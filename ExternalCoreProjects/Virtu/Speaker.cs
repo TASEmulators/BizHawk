@@ -14,7 +14,7 @@ namespace Jellyfish.Virtu
 
 		public override void Initialize()
 		{
-			AudioService = new Services.AudioService();
+			AudioService = new AudioService();
 
 			Machine.Events.AddEvent(CyclesPerFlush * Machine.Cpu.Multiplier, _flushOutputEvent);
 		}

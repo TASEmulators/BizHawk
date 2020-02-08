@@ -187,7 +187,7 @@ namespace Jellyfish.Virtu
 		public string[] TraceState()
 		{
 			string[] parts = new string[2];
-			parts[0] = string.Format("{0:X4}  {1:X2} {2} ", RPC, _memory.Read(RPC), ReadOpcode(RPC));
+			parts[0] = $"{RPC:X4}  {_memory.Read(RPC):X2} {ReadOpcode(RPC)} ";
 			parts[1] = string.Format(
 				"A:{0:X2} X:{1:X2} Y:{2:X2} P:{3:X2} SP:{4:X2} {6}{7}{8}{9}{10}{11}{12}{13} Cy:{5}",
 				RA,
@@ -211,60 +211,59 @@ namespace Jellyfish.Virtu
 		private string ReadOpcode(int pc)
 		{
 			//It would be so much better if I could just use the MOS6502X's Disassemble Method here.
-
 			if (pc <= 0xFFFD)   //sanity check to make sure we don't read from outside address space.
 			{
 				switch (_memory.Peek(pc))
 				{
-					case 0x0C: return string.Format("NOP (${0:X4})", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x0D: return string.Format("ORA ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x0E: return string.Format("ASL ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x19: return string.Format("ORA ${0:X4},Y *", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x1D: return string.Format("ORA ${0:X4},X *", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x1E: return string.Format("ASL ${0:X4},X", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x20: return string.Format("JSR ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x2C: return string.Format("BIT ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x2D: return string.Format("AND ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x2E: return string.Format("ROL ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x39: return string.Format("AND ${0:X4},Y *", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x3D: return string.Format("AND ${0:X4},X *", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x3E: return string.Format("ROL ${0:X4},X", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x4C: return string.Format("JMP ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x4D: return string.Format("EOR ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x4E: return string.Format("LSR ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x59: return string.Format("EOR ${0:X4},Y *", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x5D: return string.Format("EOR ${0:X4},X *", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x5E: return string.Format("LSR ${0:X4},X", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x6C: return string.Format("JMP (${0:X4})", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x6D: return string.Format("ADC ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x6E: return string.Format("ROR ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x79: return string.Format("ADC ${0:X4},Y *", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x7D: return string.Format("ADC ${0:X4},X *", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x7E: return string.Format("ROR ${0:X4},X", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x8C: return string.Format("STY ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x8D: return string.Format("STA ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x8E: return string.Format("STX ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x99: return string.Format("STA ${0:X4},Y", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x9D: return string.Format("STA ${0:X4},X", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xAC: return string.Format("LDY ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xAD: return string.Format("LDA ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xAE: return string.Format("LDX ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xB9: return string.Format("LDA ${0:X4},Y *", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xBC: return string.Format("LDY ${0:X4},X *", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xBD: return string.Format("LDA ${0:X4},X *", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xBE: return string.Format("LDX ${0:X4},Y *", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xCC: return string.Format("CPY ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xCD: return string.Format("CMP ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xCE: return string.Format("DEC ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xD9: return string.Format("CMP ${0:X4},Y *", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xDD: return string.Format("CMP ${0:X4},X *", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xDE: return string.Format("DEC ${0:X4},X", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xEC: return string.Format("CPX ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xED: return string.Format("SBC ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xEE: return string.Format("INC ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xF9: return string.Format("SBC ${0:X4},Y *", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xFD: return string.Format("SBC ${0:X4},X *", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xFE: return string.Format("INC ${0:X4},X", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
+					case 0x0C: return $"NOP (${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4})";
+					case 0x0D: return $"ORA ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0x0E: return $"ASL ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0x19: return $"ORA ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},Y *";
+					case 0x1D: return $"ORA ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},X *";
+					case 0x1E: return $"ASL ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},X";
+					case 0x20: return $"JSR ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0x2C: return $"BIT ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0x2D: return $"AND ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0x2E: return $"ROL ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0x39: return $"AND ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},Y *";
+					case 0x3D: return $"AND ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},X *";
+					case 0x3E: return $"ROL ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},X";
+					case 0x4C: return $"JMP ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0x4D: return $"EOR ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0x4E: return $"LSR ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0x59: return $"EOR ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},Y *";
+					case 0x5D: return $"EOR ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},X *";
+					case 0x5E: return $"LSR ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},X";
+					case 0x6C: return $"JMP (${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4})";
+					case 0x6D: return $"ADC ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0x6E: return $"ROR ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0x79: return $"ADC ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},Y *";
+					case 0x7D: return $"ADC ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},X *";
+					case 0x7E: return $"ROR ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},X";
+					case 0x8C: return $"STY ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0x8D: return $"STA ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0x8E: return $"STX ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0x99: return $"STA ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},Y";
+					case 0x9D: return $"STA ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},X";
+					case 0xAC: return $"LDY ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0xAD: return $"LDA ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0xAE: return $"LDX ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0xB9: return $"LDA ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},Y *";
+					case 0xBC: return $"LDY ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},X *";
+					case 0xBD: return $"LDA ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},X *";
+					case 0xBE: return $"LDX ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},Y *";
+					case 0xCC: return $"CPY ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0xCD: return $"CMP ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0xCE: return $"DEC ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0xD9: return $"CMP ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},Y *";
+					case 0xDD: return $"CMP ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},X *";
+					case 0xDE: return $"DEC ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},X";
+					case 0xEC: return $"CPX ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0xED: return $"SBC ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0xEE: return $"INC ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0xF9: return $"SBC ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},Y *";
+					case 0xFD: return $"SBC ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},X *";
+					case 0xFE: return $"INC ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},X";
 
 				}
 			}
@@ -272,100 +271,100 @@ namespace Jellyfish.Virtu
 			{
 				switch (_memory.Peek(pc))
 				{
-					case 0x01: return string.Format("ORA (${0:X2},X)", _memory.Peek(++pc));
-					case 0x04: return string.Format("NOP ${0:X2}", _memory.Peek(++pc));
-					case 0x05: return string.Format("ORA ${0:X2}", _memory.Peek(++pc));
-					case 0x06: return string.Format("ASL ${0:X2}", _memory.Peek(++pc));
-					case 0x09: return string.Format("ORA #${0:X2}", _memory.Peek(++pc));
-					case 0x10: return string.Format("BPL ${0:X4}", pc + 2 + (sbyte)_memory.Peek(pc + 1));
-					case 0x11: return string.Format("ORA (${0:X2}),Y *", _memory.Peek(++pc));
-					case 0x14: return string.Format("NOP ${0:X2},X", _memory.Peek(++pc));
-					case 0x15: return string.Format("ORA ${0:X2},X", _memory.Peek(++pc));
-					case 0x16: return string.Format("ASL ${0:X2},X", _memory.Peek(++pc));
-					case 0x1C: return string.Format("NOP (${0:X2},X)", _memory.Peek(++pc));
-					case 0x21: return string.Format("AND (${0:X2},X)", _memory.Peek(++pc));
-					case 0x24: return string.Format("BIT ${0:X2}", _memory.Peek(++pc));
-					case 0x25: return string.Format("AND ${0:X2}", _memory.Peek(++pc));
-					case 0x26: return string.Format("ROL ${0:X2}", _memory.Peek(++pc));
-					case 0x29: return string.Format("AND #${0:X2}", _memory.Peek(++pc));
-					case 0x30: return string.Format("BMI ${0:X4}", pc + 2 + (sbyte)_memory.Peek(pc + 1));
-					case 0x31: return string.Format("AND (${0:X2}),Y *", _memory.Peek(++pc));
-					case 0x34: return string.Format("NOP ${0:X2},X", _memory.Peek(++pc));
-					case 0x35: return string.Format("AND ${0:X2},X", _memory.Peek(++pc));
-					case 0x36: return string.Format("ROL ${0:X2},X", _memory.Peek(++pc));
-					case 0x3C: return string.Format("NOP (${0:X2},X)", _memory.Peek(++pc));
-					case 0x41: return string.Format("EOR (${0:X2},X)", _memory.Peek(++pc));
-					case 0x44: return string.Format("NOP ${0:X2}", _memory.Peek(++pc));
-					case 0x45: return string.Format("EOR ${0:X2}", _memory.Peek(++pc));
-					case 0x46: return string.Format("LSR ${0:X2}", _memory.Peek(++pc));
-					case 0x49: return string.Format("EOR #${0:X2}", _memory.Peek(++pc));
-					case 0x50: return string.Format("BVC ${0:X4}", pc + 2 + (sbyte)_memory.Peek(pc + 1));
-					case 0x51: return string.Format("EOR (${0:X2}),Y *", _memory.Peek(++pc));
-					case 0x54: return string.Format("NOP ${0:X2},X", _memory.Peek(++pc));
-					case 0x55: return string.Format("EOR ${0:X2},X", _memory.Peek(++pc));
-					case 0x56: return string.Format("LSR ${0:X2},X", _memory.Peek(++pc));
-					case 0x5C: return string.Format("NOP (${0:X2},X)", _memory.Peek(++pc));
-					case 0x61: return string.Format("ADC (${0:X2},X)", _memory.Peek(++pc));
-					case 0x64: return string.Format("NOP ${0:X2}", _memory.Peek(++pc));
-					case 0x65: return string.Format("ADC ${0:X2}", _memory.Peek(++pc));
-					case 0x66: return string.Format("ROR ${0:X2}", _memory.Peek(++pc));
-					case 0x69: return string.Format("ADC #${0:X2}", _memory.Peek(++pc));
-					case 0x70: return string.Format("BVS ${0:X4}", pc + 2 + (sbyte)_memory.Peek(pc + 1));
-					case 0x71: return string.Format("ADC (${0:X2}),Y *", _memory.Peek(++pc));
-					case 0x74: return string.Format("NOP ${0:X2},X", _memory.Peek(++pc));
-					case 0x75: return string.Format("ADC ${0:X2},X", _memory.Peek(++pc));
-					case 0x76: return string.Format("ROR ${0:X2},X", _memory.Peek(++pc));
-					case 0x7C: return string.Format("NOP (${0:X2},X)", _memory.Peek(++pc));
-					case 0x80: return string.Format("NOP #${0:X2}", _memory.Peek(++pc));
-					case 0x81: return string.Format("STA (${0:X2},X)", _memory.Peek(++pc));
-					case 0x82: return string.Format("NOP #${0:X2}", _memory.Peek(++pc));
-					case 0x84: return string.Format("STY ${0:X2}", _memory.Peek(++pc));
-					case 0x85: return string.Format("STA ${0:X2}", _memory.Peek(++pc));
-					case 0x86: return string.Format("STX ${0:X2}", _memory.Peek(++pc));
-					case 0x89: return string.Format("NOP #${0:X2}", _memory.Peek(++pc));
-					case 0x90: return string.Format("BCC ${0:X4}", pc + 2 + (sbyte)_memory.Peek(pc + 1));
-					case 0x91: return string.Format("STA (${0:X2}),Y", _memory.Peek(++pc));
-					case 0x94: return string.Format("STY ${0:X2},X", _memory.Peek(++pc));
-					case 0x95: return string.Format("STA ${0:X2},X", _memory.Peek(++pc));
-					case 0x96: return string.Format("STX ${0:X2},Y", _memory.Peek(++pc));
-					case 0xA0: return string.Format("LDY #${0:X2}", _memory.Peek(++pc));
-					case 0xA1: return string.Format("LDA (${0:X2},X)", _memory.Peek(++pc));
-					case 0xA2: return string.Format("LDX #${0:X2}", _memory.Peek(++pc));
-					case 0xA4: return string.Format("LDY ${0:X2}", _memory.Peek(++pc));
-					case 0xA5: return string.Format("LDA ${0:X2}", _memory.Peek(++pc));
-					case 0xA6: return string.Format("LDX ${0:X2}", _memory.Peek(++pc));
-					case 0xA9: return string.Format("LDA #${0:X2}", _memory.Peek(++pc));
-					case 0xB0: return string.Format("BCS ${0:X4}", pc + 2 + (sbyte)_memory.Peek(pc + 1));
-					case 0xB1: return string.Format("LDA (${0:X2}),Y *", _memory.Peek(++pc));
-					case 0xB4: return string.Format("LDY ${0:X2},X", _memory.Peek(++pc));
-					case 0xB5: return string.Format("LDA ${0:X2},X", _memory.Peek(++pc));
-					case 0xB6: return string.Format("LDX ${0:X2},Y", _memory.Peek(++pc));
-					case 0xC0: return string.Format("CPY #${0:X2}", _memory.Peek(++pc));
-					case 0xC1: return string.Format("CMP (${0:X2},X)", _memory.Peek(++pc));
-					case 0xC2: return string.Format("NOP #${0:X2}", _memory.Peek(++pc));
-					case 0xC4: return string.Format("CPY ${0:X2}", _memory.Peek(++pc));
-					case 0xC5: return string.Format("CMP ${0:X2}", _memory.Peek(++pc));
-					case 0xC6: return string.Format("DEC ${0:X2}", _memory.Peek(++pc));
-					case 0xC9: return string.Format("CMP #${0:X2}", _memory.Peek(++pc));
-					case 0xD0: return string.Format("BNE ${0:X4}", pc + 2 + (sbyte)_memory.Peek(pc + 1));
-					case 0xD1: return string.Format("CMP (${0:X2}),Y *", _memory.Peek(++pc));
-					case 0xD4: return string.Format("NOP ${0:X2},X", _memory.Peek(++pc));
-					case 0xD5: return string.Format("CMP ${0:X2},X", _memory.Peek(++pc));
-					case 0xD6: return string.Format("DEC ${0:X2},X", _memory.Peek(++pc));
-					case 0xDC: return string.Format("NOP (${0:X2},X)", _memory.Peek(++pc));
-					case 0xE0: return string.Format("CPX #${0:X2}", _memory.Peek(++pc));
-					case 0xE1: return string.Format("SBC (${0:X2},X)", _memory.Peek(++pc));
-					case 0xE2: return string.Format("NOP #${0:X2}", _memory.Peek(++pc));
-					case 0xE4: return string.Format("CPX ${0:X2}", _memory.Peek(++pc));
-					case 0xE5: return string.Format("SBC ${0:X2}", _memory.Peek(++pc));
-					case 0xE6: return string.Format("INC ${0:X2}", _memory.Peek(++pc));
-					case 0xE9: return string.Format("SBC #${0:X2}", _memory.Peek(++pc));
-					case 0xF0: return string.Format("BEQ ${0:X4}", pc + 2 + (sbyte)_memory.Peek(pc + 1));
-					case 0xF1: return string.Format("SBC (${0:X2}),Y *", _memory.Peek(++pc));
-					case 0xF4: return string.Format("NOP ${0:X2},X", _memory.Peek(++pc));
-					case 0xF5: return string.Format("SBC ${0:X2},X", _memory.Peek(++pc));
-					case 0xF6: return string.Format("INC ${0:X2},X", _memory.Peek(++pc));
-					case 0xFC: return string.Format("NOP (${0:X2},X)", _memory.Peek(++pc));
+					case 0x01: return $"ORA (${_memory.Peek(++pc):X2},X)";
+					case 0x04: return $"NOP ${_memory.Peek(++pc):X2}";
+					case 0x05: return $"ORA ${_memory.Peek(++pc):X2}";
+					case 0x06: return $"ASL ${_memory.Peek(++pc):X2}";
+					case 0x09: return $"ORA #${_memory.Peek(++pc):X2}";
+					case 0x10: return $"BPL ${pc + 2 + (sbyte) _memory.Peek(pc + 1):X4}";
+					case 0x11: return $"ORA (${_memory.Peek(++pc):X2}),Y *";
+					case 0x14: return $"NOP ${_memory.Peek(++pc):X2},X";
+					case 0x15: return $"ORA ${_memory.Peek(++pc):X2},X";
+					case 0x16: return $"ASL ${_memory.Peek(++pc):X2},X";
+					case 0x1C: return $"NOP (${_memory.Peek(++pc):X2},X)";
+					case 0x21: return $"AND (${_memory.Peek(++pc):X2},X)";
+					case 0x24: return $"BIT ${_memory.Peek(++pc):X2}";
+					case 0x25: return $"AND ${_memory.Peek(++pc):X2}";
+					case 0x26: return $"ROL ${_memory.Peek(++pc):X2}";
+					case 0x29: return $"AND #${_memory.Peek(++pc):X2}";
+					case 0x30: return $"BMI ${pc + 2 + (sbyte) _memory.Peek(pc + 1):X4}";
+					case 0x31: return $"AND (${_memory.Peek(++pc):X2}),Y *";
+					case 0x34: return $"NOP ${_memory.Peek(++pc):X2},X";
+					case 0x35: return $"AND ${_memory.Peek(++pc):X2},X";
+					case 0x36: return $"ROL ${_memory.Peek(++pc):X2},X";
+					case 0x3C: return $"NOP (${_memory.Peek(++pc):X2},X)";
+					case 0x41: return $"EOR (${_memory.Peek(++pc):X2},X)";
+					case 0x44: return $"NOP ${_memory.Peek(++pc):X2}";
+					case 0x45: return $"EOR ${_memory.Peek(++pc):X2}";
+					case 0x46: return $"LSR ${_memory.Peek(++pc):X2}";
+					case 0x49: return $"EOR #${_memory.Peek(++pc):X2}";
+					case 0x50: return $"BVC ${pc + 2 + (sbyte) _memory.Peek(pc + 1):X4}";
+					case 0x51: return $"EOR (${_memory.Peek(++pc):X2}),Y *";
+					case 0x54: return $"NOP ${_memory.Peek(++pc):X2},X";
+					case 0x55: return $"EOR ${_memory.Peek(++pc):X2},X";
+					case 0x56: return $"LSR ${_memory.Peek(++pc):X2},X";
+					case 0x5C: return $"NOP (${_memory.Peek(++pc):X2},X)";
+					case 0x61: return $"ADC (${_memory.Peek(++pc):X2},X)";
+					case 0x64: return $"NOP ${_memory.Peek(++pc):X2}";
+					case 0x65: return $"ADC ${_memory.Peek(++pc):X2}";
+					case 0x66: return $"ROR ${_memory.Peek(++pc):X2}";
+					case 0x69: return $"ADC #${_memory.Peek(++pc):X2}";
+					case 0x70: return $"BVS ${pc + 2 + (sbyte) _memory.Peek(pc + 1):X4}";
+					case 0x71: return $"ADC (${_memory.Peek(++pc):X2}),Y *";
+					case 0x74: return $"NOP ${_memory.Peek(++pc):X2},X";
+					case 0x75: return $"ADC ${_memory.Peek(++pc):X2},X";
+					case 0x76: return $"ROR ${_memory.Peek(++pc):X2},X";
+					case 0x7C: return $"NOP (${_memory.Peek(++pc):X2},X)";
+					case 0x80: return $"NOP #${_memory.Peek(++pc):X2}";
+					case 0x81: return $"STA (${_memory.Peek(++pc):X2},X)";
+					case 0x82: return $"NOP #${_memory.Peek(++pc):X2}";
+					case 0x84: return $"STY ${_memory.Peek(++pc):X2}";
+					case 0x85: return $"STA ${_memory.Peek(++pc):X2}";
+					case 0x86: return $"STX ${_memory.Peek(++pc):X2}";
+					case 0x89: return $"NOP #${_memory.Peek(++pc):X2}";
+					case 0x90: return $"BCC ${pc + 2 + (sbyte) _memory.Peek(pc + 1):X4}";
+					case 0x91: return $"STA (${_memory.Peek(++pc):X2}),Y";
+					case 0x94: return $"STY ${_memory.Peek(++pc):X2},X";
+					case 0x95: return $"STA ${_memory.Peek(++pc):X2},X";
+					case 0x96: return $"STX ${_memory.Peek(++pc):X2},Y";
+					case 0xA0: return $"LDY #${_memory.Peek(++pc):X2}";
+					case 0xA1: return $"LDA (${_memory.Peek(++pc):X2},X)";
+					case 0xA2: return $"LDX #${_memory.Peek(++pc):X2}";
+					case 0xA4: return $"LDY ${_memory.Peek(++pc):X2}";
+					case 0xA5: return $"LDA ${_memory.Peek(++pc):X2}";
+					case 0xA6: return $"LDX ${_memory.Peek(++pc):X2}";
+					case 0xA9: return $"LDA #${_memory.Peek(++pc):X2}";
+					case 0xB0: return $"BCS ${pc + 2 + (sbyte) _memory.Peek(pc + 1):X4}";
+					case 0xB1: return $"LDA (${_memory.Peek(++pc):X2}),Y *";
+					case 0xB4: return $"LDY ${_memory.Peek(++pc):X2},X";
+					case 0xB5: return $"LDA ${_memory.Peek(++pc):X2},X";
+					case 0xB6: return $"LDX ${_memory.Peek(++pc):X2},Y";
+					case 0xC0: return $"CPY #${_memory.Peek(++pc):X2}";
+					case 0xC1: return $"CMP (${_memory.Peek(++pc):X2},X)";
+					case 0xC2: return $"NOP #${_memory.Peek(++pc):X2}";
+					case 0xC4: return $"CPY ${_memory.Peek(++pc):X2}";
+					case 0xC5: return $"CMP ${_memory.Peek(++pc):X2}";
+					case 0xC6: return $"DEC ${_memory.Peek(++pc):X2}";
+					case 0xC9: return $"CMP #${_memory.Peek(++pc):X2}";
+					case 0xD0: return $"BNE ${pc + 2 + (sbyte) _memory.Peek(pc + 1):X4}";
+					case 0xD1: return $"CMP (${_memory.Peek(++pc):X2}),Y *";
+					case 0xD4: return $"NOP ${_memory.Peek(++pc):X2},X";
+					case 0xD5: return $"CMP ${_memory.Peek(++pc):X2},X";
+					case 0xD6: return $"DEC ${_memory.Peek(++pc):X2},X";
+					case 0xDC: return $"NOP (${_memory.Peek(++pc):X2},X)";
+					case 0xE0: return $"CPX #${_memory.Peek(++pc):X2}";
+					case 0xE1: return $"SBC (${_memory.Peek(++pc):X2},X)";
+					case 0xE2: return $"NOP #${_memory.Peek(++pc):X2}";
+					case 0xE4: return $"CPX ${_memory.Peek(++pc):X2}";
+					case 0xE5: return $"SBC ${_memory.Peek(++pc):X2}";
+					case 0xE6: return $"INC ${_memory.Peek(++pc):X2}";
+					case 0xE9: return $"SBC #${_memory.Peek(++pc):X2}";
+					case 0xF0: return $"BEQ ${pc + 2 + (sbyte) _memory.Peek(pc + 1):X4}";
+					case 0xF1: return $"SBC (${_memory.Peek(++pc):X2}),Y *";
+					case 0xF4: return $"NOP ${_memory.Peek(++pc):X2},X";
+					case 0xF5: return $"SBC ${_memory.Peek(++pc):X2},X";
+					case 0xF6: return $"INC ${_memory.Peek(++pc):X2},X";
+					case 0xFC: return $"NOP (${_memory.Peek(++pc):X2},X)";
 				}
 			}
 			if (pc <= 0xFFFF)   //read one-byte opcodes here
@@ -3466,7 +3465,7 @@ namespace Jellyfish.Virtu
 		[JsonIgnore]
 		public Action<string[]> TraceCallback;
 
-		/// <summary>Carry Flag</summary>   
+		/// <summary>Carry Flag</summary>
 		[JsonIgnore]
 		public bool FlagC
 		{

@@ -32,7 +32,7 @@ namespace Jellyfish.Library
 			{
 				total += read = stream.Read(buffer, offset + total, count - total);
 			}
-			while ((read > 0) && (total < count));
+			while (read > 0 && total < count);
 
 			if (total < minCount)
 			{
