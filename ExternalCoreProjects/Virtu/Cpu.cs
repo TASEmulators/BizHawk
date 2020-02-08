@@ -189,7 +189,7 @@ namespace Jellyfish.Virtu
 			string[] parts = new string[2];
 			parts[0] = string.Format("{0:X4}  {1:X2} {2} ", RPC, _memory.Read(RPC), ReadOpcode(RPC));
 			parts[1] = string.Format(
-				"A:{0:X2} X:{1:X2} Y:{2:X2} P:{3:X2} SP:{4:X2} Cy:{5}",
+				"A:{0:X2} X:{1:X2} Y:{2:X2} P:{3:X2} SP:{4:X2} {6}{7}{8}{9}{10}{11}{12}{13} Cy:{5}",
 				RA,
 				RX,
 				RY,
