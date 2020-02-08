@@ -19,6 +19,8 @@ namespace BizHawk.Client.Common
 		public const string BOARDNAME = "BoardName";
 		public const string SYNCSETTINGS = "SyncSettings";
 		public const string LOOPOFFSET = "LoopOffset";
+		public const string VBLANKCOUNT = "VBlankCount";
+		public const string CYCLECOUNT = "CycleCount";
 
 		// Core Setting
 		public const string CORE = "Core";

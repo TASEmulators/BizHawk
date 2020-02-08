@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.Common
 {
@@ -69,12 +70,23 @@ namespace BizHawk.Client.Common
 
 		public int InputLogLength => Log.Count;
 
-		public int TimeLength
+		public ulong TimeLength
 		{
 			get
 			{
-				if (Header.ContainsKey("VBlankCount")) { return Convert.ToInt32(Header["VBlankCount"]); }
-				return Log.Count;
+				if (Header.ContainsKey(HeaderKeys.VBLANKCOUNT))
+				{
+					return Convert.ToUInt64(Header[HeaderKeys.VBLANKCOUNT]);
+				}
+				else if (Header.ContainsKey(HeaderKeys.CYCLECOUNT))
+				{
+					var gambatteName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(Gameboy), typeof(CoreAttribute))).CoreName;
+					if (Header[HeaderKeys.CORE] == gambatteName)
+					{
+						return Convert.ToUInt64(Header[HeaderKeys.CYCLECOUNT]);
+					}
+				}
+				return (ulong)Log.Count;
 			}
 		}
 

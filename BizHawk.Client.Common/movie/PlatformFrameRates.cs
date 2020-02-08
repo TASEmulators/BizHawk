@@ -38,6 +38,7 @@ namespace BizHawk.Client.Common
 			["WSWAN"] = (3072000.0 / (159 * 256)), // 75.4716981132
 			["GB"] = 262144.0 / 4389.0, // 59.7275005696
 			["GBC"] = 262144.0 / 4389.0, // 59.7275005696
+			["GB_Clock"] = 2097152.0,
 			["GBA"] = 262144.0 / 4389.0, // 59.7275005696 
 			["GEN"] = 53693175 / (3420.0 * 262),
 			["GEN_PAL"] = 53203424 / (3420.0 * 313),
@@ -102,8 +103,14 @@ namespace BizHawk.Client.Common
 		private double Fps(IMovie movie)
 		{
 			var system = movie.HeaderEntries[HeaderKeys.PLATFORM];
+			var core = movie.HeaderEntries[HeaderKeys.CORE];
 			var pal = movie.HeaderEntries.ContainsKey(HeaderKeys.PAL)
 				&& movie.HeaderEntries[HeaderKeys.PAL] == "1";
+
+			if (movie.HeaderEntries.ContainsKey(HeaderKeys.CYCLECOUNT) && core == "Gambatte")
+			{
+				system = "GB_Clock";
+			}
 
 			return this[system, pal];
 		}

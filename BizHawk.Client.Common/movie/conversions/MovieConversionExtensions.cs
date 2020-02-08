@@ -343,7 +343,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 
 			if (Global.Emulator is Gameboy)
 			{
-				movie.HeaderEntries.Add("CycleCount", "0");
+				movie.HeaderEntries.Add(HeaderKeys.CYCLECOUNT, "0");
 			}
 
 			if (Global.Emulator is SMS && ((SMS) Global.Emulator).IsSG1000)
@@ -368,7 +368,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 
 			if (Global.Emulator is SubNESHawk)
 			{
-				movie.HeaderEntries.Add("VBlankCount", "0");
+				movie.HeaderEntries.Add(HeaderKeys.VBLANKCOUNT, "0");
 			}
 
 			movie.Core = ((CoreAttribute)Attribute

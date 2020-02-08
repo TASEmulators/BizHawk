@@ -62,7 +62,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets the actual length of time a movie lasts for. For subframe cores, this will be different then the above two options
 		/// </summary>
-		int TimeLength { get; }
+		ulong TimeLength { get; }
 
 		/// <summary>
 		/// Gets the file extension for the current <see cref="IMovie"/> implementation

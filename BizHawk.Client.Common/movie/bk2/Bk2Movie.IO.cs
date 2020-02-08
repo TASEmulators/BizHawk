@@ -169,12 +169,12 @@ namespace BizHawk.Client.Common
 			if (Global.Emulator is Emulation.Cores.Nintendo.SubNESHawk.SubNESHawk)
 			{
 				var _subnes = (Emulation.Cores.Nintendo.SubNESHawk.SubNESHawk)Global.Emulator;
-				Header["VBlankCount"] = _subnes.VBL_CNT.ToString();
+				Header[HeaderKeys.VBLANKCOUNT] = _subnes.VBL_CNT.ToString();
 			}
 			else if (Global.Emulator is Emulation.Cores.Nintendo.Gameboy.Gameboy)
 			{
 				var _gameboy = (Emulation.Cores.Nintendo.Gameboy.Gameboy)Global.Emulator;
-				Header["CycleCount"] = _gameboy.CycleCount.ToString();
+				Header[HeaderKeys.CYCLECOUNT] = _gameboy.CycleCount.ToString();
 			}
 
 			var file = new FileInfo(fn);
