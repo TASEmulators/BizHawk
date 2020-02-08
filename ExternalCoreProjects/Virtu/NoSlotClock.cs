@@ -190,8 +190,8 @@ namespace Jellyfish.Virtu
 				return false;
 			}
 
-			public ulong Data { get { return _data; } } // no auto props
-			public ulong Mask { get { return _mask; } }
+			public ulong Data => _data;
+			public ulong Mask => _mask;
 
 			private ulong _data;
 			private ulong _mask;

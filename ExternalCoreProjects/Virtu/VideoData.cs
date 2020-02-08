@@ -4,7 +4,7 @@ namespace Jellyfish.Virtu
 {
 	public partial class Video
 	{
-		private static readonly int[] AddressOffset = new int[Height]
+		private static readonly int[] AddressOffset =
 		{
 			0x0000, 0x0400, 0x0800, 0x0C00, 0x1000, 0x1400, 0x1800, 0x1C00,
 			0x0080, 0x0480, 0x0880, 0x0C80, 0x1080, 0x1480, 0x1880, 0x1C80,
@@ -34,12 +34,9 @@ namespace Jellyfish.Virtu
 
 		private const int CellWidth = 14;
 		private const int CellHeight = 8;
-		private const int CellRows = Height / CellHeight;
 		private const int CellColumns = Width / CellWidth;
 
-		private const int CellIndexCount = 0x2000;
-
-		private static readonly ushort[] CellIndex = new ushort[CellIndexCount]
+		private static readonly ushort[] CellIndex =
 		{
 			0x0000, 0x0001, 0x0002, 0x0003, 0x0004, 0x0005, 0x0006, 0x0007,
 			0x0008, 0x0009, 0x000A, 0x000B, 0x000C, 0x000D, 0x000E, 0x000F,
@@ -1067,10 +1064,9 @@ namespace Jellyfish.Virtu
 			0x1E00, 0x1E00, 0x1E00, 0x1E00, 0x1E00, 0x1E00, 0x1E00, 0x1E00
 		};
 
-		private const int CharBitmapCount = 322;
 		private const int CharBitmapBytes = 8;
 
-		private static readonly byte[] CharBitmap = new byte[CharBitmapCount * CharBitmapBytes]
+		private static readonly byte[] CharBitmap =
 		{
 			0x43, 0x5D, 0x55, 0x45, 0x65, 0x7D, 0x43, 0x7F,
 			0x77, 0x6B, 0x5D, 0x5D, 0x41, 0x5D, 0x5D, 0x7F,
@@ -1396,9 +1392,7 @@ namespace Jellyfish.Virtu
 			0x00, 0x18, 0x07, 0x00, 0x07, 0x0C, 0x08, 0x70
 		};
 
-		private const int CharSetCharCount = 256;
-
-		private static readonly ushort[] CharSetPrimary = new ushort[CharSetCharCount]
+		private static readonly ushort[] CharSetPrimary =
 		{
 			0x0000, 0x0001, 0x0002, 0x0003, 0x0004, 0x0005, 0x0006, 0x0007,
 			0x0008, 0x0009, 0x000A, 0x000B, 0x000C, 0x000D, 0x000E, 0x000F,
@@ -1434,7 +1428,7 @@ namespace Jellyfish.Virtu
 			0x00F8, 0x00F9, 0x00FA, 0x00FB, 0x00FC, 0x00FD, 0x00FE, 0x00FF
 		};
 
-		private static readonly ushort[] CharSetSecondaryStandard = new ushort[CharSetCharCount]
+		private static readonly ushort[] CharSetSecondaryStandard =
 		{
 			0x0000, 0x0001, 0x0002, 0x0003, 0x0004, 0x0005, 0x0006, 0x0007,
 			0x0008, 0x0009, 0x000A, 0x000B, 0x000C, 0x000D, 0x000E, 0x000F,
@@ -1470,7 +1464,7 @@ namespace Jellyfish.Virtu
 			0x00F8, 0x00F9, 0x00FA, 0x00FB, 0x00FC, 0x00FD, 0x00FE, 0x00FF
 		};
 
-		private static readonly ushort[] CharSetSecondaryEnhanced = new ushort[CharSetCharCount]
+		private static readonly ushort[] CharSetSecondaryEnhanced =
 		{
 			0x0000, 0x0001, 0x0002, 0x0003, 0x0004, 0x0005, 0x0006, 0x0007,
 			0x0008, 0x0009, 0x000A, 0x000B, 0x000C, 0x000D, 0x000E, 0x000F,
@@ -1545,9 +1539,7 @@ namespace Jellyfish.Virtu
 		private const int ColorDHiresE = 0x20E;
 		private const int ColorDHiresF = 0x20F;
 
-		private const int ColorLoresDataCount = 16;
-
-		private static readonly int[] ColorLores = new int[ColorLoresDataCount]
+		private static readonly int[] ColorLores =
 		{
 			ColorDHires0, ColorDHires8, ColorDHires1, ColorDHires9,
 			ColorDHires2, ColorDHiresA, ColorDHires3, ColorDHiresB,
@@ -1555,33 +1547,31 @@ namespace Jellyfish.Virtu
 			ColorDHires6, ColorDHiresE, ColorDHires7, ColorDHiresF
 		};
 
-		private static readonly int[] Color7MLores = new int[2 * ColorLoresDataCount]
+		private static readonly int[] Color7MLores =
 		{
 			ColorDHires0, ColorDHires9, ColorDHires6, ColorDHiresF, // even columns
-            ColorDHires0, ColorDHires9, ColorDHires6, ColorDHiresF,
+			ColorDHires0, ColorDHires9, ColorDHires6, ColorDHiresF,
 			ColorDHires0, ColorDHires9, ColorDHires6, ColorDHiresF,
 			ColorDHires0, ColorDHires9, ColorDHires6, ColorDHiresF,
 			ColorDHires0, ColorDHires0, ColorDHires0, ColorDHires0, // odd columns
-            ColorDHires6, ColorDHires6, ColorDHires6, ColorDHires6,
+			ColorDHires6, ColorDHires6, ColorDHires6, ColorDHires6,
 			ColorDHires9, ColorDHires9, ColorDHires9, ColorDHires9,
 			ColorDHiresF, ColorDHiresF, ColorDHiresF, ColorDHiresF
 		};
 
-		private static readonly int[] ColorDLores = new int[2 * ColorLoresDataCount]
+		private static readonly int[] ColorDLores =
 		{
 			ColorDHires0, ColorDHires4, ColorDHires8, ColorDHiresC, // even columns
-            ColorDHires1, ColorDHires5, ColorDHires9, ColorDHiresD,
+			ColorDHires1, ColorDHires5, ColorDHires9, ColorDHiresD,
 			ColorDHires2, ColorDHires6, ColorDHiresA, ColorDHiresE,
 			ColorDHires3, ColorDHires7, ColorDHiresB, ColorDHiresF,
 			ColorDHires0, ColorDHires8, ColorDHires1, ColorDHires9, // odd columns
-            ColorDHires2, ColorDHiresA, ColorDHires3, ColorDHiresB,
+			ColorDHires2, ColorDHiresA, ColorDHires3, ColorDHiresB,
 			ColorDHires4, ColorDHiresC, ColorDHires5, ColorDHiresD,
 			ColorDHires6, ColorDHiresE, ColorDHires7, ColorDHiresF
 		};
 
-		private const int ColorHiresDataCount = 8;
-
-		private static readonly int[] ColorHires = new int[4 * ColorHiresDataCount]
+		private static readonly int[] ColorHires =
 		{
 			ColorDHires0, ColorDHires0, ColorDHires9, ColorDHiresF, // even columns, high bit off
             ColorDHires0, ColorDHires6, ColorDHiresF, ColorDHiresF,
@@ -1593,10 +1583,8 @@ namespace Jellyfish.Virtu
             ColorDHires0, ColorDHires3, ColorDHiresF, ColorDHiresF
 		};
 
-		private const int CyclesPerHBlank = 25;
 		private const int CyclesPerHSync = 65;
 		private const int CyclesPerFlush = 8 * CyclesPerHSync;
-		private const int CyclesPerSecond = 1022730;
 
 		private const int HCountPreset = 0x40; // hcount preset after hcount overflows -> HPE' low [3-13]
 		private const int HCountLeaveHBlank = 0x58; // hcount when leaving hblank [3-15]
@@ -1633,10 +1621,8 @@ namespace Jellyfish.Virtu
 		private const int Height = VLineEnterVBlank;
 
 		private const int TextHeight = 8;
-		private const int TextRows = Height / TextHeight;
 
 		private const int LoresHeight = 4;
-		private const int LoresRows = Height / LoresHeight;
 
 		private const int MixedHeight = 160;
 		private const int MixedCellIndex = MixedHeight * CellColumns;

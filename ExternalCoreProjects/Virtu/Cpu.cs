@@ -3440,7 +3440,8 @@ namespace Jellyfish.Virtu
 		}
 		#endregion
 
-		public bool Is65C02 { get { return _is65C02; } set { _is65C02 = value; _executeOpCode = _is65C02 ? ExecuteOpCode65C02 : ExecuteOpCode65N02; } }
+		public bool Is65C02 { get => _is65C02;
+			set { _is65C02 = value; _executeOpCode = _is65C02 ? ExecuteOpCode65C02 : ExecuteOpCode65N02; } }
 		public bool IsThrottled { get; set; }
 		public int Multiplier { get; set; }
 
@@ -3469,64 +3470,64 @@ namespace Jellyfish.Virtu
 		[JsonIgnore]
 		public bool FlagC
 		{
-			get { return (RP & 0x01) != 0; }
-			set { RP = (byte)((RP & ~0x01) | (value ? 0x01 : 0x00)); }
+			get => (RP & 0x01) != 0;
+			set => RP = (byte)((RP & ~0x01) | (value ? 0x01 : 0x00));
 		}
 
 		/// <summary>Zero Flag</summary>
 		[JsonIgnore]
 		public bool FlagZ
 		{
-			get { return (RP & 0x02) != 0; }
-			set { RP = (byte)((RP & ~0x02) | (value ? 0x02 : 0x00)); }
+			get => (RP & 0x02) != 0;
+			set => RP = (byte)((RP & ~0x02) | (value ? 0x02 : 0x00));
 		}
 
 		/// <summary>Interrupt Disable Flag</summary>
 		[JsonIgnore]
 		public bool FlagI
 		{
-			get { return (RP & 0x04) != 0; }
-			set { RP = (byte)((RP & ~0x04) | (value ? 0x04 : 0x00)); }
+			get => (RP & 0x04) != 0;
+			set => RP = (byte)((RP & ~0x04) | (value ? 0x04 : 0x00));
 		}
 
 		/// <summary>Decimal Mode Flag</summary>
 		[JsonIgnore]
 		public bool FlagD
 		{
-			get { return (RP & 0x08) != 0; }
-			set { RP = (byte)((RP & ~0x08) | (value ? 0x08 : 0x00)); }
+			get => (RP & 0x08) != 0;
+			set => RP = (byte)((RP & ~0x08) | (value ? 0x08 : 0x00));
 		}
 
 		/// <summary>Break Flag</summary>
 		[JsonIgnore]
 		public bool FlagB
 		{
-			get { return (RP & 0x10) != 0; }
-			set { RP = (byte)((RP & ~0x10) | (value ? 0x10 : 0x00)); }
+			get => (RP & 0x10) != 0;
+			set => RP = (byte)((RP & ~0x10) | (value ? 0x10 : 0x00));
 		}
 
 		/// <summary>T... Flag</summary>
 		[JsonIgnore]
 		public bool FlagT
 		{
-			get { return (RP & 0x20) != 0; }
-			set { RP = (byte)((RP & ~0x20) | (value ? 0x20 : 0x00)); }
+			get => (RP & 0x20) != 0;
+			set => RP = (byte)((RP & ~0x20) | (value ? 0x20 : 0x00));
 		}
 
 		/// <summary>Overflow Flag</summary>
 		[JsonIgnore]
 		public bool FlagV
 		{
-			get { return (RP & 0x40) != 0; }
-			set { RP = (byte)((RP & ~0x40) | (value ? 0x40 : 0x00)); }
+			get => (RP & 0x40) != 0;
+			set => RP = (byte)((RP & ~0x40) | (value ? 0x40 : 0x00));
 		}
 
 		/// <summary>Negative Flag</summary>
 		[JsonIgnore]
 		public bool FlagN
 		{
-			get { return (RP & 0x80) != 0; }
-			set { RP = (byte)((RP & ~0x80) | (value ? 0x80 : 0x00)); }
+			get => (RP & 0x80) != 0;
+			set => RP = (byte)((RP & ~0x80) | (value ? 0x80 : 0x00));
 		}
 	}
 }

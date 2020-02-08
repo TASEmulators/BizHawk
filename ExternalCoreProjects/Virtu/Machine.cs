@@ -55,8 +55,6 @@ namespace Jellyfish.Virtu
 			}
 		}
 
-
-
 		private void Initialize()
 		{
 			foreach (var component in Components)
@@ -177,19 +175,19 @@ namespace Jellyfish.Virtu
 		{
 			return new Dictionary<string, int>
 			{
-				{ "A", Cpu.RA },
-				{ "X", Cpu.RX },
-				{ "Y", Cpu.RY },
-				{ "S", Cpu.RS },
-				{ "PC", Cpu.RPC },
-				{ "Flag C", Cpu.FlagC ? 1 : 0 },
-				{ "Flag Z", Cpu.FlagZ ? 1 : 0 },
-				{ "Flag I", Cpu.FlagI ? 1 : 0 },
-				{ "Flag D", Cpu.FlagD ? 1 : 0 },
-				{ "Flag B", Cpu.FlagB ? 1 : 0 },
-				{ "Flag V", Cpu.FlagV ? 1 : 0 },
-				{ "Flag N", Cpu.FlagN ? 1 : 0 },
-				{ "Flag T", Cpu.FlagT ? 1 : 0 }
+				["A"] = Cpu.RA,
+				["X"] = Cpu.RX,
+				["Y"] = Cpu.RY,
+				["S"] = Cpu.RS,
+				["PC"] = Cpu.RPC,
+				["Flag C"] = Cpu.FlagC ? 1 : 0,
+				["Flag Z"] = Cpu.FlagZ ? 1 : 0,
+				["Flag I"] = Cpu.FlagI ? 1 : 0,
+				["Flag D"] = Cpu.FlagD ? 1 : 0,
+				["Flag B"] = Cpu.FlagB ? 1 : 0,
+				["Flag V"] = Cpu.FlagV ? 1 : 0,
+				["Flag N"] = Cpu.FlagN ? 1 : 0,
+				["Flag T"] = Cpu.FlagT ? 1 : 0
 			};
 		}
 	}

@@ -5,8 +5,6 @@ namespace Jellyfish.Virtu
 {
 	public partial class Memory
 	{
-		private const int BankCount = 2;
-
 		private const int BankMain = 0;
 		private const int BankAux = 1;
 
@@ -25,14 +23,12 @@ namespace Jellyfish.Virtu
 		private const int RegionD0DF = 10;
 		private const int RegionE0FF = 11;
 
-		private static readonly int[] RegionBaseAddress = new int[RegionCount]
+		private static readonly int[] RegionBaseAddress =
 		{
 			0x0000, 0x0200, 0x0200, 0x0200, 0x0200, 0x0200, 0xC000, 0xC100, 0xC100, 0xC100, 0xD000, 0xE000
 		};
 
-		private const int PageCount = 256;
-
-		private static readonly int[] PageRegion = new int[PageCount]
+		private static readonly int[] PageRegion =
 		{
 			Region0001, Region0001, Region02BF, Region02BF, Region0407, Region0407, Region0407, Region0407,
 			Region080B, Region080B, Region080B, Region080B, Region02BF, Region02BF, Region02BF, Region02BF,
@@ -92,9 +88,7 @@ namespace Jellyfish.Virtu
 		private const int StateAn3 = 0x200000;
 		private const int StateVideo = State80Col | StateText | StateMixed | StateHires | StateDRes;
 
-		private const int StateVideoModeCount = 32;
-
-		private static readonly int[] StateVideoMode = new int[StateVideoModeCount]
+		private static readonly int[] StateVideoMode =
 		{
 			Video.Mode0, Video.Mode0, Video.Mode1, Video.Mode2, Video.Mode3, Video.Mode4, Video.Mode1, Video.Mode2,
 			Video.Mode5, Video.Mode5, Video.Mode1, Video.Mode2, Video.Mode6, Video.Mode7, Video.Mode1, Video.Mode2,

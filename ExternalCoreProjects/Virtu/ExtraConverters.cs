@@ -250,15 +250,13 @@ namespace Jellyfish.Virtu
 			return typeof(Delegate).IsAssignableFrom(objectType);
 		}
 
-		public override bool CanRead { get { return true; } }
-		public override bool CanWrite { get { return true; } }
+		public override bool CanRead => true;
+		public override bool CanWrite => true;
 
 		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
 		{
 			var slug = serializer.Deserialize<Slug>(reader);
-			if (slug == null)
-				return null;
-			return slug.GetDelegate();
+			return slug?.GetDelegate();
 		}
 
 		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)

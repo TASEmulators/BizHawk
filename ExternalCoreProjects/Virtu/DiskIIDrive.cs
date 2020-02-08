@@ -9,10 +9,10 @@ namespace Jellyfish.Virtu
 		public DiskIIDrive(Machine machine) :
 			base(machine)
 		{
-			DriveArmStepDelta[0] = new int[] { 0, 0, 1, 1, 0, 0, 1, 1, -1, -1, 0, 0, -1, -1, 0, 0 }; // phase 0
-			DriveArmStepDelta[1] = new int[] { 0, -1, 0, -1, 1, 0, 1, 0, 0, -1, 0, -1, 1, 0, 1, 0 }; // phase 1
-			DriveArmStepDelta[2] = new int[] { 0, 0, -1, -1, 0, 0, -1, -1, 1, 1, 0, 0, 1, 1, 0, 0 }; // phase 2
-			DriveArmStepDelta[3] = new int[] { 0, 1, 0, 1, -1, 0, -1, 0, 0, 1, 0, 1, -1, 0, -1, 0 }; // phase 3
+			DriveArmStepDelta[0] = new[] { 0, 0, 1, 1, 0, 0, 1, 1, -1, -1, 0, 0, -1, -1, 0, 0 }; // phase 0
+			DriveArmStepDelta[1] = new[] { 0, -1, 0, -1, 1, 0, 1, 0, 0, -1, 0, -1, 1, 0, 1, 0 }; // phase 1
+			DriveArmStepDelta[2] = new[] { 0, 0, -1, -1, 0, 0, -1, -1, 1, 1, 0, 0, 1, 1, 0, 0 }; // phase 2
+			DriveArmStepDelta[3] = new[] { 0, 1, 0, 1, -1, 0, -1, 0, 0, 1, 0, 1, -1, 0, -1, 0 }; // phase 3
 		}
 
 		public void InsertDisk(string name, byte[] data, bool isWriteProtected)
@@ -68,8 +68,6 @@ namespace Jellyfish.Virtu
 			}
 
 			return 0x80;
-			// TODO: WTF was this
-			//return _random.Next(0x01, 0xFF);
 		}
 
 		public void Write(int data)
@@ -108,7 +106,7 @@ namespace Jellyfish.Virtu
 		}
 
 		[Newtonsoft.Json.JsonIgnore]
-		public bool IsWriteProtected { get { return _disk.IsWriteProtected; } }
+		public bool IsWriteProtected => _disk.IsWriteProtected;
 
 		private const int TrackNumberMax = 0x44;
 

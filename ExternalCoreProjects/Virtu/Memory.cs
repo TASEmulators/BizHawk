@@ -28,7 +28,7 @@ namespace Jellyfish.Virtu
 			WriteRamModeBankRegion = new Action<int, byte>[Video.ModeCount][][];
 			for (int mode = 0; mode < Video.ModeCount; mode++)
 			{
-				WriteRamModeBankRegion[mode] = new Action<int, byte>[BankCount][]
+				WriteRamModeBankRegion[mode] = new[]
 				{
 					new Action<int, byte>[RegionCount], new Action<int, byte>[RegionCount]
 				};
@@ -108,7 +108,7 @@ namespace Jellyfish.Virtu
 			_video = Machine.Video;
 			_noSlotClock = Machine.NoSlotClock;
 
-			// TODO: this is a lazy and more compicated way to do this
+			// TODO: this is a lazy and more complicated way to do this
 			_romInternalRegionC1CF = _appleIIe
 				.Skip(0x100)
 				.Take(_romInternalRegionC1CF.Length)
@@ -194,14 +194,8 @@ namespace Jellyfish.Virtu
 		{
 			int region = PageRegion[address >> 8];
 			var result = ((address & 0xF000) != 0xC000) ? _regionRead[region][address - RegionBaseAddress[region]] : ReadIoRegionC0CF(address);
-			if (ExecuteCallback != null)
-			{
-				ExecuteCallback((uint)address);
-			}
-			if (ReadCallback != null)
-			{
-				ReadCallback((uint)address);
-			}
+			ExecuteCallback?.Invoke((uint)address);
+			ReadCallback?.Invoke((uint)address);
 			return result;
 		}
 
@@ -209,10 +203,7 @@ namespace Jellyfish.Virtu
 		{
 			int region = PageRegion[address >> 8];
 			var result = ((address & 0xF000) != 0xC000) ? _regionRead[region][address - RegionBaseAddress[region]] : ReadIoRegionC0CF(address);
-			if (ReadCallback != null)
-			{
-				ReadCallback((uint)address);
-			}
+			ReadCallback?.Invoke((uint)address);
 			return result;
 		}
 
@@ -224,10 +215,7 @@ namespace Jellyfish.Virtu
 
 		public int ReadZeroPage(int address)
 		{
-			if (ReadCallback != null)
-			{
-				ReadCallback((uint)address);
-			}
+			ReadCallback?.Invoke((uint)address);
 			return _zeroPage[address];
 		}
 
@@ -236,28 +224,19 @@ namespace Jellyfish.Virtu
 			int region = PageRegion[address >> 8];
 			if (_writeRegion[region] == null)
 			{
-				if (WriteCallback != null)
-				{
-					WriteCallback((uint)address);
-				}
+				WriteCallback?.Invoke((uint)address);
 				_regionWrite[region][address - RegionBaseAddress[region]] = (byte)data;
 			}
 			else
 			{
-				if (WriteCallback != null)
-				{
-					WriteCallback((uint)address);
-				}
+				WriteCallback?.Invoke((uint)address);
 				_writeRegion[region](address, (byte)data);
 			}
 		}
 
 		public void WriteZeroPage(int address, int data)
 		{
-			if (WriteCallback != null)
-			{
-				WriteCallback((uint)address);
-			}
+			WriteCallback?.Invoke((uint)address);
 			_zeroPage[address] = (byte)data;
 		}
 		#endregion
@@ -301,10 +280,7 @@ namespace Jellyfish.Virtu
 			if ((0xC000 <= address && address <= 0xC00F) || (0xC061 <= address && address <= 0xC067) || (0xC069 <= address && address <= 0xC06F))
 			{
 				Machine.Lagged = false;
-				if (InputCallback != null)
-				{
-					InputCallback();
-				}
+				InputCallback?.Invoke();
 			}
 
 			switch (address)
@@ -2108,36 +2084,31 @@ namespace Jellyfish.Virtu
 			return ((_state & mask) == value);
 		}
 
-		public bool Is80Columns { get { return TestState(State80Col); } }
-		public bool Is80Store { get { return TestState(State80Store); } }
-		public bool IsAnnunciator0 { get { return TestState(StateAn0); } }
-		public bool IsAnnunciator1 { get { return TestState(StateAn1); } }
-		public bool IsAnnunciator2 { get { return TestState(StateAn2); } }
-		public bool IsAnnunciator3 { get { return TestState(StateAn3); } }
-		public bool IsCharSetAlternate { get { return TestState(StateAltChrSet); } }
-		public bool IsDoubleRes { get { return TestState(StateDRes); } }
-		public bool IsHighRamAux { get { return IsZeroPageAux; } }
-		public bool IsHighRamBank1 { get { return TestState(StateBank1); } }
-		public bool IsHighRamRead { get { return TestState(StateHRamRd); } }
-		public bool IsHighRamWrite { get { return !TestState(StateHRamWrt); } } // HRamWrt' [5-23]
-		public bool IsHires { get { return TestState(StateHires); } }
-		public bool IsMixed { get { return TestState(StateMixed); } }
-		public bool IsPage2 { get { return TestState(StatePage2); } }
-		public bool IsRamReadAux { get { return TestState(StateRamRd); } }
-		public bool IsRamReadAuxRegion0407 { get { return Is80Store ? IsPage2 : IsRamReadAux; } }
-		public bool IsRamReadAuxRegion203F { get { return TestState(State80Store | StateHires, State80Store | StateHires) ? IsPage2 : IsRamReadAux; } }
-		public bool IsRamWriteAux { get { return TestState(StateRamWrt); } }
-		public bool IsRamWriteAuxRegion0407 { get { return Is80Store ? IsPage2 : IsRamWriteAux; } }
-		public bool IsRamWriteAuxRegion203F { get { return TestState(State80Store | StateHires, State80Store | StateHires) ? IsPage2 : IsRamWriteAux; } }
-		public bool IsRomC1CFInternal { get { return TestState(StateIntCXRom); } }
-		public bool IsRomC3C3External { get { return TestState(StateSlotC3Rom); } }
-		public bool IsRomC8CFInternal { get { return TestState(StateIntC8Rom); } }
-		public bool IsText { get { return TestState(StateText); } }
-		public bool IsVideoPage2 { get { return TestState(State80Store | StatePage2, StatePage2); } } // 80Store inhibits video Page2 [5-7, 8-19]
-		public bool IsZeroPageAux { get { return TestState(StateAltZP); } }
+		public bool Is80Columns => TestState(State80Col);
+		public bool Is80Store => TestState(State80Store);
+		public bool IsCharSetAlternate => TestState(StateAltChrSet);
+		public bool IsHighRamAux => IsZeroPageAux;
+		public bool IsHighRamBank1 => TestState(StateBank1);
+		public bool IsHighRamRead => TestState(StateHRamRd);
+		public bool IsHighRamWrite => !TestState(StateHRamWrt); // HRamWrt' [5-23]
+		public bool IsHires => TestState(StateHires);
+		public bool IsMixed => TestState(StateMixed);
+		public bool IsPage2 => TestState(StatePage2);
+		public bool IsRamReadAux => TestState(StateRamRd);
+		public bool IsRamReadAuxRegion0407 => Is80Store ? IsPage2 : IsRamReadAux;
+		public bool IsRamReadAuxRegion203F => TestState(State80Store | StateHires, State80Store | StateHires) ? IsPage2 : IsRamReadAux;
+		public bool IsRamWriteAux => TestState(StateRamWrt);
+		public bool IsRamWriteAuxRegion0407 => Is80Store ? IsPage2 : IsRamWriteAux;
+		public bool IsRamWriteAuxRegion203F => TestState(State80Store | StateHires, State80Store | StateHires) ? IsPage2 : IsRamWriteAux;
+		public bool IsRomC1CFInternal => TestState(StateIntCXRom);
+		public bool IsRomC3C3External => TestState(StateSlotC3Rom);
+		public bool IsRomC8CFInternal => TestState(StateIntC8Rom);
+		public bool IsText => TestState(StateText);
+		public bool IsVideoPage2 => TestState(State80Store | StatePage2, StatePage2); // 80Store inhibits video Page2 [5-7, 8-19]
+		public bool IsZeroPageAux => TestState(StateAltZP);
 
 		public MonitorType Monitor { get; private set; }
-		public int VideoMode { get { return StateVideoMode[_state & StateVideo]; } }
+		public int VideoMode => StateVideoMode[_state & StateVideo];
 
 		[JsonIgnore]
 		private Action<int, byte> _writeIoRegionC0C0;

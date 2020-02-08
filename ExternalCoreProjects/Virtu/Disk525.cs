@@ -24,11 +24,13 @@ namespace Jellyfish.Virtu
 			{
 				return new DiskDsk(name, data, isWriteProtected, SectorSkew.Dos);
 			}
-			else if (name.EndsWith(".nib", StringComparison.OrdinalIgnoreCase))
+
+			if (name.EndsWith(".nib", StringComparison.OrdinalIgnoreCase))
 			{
 				return new DiskNib(name, data, isWriteProtected);
 			}
-			else if (name.EndsWith(".po", StringComparison.OrdinalIgnoreCase))
+
+			if (name.EndsWith(".po", StringComparison.OrdinalIgnoreCase))
 			{
 				return new DiskDsk(name, data, isWriteProtected, SectorSkew.ProDos);
 			}

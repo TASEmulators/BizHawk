@@ -25,8 +25,8 @@
 
 		public Machine Machine
 		{
-			get { return _machine; }
-			set { _machine = value; }
+			get => _machine;
+			set => _machine = value;
 		}
 	}
 }

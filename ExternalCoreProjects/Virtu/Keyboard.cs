@@ -141,10 +141,9 @@ namespace Jellyfish.Virtu
 		Reset = 2305843009213693952UL,
 	}
 
-
 	public sealed class Keyboard : MachineComponent
 	{
-		private static readonly uint[] KeyAsciiData = new uint[]
+		private static readonly uint[] KeyAsciiData =
 		{
 			// https://archive.org/stream/Apple_IIe_Technical_Reference_Manual#page/n47/mode/2up
 			// 0xNNCCSSBB    normal, control, shift both
@@ -266,15 +265,8 @@ namespace Jellyfish.Virtu
 		{
 			Keys keys = FromStrings(keynames);
 
-			if (keys.HasFlag(Keys.WhiteApple))
-				WhiteAppleDown = true;
-			else
-				WhiteAppleDown = false;
-
-			if (keys.HasFlag(Keys.BlackApple))
-				BlackAppleDown = true;
-			else
-				BlackAppleDown = false;
+			WhiteAppleDown = keys.HasFlag(Keys.WhiteApple);
+			BlackAppleDown = keys.HasFlag(Keys.BlackApple);
 
 			if (keys.HasFlag(Keys.Reset) && keys.HasFlag(Keys.Control)) { } // TODO: reset console
 
@@ -318,10 +310,6 @@ namespace Jellyfish.Virtu
 				// strobe, start new repeat cycle
 				Strobe = true;
 				Latch = KeyToAscii(NewKeyPressed, control, shift);
-				//if (Latch >= 0x20 && Latch < 0x7f)
-				//	Console.WriteLine("Latch: {0:x2}, {1}", Latch, (char)Latch);
-				//else
-				//	Console.WriteLine("Latch: {0:x2}", Latch);
 				FramesToRepeat = KeyRepeatStart;
 			}
 			else
@@ -332,10 +320,6 @@ namespace Jellyfish.Virtu
 				{
 					Strobe = true;
 					Latch = KeyToAscii(NewKeyPressed, control, shift);
-					//if (Latch >= 0x20 && Latch < 0x7f)
-					//	Console.WriteLine("Latch: {0:x2}, {1}", Latch, (char)Latch);
-					//else
-					//	Console.WriteLine("Latch: {0:x2}", Latch);
 					FramesToRepeat = KeyRepeatRate;
 				}
 			}

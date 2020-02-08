@@ -67,10 +67,8 @@ namespace Jellyfish.Virtu
 						{
 							return _latch = Drives[_driveNumber].Read();
 						}
-						else
-						{
-							WriteLatch();
-						}
+
+						WriteLatch();
 					}
 					break;
 
