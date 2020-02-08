@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace Jellyfish.Virtu
+﻿namespace Jellyfish.Virtu
 {
 	public sealed class Cassette : MachineComponent
 	{

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using Jellyfish.Virtu.Services;
 
 namespace Jellyfish.Virtu

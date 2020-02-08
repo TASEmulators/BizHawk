@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 using System.Threading;
-using Jellyfish.Library;
 
 namespace Jellyfish.Virtu.Services
 {

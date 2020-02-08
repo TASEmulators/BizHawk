@@ -1,9 +1,4 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading;
-using Jellyfish.Library;
-
-namespace Jellyfish.Virtu.Services
+﻿namespace Jellyfish.Virtu.Services
 {
 	/// <summary>
 	/// this isn't really a "service" anymore, just a helper for the speaker class
@@ -23,9 +18,9 @@ namespace Jellyfish.Virtu.Services
 		}
 
 		[Newtonsoft.Json.JsonIgnore] // only relevant if trying to savestate midframe
-		private short[] buff = new short[4096];
+		private readonly short[] buff = new short[4096];
 		[Newtonsoft.Json.JsonIgnore] // only relevant if trying to savestate midframe
-		private int pos = 0;
+		private int pos;
 
 		[System.Runtime.Serialization.OnDeserialized]
 		public void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
@@ -38,10 +33,10 @@ namespace Jellyfish.Virtu.Services
 			pos = 0;
 		}
 
-		public void GetSamples(out short[] samples, out int nsamp)
+		public void GetSamples(out short[] samples, out int nSamp)
 		{
 			samples = buff;
-			nsamp = pos / 2;
+			nSamp = pos / 2;
 			pos = 0;
 		}
 	}
