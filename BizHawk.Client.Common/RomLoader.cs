@@ -13,14 +13,12 @@ using BizHawk.Emulation.Cores.Computers.AppleII;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
-using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 using BizHawk.Emulation.Cores.Nintendo.GBHawkLink;
 using BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x;
 using BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.GGHawkLink;
-using BizHawk.Emulation.Cores.Sega.Saturn;
 using BizHawk.Emulation.Cores.Sony.PSP;
 using BizHawk.Emulation.Cores.Sony.PSX;
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
@@ -30,7 +28,6 @@ using BizHawk.Emulation.DiscSystem;
 using BizHawk.Emulation.Cores.Consoles.Sega.Saturn;
 using BizHawk.Emulation.Cores.Consoles.NEC.PCFX;
 using BizHawk.Emulation.Cores.Computers.AmstradCPC;
-using BizHawk.Emulation.Cores.Consoles.Vectrex;
 using BizHawk.Emulation.Cores.Consoles.ChannelF;
 
 namespace BizHawk.Client.Common
@@ -39,7 +36,7 @@ namespace BizHawk.Client.Common
 	{
 		public enum LoadErrorType
 		{
-			Unknown, MissingFirmware, XML, DiscError
+			Unknown, MissingFirmware, Xml, DiscError
 		}
 
 		// helper methods for the settings events
@@ -69,7 +66,7 @@ namespace BizHawk.Client.Common
 			return e.Settings;
 		}
 
-		// For not throwing errors but simply outputing information to the screen
+		// For not throwing errors but simply outputting information to the screen
 		public Action<string> MessageCallback { get; set; }
 
 		private void DoMessageCallback(string message)
@@ -102,18 +99,18 @@ namespace BizHawk.Client.Common
 				RomPath = path;
 			}
 
-			public string Message { get; private set; }
-			public string AttemptedCoreLoad { get; private set; }
-			public string RomPath { get; private set; }
+			public string Message { get; }
+			public string AttemptedCoreLoad { get; }
+			public string RomPath { get; }
 			public bool? Deterministic { get; set; }
 			public bool Retry { get; set; }
-			public LoadErrorType Type { get; private set; }
+			public LoadErrorType Type { get; }
 		}
 
 		public class SettingsLoadArgs : EventArgs
 		{
 			public object Settings { get; set; }
-			public Type Core { get; private set; }
+			public Type Core { get; }
 			public SettingsLoadArgs(Type t)
 			{
 				Core = t;
@@ -133,24 +130,24 @@ namespace BizHawk.Client.Common
 		public Func<RomGame, string> ChoosePlatform { get; set; }
 
 		// in case we get sent back through the picker more than once, use the same choice the second time
-		private int? previouschoice;
+		private int? _previousChoice;
 		private int? HandleArchive(HawkFile file)
 		{
-			if (previouschoice.HasValue)
+			if (_previousChoice.HasValue)
 			{
-				return previouschoice;
+				return _previousChoice;
 			}
 
 			if (ChooseArchive != null)
 			{
-				previouschoice = ChooseArchive(file);
-				return previouschoice;
+				_previousChoice = ChooseArchive(file);
+				return _previousChoice;
 			}
 
 			return null;
 		}
 
-		// May want to phase out this method in favor of the overload with more paramaters
+		// May want to phase out this method in favor of the overload with more parameters
 		private void DoLoadErrorCallback(string message, string systemId, LoadErrorType type = LoadErrorType.Unknown)
 		{
 			OnLoadError?.Invoke(this, new RomErrorArgs(message, systemId, type));
@@ -208,17 +205,16 @@ namespace BizHawk.Client.Common
 			var sw = new StringWriter();
 			foreach (var e in xmlGame.AssetFullPaths)
 			{
-				Disc disc = null;
 				string discPath = e;
 
 				//--- load the disc in a context which will let us abort if it's going to take too long
 				var discMountJob = new DiscMountJob { IN_FromPath = discPath, IN_SlowLoadAbortThreshold = 8 };
 				discMountJob.Run();
-				disc = discMountJob.OUT_Disc;
+				var disc = discMountJob.OUT_Disc;
 
 				if (discMountJob.OUT_SlowLoadAborted)
 				{
-					DoLoadErrorCallback("This disc would take too long to load. Run it through discohawk first, or find a new rip because this one is probably junk", systemId, LoadErrorType.DiscError);
+					DoLoadErrorCallback("This disc would take too long to load. Run it through DiscoHawk first, or find a new rip because this one is probably junk", systemId, LoadErrorType.DiscError);
 				}
 
 				else if (discMountJob.OUT_ErrorLevel)
@@ -277,7 +273,7 @@ namespace BizHawk.Client.Common
 
 					file.Open(path);
 
-					// if the provided file doesnt even exist, give up!
+					// if the provided file doesn't even exist, give up!
 					if (!file.Exists)
 					{
 						return false;
@@ -301,7 +297,7 @@ namespace BizHawk.Client.Common
 						var retro = new LibretroCore(nextComm, nextComm.LaunchLibretroCore);
 						nextEmulator = retro;
 
-						// kind of dirty.. we need to stash this, and then we can unstash it in a moment, in case the core doesnt fail
+						// kind of dirty.. we need to stash this, and then we can unstash it in a moment, in case the core doesn't fail
 						var oldGame = Global.Game;
 
 						if (retro.Description.SupportsNoGame && string.IsNullOrEmpty(path))
@@ -311,7 +307,7 @@ namespace BizHawk.Client.Common
 							var gameName = codePathPart;
 							Global.Game = game = new GameInfo { Name = gameName, System = "Libretro" };
 
-							// if we are allowed to run NoGame and we dont have a game, boot up the core that way
+							// if we are allowed to run NoGame and we don't have a game, boot up the core that way
 							bool ret = retro.LoadNoGame();
 
 							Global.Game = oldGame;
@@ -378,7 +374,7 @@ namespace BizHawk.Client.Common
 					else
 					{
 						// at this point, file is either assigned to the ROM path, if it exists,
-						// or is empty and corecomm is not a libretro core
+						// or is empty and CoreComm is not a libretro core
 						// so, we still need to check path here before continuing
 						if (string.IsNullOrEmpty(path))
 						{
@@ -387,7 +383,7 @@ namespace BizHawk.Client.Common
 						}
 
 						// if not libretro:
-						// do extension checknig
+						// do extension checking
 						ext = file.Extension.ToLowerInvariant();
 
 						// do the archive binding we had to skip
@@ -416,22 +412,21 @@ namespace BizHawk.Client.Common
 
 						// load discs for all the m3u
 						m3u.Rebase(Path.GetDirectoryName(path));
-						List<Disc> discs = new List<Disc>();
-						List<string> discNames = new List<string>();
-						StringWriter sw = new StringWriter();
+						var discs = new List<Disc>();
+						var discNames = new List<string>();
+						var sw = new StringWriter();
 						foreach (var e in m3u.Entries)
 						{
-							Disc disc = null;
 							string discPath = e.Path;
 
 							//--- load the disc in a context which will let us abort if it's going to take too long
 							var discMountJob = new DiscMountJob { IN_FromPath = discPath, IN_SlowLoadAbortThreshold = 8 };
 							discMountJob.Run();
-							disc = discMountJob.OUT_Disc;
+							var disc = discMountJob.OUT_Disc;
 
 							if (discMountJob.OUT_SlowLoadAborted)
 							{
-								DoLoadErrorCallback("This disc would take too long to load. Run it through discohawk first, or find a new rip because this one is probably junk", "", LoadErrorType.DiscError);
+								DoLoadErrorCallback("This disc would take too long to load. Run it through DiscoHawk first, or find a new rip because this one is probably junk", "", LoadErrorType.DiscError);
 								return false;
 							}
 
@@ -491,15 +486,13 @@ namespace BizHawk.Client.Common
 							throw new InvalidOperationException("Can't load CD files from archives!");
 						}
 
-						string discHash = null;
-
 						//--- load the disc in a context which will let us abort if it's going to take too long
 						var discMountJob = new DiscMountJob { IN_FromPath = path, IN_SlowLoadAbortThreshold = 8 };
 						discMountJob.Run();
 
 						if (discMountJob.OUT_SlowLoadAborted)
 						{
-							DoLoadErrorCallback("This disc would take too long to load. Run it through discohawk first, or find a new rip because this one is probably junk", "", LoadErrorType.DiscError);
+							DoLoadErrorCallback("This disc would take too long to load. Run it through DiscoHawk first, or find a new rip because this one is probably junk", "", LoadErrorType.DiscError);
 							return false;
 						}
 
@@ -508,19 +501,14 @@ namespace BizHawk.Client.Common
 							throw new InvalidOperationException($"\r\n{discMountJob.OUT_Log}");
 						}
 
-						var disc = discMountJob.OUT_Disc;                        
+						var disc = discMountJob.OUT_Disc;
 
 						// -----------
 						// TODO - use more sophisticated IDer
 						var discType = new DiscIdentifier(disc).DetectDiscType();
-						if (discType == DiscType.SonyPSX)
-						{
-							discHash = new DiscHasher(disc).Calculate_PSX_BizIDHash().ToString("X8");
-						}
-						else
-						{
-							discHash = new DiscHasher(disc).OldHash();
-						}
+						var discHash = discType == DiscType.SonyPSX
+							? new DiscHasher(disc).Calculate_PSX_BizIDHash().ToString("X8")
+							: new DiscHasher(disc).OldHash();
 
 						game = Database.CheckDatabase(discHash);
 						if (game == null)
@@ -567,15 +555,9 @@ namespace BizHawk.Client.Common
 								case DiscType.AudioDisc:
 								case DiscType.UnknownCDFS:
 								case DiscType.UnknownFormat:
-									if (PreferredPlatformIsDefined(ext))
-									{
-										game.System = Global.Config.PreferredPlatformsForExtensions[ext];
-									}
-									else
-									{
-										game.System = "NULL"; // "PCECD";
-									}
-
+									game.System = PreferredPlatformIsDefined(ext)
+										? Global.Config.PreferredPlatformsForExtensions[ext]
+										: "NULL";
 									break;
 							}
 						}
@@ -604,7 +586,7 @@ namespace BizHawk.Client.Common
 								}
 								else
 								{
-									StringWriter sw = new StringWriter();
+									var sw = new StringWriter();
 									sw.WriteLine("Disc was identified (99.99% confidently) as known good with disc id hash CRC32:{0:X8}", discHash);
 									sw.WriteLine("Nonetheless it could be an unrecognized romhack or patched version.");
 									sw.WriteLine("According to redump.org, the ideal hash for entire disc is: CRC32:{0:X8}", game.GetStringValue("dh"));
@@ -732,7 +714,7 @@ namespace BizHawk.Client.Common
 									break;
 								case "ZXSpectrum":
 
-									List<GameInfo> zxGI = new List<GameInfo>();
+									var zxGI = new List<GameInfo>();
 									foreach (var a in xmlGame.Assets)
 									{
 										zxGI.Add(new GameInfo { Name = Path.GetFileNameWithoutExtension(a.Key) });
@@ -740,15 +722,15 @@ namespace BizHawk.Client.Common
 
 									nextEmulator = new ZXSpectrum(
 										nextComm,
-										xmlGame.Assets.Select(a => a.Value), //.First(),
-										zxGI, // GameInfo.NullInstance,
+										xmlGame.Assets.Select(a => a.Value),
+										zxGI,
 										(ZXSpectrum.ZXSpectrumSettings)GetCoreSettings<ZXSpectrum>(),
 										(ZXSpectrum.ZXSpectrumSyncSettings)GetCoreSyncSettings<ZXSpectrum>(),
 										Deterministic);
 									break;
 								case "AmstradCPC":
 
-									List<GameInfo> cpcGI = new List<GameInfo>();
+									var cpcGI = new List<GameInfo>();
 									foreach (var a in xmlGame.Assets)
 									{
 										cpcGI.Add(new GameInfo { Name = Path.GetFileNameWithoutExtension(a.Key) });
@@ -768,17 +750,16 @@ namespace BizHawk.Client.Common
 									var sw = new StringWriter();
 									foreach (var e in entries)
 									{
-										Disc disc = null;
 										string discPath = e;
 
 										//--- load the disc in a context which will let us abort if it's going to take too long
 										var discMountJob = new DiscMountJob { IN_FromPath = discPath, IN_SlowLoadAbortThreshold = 8 };
 										discMountJob.Run();
-										disc = discMountJob.OUT_Disc;
+										var disc = discMountJob.OUT_Disc;
 
 										if (discMountJob.OUT_SlowLoadAborted)
 										{
-											DoLoadErrorCallback("This disc would take too long to load. Run it through discohawk first, or find a new rip because this one is probably junk", "PSX", LoadErrorType.DiscError);
+											DoLoadErrorCallback("This disc would take too long to load. Run it through DiscoHawk first, or find a new rip because this one is probably junk", "PSX", LoadErrorType.DiscError);
 											return false;
 										}
 
@@ -899,7 +880,7 @@ namespace BizHawk.Client.Common
 							}
 							catch
 							{
-								DoLoadErrorCallback(ex.ToString(), "DGB", LoadErrorType.XML);
+								DoLoadErrorCallback(ex.ToString(), "DGB", LoadErrorType.Xml);
 								return false;
 							}
 						}
@@ -1047,14 +1028,9 @@ namespace BizHawk.Client.Common
 
 									if (preference == "neshawk")
 									{
-										if (Global.Config.UseSubNESHawk)
-										{
-											core = CoreInventory.Instance["NES", "SubNESHawk"];
-										}
-										else
-										{
-											core = CoreInventory.Instance["NES", "NesHawk"];
-										}										
+										core = Global.Config.UseSubNESHawk
+											? CoreInventory.Instance["NES", "SubNESHawk"]
+											: CoreInventory.Instance["NES", "NesHawk"];
 									}
 									else
 									{
@@ -1067,14 +1043,9 @@ namespace BizHawk.Client.Common
 							case "GB":
 								if (!Global.Config.GbAsSgb)
 								{
-									if (Global.Config.GbUseGbHawk)
-									{
-										core = CoreInventory.Instance["GB", "GBHawk"];
-									}
-									else
-									{
-										core = CoreInventory.Instance["GB", "Gambatte"];
-									}
+									core = Global.Config.GbUseGbHawk
+										? CoreInventory.Instance["GB", "GBHawk"]
+										: CoreInventory.Instance["GB", "Gambatte"];
 								}
 								else
 								{
@@ -1094,14 +1065,9 @@ namespace BizHawk.Client.Common
 							case "GBC":
 								if (!Global.Config.GbAsSgb)
 								{
-									if (Global.Config.GbUseGbHawk)
-									{
-										core = CoreInventory.Instance["GBC", "GBHawk"];
-									}
-									else
-									{
-										core = CoreInventory.Instance["GBC", "Gambatte"];
-									}
+									core = Global.Config.GbUseGbHawk
+										? CoreInventory.Instance["GBC", "GBHawk"]
+										: CoreInventory.Instance["GBC", "Gambatte"];
 								}
 								else
 								{
@@ -1119,8 +1085,8 @@ namespace BizHawk.Client.Common
 								}
 								break;
 							case "A78":
-								var gamedbpath = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb_a7800.csv");
-								nextEmulator = new A7800Hawk(nextComm, game, rom.RomData, gamedbpath, GetCoreSettings<A7800Hawk>(), GetCoreSyncSettings<A7800Hawk>());
+								var gameDbPath = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb_a7800.csv");
+								nextEmulator = new A7800Hawk(nextComm, game, rom.RomData, gameDbPath, GetCoreSettings<A7800Hawk>(), GetCoreSyncSettings<A7800Hawk>());
 								break;
 							case "C64":
 								var c64 = new C64(nextComm, Enumerable.Repeat(rom.FileData, 1), rom.GameInfo, GetCoreSettings<C64>(), GetCoreSyncSettings<C64>());
@@ -1143,23 +1109,16 @@ namespace BizHawk.Client.Common
 								nextEmulator = cpc;
 								break;
 							case "GBA":
-								if (Global.Config.GbaUsemGba)
-								{
-									core = CoreInventory.Instance["GBA", "mGBA"];
-								}
-								else
-								{
-									core = CoreInventory.Instance["GBA", "VBA-Next"];
-								}
-
+								core = Global.Config.GbaUsemGba
+									? CoreInventory.Instance["GBA", "mGBA"]
+									: CoreInventory.Instance["GBA", "VBA-Next"];
 								break;
 							case "PSX":
 								nextEmulator = new Octoshock(nextComm, null, null, rom.FileData, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
 								nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
 								break;
 							case "Arcade":
-								string gameName = "";
-								nextEmulator = new MAME(nextComm, file.Directory, file.CanonicalName, GetCoreSyncSettings<MAME>(), out gameName);
+								nextEmulator = new MAME(nextComm, file.Directory, file.CanonicalName, GetCoreSyncSettings<MAME>(), out var gameName);
 								rom.GameInfo.Name = gameName;
 								break;
 							case "GEN":
@@ -1186,7 +1145,7 @@ namespace BizHawk.Client.Common
 
 						if (core != null)
 						{
-							// use coreinventory
+							// use CoreInventory
 							nextEmulator = core.Create(nextComm, game, rom.RomData, rom.FileData, Deterministic, GetCoreSettings(core.Type), GetCoreSyncSettings(core.Type));
 						}
 					}
@@ -1226,7 +1185,8 @@ namespace BizHawk.Client.Common
 
 						return LoadRom(path, nextComm, true, recursiveCount + 1);
 					}
-					else if (ex is MissingFirmwareException)
+
+					if (ex is MissingFirmwareException)
 					{
 						DoLoadErrorCallback(ex.Message, system, path, Deterministic, LoadErrorType.MissingFirmware);
 					}
@@ -1239,7 +1199,7 @@ namespace BizHawk.Client.Common
 						return LoadRom(path, nextComm, false, recursiveCount + 1);
 					}
 
-					// handle exceptions thrown by the new detected systems that bizhawk does not have cores for
+					// handle exceptions thrown by the new detected systems that BizHawk does not have cores for
 					else if (ex is NoAvailableCoreException)
 					{
 						DoLoadErrorCallback($"{ex.Message}\n\n{ex}", system);
