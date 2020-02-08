@@ -143,7 +143,7 @@ namespace Jellyfish.Virtu
 				typeof(Machine).Assembly,
 				typeof(object).Assembly
 			}));
-			
+
 			ser.Converters.Add(new DelegateConverter());
 			ser.Converters.Add(new ArrayConverter());
 

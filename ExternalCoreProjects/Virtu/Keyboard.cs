@@ -144,8 +144,8 @@ namespace Jellyfish.Virtu
 	}
 
 
-    public sealed class Keyboard : MachineComponent
-    {
+	public sealed class Keyboard : MachineComponent
+	{
 		private static readonly uint[] KeyAsciiData = new uint[]
 		{
 			// https://archive.org/stream/Apple_IIe_Technical_Reference_Manual#page/n47/mode/2up
@@ -250,13 +250,13 @@ namespace Jellyfish.Virtu
 
 		public Keyboard() { }
 		public Keyboard(Machine machine) :
-            base(machine)
-        {
-        }
+			base(machine)
+		{
+		}
 
-        public override void Initialize()
-        {
-        }
+		public override void Initialize()
+		{
+		}
 
 		public static bool WhiteAppleDown;
 		public static bool BlackAppleDown;
@@ -306,7 +306,7 @@ namespace Jellyfish.Virtu
 			// that would be somehow resolved by the scan pattern.  we don't emulate that.
 
 			// instead, just arbitrarily choose the lowest key in our list
-			
+
 			// BSF
 			int NewKeyPressed = 0;
 			while ((k & 1) == 0)
@@ -322,7 +322,7 @@ namespace Jellyfish.Virtu
 				Latch = KeyToAscii(NewKeyPressed, control, shift);
 				//if (Latch >= 0x20 && Latch < 0x7f)
 				//	Console.WriteLine("Latch: {0:x2}, {1}", Latch, (char)Latch);
- 				//else
+				//else
 				//	Console.WriteLine("Latch: {0:x2}", Latch);
 				FramesToRepeat = KeyRepeatStart;
 			}
@@ -346,11 +346,11 @@ namespace Jellyfish.Virtu
 		}
 
 
-        public void ResetStrobe()
-        {
-            Strobe = false;
-        }
-		
+		public void ResetStrobe()
+		{
+			Strobe = false;
+		}
+
 		/// <summary>
 		/// true if any of the 56 basic keys are pressed
 		/// </summary>
@@ -359,7 +359,7 @@ namespace Jellyfish.Virtu
 		/// the currently latched key; 7 bits.
 		/// </summary>
 		public int Latch { get; private set; }
-        public bool Strobe { get; private set; }
+		public bool Strobe { get; private set; }
 
 		/// <summary>
 		/// true if caps lock is active
@@ -377,5 +377,5 @@ namespace Jellyfish.Virtu
 
 		private const int KeyRepeatRate = 6; // 10hz
 		private const int KeyRepeatStart = 40; // ~666ms?
-    }
+	}
 }

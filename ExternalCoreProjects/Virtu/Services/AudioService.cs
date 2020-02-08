@@ -8,19 +8,19 @@ namespace Jellyfish.Virtu.Services
 	/// <summary>
 	/// this isn't really a "service" anymore, just a helper for the speaker class
 	/// </summary>
-    public class AudioService
-    {
+	public class AudioService
+	{
 		public AudioService() { }
 
-        public void Output(int data) // machine thread
-        {
+		public void Output(int data) // machine thread
+		{
 			data = (int)(data * 0.2);
 			if (pos < buff.Length - 2)
 			{
 				buff[pos++] = (short)data;
 				buff[pos++] = (short)data;
 			}
-        }
+		}
 
 		[Newtonsoft.Json.JsonIgnore] // only relevant if trying to savestate midframe
 		private short[] buff = new short[4096];
@@ -44,5 +44,5 @@ namespace Jellyfish.Virtu.Services
 			nsamp = pos / 2;
 			pos = 0;
 		}
-    }
+	}
 }

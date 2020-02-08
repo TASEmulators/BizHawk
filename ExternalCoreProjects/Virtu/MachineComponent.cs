@@ -5,25 +5,25 @@ using Jellyfish.Virtu.Services;
 
 namespace Jellyfish.Virtu
 {
-    public abstract class MachineComponent
-    {
+	public abstract class MachineComponent
+	{
 		public MachineComponent() { }
-        protected MachineComponent(Machine machine)
-        {
+		protected MachineComponent(Machine machine)
+		{
 			_machine = machine;
-        }
+		}
 
-        public virtual void Initialize()
-        {
-        }
+		public virtual void Initialize()
+		{
+		}
 
-        public virtual void Reset()
-        {
-        }
+		public virtual void Reset()
+		{
+		}
 
-        public virtual void Uninitialize()
-        {
-        }
+		public virtual void Uninitialize()
+		{
+		}
 
 		[Newtonsoft.Json.JsonIgnore]
 		private Machine _machine;
@@ -33,5 +33,5 @@ namespace Jellyfish.Virtu
 			get { return _machine; }
 			set { _machine = value; }
 		}
-    }
+	}
 }

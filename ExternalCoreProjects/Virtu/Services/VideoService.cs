@@ -3,8 +3,8 @@
 	/// <summary>
 	/// this isn't really a "service" anymore, just a helper for the video class
 	/// </summary>
-    public class VideoService
-    {
+	public class VideoService
+	{
 		public VideoService()
 		{
 			fb = new int[560 * 384];
@@ -22,5 +22,5 @@
 			int i = 560 * y + x;
 			fb[i] = fb[i + 560] = color;
 		}
-    }
+	}
 }

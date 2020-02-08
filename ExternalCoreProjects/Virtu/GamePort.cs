@@ -6,8 +6,8 @@ using Jellyfish.Virtu.Services;
 
 namespace Jellyfish.Virtu
 {
-    public sealed class GamePort : MachineComponent
-    {
+	public sealed class GamePort : MachineComponent
+	{
 		// TODO: ressurect this
 		public bool ReadButton0() { return Keyboard.WhiteAppleDown; }
 		public bool ReadButton1() { return Keyboard.BlackAppleDown; }
@@ -21,16 +21,16 @@ namespace Jellyfish.Virtu
 		public void TriggerTimers() { }
 
 		public GamePort() { }
-        public GamePort(Machine machine) :
-            base(machine)
-        {
+		public GamePort(Machine machine) :
+			base(machine)
+		{
 			/*
             _resetPaddle0StrobeEvent = ResetPaddle0StrobeEvent; // cache delegates; avoids garbage
             _resetPaddle1StrobeEvent = ResetPaddle1StrobeEvent;
             _resetPaddle2StrobeEvent = ResetPaddle2StrobeEvent;
             _resetPaddle3StrobeEvent = ResetPaddle3StrobeEvent;
 			*/
-        }
+		}
 
 		/*
         public override void Initialize()
@@ -252,5 +252,5 @@ namespace Jellyfish.Virtu
 
         private KeyboardService _keyboardService;
         private GamePortService _gamePortService;*/
-    }
+	}
 }

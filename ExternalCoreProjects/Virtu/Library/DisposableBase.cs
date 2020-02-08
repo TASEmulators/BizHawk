@@ -2,25 +2,25 @@
 
 namespace Jellyfish.Library
 {
-    public abstract class DisposableBase : IDisposable
-    {
-        protected DisposableBase()
-        {
-        }
+	public abstract class DisposableBase : IDisposable
+	{
+		protected DisposableBase()
+		{
+		}
 
-        ~DisposableBase()
-        {
-            Dispose(false);
-        }
+		~DisposableBase()
+		{
+			Dispose(false);
+		}
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
 
-        protected virtual void Dispose(bool disposing)
-        {
-        }
-    }
+		protected virtual void Dispose(bool disposing)
+		{
+		}
+	}
 }

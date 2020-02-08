@@ -2,21 +2,21 @@
 
 namespace Jellyfish.Virtu
 {
-    public sealed class Cassette : MachineComponent
-    {
+	public sealed class Cassette : MachineComponent
+	{
 		public Cassette() { }
-        public Cassette(Machine machine) :
-            base(machine)
-        {
-        }
+		public Cassette(Machine machine) :
+			base(machine)
+		{
+		}
 
-        public bool ReadInput()
-        {
-            return false;
-        }
+		public bool ReadInput()
+		{
+			return false;
+		}
 
-        public void ToggleOutput()
-        {
-        }
-    }
+		public void ToggleOutput()
+		{
+		}
+	}
 }
