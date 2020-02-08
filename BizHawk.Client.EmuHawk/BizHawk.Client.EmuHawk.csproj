@@ -162,12 +162,8 @@
 		<Compile Include="$(SolutionDir)BizHawk.Common/OSTailoredCode.cs" Link="OSTailoredCode.cs" />
 		<Compile Include="$(SolutionDir)Version/svnrev.cs" Link="svnrev.cs" />
 		<Compile Include="$(SolutionDir)Version/VersionInfo.cs" Link="VersionInfo.cs" />
-		<Compile Remove="DisplayManager/SwappableBitmapBufferSet.cs" />
-		<Compile Remove="ExternalCoreSupport.cs" />
-		<Compile Remove="Global.cs" />
 		<Compile Remove="Properties/AssemblyInfo.cs" />
 		<Compile Remove="Properties/Settings.Designer.cs" />
-		<Compile Remove="Watch.cs" />
 		<Content Include="images/logo.ico" />
 		<EmbeddedResource Include="**/*.resx" />
 		<EmbeddedResource Include="images/**/*" />
