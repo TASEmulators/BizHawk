@@ -9,10 +9,6 @@
 		{
 			fb = new int[560 * 384];
 		}
-		public VideoService(int[] fb)
-		{
-			this.fb = fb;
-		}
 
 		[Newtonsoft.Json.JsonIgnore] // client can serialize framebuffer if it wants to
 		public int[] fb;

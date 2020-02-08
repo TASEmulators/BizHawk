@@ -11,11 +11,6 @@ namespace Jellyfish.Virtu.Services
 	/// </summary>
 	public static class DebugService
 	{
-		public static void WriteMessage(string message)
-		{
-			OnWriteMessage(FormatMessage(message));
-		}
-
 		public static void WriteMessage(string format, params object[] args)
 		{
 			OnWriteMessage(FormatMessage(format, args));
@@ -23,11 +18,7 @@ namespace Jellyfish.Virtu.Services
 
 		private static void OnWriteMessage(string message)
 		{
-#if SILVERLIGHT
-            Debug.WriteLine(message);
-#else
 			Trace.WriteLine(message);
-#endif
 		}
 
 		private static string FormatMessage(string format, params object[] args)

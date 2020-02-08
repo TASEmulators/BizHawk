@@ -59,32 +59,5 @@ namespace Jellyfish.Library
 
 			return word;
 		}
-
-		public static void SkipBlock(this Stream stream, int count)
-		{
-			if (stream == null)
-			{
-				throw new ArgumentNullException("stream");
-			}
-
-			if (stream.CanSeek)
-			{
-				stream.Seek(count, SeekOrigin.Current);
-			}
-			else
-			{
-				int total = 0;
-				int read;
-				do
-				{
-					total += read = stream.Read(_skipBuffer, 0, Math.Min(count - total, SkipBufferSize));
-				}
-				while ((read > 0) && (total < count));
-			}
-		}
-
-		private const int SkipBufferSize = 1024;
-
-		private static byte[] _skipBuffer = new byte[SkipBufferSize];
 	}
 }

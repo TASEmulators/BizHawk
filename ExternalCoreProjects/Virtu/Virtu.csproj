@@ -56,7 +56,6 @@
     <Compile Include="DiskNib.cs" />
     <Compile Include="GamePort.cs" />
     <Compile Include="Keyboard.cs" />
-    <Compile Include="Library\DisposableBase.cs" />
     <Compile Include="Library\MathHelpers.cs" />
     <Compile Include="Library\StreamExtensions.cs" />
     <Compile Include="Machine.cs" />
