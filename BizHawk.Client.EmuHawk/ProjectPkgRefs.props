@@ -1,0 +1,16 @@
+<Project>
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" PrivateAssets="All" />
+		<Reference Include="$(MachineNuGetPackageDir)/newtonsoft.json/12.0.3/lib/net45/Newtonsoft.Json.dll"
+			FusionName="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed"
+			Name="Newtonsoft.Json"
+			Private="true"
+			SpecificVersion="true" />
+		<PackageReference Include="SharpZipLib" Version="1.1.0" PrivateAssets="All" />
+		<Reference Include="$(MachineNuGetPackageDir)/sharpziplib/1.1.0/lib/net45/ICSharpCode.SharpZipLib.dll"
+			FusionName="ICSharpCode.SharpZipLib, Version=1.1.0.145, Culture=neutral, PublicKeyToken=1b03e6acf1164f73"
+			Name="ICSharpCode.SharpZipLib"
+			Private="true"
+			SpecificVersion="true" />
+	</ItemGroup>
+</Project>

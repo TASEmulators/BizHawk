@@ -204,8 +204,6 @@
 		<EmbeddedResource Remove="Resources/ZXSpectrumKeyboard.bmp" />
 		<None Include="app.config" />
 		<None Include="app.manifest" />
-		<None Remove="MainForm.resources" />
-		<None Remove="NameStateForm.resources" />
 		<None Remove="packages.config" />
 		<None Remove="ProjectPkgRefs.props" />
 		<None Remove="Properties/Resources.resources" />
