@@ -153,6 +153,17 @@ namespace BizHawk.Client.Common
 
 		private void HandlePlaybackEnd()
 		{
+			var gambatteName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(Gameboy), typeof(CoreAttribute))).CoreName;
+			if (Movie.Core == gambatteName)
+			{
+				var movieCycles = Convert.ToUInt64(Movie.HeaderEntries[HeaderKeys.CYCLECOUNT]);
+				var coreCycles = (Global.Emulator as Gameboy).CycleCount;
+				if (movieCycles != (ulong)coreCycles)
+				{
+					PopupMessage($"Cycle count in the movie ({movieCycles}) doesn't match the emulated value ({coreCycles}).");
+				}
+			}
+
 			// TODO: mainform callback to update on mode change
 			switch (Global.Config.MovieEndAction)
 			{
