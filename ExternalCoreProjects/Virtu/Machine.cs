@@ -52,7 +52,6 @@ namespace Jellyfish.Virtu
 			{
 				DebugService.WriteMessage("Resetting machine '{0}'", component.GetType().Name);
 				component.Reset();
-				//DebugService.WriteMessage("Reset machine '{0}'", component.GetType().Name);
 			}
 		}
 
@@ -64,7 +63,6 @@ namespace Jellyfish.Virtu
 			{
 				DebugService.WriteMessage("Initializing machine '{0}'", component.GetType().Name);
 				component.Initialize();
-				//DebugService.WriteMessage("Initialized machine '{0}'", component.GetType().Name);
 			}
 		}
 
@@ -74,7 +72,6 @@ namespace Jellyfish.Virtu
 			{
 				DebugService.WriteMessage("Uninitializing machine '{0}'", component.GetType().Name);
 				component.Uninitialize();
-				//DebugService.WriteMessage("Uninitialized machine '{0}'", component.GetType().Name);
 			}
 		}
 
@@ -91,27 +88,15 @@ namespace Jellyfish.Virtu
 
 			Keyboard.SetKeys(buttons);
 
-			//frame begins at vsync.. beginning of vblank
+			// frame begins at vsync.. beginning of vblank
 			while (Video.IsVBlank)
 			{
-				/*
-				var sb = new System.Text.StringBuilder();
-				sb.AppendFormat("{0} ", Cpu);
-				for (int i = 0; i < 256; i++)
-					sb.AppendFormat("{0:x2} ", Memory.Read(i));
-				tw.WriteLine(sb.ToString());*/
 				Events.HandleEvents(Cpu.Execute());
 			}
-			//now, while not vblank, we're in a frame
+
+			// now, while not vblank, we're in a frame
 			while (!Video.IsVBlank)
 			{
-				/*
-				var sb = new System.Text.StringBuilder();
-				sb.AppendFormat("{0} ", Cpu);
-				for (int i = 0; i < 256; i++)
-					sb.AppendFormat("{0:x2} ", Memory.Read(i));
-				tw.WriteLine(sb.ToString()); */
-
 				Events.HandleEvents(Cpu.Execute());
 			}
 		}
