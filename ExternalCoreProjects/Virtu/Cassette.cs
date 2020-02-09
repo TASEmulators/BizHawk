@@ -1,6 +1,6 @@
 ﻿namespace Jellyfish.Virtu
 {
-	public sealed class Cassette : MachineComponent
+	internal sealed class Cassette : MachineComponent
 	{
 		public Cassette() { }
 		public Cassette(Machine machine) :

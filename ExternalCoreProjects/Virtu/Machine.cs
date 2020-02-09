@@ -42,35 +42,10 @@ namespace Jellyfish.Virtu
 			BootDiskII = Slots.OfType<DiskIIController>().Last();
 		}
 
+		#region API
+
 		public void Dispose()
 		{
-		}
-
-		public void Reset()
-		{
-			foreach (var component in Components)
-			{
-				DebugService.WriteMessage("Resetting machine '{0}'", component.GetType().Name);
-				component.Reset();
-			}
-		}
-
-		private void Initialize()
-		{
-			foreach (var component in Components)
-			{
-				DebugService.WriteMessage("Initializing machine '{0}'", component.GetType().Name);
-				component.Initialize();
-			}
-		}
-
-		private void Uninitialize()
-		{
-			foreach (var component in Components)
-			{
-				DebugService.WriteMessage("Uninitializing machine '{0}'", component.GetType().Name);
-				component.Uninitialize();
-			}
 		}
 
 		public void BizInitialize()
@@ -104,6 +79,78 @@ namespace Jellyfish.Virtu
 			Uninitialize();
 		}
 
+		public void Serialize(JsonWriter w)
+		{
+			CreateSerializer().Serialize(w, this);
+		}
+
+		public static Machine Deserialize(JsonReader r)
+		{
+			return CreateSerializer().Deserialize<Machine>(r);
+		}
+
+		public void CpuExecute()
+		{
+			Events.HandleEvents(Cpu.Execute());
+		}
+
+		public IDictionary<string, int> GetCpuFlagsAndRegisters()
+		{
+			return new Dictionary<string, int>
+			{
+				["A"] = Cpu.RA,
+				["X"] = Cpu.RX,
+				["Y"] = Cpu.RY,
+				["S"] = Cpu.RS,
+				["PC"] = Cpu.RPC,
+				["Flag C"] = Cpu.FlagC ? 1 : 0,
+				["Flag Z"] = Cpu.FlagZ ? 1 : 0,
+				["Flag I"] = Cpu.FlagI ? 1 : 0,
+				["Flag D"] = Cpu.FlagD ? 1 : 0,
+				["Flag B"] = Cpu.FlagB ? 1 : 0,
+				["Flag V"] = Cpu.FlagV ? 1 : 0,
+				["Flag N"] = Cpu.FlagN ? 1 : 0,
+				["Flag T"] = Cpu.FlagT ? 1 : 0
+			};
+		}
+
+		public Cpu Cpu { get; private set; }
+		public Memory Memory { get; private set; }
+		public Speaker Speaker { get; private set; }
+		public Video Video { get; private set; }
+
+		public bool Lagged { get; set; }
+		public bool DriveLight { get; set; }
+
+		#endregion
+
+		private void Reset()
+		{
+			foreach (var component in Components)
+			{
+				DebugService.WriteMessage("Resetting machine '{0}'", component.GetType().Name);
+				component.Reset();
+			}
+		}
+
+		private void Initialize()
+		{
+			foreach (var component in Components)
+			{
+				DebugService.WriteMessage("Initializing machine '{0}'", component.GetType().Name);
+				component.Initialize();
+			}
+		}
+
+		private void Uninitialize()
+		{
+			foreach (var component in Components)
+			{
+				DebugService.WriteMessage("Uninitializing machine '{0}'", component.GetType().Name);
+				component.Uninitialize();
+			}
+		}
+
 		private static JsonSerializer CreateSerializer()
 		{
 			// TODO: converters could be cached for speedup
@@ -132,63 +179,27 @@ namespace Jellyfish.Virtu
 			return ser;
 		}
 
-		public void Serialize(JsonWriter w)
-		{
-			CreateSerializer().Serialize(w, this);
-		}
+		private const string Version = "0.9.4.0";
 
-		public static Machine Deserialize(JsonReader r)
-		{
-			return CreateSerializer().Deserialize<Machine>(r);
-		}
+		internal MachineEvents Events { get; set; }
 
-		public const string Version = "0.9.4.0";
+		
+		internal Keyboard Keyboard { get; private set; }
+		internal GamePort GamePort { get; private set; }
+		internal Cassette Cassette { get; private set; }
+		
+		internal NoSlotClock NoSlotClock { get; private set; }
 
-		public MachineEvents Events { get; private set; }
+		internal PeripheralCard Slot1 { get; private set; }
+		internal PeripheralCard Slot2 { get; private set; }
+		internal PeripheralCard Slot3 { get; private set; }
+		internal PeripheralCard Slot4 { get; private set; }
+		internal PeripheralCard Slot5 { get; private set; }
+		internal PeripheralCard Slot6 { get; private set; }
+		internal PeripheralCard Slot7 { get; private set; }
 
-		public Cpu Cpu { get; private set; }
-		public Memory Memory { get; private set; }
-		public Keyboard Keyboard { get; private set; }
-		public GamePort GamePort { get; private set; }
-		public Cassette Cassette { get; private set; }
-		public Speaker Speaker { get; private set; }
-		public Video Video { get; private set; }
-		public NoSlotClock NoSlotClock { get; private set; }
-
-		public PeripheralCard Slot1 { get; private set; }
-		public PeripheralCard Slot2 { get; private set; }
-		public PeripheralCard Slot3 { get; private set; }
-		public PeripheralCard Slot4 { get; private set; }
-		public PeripheralCard Slot5 { get; private set; }
-		public PeripheralCard Slot6 { get; private set; }
-		public PeripheralCard Slot7 { get; private set; }
-
-		public IList<PeripheralCard> Slots { get; private set; }
-		public IList<MachineComponent> Components { get; private set; }
-
-		public DiskIIController BootDiskII { get; private set; }
-
-		public bool Lagged { get; set; }
-		public bool DriveLight { get; set; }
-
-		public IDictionary<string, int> GetCpuFlagsAndRegisters()
-		{
-			return new Dictionary<string, int>
-			{
-				["A"] = Cpu.RA,
-				["X"] = Cpu.RX,
-				["Y"] = Cpu.RY,
-				["S"] = Cpu.RS,
-				["PC"] = Cpu.RPC,
-				["Flag C"] = Cpu.FlagC ? 1 : 0,
-				["Flag Z"] = Cpu.FlagZ ? 1 : 0,
-				["Flag I"] = Cpu.FlagI ? 1 : 0,
-				["Flag D"] = Cpu.FlagD ? 1 : 0,
-				["Flag B"] = Cpu.FlagB ? 1 : 0,
-				["Flag V"] = Cpu.FlagV ? 1 : 0,
-				["Flag N"] = Cpu.FlagN ? 1 : 0,
-				["Flag T"] = Cpu.FlagT ? 1 : 0
-			};
-		}
+		internal IList<PeripheralCard> Slots { get; private set; }
+		internal IList<MachineComponent> Components { get; private set; }
+		internal DiskIIController BootDiskII { get; private set; }
 	}
 }
