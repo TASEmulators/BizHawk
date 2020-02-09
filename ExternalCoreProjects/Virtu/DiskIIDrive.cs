@@ -17,7 +17,7 @@ namespace Jellyfish.Virtu
 
 		public void InsertDisk(string name, byte[] data, bool isWriteProtected)
 		{
-			DebugService.WriteMessage("Inserting disk '{0}'", name);
+			TraceWriter.Write("Inserting disk '{0}'", name);
 			FlushTrack();
 			_disk = Disk525.CreateDisk(name, data, isWriteProtected);
 			_trackLoaded = false;
@@ -27,7 +27,7 @@ namespace Jellyfish.Virtu
 		{
 			if (_disk != null)
 			{
-				DebugService.WriteMessage("Removing disk '{0}'", _disk.Name);
+				TraceWriter.Write("Removing disk '{0}'", _disk.Name);
 				_trackLoaded = false;
 				_trackChanged = false;
 				_trackNumber = 0;

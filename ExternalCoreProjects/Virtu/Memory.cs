@@ -1971,7 +1971,7 @@ namespace Jellyfish.Virtu
 
 		private void Load(Stream stream, int startAddress)
 		{
-			DebugService.WriteMessage("Loading memory ${0:X04}", startAddress);
+			TraceWriter.Write("Loading memory ${0:X04}", startAddress);
 			int address = startAddress;
 			if (address < 0x0200)
 			{
@@ -1995,13 +1995,13 @@ namespace Jellyfish.Virtu
 			}
 			if (address > startAddress)
 			{
-				DebugService.WriteMessage("Loaded memory ${0:X04}-${1:X04} (${2:X04})", startAddress, address - 1, address - startAddress);
+				TraceWriter.Write("Loaded memory ${0:X04}-${1:X04} (${2:X04})", startAddress, address - 1, address - startAddress);
 			}
 		}
 
 		private void Load(Stream stream, int startAddress, int length)
 		{
-			DebugService.WriteMessage("Loading memory ${0:X04}-${1:X04} (${2:X04})", startAddress, startAddress + length - 1, length);
+			TraceWriter.Write("Loading memory ${0:X04}-${1:X04} (${2:X04})", startAddress, startAddress + length - 1, length);
 			int address = startAddress;
 			if (address < 0x0200)
 			{

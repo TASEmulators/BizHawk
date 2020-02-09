@@ -56,8 +56,7 @@
     <Compile Include="DiskNib.cs" />
     <Compile Include="GamePort.cs" />
     <Compile Include="Keyboard.cs" />
-    <Compile Include="Library\MathHelpers.cs" />
-    <Compile Include="Library\StreamExtensions.cs" />
+    <Compile Include="Library\Extensions.cs" />
     <Compile Include="Machine.cs" />
     <Compile Include="MachineComponent.cs" />
     <Compile Include="MachineEvents.cs" />
@@ -66,11 +65,12 @@
     <Compile Include="NoSlotClock.cs" />
     <Compile Include="PeripheralCard.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\DebugService.cs" />
+    <Compile Include="Library\TraceWriter.cs" />
     <Compile Include="Speaker.cs" />
     <Compile Include="Video.cs" />
     <Compile Include="VideoData.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /y "$(TargetDir)$(TargetFileName)" "$(ProjectDir)..\..\references\$(TargetFileName)"</PostBuildEvent>

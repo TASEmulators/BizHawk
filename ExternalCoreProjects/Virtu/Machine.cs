@@ -128,7 +128,7 @@ namespace Jellyfish.Virtu
 		{
 			foreach (var component in Components)
 			{
-				DebugService.WriteMessage("Resetting machine '{0}'", component.GetType().Name);
+				TraceWriter.Write("Resetting machine '{0}'", component.GetType().Name);
 				component.Reset();
 			}
 		}
@@ -137,7 +137,7 @@ namespace Jellyfish.Virtu
 		{
 			foreach (var component in Components)
 			{
-				DebugService.WriteMessage("Initializing machine '{0}'", component.GetType().Name);
+				TraceWriter.Write("Initializing machine '{0}'", component.GetType().Name);
 				component.Initialize();
 			}
 		}
@@ -146,7 +146,7 @@ namespace Jellyfish.Virtu
 		{
 			foreach (var component in Components)
 			{
-				DebugService.WriteMessage("Uninitializing machine '{0}'", component.GetType().Name);
+				TraceWriter.Write("Uninitializing machine '{0}'", component.GetType().Name);
 				component.Uninitialize();
 			}
 		}
