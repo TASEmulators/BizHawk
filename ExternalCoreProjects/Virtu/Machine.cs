@@ -4,6 +4,7 @@ using System.Linq;
 using Jellyfish.Virtu.Services;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Virtu.Library;
 
 namespace Jellyfish.Virtu
 {
