@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
 namespace Jellyfish.Virtu
@@ -54,7 +55,7 @@ namespace Jellyfish.Virtu
 			_highCycles = _totalCycles = 0;
 		}
 
-		public void ToggleOutput()
+		internal void ToggleOutput()
 		{
 			UpdateCycles();
 			_isHigh ^= true;
@@ -92,8 +93,8 @@ namespace Jellyfish.Virtu
 		}
 
 
-		[System.Runtime.Serialization.OnDeserialized]
-		public void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
+		[OnDeserialized]
+		private void OnDeserialized(StreamingContext context)
 		{
 			_position = 0;
 		}

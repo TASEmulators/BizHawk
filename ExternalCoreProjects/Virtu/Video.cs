@@ -28,7 +28,7 @@ namespace Jellyfish.Virtu
 		public int[] GetVideoBuffer() => Framebuffer;
 
 		[OnDeserialized]
-		public void OnDeserialized(StreamingContext context)
+		private void OnDeserialized(StreamingContext context)
 		{
 			// the VideoService forgets all of its information on LoadState
 			DirtyScreen();
@@ -78,12 +78,12 @@ namespace Jellyfish.Virtu
 			FlushScreen();
 		}
 
-		public void DirtyCell(int addressOffset)
+		internal void DirtyCell(int addressOffset)
 		{
 			_isCellDirty[CellIndex[addressOffset]] = true;
 		}
 
-		public void DirtyCellMixed(int addressOffset)
+		internal void DirtyCellMixed(int addressOffset)
 		{
 			int cellIndex = CellIndex[addressOffset];
 			if (cellIndex < MixedCellIndex)
@@ -92,7 +92,7 @@ namespace Jellyfish.Virtu
 			}
 		}
 
-		public void DirtyCellMixedText(int addressOffset)
+		internal void DirtyCellMixedText(int addressOffset)
 		{
 			int cellIndex = CellIndex[addressOffset];
 			if (cellIndex >= MixedCellIndex)
@@ -101,7 +101,7 @@ namespace Jellyfish.Virtu
 			}
 		}
 
-		public void DirtyScreen()
+		internal void DirtyScreen()
 		{
 			for (int i = 0; i < Height * CellColumns; i++)
 			{
@@ -109,7 +109,7 @@ namespace Jellyfish.Virtu
 			}
 		}
 
-		public void DirtyScreenText()
+		private void DirtyScreenText()
 		{
 			if (_memory.IsText)
 			{
@@ -127,7 +127,7 @@ namespace Jellyfish.Virtu
 			}
 		}
 
-		public int ReadFloatingBus() // [5-40]
+		internal int ReadFloatingBus() // [5-40]
 		{
 			// derive scanner counters from current cycles into frame; assumes hcount and vcount preset at start of frame [3-13, 3-15, 3-16]
 			int cycles = _cyclesPerVSync - Machine.Events.FindEvent(_resetVSyncEvent);
@@ -154,13 +154,14 @@ namespace Jellyfish.Virtu
 			return _memory.Read(address);
 		}
 
-		public void SetCharSet()
+		internal void SetCharSet()
 		{
 			_charSet = !_memory.IsCharSetAlternate ? CharSetPrimary : (_memory.Monitor == MonitorType.Standard) ? CharSetSecondaryStandard : CharSetSecondaryEnhanced;
 			DirtyScreenText();
 		}
 
 		#region Draw Methods
+
 		private void DrawText40(int data, int x, int y)
 		{
 			int color = IsMonochrome ? ColorMono00 : ColorWhite00;
@@ -679,6 +680,7 @@ namespace Jellyfish.Virtu
 				}
 			}
 		}
+
 		#endregion
 
 		#region Flush Methods
