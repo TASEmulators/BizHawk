@@ -1,15 +1,47 @@
 ﻿using System;
+using Newtonsoft.Json;
 
 namespace Jellyfish.Virtu
 {
 	public sealed class Speaker : MachineComponent
 	{
 		public Speaker() { }
-		public Speaker(Machine machine) :
-			base(machine)
+		public Speaker(Machine machine)
+			: base(machine)
 		{
 			_flushOutputEvent = FlushOutputEvent; // cache delegates; avoids garbage
 		}
+
+		private const int CyclesPerFlush = 23;
+
+		private Action _flushOutputEvent;
+
+		private bool _isHigh;
+		private int _highCycles;
+		private int _totalCycles;
+		private long _lastCycles;
+
+		[JsonIgnore] // only relevant if trying to savestate mid-frame
+		private readonly short[] _buffer = new short[4096];
+
+		[JsonIgnore] // only relevant if trying to savestate mid-frame
+		private int _position;
+
+		#region Api
+
+		public void Clear()
+		{
+			_position = 0;
+		}
+
+		public void GetSamples(out short[] samples, out int nSamp)
+		{
+			samples = _buffer;
+			nSamp = _position / 2;
+			_position = 0;
+		}
+
+		#endregion
 
 		public override void Initialize()
 		{
@@ -49,47 +81,23 @@ namespace Jellyfish.Virtu
 			_lastCycles = Machine.Cpu.Cycles;
 		}
 
-		private const int CyclesPerFlush = 23;
-
-		private Action _flushOutputEvent;
-
-		private bool _isHigh;
-		private int _highCycles;
-		private int _totalCycles;
-		private long _lastCycles;
-
-
 		private void Output(int data) // machine thread
 		{
 			data = (int)(data * 0.2);
-			if (pos < buff.Length - 2)
+			if (_position < _buffer.Length - 2)
 			{
-				buff[pos++] = (short)data;
-				buff[pos++] = (short)data;
+				_buffer[_position++] = (short)data;
+				_buffer[_position++] = (short)data;
 			}
 		}
 
-		[Newtonsoft.Json.JsonIgnore] // only relevant if trying to savestate midframe
-		private readonly short[] buff = new short[4096];
-		[Newtonsoft.Json.JsonIgnore] // only relevant if trying to savestate midframe
-		private int pos;
 
 		[System.Runtime.Serialization.OnDeserialized]
 		public void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
 		{
-			pos = 0;
+			_position = 0;
 		}
 
-		public void Clear()
-		{
-			pos = 0;
-		}
-
-		public void GetSamples(out short[] samples, out int nSamp)
-		{
-			samples = buff;
-			nSamp = pos / 2;
-			pos = 0;
-		}
+		
 	}
 }
