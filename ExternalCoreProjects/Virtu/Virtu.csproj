@@ -61,14 +61,14 @@
     <Compile Include="MachineComponent.cs" />
     <Compile Include="MachineEvents.cs" />
     <Compile Include="Memory.cs" />
-    <Compile Include="MemoryData.cs" />
+    <Compile Include="Memory.Data.cs" DependentUpon="Memory.cs" />
     <Compile Include="NoSlotClock.cs" />
     <Compile Include="PeripheralCard.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Library\TraceWriter.cs" />
     <Compile Include="Speaker.cs" />
     <Compile Include="Video.cs" />
-    <Compile Include="VideoData.cs" />
+    <Compile Include="Video.Data.cs" DependentUpon="Video.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
