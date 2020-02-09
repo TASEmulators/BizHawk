@@ -3,7 +3,7 @@
 	/// <summary>
 	/// this isn't really a "service" anymore, just a helper for the speaker class
 	/// </summary>
-	public class AudioService
+	internal class AudioService
 	{
 		public AudioService() { }
 

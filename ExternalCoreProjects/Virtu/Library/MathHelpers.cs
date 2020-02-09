@@ -1,6 +1,6 @@
 ﻿namespace Jellyfish.Library
 {
-	public static class MathHelpers
+	internal static class MathHelpers
 	{
 		public static int Clamp(int value, int min, int max)
 		{

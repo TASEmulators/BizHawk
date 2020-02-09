@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Jellyfish.Library
 {
-	public static class StreamExtensions
+	internal static class StreamExtensions
 	{
 		public static int ReadBlock(this Stream stream, byte[] buffer, int offset, ref int count)
 		{

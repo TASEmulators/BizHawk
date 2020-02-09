@@ -9,7 +9,7 @@ namespace Jellyfish.Virtu.Services
 	/// <summary>
 	/// this isn't really a "service" anymore
 	/// </summary>
-	public static class DebugService
+	internal static class DebugService
 	{
 		public static void WriteMessage(string format, params object[] args)
 		{

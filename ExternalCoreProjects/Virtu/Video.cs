@@ -26,6 +26,8 @@ namespace Jellyfish.Virtu
 			};
 		}
 
+		public int[] GetVideoBuffer() => VideoService.fb;
+
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext context)
 		{
@@ -1024,7 +1026,7 @@ namespace Jellyfish.Virtu
 		private Action _resetVSyncEvent;
 
 		private Memory _memory;
-		public VideoService VideoService { get; private set; }
+		internal VideoService VideoService { get; private set; }
 
 		private int _colorBlack;
 		private int _colorDarkBlue;

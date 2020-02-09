@@ -3,7 +3,7 @@
 	/// <summary>
 	/// this isn't really a "service" anymore, just a helper for the video class
 	/// </summary>
-	public class VideoService
+	internal class VideoService
 	{
 		public VideoService()
 		{

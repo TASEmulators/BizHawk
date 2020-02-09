@@ -12,6 +12,9 @@ namespace Jellyfish.Virtu
 			_flushOutputEvent = FlushOutputEvent; // cache delegates; avoids garbage
 		}
 
+		public void GetSamples(out short[] samples, out int nSamp) => AudioService.GetSamples(out samples, out nSamp);
+		public void Clear() => AudioService.Clear();
+
 		public override void Initialize()
 		{
 			AudioService = new AudioService();
@@ -61,6 +64,6 @@ namespace Jellyfish.Virtu
 		private int _totalCycles;
 		private long _lastCycles;
 
-		public AudioService AudioService { get; private set; }
+		internal AudioService AudioService { get; private set; }
 	}
 }
