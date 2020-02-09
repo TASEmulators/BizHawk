@@ -20,7 +20,7 @@ namespace Jellyfish.Virtu
 		{
 			if (stream == null)
 			{
-				throw new ArgumentNullException("stream");
+				throw new ArgumentNullException(nameof(stream));
 			}
 
 			stream.ReadBlock(Data);

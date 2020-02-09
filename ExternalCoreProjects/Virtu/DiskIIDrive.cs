@@ -42,7 +42,7 @@ namespace Jellyfish.Virtu
 			int delta = DriveArmStepDelta[_trackNumber & 0x3][phaseState];
 			if (delta != 0)
 			{
-				int newTrackNumber = MathHelpers.Clamp(_trackNumber + delta, 0, TrackNumberMax);
+				int newTrackNumber = (_trackNumber + delta).Clamp(0, TrackNumberMax);
 				if (newTrackNumber != _trackNumber)
 				{
 					FlushTrack();

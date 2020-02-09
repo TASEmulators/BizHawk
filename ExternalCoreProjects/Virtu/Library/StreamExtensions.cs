@@ -16,11 +16,12 @@ namespace Jellyfish.Library
 		{
 			if (stream == null)
 			{
-				throw new ArgumentNullException("stream");
+				throw new ArgumentNullException(nameof(stream));
 			}
+
 			if (buffer == null)
 			{
-				throw new ArgumentNullException("buffer");
+				throw new ArgumentNullException(nameof(buffer));
 			}
 
 			count = Math.Min(count, buffer.Length - offset);
@@ -46,7 +47,7 @@ namespace Jellyfish.Library
 		{
 			if (stream == null)
 			{
-				throw new ArgumentNullException("stream");
+				throw new ArgumentNullException(nameof(stream));
 			}
 
 			int lowByte = stream.ReadByte();

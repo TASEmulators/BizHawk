@@ -1,11 +1,13 @@
-﻿namespace Jellyfish.Virtu
+﻿using Newtonsoft.Json;
+
+namespace Jellyfish.Virtu
 {
 	public abstract class MachineComponent
 	{
-		public MachineComponent() { }
+		protected MachineComponent() { }
 		protected MachineComponent(Machine machine)
 		{
-			_machine = machine;
+			Machine = machine;
 		}
 
 		public virtual void Initialize()
@@ -20,13 +22,7 @@
 		{
 		}
 
-		[Newtonsoft.Json.JsonIgnore]
-		private Machine _machine;
-
-		public Machine Machine
-		{
-			get => _machine;
-			set => _machine = value;
-		}
+		[field: JsonIgnore]
+		protected Machine Machine { get; set; }
 	}
 }
