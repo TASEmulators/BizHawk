@@ -26,7 +26,7 @@ namespace Jellyfish.Virtu
 			};
 		}
 
-		public int[] GetVideoBuffer() => VideoService.fb;
+		public int[] GetVideoBuffer() => Framebuffer;
 
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext context)
@@ -38,7 +38,6 @@ namespace Jellyfish.Virtu
 		public override void Initialize()
 		{
 			_memory = Machine.Memory;
-			VideoService = new VideoService();
 
 			unchecked
 			{
@@ -988,9 +987,13 @@ namespace Jellyfish.Virtu
 			DirtyScreen();
 		}
 
+		// ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
+		private int[] Framebuffer { get; set; } = new int[560 * 384];
+
 		private void SetPixel(int x, int y, int color)
 		{
-			VideoService.SetPixel(x, 2 * y, _colorPalette[color]);
+			int i = 560 * (2 * y) + x;
+			Framebuffer[i] = Framebuffer[i + 560] = _colorPalette[color];
 		}
 
 		private void SetScanner()
@@ -1026,8 +1029,6 @@ namespace Jellyfish.Virtu
 		private Action _resetVSyncEvent;
 
 		private Memory _memory;
-		internal VideoService VideoService { get; private set; }
-
 		private int _colorBlack;
 		private int _colorDarkBlue;
 		private int _colorDarkGreen;

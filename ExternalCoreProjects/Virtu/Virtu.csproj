@@ -68,7 +68,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AudioService.cs" />
     <Compile Include="Services\DebugService.cs" />
-    <Compile Include="Services\VideoService.cs" />
     <Compile Include="Speaker.cs" />
     <Compile Include="Video.cs" />
     <Compile Include="VideoData.cs" />
