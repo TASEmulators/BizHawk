@@ -19,18 +19,22 @@ namespace Jellyfish.Virtu
 		public override bool CanConvert(Type objectType)
 		{
 			if (!typeof(Array).IsAssignableFrom(objectType))
+			{
 				return false;
+			}
 
 			if (objectType.GetArrayRank() > 1)
+			{
 				throw new NotImplementedException();
+			}
 
 			return true;
 		}
 
-		public override bool CanRead { get { return true; } }
-		public override bool CanWrite { get { return true; } }
+		public override bool CanRead => true;
+		public override bool CanWrite => true;
 
-		private JsonSerializer bareserializer = new JsonSerializer(); // full default settings, separate context
+		private readonly JsonSerializer _bareSerializer = new JsonSerializer(); // full default settings, separate context
 
 		private static void ReadExpectType(JsonReader reader, JsonToken expected)
 		{
@@ -43,9 +47,14 @@ namespace Jellyfish.Virtu
 		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
 		{
 			if (reader.TokenType == JsonToken.Null)
+			{
 				return null;
-			else if (reader.TokenType != JsonToken.StartObject)
+			}
+			
+			if (reader.TokenType != JsonToken.StartObject)
+			{
 				throw new InvalidOperationException();
+			}
 
 			ReadExpectType(reader, JsonToken.PropertyName);
 			string prop = reader.Value.ToString();
@@ -57,7 +66,8 @@ namespace Jellyfish.Virtu
 				ReadExpectType(reader, JsonToken.EndObject);
 				return ret;
 			}
-			else if (prop == "$id")
+
+			if (prop == "$id")
 			{
 				ReadExpectType(reader, JsonToken.PropertyName);
 				prop = reader.Value.ToString();
@@ -88,25 +98,26 @@ namespace Jellyfish.Virtu
 					ReadExpectType(reader, JsonToken.EndObject);
 					return ret;
 				}
-				else if (prop == "$values") // simple array
+
+				if (prop == "$values") // simple array
 				{
 					if (!reader.Read())
+					{
 						throw new InvalidOperationException();
-					object ret = bareserializer.Deserialize(reader, objectType);
+					}
+
+					object ret = _bareSerializer.Deserialize(reader, objectType);
+
 					// OK to add this after deserializing, as arrays of primitive types can't contain backrefs
 					serializer.ReferenceResolver.AddReference(serializer, id, ret);
 					ReadExpectType(reader, JsonToken.EndObject);
 					return ret;
 				}
-				else
-				{
-					throw new InvalidOperationException();
-				}
-			}
-			else
-			{
+
 				throw new InvalidOperationException();
 			}
+
+			throw new InvalidOperationException();
 		}
 
 		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -128,10 +139,10 @@ namespace Jellyfish.Virtu
 				writer.WriteValue(serializer.ReferenceResolver.GetReference(serializer, value));
 
 				var elementType = value.GetType().GetElementType();
-				if (elementType.IsPrimitive)
+				if (elementType?.IsPrimitive ?? false)
 				{
 					writer.WritePropertyName("$values");
-					bareserializer.Serialize(writer, value);
+					_bareSerializer.Serialize(writer, value);
 				}
 				else
 				{
@@ -145,6 +156,7 @@ namespace Jellyfish.Virtu
 					{
 						serializer.Serialize(writer, o, elementType);
 					}
+
 					writer.WriteEndArray();
 				}
 
@@ -158,37 +170,36 @@ namespace Jellyfish.Virtu
 		// serialize and deserialize types, ignoring assembly entirely and only using namespace+typename
 		// all types, including generic type arguments to supplied types, must be in one of the declared assemblies (only checked on read!)
 		// the main goal here is to have something with a slight chance of working across versions
-
 		public TypeTypeConverter(IEnumerable<Assembly> ass)
 		{
-			assemblies = ass.ToList();
+			_assemblies = ass.ToList();
 		}
 
-		private List<Assembly> assemblies;
-		private Dictionary<string, Type> readlookup = new Dictionary<string, Type>();
+		private readonly List<Assembly> _assemblies;
+		private readonly Dictionary<string, Type> _readlookup = new Dictionary<string, Type>();
 
 		public override bool CanConvert(Type objectType)
 		{
 			return typeof(Type).IsAssignableFrom(objectType);
 		}
 
-		public override bool CanRead { get { return true; } }
-		public override bool CanWrite { get { return true; } }
+		public override bool CanRead => true;
+		public override bool CanWrite => true;
 
 		private Type GetType(string name)
 		{
-			Type ret;
-			if (!readlookup.TryGetValue(name, out ret))
+			if (!_readlookup.TryGetValue(name, out var ret))
 			{
-				ret = assemblies.Select(ass => ass.GetType(name, false)).Where(t => t != null).Single();
-				readlookup.Add(name, ret);
+				ret = _assemblies.Select(ass => ass.GetType(name, false)).Single(t => t != null);
+				_readlookup.Add(name, ret);
 			}
+
 			return ret;
 		}
 
 		private static string GetName(Type type)
 		{
-			return string.Format("{0}.{1}", type.Namespace, type.Name);
+			return $"{type.Namespace}.{type.Name}";
 		}
 
 		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
@@ -197,19 +208,19 @@ namespace Jellyfish.Virtu
 			{
 				return null;
 			}
-			else if (reader.TokenType == JsonToken.String)
+
+			if (reader.TokenType == JsonToken.String)
 			{
 				return GetType(reader.Value.ToString());
 			}
-			else if (reader.TokenType == JsonToken.StartArray) // full generic
+
+			if (reader.TokenType == JsonToken.StartArray) // full generic
 			{
-				List<string> vals = serializer.Deserialize<List<string>>(reader);
-				return GetType(vals[0]).MakeGenericType(vals.Skip(1).Select(GetType).ToArray());
+				List<string> values = serializer.Deserialize<List<string>>(reader);
+				return GetType(values[0]).MakeGenericType(values.Skip(1).Select(GetType).ToArray());
 			}
-			else
-			{
-				throw new InvalidOperationException();
-			}
+
+			throw new InvalidOperationException();
 		}
 
 		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
