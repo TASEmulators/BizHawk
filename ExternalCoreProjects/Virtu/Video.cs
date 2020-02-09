@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.Serialization;
-using Jellyfish.Virtu.Services;
 using Newtonsoft.Json;
 
 namespace Jellyfish.Virtu

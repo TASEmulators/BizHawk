@@ -1,5 +1,4 @@
 ﻿using System;
-using Jellyfish.Virtu.Services;
 
 namespace Jellyfish.Virtu
 {
@@ -12,13 +11,8 @@ namespace Jellyfish.Virtu
 			_flushOutputEvent = FlushOutputEvent; // cache delegates; avoids garbage
 		}
 
-		public void GetSamples(out short[] samples, out int nSamp) => AudioService.GetSamples(out samples, out nSamp);
-		public void Clear() => AudioService.Clear();
-
 		public override void Initialize()
 		{
-			AudioService = new AudioService();
-
 			Machine.Events.AddEvent(CyclesPerFlush * Machine.Cpu.Multiplier, _flushOutputEvent);
 		}
 
@@ -38,7 +32,7 @@ namespace Jellyfish.Virtu
 		{
 			UpdateCycles();
 			// TODO: better than simple decimation here!!
-			AudioService.Output(_highCycles * short.MaxValue / _totalCycles);
+			Output(_highCycles * short.MaxValue / _totalCycles);
 			_highCycles = _totalCycles = 0;
 
 			Machine.Events.AddEvent(CyclesPerFlush * Machine.Cpu.Multiplier, _flushOutputEvent);
@@ -64,6 +58,38 @@ namespace Jellyfish.Virtu
 		private int _totalCycles;
 		private long _lastCycles;
 
-		internal AudioService AudioService { get; private set; }
+
+		private void Output(int data) // machine thread
+		{
+			data = (int)(data * 0.2);
+			if (pos < buff.Length - 2)
+			{
+				buff[pos++] = (short)data;
+				buff[pos++] = (short)data;
+			}
+		}
+
+		[Newtonsoft.Json.JsonIgnore] // only relevant if trying to savestate midframe
+		private readonly short[] buff = new short[4096];
+		[Newtonsoft.Json.JsonIgnore] // only relevant if trying to savestate midframe
+		private int pos;
+
+		[System.Runtime.Serialization.OnDeserialized]
+		public void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
+		{
+			pos = 0;
+		}
+
+		public void Clear()
+		{
+			pos = 0;
+		}
+
+		public void GetSamples(out short[] samples, out int nSamp)
+		{
+			samples = buff;
+			nSamp = pos / 2;
+			pos = 0;
+		}
 	}
 }
