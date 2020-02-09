@@ -156,7 +156,7 @@ namespace Jellyfish.Virtu
 			};
 		}
 
-		public override void Initialize()
+		internal override void Initialize()
 		{
 			_memory = Machine.Memory;
 
@@ -167,7 +167,7 @@ namespace Jellyfish.Virtu
 			RS = 0xFF;
 		}
 
-		public override void Reset()
+		internal override void Reset()
 		{
 			RS = (RS - 3) & 0xFF; // [4-14]
 			RPC = _memory.ReadRomRegionE0FF(0xFFFC) | (_memory.ReadRomRegionE0FF(0xFFFD) << 8);

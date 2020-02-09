@@ -34,7 +34,7 @@ namespace Jellyfish.Virtu
 			DirtyScreen();
 		}
 
-		public override void Initialize()
+		internal override void Initialize()
 		{
 			_memory = Machine.Memory;
 
@@ -71,7 +71,7 @@ namespace Jellyfish.Virtu
 			Machine.Events.AddEvent(_cyclesPerFlash, _inverseTextEvent);
 		}
 
-		public override void Reset()
+		internal override void Reset()
 		{
 			SetCharSet();
 			DirtyScreen();

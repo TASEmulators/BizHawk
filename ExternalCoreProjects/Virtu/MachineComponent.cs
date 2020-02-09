@@ -10,15 +10,15 @@ namespace Jellyfish.Virtu
 			Machine = machine;
 		}
 
-		public virtual void Initialize()
+		internal virtual void Initialize()
 		{
 		}
 
-		public virtual void Reset()
+		internal virtual void Reset()
 		{
 		}
 
-		public virtual void Uninitialize()
+		internal virtual void Uninitialize()
 		{
 		}
 

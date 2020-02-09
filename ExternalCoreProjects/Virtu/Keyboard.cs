@@ -251,7 +251,7 @@ namespace Jellyfish.Virtu
 		{
 		}
 
-		public override void Initialize()
+		internal override void Initialize()
 		{
 		}
 

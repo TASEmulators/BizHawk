@@ -17,9 +17,9 @@ namespace Jellyfish.Virtu
 			BootDrive = Drive1;
 		}
 
-		public override void Initialize() { }
+		internal override void Initialize() { }
 
-		public override void Reset()
+		internal override void Reset()
 		{
 			_phaseStates = 0;
 			SetMotorOn(false);

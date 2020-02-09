@@ -99,7 +99,7 @@ namespace Jellyfish.Virtu
 
 		private byte[] _appleIIe;
 
-		public override void Initialize()
+		internal override void Initialize()
 		{
 			_keyboard = Machine.Keyboard;
 			_gamePort = Machine.GamePort;
@@ -134,7 +134,7 @@ namespace Jellyfish.Virtu
 			}
 		}
 
-		public override void Reset() // [7-3]
+		internal override void Reset() // [7-3]
 		{
 			ResetState(State80Col | State80Store | StateAltChrSet | StateAltZP | StateBank1 | StateHRamRd | StateHRamPreWrt | StateHRamWrt | // HRamWrt' [5-23]
 				StateHires | StatePage2 | StateRamRd | StateRamWrt | StateIntCXRom | StateSlotC3Rom | StateIntC8Rom | StateAn0 | StateAn1 | StateAn2 | StateAn3);
@@ -150,7 +150,7 @@ namespace Jellyfish.Virtu
 		{
 			if (stream == null)
 			{
-				throw new ArgumentNullException("stream");
+				throw new ArgumentNullException(nameof(stream));
 			}
 
 			int startAddress = stream.ReadWord();
@@ -162,7 +162,7 @@ namespace Jellyfish.Virtu
 		{
 			if (stream == null)
 			{
-				throw new ArgumentNullException("stream");
+				throw new ArgumentNullException(nameof(stream));
 			}
 
 			const int Marker = 0xFFFF;

@@ -10,7 +10,7 @@ namespace Jellyfish.Virtu
 		{
 		}
 
-		public override void Initialize()
+		internal override void Initialize()
 		{
 			_clockEnabled = false;
 			_writeEnabled = true;

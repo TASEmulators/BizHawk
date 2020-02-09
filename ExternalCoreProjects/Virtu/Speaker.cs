@@ -44,12 +44,12 @@ namespace Jellyfish.Virtu
 
 		#endregion
 
-		public override void Initialize()
+		internal override void Initialize()
 		{
 			Machine.Events.AddEvent(CyclesPerFlush * Machine.Cpu.Multiplier, _flushOutputEvent);
 		}
 
-		public override void Reset()
+		internal override void Reset()
 		{
 			_isHigh = false;
 			_highCycles = _totalCycles = 0;
