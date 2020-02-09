@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace Jellyfish.Virtu
 {
-	public enum MonitorType { Unknown, Standard, Enhanced };
+	internal enum MonitorType { Unknown, Standard, Enhanced };
 
 	public sealed partial class Memory : MachineComponent
 	{
@@ -2107,7 +2107,7 @@ namespace Jellyfish.Virtu
 		public bool IsVideoPage2 => TestState(State80Store | StatePage2, StatePage2); // 80Store inhibits video Page2 [5-7, 8-19]
 		public bool IsZeroPageAux => TestState(StateAltZP);
 
-		public MonitorType Monitor { get; private set; }
+		internal MonitorType Monitor { get; private set; }
 		public int VideoMode => StateVideoMode[_state & StateVideo];
 
 		[JsonIgnore]

@@ -4,7 +4,7 @@ using System.Globalization;
 
 namespace Jellyfish.Virtu
 {
-	public sealed class MachineEvent
+	internal sealed class MachineEvent
 	{
 		public MachineEvent(int delta, Action action)
 		{

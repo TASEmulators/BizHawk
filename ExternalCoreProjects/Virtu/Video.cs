@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 namespace Jellyfish.Virtu
 {
 	[Flags]
-	public enum ScannerOptions { None = 0x0, AppleII = 0x1, Pal = 0x2 } // defaults to AppleIIe, Ntsc
+	internal enum ScannerOptions { None = 0x0, AppleII = 0x1, Pal = 0x2 } // defaults to AppleIIe, Ntsc
 
 	public sealed partial class Video : MachineComponent
 	{
@@ -1016,7 +1016,7 @@ namespace Jellyfish.Virtu
 		public bool IsMonochrome { get => _isMonochrome; set { _isMonochrome = value; DirtyScreen(); } }
 
 		[JsonIgnore]
-		public ScannerOptions ScannerOptions { get => _scannerOptions; set { _scannerOptions = value; SetScanner(); } }
+		internal ScannerOptions ScannerOptions { get => _scannerOptions; set { _scannerOptions = value; SetScanner(); } }
 
 		public bool IsVBlank { get; private set; }
 

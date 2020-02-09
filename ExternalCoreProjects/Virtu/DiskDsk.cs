@@ -4,9 +4,9 @@ using Jellyfish.Library;
 
 namespace Jellyfish.Virtu
 {
-	public enum SectorSkew { None = 0, Dos, ProDos };
+	internal enum SectorSkew { None = 0, Dos, ProDos };
 
-	public sealed class DiskDsk : Disk525
+	internal sealed class DiskDsk : Disk525
 	{
 		public DiskDsk() { }
 		public DiskDsk(string name, byte[] data, bool isWriteProtected, SectorSkew sectorSkew) :

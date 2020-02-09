@@ -118,7 +118,7 @@ namespace Jellyfish.Virtu
 		public Memory Memory { get; private set; }
 		public Speaker Speaker { get; private set; }
 		public Video Video { get; private set; }
-
+		public DiskIIController BootDiskII { get; private set; }
 		public bool Lagged { get; set; }
 		public bool DriveLight { get; set; }
 
@@ -183,7 +183,6 @@ namespace Jellyfish.Virtu
 
 		internal MachineEvents Events { get; set; }
 
-		
 		internal Keyboard Keyboard { get; private set; }
 		internal GamePort GamePort { get; private set; }
 		internal Cassette Cassette { get; private set; }
@@ -200,6 +199,6 @@ namespace Jellyfish.Virtu
 
 		internal IList<PeripheralCard> Slots { get; private set; }
 		internal IList<MachineComponent> Components { get; private set; }
-		internal DiskIIController BootDiskII { get; private set; }
+		
 	}
 }

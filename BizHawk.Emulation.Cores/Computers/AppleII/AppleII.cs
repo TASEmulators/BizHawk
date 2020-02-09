@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			
 			_machine.BizInitialize();
 
-			// make a writeable memory stream cloned from the rom.
+			// make a writable memory stream cloned from the rom.
 			// for junk.dsk the .dsk is important because it determines the format from that
 			InitDisk();
 
@@ -109,14 +109,12 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		{
 			_disk1 = _romSet[CurrentDisk];
 
-			// make a writeable memory stream cloned from the rom.
+			// make a writable memory stream cloned from the rom.
 			// for junk.dsk the .dsk is important because it determines the format from that
 			_machine.BootDiskII.Drives[0].InsertDisk("junk.dsk", (byte[])_disk1.Clone(), false);
 		}
 
 		private static readonly List<string> RealButtons = new List<string>(Keyboard.GetKeyNames()
-			//.Where(k => k != "White Apple") // Hack because these buttons aren't wired up yet
-			//.Where(k => k != "Black Apple")
 			.Where(k => k != "Reset"));
 
 		private static readonly List<string> ExtraButtons = new List<string>
@@ -140,7 +138,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			});
 		}
 
-		private void FrameAdv(IController controller, bool render, bool rendersound)
+		private void FrameAdv(IController controller, bool render, bool renderSound)
 		{
 			if (_tracer.Enabled)
 			{

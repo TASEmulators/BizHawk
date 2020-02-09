@@ -2,7 +2,7 @@
 
 namespace Jellyfish.Virtu
 {
-	public sealed class NoSlotClock : MachineComponent
+	internal sealed class NoSlotClock : MachineComponent
 	{
 		public NoSlotClock() { }
 		public NoSlotClock(Machine machine) :
