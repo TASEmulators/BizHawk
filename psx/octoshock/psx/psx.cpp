@@ -36,7 +36,7 @@
 #include "input/memcard.h"
 #include "input/multitap.h"
 
-
+#include <array>
 #include <stdarg.h>
 #include <ctype.h>
 
@@ -1058,11 +1058,18 @@ struct ShockState
 
 struct ShockPeripheral
 {
-	ePeripheralType type;
+	ePeripheralType type = ePeripheralType_None;
 	u8 buffer[32]; //must be larger than 16+3+1 or thereabouts because the dualshock writes some rumble data into it. bleck, ill fix it later
 	//TODO: test for multitap. does it need to be as large as 4 of whatever the single largest port would be?
 	//well, it must manage its own stuff.. its not like we feed in external data, right?
-	InputDevice* device;
+	InputDevice* device = nullptr;
+
+	~ShockPeripheral()
+	{
+		//do not do this! FIO takes care of finishing this off
+		//I know, it's all a mess
+		//delete device;
+	}
 };
 
 static int addressToPortNum(int address)
@@ -1087,15 +1094,13 @@ struct {
 	//"This is kind of redundant with the frontIO code, and should be merged with it eventually, when the configurability gets more advanced"
 	//I dunno.
 
-	ShockPeripheral ports[10];
+	std::array<ShockPeripheral,10> ports;
 
 	void Initialize()
 	{
+		reconstruct(&ports);
 		for(int i=0;i<10;i++)
-		{
-			ports[i].type = ePeripheralType_None;
 			memset(ports[i].buffer,0,sizeof(ports[i].buffer));
-		}
 		reconstruct(FIO);
 	}
 
@@ -1133,6 +1138,7 @@ struct {
 			return SHOCK_ERROR;
 		}
 		ports[portnum].type = (ePeripheralType)type;
+		if(ports[portnum].device) delete ports[portnum].device;
 		ports[portnum].device = next;
 		memset(ports[portnum].buffer,0,sizeof(ports[portnum].buffer));
 
@@ -1303,13 +1309,10 @@ struct {
 
 	void UpdateInput()
 	{
-		for(int i=0;i<10;i++)
+		for(int i=0;i<ports.size();i++)
 		{
-			for(int i=0;i<ARRAY_SIZE(ports);i++)
-			{
-				if(ports[i].device)
-					ports[i].device->UpdateInput(ports[i].buffer);
-			}
+			if(ports[i].device)
+				ports[i].device->UpdateInput(ports[i].buffer);
 		}
 	}
 
@@ -2497,11 +2500,6 @@ EW_EXPORT s32 shock_AnalyzeDisc(ShockDiscRef* disc, ShockDiscInfo* info)
 	catch(const char* str)
 	{
 		//puts(e.what());
-		int zzz=9;
-	}
-	catch(...)
-	{
-		int zzz=9;
 	}
 
 	//uhmm couldnt find system.cnf. try another way
