@@ -2,14 +2,16 @@
 
 namespace Jellyfish.Virtu
 {
-	internal sealed class DiskIIController : PeripheralCard
+	internal sealed class DiskIIController : IPeripheralCard
 	{
+		private Machine _machine;
+
 		// ReSharper disable once UnusedMember.Global
 		public DiskIIController() { }
 
-		public DiskIIController(Machine machine, byte[] diskIIRom) :
-			base(machine)
+		public DiskIIController(Machine machine, byte[] diskIIRom)
 		{
+			_machine = machine;
 			_romRegionC1C7 = diskIIRom;
 			Drive1 = new DiskIIDrive(machine);
 			Drive2 = new DiskIIDrive(machine);
@@ -19,9 +21,7 @@ namespace Jellyfish.Virtu
 			BootDrive = Drive1;
 		}
 
-		internal override void Initialize() { }
-
-		internal override void Reset()
+		public void Reset()
 		{
 			_phaseStates = 0;
 			SetMotorOn(false);
@@ -30,7 +30,9 @@ namespace Jellyfish.Virtu
 			_writeMode = false;
 		}
 
-		public override int ReadIoRegionC0C0(int address)
+		public void WriteIoRegionC8CF(int address, int data) => _machine.Video.ReadFloatingBus();
+
+		public int ReadIoRegionC0C0(int address)
 		{
 			switch (address & 0xF)
 			{
@@ -110,15 +112,17 @@ namespace Jellyfish.Virtu
 				return _driveSpin ? 0x7E : 0x7F;
 			}
 
-			return ReadFloatingBus();
+			return _machine.Video.ReadFloatingBus();
 		}
 
-		public override int ReadIoRegionC1C7(int address)
+		public int ReadIoRegionC1C7(int address)
 		{
 			return _romRegionC1C7[address & 0xFF];
 		}
 
-		public override void WriteIoRegionC0C0(int address, int data)
+		public int ReadIoRegionC8CF(int address) => _machine.Video.ReadFloatingBus();
+
+		public void WriteIoRegionC0C0(int address, int data)
 		{
 			switch (address & 0xF)
 			{
@@ -179,6 +183,8 @@ namespace Jellyfish.Virtu
 				}
 			}
 		}
+
+		public void WriteIoRegionC1C7(int address, int data) { }
 
 		private void WriteLatch()
 		{

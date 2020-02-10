@@ -27,7 +27,7 @@ namespace Jellyfish.Virtu
 			Video = new Video(this);
 			NoSlotClock = new NoSlotClock(this);
 
-			var emptySlot = new PeripheralCard(this);
+			var emptySlot = new EmptyPeripheralCard(this);
 			Slot1 = emptySlot;
 			Slot2 = emptySlot;
 			Slot3 = emptySlot;
@@ -36,7 +36,7 @@ namespace Jellyfish.Virtu
 			Slot6 = new DiskIIController(this, diskIIRom);
 			Slot7 = emptySlot;
 
-			Slots = new List<PeripheralCard> { null, Slot1, Slot2, Slot3, Slot4, Slot5, Slot6, Slot7 };
+			Slots = new List<IPeripheralCard> { null, Slot1, Slot2, Slot3, Slot4, Slot5, Slot6, Slot7 };
 
 			BootDiskII = Slots.OfType<DiskIIController>().Last();
 		}
@@ -153,13 +153,6 @@ namespace Jellyfish.Virtu
 			Speaker.Initialize();
 			Video.Initialize();
 			NoSlotClock.Initialize();
-			Slot1.Initialize();
-			Slot2.Initialize();
-			Slot3.Initialize();
-			Slot4.Initialize();
-			Slot5.Initialize();
-			Slot6.Initialize();
-			Slot7.Initialize();
 		}
 
 		private static JsonSerializer CreateSerializer()
@@ -200,14 +193,14 @@ namespace Jellyfish.Virtu
 		internal DiskIIController BootDiskII { get; private set; }
 		internal NoSlotClock NoSlotClock { get; private set; }
 
-		internal PeripheralCard Slot1 { get; private set; }
-		internal PeripheralCard Slot2 { get; private set; }
-		internal PeripheralCard Slot3 { get; private set; }
-		internal PeripheralCard Slot4 { get; private set; }
-		internal PeripheralCard Slot5 { get; private set; }
-		internal PeripheralCard Slot6 { get; private set; }
-		internal PeripheralCard Slot7 { get; private set; }
+		internal IPeripheralCard Slot1 { get; private set; }
+		internal IPeripheralCard Slot2 { get; private set; }
+		internal IPeripheralCard Slot3 { get; private set; }
+		internal IPeripheralCard Slot4 { get; private set; }
+		internal IPeripheralCard Slot5 { get; private set; }
+		internal IPeripheralCard Slot6 { get; private set; }
+		internal IPeripheralCard Slot7 { get; private set; }
 
-		internal IList<PeripheralCard> Slots { get; private set; }
+		internal IList<IPeripheralCard> Slots { get; private set; }
 	}
 }
