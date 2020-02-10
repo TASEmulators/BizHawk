@@ -7,7 +7,7 @@ using Virtu.Library;
 
 namespace Jellyfish.Virtu
 {
-	public sealed class Machine : IDisposable
+	public sealed class Machine
 	{
 		/// <summary>
 		/// for deserialization only!!
@@ -41,10 +41,6 @@ namespace Jellyfish.Virtu
 		}
 
 		#region API
-
-		public void Dispose()
-		{
-		}
 
 		public void BizInitialize()
 		{
@@ -129,13 +125,7 @@ namespace Jellyfish.Virtu
 			Memory.Reset();
 			Speaker.Reset();
 			Video.Reset();
-			Slot1.Reset();
-			Slot2.Reset();
-			Slot3.Reset();
-			Slot4.Reset();
-			Slot5.Reset();
 			Slot6.Reset();
-			Slot7.Reset();
 		}
 
 		private void Initialize()
@@ -190,7 +180,7 @@ namespace Jellyfish.Virtu
 		internal IPeripheralCard Slot3 { get; private set; }
 		internal IPeripheralCard Slot4 { get; private set; }
 		internal IPeripheralCard Slot5 { get; private set; }
-		internal IPeripheralCard Slot6 { get; private set; }
+		internal DiskIIController Slot6 { get; private set; }
 		internal IPeripheralCard Slot7 { get; private set; }
 
 		internal IList<IPeripheralCard> Slots { get; private set; }

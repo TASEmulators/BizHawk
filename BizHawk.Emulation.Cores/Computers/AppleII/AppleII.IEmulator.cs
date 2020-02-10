@@ -32,7 +32,6 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		public void Dispose()
 		{
-			_machine.Dispose();
 		}
 	}
 }

@@ -19,8 +19,6 @@
 		
 		// write I/O Strobe' address $C800-$CFFF
 		void WriteIoRegionC8CF(int address, int data);
-
-		void Reset();
 	}
 
 	public class EmptyPeripheralCard : IPeripheralCard
@@ -44,7 +42,5 @@
 		public void WriteIoRegionC0C0(int address, int data) { }
 		public void WriteIoRegionC1C7(int address, int data) { }
 		public void WriteIoRegionC8CF(int address, int data) { }
-
-		public void Reset() { }
 	}
 }
