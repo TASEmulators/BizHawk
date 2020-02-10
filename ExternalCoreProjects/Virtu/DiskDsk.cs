@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using Jellyfish.Library;
 
 namespace Jellyfish.Virtu
 {
@@ -14,18 +12,6 @@ namespace Jellyfish.Virtu
 		public DiskDsk(string name, byte[] data, bool isWriteProtected, SectorSkew sectorSkew) :
 			base(name, data, isWriteProtected)
 		{
-			_sectorSkew = SectorSkewMode[(int)sectorSkew];
-		}
-
-		public DiskDsk(string name, Stream stream, bool isWriteProtected, SectorSkew sectorSkew) :
-			base(name, new byte[TrackCount * SectorCount * SectorSize], isWriteProtected)
-		{
-			if (stream == null)
-			{
-				throw new ArgumentNullException(nameof(stream));
-			}
-
-			stream.ReadBlock(Data);
 			_sectorSkew = SectorSkewMode[(int)sectorSkew];
 		}
 
