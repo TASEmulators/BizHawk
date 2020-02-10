@@ -36,12 +36,18 @@ namespace Virtu.Library
 
 		private readonly JsonSerializer _bareSerializer = new JsonSerializer(); // full default settings, separate context
 
+		// ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
 		private static void ReadExpectType(JsonReader reader, JsonToken expected)
 		{
 			if (!reader.Read())
+			{
 				throw new InvalidOperationException();
+			}
+
 			if (reader.TokenType != expected)
+			{
 				throw new InvalidOperationException();
+			}
 		}
 
 		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
@@ -81,7 +87,9 @@ namespace Virtu.Library
 
 					Type elementType = objectType.GetElementType();
 
+					// ReSharper disable once AssignNullToNotNullAttribute
 					Array ret = Array.CreateInstance(elementType, length);
+
 					// must register reference before deserializing elements to handle possible circular references
 					serializer.ReferenceResolver.AddReference(serializer, id, ret);
 					int index = 0;
@@ -176,7 +184,7 @@ namespace Virtu.Library
 		}
 
 		private readonly List<Assembly> _assemblies;
-		private readonly Dictionary<string, Type> _readlookup = new Dictionary<string, Type>();
+		private readonly Dictionary<string, Type> _readLookup = new Dictionary<string, Type>();
 
 		public override bool CanConvert(Type objectType)
 		{
@@ -188,10 +196,10 @@ namespace Virtu.Library
 
 		private Type GetType(string name)
 		{
-			if (!_readlookup.TryGetValue(name, out var ret))
+			if (!_readLookup.TryGetValue(name, out var ret))
 			{
 				ret = _assemblies.Select(ass => ass.GetType(name, false)).Single(t => t != null);
-				_readlookup.Add(name, ret);
+				_readLookup.Add(name, ret);
 			}
 
 			return ret;
@@ -278,10 +286,24 @@ namespace Virtu.Library
 
 		private class Slug
 		{
+			// ReSharper disable once MemberCanBePrivate.Local
+			// ReSharper disable once FieldCanBeMadeReadOnly.Local
 			public Type DelegateType;
+
+			// ReSharper disable once MemberCanBePrivate.Local
+			// ReSharper disable once FieldCanBeMadeReadOnly.Local
 			public Type MethodDeclaringType;
+
+			// ReSharper disable once MemberCanBePrivate.Local
+			// ReSharper disable once FieldCanBeMadeReadOnly.Local
 			public string MethodName;
+
+			// ReSharper disable once MemberCanBePrivate.Local
+			// ReSharper disable once FieldCanBeMadeReadOnly.Local
 			public List<Type> MethodParameters;
+
+			// ReSharper disable once MemberCanBePrivate.Local
+			// ReSharper disable once FieldCanBeMadeReadOnly.Local
 			public object Target;
 
 			public Delegate GetDelegate()
@@ -293,6 +315,7 @@ namespace Virtu.Library
 					MethodParameters.ToArray(),
 					null);
 
+				// ReSharper disable once AssignNullToNotNullAttribute
 				return Delegate.CreateDelegate(DelegateType, Target, mi);
 			}
 

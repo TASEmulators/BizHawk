@@ -185,7 +185,7 @@ namespace Jellyfish.Virtu
 				RA, RX, RY, RP, RS, RPC, EA, CC);
 		}
 
-		public string[] TraceState()
+		private string[] TraceState()
 		{
 			string[] parts = new string[2];
 			parts[0] = $"{RPC:X4}  {_memory.Read(RPC):X2} {ReadOpcode(RPC)} ";
@@ -412,7 +412,7 @@ namespace Jellyfish.Virtu
 			return "---";
 		}
 
-		public int Execute()
+		internal int Execute()
 		{
 			TraceCallback?.Invoke(TraceState());
 
@@ -3410,10 +3410,14 @@ namespace Jellyfish.Virtu
 		}
 		#endregion
 
-		public bool Is65C02 { get => _is65C02;
-			set { _is65C02 = value; _executeOpCode = _is65C02 ? ExecuteOpCode65C02 : ExecuteOpCode65N02; } }
-		public bool IsThrottled { get; set; }
-		public int Multiplier { get; set; }
+		private bool Is65C02
+		{
+			get => _is65C02;
+			set { _is65C02 = value; _executeOpCode = _is65C02 ? ExecuteOpCode65C02 : ExecuteOpCode65N02; }
+		}
+
+		internal bool IsThrottled { get; set; }
+		internal int Multiplier { get; set; }
 
 		public int RA { get; set; }
 		public int RX { get; set; }
@@ -3423,7 +3427,7 @@ namespace Jellyfish.Virtu
 		public int RPC { get; set; }
 		public int EA { get; private set; }
 		public int CC { get; private set; }
-		public int OpCode { get; private set; }
+		internal int OpCode { get; private set; }
 		public long Cycles { get; private set; }
 
 		private Memory _memory;
