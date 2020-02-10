@@ -25,6 +25,7 @@ namespace Jellyfish.Virtu
 			};
 		}
 
+		// ReSharper disable once UnusedMember.Global
 		public int[] GetVideoBuffer() => Framebuffer;
 
 		[OnDeserialized]
