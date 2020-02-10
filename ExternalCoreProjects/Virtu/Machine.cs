@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace Jellyfish.Virtu
 {
@@ -30,10 +29,6 @@ namespace Jellyfish.Virtu
 			Slot5 = emptySlot;
 			Slot6 = new DiskIIController(this, diskIIRom);
 			Slot7 = emptySlot;
-
-			Slots = new List<IPeripheralCard> { null, Slot1, Slot2, Slot3, Slot4, Slot5, Slot6, Slot7 };
-
-			BootDiskII = Slots.OfType<DiskIIController>().Last();
 		}
 
 		#region API
@@ -82,7 +77,7 @@ namespace Jellyfish.Virtu
 		{
 			// make a writable memory stream cloned from the rom.
 			// for junk.dsk the .dsk is important because it determines the format from that
-			BootDiskII.Drives[0].InsertDisk("junk.dsk", (byte[])disk1.Clone(), false);
+			Slot6.Drives[0].InsertDisk("junk.dsk", (byte[])disk1.Clone(), false);
 		}
 
 		public Cpu Cpu { get; private set; }
@@ -94,14 +89,11 @@ namespace Jellyfish.Virtu
 
 		#endregion
 
-		private const string Version = "0.9.4.0";
-
 		internal MachineEvents Events { get; set; }
 
 		internal Keyboard Keyboard { get; private set; }
 		internal GamePort GamePort { get; private set; }
 		internal Cassette Cassette { get; private set; }
-		internal DiskIIController BootDiskII { get; private set; }
 		internal NoSlotClock NoSlotClock { get; private set; }
 
 		internal IPeripheralCard Slot1 { get; private set; }
@@ -112,6 +104,6 @@ namespace Jellyfish.Virtu
 		internal DiskIIController Slot6 { get; private set; }
 		internal IPeripheralCard Slot7 { get; private set; }
 
-		internal IList<IPeripheralCard> Slots { get; private set; }
+		internal IList<IPeripheralCard> Slots => new List<IPeripheralCard> { null, Slot1, Slot2, Slot3, Slot4, Slot5, Slot6, Slot7 };
 	}
 }
