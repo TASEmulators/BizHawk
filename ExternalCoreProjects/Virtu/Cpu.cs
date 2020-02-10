@@ -4,17 +4,20 @@ using Newtonsoft.Json;
 
 namespace Jellyfish.Virtu
 {
-	public sealed partial class Cpu : MachineComponent
+	public sealed partial class Cpu
 	{
+		// ReSharper disable once FieldCanBeMadeReadOnly.Local
+		private Machine _machine;
+
 		// ReSharper disable once UnusedMember.Global
 		public Cpu()
 		{
 			InitializeOpCodeDelegates();
 		}
 
-		public Cpu(Machine machine) :
-			base(machine)
+		public Cpu(Machine machine)
 		{
+			_machine = machine;
 			InitializeOpCodeDelegates();
 		}
 
@@ -157,9 +160,9 @@ namespace Jellyfish.Virtu
 			};
 		}
 
-		internal override void Initialize()
+		internal void Initialize()
 		{
-			_memory = Machine.Memory;
+			_memory = _machine.Memory;
 
 			Is65C02 = true;
 			IsThrottled = false;
@@ -168,7 +171,7 @@ namespace Jellyfish.Virtu
 			RS = 0xFF;
 		}
 
-		internal override void Reset()
+		internal void Reset()
 		{
 			RS = (RS - 3) & 0xFF; // [4-14]
 			RPC = _memory.ReadRomRegionE0FF(0xFFFC) | (_memory.ReadRomRegionE0FF(0xFFFD) << 8);

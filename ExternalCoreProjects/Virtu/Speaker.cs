@@ -4,12 +4,15 @@ using Newtonsoft.Json;
 
 namespace Jellyfish.Virtu
 {
-	public sealed class Speaker : MachineComponent
+	public sealed class Speaker
 	{
+		// ReSharper disable once FieldCanBeMadeReadOnly.Local
+		private Machine _machine;
+
 		public Speaker() { }
 		public Speaker(Machine machine)
-			: base(machine)
 		{
+			_machine = machine;
 			_flushOutputEvent = FlushOutputEvent; // cache delegates; avoids garbage
 		}
 
@@ -44,12 +47,12 @@ namespace Jellyfish.Virtu
 
 		#endregion
 
-		internal override void Initialize()
+		internal void Initialize()
 		{
-			Machine.Events.AddEvent(CyclesPerFlush * Machine.Cpu.Multiplier, _flushOutputEvent);
+			_machine.Events.AddEvent(CyclesPerFlush * _machine.Cpu.Multiplier, _flushOutputEvent);
 		}
 
-		internal override void Reset()
+		internal void Reset()
 		{
 			_isHigh = false;
 			_highCycles = _totalCycles = 0;
@@ -68,18 +71,18 @@ namespace Jellyfish.Virtu
 			Output(_highCycles * short.MaxValue / _totalCycles);
 			_highCycles = _totalCycles = 0;
 
-			Machine.Events.AddEvent(CyclesPerFlush * Machine.Cpu.Multiplier, _flushOutputEvent);
+			_machine.Events.AddEvent(CyclesPerFlush * _machine.Cpu.Multiplier, _flushOutputEvent);
 		}
 
 		private void UpdateCycles()
 		{
-			int delta = (int)(Machine.Cpu.Cycles - _lastCycles);
+			int delta = (int)(_machine.Cpu.Cycles - _lastCycles);
 			if (_isHigh)
 			{
 				_highCycles += delta;
 			}
 			_totalCycles += delta;
-			_lastCycles = Machine.Cpu.Cycles;
+			_lastCycles = _machine.Cpu.Cycles;
 		}
 
 		private void Output(int data) // machine thread

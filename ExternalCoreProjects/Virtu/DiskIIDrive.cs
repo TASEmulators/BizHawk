@@ -3,14 +3,17 @@ using Newtonsoft.Json;
 
 namespace Jellyfish.Virtu
 {
-	internal sealed class DiskIIDrive : MachineComponent
+	internal sealed class DiskIIDrive
 	{
+		// ReSharper disable once FieldCanBeMadeReadOnly.Local
+		private Machine _machine;
+
 		// ReSharper disable once UnusedMember.Global
 		public DiskIIDrive() { }
 
 		public DiskIIDrive(Machine machine)
-			: base(machine)
 		{
+			_machine = machine;
 			DriveArmStepDelta[0] = new[] { 0, 0, 1, 1, 0, 0, 1, 1, -1, -1, 0, 0, -1, -1, 0, 0 }; // phase 0
 			DriveArmStepDelta[1] = new[] { 0, -1, 0, -1, 1, 0, 1, 0, 0, -1, 0, -1, 1, 0, 1, 0 }; // phase 1
 			DriveArmStepDelta[2] = new[] { 0, 0, -1, -1, 0, 0, -1, -1, 1, 1, 0, 0, 1, 1, 0, 0 }; // phase 2
@@ -52,7 +55,7 @@ namespace Jellyfish.Virtu
 					_trackOffset = 0;
 				}
 
-				Machine.DriveLight = true;
+				_machine.DriveLight = true;
 				return data;
 			}
 
@@ -70,7 +73,7 @@ namespace Jellyfish.Virtu
 					_trackOffset = 0;
 				}
 
-				Machine.DriveLight = true;
+				_machine.DriveLight = true;
 			}
 		}
 

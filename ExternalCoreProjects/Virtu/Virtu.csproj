@@ -58,7 +58,6 @@
     <Compile Include="Library\Extensions.cs" />
     <Compile Include="Library\JsonConverters.cs" />
     <Compile Include="Machine.cs" />
-    <Compile Include="MachineComponent.cs" />
     <Compile Include="MachineEvents.cs" />
     <Compile Include="Memory.cs" />
     <Compile Include="Memory.Data.cs" DependentUpon="Memory.cs" />

@@ -6,17 +6,20 @@ namespace Jellyfish.Virtu
 {
 	internal enum MonitorType { Unknown, Standard, Enhanced };
 
-	public sealed partial class Memory : MachineComponent
+	public sealed partial class Memory
 	{
+		// ReSharper disable once FieldCanBeMadeReadOnly.Local
+		private Machine _machine;
+
 		// ReSharper disable once UnusedMember.Global
 		public Memory()
 		{
 			InitializeWriteDelegates();
 		}
 
-		public Memory(Machine machine, byte[] appleIIe) :
-			base(machine)
+		public Memory(Machine machine, byte[] appleIIe)
 		{
+			_machine = machine;
 			_appleIIe = appleIIe;
 			InitializeWriteDelegates();
 		}
@@ -99,14 +102,14 @@ namespace Jellyfish.Virtu
 		// ReSharper disable once FieldCanBeMadeReadOnly.Local
 		private byte[] _appleIIe;
 
-		internal override void Initialize()
+		internal void Initialize()
 		{
-			_keyboard = Machine.Keyboard;
-			_gamePort = Machine.GamePort;
-			_cassette = Machine.Cassette;
-			_speaker = Machine.Speaker;
-			_video = Machine.Video;
-			_noSlotClock = Machine.NoSlotClock;
+			_keyboard = _machine.Keyboard;
+			_gamePort = _machine.GamePort;
+			_cassette = _machine.Cassette;
+			_speaker = _machine.Speaker;
+			_video = _machine.Video;
+			_noSlotClock = _machine.NoSlotClock;
 
 			// TODO: this is a lazy and more complicated way to do this
 			_romInternalRegionC1CF = _appleIIe
@@ -134,7 +137,7 @@ namespace Jellyfish.Virtu
 			}
 		}
 
-		internal override void Reset() // [7-3]
+		internal void Reset() // [7-3]
 		{
 			ResetState(State80Col | State80Store | StateAltChrSet | StateAltZP | StateBank1 | StateHRamRd | StateHRamPreWrt | StateHRamWrt | // HRamWrt' [5-23]
 				StateHires | StatePage2 | StateRamRd | StateRamWrt | StateIntCXRom | StateSlotC3Rom | StateIntC8Rom | StateAn0 | StateAn1 | StateAn2 | StateAn3);
@@ -238,7 +241,7 @@ namespace Jellyfish.Virtu
 		{
 			if ((0xC000 <= address && address <= 0xC00F) || (0xC061 <= address && address <= 0xC067) || (0xC069 <= address && address <= 0xC06F))
 			{
-				Machine.Lagged = false;
+				_machine.Lagged = false;
 				InputCallback?.Invoke();
 			}
 
@@ -494,7 +497,7 @@ namespace Jellyfish.Virtu
 				case 0xC09D:
 				case 0xC09E:
 				case 0xC09F:
-					return Machine.Slot1.ReadIoRegionC0C0(address);
+					return _machine.Slot1.ReadIoRegionC0C0(address);
 
 				case 0xC0A0:
 				case 0xC0A1:
@@ -512,7 +515,7 @@ namespace Jellyfish.Virtu
 				case 0xC0AD:
 				case 0xC0AE:
 				case 0xC0AF:
-					return Machine.Slot2.ReadIoRegionC0C0(address);
+					return _machine.Slot2.ReadIoRegionC0C0(address);
 
 				case 0xC0B0:
 				case 0xC0B1:
@@ -530,7 +533,7 @@ namespace Jellyfish.Virtu
 				case 0xC0BD:
 				case 0xC0BE:
 				case 0xC0BF:
-					return Machine.Slot3.ReadIoRegionC0C0(address);
+					return _machine.Slot3.ReadIoRegionC0C0(address);
 
 				case 0xC0C0:
 				case 0xC0C1:
@@ -548,7 +551,7 @@ namespace Jellyfish.Virtu
 				case 0xC0CD:
 				case 0xC0CE:
 				case 0xC0CF:
-					return Machine.Slot4.ReadIoRegionC0C0(address);
+					return _machine.Slot4.ReadIoRegionC0C0(address);
 
 				case 0xC0D0:
 				case 0xC0D1:
@@ -566,7 +569,7 @@ namespace Jellyfish.Virtu
 				case 0xC0DD:
 				case 0xC0DE:
 				case 0xC0DF:
-					return Machine.Slot5.ReadIoRegionC0C0(address);
+					return _machine.Slot5.ReadIoRegionC0C0(address);
 
 				case 0xC0E0:
 				case 0xC0E1:
@@ -584,7 +587,7 @@ namespace Jellyfish.Virtu
 				case 0xC0ED:
 				case 0xC0EE:
 				case 0xC0EF:
-					return Machine.Slot6.ReadIoRegionC0C0(address);
+					return _machine.Slot6.ReadIoRegionC0C0(address);
 
 				case 0xC0F0:
 				case 0xC0F1:
@@ -602,7 +605,7 @@ namespace Jellyfish.Virtu
 				case 0xC0FD:
 				case 0xC0FE:
 				case 0xC0FF:
-					return Machine.Slot7.ReadIoRegionC0C0(address);
+					return _machine.Slot7.ReadIoRegionC0C0(address);
 
 				default:
 					throw new ArgumentOutOfRangeException(nameof(address));
@@ -614,7 +617,7 @@ namespace Jellyfish.Virtu
 		private int ReadIoRegionC1C7(int address)
 		{
 			_slotRegionC8CF = (address >> 8) & 0x07;
-			return IsRomC1CFInternal ? _romInternalRegionC1CF[address - 0xC100] : Machine.Slots[_slotRegionC8CF].ReadIoRegionC1C7(address);
+			return IsRomC1CFInternal ? _romInternalRegionC1CF[address - 0xC100] : _machine.Slots[_slotRegionC8CF].ReadIoRegionC1C7(address);
 		}
 
 		private int ReadIoRegionC3C3(int address)
@@ -624,7 +627,7 @@ namespace Jellyfish.Virtu
 			{
 				SetRomC8CF(true); // $C3XX sets IntC8Rom; inhibits I/O Strobe' [5-28, 7-21]
 			}
-			return (IsRomC1CFInternal || !IsRomC3C3External) ? _noSlotClock.Read(address, _romInternalRegionC1CF[address - 0xC100]) : Machine.Slot3.ReadIoRegionC1C7(address);
+			return (IsRomC1CFInternal || !IsRomC3C3External) ? _noSlotClock.Read(address, _romInternalRegionC1CF[address - 0xC100]) : _machine.Slot3.ReadIoRegionC1C7(address);
 		}
 
 		private int ReadIoRegionC8CF(int address)
@@ -633,7 +636,7 @@ namespace Jellyfish.Virtu
 			{
 				SetRomC8CF(false); // $CFFF resets IntC8Rom [5-28, 7-21]
 			}
-			return (IsRomC1CFInternal || IsRomC8CFInternal) ? _noSlotClock.Read(address, _romInternalRegionC1CF[address - 0xC100]) : Machine.Slots[_slotRegionC8CF].ReadIoRegionC8CF(address);
+			return (IsRomC1CFInternal || IsRomC8CFInternal) ? _noSlotClock.Read(address, _romInternalRegionC1CF[address - 0xC100]) : _machine.Slots[_slotRegionC8CF].ReadIoRegionC8CF(address);
 		}
 
 		public int ReadRamMainRegion02BF(int address)
@@ -887,7 +890,7 @@ namespace Jellyfish.Virtu
 				case 0xC09D:
 				case 0xC09E:
 				case 0xC09F:
-					Machine.Slot1.WriteIoRegionC0C0(address, data);
+					_machine.Slot1.WriteIoRegionC0C0(address, data);
 					break;
 
 				case 0xC0A0:
@@ -906,7 +909,7 @@ namespace Jellyfish.Virtu
 				case 0xC0AD:
 				case 0xC0AE:
 				case 0xC0AF:
-					Machine.Slot2.WriteIoRegionC0C0(address, data);
+					_machine.Slot2.WriteIoRegionC0C0(address, data);
 					break;
 
 				case 0xC0B0:
@@ -925,7 +928,7 @@ namespace Jellyfish.Virtu
 				case 0xC0BD:
 				case 0xC0BE:
 				case 0xC0BF:
-					Machine.Slot3.WriteIoRegionC0C0(address, data);
+					_machine.Slot3.WriteIoRegionC0C0(address, data);
 					break;
 
 				case 0xC0C0:
@@ -944,7 +947,7 @@ namespace Jellyfish.Virtu
 				case 0xC0CD:
 				case 0xC0CE:
 				case 0xC0CF:
-					Machine.Slot4.WriteIoRegionC0C0(address, data);
+					_machine.Slot4.WriteIoRegionC0C0(address, data);
 					break;
 
 				case 0xC0D0:
@@ -963,7 +966,7 @@ namespace Jellyfish.Virtu
 				case 0xC0DD:
 				case 0xC0DE:
 				case 0xC0DF:
-					Machine.Slot5.WriteIoRegionC0C0(address, data);
+					_machine.Slot5.WriteIoRegionC0C0(address, data);
 					break;
 
 				case 0xC0E0:
@@ -982,7 +985,7 @@ namespace Jellyfish.Virtu
 				case 0xC0ED:
 				case 0xC0EE:
 				case 0xC0EF:
-					Machine.Slot6.WriteIoRegionC0C0(address, data);
+					_machine.Slot6.WriteIoRegionC0C0(address, data);
 					break;
 
 				case 0xC0F0:
@@ -1001,7 +1004,7 @@ namespace Jellyfish.Virtu
 				case 0xC0FD:
 				case 0xC0FE:
 				case 0xC0FF:
-					Machine.Slot7.WriteIoRegionC0C0(address, data);
+					_machine.Slot7.WriteIoRegionC0C0(address, data);
 					break;
 
 				default:
@@ -1014,7 +1017,7 @@ namespace Jellyfish.Virtu
 			_slotRegionC8CF = (address >> 8) & 0x07;
 			if (!IsRomC1CFInternal)
 			{
-				Machine.Slots[_slotRegionC8CF].WriteIoRegionC1C7(address, data);
+				_machine.Slots[_slotRegionC8CF].WriteIoRegionC1C7(address, data);
 			}
 		}
 
@@ -1031,7 +1034,7 @@ namespace Jellyfish.Virtu
 			}
 			else
 			{
-				Machine.Slot3.WriteIoRegionC1C7(address, data);
+				_machine.Slot3.WriteIoRegionC1C7(address, data);
 			}
 		}
 
@@ -1047,7 +1050,7 @@ namespace Jellyfish.Virtu
 			}
 			else
 			{
-				Machine.Slots[_slotRegionC8CF].WriteIoRegionC8CF(address, data);
+				_machine.Slots[_slotRegionC8CF].WriteIoRegionC8CF(address, data);
 			}
 		}
 

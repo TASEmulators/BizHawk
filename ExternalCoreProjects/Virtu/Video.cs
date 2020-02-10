@@ -7,12 +7,15 @@ namespace Jellyfish.Virtu
 	[Flags]
 	internal enum ScannerOptions { None = 0x0, AppleII = 0x1, Pal = 0x2 } // defaults to AppleIIe, Ntsc
 
-	public sealed partial class Video : MachineComponent
+	public sealed partial class Video
 	{
+		// ReSharper disable once FieldCanBeMadeReadOnly.Local
+		private Machine _machine;
+
 		public Video() { }
-		public Video(Machine machine) :
-			base(machine)
+		public Video(Machine machine)
 		{
+			_machine = machine;
 			_flushRowEvent = FlushRowEvent; // cache delegates; avoids garbage
 			_inverseTextEvent = InverseTextEvent;
 			_leaveVBlankEvent = LeaveVBlankEvent;
@@ -35,9 +38,9 @@ namespace Jellyfish.Virtu
 			DirtyScreen();
 		}
 
-		internal override void Initialize()
+		internal void Initialize()
 		{
-			_memory = Machine.Memory;
+			_memory = _machine.Memory;
 
 			unchecked
 			{
@@ -67,12 +70,12 @@ namespace Jellyfish.Virtu
 
 			IsVBlank = true;
 
-			Machine.Events.AddEvent(_cyclesPerVBlankPreset, _leaveVBlankEvent); // align flush events with scanner; assumes vcount preset at start of frame [3-15, 3-16]
-			Machine.Events.AddEvent(_cyclesPerVSync, _resetVSyncEvent);
-			Machine.Events.AddEvent(_cyclesPerFlash, _inverseTextEvent);
+			_machine.Events.AddEvent(_cyclesPerVBlankPreset, _leaveVBlankEvent); // align flush events with scanner; assumes vcount preset at start of frame [3-15, 3-16]
+			_machine.Events.AddEvent(_cyclesPerVSync, _resetVSyncEvent);
+			_machine.Events.AddEvent(_cyclesPerFlash, _inverseTextEvent);
 		}
 
-		internal override void Reset()
+		internal void Reset()
 		{
 			SetCharSet();
 			DirtyScreen();
@@ -131,7 +134,7 @@ namespace Jellyfish.Virtu
 		internal int ReadFloatingBus() // [5-40]
 		{
 			// derive scanner counters from current cycles into frame; assumes hcount and vcount preset at start of frame [3-13, 3-15, 3-16]
-			int cycles = _cyclesPerVSync - Machine.Events.FindEvent(_resetVSyncEvent);
+			int cycles = _cyclesPerVSync - _machine.Events.FindEvent(_resetVSyncEvent);
 			int hClock = cycles % CyclesPerHSync;
 			int hCount = (hClock != 0) ? HCountPreset + hClock - 1 : 0;
 			int vLine = cycles / CyclesPerHSync;
@@ -900,19 +903,19 @@ namespace Jellyfish.Virtu
 
 		private void FlushRowEvent()
 		{
-			int y = (_cyclesPerVSync - _cyclesPerVBlankPreset - Machine.Events.FindEvent(_resetVSyncEvent)) / CyclesPerHSync;
+			int y = (_cyclesPerVSync - _cyclesPerVBlankPreset - _machine.Events.FindEvent(_resetVSyncEvent)) / CyclesPerHSync;
 
 			FlushRowMode[_memory.VideoMode](y - CellHeight); // in arrears
 
 			if (y < Height)
 			{
-				Machine.Events.AddEvent(CyclesPerFlush, _flushRowEvent);
+				_machine.Events.AddEvent(CyclesPerFlush, _flushRowEvent);
 			}
 			else
 			{
 				IsVBlank = true;
 
-				Machine.Events.AddEvent(_cyclesPerVBlank, _leaveVBlankEvent);
+				_machine.Events.AddEvent(_cyclesPerVBlank, _leaveVBlankEvent);
 			}
 		}
 
@@ -932,19 +935,19 @@ namespace Jellyfish.Virtu
 
 			DirtyScreenText();
 
-			Machine.Events.AddEvent(_cyclesPerFlash, _inverseTextEvent);
+			_machine.Events.AddEvent(_cyclesPerFlash, _inverseTextEvent);
 		}
 
 		private void LeaveVBlankEvent()
 		{
 			IsVBlank = false;
 
-			Machine.Events.AddEvent(CyclesPerFlush, _flushRowEvent);
+			_machine.Events.AddEvent(CyclesPerFlush, _flushRowEvent);
 		}
 
 		private void ResetVSyncEvent()
 		{
-			Machine.Events.AddEvent(_cyclesPerVSync, _resetVSyncEvent);
+			_machine.Events.AddEvent(_cyclesPerVSync, _resetVSyncEvent);
 		}
 
 		private void SetPalette()
