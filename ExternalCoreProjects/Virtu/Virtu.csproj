@@ -55,7 +55,6 @@
     <Compile Include="DiskNib.cs" />
     <Compile Include="GamePort.cs" />
     <Compile Include="Keyboard.cs" />
-    <Compile Include="Library\Extensions.cs" />
     <Compile Include="Library\JsonConverters.cs" />
     <Compile Include="Machine.cs" />
     <Compile Include="MachineEvents.cs" />
@@ -64,7 +63,6 @@
     <Compile Include="NoSlotClock.cs" />
     <Compile Include="PeripheralCard.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Library\TraceWriter.cs" />
     <Compile Include="Speaker.cs" />
     <Compile Include="Video.cs" />
     <Compile Include="Video.Data.cs" DependentUpon="Video.cs" />

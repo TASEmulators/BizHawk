@@ -1,5 +1,4 @@
-﻿using Jellyfish.Library;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace Jellyfish.Virtu
 {
@@ -22,10 +21,14 @@ namespace Jellyfish.Virtu
 
 		public void InsertDisk(string name, byte[] data, bool isWriteProtected)
 		{
-			TraceWriter.Write("Inserting disk '{0}'", name);
 			FlushTrack();
 			_disk = Disk525.CreateDisk(name, data, isWriteProtected);
 			_trackLoaded = false;
+		}
+
+		private static int Clamp(int value, int min, int max)
+		{
+			return (value < min) ? min : (value > max) ? max : value;
 		}
 
 		public void ApplyPhaseChange(int phaseState)
@@ -34,7 +37,7 @@ namespace Jellyfish.Virtu
 			int delta = DriveArmStepDelta[_trackNumber & 0x3][phaseState];
 			if (delta != 0)
 			{
-				int newTrackNumber = (_trackNumber + delta).Clamp(0, TrackNumberMax);
+				int newTrackNumber = Clamp(_trackNumber + delta, 0, TrackNumberMax);
 				if (newTrackNumber != _trackNumber)
 				{
 					FlushTrack();
