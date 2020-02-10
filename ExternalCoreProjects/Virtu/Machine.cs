@@ -44,8 +44,17 @@ namespace Jellyfish.Virtu
 
 		public void BizInitialize()
 		{
-			Initialize();
-			Reset();
+			Cpu.Initialize();
+			Memory.Initialize();
+			Speaker.Initialize();
+			Video.Initialize();
+			NoSlotClock.Initialize();
+
+			Cpu.Reset();
+			Memory.Reset();
+			Speaker.Reset();
+			Video.Reset();
+			Slot6.Reset();
 		}
 
 		public void BizFrameAdvance(IEnumerable<string> buttons)
@@ -118,24 +127,6 @@ namespace Jellyfish.Virtu
 		public bool DriveLight { get; set; }
 
 		#endregion
-
-		private void Reset()
-		{
-			Cpu.Reset();
-			Memory.Reset();
-			Speaker.Reset();
-			Video.Reset();
-			Slot6.Reset();
-		}
-
-		private void Initialize()
-		{
-			Cpu.Initialize();
-			Memory.Initialize();
-			Speaker.Initialize();
-			Video.Initialize();
-			NoSlotClock.Initialize();
-		}
 
 		private static JsonSerializer CreateSerializer()
 		{
