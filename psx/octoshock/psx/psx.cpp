@@ -1094,6 +1094,7 @@ struct {
 		for(int i=0;i<10;i++)
 		{
 			ports[i].type = ePeripheralType_None;
+			ports[i].device = nullptr;	// devices are freed in reconstruct
 			memset(ports[i].buffer,0,sizeof(ports[i].buffer));
 		}
 		reconstruct(FIO);
