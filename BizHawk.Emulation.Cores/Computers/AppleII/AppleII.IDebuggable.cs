@@ -9,7 +9,22 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 	{
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			var regs = _machine.GetCpuFlagsAndRegisters();
+			var regs = new Dictionary<string, int>
+			{
+				["A"] = _machine.Cpu.RA,
+				["X"] = _machine.Cpu.RX,
+				["Y"] = _machine.Cpu.RY,
+				["S"] = _machine.Cpu.RS,
+				["PC"] = _machine.Cpu.RPC,
+				["Flag C"] = _machine.Cpu.FlagC ? 1 : 0,
+				["Flag Z"] = _machine.Cpu.FlagZ ? 1 : 0,
+				["Flag I"] = _machine.Cpu.FlagI ? 1 : 0,
+				["Flag D"] = _machine.Cpu.FlagD ? 1 : 0,
+				["Flag B"] = _machine.Cpu.FlagB ? 1 : 0,
+				["Flag V"] = _machine.Cpu.FlagV ? 1 : 0,
+				["Flag N"] = _machine.Cpu.FlagN ? 1 : 0,
+				["Flag T"] = _machine.Cpu.FlagT ? 1 : 0
+			};
 
 			var dic = new Dictionary<string, RegisterValue>();
 
