@@ -6,6 +6,7 @@ namespace Jellyfish.Virtu
 {
 	public sealed partial class Cpu : MachineComponent
 	{
+		// ReSharper disable once UnusedMember.Global
 		public Cpu()
 		{
 			InitializeOpCodeDelegates();
@@ -19,7 +20,7 @@ namespace Jellyfish.Virtu
 
 		private void InitializeOpCodeDelegates()
 		{
-			ExecuteOpCode65N02 = new Action[OpCodeCount]
+			ExecuteOpCode65N02 = new Action[]
 			{
 				Execute65X02Brk00, Execute65X02Ora01, Execute65N02Nop02, Execute65N02Nop03,
 				Execute65N02Nop04, Execute65X02Ora05, Execute65X02Asl06, Execute65N02Nop07,
@@ -87,7 +88,7 @@ namespace Jellyfish.Virtu
 				Execute65N02NopFC, Execute65N02SbcFD, Execute65N02IncFE, Execute65N02NopFF
 			};
 
-			ExecuteOpCode65C02 = new Action[OpCodeCount]
+			ExecuteOpCode65C02 = new Action[]
 			{
 				Execute65X02Brk00, Execute65X02Ora01, Execute65C02Nop02, Execute65C02Nop03,
 				Execute65C02Tsb04, Execute65X02Ora05, Execute65X02Asl06, Execute65C02Nop07,
@@ -413,10 +414,7 @@ namespace Jellyfish.Virtu
 
 		public int Execute()
 		{
-			if (TraceCallback != null)
-			{
-				TraceCallback(TraceState());
-			}
+			TraceCallback?.Invoke(TraceState());
 
 			CC = 0;
 			OpCode = _memory.ReadOpcode(RPC);
@@ -972,20 +970,6 @@ namespace Jellyfish.Virtu
 			CC += cc;
 		}
 
-		private void ExecuteIrq(int cc)
-		{
-			Push(RPC >> 8);
-			Push(RPC & 0xFF);
-			Push(RP & ~PB);
-			RP |= PI;
-			if (Is65C02) // [C-10]
-			{
-				RP &= ~PD;
-			}
-			RPC = _memory.Read(0xFFFE) | (_memory.Read(0xFFFF) << 8);
-			CC += cc;
-		}
-
 		private void ExecuteJmpAbs(int cc) // jmp abs
 		{
 			RPC = _memory.Read(RPC) | (_memory.Read(RPC + 1) << 8);
@@ -1058,20 +1042,6 @@ namespace Jellyfish.Virtu
 			RP = RP & ~PC | (RA & PC);
 			RA >>= 1;
 			RP = RP & ~(PN | PZ) | DataPNZ[RA];
-			CC += cc;
-		}
-
-		private void ExecuteNmi(int cc)
-		{
-			Push(RPC >> 8);
-			Push(RPC & 0xFF);
-			Push(RP & ~PB);
-			RP |= PI;
-			if (Is65C02) // [C-10]
-			{
-				RP &= ~PD;
-			}
-			RPC = _memory.Read(0xFFFA) | (_memory.Read(0xFFFB) << 8);
 			CC += cc;
 		}
 

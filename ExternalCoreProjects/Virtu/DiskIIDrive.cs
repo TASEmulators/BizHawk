@@ -1,13 +1,14 @@
 ﻿using Jellyfish.Library;
-using Jellyfish.Virtu.Services;
 
 namespace Jellyfish.Virtu
 {
 	public sealed class DiskIIDrive : MachineComponent
 	{
+		// ReSharper disable once UnusedMember.Global
 		public DiskIIDrive() { }
-		public DiskIIDrive(Machine machine) :
-			base(machine)
+
+		public DiskIIDrive(Machine machine)
+			: base(machine)
 		{
 			DriveArmStepDelta[0] = new[] { 0, 0, 1, 1, 0, 0, 1, 1, -1, -1, 0, 0, -1, -1, 0, 0 }; // phase 0
 			DriveArmStepDelta[1] = new[] { 0, -1, 0, -1, 1, 0, 1, 0, 0, -1, 0, -1, 1, 0, 1, 0 }; // phase 1
@@ -21,19 +22,6 @@ namespace Jellyfish.Virtu
 			FlushTrack();
 			_disk = Disk525.CreateDisk(name, data, isWriteProtected);
 			_trackLoaded = false;
-		}
-
-		public void RemoveDisk()
-		{
-			if (_disk != null)
-			{
-				TraceWriter.Write("Removing disk '{0}'", _disk.Name);
-				_trackLoaded = false;
-				_trackChanged = false;
-				_trackNumber = 0;
-				_trackOffset = 0;
-				_disk = null;
-			}
 		}
 
 		public void ApplyPhaseChange(int phaseState)

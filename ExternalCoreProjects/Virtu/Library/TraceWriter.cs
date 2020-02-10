@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Text;
 using System.Threading;
 
-namespace Jellyfish.Virtu.Services
+namespace Jellyfish.Library
 {
 	internal static class TraceWriter
 	{
