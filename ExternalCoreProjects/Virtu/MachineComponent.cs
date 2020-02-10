@@ -18,10 +18,6 @@ namespace Jellyfish.Virtu
 		{
 		}
 
-		internal virtual void Uninitialize()
-		{
-		}
-
 		[field: JsonIgnore]
 		protected Machine Machine { get; set; }
 	}

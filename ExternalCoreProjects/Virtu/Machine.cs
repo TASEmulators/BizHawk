@@ -75,11 +75,6 @@ namespace Jellyfish.Virtu
 			}
 		}
 
-		public void BizShutdown()
-		{
-			Uninitialize();
-		}
-
 		public void Serialize(JsonWriter w)
 		{
 			CreateSerializer().Serialize(w, this);
@@ -140,15 +135,6 @@ namespace Jellyfish.Virtu
 			{
 				TraceWriter.Write("Initializing machine '{0}'", component.GetType().Name);
 				component.Initialize();
-			}
-		}
-
-		private void Uninitialize()
-		{
-			foreach (var component in Components)
-			{
-				TraceWriter.Write("Uninitializing machine '{0}'", component.GetType().Name);
-				component.Uninitialize();
 			}
 		}
 
