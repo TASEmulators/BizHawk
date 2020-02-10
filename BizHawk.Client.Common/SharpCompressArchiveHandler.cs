@@ -27,10 +27,20 @@ namespace BizHawk.Client.Common
 			_archive = null;
 		}
 
+		/// <summary>
+		/// whitelist extensions, to avoid thrown exceptions
+		/// </summary>
+		public string[] ArchiveExtensions = { ".zip", ".gz", ".gzip", ".tar", ".rar", ".7z" };
+
 		public bool CheckSignature(string fileName, out int offset, out bool isExecutable)
 		{
 			offset = 0;
 			isExecutable = false;
+			
+			var pathExt = Path.GetExtension(fileName).ToLower();
+			if (!ArchiveExtensions.Contains(pathExt))
+				return false;
+
 			try
 			{
 				using (var arcTest = ArchiveFactory.Open(fileName))

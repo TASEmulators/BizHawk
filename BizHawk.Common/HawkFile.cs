@@ -440,7 +440,8 @@ namespace BizHawk.Common
 			int offset;
 			bool isExecutable;
 
-			if (NonArchiveExtensions.Any(ext => Path.GetExtension(path).ToLower() == ext.ToLower()))
+			var pathExt = Path.GetExtension(path).ToLower();
+			if (NonArchiveExtensions.Contains(pathExt))
 			{
 				return;
 			}
