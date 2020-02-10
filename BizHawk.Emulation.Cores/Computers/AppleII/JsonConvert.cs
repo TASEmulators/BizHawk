@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
 using System.Reflection;
+using Newtonsoft.Json;
 
-namespace Jellyfish.Virtu
+namespace BizHawk.Emulation.Cores.Computers.AppleII
 {
 	public class ArrayConverter : JsonConverter
 	{

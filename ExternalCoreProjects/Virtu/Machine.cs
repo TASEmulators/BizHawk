@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace Jellyfish.Virtu
 {
@@ -75,16 +73,6 @@ namespace Jellyfish.Virtu
 			}
 		}
 
-		public void Serialize(JsonWriter w)
-		{
-			CreateSerializer().Serialize(w, this);
-		}
-
-		public static Machine Deserialize(JsonReader r)
-		{
-			return CreateSerializer().Deserialize<Machine>(r);
-		}
-
 		public void CpuExecute()
 		{
 			Events.HandleEvents(Cpu.Execute());
@@ -105,34 +93,6 @@ namespace Jellyfish.Virtu
 		public bool DriveLight { get; set; }
 
 		#endregion
-
-		private static JsonSerializer CreateSerializer()
-		{
-			// TODO: converters could be cached for speedup
-
-			var ser = new JsonSerializer
-			{
-				TypeNameHandling = TypeNameHandling.Auto,
-				PreserveReferencesHandling = PreserveReferencesHandling.All, // leaving out Array is a very important problem, and means that we can't rely on a directly shared array to work.
-				ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
-			};
-
-			ser.Converters.Add(new TypeTypeConverter(new[]
-			{
-				// all expected Types to convert are either in this assembly or mscorlib
-				typeof(Machine).Assembly,
-				typeof(object).Assembly
-			}));
-
-			ser.Converters.Add(new DelegateConverter());
-			ser.Converters.Add(new ArrayConverter());
-
-			var cr = new DefaultContractResolver();
-			cr.DefaultMembersSearchFlags |= System.Reflection.BindingFlags.NonPublic;
-			ser.ContractResolver = cr;
-
-			return ser;
-		}
 
 		private const string Version = "0.9.4.0";
 

@@ -5,6 +5,7 @@ using BizHawk.Emulation.Common;
 
 using Jellyfish.Virtu;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace BizHawk.Emulation.Cores.Computers.AppleII
 {
@@ -23,8 +24,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 			public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
 			{
-				// uses its own serialization context: intentional
-				return Machine.Deserialize(reader);
+				return CreateSerializer().Deserialize<Machine>(reader);
 			}
 
 			public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			w.WritePropertyName("NextDiskPressed");
 			w.WriteValue(_nextPressed);
 			w.WritePropertyName("Core");
-			_machine.Serialize(w);
+			CreateSerializer().Serialize(w, _machine);
 			w.WriteEndObject();
 		}
 
@@ -151,6 +151,34 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			SaveStateBinary(writer);
 			writer.Flush();
 			return stream.ToArray();
+		}
+
+		private static JsonSerializer CreateSerializer()
+		{
+			// TODO: converters could be cached for speedup
+
+			var ser = new JsonSerializer
+			{
+				TypeNameHandling = TypeNameHandling.Auto,
+				PreserveReferencesHandling = PreserveReferencesHandling.All, // leaving out Array is a very important problem, and means that we can't rely on a directly shared array to work.
+				ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
+			};
+
+			ser.Converters.Add(new TypeTypeConverter(new[]
+			{
+				// all expected Types to convert are either in this assembly or mscorlib
+				typeof(Machine).Assembly,
+				typeof(object).Assembly
+			}));
+
+			ser.Converters.Add(new DelegateConverter());
+			ser.Converters.Add(new ArrayConverter());
+
+			var cr = new DefaultContractResolver();
+			cr.DefaultMembersSearchFlags |= System.Reflection.BindingFlags.NonPublic;
+			ser.ContractResolver = cr;
+
+			return ser;
 		}
 	}
 }
