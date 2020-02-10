@@ -2,9 +2,11 @@
 
 namespace Jellyfish.Virtu
 {
-	public abstract class Disk525
+	internal abstract class Disk525
 	{
+		// ReSharper disable once PublicConstructorInAbstractClass
 		public Disk525() { }
+
 		protected Disk525(string name, byte[] data, bool isWriteProtected)
 		{
 			Name = name;
@@ -16,7 +18,7 @@ namespace Jellyfish.Virtu
 		{
 			if (name == null)
 			{
-				throw new ArgumentNullException("name");
+				throw new ArgumentNullException(nameof(name));
 			}
 
 			if (name.EndsWith(".do", StringComparison.OrdinalIgnoreCase) ||

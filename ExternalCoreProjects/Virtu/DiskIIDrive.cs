@@ -1,8 +1,9 @@
 ﻿using Jellyfish.Library;
+using Newtonsoft.Json;
 
 namespace Jellyfish.Virtu
 {
-	public sealed class DiskIIDrive : MachineComponent
+	internal sealed class DiskIIDrive : MachineComponent
 	{
 		// ReSharper disable once UnusedMember.Global
 		public DiskIIDrive() { }
@@ -93,7 +94,7 @@ namespace Jellyfish.Virtu
 			}
 		}
 
-		[Newtonsoft.Json.JsonIgnore]
+		[JsonIgnore]
 		public bool IsWriteProtected => _disk.IsWriteProtected;
 
 		private const int TrackNumberMax = 0x44;

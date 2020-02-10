@@ -143,6 +143,29 @@ namespace Jellyfish.Virtu
 
 	public sealed class Keyboard : MachineComponent
 	{
+		// ReSharper disable once UnusedMember.Global
+		public Keyboard() { }
+		public Keyboard(Machine machine) :
+			base(machine)
+		{
+		}
+
+		static Keyboard()
+		{
+			for (int i = 0; i < 62; i++)
+			{
+				// http://stackoverflow.com/questions/2650080/how-to-get-c-sharp-enum-description-from-value
+				Keys value = (Keys)(1UL << i);
+				var fi = typeof(Keys).GetField(value.ToString());
+				var attr = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
+				string name = attr[0].Description;
+				DescriptionsToKeys[name] = value;
+			}
+
+		}
+
+		public static IEnumerable<string> GetKeyNames() => DescriptionsToKeys.Keys.ToList();
+
 		private static readonly uint[] KeyAsciiData =
 		{
 			// https://archive.org/stream/Apple_IIe_Technical_Reference_Manual#page/n47/mode/2up
@@ -216,25 +239,6 @@ namespace Jellyfish.Virtu
 
 		private static Dictionary<string, Keys> DescriptionsToKeys = new Dictionary<string, Keys>();
 
-		static Keyboard()
-		{
-			for (int i = 0; i < 62; i++)
-			{
-				// http://stackoverflow.com/questions/2650080/how-to-get-c-sharp-enum-description-from-value
-				Keys value = (Keys)(1UL << i);
-				var fi = typeof(Keys).GetField(value.ToString());
-				var attr = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
-				string name = attr[0].Description;
-				DescriptionsToKeys[name] = value;
-			}
-
-		}
-
-		public static IEnumerable<string> GetKeyNames()
-		{
-			return DescriptionsToKeys.Keys.ToList();
-		}
-
 		private static Keys FromStrings(IEnumerable<string> keynames)
 		{
 			Keys ret = 0;
@@ -243,12 +247,6 @@ namespace Jellyfish.Virtu
 				ret |= DescriptionsToKeys[s];
 			}
 			return ret;
-		}
-
-		public Keyboard() { }
-		public Keyboard(Machine machine) :
-			base(machine)
-		{
 		}
 
 		internal override void Initialize()
@@ -274,7 +272,7 @@ namespace Jellyfish.Virtu
 			bool shift = keys.HasFlag(Keys.Shift);
 
 			bool caps = keys.HasFlag(Keys.CapsLock);
-			if (caps && !CurrentCapsLockState) // leading edge: toggle capslock
+			if (caps && !CurrentCapsLockState) // leading edge: toggle CapsLock
 			{
 				CapsActive ^= true;
 			}
@@ -298,18 +296,18 @@ namespace Jellyfish.Virtu
 			// instead, just arbitrarily choose the lowest key in our list
 
 			// BSF
-			int NewKeyPressed = 0;
+			int newKeyPressed = 0;
 			while ((k & 1) == 0)
 			{
 				k >>= 1;
-				NewKeyPressed++;
+				newKeyPressed++;
 			}
 
-			if (NewKeyPressed != CurrentKeyPressed)
+			if (newKeyPressed != CurrentKeyPressed)
 			{
 				// strobe, start new repeat cycle
 				Strobe = true;
-				Latch = KeyToAscii(NewKeyPressed, control, shift);
+				Latch = KeyToAscii(newKeyPressed, control, shift);
 				FramesToRepeat = KeyRepeatStart;
 			}
 			else
@@ -319,12 +317,12 @@ namespace Jellyfish.Virtu
 				if (FramesToRepeat == 0)
 				{
 					Strobe = true;
-					Latch = KeyToAscii(NewKeyPressed, control, shift);
+					Latch = KeyToAscii(newKeyPressed, control, shift);
 					FramesToRepeat = KeyRepeatRate;
 				}
 			}
 
-			CurrentKeyPressed = NewKeyPressed;
+			CurrentKeyPressed = newKeyPressed;
 		}
 
 

@@ -1,26 +1,15 @@
 ﻿using System;
-using System.IO;
-using Jellyfish.Library;
 
 namespace Jellyfish.Virtu
 {
-	public sealed class DiskNib : Disk525
+	internal sealed class DiskNib : Disk525
 	{
+		// ReSharper disable once UnusedMember.Global
 		public DiskNib() { }
+
 		public DiskNib(string name, byte[] data, bool isWriteProtected) :
 			base(name, data, isWriteProtected)
 		{
-		}
-
-		public DiskNib(string name, Stream stream, bool isWriteProtected) :
-			base(name, new byte[TrackCount * TrackSize], isWriteProtected)
-		{
-			if (stream == null)
-			{
-				throw new ArgumentNullException("stream");
-			}
-
-			stream.ReadBlock(Data);
 		}
 
 		public override void ReadTrack(int number, int fraction, byte[] buffer)

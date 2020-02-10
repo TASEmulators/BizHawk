@@ -2,9 +2,11 @@
 
 namespace Jellyfish.Virtu
 {
-	public sealed class DiskIIController : PeripheralCard
+	internal sealed class DiskIIController : PeripheralCard
 	{
+		// ReSharper disable once UnusedMember.Global
 		public DiskIIController() { }
+
 		public DiskIIController(Machine machine, byte[] diskIIRom) :
 			base(machine)
 		{
