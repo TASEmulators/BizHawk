@@ -47,7 +47,7 @@
   <ItemGroup>
     <Compile Include="Cassette.cs" />
     <Compile Include="Cpu.cs" />
-    <Compile Include="CpuData.cs" />
+    <Compile Include="Cpu.Data.cs" DependentUpon="Cpu.cs" />
     <Compile Include="Disk525.cs" />
     <Compile Include="DiskDsk.cs" />
     <Compile Include="DiskIIController.cs" />
