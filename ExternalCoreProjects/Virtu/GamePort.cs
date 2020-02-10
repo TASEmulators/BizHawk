@@ -1,15 +1,7 @@
 ﻿namespace Jellyfish.Virtu
 {
-	public sealed class GamePort : MachineComponent
+	public sealed class GamePort
 	{
-		// ReSharper disable once UnusedMember.Global
-		public GamePort() { }
-
-		public GamePort(Machine machine) :
-			base(machine)
-		{
-		}
-
 		public bool ReadButton0() => Keyboard.WhiteAppleDown;
 		public bool ReadButton1() => Keyboard.BlackAppleDown;
 		public bool ReadButton2() => false;

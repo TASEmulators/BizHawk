@@ -141,14 +141,10 @@ namespace Jellyfish.Virtu
 		Reset = 2305843009213693952UL,
 	}
 
-	public sealed class Keyboard : MachineComponent
+	public sealed class Keyboard
 	{
 		// ReSharper disable once UnusedMember.Global
 		public Keyboard() { }
-		public Keyboard(Machine machine) :
-			base(machine)
-		{
-		}
 
 		static Keyboard()
 		{
@@ -161,7 +157,6 @@ namespace Jellyfish.Virtu
 				string name = attr[0].Description;
 				DescriptionsToKeys[name] = value;
 			}
-
 		}
 
 		public static IEnumerable<string> GetKeyNames() => DescriptionsToKeys.Keys.ToList();
@@ -249,10 +244,6 @@ namespace Jellyfish.Virtu
 			return ret;
 		}
 
-		internal override void Initialize()
-		{
-		}
-
 		public static bool WhiteAppleDown;
 		public static bool BlackAppleDown;
 
@@ -324,7 +315,6 @@ namespace Jellyfish.Virtu
 
 			CurrentKeyPressed = newKeyPressed;
 		}
-
 
 		public void ResetStrobe()
 		{

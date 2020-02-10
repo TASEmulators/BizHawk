@@ -20,9 +20,8 @@ namespace Jellyfish.Virtu
 
 			Cpu = new Cpu(this);
 			Memory = new Memory(this, appleIIe);
-			Keyboard = new Keyboard(this);
-			GamePort = new GamePort(this);
-			Cassette = new Cassette(this);
+			Keyboard = new Keyboard();
+			GamePort = new GamePort();
 			Speaker = new Speaker(this);
 			Video = new Video(this);
 			NoSlotClock = new NoSlotClock(this);
@@ -128,12 +127,8 @@ namespace Jellyfish.Virtu
 		{
 			Cpu.Reset();
 			Memory.Reset();
-			Keyboard.Reset();
-			GamePort.Reset();
-			Cassette.Reset();
 			Speaker.Reset();
 			Video.Reset();
-			NoSlotClock.Reset();
 			Slot1.Reset();
 			Slot2.Reset();
 			Slot3.Reset();
@@ -147,9 +142,6 @@ namespace Jellyfish.Virtu
 		{
 			Cpu.Initialize();
 			Memory.Initialize();
-			Keyboard.Initialize();
-			GamePort.Initialize();
-			Cassette.Initialize();
 			Speaker.Initialize();
 			Video.Initialize();
 			NoSlotClock.Initialize();
