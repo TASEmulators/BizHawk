@@ -27,19 +27,19 @@
 	{
 		// TODO: can't be read only because of serialization?
 		// ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private Machine _machine;
+		private Video _video;
 
 		// ReSharper disable once UnusedMember.Global
 		public EmptyPeripheralCard() { }
 
-		public EmptyPeripheralCard(Machine machine)
+		public EmptyPeripheralCard(Video video)
 		{
-			_machine = machine;
+			_video = video;
 		}
 
-		public int ReadIoRegionC0C0(int address) => _machine.Video.ReadFloatingBus();
-		public int ReadIoRegionC1C7(int address) => _machine.Video.ReadFloatingBus();
-		public int ReadIoRegionC8CF(int address) => _machine.Video.ReadFloatingBus();
+		public int ReadIoRegionC0C0(int address) => _video.ReadFloatingBus();
+		public int ReadIoRegionC1C7(int address) => _video.ReadFloatingBus();
+		public int ReadIoRegionC8CF(int address) => _video.ReadFloatingBus();
 
 		public void WriteIoRegionC0C0(int address, int data) { }
 		public void WriteIoRegionC1C7(int address, int data) { }

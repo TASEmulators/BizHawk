@@ -26,7 +26,7 @@ namespace Jellyfish.Virtu
 			Video = new Video(this);
 			NoSlotClock = new NoSlotClock(this);
 
-			var emptySlot = new EmptyPeripheralCard(this);
+			var emptySlot = new EmptyPeripheralCard(Video);
 			Slot1 = emptySlot;
 			Slot2 = emptySlot;
 			Slot3 = emptySlot;
