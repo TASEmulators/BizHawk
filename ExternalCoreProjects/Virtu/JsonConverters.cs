@@ -4,7 +4,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using System.Reflection;
 
-namespace Virtu.Library
+namespace Jellyfish.Virtu
 {
 	public class ArrayConverter : JsonConverter
 	{

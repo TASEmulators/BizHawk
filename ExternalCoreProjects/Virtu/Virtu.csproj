@@ -55,7 +55,7 @@
     <Compile Include="DiskNib.cs" />
     <Compile Include="GamePort.cs" />
     <Compile Include="Keyboard.cs" />
-    <Compile Include="Library\JsonConverters.cs" />
+    <Compile Include="JsonConverters.cs" />
     <Compile Include="Machine.cs" />
     <Compile Include="MachineEvents.cs" />
     <Compile Include="Memory.cs" />
