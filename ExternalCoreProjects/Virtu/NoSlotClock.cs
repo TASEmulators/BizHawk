@@ -4,6 +4,7 @@ namespace Jellyfish.Virtu
 {
 	internal sealed class NoSlotClock
 	{
+		// ReSharper disable once FieldCanBeMadeReadOnly.Local
 		private Machine _machine;
 
 		// ReSharper disable once UnusedMember.Global

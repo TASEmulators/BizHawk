@@ -334,7 +334,7 @@ namespace Jellyfish.Virtu
 		/// <summary>
 		/// true if caps lock is active
 		/// </summary>
-		public bool CapsActive { get; private set; }
+		private bool CapsActive { get; set; }
 
 		private bool CurrentCapsLockState;
 

@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace Jellyfish.Virtu
 {
-	internal enum MonitorType { Unknown, Standard, Enhanced };
+	internal enum MonitorType { Unknown, Standard, Enhanced }
 
 	public sealed partial class Memory
 	{
