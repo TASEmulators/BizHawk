@@ -110,11 +110,17 @@ namespace Jellyfish.Virtu
 			};
 		}
 
+		public void InsertDisk1(byte[] disk1)
+		{
+			// make a writable memory stream cloned from the rom.
+			// for junk.dsk the .dsk is important because it determines the format from that
+			BootDiskII.Drives[0].InsertDisk("junk.dsk", (byte[])disk1.Clone(), false);
+		}
+
 		public Cpu Cpu { get; private set; }
 		public Memory Memory { get; private set; }
 		public Speaker Speaker { get; private set; }
 		public Video Video { get; private set; }
-		public DiskIIController BootDiskII { get; private set; }
 		public bool Lagged { get; set; }
 		public bool DriveLight { get; set; }
 
@@ -173,7 +179,7 @@ namespace Jellyfish.Virtu
 		internal Keyboard Keyboard { get; private set; }
 		internal GamePort GamePort { get; private set; }
 		internal Cassette Cassette { get; private set; }
-		
+		internal DiskIIController BootDiskII { get; private set; }
 		internal NoSlotClock NoSlotClock { get; private set; }
 
 		internal PeripheralCard Slot1 { get; private set; }
