@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Jellyfish.Library;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Virtu.Library;
@@ -38,7 +37,6 @@ namespace Jellyfish.Virtu
 			Slot7 = emptySlot;
 
 			Slots = new List<PeripheralCard> { null, Slot1, Slot2, Slot3, Slot4, Slot5, Slot6, Slot7 };
-			Components = new List<MachineComponent> { Cpu, Memory, Keyboard, GamePort, Cassette, Speaker, Video, NoSlotClock, Slot1, Slot2, Slot3, Slot4, Slot5, Slot6, Slot7 };
 
 			BootDiskII = Slots.OfType<DiskIIController>().Last();
 		}
@@ -128,20 +126,40 @@ namespace Jellyfish.Virtu
 
 		private void Reset()
 		{
-			foreach (var component in Components)
-			{
-				TraceWriter.Write("Resetting machine '{0}'", component.GetType().Name);
-				component.Reset();
-			}
+			Cpu.Reset();
+			Memory.Reset();
+			Keyboard.Reset();
+			GamePort.Reset();
+			Cassette.Reset();
+			Speaker.Reset();
+			Video.Reset();
+			NoSlotClock.Reset();
+			Slot1.Reset();
+			Slot2.Reset();
+			Slot3.Reset();
+			Slot4.Reset();
+			Slot5.Reset();
+			Slot6.Reset();
+			Slot7.Reset();
 		}
 
 		private void Initialize()
 		{
-			foreach (var component in Components)
-			{
-				TraceWriter.Write("Initializing machine '{0}'", component.GetType().Name);
-				component.Initialize();
-			}
+			Cpu.Initialize();
+			Memory.Initialize();
+			Keyboard.Initialize();
+			GamePort.Initialize();
+			Cassette.Initialize();
+			Speaker.Initialize();
+			Video.Initialize();
+			NoSlotClock.Initialize();
+			Slot1.Initialize();
+			Slot2.Initialize();
+			Slot3.Initialize();
+			Slot4.Initialize();
+			Slot5.Initialize();
+			Slot6.Initialize();
+			Slot7.Initialize();
 		}
 
 		private static JsonSerializer CreateSerializer()
@@ -191,7 +209,5 @@ namespace Jellyfish.Virtu
 		internal PeripheralCard Slot7 { get; private set; }
 
 		internal IList<PeripheralCard> Slots { get; private set; }
-		internal IList<MachineComponent> Components { get; private set; }
-		
 	}
 }
