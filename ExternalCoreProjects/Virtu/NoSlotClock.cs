@@ -4,7 +4,9 @@ namespace Jellyfish.Virtu
 {
 	internal sealed class NoSlotClock : MachineComponent
 	{
+		// ReSharper disable once UnusedMember.Global
 		public NoSlotClock() { }
+
 		public NoSlotClock(Machine machine) :
 			base(machine)
 		{
@@ -58,6 +60,7 @@ namespace Jellyfish.Virtu
 			{
 				_clockEnabled = false;
 			}
+
 			return data;
 		}
 
@@ -155,7 +158,7 @@ namespace Jellyfish.Virtu
 				WriteBits(data, 4);
 			}
 
-			public void WriteBits(int data, int count)
+			private void WriteBits(int data, int count)
 			{
 				for (int i = 1; i <= count; i++)
 				{
@@ -165,19 +168,23 @@ namespace Jellyfish.Virtu
 				}
 			}
 
-			public void WriteBit(int data)
+			private void WriteBit(int data)
 			{
-				_data = ((data & 0x1) != 0) ? (_data | _mask) : (_data & ~_mask);
+				_data = (data & 0x1) != 0
+					? _data | _mask
+					: _data & ~_mask;
 			}
 
 			public int ReadBit(int data)
 			{
-				return ((_data & _mask) != 0) ? (data | 0x1) : (data & ~0x1);
+				return (_data & _mask) != 0
+					? data | 0x1
+					: data & ~0x1;
 			}
 
 			public bool CompareBit(int data)
 			{
-				return (((_data & _mask) != 0) == ((data & 0x1) != 0));
+				return (_data & _mask) != 0 == ((data & 0x1) != 0);
 			}
 
 			public bool NextBit()
@@ -187,11 +194,9 @@ namespace Jellyfish.Virtu
 					_mask = 0x1;
 					return true; // wrap
 				}
+
 				return false;
 			}
-
-			public ulong Data => _data;
-			public ulong Mask => _mask;
 
 			private ulong _data;
 			private ulong _mask;

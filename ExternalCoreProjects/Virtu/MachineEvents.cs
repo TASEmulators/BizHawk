@@ -14,14 +14,14 @@ namespace Jellyfish.Virtu
 
 		public override string ToString()
 		{
-			return string.Format(CultureInfo.InvariantCulture, "Delta = {0} Action = {{{1}.{2}}}", Delta, Action.Method.DeclaringType.Name, Action.Method.Name);
+			return string.Format(CultureInfo.InvariantCulture, "Delta = {0} Action = {{{1}.{2}}}", Delta, Action.Method.DeclaringType?.Name, Action.Method.Name);
 		}
 
 		public int Delta { get; set; }
 		public Action Action { get; set; }
 	}
 
-	public sealed class MachineEvents
+	internal sealed class MachineEvents
 	{
 		public void AddEvent(int delta, Action action)
 		{
@@ -104,7 +104,10 @@ namespace Jellyfish.Virtu
 			_free.AddFirst(node); // cache node; avoids garbage
 		}
 
+		// ReSharper disable once FieldCanBeMadeReadOnly.Local
 		private LinkedList<MachineEvent> _used = new LinkedList<MachineEvent>();
+
+		// ReSharper disable once FieldCanBeMadeReadOnly.Local
 		private LinkedList<MachineEvent> _free = new LinkedList<MachineEvent>();
 	}
 }

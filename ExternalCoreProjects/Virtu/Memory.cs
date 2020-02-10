@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.IO;
-using Jellyfish.Library;
 using Newtonsoft.Json;
 
 namespace Jellyfish.Virtu
@@ -10,6 +8,7 @@ namespace Jellyfish.Virtu
 
 	public sealed partial class Memory : MachineComponent
 	{
+		// ReSharper disable once UnusedMember.Global
 		public Memory()
 		{
 			InitializeWriteDelegates();
@@ -96,6 +95,8 @@ namespace Jellyfish.Virtu
 			_writeRomRegionD0FF = WriteRomRegionD0FF;
 		}
 
+		// TODO: this shouldn't be in savestates!
+		// ReSharper disable once FieldCanBeMadeReadOnly.Local
 		private byte[] _appleIIe;
 
 		internal override void Initialize()
@@ -145,51 +146,9 @@ namespace Jellyfish.Virtu
 			MapRegionD0FF();
 		}
 
-		public void LoadPrg(Stream stream)
-		{
-			if (stream == null)
-			{
-				throw new ArgumentNullException(nameof(stream));
-			}
-
-			int startAddress = stream.ReadWord();
-			SetWarmEntry(startAddress); // assumes autostart monitor
-			Load(stream, startAddress);
-		}
-
-		public void LoadXex(Stream stream)
-		{
-			if (stream == null)
-			{
-				throw new ArgumentNullException(nameof(stream));
-			}
-
-			const int Marker = 0xFFFF;
-			int marker = stream.ReadWord(); // mandatory marker
-			if (marker != Marker)
-			{
-				throw new InvalidOperationException(string.Format("Marker ${0:X04} not found.", Marker));
-			}
-			int startAddress = stream.ReadWord();
-			int endAddress = stream.ReadWord();
-			SetWarmEntry(startAddress); // assumes autostart monitor
-
-			do
-			{
-				if (startAddress > endAddress)
-				{
-					throw new InvalidOperationException(string.Format("Invalid address range ${0:X04}-${1:X04}.", startAddress, endAddress));
-				}
-				Load(stream, startAddress, endAddress - startAddress + 1);
-				marker = stream.ReadWord(optional: true); // optional marker
-				startAddress = (marker != Marker) ? marker : stream.ReadWord(optional: true);
-				endAddress = stream.ReadWord(optional: true);
-			}
-			while ((startAddress >= 0) && (endAddress >= 0));
-		}
-
 		#region Core Read & Write
-		public int ReadOpcode(int address)
+
+		internal int ReadOpcode(int address)
 		{
 			int region = PageRegion[address >> 8];
 			var result = ((address & 0xF000) != 0xC000) ? _regionRead[region][address - RegionBaseAddress[region]] : ReadIoRegionC0CF(address);
@@ -212,7 +171,7 @@ namespace Jellyfish.Virtu
 			return ((address & 0xF000) != 0xC000) ? _regionRead[region][address - RegionBaseAddress[region]] : ReadIoRegionC0CF(address);
 		}
 
-		public int ReadZeroPage(int address)
+		internal int ReadZeroPage(int address)
 		{
 			ReadCallback?.Invoke((uint)address);
 			return _zeroPage[address];
@@ -233,11 +192,12 @@ namespace Jellyfish.Virtu
 			}
 		}
 
-		public void WriteZeroPage(int address, int data)
+		internal void WriteZeroPage(int address, int data)
 		{
 			WriteCallback?.Invoke((uint)address);
 			_zeroPage[address] = (byte)data;
 		}
+
 		#endregion
 
 		#region Read Actions
@@ -645,7 +605,7 @@ namespace Jellyfish.Virtu
 					return Machine.Slot7.ReadIoRegionC0C0(address);
 
 				default:
-					throw new ArgumentOutOfRangeException("address");
+					throw new ArgumentOutOfRangeException(nameof(address));
 			}
 
 			return _video.ReadFloatingBus();
@@ -1045,7 +1005,7 @@ namespace Jellyfish.Virtu
 					break;
 
 				default:
-					throw new ArgumentOutOfRangeException("address");
+					throw new ArgumentOutOfRangeException(nameof(address));
 			}
 		}
 
@@ -1968,69 +1928,6 @@ namespace Jellyfish.Virtu
 		}
 		#endregion
 
-		private void Load(Stream stream, int startAddress)
-		{
-			TraceWriter.Write("Loading memory ${0:X04}", startAddress);
-			int address = startAddress;
-			if (address < 0x0200)
-			{
-				address += stream.ReadBlock(_ramMainRegion0001, address, minCount: 0);
-			}
-			if ((0x0200 <= address) && (address < 0xC000))
-			{
-				address += stream.ReadBlock(_ramMainRegion02BF, address - 0x0200, minCount: 0);
-			}
-			if ((0xC000 <= address) && (address < 0xD000))
-			{
-				address += stream.ReadBlock(_ramMainBank1RegionD0DF, address - 0xC000, minCount: 0);
-			}
-			if ((0xD000 <= address) && (address < 0xE000))
-			{
-				address += stream.ReadBlock(_ramMainBank2RegionD0DF, address - 0xD000, minCount: 0);
-			}
-			if (0xE000 <= address)
-			{
-				address += stream.ReadBlock(_ramMainRegionE0FF, address - 0xE000, minCount: 0);
-			}
-			if (address > startAddress)
-			{
-				TraceWriter.Write("Loaded memory ${0:X04}-${1:X04} (${2:X04})", startAddress, address - 1, address - startAddress);
-			}
-		}
-
-		private void Load(Stream stream, int startAddress, int length)
-		{
-			TraceWriter.Write("Loading memory ${0:X04}-${1:X04} (${2:X04})", startAddress, startAddress + length - 1, length);
-			int address = startAddress;
-			if (address < 0x0200)
-			{
-				address += stream.ReadBlock(_ramMainRegion0001, address, ref length);
-			}
-			if ((0x0200 <= address) && (address < 0xC000))
-			{
-				address += stream.ReadBlock(_ramMainRegion02BF, address - 0x0200, ref length);
-			}
-			if ((0xC000 <= address) && (address < 0xD000))
-			{
-				address += stream.ReadBlock(_ramMainBank1RegionD0DF, address - 0xC000, ref length);
-			}
-			if ((0xD000 <= address) && (address < 0xE000))
-			{
-				address += stream.ReadBlock(_ramMainBank2RegionD0DF, address - 0xD000, ref length);
-			}
-			if (0xE000 <= address)
-			{
-				address += stream.ReadBlock(_ramMainRegionE0FF, address - 0xE000, ref length);
-			}
-		}
-
-		private void SetWarmEntry(int address)
-		{
-			_ramMainRegion02BF[0x03F2 - 0x0200] = (byte)(address & 0xFF);
-			_ramMainRegion02BF[0x03F3 - 0x0200] = (byte)(address >> 8);
-			_ramMainRegion02BF[0x03F4 - 0x0200] = (byte)((address >> 8) ^ 0xA5);
-		}
-
 		private static int SetBit7(int data, bool value)
 		{
 			return value ? (data | 0x80) : (data & 0x7F);
@@ -2083,31 +1980,31 @@ namespace Jellyfish.Virtu
 			return ((_state & mask) == value);
 		}
 
-		public bool Is80Columns => TestState(State80Col);
-		public bool Is80Store => TestState(State80Store);
-		public bool IsCharSetAlternate => TestState(StateAltChrSet);
-		public bool IsHighRamAux => IsZeroPageAux;
-		public bool IsHighRamBank1 => TestState(StateBank1);
-		public bool IsHighRamRead => TestState(StateHRamRd);
-		public bool IsHighRamWrite => !TestState(StateHRamWrt); // HRamWrt' [5-23]
-		public bool IsHires => TestState(StateHires);
-		public bool IsMixed => TestState(StateMixed);
-		public bool IsPage2 => TestState(StatePage2);
-		public bool IsRamReadAux => TestState(StateRamRd);
-		public bool IsRamReadAuxRegion0407 => Is80Store ? IsPage2 : IsRamReadAux;
-		public bool IsRamReadAuxRegion203F => TestState(State80Store | StateHires, State80Store | StateHires) ? IsPage2 : IsRamReadAux;
-		public bool IsRamWriteAux => TestState(StateRamWrt);
-		public bool IsRamWriteAuxRegion0407 => Is80Store ? IsPage2 : IsRamWriteAux;
-		public bool IsRamWriteAuxRegion203F => TestState(State80Store | StateHires, State80Store | StateHires) ? IsPage2 : IsRamWriteAux;
-		public bool IsRomC1CFInternal => TestState(StateIntCXRom);
-		public bool IsRomC3C3External => TestState(StateSlotC3Rom);
-		public bool IsRomC8CFInternal => TestState(StateIntC8Rom);
-		public bool IsText => TestState(StateText);
-		public bool IsVideoPage2 => TestState(State80Store | StatePage2, StatePage2); // 80Store inhibits video Page2 [5-7, 8-19]
-		public bool IsZeroPageAux => TestState(StateAltZP);
+		internal bool Is80Columns => TestState(State80Col);
+		internal bool Is80Store => TestState(State80Store);
+		internal bool IsCharSetAlternate => TestState(StateAltChrSet);
+		internal bool IsHighRamAux => IsZeroPageAux;
+		internal bool IsHighRamBank1 => TestState(StateBank1);
+		internal bool IsHighRamRead => TestState(StateHRamRd);
+		internal bool IsHighRamWrite => !TestState(StateHRamWrt); // HRamWrt' [5-23]
+		internal bool IsHires => TestState(StateHires);
+		internal bool IsMixed => TestState(StateMixed);
+		internal bool IsPage2 => TestState(StatePage2);
+		internal bool IsRamReadAux => TestState(StateRamRd);
+		internal bool IsRamReadAuxRegion0407 => Is80Store ? IsPage2 : IsRamReadAux;
+		internal bool IsRamReadAuxRegion203F => TestState(State80Store | StateHires, State80Store | StateHires) ? IsPage2 : IsRamReadAux;
+		internal bool IsRamWriteAux => TestState(StateRamWrt);
+		internal bool IsRamWriteAuxRegion0407 => Is80Store ? IsPage2 : IsRamWriteAux;
+		internal bool IsRamWriteAuxRegion203F => TestState(State80Store | StateHires, State80Store | StateHires) ? IsPage2 : IsRamWriteAux;
+		internal bool IsRomC1CFInternal => TestState(StateIntCXRom);
+		internal bool IsRomC3C3External => TestState(StateSlotC3Rom);
+		internal bool IsRomC8CFInternal => TestState(StateIntC8Rom);
+		internal bool IsText => TestState(StateText);
+		internal bool IsVideoPage2 => TestState(State80Store | StatePage2, StatePage2); // 80Store inhibits video Page2 [5-7, 8-19]
+		internal bool IsZeroPageAux => TestState(StateAltZP);
 
 		internal MonitorType Monitor { get; private set; }
-		public int VideoMode => StateVideoMode[_state & StateVideo];
+		internal int VideoMode => StateVideoMode[_state & StateVideo];
 
 		[JsonIgnore]
 		private Action<int, byte> _writeIoRegionC0C0;

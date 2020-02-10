@@ -98,7 +98,5 @@ namespace Jellyfish.Virtu
 		{
 			_position = 0;
 		}
-
-		
 	}
 }
