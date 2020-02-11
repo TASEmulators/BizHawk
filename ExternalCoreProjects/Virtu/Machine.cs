@@ -26,7 +26,7 @@ namespace Jellyfish.Virtu
 			Slot3 = emptySlot;
 			Slot4 = emptySlot;
 			Slot5 = emptySlot;
-			Slot6 = new DiskIIController(this, diskIIRom);
+			Slot6 = new DiskIIController(Video, diskIIRom);
 			Slot7 = emptySlot;
 		}
 
