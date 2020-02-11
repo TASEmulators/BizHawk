@@ -17,7 +17,7 @@ namespace Jellyfish.Virtu
 			Keyboard = new Keyboard();
 			GamePort = new GamePort();
 			Speaker = new Speaker(this);
-			Video = new Video(this);
+			Video = new Video(Events, Memory);
 			NoSlotClock = new NoSlotClock(this);
 
 			var emptySlot = new EmptyPeripheralCard(Video);

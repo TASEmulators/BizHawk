@@ -21,7 +21,7 @@ namespace Jellyfish.Virtu
 		public Action Action { get; set; }
 	}
 
-	internal sealed class MachineEvents
+	public sealed class MachineEvents
 	{
 		public void AddEvent(int delta, Action action)
 		{
