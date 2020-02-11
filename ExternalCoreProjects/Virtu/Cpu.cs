@@ -7,7 +7,7 @@ namespace Jellyfish.Virtu
 	public sealed partial class Cpu
 	{
 		// ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private Machine _machine;
+		private Memory _memory;
 
 		// ReSharper disable once UnusedMember.Global
 		public Cpu()
@@ -15,9 +15,9 @@ namespace Jellyfish.Virtu
 			InitializeOpCodeDelegates();
 		}
 
-		public Cpu(Machine machine)
+		public Cpu(Memory memory)
 		{
-			_machine = machine;
+			_memory = memory;
 			InitializeOpCodeDelegates();
 		}
 
@@ -162,12 +162,9 @@ namespace Jellyfish.Virtu
 
 		internal void Initialize()
 		{
-			_memory = _machine.Memory;
-
 			Is65C02 = true;
 			IsThrottled = false;
 			Multiplier = 1;
-
 			RS = 0xFF;
 		}
 
@@ -3432,8 +3429,6 @@ namespace Jellyfish.Virtu
 		public int CC { get; private set; }
 		internal int OpCode { get; private set; }
 		public long Cycles { get; private set; }
-
-		private Memory _memory;
 
 		[JsonIgnore]
 		private bool _is65C02;

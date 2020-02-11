@@ -12,9 +12,8 @@ namespace Jellyfish.Virtu
 		public Machine(byte[] appleIIe, byte[] diskIIRom)
 		{
 			Events = new MachineEvents();
-
-			Cpu = new Cpu(this);
 			Memory = new Memory(this, appleIIe);
+			Cpu = new Cpu(Memory);
 			Keyboard = new Keyboard();
 			GamePort = new GamePort();
 			Speaker = new Speaker(this);
