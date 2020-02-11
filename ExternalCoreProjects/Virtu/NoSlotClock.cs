@@ -5,14 +5,14 @@ namespace Jellyfish.Virtu
 	internal sealed class NoSlotClock
 	{
 		// ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private Machine _machine;
+		private Video _video;
 
 		// ReSharper disable once UnusedMember.Global
 		public NoSlotClock() { }
 
-		public NoSlotClock(Machine machine)
+		public NoSlotClock(Video video)
 		{
-			_machine = machine;
+			_video = video;
 		}
 
 		internal void Initialize()
@@ -58,7 +58,7 @@ namespace Jellyfish.Virtu
 				return data;
 			}
 
-			data = _clockRegister.ReadBit(_machine.Video.ReadFloatingBus());
+			data = _clockRegister.ReadBit(_video.ReadFloatingBus());
 			if (_clockRegister.NextBit())
 			{
 				_clockEnabled = false;

@@ -18,7 +18,7 @@ namespace Jellyfish.Virtu
 			GamePort = new GamePort();
 			Speaker = new Speaker(this);
 			Video = new Video(Events, Memory);
-			NoSlotClock = new NoSlotClock(this);
+			NoSlotClock = new NoSlotClock(Video);
 
 			var emptySlot = new EmptyPeripheralCard(Video);
 			Slot1 = emptySlot;
