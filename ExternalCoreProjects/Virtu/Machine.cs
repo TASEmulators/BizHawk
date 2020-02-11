@@ -50,7 +50,7 @@ namespace Jellyfish.Virtu
 		public void BizFrameAdvance(IEnumerable<string> buttons)
 		{
 			Lagged = true;
-			DriveLight = false;
+			Slot6.DriveLight = false;
 
 			Keyboard.SetKeys(buttons);
 
@@ -84,7 +84,6 @@ namespace Jellyfish.Virtu
 		public Speaker Speaker { get; private set; }
 		public Video Video { get; private set; }
 		public bool Lagged { get; set; }
-		public bool DriveLight { get; set; }
 
 		#endregion
 
@@ -100,7 +99,7 @@ namespace Jellyfish.Virtu
 		internal IPeripheralCard Slot3 { get; private set; }
 		internal IPeripheralCard Slot4 { get; private set; }
 		internal IPeripheralCard Slot5 { get; private set; }
-		internal DiskIIController Slot6 { get; private set; }
+		public DiskIIController Slot6 { get; private set; }
 		internal IPeripheralCard Slot7 { get; private set; }
 
 		internal IList<IPeripheralCard> Slots => new List<IPeripheralCard> { null, Slot1, Slot2, Slot3, Slot4, Slot5, Slot6, Slot7 };

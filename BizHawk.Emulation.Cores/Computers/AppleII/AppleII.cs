@@ -121,7 +121,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		};
 
 		public bool DriveLightEnabled => true;
-		public bool DriveLightOn => _machine.DriveLight;
+		public bool DriveLightOn => _machine.Slot6.DriveLight;
 
 		private bool _nextPressed;
 		private bool _prevPressed;

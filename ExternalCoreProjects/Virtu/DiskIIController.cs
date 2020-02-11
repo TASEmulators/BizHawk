@@ -2,7 +2,7 @@
 
 namespace Jellyfish.Virtu
 {
-	internal sealed class DiskIIController : IPeripheralCard
+	public sealed class DiskIIController : IPeripheralCard
 	{
 		private Machine _machine;
 
@@ -13,13 +13,15 @@ namespace Jellyfish.Virtu
 		{
 			_machine = machine;
 			_romRegionC1C7 = diskIIRom;
-			Drive1 = new DiskIIDrive(machine);
-			Drive2 = new DiskIIDrive(machine);
+			Drive1 = new DiskIIDrive(this);
+			Drive2 = new DiskIIDrive(this);
 
 			Drives = new List<DiskIIDrive> { Drive1, Drive2 };
 
 			BootDrive = Drive1;
 		}
+
+		public bool DriveLight { get; set; }
 
 		public void Reset()
 		{

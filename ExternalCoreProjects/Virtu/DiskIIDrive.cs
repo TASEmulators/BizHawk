@@ -2,17 +2,17 @@
 
 namespace Jellyfish.Virtu
 {
-	internal sealed class DiskIIDrive
+	public sealed class DiskIIDrive
 	{
 		// ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private Machine _machine;
+		private DiskIIController _diskController;
 
 		// ReSharper disable once UnusedMember.Global
 		public DiskIIDrive() { }
 
-		public DiskIIDrive(Machine machine)
+		public DiskIIDrive(DiskIIController diskController)
 		{
-			_machine = machine;
+			_diskController = diskController;
 			DriveArmStepDelta[0] = new[] { 0, 0, 1, 1, 0, 0, 1, 1, -1, -1, 0, 0, -1, -1, 0, 0 }; // phase 0
 			DriveArmStepDelta[1] = new[] { 0, -1, 0, -1, 1, 0, 1, 0, 0, -1, 0, -1, 1, 0, 1, 0 }; // phase 1
 			DriveArmStepDelta[2] = new[] { 0, 0, -1, -1, 0, 0, -1, -1, 1, 1, 0, 0, 1, 1, 0, 0 }; // phase 2
@@ -58,7 +58,7 @@ namespace Jellyfish.Virtu
 					_trackOffset = 0;
 				}
 
-				_machine.DriveLight = true;
+				_diskController.DriveLight = true;
 				return data;
 			}
 
@@ -76,7 +76,7 @@ namespace Jellyfish.Virtu
 					_trackOffset = 0;
 				}
 
-				_machine.DriveLight = true;
+				_diskController.DriveLight = true;
 			}
 		}
 
