@@ -28,12 +28,7 @@ namespace Jellyfish.Virtu
 			Slot5 = emptySlot;
 			Slot6 = new DiskIIController(Video, diskIIRom);
 			Slot7 = emptySlot;
-		}
 
-		#region API
-
-		public void BizInitialize()
-		{
 			Memory.Initialize();
 
 			Cpu.Reset();
@@ -42,6 +37,8 @@ namespace Jellyfish.Virtu
 			Video.Reset();
 			Slot6.Reset();
 		}
+
+		#region API
 
 		public void BizFrameAdvance(IEnumerable<string> buttons)
 		{

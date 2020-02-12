@@ -49,8 +49,6 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 			_machine = new Machine(_appleIIRom, _diskIIRom);
 			
-			_machine.BizInitialize();
-
 			// make a writable memory stream cloned from the rom.
 			// for junk.dsk the .dsk is important because it determines the format from that
 			InitDisk();
