@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Jellyfish.Virtu
+﻿namespace Jellyfish.Virtu
 {
 	public sealed class Machine
 	{
@@ -37,26 +35,6 @@ namespace Jellyfish.Virtu
 			Speaker.Reset();
 			Video.Reset();
 			Slot6.Reset();
-		}
-
-		public void BizFrameAdvance(IEnumerable<string> buttons)
-		{
-			Memory.Lagged = true;
-			Slot6.DriveLight = false;
-
-			Keyboard.SetKeys(buttons);
-
-			// frame begins at vsync.. beginning of vblank
-			while (Video.IsVBlank)
-			{
-				Events.HandleEvents(Cpu.Execute());
-			}
-
-			// now, while not vblank, we're in a frame
-			while (!Video.IsVBlank)
-			{
-				Events.HandleEvents(Cpu.Execute());
-			}
 		}
 
 		public MachineEvents Events { get; set; }

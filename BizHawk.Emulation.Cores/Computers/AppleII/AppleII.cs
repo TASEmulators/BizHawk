@@ -168,13 +168,33 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 				_prevPressed = false;
 			}
 
-			_machine.BizFrameAdvance(RealButtons.Where(controller.IsPressed));
+			MachineAdvance(RealButtons.Where(controller.IsPressed));
 			if (IsLagFrame)
 			{
 				LagCount++;
 			}
 
 			Frame++;
+		}
+
+		private void MachineAdvance(IEnumerable<string> buttons)
+		{
+			_machine.Memory.Lagged = true;
+			_machine.Slot6.DriveLight = false;
+
+			_machine.Keyboard.SetKeys(buttons);
+
+			// frame begins at vsync.. beginning of vblank
+			while (_machine.Video.IsVBlank)
+			{
+				_machine.Events.HandleEvents(_machine.Cpu.Execute());
+			}
+
+			// now, while not vblank, we're in a frame
+			while (!_machine.Video.IsVBlank)
+			{
+				_machine.Events.HandleEvents(_machine.Cpu.Execute());
+			}
 		}
 
 		private void SetCallbacks()
