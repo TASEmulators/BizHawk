@@ -16,7 +16,7 @@ namespace Jellyfish.Virtu
 			Cpu = new Cpu(Memory);
 			Keyboard = new Keyboard();
 			GamePort = new GamePort();
-			Speaker = new Speaker(this);
+			Speaker = new Speaker(Events, Cpu);
 			Video = new Video(Events, Memory);
 			NoSlotClock = new NoSlotClock(Video);
 

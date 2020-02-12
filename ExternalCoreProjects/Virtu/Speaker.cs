@@ -7,12 +7,16 @@ namespace Jellyfish.Virtu
 	public sealed class Speaker
 	{
 		// ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private Machine _machine;
+		private MachineEvents _events;
+
+		// ReSharper disable once FieldCanBeMadeReadOnly.Local
+		private Cpu _cpu;
 
 		public Speaker() { }
-		public Speaker(Machine machine)
+		public Speaker(MachineEvents events, Cpu cpu)
 		{
-			_machine = machine;
+			_events = events;
+			_cpu = cpu;
 			_flushOutputEvent = FlushOutputEvent; // cache delegates; avoids garbage
 		}
 
@@ -49,7 +53,7 @@ namespace Jellyfish.Virtu
 
 		internal void Initialize()
 		{
-			_machine.Events.AddEvent(CyclesPerFlush * _machine.Cpu.Multiplier, _flushOutputEvent);
+			_events.AddEvent(CyclesPerFlush * _cpu.Multiplier, _flushOutputEvent);
 		}
 
 		internal void Reset()
@@ -71,18 +75,18 @@ namespace Jellyfish.Virtu
 			Output(_highCycles * short.MaxValue / _totalCycles);
 			_highCycles = _totalCycles = 0;
 
-			_machine.Events.AddEvent(CyclesPerFlush * _machine.Cpu.Multiplier, _flushOutputEvent);
+			_events.AddEvent(CyclesPerFlush * _cpu.Multiplier, _flushOutputEvent);
 		}
 
 		private void UpdateCycles()
 		{
-			int delta = (int)(_machine.Cpu.Cycles - _lastCycles);
+			int delta = (int)(_cpu.Cycles - _lastCycles);
 			if (_isHigh)
 			{
 				_highCycles += delta;
 			}
 			_totalCycles += delta;
-			_lastCycles = _machine.Cpu.Cycles;
+			_lastCycles = _cpu.Cycles;
 		}
 
 		private void Output(int data) // machine thread
