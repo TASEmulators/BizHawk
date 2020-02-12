@@ -106,7 +106,10 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		private void InitDisk()
 		{
 			_disk1 = _romSet[CurrentDisk];
-			_machine.InsertDisk1(_disk1);
+
+			// make a writable memory stream cloned from the rom.
+			// for junk.dsk the .dsk is important because it determines the format from that
+			_machine.Slot6.Drives[0].InsertDisk("junk.dsk", (byte[])_disk1.Clone(), false);
 		}
 
 		private static readonly List<string> RealButtons = new List<string>(Keyboard.GetKeyNames()

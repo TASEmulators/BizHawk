@@ -19,6 +19,7 @@ namespace Jellyfish.Virtu
 			Speaker = new Speaker(Events, Cpu);
 			Video = new Video(Events, Memory);
 			NoSlotClock = new NoSlotClock(Video);
+			Cassette = new Cassette();
 
 			var emptySlot = new EmptyPeripheralCard(Video);
 			Slot1 = emptySlot;
@@ -37,8 +38,6 @@ namespace Jellyfish.Virtu
 			Video.Reset();
 			Slot6.Reset();
 		}
-
-		#region API
 
 		public void BizFrameAdvance(IEnumerable<string> buttons)
 		{
@@ -60,39 +59,24 @@ namespace Jellyfish.Virtu
 			}
 		}
 
-		public void CpuExecute()
-		{
-			Events.HandleEvents(Cpu.Execute());
-		}
-
-		public void InsertDisk1(byte[] disk1)
-		{
-			// make a writable memory stream cloned from the rom.
-			// for junk.dsk the .dsk is important because it determines the format from that
-			Slot6.Drives[0].InsertDisk("junk.dsk", (byte[])disk1.Clone(), false);
-		}
-
-		public Cpu Cpu { get; private set; }
-		public Memory Memory { get; private set; }
-		public Speaker Speaker { get; private set; }
-		public Video Video { get; private set; }
 		public bool Lagged { get; set; }
 
-		#endregion
+		public MachineEvents Events { get; set; }
+		public Memory Memory { get; private set; }
+		public Cpu Cpu { get; private set; }
+		public Keyboard Keyboard { get; private set; }
+		public GamePort GamePort { get; private set; }
+		public Speaker Speaker { get; private set; }
+		public Video Video { get; private set; }
+		public Cassette Cassette { get; private set; }
+		public NoSlotClock NoSlotClock { get; private set; }
 
-		internal MachineEvents Events { get; set; }
-
-		internal Keyboard Keyboard { get; private set; }
-		internal GamePort GamePort { get; private set; }
-		internal Cassette Cassette { get; private set; }
-		internal NoSlotClock NoSlotClock { get; private set; }
-
-		internal IPeripheralCard Slot1 { get; private set; }
-		internal IPeripheralCard Slot2 { get; private set; }
-		internal IPeripheralCard Slot3 { get; private set; }
-		internal IPeripheralCard Slot4 { get; private set; }
-		internal IPeripheralCard Slot5 { get; private set; }
+		public IPeripheralCard Slot1 { get; private set; }
+		public IPeripheralCard Slot2 { get; private set; }
+		public IPeripheralCard Slot3 { get; private set; }
+		public IPeripheralCard Slot4 { get; private set; }
+		public IPeripheralCard Slot5 { get; private set; }
 		public DiskIIController Slot6 { get; private set; }
-		internal IPeripheralCard Slot7 { get; private set; }
+		public IPeripheralCard Slot7 { get; private set; }
 	}
 }

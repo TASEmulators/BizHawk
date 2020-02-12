@@ -1,6 +1,6 @@
 ﻿namespace Jellyfish.Virtu
 {
-	internal interface IPeripheralCard
+	public interface IPeripheralCard
 	{
 		// read Device Select' address $C0nX; n = slot number + 8
 		int ReadIoRegionC0C0(int address);
@@ -21,7 +21,7 @@
 		void WriteIoRegionC8CF(int address, int data);
 	}
 
-	public class EmptyPeripheralCard : IPeripheralCard
+	internal class EmptyPeripheralCard : IPeripheralCard
 	{
 		// TODO: can't be read only because of serialization?
 		// ReSharper disable once FieldCanBeMadeReadOnly.Local

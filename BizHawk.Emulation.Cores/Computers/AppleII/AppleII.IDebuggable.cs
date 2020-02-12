@@ -150,7 +150,8 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 			var machineInVblank = _machine.Video.IsVBlank;
 
-			_machine.CpuExecute();
+
+			_machine.Events.HandleEvents(_machine.Cpu.Execute());
 
 			if (!machineInVblank && _machine.Video.IsVBlank) // Check if a frame has passed while stepping
 			{

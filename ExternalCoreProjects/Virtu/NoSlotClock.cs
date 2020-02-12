@@ -2,7 +2,7 @@
 
 namespace Jellyfish.Virtu
 {
-	internal sealed class NoSlotClock
+	public sealed class NoSlotClock
 	{
 		// ReSharper disable once FieldCanBeMadeReadOnly.Local
 		private Video _video;

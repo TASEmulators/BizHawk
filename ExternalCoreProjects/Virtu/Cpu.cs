@@ -409,7 +409,7 @@ namespace Jellyfish.Virtu
 			return "---";
 		}
 
-		internal int Execute()
+		public int Execute()
 		{
 			TraceCallback?.Invoke(TraceState());
 
