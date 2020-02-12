@@ -19,6 +19,10 @@ namespace Jellyfish.Virtu
 		private Video _video;
 		private NoSlotClock _noSlotClock;
 
+		// TODO: this shouldn't be in savestates!
+		// ReSharper disable once FieldCanBeMadeReadOnly.Local
+		private byte[] _appleIIe;
+
 		// ReSharper disable once UnusedMember.Global
 		public Memory()
 		{
@@ -30,6 +34,41 @@ namespace Jellyfish.Virtu
 			_machine = machine;
 			_appleIIe = appleIIe;
 			InitializeWriteDelegates();
+		}
+
+		internal void Initialize()
+		{
+			_keyboard = _machine.Keyboard;
+			_gamePort = _machine.GamePort;
+			_cassette = _machine.Cassette;
+			_speaker = _machine.Speaker;
+			_video = _machine.Video;
+			_noSlotClock = _machine.NoSlotClock;
+
+			// TODO: this is a lazy and more complicated way to do this
+			_romInternalRegionC1CF = _appleIIe
+				.Skip(0x100)
+				.Take(_romInternalRegionC1CF.Length)
+				.ToArray();
+
+			_romRegionD0DF = _appleIIe
+				.Skip(0x100 + _romInternalRegionC1CF.Length)
+				.Take(_romRegionD0DF.Length)
+				.ToArray();
+
+			_romRegionE0FF = _appleIIe
+				.Skip(0x100 + _romInternalRegionC1CF.Length + _romRegionD0DF.Length)
+				.Take(_romRegionE0FF.Length)
+				.ToArray();
+
+			if ((ReadRomRegionE0FF(0xFBB3) == 0x06) && (ReadRomRegionE0FF(0xFBBF) == 0xC1))
+			{
+				Monitor = MonitorType.Standard;
+			}
+			else if ((ReadRomRegionE0FF(0xFBB3) == 0x06) && (ReadRomRegionE0FF(0xFBBF) == 0x00) && (ReadRomRegionE0FF(0xFBC0) == 0xE0))
+			{
+				Monitor = MonitorType.Enhanced;
+			}
 		}
 
 		public bool Lagged { get; set; }
@@ -118,45 +157,6 @@ namespace Jellyfish.Virtu
 			_writeIoRegionC3C3 = WriteIoRegionC3C3;
 			_writeIoRegionC8CF = WriteIoRegionC8CF;
 			_writeRomRegionD0FF = WriteRomRegionD0FF;
-		}
-
-		// TODO: this shouldn't be in savestates!
-		// ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private byte[] _appleIIe;
-
-		internal void Initialize()
-		{
-			_keyboard = _machine.Keyboard;
-			_gamePort = _machine.GamePort;
-			_cassette = _machine.Cassette;
-			_speaker = _machine.Speaker;
-			_video = _machine.Video;
-			_noSlotClock = _machine.NoSlotClock;
-
-			// TODO: this is a lazy and more complicated way to do this
-			_romInternalRegionC1CF = _appleIIe
-				.Skip(0x100)
-				.Take(_romInternalRegionC1CF.Length)
-				.ToArray();
-
-			_romRegionD0DF = _appleIIe
-				.Skip(0x100 + _romInternalRegionC1CF.Length)
-				.Take(_romRegionD0DF.Length)
-				.ToArray();
-
-			_romRegionE0FF = _appleIIe
-				.Skip(0x100 + _romInternalRegionC1CF.Length + _romRegionD0DF.Length)
-				.Take(_romRegionE0FF.Length)
-				.ToArray();
-
-			if ((ReadRomRegionE0FF(0xFBB3) == 0x06) && (ReadRomRegionE0FF(0xFBBF) == 0xC1))
-			{
-				Monitor = MonitorType.Standard;
-			}
-			else if ((ReadRomRegionE0FF(0xFBB3) == 0x06) && (ReadRomRegionE0FF(0xFBBF) == 0x00) && (ReadRomRegionE0FF(0xFBC0) == 0xE0))
-			{
-				Monitor = MonitorType.Enhanced;
-			}
 		}
 
 		internal void Reset() // [7-3]
