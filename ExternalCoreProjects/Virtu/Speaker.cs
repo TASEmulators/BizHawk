@@ -18,6 +18,8 @@ namespace Jellyfish.Virtu
 			_events = events;
 			_cpu = cpu;
 			_flushOutputEvent = FlushOutputEvent; // cache delegates; avoids garbage
+
+			_events.AddEvent(CyclesPerFlush * _cpu.Multiplier, _flushOutputEvent);
 		}
 
 		private const int CyclesPerFlush = 23;
@@ -50,11 +52,6 @@ namespace Jellyfish.Virtu
 		}
 
 		#endregion
-
-		internal void Initialize()
-		{
-			_events.AddEvent(CyclesPerFlush * _cpu.Multiplier, _flushOutputEvent);
-		}
 
 		internal void Reset()
 		{
