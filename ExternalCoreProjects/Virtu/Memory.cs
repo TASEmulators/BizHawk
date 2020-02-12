@@ -40,7 +40,7 @@ namespace Jellyfish.Virtu
 			InitializeWriteDelegates();
 		}
 
-		internal void Initialize(
+		public void Initialize(
 			Keyboard keyboard,
 			GamePort gamePort,
 			Cassette cassette,
@@ -190,7 +190,7 @@ namespace Jellyfish.Virtu
 			_writeRomRegionD0FF = WriteRomRegionD0FF;
 		}
 
-		internal void Reset() // [7-3]
+		public void Reset() // [7-3]
 		{
 			ResetState(State80Col | State80Store | StateAltChrSet | StateAltZP | StateBank1 | StateHRamRd | StateHRamPreWrt | StateHRamWrt | // HRamWrt' [5-23]
 				StateHires | StatePage2 | StateRamRd | StateRamWrt | StateIntCXRom | StateSlotC3Rom | StateIntC8Rom | StateAn0 | StateAn1 | StateAn2 | StateAn3);

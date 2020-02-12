@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			_diskIIRom = comm.CoreFileProvider.GetFirmware(
 				SystemId, "DiskII", true, "The DiskII firmware is required");
 
-			_machine = new Machine(_appleIIRom, _diskIIRom);
+			_machine = new Components(_appleIIRom, _diskIIRom);
 			
 			// make a writable memory stream cloned from the rom.
 			// for junk.dsk the .dsk is important because it determines the format from that
@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		private readonly List<byte[]> _romSet = new List<byte[]>();
 		private readonly ITraceable _tracer;
 
-		private Machine _machine;
+		private Components _machine;
 		private byte[] _disk1;
 		private readonly byte[] _appleIIRom;
 		private readonly byte[] _diskIIRom;

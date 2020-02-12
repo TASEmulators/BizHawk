@@ -21,7 +21,7 @@
 		void WriteIoRegionC8CF(int address, int data);
 	}
 
-	internal class EmptyPeripheralCard : IPeripheralCard
+	public class EmptyPeripheralCard : IPeripheralCard
 	{
 		// TODO: can't be read only because of serialization?
 		// ReSharper disable once FieldCanBeMadeReadOnly.Local

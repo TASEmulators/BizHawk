@@ -165,7 +165,7 @@ namespace Jellyfish.Virtu
 			};
 		}
 
-		internal void Reset()
+		public void Reset()
 		{
 			RS = (RS - 3) & 0xFF; // [4-14]
 			RPC = _memory.ReadRomRegionE0FF(0xFFFC) | (_memory.ReadRomRegionE0FF(0xFFFD) << 8);

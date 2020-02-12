@@ -2,7 +2,6 @@
 using System.IO;
 
 using BizHawk.Emulation.Common;
-
 using Jellyfish.Virtu;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -15,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		{
 			public override bool CanConvert(Type objectType)
 			{
-				return objectType == typeof(Machine);
+				return objectType == typeof(Components);
 			}
 
 			public override bool CanRead => true;
@@ -24,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 			public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
 			{
-				return CreateSerializer().Deserialize<Machine>(reader);
+				return CreateSerializer().Deserialize<Components>(reader);
 			}
 
 			public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -79,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			public int CurrentDisk;
 			public bool PreviousDiskPressed;
 			public bool NextDiskPressed;
-			public Machine Core;
+			public Components Core;
 		}
 
 		private void InitSaveStates()
@@ -167,7 +166,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			ser.Converters.Add(new TypeTypeConverter(new[]
 			{
 				// all expected Types to convert are either in this assembly or mscorlib
-				typeof(Machine).Assembly,
+				typeof(Memory).Assembly,
 				typeof(object).Assembly
 			}));
 

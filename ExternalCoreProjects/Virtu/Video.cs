@@ -75,7 +75,7 @@ namespace Jellyfish.Virtu
 			DirtyScreen();
 		}
 
-		internal void Reset()
+		public void Reset()
 		{
 			SetCharSet();
 			DirtyScreen();
