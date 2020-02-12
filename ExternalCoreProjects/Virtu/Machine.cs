@@ -14,7 +14,7 @@
 			GamePort = new GamePort();
 			Cassette = new Cassette();
 
-			Memory = new Memory(this, appleIIe);
+			Memory = new Memory(appleIIe);
 			Cpu = new Cpu(Memory);
 			
 			Speaker = new Speaker(Events, Cpu);
@@ -30,7 +30,21 @@
 			Slot6 = new DiskIIController(Video, diskIIRom);
 			Slot7 = emptySlot;
 
-			Memory.Initialize();
+			// Necessary because of tangling dependencies between memory and video classes
+			Memory.Initialize(
+				Keyboard,
+				GamePort,
+				Cassette,
+				Speaker,
+				Video,
+				NoSlotClock,
+				Slot1,
+				Slot2,
+				Slot3,
+				Slot4,
+				Slot5,
+				Slot6,
+				Slot7);
 
 			Cpu.Reset();
 			Memory.Reset();
