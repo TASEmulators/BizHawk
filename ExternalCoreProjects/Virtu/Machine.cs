@@ -22,13 +22,6 @@
 			NoSlotClock = new NoSlotClock(Video);
 
 			var emptySlot = new EmptyPeripheralCard(Video);
-			Slot1 = emptySlot;
-			Slot2 = emptySlot;
-			Slot3 = emptySlot;
-			Slot4 = emptySlot;
-			Slot5 = emptySlot;
-			Slot6 = new DiskIIController(Video, diskIIRom);
-			Slot7 = emptySlot;
 
 			// Necessary because of tangling dependencies between memory and video classes
 			Memory.Initialize(
@@ -38,13 +31,13 @@
 				Speaker,
 				Video,
 				NoSlotClock,
-				Slot1,
-				Slot2,
-				Slot3,
-				Slot4,
-				Slot5,
-				Slot6,
-				Slot7);
+				emptySlot,
+				emptySlot,
+				emptySlot,
+				emptySlot,
+				emptySlot,
+				new DiskIIController(Video, diskIIRom),
+				emptySlot);
 
 			Cpu.Reset();
 			Memory.Reset();
@@ -60,13 +53,5 @@
 		public Video Video { get; private set; }
 		public Cassette Cassette { get; private set; }
 		public NoSlotClock NoSlotClock { get; private set; }
-
-		public IPeripheralCard Slot1 { get; private set; }
-		public IPeripheralCard Slot2 { get; private set; }
-		public IPeripheralCard Slot3 { get; private set; }
-		public IPeripheralCard Slot4 { get; private set; }
-		public IPeripheralCard Slot5 { get; private set; }
-		public DiskIIController Slot6 { get; private set; }
-		public IPeripheralCard Slot7 { get; private set; }
 	}
 }

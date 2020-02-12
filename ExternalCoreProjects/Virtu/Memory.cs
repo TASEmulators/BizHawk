@@ -21,7 +21,7 @@ namespace Jellyfish.Virtu
 		private IPeripheralCard _slot3;
 		private IPeripheralCard _slot4;
 		private IPeripheralCard _slot5;
-		private IPeripheralCard _slot6;
+		private DiskIIController _slot6;
 		private IPeripheralCard _slot7;
 
 		// TODO: this shouldn't be in savestates!
@@ -52,7 +52,7 @@ namespace Jellyfish.Virtu
 			IPeripheralCard slot3,
 			IPeripheralCard slot4,
 			IPeripheralCard slot5,
-			IPeripheralCard slot6,
+			DiskIIController slot6,
 			IPeripheralCard slot7)
 		{
 			_keyboard = keyboard;
@@ -109,6 +109,8 @@ namespace Jellyfish.Virtu
 			_slot6,
 			_slot7
 		};
+
+		public DiskIIController DiskIIController => _slot6;
 
 		private void InitializeWriteDelegates()
 		{

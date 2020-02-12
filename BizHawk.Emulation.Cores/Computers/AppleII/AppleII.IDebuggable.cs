@@ -162,7 +162,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 				}
 
 				_machine.Memory.Lagged = true;
-				_machine.Slot6.DriveLight = false;
+				_machine.Memory.DiskIIController.DriveLight = false;
 			}
 		}
 

@@ -109,7 +109,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 			// make a writable memory stream cloned from the rom.
 			// for junk.dsk the .dsk is important because it determines the format from that
-			_machine.Slot6.Drives[0].InsertDisk("junk.dsk", (byte[])_disk1.Clone(), false);
+			_machine.Memory.DiskIIController.Drives[0].InsertDisk("junk.dsk", (byte[])_disk1.Clone(), false);
 		}
 
 		private static readonly List<string> RealButtons = new List<string>(Keyboard.GetKeyNames()
@@ -122,7 +122,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		};
 
 		public bool DriveLightEnabled => true;
-		public bool DriveLightOn => _machine.Slot6.DriveLight;
+		public bool DriveLightOn => _machine.Memory.DiskIIController.DriveLight;
 
 		private bool _nextPressed;
 		private bool _prevPressed;
@@ -180,7 +180,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		private void MachineAdvance(IEnumerable<string> buttons)
 		{
 			_machine.Memory.Lagged = true;
-			_machine.Slot6.DriveLight = false;
+			_machine.Memory.DiskIIController.DriveLight = false;
 
 			_machine.Keyboard.SetKeys(buttons);
 
