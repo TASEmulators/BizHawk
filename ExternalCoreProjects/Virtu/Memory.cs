@@ -12,6 +12,13 @@ namespace Jellyfish.Virtu
 		// ReSharper disable once FieldCanBeMadeReadOnly.Local
 		private Machine _machine;
 
+		private Keyboard _keyboard;
+		private GamePort _gamePort;
+		private Cassette _cassette;
+		private Speaker _speaker;
+		private Video _video;
+		private NoSlotClock _noSlotClock;
+
 		// ReSharper disable once UnusedMember.Global
 		public Memory()
 		{
@@ -2046,13 +2053,6 @@ namespace Jellyfish.Virtu
 
 		[JsonIgnore]
 		public Action InputCallback;
-
-		private Keyboard _keyboard;
-		private GamePort _gamePort;
-		private Cassette _cassette;
-		private Speaker _speaker;
-		private Video _video;
-		private NoSlotClock _noSlotClock;
 
 		private int _state;
 		private int _slotRegionC8CF;
