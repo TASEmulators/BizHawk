@@ -9,10 +9,8 @@ namespace Jellyfish.Virtu
 
 	public sealed partial class Memory
 	{
-		private Keyboard _keyboard;
 		private GamePort _gamePort;
 		private Cassette _cassette;
-		private Speaker _speaker;
 		private Video _video;
 		private NoSlotClock _noSlotClock;
 
@@ -21,7 +19,6 @@ namespace Jellyfish.Virtu
 		private IPeripheralCard _slot3;
 		private IPeripheralCard _slot4;
 		private IPeripheralCard _slot5;
-		private DiskIIController _slot6;
 		private IPeripheralCard _slot7;
 
 		// TODO: this shouldn't be in savestates!
@@ -55,10 +52,10 @@ namespace Jellyfish.Virtu
 			DiskIIController slot6,
 			IPeripheralCard slot7)
 		{
-			_keyboard = keyboard;
+			Keyboard = keyboard;
 			_gamePort = gamePort;
 			_cassette = cassette;
-			_speaker = speaker;
+			Speaker = speaker;
 			_video = video;
 			_noSlotClock = noSlotClock;
 
@@ -67,7 +64,7 @@ namespace Jellyfish.Virtu
 			_slot3 = slot3;
 			_slot4 = slot4;
 			_slot5 = slot5;
-			_slot6 = slot6;
+			DiskIIController = slot6;
 			_slot7 = slot7;
 
 			// TODO: this is a lazy and more complicated way to do this
@@ -106,15 +103,15 @@ namespace Jellyfish.Virtu
 			_slot3,
 			_slot4,
 			_slot5,
-			_slot6,
+			DiskIIController,
 			_slot7
 		};
 
-		public DiskIIController DiskIIController => _slot6;
+		public DiskIIController DiskIIController { get; private set; }
 
-		public Keyboard Keyboard => _keyboard;
+		public Keyboard Keyboard { get; private set; }
 
-		public Speaker Speaker => _speaker;
+		public Speaker Speaker { get; private set; }
 
 		private void InitializeWriteDelegates()
 		{
@@ -316,56 +313,56 @@ namespace Jellyfish.Virtu
 				case 0xC00D:
 				case 0xC00E:
 				case 0xC00F:
-					return SetBit7(_keyboard.Latch, _keyboard.Strobe);
+					return SetBit7(Keyboard.Latch, Keyboard.Strobe);
 
 				case 0xC010:
-					_keyboard.ResetStrobe();
-					return SetBit7(_keyboard.Latch, _keyboard.IsAnyKeyDown);
+					Keyboard.ResetStrobe();
+					return SetBit7(Keyboard.Latch, Keyboard.IsAnyKeyDown);
 
 				case 0xC011:
-					return SetBit7(_keyboard.Latch, !IsHighRamBank1); // Bank1' [5-22]
+					return SetBit7(Keyboard.Latch, !IsHighRamBank1); // Bank1' [5-22]
 
 				case 0xC012:
-					return SetBit7(_keyboard.Latch, IsHighRamRead);
+					return SetBit7(Keyboard.Latch, IsHighRamRead);
 
 				case 0xC013:
-					return SetBit7(_keyboard.Latch, IsRamReadAux);
+					return SetBit7(Keyboard.Latch, IsRamReadAux);
 
 				case 0xC014:
-					return SetBit7(_keyboard.Latch, IsRamWriteAux);
+					return SetBit7(Keyboard.Latch, IsRamWriteAux);
 
 				case 0xC015:
-					return SetBit7(_keyboard.Latch, IsRomC1CFInternal);
+					return SetBit7(Keyboard.Latch, IsRomC1CFInternal);
 
 				case 0xC016:
-					return SetBit7(_keyboard.Latch, IsZeroPageAux);
+					return SetBit7(Keyboard.Latch, IsZeroPageAux);
 
 				case 0xC017:
-					return SetBit7(_keyboard.Latch, IsRomC3C3External);
+					return SetBit7(Keyboard.Latch, IsRomC3C3External);
 
 				case 0xC018:
-					return SetBit7(_keyboard.Latch, Is80Store);
+					return SetBit7(Keyboard.Latch, Is80Store);
 
 				case 0xC019:
-					return SetBit7(_keyboard.Latch, !_video.IsVBlank); // Vbl' [7-5]
+					return SetBit7(Keyboard.Latch, !_video.IsVBlank); // Vbl' [7-5]
 
 				case 0xC01A:
-					return SetBit7(_keyboard.Latch, IsText);
+					return SetBit7(Keyboard.Latch, IsText);
 
 				case 0xC01B:
-					return SetBit7(_keyboard.Latch, IsMixed);
+					return SetBit7(Keyboard.Latch, IsMixed);
 
 				case 0xC01C:
-					return SetBit7(_keyboard.Latch, IsPage2);
+					return SetBit7(Keyboard.Latch, IsPage2);
 
 				case 0xC01D:
-					return SetBit7(_keyboard.Latch, IsHires);
+					return SetBit7(Keyboard.Latch, IsHires);
 
 				case 0xC01E:
-					return SetBit7(_keyboard.Latch, IsCharSetAlternate);
+					return SetBit7(Keyboard.Latch, IsCharSetAlternate);
 
 				case 0xC01F:
-					return SetBit7(_keyboard.Latch, Is80Columns);
+					return SetBit7(Keyboard.Latch, Is80Columns);
 
 				case 0xC020:
 				case 0xC021:
@@ -402,7 +399,7 @@ namespace Jellyfish.Virtu
 				case 0xC03D:
 				case 0xC03E:
 				case 0xC03F:
-					_speaker.ToggleOutput();
+					Speaker.ToggleOutput();
 					break;
 
 				case 0xC040:
@@ -640,7 +637,7 @@ namespace Jellyfish.Virtu
 				case 0xC0ED:
 				case 0xC0EE:
 				case 0xC0EF:
-					return _slot6.ReadIoRegionC0C0(address);
+					return DiskIIController.ReadIoRegionC0C0(address);
 
 				case 0xC0F0:
 				case 0xC0F1:
@@ -771,7 +768,7 @@ namespace Jellyfish.Virtu
 				case 0xC01D:
 				case 0xC01E:
 				case 0xC01F:
-					_keyboard.ResetStrobe();
+					Keyboard.ResetStrobe();
 					break;
 
 				case 0xC020:
@@ -809,7 +806,7 @@ namespace Jellyfish.Virtu
 				case 0xC03D:
 				case 0xC03E:
 				case 0xC03F:
-					_speaker.ToggleOutput();
+					Speaker.ToggleOutput();
 					break;
 
 				case 0xC040:
@@ -1038,7 +1035,7 @@ namespace Jellyfish.Virtu
 				case 0xC0ED:
 				case 0xC0EE:
 				case 0xC0EF:
-					_slot6.WriteIoRegionC0C0(address, data);
+					DiskIIController.WriteIoRegionC0C0(address, data);
 					break;
 
 				case 0xC0F0:
