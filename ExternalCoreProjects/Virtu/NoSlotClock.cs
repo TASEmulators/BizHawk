@@ -13,10 +13,7 @@ namespace Jellyfish.Virtu
 		public NoSlotClock(Video video)
 		{
 			_video = video;
-		}
 
-		internal void Initialize()
-		{
 			_clockEnabled = false;
 			_writeEnabled = true;
 			_clockRegister = new RingRegister(0x0, 0x1);

@@ -31,20 +31,7 @@ namespace Jellyfish.Virtu
 				FlushRowMode0, FlushRowMode1, FlushRowMode2, FlushRowMode3, FlushRowMode4, FlushRowMode5, FlushRowMode6, FlushRowMode7,
 				FlushRowMode8, FlushRowMode9, FlushRowModeA, FlushRowModeB, FlushRowModeC, FlushRowModeD, FlushRowModeE, FlushRowModeF
 			};
-		}
 
-		// ReSharper disable once UnusedMember.Global
-		public int[] GetVideoBuffer() => Framebuffer;
-
-		[OnDeserialized]
-		private void OnDeserialized(StreamingContext context)
-		{
-			// the VideoService forgets all of its information on LoadState
-			DirtyScreen();
-		}
-
-		internal void Initialize()
-		{
 			unchecked
 			{
 				_colorBlack = (int)0xFF000000; // BGRA
@@ -76,6 +63,16 @@ namespace Jellyfish.Virtu
 			_events.AddEvent(_cyclesPerVBlankPreset, _leaveVBlankEvent); // align flush events with scanner; assumes vcount preset at start of frame [3-15, 3-16]
 			_events.AddEvent(_cyclesPerVSync, _resetVSyncEvent);
 			_events.AddEvent(_cyclesPerFlash, _inverseTextEvent);
+		}
+
+		// ReSharper disable once UnusedMember.Global
+		public int[] GetVideoBuffer() => Framebuffer;
+
+		[OnDeserialized]
+		private void OnDeserialized(StreamingContext context)
+		{
+			// the VideoService forgets all of its information on LoadState
+			DirtyScreen();
 		}
 
 		internal void Reset()
