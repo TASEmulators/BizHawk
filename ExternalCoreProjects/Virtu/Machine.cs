@@ -34,7 +34,6 @@ namespace Jellyfish.Virtu
 
 		public void BizInitialize()
 		{
-			Cpu.Initialize();
 			Memory.Initialize();
 			Speaker.Initialize();
 			Video.Initialize();

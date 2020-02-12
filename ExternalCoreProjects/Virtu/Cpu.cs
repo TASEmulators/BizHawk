@@ -19,6 +19,11 @@ namespace Jellyfish.Virtu
 		{
 			_memory = memory;
 			InitializeOpCodeDelegates();
+
+			Is65C02 = true;
+			IsThrottled = false;
+			Multiplier = 1;
+			RS = 0xFF;
 		}
 
 		private void InitializeOpCodeDelegates()
@@ -158,14 +163,6 @@ namespace Jellyfish.Virtu
 				Execute65X02SedF8, Execute65C02SbcF9, Execute65C02PlxFA, Execute65C02NopFB,
 				Execute65C02NopFC, Execute65C02SbcFD, Execute65C02IncFE, Execute65C02NopFF
 			};
-		}
-
-		internal void Initialize()
-		{
-			Is65C02 = true;
-			IsThrottled = false;
-			Multiplier = 1;
-			RS = 0xFF;
 		}
 
 		internal void Reset()
