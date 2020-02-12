@@ -41,7 +41,7 @@ namespace Jellyfish.Virtu
 
 		public void BizFrameAdvance(IEnumerable<string> buttons)
 		{
-			Lagged = true;
+			Memory.Lagged = true;
 			Slot6.DriveLight = false;
 
 			Keyboard.SetKeys(buttons);
@@ -58,8 +58,6 @@ namespace Jellyfish.Virtu
 				Events.HandleEvents(Cpu.Execute());
 			}
 		}
-
-		public bool Lagged { get; set; }
 
 		public MachineEvents Events { get; set; }
 		public Memory Memory { get; private set; }

@@ -25,6 +25,8 @@ namespace Jellyfish.Virtu
 			InitializeWriteDelegates();
 		}
 
+		public bool Lagged { get; set; }
+
 		internal IList<IPeripheralCard> Slots => new List<IPeripheralCard>
 		{
 			null,
@@ -254,7 +256,7 @@ namespace Jellyfish.Virtu
 		{
 			if ((0xC000 <= address && address <= 0xC00F) || (0xC061 <= address && address <= 0xC067) || (0xC069 <= address && address <= 0xC06F))
 			{
-				_machine.Lagged = false;
+				Lagged = false;
 				InputCallback?.Invoke();
 			}
 

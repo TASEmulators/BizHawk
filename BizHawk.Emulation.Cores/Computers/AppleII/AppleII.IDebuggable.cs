@@ -156,12 +156,12 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			if (!machineInVblank && _machine.Video.IsVBlank) // Check if a frame has passed while stepping
 			{
 				Frame++;
-				if (_machine.Lagged)
+				if (_machine.Memory.Lagged)
 				{
 					LagCount++;
 				}
 
-				_machine.Lagged = true;
+				_machine.Memory.Lagged = true;
 				_machine.Slot6.DriveLight = false;
 			}
 		}
