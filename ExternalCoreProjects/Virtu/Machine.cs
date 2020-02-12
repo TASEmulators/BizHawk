@@ -12,7 +12,6 @@
 			Events = new MachineEvents();
 			Memory = new Memory(appleIIe);
 			Cpu = new Cpu(Memory);
-			Speaker = new Speaker(Events, Cpu);
 			Video = new Video(Events, Memory);
 
 			var emptySlot = new EmptyPeripheralCard(Video);
@@ -22,7 +21,7 @@
 				new Keyboard(),
 				new GamePort(),
 				new Cassette(),
-				Speaker,
+				new Speaker(Events, Cpu),
 				Video,
 				new NoSlotClock(Video),
 				emptySlot,
@@ -41,7 +40,6 @@
 		public MachineEvents Events { get; set; }
 		public Memory Memory { get; private set; }
 		public Cpu Cpu { get; private set; }
-		public Speaker Speaker { get; private set; }
 		public Video Video { get; private set; }
 	}
 }

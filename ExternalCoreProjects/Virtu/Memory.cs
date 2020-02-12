@@ -114,6 +114,8 @@ namespace Jellyfish.Virtu
 
 		public Keyboard Keyboard => _keyboard;
 
+		public Speaker Speaker => _speaker;
+
 		private void InitializeWriteDelegates()
 		{
 			WriteRamModeBankRegion = new Action<int, byte>[Video.ModeCount][][];
