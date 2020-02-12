@@ -181,8 +181,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		{
 			_machine.Memory.Lagged = true;
 			_machine.Memory.DiskIIController.DriveLight = false;
-
-			_machine.Keyboard.SetKeys(buttons);
+			_machine.Memory.Keyboard.SetKeys(buttons);
 
 			// frame begins at vsync.. beginning of vblank
 			while (_machine.Video.IsVBlank)

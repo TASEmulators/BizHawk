@@ -112,6 +112,8 @@ namespace Jellyfish.Virtu
 
 		public DiskIIController DiskIIController => _slot6;
 
+		public Keyboard Keyboard => _keyboard;
+
 		private void InitializeWriteDelegates()
 		{
 			WriteRamModeBankRegion = new Action<int, byte>[Video.ModeCount][][];
