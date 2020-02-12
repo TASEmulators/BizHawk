@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 
@@ -23,6 +24,18 @@ namespace Jellyfish.Virtu
 			_appleIIe = appleIIe;
 			InitializeWriteDelegates();
 		}
+
+		internal IList<IPeripheralCard> Slots => new List<IPeripheralCard>
+		{
+			null,
+			_machine.Slot1,
+			_machine.Slot2,
+			_machine.Slot3,
+			_machine.Slot4,
+			_machine.Slot5,
+			_machine.Slot6,
+			_machine.Slot7
+		};
 
 		private void InitializeWriteDelegates()
 		{
@@ -617,7 +630,7 @@ namespace Jellyfish.Virtu
 		private int ReadIoRegionC1C7(int address)
 		{
 			_slotRegionC8CF = (address >> 8) & 0x07;
-			return IsRomC1CFInternal ? _romInternalRegionC1CF[address - 0xC100] : _machine.Slots[_slotRegionC8CF].ReadIoRegionC1C7(address);
+			return IsRomC1CFInternal ? _romInternalRegionC1CF[address - 0xC100] : Slots[_slotRegionC8CF].ReadIoRegionC1C7(address);
 		}
 
 		private int ReadIoRegionC3C3(int address)
@@ -636,7 +649,7 @@ namespace Jellyfish.Virtu
 			{
 				SetRomC8CF(false); // $CFFF resets IntC8Rom [5-28, 7-21]
 			}
-			return (IsRomC1CFInternal || IsRomC8CFInternal) ? _noSlotClock.Read(address, _romInternalRegionC1CF[address - 0xC100]) : _machine.Slots[_slotRegionC8CF].ReadIoRegionC8CF(address);
+			return (IsRomC1CFInternal || IsRomC8CFInternal) ? _noSlotClock.Read(address, _romInternalRegionC1CF[address - 0xC100]) : Slots[_slotRegionC8CF].ReadIoRegionC8CF(address);
 		}
 
 		public int ReadRamMainRegion02BF(int address)
@@ -1017,7 +1030,7 @@ namespace Jellyfish.Virtu
 			_slotRegionC8CF = (address >> 8) & 0x07;
 			if (!IsRomC1CFInternal)
 			{
-				_machine.Slots[_slotRegionC8CF].WriteIoRegionC1C7(address, data);
+				Slots[_slotRegionC8CF].WriteIoRegionC1C7(address, data);
 			}
 		}
 
@@ -1050,7 +1063,7 @@ namespace Jellyfish.Virtu
 			}
 			else
 			{
-				_machine.Slots[_slotRegionC8CF].WriteIoRegionC8CF(address, data);
+				Slots[_slotRegionC8CF].WriteIoRegionC8CF(address, data);
 			}
 		}
 

@@ -101,7 +101,5 @@ namespace Jellyfish.Virtu
 		internal IPeripheralCard Slot5 { get; private set; }
 		public DiskIIController Slot6 { get; private set; }
 		internal IPeripheralCard Slot7 { get; private set; }
-
-		internal IList<IPeripheralCard> Slots => new List<IPeripheralCard> { null, Slot1, Slot2, Slot3, Slot4, Slot5, Slot6, Slot7 };
 	}
 }
