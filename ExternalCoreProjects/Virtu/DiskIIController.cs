@@ -20,18 +20,15 @@ namespace Jellyfish.Virtu
 			Drives = new List<DiskIIDrive> { Drive1, Drive2 };
 
 			BootDrive = Drive1;
-		}
 
-		public bool DriveLight { get; set; }
-
-		public void Reset()
-		{
 			_phaseStates = 0;
 			SetMotorOn(false);
 			SetDriveNumber(0);
 			_loadMode = false;
 			_writeMode = false;
 		}
+
+		public bool DriveLight { get; set; }
 
 		public void WriteIoRegionC8CF(int address, int data) => _video.ReadFloatingBus();
 

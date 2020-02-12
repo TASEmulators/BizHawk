@@ -10,14 +10,16 @@
 		public Machine(byte[] appleIIe, byte[] diskIIRom)
 		{
 			Events = new MachineEvents();
-			Memory = new Memory(this, appleIIe);
-			Cpu = new Cpu(Memory);
 			Keyboard = new Keyboard();
 			GamePort = new GamePort();
+			Cassette = new Cassette();
+
+			Memory = new Memory(this, appleIIe);
+			Cpu = new Cpu(Memory);
+			
 			Speaker = new Speaker(Events, Cpu);
 			Video = new Video(Events, Memory);
 			NoSlotClock = new NoSlotClock(Video);
-			Cassette = new Cassette();
 
 			var emptySlot = new EmptyPeripheralCard(Video);
 			Slot1 = emptySlot;
@@ -32,9 +34,7 @@
 
 			Cpu.Reset();
 			Memory.Reset();
-			Speaker.Reset();
 			Video.Reset();
-			Slot6.Reset();
 		}
 
 		public MachineEvents Events { get; set; }
