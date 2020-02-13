@@ -45,7 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Cassette.cs" />
+    <Compile Include="ICassette.cs" />
     <Compile Include="Cpu.cs" />
     <Compile Include="Cpu.Data.cs" DependentUpon="Cpu.cs" />
     <Compile Include="Disk525.cs" />

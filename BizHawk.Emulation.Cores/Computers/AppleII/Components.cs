@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			Memory.Initialize(
 				new Keyboard(),
 				new GamePort(),
-				new Cassette(),
+				new EmptyCassetteComponent(),
 				new Speaker(Events, Cpu),
 				Video,
 				new NoSlotClock(Video),
