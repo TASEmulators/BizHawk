@@ -7,7 +7,21 @@ namespace Jellyfish.Virtu
 {
 	internal enum MonitorType { Unknown, Standard, Enhanced }
 
-	public sealed partial class Memory
+	public interface IMemoryBus
+	{
+		bool Lagged { get; }
+
+		int ReadRomRegionE0FF(int address);
+
+		int Read(int address);
+		int Peek(int address);
+		int ReadOpcode(int address);
+		int ReadZeroPage(int address);
+		void WriteZeroPage(int address, int data);
+		void Write(int address, int data);
+	}
+
+	public sealed partial class Memory : IMemoryBus
 	{
 		private IGamePort _gamePort;
 		private ICassette _cassette;
@@ -41,7 +55,7 @@ namespace Jellyfish.Virtu
 			Keyboard keyboard,
 			IGamePort gamePort,
 			ICassette cassette,
-			Speaker speaker,
+			ISpeaker speaker,
 			IVideo video,
 			ISlotClock noSlotClock,
 			IPeripheralCard slot1,
@@ -95,7 +109,7 @@ namespace Jellyfish.Virtu
 
 		public bool Lagged { get; set; }
 
-		internal IList<IPeripheralCard> Slots => new List<IPeripheralCard>
+		private IList<IPeripheralCard> Slots => new List<IPeripheralCard>
 		{
 			null,
 			_slot1,
@@ -107,11 +121,11 @@ namespace Jellyfish.Virtu
 			_slot7
 		};
 
-		public DiskIIController DiskIIController { get; private set; }
+		public IDiskIIController DiskIIController { get; private set; }
 
 		public Keyboard Keyboard { get; private set; }
 
-		public Speaker Speaker { get; private set; }
+		public ISpeaker Speaker { get; private set; }
 
 		private void InitializeWriteDelegates()
 		{
@@ -201,7 +215,7 @@ namespace Jellyfish.Virtu
 
 		#region Core Read & Write
 
-		internal int ReadOpcode(int address)
+		public int ReadOpcode(int address)
 		{
 			int region = PageRegion[address >> 8];
 			var result = ((address & 0xF000) != 0xC000) ? _regionRead[region][address - RegionBaseAddress[region]] : ReadIoRegionC0CF(address);
@@ -224,7 +238,7 @@ namespace Jellyfish.Virtu
 			return ((address & 0xF000) != 0xC000) ? _regionRead[region][address - RegionBaseAddress[region]] : ReadIoRegionC0CF(address);
 		}
 
-		internal int ReadZeroPage(int address)
+		public int ReadZeroPage(int address)
 		{
 			ReadCallback?.Invoke((uint)address);
 			return _zeroPage[address];
@@ -245,7 +259,7 @@ namespace Jellyfish.Virtu
 			}
 		}
 
-		internal void WriteZeroPage(int address, int data)
+		public void WriteZeroPage(int address, int data)
 		{
 			WriteCallback?.Invoke((uint)address);
 			_zeroPage[address] = (byte)data;

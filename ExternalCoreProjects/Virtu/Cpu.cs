@@ -4,10 +4,18 @@ using Newtonsoft.Json;
 
 namespace Jellyfish.Virtu
 {
-	public sealed partial class Cpu
+	public interface ICpu
+	{
+		void Reset();
+		int Execute();
+		long Cycles { get; }
+		int Multiplier { get; }
+	}
+
+	public sealed partial class Cpu : ICpu
 	{
 		// ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private Memory _memory;
+		private IMemoryBus _memory;
 
 		// ReSharper disable once UnusedMember.Global
 		public Cpu()
@@ -15,7 +23,7 @@ namespace Jellyfish.Virtu
 			InitializeOpCodeDelegates();
 		}
 
-		public Cpu(Memory memory)
+		public Cpu(IMemoryBus memory)
 		{
 			_memory = memory;
 			InitializeOpCodeDelegates();
@@ -418,7 +426,6 @@ namespace Jellyfish.Virtu
 			RPC = (RPC + 1) & 0xFFFF;
 			_executeOpCode[OpCode]();
 			Cycles += CC;
-
 
 			return CC;
 		}
@@ -3414,7 +3421,7 @@ namespace Jellyfish.Virtu
 		}
 
 		internal bool IsThrottled { get; set; }
-		internal int Multiplier { get; set; }
+		public int Multiplier { get; set; }
 
 		public int RA { get; set; }
 		public int RX { get; set; }
@@ -3424,7 +3431,7 @@ namespace Jellyfish.Virtu
 		public int RPC { get; set; }
 		public int EA { get; private set; }
 		public int CC { get; private set; }
-		internal int OpCode { get; private set; }
+		public int OpCode { get; private set; }
 		public long Cycles { get; private set; }
 
 		[JsonIgnore]

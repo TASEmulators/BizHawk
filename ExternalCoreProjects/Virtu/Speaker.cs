@@ -4,16 +4,23 @@ using Newtonsoft.Json;
 
 namespace Jellyfish.Virtu
 {
-	public sealed class Speaker
+	public interface ISpeaker
+	{
+		void ToggleOutput();
+		void Clear();
+		void GetSamples(out short[] samples, out int nSamp);
+	}
+
+	public sealed class Speaker : ISpeaker
 	{
 		// ReSharper disable once FieldCanBeMadeReadOnly.Local
 		private MachineEvents _events;
 
 		// ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private Cpu _cpu;
+		private ICpu _cpu;
 
 		public Speaker() { }
-		public Speaker(MachineEvents events, Cpu cpu)
+		public Speaker(MachineEvents events, ICpu cpu)
 		{
 			_events = events;
 			_cpu = cpu;
@@ -56,7 +63,7 @@ namespace Jellyfish.Virtu
 
 		#endregion
 
-		internal void ToggleOutput()
+		public void ToggleOutput()
 		{
 			UpdateCycles();
 			_isHigh ^= true;

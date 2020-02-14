@@ -2,7 +2,13 @@
 
 namespace Jellyfish.Virtu
 {
-	public sealed class DiskIIController : IPeripheralCard
+	public interface IDiskIIController : IPeripheralCard
+	{
+		bool DriveLight { get; set; }
+		IList<DiskIIDrive> Drives { get; }
+	}
+
+	public sealed class DiskIIController : IDiskIIController
 	{
 		// ReSharper disable once FieldCanBeMadeReadOnly.Local
 		private Video _video;
@@ -234,7 +240,7 @@ namespace Jellyfish.Virtu
 		public DiskIIDrive Drive1 { get; private set; }
 		public DiskIIDrive Drive2 { get; private set; }
 
-		public List<DiskIIDrive> Drives { get; private set; }
+		public IList<DiskIIDrive> Drives { get; private set; }
 
 		public DiskIIDrive BootDrive { get; private set; }
 
