@@ -1,8 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
@@ -10,10 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public partial class NES : IStatable
 	{
-		public bool BinarySaveStatesPreferred
-		{
-			get { return false; }
-		}
+		public bool BinarySaveStatesPreferred => false;
 
 		public void SaveStateText(TextWriter writer)
 		{
@@ -39,8 +33,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public byte[] SaveStateBinary()
 		{
-			MemoryStream ms = new MemoryStream();
-			BinaryWriter bw = new BinaryWriter(ms);
+			using var ms = new MemoryStream();
+			using var bw = new BinaryWriter(ms);
 			SaveStateBinary(bw);
 			bw.Flush();
 			return ms.ToArray();
