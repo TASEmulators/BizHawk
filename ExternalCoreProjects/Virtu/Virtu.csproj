@@ -59,7 +59,7 @@
     <Compile Include="Memory.cs" />
     <Compile Include="Memory.Data.cs" DependentUpon="Memory.cs" />
     <Compile Include="NoSlotClock.cs" />
-    <Compile Include="PeripheralCard.cs" />
+    <Compile Include="IPeripheralCard.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Speaker.cs" />
     <Compile Include="Video.cs" />
