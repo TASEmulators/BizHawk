@@ -25,8 +25,6 @@ namespace Jellyfish.Virtu
 			_romRegionC1C7 = diskIIRom;
 			Drive1 = new DiskIIDrive(this);
 			Drive2 = new DiskIIDrive(this);
-			BootDrive = Drive1;
-
 			_phaseStates = 0;
 			SetMotorOn(false);
 			SetDriveNumber(0);
@@ -245,8 +243,6 @@ namespace Jellyfish.Virtu
 
 		// ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
 		public DiskIIDrive Drive2 { get; private set; }
-
-		public DiskIIDrive BootDrive { get; set; }
 
 		private const int Phase1On = 1 << 1;
 
