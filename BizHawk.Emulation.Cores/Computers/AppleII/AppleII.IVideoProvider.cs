@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 {
 	public partial class AppleII : IVideoProvider
 	{
-		public int[] GetVideoBuffer() => _machine.Video.VideoService.fb;
+		public int[] GetVideoBuffer() => _machine.Video.GetVideoBuffer();
 
 		// put together, these describe a metric on the screen
 		// they should define the smallest size that the buffer can be placed inside such that:

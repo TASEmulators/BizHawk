@@ -47,11 +47,9 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			_diskIIRom = comm.CoreFileProvider.GetFirmware(
 				SystemId, "DiskII", true, "The DiskII firmware is required");
 
-			_machine = new Machine(_appleIIRom, _diskIIRom);
+			_machine = new Components(_appleIIRom, _diskIIRom);
 			
-			_machine.BizInitialize();
-
-			// make a writeable memory stream cloned from the rom.
+			// make a writable memory stream cloned from the rom.
 			// for junk.dsk the .dsk is important because it determines the format from that
 			InitDisk();
 
@@ -69,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		private readonly List<byte[]> _romSet = new List<byte[]>();
 		private readonly ITraceable _tracer;
 
-		private Machine _machine;
+		private Components _machine;
 		private byte[] _disk1;
 		private readonly byte[] _appleIIRom;
 		private readonly byte[] _diskIIRom;
@@ -109,14 +107,12 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		{
 			_disk1 = _romSet[CurrentDisk];
 
-			// make a writeable memory stream cloned from the rom.
+			// make a writable memory stream cloned from the rom.
 			// for junk.dsk the .dsk is important because it determines the format from that
-			_machine.BootDiskII.Drives[0].InsertDisk("junk.dsk", (byte[])_disk1.Clone(), false);
+			_machine.Memory.DiskIIController.Drive1.InsertDisk("junk.dsk", (byte[])_disk1.Clone(), false);
 		}
 
 		private static readonly List<string> RealButtons = new List<string>(Keyboard.GetKeyNames()
-			//.Where(k => k != "White Apple") // Hack because these buttons aren't wired up yet
-			//.Where(k => k != "Black Apple")
 			.Where(k => k != "Reset"));
 
 		private static readonly List<string> ExtraButtons = new List<string>
@@ -126,7 +122,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		};
 
 		public bool DriveLightEnabled => true;
-		public bool DriveLightOn => _machine.DriveLight;
+		public bool DriveLightOn => _machine.Memory.DiskIIController.DriveLight;
 
 		private bool _nextPressed;
 		private bool _prevPressed;
@@ -140,7 +136,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			});
 		}
 
-		private void FrameAdv(IController controller, bool render, bool rendersound)
+		private void FrameAdv(IController controller, bool render, bool renderSound)
 		{
 			if (_tracer.Enabled)
 			{
@@ -172,13 +168,32 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 				_prevPressed = false;
 			}
 
-			_machine.BizFrameAdvance(RealButtons.Where(controller.IsPressed));
+			MachineAdvance(RealButtons.Where(controller.IsPressed));
 			if (IsLagFrame)
 			{
 				LagCount++;
 			}
 
 			Frame++;
+		}
+
+		private void MachineAdvance(IEnumerable<string> buttons)
+		{
+			_machine.Memory.Lagged = true;
+			_machine.Memory.DiskIIController.DriveLight = false;
+			_machine.Memory.Keyboard.SetKeys(buttons);
+
+			// frame begins at vsync.. beginning of vblank
+			while (_machine.Video.IsVBlank)
+			{
+				_machine.Events.HandleEvents(_machine.Cpu.Execute());
+			}
+
+			// now, while not vblank, we're in a frame
+			while (!_machine.Video.IsVBlank)
+			{
+				_machine.Events.HandleEvents(_machine.Cpu.Execute());
+			}
 		}
 
 		private void SetCallbacks()

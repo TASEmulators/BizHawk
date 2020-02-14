@@ -1,32 +1,30 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using Jellyfish.Library;
-using Jellyfish.Virtu.Services;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Jellyfish.Virtu
 {
-	public sealed class DiskIIController : PeripheralCard
+	public interface IDiskIIController : IPeripheralCard
 	{
+		bool DriveLight { get; set; }
+
+		// ReSharper disable once UnusedMemberInSuper.Global
+		DiskIIDrive Drive1 { get; }
+	}
+
+	// ReSharper disable once UnusedMember.Global
+	public sealed class DiskIIController : IDiskIIController
+	{
+		// ReSharper disable once FieldCanBeMadeReadOnly.Local
+		private IVideo _video;
+
+		// ReSharper disable once UnusedMember.Global
 		public DiskIIController() { }
-		public DiskIIController(Machine machine, byte[] diskIIRom) :
-			base(machine)
+
+		public DiskIIController(IVideo video, byte[] diskIIRom)
 		{
+			_video = video;
 			_romRegionC1C7 = diskIIRom;
-			Drive1 = new DiskIIDrive(machine);
-			Drive2 = new DiskIIDrive(machine);
-
-			Drives = new List<DiskIIDrive> { Drive1, Drive2 };
-
-			BootDrive = Drive1;
-		}
-
-		public override void Initialize() { }
-
-		public override void Reset()
-		{
+			Drive1 = new DiskIIDrive(this);
+			Drive2 = new DiskIIDrive(this);
 			_phaseStates = 0;
 			SetMotorOn(false);
 			SetDriveNumber(0);
@@ -34,7 +32,13 @@ namespace Jellyfish.Virtu
 			_writeMode = false;
 		}
 
-		public override int ReadIoRegionC0C0(int address)
+		public bool DriveLight { get; set; }
+
+		public IList<DiskIIDrive> Drives => new List<DiskIIDrive> { Drive1, Drive2 };
+
+		public void WriteIoRegionC8CF(int address, int data) => _video.ReadFloatingBus();
+
+		public int ReadIoRegionC0C0(int address)
 		{
 			switch (address & 0xF)
 			{
@@ -73,10 +77,8 @@ namespace Jellyfish.Virtu
 						{
 							return _latch = Drives[_driveNumber].Read();
 						}
-						else
-						{
-							WriteLatch();
-						}
+
+						WriteLatch();
 					}
 					break;
 
@@ -116,15 +118,17 @@ namespace Jellyfish.Virtu
 				return _driveSpin ? 0x7E : 0x7F;
 			}
 
-			return ReadFloatingBus();
+			return _video.ReadFloatingBus();
 		}
 
-		public override int ReadIoRegionC1C7(int address)
+		public int ReadIoRegionC1C7(int address)
 		{
 			return _romRegionC1C7[address & 0xFF];
 		}
 
-		public override void WriteIoRegionC0C0(int address, int data)
+		public int ReadIoRegionC8CF(int address) => _video.ReadFloatingBus();
+
+		public void WriteIoRegionC0C0(int address, int data)
 		{
 			switch (address & 0xF)
 			{
@@ -186,6 +190,8 @@ namespace Jellyfish.Virtu
 			}
 		}
 
+		public void WriteIoRegionC1C7(int address, int data) { }
+
 		private void WriteLatch()
 		{
 			// write protect is forced if phase 1 is on [F9.7]
@@ -231,17 +237,14 @@ namespace Jellyfish.Virtu
 			}
 		}
 
+		// ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
 		public DiskIIDrive Drive1 { get; private set; }
+
+
+		// ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
 		public DiskIIDrive Drive2 { get; private set; }
 
-		public List<DiskIIDrive> Drives { get; private set; }
-
-		public DiskIIDrive BootDrive { get; private set; }
-
-		private const int Phase0On = 1 << 0;
 		private const int Phase1On = 1 << 1;
-		private const int Phase2On = 1 << 2;
-		private const int Phase3On = 1 << 3;
 
 		private int _latch;
 		private int _phaseStates;

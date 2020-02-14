@@ -8,8 +8,8 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		public bool IsLagFrame
 		{
-			get => _machine.Lagged;
-			set => _machine.Lagged = value;
+			get => _machine.Memory.Lagged;
+			set => _machine.Memory.Lagged = value;
 		}
 
 		public IInputCallbackSystem InputCallbacks { get; } = new InputCallbackSystem();

@@ -49,10 +49,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		// as best as I can tell, the serializers refer to depth, but don't actually need to work except when doing certain error recovery
 		public override int Depth => 0;
 
-		public override string Path
-		{
-			get { throw new NotImplementedException(); }
-		}
+		public override string Path => throw new NotImplementedException();
 
 		public override Type ValueType => _v?.GetType();
 
