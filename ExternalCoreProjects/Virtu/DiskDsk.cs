@@ -56,7 +56,9 @@ namespace Jellyfish.Virtu
 		public override void WriteTrack(int number, int fraction, byte[] buffer)
 		{
 			if (IsWriteProtected)
+			{
 				return;
+			}
 
 			int track = number / 2;
 
@@ -67,41 +69,62 @@ namespace Jellyfish.Virtu
 			for (int sector = 0; sector < SectorCount; sector++)
 			{
 				if (!Read3Nibbles(0xD5, 0xAA, 0x96, 0x304))
+				{
 					break; // no address prologue
+				}
 
 				/*int readVolume = */
 				ReadNibble44();
 
 				int readTrack = ReadNibble44();
 				if (readTrack != track)
+				{
 					break; // bad track number
+				}
 
 				int readSector = ReadNibble44();
 				if (readSector > SectorCount)
+				{
 					break; // bad sector number
+				}
+
 				if ((sectorsDone & (0x1 << readSector)) != 0)
+				{
 					break; // already done this sector
+				}
 
 				if (ReadNibble44() != (Volume ^ readTrack ^ readSector))
+				{
 					break; // bad address checksum
+				}
 
-				if ((ReadNibble() != 0xDE) || (ReadNibble() != 0xAA))
+				if (ReadNibble() != 0xDE || ReadNibble() != 0xAA)
+				{
 					break; // bad address epilogue
+				}
 
 				if (!Read3Nibbles(0xD5, 0xAA, 0xAD, 0x20))
+				{
 					break; // no data prologue
+				}
 
 				if (!ReadDataNibbles((track * SectorCount + _sectorSkew[sector]) * SectorSize))
+				{
 					break; // bad data checksum
+				}
 
-				if ((ReadNibble() != 0xDE) || (ReadNibble() != 0xAA))
+				if (ReadNibble() != 0xDE || ReadNibble() != 0xAA)
+				{
 					break; // bad data epilogue
+				}
 
 				sectorsDone |= 0x1 << sector;
 			}
 
 			if (sectorsDone != 0xFFFF)
+			{
 				throw new InvalidOperationException("disk error"); // TODO: we should alert the user and "dump" a NIB
+			}
 		}
 
 		private byte ReadNibble()
@@ -206,14 +229,14 @@ namespace Jellyfish.Virtu
 
 		private void WriteDataNibbles(int sectorOffset)
 		{
-			byte a, x, y;
+			byte a, x;
 
 			for (x = 0; x < SecondaryBufferLength; x++)
 			{
 				_secondaryBuffer[x] = 0; // zero secondary buffer
 			}
 
-			y = 2;
+			byte y = 2;
 			do // fill buffers
 			{
 				x = 0;
