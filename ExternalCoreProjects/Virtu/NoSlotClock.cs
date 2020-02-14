@@ -8,6 +8,7 @@ namespace Jellyfish.Virtu
 		void Write(int address);
 	}
 
+	// ReSharper disable once UnusedMember.Global
 	public sealed class NoSlotClock : ISlotClock
 	{
 		// ReSharper disable once FieldCanBeMadeReadOnly.Local

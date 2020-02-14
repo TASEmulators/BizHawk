@@ -28,10 +28,10 @@ namespace Jellyfish.Virtu
 		private MachineEvents _events;
 
 		// ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private Memory _memory;
+		private IMemoryBus _memory;
 
 		public Video() { }
-		public Video(MachineEvents events, Memory memory)
+		public Video(MachineEvents events, IMemoryBus memory)
 		{
 			_events = events;
 			_memory = memory;

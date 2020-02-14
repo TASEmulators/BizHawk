@@ -13,12 +13,13 @@ namespace Jellyfish.Virtu
 		public DiskIIDrive(IDiskIIController diskController)
 		{
 			_diskController = diskController;
-			DriveArmStepDelta[0] = new[] { 0, 0, 1, 1, 0, 0, 1, 1, -1, -1, 0, 0, -1, -1, 0, 0 }; // phase 0
-			DriveArmStepDelta[1] = new[] { 0, -1, 0, -1, 1, 0, 1, 0, 0, -1, 0, -1, 1, 0, 1, 0 }; // phase 1
-			DriveArmStepDelta[2] = new[] { 0, 0, -1, -1, 0, 0, -1, -1, 1, 1, 0, 0, 1, 1, 0, 0 }; // phase 2
-			DriveArmStepDelta[3] = new[] { 0, 1, 0, 1, -1, 0, -1, 0, 0, 1, 0, 1, -1, 0, -1, 0 }; // phase 3
+			_driveArmStepDelta[0] = new[] { 0, 0, 1, 1, 0, 0, 1, 1, -1, -1, 0, 0, -1, -1, 0, 0 }; // phase 0
+			_driveArmStepDelta[1] = new[] { 0, -1, 0, -1, 1, 0, 1, 0, 0, -1, 0, -1, 1, 0, 1, 0 }; // phase 1
+			_driveArmStepDelta[2] = new[] { 0, 0, -1, -1, 0, 0, -1, -1, 1, 1, 0, 0, 1, 1, 0, 0 }; // phase 2
+			_driveArmStepDelta[3] = new[] { 0, 1, 0, 1, -1, 0, -1, 0, 0, 1, 0, 1, -1, 0, -1, 0 }; // phase 3
 		}
 
+		// ReSharper disable once UnusedMember.Global
 		public void InsertDisk(string name, byte[] data, bool isWriteProtected)
 		{
 			FlushTrack();
@@ -28,13 +29,13 @@ namespace Jellyfish.Virtu
 
 		private static int Clamp(int value, int min, int max)
 		{
-			return (value < min) ? min : (value > max) ? max : value;
+			return value < min ? min : value > max ? max : value;
 		}
 
 		internal void ApplyPhaseChange(int phaseState)
 		{
 			// step the drive head according to stepper magnet changes
-			int delta = DriveArmStepDelta[_trackNumber & 0x3][phaseState];
+			int delta = _driveArmStepDelta[_trackNumber & 0x3][phaseState];
 			if (delta != 0)
 			{
 				int newTrackNumber = Clamp(_trackNumber + delta, 0, TrackNumberMax);
@@ -65,7 +66,7 @@ namespace Jellyfish.Virtu
 			return 0x80;
 		}
 
-		public void Write(int data)
+		internal void Write(int data)
 		{
 			if (LoadTrack())
 			{
@@ -91,7 +92,7 @@ namespace Jellyfish.Virtu
 			return _trackLoaded;
 		}
 
-		public void FlushTrack()
+		internal void FlushTrack()
 		{
 			if (_trackChanged)
 			{
@@ -107,13 +108,17 @@ namespace Jellyfish.Virtu
 
 		private const int PhaseCount = 4;
 
-		private int[][] DriveArmStepDelta = new int[PhaseCount][];
+		// ReSharper disable once FieldCanBeMadeReadOnly.Local
+		private int[][] _driveArmStepDelta = new int[PhaseCount][];
 
 		private bool _trackLoaded;
 		private bool _trackChanged;
 		private int _trackNumber;
 		private int _trackOffset;
+
+		// ReSharper disable once FieldCanBeMadeReadOnly.Local
 		private byte[] _trackData = new byte[Disk525.TrackSize];
+
 		private Disk525 _disk;
 	}
 }

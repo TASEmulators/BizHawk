@@ -159,6 +159,7 @@ namespace Jellyfish.Virtu
 			}
 		}
 
+		// ReSharper disable once UnusedMember.Global
 		public static IEnumerable<string> GetKeyNames() => DescriptionsToKeys.Keys.ToList();
 
 		private static readonly uint[] KeyAsciiData =
@@ -232,6 +233,7 @@ namespace Jellyfish.Virtu
 			return (int)(KeyAsciiData[key] >> s & 0x7f);
 		}
 
+		// ReSharper disable once InconsistentNaming
 		private static Dictionary<string, Keys> DescriptionsToKeys = new Dictionary<string, Keys>();
 
 		private static Keys FromStrings(IEnumerable<string> keynames)
@@ -241,6 +243,7 @@ namespace Jellyfish.Virtu
 			{
 				ret |= DescriptionsToKeys[s];
 			}
+
 			return ret;
 		}
 
@@ -250,6 +253,7 @@ namespace Jellyfish.Virtu
 		/// <summary>
 		/// Call this at 60hz with all of the currently pressed keys
 		/// </summary>
+		// ReSharper disable once UnusedMember.Global
 		public void SetKeys(IEnumerable<string> keynames)
 		{
 			Keys keys = FromStrings(keynames);
@@ -263,11 +267,11 @@ namespace Jellyfish.Virtu
 			bool shift = keys.HasFlag(Keys.Shift);
 
 			bool caps = keys.HasFlag(Keys.CapsLock);
-			if (caps && !CurrentCapsLockState) // leading edge: toggle CapsLock
+			if (caps && !_currentCapsLockState) // leading edge: toggle CapsLock
 			{
 				CapsActive ^= true;
 			}
-			CurrentCapsLockState = caps;
+			_currentCapsLockState = caps;
 			shift ^= CapsActive;
 
 			// work with only the first 56 real keys
@@ -277,7 +281,7 @@ namespace Jellyfish.Virtu
 
 			if (!IsAnyKeyDown)
 			{
-				CurrentKeyPressed = -1;
+				_currentKeyPressed = -1;
 				return;
 			}
 
@@ -294,26 +298,26 @@ namespace Jellyfish.Virtu
 				newKeyPressed++;
 			}
 
-			if (newKeyPressed != CurrentKeyPressed)
+			if (newKeyPressed != _currentKeyPressed)
 			{
 				// strobe, start new repeat cycle
 				Strobe = true;
 				Latch = KeyToAscii(newKeyPressed, control, shift);
-				FramesToRepeat = KeyRepeatStart;
+				_framesToRepeat = KeyRepeatStart;
 			}
 			else
 			{
 				// check for repeat
-				FramesToRepeat--;
-				if (FramesToRepeat == 0)
+				_framesToRepeat--;
+				if (_framesToRepeat == 0)
 				{
 					Strobe = true;
 					Latch = KeyToAscii(newKeyPressed, control, shift);
-					FramesToRepeat = KeyRepeatRate;
+					_framesToRepeat = KeyRepeatRate;
 				}
 			}
 
-			CurrentKeyPressed = newKeyPressed;
+			_currentKeyPressed = newKeyPressed;
 		}
 
 		public void ResetStrobe()
@@ -325,6 +329,7 @@ namespace Jellyfish.Virtu
 		/// true if any of the 56 basic keys are pressed
 		/// </summary>
 		public bool IsAnyKeyDown { get; private set; }
+
 		/// <summary>
 		/// the currently latched key; 7 bits.
 		/// </summary>
@@ -336,14 +341,14 @@ namespace Jellyfish.Virtu
 		/// </summary>
 		private bool CapsActive { get; set; }
 
-		private bool CurrentCapsLockState;
+		private bool _currentCapsLockState;
 
 		/// <summary>
 		/// 0-55, -1 = none
 		/// </summary>
-		private int CurrentKeyPressed;
+		private int _currentKeyPressed;
 
-		private int FramesToRepeat;
+		private int _framesToRepeat;
 
 		private const int KeyRepeatRate = 6; // 10hz
 		private const int KeyRepeatStart = 40; // ~666ms?

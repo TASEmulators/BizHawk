@@ -7,7 +7,11 @@ namespace Jellyfish.Virtu
 	public interface ISpeaker
 	{
 		void ToggleOutput();
+
+		// ReSharper disable once UnusedMember.Global
 		void Clear();
+
+		// ReSharper disable once UnusedMember.Global
 		void GetSamples(out short[] samples, out int nSamp);
 	}
 
@@ -34,6 +38,7 @@ namespace Jellyfish.Virtu
 
 		private const int CyclesPerFlush = 23;
 
+		// ReSharper disable once FieldCanBeMadeReadOnly.Local
 		private Action _flushOutputEvent;
 
 		private bool _isHigh;

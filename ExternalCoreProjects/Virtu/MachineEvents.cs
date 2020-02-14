@@ -80,6 +80,7 @@ namespace Jellyfish.Virtu
 			return 0;
 		}
 
+		// ReSharper disable once UnusedMember.Global
 		public void HandleEvents(int delta)
 		{
 			var node = _used.First;

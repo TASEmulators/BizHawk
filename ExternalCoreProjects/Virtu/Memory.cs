@@ -5,13 +5,16 @@ using Newtonsoft.Json;
 
 namespace Jellyfish.Virtu
 {
-	internal enum MonitorType { Unknown, Standard, Enhanced }
+	public enum MonitorType { Unknown, Standard, Enhanced }
 
 	public interface IMemoryBus
 	{
+		// ReSharper disable once UnusedMemberInSuper.Global
 		bool Lagged { get; }
 
 		int ReadRomRegionE0FF(int address);
+		int ReadRamMainRegion02BF(int address);
+		int ReadRamAuxRegion02BF(int address);
 
 		int Read(int address);
 		int Peek(int address);
@@ -19,6 +22,15 @@ namespace Jellyfish.Virtu
 		int ReadZeroPage(int address);
 		void WriteZeroPage(int address, int data);
 		void Write(int address, int data);
+
+		bool IsText { get; }
+		bool IsMixed { get; }
+		bool IsHires { get; }
+		bool IsVideoPage2 { get; }
+		bool IsCharSetAlternate { get; }
+
+		int VideoMode { get; }
+		MonitorType Monitor { get; }
 	}
 
 	public sealed partial class Memory : IMemoryBus
@@ -45,12 +57,14 @@ namespace Jellyfish.Virtu
 			InitializeWriteDelegates();
 		}
 
+		// ReSharper disable once UnusedMember.Global
 		public Memory(byte[] appleIIe)
 		{
 			_appleIIe = appleIIe;
 			InitializeWriteDelegates();
 		}
 
+		// ReSharper disable once UnusedMember.Global
 		public void Initialize(
 			Keyboard keyboard,
 			IGamePort gamePort,
@@ -97,11 +111,13 @@ namespace Jellyfish.Virtu
 				.Take(_romRegionE0FF.Length)
 				.ToArray();
 
-			if ((ReadRomRegionE0FF(0xFBB3) == 0x06) && (ReadRomRegionE0FF(0xFBBF) == 0xC1))
+			if (ReadRomRegionE0FF(0xFBB3) == 0x06 && ReadRomRegionE0FF(0xFBBF) == 0xC1)
 			{
 				Monitor = MonitorType.Standard;
 			}
-			else if ((ReadRomRegionE0FF(0xFBB3) == 0x06) && (ReadRomRegionE0FF(0xFBBF) == 0x00) && (ReadRomRegionE0FF(0xFBC0) == 0xE0))
+			else if (ReadRomRegionE0FF(0xFBB3) == 0x06
+				&& ReadRomRegionE0FF(0xFBBF) == 0x00
+				&& ReadRomRegionE0FF(0xFBC0) == 0xE0)
 			{
 				Monitor = MonitorType.Enhanced;
 			}
@@ -201,6 +217,7 @@ namespace Jellyfish.Virtu
 			_writeRomRegionD0FF = WriteRomRegionD0FF;
 		}
 
+		// ReSharper disable once UnusedMember.Global
 		public void Reset() // [7-3]
 		{
 			ResetState(State80Col | State80Store | StateAltChrSet | StateAltZP | StateBank1 | StateHRamRd | StateHRamPreWrt | StateHRamWrt | // HRamWrt' [5-23]
@@ -227,7 +244,9 @@ namespace Jellyfish.Virtu
 		public int Read(int address)
 		{
 			int region = PageRegion[address >> 8];
-			var result = ((address & 0xF000) != 0xC000) ? _regionRead[region][address - RegionBaseAddress[region]] : ReadIoRegionC0CF(address);
+			var result = (address & 0xF000) != 0xC000
+				? _regionRead[region][address - RegionBaseAddress[region]]
+				: ReadIoRegionC0CF(address);
 			ReadCallback?.Invoke((uint)address);
 			return result;
 		}
@@ -235,7 +254,9 @@ namespace Jellyfish.Virtu
 		public int Peek(int address)
 		{
 			int region = PageRegion[address >> 8];
-			return ((address & 0xF000) != 0xC000) ? _regionRead[region][address - RegionBaseAddress[region]] : ReadIoRegionC0CF(address);
+			return (address & 0xF000) != 0xC000
+				? _regionRead[region][address - RegionBaseAddress[region]]
+				: ReadIoRegionC0CF(address);
 		}
 
 		public int ReadZeroPage(int address)
@@ -303,7 +324,7 @@ namespace Jellyfish.Virtu
 
 		private int ReadIoRegionC0C0(int address)
 		{
-			if ((0xC000 <= address && address <= 0xC00F) || (0xC061 <= address && address <= 0xC067) || (0xC069 <= address && address <= 0xC06F))
+			if (0xC000 <= address && address <= 0xC00F || 0xC061 <= address && address <= 0xC067 || 0xC069 <= address && address <= 0xC06F)
 			{
 				Lagged = false;
 				InputCallback?.Invoke();
@@ -691,7 +712,10 @@ namespace Jellyfish.Virtu
 			{
 				SetRomC8CF(true); // $C3XX sets IntC8Rom; inhibits I/O Strobe' [5-28, 7-21]
 			}
-			return (IsRomC1CFInternal || !IsRomC3C3External) ? _noSlotClock.Read(address, _romInternalRegionC1CF[address - 0xC100]) : _slot3.ReadIoRegionC1C7(address);
+
+			return IsRomC1CFInternal || !IsRomC3C3External
+				? _noSlotClock.Read(address, _romInternalRegionC1CF[address - 0xC100])
+				: _slot3.ReadIoRegionC1C7(address);
 		}
 
 		private int ReadIoRegionC8CF(int address)
@@ -700,7 +724,9 @@ namespace Jellyfish.Virtu
 			{
 				SetRomC8CF(false); // $CFFF resets IntC8Rom [5-28, 7-21]
 			}
-			return (IsRomC1CFInternal || IsRomC8CFInternal) ? _noSlotClock.Read(address, _romInternalRegionC1CF[address - 0xC100]) : Slots[_slotRegionC8CF].ReadIoRegionC8CF(address);
+			return IsRomC1CFInternal || IsRomC8CFInternal
+				? _noSlotClock.Read(address, _romInternalRegionC1CF[address - 0xC100])
+				: Slots[_slotRegionC8CF].ReadIoRegionC8CF(address);
 		}
 
 		public int ReadRamMainRegion02BF(int address)
@@ -1993,21 +2019,22 @@ namespace Jellyfish.Virtu
 				MapRegionD0FF();
 			}
 		}
+
 		#endregion
 
 		private static int SetBit7(int data, bool value)
 		{
-			return value ? (data | 0x80) : (data & 0x7F);
+			return value ? data | 0x80 : data & 0x7F;
 		}
 
 		private static bool TestBit(int data, int bit)
 		{
-			return ((data & (0x1 << bit)) != 0x0);
+			return (data & (0x1 << bit)) != 0x0;
 		}
 
 		private static bool TestMask(int data, int mask, int value)
 		{
-			return ((data & mask) == value);
+			return (data & mask) == value;
 		}
 
 		private void ResetState(int mask)
@@ -2034,28 +2061,28 @@ namespace Jellyfish.Virtu
 
 		private bool TestState(int mask)
 		{
-			return ((_state & mask) != 0x0);
+			return (_state & mask) != 0x0;
 		}
 
 		private bool TestState(int mask, bool value)
 		{
-			return (((_state & mask) != 0x0) == value);
+			return ((_state & mask) != 0x0) == value;
 		}
 
 		private bool TestState(int mask, int value)
 		{
-			return ((_state & mask) == value);
+			return (_state & mask) == value;
 		}
 
-		internal bool Is80Columns => TestState(State80Col);
-		internal bool Is80Store => TestState(State80Store);
-		internal bool IsCharSetAlternate => TestState(StateAltChrSet);
-		internal bool IsHighRamAux => IsZeroPageAux;
-		internal bool IsHighRamBank1 => TestState(StateBank1);
-		internal bool IsHighRamRead => TestState(StateHRamRd);
-		internal bool IsHighRamWrite => !TestState(StateHRamWrt); // HRamWrt' [5-23]
-		internal bool IsHires => TestState(StateHires);
-		internal bool IsMixed => TestState(StateMixed);
+		private bool Is80Columns => TestState(State80Col);
+		private bool Is80Store => TestState(State80Store);
+		public bool IsCharSetAlternate => TestState(StateAltChrSet);
+		private bool IsHighRamAux => IsZeroPageAux;
+		private bool IsHighRamBank1 => TestState(StateBank1);
+		private bool IsHighRamRead => TestState(StateHRamRd);
+		private bool IsHighRamWrite => !TestState(StateHRamWrt); // HRamWrt' [5-23]
+		public bool IsHires => TestState(StateHires);
+		public bool IsMixed => TestState(StateMixed);
 		internal bool IsPage2 => TestState(StatePage2);
 		internal bool IsRamReadAux => TestState(StateRamRd);
 		internal bool IsRamReadAuxRegion0407 => Is80Store ? IsPage2 : IsRamReadAux;
@@ -2066,12 +2093,12 @@ namespace Jellyfish.Virtu
 		internal bool IsRomC1CFInternal => TestState(StateIntCXRom);
 		internal bool IsRomC3C3External => TestState(StateSlotC3Rom);
 		internal bool IsRomC8CFInternal => TestState(StateIntC8Rom);
-		internal bool IsText => TestState(StateText);
-		internal bool IsVideoPage2 => TestState(State80Store | StatePage2, StatePage2); // 80Store inhibits video Page2 [5-7, 8-19]
+		public bool IsText => TestState(StateText);
+		public bool IsVideoPage2 => TestState(State80Store | StatePage2, StatePage2); // 80Store inhibits video Page2 [5-7, 8-19]
 		internal bool IsZeroPageAux => TestState(StateAltZP);
 
-		internal MonitorType Monitor { get; private set; }
-		internal int VideoMode => StateVideoMode[_state & StateVideo];
+		public MonitorType Monitor { get; private set; }
+		public int VideoMode => StateVideoMode[_state & StateVideo];
 
 		[JsonIgnore]
 		private Action<int, byte> _writeIoRegionC0C0;
