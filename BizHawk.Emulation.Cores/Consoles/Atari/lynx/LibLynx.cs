@@ -39,11 +39,6 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		[DllImport(dllname, CallingConvention = cc)]
 		public static extern bool BinStateLoad(IntPtr s, byte[] data, int length);
 		[DllImport(dllname, CallingConvention = cc)]
-		public static extern void TxtStateSave(IntPtr s, [In]ref TextStateFPtrs ff);
-		[DllImport(dllname, CallingConvention = cc)]
-		public static extern void TxtStateLoad(IntPtr s, [In]ref TextStateFPtrs ff);
-
-		[DllImport(dllname, CallingConvention = cc)]
 		public static extern IntPtr GetRamPointer(IntPtr s);
 
 		[Flags]

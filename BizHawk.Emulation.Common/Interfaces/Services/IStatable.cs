@@ -20,14 +20,6 @@ namespace BizHawk.Emulation.Common
 	public interface IStatable : IBinaryStateable, IEmulatorService
 	{
 		/// <summary>
-		/// Gets a value indicating whether the core would rather give a binary savestate than a text one. Both must function regardless
-		/// </summary>
-		bool BinarySaveStatesPreferred { get; }
-
-		void SaveStateText(TextWriter writer);
-		void LoadStateText(TextReader reader);
-
-		/// <summary>
 		/// save state binary to a byte buffer
 		/// </summary>
 		/// <returns>you may NOT modify this.  if you call SaveStateBinary() again with the same core, the old data MAY be overwritten.</returns>

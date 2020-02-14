@@ -7,8 +7,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 {
 	public sealed partial class PCEngine : IStatable
 	{
-		public bool BinarySaveStatesPreferred => false;
-
 		public void SaveStateBinary(BinaryWriter bw)
 		{
 			SyncState(Serializer.CreateBinaryWriter(bw));
@@ -17,16 +15,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public void LoadStateBinary(BinaryReader br)
 		{
 			SyncState(Serializer.CreateBinaryReader(br));
-		}
-
-		public void SaveStateText(TextWriter tw)
-		{
-			SyncState(Serializer.CreateTextWriter(tw));
-		}
-
-		public void LoadStateText(TextReader tr)
-		{
-			SyncState(Serializer.CreateTextReader(tr));
 		}
 
 		public byte[] SaveStateBinary()

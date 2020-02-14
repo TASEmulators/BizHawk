@@ -32,8 +32,6 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			}
 		}
 
-		public bool BinarySaveStatesPreferred => true;
-
 		private void SerializeEverything(JsonWriter w)
 		{
 			// this is much faster than other possibilities for serialization
@@ -87,16 +85,6 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		}
 
 		private readonly JsonSerializer _ser = new JsonSerializer();
-
-		public void SaveStateText(TextWriter writer)
-		{
-			SerializeEverything(new JsonTextWriter(writer) { Formatting = Formatting.None });
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			DeserializeEverything(new JsonTextReader(reader));
-		}
 
 		/*
 		 * These are horrible; the LoadStateBinary() takes over 10x as long as LoadStateText()

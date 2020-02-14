@@ -1,34 +1,11 @@
 ﻿using System.IO;
-using Newtonsoft.Json;
-
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 {
 	public partial class GBHawkLink4x : IStatable
 	{
-		public bool BinarySaveStatesPreferred => true;
-
-		public void SaveStateText(TextWriter writer)
-		{
-			A.SaveStateText(writer);
-			B.SaveStateText(writer);
-			C.SaveStateText(writer);
-			D.SaveStateText(writer);
-			SyncState(new Serializer(writer));
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			A.LoadStateText(reader);
-			B.LoadStateText(reader);
-			C.LoadStateText(reader);
-			D.LoadStateText(reader);
-			SyncState(new Serializer(reader));
-		}
-
 		public void SaveStateBinary(BinaryWriter bw)
 		{
 			A.SaveStateBinary(bw);
@@ -57,8 +34,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			bw.Flush();
 			return ms.ToArray();
 		}
-
-		//private JsonSerializer ser = new JsonSerializer { Formatting = Formatting.Indented };
 
 		private void SyncState(Serializer ser)
 		{

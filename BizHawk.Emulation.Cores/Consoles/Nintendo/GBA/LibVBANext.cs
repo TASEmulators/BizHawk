@@ -102,11 +102,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		[DllImport(dllname, CallingConvention = cc)]
 		public static extern bool BinStateLoad(IntPtr g, byte[] data, int length);
 		[DllImport(dllname, CallingConvention = cc)]
-		public static extern void TxtStateSave(IntPtr g, [In]ref TextStateFPtrs ff);
-		[DllImport(dllname, CallingConvention = cc)]
-		public static extern void TxtStateLoad(IntPtr g, [In]ref TextStateFPtrs ff);
-
-		[DllImport(dllname, CallingConvention = cc)]
 		public static extern int SaveRamSize(IntPtr g);
 		[DllImport(dllname, CallingConvention = cc)]
 		public static extern bool SaveRamSave(IntPtr g, byte[] data, int length);

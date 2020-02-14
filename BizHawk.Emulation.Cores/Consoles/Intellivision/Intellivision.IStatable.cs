@@ -7,19 +7,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 {
 	public partial class Intellivision : IStatable
 	{
-		public bool BinarySaveStatesPreferred => true;
-
-		public void SaveStateText(TextWriter writer)
-		{
-			SyncState(Serializer.CreateTextWriter(writer));
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			SyncState(Serializer.CreateTextReader(reader));
-			SetupMemoryDomains(); // resync the memory domains
-		}
-
 		public void SaveStateBinary(BinaryWriter bw)
 		{
 			SyncState(Serializer.CreateBinaryWriter(bw));

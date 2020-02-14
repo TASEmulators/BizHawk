@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -8,18 +7,6 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 {
 	public partial class MSX : IStatable
 	{
-		public bool BinarySaveStatesPreferred => true;
-
-		public void SaveStateText(TextWriter writer)
-		{
-			SyncState(new Serializer(writer));
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			SyncState(new Serializer(reader));
-		}
-
 		public void SaveStateBinary(BinaryWriter bw)
 		{
 			SyncState(new Serializer(bw));

@@ -364,20 +364,6 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		private byte[] savebuff, savebuff2;
 
-		public void SaveStateText(System.IO.TextWriter writer)
-		{
-			var temp = SaveStateBinary();
-			temp.SaveAsHexFast(writer);
-		}
-
-		public void LoadStateText(System.IO.TextReader reader)
-		{
-			string hex = reader.ReadLine();
-			byte[] state = new byte[hex.Length / 2];
-			state.ReadFromHex(hex);
-			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
-		}
-
 		public void SaveStateBinary(System.IO.BinaryWriter writer)
 		{
 			api.CMD_UpdateSerializeSize();
@@ -425,8 +411,6 @@ namespace BizHawk.Emulation.Cores.Libretro
 			ms.Close();
 			return savebuff2;
 		}
-
-		public bool BinarySaveStatesPreferred { get { return true; } }
 
 		#endregion
 

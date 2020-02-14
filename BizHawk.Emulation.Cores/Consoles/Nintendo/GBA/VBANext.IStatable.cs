@@ -8,34 +8,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	public partial class VBANext : IStatable
 	{
-		public bool BinarySaveStatesPreferred => true;
-
-		public void SaveStateText(TextWriter writer)
-		{
-			var s = new TextState<TextStateData>();
-			s.Prepare();
-			var ff = s.GetFunctionPointersSave();
-			LibVBANext.TxtStateSave(Core, ref ff);
-			s.ExtraData.IsLagFrame = IsLagFrame;
-			s.ExtraData.LagCount = LagCount;
-			s.ExtraData.Frame = Frame;
-
-			ser.Serialize(writer, s);
-
-			//Console.WriteLine(BizHawk.Common.BufferExtensions.BufferExtensions.HashSHA1(SaveStateBinary()));
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			var s = (TextState<TextStateData>)ser.Deserialize(reader, typeof(TextState<TextStateData>));
-			s.Prepare();
-			var ff = s.GetFunctionPointersLoad();
-			LibVBANext.TxtStateLoad(Core, ref ff);
-			IsLagFrame = s.ExtraData.IsLagFrame;
-			LagCount = s.ExtraData.LagCount;
-			Frame = s.ExtraData.Frame;
-		}
-
 		public void SaveStateBinary(BinaryWriter writer)
 		{
 			if (!LibVBANext.BinStateSave(Core, _savebuff, _savebuff.Length))

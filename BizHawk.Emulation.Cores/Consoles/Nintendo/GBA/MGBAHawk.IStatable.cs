@@ -10,21 +10,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		private byte[] _savebuff = new byte[0];
 		private byte[] _savebuff2 = new byte[13];
 
-		public bool BinarySaveStatesPreferred => true;
-
-		public void SaveStateText(TextWriter writer)
-		{
-			var tmp = SaveStateBinary();
-			BizHawk.Common.BufferExtensions.BufferExtensions.SaveAsHexFast(tmp, writer);
-		}
-		public void LoadStateText(TextReader reader)
-		{
-			string hex = reader.ReadLine();
-			byte[] state = new byte[hex.Length / 2];
-			BizHawk.Common.BufferExtensions.BufferExtensions.ReadFromHexFast(state, hex);
-			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
-		}
-
 		private void StartSaveStateBinaryInternal()
 		{
 			IntPtr p = IntPtr.Zero;

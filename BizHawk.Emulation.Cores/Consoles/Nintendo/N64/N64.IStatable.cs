@@ -9,24 +9,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
 	public partial class N64 : IStatable
 	{
-		public bool BinarySaveStatesPreferred => true;
-
 		// these functions are all exact copy paste from gambatte.
 		// if something's wrong here, it's probably wrong there too
-		public void SaveStateText(TextWriter writer)
-		{
-			var temp = SaveStateBinary();
-			temp.SaveAsHexFast(writer);
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			var hex = reader.ReadLine();
-			var state = new byte[hex.Length / 2];
-			state.ReadFromHexFast(hex);
-			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
-		}
-
 		public void SaveStateBinary(BinaryWriter writer)
 		{
 			byte[] data = SaveStatePrivateBuff;

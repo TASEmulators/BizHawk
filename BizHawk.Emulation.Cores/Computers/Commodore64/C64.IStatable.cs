@@ -7,26 +7,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	public sealed partial class C64 : IStatable
 	{
-		public bool BinarySaveStatesPreferred => true;
-
 		public void LoadStateBinary(BinaryReader br)
 		{
 			SyncState(new Serializer(br));
 		}
 
-		public void LoadStateText(TextReader reader)
-		{
-			SyncState(new Serializer(reader));
-		}
-
 		public void SaveStateBinary(BinaryWriter bw)
 		{
 			SyncState(new Serializer(bw));
-		}
-
-		public void SaveStateText(TextWriter writer)
-		{
-			SyncState(new Serializer(writer));
 		}
 
 		public byte[] SaveStateBinary()

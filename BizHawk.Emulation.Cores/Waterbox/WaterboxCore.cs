@@ -254,22 +254,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		#region IStatable
 
-		public bool BinarySaveStatesPreferred => true;
-
-		public void SaveStateText(TextWriter writer)
-		{
-			var temp = SaveStateBinary();
-			temp.SaveAsHexFast(writer);
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			string hex = reader.ReadLine();
-			byte[] state = new byte[hex.Length / 2];
-			state.ReadFromHexFast(hex);
-			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
-		}
-
 		public void LoadStateBinary(BinaryReader reader)
 		{
 			_exe.LoadStateBinary(reader);

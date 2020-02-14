@@ -7,19 +7,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public partial class NES : IStatable
 	{
-		public bool BinarySaveStatesPreferred => false;
-
-		public void SaveStateText(TextWriter writer)
-		{
-			SyncState(Serializer.CreateTextWriter(writer));
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			SyncState(Serializer.CreateTextReader(reader));
-			SetupMemoryDomains(); // resync the memory domains
-		}
-
 		public void SaveStateBinary(BinaryWriter bw)
 		{
 			SyncState(Serializer.CreateBinaryWriter(bw));

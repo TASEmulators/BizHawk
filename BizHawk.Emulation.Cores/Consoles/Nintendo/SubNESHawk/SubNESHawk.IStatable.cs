@@ -7,20 +7,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 {
 	public partial class SubNESHawk : IStatable
 	{
-		public bool BinarySaveStatesPreferred => true;
-
-		public void SaveStateText(TextWriter writer)
-		{
-			subnes.SaveStateText(writer);
-			SyncState(new Serializer(writer));
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			subnes.LoadStateText(reader);
-			SyncState(new Serializer(reader));
-		}
-
 		public void SaveStateBinary(BinaryWriter bw)
 		{
 			subnes.SaveStateBinary(bw);
@@ -43,8 +29,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			bw.Flush();
 			return ms.ToArray();
 		}
-
-		//private JsonSerializer ser = new JsonSerializer { Formatting = Formatting.Indented };
 
 		private void SyncState(Serializer ser)
 		{
