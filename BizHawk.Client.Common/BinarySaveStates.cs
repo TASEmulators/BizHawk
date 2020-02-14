@@ -19,8 +19,7 @@ namespace BizHawk.Client.Common
 		public static BinaryStateLump Framebuffer { get; private set; }
 		[Name("Input Log", "txt")]
 		public static BinaryStateLump Input { get; private set; }
-		[Name("CoreText", "txt")]
-		public static BinaryStateLump CorestateText { get; private set; }
+
 		[Name("MovieSaveRam", "bin")]
 		public static BinaryStateLump MovieSaveRam { get; private set; }
 
