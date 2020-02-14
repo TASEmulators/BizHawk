@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			ser.Sync(nameof(old_s), ref old_s);
 
-			//oam related
+			// OAM related
 			ser.Sync("Oam_Dma_Index", ref oam_dma_index);
 			ser.Sync("Oam_Dma_Exec", ref oam_dma_exec);
 			ser.Sync("Oam_Dma_Addr", ref oam_dma_addr);
@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(special_case_delay), ref special_case_delay);
 			ser.Sync(nameof(do_the_reread), ref do_the_reread);
 
-			//VS related
+			// VS related
 			ser.Sync("VS", ref _isVS);
 			ser.Sync("VS_2c05", ref _isVS2c05);
 			ser.Sync("VS_CHR", ref VS_chr_reg);
@@ -84,8 +84,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			ser.BeginSection(nameof(Board));
 			Board.SyncState(ser);
-			if (Board is NESBoardBase && !((NESBoardBase)Board).SyncStateFlag)
+			if (Board is NESBoardBase board && !board.SyncStateFlag)
+			{
 				throw new InvalidOperationException($"the current NES mapper didn't call base.{nameof(INESBoard.SyncState)}");
+			}
+
 			ser.EndSection();
 			ppu.SyncState(ser);
 			apu.SyncState(ser);
@@ -94,6 +97,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				ser.Sync(nameof(DB), ref DB);
 			}
+
 			if (version >= 3)
 			{
 				ser.Sync(nameof(latched4016), ref latched4016);
@@ -101,6 +105,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ControllerDeck.SyncState(ser);
 				ser.EndSection();
 			}
+
 			if (version >= 4)
 			{
 				ser.Sync(nameof(resetSignal), ref resetSignal);
