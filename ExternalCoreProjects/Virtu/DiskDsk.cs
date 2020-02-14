@@ -9,8 +9,8 @@ namespace Jellyfish.Virtu
 		// ReSharper disable once UnusedMember.Global
 		public DiskDsk() { }
 
-		public DiskDsk(string name, byte[] data, bool isWriteProtected, SectorSkew sectorSkew) :
-			base(name, data, isWriteProtected)
+		public DiskDsk(byte[] data, bool isWriteProtected, SectorSkew sectorSkew)
+			: base(data, isWriteProtected)
 		{
 			_sectorSkew = SectorSkewMode[(int)sectorSkew];
 		}

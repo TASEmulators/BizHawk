@@ -7,8 +7,8 @@ namespace Jellyfish.Virtu
 		// ReSharper disable once UnusedMember.Global
 		public DiskNib() { }
 
-		public DiskNib(string name, byte[] data, bool isWriteProtected) :
-			base(name, data, isWriteProtected)
+		public DiskNib(byte[] data, bool isWriteProtected)
+			: base(data, isWriteProtected)
 		{
 		}
 

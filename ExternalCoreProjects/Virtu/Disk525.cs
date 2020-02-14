@@ -8,9 +8,8 @@ namespace Jellyfish.Virtu
 		// ReSharper disable once PublicConstructorInAbstractClass
 		public Disk525() { }
 
-		protected Disk525(string name, byte[] data, bool isWriteProtected)
+		protected Disk525(byte[] data, bool isWriteProtected)
 		{
-			_name = name;
 			Data = data;
 			IsWriteProtected = isWriteProtected;
 		}
@@ -25,17 +24,17 @@ namespace Jellyfish.Virtu
 			if (name.EndsWith(".do", StringComparison.OrdinalIgnoreCase) ||
 				name.EndsWith(".dsk", StringComparison.OrdinalIgnoreCase)) // assumes dos sector skew
 			{
-				return new DiskDsk(name, data, isWriteProtected, SectorSkew.Dos);
+				return new DiskDsk(data, isWriteProtected, SectorSkew.Dos);
 			}
 
 			if (name.EndsWith(".nib", StringComparison.OrdinalIgnoreCase))
 			{
-				return new DiskNib(name, data, isWriteProtected);
+				return new DiskNib(data, isWriteProtected);
 			}
 
 			if (name.EndsWith(".po", StringComparison.OrdinalIgnoreCase))
 			{
-				return new DiskDsk(name, data, isWriteProtected, SectorSkew.ProDos);
+				return new DiskDsk(data, isWriteProtected, SectorSkew.ProDos);
 			}
 
 			return null;
@@ -43,8 +42,6 @@ namespace Jellyfish.Virtu
 
 		public abstract void ReadTrack(int number, int fraction, byte[] buffer);
 		public abstract void WriteTrack(int number, int fraction, byte[] buffer);
-
-		private string _name;
 
 		public byte[] Data { get; protected set; }
 
