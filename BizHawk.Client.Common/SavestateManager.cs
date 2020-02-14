@@ -16,22 +16,10 @@ namespace BizHawk.Client.Common
 			// the old method of text savestate save is now gone.
 			// a text savestate is just like a binary savestate, but with a different core lump
 			using var bs = new BinaryStateSaver(filename);
-			if (Global.Config.SaveStateType == SaveStateTypeE.Text
-				|| (Global.Config.SaveStateType == SaveStateTypeE.Default && !core.BinarySaveStatesPreferred))
+			// binary core lump format
+			using (new SimpleTime("Save Core"))
 			{
-				// text savestate format
-				using (new SimpleTime("Save Core"))
-				{
-					bs.PutLump(BinaryStateLump.CorestateText, tw => core.SaveStateText(tw));
-				}
-			}
-			else
-			{
-				// binary core lump format
-				using (new SimpleTime("Save Core"))
-				{
-					bs.PutLump(BinaryStateLump.Corestate, bw => core.SaveStateBinary(bw));
-				}
+				bs.PutLump(BinaryStateLump.Corestate, bw => core.SaveStateBinary(bw));
 			}
 
 			if (Global.Config.SaveScreenshotWithStates && Global.Emulator.HasVideoProvider())

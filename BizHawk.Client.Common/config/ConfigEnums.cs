@@ -27,11 +27,6 @@
 		CustomRatio
 	}
 
-	public enum SaveStateTypeE
-	{
-		Default, Binary, Text
-	}
-
 	public enum ClientProfile
 	{
 		Unknown = 0,
