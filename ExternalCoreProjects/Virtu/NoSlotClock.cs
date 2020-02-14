@@ -2,7 +2,13 @@
 
 namespace Jellyfish.Virtu
 {
-	public sealed class NoSlotClock
+	public interface ISlotClock
+	{
+		int Read(int address, int value);
+		void Write(int address);
+	}
+
+	public sealed class NoSlotClock : ISlotClock
 	{
 		// ReSharper disable once FieldCanBeMadeReadOnly.Local
 		private Video _video;
@@ -20,16 +26,16 @@ namespace Jellyfish.Virtu
 			_comparisonRegister = new RingRegister(ClockInitSequence, 0x1);
 		}
 
-		public int Read(int address, int data)
+		public int Read(int address, int value)
 		{
 			// this may read or write the clock
 			if ((address & 0x4) != 0)
 			{
-				return ReadClock(data);
+				return ReadClock(value);
 			}
 
 			WriteClock(address);
-			return data;
+			return value;
 		}
 
 		public void Write(int address)

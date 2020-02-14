@@ -12,7 +12,7 @@ namespace Jellyfish.Virtu
 		private IGamePort _gamePort;
 		private ICassette _cassette;
 		private Video _video;
-		private NoSlotClock _noSlotClock;
+		private ISlotClock _noSlotClock;
 
 		private IPeripheralCard _slot1;
 		private IPeripheralCard _slot2;
@@ -43,7 +43,7 @@ namespace Jellyfish.Virtu
 			ICassette cassette,
 			Speaker speaker,
 			Video video,
-			NoSlotClock noSlotClock,
+			ISlotClock noSlotClock,
 			IPeripheralCard slot1,
 			IPeripheralCard slot2,
 			IPeripheralCard slot3,
