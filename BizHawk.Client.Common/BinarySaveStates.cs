@@ -289,22 +289,20 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <exception cref="Exception">couldn't find Binary or Text savestate</exception>
-		public void GetCoreState(Action<BinaryReader, long> callbackBinary, Action<TextReader> callbackText)
+		public void GetCoreState(Action<BinaryReader, long> callbackBinary)
 		{
-			if (!GetLump(BinaryStateLump.Corestate, false, callbackBinary)
-				&& !GetLump(BinaryStateLump.CorestateText, false, callbackText))
+			if (!GetLump(BinaryStateLump.Corestate, false, callbackBinary))
 			{
-				throw new Exception("Couldn't find Binary or Text savestate");
+				throw new Exception("Could not find Core Savestate");
 			}
 		}
 
 		/// <exception cref="Exception">couldn't find Binary or Text savestate</exception>
-		public void GetCoreState(Action<BinaryReader> callbackBinary, Action<TextReader> callbackText)
+		public void GetCoreState(Action<BinaryReader> callbackBinary)
 		{
-			if (!GetLump(BinaryStateLump.Corestate, false, callbackBinary)
-				&& !GetLump(BinaryStateLump.CorestateText, false, callbackText))
+			if (!GetLump(BinaryStateLump.Corestate, false, callbackBinary))
 			{
-				throw new Exception("Couldn't find Binary or Text savestate");
+				throw new Exception("Could not find Core Savestate");
 			}
 		}
 	}

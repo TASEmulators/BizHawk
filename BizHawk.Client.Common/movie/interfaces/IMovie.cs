@@ -78,7 +78,6 @@ namespace BizHawk.Client.Common
 		IList<string> Comments { get; }
 
 		// savestate anchor.
-		string TextSavestate { get; set; }
 		byte[] BinarySavestate { get; set; }
 		int[] SavestateFramebuffer { get; set; }
 

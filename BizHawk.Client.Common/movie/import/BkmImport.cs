@@ -47,7 +47,6 @@ namespace BizHawk.Client.Common.movie.import
 				bk2.Subtitles.Add(sub);
 			}
 
-			bk2.TextSavestate = old.TextSavestate;
 			bk2.BinarySavestate = old.BinarySavestate;
 
 			bk2.Save();

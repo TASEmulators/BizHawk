@@ -36,14 +36,7 @@ namespace BizHawk.Client.Common
 
 				if (StartsFromSavestate)
 				{
-					if (TextSavestate != null)
-					{
-						bs.PutLump(BinaryStateLump.CorestateText, (TextWriter tw) => tw.Write(TextSavestate));
-					}
-					else
-					{
-						bs.PutLump(BinaryStateLump.Corestate, (BinaryWriter bw) => bw.Write(BinarySavestate));
-					}
+					bs.PutLump(BinaryStateLump.Corestate, (BinaryWriter bw) => bw.Write(BinarySavestate));
 				}
 				else if (StartsFromSaveRam)
 				{
@@ -164,10 +157,6 @@ namespace BizHawk.Client.Common
 						delegate(BinaryReader br, long length)
 						{
 							BinarySavestate = br.ReadBytes((int)length);
-						},
-						delegate(TextReader tr)
-						{
-							TextSavestate = tr.ReadToEnd();
 						});
 				}
 				else if (StartsFromSaveRam)

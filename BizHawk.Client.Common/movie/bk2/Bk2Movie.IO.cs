@@ -111,9 +111,8 @@ namespace BizHawk.Client.Common
 
 				bl.GetLump(BinaryStateLump.Input, true, delegate(TextReader tr)
 				{
-					string errorMessage;
 					IsCountingRerecords = false;
-					ExtractInputLog(tr, out errorMessage);
+					ExtractInputLog(tr, out _);
 					IsCountingRerecords = true;
 				});
 
@@ -123,10 +122,6 @@ namespace BizHawk.Client.Common
 						delegate(BinaryReader br, long length)
 						{
 							BinarySavestate = br.ReadBytes((int)length);
-						},
-						delegate(TextReader tr)
-						{
-							TextSavestate = tr.ReadToEnd();
 						});
 					bl.GetLump(BinaryStateLump.Framebuffer, false,
 						delegate(BinaryReader br, long length)
@@ -194,14 +189,7 @@ namespace BizHawk.Client.Common
 
 				if (StartsFromSavestate)
 				{
-					if (TextSavestate != null)
-					{
-						bs.PutLump(BinaryStateLump.CorestateText, (TextWriter tw) => tw.Write(TextSavestate));
-					}
-					else
-					{
-						bs.PutLump(BinaryStateLump.Corestate, (BinaryWriter bw) => bw.Write(BinarySavestate));
-					}
+					bs.PutLump(BinaryStateLump.Corestate, (BinaryWriter bw) => bw.Write(BinarySavestate));
 
 					if (SavestateFramebuffer != null)
 					{
@@ -227,7 +215,6 @@ namespace BizHawk.Client.Common
 			Subtitles.Clear();
 			Comments.Clear();
 			_syncSettingsJson = "";
-			TextSavestate = null;
 			BinarySavestate = null;
 		}
 	}

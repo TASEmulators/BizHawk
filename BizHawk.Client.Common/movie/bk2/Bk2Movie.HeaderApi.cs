@@ -264,7 +264,6 @@ namespace BizHawk.Client.Common
 			return sb.ToString();
 		}
 
-		public string TextSavestate { get; set; }
 		public byte[] BinarySavestate { get; set; }
 		public int[] SavestateFramebuffer { get; set; }
 		public byte[] SaveRam { get; set; }

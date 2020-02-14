@@ -60,14 +60,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Emulator.HasSavestates() && movie.StartsFromSavestate)
 			{
-				if (movie.TextSavestate != null)
-				{
-					Emulator.AsStatable().LoadStateText(new StringReader(movie.TextSavestate));
-				}
-				else
-				{
-					Emulator.AsStatable().LoadStateBinary(new BinaryReader(new MemoryStream(movie.BinarySavestate, false)));
-				}
+				Emulator.AsStatable().LoadStateBinary(new BinaryReader(new MemoryStream(movie.BinarySavestate, false)));
 
 				if (movie.SavestateFramebuffer != null && Emulator.HasVideoProvider())
 				{

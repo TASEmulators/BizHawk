@@ -108,16 +108,7 @@ namespace BizHawk.Client.EmuHawk
 					movieToRecord.StartsFromSavestate = true;
 					movieToRecord.StartsFromSaveRam = false;
 
-					if (core.BinarySaveStatesPreferred)
-					{
-						movieToRecord.BinarySavestate = (byte[])core.SaveStateBinary().Clone();
-					}
-					else
-					{
-						using var sw = new StringWriter();
-						core.SaveStateText(sw);
-						movieToRecord.TextSavestate = sw.ToString();
-					}
+					movieToRecord.BinarySavestate = (byte[])core.SaveStateBinary().Clone();
 
 					// TODO: do we want to support optionally not saving this?
 					movieToRecord.SavestateFramebuffer = new int[0];
