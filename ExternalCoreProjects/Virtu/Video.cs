@@ -41,7 +41,7 @@ namespace Jellyfish.Virtu
 			_leaveVBlankEvent = LeaveVBlankEvent;
 			_resetVSyncEvent = ResetVSyncEvent;
 
-			FlushRowMode = new Action<int>[]
+			_flushRowMode = new Action<int>[]
 			{
 				FlushRowMode0, FlushRowMode1, FlushRowMode2, FlushRowMode3, FlushRowMode4, FlushRowMode5, FlushRowMode6, FlushRowMode7,
 				FlushRowMode8, FlushRowMode9, FlushRowModeA, FlushRowModeB, FlushRowModeC, FlushRowModeD, FlushRowModeE, FlushRowModeF
@@ -920,7 +920,7 @@ namespace Jellyfish.Virtu
 		{
 			int y = (_cyclesPerVSync - _cyclesPerVBlankPreset - _events.FindEvent(_resetVSyncEvent)) / CyclesPerHSync;
 
-			FlushRowMode[_memory.VideoMode](y - CellHeight); // in arrears
+			_flushRowMode[_memory.VideoMode](y - CellHeight); // in arrears
 
 			if (y < Height)
 			{
@@ -935,7 +935,7 @@ namespace Jellyfish.Virtu
 
 		private void FlushScreen()
 		{
-			var flushRowMode = FlushRowMode[_memory.VideoMode];
+			var flushRowMode = _flushRowMode[_memory.VideoMode];
 			for (int y = 0; y < Height; y += CellHeight)
 			{
 				flushRowMode(y);

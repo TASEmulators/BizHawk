@@ -1574,13 +1574,13 @@ namespace Jellyfish.Virtu
 		private static readonly int[] ColorHires =
 		{
 			ColorDHires0, ColorDHires0, ColorDHires9, ColorDHiresF, // even columns, high bit off
-            ColorDHires0, ColorDHires6, ColorDHiresF, ColorDHiresF,
+			ColorDHires0, ColorDHires6, ColorDHiresF, ColorDHiresF,
 			ColorDHires0, ColorDHires0, ColorDHires3, ColorDHiresF, // even columns, high bit on
-            ColorDHires0, ColorDHiresC, ColorDHiresF, ColorDHiresF,
+			ColorDHires0, ColorDHiresC, ColorDHiresF, ColorDHiresF,
 			ColorDHires0, ColorDHires0, ColorDHires6, ColorDHiresF, // odd columns, high bit off
-            ColorDHires0, ColorDHires9, ColorDHiresF, ColorDHiresF,
+			ColorDHires0, ColorDHires9, ColorDHiresF, ColorDHiresF,
 			ColorDHires0, ColorDHires0, ColorDHiresC, ColorDHiresF, // odd columns, high bit on
-            ColorDHires0, ColorDHires3, ColorDHiresF, ColorDHiresF
+			ColorDHires0, ColorDHires3, ColorDHiresF, ColorDHiresF
 		};
 
 		private const int CyclesPerHSync = 65;
@@ -1615,7 +1615,8 @@ namespace Jellyfish.Virtu
 		public const int ModeE = 0xE;
 		public const int ModeF = 0xF;
 
-		private Action<int>[] FlushRowMode;
+		// ReSharper disable once FieldCanBeMadeReadOnly.Local
+		private Action<int>[] _flushRowMode;
 
 		private const int Width = 560;
 		private const int Height = VLineEnterVBlank;
