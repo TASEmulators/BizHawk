@@ -821,7 +821,7 @@
             // label20
             // 
             this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(21, 291);
+            this.label20.Location = new System.Drawing.Point(21, 251);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(315, 13);
             this.label20.TabIndex = 34;
@@ -830,7 +830,7 @@
             // KbLabel
             // 
             this.KbLabel.AutoSize = true;
-            this.KbLabel.Location = new System.Drawing.Point(276, 271);
+            this.KbLabel.Location = new System.Drawing.Point(276, 231);
             this.KbLabel.Name = "KbLabel";
             this.KbLabel.Size = new System.Drawing.Size(21, 13);
             this.KbLabel.TabIndex = 33;
@@ -838,7 +838,7 @@
             // 
             // BigScreenshotNumeric
             // 
-            this.BigScreenshotNumeric.Location = new System.Drawing.Point(212, 267);
+            this.BigScreenshotNumeric.Location = new System.Drawing.Point(212, 227);
             this.BigScreenshotNumeric.Maximum = new decimal(new int[] {
             8192,
             0,
@@ -861,7 +861,7 @@
             // LowResLargeScreenshotsCheckbox
             // 
             this.LowResLargeScreenshotsCheckbox.AutoSize = true;
-            this.LowResLargeScreenshotsCheckbox.Location = new System.Drawing.Point(21, 269);
+            this.LowResLargeScreenshotsCheckbox.Location = new System.Drawing.Point(21, 229);
             this.LowResLargeScreenshotsCheckbox.Name = "LowResLargeScreenshotsCheckbox";
             this.LowResLargeScreenshotsCheckbox.Size = new System.Drawing.Size(195, 17);
             this.LowResLargeScreenshotsCheckbox.TabIndex = 31;
@@ -871,7 +871,7 @@
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(21, 235);
+            this.label13.Location = new System.Drawing.Point(21, 195);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(186, 13);
             this.label13.TabIndex = 30;
@@ -880,7 +880,7 @@
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(19, 221);
+            this.label14.Location = new System.Drawing.Point(19, 181);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(290, 13);
             this.label14.TabIndex = 29;
@@ -889,7 +889,7 @@
             // ScreenshotInStatesCheckbox
             // 
             this.ScreenshotInStatesCheckbox.AutoSize = true;
-            this.ScreenshotInStatesCheckbox.Location = new System.Drawing.Point(22, 201);
+            this.ScreenshotInStatesCheckbox.Location = new System.Drawing.Point(22, 161);
             this.ScreenshotInStatesCheckbox.Name = "ScreenshotInStatesCheckbox";
             this.ScreenshotInStatesCheckbox.Size = new System.Drawing.Size(180, 17);
             this.ScreenshotInStatesCheckbox.TabIndex = 28;
@@ -900,7 +900,7 @@
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(39, 171);
+            this.label15.Location = new System.Drawing.Point(39, 131);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(102, 13);
             this.label15.TabIndex = 27;
@@ -909,7 +909,7 @@
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(39, 158);
+            this.label16.Location = new System.Drawing.Point(39, 118);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(292, 13);
             this.label16.TabIndex = 26;
@@ -918,7 +918,7 @@
             // BackupSavestatesCheckbox
             // 
             this.BackupSavestatesCheckbox.AutoSize = true;
-            this.BackupSavestatesCheckbox.Location = new System.Drawing.Point(21, 138);
+            this.BackupSavestatesCheckbox.Location = new System.Drawing.Point(21, 98);
             this.BackupSavestatesCheckbox.Name = "BackupSavestatesCheckbox";
             this.BackupSavestatesCheckbox.Size = new System.Drawing.Size(119, 17);
             this.BackupSavestatesCheckbox.TabIndex = 25;
