@@ -4,12 +4,13 @@ namespace Jellyfish.Virtu
 {
 	internal abstract class Disk525
 	{
+		// ReSharper disable once UnusedMember.Global
 		// ReSharper disable once PublicConstructorInAbstractClass
 		public Disk525() { }
 
 		protected Disk525(string name, byte[] data, bool isWriteProtected)
 		{
-			Name = name;
+			_name = name;
 			Data = data;
 			IsWriteProtected = isWriteProtected;
 		}
@@ -43,14 +44,15 @@ namespace Jellyfish.Virtu
 		public abstract void ReadTrack(int number, int fraction, byte[] buffer);
 		public abstract void WriteTrack(int number, int fraction, byte[] buffer);
 
-		public string Name { get; private set; }
+		private string _name;
 
 		public byte[] Data { get; protected set; }
+
+		// ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
 		public bool IsWriteProtected { get; private set; }
 
 		public const int SectorCount = 16;
 		public const int SectorSize = 0x100;
-		public const int TrackCount = 35;
 		public const int TrackSize = 0x1A00;
 	}
 }

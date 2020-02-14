@@ -6,12 +6,16 @@ namespace Jellyfish.Virtu
 {
 	public interface ICpu
 	{
+		// ReSharper disable once UnusedMember.Global
 		void Reset();
+
+		// ReSharper disable once UnusedMember.Global
 		int Execute();
 		long Cycles { get; }
 		int Multiplier { get; }
 	}
 
+	// ReSharper disable once UnusedMember.Global
 	public sealed partial class Cpu : ICpu
 	{
 		// ReSharper disable once FieldCanBeMadeReadOnly.Local
@@ -29,14 +33,13 @@ namespace Jellyfish.Virtu
 			InitializeOpCodeDelegates();
 
 			Is65C02 = true;
-			IsThrottled = false;
 			Multiplier = 1;
 			RS = 0xFF;
 		}
 
 		private void InitializeOpCodeDelegates()
 		{
-			ExecuteOpCode65N02 = new Action[]
+			_executeOpCode65N02 = new Action[]
 			{
 				Execute65X02Brk00, Execute65X02Ora01, Execute65N02Nop02, Execute65N02Nop03,
 				Execute65N02Nop04, Execute65X02Ora05, Execute65X02Asl06, Execute65N02Nop07,
@@ -104,7 +107,7 @@ namespace Jellyfish.Virtu
 				Execute65N02NopFC, Execute65N02SbcFD, Execute65N02IncFE, Execute65N02NopFF
 			};
 
-			ExecuteOpCode65C02 = new Action[]
+			_executeOpCode65C02 = new Action[]
 			{
 				Execute65X02Brk00, Execute65X02Ora01, Execute65C02Nop02, Execute65C02Nop03,
 				Execute65C02Tsb04, Execute65X02Ora05, Execute65X02Asl06, Execute65C02Nop07,
@@ -177,10 +180,10 @@ namespace Jellyfish.Virtu
 		{
 			RS = (RS - 3) & 0xFF; // [4-14]
 			RPC = _memory.ReadRomRegionE0FF(0xFFFC) | (_memory.ReadRomRegionE0FF(0xFFFD) << 8);
-			RP |= (PB | PI);
+			RP |= (Pb | Pi);
 			if (Is65C02) // [C-10]
 			{
-				RP &= ~PD;
+				RP &= ~Pd;
 			}
 		}
 
@@ -270,9 +273,9 @@ namespace Jellyfish.Virtu
 					case 0xF9: return $"SBC ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},Y *";
 					case 0xFD: return $"SBC ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},X *";
 					case 0xFE: return $"INC ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},X";
-
 				}
 			}
+
 			if (pc <= 0xFFFE)   //read two-byte opcodes here
 			{
 				switch (_memory.Peek(pc))
@@ -373,7 +376,8 @@ namespace Jellyfish.Virtu
 					case 0xFC: return $"NOP (${_memory.Peek(++pc):X2},X)";
 				}
 			}
-			if (pc <= 0xFFFF)   //read one-byte opcodes here
+
+			if (pc <= 0xFFFF) // read one-byte opcodes here
 			{
 				switch (_memory.Peek(pc))
 				{
@@ -414,13 +418,13 @@ namespace Jellyfish.Virtu
 					case 0xFA: return "NOP";
 				}
 			}
+
 			return "---";
 		}
 
 		public int Execute()
 		{
 			TraceCallback?.Invoke(TraceState());
-
 			CC = 0;
 			OpCode = _memory.ReadOpcode(RPC);
 			RPC = (RPC + 1) & 0xFFFF;
@@ -431,6 +435,7 @@ namespace Jellyfish.Virtu
 		}
 
 		#region Core Operand Actions
+
 		private void GetAddressAbs() // abs
 		{
 			EA = _memory.Read(RPC) | (_memory.Read(RPC + 1) << 8);
@@ -516,7 +521,6 @@ namespace Jellyfish.Virtu
 		private int Pull()
 		{
 			RS = (RS + 1) & 0xFF;
-
 			return _memory.ReadZeroPage(0x0100 + RS);
 		}
 
@@ -545,7 +549,6 @@ namespace Jellyfish.Virtu
 		{
 			int data = _memory.Read(RPC);
 			RPC = (RPC + 1) & 0xFFFF;
-
 			return data;
 		}
 
@@ -623,34 +626,37 @@ namespace Jellyfish.Virtu
 		{
 			_memory.WriteZeroPage(EA, data);
 		}
+
 		#endregion
 
 		#region Core OpCode Actions
 		private void ExecuteAdc65N02(int data, int cc)
 		{
-			if ((RP & PD) == 0x0)
+			if ((RP & Pd) == 0x0)
 			{
-				int ra = RA + data + (RP & PC);
-				RP = RP & ~(PC | PN | PV | PZ) | ((ra >> 8) & PC) | DataPNZ[ra & 0xFF] | (((~(RA ^ data) & (RA ^ (ra & 0xFF))) >> 1) & PV);
+				int ra = RA + data + (RP & Pc);
+				RP = RP & ~(Pc | Pn | Pv | Pz) | ((ra >> 8) & Pc) | DataPnz[ra & 0xFF] | (((~(RA ^ data) & (RA ^ (ra & 0xFF))) >> 1) & Pv);
 				RA = ra & 0xFF;
 				CC += cc;
 			}
 			else // decimal
 			{
-				int ral = (RA & 0x0F) + (data & 0x0F) + (RP & PC);
+				int ral = (RA & 0x0F) + (data & 0x0F) + (RP & Pc);
 				int rah = (RA >> 4) + (data >> 4);
 				if (ral >= 10)
 				{
 					ral -= 10;
 					rah++;
 				}
+
 				int ra = (ral | (rah << 4)) & 0xFF;
-				RP = RP & ~(PC | PN | PV | PZ) | DataPN[ra] | (((~(RA ^ data) & (RA ^ ra)) >> 1) & PV) | DataPZ[(RA + data + (RP & PC)) & 0xFF];
+				RP = RP & ~(Pc | Pn | Pv | Pz) | DataPn[ra] | (((~(RA ^ data) & (RA ^ ra)) >> 1) & Pv) | DataPz[(RA + data + (RP & Pc)) & 0xFF];
 				if (rah >= 10)
 				{
 					rah -= 10;
-					RP |= PC;
+					RP |= Pc;
 				}
+
 				RA = (ral | (rah << 4)) & 0xFF;
 				CC += cc;
 			}
@@ -658,30 +664,32 @@ namespace Jellyfish.Virtu
 
 		private void ExecuteAdc65C02(int data, int cc)
 		{
-			if ((RP & PD) == 0x0)
+			if ((RP & Pd) == 0x0)
 			{
-				int ra = RA + data + (RP & PC);
-				RP = RP & ~(PC | PN | PV | PZ) | ((ra >> 8) & PC) | DataPNZ[ra & 0xFF] | (((~(RA ^ data) & (RA ^ (ra & 0xFF))) >> 1) & PV);
+				int ra = RA + data + (RP & Pc);
+				RP = RP & ~(Pc | Pn | Pv | Pz) | ((ra >> 8) & Pc) | DataPnz[ra & 0xFF] | (((~(RA ^ data) & (RA ^ (ra & 0xFF))) >> 1) & Pv);
 				RA = ra & 0xFF;
 				CC += cc;
 			}
 			else // decimal
 			{
-				int ral = (RA & 0x0F) + (data & 0x0F) + (RP & PC);
+				int ral = (RA & 0x0F) + (data & 0x0F) + (RP & Pc);
 				int rah = (RA >> 4) + (data >> 4);
 				if (ral >= 10)
 				{
 					ral -= 10;
 					rah++;
 				}
-				RP &= ~PC;
+
+				RP &= ~Pc;
 				if (rah >= 10)
 				{
 					rah -= 10;
-					RP |= PC;
+					RP |= Pc;
 				}
+
 				int ra = (ral | (rah << 4)) & 0xFF;
-				RP = RP & ~(PN | PV | PZ) | DataPNZ[ra] | (((~(RA ^ data) & (RA ^ ra)) >> 1) & PV);
+				RP = RP & ~(Pn | Pv | Pz) | DataPnz[ra] | (((~(RA ^ data) & (RA ^ ra)) >> 1) & Pv);
 				RA = ra;
 				CC += cc + 1;
 			}
@@ -690,15 +698,15 @@ namespace Jellyfish.Virtu
 		private void ExecuteAnd(int data, int cc)
 		{
 			RA &= data;
-			RP = RP & ~(PN | PZ) | DataPNZ[RA];
+			RP = RP & ~(Pn | Pz) | DataPnz[RA];
 			CC += cc;
 		}
 
 		private int ExecuteAsl(int data, int cc)
 		{
-			RP = RP & ~PC | ((data >> 7) & PC);
+			RP = RP & ~Pc | ((data >> 7) & Pc);
 			data = (data << 1) & 0xFF;
-			RP = RP & ~(PN | PZ) | DataPNZ[data];
+			RP = RP & ~(Pn | Pz) | DataPnz[data];
 			CC += cc;
 
 			return data;
@@ -706,15 +714,15 @@ namespace Jellyfish.Virtu
 
 		private void ExecuteAslImp(int cc)
 		{
-			RP = RP & ~PC | ((RA >> 7) & PC);
+			RP = RP & ~Pc | ((RA >> 7) & Pc);
 			RA = (RA << 1) & 0xFF;
-			RP = RP & ~(PN | PZ) | DataPNZ[RA];
+			RP = RP & ~(Pn | Pz) | DataPnz[RA];
 			CC += cc;
 		}
 
 		private void ExecuteBcc(int cc)
 		{
-			if ((RP & PC) == 0x0)
+			if ((RP & Pc) == 0x0)
 			{
 				int rpc = (RPC + 1) & 0xFFFF;
 				RPC = (RPC + 1 + (sbyte)_memory.Read(RPC)) & 0xFFFF;
@@ -729,7 +737,7 @@ namespace Jellyfish.Virtu
 
 		private void ExecuteBcs(int cc)
 		{
-			if ((RP & PC) != 0x0)
+			if ((RP & Pc) != 0x0)
 			{
 				int rpc = (RPC + 1) & 0xFFFF;
 				RPC = (RPC + 1 + (sbyte)_memory.Read(RPC)) & 0xFFFF;
@@ -744,7 +752,7 @@ namespace Jellyfish.Virtu
 
 		private void ExecuteBeq(int cc)
 		{
-			if ((RP & PZ) != 0x0)
+			if ((RP & Pz) != 0x0)
 			{
 				int rpc = (RPC + 1) & 0xFFFF;
 				RPC = (RPC + 1 + (sbyte)_memory.Read(RPC)) & 0xFFFF;
@@ -759,19 +767,19 @@ namespace Jellyfish.Virtu
 
 		private void ExecuteBit(int data, int cc)
 		{
-			RP = RP & ~(PN | PV | PZ) | (data & (PN | PV)) | DataPZ[RA & data];
+			RP = RP & ~(Pn | Pv | Pz) | (data & (Pn | Pv)) | DataPz[RA & data];
 			CC += cc;
 		}
 
 		private void ExecuteBitImm(int data, int cc)
 		{
-			RP = RP & ~PZ | DataPZ[RA & data];
+			RP = RP & ~Pz | DataPz[RA & data];
 			CC += cc;
 		}
 
 		private void ExecuteBmi(int cc)
 		{
-			if ((RP & PN) != 0x0)
+			if ((RP & Pn) != 0x0)
 			{
 				int rpc = (RPC + 1) & 0xFFFF;
 				RPC = (RPC + 1 + (sbyte)_memory.Read(RPC)) & 0xFFFF;
@@ -786,7 +794,7 @@ namespace Jellyfish.Virtu
 
 		private void ExecuteBne(int cc)
 		{
-			if ((RP & PZ) == 0x0)
+			if ((RP & Pz) == 0x0)
 			{
 				int rpc = (RPC + 1) & 0xFFFF;
 				RPC = (RPC + 1 + (sbyte)_memory.Read(RPC)) & 0xFFFF;
@@ -801,7 +809,7 @@ namespace Jellyfish.Virtu
 
 		private void ExecuteBpl(int cc)
 		{
-			if ((RP & PN) == 0x0)
+			if ((RP & Pn) == 0x0)
 			{
 				int rpc = (RPC + 1) & 0xFFFF;
 				RPC = (RPC + 1 + (sbyte)_memory.Read(RPC)) & 0xFFFF;
@@ -826,15 +834,15 @@ namespace Jellyfish.Virtu
 			int rpc = (RPC + 1) & 0xFFFF; // [4-18]
 			Push(rpc >> 8);
 			Push(rpc & 0xFF);
-			Push(RP | PB);
-			RP |= PI;
+			Push(RP | Pb);
+			RP |= Pi;
 			RPC = _memory.Read(0xFFFE) | (_memory.Read(0xFFFF) << 8);
 			CC += cc;
 		}
 
 		private void ExecuteBvc(int cc)
 		{
-			if ((RP & PV) == 0x0)
+			if ((RP & Pv) == 0x0)
 			{
 				int rpc = (RPC + 1) & 0xFFFF;
 				RPC = (RPC + 1 + (sbyte)_memory.Read(RPC)) & 0xFFFF;
@@ -849,7 +857,7 @@ namespace Jellyfish.Virtu
 
 		private void ExecuteBvs(int cc)
 		{
-			if ((RP & PV) != 0x0)
+			if ((RP & Pv) != 0x0)
 			{
 				int rpc = (RPC + 1) & 0xFFFF;
 				RPC = (RPC + 1 + (sbyte)_memory.Read(RPC)) & 0xFFFF;
@@ -864,60 +872,60 @@ namespace Jellyfish.Virtu
 
 		private void ExecuteClc(int cc)
 		{
-			RP &= ~PC;
+			RP &= ~Pc;
 			CC += cc;
 		}
 
 		private void ExecuteCld(int cc)
 		{
-			RP &= ~PD;
+			RP &= ~Pd;
 			CC += cc;
 		}
 
 		private void ExecuteCli(int cc)
 		{
-			RP &= ~PI;
+			RP &= ~Pi;
 			CC += cc;
 		}
 
 		private void ExecuteClv(int cc)
 		{
-			RP &= ~PV;
+			RP &= ~Pv;
 			CC += cc;
 		}
 
 		private void ExecuteCmp(int data, int cc)
 		{
 			int diff = RA - data;
-			RP = RP & ~(PC | PN | PZ) | ((~diff >> 8) & PC) | DataPNZ[diff & 0xFF];
+			RP = RP & ~(Pc | Pn | Pz) | ((~diff >> 8) & Pc) | DataPnz[diff & 0xFF];
 			CC += cc;
 		}
 
 		private void ExecuteCpx(int data, int cc)
 		{
 			int diff = RX - data;
-			RP = RP & ~(PC | PN | PZ) | ((~diff >> 8) & PC) | DataPNZ[diff & 0xFF];
+			RP = RP & ~(Pc | Pn | Pz) | ((~diff >> 8) & Pc) | DataPnz[diff & 0xFF];
 			CC += cc;
 		}
 
 		private void ExecuteCpy(int data, int cc)
 		{
 			int diff = RY - data;
-			RP = RP & ~(PC | PN | PZ) | ((~diff >> 8) & PC) | DataPNZ[diff & 0xFF];
+			RP = RP & ~(Pc | Pn | Pz) | ((~diff >> 8) & Pc) | DataPnz[diff & 0xFF];
 			CC += cc;
 		}
 
 		private void ExecuteDea(int cc)
 		{
 			RA = (RA - 1) & 0xFF;
-			RP = RP & ~(PN | PZ) | DataPNZ[RA];
+			RP = RP & ~(Pn | Pz) | DataPnz[RA];
 			CC += cc;
 		}
 
 		private int ExecuteDec(int data, int cc)
 		{
 			data = (data - 1) & 0xFF;
-			RP = RP & ~(PN | PZ) | DataPNZ[data];
+			RP = RP & ~(Pn | Pz) | DataPnz[data];
 			CC += cc;
 
 			return data;
@@ -926,35 +934,35 @@ namespace Jellyfish.Virtu
 		private void ExecuteDex(int cc)
 		{
 			RX = (RX - 1) & 0xFF;
-			RP = RP & ~(PN | PZ) | DataPNZ[RX];
+			RP = RP & ~(Pn | Pz) | DataPnz[RX];
 			CC += cc;
 		}
 
 		private void ExecuteDey(int cc)
 		{
 			RY = (RY - 1) & 0xFF;
-			RP = RP & ~(PN | PZ) | DataPNZ[RY];
+			RP = RP & ~(Pn | Pz) | DataPnz[RY];
 			CC += cc;
 		}
 
 		private void ExecuteEor(int data, int cc)
 		{
 			RA ^= data;
-			RP = RP & ~(PN | PZ) | DataPNZ[RA];
+			RP = RP & ~(Pn | Pz) | DataPnz[RA];
 			CC += cc;
 		}
 
 		private void ExecuteIna(int cc)
 		{
 			RA = (RA + 1) & 0xFF;
-			RP = RP & ~(PN | PZ) | DataPNZ[RA];
+			RP = RP & ~(Pn | Pz) | DataPnz[RA];
 			CC += cc;
 		}
 
 		private int ExecuteInc(int data, int cc)
 		{
 			data = (data + 1) & 0xFF;
-			RP = RP & ~(PN | PZ) | DataPNZ[data];
+			RP = RP & ~(Pn | Pz) | DataPnz[data];
 			CC += cc;
 
 			return data;
@@ -963,14 +971,14 @@ namespace Jellyfish.Virtu
 		private void ExecuteInx(int cc)
 		{
 			RX = (RX + 1) & 0xFF;
-			RP = RP & ~(PN | PZ) | DataPNZ[RX];
+			RP = RP & ~(Pn | Pz) | DataPnz[RX];
 			CC += cc;
 		}
 
 		private void ExecuteIny(int cc)
 		{
 			RY = (RY + 1) & 0xFF;
-			RP = RP & ~(PN | PZ) | DataPNZ[RY];
+			RP = RP & ~(Pn | Pz) | DataPnz[RY];
 			CC += cc;
 		}
 
@@ -1013,29 +1021,29 @@ namespace Jellyfish.Virtu
 		private void ExecuteLda(int data, int cc)
 		{
 			RA = data;
-			RP = RP & ~(PN | PZ) | DataPNZ[RA];
+			RP = RP & ~(Pn | Pz) | DataPnz[RA];
 			CC += cc;
 		}
 
 		private void ExecuteLdx(int data, int cc)
 		{
 			RX = data;
-			RP = RP & ~(PN | PZ) | DataPNZ[RX];
+			RP = RP & ~(Pn | Pz) | DataPnz[RX];
 			CC += cc;
 		}
 
 		private void ExecuteLdy(int data, int cc)
 		{
 			RY = data;
-			RP = RP & ~(PN | PZ) | DataPNZ[RY];
+			RP = RP & ~(Pn | Pz) | DataPnz[RY];
 			CC += cc;
 		}
 
 		private int ExecuteLsr(int data, int cc)
 		{
-			RP = RP & ~PC | (data & PC);
+			RP = RP & ~Pc | (data & Pc);
 			data >>= 1;
-			RP = RP & ~(PN | PZ) | DataPNZ[data];
+			RP = RP & ~(Pn | Pz) | DataPnz[data];
 			CC += cc;
 
 			return data;
@@ -1043,9 +1051,9 @@ namespace Jellyfish.Virtu
 
 		private void ExecuteLsrImp(int cc)
 		{
-			RP = RP & ~PC | (RA & PC);
+			RP = RP & ~Pc | (RA & Pc);
 			RA >>= 1;
-			RP = RP & ~(PN | PZ) | DataPNZ[RA];
+			RP = RP & ~(Pn | Pz) | DataPnz[RA];
 			CC += cc;
 		}
 
@@ -1063,7 +1071,7 @@ namespace Jellyfish.Virtu
 		private void ExecuteOra(int data, int cc)
 		{
 			RA |= data;
-			RP = RP & ~(PN | PZ) | DataPNZ[RA];
+			RP = RP & ~(Pn | Pz) | DataPnz[RA];
 			CC += cc;
 		}
 
@@ -1075,7 +1083,7 @@ namespace Jellyfish.Virtu
 
 		private void ExecutePhp(int cc)
 		{
-			Push(RP | PB); // [4-18]
+			Push(RP | Pb); // [4-18]
 			CC += cc;
 		}
 
@@ -1094,7 +1102,7 @@ namespace Jellyfish.Virtu
 		private void ExecutePla(int cc)
 		{
 			RA = Pull();
-			RP = RP & ~(PN | PZ) | DataPNZ[RA];
+			RP = RP & ~(Pn | Pz) | DataPnz[RA];
 			CC += cc;
 		}
 
@@ -1107,23 +1115,23 @@ namespace Jellyfish.Virtu
 		private void ExecutePlx(int cc)
 		{
 			RX = Pull();
-			RP = RP & ~(PN | PZ) | DataPNZ[RX];
+			RP = RP & ~(Pn | Pz) | DataPnz[RX];
 			CC += cc;
 		}
 
 		private void ExecutePly(int cc)
 		{
 			RY = Pull();
-			RP = RP & ~(PN | PZ) | DataPNZ[RY];
+			RP = RP & ~(Pn | Pz) | DataPnz[RY];
 			CC += cc;
 		}
 
 		private int ExecuteRol(int data, int cc)
 		{
-			int c = RP & PC;
-			RP = RP & ~PC | ((data >> 7) & PC);
+			int c = RP & Pc;
+			RP = RP & ~Pc | ((data >> 7) & Pc);
 			data = ((data << 1) | c) & 0xFF;
-			RP = RP & ~(PN | PZ) | DataPNZ[data];
+			RP = RP & ~(Pn | Pz) | DataPnz[data];
 			CC += cc;
 
 			return data;
@@ -1131,19 +1139,19 @@ namespace Jellyfish.Virtu
 
 		private void ExecuteRolImp(int cc)
 		{
-			int c = RP & PC;
-			RP = RP & ~PC | ((RA >> 7) & PC);
+			int c = RP & Pc;
+			RP = RP & ~Pc | ((RA >> 7) & Pc);
 			RA = ((RA << 1) | c) & 0xFF;
-			RP = RP & ~(PN | PZ) | DataPNZ[RA];
+			RP = RP & ~(Pn | Pz) | DataPnz[RA];
 			CC += cc;
 		}
 
 		private int ExecuteRor(int data, int cc)
 		{
-			int c = RP & PC;
-			RP = RP & ~PC | (data & PC);
+			int c = RP & Pc;
+			RP = RP & ~Pc | (data & Pc);
 			data = (c << 7) | (data >> 1);
-			RP = RP & ~(PN | PZ) | DataPNZ[data];
+			RP = RP & ~(Pn | Pz) | DataPnz[data];
 			CC += cc;
 
 			return data;
@@ -1151,10 +1159,10 @@ namespace Jellyfish.Virtu
 
 		private void ExecuteRorImp(int cc)
 		{
-			int c = RP & PC;
-			RP = RP & ~PC | (RA & PC);
+			int c = RP & Pc;
+			RP = RP & ~Pc | (RA & Pc);
 			RA = (c << 7) | (RA >> 1);
-			RP = RP & ~(PN | PZ) | DataPNZ[RA];
+			RP = RP & ~(Pn | Pz) | DataPnz[RA];
 			CC += cc;
 		}
 
@@ -1175,16 +1183,16 @@ namespace Jellyfish.Virtu
 
 		private void ExecuteSbc65N02(int data, int cc)
 		{
-			if ((RP & PD) == 0x0)
+			if ((RP & Pd) == 0x0)
 			{
-				int ra = RA - data - (~RP & PC);
-				RP = RP & ~(PC | PN | PV | PZ) | ((~ra >> 8) & PC) | DataPNZ[ra & 0xFF] | ((((RA ^ data) & (RA ^ (ra & 0xFF))) >> 1) & PV);
+				int ra = RA - data - (~RP & Pc);
+				RP = RP & ~(Pc | Pn | Pv | Pz) | ((~ra >> 8) & Pc) | DataPnz[ra & 0xFF] | ((((RA ^ data) & (RA ^ (ra & 0xFF))) >> 1) & Pv);
 				RA = ra & 0xFF;
 				CC += cc;
 			}
 			else // decimal
 			{
-				int ral = (RA & 0x0F) - (data & 0x0F) - (~RP & PC);
+				int ral = (RA & 0x0F) - (data & 0x0F) - (~RP & Pc);
 				int rah = (RA >> 4) - (data >> 4);
 				if (ral < 0)
 				{
@@ -1192,11 +1200,11 @@ namespace Jellyfish.Virtu
 					rah--;
 				}
 				int ra = (ral | (rah << 4)) & 0xFF;
-				RP = RP & ~(PN | PV | PZ) | PC | DataPN[ra] | ((((RA ^ data) & (RA ^ ra)) >> 1) & PV) | DataPZ[(RA - data - (~RP & PC)) & 0xFF];
+				RP = RP & ~(Pn | Pv | Pz) | Pc | DataPn[ra] | ((((RA ^ data) & (RA ^ ra)) >> 1) & Pv) | DataPz[(RA - data - (~RP & Pc)) & 0xFF];
 				if (rah < 0)
 				{
 					rah += 10;
-					RP &= ~PC;
+					RP &= ~Pc;
 				}
 				RA = (ral | (rah << 4)) & 0xFF;
 				CC += cc;
@@ -1205,30 +1213,30 @@ namespace Jellyfish.Virtu
 
 		private void ExecuteSbc65C02(int data, int cc)
 		{
-			if ((RP & PD) == 0x0)
+			if ((RP & Pd) == 0x0)
 			{
-				int ra = RA - data - (~RP & PC);
-				RP = RP & ~(PC | PN | PV | PZ) | ((~ra >> 8) & PC) | DataPNZ[ra & 0xFF] | ((((RA ^ data) & (RA ^ (ra & 0xFF))) >> 1) & PV);
+				int ra = RA - data - (~RP & Pc);
+				RP = RP & ~(Pc | Pn | Pv | Pz) | ((~ra >> 8) & Pc) | DataPnz[ra & 0xFF] | ((((RA ^ data) & (RA ^ (ra & 0xFF))) >> 1) & Pv);
 				RA = ra & 0xFF;
 				CC += cc;
 			}
 			else // decimal
 			{
-				int ral = (RA & 0x0F) - (data & 0x0F) - (~RP & PC);
+				int ral = (RA & 0x0F) - (data & 0x0F) - (~RP & Pc);
 				int rah = (RA >> 4) - (data >> 4);
 				if (ral < 0)
 				{
 					ral += 10;
 					rah--;
 				}
-				RP |= PC;
+				RP |= Pc;
 				if (rah < 0)
 				{
 					rah += 10;
-					RP &= ~PC;
+					RP &= ~Pc;
 				}
 				int ra = (ral | (rah << 4)) & 0xFF;
-				RP = RP & ~(PN | PV | PZ) | DataPNZ[ra] | ((((RA ^ data) & (RA ^ ra)) >> 1) & PV);
+				RP = RP & ~(Pn | Pv | Pz) | DataPnz[ra] | ((((RA ^ data) & (RA ^ ra)) >> 1) & Pv);
 				RA = ra;
 				CC += cc + 1;
 			}
@@ -1236,19 +1244,19 @@ namespace Jellyfish.Virtu
 
 		private void ExecuteSec(int cc)
 		{
-			RP |= PC;
+			RP |= Pc;
 			CC += cc;
 		}
 
 		private void ExecuteSed(int cc)
 		{
-			RP |= PD;
+			RP |= Pd;
 			CC += cc;
 		}
 
 		private void ExecuteSei(int cc)
 		{
-			RP |= PI;
+			RP |= Pi;
 			CC += cc;
 		}
 
@@ -1275,20 +1283,20 @@ namespace Jellyfish.Virtu
 		private void ExecuteTax(int cc)
 		{
 			RX = RA;
-			RP = RP & ~(PN | PZ) | DataPNZ[RX];
+			RP = RP & ~(Pn | Pz) | DataPnz[RX];
 			CC += cc;
 		}
 
 		private void ExecuteTay(int cc)
 		{
 			RY = RA;
-			RP = RP & ~(PN | PZ) | DataPNZ[RY];
+			RP = RP & ~(Pn | Pz) | DataPnz[RY];
 			CC += cc;
 		}
 
 		private int ExecuteTrb(int data, int cc)
 		{
-			RP = RP & ~PZ | DataPZ[RA & data];
+			RP = RP & ~Pz | DataPz[RA & data];
 			data &= ~RA;
 			CC += cc;
 
@@ -1297,7 +1305,7 @@ namespace Jellyfish.Virtu
 
 		private int ExecuteTsb(int data, int cc)
 		{
-			RP = RP & ~PZ | DataPZ[RA & data];
+			RP = RP & ~Pz | DataPz[RA & data];
 			data |= RA;
 			CC += cc;
 
@@ -1307,14 +1315,14 @@ namespace Jellyfish.Virtu
 		private void ExecuteTsx(int cc)
 		{
 			RX = RS;
-			RP = RP & ~(PN | PZ) | DataPNZ[RX];
+			RP = RP & ~(Pn | Pz) | DataPnz[RX];
 			CC += cc;
 		}
 
 		private void ExecuteTxa(int cc)
 		{
 			RA = RX;
-			RP = RP & ~(PN | PZ) | DataPNZ[RA];
+			RP = RP & ~(Pn | Pz) | DataPnz[RA];
 			CC += cc;
 		}
 
@@ -1327,7 +1335,7 @@ namespace Jellyfish.Virtu
 		private void ExecuteTya(int cc)
 		{
 			RA = RY;
-			RP = RP & ~(PN | PZ) | DataPNZ[RA];
+			RP = RP & ~(Pn | Pz) | DataPnz[RA];
 			CC += cc;
 		}
 		#endregion
@@ -2065,9 +2073,11 @@ namespace Jellyfish.Virtu
 		{
 			ExecuteTya(2);
 		}
+
 		#endregion
 
 		#region 65N02 OpCode Actions
+
 		private void Execute65N02Adc61() // adc (zpg, x)
 		{
 			GetAddressZpgIndX();
@@ -2727,6 +2737,7 @@ namespace Jellyfish.Virtu
 			GetAddressAbsXCC();
 			ExecuteSbc65N02(ReadAbsX(), 4);
 		}
+
 		#endregion
 
 		#region 65C02 OpCode Actions
@@ -3412,15 +3423,15 @@ namespace Jellyfish.Virtu
 			GetAddressAbs();
 			WriteAbs(ExecuteTsb(ReadAbs(), 6));
 		}
+
 		#endregion
 
 		private bool Is65C02
 		{
 			get => _is65C02;
-			set { _is65C02 = value; _executeOpCode = _is65C02 ? ExecuteOpCode65C02 : ExecuteOpCode65N02; }
+			set { _is65C02 = value; _executeOpCode = _is65C02 ? _executeOpCode65C02 : _executeOpCode65N02; }
 		}
 
-		internal bool IsThrottled { get; set; }
 		public int Multiplier { get; set; }
 
 		public int RA { get; set; }
