@@ -333,12 +333,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern bool gambatte_newstateload(IntPtr core, byte[] data, int len);
 
-		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void gambatte_newstatesave_ex(IntPtr core, ref TextStateFPtrs ff);
-
-		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void gambatte_newstateload_ex(IntPtr core, ref TextStateFPtrs ff);
-
 		/// <summary>
 		/// ROM header title of currently loaded ROM image.
 		/// </summary>

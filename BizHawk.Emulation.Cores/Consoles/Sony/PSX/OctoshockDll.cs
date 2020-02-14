@@ -180,7 +180,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			public eShockStateTransaction transaction;
 			public void* buffer;
 			public int bufferLength;
-			public TextStateFPtrs ff;
 		}
 
 

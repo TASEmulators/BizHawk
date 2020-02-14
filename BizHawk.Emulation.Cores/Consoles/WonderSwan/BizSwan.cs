@@ -93,11 +93,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		public static extern bool bizswan_binstateload(IntPtr core, byte[] data, int length);
 
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern void bizswan_txtstatesave(IntPtr core, [In]ref TextStateFPtrs ff);
-		[DllImport(dd, CallingConvention = cc)]
-		public static extern void bizswan_txtstateload(IntPtr core, [In]ref TextStateFPtrs ff);
-
-		[DllImport(dd, CallingConvention = cc)]
 		public static extern void bizswan_setmemorycallbacks(IntPtr core, MemoryCallback rcb, MemoryCallback ecb, MemoryCallback wcb);
 
 		[DllImport(dd, CallingConvention = cc)]
