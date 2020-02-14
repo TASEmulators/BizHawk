@@ -5,12 +5,12 @@ namespace Jellyfish.Virtu
 	public sealed class DiskIIDrive
 	{
 		// ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private DiskIIController _diskController;
+		private IDiskIIController _diskController;
 
 		// ReSharper disable once UnusedMember.Global
 		public DiskIIDrive() { }
 
-		public DiskIIDrive(DiskIIController diskController)
+		public DiskIIDrive(IDiskIIController diskController)
 		{
 			_diskController = diskController;
 			DriveArmStepDelta[0] = new[] { 0, 0, 1, 1, 0, 0, 1, 1, -1, -1, 0, 0, -1, -1, 0, 0 }; // phase 0
@@ -31,7 +31,7 @@ namespace Jellyfish.Virtu
 			return (value < min) ? min : (value > max) ? max : value;
 		}
 
-		public void ApplyPhaseChange(int phaseState)
+		internal void ApplyPhaseChange(int phaseState)
 		{
 			// step the drive head according to stepper magnet changes
 			int delta = DriveArmStepDelta[_trackNumber & 0x3][phaseState];
@@ -48,7 +48,7 @@ namespace Jellyfish.Virtu
 			}
 		}
 
-		public int Read()
+		internal int Read()
 		{
 			if (LoadTrack())
 			{

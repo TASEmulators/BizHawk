@@ -11,12 +11,12 @@ namespace Jellyfish.Virtu
 	public sealed class DiskIIController : IDiskIIController
 	{
 		// ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private Video _video;
+		private IVideo _video;
 
 		// ReSharper disable once UnusedMember.Global
 		public DiskIIController() { }
 
-		public DiskIIController(Video video, byte[] diskIIRom)
+		public DiskIIController(IVideo video, byte[] diskIIRom)
 		{
 			_video = video;
 			_romRegionC1C7 = diskIIRom;

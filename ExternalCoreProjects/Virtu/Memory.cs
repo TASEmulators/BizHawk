@@ -63,7 +63,7 @@ namespace Jellyfish.Virtu
 			IPeripheralCard slot3,
 			IPeripheralCard slot4,
 			IPeripheralCard slot5,
-			DiskIIController slot6,
+			IDiskIIController slot6,
 			IPeripheralCard slot7)
 		{
 			Keyboard = keyboard;
