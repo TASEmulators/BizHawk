@@ -81,10 +81,6 @@
             this.label8 = new System.Windows.Forms.Label();
             this.RewindFramesUsedLabel = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.rbStatesText = new System.Windows.Forms.RadioButton();
-            this.rbStatesBinary = new System.Windows.Forms.RadioButton();
-            this.rbStatesDefault = new System.Windows.Forms.RadioButton();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.btnResetCompression = new System.Windows.Forms.Button();
             this.trackBarCompression = new System.Windows.Forms.TrackBar();
@@ -114,7 +110,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.RewindSpeedNumeric)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BufferSizeUpDown)).BeginInit();
             this.groupBox4.SuspendLayout();
-            this.groupBox6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarCompression)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudCompression)).BeginInit();
             this.groupBox7.SuspendLayout();
@@ -758,51 +753,6 @@
             this.label7.TabIndex = 12;
             this.label7.Text = "Frames Stored:";
             // 
-            // groupBox6
-            // 
-            this.groupBox6.Controls.Add(this.rbStatesText);
-            this.groupBox6.Controls.Add(this.rbStatesBinary);
-            this.groupBox6.Controls.Add(this.rbStatesDefault);
-            this.groupBox6.Location = new System.Drawing.Point(22, 78);
-            this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(215, 48);
-            this.groupBox6.TabIndex = 4;
-            this.groupBox6.TabStop = false;
-            this.groupBox6.Text = "Type";
-            // 
-            // rbStatesText
-            // 
-            this.rbStatesText.AutoSize = true;
-            this.rbStatesText.Location = new System.Drawing.Point(163, 18);
-            this.rbStatesText.Name = "rbStatesText";
-            this.rbStatesText.Size = new System.Drawing.Size(46, 17);
-            this.rbStatesText.TabIndex = 1;
-            this.rbStatesText.TabStop = true;
-            this.rbStatesText.Text = "Text";
-            this.rbStatesText.UseVisualStyleBackColor = true;
-            // 
-            // rbStatesBinary
-            // 
-            this.rbStatesBinary.AutoSize = true;
-            this.rbStatesBinary.Location = new System.Drawing.Point(88, 18);
-            this.rbStatesBinary.Name = "rbStatesBinary";
-            this.rbStatesBinary.Size = new System.Drawing.Size(54, 17);
-            this.rbStatesBinary.TabIndex = 1;
-            this.rbStatesBinary.TabStop = true;
-            this.rbStatesBinary.Text = "Binary";
-            this.rbStatesBinary.UseVisualStyleBackColor = true;
-            // 
-            // rbStatesDefault
-            // 
-            this.rbStatesDefault.AutoSize = true;
-            this.rbStatesDefault.Location = new System.Drawing.Point(6, 18);
-            this.rbStatesDefault.Name = "rbStatesDefault";
-            this.rbStatesDefault.Size = new System.Drawing.Size(59, 17);
-            this.rbStatesDefault.TabIndex = 0;
-            this.rbStatesDefault.TabStop = true;
-            this.rbStatesDefault.Text = "Default";
-            this.rbStatesDefault.UseVisualStyleBackColor = true;
-            // 
             // btnResetCompression
             // 
             this.btnResetCompression.AutoSize = true;
@@ -858,7 +808,6 @@
             this.groupBox7.Controls.Add(this.label16);
             this.groupBox7.Controls.Add(this.BackupSavestatesCheckbox);
             this.groupBox7.Controls.Add(this.label12);
-            this.groupBox7.Controls.Add(this.groupBox6);
             this.groupBox7.Controls.Add(this.btnResetCompression);
             this.groupBox7.Controls.Add(this.nudCompression);
             this.groupBox7.Controls.Add(this.trackBarCompression);
@@ -1024,9 +973,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.BufferSizeUpDown)).EndInit();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
-            this.groupBox6.ResumeLayout(false);
-            this.groupBox6.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarCompression)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.trackBarCompression)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudCompression)).EndInit();
             this.groupBox7.ResumeLayout(false);
             this.groupBox7.PerformLayout();
@@ -1085,10 +1032,6 @@
         private System.Windows.Forms.Label AverageStoredStateSizeLabel;
         private System.Windows.Forms.Label EstTimeLabel;
 				private System.Windows.Forms.Label label11;
-				private System.Windows.Forms.GroupBox groupBox6;
-				private System.Windows.Forms.RadioButton rbStatesText;
-				private System.Windows.Forms.RadioButton rbStatesBinary;
-				private System.Windows.Forms.RadioButton rbStatesDefault;
 				private System.Windows.Forms.ToolTip toolTip1;
 				private System.Windows.Forms.TrackBar trackBarCompression;
 				private System.Windows.Forms.NumericUpDown nudCompression;
