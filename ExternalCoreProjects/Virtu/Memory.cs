@@ -9,7 +9,7 @@ namespace Jellyfish.Virtu
 
 	public sealed partial class Memory
 	{
-		private GamePort _gamePort;
+		private IGamePort _gamePort;
 		private ICassette _cassette;
 		private Video _video;
 		private NoSlotClock _noSlotClock;
@@ -39,7 +39,7 @@ namespace Jellyfish.Virtu
 
 		public void Initialize(
 			Keyboard keyboard,
-			GamePort gamePort,
+			IGamePort gamePort,
 			ICassette cassette,
 			Speaker speaker,
 			Video video,

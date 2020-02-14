@@ -53,7 +53,7 @@
     <Compile Include="DiskIIController.cs" />
     <Compile Include="DiskIIDrive.cs" />
     <Compile Include="DiskNib.cs" />
-    <Compile Include="GamePort.cs" />
+    <Compile Include="IGamePort.cs" />
     <Compile Include="Keyboard.cs" />
     <Compile Include="MachineEvents.cs" />
     <Compile Include="Memory.cs" />

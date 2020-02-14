@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			// Necessary because of tangling dependencies between memory and video classes
 			Memory.Initialize(
 				new Keyboard(),
-				new GamePort(),
+				new GamePortComponent(),
 				new EmptyCassetteComponent(),
 				new Speaker(Events, Cpu),
 				Video,
