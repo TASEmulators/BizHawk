@@ -7,7 +7,22 @@ namespace Jellyfish.Virtu
 	[Flags]
 	internal enum ScannerOptions { None = 0x0, AppleII = 0x1, Pal = 0x2 } // defaults to AppleIIe, Ntsc
 
-	public sealed partial class Video
+	public interface IVideo
+	{
+		int[] GetVideoBuffer();
+		void Reset();
+
+		void DirtyCell(int addressOffset);
+		void DirtyCellMixed(int addressOffset);
+		void DirtyCellMixedText(int addressOffset);
+		void DirtyScreen();
+		int ReadFloatingBus();
+		void SetCharSet();
+
+		bool IsVBlank { get; }
+	}
+
+	public sealed partial class Video : IVideo
 	{
 		// ReSharper disable once FieldCanBeMadeReadOnly.Local
 		private MachineEvents _events;
@@ -82,12 +97,12 @@ namespace Jellyfish.Virtu
 			FlushScreen();
 		}
 
-		internal void DirtyCell(int addressOffset)
+		void IVideo.DirtyCell(int addressOffset)
 		{
 			_isCellDirty[CellIndex[addressOffset]] = true;
 		}
 
-		internal void DirtyCellMixed(int addressOffset)
+		void IVideo.DirtyCellMixed(int addressOffset)
 		{
 			int cellIndex = CellIndex[addressOffset];
 			if (cellIndex < MixedCellIndex)
@@ -96,7 +111,7 @@ namespace Jellyfish.Virtu
 			}
 		}
 
-		internal void DirtyCellMixedText(int addressOffset)
+		void IVideo.DirtyCellMixedText(int addressOffset)
 		{
 			int cellIndex = CellIndex[addressOffset];
 			if (cellIndex >= MixedCellIndex)
@@ -105,7 +120,7 @@ namespace Jellyfish.Virtu
 			}
 		}
 
-		internal void DirtyScreen()
+		public void DirtyScreen()
 		{
 			for (int i = 0; i < Height * CellColumns; i++)
 			{
@@ -131,7 +146,7 @@ namespace Jellyfish.Virtu
 			}
 		}
 
-		internal int ReadFloatingBus() // [5-40]
+		public int ReadFloatingBus() // [5-40]
 		{
 			// derive scanner counters from current cycles into frame; assumes hcount and vcount preset at start of frame [3-13, 3-15, 3-16]
 			int cycles = _cyclesPerVSync - _events.FindEvent(_resetVSyncEvent);
@@ -158,7 +173,7 @@ namespace Jellyfish.Virtu
 			return _memory.Read(address);
 		}
 
-		internal void SetCharSet()
+		public void SetCharSet()
 		{
 			_charSet = !_memory.IsCharSetAlternate ? CharSetPrimary : (_memory.Monitor == MonitorType.Standard) ? CharSetSecondaryStandard : CharSetSecondaryEnhanced;
 			DirtyScreenText();
