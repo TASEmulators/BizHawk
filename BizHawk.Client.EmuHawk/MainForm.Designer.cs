@@ -451,11 +451,6 @@
 			this.toolStripMenuItem15 = new System.Windows.Forms.ToolStripMenuItem();
 			this.customizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator30 = new System.Windows.Forms.ToolStripSeparator();
-			this.SavestateTypeContextSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.SavestateTypeDefaultContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SavestateBinaryContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SavestateTextContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator37 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripMenuItem66 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem67 = new System.Windows.Forms.ToolStripMenuItem();
 			this.ScreenshotContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -3847,8 +3842,6 @@
 			this.toolStripMenuItem15,
 			this.customizeToolStripMenuItem,
 			this.toolStripSeparator30,
-			this.SavestateTypeContextSubMenu,
-			this.toolStripSeparator37,
 			this.toolStripMenuItem66,
 			this.toolStripMenuItem67});
 			this.ConfigContextMenuItem.Name = "ConfigContextMenuItem";
@@ -3936,40 +3929,6 @@
 			// 
 			this.toolStripSeparator30.Name = "toolStripSeparator30";
 			this.toolStripSeparator30.Size = new System.Drawing.Size(154, 6);
-			// 
-			// SavestateTypeContextSubMenu
-			// 
-			this.SavestateTypeContextSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.SavestateTypeDefaultContextMenuItem,
-			this.SavestateBinaryContextMenuItem,
-			this.SavestateTextContextMenuItem});
-			this.SavestateTypeContextSubMenu.Name = "SavestateTypeContextSubMenu";
-			this.SavestateTypeContextSubMenu.Size = new System.Drawing.Size(157, 22);
-			this.SavestateTypeContextSubMenu.Text = "Savestate Type";
-			this.SavestateTypeContextSubMenu.DropDownOpened += new System.EventHandler(this.SavestateTypeContextSubMenu_DropDownOpened);
-			// 
-			// SavestateTypeDefaultContextMenuItem
-			// 
-			this.SavestateTypeDefaultContextMenuItem.Name = "SavestateTypeDefaultContextMenuItem";
-			this.SavestateTypeDefaultContextMenuItem.Size = new System.Drawing.Size(109, 22);
-			this.SavestateTypeDefaultContextMenuItem.Text = "&Default";
-			// 
-			// SavestateBinaryContextMenuItem
-			// 
-			this.SavestateBinaryContextMenuItem.Name = "SavestateBinaryContextMenuItem";
-			this.SavestateBinaryContextMenuItem.Size = new System.Drawing.Size(109, 22);
-			this.SavestateBinaryContextMenuItem.Text = "&Binary";
-			// 
-			// SavestateTextContextMenuItem
-			// 
-			this.SavestateTextContextMenuItem.Name = "SavestateTextContextMenuItem";
-			this.SavestateTextContextMenuItem.Size = new System.Drawing.Size(109, 22);
-			this.SavestateTextContextMenuItem.Text = "&Text";
-			// 
-			// toolStripSeparator37
-			// 
-			this.toolStripSeparator37.Name = "toolStripSeparator37";
-			this.toolStripSeparator37.Size = new System.Drawing.Size(154, 6);
 			// 
 			// toolStripMenuItem66
 			// 
@@ -4346,11 +4305,6 @@
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem14;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem15;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator30;
-		private System.Windows.Forms.ToolStripMenuItem SavestateTypeContextSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem SavestateTypeDefaultContextMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SavestateBinaryContextMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SavestateTextContextMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator37;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem66;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem67;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;

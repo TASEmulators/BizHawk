@@ -2880,25 +2880,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SavestateTypeContextSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			SavestateTypeDefaultContextMenuItem.Checked = false;
-			SavestateBinaryContextMenuItem.Checked = false;
-			SavestateTextContextMenuItem.Checked = false;
-			switch (Config.SaveStateType)
-			{
-				case SaveStateTypeE.Binary:
-					SavestateBinaryContextMenuItem.Checked = true;
-					break;
-				case SaveStateTypeE.Text:
-					SavestateTextContextMenuItem.Checked = true;
-					break;
-				case SaveStateTypeE.Default:
-					SavestateTypeDefaultContextMenuItem.Checked = true;
-					break;
-			}
-		}
-
 		private void DisplayConfigMenuItem_Click(object sender, EventArgs e)
 		{
 			using var window = new DisplayConfig(Config);
