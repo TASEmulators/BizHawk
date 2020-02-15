@@ -18,7 +18,6 @@ namespace Jellyfish.Virtu
 			ser.Sync(nameof(_rp), ref _rp);
 			ser.Sync(nameof(_rpc), ref _rpc);
 			ser.Sync(nameof(_ea), ref _ea);
-			ser.Sync(nameof(_rpc), ref _rpc);
 			ser.Sync(nameof(_cc), ref _cc);
 			ser.Sync(nameof(_opCode), ref _opCode);
 			ser.Sync(nameof(_cycles), ref _cycles);
@@ -28,11 +27,10 @@ namespace Jellyfish.Virtu
 		private Action[] _executeOpCode65N02;
 		[JsonIgnore]
 		private Action[] _executeOpCode65C02;
-
-		private bool _is65C02;
-
 		[JsonIgnore]
 		private Action[] _executeOpCode;
+
+		private bool _is65C02;
 
 		private int _multiplier;
 
