@@ -13,6 +13,8 @@ namespace Jellyfish.Virtu
 		int Execute();
 		long Cycles { get; }
 		int Multiplier { get; }
+
+		void Sync(IComponentSerializer ser);
 	}
 
 	// ReSharper disable once UnusedMember.Global
@@ -3432,23 +3434,29 @@ namespace Jellyfish.Virtu
 			set { _is65C02 = value; _executeOpCode = _is65C02 ? _executeOpCode65C02 : _executeOpCode65N02; }
 		}
 
-		public int Multiplier { get; set; }
-
-		public int RA { get; set; }
-		public int RX { get; set; }
-		public int RY { get; set; }
-		public int RS { get; set; }
-		public int RP { get; set; }
-		public int RPC { get; set; }
-		public int EA { get; private set; }
-		public int CC { get; private set; }
-		public int OpCode { get; private set; }
-		public long Cycles { get; private set; }
+		[JsonIgnore]
+		public int Multiplier { get => _multiplier; set => _multiplier = value; }
 
 		[JsonIgnore]
-		private bool _is65C02;
+		public int RA { get => _ra; set => _ra = value; }
 		[JsonIgnore]
-		private Action[] _executeOpCode;
+		public int RX { get => _rx; set => _rx = value; }
+		[JsonIgnore]
+		public int RY { get => _ry; set => _ry = value; }
+		[JsonIgnore]
+		public int RS { get => _rs; set => _rs = value; }
+		[JsonIgnore]
+		public int RP { get => _rp; set => _rp = value; }
+		[JsonIgnore]
+		public int RPC { get => _rpc; set => _rpc = value; }
+		[JsonIgnore]
+		public int EA { get => _ea; set => _ea = value; }
+		[JsonIgnore]
+		public int CC { get => _cc; set => _cc = value; }
+		[JsonIgnore]
+		public int OpCode { get => _opCode; set => _opCode = value; }
+		[JsonIgnore]
+		public long Cycles { get => _cycles; set => _cycles = value; }
 
 		[JsonIgnore]
 		public Action<string[]> TraceCallback;

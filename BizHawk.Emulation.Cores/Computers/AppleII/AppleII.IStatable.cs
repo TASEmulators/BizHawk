@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using Jellyfish.Virtu;
 using Newtonsoft.Json;
@@ -126,18 +126,22 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		// these homemade classes edge out the stock ones slightly, but need BufferedStream to not be bad
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			var buffer = new BufferedStream(writer.BaseStream, 16384);
-			var bw2 = new BinaryWriter(buffer);
-			SerializeEverything(new LBW(bw2));
-			bw2.Flush();
-			buffer.Flush();
+			//var buffer = new BufferedStream(writer.BaseStream, 16384);
+			//var bw2 = new BinaryWriter(buffer);
+			//SerializeEverything(new LBW(bw2));
+			//bw2.Flush();
+			//buffer.Flush();
+
+			SyncState(new AppleSerializer(writer));
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
 		{
-			var buffer = new BufferedStream(reader.BaseStream, 16384);
-			var br2 = new BinaryReader(buffer);
-			DeserializeEverything(new LBR(br2));
+			//var buffer = new BufferedStream(reader.BaseStream, 16384);
+			//var br2 = new BinaryReader(buffer);
+			//DeserializeEverything(new LBR(br2));
+
+			SyncState(new AppleSerializer(reader));
 		}
 
 		public byte[] SaveStateBinary()
@@ -176,6 +180,28 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			ser.ContractResolver = cr;
 
 			return ser;
+		}
+
+		private void SyncState(AppleSerializer ser)
+		{
+			int version = 2;
+			ser.BeginSection(nameof(AppleII));
+			ser.Sync(nameof(version), ref version);
+			ser.Sync("Frame", ref _frame);
+			ser.Sync("Lag", ref _lagcount);
+			ser.BeginSection("Cpu");
+			_machine.Cpu.Sync(ser);
+		}
+
+		public class AppleSerializer : Serializer, IComponentSerializer
+		{
+			public AppleSerializer(BinaryReader br) : base(br)
+			{
+			}
+
+			public AppleSerializer(BinaryWriter bw) : base(bw)
+			{
+			}
 		}
 	}
 }
