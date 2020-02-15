@@ -20,12 +20,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool HasVideoProvider(this IEmulator core)
 		{
-			if (core == null)
-			{
-				return false;
-			}
-
-			return core.ServiceProvider.HasService<IVideoProvider>();
+			return core != null && core.ServiceProvider.HasService<IVideoProvider>();
 		}
 
 		public static IVideoProvider AsVideoProvider(this IEmulator core)
@@ -208,23 +203,12 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool CanPoke(this MemoryDomain d)
 		{
-			if (!d.Writable)
-			{
-				return false;
-			}
-
-			// once upon a time, we did a try { poke(peek) } here, but that was before Writable was added. the poke(peek) is not acceptable. If there are further problems, make sure Writable is correct.
-			return true;
+			return d.Writable;
 		}
 
 		public static bool HasRegions(this IEmulator core)
 		{
-			if (core == null)
-			{
-				return false;
-			}
-
-			return core.ServiceProvider.HasService<IRegionable>();
+			return core != null && core.ServiceProvider.HasService<IRegionable>();
 		}
 
 		public static IRegionable AsRegionable(this IEmulator core)
@@ -297,26 +281,8 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			return core.VsyncNumerator() / (double)core.VsyncDenominator();
 		}
 
-		// TODO: a better place for these
+		// TODO: a better place for this
 		public static bool IsImplemented(this MethodInfo info)
-		{
-			// If a method is marked as Not implemented, it is not implemented no matter what the body is
-			if (info.GetCustomAttributes(false).Any(a => a is FeatureNotImplementedAttribute))
-			{
-				return false;
-			}
-
-			// adelikat: we can't rely on this anymore
-			// Some methods throw an exception by design, such as ISoundProvider.GetSamplesAsync()
-			// If async is not provided by the implementation this method will throw an exception
-			// We need to figure out a reliable way to check specifically for a NotImplementedException, then maybe this method will be more useful
-			// If a method is not marked but all it does is throw an exception, consider it not implemented
-			////return !info.ThrowsError();
-
-			return true;
-		}
-
-		public static bool IsImplemented(this PropertyInfo info)
 		{
 			return !info.GetCustomAttributes(false).Any(a => a is FeatureNotImplementedAttribute);
 		}
