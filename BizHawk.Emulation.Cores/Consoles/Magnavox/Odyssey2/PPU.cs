@@ -20,8 +20,9 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public byte[] Quad_Chars = new byte[64];
 		public byte[] Grid_H = new byte[18];
 		public byte[] Grid_V = new byte[10];
+		public byte[] VDC_col_ret = new byte[8];
 
-		public byte VDC_ctrl, VDC_status, VDC_collision, VDC_col_ret, VDC_color;
+		public byte VDC_ctrl, VDC_status, VDC_collision, VDC_color;
 		public byte Pixel_Stat;
 		public int bg_brightness, grid_brightness;
 		public byte A4_latch, A5_latch;
@@ -64,7 +65,14 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			}
 			else if (addr == 0xA2)
 			{
-				ret = VDC_col_ret;
+				for (int i = 0; i < 8; i++)
+				{
+					if (VDC_collision.Bit(i))
+					{
+						ret |= VDC_col_ret[i];
+					}					
+				}
+				
 				//Console.WriteLine("col: " + ret + " " + Core.cpu.TotalExecutedCycles);
 			}
 			else if (addr == 0xA3)
@@ -405,23 +413,17 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 						}
 					}
 
-					// calculate collision
-					int col_bit = -1;
-					for (int i = 7; i >= 0; i--)
+					if (Pixel_Stat != 0)
 					{
-						if (VDC_collision.Bit(i))
+						// calculate collision
+						for (int i = 7; i >= 0; i--)
 						{
-							col_bit = i;
-						}
-					}
-
-					if (col_bit >= 0)
-					{
-						for (int i = 0; i < 8; i++)
-						{
-							if (Pixel_Stat.Bit(i) & Pixel_Stat.Bit(col_bit) && (i != col_bit))
+							for (int j = 0; j < 8; j++)
 							{
-								VDC_col_ret |= (byte)(1 << i);
+								if (Pixel_Stat.Bit(j) & Pixel_Stat.Bit(i) && (j != i))
+								{
+									VDC_col_ret[i] |= (byte)(1 << j);
+								}
 							}
 						}
 					}
@@ -451,7 +453,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					VBL = false;
 					Core.in_vblank = false;
 					VDC_status &= 0xF7;
-					VDC_col_ret = 0;
+					for (int i = 0; i < 8; i++) { VDC_col_ret[i] = 0; }
 				}
 				if (LY < 240)
 				{
@@ -599,7 +601,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			ser.Sync(nameof(VDC_ctrl), ref VDC_ctrl);
 			ser.Sync(nameof(VDC_status), ref VDC_status);
 			ser.Sync(nameof(VDC_collision), ref VDC_collision);
-			ser.Sync(nameof(VDC_col_ret), ref VDC_col_ret);
+			ser.Sync(nameof(VDC_col_ret), ref VDC_col_ret, false);
 			ser.Sync(nameof(VDC_color), ref VDC_color);
 			ser.Sync(nameof(Pixel_Stat), ref Pixel_Stat);
 			ser.Sync(nameof(bg_brightness), ref bg_brightness);
