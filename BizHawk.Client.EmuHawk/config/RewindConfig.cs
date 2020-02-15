@@ -74,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 
 			nudCompression.Value = _config.SaveStateCompressionLevelNormal;
 
-			rbStatesBinary.Checked = _config.SaveStateType == SaveStateTypeE.Binary || _config.SaveStateType == SaveStateTypeE.Default;
+			rbStatesBinary.Checked = _config.SaveStateType == SaveStateTypeE.Binary;
 			rbStatesText.Checked = _config.SaveStateType == SaveStateTypeE.Text;
 
 			BackupSavestatesCheckbox.Checked = _config.BackupSavestates;

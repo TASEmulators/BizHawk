@@ -136,7 +136,7 @@ namespace BizHawk.Client.Common
 		public RewindConfig Rewind { get; set; } = new RewindConfig();
 
 		// Savestate settings
-		public SaveStateTypeE SaveStateType { get; set; } = SaveStateTypeE.Default;
+		public SaveStateTypeE SaveStateType { get; set; } = SaveStateTypeE.Binary;
 		public const int DefaultSaveStateCompressionLevelNormal = 1;
 		public int SaveStateCompressionLevelNormal { get; set; } = DefaultSaveStateCompressionLevelNormal;
 		public const int DefaultSaveStateCompressionLevelRewind = 0; // this isn't actually used yet 
