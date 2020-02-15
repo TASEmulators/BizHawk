@@ -6,10 +6,8 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
-	public partial class Gameboy : IStatable
+	public partial class Gameboy : ITextStatable
 	{
-		public bool BinarySaveStatesPreferred => true;
-
 		public void SaveStateText(TextWriter writer)
 		{
 			var s = SaveState();

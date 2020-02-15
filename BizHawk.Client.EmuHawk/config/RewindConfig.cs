@@ -74,7 +74,6 @@ namespace BizHawk.Client.EmuHawk
 
 			nudCompression.Value = _config.SaveStateCompressionLevelNormal;
 
-			rbStatesDefault.Checked = _config.SaveStateType == SaveStateTypeE.Default;
 			rbStatesBinary.Checked = _config.SaveStateType == SaveStateTypeE.Binary;
 			rbStatesText.Checked = _config.SaveStateType == SaveStateTypeE.Text;
 
@@ -182,7 +181,6 @@ namespace BizHawk.Client.EmuHawk
 			// These settings are not used by DoRewindSettings
 			_config.Rewind.SpeedMultiplier = (int)RewindSpeedNumeric.Value;
 			_config.SaveStateCompressionLevelNormal = (int)nudCompression.Value;
-			if (rbStatesDefault.Checked) _config.SaveStateType = SaveStateTypeE.Default;
 			if (rbStatesBinary.Checked) _config.SaveStateType = SaveStateTypeE.Binary;
 			if (rbStatesText.Checked) _config.SaveStateType = SaveStateTypeE.Text;
 			_config.BackupSavestates = BackupSavestatesCheckbox.Checked;

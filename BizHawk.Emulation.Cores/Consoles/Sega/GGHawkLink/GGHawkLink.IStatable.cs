@@ -1,15 +1,12 @@
 ﻿using System.IO;
-using Newtonsoft.Json;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 {
-	public partial class GGHawkLink : IStatable
+	public partial class GGHawkLink : ITextStatable
 	{
-		public bool BinarySaveStatesPreferred => true;
-
 		public void SaveStateText(TextWriter writer)
 		{
 			L.SaveStateText(writer);
@@ -48,8 +45,6 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			bw.Flush();
 			return ms.ToArray();
 		}
-
-		//private JsonSerializer ser = new JsonSerializer { Formatting = Formatting.Indented };
 
 		private void SyncState(Serializer ser)
 		{

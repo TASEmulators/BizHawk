@@ -5,10 +5,8 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Intellivision
 {
-	public partial class Intellivision : IStatable
+	public partial class Intellivision : ITextStatable
 	{
-		public bool BinarySaveStatesPreferred => true;
-
 		public void SaveStateText(TextWriter writer)
 		{
 			SyncState(Serializer.CreateTextWriter(writer));

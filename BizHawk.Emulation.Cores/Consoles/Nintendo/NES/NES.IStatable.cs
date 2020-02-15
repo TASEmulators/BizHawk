@@ -5,10 +5,8 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public partial class NES : IStatable
+	public partial class NES : ITextStatable
 	{
-		public bool BinarySaveStatesPreferred => false;
-
 		public void SaveStateText(TextWriter writer)
 		{
 			SyncState(Serializer.CreateTextWriter(writer));

@@ -5,10 +5,8 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
-	public partial class GBHawk : IStatable
+	public partial class GBHawk : ITextStatable
 	{
-		public bool BinarySaveStatesPreferred => true;
-
 		public void SaveStateText(TextWriter writer)
 		{
 			SyncState(new Serializer(writer));

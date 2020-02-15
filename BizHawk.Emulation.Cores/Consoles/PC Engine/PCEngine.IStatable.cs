@@ -5,10 +5,8 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.PCEngine
 {
-	public sealed partial class PCEngine : IStatable
+	public sealed partial class PCEngine : ITextStatable
 	{
-		public bool BinarySaveStatesPreferred => false;
-
 		public void SaveStateBinary(BinaryWriter bw)
 		{
 			SyncState(Serializer.CreateBinaryWriter(bw));

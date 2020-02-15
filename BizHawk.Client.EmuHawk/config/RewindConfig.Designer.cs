@@ -84,7 +84,6 @@
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.rbStatesText = new System.Windows.Forms.RadioButton();
             this.rbStatesBinary = new System.Windows.Forms.RadioButton();
-            this.rbStatesDefault = new System.Windows.Forms.RadioButton();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.btnResetCompression = new System.Windows.Forms.Button();
             this.trackBarCompression = new System.Windows.Forms.TrackBar();
@@ -762,7 +761,6 @@
             // 
             this.groupBox6.Controls.Add(this.rbStatesText);
             this.groupBox6.Controls.Add(this.rbStatesBinary);
-            this.groupBox6.Controls.Add(this.rbStatesDefault);
             this.groupBox6.Location = new System.Drawing.Point(22, 78);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(215, 48);
@@ -773,7 +771,7 @@
             // rbStatesText
             // 
             this.rbStatesText.AutoSize = true;
-            this.rbStatesText.Location = new System.Drawing.Point(163, 18);
+            this.rbStatesText.Location = new System.Drawing.Point(88, 18);
             this.rbStatesText.Name = "rbStatesText";
             this.rbStatesText.Size = new System.Drawing.Size(46, 17);
             this.rbStatesText.TabIndex = 1;
@@ -784,24 +782,13 @@
             // rbStatesBinary
             // 
             this.rbStatesBinary.AutoSize = true;
-            this.rbStatesBinary.Location = new System.Drawing.Point(88, 18);
+            this.rbStatesBinary.Location = new System.Drawing.Point(6, 18);
             this.rbStatesBinary.Name = "rbStatesBinary";
             this.rbStatesBinary.Size = new System.Drawing.Size(54, 17);
             this.rbStatesBinary.TabIndex = 1;
             this.rbStatesBinary.TabStop = true;
             this.rbStatesBinary.Text = "Binary";
             this.rbStatesBinary.UseVisualStyleBackColor = true;
-            // 
-            // rbStatesDefault
-            // 
-            this.rbStatesDefault.AutoSize = true;
-            this.rbStatesDefault.Location = new System.Drawing.Point(6, 18);
-            this.rbStatesDefault.Name = "rbStatesDefault";
-            this.rbStatesDefault.Size = new System.Drawing.Size(59, 17);
-            this.rbStatesDefault.TabIndex = 0;
-            this.rbStatesDefault.TabStop = true;
-            this.rbStatesDefault.Text = "Default";
-            this.rbStatesDefault.UseVisualStyleBackColor = true;
             // 
             // btnResetCompression
             // 
@@ -1088,7 +1075,6 @@
 				private System.Windows.Forms.GroupBox groupBox6;
 				private System.Windows.Forms.RadioButton rbStatesText;
 				private System.Windows.Forms.RadioButton rbStatesBinary;
-				private System.Windows.Forms.RadioButton rbStatesDefault;
 				private System.Windows.Forms.ToolTip toolTip1;
 				private System.Windows.Forms.TrackBar trackBarCompression;
 				private System.Windows.Forms.NumericUpDown nudCompression;

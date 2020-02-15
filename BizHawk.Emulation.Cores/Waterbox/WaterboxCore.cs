@@ -1,14 +1,10 @@
 ﻿using BizHawk.Common;
 using BizHawk.BizInvoke;
-using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
@@ -253,22 +249,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		#endregion
 
 		#region IStatable
-
-		public bool BinarySaveStatesPreferred => true;
-
-		public void SaveStateText(TextWriter writer)
-		{
-			var temp = SaveStateBinary();
-			temp.SaveAsHexFast(writer);
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			string hex = reader.ReadLine();
-			byte[] state = new byte[hex.Length / 2];
-			state.ReadFromHexFast(hex);
-			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
-		}
 
 		public void LoadStateBinary(BinaryReader reader)
 		{

@@ -5,10 +5,8 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
-	public sealed partial class C64 : IStatable
+	public sealed partial class C64 : ITextStatable
 	{
-		public bool BinarySaveStatesPreferred => true;
-
 		public void LoadStateBinary(BinaryReader br)
 		{
 			SyncState(new Serializer(br));

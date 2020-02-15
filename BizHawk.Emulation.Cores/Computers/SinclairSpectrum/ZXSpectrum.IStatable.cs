@@ -8,10 +8,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// ZXHawk: Core Class
 	/// * IStatable *
 	/// </summary>
-	public partial class ZXSpectrum : IStatable
+	public partial class ZXSpectrum : ITextStatable
 	{
-		public bool BinarySaveStatesPreferred => true;
-
 		public void SaveStateText(TextWriter writer)
 		{
 			SyncState(new Serializer(writer));

@@ -29,7 +29,7 @@
 
 	public enum SaveStateTypeE
 	{
-		Default, Binary, Text
+		Binary, Text
 	}
 
 	public enum ClientProfile

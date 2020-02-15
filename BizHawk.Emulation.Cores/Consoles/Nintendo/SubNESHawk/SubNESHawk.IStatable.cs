@@ -5,10 +5,8 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 {
-	public partial class SubNESHawk : IStatable
+	public partial class SubNESHawk : ITextStatable
 	{
-		public bool BinarySaveStatesPreferred => true;
-
 		public void SaveStateText(TextWriter writer)
 		{
 			subnes.SaveStateText(writer);
@@ -43,8 +41,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			bw.Flush();
 			return ms.ToArray();
 		}
-
-		//private JsonSerializer ser = new JsonSerializer { Formatting = Formatting.Indented };
 
 		private void SyncState(Serializer ser)
 		{

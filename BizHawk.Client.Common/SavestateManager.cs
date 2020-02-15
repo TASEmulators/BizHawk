@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.Common
@@ -16,8 +17,7 @@ namespace BizHawk.Client.Common
 			// the old method of text savestate save is now gone.
 			// a text savestate is just like a binary savestate, but with a different core lump
 			using var bs = new BinaryStateSaver(filename);
-			if (Global.Config.SaveStateType == SaveStateTypeE.Text
-				|| (Global.Config.SaveStateType == SaveStateTypeE.Default && !core.BinarySaveStatesPreferred))
+			if (Global.Config.SaveStateType == SaveStateTypeE.Text)
 			{
 				// text savestate format
 				using (new SimpleTime("Save Core"))
