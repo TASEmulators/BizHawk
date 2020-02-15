@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Calculators
 {
-	public partial class TI83 : IStatable
+	public partial class TI83 : ITextStatable
 	{
 		public void SaveStateText(TextWriter writer)
 		{

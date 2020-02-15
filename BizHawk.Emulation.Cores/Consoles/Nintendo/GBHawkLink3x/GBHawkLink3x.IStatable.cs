@@ -4,7 +4,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 {
-	public partial class GBHawkLink3x : IStatable
+	public partial class GBHawkLink3x : ITextStatable
 	{
 		public void SaveStateText(TextWriter writer)
 		{

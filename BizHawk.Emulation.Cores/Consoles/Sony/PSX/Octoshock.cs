@@ -1072,62 +1072,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		#region Savestates
 		//THIS IS STILL AWFUL
 
-		JsonSerializer ser = new JsonSerializer() { Formatting = Formatting.Indented };
-
-		class TextStateData
-		{
-			public int Frame;
-			public int LagCount;
-			public bool IsLagFrame;
-			public bool CurrentDiscEjected;
-			public int CurrentDiscIndexMounted;
-		}
-
-		public void SaveStateText(TextWriter writer)
-		{
-			var s = new TextState<TextStateData>();
-			s.Prepare();
-
-			var transaction = new OctoshockDll.ShockStateTransaction()
-			{
-				transaction = OctoshockDll.eShockStateTransaction.TextSave,
-				ff = s.GetFunctionPointersSave()
-			};
-			int result = OctoshockDll.shock_StateTransaction(psx, ref transaction);
-			if (result != OctoshockDll.SHOCK_OK)
-				throw new InvalidOperationException($"{nameof(OctoshockDll.eShockStateTransaction)}.{nameof(OctoshockDll.eShockStateTransaction.TextSave)} returned error!");
-
-			s.ExtraData.IsLagFrame = IsLagFrame;
-			s.ExtraData.LagCount = LagCount;
-			s.ExtraData.Frame = Frame;
-			s.ExtraData.CurrentDiscEjected = CurrentTrayOpen;
-			s.ExtraData.CurrentDiscIndexMounted = CurrentDiscIndexMounted;
-
-			ser.Serialize(writer, s);
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			var s = (TextState<TextStateData>)ser.Deserialize(reader, typeof(TextState<TextStateData>));
-			s.Prepare();
-			var transaction = new OctoshockDll.ShockStateTransaction()
-			{
-				transaction = OctoshockDll.eShockStateTransaction.TextLoad,
-				ff = s.GetFunctionPointersLoad()
-			};
-
-			int result = OctoshockDll.shock_StateTransaction(psx, ref transaction);
-			if (result != OctoshockDll.SHOCK_OK)
-				throw new InvalidOperationException($"{nameof(OctoshockDll.eShockStateTransaction)}.{nameof(OctoshockDll.eShockStateTransaction.TextLoad)} returned error!");
-
-			IsLagFrame = s.ExtraData.IsLagFrame;
-			LagCount = s.ExtraData.LagCount;
-			Frame = s.ExtraData.Frame;
-			CurrentTrayOpen = s.ExtraData.CurrentDiscEjected;
-			CurrentDiscIndexMounted = s.ExtraData.CurrentDiscIndexMounted;
-			PokeDisc();
-		}
-
 		byte[] savebuff;
 		byte[] savebuff2;
 

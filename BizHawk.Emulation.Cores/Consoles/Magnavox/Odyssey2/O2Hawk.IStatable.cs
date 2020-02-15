@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 {
-	public partial class O2Hawk : IStatable
+	public partial class O2Hawk : ITextStatable
 	{
 		public void SaveStateText(TextWriter writer)
 		{

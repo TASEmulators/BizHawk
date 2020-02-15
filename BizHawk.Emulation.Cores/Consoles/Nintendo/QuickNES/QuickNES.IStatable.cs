@@ -1,28 +1,11 @@
 ﻿using System;
 using System.IO;
-using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
 	public partial class QuickNES : IStatable
 	{
-		public void SaveStateText(TextWriter writer)
-		{
-			CheckDisposed();
-			var temp = SaveStateBinary();
-			temp.SaveAsHexFast(writer);
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			CheckDisposed();
-			string hex = reader.ReadLine();
-			byte[] state = new byte[hex.Length / 2];
-			state.ReadFromHexFast(hex);
-			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
-		}
-
 		public void SaveStateBinary(BinaryWriter writer)
 		{
 			CheckDisposed();

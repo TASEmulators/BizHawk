@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Lynx
 {
-	public partial class Lynx : IStatable
+	public partial class Lynx : ITextStatable
 	{
 		public void SaveStateText(TextWriter writer)
 		{
@@ -19,8 +19,6 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			s.ExtraData.Frame = Frame;
 
 			_ser.Serialize(writer, s);
-
-			////Console.WriteLine(BizHawk.Common.BufferExtensions.BufferExtensions.HashSHA1(SaveStateBinary()));
 		}
 
 		public void LoadStateText(TextReader reader)

@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.WonderSwan
 {
-	partial class WonderSwan: IStatable
+	partial class WonderSwan: ITextStatable
 	{
 		private void InitIStatable()
 		{

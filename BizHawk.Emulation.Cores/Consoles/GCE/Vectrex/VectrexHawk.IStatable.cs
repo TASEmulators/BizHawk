@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 {
-	public partial class VectrexHawk : IStatable
+	public partial class VectrexHawk : ITextStatable
 	{
 		public void SaveStateText(TextWriter writer)
 		{

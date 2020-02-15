@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
-	public partial class SMS : IStatable
+	public partial class SMS : ITextStatable
 	{
 		public void SaveStateText(TextWriter writer)
 		{

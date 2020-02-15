@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.ColecoVision
 {
-	public partial class ColecoVision : IStatable
+	public partial class ColecoVision : ITextStatable
 	{
 		public void SaveStateText(TextWriter writer)
 		{

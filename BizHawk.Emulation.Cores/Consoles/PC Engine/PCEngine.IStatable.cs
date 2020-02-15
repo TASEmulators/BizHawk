@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.PCEngine
 {
-	public sealed partial class PCEngine : IStatable
+	public sealed partial class PCEngine : ITextStatable
 	{
 		public void SaveStateBinary(BinaryWriter bw)
 		{

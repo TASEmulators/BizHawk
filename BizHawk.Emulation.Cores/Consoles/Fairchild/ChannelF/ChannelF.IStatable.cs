@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
-	public partial class ChannelF : IStatable
+	public partial class ChannelF : ITextStatable
 	{
 		public void SaveStateText(TextWriter writer)
 		{

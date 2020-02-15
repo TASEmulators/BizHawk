@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// CPCHawk: Core Class
 	/// * IStatable *
 	/// </summary>
-	public partial class AmstradCPC : IStatable
+	public partial class AmstradCPC : ITextStatable
 	{
 		public void SaveStateText(TextWriter writer)
 		{

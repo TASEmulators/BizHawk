@@ -8,7 +8,7 @@ using Newtonsoft.Json.Serialization;
 
 namespace BizHawk.Emulation.Cores.Computers.AppleII
 {
-	public partial class AppleII : IStatable
+	public partial class AppleII : ITextStatable
 	{
 		private class CoreConverter : JsonConverter
 		{

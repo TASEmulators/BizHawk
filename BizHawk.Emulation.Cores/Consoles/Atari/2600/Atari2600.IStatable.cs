@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
-	public partial class Atari2600 : IStatable
+	public partial class Atari2600 : ITextStatable
 	{
 		public void SaveStateText(TextWriter writer)
 		{

@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.MSX
 {
-	public partial class MSX : IStatable
+	public partial class MSX : ITextStatable
 	{
 		public void SaveStateText(TextWriter writer)
 		{

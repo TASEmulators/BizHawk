@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
-	public partial class A7800Hawk : IStatable
+	public partial class A7800Hawk : ITextStatable
 	{
 		public void SaveStateText(TextWriter writer)
 		{

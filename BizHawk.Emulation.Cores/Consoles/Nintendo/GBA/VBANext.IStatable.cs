@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
-	public partial class VBANext : IStatable
+	public partial class VBANext : ITextStatable
 	{
 		public void SaveStateText(TextWriter writer)
 		{
@@ -19,8 +19,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			s.ExtraData.Frame = Frame;
 
 			ser.Serialize(writer, s);
-
-			//Console.WriteLine(BizHawk.Common.BufferExtensions.BufferExtensions.HashSHA1(SaveStateBinary()));
 		}
 
 		public void LoadStateText(TextReader reader)

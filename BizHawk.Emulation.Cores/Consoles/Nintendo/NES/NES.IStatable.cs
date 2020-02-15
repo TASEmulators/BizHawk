@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public partial class NES : IStatable
+	public partial class NES : ITextStatable
 	{
 		public void SaveStateText(TextWriter writer)
 		{
