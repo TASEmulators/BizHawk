@@ -5,7 +5,6 @@ using System.Drawing;
 using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.InputAdapterExtensions;
 

@@ -6,7 +6,6 @@ using System.Windows.Forms;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 
 // todo - perks - pause, copy to clipboard, backlog length limiting

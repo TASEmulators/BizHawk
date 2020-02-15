@@ -2,7 +2,6 @@
 using System.Threading;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Common;
 

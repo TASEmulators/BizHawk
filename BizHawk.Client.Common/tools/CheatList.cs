@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.Common
 {

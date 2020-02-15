@@ -7,7 +7,6 @@ using System.Windows.Forms;
 using System.ComponentModel;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.MovieConversionExtensions;

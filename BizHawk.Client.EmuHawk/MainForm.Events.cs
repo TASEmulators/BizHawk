@@ -4,7 +4,6 @@ using System.IO;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Calculators;
 using BizHawk.Emulation.Cores.ColecoVision;
 using BizHawk.Emulation.Cores.Nintendo.NES;

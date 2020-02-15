@@ -13,7 +13,6 @@ using BizHawk.Common.NumberExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 

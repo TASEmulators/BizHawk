@@ -8,7 +8,6 @@ using System.Dynamic;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Emulation.Cores.Arcades.MAME
 {

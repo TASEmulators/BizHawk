@@ -9,13 +9,10 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
-using BizHawk.Common.NumberExtensions;
-
-using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
-
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Common.NumberExtensions;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {

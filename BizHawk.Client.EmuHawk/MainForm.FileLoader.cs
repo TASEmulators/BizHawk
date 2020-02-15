@@ -5,7 +5,7 @@ using System.Linq;
 using System.Collections.Generic;
 
 using BizHawk.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
+using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk

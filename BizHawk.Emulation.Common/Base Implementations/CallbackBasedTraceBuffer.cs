@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Emulation.Common
 {

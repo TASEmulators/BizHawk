@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {

@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
-using System.IO;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
-using BizHawk.Common;
 
 // ReSharper disable UnusedMember.Global
 namespace BizHawk.Client.ApiHawk

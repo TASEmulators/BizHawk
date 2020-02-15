@@ -7,7 +7,6 @@ using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 using BizHawk.Emulation.Cores.Nintendo.SubNESHawk;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive;
 

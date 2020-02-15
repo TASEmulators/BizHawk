@@ -5,7 +5,6 @@ using System.Linq;
 
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.Common
 {

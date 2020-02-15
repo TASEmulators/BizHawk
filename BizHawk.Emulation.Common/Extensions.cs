@@ -3,9 +3,9 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace BizHawk.Emulation.Common.IEmulatorExtensions
+namespace BizHawk.Emulation.Common
 {
-	public static class Extensions
+	public static class EmulatorExtensions
 	{
 		public static CoreAttribute Attributes(this IEmulator core)
 		{

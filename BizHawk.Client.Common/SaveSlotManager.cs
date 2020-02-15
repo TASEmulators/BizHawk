@@ -1,7 +1,7 @@
 ﻿using System.IO;
 
 using BizHawk.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {

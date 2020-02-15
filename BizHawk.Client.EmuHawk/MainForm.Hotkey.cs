@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 
 using BizHawk.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.EmuHawk
