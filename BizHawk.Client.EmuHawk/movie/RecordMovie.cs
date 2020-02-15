@@ -108,7 +108,7 @@ namespace BizHawk.Client.EmuHawk
 					movieToRecord.StartsFromSavestate = true;
 					movieToRecord.StartsFromSaveRam = false;
 
-					if (core.BinarySaveStatesPreferred)
+					if (_config.SaveStateType == SaveStateTypeE.Binary)
 					{
 						movieToRecord.BinarySavestate = (byte[])core.SaveStateBinary().Clone();
 					}
