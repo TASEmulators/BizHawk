@@ -7,8 +7,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 {
 	public partial class VectrexHawk : IStatable
 	{
-		public bool BinarySaveStatesPreferred => true;
-
 		public void SaveStateText(TextWriter writer)
 		{
 			SyncState(new Serializer(writer));

@@ -32,8 +32,6 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			}
 		}
 
-		public bool BinarySaveStatesPreferred => true;
-
 		private void SerializeEverything(JsonWriter w)
 		{
 			// this is much faster than other possibilities for serialization

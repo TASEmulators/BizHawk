@@ -97,7 +97,5 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			ms.Close();
 			return savebuff2;
 		}
-
-		public bool BinarySaveStatesPreferred => true;
 	}
 }

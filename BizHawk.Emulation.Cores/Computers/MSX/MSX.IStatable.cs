@@ -8,8 +8,6 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 {
 	public partial class MSX : IStatable
 	{
-		public bool BinarySaveStatesPreferred => true;
-
 		public void SaveStateText(TextWriter writer)
 		{
 			SyncState(new Serializer(writer));

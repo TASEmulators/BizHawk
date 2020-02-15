@@ -6,8 +6,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
 	public unsafe partial class LibsnesCore : IStatable
 	{
-		public bool BinarySaveStatesPreferred => true;
-
 		public void SaveStateText(TextWriter writer)
 		{
 			var temp = SaveStateBinary();

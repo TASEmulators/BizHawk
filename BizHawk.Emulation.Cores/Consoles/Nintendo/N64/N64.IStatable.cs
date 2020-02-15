@@ -9,8 +9,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
 	public partial class N64 : IStatable
 	{
-		public bool BinarySaveStatesPreferred => true;
-
 		// these functions are all exact copy paste from gambatte.
 		// if something's wrong here, it's probably wrong there too
 		public void SaveStateText(TextWriter writer)

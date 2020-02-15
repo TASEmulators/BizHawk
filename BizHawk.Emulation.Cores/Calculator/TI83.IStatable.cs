@@ -7,8 +7,6 @@ namespace BizHawk.Emulation.Cores.Calculators
 {
 	public partial class TI83 : IStatable
 	{
-		public bool BinarySaveStatesPreferred => true;
-
 		public void SaveStateText(TextWriter writer)
 		{
 			SyncState(new Serializer(writer));

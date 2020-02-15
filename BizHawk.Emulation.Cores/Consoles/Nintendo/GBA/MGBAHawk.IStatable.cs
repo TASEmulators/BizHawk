@@ -10,8 +10,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		private byte[] _savebuff = new byte[0];
 		private byte[] _savebuff2 = new byte[13];
 
-		public bool BinarySaveStatesPreferred => true;
-
 		public void SaveStateText(TextWriter writer)
 		{
 			var tmp = SaveStateBinary();

@@ -1208,8 +1208,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			return savebuff2;
 		}
 
-		public bool BinarySaveStatesPreferred => true;
-
 		#endregion
 
 		#region Settings

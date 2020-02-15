@@ -254,8 +254,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		#region IStatable
 
-		public bool BinarySaveStatesPreferred => true;
-
 		public void SaveStateText(TextWriter writer)
 		{
 			var temp = SaveStateBinary();

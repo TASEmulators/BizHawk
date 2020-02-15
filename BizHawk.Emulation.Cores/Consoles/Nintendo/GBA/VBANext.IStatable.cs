@@ -8,8 +8,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	public partial class VBANext : IStatable
 	{
-		public bool BinarySaveStatesPreferred => true;
-
 		public void SaveStateText(TextWriter writer)
 		{
 			var s = new TextState<TextStateData>();

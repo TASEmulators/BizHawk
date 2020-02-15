@@ -426,8 +426,6 @@ namespace BizHawk.Emulation.Cores.Libretro
 			return savebuff2;
 		}
 
-		public bool BinarySaveStatesPreferred { get { return true; } }
-
 		#endregion
 
 

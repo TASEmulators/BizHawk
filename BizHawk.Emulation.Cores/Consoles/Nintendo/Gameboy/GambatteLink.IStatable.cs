@@ -8,8 +8,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	public partial class GambatteLink : IStatable
 	{
-		public bool BinarySaveStatesPreferred { get { return true; } }
-
 		public void SaveStateText(TextWriter writer)
 		{
 			var s = new DGBSerialized
