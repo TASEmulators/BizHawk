@@ -43,10 +43,10 @@ namespace Jellyfish.Virtu
 		public abstract void ReadTrack(int number, int fraction, byte[] buffer);
 		public abstract void WriteTrack(int number, int fraction, byte[] buffer);
 
-		public byte[] Data { get; protected set; }
+		public byte[] Data;
 
 		// ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
-		public bool IsWriteProtected { get; private set; }
+		public bool IsWriteProtected;
 
 		public const int SectorCount = 16;
 		public const int SectorSize = 0x100;

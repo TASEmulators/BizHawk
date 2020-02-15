@@ -8,6 +8,8 @@ namespace Jellyfish.Virtu
 
 		// ReSharper disable once UnusedMemberInSuper.Global
 		DiskIIDrive Drive1 { get; }
+
+		void Sync(IComponentSerializer ser);
 	}
 
 	// ReSharper disable once UnusedMember.Global
@@ -32,7 +34,29 @@ namespace Jellyfish.Virtu
 			_writeMode = false;
 		}
 
-		public bool DriveLight { get; set; }
+		public void Sync(IComponentSerializer ser)
+		{
+			ser.Sync(nameof(_driveLight), ref _driveLight);
+
+			ser.Sync(nameof(_latch), ref _latch);
+			ser.Sync(nameof(_phaseStates), ref _phaseStates);
+			ser.Sync(nameof(_motorOn), ref _motorOn);
+			ser.Sync(nameof(_driveNumber), ref _driveNumber);
+			ser.Sync(nameof(_loadMode), ref _loadMode);
+			ser.Sync(nameof(_writeMode), ref _writeMode);
+			ser.Sync(nameof(_driveSpin), ref _driveSpin);
+
+			Drive1.Sync(ser);
+			Drive2.Sync(ser);
+		}
+
+		private bool _driveLight;
+
+		public bool DriveLight
+		{
+			get => _driveLight;
+			set => _driveLight = value;
+		}
 
 		public IList<DiskIIDrive> Drives => new List<DiskIIDrive> { Drive1, Drive2 };
 

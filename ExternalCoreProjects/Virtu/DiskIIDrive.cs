@@ -19,6 +19,22 @@ namespace Jellyfish.Virtu
 			_driveArmStepDelta[3] = new[] { 0, 1, 0, 1, -1, 0, -1, 0, 0, 1, 0, 1, -1, 0, -1, 0 }; // phase 3
 		}
 
+		public void Sync(IComponentSerializer ser)
+		{
+			ser.Sync(nameof(_trackLoaded), ref _trackLoaded);
+			ser.Sync(nameof(_trackChanged), ref _trackChanged);
+			ser.Sync(nameof(_trackNumber), ref _trackNumber);
+			ser.Sync(nameof(_trackOffset), ref _trackOffset);
+
+			
+			// TODO: enforce isWriteProtected, or save the delta
+			if (_disk != null)
+			{
+				ser.Sync(nameof(_disk.Data), ref _disk.Data, false);
+				ser.Sync(nameof(_disk.IsWriteProtected), ref _disk.IsWriteProtected);
+			}
+		}
+
 		// ReSharper disable once UnusedMember.Global
 		public void InsertDisk(string name, byte[] data, bool isWriteProtected)
 		{

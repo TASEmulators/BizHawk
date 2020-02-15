@@ -13,6 +13,8 @@ namespace Jellyfish.Virtu
 
 		// ReSharper disable once UnusedMember.Global
 		void GetSamples(out short[] samples, out int nSamp);
+
+		void Sync(IComponentSerializer ser);
 	}
 
 	public sealed class Speaker : ISpeaker
@@ -34,6 +36,14 @@ namespace Jellyfish.Virtu
 
 			_isHigh = false;
 			_highCycles = _totalCycles = 0;
+		}
+
+		public void Sync(IComponentSerializer ser)
+		{
+			ser.Sync(nameof(_isHigh), ref _isHigh);
+			ser.Sync(nameof(_highCycles), ref _highCycles);
+			ser.Sync(nameof(_totalCycles), ref _totalCycles);
+			ser.Sync(nameof(_lastCycles), ref _lastCycles);
 		}
 
 		private const int CyclesPerFlush = 23;

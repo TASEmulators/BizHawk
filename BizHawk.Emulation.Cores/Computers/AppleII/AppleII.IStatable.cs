@@ -193,6 +193,12 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			_machine.Cpu.Sync(ser);
 			ser.BeginSection("Video");
 			_machine.Video.Sync(ser);
+			ser.BeginSection("Memory");
+			_machine.Memory.Sync(ser);
+			ser.BeginSection("NoSlotClock");
+			_machine.NoSlotClock.Sync(ser);
+			ser.BeginSection("DiskIIController");
+			_machine.DiskIIController.Sync(ser);
 		}
 
 		public class AppleSerializer : Serializer, IComponentSerializer

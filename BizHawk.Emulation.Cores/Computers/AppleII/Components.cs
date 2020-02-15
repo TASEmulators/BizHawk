@@ -19,6 +19,9 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			Cpu = new Cpu(Memory);
 			Video = new Video(Events, Memory);
 
+			NoSlotClock = new NoSlotClock(Video);
+			DiskIIController = new DiskIIController(Video, diskIIRom);
+
 			var emptySlot = new EmptyPeripheralCard(Video);
 
 			// Necessary because of tangling dependencies between memory and video classes
@@ -28,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 				new EmptyCassetteComponent(),
 				new Speaker(Events, Cpu),
 				Video,
-				new NoSlotClock(Video),
+				NoSlotClock,
 				emptySlot,
 				emptySlot,
 				emptySlot,
@@ -46,5 +49,9 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		public Memory Memory { get; private set; }
 		public Cpu Cpu { get; private set; }
 		public Video Video { get; private set; }
+
+		// Only needed for convenience of savestate syncing, else the memory component needs to do it
+		public NoSlotClock NoSlotClock { get; private set; }
+		public DiskIIController DiskIIController { get; private set; }
 	}
 }

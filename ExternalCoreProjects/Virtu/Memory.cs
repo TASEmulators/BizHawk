@@ -31,6 +31,8 @@ namespace Jellyfish.Virtu
 
 		int VideoMode { get; }
 		MonitorType Monitor { get; }
+
+		void Sync(IComponentSerializer ser);
 	}
 
 	public sealed partial class Memory : IMemoryBus
@@ -62,6 +64,29 @@ namespace Jellyfish.Virtu
 		{
 			_appleIIe = appleIIe;
 			InitializeWriteDelegates();
+		}
+
+		public void Sync(IComponentSerializer ser)
+		{
+			ser.Sync(nameof(_lagged), ref _lagged);
+			ser.Sync(nameof(_state), ref _state);
+			ser.Sync(nameof(_slotRegionC8CF), ref _slotRegionC8CF);
+			ser.Sync(nameof(_zeroPage), ref _zeroPage, false);
+
+			ser.Sync(nameof(_ramMainRegion0001), ref _ramMainRegion0001, false);
+			ser.Sync(nameof(_ramMainRegion02BF), ref _ramMainRegion02BF, false);
+			ser.Sync(nameof(_ramMainBank1RegionD0DF), ref _ramMainBank1RegionD0DF, false);
+			ser.Sync(nameof(_ramMainBank2RegionD0DF), ref _ramMainBank2RegionD0DF, false);
+			ser.Sync(nameof(_ramMainRegionE0FF), ref _ramMainRegionE0FF, false);
+			ser.Sync(nameof(_ramAuxRegion0001), ref _ramAuxRegion0001, false);
+			ser.Sync(nameof(_ramAuxRegion02BF), ref _ramAuxRegion02BF, false);
+			ser.Sync(nameof(_ramAuxBank1RegionD0DF), ref _ramAuxBank1RegionD0DF, false);
+			ser.Sync(nameof(_ramAuxBank2RegionD0DF), ref _ramAuxBank2RegionD0DF, false);
+			ser.Sync(nameof(_ramAuxRegionE0FF), ref _ramAuxRegionE0FF, false);
+			ser.Sync(nameof(_romExternalRegionC1CF), ref _romExternalRegionC1CF, false);
+			ser.Sync(nameof(_romInternalRegionC1CF), ref _romInternalRegionC1CF, false);
+			ser.Sync(nameof(_romRegionD0DF), ref _romRegionD0DF, false);
+			ser.Sync(nameof(_romRegionE0FF), ref _romRegionE0FF, false);
 		}
 
 		// ReSharper disable once UnusedMember.Global
@@ -123,7 +148,9 @@ namespace Jellyfish.Virtu
 			}
 		}
 
-		public bool Lagged { get; set; }
+		private bool _lagged;
+
+		public bool Lagged { get => _lagged; set => _lagged = value; }
 
 		private IList<IPeripheralCard> Slots => new List<IPeripheralCard>
 		{

@@ -6,11 +6,21 @@ namespace Jellyfish.Virtu
 	{
 		int Read(int address, int value);
 		void Write(int address);
+
+		void Sync(IComponentSerializer ser);
 	}
 
 	// ReSharper disable once UnusedMember.Global
 	public sealed class NoSlotClock : ISlotClock
 	{
+		public void Sync(IComponentSerializer ser)
+		{
+			ser.Sync(nameof(_clockEnabled), ref _clockEnabled);
+			ser.Sync(nameof(_writeEnabled), ref _writeEnabled);
+			_clockRegister.Sync(ser);
+			_comparisonRegister.Sync(ser);
+		}
+
 		// ReSharper disable once FieldCanBeMadeReadOnly.Local
 		private Video _video;
 
@@ -153,6 +163,12 @@ namespace Jellyfish.Virtu
 			{
 				_data = data;
 				_mask = mask;
+			}
+
+			public void Sync(IComponentSerializer ser)
+			{
+				ser.Sync(nameof(_data), ref _data);
+				ser.Sync(nameof(_mask), ref _mask);
 			}
 
 			public void Reset()
