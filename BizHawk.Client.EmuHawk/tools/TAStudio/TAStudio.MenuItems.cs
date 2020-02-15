@@ -779,7 +779,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (CurrentTasMovie.TasStateManager.HasState(Emulator.Frame))
 				{
-					byte[] state = StatableEmulator.SaveStateBinary();
+					byte[] state = (byte[])StatableEmulator.SaveStateBinary().Clone();
 					byte[] greenZone = CurrentTasMovie.TasStateManager[Emulator.Frame];
 
 					if (!state.SequenceEqual(greenZone))
