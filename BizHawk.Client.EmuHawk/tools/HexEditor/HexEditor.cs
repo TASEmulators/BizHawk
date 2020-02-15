@@ -629,7 +629,7 @@ namespace BizHawk.Client.EmuHawk
 				HexScrollBar.Value = 0;
 			}
 
-			AddressesLabel.ForeColor = _domain.CanPoke()
+			AddressesLabel.ForeColor = _domain.Writable
 				? SystemColors.ControlText
 				: SystemColors.ControlDarkDark;
 
@@ -649,7 +649,7 @@ namespace BizHawk.Client.EmuHawk
 		private void UpdateGroupBoxTitle()
 		{
 			var addressesString = "0x" + $"{_domain.Size / DataSize:X8}".TrimStart('0');
-			var viewerText = $"{Emulator.SystemId} {_domain}{(_domain.CanPoke() ? string.Empty : " (READ-ONLY)")}  -  {addressesString} addresses";
+			var viewerText = $"{Emulator.SystemId} {_domain}{(_domain.Writable ? string.Empty : " (READ-ONLY)")}  -  {addressesString} addresses";
 			if (_nibbles.Any())
 			{
 				viewerText += $"  Typing: ({MakeNibbles()})";
@@ -1245,7 +1245,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void importAsBinaryToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if(!_domain.CanPoke())
+			if(!_domain.Writable)
 			{
 				MessageBox.Show("This Memory Domain can't be Poked; so importing can't work");
 				return;
@@ -1360,10 +1360,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var data = Clipboard.GetDataObject();
 			PasteMenuItem.Enabled =
-				_domain.CanPoke() &&
-				(_highlightedAddress.HasValue || _secondaryHighlightedAddresses.Any()) &&
-				data != null &&
-				data.GetDataPresent(DataFormats.Text);
+				_domain.Writable
+				&& (_highlightedAddress.HasValue || _secondaryHighlightedAddresses.Any())
+				&& data != null
+				&& data.GetDataPresent(DataFormats.Text);
 
 			FindNextMenuItem.Enabled = !string.IsNullOrWhiteSpace(_findStr);
 		}
@@ -1536,7 +1536,7 @@ namespace BizHawk.Client.EmuHawk
 			PokeAddressMenuItem.Enabled =
 				FreezeAddressMenuItem.Enabled =
 				_highlightedAddress.HasValue &&
-				_domain.CanPoke();
+				_domain.Writable;
 		}
 
 		private void MemoryDomainsMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1619,7 +1619,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FreezeAddressMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!_domain.CanPoke())
+			if (!_domain.Writable)
 			{
 				return;
 			}
@@ -1648,7 +1648,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PokeAddressMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!_domain.CanPoke())
+			if (!_domain.Writable)
 			{
 				return;
 			}
@@ -1933,7 +1933,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (!_domain.CanPoke() || !_highlightedAddress.HasValue)
+			if (!_domain.Writable || !_highlightedAddress.HasValue)
 			{
 				return;
 			}
@@ -1984,10 +1984,10 @@ namespace BizHawk.Client.EmuHawk
 				DecrementContextItem.Visible =
 				ContextSeparator2.Visible =
 				(_highlightedAddress.HasValue || _secondaryHighlightedAddresses.Any()) &&
-				_domain.CanPoke();
+				_domain.Writable;
 
 			UnfreezeAllContextItem.Visible = Global.CheatList.ActiveCount > 0;
-			PasteContextItem.Visible = _domain.CanPoke() && data != null && data.GetDataPresent(DataFormats.Text);
+			PasteContextItem.Visible = _domain.Writable && data != null && data.GetDataPresent(DataFormats.Text);
 
 			ContextSeparator1.Visible =
 				_highlightedAddress.HasValue ||
@@ -2011,7 +2011,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void IncrementContextItem_Click(object sender, EventArgs e)
 		{
-			if (!_domain.CanPoke())
+			if (!_domain.Writable)
 			{
 				return;
 			}
@@ -2028,7 +2028,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DecrementContextItem_Click(object sender, EventArgs e)
 		{
-			if (!_domain.CanPoke())
+			if (!_domain.Writable)
 			{
 				return;
 			}

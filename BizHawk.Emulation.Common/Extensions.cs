@@ -201,11 +201,6 @@ namespace BizHawk.Emulation.Common
 			return core.ServiceProvider.GetService<IDisassemblable>();
 		}
 
-		public static bool CanPoke(this MemoryDomain d)
-		{
-			return d.Writable;
-		}
-
 		public static bool HasRegions(this IEmulator core)
 		{
 			return core != null && core.ServiceProvider.HasService<IRegionable>();

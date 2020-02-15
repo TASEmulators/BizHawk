@@ -440,8 +440,8 @@ namespace BizHawk.Client.EmuHawk
 
 			PokeAddressToolBarItem.Enabled =
 				FreezeAddressToolBarItem.Enabled =
-				SelectedIndices.Any() &&
-				_searches.Domain.CanPoke();
+				SelectedIndices.Any()
+				&& _searches.Domain.Writable;
 		}
 
 		private long? CompareToValue
@@ -1227,7 +1227,7 @@ namespace BizHawk.Client.EmuHawk
 			PokeAddressMenuItem.Enabled =
 				FreezeAddressMenuItem.Enabled =
 				SelectedIndices.Any() &&
-				SelectedWatches.All(w => w.Domain.CanPoke());
+				SelectedWatches.All(w => w.Domain.Writable);
 
 			UndoMenuItem.Enabled =
 				ClearUndoMenuItem.Enabled =
@@ -1439,7 +1439,7 @@ namespace BizHawk.Client.EmuHawk
 			PokeContextMenuItem.Enabled =
 				FreezeContextMenuItem.Visible =
 				SelectedIndices.Any() &&
-				SelectedWatches.All(w => w.Domain.CanPoke());
+				SelectedWatches.All(w => w.Domain.Writable);
 
 			UnfreezeAllContextMenuItem.Visible = Global.CheatList.ActiveCount > 0;
 
@@ -1742,8 +1742,8 @@ namespace BizHawk.Client.EmuHawk
 
 			PokeAddressToolBarItem.Enabled =
 				FreezeAddressToolBarItem.Enabled =
-				SelectedIndices.Any() &&
-				_searches.Domain.CanPoke();
+				SelectedIndices.Any()
+				&& _searches.Domain.Writable;
 		}
 
 		private void WatchListView_Enter(object sender, EventArgs e)

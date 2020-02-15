@@ -193,8 +193,8 @@ namespace BizHawk.Client.EmuHawk
 					UpdateValues();
 					PokeAddressToolBarItem.Enabled =
 						FreezeAddressToolBarItem.Enabled =
-						SelectedIndices.Any() &&
-						SelectedWatches.All(w => w.Domain.CanPoke());
+						SelectedIndices.Any()
+						&& SelectedWatches.All(w => w.Domain.Writable);
 				}
 			}
 		}
@@ -496,7 +496,7 @@ namespace BizHawk.Client.EmuHawk
 				PokeAddressToolBarItem.Enabled =
 					FreezeAddressToolBarItem.Enabled =
 					SelectedIndices.Any() &&
-					SelectedWatches.All(w => w.Domain.CanPoke());
+					SelectedWatches.All(w => w.Domain.Writable);
 			}
 		}
 
@@ -712,7 +712,7 @@ namespace BizHawk.Client.EmuHawk
 			PokeAddressMenuItem.Enabled =
 				FreezeAddressMenuItem.Enabled =
 				SelectedIndices.Any() &&
-				SelectedWatches.All(w => w.Domain.CanPoke());
+				SelectedWatches.All(w => w.Domain.Writable);
 
 			PauseMenuItem.Text = _paused ? "Unpause" : "Pause";
 		}
@@ -1059,7 +1059,7 @@ namespace BizHawk.Client.EmuHawk
 			PokeAddressToolBarItem.Enabled =
 				FreezeAddressToolBarItem.Enabled =
 				SelectedIndices.Any() &&
-				SelectedWatches.All(w => w.Domain.CanPoke());
+				SelectedWatches.All(w => w.Domain.Writable);
 		}
 
 		private void ColumnToggleCallback()
@@ -1109,8 +1109,8 @@ namespace BizHawk.Client.EmuHawk
 
 			PokeContextMenuItem.Enabled =
 				FreezeContextMenuItem.Visible =
-				SelectedIndices.Any() &&
-				SelectedWatches.All(w => w.Domain.CanPoke());
+				SelectedIndices.Any()
+				&& SelectedWatches.All(w => w.Domain.Writable);
 
 			var allCheats = SelectedWatches.All(x => Global.CheatList.IsActive(x.Domain, x.Address));
 
@@ -1209,8 +1209,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			PokeAddressToolBarItem.Enabled =
 				FreezeAddressToolBarItem.Enabled =
-				SelectedIndices.Any() &&
-				SelectedWatches.All(w => w.Domain.CanPoke());
+				SelectedIndices.Any()
+				&& SelectedWatches.All(w => w.Domain.Writable);
 		}
 
 		private void WatchListView_MouseDoubleClick(object sender, MouseEventArgs e)

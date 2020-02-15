@@ -95,7 +95,7 @@ namespace BizHawk.Client.Common
 		private void WriteUnsignedByte(long addr, uint v, string domain = null)
 		{
 			var d = NamedDomainOrCurrent(domain);
-			if (!d.CanPoke())
+			if (!d.Writable)
 			{
 				LogCallback($"Error: the domain {d.Name} is not writable");
 				return;
@@ -235,7 +235,7 @@ namespace BizHawk.Client.Common
 		public void WriteByteRange(long addr, List<byte> memoryblock, string domain = null)
 		{
 			var d = NamedDomainOrCurrent(domain);
-			if (!d.CanPoke())
+			if (!d.Writable)
 			{
 				LogCallback($"Error: the domain {d.Name} is not writable");
 				return;
@@ -261,7 +261,7 @@ namespace BizHawk.Client.Common
 		public void WriteFloat(long addr, double value, string domain = null)
 		{
 			var d = NamedDomainOrCurrent(domain);
-			if (!d.CanPoke())
+			if (!d.Writable)
 			{
 				LogCallback($"Error: the domain {Domain.Name} is not writable");
 				return;
