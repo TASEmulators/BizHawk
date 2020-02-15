@@ -188,6 +188,7 @@ namespace BizHawk.Client.EmuHawk
 			_config.NoLowResLargeScreenshotWithStates = !LowResLargeScreenshotsCheckbox.Checked;
 			_config.BigScreenshotSize = (int)BigScreenshotNumeric.Value * 1024;
 
+			DialogResult = DialogResult.OK;
 			Close();
 		}
 
