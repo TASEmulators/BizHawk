@@ -20,6 +20,8 @@ namespace Jellyfish.Virtu
 		void SetCharSet();
 
 		bool IsVBlank { get; }
+
+		void Sync(IComponentSerializer ser);
 	}
 
 	public sealed partial class Video : IVideo
@@ -80,8 +82,13 @@ namespace Jellyfish.Virtu
 			_events.AddEvent(_cyclesPerFlash, _inverseTextEvent);
 		}
 
+		public void Sync(IComponentSerializer ser)
+		{
+			ser.Sync(nameof(_framebuffer), ref _framebuffer, false);
+		}
+
 		// ReSharper disable once UnusedMember.Global
-		public int[] GetVideoBuffer() => Framebuffer;
+		public int[] GetVideoBuffer() => _framebuffer;
 
 		[OnDeserialized]
 		private void OnDeserialized(StreamingContext context)
@@ -1003,12 +1010,12 @@ namespace Jellyfish.Virtu
 		}
 
 		// ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
-		private int[] Framebuffer { get; set; } = new int[560 * 384];
+		private int[] _framebuffer = new int[560 * 384];
 
 		private void SetPixel(int x, int y, int color)
 		{
 			int i = 560 * (2 * y) + x;
-			Framebuffer[i] = Framebuffer[i + 560] = _colorPalette[color];
+			_framebuffer[i] = _framebuffer[i + 560] = _colorPalette[color];
 		}
 
 		private void SetScanner()

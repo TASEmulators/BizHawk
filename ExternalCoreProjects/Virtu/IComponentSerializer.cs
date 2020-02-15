@@ -6,5 +6,7 @@
 		void Sync(string name, ref bool val);
 		void Sync(string name, ref int val);
 		void Sync(string name, ref long val);
+
+		void Sync(string name, ref int[] val, bool useNull);
 	}
 }

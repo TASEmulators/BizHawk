@@ -191,6 +191,8 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			ser.Sync("Lag", ref _lagcount);
 			ser.BeginSection("Cpu");
 			_machine.Cpu.Sync(ser);
+			ser.BeginSection("Video");
+			_machine.Video.Sync(ser);
 		}
 
 		public class AppleSerializer : Serializer, IComponentSerializer
