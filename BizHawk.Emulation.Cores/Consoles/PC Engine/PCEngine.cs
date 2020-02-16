@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		"Vecna",
 		isPorted: false,
 		isReleased: true)]
-	public sealed partial class PCEngine : IEmulator, ISaveRam, IStatable, IInputPollable,
+	public sealed partial class PCEngine : IEmulator, ISaveRam, IInputPollable,
 		IDebuggable, ISettable<PCEngine.PCESettings, PCEngine.PCESyncSettings>, IDriveLight, ICodeDataLogger
 	{
 		[CoreConstructor("PCE", "SGX")]
@@ -321,6 +321,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			ser.Register<IDisassemblable>(Cpu);
 			ser.Register<IVideoProvider>((IVideoProvider)VPC ?? VDC1);
 			ser.Register<ISoundProvider>(_soundProvider);
+			ser.Register<IStatable>(new StateSerializer(SyncState));
 			SetupMemoryDomains();
 		}
 
