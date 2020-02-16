@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Intellivision
 {
-	public partial class Intellivision : IEmulator, IStatable, ISettable<Intellivision.IntvSettings, Intellivision.IntvSyncSettings>
+	public partial class Intellivision : IEmulator, ISettable<Intellivision.IntvSettings, Intellivision.IntvSyncSettings>
 	{
 		public IntvSettings GetSettings()
 		{

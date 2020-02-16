@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		isPorted: false,
 		isReleased: true)]
 	[ServiceNotApplicable(typeof(ISaveRam), typeof(IDriveLight), typeof(IRegionable))]
-	public sealed partial class Intellivision : IEmulator, IStatable, IInputPollable, IDisassemblable,
+	public sealed partial class Intellivision : IEmulator, IInputPollable, IDisassemblable,
 		IBoardInfo, IDebuggable, ISettable<Intellivision.IntvSettings, Intellivision.IntvSyncSettings>
 	{
 		[CoreConstructor("INTV")]
@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 			_tracer = new TraceBuffer { Header = _cpu.TraceHeader };
 			ser.Register<ITraceable>(_tracer);
-
+			ser.Register<IStatable>(new StateSerializer(SyncState));
 			SetupMemoryDomains();
 		}
 

@@ -8,7 +8,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 {
-	public partial class VectrexHawk : IEmulator, IStatable, ISettable<VectrexHawk.VectrexSettings, VectrexHawk.VectrexSyncSettings>
+	public partial class VectrexHawk : IEmulator, ISettable<VectrexHawk.VectrexSettings, VectrexHawk.VectrexSyncSettings>
 	{
 		public VectrexSettings GetSettings()
 		{
