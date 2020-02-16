@@ -10,6 +10,7 @@ using System.Xml.Linq;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -49,6 +50,10 @@ namespace BizHawk.Client.EmuHawk
 				if (SystemDropDown.Items.Contains(Emulator.SystemId))
 				{
 					SystemDropDown.SelectedItem = Emulator.SystemId;
+				}
+				else if (Emulator is SMS sms && sms.IsGameGear)
+				{
+					SystemDropDown.SelectedItem = "Game Gear";
 				}
 
 				FileSelectors.First().Path = MainForm.CurrentlyOpenRom;
