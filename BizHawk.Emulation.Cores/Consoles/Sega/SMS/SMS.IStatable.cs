@@ -14,9 +14,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				ms.Close();
 				core = ms.ToArray();
 			}
-			Cpu.SyncState(ser);
 
 			ser.BeginSection(nameof(SMS));
+			Cpu.SyncState(ser);
 			Vdp.SyncState(ser);
 			PSG.SyncState(ser);
 			ser.Sync("RAM", ref SystemRam, false);

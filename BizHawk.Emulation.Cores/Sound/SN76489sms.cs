@@ -99,10 +99,10 @@ namespace BizHawk.Emulation.Cores.Components
 			ser.Sync(nameof(B_L), ref B_L);
 			ser.Sync(nameof(C_L), ref C_L);
 			ser.Sync(nameof(noise_L), ref noise_L);
-			ser.Sync(nameof(A_L), ref A_R);
-			ser.Sync(nameof(B_L), ref B_R);
-			ser.Sync(nameof(C_L), ref C_R);
-			ser.Sync(nameof(noise_L), ref noise_R);
+			ser.Sync(nameof(A_R), ref A_R);
+			ser.Sync(nameof(B_R), ref B_R);
+			ser.Sync(nameof(C_R), ref C_R);
+			ser.Sync(nameof(noise_R), ref noise_R);
 
 			ser.Sync(nameof(current_sample_L), ref current_sample_L);
 			ser.Sync(nameof(current_sample_R), ref current_sample_R);
