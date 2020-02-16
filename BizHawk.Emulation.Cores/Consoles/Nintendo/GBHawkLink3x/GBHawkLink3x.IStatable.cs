@@ -4,27 +4,11 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 {
-	public partial class GBHawkLink3x : ITextStatable
+	public partial class GBHawkLink3x : IStatable
 	{
-		private readonly ITextStatable _lStates;
-		private readonly ITextStatable _cStates;
-		private readonly ITextStatable _rStates;
-
-		public void SaveStateText(TextWriter writer)
-		{
-			_lStates.SaveStateText(writer);
-			_cStates.SaveStateText(writer);
-			_rStates.SaveStateText(writer);
-			SyncState(new Serializer(writer));
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			_lStates.LoadStateText(reader);
-			_cStates.LoadStateText(reader);
-			_rStates.LoadStateText(reader);
-			SyncState(new Serializer(reader));
-		}
+		private readonly IStatable _lStates;
+		private readonly IStatable _cStates;
+		private readonly IStatable _rStates;
 
 		public void SaveStateBinary(BinaryWriter bw)
 		{
