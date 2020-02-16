@@ -18,8 +18,11 @@ namespace BizHawk.Emulation.Common
 	/// If unavailable these options will not be exposed
 	/// Additionally many tools depend on savestates such as TAStudio, these will only be available if this service is implemented
 	/// </summary>
-	public interface IStatable : IBinaryStateable, IEmulatorService
+	public interface IStatable : IEmulatorService
 	{
+		void SaveStateBinary(BinaryWriter writer);
+		void LoadStateBinary(BinaryReader reader);
+
 		/// <summary>
 		/// save state binary to a byte buffer
 		/// </summary>
