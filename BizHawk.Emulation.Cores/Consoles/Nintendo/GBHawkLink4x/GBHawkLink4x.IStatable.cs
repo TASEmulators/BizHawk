@@ -7,40 +7,45 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 {
 	public partial class GBHawkLink4x : ITextStatable
 	{
+		private readonly ITextStatable _aStates;
+		private readonly ITextStatable _bStates;
+		private readonly ITextStatable _cStates;
+		private readonly ITextStatable _dStates;
+
 		public void SaveStateText(TextWriter writer)
 		{
-			A.SaveStateText(writer);
-			B.SaveStateText(writer);
-			C.SaveStateText(writer);
-			D.SaveStateText(writer);
+			_aStates.SaveStateText(writer);
+			_bStates.SaveStateText(writer);
+			_cStates.SaveStateText(writer);
+			_dStates.SaveStateText(writer);
 			SyncState(new Serializer(writer));
 		}
 
 		public void LoadStateText(TextReader reader)
 		{
-			A.LoadStateText(reader);
-			B.LoadStateText(reader);
-			C.LoadStateText(reader);
-			D.LoadStateText(reader);
+			_aStates.LoadStateText(reader);
+			_bStates.LoadStateText(reader);
+			_cStates.LoadStateText(reader);
+			_dStates.LoadStateText(reader);
 			SyncState(new Serializer(reader));
 		}
 
 		public void SaveStateBinary(BinaryWriter bw)
 		{
-			A.SaveStateBinary(bw);
-			B.SaveStateBinary(bw);
-			C.SaveStateBinary(bw);
-			D.SaveStateBinary(bw);
+			_aStates.SaveStateBinary(bw);
+			_bStates.SaveStateBinary(bw);
+			_cStates.SaveStateBinary(bw);
+			_dStates.SaveStateBinary(bw);
 			// other variables
 			SyncState(new Serializer(bw));
 		}
 
 		public void LoadStateBinary(BinaryReader br)
 		{
-			A.LoadStateBinary(br);
-			B.LoadStateBinary(br);
-			C.LoadStateBinary(br);
-			D.LoadStateBinary(br);
+			_aStates.LoadStateBinary(br);
+			_bStates.LoadStateBinary(br);
+			_cStates.LoadStateBinary(br);
+			_dStates.LoadStateBinary(br);
 			// other variables
 			SyncState(new Serializer(br));
 		}
@@ -53,8 +58,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			bw.Flush();
 			return ms.ToArray();
 		}
-
-		//private JsonSerializer ser = new JsonSerializer { Formatting = Formatting.Indented };
 
 		private void SyncState(Serializer ser)
 		{

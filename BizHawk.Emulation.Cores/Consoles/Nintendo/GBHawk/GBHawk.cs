@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		isPorted: false,
 		isReleased: true)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public partial class GBHawk : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable, IGameboyCommon,
+	public partial class GBHawk : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, IGameboyCommon,
 	ISettable<GBHawk.GBSettings, GBHawk.GBSyncSettings>
 	{
 		// this register controls whether or not the GB BIOS is mapped into memory
@@ -188,7 +188,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			_tracer = new TraceBuffer { Header = cpu.TraceHeader };
 			ser.Register<ITraceable>(_tracer);
-
+			ser.Register<IStatable>(new StateSerializer(SyncState, false));
 			SetupMemoryDomains();
 			HardReset();
 

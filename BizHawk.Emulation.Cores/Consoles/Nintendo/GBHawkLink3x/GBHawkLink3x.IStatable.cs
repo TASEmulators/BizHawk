@@ -6,36 +6,40 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 {
 	public partial class GBHawkLink3x : ITextStatable
 	{
+		private readonly ITextStatable _lStates;
+		private readonly ITextStatable _cStates;
+		private readonly ITextStatable _rStates;
+
 		public void SaveStateText(TextWriter writer)
 		{
-			L.SaveStateText(writer);
-			C.SaveStateText(writer);
-			R.SaveStateText(writer);
+			_lStates.SaveStateText(writer);
+			_cStates.SaveStateText(writer);
+			_rStates.SaveStateText(writer);
 			SyncState(new Serializer(writer));
 		}
 
 		public void LoadStateText(TextReader reader)
 		{
-			L.LoadStateText(reader);
-			C.LoadStateText(reader);
-			R.LoadStateText(reader);
+			_lStates.LoadStateText(reader);
+			_cStates.LoadStateText(reader);
+			_rStates.LoadStateText(reader);
 			SyncState(new Serializer(reader));
 		}
 
 		public void SaveStateBinary(BinaryWriter bw)
 		{
-			L.SaveStateBinary(bw);
-			C.SaveStateBinary(bw);
-			R.SaveStateBinary(bw);
+			_lStates.SaveStateBinary(bw);
+			_cStates.SaveStateBinary(bw);
+			_rStates.SaveStateBinary(bw);
 			// other variables
 			SyncState(new Serializer(bw));
 		}
 
 		public void LoadStateBinary(BinaryReader br)
 		{
-			L.LoadStateBinary(br);
-			C.LoadStateBinary(br);
-			R.LoadStateBinary(br);
+			_lStates.LoadStateBinary(br);
+			_cStates.LoadStateBinary(br);
+			_rStates.LoadStateBinary(br);
 			// other variables
 			SyncState(new Serializer(br));
 		}

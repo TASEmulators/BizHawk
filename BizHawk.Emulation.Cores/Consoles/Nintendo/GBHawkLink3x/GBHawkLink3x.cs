@@ -1,8 +1,4 @@
-﻿using System;
-
-using BizHawk.Emulation.Common;
-
-using BizHawk.Emulation.Cores.Nintendo.GBHawk;
+﻿using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 {
@@ -81,7 +77,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 			_tracer = new TraceBuffer { Header = L.cpu.TraceHeader };
 			ser.Register<ITraceable>(_tracer);
 
-			ServiceProvider = ser;
+			_lStates = (ITextStatable)L.ServiceProvider.GetService<IStatable>();
+			_cStates = (ITextStatable)C.ServiceProvider.GetService<IStatable>();
+			_rStates = (ITextStatable)R.ServiceProvider.GetService<IStatable>();
 
 			SetupMemoryDomains();
 

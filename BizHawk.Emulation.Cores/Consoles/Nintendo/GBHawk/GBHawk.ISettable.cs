@@ -8,7 +8,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
-	public partial class GBHawk : IEmulator, IStatable, ISettable<GBHawk.GBSettings, GBHawk.GBSyncSettings>
+	public partial class GBHawk : IEmulator, ISettable<GBHawk.GBSettings, GBHawk.GBSyncSettings>
 	{
 		public GBSettings GetSettings()
 		{

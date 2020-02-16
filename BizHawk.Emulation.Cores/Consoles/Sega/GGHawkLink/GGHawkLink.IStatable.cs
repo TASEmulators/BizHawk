@@ -7,35 +7,35 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 {
 	public partial class GGHawkLink : ITextStatable
 	{
-		private readonly ITextStatable _leftStatable;
-		private readonly ITextStatable _rightStatable;
+		private readonly ITextStatable _lStates;
+		private readonly ITextStatable _rStates;
 
 		public void SaveStateText(TextWriter writer)
 		{
-			_leftStatable.SaveStateText(writer);
-			_rightStatable.SaveStateText(writer);
+			_lStates.SaveStateText(writer);
+			_rStates.SaveStateText(writer);
 			SyncState(new Serializer(writer));
 		}
 
 		public void LoadStateText(TextReader reader)
 		{
-			_leftStatable.LoadStateText(reader);
-			_rightStatable.LoadStateText(reader);
+			_lStates.LoadStateText(reader);
+			_rStates.LoadStateText(reader);
 			SyncState(new Serializer(reader));
 		}
 
 		public void SaveStateBinary(BinaryWriter bw)
 		{
-			_leftStatable.SaveStateBinary(bw);
-			_rightStatable.SaveStateBinary(bw);
+			_lStates.SaveStateBinary(bw);
+			_rStates.SaveStateBinary(bw);
 			// other variables
 			SyncState(new Serializer(bw));
 		}
 
 		public void LoadStateBinary(BinaryReader br)
 		{
-			_leftStatable.LoadStateBinary(br);
-			_rightStatable.LoadStateBinary(br);
+			_lStates.LoadStateBinary(br);
+			_rStates.LoadStateBinary(br);
 			// other variables
 			SyncState(new Serializer(br));
 		}
