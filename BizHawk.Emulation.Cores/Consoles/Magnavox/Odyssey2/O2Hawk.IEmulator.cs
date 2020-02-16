@@ -191,22 +191,22 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		{
 			for (int j = 0; j < 240; j++) 
 			{
-				for (int i = 0; i < 160; i++)
+				for (int i = 0; i < 320; i++)
 				{
-					frame_buffer[j * 160 + i] = _vidbuffer[j * 186 + i];
-					_vidbuffer[j * 186 + i] = 0;
+					frame_buffer[j * 320 + i] = _vidbuffer[j * 372 + i];
+					_vidbuffer[j * 372 + i] = 0;
 				}
 
-				for (int k = 160; k < 186; k++)
+				for (int k = 320; k < 372; k++)
 				{
-					_vidbuffer[j * 186 + k] = 0;
+					_vidbuffer[j * 372 + k] = 0;
 				}
 			}
 		}
 
 		public int VirtualWidth => 320;
 		public int VirtualHeight => 240;
-		public int BufferWidth => 160;
+		public int BufferWidth => 320;
 		public int BufferHeight => 240;
 		public int BackgroundColor => unchecked((int)0xFF000000);
 		public int VsyncNumerator => _frameHz;

@@ -140,8 +140,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 			cpu.SetCallbacks(ReadMemory, PeekMemory, PeekMemory, WriteMemory);
 
-			_vidbuffer = new int[186 * 240];
-			frame_buffer = new int[160 * 240];
+			_vidbuffer = new int[372 * 240];
+			frame_buffer = new int[320 * 240];
 		}
 
 		private void ExecFetch(ushort addr)
