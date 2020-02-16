@@ -60,6 +60,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 			_tracer = new TraceBuffer { Header = _board.Cpu.TraceHeader };
 			ser.Register<ITraceable>(_tracer);
+			ser.Register<IStatable>(new StateSerializer(SyncState));
 
 			if (_board.CartPort.IsConnected)
 			{

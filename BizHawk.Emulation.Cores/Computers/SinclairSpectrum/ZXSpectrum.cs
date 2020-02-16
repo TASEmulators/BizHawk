@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BizHawk.Emulation.Cores.Components;
-using BizHawk.Emulation.Cores.Sound;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -145,7 +144,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			DCFilter dc = new DCFilter(SoundMixer, 512);
 			ser.Register<ISoundProvider>(dc);
-
+			ser.Register<IStatable>(new StateSerializer(SyncState));
 			HardReset();
 			SetupMemoryDomains();
 		}
