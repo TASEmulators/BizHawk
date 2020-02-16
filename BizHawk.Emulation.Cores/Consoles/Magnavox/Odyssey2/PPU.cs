@@ -411,7 +411,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 							right_shift_even = (Sprites[i * 4 + 2].Bit(1) && (((Sprites[i * 4] + 8 * double_size - LY) % 2) == 0)) ? 1 : 0;
 							x_base = Sprites[i * 4 + 1];
 
-							if ((right_shift + right_shift_even) == 0) 
+							if ((right_shift + right_shift_even) == 0)
 							{
 								if (((cycle - HBL_CNT) >= x_base) && ((cycle - HBL_CNT) < (x_base + 8 * (double_size / 2))))
 								{
@@ -432,11 +432,11 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 										Pixel_Stat |= (byte)(1 << i);
 									}
 								}
-							} 
-							else 
+							}
+							else
 							{
 								// special shifted cases
-								// since we are drawing one pixel at a time, we need to be careful that the next background / grid/ char pixel
+								// since we are drawing two pixels at a time, we need to be careful that the next background / grid / char pixel
 								// doesn't overwrite the shifted pixel on the next pass
 								if (((cycle - HBL_CNT) >= x_base) && ((cycle - HBL_CNT) < (x_base + 1 + 8 * (double_size / 2))))
 								{
@@ -460,7 +460,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 													if ((right_shift + right_shift_even) == 2)
 													{
-														Core._vidbuffer[LY * 372 + current_pixel_offset + 1 + right_shift + right_shift_even] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
+														Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
 													}
 												}
 
@@ -539,28 +539,30 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 									{
 										if ((((cycle - HBL_CNT) - x_base) >> 1) == 8)
 										{
-											offset_x = 7;
-
-											int pixel_pick = (Sprite_Shapes[i * 8 + offset_y] >> offset_x) & 1;
-
-											if (pixel_pick == 1)
+											if ((((cycle - HBL_CNT) - x_base) % 2) == 0)
 											{
-												if (Core._settings.Show_Sprites)
+												offset_x = 7;
+
+												int pixel_pick = (Sprite_Shapes[i * 8 + offset_y] >> offset_x) & 1;
+
+												if (pixel_pick == 1)
 												{
-													Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
-
-													if ((right_shift + right_shift_even) == 2)
+													if (Core._settings.Show_Sprites)
 													{
-														Core._vidbuffer[LY * 372 + current_pixel_offset + 1 + right_shift + right_shift_even] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
+														Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
+														if ((right_shift + right_shift_even) == 2)
+														{
+															Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
+														}
 													}
-												}
 
-												Pixel_Stat |= (byte)(1 << i);
+													Pixel_Stat |= (byte)(1 << i);
+												}
 											}
 										}
 										else if ((((cycle - HBL_CNT) - x_base) >> 1) == 0)
 										{
-											if ((right_shift + right_shift_even) < 2)
+											if ((((cycle - HBL_CNT) - x_base) % 2) == 1)
 											{
 												offset_x = 0;
 
@@ -570,37 +572,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 												{
 													if (Core._settings.Show_Sprites)
 													{
-														Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
-													}
-
-													Pixel_Stat |= (byte)(1 << i);
-												}
-											}
-										}
-										else
-										{
-											offset_x = (cycle - HBL_CNT - x_base) >> 1;
-
-											if ((right_shift + right_shift_even) < 2)
-											{
-												int pixel_pick = (Sprite_Shapes[i * 8 + offset_y] >> (offset_x - 1)) & 1;
-
-												if (pixel_pick == 1)
-												{
-													if (Core._settings.Show_Sprites)
-													{
 														Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
-													}
-
-													Pixel_Stat |= (byte)(1 << i);
-												}
-
-												pixel_pick = (Sprite_Shapes[i * 8 + offset_y] >> offset_x) & 1;
-
-												if (pixel_pick == 1)
-												{
-													if (Core._settings.Show_Sprites)
-													{
 														Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
 													}
 
@@ -609,7 +581,29 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 											}
 											else
 											{
-												offset_x -= 1;
+												if ((right_shift + right_shift_even) < 2)
+												{
+													offset_x = 0;
+
+													int pixel_pick = (Sprite_Shapes[i * 8 + offset_y] >> offset_x) & 1;
+
+													if (pixel_pick == 1)
+													{
+														if (Core._settings.Show_Sprites)
+														{
+															Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
+														}
+
+														Pixel_Stat |= (byte)(1 << i);
+													}
+												}
+											}
+										}
+										else
+										{
+											if ((((cycle - HBL_CNT) - x_base) % 2) == 1)
+											{
+												offset_x = (cycle - HBL_CNT - x_base) >> 1;
 
 												int pixel_pick = (Sprite_Shapes[i * 8 + offset_y] >> offset_x) & 1;
 
@@ -624,10 +618,58 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 													Pixel_Stat |= (byte)(1 << i);
 												}
 											}
+											else
+											{
+												offset_x = (cycle - HBL_CNT - x_base) >> 1;
+
+												if ((right_shift + right_shift_even) < 2)
+												{
+													int pixel_pick = (Sprite_Shapes[i * 8 + offset_y] >> (offset_x - 1)) & 1;
+
+													if (pixel_pick == 1)
+													{
+														if (Core._settings.Show_Sprites)
+														{
+															Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
+														}
+
+														Pixel_Stat |= (byte)(1 << i);
+													}
+
+													pixel_pick = (Sprite_Shapes[i * 8 + offset_y] >> offset_x) & 1;
+
+													if (pixel_pick == 1)
+													{
+														if (Core._settings.Show_Sprites)
+														{
+															Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
+														}
+
+														Pixel_Stat |= (byte)(1 << i);
+													}
+												}
+												else
+												{
+													offset_x -= 1;
+
+													int pixel_pick = (Sprite_Shapes[i * 8 + offset_y] >> offset_x) & 1;
+
+													if (pixel_pick == 1)
+													{
+														if (Core._settings.Show_Sprites)
+														{
+															Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
+															Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
+														}
+
+														Pixel_Stat |= (byte)(1 << i);
+													}
+												}
+											}
 										}
 									}
 								}
-							}							
+							}
 						}
 					}
 
