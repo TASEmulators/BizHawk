@@ -5,21 +5,9 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 {
-	public partial class SubNESHawk : ITextStatable
+	public partial class SubNESHawk : IStatable
 	{
-		private readonly ITextStatable _nesStatable;
-
-		public void SaveStateText(TextWriter writer)
-		{
-			_nesStatable.SaveStateText(writer);
-			SyncState(new Serializer(writer));
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			_nesStatable.LoadStateText(reader);
-			SyncState(new Serializer(reader));
-		}
+		private readonly IStatable _nesStatable;
 
 		public void SaveStateBinary(BinaryWriter bw)
 		{

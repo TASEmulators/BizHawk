@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			subnes.cpu.ext_ppu_cycle = current_cycle;
 			VBL_CNT = 0;
 
-			_nesStatable = (ITextStatable)subnes.ServiceProvider.GetService<IStatable>();
+			_nesStatable = subnes.ServiceProvider.GetService<IStatable>();
 		}
 
 		public void HardReset()
