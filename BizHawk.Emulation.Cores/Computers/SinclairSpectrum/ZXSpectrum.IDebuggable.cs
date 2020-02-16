@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
 	/// <summary>
 	/// ZXHawk: Core Class
-	/// * IDebugggable *
+	/// * IDebuggable *
 	/// </summary>
 	public partial class ZXSpectrum : IDebuggable
 	{

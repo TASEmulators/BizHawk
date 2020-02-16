@@ -39,28 +39,35 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			_files = files?.ToList() ?? new List<byte[]>();
 
 			if (settings == null)
+			{
 				settings = new ZXSpectrumSettings();
+			}
+
 			if (syncSettings == null)
+			{
 				syncSettings = new ZXSpectrumSyncSettings();
+			}
 
-			PutSyncSettings((ZXSpectrumSyncSettings)syncSettings ?? new ZXSpectrumSyncSettings());
-			PutSettings((ZXSpectrumSettings)settings ?? new ZXSpectrumSettings());
+			PutSyncSettings((ZXSpectrumSyncSettings)syncSettings);
+			PutSettings((ZXSpectrumSettings)settings);
 
-			List<JoystickType> joysticks = new List<JoystickType>();
-			joysticks.Add(((ZXSpectrumSyncSettings)syncSettings).JoystickType1);
-			joysticks.Add(((ZXSpectrumSyncSettings)syncSettings).JoystickType2);
-			joysticks.Add(((ZXSpectrumSyncSettings)syncSettings).JoystickType3);
+			var joysticks = new List<JoystickType>
+			{
+				((ZXSpectrumSyncSettings)syncSettings).JoystickType1,
+				((ZXSpectrumSyncSettings)syncSettings).JoystickType2,
+				((ZXSpectrumSyncSettings)syncSettings).JoystickType3
+			};
 
-			deterministicEmulation = ((ZXSpectrumSyncSettings)syncSettings).DeterministicEmulation;
+			DeterministicEmulation = ((ZXSpectrumSyncSettings)syncSettings).DeterministicEmulation;
 
 			if (deterministic != null && deterministic == true)
 			{
-				if (deterministicEmulation == false)
+				if (!DeterministicEmulation)
 				{
 					CoreComm.Notify("Forcing Deterministic Emulation");
 				}
 
-				deterministicEmulation = deterministic.Value;
+				DeterministicEmulation = deterministic.Value;
 			}
 
 			MachineType = SyncSettings.MachineType;
@@ -270,7 +277,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					var _systemRomP3 = GetFirmware(0x10000, "PLUS3ROM");
 					var romDataP3 = RomData.InitROM(machineType, _systemRomP3);
 					_machine.InitROM(romDataP3);
-					//System.Windows.Forms.MessageBox.Show("+3 is not working at all yet :/");
 					break;
 				case MachineType.Pentagon128:
 					_machine = new Pentagon128(this, _cpu, borderType, files, joys);
@@ -291,26 +297,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		#region IDriveLight
 
-		public bool DriveLightEnabled
-		{
-			get
-			{
-				return true;
-			}
-		}
+		public bool DriveLightEnabled => true;
 
-		public bool DriveLightOn
-		{
-			get
-			{
-				if (_machine != null &&
-					(_machine.TapeDevice != null && _machine.TapeDevice.TapeIsPlaying) ||
-					(_machine.UPDDiskDevice != null && _machine.UPDDiskDevice.DriveLight))
-					return true;
-
-				return false;
-			}
-		}
+		public bool DriveLightOn =>
+			_machine?.TapeDevice?.TapeIsPlaying == true
+			|| _machine?.UPDDiskDevice?.DriveLight == true;
 
 		#endregion
 

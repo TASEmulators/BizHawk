@@ -1,10 +1,9 @@
-﻿using BizHawk.Common;
-using BizHawk.Emulation.Common;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
-using BizHawk.Emulation.Cores.Sound;
+
+using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -17,31 +16,25 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		internal ZXSpectrumSettings Settings = new ZXSpectrumSettings();
 		internal ZXSpectrumSyncSettings SyncSettings = new ZXSpectrumSyncSettings();
 
-		public ZXSpectrumSettings GetSettings()
-		{
-			return Settings.Clone();
-		}
+		public ZXSpectrumSettings GetSettings() => Settings.Clone();
 
-		public ZXSpectrumSyncSettings GetSyncSettings()
-		{
-			return SyncSettings.Clone();
-		}
+		public ZXSpectrumSyncSettings GetSyncSettings() => SyncSettings.Clone();
 
 		public bool PutSettings(ZXSpectrumSettings o)
 		{
 			// restore user settings to devices
-			if (_machine != null && _machine.AYDevice != null)
+			if (_machine?.AYDevice != null)
 			{
-				((AY38912)_machine.AYDevice as AY38912).PanningConfiguration = o.AYPanConfig;
+				((AY38912)_machine.AYDevice).PanningConfiguration = o.AYPanConfig;
 				_machine.AYDevice.Volume = o.AYVolume;
 			}
-			if (_machine != null && _machine.BuzzerDevice != null)
+			if (_machine?.BuzzerDevice != null)
 			{
-				((OneBitBeeper)_machine.BuzzerDevice as OneBitBeeper).Volume = o.EarVolume;
+				_machine.BuzzerDevice.Volume = o.EarVolume;
 			}
-			if (_machine != null && _machine.TapeBuzzer != null)
+			if (_machine?.TapeBuzzer != null)
 			{
-				((OneBitBeeper)_machine.TapeBuzzer as OneBitBeeper).Volume = o.TapeVolume;
+				_machine.TapeBuzzer.Volume = o.TapeVolume;
 			}
 
 			Settings = o;
@@ -100,7 +93,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			public ZXSpectrumSettings()
 			{
-				BizHawk.Common.SettingsUtil.SetDefaultValues(this);
+				SettingsUtil.SetDefaultValues(this);
 			}
 		}
 
@@ -241,15 +234,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public string Media { get; set; }
 		public string OtherMisc { get; set; }
 
-		Dictionary<string, string> Data = new Dictionary<string, string>();
+		private Dictionary<string, string> Data = new Dictionary<string, string>();
 
 		/// <summary>
 		/// Detailed info to be displayed within the settings UIs
 		/// </summary>
 		public static ZXMachineMetaData GetMetaObject(MachineType type)
 		{
-			ZXMachineMetaData m = new ZXMachineMetaData();
-			m.MachineType = type;
+			ZXMachineMetaData m = new ZXMachineMetaData { MachineType = type };
 
 			switch (type)
 			{
@@ -350,13 +342,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		}
 
 		/// <summary>
-		/// Returns machine metadata as a formatted string (to be displayed in a textbox)
+		/// Returns machine metadata as a formatted string (to be displayed in a TextBox)
 		/// </summary>
 		public static string GetMetaString(MachineType type)
 		{
 			var m = GetMetaObject(type);
 
-			StringBuilder sb = new StringBuilder();
+			var sb = new StringBuilder();
 
 			// get longest title
 			int titleLen = 0;
@@ -385,11 +377,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					}
 				}
 
-				// output the data splitting and tabbing as neccessary
+				// output the data splitting and tabbing as necessary
 				var arr = d.Value.Split(' ');
 				//int cnt = 0;
 
-				List<string> builder = new List<string>();
+				var builder = new List<string>();
 				string working = "";
 				foreach (var s in arr)
 				{
