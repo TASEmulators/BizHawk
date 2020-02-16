@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 using BizHawk.Common;
@@ -44,9 +45,53 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			FlagI = true;
 		}
 
-		public string TraceHeader
+		public string TraceHeader => "6502: PC, machine code, mnemonic, operands, registers (A, X, Y, P, SP), flags (NVTBDIZCR)";
+
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			get { return "6502: PC, machine code, mnemonic, operands, registers (A, X, Y, P, SP), flags (NVTBDIZCR)"; }
+			return new Dictionary<string, RegisterValue>
+			{
+				["A"] = A,
+				["X"] = X,
+				["Y"] = Y,
+				["S"] = S,
+				["PC"] = PC,
+				["Flag C"] = FlagC,
+				["Flag Z"] = FlagZ,
+				["Flag I"] = FlagI,
+				["Flag D"] = FlagD,
+				["Flag B"] = FlagB,
+				["Flag V"] = FlagV,
+				["Flag N"] = FlagN,
+				["Flag T"] = FlagT
+			};
+		}
+
+		public void SetCpuRegister(string register, int value)
+		{
+			switch (register)
+			{
+				default:
+					throw new InvalidOperationException();
+				case "A":
+					A = (byte)value;
+					break;
+				case "X":
+					X = (byte)value;
+					break;
+				case "Y":
+					Y = (byte)value;
+					break;
+				case "S":
+					S = (byte)value;
+					break;
+				case "PC":
+					PC = (ushort)value;
+					break;
+				case "Flag I":
+					FlagI = value > 0;
+					break;
+			}
 		}
 
 		public TraceInfo State(bool disassemble = true)

@@ -36,7 +36,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ControllerSettings = SyncSettings.Controls;
 			CoreComm = comm;
 
-			MemoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
 			BootGodDB.Initialize();
 			videoProvider = new MyVideoProvider(this);
 			Init(game, rom, fdsbios);
