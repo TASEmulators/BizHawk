@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		isPorted: false,
 		isReleased: false)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public partial class MSX : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ISettable<MSX.MSXSettings, MSX.MSXSyncSettings>
+	public partial class MSX : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IInputPollable, IRegionable, ISettable<MSX.MSXSettings, MSX.MSXSyncSettings>
 	{
 		[CoreConstructor("MSX")]
 		public MSX(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
@@ -92,6 +92,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 			var serviceProvider = ServiceProvider as BasicServiceProvider;
 			serviceProvider.Register<ITraceable>(Tracer);
+			serviceProvider.Register<IStatable>(new StateSerializer(SyncState));
 
 			current_controller = SyncSettings.Contr_Setting == MSXSyncSettings.ContrType.Keyboard ? MSXControllerKB : MSXControllerJS;
 		}
