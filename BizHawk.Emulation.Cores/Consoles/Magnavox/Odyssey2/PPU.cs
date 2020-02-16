@@ -983,6 +983,11 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				_blip_C.ReadSamples(samples, nsamp, true);
 			}
 
+			for (int i = 0; i < nsamp * 2; i += 2)
+			{
+				samples[i + 1] = samples[i];
+			}
+
 			master_audio_clock = 0;
 		}
 
