@@ -626,7 +626,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public uint master_audio_clock;
 
-		public int tick_cnt, output_bit;
+		public int tick_cnt, output_bit, shift_cnt;
 
 		public int latched_sample_C;
 
@@ -673,27 +673,25 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 					shift_2 = (byte)((shift_2 >> 1) | ((shift_1 & 1) << 7));
 					shift_1 = (byte)((shift_1 >> 1) | ((shift_0 & 1) << 7));
-
-					if (aud_ctrl.Bit(6))
-					{
-						shift_0 = (byte)((shift_0 >> 1) | (output_bit << 7));
-					}
-					else
-					{
-						shift_0 = (byte)(shift_0 >> 1);
-					}
+					shift_0 = (byte)(shift_0 >> 1);
 
 					if (aud_ctrl.Bit(4))
 					{
-						if (shift_2.Bit(7) == output_bit.Bit(0))
+						shift_0 |= (byte)(((output_bit.Bit(0) ^ shift_2.Bit(7)) ^ shift_2.Bit(4)) ? 0x80 : 0);					
+					}
+
+					shift_cnt++;
+
+					if (shift_cnt == 24)
+					{
+						if (aud_ctrl.Bit(6) && !aud_ctrl.Bit(4))
 						{
-							shift_2 &= 0x7F;
+							shift_0 = shift_reg_0;
+							shift_1 = shift_reg_1;
+							shift_2 = shift_reg_2;
 						}
-						else
-						{
-							shift_2 = (byte)(shift_2 | 0x80);
-						}
-						
+
+						shift_cnt = 0;
 					}
 				}
 
@@ -716,6 +714,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 			sample = 0;
 
+			shift_cnt = 0;
+
 			_blip_C.SetRates(1792000, 44100);
 		}
 
@@ -734,6 +734,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			ser.Sync(nameof(shift_reg_1), ref shift_reg_1);
 			ser.Sync(nameof(shift_reg_2), ref shift_reg_2);
 			ser.Sync(nameof(tick_cnt), ref tick_cnt);
+			ser.Sync(nameof(shift_cnt), ref shift_cnt);
 			ser.Sync(nameof(output_bit), ref output_bit);
 		}
 
