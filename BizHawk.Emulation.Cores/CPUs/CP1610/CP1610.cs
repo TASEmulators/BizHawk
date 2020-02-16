@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 			ser.Sync(nameof(IntRM), ref IntRM);
 			ser.Sync(nameof(BusRq), ref BusRq);
 			ser.Sync(nameof(BusAk), ref BusAk);
-			ser.Sync(nameof(BusRq), ref BusRq);
+			ser.Sync("Duplicate_Bus_Rq", ref BusRq); // Can't remove this or it will break backward compatibility with binary states
 			ser.Sync(nameof(Interruptible), ref Interruptible);
 			ser.Sync(nameof(Interrupted), ref Interrupted);
 			ser.Sync("Toal_executed_cycles", ref TotalExecutedCycles);
