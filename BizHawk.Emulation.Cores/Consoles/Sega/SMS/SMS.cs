@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		isPorted: false,
 		isReleased: true)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public partial class SMS : IEmulator, ISaveRam, IStatable, IInputPollable, IRegionable,
+	public partial class SMS : IEmulator, ISaveRam, IInputPollable, IRegionable,
 		IDebuggable, ISettable<SMS.SmsSettings, SMS.SmsSyncSettings>, ICodeDataLogger
 	{
 		[CoreConstructor("SMS", "SG", "GG")]
@@ -201,6 +201,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			var serviceProvider = ServiceProvider as BasicServiceProvider;
 			serviceProvider.Register<ITraceable>(Tracer);
 			serviceProvider.Register<IDisassemblable>(Cpu);
+			serviceProvider.Register<IStatable>(new StateSerializer(SyncState));
 			Vdp.ProcessOverscan();
 
 			Cpu.ReadMemory = ReadMemory;
