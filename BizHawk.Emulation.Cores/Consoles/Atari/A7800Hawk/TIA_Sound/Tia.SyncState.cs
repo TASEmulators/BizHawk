@@ -23,8 +23,12 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			ser.Sync("FrameStartCycles", ref _frameStartCycles);
 			ser.Sync("FrameEndCycles", ref _frameEndCycles);
 
+			ser.BeginSection("AUD0");
 			AUD[0].SyncState(ser);
+			ser.EndSection();
+			ser.BeginSection("AUD1");
 			AUD[1].SyncState(ser);
+			ser.EndSection();
 
 			ser.EndSection();
 		}

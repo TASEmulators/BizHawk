@@ -6,14 +6,17 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 	{
 		private void SyncState(Serializer ser)
 		{
+			ser.BeginSection("Atari7800");
+
 			cpu.SyncState(ser);
 			tia.SyncState(ser);
 			maria.SyncState(ser);
 			m6532.SyncState(ser);
+			ser.BeginSection("Mapper");
 			mapper.SyncState(ser);
+			ser.EndSection();
 			pokey.SyncState(ser);
 
-			ser.BeginSection("Atari7800");
 			ser.Sync("Lag", ref _lagCount);
 			ser.Sync("Frame", ref _frame);
 			ser.Sync("IsLag", ref _isLag);
@@ -35,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			ser.Sync(nameof(cpu_resume_pending), ref cpu_resume_pending);
 
 			ser.Sync(nameof(slow_access), ref slow_access);
-			ser.Sync(nameof(slow_access), ref slow_countdown);
+			ser.Sync(nameof(slow_countdown), ref slow_countdown);
 			ser.Sync("small flag", ref small_flag);
 			ser.Sync("pal kara", ref PAL_Kara);
 			ser.Sync("Cart RAM", ref cart_RAM);
