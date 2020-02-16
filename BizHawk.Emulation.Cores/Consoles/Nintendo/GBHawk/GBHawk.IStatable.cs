@@ -14,6 +14,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				ms.Close();
 				core = ms.ToArray();
 			}
+
+			ser.BeginSection("Gameboy");
 			cpu.SyncState(ser);
 			mapper.SyncState(ser);
 			timer.SyncState(ser);
@@ -21,7 +23,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			serialport.SyncState(ser);
 			audio.SyncState(ser);
 
-			ser.BeginSection("Gameboy");
 			ser.Sync(nameof(core), ref core, false);
 			ser.Sync("Lag", ref _lagcount);
 			ser.Sync("Frame", ref _frame);

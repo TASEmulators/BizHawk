@@ -951,7 +951,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(SQ1_vol_done), ref SQ1_vol_done);
 			ser.Sync(nameof(SQ1_calc_done), ref SQ1_calc_done);
 			ser.Sync(nameof(SQ1_swp_enable), ref SQ1_swp_enable);
-			ser.Sync(nameof(SQ1_len_cntr), ref SQ1_len_cntr);
+			//ser.Sync("Duplicate_SQ1_len_center", ref SQ1_len_cntr); // Deleting this breaks backwards compatibility with binary states
 			ser.Sync(nameof(SQ1_enable), ref SQ1_enable);
 			ser.Sync(nameof(SQ1_vol_state), ref SQ1_vol_state);
 			ser.Sync(nameof(SQ1_duty_cntr), ref SQ1_duty_cntr);
@@ -974,7 +974,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(SQ1_output), ref SQ1_output);
 
 			ser.Sync(nameof(SQ2_vol_done), ref SQ2_vol_done);
-			ser.Sync(nameof(SQ2_len_cntr), ref SQ2_len_cntr);
+			ser.Sync("Duplicate_SQ2_len_counter", ref SQ2_len_cntr); // Deleting this breaks backwards compatibility with binary states
 			ser.Sync(nameof(SQ2_enable), ref SQ2_enable);
 			ser.Sync(nameof(SQ2_vol_state), ref SQ2_vol_state);
 			ser.Sync(nameof(SQ2_duty_cntr), ref SQ2_duty_cntr);
@@ -992,7 +992,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(SQ2_output), ref SQ2_output);
 
 			ser.Sync(nameof(WAVE_can_get), ref WAVE_can_get);
-			ser.Sync(nameof(WAVE_len_cntr), ref WAVE_len_cntr);
+			ser.Sync("duplicate_WAVE_len_counter", ref WAVE_len_cntr); // Deleting this breaks backwards compatibility with binary states
 			ser.Sync(nameof(WAVE_enable), ref WAVE_enable);
 			ser.Sync(nameof(WAVE_wave_cntr), ref WAVE_wave_cntr);
 			ser.Sync(nameof(WAVE_intl_cntr), ref WAVE_intl_cntr);
@@ -1006,7 +1006,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(WAVE_output), ref WAVE_output);
 
 			ser.Sync(nameof(NOISE_vol_done), ref NOISE_vol_done);
-			ser.Sync(nameof(NOISE_len_cntr), ref NOISE_len_cntr);
+			ser.Sync("NOISE_len_counter", ref NOISE_len_cntr); // Deleting this breaks backwards compatibility with binary states
 			ser.Sync(nameof(NOISE_enable), ref NOISE_enable);
 			ser.Sync(nameof(NOISE_vol_state), ref NOISE_vol_state);
 			ser.Sync(nameof(NOISE_intl_cntr), ref NOISE_intl_cntr);
