@@ -74,6 +74,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			ser.Register<ITraceable>(_tracer);
 			ser.Register<IDisassemblable>(_cpu);
 			ser.Register<IVideoProvider>(_machine.GateArray);
+			ser.Register<IStatable>(new StateSerializer(SyncState));
 
 			// initialize sound mixer and attach the various ISoundProvider devices
 			SoundMixer = new SoundProviderMixer((int)(32767 / 10), "Tape Audio", (ISoundProvider)_machine.TapeBuzzer);

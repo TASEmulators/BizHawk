@@ -1,41 +1,9 @@
-﻿using System.IO;
-
-using BizHawk.Common;
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
-	public partial class A7800Hawk : ITextStatable
+	public partial class A7800Hawk
 	{
-		public void SaveStateText(TextWriter writer)
-		{
-			SyncState(new Serializer(writer));
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			SyncState(new Serializer(reader));
-		}
-
-		public void SaveStateBinary(BinaryWriter bw)
-		{
-			SyncState(new Serializer(bw));
-		}
-
-		public void LoadStateBinary(BinaryReader br)
-		{
-			SyncState(new Serializer(br));
-		}
-
-		public byte[] SaveStateBinary()
-		{
-			using var ms = new MemoryStream();
-			using var bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			return ms.ToArray();
-		}
-
 		private void SyncState(Serializer ser)
 		{
 			cpu.SyncState(ser);

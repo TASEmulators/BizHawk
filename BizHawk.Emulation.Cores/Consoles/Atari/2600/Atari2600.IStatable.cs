@@ -1,41 +1,9 @@
-﻿using System.IO;
-
-using BizHawk.Common;
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
-	public partial class Atari2600 : ITextStatable
+	public partial class Atari2600
 	{
-		public void SaveStateText(TextWriter writer)
-		{
-			SyncState(Serializer.CreateTextWriter(writer));
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			SyncState(Serializer.CreateTextReader(reader));
-		}
-
-		public void SaveStateBinary(BinaryWriter bw)
-		{
-			SyncState(Serializer.CreateBinaryWriter(bw));
-		}
-
-		public void LoadStateBinary(BinaryReader br)
-		{
-			SyncState(Serializer.CreateBinaryReader(br));
-		}
-
-		public byte[] SaveStateBinary()
-		{
-			using var ms = new MemoryStream();
-			using var bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			return ms.ToArray();
-		}
-
 		private void SyncState(Serializer ser)
 		{
 			ser.BeginSection("A2600");

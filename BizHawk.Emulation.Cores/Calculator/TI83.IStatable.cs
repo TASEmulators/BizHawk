@@ -1,41 +1,11 @@
 ﻿using System.IO;
 
 using BizHawk.Common;
-using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Calculators
 {
-	public partial class TI83 : ITextStatable
+	public partial class TI83
 	{
-		public void SaveStateText(TextWriter writer)
-		{
-			SyncState(new Serializer(writer));
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			SyncState(new Serializer(reader));
-		}
-
-		public void SaveStateBinary(BinaryWriter bw)
-		{
-			SyncState(new Serializer(bw));
-		}
-
-		public void LoadStateBinary(BinaryReader br)
-		{
-			SyncState(new Serializer(br));
-		}
-
-		public byte[] SaveStateBinary()
-		{
-			using var ms = new MemoryStream();
-			using var bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			return ms.ToArray();
-		}
-
 		private void SyncState(Serializer ser)
 		{
 			if (ser.IsWriter)

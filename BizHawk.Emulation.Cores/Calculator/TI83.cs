@@ -1,6 +1,4 @@
 using System;
-using System.Globalization;
-
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.Z80A;
 
@@ -13,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 		isPorted: false,
 		isReleased: true)]
 	[ServiceNotApplicable(typeof(ISoundProvider), typeof(ISaveRam), typeof(IRegionable), typeof(IDriveLight), typeof(IBoardInfo))]
-	public partial class TI83 : IEmulator, IVideoProvider, IStatable, IDebuggable, IInputPollable, ISettable<TI83.TI83Settings, object>
+	public partial class TI83 : IEmulator, IVideoProvider, IDebuggable, IInputPollable, ISettable<TI83.TI83Settings, object>
 	{
 		[CoreConstructor("TI83")]
 		public TI83(CoreComm comm, GameInfo game, byte[] rom, object settings)
@@ -42,6 +40,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 			ser.Register<ITraceable>(_tracer);
 			ser.Register<IDisassemblable>(_cpu);
+			ser.Register<IStatable>(new StateSerializer(SyncState));
 		}
 
 		private readonly TraceBuffer _tracer;

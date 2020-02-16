@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
-	public partial class GambatteLink : IStatable
+	public partial class GambatteLink : ITextStatable
 	{
 		public void SaveStateText(TextWriter writer)
 		{

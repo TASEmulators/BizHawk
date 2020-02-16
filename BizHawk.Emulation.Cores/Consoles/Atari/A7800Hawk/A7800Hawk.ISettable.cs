@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
-	public partial class A7800Hawk : IEmulator, IStatable, ISettable<A7800Hawk.A7800Settings, A7800Hawk.A7800SyncSettings>
+	public partial class A7800Hawk : IEmulator, ISettable<A7800Hawk.A7800Settings, A7800Hawk.A7800SyncSettings>
 	{
 		public A7800Settings GetSettings()
 		{

@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		isPorted: false,
 		isReleased: true)]
 	[ServiceNotApplicable(typeof(ISettable<,>), typeof(IDriveLight))]
-	public partial class A7800Hawk : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable,
+	public partial class A7800Hawk : IEmulator, ISaveRam, IDebuggable, IInputPollable,
 		IRegionable, IBoardInfo, ISettable<A7800Hawk.A7800Settings, A7800Hawk.A7800SyncSettings>
 	{
 		// this register selects between 2600 and 7800 mode in the A7800
@@ -255,7 +255,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			_tracer = new TraceBuffer { Header = cpu.TraceHeader };
 			ser.Register<ITraceable>(_tracer);
-
+			ser.Register<IStatable>(new StateSerializer(SyncState));
 			SetupMemoryDomains();
 			ser.Register<IDisassemblable>(cpu);
 			HardReset();

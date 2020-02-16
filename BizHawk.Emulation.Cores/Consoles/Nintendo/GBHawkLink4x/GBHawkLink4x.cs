@@ -94,6 +94,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 
 			ServiceProvider = ser;
 
+			_aStates = (ITextStatable)A.ServiceProvider.GetService<IStatable>();
+			_bStates = (ITextStatable)B.ServiceProvider.GetService<IStatable>();
+			_cStates = (ITextStatable)C.ServiceProvider.GetService<IStatable>();
+			_dStates = (ITextStatable)D.ServiceProvider.GetService<IStatable>();
+
 			SetupMemoryDomains();
 
 			HardReset();

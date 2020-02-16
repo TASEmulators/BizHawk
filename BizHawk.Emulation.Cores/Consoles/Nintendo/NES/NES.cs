@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		"zeromus, natt, alyosha, adelikat",
 		isPorted: false,
 		isReleased: true)]
-	public partial class NES : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable,
+	public partial class NES : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable,
 		IBoardInfo, ISettable<NES.NESSettings, NES.NESSyncSettings>, ICodeDataLogger
 	{
 		[CoreConstructor("NES")]
@@ -63,6 +63,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Register<ITraceable>(Tracer);
 			ser.Register<IVideoProvider>(videoProvider);
 			ser.Register<ISoundProvider>(this);
+			ser.Register<IStatable>(new StateSerializer(SyncState)
+			{
+				LoadStateCallback = SetupMemoryDomains
+			});
 
 			if (Board is BANDAI_FCG_1)
 			{

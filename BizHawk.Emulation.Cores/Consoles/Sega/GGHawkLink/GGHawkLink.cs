@@ -60,6 +60,9 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 			L.stand_alone = false;
 			R.stand_alone = false;
+
+			_lStates = (ITextStatable)L.ServiceProvider.GetService<IStatable>();
+			_rStates = (ITextStatable)R.ServiceProvider.GetService<IStatable>();
 		}
 
 		public void HardReset()

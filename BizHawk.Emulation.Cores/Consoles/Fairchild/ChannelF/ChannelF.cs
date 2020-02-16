@@ -1,6 +1,4 @@
 ﻿using System;
-using BizHawk.Common;
-using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.ChannelF
@@ -48,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			ser.Register<ITraceable>(_tracer);
 			ser.Register<IDisassemblable>(CPU);
 			ser.Register<ISoundProvider>(this);
-
+			ser.Register<IStatable>(new StateSerializer(SyncState));
 			SetupMemoryDomains();
 		}
 

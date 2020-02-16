@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		isPorted: false,
 		isReleased: true)]
 	[ServiceNotApplicable(typeof(ISaveRam), typeof(IDriveLight))]
-	public sealed partial class ColecoVision : IEmulator, IDebuggable, IInputPollable, IStatable, ISettable<ColecoVision.ColecoSettings, ColecoVision.ColecoSyncSettings>
+	public sealed partial class ColecoVision : IEmulator, IDebuggable, IInputPollable, ISettable<ColecoVision.ColecoSettings, ColecoVision.ColecoSyncSettings>
 	{
 		[CoreConstructor("Coleco")]
 		public ColecoVision(CoreComm comm, GameInfo game, byte[] rom, object syncSettings)
@@ -40,6 +40,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 			_vdp = new TMS9918A(_cpu);
 			ser.Register<IVideoProvider>(_vdp);
+			ser.Register<IStatable>(new StateSerializer(SyncState));
 
 			// TODO: hack to allow bios-less operation would be nice, no idea if its feasible
 			_biosRom = CoreComm.CoreFileProvider.GetFirmware("Coleco", "Bios", true, "Coleco BIOS file is required.");
