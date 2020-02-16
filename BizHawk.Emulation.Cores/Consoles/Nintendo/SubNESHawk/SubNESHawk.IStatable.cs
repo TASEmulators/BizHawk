@@ -7,28 +7,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 {
 	public partial class SubNESHawk : ITextStatable
 	{
+		private readonly IStatable _nesStatable;
+
 		public void SaveStateText(TextWriter writer)
 		{
-			subnes.SaveStateText(writer);
+			_nesStatable.SaveStateText(writer);
 			SyncState(new Serializer(writer));
 		}
 
 		public void LoadStateText(TextReader reader)
 		{
-			subnes.LoadStateText(reader);
+			_nesStatable.LoadStateText(reader);
 			SyncState(new Serializer(reader));
 		}
 
 		public void SaveStateBinary(BinaryWriter bw)
 		{
-			subnes.SaveStateBinary(bw);
+			_nesStatable.SaveStateBinary(bw);
 			// other variables
 			SyncState(new Serializer(bw));
 		}
 
 		public void LoadStateBinary(BinaryReader br)
 		{
-			subnes.LoadStateBinary(br);
+			_nesStatable.LoadStateBinary(br);
 			// other variables
 			SyncState(new Serializer(br));
 		}

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using BizHawk.Common;
+
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>
@@ -16,6 +17,11 @@ namespace BizHawk.Emulation.Common
 			_syncState = syncState;
 		}
 
+		/// <summary>
+		/// If provided, will be called after a loadstate call
+		/// </summary>
+		public Action LoadStateCallback { get; set; }
+
 		public void SaveStateText(TextWriter writer)
 		{
 			_syncState(new Serializer(writer));
@@ -24,6 +30,7 @@ namespace BizHawk.Emulation.Common
 		public void LoadStateText(TextReader reader)
 		{
 			_syncState(new Serializer(reader));
+			LoadStateCallback?.Invoke();
 		}
 
 		public void SaveStateBinary(BinaryWriter bw)
@@ -34,6 +41,7 @@ namespace BizHawk.Emulation.Common
 		public void LoadStateBinary(BinaryReader br)
 		{
 			_syncState(new Serializer(br));
+			LoadStateCallback?.Invoke();
 		}
 
 		public byte[] SaveStateBinary()
