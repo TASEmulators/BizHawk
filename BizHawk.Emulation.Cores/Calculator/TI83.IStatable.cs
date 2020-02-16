@@ -14,9 +14,9 @@ namespace BizHawk.Emulation.Cores.Calculators
 				ms.Close();
 				ms.ToArray();
 			}
-			_cpu.SyncState(ser);
 
 			ser.BeginSection(nameof(TI83));
+			_cpu.SyncState(ser);
 			ser.Sync("RAM", ref _ram, false);
 			ser.Sync("romPageLow3Bits", ref _romPageLow3Bits);
 			ser.Sync("romPageHighBit", ref _romPageHighBit);
