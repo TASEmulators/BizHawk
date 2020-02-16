@@ -115,7 +115,8 @@ private:
 	unsigned short sp;
 	unsigned hf1, hf2, zf, cf;
 	unsigned char a, b, c, d, e, /*f,*/ h, l;
-	bool skip_;
+	unsigned char opcode_;
+	bool prefetched_;
 
 	int *interruptAddresses;
 	int numInterruptAddresses;

@@ -22,6 +22,7 @@
 static unsigned char const agbOverride[0xD] = { 0xFF, 0x00, 0xCD, 0x03, 0x35, 0xAA, 0x31, 0x90, 0x94, 0x00, 0x00, 0x00, 0x00 };
 
 #include "mem/cartridge.h"
+#include "interrupter.h"
 #include "sound.h"
 #include "tima.h"
 #include "video.h"
@@ -34,7 +35,7 @@ class FilterInfo;
 
 class Memory {
 public:
-	explicit Memory(unsigned short &sp, unsigned short &pc);
+	explicit Memory(Interrupter const &interrupter);
 	~Memory();
 
 	bool loaded() const { return cart_.loaded(); }
@@ -58,7 +59,7 @@ public:
 
 	bool getMemoryArea(int which, unsigned char **data, int *length);
 
-	unsigned long stop(unsigned long cycleCounter);
+	unsigned long stop(unsigned long cycleCounter, bool& skip);
 	bool isCgb() const { return lcd_.isCgb(); }
 	bool ime() const { return intreq_.ime(); }
 	bool halted() const { return intreq_.halted(); }
@@ -73,9 +74,13 @@ public:
 		return (cc - intreq_.eventTime(intevent_blit)) >> isDoubleSpeed();
 	}
 
-	void halt(unsigned long cycleCounter) { halttime_ = cycleCounter; intreq_.halt(); }
+	void freeze(unsigned long cc);
+	bool halt(unsigned long cc);
 	void ei(unsigned long cycleCounter) { if (!ime()) { intreq_.ei(cycleCounter); } }
 	void di() { intreq_.di(); }
+
+	unsigned pendingIrqs(unsigned long cc);
+	void ackIrq(unsigned bit, unsigned long cc);
 
 	unsigned readBios(unsigned p) {
 		if(agbMode_ && p >= 0xF3 && p < 0x100) {
@@ -262,6 +267,10 @@ public:
 		lcd_.setDmgPaletteColor(palNum, colorNum, rgb32);
 	}
 
+	void blackScreen() {
+		lcd_.blackScreen();
+	}
+
 	void setCgbPalette(unsigned *lut);
 	void setTimeMode(bool useCycles, unsigned long const cc) {
 		cart_.setTimeMode(useCycles, cc);
@@ -282,20 +291,20 @@ private:
 	Tima tima_;
 	LCD lcd_;
 	PSG psg_;
+	Interrupter interrupter_;
 	unsigned short dmaSource_;
 	unsigned short dmaDestination_;
 	unsigned char oamDmaPos_;
+	unsigned char oamDmaStartPos_;
 	unsigned char serialCnt_;
 	bool blanklcd_;
 	bool biosMode_;
 	bool cgbSwitching_;
 	bool agbMode_;
 	bool gbIsCgb_;
-	unsigned short &sp_;
-	unsigned short &pc_;
 	unsigned long basetime_;
-	unsigned long halttime_;
 	bool stopped_;
+	enum HdmaState { hdma_low, hdma_high, hdma_requested } haltHdmaState_;
 
 	MemoryCallback readCallback_;
 	MemoryCallback writeCallback_;
@@ -311,6 +320,7 @@ private:
 	void startOamDma(unsigned long cycleCounter);
 	void endOamDma(unsigned long cycleCounter);
 	unsigned char const * oamDmaSrcPtr() const;
+	unsigned long dma(unsigned long cc);
 	unsigned nontrivial_ff_read(unsigned p, unsigned long cycleCounter);
 	unsigned nontrivial_read(unsigned p, unsigned long cycleCounter);
 	void nontrivial_ff_write(unsigned p, unsigned data, unsigned long cycleCounter);

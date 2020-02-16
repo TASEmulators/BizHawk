@@ -54,6 +54,8 @@ struct SaveState {
 		unsigned char f;
 		unsigned char h;
 		unsigned char l;
+		unsigned char opcode;
+		unsigned char /*bool*/ prefetched;
 		unsigned char /*bool*/ skip;
 	} cpu;
 
@@ -63,19 +65,18 @@ struct SaveState {
 		Ptr<unsigned char> wram;
 		Ptr<unsigned char> ioamhram;
 		unsigned long divLastUpdate;
-		unsigned long timaBasetime;
 		unsigned long timaLastUpdate;
 		unsigned long tmatime;
 		unsigned long nextSerialtime;
 		unsigned long lastOamDmaUpdate;
 		unsigned long minIntTime;
 		unsigned long unhaltTime;
-		unsigned long halttime;
 		unsigned short rombank;
 		unsigned short dmaSource;
 		unsigned short dmaDestination;
 		unsigned char rambank;
 		unsigned char oamDmaPos;
+		unsigned char haltHdmaState;
 		unsigned char /*bool*/ IME;
 		unsigned char /*bool*/ halted;
 		unsigned char /*bool*/ enableRam;
@@ -147,7 +148,7 @@ struct SaveState {
 				unsigned long counter;
 				unsigned short shadow;
 				unsigned char nr0;
-				unsigned char /*bool*/ negging;
+				unsigned char /*bool*/ neg;
 			} sweep;
 			Duty duty;
 			Env env;
@@ -188,6 +189,7 @@ struct SaveState {
 		} ch4;
 
 		unsigned long cycleCounter;
+		unsigned char lastUpdate;
 	} spu;
 
 	struct Time {

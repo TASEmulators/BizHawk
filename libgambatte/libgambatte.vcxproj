@@ -154,9 +154,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\array.h" />
     <ClInclude Include="include\gambatte.h" />
     <ClInclude Include="include\gbint.h" />
     <ClInclude Include="include\loadres.h" />
+    <ClInclude Include="src\interrupter.h" />
     <ClInclude Include="src\cinterface.h" />
     <ClInclude Include="src\counterdef.h" />
     <ClInclude Include="src\cpu.h" />
@@ -180,6 +182,7 @@
     <ClInclude Include="src\sound\envelope_unit.h" />
     <ClInclude Include="src\sound\length_counter.h" />
     <ClInclude Include="src\sound\master_disabler.h" />
+    <ClInclude Include="src\sound\psgdef.h" />
     <ClInclude Include="src\sound\sound_unit.h" />
     <ClInclude Include="src\sound\static_output_tester.h" />
     <ClInclude Include="src\tima.h" />
@@ -192,6 +195,7 @@
     <ClInclude Include="src\video\sprite_mapper.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Interrupter.cpp" />
     <ClCompile Include="src\cinterface.cpp" />
     <ClCompile Include="src\cpu.cpp" />
     <ClCompile Include="src\gambatte.cpp" />

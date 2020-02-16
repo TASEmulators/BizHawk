@@ -123,6 +123,15 @@
     <ClInclude Include="src\video\sprite_mapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\interrupter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\array.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sound\psgdef.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\cinterface.cpp">
@@ -201,6 +210,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\video\sprite_mapper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Interrupter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

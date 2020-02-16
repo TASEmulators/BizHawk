@@ -23,7 +23,7 @@
 namespace gambatte {
 
 CPU::CPU()
-: mem_(sp, pc)
+: mem_(sp, pc, opcode_, prefetched_)
 , cycleCounter_(0)
 , pc(0x100)
 , sp(0xFFFE)
@@ -38,7 +38,8 @@ CPU::CPU()
 , e(0xD8)
 , h(0x01)
 , l(0x4D)
-, skip_(false)
+, opcode_(0)
+, prefetched_(false)
 , numInterruptAddresses()
 , tracecallback(0)
 {
@@ -103,7 +104,13 @@ void CPU::loadState(SaveState const &state) {
 	cf  =  cfFromF(state.cpu.f);
 	h = state.cpu.h & 0xFF;
 	l = state.cpu.l & 0xFF;
-	skip_ = state.cpu.skip;
+	opcode_ = state.cpu.opcode;
+	prefetched_ = state.cpu.prefetched;
+	if (state.cpu.skip) {
+		opcode_ = mem_.read(pc, cycleCounter_);
+		prefetched_ = true;
+	}
+
 }
 
 // The main reasons for the use of macros is to more conveniently be able to tweak
@@ -111,12 +118,11 @@ void CPU::loadState(SaveState const &state) {
 // time they were written GCC had a tendency to not be able to keep hot variables
 // in regs if you took an address/reference in an inline function.
 
-#define bc() ( b << 8 | c )
-#define de() ( d << 8 | e )
-#define hl() ( h << 8 | l )
+#define bc() ( b * 0x100u | c )
+#define de() ( d * 0x100u | e )
+#define hl() ( h * 0x100u | l )
 
 #define READ(dest, addr) do { (dest) = mem_.read(addr, cycleCounter); cycleCounter += 4; } while (0)
-#define PEEK(dest, addr) do { (dest) = mem_.read(addr, cycleCounter); } while (0)
 #define PC_READ(dest) do { (dest) = mem_.read_excb(pc, cycleCounter, false); pc = (pc + 1) & 0xFFFF; cycleCounter += 4; } while (0)
 #define PC_READ_FIRST(dest) do { (dest) = mem_.read_excb(pc, cycleCounter, true); pc = (pc + 1) & 0xFFFF; cycleCounter += 4; } while (0)
 #define FF_READ(dest, addr) do { (dest) = mem_.ff_read(addr, cycleCounter); cycleCounter += 4; } while (0)
@@ -174,7 +180,7 @@ void CPU::loadState(SaveState const &state) {
 // Rotate 8-bit register right through CF, store old bit0 in CF, old CF value becomes bit7. Reset SF and HCF, Check ZF:
 #define rr_r(r) do { \
 	unsigned const oldcf = cf & 0x100; \
-	cf = (r) << 8; \
+	cf = (r) * 0x100u; \
 	(r) = zf = ((r) | oldcf) >> 1; \
 	hf2 = 0; \
 } while (0)
@@ -190,7 +196,7 @@ void CPU::loadState(SaveState const &state) {
 // sra r (8 cycles):
 // Shift 8-bit register right, store old bit0 in CF. bit7=old bit7. Reset SF and HCF, Check ZF:
 #define sra_r(r) do { \
-	cf = (r) << 8; \
+	cf = (r) * 0x100u; \
 	zf = (r) >> 1; \
 	(r) = zf | ((r) & 0x80); \
 	hf2 = 0; \
@@ -200,7 +206,7 @@ void CPU::loadState(SaveState const &state) {
 // Shift 8-bit register right, store old bit0 in CF. Reset SF and HCF, Check ZF:
 #define srl_r(r) do { \
 	zf = (r); \
-	cf = (r) << 8; \
+	cf = (r) * 0x100u; \
 	zf >>= 1; \
 	(r) = zf; \
 	hf2 = 0; \
@@ -261,7 +267,7 @@ void CPU::loadState(SaveState const &state) {
 	unsigned const hl = hl(); \
 	unsigned val; \
 	READ(val, hl); \
-	val &= ~(1 << (n)); \
+	val &= ~(1u << (n)); \
 	WRITE(hl, val); \
 } while (0)
 
@@ -461,9 +467,8 @@ void CPU::loadState(SaveState const &state) {
 // rst n (16 Cycles):
 // Push present address onto stack, jump to address n (one of 00h,08h,10h,18h,20h,28h,30h,38h):
 #define rst_n(n) do { \
-	cycleCounter += 4; \
-	PUSH(pc >> 8, pc & 0xFF); \
-	pc = n; \
+	push_rr(pc >> 8, pc & 0xFF); \
+	pc = (n); \
 } while (0)
 
 // ret (16 cycles):
@@ -473,6 +478,17 @@ void CPU::loadState(SaveState const &state) {
 	pop_rr(high, low); \
 	PC_MOD(high << 8 | low); \
 } while (0)
+
+namespace {
+	unsigned long freeze(Memory & mem, unsigned long cc) {
+		mem.freeze(cc);
+		if (cc < mem.nextEventTime()) {
+			unsigned long cycles = mem.nextEventTime() - cc;
+			cc += cycles + (-cycles & 3);
+		}
+		return cc;
+	}
+}
 
 void CPU::process(unsigned long const cycles) {
 	mem_.setEndtime(cycleCounter_, cycles);
@@ -524,7 +540,7 @@ void CPU::process(unsigned long const cycles) {
 				result[8] = toF(hf2, cf, zf);
 				result[9] = h;
 				result[10] = l;
-				result[11] = skip_;
+				result[11] = prefetched_;
 				PC_READ_FIRST(opcode);
 				result[12] = opcode;
 				result[13] = mem_.debugGetLY();
@@ -534,9 +550,13 @@ void CPU::process(unsigned long const cycles) {
 				PC_READ_FIRST(opcode);
 			}
 
-			if (skip_) {
-				pc = (pc - 1) & 0xFFFF;
-				skip_ = false;
+			if (!prefetched_) {
+				PC_READ(opcode);
+			}
+			else {
+				opcode = opcode_;
+				cycleCounter += 4;
+				prefetched_ = false;
 			}
 
 			switch (opcode) {
@@ -607,7 +627,7 @@ void CPU::process(unsigned long const cycles) {
 				// rrca (4 cycles):
 				// Rotate 8-bit register A right, store old bit0 in CF. Reset SF, HCF, ZF:
 			case 0x0F:
-				cf = a << 8 | a;
+				cf = a * 0x100u | a;
 				a = cf >> 1 & 0xFF;
 				hf2 = 0;
 				zf = 1;
@@ -616,14 +636,13 @@ void CPU::process(unsigned long const cycles) {
 				// stop (4 cycles):
 				// Halt CPU and LCD display until button pressed:
 			case 0x10:
-				{
-					cycleCounter = mem_.stop(cycleCounter);
-
-					if (cycleCounter < mem_.nextEventTime()) {
-						unsigned long cycles = mem_.nextEventTime() - cycleCounter;
-						cycleCounter += cycles + (-cycles & 3);
-					}
+				PC_READ(opcode_);
+				cycleCounter = mem_.stop(cycleCounter - 4, prefetched_);
+				if (cycleCounter < mem_.nextEventTime()) {
+					unsigned long cycles = mem_.nextEventTime() - cycleCounter;
+					cycleCounter += cycles + (-cycles & 3);
 				}
+
 				break;
 
 			case 0x11:
@@ -687,7 +706,7 @@ void CPU::process(unsigned long const cycles) {
 			case 0x1F:
 				{
 					unsigned oldcf = cf & 0x100;
-					cf = a << 8;
+					cf = a * 0x100u;
 					a = (a | oldcf) >> 1;
 				}
 
@@ -1023,14 +1042,12 @@ void CPU::process(unsigned long const cycles) {
 
 				// halt (4 cycles):
 			case 0x76:
-				if (mem_.ff_read(0x0F, cycleCounter) & mem_.ff_read(0xFF, cycleCounter) & 0x1F) {
-					if (mem_.ime())
-						pc = (pc - 1) & 0xFFFF;
-					else
-						skip_ = true;
+				opcode_ = mem_.read(pc, cycleCounter);
+				if (mem_.pendingIrqs(cycleCounter)) {
+					prefetched_ = true;
 				} else {
-					mem_.halt(cycleCounter);
-
+					prefetched_ = mem_.halt(cycleCounter);
+					cycleCounter += 4 + 4 * !mem_.isCgb();
 					if (cycleCounter < mem_.nextEventTime()) {
 						unsigned long cycles = mem_.nextEventTime() - cycleCounter;
 						cycleCounter += cycles + (-cycles & 3);
@@ -1705,13 +1722,7 @@ void CPU::process(unsigned long const cycles) {
 				break;
 
 			case 0xD3: // not specified. should freeze.
-				mem_.di();
-				cycleCounter = mem_.stop(cycleCounter);
-
-				if (cycleCounter < mem_.nextEventTime()) {
-					unsigned long cycles = mem_.nextEventTime() - cycleCounter;
-					cycleCounter += cycles + (-cycles & 3);
-				}
+				cycleCounter = freeze(mem_, cycleCounter);
 				break;
 
 				// call nc,nn (24;12 cycles):
@@ -1779,13 +1790,7 @@ void CPU::process(unsigned long const cycles) {
 				break;
 
 			case 0xDB: // not specified. should freeze.
-				mem_.di();
-				cycleCounter = mem_.stop(cycleCounter);
-
-				if (cycleCounter < mem_.nextEventTime()) {
-					unsigned long cycles = mem_.nextEventTime() - cycleCounter;
-					cycleCounter += cycles + (-cycles & 3);
-				}
+				cycleCounter = freeze(mem_, cycleCounter);
 				break;
 
 				// call z,nn (24;12 cycles):
@@ -1801,13 +1806,7 @@ void CPU::process(unsigned long const cycles) {
 
 				break;
 			case 0xDD: // not specified. should freeze.
-				mem_.di();
-				cycleCounter = mem_.stop(cycleCounter);
-
-				if (cycleCounter < mem_.nextEventTime()) {
-					unsigned long cycles = mem_.nextEventTime() - cycleCounter;
-					cycleCounter += cycles + (-cycles & 3);
-				}
+				cycleCounter = freeze(mem_, cycleCounter);
 				break;
 
 			case 0xDE:
@@ -1846,13 +1845,7 @@ void CPU::process(unsigned long const cycles) {
 
 			case 0xE3: 
 			case 0xE4: // not specified. should freeze.
-				mem_.di();
-				cycleCounter = mem_.stop(cycleCounter);
-
-				if (cycleCounter < mem_.nextEventTime()) {
-					unsigned long cycles = mem_.nextEventTime() - cycleCounter;
-					cycleCounter += cycles + (-cycles & 3);
-				}
+				cycleCounter = freeze(mem_, cycleCounter);
 				break;
 
 			case 0xE5:
@@ -1898,16 +1891,10 @@ void CPU::process(unsigned long const cycles) {
 
 				break;
 
-			case 0xEB:
-			case 0xEC:
+			case 0xEB: // not specified. should freeze.
+			case 0xEC: // not specified. should freeze.
 			case 0xED: // not specified. should freeze.
-				mem_.di();
-				cycleCounter = mem_.stop(cycleCounter);
-
-				if (cycleCounter < mem_.nextEventTime()) {
-					unsigned long cycles = mem_.nextEventTime() - cycleCounter;
-					cycleCounter += cycles + (-cycles & 3);
-				}
+				cycleCounter = freeze(mem_, cycleCounter);
 				break;
 
 			case 0xEE:
@@ -1957,13 +1944,7 @@ void CPU::process(unsigned long const cycles) {
 				break;
 
 			case 0xF4: // not specified. should freeze.
-				mem_.di();
-				cycleCounter = mem_.stop(cycleCounter);
-
-				if (cycleCounter < mem_.nextEventTime()) {
-					unsigned long cycles = mem_.nextEventTime() - cycleCounter;
-					cycleCounter += cycles + (-cycles & 3);
-				}
+				cycleCounter = freeze(mem_, cycleCounter);
 				break;
 
 			case 0xF5:
@@ -2027,15 +2008,9 @@ void CPU::process(unsigned long const cycles) {
 				mem_.ei(cycleCounter);
 				break;
 
-			case 0xFC:
+			case 0xFC: // not specified. should freeze.
 			case 0xFD: // not specified. should freeze
-				mem_.di();
-				cycleCounter = mem_.stop(cycleCounter);
-
-				if (cycleCounter < mem_.nextEventTime()) {
-					unsigned long cycles = mem_.nextEventTime() - cycleCounter;
-					cycleCounter += cycles + (-cycles & 3);
-				}
+				cycleCounter = freeze(mem_, cycleCounter);
 				break;
 			case 0xFE:
 				{
