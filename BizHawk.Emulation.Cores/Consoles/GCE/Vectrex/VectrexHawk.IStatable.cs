@@ -15,13 +15,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 				core = ms.ToArray();
 			}
 
+			ser.BeginSection("VECTREX");
+
 			cpu.SyncState(ser);
 			mapper.SyncState(ser);
 			ppu.SyncState(ser);
 			serialport.SyncState(ser);
 			audio.SyncState(ser);
-
-			ser.BeginSection("VECTREX");
 
 			ser.Sync(nameof(RAM), ref RAM, false);
 
