@@ -36,23 +36,23 @@ namespace BizHawk.Emulation.Common
 
 		public void SaveStateText(TextWriter writer)
 		{
-			_syncState(new Serializer(writer));
+			_syncState(Serializer.CreateTextWriter(writer));
 		}
 
 		public void LoadStateText(TextReader reader)
 		{
-			_syncState(new Serializer(reader));
+			_syncState(Serializer.CreateTextReader(reader));
 			LoadStateCallback?.Invoke();
 		}
 
 		public void SaveStateBinary(BinaryWriter bw)
 		{
-			_syncState(new Serializer(bw));
+			_syncState(Serializer.CreateBinaryWriter(bw));
 		}
 
 		public void LoadStateBinary(BinaryReader br)
 		{
-			_syncState(new Serializer(br));
+			_syncState(Serializer.CreateBinaryReader(br));
 			LoadStateCallback?.Invoke();
 		}
 
