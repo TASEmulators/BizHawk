@@ -15,9 +15,9 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				ms.Close();
 				core = ms.ToArray();
 			}
-			_cpu.SyncState(ser);
 
 			ser.BeginSection("Coleco");
+			_cpu.SyncState(ser);
 			_vdp.SyncState(ser);
 			ControllerDeck.SyncState(ser);
 			PSG.SyncState(ser);

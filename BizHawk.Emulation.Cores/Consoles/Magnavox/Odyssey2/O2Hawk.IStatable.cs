@@ -14,12 +14,13 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				ms.Close();
 				core = ms.ToArray();
 			}
+
+			ser.BeginSection("Odyssey2");
 			cpu.SyncState(ser);
 			mapper.SyncState(ser);
 			ppu.SyncState(ser);
 			serialport.SyncState(ser);
 
-			ser.BeginSection("Odyssey2");
 			ser.Sync(nameof(core), ref core, false);
 			ser.Sync("Lag", ref _lagcount);
 			ser.Sync("Frame", ref _frame);
