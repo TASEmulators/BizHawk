@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 			ser.Register<ITraceable>(_tracer);
 			ser.Register<IDisassemblable>(_cpu);
-			ser.Register<ITextStatable>(new StateSerializer(SyncState));
+			ser.Register<IStatable>(new StateSerializer(SyncState));
 		}
 
 		private readonly TraceBuffer _tracer;
