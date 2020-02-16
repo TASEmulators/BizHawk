@@ -17,7 +17,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
-			MemoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
 			CoreComm = comm;
 			_syncSettings = (ColecoSyncSettings)syncSettings ?? new ColecoSyncSettings();
 			bool skipbios = _syncSettings.SkipBiosIntro;

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 
@@ -115,6 +116,43 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			IRQS = 3;
 			instr_pntr = mem_pntr = bus_pntr = irq_pntr = 0;
 			NO_prefix = true;
+		}
+
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
+		{
+			return new Dictionary<string, RegisterValue>
+			{
+				["A"] = Regs[A],
+				["AF"] = Regs[F] + (Regs[A] << 8),
+				["B"] = Regs[B],
+				["BC"] = Regs[C] + (Regs[B] << 8),
+				["C"] = Regs[C],
+				["D"] = Regs[D],
+				["DE"] = Regs[E] + (Regs[D] << 8),
+				["E"] = Regs[E],
+				["F"] = Regs[F],
+				["H"] = Regs[H],
+				["HL"] = Regs[L] + (Regs[H] << 8),
+				["I"] = Regs[I],
+				["IX"] = Regs[Ixl] + (Regs[Ixh] << 8),
+				["IY"] = Regs[Iyl] + (Regs[Iyh] << 8),
+				["L"] = Regs[L],
+				["PC"] = Regs[PCl] + (Regs[PCh] << 8),
+				["R"] = Regs[R],
+				["Shadow AF"] = Regs[F_s] + (Regs[A_s] << 8),
+				["Shadow BC"] = Regs[C_s] + (Regs[B_s] << 8),
+				["Shadow DE"] = Regs[E_s] + (Regs[D_s] << 8),
+				["Shadow HL"] = Regs[L_s] + (Regs[H_s] << 8),
+				["SP"] = Regs[Iyl] + (Regs[Iyh] << 8),
+				["Flag C"] = FlagC,
+				["Flag N"] = FlagN,
+				["Flag P/V"] = FlagP,
+				["Flag 3rd"] = Flag3,
+				["Flag H"] = FlagH,
+				["Flag 5th"] = Flag5,
+				["Flag Z"] = FlagZ,
+				["Flag S"] = FlagS
+			};
 		}
 
 		public IMemoryCallbackSystem MemoryCallbacks { get; set; }

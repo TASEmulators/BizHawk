@@ -1,6 +1,5 @@
 ﻿using System;
 
-using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components;
 using BizHawk.Emulation.Cores.Components.Z80A;
@@ -31,7 +30,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			Settings = (SmsSettings)settings ?? new SmsSettings();
 			SyncSettings = (SmsSyncSettings)syncSettings ?? new SmsSyncSettings();
 			CoreComm = comm;
-			MemoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
 
 			IsGameGear = game.System == "GG";
 			IsGameGear_C = game.System == "GG";
