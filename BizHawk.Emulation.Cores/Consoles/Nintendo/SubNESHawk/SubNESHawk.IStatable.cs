@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 {
 	public partial class SubNESHawk : ITextStatable
 	{
-		private readonly IStatable _nesStatable;
+		private readonly ITextStatable _nesStatable;
 
 		public void SaveStateText(TextWriter writer)
 		{
