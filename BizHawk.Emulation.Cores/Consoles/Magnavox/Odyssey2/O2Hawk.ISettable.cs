@@ -1,14 +1,10 @@
-﻿using System;
-using System.ComponentModel;
-
-using Newtonsoft.Json;
-
+﻿using System.ComponentModel;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 {
-	public partial class O2Hawk : IEmulator, IStatable, ISettable<O2Hawk.O2Settings, O2Hawk.O2SyncSettings>
+	public partial class O2Hawk : IEmulator, ISettable<O2Hawk.O2Settings, O2Hawk.O2SyncSettings>
 	{
 		public O2Settings GetSettings()
 		{

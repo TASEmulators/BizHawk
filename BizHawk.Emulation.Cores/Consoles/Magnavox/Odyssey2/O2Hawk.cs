@@ -4,8 +4,6 @@ using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.I8048;
 
-using System.Runtime.InteropServices;
-
 namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 {
 	[Core(
@@ -14,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		isPorted: false,
 		isReleased: false)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public partial class O2Hawk : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable, ISettable<O2Hawk.O2Settings, O2Hawk.O2SyncSettings>
+	public partial class O2Hawk : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, ISettable<O2Hawk.O2Settings, O2Hawk.O2SyncSettings>
 	{
 		// memory domains
 		public byte[] RAM = new byte[0x80];
@@ -99,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 			_tracer = new TraceBuffer { Header = cpu.TraceHeader };
 			ser.Register<ITraceable>(_tracer);
-
+			ser.Register<IStatable>(new StateSerializer(SyncState));
 			SetupMemoryDomains();
 			HardReset();
 
