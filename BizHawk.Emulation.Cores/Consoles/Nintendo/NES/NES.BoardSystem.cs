@@ -487,32 +487,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// </summary>
 		static Type FindBoard(CartInfo cart, EDetectionOrigin origin, Dictionary<string, string> properties)
 		{
-			NES nes = new NES();
-			nes.cart = cart;
+			NES nes = new NES { cart = cart };
 			Type ret = null;
 			lock(INESBoardImplementors)
 				foreach (var type in INESBoardImplementors)
 				{
-					using (NESBoardBase board = (NESBoardBase)Activator.CreateInstance(type))
-					{
-						//unif demands that the boards set themselves up with expected legal values based on the board size
-						//except, i guess, for the rom/chr sizes. go figure.
-						//so, disable the asserts here
-						if (origin == EDetectionOrigin.UNIF)
-							board.DisableConfigAsserts = true;
+					using NESBoardBase board = (NESBoardBase)Activator.CreateInstance(type);
+					//unif demands that the boards set themselves up with expected legal values based on the board size
+					//except, i guess, for the rom/chr sizes. go figure.
+					//so, disable the asserts here
+					if (origin == EDetectionOrigin.UNIF)
+						board.DisableConfigAsserts = true;
 
-						board.Create(nes);
-						board.InitialRegisterValues = properties;
-						if (board.Configure(origin))
-						{
+					board.Create(nes);
+					board.InitialRegisterValues = properties;
+					if (board.Configure(origin))
+					{
 #if DEBUG
-							if (ret != null)
-								throw new Exception($"Boards {ret} and {type} both responded to {nameof(NESBoardBase.Configure)}!");
-							ret = type;
+						if (ret != null)
+							throw new Exception($"Boards {ret} and {type} both responded to {nameof(NESBoardBase.Configure)}!");
+						ret = type;
 #else
 							return type;
 #endif
-						}
 					}
 				}
 			return ret;
@@ -741,14 +738,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	[AttributeUsage(AttributeTargets.Field)]
 	public class MapperPropAttribute : Attribute
 	{
-		public string Name { get; private set; }
-		public MapperPropAttribute(string Name)
+		public string Name { get; }
+
+		public MapperPropAttribute(string name)
 		{
-			this.Name = Name;
+			Name = name;
 		}
+
 		public MapperPropAttribute()
 		{
-			this.Name = null;
+			Name = null;
 		}
 	}
 

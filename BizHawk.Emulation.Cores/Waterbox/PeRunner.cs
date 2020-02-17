@@ -1008,10 +1008,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 						byte[] data;
 						if (File.Exists(gzpath))
 						{
-							using (var fs = new FileStream(gzpath, FileMode.Open, FileAccess.Read))
-							{
-								data = Util.DecompressGzipFile(fs);
-							}
+							using var fs = new FileStream(gzpath, FileMode.Open, FileAccess.Read);
+							data = Util.DecompressGzipFile(fs);
 						}
 						else
 						{

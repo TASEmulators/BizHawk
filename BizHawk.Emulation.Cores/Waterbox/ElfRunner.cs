@@ -462,11 +462,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private byte[] HashSection(ulong ptr, ulong len)
 		{
-			using (var h = SHA1.Create())
-			{
-				var ms = _base.GetStream(ptr, len, false);
-				return h.ComputeHash(ms);
-			}
+			using var h = SHA1.Create();
+			var ms = _base.GetStream(ptr, len, false);
+			return h.ComputeHash(ms);
 		}
 
 		#endregion
