@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 
-using BizHawk.Emulation.Cores.Components;
-
 namespace BizHawk.Emulation.Cores.Components
 {
 	// ======================================================================

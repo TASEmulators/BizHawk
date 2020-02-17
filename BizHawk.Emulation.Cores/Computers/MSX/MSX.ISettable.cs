@@ -1,8 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-
-using Newtonsoft.Json;
-
+﻿using System.ComponentModel;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 

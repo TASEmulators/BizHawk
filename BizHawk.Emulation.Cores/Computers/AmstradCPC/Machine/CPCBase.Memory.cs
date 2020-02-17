@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
+﻿namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
 	/// <summary>
 	/// The abstract class that all emulated models will inherit from

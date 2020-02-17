@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using BizHawk.Emulation.Cores.Nintendo.N64;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 {

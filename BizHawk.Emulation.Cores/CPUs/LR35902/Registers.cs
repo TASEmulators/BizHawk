@@ -1,6 +1,3 @@
-using System.Runtime.InteropServices;
-using System;
-
 namespace BizHawk.Emulation.Cores.Components.LR35902
 {
 	public partial class LR35902

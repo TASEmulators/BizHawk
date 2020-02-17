@@ -2,8 +2,6 @@
 using System.IO;
 using System.Collections.Generic;
 
-using BizHawk.Common;
-
 //HOW TO USE
 //we dont expect anyone to use this fully yet. It's just over-engineered for future use.
 //for now, just use it when you truly dont know what to do with a file.

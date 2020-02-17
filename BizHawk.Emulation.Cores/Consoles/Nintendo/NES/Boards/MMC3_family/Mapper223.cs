@@ -1,6 +1,4 @@
-﻿using BizHawk.Common;
-
-namespace BizHawk.Emulation.Cores.Nintendo.NES
+﻿namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// TODO
 	public sealed class Mapper223 : MMC3Board_Base

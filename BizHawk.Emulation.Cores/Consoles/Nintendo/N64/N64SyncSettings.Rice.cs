@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 using BizHawk.Emulation.Common;
-using System.Reflection;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64
 {

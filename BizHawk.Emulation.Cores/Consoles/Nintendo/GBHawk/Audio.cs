@@ -1,7 +1,6 @@
 ﻿using System;
 
 using BizHawk.Common;
-using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Common.NumberExtensions;
 

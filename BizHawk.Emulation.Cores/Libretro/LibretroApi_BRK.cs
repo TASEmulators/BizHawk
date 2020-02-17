@@ -1,8 +1,4 @@
-﻿using System;
-
-using BizHawk.Common;
-
-namespace BizHawk.Emulation.Cores.Libretro
+﻿namespace BizHawk.Emulation.Cores.Libretro
 {
 	unsafe partial class LibretroApi
 	{

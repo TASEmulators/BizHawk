@@ -1,13 +1,8 @@
-﻿using BizHawk.Common.NumberExtensions;
-using BizHawk.Emulation.Cores.Components.Z80A;
-using System;
-using System.Collections;
+﻿using BizHawk.Emulation.Cores.Components.Z80A;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {

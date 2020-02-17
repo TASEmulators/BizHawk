@@ -2,7 +2,6 @@
 using System.Diagnostics;
 
 using BizHawk.Emulation.Common;
-using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {

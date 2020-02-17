@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Runtime.InteropServices;
 using ELFSharp.ELF;
 using ELFSharp.ELF.Sections;
@@ -10,8 +9,6 @@ using System.Reflection;
 using BizHawk.Common;
 using System.Security.Cryptography;
 using System.IO;
-using System.Collections.Concurrent;
-using System.Threading;
 using BizHawk.Emulation.Common;
 using BizHawk.BizInvoke;
 

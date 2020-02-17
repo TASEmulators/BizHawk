@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using BizHawk.Emulation.Common;
 using BizHawk.Common;
-using System.Reflection;
 using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES

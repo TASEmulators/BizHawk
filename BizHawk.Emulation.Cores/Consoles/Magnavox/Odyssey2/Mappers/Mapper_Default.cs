@@ -1,8 +1,4 @@
-﻿using BizHawk.Common;
-using BizHawk.Common.NumberExtensions;
-using System;
-
-using BizHawk.Emulation.Cores.Components.I8048;
+﻿using BizHawk.Emulation.Cores.Components.I8048;
 
 namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 {

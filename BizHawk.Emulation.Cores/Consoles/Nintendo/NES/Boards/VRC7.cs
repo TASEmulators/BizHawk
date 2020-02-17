@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Cores.Components;

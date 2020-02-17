@@ -1,7 +1,4 @@
 using System;
-using System.Globalization;
-using System.IO;
-
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Common.NumberExtensions;

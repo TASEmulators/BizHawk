@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BizHawk.Emulation.Cores.Components.M68000
+﻿namespace BizHawk.Emulation.Cores.Components.M68000
 {
 	partial class MC68000
 	{

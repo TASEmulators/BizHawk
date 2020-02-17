@@ -3,10 +3,6 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.Z80A;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
