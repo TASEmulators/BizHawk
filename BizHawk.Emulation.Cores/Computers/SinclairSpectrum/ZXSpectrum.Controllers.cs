@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				foreach (var s in joys1)
 				{
 					definition.BoolButtons.Add(s);
-					definition.CategoryLabels[s] = "J1 (" + SyncSettings.JoystickType1.ToString() + ")";
+					definition.CategoryLabels[s] = "J1 (" + SyncSettings.JoystickType1 + ")";
 				}
 
 				var joys2 = new List<string>
@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				foreach (var s in joys2)
 				{
 					definition.BoolButtons.Add(s);
-					definition.CategoryLabels[s] = "J2 (" + SyncSettings.JoystickType2.ToString() + ")";
+					definition.CategoryLabels[s] = "J2 (" + SyncSettings.JoystickType2 + ")";
 				}
 
 				var joys3 = new List<string>
@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				foreach (var s in joys3)
 				{
 					definition.BoolButtons.Add(s);
-					definition.CategoryLabels[s] = "J3 (" + SyncSettings.JoystickType3.ToString() + ")";
+					definition.CategoryLabels[s] = "J3 (" + SyncSettings.JoystickType3 + ")";
 				}
 
 				// keyboard

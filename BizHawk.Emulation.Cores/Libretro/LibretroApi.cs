@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		{
 			T GetTypedDelegate<T>(string proc) where T : Delegate => (T) Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddrOrThrow(proc), typeof(T));
 
-			InstanceName = "libretro_" + Guid.NewGuid().ToString();
+			InstanceName = "libretro_" + Guid.NewGuid();
 
 			var pipeName = InstanceName;
 

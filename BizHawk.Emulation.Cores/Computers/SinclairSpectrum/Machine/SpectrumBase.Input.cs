@@ -292,7 +292,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             for (int i = 0; i < JoystickCollection.Length; i++)
             {
-                Spectrum.OSD_FireInputMessage("Joystick " + (i + 1) + ": " + JoystickCollection[i].JoyType.ToString());
+                Spectrum.OSD_FireInputMessage("Joystick " + (i + 1) + ": " + JoystickCollection[i].JoyType);
             }
         }
 

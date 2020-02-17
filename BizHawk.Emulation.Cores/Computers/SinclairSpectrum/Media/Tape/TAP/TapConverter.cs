@@ -216,7 +216,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				{
 					// data block
 					description = "Data Block " + (blockSize - 2) + "bytes";
-					tdb.AddMetaData(BlockDescriptorTitle.Data_Bytes, (blockSize - 2).ToString() + " Bytes");
+					tdb.AddMetaData(BlockDescriptorTitle.Data_Bytes, (blockSize - 2) + " Bytes");
 				}
 				else
 				{
@@ -356,7 +356,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				// PAUS block if neccessary
 				if (pauseInTStates > 0)
 				{
-					tdbPause.AddMetaData(BlockDescriptorTitle.Block_ID, pauseInTStates.ToString() + " cycles");
+					tdbPause.AddMetaData(BlockDescriptorTitle.Block_ID, pauseInTStates + " cycles");
 
 					int by1000 = pauseInTStates / 70000;
 					int rem1000 = pauseInTStates % 70000;

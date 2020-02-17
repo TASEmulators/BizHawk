@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 		public FilePiping()
 		{
-			PipeName = "BizHawk-" + Guid.NewGuid().ToString();
+			PipeName = "BizHawk-" + Guid.NewGuid();
 		}
 
 		public void Get(Stream s)
