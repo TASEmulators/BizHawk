@@ -1,43 +1,11 @@
 ﻿using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 
+// http://wiki.nesdev.com/w/index.php/INES_Mapper_231
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public sealed class Mapper231 : NES.NESBoardBase
 	{
-		/*
-		* Here are Disch's original notes:  
-		========================
-		=  Mapper 231          =
-		========================
- 
-		Example Game:
-		--------------------------
-		20-in-1
- 
- 
- 
-		Registers:
-		---------------------------
- 
-		$8000-FFFF:     A~[.... .... M.LP PPP.]
-		M = Mirroring (0=Vert, 1=Horz)
-		L = Low bit of PRG
-		P = High bits of PRG
- 
- 
- 
-		PRG Setup:
-		---------------------------
- 
-		Note that 'L' and 'P' bits make up the PRG reg, and the 'L' is the low bit.
- 
- 
-		$8000   $A000   $C000   $E000  
-		+---------------+---------------+
-		| $8000 AND $1E |     $8000     |
-		+---------------+---------------+
-		*/
 		public int prg_reg;
 		public int prg_bank_mask_16k;
 

@@ -1,82 +1,11 @@
 ﻿using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 
+// http://wiki.nesdev.com/w/index.php/INES_Mapper_228
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public sealed class MLT_ACTION52 : NES.NESBoardBase
 	{
-		/*
-		 Here are Disch's original notes:
-		========================
-		=  Mapper 228          =
-		========================
-
-
-		Example Games:
-		--------------------------
-		Action 52
-		Cheetah Men II
-
-
-		Notes:
-		---------------------------
-		Cheetah Men II is infamous for how freaking terrible it is.  Action 52 is none better.  These games are SO
-		bad, it's hilarious.
- 
-		Action 52's PRG size is weird (not a power of 2 value).  This is because there are 3 seperate 512k PRG chips.
-		PRG Setup section will cover details.
-
-
-		Powerup and Reset:
-		---------------------------
-		Apparently the games expect $00 to be written to $8000 on powerup/reset.
-
-
-		Registers:
-		---------------------------
-
-		$4020-4023:  [.... RRRR]  RAM  (readable/writable)
-		(16 bits of RAM -- 4 bits in each of the 4 regs)
-		$4024-5FFF:    mirrors $4020-4023
-
-		$8000-FFFF:    [.... ..CC]   Low 2 bits of CHR
-		A~[..MH HPPP PPO. CCCC]
-
-		M = Mirroring (0=Vert, 1=Horz)
-		H = PRG Chip Select
-		P = PRG Page Select
-		O = PRG Mode
-		C = High 4 bits of CHR
-
-		CHR Setup:
-		---------------------------
-
-		$0000   $0400   $0800   $0C00   $1000   $1400   $1800   $1C00 
-		+---------------------------------------------------------------+
-		|                             $8000                             |
-		+---------------------------------------------------------------+
-
-
-		PRG Setup:
-		---------------------------
-
-		'H' bits select the PRG chip.  Each chip is 512k in size.  Chip 2 does not exist, and when selected, will
-		result in open bus.  The Action 52 .nes ROM file contains chips 0, 1, and 3:
-
-		chip 0:  offset 0x000010
-		chip 1:  offset 0x080010
-		chip 2:  -- non existant --
-		chip 3:  offset 0x100010
-
-		'P' selects the PRG page on the currently selected chip.
-
-		$8000   $A000   $C000   $E000  
-					+-------------------------------+
-		PRG Mode 0: |            <$8000>            |
-					+-------------------------------+
-		PRG Mode 1: |     $8000     |     $8000     |
-					+---------------+---------------+
-		*/
 		[MapperProp]
 		public bool prg_mode = false;
 		[MapperProp]
