@@ -26,8 +26,8 @@ namespace BizHawk.Client.EmuHawk
 			HistoryView.AllColumns.Clear();
 			HistoryView.AllColumns.AddRange(new[]
 			{
-				new RollColumn { Name = IdColumnName, Text = IdColumnName, Width = 40, Type = ColumnType.Text },
-				new RollColumn { Name = UndoColumnName, Text = UndoColumnName, Width = 280, Type = ColumnType.Text }
+				new RollColumn { Name = IdColumnName, Text = IdColumnName, UnscaledWidth = 40, Type = ColumnType.Text },
+				new RollColumn { Name = UndoColumnName, Text = UndoColumnName, UnscaledWidth = 280, Type = ColumnType.Text }
 			});
 
 			MaxStepsNum.Value = Log.MaxSteps;

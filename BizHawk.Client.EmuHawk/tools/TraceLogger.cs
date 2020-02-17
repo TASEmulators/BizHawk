@@ -81,14 +81,14 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Name = DisasmColumnName,
 				Text = DisasmColumnName,
-				Width = 239,
+				UnscaledWidth = 239,
 				Type = ColumnType.Text
 			});
 			TraceView.AllColumns.Add(new RollColumn
 			{
 				Name = RegistersColumnName,
 				Text = RegistersColumnName,
-				Width = 357,
+				UnscaledWidth = 357,
 				Type = ColumnType.Text
 			});
 		}

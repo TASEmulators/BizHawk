@@ -25,5 +25,14 @@
 		/// If drawn rotated, specifies the desired height, or null to auto-size
 		/// </summary>
 		public int? RotatedHeight { get; set; }
+
+		/// <summary>
+		/// Sets the desired width as appropriate for a display with no scaling. If display
+		/// scaling is enabled, the actual column width will be scaled accordingly.
+		/// </summary>
+		public int UnscaledWidth
+		{
+			set => Width = UIHelper.ScaleX(value);
+		}
 	}
 }

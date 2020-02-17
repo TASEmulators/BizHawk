@@ -415,7 +415,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Name = FrameColumnName,
 					Text = "Frame#",
-					Width = 68,
+					UnscaledWidth = 68,
 					Type = ColumnType.Text,
 					Rotatable = true
 				});
@@ -525,7 +525,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Name = columnName,
 					Text = columnText,
-					Width = columnWidth,
+					UnscaledWidth = columnWidth,
 					Type = columnType
 				});
 		}

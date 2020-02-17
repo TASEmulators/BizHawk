@@ -79,14 +79,14 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Columns = new List<RollColumn>
 				{
-					new RollColumn { Text = "Address", Name = WatchList.ADDRESS, Visible = true, Width = 60, Type = ColumnType.Text },
-					new RollColumn { Text = "Value", Name = WatchList.VALUE, Visible = true, Width = 59, Type = ColumnType.Text },
-					new RollColumn { Text = "Prev", Name = WatchList.PREV, Visible = false, Width = 59, Type = ColumnType.Text },
-					new RollColumn { Text = "Changes", Name = WatchList.CHANGES, Visible = true, Width = 60, Type = ColumnType.Text },
-					new RollColumn { Text = "Diff", Name = WatchList.DIFF, Visible = false, Width = 59, Type = ColumnType.Text },
-					new RollColumn { Text = "Type", Name = WatchList.TYPE, Visible = false, Width = 55, Type = ColumnType.Text },
-					new RollColumn { Text = "Domain", Name = WatchList.DOMAIN, Visible = true, Width = 55, Type = ColumnType.Text },
-					new RollColumn { Text = "Notes", Name = WatchList.NOTES, Visible = true, Width = 128, Type = ColumnType.Text }
+					new RollColumn { Text = "Address", Name = WatchList.ADDRESS, Visible = true, UnscaledWidth = 60, Type = ColumnType.Text },
+					new RollColumn { Text = "Value", Name = WatchList.VALUE, Visible = true, UnscaledWidth = 59, Type = ColumnType.Text },
+					new RollColumn { Text = "Prev", Name = WatchList.PREV, Visible = false, UnscaledWidth = 59, Type = ColumnType.Text },
+					new RollColumn { Text = "Changes", Name = WatchList.CHANGES, Visible = true, UnscaledWidth = 60, Type = ColumnType.Text },
+					new RollColumn { Text = "Diff", Name = WatchList.DIFF, Visible = false, UnscaledWidth = 59, Type = ColumnType.Text },
+					new RollColumn { Text = "Type", Name = WatchList.TYPE, Visible = false, UnscaledWidth = 55, Type = ColumnType.Text },
+					new RollColumn { Text = "Domain", Name = WatchList.DOMAIN, Visible = true, UnscaledWidth = 55, Type = ColumnType.Text },
+					new RollColumn { Text = "Notes", Name = WatchList.NOTES, Visible = true, UnscaledWidth = 128, Type = ColumnType.Text }
 				};
 			}
 

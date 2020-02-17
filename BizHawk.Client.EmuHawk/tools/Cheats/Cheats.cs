@@ -727,15 +727,15 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Columns = new List<RollColumn>
 				{
-					new RollColumn { Text = "Names", Name = NameColumn, Visible = true, Width = 128, Type = ColumnType.Text },
-					new RollColumn { Text = "Address", Name = AddressColumn, Visible = true, Width = 60, Type = ColumnType.Text },
-					new RollColumn { Text = "Value", Name = ValueColumn, Visible = true, Width = 59, Type = ColumnType.Text },
-					new RollColumn { Text = "Compare", Name = CompareColumn, Visible = true, Width = 63, Type = ColumnType.Text },
-					new RollColumn { Text = "Compare Type", Name = ComparisonTypeColumn, Visible = true, Width = 98, Type = ColumnType.Text },
-					new RollColumn { Text = "On", Name = OnColumn, Visible = false, Width = 28, Type = ColumnType.Text },
-					new RollColumn { Text = "Size", Name = SizeColumn, Visible = true, Width = 55, Type = ColumnType.Text },
-					new RollColumn { Text = "Endian", Name = EndianColumn, Visible = false, Width = 55, Type = ColumnType.Text },
-					new RollColumn { Text = "Display Type", Name = TypeColumn, Visible = false, Width = 88, Type = ColumnType.Text }
+					new RollColumn { Text = "Names", Name = NameColumn, Visible = true, UnscaledWidth = 128, Type = ColumnType.Text },
+					new RollColumn { Text = "Address", Name = AddressColumn, Visible = true, UnscaledWidth = 60, Type = ColumnType.Text },
+					new RollColumn { Text = "Value", Name = ValueColumn, Visible = true, UnscaledWidth = 59, Type = ColumnType.Text },
+					new RollColumn { Text = "Compare", Name = CompareColumn, Visible = true, UnscaledWidth = 63, Type = ColumnType.Text },
+					new RollColumn { Text = "Compare Type", Name = ComparisonTypeColumn, Visible = true, UnscaledWidth = 98, Type = ColumnType.Text },
+					new RollColumn { Text = "On", Name = OnColumn, Visible = false, UnscaledWidth = 28, Type = ColumnType.Text },
+					new RollColumn { Text = "Size", Name = SizeColumn, Visible = true, UnscaledWidth = 55, Type = ColumnType.Text },
+					new RollColumn { Text = "Endian", Name = EndianColumn, Visible = false, UnscaledWidth = 55, Type = ColumnType.Text },
+					new RollColumn { Text = "Display Type", Name = TypeColumn, Visible = false, UnscaledWidth = 88, Type = ColumnType.Text }
 				};
 			}
 

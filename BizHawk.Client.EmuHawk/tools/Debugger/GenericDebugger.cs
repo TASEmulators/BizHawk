@@ -27,14 +27,14 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Name = AddressColumnName,
 					Text = AddressColumnName,
-					Width = 94,
+					UnscaledWidth = 94,
 					Type = ColumnType.Text
 				},
 				new RollColumn
 				{
 					Name = InstructionColumnName,
 					Text = InstructionColumnName,
-					Width = 291,
+					UnscaledWidth = 291,
 					Type = ColumnType.Text
 				}
 			});

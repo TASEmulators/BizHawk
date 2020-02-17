@@ -58,19 +58,19 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Name = BranchNumberColumnName,
 					Text = "#",
-					Width = 30
+					UnscaledWidth = 30
 				},
 				new RollColumn
 				{
 					Name = FrameColumnName,
 					Text = "Frame",
-					Width = 64
+					UnscaledWidth = 64
 				},
 				new RollColumn
 				{
 					Name = UserTextColumnName,
 					Text = "UserText",
-					Width = 90
+					UnscaledWidth = 90
 				},
 			});
 		}
