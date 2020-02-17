@@ -31,6 +31,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public int cycle;
 		public bool VBL;
 		public bool HBL;
+		public bool lum_en;
 
 		// local variables not stated
 		int current_pixel_offset;
@@ -166,8 +167,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			{
 				VDC_color = value;
 				//Console.WriteLine("VDC_color: " + value + " " + Core.cpu.TotalExecutedCycles);
-				bg_brightness = VDC_color.Bit(7) ? 8 : 0;
-				grid_brightness = VDC_color.Bit(6) ? 8 : 0;
+				grid_brightness = (!lum_en | VDC_color.Bit(6)) ? 8 : 0;
+				bg_brightness = !lum_en ? 8 : 0;
 			}
 			else if (addr == 0xA4)
 			{
@@ -866,6 +867,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			ser.Sync(nameof(Pixel_Stat), ref Pixel_Stat);
 			ser.Sync(nameof(bg_brightness), ref bg_brightness);
 			ser.Sync(nameof(grid_brightness), ref grid_brightness);
+			ser.Sync(nameof(lum_en), ref lum_en);
 
 			ser.Sync(nameof(grid_fill), ref grid_fill);
 			ser.Sync(nameof(grid_fill_col), ref grid_fill_col);

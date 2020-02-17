@@ -106,7 +106,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			else if (port == 1)
 			{
 				// various control pins
-				return (byte)((lum_en ? 0x80 : 0) |
+				return (byte)((ppu.lum_en ? 0x80 : 0) |
 				(copy_en ? 0x40 : 0) |
 				(0x20) |
 				(!RAM_en ? 0x10 : 0) |
@@ -156,7 +156,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			else if (port == 1)
 			{
 				// various control pins
-				lum_en = value.Bit(7);
+				ppu.lum_en = value.Bit(7);
 				copy_en = value.Bit(6);
 				RAM_en = !value.Bit(4);
 				ppu_en = !value.Bit(3);
@@ -168,7 +168,10 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				rom_bank |= (ushort)(cart_b1 ? 2 : 0);
 				rom_bank = (ushort)(rom_bank << 11);
 
-				//Console.WriteLine("main ctrl: " + value + " " + ppu_en + " " + RAM_en + " " + cpu.TotalExecutedCycles);
+				ppu.bg_brightness = !ppu.lum_en ? 8 : 0;
+				ppu.grid_brightness = (!ppu.lum_en | ppu.VDC_color.Bit(6)) ? 8 : 0;
+
+				//Console.WriteLine("main ctrl: " + value + " " + ppu.lum_en + " " + ppu_en + " " + RAM_en + " " + cpu.TotalExecutedCycles + " " + ppu.LY);
 			}
 			else
 			{

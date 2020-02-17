@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public byte addr_latch;
 		public byte kb_byte;
-		public bool ppu_en, RAM_en, kybrd_en, copy_en, lum_en, cart_b0, cart_b1;
+		public bool ppu_en, RAM_en, kybrd_en, copy_en, cart_b0, cart_b1;
 		public ushort rom_bank;
 
 		public byte[] _bios;
