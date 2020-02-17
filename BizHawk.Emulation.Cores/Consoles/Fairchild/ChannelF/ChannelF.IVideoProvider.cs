@@ -1,6 +1,4 @@
-﻿using System;
-using BizHawk.Common;
-using BizHawk.Common.BufferExtensions;
+﻿using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.ChannelF

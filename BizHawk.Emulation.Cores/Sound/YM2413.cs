@@ -7,7 +7,6 @@
 using System;
 
 using BizHawk.Common;
-using BizHawk.Emulation.Cores.Components;
 
 namespace BizHawk.Emulation.Cores.Components
 {
@@ -420,14 +419,15 @@ namespace BizHawk.Emulation.Cores.Components
 						dphaseTable[fnum, block, ML] = RATE_ADJUST(((fnum * mltable[ML]) << (int)block) >> (20 - DP_BITS));
 		}
 
-		static double dB2(double x) { return ((x) * 2); }
+		static double dB2(double x)=> x * 2;
 
 		static void makeTllTable()
 		{
-			double[] kltable = new double[] {
-					dB2 (0.000), dB2 (9.000), dB2 (12.000), dB2 (13.875), dB2 (15.000), dB2 (16.125), dB2 (16.875), dB2 (17.625),
-					dB2 (18.000), dB2 (18.750), dB2 (19.125), dB2 (19.500), dB2 (19.875), dB2 (20.250), dB2 (20.625), dB2 (21.000)
-				};
+			double[] kltable =
+			{
+				dB2 (0.000), dB2 (9.000), dB2 (12.000), dB2 (13.875), dB2 (15.000), dB2 (16.125), dB2 (16.875), dB2 (17.625),
+				dB2 (18.000), dB2 (18.750), dB2 (19.125), dB2 (19.500), dB2 (19.875), dB2 (20.250), dB2 (20.625), dB2 (21.000)
+			};
 
 			int tmp;
 			int fnum, block, TL, KL;
@@ -1111,10 +1111,11 @@ namespace BizHawk.Emulation.Cores.Components
 
 		/* EG */
 		static uint S2E(double x) { return (SL2EG((uint)(x / SL_STEP)) << (EG_DP_BITS - EG_BITS)); }
-		static uint[] SL = new[] {
-				S2E (0.0), S2E (3.0), S2E (6.0), S2E (9.0), S2E (12.0), S2E (15.0), S2E (18.0), S2E (21.0),
-				S2E (24.0), S2E (27.0), S2E (30.0), S2E (33.0), S2E (36.0), S2E (39.0), S2E (42.0), S2E (48.0)
-			};
+		static uint[] SL =
+		{
+			S2E (0.0), S2E (3.0), S2E (6.0), S2E (9.0), S2E (12.0), S2E (15.0), S2E (18.0), S2E (21.0),
+			S2E (24.0), S2E (27.0), S2E (30.0), S2E (33.0), S2E (36.0), S2E (39.0), S2E (42.0), S2E (48.0)
+		};
 
 		static void calc_envelope(OPLL_SLOT slot, int lfo)
 		{
@@ -1686,8 +1687,8 @@ namespace BizHawk.Emulation.Cores.Components
 
 		static void calc_stereo(OPLL opll, int[] output)
 		{
-			int[] b = new[] { 0, 0, 0, 0 };        /* Ignore, Right, Left, Center */
-			int[] r = new[] { 0, 0, 0, 0 };        /* Ignore, Right, Left, Center */
+			int[] b = { 0, 0, 0, 0 };        /* Ignore, Right, Left, Center */
+			int[] r = { 0, 0, 0, 0 };        /* Ignore, Right, Left, Center */
 			int i;
 
 			update_ampm(opll);

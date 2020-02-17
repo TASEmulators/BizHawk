@@ -1,5 +1,4 @@
 ﻿using BizHawk.Common;
-using BizHawk.Common.NumberExtensions;
 using System;
 
 using BizHawk.Emulation.Cores.Components.LR35902;

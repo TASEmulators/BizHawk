@@ -102,12 +102,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			/// <summary>
 			/// is this BGMode a mode7 type (mode7, mode7ext, mode7DC)
 			/// </summary>
-			public bool BGModeIsMode7Type { get { return BGModeIsMode7Type(BGMode); } }
+			public bool BGModeIsMode7Type => BGModeIsMode7Type(BGMode);
 
 			/// <summary>
 			/// Is the layer even enabled?
 			/// </summary>
-			public bool Enabled { get { return Bpp != 0; } }
+			public bool Enabled => Bpp != 0;
 
 			/// <summary>
 			/// screen and tiledata register values
@@ -137,7 +137,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			/// <summary>
 			/// Screen size (shape, really.)
 			/// </summary>
-			public ScreenSize ScreenSize { get { return (ScreenSize)SCSIZE; } }
+			public ScreenSize ScreenSize => (ScreenSize)SCSIZE;
 
 			/// <summary>
 			/// the BPP of the BG, as derived from the current mode
@@ -172,7 +172,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			/// <summary>
 			/// TileSize; 8 or 16
 			/// </summary>
-			public int TileSize { get { return TILESIZE == 1 ? 16 : 8; } }
+			public int TileSize => TILESIZE == 1 ? 16 : 8;
 
 			/// <summary>
 			/// The size of the layer, in tiles
@@ -190,13 +190,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			/// <summary>
 			/// The size of the layer, in pixels. This has factored in the selection of 8x8 or 16x16 tiles
 			/// </summary>
-			public Dimensions ScreenSizeInPixels
-			{
-				get
-				{
-					return new Dimensions(ScreenSizeInTiles.Width * TileSize, ScreenSizeInTiles.Height * TileSize);
-				}
-			}
+			public Dimensions ScreenSizeInPixels => new Dimensions(ScreenSizeInTiles.Width * TileSize, ScreenSizeInTiles.Height * TileSize);
 
 			/// <summary>
 			/// returns information about what colors could possibly be used for this bg
@@ -208,11 +202,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public class BGInfos
 		{
 			BGInfo[] bgs = new BGInfo[4] { new BGInfo(1), new BGInfo(2), new BGInfo(3), new BGInfo(4) };
-			public BGInfo BG1 { get { return bgs[0]; } }
-			public BGInfo BG2 { get { return bgs[1]; } }
-			public BGInfo BG3 { get { return bgs[2]; } }
-			public BGInfo BG4 { get { return bgs[3]; } }
-			public BGInfo this[int index] { get { return bgs[index - 1]; } }
+			public BGInfo BG1 => bgs[0];
+			public BGInfo BG2 => bgs[1];
+			public BGInfo BG3 => bgs[2];
+			public BGInfo BG4 => bgs[3];
+			public BGInfo this[int index] => bgs[index - 1];
 		}
 
 		public class ModeInfo

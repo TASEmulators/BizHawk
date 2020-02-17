@@ -1,7 +1,6 @@
-﻿using BizHawk.Common;
+﻿using System.Collections;
+using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
-using System;
-using System.Collections;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
@@ -38,18 +37,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// BDIR Line connected to PSG
 		/// </summary>
-		public bool BDIR
-		{
-			get { return Regs[PORT_C].Bit(7); }
-		}
+		public bool BDIR => Regs[PORT_C].Bit(7);
 
 		/// <summary>
 		/// BC1 Line connected to PSG
 		/// </summary>
-		public bool BC1
-		{
-			get { return Regs[PORT_C].Bit(6); }
-		}
+		public bool BC1 => Regs[PORT_C].Bit(6);
 
 		/* Port Constants */
 		private const int PORT_A = 0;
@@ -65,34 +58,22 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Returns the currently latched port direction for Port A
 		/// </summary>
-		private PortDirection DirPortA
-		{
-			get { return Regs[PORT_CONTROL].Bit(4) ? PortDirection.Input : PortDirection.Output; }
-		}
+		private PortDirection DirPortA => Regs[PORT_CONTROL].Bit(4) ? PortDirection.Input : PortDirection.Output;
 
 		/// <summary>
 		/// Returns the currently latched port direction for Port B
 		/// </summary>
-		private PortDirection DirPortB
-		{
-			get { return Regs[PORT_CONTROL].Bit(1) ? PortDirection.Input : PortDirection.Output; }
-		}
+		private PortDirection DirPortB => Regs[PORT_CONTROL].Bit(1) ? PortDirection.Input : PortDirection.Output;
 
 		/// <summary>
 		/// Returns the currently latched port direction for Port C (lower half)
 		/// </summary>
-		private PortDirection DirPortCL
-		{
-			get { return Regs[PORT_CONTROL].Bit(0) ? PortDirection.Input : PortDirection.Output; }
-		}
+		private PortDirection DirPortCL => Regs[PORT_CONTROL].Bit(0) ? PortDirection.Input : PortDirection.Output;
 
 		/// <summary>
 		/// Returns the currently latched port direction for Port C (upper half)
 		/// </summary>
-		private PortDirection DirPortCU
-		{
-			get { return Regs[PORT_CONTROL].Bit(3) ? PortDirection.Input : PortDirection.Output; }
-		}
+		private PortDirection DirPortCU => Regs[PORT_CONTROL].Bit(3) ? PortDirection.Input : PortDirection.Output;
 
 		#region OUT Methods
 

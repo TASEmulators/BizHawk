@@ -93,7 +93,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		IntPtr Core;
 
-		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+		public IEmulatorServiceProvider ServiceProvider { get; }
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
@@ -118,9 +118,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		private ITraceable Tracer { get; set; }
 
-		public string SystemId { get { return "GBA"; } }
+		public string SystemId => "GBA";
 
-		public bool DeterministicEmulation { get; private set; }
+		public bool DeterministicEmulation { get; }
 
 		public void ResetCounters()
 		{
@@ -154,7 +154,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		LibVBANext.TraceCallback tracecb;
 
 		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
-		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
+		public IInputCallbackSystem InputCallbacks => _inputCallbacks;
 
 		TraceInfo Trace(uint addr, uint opcode)
 		{
@@ -215,7 +215,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		#region Controller
 
-		public ControllerDefinition ControllerDefinition { get { return GBA.GBAController; } }
+		public ControllerDefinition ControllerDefinition => GBA.GBAController;
 
 		public static LibVBANext.Buttons GetButtons(IController c)
 		{

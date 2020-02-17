@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -60,11 +59,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// process track information
 			for (int t = 0; t < DiskHeader.NumberOfTracks; t++)
 			{
-				DiskTracks[t] = new UDIv1Track();
-				DiskTracks[t].TrackNumber = (byte)t;
-				DiskTracks[t].SideNumber = 0;
-				DiskTracks[t].TrackType = data[pos++];
-				DiskTracks[t].TLEN = MediaConverter.GetWordValue(data, pos); pos += 2;
+				DiskTracks[t] = new UDIv1Track
+				{
+					TrackNumber = (byte) t,
+					SideNumber = 0,
+					TrackType = data[pos++],
+					TLEN = MediaConverter.GetWordValue(data, pos)
+				};
+				pos += 2;
 				DiskTracks[t].TrackData = new byte[DiskTracks[t].TLEN + DiskTracks[t].CLEN];
 				Array.Copy(data, pos, DiskTracks[t].TrackData, 0, DiskTracks[t].TLEN + DiskTracks[t].CLEN);
 				pos += DiskTracks[t].TLEN + DiskTracks[t].CLEN;

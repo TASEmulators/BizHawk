@@ -7,13 +7,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition
-		{
-			get
-			{
-				return current_controller;		
-			}
-		}
+		public ControllerDefinition ControllerDefinition => current_controller;
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{			
@@ -182,7 +176,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 		const int blipbuffsize = 4500;
 
-		public bool CanProvideAsync { get { return false; } }
+		public bool CanProvideAsync => false;
 
 		public void SetSyncMode(SyncSoundMode mode)
 		{
@@ -197,10 +191,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			throw new NotSupportedException("Async not supported");
 		}
 
-		public SyncSoundMode SyncMode
-		{
-			get { return SyncSoundMode.Sync; }
-		}
+		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{

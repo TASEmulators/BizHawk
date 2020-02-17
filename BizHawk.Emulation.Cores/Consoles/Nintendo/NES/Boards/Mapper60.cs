@@ -1,5 +1,4 @@
-﻿using System;
-using BizHawk.Common;
+﻿using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
@@ -9,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// http://wiki.nesdev.com/w/index.php/INES_Mapper_060
 
 		private int _reg;
-		private bool IsPrg16Mode { get { return _reg.Bit(7); } }
+		private bool IsPrg16Mode => _reg.Bit(7);
 
 		[MapperProp]
 		public int Mapper60_DipSwitch;

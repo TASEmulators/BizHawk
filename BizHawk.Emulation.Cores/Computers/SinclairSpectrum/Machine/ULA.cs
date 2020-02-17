@@ -857,10 +857,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			set { }
 		}
 
-		public int VsyncDenominator
-		{
-			get { return ClockSpeed; }//FrameLength; }
-		}
+		public int VsyncDenominator => ClockSpeed; // FrameLength;
 
 		public int[] GetVideoBuffer()
 		{

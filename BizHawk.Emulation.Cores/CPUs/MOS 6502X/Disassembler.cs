@@ -20,19 +20,13 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		public string Cpu
 		{
-			get
-			{
-				return "6502";
-			}
+			get => "6502";
 			set
 			{
 			}
 		}
 
-		public string PCRegisterName
-		{
-			get { return "PC"; }
-		}
+		public string PCRegisterName => "PC";
 
 		public IEnumerable<string> AvailableCpus
 		{

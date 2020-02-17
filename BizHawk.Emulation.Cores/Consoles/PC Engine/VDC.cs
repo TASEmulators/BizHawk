@@ -1,7 +1,6 @@
 ﻿using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.H6280;
-using System;
 
 namespace BizHawk.Emulation.Cores.PCEngine
 {

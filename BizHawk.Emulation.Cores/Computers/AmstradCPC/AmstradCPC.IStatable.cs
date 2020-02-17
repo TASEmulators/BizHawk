@@ -39,9 +39,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				if (tmpM != _machineType && _machineType.ToString() != "72")
 				{
 					string msg = "SAVESTATE FAILED TO LOAD!!\n\n";
-					msg += "Current Configuration: " + tmpM.ToString();
+					msg += "Current Configuration: " + tmpM;
 					msg += "\n";
-					msg += "Saved Configuration:    " + _machineType.ToString();
+					msg += "Saved Configuration:    " + _machineType;
 					msg += "\n\n";
 					msg += "If you wish to load this SaveState ensure that you have the correct machine configuration selected, reboot the core, then try again.";
 					CoreComm.ShowMessage(msg);

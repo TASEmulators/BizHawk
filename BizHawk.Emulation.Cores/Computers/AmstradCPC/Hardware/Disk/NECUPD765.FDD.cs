@@ -171,18 +171,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Signs whether the current active drive has a disk inserted
 		/// </summary>        
-		public bool FDD_IsDiskLoaded
-		{
-			get { return DriveStates[DiskDriveIndex].FDD_IsDiskLoaded; }
-		}
+		public bool FDD_IsDiskLoaded => DriveStates[DiskDriveIndex].FDD_IsDiskLoaded;
 
 		/// <summary>
 		/// Returns the disk object from drive 0
 		/// </summary>
-		public FloppyDisk DiskPointer
-		{
-			get { return DriveStates[0].Disk; }
-		}
+		public FloppyDisk DiskPointer => DriveStates[0].Disk;
 
 		public FloppyDisk Disk { get; set; }
 

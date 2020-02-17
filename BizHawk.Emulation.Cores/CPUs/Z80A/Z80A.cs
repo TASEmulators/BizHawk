@@ -1,8 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Common.NumberExtensions;
@@ -306,8 +303,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					break;
 				case OP_F:
 					// Read the opcode of the next instruction	
-					if (OnExecFetch != null) OnExecFetch(RegPC);
-					if (TraceCallback != null) TraceCallback(State());
+					OnExecFetch?.Invoke(RegPC);
+					TraceCallback?.Invoke(State());
 					opcode = FetchMemory(RegPC++);
 					FetchInstruction();
 					
@@ -778,10 +775,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 				{
 					nonMaskableInterruptPending = false;
 
-					if (TraceCallback != null)
-					{
-						TraceCallback(new TraceInfo { Disassembly = "====NMI====", RegisterInfo = "" });
-					}
+					TraceCallback?.Invoke(new TraceInfo { Disassembly = "====NMI====", RegisterInfo = "" });
 
 					iff2 = iff1;
 					iff1 = false;
@@ -802,10 +796,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					iff1 = iff2 = false;
 					EI_pending = 0;
 
-					if (TraceCallback != null)
-					{
-						TraceCallback(new TraceInfo { Disassembly = "====IRQ====", RegisterInfo = "" });
-					}
+					TraceCallback?.Invoke(new TraceInfo { Disassembly = "====IRQ====", RegisterInfo = "" });
 
 					switch (interruptMode)
 					{
@@ -858,10 +849,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		// tracer stuff
 		public Action<TraceInfo> TraceCallback;
 
-		public string TraceHeader
-		{
-			get { return "Z80A: PC, machine code, mnemonic, operands, registers (AF, BC, DE, HL, IX, IY, SP, Cy), flags (CNP3H5ZS)"; }
-		}
+		public string TraceHeader => "Z80A: PC, machine code, mnemonic, operands, registers (AF, BC, DE, HL, IX, IY, SP, Cy), flags (CNP3H5ZS)";
 
 		public TraceInfo State(bool disassemble = true)
 		{
@@ -906,7 +894,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 		/// <summary>
 		/// Optimization method to set BUSRQ
-		/// </summary>		
+		/// </summary>
 		private void PopulateBUSRQ(ushort d0 = 0, ushort d1 = 0, ushort d2 = 0, ushort d3 = 0, ushort d4 = 0, ushort d5 = 0, ushort d6 = 0, ushort d7 = 0, ushort d8 = 0,
 			ushort d9 = 0, ushort d10 = 0, ushort d11 = 0, ushort d12 = 0, ushort d13 = 0, ushort d14 = 0, ushort d15 = 0, ushort d16 = 0, ushort d17 = 0, ushort d18 = 0)
 		{
@@ -921,7 +909,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 		/// <summary>
 		/// Optimization method to set MEMRQ
-		/// </summary>	
+		/// </summary>
 		private void PopulateMEMRQ(ushort d0 = 0, ushort d1 = 0, ushort d2 = 0, ushort d3 = 0, ushort d4 = 0, ushort d5 = 0, ushort d6 = 0, ushort d7 = 0, ushort d8 = 0,
 			ushort d9 = 0, ushort d10 = 0, ushort d11 = 0, ushort d12 = 0, ushort d13 = 0, ushort d14 = 0, ushort d15 = 0, ushort d16 = 0, ushort d17 = 0, ushort d18 = 0)
 		{

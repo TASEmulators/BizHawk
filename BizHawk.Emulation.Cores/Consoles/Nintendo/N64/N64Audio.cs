@@ -23,10 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		/// </summary>
 		public uint SamplingRate
 		{
-			get
-			{
-				return _samplingRate;
-			}
+			get => _samplingRate;
 			private set
 			{
 				_samplingRate = value;
@@ -80,8 +77,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public void Dispose()
 		{
 			coreAPI.VInterrupt -= DoAudioFrame;
-			if(Resampler != null)
-				Resampler.Dispose();
+			Resampler?.Dispose();
 			Resampler = null;
 			api = null;
 		}

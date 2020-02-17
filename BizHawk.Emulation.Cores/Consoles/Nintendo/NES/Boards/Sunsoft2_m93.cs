@@ -1,5 +1,4 @@
-﻿using System;
-using BizHawk.Common;
+﻿using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {

@@ -172,8 +172,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// we have reached the end of a frame
 			LastFrameStartCPUTick = CPU.TotalExecutedCycles; // - OverFlow;
 
-			if (AYDevice != null)
-				AYDevice.EndFrame();
+			AYDevice?.EndFrame();
 
 			FrameCount++;
 
@@ -185,7 +184,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// is this a lag frame?
 			CPC.IsLagFrame = !InputRead;
 
-			// FDC debug            
+			// FDC debug
 			if (UPDDiskDevice != null && UPDDiskDevice.writeDebug)
 			{
 				// only write UPD log every second
@@ -360,10 +359,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			if (ser.IsReader)
 				DiskMediaIndex = diskMediaIndex;
 
-			if (UPDDiskDevice != null)
-			{
-				UPDDiskDevice.SyncState(ser);
-			}
+			UPDDiskDevice?.SyncState(ser);
 
 			ser.EndSection();
 		}

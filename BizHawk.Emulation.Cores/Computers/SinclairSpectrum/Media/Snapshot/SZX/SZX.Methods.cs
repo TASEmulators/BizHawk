@@ -1,13 +1,8 @@
-﻿using BizHawk.Common.NumberExtensions;
-using BizHawk.Emulation.Cores.Components.Z80A;
-using System;
-using System.Collections;
+﻿using BizHawk.Emulation.Cores.Components.Z80A;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -35,9 +30,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			byte[] result = null;
 
-			using (MemoryStream ms = new MemoryStream())
+			using (var ms = new MemoryStream())
 			{
-				using (BinaryWriter r = new BinaryWriter(ms))
+				using (var r = new BinaryWriter(ms))
 				{
 					// temp buffer
 					byte[] buff;
@@ -45,11 +40,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					ZXSTBLOCK block = new ZXSTBLOCK();
 
 					// header
-					ZXSTHEADER header = new ZXSTHEADER();
-					header.dwMagic = MediaConverter.GetUInt32(Encoding.UTF8.GetBytes("ZXST"), 0);
-					header.chMajorVersion = 1;
-					header.chMinorVersion = 4;
-					header.chFlags = 0;
+					ZXSTHEADER header = new ZXSTHEADER
+					{
+						dwMagic = MediaConverter.GetUInt32(Encoding.UTF8.GetBytes("ZXST"), 0),
+						chMajorVersion = 1,
+						chMinorVersion = 4,
+						chFlags = 0
+					};
 					switch (s._machine.Spectrum.MachineType)
 					{
 						case MachineType.ZXSpectrum16: header.chMachineId = (int)MachineIdentifier.ZXSTMID_16K; break;
@@ -98,7 +95,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					buff = MediaConverter.SerializeRaw(eStruct);
 					r.Write(buff);
 
-					// ZXSTJOYSTICK                    
+					// ZXSTJOYSTICK
 					var fStruct = s.GetZXSTJOYSTICK();
 					block.dwId = MediaConverter.GetUInt32(Encoding.UTF8.GetBytes("JOY\0"), 0);
 					block.dwSize = (uint)Marshal.SizeOf(fStruct);
@@ -256,26 +253,28 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		private ZXSTZ80REGS GetZXSTZ80REGS()
 		{
-			var s = new ZXSTZ80REGS();
-			s.AF = (ushort)_machine.Spectrum.GetCpuFlagsAndRegisters()["AF"].Value;
-			s.BC = (ushort)_machine.Spectrum.GetCpuFlagsAndRegisters()["BC"].Value;
-			s.DE = (ushort)_machine.Spectrum.GetCpuFlagsAndRegisters()["DE"].Value;
-			s.HL = (ushort)_machine.Spectrum.GetCpuFlagsAndRegisters()["HL"].Value;
-			s.AF1 = (ushort)_machine.Spectrum.GetCpuFlagsAndRegisters()["Shadow AF"].Value;
-			s.BC1 = (ushort)_machine.Spectrum.GetCpuFlagsAndRegisters()["Shadow BC"].Value;
-			s.DE1 = (ushort)_machine.Spectrum.GetCpuFlagsAndRegisters()["Shadow DE"].Value;
-			s.HL1 = (ushort)_machine.Spectrum.GetCpuFlagsAndRegisters()["Shadow HL"].Value;
-			s.IX = (ushort)_machine.Spectrum.GetCpuFlagsAndRegisters()["IX"].Value;
-			s.IY = (ushort)_machine.Spectrum.GetCpuFlagsAndRegisters()["IY"].Value;
-			s.SP = (ushort)_machine.Spectrum.GetCpuFlagsAndRegisters()["SP"].Value;
-			s.PC = (ushort)_machine.Spectrum.GetCpuFlagsAndRegisters()["PC"].Value;
-			s.I = (byte)_machine.CPU.Regs[_machine.CPU.I];
-			s.R = (byte)_machine.CPU.Regs[_machine.CPU.R];
-			s.IFF1 = (byte)(_machine.CPU.IFF1 ? 1 : 0);
-			s.IFF2 = (byte)(_machine.CPU.IFF2 ? 1 : 0);
-			s.IM = (byte)_machine.CPU.InterruptMode;
-			s.dwCyclesStart = (uint)(_machine.CurrentFrameCycle + _machine.ULADevice.InterruptStartTime);
-			s.wMemPtr = (ushort)(_machine.CPU.Regs[_machine.CPU.Z] + (_machine.CPU.Regs[_machine.CPU.W] << 8));
+			var s = new ZXSTZ80REGS
+			{
+				AF = (ushort) _machine.Spectrum.GetCpuFlagsAndRegisters()["AF"].Value,
+				BC = (ushort) _machine.Spectrum.GetCpuFlagsAndRegisters()["BC"].Value,
+				DE = (ushort) _machine.Spectrum.GetCpuFlagsAndRegisters()["DE"].Value,
+				HL = (ushort) _machine.Spectrum.GetCpuFlagsAndRegisters()["HL"].Value,
+				AF1 = (ushort) _machine.Spectrum.GetCpuFlagsAndRegisters()["Shadow AF"].Value,
+				BC1 = (ushort) _machine.Spectrum.GetCpuFlagsAndRegisters()["Shadow BC"].Value,
+				DE1 = (ushort) _machine.Spectrum.GetCpuFlagsAndRegisters()["Shadow DE"].Value,
+				HL1 = (ushort) _machine.Spectrum.GetCpuFlagsAndRegisters()["Shadow HL"].Value,
+				IX = (ushort) _machine.Spectrum.GetCpuFlagsAndRegisters()["IX"].Value,
+				IY = (ushort) _machine.Spectrum.GetCpuFlagsAndRegisters()["IY"].Value,
+				SP = (ushort) _machine.Spectrum.GetCpuFlagsAndRegisters()["SP"].Value,
+				PC = (ushort) _machine.Spectrum.GetCpuFlagsAndRegisters()["PC"].Value,
+				I = (byte) _machine.CPU.Regs[_machine.CPU.I],
+				R = (byte) _machine.CPU.Regs[_machine.CPU.R],
+				IFF1 = (byte) (_machine.CPU.IFF1 ? 1 : 0),
+				IFF2 = (byte) (_machine.CPU.IFF2 ? 1 : 0),
+				IM = (byte) _machine.CPU.InterruptMode,
+				dwCyclesStart = (uint) (_machine.CurrentFrameCycle + _machine.ULADevice.InterruptStartTime),
+				wMemPtr = (ushort) (_machine.CPU.Regs[_machine.CPU.Z] + (_machine.CPU.Regs[_machine.CPU.W] << 8))
+			};
 			//s.chHoldIntReqCycles = ?
 
 			if (_machine.CPU.EIPending > 0)

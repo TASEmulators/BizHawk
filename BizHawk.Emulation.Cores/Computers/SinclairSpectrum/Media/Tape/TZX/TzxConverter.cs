@@ -14,23 +14,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// The type of serializer
 		/// </summary>
 		private MediaConverterType _formatType = MediaConverterType.TZX;
-		public override MediaConverterType FormatType
-		{
-			get
-			{
-				return _formatType;
-			}
-		}
+		public override MediaConverterType FormatType => _formatType;
 
 		/// <summary>
 		/// Signs whether this class can be used to read the data format
 		/// </summary>
-		public override bool IsReader { get { return true; } }
+		public override bool IsReader => true;
 
 		/// <summary>
 		/// Signs whether this class can be used to write the data format
 		/// </summary>
-		public override bool IsWriter { get { return false; } }
+		public override bool IsWriter => false;
 
 		/// <summary>
 		/// Working list of generated tape data blocks
@@ -125,7 +119,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			if (ident != "ZXTape!" || eotm != 0x1A)
 			{
 				// this is not a valid TZX format file
-				throw new Exception(this.GetType().ToString() +
+				throw new Exception(this.GetType() +
 					"This is not a valid TZX format file");
 			}
 
@@ -402,7 +396,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			int pulseLength = GetWordValue(data, _position);
 			int pulseCount = GetWordValue(data, _position + 2);
 
-			t.AddMetaData(BlockDescriptorTitle.Pulse_Length, pulseLength.ToString() + " T-States");
+			t.AddMetaData(BlockDescriptorTitle.Pulse_Length, pulseLength + " T-States");
 			t.AddMetaData(BlockDescriptorTitle.Pulse_Count, pulseCount.ToString());
 
 			// build period information
@@ -423,20 +417,21 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/*              length: [00]*02+01
 				Offset	Value	Type	Description
 				0x00	N	    BYTE	Number of pulses
-				0x01	-	    WORD[N]	Pulses' lengths                               
+				0x01	-	    WORD[N]	Pulses' lengths
 
 				This will produce N pulses, each having its own timing. Up to 255 pulses can be stored in this block; this is useful for non-standard 
 				sync tones used by some protection schemes. */
 		private void ProcessBlockID13(byte[] data)
 		{
-			TapeDataBlock t = new TapeDataBlock();
-			t.BlockID = 0x13;
-			t.BlockDescription = BlockType.Pulse_Sequence;
-			t.DataPeriods = new List<int>();
+			TapeDataBlock t = new TapeDataBlock
+			{
+				BlockID = 0x13,
+				BlockDescription = BlockType.Pulse_Sequence,
+				DataPeriods = new List<int>(),
+				PauseInMS = 0
+			};
 
-			t.PauseInMS = 0;
-
-			// get pulse count           
+			// get pulse count
 			int pulseCount = data[_position];
 			t.AddMetaData(BlockDescriptorTitle.Pulse_Count, pulseCount.ToString());
 			_position++;
@@ -446,7 +441,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			{
 				// get pulse length
 				int pulseLength = GetWordValue(data, _position);
-				t.AddMetaData(BlockDescriptorTitle.Needs_Parsing, "Pulse " + p + " Length\t" + pulseLength.ToString() + " T-States");
+				t.AddMetaData(BlockDescriptorTitle.Needs_Parsing, "Pulse " + p + " Length\t" + pulseLength + " T-States");
 				t.DataPeriods.Add(pulseLength);
 			}
 
@@ -1676,7 +1671,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				{
 					// data block
 					description = "Data Block " + (blockSize - 2) + "bytes";
-					block.AddMetaData(BlockDescriptorTitle.Data_Bytes, (blockSize - 2).ToString() + " Bytes");
+					block.AddMetaData(BlockDescriptorTitle.Data_Bytes, (blockSize - 2) + " Bytes");
 				}
 				else
 				{
@@ -1742,10 +1737,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					if (dataBlockType == DataBlockType.Turbo)
 						block.BlockDescription = BlockType.Turbo_Speed_Data_Block;
 
-					block.AddMetaData(BlockDescriptorTitle.Pilot_Pulse_Length, pilotToneLength.ToString() + " T-States");
-					block.AddMetaData(BlockDescriptorTitle.Pilot_Pulse_Count, pilotCount.ToString() + " Pulses");
-					block.AddMetaData(BlockDescriptorTitle.First_Sync_Length, sync1PulseLength.ToString() + " T-States");
-					block.AddMetaData(BlockDescriptorTitle.Second_Sync_Length, sync2PulseLength.ToString() + " T-States");
+					block.AddMetaData(BlockDescriptorTitle.Pilot_Pulse_Length, pilotToneLength + " T-States");
+					block.AddMetaData(BlockDescriptorTitle.Pilot_Pulse_Count, pilotCount + " Pulses");
+					block.AddMetaData(BlockDescriptorTitle.First_Sync_Length, sync1PulseLength + " T-States");
+					block.AddMetaData(BlockDescriptorTitle.Second_Sync_Length, sync2PulseLength + " T-States");
 					break;
 
 				case DataBlockType.Pure:
@@ -1753,11 +1748,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					break;
 			}
 
-			block.AddMetaData(BlockDescriptorTitle.Zero_Bit_Length, bit0PulseLength.ToString() + " T-States");
-			block.AddMetaData(BlockDescriptorTitle.One_Bit_Length, bit1PulseLength.ToString() + " T-States");
-			block.AddMetaData(BlockDescriptorTitle.Data_Length, blockSize.ToString() + " Bytes");
-			block.AddMetaData(BlockDescriptorTitle.Bits_In_Last_Byte, bitsInLastByte.ToString() + " Bits");
-			block.AddMetaData(BlockDescriptorTitle.Pause_After_Data, pauseAfterBlock.ToString() + " ms");
+			block.AddMetaData(BlockDescriptorTitle.Zero_Bit_Length, bit0PulseLength + " T-States");
+			block.AddMetaData(BlockDescriptorTitle.One_Bit_Length, bit1PulseLength + " T-States");
+			block.AddMetaData(BlockDescriptorTitle.Data_Length, blockSize + " Bytes");
+			block.AddMetaData(BlockDescriptorTitle.Bits_In_Last_Byte, bitsInLastByte + " Bits");
+			block.AddMetaData(BlockDescriptorTitle.Pause_After_Data, pauseAfterBlock + " ms");
 
 			// calculate period information
 			List<int> dataPeriods = new List<int>();
@@ -1886,7 +1881,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				pBlock.PauseInMS = 0;
 				var pauseInTStates = TranslatePause(original.PauseInMS);
 
-				pBlock.AddMetaData(BlockDescriptorTitle.Block_ID, pauseInTStates.ToString() + " cycles");
+				pBlock.AddMetaData(BlockDescriptorTitle.Block_ID, pauseInTStates + " cycles");
 
 				int by1000 = pauseInTStates / 70000;
 				int rem1000 = pauseInTStates % 70000;

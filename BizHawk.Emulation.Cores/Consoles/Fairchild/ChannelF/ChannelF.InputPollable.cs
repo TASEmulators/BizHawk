@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			set => _isLag = value;
 		}
 
-		public IInputCallbackSystem InputCallbacks { get; }
+		public IInputCallbackSystem InputCallbacks { get; } = new InputCallbackSystem();
 
 		private int _lagCount = 0;
 		private bool _isLag = false;

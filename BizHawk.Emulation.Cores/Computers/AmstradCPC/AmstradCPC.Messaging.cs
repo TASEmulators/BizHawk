@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC

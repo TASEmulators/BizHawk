@@ -1,5 +1,4 @@
-﻿using System;
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 {
@@ -15,12 +14,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		}
 
-		public bool SaveRamModified
-		{
-			get 
-			{
-				return false;
-			}	
-		}
+		public bool SaveRamModified => false;
 	}
 }

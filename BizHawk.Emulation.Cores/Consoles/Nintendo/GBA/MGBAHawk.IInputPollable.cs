@@ -9,9 +9,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public bool IsLagFrame { get; set; }
 
 		[FeatureNotImplemented]
-		public IInputCallbackSystem InputCallbacks
-		{
-			get { throw new NotImplementedException(); }
-		}
+		public IInputCallbackSystem InputCallbacks => throw new NotImplementedException();
 	}
 }

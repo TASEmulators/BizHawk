@@ -67,11 +67,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
 			public bool this[int sector]
 			{
-				get
-				{
-					return (Data & (1 << sector)) != 0;
-				}
-
+				get => (Data & (1 << sector)) != 0;
 				set
 				{
 					if (value)

@@ -1,7 +1,4 @@
-﻿using System;
-
-using BizHawk.Common.NumberExtensions;
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 {

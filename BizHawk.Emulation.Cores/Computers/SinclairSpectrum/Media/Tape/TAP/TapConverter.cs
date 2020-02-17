@@ -15,23 +15,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// The type of serializer
 		/// </summary>
 		private MediaConverterType _formatType = MediaConverterType.TAP;
-		public override MediaConverterType FormatType
-		{
-			get
-			{
-				return _formatType;
-			}
-		}
+		public override MediaConverterType FormatType => _formatType;
 
 		/// <summary>
 		/// Signs whether this class can be used to read the data format
 		/// </summary>
-		public override bool IsReader { get { return true; } }
+		public override bool IsReader => true;
 
 		/// <summary>
 		/// Signs whether this class can be used to write the data format
 		/// </summary>
-		public override bool IsWriter { get { return false; } }
+		public override bool IsWriter => false;
 
 		#region Construction
 
@@ -222,7 +216,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				{
 					// data block
 					description = "Data Block " + (blockSize - 2) + "bytes";
-					tdb.AddMetaData(BlockDescriptorTitle.Data_Bytes, (blockSize - 2).ToString() + " Bytes");
+					tdb.AddMetaData(BlockDescriptorTitle.Data_Bytes, (blockSize - 2) + " Bytes");
 				}
 				else
 				{
@@ -362,7 +356,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				// PAUS block if neccessary
 				if (pauseInTStates > 0)
 				{
-					tdbPause.AddMetaData(BlockDescriptorTitle.Block_ID, pauseInTStates.ToString() + " cycles");
+					tdbPause.AddMetaData(BlockDescriptorTitle.Block_ID, pauseInTStates + " cycles");
 
 					int by1000 = pauseInTStates / 70000;
 					int rem1000 = pauseInTStates % 70000;

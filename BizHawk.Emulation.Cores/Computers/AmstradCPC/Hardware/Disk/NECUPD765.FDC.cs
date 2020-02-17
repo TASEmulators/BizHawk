@@ -372,22 +372,13 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 							switch (ActiveCommandParams.SectorSize)
 							{
 								case 1:
-									if (CMD_FLAG_MF)
-										maxTransferCap = 6656;
-									else
-										maxTransferCap = 3840;
+									maxTransferCap = CMD_FLAG_MF ? 6656 : 3840;
 									break;
 								case 2:
-									if (CMD_FLAG_MF)
-										maxTransferCap = 7680;
-									else
-										maxTransferCap = 4096;
+									maxTransferCap = CMD_FLAG_MF ? 7680 : 4096;
 									break;
 								case 3:
-									if (CMD_FLAG_MF)
-										maxTransferCap = 8192;
-									else
-										maxTransferCap = 4096;
+									maxTransferCap = CMD_FLAG_MF ? 8192 : 4096;
 									break;
 							}
 
@@ -397,7 +388,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						var mtc = maxTransferCap;
 
 						// get the current track
-						var track = ActiveDrive.Disk.DiskTracks.Where(a => a.TrackNumber == ActiveDrive.CurrentTrackID).FirstOrDefault();
+						var track = ActiveDrive.Disk.DiskTracks.FirstOrDefault(a => a.TrackNumber == ActiveDrive.CurrentTrackID);
 
 						if (track == null || track.NumberOfSectors <= 0)
 						{
@@ -704,7 +695,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						}
 
 						// get the current track
-						var track = ActiveDrive.Disk.DiskTracks.Where(a => a.TrackNumber == ActiveDrive.CurrentTrackID).FirstOrDefault();
+						var track = ActiveDrive.Disk.DiskTracks.FirstOrDefault(a => a.TrackNumber == ActiveDrive.CurrentTrackID);
 
 						if (track == null || track.NumberOfSectors <= 0)
 						{
@@ -754,7 +745,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 							Status1 = sector.Status1;
 							Status2 = sector.Status2;
 
-							// we dont need EN
+							// we don't need EN
 							UnSetBit(SR1_EN, ref Status1);
 
 							// invert CM for read deleted data command
@@ -994,22 +985,13 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 							switch (ActiveCommandParams.SectorSize)
 							{
 								case 1:
-									if (CMD_FLAG_MF)
-										maxTransferCap = 6656;
-									else
-										maxTransferCap = 3840;
+									maxTransferCap = CMD_FLAG_MF ? 6656 : 3840;
 									break;
 								case 2:
-									if (CMD_FLAG_MF)
-										maxTransferCap = 7680;
-									else
-										maxTransferCap = 4096;
+									maxTransferCap = CMD_FLAG_MF ? 7680 : 4096;
 									break;
 								case 3:
-									if (CMD_FLAG_MF)
-										maxTransferCap = 8192;
-									else
-										maxTransferCap = 4096;
+									maxTransferCap = CMD_FLAG_MF ? 8192 : 4096;
 									break;
 							}
 
@@ -1017,7 +999,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						}
 
 						// get the current track
-						var track = ActiveDrive.Disk.DiskTracks.Where(a => a.TrackNumber == ActiveDrive.CurrentTrackID).FirstOrDefault();
+						var track = ActiveDrive.Disk.DiskTracks.FirstOrDefault(a => a.TrackNumber == ActiveDrive.CurrentTrackID);
 
 						if (track == null || track.NumberOfSectors <= 0)
 						{
@@ -1209,7 +1191,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 							break;
 						}
 
-						var track = ActiveDrive.Disk.DiskTracks.Where(a => a.TrackNumber == ActiveDrive.CurrentTrackID).FirstOrDefault();
+						var track = ActiveDrive.Disk.DiskTracks.FirstOrDefault(a => a.TrackNumber == ActiveDrive.CurrentTrackID);
 
 						if (track != null && track.NumberOfSectors > 0 && track.TrackNumber != 0xff)
 						{
@@ -2539,7 +2521,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			cmdByte = cByte;
 
 			// lookup the command
-			var cmd = CommandList.Where(a => a.CommandCode == cmdByte).FirstOrDefault();
+			var cmd = CommandList.FirstOrDefault(a => a.CommandCode == cmdByte);
 
 			if (cmd == null)
 			{

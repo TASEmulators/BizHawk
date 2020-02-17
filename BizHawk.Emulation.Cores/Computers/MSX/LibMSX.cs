@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using BizHawk.Emulation.Common;
 using System.Text;
 
 namespace BizHawk.Emulation.Cores.Computers.MSX

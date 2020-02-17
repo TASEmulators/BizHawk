@@ -1,43 +1,11 @@
 ﻿using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 
+// http://wiki.nesdev.com/w/index.php/INES_Mapper_058
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public sealed class Mapper058 : NES.NESBoardBase
 	{
-		/*
-		*  Here are Disch's original notes:  
-		========================
-		=  Mapper 058          =
-		========================
-
-		Example Games:
-		--------------------------
-		68-in-1 (Game Star)
-		Study and Game 32-in-1
-
-
-		Registers:
-		---------------------------
-
-		$8000-FFFF:  A~[.... .... MOCC CPPP]
-		P = PRG page select
-		C = CHR page select (8k @ $0000)
-		O = PRG Mode
-		M = Mirroring (0=Vert, 1=Horz)
-
-
-		PRG Setup:
-		---------------------------
-
-					  $8000   $A000   $C000   $E000  
-					+-------------------------------+
-		PRG Mode 0: |            <$8000>            |
-					+-------------------------------+
-		PRG Mode 1: |     $8000     |     $8000     |
-					+---------------+---------------+
-		*/
-
 		bool prg_mode = false;
 		int chr_reg;
 		int prg_reg;

@@ -66,10 +66,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// for debugging only!
 		/// </summary>
-		public INESBoard GetBoard()
-		{
-			return Board;
-		}
+		public INESBoard GetBoard() => Board;
 
 		#region Audio
 
@@ -78,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public int old_s = 0;
 
-		public bool CanProvideAsync { get { return false; } }
+		public bool CanProvideAsync => false;
 
 		public void SetSyncMode(SyncSoundMode mode)
 		{
@@ -93,10 +90,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			throw new NotSupportedException("Async not supported");
 		}
 
-		public SyncSoundMode SyncMode
-		{
-			get { return SyncSoundMode.Sync; }
-		}
+		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
 		public void Dispose()
 		{

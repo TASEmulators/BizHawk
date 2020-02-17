@@ -1,7 +1,6 @@
 ﻿using BizHawk.Common;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {

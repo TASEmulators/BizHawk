@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Cores.Components;
@@ -36,8 +34,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			if (fm != null)
-				fm.SyncState(ser);
+			fm?.SyncState(ser);
 			ser.Sync(nameof(prg_banks_8k), ref prg_banks_8k);
 			ser.Sync(nameof(chr_banks_1k), ref chr_banks_1k);
 			ser.Sync(nameof(irq_mode), ref irq_mode);
@@ -111,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					else if (Cart.pcb == "352402")
 					{
 						//lagrange point
-						remap = (addr) => ((addr & 0xF000) | ((addr & 0x30) >> 4));
+						remap = addr => ((addr & 0xF000) | ((addr & 0x30) >> 4));
 						fm = new YM2413(YM2413.ChipType.VRC7);
 					}
 					else
@@ -163,9 +160,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr = Map_PPU(addr);
 				if (Cart.vram_size != 0)
 					return base.ReadPPU(addr);
-				else return VROM[addr];
+
+				return VROM[addr];
 			}
-			else return base.ReadPPU(addr);
+
+			return base.ReadPPU(addr);
 		}
 
 		public override void WritePPU(int addr, byte value)
@@ -211,8 +210,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				case 0x1003:
 					//sound data port
-					if (fm != null)
-						fm.Write(value);
+					fm?.Write(value);
 					break;
 
 					//a bit creepy to mask this for lagrange point which has no VROM, but the mask will be 0xFFFFFFFF so its OK
@@ -228,10 +226,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x6000:
 					switch (value & 3)
 					{
-						case 0: SetMirrorType(NES.NESBoardBase.EMirrorType.Vertical); break;
-						case 1: SetMirrorType(NES.NESBoardBase.EMirrorType.Horizontal); break;
-						case 2: SetMirrorType(NES.NESBoardBase.EMirrorType.OneScreenA); break;
-						case 3: SetMirrorType(NES.NESBoardBase.EMirrorType.OneScreenB); break;
+						case 0: SetMirrorType(EMirrorType.Vertical); break;
+						case 1: SetMirrorType(EMirrorType.Horizontal); break;
+						case 2: SetMirrorType(EMirrorType.OneScreenA); break;
+						case 3: SetMirrorType(EMirrorType.OneScreenB); break;
 					}
 					break;
 
@@ -324,6 +322,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 		}
-
 	}
 }

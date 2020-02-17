@@ -41,10 +41,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cassette
 		public void SyncState(Serializer ser)
 		{
 			ser.Sync("Connected", ref _connected);
-			if (_device != null)
-			{
-				_device.SyncState(ser);
-			}
+			_device?.SyncState(ser);
 		}
 
 		public void Connect(CassettePortDevice device)

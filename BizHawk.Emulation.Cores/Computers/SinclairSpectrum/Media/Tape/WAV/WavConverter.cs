@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
@@ -16,23 +15,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// The type of serializer
 		/// </summary>
 		private MediaConverterType _formatType = MediaConverterType.WAV;
-		public override MediaConverterType FormatType
-		{
-			get
-			{
-				return _formatType;
-			}
-		}
+		public override MediaConverterType FormatType => _formatType;
 
 		/// <summary>
 		/// Signs whether this class can be used to read the data format
 		/// </summary>
-		public override bool IsReader { get { return true; } }
+		public override bool IsReader => true;
 
 		/// <summary>
 		/// Signs whether this class can be used to write the data format
 		/// </summary>
-		public override bool IsWriter { get { return false; } }
+		public override bool IsWriter => false;
 
 		/// <summary>
 		/// Position counter

@@ -1,5 +1,3 @@
-using System;
-
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//various japanese Namcot108 boards plus DEROM
@@ -79,7 +77,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			return true;
 		}
-
 	}
-
 }

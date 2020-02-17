@@ -1,10 +1,8 @@
 ﻿using BizHawk.BizInvoke;
 using BizHawk.Emulation.Common;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {

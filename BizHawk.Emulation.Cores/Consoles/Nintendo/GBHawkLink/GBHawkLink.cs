@@ -1,8 +1,4 @@
-﻿using System;
-
-using BizHawk.Emulation.Common;
-
-using BizHawk.Emulation.Cores.Nintendo.GBHawk;
+﻿using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 {

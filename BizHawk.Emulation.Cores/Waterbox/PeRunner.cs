@@ -1,14 +1,11 @@
 ﻿using BizHawk.Common;
 using BizHawk.BizInvoke;
 using BizHawk.Emulation.Common;
-using PeNet;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
@@ -1011,10 +1008,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 						byte[] data;
 						if (File.Exists(gzpath))
 						{
-							using (var fs = new FileStream(gzpath, FileMode.Open, FileAccess.Read))
-							{
-								data = Util.DecompressGzipFile(fs);
-							}
+							using var fs = new FileStream(gzpath, FileMode.Open, FileAccess.Read);
+							data = Util.DecompressGzipFile(fs);
 						}
 						else
 						{
@@ -1129,8 +1124,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				{
 					pe.SealImportsAndTakeXorSnapshot();
 				}
-				if (_mmapheap != null)
-					_mmapheap.Memory.SaveXorSnapshot();
+
+				_mmapheap?.Memory.SaveXorSnapshot();
 			}
 		}
 

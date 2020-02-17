@@ -181,8 +181,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 			bool FlagD_prev = FlagD;
 			opcode = ReadMemoryWrapper(RegisterPC++, false) & 0x3FF;
 
-			if (TraceCallback != null)
-				TraceCallback(CP1610State());
+			TraceCallback?.Invoke(CP1610State());
 
 			if (MemoryCallbacks != null)
 			{

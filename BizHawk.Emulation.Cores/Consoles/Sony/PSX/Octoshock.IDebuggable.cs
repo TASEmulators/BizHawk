@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Sony.PSX
@@ -81,17 +78,14 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		}
 
 		private readonly MemoryCallbackSystem _memoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" }); // Note: there is no system bus memory domain, but there's also no hard rule that the memory callback system domains have to correspond to actual domains in MemoryDomains, that could be good, or bad, but something to be careful about
-		public IMemoryCallbackSystem MemoryCallbacks { get { return _memoryCallbacks; } }
+		public IMemoryCallbackSystem MemoryCallbacks => _memoryCallbacks;
 
-		public bool CanStep(StepType type) { return false; }
-
-		[FeatureNotImplemented]
-		public void Step(StepType type) { throw new NotImplementedException(); }
+		public bool CanStep(StepType type) => false;
 
 		[FeatureNotImplemented]
-		public long TotalExecutedCycles
-		{
-			get { throw new NotImplementedException(); }
-		}
+		public void Step(StepType type) => throw new NotImplementedException();
+
+		[FeatureNotImplemented]
+		public long TotalExecutedCycles => throw new NotImplementedException();
 	}
 }

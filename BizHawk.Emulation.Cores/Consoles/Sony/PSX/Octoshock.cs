@@ -14,7 +14,6 @@ using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.IO;
-using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 
@@ -429,7 +428,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		List<DiscInterface> discInterfaces = new List<DiscInterface>();
 		DiscInterface currentDiscInterface;
 
-		public DisplayType Region { get { return SystemVidStandard == OctoshockDll.eVidStandard.PAL ? DisplayType.PAL : DisplayType.NTSC; } }
+		public DisplayType Region => SystemVidStandard == OctoshockDll.eVidStandard.PAL ? DisplayType.PAL : DisplayType.NTSC;
 
 		public OctoshockDll.eRegion SystemRegion { get; private set; }
 		public OctoshockDll.eVidStandard SystemVidStandard { get; private set; }
@@ -448,8 +447,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		void Attach()
 		{
 			//attach this core as the current
-			if (CurrOctoshockCore != null)
-				CurrOctoshockCore.Dispose();
+			CurrOctoshockCore?.Dispose();
 			CurrOctoshockCore = this;
 
 			//the psx instance cant be created until the desired region is known, which needs a disc, so we need the dll static attached first
@@ -567,7 +565,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public class ResolutionInfo
 		{
 			public System.Drawing.Size Resolution, Padding;
-			public System.Drawing.Size Total { get { return System.Drawing.Size.Add(Resolution, Padding); } }
+			public System.Drawing.Size Total => System.Drawing.Size.Add(Resolution, Padding);
 		}
 
 		/// <summary>
@@ -873,19 +871,18 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public IInputCallbackSystem InputCallbacks
 		{
 			[FeatureNotImplemented]
-			get
-			{ throw new NotImplementedException(); }
+			get => throw new NotImplementedException();
 		}
 
 		[FeatureNotImplemented]
-		public bool DeterministicEmulation { get { return true; } }
+		public bool DeterministicEmulation => true;
 
-		public int[] GetVideoBuffer() { return frameBuffer; }
+		public int[] GetVideoBuffer() => frameBuffer;
 		public int VirtualWidth { get; private set; }
 		public int VirtualHeight { get; private set; }
 		public int BufferWidth { get; private set; }
 		public int BufferHeight { get; private set; }
-		public int BackgroundColor { get { return 0; } }
+		public int BackgroundColor => 0;
 		public int VsyncNumerator { get; private set; }
 		public int VsyncDenominator { get; private set; }
 
@@ -977,10 +974,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			sbuffcontains = 0;
 		}
 
-		public bool CanProvideAsync
-		{
-			get { return false; }
-		}
+		public bool CanProvideAsync => false;
 
 		public void SetSyncMode(SyncSoundMode mode)
 		{
@@ -990,10 +984,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			}
 		}
 
-		public SyncSoundMode SyncMode
-		{
-			get { return SyncSoundMode.Sync; }
-		}
+		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
 		public void GetSamplesAsync(short[] samples)
 		{

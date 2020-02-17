@@ -462,7 +462,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		}
 
 		public readonly int[] FrameBuffer = new int[256 * 192];
-		public int[] GetVideoBuffer() { return FrameBuffer; }
+		public int[] GetVideoBuffer() => FrameBuffer;
 
 		public int VirtualWidth => 293;
 		public int VirtualHeight => 192;
@@ -473,19 +473,13 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public int VsyncNumerator
 		{
 			[FeatureNotImplemented]
-			get
-			{
-				return NullVideo.DefaultVsyncNum;
-			}
+			get => NullVideo.DefaultVsyncNum;
 		}
 
 		public int VsyncDenominator
 		{
 			[FeatureNotImplemented]
-			get
-			{
-				return NullVideo.DefaultVsyncDen;
-			}
+			get => NullVideo.DefaultVsyncDen;
 		}
 
 		private readonly int[] PaletteTMS9918 =

@@ -17,9 +17,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			m_header.Deserialize(stream);
 		}
 
-		public WavHeader Header { get { return m_header; } }
+		public WavHeader Header => m_header;
 
-		public int Count { get { return m_header.dataSize / m_header.fmtBlockAlign; } }
+		public int Count => m_header.dataSize / m_header.fmtBlockAlign;
 
 		public Int32 ReadNext()
 		{

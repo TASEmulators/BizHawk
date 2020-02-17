@@ -154,8 +154,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			if (_renderSound)
 			{
-				if (AYDevice != null)
-					AYDevice.StartFrame();
+				AYDevice?.StartFrame();
 			}
 
 			PollInput();
@@ -185,8 +184,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			ULADevice.LastTState = 0;
 
-			if (AYDevice != null)
-				AYDevice.EndFrame();
+			AYDevice?.EndFrame();
 
 			FrameCount++;
 
@@ -243,10 +241,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			CPU.Regs[CPU.R] = 0;
 
 			TapeDevice.Reset();
-			if (AYDevice != null)
-				AYDevice.Reset();
+			AYDevice?.Reset();
 
-			byte[][] rams = new byte[][]
+			byte[][] rams = 
 			{
 				RAM0,
 				RAM1,
@@ -295,10 +292,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			CPU.Regs[CPU.R] = 0;
 
 			TapeDevice.Reset();
-			if (AYDevice != null)
-				AYDevice.Reset();
+			AYDevice?.Reset();
 
-			byte[][] rams = new byte[][]
+			byte[][] rams =
 			{
 				RAM0,
 				RAM1,
@@ -364,7 +360,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			if (AYDevice != null)
 			{
 				AYDevice.SyncState(ser);
-				((AY38912)AYDevice as AY38912).PanningConfiguration = Spectrum.Settings.AYPanConfig;
+				((AY38912)AYDevice).PanningConfiguration = Spectrum.Settings.AYPanConfig;
 			}
 
 			ser.Sync(nameof(tapeMediaIndex), ref tapeMediaIndex);
@@ -374,7 +370,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				TapeMediaIndex = tapeMediaIndex;
 				IsLoadState = false;
 			}
-
 
 			TapeDevice.SyncState(ser);
 
@@ -386,10 +381,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				IsLoadState = false;
 			}
 
-			if (UPDDiskDevice != null)
-			{
-				UPDDiskDevice.SyncState(ser);
-			}
+			UPDDiskDevice?.SyncState(ser);
 
 			ser.EndSection();
 		}

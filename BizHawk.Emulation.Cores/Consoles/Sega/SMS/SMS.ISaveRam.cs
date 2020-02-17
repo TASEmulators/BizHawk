@@ -8,14 +8,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 	{
 		public byte[] CloneSaveRam()
 		{
-			if (SaveRAM != null)
-			{
-				return (byte[])SaveRAM.Clone();
-			}
-			else
-			{
-				return null;
-			}
+			return (byte[]) SaveRAM?.Clone();
 		}
 
 		public void StoreSaveRam(byte[] data)

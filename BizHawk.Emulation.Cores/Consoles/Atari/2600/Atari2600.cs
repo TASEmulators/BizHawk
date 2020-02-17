@@ -107,23 +107,21 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			// here we advance past start up irregularities to see how long a frame is based on calls to Vsync
 			// we run 72 frames, then run 270 scanlines worth of cycles.
 			// if we don't hit a new frame, we can be pretty confident we are in PAL
-			using (Atari2600 emu = new Atari2600(new CoreComm(null, null), newgame, rom, null, null))
+			using var emu = new Atari2600(new CoreComm(null, null), newgame, rom, null, null);
+			for (int i = 0; i < 72; i++)
 			{
-				for (int i = 0; i < 72; i++)
-				{
-					emu.FrameAdvance(NullController.Instance, false, false);
-				}
-
-				for (int i = 0; i < 61560; i++)
-				{
-					emu.Cycle();
-				}
-
-				bool pal = !emu._tia.New_Frame;
-
-				Console.WriteLine("PAL Detection: {0}", pal);
-				return pal;
+				emu.FrameAdvance(NullController.Instance, false, false);
 			}
+
+			for (int i = 0; i < 61560; i++)
+			{
+				emu.Cycle();
+			}
+
+			bool pal = !emu._tia.New_Frame;
+
+			Console.WriteLine("PAL Detection: {0}", pal);
+			return pal;
 		}
 	}
 }

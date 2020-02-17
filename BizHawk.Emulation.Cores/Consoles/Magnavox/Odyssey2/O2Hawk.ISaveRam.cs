@@ -7,14 +7,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 	{
 		public byte[] CloneSaveRam()
 		{
-			if (cart_RAM != null)
-			{
-				return (byte[])cart_RAM.Clone();
-			}
-			else
-			{
-				return null;
-			}
+			return (byte[])cart_RAM?.Clone();
 		}
 
 		public void StoreSaveRam(byte[] data)
@@ -26,12 +19,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			}
 		}
 
-		public bool SaveRamModified
-		{
-			get 
-			{
-				return has_bat & _syncSettings.Use_SRAM;
-			}	
-		}
+		public bool SaveRamModified => has_bat & _syncSettings.Use_SRAM;
 	}
 }

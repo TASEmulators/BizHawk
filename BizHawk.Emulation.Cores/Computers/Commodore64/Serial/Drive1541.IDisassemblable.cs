@@ -12,10 +12,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 
 		string IDisassemblable.Cpu
 		{
-			get
-			{
-				return "Disk Drive 6502";
-			}
+			get => "Disk Drive 6502";
 
 			set
 			{

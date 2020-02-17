@@ -1,6 +1,5 @@
 ﻿using System;
 using BizHawk.Common;
-using BizHawk.Emulation.Common;
 using BizHawk.Emulation.DiscSystem;
 
 // The state of the cd player is quantized to the frame level.

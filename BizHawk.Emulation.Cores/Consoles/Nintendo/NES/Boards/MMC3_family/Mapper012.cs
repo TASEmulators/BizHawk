@@ -30,11 +30,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		int block0, block1;
 
-		public override void WritePRG(int addr, byte value)
-		{
-			base.WritePRG(addr, value);
-		}
-
 		public override void WriteEXP(int addr, byte value)
 		{
 			base.WriteEXP(addr, value);

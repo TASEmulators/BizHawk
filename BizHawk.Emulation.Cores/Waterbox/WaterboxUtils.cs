@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
@@ -25,18 +22,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public static byte[] Hash(byte[] data)
 		{
-			using (var h = SHA1.Create())
-			{
-				return h.ComputeHash(data);
-			}
+			using var h = SHA1.Create();
+			return h.ComputeHash(data);
 		}
 
 		public static byte[] Hash(Stream s)
 		{
-			using (var h = SHA1.Create())
-			{
-				return h.ComputeHash(s);
-			}
+			using var h = SHA1.Create();
+			return h.ComputeHash(s);
 		}
 
 		public static unsafe void ZeroMemory(IntPtr mem, long length)
@@ -57,16 +50,16 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// <summary>
 		/// system page size
 		/// </summary>
-		public static int PageSize { get; private set; }
+		public static int PageSize { get; }
 
 		/// <summary>
 		/// bitshift corresponding to PageSize
 		/// </summary>
-		public static int PageShift { get; private set; }
+		public static int PageShift { get; }
 		/// <summary>
 		/// bitmask corresponding to PageSize
 		/// </summary>
-		public static ulong PageMask { get; private set; }
+		public static ulong PageMask { get; }
 
 		static WaterboxUtils()
 		{
@@ -122,32 +115,28 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			if (IntPtr.Size == 8)
 				return (IntPtr)(long)l;
-			else
-				return (IntPtr)(int)l;
+			return (IntPtr)(int)l;
 		}
 
 		public static UIntPtr UU(ulong l)
 		{
 			if (UIntPtr.Size == 8)
 				return (UIntPtr)l;
-			else
-				return (UIntPtr)(uint)l;
+			return (UIntPtr)(uint)l;
 		}
 
 		public static IntPtr SS(long l)
 		{
 			if (IntPtr.Size == 8)
 				return (IntPtr)l;
-			else
-				return (IntPtr)(int)l;
+			return (IntPtr)(int)l;
 		}
 
 		public static UIntPtr SU(long l)
 		{
 			if (UIntPtr.Size == 8)
 				return (UIntPtr)(ulong)l;
-			else
-				return (UIntPtr)(uint)l;
+			return (UIntPtr)(uint)l;
 		}
 	}
 }

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using BizHawk.Emulation.Common;
 
@@ -73,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 			public string Name;
 			public int Offs;
 			public int VOffs; // if non-zero, specifies a larger potential offset
-			public int MaxOffs { get { return Math.Max(Offs, VOffs); } }
+			public int MaxOffs => Math.Max(Offs, VOffs);
 		}
 
 		public MemMapping[] Mappings; // = new MemMapping[256];

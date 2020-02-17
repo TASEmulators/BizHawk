@@ -1,6 +1,5 @@
 ﻿//TODO - correctly emulate PPU OFF state
 
-using System;
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 

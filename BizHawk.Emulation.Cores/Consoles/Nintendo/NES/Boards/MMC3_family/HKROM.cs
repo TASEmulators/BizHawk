@@ -111,7 +111,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (block_enabled)
 				return base.ReadWRAM(addr);
-			else return 0;
+			return 0;
 		}
 
 	}

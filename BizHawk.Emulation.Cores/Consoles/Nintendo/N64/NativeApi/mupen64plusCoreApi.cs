@@ -1027,23 +1027,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		private void FireFrameFinishedEvent()
 		{
 			// Execute Frame Callback functions
-			if (FrameFinished != null)
-				FrameFinished();
+			FrameFinished?.Invoke();
 		}
 
 		private void FireVIEvent()
 		{
 			// Execute VI Callback functions
-			if (VInterrupt != null)
-				VInterrupt();
+			VInterrupt?.Invoke();
 			event_frameend = true; //order important
 			m64pEvent.Set(); //order important
 		}
 
 		private void FireRenderEvent()
 		{
-			if (BeforeRender != null)
-				BeforeRender();
+			BeforeRender?.Invoke();
 		}
 
 		private bool CheckBreakpointFlag(ref m64p_breakpoint bkp, m64p_dbg_bkp_flags flag)
@@ -1054,8 +1051,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		private void FireBreakpointEvent(int bpt)
 		{
 			// bpt equal to -1 means we're stepping
-			if((bpt == -1) || (BreakpointHit == null))
+			if (bpt == -1 || BreakpointHit == null)
+			{
 				return;
+			}
 
 			m64p_breakpoint breakpoint = new m64p_breakpoint();
 

@@ -1,6 +1,4 @@
 ﻿using BizHawk.Common;
-using System;
-
 using BizHawk.Emulation.Cores.Components.LR35902;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk

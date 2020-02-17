@@ -2,8 +2,6 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text;
-
-using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
@@ -31,10 +29,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if ((data[7] & 0x0c) == 0x08)
 			{
 				// process as iNES v2
-				CartV2 = new CartInfo();
+				CartV2 = new CartInfo
+				{
+					prg_size = data[4] | data[9] << 8 & 0xf00,
+					chr_size = data[5] | data[9] << 4 & 0xf00
+				};
 
-				CartV2.prg_size = data[4] | data[9] << 8 & 0xf00;
-				CartV2.chr_size = data[5] | data[9] << 4 & 0xf00;
 				CartV2.prg_size *= 16;
 				CartV2.chr_size *= 8;
 
@@ -82,10 +82,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			// process as iNES v1
 			// the DiskDude cleaning is no longer; get better roms
-			Cart = new CartInfo();
+			Cart = new CartInfo
+			{
+				prg_size = data[4],
+				chr_size = data[5]
+			};
 
-			Cart.prg_size = data[4];
-			Cart.chr_size = data[5];
 			if (Cart.prg_size == 0)
 				Cart.prg_size = 256;
 			Cart.prg_size *= 16;

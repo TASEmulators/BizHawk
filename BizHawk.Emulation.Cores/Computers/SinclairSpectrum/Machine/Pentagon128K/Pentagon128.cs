@@ -19,8 +19,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			Spectrum = spectrum;
 			CPU = cpu;
 
-			CPUMon = new CPUMonitor(this);
-			CPUMon.machineType = MachineType.Pentagon128;
+			CPUMon = new CPUMonitor(this) { machineType = MachineType.Pentagon128 };
 
 			ROMPaged = 0;
 			SHADOWPaged = false;

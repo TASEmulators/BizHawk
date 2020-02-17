@@ -1,7 +1,6 @@
-﻿using BizHawk.Common;
+﻿using System.Collections;
+using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
-using System;
-using System.Collections;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
@@ -62,7 +61,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// An external dot counter is used to derive this signal which is usually the character rate in an alphanumeric CRT.
 		/// The active transition is high-to-low
 		/// </summary>
-		public bool CLK { get { return _CLK; } }
+		public bool CLK => _CLK;
+
 		private bool _CLK;
 		/// <summary>
 		/// The RES input is used to Reset the CRTC. An input low level on RES forces CRTC into following status: 
@@ -74,13 +74,15 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		///         (At least 1 cycle CLK signal is necessary for reset.) 
 		///     (C) The CRTC starts the Display operation immediately after the release of RES signal.
 		/// </summary>
-		public bool RESET { get { return _RESET; } }
+		public bool RESET => _RESET;
+
 		private bool _RESET;
 		/// <summary>
 		/// Light Pen Strobe (LPSTR) - This high impedance TTLIMOS compatible input latches the cu rrent Refresh Addresses in the Register File.
 		/// Latching is on the low to high edge and is synchronized internally to character clock.
 		/// </summary>
-		public bool LPSTB { get { return _LPSTB; } }
+		public bool LPSTB => _LPSTB;
+
 		private bool _LPSTB;
 
 		#endregion
@@ -92,23 +94,27 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// This TTL compatible output is an active high signal which drives the monitor directly or is fed to Video Processing Logic for composite generation.
 		/// This signal determines the vertical position of the displayed text.
 		/// </summary>
-		public bool VSYNC { get { return _VSYNC; } }
+		public bool VSYNC => _VSYNC;
+
 		private bool _VSYNC;
 		/// <summary>
 		/// This TTL compatible  output is an active high signal which drives the monitor directly or is fed to Video Processing Logic for composite generation.
 		/// This signal determines the horizontal position of the displayed text. 
 		/// </summary>
-		public bool HSYNC { get { return _HSYNC; } }
+		public bool HSYNC => _HSYNC;
+
 		private bool _HSYNC;
 		/// <summary>
 		/// This TTL compatible output is an active high signal which indicates the CRTC is providing addressing in the active Display Area.
 		/// </summary>      
-		public bool DISPTMG { get { return _DISPTMG; } }
+		public bool DISPTMG => _DISPTMG;
+
 		private bool _DISPTMG;
 		/// <summary>
 		/// This TTL compatible output indicates Cursor Display to external Video Processing Logic.Active high signal. 
 		/// </summary>       
-		public bool CUDISP { get { return _CUDISP; } }
+		public bool CUDISP => _CUDISP;
+
 		private bool _CUDISP;
 
 		// Refresh memory addresses
@@ -117,31 +123,31 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             data located within a 16K block of refresh memory. These outputs drive a TTL load and 30pF. A high level on
             MAO-MA 13 is a logical "1." 
          */
-		public bool MA0 { get { return LinearAddress.Bit(0); } }
-		public bool MA1 { get { return LinearAddress.Bit(1); } }
-		public bool MA2 { get { return LinearAddress.Bit(2); } }
-		public bool MA3 { get { return LinearAddress.Bit(3); } }
-		public bool MA4 { get { return LinearAddress.Bit(4); } }
-		public bool MA5 { get { return LinearAddress.Bit(5); } }
-		public bool MA6 { get { return LinearAddress.Bit(6); } }
-		public bool MA7 { get { return LinearAddress.Bit(7); } }
-		public bool MA8 { get { return LinearAddress.Bit(8); } }
-		public bool MA9 { get { return LinearAddress.Bit(9); } }
-		public bool MA10 { get { return LinearAddress.Bit(10); } }   // cpcwiki would suggest that this isnt connected in the CPC range
-		public bool MA11 { get { return LinearAddress.Bit(11); } }   // cpcwiki would suggest that this isnt connected in the CPC range
-		public bool MA12 { get { return LinearAddress.Bit(12); } }   // cpcwiki would suggest that this is connected in the CPC range but not used
-		public bool MA13 { get { return LinearAddress.Bit(13); } }   // cpcwiki would suggest that this is connected in the CPC range but not used
+		public bool MA0 => LinearAddress.Bit(0);
+		public bool MA1 => LinearAddress.Bit(1);
+		public bool MA2 => LinearAddress.Bit(2);
+		public bool MA3 => LinearAddress.Bit(3);
+		public bool MA4 => LinearAddress.Bit(4);
+		public bool MA5 => LinearAddress.Bit(5);
+		public bool MA6 => LinearAddress.Bit(6);
+		public bool MA7 => LinearAddress.Bit(7);
+		public bool MA8 => LinearAddress.Bit(8);
+		public bool MA9 => LinearAddress.Bit(9);
+		public bool MA10 => LinearAddress.Bit(10); // cpcwiki would suggest that this isnt connected in the CPC range
+		public bool MA11 => LinearAddress.Bit(11); // cpcwiki would suggest that this isnt connected in the CPC range
+		public bool MA12 => LinearAddress.Bit(12); // cpcwiki would suggest that this is connected in the CPC range but not used
+		public bool MA13 => LinearAddress.Bit(13); // cpcwiki would suggest that this is connected in the CPC range but not used
 
 		// Row addresses for character generators
 		/*
             Raster Addresses (RAO-RA4) - These 5 outputs from the internal Raster Counter address the Character ROM
             for the row of a character. These outputs drive a TTL load and 30pF. A high level (on RAO-RA4) is a logical "1." 
          */
-		public bool RA0 { get { return RowSelects.Bit(0); } }
-		public bool RA1 { get { return RowSelects.Bit(1); } }
-		public bool RA2 { get { return RowSelects.Bit(2); } }
-		public bool RA3 { get { return RowSelects.Bit(3); } }    // cpcwiki would suggest that this isnt connected in the CPC range
-		public bool RA4 { get { return RowSelects.Bit(4); } }    // cpcwiki would suggest that this isnt connected in the CPC range
+		public bool RA0 => RowSelects.Bit(0);
+		public bool RA1 => RowSelects.Bit(1);
+		public bool RA2 => RowSelects.Bit(2);
+		public bool RA3 => RowSelects.Bit(3); // cpcwiki would suggest that this isnt connected in the CPC range
+		public bool RA4 => RowSelects.Bit(4); // cpcwiki would suggest that this isnt connected in the CPC range
 
 		/// <summary>
 		/// This 16-bit property emulates how the Amstrad CPC Gate Array is connected up to the CRTC
@@ -682,15 +688,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Current programmed HSYNC width for Type 0 (HD6845S & UM6845) & Type 1 (UM6845R)
 		/// </summary>
-		private int HSYNCWidth_Type0_1
-		{
-			get
-			{
-				// Bits 3..0 define Horizontal Sync Width. 
-				// If 0 is programmed no HSYNC is generated.
-				return (Register[SYNC_WIDTHS] >> 0) & 0x0F;
-			}
-		}
+		// Bits 3..0 define Horizontal Sync Width. 
+		// If 0 is programmed no HSYNC is generated.
+		private int HSYNCWidth_Type0_1 => (Register[SYNC_WIDTHS] >> 0) & 0x0F;
 
 		/// <summary>
 		/// Current programmed HSYNC width for Type 2 (MC6845), 3 (AMS40489) & 4 (pre-ASIC)
@@ -727,15 +727,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Current programmed VSYNC width for Type 1 (UM6845R) & 2 (MC6845)
 		/// </summary>
-		private int VSYNCWidth_Type1_2
-		{
-			get
-			{
-				// Bits 7..4 are ignored. 
-				// Vertical Sync is fixed at 16 lines.
-				return 16;
-			}
-		}
+		// Bits 7..4 are ignored. 
+		// Vertical Sync is fixed at 16 lines.
+		private int VSYNCWidth_Type1_2 => 16;
 
 		#endregion
 

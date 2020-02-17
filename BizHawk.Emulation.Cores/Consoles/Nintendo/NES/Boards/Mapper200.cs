@@ -1,48 +1,11 @@
 ﻿using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 
+// https://wiki.nesdev.com/w/index.php/INES_Mapper_200
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public sealed class Mapper200 : NES.NESBoardBase
 	{
-		/*
-		Here are Disch's original notes:  
-		========================
-		=  Mapper 200          =
-		========================
- 
-		Example Games:
-		--------------------------
-		1200-in-1
-		36-in-1
- 
- 
-		Registers:
-		---------------------------
- 
- 
-		$8000-FFFF:  A~[.... ....  .... MRRR]
-		M = Mirroring (0=Vert, 1=Horz)
-		R = PRG/CHR Reg
- 
- 
-		CHR Setup:
-		---------------------------
- 
-		$0000   $0400   $0800   $0C00   $1000   $1400   $1800   $1C00 
-		+---------------------------------------------------------------+
-		|                             $8000                             |
-		+---------------------------------------------------------------+
- 
- 
-		PRG Setup:
-		---------------------------
- 
-		$8000   $A000   $C000   $E000  
-		+---------------+---------------+
-		|     $8000     |     $8000     |
-		+---------------+---------------+
-		*/
 		int prg_reg_16k, chr_reg_8k;
 		int prg_bank_mask_16k;
 		int chr_bank_mask_8k;

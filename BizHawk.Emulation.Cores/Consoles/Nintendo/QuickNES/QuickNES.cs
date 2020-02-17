@@ -221,8 +221,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				if (rendersound)
 					DrainAudio();
 
-				if (_callBack1 != null) _callBack1();
-				if (_callBack2 != null) _callBack2();
+				_callBack1?.Invoke();
+				_callBack2?.Invoke();
 
 				return true;
 			}
@@ -231,9 +231,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		IntPtr Context;
 		public int Frame { get; private set; }
 
-		public string SystemId { get { return "NES"; } }
-		public bool DeterministicEmulation { get { return true; } }
-		public string BoardName { get; private set; }
+		public string SystemId => "NES";
+		public bool DeterministicEmulation => true;
+		public string BoardName { get; }
 
 		public void ResetCounters()
 		{
@@ -242,11 +242,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			LagCount = 0;
 		}
 
-		public CoreComm CoreComm
-		{
-			get;
-			private set;
-		}
+		public CoreComm CoreComm { get; }
 
 		#region bootgod
 

@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	public interface IFDDHost
 	{
 		/// <summary>
-		/// The currently inserted diskimage
+		/// The currently inserted disk image
 		/// </summary>
 		FloppyDisk Disk { get; set; }
 
@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		/// <summary>
 		/// Signs whether the current active drive has a disk inserted
-		/// </summary>   
+		/// </summary>
 		bool FDD_IsDiskLoaded { get; }
 	}
 }

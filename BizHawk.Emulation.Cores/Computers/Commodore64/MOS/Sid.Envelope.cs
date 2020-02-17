@@ -146,10 +146,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			public int Attack
 			{
-				get
-				{
-					return _attack;
-				}
+				get => _attack;
 				set
 				{
 					_attack = value & 0xF;
@@ -160,10 +157,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			public int Decay
 			{
-				get
-				{
-					return _decay;
-				}
+				get => _decay;
 				set
 				{
 					_decay = value & 0xF;
@@ -174,10 +168,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			public bool Gate
 			{
-				get
-				{
-					return _gate;
-				}
+				get => _gate;
 				set
 				{
 					var nextGate = value;
@@ -197,20 +188,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				}
 			}
 
-			public int Level
-			{
-				get
-				{
-					return _envCounter;
-				}
-			}
+			public int Level => _envCounter;
 
 			public int Release
 			{
-				get
-				{
-					return _release;
-				}
+				get => _release;
 				set
 				{
 					_release = value & 0xF;
@@ -221,14 +203,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			public int Sustain
 			{
-				get
-				{
-					return _sustain;
-				}
-				set
-				{
-					_sustain = value & 0xF;
-				}
+				get => _sustain;
+				set => _sustain = value & 0xF;
 			}
 
 			// ------------------------------------

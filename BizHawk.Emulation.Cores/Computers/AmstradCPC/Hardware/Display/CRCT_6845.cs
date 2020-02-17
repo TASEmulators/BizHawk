@@ -1,7 +1,5 @@
 ﻿using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
-using System;
-using System.Collections;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
@@ -98,123 +96,57 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// The total frame width (in characters)
 		/// </summary>
-		public int FrameWidth
-		{
-			get
-			{
-				return (int)Regs[HOR_TOTAL] + 1;
-			}
-		}
+		public int FrameWidth => (int)Regs[HOR_TOTAL] + 1;
 
 		/// <summary>
 		/// The total frame height (in scanlines)
 		/// </summary>
-		public int FrameHeight
-		{
-			get
-			{
-				return ((int)Regs[VER_TOTAL] + 1) * ((int)Regs[MAX_RASTER_ADDR] + 1);
-			}
-		}
+		public int FrameHeight => ((int)Regs[VER_TOTAL] + 1) * ((int)Regs[MAX_RASTER_ADDR] + 1);
 
 		/// <summary>
 		/// The total frame height (in scanlines)
 		/// </summary>
-		public int FrameHeightInChars
-		{
-			get
-			{
-				return ((int)Regs[VER_TOTAL] + 1);
-			}
-		}
+		public int FrameHeightInChars => ((int)Regs[VER_TOTAL] + 1);
 
 		/// <summary>
 		/// The width of the display area (in characters)
 		/// </summary>
-		public int DisplayWidth
-		{
-			get
-			{
-				return (int)Regs[HOR_DISPLAYED];
-			}
-		}
+		public int DisplayWidth => (int)Regs[HOR_DISPLAYED];
 
 		/// <summary>
 		/// The width of the display area (in scanlines)
 		/// </summary>
-		public int DisplayHeight
-		{
-			get
-			{
-				return (int)Regs[VER_DISPLAYED] * ((int)Regs[MAX_RASTER_ADDR] + 1);
-			}
-		}
+		public int DisplayHeight => (int)Regs[VER_DISPLAYED] * ((int)Regs[MAX_RASTER_ADDR] + 1);
 
 		/// <summary>
 		/// The width of the display area (in scanlines)
 		/// </summary>
-		public int DisplayHeightInChars
-		{
-			get
-			{
-				return (int)Regs[VER_DISPLAYED];
-			}
-		}
+		public int DisplayHeightInChars => (int)Regs[VER_DISPLAYED];
 
 		/// <summary>
 		/// The character at which to start HSYNC
 		/// </summary>
-		public int HorizontalSyncPos
-		{
-			get
-			{
-				return (int)Regs[HOR_SYNC_POS];
-			}
-		}
+		public int HorizontalSyncPos => (int)Regs[HOR_SYNC_POS];
 
 		/// <summary>
 		/// Width (in characters) of the HSYNC
 		/// </summary>
-		public int HorizontalSyncWidth
-		{
-			get
-			{
-				return HSYNCWidth;
-			}
-		}
+		public int HorizontalSyncWidth => HSYNCWidth;
 
 		/// <summary>
 		/// The vertical scanline at which to start VSYNC
 		/// </summary>
-		public int VerticalSyncPos
-		{
-			get
-			{
-				return (int)Regs[VER_SYNC_POS] * ((int)Regs[MAX_RASTER_ADDR] + 1);
-			}
-		}
+		public int VerticalSyncPos => (int)Regs[VER_SYNC_POS] * ((int)Regs[MAX_RASTER_ADDR] + 1);
 
 		/// <summary>
 		/// Height (in scanlines) of the VSYNC
 		/// </summary>
-		public int VerticalSyncHeight
-		{
-			get
-			{
-				return VSYNCWidth; // * ((int)Regs[MAX_RASTER_ADDR] + 1);
-			}
-		}
+		public int VerticalSyncHeight => VSYNCWidth; // * ((int)Regs[MAX_RASTER_ADDR] + 1);
 
 		/// <summary>
 		/// The number of scanlines in one character (MAXRASTER)
 		/// </summary>
-		public int ScanlinesPerCharacter
-		{
-			get
-			{
-				return (int)Regs[MAX_RASTER_ADDR] + 1;
-			}
-		}
+		public int ScanlinesPerCharacter => (int)Regs[MAX_RASTER_ADDR] + 1;
 
 		/// <summary>
 		/// Returns the starting video page address as specified within R12
@@ -236,11 +168,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 		}
 
-		public int DStartHigh
-		{ get { return Regs[DISP_START_ADDR_H]; } }
+		public int DStartHigh => Regs[DISP_START_ADDR_H];
 
-		public int DStartLow
-		{ get { return Regs[DISP_START_ADDR_L]; } }
+		public int DStartLow => Regs[DISP_START_ADDR_L];
 
 		/// <summary>
 		/// Returns the video buffer size as specified within R12
@@ -456,14 +386,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// http://www.cantrell.org.uk/david/tech/cpc/cpc-firmware/firmware.pdf
 		/// (The defaults values given here are those programmed by the firmware ROM after a cold/warm boot of the CPC/Plus)
 		/// </summary>
-		private byte[] RegDefaults = new byte[] { 63, 40, 46, 112, 38, 0, 25, 30, 0, 7, 0, 0, 48, 0, 192, 7, 0, 0 };
+		private byte[] RegDefaults = { 63, 40, 46, 112, 38, 0, 25, 30, 0, 7, 0, 0, 48, 0, 192, 7, 0, 0 };
 
 		/// <summary>
 		/// Register masks
 		/// 0 = WRITE
 		/// 1 = READ
 		/// </summary>
-		private byte[] CPCMask = new byte[] { 255, 255, 255, 255, 127, 31, 127, 126, 3, 31, 31, 31, 63, 255, 63, 255, 63, 255 };
+		private byte[] CPCMask = { 255, 255, 255, 255, 127, 31, 127, 126, 3, 31, 31, 31, 63, 255, 63, 255, 63, 255 };
 
 		/// <summary>
 		/// Horizontal Character Count

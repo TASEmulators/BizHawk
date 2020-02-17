@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 using BizHawk.Emulation.Common;
@@ -22,10 +21,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			}
 		}
 
-		public string PCRegisterName
-		{
-			get { return "PC"; }
-		}
+		public string PCRegisterName => "PC";
 
 		public string Disassemble(MemoryDomain m, uint addr, out int length)
 		{

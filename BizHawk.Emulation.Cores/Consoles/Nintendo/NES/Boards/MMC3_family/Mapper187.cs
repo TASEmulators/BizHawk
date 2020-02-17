@@ -80,13 +80,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return base.ReadEXP(addr);
 		}
 
-		private byte MMc3_cmd
-		{
-			get
-			{
-				return (byte)(mmc3.chr_mode ? 0x80 : 0);
-			}
-		}
+		private byte MMc3_cmd => (byte)(mmc3.chr_mode ? 0x80 : 0);
 
 		protected override int Get_CHRBank_1K(int addr)
 		{
@@ -109,15 +103,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						return ROM[((bank >> 2) << 15) + addr];
 					}
-					else
-					{
-						return ROM[((bank >> 1) << 15) + addr]; // hacky! two mappers in one! need real hw carts to test
-					}
+
+					return ROM[((bank >> 1) << 15) + addr]; // hacky! two mappers in one! need real hw carts to test
 				}
-				else
-				{
-					return ROM[(bank << 14) + (addr & 0x3FFF)];
-				}
+
+				return ROM[(bank << 14) + (addr & 0x3FFF)];
 			}
 
 			return base.ReadPRG(addr);

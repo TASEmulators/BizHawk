@@ -5,331 +5,318 @@ using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
-    /// <summary>
-    /// Floppy drive related stuff
-    /// </summary>
-    #region Attribution
-    /*
+	/// <summary>
+	/// Floppy drive related stuff
+	/// </summary>
+	#region Attribution
+	/*
         Implementation based on the information contained here:
         http://www.cpcwiki.eu/index.php/765_FDC
         and here:
         http://www.cpcwiki.eu/imgs/f/f3/UPD765_Datasheet_OCRed.pdf
     */
-    #endregion
-    public partial class NECUPD765 : IFDDHost
-    {
-        #region Drive State
+	#endregion
+	public partial class NECUPD765 : IFDDHost
+	{
+		#region Drive State
 
-        /// <summary>
-        /// FDD Flag - motor on/off
-        /// </summary>
-        public bool FDD_FLAG_MOTOR;
+		/// <summary>
+		/// FDD Flag - motor on/off
+		/// </summary>
+		public bool FDD_FLAG_MOTOR;
 
-        /// <summary>
-        /// The index of the currently active disk drive
-        /// </summary>
-        public int DiskDriveIndex
-        {
-            get => _diskDriveIndex;
-            set
-            {
-                // when index is changed update the ActiveDrive
-                _diskDriveIndex = value;
-                ActiveDrive = DriveStates[_diskDriveIndex];
-            }
-        }
-        private int _diskDriveIndex = 0;
+		/// <summary>
+		/// The index of the currently active disk drive
+		/// </summary>
+		public int DiskDriveIndex
+		{
+			get => _diskDriveIndex;
+			set
+			{
+				// when index is changed update the ActiveDrive
+				_diskDriveIndex = value;
+				ActiveDrive = DriveStates[_diskDriveIndex];
+			}
+		}
+		private int _diskDriveIndex = 0;
 
-        /// <summary>
-        /// The currently active drive
-        /// </summary>
-        private DriveState ActiveDrive;
+		/// <summary>
+		/// The currently active drive
+		/// </summary>
+		private DriveState ActiveDrive;
 
-        /// <summary>
-        /// Array that holds state information for each possible drive
-        /// </summary>
-        private DriveState[] DriveStates = new DriveState[4];
+		/// <summary>
+		/// Array that holds state information for each possible drive
+		/// </summary>
+		private DriveState[] DriveStates = new DriveState[4];
 
-        #endregion
+		#endregion
 
-        #region FDD Methods
+		#region FDD Methods
 
-        /// <summary>
-        /// Initialization / reset of the floppy drive subsystem
-        /// </summary>
-        private void FDD_Init()
-        {
-            for (int i = 0; i < 4; i++)
-            {
-                DriveState ds = new DriveState(i, this);
-                DriveStates[i] = ds;
-            }
-        }
+		/// <summary>
+		/// Initialization / reset of the floppy drive subsystem
+		/// </summary>
+		private void FDD_Init()
+		{
+			for (int i = 0; i < 4; i++)
+			{
+				DriveState ds = new DriveState(i, this);
+				DriveStates[i] = ds;
+			}
+		}
 
-        /// <summary>
-        /// Searches for the requested sector
-        /// </summary>
-        private FloppyDisk.Sector GetSector()
-        {
-            FloppyDisk.Sector sector = null;
+		/// <summary>
+		/// Searches for the requested sector
+		/// </summary>
+		private FloppyDisk.Sector GetSector()
+		{
+			FloppyDisk.Sector sector = null;
 
-            // get the current track
-            var trk = ActiveDrive.Disk.DiskTracks[ActiveDrive.TrackIndex];
+			// get the current track
+			var trk = ActiveDrive.Disk.DiskTracks[ActiveDrive.TrackIndex];
 
-            // get the current sector index
-            int index = ActiveDrive.SectorIndex;
+			// get the current sector index
+			int index = ActiveDrive.SectorIndex;
 
-            // make sure this index exists
-            if (index > trk.Sectors.Length)
-            {
-                index = 0;
-            }
+			// make sure this index exists
+			if (index > trk.Sectors.Length)
+			{
+				index = 0;
+			}
 
-            // index hole count
-            int iHole = 0;
+			// index hole count
+			int iHole = 0;
 
-            // loop through the sectors in a track
-            // the loop ends with either the sector being found
-            // or the index hole being passed twice
-            while (iHole <= 2)
-            {
-                // does the requested sector match the current sector
-                if (trk.Sectors[index].SectorIDInfo.C == ActiveCommandParams.Cylinder &&
-                    trk.Sectors[index].SectorIDInfo.H == ActiveCommandParams.Head &&
-                    trk.Sectors[index].SectorIDInfo.R == ActiveCommandParams.Sector &&
-                    trk.Sectors[index].SectorIDInfo.N == ActiveCommandParams.SectorSize)
-                {
-                    // sector has been found
-                    sector = trk.Sectors[index];
+			// loop through the sectors in a track
+			// the loop ends with either the sector being found
+			// or the index hole being passed twice
+			while (iHole <= 2)
+			{
+				// does the requested sector match the current sector
+				if (trk.Sectors[index].SectorIDInfo.C == ActiveCommandParams.Cylinder &&
+					trk.Sectors[index].SectorIDInfo.H == ActiveCommandParams.Head &&
+					trk.Sectors[index].SectorIDInfo.R == ActiveCommandParams.Sector &&
+					trk.Sectors[index].SectorIDInfo.N == ActiveCommandParams.SectorSize)
+				{
+					// sector has been found
+					sector = trk.Sectors[index];
 
-                    UnSetBit(SR2_BC, ref Status2);
-                    UnSetBit(SR2_WC, ref Status2);
-                    break;
-                }
+					UnSetBit(SR2_BC, ref Status2);
+					UnSetBit(SR2_WC, ref Status2);
+					break;
+				}
 
-                // check for bad cylinder
-                if (trk.Sectors[index].SectorIDInfo.C == 255)
-                {
-                    SetBit(SR2_BC, ref Status2);
-                }
-                // check for no cylinder
-                else if (trk.Sectors[index].SectorIDInfo.C != ActiveCommandParams.Cylinder)
-                {
-                    SetBit(SR2_WC, ref Status2);
-                }
+				// check for bad cylinder
+				if (trk.Sectors[index].SectorIDInfo.C == 255)
+				{
+					SetBit(SR2_BC, ref Status2);
+				}
+				// check for no cylinder
+				else if (trk.Sectors[index].SectorIDInfo.C != ActiveCommandParams.Cylinder)
+				{
+					SetBit(SR2_WC, ref Status2);
+				}
 
-                // incrememnt sector index
-                index++;
+				// incrememnt sector index
+				index++;
 
-                // have we reached the index hole?
-                if (trk.Sectors.Length <= index)
-                {
-                    // wrap around
-                    index = 0;
-                    iHole++;
-                }
-            }
+				// have we reached the index hole?
+				if (trk.Sectors.Length <= index)
+				{
+					// wrap around
+					index = 0;
+					iHole++;
+				}
+			}
 
-            // search loop has completed and the sector may or may not have been found
+			// search loop has completed and the sector may or may not have been found
 
-            // bad cylinder detected?
-            if (Status2.Bit(SR2_BC))
-            {
-                // remove WC
-                UnSetBit(SR2_WC, ref Status2);
-            }
+			// bad cylinder detected?
+			if (Status2.Bit(SR2_BC))
+			{
+				// remove WC
+				UnSetBit(SR2_WC, ref Status2);
+			}
 
-            // update sectorindex on drive
-            ActiveDrive.SectorIndex = index;
+			// update sectorindex on drive
+			ActiveDrive.SectorIndex = index;
 
-            return sector;
-        }
+			return sector;
+		}
 
-        #endregion
+		#endregion
 
-        #region IFDDHost
+		#region IFDDHost
 
-        // IFDDHost methods that fall through to the currently active drive
+		// IFDDHost methods that fall through to the currently active drive
 
-        /// <summary>
-        /// Parses a new disk image and loads it into this floppy drive
-        /// </summary>
-        public void FDD_LoadDisk(byte[] diskData)
-        {
-            // we are only going to load into the first drive
-            DriveStates[0].FDD_LoadDisk(diskData);
-        }
+		/// <summary>
+		/// Parses a new disk image and loads it into this floppy drive
+		/// </summary>
+		public void FDD_LoadDisk(byte[] diskData)
+		{
+			// we are only going to load into the first drive
+			DriveStates[0].FDD_LoadDisk(diskData);
+		}
 
-        /// <summary>
-        /// Ejects the current disk
-        /// </summary>
-        public void FDD_EjectDisk()
-        {
-            DriveStates[0].FDD_EjectDisk();
-        }
+		/// <summary>
+		/// Ejects the current disk
+		/// </summary>
+		public void FDD_EjectDisk()
+		{
+			DriveStates[0].FDD_EjectDisk();
+		}
 
-        /// <summary>
-        /// Signs whether the current active drive has a disk inserted
-        /// </summary>        
-        public bool FDD_IsDiskLoaded
-        {
-            get { return DriveStates[DiskDriveIndex].FDD_IsDiskLoaded; }            
-        }
+		/// <summary>
+		/// Signs whether the current active drive has a disk inserted
+		/// </summary>
+		public bool FDD_IsDiskLoaded => DriveStates[DiskDriveIndex].FDD_IsDiskLoaded;
 
-        /// <summary>
-        /// Returns the disk object from drive 0
-        /// </summary>
-        public FloppyDisk DiskPointer
-        {
-            get { return DriveStates[0].Disk; }
-        }
-        
-        public FloppyDisk Disk { get; set; }
+		/// <summary>
+		/// Returns the disk object from drive 0
+		/// </summary>
+		public FloppyDisk DiskPointer => DriveStates[0].Disk;
 
-        #endregion
+		public FloppyDisk Disk { get; set; }
 
-        #region Drive Status Class
+		#endregion
 
-        /// <summary>
-        /// Holds specfic state information about a drive
-        /// </summary>
-        private class DriveState : IFDDHost
-        {
-            #region State
+		#region Drive Status Class
 
-            /// <summary>
-            /// The drive ID from an FDC perspective
-            /// </summary>
-            public int ID;
+		/// <summary>
+		/// Holds specfic state information about a drive
+		/// </summary>
+		private class DriveState : IFDDHost
+		{
+			#region State
 
-            /// <summary>
-            /// Signs whether this drive ready
-            /// TRUE if both drive exists and has a disk inserted
-            /// </summary>
-            public bool FLAG_READY
-            {
-                get
-                {
-                    if (!FDD_IsDiskLoaded || Disk.GetTrackCount() == 0 || !FDC.FDD_FLAG_MOTOR)
-                        return false;
-                    else
-                        return true;
-                }
-            }
+			/// <summary>
+			/// The drive ID from an FDC perspective
+			/// </summary>
+			public int ID;
 
-            /// <summary>
-            /// Disk is write protected (TRUE BY DEFAULT)
-            /// </summary>
-            public bool FLAG_WRITEPROTECT = false;            
+			/// <summary>
+			/// Signs whether this drive ready
+			/// TRUE if both drive exists and has a disk inserted
+			/// </summary>
+			public bool FLAG_READY
+			{
+				get
+				{
+					if (!FDD_IsDiskLoaded || Disk.GetTrackCount() == 0 || !FDC.FDD_FLAG_MOTOR)
+						return false;
+					else
+						return true;
+				}
+			}
 
-            /// <summary>
-            /// Storage for seek steps
-            /// One step for each indexpulse (track index) until seeked track
-            /// </summary>
-            public int SeekCounter;
+			/// <summary>
+			/// Disk is write protected (TRUE BY DEFAULT)
+			/// </summary>
+			public bool FLAG_WRITEPROTECT = false;
 
-            /// <summary>
-            /// Seek status
-            /// </summary>
-            public int SeekStatus;
+			/// <summary>
+			/// Storage for seek steps
+			/// One step for each indexpulse (track index) until seeked track
+			/// </summary>
+			public int SeekCounter;
 
-            /// <summary>
-            /// Age counter
-            /// </summary>
-            public int SeekAge;
+			/// <summary>
+			/// Seek status
+			/// </summary>
+			public int SeekStatus;
 
-            /// <summary>
-            /// The current side
-            /// </summary>
-            public byte CurrentSide;
+			/// <summary>
+			/// Age counter
+			/// </summary>
+			public int SeekAge;
 
-            /// <summary>
-            /// The current track index in the DiskTracks array
-            /// </summary>
-            public byte TrackIndex;
+			/// <summary>
+			/// The current side
+			/// </summary>
+			public byte CurrentSide;
 
-            /// <summary>
-            /// The track ID of the current cylinder
-            /// </summary>
-            public byte CurrentTrackID
-            {
-                get
-                {
-                    // default invalid track
-                    int id = 0xff;
+			/// <summary>
+			/// The current track index in the DiskTracks array
+			/// </summary>
+			public byte TrackIndex;
 
-                    if (Disk == null)
-                        return (byte)id;
+			/// <summary>
+			/// The track ID of the current cylinder
+			/// </summary>
+			public byte CurrentTrackID
+			{
+				get
+				{
+					// default invalid track
+					int id = 0xff;
 
-                    if (Disk.DiskTracks.Count() == 0)
-                        return (byte)id;
+					if (Disk == null)
+						return (byte)id;
 
-                    if (TrackIndex >= Disk.GetTrackCount())
-                        TrackIndex = 0;                   
-                    else if (TrackIndex < 0)
-                        TrackIndex = 0;
+					if (Disk.DiskTracks.Count() == 0)
+						return (byte)id;
 
-                    var track = Disk.DiskTracks[TrackIndex];
+					if (TrackIndex >= Disk.GetTrackCount())
+						TrackIndex = 0;
+					else if (TrackIndex < 0)
+						TrackIndex = 0;
 
-                    id = track.TrackNumber;
+					var track = Disk.DiskTracks[TrackIndex];
 
-                    return (byte)id;
-                }
-                set
-                {
-                    for (int i = 0; i < Disk.GetTrackCount(); i++)
-                    {
-                        if (Disk.DiskTracks[i].TrackNumber == value)
-                        {
-                            TrackIndex = (byte)i;
-                            break;
-                        }
-                    }
-                }
-            }
+					id = track.TrackNumber;
+
+					return (byte)id;
+				}
+				set
+				{
+					for (int i = 0; i < Disk.GetTrackCount(); i++)
+					{
+						if (Disk.DiskTracks[i].TrackNumber == value)
+						{
+							TrackIndex = (byte)i;
+							break;
+						}
+					}
+				}
+			}
 
 
-            /// <summary>
-            /// The new track that the drive is seeking to
-            /// (used in seek operations)
-            /// </summary>
-            public int SeekingTrack;
+			/// <summary>
+			/// The new track that the drive is seeking to
+			/// (used in seek operations)
+			/// </summary>
+			public int SeekingTrack;
 
-            /// <summary>
-            /// The current sector index in the Sectors array
-            /// </summary>
-            public int SectorIndex;
+			/// <summary>
+			/// The current sector index in the Sectors array
+			/// </summary>
+			public int SectorIndex;
 
-            /// <summary>
-            /// The currently loaded floppy disk
-            /// </summary>
-            public FloppyDisk Disk { get; set; }
+			/// <summary>
+			/// The currently loaded floppy disk
+			/// </summary>
+			public FloppyDisk Disk { get; set; }
 
-            /// <summary>
-            /// The parent controller
-            /// </summary>
-            private NECUPD765 FDC;
+			/// <summary>
+			/// The parent controller
+			/// </summary>
+			private NECUPD765 FDC;
 
-            #endregion
+			#endregion
 
-            #region Lookups
+			#region Lookups
 
-            /// <summary>
-            /// TRUE if we are on track 0
-            /// </summary>
-            public bool FLAG_TRACK0
-            {
-                get
-                {
-                    if (TrackIndex == 0) { return true; }
-                    else { return false; }
-                }
-            }
+			/// <summary>
+			/// TRUE if we are on track 0
+			/// </summary>
+			public bool FLAG_TRACK0 => TrackIndex == 0;
 
-            #endregion
+			#endregion
 
-            #region Public Methods
-            /*
+			#region Public Methods
+			/*
             /// <summary>
             /// Moves the head across the disk cylinders
             /// </summary>
@@ -369,7 +356,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
             */
 
-            /*
+			/*
 
             /// <summary>
             /// Finds a supplied sector
@@ -524,7 +511,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
             */
 
-            /*
+			/*
 
             /// <summary>
             /// The drive performs a seek operation if necessary
@@ -751,139 +738,139 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     SetBit(SR0_EC, ref IntStatus);
                 }
                 */
-                /*
-                // UnitSelect
-                SetUnitSelect(ID, ref IntStatus);
+			/*
+			// UnitSelect
+			SetUnitSelect(ID, ref IntStatus);
 
-                // move to none state
-                //CurrentState = DriveMainState.None;
+			// move to none state
+			//CurrentState = DriveMainState.None;
 
-                //SeekState = SeekSubState.SeekCompleted;
+			//SeekState = SeekSubState.SeekCompleted;
 
-                // set the seek interrupt flag for this drive
-                // this will be cleared at the next successful senseint
-                FLAG_SEEK_INTERRUPT = true;
+			// set the seek interrupt flag for this drive
+			// this will be cleared at the next successful senseint
+			FLAG_SEEK_INTERRUPT = true;
 
-                //CurrentState = DriveMainState.None;
+			//CurrentState = DriveMainState.None;
 
-            }
-        */
+		}
+	*/
 
-            #endregion
+			#endregion
 
-            #region Construction
+			#region Construction
 
-            public DriveState(int driveID, NECUPD765 fdc)
-            {
-                ID = driveID;
-                FDC = fdc;
-            }
+			public DriveState(int driveID, NECUPD765 fdc)
+			{
+				ID = driveID;
+				FDC = fdc;
+			}
 
-            #endregion
+			#endregion
 
-            #region IFDDHost
+			#region IFDDHost
 
-            /// <summary>
-            /// Parses a new disk image and loads it into this floppy drive
-            /// </summary>
-            public void FDD_LoadDisk(byte[] diskData)
-            {
-                // try dsk first
-                FloppyDisk fdd = null;
-                bool found = false;
+			/// <summary>
+			/// Parses a new disk image and loads it into this floppy drive
+			/// </summary>
+			public void FDD_LoadDisk(byte[] diskData)
+			{
+				// try dsk first
+				FloppyDisk fdd = null;
+				bool found = false;
 
-                foreach (DiskType type in Enum.GetValues(typeof(DiskType)))
-                {
-                    switch (type)
-                    {
-                        case DiskType.CPCExtended:
-                            fdd = new CPCExtendedFloppyDisk();
-                            found = fdd.ParseDisk(diskData);
-                            break;
-                        case DiskType.CPC:
-                            fdd = new CPCFloppyDisk();
-                            found = fdd.ParseDisk(diskData);
-                            break;
-                        case DiskType.IPF:
-                            fdd = new IPFFloppyDisk();
-                            found = fdd.ParseDisk(diskData);
-                            break;
-                        case DiskType.UDI:
-                            fdd = new UDI1_0FloppyDisk();
-                            found = fdd.ParseDisk(diskData);
-                            break;
-                    }
+				foreach (DiskType type in Enum.GetValues(typeof(DiskType)))
+				{
+					switch (type)
+					{
+						case DiskType.CPCExtended:
+							fdd = new CPCExtendedFloppyDisk();
+							found = fdd.ParseDisk(diskData);
+							break;
+						case DiskType.CPC:
+							fdd = new CPCFloppyDisk();
+							found = fdd.ParseDisk(diskData);
+							break;
+						case DiskType.IPF:
+							fdd = new IPFFloppyDisk();
+							found = fdd.ParseDisk(diskData);
+							break;
+						case DiskType.UDI:
+							fdd = new UDI1_0FloppyDisk();
+							found = fdd.ParseDisk(diskData);
+							break;
+					}
 
-                    if (found)
-                    {
-                        Disk = fdd;
-                        break;
-                    }                        
-                }
+					if (found)
+					{
+						Disk = fdd;
+						break;
+					}
+				}
 
-                if (!found)
-                {
-                    throw new Exception(this.GetType().ToString() +
-                        "\n\nDisk image file could not be parsed. Potentially an unknown format.");
-                }
-            }
+				if (!found)
+				{
+					throw new Exception(this.GetType().ToString() +
+						"\n\nDisk image file could not be parsed. Potentially an unknown format.");
+				}
+			}
 
-            /// <summary>
-            /// Ejects the current disk
-            /// </summary>
-            public void FDD_EjectDisk()
-            {
-                Disk = null;
-                //FLAG_READY = false;
-            }
+			/// <summary>
+			/// Ejects the current disk
+			/// </summary>
+			public void FDD_EjectDisk()
+			{
+				Disk = null;
+				//FLAG_READY = false;
+			}
 
-            /// <summary>
-            /// Signs whether the current active drive has a disk inserted
-            /// </summary>        
-            public bool FDD_IsDiskLoaded
-            {
-                get
-                {
-                    if (Disk != null)
-                        return true;
-                    else
-                        return false;
-                }
-            }
+			/// <summary>
+			/// Signs whether the current active drive has a disk inserted
+			/// </summary>        
+			public bool FDD_IsDiskLoaded
+			{
+				get
+				{
+					if (Disk != null)
+						return true;
+					else
+						return false;
+				}
+			}
 
-                #endregion
+			#endregion
 
-            #region StateSerialization
+			#region StateSerialization
 
-            public void SyncState(Serializer ser)
-            {
-                ser.Sync(nameof(ID), ref ID);
-                ser.Sync(nameof(FLAG_WRITEPROTECT), ref FLAG_WRITEPROTECT);
-                //ser.Sync(nameof(FLAG_DISKCHANGED), ref FLAG_DISKCHANGED);
-                //ser.Sync(nameof(FLAG_RECALIBRATING), ref FLAG_RECALIBRATING);
-                //ser.Sync(nameof(FLAG_SEEK_INTERRUPT), ref FLAG_SEEK_INTERRUPT);
-                //ser.Sync(nameof(IntStatus), ref IntStatus);
-                //ser.Sync(nameof(ST0), ref ST0);
-                //ser.Sync(nameof(RecalibrationCounter), ref RecalibrationCounter);
-                ser.Sync(nameof(SeekCounter), ref SeekCounter);
-                ser.Sync(nameof(SeekStatus), ref SeekStatus);
-                ser.Sync(nameof(SeekAge), ref SeekAge);
-                ser.Sync(nameof(CurrentSide), ref CurrentSide);
-                //ser.Sync(nameof(CurrentTrack), ref CurrentTrack);
-                ser.Sync(nameof(TrackIndex), ref TrackIndex);
-                ser.Sync(nameof(SeekingTrack), ref SeekingTrack);
-                //ser.Sync(nameof(CurrentSector), ref CurrentSector);
-                ser.Sync(nameof(SectorIndex), ref SectorIndex);
-                //ser.Sync(nameof(RAngles), ref RAngles);
-                //ser.Sync(nameof(DataPointer), ref DataPointer);
-                //ser.SyncEnum(nameof(CurrentState), ref CurrentState);
-                //ser.SyncEnum(nameof(SeekState), ref SeekState);
-                //ser.SyncEnum(nameof(SeekIntState), ref SeekIntState);
-            }
+			public void SyncState(Serializer ser)
+			{
+				ser.Sync(nameof(ID), ref ID);
+				ser.Sync(nameof(FLAG_WRITEPROTECT), ref FLAG_WRITEPROTECT);
+				//ser.Sync(nameof(FLAG_DISKCHANGED), ref FLAG_DISKCHANGED);
+				//ser.Sync(nameof(FLAG_RECALIBRATING), ref FLAG_RECALIBRATING);
+				//ser.Sync(nameof(FLAG_SEEK_INTERRUPT), ref FLAG_SEEK_INTERRUPT);
+				//ser.Sync(nameof(IntStatus), ref IntStatus);
+				//ser.Sync(nameof(ST0), ref ST0);
+				//ser.Sync(nameof(RecalibrationCounter), ref RecalibrationCounter);
+				ser.Sync(nameof(SeekCounter), ref SeekCounter);
+				ser.Sync(nameof(SeekStatus), ref SeekStatus);
+				ser.Sync(nameof(SeekAge), ref SeekAge);
+				ser.Sync(nameof(CurrentSide), ref CurrentSide);
+				//ser.Sync(nameof(CurrentTrack), ref CurrentTrack);
+				ser.Sync(nameof(TrackIndex), ref TrackIndex);
+				ser.Sync(nameof(SeekingTrack), ref SeekingTrack);
+				//ser.Sync(nameof(CurrentSector), ref CurrentSector);
+				ser.Sync(nameof(SectorIndex), ref SectorIndex);
+				//ser.Sync(nameof(RAngles), ref RAngles);
+				//ser.Sync(nameof(DataPointer), ref DataPointer);
+				//ser.SyncEnum(nameof(CurrentState), ref CurrentState);
+				//ser.SyncEnum(nameof(SeekState), ref SeekState);
+				//ser.SyncEnum(nameof(SeekIntState), ref SeekIntState);
+			}
 
-                #endregion
-        }
+			#endregion
+		}
 
-#endregion
-    }
+		#endregion
+	}
 }

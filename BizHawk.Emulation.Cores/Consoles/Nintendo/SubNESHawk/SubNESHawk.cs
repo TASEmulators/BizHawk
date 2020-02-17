@@ -148,20 +148,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			return subnes.palette_compiled;
 		}
 
-		public bool BGBaseHigh
-		{
-			get { return subnes.ppu.reg_2000.bg_pattern_hi; }
-		}
+		public bool BGBaseHigh => subnes.ppu.reg_2000.bg_pattern_hi;
 
-		public bool SPBaseHigh
-		{
-			get { return subnes.ppu.reg_2000.obj_pattern_hi; }
-		}
+		public bool SPBaseHigh => subnes.ppu.reg_2000.obj_pattern_hi;
 
-		public bool SPTall
-		{
-			get { return subnes.ppu.reg_2000.obj_size_16; }
-		}
+		public bool SPTall => subnes.ppu.reg_2000.obj_size_16;
 
 		public byte[] GetPPUBus()
 		{
@@ -173,20 +164,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			return ret;
 		}
 
-		public byte[] GetPalRam()
-		{
-			return subnes.ppu.PALRAM;
-		}
+		public byte[] GetPalRam() => subnes.ppu.PALRAM;
 
-		public byte[] GetOam()
-		{
-			return subnes.ppu.OAM;
-		}
+		public byte[] GetOam() => subnes.ppu.OAM;
 
-		public byte PeekPPU(int addr)
-		{
-			return subnes.Board.PeekPPU(addr);
-		}
+		public byte PeekPPU(int addr) => subnes.Board.PeekPPU(addr);
 
 		public byte[] GetExTiles()
 		{
@@ -194,16 +176,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			{
 				return subnes.Board.VROM ?? subnes.Board.VRAM;
 			}
-			else
-			{
-				throw new InvalidOperationException();
-			}
+			
+			throw new InvalidOperationException();
 		}
 
-		public bool ExActive
-		{
-			get { return subnes.Board is ExROM && (subnes.Board as ExROM).ExAttrActive; }
-		}
+		public bool ExActive => subnes.Board is ExROM && (subnes.Board as ExROM).ExAttrActive;
 
 		public byte[] GetExRam()
 		{
@@ -211,17 +188,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			{
 				return (subnes.Board as ExROM).GetExRAMArray();
 			}
-			else
-			{
-				throw new InvalidOperationException();
-			}
+
+			throw new InvalidOperationException();
 		}
 
-		public MemoryDomain GetCHRROM()
-		{
-			return _memoryDomains["CHR VROM"];
-		}
-
+		public MemoryDomain GetCHRROM() => _memoryDomains["CHR VROM"];
 
 		public void InstallCallback1(Action cb, int sl)
 		{

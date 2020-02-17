@@ -56,14 +56,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private void SetMirroring(bool horizontal)
 		{
-			if (horizontal)
-			{
-				SetMirrorType(EMirrorType.Horizontal);
-			}
-			else
-			{
-				SetMirrorType(EMirrorType.Vertical);
-			}
+			SetMirrorType(horizontal ? EMirrorType.Horizontal : EMirrorType.Vertical);
 		}
 
 		public override byte ReadPPU(int addr)

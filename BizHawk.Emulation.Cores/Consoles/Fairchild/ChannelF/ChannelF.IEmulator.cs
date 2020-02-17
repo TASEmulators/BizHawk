@@ -1,6 +1,4 @@
-﻿using System;
-using BizHawk.Common.BufferExtensions;
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
@@ -71,7 +69,6 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		public void Dispose()
 		{
-
 		}
 	}
 }

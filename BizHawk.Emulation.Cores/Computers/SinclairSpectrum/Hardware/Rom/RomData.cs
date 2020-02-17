@@ -51,11 +51,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		private ushort _loadBytesResumeAddress;
 		private ushort _loadBytesInvalidHeaderAddress;
 
-
 		public static RomData InitROM(MachineType machineType, byte[] rom)
 		{
-			RomData RD = new RomData();
-			RD.RomBytes = new byte[rom.Length];
+			RomData RD = new RomData { RomBytes = new byte[rom.Length] };
 			RD.RomBytes = rom;
 
 			switch (machineType)

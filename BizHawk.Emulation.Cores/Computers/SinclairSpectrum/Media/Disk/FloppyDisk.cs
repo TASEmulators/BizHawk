@@ -593,7 +593,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			public virtual byte TrackType { get; set; }
 			public virtual int TLEN { get; set; }
-			public virtual int CLEN { get { return TLEN / 8 + (TLEN % 8 / 7) / 8; } }
+			public virtual int CLEN => TLEN / 8 + (TLEN % 8 / 7) / 8;
 			public virtual byte[] TrackData { get; set; }
 
 			#endregion
@@ -646,10 +646,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					{
 						return ActualDataByteLength;
 					}
-					else
-					{
-						return ActualDataByteLength / (ActualDataByteLength / (0x80 << SectorSize));
-					}
+
+					return ActualDataByteLength / (ActualDataByteLength / (0x80 << SectorSize));
 				}
 			}
 
@@ -676,10 +674,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 							return l.ToArray();
 						}
-						else
-						{
-							return SectorData;
-						}
+
+						return SectorData;
 					}
 					else
 					{
@@ -709,21 +705,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				}
 			}
 
-			public CHRN SectorIDInfo
-			{
-				get
+			public CHRN SectorIDInfo =>
+				new CHRN
 				{
-					return new CHRN
-					{
-						C = TrackNumber,
-						H = SideNumber,
-						R = SectorID,
-						N = SectorSize,
-						Flag1 = Status1,
-						Flag2 = Status2,
-					};
-				}
-			}
+					C = TrackNumber,
+					H = SideNumber,
+					R = SectorID,
+					N = SectorSize,
+					Flag1 = Status1,
+					Flag2 = Status2,
+				};
 		}
 	}
 

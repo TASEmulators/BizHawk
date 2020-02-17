@@ -90,10 +90,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public IMemoryCallbackSystem MemoryCallbacks { get; } = new MemoryCallbackSystem(new[] { "System Bus" });
 
-		public bool CanStep(StepType type)
-		{
-			return false;
-		}
+		public bool CanStep(StepType type) => false;
 
 		[FeatureNotImplemented]
 		public void Step(StepType type)
@@ -101,9 +98,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			throw new NotImplementedException();
 		}
 
-		public long TotalExecutedCycles
-		{
-			get { return (long)cpu.TotalExecutedCycles; }
-		}
+		public long TotalExecutedCycles => (long)cpu.TotalExecutedCycles;
 	}
 }

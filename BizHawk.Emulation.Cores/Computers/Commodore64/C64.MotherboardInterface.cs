@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BizHawk.Emulation.Cores.Computers.Commodore64
+﻿namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	public sealed partial class Motherboard
 	{

@@ -84,10 +84,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return 0x0F;
 			}
-			else
-			{
-				return 0x1F;
-			}
+
+			return 0x1F;
 		}
 
 		private int PRG_OR()
@@ -96,10 +94,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return prg_or;
 			}
-			else
-			{
-				return (prg_or & 0x60);
-			}
+
+			return (prg_or & 0x60);
 		}
 
 		protected override int MapCHR(int addr)
@@ -119,10 +115,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return 0x7F;
 			}
-			else
-			{
-				return 0xFF;
-			}
+
+			return 0xFF;
 		}
 
 		private int CHR_OR()
@@ -131,10 +125,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return chr_or;
 			}
-			else
-			{
-				return (chr_or & 0x300);
-			}
+
+			return (chr_or & 0x300);
 		}
 	}
 }

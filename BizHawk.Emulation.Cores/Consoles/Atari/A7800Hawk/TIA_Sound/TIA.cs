@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
+﻿namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
 	// Emulates the TIA
 	public partial class TIA

@@ -1,7 +1,6 @@
 //http://nesdev.parodius.com/6502_cpu.txt
 
 using System;
-using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 
@@ -561,14 +560,11 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				interrupt_pending = false;
 				if (NMI)
 				{
-					if (TraceCallback != null)
+					TraceCallback?.Invoke(new TraceInfo
 					{
-						TraceCallback(new TraceInfo
-						{
-							Disassembly = "====NMI====",
-							RegisterInfo = ""
-						});
-					}
+						Disassembly = "====NMI====",
+						RegisterInfo = ""
+					});
 
 					ea = NMIVector;
 					opcode = VOP_NMI;
@@ -577,16 +573,14 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 					ExecuteOneRetry();
 					return;
 				}
-				else if (IRQ && !my_iflag)
+
+				if (IRQ && !my_iflag)
 				{
-					if (TraceCallback != null)
+					TraceCallback?.Invoke(new TraceInfo
 					{
-						TraceCallback(new TraceInfo
-						{
-							Disassembly = "====IRQ====",
-							RegisterInfo = ""
-						});
-					}
+						Disassembly = "====IRQ====",
+						RegisterInfo = ""
+					});
 					ea = IRQVector;
 					opcode = VOP_IRQ;
 					mi = 0;
@@ -606,8 +600,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				if (debug) Console.WriteLine(State());
 				branch_irq_hack = false;
 				_link.OnExecFetch(PC);
-				if (TraceCallback != null)
-					TraceCallback(State());
+				TraceCallback?.Invoke(State());
 				opcode = _link.ReadMemory(PC++);
 				mi = -1;
 			}

@@ -1,8 +1,4 @@
-﻿using System;
-
-using BizHawk.Common;
-
-namespace BizHawk.Emulation.Cores.Nintendo.SNES
+﻿namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
 	unsafe partial class LibsnesApi
 	{

@@ -85,19 +85,13 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public int VsyncNumerator
 		{
 			[FeatureNotImplemented]
-			get
-			{
-				return NullVideo.DefaultVsyncNum;
-			}
+			get => NullVideo.DefaultVsyncNum;
 		}
 
 		public int VsyncDenominator
 		{
 			[FeatureNotImplemented]
-			get
-			{
-				return NullVideo.DefaultVsyncDen;
-			}
+			get => NullVideo.DefaultVsyncDen;
 		}
 
 		public void Reset()
@@ -114,15 +108,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			ColorSP = 0x0028;
 		}
 
-		public bool GetSr1()
-		{
-			return Sr1;
-		}
-
-		public bool GetSr2()
-		{
-			return Sr2;
-		}
+		public bool GetSr1() => Sr1;
+		public bool GetSr2() => Sr2;
 
 		public void ToggleSr2()
 		{

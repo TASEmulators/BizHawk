@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.InteropServices;
-using BizHawk.Emulation.Cores.Nintendo.N64;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 {
@@ -86,8 +82,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 
 		private void FireOnRumbleChange(int Control, int on)
 		{
-			if (OnRumbleChange != null)
-				OnRumbleChange(Control, on);
+			OnRumbleChange?.Invoke(Control, @on);
 		}
 
 		public void SetM64PControllerPakType(int controller, N64SyncSettings.N64ControllerSettings.N64ControllerPakType type)
