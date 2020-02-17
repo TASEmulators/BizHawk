@@ -155,6 +155,93 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			};
 		}
 
+		public void SetCpuRegister(string register, int value)
+		{
+			switch (register)
+			{
+				default:
+					throw new InvalidOperationException();
+				case "A":
+					Regs[A] = (ushort)value;
+					break;
+				case "AF":
+					Regs[F] = (ushort)(value & 0xFF);
+					Regs[A] = (ushort)(value & 0xFF00);
+					break;
+				case "B":
+					Regs[B] = (ushort)value;
+					break;
+				case "BC":
+					Regs[C] = (ushort)(value & 0xFF);
+					Regs[B] = (ushort)(value & 0xFF00);
+					break;
+				case "C":
+					Regs[C] = (ushort)value;
+					break;
+				case "D":
+					Regs[D] = (ushort)value;
+					break;
+				case "DE":
+					Regs[E] = (ushort)(value & 0xFF);
+					Regs[D] = (ushort)(value & 0xFF00);
+					break;
+				case "E":
+					Regs[E] = (ushort)value;
+					break;
+				case "F":
+					Regs[F] = (ushort)value;
+					break;
+				case "H":
+					Regs[H] = (ushort)value;
+					break;
+				case "HL":
+					Regs[L] = (ushort)(value & 0xFF);
+					Regs[H] = (ushort)(value & 0xFF00);
+					break;
+				case "I":
+					Regs[I] = (ushort)value;
+					break;
+				case "IX":
+					Regs[Ixl] = (ushort)(value & 0xFF);
+					Regs[Ixh] = (ushort)(value & 0xFF00);
+					break;
+				case "IY":
+					Regs[Iyl] = (ushort)(value & 0xFF);
+					Regs[Iyh] = (ushort)(value & 0xFF00);
+					break;
+				case "L":
+					Regs[L] = (ushort)value;
+					break;
+				case "PC":
+					Regs[PCl] = (ushort)(value & 0xFF);
+					Regs[PCh] = (ushort)(value & 0xFF00);
+					break;
+				case "R":
+					Regs[R] = (ushort)value;
+					break;
+				case "Shadow AF":
+					Regs[F_s] = (ushort)(value & 0xFF);
+					Regs[A_s] = (ushort)(value & 0xFF00);
+					break;
+				case "Shadow BC":
+					Regs[C_s] = (ushort)(value & 0xFF);
+					Regs[B_s] = (ushort)(value & 0xFF00);
+					break;
+				case "Shadow DE":
+					Regs[E_s] = (ushort)(value & 0xFF);
+					Regs[D_s] = (ushort)(value & 0xFF00);
+					break;
+				case "Shadow HL":
+					Regs[L_s] = (ushort)(value & 0xFF);
+					Regs[H_s] = (ushort)(value & 0xFF00);
+					break;
+				case "SP":
+					Regs[SPl] = (ushort)(value & 0xFF);
+					Regs[SPh] = (ushort)(value & 0xFF00);
+					break;
+			}
+		}
+
 		public IMemoryCallbackSystem MemoryCallbacks { get; set; }
 
 		// Memory Access 
