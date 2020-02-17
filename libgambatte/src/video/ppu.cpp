@@ -140,6 +140,13 @@ inline void nextCall(int const cycles, PPUState const &state, PPUPriv &p) {
 	p.nextCallPtr = &state;
 }
 
+inline unsigned long const* cgbSpPalette(PPUPriv const& p, unsigned const attrib) {
+	if (!p.cgbDmg)
+		return p.spPalette + (attrib & attr_cgbpalno) * num_palette_entries;
+	else
+		return p.spPalette + (attrib & attr_dmgpalno ? num_palette_entries : 0);
+}
+
 namespace M2_Ly0 {
 	void f0(PPUPriv& p) {
 		p.weMaster = lcdcWinEn(p) && 0 == p.wy;
@@ -444,6 +451,7 @@ namespace M3Loop {
 						+ expand_lut[(tileDataLine + ts * tno - 2 * ts * (tno & tileIndexSign))[1]] * 2;
 				} while (dst != dstend);
 
+
 				p.ntileword = ntileword;
 				continue;
 			}
@@ -454,6 +462,7 @@ namespace M3Loop {
 
 				p.cycles = cycles;
 			}
+
 
 			uint_least32_t* const dst = dbufline + (xpos - tile_len);
 			unsigned const tileword = -(p.lcdc & 1u * lcdc_bgen) & p.ntileword;
@@ -540,6 +549,7 @@ namespace M3Loop {
 					--i;
 				} while (i >= 0 && spx(p.spriteList[i]) > xpos - tile_len);
 			}
+
 
 			unsigned const tno = tileMapLine[tileMapXpos % tile_map_len];
 			int const ts = tile_size;
@@ -766,6 +776,7 @@ namespace M3Loop {
 				} while (i >= 0 && spx(p.spriteList[i]) > xpos - tile_len);
 			}
 
+
 			{
 				unsigned const tno = tileMapLine[tileMapXpos % tile_map_len];
 				unsigned const nattrib = tileMapLine[tileMapXpos % tile_map_len + vram_bank_size];
@@ -785,7 +796,6 @@ namespace M3Loop {
 
 		p.xpos = xpos;
 	}
-
 
 	void doFullTilesUnrolled(PPUPriv& p) {
 		int xpos = p.xpos;
@@ -1768,6 +1778,7 @@ void PPU::loadState(SaveState const& ss, unsigned char const* const oamram) {
 void PPU::reset(unsigned char const *oamram, unsigned char const *vram, bool cgb) {
 	p_.vram = vram;
 	p_.cgb = cgb;
+	p_.cgbDmg = false;
 	p_.spriteMapper.reset(oamram, cgb);
 }
 

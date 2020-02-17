@@ -96,6 +96,7 @@ inline void Channel4::Lfsr::event() {
 void Channel4::Lfsr::nr3Change(unsigned newNr3, unsigned long cc) {
 	updateBackupCounter(cc);
 	nr3_ = newNr3;
+	counter_ = cc;
 }
 
 void Channel4::Lfsr::nr4Init(unsigned long cc) {

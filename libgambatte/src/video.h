@@ -50,13 +50,13 @@ public:
 	LCD(unsigned char const *oamram, unsigned char const *vram,
 	    VideoInterruptRequester memEventRequester);
 	void reset(unsigned char const *oamram, unsigned char const *vram, bool cgb);
+	void setCgbDmg(bool enabled) { ppu_.setCgbDmg(enabled); }
 	void setStatePtrs(SaveState &state);
 	void loadState(SaveState const &state, unsigned char const *oamram);
 	void setDmgPaletteColor(unsigned palNum, unsigned colorNum, unsigned long rgb32);
 	void setCgbPalette(unsigned *lut);
 	void setVideoBuffer(uint_least32_t *videoBuf, std::ptrdiff_t pitch);
 	void setLayers(unsigned mask) { ppu_.setLayers(mask); }
-	void setCgb(bool cgb);
 	void copyCgbPalettesToDmg();
 
 	int debugGetLY() const { return ppu_.lyCounter().ly(); }
@@ -147,6 +147,7 @@ public:
 	bool hdmaIsEnabled() const { return eventTimes_(memevent_hdma) != disabled_time; }
 	void update(unsigned long cycleCounter);
 	bool isCgb() const { return ppu_.cgb(); }
+	bool isCgbDmg() const { return ppu_.cgbDmg(); }
 	bool isDoubleSpeed() const { return ppu_.lyCounter().isDoubleSpeed(); }
 
 	unsigned long *bgPalette() { return ppu_.bgPalette(); }

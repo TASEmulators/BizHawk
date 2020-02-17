@@ -24,8 +24,8 @@
 using namespace gambatte;
 
 unsigned long LCD::gbcToRgb32(const unsigned bgr15) {
-	unsigned long const r = bgr15       & 0x1F;
-	unsigned long const g = bgr15 >>  5 & 0x1F;
+	unsigned long const r = bgr15 & 0x1F;
+	unsigned long const g = bgr15 >> 5 & 0x1F;
 	unsigned long const b = bgr15 >> 10 & 0x1F;
 
 	return cgbColorsRgb32_[bgr15 & 0x7FFF];
@@ -69,18 +69,13 @@ namespace {
 			&& cc >= m0TimeOfCurrentLy;
 	}
 
-	void doCgbColorChange(unsigned char* pdata,
-		unsigned long* palette, unsigned index, unsigned data, bool trueColor) {
-		pdata[index] = data;
-		index /= 2;
-		palette[index] = gbcToRgb32(pdata[index * 2] | pdata[index * 2 + 1] * 0x100l);
-	}
-
 } // unnamed namespace.
 
 void LCD::setDmgPalette(unsigned long palette[], const unsigned long dmgColors[], unsigned data) {
-		for (int i = 0; i < num_palette_entries; ++i, data /= num_palette_entries)
-		palette[i] = gbcToRgb32(dmgColors[data % num_palette_entries]);
+	palette[0] = dmgColors[data & 3];
+	palette[1] = dmgColors[data >> 2 & 3];
+	palette[2] = dmgColors[data >> 4 & 3];
+	palette[3] = dmgColors[data >> 6 & 3];
 }
 
 void LCD::setCgbPalette(unsigned *lut) {
@@ -112,10 +107,6 @@ void LCD::reset(unsigned char const *oamram, unsigned char const *vram, bool cgb
 	ppu_.reset(oamram, vram, cgb);
 	lycIrq_.setCgb(cgb);
 	refreshPalettes();
-}
-
-void LCD::setCgb(bool cgb) {
-	ppu_.setCgb(cgb);
 }
 
 void LCD::setStatePtrs(SaveState &state) {
@@ -162,7 +153,7 @@ void LCD::loadState(SaveState const &state, unsigned char const *const oamram) {
 }
 
 void LCD::refreshPalettes() {
-	if (ppu_.cgb()) {
+	if (isCgb() && !isCgbDmg()) {
 		for (int i = 0; i < max_num_palettes * num_palette_entries; ++i) {
 			ppu_.bgPalette()[i] = gbcToRgb32(bgpData_[2 * i] | bgpData_[2 * i + 1] * 0x100l);
 			ppu_.spPalette()[i] = gbcToRgb32(objpData_[2 * i] | objpData_[2 * i + 1] * 0x100l);
@@ -186,7 +177,7 @@ void LCD::copyCgbPalettesToDmg() {
 namespace {
 
 template<typename T>
-static void clear(T *buf, unsigned long color, std::ptrdiff_t dpitch) {
+void clear(T *buf, unsigned long color, std::ptrdiff_t dpitch) {
 	unsigned lines = 144;
 
 	while (lines--) {
@@ -856,6 +847,4 @@ SYNCFUNC(LCD)
 	SSS(lycIrq_);
 	SSS(nextM0Time_);
 	NSS(statReg_);
-	NSS(m2IrqStatReg_);
-	NSS(m1IrqStatReg_);
 }

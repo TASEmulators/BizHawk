@@ -36,7 +36,7 @@ struct SaveState {
 		void set(T *p, std::size_t size) { ptr = p; size_ = size; }
 
 		friend class SaverList;
-		friend void setInitState(SaveState &, bool, bool);
+		friend void setInitState(SaveState &, bool);
 	private:
 		T *ptr;
 		std::size_t size_;
@@ -83,9 +83,6 @@ struct SaveState {
 		unsigned char /*bool*/ rambankMode;
 		unsigned char /*bool*/ hdmaTransfer;
 		unsigned char /*bool*/ biosMode;
-		unsigned char /*bool*/ cgbSwitching;
-		unsigned char /*bool*/ agbMode;
-		unsigned char /*bool*/ gbIsCgb;
 		unsigned char /*bool*/ stopped;
 	} mem;
 
@@ -122,7 +119,7 @@ struct SaveState {
 		unsigned char wscx;
 		unsigned char /*bool*/ weMaster;
 		unsigned char /*bool*/ pendingLcdstatIrq;
-		unsigned char /*bool*/ isCgb;
+		unsigned char /*bool*/ notCgbDmg;
 	} ppu;
 
 	struct SPU {

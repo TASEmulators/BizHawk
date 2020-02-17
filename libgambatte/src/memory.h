@@ -55,12 +55,12 @@ public:
 		memcpy(bios_, buffer, size);
 		biosSize_ = size;
 	}
-	bool gbIsCgb() { return gbIsCgb_; }
 
 	bool getMemoryArea(int which, unsigned char **data, int *length);
 
 	unsigned long stop(unsigned long cycleCounter, bool& skip);
 	bool isCgb() const { return lcd_.isCgb(); }
+	bool isCgbDmg() const { return lcd_.isCgbDmg(); }
 	bool ime() const { return intreq_.ime(); }
 	bool halted() const { return intreq_.halted(); }
 	unsigned long nextEventTime() const { return intreq_.minEventTime(); }
@@ -226,7 +226,7 @@ public:
 
 	unsigned long event(unsigned long cycleCounter);
 	unsigned long resetCounters(unsigned long cycleCounter);
-	LoadRes loadROM(char const *romfiledata, unsigned romfilelength, bool forceDmg, bool multicartCompat);
+	LoadRes loadROM(char const *romfiledata, unsigned romfilelength, unsigned flags);
 
 	void setInputGetter(unsigned (*getInput)()) {
 		getInput_ = getInput;
@@ -299,9 +299,7 @@ private:
 	unsigned char serialCnt_;
 	bool blanklcd_;
 	bool biosMode_;
-	bool cgbSwitching_;
 	bool agbMode_;
-	bool gbIsCgb_;
 	unsigned long basetime_;
 	bool stopped_;
 	enum HdmaState { hdma_low, hdma_high, hdma_requested } haltHdmaState_;
