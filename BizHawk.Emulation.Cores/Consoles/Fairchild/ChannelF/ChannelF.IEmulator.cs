@@ -69,7 +69,6 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		public void Dispose()
 		{
-
 		}
 	}
 }

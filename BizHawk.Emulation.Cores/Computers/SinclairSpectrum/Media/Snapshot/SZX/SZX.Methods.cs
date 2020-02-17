@@ -30,9 +30,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			byte[] result = null;
 
-			using (MemoryStream ms = new MemoryStream())
+			using (var ms = new MemoryStream())
 			{
-				using (BinaryWriter r = new BinaryWriter(ms))
+				using (var r = new BinaryWriter(ms))
 				{
 					// temp buffer
 					byte[] buff;
@@ -40,11 +40,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					ZXSTBLOCK block = new ZXSTBLOCK();
 
 					// header
-					ZXSTHEADER header = new ZXSTHEADER();
-					header.dwMagic = MediaConverter.GetUInt32(Encoding.UTF8.GetBytes("ZXST"), 0);
-					header.chMajorVersion = 1;
-					header.chMinorVersion = 4;
-					header.chFlags = 0;
+					ZXSTHEADER header = new ZXSTHEADER
+					{
+						dwMagic = MediaConverter.GetUInt32(Encoding.UTF8.GetBytes("ZXST"), 0),
+						chMajorVersion = 1,
+						chMinorVersion = 4,
+						chFlags = 0
+					};
 					switch (s._machine.Spectrum.MachineType)
 					{
 						case MachineType.ZXSpectrum16: header.chMachineId = (int)MachineIdentifier.ZXSTMID_16K; break;
@@ -93,7 +95,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					buff = MediaConverter.SerializeRaw(eStruct);
 					r.Write(buff);
 
-					// ZXSTJOYSTICK                    
+					// ZXSTJOYSTICK
 					var fStruct = s.GetZXSTJOYSTICK();
 					block.dwId = MediaConverter.GetUInt32(Encoding.UTF8.GetBytes("JOY\0"), 0);
 					block.dwSize = (uint)Marshal.SizeOf(fStruct);

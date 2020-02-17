@@ -6,10 +6,11 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 	public partial class ChannelF
 	{
 		public bool[] StateConsole = new bool[4];
-		public string[] ButtonsConsole = new string[]
+		public string[] ButtonsConsole =
 		{
 			"TIME", "MODE", "HOLD", "START"
 		};
+
 		public byte DataConsole
 		{
 			get
@@ -26,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		}
 
 		public bool[] StateRight = new bool[8];
-		public string[] ButtonsRight = new string[]
+		public string[] ButtonsRight =
 		{
 			"Right", "Left", "Back", "Forward", "CCW", "CW", "Pull", "Push"
 		};
@@ -46,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		}
 
 		public bool[] StateLeft = new bool[8];
-		public string[] ButtonsLeft = new string[]
+		public string[] ButtonsLeft =
 		{
 			"Right", "Left", "Back", "Forward", "CCW", "CW", "Pull", "Push"
 		};
@@ -122,13 +123,15 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		{
 			get
 			{
-				ControllerDefinition definition = new ControllerDefinition();
-				definition.Name = "ChannelF Controller";
+				ControllerDefinition definition = new ControllerDefinition
+				{
+					Name = "ChannelF Controller"
+				};
 
 				string pre = "P1 ";
 
 				// sticks
-				List<string> stickR = new List<string>
+				var stickR = new List<string>
 				{
 					// P1 (right) stick
 					pre + "Forward", pre + "Back", pre + "Left", pre + "Right", pre + "CCW", pre + "CW", pre + "Pull", pre + "Push"
@@ -142,7 +145,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 				pre = "P2 ";
 
-				List<string> stickL = new List<string>
+				var stickL = new List<string>
 				{
 					// P2 (left) stick
 					pre + "Forward", pre + "Back", pre + "Left", pre + "Right", pre + "CCW", pre + "CW", pre + "Pull", pre + "Push"
@@ -155,7 +158,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				}
 
 				// console
-				List<string> consoleButtons = new List<string>
+				var consoleButtons = new List<string>
 				{
 					"RESET", "START", "HOLD", "MODE", "TIME"
 				};

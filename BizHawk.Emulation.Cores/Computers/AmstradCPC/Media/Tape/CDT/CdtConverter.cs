@@ -59,14 +59,16 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		private TapeDataBlock ConvertClock(TapeDataBlock db)
 		{
-			TapeDataBlock tb = new TapeDataBlock();
-			tb.BlockDescription = db.BlockDescription;
-			tb.BlockID = db.BlockID;
-			tb.Command = db.Command;
-			tb.DataPeriods = new List<int>();
-			tb.InitialPulseLevel = db.InitialPulseLevel;
-			tb.MetaData = db.MetaData;
-			tb.PauseInMS = db.PauseInMS;
+			var tb = new TapeDataBlock
+			{
+				BlockDescription = db.BlockDescription,
+				BlockID = db.BlockID,
+				Command = db.Command,
+				DataPeriods = new List<int>(),
+				InitialPulseLevel = db.InitialPulseLevel,
+				MetaData = db.MetaData,
+				PauseInMS = db.PauseInMS
+			};
 
 			double multiplier = 8.0 / 7.0;
 			//double cycleScale = ((40 << 16) / 35);

@@ -226,9 +226,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			SetMirrorType(EMirrorType.Vertical);
 
-			scnt = new MMC1.MMC1_SerialController();
-			scnt.WriteRegister = SerialWriteRegister;
-			scnt.Reset = SerialReset;
+			scnt = new MMC1.MMC1_SerialController
+			{
+				WriteRegister = SerialWriteRegister,
+				Reset = SerialReset
+			};
 
 			InitValues();
 
