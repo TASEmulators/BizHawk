@@ -2,7 +2,7 @@
 #include "ppu.h"
 
 void gambatte::NextM0Time::predictNextM0Time(PPU const &ppu) {
-	predictedNextM0Time_ = ppu.predictedNextXposTime(167);
+	predictedNextM0Time_ = ppu.predictedNextXposTime(lcd_hres + 7);
 }
 
 SYNCFUNC(gambatte::NextM0Time)

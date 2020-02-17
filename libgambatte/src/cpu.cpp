@@ -23,7 +23,7 @@
 namespace gambatte {
 
 CPU::CPU()
-: mem_(sp, pc, opcode_, prefetched_)
+: mem_(Interrupter(sp, pc, opcode_, prefetched_))
 , cycleCounter_(0)
 , pc(0x100)
 , sp(0xFFFE)
@@ -2077,7 +2077,8 @@ SYNCFUNC(CPU)
 	NSS(e);
 	NSS(h);
 	NSS(l);
-	NSS(skip_);
+	NSS(opcode_);
+	NSS(prefetched_);
 }
 
 }

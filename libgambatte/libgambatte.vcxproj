@@ -187,9 +187,10 @@
     <ClInclude Include="src\sound\static_output_tester.h" />
     <ClInclude Include="src\tima.h" />
     <ClInclude Include="src\video.h" />
+    <ClInclude Include="src\video\lcddef.h" />
     <ClInclude Include="src\video\lyc_irq.h" />
     <ClInclude Include="src\video\ly_counter.h" />
-    <ClInclude Include="src\video\m0_irq.h" />
+    <ClInclude Include="src\video\mstat_irq.h" />
     <ClInclude Include="src\video\next_m0_time.h" />
     <ClInclude Include="src\video\ppu.h" />
     <ClInclude Include="src\video\sprite_mapper.h" />

@@ -1303,7 +1303,6 @@ SYNCFUNC(Memory)
 	NSS(cgbSwitching_);
 	NSS(agbMode_);
 	NSS(gbIsCgb_);
-	NSS(halttime_);
 	NSS(stopped_);
 	NSS(LINKCABLE_);
 	NSS(linkClockTrigger_);

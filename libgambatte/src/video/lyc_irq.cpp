@@ -23,7 +23,26 @@
 #include "savestate.h"
 #include <algorithm>
 
-namespace gambatte {
+using namespace gambatte;
+
+namespace {
+
+	unsigned long schedule(unsigned statReg,
+		unsigned lycReg, LyCounter const& lyCounter, unsigned long cc) {
+		return (statReg & lcdstat_lycirqen) && lycReg < lcd_lines_per_frame
+			? lyCounter.nextFrameCycle(lycReg
+				? 1l * lycReg * lcd_cycles_per_line - 2
+				: (lcd_lines_per_frame - 1l) * lcd_cycles_per_line + 6, cc)
+			: 1 * disabled_time;
+	}
+
+	bool lycIrqBlockedByM2OrM1StatIrq(unsigned ly, unsigned statreg) {
+		return ly <= lcd_vres && ly > 0
+			? statreg & lcdstat_m2irqen
+			: statreg & lcdstat_m1irqen;
+	}
+
+}
 
 LycIrq::LycIrq()
 : time_(disabled_time)
@@ -35,53 +54,40 @@ LycIrq::LycIrq()
 {
 }
 
-static unsigned long schedule(unsigned statReg,
-		unsigned lycReg, LyCounter const &lyCounter, unsigned long cc) {
-	return (statReg & lcdstat_lycirqen) && lycReg < 154
-	     ? lyCounter.nextFrameCycle(lycReg ? lycReg * 456 : 153 * 456 + 8, cc)
-	     : static_cast<unsigned long>(disabled_time);
-}
-
 void LycIrq::regChange(unsigned const statReg,
-		unsigned const lycReg, LyCounter const &lyCounter, unsigned long const cc) {
+	unsigned const lycReg, LyCounter const& lyCounter, unsigned long const cc) {
 	unsigned long const timeSrc = schedule(statReg, lycReg, lyCounter, cc);
 	statRegSrc_ = statReg;
 	lycRegSrc_ = lycReg;
 	time_ = std::min(time_, timeSrc);
 
 	if (cgb_) {
-		if (time_ - cc > 8 || (timeSrc != time_ && time_ - cc > 4U - lyCounter.isDoubleSpeed() * 4U))
+		if (time_ - cc > 6u + 4 * lyCounter.isDoubleSpeed() || (timeSrc != time_ && time_ - cc > 2))
 			lycReg_ = lycReg;
-
-		if (time_ - cc > 4U - lyCounter.isDoubleSpeed() * 4U)
+		if (time_ - cc > 2)
 			statReg_ = statReg;
-	} else {
+	}
+	else {
 		if (time_ - cc > 4 || timeSrc != time_)
 			lycReg_ = lycReg;
 
-		if (time_ - cc > 4 || lycReg_ != 0)
-			statReg_ = statReg;
-
-		statReg_ = (statReg_ & lcdstat_lycirqen) | (statReg & ~lcdstat_lycirqen);
+		statReg_ = statReg;
 	}
 }
 
-static bool lycIrqBlockedByM2OrM1StatIrq(unsigned ly, unsigned statreg) {
-	return ly - 1u < 144u - 1u
-	     ? statreg & lcdstat_m2irqen
-	     : statreg & lcdstat_m1irqen;
-}
-
-void LycIrq::doEvent(unsigned char *const ifreg, LyCounter const &lyCounter) {
+bool LycIrq::doEvent(LyCounter const& lyCounter) {
+	bool flagIrq = false;
 	if ((statReg_ | statRegSrc_) & lcdstat_lycirqen) {
-		unsigned cmpLy = lyCounter.time() - time_ < lyCounter.lineTime() ? 0 : lyCounter.ly();
-		if (lycReg_ == cmpLy && !lycIrqBlockedByM2OrM1StatIrq(lycReg_, statReg_))
-			*ifreg |= 2;
+		unsigned const cmpLy = lyCounter.ly() == lcd_lines_per_frame - 1
+			? 0
+			: lyCounter.ly() + 1;
+		flagIrq = lycReg_ == cmpLy && !lycIrqBlockedByM2OrM1StatIrq(lycReg_, statReg_);
 	}
 
 	lycReg_ = lycRegSrc_;
 	statReg_ = statRegSrc_;
 	time_ = schedule(statReg_, lycReg_, lyCounter, time_);
+	return flagIrq;
 }
 
 void LycIrq::loadState(SaveState const &state) {
@@ -109,6 +115,4 @@ SYNCFUNC(LycIrq)
 	NSS(lycReg_);
 	NSS(statReg_);
 	NSS(cgb_);
-}
-
 }

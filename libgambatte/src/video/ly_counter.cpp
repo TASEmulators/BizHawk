@@ -33,7 +33,7 @@ LyCounter::LyCounter()
 
 void LyCounter::doEvent() {
 	++ly_;
-	if (ly_ == 154)
+	if (ly_ == lcd_lines_per_frame)
 		ly_ = 0;
 
 	time_ = time_ + lineTime_;
@@ -48,21 +48,22 @@ unsigned long LyCounter::nextLineCycle(unsigned const lineCycle, unsigned long c
 }
 
 unsigned long LyCounter::nextFrameCycle(unsigned long const frameCycle, unsigned long const cc) const {
-	unsigned long tmp = time_ + (((153U - ly()) * 456U + frameCycle) << ds_);
-	if (tmp - cc > 70224U << ds_)
-		tmp -= 70224U << ds_;
+	unsigned long tmp = time_ + (((lcd_lines_per_frame - 1l - ly()) * lcd_cycles_per_line + frameCycle) << ds_);
+	if (tmp - cc > 1ul * lcd_cycles_per_frame << ds_)
+		tmp -= 1ul * lcd_cycles_per_frame << ds_;
 
 	return tmp;
 }
 
 void LyCounter::reset(unsigned long videoCycles, unsigned long lastUpdate) {
-	ly_ = videoCycles / 456;
-	time_ = lastUpdate + ((456 - (videoCycles - ly_ * 456ul)) << isDoubleSpeed());
+	ly_ = videoCycles / lcd_cycles_per_line;
+	time_ = lastUpdate + ((lcd_cycles_per_line
+		- (videoCycles - 1l * ly_ * lcd_cycles_per_line)) << isDoubleSpeed());
 }
 
 void LyCounter::setDoubleSpeed(bool ds) {
 	ds_ = ds;
-	lineTime_ = 456U << ds;
+	lineTime_ = lcd_cycles_per_line << ds;
 }
 
 SYNCFUNC(LyCounter)

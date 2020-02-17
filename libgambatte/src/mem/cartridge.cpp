@@ -375,6 +375,10 @@ public:
 	{
 	}
 
+	virtual unsigned char curRomBank() const {
+		return rombank_;
+	}
+
 	virtual void romWrite(unsigned const p, unsigned const data, unsigned long const /*cc*/) {
 		switch (p >> 13 & 3) {
 		case 0:
@@ -441,6 +445,10 @@ public:
 	, rambank_(0)
 	, enableRam_(false)
 	{
+	}
+
+	virtual unsigned char curRomBank() const {
+		return rombank_;
 	}
 
 	virtual void romWrite(unsigned const p, unsigned const data, unsigned long const /*cc*/) {
