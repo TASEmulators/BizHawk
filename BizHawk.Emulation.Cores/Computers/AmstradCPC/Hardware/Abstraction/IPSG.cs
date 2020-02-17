@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	public interface IPSG : ISoundProvider
 	{
 		/// <summary>
-		/// Initlization routine
+		/// Initialization routine
 		/// </summary>
 		void Init(int sampleRate, int tStatesPerFrame);
 

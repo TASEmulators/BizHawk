@@ -526,8 +526,10 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 		public static string Disassemble(ushort addr, Func<ushort, byte> reader, out ushort size)
 		{
 			ushort origaddr = addr;
-			List<byte> bytes = new List<byte>();
-			bytes.Add(reader(addr++));
+			var bytes = new List<byte>
+			{
+				reader(addr++)
+			};
 
 			string result = table[bytes[0]];
 			if (bytes[0] == 0xcb)
@@ -573,7 +575,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					offs -= 256;
 				result = result.Replace("r8", $"{(ushort)(addr + offs):X4}h");
 			}
-			StringBuilder ret = new StringBuilder();
+			var ret = new StringBuilder();
 			ret.Append($"{origaddr:X4}:  ");
 			foreach (var b in bytes)
 				ret.Append($"{b:X2} ");

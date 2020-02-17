@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 
 			// now process the blocks
-			var infoBlock = blocks.Where(a => a.RecordType == RecordHeaderType.INFO).FirstOrDefault();
+			var infoBlock = blocks.FirstOrDefault(a => a.RecordType == RecordHeaderType.INFO);
 			var IMGEblocks = blocks.Where(a => a.RecordType == RecordHeaderType.IMGE).ToList();
 			var DATAblocks = blocks.Where(a => a.RecordType == RecordHeaderType.DATA);
 
@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				var trk = DiskTracks[t];
 
 				var blockCount = img.IMGEblockCount;
-				var dataBlock = DATAblocks.Where(a => a.DATAdataKey == img.IMGEdataKey).FirstOrDefault();
+				var dataBlock = DATAblocks.FirstOrDefault(a => a.DATAdataKey == img.IMGEdataKey);
 
 				trk.SideNumber = (byte)img.IMGEside;
 				trk.TrackNumber = (byte)img.IMGEtrack;

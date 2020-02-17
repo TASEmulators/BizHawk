@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	public interface IBeeperDevice
 	{
 		/// <summary>
-		/// Initialisation
+		/// Initialization
 		/// </summary>
 		void Init(int sampleRate, int tStatesPerFrame);
 

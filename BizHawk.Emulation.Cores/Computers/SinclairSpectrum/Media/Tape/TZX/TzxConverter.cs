@@ -417,20 +417,21 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/*              length: [00]*02+01
 				Offset	Value	Type	Description
 				0x00	N	    BYTE	Number of pulses
-				0x01	-	    WORD[N]	Pulses' lengths                               
+				0x01	-	    WORD[N]	Pulses' lengths
 
 				This will produce N pulses, each having its own timing. Up to 255 pulses can be stored in this block; this is useful for non-standard 
 				sync tones used by some protection schemes. */
 		private void ProcessBlockID13(byte[] data)
 		{
-			TapeDataBlock t = new TapeDataBlock();
-			t.BlockID = 0x13;
-			t.BlockDescription = BlockType.Pulse_Sequence;
-			t.DataPeriods = new List<int>();
+			TapeDataBlock t = new TapeDataBlock
+			{
+				BlockID = 0x13,
+				BlockDescription = BlockType.Pulse_Sequence,
+				DataPeriods = new List<int>(),
+				PauseInMS = 0
+			};
 
-			t.PauseInMS = 0;
-
-			// get pulse count           
+			// get pulse count
 			int pulseCount = data[_position];
 			t.AddMetaData(BlockDescriptorTitle.Pulse_Count, pulseCount.ToString());
 			_position++;

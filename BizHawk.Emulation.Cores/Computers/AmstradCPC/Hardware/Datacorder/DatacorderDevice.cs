@@ -805,7 +805,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		#region State Serialization
 
 		/// <summary>
-		/// Bizhawk state serialization
+		/// BizHawk state serialization
 		/// </summary>
 		public void SyncState(Serializer ser)
 		{
