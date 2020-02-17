@@ -823,7 +823,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			0xFFC6B869, // light yellow
 			0xFF5C80F6, // light blue
 			0xFFDC84D4, // light violet
-			0xFF77E6EB, // light grey
+			0xFF77E6EB, // light blue-green
 			0xFFFFFFFF, // white
 		};
 
@@ -844,7 +844,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			0xFFC75151, // light red
 			0xFFDC84D4, // light violet
 			0xFFC6B869, // light yellow
-			0xFFCECECE, // light grey
+			0xFFFFFFFF, // white
 		};
 
 
