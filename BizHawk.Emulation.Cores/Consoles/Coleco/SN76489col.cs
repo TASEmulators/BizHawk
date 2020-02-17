@@ -188,7 +188,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 							noise_clock = Chan_tone[2] + 1;
 						}
 
-						noise_clock *= 2;					
+						noise_clock *= 2;
 					}
 					
 					if (clock_A == 0)

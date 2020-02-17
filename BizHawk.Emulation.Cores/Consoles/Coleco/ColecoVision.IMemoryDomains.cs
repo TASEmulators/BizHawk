@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			var domains = new List<MemoryDomain>
 			{
 				new MemoryDomainDelegate("System Bus", 0x10000, MemoryDomain.Endian.Little,
-				(addr) =>
+				addr =>
 				{
 					if (addr < 0 || addr >= 65536)
 					{
