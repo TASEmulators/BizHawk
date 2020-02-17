@@ -541,13 +541,13 @@ void CPU::process(unsigned long const cycles) {
 				result[9] = h;
 				result[10] = l;
 				result[11] = prefetched_;
-				PC_READ_FIRST(opcode);
+				//PC_READ_FIRST(opcode);
 				result[12] = opcode;
 				result[13] = mem_.debugGetLY();
 				tracecallback((void *)result);
 			}
 			else {
-				PC_READ_FIRST(opcode);
+				//PC_READ_FIRST(opcode);
 			}
 
 			if (!prefetched_) {
