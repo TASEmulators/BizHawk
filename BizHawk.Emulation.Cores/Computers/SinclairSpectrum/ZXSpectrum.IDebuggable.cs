@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public bool CanStep(StepType type) => false;
 
 		[FeatureNotImplemented]
-		public void Step(StepType type) => new NotImplementedException();
+		public void Step(StepType type) => throw new NotImplementedException();
 
 		public long TotalExecutedCycles => _cpu.TotalExecutedCycles;
 	}
