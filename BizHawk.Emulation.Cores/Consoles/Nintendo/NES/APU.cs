@@ -342,7 +342,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				get
 				{
 					if (len_cnt == 0) return true;
-					else return false;
+					return false;
 				}
 			}
 
@@ -956,14 +956,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		int[][] sequencer_lut = new int[2][];
 
-		static int[][] sequencer_lut_ntsc = new int[][]{
-			new int[]{7457,14913,22371,29830},
-			new int[]{7457,14913,22371,29830,37282}
+		static int[][] sequencer_lut_ntsc = {
+			new[]{7457,14913,22371,29830},
+			new[]{7457,14913,22371,29830,37282}
 		};
 
-		static int[][] sequencer_lut_pal = new int[][]{
-			new int[]{8313,16627,24939,33254},
-			new int[]{8313,16627,24939,33254,41566}
+		static int[][] sequencer_lut_pal = {
+			new[]{8313,16627,24939,33254},
+			new[]{8313,16627,24939,33254,41566}
 		};
 
 		void sequencer_write_tick(byte val)

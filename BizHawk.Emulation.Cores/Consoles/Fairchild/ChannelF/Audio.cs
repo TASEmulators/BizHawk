@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		private int tone = 0;
 
-		private double[] tone_freqs = new double[] { 0, 1000, 500, 120 };
+		private double[] tone_freqs = { 0, 1000, 500, 120 };
 		private double amplitude = 0;
 		private double decay = 0.998;
 		private double time = 0;

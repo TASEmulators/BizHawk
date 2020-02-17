@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Xml;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-
+using System.Xml;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
@@ -19,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//base class pre-configuration
 			void Create(NES nes);
 			//one-time inherited classes configuration 
-			bool Configure(NES.EDetectionOrigin origin);
+			bool Configure(EDetectionOrigin origin);
 			//one-time base class configuration (which can take advantage of any information setup by the more-informed Configure() method)
 			void PostConfigure();
 			
@@ -68,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public enum EMirrorType
 			{
 				Vertical, Horizontal,
-				OneScreenA, OneScreenB,
+				OneScreenA, OneScreenB
 			}
 
 			public virtual void Create(NES nes)
@@ -87,7 +86,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				set => _initialRegisterValues = value;
 			}
 
-			public abstract bool Configure(NES.EDetectionOrigin origin);
+			public abstract bool Configure(EDetectionOrigin origin);
 			public virtual void ClockPPU() { }
 			public virtual void ClockCPU() { }
 			public virtual void AtVsyncNMI() { }
@@ -96,7 +95,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public NES NES { get; set; }
 
 			//this is set to true when SyncState is called, so that we know the base class SyncState was used
-			public bool SyncStateFlag = false;
+			public bool SyncStateFlag;
 
 			public virtual void SyncState(Serializer ser)
 			{
@@ -153,10 +152,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					if (pad_v == 0)
 						return EMirrorType.OneScreenA;
 					else return EMirrorType.Horizontal;
-				else
-					if (pad_v == 0)
-						return EMirrorType.Vertical;
-					else return EMirrorType.OneScreenB;
+				if (pad_v == 0)
+					return EMirrorType.Vertical;
+				return EMirrorType.OneScreenB;
 			}
 
 			protected void SetMirrorType(int pad_h, int pad_v)
@@ -208,10 +206,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				wram_mask = (Cart.wram_size * 1024) - 1;
 			}
 
-			public virtual byte ReadWRAM(int addr) {
+			public virtual byte ReadWRAM(int addr)
+			{
 				if (wram != null)
 					return wram[addr & wram_mask];
-				else return NES.DB;
+				return NES.DB;
 			}
 
 			public virtual void WriteEXP(int addr, byte value) { }
@@ -254,7 +253,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				if (VROM != null)
 					return VROM[addr];
-				else return VRAM[addr];
+				return VRAM[addr];
 			}
 
 			public virtual byte ReadPPU(int addr)
@@ -263,12 +262,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					if (VROM != null)
 						return VROM[addr];
-					else return VRAM[addr];
+					return VRAM[addr];
 				}
-				else
-				{
-					return NES.CIRAM[ApplyMirroring(addr)];
-				}
+
+				return NES.CIRAM[ApplyMirroring(addr)];
 			}
 
 			/// <summary>
@@ -339,7 +336,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public virtual void ApplyCustomAudio(short[] samples) { }
 
-			public bool DisableConfigAsserts = false;
+			public bool DisableConfigAsserts;
 		}
 
 		//this will be used to track classes that implement boards
@@ -511,8 +508,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 #if DEBUG
 							if (ret != null)
 								throw new Exception($"Boards {ret} and {type} both responded to {nameof(NESBoardBase.Configure)}!");
-							else
-								ret = type;
+							ret = type;
 #else
 							return type;
 #endif
