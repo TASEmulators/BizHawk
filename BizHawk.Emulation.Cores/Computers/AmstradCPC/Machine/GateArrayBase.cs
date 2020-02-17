@@ -452,10 +452,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private int _bufferWidth;
 		private int _bufferHeight;
 
-		public int BackgroundColor
-		{
-			get { return CPCHardwarePalette[16]; }
-		}
+		public int BackgroundColor => CPCHardwarePalette[16];
 
 		public int VirtualWidth
 		{
@@ -487,15 +484,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			set { }
 		}
 
-		public int VsyncDenominator
-		{
-			get { return Z80ClockSpeed; }
-		}
+		public int VsyncDenominator => Z80ClockSpeed;
 
-		public int[] GetVideoBuffer()
-		{
-			return ScreenBuffer;
-		}
+		public int[] GetVideoBuffer() => ScreenBuffer;
 
 		protected void SetupScreenSize()
 		{

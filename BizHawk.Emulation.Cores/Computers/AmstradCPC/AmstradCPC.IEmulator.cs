@@ -46,24 +46,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			return true;
 		}
 
-		public int Frame
-		{
-			get
-			{
-				if (_machine == null)
-					return 0;
-				else
-					return _machine.FrameCount;
-			}
-		}
+		public int Frame => _machine?.FrameCount ?? 0;
 
 		public string SystemId => "AmstradCPC";
 
-		private bool deterministicEmulation;
-		public bool DeterministicEmulation
-		{
-			get { return deterministicEmulation; }
-		}
+		public bool DeterministicEmulation { get; }
 
 		public void ResetCounters()
 		{

@@ -33,16 +33,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			coreAPI.BeforeRender += () => { IsVIFrame = true; };
 		}
 
-		public int[] GetVideoBuffer()
-		{
-			return frameBuffer;
-		}
+		public int[] GetVideoBuffer() => frameBuffer;
 
-		public int VirtualWidth { get { return BufferWidth; } }
-		public int VirtualHeight { get { return BufferHeight; } }
+		public int VirtualWidth => BufferWidth;
+		public int VirtualHeight => BufferHeight;
 		public int BufferWidth { get; private set; }
 		public int BufferHeight { get; private set; }
-		public int BackgroundColor { get { return 0; } }
+		public int BackgroundColor => 0;
 		public int VsyncNumerator { get; internal set; }
 		public int VsyncDenominator { get; internal set; }
 

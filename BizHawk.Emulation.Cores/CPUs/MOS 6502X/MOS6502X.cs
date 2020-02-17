@@ -138,7 +138,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			};
 		}
 
-		public bool AtStart { get { return opcode == VOP_Fetch1 || Microcode[opcode][mi] >= Uop.End; } }
+		public bool AtStart => opcode == VOP_Fetch1 || Microcode[opcode][mi] >= Uop.End;
 
 		public TraceInfo TraceState()
 		{

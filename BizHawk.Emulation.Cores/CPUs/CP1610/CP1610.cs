@@ -26,13 +26,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 			set => Register[7] = value;
 		}
 
-		public string TraceHeader
-		{
-			get
-			{
-				return "CP1610: PC, machine code, mnemonic, operands, flags (SCZOID)";
-			}
-		}
+		public string TraceHeader => "CP1610: PC, machine code, mnemonic, operands, flags (SCZOID)";
 
 		public Action<TraceInfo> TraceCallback;
 		public IMemoryCallbackSystem MemoryCallbacks { get; set; }

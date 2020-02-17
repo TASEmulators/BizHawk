@@ -57,6 +57,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			return (base.Get_CHRBank_1K(addr)&0x7F) + block * 128;
 		}
-
 	}
 }

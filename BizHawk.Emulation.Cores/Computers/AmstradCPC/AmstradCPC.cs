@@ -39,18 +39,18 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			PutSyncSettings((AmstradCPCSyncSettings)syncSettings ?? new AmstradCPCSyncSettings());
 			PutSettings((AmstradCPCSettings)settings ?? new AmstradCPCSettings());
 
-			deterministicEmulation = ((AmstradCPCSyncSettings)syncSettings as AmstradCPCSyncSettings).DeterministicEmulation;
+			DeterministicEmulation = ((AmstradCPCSyncSettings)syncSettings).DeterministicEmulation;
 
 			switch (SyncSettings.MachineType)
 			{
 				case MachineType.CPC464:
 					ControllerDefinition = AmstradCPCControllerDefinition;
-					Init(MachineType.CPC464, _files, ((AmstradCPCSyncSettings)syncSettings as AmstradCPCSyncSettings).AutoStartStopTape,
-						((AmstradCPCSyncSettings)syncSettings as AmstradCPCSyncSettings).BorderType);
+					Init(MachineType.CPC464, _files, ((AmstradCPCSyncSettings)syncSettings).AutoStartStopTape,
+						((AmstradCPCSyncSettings)syncSettings).BorderType);
 					break;
 				case MachineType.CPC6128:
 					ControllerDefinition = AmstradCPCControllerDefinition;
-					Init(MachineType.CPC6128, _files, ((AmstradCPCSyncSettings)syncSettings as AmstradCPCSyncSettings).AutoStartStopTape, ((AmstradCPCSyncSettings)syncSettings as AmstradCPCSyncSettings).BorderType);
+					Init(MachineType.CPC6128, _files, ((AmstradCPCSyncSettings)syncSettings).AutoStartStopTape, ((AmstradCPCSyncSettings)syncSettings).BorderType);
 					break;
 				default:
 					throw new InvalidOperationException("Machine not yet emulated");
@@ -194,13 +194,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		#region IDriveLight
 
-		public bool DriveLightEnabled
-		{
-			get
-			{
-				return true;
-			}
-		}
+		public bool DriveLightEnabled => true;
 
 		public bool DriveLightOn
 		{

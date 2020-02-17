@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Components.H6280
@@ -14,10 +11,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 			set { }
 		}
 
-		public string PCRegisterName
-		{
-			get { return "PC"; }
-		}
+		public string PCRegisterName => "PC";
 
 		public IEnumerable<string> AvailableCpus
 		{

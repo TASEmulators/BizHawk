@@ -163,12 +163,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		private bool _disableExpansionSlot = true;
 
-		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public bool UsingExpansionSlot
-		{
-			get { return !_disableExpansionSlot; }
-		}
+		public bool UsingExpansionSlot => !_disableExpansionSlot;
 
 		public bool IsOverridingUserExpansionSlotSetting { get; set; }
 
@@ -261,16 +258,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			return true;
 		}
 
-		public string SystemId { get { return "N64"; } }
+		public string SystemId => "N64";
 
-		public CoreComm CoreComm { get; private set; }
+		public CoreComm CoreComm { get; }
 
-		public DisplayType Region { get { return _display_type; } }
+		public DisplayType Region => _display_type;
 
-		public ControllerDefinition ControllerDefinition
-		{
-			get { return _inputProvider.ControllerDefinition; }
-		}
+		public ControllerDefinition ControllerDefinition => _inputProvider.ControllerDefinition;
 
 		public void ResetCounters()
 		{
@@ -279,6 +273,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			IsLagFrame = false;
 		}
 
-		public bool DeterministicEmulation { get { return false; } }
+		public bool DeterministicEmulation => false;
 	}
 }

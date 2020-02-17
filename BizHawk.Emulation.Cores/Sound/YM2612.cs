@@ -449,12 +449,12 @@ namespace BizHawk.Emulation.Cores.Components
 		int TimerALastReset, TimerBLastReset;
 
 		byte TimerControl27;
-		bool TimerALoad { get { return (TimerControl27 & 1) != 0; } }
-		bool TimerBLoad { get { return (TimerControl27 & 2) != 0; } }
-		bool TimerAEnable { get { return (TimerControl27 & 4) != 0; } }
-		bool TimerBEnable { get { return (TimerControl27 & 8) != 0; } }
-		bool TimerAReset { get { return (TimerControl27 & 16) != 0; } }
-		bool TimerBReset { get { return (TimerControl27 & 32) != 0; } }
+		bool TimerALoad => (TimerControl27 & 1) != 0;
+		bool TimerBLoad => (TimerControl27 & 2) != 0;
+		bool TimerAEnable => (TimerControl27 & 4) != 0;
+		bool TimerBEnable => (TimerControl27 & 8) != 0;
+		bool TimerAReset => (TimerControl27 & 16) != 0;
+		bool TimerBReset => (TimerControl27 & 32) != 0;
 
 		void InitTimers()
 		{
@@ -998,9 +998,9 @@ namespace BizHawk.Emulation.Cores.Components
 				}
 			}
 
-			public int Normalized10BitSL { get { return slTable[SL_SustainLevel]; } }
-			public int Normalized10BitTL { get { return TL_TotalLevel << 3; } }
-			public int AdjustedEGOutput { get { return Math.Min(egAttenuation + Normalized10BitTL, 1023); } }
+			public int Normalized10BitSL => slTable[SL_SustainLevel];
+			public int Normalized10BitTL => TL_TotalLevel << 3;
+			public int AdjustedEGOutput => Math.Min(egAttenuation + Normalized10BitTL, 1023);
 		}
 
 		public sealed class Channel

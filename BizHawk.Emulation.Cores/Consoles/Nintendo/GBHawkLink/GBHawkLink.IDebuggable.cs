@@ -58,20 +58,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 		public IMemoryCallbackSystem MemoryCallbacks { get; } = new MemoryCallbackSystem(new[] { "System Bus" });
 
-		public bool CanStep(StepType type)
-		{
-			return false;
-		}
+		public bool CanStep(StepType type) => false;
 
 		[FeatureNotImplemented]
-		public void Step(StepType type)
-		{
-			throw new NotImplementedException();
-		}
+		public void Step(StepType type) => throw new NotImplementedException();
 
-		public long TotalExecutedCycles
-		{
-			get { return (long)L.cpu.TotalExecutedCycles; }
-		}
+		public long TotalExecutedCycles => (long)L.cpu.TotalExecutedCycles;
 	}
 }

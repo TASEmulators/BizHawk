@@ -87,8 +87,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			get
 			{
-				if (_dataBlocks.Count() > 0) { return _currentDataBlockIndex; }
-				else { return -1; }
+				if (_dataBlocks.Any())
+				{
+					return _currentDataBlockIndex;
+				}
+
+				return -1;
 			}
 			set
 			{
@@ -105,23 +109,13 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// The current position within the current data block
 		/// </summary>
 		private int _position = 0;
-		public int Position
-		{
-			get
-			{
-				if (_position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count) { return 0; }
-				else { return _position; }
-			}
-		}
+		public int Position => _position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count ? 0 : _position;
 
 		/// <summary>
 		/// Signs whether the tape is currently playing or not
 		/// </summary>
 		private bool _tapeIsPlaying = false;
-		public bool TapeIsPlaying
-		{
-			get { return _tapeIsPlaying; }
-		}
+		public bool TapeIsPlaying => _tapeIsPlaying;
 
 		/// <summary>
 		/// A list of the currently loaded data blocks

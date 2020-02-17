@@ -439,10 +439,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			set { }
 		}
 
-		public string PCRegisterName
-		{
-			get { return "PC"; }
-		}
+		public string PCRegisterName => "PC";
 
 		public IEnumerable<string> AvailableCpus
 		{

@@ -78,7 +78,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public virtual void NESSoftReset()
 			{
-
 			}
 
 			Dictionary<string, string> _initialRegisterValues = new Dictionary<string, string>();
@@ -93,7 +92,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public virtual void ClockCPU() { }
 			public virtual void AtVsyncNMI() { }
 
-			public CartInfo Cart { get { return NES.cart; } }
+			public CartInfo Cart => NES.cart;
 			public NES NES { get; set; }
 
 			//this is set to true when SyncState is called, so that we know the base class SyncState was used
@@ -369,7 +368,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return board;
 		}
 
-		public string BoardName { get { return Board.GetType().Name; } }
+		public string BoardName => Board.GetType().Name;
 
 		void BoardSystemHardReset()
 		{

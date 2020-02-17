@@ -6,8 +6,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
@@ -986,10 +984,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private int _bufferWidth;
 		private int _bufferHeight;
 
-		public int BackgroundColor
-		{
-			get { return CPCHardwarePalette[0]; }
-		}
+		public int BackgroundColor => CPCHardwarePalette[0];
 
 		public int VirtualWidth
 		{
@@ -1024,10 +1019,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			set { }
 		}
 
-		public int VsyncDenominator
-		{
-			get { return Z80ClockSpeed; }
-		}
+		public int VsyncDenominator => Z80ClockSpeed;
 
 		public int[] GetVideoBuffer()
 		{
@@ -1313,10 +1305,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				Phases.Add(phase);
 			}
 
-			public int PhaseCount
-			{
-				get { return Phases.Count(); }
-			}
+			public int PhaseCount => Phases.Count();
 
 			public void Clear(int screenMode)
 			{

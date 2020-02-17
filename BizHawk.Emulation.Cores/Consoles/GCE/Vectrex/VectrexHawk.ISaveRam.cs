@@ -15,12 +15,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		}
 
-		public bool SaveRamModified
-		{
-			get 
-			{
-				return false;
-			}	
-		}
+		public bool SaveRamModified => false;
 	}
 }

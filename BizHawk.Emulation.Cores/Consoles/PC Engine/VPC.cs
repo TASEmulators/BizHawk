@@ -526,11 +526,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		}
 
 		// IVideoProvider implementation
-		public int[] GetVideoBuffer()
-		{
-			return FrameBuffer;
-		}
-
+		public int[] GetVideoBuffer() => FrameBuffer;
 		public int VirtualWidth => FrameWidth;
 		public int VirtualHeight => FrameHeight;
 		public int BufferWidth => FrameWidth;
@@ -540,19 +536,13 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public int VsyncNumerator
 		{
 			[FeatureNotImplemented]
-			get
-			{
-				return NullVideo.DefaultVsyncNum;
-			}
+			get => NullVideo.DefaultVsyncNum;
 		}
 
 		public int VsyncDenominator
 		{
 			[FeatureNotImplemented]
-			get
-			{
-				return NullVideo.DefaultVsyncDen;
-			}
+			get => NullVideo.DefaultVsyncDen;
 		}
 	}
 }

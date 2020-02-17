@@ -700,21 +700,16 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 			}
 
-			public CHRN SectorIDInfo
-			{
-				get
+			public CHRN SectorIDInfo =>
+				new CHRN
 				{
-					return new CHRN
-					{
-						C = TrackNumber,
-						H = SideNumber,
-						R = SectorID,
-						N = SectorSize,
-						Flag1 = Status1,
-						Flag2 = Status2,
-					};
-				}
-			}
+					C = TrackNumber,
+					H = SideNumber,
+					R = SectorID,
+					N = SectorSize,
+					Flag1 = Status1,
+					Flag2 = Status2,
+				};
 		}
 	}
 

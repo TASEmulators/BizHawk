@@ -328,10 +328,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			set { }
 		}
 
-		public string PCRegisterName
-		{
-			get { return "PC"; }
-		}
+		public string PCRegisterName => "PC";
 
 		public IEnumerable<string> AvailableCpus
 		{

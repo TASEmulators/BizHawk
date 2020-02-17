@@ -16,13 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// The type of serializer
 		/// </summary>
 		private MediaConverterType _formatType = MediaConverterType.CSW;
-		public override MediaConverterType FormatType
-		{
-			get
-			{
-				return _formatType;
-			}
-		}
+		public override MediaConverterType FormatType => _formatType;
 
 		/// <summary>
 		/// Position counter
@@ -32,12 +26,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Signs whether this class can be used to read the data format
 		/// </summary>
-		public override bool IsReader { get { return true; } }
+		public override bool IsReader => true;
 
 		/// <summary>
 		/// Signs whether this class can be used to write the data format
 		/// </summary>
-		public override bool IsWriter { get { return false; } }
+		public override bool IsWriter => false;
 
 		#region Construction
 
@@ -70,10 +64,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				// this is not a valid CSW format file
 				return false;
 			}
-			else
-			{
-				return true;
-			}
+
+			return true;
 		}
 
 		/// <summary>

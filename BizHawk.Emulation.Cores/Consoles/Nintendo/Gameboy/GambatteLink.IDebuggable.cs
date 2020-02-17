@@ -31,24 +31,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			}
 		}
 
-		public IMemoryCallbackSystem MemoryCallbacks
-		{
-			get { return _memorycallbacks; }
-		}
+		public IMemoryCallbackSystem MemoryCallbacks { get; } = new MemoryCallbackSystem(new[] { "System Bus" });
 
-		public bool CanStep(StepType type)
-		{
-			return false;
-		}
+		public bool CanStep(StepType type) => false;
 
 		[FeatureNotImplemented]
-		public void Step(StepType type) { throw new NotImplementedException(); }
+		public void Step(StepType type) => throw new NotImplementedException();
 
 		[FeatureNotImplemented]
-		public long TotalExecutedCycles
-		{
-			get { throw new NotImplementedException(); }
-		}
+		public long TotalExecutedCycles => throw new NotImplementedException();
 
 		private readonly MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
 	}

@@ -264,10 +264,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 			return (ushort)(ReadMemory(address) | (ReadMemory(highAddress) << 8));
 		}
 
-		public string TraceHeader
-		{
-			get { return "HuC6280: PC, machine code, mnemonic, operands, registers (A, X, Y, P, SP, Cy), flags (NVTBDIZC)"; }
-		}
+		public string TraceHeader => "HuC6280: PC, machine code, mnemonic, operands, registers (A, X, Y, P, SP, Cy), flags (NVTBDIZC)";
 
 		public TraceInfo State()
 		{

@@ -4,13 +4,7 @@
 //(the bridge wraps libretro API and presents a very different interface)
 
 using System;
-using System.Diagnostics;
-using System.IO;
-using System.IO.Pipes;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.IO.MemoryMappedFiles;
-
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Libretro
@@ -202,11 +196,9 @@ namespace BizHawk.Emulation.Cores.Libretro
 			public fixed ulong buf_size[(int)BufId.BufId_Num]; //actually a size_t
 
 			//utilities
-			public bool GetBoolValue() { return value != 0; } //should this be here or by the other helpers? I dont know
+			public bool GetBoolValue() => value != 0; // should this be here or by the other helpers? I dont know
 		}
 
-		public retro_system_av_info AVInfo { get { return comm->env.retro_system_av_info; } }
-
+		public retro_system_av_info AVInfo => comm->env.retro_system_av_info;
 	} //class
-
 }

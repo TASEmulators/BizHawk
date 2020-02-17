@@ -557,10 +557,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		public Action<TraceInfo> TraceCallback;
 
-		public string TraceHeader
-		{
-			get { return "LR35902: PC, machine code, mnemonic, operands, registers (A, F, B, C, D, E, H, L, SP), Cy, flags (ZNHCI)"; }
-		}
+		public string TraceHeader => "LR35902: PC, machine code, mnemonic, operands, registers (A, F, B, C, D, E, H, L, SP), Cy, flags (ZNHCI)";
 
 		public TraceInfo State(bool disassemble = true)
 		{

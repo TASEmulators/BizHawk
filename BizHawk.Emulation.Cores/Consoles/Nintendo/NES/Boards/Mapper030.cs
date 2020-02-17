@@ -221,14 +221,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return ROM[bank << 14 | addr & 0x3fff];
 		}
 
-		public override byte[] SaveRam { get { return flash_rom; } }
+		public override byte[] SaveRam => flash_rom;
 
 		public override byte ReadPPU(int addr)
 		{
 			if (addr < 0x2000)
 				return VRAM[addr | chr << 13];
-			else
-				return base.ReadPPU(addr);
+			return base.ReadPPU(addr);
 		}
 		public override void WritePPU(int addr, byte value)
 		{

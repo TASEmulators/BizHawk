@@ -109,8 +109,6 @@
 #endregion
 
 using System.Collections.Generic;
-using System.Linq;
-
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 
@@ -150,19 +148,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		[MapperProp]
 		public bool Dipswitch4 = false;
 
-		private List<bool> Switches
-		{
-			get
+		private List<bool> Switches =>
+			new List<bool>
 			{
-				return new List<bool>
-				{
-					{ Dipswitch1 },
-					{ Dipswitch2 },
-					{ Dipswitch3 },
-					{ Dipswitch4 }
-				};
-			}
-		}
+				{ Dipswitch1 },
+				{ Dipswitch2 },
+				{ Dipswitch3 },
+				{ Dipswitch4 }
+			};
 
 		public int IrqDestination
 		{

@@ -19,24 +19,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Signs whether this class can be used to read the data format
 		/// </summary>
-		public virtual bool IsReader
-		{
-			get
-			{
-				return false;
-			}
-		}
+		public virtual bool IsReader => false;
 
 		/// <summary>
 		/// Signs whether this class can be used to write the data format
 		/// </summary>
-		public virtual bool IsWriter
-		{
-			get
-			{
-				return false;
-			}
-		}
+		public virtual bool IsWriter => false;
 
 		/// <summary>
 		/// Serialization method

@@ -17,31 +17,19 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Signs whether this class can be used to read the data format
 		/// </summary>
-		public virtual bool IsReader
-		{
-			get
-			{
-				return false;
-			}
-		}
+		public virtual bool IsReader => false;
 
 		/// <summary>
 		/// Signs whether this class can be used to write the data format
 		/// </summary>
-		public virtual bool IsWriter
-		{
-			get
-			{
-				return false;
-			}
-		}
+		public virtual bool IsWriter => false;
 
 		/// <summary>
 		/// Serialization method
 		/// </summary>
 		public virtual void Read(byte[] data)
 		{
-			throw new NotImplementedException(this.GetType().ToString() +
+			throw new NotImplementedException(this.GetType() +
 				"Read operation is not implemented for this converter");
 		}
 
@@ -50,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public virtual void Write(byte[] data)
 		{
-			throw new NotImplementedException(this.GetType().ToString() +
+			throw new NotImplementedException(this.GetType() +
 				"Write operation is not implemented for this converter");
 		}
 

@@ -34,18 +34,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		public bool IsVIFrame
 		{
-			get
-			{
-				return _videoProvider.IsVIFrame;
-			}
-
-			internal set
-			{
-				_videoProvider.IsVIFrame = value;
-			}
+			get => _videoProvider.IsVIFrame;
+			internal set => _videoProvider.IsVIFrame = value;
 		}
 
 		// TODO: optimize managed to unmanaged using the ActiveChanged event
-		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented] get; private set; }
+		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented] get; }
 	}
 }

@@ -131,20 +131,20 @@ namespace BizHawk.Emulation.Cores.Libretro
 			return new Dictionary<string, RegisterValue>();
 		}
 
-		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
+		public IInputCallbackSystem InputCallbacks => _inputCallbacks;
 		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
 
 		public ITraceable Tracer { get; private set; }
 		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
 
-		public bool CanStep(StepType type) { return false; }
+		public bool CanStep(StepType type) => false;
 
 		[FeatureNotImplemented]
-		public void Step(StepType type) { throw new NotImplementedException(); }
+		public void Step(StepType type) => throw new NotImplementedException();
 		[FeatureNotImplemented]
-		public void SetCpuRegister(string register, int value) { throw new NotImplementedException(); }
+		public void SetCpuRegister(string register, int value) => throw new NotImplementedException();
 		[FeatureNotImplemented]
-		public long TotalExecutedCycles { get { throw new NotImplementedException(); } }
+		public long TotalExecutedCycles => throw new NotImplementedException();
 
 		private IController _controller;
 
@@ -170,7 +170,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		}
 
 		//video provider
-		int IVideoProvider.BackgroundColor { get { return 0; } }
+		int IVideoProvider.BackgroundColor => 0;
 		int[] IVideoProvider.GetVideoBuffer() { return vidBuffer; }
 
 		public int VirtualWidth
@@ -180,10 +180,9 @@ namespace BizHawk.Emulation.Cores.Libretro
 				var dar = api.AVInfo.geometry.aspect_ratio;
 				if(dar<=0)
 					return vidWidth;
-				else if (dar > 1.0f)
+				if (dar > 1.0f)
 					return (int)(vidHeight * dar);
-				else
-					return vidWidth;
+				return vidWidth;
 			}
 		}
 		public int VirtualHeight
@@ -195,8 +194,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 					return vidHeight;
 				if (dar < 1.0f)
 					return (int)(vidWidth / dar);
-				else
-					return vidHeight;
+				return vidHeight;
 			}
 		}
 
@@ -205,8 +203,8 @@ namespace BizHawk.Emulation.Cores.Libretro
 			SetVideoBuffer(api.comm->env.fb_width, api.comm->env.fb_height);
 		}
 
-		int IVideoProvider.BufferWidth { get { return vidWidth; } }
-		int IVideoProvider.BufferHeight { get { return vidHeight; } }
+		int IVideoProvider.BufferWidth => vidWidth;
+		int IVideoProvider.BufferHeight => vidHeight;
 
 		public int VsyncNumerator { get; private set; }
 		public int VsyncDenominator { get; private set; }
@@ -298,10 +296,10 @@ namespace BizHawk.Emulation.Cores.Libretro
 		}
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; set; }
-		public string SystemId { get { return "Libretro"; } }
-		public bool DeterministicEmulation { get { return false; } }
+		public string SystemId => "Libretro";
+		public bool DeterministicEmulation => false;
 
-	#region ISaveRam
+		#region ISaveRam
 		//TODO - terrible things will happen if this changes at runtime
 
 		byte[] saverambuff = new byte[0];

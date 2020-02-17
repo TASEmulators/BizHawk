@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 	{
 		public byte[] CloneSaveRam()
 		{
-			if ((A.cart_RAM != null) || (B.cart_RAM != null) || (C.cart_RAM != null) || (D.cart_RAM != null))
+			if (A.cart_RAM != null || B.cart_RAM != null || C.cart_RAM != null || D.cart_RAM != null)
 			{
 				int Len1 = 0;
 				int Len2 = 0;
@@ -75,10 +75,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 
 				return temp;
 			}
-			else
-			{
-				return null;
-			}
+
+			return null;
 		}
 
 		public void StoreSaveRam(byte[] data)
@@ -114,12 +112,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			}
 		}
 
-		public bool SaveRamModified
-		{
-			get 
-			{
-				return (A.has_bat || B.has_bat || C.has_bat || D.has_bat) & Link4xSyncSettings.Use_SRAM;
-			}	
-		}
+		public bool SaveRamModified => (A.has_bat || B.has_bat || C.has_bat || D.has_bat) & Link4xSyncSettings.Use_SRAM;
 	}
 }

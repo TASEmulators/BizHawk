@@ -16,10 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			set => islag = value;
 		}
 
-		public IInputCallbackSystem InputCallbacks
-		{
-			get { return _inputCallbacks; }
-		}
+		public IInputCallbackSystem InputCallbacks => _inputCallbacks;
 
 		private int _lagcount;
 		private bool lagged = true;

@@ -858,10 +858,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		// tracer stuff
 		public Action<TraceInfo> TraceCallback;
 
-		public string TraceHeader
-		{
-			get { return "Z80A: PC, machine code, mnemonic, operands, registers (AF, BC, DE, HL, IX, IY, SP, Cy), flags (CNP3H5ZS)"; }
-		}
+		public string TraceHeader => "Z80A: PC, machine code, mnemonic, operands, registers (AF, BC, DE, HL, IX, IY, SP, Cy), flags (CNP3H5ZS)";
 
 		public TraceInfo State(bool disassemble = true)
 		{

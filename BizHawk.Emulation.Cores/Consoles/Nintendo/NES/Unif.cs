@@ -111,9 +111,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				chrrom = null;
 		}
 
-		public NES.CartInfo CartInfo { get { return ci; } }
-		public byte[] PRG { get { return prgrom; } }
-		public byte[] CHR { get { return chrrom; } }
-
+		public NES.CartInfo CartInfo => ci;
+		public byte[] PRG => prgrom;
+		public byte[] CHR => chrrom;
 	}
 }

@@ -35,10 +35,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override byte ReadPRG(int addr)
 		{
-			if (addr >= 0x4000)
-				return ROM[addr + 0x8000];
-			else
-				return ROM[addr + (prg << 14)];
+			return addr >= 0x4000
+				? ROM[addr + 0x8000]
+				: ROM[addr + (prg << 14)];
 		}
 
 		// the chr reg on hardware is supposedly bitscrambled and then inverted from
@@ -66,10 +65,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr < 0x1000)
 				return VRAM[addr | Scramble(0) << 12];
-			else if (addr < 0x2000)
+			if (addr < 0x2000)
 				return VRAM[(addr & 0xfff) | Scramble(chr) << 12];
-			else
-				return base.ReadPPU(addr);
+			return base.ReadPPU(addr);
 		}
 
 		public override void WritePPU(int addr, byte value)
@@ -82,7 +80,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				base.WritePPU(addr, value);
 		}
 
-		public override byte[] SaveRam { get { return VRAM; } }
+		public override byte[] SaveRam => VRAM;
 
 		public override void SyncState(Serializer ser)
 		{

@@ -60,10 +60,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 
 				return temp;
 			}
-			else
-			{
-				return null;
-			}
+
+			return null;
 		}
 
 		public void StoreSaveRam(byte[] data)
@@ -93,12 +91,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 			}
 		}
 
-		public bool SaveRamModified
-		{
-			get 
-			{
-				return (L.has_bat || C.has_bat || R.has_bat) & Link3xSyncSettings.Use_SRAM;
-			}	
-		}
+		public bool SaveRamModified => (L.has_bat || C.has_bat || R.has_bat) & Link3xSyncSettings.Use_SRAM;
 	}
 }

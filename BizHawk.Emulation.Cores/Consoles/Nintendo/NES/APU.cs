@@ -11,8 +11,6 @@
 // TODO - refactor length counter to be separate component
 
 using System;
-using System.Collections.Generic;
-
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 
@@ -32,14 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			this.nes = nes;
 			dmc = new DMCUnit(this, pal);
-			if (pal)
-			{
-				sequencer_lut = sequencer_lut_pal;
-			}
-			else
-			{
-				sequencer_lut = sequencer_lut_ntsc;
-			}
+			sequencer_lut = pal ? sequencer_lut_pal : sequencer_lut_ntsc;
 			
 			noise = new NoiseUnit(this, pal);
 			triangle = new TriangleUnit(this);
@@ -307,31 +298,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
-			public bool Debug_IsSilenced
-			{
-				get
-				{
-					if (swp_silence || len_cnt == 0)
-						return true;
-					else return false;
-				}
-			}
+			public bool Debug_IsSilenced => swp_silence || len_cnt == 0;
 
-			public int Debug_DutyType
-			{
-				get
-				{
-					return duty_cnt;
-				}
-			}
+			public int Debug_DutyType => duty_cnt;
 
-			public int Debug_Volume
-			{
-				get
-				{
-					return env_output;
-				}
-			}
+			public int Debug_Volume => env_output;
 		}
 
 		public sealed class NoiseUnit
@@ -375,21 +346,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
-			public int Debug_Period
-			{
-				get
-				{
-					return period_cnt;
-				}
-			}
+			public int Debug_Period => period_cnt;
 
-			public int Debug_Volume
-			{
-				get
-				{
-					return env_output;
-				}
-			}
+			public int Debug_Volume => env_output;
 
 			public void SyncState(Serializer ser)
 			{
@@ -416,7 +375,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ser.EndSection();
 			}
 
-			public bool IsLenCntNonZero() { return len_cnt > 0; }
+			public bool IsLenCntNonZero() => len_cnt > 0;
 
 			public void WriteReg(int addr, byte val)
 			{
@@ -623,13 +582,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
-			public int Debug_PeriodValue
-			{
-				get
-				{
-					return timer_cnt;
-				}
-			}
+			public int Debug_PeriodValue => timer_cnt;
 
 			public void Run()
 			{
@@ -724,7 +677,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			int out_shift, out_bits_remaining, out_deltacounter;
 			bool out_silence;
 
-			public int sample { get { return out_deltacounter /* - 64*/; } }
+			public int sample => out_deltacounter /* - 64*/;
 
 			public void SyncState(Serializer ser)
 			{

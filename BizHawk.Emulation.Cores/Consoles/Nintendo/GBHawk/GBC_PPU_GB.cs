@@ -28,20 +28,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public byte HDMA_byte;
 
 		// accessors for derived values
-		public byte BG_pal_ret
-		{
-			get { return (byte)(((BG_bytes_inc ? 1 : 0) << 7) | (BG_bytes_index & 0x3F)); }
-		}
+		public byte BG_pal_ret => (byte)(((BG_bytes_inc ? 1 : 0) << 7) | (BG_bytes_index & 0x3F));
 
-		public byte OBJ_pal_ret
-		{
-			get { return (byte)(((OBJ_bytes_inc ? 1 : 0) << 7) | (OBJ_bytes_index & 0x3F)); }
-		}
+		public byte OBJ_pal_ret => (byte)(((OBJ_bytes_inc ? 1 : 0) << 7) | (OBJ_bytes_index & 0x3F));
 
-		public byte HDMA_ctrl
-		{
-			get { return (byte)(((HDMA_active ? 0 : 1) << 7) | ((HDMA_length >> 4) - 1)); }
-		}
+		public byte HDMA_ctrl => (byte)(((HDMA_active ? 0 : 1) << 7) | ((HDMA_length >> 4) - 1));
 
 
 		// controls for tile attributes

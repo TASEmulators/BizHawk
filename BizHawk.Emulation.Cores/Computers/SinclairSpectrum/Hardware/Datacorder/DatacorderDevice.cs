@@ -77,7 +77,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			get
 			{
 				if (_position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count) { return 0; }
-				else { return _position; }
+
+				return _position;
 			}
 		}
 
@@ -85,10 +86,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// Signs whether the tape is currently playing or not
 		/// </summary>
 		private bool _tapeIsPlaying = false;
-		public bool TapeIsPlaying
-		{
-			get { return _tapeIsPlaying; }
-		}
+		public bool TapeIsPlaying => _tapeIsPlaying;
 
 		/// <summary>
 		/// A list of the currently loaded data blocks

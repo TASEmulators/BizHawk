@@ -5,7 +5,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 
 namespace BizHawk.Emulation.Cores.Waterbox
@@ -70,17 +69,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 #endif
 			public Swappable Loaded
 			{
-				get
-				{
-					// if somehow an object died without being disposed,
-					// the MemoryBlock finalizer will have unloaded the memory
-					// and so we can treat it as if no Swappable was attached
-					return (Swappable)LoadedRef.Target;
-				}
-				set
-				{
-					LoadedRef.Target = value;
-				}
+				// if somehow an object died without being disposed,
+				// the MemoryBlock finalizer will have unloaded the memory
+				// and so we can treat it as if no Swappable was attached
+				get => (Swappable)LoadedRef.Target;
+				set => LoadedRef.Target = value;
 			}
 		}
 
@@ -98,8 +91,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 #endif
 			if (_currentLockInfo.Loaded != this)
 			{
-				if (_currentLockInfo.Loaded != null)
-					_currentLockInfo.Loaded.DeactivateInternal();
+				_currentLockInfo.Loaded?.DeactivateInternal();
 				_currentLockInfo.Loaded = null;
 				ActivateInternal();
 				_currentLockInfo.Loaded = this;

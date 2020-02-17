@@ -5,13 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	public partial class GambatteLink : ISaveRam
 	{
-		public bool SaveRamModified
-		{
-			get
-			{
-				return L.SaveRamModified || R.SaveRamModified;
-			}
-		}
+		public bool SaveRamModified => L.SaveRamModified || R.SaveRamModified;
 
 		public byte[] CloneSaveRam()
 		{

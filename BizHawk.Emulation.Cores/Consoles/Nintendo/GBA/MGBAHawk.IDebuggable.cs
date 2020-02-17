@@ -27,27 +27,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		}
 
 		[FeatureNotImplemented]
-		public IMemoryCallbackSystem MemoryCallbacks
-		{
-			get { throw new NotImplementedException(); }
-		}
+		public IMemoryCallbackSystem MemoryCallbacks => throw new NotImplementedException();
 
-		public bool CanStep(StepType type)
-		{
-			return false;
-		}
+		public bool CanStep(StepType type) => false;
 
 		[FeatureNotImplemented]
-		public void Step(StepType type)
-		{
-			throw new NotImplementedException();
-		}
+		public void Step(StepType type) => throw new NotImplementedException();
 
 		[FeatureNotImplemented]
-		public long TotalExecutedCycles
-		{
-			get { throw new NotImplementedException(); }
-		}
+		public long TotalExecutedCycles => throw new NotImplementedException();
 
 		private static readonly string[] RegisterNames =
 		{

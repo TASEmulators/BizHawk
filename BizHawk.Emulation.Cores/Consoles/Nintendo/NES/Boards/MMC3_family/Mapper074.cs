@@ -66,25 +66,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					return VRAM[addr & 0x03FF];
 				}
-				else if (bank == 0x09)
+				
+				if (bank == 0x09)
 				{
 					return VRAM[(addr & 0x03FF) + 0x400];
 				}
-				else
+
+				addr = MapCHR(addr);
+
+				// Ying Kiong Chuan Qi, no VROM
+				// Nestopia maps this to mapper 224, perhaps we should do the same instead of attempt to account for this scenario here
+				if (VROM == null)
 				{
-					addr = MapCHR(addr);
-
-					// Ying Kiong Chuan Qi, no VROM
-					// Nestopia maps this to mapper 224, perhaps we should do the same instead of attempt to account for this scenario here
-					if (VROM == null)
-					{
-						return VRAM[addr];
-					}
-
-					return VROM[addr];
+					return VRAM[addr];
 				}
+
+				return VROM[addr];
 			}
-			else return base.ReadPPU(addr);
+
+			return base.ReadPPU(addr);
 		}
 	}
 }

@@ -233,20 +233,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return VROM[addr & 0x7ff | chr[addr >> 11] << 11];
 			}
-			else
+
+			int mappedaddr = addr & 0x3ff | nt[addr >> 10 & 3] << 10;
+			if (exattr && (addr & 0x3ff) >= 0x3c0)
 			{
-				int mappedaddr = addr & 0x3ff | nt[addr >> 10 & 3] << 10;
-				if (exattr && (addr & 0x3ff) >= 0x3c0)
-				{
-					// pull palette data from exattr instead
-					return exram[lastntread];
-				}
-				else
-				{
-					lastntread = mappedaddr;
-					return NES.CIRAM[mappedaddr];
-				}
+				// pull palette data from exattr instead
+				return exram[lastntread];
 			}
+
+			lastntread = mappedaddr;
+			return NES.CIRAM[mappedaddr];
 		}
 
 		public override void WritePPU(int addr, byte value)
@@ -321,8 +317,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
-			bool Empty { get { return writecursor == readcursor; } }
-			bool Full { get { return readcursor + 256 == writecursor; } }
+			bool Empty => writecursor == readcursor;
+			bool Full => readcursor + 256 == writecursor;
 
 			public void Write(int addr, byte value)
 			{
