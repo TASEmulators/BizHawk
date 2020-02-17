@@ -2,48 +2,57 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 {
 	public partial class LR35902
 	{
-		// this contains the vectors of instrcution operations
+		// this contains the vectors of instruction operations
 		// NOTE: This list is NOT confirmed accurate for each individual cycle
 
 		private void NOP_()
 		{
-			cur_instr = new ushort[]
-						{IDLE,					
-						IDLE,
-						HALT_CHK,
-						OP };
+			cur_instr = new[]
+			{
+				IDLE,
+				IDLE,
+				HALT_CHK,
+				OP
+			};
 		}
 
-		private void INC_16(ushort src_l, ushort src_h)
+		private void INC_16(ushort srcL, ushort srcH)
 		{
-			cur_instr = new ushort[]
-						{IDLE,
-						IDLE,
-						IDLE,
-						INC16,  src_l, src_h,
-						IDLE,
-						IDLE,
-						HALT_CHK,
-						OP };
+			cur_instr = new[]
+			{
+				IDLE,
+				IDLE,
+				IDLE,
+				INC16,
+				srcL,
+				srcH,
+				IDLE,
+				IDLE,
+				HALT_CHK,
+				OP
+			};
 		}
-
 
 		private void DEC_16(ushort src_l, ushort src_h)
 		{
-			cur_instr = new ushort[]
-						{IDLE,
-						IDLE,
-						IDLE,
-						DEC16, src_l, src_h,
-						IDLE,
-						IDLE,
-						HALT_CHK,
-						OP };
+			cur_instr = new[]
+			{
+				IDLE,
+				IDLE,
+				IDLE,
+				DEC16,
+				src_l,
+				src_h,
+				IDLE,
+				IDLE,
+				HALT_CHK,
+				OP
+			};
 		}
 
 		private void ADD_16(ushort dest_l, ushort dest_h, ushort src_l, ushort src_h)
 		{
-			cur_instr = new ushort[]
+			cur_instr = new[]
 						{IDLE,
 						IDLE,
 						IDLE,
@@ -56,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		private void REG_OP(ushort operation, ushort dest, ushort src)
 		{
-			cur_instr = new ushort[]
+			cur_instr = new[]
 						{operation, dest, src,
 						IDLE,
 						HALT_CHK,
@@ -65,7 +74,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		private void STOP_()
 		{
-			cur_instr = new ushort[]
+			cur_instr = new[]
 						{RD, Z, PCl, PCh,
 						INC16, PCl, PCh,
 						IDLE,
@@ -80,7 +89,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 				{
 					// in GBC mode, the HALT bug is worked around by simply adding a NOP
 					// so it just takes 4 cycles longer to reach the next instruction
-					cur_instr = new ushort[]
+					cur_instr = new[]
 							{IDLE,
 							IDLE,
 							IDLE,
@@ -90,7 +99,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 				{	// if interrupts are disabled,
 					// a glitchy decrement to the program counter happens
 					{
-						cur_instr = new ushort[]
+						cur_instr = new[]
 							{IDLE,
 							IDLE,
 							IDLE,
@@ -102,7 +111,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			{
 				cur_instr = new ushort[]
 						{
-						IDLE,						
+						IDLE,
 						HALT_CHK,
 						IDLE,
 						HALT, 0 };
@@ -137,7 +146,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			}
 			else
 			{
-				cur_instr = new ushort[]
+				cur_instr = new[]
 							{IDLE,
 							IDLE,
 							IDLE,
@@ -153,7 +162,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 		{
 			if (cond)
 			{
-				cur_instr = new ushort[]
+				cur_instr = new[]
 							{IDLE,
 							IDLE,
 							IDLE,
@@ -173,7 +182,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			}
 			else
 			{
-				cur_instr = new ushort[]
+				cur_instr = new[]
 							{IDLE,
 							IDLE,
 							IDLE,
@@ -191,7 +200,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		private void RET_()
 		{
-			cur_instr = new ushort[]
+			cur_instr = new[]
 						{IDLE,
 						IDLE,
 						IDLE,
@@ -212,7 +221,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		private void RETI_()
 		{
-			cur_instr = new ushort[]
+			cur_instr = new[]
 						{IDLE,
 						IDLE,
 						IDLE,
@@ -236,7 +245,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 		{
 			if (cond)
 			{
-				cur_instr = new ushort[]
+				cur_instr = new[]
 							{IDLE,
 							IDLE,
 							IDLE,
@@ -260,7 +269,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			}
 			else
 			{
-				cur_instr = new ushort[]
+				cur_instr = new[]
 							{IDLE,
 							IDLE,
 							IDLE,
@@ -276,7 +285,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 		{
 			if (cond)
 			{
-				cur_instr = new ushort[]
+				cur_instr = new[]
 							{IDLE,
 							IDLE,
 							IDLE,
@@ -304,7 +313,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			}
 			else
 			{
-				cur_instr = new ushort[]
+				cur_instr = new[]
 							{IDLE,
 							IDLE,
 							IDLE,
@@ -322,7 +331,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		private void INT_OP(ushort operation, ushort src)
 		{
-			cur_instr = new ushort[]
+			cur_instr = new[]
 						{operation, src,
 						IDLE,
 						HALT_CHK,
@@ -331,7 +340,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		private void BIT_OP(ushort operation, ushort bit, ushort src)
 		{
-			cur_instr = new ushort[]
+			cur_instr = new[]
 						{operation, bit, src,
 						IDLE,
 						HALT_CHK,
@@ -340,7 +349,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		private void PUSH_(ushort src_l, ushort src_h)
 		{
-			cur_instr = new ushort[]
+			cur_instr = new[]
 						{IDLE,
 						IDLE,
 						IDLE,
@@ -366,7 +375,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 		{
 			if (src_l != F)
 			{
-				cur_instr = new ushort[]
+				cur_instr = new[]
 							{IDLE,
 							IDLE,
 							IDLE,
@@ -382,7 +391,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			}
 			else
 			{
-				cur_instr = new ushort[]
+				cur_instr = new[]
 							{IDLE,
 							IDLE,
 							IDLE,
@@ -421,7 +430,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		private void PREFIX_()
 		{
-			cur_instr = new ushort[]
+			cur_instr = new[]
 						{PREFIX,
 						IDLE,
 						IDLE,
@@ -430,7 +439,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		private void DI_()
 		{
-			cur_instr = new ushort[]
+			cur_instr = new[]
 						{DI,
 						IDLE,
 						HALT_CHK,
@@ -439,7 +448,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		private void EI_()
 		{
-			cur_instr = new ushort[]
+			cur_instr = new[]
 						{EI,
 						IDLE,
 						HALT_CHK,
@@ -448,7 +457,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		private void JP_HL()
 		{
-			cur_instr = new ushort[]
+			cur_instr = new[]
 						{TR, PCl, L,
 						TR, PCh, H,
 						HALT_CHK,
@@ -478,7 +487,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		private void LD_SP_HL()
 		{
-			cur_instr = new ushort[]
+			cur_instr = new[]
 						{IDLE,
 						IDLE,
 						IDLE,
@@ -508,7 +517,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		private void JAM_()
 		{
-			cur_instr = new ushort[]
+			cur_instr = new[]
 						{JAM,
 						IDLE,
 						IDLE,
