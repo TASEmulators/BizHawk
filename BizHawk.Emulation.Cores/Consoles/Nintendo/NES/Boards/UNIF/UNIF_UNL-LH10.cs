@@ -88,10 +88,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			bank &= prg_bank_mask_8;
 			return ROM[(bank << 13) + (addr & 0x1FFF)];
 		}
-
-		public override byte ReadPPU(int addr)
-		{
-			return base.ReadPPU(addr);
-		}
 	}
 }

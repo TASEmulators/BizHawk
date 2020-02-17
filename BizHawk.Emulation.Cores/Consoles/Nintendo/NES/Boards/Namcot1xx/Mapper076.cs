@@ -1,6 +1,5 @@
 using BizHawk.Common;
 
-
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// aka NAMCOT-3446
@@ -70,8 +69,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr < 0x2000)
 				return VROM[addr & 0x7ff | chr[addr >> 11] << 11];
-			else
-				return base.ReadPPU(addr);
+			return base.ReadPPU(addr);
 		}
 
 		public override void SyncState(Serializer ser)

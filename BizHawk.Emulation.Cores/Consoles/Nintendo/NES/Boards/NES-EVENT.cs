@@ -290,11 +290,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_banks_16k[1] &= prg_bank_mask_16k;
 		}
 
-		public override void WritePPU(int addr, byte value)
-		{
-			base.WritePPU(addr, value);
-		}
-
 		void SerialWriteRegister(int addr, int value)
 		{
 			switch (addr)

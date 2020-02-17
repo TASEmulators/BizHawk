@@ -360,11 +360,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return 0;
 		}
 
-		public override byte ReadWRAM(int addr)
-		{
-			return base.ReadWRAM(addr);
-		}
-
 		public override byte ReadPRG(int addr)
 		{
 			//patch in vector reading

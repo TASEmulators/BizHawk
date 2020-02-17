@@ -31,7 +31,7 @@ mirroring - both
 				default:
 					return false;
 			}
-			SetMirrorType(NES.NESBoardBase.EMirrorType.Vertical); 
+			SetMirrorType(EMirrorType.Vertical);
 			return true;
 		}
 
@@ -46,10 +46,7 @@ mirroring - both
 			//fceux had different logic here for the mirroring, but that didnt match with experiments on dragon quest 8 nor disch's docs
 			//i changed it at the same time
 			bool mirror = addr.Bit(1);
-			if (mirror)
-				SetMirrorType(NES.NESBoardBase.EMirrorType.Horizontal);
-			else
-				SetMirrorType(NES.NESBoardBase.EMirrorType.Vertical);
+			SetMirrorType(mirror ? EMirrorType.Horizontal : EMirrorType.Vertical);
 		}
 
 		public override void SyncState(Serializer ser)
