@@ -739,7 +739,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						{
 							delay = 3;
 						}
-					}					
+					}
 				}
 
 				// I did some tests in Visual 2A03 and there seems to be some delay betwen when a DMC is first needed and when the 
@@ -816,7 +816,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					// If the DMC bit is clear, the DMC bytes remaining will be set to 0 
 					// and the DMC will silence when it empties.
 					sample_length = 0;
-					}
+				}
 				else
 				{
 					// only start playback if playback is stopped
@@ -1288,7 +1288,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			nes._irq_apu = irq_pending;
 
 			// since the units run concurrently, the APU frame sequencer is ran last because
-			// it can change the ouput values of the pulse/triangle channels
+			// it can change the output values of the pulse/triangle channels
 			// we want the changes to affect it on the *next* cycle.
 
 			if (sequencer_irq_flag == false)
@@ -1298,8 +1298,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				if (DebugCallbackTimer == 0)
 				{
-					if (DebugCallback != null)
-						DebugCallback();
+					DebugCallback?.Invoke();
 					DebugCallbackTimer = DebugCallbackDivider;
 				}
 				else DebugCallbackTimer--;
@@ -1355,7 +1354,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return mix;
 			}
 
-			return oldmix;			
+			return oldmix;
 		}
 	}
 }

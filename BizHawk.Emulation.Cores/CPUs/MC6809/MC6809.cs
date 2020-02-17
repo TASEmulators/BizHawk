@@ -162,10 +162,10 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 					// do nothing
 					break;
 				case OP:
-					// Read the opcode of the next instruction					
-					if (OnExecFetch != null) OnExecFetch(PC);
-					if (TraceCallback != null) TraceCallback(State());
-					if (CDLCallback != null) CDLCallback(PC, eCDLogMemFlags.FetchFirst);
+					// Read the opcode of the next instruction
+					OnExecFetch?.Invoke(PC);
+					TraceCallback?.Invoke(State());
+					CDLCallback?.Invoke(PC, eCDLogMemFlags.FetchFirst);
 					FetchInstruction(ReadMemory(Regs[PC]++));
 					instr_pntr = 0;
 					irq_pntr = -1;
@@ -473,7 +473,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 						irq_pntr = -1;
 						IRQS = 3;
 
-						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====CWAI NMI====", RegisterInfo = "" }); }
+						TraceCallback?.Invoke(new TraceInfo { Disassembly = "====CWAI NMI====", RegisterInfo = "" });
 					}
 					else if (FIRQPending && !FlagF)
 					{
@@ -486,7 +486,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 						irq_pntr = -1;
 						IRQS = 3;
 
-						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====CWAI FIRQ====", RegisterInfo = "" }); }
+						TraceCallback?.Invoke(new TraceInfo { Disassembly = "====CWAI FIRQ====", RegisterInfo = "" });
 					}
 					else if (IRQPending && !FlagI)
 					{
@@ -499,7 +499,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 						irq_pntr = -1;
 						IRQS = 3;
 
-						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====CWAI IRQ====", RegisterInfo = "" }); }
+						TraceCallback?.Invoke(new TraceInfo { Disassembly = "====CWAI IRQ====", RegisterInfo = "" });
 					}
 					else
 					{
@@ -522,7 +522,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 						irq_pntr = -1;
 						IRQS = 3;
 
-						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====SYNC NMI====", RegisterInfo = "" }); }
+						TraceCallback?.Invoke(new TraceInfo { Disassembly = "====SYNC NMI====", RegisterInfo = "" });
 					}
 					else if (FIRQPending)
 					{
@@ -537,11 +537,11 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 							irq_pntr = -1;
 							IRQS = 3;
 
-							if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====SYNC FIRQ====", RegisterInfo = "" }); }
+							TraceCallback?.Invoke(new TraceInfo { Disassembly = "====SYNC FIRQ====", RegisterInfo = "" });
 						}
 						else
 						{
-							FIRQPending = false;					
+							FIRQPending = false;
 							IN_SYNC = false;
 							IRQS = 2;
 							instr_pntr = irq_pntr = 0;
@@ -563,7 +563,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 							irq_pntr = -1;
 							IRQS = 3;
 
-							if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====SYNC IRQ====", RegisterInfo = "" }); }
+							TraceCallback?.Invoke(new TraceInfo { Disassembly = "====SYNC IRQ====", RegisterInfo = "" });
 						}
 						else
 						{
@@ -593,7 +593,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 				{
 					NMIPending = false;
 
-					if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====NMI====", RegisterInfo = "" }); }
+					TraceCallback?.Invoke(new TraceInfo { Disassembly = "====NMI====", RegisterInfo = "" });
 
 					NMI_();
 					NMICallback();
@@ -604,23 +604,22 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 				{
 					FIRQPending = false;
 
-					if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====FIRQ====", RegisterInfo = "" }); }
+					TraceCallback?.Invoke(new TraceInfo { Disassembly = "====FIRQ====", RegisterInfo = "" });
 
 					FIRQ_();
 					FIRQCallback();
 					instr_pntr = irq_pntr = 0;
 				}
-				// then regular IRQ				
+				// then regular IRQ
 				else if (IRQPending && !FlagI)
 				{
 					IRQPending = false;
 
-					if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====IRQ====", RegisterInfo = "" }); }
-
+					TraceCallback?.Invoke(new TraceInfo { Disassembly = "====IRQ====", RegisterInfo = "" });
 					IRQ_();
 					IRQCallback();
 					instr_pntr = irq_pntr = 0;
-				}				
+				}
 				// otherwise start the next instruction
 				else
 				{
@@ -664,7 +663,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 					FlagN ? "N" : "n",
 					FlagZ ? "Z" : "z",
 					FlagV ? "V" : "v",
-					FlagC ? "C" : "c"			
+					FlagC ? "C" : "c"
 					)
 			};
 		}

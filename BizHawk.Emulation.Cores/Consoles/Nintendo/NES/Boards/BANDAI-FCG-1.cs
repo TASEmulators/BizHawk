@@ -61,10 +61,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(irq_counter), ref irq_counter);
 			ser.Sync(nameof(irq_enabled), ref irq_enabled);
 			ser.Sync(nameof(irq_latch), ref irq_latch);
-			if (eprom != null)
-				eprom.SyncState(ser);
-			if (reader != null)
-				reader.SyncState(ser);
+			eprom?.SyncState(ser);
+			reader?.SyncState(ser);
 			SyncPRG();
 		}
 
@@ -271,8 +269,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					
 					break;
 				case 0xD:
-					if (eprom != null)
-						eprom.WriteByte(value);
+					eprom?.WriteByte(value);
 					break;
 			}
 		}
@@ -333,10 +330,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 				return ret;
 			}
-			else
-			{
-				return WRAM[addr];
-			}
+
+			return WRAM[addr];
 		}
 
 		public override void ClockCPU()
@@ -354,10 +349,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					irq_counter--;
 				}
 			}
-			if (reader != null)
-			{
-				reader.Clock();
-			}
+
+			reader?.Clock();
 		}
 
 
@@ -390,10 +383,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				else
 					return VROM[CalcPPUAddress(addr)];
 			}
-			else
-			{
-				return base.ReadPPU(addr);
-			}
+
+			return base.ReadPPU(addr);
 		}
 
 		public override void WritePPU(int addr, byte value)
@@ -414,15 +405,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			get
 			{
 				if (eprom != null)
+				{
 					return eprom.GetSaveRAM();
-				else if (jump2)
+				}
+
+				if (jump2)
 				{
 					return WRAM;
 				}
-				else
-				{
-					return null;
-				}
+
+				return null;
 			}
 		}
 	}

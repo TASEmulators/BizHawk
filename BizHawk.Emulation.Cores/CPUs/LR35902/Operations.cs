@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			Regs[dest] = ReadMemory(addr);
 		}
 
-		// speical read for POP AF that always clears the lower 4 bits of F 
+		// special read for POP AF that always clears the lower 4 bits of F 
 		public void Read_Func_F(ushort dest, ushort src_l, ushort src_h)
 		{
 			Regs[dest] = (ushort)(ReadMemory((ushort)(Regs[src_l] | (Regs[src_h]) << 8)) & 0xF0);
@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 		public void Write_Func(ushort dest_l, ushort dest_h, ushort src)
 		{
 			ushort addr = (ushort)(Regs[dest_l] | (Regs[dest_h]) << 8);
-			if (CDLCallback != null) CDLCallback(addr, eCDLogMemFlags.Write | eCDLogMemFlags.Data);
+			CDLCallback?.Invoke(addr, eCDLogMemFlags.Write | eCDLogMemFlags.Data);
 			WriteMemory(addr, (byte)Regs[src]);
 		}
 
@@ -140,7 +140,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 			FlagZ = Regs[src] == 0;
 			FlagH = false;
-			FlagN = false;		
+			FlagN = false;
 		}
 
 		public void SRA_Func(ushort src)

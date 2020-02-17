@@ -160,10 +160,10 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 					// do nothing
 					break;
 				case OP:
-					// Read the opcode of the next instruction					
-					if (OnExecFetch != null) OnExecFetch(PC);
-					if (TraceCallback != null) TraceCallback(State());
-					if (CDLCallback != null) CDLCallback(PC, eCDLogMemFlags.FetchFirst);
+					// Read the opcode of the next instruction
+					OnExecFetch?.Invoke(PC);
+					TraceCallback?.Invoke(State());
+					CDLCallback?.Invoke(PC, eCDLogMemFlags.FetchFirst);
 					FetchInstruction(ReadMemory(Regs[PC]));
 					Regs[ALU2] = (ushort)(Regs[PC] & 0x800);
 					Regs[PC] = (ushort)(((Regs[PC] + 1) & 0x7FF) | Regs[ALU2]);
@@ -259,8 +259,8 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 					else
 					{
 						Regs[reg_d_ad] = (ushort)((reg_h_ad << 8) | Regs[reg_l_ad]);
-					}				
-					break;			
+					}
+					break;
 				case CLC:
 					FlagC = false;
 					break;
@@ -437,12 +437,12 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 
 			if (++irq_pntr == IRQS)
 			{
-				// then regular IRQ				
+				// then regular IRQ
 				if (IRQPending && IntEn && INT_MSTR)
 				{
 					IRQPending = false;
 
-					if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====IRQ====", RegisterInfo = "" }); }
+					TraceCallback?.Invoke(new TraceInfo { Disassembly = "====IRQ====", RegisterInfo = "" });
 
 					IRQ_(0);
 					IRQCallback();
@@ -452,7 +452,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 				{
 					TIRQPending = false;
 
-					if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====TIRQ====", RegisterInfo = "" }); }
+					TraceCallback?.Invoke(new TraceInfo { Disassembly = "====TIRQ====", RegisterInfo = "" });
 
 					IRQ_(1);
 					IRQCallback();

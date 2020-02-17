@@ -30,40 +30,40 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 
 		public void Write_Func(ushort dest, ushort src)
 		{
-			if (CDLCallback != null) CDLCallback(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
+			CDLCallback?.Invoke(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
 			WriteMemory(Regs[dest], (byte)Regs[src]);
 		}
 
 		public void Write_Dec_Lo_Func(ushort dest, ushort src)
 		{
-			if (CDLCallback != null) CDLCallback(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
+			CDLCallback?.Invoke(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
 			WriteMemory(Regs[dest], (byte)Regs[src]);
 			Regs[dest] -= 1;
 		}
 
 		public void Write_Dec_HI_Func(ushort dest, ushort src)
 		{
-			if (CDLCallback != null) CDLCallback(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
+			CDLCallback?.Invoke(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
 			WriteMemory(Regs[dest], (byte)(Regs[src] >> 8));
 			Regs[dest] -= 1;
 		}
 
 		public void Write_Hi_Func(ushort dest, ushort src)
 		{
-			if (CDLCallback != null) CDLCallback(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
+			CDLCallback?.Invoke(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
 			WriteMemory(Regs[dest], (byte)(Regs[src] >> 8));
 		}
 
 		public void Write_Hi_Inc_Func(ushort dest, ushort src)
 		{
-			if (CDLCallback != null) CDLCallback(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
+			CDLCallback?.Invoke(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
 			WriteMemory(Regs[dest], (byte)(Regs[src] >> 8));
 			Regs[dest]++;
 		}
 
 		public void Write_Lo_Inc_Func(ushort dest, ushort src)
 		{
-			if (CDLCallback != null) CDLCallback(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
+			CDLCallback?.Invoke(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
 			WriteMemory(Regs[dest], (byte)Regs[src]);
 			Regs[dest]++;
 		}
@@ -125,7 +125,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 
 			FlagZ = Regs[dest] == 0;
 			FlagV = false;
-			FlagN = Regs[dest] > 0x7FFF;		
+			FlagN = Regs[dest] > 0x7FFF;
 		}
 
 		// for LEAX/Y, zero flag can be effected, but not for U/S
@@ -133,7 +133,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 		{
 			Regs[dest] = Regs[src];
 
-			if ((dest == X) || (dest == Y))
+			if (dest == X || dest == Y)
 			{
 				FlagZ = Regs[dest] == 0;
 			}

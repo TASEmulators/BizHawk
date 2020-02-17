@@ -704,7 +704,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 						}
 
 						// get the current track
-						var track = ActiveDrive.Disk.DiskTracks.Where(a => a.TrackNumber == ActiveDrive.CurrentTrackID).FirstOrDefault();
+						var track = ActiveDrive.Disk.DiskTracks.FirstOrDefault(a => a.TrackNumber == ActiveDrive.CurrentTrackID);
 
 						if (track == null || track.NumberOfSectors <= 0)
 						{
@@ -1017,7 +1017,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 						}
 
 						// get the current track
-						var track = ActiveDrive.Disk.DiskTracks.Where(a => a.TrackNumber == ActiveDrive.CurrentTrackID).FirstOrDefault();
+						var track = ActiveDrive.Disk.DiskTracks.FirstOrDefault(a => a.TrackNumber == ActiveDrive.CurrentTrackID);
 
 						if (track == null || track.NumberOfSectors <= 0)
 						{
@@ -1209,7 +1209,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 							break;
 						}
 
-						var track = ActiveDrive.Disk.DiskTracks.Where(a => a.TrackNumber == ActiveDrive.CurrentTrackID).FirstOrDefault();
+						var track = ActiveDrive.Disk.DiskTracks.FirstOrDefault(a => a.TrackNumber == ActiveDrive.CurrentTrackID);
 
 						if (track != null && track.NumberOfSectors > 0 && track.TrackNumber != 0xff)
 						{
@@ -2545,7 +2545,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			cmdByte = cByte;
 
 			// lookup the command
-			var cmd = CommandList.Where(a => a.CommandCode == cmdByte).FirstOrDefault();
+			var cmd = CommandList.FirstOrDefault(a => a.CommandCode == cmdByte);
 
 			if (cmd == null)
 			{

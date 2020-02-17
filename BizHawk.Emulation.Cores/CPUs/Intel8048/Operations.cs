@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 
 		public void Write_Func(ushort dest, ushort src)
 		{
-			if (CDLCallback != null) CDLCallback(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
+			CDLCallback?.Invoke(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
 			WriteMemory(Regs[dest], (byte)Regs[src]);
 		}
 

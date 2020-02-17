@@ -30,33 +30,33 @@ namespace BizHawk.Emulation.Cores.Components.MC6800
 
 		public void Write_Func(ushort dest, ushort src)
 		{
-			if (CDLCallback != null) CDLCallback(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
+			CDLCallback?.Invoke(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
 			WriteMemory(Regs[dest], (byte)Regs[src]);
 		}
 
 		public void Write_Dec_Lo_Func(ushort dest, ushort src)
 		{
-			if (CDLCallback != null) CDLCallback(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
+			CDLCallback?.Invoke(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
 			WriteMemory(Regs[dest], (byte)Regs[src]);
 			Regs[dest] -= 1;
 		}
 
 		public void Write_Dec_HI_Func(ushort dest, ushort src)
 		{
-			if (CDLCallback != null) CDLCallback(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
+			CDLCallback?.Invoke(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
 			WriteMemory(Regs[dest], (byte)(Regs[src] >> 8));
 			Regs[dest] -= 1;
 		}
 
 		public void Write_Hi_Func(ushort dest, ushort src)
 		{
-			if (CDLCallback != null) CDLCallback(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
+			CDLCallback?.Invoke(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
 			WriteMemory(Regs[dest], (byte)(Regs[src] >> 8));
 		}
 
 		public void Write_Hi_Inc_Func(ushort dest, ushort src)
 		{
-			if (CDLCallback != null) CDLCallback(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
+			CDLCallback?.Invoke(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
 			WriteMemory(Regs[dest], (byte)(Regs[src] >> 8));
 			Regs[dest]++;
 		}

@@ -142,14 +142,11 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					{
 						interrupts_enabled = false;
 
-						if (TraceCallback != null)
+						TraceCallback?.Invoke(new TraceInfo
 						{
-							TraceCallback(new TraceInfo
-							{
-								Disassembly = "====IRQ====",
-								RegisterInfo = ""
-							});
-						}
+							Disassembly = "====IRQ====",
+							RegisterInfo = ""
+						});
 
 						// call interrupt processor 
 						// lowest bit set is highest priority
@@ -157,9 +154,9 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					}
 					else
 					{
-						if (OnExecFetch != null) OnExecFetch(RegPC);
+						OnExecFetch?.Invoke(RegPC);
 						if (TraceCallback != null && !CB_prefix) TraceCallback(State());
-						if (CDLCallback != null) CDLCallback(RegPC, eCDLogMemFlags.FetchFirst);
+						CDLCallback?.Invoke(RegPC, eCDLogMemFlags.FetchFirst);
 						FetchInstruction(ReadMemory(RegPC++));
 					}
 					instr_pntr = 0;
@@ -293,14 +290,11 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					{
 						interrupts_enabled = false;
 
-						if (TraceCallback != null)
+						TraceCallback?.Invoke(new TraceInfo
 						{
-							TraceCallback(new TraceInfo
-							{
-								Disassembly = "====IRQ====",
-								RegisterInfo = ""
-							});
-						}
+							Disassembly = "====IRQ====",
+							RegisterInfo = ""
+						});
 						halted = false;
 						
 						if (is_GBC)
@@ -318,23 +312,20 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 							}
 						}
 						else
-						{					
+						{
 							// call interrupt processor
 							INTERRUPT_();
 							Halt_bug_3 = false;
-						}					
+						}
 					}
 					else if (temp)
 					{
 						// even if interrupt servicing is disabled, any interrupt flag raised still resumes execution
-						if (TraceCallback != null)
+						TraceCallback?.Invoke(new TraceInfo
 						{
-							TraceCallback(new TraceInfo
-							{
-								Disassembly = "====un-halted====",
-								RegisterInfo = ""
-							});
-						}
+							Disassembly = "====un-halted====",
+							RegisterInfo = ""
+						});
 						halted = false;
 
 						if (is_GBC)
@@ -342,9 +333,9 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 							// extra 4 cycles for GBC
 							if (Halt_bug_3)
 							{
-								if (OnExecFetch != null) OnExecFetch(RegPC);
+								OnExecFetch?.Invoke(RegPC);
 								if (TraceCallback != null && !CB_prefix) TraceCallback(State());
-								if (CDLCallback != null) CDLCallback(RegPC, eCDLogMemFlags.FetchFirst);
+								CDLCallback?.Invoke(RegPC, eCDLogMemFlags.FetchFirst);
 
 								RegPC++;
 								FetchInstruction(ReadMemory(RegPC));
@@ -353,18 +344,20 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 							}
 							else
 							{
-								cur_instr = new ushort[]
-										{IDLE,
-										IDLE,
-										IDLE,
-										OP };
+								cur_instr = new[]
+								{
+									IDLE,
+									IDLE,
+									IDLE,
+									OP
+								};
 							}
 						}
 						else
 						{
-							if (OnExecFetch != null) OnExecFetch(RegPC);
+							OnExecFetch?.Invoke(RegPC);
 							if (TraceCallback != null && !CB_prefix) TraceCallback(State());
-							if (CDLCallback != null) CDLCallback(RegPC, eCDLogMemFlags.FetchFirst);
+							CDLCallback?.Invoke(RegPC, eCDLogMemFlags.FetchFirst);
 
 							if (Halt_bug_3)
 							{
@@ -376,8 +369,8 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 							else
 							{
 								FetchInstruction(ReadMemory(RegPC++));
-							}							
-						}					
+							}
+						}
 					}
 					else
 					{
@@ -428,19 +421,16 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 						stop_time--;
 						if (stop_time == 0)
 						{
-							if (TraceCallback != null)
+							TraceCallback?.Invoke(new TraceInfo
 							{
-								TraceCallback(new TraceInfo
-								{
-									Disassembly = "====un-stop====",
-									RegisterInfo = ""
-								});
-							}
+								Disassembly = "====un-stop====",
+								RegisterInfo = ""
+							});
 
 							stopped = false;
-							if (OnExecFetch != null) OnExecFetch(RegPC);
+							OnExecFetch?.Invoke(RegPC);
 							if (TraceCallback != null && !CB_prefix) TraceCallback(State());
-							if (CDLCallback != null) CDLCallback(RegPC, eCDLogMemFlags.FetchFirst);
+							CDLCallback?.Invoke(RegPC, eCDLogMemFlags.FetchFirst);
 							FetchInstruction(ReadMemory(RegPC++));
 							instr_pntr = 0;
 
@@ -458,19 +448,16 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					}
 					else if (interrupt_src.Bit(4)) // button pressed, not actually an interrupt though
 					{
-						if (TraceCallback != null)
+						TraceCallback?.Invoke(new TraceInfo
 						{
-							TraceCallback(new TraceInfo
-							{
-								Disassembly = "====un-stop====",
-								RegisterInfo = ""
-							});
-						}
+							Disassembly = "====un-stop====",
+							RegisterInfo = ""
+						});
 
 						stopped = false;
-						if (OnExecFetch != null) OnExecFetch(RegPC);
+						OnExecFetch?.Invoke(RegPC);
 						if (TraceCallback != null && !CB_prefix) TraceCallback(State());
-						if (CDLCallback != null) CDLCallback(RegPC, eCDLogMemFlags.FetchFirst);
+						CDLCallback?.Invoke(RegPC, eCDLogMemFlags.FetchFirst);
 						FetchInstruction(ReadMemory(RegPC++));
 						instr_pntr = 0;
 
@@ -479,11 +466,13 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					else
 					{
 						instr_pntr = 0;
-						cur_instr = new ushort[]
-						{IDLE,
-						IDLE,
-						IDLE,
-						STOP };
+						cur_instr = new[]
+						{
+							IDLE,
+							IDLE,
+							IDLE,
+							STOP
+						};
 					}
 					break;
 				case PREFIX:
@@ -496,9 +485,9 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					ADDS_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case OP_G:
-					if (OnExecFetch != null) OnExecFetch(RegPC);
-					if (TraceCallback != null) TraceCallback(State());
-					if (CDLCallback != null) CDLCallback(RegPC, eCDLogMemFlags.FetchFirst);
+					OnExecFetch?.Invoke(RegPC);
+					TraceCallback?.Invoke(State());
+					CDLCallback?.Invoke(RegPC, eCDLogMemFlags.FetchFirst);
 
 					FetchInstruction(ReadMemory(RegPC)); // note no increment
 

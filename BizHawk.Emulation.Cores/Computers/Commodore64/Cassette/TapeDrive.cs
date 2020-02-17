@@ -32,8 +32,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cassette
 
 		public override void SyncState(Serializer ser)
 		{
-
-			if (_tape != null) { _tape.SyncState(ser); }
+			_tape?.SyncState(ser);
 		}
 
 		public void Insert(Tape tape)
@@ -47,19 +46,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cassette
 		}
 
 		// Exposed for memory domains, should not be used for actual emulation implementation
-		public override byte[] TapeDataDomain 
-		{
-			get
-			{
-				if (_tape != null)
-				{
-					return _tape.TapeDataDomain;
-				}
-				else
-				{
-					return null;
-				}
-			}
-		}		
+		public override byte[] TapeDataDomain => _tape?.TapeDataDomain;
 	}
 }

@@ -89,8 +89,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WritePRG(int addr, byte value)
 		{
-			if (PrgWrite != null)
-				PrgWrite(value);
+			PrgWrite?.Invoke(value);
 		}
 
 		public override byte ReadPRG(int addr)

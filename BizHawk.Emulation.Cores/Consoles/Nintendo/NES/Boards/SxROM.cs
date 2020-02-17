@@ -546,7 +546,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void Dispose()
 		{
 			base.Dispose();
-			if(mmc1 != null) mmc1.Dispose();
+			mmc1?.Dispose();
 		}
 	} //class SxROM
 
@@ -590,7 +590,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			return base.ReadWRAM(Map_WRAM(addr));
 		}
-
 	}
 
 	class SXROM : SuROM

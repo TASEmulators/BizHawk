@@ -447,8 +447,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		void Attach()
 		{
 			//attach this core as the current
-			if (CurrOctoshockCore != null)
-				CurrOctoshockCore.Dispose();
+			CurrOctoshockCore?.Dispose();
 			CurrOctoshockCore = this;
 
 			//the psx instance cant be created until the desired region is known, which needs a disc, so we need the dll static attached first

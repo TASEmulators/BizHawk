@@ -410,8 +410,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					ms.CopyTo(bw.BaseStream);
 				}
 
-				if (_heap != null) _heap.SaveStateBinary(bw);
-				if (_sealedheap != null) _sealedheap.SaveStateBinary(bw);
+				_heap?.SaveStateBinary(bw);
+				_sealedheap?.SaveStateBinary(bw);
 				bw.Write(MAGIC);
 			}
 			finally
@@ -441,13 +441,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					WaterboxUtils.CopySome(br.BaseStream, ms, len);
 				}
 
-				if (_heap != null) _heap.LoadStateBinary(br);
-				if (_sealedheap != null) _sealedheap.LoadStateBinary(br);
+				_heap?.LoadStateBinary(br);
+				_sealedheap?.LoadStateBinary(br);
 				if (br.ReadUInt64() != MAGIC)
 					throw new InvalidOperationException("Magic not magic enough!");
 
 				// the syscall trampolines were overwritten in loadstate (they're in .bss), and if we're cross-session,
-				// are no longer valid.  cores must similiarly resend any external pointers they gave the core.
+				// are no longer valid.  cores must similarly resend any external pointers they gave the core.
 				ConnectAllClibPatches();
 			}
 			finally

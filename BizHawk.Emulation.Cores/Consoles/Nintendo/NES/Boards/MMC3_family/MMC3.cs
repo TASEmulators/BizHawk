@@ -339,7 +339,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void Dispose()
 		{
-			if(mmc3 != null) mmc3.Dispose();
+			mmc3?.Dispose();
 		}
 
 		public override void SyncState(Serializer ser)
@@ -377,7 +377,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return VROM[addr + extra_vrom];
 				else return VRAM[addr];
 			}
-			else return base.ReadPPU(addr);
+
+			return base.ReadPPU(addr);
 		}
 
 		public override void WritePPU(int addr, byte value)

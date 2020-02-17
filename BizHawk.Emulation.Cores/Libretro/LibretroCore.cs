@@ -71,8 +71,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			//api.CMD_unload_cartridge();
 			//api.CMD_term();
 
-			if(resampler != null)
-				resampler.Dispose();
+			resampler?.Dispose();
 
 			api.Dispose();
 

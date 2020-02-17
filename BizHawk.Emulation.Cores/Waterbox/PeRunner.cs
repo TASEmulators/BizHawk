@@ -1124,8 +1124,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				{
 					pe.SealImportsAndTakeXorSnapshot();
 				}
-				if (_mmapheap != null)
-					_mmapheap.Memory.SaveXorSnapshot();
+
+				_mmapheap?.Memory.SaveXorSnapshot();
 			}
 		}
 
