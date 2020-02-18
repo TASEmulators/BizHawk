@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Emulation.Cores.Components.MC6809
 {
 	public partial class MC6809
@@ -82,6 +86,82 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			}
 
 			FlagI = true;
+		}
+
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
+		{
+			return new Dictionary<string, RegisterValue>
+			{
+				["A"] = Regs[A],
+				["B"] = Regs[B],
+				["X"] = Regs[X],
+				["Y"] = Regs[Y],
+				["US"] = Regs[US],
+				["SP"] = Regs[SP],
+				["PC"] = Regs[PC],
+				["Flag E"] = FlagE,
+				["Flag F"] = FlagF,
+				["Flag H"] = FlagH,
+				["Flag I"] = FlagI,
+				["Flag N"] = FlagN,
+				["Flag Z"] = FlagZ,
+				["Flag V"] = FlagV,
+				["Flag C"] = FlagC
+			};
+		}
+
+		public void SetCpuRegister(string register, int value)
+		{
+			switch (register)
+			{
+				default:
+					throw new InvalidOperationException();
+				case "A":
+					Regs[A] = (byte)value;
+					break;
+				case "B":
+					Regs[B] = (byte)value;
+					break;
+				case "X":
+					Regs[X] = (byte)value;
+					break;
+				case "Y":
+					Regs[Y] = (ushort)value;
+					break;
+				case "US":
+					Regs[US] = (ushort)value;
+					break;
+				case "SP":
+					Regs[SP] = (ushort)value;
+					break;
+				case "PC":
+					Regs[PC] = (ushort)value;
+					break;
+				case "Flag E":
+					FlagE = value > 0;
+					break;
+				case "Flag F":
+					FlagF = value > 0;
+					break;
+				case "Flag H":
+					FlagH = value > 0;
+					break;
+				case "Flag I":
+					FlagI = value > 0;
+					break;
+				case "Flag N":
+					FlagN = value > 0;
+					break;
+				case "Flag Z":
+					FlagZ = value > 0;
+					break;
+				case "Flag V":
+					FlagV = value > 0;
+					break;
+				case "Flag C":
+					FlagC = value > 0;
+					break;
+			}
 		}
 	}
 }
