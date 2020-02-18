@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -162,6 +163,79 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 			Log.Flush();
 		}
 
-		
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
+		{
+			return new Dictionary<string, RegisterValue>
+			{
+				["R0"] = Register[0],
+				["R1"] = Register[1],
+				["R2"] = Register[2],
+				["R3"] = Register[3],
+				["R4"] = Register[4],
+				["R5"] = Register[5],
+				["R6"] = Register[6],
+				["PC"] = Register[7],
+
+				["FlagS"] = FlagS,
+				["FlagC"] = FlagC,
+				["FlagZ"] = FlagZ,
+				["FlagO"] = FlagO,
+				["FlagI"] = FlagI,
+				["FlagD"] = FlagD
+			};
+		}
+
+		public void SetCpuRegister(string register, int value)
+		{
+			switch (register)
+			{
+				default:
+					throw new InvalidOperationException();
+
+				case "R0":
+					Register[0] = (ushort)value;
+					break;
+				case "R1":
+					Register[1] = (ushort)value;
+					break;
+				case "R2":
+					Register[2] = (ushort)value;
+					break;
+				case "R3":
+					Register[3] = (ushort)value;
+					break;
+				case "R4":
+					Register[4] = (ushort)value;
+					break;
+				case "R5":
+					Register[5] = (ushort)value;
+					break;
+				case "R6":
+					Register[6] = (ushort)value;
+					break;
+				case "PC":
+					Register[7] = (ushort)value;
+					break;
+
+				case "FlagS":
+					FlagS = value > 0;
+					break;
+				case "FlagC":
+					FlagC = value > 0;
+					break;
+				case "FlagZ":
+					FlagZ = value > 0;
+					break;
+				case "FlagO":
+					FlagO = value > 0;
+					break;
+				case "FlagI":
+					FlagI = value > 0;
+					break;
+				case "FlagD":
+					FlagD = value > 0;
+					break;
+			}
+		}
 	}
 }
