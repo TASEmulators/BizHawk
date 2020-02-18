@@ -94,7 +94,7 @@ namespace BizHawk.Client.EmuHawk
 
 				_commandline = $"ffmpeg {_ffmpeg.StartInfo.Arguments}";
 
-				_ffmpeg.ErrorDataReceived += new DataReceivedEventHandler(StderrHandler);
+				_ffmpeg.ErrorDataReceived += StderrHandler;
 
 				_stderr = new Queue<string>(Consolebuffer);
 
@@ -137,7 +137,12 @@ namespace BizHawk.Client.EmuHawk
 			//ffmpeg.StandardInput.Close();
 
 			// how long should we wait here?
-			_ffmpeg.WaitForExit(20000);
+			if (_ffmpeg.WaitForExit(20000))
+			{
+				// Known MS bug: WaitForExit(time) waits for the process to exit but doesn't wait for event handling to finish.
+				//               If WaitForExit(time) returns true, this call waits for message pump to clear out events.
+				_ffmpeg.WaitForExit();
+			}
 			_ffmpeg.Dispose();
 			_ffmpeg = null;
 			_stderr = null;
