@@ -10,15 +10,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 {
 	public partial class GBHawkLink3x : IEmulator, IStatable, ISettable<GBHawkLink3x.GBLink3xSettings, GBHawkLink3x.GBLink3xSyncSettings>
 	{
-		public GBLink3xSettings GetSettings()
-		{
-			return Link3xSettings.Clone();
-		}
+		public GBLink3xSettings GetSettings() => Link3xSettings.Clone();
 
-		public GBLink3xSyncSettings GetSyncSettings()
-		{
-			return Link3xSyncSettings.Clone();
-		}
+		public GBLink3xSyncSettings GetSyncSettings() => Link3xSyncSettings.Clone();
 
 		public bool PutSettings(GBLink3xSettings o)
 		{
@@ -34,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 		}
 
 		private GBLink3xSettings Link3xSettings = new GBLink3xSettings();
-		public GBLink3xSyncSettings Link3xSyncSettings = new GBLink3xSyncSettings();
+		private GBLink3xSyncSettings Link3xSyncSettings = new GBLink3xSyncSettings();
 
 		public class GBLink3xSettings
 		{
@@ -66,15 +60,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 			[DefaultValue(AudioSrc.Left)]
 			public AudioSrc AudioSet { get; set; }
 
-			public GBLink3xSettings Clone()
-			{
-				return (GBLink3xSettings)MemberwiseClone();
-			}
+			public GBLink3xSettings Clone() => (GBLink3xSettings)MemberwiseClone();
 
-			public GBLink3xSettings()
-			{
-				SettingsUtil.SetDefaultValues(this);
-			}
+			public GBLink3xSettings() => SettingsUtil.SetDefaultValues(this);
 		}
 
 		public class GBLink3xSyncSettings
@@ -177,15 +165,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 			[JsonIgnore]
 			public ushort _DivInitialTime_R = 8;
 
-			public GBLink3xSyncSettings Clone()
-			{
-				return (GBLink3xSyncSettings)MemberwiseClone();
-			}
+			public GBLink3xSyncSettings Clone() => (GBLink3xSyncSettings)MemberwiseClone();
 
-			public GBLink3xSyncSettings()
-			{
-				SettingsUtil.SetDefaultValues(this);
-			}
+			public GBLink3xSyncSettings() => SettingsUtil.SetDefaultValues(this);
 
 			public static bool NeedsReboot(GBLink3xSyncSettings x, GBLink3xSyncSettings y)
 			{

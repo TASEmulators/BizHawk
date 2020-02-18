@@ -7,29 +7,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 	{
 		public byte[] CloneSaveRam()
 		{
-			if ((L.cart_RAM != null) || (C.cart_RAM != null) || (R.cart_RAM != null))
+			if (L.cart_RAM != null || C.cart_RAM != null || R.cart_RAM != null)
 			{
-				int Len1 = 0;
-				int Len2 = 0;
-				int Len3 = 0;
+				int len1 = 0;
+				int len2 = 0;
+				int len3 = 0;
 				int index = 0;
 
 				if (L.cart_RAM != null)
 				{
-					Len1 = L.cart_RAM.Length;
+					len1 = L.cart_RAM.Length;
 				}
 
 				if (C.cart_RAM != null)
 				{
-					Len2 = C.cart_RAM.Length;
+					len2 = C.cart_RAM.Length;
 				}
 
 				if (R.cart_RAM != null)
 				{
-					Len3 = R.cart_RAM.Length;
+					len3 = R.cart_RAM.Length;
 				}
 
-				byte[] temp = new byte[Len1 + Len2 + Len3];
+				byte[] temp = new byte[len1 + len2 + len3];
 
 				if (L.cart_RAM != null)
 				{

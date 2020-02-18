@@ -58,22 +58,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 					"System Bus L",
 					0X10000,
 					MemoryDomain.Endian.Little,
-					addr => PeekSystemBusL(addr),
-					(addr, value) => PokeSystemBusL(addr, value),
+					PeekSystemBusL,
+					PokeSystemBusL,
 					1),
 				new MemoryDomainDelegate(
 					"System Bus C",
 					0X10000,
 					MemoryDomain.Endian.Little,
-					addr => PeekSystemBusC(addr),
-					(addr, value) => PokeSystemBusC(addr, value),
+					PeekSystemBusC,
+					PokeSystemBusC,
 					1),
 				new MemoryDomainDelegate(
 					"System Bus R",
 					0X10000,
 					MemoryDomain.Endian.Little,
-					addr => PeekSystemBusR(addr),
-					(addr, value) => PokeSystemBusR(addr, value),
+					PeekSystemBusR,
+					PokeSystemBusR,
 					1),
 				new MemoryDomainDelegate(
 					"ROM L",
@@ -121,20 +121,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 
 			if (L.cart_RAM != null)
 			{
-				var CartRamL = new MemoryDomainByteArray("Cart RAM L", MemoryDomain.Endian.Little, L.cart_RAM, true, 1);
-				domains.Add(CartRamL);
+				var cartRamL = new MemoryDomainByteArray("Cart RAM L", MemoryDomain.Endian.Little, L.cart_RAM, true, 1);
+				domains.Add(cartRamL);
 			}
 
 			if (C.cart_RAM != null)
 			{
-				var CartRamC = new MemoryDomainByteArray("Cart RAM C", MemoryDomain.Endian.Little, C.cart_RAM, true, 1);
-				domains.Add(CartRamC);
+				var cartRamC = new MemoryDomainByteArray("Cart RAM C", MemoryDomain.Endian.Little, C.cart_RAM, true, 1);
+				domains.Add(cartRamC);
 			}
 
 			if (R.cart_RAM != null)
 			{
-				var CartRamR = new MemoryDomainByteArray("Cart RAM R", MemoryDomain.Endian.Little, R.cart_RAM, true, 1);
-				domains.Add(CartRamR);
+				var cartRamR = new MemoryDomainByteArray("Cart RAM R", MemoryDomain.Endian.Little, R.cart_RAM, true, 1);
+				domains.Add(cartRamR);
 			}
 
 			MemoryDomains = new MemoryDomainList(domains);

@@ -39,50 +39,49 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 
 			CoreComm = comm;
 
-			var temp_set_L = new GBHawk.GBHawk.GBSettings();
-			var temp_set_C = new GBHawk.GBHawk.GBSettings();
-			var temp_set_R = new GBHawk.GBHawk.GBSettings();
+			var tempSetL = new GBHawk.GBHawk.GBSettings();
+			var tempSetC = new GBHawk.GBHawk.GBSettings();
+			var tempSetR = new GBHawk.GBHawk.GBSettings();
 
-			var temp_sync_L = new GBHawk.GBHawk.GBSyncSettings();
-			var temp_sync_C = new GBHawk.GBHawk.GBSyncSettings();
-			var temp_sync_R = new GBHawk.GBHawk.GBSyncSettings();
+			var tempSyncL = new GBHawk.GBHawk.GBSyncSettings();
+			var tempSyncC = new GBHawk.GBHawk.GBSyncSettings();
+			var tempSyncR = new GBHawk.GBHawk.GBSyncSettings();
 
-			temp_sync_L.ConsoleMode = Link3xSyncSettings.ConsoleMode_L;
-			temp_sync_C.ConsoleMode = Link3xSyncSettings.ConsoleMode_C;
-			temp_sync_R.ConsoleMode = Link3xSyncSettings.ConsoleMode_R;
+			tempSyncL.ConsoleMode = Link3xSyncSettings.ConsoleMode_L;
+			tempSyncC.ConsoleMode = Link3xSyncSettings.ConsoleMode_C;
+			tempSyncR.ConsoleMode = Link3xSyncSettings.ConsoleMode_R;
 
-			temp_sync_L.GBACGB = Link3xSyncSettings.GBACGB;
-			temp_sync_C.GBACGB = Link3xSyncSettings.GBACGB;
-			temp_sync_R.GBACGB = Link3xSyncSettings.GBACGB;
+			tempSyncL.GBACGB = Link3xSyncSettings.GBACGB;
+			tempSyncC.GBACGB = Link3xSyncSettings.GBACGB;
+			tempSyncR.GBACGB = Link3xSyncSettings.GBACGB;
 
-			temp_sync_L.RTCInitialTime = Link3xSyncSettings.RTCInitialTime_L;
-			temp_sync_C.RTCInitialTime = Link3xSyncSettings.RTCInitialTime_C;
-			temp_sync_R.RTCInitialTime = Link3xSyncSettings.RTCInitialTime_R;
-			temp_sync_L.RTCOffset = Link3xSyncSettings.RTCOffset_L;
-			temp_sync_C.RTCOffset = Link3xSyncSettings.RTCOffset_C;
-			temp_sync_R.RTCOffset = Link3xSyncSettings.RTCOffset_R;
+			tempSyncL.RTCInitialTime = Link3xSyncSettings.RTCInitialTime_L;
+			tempSyncC.RTCInitialTime = Link3xSyncSettings.RTCInitialTime_C;
+			tempSyncR.RTCInitialTime = Link3xSyncSettings.RTCInitialTime_R;
+			tempSyncL.RTCOffset = Link3xSyncSettings.RTCOffset_L;
+			tempSyncC.RTCOffset = Link3xSyncSettings.RTCOffset_C;
+			tempSyncR.RTCOffset = Link3xSyncSettings.RTCOffset_R;
 
 			L = new GBHawk.GBHawk(new CoreComm(comm.ShowMessage, comm.Notify) { CoreFileProvider = comm.CoreFileProvider },
-				game_L, rom_L, temp_set_L, temp_sync_L);
+				game_L, rom_L, tempSetL, tempSyncL);
 
 			C = new GBHawk.GBHawk(new CoreComm(comm.ShowMessage, comm.Notify) { CoreFileProvider = comm.CoreFileProvider },
-				game_C, rom_C, temp_set_C, temp_sync_C);
+				game_C, rom_C, tempSetC, tempSyncC);
 
 			R = new GBHawk.GBHawk(new CoreComm(comm.ShowMessage, comm.Notify) { CoreFileProvider = comm.CoreFileProvider },
-				game_R, rom_R, temp_set_R, temp_sync_R);
+				game_R, rom_R, tempSetR, tempSyncR);
 
 			ser.Register<IVideoProvider>(this);
 			ser.Register<ISoundProvider>(this); 
 
 			_tracer = new TraceBuffer { Header = L.cpu.TraceHeader };
-			ser.Register<ITraceable>(_tracer);
+			ser.Register(_tracer);
 
 			_lStates = L.ServiceProvider.GetService<IStatable>();
 			_cStates = C.ServiceProvider.GetService<IStatable>();
 			_rStates = R.ServiceProvider.GetService<IStatable>();
 
 			SetupMemoryDomains();
-
 			HardReset();
 		}
 
@@ -100,11 +99,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 		private readonly GBHawkLink3xControllerDeck _controllerDeck;
 
 		private readonly ITraceable _tracer;
-
-		private void ExecFetch(ushort addr)
-		{
-			uint flags = (uint)(MemoryCallbackFlags.AccessExecute);
-			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
-		}
 	}
 }

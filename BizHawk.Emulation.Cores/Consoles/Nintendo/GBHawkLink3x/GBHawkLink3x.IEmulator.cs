@@ -6,11 +6,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 {
 	public partial class GBHawkLink3x : IEmulator, IVideoProvider, ISoundProvider
 	{
-		public IEmulatorServiceProvider ServiceProvider { get; }
+		public IEmulatorServiceProvider ServiceProvider { get; } = new BasicServiceProvider();
 
 		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
-		public bool FrameAdvance(IController controller, bool render, bool rendersound)
+		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
 			//Console.WriteLine("-----------------------FRAME-----------------------");
 			//Update the color palette if a setting changed
@@ -380,7 +380,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 					R.vblank_rise = false;
 					do_frame_fill = true;
 				}
-			}			
+			}
 		}
 
 		public void GetControllerState(IController controller)
@@ -417,10 +417,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 
 		public int[] _vidbuffer = new int[160 * 2 * 144 * 2];
 
-		public int[] GetVideoBuffer()
-		{
-			return _vidbuffer;		
-		}
+		public int[] GetVideoBuffer() => _vidbuffer;
 
 		public void FillVideoBuffer()
 		{
@@ -447,8 +444,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 		public static readonly uint[] color_palette_BW = { 0xFFFFFFFF , 0xFFAAAAAA, 0xFF555555, 0xFF000000 };
 		public static readonly uint[] color_palette_Gr = { 0xFFA4C505, 0xFF88A905, 0xFF1D551D, 0xFF052505 };
 
-		public uint[] color_palette = new uint[4];
-
 		#endregion
 
 		#region audio
@@ -467,32 +462,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			short[] temp_samp_L;
-			short[] temp_samp_C;
-			short[] temp_samp_R;
-
-			int nsamp_L;
-			int nsamp_C;
-			int nsamp_R;
-
-			L.audio.GetSamplesSync(out temp_samp_L, out nsamp_L);
-			C.audio.GetSamplesSync(out temp_samp_C, out nsamp_C);
-			R.audio.GetSamplesSync(out temp_samp_R, out nsamp_R);
+			L.audio.GetSamplesSync(out var tempSampL, out var nsampL);
+			C.audio.GetSamplesSync(out var tempSampC, out var nsampC);
+			R.audio.GetSamplesSync(out var tempSampR, out var nsampR);
 
 			if (Link3xSettings.AudioSet == GBLink3xSettings.AudioSrc.Left)
 			{
-				samples = temp_samp_L;
-				nsamp = nsamp_L;
+				samples = tempSampL;
+				nsamp = nsampL;
 			}
 			else if (Link3xSettings.AudioSet == GBLink3xSettings.AudioSrc.Center)
 			{
-				samples = temp_samp_C;
-				nsamp = nsamp_C;
+				samples = tempSampC;
+				nsamp = nsampC;
 			}
 			else if (Link3xSettings.AudioSet == GBLink3xSettings.AudioSrc.Right)
 			{
-				samples = temp_samp_R;
-				nsamp = nsamp_R;
+				samples = tempSampR;
+				nsamp = nsampR;
 			}
 			else
 			{
@@ -511,11 +498,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 			L.audio.DiscardSamples();
 			C.audio.DiscardSamples();
 			R.audio.DiscardSamples();
-		}
-
-		private void GetSamples(short[] samples)
-		{
-
 		}
 
 		public void DisposeSound()
