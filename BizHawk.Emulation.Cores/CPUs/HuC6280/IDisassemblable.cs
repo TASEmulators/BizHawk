@@ -21,8 +21,8 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 		public string Disassemble(MemoryDomain m, uint addr, out int length)
 		{
 			return DisassembleExt((ushort)addr, out length,
-				(a) => m.PeekByte(a),
-				(a) => (ushort)(m.PeekByte(a) | m.PeekByte(a + 1) << 8));
+				a => m.PeekByte(a),
+				a => (ushort)(m.PeekByte(a) | m.PeekByte(a + 1) << 8));
 		}
 	}
 }

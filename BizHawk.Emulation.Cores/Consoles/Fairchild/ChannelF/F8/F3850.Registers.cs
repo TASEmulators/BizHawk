@@ -1,4 +1,8 @@
-﻿namespace BizHawk.Emulation.Cores.Consoles.ChannelF
+﻿using System;
+using System.Collections.Generic;
+using BizHawk.Emulation.Common;
+
+namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
 	/// <summary>
 	/// Internal Registers
@@ -168,6 +172,99 @@
 			{
 				Regs[DC0l] = (byte)(value & 0xFF);
 				Regs[DC0h] = (byte)((value >> 8) & 0xFF);
+			}
+		}
+
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
+		{
+			var res = new Dictionary<string, RegisterValue>
+			{
+				["A"] = Regs[A],
+				["W"] = Regs[W],
+				["ISAR"] = Regs[ISAR],
+				["PC0"] = RegPC0,
+				["PC1"] = RegPC1,
+				["DC0"] = RegDC0,
+				["DB"] = Regs[DB],
+				["IO"] = Regs[IO],
+				["J"] = Regs[J],
+				["H"] = Regs[Hl] + (Regs[Hh] << 8),
+				["K"] = Regs[Kl] + (Regs[Kh] << 8),
+				["Q"] = Regs[Ql] + (Regs[Qh] << 8),
+				["Flag C"] = FlagC,
+				["Flag O"] = FlagO,
+				["Flag Z"] = FlagZ,
+				["Flag S"] = FlagS,
+				["Flag I"] = FlagICB
+			};
+
+			for (int i = 0; i < 64; i++)
+			{
+				res.Add("SPR" + i, Regs[i]);
+			}
+
+			return res;
+		}
+
+		public void SetCpuRegister(string register, int value)
+		{
+			if (register.StartsWith("SPR"))
+			{
+				var reg = Convert.ToInt32(register.Replace("SPR", ""));
+
+				if (reg > 63)
+				{
+					throw new InvalidOperationException();
+				}
+
+				Regs[reg] = (byte) value;
+			}
+			else
+			{
+				switch (register)
+				{
+					default:
+						throw new InvalidOperationException();
+					case "A":
+						Regs[A] = (byte)value;
+						break;
+					case "W":
+						Regs[W] = (byte)value;
+						break;
+					case "ISAR":
+						Regs[ISAR] = (byte)(value & 0x3F);
+						break;
+					case "PC0":
+						RegPC0 = (ushort)value;
+						break;
+					case "PC1":
+						RegPC1 = (ushort)value;
+						break;
+					case "DC0":
+						RegDC0 = (ushort)value;
+						break;
+					case "DB":
+						Regs[DB] = (byte)value;
+						break;
+					case "IO":
+						Regs[IO] = (byte)value;
+						break;
+					case "J":
+						Regs[J] = (byte)value;
+						break;
+					case "H":
+						Regs[Hl] = (byte)(value & 0xFF);
+						Regs[Hh] = (byte)(value & 0xFF00);
+						break;
+					case "K":
+						Regs[Kl] = (byte)(value & 0xFF);
+						Regs[Kh] = (byte)(value & 0xFF00);
+						break;
+					case "Q":
+						Regs[Ql] = (byte)(value & 0xFF);
+						Regs[Qh] = (byte)(value & 0xFF00);
+						break;
+				}
 			}
 		}
 
