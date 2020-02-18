@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
@@ -94,6 +95,104 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 			ser.Sync("BTLen", ref btLen);
 			ser.Sync("BTAlternator", ref btAlternator);
 			ser.EndSection();
+		}
+
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
+		{
+			return new Dictionary<string, RegisterValue>
+			{
+				["A"] = A,
+				["X"] = X,
+				["Y"] = Y,
+				["PC"] = PC,
+				["S"] = S,
+				["MPR-0"] = MPR[0],
+				["MPR-1"] = MPR[1],
+				["MPR-2"] = MPR[2],
+				["MPR-3"] = MPR[3],
+				["MPR-4"] = MPR[4],
+				["MPR-5"] = MPR[5],
+				["MPR-6"] = MPR[6],
+				["MPR-7"] = MPR[7],
+				["Flag C"] = FlagC,
+				["Flag Z"] = FlagZ,
+				["Flag I"] = FlagI,
+				["Flag D"] = FlagD,
+				["Flag B"] = FlagB,
+				["Flag T"] = FlagT,
+				["Flag V"] = FlagV,
+				["Flag N"] = FlagN
+			};
+		}
+
+		public void SetCpuRegister(string register, int value)
+		{
+			switch (register)
+			{
+				default:
+					throw new InvalidOperationException();
+
+				case "A":
+					A = (byte)value;
+					break;
+				case "X":
+					X = (byte)value;
+					break;
+				case "Y":
+					Y = (byte)value;
+					break;
+				case "PC":
+					PC = (byte)value;
+					break;
+				case "MPR-0":
+					MPR[0] = (byte)value;
+					break;
+				case "MPR-1":
+					MPR[1] = (byte)value;
+					break;
+				case "MPR-2":
+					MPR[2] = (byte)value;
+					break;
+				case "MPR-3":
+					MPR[3] = (byte)value;
+					break;
+				case "MPR-4":
+					MPR[4] = (byte)value;
+					break;
+				case "MPR-5":
+					MPR[5] = (byte)value;
+					break;
+				case "MPR-6":
+					MPR[6] = (byte)value;
+					break;
+				case "MPR-7":
+					MPR[7] = (byte)value;
+					break;
+				case "FlagC":
+					FlagC = value > 0;
+					break;
+				case "FlagZ":
+					FlagZ = value > 0;
+					break;
+				case "FlagI":
+					FlagI = value > 0;
+					break;
+				case "FlagD":
+					FlagD = value > 0;
+					break;
+				case "FlagB":
+					FlagB = value > 0;
+					break;
+				case "FlagT":
+					FlagT = value > 0;
+					break;
+				case "FlagV":
+					FlagV = value > 0;
+					break;
+				case "FlagN":
+					FlagN = value > 0;
+					break;
+			}
 		}
 
 		// ==== Interrupts ====
