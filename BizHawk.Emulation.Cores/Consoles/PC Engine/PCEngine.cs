@@ -22,7 +22,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		[CoreConstructor("PCE", "SGX")]
 		public PCEngine(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
 		{
-			MemoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
 			CoreComm = comm;
 
 			switch (game.System)
@@ -50,19 +49,16 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				_syncSettings.Port5);
 		}
 
-		public PCEngine(CoreComm comm, GameInfo game, Disc disc, object Settings, object syncSettings)
+		public PCEngine(CoreComm comm, GameInfo game, Disc disc, object settings, object syncSettings)
 		{
 			CoreComm = comm;
-			MemoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
-			DriveLightEnabled = true;
 			SystemId = "PCECD";
 			Type = NecSystemType.TurboCD;
 			this.disc = disc;
-			this.Settings = (PCESettings)Settings ?? new PCESettings();
+			Settings = (PCESettings)settings ?? new PCESettings();
 			_syncSettings = (PCESyncSettings)syncSettings ?? new PCESyncSettings();
 
-			GameInfo biosInfo;
-			byte[] rom = CoreComm.CoreFileProvider.GetFirmwareWithGameInfo("PCECD", "Bios", true, out biosInfo,
+			byte[] rom = CoreComm.CoreFileProvider.GetFirmwareWithGameInfo("PCECD", "Bios", true, out var biosInfo,
 				"PCE-CD System Card not found. Please check the BIOS settings in Config->Firmwares.");
 
 			if (biosInfo.Status == RomStatus.BadDump)
@@ -101,7 +97,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			Init(game, rom);
 
 			// the default RomStatusDetails don't do anything with Disc
-			CoreComm.RomStatusDetails = $"{game.Name}\r\nDisk partial hash:{new DiscSystem.DiscHasher(disc).OldHash()}";
+			CoreComm.RomStatusDetails = $"{game.Name}\r\nDisk partial hash:{new DiscHasher(disc).OldHash()}";
 
 			_controllerDeck = new PceControllerDeck(
 				_syncSettings.Port1,
@@ -220,7 +216,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				RomLength = RomData.Length;
 
 				// user request: current value of the SF2MapperLatch on the tracelogger
-				Cpu.Logger = (s) => Tracer.Put(new TraceInfo
+				Cpu.Logger = s => Tracer.Put(new TraceInfo
 				{
 					Disassembly = $"{SF2MapperLatch:X1}:{s}",
 					RegisterInfo = ""

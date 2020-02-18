@@ -25,9 +25,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
-			InputCallbacks = new InputCallbackSystem();
-			MemoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
-
 			CoreComm = comm;
 
 			_gameInfo = game;

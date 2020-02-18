@@ -23,7 +23,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
-			InputCallbacks = new InputCallbackSystem();
 
 			CoreComm = comm;
 			_roms = roms?.ToList() ?? new List<byte[]>();

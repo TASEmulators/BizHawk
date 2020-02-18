@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		public void SetCpuRegister(string register, int value) => _cpu.SetCpuRegister(register, value);
 
-		public IMemoryCallbackSystem MemoryCallbacks { get; }
+		public IMemoryCallbackSystem MemoryCallbacks { get; } = new MemoryCallbackSystem(new[] { "System Bus" });
 
 		public bool CanStep(StepType type) => false;
 
