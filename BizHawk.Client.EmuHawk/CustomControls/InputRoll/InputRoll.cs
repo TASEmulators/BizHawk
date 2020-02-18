@@ -265,7 +265,7 @@ namespace BizHawk.Client.EmuHawk
 				bool fullRefresh = false;
 				if (_rowCount != value)
 				{
-					if (value < _rowCount && IsVisible(value))
+					if ((value < _rowCount && IsVisible(value)) || HorizontalOrientation)
 					{
 						fullRefresh = true;
 					}
