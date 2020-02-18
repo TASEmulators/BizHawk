@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using BizHawk.Bizware.BizwareGL;
 using SlimDX.Direct3D9;
 
-namespace BizHawk.Bizware.BizwareGL
+namespace BizHawk.Client.EmuHawk
 {
 	public class GLControlWrapper_SlimDX9 : Control, IGraphicsControl
 	{

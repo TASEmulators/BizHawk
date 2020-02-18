@@ -21,7 +21,7 @@ using swf = System.Windows.Forms;
 
 //todo - do a better job selecting shader model? base on caps somehow? try several and catch compilation exceptions (yuck, exceptions)
 
-namespace BizHawk.Bizware.BizwareGL
+namespace BizHawk.Client.EmuHawk
 {
 
 	public class IGL_SlimDX9 : IGL

@@ -25,7 +25,7 @@ using sd = System.Drawing;
 using sdi = System.Drawing.Imaging;
 using swf = System.Windows.Forms;
 
-namespace BizHawk.Bizware.BizwareGL
+namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
 	/// OpenTK implementation of the BizwareGL.IGL interface. 

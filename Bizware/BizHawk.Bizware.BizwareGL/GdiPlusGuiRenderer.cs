@@ -15,10 +15,9 @@ namespace BizHawk.Bizware.BizwareGL
 {
 	public class GDIPlusGuiRenderer : IGuiRenderer
 	{
-		public GDIPlusGuiRenderer(IGL_GdiPlus gl)
+		public GDIPlusGuiRenderer(IGL gl)
 		{
 			Owner = gl;
-			Gdi = gl as IGL_GdiPlus;
 		}
 
 		OpenTK.Graphics.Color4[] CornerColors = new OpenTK.Graphics.Color4[4] {
@@ -164,8 +163,8 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public void DrawSubrect(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
 		{
-			var tw = tex.Opaque as IGL_GdiPlus.TextureWrapper;
-			var g = Gdi.GetCurrentGraphics();
+			var tw = tex.Opaque as GDIPTextureWrapper;
+			var g = ((dynamic) Gdi).GetCurrentGraphics() as sd.Graphics;
 			PrepDraw(g, tex);
 			SetupMatrix(g);
 
@@ -200,7 +199,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		void PrepDraw(sd.Graphics g, Texture2d tex)
 		{
-			var tw = tex.Opaque as IGL_GdiPlus.TextureWrapper;
+			var tw = tex.Opaque as GDIPTextureWrapper;
 			//TODO - we can support bicubic for the final presentation..
 			if ((int)tw.MagFilter != (int)tw.MinFilter)
 				throw new InvalidOperationException($"{nameof(tw)}.{nameof(tw.MagFilter)} != {nameof(tw)}.{nameof(tw.MinFilter)}");
@@ -253,7 +252,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		unsafe void DrawInternal(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
 		{
-			var g = Gdi.GetCurrentGraphics();
+			var g = ((dynamic) Gdi).GetCurrentGraphics() as sd.Graphics;
 			PrepDraw(g, tex);
 
 			SetupMatrix(g);
@@ -271,7 +270,7 @@ namespace BizHawk.Bizware.BizwareGL
 			float sw = sx2 - sx;
 			float sh = sy2 - sy;
 
-			var tw = tex.Opaque as IGL_GdiPlus.TextureWrapper;
+			var tw = tex.Opaque as GDIPTextureWrapper;
 			g.PixelOffsetMode = sd.Drawing2D.PixelOffsetMode.Half;
 			g.DrawImage(tw.SDBitmap, destPoints, new sd.RectangleF(sx, sy, sw, sh), sd.GraphicsUnit.Pixel, CurrentImageAttributes);
 			g.Transform = new sd.Drawing2D.Matrix(); //.Reset() doesnt work ? ?
@@ -285,7 +284,7 @@ namespace BizHawk.Bizware.BizwareGL
 		
 		public bool IsActive { get; private set; }
 		public IGL Owner { get; private set; }
-		public IGL_GdiPlus Gdi;
+		public IGL Gdi => Owner;
 
 	}
 }

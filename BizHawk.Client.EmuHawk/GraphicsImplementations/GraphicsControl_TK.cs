@@ -11,7 +11,7 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 
-namespace BizHawk.Bizware.BizwareGL
+namespace BizHawk.Client.EmuHawk
 {
 	class GLControlWrapper : GLControl, IGraphicsControl
 	{
