@@ -840,6 +840,7 @@ SYNCFUNC(LCD)
 {
 	SSS(ppu_);
 	NSS(dmgColorsRgb32_);
+	NSS(cgbColorsRgb32_);
 	NSS(bgpData_);
 	NSS(objpData_);
 	SSS(eventTimes_);

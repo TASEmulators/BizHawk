@@ -223,6 +223,7 @@ SYNCFUNC(PSG)
 	SSS(ch3_);
 	SSS(ch4_);
 	NSS(lastUpdate_);
+	NSS(cycleCounter_);
 	NSS(soVol_);
 	NSS(rsum_);
 	NSS(enabled_);

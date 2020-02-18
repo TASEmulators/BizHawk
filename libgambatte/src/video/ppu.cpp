@@ -1859,6 +1859,7 @@ SYNCFUNC(PPU)
 	NSS(p_.spwordList);
 	NSS(p_.nextSprite);
 	NSS(p_.currentSprite);
+	NSS(p_.layersMask);
 
 	EBS(p_.nextCallPtr, 0);
 	EVS(p_.nextCallPtr, &M2_Ly0::f0_, 1);
@@ -1913,5 +1914,6 @@ SYNCFUNC(PPU)
 	NSS(p_.endx);
 
 	NSS(p_.cgb);
+	NSS(p_.cgbDmg);
 	NSS(p_.weMaster);
 }
