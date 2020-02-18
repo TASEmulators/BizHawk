@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 		isReleased: true)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
 	public partial class SubNESHawk : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable,
-	ISettable<NES.NES.NESSettings, NES.NES.NESSyncSettings>, INESPPUViewable
+		IBoardInfo, ISettable<NES.NES.NESSettings, NES.NES.NESSyncSettings>, INESPPUViewable
 	{
 		public NES.NES subnes;
 
@@ -94,6 +94,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 		}
 
 		private readonly ITraceable _tracer;
+
+		public string BoardName => subnes.Board.GetType().Name;
 
 		#region ISettable
 		private NES.NES.NESSettings subnesSettings = new NES.NES.NESSettings();
