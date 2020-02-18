@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		static readonly LibQuickNES QN;
 		static readonly DynamicLibraryImportResolver Resolver;
 
-		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+		public IEmulatorServiceProvider ServiceProvider { get; }
 
 		#region FPU precision
 

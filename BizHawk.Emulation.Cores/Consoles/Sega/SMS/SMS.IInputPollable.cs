@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			set => _isLag = value;
 		}
 
-		public IInputCallbackSystem InputCallbacks { get; private set; }
+		public IInputCallbackSystem InputCallbacks { get; } = new InputCallbackSystem();
 
 		public int _lagCount = 0;
 		public bool _lagged = true;

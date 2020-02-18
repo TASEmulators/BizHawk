@@ -51,22 +51,22 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private readonly byte[] _fileHash;
 
 		public ulong Size { get; }
-		public ulong Start { get; private set; }
+		public ulong Start { get; }
 
-		public long LoadOffset { get; private set; }
+		public long LoadOffset { get; }
 
 		public MemoryBlockBase Memory { get; private set; }
 
-		public IntPtr EntryPoint { get; private set; }
+		public IntPtr EntryPoint { get; }
 
 		/// <summary>
-		/// for midipix-built PEs, pointer to the construtors to run during init
+		/// for midipix-built PEs, pointer to the constructors to run during init
 		/// </summary>
-		public IntPtr CtorList { get; private set; }
+		public IntPtr CtorList { get; }
 		/// <summary>
 		/// for midipix-build PEs, pointer to the destructors to run during fini
 		/// </summary>
-		public IntPtr DtorList { get; private set; }
+		public IntPtr DtorList { get; }
 
 		// true if the seal process has completed, including .idata and .sealed set to readonly,
 		// xorstate taken

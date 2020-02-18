@@ -378,7 +378,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		[AttributeUsage(AttributeTargets.Method)]
 		private class CLibPatchAttribute : Attribute
 		{
-			public string NativeName { get; private set; }
+			public string NativeName { get; }
 			public CLibPatchAttribute(string nativeName)
 			{
 				NativeName = nativeName;

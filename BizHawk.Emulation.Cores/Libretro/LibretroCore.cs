@@ -79,9 +79,9 @@ namespace BizHawk.Emulation.Cores.Libretro
 				vidBufferHandle.Free();
 		}
 
-		public CoreComm CoreComm { get; private set; }
+		public CoreComm CoreComm { get; }
 
-		public RetroDescription Description { get; private set; }
+		public RetroDescription Description { get; }
 
 		public bool LoadData(byte[] data, string id)
 		{
@@ -123,7 +123,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(resampler);
 		}
 
-		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+		public IEmulatorServiceProvider ServiceProvider { get; }
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
@@ -285,7 +285,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			return definition;
 		}
 
-		public ControllerDefinition ControllerDefinition { get; private set; }
+		public ControllerDefinition ControllerDefinition { get; }
 
 		int timeFrameCounter;
 		public int Frame

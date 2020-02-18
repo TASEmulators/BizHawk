@@ -132,9 +132,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		/// <summary>
 		/// set in the ROM internal header
 		/// </summary>
-		public string GameCode { get; private set; }
+		public string GameCode { get; }
 
-		public CoreComm CoreComm { get; private set; }
+		public CoreComm CoreComm { get; }
 
 		public void Dispose()
 		{

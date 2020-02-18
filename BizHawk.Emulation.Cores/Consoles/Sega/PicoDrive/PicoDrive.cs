@@ -243,7 +243,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 
 		#region IDriveLight
 
-		public bool DriveLightEnabled { get; private set; }
+		public bool DriveLightEnabled { get; }
 		public bool DriveLightOn { get; private set; }
 
 		#endregion

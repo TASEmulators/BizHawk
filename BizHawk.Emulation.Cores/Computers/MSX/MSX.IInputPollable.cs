@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			set => _isLag = value;
 		}
 
-		public IInputCallbackSystem InputCallbacks { get; private set; }
+		public IInputCallbackSystem InputCallbacks { get; } = new InputCallbackSystem();
 
 		public int _lagCount = 0;
 		public bool _lagged = true;

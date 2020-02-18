@@ -85,8 +85,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		#region Properties
 
-		public CoreComm CoreComm { get; private set; }
-		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+		public CoreComm CoreComm { get; }
+		public IEmulatorServiceProvider ServiceProvider { get; }
 		public ControllerDefinition ControllerDefinition => MAMEController;
 		public string SystemId => "MAME";
 		public int[] GetVideoBuffer() => _frameBuffer;

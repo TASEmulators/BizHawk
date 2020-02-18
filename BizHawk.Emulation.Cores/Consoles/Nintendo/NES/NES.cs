@@ -779,7 +779,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		private ITraceable Tracer { get; set; }
+		private ITraceable Tracer { get; }
 	}
 }
 

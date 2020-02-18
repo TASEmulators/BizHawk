@@ -77,18 +77,16 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 			SetupMemoryDomains();
 
-			InputCallbacks = new InputCallbackSystem();
-
 			Header_Length = LibMSX.MSX_getheaderlength(MSX_Pntr);
 			Disasm_Length = LibMSX.MSX_getdisasmlength(MSX_Pntr);
 			Reg_String_Length = LibMSX.MSX_getregstringlength(MSX_Pntr);
 
-			StringBuilder new_header = new StringBuilder(Header_Length);
-			LibMSX.MSX_getheader(MSX_Pntr, new_header, Header_Length);
+			var newHeader = new StringBuilder(Header_Length);
+			LibMSX.MSX_getheader(MSX_Pntr, newHeader, Header_Length);
 
 			Console.WriteLine(Header_Length + " " + Disasm_Length + " " + Reg_String_Length);
 
-			Tracer = new TraceBuffer { Header = new_header.ToString() };
+			Tracer = new TraceBuffer { Header = newHeader.ToString() };
 
 			var serviceProvider = ServiceProvider as BasicServiceProvider;
 			serviceProvider.Register<ITraceable>(Tracer);

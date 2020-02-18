@@ -192,8 +192,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			//this manages the linkage between the cpu and mapper callbacks so it needs running before bootup is complete
 			((ICodeDataLogger)this).SetCDL(null);
 
-			InputCallbacks = new InputCallbackSystem();
-
 			Tracer = new TraceBuffer { Header = Cpu.TraceHeader };
 
 			var serviceProvider = ServiceProvider as BasicServiceProvider;

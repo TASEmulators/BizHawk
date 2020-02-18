@@ -79,8 +79,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			ser.EndSection();
 		}
 
-		public IPort Port1 { get; private set; }
-		public IPort Port2 { get; private set; }
+		public IPort Port1 { get; }
+		public IPort Port2 { get; }
 
 		private static Dictionary<string, Type> _controllerTypes = null;
 

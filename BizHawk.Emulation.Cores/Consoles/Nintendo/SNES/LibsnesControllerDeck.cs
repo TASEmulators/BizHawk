@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		private readonly ILibsnesController[] _ports;
 		private readonly ControlDefUnMerger[] _mergers;
 
-		public ControllerDefinition Definition { get; private set; }
+		public ControllerDefinition Definition { get; }
 
 		public LibsnesControllerDeck(LibsnesCore.SnesSyncSettings ss)
 		{

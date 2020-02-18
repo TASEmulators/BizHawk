@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// <summary>
 		/// name, used in identifying errors
 		/// </summary>
-		public string Name { get; private set; }
+		public string Name { get; }
 
 		/// <summary>
 		/// total number of bytes allocated

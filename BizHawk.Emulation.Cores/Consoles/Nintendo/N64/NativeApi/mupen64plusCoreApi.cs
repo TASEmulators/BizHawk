@@ -472,7 +472,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		DebugStep m64pDebugStep;
 
 		// DLL handles
-		public IntPtr CoreDll { get; private set; }
+		public IntPtr CoreDll { get; }
 
 		public mupen64plusApi(N64 bizhawkCore, byte[] rom, VideoPluginSettings video_settings, int SaveType, int CoreType, bool DisableExpansionSlot)
 		{

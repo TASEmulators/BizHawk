@@ -219,22 +219,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public class OAMInfo
 		{
-			public int Index { private set; get; }
-			public int X { private set; get; }
-			public int Y { private set; get; }
-			public int Tile { private set; get; }
-			public int Name { private set; get; }
-			public int Table { private set; get; }
-			public int Palette { private set; get; }
-			public int Priority { private set; get; }
-			public bool VFlip { private set; get; }
-			public bool HFlip { private set; get; }
-			public int Size { private set; get; }
+			public int Index { get; }
+			public int X { get; }
+			public int Y { get; }
+			public int Tile { get; }
+			public int Name { get; }
+			public int Table { get; }
+			public int Palette { get; }
+			public int Priority { get; }
+			public bool VFlip { get; }
+			public bool HFlip { get; }
+			public int Size { get; }
 
 			/// <summary>
 			/// tiledata address
 			/// </summary>
-			public int Address { private set; get; }
+			public int Address { get; }
 
 			public OAMInfo(SNESGraphicsDecoder dec, ScreenInfo si, int num)
 			{
