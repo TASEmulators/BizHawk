@@ -16,7 +16,7 @@ using swf = System.Windows.Forms;
 
 //TODO - maybe a layer to cache Graphics parameters (notably, filtering) ?
 
-namespace BizHawk.Bizware.BizwareGL
+namespace BizHawk.Client.EmuHawk
 {
 	public class IGL_GdiPlus : IGL
 	{
@@ -62,7 +62,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public void FreeTexture(Texture2d tex)
 		{
-			var tw = tex.Opaque as TextureWrapper;
+			var tw = tex.Opaque as GDIPTextureWrapper;
 			tw.Dispose();
 		}
 		
@@ -151,7 +151,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public void TexParameter2d(Texture2d tex, TextureParameterName pname, int param)
 		{
-			var tw = tex.Opaque as TextureWrapper;
+			var tw = tex.Opaque as GDIPTextureWrapper;
 			if (pname == TextureParameterName.TextureMinFilter)
 				tw.MinFilter = (TextureMinFilter)param;
 			if (pname == TextureParameterName.TextureMagFilter)
@@ -161,7 +161,7 @@ namespace BizHawk.Bizware.BizwareGL
 		public Texture2d LoadTexture(sd.Bitmap bitmap)
 		{
 			var sdbmp = (sd.Bitmap)bitmap.Clone();
-			TextureWrapper tw = new TextureWrapper();
+			GDIPTextureWrapper tw = new GDIPTextureWrapper();
 			tw.SDBitmap = sdbmp;
 			return new Texture2d(this, tw, bitmap.Width, bitmap.Height);
 		}
@@ -185,7 +185,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public void LoadTextureData(Texture2d tex, BitmapBuffer bmp)
 		{
-			var tw = tex.Opaque as TextureWrapper;
+			var tw = tex.Opaque as GDIPTextureWrapper;
 			bmp.ToSysdrawingBitmap(tw.SDBitmap);
 		}
 
@@ -194,14 +194,14 @@ namespace BizHawk.Bizware.BizwareGL
 		{
 			//definitely needed (by TextureFrugalizer at least)
 			var sdbmp = bmp.ToSysdrawingBitmap();
-			var tw = new TextureWrapper();
+			var tw = new GDIPTextureWrapper();
 			tw.SDBitmap = sdbmp;
 			return new Texture2d(this, tw, bmp.Width, bmp.Height);
 		}
 
 		public unsafe BitmapBuffer ResolveTexture2d(Texture2d tex)
 		{
-			var tw = tex.Opaque as TextureWrapper;
+			var tw = tex.Opaque as GDIPTextureWrapper;
 			var blow = new BitmapLoadOptions()
 			{
 				AllowWrap = false //must be an independent resource
@@ -320,7 +320,7 @@ namespace BizHawk.Bizware.BizwareGL
 				}
 				else
 				{
-					var tw = Target.Texture2d.Opaque as TextureWrapper;
+					var tw = Target.Texture2d.Opaque as GDIPTextureWrapper;
 					r = Target.Texture2d.Rectangle;
 					refGraphics = Graphics.FromImage(tw.SDBitmap);
 				}
@@ -368,7 +368,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public unsafe RenderTarget CreateRenderTarget(int w, int h)
 		{
-			TextureWrapper tw = new TextureWrapper();
+			GDIPTextureWrapper tw = new GDIPTextureWrapper();
 			tw.SDBitmap = new Bitmap(w,h, sdi.PixelFormat.Format32bppArgb);
 			var tex = new Texture2d(this, tw, w, h);
 
@@ -406,7 +406,7 @@ namespace BizHawk.Bizware.BizwareGL
 			}
 			else
 			{
-				var tw = rt.Texture2d.Opaque as TextureWrapper;
+				var tw = rt.Texture2d.Opaque as GDIPTextureWrapper;
 				CurrentRenderTargetWrapper = rt.Opaque as RenderTargetWrapper;
 				_CurrentOffscreenGraphics = Graphics.FromImage(tw.SDBitmap);
 				//if (CurrentRenderTargetWrapper.MyBufferedGraphics == null)
@@ -428,21 +428,6 @@ namespace BizHawk.Bizware.BizwareGL
 		public RenderTargetWrapper CurrentRenderTargetWrapper;
 
 		public BufferedGraphicsContext MyBufferedGraphicsContext;
-
-		public class TextureWrapper : IDisposable
-		{
-			public sd.Bitmap SDBitmap;
-			public TextureMinFilter MinFilter = TextureMinFilter.Nearest;
-			public TextureMagFilter MagFilter = TextureMagFilter.Nearest;
-			public void Dispose()
-			{
-				if (SDBitmap != null)
-				{
-					SDBitmap.Dispose();
-					SDBitmap = null;
-				}
-			}
-		}
 
 
 	} //class IGL_GdiPlus

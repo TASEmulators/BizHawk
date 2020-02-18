@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using BizHawk.Bizware.BizwareGL;
 
 
-namespace BizHawk.Bizware.BizwareGL
+namespace BizHawk.Client.EmuHawk
 {
 	public class GLControlWrapper_GdiPlus : Control, IGraphicsControl
 	{

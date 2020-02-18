@@ -96,8 +96,17 @@
 		<Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed"
 			HintPath="$(SolutionDir)packages/Newtonsoft.Json.12.0.3/lib/net45/Newtonsoft.Json.dll"
 			Private="true" />
+		<!--<Reference Include="OpenTK, Version=3.0.1.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4"
+			HintPath="../packages/OpenTK.3.0.1/lib/net20/OpenTK.dll"
+			Private="true" />-->
+		<Reference Include="OpenTK.GLControl, Version=3.0.1.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4"
+			HintPath="../packages/OpenTK.GLControl.3.0.1/lib/net20/OpenTK.GLControl.dll"
+			Private="true" />
 		<Reference Include="ICSharpCode.SharpZipLib, Version=1.1.0.145, Culture=neutral, PublicKeyToken=1b03e6acf1164f73"
 			HintPath="$(SolutionDir)packages/SharpZipLib.1.1.0/lib/net45/ICSharpCode.SharpZipLib.dll"
+			Private="true" />
+		<Reference Include="System.Drawing.Common, Version=4.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51"
+			HintPath="../packages/System.Drawing.Common.4.7.0/lib/net461/System.Drawing.Common.dll"
 			Private="true" />
 	</ItemGroup>
 	<ItemGroup>
@@ -426,6 +435,11 @@
 		<Compile Update="CustomControls/ToolStripEx.cs" SubType="Component" />
 		<Compile Update="CustomControls/TransparentTrackbar.cs" SubType="Component" />
 		<Compile Update="CustomControls/ViewportPanel.cs" SubType="Component" />
+		<Compile Update="GraphicsImplementations/GLControlWrapper_GdiPlus.cs" SubType="Component" />
+		<Compile Update="GraphicsImplementations/GLControlWrapper_SlimDX9.cs" SubType="Component" />
+		<Compile Update="GraphicsImplementations/GraphicsControl.cs" SubType="UserControl" />
+		<Compile Update="GraphicsImplementations/GraphicsControl_TK.cs" SubType="UserControl" />
+		<Compile Update="GraphicsImplementations/RetainedGraphicsControl.cs" SubType="UserControl" />
 		<Compile Update="LogWindow.cs" SubType="Form" />
 		<Compile Update="LogWindow.Designer.cs" DependentUpon="LogWindow.cs" />
 		<EmbeddedResource Update="LogWindow.resx" DependentUpon="LogWindow.cs" />
