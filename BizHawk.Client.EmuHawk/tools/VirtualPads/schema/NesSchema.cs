@@ -31,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 				else if (core is SubNESHawk subNesHawk)
 				{
 					ss = subNesHawk.GetSyncSettings();
-					isFds = subNesHawk.IsFDS;
+					isFds = subNesHawk.IsFds;
 					fdsButtonCount = subNesHawk.ControllerDefinition.BoolButtons.Count(b => b.StartsWith("FDS Insert "));
 				}
 

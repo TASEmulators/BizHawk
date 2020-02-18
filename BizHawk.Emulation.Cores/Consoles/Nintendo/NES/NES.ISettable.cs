@@ -8,15 +8,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public partial class NES : ISettable<NES.NESSettings, NES.NESSyncSettings>
 	{
-		public NESSettings GetSettings()
-		{
-			return Settings.Clone();
-		}
+		public NESSettings GetSettings() => Settings.Clone();
 
-		public NESSyncSettings GetSyncSettings()
-		{
-			return SyncSettings.Clone();
-		}
+		public NESSyncSettings GetSyncSettings() => SyncSettings.Clone();
 
 		public bool PutSettings(NESSettings o)
 		{

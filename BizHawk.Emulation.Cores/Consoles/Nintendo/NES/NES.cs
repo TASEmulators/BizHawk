@@ -67,12 +67,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				LoadStateCallback = SetupMemoryDomains
 			});
 
-			if (Board is BANDAI_FCG_1)
+			if (Board is BANDAI_FCG_1 bandai)
 			{
-				var reader = (Board as BANDAI_FCG_1).reader;
+				var reader = bandai.reader;
 				// not all BANDAI FCG 1 boards have a barcode reader
 				if (reader != null)
-					ser.Register<DatachBarcode>(reader);
+				{
+					ser.Register(reader);
+				}
 			}
 		}
 

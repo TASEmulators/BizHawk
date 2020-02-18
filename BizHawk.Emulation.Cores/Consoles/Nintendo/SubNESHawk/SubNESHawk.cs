@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using BizHawk.Emulation.Common;
-
+﻿using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
@@ -11,214 +8,85 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 		"",
 		isPorted: false,
 		isReleased: true)]
-	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
-	public partial class SubNESHawk : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable,
-		IBoardInfo, ISettable<NES.NES.NESSettings, NES.NES.NESSyncSettings>, INESPPUViewable
+	[ServiceNotApplicable(new [] { typeof(IDriveLight) })]
+	public partial class SubNESHawk : IEmulator, IStatable, IInputPollable,
+		ISettable<NES.NES.NESSettings, NES.NES.NESSyncSettings>
 	{
-		public NES.NES subnes;
-
-		// needed for movies to accurately calculate timing
-		public int VBL_CNT;
-
 		[CoreConstructor("NES")]
 		public SubNESHawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ object settings, object syncSettings)
 		{
-			var ser = new BasicServiceProvider(this);
+			
+			var subNesSettings = (NES.NES.NESSettings)settings ?? new NES.NES.NESSettings();
+			var subNesSyncSettings = (NES.NES.NESSyncSettings)syncSettings ?? new NES.NES.NESSyncSettings();
 
-			subnesSettings = (NES.NES.NESSettings)settings ?? new NES.NES.NESSettings();
-			subnesSyncSettings = (NES.NES.NESSyncSettings)syncSettings ?? new NES.NES.NESSyncSettings();
+			_nesCore = new NES.NES(new CoreComm(comm.ShowMessage, comm.Notify) {CoreFileProvider = comm.CoreFileProvider},
+				game, rom, subNesSettings, subNesSyncSettings)
+			{
+				using_reset_timing = true
+			};
 
-			CoreComm = comm;
-
-			subnes = new NES.NES(new CoreComm(comm.ShowMessage, comm.Notify) { CoreFileProvider = comm.CoreFileProvider },
-				game, rom, subnesSettings, subnesSyncSettings);
-
-			ser.Register<IVideoProvider>(subnes.videoProvider);
-			ser.Register<ISoundProvider>(subnes); 
-
-			_tracer = new TraceBuffer { Header = "6502: PC, machine code, mnemonic, operands, registers (A, X, Y, P, SP), flags (NVTBDIZCR), CPU Cycle, PPU Cycle" };
-			ser.Register<ITraceable>(_tracer);
-			ser.Register<IDisassemblable>(subnes.cpu);
-			ServiceProvider = ser;
-
-			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(subnes._memoryDomains);
-
-			subnes.using_reset_timing = true;
 			HardReset();
 			current_cycle = 0;
-			subnes.cpu.ext_ppu_cycle = current_cycle;
+			_nesCore.cpu.ext_ppu_cycle = current_cycle;
 			VBL_CNT = 0;
 
-			_nesStatable = subnes.ServiceProvider.GetService<IStatable>();
+			_nesStatable = _nesCore.ServiceProvider.GetService<IStatable>();
 
-			var barCodeService = subnes.ServiceProvider.GetService<DatachBarcode>();
+			var ser = new BasicServiceProvider(this);
+			ServiceProvider = ser;
+
+			ser.Register(_nesCore.ServiceProvider.GetService<IVideoProvider>());
+			ser.Register(_nesCore.ServiceProvider.GetService<ISoundProvider>());
+			ser.Register(_nesCore.ServiceProvider.GetService<ITraceable>());
+			ser.Register(_nesCore.ServiceProvider.GetService<IDisassemblable>());
+			ser.Register(_nesCore.ServiceProvider.GetService<IMemoryDomains>());
+			ser.Register(_nesCore.ServiceProvider.GetService<INESPPUViewable>());
+			ser.Register(_nesCore.ServiceProvider.GetService<IBoardInfo>());
+			ser.Register(_nesCore.ServiceProvider.GetService<ISaveRam>());
+			ser.Register(_nesCore.ServiceProvider.GetService<IDebuggable>());
+			ser.Register(_nesCore.ServiceProvider.GetService<IRegionable>());
+			ser.Register(_nesCore.ServiceProvider.GetService<ICodeDataLogger>());
+
+			_tracer = new TraceBuffer { Header = "6502: PC, machine code, mnemonic, operands, registers (A, X, Y, P, SP), flags (NVTBDIZCR), CPU Cycle, PPU Cycle" };
+			ser.Register(_tracer);
+
+			
+			var barCodeService = _nesCore.ServiceProvider.GetService<DatachBarcode>();
 			if (barCodeService != null)
 			{
 				ser.Register(barCodeService);
 			}
 		}
 
-		public void HardReset() => subnes.HardReset();
+		private readonly NES.NES _nesCore;
 
-		public void SoftReset()
+		// needed for movies to accurately calculate timing
+		public int VBL_CNT;
+
+		public void HardReset() => _nesCore.HardReset();
+
+		private void SoftReset()
 		{
-			subnes.Board.NESSoftReset();
-			subnes.cpu.NESSoftReset();
-			subnes.apu.NESSoftReset();
-			subnes.ppu.NESSoftReset();
+			_nesCore.Board.NESSoftReset();
+			_nesCore.cpu.NESSoftReset();
+			_nesCore.apu.NESSoftReset();
+			_nesCore.ppu.NESSoftReset();
 			current_cycle = 0;
-			subnes.cpu.ext_ppu_cycle = current_cycle;
+			_nesCore.cpu.ext_ppu_cycle = current_cycle;
 		}
 
-		public DisplayType Region => DisplayType.NTSC;
+		private int _frame;
 
-		public int _frame = 0;
+		public bool IsFds => _nesCore.IsFDS;
 
-		public bool IsFDS => subnes.IsFDS;
-
-		public bool IsVs => subnes.IsVS;
-
-		public bool HasMapperProperties
-		{
-			get
-			{
-				var fields = subnes.Board.GetType().GetFields();
-				foreach (var field in fields)
-				{
-					var attrib = field.GetCustomAttributes(typeof(MapperPropAttribute), false).OfType<MapperPropAttribute>().SingleOrDefault();
-					if (attrib != null)
-					{
-						return true;
-					}
-				}
-
-				return false;
-			}
-		}
+		public bool IsVs => _nesCore.IsVS;
 
 		private readonly ITraceable _tracer;
+		public bool HasMapperProperties => _nesCore.HasMapperProperties;
 
-		public string BoardName => subnes.Board.GetType().Name;
-
-		#region ISettable
-		private NES.NES.NESSettings subnesSettings = new NES.NES.NESSettings();
-		public NES.NES.NESSyncSettings subnesSyncSettings = new NES.NES.NESSyncSettings();
-
-		public NES.NES.NESSettings GetSettings()
-		{
-			return subnesSettings.Clone();
-		}
-
-		public NES.NES.NESSyncSettings GetSyncSettings()
-		{
-			return subnesSyncSettings.Clone();
-		}
-
-		public bool PutSettings(NES.NES.NESSettings o)
-		{
-			subnesSettings = o;
-			if (subnesSettings.ClipLeftAndRight)
-			{
-				subnes.videoProvider.left = 8;
-				subnes.videoProvider.right = 247;
-			}
-			else
-			{
-				subnes.videoProvider.left = 0;
-				subnes.videoProvider.right = 255;
-			}
-
-			CoreComm.ScreenLogicalOffsetX = subnes.videoProvider.left;
-			CoreComm.ScreenLogicalOffsetY = Region == DisplayType.NTSC ? subnesSettings.NTSC_TopLine : subnesSettings.PAL_TopLine;
-
-			subnes.SetPalette(subnesSettings.Palette);
-
-			subnes.apu.m_vol = subnesSettings.APU_vol;
-
-			return false;
-		}
-
-		public bool PutSyncSettings(NES.NES.NESSyncSettings o)
-		{
-			bool ret = NES.NES.NESSyncSettings.NeedsReboot(subnesSyncSettings, o);
-			subnesSyncSettings = o;
-			return ret;
-		}
-		#endregion
-
-		#region PPU Viewable
-
-		public int[] GetPalette()
-		{
-			return subnes.palette_compiled;
-		}
-
-		public bool BGBaseHigh => subnes.ppu.reg_2000.bg_pattern_hi;
-
-		public bool SPBaseHigh => subnes.ppu.reg_2000.obj_pattern_hi;
-
-		public bool SPTall => subnes.ppu.reg_2000.obj_size_16;
-
-		public byte[] GetPPUBus()
-		{
-			byte[] ret = new byte[0x3000];
-			for (int i = 0; i < 0x3000; i++)
-			{
-				ret[i] = subnes.ppu.ppubus_peek(i);
-			}
-			return ret;
-		}
-
-		public byte[] GetPalRam() => subnes.ppu.PALRAM;
-
-		public byte[] GetOam() => subnes.ppu.OAM;
-
-		public byte PeekPPU(int addr) => subnes.Board.PeekPPU(addr);
-
-		public byte[] GetExTiles()
-		{
-			if (subnes.Board is ExROM)
-			{
-				return subnes.Board.VROM ?? subnes.Board.VRAM;
-			}
-			
-			throw new InvalidOperationException();
-		}
-
-		public bool ExActive => subnes.Board is ExROM && (subnes.Board as ExROM).ExAttrActive;
-
-		public byte[] GetExRam()
-		{
-			if (subnes.Board is ExROM)
-			{
-				return (subnes.Board as ExROM).GetExRAMArray();
-			}
-
-			throw new InvalidOperationException();
-		}
-
-		public MemoryDomain GetCHRROM() => _memoryDomains["CHR VROM"];
-
-		public void InstallCallback1(Action cb, int sl)
-		{
-			subnes.ppu.NTViewCallback = new PPU.DebugCallback { Callback = cb, Scanline = sl };
-		}
-
-		public void InstallCallback2(Action cb, int sl)
-		{
-			subnes.ppu.PPUViewCallback = new PPU.DebugCallback { Callback = cb, Scanline = sl };
-		}
-
-		public void RemoveCallback1()
-		{
-			subnes.ppu.NTViewCallback = null;
-		}
-
-		public void RemoveCallback2()
-		{
-			subnes.ppu.PPUViewCallback = null;
-		}
-
-		#endregion
+		public NES.NES.NESSettings GetSettings() => _nesCore.GetSettings();
+		public NES.NES.NESSyncSettings GetSyncSettings() => _nesCore.GetSyncSettings();
+		public bool PutSettings(NES.NES.NESSettings o) => _nesCore.PutSettings(o);
+		public bool PutSyncSettings(NES.NES.NESSyncSettings o) => _nesCore.PutSyncSettings(o);
 	}
 }
