@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Emulation.Cores.Components.I8048
 {
 	public partial class I8048
@@ -98,6 +102,86 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 		{
 			get => (Regs[PSW] & 0x80) != 0;
 			set => Regs[PSW] = (byte)((Regs[PSW] & ~0x80) | (value ? 0x80 : 0x00));
+		}
+
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
+		{
+			return new Dictionary<string, RegisterValue>
+			{
+				["R0"] = Regs[0 + RB],
+				["R1"] = Regs[1 + RB],
+				["R2"] = Regs[2 + RB],
+				["R3"] = Regs[3 + RB],
+				["R4"] = Regs[4 + RB],
+				["R5"] = Regs[5 + RB],
+				["R6"] = Regs[6 + RB],
+				["R7"] = Regs[7 + RB],
+				["PC"] = Regs[PC],
+				["Flag C"] = FlagC,
+				["Flag AC"] = FlagAC,
+				["Flag BS"] = FlagBS,
+				["Flag F0"] = FlagF0,
+				["Flag F1"] = F1,
+				["Flag T0"] = T0,
+				["Flag T1"] = T1
+			};
+		}
+
+		public void SetCpuRegister(string register, int value)
+		{
+			switch (register)
+			{
+				default:
+					throw new InvalidOperationException();
+				case "R0":
+					Regs[0 + RB] = (byte)value;
+					break;
+				case "R1":
+					Regs[1 + RB] = (byte)value;
+					break;
+				case "R2":
+					Regs[2 + RB] = (byte)value;
+					break;
+				case "R3":
+					Regs[3 + RB] = (byte)value;
+					break;
+				case "R4":
+					Regs[4 + RB] = (byte)value;
+					break;
+				case "R5":
+					Regs[5 + RB] = (byte)value;
+					break;
+				case "R6":
+					Regs[6 + RB] = (byte)value;
+					break;
+				case "R7":
+					Regs[7 + RB] = (byte)value;
+					break;
+				case "PC":
+					Regs[PC] = (ushort)value;
+					break;
+				case "Flag C":
+					FlagC = value > 0;
+					break;
+				case "Flag AC":
+					FlagAC = value > 0;
+					break;
+				case "Flag BS":
+					FlagBS = value > 0;
+					break;
+				case "Flag F0":
+					FlagF0 = value > 0;
+					break;
+				case "Flag F1":
+					F1 = value > 0;
+					break;
+				case "Flag T0":
+					T0 = value > 0;
+					break;
+				case "Flag T1":
+					T1 = value > 0;
+					break;
+			}
 		}
 
 		private void ResetRegisters()
