@@ -88,7 +88,7 @@ void GB::reset() {
 
 		SaveState state;
 		p_->cpu.setStatePtrs(state);
-		setInitState(state, !(p_->loadflags & FORCE_DMG), p_->loadflags & GBA_CGB);
+		setInitState(state, !(p_->loadflags & FORCE_DMG));
 		p_->cpu.loadState(state);
 		if (length > 0)
 		{
@@ -139,13 +139,13 @@ void GB::setRtcDivisorOffset(long const rtcDivisorOffset) {
 }
 
 LoadRes GB::load(char const *romfiledata, unsigned romfilelength, unsigned const flags) {
-	LoadRes const loadres = p_->cpu.load(romfiledata, romfilelength, flags & FORCE_DMG, flags & MULTICART_COMPAT);
+	LoadRes const loadres = p_->cpu.load(romfiledata, romfilelength, flags);
 
 	if (loadres == LOADRES_OK) {
 		SaveState state;
 		p_->cpu.setStatePtrs(state);
 		p_->loadflags = flags;
-		setInitState(state, !(flags & FORCE_DMG), flags & GBA_CGB);
+		setInitState(state, !(flags & FORCE_DMG));
 		p_->cpu.loadState(state);
 	}
 

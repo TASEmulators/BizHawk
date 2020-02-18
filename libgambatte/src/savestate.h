@@ -36,7 +36,7 @@ struct SaveState {
 		void set(T *p, std::size_t size) { ptr = p; size_ = size; }
 
 		friend class SaverList;
-		friend void setInitState(SaveState &, bool, bool);
+		friend void setInitState(SaveState &, bool);
 	private:
 		T *ptr;
 		std::size_t size_;
@@ -54,6 +54,8 @@ struct SaveState {
 		unsigned char f;
 		unsigned char h;
 		unsigned char l;
+		unsigned char opcode;
+		unsigned char /*bool*/ prefetched;
 		unsigned char /*bool*/ skip;
 	} cpu;
 
@@ -63,28 +65,24 @@ struct SaveState {
 		Ptr<unsigned char> wram;
 		Ptr<unsigned char> ioamhram;
 		unsigned long divLastUpdate;
-		unsigned long timaBasetime;
 		unsigned long timaLastUpdate;
 		unsigned long tmatime;
 		unsigned long nextSerialtime;
 		unsigned long lastOamDmaUpdate;
 		unsigned long minIntTime;
 		unsigned long unhaltTime;
-		unsigned long halttime;
 		unsigned short rombank;
 		unsigned short dmaSource;
 		unsigned short dmaDestination;
 		unsigned char rambank;
 		unsigned char oamDmaPos;
+		unsigned char haltHdmaState;
 		unsigned char /*bool*/ IME;
 		unsigned char /*bool*/ halted;
 		unsigned char /*bool*/ enableRam;
 		unsigned char /*bool*/ rambankMode;
 		unsigned char /*bool*/ hdmaTransfer;
 		unsigned char /*bool*/ biosMode;
-		unsigned char /*bool*/ cgbSwitching;
-		unsigned char /*bool*/ agbMode;
-		unsigned char /*bool*/ gbIsCgb;
 		unsigned char /*bool*/ stopped;
 	} mem;
 
@@ -121,7 +119,7 @@ struct SaveState {
 		unsigned char wscx;
 		unsigned char /*bool*/ weMaster;
 		unsigned char /*bool*/ pendingLcdstatIrq;
-		unsigned char /*bool*/ isCgb;
+		unsigned char /*bool*/ notCgbDmg;
 	} ppu;
 
 	struct SPU {
@@ -147,7 +145,7 @@ struct SaveState {
 				unsigned long counter;
 				unsigned short shadow;
 				unsigned char nr0;
-				unsigned char /*bool*/ negging;
+				unsigned char /*bool*/ neg;
 			} sweep;
 			Duty duty;
 			Env env;
@@ -188,6 +186,7 @@ struct SaveState {
 		} ch4;
 
 		unsigned long cycleCounter;
+		unsigned char lastUpdate;
 	} spu;
 
 	struct Time {

@@ -27,6 +27,7 @@ class TimaInterruptRequester {
 public:
 	explicit TimaInterruptRequester(InterruptRequester &intreq) : intreq_(intreq) {}
 	void flagIrq() const { intreq_.flagIrq(4); }
+	void flagIrq(unsigned long cc) const { intreq_.flagIrq(4, cc); }
 	unsigned long nextIrqEventTime() const { return intreq_.eventTime(intevent_tima); }
 	void setNextIrqEventTime(unsigned long time) const { intreq_.setEventTime<intevent_tima>(time); }
 
@@ -42,12 +43,14 @@ public:
 	void setTima(unsigned tima, unsigned long cc, TimaInterruptRequester timaIrq);
 	void setTma(unsigned tma, unsigned long cc, TimaInterruptRequester timaIrq);
 	void setTac(unsigned tac, unsigned long cc, TimaInterruptRequester timaIrq, bool agbFlag);
-	void resTac(unsigned long cc, TimaInterruptRequester timaIrq);
+	void divReset(unsigned long cc, TimaInterruptRequester);
+	void speedChange(TimaInterruptRequester);
+	unsigned long divLastUpdate() const { return divLastUpdate_; }
 	unsigned tima(unsigned long cc);
 	void doIrqEvent(TimaInterruptRequester timaIrq);
 
 private:
-	unsigned long basetime_;
+	unsigned long divLastUpdate_;
 	unsigned long lastUpdate_;
 	unsigned long tmatime_;
 	unsigned char tima_;

@@ -22,32 +22,32 @@
     <ProjectGuid>{5D630682-7BDA-474D-B387-0EB420DDC199}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>libgambatte</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -154,9 +154,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\array.h" />
     <ClInclude Include="include\gambatte.h" />
     <ClInclude Include="include\gbint.h" />
     <ClInclude Include="include\loadres.h" />
+    <ClInclude Include="src\interrupter.h" />
     <ClInclude Include="src\cinterface.h" />
     <ClInclude Include="src\counterdef.h" />
     <ClInclude Include="src\cpu.h" />
@@ -180,18 +182,21 @@
     <ClInclude Include="src\sound\envelope_unit.h" />
     <ClInclude Include="src\sound\length_counter.h" />
     <ClInclude Include="src\sound\master_disabler.h" />
+    <ClInclude Include="src\sound\psgdef.h" />
     <ClInclude Include="src\sound\sound_unit.h" />
     <ClInclude Include="src\sound\static_output_tester.h" />
     <ClInclude Include="src\tima.h" />
     <ClInclude Include="src\video.h" />
+    <ClInclude Include="src\video\lcddef.h" />
     <ClInclude Include="src\video\lyc_irq.h" />
     <ClInclude Include="src\video\ly_counter.h" />
-    <ClInclude Include="src\video\m0_irq.h" />
+    <ClInclude Include="src\video\mstat_irq.h" />
     <ClInclude Include="src\video\next_m0_time.h" />
     <ClInclude Include="src\video\ppu.h" />
     <ClInclude Include="src\video\sprite_mapper.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Interrupter.cpp" />
     <ClCompile Include="src\cinterface.cpp" />
     <ClCompile Include="src\cpu.cpp" />
     <ClCompile Include="src\gambatte.cpp" />

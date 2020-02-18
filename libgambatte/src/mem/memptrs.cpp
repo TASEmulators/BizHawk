@@ -20,7 +20,56 @@
 #include <algorithm>
 #include <cstring>
 
-namespace gambatte {
+using namespace gambatte;
+
+namespace {
+
+	template <OamDmaSrc src, bool cgb> struct OamDmaConflictMap;
+	template <bool cgb> struct OamDmaConflictMap<oam_dma_src_rom, cgb> { enum { r = 0xFCFF }; };
+	template <bool cgb> struct OamDmaConflictMap<oam_dma_src_sram, cgb> { enum { r = 0xFCFF }; };
+	template <bool cgb> struct OamDmaConflictMap<oam_dma_src_vram, cgb> { enum { r = 0x0300 }; };
+	template <bool cgb> struct OamDmaConflictMap<oam_dma_src_wram, cgb> { enum { r = cgb ? 0xF000 : 0xFCFF }; };
+	template <bool cgb> struct OamDmaConflictMap<oam_dma_src_invalid, cgb> { enum { r = cgb ? 0xFCFF : 0x0000 }; };
+
+	template <bool cgb>
+	bool isInOamDmaConflictArea(OamDmaSrc src, unsigned p)
+	{
+		static unsigned short const m[] = {
+			OamDmaConflictMap<oam_dma_src_rom, cgb>::r,
+			OamDmaConflictMap<oam_dma_src_sram, cgb>::r,
+			OamDmaConflictMap<oam_dma_src_vram, cgb>::r,
+			OamDmaConflictMap<oam_dma_src_wram, cgb>::r,
+			OamDmaConflictMap<oam_dma_src_invalid, cgb>::r,
+			0 };
+		return p < mm_oam_begin && (m[src] >> (p >> 12) & 1);
+	}
+
+	template <OamDmaSrc src, bool cgb>
+	void disconnectOamDmaAreas(unsigned char const* (&rmem)[0x10], unsigned char* (&wmem)[0x10])
+	{
+		if (OamDmaConflictMap<src, cgb>::r & 0x00FF)
+			std::fill_n(rmem, 8, static_cast<unsigned char*>(0));
+		if (OamDmaConflictMap<src, cgb>::r & 0x0C00)
+			rmem[0xB] = rmem[0xA] = wmem[0xB] = wmem[0xA] = 0;
+		if (OamDmaConflictMap<src, cgb>::r & 0x7000)
+			rmem[0xE] = rmem[0xD] = rmem[0xC] = wmem[0xE] = wmem[0xD] = wmem[0xC] = 0;
+	}
+
+	template <bool cgb>
+	void disconnectOamDmaAreas(unsigned char const* (&rmem)[0x10], unsigned char* (&wmem)[0x10],
+		OamDmaSrc src)
+	{
+		switch (src) {
+		case oam_dma_src_rom: disconnectOamDmaAreas<oam_dma_src_rom, cgb>(rmem, wmem); break;
+		case oam_dma_src_sram: disconnectOamDmaAreas<oam_dma_src_sram, cgb>(rmem, wmem); break;
+		case oam_dma_src_vram: disconnectOamDmaAreas<oam_dma_src_vram, cgb>(rmem, wmem); break;
+		case oam_dma_src_wram: disconnectOamDmaAreas<oam_dma_src_wram, cgb>(rmem, wmem); break;
+		case oam_dma_src_invalid: disconnectOamDmaAreas<oam_dma_src_invalid, cgb>(rmem, wmem); break;
+		case oam_dma_src_off: break;
+		}
+	}
+
+} // unnamed namespace.
 
 MemPtrs::MemPtrs()
 : rmem_()
@@ -30,7 +79,6 @@ MemPtrs::MemPtrs()
 , vrambankptr_(0)
 , rsrambankptr_(0)
 , wsrambankptr_(0)
-, memchunk_(0)
 , rambankdata_(0)
 , wramdataend_(0)
 , oamDmaSrc_(oam_dma_src_off)
@@ -39,32 +87,27 @@ MemPtrs::MemPtrs()
 {
 }
 
-MemPtrs::~MemPtrs() {
-	delete []memchunk_;
-}
-
 void MemPtrs::reset(unsigned const rombanks, unsigned const rambanks, unsigned const wrambanks) {
-	delete []memchunk_;
-	memchunk_len = 
-		  0x4000
-		+ rombanks * 0x4000ul
-		+ 0x4000
-		+ rambanks * 0x2000ul
-		+ wrambanks * 0x1000ul
-		+ 0x4000;
-	memchunk_ = new unsigned char[memchunk_len];
+	int const num_disabled_ram_areas = 2;
+	memchunk_.reset(
+		pre_rom_pad_size()
+		+ rombanks * rombank_size()
+		+ max_num_vrambanks * vrambank_size()
+		+ rambanks * rambank_size()
+		+ wrambanks * wrambank_size()
+		+ num_disabled_ram_areas * rambank_size());
 
 	romdata_[0] = romdata();
-	rambankdata_ = romdata_[0] + rombanks * 0x4000ul + 0x4000;
-	wramdata_[0] = rambankdata_ + rambanks * 0x2000ul;
-	wramdataend_ = wramdata_[0] + wrambanks * 0x1000ul;
+	rambankdata_ = romdata_[0] + rombanks * rombank_size() + max_num_vrambanks * vrambank_size();
+	wramdata_[0] = rambankdata_ + rambanks * rambank_size();
+	wramdataend_ = wramdata_[0] + wrambanks * wrambank_size();
 
-	std::memset(rdisabledRamw(), 0xFF, 0x2000);
+	std::fill_n(rdisabledRamw(), rambank_size(), 0xFF);
 
 	oamDmaSrc_ = oam_dma_src_off;
 	rmem_[0x3] = rmem_[0x2] = rmem_[0x1] = rmem_[0x0] = romdata_[0];
-	rmem_[0xC] = wmem_[0xC] = wramdata_[0] - 0xC000;
-	rmem_[0xE] = wmem_[0xE] = wramdata_[0] - 0xE000;
+	rmem_[0xC] = wmem_[0xC] = wramdata_[0] - mm_wram_begin;
+	rmem_[0xE] = wmem_[0xE] = wramdata_[0] - mm_wram_mirror_begin;
 	setRombank(1);
 	setRambank(0, 0);
 	setVrambank(0);
@@ -76,38 +119,40 @@ void MemPtrs::reset(unsigned const rombanks, unsigned const rambanks, unsigned c
 }
 
 void MemPtrs::setRombank0(unsigned bank) {
-	romdata_[0] = romdata() + bank * 0x4000ul;
+	romdata_[0] = romdata() + bank * rombank_size();
 	rmem_[0x3] = rmem_[0x2] = rmem_[0x1] = rmem_[0x0] = romdata_[0];
 	disconnectOamDmaAreas();
 }
 
 void MemPtrs::setRombank(unsigned bank) {
 	curRomBank_ = bank;
-	romdata_[1] = romdata() + bank * 0x4000ul - 0x4000;
+	romdata_[1] = romdata() + bank * rombank_size() - mm_rom1_begin;
 	rmem_[0x7] = rmem_[0x6] = rmem_[0x5] = rmem_[0x4] = romdata_[1];
 	disconnectOamDmaAreas();
 }
 
 void MemPtrs::setRambank(unsigned const flags, unsigned const rambank) {
-	unsigned char *srambankptr = 0;
+	unsigned char* srambankptr = 0;
 	if (!(flags & rtc_en)) {
 		srambankptr = rambankdata() != rambankdataend()
-		            ? rambankdata_ + rambank * 0x2000ul - 0xA000
-		            : wdisabledRam() - 0xA000;
+			? rambankdata_ + rambank * rambank_size() - mm_sram_begin
+			: wdisabledRam() - mm_sram_begin;
 	}
 
-	rsrambankptr_ = (flags & read_en) && srambankptr != wdisabledRam() - 0xA000
-	              ? srambankptr
-	              : rdisabledRamw() - 0xA000;
-	wsrambankptr_ = flags & write_en ? srambankptr : wdisabledRam() - 0xA000;
+	rsrambankptr_ = (flags & read_en) && srambankptr != wdisabledRam() - mm_sram_begin
+		? srambankptr
+		: rdisabledRamw() - mm_sram_begin;
+	wsrambankptr_ = flags & write_en
+		? srambankptr
+		: wdisabledRam() - mm_sram_begin;
 	rmem_[0xB] = rmem_[0xA] = rsrambankptr_;
 	wmem_[0xB] = wmem_[0xA] = wsrambankptr_;
 	disconnectOamDmaAreas();
 }
 
 void MemPtrs::setWrambank(unsigned bank) {
-	wramdata_[1] = wramdata_[0] + (bank & 0x07 ? bank & 0x07 : 1) * 0x1000;
-	rmem_[0xD] = wmem_[0xD] = wramdata_[1] - 0xD000;
+	wramdata_[1] = wramdata_[0] + (bank & 0x07 ? bank & 0x07 : 1) * wrambank_size();
+	rmem_[0xD] = wmem_[0xD] = wramdata_[1] - mm_wram1_begin;
 	disconnectOamDmaAreas();
 }
 
@@ -116,51 +161,25 @@ void MemPtrs::setOamDmaSrc(OamDmaSrc oamDmaSrc) {
 	rmem_[0x7] = rmem_[0x6] = rmem_[0x5] = rmem_[0x4] = romdata_[1];
 	rmem_[0xB] = rmem_[0xA] = rsrambankptr_;
 	wmem_[0xB] = wmem_[0xA] = wsrambankptr_;
-	rmem_[0xC] = wmem_[0xC] = wramdata_[0] - 0xC000;
-	rmem_[0xD] = wmem_[0xD] = wramdata_[1] - 0xD000;
-	rmem_[0xE] = wmem_[0xE] = wramdata_[0] - 0xE000;
+	rmem_[0xC] = wmem_[0xC] = wramdata_[0] - mm_wram_begin;
+	rmem_[0xD] = wmem_[0xD] = wramdata_[1] - mm_wram1_begin;
+	rmem_[0xE] = wmem_[0xE] = wramdata_[0] - mm_wram_mirror_begin;
 
 	oamDmaSrc_ = oamDmaSrc;
 	disconnectOamDmaAreas();
 }
 
 void MemPtrs::disconnectOamDmaAreas() {
-	if (isCgb(*this)) {
-		switch (oamDmaSrc_) {
-		case oam_dma_src_rom:  // fall through
-		case oam_dma_src_sram:
-		case oam_dma_src_invalid:
-			std::fill(rmem_, rmem_ + 8, static_cast<unsigned char *>(0));
-			rmem_[0xB] = rmem_[0xA] = 0;
-			wmem_[0xB] = wmem_[0xA] = 0;
-			break;
-		case oam_dma_src_vram:
-			break;
-		case oam_dma_src_wram:
-			rmem_[0xE] = rmem_[0xD] = rmem_[0xC] = 0;
-			wmem_[0xE] = wmem_[0xD] = wmem_[0xC] = 0;
-			break;
-		case oam_dma_src_off:
-			break;
-		}
-	} else {
-		switch (oamDmaSrc_) {
-		case oam_dma_src_rom:  // fall through
-		case oam_dma_src_sram:
-		case oam_dma_src_wram:
-		case oam_dma_src_invalid:
-			std::fill(rmem_, rmem_ + 8, static_cast<unsigned char *>(0));
-			rmem_[0xB] = rmem_[0xA] = 0;
-			wmem_[0xB] = wmem_[0xA] = 0;
-			rmem_[0xE] = rmem_[0xD] = rmem_[0xC] = 0;
-			wmem_[0xE] = wmem_[0xD] = wmem_[0xC] = 0;
-			break;
-		case oam_dma_src_vram:
-			break;
-		case oam_dma_src_off:
-			break;
-		}
-	}
+	return isCgb(*this)
+		? ::disconnectOamDmaAreas<true>(rmem_, wmem_, oamDmaSrc_)
+		: ::disconnectOamDmaAreas<false>(rmem_, wmem_, oamDmaSrc_);
+}
+
+bool MemPtrs::isInOamDmaConflictArea(unsigned p) const
+{
+	return isCgb(*this)
+		? ::isInOamDmaConflictArea<true>(oamDmaSrc_, p)
+		: ::isInOamDmaConflictArea<false>(oamDmaSrc_, p);
 }
 
 // all pointers here are relative to memchunk_
@@ -220,4 +239,3 @@ SYNCFUNC(MemPtrs)
 	NSS(curRomBank_);
 }
 
-}

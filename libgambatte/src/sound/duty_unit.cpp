@@ -17,17 +17,24 @@
 //
 
 #include "duty_unit.h"
+#include "psgdef.h"
 #include <algorithm>
 
-static inline bool toOutState(unsigned duty, unsigned pos) {
-	return 0x7EE18180 >> (duty * 8 + pos) & 1;
+namespace {
+
+	int const duty_pattern_len = 8;
+
+	bool toOutState(unsigned duty, unsigned pos) {
+		return 0x7EE18180 >> (duty * duty_pattern_len + pos) & 1;
+	}
+
+	unsigned toPeriod(unsigned freq) {
+		return (2048 - freq) * 2;
+	}
+
 }
 
-static inline unsigned toPeriod(unsigned freq) {
-	return (2048 - freq) * 2;
-}
-
-namespace gambatte {
+using namespace gambatte;
 
 DutyUnit::DutyUnit()
 : nextPosUpdate_(counter_disabled)
@@ -44,27 +51,26 @@ void DutyUnit::updatePos(unsigned long const cc) {
 	if (cc >= nextPosUpdate_) {
 		unsigned long const inc = (cc - nextPosUpdate_) / period_ + 1;
 		nextPosUpdate_ += period_ * inc;
-		pos_ += inc;
-		pos_ &= 7;
+		pos_ = (pos_ + inc) % duty_pattern_len;
 		high_ = toOutState(duty_, pos_);
 	}
 }
 
 void DutyUnit::setCounter() {
-	static unsigned char const nextStateDistance[4 * 8] = {
-		7, 6, 5, 4, 3, 2, 1, 1,
-		1, 6, 5, 4, 3, 2, 1, 2,
-		1, 4, 3, 2, 1, 4, 3, 2,
-		1, 6, 5, 4, 3, 2, 1, 2
+	static unsigned char const nextStateDistance[][duty_pattern_len] = {
+		{ 7, 6, 5, 4, 3, 2, 1, 1 },
+		{ 1, 6, 5, 4, 3, 2, 1, 2 },
+		{ 1, 4, 3, 2, 1, 4, 3, 2 },
+		{ 1, 6, 5, 4, 3, 2, 1, 2 }
 	};
 
 	if (enableEvents_ && nextPosUpdate_ != counter_disabled) {
-		unsigned const npos = (pos_ + 1) & 7;
+		unsigned const npos = (pos_ + 1) % duty_pattern_len;
 		counter_ = nextPosUpdate_;
-		inc_ = nextStateDistance[duty_ * 8 + npos];
+		inc_ = nextStateDistance[duty_][npos];
 		if (toOutState(duty_, npos) == high_) {
 			counter_ += period_ * inc_;
-			inc_ = nextStateDistance[duty_ * 8 + ((npos + inc_) & 7)];
+			inc_ = nextStateDistance[duty_][(npos + inc_) % duty_pattern_len];
 		}
 	} else
 		counter_ = counter_disabled;
@@ -77,16 +83,16 @@ void DutyUnit::setFreq(unsigned newFreq, unsigned long cc) {
 }
 
 void DutyUnit::event() {
-	static unsigned char const inc[] = {
-		1, 7,
-		2, 6,
-		4, 4,
-		6, 2,
+	static unsigned char const inc[][2] = {
+		{ 1, 7 },
+		{ 2, 6 },
+		{ 4, 4 },
+		{ 6, 2 }
 	};
 
 	high_ ^= true;
 	counter_ += inc_ * period_;
-	inc_ = inc[duty_ * 2 + high_];
+	inc_ = inc[duty_][high_];
 }
 
 void DutyUnit::nr1Change(unsigned newNr1, unsigned long cc) {
@@ -99,12 +105,11 @@ void DutyUnit::nr3Change(unsigned newNr3, unsigned long cc) {
 	setFreq((freq() & 0x700) | newNr3, cc);
 }
 
-void DutyUnit::nr4Change(unsigned const newNr4, unsigned long const cc,
-		bool const master) {
+void DutyUnit::nr4Change(unsigned const newNr4, unsigned long const cc, unsigned long const ref, bool const master) {
 	setFreq((newNr4 << 8 & 0x700) | (freq() & 0xFF), cc);
 
-	if (newNr4 & 0x80) {
-		nextPosUpdate_ = (cc & ~1ul) + period_ + 4 - (master << 1);
+	if (newNr4 & psg_nr4_init) {
+		nextPosUpdate_ = cc - (cc - ref) % 2 + period_ + 4 - (master << 1);
 		setCounter();
 	}
 }
@@ -113,6 +118,15 @@ void DutyUnit::reset() {
 	pos_ = 0;
 	high_ = false;
 	nextPosUpdate_ = counter_disabled;
+	setCounter();
+}
+
+void DutyUnit::resetCc(unsigned long cc, unsigned long newCc) {
+	if (nextPosUpdate_ == counter_disabled)
+		return;
+
+	updatePos(cc);
+	nextPosUpdate_ -= cc - newCc;
 	setCounter();
 }
 
@@ -127,13 +141,8 @@ void DutyUnit::loadState(SaveState::SPU::Duty const &dstate,
 	setCounter();
 }
 
-void DutyUnit::resetCounters(unsigned long const oldCc) {
-	if (nextPosUpdate_ == counter_disabled)
-		return;
-
-	updatePos(oldCc);
-	nextPosUpdate_ -= counter_max;
-	setCounter();
+void DutyUnit::resetCounters(unsigned long cc) {
+	resetCc(cc, cc - counter_max);
 }
 
 void DutyUnit::killCounter() {
@@ -157,6 +166,4 @@ SYNCFUNC(DutyUnit)
 	NSS(inc_);
 	NSS(high_);
 	NSS(enableEvents_);
-}
-
 }

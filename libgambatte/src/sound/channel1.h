@@ -35,14 +35,15 @@ class Channel1 {
 public:
 	Channel1();
 	void setNr0(unsigned data);
-	void setNr1(unsigned data);
-	void setNr2(unsigned data);
-	void setNr3(unsigned data);
-	void setNr4(unsigned data);
-	void setSo(unsigned long soMask);
+	void setNr1(unsigned data, unsigned long cc);
+	void setNr2(unsigned data, unsigned long cc);
+	void setNr3(unsigned data, unsigned long cc);
+	void setNr4(unsigned data, unsigned long cc, unsigned long ref);
+	void setSo(unsigned long soMask, unsigned long cc);
 	bool isActive() const { return master_; }
-	void update(uint_least32_t *buf, unsigned long soBaseVol, unsigned long cycles);
+	void update(uint_least32_t* buf, unsigned long soBaseVol, unsigned long cc, unsigned long end);
 	void reset();
+	void resetCc(unsigned long cc, unsigned long ncc) { dutyUnit_.resetCc(cc, ncc); }
 	void init(bool cgb);
 	void loadState(SaveState const &state);
 
@@ -54,6 +55,7 @@ private:
 		void nr0Change(unsigned newNr0);
 		void nr4Init(unsigned long cycleCounter);
 		void reset();
+		void resetCc(unsigned long cc, unsigned long ncc) { dutyUnit_.resetCc(cc, ncc); }
 		void init(bool cgb) { cgb_ = cgb; }
 		void loadState(SaveState const &state);
 
@@ -62,7 +64,7 @@ private:
 		DutyUnit &dutyUnit_;
 		unsigned short shadow_;
 		unsigned char nr0_;
-		bool negging_;
+		bool neg_;
 		bool cgb_;
 
 		unsigned calcFreq();
@@ -80,7 +82,6 @@ private:
 	EnvelopeUnit envelopeUnit_;
 	SweepUnit sweepUnit_;
 	SoundUnit *nextEventUnit_;
-	unsigned long cycleCounter_;
 	unsigned long soMask_;
 	unsigned long prevOut_;
 	unsigned char nr4_;
