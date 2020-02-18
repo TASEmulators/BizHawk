@@ -1924,7 +1924,7 @@ namespace BizHawk.Client.EmuHawk
 
 			return 0.RangeToExclusive(_horizontalColumnTops.Length).Contains(index)
 				? _horizontalColumnTops[index]
-				: _horizontalColumnTops.Last() + CellHeight;
+				: _horizontalColumnTops.Last() + _horizontalColumnHeights.Last();
 		}
 
 		private int GetHColBottom(int index) =>
