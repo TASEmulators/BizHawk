@@ -23,13 +23,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 
-			byte[] fdsbios = comm.CoreFileProvider.GetFirmware("NES", "Bios_FDS", false);
-			if (fdsbios != null && fdsbios.Length == 40976)
+			byte[] fdsBios = comm.CoreFileProvider.GetFirmware("NES", "Bios_FDS", false);
+			if (fdsBios != null && fdsBios.Length == 40976)
 			{
 				comm.ShowMessage("Your FDS BIOS is a bad dump.  BizHawk will attempt to use it, but no guarantees!  You should find a new one.");
 				var tmp = new byte[8192];
-				Buffer.BlockCopy(fdsbios, 16 + 8192 * 3, tmp, 0, 8192);
-				fdsbios = tmp;
+				Buffer.BlockCopy(fdsBios, 16 + 8192 * 3, tmp, 0, 8192);
+				fdsBios = tmp;
 			}
 
 			SyncSettings = (NESSyncSettings)syncSettings ?? new NESSyncSettings();
@@ -38,11 +38,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			BootGodDB.Initialize();
 			videoProvider = new MyVideoProvider(this);
-			Init(game, rom, fdsbios);
-			if (Board is FDS)
+			Init(game, rom, fdsBios);
+			if (Board is FDS fds)
 			{
 				DriveLightEnabled = true;
-				(Board as FDS).SetDriveLightCallback((val) => DriveLightOn = val);
+				fds.SetDriveLightCallback(val => DriveLightOn = val);
 				// bit of a hack: we don't have a private gamedb for FDS, but the frontend
 				// expects this to be set.
 				RomStatus = game.Status;

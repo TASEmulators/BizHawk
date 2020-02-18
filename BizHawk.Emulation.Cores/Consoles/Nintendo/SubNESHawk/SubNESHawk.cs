@@ -50,6 +50,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			VBL_CNT = 0;
 
 			_nesStatable = subnes.ServiceProvider.GetService<IStatable>();
+
+			var barCodeService = subnes.ServiceProvider.GetService<DatachBarcode>();
+			if (barCodeService != null)
+			{
+				ser.Register(barCodeService);
+			}
 		}
 
 		public void HardReset() => subnes.HardReset();

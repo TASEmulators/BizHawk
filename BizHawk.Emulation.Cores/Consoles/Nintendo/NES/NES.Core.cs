@@ -142,17 +142,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// set controller definition first time only
 			if (ControllerDefinition == null)
 			{
-				ControllerDefinition = new ControllerDefinition(ControllerDeck.GetDefinition());
-				ControllerDefinition.Name = "NES Controller";
+				ControllerDefinition = new ControllerDefinition(ControllerDeck.GetDefinition())
+				{
+					Name = "NES Controller"
+				};
+
 				// controls other than the deck
 				ControllerDefinition.BoolButtons.Add("Power");
 				ControllerDefinition.BoolButtons.Add("Reset");
-				if (Board is FDS)
+				if (Board is FDS b)
 				{
-					var b = Board as FDS;
 					ControllerDefinition.BoolButtons.Add("FDS Eject");
 					for (int i = 0; i < b.NumSides; i++)
+					{
 						ControllerDefinition.BoolButtons.Add("FDS Insert " + i);
+					}
 				}
 
 				if (_isVS)
@@ -164,7 +168,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			// Add in the reset timing float control for subneshawk
-			if (using_reset_timing && (ControllerDefinition.FloatControls.Count() == 0))
+			if (using_reset_timing && ControllerDefinition.FloatControls.Count == 0)
 			{
 				ControllerDefinition.FloatControls.Add("Reset Cycle");
 				ControllerDefinition.FloatRanges.Add(new ControllerDefinition.FloatRange(0, 0, 500000));
