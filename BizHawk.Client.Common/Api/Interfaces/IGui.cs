@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Windows.Forms;
 
 namespace BizHawk.Client.Common
 {
@@ -20,7 +19,7 @@ namespace BizHawk.Client.Common
 		void SetPadding(int all);
 		void SetPadding(int x, int y);
 		void SetPadding(int l, int t, int r, int b);
-		Padding GetPadding();
+		(int Left, int Top, int Right, int Bottom) GetPadding();
 		#endregion
 
 		void AddMessage(string message);

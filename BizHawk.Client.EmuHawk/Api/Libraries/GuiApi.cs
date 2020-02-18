@@ -102,7 +102,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SetPadding(int l, int t, int r, int b) => _padding = new Padding(l, t, r, b);
 
-		public Padding GetPadding() => _padding;
+		public (int Left, int Top, int Right, int Bottom) GetPadding() => (_padding.Left, _padding.Top, _padding.Right, _padding.Bottom);
 
 		public void AddMessage(string message) => GlobalWin.OSD.AddMessage(message);
 

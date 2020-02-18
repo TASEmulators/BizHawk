@@ -17,7 +17,7 @@
 		</Reference>
 		<!--<Reference Include="System.Drawing" />-->
 		<Reference Include="System.IO.Compression" />
-		<Reference Include="System.Windows.Forms" />
+		<!--<Reference Include="System.Windows.Forms" />-->
 		<!--<Reference Include="System.Xml" />-->
 		<!--<Reference Include="System.Xml.Linq" />-->
 	</ItemGroup>
