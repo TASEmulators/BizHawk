@@ -1248,11 +1248,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (e.Button == MouseButtons.Left)
 				{
-					ColumnClickEvent(ColumnAtPixel(e.X));
+					ColumnClickEvent(ColumnAtPixel(HorizontalOrientation ? e.Y : e.X));
 				}
 				else if (e.Button == MouseButtons.Right)
 				{
-					ColumnRightClickEvent(ColumnAtPixel(e.X));
+					ColumnRightClickEvent(ColumnAtPixel(HorizontalOrientation ? e.Y : e.X));
 				}
 			}
 
