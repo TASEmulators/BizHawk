@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 
 			_tracer = new TraceBuffer { Header = "6502: PC, machine code, mnemonic, operands, registers (A, X, Y, P, SP), flags (NVTBDIZCR), CPU Cycle, PPU Cycle" };
 			ser.Register<ITraceable>(_tracer);
-
+			ser.Register<IDisassemblable>(subnes.cpu);
 			ServiceProvider = ser;
 
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(subnes._memoryDomains);
@@ -52,10 +52,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			_nesStatable = subnes.ServiceProvider.GetService<IStatable>();
 		}
 
-		public void HardReset()
-		{
-			subnes.HardReset();
-		}
+		public void HardReset() => subnes.HardReset();
 
 		public void SoftReset()
 		{
