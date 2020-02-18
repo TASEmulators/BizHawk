@@ -78,20 +78,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CalculateHorizontalColumnPositions(List<RollColumn> visibleColumns)
 		{
-			int firstVisibleRow = FirstVisibleRow;
-
-			if (!HorizontalOrientation)
+			if (_horizontalColumnTops == null || _horizontalColumnTops.Length != visibleColumns.Count + 1)
 			{
-				_horizontalColumnHeights = null;
-				_horizontalColumnTops = null;
-				return;
+				_horizontalColumnTops = new int[visibleColumns.Count + 1];
 			}
 
-			_horizontalColumnHeights = new int[visibleColumns.Count];
-			_horizontalColumnTops = new int[visibleColumns.Count];
-
 			int top = 0;
-			int startRow = firstVisibleRow;
+			int startRow = FirstVisibleRow;
 			for (int j = 0; j < visibleColumns.Count; j++)
 			{
 				RollColumn col = visibleColumns[j];
@@ -108,10 +101,10 @@ namespace BizHawk.Client.EmuHawk
 					int textWidth = (int)_renderer.MeasureString(text, Font).Width;
 					height = Math.Max(height, textWidth + (CellWidthPadding * 2));
 				}
-				_horizontalColumnHeights[j] = height;
 				_horizontalColumnTops[j] = top;
 				top += height;
 			}
+			_horizontalColumnTops[visibleColumns.Count] = top;
 		}
 
 		private void DrawColumnDrag(List<RollColumn> visibleColumns)

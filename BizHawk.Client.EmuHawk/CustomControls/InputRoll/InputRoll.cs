@@ -36,9 +36,7 @@ namespace BizHawk.Client.EmuHawk
 		private int _rowCount;
 		private SizeF _charSize;
 
-		// Updated on paint
-		private int[] _horizontalColumnHeights;
-		private int[] _horizontalColumnTops;
+		private int[] _horizontalColumnTops; // Updated on paint, contains one extra item to allow inference of last column height
 
 		private RollColumn _columnDown;
 		private RollColumn _columnResizing;
@@ -1876,7 +1874,7 @@ namespace BizHawk.Client.EmuHawk
 			if (_horizontalOrientation)
 			{
 				return _columns.VisibleColumns.Select((n, i) => new { Column = n, Index = i })
-					.FirstOrDefault(anonObj => (GetHColTop(anonObj.Index) - _vBar.Value).RangeTo(GetHColBottom(anonObj.Index) - _vBar.Value).Contains(pixel))
+					.FirstOrDefault(item => (GetHColTop(item.Index) - _vBar.Value).RangeTo(GetHColBottom(item.Index) - _vBar.Value).Contains(pixel))
 					?.Column;
 			}
 			return _columns.VisibleColumns.FirstOrDefault(column => (column.Left - _hBar.Value).RangeTo(column.Right - _hBar.Value).Contains(pixel));
@@ -1912,23 +1910,18 @@ namespace BizHawk.Client.EmuHawk
 			return (int)Math.Floor((float)(pixels - ColumnHeight) / CellHeight);
 		}
 
-		private int GetHColHeight(int index) =>
-			_horizontalColumnHeights != null && index < _horizontalColumnHeights.Length ? _horizontalColumnHeights[index] : CellHeight;
-
-		private int GetHColTop(int index)
-		{
-			if (_horizontalColumnTops == null)
-			{
-				return 0;
-			}
-
-			return 0.RangeToExclusive(_horizontalColumnTops.Length).Contains(index)
+		private int GetHColTop(int index) =>
+			_horizontalColumnTops != null && 0.RangeToExclusive(_horizontalColumnTops.Length).Contains(index)
 				? _horizontalColumnTops[index]
-				: _horizontalColumnTops.Last() + _horizontalColumnHeights.Last();
-		}
+				: index * CellHeight;
+
+		private int GetHColHeight(int index) =>
+			_horizontalColumnTops != null && 0.RangeToExclusive(_horizontalColumnTops.Length - 1).Contains(index)
+				? _horizontalColumnTops[index + 1] - _horizontalColumnTops[index]
+				: CellHeight;
 
 		private int GetHColBottom(int index) =>
-			GetHColTop(index) + GetHColHeight(index);
+			GetHColTop(index + 1);
 
 		// The width of the largest column cell in Horizontal Orientation
 		private int MaxColumnWidth { get; set; }
