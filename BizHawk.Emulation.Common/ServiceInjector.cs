@@ -68,12 +68,12 @@ namespace BizHawk.Emulation.Common
 	}
 
 	[AttributeUsage(AttributeTargets.Property)]
-	public class RequiredServiceAttribute : Attribute
+	public sealed class RequiredServiceAttribute : Attribute
 	{
 	}
 
 	[AttributeUsage(AttributeTargets.Property)]
-	public class OptionalServiceAttribute : Attribute
+	public sealed class OptionalServiceAttribute : Attribute
 	{
 	}
 }

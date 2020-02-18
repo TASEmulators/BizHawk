@@ -122,23 +122,15 @@ namespace BizHawk.BizInvoke
 		}
 	}
 
-	/// <summary>
-	/// mark an instance method to be exported by BizExvoker
-	/// </summary>
+	/// <summary>Indicates that a method is to be exported by BizExvoker.</summary>
 	[AttributeUsage(AttributeTargets.Method)]
-	public class BizExportAttribute : Attribute
+	public sealed class BizExportAttribute : Attribute
 	{
 		public CallingConvention CallingConvention { get; }
 
-		/// <summary>
-		/// Gets or sets the name of entry point; if not given, the method's name is used
-		/// </summary>
+		/// <remarks>The annotated method's name is used iff <see langword="null"/>.</remarks>
 		public string EntryPoint { get; set; }
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="BizImportAttribute"/> class. 
-		/// </summary>
-		/// <param name="c">unmanaged calling convention</param>
 		public BizExportAttribute(CallingConvention c)
 		{
 			CallingConvention = c;

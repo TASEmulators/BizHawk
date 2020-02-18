@@ -1,8 +1,21 @@
 ﻿namespace BizHawk.Emulation.Common
 {
 	[Core("NullHawk", "", false, true)]
-	[ServiceNotApplicable(typeof(IStatable), typeof(ISaveRam), typeof(IDriveLight), typeof(ICodeDataLogger), typeof(IMemoryDomains), typeof(ISettable<,>),
-		typeof(IDebuggable), typeof(IDisassemblable), typeof(IInputPollable), typeof(IRegionable), typeof(ITraceable), typeof(IBoardInfo), typeof(ISoundProvider))]
+	[ServiceNotApplicable(new[] {
+		typeof(IBoardInfo),
+		typeof(ICodeDataLogger),
+		typeof(IDebuggable),
+		typeof(IDisassemblable),
+		typeof(IDriveLight),
+		typeof(IInputPollable),
+		typeof(IMemoryDomains),
+		typeof(IRegionable),
+		typeof(ISaveRam),
+		typeof(ISettable<,>),
+		typeof(ISoundProvider),
+		typeof(IStatable),
+		typeof(ITraceable)
+	})]
 	public class NullEmulator : IEmulator, IVideoProvider
 	{
 		private readonly int[] _frameBuffer = new int[NullVideo.DefaultWidth * NullVideo.DefaultHeight];

@@ -5,14 +5,16 @@ using System.Linq;
 namespace BizHawk.Client.EmuHawk
 {
 	[AttributeUsage(AttributeTargets.Class)]
-	public class ToolAttribute : Attribute
+	public sealed class ToolAttribute : Attribute
 	{
-		public ToolAttribute(bool released, string[] supportedSystems, string[] unsupportedCores = null)
+		public ToolAttribute(bool released, string[] supportedSystems, string[] unsupportedCores)
 		{
 			Released = released;
 			SupportedSystems = supportedSystems ?? Enumerable.Empty<string>();
 			UnsupportedCores = unsupportedCores ?? Enumerable.Empty<string>();
 		}
+
+		public ToolAttribute(bool released, string[] supportedSystems) : this(released, supportedSystems, null) {}
 
 		public bool Released { get; }
 

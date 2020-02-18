@@ -7,8 +7,8 @@ using BizHawk.Emulation.Cores.Components.ARM;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
-	[Core("VBA-Next", "many authors", true, true, "cd508312a29ed8c29dacac1b11c2dce56c338a54", "https://github.com/libretro/vba-next")]
-	[ServiceNotApplicable(typeof(IDriveLight), typeof(IRegionable))]
+	[Core("VBA-Next", "many authors", true, true, "cd508312a29ed8c29dacac1b11c2dce56c338a54", "https://github.com/libretro/vba-next", false)]
+	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(IRegionable) })]
 	public partial class VBANext : IEmulator, IVideoProvider, ISoundProvider, IInputPollable,
 		IGBAGPUViewable, ISaveRam, IStatable, IDebuggable, ISettable<object, VBANext.SyncSettings>
 	{

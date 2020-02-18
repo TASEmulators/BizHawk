@@ -15,6 +15,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		name: "MAME",
 		author: "MAMEDev",
 		isPorted: true,
+		isReleased: false,
 		portedVersion: "0.217",
 		portedUrl: "https://github.com/mamedev/mame.git",
 		singleInstance: false)]

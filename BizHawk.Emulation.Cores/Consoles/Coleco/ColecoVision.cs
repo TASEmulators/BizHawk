@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		"Vecna",
 		isPorted: false,
 		isReleased: true)]
-	[ServiceNotApplicable(typeof(ISaveRam), typeof(IDriveLight))]
+	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(ISaveRam) })]
 	public sealed partial class ColecoVision : IEmulator, IDebuggable, IInputPollable, ISettable<ColecoVision.ColecoSettings, ColecoVision.ColecoSyncSettings>
 	{
 		[CoreConstructor("Coleco")]

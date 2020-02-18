@@ -11,8 +11,8 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Libretro
 {
-	[Core("Libretro", "zeromus")]
-	[ServiceNotApplicable(typeof(IDriveLight))]
+	[Core("Libretro", "zeromus", isPorted: false, isReleased: false)]
+	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public unsafe partial class LibretroCore : IEmulator, ISettable<LibretroCore.Settings, LibretroCore.SyncSettings>,
 		ISaveRam, IStatable, IVideoProvider, IInputPollable
 	{

@@ -537,28 +537,18 @@ namespace BizHawk.BizInvoke
 		}
 	}
 
-	/// <summary>
-	/// mark an abstract method to be proxied by BizInvoker
-	/// </summary>
+	/// <summary>Indicates that an abstract method is to be proxied by BizInvoker.</summary>
 	[AttributeUsage(AttributeTargets.Method)]
-	public class BizImportAttribute : Attribute
+	public sealed class BizImportAttribute : Attribute
 	{
 		public CallingConvention CallingConvention { get; }
 
-		/// <summary>
-		/// Gets or sets the name of entry point; if not given, the method's name is used
-		/// </summary>
+		/// <remarks>The annotated method's name is used iff <see langword="null"/>.</remarks>
 		public string EntryPoint { get; set; }
 
-		/// <summary>
-		/// Gets or sets a value indicating whether or not to use a slower interop that supports more argument types
-		/// </summary>
+		/// <summary><see langword="true"/> iff a compatibility interop should be used, which is slower but supports more argument types.</summary>
 		public bool Compatibility { get; set; }
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="BizImportAttribute"/> class. 
-		/// </summary>
-		/// <param name="c">unmanaged calling convention</param>
 		public BizImportAttribute(CallingConvention c)
 		{
 			CallingConvention = c;

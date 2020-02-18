@@ -2,11 +2,9 @@
 
 namespace BizHawk.Client.Common
 {
-	/// <summary>
-	/// Define if the property has to be persisted in config
-	/// </summary>
+	/// <summary>Indicates that a property is to be saved to config for persistence.</summary>
 	[AttributeUsage(AttributeTargets.Property)]
-	public class ConfigPersistAttribute : Attribute
+	public sealed class ConfigPersistAttribute : Attribute
 	{
 	}
 }

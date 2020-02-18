@@ -2,11 +2,10 @@
 
 namespace BizHawk.Client.Common
 {
-	/// <summary>
-	/// Defines a method to be called when a tool dialog's Restore Defaults method is called
-	/// </summary>
+	/// <summary>Indicates which method of an <see cref="IToolFormAutoConfig"/> is to be called when the generated <c>Restore Defaults</c> menu item is clicked.</summary>
+	/// <remarks>If not present on any instance method, the menu item will do nothing. If present on multiple, the first will be called.</remarks>
 	[AttributeUsage(AttributeTargets.Method)]
-	public class RestoreDefaultsAttribute : Attribute
+	public sealed class RestoreDefaultsAttribute : Attribute
 	{
 	}
 }

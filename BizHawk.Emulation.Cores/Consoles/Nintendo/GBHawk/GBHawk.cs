@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		"",
 		isPorted: false,
 		isReleased: true)]
-	[ServiceNotApplicable(typeof(IDriveLight))]
+	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class GBHawk : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, IGameboyCommon,
 	ISettable<GBHawk.GBSettings, GBHawk.GBSyncSettings>
 	{
@@ -84,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		private static byte[] GBA_override = { 0xFF, 0x00, 0xCD, 0x03, 0x35, 0xAA, 0x31, 0x90, 0x94, 0x00, 0x00, 0x00, 0x00 };
 
-		[CoreConstructor("GB", "GBC")]
+		[CoreConstructor(new[] { "GB", "GBC" })]
 		public GBHawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ object settings, object syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);

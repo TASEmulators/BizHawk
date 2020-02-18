@@ -96,13 +96,12 @@ namespace BizHawk.Client.Common
 	[AttributeUsage(AttributeTargets.Class)]
 	public sealed class ExternalToolAttribute : Attribute
 	{
-		public readonly string Description;
+		public string Description { get; set; }
 
 		public readonly string Name;
 
-		public ExternalToolAttribute(string name, string description = null)
+		public ExternalToolAttribute(string name)
 		{
-			Description = description;
 			Name = string.IsNullOrWhiteSpace(name) ? Guid.NewGuid().ToString() : name;
 		}
 

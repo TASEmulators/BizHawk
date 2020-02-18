@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 		"",
 		isPorted: false,
 		isReleased: true)]
-	[ServiceNotApplicable(typeof(IDriveLight))]
+	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class GBHawkLink : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable, ILinkable,
 	ISettable<GBHawkLink.GBLinkSettings, GBHawkLink.GBLinkSyncSettings>
 	{

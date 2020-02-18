@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		"",
 		isPorted: false,
 		isReleased: false)]
-	[ServiceNotApplicable(typeof(IDriveLight))]
+	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class MSX : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IInputPollable, IRegionable, ISettable<MSX.MSXSettings, MSX.MSXSyncSettings>
 	{
 		[CoreConstructor("MSX")]

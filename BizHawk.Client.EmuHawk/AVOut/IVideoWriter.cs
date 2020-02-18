@@ -99,7 +99,7 @@ namespace BizHawk.Client.EmuHawk
 	}
 
 	[AttributeUsage(AttributeTargets.Class)]
-	public class VideoWriterAttribute : Attribute
+	public sealed class VideoWriterAttribute : Attribute
 	{
 		public string ShortName { get; }
 		public string Name { get; }
@@ -114,7 +114,7 @@ namespace BizHawk.Client.EmuHawk
 	}
 
 	[AttributeUsage(AttributeTargets.Class)]
-	public class VideoWriterIgnoreAttribute : Attribute
+	public sealed class VideoWriterIgnoreAttribute : Attribute
 	{
 	}
 

@@ -19,11 +19,11 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		"Vecna",
 		isPorted: false,
 		isReleased: true)]
-	[ServiceNotApplicable(typeof(IDriveLight))]
+	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class SMS : IEmulator, ISaveRam, IInputPollable, IRegionable,
 		IDebuggable, ISettable<SMS.SmsSettings, SMS.SmsSyncSettings>, ICodeDataLogger
 	{
-		[CoreConstructor("SMS", "SG", "GG")]
+		[CoreConstructor(new[] { "SMS", "SG", "GG" })]
 		public SMS(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);

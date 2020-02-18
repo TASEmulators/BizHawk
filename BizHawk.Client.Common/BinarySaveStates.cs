@@ -69,7 +69,7 @@ namespace BizHawk.Client.Common
 		public static BinaryStateLump BranchUserText { get; private set; }
 
 		[AttributeUsage(AttributeTargets.Property)]
-		private class NameAttribute : Attribute
+		private sealed class NameAttribute : Attribute
 		{
 			public string Name { get; }
 			public string Ext { get; }

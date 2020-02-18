@@ -7,11 +7,9 @@ using System.Reflection;
 
 namespace BizHawk.Common
 {
-	/// <summary>
-	/// causes DeepEquality to ignore this field when determining equality
-	/// </summary>
+	/// <summary>Annotated fields will not be used by <see cref="DeepEquality"/> for comparison.</summary>
 	[AttributeUsage(AttributeTargets.Field)]
-	public class DeepEqualsIgnoreAttribute : Attribute
+	public sealed class DeepEqualsIgnoreAttribute : Attribute
 	{
 	}
 

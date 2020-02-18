@@ -10,6 +10,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 		"hrydgard",
 		isPorted: true,
 		isReleased: false,
+		portedVersion: null,
+		portedUrl: null,
 		singleInstance: true)]
 	public class PSP : IEmulator, IVideoProvider, ISoundProvider
 	{

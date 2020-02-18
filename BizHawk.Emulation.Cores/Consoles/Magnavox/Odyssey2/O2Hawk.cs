@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		"",
 		isPorted: false,
 		isReleased: false)]
-	[ServiceNotApplicable(typeof(IDriveLight))]
+	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class O2Hawk : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, ISettable<O2Hawk.O2Settings, O2Hawk.O2SyncSettings>
 	{
 		// memory domains

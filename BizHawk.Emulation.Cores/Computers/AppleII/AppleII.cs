@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		"fool",
 		isPorted: true,
 		isReleased: true)]
-	[ServiceNotApplicable(typeof(ISaveRam), typeof(IRegionable), typeof(IBoardInfo))]
+	[ServiceNotApplicable(new[] { typeof(IBoardInfo), typeof(IRegionable), typeof(ISaveRam) })]
 	public partial class AppleII : IEmulator, ISoundProvider, IVideoProvider, IStatable, IDriveLight
 	{
 		static AppleII()

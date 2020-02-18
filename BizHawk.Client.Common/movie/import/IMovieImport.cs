@@ -101,7 +101,7 @@ namespace BizHawk.Client.Common
 	}
 
 	[AttributeUsage(AttributeTargets.Class)]
-	public class ImporterForAttribute : Attribute
+	public sealed class ImporterForAttribute : Attribute
 	{
 		public ImporterForAttribute(string emulator, string extension)
 		{

@@ -341,14 +341,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		//this will be used to track classes that implement boards
 		[AttributeUsage(AttributeTargets.Class)]
-		public class INESBoardImplAttribute : Attribute { }
+		public sealed class INESBoardImplAttribute : Attribute { }
 		//this tracks derived boards that shouldnt be used by the implementation scanner
 		[AttributeUsage(AttributeTargets.Class)]
-		public class INESBoardImplCancelAttribute : Attribute { }
+		public sealed class INESBoardImplCancelAttribute : Attribute { }
 		static List<Type> INESBoardImplementors = new List<Type>();
 		//flags it as being priority, i.e. in the top of the list
 		[AttributeUsage(AttributeTargets.Class)]
-		public class INESBoardImplPriorityAttribute : Attribute { }
+		public sealed class INESBoardImplPriorityAttribute : Attribute { }
 
 		static INESBoard CreateBoardInstance(Type boardType)
 		{
@@ -736,7 +736,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	}
 
 	[AttributeUsage(AttributeTargets.Field)]
-	public class MapperPropAttribute : Attribute
+	public sealed class MapperPropAttribute : Attribute
 	{
 		public string Name { get; }
 

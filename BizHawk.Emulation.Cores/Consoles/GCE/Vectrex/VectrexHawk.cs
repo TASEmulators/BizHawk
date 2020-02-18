@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		"",
 		isPorted: false,
 		isReleased: true)]
-	[ServiceNotApplicable(typeof(IDriveLight))]
+	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class VectrexHawk : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, 
 	ISettable<VectrexHawk.VectrexSettings, VectrexHawk.VectrexSyncSettings>
 	{

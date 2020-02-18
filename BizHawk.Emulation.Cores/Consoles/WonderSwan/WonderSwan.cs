@@ -6,8 +6,8 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.WonderSwan
 {
-	[Core("Cygne/Mednafen", "Dox, Mednafen Team", true, true, "0.9.36.5", "http://mednafen.sourceforge.net/")]
-	[ServiceNotApplicable(typeof(IDriveLight), typeof(IRegionable))]
+	[Core("Cygne/Mednafen", "Dox, Mednafen Team", true, true, "0.9.36.5", "http://mednafen.sourceforge.net/", false)]
+	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(IRegionable) })]
 	public partial class WonderSwan : IEmulator, IVideoProvider, ISoundProvider,
 		IInputPollable, IDebuggable
 	{

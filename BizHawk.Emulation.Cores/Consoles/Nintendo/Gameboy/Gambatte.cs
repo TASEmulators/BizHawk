@@ -15,13 +15,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		isPorted: true,
 		isReleased: true,
 		portedVersion: "SVN 344",
-		portedUrl: "http://gambatte.sourceforge.net/")]
-	[ServiceNotApplicable(typeof(IDriveLight), typeof(IDriveLight))]
+		portedUrl: "http://gambatte.sourceforge.net/",
+		singleInstance: false)]
+	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class Gameboy : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IInputPollable, ICodeDataLogger,
 		IBoardInfo, IDebuggable, ISettable<Gameboy.GambatteSettings, Gameboy.GambatteSyncSettings>,
 		IGameboyCommon, ICycleTiming, ILinkable
 	{
-		[CoreConstructor("GB", "GBC")]
+		[CoreConstructor(new[] { "GB", "GBC" })]
 		public Gameboy(CoreComm comm, GameInfo game, byte[] file, object settings, object syncSettings, bool deterministic)
 		{
 			var ser = new BasicServiceProvider(this);

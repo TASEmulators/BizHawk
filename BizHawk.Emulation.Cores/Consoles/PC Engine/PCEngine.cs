@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 	public sealed partial class PCEngine : IEmulator, ISaveRam, IInputPollable,
 		IDebuggable, ISettable<PCEngine.PCESettings, PCEngine.PCESyncSettings>, IDriveLight, ICodeDataLogger
 	{
-		[CoreConstructor("PCE", "SGX")]
+		[CoreConstructor(new[] { "PCE", "SGX" })]
 		public PCEngine(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
 		{
 			CoreComm = comm;

@@ -23,8 +23,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		isPorted: true,
 		isReleased: true,
 		portedVersion: "v87",
-		portedUrl: "http://byuu.org/")]
-	[ServiceNotApplicable(typeof(IDriveLight))]
+		portedUrl: "http://byuu.org/",
+		singleInstance: false)]
+	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public unsafe partial class LibsnesCore : IEmulator, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ICodeDataLogger,
 		IDebuggable, ISettable<LibsnesCore.SnesSettings, LibsnesCore.SnesSyncSettings>
 	{

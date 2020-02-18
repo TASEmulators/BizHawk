@@ -68,12 +68,12 @@ namespace BizHawk.Client.ApiHawk
 	}
 
 	[AttributeUsage(AttributeTargets.Property)]
-	public class RequiredApiAttribute : Attribute
+	public sealed class RequiredApiAttribute : Attribute
 	{
 	}
 
 	[AttributeUsage(AttributeTargets.Property)]
-	public class OptionalApiAttribute : Attribute
+	public sealed class OptionalApiAttribute : Attribute
 	{
 	}
 }

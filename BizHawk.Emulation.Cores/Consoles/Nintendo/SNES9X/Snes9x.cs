@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 {
 	[Core("Snes9x", "", true, true,
 		"5e0319ab3ef9611250efb18255186d0dc0d7e125", "https://github.com/snes9xgit/snes9x", false)]
-	[ServiceNotApplicable(typeof(IDriveLight))]
+	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public class Snes9x : WaterboxCore, 
 		ISettable<Snes9x.Settings, Snes9x.SyncSettings>, IRegionable
 	{

@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		"BrandonE, Alyosha",
 		isPorted: false,
 		isReleased: true)]
-	[ServiceNotApplicable(typeof(ISaveRam), typeof(IDriveLight), typeof(IRegionable))]
+	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(IRegionable), typeof(ISaveRam) })]
 	public sealed partial class Intellivision : IEmulator, IInputPollable, IDisassemblable,
 		IBoardInfo, IDebuggable, ISettable<Intellivision.IntvSettings, Intellivision.IntvSyncSettings>
 	{

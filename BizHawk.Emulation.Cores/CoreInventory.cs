@@ -177,13 +177,19 @@ namespace BizHawk.Emulation.Cores
 	}
 
 	[AttributeUsage(AttributeTargets.Constructor)]
-	public class CoreConstructorAttribute : Attribute
+	public sealed class CoreConstructorAttribute : Attribute
 	{
 		private readonly List<string> _systems = new List<string>();
 
-		public CoreConstructorAttribute(params string[] systems)
+		/// <remarks>TODO neither array nor <see cref="IEnumerable{T}"/> is the correct collection to be using here, try <see cref="IReadOnlyList{T}"/>/<see cref="IReadOnlyCollection{T}"/> instead</remarks>
+		public CoreConstructorAttribute(string[] systems)
 		{
 			_systems.AddRange(systems);
+		}
+
+		public CoreConstructorAttribute(string system)
+		{
+			_systems.Add(system);
 		}
 
 		public IEnumerable<string> Systems => _systems;

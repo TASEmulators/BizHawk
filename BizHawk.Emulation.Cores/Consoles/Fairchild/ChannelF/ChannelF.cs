@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		"Asnivor",
 		isPorted: false,
 		isReleased: false)]
-	[ServiceNotApplicable(typeof(IDriveLight))]
+	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class ChannelF
 	{
 		public ChannelF(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)

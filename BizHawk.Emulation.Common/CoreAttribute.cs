@@ -3,25 +3,21 @@
 namespace BizHawk.Emulation.Common
 {
 	[AttributeUsage(AttributeTargets.Class)]
-	public class CoreAttribute : Attribute
+	public sealed class CoreAttribute : Attribute
 	{
-		public CoreAttribute(
-			string name,
-			string author,
-			bool isPorted = false,
-			bool isReleased = false,
-			string portedVersion = "",
-			string portedUrl = "",
-			bool singleInstance = false)
+		public CoreAttribute(string name, string author, bool isPorted, bool isReleased, string portedVersion, string portedUrl, bool singleInstance)
 		{
 			CoreName = name;
 			Author = author;
 			Ported = isPorted;
 			Released = isReleased;
-			PortedVersion = portedVersion;
-			PortedUrl = portedUrl;
+			PortedVersion = portedVersion ?? string.Empty;
+			PortedUrl = portedUrl ?? string.Empty;
 			SingleInstance = singleInstance;
 		}
+
+		public CoreAttribute(string name, string author, bool isPorted, bool isReleased)
+			: this(name, author, isPorted, isReleased, null, null, false) {}
 
 		public string CoreName { get; }
 		public string Author { get; }

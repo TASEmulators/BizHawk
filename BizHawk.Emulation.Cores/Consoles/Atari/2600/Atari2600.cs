@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		"Micro500, Alyosha, adelikat, natt",
 		isPorted: false,
 		isReleased: true)]
-	[ServiceNotApplicable(typeof(ISaveRam), typeof(IDriveLight))]
+	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(ISaveRam) })]
 	public partial class Atari2600 : IEmulator, IDebuggable, IInputPollable, IBoardInfo,
 		IRegionable, ICreateGameDBEntries, ISettable<Atari2600.A2600Settings, Atari2600.A2600SyncSettings>
 	{
