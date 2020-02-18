@@ -24,20 +24,17 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
-			InputCallbacks = new InputCallbackSystem();
 			CoreComm = comm;
 			_gameInfo = game;
 			_cpu = new Z80A();
 			_tracer = new TraceBuffer { Header = _cpu.TraceHeader };
 			_files = files?.ToList() ?? new List<byte[]>();
 
-			if (settings == null)
-				settings = new AmstradCPCSettings();
-			if (syncSettings == null)
-				syncSettings = new AmstradCPCSyncSettings();
+			settings ??= new AmstradCPCSettings();
+			syncSettings ??= new AmstradCPCSyncSettings();
 
-			PutSyncSettings((AmstradCPCSyncSettings)syncSettings ?? new AmstradCPCSyncSettings());
-			PutSettings((AmstradCPCSettings)settings ?? new AmstradCPCSettings());
+			PutSyncSettings((AmstradCPCSyncSettings)syncSettings);
+			PutSettings((AmstradCPCSettings)settings);
 
 			DeterministicEmulation = ((AmstradCPCSyncSettings)syncSettings).DeterministicEmulation;
 
@@ -83,13 +80,13 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// set audio device settings
 			if (_machine.AYDevice != null && _machine.AYDevice.GetType() == typeof(AY38912))
 			{
-				((AY38912)_machine.AYDevice as AY38912).PanningConfiguration = ((AmstradCPCSettings)settings as AmstradCPCSettings).AYPanConfig;
-				_machine.AYDevice.Volume = ((AmstradCPCSettings)settings as AmstradCPCSettings).AYVolume;
+				((AY38912)_machine.AYDevice).PanningConfiguration = ((AmstradCPCSettings)settings).AYPanConfig;
+				_machine.AYDevice.Volume = ((AmstradCPCSettings)settings).AYVolume;
 			}
 
 			if (_machine.TapeBuzzer != null)
 			{
-				((Beeper)_machine.TapeBuzzer as Beeper).Volume = ((AmstradCPCSettings)settings as AmstradCPCSettings).TapeVolume;
+				((Beeper)_machine.TapeBuzzer).Volume = ((AmstradCPCSettings)settings).TapeVolume;
 			}
 
 			ser.Register<ISoundProvider>(SoundMixer);
@@ -168,7 +165,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			{
 				case MachineType.CPC464:
 					_machine = new CPC464(this, _cpu, files, autoTape, bType);
-					List<RomData> roms64 = new List<RomData>();
+					var roms64 = new List<RomData>();
 					roms64.Add(RomData.InitROM(MachineType.CPC464, GetFirmware(0x4000, "OS464ROM"), RomData.ROMChipType.Lower));
 					roms64.Add(RomData.InitROM(MachineType.CPC464, GetFirmware(0x4000, "BASIC1-0ROM"), RomData.ROMChipType.Upper, 0));
 					_machine.InitROM(roms64.ToArray());
@@ -176,7 +173,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 				case MachineType.CPC6128:
 					_machine = new CPC6128(this, _cpu, files, autoTape, bType);
-					List<RomData> roms128 = new List<RomData>();
+					var roms128 = new List<RomData>();
 					roms128.Add(RomData.InitROM(MachineType.CPC6128, GetFirmware(0x4000, "OS6128ROM"), RomData.ROMChipType.Lower));
 					roms128.Add(RomData.InitROM(MachineType.CPC6128, GetFirmware(0x4000, "BASIC1-1ROM"), RomData.ROMChipType.Upper, 0));
 					roms128.Add(RomData.InitROM(MachineType.CPC6128, GetFirmware(0x4000, "AMSDOS0-5ROM"), RomData.ROMChipType.Upper, 7));
@@ -196,18 +193,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		public bool DriveLightEnabled => true;
 
-		public bool DriveLightOn
-		{
-			get
-			{
-				if (_machine != null &&
-					(_machine.TapeDevice != null && _machine.TapeDevice.TapeIsPlaying) ||
-					(_machine.UPDDiskDevice != null && _machine.UPDDiskDevice.DriveLight))
-					return true;
-
-				return false;
-			}
-		}
+		public bool DriveLightOn =>
+			(_machine?.TapeDevice != null && _machine.TapeDevice.TapeIsPlaying)
+			|| (_machine?.UPDDiskDevice != null && _machine.UPDDiskDevice.DriveLight);
 
 		#endregion
 	}
