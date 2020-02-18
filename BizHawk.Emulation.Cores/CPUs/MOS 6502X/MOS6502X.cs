@@ -104,9 +104,8 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				};
 			}
 
-			int length;
 			string rawbytes = "";
-			string disasm = Disassemble(PC, out length);
+			string disasm = Disassemble(PC, out var length);
 
 			for (int i = 0; i < length; i++)
 			{

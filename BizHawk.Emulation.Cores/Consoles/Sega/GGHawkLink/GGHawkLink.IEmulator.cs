@@ -352,11 +352,8 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			short[] temp_samp_L = new short[735 * 2];
 			short[] temp_samp_R = new short[735 * 2];
 
-			int nsamp_L = 735;
-			int nsamp_R = 735;
-
-			L.GetSamplesSync(out temp_samp_L, out nsamp_L);
-			R.GetSamplesSync(out temp_samp_R, out nsamp_L);
+			L.GetSamplesSync(out temp_samp_L, out int nsamp_L);
+			R.GetSamplesSync(out temp_samp_R, out int nsamp_R);
 
 			if (linkSettings.AudioSet == GGLinkSettings.AudioSrc.Left)
 			{

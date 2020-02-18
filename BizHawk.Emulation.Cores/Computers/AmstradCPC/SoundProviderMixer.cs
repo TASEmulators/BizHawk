@@ -144,9 +144,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// get samples from all the providers
 			foreach (var sp in SoundProviders)
 			{
-				int sampCount;
-				short[] samp;
-				sp.SoundProvider.GetSamplesSync(out samp, out sampCount);
+				sp.SoundProvider.GetSamplesSync(out var samp, out var sampCount);
 				sp.NSamp = sampCount;
 				sp.Buffer = samp;
 			}

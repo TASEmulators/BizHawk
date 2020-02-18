@@ -203,8 +203,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				if (controller.IsPressed("Reset"))
 					QN.qn_reset(Context, false);
 
-				int j1, j2;
-				SetPads(controller, out j1, out j2);
+				SetPads(controller, out var j1, out var j2);
 
 				if (Tracer.Enabled)
 					QN.qn_set_tracecb(Context, _traceCb);

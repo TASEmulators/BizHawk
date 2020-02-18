@@ -90,8 +90,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			if (discInterfaces.Count != 0)
 			{
 				//determine region of one of the discs
-				OctoshockDll.ShockDiscInfo discInfo;
-				OctoshockDll.shock_AnalyzeDisc(discInterfaces[0].OctoshockHandle, out discInfo);
+				OctoshockDll.shock_AnalyzeDisc(discInterfaces[0].OctoshockHandle, out var discInfo);
 
 				//try to acquire the appropriate firmware
 				if (discInfo.region == OctoshockDll.eRegion.EU) firmwareRegion = "E";
@@ -928,10 +927,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		unsafe void SetMemoryDomains()
 		{
 			var mmd = new List<MemoryDomain>();
-			IntPtr ptr;
-			int size;
 
-			OctoshockDll.shock_GetMemData(psx, out ptr, out size, OctoshockDll.eMemType.MainRAM);
+			OctoshockDll.shock_GetMemData(psx, out var ptr, out var size, OctoshockDll.eMemType.MainRAM);
 			mmd.Add(new MemoryDomainIntPtr("MainRAM", MemoryDomain.Endian.Little, ptr, size, true, 4));
 
 			OctoshockDll.shock_GetMemData(psx, out ptr, out size, OctoshockDll.eMemType.GPURAM);

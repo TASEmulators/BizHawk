@@ -23,8 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		void TryAdd(Stream s, string key)
 		{
-			byte[] data;
-			if (!chunks.TryGetValue(key, out data))
+			if (!chunks.TryGetValue(key, out var data))
 				return;
 			s.Write(data, 0, data.Length);
 		}
@@ -64,9 +63,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ci.prg_size = (short)(prgrom.Length / 1024);
 			ci.chr_size = (short)(chrrom.Length / 1024);
 
-			byte[] tmp;
-
-			if (chunks.TryGetValue("MIRR", out tmp))
+			if (chunks.TryGetValue("MIRR", out var tmp))
 			{
 				switch (tmp[0])
 				{

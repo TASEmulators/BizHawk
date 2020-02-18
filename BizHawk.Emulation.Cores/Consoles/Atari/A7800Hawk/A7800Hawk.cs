@@ -155,8 +155,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				// if such a game is being played, tell the user and disable it
 				if (dict.ContainsKey("No_HS"))
 				{
-					bool no_hs;
-					bool.TryParse(dict["No_HS"], out no_hs);
+					bool.TryParse(dict["No_HS"], out var no_hs);
 
 					if (no_hs)
 					{

@@ -138,8 +138,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			this.Left = Left;
 			this.Right = Right;
-			List<ControlDefUnMerger> cdum;
-			Definition = ControllerDefinitionMerger.GetMerged(new[] { Left.GetDefinition(), Right.GetDefinition() }, out cdum);
+			Definition = ControllerDefinitionMerger.GetMerged(new[] { Left.GetDefinition(), Right.GetDefinition() }, out var cdum);
 			LeftU = cdum[0];
 			RightU = cdum[1];
 
@@ -684,9 +683,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public FamicomDeck(IFamicomExpansion ExpSlot, LightgunDelegate PPUCallback)
 		{
 			Player3 = ExpSlot;
-			List<ControlDefUnMerger> cdum;
 			Definition = ControllerDefinitionMerger.GetMerged(
-				new[] { Player1.GetDefinition(), Player2.GetDefinition(), Player3.GetDefinition() }, out cdum);
+				new[] { Player1.GetDefinition(), Player2.GetDefinition(), Player3.GetDefinition() }, out var cdum);
 			Definition.BoolButtons.Add("P2 Microphone");
 			Player1U = cdum[0];
 			Player2U = cdum[1];

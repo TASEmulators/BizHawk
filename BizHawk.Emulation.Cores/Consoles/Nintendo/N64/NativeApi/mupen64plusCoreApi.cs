@@ -1007,8 +1007,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 
 		public void DetachPlugin(m64p_plugin_type type)
 		{
-			AttachedPlugin plugin;
-			if (plugins.TryGetValue(type, out plugin))
+			if (plugins.TryGetValue(type, out var plugin))
 			{
 				plugins.Remove(type);
 				m64pCoreDetachPlugin(type);

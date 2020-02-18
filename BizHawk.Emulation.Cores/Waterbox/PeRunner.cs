@@ -511,8 +511,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			[BizExport(CallingConvention.Cdecl, EntryPoint = "n2")]
 			public int Open(string path, int flags, int mode)
 			{
-				IFileObject o;
-				if (!_availableFiles.TryGetValue(path, out o))
+				if (!_availableFiles.TryGetValue(path, out var o))
 					return -1;
 				if (_openFiles.Contains(o))
 					return -1;
@@ -760,8 +759,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			private T RemoveFileInternal<T>(string name)
 				where T : IFileObject
 			{
-				IFileObject o;
-				if (!_availableFiles.TryGetValue(name, out o))
+				if (!_availableFiles.TryGetValue(name, out var o))
 					throw new InvalidOperationException("File was never registered!");
 				if (o.GetType() != typeof(T))
 					throw new InvalidOperationException("Object was not a the right kind of file");
@@ -1107,8 +1105,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				// but it breaks xor state verification, so when we seal, nuke it.
 
 				// this could be the responsibility of something else other than the PeRunner; I am not sure yet...
-				IImportResolver libco;
-				if (_exports.TryGetValue("libco.so", out libco))
+				if (_exports.TryGetValue("libco.so", out var libco))
 				{
 					Console.WriteLine("Calling co_clean()...");
 					CallingConventionAdapters.Waterbox.GetDelegateForFunctionPointer<Action>(libco.GetProcAddrOrThrow("co_clean"))();

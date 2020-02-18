@@ -49,9 +49,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 				.ToArray();
 			_data = new byte[count * DataSize];
 
-			List<ControlDefUnMerger> cdum;
 			Definition = ControllerDefinitionMerger.GetMerged(_devices.Select(d => d.Definition),
-				out cdum);
+				out var cdum);
 			_unmerger = cdum.ToArray();
 		}
 

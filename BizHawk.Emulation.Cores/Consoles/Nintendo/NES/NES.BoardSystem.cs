@@ -781,8 +781,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						string Name = ((MapperPropAttribute)attrib).Name ?? field.Name;
 
-						string Value;
-						if (board.InitialRegisterValues.TryGetValue(Name, out Value))
+						if (board.InitialRegisterValues.TryGetValue(Name, out var Value))
 						{
 							try
 							{

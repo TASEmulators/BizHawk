@@ -132,8 +132,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 				case JsonToken.Float:
 					return Convert.ToInt32(_v);
 				case JsonToken.String:
-					int i;
-					if (int.TryParse(_v.ToString(), out i))
+					if (int.TryParse(_v.ToString(), out var i))
 					{
 						return i;
 					}

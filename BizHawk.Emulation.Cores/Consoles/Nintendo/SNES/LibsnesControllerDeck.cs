@@ -59,8 +59,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				Factory(ss.RightPort, ss)
 			};
 
-			List<ControlDefUnMerger> tmp;
-			Definition = ControllerDefinitionMerger.GetMerged(_ports.Select(p => p.Definition), out tmp);
+			Definition = ControllerDefinitionMerger.GetMerged(_ports.Select(p => p.Definition), out var tmp);
 			_mergers = tmp.ToArray();
 
 			// add buttons that the core itself will handle

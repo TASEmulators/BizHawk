@@ -247,8 +247,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			// NB: Hints are not the same as Ordinals
 			foreach (var import in _pe.ImportedFunctions)
 			{
-				Dictionary<string, IntPtr> module;
-				if (!ImportsByModule.TryGetValue(import.DLL, out module))
+				if (!ImportsByModule.TryGetValue(import.DLL, out var module))
 				{
 					module = new Dictionary<string, IntPtr>();
 					ImportsByModule.Add(import.DLL, module);
@@ -260,8 +259,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				module.Add(import.Name, Z.US(dest));
 			}
 
-			Section midipix;
-			if (_sectionsByName.TryGetValue(".midipix", out midipix))
+			if (_sectionsByName.TryGetValue(".midipix", out Section midipix))
 			{
 				var dataOffset = midipix.DiskStart;
 				CtorList = Z.SS(BitConverter.ToInt64(fileData, (int)(dataOffset + 0x30)) + LoadOffset);
@@ -313,8 +311,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			if (_everythingSealed && _imports != null)
 				Memory.Protect(_imports.Start, _imports.Size, MemoryBlockBase.Protection.RW);
 
-			Dictionary<string, IntPtr> imports;
-			if (ImportsByModule.TryGetValue(moduleName, out imports))
+			if (ImportsByModule.TryGetValue(moduleName, out var imports))
 			{
 				foreach (var kvp in imports)
 				{

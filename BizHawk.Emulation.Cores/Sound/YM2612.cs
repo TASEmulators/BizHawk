@@ -183,8 +183,7 @@ namespace BizHawk.Emulation.Cores.Components
 
 		void Part1_WriteRegister(byte register, byte value)
 		{
-			int chan, oper;
-			GetChanOpP1(register, out chan, out oper);
+			GetChanOpP1(register, out var chan, out var oper);
 
 			switch (register & 0xF0)
 			{
@@ -203,8 +202,7 @@ namespace BizHawk.Emulation.Cores.Components
 
 		void Part2_WriteRegister(byte register, byte value)
 		{
-			int chan, oper;
-			GetChanOpP2(register, out chan, out oper);
+			GetChanOpP2(register, out var chan, out var oper);
 
 			switch (register & 0xF0)
 			{

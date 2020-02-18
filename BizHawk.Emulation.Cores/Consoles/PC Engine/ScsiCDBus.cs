@@ -552,8 +552,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 						// zero 07-jul-2015 - I may have broken this
 						int totalLbaLength = disc.Session1.LeadoutLBA;
 
-						byte m, s, f;
-						DiscUtils.Convert_LBA_To_AMSF(totalLbaLength + 150, out m, out s, out f);
+						DiscUtils.Convert_LBA_To_AMSF(totalLbaLength + 150, out var m, out var s, out var f);
 
 						DataIn.Clear();
 						DataIn.Enqueue(m.BinToBCD());
@@ -577,8 +576,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 						else
 							lbaPos = tracks[track].LBA;
 
-						byte m, s, f;
-						DiscUtils.Convert_LBA_To_AMSF(lbaPos, out m, out s, out f);
+						DiscUtils.Convert_LBA_To_AMSF(lbaPos, out var m, out var s, out var f);
 
 						DataIn.Clear();
 						DataIn.Enqueue(m.BinToBCD());

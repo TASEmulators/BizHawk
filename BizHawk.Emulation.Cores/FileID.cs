@@ -167,8 +167,7 @@ namespace BizHawk.Emulation.Cores
 			if(job.Extension != null)
 			{
 				//first test everything associated with this extension
-				ExtensionInfo handler = null;
-				if (ExtensionHandlers.TryGetValue(ext, out handler))
+				if (ExtensionHandlers.TryGetValue(ext, out var handler))
 				{
 					foreach (var del in handler.Testers)
 					{

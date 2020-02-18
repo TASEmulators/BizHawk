@@ -222,9 +222,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 				using var trackMem = new MemoryStream();
 				for (var j = 0; j < sectors; j++)
 				{
-					int bitsWritten;
 					var sectorData = reader.ReadBytes(256);
-					var diskData = ConvertSectorToGcr(sectorData, (byte)j, (byte)(i + 1), formatA, formatB, StandardSectorGapLength[DensityTable[i]], errorType, out bitsWritten);
+					var diskData = ConvertSectorToGcr(sectorData, (byte)j, (byte)(i + 1), formatA, formatB, StandardSectorGapLength[DensityTable[i]], errorType, out var bitsWritten);
 					trackMem.Write(diskData, 0, diskData.Length);
 					trackLengthBits += bitsWritten;
 				}

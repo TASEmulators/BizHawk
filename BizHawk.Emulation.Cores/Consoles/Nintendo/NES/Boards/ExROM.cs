@@ -438,10 +438,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override byte ReadPRG(int addr)
 		{
-			bool ram;
 			byte ret;
 			int offs = addr & 0x1fff;
-			int bank = PRGGetBank(addr, out ram);
+			int bank = PRGGetBank(addr, out var ram);
 
 			if (ram)
 				ret = ReadWRAMActual(bank, offs);
@@ -463,10 +462,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public byte PeekPRG(int addr)
 		{
-			bool ram;
 			byte ret;
 			int offs = addr & 0x1fff;
-			int bank = PRGGetBank(addr, out ram);
+			int bank = PRGGetBank(addr, out var ram);
 
 			if (ram)
 				ret = ReadWRAMActual(bank, offs);
@@ -479,8 +477,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WritePRG(int addr, byte value)
 		{
-			bool ram;
-			int bank = PRGGetBank(addr, out ram);
+			int bank = PRGGetBank(addr, out var ram);
 			if (ram)
 				WriteWRAMActual(bank, addr & 0x1fff, value);
 		}

@@ -55,8 +55,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			float g = to_float * inp[1];
 			float b = to_float * inp[2];
 
-			float y, i, q;
-			RGB_TO_YIQ(r, g, b, out y, out i, out q);
+			RGB_TO_YIQ(r, g, b, out float y, out var i, out var q);
 
 			if (tint > 0 && color < 0x0d)
 			{

@@ -619,20 +619,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			short[] temp_samp_A;
-			short[] temp_samp_B;
-			short[] temp_samp_C;
-			short[] temp_samp_D;
-
-			int nsamp_A;
-			int nsamp_B;
-			int nsamp_C;
-			int nsamp_D;
-
-			A.audio.GetSamplesSync(out temp_samp_A, out nsamp_A);
-			B.audio.GetSamplesSync(out temp_samp_B, out nsamp_B);
-			C.audio.GetSamplesSync(out temp_samp_C, out nsamp_C);
-			D.audio.GetSamplesSync(out temp_samp_D, out nsamp_D);
+			A.audio.GetSamplesSync(out var temp_samp_A, out var nsamp_A);
+			B.audio.GetSamplesSync(out short[] temp_samp_B, out var nsamp_B);
+			C.audio.GetSamplesSync(out var temp_samp_C, out var nsamp_C);
+			D.audio.GetSamplesSync(out var temp_samp_D, out var nsamp_D);
 
 			if (Link4xSettings.AudioSet == GBLink4xSettings.AudioSrc.A)
 			{
