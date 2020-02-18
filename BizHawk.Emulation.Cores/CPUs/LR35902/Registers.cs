@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Emulation.Cores.Components.LR35902
 {
 	public partial class LR35902
@@ -66,5 +70,85 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			}
 		}
 
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
+		{
+			return new Dictionary<string, RegisterValue>
+			{
+				[nameof(PCl)] = Regs[PCl],
+				[nameof(PCh)] = Regs[PCh],
+				[nameof(SPl)] = Regs[SPl],
+				[nameof(SPh)] = Regs[SPh],
+				[nameof(A)] = Regs[A],
+				[nameof(F)] = Regs[F],
+				[nameof(B)] = Regs[B],
+				[nameof(C)] = Regs[C],
+				[nameof(D)] = Regs[D],
+				[nameof(E)] = Regs[E],
+				[nameof(H)] = Regs[H],
+				[nameof(L)] = Regs[L],
+				[nameof(W)] = Regs[W],
+				[nameof(Z)] = Regs[Z],
+				["PC"] = RegPC,
+				["Flag I"] = FlagI,
+				["Flag C"] = FlagC,
+				["Flag H"] = FlagH,
+				["Flag N"] = FlagN,
+				["Flag Z"] = FlagZ
+			};
+		}
+
+		public void SetCpuRegister(string register, int value)
+		{
+			switch (register)
+			{
+				default:
+					throw new InvalidOperationException();
+				case nameof(PCl):
+					Regs[PCl] = (ushort)value;
+					break;
+				case nameof(PCh):
+					Regs[PCh] = (ushort)value;
+					break;
+				case nameof(SPl):
+					Regs[SPl] = (ushort)value;
+					break;
+				case nameof(SPh):
+					Regs[SPh] = (ushort)value;
+					break;
+				case nameof(A):
+					Regs[A] = (ushort)value;
+					break;
+				case nameof(F):
+					Regs[F] = (ushort)value;
+					break;
+				case nameof(B):
+					Regs[B] = (ushort)value;
+					break;
+				case nameof(C):
+					Regs[C] = (ushort)value;
+					break;
+				case nameof(D):
+					Regs[D] = (ushort)value;
+					break;
+				case nameof(E):
+					Regs[E] = (ushort)value;
+					break;
+				case nameof(H):
+					Regs[H] = (ushort)value;
+					break;
+				case nameof(L):
+					Regs[L] = (ushort)value;
+					break;
+				case nameof(W):
+					Regs[W] = (ushort)value;
+					break;
+				case nameof(Z):
+					Regs[Z] = (ushort)value;
+					break;
+				case "PC":
+					RegPC = (ushort) value;
+					break;
+			}
+		}
 	}
 }
