@@ -5,7 +5,6 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Drawing.Text;
 using System.IO;
-using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
@@ -77,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool HasGUISurface => _GUISurface != null;
 
-		public Padding Padding { get; set; } = new Padding(0);
+		public (int Left, int Top, int Right, int Bottom) Padding { get; set; } = (0, 0, 0, 0);
 
 		public void AddMessage(string message) => GlobalWin.OSD.AddMessage(message);
 
