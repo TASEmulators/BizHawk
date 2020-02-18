@@ -10,15 +10,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 {
 	public partial class GBHawkLink : IEmulator, IStatable, ISettable<GBHawkLink.GBLinkSettings, GBHawkLink.GBLinkSyncSettings>
 	{
-		public GBLinkSettings GetSettings()
-		{
-			return linkSettings.Clone();
-		}
+		public GBLinkSettings GetSettings() => linkSettings.Clone();
 
-		public GBLinkSyncSettings GetSyncSettings()
-		{
-			return linkSyncSettings.Clone();
-		}
+		public GBLinkSyncSettings GetSyncSettings() => linkSyncSettings.Clone();
 
 		public bool PutSettings(GBLinkSettings o)
 		{
@@ -72,15 +66,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 			[DefaultValue(VideoSrc.Both)]
 			public VideoSrc VideoSet { get; set; }
 
-			public GBLinkSettings Clone()
-			{
-				return (GBLinkSettings)MemberwiseClone();
-			}
+			public GBLinkSettings Clone() => (GBLinkSettings)MemberwiseClone();
 
-			public GBLinkSettings()
-			{
-				SettingsUtil.SetDefaultValues(this);
-			}
+			public GBLinkSettings() => SettingsUtil.SetDefaultValues(this);
 		}
 
 		public class GBLinkSyncSettings
@@ -154,15 +142,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 			[JsonIgnore]
 			public ushort _DivInitialTime_R = 8;
 
-			public GBLinkSyncSettings Clone()
-			{
-				return (GBLinkSyncSettings)MemberwiseClone();
-			}
+			public GBLinkSyncSettings Clone() => (GBLinkSyncSettings)MemberwiseClone();
 
-			public GBLinkSyncSettings()
-			{
-				SettingsUtil.SetDefaultValues(this);
-			}
+			public GBLinkSyncSettings() => SettingsUtil.SetDefaultValues(this);
 
 			public static bool NeedsReboot(GBLinkSyncSettings x, GBLinkSyncSettings y)
 			{

@@ -7,23 +7,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 	{
 		public byte[] CloneSaveRam()
 		{
-			if ((L.cart_RAM != null) || (R.cart_RAM != null))
+			if (L.cart_RAM != null || R.cart_RAM != null)
 			{
-				int Len1 = 0;
-				int Len2 = 0;
+				int len1 = 0;
+				int len2 = 0;
 				int index = 0;
 
 				if (L.cart_RAM != null)
 				{
-					Len1 = L.cart_RAM.Length;
+					len1 = L.cart_RAM.Length;
 				}
 
 				if (R.cart_RAM != null)
 				{
-					Len2 = R.cart_RAM.Length;
+					len2 = R.cart_RAM.Length;
 				}
 
-				byte[] temp = new byte[Len1 + Len2];
+				byte[] temp = new byte[len1 + len2];
 
 				if (L.cart_RAM != null)
 				{
@@ -53,15 +53,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 		{
 			if (linkSyncSettings.Use_SRAM)
 			{
-				if ((L.cart_RAM != null) && (R.cart_RAM == null))
+				if (L.cart_RAM != null && R.cart_RAM == null)
 				{
 					Buffer.BlockCopy(data, 0, L.cart_RAM, 0, L.cart_RAM.Length);
 				}
-				else if ((R.cart_RAM != null) && (L.cart_RAM == null))
+				else if (R.cart_RAM != null && L.cart_RAM == null)
 				{
 					Buffer.BlockCopy(data, 0, R.cart_RAM, 0, R.cart_RAM.Length);
 				}
-				else if ((R.cart_RAM != null) && (L.cart_RAM != null))
+				else if (R.cart_RAM != null && L.cart_RAM != null)
 				{
 					Buffer.BlockCopy(data, 0, L.cart_RAM, 0, L.cart_RAM.Length);
 					Buffer.BlockCopy(data, L.cart_RAM.Length, R.cart_RAM, 0, R.cart_RAM.Length);

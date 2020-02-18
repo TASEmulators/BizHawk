@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
-		public bool FrameAdvance(IController controller, bool render, bool rendersound)
+		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
 			//Console.WriteLine("-----------------------FRAME-----------------------");
 			//Update the color palette if a setting changed
@@ -164,7 +164,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 							if ((R.IR_self & R.IR_receive) == 2) { R.IR_reg |= 2; }
 							else { R.IR_reg &= 0xFD; }
 						}
-					}					
+					}
 				}
 
 				// if we hit a frame boundary, update video
@@ -197,7 +197,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 					R.vblank_rise = false;
 					do_frame_fill = true;
 				}
-			}			
+			}
 		}
 
 		public void GetControllerState(IController controller)
@@ -232,10 +232,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 		public int[] _vidbuffer = new int[160 * 2 * 144];
 
-		public int[] GetVideoBuffer()
-		{
-			return _vidbuffer;		
-		}
+		public int[] GetVideoBuffer() => _vidbuffer;
 
 		public void FillVideoBuffer()
 		{
@@ -307,24 +304,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			short[] temp_samp_L;
-			short[] temp_samp_R;
-
-			int nsamp_L;
-			int nsamp_R;
-
-			L.audio.GetSamplesSync(out temp_samp_L, out nsamp_L);
-			R.audio.GetSamplesSync(out temp_samp_R, out nsamp_R);
+			L.audio.GetSamplesSync(out var tempSampL, out var nsampL);
+			R.audio.GetSamplesSync(out var tempSampR, out var nsampR);
 
 			if (linkSettings.AudioSet == GBLinkSettings.AudioSrc.Left)
 			{
-				samples = temp_samp_L;
-				nsamp = nsamp_L;
+				samples = tempSampL;
+				nsamp = nsampL;
 			}
 			else if (linkSettings.AudioSet == GBLinkSettings.AudioSrc.Right)
 			{
-				samples = temp_samp_R;
-				nsamp = nsamp_R;
+				samples = tempSampR;
+				nsamp = nsampR;
 			}
 			else
 			{
@@ -342,11 +333,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 		{
 			L.audio.DiscardSamples();
 			R.audio.DiscardSamples();
-		}
-
-		private void GetSamples(short[] samples)
-		{
-
 		}
 
 		public void DisposeSound()

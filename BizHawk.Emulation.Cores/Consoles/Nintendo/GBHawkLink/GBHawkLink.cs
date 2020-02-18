@@ -32,6 +32,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 		public GBHawkLink(CoreComm comm, GameInfo game_L, byte[] rom_L, GameInfo game_R, byte[] rom_R, /*string gameDbFn,*/ object settings, object syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
+			ServiceProvider = ser;
 
 			linkSettings = (GBLinkSettings)settings ?? new GBLinkSettings();
 			linkSyncSettings = (GBLinkSyncSettings)syncSettings ?? new GBLinkSyncSettings();
@@ -67,8 +68,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 			_tracer = new TraceBuffer { Header = L.cpu.TraceHeader };
 			ser.Register<ITraceable>(_tracer);
-
-			ServiceProvider = ser;
 
 			_lStates = L.ServiceProvider.GetService<IStatable>();
 			_rStates = R.ServiceProvider.GetService<IStatable>();
