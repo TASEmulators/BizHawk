@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
@@ -9,50 +9,38 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 	{
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			return new Dictionary<string, RegisterValue>
-			{
-				/*
-				["A"] = cpu.A,
-				["X"] = cpu.X,
-				["Y"] = cpu.Y,
-				["S"] = cpu.S,
-				["PC"] = cpu.PC,
-				["Flag C"] = cpu.FlagC,
-				["Flag Z"] = cpu.FlagZ,
-				["Flag I"] = cpu.FlagI,
-				["Flag D"] = cpu.FlagD,
-				["Flag B"] = cpu.FlagB,
-				["Flag V"] = cpu.FlagV,
-				["Flag N"] = cpu.FlagN,
-				["Flag T"] = cpu.FlagT
-				*/
-			};
+			var a = A.GetCpuFlagsAndRegisters()
+				.Select(reg => new KeyValuePair<string, RegisterValue>("A " + reg.Key, reg.Value));
+
+			var b = B.GetCpuFlagsAndRegisters()
+				.Select(reg => new KeyValuePair<string, RegisterValue>("B " + reg.Key, reg.Value));
+
+			var c = C.GetCpuFlagsAndRegisters()
+				.Select(reg => new KeyValuePair<string, RegisterValue>("C " + reg.Key, reg.Value));
+
+			var d = D.GetCpuFlagsAndRegisters()
+				.Select(reg => new KeyValuePair<string, RegisterValue>("D " + reg.Key, reg.Value));
+
+			return a.Union(b).Union(c).Union(d).ToDictionary(pair => pair.Key, pair => pair.Value);
 		}
 
 		public void SetCpuRegister(string register, int value)
 		{
-			switch (register)
+			if (register.StartsWith("A "))
 			{
-				default:
-					throw new InvalidOperationException();
-				case "A":
-					//cpu.A = (byte)value;
-					break;
-				case "X":
-					//cpu.X = (byte)value;
-					break;
-				case "Y":
-					//cpu.Y = (byte)value;
-					break;
-				case "S":
-					//cpu.S = (byte)value;
-					break;
-				case "PC":
-					//cpu.PC = (ushort)value;
-					break;
-				case "Flag I":
-					//cpu.FlagI = value > 0;
-					break;
+				A.SetCpuRegister(register.Replace("A ", ""), value);
+			}
+			else if (register.StartsWith("B "))
+			{
+				B.SetCpuRegister(register.Replace("B ", ""), value);
+			}
+			else if (register.StartsWith("C "))
+			{
+				C.SetCpuRegister(register.Replace("C ", ""), value);
+			}
+			else if (register.StartsWith("D "))
+			{
+				C.SetCpuRegister(register.Replace("D ", ""), value);
 			}
 		}
 
