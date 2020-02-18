@@ -2283,7 +2283,8 @@ namespace BizHawk.Client.EmuHawk
 			new FileFilterEntry("Neo Geo Pocket", "*.ngp;*.ngc;%ARCH%"),
 			new FileFilterEntry("Commodore 64", "*.prg;*.d64;*.g64;*.crt;*.tap;%ARCH%"),
 			new FileFilterEntry("Amstrad CPC", null, developerFilters: "*.cdt;*.dsk;%ARCH%"),
-			new FileFilterEntry("Sinclair ZX Spectrum", "*.tzx;*.tap;*.dsk;*.pzx;*.csw;*.wav;%ARCH%")
+			new FileFilterEntry("Sinclair ZX Spectrum", "*.tzx;*.tap;*.dsk;*.pzx;*.csw;*.wav;%ARCH%"),
+			new FileFilterEntry("Odyssey 2", "*.o2")
 		};
 
 		public const string ArchiveFilters = "*.zip;*.rar;*.7z;*.gz";
