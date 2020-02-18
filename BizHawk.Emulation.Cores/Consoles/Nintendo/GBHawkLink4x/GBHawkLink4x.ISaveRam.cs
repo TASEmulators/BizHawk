@@ -9,33 +9,33 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 		{
 			if (A.cart_RAM != null || B.cart_RAM != null || C.cart_RAM != null || D.cart_RAM != null)
 			{
-				int Len1 = 0;
-				int Len2 = 0;
-				int Len3 = 0;
-				int Len4 = 0;
+				int len1 = 0;
+				int len2 = 0;
+				int len3 = 0;
+				int len4 = 0;
 				int index = 0;
 
 				if (A.cart_RAM != null)
 				{
-					Len1 = A.cart_RAM.Length;
+					len1 = A.cart_RAM.Length;
 				}
 
 				if (B.cart_RAM != null)
 				{
-					Len2 = B.cart_RAM.Length;
+					len2 = B.cart_RAM.Length;
 				}
 
 				if (C.cart_RAM != null)
 				{
-					Len3 = C.cart_RAM.Length;
+					len3 = C.cart_RAM.Length;
 				}
 
 				if (D.cart_RAM != null)
 				{
-					Len4 = D.cart_RAM.Length;
+					len4 = D.cart_RAM.Length;
 				}
 
-				byte[] temp = new byte[Len1 + Len2 + Len3 + Len4];
+				byte[] temp = new byte[len1 + len2 + len3 + len4];
 
 				if (A.cart_RAM != null)
 				{

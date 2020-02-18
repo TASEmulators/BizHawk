@@ -41,52 +41,52 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 
 			CoreComm = comm;
 
-			var temp_set_A = new GBHawk.GBHawk.GBSettings();
-			var temp_set_B = new GBHawk.GBHawk.GBSettings();
-			var temp_set_C = new GBHawk.GBHawk.GBSettings();
-			var temp_set_D = new GBHawk.GBHawk.GBSettings();
+			var tempSetA = new GBHawk.GBHawk.GBSettings();
+			var tempSetB = new GBHawk.GBHawk.GBSettings();
+			var tempSetC = new GBHawk.GBHawk.GBSettings();
+			var tempSetD = new GBHawk.GBHawk.GBSettings();
 
-			var temp_sync_A = new GBHawk.GBHawk.GBSyncSettings();
-			var temp_sync_B = new GBHawk.GBHawk.GBSyncSettings();
-			var temp_sync_C = new GBHawk.GBHawk.GBSyncSettings();
-			var temp_sync_D = new GBHawk.GBHawk.GBSyncSettings();
+			var tempSyncA = new GBHawk.GBHawk.GBSyncSettings();
+			var tempSyncB = new GBHawk.GBHawk.GBSyncSettings();
+			var tempSyncC = new GBHawk.GBHawk.GBSyncSettings();
+			var tempSyncD = new GBHawk.GBHawk.GBSyncSettings();
 
-			temp_sync_A.ConsoleMode = Link4xSyncSettings.ConsoleMode_A;
-			temp_sync_B.ConsoleMode = Link4xSyncSettings.ConsoleMode_B;
-			temp_sync_C.ConsoleMode = Link4xSyncSettings.ConsoleMode_C;
-			temp_sync_D.ConsoleMode = Link4xSyncSettings.ConsoleMode_D;
+			tempSyncA.ConsoleMode = Link4xSyncSettings.ConsoleMode_A;
+			tempSyncB.ConsoleMode = Link4xSyncSettings.ConsoleMode_B;
+			tempSyncC.ConsoleMode = Link4xSyncSettings.ConsoleMode_C;
+			tempSyncD.ConsoleMode = Link4xSyncSettings.ConsoleMode_D;
 
-			temp_sync_A.GBACGB = Link4xSyncSettings.GBACGB;
-			temp_sync_B.GBACGB = Link4xSyncSettings.GBACGB;
-			temp_sync_C.GBACGB = Link4xSyncSettings.GBACGB;
-			temp_sync_D.GBACGB = Link4xSyncSettings.GBACGB;
+			tempSyncA.GBACGB = Link4xSyncSettings.GBACGB;
+			tempSyncB.GBACGB = Link4xSyncSettings.GBACGB;
+			tempSyncC.GBACGB = Link4xSyncSettings.GBACGB;
+			tempSyncD.GBACGB = Link4xSyncSettings.GBACGB;
 
-			temp_sync_A.RTCInitialTime = Link4xSyncSettings.RTCInitialTime_A;
-			temp_sync_B.RTCInitialTime = Link4xSyncSettings.RTCInitialTime_B;
-			temp_sync_C.RTCInitialTime = Link4xSyncSettings.RTCInitialTime_C;
-			temp_sync_D.RTCInitialTime = Link4xSyncSettings.RTCInitialTime_D;
-			temp_sync_A.RTCOffset = Link4xSyncSettings.RTCOffset_A;
-			temp_sync_B.RTCOffset = Link4xSyncSettings.RTCOffset_B;
-			temp_sync_C.RTCOffset = Link4xSyncSettings.RTCOffset_C;
-			temp_sync_D.RTCOffset = Link4xSyncSettings.RTCOffset_D;
+			tempSyncA.RTCInitialTime = Link4xSyncSettings.RTCInitialTime_A;
+			tempSyncB.RTCInitialTime = Link4xSyncSettings.RTCInitialTime_B;
+			tempSyncC.RTCInitialTime = Link4xSyncSettings.RTCInitialTime_C;
+			tempSyncD.RTCInitialTime = Link4xSyncSettings.RTCInitialTime_D;
+			tempSyncA.RTCOffset = Link4xSyncSettings.RTCOffset_A;
+			tempSyncB.RTCOffset = Link4xSyncSettings.RTCOffset_B;
+			tempSyncC.RTCOffset = Link4xSyncSettings.RTCOffset_C;
+			tempSyncD.RTCOffset = Link4xSyncSettings.RTCOffset_D;
 
 			A = new GBHawk.GBHawk(new CoreComm(comm.ShowMessage, comm.Notify) { CoreFileProvider = comm.CoreFileProvider },
-				game_A, rom_A, temp_set_A, temp_sync_A);
+				game_A, rom_A, tempSetA, tempSyncA);
 
 			B = new GBHawk.GBHawk(new CoreComm(comm.ShowMessage, comm.Notify) { CoreFileProvider = comm.CoreFileProvider },
-				game_B, rom_B, temp_set_B, temp_sync_B);
+				game_B, rom_B, tempSetB, tempSyncB);
 
 			C = new GBHawk.GBHawk(new CoreComm(comm.ShowMessage, comm.Notify) { CoreFileProvider = comm.CoreFileProvider },
-				game_C, rom_C, temp_set_C, temp_sync_C);
+				game_C, rom_C, tempSetC, tempSyncC);
 
 			D = new GBHawk.GBHawk(new CoreComm(comm.ShowMessage, comm.Notify) { CoreFileProvider = comm.CoreFileProvider },
-				game_D, rom_D, temp_set_D, temp_sync_D);
+				game_D, rom_D, tempSetD, tempSyncD);
 
 			ser.Register<IVideoProvider>(this);
 			ser.Register<ISoundProvider>(this); 
 
 			_tracer = new TraceBuffer { Header = A.cpu.TraceHeader };
-			ser.Register<ITraceable>(_tracer);
+			ser.Register(_tracer);
 
 			ServiceProvider = ser;
 
@@ -115,11 +115,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 		private readonly GBHawkLink4xControllerDeck _controllerDeck;
 
 		private readonly ITraceable _tracer;
-
-		private void ExecFetch(ushort addr)
-		{
-			uint flags = (uint)(MemoryCallbackFlags.AccessExecute);
-			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
-		}
 	}
 }

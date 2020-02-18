@@ -10,15 +10,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 {
 	public partial class GBHawkLink4x : IEmulator, IStatable, ISettable<GBHawkLink4x.GBLink4xSettings, GBHawkLink4x.GBLink4xSyncSettings>
 	{
-		public GBLink4xSettings GetSettings()
-		{
-			return Link4xSettings.Clone();
-		}
+		public GBLink4xSettings GetSettings() => Link4xSettings.Clone();
 
-		public GBLink4xSyncSettings GetSyncSettings()
-		{
-			return Link4xSyncSettings.Clone();
-		}
+		public GBLink4xSyncSettings GetSyncSettings() => Link4xSyncSettings.Clone();
 
 		public bool PutSettings(GBLink4xSettings o)
 		{
@@ -72,15 +66,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			[DefaultValue(AudioSrc.A)]
 			public AudioSrc AudioSet { get; set; }
 
-			public GBLink4xSettings Clone()
-			{
-				return (GBLink4xSettings)MemberwiseClone();
-			}
+			public GBLink4xSettings Clone() => (GBLink4xSettings)MemberwiseClone();
 
-			public GBLink4xSettings()
-			{
-				SettingsUtil.SetDefaultValues(this);
-			}
+			public GBLink4xSettings() => SettingsUtil.SetDefaultValues(this);
 		}
 
 		public class GBLink4xSyncSettings
@@ -212,15 +200,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			[JsonIgnore]
 			public ushort _DivInitialTime_D = 8;
 
-			public GBLink4xSyncSettings Clone()
-			{
-				return (GBLink4xSyncSettings)MemberwiseClone();
-			}
+			public GBLink4xSyncSettings Clone() => (GBLink4xSyncSettings)MemberwiseClone();
 
-			public GBLink4xSyncSettings()
-			{
-				SettingsUtil.SetDefaultValues(this);
-			}
+			public GBLink4xSyncSettings() => SettingsUtil.SetDefaultValues(this);
 			public static bool NeedsReboot(GBLink4xSyncSettings x, GBLink4xSyncSettings y)
 			{
 				return !DeepEquality.DeepEquals(x, y);

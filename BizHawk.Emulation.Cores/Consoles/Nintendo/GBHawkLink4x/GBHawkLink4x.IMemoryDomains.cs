@@ -72,29 +72,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 					"System Bus A",
 					0X10000,
 					MemoryDomain.Endian.Little,
-					addr => PeekSystemBusA(addr),
-					(addr, value) => PokeSystemBusA(addr, value),
+					PeekSystemBusA,
+					PokeSystemBusA,
 					1),
 				new MemoryDomainDelegate(
 					"System Bus B",
 					0X10000,
 					MemoryDomain.Endian.Little,
-					addr => PeekSystemBusB(addr),
-					(addr, value) => PokeSystemBusB(addr, value),
+					PeekSystemBusB,
+					PokeSystemBusB,
 					1),
 				new MemoryDomainDelegate(
 					"System Bus C",
 					0X10000,
 					MemoryDomain.Endian.Little,
-					addr => PeekSystemBusC(addr),
-					(addr, value) => PokeSystemBusC(addr, value),
+					PeekSystemBusC,
+					PokeSystemBusC,
 					1),
 				new MemoryDomainDelegate(
 					"System Bus D",
 					0X10000,
 					MemoryDomain.Endian.Little,
-					addr => PeekSystemBusD(addr),
-					(addr, value) => PokeSystemBusD(addr, value),
+					PeekSystemBusD,
+					PokeSystemBusD,
 					1),
 				new MemoryDomainDelegate(
 					"ROM A",
@@ -156,26 +156,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 
 			if (A.cart_RAM != null)
 			{
-				var CartRamA = new MemoryDomainByteArray("Cart RAM L", MemoryDomain.Endian.Little, A.cart_RAM, true, 1);
-				domains.Add(CartRamA);
+				var cartRamA = new MemoryDomainByteArray("Cart RAM L", MemoryDomain.Endian.Little, A.cart_RAM, true, 1);
+				domains.Add(cartRamA);
 			}
 
 			if (B.cart_RAM != null)
 			{
-				var CartRamB = new MemoryDomainByteArray("Cart RAM B", MemoryDomain.Endian.Little, B.cart_RAM, true, 1);
-				domains.Add(CartRamB);
+				var cartRamB = new MemoryDomainByteArray("Cart RAM B", MemoryDomain.Endian.Little, B.cart_RAM, true, 1);
+				domains.Add(cartRamB);
 			}
 
 			if (C.cart_RAM != null)
 			{
-				var CartRamC = new MemoryDomainByteArray("Cart RAM C", MemoryDomain.Endian.Little, C.cart_RAM, true, 1);
-				domains.Add(CartRamC);
+				var cartRamC = new MemoryDomainByteArray("Cart RAM C", MemoryDomain.Endian.Little, C.cart_RAM, true, 1);
+				domains.Add(cartRamC);
 			}
 
 			if (D.cart_RAM != null)
 			{
-				var CartRamD = new MemoryDomainByteArray("Cart RAM D", MemoryDomain.Endian.Little, D.cart_RAM, true, 1);
-				domains.Add(CartRamD);
+				var cartRamD = new MemoryDomainByteArray("Cart RAM D", MemoryDomain.Endian.Little, D.cart_RAM, true, 1);
+				domains.Add(cartRamD);
 			}
 
 			MemoryDomains = new MemoryDomainList(domains);
