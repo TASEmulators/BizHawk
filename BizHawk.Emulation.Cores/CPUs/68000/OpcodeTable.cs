@@ -121,7 +121,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			foreach (var opcode in opList)
 			{
 				int opc = Convert.ToInt32(opcode, 2);
-				if (Opcodes[opc] != null && instr.NotIn("movea", "andi2sr", "eori2sr", "ori2sr", "ext", "dbcc", "swap", "cmpm"))
+				if (Opcodes[opc] != null && !instr.In("movea", "andi2sr", "eori2sr", "ori2sr", "ext", "dbcc", "swap", "cmpm"))
 					Console.WriteLine("Setting opcode for {0}, a handler is already set. overwriting. {1:X4}", instr, opc);
 				Opcodes[opc] = exec;
 			}

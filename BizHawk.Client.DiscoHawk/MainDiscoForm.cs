@@ -105,7 +105,7 @@ namespace BizHawk.Client.DiscoHawk
 			if (files == null) return new List<string>();
 			foreach (string str in files)
 			{
-				string ext = Path.GetExtension(str)?.ToUpper();
+				var ext = Path.GetExtension(str) ?? string.Empty;
 				if(!ext.In(".CUE", ".ISO", ".CCD", ".MDS"))
 				{
 					return new List<string>();
