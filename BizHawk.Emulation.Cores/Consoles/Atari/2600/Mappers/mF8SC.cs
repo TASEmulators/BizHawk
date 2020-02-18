@@ -39,7 +39,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				_ram[(addr & 0x7F)] = 0xFF; // Reading from the write port triggers an unwanted write of open bus
 				return 0xFF; // 0xFF is used for deterministic emulation, in reality it would be a random value based on pins being high or low
 			}
-			else if (addr < 0x1100)
+
+			if (addr < 0x1100)
 			{
 				return _ram[(addr & 0x7F)];
 			}

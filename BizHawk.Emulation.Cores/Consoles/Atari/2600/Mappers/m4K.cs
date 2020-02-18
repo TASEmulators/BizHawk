@@ -12,9 +12,6 @@
 			return Core.Rom[addr & 0xFFF];
 		}
 
-		public override byte PeekMemory(ushort addr)
-		{
-			return ReadMemory(addr);
-		}
+		public override byte PeekMemory(ushort addr) => ReadMemory(addr);
 	}
 }
