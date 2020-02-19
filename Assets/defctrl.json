@@ -1259,6 +1259,26 @@
 			"P1 Button 3": "A, J1 B1, X1 X",
 			"P1 Button 4": "S, J1 B4, X1 Y"
 		},
+		"O2 Joystick": {
+	      "P1 Up": "Up",
+	      "P1 Down": "Down",
+	      "P1 Left": "Left",
+	      "P1 Right": "Right",
+	      "P1 F": "Z",
+	      "0": "Keypad0",
+	      "1": "Keypad1",
+	      "2": "Keypad2",
+	      "3": "Keypad3",
+	      "4": "Keypad4",
+	      "5": "Keypad5",
+	      "6": "Keypad6",
+	      "7": "Keypad7",
+	      "8": "Keypad8",
+	      "9": "Keypad9",
+	      "YES": "Y",
+	      "NO": "N",
+	      "ENT": "KeypadEnter"
+	    }
 	},
 	"AllTrollersAutoFire": {
 		"NES Controller": {
