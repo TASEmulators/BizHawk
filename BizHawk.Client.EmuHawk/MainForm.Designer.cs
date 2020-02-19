@@ -3283,7 +3283,7 @@
 			this.O2HawksettingsToolStripMenuItem});
 			this.O2HawkSubMenu.Name = "O2HawkSubMenu";
 			this.O2HawkSubMenu.Size = new System.Drawing.Size(59, 17);
-			this.O2HawkSubMenu.Text = "&O2Hawk";
+			this.O2HawkSubMenu.Text = "&Odyssey 2";
 			// 
 			// O2HawksettingsToolStripMenuItem
 			// 
