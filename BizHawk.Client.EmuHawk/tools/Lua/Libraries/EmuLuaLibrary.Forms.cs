@@ -391,12 +391,11 @@ namespace BizHawk.Client.EmuHawk
 			return (int)form.Handle;
 		}
 
-		[LuaMethodExample("local stforope = forms.openfile( \"C:\\filename.bin\", \"C:\\\", \"All files ( *.* )|*.*\");")]
+		[LuaMethodExample(@"local filename = forms.openfile(""C:\filename.bin"", ""C:\"", ""Raster Images (*.bmp;*.gif;*.jpg;*.png)|*.bmp;*.gif;*.jpg;*.png|All Files (*.*)|*.*"")")]
 		[LuaMethod(
 			"openfile", "Creates a standard openfile dialog with optional parameters for the filename, directory, and filter. The return value is the directory that the user picked. If they chose to cancel, it will return an empty string")]
-		public string OpenFile(string fileName = null, string initialDirectory = null, string filter = "All files (*.*)|*.*")
+		public string OpenFile(string fileName = null, string initialDirectory = null, string filter = null)
 		{
-			// filterext format ex: "Image Files(*.BMP;*.JPG;*.GIF)|*.BMP;*.JPG;*.GIF|All files (*.*)|*.*"
 			var openFileDialog1 = new OpenFileDialog();
 			if (initialDirectory != null)
 			{
@@ -408,11 +407,8 @@ namespace BizHawk.Client.EmuHawk
 				openFileDialog1.FileName = fileName;
 			}
 
-			if (filter != null)
-			{
-				openFileDialog1.AddExtension = true;
-				openFileDialog1.Filter = filter;
-			}
+			openFileDialog1.AddExtension = true;
+			openFileDialog1.Filter = filter ?? "All Files (*.*)|*";
 
 			if (openFileDialog1.ShowDialog() == DialogResult.OK)
 			{

@@ -8,6 +8,11 @@ namespace BizHawk.Client.Common
 {
 	public static class MovieImport
 	{
+		private static readonly Dictionary<Type, ImporterForAttribute> Importers = Assembly.GetAssembly(typeof(ImporterForAttribute)).GetTypes()
+			.Select(t => (t, attr: (ImporterForAttribute) t.GetCustomAttributes(typeof(ImporterForAttribute)).FirstOrDefault()))
+			.Where(tuple => tuple.attr != null)
+			.ToDictionary(tuple => tuple.t, tuple => tuple.attr);
+
 		/// <summary>
 		/// Returns a value indicating whether or not there is an importer for the given extension
 		/// </summary>
@@ -54,12 +59,5 @@ namespace BizHawk.Client.Common
 		{
 			return Importers.FirstOrDefault(i => string.Equals(i.Value.Extension, ext, StringComparison.OrdinalIgnoreCase)).Key;
 		}
-
-		private static readonly Dictionary<Type, ImporterForAttribute> Importers = Assembly.GetAssembly(typeof(ImporterForAttribute))
-			.GetTypes()
-			.Where(t => t.GetCustomAttributes(typeof(ImporterForAttribute))
-				.Any())
-			.ToDictionary(tkey => tkey, tvalue => ((ImporterForAttribute)tvalue.GetCustomAttributes(typeof(ImporterForAttribute))
-				.First()));
 	}
 }
