@@ -16,17 +16,13 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			{
 				return Core._rom[addr & (Core._rom.Length - 1)];
 			}
-			else
+
+			if (Core.cart_RAM != null)
 			{
-				if (Core.cart_RAM != null)
-				{
-					return Core.cart_RAM[addr - 0xA000];
-				}
-				else
-				{
-					return 0;
-				}
+				return Core.cart_RAM[addr - 0xA000];
 			}
+
+			return 0;
 		}
 
 		public override void MapCDL(ushort addr, I8048.eCDLogMemFlags flags)
@@ -41,17 +37,10 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				{
 					SetCDLRAM(flags, addr - 0xA000);
 				}
-				else
-				{
-					return;
-				}
 			}
 		}
 
-		public override byte PeekMemory(ushort addr)
-		{
-			return ReadMemory(addr);
-		}
+		public override byte PeekMemory(ushort addr) => ReadMemory(addr);
 
 		public override void WriteMemory(ushort addr, byte value)
 		{
