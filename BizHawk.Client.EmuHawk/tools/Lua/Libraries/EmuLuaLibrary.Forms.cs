@@ -408,7 +408,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			openFileDialog1.AddExtension = true;
-			openFileDialog1.Filter = filter ?? "All Files (*.*)|*";
+			openFileDialog1.Filter = filter ?? FilesystemFilter.AllFilesEntry;
 
 			if (openFileDialog1.ShowDialog() == DialogResult.OK)
 			{

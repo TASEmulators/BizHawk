@@ -309,7 +309,7 @@ namespace BizHawk.Client.EmuHawk
 			using var ofd = new OpenFileDialog
 			{
 				InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries["GB", "Palettes"].Path, "GB"),
-				Filter = "Gambatte Palettes (*.pal)|*.pal|All Files|*.*",
+				Filter = new FilesystemFilterSet(FilesystemFilter.Palettes).ToString(),
 				RestoreDirectory = true
 			};
 
@@ -346,7 +346,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries["GB", "Palettes"].Path, "GB"),
 				FileName = $"{Global.Game.Name}.pal",
-				Filter = "Gambatte Palettes (*.pal)|*.pal|All Files|*.*",
+				Filter = new FilesystemFilterSet(FilesystemFilter.Palettes).ToString(),
 				RestoreDirectory = true
 			};
 

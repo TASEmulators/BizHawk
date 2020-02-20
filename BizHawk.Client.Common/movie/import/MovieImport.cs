@@ -23,13 +23,11 @@ namespace BizHawk.Client.Common
 				.Any(e => string.Equals(extension, e.Extension, StringComparison.OrdinalIgnoreCase));
 		}
 
-		public static Dictionary<string, string> AvailableImporters()
-		{
-			return Importers
-				.OrderBy(i => i.Value.Emulator)
-				.ToDictionary(tkey => tkey.Value.Emulator, tvalue => tvalue.Value.Extension);
-		}
-			
+		public static readonly FilesystemFilterSet AvailableImporters = new FilesystemFilterSet(
+			Importers.Values.OrderBy(attr => attr.Emulator)
+				.Select(attr => new FilesystemFilter(attr.Emulator, new[] { attr.Extension.Substring(1) })) // substring removes initial '.'
+				.ToArray()
+		);
 
 		// Attempt to import another type of movie file into a movie object.
 		public static ImportResult ImportFile(string path)

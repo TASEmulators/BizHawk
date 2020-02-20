@@ -6,7 +6,6 @@ using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -1436,7 +1435,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			ofd.RestoreDirectory = true;
-			ofd.Filter = "Libretro Cores (*.dll)|*.dll";
+			ofd.Filter = new FilesystemFilter("Libretro Cores", new[] { "dll" }).ToString();
 
 			if (ofd.ShowDialog() == DialogResult.Cancel)
 			{
@@ -2210,107 +2209,50 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public static string ToFilter(string name, IDictionary<string, string> entries)
-		{
-			var items = new List<string>
-			{
-				name,
-				string.Join(";", entries.Select(e => $"*{e.Value}"))
-			};
+		/// <remarks>TODO add and handle <see cref="FilesystemFilter.LuaScripts"/> (you can drag-and-drop scripts and there are already non-rom things in this list, so why not?)</remarks>
+		private static readonly FilesystemFilterSet RomFSFilterSet = new FilesystemFilterSet(
+			new FilesystemFilter("Music Files", new string[0], devBuildExtraExts: new[] { "psf", "minipsf", "sid", "nsf" }),
+			new FilesystemFilter("Disc Images", new[] { "cue", "ccd", "mds", "m3u" }),
+			new FilesystemFilter("NES", new[] { "nes", "fds", "unf", "nsf" }, addArchiveExts: true),
+			new FilesystemFilter("Super NES", new[] { "smc", "sfc", "xml" }, addArchiveExts: true),
+			new FilesystemFilter("PlayStation", new[] { "cue", "ccd", "mds", "m3u" }),
+			new FilesystemFilter("PSX Executables (experimental)", new string[0], devBuildExtraExts: new[] { "exe" }),
+			new FilesystemFilter("PSF Playstation Sound File", new[] { "psf", "minipsf" }),
+			new FilesystemFilter("Nintendo 64", new[] { "z64", "v64", "n64" }),
+			new FilesystemFilter("Gameboy", new[] { "gb", "gbc", "sgb" }, addArchiveExts: true),
+			new FilesystemFilter("Gameboy Advance", new[] { "gba" }, addArchiveExts: true),
+			new FilesystemFilter("Master System", new[] { "sms", "gg", "sg" }, addArchiveExts: true),
+			new FilesystemFilter("PC Engine", new[] { "pce", "sgx", "cue", "ccd", "mds" }, addArchiveExts: true),
+			new FilesystemFilter("Atari 2600", new[] { "a26" }, devBuildExtraExts: new[] { "bin" }, addArchiveExts: true),
+			new FilesystemFilter("Atari 7800", new[] { "a78" }, devBuildExtraExts: new[] { "bin" }, addArchiveExts: true),
+			new FilesystemFilter("Atari Lynx", new[] { "lnx" }, addArchiveExts: true),
+			new FilesystemFilter("ColecoVision", new[] { "col" }, addArchiveExts: true),
+			new FilesystemFilter("IntelliVision", new[] { "int", "bin", "rom" }, addArchiveExts: true),
+			new FilesystemFilter("TI-83", new[] { "rom" }, addArchiveExts: true),
+			FilesystemFilter.Archives,
+			new FilesystemFilter("Genesis", new[] { "gen", "md", "smd", "32x", "bin", "cue", "ccd" }, addArchiveExts: true),
+			new FilesystemFilter("SID Commodore 64 Music File", new string[0], devBuildExtraExts: new[] { "sid" }, devBuildAddArchiveExts: true),
+			new FilesystemFilter("WonderSwan", new[] { "ws", "wsc" }, addArchiveExts: true),
+			new FilesystemFilter("Apple II", new[] { "dsk", "do", "po" }, addArchiveExts: true),
+			new FilesystemFilter("Virtual Boy", new[] { "vb" }, addArchiveExts: true),
+			new FilesystemFilter("Neo Geo Pocket", new[] { "ngp", "ngc" }, addArchiveExts: true),
+			new FilesystemFilter("Commodore 64", new[] { "prg", "d64", "g64", "crt", "tap" }, addArchiveExts: true),
+			new FilesystemFilter("Amstrad CPC", new string[0], devBuildExtraExts: new[] { "cdt", "dsk" }, devBuildAddArchiveExts: true),
+			new FilesystemFilter("Sinclair ZX Spectrum", new[] { "tzx", "tap", "dsk", "pzx", "csw", "wav" }, addArchiveExts: true),
+			new FilesystemFilter("Odyssey 2", new[] { "o2" }),
+			FilesystemFilter.EmuHawkSaveStates
+		);
 
-			foreach (var kvp in entries)
-			{
-				items.Add(kvp.Key);
-				items.Add($"*{kvp.Value}");
-			}
+		private static readonly IReadOnlyCollection<string> KnownRomExtensions = RomFSFilterSet.Filters
+			.SelectMany(f => f.Extensions)
+			.Distinct()
+			.Except(FilesystemFilter.ArchiveExtensions.Concat(new[] { "State" }))
+			.Select(s => $".{s.ToUpperInvariant()}") // this is what's expected at call-site
+			.ToList();
 
-			items.Add("All Files");
-			items.Add("*.*");
+		public static readonly string RomFilter = RomFSFilterSet.ToString("Everything");
 
-			return FormatFilter(items.ToArray());
-		}
-
-		/// <exception cref="ArgumentException"><paramref name="args"/> contains unpaired element</exception>
-		public static string FormatFilter(params string[] args)
-		{
-			var sb = new StringBuilder();
-			if (args.Length % 2 != 0)
-			{
-				throw new ArgumentException();
-			}
-
-			var num = args.Length / 2;
-			for (int i = 0; i < num; i++)
-			{
-				sb.AppendFormat("{0} ({1})|{1}", args[i * 2], args[(i * 2) + 1]);
-				if (i != num - 1)
-				{
-					sb.Append('|');
-				}
-			}
-
-			var str = sb.ToString().Replace("%ARCH%", ArchiveFilters);
-			str = str.Replace(";", "; ");
-			return str;
-		}
-
-		public static FileFilterEntry[] RomFilterEntries { get; } =
-		{
-			new FileFilterEntry("Music Files", null, developerFilters: "*.psf;*.minipsf;*.sid;*.nsf"),
-			new FileFilterEntry("Disc Images", "*.cue;*.ccd;*.mds;*.m3u"),
-			new FileFilterEntry("NES", "*.nes;*.fds;*.unf;*.nsf;%ARCH%"),
-			new FileFilterEntry("Super NES", "*.smc;*.sfc;*.xml;%ARCH%"),
-			new FileFilterEntry("PlayStation", "*.cue;*.ccd;*.mds;*.m3u"),
-			new FileFilterEntry("PSX Executables (experimental)", null, developerFilters: "*.exe"),
-			new FileFilterEntry("PSF Playstation Sound File", "*.psf;*.minipsf"),
-			new FileFilterEntry("Nintendo 64", "*.z64;*.v64;*.n64"),
-			new FileFilterEntry("Gameboy", "*.gb;*.gbc;*.sgb;%ARCH%"),
-			new FileFilterEntry("Gameboy Advance", "*.gba;%ARCH%"),
-			new FileFilterEntry("Master System", "*.sms;*.gg;*.sg;%ARCH%"),
-			new FileFilterEntry("PC Engine", "*.pce;*.sgx;*.cue;*.ccd;*.mds;%ARCH%"),
-			new FileFilterEntry("Atari 2600", "*.a26;%ARCH%", developerFilters: "*.bin"),
-			new FileFilterEntry("Atari 7800", "*.a78;%ARCH%", developerFilters: "*.bin"),
-			new FileFilterEntry("Atari Lynx", "*.lnx;%ARCH%"),
-			new FileFilterEntry("ColecoVision", "*.col;%ARCH%"),
-			new FileFilterEntry("IntelliVision", "*.int;*.bin;*.rom;%ARCH%"),
-			new FileFilterEntry("TI-83", "*.rom;%ARCH%"),
-			new FileFilterEntry("Archive Files", "%ARCH%"),
-			new FileFilterEntry("Genesis", "*.gen;*.md;*.smd;*.32x;*.bin;*.cue;*.ccd;%ARCH%"),
-			new FileFilterEntry("SID Commodore 64 Music File", null, developerFilters: "*.sid;%ARCH%"),
-			new FileFilterEntry("WonderSwan", "*.ws;*.wsc;%ARCH%"),
-			new FileFilterEntry("Apple II", "*.dsk;*.do;*.po;%ARCH%"),
-			new FileFilterEntry("Virtual Boy", "*.vb;%ARCH%"),
-			new FileFilterEntry("Neo Geo Pocket", "*.ngp;*.ngc;%ARCH%"),
-			new FileFilterEntry("Commodore 64", "*.prg;*.d64;*.g64;*.crt;*.tap;%ARCH%"),
-			new FileFilterEntry("Amstrad CPC", null, developerFilters: "*.cdt;*.dsk;%ARCH%"),
-			new FileFilterEntry("Sinclair ZX Spectrum", "*.tzx;*.tap;*.dsk;*.pzx;*.csw;*.wav;%ARCH%"),
-			new FileFilterEntry("Odyssey 2", "*.o2")
-		};
-
-		public const string ArchiveFilters = "*.zip;*.rar;*.7z;*.gz";
-
-		public static string RomFilter
-		{
-			get
-			{
-				string GetRomFilterStrings()
-				{
-					var values = new HashSet<string>(RomFilterEntries.SelectMany(f => f.EffectiveFilters));
-					if (values.Remove("%ARCH%"))
-					{
-						values.UnionWith(ArchiveFilters.Split(';'));
-					}
-					return string.Join(";", values.OrderBy(n => n));
-				}
-
-				var allFilters = new List<FileFilterEntry> { new FileFilterEntry("Rom Files", GetRomFilterStrings()) };
-				allFilters.AddRange(RomFilterEntries.Where(f => f.EffectiveFilters.Any()));
-				allFilters.Add(new FileFilterEntry("Savestate", "*.state"));
-				allFilters.Add(new FileFilterEntry("All Files", "*.*"));
-
-				return FormatFilter(allFilters.SelectMany(f => new[] { f.Description, string.Join(";", f.EffectiveFilters) }).ToArray());
-			}
-		}
+		public static readonly string ConfigFileFSFilterString = new FilesystemFilter("Config File", new[] { "ini" }).ToString();
 
 		private void OpenRom()
 		{
@@ -3332,7 +3274,7 @@ namespace BizHawk.Client.EmuHawk
 							sfd.InitialDirectory = PathManager.MakeAbsolutePath(Config.PathEntries.AvPathFragment, null);
 						}
 
-						sfd.Filter = string.Format("{0} (*.{0})|*.{0}|All Files|*.*", ext);
+						sfd.Filter = new FilesystemFilterSet(new FilesystemFilter(ext, new[] { ext })).ToString();
 
 						var result = sfd.ShowHawkDialog();
 						if (result == DialogResult.Cancel)
@@ -4267,7 +4209,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				AddExtension = true,
 				DefaultExt = "State",
-				Filter = "Save States (*.State)|*.State|All Files|*.*",
+				Filter = new FilesystemFilterSet(FilesystemFilter.EmuHawkSaveStates).ToString(),
 				InitialDirectory = path,
 				FileName = $"{PathManager.SaveStatePrefix(Game)}.QuickSave0.State"
 			};
@@ -4300,7 +4242,7 @@ namespace BizHawk.Client.EmuHawk
 			using var ofd = new OpenFileDialog
 			{
 				InitialDirectory = PathManager.GetSaveStatePath(Game),
-				Filter = "Save States (*.State)|*.State|All Files|*.*",
+				Filter = new FilesystemFilterSet(FilesystemFilter.EmuHawkSaveStates).ToString(),
 				RestoreDirectory = true
 			};
 

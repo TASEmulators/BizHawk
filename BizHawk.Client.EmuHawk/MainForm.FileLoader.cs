@@ -39,9 +39,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private IEnumerable<string> KnownRomExtensions =>
-			RomFilterEntries.SelectMany(f => f.EffectiveFilters.Where(s => s.StartsWith("*.", StringComparison.Ordinal)).Select(s => s.Substring(1).ToUpperInvariant()));
-
 		private readonly string[] _nonArchive = { ".ISO", ".CUE", ".CCD" };
 
 		#region Loaders

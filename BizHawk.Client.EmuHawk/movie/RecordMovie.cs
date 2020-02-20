@@ -184,7 +184,7 @@ namespace BizHawk.Client.EmuHawk
 				DefaultExt = $".{_movieSession.Movie.PreferredExtension}",
 				FileName = RecordBox.Text,
 				OverwritePrompt = false,
-				Filter = $"Movie Files (*.{_movieSession.Movie.PreferredExtension})|*.{_movieSession.Movie.PreferredExtension}|All Files|*.*"
+				Filter = new FilesystemFilterSet(new FilesystemFilter("Movie Files", new[] { _movieSession.Movie.PreferredExtension })).ToString()
 			};
 
 			var result = sfd.ShowHawkDialog();

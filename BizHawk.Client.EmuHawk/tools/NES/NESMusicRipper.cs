@@ -112,7 +112,7 @@ namespace BizHawk.Client.EmuHawk
 			//acquire target
 			using var sfd = new SaveFileDialog
 			{
-				Filter = "XRNS (*.xrns)|*.xrns"
+				Filter = new FilesystemFilter("Renoise Song Files", new[] { "xrns" }).ToString()
 			};
 			if (sfd.ShowDialog() != DialogResult.OK)
 			{

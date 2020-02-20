@@ -94,26 +94,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void btnLibretroLaunchGame_Click(object sender, EventArgs e)
 		{
-			//build a list of extensions suggested for use for this core
-			StringWriter sw = new StringWriter();
-			foreach(var ext in _currentDescription.ValidExtensions.Split('|'))
-				sw.Write("*.{0};",ext);
-			var filter = sw.ToString();
-			filter = filter.Substring(0,filter.Length-1); //remove last semicolon
-			var args = new List<string> { "Rom Files" };
-			if (!_currentDescription.NeedsArchives)
-				filter += ";%ARCH%";
-			args.Add(filter);
-			if (!_currentDescription.NeedsArchives)
-			{
-				args.Add("Archive Files");
-				args.Add("%ARCH%");
-			}
-			args.Add("All Files");
-			args.Add("*.*");
-			filter = MainForm.FormatFilter(args.ToArray());
-			SuggestedExtensionFilter = filter;
-
+			var entries = new List<FilesystemFilter> { new FilesystemFilter("ROMs", _currentDescription.ValidExtensions.Split('|')) };
+			if (!_currentDescription.NeedsArchives) entries.Add(FilesystemFilter.Archives); // "needs archives" means the relevant archive extensions are already in the list, and we shouldn't scan archives for roms
+			SuggestedExtensionFilter = new FilesystemFilterSet(entries.ToArray()).ToString();
 			Result = AdvancedRomLoaderType.LibretroLaunchGame;
 			DialogResult = DialogResult.OK;
 			Close();

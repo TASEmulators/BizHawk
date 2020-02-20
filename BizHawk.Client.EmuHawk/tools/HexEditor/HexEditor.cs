@@ -926,12 +926,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using var sfd = new SaveFileDialog
 			{
-				Filter = "Text (*.txt)|*.txt|All Files|*.*"
-				, RestoreDirectory = true
-				, InitialDirectory = RomDirectory
-				, FileName = _domain.Name == "File on Disk"
+				FileName = _domain.Name == "File on Disk"
 					? $"{Path.GetFileNameWithoutExtension(RomName)}.txt"
-					: PathManager.FilesystemSafeName(Global.Game)
+					: PathManager.FilesystemSafeName(Global.Game),
+				Filter = new FilesystemFilterSet(FilesystemFilter.TextFiles).ToString(),
+				InitialDirectory = RomDirectory,
+				RestoreDirectory = true
 			};
 
 			var result = sfd.ShowHawkDialog();
@@ -1253,7 +1253,10 @@ namespace BizHawk.Client.EmuHawk
 
 			using var sfd = new OpenFileDialog
 			{
-				Filter = "Binary (*.bin)|*.bin|Save Files (*.sav)|*.sav|All Files|*.*",
+				Filter = new FilesystemFilterSet(
+					new FilesystemFilter("Binary", new[] { "bin" }),
+					new FilesystemFilter("Save Files", new[] { "sav" })
+				).ToString(),
 				RestoreDirectory = true,
 			};
 
@@ -1307,7 +1310,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				FileName = $"{Path.GetFileNameWithoutExtension(romName)}.tbl",
 				InitialDirectory = initialDirectory,
-				Filter = "Text Table files (*.tbl)|*.tbl|All Files|*.*",
+				Filter = new FilesystemFilterSet(new FilesystemFilter("Text Table Files", new[] { "tbl" })).ToString(),
 				RestoreDirectory = false
 			};
 
