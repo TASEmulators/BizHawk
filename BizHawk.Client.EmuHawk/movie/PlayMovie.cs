@@ -570,7 +570,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using var ofd = new OpenFileDialog
 			{
-				Filter = $"Movie Files (*.{MovieService.DefaultExtension})|*.{MovieService.DefaultExtension}|TAS project Files (*.{TasMovie.Extension})|*.{TasMovie.Extension}|All Files|*.*",
+				Filter = new FilesystemFilterSet(FilesystemFilter.BizHawkMovies, FilesystemFilter.TAStudioProjects).ToString(),
 				InitialDirectory = PathManager.MakeAbsolutePath(_config.PathEntries.MoviesPathFragment, null)
 			};
 

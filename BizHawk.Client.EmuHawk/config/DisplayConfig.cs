@@ -243,7 +243,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using var ofd = new OpenFileDialog
 			{
-				Filter = ".CGP (*.cgp)|*.cgp",
+				Filter = new FilesystemFilter(".CGP Files", new[] { "cgp" }).ToString(),
 				FileName = _pathSelection
 			};
 			if (ofd.ShowDialog() == DialogResult.OK)

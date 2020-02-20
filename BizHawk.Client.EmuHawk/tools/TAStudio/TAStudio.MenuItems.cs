@@ -100,14 +100,15 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// need to be fancy here, so call the ofd constructor directly instead of helper
-				var all = $"*.{string.Join(";*.", MovieService.MovieExtensions.Reverse())}";
 				var ofd = new OpenFileDialog
 				{
 					FileName = filename,
 					InitialDirectory = PathManager.MakeAbsolutePath(Config.PathEntries.MoviesPathFragment, null),
-					Filter = string.Format(
-						"All Available Files ({0})|{0}|TAS Project Files (*.{1})|*.{1}|Movie Files (*.{2})|*.{2}|All Files|*.*",
-						all, TasMovie.Extension, MovieService.DefaultExtension)
+					Filter = new FilesystemFilterSet(
+						new FilesystemFilter("All Available Files", MovieService.MovieExtensions.Reverse().ToArray()),
+						FilesystemFilter.TAStudioProjects,
+						FilesystemFilter.BizHawkMovies
+					).ToString()
 				};
 
 				var result = ofd.ShowHawkDialog();

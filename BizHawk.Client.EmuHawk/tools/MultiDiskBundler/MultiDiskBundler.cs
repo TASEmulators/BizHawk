@@ -249,7 +249,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				FileName = filename,
 				InitialDirectory = initialDirectory,
-				Filter = "xml (*.xml)|*.xml|All Files|*.*"
+				Filter = new FilesystemFilterSet(new FilesystemFilter("XML Files", new[] { "xml" })).ToString()
 			};
 
 			var result = sfd.ShowHawkDialog();

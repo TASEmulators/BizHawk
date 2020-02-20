@@ -200,7 +200,7 @@ namespace BizHawk.Client.EmuHawk
 			using var form = new SaveFileDialog
 			{
 				AddExtension = true,
-				Filter = "SubRip Files (*.srt)|*.srt|All files (*.*)|*.*"
+				Filter = new FilesystemFilterSet(new FilesystemFilter("SubRip Files", new[] { "srt" })).ToString()
 			};
 
 			var result = form.ShowDialog();

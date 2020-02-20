@@ -341,7 +341,7 @@ namespace BizHawk.Client.EmuHawk
 			else if (oac.Result == AdvancedRomLoaderType.MAMELaunchGame)
 			{
 				args.OpenAdvanced = new OpenAdvanced_MAME();
-				filter = "MAME Arcade ROMs (*.zip)|*.zip";
+				filter = new FilesystemFilter("MAME Arcade ROMs", new[] { "zip" }).ToString();
 			}
 			else
 			{
@@ -510,7 +510,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				InitialDirectory = PathManager.GetRomsPath(Emulator.SystemId),
 				Multiselect = true,
-				Filter = ToFilter("Movie Files", MovieImport.AvailableImporters()),
+				Filter = MovieImport.AvailableImporters.ToString("Movie Files"),
 				RestoreDirectory = false
 			};
 
@@ -628,7 +628,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				InitialDirectory = Path.GetDirectoryName(path),
 				FileName = Path.GetFileName(path),
-				Filter = "PNG File (*.png)|*.png"
+				Filter = FilesystemFilter.PNGs.ToString()
 			};
 
 			if (sfd.ShowHawkDialog().IsOk())
@@ -1329,7 +1329,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				InitialDirectory = Path.GetDirectoryName(path),
 				FileName = Path.GetFileName(path),
-				Filter = "Config File (*.ini)|*.ini"
+				Filter = ConfigFileFSFilterString
 			};
 
 			if (sfd.ShowHawkDialog().IsOk())
@@ -1354,7 +1354,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				InitialDirectory = Path.GetDirectoryName(path),
 				FileName = Path.GetFileName(path),
-				Filter = "Config File (*.ini)|*.ini"
+				Filter = ConfigFileFSFilterString
 			};
 
 			if (ofd.ShowHawkDialog().IsOk())
@@ -1851,8 +1851,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				using var ofd = new OpenFileDialog
 				{
-					InitialDirectory = PathManager.GetRomsPath(Emulator.SystemId)
-					, Filter = "TI-83 Program Files (*.83p,*.8xp)|*.83P;*.8xp|All Files|*.*", RestoreDirectory = true
+					Filter = new FilesystemFilterSet(new FilesystemFilter("TI-83 Program Files", new[] { "83p", "8xp" })).ToString(),
+					InitialDirectory = PathManager.GetRomsPath(Emulator.SystemId),
+					RestoreDirectory = true
 				};
 
 				if (ofd.ShowDialog()
@@ -2591,11 +2592,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using var zxSnapExpDialog = new SaveFileDialog
 			{
-				RestoreDirectory = true
-				, Title = "EXPERIMENTAL - Export 3rd party snapshot formats"
-				, DefaultExt = "szx"
-				, Filter = "ZX-State files (*.szx)|*.szx"
-				, SupportMultiDottedExtensions = true
+				DefaultExt = "szx",
+				Filter = new FilesystemFilter("ZX-State files", new[] { "szx" }).ToString(),
+				RestoreDirectory = true,
+				SupportMultiDottedExtensions = true,
+				Title = "EXPERIMENTAL - Export 3rd party snapshot formats"
 			};
 
 			try

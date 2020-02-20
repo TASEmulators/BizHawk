@@ -21,6 +21,8 @@ namespace BizHawk.Client.EmuHawk
 		private const string ScriptColumnName = "Script";
 		private const string PathColumnName = "PathName";
 
+		private static readonly FilesystemFilterSet SessionsFSFilterSet = new FilesystemFilterSet(new FilesystemFilter("Lua Session Files", new[] { "luases" }));
+
 		private readonly LuaAutocompleteInstaller _luaAutoInstaller = new LuaAutocompleteInstaller();
 		private readonly List<FileSystemWatcher> _watches = new List<FileSystemWatcher>();
 
@@ -581,7 +583,7 @@ namespace BizHawk.Client.EmuHawk
 				sfd.InitialDirectory = PathManager.GetLuaPath();
 			}
 
-			sfd.Filter = "Lua Session Files (*.luases)|*.luases|All Files|*.*";
+			sfd.Filter = SessionsFSFilterSet.ToString();
 			sfd.RestoreDirectory = true;
 			var result = sfd.ShowHawkDialog();
 			if (result != DialogResult.OK)
@@ -709,7 +711,7 @@ namespace BizHawk.Client.EmuHawk
 			var ofd = new OpenFileDialog
 			{
 				InitialDirectory = PathManager.GetLuaPath(),
-				Filter = "Lua Session Files (*.luases)|*.luases|All Files|*.*",
+				Filter = SessionsFSFilterSet.ToString(),
 				RestoreDirectory = true,
 				Multiselect = false
 			};
@@ -790,7 +792,7 @@ namespace BizHawk.Client.EmuHawk
 					Path.GetFileNameWithoutExtension(LuaImp.ScriptList.Filename) :
 					Path.GetFileNameWithoutExtension(Global.Game.Name),
 				OverwritePrompt = true,
-				Filter = "Lua Scripts (*.lua)|*.lua|All Files (*.*)|*.*"
+				Filter = new FilesystemFilterSet(FilesystemFilter.LuaScripts).ToString()
 			};
 
 			var result = sfd.ShowHawkDialog();
@@ -815,7 +817,7 @@ namespace BizHawk.Client.EmuHawk
 			var ofd = new OpenFileDialog
 			{
 				InitialDirectory = PathManager.GetLuaPath(),
-				Filter = "Lua Scripts (*.lua)|*.lua|Text (*.text)|*.txt|All Files|*.*",
+				Filter = new FilesystemFilterSet(FilesystemFilter.LuaScripts, FilesystemFilter.TextFiles).ToString(),
 				RestoreDirectory = true,
 				Multiselect = true
 			};
@@ -945,7 +947,7 @@ namespace BizHawk.Client.EmuHawk
 					DefaultExt = ".lua",
 					FileName = $"{Path.GetFileNameWithoutExtension(script.Path)} (1)",
 					OverwritePrompt = true,
-					Filter = "Lua Scripts (*.lua)|*.lua|All Files (*.*)|*.*"
+					Filter = new FilesystemFilterSet(FilesystemFilter.LuaScripts).ToString()
 				};
 
 				if (sfd.ShowDialog() == DialogResult.OK)

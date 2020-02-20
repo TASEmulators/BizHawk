@@ -28,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 					? Path.GetFileName(currentFile)
 					: $"{PathManager.FilesystemSafeName(Global.Game)}.{fileExt}",
 				InitialDirectory = path,
-				Filter = string.Format("{0} (*.{1})|*.{1}|All Files|*.*", fileType, fileExt),
+				Filter = new FilesystemFilterSet(new FilesystemFilter(fileType, new[] { fileExt })).ToString(),
 				RestoreDirectory = true
 			};
 
@@ -54,7 +54,7 @@ namespace BizHawk.Client.EmuHawk
 					? Path.GetFileName(currentFile)
 					: $"{PathManager.FilesystemSafeName(Global.Game)}.{fileExt}",
 				InitialDirectory = path,
-				Filter = string.Format("{0} (*.{1})|*.{1}|All Files|*.*", fileType, fileExt),
+				Filter = new FilesystemFilterSet(new FilesystemFilter(fileType, new[] { fileExt })).ToString(),
 				RestoreDirectory = true,
 			};
 

@@ -301,7 +301,10 @@ namespace BizHawk.Client.EmuHawk
 				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Config.PathEntries.LogPathFragment, null);
 			}
 
-			sfd.Filter = "Log Files (*.log)|*.log|Text Files (*.txt)|*.txt|All Files|*.*";
+			sfd.Filter = new FilesystemFilterSet(
+				new FilesystemFilter("Log Files", new[] { "log" }),
+				FilesystemFilter.TextFiles
+			).ToString();
 			sfd.RestoreDirectory = true;
 			var result = sfd.ShowHawkDialog();
 			return result.IsOk() ? new FileInfo(sfd.FileName) : null;

@@ -106,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				FileName = $"{PathManager.FilesystemSafeName(Global.Game)}-Palettes",
 				InitialDirectory = path,
-				Filter = "PNG (*.png)|*.png|Bitmap (*.bmp)|*.bmp|All Files|*.*",
+				Filter = FilesystemFilterSet.Screenshots.ToString(),
 				RestoreDirectory = true
 			};
 

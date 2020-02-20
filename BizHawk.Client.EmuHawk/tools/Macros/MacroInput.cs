@@ -15,6 +15,8 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
 
+		private static readonly FilesystemFilterSet MacrosFSFilterSet = new FilesystemFilterSet(new FilesystemFilter("Movie Macros", new[] { "bk2m" }));
+
 		private readonly List<MovieZone> _zones = new List<MovieZone>();
 		private readonly List<int> _unsavedZones = new List<int>();
 		private bool _selecting;
@@ -288,7 +290,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				InitialDirectory = SuggestedFolder(),
 				FileName = macro.Name,
-				Filter = "Movie Macros (*.bk2m)|*.bk2m|All Files|*.*"
+				Filter = MacrosFSFilterSet.ToString()
 			};
 
 			// Create directory?
@@ -321,7 +323,7 @@ namespace BizHawk.Client.EmuHawk
 			using var dialog = new OpenFileDialog
 			{
 				InitialDirectory = SuggestedFolder(),
-				Filter = "Movie Macros (*.bk2m)|*.bk2m|All Files|*.*"
+				Filter = MacrosFSFilterSet.ToString()
 			};
 			
 			DialogResult result = dialog.ShowHawkDialog();

@@ -40,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					FileName = $"{PathManager.FilesystemSafeName(Global.Game)}-Sprites",
 					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries["NES", "Screenshots"].Path, "NES"),
-					Filter = "PNG (*.png)|*.png|Bitmap (*.bmp)|*.bmp|All Files|*.*",
+					Filter = FilesystemFilterSet.Screenshots.ToString(),
 					RestoreDirectory = true
 				};
 
