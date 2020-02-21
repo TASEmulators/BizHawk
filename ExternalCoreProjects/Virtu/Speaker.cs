@@ -31,8 +31,8 @@ namespace Jellyfish.Virtu
 			_events = events;
 			_cpu = cpu;
 			_flushOutputEvent = FlushOutputEvent; // cache delegates; avoids garbage
-
-			_events.AddEvent(CyclesPerFlush * _cpu.Multiplier, _flushOutputEvent);
+			_events.AddEventDelegate(EventCallbacks.FlushOutput, _flushOutputEvent);
+			_events.AddEvent(CyclesPerFlush * _cpu.Multiplier, EventCallbacks.FlushOutput);
 
 			_isHigh = false;
 			_highCycles = _totalCycles = 0;
@@ -91,7 +91,7 @@ namespace Jellyfish.Virtu
 			Output(_highCycles * short.MaxValue / _totalCycles);
 			_highCycles = _totalCycles = 0;
 
-			_events.AddEvent(CyclesPerFlush * _cpu.Multiplier, _flushOutputEvent);
+			_events.AddEvent(CyclesPerFlush * _cpu.Multiplier, EventCallbacks.FlushOutput);
 		}
 
 		private void UpdateCycles()

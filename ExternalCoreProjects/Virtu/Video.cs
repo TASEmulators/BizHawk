@@ -43,6 +43,11 @@ namespace Jellyfish.Virtu
 			_leaveVBlankEvent = LeaveVBlankEvent;
 			_resetVSyncEvent = ResetVSyncEvent;
 
+			_events.AddEventDelegate(EventCallbacks.FlushRow, _flushRowEvent);
+			_events.AddEventDelegate(EventCallbacks.InverseText, _inverseTextEvent);
+			_events.AddEventDelegate(EventCallbacks.LeaveVBlank, _leaveVBlankEvent);
+			_events.AddEventDelegate(EventCallbacks.ResetVsync, _resetVSyncEvent);
+
 			_flushRowMode = new Action<int>[]
 			{
 				FlushRowMode0, FlushRowMode1, FlushRowMode2, FlushRowMode3, FlushRowMode4, FlushRowMode5, FlushRowMode6, FlushRowMode7,
@@ -77,9 +82,9 @@ namespace Jellyfish.Virtu
 
 			IsVBlank = true;
 
-			_events.AddEvent(_cyclesPerVBlankPreset, _leaveVBlankEvent); // align flush events with scanner; assumes vcount preset at start of frame [3-15, 3-16]
-			_events.AddEvent(_cyclesPerVSync, _resetVSyncEvent);
-			_events.AddEvent(_cyclesPerFlash, _inverseTextEvent);
+			_events.AddEvent(_cyclesPerVBlankPreset, EventCallbacks.LeaveVBlank); // align flush events with scanner; assumes vcount preset at start of frame [3-15, 3-16]
+			_events.AddEvent(_cyclesPerVSync, EventCallbacks.ResetVsync);
+			_events.AddEvent(_cyclesPerFlash, EventCallbacks.InverseText);
 		}
 
 		public void Sync(IComponentSerializer ser)
@@ -156,7 +161,7 @@ namespace Jellyfish.Virtu
 		public int ReadFloatingBus() // [5-40]
 		{
 			// derive scanner counters from current cycles into frame; assumes hcount and vcount preset at start of frame [3-13, 3-15, 3-16]
-			int cycles = _cyclesPerVSync - _events.FindEvent(_resetVSyncEvent);
+			int cycles = _cyclesPerVSync - _events.FindEvent(EventCallbacks.ResetVsync);
 			int hClock = cycles % CyclesPerHSync;
 			int hCount = (hClock != 0) ? HCountPreset + hClock - 1 : 0;
 			int vLine = cycles / CyclesPerHSync;
@@ -925,18 +930,18 @@ namespace Jellyfish.Virtu
 
 		private void FlushRowEvent()
 		{
-			int y = (_cyclesPerVSync - _cyclesPerVBlankPreset - _events.FindEvent(_resetVSyncEvent)) / CyclesPerHSync;
+			int y = (_cyclesPerVSync - _cyclesPerVBlankPreset - _events.FindEvent(EventCallbacks.ResetVsync)) / CyclesPerHSync;
 
 			_flushRowMode[_memory.VideoMode](y - CellHeight); // in arrears
 
 			if (y < Height)
 			{
-				_events.AddEvent(CyclesPerFlush, _flushRowEvent);
+				_events.AddEvent(CyclesPerFlush, EventCallbacks.FlushRow);
 			}
 			else
 			{
 				IsVBlank = true;
-				_events.AddEvent(_cyclesPerVBlank, _leaveVBlankEvent);
+				_events.AddEvent(_cyclesPerVBlank, EventCallbacks.LeaveVBlank);
 			}
 		}
 
@@ -953,18 +958,18 @@ namespace Jellyfish.Virtu
 		{
 			_isTextInversed = !_isTextInversed;
 			DirtyScreenText();
-			_events.AddEvent(_cyclesPerFlash, _inverseTextEvent);
+			_events.AddEvent(_cyclesPerFlash, EventCallbacks.InverseText);
 		}
 
 		private void LeaveVBlankEvent()
 		{
 			IsVBlank = false;
-			_events.AddEvent(CyclesPerFlush, _flushRowEvent);
+			_events.AddEvent(CyclesPerFlush, EventCallbacks.FlushRow);
 		}
 
 		private void ResetVSyncEvent()
 		{
-			_events.AddEvent(_cyclesPerVSync, _resetVSyncEvent);
+			_events.AddEvent(_cyclesPerVSync, EventCallbacks.ResetVsync);
 		}
 
 		private void SetPalette()
