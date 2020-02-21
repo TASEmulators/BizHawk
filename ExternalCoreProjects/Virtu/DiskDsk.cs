@@ -6,8 +6,13 @@ namespace Jellyfish.Virtu
 
 	internal sealed class DiskDsk : Disk525
 	{
-		// ReSharper disable once UnusedMember.Global
-		public DiskDsk() { }
+		private byte[] _trackBuffer;
+		private int _trackOffset;
+		private byte[] _primaryBuffer = new byte[0x100];
+		private const int SecondaryBufferLength = 0x56;
+		private byte[] _secondaryBuffer = new byte[SecondaryBufferLength + 1];
+		private int[] _sectorSkew;
+		private const int Volume = 0xFE;
 
 		public DiskDsk(byte[] data, bool isWriteProtected, SectorSkew sectorSkew)
 			: base(data, isWriteProtected)
@@ -165,13 +170,12 @@ namespace Jellyfish.Virtu
 
 		private int ReadNibble44()
 		{
-			return (((ReadNibble() << 1) | 0x1) & ReadNibble());
+			return ((ReadNibble() << 1) | 0x1) & ReadNibble();
 		}
 
 		private byte ReadTranslatedNibble()
 		{
-			byte data = NibbleToByte[ReadNibble()];
-			return data;
+			return NibbleToByte[ReadNibble()];
 		}
 
 		private bool ReadDataNibbles(int sectorOffset)
@@ -267,14 +271,6 @@ namespace Jellyfish.Virtu
 
 			WriteNibble(ByteToNibble[a]); // data checksum
 		}
-
-		private byte[] _trackBuffer;
-		private int _trackOffset;
-		private byte[] _primaryBuffer = new byte[0x100];
-		private const int SecondaryBufferLength = 0x56;
-		private byte[] _secondaryBuffer = new byte[SecondaryBufferLength + 1];
-		private int[] _sectorSkew;
-		private const int Volume = 0xFE;
 
 		private static readonly byte[] SwapBits = { 0, 2, 1, 3 };
 

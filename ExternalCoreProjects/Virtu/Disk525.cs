@@ -45,7 +45,6 @@ namespace Jellyfish.Virtu
 
 		public byte[] Data;
 
-		// ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
 		public bool IsWriteProtected;
 
 		public const int SectorCount = 16;
