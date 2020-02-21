@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Jellyfish.Virtu
 {
@@ -33,6 +34,48 @@ namespace Jellyfish.Virtu
 
 		// ReSharper disable once FieldCanBeMadeReadOnly.Local
 		private LinkedList<MachineEvent> _free = new LinkedList<MachineEvent>();
+
+		public void Sync(IComponentSerializer ser)
+		{
+			if (ser.IsReader)
+			{
+				int[] usedDelta = new int[0];
+				int[] usedType = new int[0];
+				int[] freeDelta = new int[0];
+				int[] freeType = new int[0];
+
+				ser.Sync("UsedDelta", ref usedDelta, false);
+				ser.Sync("UsedType", ref usedType, false);
+				ser.Sync("FreeDelta", ref freeDelta, false);
+				ser.Sync("FreeType", ref freeType, false);
+
+				_used.Clear();
+				for (int i = 0; i < usedDelta.Length; i++)
+				{
+					var e = new MachineEvent(usedDelta[i], (EventCallbacks)usedType[i]);
+					_used.AddLast(new LinkedListNode<MachineEvent>(e));
+				}
+
+				_free.Clear();
+				for (int i = 0; i < freeDelta.Length; i++)
+				{
+					var e = new MachineEvent(freeDelta[i], (EventCallbacks)freeType[i]);
+					_free.AddLast(new LinkedListNode<MachineEvent>(e));
+				}
+			}
+			else
+			{
+				var usedDelta = _used.Select(u => u.Delta).ToArray();
+				var usedType = _used.Select(u => (int)u.Type).ToArray();
+				var freeDelta = _free.Select(f => f.Delta).ToArray();
+				var freeType = _free.Select(f => (int)f.Type).ToArray();
+
+				ser.Sync("UsedDelta", ref usedDelta, false);
+				ser.Sync("UsedType", ref usedType, false);
+				ser.Sync("FreeDelta", ref freeDelta, false);
+				ser.Sync("FreeType", ref freeType, false);
+			}
+		}
 
 		public void AddEventDelegate(EventCallbacks type, Action action)
 
