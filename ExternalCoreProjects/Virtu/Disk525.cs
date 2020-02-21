@@ -4,14 +4,16 @@ namespace Jellyfish.Virtu
 {
 	internal abstract class Disk525
 	{
-		// ReSharper disable once UnusedMember.Global
-		// ReSharper disable once PublicConstructorInAbstractClass
-		public Disk525() { }
-
 		protected Disk525(byte[] data, bool isWriteProtected)
 		{
 			Data = data;
 			IsWriteProtected = isWriteProtected;
+		}
+
+		public virtual void Sync(IComponentSerializer ser)
+		{
+			ser.Sync(nameof(Data), ref Data, false);
+			ser.Sync(nameof(IsWriteProtected), ref IsWriteProtected);
 		}
 
 		public static Disk525 CreateDisk(string name, byte[] data, bool isWriteProtected)
@@ -43,8 +45,7 @@ namespace Jellyfish.Virtu
 		public abstract void ReadTrack(int number, int fraction, byte[] buffer);
 		public abstract void WriteTrack(int number, int fraction, byte[] buffer);
 
-		public byte[] Data;
-
+		protected byte[] Data;
 		public bool IsWriteProtected;
 
 		public const int SectorCount = 16;

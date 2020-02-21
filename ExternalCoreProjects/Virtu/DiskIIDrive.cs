@@ -30,12 +30,8 @@
 			ser.Sync(nameof(_trackOffset), ref _trackOffset);
 			ser.Sync(nameof(_trackData), ref _trackData, false);
 			
-			// TODO: enforce isWriteProtected, or save the delta
-			if (_disk != null)
-			{
-				ser.Sync(nameof(_disk.Data), ref _disk.Data, false);
-				ser.Sync(nameof(_disk.IsWriteProtected), ref _disk.IsWriteProtected);
-			}
+			// TODO: save the delta, this is saving the rom into save states
+			_disk?.Sync(ser);
 		}
 
 		// ReSharper disable once UnusedMember.Global

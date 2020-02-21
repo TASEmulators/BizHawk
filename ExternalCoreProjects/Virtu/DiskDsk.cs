@@ -6,18 +6,29 @@ namespace Jellyfish.Virtu
 
 	internal sealed class DiskDsk : Disk525
 	{
+		private const int SecondaryBufferLength = 0x56;
+		private const int Volume = 0xFE;
+
 		private byte[] _trackBuffer;
 		private int _trackOffset;
 		private byte[] _primaryBuffer = new byte[0x100];
-		private const int SecondaryBufferLength = 0x56;
 		private byte[] _secondaryBuffer = new byte[SecondaryBufferLength + 1];
 		private int[] _sectorSkew;
-		private const int Volume = 0xFE;
 
 		public DiskDsk(byte[] data, bool isWriteProtected, SectorSkew sectorSkew)
 			: base(data, isWriteProtected)
 		{
 			_sectorSkew = SectorSkewMode[(int)sectorSkew];
+		}
+
+		public override void Sync(IComponentSerializer ser)
+		{
+			ser.Sync(nameof(_trackBuffer), ref _trackBuffer, false);
+			ser.Sync(nameof(_trackOffset), ref _trackOffset);
+			ser.Sync(nameof(_primaryBuffer), ref _primaryBuffer, false);
+			ser.Sync(nameof(_secondaryBuffer), ref _secondaryBuffer, false);
+			ser.Sync(nameof(_sectorSkew), ref _sectorSkew, false);
+			base.Sync(ser);
 		}
 
 		public override void ReadTrack(int number, int fraction, byte[] buffer)
