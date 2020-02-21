@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using Newtonsoft.Json;
 
 namespace Jellyfish.Virtu
 {
@@ -20,14 +19,7 @@ namespace Jellyfish.Virtu
 	// ReSharper disable once UnusedMember.Global
 	public sealed partial class Cpu : ICpu
 	{
-		// ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private IMemoryBus _memory;
-
-		// ReSharper disable once UnusedMember.Global
-		public Cpu()
-		{
-			InitializeOpCodeDelegates();
-		}
+		private readonly IMemoryBus _memory;
 
 		public Cpu(IMemoryBus memory)
 		{
@@ -3434,35 +3426,22 @@ namespace Jellyfish.Virtu
 			set { _is65C02 = value; _executeOpCode = _is65C02 ? _executeOpCode65C02 : _executeOpCode65N02; }
 		}
 
-		[JsonIgnore]
 		public int Multiplier { get => _multiplier; set => _multiplier = value; }
 
-		[JsonIgnore]
 		public int RA { get => _ra; set => _ra = value; }
-		[JsonIgnore]
 		public int RX { get => _rx; set => _rx = value; }
-		[JsonIgnore]
 		public int RY { get => _ry; set => _ry = value; }
-		[JsonIgnore]
 		public int RS { get => _rs; set => _rs = value; }
-		[JsonIgnore]
 		public int RP { get => _rp; set => _rp = value; }
-		[JsonIgnore]
 		public int RPC { get => _rpc; set => _rpc = value; }
-		[JsonIgnore]
 		public int EA { get => _ea; set => _ea = value; }
-		[JsonIgnore]
 		public int CC { get => _cc; set => _cc = value; }
-		[JsonIgnore]
 		public int OpCode { get => _opCode; set => _opCode = value; }
-		[JsonIgnore]
 		public long Cycles { get => _cycles; set => _cycles = value; }
 
-		[JsonIgnore]
 		public Action<string[]> TraceCallback;
 
 		/// <summary>Carry Flag</summary>
-		[JsonIgnore]
 		public bool FlagC
 		{
 			get => (RP & 0x01) != 0;
@@ -3470,7 +3449,6 @@ namespace Jellyfish.Virtu
 		}
 
 		/// <summary>Zero Flag</summary>
-		[JsonIgnore]
 		public bool FlagZ
 		{
 			get => (RP & 0x02) != 0;
@@ -3478,7 +3456,6 @@ namespace Jellyfish.Virtu
 		}
 
 		/// <summary>Interrupt Disable Flag</summary>
-		[JsonIgnore]
 		public bool FlagI
 		{
 			get => (RP & 0x04) != 0;
@@ -3486,7 +3463,6 @@ namespace Jellyfish.Virtu
 		}
 
 		/// <summary>Decimal Mode Flag</summary>
-		[JsonIgnore]
 		public bool FlagD
 		{
 			get => (RP & 0x08) != 0;
@@ -3494,7 +3470,6 @@ namespace Jellyfish.Virtu
 		}
 
 		/// <summary>Break Flag</summary>
-		[JsonIgnore]
 		public bool FlagB
 		{
 			get => (RP & 0x10) != 0;
@@ -3502,7 +3477,6 @@ namespace Jellyfish.Virtu
 		}
 
 		/// <summary>T... Flag</summary>
-		[JsonIgnore]
 		public bool FlagT
 		{
 			get => (RP & 0x20) != 0;
@@ -3510,7 +3484,6 @@ namespace Jellyfish.Virtu
 		}
 
 		/// <summary>Overflow Flag</summary>
-		[JsonIgnore]
 		public bool FlagV
 		{
 			get => (RP & 0x40) != 0;
@@ -3518,7 +3491,6 @@ namespace Jellyfish.Virtu
 		}
 
 		/// <summary>Negative Flag</summary>
-		[JsonIgnore]
 		public bool FlagN
 		{
 			get => (RP & 0x80) != 0;

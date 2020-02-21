@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 
 namespace Jellyfish.Virtu
 {
@@ -21,17 +20,19 @@ namespace Jellyfish.Virtu
 			ser.Sync(nameof(_cc), ref _cc);
 			ser.Sync(nameof(_opCode), ref _opCode);
 			ser.Sync(nameof(_cycles), ref _cycles);
+
+			if (!ser.IsReader)
+			{
+				// Hacky way to set the action callback
+				Is65C02 = _is65C02;
+			}
 		}
 
-		[JsonIgnore]
 		private Action[] _executeOpCode65N02;
-		[JsonIgnore]
 		private Action[] _executeOpCode65C02;
-		[JsonIgnore]
 		private Action[] _executeOpCode;
 
 		private bool _is65C02;
-
 		private int _multiplier;
 
 		private int _ra;
