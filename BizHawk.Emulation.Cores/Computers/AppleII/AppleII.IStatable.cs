@@ -193,7 +193,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			ser.BeginSection("Events");
 			_machine.Events.Sync(ser);
 			ser.EndSection();
-			
+
 			ser.BeginSection("Cpu");
 			_machine.Cpu.Sync(ser);
 			ser.EndSection();

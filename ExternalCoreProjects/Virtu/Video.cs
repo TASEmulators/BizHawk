@@ -72,7 +72,7 @@ namespace Jellyfish.Virtu
 			IsMonochrome = false;
 			ScannerOptions = ScannerOptions.None;
 
-			IsVBlank = true;
+			_isVBlank = true;
 
 			_events.AddEvent(_cyclesPerVBlankPreset, EventCallbacks.LeaveVBlank); // align flush events with scanner; assumes vcount preset at start of frame [3-15, 3-16]
 			_events.AddEvent(_cyclesPerVSync, EventCallbacks.ResetVsync);
@@ -81,6 +81,7 @@ namespace Jellyfish.Virtu
 
 		public void Sync(IComponentSerializer ser)
 		{
+			ser.Sync(nameof(_isVBlank), ref _isVBlank);
 			ser.Sync(nameof(_framebuffer), ref _framebuffer, false);
 		}
 
@@ -932,7 +933,7 @@ namespace Jellyfish.Virtu
 			}
 			else
 			{
-				IsVBlank = true;
+				_isVBlank = true;
 				_events.AddEvent(_cyclesPerVBlank, EventCallbacks.LeaveVBlank);
 			}
 		}
@@ -955,7 +956,7 @@ namespace Jellyfish.Virtu
 
 		private void LeaveVBlankEvent()
 		{
-			IsVBlank = false;
+			_isVBlank = false;
 			_events.AddEvent(CyclesPerFlush, EventCallbacks.FlushRow);
 		}
 
@@ -1040,7 +1041,9 @@ namespace Jellyfish.Virtu
 		[JsonIgnore]
 		internal ScannerOptions ScannerOptions { get => _scannerOptions; set { _scannerOptions = value; SetScanner(); } }
 
-		public bool IsVBlank { get; private set; }
+		private bool _isVBlank;
+
+		public bool IsVBlank => _isVBlank;
 
 		private int _colorBlack;
 		private int _colorDarkBlue;
