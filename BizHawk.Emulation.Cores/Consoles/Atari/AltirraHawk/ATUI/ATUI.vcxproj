@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="../Build/ProjectConfigurations.props" />
+  <ItemGroup>
+    <ClInclude Include="..\h\at\atui\constants.h" />
+    <ClInclude Include="..\h\at\atui\uianchor.h" />
+    <ClInclude Include="..\h\at\atui\uicommandmanager.h" />
+    <ClInclude Include="..\h\at\atui\uicontainer.h" />
+    <ClInclude Include="..\h\at\atui\uidragdrop.h" />
+    <ClInclude Include="..\h\at\atui\uidrawingutils.h" />
+    <ClInclude Include="..\h\at\atui\uimanager.h" />
+    <ClInclude Include="..\h\at\atui\uimenulist.h" />
+    <ClInclude Include="..\h\at\atui\uiwidget.h" />
+    <ClInclude Include="h\stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\stdafx.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="source\uianchor.cpp" />
+    <ClCompile Include="source\uicommandmanager.cpp" />
+    <ClCompile Include="source\uicontainer.cpp" />
+    <ClCompile Include="source\uidrawingutils.cpp" />
+    <ClCompile Include="source\uimanager.cpp" />
+    <ClCompile Include="source\uimenulist.cpp" />
+    <ClCompile Include="source\uiwidget.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{B37046D2-6E5B-4E2B-8510-E6173B30E12B}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>ATUI</RootNamespace>
+  </PropertyGroup>
+  <Import Project="..\Build\PlatformSetup.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\Build\Altirra.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

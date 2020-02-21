@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="../Build/ProjectConfigurations.props" />
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{3DA1C056-7383-4F66-A9A0-0303A52D8171}</ProjectGuid>
+    <RootNamespace>ATNetworkSockets</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="..\Build\PlatformSetup.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\Build\Altirra.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ClInclude Include="h\at\atnetworksockets\internal\vxlantunnel.h" />
+    <ClCompile Include="source\vxlantunnel.cpp" />
+    <ClCompile Include="source\stdafx.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="source\worker.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\h\at\atnetworksockets\vxlantunnel.h" />
+    <ClInclude Include="h\stdafx.h" />
+    <ClInclude Include="h\at\atnetworksockets\internal\worker.h" />
+    <ClInclude Include="..\h\at\atnetworksockets\worker.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

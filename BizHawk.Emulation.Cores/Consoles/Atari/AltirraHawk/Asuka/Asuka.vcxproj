@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\Build\ProjectConfigurations.props" />
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{6AA99A18-196F-4334-A3DE-D9EEA62CD5E9}</ProjectGuid>
+    <RootNamespace>Asuka</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="..\Build\PlatformSetup.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\Build\Altirra.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <Link>
+      <AdditionalDependencies>system.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(VDLibPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <SubSystem>Console</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\VDDisplay\source\minid3dx.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="source\checkimports.cpp" />
+    <ClCompile Include="source\filecreator.cpp" />
+    <ClCompile Include="source\fontencode.cpp" />
+    <ClCompile Include="source\fontextract.cpp" />
+    <ClCompile Include="source\fontrender.cpp" />
+    <ClCompile Include="source\fxc10.cpp" />
+    <ClCompile Include="source\glc.cpp" />
+    <ClCompile Include="source\glc_atifs.cpp" />
+    <ClCompile Include="source\glc_nvrc.cpp" />
+    <ClCompile Include="source\hash.cpp" />
+    <ClCompile Include="source\main.cpp" />
+    <ClCompile Include="source\makearray.cpp" />
+    <ClCompile Include="source\maketables.cpp" />
+    <ClCompile Include="source\utils.cpp" />
+    <ClCompile Include="source\stdafx.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="h\filecreator.h" />
+    <ClInclude Include="h\glc.h" />
+    <ClInclude Include="res\resource.h" />
+    <ClInclude Include="h\symbols.h" />
+    <ClInclude Include="h\utils.h" />
+    <ClInclude Include="h\stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="res\Asuka.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\system\system.vcxproj">
+      <Project>{c2082189-3ecb-4079-91fa-89d3c8a305c0}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

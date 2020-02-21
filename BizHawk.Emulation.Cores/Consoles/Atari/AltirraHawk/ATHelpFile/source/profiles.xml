@@ -1,0 +1,102 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Profiles">
+  <toc/>
+
+  <h2>Overview</h2>
+  <p>
+    <i>Profiles</i> allow for easy switching between groups of settings without having to switch
+    everything manually. An example is keeping computer and 5200 console settings separate, as
+    the 5200 needs different controllers and different cartridges. By default, Altirra comes with
+    profiles pre-configured for the major computer and console types. Additional profiles can
+    also be created by the user.
+  </p>
+
+  <h2>How profiles work</h2>
+  <p>
+    Profiles work by keeping settings attached to the profile. For instance, the 5200 Console
+    profile is set to store input settings in the profile, so switching to that
+    profile loads 5200-specific settings and any changes made in that mode are kept private
+    to the 5200 Console profile. Switching back to the XL/XE Computer profile then unloads
+    the 5200-specific input settings, removing the 5200 controllers and replacing them with
+    computer-compatible joysticks and paddle settings.
+  </p>
+  <h3>Settings categories</h3>
+  <p>
+    Not all settings need to be kept in a profile. The default profiles leave out the Full Screen
+    setting and <i>inherit</i> this setting from their parent, which is the Global profile. This
+    means that the full screen mode setting is shared between all of the profiles, so switching
+    to full screen mode in one profile also changes that setting for the rest.
+  </p>
+  
+  <h2>Switching profiles</h2>
+  <p>
+    The profiles are accessed in the System | Profiles menu. Selecting a profile switches the
+    emulation settings to the ones in that profile. Note that switching between profiles causes
+    the emulated computer to reset.
+  </p>
+  <h3>Temporary profiles</h3>
+  <p>
+    Also on this menu is an option to use a <i>temporary</i> profile. A temporary profile can
+    be modified, but isn't saved. This is useful when you want to experiment with some settings
+    based on an existing profile, but don't want to deal with the hassle of manually creating
+    a new profile just to prevent the existing one from getting changed. If the changes do turn
+    out to be worth keeping, turning the temporary profile option off will allow the changes to
+    be saved back to the profile.
+  </p>
+  
+  <h2>Editing profiles</h2>
+  <p>
+    The Edit Profiles... menu option allows profiles to be created, deleted, and modified.
+    To create a new profile, select the parent profile to inherit from, click Add, and type a
+    name for the new profile. Then, use Edit Categories to choose which groups of settings to
+    store in the profile.
+  </p>
+  <p>
+    Profiles can also be dragged in the tree to re-parent them. This changes the profile to
+    inherit settings from a different parent profile.
+  </p>
+  <h3>Default profiles</h3>
+  <p>
+    The <i>Set as Default</i> button allows a profile to be tagged as the default for a specific
+    computer type. This is used when the emulator needs to switch to a particular computer type
+    and needs to find a profile to use for it. As an example, attempting to boot a floppy disk
+    image while in 5200 mode will cause the emulator to switch to the default profile for
+    the XL/XE computer type.
+  </p>
+  <h3>Visible and hidden profiles</h3>
+  <p>
+    The <i>Visible</i> checkbox determines which profiles show up in the Profile menu. Profiles
+    without this checkbox set can only be accessed from the Edit Profiles dialog or from the
+    command line. This is particularly useful for profiles that are only used when launching
+    the emulator from another program.
+  </p>
+  
+  <h2>Using profiles from the command line</h2>
+  <p>
+    Several command line switches are provided to use profiles when launching the emulator from
+    the command line:
+  </p>
+  <dl>
+    <dt>/profile</dt>
+    <dd>
+      Selects a profile by name. For instance: <tt>/profile:dos2</tt> will select the profile
+      called "dos2." Note that the name is case sensitive.
+    </dd>
+    
+    <dt>/defprofile</dt>
+    <dd>
+      Selects a default profile by computer type. Valid computer types are xl, xegs, 800, 1200xl,
+      and 5200. Example: <tt>/defprofile:xegs</tt>.
+    </dd>
+    
+    <dt>/tempprofile</dt>
+    <dd>
+      Enables temporary profile mode, preventing changes from being saved back to the profile
+      unless the Temporary Profile mode is turned back off in the UI. This is useful for a kiosk
+      style launch where settings should not be saved. <tt>/tempprofile</tt> does
+      not select a profile by itself, so it must be combined with <tt>/profile</tt> or <tt>/defprofile</tt>
+      to use a specific profile as the template for the temporary profile.
+    </dd>
+  </dl>
+</topic>

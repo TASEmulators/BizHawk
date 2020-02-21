@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="I.S. Plate">
+  <p>
+    The I.S. Plate is a modified Atari 1050 with support for single, enhanced, and double
+    density disks.
+  </p>
+  <h2>Accurate sector timing</h2>
+  <p>
+    The "accurate sector timing" option is forced on when emulating I.S. Plate drives. This
+    is to work around a bug in the ISP firmware where the firmware crashes and reboots if it
+    sees more than about 100 sectors within a quarter of a second.
+  </p>
+  <h2>NTSC compatibility</h2>
+  <p>
+    The US/IS Doubler emulation option in the ISP Lightspeed rev. 2.0 software will not work
+    if the computer is set to NTSC. This is due to out of tolerance
+    serial timing in the IS Doubler firmware preventing the computer from being able to
+    receive. The timing is just barely within POKEY's requirements
+    for an ideal PAL machine, but beyond what POKEY can receive for ideal NTSC. Your mileage
+    may vary on real hardware due to real-world clock variance.
+  </p>
+</topic>

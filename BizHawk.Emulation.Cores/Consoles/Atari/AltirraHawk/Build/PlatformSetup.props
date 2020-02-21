@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <PlatformToolset Condition="$(Platform)!='ARM64'">v141_xp</PlatformToolset>
+    <PlatformToolset Condition="$(Platform)=='ARM64'">v141</PlatformToolset>
+    <WindowsTargetPlatformVersion Condition="$(Platform)=='ARM64'">10.0.17763.0</WindowsTargetPlatformVersion>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Condition="Exists('$(MSBuildThisFileDirectory)..\..\localconfig\active\PlatformSetup.local.props')" Project="$(MSBuildThisFileDirectory)..\..\localconfig\active\PlatformSetup.local.props" />
+</Project>

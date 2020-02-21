@@ -1,0 +1,101 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Additions disk">
+  <p>
+    For some devices, additional software must be loaded on the computer to make use
+    of that device. Altirra comes with an additions disk called <tt>Additions.atr</tt>
+    containing additional software
+    for use with emulated devices. Some of the drivers can also be used on the real hardware.
+  </p>
+  <h2>Software on the Additions disk</h2>
+  <dl>
+    <dt>ALTXEP80.SYS</dt>
+    <dd>
+      XEP80 Interface Module 80-column E:/S: driver.
+    </dd>
+
+    <dt>ALTXEP8F.SYS</dt>
+    <dd>
+      Fast version of XEP80 driver. The fast driver uses 31.5Kbaud for transmission to the XEP80
+      instead of the standard 15.7Kbaud, for better output speed. Note that the XEP80 must be
+      powered off and back on again to work at standard speed after using the fast driver.
+    </dd>
+
+    <dt>BOOT850.COM</dt>
+    <dd>
+      Downloads R: handler software from an 850 Interface Module, for when it isn't
+      already being downloaded by the boot process. In Altirra, this is only
+      usable if full SIO emulation is enabled. It will work but do nothing when stub
+      loader emulation is enabled.
+    </dd>
+    <dd>
+      <tt>BOOT850.COM</tt> attempts to workaround some shortcomings in the 850 handler
+      download process, particularly that the 850 only answers poll requests once. If
+      the poll request fails, a special SIO routine is used to download the relocator
+      blind without having to know its length.
+    </dd>
+    <dd>
+      The downloader will detect if R: is already installed and avoid installing it
+      again.
+    </dd>
+
+    <dt>RHND850.COM</dt>
+    <dd>
+      Disk-based version of Altirra's built-in 850 R: handler. This handler is intended
+      for use with the 850 emulation but should also work on real 850 hardware.
+    </dd>
+    <dd>
+      Like <tt>BOOT850.COM</tt>, <tt>RHND850.COM</tt> will also avoid installing its
+      <tt>R:</tt> handler if one is already installed.
+    </dd>
+
+    <dt>BOOT1030.COM</dt>
+    <dd>
+      Downloads T: handler software from a 1030 Modem, for when it isn't
+      already being downloaded by the boot process. In Altirra, this is only
+      usable if full SIO emulation is enabled. It will work but do nothing when stub
+      loader emulation is enabled.
+    </dd>
+    <dd>
+      The downloader will detect if T: is already installed and avoid installing it
+      again.
+    </dd>
+
+    <dt>THND1030.COM</dt>
+    <dd>
+      Disk-based version of Altirra's built-in 1030 T: handler. This handler
+      is intended for use with the 1030 emulation but should also work on real 1030 hardware.
+      Unlike the firmware-loaded version, it is relocatable and will leave more memory
+      free whenever MEMLO is below $1D00.
+    </dd>
+    <dd>
+      Like <tt>BOOT1030.COM</tt>, <tt>THND1030.COM</tt> will also avoid installing its
+      <tt>T:</tt> handler if one is already installed.
+    </dd>
+
+     <dt>SX212.COM</dt>
+    <dd>
+      T: handler for SX212 modem. This handler is intended for use with the SX212
+      emulation but should also work on real hardware.
+    </dd>
+
+    <dt>ATBASICX.COM</dt>
+    <dd>
+      Disk-based version of Altirra BASIC; requires 48K RAM and no cartridge inserted.
+      Will attempt to run AUTORUN.BAS unless a filename is specified on the command
+      line.
+    </dd>
+
+    <dt>COLORMAP.COM</dt>
+    <dd>
+      Displays color charts for color calibration purposes.
+    </dd>
+    
+    <dt>LOADEXE.COM</dt>
+    <dd>
+      Triggers loading of a program loaded directly in the emulator when the program load
+      mode is set to Type 3 Poll or Deferred. This can be renamed to AUTORUN.SYS to
+      automatically trigger the program load once DOS has booted.
+    </dd>
+  </dl>
+</topic>

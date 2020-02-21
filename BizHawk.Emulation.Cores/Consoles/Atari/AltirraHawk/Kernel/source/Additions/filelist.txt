@@ -1,0 +1,13 @@
+dos.sys
+autorun.sys
+atbasicx.xex -> atbasicx.com
+boot850.xex -> boot850.com
+boot1030.xex -> boot1030.com
+colormap.xex -> colormap.com
+rhnd850.xex -> rhnd850.com
+sx212.xex -> sx212.com
+thnd1030.xex -> thnd1030.com
+xep80.sys -> altxep80.sys
+xep80f.sys -> altxep8f.sys
+loadexe.xex -> loadexe.com
+additions-license.txt -> license.txt

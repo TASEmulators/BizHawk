@@ -1,0 +1,38 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Options: System">
+  <p>
+    Altirra has a number of options that can be used to customize the emulated Atari hardware.
+  </p>
+  <toc/>
+  
+  <h2>Disk options</h2>
+  <h3>Accurate sector timing</h3>
+  <p>
+    Causes the emulator to simulate rotational delays caused by sector position and seek delays (step and head settling time).
+    This results in a slower disk load, but is sometimes necessary to load protected disks.
+  </p>
+  <p>
+    When disabled or when the SIO patch is enabled, Altirra still attempts to track disk rotation for protected disks. This means
+    that CPU timing is not preserved, but rotational position is still noted.
+  </p>
+  <h3>Show sector counter</h3>
+  <p>Displays the current sector being read or written instead of the unit number in the on-screen indicator.</p>
+  <h2>Cassette options</h2>
+  <h3>Auto-boot on startup</h3>
+  <p>
+    Automatically holds down START during system startup and then hits a key to initiate a cassette tape load. This only works
+    with cassette tapes that have a machine language program; BASIC tapes must be loaded via CLOAD at the BASIC prompt instead.
+  </p>
+  <h3>Load data as audio</h3>
+  <p>Converts the data from a .CAS tape image into raw audio data so it plays through the speaker.</p>
+  
+  <h2>Misc options</h2>
+  <h3>Warp speed</h3>
+  <p>Disables the speed limiter and audio sync, and runs the emulator as fast as possible.</p>
+  <h3>Pause when inactive</h3>
+  <p>
+    When set, causes Altirra to pause emulation when its window goes inactive. Use this to prevent the emulated Atari from using
+    CPU time when in the background.
+  </p>
+</topic>

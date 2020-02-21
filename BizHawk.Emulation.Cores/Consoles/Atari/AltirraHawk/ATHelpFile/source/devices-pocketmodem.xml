@@ -1,0 +1,56 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Pocket Modem">
+  <p>
+    The Pocket Modem by BOT Engineering is small adapter that connects to the SIO port and
+    provides 300 baud modem connectivity. A special proprietary 500 baud mode is also available.
+  </p>
+  <h2>Setting up the Pocket Modem</h2>
+  <h3>Adding the device</h3>
+  <p>
+    Under <i>System, Devices</i>, add the Pocket Modem under the SIO devices category as a
+    child of the Computer node.
+  </p>
+  <p>
+    The Pocket Modem consists of an SIO end plug, which means it must be at the end of the
+    SIO device chain. This means that it normally would not be usable at the same time as
+    other devices that needed to be at the end, notably cassette tape drives. However, it can be used
+    at the end of a chain including disk drives.
+  </p>
+  <h3>Loading handler software</h3>
+  <p>
+    Booting off the Pocket Modem is not possible, so handler and terminal software must be
+    loaded off disk. This is not provided with the emulator and must be obtained externally.
+    The handler typically loads as the <tt>M:</tt> device, which is then used by terminal
+    software written in either BASIC or assembly language.
+  </p>
+  <p>
+    There is an unfortunate stability issue with the <tt>M:</tt> driver software provided on
+    the Driver Disk and the DOS DUP menu. The driver software loads low in memory
+    and hooks several interrupts including the vertical blank interrupt. The area in which
+    it loads is also used by DUP, however, so any attempt to load DUP while the <tt>M:</tt>
+    driver is present results in a crash. As DOS will automatically attempt to load DUP if
+    no cartridge is present, this typically means that a disk which is set up to load
+    the <tt>M:</tt> handler on startup will crash on boot if BASIC is not enabled.
+  </p>
+  <h3>Hardware capabilities</h3>
+  <p>
+    The Pocket Modem is capable of full-dupliex communications at 110, 210, 300, and 500 baud.
+    Pulse dialing is also possible, but not tone dialing. It can detect both carrier and ringing,
+    and auto-answer the phone under software control. Unlike with the 850, it does not require
+    dropping out of communications in order to check carrier state.
+  </p>
+  <h2>Emulation details</h2>
+  <p>
+    The baud rate used over the connection is controlled solely by the rate that POKEY shifts
+    bits in and out, and the modem itself is never told of the baud rate. This means that the
+    user must pre-configure the terminal software beforehand to the baud rate that will be used
+    by the other end. As this is inconvenient for emulation, and emulating baud rate mismatches
+    is of limited use, Altirra simply automatically changes the baud rate based on the last
+    byte transmitted.
+  </p>
+  <p>
+    Any attempt to pulse-dial a number results in the dial address in the modem settings being
+    used to establish a connection.
+  </p>
+</topic>

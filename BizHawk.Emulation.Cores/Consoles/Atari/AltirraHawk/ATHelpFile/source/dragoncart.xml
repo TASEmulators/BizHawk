@@ -1,0 +1,224 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="DragonCart">
+  <p>
+    The DragonCart adds an Ethernet interface to the computer. It has no on-board storage, so
+    external software must be loaded from disk to actually use the DragonCart.
+  </p>
+  <toc/>
+  <h2>What DragonCart does and does not do</h2>
+  <p>
+    The DragonCart is based around an Ethernet interface chip called the CS8900A. It handles
+    the basic Ethernet protocol, and buffers both incoming and outgoing packets. Essentially,
+    it serves the same purpose as a traditional Network Interface Card (NIC).
+  </p>
+  <p>
+    What the DragonCart <i>doesn't</i> do is act as a server or network node in any way. It
+    has no on-board processor or software, doesn't respond to or send any packets on its own,
+    doesn't track any connections or provide any services or external computers. Software
+    running on the computer must interpret Ethernet packets in order to bind to a hardware
+    address (ARP) and then a network address (IPv4 + DHCP), and establish connections (TCP/UDP).
+    This software is not built into the DragonCart and is not provided with the emulator either,
+    so it must be obtained externally.
+  </p>
+  <h2>Setting up the emulation network</h2>
+  <p>
+    For technical reasons, the emulated DragonCart is connected to an <i>emulation network</i>
+    which is separate than the physical networks the host computer is connected to. Some
+    additional setup is required to allow the emulation to connect with the outside network,
+    particularly the choice of <i>bridging mode</i>.
+  </p>
+  <p>
+    The emulation network must have an IPv4 address for IP connections to work. The default
+    is to use the class C private network 192.168.0.0/24. This can be changed to any valid
+    IPv4 address as needed, except for the important caveat noted below in NAT mode. There
+    is no need to set it to match any IP address on the host computer that the emulator is
+    running on, and in NAT mode it <b>must not</b> be the same. There are three private
+    network address blocks in IPv4 that are guaranteed never to be used on the public
+    Internet:
+  </p>
+  <ul>
+    <li>10.*.*.*</li>
+    <li>172.16.*.* to 172.31.*.*</li>
+    <li>192.168.*.*</li>
+  </ul>
+  <p>
+    Any of these is guaranteed to never overlap with any server on the Internet. However,
+    internal networks often also use these ranges, so the emulation network must be placed
+    at an address that isn't public and also doesn't overlap the physical LAN. Typically
+    a class C network is carved out of the last range, such as 192.168.200.* (address
+    192.168.200.0, network mask 255.255.255.0).
+  </p>
+  <h2>No external access mode</h2>
+  <p>
+    In this mode, the emulated DragonCart is connected to an isolated network that has no
+    connection to the outside world.
+    A support server is emulated at the gateway (.1) address that has basic DHCP services.
+    This supports basic functionality testing only. However, the packets sent and received
+    by the CS8900A can be monitored in the debugger.
+  </p>
+      
+  <h2>Host only mode</h2>
+  <p>
+    In <i>host only</i> mode, any TCP or UDP connections to the gateway address are
+    reflected to the computer running the emulator. This allows access to services running
+    on the host computer, but no external access.
+  </p>
+  
+  <h2>Network Address Translation (NAT) mode</h2>
+  <p>
+    In NAT mode, the emulated gateway also routes outgoing UDP and TCP connections through
+    the gateway to the outside world. This is done through network address translation
+    so that the connections originate from the host computer itself, not from the emulation
+    network. In effect, the gateway intercepts the connection so that the emulation is actually
+    connecting to the gateway, the gateway connects to the external server, and data is then
+    reflected between the internal and external connections.
+  </p>
+  <p>
+    Because NAT reflects between internal and external networks, <b>the emulation network
+    must have a nonconflicting address different than external networks</b>. In particular,
+    it <b>must not</b> be the same as the LAN that the host computer is on or of any
+    external sites that you want to connect to. For instance, if the host computer is on
+    192.168.0.* and the emulation wants to connect to 8.8.8.8, the emulation network must
+    not overlap either of those addresses. If it does, the connection attempt will fail
+    because the destination address of the connection request will match the emulation
+    network and will be routed there instead of externally. Typically the emulation
+    network should be set to a different private network address instead, like 192.168.1.*.
+  </p>
+  
+  <h2>Inbound connections</h2>
+  <p>
+    By default and also due to OS limitations, the emulation will typically not see incoming
+    connections destined for it even if they are target at the emulation network. However,
+    the emulator can be configured to enable port forwarding so that UDP and TCP connections
+    on a particular port to the host are forwarded to the emulation.
+  </p>
+  <p>
+    Due to the way that the port forwarding works, TCP connections on the host side will
+    always connect. If the connection is rejected on the emulation side, the gateway will
+    then close the external connection. This means that the external client will see a
+    successful connection followed by a hard close instead of a connection failure.
+  </p>
+  
+  <h2>VXLAN tunneling</h2>
+  <p>
+    The emulator also has support for tunneling over the VXLAN protocol, which allows the
+    emulation to exchange actual Ethernet packets with external hosts. VXLAN is a simple
+    protocol used by routers and some virtual machines to encapsulate Ethernet packets in
+    UDP datagrams, typically sent over UDP port 4789. The official protocol is detailed
+    in RFC 7348.
+  </p>
+  <p>
+    In order to use VXLAN tunneling, another endpoint must be available that also supports
+    the VXLAN protocol. This can be another instance of the emulator, either running on
+    the same computer or another computer, or it can even be a different type of machine
+    like a Linux box. Effectively, VXLAN allows two private networks to be tied
+    together into a single combined network, while still isolating it from the public
+    network.
+  </p>
+  <p>
+    The emulator must be configured with the IP address and port to send VXLAN packets to
+    (tunnel address and destination port), and the port to listen on to receive packets
+    (source port). Once this is established, packets sent by the emulation are reflected
+    to the VXLAN tunnel and packets received on the VXLAN tunnel are reflected into
+    the emulation network.
+  </p>
+  <p><b>Note:</b> Altirra currently always uses and responds only to tunnel ID 0.</p>
+  <p>
+    On a Linux box, it is possible to set up VXLAN tunnelling as follows. Note that this is
+    not a production-level setup and may vary based on the specific configuration and
+    distribution you are using. Also, there may be better ways to do this.
+  </p>
+  <ul>
+    <li>
+      <p>
+      Run <tt>ifconfig</tt> on the Linux box and <tt>ipconfig</tt> on the Windows box
+      and confirm the two IP addresses being used. <tt>ping</tt> should work in both
+      directions.
+      </p>
+    </li>
+    <li>
+      <p>
+      Add a VXLAN tunnel to the Linux box, aimed at the Windows box by unicast IP. In this case, the
+      Windows box has the IP address <tt>192.168.37.1</tt>.
+      </p>
+      <div><tt>ip link add vxlan0 type vxlan id 0 remote 192.168.37.1 dstport 4789 srcport 4789 4789</tt></div>
+    </li>
+    <li>
+      <p>
+      Configure Altirra similarly: tunnel address <tt>192.168.37.128</tt> (the address of the Linux box),
+      port 4789 for both source and target port.
+      </p>
+    </li>
+    <li>
+      <p>
+        On the Linux box, bring up the <tt>vxlan0</tt> interface, and force a DHCP update:
+      </p>
+      <div><tt>ifconfig vxlan0 up</tt><br/><tt>dhclient vxlan0</tt></div>
+      <p>
+      With luck, Altirra's debugger will show DHCP messages being exchanged, and
+      <tt>ifconfig</tt> on the Linux box should show that it has obtained an IP address.
+      Client applications like Mozilla Firefox can now be used to connect to services
+      running in the emulation, and network diagnostic utilities like tcpdump and Wireshark
+      can be used too. If NAT and incoming port forwarding is enabled, the Linux box will
+      also see traffic between the NAT gateway and the emulation servers.
+      </p>
+    </li>
+  </ul>
+  <p>
+    It should be noted that VXLAN is not a secure protocol and delivers all packets in
+    the clear (plaintext). This means it is susceptable to many types of attacks including
+    snooping. However, this is not typically an issue for DragonCart emulation where the
+    connections established are not used for sensitive information.
+  </p>
+  <p>
+    <b>Important:</b> If the physical network that the VXLAN packets travel over is being
+    reflected into the tunnel, the UDP packets for the tunnel should be filtered out from
+    the tunnel, or else a packet storm may occur.
+  </p>
+  
+  <h2>Configuring network software in emulation</h2>
+  <p>
+    In order to actually communicate on the network, software must be running in the
+    emulation that provides an IP stack. If that software includes a DHCP client, the
+    IP stack can obtain an automatically assigned IP address from the emulator gateway.
+  </p>
+  <p>
+    If the IP stack doesn't support DHCP, then an IP address must be assigned manually.
+    The network address and network mask must match the emulation network that was set
+    up in DragonCart settings, and the network IP address must be within that network.
+    The gateway address is at .1 or .0.1 and must not be used; also, addresses .100 to
+    .254 are used by the gateway DHCP server and are also best avoided.
+  </p>
+  
+  <h2>Limitations</h2>
+  <p>
+    The IPv4 stack used by the emulated gateway is fairly primitive and does not understand
+    many modern IP options. However, it should be compatible with clients that follow the
+    IPv4 standard. ICMP forwarding is not supported, so pings will not work. ARP and DHCPv4
+    are supported.
+  </p>
+  <p>
+    IPv6 is not supported by the gateway. All attempts to establish an outgoing connection
+    with IPv6 will fail. However, incoming connections over IPv6 to the host can still be
+    forwarded to an IPv4 address on the emulation network.
+  </p>
+
+  <h2>Debugging with the DragonCart</h2>
+  <p>
+    The emulator's debugger has logging channels to aid with diagnosing issues with
+    network connections through the DragonCart. The <tt>CS8900AN</tt> channel is the
+    most useful and shows all traffic on the emulated Ethernet network. Where possible,
+    the debugger attempts to decode IPv4, ARP, UDP, and TCP traffic to a more readable
+    tcpdump-like format. The <tt>CS8900AD</tt> channel provides a verbose dump of the
+    data payloads of each packet. Finally, for interface level debugging, the <tt>CS8900AR</tt>
+    and <tt>CS8900AW</tt> channels display raw reads and writes to the CS8900A's interface
+    region.
+  </p>
+  <p>
+    For protocol level debugging, VXLAN tunneling can be used to reflect the network
+    to an external box running network diagnostic tools. For instance, the VXLAN tunnel
+    can be aimed at virtual interface on a Linux box, which can then diagnose the traffic
+    on the emulated tunnel using Wireshark.
+  </p>
+</topic>

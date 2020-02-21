@@ -1,0 +1,58 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="The 800XL/130XE Home Computers">
+  <h2>Description</h2>
+  <p>
+    The 800XL and 130XE computers were upgraded versions of the 800 Home Computer.
+    600XL and 800XE were minor variants in this line.
+  </p>
+  <h3>Configurations</h3>
+  <p>
+    Compared to a 48K 800, the 800XL has 64K of RAM, an updated 16K OS with built-in
+    self test, and built-in BASIC. There is only one cartridge port, with no right cartridge
+    support, and only two joystick ports instead of four. The 800XL also adds a new port
+    on the back called the Parallel Bus Interface (PBI), which adds additional expansion
+    capabilities by devices that can directly interface to the CPU bus and was popular
+    for hard drive expansions.
+  </p>
+  <p>
+    The 130XE adds another 64K of extended RAM for 128K total. Unlike earlier third-party
+    memory expansions, the 130XE has the unique capability of independent CPU and ANTIC
+    access enables for the extended RAM. The PBI port was also replaced by the Enhanced
+    Cartridge Interface (ECI), which combines the cartridge port with an additional side
+    port to form a comparable PBI-like interface.
+  </p>
+  <h2>Emulation-specific concerns</h2>
+  <p>
+    Altirra has separate hardware modes for the 800XL and 130XE, but only a common
+    default XL/XE profile. It is rare for software to work on one and not the other;
+    the extended RAM separate access feature was rarely used, so software that used the
+    130XE's extra RAM would usually run on an expanded 800XL. There are also obscure
+    minor hardware differences between the two that can cause incompatibilities and
+    are toggled between the two hardware modes, but software that is sensitive to those
+    is extremely rare.
+  </p>
+  <p>
+    A rather annoying addition to the 800XL was the introduction of the internal BASIC, which
+    would not have been an issue except that it defaults to being enabled unless the
+    Option key is held on power-up. This does not cause problems for cartridge-based software,
+    but a substantial amount of disk-based software will crash if loaded with BASIC
+    enabled. For this reason, the emulator has a internal BASIC toggle option that will
+    automatically hold the Option key on startup. In rare cases this can cause problems due
+    to being interpreted as something other than a request to disable BASIC, so
+    the screen will show [Option] briefly on the side to indicate that the Option key
+    is being held down automatically by the emulator. Some modified OS ROMs also invert this
+    behavior for convenience; these ROMs need to be tagged appropriately when added in
+    Firmware Images for the emulator to recognize the flipped behavior and adjust its use
+    of the Option button accordingly.
+  </p>
+  <p>
+    While there are some differences in capability between the Parallel Bus Interface (PBI)
+    port of the 800XL and the Enhanced Cartridge Interface (ECI) of the 130XE, adapters were
+    often available to use the same hardware with both, and the emulator does not make a
+    distinction between the two: hardware is added via the Devices tree in the same
+    way regardless of whether the emulated system has a PBI or ECI port. This does allow for
+    the minor impossibility of using a cartridge together with an ECI device that did not
+    originally have a cartridge pass-through, though.
+  </p>
+</topic>

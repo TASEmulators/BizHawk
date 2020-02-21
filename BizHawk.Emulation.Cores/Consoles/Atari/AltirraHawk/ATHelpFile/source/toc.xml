@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<toc>
+  <t name="Introduction" href="index.html"/>
+  <t name="FAQ" href="faq.html"/>
+  <t name="How to use">
+    <t name="Getting started" href="getting-started.html"/>
+    <t name="Keyboard layout" href="keyboard.html"/>
+    <t name="Using the emulated computer" href="using-the-emulated-computer.html"/>
+    <t name="Configuring input" href="input.html"/>
+    <t name="On-screen indicators" href="indicators.html"/>
+    <t name="Profiles" href="profiles.html"/>
+    <t name="Portable mode" href="portable-mode.html"/>
+    <t name="Touch support" href="touch.html"/>
+    <t name="Adjusting colors" href="colors.html"/>
+  </t>
+  <t name="Emulated systems">
+    <t name="400/800 Home Computer" href="systems-800.html" />
+    <t name="1200XL Home Computer" href="systems-1200xl.html" />
+    <t name="800XL/130XE Home Computer" href="systems-xlxe.html" />
+    <t name="XE Game System (XEGS)" href="systems-xegs.html" />
+    <t name="5200 SuperSystem Console" href="systems-5200.html" />
+  </t>
+  <t name="Emulated devices">
+    <t name="Additions disk" href="additions.html"/>
+    <t name="Cartridge-based devices">
+      <t name="Introduction" href="devices-cartintro.html" />
+      <t name="DragonCart" href="dragoncart.html"/>
+      <t name="MyIDE" href="myide.html"/>
+      <t name="R-Time 8" href="devices-rtime8.html"/>
+    </t>
+    <t name="Internal devices">
+      <t name="Rapidus" href="devices-rapidus.html"/>
+      <t name="Ultimate1MB" href="ultimate1mb.html"/>
+      <t name="VideoBoard XE (VBXE)" href="vbxe.html"/>
+    </t>
+    <t name="SIO-based devices">
+      <t name="Introduction" href="devices-serintro.html" />
+      <t name="410/1010 Program Recorder" href="devices-cassette.html"/>
+      <t name="850 Interface Module" href="serial.html"/>
+      <t name="1030 Modem" href="1030.html"/>
+      <t name="Disk drives" href="disk.html"/>
+      <t name="PCLink" href="pclink.html"/>
+      <t name="Pocket Modem" href="devices-pocketmodem.html"/>
+      <t name="SX212 Modem" href="sx212.html"/>
+    </t>
+    <t name="PBI-based devices">
+      <t name="Black Box" href="devices-blackbox.html"/>
+      <t name="KMK/JZ IDE (IDEPlus 2.0)" href="devices-ideplus2.html"/>
+      <t name="Multi-I/O" href="devices-mio.html"/>
+    </t>
+    <t name="Full disk drive devices">
+      <t name="Introduction" href="devices-fulldisk.html"/>
+      <t name="Atari XF551" href="devices-xf551.html"/>
+      <t name="Indus GT" href="devices-indusgt.html"/>
+      <t name="I.S. Plate" href="devices-isplate.html"/>
+      <t name="Speedy 1050" href="devices-speedy1050.html"/>
+    </t>
+    <t name="High-level emulation (HLE) devices">
+      <t name="Host (H:) device" href="host-device.html"/>
+    </t>
+    <t name="Other devices">
+      <t name="Corvus Disk Interface" href="devices-corvus.html" />
+      <t name="XEP-80 Interface Module" href="xep80.html" />
+    </t>
+  </t>
+  <t name="Debugger">
+    <t name="Starting the debugger" href="debug-intro.html"/>
+    <t name="Source-level debugging" href="debug-source.html"/>
+    <t name="Addresses and expressions" href="debug-expressions.html"/>
+    <t name="Diagnostics" href="debug-diagnostics.html"/>
+    <t name="Logging" href="debug-logging.html"/>
+    <t name="Profiling" href="debug-profiling.html"/>
+    <t name="Debugging BASIC programs" href="debug-basic.html"/>
+  </t>
+  <t name="Reference">
+    <t name="Options" href="options.html">
+      <t name="Acceleration" href="options-accel.html" />
+      <t name="Hardware" href="options-hardware.html" />
+      <t name="Firmware" href="options-firmware.html" />
+      <t name="System" href="options-system.html" />
+    </t>
+  </t>
+  <t name="Troubleshooting">
+    <t name="General issues" href="troubleshooting.html"/>
+    <t name="Program-specific issues" href="compatibility.html"/>
+    <t name="Bugs to avoid in new programs" href="common-errors.html"/>
+  </t>
+  <t name="License" href="license.html"/>
+</toc>

@@ -1,0 +1,13 @@
+root = true
+
+[cmdhelp.txt]
+indent_style = space
+indent_size = 4
+
+[dbghelp.txt]
+indent_style = space
+indent_size = 4
+
+[changes.txt]
+indent_style = space
+indent_size = 3

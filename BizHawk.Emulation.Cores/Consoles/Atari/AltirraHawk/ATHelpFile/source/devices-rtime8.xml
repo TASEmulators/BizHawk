@@ -1,0 +1,28 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="R-Time 8">
+  <p>
+    The R-Time 8 cartridge allows the computer to keep track of accurate time. It
+    contains a small battery backed up real-time clock (RTC) chip.
+  </p>
+  <h2>Using the R-Time 8</h2>
+  <p>
+    The intended use for the R-Time 8 is to boot a DOS that keeps track of file
+    timestamps and load a driver to sync its clock with the one on the R-Time 8.
+    Typically this is either disk-based SpartaDOS or the cartridge-based
+    SpartaDOS X. In the latter case, the R-Time 8 is plugged into the pass-through
+    port on the SDX cartridge instead of directly into the computer.
+  </p>
+  <p>
+    The R-Time 8 can also be read using a special <tt>Z:</tt> CIO device.
+    The device driver for this handler must be loaded from disk and is not included
+    with the emulator.
+  </p>
+  <h3>Emulated behavior</h3>
+  <p>
+    In Altirra, the R-Time 8 always reads the true date and time in the local
+    time zone. Any attempts to
+    change the date or time on the real-time clock chip are discarded. Also, the
+    alarm functionality is not currently implemented.
+  </p>
+</topic>

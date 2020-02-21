@@ -1,0 +1,58 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="The 5200 SuperSystem">
+  <h2>Description</h2>
+  <p>
+    The 5200 SuperSystem is a game console that is similar internally to the 400/800 computer
+    line, but designed exclusively to run pre-packaged games on cartridges with controller
+    input, without a keyboard or writable storage like floppy disks and tape. It shares enough
+    hardware internals that games can be ported between the 5200 and the 800 with minor
+    difficulty, but the two are not directly compatible with each other.
+  </p>
+  <h3>Ports</h3>
+  <p>
+    The 5200 has a cartridge port and either two or four controller ports, depending on the model.
+    Both take 5200-specific cartridges and controllers that are incompatible with the 800. There
+    are no buttons on the console itself besides a power button; the buttons to start and reset
+    games are on the controllers.
+  </p>
+  <p>
+    The 5200 is notorious for its controllers, which are analog but do not have self-centering.
+    Besides the stubby analog stick, there are two fire buttons on the side, which are distinct
+    and can trigger different actions depending on the game, a 12 button keypad at the bottom,
+    and Start/Select/Reset buttons on the top.
+  </p>
+  <h3>Hardware versions</h3>
+  <p>
+    The original version of the 5200 had four controller ports, whereas a later version was made
+    with only two. There are two additional differences between the consoles, both minor. First,
+    the 2-port version contained hardware updates to support the 2600 adaptor, which is not
+    applicable to emulation. Second, the 2-port version also came with an updated BIOS ROM to
+    support a future PAL version that never shipped. There are a few games which are incompatible with
+    the 2-port version of the BIOS as a result of these changes.
+  </p>
+  <h2>Emulation-specific concerns</h2>
+  <p>
+    Because the 5200 is incompatible with computer peripherals and software, Altirra defaults to
+    having a separate configuration profile for 5200 mode. Running a 5200 cartridge will automatically
+    switch to this profile, and cartridge and input maps set in this mode will only affect 5200
+    operation. This prevents accidentally mixing settings between the two modes and creating
+    impossible configurations that don't work.
+  </p>
+  <p>
+    There is no default screen on the 5200, since the 5200 cannot be powered on without a
+    cartridge. (The console is designed so that the cartridge is required to complete the
+    power circuit, and removing it turns off the power.) In Altirra, a standby cartridge
+    is substituted whenever a cartridge is removed. This cartridge also doubles as a controller
+    test to check that input mappings are working as expected.
+  </p>
+  <p>
+    Some games use the analog stick for precise positioning, like Missile Command, while others
+    use it for less-precise directional control, like Pengo. The emulator cannot tell which control
+    style the game prefers, so it comes with defaults to bind the controller both in "absolute"
+    and "relative" styles. Absolute positioning maps input directions directly to those same
+    directions on the analog stick; relative positioning uses input to nudge the stick in that
+    direction. You will need to manually choose the input map that more closely suits the
+    control style of each game.
+  </p>
+</topic>

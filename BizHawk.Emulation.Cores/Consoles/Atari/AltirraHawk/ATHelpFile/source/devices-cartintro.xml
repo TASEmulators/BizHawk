@@ -1,0 +1,31 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Cartridge-based devices">
+  <p>
+    Cartridge-based devices plug into the cartridge port of the Atari computer.
+  </p>
+  <h2>Devices</h2>
+  <p>
+    The following cartridge-based devices are emulated by Altirra:
+  </p>
+  <ul>
+    <li><a href="dragoncart.html">DragonCart</a></li>
+    <li><a href="myide.html">MyIDE</a></li>
+    <li><a href="devices-rtime8.html">R-Time 8</a></li>
+  </ul>
+  <h2>Conflicts</h2>
+  <p>
+    Since these devices use the cartridge port, they can conflict with other devices that also use
+    the same port. Typically, only one cartridge can be plugged in at a time. However, a few cartridges,
+    notably the SpartaDOS X cartridge, have a pass-through expansion port that allows a secondary cartridge to
+    be plugged. Altirra supports cartridge stacks, but like on real hardware, the pass-through port
+    can interfere with the secondary cartridge's operation.
+  </p>
+  <p>
+    In rare cases, it is possible to set up an impossible configuration in emulation
+    with two cartridge-based devices simultaneously active. This most often occurs when two emulated
+    devices are activated when neither has a pass-through port. On a real computer, this would be noticed
+    because the only way to get two such devices into the cartridge port at the same time would be
+    with a hammer; in emulation this can result in bizarre and broken behavior.
+  </p>
+</topic>

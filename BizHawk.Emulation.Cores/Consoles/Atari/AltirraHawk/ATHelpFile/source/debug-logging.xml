@@ -1,0 +1,71 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Logging">
+  <p>
+    The simulation has a number of optional logging channels which can report additional
+    information about what is going on in the emulated program. The debugger has commands
+    to manage the logging configuration.
+  </p>
+  <h2>Displaying logging channels</h2>
+  <p>
+    The <tt>lfl</tt> (log filter list) command displays the list of available logging
+    channels and their current status:
+  </p>
+  <pre class="example">Altirra> lfl
+850         off  850 interface SIO activity
+CAS         on   Cassette I/O
+CASDATA     off  Cassette data
+CASDRDATA   off  Cassette direct data
+CASIMAGE    off  Cassette image processing
+CS8900AD    off  CS8900A network data (requirse CS8900AN channel)
+CS8900AN    on   CS8900A network transmit/receive
+CS8900AR    off  CS8900A reads
+CS8900AW    on   CS8900A writes
+DISK        off  Disk activity
+DISKCMD     off  Disk commands
+DISKIMAGE   off  Disk image load details
+DISKXFR     off  Disk data transfer
+DS1305CR    off  DS1305 real time clock reads
+DS1305UR    off  DS1305 real time clock user reads
+DS1305W     off  DS1305 real time clock writes
+FLASH       off  Flash memory erase operations
+FLASHWR     off  Flash memory write operations
+FPACCEL     off  Floating-point acceleration
+HOOKSIO     off  OS SIO hook messages
+HOOKSIOREQS  off  OS SIO hook requests
+IDE         off  IDE activity
+IDEERROR    off  IDE interface errors
+MODEM       off  Modem activity
+MODEMDATA   off  Modem interface data
+MODEMTCP    off  Modem TCP/IP activity
+PCLINK      off  PCLink activity
+V3021       off  V3021 real time clock accesses
+VDISK       off  Virtual disk activity
+XEPCMD      off  XEP-80 Commands
+XEPDATA     off  XEP-80 Data Transfer</pre>
+  <p>
+    Most channels default to off, although a few are enabled by default. The <tt>lfe</tt>
+    (log filter enable), <tt>lfd</tt> (log filter disable), and <tt>lft</tt> (log filter
+    enable tagged) commands are used to modify the state of a channel. For example, enabling
+    the <tt>MODEM</tt> channel is useful for checking the modem commands being sent out
+    over the R: device:
+  </p>
+  <pre class="example">Altirra> lfe modem
+Enabled logging channel: MODEM
+Altirra> g
+MODEM: Executing command: [Z]
+MODEM: Sending response: OK</pre>
+  <h2>Additional logging paths</h2>
+  <p>
+    There are a couple of other useful logging paths that are not controlled via the logging
+    system:
+  </p>
+  <ul>
+    <li>
+      <tt>.traceser</tt> enables logging of raw serial I/O bus traffic.
+    </li>
+    <li>
+      <tt>.tracecio</tt> enables logging of CIO commands.
+    </li>
+  </ul>
+</topic>

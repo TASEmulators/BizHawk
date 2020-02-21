@@ -1,0 +1,222 @@
+<html>
+  <head>
+    <title>Altirra ROM image set</title>
+    <style>
+      body {
+        background: #fff;
+        color: #000;  
+        font-family: sans-serif;
+        font-size: 10pt;
+      }
+
+      tt {
+        font-family: Lucida Console, monospace;
+        color: #800;
+      }
+
+      h1 {
+        font-weight: 400;
+        font-size: 250%;
+      }
+
+      h2 {
+        margin-top: 30px;
+        border-bottom: 1px solid black;
+        font-weight: normal;
+      }
+
+      h3 {
+          font-size: 12pt;
+          font-weight: bold;
+          margin-top: 25px;
+          margin-bottom: 12px;
+      }
+
+      p.copy {
+        font-style: italic;
+      }
+
+      span.mono {
+        font-family: monospace;
+      }
+      
+      ul.verhistory ul {
+        margin-top: 5pt;
+        margin-bottom: 5pt;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Altirra ROM image set</h1>
+    <p>
+      This ROM image set consists of the following five files:
+    </p>
+    <ul>
+      <li><span class="mono">atbasic.rom</span> (Altirra 8K BASIC)</li>
+      <li><span class="mono">altirraos-800.rom</span> (AltirraOS for 400/800 Computers)</li>
+      <li><span class="mono">altirraos-xl.rom</span> (AltirraOS for XL/XE/XEGS Computers)</li>
+      <li><span class="mono">altirraos-5200.rom</span> (AltirraOS for 5200 SuperSystem)</li>
+      <li><span class="mono">altirraos-816.rom</span> (AltirraOS for 65C816 Accelerators)</li>
+    </ul>
+    <p>
+      These are replacements for the standard Atari ROMs that would normally be present in these
+      systems; they are not the original ROMs, but new ones rewritten from scratch to match the
+      same programming interface without the original code. They may be used in either real
+      hardware or in emulators with sufficient accuracy. The mapping to standard filenames
+      expected by most emulators is as follows:
+    </p>
+    <ul>
+      <li><span class="mono">atbasic.rom -&gt; ATARIBAS.ROM</span></li>
+      <li><span class="mono">altirraos-800.rom -&gt; ATARIOSB.ROM</span></li>
+      <li><span class="mono">altirraos-xl.rom, altirraos-816.rom -&gt; ATARIXL.ROM / ATARIXEGS.ROM</span></li>
+      <li><span class="mono">altirraos-5200.rom -&gt; ATARI5200.ROM</span></li>
+    </ul>
+    <p>
+      On real hardware, you will need a way to burn or flash replacement ROMs, such as an EPROM
+      burner, 32-in-1 OS switcher, or Ultimate1MB. For Altirra 8K BASIC, there is a soft-loadable
+      version of the interpreter on the Additions disk that comes with Altirra.
+    </p>
+    <p>
+      <b>Please note:</b> The replacement ROMs have been written to support software that conforms
+      to Atari's original specifications for usage of public variables and entry points into the
+      firmware ROMs. Software that makes use of undocumented entry points or behaviors from the
+      original OS and BASIC ROMs may not work with these ROMs. An attempt has been made to achieve
+      reasonably high compatibility, but some programs have hardcoded assumptions that cannot work
+      with such a replacement ROM and will only run on the original firmware.
+    </p>
+    <h2>Updates</h2>
+    <p>
+      This ROM image set package is produced by the Tools &gt; Export ROM Set command of the Altirra emulator.
+      Newer versions of the emulator include updated versions of the ROM set.
+    </p>
+    <h2>License</h2>
+    <p>
+      The license for all files in the ROM set is the following all-permissive license:
+    </p>
+    <div style="margin-left: 1.5em;">
+      <p class="copy">
+        Altirra 8K BASIC<br/>
+        AltirraOS for 400/800 Computers<br/>
+        AltirraOS for XL/XE/XEGS Computers<br/>
+        AltirraOS for 5200 SuperSystem<br/>
+        AltirraOS for 65C816 Accelerators<br/>
+      </p>
+      <p class="copy">Copyright &copy; 2017-2019 Avery Lee, All Rights Reserved.</p>
+      <p class="copy">
+        Copying and distribution of this file, with or without modification,
+        are permitted in any medium without royalty provided the copyright
+        notice and this notice are preserved.  This file is offered as-is,
+        without any warranty.
+      </p>
+    </div>
+    <h2>Source code</h2>
+    <p>
+      The source code for these files is included in the source of the <a href="http://virtualdub.org/altirra.html">Altirra emulator</a>.
+    </p>
+    <h2>Other stuff</h2>
+    <p>
+      Looking for other software, like a replacement R: device handler? You might find it on the Additions disk that comes with Altirra.
+    </p>
+    <h2>Version history</h2>
+    <h3>AltirraOS</h3>
+    <ul class="verhistory">
+      <li>Version 3.17</li>
+	  <ul>
+		<li>Fixed regression in 3.16 where fine scrolling was set up too often on screen opens.</li>
+      </ul>
+      <li>Version 3.16</li>
+	  <ul>
+		<li>Minor optimizations to text I/O routines.</li>
+		<li>XL/XE/XEGS build: HELPFG is now set when Help is pressed.</li>
+		<li>65C816 build: COP #n no longer crashes in emulation mode.</li>
+	  </ul>
+      <li>Version 3.15</li>
+	  <ul>
+		<li>ICBLLZ/ICBLHZ is now updated after a CIO get operation. This fixes Lightspeed DOS directory listings.</li>
+	  </ul>
+      <li>Version 3.14</li>
+	  <ul>
+		<li>Type 3 poll loop is now exited if PBI device firmware responds to a poll request with error Y=$80 (user break). This fixes a boot loop with Black Box 2.16 firmware.</li>
+	  </ul>
+      <li>Version 3.13</li>
+	  <ul>
+		<li>SIOV now sets A=0 (undocumented XL/XE OS behavior).</li>
+	  </ul>
+      <li>Version 3.12</li>
+	  <ul>
+		<li>CBAUDL/H are now set by the cassette routines.</li>
+	  </ul>
+      <li>Version 3.11</li>
+      <ul>
+        <li>Version number now decoupled from main emulator.</li>
+        <li>FDIV no longer returns 0 for 0/0.</li>
+        <li>AFP(".") properly returns an error instead of 0.</li>
+        <li>EXP10() was returning an error instead of underflowing to 0 for some large negative inputs.</li>
+		<li>Entering the boot screen (self test) now sets COLDST to prevent BASIC from attempting to preserve an existing program on reset.</li>
+      </ul>
+      
+      <li>Version 3.10</li>
+      <ul>
+        <li>Added 65C816 version.</li>
+      </ul>
+
+      <li>Version 3.00</li>
+      <ul>
+        <li>Fixed polarity of CKEY.</li>
+      </ul>
+
+      <li>Version 2.90</li>
+      <ul>
+        <li>Modified values of PALNTS for better compatibility with XL/XE OS.</li>
+        <li>Fix short block flag not being handled by direct SIO calls for the cassette device.</li>
+        <li>Suppress type 3 poll to disk boot only (fixes Pole Position and Missile Command cartridge audio).</li>
+      </ul>
+
+      <li>Version 2.80</li>
+      <ul>
+        <li>Fixed XEGS game cartridge activation.</li>
+        <li>Fixed errors getting dropped in cassette handler.</li>
+        <li>Fixed extra initial block and incorrect partial block problems when writing cassette streams.</li>
+        <li>Fixed CIO read record when line exactly fits in buffer.</li>
+        <li>Fixed broken inverse key.</li>
+        <li>S: clear also clears split-screen area.</li>
+        <li>Optimized C/E->data frame path in SIO for better robustness when DLIs are active.</li>
+        <li>Fixed race condition in SETVBV.</li>
+      </ul>
+    </ul>
+
+    <h3>Altirra BASIC</h3>
+    <ul class="verhistory">
+      <li>Version 1.56</li>
+      <ul>
+        <li>Fixed crash when Break is pressed prior to startup banner.</li>
+      </ul>
+
+      <li>Version 1.55</li>
+      <ul>
+        <li>Added compatibility workaround for programs that use locations 183 and 184 to read the current DATA line.</li>
+      </ul>
+
+      <li>Version 1.54</li>
+      <ul>
+        <li>PMBASE is no longer altered if PMGRAPHICS has not been executed.</li>
+      </ul>
+
+      <li>Version 1.53</li>
+      <ul>
+        <li>Fixed READ line not getting reset after NEW.</li>
+      </ul>
+
+      <li>Version 1.52</li>
+      <ul>
+        <li>Disk version now works around SDX bug when restoring screen on exit.</li>
+      </ul>
+
+      <li>Version 1.51</li>
+      <ul>
+        <li>Fixed INT(1000000000) crash.</li>
+        <li>Newly added variables are removed on parsing error.</li>
+      </ul>
+    </ul>
+  </body>
+</html>

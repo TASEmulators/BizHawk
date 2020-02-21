@@ -1,0 +1,713 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="compatibility.xsl" ?>
+<topic title="Program-specific issues">
+  <p>
+    Some programs have bugs or are otherwise not well behaved and will malfunction in mysterious ways.
+    This can be due to incompatibility with specific hardware or firmware configurations, timing sensitivities
+    that manifest more or less often on emulators, or just plain bizarre bugs. This is a list of programs
+    with known issues and under what conditions they break.
+  </p>
+  <p>
+    Note that there are often several versions of programs in the wild, which can display different
+    behavior. In particular, versions that have been "frozen" and stored in a turbo-load configuration
+    or mega-disk can act differently than the originals. Unless specified otherwise, the compatibility
+    entries here are for the original versions.
+  </p>
+  <h2>Compatibility list</h2>
+  <compat-toc/>
+
+  <!-- *************************************************** -->
+
+  <!--
+  <h2>Compatibility issues</h2>
+  <p>
+    Many types of compatibility issues are common enough to occur in multiple programs:
+  </p>
+  -->
+  <compat-tags>
+    <compat-tag id="disktiming" name="Requires disk SIO patch off (timing)">
+      <inline-text>
+        <p>
+          Unmodified versions of this game contain a RTCLOK check during the disk load and must be
+          booted with the SIO patch disabled.
+        </p>
+      </inline-text>
+      <desc>
+        <p>
+          Some programs measure disk load timing to ensure that disk reads take an expected
+          amount of time, usually to detect a copied disk. This is typically done through a
+          timer called RTCLOK. These programs need to be run with the disk SIO patch feature
+          disabled, as that would otherwise cause the disk load to happen too quickly. Particularly
+          picky programs may also need accurate disk timing to be enabled.
+        </p>
+      </desc>
+    </compat-tag>
+
+    <compat-tag id="diskrw" name="Requires writable disk">
+      <inline-text>
+        <p>
+          This program writes to the disk during normal operation and requires read/write or virtual
+          read/write mode to be selected.
+        </p>
+      </inline-text>
+      <desc>
+        <p>
+          The program writes its current state to disk, so if the disk is write protected, it
+          won't be able to keep track of progress and will act strangely or fail.
+        </p>
+      </desc>
+    </compat-tag>
+
+    <compat-tag id="requires-osb" name="Requires OS-B">
+      <desc>
+        <p>
+          Program requires the original 400/800 version B operating system to run ("OS-B"), which was
+          the most common version of the OS prior to the XL/XE machines. This is usually because of
+          dependencies on specific code or data locations that weren't guaranteed to be stable
+          across OS versions. As a result, the program can fail if run under the LLE OSes or
+          with another custom OS.
+        </p>
+      </desc>
+    </compat-tag>
+
+    <compat-tag id="requires-xlos" name="Requires XL/XE OS">
+      <desc>
+        <p>
+          Program requires the original XL/XE operating system to run. This is usually because of
+          dependencies on specific code or data locations that weren't guaranteed to be stable
+          across OS versions. As a result, the program can fail if run under the HLE/LLE OSes or
+          with another custom OS.
+        </p>
+      </desc>
+    </compat-tag>
+
+    <compat-tag id="requires-ataribasic" name="Requires Atari BASIC">
+      <desc>
+        <p>
+          Program requires the original Atari BASIC to run, as it directly uses code or data from
+          that version.
+        </p>
+      </desc>
+    </compat-tag>
+    
+    <compat-tag id="minor-bug" name="Minor program bug">
+      <desc>
+        <p>
+          Issues are caused by a minor bug specific to the program that also shows up on real hardware,
+          such as audio glitches. The rate of occurrence may be different in emulation, but
+          the minor bugs are being faithfully emulated.
+        </p>
+      </desc>
+    </compat-tag>
+
+    <compat-tag id="major-bug" name="Major program bug">
+      <desc>
+        <p>
+          Issues are caused by a major bug specific to the program that also shows up on real hardware,
+          such as a random crash. The rate of occurrence may be different in emulation, but
+          in any case the crash is being faithfully emulated.
+        </p>
+      </desc>
+    </compat-tag>
+
+    <compat-tag id="ctia" name="GTIA incompatibility">
+      <desc>
+        <p>
+          Program was designed for the earlier CTIA chip and has problems running on the
+          newer GTIA graphics chip. The most common symptom is abnormal switching to GTIA
+          graphics modes.
+        </p>
+      </desc>
+    </compat-tag>
+
+    <compat-tag id="os-hackery" name="OS hackery">
+      <desc>
+        <p>
+          Program does naughty things with OS code, such as copying only parts of it to RAM.
+          This was not a recommended or supported programming practice by Atari, and can
+          result in either failure on the HLE/LLE OSes or other custom OSes, or even failing
+          to work on one of the standard OS-B or XL/XE OSes.
+        </p>
+      </desc>
+    </compat-tag>
+
+    <compat-tag id="special-hw" name="Requires special hardware">
+      <desc>
+        <p>
+          Program requires special hardware not usually used by other programs, such as a
+          specific cartridge.
+        </p>
+      </desc>
+    </compat-tag>
+
+    <compat-tag id="illinsn" name="Uses illegal instructions">
+      <desc>
+        <p>
+          Program uses "illegal" CPU instructions that weren't part of the official
+          6502 instruction set and cause weird behavior on the CPU chip. This prevents
+          the program from running correctly on a 65C02 or 65C816 CPU.
+        </p>
+      </desc>
+    </compat-tag>
+
+    <compat-tag id="65C816" name="65C816 incompatibility">
+      <desc>
+        <p>
+          Program has compatibility issues with 65C816 CPUs.
+        </p>
+      </desc>
+    </compat-tag>
+
+    <compat-tag id="exphw" name="Expansion hardware incompatibility">
+      <desc>
+        <p>
+          Program has compatibility issues with expansion hardware.
+        </p>
+      </desc>
+    </compat-tag>
+  </compat-tags>
+
+  <!-- *************************************************** -->
+
+  <compat-list>
+    <compat-category name="Demos">
+      <compat-title name="1st Top Demo 1989">
+        <compat-issue id="requires-xlos">
+          <p>
+            Contains a direct jump into the XL/XE OS at $C0E2 and may fail with other OSes.
+          </p>
+        </compat-issue>
+      </compat-title>
+
+      <compat-title name="Cup of Tea">
+        <compat-issue id="minor-bug">
+          <p>
+            There is a bug in the IRQ handling that causes it to occasionally crash after playing
+            the sample: it assumes that an IRQ cannot happen after it is shut off in IRQEN, but there is
+            a one-cycle window where this can still occur.
+          </p>
+        </compat-issue>
+        <compat-issue id="requires-xlos">
+          <p>
+            This demo also contains a strange check for the low byte of the cold start vector (COLDSV)
+            and forces a cold reboot if it doesn't match the address byte in the XL/XE OS, so it won't
+            work with other OSes.
+          </p>
+        </compat-issue>
+      </compat-title>
+
+      <compat-title name="Joyride">
+        <compat-issue id="minor-bug">
+          <p>
+            Has a custom SIO loader which fails out immediately on an error without doing any retries
+            and therefore has very low tolerance for communication errors. It tends to work reliably
+            in emulation, but can sporadically fail with a red screen on real hardware.
+          </p>
+        </compat-issue>
+      </compat-title>
+
+      <compat-title name="Total Daze">
+        <compat-issue id="minor-bug">
+          <p>
+            Due to a bug in the detection routine, this demo occasionally misdetects a single POKEY as
+            dual POKEYs, resulting in garbled audio during the loading screen.
+          </p>
+        </compat-issue>
+      </compat-title>
+
+      <compat-title name="Vantage Point">
+        <compat-issue id="major-bug">
+          <p>
+            The executable has a malformed segment (two bytes too long). The built-in executable loader
+            will load the program, but complain; DOS may barf.
+          </p>
+          <p>
+            The startup code for this demo is <b>very</b> broken and it does not run reliably on real
+            hardware. It banks out the kernel ROM, hooks
+            the NMI vector, and then returns to an invalid location in RAM. This causes the 6502 to run
+            garbage as code in mainline while display list interrupts run the initial display and music.
+            The most serious problem is that the IRQ/BRK vector is uninitialized, which can cause the
+            CPU to jump to random locations depending on the RAM power-on pattern.
+          </p>
+        </compat-issue>
+      </compat-title>
+    </compat-category>
+
+    <!-- *************************************************** -->
+
+    <compat-category name="Games">
+      <compat-title name="63-on-1 cartridge">
+        <compat-issue id="requires-xlos">
+          <p>
+            Requires XL/XE OS as it directly hardcodes vector entry points.
+          </p>
+        </compat-issue>
+      </compat-title>
+      
+      <compat-title name="Adebar">
+        <compat-issue id="requires-xlos">
+          <p>
+            Jumps directly into the display code at $F1A4 and needs the XL/XE OS.
+          </p>
+        </compat-issue>
+      </compat-title>
+      
+      <compat-title name="Alien Garden">
+        <compat-issue id="ctia">
+          <p>
+            Erroneously trips GTIA video modes, resulting in colored garbage on screen during transitions.
+          </p>
+        </compat-issue>
+      </compat-title>
+
+      <compat-title name="Assault Force 3D">
+        <compat-issue id="special-hw">
+          <p>
+            This game requires the SuperCharger 3D cartridge, which is used for hardware multiply/divide.
+          </p>
+        </compat-issue>
+      </compat-title>
+
+      <compat-title name="Astro Chase">
+        <compat-issue desc="CIO device compatibility issue">
+          <p>
+            Hangs during intro if any custom CIO devices are registered, particularly disk (<tt>D:</tt>) or
+            host device (<tt>H:</tt>).
+          </p>
+        </compat-issue>
+      </compat-title>
+
+      <compat-title name="Berzerk">
+        <compat-issue id="minor-bug">
+          <p>
+            Some versions do not initialize SKCTL properly and therefore fail to play shot sounds.
+          </p>
+        </compat-issue>
+      </compat-title>
+
+      <compat-title name="Bounty Bob Strikes Back!">
+        <compat-issue desc="Hardware compatibility issue">
+          <p>
+            Some versions require <b>exactly</b> 64K of RAM to work.
+          </p>
+        </compat-issue>
+        <compat-issue id="exphw">
+          <p>
+            Joystick control will not work if Ultimate1MB hardware is present. This is because BBSB! reads
+            the joystick from a shadow of PORTA at $D3F0, which is blocked by the U1MB hardware.
+          </p>
+        </compat-issue>
+      </compat-title>
+
+      <compat-title name="Bubble Bobble (demo)">
+        <compat-issue id="major-bug">
+          <p>
+            Some versions of this homebrew game copy the kernel into RAM, write over part of the SIO
+            routine, and then invoke the corrupted SIO routine. This will only work in some emulators
+            when SIO patch is enabled, bypassing the broken code; it does not work in Altirra because
+            SIO hooks are not allowed to activate from code in RAM.
+          </p>
+        </compat-issue>
+      </compat-title>
+
+      <compat-title name="Castle Wolfenstein">
+        <compat-issue id="diskrw"/>
+      </compat-title>
+
+      <compat-title name="Choplifter (cartridge)">
+        <compat-issue id="os-hackery">
+          <p>
+            Copies out OS ROM at addresses $E500-FEFF and $C500-CBFF, and so can fail with OSes other
+            than the stock XL/XE OS.
+          </p>
+        </compat-issue>
+      </compat-title>
+
+      <compat-title name="Cohen's Towers">
+        <compat-issue desc="Requires OS-B or 48K/64K memory">
+          <p>
+            Program tries to clear PIA registers in the wrong order from within the extended memory
+            window ($4000-7FFF), which means on a machine with 128K or more of memory it accidentally
+            bank switches itself out of CPU address space and crashes. It works if it is running on a machine
+            without extended memory banks (48K/64K) or on an OS that configures PIA port B for input
+            (OS-B or AltirraOS/800).
+          </p>
+        </compat-issue>
+      </compat-title>
+
+      <compat-title name="Crownland">
+        <compat-issue id="illinsn">
+          <p>
+            Program will crash on horizontal scroll if illegal instructions are not enabled or if
+            65C02/65C816 CPU is selected.
+          </p>
+        </compat-issue>
+      </compat-title>
+
+      <compat-title name="DARG">
+        <compat-issue desc="Acceleration issue">
+          <p>
+            The clock runs too quickly if accelerated floating-point is enabled.
+          </p>
+        </compat-issue>
+      </compat-title>
+
+      <compat-title name="E.T. Phone Home! (cartridge)">
+        <compat-issue id="major-bug">
+          <p>
+            This cartridge has a protection check which requires the OS to boot within a certain
+            amount of time. The XL/XE OS takes more time to initialize and can cause this check to
+            fail on NTSC systems.
+          </p>
+        </compat-issue>
+      </compat-title>
+
+      <compat-title name="Fort Apocalypse">
+        <compat-issue id="disktiming" />
+      </compat-title>
+
+      <compat-title name="Formula 1 Racing">
+        <compat-issue id="requires-ataribasic">
+          <p>
+            Has a USR() routine that jumps directly into the Atari BASIC ROM, and therefore won't work
+            with an alternate BASIC.
+          </p>
+        </compat-issue>
+      </compat-title>
+      
+      <compat-title name="Ghost Hunter">
+        <compat-issue id="major-bug">
+          <p>
+            Relies on the location of <tt>RUNAD+1</tt> to be <tt>$00</tt> during playfield generation.
+            Some versions of this game are packaged as an executable such that the run address is
+            set during load, and since it is not cleared afterward the playfield breaks.
+          </p>
+        </compat-issue>
+      </compat-title>
+
+      <compat-title name="G.I.L.P.">
+        <compat-issue id="illinsn">
+          <p>
+            Requires 6502 CPU with illegal instructions enabled; will crash on a 65C816.
+          </p>
+        </compat-issue>
+      </compat-title>
+
+      <compat-title name="Gruds in Space">
+        <compat-issue id="disktiming"/>
+      </compat-title>
+
+      <compat-title name="Gyruss">
+        <compat-issue id="65C816">
+          <p>
+            Wraps absolute indexed addressing around the 64K address space. This causes the game to
+            malfunction if run on a 65C816 without memory at bank $01, by preventing it from expiring
+            enemy explosions. It runs fine with either 16-bit
+            addressing (bank $00 = bank $01) or with memory in that bank.
+          </p>
+        </compat-issue>
+      </compat-title>
+      
+      <compat-title name="Henry's House">
+        <compat-issue id="major-bug">
+          <p>
+            The game can crash randomly on NTSC machines when Henry dies in Room 05. This is due to the game
+            spending too long in a deferred VBI handler and subsequently scrambling the order of
+            its display list interrupts.
+          </p>
+        </compat-issue>
+      </compat-title>
+      
+      <compat-title name="His Dark Majesty">
+        <compat-issue id="major-bug">
+          <p>
+            Version 1.0 has a bug that can cause it to randomly crash due to infinite DLI interrupts if the
+            opening animation is interrupted at certain times in the video frame.  The workaround is to hit
+            a key during the title screen instead.
+            This bug is fixed in version 1.01.
+          </p>
+        </compat-issue>
+
+        <compat-issue id="os-hackery">
+          <p>
+            This game will not work with some custom OSes due to copying out parts of the OS ROM for
+            private use (the SIO routines, to be specific).
+          </p>
+        </compat-issue>
+      </compat-title>
+
+      <compat-title name="Missile Command">
+        <compat-issue id="requires-osb">
+          <p>
+            Has a hardcoded reference to the keyboard lookup table in the OS-B ROM. The game is playable on
+            XL/XE or custom OSes, but the keys for selecting the starting wave will not work.
+          </p>
+        </compat-issue>
+      </compat-title>
+
+      <compat-title name="Mr. DO!">
+        <compat-issue id="disktiming">
+          <p>
+            Unmodified versions should be run with the SIO patch disabled and with accurate disk timing
+            enabled. The game may appear to load
+            correctly, but will malfunction in certain game elements due to the silently failed timing
+            check. Specifically, if a particular section of the boot process runs <i>faster</i> than
+            a certain amount of time, the game will deliberately break itself and sprites will fall
+            through to the bottom of the screen.
+          </p>
+        </compat-issue>
+      </compat-title>
+
+      <compat-title name="M.U.L.E.">
+        <compat-issue id="minor-bug">
+          <p>
+            The tiny sound glitches that occur when notes are played happen on a real Atari, too.
+          </p>
+        </compat-issue>
+      </compat-title>
+
+      <compat-title name="Parsec XL">
+        <compat-issue id="requires-xlos">
+          <p>
+            Directly jumps into XL/XE OS at $C28A and may fail with other OSes.
+          </p>
+        </compat-issue>
+      </compat-title>
+
+      <compat-title name="Preppie-II">
+        <compat-issue id="minor-bug">
+          <p>
+            Has a hidden function in the game that skips levels if the buttons on paddle 4 and 5
+            (port 3) are pressed simultaneously. This is normally impossible on an XL/XE because
+            there is no port 3, and although the OS mirrors port 1 to port 3 in the OS variables
+            and the paddle buttons overlap with the joystick direction lines, it's impossible to
+            trigger this with the joystick (it can't be both left and right). However, this can
+            be triggered if a custom OS doesn't set PTRIG4/PTRIG5 properly.
+          </p>
+        </compat-issue>
+      </compat-title>
+
+      <compat-title name="Protector II">
+        <compat-issue id="requires-osb">
+          <p>
+            Requires OS-B, as it directly pulls the vector table from the OS ROM.
+          </p>
+        </compat-issue>
+      </compat-title>
+      
+      <compat-title name="Return of Heracles">
+        <compat-issue id="requires-osb">
+          <p>
+            Requires OS-B due to hardcoded references to the keyboard translation table. The game will
+            appear to work on the XL/XE or a custom OS, but keyboard entry will fail late in the game
+            with the Riddle of the Sphinx puzzle.
+          </p>
+        </compat-issue>
+      </compat-title>
+
+      <compat-title name="The Tail of Beta Lyrae">
+        <compat-issue id="diskrw">
+          <p>
+            Rewrites the disk to store a load counter, which is used to gradually reveal more game
+            elements as the game is loaded more times. The game will work if the disk is write
+            protected, but the new game elements will not appear if the counter is not already
+            high enough.
+          </p>
+        </compat-issue>
+      </compat-title>
+
+      <compat-title name="The Wizard and the Princess">
+        <compat-issue id="requires-osb">
+          <p>
+            Directly jumps into the OS-B screen editor; fails with XL/XE or custom OSes.
+          </p>
+        </compat-issue>
+      </compat-title>
+
+      <compat-title name="TL Cars (128)">
+        <compat-issue desc="Requires XL Hardware">
+          <p>
+            Original version has an unusual problem where its loader will fail with hardware that
+            has a floating data bus, where varying data is returned from the $D1xx region. In
+            Altirra, this is emulated when XE hardware is selected. XL hardware has pull-ups on
+            the data bus that cause $FF to be consistently returned from those addresses and will
+            work with this version.
+          </p>
+        </compat-issue>
+      </compat-title>
+
+      <compat-title name="Transylvania">
+        <compat-issue id="disktiming"/>
+      </compat-title>
+
+      <compat-title name="Twerps">
+        <compat-issue id="disktiming"/>
+      </compat-title>
+
+      <compat-title name="Ultima I">
+        <compat-issue id="requires-osb">
+          <p>
+            This game requires the OS-B kernel ROM to run. It fails on HLE or XL kernels because it has
+            hardcoded references to keyboard translation tables in the OS-B ROM.
+          </p>
+        </compat-issue>
+      </compat-title>
+
+      <compat-title name="Zebuland">
+        <compat-issue id="diskrw"/>
+      </compat-title>
+    </compat-category>
+
+    <!-- *************************************************** -->
+
+    <compat-category name="Applications">
+      <compat-title name="Basic XE 4.2">
+        <compat-issue desc="Extension disk compatibility issue">
+          <p>
+            Basic XE 4.2 will appear to hang on the title screen if used with the Extension disk normally used
+            with 4.1. This is due to a change in the initialization code in 4.2 that prevents the Screen Editor
+            display from being restored after the Extension loads. This can be worked around by blindly typing
+            a <tt>GR.0</tt> command to restore the screen.
+          </p>
+        </compat-issue>
+      </compat-title>
+      <compat-title name="FoReM XL/XE/XE Pro">
+        <compat-issue desc="Hardware compatibility issue">
+          <p>
+            FoReM relies on particular short response values for CONNECT messages from the modem.
+            These were not standardized for higher baud rates. Altirra's emulated modem returns the Conexant
+            code for 9600 baud (12), while FoReM by default expects the value returned by U.S. Robotics
+            modems (13). Either lower the connection speed limit to 2400 baud or follow the directions in the FXL/FXE
+            documentation to change the expected code.
+          </p>
+        </compat-issue>
+        <compat-issue id="minor-bug">
+          <p>
+            The clock in FoReM XL/XE also tends to lose a couple of seconds per day because it is
+            written to expect exactly 60 or 50 frames per second, whereas the actual Atari runs slightly
+            slower than that (59.92 fps / 49.87 fps). A workaround is to adjust the emulator speed to
+            50/60Hz in Speed Options.
+          </p>
+        </compat-issue>
+      </compat-title>
+
+      <compat-title name="Ice-T XE 2.72">
+        <compat-issue id="major-bug">          
+          <p>
+            The keyboard click feature of this program has a bug: it calls directly into the OS K:
+            handler's GET BYTE routine without going through CIO and without setting ICAX1Z. This
+            causes the program to sometimes jam up endlessly transmitting the "j" character. Disabling
+            the keyboard click and then waiting for the output buffer to drain fixes the problem.
+          </p>
+          <p>
+            This bug is fixed in Ice-T XE 2.73.
+          </p>
+        </compat-issue>
+      </compat-title>
+
+      <compat-title name="MicroCalc (cartridge)">
+        <compat-issue id="requires-xlos">
+          <p>
+            Jumps directly into SIO at $E959 instead of using the SIOV vector, and so will fail unless
+            the OS-B or XL/XE OS is used.
+          </p>
+        </compat-issue>
+      </compat-title>
+
+      <compat-title name="Text Wizard V1.3">
+        <compat-issue id="requires-osb">
+          <p>
+            Requires OS-B as it has illegal calls into the screen editor code.
+          </p>
+        </compat-issue>
+      </compat-title>
+
+      <compat-title name="The Newsroom">
+        <compat-issue id="diskrw">
+          <p>
+            Requires program disk to be writable, or else it will keep asking for the program disk to
+            be inserted. Unusually, this check is done by checking the write protection tab directly
+            rather than being detected from a write failure.
+          </p>
+        </compat-issue>
+      </compat-title>
+    </compat-category>
+
+    <!-- *************************************************** -->
+
+    <compat-category name="Disk Operating Systems">
+      <compat-title name="Atari DOS 2.5">
+        <compat-issue id="os-hackery">
+          <p>
+            Does an unsupported OS check by looking for a BCC opcode ($90) at address $EA9C in the OS ROM,
+            and replaces the VSEROR vector if it is found. This can cause a failure with custom OSes.
+          </p>
+        </compat-issue>
+      </compat-title>
+
+      <compat-title name="DOS II+/D Version 6.4">
+        <compat-issue id="requires-xlos">
+          <p>
+            Jumps directly into the XL/XE OS E: put byte handler at $F2B0 from $18F0. Will not work with OS-B or
+            alternative operating systems.
+          </p>
+        </compat-issue>
+      </compat-title>
+      
+      <compat-title name="MyDOS">
+        <compat-issue id="65C816">
+          <p>
+            Wraps absolute indexed addressing around the 64K address space, and thus does not work
+            on a 65C816 CPU with 24-bit addressing.
+          </p>
+        </compat-issue>
+        <p>
+          The Load Binary command in the MyDOS menu uses a MyDOS-specific XIO call to load the binary
+          instead of regular CIO read calls. This prevents Load Binary from working with the H: handler
+          as the handler does not know how to handle MyDOS XIO calls.
+        </p>
+        <p>
+          There is also a bug in MyDOS that prevents wildcarded copies from working when using H: as
+          the source: MyDOS passes the wrong flags when enumerating files from non-disk devices, causing
+          the copy to fail. Specifically, it attempts to read a directory listing using an <tt>AUX1</tt> mode
+          of <tt>$04</tt> (open file) instead of <tt>$06</tt> (open directory).
+        </p>
+      </compat-title>
+
+      <compat-title name="SpartaDOS 3.2">
+        <compat-issue desc="Emulation feature issue">
+          <p>
+            While the emulator's H: device can be accessed by SpartaDOS 3, there is a bug in its COPY
+            command that causes it to malfunction when copying from H: to a destination path:
+          </p>
+          <blockquote>
+            <tt>D1:>COPY H:FILE.BIN D2:</tt>
+          </blockquote>
+          <p>
+            This fails with <tt>163 Illegal wildcard in name</tt> because COPY attempts to create a file
+            called <tt>*.*</tt> on the destination drive. It works for copies from the regular <tt>D:</tt>
+            device because there it issues a directory search to get the source name. The workaround is
+            to specify a full destination filename:
+          </p>
+          <blockquote>
+            <tt>D1:>COPY H:FILE.BIN D2:FILE.BIN</tt>
+          </blockquote>
+        </compat-issue>
+      </compat-title>
+
+      <compat-title name="SpartaDOS X">
+        <compat-issue desc="Emulation feature issue">
+          <p>
+            SpartaDOS X uses a custom SIO routine and thus will not work with standard SIOV patch based
+            <tt>D:</tt> acceleration. Burst I/O and PBI-based acceleration will work.
+          </p>
+          <p>
+            The H: device is not supported at all by the SDX kernel, so specific drivers or tools must
+            be used to copy to and from the emulator devices. <a href="pclink.html">PCLink</a> is the
+            recommended alternative for SDX 4.44 and above.
+          </p>
+        </compat-issue>
+      </compat-title>
+    </compat-category>
+  </compat-list>
+</topic>

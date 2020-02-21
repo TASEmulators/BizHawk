@@ -1,0 +1,66 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Video Board XE">
+  <p>
+    VideoBoard XE, or VBXE, is an internal expansion that greatly increases the graphics output capabilities
+    of an Atari 8-bit computer.
+  </p>
+  <h2>Overview</h2>
+  <p>
+    VBXE installs internally within the computer, shadowing the PIA and GTIA chips and producing its own
+    video output. It is designed to emulate the original capabilities of the computer well enough that
+    the VBXE video output can be used all the time, even when VBXE capabilities are not being used. The
+    VBXE graphics hardware is an improvement over the standard hardware in many ways:
+  </p>
+  <ul>
+    <li>512K of video memory with two independent memory access windows</li>
+    <li>640 pixel wide modes</li>
+    <li>16-color and 256-color modes</li>
+    <li>80-column text mode</li>
+    <li>Hardware blitter</li>
+    <li>Attribute map</li>
+    <li>Extended versions of original ANTIC/GTIA modes, including extended color and overlays</li>
+  </ul>
+  <p>
+    VBXE does not occupy any of the regular expansion ports like the cartridge or PBI ports, however,
+    so it can coexist with other such expansions.
+  </p>
+  <h2>VBXE configuration options</h2>
+  <p>
+    VBXE requires a register memory access window in the parallel bus interface (PBI) space, either
+    at <tt>$D6xx</tt> or <tt>$D7xx</tt>. Both options are supported in Altirra. <tt>$D6xx</tt>
+    is the more common configuration in real hardware and should be used except in case of conflict;
+    most VBXE software is compiled for this address and will not adapt to a <tt>$D7xx</tt> setup.
+  </p>
+  <p>
+    If Ultimate1MB is also active, Altirra automatically routes the VBXE through the U1MB module
+    so that it can control the VBXE register configuration. In this case, the VBXE register window
+    must be configured through U1MB setup rather than emulator options.
+  </p>
+  <p>
+    The VBXE firmware comes in two forms, a standard version and a "RAMBO" or 'r' version. The 'r'
+    version emulates a RAMBO 256K memory expansion. This is supported in Altirra through the <i>Use
+    VBXE memory for expansion</i> option, but the memory configuration must be adjusted to match.
+  </p>
+  <h2>Using VBXE</h2>
+  <p>
+    VBXE only has device firmware and no computer firmware, so booting a system with VBXE installed
+    only has the VBXE emulating the standard display and no new functionality is available. To use
+    VBXE extended features, software must be loaded that specifically supports VBXE.
+  </p>
+  <h2>Emulator limitations</h2>
+  <p>
+    Because VBXE can produce video with higher color depth and resolution than standard GTIA, some
+    emulation options are altered or limited when VBXE is active. Screenshots are captured twice
+    as wide, and the high artifacting modes are not available. VBXE emulation is also a bit slower
+    than standard GTIA emulation.
+  </p>
+  <p>
+    On a real VBXE, the starting palette is baked into the device firmware itself, and so the color
+    adjustment on the Atari has no effect on the VBXE display. In Altirra, the color adjustments
+    are reflected in the VBXE's initial palette 0. This can lead to some slight color errors in
+    VBXE-based software that relies on the initial color values in the original VBXE firmware. Newer
+    revisions of the firmware also allow for adjusted palettes, so it is best that software be able to
+    handle this in any case.
+  </p>
+</topic>

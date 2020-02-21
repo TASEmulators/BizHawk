@@ -1,0 +1,151 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\Build\ProjectConfigurations.props" />
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{6638DCCD-01B4-49F8-BC66-696648AA0B84}</ProjectGuid>
+    <RootNamespace>VDDisplay</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="..\Build\PlatformSetup.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\Build\Altirra.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="source\bicubic.cpp" />
+    <ClCompile Include="source\customshaderd3d9.cpp" />
+    <ClCompile Include="source\direct3d.cpp" />
+    <ClCompile Include="source\directdraw.cpp" />
+    <ClCompile Include="source\display.cpp" />
+    <ClCompile Include="source\displaydrv.cpp" />
+    <ClCompile Include="source\displaydrv3d.cpp" />
+    <ClCompile Include="source\displaydrvd3d9.cpp" />
+    <ClCompile Include="source\displaydrvddraw.cpp" />
+    <ClCompile Include="source\displaydrvgl.cpp" />
+    <ClCompile Include="source\displaygdi.cpp" />
+    <ClCompile Include="source\displaymgr.cpp" />
+    <ClCompile Include="source\displaynode3d.cpp" />
+    <ClCompile Include="source\fontbitmap.cpp" />
+    <ClCompile Include="source\fontgdi.cpp" />
+    <ClCompile Include="source\logging.cpp" />
+    <ClCompile Include="source\minid3dx.cpp" />
+    <ClCompile Include="source\opengl.cpp" />
+    <ClCompile Include="source\rendercache.cpp" />
+    <ClCompile Include="source\renderer.cpp" />
+    <ClCompile Include="source\renderer3d.cpp" />
+    <ClCompile Include="source\rendererd3d9.cpp" />
+    <ClCompile Include="source\rendererddraw.cpp" />
+    <ClCompile Include="source\renderergdi.cpp" />
+    <ClCompile Include="source\renderersoft.cpp" />
+    <ClCompile Include="source\screenfx.cpp" />
+    <ClCompile Include="source\textrenderer.cpp" />
+    <ClCompile Include="source\stdafx.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\h\vd2\VDDisplay\direct3d.h" />
+    <ClInclude Include="..\h\vd2\VDDisplay\logging.h" />
+    <ClInclude Include="..\h\vd2\VDDisplay\minid3dx.h" />
+    <ClInclude Include="..\h\vd2\VDDisplay\opengl.h" />
+    <ClInclude Include="h\bicubic.h" />
+    <ClInclude Include="h\displaydrvd3d9.h" />
+    <ClInclude Include="h\vd2\VDDisplay\internal\customshaderd3d9.h" />
+    <ClInclude Include="h\vd2\VDDisplay\internal\directdraw.h" />
+    <ClInclude Include="h\displaydrv3d.h" />
+    <ClInclude Include="h\displaymgr.h" />
+    <ClInclude Include="h\displaynode3d.h" />
+    <ClInclude Include="h\vd2\VDDisplay\internal\fontbitmap.h" />
+    <ClInclude Include="h\vd2\VDDisplay\internal\fontgdi.h" />
+    <ClInclude Include="h\renderer3d.h" />
+    <ClInclude Include="h\vd2\VDDisplay\internal\rendererddraw.h" />
+    <ClInclude Include="h\vd2\VDDisplay\internal\renderergdi.h" />
+    <ClInclude Include="h\stdafx.h" />
+    <ClInclude Include="..\h\vd2\VDDisplay\compositor.h" />
+    <ClInclude Include="..\h\vd2\VDDisplay\display.h" />
+    <ClInclude Include="..\h\vd2\VDDisplay\displaydrv.h" />
+    <ClInclude Include="..\h\vd2\VDDisplay\font.h" />
+    <ClInclude Include="..\h\vd2\VDDisplay\rendercache.h" />
+    <ClInclude Include="..\h\vd2\VDDisplay\renderer.h" />
+    <ClInclude Include="..\h\vd2\VDDisplay\renderersoft.h" />
+    <ClInclude Include="..\h\vd2\VDDisplay\textrenderer.h" />
+    <ClInclude Include="h\vd2\VDDisplay\internal\screenfx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="autogen\displayd3d9_shader.inl" />
+    <None Include="shaders\bicubic.fxh" />
+    <CustomBuild Include="shaders\image.fx">
+      <Message />
+      <Command>"$(VDBaseDir)\out\$(VDConfigDirTag)\asuka" fxc10 "%(FullPath)" "%(RootDir)%(Directory)\..\autogen\%(Filename)_shader.inl"</Command>
+      <AdditionalInputs>$(VDBaseDir)\out\$(VDConfigDirTag)\asuka.exe;$(ProjectDir)shaders\sysdefs.fxh;$(ProjectDir)shaders\pal8.fxh;$(ProjectDir)shaders\ycbcr.fxh;$(ProjectDir)shaders\utils.fxh;$(ProjectDir)shaders\ycbcr_interleaved.fxh;$(ProjectDir)shaders\rgb.fxh;$(ProjectDir)shaders\bicubic.fxh;$(ProjectDir)shaders\render.fxh;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs>$(ProjectDir)autogen\%(Filename)_shader.inl;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(VDBaseDir)\out\$(VDConfigDirTag)\asuka.exe;$(ProjectDir)shaders\sysdefs.fxh;$(ProjectDir)shaders\pal8.fxh;$(ProjectDir)shaders\ycbcr.fxh;$(ProjectDir)shaders\utils.fxh;$(ProjectDir)shaders\ycbcr_interleaved.fxh;$(ProjectDir)shaders\rgb.fxh;$(ProjectDir)shaders\bicubic.fxh;$(ProjectDir)shaders\render.fxh;$(ProjectDir)shaders\screenfx.fxh;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(VDBaseDir)\out\$(VDConfigDirTag)\asuka.exe;$(ProjectDir)shaders\sysdefs.fxh;$(ProjectDir)shaders\pal8.fxh;$(ProjectDir)shaders\ycbcr.fxh;$(ProjectDir)shaders\utils.fxh;$(ProjectDir)shaders\ycbcr_interleaved.fxh;$(ProjectDir)shaders\rgb.fxh;$(ProjectDir)shaders\bicubic.fxh;$(ProjectDir)shaders\render.fxh;$(ProjectDir)shaders\screenfx.fxh;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">$(VDBaseDir)\out\$(VDConfigDirTag)\asuka.exe;$(ProjectDir)shaders\sysdefs.fxh;$(ProjectDir)shaders\pal8.fxh;$(ProjectDir)shaders\ycbcr.fxh;$(ProjectDir)shaders\utils.fxh;$(ProjectDir)shaders\ycbcr_interleaved.fxh;$(ProjectDir)shaders\rgb.fxh;$(ProjectDir)shaders\bicubic.fxh;$(ProjectDir)shaders\render.fxh;$(ProjectDir)shaders\screenfx.fxh;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">$(VDBaseDir)\out\$(VDConfigDirTag)\asuka.exe;$(ProjectDir)shaders\sysdefs.fxh;$(ProjectDir)shaders\pal8.fxh;$(ProjectDir)shaders\ycbcr.fxh;$(ProjectDir)shaders\utils.fxh;$(ProjectDir)shaders\ycbcr_interleaved.fxh;$(ProjectDir)shaders\rgb.fxh;$(ProjectDir)shaders\bicubic.fxh;$(ProjectDir)shaders\render.fxh;$(ProjectDir)shaders\screenfx.fxh;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">$(VDBaseDir)\out\$(VDConfigDirTag)\asuka.exe;$(ProjectDir)shaders\sysdefs.fxh;$(ProjectDir)shaders\pal8.fxh;$(ProjectDir)shaders\ycbcr.fxh;$(ProjectDir)shaders\utils.fxh;$(ProjectDir)shaders\ycbcr_interleaved.fxh;$(ProjectDir)shaders\rgb.fxh;$(ProjectDir)shaders\bicubic.fxh;$(ProjectDir)shaders\render.fxh;$(ProjectDir)shaders\screenfx.fxh;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Profile|ARM64'">$(VDBaseDir)\out\$(VDConfigDirTag)\asuka.exe;$(ProjectDir)shaders\sysdefs.fxh;$(ProjectDir)shaders\pal8.fxh;$(ProjectDir)shaders\ycbcr.fxh;$(ProjectDir)shaders\utils.fxh;$(ProjectDir)shaders\ycbcr_interleaved.fxh;$(ProjectDir)shaders\rgb.fxh;$(ProjectDir)shaders\bicubic.fxh;$(ProjectDir)shaders\render.fxh;$(ProjectDir)shaders\screenfx.fxh;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(VDBaseDir)\out\$(VDConfigDirTag)\asuka.exe;$(ProjectDir)shaders\sysdefs.fxh;$(ProjectDir)shaders\pal8.fxh;$(ProjectDir)shaders\ycbcr.fxh;$(ProjectDir)shaders\utils.fxh;$(ProjectDir)shaders\ycbcr_interleaved.fxh;$(ProjectDir)shaders\rgb.fxh;$(ProjectDir)shaders\bicubic.fxh;$(ProjectDir)shaders\render.fxh;$(ProjectDir)shaders\screenfx.fxh;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(VDBaseDir)\out\$(VDConfigDirTag)\asuka.exe;$(ProjectDir)shaders\sysdefs.fxh;$(ProjectDir)shaders\pal8.fxh;$(ProjectDir)shaders\ycbcr.fxh;$(ProjectDir)shaders\utils.fxh;$(ProjectDir)shaders\ycbcr_interleaved.fxh;$(ProjectDir)shaders\rgb.fxh;$(ProjectDir)shaders\bicubic.fxh;$(ProjectDir)shaders\render.fxh;$(ProjectDir)shaders\screenfx.fxh;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">$(VDBaseDir)\out\$(VDConfigDirTag)\asuka.exe;$(ProjectDir)shaders\sysdefs.fxh;$(ProjectDir)shaders\pal8.fxh;$(ProjectDir)shaders\ycbcr.fxh;$(ProjectDir)shaders\utils.fxh;$(ProjectDir)shaders\ycbcr_interleaved.fxh;$(ProjectDir)shaders\rgb.fxh;$(ProjectDir)shaders\bicubic.fxh;$(ProjectDir)shaders\render.fxh;$(ProjectDir)shaders\screenfx.fxh;%(AdditionalInputs)</AdditionalInputs>
+    </CustomBuild>
+    <CustomBuild Include="shaders\displayd3d9.fx">
+      <Message />
+      <Command>"$(VDBaseDir)\out\$(VDConfigDirTag)\asuka" fxc10 "%(FullPath)" "%(RootDir)%(Directory)\..\autogen\%(Filename)_shader.inl"</Command>
+      <AdditionalInputs>$(VDBaseDir)\out\$(VDConfigDirTag)\asuka.exe;$(ProjectDir)shaders\displayd3d9_ff.fxh;$(ProjectDir)shaders\displayd3d9_ps1.fxh;$(ProjectDir)shaders\displayd3d9_ps14.fxh;$(ProjectDir)shaders\displayd3d9_ps2.fxh;$(ProjectDir)shaders\displayd3d9_stddefs.fxh;$(ProjectDir)shaders\utils.fxh;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs>%(RootDir)%(Directory)\..\autogen\%(Filename)_shader.inl;%(Outputs)</Outputs>
+      <Command>if not exist "$(VDBaseDir)\out\$(VDConfigDirTag)\asuka.exe" (
+echo Error: Missing tool: $(VDBaseDir)\out\$(VDConfigDirTag)\asuka.exe
+exit /b 10
+)
+"$(VDBaseDir)\out\$(VDConfigDirTag)\asuka.exe" fxc10 "%(FullPath)" "%(RootDir)%(Directory)\..\autogen\%(Filename)_shader.inl"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(VDBaseDir)\out\$(VDConfigDirTag)\asuka.exe;$(ProjectDir)shaders\displayd3d9_ff.fxh;$(ProjectDir)shaders\displayd3d9_ps1.fxh;$(ProjectDir)shaders\displayd3d9_ps14.fxh;$(ProjectDir)shaders\displayd3d9_ps2.fxh;$(ProjectDir)shaders\displayd3d9_stddefs.fxh;$(ProjectDir)shaders\utils.fxh;$(ProjectDir)shaders\screenfx.fxh;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(VDBaseDir)\out\$(VDConfigDirTag)\asuka.exe;$(ProjectDir)shaders\displayd3d9_ff.fxh;$(ProjectDir)shaders\displayd3d9_ps1.fxh;$(ProjectDir)shaders\displayd3d9_ps14.fxh;$(ProjectDir)shaders\displayd3d9_ps2.fxh;$(ProjectDir)shaders\displayd3d9_stddefs.fxh;$(ProjectDir)shaders\utils.fxh;$(ProjectDir)shaders\screenfx.fxh;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">$(VDBaseDir)\out\$(VDConfigDirTag)\asuka.exe;$(ProjectDir)shaders\displayd3d9_ff.fxh;$(ProjectDir)shaders\displayd3d9_ps1.fxh;$(ProjectDir)shaders\displayd3d9_ps14.fxh;$(ProjectDir)shaders\displayd3d9_ps2.fxh;$(ProjectDir)shaders\displayd3d9_stddefs.fxh;$(ProjectDir)shaders\utils.fxh;$(ProjectDir)shaders\screenfx.fxh;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">$(VDBaseDir)\out\$(VDConfigDirTag)\asuka.exe;$(ProjectDir)shaders\displayd3d9_ff.fxh;$(ProjectDir)shaders\displayd3d9_ps1.fxh;$(ProjectDir)shaders\displayd3d9_ps14.fxh;$(ProjectDir)shaders\displayd3d9_ps2.fxh;$(ProjectDir)shaders\displayd3d9_stddefs.fxh;$(ProjectDir)shaders\utils.fxh;$(ProjectDir)shaders\screenfx.fxh;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">$(VDBaseDir)\out\$(VDConfigDirTag)\asuka.exe;$(ProjectDir)shaders\displayd3d9_ff.fxh;$(ProjectDir)shaders\displayd3d9_ps1.fxh;$(ProjectDir)shaders\displayd3d9_ps14.fxh;$(ProjectDir)shaders\displayd3d9_ps2.fxh;$(ProjectDir)shaders\displayd3d9_stddefs.fxh;$(ProjectDir)shaders\utils.fxh;$(ProjectDir)shaders\screenfx.fxh;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Profile|ARM64'">$(VDBaseDir)\out\$(VDConfigDirTag)\asuka.exe;$(ProjectDir)shaders\displayd3d9_ff.fxh;$(ProjectDir)shaders\displayd3d9_ps1.fxh;$(ProjectDir)shaders\displayd3d9_ps14.fxh;$(ProjectDir)shaders\displayd3d9_ps2.fxh;$(ProjectDir)shaders\displayd3d9_stddefs.fxh;$(ProjectDir)shaders\utils.fxh;$(ProjectDir)shaders\screenfx.fxh;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(VDBaseDir)\out\$(VDConfigDirTag)\asuka.exe;$(ProjectDir)shaders\displayd3d9_ff.fxh;$(ProjectDir)shaders\displayd3d9_ps1.fxh;$(ProjectDir)shaders\displayd3d9_ps14.fxh;$(ProjectDir)shaders\displayd3d9_ps2.fxh;$(ProjectDir)shaders\displayd3d9_stddefs.fxh;$(ProjectDir)shaders\utils.fxh;$(ProjectDir)shaders\screenfx.fxh;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(VDBaseDir)\out\$(VDConfigDirTag)\asuka.exe;$(ProjectDir)shaders\displayd3d9_ff.fxh;$(ProjectDir)shaders\displayd3d9_ps1.fxh;$(ProjectDir)shaders\displayd3d9_ps14.fxh;$(ProjectDir)shaders\displayd3d9_ps2.fxh;$(ProjectDir)shaders\displayd3d9_stddefs.fxh;$(ProjectDir)shaders\utils.fxh;$(ProjectDir)shaders\screenfx.fxh;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">$(VDBaseDir)\out\$(VDConfigDirTag)\asuka.exe;$(ProjectDir)shaders\displayd3d9_ff.fxh;$(ProjectDir)shaders\displayd3d9_ps1.fxh;$(ProjectDir)shaders\displayd3d9_ps14.fxh;$(ProjectDir)shaders\displayd3d9_ps2.fxh;$(ProjectDir)shaders\displayd3d9_stddefs.fxh;$(ProjectDir)shaders\utils.fxh;$(ProjectDir)shaders\screenfx.fxh;%(AdditionalInputs)</AdditionalInputs>
+    </CustomBuild>
+    <None Include="shaders\displayd3d9_ps1.fxh" />
+    <None Include="shaders\displayd3d9_ps2.fxh" />
+    <None Include="shaders\displayd3d9_stddefs.fxh" />
+    <None Include="shaders\pal8.fxh" />
+    <None Include="shaders\render.fxh" />
+    <None Include="shaders\rgb.fxh" />
+    <None Include="shaders\screenfx.fxh" />
+    <None Include="shaders\sysdefs.fxh" />
+    <None Include="shaders\utils.fxh" />
+    <None Include="shaders\ycbcr.fxh" />
+    <None Include="shaders\ycbcr_interleaved.fxh" />
+    <None Include="autogen\image_shader.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Asuka\Asuka.vcxproj">
+      <Project>{6aa99a18-196f-4334-a3de-d9eea62cd5e9}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

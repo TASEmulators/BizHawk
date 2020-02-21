@@ -1,0 +1,43 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="General issues">
+  <toc/>
+
+  <h2>PAL vs. NTSC</h2>
+  <p>
+    The 8-bit Atari was originally created for the NTSC standard and later adapted for PAL. As such, much of commercial
+    software was designed for NTSC. Productivity software will usually work fine on either setting, but many games will
+    only run at their correct speed on NTSC hardware settings. These games will run correctly on PAL, but 16% too
+    slowly.
+  </p>
+  <p>
+    Later software is the opposite, as much of the later and more advanced programs and games were developed in Europe
+    on PAL hardware. Almost all demos are designed for PAL, as are the very late games that take advantage of expanded
+    memory and push the hardware to its limits. These will run too fast or malfunction if run with NTSC timing.
+  </p>
+  <p>
+    Note that while almost all NTSC-designed software will run in PAL, some PAL software may malfunction in NTSC. This
+    is usually due to the shorter vertical blank period. Screen corruption at the top of the frame is one common
+    symptom, if the program doesn't lock up entirely.
+  </p>
+
+  <h2>Memory size</h2>
+  <p>
+    The typical choices here are 48K, 64K, and 320K. Very little software requires any other setting than these three.
+  </p>
+  <p>
+    48K was the maximum memory configuration for the original Atari 800 and is only possible in that hardware mode,
+    as XL computers came with 64K minimum. In Altirra, selecting 48K is synonymous with switching to the 800 hardware
+    configuration. This is generally only necessary when dealing with very old software that carelessly changes the
+    PORTB register and accidentally swaps out the kernel ROM.
+  </p>
+  <p>
+    64K was the standard configuration for 800XL and 1200XL models. This memory size will support most later commercial
+    software.
+  </p>
+  <p>
+    The 320K memory configuration encompasses most of the common expanded memory configurations, including the 128K
+    of the 130XE as well as several third-party 256K expansions. This setting will run the majority of software
+    making use of expanded memory.
+  </p>
+</topic>

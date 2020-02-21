@@ -1,0 +1,95 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Using the debugger">
+  <p>
+    Altirra includes a powerful debugger for diagnosing programs that are not working properly or that
+    are under development.
+  </p>
+  <toc/>
+  <h2>Switching to debugger mode</h2>
+  <p>
+    To switch to debugger mode, select Debug &gt; Enable Debugger from the menu. This will change
+    the window layout to the default for debugging, which you can then modify by dragging panes or
+    opening new ones from the Debug &gt; Windows menu. Debug mode and normal mode have separate window
+    layouts, which are saved independently.
+  </p>
+  <h2>Using the command line</h2>
+  <p>
+    In debug mode, various panes are available to display the state of the CPU, of memory, and of
+    emulation. However, the main port for interacting with the debugger is the Output pane, which
+    contains both a log window and a command line at the bottom. While some of the debugger
+    commands can be used through the GUI, all of them are available through the command line, and
+    thus mastering the command line is important for debugging proficiency.
+  </p>
+  <p>
+    All commands are of the form:
+  </p>
+  <blockquote>
+    <tt>command-name [optional arguments]</tt>
+  </blockquote>
+  <p>
+    To execute a command, type it in the command line and hit Enter. The command will be echoed in
+    the log, along with any results. The command line supports history and allows past commands to
+    be repeated using the up and down arrow keys.
+  </p>
+  <p>
+    The <tt>.help</tt> command gives a list of available commands. You can also specify a command name,
+    i.e. <tt>.help s</tt>, in order to get help on a specific command.
+  </p>
+  <h2>Execution control</h2>
+  <p>
+    In order to execute commands, however, simulator execution should be halted. This can be done by
+    Run/Break (F8) or by Break (Ctrl+Break). Once execution has been halted, the title bar will change
+    to indicate that the simulator is stopped and all of the debug panes will be updated with the
+    current emulation status. No changes will occur to emulation until a command is given.
+  </p>
+  <p>
+    The t (trace) command allows the emulation to be single-stepped under debugger control. The trace
+    command runs the simulator until the CPU has completed executing an instruction, after which it
+    is halted again and the current execution state is reported. If an interrupt occurs, the simulator
+    will step into the interrupt handler routine.
+  </p>
+  <p>
+    For cases where a particular execution path is being followed, the s (step) command is useful.
+    It acts like the trace command except that any interrupt handler or subroutine call is stepped
+    through automatically. If the simulator has already stepped into a subroutine, the gr (go until
+    return) command will execute instructions until the subroutine is complete.
+  </p>
+  <p>
+    While it is possible to debug a program using the t, s, and gr commands in the command line, these
+    commands are so frequently used that they have shortcuts: Step Into (F11), Step Over (F10), and
+    Step Out (Shift+F11).
+  </p>
+  <p>
+    The go (g) command resumes execution. Its analogous GUI command is Run/Break (F8).
+  </p>
+  <h2>Setting breakpoints</h2>
+  <p>
+    Breakpoints allow the simulator to automatically break into the debugger when a specific condition
+    is reached, permitting much faster debugging than just manually stepping the program since the
+    program runs at full speed while the debugger waits for a breakpoint to fire. A common approach
+    is to use breakpoints to detect an particular condition and then single-step the program around
+    the area of interest.
+  </p>
+  <p>
+    The most common type of breakpoint is a PC breakpoint. These are set with the bp (breakpoint)
+    command, and listed or cleared with the bl (breakpoint list) and bc (breakpoint clear) commands,
+    and cause the simulator to break into the debugger when the CPU PC register equals certain
+    values. There is no limit to the number of PC breakpoints that can be set, and breakpoints persist
+    until cleared. Since PC breakpoints are also a frequently used feature, they can be toggled in
+    the GUI by selecting an instruction in the Disassembly view and pressing the F9 key. The Disassembly
+    view shows a red background on any instruction on which a breakpoint is set.
+  </p>
+  <p>
+    Unlike traditional on-machine debuggers which may insert BRK instructions into the instruction
+    stream to implement breakpoints, breakpoints in Altirra work by address matching. Memory is never
+    modified by a breakpoint, and they can be placed even in ROM or on hardware registers. Execution
+    timing is also unaffected by breakpoints.
+  </p>
+  <p>
+    Altirra also supports memory access breakpoints, which allow detection of reads or writes to
+    a particular address. These are set and cleared using the ba (break on access) command. Memory
+    range breakpoints can also be set, which trip whenever any location within the memory range is
+    accessed.
+  </p>
+</topic>

@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="../Build/ProjectConfigurations.props" />
+  <ItemGroup>
+    <ClCompile Include="source\breakpointsimpl.cpp" />
+    <ClCompile Include="source\historytree.cpp" />
+    <ClCompile Include="source\historytreebuilder.cpp" />
+    <ClCompile Include="source\stdafx.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\h\at\atdebugger\argparse.h" />
+    <ClInclude Include="..\h\at\atdebugger\breakpointsimpl.h" />
+    <ClInclude Include="..\h\at\atdebugger\expression.h" />
+    <ClInclude Include="..\h\at\atdebugger\historytree.h" />
+    <ClInclude Include="..\h\at\atdebugger\historytreebuilder.h" />
+    <ClInclude Include="..\h\at\atdebugger\target.h" />
+    <ClInclude Include="h\stdafx.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{DFC889CD-284D-4E66-A662-0FB273228F40}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>ATDebugger</RootNamespace>
+  </PropertyGroup>
+  <Import Project="..\Build\PlatformSetup.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\Build\Altirra.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

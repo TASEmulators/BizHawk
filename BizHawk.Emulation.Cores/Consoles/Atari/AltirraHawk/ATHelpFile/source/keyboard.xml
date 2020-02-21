@@ -1,0 +1,264 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Keyboard mapping">
+  <style>
+    .keyboard {
+    text-align: center;
+    margin: 24pt;
+    }
+    
+    .keyboard-title {
+    font-weight: bold;
+    }
+    
+    .keyboard table {
+    margin-left: auto;
+    margin-right: auto;
+    }
+
+    .keyboard th,td {
+    text-align: left;
+    }
+    
+    .keyboard th {
+    background: #cfc;
+    }
+
+    .keyboard td {
+    background: #eee;
+    }
+  </style>
+
+  <h2>Atari Keys</h2>
+
+  <p>
+    When possible, Atari keys are mapped to the host keys that generate the same characters. For instance, Shift+2 on a US English keyboard layout
+    generates an @ key press in the emulated system, even though Shift+2 generates a double quote (") on the Atari keyboard. Here are the less
+    obvious mappings:
+  </p>
+  
+  <div class="keyboard">
+    <table>
+      <tr>
+        <th>Atari key</th>
+        <th>Host key</th>
+      </tr>
+      <tr>
+        <td>Start</td>
+        <td>F2</td>
+      </tr>
+      <tr>
+        <td>Select</td>
+        <td>F3</td>
+      </tr>
+      <tr>
+        <td>Option</td>
+        <td>F4</td>
+      </tr>
+      <tr>
+        <td>System Reset (Warm Reset)</td>
+        <td>F5</td>
+      </tr>
+      <tr>
+        <td>Power (Cold Reset)</td>
+        <td>Shift+F5</td>
+      </tr>
+      <tr>
+        <td>Help</td>
+        <td>F6</td>
+      </tr>
+      <tr>
+        <td>Break</td>
+        <td>F7/Pause</td>
+      </tr>
+      <tr>
+        <td>Shift+&lt; (Clear)</td>
+        <td>Home</td>
+      </tr>
+      <tr>
+        <td>Shift+&gt; (Insert Line)</td>
+        <td>Shift+Insert</td>
+      </tr>
+      <tr>
+        <td>Ctrl+&gt; (Insert Character)</td>
+        <td>Insert</td>
+      </tr>
+      <tr>
+        <td>Shift+Backspace (Delete Line)</td>
+        <td>Shift+Delete</td>
+      </tr>
+      <tr>
+        <td>Ctrl+Backspace (Delete Character)</td>
+        <td>Delete</td>
+      </tr>
+      <tr>
+        <td>Fuji / Invert</td>
+        <td>End or `</td>
+      </tr>
+      <tr>
+        <td>Ctrl+Esc</td>
+        <td>Ctrl+\</td>
+      </tr>
+      <tr>
+        <td>Ctrl+Shift+Esc</td>
+        <td>Ctrl+Shift+\</td>
+      </tr>
+      <tr>
+        <td>Ctrl+-</td>
+        <td>Up Arrow*</td>
+      </tr>
+      <tr>
+        <td>Ctrl+=</td>
+        <td>Down Arrow*</td>
+      </tr>
+      <tr>
+        <td>Ctrl++</td>
+        <td>Left Arrow*</td>
+      </tr>
+      <tr>
+        <td>Ctrl+*</td>
+        <td>Right Arrow*</td>
+      </tr>
+    </table>
+  </div>
+  <ul>
+    <li>
+      The Options / Keyboard... dialog allows configuration of the arrow key handling and can be set to either
+      require or not require use of the Ctrl modifier key. Also, holding the Alt key will allow the arrow keys
+      on the host to issue keyboard input even if those keys are already mapped to an input controller.
+    </li>
+  </ul>
+
+  <h2>Host Keys</h2>
+  <p>
+    These are the mappings from host keys to emulator functions:
+  </p>
+  <div class="keyboard">
+    <table>
+      <tr>
+        <th>Host key</th>
+        <th>Function</th>
+      </tr>
+      <tr>
+        <td>Alt+Shift+C</td>
+        <td>Copy frame to clipboard</td>
+      </tr>
+      <tr>
+        <td>Alt+Shift+V</td>
+        <td>Paste text</td>
+      </tr>
+      <tr>
+        <td>Ctrl+\</td>
+        <td>Ctrl+Esc</td>
+      </tr>
+      <tr>
+        <td>Ctrl+Shift+\</td>
+        <td>Ctrl+Shift+Esc</td>
+      </tr>
+      <tr>
+        <td>Alt+Enter</td>
+        <td>Toggle full-screen mode</td>
+      </tr>
+      <tr>
+        <td>F1</td>
+        <td>Warp speed</td>
+      </tr>
+      <tr>
+        <td>Ctrl+F1</td>
+        <td>Toggle filter mode</td>
+      </tr>
+      <tr>
+        <td>F2</td>
+        <td>Start</td>
+      </tr>
+      <tr>
+        <td>F3</td>
+        <td>Select</td>
+      </tr>
+      <tr>
+        <td>F4</td>
+        <td>Option</td>
+      </tr>
+      <tr>
+        <td>F5</td>
+        <td>System Reset (Warm Reset)</td>
+      </tr>
+      <tr>
+        <td>Shift+F5</td>
+        <td>Power (Cold Reset)</td>
+      </tr>
+      <tr>
+        <td>F6</td>
+        <td>Help key (computer)</td>
+      </tr>
+      <tr>
+        <td>F7</td>
+        <td>Break key (computer)</td>
+      </tr>
+      <tr>
+        <td>F8</td>
+        <td>Run / Break (debugger)</td>
+      </tr>
+      <tr>
+        <td>F9</td>
+        <td>Toggle Breakpoint (debugger)</td>
+      </tr>
+      <tr>
+        <td>F10</td>
+        <td>Step Over (debugger)</td>
+      </tr>
+      <tr>
+        <td>F11</td>
+        <td>Step Into (debugger)</td>
+      </tr>
+      <tr>
+        <td>Pause</td>
+        <td>Break key (computer)</td>
+      </tr>
+      <tr>
+        <td>Home</td>
+        <td>Shift+&lt; (Clear)</td>
+      </tr>
+      <tr>
+        <td>Insert</td>
+        <td>Ctrl+&gt; (Insert Character)</td>
+      </tr>
+      <tr>
+        <td>Shift+Insert</td>
+        <td>Shift+&gt; (Insert Line)</td>
+      </tr>
+      <tr>
+        <td>Delete</td>
+        <td>Ctrl+Backspace (Delete Character)</td>
+      </tr>
+      <tr>
+        <td>Shift+Delete</td>
+        <td>Shift+Backspace (Delete Line)</td>
+      </tr>
+      <tr>
+        <td>End or `</td>
+        <td>Fuji / Invert</td>
+      </tr>
+      <tr>
+        <td>Up Arrow*</td>
+        <td>Ctrl+-</td>
+      </tr>
+      <tr>
+        <td>Down Arrow*</td>
+        <td>Ctrl+=</td>
+      </tr>
+      <tr>
+        <td>Left Arrow*</td>
+        <td>Ctrl++</td>
+      </tr>
+      <tr>
+        <td>Right Arrow*</td>
+        <td>Ctrl+*</td>
+      </tr>
+      <tr>
+        <td>Right Alt (AltGr)</td>
+        <td>Release mouse capture</td>
+      </tr>
+    </table>
+  </div>
+</topic>

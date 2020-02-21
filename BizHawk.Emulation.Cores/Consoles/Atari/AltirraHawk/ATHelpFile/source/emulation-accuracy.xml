@@ -1,0 +1,102 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Emulation accuracy">
+  <toc/>
+  <h2>Emulation goal</h2>
+  <p>
+    It is impossible for a PC host to perfectly emulate all aspects of an Atari 8-bit computer without
+    actually being that computer exactly. Therefore, for the purposes of grading emulation accuracy,
+    we will define perfection as follows:
+  </p>
+  <div style="margin-left: 24pt; margin-right: 48pt; font-style: italic;">
+      A perfect emulator is one in which a program running on the emulated architecture cannot
+      distinguish the emulator from the real hardware.
+  </div>
+  <p>
+    This definition restricts evaluation criteria to only elements that are <i>program-visible</i>;
+    it excludes elements such as analog audio/video output circuitry. Those elements are also important,
+    but their quality is subjective and also varying even on real hardware. In contrast, the synchronous
+    response of the hardware to executed program code is almost entirely deterministic and mostly well-defined.
+  </p>
+  <p>
+    In some cases, behavior on real hardware may vary. This includes the contents of system memory on
+    power-on (particularly if the system has recently been turned off), and disk drive timing. In these
+    cases, the emulated behavior should at least be possible, with ideal or better behavior being desirable.
+  </p>
+  <h2>Timing</h2>
+  <p>
+    Altirra strives for cycle-exact timing in all hardware emulation. This includes:
+  </p>
+  <ul>
+    <li>
+      CPU memory read/write timing, including dummy instruction fetches and false read/write cycles.
+    </li>
+    <li>
+      ANTIC DMA timing. All DMA cycles, including display list, playfield, P/M graphics, and refresh DMA cycles, are spaced out in the scan line to match the hardware.
+    </li>
+    <li>
+      Mid-screen writes to all hardware registers.
+    </li>
+    <li>
+      POKEY interrupt and SIO disk transfer timing. POKEY timer interrupts fire with cycle accuracy, not scan line accuracy.
+    </li>
+  </ul>
+  <p>
+    Timing on the host does necessarily vary, as the audio and video output cannot be produced with the exact timing
+    used by the real Atari hardware. However, the emulation is stepped synchronously such that a program running
+    under emulation does not see these timing variations.
+  </p>
+  <h2>Known issues: CPU</h2>
+  <ul>
+    <li>
+      Missed DLIs are not enabled by default. On real hardware, NMIs from ANTIC are missed by the CPU if BRK or IRQ interrupt processing begins on exactly cycle
+      4 of a scan line where an NMI is supposed to take place. This must be enabled in CPU options in the emulator.
+    </li>
+    <li>
+      Reads from unmapped memory are only partially emulated. Floating data bus is emulated in 800 and XE modes, but is only
+      accurate for single cycle reads; it is not accurate during a WSYNC wait (only visible by ANTIC).
+    </li>
+  </ul>
+  <h2>Known issues: ANTIC</h2>
+  <ul>
+    <li>
+      The invert/blink state is not correct on characters when vertical scrolling is used to replay buffered data on a character mode scan line.
+    </li>
+  </ul>
+  <h2>Known issues: GTIA</h2>
+  <ul>
+    <li>Incorrect pixels may be shown during the transition when GTIA modes are switched mid-scanline with non-uniform bit patterns.</li>
+  </ul>
+  <h2>Known issues: POKEY</h2>
+  <ul>
+    <li>The phases of the 15KHz clock may not be correct if initialization mode is toggled off very briefly (less than 7 cycles).</li>
+  </ul>
+  <h2>Known issues: PIA</h2>
+  <ul>
+    <li>Not all PIA control line modes are implemented. (The only ones that are program visible are ones that affect the SIO motor or control lines, or cause interrupts.)</li>
+  </ul>
+  <h2>Known issues: Disk</h2>
+  <ul>
+    <li>
+      The emulation core is more tolerant than real hardware about commands being prematurely aborted. It may allow subsequent
+      commands to go through that should be ignored because the device is still processing the previous command.
+    </li>
+  </ul>
+  <h2>Known issues: Video Board XE (VBXE)</h2>
+  <ul>
+    <li>XDL, overlay and attribute DMA run on a per-scanline basis.</li>
+    <li>The blitter runs on a per scan line basis, and will not complete a blit until the end of a scan line. It does accumulate available cycles according to
+      overlay and attribute map modes, and it does carry over unused cycles between blits in the same blit list.</li>
+    <li>
+      The blitter reads blit list entries instantaneously. This means that the CPU cannot start a blit list and then overwrite the first entry before
+      the blitter can read it, even though this is possible in rare circumstances (HR overlay, 8 pixel wide attribute tiles, executing code from a MEMAC window).
+    </li>
+    <li>MEMAC accesses by the CPU do not slow down the blitter.</li>
+    <li>Attribute map collision is not supported.</li>
+    <li>
+      Palette 0 is initialized with the palette currently specified in System &gt; Video &gt; Adjust Colors
+      instead of the laoo palette used by the VBXE hardware. This can result in color mismatches when
+      software attempts to mix a custom palette with the cold start palette.
+    </li>
+  </ul>
+</topic>

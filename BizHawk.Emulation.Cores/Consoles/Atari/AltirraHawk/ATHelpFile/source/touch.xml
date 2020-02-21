@@ -1,0 +1,24 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Touch support">
+  <p>
+    Altirra is primarily meant for use with keyboard, mouse, and game controller devices. However, it
+    does have some support for touch input.
+  </p>
+  <h2>Pointer-based controller input</h2>
+  <p>
+    By default, the main display window operates with standard touch input support in Windows, such
+    that the press-and-hold gesture activates the simulated right mouse button. This activates the copy/paste
+    context menu. However, if an input controller is set up with bindings to the left mouse button, and
+    not the right mouse button, this gesture is automatically disabled. This improves responsiveness
+    by allowing touch presses to immediately be detected and passed to emulation instead of incurring
+    the usual delays.
+  </p>
+  <h2>On-screen keyboard</h2>
+  <p>
+    The on-screen keyboard that is available via the game controller can also be activated by touch
+    by swiping up from the bottom portion of the display window. This UI also modifies the gesture
+    settings so that touching the display immediately presses down keys on the on-screen keyboard.
+    Touching elsewhere on the display closes the on-screen keyboard.
+  </p>
+</topic>

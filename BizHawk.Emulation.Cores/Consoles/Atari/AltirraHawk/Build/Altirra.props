@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="VCDisableTelemetry.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros">
+    <VDBaseDir>..\..</VDBaseDir>
+    <VDPlatformDirTag Condition="$(Platform)=='x86'"></VDPlatformDirTag>
+    <VDPlatformDirTag Condition="$(Platform)=='x64'">AMD64</VDPlatformDirTag>
+    <VDPlatformDirTag Condition="$(Platform)=='ARM64'">ARM64</VDPlatformDirTag>
+    <VDConfigDirTag>Unknown</VDConfigDirTag>
+    <VDConfigDirTag Condition="$(Configuration)=='Debug'">Debug</VDConfigDirTag>
+    <VDConfigDirTag Condition="$(Configuration)=='Profile'">Profile</VDConfigDirTag>
+    <VDConfigDirTag Condition="$(Configuration)=='Release'">Release</VDConfigDirTag>
+    <VDToolsConfigDirTag>Release</VDToolsConfigDirTag>
+    <VDDirTag>$(VDConfigDirTag)$(VDPlatformDirTag)</VDDirTag>
+    <VDLibPath>$(VDBaseDir)\lib\$(VDDirTag)</VDLibPath>
+    <VDOutputPath>$(VDBaseDir)\out\$(VDDirTag)</VDOutputPath>
+    <VDObjPath>$(VDBaseDir)\obj\$(VDDirTag)\$(ProjectName)</VDObjPath>
+    <ML Condition="$(Platform)=='x64'">/Dxmmword=qword</ML>
+
+    <ATBuildToolPath Condition="'$(Configuration)'=='Debug'">$(SolutionDir)..\out\debug</ATBuildToolPath>
+    <ATBuildToolPath Condition="'$(Configuration)'!='Debug'">$(SolutionDir)..\out\release</ATBuildToolPath>
+    <ATLibPath Condition="'$(Configuration)'=='Debug'">$(SolutionDir)..\lib\Debug$(VDPlatformDirTag)</ATLibPath>
+    <ATLibPath Condition="'$(Configuration)'=='Profile'">$(SolutionDir)..\lib\Profile$(VDPlatformDirTag)</ATLibPath>
+    <ATLibPath Condition="'$(Configuration)'=='Release'">$(SolutionDir)..\lib\Release$(VDPlatformDirTag)</ATLibPath>
+    <ATMadsPath>mads.exe</ATMadsPath>
+    <ATObjPath Condition="'$(Configuration)'=='Debug'">$(SolutionDir)..\obj\Debug$(VDPlatformDirTag)\$(ProjectName)</ATObjPath>
+    <ATObjPath Condition="'$(Configuration)'=='Profile'">$(SolutionDir)..\obj\Profile$(VDPlatformDirTag)\$(ProjectName)</ATObjPath>
+    <ATObjPath Condition="'$(Configuration)'=='Release'">$(SolutionDir)..\obj\Release$(VDPlatformDirTag)\$(ProjectName)</ATObjPath>
+    <ATOutPath Condition="'$(Configuration)'=='Debug'">$(SolutionDir)..\out\Debug$(VDPlatformDirTag)</ATOutPath>
+    <ATOutPath Condition="'$(Configuration)'=='Profile'">$(SolutionDir)..\out\Profile$(VDPlatformDirTag)</ATOutPath>
+    <ATOutPath Condition="'$(Configuration)'=='Release'">$(SolutionDir)..\out\Release$(VDPlatformDirTag)</ATOutPath>
+    <ATYasmPath>yasm.exe</ATYasmPath>
+	<XPDeprecationWarning>False</XPDeprecationWarning>  
+  </PropertyGroup>
+  <ItemGroup>
+    <BuildMacro Include="ATBuildToolPath">
+      <Value>$(ATBuildToolPath)</Value>
+    </BuildMacro>
+    <BuildMacro Include="ATMadsPath">
+      <Value>$(ATMadsPath)</Value>
+    </BuildMacro>
+  </ItemGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>h;..\h;autogen;res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /Zc:inline /permissive-</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)'!='Debug'">%(AdditionalOptions) /Zo</AdditionalOptions>
+      <BasicRuntimeChecks Condition="'$(Configuration)'=='Debug'">EnableFastChecks</BasicRuntimeChecks>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <CallingConvention Condition="'$(Platform)'!='ARM64'">VectorCall</CallingConvention>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings Condition="$(Platform)!='x86'">4244;4267;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="$(Platform)=='ARM64'">4164;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <EnableEnhancedInstructionSet Condition="$(Platform)=='x86'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <InlineFunctionExpansion Condition="'$(Configuration)'!='Debug'">AnySuitable</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild>false</MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization Condition="'$(Configuration)'=='Debug'">Disabled</Optimization>
+      <Optimization Condition="'$(Configuration)'!='Debug'">Full</Optimization>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <PreprocessorDefinitions>WIN32;_WIN32;WIN32_LEAN_AND_MEAN;VC_EXTRALEAN;NOMINMAX;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_SECURE_SCL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)'=='Debug'">_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)'!='Debug'">NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)'!='Release'">ATNRELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(ConfigurationType)'=='StaticLibrary'">_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary Condition="'$(Configuration)'!='Debug'">MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary Condition="'$(Configuration)'=='Debug'">MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <StringPooling>true</StringPooling>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <SupportJustMyCode>false</SupportJustMyCode>
+    </ClCompile>
+    <Lib>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TargetMachine Condition="'$(Platform)'=='Win32'">MachineX86</TargetMachine>
+      <TargetMachine Condition="'$(Platform)'=='x64'">MachineX64</TargetMachine>
+      <TargetMachine Condition="'$(Platform)'=='ARM64'">MachineARM64</TargetMachine>
+    </Lib>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <TargetMachine Condition="'$(Platform)'=='Win32'">MachineX86</TargetMachine>
+      <TargetMachine Condition="'$(Platform)'=='x64'">MachineX64</TargetMachine>
+      <TargetMachine Condition="'$(Platform)'=='ARM64'">MachineARM64</TargetMachine>
+      <OptimizeReferences Condition="'$(Configuration)'!='Debug'">true</OptimizeReferences>
+      <EnableCOMDATFolding Condition="'$(Configuration)'!='Debug'">true</EnableCOMDATFolding>
+    </Link>
+    <ResourceCompile>
+      <PreprocessorDefinitions Condition="'$(Configuration)'!='Debug'">NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)'=='Debug'">_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <PropertyGroup>
+    <IntDir>$(ATObjPath)\</IntDir>
+    <OutDir Condition="'$(ConfigurationType)'=='StaticLibrary'">$(ATLibPath)\</OutDir>
+    <OutDir Condition="'$(ConfigurationType)'!='StaticLibrary'">$(ATOutPath)\</OutDir>
+  </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Condition="Exists('$(MSBuildThisFileDirectory)..\..\localconfig\active\Altirra.local.props')" Project="$(MSBuildThisFileDirectory)..\..\localconfig\active\Altirra.local.props" />
+  </ImportGroup>
+  <ItemGroup>
+    <BuildMacro Include="VDBaseDir">
+      <Value>$(VDBaseDir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="VDDirTag">
+      <Value>$(VDDirTag)</Value>
+    </BuildMacro>
+    <BuildMacro Include="VDLibPath">
+      <Value>$(VDLibPath)</Value>
+    </BuildMacro>
+    <BuildMacro Include="VDOutputPath">
+      <Value>$(VDOutputPath)</Value>
+    </BuildMacro>
+    <BuildMacro Include="VDObjPath">
+      <Value>$(VDObjPath)</Value>
+    </BuildMacro>
+    <BuildMacro Include="VDPlatformDirTag">
+      <Value>$(VDPlatformDirTag)</Value>
+    </BuildMacro>
+    <BuildMacro Include="VDConfigDirTag">
+      <Value>$(VDConfigDirTag)</Value>
+    </BuildMacro>
+    <BuildMacro Include="ML" Condition="$(Platform)=='x64'">
+      <Value>$(ML)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+  </ItemGroup>
+</Project>

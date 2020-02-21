@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\Build\ProjectConfigurations.props" />
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{81ADB599-84B5-4FF3-B781-FB39D5CC63EE}</ProjectGuid>
+    <RootNamespace>Tessa</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="..\Build\PlatformSetup.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\Build\Altirra.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="source\Context.cpp" />
+    <ClCompile Include="source\Format.cpp" />
+    <ClCompile Include="source\Program.cpp" />
+    <ClCompile Include="source\D3D9\Context_D3D9.cpp" />
+    <ClCompile Include="source\D3D9\FenceManager_D3D9.cpp" />
+    <ClCompile Include="source\D3D11\Context_D3D11.cpp" />
+    <ClCompile Include="source\D3D11\FenceManager_D3D11.cpp" />
+    <ClCompile Include="source\stdafx.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="h\stdafx.h" />
+    <ClInclude Include="..\h\vd2\Tessa\Context.h" />
+    <ClInclude Include="..\h\vd2\Tessa\Format.h" />
+    <ClInclude Include="..\h\vd2\Tessa\Types.h" />
+    <ClInclude Include="h\Program.h" />
+    <ClInclude Include="h\D3D9\Context_D3D9.h" />
+    <ClInclude Include="h\D3D9\FenceManager_D3D9.h" />
+    <ClInclude Include="h\D3D11\Context_D3D11.h" />
+    <ClInclude Include="h\D3D11\FenceManager_D3D11.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

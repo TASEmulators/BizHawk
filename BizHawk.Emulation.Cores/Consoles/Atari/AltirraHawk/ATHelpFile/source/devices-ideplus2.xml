@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="KMK/JŻ IDE 2.0 (IDEPlus 2.0)">
+	<p>
+		The Black Box is a Parallel Bus Interface (PBI) based device that adds hard disk, serial, and
+		parallel printing capabilities.
+	</p>
+	<h2>Accessing the IDE+2 menu</h2>
+	<p>
+		To access the IDE+2 menu, hold down Start while pressing Reset. In the emulator, use F2+F5 with default
+		key bindings, or use the Hold Keys function to hold down Start before selecting Cold Reset.
+	</p>
+	<img src="pics/ideplus2-menu.png" />
+	<h3>SpartaDOS X cartridge option</h3>
+	<p>
+		A subtle but documented quirk of the menu is that the <i>SDX cartridge</i> option is not saved and
+		always reverts on power-up. Instead, the SDX hardware switch is used to configure the power-up state
+		of this option. In the emulator, this switch is configured in the device settings for the IDE+2.
+	</p>
+	<h3>External cartridge option</h3>
+	<p>
+		The IDE+2 has a built-in pass-through cartridge port similar to that on a SpartaDOS X cartridge.
+		The emulated device has full support for this
+		port as provided by a 130XE's ECI or an 800XL's PBI with the additional cartridge port connection,
+		and thus the <i>External cartridge</i> setting is fully functional.
+	</p>
+	<p>
+		This setting is not used when the internal SpartaDOS X cartridge is enabled because in that case
+		SDX manages the external cartridge: it initializes the external cart, boots SDX as DOS if
+		requested by the cart, and then runs the external cart. Some cartridges will allow SDX
+		to boot, while others will launch immediately almost as if SDX were not present.
+	</p>
+	<h3>NVRAM reset issue</h3>
+	<p>
+		On a real IDE+2, the menu must be exited before resetting or powering off the computer. This is because
+		of a design issue with the Real Time Clock (RTC) chip that contains the configuration: the NVRAM must
+		be temporarily overwritten by the time to read the clock and the config data written back afterward.
+		If this operation is interrupted, the config is corrupted and lost.
+	</p>
+	<p>
+		Since the emulator can be restarted or closed more often, it protects the NVRAM by default to save the
+		config data it is still overwritten by clock data at reset or close. This behavior can be disabled in
+		device options if accurate behavior is desired. In that case, exiting the menu improperly will corrupt
+		the configuration in the same way as on real hardware.
+	</p>
+</topic>

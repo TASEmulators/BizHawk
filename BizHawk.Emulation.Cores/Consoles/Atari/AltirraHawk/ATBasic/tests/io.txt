@@ -1,0 +1,5 @@
+10 OPEN #1,8,0,"P"
+20 C = 155:PUT #1,C
+30 PRINT #1;"Printer test"
+40 CLOSE #1
+50 END

@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <PropertyPageSchema
+      Include="$(MSBuildThisFileDirectory)YASM.xml" />
+    <AvailableItemName Include="YASM">
+      <Targets>_YASM</Targets>
+    </AvailableItemName>
+  </ItemGroup>
+  <UsingTask
+    TaskName="YASM"
+    TaskFactory="XamlTaskFactory"
+    AssemblyName="Microsoft.Build.Tasks.v4.0">
+    <Task>$(MSBuildThisFileDirectory)YASM.xml</Task>
+  </UsingTask>
+  <Target Name="_YASMCheck">
+    <Exec
+        Condition="!Exists('$(YASMPath)')"
+        IgnoreExitCode="true"
+        IgnoreStandardErrorWarningFormat="true"
+        Command="where /q &quot;$(YASMPath)&quot; 2&gt;nul">
+        <Output TaskParameter="ExitCode" PropertyName="YASMCheckErrorCode"/>
+    </Exec>
+    <Error
+        Condition="'$(YASMCheckErrorCode)'!='0'"
+        Text="The YASM tool could not be found at: $(YASMPath). This means that the YASMPath property is not set correctly in the build configuration. See BUILD-HOWTO.html for how to set a local override for the YASM path."
+        />
+  </Target>
+  <Target
+    Name="_YASM"
+    AfterTargets="CustomBuild"
+    BeforeTargets="Midl"
+    Condition="'@(YASM)' != ''"
+    DependsOnTargets="_SelectedFiles;ComputeYASMOutput"
+    Outputs="%(YASM.Outputs)"
+    Inputs="%(YASM.Identity);%(YASM.AdditionalDependencies);$(MSBuildProjectFile)">
+    <ItemGroup Condition="'@(SelectedFiles)' != ''">
+      <YASM
+        Remove="@(YASM)"
+        Condition="'%(Identity)' != '@(SelectedFiles)'" />
+    </ItemGroup>
+    <ItemGroup>
+      <YASM_tlog
+        Include="%(YASM.Outputs)"
+        Condition="'%(YASM.Outputs)' != '' and '%(YASM.ExcludedFromBuild)' != 'true'">
+        <Source>@(YASM, '|')</Source>
+      </YASM_tlog>
+    </ItemGroup>
+    <CallTarget Targets="_YASMCheck"
+      Condition="'@(YASM)' != '' and '%(YASM.ExcludedFromBuild)' != 'true'" />
+    <Message
+      Condition="'@(YASM)' != '' and '%(YASM.ExcludedFromBuild)' != 'true'"
+      Importance="High"
+      Text="%(YASM.ExecutionDescription)" />
+    <WriteLinesToFile
+      Condition="'@(YASM_tlog)' != '' and '%(YASM_tlog.ExcludedFromBuild)' != 'true'"
+      File="$(IntDir)$(ProjectName).write.1.tlog"
+      Lines="^%(YASM_tlog.Source);@(YASM_tlog-&gt;'%(Fullpath)')" />
+    <YASM
+      Condition="'@(YASM)' != '' and '%(YASM.ExcludedFromBuild)' != 'true'"
+      CommandLineTemplate="%(YASM.CommandLineTemplate)"
+      AdditionalOptions="%(YASM.AdditionalOptions)"
+      Inputs="%(YASM.Identity)" />
+  </Target>
+  <PropertyGroup>
+    <ComputeLinkInputsTargets>$(ComputeLinkInputsTargets);ComputeYASMOutput</ComputeLinkInputsTargets>
+    <ComputeLibInputsTargets>$(ComputeLibInputsTargets);ComputeYASMOutput;</ComputeLibInputsTargets>
+  </PropertyGroup>
+  <Target
+    Name="ComputeYASMOutput"
+    Condition="'@(YASM)' != ''">
+    <ItemGroup>
+      <YASMDirsToMake
+        Condition="'%(YASM.ExcludedFromBuild)' != 'true'"
+        Include="%(YASM.Outputs)" />
+      <Link Include="%(YASMDirsToMake.Identity)" />
+      <Lib Include="%(YASMDirsToMake.Identity)" />
+      <ImpLib Include="%(YASMDirsToMake.Identity)" />
+    </ItemGroup>
+    <MakeDir
+      Directories="@(YASMDirsToMake-&gt;'%(RootDir)%(Directory)')" />
+  </Target>
+</Project>

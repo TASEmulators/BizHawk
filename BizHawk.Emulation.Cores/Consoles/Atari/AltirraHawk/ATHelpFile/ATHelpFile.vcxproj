@@ -1,0 +1,167 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{B1076C28-FEB2-40A6-8224-A072C44DD2B8}</ProjectGuid>
+    <RootNamespace>ATHelpFile</RootNamespace>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\out\HelpFile\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\obj\HelpFile\</IntDir>
+    <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\out\$(Configuration)\athelpbuilder.exe "%programfiles%\html help workshop\hhc.exe" source ..\..\out\Helpfile</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\out\$(Configuration)\athelpbuilder.exe "%programfiles%\html help workshop\hhc.exe" source ..\..\out\Helpfile</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <NMakeOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\out\Helpfile\Altirra.chm</NMakeOutput>
+    <NMakePreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakeIncludeSearchPath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+    <NMakeForcedIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(NMakeForcedIncludes)</NMakeForcedIncludes>
+    <NMakeAssemblySearchPath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(NMakeAssemblySearchPath)</NMakeAssemblySearchPath>
+    <NMakeForcedUsingAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(NMakeForcedUsingAssemblies)</NMakeForcedUsingAssemblies>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\out\HelpFile\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\obj\HelpFile\</IntDir>
+    <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\out\$(Configuration)\athelpbuilder.exe "%programfiles%\html help workshop\hhc.exe" source ..\..\out\Helpfile</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\out\$(Configuration)\athelpbuilder.exe "%programfiles%\html help workshop\hhc.exe" source ..\..\out\Helpfile</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <NMakeOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\out\Helpfile\Altirra.chm</NMakeOutput>
+    <NMakePreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakeIncludeSearchPath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+    <NMakeForcedIncludes Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(NMakeForcedIncludes)</NMakeForcedIncludes>
+    <NMakeAssemblySearchPath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(NMakeAssemblySearchPath)</NMakeAssemblySearchPath>
+    <NMakeForcedUsingAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(NMakeForcedUsingAssemblies)</NMakeForcedUsingAssemblies>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="source\additions.xml" />
+    <None Include="source\colors.xml">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="source\common-errors.xml" />
+    <None Include="source\compatibility.xml" />
+    <None Include="source\debug-basic.xml" />
+    <None Include="source\debug-diagnostics.xml" />
+    <None Include="source\debug-expressions.xml">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="source\debug-intro.xml" />
+    <None Include="source\debug-logging.xml" />
+    <None Include="source\debug-source.xml" />
+    <None Include="source\devices-cartintro.xml" />
+    <None Include="source\devices-serintro.xml" />
+    <None Include="source\disk.xml" />
+    <None Include="source\emulation-accuracy.xml" />
+    <None Include="source\faq.xml" />
+    <None Include="source\getting-started.xml" />
+    <None Include="source\host-device.xml" />
+    <None Include="source\index.xml" />
+    <None Include="source\indicators.xml" />
+    <None Include="source\input.xml" />
+    <None Include="source\keyboard.xml" />
+    <None Include="source\license.xml" />
+    <None Include="source\myide.xml" />
+    <None Include="source\options.xml" />
+    <None Include="source\pclink.xml" />
+    <None Include="source\portable-mode.xml" />
+    <None Include="source\serial.xml">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="source\toc.xml">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="source\touch.xml" />
+    <None Include="source\troubleshooting.xml" />
+    <None Include="source\ultimate1mb.xml" />
+    <None Include="source\vbxe.xml" />
+    <None Include="source\xep80.xml" />
+    <None Include="source\compatibility.xsl" />
+    <None Include="source\index.xsl" />
+    <None Include="source\toc.xsl" />
+    <None Include="source\layout.css" />
+    <None Include="source\athelp.hhc" />
+    <None Include="source\athelp.hhp" />
+    <None Include="source\athelp.hhw" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ATHelpBuilder\ATHelpBuilder.vcxproj">
+      <Project>{2e82f9c0-cd0e-445f-899f-8a71338096be}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="source\1030.xml">
+      <SubType>Designer</SubType>
+    </Xml>
+    <None Include="source\debug-profiling.xml">
+      <SubType>Designer</SubType>
+    </None>
+    <Xml Include="source\devices-blackbox.xml" />
+    <Xml Include="source\devices-cassette.xml" />
+    <Xml Include="source\devices-corvus.xml" />
+    <Xml Include="source\devices-fulldisk.xml" />
+    <Xml Include="source\devices-ideplus2.xml" />
+    <Xml Include="source\devices-indusgt.xml">
+      <SubType>Designer</SubType>
+    </Xml>
+    <Xml Include="source\devices-isplate.xml" />
+    <Xml Include="source\devices-mio.xml" />
+    <Xml Include="source\devices-pocketmodem.xml" />
+    <Xml Include="source\devices-rapidus.xml" />
+    <Xml Include="source\devices-rtime8.xml" />
+    <Xml Include="source\devices-speedy1050.xml" />
+    <Xml Include="source\devices-xf551.xml" />
+    <Xml Include="source\dragoncart.xml" />
+    <Xml Include="source\options-accel.xml" />
+    <Xml Include="source\options-firmware.xml">
+      <SubType>Designer</SubType>
+    </Xml>
+    <Xml Include="source\options-hardware.xml" />
+    <Xml Include="source\options-system.xml">
+      <SubType>Designer</SubType>
+    </Xml>
+    <Xml Include="source\profiles.xml" />
+    <Xml Include="source\sx212.xml" />
+    <Xml Include="source\systems-1200xl.xml">
+      <SubType>Designer</SubType>
+    </Xml>
+    <Xml Include="source\systems-5200.xml" />
+    <Xml Include="source\systems-800.xml" />
+    <Xml Include="source\systems-xegs.xml" />
+    <Xml Include="source\systems-xlxe.xml" />
+    <Xml Include="source\using-the-emulated-computer.xml">
+      <SubType>Designer</SubType>
+    </Xml>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

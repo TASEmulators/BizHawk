@@ -1,0 +1,198 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\Build\ProjectConfigurations.props" />
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{0D252872-7542-4232-8D02-53F9182AEE15}</ProjectGuid>
+    <RootNamespace>Kasumi</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="..\Build\PlatformSetup.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="..\Build\YASM.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\Build\Altirra.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ClCompile Include="source\alphablt.cpp" />
+    <ClCompile Include="source\blitter.cpp" />
+    <ClCompile Include="source\blt.cpp" />
+    <ClCompile Include="source\blt_reference.cpp" />
+    <ClCompile Include="source\blt_reference_pal.cpp" />
+    <ClCompile Include="source\blt_reference_rgb.cpp" />
+    <ClCompile Include="source\blt_reference_yuv.cpp" />
+    <ClCompile Include="source\blt_reference_yuv2yuv.cpp" />
+    <ClCompile Include="source\blt_reference_yuvrev.cpp" />
+    <ClCompile Include="source\blt_setup.cpp" />
+    <ClCompile Include="source\blt_spanutils.cpp" />
+    <ClCompile Include="source\blt_uberblit.cpp" />
+    <ClCompile Include="source\pixel.cpp" />
+    <ClCompile Include="source\pixmaputils.cpp" />
+    <ClCompile Include="source\region.cpp" />
+    <ClCompile Include="source\resample.cpp" />
+    <ClCompile Include="source\resample_kernels.cpp" />
+    <ClCompile Include="source\resample_stages.cpp" />
+    <ClCompile Include="source\resample_stages_reference.cpp" />
+    <ClCompile Include="source\stretchblt_reference.cpp" />
+    <ClCompile Include="source\tables.cpp" />
+    <ClCompile Include="source\text.cpp" />
+    <ClCompile Include="source\triblt.cpp" />
+    <ClCompile Include="source\uberblit.cpp" />
+    <ClCompile Include="source\uberblit_16f.cpp" />
+    <ClCompile Include="source\uberblit_gen.cpp" />
+    <ClCompile Include="source\uberblit_resample.cpp" />
+    <ClCompile Include="source\uberblit_resample_special.cpp" />
+    <ClCompile Include="source\uberblit_swizzle.cpp" />
+    <ClCompile Include="source\uberblit_swizzle_x86.cpp">
+      <ExcludedFromBuild Condition="'$(Platform)'!='Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\uberblit_v210.cpp" />
+    <ClCompile Include="source\uberblit_ycbcr_generic.cpp" />
+    <ClCompile Include="source\uberblit_ycbcr_x86.cpp">
+      <ExcludedFromBuild Condition="'$(Platform)'!='Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\blt_spanutils_x86.cpp">
+      <ExcludedFromBuild Condition="'$(Platform)'!='Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\blt_x86.cpp">
+      <ExcludedFromBuild Condition="'$(Platform)'!='Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\resample_stages_x86.cpp">
+      <ExcludedFromBuild Condition="'$(Platform)'!='Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\uberblit_resample_special_x86.cpp">
+      <ExcludedFromBuild Condition="'$(Platform)'!='Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\resample_stages_x64.cpp">
+      <ExcludedFromBuild Condition="'$(Platform)'!='x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\stdafx.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="h\bitutils.h" />
+    <ClInclude Include="h\blt_setup.h" />
+    <ClInclude Include="h\blt_spanutils.h" />
+    <ClInclude Include="h\blt_spanutils_x86.h" />
+    <ClInclude Include="..\h\vd2\Kasumi\pixel.h" />
+    <ClInclude Include="..\h\vd2\Kasumi\pixmap.h" />
+    <ClInclude Include="..\h\vd2\Kasumi\pixmapops.h" />
+    <ClInclude Include="..\h\vd2\Kasumi\pixmaputils.h" />
+    <ClInclude Include="..\h\vd2\Kasumi\region.h" />
+    <ClInclude Include="..\h\vd2\Kasumi\resample.h" />
+    <ClInclude Include="h\resample_stages.h" />
+    <ClInclude Include="h\resample_stages_reference.h" />
+    <ClInclude Include="h\resample_stages_x64.h" />
+    <ClInclude Include="h\resample_stages_x86.h" />
+    <ClInclude Include="..\h\vd2\Kasumi\tables.h" />
+    <ClInclude Include="..\h\vd2\Kasumi\text.h" />
+    <ClInclude Include="..\h\vd2\Kasumi\triblt.h" />
+    <ClInclude Include="h\uberblit.h" />
+    <ClInclude Include="h\uberblit_16f.h" />
+    <ClInclude Include="h\uberblit_base.h" />
+    <ClInclude Include="h\uberblit_fill.h" />
+    <ClInclude Include="h\uberblit_gen.h" />
+    <ClInclude Include="h\uberblit_input.h" />
+    <ClInclude Include="h\uberblit_interlace.h" />
+    <ClInclude Include="h\uberblit_pal.h" />
+    <ClInclude Include="h\uberblit_resample.h" />
+    <ClInclude Include="h\uberblit_resample_special.h" />
+    <ClInclude Include="h\uberblit_resample_special_x86.h" />
+    <ClInclude Include="h\uberblit_rgb.h" />
+    <ClInclude Include="h\uberblit_rgb_x86.h" />
+    <ClInclude Include="h\uberblit_swizzle.h" />
+    <ClInclude Include="h\uberblit_swizzle_x86.h" />
+    <ClInclude Include="h\uberblit_v210.h" />
+    <ClInclude Include="h\uberblit_ycbcr.h" />
+    <ClInclude Include="h\uberblit_ycbcr_generic.h" />
+    <ClInclude Include="h\uberblit_ycbcr_x86.h" />
+    <ClInclude Include="..\h\vd2\Kasumi\blitter.h" />
+    <ClInclude Include="..\h\vd2\Kasumi\resample_kernels.h" />
+    <ClInclude Include="h\stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <YASM Include="source\a_bltrgb.asm">
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Platform)'!='Win32'">true</ExcludedFromBuild>
+    </YASM>
+    <YASM Include="source\a_bltrgb2yuv_mmx.asm">
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Platform)'!='Win32'">true</ExcludedFromBuild>
+    </YASM>
+    <YASM Include="source\a_bltrgb_mmx.asm">
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Platform)'!='Win32'">true</ExcludedFromBuild>
+    </YASM>
+    <YASM Include="source\a_bltyuv2rgb_sse2.asm">
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Platform)'!='Win32'">true</ExcludedFromBuild>
+    </YASM>
+    <YASM Include="source\a_resample_mmx.asm">
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Platform)'!='Win32'">true</ExcludedFromBuild>
+    </YASM>
+    <YASM Include="source\a_resample_sse41.asm">
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Platform)'!='Win32'">true</ExcludedFromBuild>
+    </YASM>
+    <YASM Include="source\a_spanutils_isse.asm">
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Platform)'!='Win32'">true</ExcludedFromBuild>
+    </YASM>
+    <YASM Include="source\a_stretchrgb_mmx.asm">
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Platform)'!='Win32'">true</ExcludedFromBuild>
+    </YASM>
+    <YASM Include="source\a_stretchrgb_point.asm">
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Platform)'!='Win32'">true</ExcludedFromBuild>
+    </YASM>
+    <YASM Include="source\a_triblt_mmx.asm">
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Platform)'!='Win32'">true</ExcludedFromBuild>
+    </YASM>
+    <YASM Include="source\a_triblt_scalar.asm">
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Platform)'!='Win32'">true</ExcludedFromBuild>
+    </YASM>
+    <YASM Include="source\a_triblt_sse2.asm">
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Platform)'!='Win32'">true</ExcludedFromBuild>
+    </YASM>
+  </ItemGroup>
+  <ItemGroup>
+    <YASM Include="source\a64_resample.asm64">
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Platform)'!='x64'">true</ExcludedFromBuild>
+    </YASM>
+    <None Include="h\defaultfont.inl" />
+    <CustomBuild Include="data\Tuffy.ttf">
+      <Message />
+      <Command>"$(VDBaseDir)\out\$(VDToolsConfigDirTag)\asuka" fontextract "%(FullPath)" Tuffy 32 127 "%(RootDir)%(Directory)\..\h\defaultfont.inl" g_VDDefaultFont</Command>
+      <AdditionalInputs>$(VDBaseDir)\out\$(VDToolsConfigDirTag)\asuka.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs>%(RootDir)%(Directory)\..\h\defaultfont.inl;%(Outputs)</Outputs>
+    </CustomBuild>
+    <None Include="source\a_triblt.inc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Asuka\Asuka.vcxproj">
+      <Project>{6aa99a18-196f-4334-a3de-d9eea62cd5e9}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\Build\YASM.targets" />
+  </ImportGroup>
+</Project>

@@ -1,0 +1,46 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="The 1200XL Home Computers">
+  <h2>Description</h2>
+  <p>
+    The 1200XL was a redesigned and upgraded version of the 800 computer. Despite the numbering
+    scheme, it predates the 800XL, which fixed some of the 1200XL's shortcomings.
+  </p>
+  <h3>Configurations</h3>
+  <p>
+    Compared to a 48K 800, the 1200XL has 64K of RAM, and an updated 16K OS with built-in
+    self test. There is only one cartridge port, with no right cartridge
+    support, and only two joystick ports instead of four. It has some unique features
+    not found in any other model in the computer line: two software controllable LEDs
+    and four F1-F4 function keys.
+  </p>
+  <p>
+    The 1200XL shipped with an updated OS that had some unfortunate incompatibilities
+    with the OS-B that was used with the 800. A Translator disk was provided to load
+    OS-B into the 1200XL's high RAM, permitting some incompatible programs to run. The
+    800XL's updated OS fixed some of the compatibility issues.
+  </p>
+  <p>
+    There is no equivalent to the Parallel Bus Interface (PBI) or Enhanced Cartridge
+    Interface (ECI) ports on the 1200XL. The 1200XL also does not have internal BASIC.
+  </p>
+  <h2>Emulation-specific concerns</h2>
+  <p>
+    The 1200XL is a bit of an odd duck. Usually, it's preferable to emulate an 800XL
+    instead of a 1200XL since there was little, if any, software that required a 1200XL.
+  </p>
+  <p>
+    Altirra has both separate hardware modes and default profiles for the 1200XL. The
+    function keys are seldom used and not mapped by default; they can be enabled in
+    Keyboard Options, replacing the default turbo and console key mappings unless
+    remapped. LEDs are displayed at the bottom, if lit.
+  </p>
+  <p>
+    Like the 400/800, the 1200XL does not have internal BASIC, and the BASIC cartridge
+    must be attached if desired.
+  </p>
+  <p>
+    The 1200XL's unique OS is required to reproduce the quirks of that system, but
+    it can be run with an 800XL OS instead.
+  </p>
+</topic>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+    <head>
+        <title>Altirra BASIC - internals</title>
+        <link rel="stylesheet" href="styles.css" />
+    </head>
+    <body>
+        <h1>Altirra BASIC - internals</h1>
+        <h2>Variable formats</h2>
+        <table cellspacing="3">
+            <tr>
+                <th>Type</th>
+                <th>0</th>
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+                <th>4</th>
+                <th>5</th>
+                <th>6</th>
+                <th>7</th>
+            </tr>
+            <tr>
+                <td>Number</td>
+                <td>$00</td>
+                <td>Var ID</td>
+                <td colspan="6">Number</td>
+            </tr>
+            <tr>
+                <td>Array (undimensioned absolute)</td>
+                <td>$40</td>
+                <td>Var ID</td>
+                <td colspan="2">Address</td>
+                <td colspan="2">Dim 1</td>
+                <td colspan="2">Dim 2</td>
+            </tr>
+            <tr>
+                <td>Array (dimensioned relative)</td>
+                <td>$41</td>
+                <td>Var ID</td>
+                <td colspan="2">Offset</td>
+                <td colspan="2">Dim 1</td>
+                <td colspan="2">Dim 2</td>
+            </tr>
+            <tr>
+                <td>Array (dimensioned absolute)</td>
+                <td>$43</td>
+                <td>Var ID</td>
+                <td colspan="2">Address</td>
+                <td colspan="2">Dim 1</td>
+                <td colspan="2">Dim 2</td>
+            </tr>
+            <tr>
+                <td>String (undimensioned absolute)</td>
+                <td>$80</td>
+                <td>Var ID</td>
+                <td colspan="2">Address</td>
+                <td colspan="2">Length</td>
+                <td colspan="2">Dimension</td>
+            </tr>
+            <tr>
+                <td>String (dimensioned relative)</td>
+                <td>$81</td>
+                <td>Var ID</td>
+                <td colspan="2">Offset</td>
+                <td colspan="2">Length</td>
+                <td colspan="2">Dimension</td>
+            </tr>
+            <tr>
+                <td>String (dimensioned absolute)</td>
+                <td>$83</td>
+                <td>Var ID</td>
+                <td colspan="2">Address</td>
+                <td colspan="2">Length</td>
+                <td colspan="2">Dimension</td>
+            </tr>
+        </table>
+    </body>
+</html>

@@ -1,0 +1,68 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Ultimate1MB emulation">
+  <toc/>
+  <h2>Basic setup</h2>
+  <h3>Hardware description</h3>
+  <p>
+    Ultimate1MB is a hardware expansion that provides 1MB of memory, flashable
+    BIOS/BASIC/GAME slots, SpartaDOS X, real-time clock, and SIDE parallel bus interface
+    (PBI) disk emulation facilities.
+  </p>
+  <p>
+    Altirra emulates the U1MB with version 2 of the CPLD firmware, which includes
+    PBI support.
+  </p>
+  <h3>Flashing the firmware</h3>
+  <p>
+    U1MB has 512KB of flash memory that must be loaded with an image containing
+    both a BIOS and an OS. The BIOS is needed to initialize the U1MB hardware prior
+    to handing control over to a conventional OS.
+  </p>
+  <p>
+    Altirra does not come with the U1MB firmware, which must be obtained separately.
+    However, it does contain a recovery image with a minimal BIOS and OS that can
+    be used to run the flasher disk to load the real hardware. Alternatively, if
+    the image is available in raw image form it can be bound directly through the
+    System | Firmware | ROM images menu item.
+  </p>
+  <h2>Gotchas</h2>
+  <h3>Entering the BIOS menu</h3>
+  <p>
+    The U1MB BIOS has a menu that is accessed by holding down the Help key while
+    powering on or resetting the computer. In Altirra, it is easier to enter
+    this mode if the keyboard mode is switched from cooked keys to raw keys.
+  </p>
+  <h3>Inactive menu items</h3>
+  <p>
+    When U1MB is enabled, the addressing for VBXE, SoundBoard, and Covox devices
+    is controlled by the U1MB mapping hardware and needs to be set through the
+    U1MB BIOS. Similarly, the memory sizing modes do not apply when U1MB is enabled as
+    the U1MB hardware emulates various memory models under software control.
+  </p>
+  <h3>PBI disk emulation</h3>
+  <p>
+    When PBI disk emulation is enabled in the U1MB BIOS, the SIO Patch and
+    Fast Boot options should be disabled or the SIO Override Detection mode
+    should be turned on. Otherwise, the emulator can intercept disk accesses
+    before the PBI BIOS does and prevent the PBI disk emulation from working.
+  </p>
+  <h3>SIDE SpartaDOS X cartridge</h3>
+  <p>
+    If a SIDE cartridge is used with U1MB, the SpartaDOS X (SDX) facility on the
+    SIDE cartridge should be disabled. The reason is that the SIDE SDX and the
+    U1MB SDX mapping registers overlap and this can cause difficulty in
+    disabling SDX. A symptom of this conflict is that the PBI BIOS hangs on startup
+    because it cannot unmap the SDX cartridge.
+  </p>
+  <h3>Reflashing the firmware</h3>
+  <p>
+    Altirra emulates the flash memory in the U1MB, so it is possible to reflash
+    the U1MB to newer firmware in the same manner as on the real hardware. However,
+    an important caveat that applies equally to the real and emulated hardware is
+    that SIDE PBI support should be turned off in the U1MB BIOS prior to running
+    the flasher. Otherwise, the flasher will fail by erasing the PBI BIOS
+    and then calling into it via a disk read request, resulting in a crash and
+    bricking the U1MB. Fortunately, under emulation this is simple to recover from.
+  </p>
+</topic>

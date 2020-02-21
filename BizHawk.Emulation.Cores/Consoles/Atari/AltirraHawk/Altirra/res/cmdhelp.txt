@@ -1,0 +1,123 @@
+Usage: Altirra [switches] <disk/cassette/cartridge images...>
+
+                           -- Profile options --
+  /profile:<name>
+              Use specific configuration profile
+  /defprofile:800|xl|xegs|1200xl|5200
+              Use default profile for machine type
+  /tempprofile
+              Enable temporary profile mode (do not save settings)
+
+                        -- System configuration --
+
+  /baseline   Reset hardware settings to default
+  /ntsc       Select NTSC timing and behavior
+  /pal        Select PAL timing and behavior
+  /secam      Select SECAM timing and behavior
+  /ntsc50     Select NTSC display with PAL timing
+  /pal60      Select PAL display with NTSC timing
+  /kernel:default|osa|osb|xl|lle|llexl|5200|5200lle
+              Select kernel ROM
+  /hardware:800|800xl|5200
+              Select hardware type
+  /memsize:8K|16K|24K|32K|48K|52K|64K|128K|320K|320KCOMPY|576K|576KCOMPY|1088K
+              Select memory size
+  /axlonmemsize:none|64K|128K|256K|512K|1024K|2048K|4096K
+              Select Axlon ramdisk memory size
+  /highbanks:na|0|1|3|15|63
+              Select number of high (linear) 65C816 memory banks
+  /[no]basic  Enable/disable internal BASIC ROM
+  /[no]stereo
+              Enable dual pokeys
+  /[no]rawkeys
+              Enable/disable raw keyboard presses
+
+                         -- Boot/mount options --
+
+  /bootvrw    Boot disk images in virtual read/write mode
+  /bootrw     Boot disk images in read/write mode
+  /[no]casautoboot
+              Control cassette auto-boot
+  /type "keys"
+              Type keys on keyboard (~ for enter, ` for ")
+  /cart <image>
+              Load cartridge image
+  /cartmapper <mapper>
+              Set cartridge mapper for untagged image
+  /tape <image>
+              Load cassette tape image
+  /disk <image>
+              Load disk image
+  /run <image>
+              Run binary (executable) program
+  /runbas <image>
+              Run BASIC program
+  /[no]cheats <file>
+              Load cheats
+  /[no]autoprofile
+              Automatically select default profile for image type
+  /launch
+              Use /autoprofile if enabled for launched images in options
+
+                          -- Device options --
+
+  /[no]hdpath|hdpathrw <path>
+              Mount H: device
+  /[no]pclink:ro|rw,path
+              Set PCLink emulation
+  /[no]soundboard:d2c0|d500|d600
+              Enable/disable SoundBoard
+  /[no]covox  Enable/disable Covox sound device
+
+                          -- Display options --
+
+  /w          Start windowed
+  /f          Start full screen
+  /[no]borderless
+              Enable/disable borderless full-screen mode
+  /artifact:none|ntsc|ntschi|pal|palhi
+              Set video artifacting
+  /gdi        Force GDI display mode
+  /ddraw      Force DirectDraw display mode
+  /d3d9       Force Direct3D 9 display mode
+  /d3d11      Force Direct3D 11 display mode
+  /opengl     Force OpenGL display mode
+  /[no]vsync  Synchronize to vertical blank
+
+                       -- Acceleration options --
+
+  /[no]burstio
+              Control SIO burst I/O mode
+  /[no]siopatch[safe]
+              Control SIO kernel patch for disk/tape
+  /[no]fastboot
+              Control fast kernel boot initialization
+  /[no]accuratedisk
+              Control accurate sector timing
+
+                         -- Debugger options --
+
+  /debug      Launch in debugger mode
+  /[no]debugbrkrun
+              Break into debugger at EXE run address
+  /debugcmd:<command>
+              Run specified debugger command
+
+                     -- Program operation options --
+
+  /resetall   Reset all settings to default
+  /hostcpu:none|mmx|sse|sse2|sse2|sse3|ssse3|sse41
+              Override host CPU detection
+  /portable   Create Altirra.ini file and switch to portable mode
+  /portablealt:<file>
+              Temporarily enable portable mode with alternate INI file
+  /portabletemp
+              Run with in-memory temp registry; do not load or save
+              settings
+  /[no]si, /[no]singleinstance
+              Force single instance mode (reuse running instance)
+  /fullheapdump
+              Generate full memory heap dump on crash
+  /skipsetup  Skip first-run setup process
+
+(end)

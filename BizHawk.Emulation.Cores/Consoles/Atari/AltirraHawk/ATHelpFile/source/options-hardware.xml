@@ -1,0 +1,212 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Options: Hardware">
+  <p>
+    The hardware options set the base computer or console that is being emulated.
+  </p>
+  <toc/>
+  
+  <h2>Hardware options</h2>
+  <h3>400/800</h3>
+  <p>
+    Enables the base Atari 800 hardware. The 400/800 are similar, with the main difference being that the 400 shipped with
+    16K of RAM while the 800 varied from 8K to 48K.
+  </p>
+  
+  <h3>1200XL</h3>
+  <p>
+    Selects the Atari 1200XL hardware configuration. This enables a number of hardware features including 64K RAM, an extra
+    4K of OS ROM, F1-F4 function keys, cartridge detection, and the Parallel Bus Interface (PBI). It also switches the firmware
+    configuration to 1200XL mode, since the 1200XL OS has some quirks and somewhat poor compatbility.
+  </p>  
+  
+  <h3>800XL, 130XE, and XEGS</h3>
+  <p>
+    Selects the XL/XE/XEGS hardware configuration. These are all very similar except for minor differences, and firmware images
+    are shown in common for these hardware types. Software compatibility differences between these modes is very rare, although
+    there are a couple of programs that have managed to break only one of them, due to odd bugs.
+  </p>
+  <p>
+    The actual physical 130XE differs in a couple of ways. One is 128K of RAM with separate CPU/ANTIC switching, which is selected
+    in the emulator under the memory configuration. Another is the presence of a floating data bus, which is enabled by the emulator
+    in 130XE mode. The third difference is the presence of the Enhanced Cartridge Interface (ECI) port instead of the
+    Parallel Bus Interface (PBI) port. Most PBI devices can be made to work with ECI using an adapter, and this difference is
+    not emulated; all emulated devices are simply both PBI/ECI compatible.
+  </p>
+  <p>
+    The XEGS is very similar to a 64K 800, the main difference being the detachable keyboard and a switchable Missile Command ROM.
+    Enabling XEGS mode in the emulator enables the detachable keyboard setting and also enables the game ROM firmware slot. The
+    XEGS OS (rev.4) has minor changes to support keyboardless operation; the emulator will try to default to the ver.4 OS first
+    and then fall back to an XL/XE OS otherwise.
+  </p>
+  <h3>5200</h3>
+  <p>
+    Enables Atari 5200 SuperSystem hardware. The 5200 has the same CPU and core hardware as the computer lines but very different
+    peripherals, so the emulator ships by default with a separate profile for the 5200. This keeps cartridges and controller setups
+    separate between the computer and console modes.
+  </p>
+  <p>
+    PAL is not available in 5200 mode; all released 5200 consoles were NTSC only.
+  </p>
+  
+  <h2>Memory size options</h2>
+  <h3>16K</h3>
+  <p>Standard Atari 400/600XL/5200 configuration with RAM from 0000-3FFF. The range from C000-CFFF is unconnected.</p>
+  <h3>48K</h3>
+  <p>Standard Atari 800 configuration with RAM from 0000-BFFF. The range from C000-CFFF is unconnected.</p>
+  <h3>52K</h3>
+  <p>Extended Atari 800 configuration with RAM from 0000-CFFF.</p>
+  <h3>64K (XL)</h3>
+  <p>Standard Atari 800XL configuration with RAM from 0000-FFFF, with the upper 14K swappable with Kernel ROM via PORTB.</p>
+  <h3>128K (130XE)</h3>
+  <p>
+    Atari 130XE configuration with main ROM from 0000-FFFF and external RAM bank switched via a window at 4000-7FFF. This mode
+    supports ANTIC bank switching.
+  </p>
+  <h3>256K</h3>
+  <p>
+    64K of base memory plus 192K of extended memory (12 banks). This is the memory configuration used by the ICD RAMBO XL. It is
+    a bit unusual because 4 of the 16 addressable banks (64K of 256K) are aliases of the main 64K of RAM, and therefore some programs
+    can malfunction if they do not detect this properly. This mode is most useful for verifying programs that use extended memory.
+  </p>
+  <h3>320K</h3>
+  <p>Extended Atari 800/800XL configuration with an additional 16 banks of memory. This mode does not support separate ANTIC enable.</p>
+  <h3>576K</h3>
+  <p>
+    Extended Atari 800/800XL configuration with an additional 32 banks of memory. This mode does not support either separate ANTIC enable
+    or enabling BASIC while extended memory is enabled.
+  </p>
+  <h3>1088K</h3>
+  <p>
+    Extended Atari 800/800XL configuration with an additional 64 banks of memory. In addition to disabling ANTIC banking and BASIC,
+    this mode also takes an additional bit in PORTB.
+  </p>
+  
+  <h3>8K/24K/32K/40K</h3>
+  <p>
+    These are unusual Atari 800 RAM configurations resulting from various combinations of pluggable 8K and 16K RAM cartridges, each
+    inserted into one of the three RAM slots in the computer. The 8K configuration is particularly rare but reported to have been
+    seen in Europe; it can run BASIC and some cartridges, but is too small to boot DOS.
+  </p>
+  
+  <h3>
+    52K
+  </h3>
+  <p>
+    48K 800 configuration with an extra 4K of RAM added at $C000-CFFF.
+  </p>
+  
+  <h2>Video options</h2>
+  <h3>NTSC</h3>
+  <p>
+    Selects NTSC ANTIC/GTIA operation, including aspect ratio and a 60Hz refresh rate. This is the configuration used by the original
+    8-bit Ataris and is recommended for most commercial software.
+  </p>
+  <h3>PAL</h3>
+  <p>
+    Selects PAL ANTIC/GTIA operation, including aspect ratio and a 50Hz refresh rate. This is recommended for demos since many
+    are written in Europe.
+  </p>
+  <h3>SECAM</h3>
+  <p>
+    Selects PAL ANTIC operation with a SECAM GTIA (FGTIA), including aspect ratio and a 50Hz refresh rate. This is used for verifying
+    compatibility against SECAM systems, which have a couple of quirks in GTIA mode 9 rendering and in cartridge sensing.
+  </p>
+  <h3>PAL-60 and NTSC-50</h3>
+  <p>
+    Mixed configurations resulting from putting a PAL ANTIC in an NTSC computer or an NTSC ANTIC in a PAL computer, resulting in
+    a computer that produces a video signal for one standard with the frame rate of the other. The PAL-60 configuration is sometimes
+    used for better compatibility with software written for PAL while still being able to run with NTSC displays, since modern displays
+    can sometimes display these mixed modes due to their use in converted video tapes or DVDs.
+  </p>
+  <p>
+    There is a software difference from
+    a standard PAL or NTSC computer since the frame timing from ANTIC differs from the video type reported by GTIA, both of which are
+    detectable in software. The standard XL/XE OS will have some issues running in these modes unless patched, particularly with
+    cassette tape operations.
+  </p>
+  <h3>Frame blending</h3>
+  <p>
+    Averages adjacent frames together to reduce flickering with programs that use alternating frames to multiplex sprites or increase
+    apparent frame buffer depth.
+  </p>
+  <h3>Interlace</h3>
+  <p>
+    Enables display of interlaced fields (480 scan lines) instead of the standard 240 scan lines. This is only useful when running
+    software that supports interlaced display.
+  </p>
+  <h3>VBXE</h3>
+  <p>
+    Enables Video Board XE (VBXE) emulation. This is an internally installed module with 512K of VRAM and a custom FPGA core that
+    greatly expands the video capabilities of the 8-bit Atari. The FX 1.20 core is emulated.
+  </p>
+  <h3>Use VBXE memory for expansion</h3>
+  <p>
+    When VBXE emulation is also enabled, this option causes extended memory mapped through the PIA (most expansion modes) to overlap
+    memory used by VBXE. This matches the extended memory emulation done by the FX1.20r core. If disabled, the memories are separate
+    as with the FX1.20a core.
+  </p>
+  <h3>Use $D7xx for VBXE registers</h3>
+  <p>
+    Locates the VBXE registers at $D7xx instead of $D6xx. This is sometimes done on actual hardware to avoid conflicts with Parallel
+    Bus Interface (PBI) devices.
+  </p>
+  <h3>NTSC artifacting (standard)</h3>
+  <p>
+    Enables emulation of false colors from alternating high resolution pixels with NTSC video encoding. This is necessary to see
+    colors in some games that use artifacting, such as Choplifter and Pitstop II.
+  </p>
+  <h3>NTSC artifacting (high)</h3>
+  <p>
+    Emulates NTSC artifacts by simulating the NTSC decoding process. This produces artifacts that are more realistic. However,
+    the picture is also blurrier due to NTSC limitations.
+  </p>
+  <h3>PAL artifacting</h3>
+  <p>
+    Enables emulation of false colors from chroma blending in the delay line of a PAL video decoder. This gives more accurate
+    color output in programs that alternate color and grayscale lines to increase the effective color depth.
+  </p>
+  <h3>Enhanced text output (hardware intercept)</h3>
+  <p>
+    Replaces the standard emulated video display with a text screen using native Windows fonts. This disables emulation of most
+    Atari video features and only supports basic text modes, but produces a higher quality text display.
+  </p>
+
+  <h2>CPU options</h2>
+  <p>
+    The first three options should not be used unless you are debugging code in the interactive debugger, as they will slow down
+    execution or cause debug breaks in code that may be executing normally.
+  </p>
+  <h3>Record instruction history</h3>
+  <p>Causes the CPU to record a trace record for every instruction executed.</p>
+  <h3>Track code paths</h3>
+  <p>Enables tracking of all memory where instructions are executed and which instructions are branch or call targets.</p>
+  <h3>Stop on BRK instruction</h3>
+  <p>Causes the debugger to stop when a breakpoint (BRK) instruction is executed. This often indicates that the Atari has crashed.</p>
+  <h3>Enable illegal instructions</h3>
+  <p>Allows execution of undocumented NMOS 6502 instructions, which are used by some programs. This only works in 6502C mode.</p>
+  <h3>CPU model &gt; 6502C</h3>
+  <p>Selects the base NMOS 6502C as the CPU model. This is the CPU type used by all official Atari models.</p>
+  <h3>CPU model &gt; 65C02</h3>
+  <p>
+    Selects the CMOS 65C02 as the CPU model, which contains some extra instructions. This is occasionally used as a homebrew upgrade
+    option. It may introduce some compatibility problems with games.
+  </p>
+  <h3>CPU model &gt; 65C816</h3>
+  <p>
+    Selects the 16-bit 65C816 as the CPU model, which contains many more instructions and a new 16-bit native mode. This is used
+    in some homebrew and commercial accelerators to both increase speed and memory address space.
+  </p>
+  
+  <h2>Audio options</h2>
+  <h3>Stereo</h3>
+  <p>
+    Enables a second POKEY. Addresses in the D2xx range with bit 4 clear address the left channel, and addresses with bit 4 set
+    address the right channel. The IRQ and serial facilities of the second POKEY are active but unconnected.
+  </p>
+  <h3>Non-linear mixing</h3>
+  <p>
+    Emulates the effective mixing curve of the hardware, which causes the output of two voices to be lower than the sum of their
+    volume levels. This is needed for some effects and also causes some compression of the output.
+  </p>
+</topic>

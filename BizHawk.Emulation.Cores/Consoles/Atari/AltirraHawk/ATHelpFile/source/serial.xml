@@ -1,0 +1,424 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="850 Interface Module emulation">
+  <style>
+    .support {
+      margin: 24pt;
+    }
+
+    .support-title {
+      font-weight: bold;
+    }
+
+    .support table {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .support th,td {
+      text-align: left;
+      font-size: 10pt;
+    }
+
+    .support th {
+      background: #cfc;
+    }
+
+    .support td {
+      background: #eee;
+    }
+  </style>
+  
+  <p>
+    Altirra emulates the serial port side of the Atari 850 Interface Module, as well as a Hayes-compatible modem.
+  </p>
+
+  <toc/>
+
+  <h2>Hardware description</h2>
+  <p>
+    The 850 Interface Module is a device which connects to the SIO bus of the Atari computer and provides it
+    with four serial ports, as well as a printer port. The serial ports are accessed through a CIO device
+    called R:, and the printer port is used through the P: driver that is already built into the OS.
+  </p>
+  <p>
+    Altirra emulates an 850 that has a Hayes-compatible modem plugged into it, and simulates dialing in and out
+    over the phone line with TCP/IP connections over the Internet instead.
+  </p>
+  <h2>Emulation levels</h2>
+  <p>
+    Three levels of 850 hardware emulation are supported:
+  </p>
+  <ul>
+    <li>
+      <p>
+        <b>None.</b> In this mode, no hardware emulation is enabled, and a high-level emulation (HLE) R: handler is registered with
+        CIO that communicates directly with the emulator. This provides the best performance and works with most
+        software.
+      </p>
+    </li>
+    <li>
+      <p>
+        <b>Minimal.</b> This mode adds minimal support for emulating the 850 Interface Module to
+        so that programs which expect to be able to bootstrap from the R: handler from the 850 will
+        still work. The HLE R: handler is still used in this mode; the bootstrap command simply returns
+        a stub loader that does nothing, as the R: handler will already be resident.
+      </p>
+    </li>
+    <li>
+      <b>Full.</b> In this mode, the 850 Interface Module hardware is fully emulated, including SIO-level commands.
+      Instead of the simulated R: handler, a 6502-based R: handler is bootstrapped from the 850 instead. This
+      mode is required if a communication program is being tested for adequate performance, if a custom R:
+      handler is used, or if for some reason the HLE R: handler is not able to bootstrap properly.
+    </li>
+  </ul>
+  
+  <h2>High-level emulation (HLE) R: handler</h2>
+  <p>
+    Access to the serial port is provided by means of the CIO R: device. When the hardware emulation mode
+    is set to None or Minimal, this is provided by a high-level handler, so this does not result in a reduction of available memory as with the original 850 R: handler,
+    nor is there a need to load the handler from disk.
+  </p>
+  <h3>Feature support</h3>
+  <div class="support">
+    <table>
+      <tr>
+        <th>Units</th>
+        <td>R1-R4:</td>
+      </tr>
+      
+      <tr>
+        <th>Block mode</th>
+        <td>Not supported</td>
+      </tr>
+
+      <tr>
+        <th>Continuous mode</th>
+        <td>Always enabled</td>
+      </tr>
+
+      <tr>
+        <th>Baud rates</th>
+        <td>All standard 850 rates emulated; Atari800 extended modes available by option</td>
+      </tr>
+
+      <tr>
+        <th>Data bits</th>
+        <td>8 data bits only</td>
+      </tr>
+
+      <tr>
+        <th>Stop bits</th>
+        <td>Ignored</td>
+      </tr>
+      
+      <tr>
+        <th>Input parity</th>
+        <td>Cleared, but not checked</td>
+      </tr>
+      
+      <tr>
+        <th>Output parity</th>
+        <td>Supported</td>
+      </tr>
+
+      <tr>
+        <th>Control signals</th>
+        <td>Carrier detect (CRX) and Data Terminal Ready (DTR) supported</td>
+      </tr>
+      
+      <tr>
+        <th>Input buffer</th>
+        <td>Default buffer (32 byte) and external buffer supported</td>
+      </tr>
+
+      <tr>
+        <th>Output buffer</th>
+        <td>Supported (32 byte)</td>
+      </tr>
+
+      <tr>
+        <th>Translation</th>
+        <td>All modes supported (light, heavy, none)</td>
+      </tr>
+      
+      <tr>
+        <th>EOL-to-CR/LF</th>
+        <td>Supported</td>
+      </tr>
+    </table>
+  </div>
+
+  <h2>6502-based R: handler</h2>
+  <p>
+    In the Full hardware emulation mode, a standard 6502-based R: handler is used instead. As with the real 850
+    hardware, this can be loaded in one of two ways:
+  </p>
+  <ul>
+    <li>
+      <p>
+        <b>Emulated disk boot.</b> If there is no disk in D1:, the 850 responds as D1: instead and "boots" a disk
+        that contains the R: handler. This path allows the R: handler to be used with a communication program
+        loaded from cartridge or off of cassette tape.
+      </p>
+    </li>
+    <li>
+      <p>
+        <b>Direct bootstrap.</b> The 850 also exposes commands to allow direct bootstrap of the handler. The standard
+        AUTORUN.SYS that comes with DOS 2.5 will automatically attempt this bootstrap, and other DOSes come with
+        programs to initiate this bootstrap. The Additions disk contains both a downloader (<tt>BOOT850.COM</tt>)
+        and a disk based version of the Altirra's R: handler (<tt>RHND850.COM</tt>).
+      </p>
+    </li>
+  </ul>
+  <p>
+    The 6502-based R: handler is a replacement handler written from scratch, but is designed to be compatible
+    with the original 850 hardware and handler. Like the original 850's R: handler, this handler relocates
+    itself at and raises MEMLO when it loads. Altirra's R: handler takes slightly less memory than the original.
+  </p>
+  
+  <h2>Modem emulation</h2>
+  <p>
+    Altirra emulates a Hayes-compatible modem in order to provide line control and answer/dial support. Supported
+    commands are:
+  </p>
+  <div class="support">
+    <table>
+      <tr>
+        <th>A/</th>
+        <td>Repeat last command.</td>
+      </tr>
+      <tr>
+        <th>ATA</th>
+        <td>Answer incoming call. Reports NO CARRIER if there is currently no incoming connection.</td>
+      </tr>
+      <tr>
+        <th>ATB</th>
+        <td>Change communication standard (currently ignored).</td>
+      </tr>
+      <tr>
+        <th>ATD</th>
+        <td>Dial out.</td>
+      </tr>
+      <tr>
+        <th>ATE</th>
+        <td>Change command echo mode.</td>
+      </tr>
+      <tr>
+        <th>ATH</th>
+        <td>Hang up.</td>
+      </tr>
+      <tr>
+        <th>ATL</th>
+        <td>Change speaker loudness (currently ignored).</td>
+      </tr>
+      <tr>
+        <th>ATM</th>
+        <td>Change speaker mode (currently ignored).</td>
+      </tr>
+      <tr>
+        <th>ATO</th>
+        <td>Exit command mode and return to online mode.</td>
+      </tr>
+      <tr>
+        <th>ATP</th>
+        <td>Switch to pulse dialing.</td>
+      </tr>
+      <tr>
+        <th>ATQ</th>
+        <td>Enable or disable quiet response mode.</td>
+      </tr>
+      <tr>
+        <th>ATS/AT=</th>
+        <td>Set or query S-registers (S0, S2, S3, S4, S5).
+        </td>
+      </tr>
+      <tr>
+        <th>ATT</th>
+        <td>Switch to tone dialing.</td>
+      </tr>
+      <tr>
+        <th>ATV</th>
+        <td>Enable or disable verbose response mode.</td>
+      </tr>
+      <tr>
+        <th>ATX</th>
+        <td>Change extended result codes mode (stored but ignored).</td>
+      </tr>
+      <tr>
+        <th>ATZ</th>
+        <td>Reset mode to default (power-up) state.</td>
+      </tr>
+      <tr>
+        <th>AT&amp;C</th>
+        <td>Set carrier detect mode.</td>
+      </tr>
+      <tr>
+        <th>AT&amp;D</th>
+        <td>Set DTR (Data Terminal Ready) handling.</td>
+      </tr>
+      <tr>
+        <th>AT&amp;F</th>
+        <td>Reset to factory default settings.</td>
+      </tr>
+      <tr>
+        <th>AT&amp;G</th>
+        <td>Select guard tone (stored but ignored).</td>
+      </tr>
+      <tr>
+        <th>AT&amp;P</th>
+        <td>Select pulse dial make/break ratio (stored but ignored).</td>
+      </tr>
+      <tr>
+        <th>AT&amp;T</th>
+        <td>Local analog loopback test (stored but ignored).</td>
+      </tr>
+      <tr>
+        <th>AT&amp;V</th>
+        <td>Display current profile.</td>
+      </tr>
+      <tr>
+        <th>AT&amp;W</th>
+        <td>Store current configuration.</td>
+      </tr>
+    </table>
+  </div>
+  <p>
+    The modem starts in command mode.
+  </p>
+  
+  <h3>Escaping to command mode</h3>
+  <p>
+    In order to return to command mode after establishing a connection, the sequence <tt>+++</tt> must be
+    transmitted with the proper guard time before and after the sequence (time determined by S12). This can only be done
+    from the local side; the sequence is ignored if sent from the remote side. The Time Independent Escape Sequence (TIES)
+    is not supported, as it is not data transparent like the guarded sequence.
+  </p>
+  <p>
+    
+  </p>
+
+  <h3>Inbound calls</h3>
+  <p>
+    Inbound connections are supported, if enabled. When the modem is idle and listening is enabled, an
+    incoming connection is immediately accepted, but no transfers take place until the modem connection
+    is enabled. The modem reports RING responses in this state, and will establish a full connection if
+    either the <tt>ATA</tt> command is issued or the auto-answer register (S0) is set.
+  </p>
+  <p>
+    By default, both IPv4 and IPv6 connections are accepted if supported by the host. IPv6 connections
+    can be disabled in serial port options. Only one connection can be active at a time.
+  </p>
+
+  <h3>Dialing out</h3>
+  <p>
+    The dial command (D) is used to connect across the network to a server using TCP/IP. The syntax for doing
+    this is as follows:
+  </p>
+  <blockquote>
+    <tt>ATDI hostname port</tt>
+  </blockquote>
+  <p>
+    (This syntax is compatible with that used by the Atari800 emulator.)
+  </p>
+  <p>
+    For instance, to connect to a telnet server on the local machine, you could use <tt>atdi localhost 23</tt>
+    or <tt>atdi 127.0.0.1 23</tt>. If the host OS is IPv6 capable, you can also connect to IPv6 based addresses.
+  </p>
+  <p>
+    If a connection is successfully established, you will get a <tt>CONNECT</tt> banner as with a real phone
+    line, and the modem will switch to the online state. If the connection fails, the modem will emit a
+    <tt>NO ANSWER</tt> result code instead.
+  </p>
+  <p>
+    Outbound connections must be enabled in serial options for the Dial command to function. If outbound
+    connections are disabled, any attempt to dial out will result in a <tt>NO DIALTONE</tt> response.
+  </p>
+  <h3>Terminating a call</h3>
+  <p>
+    If the server ends the connection gracefully, such as a web server ending transmission, the modem will drop
+    the call with <tt>NO CARRIER</tt> once the remaining data in the connection has been read by the guest program.
+  </p>
+  <p>
+    If the connection drops less than gracefully, the modem will emit <tt>NO CARRIER</tt> immediately.
+  </p>
+  <p>
+    The connection can be terminated at any time by sending the <tt>ATH</tt> command.
+  </p>
+  <h3>Stored profile</h3>
+  <p>
+    The <tt>AT&amp;W</tt> command allows writing to the stored profile, which
+    is necessary to make the <tt>ATZ</tt> command work; some programs rely on being able to change the profile
+    restored by a soft reset. However, there is no actual non-volatile storage on the modem; a cold reset of
+    the simulation will reset both the active and stored profiles to factory default. This prevents stored
+    profiles from persisting across a cold reset.
+  </p>
+
+  <h2>Options</h2>
+  <h3>Telnet emulation</h3>
+  <p>
+    Telnet emulation allows the emulated program to connect to a server that uses the Telnet protocol
+    by escaping command bytes and processing incoming commands. This is necessary as some Telnet
+    servers will not send any data until protocol options have been negotiated. For incoming connections,
+    the Telnet emulation code will also attempt to disable local echo on the remote terminal. All requests
+    to change options from the remote side are declined.
+  </p>
+  <p>
+    If Telnet emulation is disabled, then raw data is transferred in both directions without protocol
+    translation. However, any translation modes requested on the R: device will still activate.
+  </p>
+  <h3>Automatic CR/LF conversion</h3>
+  <p>
+    The Telnet protocol requires that CR/LF be used as the line ending. While this is fine for text sent
+    to the terminal, the LF is not usually expected on the incoming side. When this option is enabled, the
+    network code will ensure that outgoing line endings are normalized to CR/LF and incoming line endings
+    to CR only. This can fix problems with BBS software showing bogus keystrokes after a return due to
+    the LF. The downside is that this translation prevents binary transfers from working correctly.
+  </p>
+  <p>
+    If an ATASCII EOL ($9B) is received from the remote side on an incoming connection, CR/LF translation
+    is automatically disabled for that session. This allows full binary transparency for ATASCII connections.
+  </p>
+  <h3>Extended baud rate support</h3>
+  <p>
+    Enables support for extended baud rates, as supported by the Atari800 emulator. In this mode, the following
+    alternate baud rates are available from XIO 36:
+  </p>
+  <div class="support">
+    <table>
+      <tr>
+        <th>Encoding</th>
+        <th>Baud rate</th>
+      </tr>
+      <tr>
+        <td>0001</td>
+        <td>57600 baud</td>
+      </tr>
+      <tr>
+        <td>0011</td>
+        <td>115200 baud</td>
+      </tr>
+      <tr>
+        <td>AUX1 bit 6 = 1</td>
+        <td>230400 baud</td>
+      </tr>
+    </table>
+  </div>
+  <h3>
+    Connection speed
+  </h3>
+  <p>
+    By default, connections are reported as simply <tt>CONNECT</tt>. The connection speed option allows the
+    connection speed to be set and to force that connection speed to appear in the response, e.g. <tt>CONNECT 2400</tt>.
+    This is useful for software that checks the reported connection speed.
+  </p>
+  <h3>Force DTE rate to match connection speed</h3>
+  <p>
+    The baud rate set on the serial port controls the maximum data transfer rate in both directions; the network code
+    buffers data both ways, but it is throttled according to the baud rate set on the R: device. If the terminal software
+    running in emulation doesn't detect the connection rate properly on incoming calls, it can end up forcing a slow 300
+    baud connection. This option forces the modem to send and receive garbage until the correct baud rate is used, emulating
+    the effect of baud rate mismatches in hardware and allowing detection routines that rely on that effect to work. When
+    this is active, the character 'U' is sent in both directions until the correct baud rate is used.
+  </p>
+</topic>

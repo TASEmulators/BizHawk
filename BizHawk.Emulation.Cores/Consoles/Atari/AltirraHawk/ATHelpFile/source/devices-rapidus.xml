@@ -1,0 +1,126 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Rapidus Accelerator">
+  <p>
+    The Rapidus Accelerator adds a 20MHz 65C816, 1MB of SRAM, and 30MB
+    of SDRAM.
+  </p>
+  <h2>Setting up the accelerator</h2>
+  <p>
+    The accelerator is ready to go without prior setup and will automatically
+    boot into 65C816 mode. However, it can be configured by holding the Inverse
+    key during boot. With the built-in bootstrap firmware, doing so will bring
+    up the following configuration screen:
+  </p>
+  <img src="pics/rapidus-menu.png" />
+  <p>
+    Use the up/down arrow keys to select an option and left/right arrow keys
+    to change the value of the option. Help is displayed on the right for each
+    option.
+  </p>
+  <h2>Limitations of the bootstrap firmware</h2>
+  <p>
+    The Rapidus accelerator is dependent upon firmware to bootstrap and
+    configure the FPGA and cannot boot into 65C816 mode without it. To
+    allow the accelerator to be emulated without this firmware, Altirra
+    ships with a replacement bootstrap firmware that supplies similar
+    functionality. This bootstrap firmware is not the actual Rapidus
+    firmware, however, and so there are some differences in operation.
+    The official hardware has a different configuration menu, and also
+    ships with a 65C816-capable Rapidus OS pre-flashed into the flash
+    ROM.
+  </p>
+  <p>
+    One other difference is that the bootstrap firmware has been written
+    to allow easier access to the menu. In the official firmware, holding
+    down any key at the end of the core upload causes the firmware to
+    bypass 65C816 boot and boot on the 6502. This means that to enter
+    the menu, the Inverse key must be held down during the short time
+    right after the core upload finishes and before the OS is reinitialized
+    on the 65C816. With the bootstrap firmware, only the Shift key forces
+    6502 boot and Inverse can be held earlier.
+  </p>
+  <h2>Using different firmware with the emulator</h2>
+  <p>
+    Altirra supports both firmware images and flashing for Rapidus, and
+    so the same update software that would be used with the actual hardware
+    can also be used in the emulator. There are three components that
+    reside in the flash ROM and can be updated:
+  </p>
+  <dl>
+    <dt>Rapidus OS</dt>
+    <dd>
+      Contains the OS that replaces the operating system on the
+      motherboard when Rapidus OS is selected in the configuration menu.
+      This is typically a 16-bit capable OS that allows switching into
+      65C816 native mode with interrupts enabled.
+    </dd>
+    
+    <dt>8-bit PBI firmware</dt>
+    <dd>
+      Displays the initial logo on power-up and uploads the core stream
+      to the FPGA chip.
+    </dd>
+    
+    <dt>FPGA core</dt>
+    <dd>
+      Contains the core logic in the FPGA for timing and memory mapping
+      support for the 65C816, as well as the 16-bit PBI firmware that
+      initializes the Rapidus on the 65C816 side.
+    </dd>
+  </dl>
+  <p>
+    Updating the Rapidus OS and 8-bit PBI firmware are straightforward
+    and will work as expected. Updating the FPGA core, however, will have
+    no effect in the emulator as the FPGA is not actually emulated due
+    to complexity. This means that the 16-bit PBI firmware will not
+    actually be updated by a FPGA core update.
+  </p>
+  <p>
+    To deal with this issue, the bootstrap firmware contains a rewritten
+    16-bit PBI firmware that is compatible with the official firmware as
+    of this writing, and the firmware options contains a second firmware
+    slot for the 16-bit PBI firmware, containing the contents of <tt>$D800-DFFF</tt>
+    when PBI device 0 (ID=$01) is selected. This second slot can be replaced
+    with a dump of the PBI firmware from the updated core to reflect any
+    changes in that firmware. However, a method of obtaining such a dump
+    is not included.
+  </p>
+  <h2>Accelerator limitations</h2>
+  <p>
+    Altirra's Rapidus emulation is functionally equivalent, but does not
+    emulate the exact timing of the Rapidus. However, there are some
+    fundamental limitations that still hold regardless, emulation or not.
+    The primary limitation of Rapidus is that it can only accelerate
+    accesses to hardware that is either part of the accelerator or is
+    simulated (shadowed) by the accelerator. Any other external hardware
+    must be accessed at normal speeds and will slow down the 65C816
+    to 1.8MHz.
+  </p>
+  <p>
+    The default (motherboard) ROM is not shadowed and always runs at
+    1.8MHz, while the Rapidus OS resides in much faster on-board flash
+    that runs at 10MHz (1 wait state). This means that the default OS
+    is mostly unaccelerated while the on-board OS will run at close to,
+    but not quite, full speed.
+  </p>
+  <p>
+    Main memory can be shadowed in 16KB blocks. The default is unshadowed,
+    which slows all accesses to RAM to 1.8MHz. Since the 65C816 reads
+    more often than it writes, the normal mode of acceleration is fast
+    read mode, which uses SRAM as a fast write-through cache for the
+    main RAM; writes go to both fast SRAM and main RAM, while reads are
+    serviced directly from SRAM. This has a high degree of compatibility
+    but the $8000-BFFF block will interfere with cartridges if enabled.
+    $0000-3FFF can additionally be switched to fast read/write to speed
+    up writes by inhibiting write-through, but this will break any software
+    placing graphics in the low 16KB of memory.
+  </p>
+  <p>
+    Extended memory and external hardware cannot be accelerated at all
+    and will always be accessed at 1.8MHz. This means that devices such
+    as VideoBoard XE will always be accessed at slow rate, and if the
+    CPU is executing from external memory it will effectively have little
+    or no acceleration.
+  </p>
+</topic>

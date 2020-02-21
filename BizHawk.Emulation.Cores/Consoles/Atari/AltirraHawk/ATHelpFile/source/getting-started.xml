@@ -1,0 +1,132 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Getting started">
+  <style>
+    .roms {
+    text-align: center;
+    margin: 24pt;
+    }
+
+    .roms-title {
+    font-weight: bold;
+    }
+
+    .roms table {
+    margin-left: auto;
+    margin-right: auto;
+    }
+
+    .roms th,td {
+    text-align: left;
+    }
+
+    .roms th {
+    background: #cfc;
+    }
+
+    .roms td {
+    background: #eee;
+    }
+  </style>
+  
+  <toc/>
+  <h2>Software to run</h2>
+  <p>
+    First, you need software to run on the emulation. This can be in the form of:
+  </p>
+  <ul>
+    <li>Disk images (ATR, DCM, XFD).</li>
+    <li>Tape images (CAS, WAV).</li>
+    <li>Cartridge ROM images (BIN, CAR, ROM).</li>
+    <li>Executable images (OBX, EXE, XEX).</li>
+    <li>BASIC programs (BAS).</li>
+  </ul>
+  <p>
+    Make sure any images you have are actually meant to run on an 8-bit Atari. 16/32-bit programs written for the Atari ST will not work. A COM/EXE program written
+    for DOS definitely won't work.
+  </p>
+  <h2>Loading the image</h2>
+  <p>
+    Almost all images can be booted easily through the File &gt; Boot Image... command on the menu. This clears any existing
+    mounted images, mounts the desired image, and then cold-reboots the emulation. This is usually all you need for disk
+    images, cartridges, and executables.
+  </p>
+  <h3>Tape images</h3>
+  <p>
+    For tape images, you will need to determine whether the program on the tape is a machine language program or a BASIC program.
+    If it is a machine language program, enable the System &gt; Cassette &gt; Auto-boot on startup option. This causes the emulator
+    to hold the START button on power-up to request a boot off cassette tape.
+  </p>
+  <h3>BASIC programs</h3>
+  <p>
+    Running a BASIC program that is supplied directly as a BAS file &#x2014; and not a disk image &#x2014; takes a bit more work.
+    In order to run the program, rename it to an 8.3 compatible filename (i.e. MYPROGRM.BAS), and then assign the directory holding
+    that file to the virtual H: device through System &gt; Hard disk. Then, enable System &gt; Firmware &gt; BASIC, cold reset
+    the emulation, and type the following:
+  </p>
+  <blockquote>
+    <tt>load "H:MYPROGRM.BAS"</tt>
+    <br/>
+    <tt>run</tt>
+  </blockquote>
+  <h2>Hooking up actual kernel ROM images</h2>
+  <p>
+    By default, Altirra uses its internal kernel. This provides a reasonable level of compatibility with
+    software, but BASIC is not included and some software will not work properly. For maximum compatibility, you will need to
+    use real Atari ROM images. These are not included with Altirra and must be obtained elsewhere, but if you have them, place
+    them in the Altirra program directory with the following names:
+  </p>
+  <div class="roms">
+    <table>
+      <tr>
+        <th>ROM</th>
+        <th>Filename</th>
+      </tr>
+      <tr>
+        <td>Atari 800 kernel ROM (revision A)</td>
+        <td>ATARIOSA.ROM</td>
+      </tr>
+      <tr>
+        <td>Atari 800 kernel ROM (revision B)</td>
+        <td>ATARIOSB.ROM</td>
+      </tr>
+      <tr>
+        <td>Atari XL/XE kernel ROM</td>
+        <td>ATARIXL.ROM</td>
+      </tr>
+      <tr>
+        <td>Atari BASIC ROM</td>
+        <td>ATARIBAS.ROM</td>
+      </tr>
+      <tr>
+        <td>Atari 5200 kernel ROM</td>
+        <td>ATARI5200.ROM</td>
+      </tr>
+    </table>
+  </div>
+  <p>
+    You do not need all of these ROM images; Altirra will use the ones that are available.
+  </p>
+  <h2>Tweaking options</h2>
+  <h3>Hardware / Firmware</h3>
+  <p>
+    Typically, you will want to run with 800XL hardware and 600/800XL firmware for best compatibility. Some programs will require
+    older 800 hardware and OS-B firmware to work.
+  </p>
+  <h3>BASIC</h3>
+  <p>
+    The simple rule for enabling BASIC is: enable it only for BASIC programs. Many games written in machine language will
+    crash if BASIC is enabled. There are a few machine language programs that do require BASIC to be enabled, but they are rare.
+  </p>
+  <h3>PAL vs. NTSC</h3>
+  <p>
+    The Atari 800 was originally an NTSC-based machine, and much of the early commercial software was written with this in mind.
+    Later software, however, was mostly written in Europe and thus targeted PAL machines.
+  </p>
+  <p>
+    If software intended for NTSC is run on PAL, it will typically run about 16% too slowly. If software intended for PAL is run
+    on an NTSC machine, however, not only may it run 20% too quickly, but it may also crash due to the shorter frame time. Therefore,
+    PAL is the safer option, as it is very rare for NTSC software to be incompatible with PAL. However, choose NTSC when appropriate
+    for a more authentic experience with software intended to run with that standard.
+  </p>
+</topic>

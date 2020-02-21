@@ -1,0 +1,67 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="The Black Box">
+	<p>
+		The Black Box is a Parallel Bus Interface (PBI) based device that adds hard disk, serial, and
+		parallel printing capabilities.
+	</p>
+	<h2>Setting up the Black Box hard drive</h2>
+	<p>
+		Under System, Devices, add the Black Box to the Computer, then select the Black Box or the empty
+		slot under it and add a hard drive.
+	</p>
+	<p>
+		Next, set up Black Box firmware
+		in System, Firmware. You must have the Black Box firmware to proceed; it is not included with
+		the emulator. The firmware auto-scan can detect three versions of firmware and as of this writing
+		v2.16 is recommended.
+	</p>
+	<p>
+		On a physical Black Box, the menu is entered by pressing the menu button on the device. In the emulator,
+		this is done in the menu via System, Console Switches, Black Box: Menu. This will then switch the
+		display to the menu:
+	</p>
+	<img src="pics/blackbox-menu.png" />
+	<p>
+		Under Port Statuses, set the sector number for the partition table:
+	</p>
+	<img src="pics/blackbox-ptable.png" />
+	<p>
+		The starting sector for the partition table can vary, but 1 or 2 is fine. Save, then exit out of
+		Port Statuses and then open the Drive Configuration sub-menu:
+	</p>
+	<img src="pics/blackbox-driveconfig.png" />
+	<p>
+		This screen allows ranges of sectors on the hard disk to be mapped to the D1-D9: drives seen
+		by the OS and by programs. Consult the Black Box documentation for full usage details. For new
+		partitions, you'll want to enter a new name in the Name field, the the sector ranges and density,
+		then write the partition to the partition table, after which it should show up in the partition
+		list for future reuse.
+	</p>
+	<p>
+		The first emulated hard disk has address ID 0, LUN 0 on the SCSI bus, the second has ID 1 LUN 0, etc.
+	</p>
+	<p>
+		Make sure to Save Config before exiting. After doing this, the partition table will be saved on
+		the hard disk image and won't need to be re-entered even after restarting.
+	</p>
+	<p>
+		Note that if you have set up D1:, the computer will attempt to boot from it and crash, which is a
+		problem if you haven't initialized the image yet. Solutions are to either swap it to another drive
+		slot temporarily or boot off of a Sparta DOS X cartridge.
+	</p>
+	<h2>Emulation considerations</h2>
+	<p>
+		Because the Black Box can emulate disk drives, it is important to make sure that the emulator doesn't
+		interfere with the Black Box emulation. In previous versions of the emulator, it was necessary to
+		disable the SIO patch for disks or enable SIO override detection to make this work, or else the
+		emulator would intercept the disk request before the Black Box firmware could, bypassing the Black
+		Box.
+	</p>
+	<p>
+		As of 2.80+, the SIO acceleration mode can be changed from SIOV to PBI, which causes the emulator
+		to use a PBI device instead of intercepting the SIOV vector. The emulator's PBI device is at lowest
+		priority (ID 7), so it does not interfere with the Black Box. This allows accelerated disk access
+		for disk drives not handled by the Black Box.
+	</p>
+</topic>

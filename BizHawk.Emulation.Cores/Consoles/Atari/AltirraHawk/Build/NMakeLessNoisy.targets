@@ -1,0 +1,25 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <UsingTask TaskName="SilentStop" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <Task>
+      <Code Type="Fragment" Language="cs">return false;</Code>
+    </Task>
+  </UsingTask>
+
+  <Target Name="CoreClean" DependsOnTargets="PrepareForNMakeBuild">
+    <Exec Command="$(NMakeCleanCommandLine)"  Condition="'$(NMakeCleanCommandLine)'!=''" IgnoreStandardErrorWarningFormat="true" />
+  </Target>
+
+  <Target Name="Build" DependsOnTargets="PrepareForNMakeBuild;ResolveReferences;GetTargetPath;$(PreNMakeBuildTarget)" Returns="$(NMakeManagedOutput)">
+    <Exec Command="$(NMakeBuildCommandLine)"  Condition="'$(NMakeBuildCommandLine)'!=''" IgnoreStandardErrorWarningFormat="true" IgnoreExitCode="true" >
+      <Output TaskParameter="ExitCode" PropertyName="NMakeExitCode" />
+    </Exec>
+    <!-- <Error Condition="'$(NMakeExitCode)'!='0'" Text="Build failed."/> -->
+    <SilentStop Condition="'$(NMakeExitCode)'!='0'" />
+  </Target>
+
+  <Target Name="Rebuild" DependsOnTargets="PrepareForNMakeBuild;_SetRebuildReferences;ResolveReferences;GetTargetPath;$(PreNMakeBuildTarget)" Returns="$(NMakeManagedOutput)">
+    <Exec Command="$(NMakeReBuildCommandLine)" Condition="'$(NMakeReBuildCommandLine)'!=''" IgnoreStandardErrorWarningFormat="true" />
+    <Exec Command="$(NMakeCleanCommandLine)" Condition="'$(NMakeReBuildCommandLine)'==''" IgnoreStandardErrorWarningFormat="true" />
+    <Exec Command="$(NMakeBuildCommandLine)" Condition="'$(NMakeReBuildCommandLine)'==''" IgnoreStandardErrorWarningFormat="true" />
+  </Target>
+</Project>

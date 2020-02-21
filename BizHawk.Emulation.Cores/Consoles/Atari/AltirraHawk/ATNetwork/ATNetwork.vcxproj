@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="../Build/ProjectConfigurations.props" />
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{91051A49-721F-42D7-B542-3192E2E982E2}</ProjectGuid>
+    <RootNamespace>ATNetwork</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="..\Build\PlatformSetup.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\Build\Altirra.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ClCompile Include="source\dhcpd.cpp" />
+    <ClCompile Include="source\ethernetbus.cpp" />
+    <ClCompile Include="source\ethernetframe.cpp" />
+    <ClCompile Include="source\gatewayserver.cpp" />
+    <ClCompile Include="source\ipstack.cpp" />
+    <ClCompile Include="source\stdafx.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="source\tcp.cpp" />
+    <ClCompile Include="source\tcpstack.cpp" />
+    <ClCompile Include="source\udp.cpp" />
+    <ClCompile Include="source\udpstack.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="h\at\atnetwork\internal\dhcpd.h" />
+    <ClInclude Include="h\ipstack.h" />
+    <ClInclude Include="h\stdafx.h" />
+    <ClInclude Include="h\tcpstack.h" />
+    <ClInclude Include="h\udpstack.h" />
+    <ClInclude Include="..\h\at\atnetwork\ethernet.h" />
+    <ClInclude Include="..\h\at\atnetwork\ethernetbus.h" />
+    <ClInclude Include="..\h\at\atnetwork\ethernetframe.h" />
+    <ClInclude Include="..\h\at\atnetwork\gatewayserver.h" />
+    <ClInclude Include="..\h\at\atnetwork\socket.h" />
+    <ClInclude Include="..\h\at\atnetwork\tcp.h" />
+    <ClInclude Include="..\h\at\atnetwork\udp.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

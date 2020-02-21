@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <PropertyPageSchema
+      Include="$(MSBuildThisFileDirectory)$(MSBuildThisFileName).xml" />
+    <AvailableItemName
+      Include="PackResource">
+      <Targets>_PackResource</Targets>
+    </AvailableItemName>
+  </ItemGroup>
+  <UsingTask
+    TaskName="PackResource"
+    TaskFactory="XamlTaskFactory"
+    AssemblyName="Microsoft.Build.Tasks.v4.0">
+    <Task>$(MSBuildThisFileDirectory)$(MSBuildThisFileName).xml</Task>
+  </UsingTask>
+  <Target
+    Name="_PackResource"
+    BeforeTargets="$(PackResourceBeforeTargets)"
+    AfterTargets="$(PackResourceAfterTargets)"
+    Condition="'@(PackResource)' != ''"
+    DependsOnTargets="$(PackResourceDependsOn);ComputePackResourceOutput"
+    Outputs="@(PackResource-&gt;Metadata('OutputPath')-&gt;Distinct())"
+    Inputs="@(PackResource);%(PackResource.AdditionalDependencies)">
+    <ItemGroup
+      Condition="'@(SelectedFiles)' != ''">
+      <PackResource
+        Remove="@(PackResource)"
+        Condition="'%(Identity)' != '@(SelectedFiles)'" />
+    </ItemGroup>
+    <ItemGroup>
+      <PackResource_tlog
+        Include="%(PackResource.OutputPath)"
+        Condition="'%(PackResource.OutputPath)' != '' and '%(PackResource.ExcludedFromBuild)' != 'true'">
+        <Source>@(PackResource, '|')</Source>
+      </PackResource_tlog>
+    </ItemGroup>
+    <Message
+      Importance="High"
+      Text="%(PackResource.ExecutionDescription)" />
+    <WriteLinesToFile
+      Condition="'@(PackResource_tlog)' != '' and '%(PackResource_tlog.ExcludedFromBuild)' != 'true'"
+      File="$(IntDir)$(ProjectName).write.1.tlog"
+      Lines="^%(PackResource_tlog.Source);@(PackResource_tlog-&gt;'%(Fullpath)')" />
+    <PackResource
+      Condition="'@(PackResource)' != '' and '%(PackResource.ExcludedFromBuild)' != 'true'"
+      CommandLineTemplate="%(PackResource.CommandLineTemplate)"
+      SymbolName="%(PackResource.SymbolName)"
+      OutputPath="%(PackResource.OutputPath)"
+      AdditionalOptions="%(PackResource.AdditionalOptions)"
+      StandardOutputImportance="High"
+      StandardErrorImportance="High"
+      EchoOff="true"
+      Inputs="@(PackResource)" />
+  </Target>
+  <PropertyGroup>
+    <ComputeLinkInputsTargets>
+            $(ComputeLinkInputsTargets);
+            ComputePackResourceOutput;
+          </ComputeLinkInputsTargets>
+    <ComputeLibInputsTargets>
+            $(ComputeLibInputsTargets);
+            ComputePackResourceOutput;
+          </ComputeLibInputsTargets>
+  </PropertyGroup>
+  <Target
+    Name="ComputePackResourceOutput"
+    Condition="'@(PackResource)' != ''">
+    <ItemGroup>
+      <PackResourceDirsToMake
+        Condition="'@(PackResource)' != '' and '%(PackResource.ExcludedFromBuild)' != 'true'"
+        Include="%(PackResource.OutputPath)" />
+      <Link
+        Include="%(PackResourceDirsToMake.Identity)"
+        Condition="'%(Extension)'=='.obj' or '%(Extension)'=='.res' or '%(Extension)'=='.rsc' or '%(Extension)'=='.lib'" />
+      <Lib
+        Include="%(PackResourceDirsToMake.Identity)"
+        Condition="'%(Extension)'=='.obj' or '%(Extension)'=='.res' or '%(Extension)'=='.rsc' or '%(Extension)'=='.lib'" />
+      <ImpLib
+        Include="%(PackResourceDirsToMake.Identity)"
+        Condition="'%(Extension)'=='.obj' or '%(Extension)'=='.res' or '%(Extension)'=='.rsc' or '%(Extension)'=='.lib'" />
+    </ItemGroup>
+    <MakeDir
+      Directories="@(PackResourceDirsToMake-&gt;'%(RootDir)%(Directory)')" />
+  </Target>
+</Project>

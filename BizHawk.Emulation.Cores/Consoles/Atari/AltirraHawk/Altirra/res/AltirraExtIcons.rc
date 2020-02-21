@@ -1,0 +1,12 @@
+#include "resource.h"
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_APPICON             ICON                    "program.ico"
+
+IDI_DISK                ICON                    "disk.ico"
+IDI_TAPE                ICON                    "tape.ico"
+IDI_XEX                 ICON                    "xex.ico"
+IDI_CART                ICON                    "cart.ico"
+
+IDI_EJECT               ICON                    "eject.ico"

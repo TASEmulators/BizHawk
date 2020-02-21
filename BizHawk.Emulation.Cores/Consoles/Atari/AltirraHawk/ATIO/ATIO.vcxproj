@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="../Build/ProjectConfigurations.props" />
+  <ItemGroup>
+    <ClCompile Include="source\atfs.cpp" />
+    <ClCompile Include="source\cartridgeimage.cpp" />
+    <ClCompile Include="source\cartridgetypes.cpp" />
+    <ClCompile Include="source\cassetteblock.cpp" />
+    <ClCompile Include="source\cassettedecoder.cpp" />
+    <ClCompile Include="source\cassetteimage.cpp" />
+    <ClCompile Include="source\diskfs.cpp" />
+    <ClCompile Include="source\diskfsarc.cpp" />
+    <ClCompile Include="source\diskfsdos2.cpp" />
+    <ClCompile Include="source\diskfsdos3.cpp" />
+    <ClCompile Include="source\diskfssdx2.cpp" />
+    <ClCompile Include="source\diskfssdx2util.cpp" />
+    <ClCompile Include="source\diskfsutil.cpp" />
+    <ClCompile Include="source\diskimage.cpp" />
+    <ClCompile Include="source\blobimage.cpp" />
+    <ClCompile Include="source\image.cpp" />
+    <ClCompile Include="source\programimage.cpp" />
+    <ClCompile Include="source\savestate.cpp" />
+    <ClCompile Include="source\stdafx.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="source\wav.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\h\at\atio\atfs.h" />
+    <ClInclude Include="..\h\at\atio\cartridgeimage.h" />
+    <ClInclude Include="..\h\at\atio\cartridgetypes.h" />
+    <ClInclude Include="..\h\at\atio\cassetteblock.h" />
+    <ClInclude Include="..\h\at\atio\cassettedecoder.h" />
+    <ClInclude Include="..\h\at\atio\cassetteimage.h" />
+    <ClInclude Include="..\h\at\atio\diskfs.h" />
+    <ClInclude Include="..\h\at\atio\diskfsdos2util.h" />
+    <ClInclude Include="..\h\at\atio\diskfssdx2util.h" />
+    <ClInclude Include="..\h\at\atio\diskfsutil.h" />
+    <ClInclude Include="..\h\at\atio\diskimage.h" />
+    <ClInclude Include="..\h\at\atio\blobimage.h" />
+    <ClInclude Include="..\h\at\atio\image.h" />
+    <ClInclude Include="..\h\at\atio\programimage.h" />
+    <ClInclude Include="..\h\at\atio\savestate.h" />
+    <ClInclude Include="..\h\at\atio\wav.h" />
+    <ClInclude Include="h\stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackResource Include="..\..\out\Release\bootsecdos2.bin">
+      <FileType>Document</FileType>
+      <SymbolName>g_ATResDOSBootSector</SymbolName>
+    </PackResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="autogen\bootsecdos2.inl" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{EEA05666-6E17-49FE-96AB-C0173FB41890}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>ATIO</RootNamespace>
+  </PropertyGroup>
+  <Import Project="..\Build\PlatformSetup.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="..\Build\PackResource.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\Build\Altirra.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\Build\PackResource.targets" />
+  </ImportGroup>
+</Project>

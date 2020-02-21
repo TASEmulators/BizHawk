@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="../Build/ProjectConfigurations.props" />
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{DB396FA4-478D-49B1-8AC9-59E70878C38D}</ProjectGuid>
+    <RootNamespace>ATNativeUI</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="..\Build\PlatformSetup.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\Build\Altirra.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ClCompile Include="source\acceleditdialog.cpp" />
+    <ClCompile Include="source\dialog.cpp" />
+    <ClCompile Include="source\dragdrop.cpp" />
+    <ClCompile Include="source\genericdialog.cpp" />
+    <ClCompile Include="source\hotkeyexcontrol.cpp" />
+    <ClCompile Include="source\messagedispatcher.cpp" />
+    <ClCompile Include="source\messageloop.cpp" />
+    <ClCompile Include="source\syncwait.cpp" />
+    <ClCompile Include="source\uiframe.cpp" />
+    <ClCompile Include="source\uinativewindow.cpp" />
+    <ClCompile Include="source\progress.cpp" />
+    <ClCompile Include="source\nativewindowproxy.cpp" />
+    <ClCompile Include="source\uiproxies.cpp" />
+    <ClCompile Include="source\stdafx.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\h\at\atnativeui\dragdrop.h" />
+    <ClInclude Include="..\h\at\atnativeui\genericdialog.h" />
+    <ClInclude Include="..\h\at\atnativeui\messagedispatcher.h" />
+    <ClInclude Include="..\h\at\atnativeui\messageloop.h" />
+    <ClInclude Include="..\h\at\atnativeui\syncwait.h" />
+    <ClInclude Include="..\h\at\atnativeui\uiframe.h" />
+    <ClInclude Include="..\h\at\atnativeui\uinativewindow.h" />
+    <ClInclude Include="..\h\at\atnativeui\progress.h" />
+    <ClInclude Include="..\h\at\atnativeui\nativewindowproxy.h" />
+    <ClInclude Include="res\resource.h" />
+    <ClInclude Include="h\stdafx.h" />
+    <ClInclude Include="..\h\at\atnativeui\acceleditdialog.h" />
+    <ClInclude Include="..\h\at\atnativeui\dialog.h" />
+    <ClInclude Include="..\h\at\atnativeui\hotkeyexcontrol.h" />
+    <ClInclude Include="..\h\at\atnativeui\uiproxies.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="res\atnativeui.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

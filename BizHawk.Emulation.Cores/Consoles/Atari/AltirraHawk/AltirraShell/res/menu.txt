@@ -1,0 +1,13 @@
+&File
+	E&xit					{File.Exit}
+
+&View
+	&Log					{View.ShowLog}
+	&Devices				{View.ShowDevices}
+
+&Settings
+	&Serial Options...		{Settings.SerialOptionsDialog}
+
+&Window
+	&Close					{Window.Close}
+	&Undock					{Window.Undock}

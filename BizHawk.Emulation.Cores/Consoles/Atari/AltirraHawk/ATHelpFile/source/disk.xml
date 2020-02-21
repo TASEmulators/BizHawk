@@ -1,0 +1,271 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Disk drives">
+  <p>
+    Floppy disk drives were the most popular and relatively speedy form of disk storage available on the Atari 8-bit computer.
+    Altirra emulates three main specific models of floppy disk drive as well as general forms of other enhanced drives.
+  </p>
+  <toc/>
+  <h2>Overview</h2>
+  <p>
+    Floppy disk drives connect to the serial I/O (SIO) bus and can be daisy-chained to support more than one drive. The first
+    drive is accessible in the OS as <tt>D1:</tt>, with subsequent drives being <tt>D2:</tt>, <tt>D3:</tt>, and so on. Two-drive
+    configurations are supported by plenty of software programs, and some support up to 15 disk drives.
+  </p>
+  <h2>Using emulated disk images</h2>
+  <h3>Write modes</h3>
+  <p>
+    Disk images can be mounted on emulated drives with different <i>write modes</i>:
+  </p>
+  <blockquote><dl>
+    <dt>
+      Read only (RO)
+    </dt>
+    <dd>
+      No write access allowed, and no changes written back to source image. This is equivalent to placing
+      the write protect tab on a physical disk.
+    </dd>
+    <dt>
+      Read/write (R/W)
+    </dt>
+    <dd>
+      Write access allowed, with changes written back to the source image. This is equivalent to a physical
+      disk with the write enable notch uncovered.
+    </dd>
+    <dt>
+      Virtual read/write (VRW)
+    </dt>
+    <dd>
+      Write access allowed, but changes are kept in memory without automatically writing them back to the source.
+      This allows temporary modification of disks while keeping source files pristine. Modified disks are shown
+      in orange in the Disk Drives dialog and can be written back to image files via the Save command on each drive.
+    </dd>
+    <dd>
+      Newly created disk images
+      are automatically mounted in virtual read/write mode as they haven't been associated with an image file yet.
+    </dd>
+    <dt>
+      Virtual read/write safe (VRWSafe)
+    </dt>
+    <dd>
+      Similar to virtual read/write, except that format commands are blocked with a read-only disk error.
+      This allows virtualized write access to disks while still blocking writes for programs that attempt
+      to format their disk on boot as part of a protection check. Altirra defaults to this mode until changed
+      in Options.
+    </dd>
+  </dl></blockquote>
+  <p>
+    For disks mounted via drag-and-drop or the Boot Image command, the default mode is set in Options.
+    Individual disk drives can also be changed to specific modes via the Disk Drives dialog.
+  </p>
+  <h3>Temporary disk images</h3>
+  <p>
+    Sometimes, a disk image that is dropped into the emulator via drag-and-drop will show up as blue in the
+    Disk Options dialog. This means that the disk image is a temporary disk image created during the drag-and-drop
+    process. Temporary disk images have no associated disk image file and are common when dropping images from
+    a compressed archive, such as a .zip file.
+  </p>
+  <p>
+    Note that this does not apply to .zip files opened directly in the emulator, since in that case the emulator
+    knows the .zip file that the image came from.
+  </p>
+  <h3>Virtual folders</h3>
+  <p>
+    Altirra can also mount folders as virtualized disk images, creating a DOS 2 or SpartaDOS file system from the contents
+    of the folder. This is done through the flyout menu button on each drive in the Disk Drives dialog and is
+    useful for bringing files into the emulation without having to assemble them into a disk.
+    The disk image is dynamic, so it can adapt to live filesystem changes and the mapped files can be larger in
+    total than can normally fit on a disk image. A virtual DOS 2 image can have up to 64 files; a virtual
+    SpartaDOS image can have unlimited files. Virtual folder images are always read only.
+  </p>
+  <h3>.ARC archives</h3>
+  <p>
+    An .ARC archive can be mounted as a disk image. The emulator decompresses the contents of the archive
+    and creates a virtual SpartaDOS disk image to hold the contents.
+  </p>
+  <h2>Hardware emulation modes</h2>
+  <p>
+    Altirra supports several different emulation modes, selectable through the <i>Disk Drives</i> dialog.
+  </p>
+  <table class="std">
+    <tr>
+      <th>Emulation mode</th>
+      <th>RPM</th>
+      <th>High-speed rate</th>
+      <th>Supported densities</th>
+    </tr>
+    <tr>
+      <td>Generic</td>
+      <td>288</td>
+      <td>38400 baud</td>
+      <td>Any</td>
+    </tr>
+    <tr>
+      <td>810 Disk Drive</td>
+      <td>288</td>
+      <td>Not supported</td>
+      <td>Single-density only</td>
+    </tr>
+    <tr>
+      <td>1050 Disk Drive</td>
+      <td>288</td>
+      <td>Not supported</td>
+      <td>Single-density and medium-density only</td>
+    </tr>
+    <tr>
+      <td>XF551 Disk Drive</td>
+      <td>300</td>
+      <td>38400 baud</td>
+      <td>Any</td>
+    </tr>
+    <tr>
+      <td>US-Doubler</td>
+      <td>288</td>
+      <td>52000 baud</td>
+      <td>Any</td>
+    </tr>
+    <tr>
+      <td>Speedy 1050</td>
+      <td>288</td>
+      <td>56000 baud</td>
+      <td>Any</td>
+    </tr>
+    <tr>
+      <td>Indus GT</td>
+      <td>288</td>
+      <td>68000 baud</td>
+      <td>Any</td>
+    </tr>
+    <tr>
+      <td>Happy Drive</td>
+      <td>288</td>
+      <td>52000 baud</td>
+      <td>Any</td>
+    </tr>
+    <tr>
+      <td>1050 Turbo</td>
+      <td>288</td>
+      <td>68000 baud</td>
+      <td>Any</td>
+    </tr>
+  </table>
+  <p>
+    The default is <i>Generic</i>, which allows all disk images to be used and enables the popularly supported
+    XF551-compatible high speed mode. The emulation mode can be changed to model-specific modes if necessary
+    for software that requires a specific drive model for high-speed operation or for testing.
+  </p>
+  <note>
+    While Altirra supports high speed transfer timings for various drives, it doesn't support the extended
+    commands for drives other than the 1050 and XF551. In particular, copy protection emulation, firmware
+    upload, and track buffering operation commands are not supported.
+  </note>
+  <h2>Acceleration support</h2>
+  <p>
+    While the Atari's SIO-based floppy drives were fairly fast for their time, they are slow by
+    today's standards, and it isn't always desirable to emulate them at their original speed. Altirra supports
+    a few options to speed up disk access.
+  </p>
+  <h3>SIO patch</h3>
+  <p>
+    The disk <i>SIO patch</i> option allows the emulator to intercept floppy disk requests at the OS level,
+    handling them immediately. This provides near instantaneous access to the emulated floppy disk and the
+    fastest disk operation. Altirra's SIO patch is designed to emulate as many behaviors of the standard SIO
+    routine as possible and is highly compatible, even with some copy protected disk loaders. The SIO patch
+    only handles a subset of disk commands and will punt to the standard OS routine if an unusual command
+    is issued.
+  </p>
+  <p>
+    Programs that directly access the disk drive over the SIO bus cannot be accelerated by the SIO patch.
+    This is most easily detected by the characteristic <i>beep-beep-beep</i> transfer sound if the disk routine
+    leaves the audio channels enabled. High-speed I/O routines frequently bypass SIO, and SpartaDOS X in
+    particular is not affected by the SIO patch.
+  </p>
+  <p>
+    The SIO patch can only operate from ROM and will not activate from RAM-based code, even with a jump through
+    the SIOV vector at <tt>$E459</tt>. This avoids emulation errors that would be caused by intercepting calls
+    at that location when the code there is not actually for the OS SIO routine. However, it also means that
+    programs that copy the OS from ROM into RAM disable the acceleration when they do so.
+  </p>
+  <h3>Burst transfers</h3>
+  <p>
+    For programs that cannot be accelerated by the SIO patch, Altirra also supports burst transfer mode. In this
+    mode, the disk routine accesses the floppy drive over the SIO bus as usual, but once the transfer starts the
+    emulator feeds data to the disk routine as fast as it can handle, raising the transfer rate from the standard
+    19200 baud to as high as 90000 baud. While not quite as fast as the SIO patch, burst mode still results in
+    much faster disk I/O and can work with many programs that the SIO patch cannot.
+  </p>
+  <p>
+    Burst mode can be enabled simultaneously with the SIO patch. When both are enabled, the SIO patch will
+    activate if the program uses the standard OS serial routines, and the burst mode will activate otherwise.
+  </p>
+  <p>
+    There are two sub-modes available for burst mode, standard and polled. Standard should be used by default and
+    works with disk routines that use interrupt-based transfers; polled mode should be used instead for disk
+    routines that poll the serial hardware instead.
+  </p>
+  <h2>Copy-protected disks</h2>
+  <p>
+    Some software was released on disks with special disk formats designed to impede copying of the disk. These
+    programs can still be run in Altirra if imaged appropriately, but sometimes some disk emulation options
+    must be altered for it to load properly.
+  </p>
+  <h3>Disk image formats</h3>
+  <p>
+    Most copy protected software must be imaged in the VAPI (ATX) format in order to faithfully capture the disk
+    format and allow the copy protection checks to pass. The ProSystem (PRO) format can also work, but is inferior
+    to the VAPI format.
+  </p>
+  <p>
+    The ATR, DCM, and XFD formats do not contain disk layout, timing, or error information, and usually cannot
+    properly contain a copy protected disk. Therefore, any copy protected software on such a disk image typically
+    either has had the protection removed or simply won't work. Rarely, there are copy protection mechanisms
+    that will happen to work with the ATR file format due to the way the emulator reconstructs the disk sector
+    positioning, but this is not guaranteed to work in future versions.
+  </p>
+  <h3>Load timing</h3>
+  <p>
+    Copy protection mechanisms are often sensitive to disk timing and frequently measure sector load latencies
+    to determine whether the disk has been copied. Disk acceleration options can therefore prevent copy protected
+    disks from booting properly. The burst I/O option is most often the one that causes problems, since it can
+    activate with any type of loader; the SIO patch is generally more compatible, but sometimes needs to be
+    disabled too.
+  </p>
+  <p>
+    For very sensitive disk loaders, the <i>accurate sector timing</i> option enables the highest level of disk
+    timing emulation, where disk sectors are returned by the emulator with the same delays and timing that a real
+    disk drive would have. This usually is enough to load any program, but also results in the slowest disk load
+    speed as both rotational and seek delays are emulated in real time. When this option is disabled, the emulator attempts to compensate for the accelerated load timing by
+    warping the disk position, which allows most software to load at the higher speeds.
+  </p>
+  <h2>Conflicts</h2>
+  <p>
+    Floppy disk drives are common enough that conflicts with other hardware are rare, but there are a few cases to watch out for
+    in emulation:
+  </p>
+  <ul>
+    <li>
+      <p>
+        <b>850 Interface Module.</b> The 850 simulates a disk drive to bootstrap its firmware if no disk drive
+        exists, but if one does, it must be manually bootstrapped. 850 + disk drive was a common configuration, so
+        many DOSes and communication programs have provisions to bootstrap the R: handler after DOS has loaded and
+        this is rarely a problem in practice.
+      </p>
+    </li>
+    <li>
+      <p>
+        <b>Parallel Bus Interface (PBI) drives.</b> Devices on the Parallel Bus can also simulate disk drives
+        with appropriate firmware. In Altirra, this is possible if PBI-capable Ultimate1MB firmware is used. On
+        real hardware, this can result in the PBI drive shadowing the real drive of the same ID, and this
+        is faithfully emulated.
+      </p>
+      <p>
+        However, in emulation specifically, it is also possible for the reverse to happen
+        and for the disk drive to shadow the PBI drive if the disk drive SIO patch is enabled. This happens
+        because the emulator cannot detect the PBI drive and intercepts the disk request before the PBI
+        firmware can handle it. The <i>SIO Override
+        Detection</i> option is designed to correct this by having the emulator let the first disk request
+        through and disabling acceleration if the PBI firmware handles the request.
+      </p>
+    </li>
+  </ul>
+</topic>

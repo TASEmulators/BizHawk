@@ -1,0 +1,122 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Options: Acceleration">
+  <p>
+    Acceleration options allow the emulator to intercept and speed up processes that would
+    normally occur at representative real-time speeds within the emulation, such as disk and
+    cassette loads. This can greatly reduce load times, such as reducing a 10 minute cassette
+    tape load to a few seconds.
+  </p>
+  <toc/>
+
+  <h2>OS acceleration options</h2>
+  <h3>Fast boot</h3>
+  <p>
+    Accelerates the startup delay, ROM checksum, and type 3 polling done by the XL/XE OS on
+    startup for faster boot. This typically cuts a couple of seconds off of cold boot.
+  </p>
+  
+   <h3>Fast FP math</h3>
+  <p>
+    Intercepts known entry points in the floating point library with native math routines. This accelerates Atari decimal math
+    to a large degree, particularly speeding up Atari BASIC.
+  </p>
+  <p>
+    The emulated FP library is higher accuracy than the real library due to better rounding and use of native math routines, so
+    it will produce slightly different results.
+  </p>
+  
+  <h2>SIO device acceleration options</h2>
+  <p>
+    SIO acceleration allows the emulator to run input/output (I/O) requests faster than real time,
+    so loading takes place almost instantaneously. This is done through an <i>SIO patch</i>, which
+    patches the I/O path to use a direct call into the emulator instead of sending requests over
+    the SIO bus as would happen on real hardware.
+  </p>
+  <p>
+    Note that while the patches are referred to in terms of CIO devices (D:) for recognizability, the acceleration
+    happens at the SIO level and does not require CIO to be used.
+  </p>
+  
+  <h3>C: patch</h3>
+  <p>
+    Enables acceleration of cassette I/O (C:).
+  </p>
+  
+  <h3>D: patch</h3>
+  <p>
+    Enables acceleration of disk drive I/O (D:). In addition to the standard <tt>SIOV</tt> OS vector,
+    this also accelerates the <tt>DSKINV</tt> vector.
+  </p>
+  
+  <h3>PRT: patch</h3>
+  <p>
+    Enables acceleration of other device I/O, including the printer (P:) and serial ports
+    (R: and T:).
+  </p>
+  
+  <h3>SIO override detection</h3>
+  <p>
+    Enables detection for custom OS or PBI device firmware that override disk drive accesses.
+    Traditional SIO patching inserts a shim between the program or DOS requesting the I/O and
+    the operating system. This causes problems with the OS or a PBI device tries to create
+    a virtual disk, such as a disk image partition on an IDE drive; the emulator intercepts
+    the request and forwards it to the disk drive, bypassing the virtual disk.
+  </p>
+  <p>
+    When the SIO override detection option is enabled, the emulator watches the first request
+    to a disk after boot to see if the disk drive is accessed or if the request is intercepted.
+    Acceleration is enabled for a drive only if the disk drive is activated. This resolves most
+    virtual disk issues, with the caveat that if a virtual drive mapping is changed, a warm
+    reset is required to redetect the new virtual drive or re-enable acceleration for a drive
+    number.
+  </p>
+  <p>
+    This option is generally only necessary for SIOV-based acceleration. PBI-based acceleration
+    allows the OS and other PBI devices to hook ahead of the emulator patch.
+  </p>
+  <p>
+    Activating this option will disable the nonexistent disk acceleration of the <i>Fast Boot</i> option.
+  </p>
+  
+  <h3>SIO burst transfers</h3>
+  <p>
+    Enables faster transfer of data across the emulated SIO bus, by shortening the delay between
+    bytes. This speeds up transfers that cannot be intercepted by the regular SIO patch
+    mechanisms, such as a custom disk loader. The speed depends on how fast the loader is; the
+    faster the loader can respond, the faster the burst transfer. Burst transfers can be
+    enabled independently for disk and non-disk devices.
+  </p>
+  <p>
+    Most disk routines are compatible with burst transfers, but a few may glitch at the high
+    speed or detect the fast transfer as an attempt to bypass copy protection. Burst transfers
+    should be disabled in these cases.
+  </p>
+  <p>
+    Older versions of Altirra had separate modes for standard and polled transfer modes, with
+    the polled mode particularly needed for SpartaDOS X. This
+    is no longer necessary, as the burst transfer modes have been merged into a universal
+    method.
+  </p>
+  
+  <h3>SIO acceleration mode</h3>
+  <p>
+    Allows switching between SIOV, PBI, and dual patching modes. The SIOV patching mode is the
+    one used by most emulators and intercepts requests to the OS SIO routines through the
+    <tt>SIOV</tt> vector. It generally works with most DOSes and custom bootloaders that
+    use the OS routines to read the disk.
+  </p>
+  <p>
+    The PBI patching mode uses a Parallel Bus Interface (PBI) device to intercept requests.
+    This is slightly slower and only works on XL/XE hardware with an XL/XE OS. However, it
+    resolves some conflict issues with virtual disk functionality in custom OSes and PBI
+    devices, by hooking as a low-priority PBI device. It also allows easier acceleration with
+    recent versions of SpartaDOS X that do not use SIOV by default but do have support for
+    PBI disks.
+  </p>
+  <p>
+    The SIOV hook has priority over the PBI hook; the PBI hook only activates if the SIOV
+    hook is unable to intercept the request.
+  </p>
+  
+</topic>

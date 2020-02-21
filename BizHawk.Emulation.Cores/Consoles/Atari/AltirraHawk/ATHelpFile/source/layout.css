@@ -1,0 +1,185 @@
+body {
+	font-family: sans-serif;
+	font-weight: normal;
+	font-size: 10pt;
+	margin: 0;
+	padding: 0;
+	background: #fff;
+	color: #000;
+}
+
+a {
+	text-decoration: none;
+}
+
+h2 {
+	font-size: 14pt;
+	font-weight: normal;
+	border-bottom: 1px solid #aaa;
+}
+
+h3 {
+	font-size: 12pt;
+	font-weight: bold;
+	margin-top: 18pt;
+	margin-bottom: 0;
+}
+
+li {
+	font-size: 10pt;
+	margin: 0;
+	padding: 0;
+	vertical-align: bottom;
+}
+
+a {
+	margin: 0;
+	padding: 0;
+}
+
+table {
+	padding: 0;
+	font-size: 10pt;
+}
+
+tr {
+	padding: 0;
+	margin: 0;
+	border: 0;
+}
+
+th {
+	padding: 2px;
+	margin: 0;
+}
+
+td {
+	padding: 2px;
+	margin: 0;
+}
+
+table.std {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+table.std th {
+	background-color: #afb;
+}
+
+table.std td {
+	background-color: #eee;
+}
+
+tt {
+	font-family: Lucida Console, monospace;
+}
+
+dt {
+	font-weight: bold;
+}
+
+dd {
+	margin-top: 5pt;
+	margin-bottom: 5pt;
+}
+
+pre {
+	white-space: pre-wrap;
+	white-space: -moz-pre-wrap;
+	white-space: -pre-wrap;
+	white-space: -o-pre-wrap;
+	word-wrap: break-word;
+}
+
+pre.example {
+	margin-left: 0px;
+	padding: 8px;
+	background: #ddd;
+}
+
+.main {
+	margin: 12pt;
+	padding-bottom: 1px;
+}
+
+.header {
+	font-family: sans-serif;
+	font-weight: normal;
+	font-size: 12pt;
+	background: #c0e0ff;
+	margin: 0;
+	padding: 8pt 4pt 4pt 4pt;
+}
+
+.header-banner {
+	font-weight: bold;
+	font-size: 16pt;
+}
+
+.header-topic {
+	margin: 0px 8px;
+	font-weight: bold;
+}
+
+.topic {
+	padding: 8pt;
+}
+
+.toc {
+	border: 1px solid black;
+}
+
+.toc-header {
+	font-weight: bold;
+	font-size: 10pt;
+	text-align: center;
+	margin-bottom: 8pt;	
+}
+
+.toc td {
+	padding: 4pt;
+}
+
+.toc ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.toc ul ul {
+	list-style: none;
+	margin: 0;
+	padding-left: 12pt;
+}
+
+.toc ol {
+	list-style: decimal;
+	margin: 0;
+	padding: 0 0 0 12pt;
+}
+
+.toc li {
+	margin: 0;
+	padding: 0;
+}
+
+.featurelist {
+}
+
+.featurelist-yes {
+	background-color: #efe;
+}
+
+.featurelist-no {
+	background-color: #fee;
+}
+
+.note {
+	border-left: 3px solid brown;
+	padding-left: 6px;
+}
+
+.note-title {
+	font-weight: bold;
+}

@@ -1,0 +1,50 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="The 400/800 Home Computer">
+  <h2>Description</h2>
+  <p>
+    The 400 and 800 Home Computers were the original computers in the Atari 8-bit computer line.
+  </p>
+  <h3>Configurations</h3>
+  <p>
+    The 400 has two distinctive features relative to the 800: a crappy membrane
+    keyboard and only 8K or 16K of RAM. Almost nothing runs in 8K, and the majority
+    of programs will not run with 16K. Hardware modifications were available to
+    expand 400s to 48K to fix this problem.
+  </p>
+  <p>
+    The 800 has an expansion bay in the back containing RAM modules and the
+    "personality module" that provides the OS ROM. Different configurations of
+    RAM modules can provide various memory configurations from 8K to 48K; the
+    48K configuration is the most common and the one expected by most software.
+    Certain hardware add-ons add another 4K of RAM to give the less common
+    52K configuration.
+  </p>
+  <p>
+    Both the 400/800 have four controller ports, but only the 800 has two cartridge
+    ports. The left cartridge port on the 800 is the regular one; the right cartridge
+    port is the oddball. A cartridge designed for one port cannot be used in the other
+    and very few cartridges were designed for the right port.
+  </p>
+  <h2>Emulation-specific concerns</h2>
+  <p>
+    Because of the similarity of the 400 and 800, Altirra does not have distinct hardware
+    modes for the two; the 400 is emulated by selecting the 800 hardware mode and lowering
+    the memory configuration to 8K or 16K. There is only one minor hardware difference
+    which is not emulated, which is that a light pen works on all ports on an 800 but
+    only port 4 on a 400.
+  </p>
+  <p>
+    The emulator also does not have distinct left and right cartridge ports; instead, the
+    'port' used by a cartridge is determined by the cartridge mapper. Cartridge images
+    using the .CAR format are pre-marked and automatically detected by the emulator
+    as a left cartridge or right cartridge. If both a left and a right cartridge are
+    to be used at the same time, the right cartridge should be set as the secondary
+    cartridge.
+  </p>
+  <p>
+    The 400/800 do not have internal BASIC and therefore Altirra's default option for
+    controlling BASIC via the Option key is inoperative with these systems. Instead,
+    BASIC is attached from the cartridge menu, which creates a BASIC cartridge on the fly.
+  </p>
+</topic>

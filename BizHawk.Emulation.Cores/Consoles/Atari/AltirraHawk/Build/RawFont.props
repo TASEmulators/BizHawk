@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup
+    Condition="'$(CompileRawFontBeforeTargets)' == '' and '$(CompileRawFontAfterTargets)' == '' and '$(ConfigurationType)' != 'Makefile'">
+    <CompileRawFontBeforeTargets>Midl</CompileRawFontBeforeTargets>
+    <CompileRawFontAfterTargets>CustomBuild</CompileRawFontAfterTargets>
+  </PropertyGroup>
+  <PropertyGroup>
+    <CompileRawFontDependsOn
+      Condition="'$(ConfigurationType)' != 'Makefile'">_SelectedFiles;$(CompileRawFontDependsOn)</CompileRawFontDependsOn>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <CompileRawFont>
+      <RawFont>False</RawFont>
+      <OutputPath>$(ProjectDir)autogen\%(Filename).inl</OutputPath>
+      <CellWidth>8</CellWidth>
+      <CellHeight>8</CellHeight>
+      <GridColumns>0</GridColumns>
+      <GridRows>0</GridRows>
+      <Ascent>0</Ascent>
+      <Advance>0</Advance>
+      <LineGap>0</LineGap>
+      <CommandLineTemplate>"$(ATBuildToolPath)\asuka.exe" fontencode "%(FullPath)" [CellWidth] [CellHeight] [GridColumns] [GridRows] [Ascent] [Advance] [LineGap] "[OutputPath]" [SymbolName] [RawFont]</CommandLineTemplate>
+      <Outputs>[OutputPath]</Outputs>
+    </CompileRawFont>
+  </ItemDefinitionGroup>
+</Project>

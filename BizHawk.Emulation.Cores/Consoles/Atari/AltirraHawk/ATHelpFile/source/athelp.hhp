@@ -1,0 +1,17 @@
+[OPTIONS]
+Compatibility=1.1 or later
+Compiled file=Altirra.chm
+Contents file=athelp.hhc
+Default Window=default
+Default topic=index.html
+Display compile progress=No
+Full-text search=Yes
+Language=0x409 English (United States)
+Title=Altirra Help
+
+[WINDOWS]
+default=,"athelp.hhc",,"index.html",,,,,,0x2520,,0x3006,,,,,,,,0
+
+
+[INFOTYPES]
+

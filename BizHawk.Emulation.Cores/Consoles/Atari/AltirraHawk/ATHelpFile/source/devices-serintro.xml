@@ -1,0 +1,50 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Serial bus based devices">
+  <p>
+    Serial I/O (SIO) bus based devices plug into the trapezoidal SIO port on the computer. The SIO bus has lower speed than
+    an internal or cartridge-based interface, but supports a wider variety of devices. Multiple devices can be connected to the serial bus by daisy-chaining.
+  </p>
+  <h2>Devices</h2>
+  <p>
+    The following serial bus based devices are emulated by Altirra:
+  </p>
+  <ul>
+    <li>
+      Cassette tape drives
+    </li>
+    <ul>
+      <li><a href="devices-cassette.html">410/1010 Program Recorder</a></li>
+    </ul>
+    <li>
+      <a href="disk.html">Disk drives</a>
+    </li>
+    <ul>
+      <li>810 Disk Drive</li>
+      <li>1050 Disk Drive</li>
+      <li>XF551 Disk Drive</li>
+    </ul>
+    <li>
+      Serial port interfaces
+    </li>
+    <ul>
+      <li>
+        <a href="serial.html">850 Interface Module</a>
+      </li>
+    </ul>
+    <li>
+      Other devices
+    </li>
+    <ul>
+      <li>
+        <a href="pclink.html">PCLink</a>
+      </li>
+    </ul>
+  </ul>
+  <h2>Conflicts</h2>
+  <p>
+    Because the SIO bus allows for daisy chaining, conflicts on the SIO bus are rare. Some devices, like the 410 Program Recorder,
+    don't have a daisy chaining port and must be at the end of the chain on real hardware; Altirra allows more than one
+    such device to be attached, but this doesn't pose a problem in emulation.
+  </p>
+</topic>

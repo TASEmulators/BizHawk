@@ -1,0 +1,143 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winresrc.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (United States) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""winresrc.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_CONFIGURE_ACCEL DIALOGEX 0, 0, 400, 206
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "Configure Keyboard Shortcuts"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "A&vailable commands:",IDC_STATIC_AVAILABLECOMMANDS,7,7,141,8
+    LISTBOX         IDC_AVAILCOMMANDS,7,18,141,132,LBS_SORT | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "&Quick Search",IDC_STATIC_QUICKSEARCH,7,153,42,12,SS_CENTERIMAGE
+    EDITTEXT        IDC_FILTER,53,153,95,12,ES_AUTOHSCROLL
+    LTEXT           "&Bound commands:",IDC_STATIC_BOUNDCOMMANDS,151,7,242,8
+    CONTROL         "",IDC_BOUNDCOMMANDS,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_TABSTOP,151,18,242,147,WS_EX_CLIENTEDGE
+    LTEXT           "&Shortcut",IDC_STATIC_SHORTCUT,7,168,28,12,SS_CENTERIMAGE
+    COMBOBOX        IDC_CONTEXT,53,168,60,50,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Custom1",IDC_HOTKEY,"VDHotKeyEx",WS_TABSTOP,115,168,172,14
+    PUSHBUTTON      "&Add",IDC_ADD,290,168,50,14
+    PUSHBUTTON      "&Remove",IDC_REMOVE,343,168,50,14
+    PUSHBUTTON      "Reset to &Defaults",IDC_RESET,53,185,65,14
+    CONTROL         "Key &up",IDC_KEYUP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,151,185,88,14
+    DEFPUSHBUTTON   "OK",IDOK,290,185,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,343,185,50,14
+END
+
+IDD_GENERIC_DIALOG DIALOGEX 0, 0, 279, 78
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Generic Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "&Yes",IDYES,117,57,50,14
+    DEFPUSHBUTTON   "&No",IDNO,151,57,50,14
+    DEFPUSHBUTTON   "OK",IDOK,170,57,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,223,57,50,14
+    ICON            "",IDC_GENERIC_ICON,34,24,20,20,SS_CENTERIMAGE
+    LTEXT           "Static Text",IDC_GENERIC_TITLE,51,7,137,12,SS_NOPREFIX
+    LTEXT           "Static Text",IDC_GENERIC_TEXT,94,27,137,12,SS_NOPREFIX
+    CONTROL         "&Don't ask this again",IDC_DISABLE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,78,10
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_CONFIGURE_ACCEL, DIALOG
+    BEGIN
+        VERTGUIDE, 7
+        VERTGUIDE, 53
+        VERTGUIDE, 148
+        VERTGUIDE, 151
+        VERTGUIDE, 393
+    END
+
+    IDD_GENERIC_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 273
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 71
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_GENERIC_DIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+#endif    // English (United States) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

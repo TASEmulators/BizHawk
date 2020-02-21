@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Atari XF551">
+	<p>
+		The Atari XF551 disk drive supports single-density (90K), enhanced density (130K),
+		double density (180K), and double-sided double density (360K) disks.
+	</p>
+	<h2>Density switching issue</h2>
+	<p>
+		The real XF551 running on stock firmware has problems switching from single-density
+		or enhanced-density to double-density modes, which is emulated faithfully if the
+		same firmware is used. The symptom is that inserting a double-density disk after
+		reading or booting either a single-density or enhanced-density disks times out
+		with a read error after a significant delay. This is caused by the firmware failing
+		to recognize the double-density disk and trying to read track 13, sector 22
+		when DOS requests a read of the first directory sector.
+	</p>
+	<p>
+		Booting off of a double-density disk avoids this problem because the firmware
+		successfully switches to double-density when DOS.SYS is read during the boot process.
+		Enhanced DOSes that allow direct control of the density setting for a drive will
+		work around this, as well, XF551-specific DOSes that read sector 4 to trigger
+		a density switch on the drive.
+	</p>
+</topic>

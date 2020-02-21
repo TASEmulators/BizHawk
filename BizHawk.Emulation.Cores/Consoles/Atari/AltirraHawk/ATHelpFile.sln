@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27205.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ATHelpBuilder", "ATHelpBuilder\ATHelpBuilder.vcxproj", "{2E82F9C0-CD0E-445F-899F-8A71338096BE}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ATHelpFile", "ATHelpFile\ATHelpFile.vcxproj", "{B1076C28-FEB2-40A6-8224-A072C44DD2B8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2E82F9C0-CD0E-445F-899F-8A71338096BE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2E82F9C0-CD0E-445F-899F-8A71338096BE}.Debug|Win32.Build.0 = Debug|Win32
+		{2E82F9C0-CD0E-445F-899F-8A71338096BE}.Release|Win32.ActiveCfg = Release|Win32
+		{2E82F9C0-CD0E-445F-899F-8A71338096BE}.Release|Win32.Build.0 = Release|Win32
+		{B1076C28-FEB2-40A6-8224-A072C44DD2B8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B1076C28-FEB2-40A6-8224-A072C44DD2B8}.Debug|Win32.Build.0 = Debug|Win32
+		{B1076C28-FEB2-40A6-8224-A072C44DD2B8}.Release|Win32.ActiveCfg = Release|Win32
+		{B1076C28-FEB2-40A6-8224-A072C44DD2B8}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E213E36A-4632-440B-B6F6-DB6D9DB24B1B}
+	EndGlobalSection
+EndGlobal

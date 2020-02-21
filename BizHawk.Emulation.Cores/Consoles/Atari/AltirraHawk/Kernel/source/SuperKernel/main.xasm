@@ -1,0 +1,373 @@
+;	Altirra - Atari 800/800XL/5200 emulator
+;	5200 OS ROM replacement
+;	Copyright (C) 2008-2010 Avery Lee
+;
+;	Copying and distribution of this file, with or without modification,
+;	are permitted in any medium without royalty provided the copyright
+;	notice and this notice are preserved.  This file is offered as-is,
+;	without any warranty.
+
+		opt		h-o+f+
+
+		icl		'includes.xasm'
+
+		org		$f800
+		ins		'atarifont.bin',$0,$400
+
+;=========================================================================
+.proc	irq
+		jmp		(vimirq)
+.endp
+
+;=========================================================================
+;Must be at $FC03 for Montezuma's Revenge to work.
+		org		$fc03
+.proc	sysirq
+		pha
+		
+		;We test interrupts in this order:
+		;	20 -> VSERIN
+		;	80 -> VTRIGR
+		;	40 -> VKYBDI
+		;	10 -> VSEROR
+		;	08 -> VSEROC
+		;	01 -> VTIMR1
+		;	02 -> VTIMR2
+		;	04 -> VTIMR4
+		;	VBRKOP
+		;
+		;Note that there is a complication with VSEROC, since it is not
+		;masked by POKEY. We must only dispatch it if it is enabled in
+		;POKMSK.
+		lda		#$20
+		bit		irqst
+		bne		not_serin
+		eor		pokmsk
+		sta		irqen
+		lda		pokmsk
+		sta		irqen
+		jmp		(vserin)
+not_serin:
+		bmi		not_trigr
+		lda		#$80
+		eor		pokmsk
+		sta		irqen
+		lda		pokmsk
+		sta		irqen
+		jmp		(vtrigr)
+not_trigr:
+		bvs		not_kybd
+		lda		#$40
+		eor		pokmsk
+		sta		irqen
+		lda		pokmsk
+		sta		irqen
+		jmp		(vkybdi)
+not_kybd:
+		ror
+		bit		irqen
+		beq		not_seror
+		eor		pokmsk
+		sta		irqen
+		lda		pokmsk
+		sta		irqen
+		jmp		(vseror)
+not_seror:
+		ror
+		bit		pokmsk
+		beq		not_seroc
+		bit		irqen
+		bne		not_seroc
+		eor		pokmsk
+		sta		irqen
+		lda		pokmsk
+		sta		irqen
+		jmp		(vseroc)
+not_seroc:
+		lda		#$01
+		bit		irqst
+		bne		not_timr1
+		eor		pokmsk
+		sta		irqen
+		lda		pokmsk
+		sta		irqen
+		jmp		(vtimr1)
+not_timr1:
+		rol
+		bit		irqst
+		bne		not_timr2
+		eor		pokmsk
+		sta		irqen
+		lda		pokmsk
+		sta		irqen
+		jmp		(vtimr2)
+not_timr2:
+		rol
+		bit		irqst
+		bne		not_timr4
+		eor		pokmsk
+		sta		irqen
+		lda		pokmsk
+		sta		irqen
+		jmp		(vtimr4)
+not_timr4:
+		txa
+		pha
+		tsx
+		lda		$0101,x
+		and		#$10
+		bne		wtf
+		jmp		(vbrkop)
+wtf:
+		pla
+		tax
+		pla
+		rti
+.endp
+
+;=========================================================================
+;Must be at $FCB2 for Congo Bongo to work (grrr... damn SEGA)
+		org		$fcb2
+.proc	xitvbl
+		pla
+		tay
+		pla
+		tax
+		pla
+		rti
+.endp
+
+;=========================================================================
+;Must be at $FCB8 for Montezuma's Revenge to work.
+		org		$fcb8
+.proc	sysvbl
+		pha
+		txa
+		pha
+		tya
+		pha
+		
+		inc		rtclok+1
+		bne		rtnocarry
+		inc		rtclok
+		lda		atract
+		bmi		rtnocarry
+		inc		atract
+rtnocarry:
+
+		lda		critic
+		bne		xitvbl
+
+		mva		sdlstl	dlistl
+		mva		sdlsth	dlisth
+		mva		sdmctl	dmactl
+
+		;copy and attract colors
+		ldy		#0
+		bit		atract
+		spl:ldy	rtclok
+		
+		ldx		#8
+colorloop:
+		tya
+		eor		pcolr0,x
+		sta		colpm0,x
+		dex
+		bpl		colorloop
+		
+		;update pots
+		ldx		#7
+potloop:
+		lda		pot0,x
+		sta		paddl0,x
+		dex
+		bpl		potloop
+		sta		potgo
+		
+		;run deferred
+		jmp		(vvblkd)
+.endp
+
+;=========================================================================
+; System keyboard handler
+;
+; MUST be at $FD02 for Blueprint to work.
+;
+		org		$fd02
+.proc	syskbd
+		txa
+		pha
+		tya
+		pha
+		lda		kbcode
+		lsr
+		and		#$0f
+		tax
+		lda		keytable,x
+		jmp		(vkybdf)
+.endp
+
+;=========================================================================
+;Keyboard translation table
+;
+;MUST be at $FD13 for Congo Bongo to work.
+;
+		org		$fd13
+keytable:
+		dta		$ff,$0b,$00,$0a,$0e,$09,$08,$07,$0d,$06,$05,$04,$0c,$03,$02,$01
+
+;=========================================================================
+; NMI handler
+;
+.proc	nmi
+		bit		nmist
+		
+		;This is pretty useless, but the stock 5200 OS does it, and it
+		;affects DLI timing -- in particular, it can cause DLIs ported
+		;from the 400/800 OS to fail.
+		sta		nmires
+		
+		spl:jmp	(vdslst)
+		jmp		(vvblki)
+.endp
+
+;=========================================================================
+; RESET handler
+;
+.proc	reset
+		;initialize CPU
+		sei
+		cld
+		ldx		#$ff
+		txs
+		
+		;check for diagnostic cartridge
+		lda		$bffd
+		cmp		#$ff
+		bne		notdiag
+		jmp		($bffe)
+notdiag:
+
+		;zero hardware registers and page zero
+		ldx		#0
+		lda		#0
+zeroloop:
+		sta		$00,x
+		sta		$c000,x
+		sta		$d400,x
+		sta		$e800,x
+		inx
+		bne		zeroloop
+		
+		;init hardware display
+		mva		#$f8 chbase
+		
+		;initialize vectors
+		ldx		#$0b
+vecloop:
+		lda		irqtable,x
+		sta		$0200,x
+		dex
+		bpl		vecloop
+		
+		;set up default display
+		ldx		#79
+pfcopyloop:
+		lda		playfield,x
+		sta		$1000,x
+		dex
+		bpl		pfcopyloop
+		
+		ldx		#19
+namecopyloop:
+		lda		$bfe8,x
+		sta		$1050,x
+		dex
+		bpl		namecopyloop
+		
+		;PF0 is the flashing color, while PF1 is white. PF2 and PF3 are black.
+		;In fact, PF3 must be black in order for the Defender title to appear
+		;properly.
+		mva		#$10 color0
+		mva		#$0F color1
+		mva		#$00 color2
+		mva		#$00 color3
+		mva		#$00 color4
+		mva		#$04 prior
+		
+		;move display list; must be at $2000 for Miniature Golf to work
+		ldx		#playfield-dlist-1
+dlcopy:
+		lda		dlist,x
+		sta		$2000,x
+		dex
+		bpl		dlcopy
+		
+		mva		#$22 sdmctl
+		mva		#$c0 nmien
+		mwa		#$2000 sdlstl
+		
+		;enable key input
+		mva		#$02 skctl
+		lda		#$c0
+		sta		pokmsk
+		sta		irqen
+		
+		;wait two seconds (four is too long)
+		lda		#120
+		cmp:rne	rtclok+1
+		
+		;invoke cartridge
+		jmp		($bffe)
+		
+dlist:
+		dta		$70
+		dta		$70
+		dta		$70
+		dta		$42,a($1000)
+		dta		$82
+		dta		$07
+		dta		$41,a(dlist)
+		
+playfield:
+;				  0123456789012345678901234567890123456789
+		dta		d"Altirra 5200 ROM Kernel                 "
+		dta		d"Now playing:                            "
+.endp
+
+;=========================================================================
+; Default IRQ table
+;
+; MUST be at $FE95 for Pitfall! to work.
+;
+		org		$fe95
+irqtable:
+		dta		a(sysirq)	;vimirq = $fc03
+		dta		a(sysvbl)	;vvblki = $fcb8
+		dta		a(xitvbl)	;vvblkd
+		dta		a(sysdli)	;vdslst = $fea1
+		dta		a(syskbd)	;vkybdi
+		dta		a(xitvbl)	;vkybdf
+
+;=========================================================================
+;Must be at $FEA1 for A.E.
+		org		$fea1
+.proc	sysdli
+		pha
+		
+		;cycle color PF0, but avoid going through grayscales
+		inc		color0
+		bne		noroll
+		lda		#$10
+		sta		color0
+noroll:
+		pla
+		rti
+.endp
+
+;=========================================================================
+
+		org		$fffa
+		dta		a(nmi)
+		dta		a(reset)
+		dta		a(irq)

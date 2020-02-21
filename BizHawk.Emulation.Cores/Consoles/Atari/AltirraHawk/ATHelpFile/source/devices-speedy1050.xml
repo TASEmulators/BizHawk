@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Speedy 1050">
+  <p>
+    The Speedy 1050 is a modified Atari 1050 with support for single, enhanced, and double
+    density disks.
+  </p>
+  <h2>NTSC compatibility</h2>
+  <p>
+    The Speedy 1050 cannot reliably handle high speed writes with an NTSC computer and
+    will constantly trigger SIO device NAK errors (error 139). This happens because NTSC
+    computers send data slightly faster than PAL computers and the Speedy 1050 firmware's
+    receive loop is slightly too slow to handle the faster NTSC speed. Firmware versions
+    up through 1.6 have this problem; a fixed 1.7 version is available for the MegaSpeedy
+    add-on, which includes Speedy 1050 as one of its modes.
+  </p>
+</topic>

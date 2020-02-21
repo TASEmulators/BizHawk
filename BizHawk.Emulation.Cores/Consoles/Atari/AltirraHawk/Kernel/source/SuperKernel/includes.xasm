@@ -1,0 +1,103 @@
+;	Altirra - Atari 800/800XL/5200 emulator
+;	5200 OS ROM replacement
+;	Copyright (C) 2008-2016 Avery Lee
+;
+;	Copying and distribution of this file, with or without modification,
+;	are permitted in any medium without royalty provided the copyright
+;	notice and this notice are preserved.  This file is offered as-is,
+;	without any warranty.
+
+trig0	equ	$c010
+trig1	equ	$c011
+trig2	equ	$c012
+colpm0	equ	$c012
+trig3	equ	$c013
+colpm1	equ	$c013
+colpm2	equ	$c014
+colpm3	equ	$c015
+colpf0	equ	$c016
+colpf1	equ	$c017
+colpf2	equ	$c018
+colpf3	equ	$c019
+colbk	equ	$c01a
+prior	equ	$c01b
+consol	equ	$c01f
+pot0	equ	$e800
+audf1	equ	$e800
+pot1	equ	$e801
+audc1	equ	$e801
+pot2	equ	$e802
+audf2	equ	$e802
+pot3	equ	$e803
+audc2	equ	$e803
+pot4	equ	$e804
+audf3	equ	$e804
+pot5	equ	$e805
+audc3	equ	$e805
+pot6	equ	$e806
+audf4	equ	$e806
+pot7	equ	$e807
+audc4	equ	$e807
+audctl	equ	$e808
+kbcode	equ	$e809
+skres	equ	$e80a
+potgo	equ	$e80b
+serin	equ	$e80d
+serout	equ	$e80d
+irqen	equ	$e80e
+irqst	equ	$e80e
+skctl	equ	$e80f
+dmactl	equ	$d400
+chactl	equ	$d401
+dlistl	equ	$d402
+dlisth	equ	$d403
+hscrol	equ	$d404
+vscrol	equ	$d405
+chbase	equ	$d409
+wsync	equ	$d40a
+nmien	equ	$d40e
+nmist	equ	$d40f
+nmires	equ	$d40f
+
+pokmsk	equ		$00
+rtclok	equ		$01
+;		equ		$02
+critic	equ		$03
+atract	equ		$04
+sdlstl	equ		$05
+sdlsth	equ		$06
+sdmctl	equ		$07
+pcolr0	equ		$08
+pcolr1	equ		$09
+pcolr2	equ		$0a
+pcolr3	equ		$0b
+color0	equ		$0c
+color1	equ		$0d
+color2	equ		$0e
+color3	equ		$0f
+color4	equ		$10
+paddl0	equ		$11
+paddl1	equ		$12
+paddl2	equ		$13
+paddl3	equ		$14
+paddl4	equ		$15
+paddl5	equ		$16
+paddl6	equ		$17
+paddl7	equ		$18
+ 
+vimirq	equ		$0200		;IRQ immediate vector
+vvblki	equ		$0202		;VBI immediate vector
+vvblkd	equ		$0204		;VBI deferred vector
+vdslst	equ		$0206		;display list vector
+vkybdi	equ		$0208		;keyboard immediate vector
+vkybdf	equ		$020a		;keyboard deferred vector
+vtrigr	equ		$020c		;soft-trigger vector (BREAK key)
+vbrkop	equ		$020e		;BRK opcode vector
+vserin	equ		$0210		;serial input ready vector
+vseror	equ		$0212		;serial output ready vector
+vseroc	equ		$0214		;serial output complete vector
+vtimr1	equ		$0216		;POKEY timer #1 vector
+vtimr2	equ		$0218		;POKEY timer #2 vector
+vtimr4	equ		$021a		;POKEY timer #4 vector
+
+jveck	equ		$021e

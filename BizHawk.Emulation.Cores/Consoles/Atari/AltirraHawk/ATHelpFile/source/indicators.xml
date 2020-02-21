@@ -1,0 +1,52 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="On-screen indicators">
+  <p>
+    A series of on-screen indicators can appear at the bottom of the display window to indicate I/O activity.
+  </p>
+  <img src="pics/indicators.png" width="672" height="38" style="display: block; margin-left: auto; margin-right: auto;"/>
+  <p>
+    The indicators are as follows:
+  </p>
+  <blockquote>
+    <dl>
+      <dt>Modem status (Connected to 192.168.0.1:8000)</dt>
+      <dd>
+        Displays outgoing addresses and state when dialing out and incoming addresses and state when receiving connections.
+        Addresses are displayed in raw IPv4 or IPv6 format.
+      </dd>
+
+      <dt>Cassette tape position (00:00:00)</dt>
+      <dd>
+        Appears when a cassette tape image is mounted and the cassette tape is moving. A "C" is also displayed before
+        the timestamp when cassette SIO acceleration is occurring.
+      </dd>
+
+      <dt>PCLink activity (PCL:R/W)</dt>
+      <dd>
+        Displayed when the <a href="pclink.html">PCLink device</a> is activated.
+      </dd>
+
+      <dt>Recording length (R02:00:00)</dt>
+      <dd>
+        Shows how long a video or audio recording session has run.
+      </dd>
+
+      <dt>IDE read/write indicator (W1000000)</dt>
+      <dd>
+        Indicates "R" for read or "W" for write activity to the IDE hard disk and the logical block address (LBA) of the accessed sector.
+      </dd>
+
+      <dt>Flash write indicator (F)</dt>
+      <dd>
+        An "F" is displayed whenever writes occur to cartridge or peripheral flash memory.
+      </dd>
+
+      <dt>Floppy drive LEDs (1-15)</dt>
+      <dd>
+        Appear on a floppy drive access. By default the drive number is displayed; this can be changed to the sector
+        number in the menu under <em>System &gt; Disk</em>.
+      </dd>
+    </dl>
+  </blockquote>
+</topic>

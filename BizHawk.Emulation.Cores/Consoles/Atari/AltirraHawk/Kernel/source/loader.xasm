@@ -1,0 +1,50 @@
+;	Altirra - Atari 800/800XL emulator
+;	Kernel ROM replacement
+;	Copyright (C) 2008-2016 Avery Lee
+;
+;	Copying and distribution of this file, with or without modification,
+;	are permitted in any medium without royalty provided the copyright
+;	notice and this notice are preserved.  This file is offered as-is,
+;	without any warranty.
+
+	run		Loader
+	
+	org		$2000
+	
+.proc Loader
+	;shut off all interrupts
+	sei
+	lda		#$00
+	sta		nmien
+	sta		nmires
+	sta		irqen
+	
+	;disable kernel and basic ROMs
+	lda		#$3c
+	sta		pbctl
+	lda		#$FE
+	sta		portb
+	
+	;relocate kernel
+	ldx		#$00
+copyloop:
+	lda		$4000, x
+	sta		$c000, x
+	inx
+	bne		copyloop
+	inc		copyloop+2
+	inc		copyloop+5
+	lda		copyloop+2
+	bmi		exit
+	cmp		#$50
+	bne		copyloop
+	lda		#$58
+	sta		copyloop+2
+	lda		#$d8
+	sta		copyloop+5
+	bne		copyloop
+	
+exit:
+	;run kernel
+	jmp		($fffc)
+.endp

@@ -1,0 +1,197 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ProjectSchemaDefinitions xmlns="clr-namespace:Microsoft.Build.Framework.XamlTypes;assembly=Microsoft.Build.Framework" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:transformCallback="Microsoft.Cpp.Dev10.ConvertPropertyCallback">
+  <Rule
+    Name="CompileRawFont"
+    PageTemplate="tool"
+    DisplayName="Compile Raw Font"
+    Order="200">
+    <Rule.DataSource>
+      <DataSource
+        Persistence="ProjectFile"
+        ItemType="CompileRawFont" />
+    </Rule.DataSource>
+    <Rule.Categories>
+      <Category
+        Name="General">
+        <Category.DisplayName>
+          <sys:String>General</sys:String>
+        </Category.DisplayName>
+      </Category>
+      <Category
+        Name="Command Line"
+        Subtype="CommandLine">
+        <Category.DisplayName>
+          <sys:String>Command Line</sys:String>
+        </Category.DisplayName>
+      </Category>
+    </Rule.Categories>
+    <StringListProperty
+      Name="Inputs"
+      Category="Command Line"
+      IsRequired="true"
+      Switch=" ">
+      <StringListProperty.DataSource>
+        <DataSource
+          Persistence="ProjectFile"
+          ItemType="CompileRawFont"
+          SourceType="Item" />
+      </StringListProperty.DataSource>
+    </StringListProperty>
+    <BoolProperty
+      Name="RawFont"
+      Subcategory="Output"
+      HelpContext="0"
+      DisplayName="Raw font"
+      Description="If set, only raw character data is encoded."
+      Switch="/raw" />
+    <StringProperty
+      Name="SymbolName"
+      Subcategory="Output"
+      HelpContext="0"
+      DisplayName="Symbol name"
+      Description="Name of symbol to use for emitted data."
+      Switch="[value]" />
+    <StringProperty
+      Name="OutputPath"
+      Subcategory="Output"
+      HelpContext="0"
+      DisplayName="Output path"
+      Description="Output path for emitted file."
+      Switch="[value]" />
+    <IntProperty
+      Name="CellWidth"
+      Subcategory="Font Metrics"
+      HelpContext="0"
+      DisplayName="Cell width"
+      Description="Maximum width of character cell, in pixels."
+      Switch="[value]" />
+    <IntProperty
+      Name="CellHeight"
+      Subcategory="Font Metrics"
+      HelpContext="0"
+      DisplayName="Cell height"
+      Description="Character cell height, in pixels."
+      Switch="[value]" />
+    <IntProperty
+      Name="GridColumns"
+      Subcategory="Image Layout"
+      HelpContext="0"
+      DisplayName="Grid columns"
+      Description="Number of cells across in the grid."
+      Switch="[value]" />
+    <IntProperty
+      Name="GridRows"
+      Subcategory="Image Layout"
+      HelpContext="0"
+      DisplayName="Grid rows"
+      Description="Number of cell rows in the layout grid."
+      Switch="[value]" />
+    <IntProperty
+      Name="Ascent"
+      Subcategory="Font Metrics"
+      HelpContext="0"
+      DisplayName="Ascent"
+      Description="Number of pixels from baseline to top of character cell."
+      Switch="[value]" />
+    <IntProperty
+      Name="Advance"
+      Subcategory="Font Metrics"
+      HelpContext="0"
+      DisplayName="Advance"
+      Description="Number of pixels to advance horizontally per character."
+      Switch="[value]" />
+    <IntProperty
+      Name="LineGap"
+      Subcategory="Font Metrics"
+      HelpContext="0"
+      DisplayName="Line gap"
+      Description="Vertical distance in pixels between character cells on adjacent rows."
+      Switch="[value]" />
+    <StringProperty
+      Name="CommandLineTemplate"
+      DisplayName="Command Line"
+      Visible="False"
+      IncludeInCommandLine="False" />
+    <DynamicEnumProperty
+      Name="CompileRawFontBeforeTargets"
+      Category="General"
+      EnumProvider="Targets"
+      IncludeInCommandLine="False">
+      <DynamicEnumProperty.DisplayName>
+        <sys:String>Execute Before</sys:String>
+      </DynamicEnumProperty.DisplayName>
+      <DynamicEnumProperty.Description>
+        <sys:String>Specifies the targets for the build customization to run before.</sys:String>
+      </DynamicEnumProperty.Description>
+      <DynamicEnumProperty.ProviderSettings>
+        <NameValuePair
+          Name="Exclude"
+          Value="^CompileRawFontBeforeTargets|^Compute" />
+      </DynamicEnumProperty.ProviderSettings>
+      <DynamicEnumProperty.DataSource>
+        <DataSource
+          Persistence="ProjectFile"
+          HasConfigurationCondition="true" />
+      </DynamicEnumProperty.DataSource>
+    </DynamicEnumProperty>
+    <DynamicEnumProperty
+      Name="CompileRawFontAfterTargets"
+      Category="General"
+      EnumProvider="Targets"
+      IncludeInCommandLine="False">
+      <DynamicEnumProperty.DisplayName>
+        <sys:String>Execute After</sys:String>
+      </DynamicEnumProperty.DisplayName>
+      <DynamicEnumProperty.Description>
+        <sys:String>Specifies the targets for the build customization to run after.</sys:String>
+      </DynamicEnumProperty.Description>
+      <DynamicEnumProperty.ProviderSettings>
+        <NameValuePair
+          Name="Exclude"
+          Value="^CompileRawFontAfterTargets|^Compute" />
+      </DynamicEnumProperty.ProviderSettings>
+      <DynamicEnumProperty.DataSource>
+        <DataSource
+          Persistence="ProjectFile"
+          ItemType=""
+          HasConfigurationCondition="true" />
+      </DynamicEnumProperty.DataSource>
+    </DynamicEnumProperty>
+    <StringListProperty
+      Name="Outputs"
+      DisplayName="Outputs"
+      Visible="False"
+      IncludeInCommandLine="False" />
+    <StringProperty
+      Name="ExecutionDescription"
+      DisplayName="Execution Description"
+      Visible="False"
+      IncludeInCommandLine="False" />
+    <StringListProperty
+      Name="AdditionalDependencies"
+      DisplayName="Additional Dependencies"
+      IncludeInCommandLine="False"
+      Visible="false" />
+    <StringProperty
+      Subtype="AdditionalOptions"
+      Name="AdditionalOptions"
+      Category="Command Line">
+      <StringProperty.DisplayName>
+        <sys:String>Additional Options</sys:String>
+      </StringProperty.DisplayName>
+      <StringProperty.Description>
+        <sys:String>Additional Options</sys:String>
+      </StringProperty.Description>
+    </StringProperty>
+  </Rule>
+  <ItemType
+    Name="CompileRawFont"
+    DisplayName="Compile Raw Font" />
+  <FileExtension
+    Name="*.bmp-font"
+    ContentType="CompileRawFont" />
+  <ContentType
+    Name="CompileRawFont"
+    DisplayName="Compile Raw Font"
+    ItemType="CompileRawFont" />
+</ProjectSchemaDefinitions>

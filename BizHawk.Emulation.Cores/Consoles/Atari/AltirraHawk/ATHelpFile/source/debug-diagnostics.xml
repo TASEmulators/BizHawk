@@ -1,0 +1,78 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Diagnostics">
+  <p>
+    Altirra's debugger allows for non-intrusive trace and assert statements to be added to
+    assembly code.
+  </p>
+  <toc/>
+  <h2>Prerequisites</h2>
+  <p>
+    You must be using the MADS assembler and have the listing file loaded into the debugger
+    as a symbols file for trace and assert statements to work.
+  </p>
+  <h2>Trace statements</h2>
+  <p>
+    A trace statement is a comment with the following form:
+  </p>
+  <blockquote>
+    <tt>;##TRACE "</tt><i>format-string</i><tt>"</tt> <i>arguments...</i>
+  </blockquote>
+  <p>
+    This expands to the <tt>.printf</tt> command and therefore the format string and arguments
+    are of the same form. For instance, this will print out the current display list
+    vector address:
+  </p>
+  <blockquote>
+    <tt>;##TRACE "Display list address = $%04X" dw(vdslst)</tt>
+  </blockquote>
+  <p>
+    The output of a trace statement goes to the debugger's Output window.
+  </p>
+  <h2>Assertions</h2>
+  <p>
+    An assertion statement declares that a condition should be true at a point in execution
+    and stops execution if that turns out to be false:
+  </p>
+  <blockquote>
+    <tt>;##ASSERT dw(adress) >= $0400</tt>
+  </blockquote>
+  <p>
+    These are used to catch broken assumptions in code. A failed assertion will stop execution
+    in the debugger with an "assertion failed" message.
+  </p>
+  <h2>Gotchas</h2>
+  <p>
+    Trace statements and assertions execute in the debugger context and not in 6502 code, so
+    they are "free" and do not impact timing or any register or memory state. Therefore,
+    unlike real hardware, they can be inserted in time critical code such as a DLI handler.
+  </p>
+  <p>
+    However, it is important to know that these statements are implemented as conditional
+    breakpoints with an on-hit command. One important implication is that they are bound
+    to the following instruction, so attempting to separate it with a label will not work:
+  </p>
+  <blockquote>
+    <pre>
+    ;This trace statement will actually execute on each loop iteration.
+    ;##TRACE "Initial loop value: %d" y
+loop:
+    sta    (adress),y
+    dey
+    bpl    loop
+    </pre>
+  </blockquote>
+  <p>
+    The second issue to be aware of is that as breakpoints they are immune to any modification
+    from the simulation. This means that any attempt to self-modify or overlay code will be
+    ignored by the statements, and if two routines are assembled into the same region and
+    swapped dynamically, their diagnostics will overlap.
+  </p>
+  <p>
+    Finally, because trace statements and assertion statements are comments and are detected
+    by parsing the assembler listing, they are not subject to code generation switching and
+    will activate even if they are in a .if 0 block or other construct that would normally
+    disable a block of code. They are affected by enabling and disabling of listing output,
+    however (OPT L- and OPT L+).
+  </p>
+</topic>

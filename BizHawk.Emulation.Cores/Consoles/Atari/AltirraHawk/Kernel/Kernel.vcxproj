@@ -1,0 +1,145 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{5DEDF6C8-711B-4CAE-A1AB-A3DBF2E5EBE6}</ProjectGuid>
+    <RootNamespace>Kernel</RootNamespace>
+    <Keyword>MakeFileProj</Keyword>
+  </PropertyGroup>
+  <Import Project="..\Build\PlatformSetup.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\Build\Altirra.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\out\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\obj\$(Configuration)\$(ProjectName)\</IntDir>
+    <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "$(IntDir)\" md "$(IntDir)\"
+nmake /nologo "OUT=$(OutDir)\" "INT=$(IntDir)\" "MADS=$(ATMadsPath)"</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "$(IntDir)\" md "$(IntDir)\"
+nmake /a /nologo "OUT=$(OutDir)\" "INT=$(IntDir)\" "MADS=$(ATMadsPath)"</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">nmake /nologo "OUT=$(OutDir)\" "INT=$(IntDir)\" clean</NMakeCleanCommandLine>
+    <NMakeOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)kernel.rom</NMakeOutput>
+    <NMakePreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakeIncludeSearchPath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+    <NMakeForcedIncludes Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(NMakeForcedIncludes)</NMakeForcedIncludes>
+    <NMakeAssemblySearchPath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(NMakeAssemblySearchPath)</NMakeAssemblySearchPath>
+    <NMakeForcedUsingAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(NMakeForcedUsingAssemblies)</NMakeForcedUsingAssemblies>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="source\1030\firmware.s" />
+    <None Include="source\1030\handler.s" />
+    <None Include="source\Additions\autorun.s" />
+    <None Include="source\Additions\boot1030.s" />
+    <None Include="source\Additions\colormap.s" />
+    <None Include="source\Additions\cp.s" />
+    <None Include="source\Additions\sx212.s" />
+    <None Include="source\Additions\sx212handler.s" />
+    <None Include="source\Additions\thnd1030.s" />
+    <None Include="source\ExeLoader\exeloader-hispeed.s" />
+    <None Include="source\ExeLoader\exeloader-nobasic.s" />
+    <None Include="source\ExeLoader\exeloader.s" />
+    <None Include="source\loader.xasm" />
+    <None Include="source\main.xasm" />
+    <None Include="source\PBIDisk\pbidisk.s" />
+    <None Include="source\Placeholders\nomio.s" />
+    <None Include="source\Rapidus\rapidfirmware.s" />
+    <None Include="source\Rapidus\rapidflash.s" />
+    <None Include="source\Rapidus\rapidos.s" />
+    <None Include="source\Rapidus\rapidpbi16.s" />
+    <None Include="source\Rapidus\rapidpbi8.s" />
+    <None Include="source\SAPPlayers\playsap-b.s" />
+    <None Include="source\SAPPlayers\playsap-c.s" />
+    <None Include="source\SAPPlayers\playsap-d.s" />
+    <None Include="source\SAPPlayers\playsap-r.s" />
+    <None Include="source\Shared\cio816.s" />
+    <None Include="source\Shared\init816.s" />
+    <None Include="source\Shared\interrupt816.s" />
+    <None Include="source\Shared\irq816.s" />
+    <None Include="source\Shared\kernel.inc" />
+    <None Include="source\Shared\keyboard816.s" />
+    <None Include="source\Shared\screenext816.s" />
+    <None Include="source\Shared\syscall816.s" />
+    <None Include="source\Shared\sysdev816.s" />
+    <None Include="source\Shared\vbi816.s" />
+    <None Include="source\Shared\version.inc" />
+    <None Include="source\softkick.s" />
+    <None Include="source\BASIC\main.xasm" />
+    <None Include="source\NoKernel\main.xasm" />
+    <None Include="source\SuperKernel\includes.xasm" />
+    <None Include="source\SuperKernel\main.xasm" />
+    <None Include="source\NoCartridge\main.s" />
+    <None Include="source\ATDiskLoader\main.s" />
+    <None Include="source\NoHDBIOS\main.s" />
+    <None Include="source\NoGame\main.s" />
+    <None Include="source\Ultimate\bios.s" />
+    <None Include="source\Ultimate\kernel.s" />
+    <None Include="source\Ultimate\main.s" />
+    <None Include="source\Shared\atarifont.inc" />
+    <None Include="source\Shared\atariifont.inc" />
+    <None Include="source\Shared\blackboard.s" />
+    <None Include="source\Shared\boot.s" />
+    <None Include="source\Shared\bootscreen.s" />
+    <None Include="source\Shared\cassette.s" />
+    <None Include="source\Shared\cio.inc" />
+    <None Include="source\Shared\cio.s" />
+    <None Include="source\Shared\disk.s" />
+    <None Include="source\Shared\driveimage.inc" />
+    <None Include="source\Shared\editor.s" />
+    <None Include="source\Shared\hardware.inc" />
+    <None Include="source\Shared\init.s" />
+    <None Include="source\Shared\interrupt.s" />
+    <None Include="source\Shared\irq.s" />
+    <None Include="source\Shared\kerneldb.inc" />
+    <None Include="source\Shared\keyboard.s" />
+    <None Include="source\Shared\keytable.s" />
+    <None Include="source\Shared\mathpack.s" />
+    <None Include="source\Shared\misc.s" />
+    <None Include="source\Shared\pbi.s" />
+    <None Include="source\Shared\phandler.s" />
+    <None Include="source\Shared\printer.s" />
+    <None Include="source\Shared\screen.s" />
+    <None Include="source\Shared\screenext.s" />
+    <None Include="source\Shared\selftestentry.s" />
+    <None Include="source\Shared\sio.inc" />
+    <None Include="source\Shared\sio.s" />
+    <None Include="source\Shared\vbi.s" />
+    <None Include="source\BootSector\bootsecdos2.s" />
+    <None Include="source\850\handler.s" />
+    <None Include="source\850\relocator.s" />
+    <None Include="source\Additions\boot850.s" />
+    <None Include="source\Additions\dos.s" />
+    <None Include="source\Additions\filelist.txt" />
+    <None Include="source\Additions\rhnd850.s" />
+    <None Include="source\Additions\xep80.s" />
+    <None Include="source\Additions\xep80handler.s" />
+    <None Include="Makefile" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\Placeholders\noblackbox.s" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="source\Additions\license.txt" />
+    <Text Include="source\Additions\loadexe.s" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\Build\NMakeLessNoisy.targets" />
+  </ImportGroup>
+</Project>

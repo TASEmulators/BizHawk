@@ -1,0 +1,134 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="PCLink support">
+  <style>
+    .atari {
+      background-color: #006374;
+      color: #5ac9da;
+      display: inline-block;
+    }
+
+    .atari-inverted {
+      background-color: #5ac9da;
+      color: #006374;
+      white-space: pre;
+    }
+  </style>
+  <p>
+    PCLink support allows a guest OS to access files and directories on the host machine through an SIO-based protocol.
+  </p>
+
+  <toc/>
+
+  <h2>Overview</h2>
+  <p>
+    A PCLink device is a device on the serial I/O (SIO) bus that responds to file and directory I/O commands, typically
+    a modern computer connected over an SIO2PC style adapter and running a PCLink server program. Unlike traditional
+    disk emulation solutions, PCLink works directly at the file I/O layer level, avoiding the limitations of disk
+    emulation and allowing full write access. In Altirra's case, the server program is integrated into the emulator
+    itself, making it even easier to set up.
+  </p>
+  <h2>Configuring PCLink</h2>
+  <p>
+    The menu item System &gt; PCLink is used to configure PCLink support. The base path controls the root directory
+    exposed to the guest OS; files and directories within this directory and in subdirectories made available.
+  </p>
+  <p>
+    The <i>Allow write access</i> option controls whether the guest OS is allowed to create or modify any files. If
+    disabled, all write operations including file creation, modification, renaming, deletion and directory creation/removal
+    are blocked.
+  </p>
+  <p>
+    The <i>SIO patch</i> and burst I/O transfer options under the Disk submenu also apply to PCLink, since the
+    transfer mechanism is similar.
+  </p>
+  
+  <h2>Accessing PCLink through CIO</h2>
+  <p>
+    Accessing the PCLink device requires special OS support; it cannot be accessed through CIO.
+    This means that neither BASIC nor Atari DOS can normally access PCLink, and for those the H: device should
+    be used instead.
+  </p>
+
+  <h2>Accessing PCLink with SpartaDOS X</h2>
+  <p>
+    To access the PCLink device with SpartaDOS X, you must be using at least version 4.43 and have the PCLINK.SYS
+    device from the Toolkit disk.
+  </p>
+  <h3>Loading PCLINK.SYS</h3>
+  <p>
+    The PCLINK.SYS driver can be executed directly or loaded via a <tt>DEVICE PCLINK.SYS</tt> statement in
+    CONFIG.SYS. When it loads, it should display a message like this:
+  </p>
+  <blockquote>
+    <pre class="atari" xml:space="preserve">
+  D1:PCLINK.SYS                         
+  PCLink v0.3, dev. 6, SIO id $6F       
+
+  D1:<span class="atari-inverted"> </span>                                  
+    </pre>
+  </blockquote>
+  <p>
+    The /S flag can also be specified to the PCLINK.SYS driver to use the OS SIO routine instead of SpartaDOS X's
+    SIO routine. This allows the SIO Patch option to work and permits much faster transfers.
+  </p>
+  <h3>Accessing files through PCLink</h3>
+  <p>
+    Once loaded, the PCLINK.SYS device exports a PCL: device to SpartaDOS X. Files can be copied from and to the
+    device, and programs can be loaded from it.
+  </p>
+  <h2>Host file mapping</h2>
+  <p>
+    Since filenames are more restricted in Atari operating systems than on modern OSes, the filenames
+    on the host must be mapped using more restricted rules. Whenever possible, files are mapped directly,
+    but there are some limitations on the mapping:
+  </p>
+  <ul>
+    <li>Files that are 16MB (16,777,216 bytes) or larger cannot be seen or accessed.</li>
+    <li>Files whose names do not fit an 8.3 pattern or use characters other than A-Z, 0-9, or _ are inaccessible.</li>
+    <li>Filename mangling is used to avoid collisions with reserved DOS device names, such as <tt>LPT1</tt> or <tt>COM1</tt>. These filenames
+      are prefixed with <tt>!</tt> on the host, i.e. <tt>!COM1</tt>.
+    </li>
+  </ul>
+  <h2>SIO protocol</h2>
+  <p>
+    The PCLink device is accessed through SIO device $6F, using the <a href="#dos2dos">DOS2DOS protocol</a>. Unlike
+    a disk image, this protocol exposes the host filesystem using a file and handle based paradigm instead as raw blocks.
+    While documenting the whole protocol is beyond the scope of this help, here is a summary:
+  </p>
+  <ul>
+    <li>Three main SIO commands are supported: Put ($50), Read ($52), Status ($53).</li>
+    <li>The Put command is used to send command parameters.</li>
+    <li>The Read command is used to exchange command data or responses.</li>
+    <li>The Status command retrieves error codes and buffer sizes.</li>
+    <li>Supported function codes include:
+      <ul>
+        <li>init</li>
+        <li>read</li>
+        <li>write</li>
+        <li>seek</li>
+        <li>get file position</li>
+        <li>open file</li>
+        <li>close handle</li>
+        <li>get file length</li>
+        <li>find first file/directory</li>
+        <li>find next file/directory</li>
+        <li>change attributes</li>
+        <li>create directory</li>
+        <li>remove directory</li>
+        <li>change current directory</li>
+        <li>get current directory</li>
+        <li>get disk info</li>
+      </ul>
+    </li>
+  </ul>
+  <p>
+    When the SIO patch is enabled, Altirra accelerates PCLink requests issued through the <tt>SIOV</tt> vector.
+  </p>
+  <h2>References</h2>
+  <ul>
+    <li>
+      <a name="dos2dos" href="http://atariki.krap.pl/index.php/DOS2DOS">DOS2DOS protocol (external site, in Polish)</a>
+    </li>
+  </ul>
+</topic>

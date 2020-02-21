@@ -1,0 +1,95 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="1030 Modem emulation">
+  <p>
+    Altirra emulates the Atari 1030 Modem with a simulated connection over TCP/IP.
+  </p>
+
+  <toc/>
+
+  <h2>Hardware description</h2>
+  <p>
+    The 1030 Modem connects to the SIO bus of the Atari computer and establishes Bell 103 compatible connections
+    at 300 baud over standard phone lines. The device contains built-in downloadable software to provide the
+    T: CIO device as well as a primitive ModemLink program for communications.
+  </p>
+  <h2>Emulation levels</h2>
+  <p>
+    Three levels of 1030 hardware emulation are supported:
+  </p>
+  <ul>
+    <li>
+      <p>
+        <b>None.</b> In this mode, no hardware emulation is enabled, and a high-level emulation (HLE) T: handler is registered with
+        CIO that communicates directly with the emulator. This provides the best performance and works with most
+        software. No ModemLink software is available.
+      </p>
+    </li>
+    <li>
+      <p>
+        <b>Minimal.</b> This mode adds minimal support for emulating the 1030 Modem to
+        so that programs which expect to be able to bootstrap from the T: handler from the 1030 will
+        still work. The HLE T: handler is still used in this mode; the bootstrap command simply returns
+        a stub loader that does nothing, as the T: handler will already be resident.
+      </p>
+    </li>
+    <li>
+      <b>Full.</b> In this mode, the 1030 Modem hardware is fully emulated, including SIO-level commands.
+      Instead of the simulated T: handler, a 6502-based T: handler is bootstrapped from the 850 instead. This
+      mode is required if a communication program is being tested for adequate performance, if a custom T:
+      handler is used, or if for some reason the HLE T: handler is not able to bootstrap properly. This
+      mode also allows ModemLink firmware to be used.
+    </li>
+  </ul>
+
+  <h2>High-level emulation (HLE) T: handler</h2>
+  <p>
+    Access to the serial port is provided by means of the CIO T: device. When the hardware emulation mode
+    is set to None or Minimal, this is provided by a high-level handler, so this does not result in a reduction of available memory as with the original 1030 T: handler,
+    nor is there a need to load the handler from disk.
+  </p>
+
+  <h2>6502-based T: handler</h2>
+  <p>
+    In the Full hardware emulation mode, a standard 6502-based T: handler is used instead. As with the real 850
+    hardware, this can be loaded in one of two ways:
+  </p>
+  <ul>
+    <li>
+      <p>
+        <b>Emulated disk boot.</b> If there is no disk in D1:, the 850 responds as D1: instead and "boots" a disk
+        that contains the R: handler. This path allows the R: handler to be used with a communication program
+        loaded from cartridge or off of cassette tape.
+      </p>
+    </li>
+    <li>
+      <p>
+        <b>Direct bootstrap.</b> The 850 also exposes commands to allow direct bootstrap of the handler. The standard
+        AUTORUN.SYS that comes with DOS 2.5 will automatically attempt this bootstrap, and other DOSes come with
+        programs to initiate this bootstrap. The Additions disk contains both a downloader (<tt>BOOT1030.COM</tt>)
+        and a disk based version of the Altirra's T: handler (<tt>THND1030.COM</tt>).
+      </p>
+    </li>
+  </ul>
+  <p>
+    The 6502-based T: handler is a replacement handler written from scratch, but is designed to be compatible
+    with the original 1030 hardware and handler. Like the original 1030's T: handler, this handler relocates
+    itself at and raises MEMLO when it loads. The downloadable handler loads at <tt>$1D00</tt> like the original;
+    the disk-based version is relocatable.
+  </p>
+
+  <h2>Dialing out</h2>
+  <p>
+    Most of the 1030's commands are emulated, but dialing is only minimally supported. Both pulse and touch dialing
+    will work, and the touch dialing mode will even generate DTMF tones, but the actual number dialed is ignored.
+    Instead, any attempt to dial will initiate a connection to the dial proxy address in the 1030 device settings.
+  </p>
+  
+  <h2>ModemLink</h2>
+  <p>
+    Currently Altirra does not have a replacement for the ModemLink software; an attempt to run it will give
+    a message to that effect. The actual ModemLink software can be used if bound as firmware in Firmware Images.
+    The image is 10,368 bytes and contains the boot sector followed by the combined ModemLink and T: handler
+    software.
+  </p>
+</topic>

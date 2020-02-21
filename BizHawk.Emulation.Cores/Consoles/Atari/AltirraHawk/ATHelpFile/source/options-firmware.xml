@@ -1,0 +1,91 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Options: Firmware">
+  <p>
+    The firmware options allow selection of the software built into the machine, including the Operating System and BASIC
+    interpreter. The name "firmware" refers to the fact that the software is stored in ROM chips, which cannot be modified.
+  </p>
+  <p>
+    Changing the firmware used by the emulated computer will cause the computer to reboot.
+  </p>
+  
+  <toc/>
+  
+  <h2>Operating System</h2>
+  <p>
+    The Operating System submenu lists all OS firmware available for use with the emulator, including both built-in
+    firmware and any additional firmware image files hooked up to the emulator through the Firmware Images dialog.
+    Besides the built-in and recognized firmware images, you can also add other images with customized names, and those
+    names will show up in this submenu for selection.
+  </p>
+  <h3>Autoselect</h3>
+  <p>
+    Chooses an external firmware image appropriate for the hardware if one is available, otherwise uses an internal
+    firmware.
+  </p>
+  
+  <h3>Atari 400/800 OS-B</h3>
+  <p>
+    The most common operating system for 400/800 computers, and the best for compatibility in that mode. This entry will
+    show up if you have added the OS-B firmware to the firmware list. ATARIOSB.ROM will show up as a patched version of this ROM.
+  </p>
+
+  <h3>Atari XL/XE OS ver. 2</h3>
+  <p>
+    The most common operating system for XL/XE computers, and the best for compatibility in that mode. You will have
+    this entry if you have added the XL/XE OS firmware to the firmware list. ATARIXL.ROM will show up as this entry.
+    Version 4, the XEGS ROM, is a good alternative for this ROM as it has practically the same compatbiility and functionality.
+  </p>
+  
+  <h3>AltirraOS for 400/800 and for XL/XE/XEGS</h3>
+  <p>
+    These are internal OS ROM replacements for the 400/800 and XL/XE/XEGS computers, respectively, written in pure 6502 code.
+    These are used by default if no other firmware is available. They are functionally compatible with the standard Atari OSes and
+    have a good compatibility rate, but you may run into software with issues due to depending on OS ROM internals.
+  </p>
+  
+  <h3>Atari 5200 OS</h3>
+  <p>
+    Selects the Atari 5200 SuperSystem firmware. You will have this entry if ATARI5200.ROM has been hooked up. The 4-port and 2-port
+    versions are similar but not the same; the 4-port firmware is more common and more compatible.
+  </p>
+  <h3>AltirraOS for 5200</h3>
+  <p>
+    Selects the internal replacement for the 5200 firmware; you can run most 5200 games with this firmware.
+  </p>
+  
+  <h2>BASIC</h2>
+  <p>
+    The BASIC submenu selects the BASIC interpreter used with the machine. With 400/800 computers, BASIC must be supplied via
+    an external cartridge, and so this option selects the image used by the emulator when the BASIC cartridge is attached from
+    the special cartridge menu. With XL/XE/XEGS computers, the BASIC interpreter ROM is included in the computer itself and
+    switchable under software control, and is selected by this menu.
+  </p>
+  <h3>Atari BASIC rev. A, B, and C</h3>
+  <p>
+    Selects one of the three revisions of Atari BASIC. You will have this entry if ATARIBAS.ROM is hooked up. Most software will
+    work with any version, but in general Revision A is buggy, revision B is more buggy, and revision C is less buggy.
+  </p>
+  <h3>Altirra BASIC</h3>
+  <p>
+    This is the built-in BASIC interpreter. It is source- and binary-compatible with Atari BASIC, has additional commands, and
+    generally runs faster. See the <i>Altirra BASIC Reference Manual</i> for details. Some software may not work with Altirra
+    BASIC due to dependencies on Atari BASIC internals, most notably disks that have special BASIC boot loaders (that are
+    sometimes not so well written).
+  </p>
+  
+  <h2>Firmware options</h2>
+  <h3>Internal BASIC (Hold Option on Boot)</h3>
+  <p>
+    On XL/XE/XEGS computers, BASIC is built into the computer and is enabled by default. The Option key must be held down on
+    boot to disable BASIC. A lot of software requires BASIC to be disabled, and holding down Option quickly becomes annoying
+    on both emulation and the real hardware. This option determines whether the emulator itself will automatically hold down
+    Option on boot to disable BASIC, saving this hassle. The emulator's display will flash Option for a short time to show
+    when it is holding down the Option key.
+  </p>
+  <p>
+    In some rare cases, the emulator may hold down Option too long or in a case where it has different meaning. This is most
+    often the case with cartridges with special menus or add-on hardware with boot menus. In that case, the Internal BASIC option may need
+    to be enabled to prevent the emulator from doing so, even though it won't really enable Internal BASIC.
+  </p>
+</topic>

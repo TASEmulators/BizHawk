@@ -1,0 +1,136 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Using the emulated computer">
+  <toc/>
+  <h2>Introduction</h2>
+  <p>
+    Altirra emulates the behavior of an Atari 8-bit home computer. If you never owned one, you might not know how to operate
+    one.
+  </p>
+  <h2>Powering on - 800</h2>
+  <p>
+     By default, an Atari 800 computer comes with an operating system in 10K of ROM, 48K of RAM... and not much else.
+     If you power it on, you get a tiny program built into the OS called the Memo Pad:
+  </p>
+  <img src="pics/atari-memopad.png" width="672" height="448"/>
+  <p>
+    This program lets you... type text on screen. Very exciting.
+  </p>
+  <h3>The cartridge ports</h3>
+  <p>
+    One way to get actual useful software onto the Atari was to plug in a cartridge. There were two cartridge ports on the
+    800, a left cartridge and a right cartridge. Cartridges had to be made for either the left slot or the right slot, and
+    almost all cartridges were left slot (no other model had a right slot). One of the more popular cartridges was the
+    BASIC language cartridge, which would give the READY prompt on start:
+  </p>
+  <img src="pics/atari-basic.png" width="672" height="448" />
+  <p>
+    The <tt>BYE</tt> command would exit BASIC and start the Memo Pad.
+  </p>
+  <p>
+    In Altirra, you can either attach an image of the BASIC cartridge, or use the Attach Special Cartridge &gt; BASIC menu
+    option.
+  </p>
+  <h3>Disk drives</h3>
+  <p>
+    With a computer and a BASIC program, you could write and run programs, but not save them for later use. One way to
+    do this was a tape drive, if you were very patient. A more useful alternative was the 810 disk drive. This connected to
+    the computer via a serial I/O (SIO) cable, and upon power-up, the computer with automatically try to boot from the
+    disk. If you didn't have a bootable disk inserted, this resulted:
+  </p>
+  <img src="pics/atari-booterror.png" width="672" height="448" />
+  <p>
+    The computer would simply try to boot from the disk drive repeatedly, printing <tt>BOOT ERROR</tt> each time. Note that
+    if the BASIC cartridge was inserted, the computer tried to boot from the disk drive <i>before</i> loading BASIC. This
+    meant that if you didn't want to boot a disk, you needed to turn off the disk drive. The Disk Drives dialog in Altirra
+    has modes to distinguish between a drive that is absent or powered off (Off) and
+    a drive that is powered on (R/O, R/W, VirtRW). Two shortcuts to power off drives are to either use the Detach menu
+    option, or click the Eject button twice in the Disk Drives dialog.
+  </p>
+  <p>
+    If a bootable disk was inserted, the computer would sound beep-beep-beep as it loaded sectors off the disk. Atari disk
+    drives were reasonably fast and took less than a minute to boot DOS. The computer didn't need to make the beep sound,
+    but the OS was configured to do so by default and you could tell by the sound whether the computer was reading from
+    the disk, writing to the disk, or hitting an error.
+  </p>
+  <p>
+    When booting a disk, what happened afterward depended on what was booted and what cartridge was plugged in.
+    Program disks usually booted directly into the application or game on the disk. Others that were based on plain DOS
+    and weren't set up to auto-run would go to the DOS menu:
+  </p>
+  <img src="pics/atari-dos.png" width="672" height="448" />
+  <p>
+    When the BASIC cartridge was also inserted, DOS would boot and then the computer would enter the BASIC READY prompt.
+    The DOS menu could be accessed by typing the <tt>DOS</tt> command.
+  </p>
+  <h3>System Reset</h3>
+  <p>
+    One of the keys on the keyboard was labeled System Reset. Its job was to reset the computer back to a sane state in
+    case you messed up... usually. For instance, in BASIC, pressing System Reset would stop the running program, clear
+    the screen, and display the READY prompt, usually with the BASIC program intact.
+  </p>
+  <p>
+    The System Reset key performed a <i>warm start</i>, meaning that it skipped some of the OS initialization. For instance,
+    it preserved user memory, which in the case of BASIC meant the running program. However, it also meant that if you
+    needed the full boot-up process, particularly booting a disk, you'd need to power the computer off and on again
+    instead of using System Reset.
+  </p>
+  <h2>The XL/XE series</h2>
+  <p>
+    The XL/XE series brought some major changes to the 8-bit home computer line. For this case we'll focus on the popular
+    800XL and forget about the 1200XL, which is the weirdo of the family.
+  </p>
+  <p>
+    One of the changes is the presence of a built-in self-test, which replaces the not very useful Memo Pad:
+  </p>
+  <img src="pics/atari-selftest.png" width="672" height="448" />
+  <p>
+    The self test waits for a bit for the user to select a mode, after which it automatically cycles through the tests
+    itself. (The simulated keyboard test was not so useful.)
+  </p>
+  <p>
+    Another change was the presence of a built-in BASIC, instead of requiring a BASIC cartridge to be inserted.
+    Annoyingly, this BASIC was enabled by <i>default</i>, unless you held down the Option key when powering on the
+    computer. This was a problem because a lot of disk-based software didn't work if you had a cartridge inserted
+    and would crash if you forgot to disable BASIC. Altirra automatically holds down the Option key for you when
+    requested under System &gt; Firmware, and displays an indicator when it is doing so. This behavior was annoying
+    enough that some people modified the OS ROM on their computer specifically to flip the interpretation of the
+    Option key on boot.
+  </p>
+  <p>
+    The XL/XE series computers only have two joystick ports, instead of the four of the 400/800 computers, and only have
+    a single (left) cartridge port.
+  </p>
+  <h3>OS compatibility and the Translator</h3>
+  <p>
+    There were two main revisions of the built-in ROM OS on the 400/800, revision A and revision B. Revision B fixed a couple
+    of bugs and was the prevalent OS version. This OS is commonly called OS-B.
+  </p>
+  <p>
+    Atari had defined specific interfaces to use when using the OS, such that sticking to those interfaces would ensure
+    compatibility with future versions of the OS. A fair amount of software ignored those guidelines and poked directly
+    into the OS, which meant that they failed when Atari created the upgraded 14K OS for the XL/XE line. To run such older
+    programs, Atari created the Translator disk, which would load a modified version of OS-B into the extra 14K of RAM
+    in the XL/XE computer. You can use the Translator on an emulator, although it's much easier just to emulate a 400/800
+    instead.
+  </p>
+  <p>
+    History repeated itself after the release of the XL/XE line, and software was created that would only work correctly
+    with the XL/XE OS.
+  </p>
+  <h2>The XE Game System (XEGS)</h2>
+  <p>
+    The XEGS was an attempt to make a game console out of an XL/XE computer. Functionally, it was very similar to an 800XL
+    with 64K of memory, almost the same OS, and the ability to use the same SIO peripherals, and had nearly 100% compatibility.
+    There were a couple of minor differences:
+  </p>
+  <p>
+    First, the XEGS had a game built-in, in addition to BASIC. Holding down the Select key on power-up would
+    start Missile Command.
+  </p>
+  <p>
+    Second, the keyboard was detachable, and the XEGS knew if the keyboard was attached. If the keyboard wasn't attached,
+    it would flip the meaning of the Select key, so the console would start Missile Command unless the Select key
+    was pressed. In Altirra, this can be simulated using the System &gt; Console &gt; Keyboard Attached option.
+  </p>
+</topic>

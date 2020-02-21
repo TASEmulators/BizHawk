@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup
+    Condition="'$(PackResourceBeforeTargets)' == '' and '$(PackResourceAfterTargets)' == '' and '$(ConfigurationType)' != 'Makefile'">
+    <PackResourceBeforeTargets>Midl</PackResourceBeforeTargets>
+    <PackResourceAfterTargets>CustomBuild</PackResourceAfterTargets>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PackResourceDependsOn
+      Condition="'$(ConfigurationType)' != 'Makefile'">_SelectedFiles;$(PackResourceDependsOn)</PackResourceDependsOn>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <PackResource>
+      <OutputPath>$(ProjectDir)autogen\%(Filename).inl</OutputPath>
+      <CommandLineTemplate>"$(ATBuildToolPath)\asuka.exe" makearray "%(FullPath)" "[OutputPath]" [SymbolName] [SymbolName]Len</CommandLineTemplate>
+      <Outputs>[OutputPath]</Outputs>
+    </PackResource>
+  </ItemDefinitionGroup>
+</Project>

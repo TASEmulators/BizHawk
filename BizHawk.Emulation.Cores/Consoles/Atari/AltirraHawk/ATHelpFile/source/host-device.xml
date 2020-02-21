@@ -1,0 +1,139 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Host device">
+  <p>
+    The host device allows the programs using the OS character I/O (CIO) facilities to access files directly
+    on the host file system. This is an easier way to exchange files with programs running under emulation
+    than manipulating disk images.
+  </p>
+  <toc/>
+  <h2>Setting up the host device</h2>
+  <p>
+    To set up the host device, open the Devices dialog using the System &gt; Devices... menu option,
+    and add the H: device from the High-level Emulation section of the device list.
+  </p>
+  <h3>Long filename encoding</h3>
+  <p>
+    The H: device follows DOS 2 rules for filenames, which restrict filenames to no more than
+    8.3. The filename encoding option allows access to files that have names which don't fit this
+    rule by encoding the filenames within the 8.3 convention. For instance, the filename
+    "<tt>(New disk)</tt>" is accessed as <tt>NEWDI_5M</tt>.
+  </p>
+  <p>
+    There is no support for long/short name tunneling with this feature, as it is intended only
+    to allow access to files and not as a extension mechanism. All calls to create
+    or rename a file from the emulation side will always result in the short name being used
+    in the host filesystem, with any previous long filename lost.
+  </p>
+  <p>
+    Wildcards are resolved with the encoded filenames, i.e. the 8.3 filenames seen by the emulation.
+  </p>
+  <h3>Burst I/O</h3>
+  <p>
+    This option allows the host device driver to detect when CIO is doing a block read/write and
+    accelerate the process by skipping the very slow per-byte calls that CIO normally does. This
+    is similar to what Atari DOS does for its D: device. Disable this option if programs are
+    receiving garbled data from GET CHARS commands.
+  </p>
+  <h2>Accessing the host device</h2>
+  <p>
+    The host device appears as an <tt>H:</tt> device in the CIO device table.
+  </p>
+  <h3>End-of-line character translation</h3>
+  <p>
+    By default, the H: device does not do any translations on read or written data. This is
+    inconvenient for text files since the host-based text programs use a LF or CR/LF convention
+    instead of the Atari's $9B end-of-line character. To deal with this, the host device maps
+    H6: through H9: to the same paths as H1:-H4:, but accesses through the H6-H9: aliases do EOL
+    conversion. On read, CR, LF, or CR/LF pairs are converted to ATASCII EOL characters, and on
+    write, EOL is converted back to CR/LF.
+  </p>
+  <p>
+    All file sizes and file positions seen by the emulation are in the ATASCII version of the
+    file stream and are consistent with GET/PUT commands.
+  </p>
+  <h3>File locking</h3>
+  <p>
+    The DOS locked file attribute is mapped to the read only attribute on the host: a read-only
+    host file is reported as locked and the LOCK/UNLOCK FILE commands will change the host
+    read-only status.
+  </p>
+  <p>
+    A different kind of locking results when the emulation opens a file: Altirra will hold
+    an appropriate lock on the host file based on the access type. Files opened for read access will
+    be opened with a read-only lock, and files opened for write or append status will have an
+    exclusive lock. This has two effects, one being that it prevents other host applications
+    from interfering with the file access, and another being that it prevents the emulation
+    from simultaneously opening a file twice with conflicting access parameters. This also
+    means that if the emulation tries to open a file with access flags that conflict with itself
+    or another host application, the SDX Access Denied error code ($B0) is returned.
+  </p>
+  <h3>Subdirectory access</h3>
+  <p>
+    The H: device also allows for subdirectory access in a style similar to used by MyDOS and
+    SpartaDOS. The directory separator may either be <tt>&gt;</tt> or <tt>\</tt>. In addition,
+    the special names <tt>.</tt> and <tt>..</tt> refer to the current and parent directories
+    from the current location.
+  </p>
+  <p>
+    Each of the four H: devices has also has a current directory associated with it, which is
+    by default used to resolve relative paths. Use of a directory separator immediately after
+    the device specifier, i.e. <tt>H:>FOO</tt>, forces resolution as an absolute path from
+    the root regardless of the current directory. H6-H9: share the same current directory
+    as H1-H5:.
+  </p>
+  <h3>Reserved host name handling</h3>
+  <p>
+    On Windows platforms, several base filenames are reserved for devices, including <tt>CON</tt>
+    and <tt>LPT1</tt>. To prevent inadvertent access to these devices, any accesses from the
+    emulation to paths with these names will be translated by the driver to use a <tt>$</tt>
+    prefix, resulting in a path component like <tt>$CON</tt>. This translation is bidirectional
+    and is invisible to the emulation for both file and directory access.
+  </p>
+  <p>
+    If the host filesystem actually contains files named with reserved device names, as is possible
+    with use of NT file path escaping (<tt>\\.\C:\COM1</tt>), these files will not be accessible to the emulation.
+  </p>
+  <h2>Host device restrictions</h2>
+  <h3>CIO access</h3>
+  <p>
+    Because H: is a CIO device, only programs and disk operating systems that use CIO to access
+    devices will allow access to files on H:. DOS 2.0S uses CIO access and allows use of the H:
+    device. MyDOS 4.5 and SpartaDOS 3.2 will also use H:, with some bugs related to wildcard
+    handling.
+  </p>
+  <p>
+    On the other hand, SpartaDOS X does not and thus attempts to access H: will fail, as it will
+    attempt to access D8: with its own routines. With SDX, the PCLink device should be used instead.
+  </p>
+  <h3>Supported special CIO commands</h3>
+  <ul>
+    <li>$20: Rename</li>
+    <li>$21: Delete</li>
+    <li>$23: Lock</li>
+    <li>$24: Unlock</li>
+    <li>$25: Point (seek)</li>
+    <li>$26: Note (tell)</li>
+    <li>$27: SDX Get File Length</li>
+    <li>$29: MyDOS Change Directory (chdir)</li>
+    <li>$2A: SDX Create Directory (mkdir)</li>
+    <li>$2B: SDX Remove Directory (rmdir)</li>
+    <li>$2C: SDX Change Directory (chdir)</li>
+    <li>$30: SDX Get Current Directory (getcwd)</li>
+  </ul>
+  <h3>Hook page requirement</h3>
+  <p>
+    The host device drivers requires a free page in hardware address space for the CIO device driver
+    definition. The two pages that the host device driver can use are $D600 and $D700. If both of
+    these pages are in use, the host device will not work. Note that this hook page can be shared
+    with other emulated devices, like the printer.
+  </p>
+  <h3>Device driver invocation</h3>
+  <p>
+    The H: device driver has a real CIO device entry point table and real entry points that can
+    be called from 6502 code. This includes both going through CIO and by directly accessing
+    the entry points, as Atari Basic does for the PUT BYTE handler. However, the code at these
+    entry points is not real as the device driver is virtual, and attempts to relocate or patch
+    the device driver routines will fail.
+  </p>
+</topic>

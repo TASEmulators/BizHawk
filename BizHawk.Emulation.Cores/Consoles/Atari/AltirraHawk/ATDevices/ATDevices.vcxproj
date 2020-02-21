@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="../Build/ProjectConfigurations.props" />
+  <ItemGroup>
+    <ClCompile Include="source\corvus.cpp" />
+    <ClCompile Include="source\devices.cpp" />
+    <ClCompile Include="source\diskdrive.cpp" />
+    <ClCompile Include="source\dongle.cpp" />
+    <ClCompile Include="source\exeloader.cpp" />
+    <ClCompile Include="source\loopback.cpp" />
+    <ClCompile Include="source\modemsound.cpp" />
+    <ClCompile Include="source\sioclock.cpp" />
+    <ClCompile Include="source\stdafx.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="source\testdevicesiohs.cpp" />
+    <ClCompile Include="source\testdevicesiopoll.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\h\at\atdevices\devices.h" />
+    <ClInclude Include="..\h\at\atdevices\modemsound.h" />
+    <ClInclude Include="h\at\atdevices\corvus.h" />
+    <ClInclude Include="h\at\atdevices\dongle.h" />
+    <ClInclude Include="h\diskdrive.h" />
+    <ClInclude Include="h\exeloader.h" />
+    <ClInclude Include="h\stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackResource Include="..\..\obj\Release\Kernel\exeloader.bin">
+      <FileType>Document</FileType>
+      <SymbolName>g_ATFirmwareExeLoader</SymbolName>
+    </PackResource>
+  </ItemGroup>
+  <ItemGroup>
+    <PackResource Include="..\..\obj\Release\Kernel\exeloader-0700.bin">
+      <FileType>Document</FileType>
+      <SymbolName>g_ATFirmwareExeLoader0700</SymbolName>
+    </PackResource>
+    <PackResource Include="..\..\obj\Release\Kernel\exeloader-hispeed-0700.bin">
+      <FileType>Document</FileType>
+      <SymbolName>g_ATFirmwareExeLoaderHiSpeed0700</SymbolName>
+    </PackResource>
+    <PackResource Include="..\..\obj\Release\Kernel\exeloader-nobasic.bin">
+      <FileType>Document</FileType>
+      <SymbolName>g_ATFirmwareExeLoaderNoBasic</SymbolName>
+    </PackResource>
+    <None Include="autogen\exeloader-0700.inl" />
+    <None Include="autogen\exeloader-hispeed-0700.inl" />
+    <None Include="autogen\exeloader-hispeed.inl" />
+    <PackResource Include="..\..\obj\Release\Kernel\exeloader-hispeed.bin">
+      <FileType>Document</FileType>
+      <SymbolName>g_ATFirmwareExeLoaderHiSpeed</SymbolName>
+    </PackResource>
+    <None Include="autogen\exeloader-nobasic.inl" />
+    <None Include="autogen\exeloader.inl" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A94FE49D-01DE-4117-8AE9-009930C466F5}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>ATDevices</RootNamespace>
+  </PropertyGroup>
+  <Import Project="..\Build\PlatformSetup.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="..\Build\PackResource.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\Build\Altirra.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\Build\PackResource.targets" />
+  </ImportGroup>
+</Project>

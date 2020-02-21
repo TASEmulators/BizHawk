@@ -1,0 +1,330 @@
+;	Altirra - Atari 800/800XL emulator
+;	Kernel ROM replacement
+;	Copyright (C) 2008-2016 Avery Lee
+;
+;	Copying and distribution of this file, with or without modification,
+;	are permitted in any medium without royalty provided the copyright
+;	notice and this notice are preserved.  This file is offered as-is,
+;	without any warranty.
+
+;==========================================================================
+
+.if _KERNEL_XLXE
+	_KERNEL_PBI_SUPPORT = 1
+	_KERNEL_USE_BOOT_SCREEN = 1
+	.macro _KERNELSTR_BIOS_NAME_INTERNAL
+.ifdef _KERNEL_816
+		dta		d" for 65C816"
+.else
+		dta		d" for XL/XE/XEGS"
+.endif
+	.endm
+.else
+	_KERNEL_PBI_SUPPORT = 0
+	_KERNEL_USE_BOOT_SCREEN = 0
+.endif
+
+	_KERNEL_PRINTER_SUPPORT = 1
+	
+;==========================================================================
+
+	icl		'version.inc'
+	icl		'hardware.inc'
+	icl		'kerneldb.inc'
+
+	opt		h-o+f+
+
+.ifdef _KERNEL_816
+	opt		c+
+.endif
+
+.if _KERNEL_XLXE
+	org		$c000
+	
+;==============================================================================
+; lower ROM identification block (XL/XE)
+;==============================================================================
+
+	dta		a(0)
+	dta		$01,$01,$13
+	dta		$02
+	dta		'CX',$00,$00,$00
+	dta		$00
+
+	_KERNEL_REPORT_MODULE_MARK
+
+	.ifdef _KERNEL_816
+	icl		'vbi816.s'
+	.else
+	icl		'vbi.s'
+	.endif
+
+	_KERNEL_REPORT_MODULE_SIZE	'VBI routines', 0
+
+	.ifdef _KERNEL_816
+	icl		'interrupt816.s'
+	.else
+	icl		'interrupt.s'
+	.endif
+
+	_KERNEL_REPORT_MODULE_SIZE	'Base interrupt routines', 0
+
+	.ifdef _KERNEL_816
+	icl		'irq816.s'
+	.else
+	icl		'irq.s'
+	.endif
+
+	_KERNEL_REPORT_MODULE_SIZE	'IRQ routines', 0
+	
+	icl		'pbi.s'
+	_KERNEL_REPORT_MODULE_SIZE	'PBI routines', 0
+	icl		'phandler.s'
+	_KERNEL_REPORT_MODULE_SIZE	'Peripheral Handler routines', 0
+	
+	.ifdef _KERNEL_816
+	icl		'syscall816.s'
+	icl		'sysdev816.s'
+	.endif
+
+	org		$cc00
+	icl		'atariifont.inc'
+	
+	org		$d000
+	icl		'bootscreen.s'
+	
+	opt		f+
+.endif
+
+	org		$d800
+
+	icl		'mathpack.s'
+
+	org		$e000
+	icl		'atarifont.inc'
+
+	org		$e400
+editrv	dta		a(EditorOpen-1)
+		dta		a(EditorClose-1)
+		dta		a(EditorGetByte-1)
+		dta		a(EditorPutByte-1)
+		dta		a(EditorGetStatus-1)
+		dta		a(EditorSpecial-1)
+		jmp		EditorInit
+		dta		$00
+
+screnv	dta		a(ScreenOpen-1)
+		dta		a(ScreenClose-1)
+		dta		a(ScreenGetByte-1)
+		dta		a(ScreenPutByte-1)
+		dta		a(ScreenGetStatus-1)
+		dta		a(ScreenSpecial-1)
+		jsr		ScreenInit
+		dta		$00
+
+keybdv	dta		a(KeyboardOpen-1)
+		dta		a(KeyboardClose-1)
+		dta		a(KeyboardGetByte-1)
+		dta		a(KeyboardPutByte-1)
+		dta		a(KeyboardGetStatus-1)
+		dta		a(KeyboardSpecial-1)
+		jmp		KeyboardInit
+		dta		$00
+	
+printv	dta		a(PrinterOpen-1)
+		dta		a(PrinterClose-1)
+		dta		a(PrinterGetByte-1)
+		dta		a(PrinterPutByte-1)
+		dta		a(PrinterGetStatus-1)
+		dta		a(PrinterSpecial-1)
+		jsr		PrinterInit
+		dta		$00
+
+casetv	dta		a(CassetteOpen-1)
+		dta		a(CassetteClose-1)
+		dta		a(CassetteGetByte-1)
+		dta		a(CassettePutByte-1)
+		dta		a(CassetteGetStatus-1)
+		dta		a(CassetteSpecial-1)
+		jmp		CassetteInit
+		dta		$00
+
+		;vector table
+		org	$e450
+diskiv	jmp		DiskInit			;$E450
+dskinv	jmp		DiskHandler			;$E453
+ciov	jmp		CIO					;$E456
+siov	jmp		SIO					;$E459
+setvbv	jmp		VBISetVector		;$E45C
+sysvbv	jmp		VBIStage1			;$E45F
+xitvbv	jmp		VBIExit				;$E462
+sioinv	jmp		SIOInit				;$E465
+sendev	jmp		SIOSendEnable		;$E468
+intinv	jmp		IntInitInterrupts	;$E46B
+cioinv	jmp		CIOInit				;$E46E
+
+.if _KERNEL_XLXE
+blkbdv	jmp		SelfTestEntry		;$E471
+.else
+blkbdv	jmp		Blackboard			;$E471
+.endif
+
+warmsv	jmp		InitWarmStart		;$E474
+coldsv	jmp		InitColdStart		;$E477
+rblokv	jmp		CassetteReadBlock	;$E47A
+csopiv	jmp		CassetteOpenRead	;$E47D
+
+.if _KERNEL_XLXE
+pupdiv	jmp		SelfTestEntry		;$E480	XL/XE: power-up display
+slftsv	jmp		$5000				;$E483	XL/XE: self-test entry
+pentv	jmp		PHAddHandler		;$E486	XL/XE: peripheral handler add
+phunlv	jmp		PHRemoveHandler		;$E489	XL/XE: peripheral handler remove
+phiniv	jmp		PHInitHandler		;$E48C	XL/XE: peripheral handler init
+gpdvv	PBI_VECTOR_TABLE			;$E48F	XL/XE: Generic device vector
+.endif
+
+.if _KERNEL_XLXE
+	icl		'selftestentry.s'
+.else
+	icl		'blackboard.s'
+.endif
+
+;==============================================================================
+; $E4C0  Known RTS instruction
+;
+; The Atari 850 handler uses this as a "known RTS" instruction, as does
+; Altirra's internal R: handler emulation.
+;
+		org		$e4c0
+		
+.nowarn .proc KnownRTS
+		rts
+.endp
+
+;==============================================================================
+; Main modules.
+;
+; We report the sizes here as well as reference sizes. The reference sizes for
+; OS-B come from Mapping the Atari.
+;
+
+	.echo	'Module sizes:'
+
+.macro _KERNEL_REPORT_MODULE_MARK
+	.def ?@_kernel_lastpt = *
+.endm
+
+.macro _KERNEL_REPORT_MODULE_PAD_ADJUST
+	.def ?@_kernel_lastpt = ?@_kernel_lastpt + :1
+.endm
+
+.macro _KERNEL_REPORT_MODULE_SIZE
+	.echo	'    ', *, ' -> ', *-?@_kernel_lastpt, '(', :2, ')', '    ', :1
+	
+	.def ?@_kernel_lastpt = *
+.endm
+
+	icl		'misc.s'
+	_KERNEL_REPORT_MODULE_MARK
+	
+	icl		'cio.inc'
+
+	.ifdef _KERNEL_816
+	icl		'cio816.s'
+	.else
+	icl		'cio.s'
+	.endif
+
+	_KERNEL_REPORT_MODULE_SIZE 'Central Input/Output (CIO)', $E6D5-$E4A6
+
+	.if !_KERNEL_XLXE
+	icl		'vbi.s'
+	icl		'interrupt.s'
+	icl		'irq.s'
+	.endif
+	_KERNEL_REPORT_MODULE_SIZE 'Interrupt routines', $E944-$E6D5
+	
+	icl		'sio.inc'
+	icl		'sio.s'
+	_KERNEL_REPORT_MODULE_SIZE 'Serial Input/Output (SIO)', $EDEA-$E944
+	
+	icl		'disk.s'
+	_KERNEL_REPORT_MODULE_SIZE 'Disk Handler', $EE78-$EDEA
+	
+	icl		'printer.s'
+	_KERNEL_REPORT_MODULE_SIZE 'Printer Handler', $EF41-$EE78
+	
+	icl		'cassette.s'
+	_KERNEL_REPORT_MODULE_SIZE 'Cassette Handler', $F0E3-$EF41
+	
+	.ifdef _KERNEL_816
+	icl		'init816.s'
+	.else
+	icl		'init.s'
+	.endif
+
+	icl		'boot.s'
+	_KERNEL_REPORT_MODULE_SIZE 'Monitor routines', $F3E4-$F0E3
+	
+	icl		'screen.s'
+	icl		'editor.s'
+
+	.ifdef _KERNEL_816
+	icl		'screenext816.s'
+	.else
+	icl		'screenext.s'
+	.endif
+
+	_KERNEL_REPORT_MODULE_SIZE 'Display routines', 0
+	
+	.ifdef _KERNEL_816
+	icl		'keyboard816.s'
+	.else
+	icl		'keyboard.s'
+	.endif
+
+	icl		'keytable.s'
+	_KERNEL_REPORT_MODULE_SIZE 'Keyboard routines', 0
+
+	.if _KERNEL_XLXE
+	.echo	'Free space: ', $FFEE-*, ' bytes'
+	.else
+	.echo	'Free space: ', $FFFA-*, ' bytes'
+	.endif
+
+;==============================================================================
+; version block (XL/XE)
+;==============================================================================
+
+	.ifdef _KERNEL_816
+	org		$ffe4
+	dta		a(IntDispatchNativeCop)		;$FFE4
+	dta		a(IntDispatchNativeBreak)	;$FFE6
+	dta		a(IntDispatchNativeAbort)	;$FFE8
+	dta		a(IntDispatchNativeNmi)		;$FFEA
+	dta		a(0)						;$FFEC
+	dta		a(IntDispatchNativeIrq)		;$FFEE
+	dta		$13							;$FFF0
+	dta		$02							;$FFF1 option byte - !!CHECKED BY ARCHON
+	dta		'CX'						;$FFF2
+	dta		a(IntDispatchCop)			;$FFF4
+	dta		a(0)						;$FFF6
+	dta		a(IntDispatchAbort)			;$FFF8
+	.elif _KERNEL_XLXE
+	org		$ffee
+	dta		$01,$01,$13
+	dta		$02					;option byte - !!CHECKED BY ARCHON
+	dta		'CX',$00,$00,$00
+	dta		$00
+	dta		a(0)
+	.endif
+
+;==============================================================================
+; reset vectors
+;==============================================================================
+	org		$fffa
+	dta		a(IntDispatchNMI)
+	dta		a(InitReset)
+	dta		a(IntDispatchIRQ)
+
+	end

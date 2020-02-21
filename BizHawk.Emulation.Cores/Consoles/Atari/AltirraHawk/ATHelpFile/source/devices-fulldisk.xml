@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Full disk drive emulation">
+	<p>
+		As of Altirra 2.90, full disk drive emulation is now supported, which means that the disk
+		drive's controller and firmware is emulated instead of just the behavior of the disk drive.
+		This allows for more precise emulation of disk drive behavior, particularly for disk drive
+		types that allow custom code to be uploaded.
+	</p>
+	<h2>Enabling full drive emulation</h2>
+	<p>
+		Full disk drive emulation is enabled by adding the desired disk drive in the Devices tree.
+		Many variants of the Atari 810 and 1050 are supported, as well as the Z80-based Indus GT
+		and the 8050-based XF551. Adding one of these devices will replace the regular disk drive
+		emulator for D1:. Currently only one full drive emulator can be used at a time.
+	</p>
+	<p>
+		Firmware images are required for any of the full drive emulations to work. These must be
+		obtained externally as they are not included with the emulator, nor are replacements
+		provided. Firmware images for disk drives are set up in System, Firmware, Firmware Images.
+		If the correct firmware is not available, the disk drive controller will fail to boot,
+		typically signified by the disk drive motor staying on.
+	</p>
+	<h2>Empty drive behavior</h2>
+	<p>
+		A notable difference between normal and full drive emulation is the behavior when no disk
+		is mounted. The normal drive emulator automatically turns off the emulated drive when
+		the disk is removed, whereas the full drive emulator stays on. This correctly emulates
+		what happens when booting the computer with the disk drive turned on but with no disk,
+		and some enhanced disk drives even boot the computer from software in the firmware ROM
+		in this case. However, as on the real hardware, this also causes the OS to always attempt
+		to boot off the disk drive,
+		and in particular prevents entry into internal BASIC without booting DOS.
+	</p>
+  <h2>Power-on delay</h2>
+  <p>
+    Some disk drives take an abnormally long time to initialize before they are ready to
+    accept commands from the computer, as long as several seconds. This is worst for drives
+    like the ATR-8000 and Percom RFD-40S1 that have multiple mechanisms to reset on power-up.
+    If the computer is
+    powered on too quickly after the drives, the computer can time out on the disk commands
+    before the drive becomes ready.
+  </p>
+  <p>
+    With real hardware, this is handled by powering on the drives first and then the computer
+    instead of both at the same time (i.e. not by a common power strip). In Altirra, this is
+    simulated using the Power-on Delay setting. The "Auto" value selects a value appropriate
+    for the typical firmware for the drive type selected.
+  </p>
+  <h2>Limitations</h2>
+	<p>
+		While full drive emulation is more precise, it is also more expensive performance-wise and
+		limits the ability of the emulator to monitor and enhance disk drive operation. The
+		following limitations are in effect when using a full drive emulation device:
+	</p>
+	<ul>
+		<li>
+			D1: acceleration is not possible, either with SIOV/PBI patch or burst I/O. However,
+			rotational delays can still be disabled (Accurate Sector Timing option disabled).
+		</li>
+		<li>
+			Only disk types actually supported by the physical drive and firmware can be read and
+			written. For instance, mounting an enhanced density 130K image in an emulated 810 drive
+			will not work, because the 810 is incapable of reading enhanced density disks.
+			Non-physical disk image geometries, like 16MB mega-disk images, will not work at all.
+		</li>
+		<li>
+			Booting BASIC programs directly will not work. This is because the emulated drive is
+			always turned on, even without a disk, and thus the OS will always attempt to boot
+			from D1: instead of running BASIC.
+		</li>
+		<li>
+			The VRWSafe write mode, which allows virtualized writes but blocks formatting, may
+			not work because the emulator may not be able to block the drive firmware from doing
+			a format. The format will still be virtualized and usually prevented even in the virtual
+			image, but the drive firmware may still format and verify all 40 tracks.
+		</li>
+		<li>
+			Drives that use track buffering, such as the Happy 1050 and the Speedy 1050, will perform
+			poorly with or possibly even cause read errors when used with virtual folder mounts.
+			This is because the track buffering obscures what files DOS is trying to read.
+			The virtual folder mount code attempts to accommodate track buffering, but performance
+			is very poor and using a track-buffered drive with a folder mount is not recommended.
+		</li>
+	</ul>
+	<p>
+		In addition, running full drive emulation also exposes all bugs in the original firmware,
+		some of which that are rather annoying -- such as drive firmware that takes too long to
+		initialize on boot, or is incapable of properly detecting a density change sometimes when
+		swapping disks.
+	</p>
+	<p>
+		For these reasons, it is recommended that full disk drive emulation only be used when
+		running software that specifically needs it, such as Indus CP/M or an enhanced copy
+		program.
+	</p>
+</topic>

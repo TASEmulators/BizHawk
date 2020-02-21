@@ -1,0 +1,47 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Multi-I/O (MIO)">
+	<p>
+		The Multi-I/O (MIO) is a Parallel Bus Interface (PBI) based device that adds hard disk, serial, and
+		parallel printing capabilities.
+	</p>
+	<h2>Setting up the MIO hard drive</h2>
+	<p>
+		Under System, Devices, add the MIO to the Computer, then select the MIO or the empty
+		slot under it and add a hard drive.
+	</p>
+	<p>
+		Next, set up MIO firmware
+		in System, Firmware. You must have the MIO firmware to proceed; it is not included with
+		the emulator. As of this writing, v1.41 is recommended.
+	</p>
+	<p>
+		The menu for the MIO is entered by holding SELECT while powering on or resetting the computer:
+	</p>
+	<img src="pics/mio-menu.png" />
+	<p>
+		The menu sets which OS drives (D1-D8:) are handled the MIO and whether they map to ramdisks or
+		to images on the hard drive. Press N to select the desired slot and then T to change the drive
+		type. Use ID,LUN 0,0 for the first hard drive, 1,0 for the second, etc. Adjust the parameters
+		on the right to locate and set the size of the disk image. Refer to the MIO manual for more details.
+	</p>
+	<p>
+		Note that if you have set up D1:, the computer will attempt to boot from it and crash, which is
+		a problem if you haven't initialized the image yet. Solutions are to either swap it to another
+		drive slot temporarily or boot off of a Sparta DOS X cartridge.
+	</p>
+	<h2>Emulation considerations</h2>
+	<p>
+		Because the MIO can emulate disk drives, it is important to make sure that the emulator doesn't
+		interfere with the MIO emulation. In previous versions of the emulator, it was necessary to
+		disable the SIO patch for disks or enable SIO override detection to make this work, or else the
+		emulator would intercept the disk request before the Black Box firmware could, bypassing the Black
+		Box.
+	</p>
+	<p>
+		As of 2.80+, the SIO acceleration mode can be changed from SIOV to PBI, which causes the emulator
+		to use a PBI device instead of intercepting the SIOV vector. The emulator's PBI device is at lowest
+		priority (ID 7), so it does not interfere with the MIO. This allows accelerated disk access
+		for disk drives not handled by the MIO.
+	</p>
+</topic>

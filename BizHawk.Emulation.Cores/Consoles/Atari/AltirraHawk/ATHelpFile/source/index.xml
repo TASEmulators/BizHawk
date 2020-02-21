@@ -1,0 +1,8 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Introduction">
+  <p>
+    This help file is the documentation for Altirra, an emulator that simulates the hardware
+    of the Atari 8-bit computer systems, including the Atari 800, 800XL, and 130XE computers. 
+  </p>
+</topic>

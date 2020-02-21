@@ -1,0 +1,53 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="XEP80 Interface Module">
+  <p>
+    The XEP80 Interface Module was an 80-column display module that connected to the joystick port of
+    the Atari. Altirra emulates all official and some unofficial functionality of the XEP80, but not
+    the printer port.
+  </p>
+  <h2>Usage</h2>
+  <p>
+    XEP80 emulation is enabled via the System &gt; XEP80 menu and emulates an XEP80 device plugged
+    into joystick port 2. For this to work, no other input device should be activated that also uses
+    port 2 (this is impossible on real hardware except by soldering or other physical means).
+  </p>
+  <p>
+    Once XEP80 emulation is enabled, display driver software must be loaded to use it.
+    You can either use the <tt>XEP80.SYS</tt> included with the original XEP80 software disk, or you can
+    use the replacement <tt>ALTXEP80.SYS</tt> from the Additions disk.
+  </p>
+  <p>
+    The XEP80 generates a different display parallel to the one usually created by the Atari.
+    In Altirra, use View &gt; XEP80 View to toggle between the standard display and the XEP80 display.
+    The Auto-switch XEP80 View option makes this easier by automatically switching to the XEP80's
+    display if it receives valid data and back to the standard display on reset.
+  </p>
+  <h2>Caveats</h2>
+  <p>
+    The printer interface isn't emulated.
+  </p>
+  <p>
+    Altirra attempts to emulate a fair amount of undocumented behavior within the XEP80, particularly
+    with regard to altering the display registers and changing UART baud rates. However, the XEP80
+    testing command set allows hardware registers and internal memory to be overwritten in ways that
+    can cause very unusual behavior, and not all of that is emulated.
+  </p>
+  <p>
+    Only software specifically designed for the XEP80 or that works through standard CIO E: and S:
+    interfaces will work with it. Programs that write directly to the screen buffer or hardware registers
+    will not work either in emulation or real hardware. This excludes most games and even some productivity
+    software.
+  </p>
+  <p>
+    The actual XEP80 hardware is notorious for extreme amounts of vertical overscan since it generates
+    250 active scanlines in NTSC and 300 in PAL in text mode. As such, while the emulator shows all 25
+    rows of text, the top and bottom rows are seldom completely visible on real hardware, subject to
+    depending on the TV set.
+  </p>
+  <p>
+    It is possible to reprogram the XEP80 for custom horizontal and vertical refresh rates. Altirra
+    allows horizontal refresh rates of 14.7-16.7KHz and vertical rates of 48-52Hz (PAL) or 58-62Hz (NTSC).
+    Scanning rates that are out of tolerance will result in an unsupported screen mode message similar.
+  </p>
+</topic>

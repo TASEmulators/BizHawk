@@ -1,0 +1,132 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Addresses and expressions">
+  <p>
+    Many debugger commands take addresses or expressions as arguments.
+  </p>
+  <toc/>
+  <h2>Addresses</h2>
+  <p>
+    Simple addresses can be either specified in default base, as set by the <tt>.base</tt>
+    command, or in hex using a <tt>$</tt> prefix. The default base is <tt>mixed</tt>, which
+    selects hex for simple addresses and decimal for numbers in expressions.
+  </p>
+  <h3>Extended addressing</h3>
+  <p>
+    For commands that support extended addressing, 24-bit and alternate memory space addresses
+    can be used.
+  </p>
+  <p>
+    24-bit addresses can be specified in bank+offset form using a <tt>:</tt> to separate
+    the bank and offset, e.g. <tt>$01:0000</tt>. A <tt>$</tt> prefix selects hex for both
+    the bank and the offset together.
+  </p>
+  <p>
+    The <tt>n:</tt> prefix selects ANTIC address space, <tt>v:</tt> selects VBXE memory,
+    <tt>x:</tt> selects PORTB-based extended RAM, and <tt>r:</tt> selects primary RAM.
+  </p>
+  <h2>Expressions</h2>
+  <h3>Constants</h3>
+  <p>
+    Constants may be specified in the default base, base 16 (hex), or base 2 (binary).
+    Hex numbers are preceeded by <tt>$</tt> and binary numbers by <tt>%</tt>. In mixed base
+    mode, expressions beyond a simple address use decimal constants.
+  </p>
+  <p>
+    A <tt>:</tt> may be used to select an alternate address space or a banked 24-bit
+    address.
+  </p>
+  <h3>Grouping</h3>
+  <p>
+    Parentheses <tt>()</tt> are used to group subexpressions. They do not request memory
+    indirection in the debugger as they do in 6502 assembly language.
+  </p>
+  <p>
+    Grouping parentheses can also be used to force expression evaluation instead of
+    address evaluation.
+  </p>
+  <h3>Arithmetic operators</h3>
+  <p>
+    The <tt>+</tt>, <tt>-</tt>, <tt>*</tt>, <tt>/</tt>, and <tt>%</tt> operators
+    perform arithmetic addition, subtraction, multiplication, division, and
+    modulus, respectively. All arithmetic is performed according to 32-bit, two's complement
+    signed integer rules.
+  </p>
+  <h3>Relational and logical operators</h3>
+  <p>
+    <tt>&lt;</tt>, <tt>&lt;=</tt>, <tt>&gt;</tt>, <tt>&gt;=</tt>, <tt>=</tt>, and
+    <tt>!=</tt> binary operators compare two values, evaluating to 0 for false and
+    1 for true. Note that unlike C-inspired programming languages, the equality operator
+    is a single <tt>=</tt> and not <tt>==</tt>.
+  </p>
+  <p>
+    <tt>and</tt> and <tt>or</tt> perform logical AND or OR combination and evaluate to
+    1 if both arguments and/or non-zero and 0 otherwise.
+  </p>
+  <p>
+    The unary <tt>!</tt> operator does logical inversion, evaluating to 1 if the argument
+    is zero and 0 otherwise.
+  </p>
+  <h3>Bitwise operators</h3>
+  <p>
+    <tt>&amp;</tt>, <tt>|</tt>, and <tt>^</tt> are bitwise AND, OR, and XOR operators.
+    <tt>~</tt> is bitwise inversion.
+  </p>
+  <h3>Low and high byte operators</h3>
+  <p>
+    <tt>&lt;</tt> and <tt>&gt;</tt> are unary operators that return the low and high
+    bytes of a 16-bit argument. They operate similarly to the low and high byte prefixes
+    used in 6502 assembly language.
+  </p>
+  <h3>Memory access operators</h3>
+  <p>
+    The <tt>db</tt>, <tt>dsb</tt>, and <tt>dw</tt> unary operators read an unsigned byte,
+    signed byte, and unsigned word from memory given an address.
+  </p>
+  <h3>CPU register operators</h3>
+  <p>
+    The <tt>pc</tt>, <tt>x</tt>, <tt>y</tt>, <tt>s</tt>, and <tt>p</tt> operators
+    return the values of the corresponding CPU registers. In 65C816 mode, the
+    low bytes of the A, X, Y, and S registers are returned.
+  </p>
+  <h3>ANTIC register operators</h3>
+  <p>
+    <tt>hpos</tt> and <tt>vpos</tt>
+    return the horizontal and vertical beam positions.
+  </p>
+  <h3>Breakpoint context operators</h3>
+  <p>
+    The <tt>read</tt> and <tt>write</tt> operators refer to the current memory read or
+    write address and are used in the address tests of a memory breakpoint. They are only
+    valid within a breakpoint condition expression.
+  </p>
+  <p>
+    In a breakpoint filter expression or when executing commands from a breakpoint
+    action, the <tt>address</tt> operator returns the memory access address and
+    the <tt>value</tt> operator returns the value read or written to memory.
+  </p>
+  <h2>Length expressions</h2>
+  <p>
+    Commands that operate on a memory range take a length parameter which begins
+    with <tt>L</tt>, which indicates the length of the range in bytes:
+  </p>
+  <blockquote>
+    <tt>f 4000 L1000 00 01 02 03</tt>
+    <br/>
+    <tt>f $1600 L($a00+x) 00 01 02 03</tt>
+  </blockquote>
+  <p>
+    The form <tt>L&gt;</tt> can also be used to set the length based on an
+    inclusive end address rather than a byte count:
+  </p>
+  <blockquote>
+    <tt>f 4000 L>4FFF 00 01 02 03</tt>
+  </blockquote>
+  <p>
+    Note that this takes priority over the high-byte expression operator. Parentheses
+    can be used to force the operator:
+  </p>
+  <blockquote>
+    <tt>f pagetable L(>bytes) 00 01 02 03</tt>
+  </blockquote>
+</topic>

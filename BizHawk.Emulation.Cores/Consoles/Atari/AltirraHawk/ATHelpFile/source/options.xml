@@ -1,0 +1,44 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Options">
+  <p>
+    Altirra has a number of options that can be used to customize the emulated Atari hardware.
+  </p>
+  <toc/>
+  <h2>View</h2>
+  <h3>Filter Mode</h3>
+  <p>
+    Selects the interpolation mode for the display. Point gives the sharpest display, but can give artifacts depending on the
+    scaling factor. Bilinear generates a smoother display. Bicubic generates an even higher quality display, but can be slow on
+    some video cards.
+  </p>
+  <p>
+    Filter modes are not available unless a Direct3D 9 video card is available; if Altirra is running in DirectDraw or GDI mode,
+    filtering is controlled by the OS or video card driver.
+  </p>
+  <h3>Stretch Mode</h3>
+  <p>
+    Controls how the display is stretched to fit the screen. Fit to Window just stretches, regardless of how it distorts; Preserve
+    Aspect Ratio attempts to match the aspect ratio that would be seen on a properly adjusted TV set. Square Pixels always assumes
+    square pixels instead, which is mostly the same for PAL, but noticeably different for NTSC. Integral Square Pixels is similar,
+    but also ensures that the scaling factor is always an integer, which prevents distortion in Point filter mode.
+  </p>
+  <h3>Overscan Mode</h3>
+  <p>
+    Selects how much of the display is visible. Normal only shows the maximum visible playfield region; Extended shows additional
+    border regions that are visible on some TV sets. Full expands the display to cover the entire video signal, even horizontal
+    and vertical blank regions.
+  </p>
+  <p>
+    The Extended PAL Height option enables viewing of additional scan lines above and below the normal picture area. This is only
+    useful when running software that explicitly uses a special trick to display more than the 240 scan lines normally allowed
+    by ANTIC.
+  </p>
+  <h3>Vertical Sync</h3>
+  <p>Lock the display to the vertical sync period, thus reducing the amount of tearing seen on screen.</p>
+  <h3>Show FPS</h3>
+  <p>
+    Display the current emulator performance in frames per second in the window caption. This can introduce occasional glitching
+    into the video output.
+  </p>
+</topic>

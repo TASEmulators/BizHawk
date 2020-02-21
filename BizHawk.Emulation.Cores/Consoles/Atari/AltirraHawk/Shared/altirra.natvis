@@ -1,0 +1,294 @@
+<?xml version="1.0"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+  <Type Name="vdspan&lt;*&gt;">
+    <DisplayString>size={mpEnd-mpBegin,i}</DisplayString>
+    <Expand>
+      <Item Name="[size]">mpEnd-mpBegin</Item>
+      <ArrayItems>
+        <Size>mpEnd-mpBegin</Size>
+        <ValuePointer>mpBegin</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+  
+	<Type Name="vdfastvector&lt;*,*&gt;">
+		<DisplayString>size={mpEnd-mpBegin,i}/{m.eos-mpBegin,i}</DisplayString>
+		<Expand>
+			<Item Name="[size]">mpEnd-mpBegin</Item>
+			<Item Name="[capacity]">m.eos-mpBegin</Item>
+			<ArrayItems>
+				<Size>mpEnd-mpBegin</Size>
+				<ValuePointer>mpBegin</ValuePointer>
+			</ArrayItems>
+		</Expand>
+	</Type>
+
+	<Type Name="vdfastfixedvector&lt;*,*&gt;">
+		<DisplayString>size={mpEnd-mpBegin,i}/{m.eos-mpBegin,i}</DisplayString>
+		<Expand>
+			<Item Name="[size]">mpEnd-mpBegin</Item>
+			<Item Name="[capacity]">m.eos-mpBegin</Item>
+			<ArrayItems>
+				<Size>mpEnd-mpBegin</Size>
+				<ValuePointer>mpBegin</ValuePointer>
+			</ArrayItems>
+		</Expand>
+	</Type>
+
+	<Type Name="vdvector&lt;*,*&gt;">
+		<DisplayString>size={m.mpEnd-m.mpBegin,i}/{m.mpEOS-m.mpBegin,i}</DisplayString>
+		<Expand>
+			<Item Name="[size]">m.mpEnd-m.mpBegin</Item>
+			<Item Name="[capacity]">m.mpEOS-m.mpBegin</Item>
+			<ArrayItems>
+				<Size>m.mpEnd-m.mpBegin</Size>
+				<ValuePointer>m.mpBegin</ValuePointer>
+			</ArrayItems>
+		</Expand>
+	</Type>
+
+	<Type Name="vdfastdeque&lt;*,*&gt;">
+		<DisplayString>size={(m.mapEnd - m.mapStart)*kBlockSize - kBlockSize + 1 + mTails.endIndex - mTails.startIndex}</DisplayString>
+		<Expand>
+			<Item Name="[size]">(m.mapEnd - m.mapStart)*kBlockSize - kBlockSize + 1 + mTails.endIndex - mTails.startIndex</Item>
+			<IndexListItems>
+				<Size>(m.mapEnd - m.mapStart)*kBlockSize - kBlockSize + 1 + mTails.endIndex - mTails.startIndex</Size>
+				<ValueNode>m.mapStart[$i / kBlockSize]->data[$i % kBlockSize]</ValueNode>
+			</IndexListItems>
+		</Expand>
+	</Type>
+	
+	<Type Name="VDStringSpanA">
+		<DisplayString Condition="mpEnd&gt;=mpBegin">len={mpEnd-mpBegin,i} "{mpBegin,[mpEnd-mpBegin]sb}"</DisplayString>
+		<DisplayString Condition="mpEnd&lt;mpBegin">invalid!</DisplayString>
+		<StringView>mpBegin,s</StringView>
+
+		<Expand>
+			<Item Name="[size]">mpEnd-mpBegin</Item>
+			<ArrayItems>
+				<Size>mpEnd-mpBegin</Size>
+				<ValuePointer>mpBegin</ValuePointer>
+			</ArrayItems>
+		</Expand>
+	</Type>
+
+	<Type Name="VDStringSpanW">
+		<DisplayString Condition="mpEnd&gt;=mpBegin">len={mpEnd-mpBegin,i} "{mpBegin,[mpEnd-mpBegin]sub}"</DisplayString>
+		<DisplayString Condition="mpEnd&lt;mpBegin">invalid!</DisplayString>
+		<StringView>mpBegin,su</StringView>
+
+		<Expand>
+			<Item Name="[size]">mpEnd-mpBegin</Item>
+			<ArrayItems>
+				<Size>mpEnd-mpBegin</Size>
+				<ValuePointer>mpBegin</ValuePointer>
+			</ArrayItems>
+		</Expand>
+	</Type>
+
+	<Type Name="vdlist&lt;*&gt;">
+		<Expand>
+			<CustomListItems MaxItemsPerView="500">
+				<Variable Name="head" InitialValue="&amp;mAnchor" />
+				<Variable Name="node" InitialValue="head-&gt;mListNodeNext" />
+				<Loop>
+					<Break Condition="node==0 || node==head" />
+					<Item><![CDATA[static_cast<$T1*>(node)]]></Item>
+					<Exec>node = node-&gt;mListNodeNext</Exec>
+				</Loop>
+			</CustomListItems>
+		</Expand>
+	</Type>
+	
+	<Type Name="vdhashtable&lt;*&gt;">
+		<DisplayString>size={mElementCount,i}, buckets={mBucketCount,i}</DisplayString>
+		<Expand>
+			<Item Name="[size]">mElementCount</Item>
+			<Item Name="[buckets]">mBucketCount</Item>
+			<Synthetic Name="Items">
+				<Expand>
+					<CustomListItems MaxItemsPerView="500">
+						<Variable Name="bucket" InitialValue="mpBucketStart" />
+						<Variable Name="node" InitialValue="mpBucketStart[0]" />
+						<Size>mElementCount</Size>
+						<Loop>
+							<Break Condition="bucket >= mpBucketEnd" />
+							<Exec>++bucket</Exec>
+							<Exec>node = *bucket</Exec>
+							<Loop>
+								<Break Condition="!node" />
+								<Item>((vdhashtable_node&lt;$T1&gt; *)node)->mData</Item>
+								<Exec>node = node->mpHashNext</Exec>
+							</Loop>
+						</Loop>
+					</CustomListItems>
+				</Expand>
+			</Synthetic>
+			<Synthetic Name="Buckets">
+				<Expand>
+					<ArrayItems>
+						<Size>mBucketCount</Size>
+						<ValuePointer>mpBucketStart</ValuePointer>
+					</ArrayItems>
+				</Expand>
+			</Synthetic>
+		</Expand>
+	</Type>
+
+	<Type Name="vdhashtable_iterator&lt;*&gt;">
+		<DisplayString><![CDATA[{static_cast<vdhashtable_node<$T1 > *>(mpNode)}]]></DisplayString>
+		<Expand>
+			<Item Name="Data"><![CDATA[static_cast<vdhashtable_node<$T1 > *>(mpNode)->mData]]></Item>
+			<Item Name="Next"><![CDATA[mpNode->mpHashNext]]></Item>
+		</Expand>
+	</Type>
+	
+	<Type Name="vdblock&lt;*&gt;">
+		<DisplayString>size={mSize,i}</DisplayString>
+		<Expand>
+			<Item Name="[size]">mSize</Item>
+			<ArrayItems>
+				<Size>mSize</Size>
+				<ValuePointer>mpBlock</ValuePointer>
+			</ArrayItems>
+		</Expand>		
+	</Type>
+	
+	<Type Name="VDRect&lt;*&gt;">
+		<DisplayString>({left},{top})-({right},{bottom}) [{right-left}x{bottom-top}]</DisplayString>
+	</Type>
+
+  <Type Name="vdrefcounted&lt;*&gt;">
+    <DisplayString>refcount={mRefCount.n,i}</DisplayString>
+  </Type>
+  
+  <Type Name="vdrefptr&lt;*&gt;">
+    <SmartPointer Usage="Minimal">ptr</SmartPointer>
+  </Type>
+  
+	<Type Name="ATEthernetAddr">
+		<DisplayString>{mAddr[0],xb}</DisplayString>
+	</Type>
+	
+	<Type Name="ATNetTcpConnectionKey">
+		<DisplayString>
+			<![CDATA[
+				{mLocalAddress&255,i}.{(mLocalAddress>>8)&255,i}.{(mLocalAddress>>16)&255,i}.{(mLocalAddress>>24)&255,i}:{mLocalPort,i} -> 
+				{mRemoteAddress&255,i}.{(mRemoteAddress>>8)&255,i}.{(mRemoteAddress>>16)&255,i}.{(mRemoteAddress>>24)&255,i}:{mRemotePort,i}
+			]]>
+		</DisplayString>
+	</Type>
+
+	<Type Name="ATDBString">
+		<DisplayString>
+			<![CDATA[
+				{(const char *)&mOffset + mOffset,s8}
+			]]>
+		</DisplayString>
+		<Expand>
+			<Item Name="offset">mOffset</Item>
+			<Item Name="ptr">(const char *)&amp;mOffset + mOffset</Item>
+		</Expand>
+	</Type>
+	
+	<Type Name="ATDBVector&lt;*&gt;">
+		<DisplayString>size={mSize}</DisplayString>
+		<Expand>
+			<Item Name="[offset]">mOffset</Item>
+			<Item Name="[size]">mSize</Item>
+			<ArrayItems>
+				<Size>mSize</Size>
+				<ValuePointer>(const $T1 *)((const char *)&amp;mOffset + mOffset)</ValuePointer>
+			</ArrayItems>			
+		</Expand>
+	</Type>
+	
+	<Type Name="ATHTNode">
+		<DisplayString Condition="mNodeType==kATHTNodeType_Insn &amp;&amp; mpFirstChild">Y={mRelYPos}:{mHeight} Type=Insns ({mInsn.mOffset}:{mInsn.mCount}) + children</DisplayString>
+		<DisplayString Condition="mNodeType==kATHTNodeType_Insn">Y={mRelYPos}:{mHeight} Type=Insns ({mInsn.mOffset}:{mInsn.mCount})</DisplayString>
+		<DisplayString Condition="mNodeType==kATHTNodeType_Repeat">Y={mRelYPos}:{mHeight} Type=Repeat ({mRepeat.mSize} insns x {mRepeat.mCount} times)</DisplayString>
+		<DisplayString Condition="mNodeType==kATHTNodeType_Label">Y={mRelYPos}:{mHeight} Type=Label "{mpLabel,sb}"</DisplayString>
+		<DisplayString Condition="mNodeType==kATHTNodeType_Interrupt">Y={mRelYPos}:{mHeight} Type=Interrupt</DisplayString>
+		<DisplayString>Y={mRelYPos} H={mHeight} Type={mNodeType}</DisplayString>
+		<Expand>
+			<CustomListItems>
+				<Variable Name="p" InitialValue="mpFirstChild" />
+				<Variable Name="count" InitialValue="0" />
+				<Loop Condition="p">
+					<Exec>p = p-&gt;mpNextSibling</Exec>
+					<Exec>count = count+1</Exec>
+				</Loop>
+				<Item Name="[Count]">count</Item>
+			</CustomListItems>
+			<Synthetic Name="[Predecessors]">
+				<Expand>
+					<LinkedListItems>
+						<HeadPointer>mpPrevSibling</HeadPointer>
+						<NextPointer>mpPrevSibling</NextPointer>
+						<ValueNode>this</ValueNode>
+					</LinkedListItems>
+				</Expand>
+			</Synthetic>
+			<Synthetic Name="[Successors]">
+				<Expand>
+					<LinkedListItems>
+						<HeadPointer>mpNextSibling</HeadPointer>
+						<NextPointer>mpNextSibling</NextPointer>
+						<ValueNode>this</ValueNode>
+					</LinkedListItems>
+				</Expand>
+			</Synthetic>
+			<LinkedListItems>
+				<HeadPointer>mpFirstChild</HeadPointer>
+				<NextPointer>mpNextSibling</NextPointer>
+				<ValueNode>this</ValueNode>
+			</LinkedListItems>
+		</Expand>
+	</Type>
+	
+	<Type Name="ATCPUHistoryEntry">
+		<DisplayString>A={(short)mA,Xb} X={(short)mX,Xb} Y={(short)mY,Xb} S={(short)mS,Xb} | {mPC,Xb}: {(unsigned short)(mOpcode[0]*256+mOpcode[1]),Xb}{(unsigned short)(mOpcode[2]*256+mOpcode[3]),Xb}</DisplayString>
+		<Expand>
+			<Synthetic Name="Opcode">
+				<DisplayString>{(unsigned short)(mOpcode[0]*256+mOpcode[1]),Xb}{(unsigned short)(mOpcode[2]*256+mOpcode[3]),Xb}</DisplayString>
+				<Expand>
+					<ArrayItems>
+						<Size>4</Size>
+						<ValuePointer>mOpcode</ValuePointer>
+					</ArrayItems>
+				</Expand>
+			</Synthetic>
+			<Item Name="A">mA,Xb</Item>
+			<Item Name="X">mX,Xb</Item>
+			<Item Name="Y">mY,Xb</Item>
+			<Item Name="S">mS,Xb</Item>
+			<Item Name="P">mP,Xb</Item>
+		</Expand>
+	</Type>
+  
+  <Type Name="ATMemoryManager::MemoryLayer" IncludeView="accessa">
+    <DisplayString Condition="mFlags&amp;4">A</DisplayString>
+    <DisplayString>-</DisplayString>
+  </Type>
+  
+  <Type Name="ATMemoryManager::MemoryLayer" IncludeView="accessr">
+    <DisplayString Condition="mFlags&amp;2">R</DisplayString>
+    <DisplayString>-</DisplayString>
+  </Type>
+
+  <Type Name="ATMemoryManager::MemoryLayer" IncludeView="accessw">
+    <DisplayString Condition="!(mFlags&amp;1)">-</DisplayString>
+    <DisplayString Condition="mbReadOnly">O</DisplayString>
+    <DisplayString>W</DisplayString>
+  </Type>
+  
+  <Type Name="ATMemoryManager::MemoryLayer">
+    <Intrinsic Name="addr_start" Expression="mPageOffset*256" />
+    <Intrinsic Name="addr_end" Expression="addr_start() + mPageCount*256" />
+    <DisplayString>Pri {(int)mPriority,i} | {*this,view(accessa)}{*this,view(accessr)}{*this,view(accessw)} | ${addr_start(),Xb}-{addr_end()-1,Xb} [{mpName,sb}]</DisplayString>
+  </Type>
+  
+  <Type Name="ATMemoryLayer">
+    <MostDerivedType IgnoreVTable="true">(ATMemoryManager::MemoryLayer*)this</MostDerivedType>
+  </Type>
+</AutoVisualizer>

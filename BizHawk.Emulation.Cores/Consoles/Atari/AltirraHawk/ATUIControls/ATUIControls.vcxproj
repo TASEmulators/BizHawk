@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="../Build/ProjectConfigurations.props" />
+  <ItemGroup>
+    <ClCompile Include="source\stdafx.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="source\uibutton.cpp" />
+    <ClCompile Include="source\uilabel.cpp" />
+    <ClCompile Include="source\uilistview.cpp" />
+    <ClCompile Include="source\uislider.cpp" />
+    <ClCompile Include="source\uitextedit.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\h\at\atuicontrols\uibutton.h" />
+    <ClInclude Include="..\h\at\atuicontrols\uilabel.h" />
+    <ClInclude Include="..\h\at\atuicontrols\uilistview.h" />
+    <ClInclude Include="..\h\at\atuicontrols\uislider.h" />
+    <ClInclude Include="..\h\at\atuicontrols\uitextedit.h" />
+    <ClInclude Include="h\stdafx.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A8F7990A-8A96-4112-AE3F-35E5B9EC87B5}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>ATUIControls</RootNamespace>
+  </PropertyGroup>
+  <Import Project="..\Build\PlatformSetup.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\Build\Altirra.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

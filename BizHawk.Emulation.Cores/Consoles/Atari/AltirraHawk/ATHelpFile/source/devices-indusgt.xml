@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Indus GT">
+	<p>
+		The Indus GT disk drive supports single-density (90K), enhanced density (130K), and
+		double density (180K) disks. It does not support double-sided disks, however.
+	</p>
+	<h2>Booting Indus CP/M</h2>
+	<p>
+		Altirra's Indus GT emulation includes the RAMCharger, which means that it can run
+		Indus CP/M. The trickiest part of booting Indus CP/M is obtaining a working image
+		of it. The disk is a double-density disk with 256 byte boot sectors, which is unusual.
+		Some images of this disk encoded in the .ATR file format are corrupted because they
+		only hold the first 128 bytes of the the first three sectors. To boot properly,
+		the full 256 byte contents of these sectors are required, which cannot be encoded
+		safely in .ATR. A working image of the Indus CP/M disk must be encoded in .XFD for
+		the emulator to use it.
+	</p>
+	<p>
+		A good image of Indus CP/M disk must be paired with an accompanying boot disk for
+		the computer, which acts as the terminal. The procedure for booting CP/M is as follows:
+	</p>
+	<ul>
+		<li>Boot the terminal disk on the computer.</li>
+		<li>Start the terminal program (typically E.COM or F.COM, for 40 and 80 column operation).</li>
+		<li>Remove the terminal disk and insert the CP/M disk. This must be done without rebooting
+			the computer, so the Open Image, Disk Drive dialog, or Attach disk commands should be
+			used instead. Alternately, mounting both disks on D1: and D2: and using the rotate disk
+			commands can be convenient.
+		</li>
+		<li>
+			Instruct the Indus drive to boot CP/M by holding Drive Type and pressing Error. This
+			is not possible in the emulator, so a special command has been added to do it:
+			System, Console Switches, Indus GT: Boot CP/M.
+		</li>
+	</ul>
+	<p>
+		If everything has been done correctly, CP/M will boot and be displayed in the terminal:
+	</p>
+	<img src="pics/indus-cpm.png" />
+	<h2>Interleaving performance issue</h2>
+	<p>
+    Indus CP/M will boot very slowly by default if the Accurate Sector Timing option is enabled.
+    The reason for this is that the ATR and XFD disk image formats lack interleave information,
+    so the emulator assumes an interleave appropriate for normal Atari disks. Indus CP/M expects
+    its disks to be formatted with a 1:1 interleave and runs very slowly with the standard
+    Atari 9:1 or 15:1 interleave.
+  </p>
+  <p>
+    There are two solutions to this problem. One is to reinterleave the disk image to 1:1 through
+    the Disk Drives dialog. This restores expected and authentic performance, but unfortunately
+    it can't be saved back to the disk image file. The other is to disable the Accurate Sector
+    Timing Option.
+  </p>
+  <h2>Problems with enhanced density disks</h2>
+  <p>
+    Indus GT drives with version 1.1 firmware cannot read enhanced density disks properly.
+    They will appear to work and then fail with error 139 when trying to read beyond the
+    single density size (90K). This bug is fixed in version 1.2. Unfortunately, there is
+    an image of firmware 1.1 floating around the Internet that is mislabeled as version 1.4,
+    which has added some confusion.
+  </p>
+</topic>

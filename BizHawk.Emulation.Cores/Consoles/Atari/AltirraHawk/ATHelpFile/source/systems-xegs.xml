@@ -1,0 +1,43 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="The XE Game System (XEGS)">
+  <h2>Description</h2>
+  <p>
+    The XE Game System, or XEGS, is a mildly adapted version of the 800XL computer intended to
+    double both as a game console and a computer. It is much more similar to the computer line
+    than the 5200 and the vast majority of software that runs on an 800XL will also run on the
+    XEGS.
+  </p>
+  <h3>Configuration</h3>
+  <p>
+    The XEGS is very similar internally to the 800XL: 64K of RAM, 16K OS ROM with built-in self
+    test, 8K internal BASIC ROM, and the same ANTIC/GTIA/POKEY/PIA chips. It also takes the same
+    cartridges and has a serial I/O bus connection for disk drives and other SIO peripherals.
+    Thus, it can run the same cartridge programs, BASIC programs, DOS, etc.
+  </p>
+  <p>
+    There are a couple of minor hardware additions. The keyboard is detachable and optional on
+    the XEGS, and software can detect if the keyboard is attached. The XEGS also has an additional
+    8K internal game ROM containing Missile Command, which activates if the keyboard is detached or
+    SELECT is pressed. The OS ROM is also slightly revised over the XL/XE line, with a newer
+    version 4 OS that contains support for booting without the keyboard.
+  </p>
+  <h2>Emulation-specific concerns</h2>
+  <p>
+    Emulating the XEGS in Altirra is nearly the same as emulating an 800XL. By default, the XEGS
+    profile has its own hardware and firmware settings, but the majority of settings are shared
+    with the rest of the computer line.
+  </p>
+  <p>
+    The keyboard can be "detached" or "attached" in System &gt; Console Switches &gt; Keyboard
+    Present (XEGS). For this to work, the version 4 OS must be used, sometimes called <tt>atarixegs.rom</tt>.
+    The common version 2 OS ("<tt>atarixl.rom</tt>") can be used if the version 4 OS is not
+    available, but detached operation and Missile Command will not activate.
+  </p>
+  <p>
+    The version of Missile Command that ships with the XEGS is modified to work with the XEGS's
+    version 4 OS. Some older versions of Missile Command were hardcoded to the 800's OS and will
+    break if run on the XEGS; the symptom of a version mismatch is that game's keyboard controls
+    won't work and the level parameters can't be changed.
+  </p>
+</topic>

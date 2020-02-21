@@ -1,0 +1,53 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="MyIDE emulation">
+  <toc/>
+  <h2>Setting up hardware emulation</h2>
+  <p>
+    Both the internal and cartridge varieties of the MyIDE interface are supported. To enable MyIDE
+    emulation, select System &gt; Hard disk... from the menu, and specify an image file to use for
+    the emulated hard drive in the MyIDE section.
+  </p>
+  <h3>Hard drive capacity</h3>
+  <p>
+    The capacity of the emulated IDE hard drive is specified in megabytes. Note that the space available
+    to the Atari is generally less, since only 128 or 256 bytes per sector are used. This means that
+    only one-quarter to one-half of the drive capacity is used. Regardless, the hard drive image file
+    always contains the full 512 bytes per sector.
+  </p>
+  <h3>I/O region</h3>
+  <p>
+    Two I/O regions can be used for the IDE interface. Select $D5xx as the interface region for a cartridge-based
+    interface, and $D1xx for an internal interface.
+  </p>
+  <h3>Device speed</h3>
+  <p>
+    The emulated device can run at either slow or fast speed. At fast speed the emulated device responds
+    almost immediately to commands, simulating a solid state device. At slow speed, there is additional
+    moderate delay in command completion, comparable to average access time for a traditional hard disk.
+  </p>
+  <h2>Software support</h2>
+  <p>
+    Altirra does not include software to make use of the emulated IDE drive. You can use the MyIDE firmware
+    or software, however. Consult the documentation for the software for full details, but here are some
+    starting tips:
+  </p>
+  <h3>Disk-based driver</h3>
+  <p>
+    Boot the MyIDE-OS loader disk and wait for the load to complete. Once MyIDE-OS has loaded,
+    either use the Open Image... command to swap the disk in D1:, or eject the disk in Disk Images.
+    Do not use Cold Reset (Shift+F1), as this will kick out the soft-loaded OS. Use Ctrl+Shift+\ on
+    the host keyboard to send Ctrl+Shift+Esc to the emulation, which initiates a soft-cold-reset.
+  </p>
+  <h3>Flash-based driver</h3>
+  <p>
+    You will need to convert the cartridge flasher disk image to a cartridge image by mounting
+    an empty 1Mbit+IDE cartridge and then booting the flasher disk. Use $D500-D51F
+    as the I/O window for the IDE interface.
+  </p>
+  <h3>Custom OS kernel ROM</h3>
+  <p>
+    Rename the MyIDE OS image as otheros.rom in the Altirra program directory and switch the firmware
+    mode to Other OS. Use $D500-D51F for the external interface or $D1xx for the internal interface.
+  </p>
+</topic>

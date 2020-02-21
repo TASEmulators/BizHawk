@@ -1,0 +1,135 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Debugging BASIC programs">
+  <p>
+    Altirra's debugger is primarily geared toward debugging machine-language programs, but does
+    have facilities to aid in debugging BASIC programs as well. The debugging commands will
+    work with Atari BASIC, OSS Basic XL, and OSS Basic XE.
+  </p>
+  <note>
+    <p>
+      The debugger doesn't know about the status of the BASIC interpreter and therefore can
+      read program tables that are in the process of being modified by the interpreter. This
+      can produce garbled results. However, this also means that the debugger can read the
+      state of the BASIC program when the interpreter has failed or is otherwise inoperable.
+    </p>
+  </note>
+  <h2>Displaying BASIC table locations</h2>
+  <p>
+    The <tt>.basic</tt> command dumps out the base pointer table used by BASIC:
+  </p>
+  <pre class="example">
+BASIC table pointers:
+LOMEM   Low memory bound      0700
+VNTP    Variable name table   0800 (2 bytes)
+VVTP    Variable value table  0802 (8 bytes)
+STMTAB  Statement table       080A (100 bytes)
+STMCUR  Current statement     082F
+STARP   String/array table    086E (0 bytes)
+RUNSTK  Runtime stack         086E (16 bytes)
+MEMTOP  Top of used memory    087E</pre>
+  <p>
+    The most useful locations here are <tt>STMTAB</tt>, which points to the beginning of the statement
+    table (program text), and <tt>STMCUR</tt>, which points to the currently executing statement if
+    there is one.
+  </p>
+  <note>
+    The values reported by the <tt>.basic</tt> command may be inconsistent if Basic XE is operating
+    in Extend mode. In that case, the program is stored in extended memory and accessed through the
+    <tt>$4000-7FFF</tt> window, and thus the pointer values will only be valid when that window
+    is active.
+  </note>
+  <h2>Displaying BASIC program text</h2>
+  <p>
+    The <tt>.basic_dumpline</tt> command can be used to decode a tokenized BASIC program line. It
+    takes one argument, the base address of the line to dump:
+  </p>
+  <pre class="example">Altirra> .basic_dumpline 80a
+10 FOR I=1 TO 100 {end $0821}</pre>
+  <p>
+    This command is useful when used with the current value of the <tt>STMCUR</tt> pointer, as it
+    can be used to determine the currently executing line. Using an asterisk as the address,
+    i.e. <tt>.basic_dumpline *</tt>, is a shortcut for the current line. The end pointer shown is the address after the last byte in the line and
+    which should be the start of the next line.
+  </p>
+  <p>
+    Using 0 as the start address, i.e. <tt>.basic_dumpline *</tt>, dumps the first line.
+    If no argument is used, the next line is dumped. This can also be invoked simply by pressing Enter
+    in the debugger to re-issue the command.
+  </p>
+  <p>
+    The <tt>-c</tt> flag dumps the remainder of the program from the start point. Thus, <tt>.basic_dumpline -c 0</tt>
+    dumps the entire program.
+  </p>
+  <h2>Displaying variable tables</h2>
+  <p>
+    The <tt>.basic_vars</tt> command dumps out the BASIC variable table, composed of the variable
+    name table (VNT) and the variable value table (VVT):
+  </p>
+  <pre class="example">Altirra> .basic_vars
+BASIC variables:
+$80  I       = 29</pre>
+  <p>
+    The token, variable name, and current value are printed. The first two columns are mainly only
+    useful when digging around in the interpreter or in the tokenized source; the value column is
+    the more useful one when debugging a (mostly) working BASIC program.
+  </p>
+  <h2>Recovering a damaged or protected BASIC program</h2>
+  <p>
+    A common method of protecting a BASIC program involves corrupting the end of the BASIC program.
+    This causes the interpreter to hang or crash when attempting to find the hidden immediate
+    mode line 32768, resulting in a program that can only be run via a disk-based RUN command
+    and can't be listed or edited. In the debugger, this can be seen when dumping the end of the
+    BASIC program's statement table:
+  </p>
+  <pre class="example">Altirra> .basic_dumpline 80a
+10 FOR I=1 TO 100 {end $0821}
+Altirra>
+20 PRINT I {end $0828}
+Altirra>
+30 NEXT I {end $082F}
+Altirra>
+0</pre>
+  <p>
+    The last line at address <tt>$082F</tt> is where the immediate mode statement should be. Dumping
+    that location reveals that it has been edited to be line 0 with no length, causing the interpreter
+    to jam in a loop:
+  </p>
+  <pre class="example">Altirra> db 82f
+082F: 00 00 00 15 1F 0E 41 20-96 00 00 00 12 0E 00 00 |......A ........|
+083F: 00 00 00 00 14 27 1F 0E-41 20 97 00 00 00 12 0E |.....'..A ......|
+084F: 00 00 00 00 00 00 14 39-19 0F 0D 44 3A 50 52 4F |.......9...D:PRO|
+085F: 47 52 41 4D 2E 42 41 53-16 00 80 00 06 04 16 41 |GRAM.BAS.......A|
+086F: 01 00 00 00 00 40 01 00-00 00 00 80 0A 00 04 00 |.....@..........|
+087F: 00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00 |................|
+088F: 00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00 |................|
+089F: 00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00 |................|</pre>
+  <p>
+    This can be rectified by fixing the line number and resetting the length to the distance to the
+    end of the statement table (STARP):
+  </p>
+  <pre class="example">Altirra> e 82f 00 80 $86e-$82f
+Altirra> .basic_dumpline 82f
+32768 POKE 2096,0: POKE 2097,0: SAVE "D:PROGRAM.BAS" {end $0868}</pre>
+  <p>
+    Verifying the result also shows how the program was originally protected.
+  </p>
+  <p>
+    The <tt>.basic_rebuildvnt</tt> command will rebuild the Variable Name Table (VNT)
+    region of a BASIC program. This table is only needed by the BASIC interpreter for
+    parsing or LISTing, so if it is damaged, those actions can be blocked. <tt>.basic_rebuildvnt</tt>
+    rebuilds the VNT by substituting generated variable names, using the type information
+    in the Variable Value Table (VVT).
+  </p>
+  <h2>Saving a BASIC program</h2>
+  <p>
+    The <tt>.basic_save</tt> command will save a BASIC program from memory, even if the BASIC
+    interpreter has failed. This is done using the same process that the BASIC interpreter itself
+    uses when executing a SAVE. The program is saved to a path on the host, not on the emulated
+    disk, so this can be done even without DOS. Afterward, if desired, the program can be brought
+    back into BASIC by the H: device, a virtual disk, or direct booting from the emulator.
+  </p>
+  <note>
+    <tt>.basic_save</tt> cannot be used on a Basic XE program in Extend mode.
+  </note>
+</topic>

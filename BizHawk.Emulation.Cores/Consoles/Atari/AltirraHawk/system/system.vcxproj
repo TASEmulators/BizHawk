@@ -1,0 +1,203 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\Build\ProjectConfigurations.props" />
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{C2082189-3ECB-4079-91FA-89D3C8A305C0}</ProjectGuid>
+    <RootNamespace>system</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="..\Build\PlatformSetup.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="..\Build\YASM.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\Build\Altirra.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ClCompile Include="source\bitmath.cpp" />
+    <ClCompile Include="source\cache.cpp" />
+    <ClCompile Include="source\cmdline.cpp" />
+    <ClCompile Include="source\cpuaccel.cpp" />
+    <ClCompile Include="source\date.cpp" />
+    <ClCompile Include="source\debug.cpp" />
+    <ClCompile Include="source\debugx86.cpp" />
+    <ClCompile Include="source\Error.cpp" />
+    <ClCompile Include="source\error_win32.cpp" />
+    <ClCompile Include="source\event.cpp" />
+    <ClCompile Include="source\file.cpp" />
+    <ClCompile Include="source\fileasync.cpp" />
+    <ClCompile Include="source\filestream.cpp" />
+    <ClCompile Include="source\filesys.cpp">
+    </ClCompile>
+    <ClCompile Include="source\filewatcher.cpp" />
+    <ClCompile Include="source\Fraction.cpp">
+    </ClCompile>
+    <ClCompile Include="source\function.cpp" />
+    <ClCompile Include="source\halffloat.cpp" />
+    <ClCompile Include="source\hash.cpp" />
+    <ClCompile Include="source\int128.cpp">
+    </ClCompile>
+    <ClCompile Include="source\linearalloc.cpp" />
+    <ClCompile Include="source\list.cpp">
+    </ClCompile>
+    <ClCompile Include="source\log.cpp">
+    </ClCompile>
+    <ClCompile Include="source\math.cpp">
+    </ClCompile>
+    <ClCompile Include="source\memory.cpp">
+    </ClCompile>
+    <ClCompile Include="source\process.cpp" />
+    <ClCompile Include="source\profile.cpp">
+    </ClCompile>
+    <ClCompile Include="source\progress.cpp">
+    </ClCompile>
+    <ClCompile Include="source\refcount.cpp" />
+    <ClCompile Include="source\registry.cpp">
+    </ClCompile>
+    <ClCompile Include="..\h\vd2\system\source\registrymemory.cpp" />
+    <ClCompile Include="source\strutil.cpp">
+    </ClCompile>
+    <ClCompile Include="source\text.cpp">
+    </ClCompile>
+    <ClCompile Include="source\thread.cpp">
+    </ClCompile>
+    <ClCompile Include="source\thunk.cpp" />
+    <ClCompile Include="source\time.cpp">
+    </ClCompile>
+    <ClCompile Include="source\tls.cpp">
+    </ClCompile>
+    <ClCompile Include="source\vdalloc.cpp" />
+    <ClCompile Include="source\VDNamespace.cpp">
+    </ClCompile>
+    <ClCompile Include="source\VDScheduler.cpp">
+    </ClCompile>
+    <ClCompile Include="source\vdstl.cpp" />
+    <ClCompile Include="source\vdstl_hash.cpp" />
+    <ClCompile Include="source\vdstl_hashtable.cpp" />
+    <ClCompile Include="source\VDString.cpp">
+    </ClCompile>
+    <ClCompile Include="source\vectors.cpp">
+    </ClCompile>
+    <ClCompile Include="source\w32assist.cpp">
+    </ClCompile>
+    <ClCompile Include="source\zip.cpp">
+    </ClCompile>
+    <ClCompile Include="source\win32\touch_win32.cpp" />
+    <ClCompile Include="source\stdaccel.cpp">
+      <Optimization Condition="'$(Configuration)'=='Debug'">Full</Optimization>
+      <InlineFunctionExpansion Condition="'$(Configuration)'=='Debug'">Default</InlineFunctionExpansion>
+      <IntrinsicFunctions Condition="'$(Configuration)'=='Debug'">false</IntrinsicFunctions>
+      <BasicRuntimeChecks Condition="'$(Configuration)'=='Debug'">Default</BasicRuntimeChecks>
+      <PrecompiledHeader />
+      <Optimization Condition="'$(Configuration)'=='Debug'">Full</Optimization>
+      <BasicRuntimeChecks Condition="'$(Configuration)'=='Debug'">Default</BasicRuntimeChecks>
+      <ExcludedFromBuild Condition="'$(Configuration)'!='Debug'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\stdafx.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\h\vd2\system\atomic.h" />
+    <ClInclude Include="..\h\vd2\system\binary.h" />
+    <ClInclude Include="..\h\vd2\system\bitmath.h" />
+    <ClInclude Include="..\h\vd2\system\cache.h" />
+    <ClInclude Include="..\h\vd2\system\cmdline.h" />
+    <ClInclude Include="..\h\VD2\system\cpuaccel.h" />
+    <ClInclude Include="..\h\vd2\system\date.h" />
+    <ClInclude Include="..\h\vd2\system\debug.h" />
+    <ClInclude Include="..\h\vd2\system\debugx86.h" />
+    <ClInclude Include="..\h\VD2\system\Error.h" />
+    <ClInclude Include="..\h\vd2\system\event.h" />
+    <ClInclude Include="..\h\vd2\system\file.h" />
+    <ClInclude Include="..\h\vd2\system\fileasync.h" />
+    <ClInclude Include="..\h\VD2\system\filesys.h" />
+    <ClInclude Include="..\h\vd2\system\filewatcher.h" />
+    <ClInclude Include="..\h\VD2\system\Fraction.h" />
+    <ClInclude Include="..\h\vd2\system\function.h" />
+    <ClInclude Include="..\h\vd2\system\halffloat.h" />
+    <ClInclude Include="..\h\vd2\system\hash.h" />
+    <ClInclude Include="..\h\VD2\system\int128.h" />
+    <ClInclude Include="..\h\vd2\system\linearalloc.h" />
+    <ClInclude Include="..\h\VD2\system\list.h" />
+    <ClInclude Include="..\h\vd2\system\log.h" />
+    <ClInclude Include="..\h\vd2\system\math.h" />
+    <ClInclude Include="..\h\VD2\system\memory.h" />
+    <ClInclude Include="..\h\vd2\system\process.h" />
+    <ClInclude Include="..\h\vd2\system\profile.h" />
+    <ClInclude Include="..\h\VD2\system\progress.h" />
+    <ClInclude Include="..\h\vd2\system\refcount.h" />
+    <ClInclude Include="..\h\VD2\system\registry.h" />
+    <ClInclude Include="..\h\vd2\system\registrymemory.h" />
+    <ClInclude Include="..\h\vd2\system\seh.h" />
+    <ClInclude Include="..\h\VD2\system\strutil.h" />
+    <ClInclude Include="..\h\VD2\system\text.h" />
+    <ClInclude Include="..\h\VD2\system\thread.h" />
+    <ClInclude Include="..\h\vd2\system\thunk.h" />
+    <ClInclude Include="..\h\vd2\system\time.h" />
+    <ClInclude Include="..\h\VD2\system\tls.h" />
+    <ClInclude Include="..\h\vd2\system\unknown.h" />
+    <ClInclude Include="..\h\VD2\system\vdalloc.h" />
+    <ClInclude Include="..\h\VD2\system\VDNamespace.h" />
+    <ClInclude Include="..\h\VD2\system\VDQueue.h" />
+    <ClInclude Include="..\h\VD2\system\VDRingBuffer.h" />
+    <ClInclude Include="..\h\VD2\system\VDScheduler.h" />
+    <ClInclude Include="..\h\vd2\system\vdstdc.h" />
+    <ClInclude Include="..\h\vd2\system\vdstl.h" />
+    <ClInclude Include="..\h\vd2\system\vdstl_algorithm.h" />
+    <ClInclude Include="..\h\vd2\system\vdstl_vectorview.h" />
+    <ClInclude Include="..\h\vd2\system\vdstl_hash.h" />
+    <ClInclude Include="..\h\vd2\system\vdstl_hashmap.h" />
+    <ClInclude Include="..\h\vd2\system\vdstl_hashset.h" />
+    <ClInclude Include="..\h\vd2\system\vdstl_hashtable.h" />
+    <ClInclude Include="..\h\vd2\system\vdstl_vector.h" />
+    <ClInclude Include="..\h\VD2\system\VDString.h" />
+    <ClInclude Include="..\h\VD2\system\vdtypes.h" />
+    <ClInclude Include="..\h\vd2\system\vectors.h" />
+    <ClInclude Include="..\h\vd2\system\vectors_float.h" />
+    <ClInclude Include="..\h\vd2\system\vectors_int.h" />
+    <ClInclude Include="..\h\vd2\system\w32assist.h" />
+    <ClInclude Include="..\h\vd2\system\zip.h" />
+    <ClInclude Include="..\h\vd2\system\win32\intrin.h" />
+    <ClInclude Include="..\h\vd2\system\win32\miniwindows.h" />
+    <ClInclude Include="..\h\vd2\system\win32\touch.h" />
+    <ClInclude Include="h\stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <YASM Include="source\a_memory.asm">
+      <ExcludedFromBuild Condition="'$(Platform)'!='Win32'">true</ExcludedFromBuild>
+    </YASM>
+    <YASM Include="source\a_thunk.asm">
+      <ExcludedFromBuild Condition="'$(Platform)'!='Win32'">true</ExcludedFromBuild>
+    </YASM>
+    <YASM Include="source\a64_cpuaccel.asm">
+      <ExcludedFromBuild Condition="'$(Platform)'!='x64'">true</ExcludedFromBuild>
+    </YASM>
+    <YASM Include="source\a64_fraction.asm">
+      <ExcludedFromBuild Condition="'$(Platform)'!='x64'">true</ExcludedFromBuild>
+    </YASM>
+    <YASM Include="source\a64_int128.asm">
+      <ExcludedFromBuild Condition="'$(Platform)'!='x64'">true</ExcludedFromBuild>
+    </YASM>
+    <YASM Include="source\a64_thunk.asm">
+      <ExcludedFromBuild Condition="'$(Platform)'!='x64'">true</ExcludedFromBuild>
+    </YASM>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\h\vd2\system\win32\vs2013x64crashfix.inl" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\Build\YASM.targets" />
+  </ImportGroup>
+</Project>

@@ -1,0 +1,96 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Source-level debugging">
+  <p>
+    While it is possible to debug a program via disassembly, doing so is an arduous task, particularly
+    with large programs. Altirra supports both symbolic and source level debugging to make it easier
+    to debug.
+  </p>
+  <toc/>
+  <h2>Generating and hooking up symbols</h2>
+  <p>
+    In order for Altirra to provide an enhanced view of the program, there must be <i>symbols</i>
+    available for objects in memory. Symbols indicate label addresses and source line positions to the
+    debugger, allowing the debugger to match addresses and disassembly from the simulator with
+    the source code of the program. Altirra includes symbols for the hardware and OS page zero and
+    page two/three databases, but symbols must be provided for any additional programs that are
+    loaded.
+  </p>
+  <p>
+    There are several types of symbols:
+  </p>
+    <dl>
+      <dt>Labels</dt>
+      <dd>
+        Matches addresses in memory to label names in the program source. When labels are loaded,
+        Altirra displays label names instead of raw addresses in disassembly, and commands which
+        take addresses can also take label names.
+      </dd>
+
+      <dt>Listing</dt>
+      <dd>
+        Displays a list of all instructions in the program along with source code lines, along with
+        their generated addresses and opcodes. This permits a limited form of source code debugging,
+        where execution can be traced through the listing. Listings are produced by assemblers.
+      </dd>
+
+      <dt>Source/line information</dt>
+      <dd>
+        Matches addresses of instructions in the program with source code lines. This allows full
+        source-level debugging, where tracing and breakpoint control can occur directly in source
+        code.
+      </dd>
+    </dl>
+  <p>
+    Files containing symbols can be loaded and unloaded manually using the <tt>.loadsym</tt>
+    and <tt>.unloadsym</tt> commands. When booting an executable using the Boot Image command,
+    Altirra will automatically load any symbol files that have the same name and path as the
+    executable and one of the extensions <tt>.lst</tt>, <tt>.lab</tt>, or <tt>.lbl</tt>.
+  </p>
+  <h2>Generating symbols with specific toolchains</h2>
+  <p>
+    In order to generate symbols, appropriate options have to be set on the assembler or compiler
+    generating the program:
+  </p>
+  <dl>
+    <dt>MADS 1.9.x (assembler)</dt>
+    <dd>
+      Use <tt>-t</tt> to generate labels and <tt>-l</tt> to generate a listing. Full label
+      translation, listing-level, and source-level debugging are possible with this assembler.
+    </dd>
+
+    <dt>XASM 3.0.x (assembler)</dt>
+    <dd>
+      Use <tt>/t</tt> to generate labels and <tt>/l</tt> to generate a listing. Full label
+      translation, listing-level, and source-level debugging are possible with this assembler.
+    </dd>
+
+    <dt>ATasm 1.07 (assembler)</dt>
+    <dd>
+      Use <tt>
+        -l:<i>program</i>.lab
+      </tt> to generate labels; only label translation is supported.
+      Source-level debugging is not possible with ATasm since it does not output source line
+      information in its listing.
+    </dd>
+  </dl>
+  <h2>Debugging at listing or source level</h2>
+  <p>
+    A program can be debugged at listing level through the Debug &gt; Open Source File... command.
+    This opens a source code view window with the contents of the listing file. Any lines that
+    are detected to correspond to instructions are displayed with a white background, and other
+    lines have a gray background. When broken into the debugger, the current line is shown in
+    amber, and any breakpoints in red. The Step Into (F11), Step Out (Shift+F11), Step Over (F10),
+    and Toggle Breakpoint (F9) commands work in the source code window. In addition, the Go
+    command has an F5 shortcut in source windows.
+  </p>
+  <p>
+    When source/line information is available, the Open Source File command can also be used with
+    the original source code files. Again, lines with a white background indicate that source
+    information has been hooked up correctly and that stepping and breakpoints can occur on
+    source lines. In addition, you can jump between source code and disassembly through Go to Source Code
+    and Go to Disassembly commands on the context menus of the source and disassembly views.
+    Unlike in disassembly and listing views, the stepping commands step by a source line in
+    the source view.
+  </p>
+</topic>

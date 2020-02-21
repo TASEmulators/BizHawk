@@ -1,0 +1,24 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Portable mode">
+  <p>
+    Altirra can be run in <i>portable mode</i> to ease transport of working setup between host machines.
+    In portable mode, Altirra stores settings in an .ini file instead of in the Windows Registry, allowing
+    both the emulator and the emulator configuration to be placed on a removable storage device.
+  </p>
+  <p>
+    To switch to portable mode, either start Altirra with the <tt>/portable</tt> switch, or create
+    <tt>Altirra.ini</tt> directly. Altirra automatically switches to portable mode whenever the INI file
+    is present, so once this file is created, there is no need to continue specifying <tt>/portable.</tt>
+  </p>
+  <h2>Limitations of portable mode</h2>
+  <p>
+    For the most part, portable mode acts substantially the same as the regular Registry-based mode.
+    However, there are slight differences in some corner cases. The main difference is that if multiple
+    instances of Altirra are started and exited at the same time, they may hit a locking conflict on
+    the <tt>Altirra.ini</tt> file, resulting in one of the instances being unable to load or save settings.
+    A warning will be displayed on startup if the emulator is unable to load settings in portable mode.
+    Launching multiple copies in portable mode that frequently is a rare corner case, but it can be easily
+    worked around by using multiple installations of Altirra, each with their own INI file.
+  </p>
+</topic>

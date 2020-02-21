@@ -1,0 +1,80 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="410/1010 Program Recorder">
+  <p>
+    The 410 and 1010 Program Recorders were cassette tape drives which recorded Atari programs onto
+    standard audio cassette tape.
+  </p>
+  <h2>Booting a tape</h2>
+  <h3>Machine-language programs</h3>
+  <p>
+    The Atari OS has provisions for booting machine language programs from cassette tape. This
+    is done by holding down the Start button while booting the computer. The computer emits one
+    buzz to prompt the user to press Play on the cassette tape player and then hit a key,
+    after which the computer begins loading from tape.
+  </p>
+  <p>
+    The emulator can automate this if the <i>System / Cassette / Auto-Boot on Startup</i> option
+    is enabled; this causes the emulator to both hold down Start and then press the Space Bar.
+  </p>
+  <h3>BASIC programs</h3>
+  <p>
+    If the cassette tape has a BASIC program, it cannot be booted via the above procedure. Instead,
+    the BASIC interpreter must be started first and then the <tt>CLOAD</tt> command issued. As
+    with the ML boot, the computer will buzz once when ready and a key should be pressed after
+    the tape player is ready in Play mode.
+  </p>
+  <h2>Talking tapes</h2>
+  <p>
+    Atari tapes are recorded in stereo and have an audio track that is piped through the
+    computer to the TV set. This means that music and speech can be played while a program
+    is loading. Altirra emulates this if you load a suitable tape recording in <tt>.wav</tt>
+    format as a cassette tape.
+  </p>
+  <p>
+    <b>NOTE</b>&#xA0; The <tt>.cas</tt> format has no provision for an audio track. Tapes
+    loaded in CAS will never have an audio track and resaving a <tt>.wav</tt> tape as CAS
+    will drop the audio.
+  </p>
+  <h2>Tape control</h2>
+  <p>
+    By default, the emulator rewinds the tape to the beginning and puts the cassette tape
+    deck in Play mode on power-up. This is fine for most simple uses, but for more complex
+    scenarios, the <i>Tape Control</i> dialog can be used to control the emulated tape recorder.
+  </p>
+  <div style="text-align: center">
+    <img src="pics/tapecontrol.png" />
+  </div>
+  <p>
+    The tape control dialog contains the normal controls of a tape recorder, including
+    Stop, Pause, Play, and Record. Seeking controls are slightly different: instead of
+    having Rewind and Fast Forward, two buttons allow for seeking to the beginning or
+    the end, and intermediate seeking is done either by dragging the position slider or
+    clicking on the waveform graph.
+  </p>
+  <p>
+    The waveform graph shows the two channels of the tape. Atari 8-bit tapes are
+    stereo and contain an audio track (left channel, red) and data track (right channel, blue).
+    The waveform shown for these two tracks makes it easier to find the records on the
+    tape.
+  </p>
+  <p>
+    <b>WARNING</b>&#xA0; While the computer can stop or start the cassette tape motor,
+    it cannot detect whether the tape drive is moving or whether it is in Play or Record
+    mode. Like on a real 410/1010, if you try to load a program with the tape drive in
+    Record mode instead of Play mode, the emulator will happily record blank tape over
+    the program you are trying to load. Similarly, trying to save a program while the
+    tape drive is Stopped or Paused will produce the right sounds but nothing on the tape.
+  </p>
+  <h2>Other considerations</h2>
+  <h3>Minimal leader</h3>
+  <p>
+    When loading a <tt>.cas</tt> file, Altirra checks if the leader at the beginning of
+    the tape is at least 10 seconds and extends it to that amount if needed. The reason
+    for this is that the Operating System waits nine seconds after starting the motor
+    before trying to read from the cassette tape in order to skip past leader noise.
+    Normally this isn't a problem because the OS writes an 18 second leader when it
+    records to tape, but it can be an issue if part of the leader was dropped when the
+    tape was digitized to an image file.
+  </p>
+</topic>

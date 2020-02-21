@@ -1,0 +1,171 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Configuring input">
+  <toc/>
+  <h2>Using input maps</h2>
+  <p>
+    An <i>input map</i> is used in Altirra to define a connection between input devices on the host
+    and emulated controllers. Altirra comes with several of these predefined, which can be selected
+    from the Input menu. For instance, the <tt>Arrow keys -&gt; Joystick (port 1)</tt> map connects
+    the arrow keys on the keyboard to an emulated joystick.
+  </p>
+  <p>
+    By default, Altirra only allows one input map to be enabled per port, and automatically disables
+    any other input map targeting that port. You can explicitly enable multiple input maps to the
+    same port through the Input Maps dialog.
+  </p>
+  <p>
+    The arrow keys are commonly mapped to controllers, but occasionally a game will require use of
+    both a game controller and the arrow keys on the Atari keyboard. You can bypass the input maps
+    and force the arrows to be interpreted as keyboard presses by holding down the Alt key when
+    pressing the arrow keys.
+  </p>
+  <h2>Managing input maps</h2>
+  <p>
+    To edit or create new input maps, use the Input Maps dialog.
+  </p>
+  <h3>Selecting existing input maps</h3>
+  <p>
+    The checkboxes beside each input map show which ones are enabled for use. Click on the checkboxes
+    to toggle individual input maps on and off. You can have many input maps enabled at the same time.
+  </p>
+  <h3>Creating a new input map</h3>
+  <p>
+    There are three ways to create a new input map. You can start from scratch by clicking the Add
+    button, or you can select an existing map and copy it with the Clone button. Finally, you can
+    select a built-in preset to use as a template using the Preset button.
+  </p>
+  <h3>Renaming an input map</h3>
+  <p>
+    To rename an input map, select it and then click once on its name, which will then become
+    editable. Type the new name and press Enter.
+  </p>
+  <h3>Adding input maps to the menu</h3>
+  <p>
+    Any input map that is created will automatically show up in the Port submenus in the Input menu
+    for any controllers that target those ports, using the name created for it.
+  </p>
+  <h2>Editing input maps</h2>
+  <p>
+    Select an input map and then Edit to bring up the Edit Input Map dialog. This allows you to
+    edit the input map itself.
+  </p>
+  <h3>Structure of an input map</h3>
+  <p>
+    An input map consists of a series of controllers, which in turn have mappings between that
+    controller and host input. The controller is the device seen by the program running under
+    emulation, and represents a device that would have been used with a real Atari.
+  </p>
+  <h3>Adding and managing controllers</h3>
+  <p>
+    To add an emulated controller, click the Add Controller button. You can also select an
+    existing controller and then Edit to change an existing controller. The Port selection
+    on the Add/Edit Controller dialog determines which of the controller ports on the Atari
+    the controller is connected to; for joysticks, port 1 is used for the main player and
+    other players use port 2 and up. For paddles, each port supports a pair of paddles, where
+    the first paddle is paddle A.
+  </p>
+  <p>
+    There are also two additional virtual controllers you can select. One is the Console
+    controller, which represents extra functions on the Atari keyboard and in the emulator
+    itself, like the Start button and the power switch (cold reset). The second is Input State,
+    which allows the input map to modify itself (see below).
+  </p>
+  <p>
+    When adding a new controller, the "add default mappings" option specifies whether to
+    pre-populate the controller with mapping entries appropriate for that controller. This is
+    handy for quickly binding a controller where no fancy mappings are needed.
+  </p>
+  <h3>Mapping input to a controller</h3>
+  <p>
+    Once a controller has been created, host inputs must be mapped to it. If "add default mappings"
+    was checked when the controller was added, there will already be blank entries present and
+    these can simply be edited; otherwise, new ones can be added with the Add Mapping... button.
+    The Target entry on the mapping refers to an aspect of the emulated controller, like the trigger
+    button on a joystick, while the Source entry determines which button or input on the host
+    activates that target.
+  </p>
+  <p>
+    When using a game controller connected to the host PC, you can press a button or axis on
+    the game controller to automatically select that input as the source for the mapping.
+  </p>
+  <p>
+    The Mode and Speed parameters allow the mapping to be customized, particularly when connecting
+    digital inputs. Such mappings can be altered to support auto-fire or to move an analog axis
+    with varying speed.
+  </p>
+  <p>
+    Mappings may share targets and sources. If two mappings share a source, that input will activate
+    both mappings: a host button can both push forward and press the trigger on an emulated joystick.
+    Similarly, if two mappings have the same target, either of them can be used to activate it. This
+    is useful for either mapping multiple buttons on a host game controller to the same function, or
+    to activate the same function with multiple modes, e.g. joystick button with and without auto-fire.
+  </p>
+  <h3>Quickly remapping inputs</h3>
+  <p>
+    You can quickly remap a series of inputs by using the Rebind button. This will bring up a sub-dialog
+    where pressing any key on the keyboard or a button on a game controller will bind that input to
+    the current mapping's target and then proceed to the next mapping. This will continue with subsequent
+    mappings until all remaining mappings are rebound or the Stop button is clicked. This is generally a
+    much faster way of setting up mappings.
+  </p>
+  <h3>Reusing buttons with flags</h3>
+  <p>
+    A button on a host controller can be overloaded with more than one function through <i>flags</i>.
+    Every input map has two binary flags that can either be set or unset, and those flags can in turn
+    enable or disable controllers on the input map. This lets the input map have multiple modes without
+    requiring too many extra buttons.
+  </p>
+  <p>
+    Flags are controlled by adding input mappings to a controller of type Input State, and binding
+    inputs to the Flag 1 or Flag 2 targets. The mode can either be Default, in which case the flag is
+    only set while the button is down, or Toggle, in which case it alternates states on each press of
+    the button. These flags can then be interpreted by controllers that are flag-sensitive, as determined
+    by the Condition checkboxes on the Add/Edit Controller Mapping dialog; each controller can either
+    require a flag to be off, on, or ignore that flag entirely. Using one flag gives two modes on
+    the input map, and both can be combined to give four modes.
+  </p>
+  <h2>Special topics</h2>
+  <h3>Analog controllers</h3>
+  <p>
+    Several of the controllers used with the Atari computer and 5200 SuperSystem are <i>analog</i>, meaning
+    that they have variable position. This includes paddles and the 5200 joystick. The most straightforward
+    way to map such a controller is to bind it to an analog controller on the host PC, such as the analog
+    stick on a game controller. However, it is sometimes useful to bind analog axes to other input types.
+  </p>
+  <p>
+    For games that do not require fine positioning, the analog controller can be bound to digital inputs:
+  </p>
+  <blockquote><pre>5200 Controller (port 1):
+    Up -&gt; Joy POV Up
+    Down -&gt; Joy POV Down
+    Left -&gt; Joy POV Left
+    Right -&gt; Joy POV Right</pre></blockquote>
+  <p>
+    This maps the nine positions on the D-pad of a PC game controller to the center and eight extremes of
+    the 5200 analog joystick. This works fine for games that use relative motion, where pushing the stick
+    in a direction moves a character in that direction. In other games that use absolute positioning, such
+    as 5200 Missile Command and 5200 Gorf, the position of the stick determines the position of the cursor
+    or player, and the above mapping only gives nine positions on screen. In that case, relative mapping
+    should be used instead:
+  </p>
+  <blockquote>
+    <pre>5200 Controller (port 1):
+    Up -&gt; Joy POV Up (Relative 5)
+    Down -&gt; Joy POV Down (Relative 5)
+    Left -&gt; Joy POV Left (Relative 5)
+    Right -&gt; Joy POV Right (Relative 5)</pre>
+  </blockquote>
+  <p>
+    This causes the various directions on the D-pad to gradually move the joystick in a particular direction.
+    Note that the stick does not auto-center when mapped this way &#x2014; when no buttons are pressed on
+    the D-pad, the emulated 5200 joystick will remain in its current position.
+  </p>
+  <h3>Mice</h3>
+  <p>
+    A mouse has no absolute position and simply reports motion. This means that it has no limits and no
+    center position. As such, binding to or from a mouse is more limited than for the other input types.
+    In particular, you cannot bind a mouse to an analog axis and get analog inputs. You can, however,
+    get digital inputs from the mouse, and get analog impulses for an emulated mouse.
+  </p>
+</topic>

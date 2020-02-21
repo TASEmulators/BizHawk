@@ -1,0 +1,43 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Corvus Disk Interface">
+  <p>
+    The Corvus Disk Interface is an external hard disk interface that connects to joystick
+    ports 3 and 4, and provides access to a 6MB hard disk.
+  </p>
+  <h2>Setting up the Corvus</h2>
+  <h3>Device connections</h3>
+  <p>
+    The Corvus interface is added through the Devices tree, under the <i>Controller port devices</i>
+    category. Underneath it, a hard disk must be added. The hard disk must be at least 6MB in size
+    (12240 blocks).
+  </p>
+  <note>
+    Because the Interface uses joystick ports 3 and 4, it can only be used on 400/800 hardware.
+  </note>
+  <h3>Initializing the Corvus drive</h3>
+  <p>
+    Before it can be used, the Corvus drive must be initialized first. The Interface has no
+    firmware and the SysGen disk that comes with the Corvus drive must be used to initialize
+    the drive. Altirra does not include software to do so, but you can use the same utility
+    disks that are used with a real Corvus drive.
+  </p>
+  <p>
+    Follow the instructions in the Corvus <i>Atari 800 Disk System Installation Guide</i>, which
+    include running <tt>SYSGEN</tt> from the SysGen disk to initialize the disk and
+    <tt>WRITBOOT.OBJ</tt> to create a boot disk. The
+    SYSGEN utility is a BASIC program, so you must use the BASIC cartridge in addition
+    to the utility disks. Since the hardware mode will be 400/800 mode, there will be no
+    built-in BASIC and the BASIC cartridge will need to be attached via the Attach Special
+    Cartridge sub-menu.
+  </p>
+  <h2>Emulation details</h2>
+  <p>
+    Altirra emulates a H-series model 6 (6MB) drive. The disk geometry is 306 cylinders,
+    2 heads per cylinder, 20 sectors per track, and 512 bytes per sector. The controller
+    is emulated but not the controller CPU,
+    so it is possible to trash the firmware area and still interact with the drive. For
+    this and other reasons, it is not recommended to try using an Altirra-created image
+    on a real Corvus.
+  </p>
+</topic>

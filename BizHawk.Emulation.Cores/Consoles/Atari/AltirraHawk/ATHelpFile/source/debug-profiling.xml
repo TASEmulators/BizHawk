@@ -1,0 +1,239 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Profiling">
+  <p>
+    <i>Profiling</i> a program means measuring its performance. The debugger contains a built-in profiler
+    to aid in determining which parts of a program are slowest and which ones are most promising to optimize.
+  </p>
+  <h2>Running the profiler</h2>
+  <p>
+    To run the profiler, select the Debug &gt; Profile &gt; Profile View menu item. This
+    opens up the Profile View pane, which can then be docked anywhere in the UI like other
+    debugger panes:
+  </p>
+  <img src="pics/profiler.png" />
+  <p>
+    The toolbar at the top controls the profiler's behavior. The first three buttons are stop,
+    pause and start; to perform a profiling session, the profiler must be started and then
+    stopped.
+  </p>
+  <h2>Profiling modes</h2>
+  <p>
+    The profiler supports several collection modes:
+  </p>
+  <blockquote>    
+    <dl>
+      <dt>Instruction sampling</dt>
+      <dd>
+        Collects information on every instruction executed, and shows which instructions are executed
+        more often and which take more total time.
+      </dd>
+    
+      <dt>Function sampling</dt>
+      <dd>
+        Also collects information on instructions, but groups them by function calls instead, where
+        function scopes are opened by JSR or interrupts and closed by RTS/RTI. This provides a higher
+        level view of performance than instruction sampling. Note that JMP and branch instructions do
+        not change function scope.
+      </dd>
+      
+      <dt>Call graph sampling</dt>
+      <dd>
+        Similar to function sampling, but groups samples by <i>context</i> instead of by function,
+        where a context is the complete call stack on function entry. For instance, this distinguishes
+        between function C being called by function A, by function B, and by function B called from
+        function A. This allows not only determining
+        which functions are taking time, but also which call paths are most leading to that function.
+      </dd>
+      
+      <dt>Basic block sampling</dt>
+      <dd>
+        Groups samples by <i>basic blocks</i>, where a basic block is a series of instructions ending
+        in a control flow instruction (branch, jump, return). This mode is best for identifying loops
+        that are taking the most time.
+      </dd>
+      
+      <dt>BASIC line sampling</dt>
+      <dd>
+        Groups samples by the BASIC line executing at the time. This works with Atari BASIC compatible
+        interpreters (Altirra BASIC, TurboBasic XL, BASIC XL, and BASIC XE in non-EXTEND mode). This
+        is useful for identifying hotspots in BASIC programs.
+      </dd>
+    </dl>
+  </blockquote>
+  <p>
+    Once the profiling session is ended, the results are displayed in the profile view. In non call graph
+    views, multiple lines can be selected to display the summary at the bottom.
+  </p>
+  <p>
+    Multiple columns are displayed for each instruction or function. In list view based modes, the list
+    of samples may be sorted by a column by clicking on a column; clicking the column again reverses the
+    sort order. The meanings are as follows:
+  </p>
+  <blockquote>
+    <dl>
+      <dt>Thread</dt>
+      <dd>
+        Execution thread that the sample occurred on. In instruction mode, the thread is determined by the
+        state of the processor's interrupt mask (I) flag and instructions with the I flag set are considered
+        to execute in interrupt thread. In function and call graph modes, samples are grouped under separate
+        IRQ, VBI and DLI threads when they are executed within the call stack for those interrupt types.
+      </dd>
+      
+      <dt>Address</dt>
+      <dd>
+        The memory address of the instruction or start of the function. If symbols are loaded, the name of
+        the symbol for that address is also shown.
+      </dd>
+        
+      <dt>Calls</dt>
+      <dd>
+        The number of times that the function was executed.
+      </dd>
+
+      <dt>Insns</dt>
+      <dd>
+        The number of times that an instruction was executed, or in function mode, the number of instructions
+        executed in the function.
+      </dd>
+      
+      <dt>Clocks</dt>
+      <dd>
+        The number of clock cycles spent in each instruction or function. These are machine cycles,
+        so they include time that the CPU was halted by ANTIC DMA.
+      </dd>
+      
+      <dt>CPU clocks</dt>
+      <dd>
+        The number of clock cycles spent by the CPU actually executing each instruction or function, excluding
+        cycles that the CPU was halted by ANTIC DMA. This is also called unhalted cycles.
+      </dd>
+      
+      <dt>Clocks%, Insns%, CPUClocks%</dt>
+      <dd>
+        Ratio of the sample's statistic to the overall sum for the frame or frames selected. 13.6% for CPUClocks%,
+        for instance, means that the CPU spent 13.6% of its total available time executing code on that function.
+      </dd>
+      <dd>
+        One use of this statistic is to determine the maximum possible impact of an optimization. If a function
+        only takes 10% of the CPU to begin with, then the best possible improvement in overall execution time
+        is to reduce it to 90%, or about 11% faster than before. On the other hand, optimzing a function that
+        takes 75% of the time will have a substantial impact on main loop time.
+      </dd>
+      
+      <dt>DMA%</dt>
+      <dd>
+        The proportion of time that the CPU was halted during the sample, i.e. ratio of halted cycles to total
+        cycles. A higher percentage means that the CPU had less time to actually execute code relative to the
+        total amount of time taken due to more cycles being stolen by ANTIC DMA.
+      </dd>
+    </dl>
+  </blockquote>
+  <h2>Performance counters</h2>
+  <p>
+    In addition to the sampling modes, <i>performance counters</i> may also be captured during the
+    profiling session. This captures additional specific information about instructions. Up to two
+    counters may be enabled:
+  </p>
+  <blockquote>
+    <dl>
+      <dt>Branch taken / branch not taken</dt>
+      <dd>
+        Counts conditional branches (Bcc instructions) that are either taken and redirect execution
+        or not taken and fall through. This is useful for identifying branches that should be
+        reversed to save 1-2 clock cycles per branch.
+      </dd>
+      
+      <dt>Page crossing</dt>
+      <dd>
+        Counts conditional branches and absolute indexing operations that take an extra clock cycle
+        due to crossing a page boundary. This helps identify hot code or data that should be realigned
+        to avoid the page crossing penalty. Absolute indexed store instructions (STA abs,X) and
+        read modify write instructions (INC abs,X) are not counted as they always execute the extra
+        clock cycle.
+      </dd>
+      
+      <dt>Redundant instruction</dt>
+      <dd>
+        Counts flag instructions that set or clear a flag that is already set or cleared, e.g.
+        CLC when C=0, and LDA/X/Y #imm instructions that set a register to the same value. This
+        can help identify instructions that are actually no-ops due to the required state already
+        being set earlier, and can thus be removed.
+      </dd>
+      <dd>
+        Note that the redundant instruction statistic is only valid during the profiling run. A 100%
+        result for an instruction is a strong indicator that an instruction is unnecessary and can
+        be removed, but it could be necessary for a corner case that wasn't hit during the profile.
+      </dd>
+      
+    </dl>
+  </blockquote>
+  <h2>Detailed view</h2>
+  <p>
+    Double-clicking on a sample opens the <i>detailed view</i>, which shows the disassembly in the vicinity of
+    that sample along with profiling data for the listed instructions. Note that these are based on global
+    instruction data across all function calls in that frame, not just the instructions executed within
+    a particular function.
+  </p>
+  <p>
+    The disassembly is based on the instructions currently in memory, and may differ from the ones actually
+    executed during the profiling session if the code has subsequently been modified.
+  </p>
+  <p>
+    <b>Tip:</b> The rate at which a branch is taken can be estimated from the average CPU cycle
+    count listed, since branch instructions take one additional clock cycle when the branch is taken
+    versus not taken. For instance, a branch listed with an average CCPI (CPU cycles per instruction)
+    value of 2.6 can be estimated to be taken about 60% of the time.
+  </p>
+  <h2>Multi-frame profiling</h2>
+  <p>
+    The profiler can also be used to collect profiling data on a per-frame basis, which aids in
+    diagnosing performance issues that only occur in a single frame and are hard to catch manually.
+    The boundaries of a "frame" do not have to correspond to video frames and can be defined in
+    terms of custom triggers in the code, allowing the frames in the profile view to correspond to
+    sections of the program's main loop instead.
+  </p>
+  <p>
+    To enable multi-frame profiling, a <i>trigger</i> must be set via the Options drop-down:
+  </p>
+  <blockquote>
+    <dl>
+      <dt>None</dt>
+      <dd>
+        Disables frame triggering. When no frame triggers are used, the frame view is hidden in
+        the profile view.
+      </dd>
+      
+      <dt>Vertical blank</dt>
+      <dd>
+        Marks frame boundaries at the beginning of vertical blank (scan line 248), thus matching
+        profiling frames to video frames.
+      </dd>
+      
+      <dt>PC trigger</dt>
+      <dd>
+        Marks frame boundaries when CPU execution reaches a specific PC address. If only a start
+        address is specified, frames will both end and begin at that address. If an end address
+        is also specified, then frames will only cover the time from when the start address is
+        hit to the next time either the start or end addresses is hit. Function mode may also
+        be used instead of an end address, in which case the profiling frame ends when the stack
+        pointer rises above the value when the start address was hit.
+      </dd>
+      <dd>
+        Note that the start and end address may be specified in terms of expressions, but the
+        expressions are only evaluated once at the beginning of the profiling session. For instance,
+        using <tt>dw vvblki</tt> as the start expression will capture each execution of the immediate
+        vertical blank interrupt routine as a separate frame. The expressions are re-evaluated each
+        time, though, so if updated code is loaded where addresses have shifted, the expressions
+        will be re-evaluated to pick up the new values on the next profiling run.
+      </dd>
+    </dl>
+  </blockquote>
+  <p>
+    When more than one frame is captured, a frame graph appears at the top of the profiling view.
+    Single frames may be selected with the left mouse button, or a range of frames may be viewed
+    together by drag-selecting over a range. The horizontal zoom may be adjusted by either the mouse
+    wheel or the +/- keys when the graph is selected; the vertical zoom is automatically fit to
+    a filtered average of the samples by total cycles.
+  </p>
+</topic>

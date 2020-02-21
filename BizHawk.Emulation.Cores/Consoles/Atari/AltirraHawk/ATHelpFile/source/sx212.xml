@@ -1,0 +1,89 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="SX212 Modem emulation">
+  <p>
+    Altirra emulates the Atari SX212 Modem with a simulated connection over TCP/IP.
+  </p>
+
+  <toc/>
+
+  <h2>Hardware description</h2>
+  <p>
+    The SX212 modem is a Hayes-compatible modem that connects to a computer either by the Atari SIO bus
+    or an RS-232 serial port connection. It can communicate at either 300 baud or 1200 baud. Unlike the
+    1030 modem, it does not contain built-in handler or communications software.
+  </p>
+  <p>
+    When used with an SIO connection, the SX212 modem is designed to be used at the end of the SIO chain,
+    as it only has one SIO plug and uses the same bus signals as a cassette tape recorder. Therefore, it
+    cannot be used with cassette tape.
+  </p>
+  <h2>Emulation levels</h2>
+  <p>
+    Altirra's SX212 emulation is for an SIO connection to the modem. Two levels of emulation are supported:
+  </p>
+  <ul>
+    <li>
+      <p>
+        <b>None.</b> In this mode, no hardware emulation is enabled, and a high-level emulation (HLE) R: handler is registered with
+        CIO that communicates directly with the emulator. This provides the best performance and works with most
+        software.
+      </p>
+    </li>
+    <li>
+      <p>
+        <b>Full.</b> In this mode, the SIO protocol for the SX212 modem is emulated. A software handler is
+        required to provide the R: device to communicate with the hardware. The Additions disk contains
+        such a handler.
+      </p>
+    </li>
+  </ul>
+
+  <h2>Supported commands</h2>
+  <p>
+    The SX212 supports the following commands:
+  </p>
+  <table class="std">
+    <tr>
+      <th>Command</th>
+      <th>Function</th>
+    </tr>
+    <tr><td>A/</td><td>Repeat last command</td></tr>
+    <tr><td>ATA</td><td>Set answer mode</td></tr>
+    <tr><td>ATB</td><td>Set Bell modulation mode</td></tr>
+    <tr><td>ATC</td><td>Set transmit carrier</td></tr>
+    <tr><td>ATD</td><td>Dial</td></tr>
+    <tr><td>ATE</td><td>Set echo</td></tr>
+    <tr><td>ATF</td><td>Set full duplex</td></tr>
+    <tr><td>ATH</td><td>Set on/off hook</td></tr>
+    <tr><td>ATI</td><td>Information</td></tr>
+    <tr><td>ATL</td><td>Speaker loudness</td></tr>
+    <tr><td>ATM</td><td>Speaker mode</td></tr>
+    <tr><td>ATO</td><td>Set originate mode</td></tr>
+    <tr><td>ATP</td><td>Set pulse dial mode</td></tr>
+    <tr><td>ATQ</td><td>Set quiet mode</td></tr>
+    <tr><td>ATR</td><td>Set reverse mode</td></tr>
+    <tr><td>ATS</td><td>Set or query register</td></tr>
+    <tr><td>ATT</td><td>Set touch dialing</td></tr>
+    <tr><td>ATV</td><td>Set verbose reporting</td></tr>
+    <tr><td>ATX</td><td>Set connect/busy/dialtone reporting</td></tr>
+    <tr><td>ATY</td><td>Set long space disconnect enable</td></tr>
+    <tr><td>ATZ</td><td>Reset modem</td></tr>
+  </table>
+  <p>
+    The escape sequence <tt>+++</tt> is used to escape from online state to command state. It must
+    be both preceded and followed by a second of guard time to be recognized.
+  </p>
+  <p>
+    Commands can be sent at either 300 or 1200 baud, and the modem will automatically switch
+    speeds to match. (On the real hardware, this is reflected in the high speed (HS) light.)
+    Online communication, however, must occur at the baud rate of the connection.
+  </p>
+
+  <h2>Dialing out</h2>
+  <p>
+    Most of the SX212's commands are emulated, but dialing is only minimally supported. Both pulse and touch dialing
+    will work, and the touch dialing mode will even generate DTMF tones, but the actual number dialed is ignored.
+    Instead, any attempt to dial will initiate a connection to the dial proxy address in the 1030 device settings.
+  </p>
+</topic>

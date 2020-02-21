@@ -1,0 +1,274 @@
+﻿&File
+	&Boot Image...			{File.BootImage}
+	&Recently Booted		{$mru}
+	---
+	&Open Image...			{File.OpenImage}
+	Dis&k Drives...			{Disk.DrivesDialog}
+	Attach Disk
+		Rotate Down			{Disk.RotateNext}
+		Rotate Up			{Disk.RotatePrev}
+		---
+		Drive 1%			{Disk.Attach1}
+		Drive 2%			{Disk.Attach2}
+		Drive 3%			{Disk.Attach3}
+		Drive 4%			{Disk.Attach4}
+		Drive 5%			{Disk.Attach5}
+		Drive 6%			{Disk.Attach6}
+		Drive 7%			{Disk.Attach7}
+		Drive 8%			{Disk.Attach8}
+	Detach Disk
+		All					{Disk.DetachAll}
+		---
+		Drive 1%			{Disk.Detach1}
+		Drive 2%			{Disk.Detach2}
+		Drive 3%			{Disk.Detach3}
+		Drive 4%			{Disk.Detach4}
+		Drive 5%			{Disk.Detach5}
+		Drive 6%			{Disk.Detach6}
+		Drive 7%			{Disk.Detach7}
+		Drive 8%			{Disk.Detach8}
+	---
+	Cassette
+		Tape Control...		{Cassette.TapeControlDialog}
+		---
+		New Tape			{Cassette.LoadNew}
+		&Load...			{Cassette.Load}
+		&Unload				{Cassette.Unload}
+		Save...				{Cassette.Save}
+		Export Audio Tape...	{Cassette.ExportAudioTape}
+	---
+	Load State...			{File.LoadState}
+	Save State...			{File.SaveState}
+	Quick Load State		{File.QuickLoadState}
+	Quick Save State		{File.QuickSaveState}
+	---
+	Attach Special Cartridge
+		&SuperCharger3D												{Cart.AttachSC3D}
+		&Empty 128K (1Mbit) MaxFlash cartridge							{Cart.AttachMaxFlash1MB}
+		&Empty 128K (1Mbit) MaxFlash cartridge (MyIDE banking)			{Cart.AttachMaxFlash1MBMyIDE}
+		Empty 1M (8Mbit) MaxFlash cartridge (older - bank 127)			{Cart.AttachMaxFlash8MB}
+		Empty 1M (8Mbit) MaxFlash cartridge (newer - bank 0)			{Cart.AttachMaxFlash8MBBank0}
+		Empty SIC! flash cartridge									{Cart.AttachSIC}
+		Empty 512K MegaCart flash cartridge							{Cart.AttachMegaCart512K}
+		Empty 4MB MegaCart flash cartridge							{Cart.AttachMegaCart4MB}
+		Empty The!Cart 32MB flash cartridge							{Cart.AttachTheCart32MB}
+		Empty The!Cart 64MB flash cartridge							{Cart.AttachTheCart64MB}
+		Empty The!Cart 128MB flash cartridge						{Cart.AttachTheCart128MB}
+		BASIC														{Cart.AttachBASIC}
+	Secondary Cartridge
+		&Attach...			{Cart.AttachSecond}
+		Detach				{Cart.DetachSecond}
+	&Attach Cartridge...	{Cart.Attach}
+	&Detach Cartridge		{Cart.Detach}
+	Save Firmware
+		&Save Cartridge...	{Cart.Save}
+		Save KMK/JZ IDE / SIDE / MyIDE II Main Flash...		{System.SaveFirmwareIDEMain}
+		Save KMK/JZ IDE SDX Flash...						{System.SaveFirmwareIDESDX}
+		Save Ultimate1MB Flash...							{System.SaveFirmwareU1MB}
+		Save Rapidus Flash...								{System.SaveFirmwareRapidusFlash}
+	---
+	E&xit					{File.Exit}
+	
+&View
+	&Full Screen			{View.ToggleFullScreen}
+	---
+	Fi&lter Mode
+		Next Mode			{View.NextFilterMode}
+		---
+		Point				{View.FilterModePoint}
+		Bilinear			{View.FilterModeBilinear}
+		Sharp Bilinear		{View.FilterModeSharpBilinear}
+		Bicubic				{View.FilterModeBicubic}
+		Any Suitable		{View.FilterModeDefault}
+	Filter Sharpness
+		Softer				{View.FilterSharpnessSofter}
+		Soft				{View.FilterSharpnessSoft}
+		Normal				{View.FilterSharpnessNormal}
+		Sharp				{View.FilterSharpnessSharp}
+		Sharper				{View.FilterSharpnessSharper}
+	&Stretch Mode
+		&Fit to Window			{View.StretchFitToWindow}
+		&Preserve Aspect Ratio	{View.StretchPreserveAspectRatio}
+		P&reserve Aspect Ratio (fixed multiples only)	{View.StretchPreserveAspectRatioInt}
+		&Square Pixels			{View.StretchSquarePixels}
+		&Square Pixels (fixed multiples only)	{View.StretchSquarePixelsInt}
+	&Overscan Mode
+		&OS Screen Only			{View.OverscanOSScreen}
+		&Normal					{View.OverscanNormal}
+		&Widescreen				{View.OverscanWidescreen}
+		&Extended				{View.OverscanExtended}
+		&Full (With Blanking)	{View.OverscanFull}
+		---
+		&Vertical Override
+			&Off					{View.VerticalOverrideOff}
+			&OS Screen Only			{View.VerticalOverrideOSScreen}
+			&Normal					{View.VerticalOverrideNormal}
+			&Extended				{View.VerticalOverrideExtended}
+			&Full (With Blanking)	{View.VerticalOverrideFull}
+		&Extended PAL Height	{View.TogglePALExtended}
+		&Indicator Margin		{View.ToggleIndicatorMargin}
+	&GTIA Visualization
+		&Next Mode				{View.NextGTIAVisMode}
+	&ANTIC Visualization
+		&Next Mode				{View.NextANTICVisMode}
+	&Vertical Sync				{View.ToggleVSync}
+	Show FPS					{View.ToggleFPS}
+	&XEP80 View					{View.ToggleXEP80View}
+	&Auto-switch XEP80 View		{View.ToggleXEP80ViewAutoswitching}
+	Adjust Colors...			{Video.AdjustColorsDialog}
+	Adjust Screen Effects...	{Video.AdjustScreenEffectsDialog}
+	---
+	&Display					{Pane.Display}
+	&Printer Output				{Pane.PrinterOutput}
+	---
+	Copy Frame to Clipboard		{Edit.CopyFrame}
+	Copy Frame to Clipboard (True Aspect)		{Edit.CopyFrameTrueAspect}
+	Save Frame...				{Edit.SaveFrame}
+	Save Frame (True Aspect)...	{Edit.SaveFrameTrueAspect}
+	Copy Text					{Edit.CopyText}
+	Copy Escaped Text			{Edit.CopyEscapedText}
+	Paste Text					{Edit.PasteText}
+
+S&ystem
+	&Profiles					{$profiles}
+		&Edit Profiles...		{System.EditProfilesDialog}
+		Temporary Profile		{System.ToggleTemporaryProfile}
+		---
+	Configure System...			{System.Configure}
+	---
+	Warm Reset					{System.WarmReset}
+	Cold Reset					{System.ColdReset}
+	Cold Reset (Computer Only)	{System.ColdResetComputerOnly}
+	Pause						{System.TogglePause}
+	---
+	&Warp Speed					{System.ToggleWarpSpeed}
+	Pause When Inactive			{System.TogglePauseWhenInactive}
+	---
+	Power-On Delay
+		&Auto					{System.PowerOnDelayAuto}
+		&None					{System.PowerOnDelayNone}
+		&1 Second				{System.PowerOnDelay1s}
+		&2 Seconds				{System.PowerOnDelay2s}
+		&3 Seconds				{System.PowerOnDelay3s}
+	Hold Keys For Reset			{Console.HoldKeys}
+	Internal BASIC (Boot Without Option Key)	{System.ToggleBASIC}
+	Auto-Boot Tape (Hold Start)		{Cassette.ToggleAutoBoot}
+	---
+	Console Switches
+		Keyboard Present (XEGS)			{System.ToggleKeyboardPresent}
+		Force Self-Test					{System.ToggleForcedSelfTest}
+		Activate Cart Menu Button		{Cart.ActivateMenuButton}
+		Enable Cart SDX					{Cart.ToggleSwitch}
+		BlackBox: Dump Screen			{Console.BlackBoxDumpScreen}
+		BlackBox: Menu					{Console.BlackBoxMenu}
+		IDE Plus 2.0: Switch Disks		{Console.IDEPlus2SwitchDisks}
+		IDE Plus 2.0: Write Protect		{Console.IDEPlus2WriteProtect}
+		IDE Plus 2.0: SDX Enable		{Console.IDEPlus2SDX}
+		Indus GT: Error Button			{Console.IndusGTError}
+		Indus GT: Track Button			{Console.IndusGTTrack}
+		Indus GT: Drive Type Button		{Console.IndusGTId}
+		Indus GT: Boot CP/M				{Console.IndusGTBootCPM}
+		Happy: Slow Switch				{Console.HappyToggleFastSlow}
+		Happy 1050: Write protect disk	{Console.HappyToggleWriteProtect}
+		Happy 1050: Write enable disk	{Console.HappyToggleWriteEnable}
+		ATR8000: Reset					{Console.ATR8000Reset}
+		XEL-CF3: Swap					{Console.XELCFSwap}
+
+&Input
+	Input Mappings...					{Input.InputMappingsDialog}
+	Input Setup...					{Input.InputSetupDialog}
+	Cycle &Quick Maps					{Input.CycleQuickMaps}
+	---
+	Capture Mouse						{Input.CaptureMouse}
+	Auto-capture Mouse					{Input.ToggleAutoCaptureMouse}
+	---
+	Light Pen/Gun...					{Input.LightPenDialog}
+	---
+	Port &1								{$port1}
+		&None							{$port1none}
+	Port &2								{$port2}
+		&None							{$port2none}
+	Port &3								{$port3}
+		&None							{$port3none}
+	Port &4								{$port4}
+		&None							{$port4none}
+
+C&heat
+	Cheater...							{Cheat.CheatDialog}
+	---
+	Disable P/M &Collisions				{Cheat.ToggleDisablePMCollisions}
+	Disable &Playfield Collisions		{Cheat.ToggleDisablePFCollisions}
+	
+Debu&g
+	Enable Debugger						{Debug.ToggleDebugger}
+	Open Source File...					{Debug.OpenSourceFile}
+	Source File List...					{Debug.OpenSourceFileList}
+	&Window
+		&Console						{Pane.Console}
+		&Registers						{Pane.Registers}
+		D&isassembly					{Pane.Disassembly}
+		Call Stac&k						{Pane.CallStack}
+		&History						{Pane.History}
+		&Memory
+			Memory &1					{Pane.Memory1}
+			Memory &2					{Pane.Memory2}
+			Memory &3					{Pane.Memory3}
+			Memory &4					{Pane.Memory4}
+		&Watch
+			Watch &1					{Pane.Watch1}
+			Watch &2					{Pane.Watch2}
+			Watch &3					{Pane.Watch3}
+			Watch &4					{Pane.Watch4}			
+		Debug Display					{Pane.DebugDisplay}
+		
+	Options
+		Auto-Reload ROMs on Cold Reset	{Debug.ToggleAutoReloadRoms}
+		Auto-Load Kernel Symbols		{Debug.ToggleAutoLoadKernelSymbols}
+		&Randomize Memory On EXE Load	{System.ToggleMemoryRandomizationEXE}
+		&Break at EXE Run Address		{Debug.ToggleBreakAtExeRun}
+		---
+		Change Font...					{Debug.ChangeFontDialog}
+	---
+	Run/Break							{Debug.RunStop}
+	Break								{Debug.Break}
+	---
+	Step Into							{Debug.StepInto}
+	Step Over							{Debug.StepOver}
+	Step Out							{Debug.StepOut}
+	---
+	&Profile
+		&Profile View					{Pane.ProfileView}
+	&Verifier...						{Debug.VerifierDialog}
+	&Performance Analyzer...			{Debug.ShowTraceViewer}
+
+&Record
+	Record &Raw Audio...				{Record.RawAudio}
+	Record &Audio...					{Record.Audio}
+	Record &Video...					{Record.Video}
+	Record &SAP type R...				{Record.SAPTypeR}
+	&Stop Recording						{Record.Stop}
+	
+&Tools
+	&Disk Explorer...					{Tools.DiskExplorer}
+	Convert SAP to EXE...				{Tools.ConvertSAPToEXE}
+	Export ROM set...					{Tools.ExportROMSet}
+	Analyze tape decoding...			{Tools.AnalyzeTapeDecoding}
+	---
+	First Time Setup...					{Tools.SetupWizard}
+	---
+	&Options...							{Tools.OptionsDialog}
+	&Keyboard Shortcuts...				{Tools.KeyboardShortcutsDialog}
+	&Compatibility Database...			{Tools.CompatDBDialog}
+	
+&Window
+	&Close								{Window.Close}
+	&Undock								{Window.Undock}
+	---
+	Adjust Window Size					{View.AdjustWindowSize}
+	Reset Window Layout					{View.ResetWindowLayout}
+
+Help
+	Contents							{Help.Contents}
+	&About								{Help.About}
+	&Change Log							{Help.ChangeLog}
+	Command-Line Help					{Help.CommandLine}

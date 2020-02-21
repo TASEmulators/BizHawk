@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <PropertyPageSchema
+      Include="$(MSBuildThisFileDirectory)$(MSBuildThisFileName).xml" />
+    <AvailableItemName
+      Include="CompileRawFont">
+      <Targets>_CompileRawFont</Targets>
+    </AvailableItemName>
+  </ItemGroup>
+  <UsingTask
+    TaskName="CompileRawFont"
+    TaskFactory="XamlTaskFactory"
+    AssemblyName="Microsoft.Build.Tasks.v4.0">
+    <Task>$(MSBuildThisFileDirectory)$(MSBuildThisFileName).xml</Task>
+  </UsingTask>
+  <Target
+    Name="_CompileRawFont"
+    BeforeTargets="$(CompileRawFontBeforeTargets)"
+    AfterTargets="$(CompileRawFontAfterTargets)"
+    Condition="'@(CompileRawFont)' != ''"
+    DependsOnTargets="$(CompileRawFontDependsOn);ComputeCompileRawFontOutput"
+    Outputs="@(CompileRawFont-&gt;Metadata('OutputPath')-&gt;Distinct())"
+    Inputs="@(CompileRawFont);%(CompileRawFont.AdditionalDependencies)">
+    <ItemGroup
+      Condition="'@(SelectedFiles)' != ''">
+      <CompileRawFont
+        Remove="@(CompileRawFont)"
+        Condition="'%(Identity)' != '@(SelectedFiles)'" />
+    </ItemGroup>
+    <ItemGroup>
+      <CompileRawFont_tlog
+        Include="%(CompileRawFont.OutputPath)"
+        Condition="'%(CompileRawFont.OutputPath)' != '' and '%(CompileRawFont.ExcludedFromBuild)' != 'true'">
+        <Source>@(CompileRawFont, '|')</Source>
+      </CompileRawFont_tlog>
+    </ItemGroup>
+    <Message
+      Importance="High"
+      Text="%(CompileRawFont.ExecutionDescription)" />
+    <WriteLinesToFile
+      Condition="'@(CompileRawFont_tlog)' != '' and '%(CompileRawFont_tlog.ExcludedFromBuild)' != 'true'"
+      File="$(IntDir)$(ProjectName).write.1.tlog"
+      Lines="^%(CompileRawFont_tlog.Source);@(CompileRawFont_tlog-&gt;'%(Fullpath)')" />
+    <CompileRawFont
+      Condition="'@(CompileRawFont)' != '' and '%(CompileRawFont.ExcludedFromBuild)' != 'true'"
+      CommandLineTemplate="%(CompileRawFont.CommandLineTemplate)"
+      RawFont="%(CompileRawFont.RawFont)"
+      SymbolName="%(CompileRawFont.SymbolName)"
+      OutputPath="%(CompileRawFont.OutputPath)"
+      CellWidth="%(CompileRawFont.CellWidth)"
+      CellHeight="%(CompileRawFont.CellHeight)"
+      GridColumns="%(CompileRawFont.GridColumns)"
+      GridRows="%(CompileRawFont.GridRows)"
+      Ascent="%(CompileRawFont.Ascent)"
+      Advance="%(CompileRawFont.Advance)"
+      LineGap="%(CompileRawFont.LineGap)"
+      AdditionalOptions="%(CompileRawFont.AdditionalOptions)"
+      StandardOutputImportance="High"
+      StandardErrorImportance="High"
+      EchoOff="true"
+      Inputs="@(CompileRawFont)" />
+  </Target>
+  <PropertyGroup>
+    <ComputeLinkInputsTargets>
+            $(ComputeLinkInputsTargets);
+            ComputeCompileRawFontOutput;
+          </ComputeLinkInputsTargets>
+    <ComputeLibInputsTargets>
+            $(ComputeLibInputsTargets);
+            ComputeCompileRawFontOutput;
+          </ComputeLibInputsTargets>
+  </PropertyGroup>
+  <Target
+    Name="ComputeCompileRawFontOutput"
+    Condition="'@(CompileRawFont)' != ''">
+    <ItemGroup>
+      <CompileRawFontDirsToMake
+        Condition="'@(CompileRawFont)' != '' and '%(CompileRawFont.ExcludedFromBuild)' != 'true'"
+        Include="%(CompileRawFont.OutputPath)" />
+      <Link
+        Include="%(CompileRawFontDirsToMake.Identity)"
+        Condition="'%(Extension)'=='.obj' or '%(Extension)'=='.res' or '%(Extension)'=='.rsc' or '%(Extension)'=='.lib'" />
+      <Lib
+        Include="%(CompileRawFontDirsToMake.Identity)"
+        Condition="'%(Extension)'=='.obj' or '%(Extension)'=='.res' or '%(Extension)'=='.rsc' or '%(Extension)'=='.lib'" />
+      <ImpLib
+        Include="%(CompileRawFontDirsToMake.Identity)"
+        Condition="'%(Extension)'=='.obj' or '%(Extension)'=='.res' or '%(Extension)'=='.rsc' or '%(Extension)'=='.lib'" />
+    </ItemGroup>
+    <MakeDir
+      Directories="@(CompileRawFontDirsToMake-&gt;'%(RootDir)%(Directory)')" />
+  </Target>
+</Project>

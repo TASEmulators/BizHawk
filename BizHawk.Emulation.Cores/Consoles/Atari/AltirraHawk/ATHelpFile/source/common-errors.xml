@@ -1,0 +1,80 @@
+<?xml version='1.0' standalone='yes'?>
+<?xml-stylesheet type="text/xsl" href="index.xsl" ?>
+<topic title="Bugs to avoid in new programs">
+  <p>
+    There are some common errors which appear to be bugs in Altirra, but are actually bugs in the program that
+    will manifest on real Atari hardware.
+  </p>
+
+  <toc/>
+  
+  <h2>POKEY</h2>
+
+  <h3>Initialization mode</h3>
+  <p>
+    Bits 0 and 1 of SKCTL control keyboard scan and debounce. They also activate POKEY initialization mode
+    when both cleared, which resets all clocks within POKEY. Both bits should be set to 1 before attempting
+    to play sound or transfer data on the SIO bus. Otherwise, timers using the 15KHz or 64KHz clocks will
+    not run.
+  </p>
+
+  <h3>Interrupt timing</h3>
+  <p>
+    Some programs developed under emulators have been written with the assumption that 15KHz timer interrupts
+    always occur at a specific position in the scan line. They do not; the scan line offset of the 15KHz clock
+    is determined by when initialization mode (SKCTL bits 0-1) is ended. Manually enable and disable
+    initialization mode if you need this interrupt to have specific timing.
+  </p>
+  
+  <h3>Asynchronous serial port clocking mode</h3>
+  <p>
+    Bits 4-6 of SKCTL control the clocking mode used by the serial port. SIO normally changes this register
+    to $13 during an SIO transfer, which enables asynchronous clocking for timer 4. This causes problems for
+    audio playback if not reset, since asynchronous timing mode causes timer 4 to be locked when a byte
+    is not being received. Resetting SKCTL to $03 before playing audio fixes the problem.
+  </p>
+
+  <h3>Disabling IRQs</h3>
+  <p>
+    Disabling an interrupt by writing to IRQEN while interrupts are unmasked on the 6502 does not guarantee
+    that the interrupt will no longer occur. There is a one-cycle window after the write during which
+    the recently disabled IRQ can still fire, which can lead to the interrupt being re-enabled if the
+    IRQ routine does so. Masking interrupts with SEI prior to writing IRQEN safely avoids this problem.
+  </p>
+  
+  <h2>ANTIC</h2>
+  
+  <h3>Changing display lists</h3>
+  <p>
+    Display lists should only be changed during vertical blank or when display list DMA is turned off.
+    Attempting to write DLISTL/DLISTH during the active region can cause ANTIC to read random data if
+    the display list DMA cycle falls between the writes. When using the OS shadow registers SDLSTL/SDLSTH,
+    the program must wait until vertical blank for the change to take effect before changing the display
+    list itself. Failing in either case can cause ANTIC to read a display list instruction with the interrupt
+    bit set, which can cause stray DLIs if enabled. This is often catastrophic in the case of a $C1
+    byte, which causes ANTIC to fire a DLI on every scan line within the active region, usually resulting
+    in a program crash.
+  </p>
+  
+  <h3>WSYNC timing</h3>
+  <p>
+    An STA WSYNC does not guarantee a completely stable position within the scan line. The exact cycle
+    at which the CPU resumes execution can be up to three cycles different depending on the DMA
+    timing on that scan line. One cycle is from possible playfield DMA at cycle 105, a second is from
+    refresh DMA on cycle 105 or 106, and a third is from DMA on a cycle right after STA WSYNC. The
+    third cycle of uncertainty can be eliminated by doing two STA WSYNCs in a row or by using
+    INC WSYNC.
+  </p>
+
+  <h2>PIA</h2>
+
+  <h3>Direction register vs. output register</h3>
+  <p>
+    The data address for a PIA port serves as both the data direction register and the output register
+    for a port, controlled by bit 2 of the control register. When changing memory banks, it is important
+    to ensure that port B has all bits set to output, as the default is for all bits to be input bits.
+    Failing to do this causes the writes to port B to be ignored as the output register will not be used
+    for any output lines.
+  </p>
+
+</topic>

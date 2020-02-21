@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="../Build/ProjectConfigurations.props" />
+  <ItemGroup>
+    <ClCompile Include="source\co6502.cpp" />
+    <ClCompile Include="source\co6502machine.cpp" />
+    <ClCompile Include="source\co65802.cpp" />
+    <ClCompile Include="source\co6809.cpp" />
+    <ClCompile Include="source\co8048.cpp" />
+    <ClCompile Include="source\coz80.cpp" />
+    <ClCompile Include="source\decode6502.cpp" />
+    <ClCompile Include="source\decode65816.cpp" />
+    <ClCompile Include="source\decode6809.cpp" />
+    <ClCompile Include="source\decodez80.cpp" />
+    <ClCompile Include="source\memorymap.cpp" />
+    <ClCompile Include="source\stdafx.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\h\at\atcpu\breakpoints.h" />
+    <ClInclude Include="..\h\at\atcpu\co6502.h" />
+    <ClInclude Include="..\h\at\atcpu\co65802.h" />
+    <ClInclude Include="..\h\at\atcpu\co6809.h" />
+    <ClInclude Include="..\h\at\atcpu\co8048.h" />
+    <ClInclude Include="..\h\at\atcpu\coz80.h" />
+    <ClInclude Include="..\h\at\atcpu\decode6502.h" />
+    <ClInclude Include="..\h\at\atcpu\decode65816.h" />
+    <ClInclude Include="..\h\at\atcpu\decode6809.h" />
+    <ClInclude Include="..\h\at\atcpu\decodez80.h" />
+    <ClInclude Include="..\h\at\atcpu\execstate.h" />
+    <ClInclude Include="..\h\at\atcpu\history.h" />
+    <ClInclude Include="..\h\at\atcpu\memorymap.h" />
+    <ClInclude Include="..\h\at\atcpu\states.h" />
+    <ClInclude Include="..\h\at\atcpu\states6502.h" />
+    <ClInclude Include="..\h\at\atcpu\states6809.h" />
+    <ClInclude Include="..\h\at\atcpu\statesz80.h" />
+    <ClInclude Include="h\stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="h\co65802.inl" />
+    <None Include="h\co6809.inl" />
+    <None Include="h\coz80.inl" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{27BE11EC-E0BE-4E86-AC21-69EC426B48FC}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>ATCPU</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="..\Build\PlatformSetup.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\Build\Altirra.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
