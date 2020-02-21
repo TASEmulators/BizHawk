@@ -26,11 +26,8 @@ namespace Jellyfish.Virtu
 
 	public sealed partial class Video : IVideo
 	{
-		// ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private MachineEvents _events;
-
-		// ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private IMemoryBus _memory;
+		private readonly MachineEvents _events;
+		private readonly IMemoryBus _memory;
 
 		public Video() { }
 		public Video(MachineEvents events, IMemoryBus memory)
@@ -38,15 +35,10 @@ namespace Jellyfish.Virtu
 			_events = events;
 			_memory = memory;
 
-			_flushRowEvent = FlushRowEvent; // cache delegates; avoids garbage
-			_inverseTextEvent = InverseTextEvent;
-			_leaveVBlankEvent = LeaveVBlankEvent;
-			_resetVSyncEvent = ResetVSyncEvent;
-
-			_events.AddEventDelegate(EventCallbacks.FlushRow, _flushRowEvent);
-			_events.AddEventDelegate(EventCallbacks.InverseText, _inverseTextEvent);
-			_events.AddEventDelegate(EventCallbacks.LeaveVBlank, _leaveVBlankEvent);
-			_events.AddEventDelegate(EventCallbacks.ResetVsync, _resetVSyncEvent);
+			_events.AddEventDelegate(EventCallbacks.FlushRow, FlushRowEvent);
+			_events.AddEventDelegate(EventCallbacks.InverseText, InverseTextEvent);
+			_events.AddEventDelegate(EventCallbacks.LeaveVBlank, LeaveVBlankEvent);
+			_events.AddEventDelegate(EventCallbacks.ResetVsync, ResetVSyncEvent);
 
 			_flushRowMode = new Action<int>[]
 			{
@@ -1049,11 +1041,6 @@ namespace Jellyfish.Virtu
 		internal ScannerOptions ScannerOptions { get => _scannerOptions; set { _scannerOptions = value; SetScanner(); } }
 
 		public bool IsVBlank { get; private set; }
-
-		private Action _flushRowEvent;
-		private Action _inverseTextEvent;
-		private Action _leaveVBlankEvent;
-		private Action _resetVSyncEvent;
 
 		private int _colorBlack;
 		private int _colorDarkBlue;
