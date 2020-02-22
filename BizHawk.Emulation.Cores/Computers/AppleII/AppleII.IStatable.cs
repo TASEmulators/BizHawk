@@ -46,6 +46,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			ser.Sync("Lag", ref _lagcount);
 			ser.Sync("PrevDiskPressed", ref _prevPressed);
 			ser.Sync("NextDiskPressed", ref _nextPressed);
+			ser.Sync("CurrentDisk", ref _currentDisk);
 
 			ser.BeginSection("Events");
 			_machine.Events.Sync(ser);
