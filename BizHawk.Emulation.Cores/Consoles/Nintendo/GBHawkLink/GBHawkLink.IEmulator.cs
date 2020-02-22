@@ -55,9 +55,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 			_frame++;
 
-			if (controller.IsPressed("Power"))
+			if (controller.IsPressed("P1 Power"))
 			{
-				HardReset();
+				L.HardReset();
+			}
+			if (controller.IsPressed("P2 Power"))
+			{
+				R.HardReset();
 			}
 
 			bool cablediscosignalNew = controller.IsPressed("Toggle Cable");

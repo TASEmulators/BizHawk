@@ -85,9 +85,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 
 			_frame++;
 
-			if (controller.IsPressed("Power"))
+			if (controller.IsPressed("P1 Power"))
 			{
-				HardReset();
+				A.HardReset();
+			}
+			if (controller.IsPressed("P2 Power"))
+			{
+				B.HardReset();
+			}
+			if (controller.IsPressed("P3 Power"))
+			{
+				C.HardReset();
+			}
+			if (controller.IsPressed("P4 Power"))
+			{
+				D.HardReset();
 			}
 
 			if (controller.IsPressed("Toggle Cable UD") | controller.IsPressed("Toggle Cable LR") | controller.IsPressed("Toggle Cable X") | controller.IsPressed("Toggle Cable 4x"))
