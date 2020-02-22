@@ -9,6 +9,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public virtual byte ReadMemory(ushort addr) => 0;
 
+		public virtual byte PeekMemory(ushort addr) => ReadMemory(addr);
+
 		public virtual void WriteMemory(ushort addr, byte value)
 		{
 		}
