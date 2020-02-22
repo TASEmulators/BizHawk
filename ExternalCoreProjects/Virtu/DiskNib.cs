@@ -4,9 +4,6 @@ namespace Jellyfish.Virtu
 {
 	internal sealed class DiskNib : Disk525
 	{
-		// ReSharper disable once UnusedMember.Global
-		public DiskNib() { }
-
 		public DiskNib(byte[] data, bool isWriteProtected)
 			: base(data, isWriteProtected)
 		{

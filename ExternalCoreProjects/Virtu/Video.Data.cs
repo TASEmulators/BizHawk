@@ -1615,8 +1615,7 @@ namespace Jellyfish.Virtu
 		public const int ModeE = 0xE;
 		public const int ModeF = 0xF;
 
-		// ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private Action<int>[] _flushRowMode;
+		private readonly Action<int>[] _flushRowMode;
 
 		private const int Width = 560;
 		private const int Height = VLineEnterVBlank;

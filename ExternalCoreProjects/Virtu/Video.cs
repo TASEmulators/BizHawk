@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
-using Newtonsoft.Json;
 
 namespace Jellyfish.Virtu
 {
@@ -9,7 +7,9 @@ namespace Jellyfish.Virtu
 
 	public interface IVideo
 	{
+		// ReSharper disable once UnusedMember.Global
 		int[] GetVideoBuffer();
+		// ReSharper disable once UnusedMember.Global
 		void Reset();
 
 		void DirtyCell(int addressOffset);
@@ -20,26 +20,42 @@ namespace Jellyfish.Virtu
 		void SetCharSet();
 
 		bool IsVBlank { get; }
+
+		// ReSharper disable once UnusedMember.Global
+		void Sync(IComponentSerializer ser);
 	}
 
 	public sealed partial class Video : IVideo
 	{
-		// ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private MachineEvents _events;
+		private readonly MachineEvents _events;
+		private readonly IMemoryBus _memory;
 
-		// ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private IMemoryBus _memory;
+		private readonly int[] _colorPalette = new int[ColorPaletteCount];
 
-		public Video() { }
+		private bool _isVBlank;
+		private int[] _framebuffer = new int[560 * 384];
+		private bool _isTextInversed;
+		private ScannerOptions _scannerOptions;
+		private int _cyclesPerVBlank;
+		private int _cyclesPerVBlankPreset;
+		private int _cyclesPerVSync;
+		private int _cyclesPerFlash;
+		private int _vCountPreset;
+		private int _vLineLeaveVBlank;
+		private ushort[] _charSet;
+		private bool _isMonochrome;
+
+		private bool[] _isCellDirty = new bool[Height * CellColumns + 1]; // includes sentinel
+
 		public Video(MachineEvents events, IMemoryBus memory)
 		{
 			_events = events;
 			_memory = memory;
 
-			_flushRowEvent = FlushRowEvent; // cache delegates; avoids garbage
-			_inverseTextEvent = InverseTextEvent;
-			_leaveVBlankEvent = LeaveVBlankEvent;
-			_resetVSyncEvent = ResetVSyncEvent;
+			_events.AddEventDelegate(EventCallbacks.FlushRow, FlushRowEvent);
+			_events.AddEventDelegate(EventCallbacks.InverseText, InverseTextEvent);
+			_events.AddEventDelegate(EventCallbacks.LeaveVBlank, LeaveVBlankEvent);
+			_events.AddEventDelegate(EventCallbacks.ResetVsync, ResetVSyncEvent);
 
 			_flushRowMode = new Action<int>[]
 			{
@@ -73,22 +89,43 @@ namespace Jellyfish.Virtu
 			IsMonochrome = false;
 			ScannerOptions = ScannerOptions.None;
 
-			IsVBlank = true;
+			_isVBlank = true;
 
-			_events.AddEvent(_cyclesPerVBlankPreset, _leaveVBlankEvent); // align flush events with scanner; assumes vcount preset at start of frame [3-15, 3-16]
-			_events.AddEvent(_cyclesPerVSync, _resetVSyncEvent);
-			_events.AddEvent(_cyclesPerFlash, _inverseTextEvent);
+			_events.AddEvent(_cyclesPerVBlankPreset, EventCallbacks.LeaveVBlank); // align flush events with scanner; assumes vcount preset at start of frame [3-15, 3-16]
+			_events.AddEvent(_cyclesPerVSync, EventCallbacks.ResetVsync);
+			_events.AddEvent(_cyclesPerFlash, EventCallbacks.InverseText);
+		}
+
+		public void Sync(IComponentSerializer ser)
+		{
+			if (ser.IsReader)
+			{
+				int option = 0;
+				ser.Sync(nameof(_scannerOptions), ref option);
+				_scannerOptions = (ScannerOptions)option;
+			}
+			else
+			{
+				int option = (int)_scannerOptions;
+				ser.Sync(nameof(_scannerOptions), ref option);
+			}
+
+			ser.Sync(nameof(_isVBlank), ref _isVBlank);
+			ser.Sync(nameof(_framebuffer), ref _framebuffer, false);
+			ser.Sync(nameof(_isTextInversed), ref _isTextInversed);
+			ser.Sync(nameof(_cyclesPerVBlank), ref _cyclesPerVBlank);
+			ser.Sync(nameof(_cyclesPerVBlankPreset), ref _cyclesPerVBlankPreset);
+			ser.Sync(nameof(_cyclesPerVSync), ref _cyclesPerVSync);
+			ser.Sync(nameof(_cyclesPerFlash), ref _cyclesPerFlash);
+			ser.Sync(nameof(_vCountPreset), ref _vCountPreset);
+			ser.Sync(nameof(_vLineLeaveVBlank), ref _vLineLeaveVBlank);
+			ser.Sync(nameof(_charSet), ref _charSet, false);
+			ser.Sync(nameof(_isCellDirty), ref _isCellDirty, false);
+			ser.Sync(nameof(_isMonochrome), ref _isMonochrome);
 		}
 
 		// ReSharper disable once UnusedMember.Global
-		public int[] GetVideoBuffer() => Framebuffer;
-
-		[OnDeserialized]
-		private void OnDeserialized(StreamingContext context)
-		{
-			// the VideoService forgets all of its information on LoadState
-			DirtyScreen();
-		}
+		public int[] GetVideoBuffer() => _framebuffer;
 
 		public void Reset()
 		{
@@ -149,7 +186,7 @@ namespace Jellyfish.Virtu
 		public int ReadFloatingBus() // [5-40]
 		{
 			// derive scanner counters from current cycles into frame; assumes hcount and vcount preset at start of frame [3-13, 3-15, 3-16]
-			int cycles = _cyclesPerVSync - _events.FindEvent(_resetVSyncEvent);
+			int cycles = _cyclesPerVSync - _events.FindEvent(EventCallbacks.ResetVsync);
 			int hClock = cycles % CyclesPerHSync;
 			int hCount = (hClock != 0) ? HCountPreset + hClock - 1 : 0;
 			int vLine = cycles / CyclesPerHSync;
@@ -918,18 +955,18 @@ namespace Jellyfish.Virtu
 
 		private void FlushRowEvent()
 		{
-			int y = (_cyclesPerVSync - _cyclesPerVBlankPreset - _events.FindEvent(_resetVSyncEvent)) / CyclesPerHSync;
+			int y = (_cyclesPerVSync - _cyclesPerVBlankPreset - _events.FindEvent(EventCallbacks.ResetVsync)) / CyclesPerHSync;
 
 			_flushRowMode[_memory.VideoMode](y - CellHeight); // in arrears
 
 			if (y < Height)
 			{
-				_events.AddEvent(CyclesPerFlush, _flushRowEvent);
+				_events.AddEvent(CyclesPerFlush, EventCallbacks.FlushRow);
 			}
 			else
 			{
-				IsVBlank = true;
-				_events.AddEvent(_cyclesPerVBlank, _leaveVBlankEvent);
+				_isVBlank = true;
+				_events.AddEvent(_cyclesPerVBlank, EventCallbacks.LeaveVBlank);
 			}
 		}
 
@@ -946,18 +983,18 @@ namespace Jellyfish.Virtu
 		{
 			_isTextInversed = !_isTextInversed;
 			DirtyScreenText();
-			_events.AddEvent(_cyclesPerFlash, _inverseTextEvent);
+			_events.AddEvent(_cyclesPerFlash, EventCallbacks.InverseText);
 		}
 
 		private void LeaveVBlankEvent()
 		{
-			IsVBlank = false;
-			_events.AddEvent(CyclesPerFlush, _flushRowEvent);
+			_isVBlank = false;
+			_events.AddEvent(CyclesPerFlush, EventCallbacks.FlushRow);
 		}
 
 		private void ResetVSyncEvent()
 		{
-			_events.AddEvent(_cyclesPerVSync, _resetVSyncEvent);
+			_events.AddEvent(_cyclesPerVSync, EventCallbacks.ResetVsync);
 		}
 
 		private void SetPalette()
@@ -1002,13 +1039,10 @@ namespace Jellyfish.Virtu
 			DirtyScreen();
 		}
 
-		// ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
-		private int[] Framebuffer { get; set; } = new int[560 * 384];
-
 		private void SetPixel(int x, int y, int color)
 		{
 			int i = 560 * (2 * y) + x;
-			Framebuffer[i] = Framebuffer[i + 560] = _colorPalette[color];
+			_framebuffer[i] = _framebuffer[i + 560] = _colorPalette[color];
 		}
 
 		private void SetScanner()
@@ -1030,53 +1064,36 @@ namespace Jellyfish.Virtu
 			_cyclesPerFlash = VSyncsPerFlash * _cyclesPerVSync;
 		}
 
-		[JsonIgnore]
-		public bool IsMonochrome { get => _isMonochrome; set { _isMonochrome = value; DirtyScreen(); } }
+		public bool IsMonochrome
+		{
+			get => _isMonochrome;
+			set { _isMonochrome = value; DirtyScreen(); }
+		}
 
-		[JsonIgnore]
-		internal ScannerOptions ScannerOptions { get => _scannerOptions; set { _scannerOptions = value; SetScanner(); } }
+		internal ScannerOptions ScannerOptions
+		{
+			get => _scannerOptions;
+			set { _scannerOptions = value; SetScanner(); }
+		}
 
-		public bool IsVBlank { get; private set; }
+		public bool IsVBlank => _isVBlank;
 
-		private Action _flushRowEvent;
-		private Action _inverseTextEvent;
-		private Action _leaveVBlankEvent;
-		private Action _resetVSyncEvent;
-
-		private int _colorBlack;
-		private int _colorDarkBlue;
-		private int _colorDarkGreen;
-		private int _colorMediumBlue;
-		private int _colorBrown;
-		private int _colorLightGrey;
-		private int _colorGreen;
-		private int _colorAquamarine;
-		private int _colorDeepRed;
-		private int _colorPurple;
-		private int _colorDarkGrey;
-		private int _colorLightBlue;
-		private int _colorOrange;
-		private int _colorPink;
-		private int _colorYellow;
-		private int _colorWhite;
-		private int _colorMonochrome;
-
-		[JsonIgnore] // not sync relevant
-		private bool _isMonochrome;
-
-		private bool _isTextInversed;
-		private ScannerOptions _scannerOptions;
-		private int _cyclesPerVBlank;
-		private int _cyclesPerVBlankPreset;
-		private int _cyclesPerVSync;
-		private int _cyclesPerFlash;
-		private int _vCountPreset;
-		private int _vLineLeaveVBlank;
-
-		private ushort[] _charSet;
-		private int[] _colorPalette = new int[ColorPaletteCount];
-
-		[JsonIgnore] // everything is automatically dirtied on load, so no need to save
-		private bool[] _isCellDirty = new bool[Height * CellColumns + 1]; // includes sentinel
+		private readonly int _colorBlack;
+		private readonly int _colorDarkBlue;
+		private readonly int _colorDarkGreen;
+		private readonly int _colorMediumBlue;
+		private readonly int _colorBrown;
+		private readonly int _colorLightGrey;
+		private readonly int _colorGreen;
+		private readonly int _colorAquamarine;
+		private readonly int _colorDeepRed;
+		private readonly int _colorPurple;
+		private readonly int _colorDarkGrey;
+		private readonly int _colorLightBlue;
+		private readonly int _colorOrange;
+		private readonly int _colorPink;
+		private readonly int _colorYellow;
+		private readonly int _colorWhite;
+		private readonly int _colorMonochrome;
 	}
 }

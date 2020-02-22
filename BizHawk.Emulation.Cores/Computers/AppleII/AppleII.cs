@@ -57,7 +57,6 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 			SetCallbacks();
 
-			InitSaveStates();
 			SetupMemoryDomains();
 			PutSettings(settings ?? new Settings());
 		}
@@ -72,7 +71,14 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		private readonly byte[] _appleIIRom;
 		private readonly byte[] _diskIIRom;
 
-		public int CurrentDisk { get; private set; }
+		private int _currentDisk;
+
+		public int CurrentDisk
+		{
+			get => _currentDisk;
+			set => _currentDisk = value;
+		}
+
 		public int DiskCount => _romSet.Count;
 
 		public void SetDisk(int discNum)

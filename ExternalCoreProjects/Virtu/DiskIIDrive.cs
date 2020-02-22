@@ -1,14 +1,17 @@
-﻿using Newtonsoft.Json;
-
-namespace Jellyfish.Virtu
+﻿namespace Jellyfish.Virtu
 {
 	public sealed class DiskIIDrive
 	{
-		// ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private IDiskIIController _diskController;
+		private readonly IDiskIIController _diskController;
+		private readonly int[][] _driveArmStepDelta = new int[PhaseCount][];
 
-		// ReSharper disable once UnusedMember.Global
-		public DiskIIDrive() { }
+		private bool _trackLoaded;
+		private bool _trackChanged;
+		private int _trackNumber;
+		private int _trackOffset;
+
+		private byte[] _trackData = new byte[Disk525.TrackSize];
+		private Disk525 _disk;
 
 		public DiskIIDrive(IDiskIIController diskController)
 		{
@@ -17,6 +20,18 @@ namespace Jellyfish.Virtu
 			_driveArmStepDelta[1] = new[] { 0, -1, 0, -1, 1, 0, 1, 0, 0, -1, 0, -1, 1, 0, 1, 0 }; // phase 1
 			_driveArmStepDelta[2] = new[] { 0, 0, -1, -1, 0, 0, -1, -1, 1, 1, 0, 0, 1, 1, 0, 0 }; // phase 2
 			_driveArmStepDelta[3] = new[] { 0, 1, 0, 1, -1, 0, -1, 0, 0, 1, 0, 1, -1, 0, -1, 0 }; // phase 3
+		}
+
+		public void Sync(IComponentSerializer ser)
+		{
+			ser.Sync(nameof(_trackLoaded), ref _trackLoaded);
+			ser.Sync(nameof(_trackChanged), ref _trackChanged);
+			ser.Sync(nameof(_trackNumber), ref _trackNumber);
+			ser.Sync(nameof(_trackOffset), ref _trackOffset);
+			ser.Sync(nameof(_trackData), ref _trackData, false);
+			
+			// TODO: save the delta, this is saving the rom into save states
+			_disk?.Sync(ser);
 		}
 
 		// ReSharper disable once UnusedMember.Global
@@ -101,24 +116,9 @@ namespace Jellyfish.Virtu
 			}
 		}
 
-		[JsonIgnore]
-		public bool IsWriteProtected => _disk.IsWriteProtected;
+		public bool IsWriteProtected => _disk?.IsWriteProtected ?? false;
 
 		private const int TrackNumberMax = 0x44;
-
 		private const int PhaseCount = 4;
-
-		// ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private int[][] _driveArmStepDelta = new int[PhaseCount][];
-
-		private bool _trackLoaded;
-		private bool _trackChanged;
-		private int _trackNumber;
-		private int _trackOffset;
-
-		// ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private byte[] _trackData = new byte[Disk525.TrackSize];
-
-		private Disk525 _disk;
 	}
 }

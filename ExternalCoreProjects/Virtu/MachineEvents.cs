@@ -1,29 +1,87 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
+using System.Linq;
 
 namespace Jellyfish.Virtu
 {
+	public enum EventCallbacks
+	{
+		FlushOutput,
+		FlushRow,
+		LeaveVBlank,
+		ResetVsync,
+		InverseText
+	}
+
 	internal sealed class MachineEvent
 	{
-		public MachineEvent(int delta, Action action)
+		public MachineEvent(int delta, EventCallbacks type)
 		{
 			Delta = delta;
-			Action = action;
-		}
-
-		public override string ToString()
-		{
-			return string.Format(CultureInfo.InvariantCulture, "Delta = {0} Action = {{{1}.{2}}}", Delta, Action.Method.DeclaringType?.Name, Action.Method.Name);
+			Type = type;
 		}
 
 		public int Delta { get; set; }
-		public Action Action { get; set; }
+		public EventCallbacks Type { get; set; }
 	}
 
 	public sealed class MachineEvents
 	{
-		public void AddEvent(int delta, Action action)
+		private readonly Dictionary<EventCallbacks, Action> _eventDelegates = new Dictionary<EventCallbacks, Action>();
+
+		private readonly LinkedList<MachineEvent> _used = new LinkedList<MachineEvent>();
+		private readonly LinkedList<MachineEvent> _free = new LinkedList<MachineEvent>();
+
+		// ReSharper disable once UnusedMember.Global
+		public void Sync(IComponentSerializer ser)
+		{
+			if (ser.IsReader)
+			{
+				int[] usedDelta = new int[0];
+				int[] usedType = new int[0];
+				int[] freeDelta = new int[0];
+				int[] freeType = new int[0];
+
+				ser.Sync("UsedDelta", ref usedDelta, false);
+				ser.Sync("UsedType", ref usedType, false);
+				ser.Sync("FreeDelta", ref freeDelta, false);
+				ser.Sync("FreeType", ref freeType, false);
+
+				_used.Clear();
+				for (int i = 0; i < usedDelta.Length; i++)
+				{
+					var e = new MachineEvent(usedDelta[i], (EventCallbacks)usedType[i]);
+					_used.AddLast(new LinkedListNode<MachineEvent>(e));
+				}
+
+				_free.Clear();
+				for (int i = 0; i < freeDelta.Length; i++)
+				{
+					var e = new MachineEvent(freeDelta[i], (EventCallbacks)freeType[i]);
+					_free.AddLast(new LinkedListNode<MachineEvent>(e));
+				}
+			}
+			else
+			{
+				var usedDelta = _used.Select(u => u.Delta).ToArray();
+				var usedType = _used.Select(u => (int)u.Type).ToArray();
+				var freeDelta = _free.Select(f => f.Delta).ToArray();
+				var freeType = _free.Select(f => (int)f.Type).ToArray();
+
+				ser.Sync("UsedDelta", ref usedDelta, false);
+				ser.Sync("UsedType", ref usedType, false);
+				ser.Sync("FreeDelta", ref freeDelta, false);
+				ser.Sync("FreeType", ref freeType, false);
+			}
+		}
+
+		public void AddEventDelegate(EventCallbacks type, Action action)
+
+		{
+			_eventDelegates[type] = action;
+		}
+
+		public void AddEvent(int delta, EventCallbacks type)
 		{
 			var node = _used.First;
 			for (; node != null; node = node.Next)
@@ -44,11 +102,11 @@ namespace Jellyfish.Virtu
 			{
 				_free.RemoveFirst();
 				newNode.Value.Delta = delta;
-				newNode.Value.Action = action;
+				newNode.Value.Type = type;
 			}
 			else
 			{
-				newNode = new LinkedListNode<MachineEvent>(new MachineEvent(delta, action));
+				newNode = new LinkedListNode<MachineEvent>(new MachineEvent(delta, type));
 			}
 
 			if (node != null)
@@ -61,7 +119,7 @@ namespace Jellyfish.Virtu
 			}
 		}
 
-		public int FindEvent(Action action)
+		public int FindEvent(EventCallbacks type)
 		{
 			int delta = 0;
 
@@ -69,9 +127,9 @@ namespace Jellyfish.Virtu
 			{
 				delta += node.Value.Delta;
 
-				var other = node.Value.Action;
+				var other = node.Value.Type;
 
-				if (other.Method == action.Method && other.Target == action.Target)
+				if (other == type)
 				{
 					return delta;
 				}
@@ -88,7 +146,7 @@ namespace Jellyfish.Virtu
 
 			while (node.Value.Delta <= 0)
 			{
-				node.Value.Action();
+				_eventDelegates[node.Value.Type]();
 				RemoveEvent(node);
 				node = _used.First;
 			}
@@ -104,11 +162,5 @@ namespace Jellyfish.Virtu
 			_used.Remove(node);
 			_free.AddFirst(node); // cache node; avoids garbage
 		}
-
-		// ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private LinkedList<MachineEvent> _used = new LinkedList<MachineEvent>();
-
-		// ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private LinkedList<MachineEvent> _free = new LinkedList<MachineEvent>();
 	}
 }

@@ -8,16 +8,26 @@ namespace Jellyfish.Virtu
 
 		// ReSharper disable once UnusedMemberInSuper.Global
 		DiskIIDrive Drive1 { get; }
+
+		// ReSharper disable once UnusedMember.Global
+		void Sync(IComponentSerializer ser);
 	}
 
 	// ReSharper disable once UnusedMember.Global
 	public sealed class DiskIIController : IDiskIIController
 	{
-		// ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private IVideo _video;
+		private const int Phase1On = 1 << 1;
+		private readonly IVideo _video;
+		private readonly byte[] _romRegionC1C7;
 
-		// ReSharper disable once UnusedMember.Global
-		public DiskIIController() { }
+		private bool _driveLight;
+		private int _latch;
+		private int _phaseStates;
+		private bool _motorOn;
+		private int _driveNumber;
+		private bool _loadMode;
+		private bool _writeMode;
+		private bool _driveSpin;
 
 		public DiskIIController(IVideo video, byte[] diskIIRom)
 		{
@@ -32,8 +42,30 @@ namespace Jellyfish.Virtu
 			_writeMode = false;
 		}
 
-		public bool DriveLight { get; set; }
+		public DiskIIDrive Drive1 { get; }
+		public DiskIIDrive Drive2 { get; }
 
+		public bool DriveLight
+		{
+			get => _driveLight;
+			set => _driveLight = value;
+		}
+
+		public void Sync(IComponentSerializer ser)
+		{
+			ser.Sync(nameof(_driveLight), ref _driveLight);
+
+			ser.Sync(nameof(_latch), ref _latch);
+			ser.Sync(nameof(_phaseStates), ref _phaseStates);
+			ser.Sync(nameof(_motorOn), ref _motorOn);
+			ser.Sync(nameof(_driveNumber), ref _driveNumber);
+			ser.Sync(nameof(_loadMode), ref _loadMode);
+			ser.Sync(nameof(_writeMode), ref _writeMode);
+			ser.Sync(nameof(_driveSpin), ref _driveSpin);
+
+			Drive1.Sync(ser);
+			Drive2.Sync(ser);
+		}
 		public IList<DiskIIDrive> Drives => new List<DiskIIDrive> { Drive1, Drive2 };
 
 		public void WriteIoRegionC8CF(int address, int data) => _video.ReadFloatingBus();
@@ -236,24 +268,5 @@ namespace Jellyfish.Virtu
 				Drives[_driveNumber].ApplyPhaseChange(_phaseStates);
 			}
 		}
-
-		// ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
-		public DiskIIDrive Drive1 { get; private set; }
-
-
-		// ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
-		public DiskIIDrive Drive2 { get; private set; }
-
-		private const int Phase1On = 1 << 1;
-
-		private int _latch;
-		private int _phaseStates;
-		private bool _motorOn;
-		private int _driveNumber;
-		private bool _loadMode;
-		private bool _writeMode;
-		private bool _driveSpin;
-
-		private byte[] _romRegionC1C7 = new byte[0x0100];
 	}
 }

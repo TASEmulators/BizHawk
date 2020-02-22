@@ -7,17 +7,15 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 	/// </summary>
 	public sealed class Components
 	{
-		/// <summary>
-		/// for deserialization only!!
-		/// </summary>
-		public Components() { }
-
 		public Components(byte[] appleIIe, byte[] diskIIRom)
 		{
 			Events = new MachineEvents();
 			Memory = new Memory(appleIIe);
 			Cpu = new Cpu(Memory);
 			Video = new Video(Events, Memory);
+
+			NoSlotClock = new NoSlotClock(Video);
+			DiskIIController = new DiskIIController(Video, diskIIRom);
 
 			var emptySlot = new EmptyPeripheralCard(Video);
 
@@ -28,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 				new EmptyCassetteComponent(),
 				new Speaker(Events, Cpu),
 				Video,
-				new NoSlotClock(Video),
+				NoSlotClock,
 				emptySlot,
 				emptySlot,
 				emptySlot,
@@ -42,9 +40,13 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			Video.Reset();
 		}
 
-		public MachineEvents Events { get; set; }
-		public Memory Memory { get; private set; }
-		public Cpu Cpu { get; private set; }
-		public Video Video { get; private set; }
+		public MachineEvents Events { get; }
+		public Memory Memory { get; }
+		public Cpu Cpu { get; }
+		public Video Video { get; }
+
+		// Only needed for convenience of savestate syncing, else the memory component needs to do it
+		public NoSlotClock NoSlotClock { get; }
+		public DiskIIController DiskIIController { get; }
 	}
 }

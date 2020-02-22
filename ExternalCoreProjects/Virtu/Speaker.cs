@@ -1,8 +1,4 @@
-﻿using System;
-using System.Runtime.Serialization;
-using Newtonsoft.Json;
-
-namespace Jellyfish.Virtu
+﻿namespace Jellyfish.Virtu
 {
 	public interface ISpeaker
 	{
@@ -13,46 +9,46 @@ namespace Jellyfish.Virtu
 
 		// ReSharper disable once UnusedMember.Global
 		void GetSamples(out short[] samples, out int nSamp);
+
+		// ReSharper disable once UnusedMember.Global
+		void Sync(IComponentSerializer ser);
 	}
 
+	// ReSharper disable once UnusedMember.Global
 	public sealed class Speaker : ISpeaker
 	{
-		// ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private MachineEvents _events;
-
-		// ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private ICpu _cpu;
-
-		public Speaker() { }
-		public Speaker(MachineEvents events, ICpu cpu)
-		{
-			_events = events;
-			_cpu = cpu;
-			_flushOutputEvent = FlushOutputEvent; // cache delegates; avoids garbage
-
-			_events.AddEvent(CyclesPerFlush * _cpu.Multiplier, _flushOutputEvent);
-
-			_isHigh = false;
-			_highCycles = _totalCycles = 0;
-		}
-
 		private const int CyclesPerFlush = 23;
 
-		// ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private Action _flushOutputEvent;
+		private readonly MachineEvents _events;
+		private readonly ICpu _cpu;
 
 		private bool _isHigh;
 		private int _highCycles;
 		private int _totalCycles;
 		private long _lastCycles;
 
-		[JsonIgnore] // only relevant if trying to savestate mid-frame
+		// only relevant if trying to savestate mid-frame
 		private readonly short[] _buffer = new short[4096];
-
-		[JsonIgnore] // only relevant if trying to savestate mid-frame
 		private int _position;
 
-		#region Api
+		public Speaker(MachineEvents events, ICpu cpu)
+		{
+			_events = events;
+			_cpu = cpu;
+			_events.AddEventDelegate(EventCallbacks.FlushOutput, FlushOutputEvent);
+			_events.AddEvent(CyclesPerFlush * _cpu.Multiplier, EventCallbacks.FlushOutput);
+
+			_isHigh = false;
+			_highCycles = _totalCycles = 0;
+		}
+
+		public void Sync(IComponentSerializer ser)
+		{
+			ser.Sync(nameof(_isHigh), ref _isHigh);
+			ser.Sync(nameof(_highCycles), ref _highCycles);
+			ser.Sync(nameof(_totalCycles), ref _totalCycles);
+			ser.Sync(nameof(_lastCycles), ref _lastCycles);
+		}
 
 		public void Clear()
 		{
@@ -65,8 +61,6 @@ namespace Jellyfish.Virtu
 			nSamp = _position / 2;
 			_position = 0;
 		}
-
-		#endregion
 
 		public void ToggleOutput()
 		{
@@ -81,7 +75,7 @@ namespace Jellyfish.Virtu
 			Output(_highCycles * short.MaxValue / _totalCycles);
 			_highCycles = _totalCycles = 0;
 
-			_events.AddEvent(CyclesPerFlush * _cpu.Multiplier, _flushOutputEvent);
+			_events.AddEvent(CyclesPerFlush * _cpu.Multiplier, EventCallbacks.FlushOutput);
 		}
 
 		private void UpdateCycles()
@@ -103,13 +97,6 @@ namespace Jellyfish.Virtu
 				_buffer[_position++] = (short)data;
 				_buffer[_position++] = (short)data;
 			}
-		}
-
-
-		[OnDeserialized]
-		private void OnDeserialized(StreamingContext context)
-		{
-			_position = 0;
 		}
 	}
 }

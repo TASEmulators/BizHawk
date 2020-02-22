@@ -1,15 +1,50 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 
 namespace Jellyfish.Virtu
 {
 	// ReSharper disable once UnusedMember.Global
 	public partial class Cpu
 	{
-		[JsonIgnore]
+		public void Sync(IComponentSerializer ser)
+		{
+			ser.Sync(nameof(_is65C02), ref _is65C02);
+			ser.Sync(nameof(_multiplier), ref _multiplier);
+
+			ser.Sync(nameof(_ra), ref _ra);
+			ser.Sync(nameof(_rx), ref _rx);
+			ser.Sync(nameof(_ry), ref _ry);
+			ser.Sync(nameof(_rs), ref _rs);
+			ser.Sync(nameof(_rp), ref _rp);
+			ser.Sync(nameof(_rpc), ref _rpc);
+			ser.Sync(nameof(_ea), ref _ea);
+			ser.Sync(nameof(_cc), ref _cc);
+			ser.Sync(nameof(_opCode), ref _opCode);
+			ser.Sync(nameof(_cycles), ref _cycles);
+
+			if (!ser.IsReader)
+			{
+				// A way to set the action callback
+				Is65C02 = _is65C02;
+			}
+		}
+
 		private Action[] _executeOpCode65N02;
-		[JsonIgnore]
 		private Action[] _executeOpCode65C02;
+		private Action[] _executeOpCode;
+
+		private bool _is65C02;
+		private int _multiplier;
+
+		private int _ra;
+		private int _rx;
+		private int _ry;
+		private int _rs;
+		private int _rp;
+		private int _rpc;
+		private int _ea;
+		private int _cc;
+		private int _opCode;
+		private long _cycles;
 
 		private const int Pc = 0x01;
 		private const int Pz = 0x02;

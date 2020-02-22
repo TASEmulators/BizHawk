@@ -33,9 +33,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\References\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -53,6 +50,7 @@
     <Compile Include="DiskIIController.cs" />
     <Compile Include="DiskIIDrive.cs" />
     <Compile Include="DiskNib.cs" />
+    <Compile Include="IComponentSerializer.cs" />
     <Compile Include="IGamePort.cs" />
     <Compile Include="Keyboard.cs" />
     <Compile Include="MachineEvents.cs" />
