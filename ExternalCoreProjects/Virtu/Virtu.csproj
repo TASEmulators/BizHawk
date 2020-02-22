@@ -1,12 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<Import Project="$(ProjectDir)../../Common.props" />
 	<PropertyGroup>
-		<TargetFramework>net48</TargetFramework>
+		<TargetFrameworks>netstandard2.0;netcoreapp3.1</TargetFrameworks>
 	</PropertyGroup>
-	<Import Project="$(ProjectDir)../../CommonRefAssemblies.props" Condition=" '$(OS)' != 'Windows_NT' " />
-	<ItemGroup>
-		<Reference Include="System" />
-	</ItemGroup>
 	<ItemGroup>
 		<Compile Update="Cpu.Data.cs" DependentUpon="Cpu.cs" />
 		<Compile Update="Memory.Data.cs" DependentUpon="Memory.cs" />
