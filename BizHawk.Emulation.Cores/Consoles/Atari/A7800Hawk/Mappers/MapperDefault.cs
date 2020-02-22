@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
 	// Default mapper with no bank switching
 	// Just need to keep track of high score bios stuff
-	public class MapperDefault : MapperBase
+	public sealed class MapperDefault : MapperBase
 	{
 		public override byte ReadMemory(ushort addr)
 		{
@@ -50,8 +50,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			return 0x00;
 		}
 
-		public override byte PeekMemory(ushort addr) => ReadMemory(addr);
-
 		public override void WriteMemory(ushort addr, byte value)
 		{
 			if (addr >= 0x1000 && addr < 0x1800)
@@ -81,11 +79,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			{ 
 				// cartridge and other OPSYS
 			}
-		}
-
-		public override void PokeMemory(ushort addr, byte value)
-		{
-			WriteMemory(addr, value);
 		}
 	}
 }

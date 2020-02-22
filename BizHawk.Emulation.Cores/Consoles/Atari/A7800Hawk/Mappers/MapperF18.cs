@@ -4,7 +4,7 @@ using BizHawk.Common.NumberExtensions;
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
 	// Mapper only used by F-18 Hornet
-	public class MapperF18 : MapperBase
+	public sealed class MapperF18 : MapperBase
 	{
 		private byte _bank;
 
@@ -50,8 +50,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			return Core._rom[tempAddr + _bank * 0x4000];
 		}
 
-		public override byte PeekMemory(ushort addr) => ReadMemory(addr);
-
 		public override void WriteMemory(ushort addr, byte value)
 		{
 			if (addr >= 0x1000 && addr < 0x1800)
@@ -82,11 +80,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					_bank -= 1;
 				}
 			}
-		}
-
-		public override void PokeMemory(ushort addr, byte value)
-		{
-			WriteMemory(addr, value);
 		}
 
 		public override void SyncState(Serializer ser)

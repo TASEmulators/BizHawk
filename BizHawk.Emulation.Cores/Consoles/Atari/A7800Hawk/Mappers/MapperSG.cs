@@ -4,7 +4,7 @@ using BizHawk.Common.NumberExtensions;
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
 	// Default Bank Switching Mapper used by most games
-	public class MapperSG : MapperBase
+	public sealed class MapperSG : MapperBase
 	{
 		private byte _bank;
 		private byte[] RAM = new byte[0x4000];
@@ -96,8 +96,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			return 0xFF;
 		}
 
-		public override byte PeekMemory(ushort addr) => ReadMemory(addr);
-
 		public override void WriteMemory(ushort addr, byte value)
 		{
 			if (addr >= 0x1000 && addr < 0x1800)
@@ -142,11 +140,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					}
 				}
 			}
-		}
-
-		public override void PokeMemory(ushort addr, byte value)
-		{
-			WriteMemory(addr, value);
 		}
 
 		public override void SyncState(Serializer ser)

@@ -3,7 +3,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
-	// emualtes pokey sound chip
+	// emulates pokey sound chip
 	// note: A7800 implementation is used only for sound
 	// potentiometers, keyboard, and IRQs are not used in this context
 	/*
@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 	 * The registers are write only, except for the RNG none of the things that would return reads are connected
 	 * for now return FF
 	 */
-	public class Pokey
+	public sealed class Pokey
 	{
 		public A7800Hawk Core { get; set; }
 
@@ -36,11 +36,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		// these are derived values and do not need to be save-stated
 		public bool[] clock_ch = new bool[4];
 		public int bit_xor;
-
-		public Pokey()
-		{
-
-		}
 
 		public int sample()
 		{
@@ -138,7 +133,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				inc_ch[2]++;
 				if (Regs[8].Bit(0))
 				{
-					if (inc_ch[2] >= 114) { inc_ch[2] = 0; clock_ch[2] = true; }					
+					if (inc_ch[2] >= 114) { inc_ch[2] = 0; clock_ch[2] = true; }
 				}
 				else
 				{
@@ -150,7 +145,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			{
 				if (clock_ch[0])
 				{
-					clock_ch[1] = true;					
+					clock_ch[1] = true;
 				}
 			}
 			else
@@ -159,7 +154,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				if (Regs[8].Bit(0))
 				{
 					if (inc_ch[1] >= 114) { inc_ch[1] = 0; clock_ch[1] = true; }
-									
 				}
 				else
 				{
@@ -179,7 +173,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				inc_ch[3]++;
 				if (Regs[8].Bit(0))
 				{
-					if (inc_ch[3] >= 114) { inc_ch[3] = 0; clock_ch[3] = true; }								
+					if (inc_ch[3] >= 114) { inc_ch[3] = 0; clock_ch[3] = true; }
 				}
 				else
 				{
@@ -273,7 +267,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 							//if (ch_src[i])
 							//{
 								ch_out[i] = poly4.Bit(3);
-							//}					
+							//}
 						}
 						else if ((Regs[i * 2 + 1] & 0xF0) == 0xE0)
 						{

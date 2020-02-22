@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
-	public partial class TIA
+	public sealed partial class TIA
 	{
 		public void SyncState(Serializer ser)
 		{

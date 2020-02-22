@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
-	public partial class TIA
+	public sealed partial class TIA
 	{
 		public class Audio
 		{
@@ -137,7 +137,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 							One5();
 							Run4();
 							on = Run1();
-							break;							
+							break;
 						case 0x06:
 						case 0x0a:
 							Run5();
@@ -153,7 +153,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 						case 0x07:
 						case 0x09:
 							on = Run5();
-							break;							
+							break;
 						case 0x08:
 							on = Run9();
 							break;

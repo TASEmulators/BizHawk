@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
 	// Super Game mapper but with extra ROM at the start of the file
 	// Have to add 1 to bank number to get correct bank value
-	public class MapperSGE : MapperBase
+	public sealed class MapperSGE : MapperBase
 	{
 		private byte _bank;
 
@@ -70,8 +70,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			return Core._rom[tempAddr];
 		}
 
-		public override byte PeekMemory(ushort addr) => ReadMemory(addr);
-
 		public override void WriteMemory(ushort addr, byte value)
 		{
 			if (addr >= 0x1000 && addr < 0x1800)
@@ -109,11 +107,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					Core.pokey.WriteReg(addr & 0xF, value);
 				}
 			}
-		}
-
-		public override void PokeMemory(ushort addr, byte value)
-		{
-			WriteMemory(addr, value);
 		}
 
 		public override void SyncState(Serializer ser)
