@@ -180,9 +180,9 @@ namespace BizHawk.Client.EmuHawk
 							 * relevant files should be extracted, but see the note below for
 							 * further details.
 							 */
-							var archiveHandler = new SharpCompressArchiveHandler();
+							var dearchivalMethod = SharpCompressDearchivalMethod.Instance;
 
-							if (string.IsNullOrEmpty(archive) && archiveHandler.CheckSignature(file, out _, out _))
+							if (string.IsNullOrEmpty(archive) && dearchivalMethod.CheckSignature(file, out _, out _))
 							{
 								sortedFiles[LoadOrdering.Rom].Add(fileInformation);
 							}

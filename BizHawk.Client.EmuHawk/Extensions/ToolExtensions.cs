@@ -63,8 +63,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 					if (crazyStuff)
 					{
 						//TODO - use standard methods to split filename (hawkfile acquire?)
-						var hf = new HawkFile();
-						hf.Parse(physicalPath);
+						var hf = new HawkFile(physicalPath ?? throw new Exception("this will probably never appear but I can't be bothered checking --yoshi"), delayIOAndDearchive: true);
 						bool canExplore = File.Exists(hf.FullPathWithoutMember);
 
 						if (canExplore)

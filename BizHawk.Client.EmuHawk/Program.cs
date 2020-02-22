@@ -101,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 
 			TempFileManager.Start();
 
-			HawkFile.ArchiveHandlerFactory = new SharpCompressArchiveHandler();
+			HawkFile.DearchivalMethod = SharpCompressDearchivalMethod.Instance;
 
 			string cmdConfigFile = ArgParser.GetCmdConfigFile(args);
 			if (cmdConfigFile != null) PathManager.SetDefaultIniPath(cmdConfigFile);

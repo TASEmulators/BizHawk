@@ -259,7 +259,7 @@ namespace BizHawk.Client.Common
 				return false;
 			}
 
-			using var file = new HawkFile();
+			using var file = new HawkFile(); // I'm almost certain that we'll see NREs unless Open or Parse is called, so I deprecated this ctor as a nag --yoshi
 			// only try mounting a file if a filename was given
 			if (!string.IsNullOrEmpty(path))
 			{
@@ -965,9 +965,8 @@ namespace BizHawk.Client.Common
 						case "83P":
 							var ti83Bios = ((CoreFileProvider)nextComm.CoreFileProvider).GetFirmware("TI83", "Rom", true);
 							var ti83BiosPath = ((CoreFileProvider)nextComm.CoreFileProvider).GetFirmwarePath("TI83", "Rom", true);
-							using (var ti83AsHawkFile = new HawkFile())
+							using (var ti83AsHawkFile = new HawkFile(ti83BiosPath))
 							{
-								ti83AsHawkFile.Open(ti83BiosPath);
 								var ti83BiosAsRom = new RomGame(ti83AsHawkFile);
 								var ti83 = new TI83(nextComm, ti83BiosAsRom.GameInfo, ti83Bios, GetCoreSettings<TI83>());
 								ti83.LinkPort.SendFileToCalc(File.OpenRead(path), false);
