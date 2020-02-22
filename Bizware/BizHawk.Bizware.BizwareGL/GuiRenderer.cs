@@ -3,10 +3,6 @@
 //why this stupid assert on the blendstate. just set one by default, geeze.
 
 using System;
-using System.Diagnostics;
-using System.Collections;
-using System.Collections.Generic;
-
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
@@ -17,7 +13,7 @@ namespace BizHawk.Bizware.BizwareGL
 	/// <summary>
 	/// A simple renderer useful for rendering GUI stuff. 
 	/// When doing GUI rendering, run everything through here (if you need a GL feature not done through here, run it through here first)
-	/// Call Begin, then draw, then End, and dont use other Renderers or GL calls in the meantime, unless you know what youre doing.
+	/// Call Begin, then draw, then End, and don't use other Renderers or GL calls in the meantime, unless you know what you're doing.
 	/// This can perform batching (well.. maybe not yet), which is occasionally necessary for drawing large quantities of things.
 	/// </summary>
 	public class GuiRenderer : IDisposable, IGuiRenderer
@@ -53,7 +49,7 @@ namespace BizHawk.Bizware.BizwareGL
 			CurrPipeline = DefaultPipeline = Owner.CreatePipeline(VertexLayout, vs, ps, true, "xgui");
 		}
 
-		OpenTK.Graphics.Color4[] CornerColors = new OpenTK.Graphics.Color4[4] {
+		readonly OpenTK.Graphics.Color4[] CornerColors = new OpenTK.Graphics.Color4[4] {
 			new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f),new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f),new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f),new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f)
 		};
 
@@ -343,10 +339,11 @@ namespace BizHawk.Bizware.BizwareGL
 		}
 
 		public bool IsActive { get; private set; }
-		public IGL Owner { get; private set; }
+		public IGL Owner { get; }
 
-		VertexLayout VertexLayout;
-		Pipeline CurrPipeline, DefaultPipeline;
+		readonly VertexLayout VertexLayout;
+		Pipeline CurrPipeline;
+		readonly Pipeline DefaultPipeline;
 
 		//state cache
 		Texture2d sTexture;

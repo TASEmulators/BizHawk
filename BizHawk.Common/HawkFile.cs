@@ -8,8 +8,8 @@ using System.Linq;
 using BizHawk.Common.StringExtensions;
 
 // the HawkFile class is excessively engineered with the IHawkFileArchiveHandler to decouple the archive handling from the basic file handling.
-// This is so we could drop in an unamanged dearchiver library optionally later as a performance optimization without ruining the portability of the code.
-// Also, we want to be able to use HawkFiles in BizHawk.Common withuot bringing in a large 7-zip dependency
+// This is so we could drop in an unmanaged dearchiver library optionally later as a performance optimization without ruining the portability of the code.
+// Also, we want to be able to use HawkFiles in BizHawk.Common without bringing in a large 7-zip dependency
 namespace BizHawk.Common
 {
 	// TODO:
@@ -165,12 +165,10 @@ namespace BizHawk.Common
 		/// </summary>
 		public byte[] ReadAllBytes()
 		{
-			using (Stream stream = GetStream())
-			{
-				var ms = new MemoryStream((int)stream.Length);
-				stream.CopyTo(ms);
-				return ms.GetBuffer();
-			}
+			using Stream stream = GetStream();
+			var ms = new MemoryStream((int)stream.Length);
+			stream.CopyTo(ms);
+			return ms.GetBuffer();
 		}
 
 		/// <summary>

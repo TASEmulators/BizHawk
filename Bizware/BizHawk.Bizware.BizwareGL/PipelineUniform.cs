@@ -23,8 +23,8 @@ namespace BizHawk.Bizware.BizwareGL
 			_UniformInfos.Add(ui);
 		}
 
-		public IEnumerable<UniformInfo> UniformInfos { get { return _UniformInfos; } }
-		List<UniformInfo> _UniformInfos = new List<UniformInfo>();
+		public IEnumerable<UniformInfo> UniformInfos => _UniformInfos;
+		readonly List<UniformInfo> _UniformInfos = new List<UniformInfo>();
 
 		/// <returns>the first and only <see cref="UniformInfo"/></returns>
 		/// <exception cref="InvalidOperationException">more than one <see cref="UniformInfo"/> exists</exception>
@@ -37,54 +37,46 @@ namespace BizHawk.Bizware.BizwareGL
 			}
 		}
 
-		public Pipeline Owner { get; private set; }
+		public Pipeline Owner { get; }
 		
 		public void Set(Matrix4 mat, bool transpose = false)
 		{
-			if (Owner == null) return; //uniform was optimized out
-			Owner.Owner.SetPipelineUniformMatrix(this, mat, transpose);
+			Owner?.Owner.SetPipelineUniformMatrix(this, mat, transpose);
 		}
 
 		public void Set(Vector4 vec)
 		{
-			if (Owner == null) return; //uniform was optimized out
-			Owner.Owner.SetPipelineUniform(this, vec);
+			Owner?.Owner.SetPipelineUniform(this, vec);
 		}
 
 		public void Set(Vector2 vec)
 		{
-			if (Owner == null) return; //uniform was optimized out
-			Owner.Owner.SetPipelineUniform(this, vec);
+			Owner?.Owner.SetPipelineUniform(this, vec);
 		}
 
 		public void Set(float f)
 		{
-			if (Owner == null) return; //uniform was optimized out
-			Owner.Owner.SetPipelineUniform(this, f);
+			Owner?.Owner.SetPipelineUniform(this, f);
 		}
 
 		public void Set(Vector4[] vecs)
 		{
-			if (Owner == null) return; //uniform was optimized out
-			Owner.Owner.SetPipelineUniform(this, vecs);
+			Owner?.Owner.SetPipelineUniform(this, vecs);
 		}
 
 		public void Set(ref Matrix4 mat, bool transpose = false)
 		{
-			if (Owner == null) return; //uniform was optimized out
-			Owner.Owner.SetPipelineUniformMatrix(this, ref mat, transpose);
+			Owner?.Owner.SetPipelineUniformMatrix(this, ref mat, transpose);
 		}
 
 		public void Set(bool value)
 		{
-			if (Owner == null) return; //uniform was optimized out
-			Owner.Owner.SetPipelineUniform(this, value);
+			Owner?.Owner.SetPipelineUniform(this, value);
 		}
 
 		public void Set(Texture2d tex)
 		{
-			if (Owner == null) return; //uniform was optimized out
-			Owner.Owner.SetPipelineUniformSampler(this, tex);
+			Owner?.Owner.SetPipelineUniformSampler(this, tex);
 		}
 	}
 }

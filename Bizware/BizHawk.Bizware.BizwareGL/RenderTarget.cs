@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 namespace BizHawk.Bizware.BizwareGL
 {
@@ -18,9 +17,9 @@ namespace BizHawk.Bizware.BizwareGL
 			return $"GL RT: {Texture2d.Width}x{Texture2d.Height}";
 		}
 
-		public object Opaque { get; private set; }
-		public IGL Owner { get; private set; }
-		public Texture2d Texture2d { get; private set; }
+		public object Opaque { get; }
+		public IGL Owner { get; }
+		public Texture2d Texture2d { get; }
 
 		public void Unbind()
 		{

@@ -1,9 +1,6 @@
 //this is full of bugs probably, related to state from old rendering sessions being all messed up. its only barely good enough to work at all
 
 using System;
-using System.Diagnostics;
-using System.Collections;
-using System.Collections.Generic;
 using System.Drawing.Imaging;
 
 using OpenTK;
@@ -20,7 +17,7 @@ namespace BizHawk.Bizware.BizwareGL
 			Owner = gl;
 		}
 
-		OpenTK.Graphics.Color4[] CornerColors = new OpenTK.Graphics.Color4[4] {
+		readonly OpenTK.Graphics.Color4[] CornerColors = new OpenTK.Graphics.Color4[4] {
 			new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f),new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f),new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f),new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f)
 		};
 
@@ -41,8 +38,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public void Dispose()
 		{
-			if (CurrentImageAttributes != null)
-				CurrentImageAttributes.Dispose();
+			CurrentImageAttributes?.Dispose();
 		}
 
 
@@ -273,7 +269,7 @@ namespace BizHawk.Bizware.BizwareGL
 			var tw = tex.Opaque as GDIPTextureWrapper;
 			g.PixelOffsetMode = sd.Drawing2D.PixelOffsetMode.Half;
 			g.DrawImage(tw.SDBitmap, destPoints, new sd.RectangleF(sx, sy, sw, sh), sd.GraphicsUnit.Pixel, CurrentImageAttributes);
-			g.Transform = new sd.Drawing2D.Matrix(); //.Reset() doesnt work ? ?
+			g.Transform = new sd.Drawing2D.Matrix(); //.Reset() doesn't work ? ?
 		}
 
 		unsafe void DrawInternal(Art art, float x, float y, float w, float h, bool fx, bool fy)
@@ -283,8 +279,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		
 		public bool IsActive { get; private set; }
-		public IGL Owner { get; private set; }
+		public IGL Owner { get; }
 		public IGL Gdi => Owner;
-
 	}
 }

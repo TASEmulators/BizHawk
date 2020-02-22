@@ -1,7 +1,6 @@
 ﻿//public domain assumed from cyotek.com
 
 using System;
-using System.Reflection;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;

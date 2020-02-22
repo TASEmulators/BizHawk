@@ -102,7 +102,7 @@ namespace BizHawk.Bizware.BizwareGL
 				if (!FontInfo.Characters.TryGetValue((char)c, out bfc))
 					bfc = FontInfo.Characters[unchecked((char)-1)];
 				
-				//calculate texcoords (we shouldve already had this cached, but im speedcoding now)
+				// calculate texcoords (we shouldve already had this cached, but im speedcoding now)
 				Texture2d tex = TexturePages[bfc.TexturePage];
 				float w = tex.Width;
 				float h = tex.Height;
@@ -119,9 +119,9 @@ namespace BizHawk.Bizware.BizwareGL
 			}
 		}
 
-		public IGL Owner { get; private set; }
+		public IGL Owner { get; }
 
-		Cyotek.Drawing.BitmapFont.BitmapFont FontInfo;
+		readonly Cyotek.Drawing.BitmapFont.BitmapFont FontInfo;
 		List<Texture2d> TexturePages = new List<Texture2d>();
 
 	}

@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.IO;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Drawing;
 
@@ -29,10 +25,11 @@ namespace BizHawk.Bizware.BizwareGL
 		class TryFitParam
 		{
 			public TryFitParam(int _w, int _h) { this.w = _w; this.h = _h; }
-			public int w, h;
+			public readonly int w;
+			public readonly int h;
 			public bool ok = true;
-			public RectangleBinPack rbp = new RectangleBinPack();
-			public List<RectangleBinPack.Node> nodes = new List<RectangleBinPack.Node>();
+			public readonly RectangleBinPack rbp = new RectangleBinPack();
+			public readonly List<RectangleBinPack.Node> nodes = new List<RectangleBinPack.Node>();
 		}
 
 		public class PackedAtlasResults

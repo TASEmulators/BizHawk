@@ -165,10 +165,9 @@ namespace Cyotek.Drawing.BitmapFont
 
     public Size TextureSize { get; set; }
 
-    public Character this[char character]
-    { get { return this.Characters[character]; } }
+    public Character this[char character] => this.Characters[character];
 
-    public bool Unicode { get; set; }
+	public bool Unicode { get; set; }
 
     #endregion  Public Properties
 

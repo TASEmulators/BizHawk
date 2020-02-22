@@ -1,9 +1,5 @@
-﻿using System;
-using System.Drawing;
-using System.Text;
-
+﻿using System.Drawing;
 using OpenTK;
-using OpenTK.Graphics;
 
 namespace BizHawk.Bizware.BizwareGL
 {

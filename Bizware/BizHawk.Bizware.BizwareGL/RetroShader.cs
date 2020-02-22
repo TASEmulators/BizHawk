@@ -11,9 +11,8 @@ namespace BizHawk.Bizware.BizwareGL
 	/// </summary>
 	public class RetroShader : IDisposable
 	{
-		//NOTE: we may need to overhaul uniform-setting infrastructure later. 
-		//maybe samplers will need to be set by index and not by name (I think the specs dont dictate what the sampler must be named)
-
+		// NOTE: we may need to overhaul uniform-setting infrastructure later.
+		// maybe samplers will need to be set by index and not by name (I think the specs don't dictate what the sampler must be named)
 		public RetroShader(IGL owner, string source, bool debug = false)
 		{
 			Owner = owner;
@@ -37,9 +36,9 @@ namespace BizHawk.Bizware.BizwareGL
 				return;
 			}
 
-			//retroarch shaders will sometimes not have the right sampler name
-			//it's unclear whether we should bind to s_p or sampler0
-			//lets bind to sampler0 in case we dont have s_p
+			// retroarch shaders will sometimes not have the right sampler name
+			// it's unclear whether we should bind to s_p or sampler0
+			// lets bind to sampler0 in case we don't have s_p
 			sampler0 = Pipeline.TryGetUniform("s_p");
 			if (sampler0 == null)
 			{
@@ -60,10 +59,10 @@ namespace BizHawk.Bizware.BizwareGL
 			Available = true;
 		}
 
-		public bool Available { get; private set; }
-		public string Errors { get { return Pipeline.Errors; } }
+		public bool Available { get; }
+		public string Errors => Pipeline.Errors;
 
-		PipelineUniform sampler0;
+		private readonly PipelineUniform sampler0;
 
 		public void Dispose()
 		{
@@ -131,9 +130,9 @@ namespace BizHawk.Bizware.BizwareGL
 		}
 
 
-		public IGL Owner { get; private set; }
+		public IGL Owner { get; }
 
-		VertexLayout VertexLayout;
+		readonly VertexLayout VertexLayout;
 		public Pipeline Pipeline;
 	}
 }

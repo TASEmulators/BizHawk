@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 
 namespace BizHawk.Bizware.BizwareGL
@@ -59,15 +58,12 @@ namespace BizHawk.Bizware.BizwareGL
 					return temp;
 				}
 
-				internal set
-				{
-					base[key] = value;
-				}
+				internal set => base[key] = value;
 			}
 		}
 
-		SpecialWorkingDictionary UniformsDictionary;
-		IDictionary<string, PipelineUniform> Uniforms { get { return UniformsDictionary; } }
+		readonly SpecialWorkingDictionary UniformsDictionary;
+		IDictionary<string, PipelineUniform> Uniforms => UniformsDictionary;
 
 		public IEnumerable<PipelineUniform> GetUniforms() { return Uniforms.Values; }
 
@@ -78,15 +74,12 @@ namespace BizHawk.Bizware.BizwareGL
 			return ret;
 		}
 
-		public PipelineUniform this[string key]
-		{
-			get { return UniformsDictionary[key]; }
-		}
+		public PipelineUniform this[string key] => UniformsDictionary[key];
 
-		public IGL Owner { get; private set; }
-		public object Opaque { get; private set; }
-		public VertexLayout VertexLayout { get; private set; }
-		public bool Available { get; private set; }
+		public IGL Owner { get; }
+		public object Opaque { get; }
+		public VertexLayout VertexLayout { get; }
+		public bool Available { get; }
 		public string Errors { get; set; }
 
 		public void Dispose()

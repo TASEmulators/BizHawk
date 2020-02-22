@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-
 using BizHawk.Common;
 
 using OpenTK.Graphics.OpenGL;
@@ -9,12 +7,12 @@ namespace BizHawk.Bizware.BizwareGL
 {
 	/// <summary>
 	/// Represents a vertex layout, really a kind of a peer of the vertex and fragment shaders.
-	///	It isnt IDisposable because itll be lifecycle-managed by the IGL (disposed when all dependent pipelines are disposed)
+	///	It isn't IDisposable because it'll be lifecycle-managed by the IGL (disposed when all dependent pipelines are disposed)
 	/// But if you want to be sure to save it for later, use AddRef
 	/// </summary>
 	public class VertexLayout
 	{
-		//TODO - could refactor to use vertex array objects? check opengl profile requirements (answer: 3.0. dont want to do this.)
+		//TODO - could refactor to use vertex array objects? check opengl profile requirements (answer: 3.0. don't want to do this.)
 
 		public VertexLayout(IGL owner, object opaque)
 		{
@@ -23,8 +21,8 @@ namespace BizHawk.Bizware.BizwareGL
 			Items = new MyDictionary();
 		}
 
-		public object Opaque { get; private set; }
-		public IGL Owner { get; private set; }
+		public object Opaque { get; }
+		public IGL Owner { get; }
 
 		int RefCount;
 
@@ -74,19 +72,12 @@ namespace BizHawk.Bizware.BizwareGL
 		{
 			public new LayoutItem this[int key]
 			{
-				get
-				{
-					return base[key];
-				}
-
-				internal set
-				{
-					base[key] = value;
-				}
+				get => base[key];
+				internal set => base[key] = value;
 			}
 		}
 
-		public MyDictionary Items { get; private set; }
+		public MyDictionary Items { get; }
 		bool Closed = false;
 
 	}
