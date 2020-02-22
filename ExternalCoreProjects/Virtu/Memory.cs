@@ -87,6 +87,14 @@ namespace Jellyfish.Virtu
 			ser.Sync(nameof(_romInternalRegionC1CF), ref _romInternalRegionC1CF, false);
 			ser.Sync(nameof(_romRegionD0DF), ref _romRegionD0DF, false);
 			ser.Sync(nameof(_romRegionE0FF), ref _romRegionE0FF, false);
+
+			if (ser.IsReader)
+			{
+				MapRegion0001();
+				MapRegion02BF();
+				MapRegionC0CF();
+				MapRegionD0FF();
+			}
 		}
 
 		// ReSharper disable once UnusedMember.Global

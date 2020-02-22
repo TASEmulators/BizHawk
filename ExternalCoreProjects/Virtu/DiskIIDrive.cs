@@ -116,7 +116,7 @@
 			}
 		}
 
-		public bool IsWriteProtected => _disk.IsWriteProtected;
+		public bool IsWriteProtected => _disk?.IsWriteProtected ?? false;
 
 		private const int TrackNumberMax = 0x44;
 		private const int PhaseCount = 4;
