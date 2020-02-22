@@ -512,6 +512,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 			input_register = 0xCF; // not reading any input
 
+			REG_FFFF = 0;
+			REG_FF0F = 0xE0;
+			REG_FF0F_OLD = 0xE0;
+
 			//undocumented registers
 			undoc_6C = 0xFE;
 			undoc_72 = 0;

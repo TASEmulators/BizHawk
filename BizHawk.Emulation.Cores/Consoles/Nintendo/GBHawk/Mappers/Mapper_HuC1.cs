@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int RAM_mask;
 		public bool IR_signal;
 
-		public override void Initialize()
+		public override void Reset()
 		{
 			ROM_bank = 0;
 			RAM_bank = 0;

@@ -74,6 +74,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			skip_once = false;
 			Halt_bug_2 = false;
 			Halt_bug_3 = false;
+			interrupts_enabled = false;
 		}
 	}
 }

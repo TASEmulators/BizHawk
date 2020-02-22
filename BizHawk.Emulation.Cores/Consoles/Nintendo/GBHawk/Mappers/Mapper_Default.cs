@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 	// Default mapper with no bank switching
 	public class MapperDefault : MapperBase
 	{
-		public override void Initialize()
+		public override void Reset()
 		{
 			// nothing to initialize
 		}

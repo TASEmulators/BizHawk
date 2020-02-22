@@ -190,6 +190,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Register<ITraceable>(_tracer);
 			ser.Register<IStatable>(new StateSerializer(SyncState, false));
 			SetupMemoryDomains();
+			cpu.SetCallbacks(ReadMemory, PeekMemory, PeekMemory, WriteMemory);
 			HardReset();
 
 			iptr0 = Marshal.AllocHGlobal(VRAM.Length + 1);
@@ -287,7 +288,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			GBC_compat = is_GBC;
 			in_vblank = true; // we start off in vblank since the LCD is off
 			in_vblank_old = true;
-
+			double_speed = false;
+			VRAM_Bank = 0;
 			RAM_Bank = 1; // RAM bank always starts as 1 (even writing zero still sets 1)
 
 			Register_Reset();
@@ -295,9 +297,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ppu.Reset();
 			audio.Reset();
 			serialport.Reset();
-
-			cpu.SetCallbacks(ReadMemory, PeekMemory, PeekMemory, WriteMemory);
-
+			mapper.Reset();
+			cpu.Reset();
+			
 			_vidbuffer = new int[VirtualWidth * VirtualHeight];
 			frame_buffer = new int[VirtualWidth * VirtualHeight];
 		}
@@ -459,7 +461,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 
 			mapper.Core = this;
-			mapper.Initialize();
 
 			if (cart_RAM != null && (mppr != "MBC7"))
 			{
@@ -532,6 +533,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				Use_MT = true;
 
 				// currently no date / time input for TAMA5
+
 			}
 		}
 	}
