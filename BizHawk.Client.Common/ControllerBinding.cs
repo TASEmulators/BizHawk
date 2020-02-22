@@ -177,7 +177,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void Overrides(OverrideAdaptor controller)
+		public void Overrides(OverrideAdapter controller)
 		{
 			foreach (var button in controller.Overrides)
 			{

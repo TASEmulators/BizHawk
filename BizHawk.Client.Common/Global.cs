@@ -43,7 +43,7 @@ namespace BizHawk.Client.Common
 		// the "output" port for the controller chain.
 		public static readonly CopyControllerAdapter ControllerOutput = new CopyControllerAdapter();
 
-		public static readonly UD_LR_ControllerAdapter UD_LR_ControllerAdapter = new UD_LR_ControllerAdapter();
+		public static readonly UdlrControllerAdapter UD_LR_ControllerAdapter = new UdlrControllerAdapter();
 
 		public static readonly AutoFireStickyXorAdapter AutofireStickyXORAdapter = new AutoFireStickyXorAdapter();
 
@@ -55,7 +55,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Used to AND to another controller, used for <see cref="JoypadApi.Set(System.Collections.Generic.Dictionary{string,bool},System.Nullable{int})">JoypadApi.Set</see>
 		/// </summary>
-		public static readonly OverrideAdaptor ButtonOverrideAdaptor = new OverrideAdaptor();
+		public static readonly OverrideAdapter ButtonOverrideAdaptor = new OverrideAdapter();
 
 		/// <summary>
 		/// fire off one-frame logical button clicks here. useful for things like ti-83 virtual pad and reset buttons

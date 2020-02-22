@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common
 	/// Filters input for things called Up and Down while considering the client's AllowUD_LR option. 
 	/// This is a bit gross but it is unclear how to do it more nicely
 	/// </summary>
-	public class UD_LR_ControllerAdapter : IController
+	public class UdlrControllerAdapter : IController
 	{
 		public ControllerDefinition Definition => Source.Definition;
 
