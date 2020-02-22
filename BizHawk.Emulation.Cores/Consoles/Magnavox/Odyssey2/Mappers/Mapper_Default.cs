@@ -40,8 +40,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			}
 		}
 
-		public override byte PeekMemory(ushort addr) => ReadMemory(addr);
-
 		public override void WriteMemory(ushort addr, byte value)
 		{
 			if (addr < 0x8000)
@@ -55,11 +53,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					Core.cart_RAM[addr - 0xA000] = value;
 				}
 			}
-		}
-
-		public override void PokeMemory(ushort addr, byte value)
-		{
-			WriteMemory(addr, value);
 		}
 	}
 }
