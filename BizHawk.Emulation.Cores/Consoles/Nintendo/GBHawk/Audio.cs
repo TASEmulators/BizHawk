@@ -930,6 +930,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			
 			Audio_Regs = new byte[21];
 
+			for (int i = 0; i < 0x16; i++)
+			{
+				WriteReg(0xFF10 + i, 0);
+			}
+
+			SQ1_duty_cntr = SQ2_duty_cntr = 0;
+
+			SQ1_enable = SQ1_swp_enable = SQ2_enable = WAVE_enable = NOISE_enable = false;
+
+			SQ1_len_en = SQ2_len_en = WAVE_len_en = NOISE_len_en = false;
+
+			SQ1_output = SQ2_output = WAVE_output = NOISE_output = 0;
+
+			SQ1_length = SQ2_length = WAVE_length = NOISE_length = 0;
+			SQ1_len_cntr = SQ2_len_cntr = WAVE_len_cntr = NOISE_len_cntr = 0;
+
 			master_audio_clock = 0;
 
 			sequencer_len = 0;

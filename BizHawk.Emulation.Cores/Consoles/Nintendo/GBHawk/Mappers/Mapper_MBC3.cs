@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public bool halt;
 		public int RTC_offset;
 
-		public override void Initialize()
+		public override void Reset()
 		{
 			ROM_bank = 1;
 			RAM_bank = 0;
@@ -36,11 +36,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				if (Core.cart_RAM.Length == 0x800) { RAM_mask = 0; }
 			}
 
-			RTC_regs[0] = 0;
-			RTC_regs[1] = 0;
-			RTC_regs[2] = 0;
-			RTC_regs[3] = 0;
-			RTC_regs[4] = 0;
+			RTC_regs_latch[0] = 0;
+			RTC_regs_latch[1] = 0;
+			RTC_regs_latch[2] = 0;
+			RTC_regs_latch[3] = 0;
+			RTC_regs_latch[4] = 0;
 
 			RTC_regs_latch_wr = true;
 		}

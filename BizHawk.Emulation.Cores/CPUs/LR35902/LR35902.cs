@@ -69,6 +69,10 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			TotalExecutedCycles = 8;
 			stop_check = false;
 			cur_instr = new ushort[] { IDLE, IDLE, HALT_CHK, OP };
+			stopped = jammed = halted = FlagI = false;
+			instr_pntr = 0;
+			EI_pending = 0;
+			CB_prefix = false;
 		}
 
 		// Memory Access 

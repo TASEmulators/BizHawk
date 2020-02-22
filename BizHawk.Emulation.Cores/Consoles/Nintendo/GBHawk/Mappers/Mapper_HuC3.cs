@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int RTC_low_clock;
 		public int RTC_seconds;
 
-		public override void Initialize()
+		public override void Reset()
 		{
 			ROM_bank = 0;
 			RAM_bank = 0;

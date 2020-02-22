@@ -136,10 +136,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public void Reset()
 		{
 			serial_control = 0x7E;
-			serial_start = false;
 			serial_data = 0x00;
+			serial_start = false;
+			serial_clock = 0;
+			serial_bits = 0;
+			clk_rate = 16;
 			going_out = 0;
-			coming_in = 1;
+			coming_in = 1;		
+			can_pulse = false;
 		}
 
 		public void SyncState(Serializer ser)

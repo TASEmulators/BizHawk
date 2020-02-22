@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			_frame++;
 
-			if (controller.IsPressed("Power"))
+			if (controller.IsPressed("P1 Power"))
 			{
 				HardReset();
 			}
@@ -117,6 +117,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				if (in_vblank && !in_vblank_old)
 				{
+					_islag = false;
+
 					// update the controller state on VBlank
 					GetControllerState(controller);
 
@@ -256,6 +258,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			Acc_X_state = _controllerDeck.ReadAccX1(controller);
 			Acc_Y_state = _controllerDeck.ReadAccY1(controller);
 		}
+
+
 
 		public int Frame => _frame;
 

@@ -13,13 +13,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int ROM_mask;
 		public int RAM_mask;
 
-		public override void Initialize()
+		public override void Reset()
 		{
 			ROM_bank = 1;
 			RAM_bank = 0;
 			RAM_enable = false;
 			sel_mode = false;
-			ROM_mask = (Core._rom.Length / 0x4000 * 2) - 1; // due to how mapping workd, we want a 1 bit higher mask
+			ROM_mask = (Core._rom.Length / 0x4000 * 2) - 1; // due to how mapping works, we want a 1 bit higher mask
 			RAM_mask = 0;
 			if (Core.cart_RAM != null)
 			{

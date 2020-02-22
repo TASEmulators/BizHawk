@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public bool countdown_start;
 
 
-		public override void Initialize()
+		public override void Reset()
 		{
 			ROM_bank = 1;
 			RAM_enable_1 = RAM_enable_2 = false;
@@ -48,7 +48,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			acc_x_high = 0x80;
 			acc_y_low = 0;
 			acc_y_high = 0x80;
-		}
+
+			// reset acceerometer
+		is_erased = false;
+
+		// EEPROM related
+		CS_prev = CLK_prev = DI_prev = DO = instr_read = perf_instr = WR_EN = countdown_start = false;
+		instr_bit_counter = instr = EE_addr = instr_case = instr_clocks = EE_value = countdown = 0;
+	}
 
 		public override byte ReadMemory(ushort addr)
 		{

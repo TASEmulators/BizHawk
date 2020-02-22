@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 		}
 
-		public virtual void Initialize()
+		public virtual void Reset()
 		{
 		}
 
