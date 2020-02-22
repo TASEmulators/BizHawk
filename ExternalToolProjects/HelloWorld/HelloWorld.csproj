@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<Import Project="$(ProjectDir)../Common.props" />
+	<Import Project="$(ProjectDir)../ExtToolCommon.props" />
 	<Import Project="$(ProjectDir)../NET48ExternalToolForm.targets" />
 	<ItemGroup>
 		<EmbeddedResource Include="icon_Hello.ico" />

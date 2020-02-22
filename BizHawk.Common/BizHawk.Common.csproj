@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<Import Project="$(SolutionDir)Common.props" />
+	<Import Project="$(SolutionDir)MainSlnCommon.props" />
 	<Import Project="$(SolutionDir)CommonNullable.props" />
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>

@@ -1,11 +1,8 @@
 <Project>
 	<PropertyGroup>
-		<CodeAnalysisRuleSet>$(SolutionDir)Common.ruleset</CodeAnalysisRuleSet>
 		<ErrorReport>prompt</ErrorReport>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<LangVersion>8.0</LangVersion>
-		<NoWarn>NU1701</NoWarn><!-- can't use .ruleset, and NU1702 can't be silenced at all (see https://github.com/NuGet/Home/issues/8797) -->
-		<OutputPath>$(SolutionDir)output/dll</OutputPath>
 		<PlatformTarget>AnyCPU</PlatformTarget>
 		<RunAnalyzersDuringBuild Condition=" '$(MachineRunAnalyzersDuringBuild)' == '' ">false</RunAnalyzersDuringBuild>
 		<RunCodeAnalysis>false</RunCodeAnalysis>
@@ -22,7 +19,4 @@
 		<DefineConstants>TRACE</DefineConstants>
 		<Optimize>true</Optimize>
 	</PropertyGroup>
-	<ItemGroup>
-		<AdditionalFiles Include="$(SolutionDir).stylecop.json" />
-	</ItemGroup>
 </Project>
