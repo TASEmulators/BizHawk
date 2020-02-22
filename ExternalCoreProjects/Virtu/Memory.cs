@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
 
 namespace Jellyfish.Virtu
 {
+	// ReSharper disable once UnusedMember.Global
 	public enum MonitorType { Unknown, Standard, Enhanced }
 
 	public interface IMemoryBus
@@ -32,9 +32,11 @@ namespace Jellyfish.Virtu
 		int VideoMode { get; }
 		MonitorType Monitor { get; }
 
+		// ReSharper disable once UnusedMember.Global
 		void Sync(IComponentSerializer ser);
 	}
 
+	// ReSharper disable once UnusedMember.Global
 	public sealed partial class Memory : IMemoryBus
 	{
 		private IGamePort _gamePort;
@@ -49,15 +51,30 @@ namespace Jellyfish.Virtu
 		private IPeripheralCard _slot5;
 		private IPeripheralCard _slot7;
 
-		// TODO: this shouldn't be in savestates!
-		// ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private byte[] _appleIIe;
+		private readonly byte[] _appleIIe;
+		private readonly byte[][] _regionRead = new byte[RegionCount][];
+		private readonly byte[][] _regionWrite = new byte[RegionCount][];
+		private readonly Action<int, byte>[] _writeRegion = new Action<int, byte>[RegionCount];
 
-		// ReSharper disable once UnusedMember.Global
-		public Memory()
-		{
-			InitializeWriteDelegates();
-		}
+		private bool _lagged;
+		private int _state;
+		private int _slotRegionC8CF;
+		private byte[] _zeroPage;
+		private byte[] _ramMainRegion0001 = new byte[0x0200];
+		private byte[] _ramMainRegion02BF = new byte[0xBE00];
+		private byte[] _ramMainBank1RegionD0DF = new byte[0x1000];
+		private byte[] _ramMainBank2RegionD0DF = new byte[0x1000];
+		private byte[] _ramMainRegionE0FF = new byte[0x2000];
+		private byte[] _ramAuxRegion0001 = new byte[0x0200];
+		private byte[] _ramAuxRegion02BF = new byte[0xBE00];
+		private byte[] _ramAuxBank1RegionD0DF = new byte[0x1000];
+		private byte[] _ramAuxBank2RegionD0DF = new byte[0x1000];
+		private byte[] _ramAuxRegionE0FF = new byte[0x2000];
+
+		private byte[] _romExternalRegionC1CF = new byte[0x0F00];
+		private byte[] _romInternalRegionC1CF = new byte[0x0F00];
+		private byte[] _romRegionD0DF = new byte[0x1000];
+		private byte[] _romRegionE0FF = new byte[0x2000];
 
 		// ReSharper disable once UnusedMember.Global
 		public Memory(byte[] appleIIe)
@@ -155,8 +172,6 @@ namespace Jellyfish.Virtu
 				Monitor = MonitorType.Enhanced;
 			}
 		}
-
-		private bool _lagged;
 
 		public bool Lagged { get => _lagged; set => _lagged = value; }
 
@@ -2135,51 +2150,15 @@ namespace Jellyfish.Virtu
 		public MonitorType Monitor { get; private set; }
 		public int VideoMode => StateVideoMode[_state & StateVideo];
 
-		[JsonIgnore]
 		private Action<int, byte> _writeIoRegionC0C0;
-		[JsonIgnore]
 		private Action<int, byte> _writeIoRegionC1C7;
-		[JsonIgnore]
 		private Action<int, byte> _writeIoRegionC3C3;
-		[JsonIgnore]
 		private Action<int, byte> _writeIoRegionC8CF;
-		[JsonIgnore]
 		private Action<int, byte> _writeRomRegionD0FF;
-
-		[JsonIgnore]
+		
 		public Action<uint> ReadCallback;
-
-		[JsonIgnore]
 		public Action<uint> WriteCallback;
-
-		[JsonIgnore]
 		public Action<uint> ExecuteCallback;
-
-		[JsonIgnore]
 		public Action InputCallback;
-
-		private int _state;
-		private int _slotRegionC8CF;
-
-		private byte[] _zeroPage;
-		private byte[][] _regionRead = new byte[RegionCount][];
-		private byte[][] _regionWrite = new byte[RegionCount][];
-		private Action<int, byte>[] _writeRegion = new Action<int, byte>[RegionCount];
-
-		private byte[] _ramMainRegion0001 = new byte[0x0200];
-		private byte[] _ramMainRegion02BF = new byte[0xBE00];
-		private byte[] _ramMainBank1RegionD0DF = new byte[0x1000];
-		private byte[] _ramMainBank2RegionD0DF = new byte[0x1000];
-		private byte[] _ramMainRegionE0FF = new byte[0x2000];
-		private byte[] _ramAuxRegion0001 = new byte[0x0200];
-		private byte[] _ramAuxRegion02BF = new byte[0xBE00];
-		private byte[] _ramAuxBank1RegionD0DF = new byte[0x1000];
-		private byte[] _ramAuxBank2RegionD0DF = new byte[0x1000];
-		private byte[] _ramAuxRegionE0FF = new byte[0x2000];
-
-		private byte[] _romExternalRegionC1CF = new byte[0x0F00];
-		private byte[] _romInternalRegionC1CF = new byte[0x0F00];
-		private byte[] _romRegionD0DF = new byte[0x1000];
-		private byte[] _romRegionE0FF = new byte[0x2000];
 	}
 }

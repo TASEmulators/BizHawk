@@ -4,6 +4,9 @@ namespace Jellyfish.Virtu
 {
 	internal abstract class Disk525
 	{
+		protected byte[] Data;
+		public bool IsWriteProtected;
+
 		protected Disk525(byte[] data, bool isWriteProtected)
 		{
 			Data = data;
@@ -44,9 +47,6 @@ namespace Jellyfish.Virtu
 
 		public abstract void ReadTrack(int number, int fraction, byte[] buffer);
 		public abstract void WriteTrack(int number, int fraction, byte[] buffer);
-
-		protected byte[] Data;
-		public bool IsWriteProtected;
 
 		public const int SectorCount = 16;
 		public const int SectorSize = 0x100;

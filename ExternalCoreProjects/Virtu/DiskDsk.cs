@@ -2,6 +2,7 @@
 
 namespace Jellyfish.Virtu
 {
+	// ReSharper disable once UnusedMember.Global
 	internal enum SectorSkew { None = 0, Dos, ProDos };
 
 	internal sealed class DiskDsk : Disk525

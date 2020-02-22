@@ -143,9 +143,6 @@ namespace Jellyfish.Virtu
 
 	public sealed class Keyboard
 	{
-		// ReSharper disable once UnusedMember.Global
-		public Keyboard() { }
-
 		static Keyboard()
 		{
 			for (int i = 0; i < 62; i++)
@@ -226,15 +223,15 @@ namespace Jellyfish.Virtu
 			0x7a1a5a1a, // z
 		};
 
-		/// <param name="key">0 - 55</param>
+		// key: 0 - 55
 		private static int KeyToAscii(int key, bool control, bool shift)
 		{
-			int s = control ? (shift ? 0 : 16) : (shift ? 8 : 24);
+			int s = control ? shift ? 0 : 16 : shift ? 8 : 24;
 			return (int)(KeyAsciiData[key] >> s & 0x7f);
 		}
 
 		// ReSharper disable once InconsistentNaming
-		private static Dictionary<string, Keys> DescriptionsToKeys = new Dictionary<string, Keys>();
+		private static readonly Dictionary<string, Keys> DescriptionsToKeys = new Dictionary<string, Keys>();
 
 		private static Keys FromStrings(IEnumerable<string> keynames)
 		{

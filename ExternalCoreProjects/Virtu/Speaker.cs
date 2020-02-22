@@ -1,8 +1,4 @@
-﻿using System;
-using System.Runtime.Serialization;
-using Newtonsoft.Json;
-
-namespace Jellyfish.Virtu
+﻿namespace Jellyfish.Virtu
 {
 	public interface ISpeaker
 	{
@@ -14,24 +10,32 @@ namespace Jellyfish.Virtu
 		// ReSharper disable once UnusedMember.Global
 		void GetSamples(out short[] samples, out int nSamp);
 
+		// ReSharper disable once UnusedMember.Global
 		void Sync(IComponentSerializer ser);
 	}
 
+	// ReSharper disable once UnusedMember.Global
 	public sealed class Speaker : ISpeaker
 	{
-		// ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private MachineEvents _events;
+		private const int CyclesPerFlush = 23;
 
-		// ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private ICpu _cpu;
+		private readonly MachineEvents _events;
+		private readonly ICpu _cpu;
 
-		public Speaker() { }
+		private bool _isHigh;
+		private int _highCycles;
+		private int _totalCycles;
+		private long _lastCycles;
+
+		// only relevant if trying to savestate mid-frame
+		private readonly short[] _buffer = new short[4096];
+		private int _position;
+
 		public Speaker(MachineEvents events, ICpu cpu)
 		{
 			_events = events;
 			_cpu = cpu;
-			_flushOutputEvent = FlushOutputEvent; // cache delegates; avoids garbage
-			_events.AddEventDelegate(EventCallbacks.FlushOutput, _flushOutputEvent);
+			_events.AddEventDelegate(EventCallbacks.FlushOutput, FlushOutputEvent);
 			_events.AddEvent(CyclesPerFlush * _cpu.Multiplier, EventCallbacks.FlushOutput);
 
 			_isHigh = false;
@@ -46,24 +50,6 @@ namespace Jellyfish.Virtu
 			ser.Sync(nameof(_lastCycles), ref _lastCycles);
 		}
 
-		private const int CyclesPerFlush = 23;
-
-		// ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private Action _flushOutputEvent;
-
-		private bool _isHigh;
-		private int _highCycles;
-		private int _totalCycles;
-		private long _lastCycles;
-
-		[JsonIgnore] // only relevant if trying to savestate mid-frame
-		private readonly short[] _buffer = new short[4096];
-
-		[JsonIgnore] // only relevant if trying to savestate mid-frame
-		private int _position;
-
-		#region Api
-
 		public void Clear()
 		{
 			_position = 0;
@@ -75,8 +61,6 @@ namespace Jellyfish.Virtu
 			nSamp = _position / 2;
 			_position = 0;
 		}
-
-		#endregion
 
 		public void ToggleOutput()
 		{
@@ -113,13 +97,6 @@ namespace Jellyfish.Virtu
 				_buffer[_position++] = (short)data;
 				_buffer[_position++] = (short)data;
 			}
-		}
-
-
-		[OnDeserialized]
-		private void OnDeserialized(StreamingContext context)
-		{
-			_position = 0;
 		}
 	}
 }

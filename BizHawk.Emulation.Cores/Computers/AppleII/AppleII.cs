@@ -57,7 +57,6 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 			SetCallbacks();
 
-			InitSaveStates();
 			SetupMemoryDomains();
 			PutSettings(settings ?? new Settings());
 		}

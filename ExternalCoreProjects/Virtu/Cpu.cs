@@ -13,6 +13,7 @@ namespace Jellyfish.Virtu
 		long Cycles { get; }
 		int Multiplier { get; }
 
+		// ReSharper disable once UnusedMember.Global
 		void Sync(IComponentSerializer ser);
 	}
 
@@ -3426,7 +3427,7 @@ namespace Jellyfish.Virtu
 			set { _is65C02 = value; _executeOpCode = _is65C02 ? _executeOpCode65C02 : _executeOpCode65N02; }
 		}
 
-		public int Multiplier { get => _multiplier; set => _multiplier = value; }
+		public int Multiplier { get => _multiplier; private set => _multiplier = value; }
 
 		public int RA { get => _ra; set => _ra = value; }
 		public int RX { get => _rx; set => _rx = value; }
@@ -3434,10 +3435,10 @@ namespace Jellyfish.Virtu
 		public int RS { get => _rs; set => _rs = value; }
 		public int RP { get => _rp; set => _rp = value; }
 		public int RPC { get => _rpc; set => _rpc = value; }
-		public int EA { get => _ea; set => _ea = value; }
-		public int CC { get => _cc; set => _cc = value; }
-		public int OpCode { get => _opCode; set => _opCode = value; }
-		public long Cycles { get => _cycles; set => _cycles = value; }
+		public int EA { get => _ea; private set => _ea = value; }
+		public int CC { get => _cc; private set => _cc = value; }
+		public int OpCode { get => _opCode; private set => _opCode = value; }
+		public long Cycles { get => _cycles; private set => _cycles = value; }
 
 		public Action<string[]> TraceCallback;
 

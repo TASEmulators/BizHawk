@@ -7,25 +7,19 @@ namespace Jellyfish.Virtu
 		int Read(int address, int value);
 		void Write(int address);
 
+		// ReSharper disable once UnusedMember.Global
 		void Sync(IComponentSerializer ser);
 	}
 
 	// ReSharper disable once UnusedMember.Global
 	public sealed class NoSlotClock : ISlotClock
 	{
-		public void Sync(IComponentSerializer ser)
-		{
-			ser.Sync(nameof(_clockEnabled), ref _clockEnabled);
-			ser.Sync(nameof(_writeEnabled), ref _writeEnabled);
-			_clockRegister.Sync(ser);
-			_comparisonRegister.Sync(ser);
-		}
+		private readonly Video _video;
 
-		// ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private Video _video;
-
-		// ReSharper disable once UnusedMember.Global
-		public NoSlotClock() { }
+		private bool _clockEnabled;
+		private bool _writeEnabled;
+		private RingRegister _clockRegister;
+		private RingRegister _comparisonRegister;
 
 		public NoSlotClock(Video video)
 		{
@@ -35,6 +29,14 @@ namespace Jellyfish.Virtu
 			_writeEnabled = true;
 			_clockRegister = new RingRegister(0x0, 0x1);
 			_comparisonRegister = new RingRegister(ClockInitSequence, 0x1);
+		}
+
+		public void Sync(IComponentSerializer ser)
+		{
+			ser.Sync(nameof(_clockEnabled), ref _clockEnabled);
+			ser.Sync(nameof(_writeEnabled), ref _writeEnabled);
+			_clockRegister.Sync(ser);
+			_comparisonRegister.Sync(ser);
 		}
 
 		public int Read(int address, int value)
@@ -151,11 +153,6 @@ namespace Jellyfish.Virtu
 		}
 
 		private const ulong ClockInitSequence = 0x5CA33AC55CA33AC5;
-
-		private bool _clockEnabled;
-		private bool _writeEnabled;
-		private RingRegister _clockRegister;
-		private RingRegister _comparisonRegister;
 
 		private struct RingRegister
 		{

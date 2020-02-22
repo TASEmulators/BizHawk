@@ -27,14 +27,12 @@ namespace Jellyfish.Virtu
 
 	public sealed class MachineEvents
 	{
-		private Dictionary<EventCallbacks, Action> _eventDelegates = new Dictionary<EventCallbacks, Action>();
+		private readonly Dictionary<EventCallbacks, Action> _eventDelegates = new Dictionary<EventCallbacks, Action>();
 
-		// ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private LinkedList<MachineEvent> _used = new LinkedList<MachineEvent>();
+		private readonly LinkedList<MachineEvent> _used = new LinkedList<MachineEvent>();
+		private readonly LinkedList<MachineEvent> _free = new LinkedList<MachineEvent>();
 
-		// ReSharper disable once FieldCanBeMadeReadOnly.Local
-		private LinkedList<MachineEvent> _free = new LinkedList<MachineEvent>();
-
+		// ReSharper disable once UnusedMember.Global
 		public void Sync(IComponentSerializer ser)
 		{
 			if (ser.IsReader)

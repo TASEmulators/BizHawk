@@ -7,7 +7,9 @@ namespace Jellyfish.Virtu
 
 	public interface IVideo
 	{
+		// ReSharper disable once UnusedMember.Global
 		int[] GetVideoBuffer();
+		// ReSharper disable once UnusedMember.Global
 		void Reset();
 
 		void DirtyCell(int addressOffset);
@@ -19,6 +21,7 @@ namespace Jellyfish.Virtu
 
 		bool IsVBlank { get; }
 
+		// ReSharper disable once UnusedMember.Global
 		void Sync(IComponentSerializer ser);
 	}
 

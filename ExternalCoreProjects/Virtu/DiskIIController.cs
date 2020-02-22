@@ -9,6 +9,7 @@ namespace Jellyfish.Virtu
 		// ReSharper disable once UnusedMemberInSuper.Global
 		DiskIIDrive Drive1 { get; }
 
+		// ReSharper disable once UnusedMember.Global
 		void Sync(IComponentSerializer ser);
 	}
 

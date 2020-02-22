@@ -23,7 +23,7 @@ namespace Jellyfish.Virtu
 
 			if (!ser.IsReader)
 			{
-				// Hacky way to set the action callback
+				// A way to set the action callback
 				Is65C02 = _is65C02;
 			}
 		}
