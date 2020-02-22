@@ -2,8 +2,6 @@
 using System.ComponentModel;
 
 using NLua;
-
-using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 
 // ReSharper disable UnusedMember.Global

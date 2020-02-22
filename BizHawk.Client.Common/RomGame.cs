@@ -16,10 +16,6 @@ namespace BizHawk.Client.Common
 
 		private const int BankSize = 1024;
 
-		public RomGame()
-		{
-		}
-
 		public RomGame(HawkFile file)
 			: this(file, null)
 		{
@@ -39,7 +35,7 @@ namespace BizHawk.Client.Common
 			int fileLength = (int)stream.Length;
 
 			// read the entire contents of the file into memory.
-			// unfortunate in the case of large files, but thats what we've got to work with for now.
+			// unfortunate in the case of large files, but that's what we've got to work with for now.
 
 			// if we're offset exactly 512 bytes from a 1024-byte boundary, 
 			// assume we have a header of that size. Otherwise, assume it's just all rom.
@@ -70,14 +66,14 @@ namespace BizHawk.Client.Common
 			else if (file.Extension == ".DSK" || file.Extension == ".TAP" || file.Extension == ".TZX" || 
 				file.Extension == ".PZX" || file.Extension == ".CSW" || file.Extension == ".WAV" || file.Extension == ".CDT")
 			{
-				// these are not roms. unforunately if treated as such there are certain edge-cases
+				// these are not roms. unfortunately if treated as such there are certain edge-cases
 				// where a header offset is detected. This should mitigate this issue until a cleaner solution is found 
 				// (-Asnivor)
 				RomData = FileData;
 			}
 			else
 			{
-				// if there was a header offset, read the whole file into FileData and then copy it into RomData (this is unfortunate, in case RomData isnt needed)
+				// if there was a header offset, read the whole file into FileData and then copy it into RomData (this is unfortunate, in case RomData isn't needed)
 				int romLength = fileLength - headerOffset;
 				RomData = new byte[romLength];
 				Buffer.BlockCopy(FileData, headerOffset, RomData, 0, romLength);
@@ -96,7 +92,7 @@ namespace BizHawk.Client.Common
 			// note: this will be taking several hashes, of a potentially large amount of data.. yikes!
 			GameInfo = Database.GetGameInfo(RomData, file.Name);
 
-			if (GameInfo.NotInDatabase && headerOffset==128 && file.Extension == ".A78")
+			if (GameInfo.NotInDatabase && headerOffset == 128 && file.Extension == ".A78")
 			{
 				// if the game is not in the DB, add the header back in so the core can use it
 				// for now only .A78 games, but probably should be for other systems as well
@@ -107,13 +103,11 @@ namespace BizHawk.Client.Common
 
 			if (patch != null)
 			{
-				using (var patchFile = new HawkFile(patch))
+				using var patchFile = new HawkFile(patch);
+				patchFile.BindFirstOf("IPS");
+				if (patchFile.IsBound)
 				{
-					patchFile.BindFirstOf("IPS");
-					if (patchFile.IsBound)
-					{
-						RomData = IPS.Patch(RomData, patchFile.GetStream());
-					}
+					RomData = IPS.Patch(RomData, patchFile.GetStream());
 				}
 			}
 		}

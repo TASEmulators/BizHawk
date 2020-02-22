@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-
 using NLua;
-
-using BizHawk.Emulation.Common;
 
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Local

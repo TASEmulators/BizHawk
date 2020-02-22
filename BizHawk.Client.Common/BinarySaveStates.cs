@@ -242,8 +242,7 @@ namespace BizHawk.Client.Common
 		/// <exception cref="Exception">stream not found and <paramref name="abort"/> is <see langword="true"/></exception>
 		public bool GetLump(BinaryStateLump lump, bool abort, Action<Stream, long> callback)
 		{
-			ZipEntry e;
-			if (_entriesByName.TryGetValue(lump.ReadName, out e))
+			if (_entriesByName.TryGetValue(lump.ReadName, out var e))
 			{
 				using (var zs = _zip.GetInputStream(e))
 				{

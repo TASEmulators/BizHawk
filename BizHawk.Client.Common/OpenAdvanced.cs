@@ -1,10 +1,5 @@
 using System;
-using System.Text;
 using System.IO;
-using System.Collections.Generic;
-
-using BizHawk.Emulation.Cores;
-
 using Newtonsoft.Json;
 
 //this file contains some cumbersome self-"serialization" in order to gain a modicum of control over what the serialized output looks like
@@ -47,7 +42,7 @@ namespace BizHawk.Client.Common
 		{
 			if (text.StartsWith("*"))
 				return Deserialize(text.Substring(1));
-			else return new OpenAdvanced_OpenRom { Path = text };
+			return new OpenAdvanced_OpenRom { Path = text };
 		}
 
 		private static IOpenAdvanced Deserialize(string text)
@@ -106,11 +101,11 @@ namespace BizHawk.Client.Common
 		{
 			public string Path, CorePath;
 		}
-		public Token token = new Token();
+		public Token token;
 
-		public string TypeName { get { return "Libretro"; } }
-		public string DisplayName { get { return $"{Path.GetFileNameWithoutExtension(token.CorePath)}: {token.Path}"; } }
-		public string SimplePath { get { return token.Path; } }
+		public string TypeName => "Libretro";
+		public string DisplayName => $"{Path.GetFileNameWithoutExtension(token.CorePath)}: {token.Path}";
+		public string SimplePath => token.Path;
 
 		public void Deserialize(string str)
 		{
@@ -131,27 +126,26 @@ namespace BizHawk.Client.Common
 
 	public class OpenAdvanced_LibretroNoGame : IOpenAdvanced, IOpenAdvancedLibretro
 	{
-		//you might think ideally we'd fetch the libretro core name from the core info inside it
-		//but that would involve spinning up excess libretro core instances, which probably isnt good for stability, no matter how much we wish otherwise, not to mention slow.
-		//moreover it's kind of complicated here,
-		//and finally, I think the Displayname should really be file-based in all cases, since the user is going to be loading cores by filename and 
-		//this is related to the recent roms filename management. 
-		//so, leave it.
-
+		// you might think ideally we'd fetch the libretro core name from the core info inside it
+		// but that would involve spinning up excess libretro core instances, which probably isn't good for stability, no matter how much we wish otherwise, not to mention slow.
+		// moreover it's kind of complicated here,
+		// and finally, I think the DisplayName should really be file-based in all cases, since the user is going to be loading cores by filename and 
+		// this is related to the recent roms filename management. 
+		// so, leave it.
 		public OpenAdvanced_LibretroNoGame()
 		{
 		}
 
-		public OpenAdvanced_LibretroNoGame(string corepath)
+		public OpenAdvanced_LibretroNoGame(string corePath)
 		{
-			_corePath = corepath;
+			_corePath = corePath;
 		}
 
 		string _corePath;
 
-		public string TypeName { get { return "LibretroNoGame"; } }
-		public string DisplayName { get { return Path.GetFileName(_corePath); } } //assume we like the filename of the core
-		public string SimplePath { get { return ""; } } //effectively a signal to not use a game
+		public string TypeName => "LibretroNoGame";
+		public string DisplayName => Path.GetFileName(_corePath); // assume we like the filename of the core
+		public string SimplePath => ""; // effectively a signal to not use a game
 
 		public void Deserialize(string str)
 		{
@@ -177,9 +171,9 @@ namespace BizHawk.Client.Common
 
 		public string Path;
 
-		public string TypeName { get { return "OpenRom"; } }
-		public string DisplayName { get { return Path; } }
-		public string SimplePath { get { return Path; } }
+		public string TypeName => "OpenRom";
+		public string DisplayName => Path;
+		public string SimplePath => Path;
 
 		public void Deserialize(string str)
 		{
@@ -199,9 +193,9 @@ namespace BizHawk.Client.Common
 
 		public string Path;
 
-		public string TypeName { get { return "MAME"; } }
-		public string DisplayName { get { return $"{TypeName}: {Path}"; } }
-		public string SimplePath { get { return Path; } }
+		public string TypeName => "MAME";
+		public string DisplayName => $"{TypeName}: {Path}";
+		public string SimplePath => Path;
 
 		public void Deserialize(string str)
 		{

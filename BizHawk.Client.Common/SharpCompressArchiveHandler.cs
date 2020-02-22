@@ -37,21 +37,21 @@ namespace BizHawk.Client.Common
 			offset = 0;
 			isExecutable = false;
 			
-			var pathExt = Path.GetExtension(fileName).ToLower();
+			var pathExt = Path.GetExtension(fileName)?.ToLower();
 			if (!ArchiveExtensions.Contains(pathExt))
 				return false;
 
 			try
 			{
-				using (var arcTest = ArchiveFactory.Open(fileName))
-					switch (arcTest.Type)
-					{
-						case ArchiveType.Zip:
-						case ArchiveType.SevenZip:
-							return true;
-					}
+				using var arcTest = ArchiveFactory.Open(fileName);
+				switch (arcTest.Type)
+				{
+					case ArchiveType.Zip:
+					case ArchiveType.SevenZip:
+						return true;
+				}
 			}
-			catch (Exception _)
+			catch (Exception)
 			{
 				// ignored
 			}
@@ -80,8 +80,8 @@ namespace BizHawk.Client.Common
 
 		public void ExtractFile(int index, Stream stream)
 		{
-			using (var entryStream = _archive.Entries.Where(e => !e.IsDirectory).ElementAt(index).OpenEntryStream())
-				entryStream.CopyTo(stream);
+			using var entryStream = _archive.Entries.Where(e => !e.IsDirectory).ElementAt(index).OpenEntryStream();
+			entryStream.CopyTo(stream);
 		}
 	}
 }

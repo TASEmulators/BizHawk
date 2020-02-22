@@ -15,8 +15,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				bool lag;
-				var result = _lagLog.TryGetValue(frame, out lag);
+				var result = _lagLog.TryGetValue(frame, out var lag);
 				if (result)
 				{
 					return lag;

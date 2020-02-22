@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using NLua;
-using BizHawk.Client.Common;
 
 // ReSharper disable UnusedMember.Global
 namespace BizHawk.Client.Common

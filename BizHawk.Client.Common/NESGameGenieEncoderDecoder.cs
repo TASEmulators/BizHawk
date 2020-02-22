@@ -46,9 +46,8 @@ namespace BizHawk.Client.Common
 				// maps to|1|6|7|8|H|2|3|4|-|I|J|K|L|A|B|C|D|M|N|O|5|E|F|G|
 				Value = 0;
 				Address = 0x8000;
-				int x;
 
-				_gameGenieTable.TryGetValue(_code[0], out x);
+				_gameGenieTable.TryGetValue(_code[0], out var x);
 				Value |= x & 0x07;
 				Value |= (x & 0x08) << 4;
 
@@ -79,9 +78,8 @@ namespace BizHawk.Client.Common
 				Value = 0;
 				Address = 0x8000;
 				Compare = 0;
-				int x;
 
-				_gameGenieTable.TryGetValue(_code[0], out x);
+				_gameGenieTable.TryGetValue(_code[0], out var x);
 				Value |= x & 0x07;
 				Value |= (x & 0x08) << 4;
 

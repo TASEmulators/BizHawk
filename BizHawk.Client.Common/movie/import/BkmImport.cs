@@ -1,6 +1,4 @@
-﻿using BizHawk.Client.Common.MovieConversionExtensions;
-
-namespace BizHawk.Client.Common.movie.import
+﻿namespace BizHawk.Client.Common.movie.import
 {
 	// ReSharper disable once UnusedMember.Global
 	[ImporterFor("BizHawk", ".bkm")]

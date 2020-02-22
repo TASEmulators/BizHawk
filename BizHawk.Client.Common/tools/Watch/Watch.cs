@@ -100,9 +100,7 @@ namespace BizHawk.Client.Common
 				return null;
 			}
 
-			long address;
-
-			if (long.TryParse(parts[0], NumberStyles.HexNumber, CultureInfo.CurrentCulture, out address))
+			if (long.TryParse(parts[0], NumberStyles.HexNumber, CultureInfo.CurrentCulture, out var address))
 			{
 				WatchSize size = SizeFromChar(parts[1][0]);
 				DisplayType type = DisplayTypeFromChar(parts[2][0]);
