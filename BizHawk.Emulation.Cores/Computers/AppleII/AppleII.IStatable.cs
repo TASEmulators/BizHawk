@@ -47,6 +47,8 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			ser.Sync("PrevDiskPressed", ref _prevPressed);
 			ser.Sync("NextDiskPressed", ref _nextPressed);
 			ser.Sync("CurrentDisk", ref _currentDisk);
+			ser.Sync("WhiteAppleDown", ref Keyboard.WhiteAppleDown);
+			ser.Sync("BlackAppleDown", ref Keyboard.BlackAppleDown);
 
 			ser.BeginSection("Events");
 			_machine.Events.Sync(ser);
