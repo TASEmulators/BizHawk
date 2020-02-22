@@ -1,51 +1,18 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="$(ProjectDir)../../Common.props" />
 	<PropertyGroup>
-		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-		<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-	</PropertyGroup>
-	<PropertyGroup>
-		<AppDesignerFolder>Properties</AppDesignerFolder>
-		<AssemblyName>Virtu</AssemblyName>
-		<ErrorReport>prompt</ErrorReport>
-		<FileAlignment>512</FileAlignment>
-		<OutputPath>bin/$(Configuration)/</OutputPath>
-		<OutputType>Library</OutputType>
-		<Prefer32Bit>false</Prefer32Bit>
-		<ProjectGuid>{8E522778-7A2C-4364-BDCE-0BA5623828E1}</ProjectGuid>
-		<RootNamespace>Virtu</RootNamespace>
-		<TargetFrameworkProfile />
-		<TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-		<WarningLevel>4</WarningLevel>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-		<DebugSymbols>true</DebugSymbols>
-		<DebugType>full</DebugType>
-		<DefineConstants>DEBUG;TRACE</DefineConstants>
-		<Optimize>false</Optimize>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-		<DebugSymbols>false</DebugSymbols>
-		<DebugType>pdbonly</DebugType>
-		<DefineConstants>TRACE</DefineConstants>
-		<Optimize>true</Optimize>
+		<TargetFramework>net48</TargetFramework>
 	</PropertyGroup>
 	<Import Project="$(ProjectDir)../../CommonRefAssemblies.props" Condition=" '$(OS)' != 'Windows_NT' " />
 	<ItemGroup>
 		<Reference Include="System" />
-		<Compile Include="**/*.cs" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Update="Cpu.Data.cs" DependentUpon="Cpu.cs" />
 		<Compile Update="Memory.Data.cs" DependentUpon="Memory.cs" />
 		<Compile Update="Video.Data.cs" DependentUpon="Video.cs" />
 	</ItemGroup>
-	<Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-	<PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
-		<PostBuildEvent>COPY /y "$(TargetDir)$(TargetFileName)" "$(ProjectDir)..\..\References\$(TargetFileName)"</PostBuildEvent>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
-		<PostBuildEvent>cp -f "$(TargetDir)$(TargetFileName)" "$(ProjectDir)../../References/$(TargetFileName)"</PostBuildEvent>
-	</PropertyGroup>
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Copy SourceFiles="$(TargetDir)$(TargetFileName)" DestinationFolder="$(ProjectDir)../../References" />
+	</Target>
 </Project>
