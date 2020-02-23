@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					if ((addr & 0x7F) == 0)
 					{
-						return regs[0];
+						return 0;// regs[0];
 					}
 					else
 					{
@@ -109,6 +109,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					ROM_bank = value;
 					ROM_bank &= ROM_mask;
+					//Console.WriteLine(addr + " " + value + " " + ROM_mask + " " + ROM_bank);
 				}
 				else if (addr < 0x6000)
 				{
