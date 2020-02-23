@@ -120,6 +120,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 					else
 					{
+						regs_enable = false;
 						RAM_bank = value & RAM_mask;
 					}
 				}
