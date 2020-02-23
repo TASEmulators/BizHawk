@@ -187,6 +187,7 @@
 			this.NesCoreMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator38 = new System.Windows.Forms.ToolStripSeparator();
 			this.SubNesHawkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SubGBHawkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.CoreSNESSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.Coresnes9xMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.CorebsnesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1849,6 +1850,13 @@
 			this.SubNesHawkMenuItem.Text = "SubNesHawk (Experimental)";
 			this.SubNesHawkMenuItem.Click += new System.EventHandler(this.SubNesCorePick_Click);
 			// 
+			// SubGBHawkMenuItem
+			// 
+			this.SubGBHawkMenuItem.Name = "SubGBHawkMenuItem";
+			this.SubGBHawkMenuItem.Size = new System.Drawing.Size(209, 22);
+			this.SubGBHawkMenuItem.Text = "SubGBHawk (Experimental)";
+			this.SubGBHawkMenuItem.Click += new System.EventHandler(this.SubGBCorePick_Click);
+			// 
 			// CoreSNESSubMenu
 			// 
 			this.CoreSNESSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -1925,7 +1933,9 @@
 			// 
 			this.GBCoreSubmenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.GBGambatteMenuItem,
-			this.GBGBHawkMenuItem});
+			this.GBGBHawkMenuItem,
+			this.toolStripSeparator38,
+			this.SubGBHawkMenuItem});
 			this.GBCoreSubmenu.Name = "GBCoreSubmenu";
 			this.GBCoreSubmenu.Size = new System.Drawing.Size(223, 22);
 			this.GBCoreSubmenu.Text = "GB";
@@ -4451,6 +4461,7 @@
 		private System.Windows.Forms.ToolStripMenuItem cpcd1ToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AmstradCPCNonSyncSettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SubNesHawkMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SubGBHawkMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator38;
 		private System.Windows.Forms.ToolStripMenuItem arcadeToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem2;

@@ -1,5 +1,6 @@
 ﻿using BizHawk.Common;
 using BizHawk.Emulation.Cores.Components.LR35902;
+using System;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
@@ -22,10 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			RAM_enable = false;
 			ROM_mask = Core._rom.Length / 0x4000 - 1;
 
-			RAM_mask = 0;
-
 			RAM_mask = Core.cart_RAM.Length / 0x2000 - 1;
-			if (Core.cart_RAM.Length == 0x800) { RAM_mask = 0; }
 
 			regs_enable = false;
 		}

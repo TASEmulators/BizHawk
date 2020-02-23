@@ -1042,9 +1042,16 @@ namespace BizHawk.Client.Common
 						case "GB":
 							if (!Global.Config.GbAsSgb)
 							{
-								core = Global.Config.GbUseGbHawk
+								if (Global.Config.UseSubGBHawk)
+								{
+									core = CoreInventory.Instance["GB", "SubGBHawk"];
+								}
+								else
+								{
+									core = Global.Config.GbUseGbHawk
 									? CoreInventory.Instance["GB", "GBHawk"]
 									: CoreInventory.Instance["GB", "Gambatte"];
+								}			
 							}
 							else
 							{
@@ -1064,9 +1071,16 @@ namespace BizHawk.Client.Common
 						case "GBC":
 							if (!Global.Config.GbAsSgb)
 							{
-								core = Global.Config.GbUseGbHawk
+								if (Global.Config.UseSubGBHawk)
+								{
+									core = CoreInventory.Instance["GB", "SubGBHawk"];
+								}
+								else
+								{
+									core = Global.Config.GbUseGbHawk
 									? CoreInventory.Instance["GBC", "GBHawk"]
 									: CoreInventory.Instance["GBC", "Gambatte"];
+								}
 							}
 							else
 							{

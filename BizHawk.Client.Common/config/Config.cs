@@ -306,6 +306,7 @@ namespace BizHawk.Client.Common
 		// it hasn't been absorbed into the new system
 		public bool GbAsSgb { get; set; }
 		public bool UseSubNESHawk { get; set; }
+		public bool UseSubGBHawk { get; set; }
 		public bool NesInQuickNes { get; set; } = true;
 		public bool SnesInSnes9x { get; set; } = true;
 		public bool GbaUsemGba { get; set; } = true;

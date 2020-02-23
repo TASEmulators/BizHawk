@@ -317,7 +317,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						_vidbuffer[i] = (int)color_palette[0];
 					}
 				}
-
+				
 				for (int j = 0; j < frame_buffer.Length; j++) { frame_buffer[j] = _vidbuffer[j]; }
 
 				ppu.blank_frame = false;

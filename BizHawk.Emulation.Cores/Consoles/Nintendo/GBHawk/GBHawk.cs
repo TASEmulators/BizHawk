@@ -341,7 +341,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0x1E: mapper = new MapperMBC5();		mppr = "MBC5";		has_bat = true;		break;
 				case 0x20: mapper = new MapperMBC6();		mppr = "MBC6";							break;
 				case 0x22: mapper = new MapperMBC7();		mppr = "MBC7";		has_bat = true;		break;
-				case 0xFC: mapper = new MapperCamera();		mppr = "CAM";							break;
+				case 0xFC: mapper = new MapperCamera();		mppr = "CAM";		has_bat = true;		break;
 				case 0xFD: mapper = new MapperTAMA5();		mppr = "TAMA5";		has_bat = true;		break;
 				case 0xFE: mapper = new MapperHuC3();		mppr = "HuC3";							break;
 				case 0xFF: mapper = new MapperHuC1();		mppr = "HuC1";							break;

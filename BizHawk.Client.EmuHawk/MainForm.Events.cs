@@ -1228,6 +1228,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void SubGBCorePick_Click(object sender, EventArgs e)
+		{
+			Config.UseSubGBHawk ^= true;
+
+			if (!Emulator.IsNull())
+			{
+				FlagNeedsReboot();
+			}
+		}
+
 		private void CoreSNESSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			Coresnes9xMenuItem.Checked = Config.SnesInSnes9x;
@@ -1269,6 +1279,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GBGambatteMenuItem.Checked = !Config.GbUseGbHawk;
 			GBGBHawkMenuItem.Checked = Config.GbUseGbHawk;
+			SubGBHawkMenuItem.Checked = Config.UseSubGBHawk;
 		}
 
 		private void SgbCorePick_Click(object sender, EventArgs e)
@@ -1284,6 +1295,7 @@ namespace BizHawk.Client.EmuHawk
 		private void GBCorePick_Click(object sender, EventArgs e)
 		{
 			Config.GbUseGbHawk ^= true;
+			Config.UseSubGBHawk = false;
 			// TODO: only flag if one of these cores
 			if (!Emulator.IsNull())
 			{
