@@ -12,6 +12,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public bool RAM_enable;
 		public int ROM_mask;
 		public int RAM_mask;
+		public bool regs_enable;
+		public byte[] regs = new byte[0x80];
 
 		public override void Reset()
 		{
@@ -24,6 +26,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			RAM_mask = Core.cart_RAM.Length / 0x2000 - 1;
 			if (Core.cart_RAM.Length == 0x800) { RAM_mask = 0; }
+
+			regs_enable = false;
 		}
 
 		public override byte ReadMemory(ushort addr)
@@ -38,13 +42,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			else
 			{
-				if (RAM_enable && (((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length))
+				if (regs_enable)
 				{
-					return Core.cart_RAM[(addr - 0xA000) + RAM_bank * 0x2000];
+					if ((addr & 0x7F) == 0)
+					{
+						return regs[0];
+					}
+					else
+					{
+						return 0;
+					}
 				}
-				else
+				else 
 				{
-					return 0xFF;
+					if (/*RAM_enable && */(((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length))
+					{
+						return Core.cart_RAM[(addr - 0xA000) + RAM_bank * 0x2000];
+					}
+					else
+					{
+						return 0xFF;
+					}
 				}
 			}
 		}
@@ -62,13 +80,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			else
 			{
-				if (RAM_enable && (((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length))
+				if (!regs_enable)
 				{
-					SetCDLRAM(flags, (addr - 0xA000) + RAM_bank * 0x2000);
-				}
-				else
-				{
-					return;
+					if (/*RAM_enable && */(((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length))
+					{
+						SetCDLRAM(flags, (addr - 0xA000) + RAM_bank * 0x2000);
+					}
+					else
+					{
+						return;
+					}
 				}
 			}
 		}
@@ -86,36 +107,36 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					RAM_enable = (value & 0xF) == 0xA;
 				}
-				else if (addr < 0x3000)
+				else if (addr < 0x4000)
 				{
 					ROM_bank = value;
 					ROM_bank &= ROM_mask;
 				}
-				else if (addr < 0x4000)
-				{
-
-				}
-				else if (addr < 0x5000)
-				{
-					//registers
-				}
 				else if (addr < 0x6000)
 				{
-					ROM_bank &= 0x1F;
-					ROM_bank |= ((value & 3) << 5);
-					ROM_bank &= ROM_mask;
-				}
-				else
-				{
-					RAM_bank = 0;
+					if ((value & 0x10) == 0x10)
+					{
+						regs_enable = true;
+					}
+					else
+					{
+						RAM_bank = value & RAM_mask;
+					}
 				}
 			}
 			else
 			{
-				if (RAM_enable && (((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length))
+				if (regs_enable)
 				{
-					Core.cart_RAM[(addr - 0xA000) + RAM_bank * 0x2000] = value;
+					regs[(addr & 0x7F)] = (byte)(value & 0x7);
 				}
+				else
+				{
+					if (RAM_enable && (((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length))
+					{
+						Core.cart_RAM[(addr - 0xA000) + RAM_bank * 0x2000] = value;
+					}
+				}				
 			}
 		}
 
@@ -131,6 +152,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(RAM_bank), ref RAM_bank);
 			ser.Sync(nameof(RAM_mask), ref RAM_mask);
 			ser.Sync(nameof(RAM_enable), ref RAM_enable);
+			ser.Sync(nameof(regs_enable), ref regs_enable);
+			ser.Sync(nameof(regs), ref regs, false);
 		}
 	}
 }
