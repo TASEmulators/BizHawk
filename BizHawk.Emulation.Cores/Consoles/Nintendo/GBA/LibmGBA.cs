@@ -143,5 +143,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		[DllImport(dll, CallingConvention = cc)]
 		public static extern void BizSetTraceCallback(TraceCallback cb);
 
+		public enum mWatchpointType {
+			WATCHPOINT_WRITE = 1,
+			WATCHPOINT_READ = 2,
+			WATCHPOINT_RW = 3,
+			WATCHPOINT_WRITE_CHANGE = 4,
+		};
+
+		[UnmanagedFunctionPointer(cc)]
+		public delegate void MemCallback(uint addr, mWatchpointType type, uint oldValue, uint newValue);
+
+		[DllImport(dll, CallingConvention = cc)]
+		public static extern void BizSetMemCallback(MemCallback cb);
 	}
 }
