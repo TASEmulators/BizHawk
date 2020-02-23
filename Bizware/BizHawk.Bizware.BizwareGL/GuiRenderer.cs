@@ -3,6 +3,7 @@
 //why this stupid assert on the blendstate. just set one by default, geeze.
 
 using System;
+using System.Diagnostics;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
