@@ -22,8 +22,8 @@ class PS_CDC
 {
  public:
 
- PS_CDC();
- ~PS_CDC();
+ PS_CDC() MDFN_COLD;
+ ~PS_CDC() MDFN_COLD;
 
  template<bool isReader>void SyncState(EW::NewState *ns);
 
@@ -31,7 +31,7 @@ class PS_CDC
  void SetDisc(ShockDiscRef *disc, const char disc_id[4], bool poke);
  void CloseTray(bool poke);
 
- void Power(void);
+ void Power(void) MDFN_COLD;
  void ResetTS(void);
 
  int32 CalcNextEvent(void);	// Returns in master cycles to next event.

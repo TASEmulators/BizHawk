@@ -952,14 +952,12 @@ void PS_CDC::HandlePlayRead(void)
   {
    uint8 tr[8];
    //zero 14-jun-2016 - useful after all for fixing bugs in "Fantastic Pinball Kyutenkai"
-#if 1
    uint16 abs_lev_max = 0;
    bool abs_lev_chselect = SubQBuf_Safe[0x8] & 0x01;
 
    for(int i = 0; i < 588; i++)
     abs_lev_max = std::max<uint16>(abs_lev_max, std::min<int>(abs((int16)MDFN_de16lsb(&read_buf[i * 4 + (abs_lev_chselect * 2)])), 32767));
    abs_lev_max |= abs_lev_chselect << 15;
-#endif
    
    ReportLastF = SubQBuf_Safe[0x9] >> 4;
 
@@ -980,9 +978,6 @@ void PS_CDC::HandlePlayRead(void)
     tr[5] = SubQBuf_Safe[0x9];	// A F
    }
 
-	//zero 14-jun-2016 - useful after all for fixing bugs in "Fantastic Pinball Kyutenkai"
-   //tr[6] = 0; //abs_lev_max >> 0;
-   //tr[7] = 0; //abs_lev_max >> 8;
    tr[6] = abs_lev_max >> 0;
    tr[7] = abs_lev_max >> 8;
 
