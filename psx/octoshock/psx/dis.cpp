@@ -1,18 +1,22 @@
-/* Mednafen - Multi-system Emulator
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+/******************************************************************************/
+/* Mednafen Sony PS1 Emulation Module                                         */
+/******************************************************************************/
+/* dis.cpp:
+**  Copyright (C) 2011-2016 Mednafen Team
+**
+** This program is free software; you can redistribute it and/or
+** modify it under the terms of the GNU General Public License
+** as published by the Free Software Foundation; either version 2
+** of the License, or (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software Foundation, Inc.,
+** 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
 #include <string.h>
@@ -325,7 +329,7 @@ EW_EXPORT s32 shock_Util_DisassembleMIPS(u32 PC, u32 instr, void* outbuf, s32 bu
 
 	static const char *cop0_names[32] =
 	{
-		"CPR0", "CPR1", "CPR2", "BPC", "CPR4", "BDA", "TAR", "DCIC", "BADVA", "BDAM", "CPR10", "BPCM", "SR", "CAUSE", "EPC", "PRID",
+		"CPR0", "CPR1", "CPR2", "BPC", "CPR4", "BDA", "TAR", "DCIC", "BADA", "BDAM", "CPR10", "BPCM", "SR", "CAUSE", "EPC", "PRID",
 		"CPR16", "CPR17", "CPR18", "CPR19", "CPR20", "CPR21", "CPR22", "CPR23", "CPR24", "CPR25", "CPR26", "CPR27", "CPR28", "CPR29", "CPR30", "CPR31"
 	};
 
