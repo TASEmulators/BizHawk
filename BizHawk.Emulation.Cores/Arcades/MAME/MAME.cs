@@ -8,6 +8,7 @@ using System.Dynamic;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using System.IO;
 
 namespace BizHawk.Emulation.Cores.Arcades.MAME
 {
@@ -16,10 +17,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		author: "MAMEDev",
 		isPorted: true,
 		isReleased: false,
-		portedVersion: "0.217",
+		portedVersion: "0.218",
 		portedUrl: "https://github.com/mamedev/mame.git",
 		singleInstance: false)]
-	public partial class MAME : IEmulator, IVideoProvider, ISoundProvider, ISettable<object, MAME.SyncSettings>
+	public partial class MAME : IEmulator, IVideoProvider, ISoundProvider, ISettable<object, MAME.SyncSettings>, IStatable
 	{
 		public MAME(CoreComm comm, string dir, string file, object syncSettings, out string gamename)
 		{
@@ -116,6 +117,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private SortedDictionary<string, string> _fieldsPorts = new SortedDictionary<string, string>();
 		private IController _controller = NullController.Instance;
 		private IMemoryDomains _memoryDomains;
+		private byte[] _mameSaveBuffer;
+		private byte[] _hawkSaveBuffer;
 		private int _systemBusAddressShift = 0;
 		private bool _memAccess = false;
 		private int[] _frameBuffer = new int[0];
@@ -169,6 +172,63 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		{
 			_exiting = true;
 			_mameThread.Join();
+		}
+
+		#endregion
+
+		#region IStatable
+
+		public void SaveStateBinary(BinaryWriter writer)
+		{
+			IntPtr ptr = LibMAME.mame_lua_get_string("return manager:machine():buffer_save()", out var lengthInBytes);
+
+			if (ptr == IntPtr.Zero)
+			{
+				Console.WriteLine("LibMAME ERROR: audio buffer pointer is null");
+				return;
+			}
+
+			Marshal.Copy(ptr, _mameSaveBuffer, 0, lengthInBytes);
+
+			if (!LibMAME.mame_lua_free_string(ptr))
+			{
+				Console.WriteLine("LibMAME ERROR: audio buffer wasn't freed");
+			}
+
+			writer.Write(_mameSaveBuffer.Length);
+			writer.Write(_mameSaveBuffer);
+			writer.Write(Frame);
+		}
+
+		public void LoadStateBinary(BinaryReader reader)
+		{
+			int length = reader.ReadInt32();
+
+			if (length != _mameSaveBuffer.Length)
+			{
+				throw new InvalidOperationException("Savestate buffer size mismatch!");
+			}
+
+			reader.Read(_mameSaveBuffer, 0, _mameSaveBuffer.Length);
+			Frame = reader.ReadInt32();
+
+			LibMAME.mame_lua_execute($"manager:machine():buffer_load({ _mameSaveBuffer })");
+		}
+
+		public byte[] SaveStateBinary()
+		{
+			MemoryStream ms = new MemoryStream(_hawkSaveBuffer);
+			BinaryWriter bw = new BinaryWriter(ms);
+			SaveStateBinary(bw);
+			bw.Flush();
+
+			if (ms.Position != _hawkSaveBuffer.Length)
+			{
+				throw new InvalidOperationException();
+			}
+
+			ms.Close();
+			return _hawkSaveBuffer;
 		}
 
 		#endregion
@@ -627,6 +687,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			Update();
 			UpdateGameName();
 			InitMemoryDomains();
+
+			IntPtr ptr = LibMAME.mame_lua_get_string("return manager:machine():buffer_save()", out var lengthInBytes);
+			_mameSaveBuffer = new byte[lengthInBytes];
+			_hawkSaveBuffer = new byte[lengthInBytes + 4 + 4];
 
 			_mameStartupComplete.Set();
 		}
