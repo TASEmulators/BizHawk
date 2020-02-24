@@ -6,6 +6,7 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 using BizHawk.Emulation.Cores.Nintendo.SubNESHawk;
+using BizHawk.Emulation.Cores.Nintendo.SubGBHawk;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive;
@@ -365,7 +366,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				movie.HeaderEntries.Add("Is32X", "1");
 			}
 
-			if (Global.Emulator is SubNESHawk)
+			if ((Global.Emulator is SubNESHawk) || (Global.Emulator is SubGBHawk))
 			{
 				movie.HeaderEntries.Add(HeaderKeys.VBLANKCOUNT, "0");
 			}

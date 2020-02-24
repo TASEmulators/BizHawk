@@ -254,7 +254,8 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator.Frame != CurrentTasMovie.InputLogLength - 1)
 			{
 				if (Emulator is Emulation.Cores.Nintendo.SubNESHawk.SubNESHawk
-					|| Emulator is Emulation.Cores.Nintendo.Gameboy.Gameboy)
+					|| Emulator is Emulation.Cores.Nintendo.Gameboy.Gameboy
+					|| Emulator is Emulation.Cores.Nintendo.SubGBHawk.SubGBHawk)
 				{
 					var result = MessageBox.Show("This core requires emulation to be on the last frame when writing the movie, otherwise movie length may appear incorrect.\nSeek there?", "Export movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
 					if (result == DialogResult.OK)

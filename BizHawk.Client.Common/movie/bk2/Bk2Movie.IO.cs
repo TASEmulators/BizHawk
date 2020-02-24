@@ -176,6 +176,11 @@ namespace BizHawk.Client.Common
 				var _gameboy = (Emulation.Cores.Nintendo.Gameboy.Gameboy)Global.Emulator;
 				Header[HeaderKeys.CYCLECOUNT] = _gameboy.CycleCount.ToString();
 			}
+			else if (Global.Emulator is Emulation.Cores.Nintendo.SubGBHawk.SubGBHawk)
+			{
+				var _subgb = (Emulation.Cores.Nintendo.SubGBHawk.SubGBHawk)Global.Emulator;
+				Header[HeaderKeys.VBLANKCOUNT] = _subgb.VBL_CNT.ToString();
+			}
 
 			var file = new FileInfo(fn);
 			if (!file.Directory.Exists)
