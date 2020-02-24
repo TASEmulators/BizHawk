@@ -565,6 +565,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 			else if (!_frameDone)
 			{
+				/*
 				IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetSpaceBuffer, out var lengthInBytes);
 
 				if (ptr == IntPtr.Zero)
@@ -580,6 +581,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				{
 					Console.WriteLine("LibMAME ERROR: audio buffer wasn't freed");
 				}
+				*/
 
 				Update();
 				_frameDone = true;
