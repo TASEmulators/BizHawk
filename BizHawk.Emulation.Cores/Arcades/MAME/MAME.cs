@@ -172,6 +172,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		{
 			_exiting = true;
 			_mameThread.Join();
+			_mameSaveBuffer = new byte[0];
+			_hawkSaveBuffer = new byte[0];
 		}
 
 		#endregion
