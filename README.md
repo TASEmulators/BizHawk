@@ -88,7 +88,7 @@ Released binaries can be found right here on GitHub (also linked at the top of t
 
 Click `BizHawk-<version>.zip` to download it. Also note the changelog, the full version of which is [here at TASVideos](http://tasvideos.org/Bizhawk/ReleaseHistory.html). Extract it anywhere, but **don't mix different versions** of BizHawk, keep each version in its own folder. Run `EmuHawk.exe` to start. You may move or rename the folder containing `EmuHawk.exe`, even to another drive — as long as you keep all the files together, and the prerequisites are installed when you go to run it.
 
-EmuHawk does have some prerequisites which it can't work without (it will let you know if they're missing). The list is [here](https://github.com/TASVideos/BizHawk-Prereqs), and we've made an all-in-one installer which you can get [here](https://github.com/TASVideos/BizHawk-Prereqs/releases/latest). You should only have to run this once per machine, unless the changelog says we need something extra.
+EmuHawk does have some prerequisites which it can't work without (it will let you know if they're missing). The list is [here](https://github.com/TASVideos/BizHawk-Prereqs/blob/e364066a0f79ad560d6725e6088d680293e09e30/README), and we've made an all-in-one installer which you can get [here](https://github.com/TASVideos/BizHawk-Prereqs/releases/tag/2.1). You should only have to run this once per machine, unless the changelog says we need something extra.
 
 We will be [following Microsoft](https://support.microsoft.com/en-us/help/13853/windows-lifecycle-fact-sheet) in dropping Windows support, that is, we reserve the right to ignore your problems unless you've updated to at least Win10 1809 "Redstone 5" or Win8.1 KB4530702 (latest at time of writing).
 
