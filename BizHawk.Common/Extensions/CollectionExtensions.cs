@@ -41,7 +41,7 @@ namespace BizHawk.Common.CollectionExtensions
 
 			mid = min;
 
-			// we didnt find it. return something corresponding to lower_bound semantics
+			// we didn't find it. return something corresponding to lower_bound semantics
 			if (mid == list.Count)
 			{
 				return max; // had to go all the way to max before giving up; lower bound is max

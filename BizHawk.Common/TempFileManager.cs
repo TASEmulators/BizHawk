@@ -4,24 +4,23 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace BizHawk.Common
 {
 	/// <summary>
 	/// Starts a thread which cleans any filenames in %temp% beginning with bizhawk.bizdelete.
-	/// Files shouldn't be named that unless they're safe to delete, but notably, they may stil be in use. That won't hurt this component.
+	/// Files shouldn't be named that unless they're safe to delete, but notably, they may still be in use. That won't hurt this component.
 	/// When they're no longer in use, this component will then be able to delete them.
 	/// </summary>
 	public static class TempFileManager
 	{
 		// TODO - manage paths other than %temp%, make not static, or allow adding multiple paths to static instance
 
-		public static string GetTempFilename(string friendlyname, string extension = null, bool delete = true)
+		public static string GetTempFilename(string friendlyName, string extension = null, bool delete = true)
 		{
 			string guidPart = Guid.NewGuid().ToString();
-			var fname = $"biz-{System.Diagnostics.Process.GetCurrentProcess().Id}-{friendlyname}-{guidPart}{extension ?? ""}";
+			var fname = $"biz-{System.Diagnostics.Process.GetCurrentProcess().Id}-{friendlyName}-{guidPart}{extension ?? ""}";
 			if (delete)
 			{
 				fname = RenameTempFilenameForDelete(fname);
@@ -64,9 +63,9 @@ namespace BizHawk.Common
 
 		static void ThreadProc()
 		{
-			//squirrely logic, trying not to create garbage
-			HashSet<string> knownTempDirs = new HashSet<string>();
-			List<DirectoryInfo> dis = new List<DirectoryInfo>();
+			// squirrely logic, trying not to create garbage
+			var knownTempDirs = new HashSet<string>();
+			var dis = new List<DirectoryInfo>();
 			for (;;)
 			{
 				lock (typeof(TempFileManager))
@@ -87,7 +86,7 @@ namespace BizHawk.Common
 					{
 					}
 
-					if(fis != null)
+					if (fis != null)
 					{
 						foreach (var fi in fis)
 						{

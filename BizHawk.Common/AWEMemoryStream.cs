@@ -83,11 +83,12 @@ namespace BizHawk.Common
 		List<AWEMemoryBlock> mBlocks = new List<AWEMemoryBlock>();
 		IntPtr mWindow;
 
-		public override bool CanRead { get { return true; } }
-		public override bool CanSeek { get { return true; } }
-		public override bool CanWrite { get { return true; } }
+		public override bool CanRead => true;
+		public override bool CanSeek => true;
+		public override bool CanWrite => true;
 		public override void Flush() { }
-		public override long Length { get { return mLength; } }
+		public override long Length => mLength;
+
 		public override long Position
 		{
 			get => mPosition;
@@ -150,7 +151,7 @@ namespace BizHawk.Common
 				{
 					mCurrBlock = block;
 					if (!mBlocks[block].Map(mWindow))
-						throw new Exception($"Couldn't map required memory for {nameof(AWEMemoryStream)}.{nameof(AWEMemoryStream.Write)}");
+						throw new Exception($"Couldn't map required memory for {nameof(AWEMemoryStream)}.{nameof(Write)}");
 				}
 				Marshal.Copy(IntPtr.Add(mWindow, blockOfs), buffer, offset, todo);
 				count -= todo;
@@ -164,7 +165,7 @@ namespace BizHawk.Common
 		{
 			long end = mPosition + count;
 			if (!Ensure(end))
-				throw new OutOfMemoryException($"Couldn't reserve required resources for {nameof(AWEMemoryStream)}.{nameof(AWEMemoryStream.Write)}");
+				throw new OutOfMemoryException($"Couldn't reserve required resources for {nameof(AWEMemoryStream)}.{nameof(Write)}");
 			SetLength(end);
 			while (count > 0)
 			{
@@ -180,7 +181,7 @@ namespace BizHawk.Common
 				{
 					mCurrBlock = block;
 					if (!mBlocks[block].Map(mWindow))
-						throw new Exception($"Couldn't map required memory for {nameof(AWEMemoryStream)}.{nameof(AWEMemoryStream.Write)}");
+						throw new Exception($"Couldn't map required memory for {nameof(AWEMemoryStream)}.{nameof(Write)}");
 				}
 				Marshal.Copy(buffer, offset, IntPtr.Add(mWindow, blockOfs), todo);
 				count -= todo;
@@ -371,13 +372,17 @@ namespace BizHawk.Common
 				lock (StaticLock)
 				{
 					if (PrivilegeAcquired)
+					{
 						return true;
+					}
+
 					if (EnableDisablePrivilege("SeLockMemoryPrivilege", true))
 					{
 						PrivilegeAcquired = true;
 						return true;
 					}
-					else return false;
+
+					return false;
 				}
 			}
 
@@ -432,13 +437,7 @@ namespace BizHawk.Common
 				}
 			}
 
-			uint NumPages
-			{
-				get
-				{
-					return (uint)(pageList.Length / (uint)IntPtr.Size);
-				}
-			}
+			uint NumPages => (uint)(pageList.Length / (uint)IntPtr.Size);
 
 			protected virtual void Dispose(bool disposing)
 			{

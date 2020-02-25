@@ -201,33 +201,33 @@ namespace BizHawk.Client.EmuHawk
 			/// <param name="mmd">metadata to write</param>
 			public void WriteMetadata(MovieMetaData mmd)
 			{
-				// write metadatas
+				// write metadata
 				WriteBe16(2); // data channel
-				writeBE32(0); // timestamp (same time as previous packet)
+				WriteBe32(0); // timestamp (same time as previous packet)
 				_f.WriteByte(71); // GameName
 
 				var temp = Encoding.UTF8.GetBytes(mmd.GameName);
-				writeVar(temp.Length);
+				WriteVar(temp.Length);
 				_f.Write(temp, 0, temp.Length);
 
 				WriteBe16(2);
-				writeBE32(0);
+				WriteBe32(0);
 				_f.WriteByte(65); // authors
 				temp = Encoding.UTF8.GetBytes(mmd.Authors);
-				writeVar(temp.Length);
+				WriteVar(temp.Length);
 				_f.Write(temp, 0, temp.Length);
 
 				WriteBe16(2);
-				writeBE32(0);
+				WriteBe32(0);
 				_f.WriteByte(76); // length
-				writeVar(8);
-				writeBE64(mmd.LengthMs * 1000000);
+				WriteVar(8);
+				WriteBe64(mmd.LengthMs * 1000000);
 
 				WriteBe16(2);
-				writeBE32(0);
+				WriteBe32(0);
 				_f.WriteByte(82); // rerecords
-				writeVar(8);
-				writeBE64(mmd.Rerecords);
+				WriteVar(8);
+				WriteBe64(mmd.Rerecords);
 			}
 
 			/// <summary>
@@ -244,7 +244,7 @@ namespace BizHawk.Client.EmuHawk
 			/// <summary>
 			/// write big endian 32 bit unsigned
 			/// </summary>
-			void writeBE32(UInt32 v)
+			private void WriteBe32(uint v)
 			{
 				byte[] b = new byte[4];
 				b[0] = (byte)(v >> 24);
@@ -257,7 +257,7 @@ namespace BizHawk.Client.EmuHawk
 			/// <summary>
 			/// write big endian 64 bit unsigned
 			/// </summary>
-			void writeBE64(UInt64 v)
+			private void WriteBe64(ulong v)
 			{
 				byte[] b = new byte[8];
 				for (int i = 7; i >= 0; i--)
@@ -272,7 +272,7 @@ namespace BizHawk.Client.EmuHawk
 			/// write variable length value
 			/// encoding is similar to MIDI
 			/// </summary>
-			void writeVar(UInt64 v)
+			private void WriteVar(ulong v)
 			{
 				byte[] b = new byte[10];
 				int i = 0;
@@ -284,98 +284,116 @@ namespace BizHawk.Client.EmuHawk
 						b[i++] = (byte)(v & 127);
 					v /= 128;
 				}
+
 				if (i == 0)
+				{
 					_f.WriteByte(0);
+				}
 				else
+				{
 					for (; i > 0; i--)
+					{
 						_f.WriteByte(b[i - 1]);
+					}
+				}
 			}
 
 			/// <summary>
 			/// write variable length value
 			/// encoding is similar to MIDI
 			/// </summary>
-			private void writeVar(int v)
+			private void WriteVar(int v)
 			{
 				if (v < 0)
 				{
 					throw new ArgumentException("length cannot be less than 0!");
 				}
 
-				writeVar((UInt64)v);
+				WriteVar((ulong)v);
 			}
 
 			/// <summary>
 			/// creates a timestamp out of fps value
 			/// </summary>
-			/// <param name="rate">fpsnum</param>
-			/// <param name="scale">fpsden</param>
+			/// <param name="rate">fpsNum</param>
+			/// <param name="scale">fpsDen</param>
 			/// <param name="pos">frame position</param>
 			/// <returns>timestamp in nanoseconds</returns>
-			static UInt64 timestampcalc(int rate, int scale, UInt64 pos)
+			private static ulong TimestampCalc(int rate, int scale, ulong pos)
 			{
 				// rate/scale events per second
 				// timestamp is in nanoseconds
 				// round down, consistent with JPC-rr apparently?
 				var b = new System.Numerics.BigInteger(pos) * scale * 1000000000 / rate;
 
-				return (UInt64)b;
+				return (ulong)b;
 			}
 
 			/// <summary>
 			/// actually write a packet to file
-			/// timestamp sequence must be nondecreasing
+			/// timestamp sequence must be non-decreasing
 			/// </summary>
-			void writeActual(JmdPacket j)
+			private void WriteActual(JmdPacket j)
 			{
 				if (j.Timestamp < _timestampOff)
 				{
 					throw new ArithmeticException("JMD Timestamp problem?");
 				}
 
-				UInt64 timestampout = j.Timestamp - _timestampOff;
-				while (timestampout > 0xffffffff)
+				var timeStampOut = j.Timestamp - _timestampOff;
+				while (timeStampOut > 0xffffffff)
 				{
-					timestampout -= 0xffffffff;
+					timeStampOut -= 0xffffffff;
 					// write timestamp skipper
 					for (int i = 0; i < 6; i++)
 						_f.WriteByte(0xff);
 				}
 				_timestampOff = j.Timestamp;
 				WriteBe16(j.Stream);
-				writeBE32((UInt32)timestampout);
+				WriteBe32((uint)timeStampOut);
 				_f.WriteByte(j.Subtype);
-				writeVar((UInt64)j.Data.LongLength);
+				WriteVar((ulong)j.Data.LongLength);
 				_f.Write(j.Data, 0, j.Data.Length);
 			}
 
 			/// <summary>
-			/// assemble JMDPacket and send to packetqueue
+			/// assemble JMDPacket and send to PacketQueue
 			/// </summary>
 			/// <param name="source">zlibed frame with width and height prepended</param>
 			public void AddVideo(byte[] source)
 			{
-				var j = new JmdPacket();
-				j.Stream = 0;
-				j.Subtype = 1; // zlib compressed, other possibility is 0 = uncompressed
-				j.Data = source;
-				j.Timestamp = timestampcalc(_fpsNum, _fpsDen, (UInt64)_totalFrames);
+				var j = new JmdPacket
+				{
+					Stream = 0,
+					Subtype = 1,// zlib compressed, other possibility is 0 = uncompressed
+					Data = source,
+					Timestamp = TimestampCalc(_fpsNum, _fpsDen, _totalFrames)
+				};
+				
 				_totalFrames++;
 				WriteVideo(j);
 			}
 
 			/// <summary>
-			/// assemble JMDPacket and send to packetqueue
+			/// assemble JMDPacket and send to PacketQueue
 			/// one audio packet is split up into many many JMD packets, since JMD requires only 2 samples (1 left, 1 right) per packet
 			/// </summary>
 			public void AddSamples(short[] samples)
 			{
 				if (!_stereo)
+				{
 					for (int i = 0; i < samples.Length; i++)
-						doaudiopacket(samples[i], samples[i]);
+					{
+						DoAudioPacket(samples[i], samples[i]);
+					}
+				}
 				else
+				{
 					for (int i = 0; i < samples.Length / 2; i++)
-						doaudiopacket(samples[2 * i], samples[2 * i + 1]);
+					{
+						DoAudioPacket(samples[2 * i], samples[2 * i + 1]);
+					}
+				}
 			}
 
 			/// <summary>
@@ -383,18 +401,21 @@ namespace BizHawk.Client.EmuHawk
 			/// </summary>
 			/// <param name="l">left sample</param>
 			/// <param name="r">right sample</param>
-			void doaudiopacket(short l, short r)
+			private void DoAudioPacket(short l, short r)
 			{
-				var j = new JmdPacket();
-				j.Stream = 1;
-				j.Subtype = 1; // raw PCM audio
-				j.Data = new byte[4];
+				var j = new JmdPacket
+				{
+					Stream = 1,
+					Subtype = 1, // raw PCM audio
+					Data = new byte[4]
+				};
+				
 				j.Data[0] = (byte)(l >> 8);
 				j.Data[1] = (byte)(l & 255);
 				j.Data[2] = (byte)(r >> 8);
 				j.Data[3] = (byte)(r & 255);
 
-				j.Timestamp = timestampcalc(_audioSamplerate, 1, _totalSamples);
+				j.Timestamp = TimestampCalc(_audioSamplerate, 1, _totalSamples);
 				_totalSamples++;
 				WriteSound(j);
 			}
@@ -419,7 +440,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var p = _videoStorage.Peek();
 					if (p.Timestamp <= j.Timestamp)
-						writeActual(_videoStorage.Dequeue());
+						WriteActual(_videoStorage.Dequeue());
 					else
 						break;
 				}
@@ -436,7 +457,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var p = _audioStorage.Peek();
 					if (p.Timestamp <= j.Timestamp)
-						writeActual(_audioStorage.Dequeue());
+						WriteActual(_audioStorage.Dequeue());
 					else
 						break;
 				}
@@ -451,14 +472,14 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var ap = _audioStorage.Peek();
 					var av = _videoStorage.Peek();
-					writeActual(ap.Timestamp <= av.Timestamp
+					WriteActual(ap.Timestamp <= av.Timestamp
 						? _audioStorage.Dequeue()
 						: _videoStorage.Dequeue());
 				}
 				while (_audioStorage.Count > 0)
-					writeActual(_audioStorage.Dequeue());
+					WriteActual(_audioStorage.Dequeue());
 				while (_videoStorage.Count > 0)
-					writeActual(_videoStorage.Dequeue());
+					WriteActual(_videoStorage.Dequeue());
 			}
 
 			/// <summary>
@@ -495,9 +516,13 @@ namespace BizHawk.Client.EmuHawk
 		public void SetVideoCodecToken(IDisposable token)
 		{
 			if (token is CodecToken codecToken)
-				this._token = codecToken;
+			{
+				_token = codecToken;
+			}
 			else
+			{
 				throw new ArgumentException("codec token must be of right type");
+			}
 		}
 
 		/// <summary>
@@ -505,9 +530,9 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		/// <param name="hwnd">hwnd to attach to if the user is shown config dialog</param>
 		/// <returns>codec token, dispose of it when you're done with it</returns>
-		public IDisposable AcquireVideoCodecToken(System.Windows.Forms.IWin32Window hwnd)
+		public IDisposable AcquireVideoCodecToken(IWin32Window hwnd)
 		{
-			CodecToken ret = new CodecToken();
+			var ret = new CodecToken();
 
 			// load from config and sanitize
 			int t = Math.Min(Math.Max(Global.Config.JmdThreads, 1), 6);
@@ -741,19 +766,18 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// set metadata parameters; should be called before opening file
 		/// </summary>
-		public void SetMetaData(string gameName, string authors, UInt64 lengthMS, UInt64 rerecords)
+		public void SetMetaData(string gameName, string authors, ulong lengthMs, ulong rerecords)
 		{
-			_movieMetadata = new MovieMetaData();
-			_movieMetadata.GameName = gameName;
-			_movieMetadata.Authors = authors;
-			_movieMetadata.LengthMs = lengthMS;
-			_movieMetadata.Rerecords = rerecords;
+			_movieMetadata = new MovieMetaData
+			{
+				GameName = gameName,
+				Authors = authors,
+				LengthMs = lengthMs,
+				Rerecords = rerecords
+			};
 		}
 
-		public string DesiredExtension()
-		{
-			return "jmd";
-		}
+		public string DesiredExtension() => "jmd";
 
 		public void SetDefaultVideoCodecToken()
 		{
@@ -772,8 +796,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SetFrame(int frame) { }
 
-		public bool UsesAudio { get { return true; } }
-		public bool UsesVideo { get { return true; } }
+		public bool UsesAudio => true;
+		public bool UsesVideo => true;
 	}
 
 
