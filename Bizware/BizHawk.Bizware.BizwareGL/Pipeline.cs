@@ -23,8 +23,11 @@ namespace BizHawk.Bizware.BizwareGL
 				return;
 
 			UniformsDictionary = new SpecialWorkingDictionary(this);
-			foreach(var ui in uniforms)
+			foreach (var ui in uniforms)
+			{
 				UniformsDictionary[ui.Name] = new PipelineUniform(this);
+			}
+
 			foreach (var ui in uniforms)
 			{
 				UniformsDictionary[ui.Name].AddUniformInfo(ui);
@@ -47,11 +50,9 @@ namespace BizHawk.Bizware.BizwareGL
 			{
 				get
 				{
-					PipelineUniform temp;
-					if (!TryGetValue(key, out temp))
+					if (!TryGetValue(key, out var temp))
 					{
-						var ui = new UniformInfo();
-						ui.Opaque = null;
+						var ui = new UniformInfo {Opaque = null};
 						temp = this[key] = new PipelineUniform(null);
 					}
 
@@ -65,12 +66,11 @@ namespace BizHawk.Bizware.BizwareGL
 		readonly SpecialWorkingDictionary UniformsDictionary;
 		IDictionary<string, PipelineUniform> Uniforms => UniformsDictionary;
 
-		public IEnumerable<PipelineUniform> GetUniforms() { return Uniforms.Values; }
+		public IEnumerable<PipelineUniform> GetUniforms() => Uniforms.Values;
 
 		public PipelineUniform TryGetUniform(string name)
 		{
-			PipelineUniform ret = null;
-			Uniforms.TryGetValue(name,out ret);
+			Uniforms.TryGetValue(name, out var ret);
 			return ret;
 		}
 

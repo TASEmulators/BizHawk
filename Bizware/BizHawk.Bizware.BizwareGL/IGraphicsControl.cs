@@ -30,6 +30,4 @@ namespace BizHawk.Bizware.BizwareGL
 		/// </summary>
 		void End();
 	}
-
-
 }

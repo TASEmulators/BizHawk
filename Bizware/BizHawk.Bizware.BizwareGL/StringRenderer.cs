@@ -16,7 +16,7 @@ namespace BizHawk.Bizware.BizwareGL
 			Owner = owner;
 			FontInfo = Cyotek.Drawing.BitmapFont.BitmapFontLoader.LoadFontFromXmlFile(xml);
 			
-			//load textures
+			// load textures
 			for(int i=0;i<FontInfo.Pages.Length;i++)
 			{
 				TexturePages.Add(owner.LoadTexture(textures[i]));
@@ -121,8 +121,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public IGL Owner { get; }
 
-		readonly Cyotek.Drawing.BitmapFont.BitmapFont FontInfo;
-		List<Texture2d> TexturePages = new List<Texture2d>();
-
+		private readonly Cyotek.Drawing.BitmapFont.BitmapFont FontInfo;
+		private List<Texture2d> TexturePages = new List<Texture2d>();
 	}
 }

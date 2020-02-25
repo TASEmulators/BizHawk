@@ -21,8 +21,7 @@ namespace BizHawk.Bizware.BizwareGL
 			public object Item;
 		}
 
-
-		class TryFitParam
+		private class TryFitParam
 		{
 			public TryFitParam(int _w, int _h) { this.w = _w; this.h = _h; }
 			public readonly int w;
@@ -49,19 +48,19 @@ namespace BizHawk.Bizware.BizwareGL
 		/// </summary>
 		public static PackedAtlasResults PackAtlas(IEnumerable<RectItem> items)
 		{
-			PackedAtlasResults ret = new PackedAtlasResults();
+			var ret = new PackedAtlasResults();
 			ret.Atlases.Add(new PackedAtlasResults.SingleAtlas());
 
-			//initially, we'll try all the items; none remain
-			List<RectItem> currentItems = new List<RectItem>(items);
-			List<RectItem> remainItems = new List<RectItem>();
+			// initially, we'll try all the items; none remain
+			var currentItems = new List<RectItem>(items);
+			var remainItems = new List<RectItem>();
 
 		RETRY:
 
-			//this is where the texture size range is determined.
-			//we run this every time we make an atlas, in case we want to variably control the maximum texture output size.
-			//ALSO - we accumulate data in there, so we need to refresh it each time. ... lame.
-			List<TryFitParam> todoSizes = new List<TryFitParam>();
+			// this is where the texture size range is determined.
+			// we run this every time we make an atlas, in case we want to variably control the maximum texture output size.
+			// ALSO - we accumulate data in there, so we need to refresh it each time. ... lame.
+			var todoSizes = new List<TryFitParam>();
 			for (int i = 3; i <= MaxSizeBits; i++)
 			{
 				for (int j = 3; j <= MaxSizeBits; j++)
@@ -164,9 +163,9 @@ namespace BizHawk.Bizware.BizwareGL
 			return ret;
 		}
 
-		//original file: RectangleBinPack.cpp
-		//author: Jukka Jylänki
-		class RectangleBinPack
+		// original file: RectangleBinPack.cpp
+		// author: Jukka Jylänki
+		private class RectangleBinPack
 		{
 			/** A node of a binary tree. Each node represents a rectangular area of the texture
 				we surface. Internal nodes store rectangles of used data, whereas leaf nodes track 
@@ -315,8 +314,5 @@ namespace BizHawk.Bizware.BizwareGL
 				return node;
 			}
 		}
-
 	}
-
-
 }
