@@ -1,10 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.IO;
-using System.Collections.Generic;
-
-namespace BizHawk.Emulation.DiscSystem
+﻿namespace BizHawk.Emulation.DiscSystem
 {
 	partial class DiscMountJob
 	{
@@ -41,7 +35,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			//this is the sole sector synthesizer we'll need
 			var synth = new SS_MednaDisc();
-			OUT_Disc.SynthProvider = new SimpleSectorSynthProvider() { SS = synth };
+			OUT_Disc.SynthProvider = new SimpleSectorSynthProvider { SS = synth };
 
 			//ADR (q-Mode) is necessarily 0x01 for a RawTOCEntry
 			const int kADR = 1;
@@ -87,7 +81,7 @@ namespace BizHawk.Emulation.DiscSystem
 				disc.RawTOCEntries.Add(new RawTOCEntry { QData = q });
 			}
 
-			//synth A0 and A1 entries (indicating first and last recorded tracks and also session type)
+			// synth A0 and A1 entries (indicating first and last recorded tracks and also session type)
 			var qA0 = new SubchannelQ
 			{
 				q_status = SubchannelQ.ComputeStatus(kADR, kUnknownControl),
@@ -118,7 +112,6 @@ namespace BizHawk.Emulation.DiscSystem
 				q_crc = 0, //meaningless
 			};
 			disc.RawTOCEntries.Add(new RawTOCEntry { QData = qA1 });
-
 		}
 	}
 }

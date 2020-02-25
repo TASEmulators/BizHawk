@@ -1,11 +1,4 @@
-using System;
-using System.Linq;
-using System.Text;
-using System.IO;
-using System.Collections.Generic;
-
-//TODO - generate correct Q subchannel CRC
-
+// TODO - generate correct Q subchannel CRC
 namespace BizHawk.Emulation.DiscSystem
 {
 	class ApplySBIJob
@@ -29,7 +22,7 @@ namespace BizHawk.Emulation.DiscSystem
 				int lba = sbi.ABAs[i] - 150;
 
 				//create a synthesizer which can return the patched data
-				var ss_patchq = new SS_PatchQ() { Original = disc._Sectors[lba + 150] };
+				var ss_patchq = new SS_PatchQ { Original = disc._Sectors[lba + 150] };
 				byte[] subQbuf = ss_patchq.Buffer_SubQ;
 
 				//read the old subcode

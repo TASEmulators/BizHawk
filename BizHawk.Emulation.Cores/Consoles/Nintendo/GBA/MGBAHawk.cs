@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				CoreComm.NominalHeight = 160;
 				PutSettings(_settings);
 
-				_tracer = new TraceBuffer()
+				_tracer = new TraceBuffer
 				{
 					Header = "ARM7: PC, machine code, mnemonic, operands, registers"
 				};
