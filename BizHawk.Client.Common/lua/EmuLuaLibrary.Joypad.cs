@@ -54,7 +54,7 @@ namespace BizHawk.Client.Common
 		public void SetAnalog(LuaTable controls, object controller = null)
 		{
 			var dict = new Dictionary<string, float>();
-			foreach (var k in controls.Keys) dict[k.ToString()] = (float) controls[k];
+			foreach (var k in controls.Keys) dict[k.ToString()] = Convert.ToSingle(controls[k]);
 			APIs.Joypad.SetAnalog(dict, controller);
 		}
 	}
