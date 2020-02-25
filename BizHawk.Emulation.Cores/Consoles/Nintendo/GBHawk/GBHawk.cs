@@ -166,7 +166,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			if (is_GBC && ((header[0x43] != 0x80) && (header[0x43] != 0xC0)))
 			{
-				ppu = new GBC_PPU_GB();
+				ppu = new GBC_GB_PPU();
 			}
 
 			Console.WriteLine("MD5: " + rom.HashMD5(0, rom.Length));

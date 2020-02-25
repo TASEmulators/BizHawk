@@ -7,7 +7,7 @@ using BizHawk.Common;
 // has several quirks not present in GB ppu
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
-	public class GBC_PPU_GB : PPU
+	public class GBC_GB_PPU : PPU
 	{
 		// individual byte used in palette colors
 		public byte[] BG_bytes = new byte[64];
