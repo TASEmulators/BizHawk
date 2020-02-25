@@ -600,11 +600,7 @@ namespace BizHawk.Client.Common
 		/// <exception cref="ArgumentException">Occurs when a <see cref="DisplayType"/> is incompatible with the <see cref="WatchSize"/></exception>
 		public DisplayType Type
 		{
-			get
-			{
-				return _type;
-			}
-
+			get => _type;
 			set
 			{
 				if (IsDiplayTypeAvailable(value))
@@ -622,11 +618,7 @@ namespace BizHawk.Client.Common
 		/// <exception cref="InvalidOperationException">(from setter) <paramref name="value"/> does not have the same name as this property's value</exception>
 		public MemoryDomain Domain
 		{
-			get
-			{
-				return _domain;
-			}
-
+			get => _domain;
 			internal set
 			{
 				if (value != null && _domain.Name == value.Name)

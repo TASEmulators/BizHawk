@@ -1,8 +1,4 @@
 using System;
-using System.Text;
-using System.IO;
-using System.Globalization;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 using BizHawk.Common;
@@ -109,7 +105,7 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 
 		static bool _IsLibraryAvailable;
-		public static bool IsLibraryAvailable { get { return _IsLibraryAvailable; } }
+		public static bool IsLibraryAvailable => _IsLibraryAvailable;
 
 		public void Dispose()
 		{
@@ -135,7 +131,7 @@ namespace BizHawk.Emulation.DiscSystem
 			//can't be a bool due to marshalling...
 			[FieldOffset(8)] public byte _validByte;
 
-			public bool Valid { get { return _validByte != 0; } }
+			public bool Valid => _validByte != 0;
 		}
 
 		[DllImport("mednadisc.dll", CallingConvention = CallingConvention.Cdecl)]

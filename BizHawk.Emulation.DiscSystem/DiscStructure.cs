@@ -1,6 +1,4 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace BizHawk.Emulation.DiscSystem
 {
@@ -26,7 +24,7 @@ namespace BizHawk.Emulation.DiscSystem
 			/// <summary>
 			/// The LBA of the session's leadout. In other words, for all intents and purposes, the end of the session
 			/// </summary>
-			public int LeadoutLBA { get { return LeadoutTrack.LBA; } }
+			public int LeadoutLBA => LeadoutTrack.LBA;
 
 			/// <summary>
 			/// The session number
@@ -38,7 +36,7 @@ namespace BizHawk.Emulation.DiscSystem
 			/// This excludes the lead-in and lead-out tracks
 			/// Use this instead of Tracks.Count
 			/// </summary>
-			public int InformationTrackCount { get { return Tracks.Count - 2; } }
+			public int InformationTrackCount => Tracks.Count - 2;
 
 			/// <summary>
 			/// All the tracks in the session.. but... Tracks[0] is the lead-in track. Tracks[1] should be "Track 1". So beware of this.
@@ -51,24 +49,24 @@ namespace BizHawk.Emulation.DiscSystem
 			/// A reference to the first information track (Track 1)
 			/// The raw TOC may have specified something different; it's not clear how this discrepancy is handled.
 			/// </summary>
-			public Track FirstInformationTrack { get { return Tracks[1]; } }
+			public Track FirstInformationTrack => Tracks[1];
 
 			/// <summary>
 			/// A reference to the last information track on the disc.
 			/// The raw TOC may have specified something different; it's not clear how this discrepancy is handled.
 			/// </summary>
-			public Track LastInformationTrack { get { return Tracks[InformationTrackCount]; } }
+			public Track LastInformationTrack => Tracks[InformationTrackCount];
 
 			/// <summary>
 			/// A reference to the lead-out track.
 			/// Effectively, the end of the user area of the disc.
 			/// </summary>
-			public Track LeadoutTrack { get { return Tracks[Tracks.Count - 1]; } }
+			public Track LeadoutTrack => Tracks[Tracks.Count - 1];
 
 			/// <summary>
 			/// A reference to the lead-in track
 			/// </summary>
-			public Track LeadinTrack { get { return Tracks[0]; } }
+			public Track LeadinTrack => Tracks[0];
 
 			/// <summary>
 			/// Determines which track of the session is at the specified LBA.
@@ -144,12 +142,12 @@ namespace BizHawk.Emulation.DiscSystem
 			/// <summary>
 			/// Is this track a Data track?
 			/// </summary>
-			public bool IsData { get { return !IsAudio; } }
+			public bool IsData => !IsAudio;
 
 			/// <summary>
 			/// Is this track an Audio track?
 			/// </summary>
-			public bool IsAudio { get { return Mode == 0; } }
+			public bool IsAudio => Mode == 0;
 
 			/// <summary>
 			/// The 'control' properties of the track expected to be found in the track's subQ.

@@ -155,7 +155,7 @@ namespace BizHawk.Emulation.DiscSystem
 			/// <summary>
 			/// The negated output (the typical result of the CRC calculation)
 			/// </summary>
-			public uint Result { get { return current ^ 0xFFFFFFFF; } }
+			public uint Result => current ^ 0xFFFFFFFF;
 
 			/// <summary>
 			/// The raw non-negated output

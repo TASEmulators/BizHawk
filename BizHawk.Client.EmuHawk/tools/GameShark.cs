@@ -134,34 +134,21 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		public bool UpdateBefore
-		{
-			get
-			{
-				return true;
-			}
-		}
-
-		public bool AskSaveChanges()
-		{
-			return true;
-		}
+		public bool UpdateBefore => true;
+		public bool AskSaveChanges() => true;
 
 		public void FastUpdate()
 		{
-
 		}
 
 		public void Restart()
 		{
-
 		}
 
 		public void NewUpdate(ToolFormUpdateType type) { }
 
 		public void UpdateValues()
 		{
-
 		}
 
 		//My Variables
@@ -198,7 +185,7 @@ namespace BizHawk.Client.EmuHawk
 						GEN();
 						break;
 					case "N64":
-						//This determies what kind of Code we have
+						// This determines what kind of Code we have
 						testo = SingleCheat.Remove(2, 11);
 						N64();
 						break;

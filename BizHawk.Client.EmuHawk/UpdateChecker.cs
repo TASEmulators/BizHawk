@@ -40,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void BeginCheck(bool skipCheck = false)
 		{
-			if (skipCheck || String.IsNullOrEmpty(_latestVersionInfoURL) || !AutoCheckEnabled || LastCheckTimeUTC > DateTime.UtcNow - _minimumCheckDuration)
+			if (skipCheck || string.IsNullOrEmpty(_latestVersionInfoURL) || !AutoCheckEnabled || LastCheckTimeUTC > DateTime.UtcNow - _minimumCheckDuration)
 			{
 				OnCheckComplete();
 				return;
@@ -49,16 +49,11 @@ namespace BizHawk.Client.EmuHawk
 			ThreadPool.QueueUserWorkItem((s) => CheckInternal());
 		}
 
-		public static bool IsNewVersionAvailable
-		{
-			get
-			{
-				return AutoCheckEnabled &&
-					LatestVersion != IgnoreVersion &&
-					ParseVersion(VersionInfo.Mainversion) != 0 && // Avoid notifying if current version string is invalid
-					ParseVersion(LatestVersion) > ParseVersion(VersionInfo.Mainversion);
-			}
-		}
+		public static bool IsNewVersionAvailable =>
+			AutoCheckEnabled
+			&& LatestVersion != IgnoreVersion
+			&& ParseVersion(VersionInfo.Mainversion) != 0 // Avoid notifying if current version string is invalid
+			&& ParseVersion(LatestVersion) > ParseVersion(VersionInfo.Mainversion);
 
 		public static void IgnoreNewVersion()
 		{

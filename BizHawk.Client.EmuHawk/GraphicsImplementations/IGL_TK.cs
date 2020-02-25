@@ -160,9 +160,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public IBlendState BlendNoneCopy { get { return _rsBlendNoneVerbatim; } }
-		public IBlendState BlendNoneOpaque { get { return _rsBlendNoneOpaque; } }
-		public IBlendState BlendNormal { get { return _rsBlendNormal; } }
+		public IBlendState BlendNoneCopy => _rsBlendNoneVerbatim;
+		public IBlendState BlendNoneOpaque => _rsBlendNoneOpaque;
+		public IBlendState BlendNormal => _rsBlendNormal;
 
 		class ShaderWrapper
 		{

@@ -106,25 +106,12 @@ namespace BizHawk.Client.Common
 
 			public override bool CanWrite => true;
 
-			public override long Length
-			{
-				get
-				{
-					throw new NotImplementedException();
-				}
-			}
+			public override long Length => throw new NotImplementedException();
 
 			public override long Position
 			{
-				get
-				{
-					throw new NotImplementedException();
-				}
-
-				set
-				{
-					throw new NotImplementedException();
-				}
+				get => throw new NotImplementedException();
+				set => throw new NotImplementedException();
 			}
 		}
 
@@ -148,7 +135,7 @@ namespace BizHawk.Client.Common
 				| dt.Month << 5
 				| (dt.Year - 1980) << 9;
 
-			var modifiedDate = new byte[]
+			var modifiedDate = new[]
 			{
 				(byte)(mtime & 0xff),
 				(byte)(mtime >> 8),

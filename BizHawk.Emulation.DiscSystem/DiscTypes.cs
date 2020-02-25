@@ -1,8 +1,4 @@
 using System;
-using System.Linq;
-using System.Text;
-using System.IO;
-using System.Collections.Generic;
 
 namespace BizHawk.Emulation.DiscSystem
 {
@@ -146,7 +142,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// The fully multiplied out flat-address Sector number
 		/// </summary>
-		public int Sector { get { return MIN * 60 * 75 + SEC * 75 + FRAC; } }
+		public int Sector => MIN * 60 * 75 + SEC * 75 + FRAC;
 
 		/// <summary>
 		/// creates timestamp from the supplied MSF
@@ -177,9 +173,6 @@ namespace BizHawk.Emulation.DiscSystem
 			Valid = true;
 		}
 
-		public override string ToString()
-		{
-			return Value;
-		}
+		public override string ToString() => Value;
 	}
 }

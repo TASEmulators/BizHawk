@@ -234,16 +234,10 @@ namespace BizHawk.Client.Common
 			public int BackgroundColor => unchecked((int)0xff000000);
 
 			/// <exception cref="InvalidOperationException">always</exception>
-			public int VsyncNumerator
-			{
-				get { throw new InvalidOperationException(); }
-			}
+			public int VsyncNumerator => throw new InvalidOperationException();
 
 			/// <exception cref="InvalidOperationException">always</exception>
-			public int VsyncDenominator
-			{
-				get { throw new InvalidOperationException(); }
-			}
+			public int VsyncDenominator => throw new InvalidOperationException();
 		}
 
 		public static unsafe bool Load(IVideoProvider v, Stream s)

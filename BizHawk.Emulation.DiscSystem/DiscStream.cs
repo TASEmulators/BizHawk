@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-
-using BizHawk.Common.BufferExtensions;
 
 namespace BizHawk.Emulation.DiscSystem
 {
@@ -90,11 +87,11 @@ namespace BizHawk.Emulation.DiscSystem
 			cachedSectorBuffer = new byte[SectorSize];
 		}
 
-		public override bool CanRead { get { return true; } }
-		public override bool CanSeek { get { return true; } }
-		public override bool CanWrite { get { return false; } }
+		public override bool CanRead => true;
+		public override bool CanSeek => true;
+		public override bool CanWrite => false;
 		public override void Flush() { throw new NotImplementedException(); }
-		public override long Length { get { return NumSectors * SectorSize; } }
+		public override long Length => NumSectors * SectorSize;
 
 		public override long Position
 		{

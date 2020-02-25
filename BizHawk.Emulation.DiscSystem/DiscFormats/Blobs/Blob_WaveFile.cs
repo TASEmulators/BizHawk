@@ -29,10 +29,7 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				public string PhysicalPath
 				{
-					get
-					{
-						return physicalPath;
-					}
+					get => physicalPath;
 					set
 					{
 						physicalPath = value;
@@ -65,13 +62,7 @@ namespace BizHawk.Emulation.DiscSystem
 						fs.Position = target;
 					return fs.Read(buffer, offset, count);
 				}
-				public long Length
-				{
-					get
-					{
-						return length;
-					}
-				}
+				public long Length => length;
 			}
 
 			public void Load(byte[] waveData)
@@ -144,12 +135,11 @@ namespace BizHawk.Emulation.DiscSystem
 			RiffMaster RiffSource;
 			long waveDataStreamPos;
 			long mDataLength;
-			public long Length { get { return mDataLength; } }
+			public long Length => mDataLength;
 
 			public void Dispose()
 			{
-				if (RiffSource != null)
-					RiffSource.Dispose();
+				RiffSource?.Dispose();
 				RiffSource = null;
 			}
 		}

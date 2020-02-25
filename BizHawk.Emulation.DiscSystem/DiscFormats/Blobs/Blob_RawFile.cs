@@ -50,13 +50,7 @@ namespace BizHawk.Emulation.DiscSystem
 					fs.Position = target;
 				return fs.Read(buffer, offset, count);
 			}
-			public long Length
-			{
-				get
-				{
-					return length;
-				}
-			}
+			public long Length => length;
 		}
 	}
 }

@@ -38,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 		Pipeline _CurrPipeline;
 		GLControlWrapper_SlimDX9 _CurrentControl;
 
-		public string API { get { return "D3D9"; } }
+		public string API => "D3D9";
 
 		public IGL_SlimDX9()
 		{
@@ -369,9 +369,9 @@ namespace BizHawk.Client.EmuHawk
 
 		CacheBlendState _rsBlendNoneVerbatim, _rsBlendNoneOpaque, _rsBlendNormal;
 
-		public IBlendState BlendNoneCopy { get { return _rsBlendNoneVerbatim; } }
-		public IBlendState BlendNoneOpaque { get { return _rsBlendNoneOpaque; } }
-		public IBlendState BlendNormal { get { return _rsBlendNormal; } }
+		public IBlendState BlendNoneCopy => _rsBlendNoneVerbatim;
+		public IBlendState BlendNoneOpaque => _rsBlendNoneOpaque;
+		public IBlendState BlendNormal => _rsBlendNormal;
 
 		/// <exception cref="InvalidOperationException">
 		/// <paramref name="required"/> is <see langword="true"/> and either <paramref name="vertexShader"/> or <paramref name="fragmentShader"/> is unavailable (their <see cref="Shader.Available"/> property is <see langword="false"/>), or

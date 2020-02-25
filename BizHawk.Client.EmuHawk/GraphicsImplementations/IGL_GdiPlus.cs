@@ -1,10 +1,6 @@
 using System;
 using System.IO;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.Windows.Forms;
-
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
@@ -32,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 		}
 
-		public void Clear(OpenTK.Graphics.OpenGL.ClearBufferMask mask)
+		public void Clear(ClearBufferMask mask)
 		{
 			var g = GetCurrentGraphics();
 			if((mask & ClearBufferMask.ColorBufferBit) != 0)
@@ -41,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public string API { get { return "GDIPLUS"; } }
+		public string API => "GDIPLUS";
 
 		public IBlendState CreateBlendState(BlendingFactorSrc colorSource, BlendEquationMode colorEquation, BlendingFactorDest colorDest,
 					BlendingFactorSrc alphaSource, BlendEquationMode alphaEquation, BlendingFactorDest alphaDest)
@@ -85,9 +81,9 @@ namespace BizHawk.Client.EmuHawk
 		class MyBlendState : IBlendState { }
 		static MyBlendState _rsBlendNoneVerbatim = new MyBlendState(), _rsBlendNoneOpaque = new MyBlendState(), _rsBlendNormal = new MyBlendState();
 
-		public IBlendState BlendNoneCopy { get { return _rsBlendNoneVerbatim; } }
-		public IBlendState BlendNoneOpaque { get { return _rsBlendNoneOpaque; } }
-		public IBlendState BlendNormal { get { return _rsBlendNormal; } }
+		public IBlendState BlendNoneCopy => _rsBlendNoneVerbatim;
+		public IBlendState BlendNoneOpaque => _rsBlendNoneOpaque;
+		public IBlendState BlendNormal => _rsBlendNormal;
 
 		public Pipeline CreatePipeline(VertexLayout vertexLayout, Shader vertexShader, Shader fragmentShader, bool required, string memo)
 		{
@@ -96,7 +92,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void FreePipeline(Pipeline pipeline) {}
 
-		public VertexLayout CreateVertexLayout() { return new VertexLayout(this, new IntPtr(0)); }
+		public VertexLayout CreateVertexLayout() => new VertexLayout(this, new IntPtr(0));
 
 		public void SetTextureWrapMode(Texture2d tex, bool clamp)
 		{
