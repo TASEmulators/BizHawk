@@ -1182,8 +1182,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void paletteViewer_MouseMove(object sender, MouseEventArgs e)
 		{
-			Point pt;
-			bool valid = TranslatePaletteCoord(e.Location, out pt);
+			bool valid = TranslatePaletteCoord(e.Location, out var pt);
 			if (!valid) return;
 			lastColorNum = pt.Y * 16 + pt.X;
 			UpdateColorDetails();

@@ -129,8 +129,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private int GetSource(ALGetSourcei param)
 		{
-			int value;
-			AL.GetSource(_sourceID, param, out value);
+			AL.GetSource(_sourceID, param, out var value);
 			return value;
 		}
 

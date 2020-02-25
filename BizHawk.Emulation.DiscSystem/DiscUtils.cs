@@ -6,8 +6,7 @@ namespace BizHawk.Emulation.DiscSystem
 	{
 		static byte IntToBCD(int n)
 		{
-			int ones;
-			int tens = Math.DivRem(n, 10, out ones);
+			int tens = Math.DivRem(n, 10, out var ones);
 			return (byte)((tens << 4) | ones);
 		}
 
@@ -37,7 +36,5 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			return f + (s * 75) + (m * 75 * 60) - 150;
 		}
-
 	}
-
 }

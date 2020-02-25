@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-
+using Cyotek.Drawing.BitmapFont;
 using sd=System.Drawing;
 
 namespace BizHawk.Bizware.BizwareGL
@@ -61,8 +61,7 @@ namespace BizHawk.Bizware.BizwareGL
 					continue;
 				}
 
-				Cyotek.Drawing.BitmapFont.Character bfc;
-				if (!FontInfo.Characters.TryGetValue((char)c, out bfc))
+				if (!FontInfo.Characters.TryGetValue((char)c, out var bfc))
 					bfc = FontInfo.Characters[unchecked((char)-1)];
 
 				x += bfc.XAdvance;
@@ -98,8 +97,7 @@ namespace BizHawk.Bizware.BizwareGL
 					continue;
 				}
 
-				Cyotek.Drawing.BitmapFont.Character bfc;
-				if (!FontInfo.Characters.TryGetValue((char)c, out bfc))
+				if (!FontInfo.Characters.TryGetValue((char)c, out var bfc))
 					bfc = FontInfo.Characters[unchecked((char)-1)];
 				
 				// calculate texcoords (we shouldve already had this cached, but im speedcoding now)

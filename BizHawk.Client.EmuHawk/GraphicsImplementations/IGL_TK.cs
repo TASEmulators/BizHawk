@@ -47,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 			//NOTE: this throws EGL exceptions anyway. I'm going to ignore it and whine about it later
 		}
 
-		public string API { get { return "OPENGL"; } }
+		public string API => "OPENGL";
 
 		public int Version
 		{
@@ -252,9 +252,8 @@ namespace BizHawk.Client.EmuHawk
 				if (required)
 					throw new InvalidOperationException($"Error creating pipeline (error returned from glLinkProgram): {errcode}\r\n\r\n{resultLog}");
 				else success = false;
-			
-			int linkStatus;
-			GL.GetProgram(pid, GetProgramParameterName.LinkStatus, out linkStatus);
+
+			GL.GetProgram(pid, GetProgramParameterName.LinkStatus, out var linkStatus);
 			if (linkStatus == 0)
 				if (required)
 					throw new InvalidOperationException($"Error creating pipeline (link status false returned from glLinkProgram): \r\n\r\n{resultLog}");
@@ -286,8 +285,7 @@ namespace BizHawk.Client.EmuHawk
 
 			//get all the attributes (not needed)
 			List<AttributeInfo> attributes = new List<AttributeInfo>();
-			int nAttributes;
-			GL.GetProgram(pid, GetProgramParameterName.ActiveAttributes, out nAttributes);
+			GL.GetProgram(pid, GetProgramParameterName.ActiveAttributes, out var nAttributes);
 			for (int i = 0; i < nAttributes; i++)
 			{
 				int size, length;
@@ -299,16 +297,14 @@ namespace BizHawk.Client.EmuHawk
 
 			//get all the uniforms
 			List<UniformInfo> uniforms = new List<UniformInfo>();
-			int nUniforms;
-			GL.GetProgram(pid,GetProgramParameterName.ActiveUniforms,out nUniforms);
+			GL.GetProgram(pid,GetProgramParameterName.ActiveUniforms,out var nUniforms);
 			List<int> samplers = new List<int>();
 
 			for (int i = 0; i < nUniforms; i++)
 			{
 				int size, length;
-				ActiveUniformType type;
 				string name = new System.Text.StringBuilder(1024).ToString();
-				GL.GetActiveUniform(pid, i, 1024, out length, out size, out type, out name);
+				GL.GetActiveUniform(pid, i, 1024, out length, out size, out var type, out name);
 				errcode = GL.GetError();
 				int loc = GL.GetUniformLocation(pid, name);
 
@@ -758,8 +754,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			int n;
-			GL.GetShader(sid, ShaderParameter.CompileStatus, out n);
+			GL.GetShader(sid, ShaderParameter.CompileStatus, out var n);
 
 			if (n == 0)
 				if (required)

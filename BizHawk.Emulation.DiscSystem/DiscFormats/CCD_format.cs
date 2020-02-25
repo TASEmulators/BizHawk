@@ -171,8 +171,7 @@ namespace BizHawk.Emulation.DiscSystem
 			/// <exception cref="CCDParseException"><paramref name="key"/> not found in <see langword="this"/></exception>
 			public int FetchOrFail(string key)
 			{
-				int ret;
-				if(!TryGetValue(key, out ret))
+				if(!TryGetValue(key, out var ret))
 					throw new CCDParseException($"Malformed or unexpected CCD format: missing required [Entry] key: {key}");
 				return ret;
 			}

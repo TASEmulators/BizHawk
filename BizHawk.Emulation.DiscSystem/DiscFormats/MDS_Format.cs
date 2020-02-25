@@ -504,15 +504,13 @@ namespace BizHawk.Emulation.DiscSystem
 			foreach (var s in aSessions.Values)
 			{
 				Session session = new Session();
-				ATrack startTrack;
-				ATrack endTrack;
 
-				if (!aTracks.TryGetValue(s.FirstTrack, out startTrack))
+				if (!aTracks.TryGetValue(s.FirstTrack, out var startTrack))
 				{
 					break;
 				}
 
-				if (!aTracks.TryGetValue(s.LastTrack, out endTrack))
+				if (!aTracks.TryGetValue(s.LastTrack, out var endTrack))
 				{
 					break;
 				}

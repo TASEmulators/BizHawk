@@ -2474,8 +2474,7 @@ namespace BizHawk.Client.EmuHawk
 				foreach (var t in code)
 				{
 					hexcode <<= 5;
-					long y;
-					_GENgameGenieTable.TryGetValue(t, out y);
+					_GENgameGenieTable.TryGetValue(t, out var y);
 					hexcode |= y;
 				}
 				long decoded = (hexcode & 0xFF00000000) >> 32;

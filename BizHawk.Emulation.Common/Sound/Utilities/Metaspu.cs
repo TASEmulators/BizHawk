@@ -37,10 +37,8 @@ namespace BizHawk.Emulation.Common
 
 		public void GetSamplesAsync(short[] samples)
 		{
-			short[] sampin;
-			int numsamp;
-			_input.GetSamplesSync(out sampin, out numsamp);
-			_buffer.EnqueueSamples(sampin, numsamp);
+			_input.GetSamplesSync(out var sampIn, out var numSamp);
+			_buffer.EnqueueSamples(sampIn, numSamp);
 			_buffer.OutputSamples(samples, samples.Length / 2);
 		}
 

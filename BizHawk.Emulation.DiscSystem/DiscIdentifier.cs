@@ -341,8 +341,7 @@ namespace BizHawk.Emulation.DiscSystem
 			//read it if we dont have it cached
 			//we wont be caching very much here, it's no big deal
 			//identification is not something we want to take a long time
-			byte[] data;
-			if (!_sectorCache.TryGetValue(lba, out data))
+			if (!_sectorCache.TryGetValue(lba, out var data))
 			{
 				data = new byte[2048];
 				int read = _dsr.ReadLBA_2048(lba, data, 0);

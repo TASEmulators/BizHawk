@@ -63,15 +63,13 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public static int BCDToInt(byte n)
 		{
-			var bcd = new BCD2();
-			bcd.BCDValue = n;
+			var bcd = new BCD2 { BCDValue = n };
 			return bcd.DecimalValue;
 		}
 
 		public static byte IntToBCD(int n)
 		{
-			int ones;
-			int tens = Math.DivRem(n, 10, out ones);
+			int tens = Math.DivRem(n, 10, out var ones);
 			return (byte)((tens << 4) | ones);
 		}
 

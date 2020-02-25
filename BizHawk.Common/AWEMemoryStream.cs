@@ -335,8 +335,7 @@ namespace BizHawk.Common
 					return false;
 				}
 				var tkp = new TOKEN_PRIVILEGES { PrivilegeCount = 1, Privileges = new LUID_AND_ATTRIBUTES[1] };
-				LUID luid;
-				if (!LookupPrivilegeValue(null, PrivilegeName, out luid))
+				if (!LookupPrivilegeValue(null, PrivilegeName, out var luid))
 				{
 					Marshal.ThrowExceptionForHR(Marshal.GetHRForLastWin32Error());
 					return false;

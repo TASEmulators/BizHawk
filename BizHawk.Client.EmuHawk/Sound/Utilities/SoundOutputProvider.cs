@@ -210,14 +210,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GetSamplesFromBase(ref double scaleFactor)
 		{
-			short[] samples;
-			int count;
-
 			if (BaseSoundProvider.SyncMode != SyncSoundMode.Sync)
 			{
 				throw new InvalidOperationException("Base sound provider must be in sync mode.");
 			}
-			BaseSoundProvider.GetSamplesSync(out samples, out count);
+			BaseSoundProvider.GetSamplesSync(out var samples, out var count);
 
 			bool correctedEmptyFrame = false;
 			if (count == 0)

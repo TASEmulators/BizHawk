@@ -113,8 +113,7 @@ namespace BizHawk.Client.EmuHawk
 			ulong version = 0;
 			for (int i = 0; i < split.Length; i++)
 			{
-				ushort versionPart;
-				if (!UInt16.TryParse(split[i], out versionPart)) return 0;
+				if (!UInt16.TryParse(split[i], out var versionPart)) return 0;
 				version |= (ulong)versionPart << (48 - (i * 16));
 			}
 			return version;

@@ -876,8 +876,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// (TODO - inefficient- build directly in a buffer)
-				int bytes_written;
-				AVIWriterImports.AVIStreamWrite(pAviRawAudioStream, outStatus.audio_samples, todo_realsamples, buf, todo_realsamples * 4, 0, IntPtr.Zero, out bytes_written);
+				AVIWriterImports.AVIStreamWrite(pAviRawAudioStream, outStatus.audio_samples, todo_realsamples, buf, todo_realsamples * 4, 0, IntPtr.Zero, out var bytes_written);
 				outStatus.audio_samples += todo_realsamples;
 				outStatus.audio_bytes += bytes_written;
 				outStatus.audio_buffered_shorts = 0;
@@ -925,8 +924,7 @@ namespace BizHawk.Client.EmuHawk
 								bp += pitch_add;
 							}
 
-							int bytes_written;
-							int ret = AVIWriterImports.AVIStreamWrite(pAviCompressedVideoStream, outStatus.video_frames, 1, new IntPtr(bytes_ptr), todo, AVIIF_KEYFRAME, IntPtr.Zero, out bytes_written);
+							int ret = AVIWriterImports.AVIStreamWrite(pAviCompressedVideoStream, outStatus.video_frames, 1, new IntPtr(bytes_ptr), todo, AVIIF_KEYFRAME, IntPtr.Zero, out var bytes_written);
 							outStatus.video_bytes += bytes_written;
 							outStatus.video_frames++;
 						}
@@ -957,8 +955,7 @@ namespace BizHawk.Client.EmuHawk
 								idx -= w * 2;
 							}
 
-							int bytes_written;
-							int ret = AVIWriterImports.AVIStreamWrite(pAviCompressedVideoStream, outStatus.video_frames, 1, new IntPtr(bytes_ptr), todo * 3, AVIIF_KEYFRAME, IntPtr.Zero, out bytes_written);
+							int ret = AVIWriterImports.AVIStreamWrite(pAviCompressedVideoStream, outStatus.video_frames, 1, new IntPtr(bytes_ptr), todo * 3, AVIIF_KEYFRAME, IntPtr.Zero, out var bytes_written);
 							outStatus.video_bytes += bytes_written;
 							outStatus.video_frames++;
 						}

@@ -425,9 +425,7 @@ namespace BizHawk.Emulation.Common
 		{
 			if (_input != null)
 			{
-				short[] sampin;
-				int nsampin;
-				_input.GetSamplesSync(out sampin, out nsampin);
+				_input.GetSamplesSync(out var sampin, out int nsampin);
 				EnqueueSamples(sampin, nsampin);
 			}
 

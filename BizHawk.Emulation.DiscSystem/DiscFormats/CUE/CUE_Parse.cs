@@ -250,8 +250,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 								break;
 							}
 							string strindexnum = clp.ReadToken();
-							int indexnum;
-							if (!int.TryParse(strindexnum, out indexnum) || indexnum < 0 || indexnum > 99)
+							if (!int.TryParse(strindexnum, out var indexnum) || indexnum < 0 || indexnum > 99)
 							{
 								job.Error($"Invalid INDEX number: {strindexnum}");
 								break;
@@ -331,15 +330,15 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 								job.Error("Incomplete TRACK command");
 								break;
 							}
+
 							string str_tracknum = clp.ReadToken();
-							int tracknum;
-							if (!int.TryParse(str_tracknum, out tracknum) || tracknum < 1 || tracknum > 99)
+							if (!int.TryParse(str_tracknum, out int tracknum) || tracknum < 1 || tracknum > 99)
 							{
 								job.Error($"Invalid TRACK number: {str_tracknum}");
 								break;
 							}
 
-							//TODO - check sequentiality? maybe as a warning
+							// TODO - check sequentiality? maybe as a warning
 
 							CueTrackType tt;
 							var str_trackType = clp.ReadToken();

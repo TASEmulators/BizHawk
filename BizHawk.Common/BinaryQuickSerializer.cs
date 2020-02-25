@@ -128,8 +128,7 @@ namespace BizHawk.Common
 				{
 					il.Emit(OpCodes.Ldloc, target);
 					il.Emit(OpCodes.Ldarg_1);
-					MethodInfo m;
-					if (!Readhandlers.TryGetValue(field.FieldType, out m))
+					if (!Readhandlers.TryGetValue(field.FieldType, out var m))
 					{
 						throw new InvalidOperationException($"(R) Can't handle nested type {field.FieldType}");
 					}
@@ -153,8 +152,7 @@ namespace BizHawk.Common
 					il.Emit(OpCodes.Ldarg_1);
 					il.Emit(OpCodes.Ldloc, target);
 					il.Emit(OpCodes.Ldfld, field);
-					MethodInfo m;
-					if (!Writehandlers.TryGetValue(field.FieldType, out m))
+					if (!Writehandlers.TryGetValue(field.FieldType, out var m))
 					{
 						throw new InvalidOperationException($"(W) Can't handle nested type {field.FieldType}");
 					}
@@ -180,8 +178,7 @@ namespace BizHawk.Common
 
 		private static SerializationFactory GetFactory(Type t)
 		{
-			SerializationFactory f;
-			if (!Serializers.TryGetValue(t, out f))
+			if (!Serializers.TryGetValue(t, out var f))
 			{
 				f = CreateFactory(t);
 				Serializers[t] = f;
