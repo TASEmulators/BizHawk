@@ -127,6 +127,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 				else if (controller.IsPressed("Toggle Cable 4x"))
 				{
 					_cableconnected_4x = true;
+					is_pinging = false;
+					is_transmitting = false;
 				}
 
 				Console.WriteLine("Cable connect status:");
@@ -176,121 +178,191 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 				C.do_single_step();
 				D.do_single_step();
 
-				/*
-				// the signal to shift out a bit is when serial_clock = 1
-				if (((A.serialport.serial_clock == 1) || (A.serialport.serial_clock == 2)) && (A.serialport.clk_rate > 0) && !do_2_next)
+				if (is_transmitting)
 				{
-					A.serialport.going_out = (byte)(A.serialport.serial_data >> 7);
 
-					if ((C.serialport.clk_rate == -1) && C.serialport.serial_start && A.serialport.can_pulse)
-					{
-						C.serialport.serial_clock = A.serialport.serial_clock;
-						C.serialport.going_out = (byte)(C.serialport.serial_data >> 7);
-						C.serialport.coming_in = A.serialport.going_out;
-					}
-
-					A.serialport.coming_in = C.serialport.going_out;
-					A.serialport.can_pulse = false;
 				}
-				else if (((C.serialport.serial_clock == 1) || (C.serialport.serial_clock == 2)) && (C.serialport.clk_rate > 0))
+				else if (is_pinging)
 				{
-					do_2_next = false;
+					x4_clock--;
+					if (x4_clock == 0)
+					{				
+						if (ping_byte == 0)
+						{
+							// first byte sent is 0xFE
+							if (ping_player == 1)
+							{
+								if ((A.serialport.clk_rate == -1) && A.serialport.serial_start)
+								{
+									A.serialport.serial_clock = 1;
+									A.serialport.going_out = (byte)(A.serialport.serial_data >> 7);
+									A.serialport.coming_in = (byte)(0xFE >> (7 - ping_bit_count));
+								}
 
-					C.serialport.going_out = (byte)(C.serialport.serial_data >> 7);
+								received_byte |= (byte)(A.serialport.going_out << (7 - ping_bit_count));
+							}
+							else if (ping_player == 2)
+							{
+								if ((B.serialport.clk_rate == -1) && B.serialport.serial_start)
+								{
+									B.serialport.serial_clock = 1;
+									B.serialport.going_out = (byte)(B.serialport.serial_data >> 7);
+									B.serialport.coming_in = (byte)(0xFE >> (7 - ping_bit_count));
+								}
 
-					if ((A.serialport.clk_rate == -1) && A.serialport.serial_start && C.serialport.can_pulse)
-					{
-						A.serialport.serial_clock = C.serialport.serial_clock;
-						A.serialport.going_out = (byte)(A.serialport.serial_data >> 7);
-						A.serialport.coming_in = C.serialport.going_out;
+								received_byte |= (byte)(B.serialport.going_out << (7 - ping_bit_count));
+							}
+							else if (ping_player == 3)
+							{
+								if ((C.serialport.clk_rate == -1) && C.serialport.serial_start)
+								{
+									C.serialport.serial_clock = 1;
+									C.serialport.going_out = (byte)(C.serialport.serial_data >> 7);
+									C.serialport.coming_in = (byte)(0xFE >> (7 - ping_bit_count));
+								}
+
+								received_byte |= (byte)(C.serialport.going_out << (7 - ping_bit_count));
+							}
+							else
+							{
+								if ((D.serialport.clk_rate == -1) && D.serialport.serial_start)
+								{
+									D.serialport.serial_clock = 1;
+									D.serialport.going_out = (byte)(D.serialport.serial_data >> 7);
+									D.serialport.coming_in = (byte)(0xFE >> (7 - ping_bit_count));
+								}
+
+								received_byte |= (byte)(D.serialport.going_out << (7 - ping_bit_count));
+							}
+
+							ping_bit_count++;
+
+							if (ping_bit_count == 8)
+							{
+								// player one can start the transmission phase
+								if ((received_byte == 0xAA) && (ping_player == 1))
+								{
+									begin_transmitting_cnt = 1;
+								}
+
+								ping_bit_count = 0;
+								received_byte = 0;
+
+								ping_byte++;
+							}								
+						}
+						else
+						{
+							// the next 3 bytes are the status byte (which may be updated in between each transfer)
+							if (ping_player == 1)
+							{
+								if ((A.serialport.clk_rate == -1) && A.serialport.serial_start)
+								{
+									A.serialport.serial_clock = 1;
+									A.serialport.going_out = (byte)(A.serialport.serial_data >> 7);
+									A.serialport.coming_in = (byte)(status_byte >> (7 - ping_bit_count));
+								}
+
+								received_byte |= (byte)(A.serialport.going_out << (7 - ping_bit_count));
+							}
+							else if (ping_player == 2)
+							{
+								if ((B.serialport.clk_rate == -1) && B.serialport.serial_start)
+								{
+									B.serialport.serial_clock = 1;
+									B.serialport.going_out = (byte)(B.serialport.serial_data >> 7);
+									B.serialport.coming_in = (byte)(status_byte >> (7 - ping_bit_count));
+								}
+
+								received_byte |= (byte)(B.serialport.going_out << (7 - ping_bit_count));
+							}
+							else if (ping_player == 3)
+							{
+								if ((C.serialport.clk_rate == -1) && C.serialport.serial_start)
+								{
+									C.serialport.serial_clock = 1;
+									C.serialport.going_out = (byte)(C.serialport.serial_data >> 7);
+									C.serialport.coming_in = (byte)(status_byte >> (7 - ping_bit_count));
+								}
+
+								received_byte |= (byte)(C.serialport.going_out << (7 - ping_bit_count));
+							}
+							else
+							{
+								if ((D.serialport.clk_rate == -1) && D.serialport.serial_start)
+								{
+									D.serialport.serial_clock = 1;
+									D.serialport.going_out = (byte)(D.serialport.serial_data >> 7);
+									D.serialport.coming_in = (byte)(status_byte >> (7 - ping_bit_count));
+								}
+
+								received_byte |= (byte)(D.serialport.going_out << (7 - ping_bit_count));
+							}
+
+							ping_bit_count++;
+
+							if (ping_bit_count == 8)
+							{
+								// player one can start the transmission phase
+								if (((received_byte & 0xAA) == 0xAA) && (ping_player == 1))
+								{
+									begin_transmitting_cnt = 1;
+
+									if (begin_transmitting_cnt == 3)
+									{
+										is_transmitting = true;
+										is_pinging = false;
+										Console.WriteLine("transmitting");
+									}
+								}
+								else if (((received_byte & 0x88) == 0x88) && (ping_byte >= 2))
+								{
+									status_byte |= (byte)(1 << (3 + ping_player));
+
+									
+								}
+
+								//Console.WriteLine(ping_player + " " + ping_byte + " " + status_byte + " " + received_byte);
+
+								ping_bit_count = 0;
+								received_byte = 0;
+
+								ping_byte++;
+
+								if (ping_byte == 4)
+								{
+									ping_byte = 0;
+									ping_player++;
+
+									if (ping_player == 5) { ping_player = 1; }
+
+									begin_transmitting_cnt = 0;
+
+									status_byte &= 0xF0;
+									status_byte |= (byte)ping_player;
+								}									
+							}
+						}		
+							
+						x4_clock = 1024;
 					}
-
-					C.serialport.coming_in = A.serialport.going_out;
-					C.serialport.can_pulse = false;
-
-					if (C.serialport.serial_clock == 2) { do_2_next = true; }
 				}
 				else
 				{
-					do_2_next = false;
-				}
-
-				// the signal to shift out a bit is when serial_clock = 1
-				if (((C.serialport.serial_clock == 1) || (C.serialport.serial_clock == 2)) && (C.serialport.clk_rate > 0) && !do_2_next)
-				{
-					C.serialport.going_out = (byte)(C.serialport.serial_data >> 7);
-
-					if ((D.serialport.clk_rate == -1) && D.serialport.serial_start && C.serialport.can_pulse)
+					// initialize the device from master GB
+					if ((A.serialport.serial_control & 0x81) == 0x80)
 					{
-						D.serialport.serial_clock = C.serialport.serial_clock;
-						D.serialport.going_out = (byte)(D.serialport.serial_data >> 7);
-						D.serialport.coming_in = C.serialport.going_out;
+						is_pinging = true;
+						x4_clock = 1024;
+						ping_player = 1;
+						ping_byte = 0;
+						ping_bit_count = 0;
+						received_byte = 0;
+						begin_transmitting_cnt = 0;
+						status_byte = 0x01; // sending to player 1
 					}
-
-					C.serialport.coming_in = D.serialport.going_out;
-					C.serialport.can_pulse = false;
 				}
-				else if (((D.serialport.serial_clock == 1) || (D.serialport.serial_clock == 2)) && (D.serialport.clk_rate > 0))
-				{
-					do_2_next = false;
-
-					D.serialport.going_out = (byte)(D.serialport.serial_data >> 7);
-
-					if ((C.serialport.clk_rate == -1) && C.serialport.serial_start && D.serialport.can_pulse)
-					{
-						C.serialport.serial_clock = D.serialport.serial_clock;
-						C.serialport.going_out = (byte)(C.serialport.serial_data >> 7);
-						C.serialport.coming_in = D.serialport.going_out;
-					}
-
-					D.serialport.coming_in = C.serialport.going_out;
-					D.serialport.can_pulse = false;
-
-					if (D.serialport.serial_clock == 2) { do_2_next = true; }
-				}
-				else
-				{
-					do_2_next = false;
-				}
-
-				// the signal to shift out a bit is when serial_clock = 1
-				if (((D.serialport.serial_clock == 1) || (D.serialport.serial_clock == 2)) && (D.serialport.clk_rate > 0) && !do_2_next)
-				{
-					D.serialport.going_out = (byte)(D.serialport.serial_data >> 7);
-
-					if ((A.serialport.clk_rate == -1) && A.serialport.serial_start && D.serialport.can_pulse)
-					{
-						A.serialport.serial_clock = D.serialport.serial_clock;
-						A.serialport.going_out = (byte)(A.serialport.serial_data >> 7);
-						A.serialport.coming_in = D.serialport.going_out;
-					}
-
-					D.serialport.coming_in = A.serialport.going_out;
-					D.serialport.can_pulse = false;
-				}
-				else if (((A.serialport.serial_clock == 1) || (A.serialport.serial_clock == 2)) && (A.serialport.clk_rate > 0))
-				{
-					do_2_next = false;
-
-					A.serialport.going_out = (byte)(A.serialport.serial_data >> 7);
-
-					if ((D.serialport.clk_rate == -1) && D.serialport.serial_start && A.serialport.can_pulse)
-					{
-						D.serialport.serial_clock = A.serialport.serial_clock;
-						D.serialport.going_out = (byte)(D.serialport.serial_data >> 7);
-						D.serialport.coming_in = A.serialport.going_out;
-					}
-
-					A.serialport.coming_in = D.serialport.going_out;
-					A.serialport.can_pulse = false;
-
-					if (A.serialport.serial_clock == 2) { do_2_next = true; }
-				}
-				else
-				{
-					do_2_next = false;
-				}
-				*/
+				
 
 				// if we hit a frame boundary, update video
 				if (A.vblank_rise)

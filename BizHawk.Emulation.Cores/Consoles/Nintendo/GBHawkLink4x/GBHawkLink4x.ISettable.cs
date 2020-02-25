@@ -32,22 +32,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 
 		public class GBLink4xSettings
 		{
-			[DisplayName("Color Mode")]
+			[DisplayName("Color Mode A")]
 			[Description("Pick Between Green scale and Grey scale colors")]
 			[DefaultValue(GBHawk.GBHawk.GBSettings.PaletteType.BW)]
 			public GBHawk.GBHawk.GBSettings.PaletteType Palette_A { get; set; }
 
-			[DisplayName("Color Mode")]
+			[DisplayName("Color Mode B")]
 			[Description("Pick Between Green scale and Grey scale colors")]
 			[DefaultValue(GBHawk.GBHawk.GBSettings.PaletteType.BW)]
 			public GBHawk.GBHawk.GBSettings.PaletteType Palette_B { get; set; }
 
-			[DisplayName("Color Mode")]
+			[DisplayName("Color Mode C")]
 			[Description("Pick Between Green scale and Grey scale colors")]
 			[DefaultValue(GBHawk.GBHawk.GBSettings.PaletteType.BW)]
 			public GBHawk.GBHawk.GBSettings.PaletteType Palette_C { get; set; }
 
-			[DisplayName("Color Mode")]
+			[DisplayName("Color Mode D")]
 			[Description("Pick Between Green scale and Grey scale colors")]
 			[DefaultValue(GBHawk.GBHawk.GBSettings.PaletteType.BW)]
 			public GBHawk.GBHawk.GBSettings.PaletteType Palette_D { get; set; }

@@ -25,6 +25,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 
 		private bool do_2_next = false;
 
+		// 4 player adapter variables
+		public bool is_pinging, is_transmitting;
+		public byte status_byte;
+		public int x4_clock;
+		public int ping_player;
+		public int ping_byte;
+		public int ping_bit_count;
+		public byte received_byte;
+		public int begin_transmitting_cnt;
+
+
 		public byte A_controller, B_controller, C_controller, D_controller;
 
 		public bool do_frame_fill;
