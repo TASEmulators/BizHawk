@@ -40,8 +40,7 @@ namespace BizHawk.Emulation.DiscSystem
 			
 			public void Dispose()
 			{
-				if(stream != null)
-					stream.Dispose();
+				stream?.Dispose();
 				stream = null;
 			}
 

@@ -109,10 +109,9 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				// Parse this node
 				if (child.Key != ISONodeRecord.CURRENT_DIRECTORY &&
-					child.Key != ISONodeRecord.PARENT_DIRECTORY &&
-					child.Value is ISODirectoryNode)
+					child.Key != ISONodeRecord.PARENT_DIRECTORY)
 				{
-					((ISODirectoryNode)child.Value).Parse(s, visited);
+					(child.Value as ISODirectoryNode)?.Parse(s, visited);
 				}
 			}
 
@@ -146,10 +145,9 @@ namespace BizHawk.Emulation.DiscSystem
 				ISONode n = this.Children[s];
 				Console.WriteLine(tabs + s);
 				if (s != ISONodeRecord.CURRENT_DIRECTORY &&
-					s != ISONodeRecord.PARENT_DIRECTORY &&
-					n is ISODirectoryNode)
+					s != ISONodeRecord.PARENT_DIRECTORY)
 				{
-					((ISODirectoryNode)n).Print(depth + 1);
+					(n as ISODirectoryNode)?.Print(depth + 1);
 				}
 			}
 		}

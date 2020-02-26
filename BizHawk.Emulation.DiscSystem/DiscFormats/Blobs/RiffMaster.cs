@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public void Dispose()
 		{
-			if (BaseStream != null) BaseStream.Dispose();
+			BaseStream?.Dispose();
 			BaseStream = null;
 		}
 
