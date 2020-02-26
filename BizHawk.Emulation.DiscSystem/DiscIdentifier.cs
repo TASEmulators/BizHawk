@@ -357,10 +357,10 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			var data = ReadSectorCached(lba);
 			if (data == null) return false;
-			byte[] cmp = System.Text.Encoding.ASCII.GetBytes(s);
+			byte[] cmp = Encoding.ASCII.GetBytes(s);
 			byte[] cmp2 = new byte[cmp.Length];
 			Buffer.BlockCopy(data, n, cmp2, 0, cmp.Length);
-			return System.Linq.Enumerable.SequenceEqual(cmp, cmp2);
+			return cmp.SequenceEqual(cmp2);
 		}
 
 		private bool SectorContains(string s, int lba = 0)

@@ -19,10 +19,8 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public void WriteFile(string fname)
 		{
-			using (FileStream fs = new FileStream(fname, FileMode.Create, FileAccess.Write, FileShare.Read))
-			{
-				WriteStream(fs);
-			}
+			using FileStream fs = new FileStream(fname, FileMode.Create, FileAccess.Write, FileShare.Read);
+			WriteStream(fs);
 		}
 
 		public Stream BaseStream;

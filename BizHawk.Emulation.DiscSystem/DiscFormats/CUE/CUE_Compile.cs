@@ -251,17 +251,15 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				//TODO - fix exception-throwing inside
 				//TODO - verify stream-disposing semantics
 				var fs = File.OpenRead(choice);
-				using (var blob = new Disc.Blob_WaveFile())
+				using var blob = new Disc.Blob_WaveFile();
+				try
 				{
-					try
-					{
-						blob.Load(fs);
-						cfi.Type = CompiledCueFileType.WAVE;
-					}
-					catch
-					{
-						cfi.Type = CompiledCueFileType.DecodeAudio;
-					}
+					blob.Load(fs);
+					cfi.Type = CompiledCueFileType.WAVE;
+				}
+				catch
+				{
+					cfi.Type = CompiledCueFileType.DecodeAudio;
 				}
 			}
 			else if (blobPathExt == ".APE") cfi.Type = CompiledCueFileType.DecodeAudio;

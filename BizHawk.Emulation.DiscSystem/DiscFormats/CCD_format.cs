@@ -421,21 +421,17 @@ namespace BizHawk.Emulation.DiscSystem
 			string imgPath = Path.ChangeExtension(path, ".img");
 			string subPath = Path.ChangeExtension(path, ".sub");
 			var buf2448 = new byte[2448];
-		  DiscSectorReader dsr = new DiscSectorReader(disc);
+			DiscSectorReader dsr = new DiscSectorReader(disc);
 
-			using (var imgFile = File.OpenWrite(imgPath))
-				using (var subFile = File.OpenWrite(subPath))
-				{
-
-					int nLBA = disc.Session1.LeadoutLBA;
-					for (int lba = 0; lba < nLBA; lba++)
-					{
-						dsr.ReadLBA_2448(lba, buf2448, 0);
-						imgFile.Write(buf2448, 0, 2352);
-						subFile.Write(buf2448, 2352, 96);
-					}
-				}
-			
+			using var imgFile = File.OpenWrite(imgPath);
+			using var subFile = File.OpenWrite(subPath);
+			int nLBA = disc.Session1.LeadoutLBA;
+			for (int lba = 0; lba < nLBA; lba++)
+			{
+				dsr.ReadLBA_2448(lba, buf2448, 0);
+				imgFile.Write(buf2448, 0, 2352);
+				subFile.Write(buf2448, 2352, 96);
+			}
 		}
 
 		class SS_CCD : ISectorSynthJob2448
