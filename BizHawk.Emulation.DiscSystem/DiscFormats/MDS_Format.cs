@@ -87,22 +87,22 @@ namespace BizHawk.Emulation.DiscSystem
 			/// <summary>
 			/// Burst Cutting Area data offset
 			/// </summary>
-			public Int64 BCAOffset;
+			public long BCAOffset;
 
 			/// <summary>
 			/// Offset to disc (DVD?) structures
 			/// </summary>
-			public Int64 StructureOffset;
+			public long StructureOffset;
 
 			/// <summary>
 			/// Offset to the first session block
 			/// </summary>
-			public Int64 SessionOffset;
+			public long SessionOffset;
 
 			/// <summary>
 			/// Data Position Measurement offset
 			/// </summary>
-			public Int64 DPMOffset;
+			public long DPMOffset;
 
 			/// <summary>
 			/// Parse mds stream for the header
@@ -141,7 +141,7 @@ namespace BizHawk.Emulation.DiscSystem
 			public byte NonTrackBlocks;     /* Number of lead-in data blocks */
 			public int FirstTrack;          /* First track in session */
 			public int LastTrack;           /* Last track in session */
-			public Int64 TrackOffset;       /* Offset of lead-in+regular track data blocks. */
+			public long TrackOffset;       /* Offset of lead-in+regular track data blocks. */
 		}
 
 		/// <summary>
@@ -181,12 +181,12 @@ namespace BizHawk.Emulation.DiscSystem
 			public int PSec;                /* PSec */
 			public int PFrame;              /* PFrame */
 
-			public Int64 ExtraOffset;       /* Start offset of this track's extra block. */
+			public long ExtraOffset;       /* Start offset of this track's extra block. */
 			public int SectorSize;          /* Sector size. */
-			public Int64 PLBA;               /* Track start sector (PLBA). */
+			public long PLBA;               /* Track start sector (PLBA). */
 			public ulong StartOffset;       /* Track start offset (from beginning of MDS file) */
-			public Int64 Files;             /* Number of filenames for this track */
-			public Int64 FooterOffset;      /* Start offset of footer (from beginning of MDS file) */
+			public long Files;             /* Number of filenames for this track */
+			public long FooterOffset;      /* Start offset of footer (from beginning of MDS file) */
 
 			/// <summary>
 			/// Track extra block
@@ -212,8 +212,8 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public class ATrackExtra
 		{
-			public Int64 Pregap;            /* Number of sectors in pregap. */
-			public Int64 Sectors;           /* Number of sectors in track. */
+			public long Pregap;            /* Number of sectors in pregap. */
+			public long Sectors;           /* Number of sectors in track. */
 		}
 
 		/// <summary>
@@ -221,8 +221,8 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public class AFooter
 		{
-			public Int64 FilenameOffset;    /* Start offset of image filename string (from beginning of mds file) */
-			public Int64 WideChar;          /* Seems to be set to 1 if widechar filename is used */
+			public long FilenameOffset;    /* Start offset of image filename string (from beginning of mds file) */
+			public long WideChar;          /* Seems to be set to 1 if widechar filename is used */
 		}
 
 		/// <summary>
@@ -389,7 +389,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 					// check for track extra block - this can probably be handled in a separate loop,
 					// but I'll just store the current stream position then seek forward to the extra block for this track
-					Int64 currPos = stream.Position;
+					long currPos = stream.Position;
 
 					// Only CDs have extra blocks - for DVDs ExtraOffset = track length
 					if (track.ExtraOffset > 0 && !isDvd)

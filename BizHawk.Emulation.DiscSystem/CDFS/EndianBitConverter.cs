@@ -55,10 +55,10 @@ namespace BizHawk.Emulation.DiscSystem
 
 		#region 16-bit
 
-		public Int16 ToInt16(byte[] data) {
+		public short ToInt16(byte[] data) {
 			return ToInt16(data, 0);
 		}
-		public Int16 ToInt16(byte[] data, int offset) {
+		public short ToInt16(byte[] data, int offset) {
 			byte[] corrected;
 			if (swap) {
 				corrected = (byte[])data.Clone();
@@ -74,10 +74,10 @@ namespace BizHawk.Emulation.DiscSystem
 
 		#region 32-bit
 
-		public Int32 ToInt32(byte[] data) {
+		public int ToInt32(byte[] data) {
 			return ToInt32(data, 0);
 		}
-		public Int32 ToInt32(byte[] data, int offset) {
+		public int ToInt32(byte[] data, int offset) {
 			byte[] corrected;
 			if (swap) {
 				corrected = (byte[])data.Clone();
@@ -93,10 +93,10 @@ namespace BizHawk.Emulation.DiscSystem
 
 		#region 64-bit
 
-		public Int64 ToInt64(byte[] data) {
+		public long ToInt64(byte[] data) {
 			return ToInt64(data, 0);
 		}
-		public Int64 ToInt64(byte[] data, int offset) {
+		public long ToInt64(byte[] data, int offset) {
 			byte[] corrected;
 			if (swap) {
 				corrected = (byte[])data.Clone();
