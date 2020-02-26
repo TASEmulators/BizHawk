@@ -21,20 +21,12 @@ namespace BizHawk.Emulation.Common
 	{
 		public ZeromusSynchronizer()
 		{
-			////#ifdef NDEBUG
 			_adjustobuf = new Adjustobuf(200, 1000);
-			////#else
-			////adjustobuf = new Adjustobuf(22000, 44000);
-			////#endif
 		}
 
-		// adjustobuf(200,1000)
-		private bool _mixqueueGo;
+		private bool _mixQueueGo;
 
-		public void Clear()
-		{
-			_adjustobuf.Clear();
-		}
+		public void Clear() => _adjustobuf.Clear();
 
 		public void EnqueueSample(short left, short right)
 		{
@@ -57,11 +49,11 @@ namespace BizHawk.Emulation.Common
 		{
 			int ctr = 0;
 			int done = 0;
-			if (!_mixqueueGo)
+			if (!_mixQueueGo)
 			{
 				if (_adjustobuf.Size > 200)
 				{
-					_mixqueueGo = true;
+					_mixQueueGo = true;
 				}
 			}
 			else
@@ -70,7 +62,7 @@ namespace BizHawk.Emulation.Common
 				{
 					if (_adjustobuf.Size == 0)
 					{
-						_mixqueueGo = false;
+						_mixQueueGo = false;
 						break;
 					}
 
@@ -139,7 +131,6 @@ namespace BizHawk.Emulation.Common
 					_statsHistory.Dequeue();
 
 					float averageSize = (float)(_rollingTotalSize / _kAverageSize);
-					////static int ctr=0;  ctr++; if((ctr&127)==0) printf("avg size: %f curr size: %d rate: %f\n",averageSize,size,rate);
 					{
 						float targetRate;
 						if (averageSize < _targetLatency)
@@ -155,7 +146,6 @@ namespace BizHawk.Emulation.Common
 							targetRate = 1.0f;
 						}
 
-						////rate = moveValueTowards(rate,targetRate,0.001f);
 						_rate = targetRate;
 					}
 				}
@@ -190,21 +180,21 @@ namespace BizHawk.Emulation.Common
 
 	internal class NitsujaSynchronizer : ISynchronizingAudioBuffer
 	{
-		private struct Ssamp
+		private struct StereoSamp
 		{
 			public readonly short L, R;
 
-			public Ssamp(short left, short right)
+			public StereoSamp(short left, short right)
 			{
 				L = left;
 				R = right;
 			}
 		}
 
-		private readonly List<Ssamp> _sampleQueue = new List<Ssamp>();
+		private readonly List<StereoSamp> _sampleQueue = new List<StereoSamp>();
 
 		// returns values going between 0 and y-1 in a saw wave pattern, based on x
-		private static int Pingpong(int x, int y)
+		private static int PingPong(int x, int y)
 		{
 			x %= 2 * y;
 			if (x >= y)
@@ -221,7 +211,7 @@ namespace BizHawk.Emulation.Common
 			////return x;
 		}
 
-		private static Ssamp Crossfade(Ssamp lhs, Ssamp rhs, int cur, int start, int end)
+		private static StereoSamp CrossFade(StereoSamp lhs, StereoSamp rhs, int cur, int start, int end)
 		{
 			if (cur <= start)
 			{
@@ -244,7 +234,7 @@ namespace BizHawk.Emulation.Common
 			int lrv = ((lhs.L * outNum) + (rhs.L * inNum)) / denom;
 			int rrv = ((lhs.R * outNum) + (rhs.R * inNum)) / denom;
 
-			return new Ssamp((short)lrv, (short)rrv);
+			return new StereoSamp((short)lrv, (short)rrv);
 		}
 
 		public void Clear()
@@ -252,28 +242,18 @@ namespace BizHawk.Emulation.Common
 			_sampleQueue.Clear();
 		}
 
-		private static void EmitSample(short[] outbuf, ref int cursor, Ssamp sample)
+		private static void EmitSample(short[] outBuf, ref int cursor, StereoSamp sample)
 		{
-			outbuf[cursor++] = sample.L;
-			outbuf[cursor++] = sample.R;
+			outBuf[cursor++] = sample.L;
+			outBuf[cursor++] = sample.R;
 		}
 
-		private static void EmitSamples(short[] outbuf, ref int outcursor, Ssamp[] samplebuf, int incursor, int samples)
+		private static void EmitSamples(short[] outBuf, ref int outCursor, StereoSamp[] sampleBuf, int inCursor, int samples)
 		{
 			for (int i = 0; i < samples; i++)
 			{
-				EmitSample(outbuf, ref outcursor, samplebuf[i + incursor]);
+				EmitSample(outBuf, ref outCursor, sampleBuf[i + inCursor]);
 			}
-		}
-
-		private static short Abs(short value)
-		{
-			if (value < 0)
-			{
-				return (short)-value;
-			}
-
-			return value;
 		}
 
 		private static int Abs(int value)
@@ -291,44 +271,44 @@ namespace BizHawk.Emulation.Common
 			int cursor = 0;
 			for (int i = 0; i < samplesProvided; i++)
 			{
-				_sampleQueue.Add(new Ssamp(buf[cursor + 0], buf[cursor + 1]));
+				_sampleQueue.Add(new StereoSamp(buf[cursor + 0], buf[cursor + 1]));
 				cursor += 2;
 			}
 		}
 
 		public void EnqueueSample(short left, short right)
 		{
-			_sampleQueue.Add(new Ssamp(left, right));
+			_sampleQueue.Add(new StereoSamp(left, right));
 		}
 
 		public int OutputSamples(short[] buf, int samplesRequested)
 		{
 			Console.WriteLine("{0} {1}", samplesRequested, _sampleQueue.Count); // add this line
 
-			int bufcursor = 0;
-			int audiosize = samplesRequested;
+			int bufCursor = 0;
+			int audioSize = samplesRequested;
 			int queued = _sampleQueue.Count;
 
 			// I am too lazy to deal with odd numbers
-			audiosize &= ~1;
+			audioSize &= ~1;
 			queued &= ~1;
 
-			if (queued > 0x200 && audiosize > 0) // is there any work to do?
+			if (queued > 0x200 && audioSize > 0) // is there any work to do?
 			{
 				// are we going at normal speed?
 				// or more precisely, are the input and output queues/buffers of similar size?
-				if (queued > 900 || audiosize > queued * 2)
+				if (queued > 900 || audioSize > queued * 2)
 				{
 					// not normal speed. we have to resample it somehow in this case.
-					if (audiosize <= queued)
+					if (audioSize <= queued)
 					{
 						// fast forward speed
 						// this is the easy case, just crossfade it and it sounds ok
-						for (int i = 0; i < audiosize; i++)
+						for (int i = 0; i < audioSize; i++)
 						{
-							int j = i + queued - audiosize;
-							Ssamp outsamp = Crossfade(_sampleQueue[i], _sampleQueue[j], i, 0, audiosize);
-							EmitSample(buf, ref bufcursor, outsamp);
+							int j = i + queued - audioSize;
+							StereoSamp outSamp = CrossFade(_sampleQueue[i], _sampleQueue[j], i, 0, audioSize);
+							EmitSample(buf, ref bufCursor, outSamp);
 						}
 					}
 					else
@@ -346,7 +326,7 @@ namespace BizHawk.Emulation.Common
 						//
 						// queued (this axis represents the index we sample from. the top means the end of the queue)
 						// ^
-						// |   --> audiosize (this axis represents the output index we write to, right meaning forward in output time/position)
+						// |   --> audio size (this axis represents the output index we write to, right meaning forward in output time/position)
 						// |   A           C       C  end
 						//    A A     B   C C     C
 						//   A   A   A B C   C   C
@@ -361,53 +341,53 @@ namespace BizHawk.Emulation.Common
 						// first calculate a shorter-than-full window
 						// that has minimal slope at the endpoints
 						// (to further reduce crackling, especially in sine waves)
-						int beststart = 0, extraAtEnd = 0;
+						int bestStart = 0;
+						int extraAtEnd;
 						{
-							int bestend = queued;
-							const int Worstdiff = 99999999;
-							int beststartdiff = Worstdiff;
-							int bestenddiff = Worstdiff;
+							int bestEnd = queued;
+							const int worstDiff = 99999999;
+							int bestStartDiff = worstDiff;
+							int bestEndDiff = worstDiff;
 							for (int i = 0; i < 128; i += 2)
 							{
 								int diff = Abs(_sampleQueue[i].L - _sampleQueue[i + 1].L) + Abs(_sampleQueue[i].R - _sampleQueue[i + 1].R);
-								if (diff < beststartdiff)
+								if (diff < bestStartDiff)
 								{
-									beststartdiff = diff;
-									beststart = i;
+									bestStartDiff = diff;
+									bestStart = i;
 								}
 							}
 
 							for (int i = queued - 3; i > queued - 3 - 128; i -= 2)
 							{
 								int diff = Abs(_sampleQueue[i].L - _sampleQueue[i + 1].L) + Abs(_sampleQueue[i].R - _sampleQueue[i + 1].R);
-								if (diff < bestenddiff)
+								if (diff < bestEndDiff)
 								{
-									bestenddiff = diff;
-									bestend = i + 1;
+									bestEndDiff = diff;
+									bestEnd = i + 1;
 								}
 							}
 
-							extraAtEnd = queued - bestend;
-							queued = bestend - beststart;
+							extraAtEnd = queued - bestEnd;
+							queued = bestEnd - bestStart;
 
-							int oksize = queued;
-							while (oksize + (queued * 2) + beststart + extraAtEnd <= samplesRequested)
+							int okSize = queued;
+							while (okSize + (queued * 2) + bestStart + extraAtEnd <= samplesRequested)
 							{
-								oksize += queued * 2;
+								okSize += queued * 2;
 							}
 
-							audiosize = oksize;
+							audioSize = okSize;
 
-							for (int x = 0; x < beststart; x++)
+							for (int x = 0; x < bestStart; x++)
 							{
-								EmitSample(buf, ref bufcursor, _sampleQueue[x]);
+								EmitSample(buf, ref bufCursor, _sampleQueue[x]);
 							}
 
-							// sampleQueue.erase(sampleQueue.begin(), sampleQueue.begin() + beststart);
-							_sampleQueue.RemoveRange(0, beststart); // zero 08-nov-2010: did i do this right?
+							_sampleQueue.RemoveRange(0, bestStart);
 						}
 
-						int midpointX = audiosize >> 1;
+						int midpointX = audioSize >> 1;
 						int midpointY = queued >> 1;
 
 						// all we need to do here is calculate the X position of the leftmost "B" in the above diagram.
@@ -419,7 +399,7 @@ namespace BizHawk.Emulation.Common
 						int midpointXOffset = queued / 2;
 						while (true)
 						{
-							int a = Abs(Pingpong(midpointX - midpointXOffset, queued) - midpointY) - midpointXOffset;
+							int a = Abs(PingPong(midpointX - midpointXOffset, queued) - midpointY) - midpointXOffset;
 							if (((a > 0) != (prevA > 0) || (a < 0) != (prevA < 0)) && prevA != 999999)
 							{
 								if (((a + prevA) & 1) != 0) // there's some sort of off-by-one problem with this search since we're moving diagonally...
@@ -441,14 +421,14 @@ namespace BizHawk.Emulation.Common
 
 						int leftMidpointX = midpointX - midpointXOffset;
 						int rightMidpointX = midpointX + midpointXOffset;
-						int leftMidpointY = Pingpong(leftMidpointX, queued);
-						int rightMidpointY = (queued - 1) - Pingpong((int)audiosize - 1 - rightMidpointX + (queued * 2), queued);
+						int leftMidpointY = PingPong(leftMidpointX, queued);
+						int rightMidpointY = (queued - 1) - PingPong((int)audioSize - 1 - rightMidpointX + (queued * 2), queued);
 
 						// output the left almost-half of the sound (section "A")
 						for (int x = 0; x < leftMidpointX; x++)
 						{
-							int i = Pingpong(x, queued);
-							EmitSample(buf, ref bufcursor, _sampleQueue[i]);
+							int i = PingPong(x, queued);
+							EmitSample(buf, ref bufCursor, _sampleQueue[i]);
 						}
 
 						// output the middle stretch (section "B")
@@ -457,75 +437,61 @@ namespace BizHawk.Emulation.Common
 						int dyMidRight = (rightMidpointY > midpointY) ? 1 : -1;
 						for (int x = leftMidpointX; x < midpointX; x++, y += dyMidLeft)
 						{
-							EmitSample(buf, ref bufcursor, _sampleQueue[y]);
+							EmitSample(buf, ref bufCursor, _sampleQueue[y]);
 						}
 
 						for (int x = midpointX; x < rightMidpointX; x++, y += dyMidRight)
 						{
-							EmitSample(buf, ref bufcursor, _sampleQueue[y]);
+							EmitSample(buf, ref bufCursor, _sampleQueue[y]);
 						}
 
 						// output the end of the queued sound (section "C")
-						for (int x = rightMidpointX; x < audiosize; x++)
+						for (int x = rightMidpointX; x < audioSize; x++)
 						{
-							int i = (queued - 1) - Pingpong((int)audiosize - 1 - x + (queued * 2), queued);
-							EmitSample(buf, ref bufcursor, _sampleQueue[i]);
+							int i = (queued - 1) - PingPong((int)audioSize - 1 - x + (queued * 2), queued);
+							EmitSample(buf, ref bufCursor, _sampleQueue[i]);
 						}
 
 						for (int x = 0; x < extraAtEnd; x++)
 						{
 							int i = queued + x;
-							EmitSample(buf, ref bufcursor, _sampleQueue[i]);
+							EmitSample(buf, ref bufCursor, _sampleQueue[i]);
 						}
 
 						queued += extraAtEnd;
-						audiosize += beststart + extraAtEnd;
+						audioSize += bestStart + extraAtEnd;
 					} // end else
 
 					// sampleQueue.erase(sampleQueue.begin(), sampleQueue.begin() + queued);
 					_sampleQueue.RemoveRange(0, queued);
 
 					// zero 08-nov-2010: did i do this right?
-					return audiosize;
+					return audioSize;
 				}
-				else
+
+				// normal speed
+				// just output the samples straightforwardly.
+				//
+				// at almost-full speeds (like 50/60 FPS)
+				// what will happen is that we rapidly fluctuate between entering this branch
+				// and entering the "slow motion speed" branch above.
+				// but that's ok! because all of these branches sound similar enough that we can get away with it.
+				// so the two cases actually complement each other.
+				if (audioSize >= queued)
 				{
-					// normal speed
-					// just output the samples straightforwardly.
-					//
-					// at almost-full speeds (like 50/60 FPS)
-					// what will happen is that we rapidly fluctuate between entering this branch
-					// and entering the "slow motion speed" branch above.
-					// but that's ok! because all of these branches sound similar enough that we can get away with it.
-					// so the two cases actually complement each other.
-					if (audiosize >= queued)
-					{
-						EmitSamples(buf, ref bufcursor, _sampleQueue.ToArray(), 0, queued);
+					EmitSamples(buf, ref bufCursor, _sampleQueue.ToArray(), 0, queued);
+					_sampleQueue.RemoveRange(0, queued);
+					return queued;
+				}
 
-						// sampleQueue.erase(sampleQueue.begin(), sampleQueue.begin() + queued);
-						_sampleQueue.RemoveRange(0, queued);
-
-						// zero 08-nov-2010: did i do this right?
-						return queued;
-					}
-					else
-					{
-						EmitSamples(buf, ref bufcursor, _sampleQueue.ToArray(), 0, audiosize);
-
-						// sampleQueue.erase(sampleQueue.begin(), sampleQueue.begin()+audiosize);
-						_sampleQueue.RemoveRange(0, audiosize);
-
-						// zero 08-nov-2010: did i do this right?
-						return audiosize;
-					}
-				} // end normal speed
-			} // end if there is any work to do
-			else
-			{
-				return 0;
+				EmitSamples(buf, ref bufCursor, _sampleQueue.ToArray(), 0, audioSize);
+				_sampleQueue.RemoveRange(0, audioSize);
+				return audioSize;
 			}
-		} // output_samples
-	} // NitsujaSynchronizer
+
+			return 0;
+		}
+	}
 
 	internal class VecnaSynchronizer : ISynchronizingAudioBuffer
 	{
@@ -540,10 +506,11 @@ namespace BizHawk.Emulation.Common
 		// We'll see if it works better or not!
 
 		// It has a min and maximum amount of excess buffer to deal with minor overflows.
-		// When fastforwarding, it will discard samples above the maximum excess buffer.
+		// When fast-forwarding, it will discard samples above the maximum excess buffer.
 
-		// When underflowing, it will attempt to resample to a certain threshhold.
-		// If it underflows beyond that threshhold, it will give up and output silence.
+		// When underflowing, it will attempt to resample to a certain thresh
+		// old.
+		// If it underflows beyond that threshold, it will give up and output silence.
 		// Since it has done this, it will go ahead and generate some excess silence in order
 		// to restock its excess buffer.
 		private struct Sample
@@ -558,7 +525,6 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		private const int SamplesInOneFrame = 735;
 		private const int MaxExcessSamples = 2048;
 
 		private readonly Queue<Sample> _buffer;
@@ -635,7 +601,6 @@ namespace BizHawk.Emulation.Common
 			else
 			{
 				// normal operation
-				////Console.WriteLine("samples in buffer {0}, requested {1}", buffer.Count, samples_requested);
 				int index = 0;
 				for (int i = 0; i < samplesRequested && _buffer.Count > 0; i++)
 				{
