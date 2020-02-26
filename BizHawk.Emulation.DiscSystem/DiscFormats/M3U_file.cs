@@ -8,9 +8,7 @@ namespace BizHawk.Emulation.DiscSystem
 		public static M3U_File Read(StreamReader sr)
 		{
 			M3U_File ret = new M3U_File();
-			if (!ret.Parse(sr))
-				return null;
-			else return ret;
+			return !ret.Parse(sr) ? null : ret;
 		}
 
 		bool Parse(StreamReader sr)

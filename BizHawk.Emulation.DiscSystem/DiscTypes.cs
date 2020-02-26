@@ -127,14 +127,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// The string representation of the MSF
 		/// </summary>
-		public string Value
-		{
-			get
-			{
-				if (!Valid) return "--:--:--";
-				return $"{(Negative ? '-' : '+')}{MIN:D2}:{SEC:D2}:{FRAC:D2}";
-			}
-		}
+		public string Value => !Valid ? "--:--:--" : $"{(Negative ? '-' : '+')}{MIN:D2}:{SEC:D2}:{FRAC:D2}";
 
 		public readonly byte MIN, SEC, FRAC;
 		public readonly bool Valid, Negative;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 //disc type identification logic
 
@@ -175,8 +176,8 @@ namespace BizHawk.Emulation.DiscSystem
 			//its a cheap win for a lot of systems, but ONLY if the iso.Parse() method is quick running (might have to time it)
 			if (isIso)
 			{
-				var appId = System.Text.Encoding.ASCII.GetString(iso.VolumeDescriptors[0].ApplicationIdentifier).TrimEnd('\0', ' ');
-				var sysId = System.Text.Encoding.ASCII.GetString(iso.VolumeDescriptors[0].SystemIdentifier).TrimEnd('\0', ' ');
+				var appId = Encoding.ASCII.GetString(iso.VolumeDescriptors[0].ApplicationIdentifier).TrimEnd('\0', ' ');
+				var sysId = Encoding.ASCII.GetString(iso.VolumeDescriptors[0].SystemIdentifier).TrimEnd('\0', ' ');
 
 				//for example: PSX magical drop F (JP SLPS_02337) doesn't have the correct iso PVD fields
 				//but, some PSX games (junky rips) don't have the 'licensed by string' so we'll hope they get caught here
@@ -365,8 +366,7 @@ namespace BizHawk.Emulation.DiscSystem
 		private bool SectorContains(string s, int lba = 0)
 		{
 			var data = ReadSectorCached(lba);
-			if (data == null) return false;
-			return System.Text.Encoding.ASCII.GetString(data).ToLower().Contains(s.ToLower());
+			return data != null && Encoding.ASCII.GetString(data).ToLower().Contains(s.ToLower());
 		}
 	}
 }
