@@ -1,5 +1,5 @@
 //TODO:
-//"The first index of a file must start at 00:00:00" - if this isnt the case, we'll be doing nonsense for sure. so catch it
+//"The first index of a file must start at 00:00:00" - if this isn't the case, we'll be doing nonsense for sure. so catch it
 //Recover the idea of TOCPoints maybe, as it's a more flexible way of generating the structure.
 
 //TODO

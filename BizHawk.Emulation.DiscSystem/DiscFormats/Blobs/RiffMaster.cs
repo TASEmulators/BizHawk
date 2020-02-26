@@ -9,8 +9,8 @@ namespace BizHawk.Emulation.DiscSystem
 	/// <summary>
 	/// Parses a RIFF file into a live data structure. 
 	/// References to large blobs remain mostly on disk in the file which RiffMaster keeps a reference too. Dispose it to close the file.
-	/// You can modify blobs however you want and write the file back out to a new path, if youre careful (that was the original point of this)
-	/// Please be sure to test round-tripping when you make any changes. This architecture is a bit tricky to use, but it works if youre careful.
+	/// You can modify blobs however you want and write the file back out to a new path, if you're careful (that was the original point of this)
+	/// Please be sure to test round-tripping when you make any changes. This architecture is a bit tricky to use, but it works if you're careful.
 	/// TODO - clarify stream disposing semantics
 	/// </summary>
 	class RiffMaster : IDisposable

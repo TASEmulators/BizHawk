@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.DiscSystem
 	partial class Disc
 	{
 		/// <summary>
-		/// TODO - doublecheck that riffmaster is not filling memory at load-time but reading through to the disk
+		/// TODO - double-check that riffmaster is not filling memory at load-time but reading through to the disk
 		/// TODO - clarify stream disposing semantics
 		/// </summary>
 		internal class Blob_WaveFile : IBlob

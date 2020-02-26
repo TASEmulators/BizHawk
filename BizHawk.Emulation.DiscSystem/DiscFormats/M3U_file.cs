@@ -30,13 +30,13 @@ namespace BizHawk.Emulation.DiscSystem
 					}
 					if (line.StartsWith("#EXTINF:"))
 					{
-						//TODO - maybe we shouldnt be so harsh. should probably add parse options.
+						//TODO - maybe we shouldn't be so harsh. should probably add parse options.
 						if (!ext) continue;
 
 						line = line.Substring(8);
 						int cidx = line.IndexOf(',');
 
-						//dont know what to do with this, but its a comment, so ignore it
+						//don't know what to do with this, but its a comment, so ignore it
 						if (cidx == -1)
 							continue;
 

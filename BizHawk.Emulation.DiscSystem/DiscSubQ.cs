@@ -6,7 +6,7 @@
 //http://www.jbum.com/cdg_revealed.html
 
 //NOTES: the 'subchannel Q' stuff here has a lot to do with the q-Mode 1. q-Mode 2 is different, 
-//and q-Mode 1 technically is defined a little differently in the lead-in area, although the fields align so the datastructures can be reused
+//and q-Mode 1 technically is defined a little differently in the lead-in area, although the fields align so the data structures can be reused
 
 //Q subchannel basic structure: (quick ref: https://en.wikipedia.org/wiki/Compact_Disc_subcode)
 //Byte 1: (aka `status`)
@@ -24,7 +24,6 @@ namespace BizHawk.Emulation.DiscSystem
 	public enum EControlQ
 	{
 		None = 0,
-
 		PRE = 1, //Pre-emphasis enabled (audio tracks only)
 		DCP = 2, //Digital copy permitted
 		DATA = 4, //set for data tracks, clear for audio tracks
@@ -33,7 +32,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 	/// <summary>
 	/// Why did I make this a struct? I thought there might be a shitton of these and I was trying to cut down on object creation churn during disc-loading.
-	/// But I ended up mostly just having a shitton of byte[] for each buffer (I could improve that later to possibly reference a blob on top of a memorystream)
+	/// But I ended up mostly just having a shitton of byte[] for each buffer (I could improve that later to possibly reference a blob on top of a MemoryStream)
 	/// So, I should probably change that.
 	/// </summary>
 	public struct SubchannelQ

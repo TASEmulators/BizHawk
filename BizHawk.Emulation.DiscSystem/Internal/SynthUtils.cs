@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 
 		/// <summary>
-		/// Caclulates the checksum of the provided Q subchannel buffer
+		/// Calculates the checksum of the provided Q subchannel buffer
 		/// </summary>
 		public static ushort SubQ_CalcChecksum(byte[] buf12, int offset)
 		{

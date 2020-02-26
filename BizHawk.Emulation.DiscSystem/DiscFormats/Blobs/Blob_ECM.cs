@@ -21,7 +21,7 @@
 //ECM File Format reading support
 
 //TODO - make a background thread to validate the EDC. be sure to terminate thread when the Blob disposes
-//remember: may need another stream for that. the IBlob architecture doesnt demand multithreading support
+//remember: may need another stream for that. the IBlob architecture doesn-t demand multi-threading support
 
 using System;
 using System.IO;
@@ -381,7 +381,7 @@ namespace BizHawk.Emulation.DiscSystem
 //      T: the type of the sector
 //  If you encounter a Number of 0xFFFFFFFF then the blocks section is finished.
 //  If you need a 6th byte for the block header, then the block header is erroneous
-//  Increment Number, since storing 0 wouldve been useless.
+//  Increment Number, since storing 0 would've been useless.
 
 //  Now, process the block.
 //    Type 0:

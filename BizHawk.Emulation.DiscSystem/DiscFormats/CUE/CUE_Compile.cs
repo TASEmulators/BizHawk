@@ -349,7 +349,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 				//well now, if it's the first in the file, an implicit index will take its value from 00:00:00 in the file
 				//this is the kind of thing I sought to solve originally by 'interpreting' the file, but it seems easy enough to handle this way
-				//my carlin.cue tests this but test cases shouldnt be hard to find
+				//my carlin.cue tests this but test cases shouldn't be hard to find
 				if (curr_track.IsFirstInFile)
 					index0.FileMSF = new Timestamp(0);
 

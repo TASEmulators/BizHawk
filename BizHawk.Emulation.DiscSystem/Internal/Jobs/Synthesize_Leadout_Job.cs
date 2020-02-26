@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 	/// <summary>
 	/// generates lead-out sectors according to very crude approximations
-	/// TODO - this isnt being used right now
+	/// TODO - this isn't being used right now
 	/// </summary>
 	class Synthesize_LeadoutJob
 	{

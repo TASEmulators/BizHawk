@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.DiscSystem
 		public DiscStructure Structure;
 
 		/// <summary>
-		/// DiscStructure.Session 1 of the disc, since that's all thats needed most of the time.
+		/// DiscStructure.Session 1 of the disc, since that's all that's needed most of the time.
 		/// </summary>
 		public DiscStructure.Session Session1 => Structure.Sessions[1];
 
@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		/// <summary>
 		/// The DiscTOCRaw corresponding to the RawTOCEntries.
-		/// TODO - there's one of these for every session, so... having one here doesnt make sense
+		/// TODO - there's one of these for every session, so... having one here doesn't make sense
 		/// so... 
 		/// TODO - remove me
 		/// </summary>

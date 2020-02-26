@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.DiscSystem
 		TurboCD,
 
 		/// <summary>
-		/// MegaDrive addon
+		/// MegaDrive add-on
 		/// </summary>
 		MegaCD,
 
@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.DiscSystem
 		CDi,
 
 		/// <summary>
-		/// Nintendo Gamecube
+		/// Nintendo GameCube
 		/// </summary>
 		GameCube,
 
@@ -168,7 +168,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			if (!isIso)
 			{
-				// its much quicker to detect dreamcast from ISO data. Only do this if ISO is not detected
+				// its much quicker to detect DreamCast from ISO data. Only do this if ISO is not detected
 				if (DetectDreamcast())
 					return DiscType.Dreamcast;
 			}

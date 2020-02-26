@@ -763,7 +763,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 					IBlob mdfBlob = null;
 					
-					// check for track pregap and create if neccessary
+					// check for track pregap and create if necessary
 					// this is specified in the track extras block
 					if (track.ExtraBlock.Pregap > 0)
 					{

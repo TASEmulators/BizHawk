@@ -26,7 +26,7 @@
 			var md = new MednaDisc(IN_FromPath);
 			disc.DisposableResources.Add(md);
 
-			//"length of disc" for bizhawk's purposes (NOT a robust concept!) is determined by beginning of leadout track
+			//"length of disc" for BizHawk's purposes (NOT a robust concept!) is determined by beginning of leadout track
 			var m_leadoutTrack = md.TOCTracks[100];
 			int nSectors = (int)m_leadoutTrack.lba;
 

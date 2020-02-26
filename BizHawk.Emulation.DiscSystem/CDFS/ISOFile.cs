@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// ISO9660
 	/// -------
 	/// It should work for most disk images that are created 
-	/// by the stanard disk imaging software. This class is by no means
+	/// by the standard disk imaging software. This class is by no means
 	/// robust to all variations of ISO9660.
 	/// Also, this class does not currently support the UDF file system.
 	/// 
@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// (asni - 20171013) - Class modified to be able to detect and consume Green 
 	/// Book disc images.
 	/// 
-	/// The implemtation of CD-I in this class adds some (but not all) additional 
+	/// The implementation of CD-I in this class adds some (but not all) additional 
 	/// properties to the class structures that CD-I brings. This means that
 	/// the same ISO class structures can be returned for both standards.
 	/// These small additions are readily found in ISOVolumeDescriptor.cs
