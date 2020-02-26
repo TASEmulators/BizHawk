@@ -29,8 +29,10 @@ namespace BizHawk.Emulation.DiscSystem
 			SpecialCRC32 crc = new SpecialCRC32();
 			byte[] buffer2352 = new byte[2352];
 
-			var dsr = new DiscSectorReader(disc);
-			dsr.Policy.DeterministicClearBuffer = false; //live dangerously
+			var dsr = new DiscSectorReader(disc)
+			{
+				Policy = { DeterministicClearBuffer = false } // live dangerously
+			};
 
 			//hash the TOC
 			crc.Add((int)disc.TOC.Session1Format);
@@ -63,8 +65,11 @@ namespace BizHawk.Emulation.DiscSystem
 			SpecialCRC32 crc = new SpecialCRC32();
 			byte[] buffer2352 = new byte[2352];
 
-			var dsr = new DiscSectorReader(disc);
-			dsr.Policy.DeterministicClearBuffer = false; //live dangerously
+			var dsr = new DiscSectorReader(disc)
+			{
+				Policy = { DeterministicClearBuffer = false } // live dangerously
+			};
+
 
 			//read all sectors for redump hash
 			for (int i = 0; i < disc.Session1.LeadoutLBA; i++)

@@ -294,9 +294,10 @@ namespace BizHawk.Emulation.DiscSystem
 			EndianBitConverter bcBig = EndianBitConverter.CreateForBigEndian();
 			bool isDvd = false;
 
-			AFile aFile = new AFile();
-
-			aFile.MDSPath = (stream as FileStream).Name;
+			var aFile = new AFile
+			{
+				MDSPath = (stream as FileStream).Name
+			};
 
 			stream.Seek(0, SeekOrigin.Begin);
 
@@ -324,17 +325,17 @@ namespace BizHawk.Emulation.DiscSystem
 				stream.Read(sessionHeader, 0, 24);
 				//sessionHeader.Reverse().ToArray();
 
-				ASession session = new ASession();
-
-				session.SessionStart = bc.ToInt32(sessionHeader.Take(4).ToArray());
-				session.SessionEnd = bc.ToInt32(sessionHeader.Skip(4).Take(4).ToArray());
-				session.SessionNumber = bc.ToInt16(sessionHeader.Skip(8).Take(2).ToArray());
-				session.AllBlocks = sessionHeader[10];
-				session.NonTrackBlocks = sessionHeader[11];
-				session.FirstTrack = bc.ToInt16(sessionHeader.Skip(12).Take(2).ToArray());
-				session.LastTrack = bc.ToInt16(sessionHeader.Skip(14).Take(2).ToArray());
-				session.TrackOffset = bc.ToInt32(sessionHeader.Skip(20).Take(4).ToArray());
-
+				var session = new ASession
+				{
+					SessionStart = bc.ToInt32(sessionHeader.Take(4).ToArray()),
+					SessionEnd = bc.ToInt32(sessionHeader.Skip(4).Take(4).ToArray()),
+					SessionNumber = bc.ToInt16(sessionHeader.Skip(8).Take(2).ToArray()),
+					AllBlocks = sessionHeader[10],
+					NonTrackBlocks = sessionHeader[11],
+					FirstTrack = bc.ToInt16(sessionHeader.Skip(12).Take(2).ToArray()),
+					LastTrack = bc.ToInt16(sessionHeader.Skip(14).Take(2).ToArray()),
+					TrackOffset = bc.ToInt32(sessionHeader.Skip(20).Take(4).ToArray())
+				};
 
 				//mdsf.Sessions.Add(session);
 				aSessions.Add(session.SessionNumber, session);
@@ -419,9 +420,11 @@ namespace BizHawk.Emulation.DiscSystem
 						stream.Seek(track.FooterOffset, SeekOrigin.Begin);
 						stream.Read(foot, 0, 16);
 
-						AFooter f = new AFooter();
-						f.FilenameOffset = bc.ToInt32(foot.Take(4).ToArray());
-						f.WideChar = bc.ToInt32(foot.Skip(4).Take(4).ToArray());
+						var f = new AFooter
+						{
+							FilenameOffset = bc.ToInt32(foot.Take(4).ToArray()),
+							WideChar = bc.ToInt32(foot.Skip(4).Take(4).ToArray())
+						};
 						track.FooterBlocks.Add(f);
 						track.FooterBlocks = track.FooterBlocks.Distinct().ToList();
 
@@ -583,8 +586,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public static LoadResults LoadMDSPath(string path)
 		{
-			LoadResults ret = new LoadResults();
-			ret.MdsPath = path;
+			var ret = new LoadResults { MdsPath = path };
 			//ret.MdfPath = Path.ChangeExtension(path, ".mdf");
 			try
 			{

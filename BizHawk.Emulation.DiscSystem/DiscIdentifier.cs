@@ -100,12 +100,13 @@ namespace BizHawk.Emulation.DiscSystem
 		public DiscIdentifier(Disc disc)
 		{
 			_disc = disc;
-			_dsr = new DiscSectorReader(disc);
-
-			//the first check for mode 0 should be sufficient for blocking attempts to read audio sectors
-			//but github #928 had a data track with an audio sector
-			//so let's be careful here.. we're just trying to ID things, not be robust
-			_dsr.Policy.ThrowExceptions2048 = false;
+			_dsr = new DiscSectorReader(disc)
+			{
+				// the first check for mode 0 should be sufficient for blocking attempts to read audio sectors
+				// but github #928 had a data track with an audio sector
+				// so let's be careful here.. we're just trying to ID things, not be robust
+				Policy = {ThrowExceptions2048 = false}
+			};
 		}
 
 		private readonly Disc _disc;

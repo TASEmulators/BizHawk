@@ -78,8 +78,7 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			int totsize = lba_count * 2048;
 			byte[] ret = new byte[totsize];
-			var dsr = new DiscSectorReader(this);
-			dsr.Policy.DeterministicClearBuffer = false;
+			var dsr = new DiscSectorReader(this) { Policy = { DeterministicClearBuffer = false } };
 			for (int i = 0; i < lba_count; i++)
 			{
 				dsr.ReadLBA_2048(lba_start + i, ret, i*2048);

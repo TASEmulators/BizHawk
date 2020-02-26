@@ -192,8 +192,10 @@ namespace BizHawk.Emulation.DiscSystem
 				if (line == "") continue;
 				if (line.StartsWith("["))
 				{
-					currSection = new CCDSection();
-					currSection.Name = line.Trim('[', ']').ToUpper();
+					currSection = new CCDSection
+					{
+						Name = line.Trim('[', ']').ToUpper()
+					};
 					sections.Add(currSection);
 				}
 				else
@@ -328,10 +330,12 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public static LoadResults LoadCCDPath(string path)
 		{
-			LoadResults ret = new LoadResults();
-			ret.CcdPath = path;
-			ret.ImgPath = Path.ChangeExtension(path, ".img");
-			ret.SubPath = Path.ChangeExtension(path, ".sub");
+			var ret = new LoadResults
+			{
+				CcdPath = path,
+				ImgPath = Path.ChangeExtension(path, ".img"),
+				SubPath = Path.ChangeExtension(path, ".sub")
+			};
 			try
 			{
 				if (!File.Exists(path)) throw new CCDParseException("Malformed CCD format: nonexistent CCD file!");

@@ -127,10 +127,8 @@ namespace BizHawk.Emulation.DiscSystem
 				//TODO - make sure code is designed so no matter what happens, a disc is disposed in case of errors.
 				//perhaps the CUE_Format2 (once renamed to something like Context) can handle that
 				var cuePath = IN_FromPath;
-				var cueContext = new CUE_Context();
-				cueContext.DiscMountPolicy = IN_DiscMountPolicy;
+				var cueContext = new CUE_Context { DiscMountPolicy = IN_DiscMountPolicy, Resolver = cfr };
 
-				cueContext.Resolver = cfr;
 				if (!cfr.IsHardcodedResolve) cfr.SetBaseDirectory(Path.GetDirectoryName(infile));
 
 				//parse the cue file
@@ -146,11 +144,13 @@ namespace BizHawk.Emulation.DiscSystem
 				if (!okParse)
 					goto DONE;
 
-				//compile the cue file:
-				//includes this work: resolve required bin files and find out what it's gonna take to load the cue
-				var compileJob = new CompileCueJob();
-				compileJob.IN_CueContext = cueContext;
-				compileJob.IN_CueFile = parseJob.OUT_CueFile;
+				// compile the cue file:
+				// includes this work: resolve required bin files and find out what it's gonna take to load the cue
+				var compileJob = new CompileCueJob
+				{
+					IN_CueContext = cueContext,
+					IN_CueFile = parseJob.OUT_CueFile
+				};
 				bool okCompile = true;
 				try { compileJob.Run(); }
 				catch (DiscJobAbortException) { okCompile = false; compileJob.FinishLog();  }
@@ -168,8 +168,7 @@ namespace BizHawk.Emulation.DiscSystem
 				}
 
 				//actually load it all up
-				var loadJob = new LoadCueJob();
-				loadJob.IN_CompileJob = compileJob;
+				var loadJob = new LoadCueJob { IN_CompileJob = compileJob };
 				loadJob.Run();
 				//TODO - need better handling of log output
 				if (!string.IsNullOrEmpty(loadJob.OUT_Log)) Console.WriteLine(loadJob.OUT_Log);

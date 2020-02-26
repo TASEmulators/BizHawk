@@ -392,10 +392,11 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 		void AddIndex(CUE_File.Command.INDEX indexCommand)
 		{
-			var newindex = new CompiledCueIndex();
-			newindex.FileMSF = indexCommand.Timestamp;
-			newindex.Number = indexCommand.Number;
-			curr_track.Indexes.Add(newindex);
+			curr_track.Indexes.Add(new CompiledCueIndex
+			{
+				FileMSF = indexCommand.Timestamp,
+				Number = indexCommand.Number
+			});
 		}
 
 		public void Run()

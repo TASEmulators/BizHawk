@@ -280,9 +280,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					SS_Base ss = null;
 					if (generateGap)
 					{
-						var ss_gap = new SS_Gap();
-						ss_gap.TrackType = qTrack.CompiledCueTrack.TrackType;
-						ss = ss_gap;
+						ss = new SS_Gap { TrackType = qTrack.CompiledCueTrack.TrackType };
 					}
 					else
 					{
@@ -353,8 +351,10 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				int specifiedPostgapLength = cct.PostgapLength.Sector;
 				for (int s = 0; s < specifiedPostgapLength; s++)
 				{
-					var ss = new SS_Gap();
-					ss.TrackType = cct.TrackType; //TODO - old track type in some < -150 cases?
+					var ss = new SS_Gap
+					{
+						TrackType = cct.TrackType  // TODO - old track type in some < -150 cases?
+					};
 
 					//-subq-
 					byte ADR = 1;

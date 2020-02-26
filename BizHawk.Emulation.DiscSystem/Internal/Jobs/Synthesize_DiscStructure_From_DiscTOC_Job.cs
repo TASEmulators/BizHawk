@@ -11,8 +11,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <exception cref="InvalidOperationException">first track of <see cref="TOCRaw"/> is not <c>1</c></exception>
 		public void Run()
 		{
-			var dsr = new DiscSectorReader(IN_Disc);
-			dsr.Policy.DeterministicClearBuffer = false;
+			var dsr = new DiscSectorReader(IN_Disc) { Policy = { DeterministicClearBuffer = false } };
 
 			Result = new DiscStructure();
 			var session = new DiscStructure.Session();
