@@ -416,7 +416,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("getversion", "Returns the current stable BizHawk version")]
 		public static string GetVersion()
 		{
-			return VersionInfo.Mainversion;
+			return VersionInfo.MainVersion;
 		}
 
 		[LuaMethodExample("local nlcliget = client.getavailabletools( );")]

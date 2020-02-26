@@ -17,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			linkLabel1.LinkVisited = true;
-			System.Diagnostics.Process.Start("http://tasvideos.org/Bizhawk.html");
+			Process.Start(VersionInfo.HomePage);
 		}
 
 		private void OK_Click(object sender, EventArgs e)
@@ -27,7 +27,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BizBox_Load(object sender, EventArgs e)
 		{
-			string mainVersion = VersionInfo.Mainversion;
+			string mainVersion = VersionInfo.MainVersion;
 			if (IntPtr.Size == 8)
 			{
 				mainVersion += " (x64)";
@@ -40,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 				: $"Version {mainVersion} (GIT {SubWCRev.GIT_BRANCH}#{SubWCRev.GIT_SHORTHASH})";
 
 			VersionLabel.Text = $"Version {mainVersion}";
-			DateLabel.Text = VersionInfo.RELEASEDATE;
+			DateLabel.Text = VersionInfo.ReleaseDate;
 
 			var cores = Assembly
 				.Load("BizHawk.Emulation.Cores")

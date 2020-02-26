@@ -316,7 +316,7 @@ namespace BizHawk.Client.Common
 		public string LibretroCore { get; set; }
 
 		// ReSharper disable once UnusedMember.Global
-		public string LastWrittenFrom { get; set; } = VersionInfo.Mainversion;
+		public string LastWrittenFrom { get; set; } = VersionInfo.MainVersion;
 
 		// ReSharper disable once UnusedMember.Global
 		public string LastWrittenFromDetailed { get; set; } = VersionInfo.GetEmuVersion();

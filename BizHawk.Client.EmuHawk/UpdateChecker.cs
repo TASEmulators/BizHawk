@@ -52,8 +52,8 @@ namespace BizHawk.Client.EmuHawk
 		public static bool IsNewVersionAvailable =>
 			AutoCheckEnabled
 			&& LatestVersion != IgnoreVersion
-			&& ParseVersion(VersionInfo.Mainversion) != 0 // Avoid notifying if current version string is invalid
-			&& ParseVersion(LatestVersion) > ParseVersion(VersionInfo.Mainversion);
+			&& ParseVersion(VersionInfo.MainVersion) != 0 // Avoid notifying if current version string is invalid
+			&& ParseVersion(LatestVersion) > ParseVersion(VersionInfo.MainVersion);
 
 		public static void IgnoreNewVersion()
 		{
