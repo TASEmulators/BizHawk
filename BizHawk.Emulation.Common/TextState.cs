@@ -113,10 +113,10 @@ namespace BizHawk.Emulation.Common
 		{
 			return new TextStateFPtrs
 			{
-				Save = new TextStateFPtrs.DataFunction(Save),
+				Save = Save,
 				Load = null,
-				EnterSection = new TextStateFPtrs.SectionFunction(EnterSectionSave),
-				ExitSection = new TextStateFPtrs.SectionFunction(ExitSection)
+				EnterSection = EnterSectionSave,
+				ExitSection = ExitSection
 			};
 		}
 
@@ -125,9 +125,9 @@ namespace BizHawk.Emulation.Common
 			return new TextStateFPtrs
 			{
 				Save = null,
-				Load = new TextStateFPtrs.DataFunction(Load),
-				EnterSection = new TextStateFPtrs.SectionFunction(EnterSectionLoad),
-				ExitSection = new TextStateFPtrs.SectionFunction(ExitSection)
+				Load = Load,
+				EnterSection = EnterSectionLoad,
+				ExitSection = ExitSection
 			};
 		}
 	}

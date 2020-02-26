@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Common
 
 		public bool Has(string name)
 		{
-			return this.FirstOrDefault((md) => md.Name == name) != null;
+			return this.Any(md => md.Name == name);
 		}
 
 		public MemoryDomainList(IList<MemoryDomain> domains)
@@ -28,16 +28,7 @@ namespace BizHawk.Emulation.Common
 
 		public MemoryDomain MainMemory
 		{
-			get
-			{
-				if (_mainMemory != null)
-				{
-					return _mainMemory;
-				}
-
-				return this.First();
-			}
-
+			get => _mainMemory ?? this.First();
 			set => _mainMemory = value;
 		}
 
@@ -83,9 +74,7 @@ namespace BizHawk.Emulation.Common
 		private static void TryMerge<T>(MemoryDomain dest, MemoryDomain src, Action<T, T> func)
 			where T : MemoryDomain
 		{
-			var d1 = dest as T;
-			var s1 = src as T;
-			if (d1 != null && s1 != null)
+			if (dest is T d1 && src is T s1)
 			{
 				func(d1, s1);
 			}

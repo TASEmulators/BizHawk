@@ -140,36 +140,19 @@ namespace BizHawk.Emulation.Common
 					};
 
 					// remove a hash type identifier. well don't really need them for indexing (they're just there for human purposes)
-					switch (items[1].Trim())
+					game.Status = items[1].Trim()
+					switch
 					{
-						case "B":
-							game.Status = RomStatus.BadDump;
-							break;
-						case "V":
-							game.Status = RomStatus.BadDump;
-							break;
-						case "T":
-							game.Status = RomStatus.TranslatedRom;
-							break;
-						case "O":
-							game.Status = RomStatus.Overdump;
-							break;
-						case "I":
-							game.Status = RomStatus.Bios;
-							break;
-						case "D":
-							game.Status = RomStatus.Homebrew;
-							break;
-						case "H":
-							game.Status = RomStatus.Hack;
-							break;
-						case "U":
-							game.Status = RomStatus.Unknown;
-							break;
-						default:
-							game.Status = RomStatus.GoodDump;
-							break;
-					}
+						"B" => RomStatus.BadDump,
+						"V" => RomStatus.BadDump,
+						"T" => RomStatus.TranslatedRom,
+						"O" => RomStatus.Overdump,
+						"I" => RomStatus.Bios,
+						"D" => RomStatus.Homebrew,
+						"H" => RomStatus.Hack,
+						"U" => RomStatus.Unknown,
+						_ => RomStatus.GoodDump
+					};
 
 					game.Name = items[2];
 					game.System = items[3];
@@ -342,7 +325,7 @@ namespace BizHawk.Emulation.Common
 					break;
 
 				case ".DSK":
-					var dId = new DSKIdentifier(romData);
+					var dId = new DskIdentifier(romData);
 					game.System = dId.IdentifiedSystem;
 					break;
 

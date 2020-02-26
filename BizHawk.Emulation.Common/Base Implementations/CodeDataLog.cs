@@ -61,10 +61,7 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// Whether the CDL is tracking a block with the given name
 		/// </summary>
-		public bool Has(string blockName)
-		{
-			return ContainsKey(blockName);
-		}
+		public bool Has(string blockName) => ContainsKey(blockName);
 
 		/// <summary>
 		/// This is just a hook, if needed, to readily suspend logging, without having to rewire the core
@@ -195,17 +192,16 @@ namespace BizHawk.Emulation.Common
 		{
 			var br = new BinaryReader(s);
 			string id = br.ReadString();
-			if (id == "BIZHAWK-CDL-1")
+			switch (id)
 			{
-				SubType = "PCE";
-			}
-			else if (id == "BIZHAWK-CDL-2")
-			{
-				SubType = br.ReadString().TrimEnd(' ');
-			}
-			else
-			{
-				throw new InvalidDataException("File is not a BizHawk CDL file!");
+				case "BIZHAWK-CDL-1":
+					SubType = "PCE";
+					break;
+				case "BIZHAWK-CDL-2":
+					SubType = br.ReadString().TrimEnd(' ');
+					break;
+				default:
+					throw new InvalidDataException("File is not a BizHawk CDL file!");
 			}
 
 			int count = br.ReadInt32();
@@ -216,9 +212,7 @@ namespace BizHawk.Emulation.Common
 				byte[] data = br.ReadBytes(len);
 				this[key] = data;
 			}
-
 		}
-	
 	}
 }
 

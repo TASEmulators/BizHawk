@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Common
 	/// </summary>
 	public class SpeexResampler : IDisposable, ISoundProvider
 	{
-		// to accept an ISyncSoundProvder input
+		// to accept an ISyncSoundProvider input
 		private readonly ISoundProvider _input;
 
 		// function to call to dispatch output
@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Common
 			QUALITY_MIN = 0,
 			QUALITY_DEFAULT = 4,
 			QUALITY_VOIP = 3,
-			QUALITY_DESKTOP = 5,
+			QUALITY_DESKTOP = 5
 		}
 
 		private static class LibSpeexDSP

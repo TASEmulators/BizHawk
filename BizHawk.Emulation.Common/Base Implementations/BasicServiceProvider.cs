@@ -65,12 +65,7 @@ namespace BizHawk.Emulation.Common
 
 		public object GetService(Type t)
 		{
-			if (_services.TryGetValue(t, out var service))
-			{
-				return service;
-			}
-
-			return null;
+			return _services.TryGetValue(t, out var service) ? service : null;
 		}
 
 		public bool HasService<T>()

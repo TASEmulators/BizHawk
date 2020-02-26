@@ -7,15 +7,15 @@ namespace BizHawk.Emulation.Common
 	/// This is here because (for probably good reason) there does not appear to be a route
 	/// to BizHawk.Emulation.Cores from BizHawk.Emulation.Common
 	/// </summary>
-	public class DSKIdentifier
+	public class DskIdentifier
 	{
+		private readonly byte[] _data;
+		private string _possibleIdent = "";
+
 		/// <summary>
 		/// Default fallthrough to AppleII
 		/// </summary>
-		public string IdentifiedSystem = "AppleII";
-		private string PossibleIdent = "";
-
-		private readonly byte[] data;
+		public string IdentifiedSystem { get; set; } = "AppleII";
 
 		// dsk header
 		public byte NumberOfTracks { get; set; }
@@ -23,28 +23,27 @@ namespace BizHawk.Emulation.Common
 		public int[] TrackSizes { get; set; }
 
 		// state
-		public int CylinderCount;
-		public int SideCount;
-		public int BytesPerTrack;
+		public int SideCount { get; set; }
+		public int BytesPerTrack { get; set; }
 
-		public Track[] Tracks = null;
+		public Track[] Tracks { get; set; }
 
-		public DSKIdentifier(byte[] imageData)
+		public DskIdentifier(byte[] imageData)
 		{
-			data = imageData;
+			_data = imageData;
 			ParseDskImage();
 		}
 
 		private void ParseDskImage()
 		{
-			string ident = Encoding.ASCII.GetString(data, 0, 16).ToUpper();
+			string ident = Encoding.ASCII.GetString(_data, 0, 16).ToUpper();
 			if (ident.Contains("MV - CPC"))
 			{
-				ParseDSK();
+				ParseDsk();
 			}
 			else if (ident.Contains("EXTENDED CPC DSK"))
 			{
-				ParseEDSK();
+				ParseEDsk();
 			}
 			else
 			{
@@ -66,7 +65,7 @@ namespace BizHawk.Emulation.Common
 				if (trk.Sectors[0].SectorData[0] == 0 && trk.Sectors[0].SectorData[1] == 0
 					&& trk.Sectors[0].SectorData[2] == 40)
 				{
-					PossibleIdent = "ZXSpectrum";
+					_possibleIdent = "ZXSpectrum";
 				}
 			}
 
@@ -90,9 +89,7 @@ namespace BizHawk.Emulation.Common
 			// check for bootable status
 			if (trk.Sectors[0].SectorData != null && trk.Sectors[0].SectorData.Length > 0)
 			{
-				int chksm = trk.Sectors[0].GetChecksum256();
-
-				switch (chksm)
+				switch (trk.Sectors[0].GetChecksum256())
 				{
 					case 3:
 						IdentifiedSystem = "ZXSpectrum";
@@ -155,7 +152,7 @@ namespace BizHawk.Emulation.Common
 				case 65:
 				case 193:
 					// possible CPC custom
-					PossibleIdent = "AmstradCPC";
+					_possibleIdent = "AmstradCPC";
 					break;
 			}
 
@@ -177,13 +174,13 @@ namespace BizHawk.Emulation.Common
 											IdentifiedSystem = "ZXSpectrum";
 											return;
 										default:
-											PossibleIdent = "ZXSpectrum";
+											_possibleIdent = "ZXSpectrum";
 											break;
 									}
 								}
 								else
 								{
-									PossibleIdent = "ZXSpectrum";
+									_possibleIdent = "ZXSpectrum";
 								}
 								break;
 							case 1:
@@ -199,7 +196,7 @@ namespace BizHawk.Emulation.Common
 								}
 								else
 								{
-									PossibleIdent = "ZXSpectrum";
+									_possibleIdent = "ZXSpectrum";
 								}
 								break;
 						}
@@ -216,56 +213,59 @@ namespace BizHawk.Emulation.Common
 			}
 
 			// last chance. use the possible value
-			if (IdentifiedSystem == "AppleII" && PossibleIdent != "")
+			if (IdentifiedSystem == "AppleII" && _possibleIdent != "")
 			{
 				IdentifiedSystem = "ZXSpectrum";
 			}
 		}
 
-		private void ParseDSK()
+		private void ParseDsk()
 		{
-			NumberOfTracks = data[0x30];
-			NumberOfSides = data[0x31];
+			NumberOfTracks = _data[0x30];
+			NumberOfSides = _data[0x31];
 			TrackSizes = new int[NumberOfTracks * NumberOfSides];
 			Tracks = new Track[NumberOfTracks * NumberOfSides];
 			int pos = 0x32;
 			for (int i = 0; i < NumberOfTracks * NumberOfSides; i++)
 			{
-				TrackSizes[i] = (ushort)(data[pos] | data[pos + 1] << 8);
+				TrackSizes[i] = (ushort)(_data[pos] | _data[pos + 1] << 8);
 			}
 			pos = 0x100;
 			for (int i = 0; i < NumberOfTracks * NumberOfSides; i++)
 			{
 				if (TrackSizes[i] == 0)
 				{
-					Tracks[i] = new Track();
-					Tracks[i].Sectors = new Sector[0];
+					Tracks[i] = new Track { Sectors = new Sector[0] };
 					continue;
 				}
 				int p = pos;
-				Tracks[i] = new Track();
-				Tracks[i].TrackIdent = Encoding.ASCII.GetString(data, p, 12);
+				Tracks[i] = new Track
+				{
+					TrackIdent = Encoding.ASCII.GetString(_data, p, 12)
+				};
 				p += 16;
-				Tracks[i].TrackNumber = data[p++];
-				Tracks[i].SideNumber = data[p++];
+				Tracks[i].TrackNumber = _data[p++];
+				Tracks[i].SideNumber = _data[p++];
 				p += 2;
-				Tracks[i].SectorSize = data[p++];
-				Tracks[i].NumberOfSectors = data[p++];
-				Tracks[i].GAP3Length = data[p++];
-				Tracks[i].FillerByte = data[p++];
-				int dpos = pos + 0x100;
+				Tracks[i].SectorSize = _data[p++];
+				Tracks[i].NumberOfSectors = _data[p++];
+				Tracks[i].Gap3Length = _data[p++];
+				Tracks[i].FillerByte = _data[p++];
+				int dPos = pos + 0x100;
 				Tracks[i].Sectors = new Sector[Tracks[i].NumberOfSectors];
 				for (int s = 0; s < Tracks[i].NumberOfSectors; s++)
 				{
-					Tracks[i].Sectors[s] = new Sector();
+					Tracks[i].Sectors[s] = new Sector
+					{
+						TrackNumber = _data[p++],
+						SideNumber = _data[p++],
+						SectorID = _data[p++],
+						SectorSize = _data[p++],
+						Status1 = _data[p++],
+						Status2 = _data[p++],
+						ActualDataByteLength = (ushort) (_data[p] | _data[p + 1] << 8)
+					};
 
-					Tracks[i].Sectors[s].TrackNumber = data[p++];
-					Tracks[i].Sectors[s].SideNumber = data[p++];
-					Tracks[i].Sectors[s].SectorID = data[p++];
-					Tracks[i].Sectors[s].SectorSize = data[p++];
-					Tracks[i].Sectors[s].Status1 = data[p++];
-					Tracks[i].Sectors[s].Status2 = data[p++];
-					Tracks[i].Sectors[s].ActualDataByteLength = (ushort)(data[p] | data[p + 1] << 8);
 					p += 2;
 					if (Tracks[i].Sectors[s].SectorSize == 0)
 					{
@@ -286,64 +286,64 @@ namespace BizHawk.Emulation.Common
 					Tracks[i].Sectors[s].SectorData = new byte[Tracks[i].Sectors[s].ActualDataByteLength];
 					for (int b = 0; b < Tracks[i].Sectors[s].ActualDataByteLength; b++)
 					{
-						Tracks[i].Sectors[s].SectorData[b] = data[dpos + b];
+						Tracks[i].Sectors[s].SectorData[b] = _data[dPos + b];
 					}
-					dpos += Tracks[i].Sectors[s].ActualDataByteLength;
+					dPos += Tracks[i].Sectors[s].ActualDataByteLength;
 				}
 				pos += TrackSizes[i];
 			}
 		}
 
-		private void ParseEDSK()
+		private void ParseEDsk()
 		{
-			NumberOfTracks = data[0x30];
-			NumberOfSides = data[0x31];
+			NumberOfTracks = _data[0x30];
+			NumberOfSides = _data[0x31];
 			TrackSizes = new int[NumberOfTracks * NumberOfSides];
 			Tracks = new Track[NumberOfTracks * NumberOfSides];
 			int pos = 0x34;
 			for (int i = 0; i < NumberOfTracks * NumberOfSides; i++)
 			{
-				TrackSizes[i] = data[pos++] * 256;
+				TrackSizes[i] = _data[pos++] * 256;
 			}
 			pos = 0x100;
 			for (int i = 0; i < NumberOfTracks * NumberOfSides; i++)
 			{
 				if (TrackSizes[i] == 0)
 				{
-					Tracks[i] = new Track();
-					Tracks[i].Sectors = new Sector[0];
+					Tracks[i] = new Track { Sectors = new Sector[0] };
 					continue;
 				}
 				int p = pos;
-				Tracks[i] = new Track();
-				Tracks[i].TrackIdent = Encoding.ASCII.GetString(data, p, 12);
+				Tracks[i] = new Track { TrackIdent = Encoding.ASCII.GetString(_data, p, 12) };
 				p += 16;
-				Tracks[i].TrackNumber = data[p++];
-				Tracks[i].SideNumber = data[p++];
-				Tracks[i].DataRate = data[p++];
-				Tracks[i].RecordingMode = data[p++];
-				Tracks[i].SectorSize = data[p++];
-				Tracks[i].NumberOfSectors = data[p++];
-				Tracks[i].GAP3Length = data[p++];
-				Tracks[i].FillerByte = data[p++];
-				int dpos = pos + 0x100;
+				Tracks[i].TrackNumber = _data[p++];
+				Tracks[i].SideNumber = _data[p++];
+				Tracks[i].DataRate = _data[p++];
+				Tracks[i].RecordingMode = _data[p++];
+				Tracks[i].SectorSize = _data[p++];
+				Tracks[i].NumberOfSectors = _data[p++];
+				Tracks[i].Gap3Length = _data[p++];
+				Tracks[i].FillerByte = _data[p++];
+				int dPos = pos + 0x100;
 				Tracks[i].Sectors = new Sector[Tracks[i].NumberOfSectors];
 				for (int s = 0; s < Tracks[i].NumberOfSectors; s++)
 				{
-					Tracks[i].Sectors[s] = new Sector();
+					Tracks[i].Sectors[s] = new Sector
+					{
+						TrackNumber = _data[p++],
+						SideNumber = _data[p++],
+						SectorID = _data[p++],
+						SectorSize = _data[p++],
+						Status1 = _data[p++],
+						Status2 = _data[p++],
+						ActualDataByteLength = (ushort) (_data[p] | _data[p + 1] << 8)
+					};
 
-					Tracks[i].Sectors[s].TrackNumber = data[p++];
-					Tracks[i].Sectors[s].SideNumber = data[p++];
-					Tracks[i].Sectors[s].SectorID = data[p++];
-					Tracks[i].Sectors[s].SectorSize = data[p++];
-					Tracks[i].Sectors[s].Status1 = data[p++];
-					Tracks[i].Sectors[s].Status2 = data[p++];
-					Tracks[i].Sectors[s].ActualDataByteLength = (ushort)(data[p] | data[p + 1] << 8);
 					p += 2;
 					Tracks[i].Sectors[s].SectorData = new byte[Tracks[i].Sectors[s].ActualDataByteLength];
 					for (int b = 0; b < Tracks[i].Sectors[s].ActualDataByteLength; b++)
 					{
-						Tracks[i].Sectors[s].SectorData[b] = data[dpos + b];
+						Tracks[i].Sectors[s].SectorData[b] = _data[dPos + b];
 					}
 					if (Tracks[i].Sectors[s].SectorSize <= 7)
 					{
@@ -356,7 +356,7 @@ namespace BizHawk.Emulation.Common
 							}
 						}
 					}
-					dpos += Tracks[i].Sectors[s].ActualDataByteLength;
+					dPos += Tracks[i].Sectors[s].ActualDataByteLength;
 				}
 				pos += TrackSizes[i];
 			}
@@ -373,7 +373,7 @@ namespace BizHawk.Emulation.Common
 			public byte RecordingMode { get; set; }
 			public byte SectorSize { get; set; }
 			public byte NumberOfSectors { get; set; }
-			public byte GAP3Length { get; set; }
+			public byte Gap3Length { get; set; }
 			public byte FillerByte { get; set; }
 			public Sector[] Sectors { get; set; }
 
@@ -383,8 +383,11 @@ namespace BizHawk.Emulation.Common
 				foreach (var s in Sectors)
 				{
 					if (s.SectorID < res)
+					{
 						res = s.SectorID;
+					}
 				}
+
 				return res;
 			}
 		}
@@ -404,10 +407,11 @@ namespace BizHawk.Emulation.Common
 			public int GetChecksum256()
 			{
 				int res = 0;
-				for (int i = 0; i < SectorData.Length; i++)
+				foreach (var b in SectorData)
 				{
-					res += SectorData[i] % 256;
+					res += b % 256;
 				}
+
 				return res;
 			}
 		}

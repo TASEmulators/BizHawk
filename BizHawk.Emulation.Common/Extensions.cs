@@ -188,12 +188,7 @@ namespace BizHawk.Emulation.Common
 
 		public static bool CanDisassemble(this IEmulator core)
 		{
-			if (core == null)
-			{
-				return false;
-			}
-
-			return core.ServiceProvider.HasService<IDisassemblable>();
+			return core != null && core.ServiceProvider.HasService<IDisassemblable>();
 		}
 
 		public static IDisassemblable AsDisassembler(this IEmulator core)
