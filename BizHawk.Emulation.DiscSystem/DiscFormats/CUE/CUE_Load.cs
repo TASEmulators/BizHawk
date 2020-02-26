@@ -18,8 +18,6 @@
 //POSTGAP commands are special : TBD
 
 using System;
-using System.Linq;
-using System.Text;
 using System.IO;
 using System.Collections.Generic;
 

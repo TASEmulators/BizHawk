@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.IO;
+﻿using System.IO;
 
 namespace BizHawk.Emulation.DiscSystem
 {
