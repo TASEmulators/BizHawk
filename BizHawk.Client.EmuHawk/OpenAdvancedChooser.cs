@@ -10,6 +10,18 @@ using BizHawk.Client.Common;
 // these match strings from OpenAdvance. should we make them constants in there?
 namespace BizHawk.Client.EmuHawk
 {
+	/// <summary>
+	/// The Advanced ROM Loader type in MainForm/RomLoader/OpenAdvancedChooser
+	/// </summary>
+	public enum AdvancedRomLoaderType
+	{
+		None,
+		LibretroLaunchNoGame,
+		LibretroLaunchGame,
+		ClassicLaunchGame,
+		MameLaunchGame
+	}
+
 	public partial class OpenAdvancedChooser : Form
 	{
 		private readonly MainForm _mainForm;
@@ -104,7 +116,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void btnMAMELaunchGame_Click(object sender, EventArgs e)
 		{
-			Result = AdvancedRomLoaderType.MAMELaunchGame;
+			Result = AdvancedRomLoaderType.MameLaunchGame;
 			DialogResult = DialogResult.OK;
 			Close();
 		}

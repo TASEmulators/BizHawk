@@ -338,7 +338,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				args.OpenAdvanced = new OpenAdvanced_OpenRom();
 			}
-			else if (oac.Result == AdvancedRomLoaderType.MAMELaunchGame)
+			else if (oac.Result == AdvancedRomLoaderType.MameLaunchGame)
 			{
 				args.OpenAdvanced = new OpenAdvanced_MAME();
 				filter = new FilesystemFilter("MAME Arcade ROMs", new[] { "zip" }).ToString();
