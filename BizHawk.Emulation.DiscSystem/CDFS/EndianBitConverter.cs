@@ -22,17 +22,13 @@ namespace BizHawk.Emulation.DiscSystem
 		/// Build a converter from little endian to the system endian-ness.
 		/// </summary>
 		/// <returns>The converter</returns>
-		public static EndianBitConverter CreateForLittleEndian() {
-			return new EndianBitConverter(!BitConverter.IsLittleEndian);
-		}
+		public static EndianBitConverter CreateForLittleEndian() => new EndianBitConverter(!BitConverter.IsLittleEndian);
 
 		/// <summary>
 		/// Build a converter from big endian to the system endian-ness.
 		/// </summary>
 		/// <returns>The converter</returns>
-		public static EndianBitConverter CreateForBigEndian() {
-			return new EndianBitConverter(BitConverter.IsLittleEndian);
-		}
+		public static EndianBitConverter CreateForBigEndian() => new EndianBitConverter(BitConverter.IsLittleEndian);
 
 		#endregion
 

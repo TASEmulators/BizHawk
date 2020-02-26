@@ -8,10 +8,7 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			public string PhysicalPath
 			{
-				get
-				{
-					return physicalPath;
-				}
+				get => physicalPath;
 				set
 				{
 					physicalPath = value;

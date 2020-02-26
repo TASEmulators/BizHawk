@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// DiscStructure.Session 1 of the disc, since that's all thats needed most of the time.
 		/// </summary>
-		public DiscStructure.Session Session1 { get { return Structure.Sessions[1]; } }
+		public DiscStructure.Session Session1 => Structure.Sessions[1];
 
 		/// <summary>
 		/// The name of a disc. Loosely based on the filename. Just for informational purposes.
