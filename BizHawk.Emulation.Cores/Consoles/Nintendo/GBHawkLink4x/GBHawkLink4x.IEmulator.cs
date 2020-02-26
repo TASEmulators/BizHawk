@@ -186,7 +186,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 				{
 					x4_clock--;
 					if (x4_clock == 0)
-					{				
+					{
+						is_pinging = false;
+
 						if (ping_byte == 0)
 						{
 							// first byte sent is 0xFE
@@ -196,7 +198,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 								{
 									A.serialport.serial_clock = 1;
 									A.serialport.going_out = (byte)(A.serialport.serial_data >> 7);
-									A.serialport.coming_in = (byte)(0xFE >> (7 - ping_bit_count));
+									A.serialport.coming_in = (byte)((0xFE >> (7 - ping_bit_count)) & 1);
 								}
 
 								received_byte |= (byte)(A.serialport.going_out << (7 - ping_bit_count));
@@ -207,7 +209,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 								{
 									B.serialport.serial_clock = 1;
 									B.serialport.going_out = (byte)(B.serialport.serial_data >> 7);
-									B.serialport.coming_in = (byte)(0xFE >> (7 - ping_bit_count));
+									B.serialport.coming_in = (byte)((0xFE >> (7 - ping_bit_count)) & 1);
 								}
 
 								received_byte |= (byte)(B.serialport.going_out << (7 - ping_bit_count));
@@ -218,7 +220,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 								{
 									C.serialport.serial_clock = 1;
 									C.serialport.going_out = (byte)(C.serialport.serial_data >> 7);
-									C.serialport.coming_in = (byte)(0xFE >> (7 - ping_bit_count));
+									C.serialport.coming_in = (byte)((0xFE >> (7 - ping_bit_count)) & 1);
 								}
 
 								received_byte |= (byte)(C.serialport.going_out << (7 - ping_bit_count));
@@ -229,7 +231,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 								{
 									D.serialport.serial_clock = 1;
 									D.serialport.going_out = (byte)(D.serialport.serial_data >> 7);
-									D.serialport.coming_in = (byte)(0xFE >> (7 - ping_bit_count));
+									D.serialport.coming_in = (byte)((0xFE >> (7 - ping_bit_count)) & 1);
 								}
 
 								received_byte |= (byte)(D.serialport.going_out << (7 - ping_bit_count));
@@ -244,6 +246,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 								{
 									begin_transmitting_cnt = 1;
 								}
+
+								//if (ping_player == 1) { Console.WriteLine(ping_player + " " + ping_byte + " " + status_byte + " " + received_byte + " " + A.serialport.serial_bits); }
+								Console.WriteLine(ping_player + " " + ping_byte + " " + status_byte + " " + received_byte);
 
 								ping_bit_count = 0;
 								received_byte = 0;
@@ -260,7 +265,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 								{
 									A.serialport.serial_clock = 1;
 									A.serialport.going_out = (byte)(A.serialport.serial_data >> 7);
-									A.serialport.coming_in = (byte)(status_byte >> (7 - ping_bit_count));
+									A.serialport.coming_in = (byte)((status_byte >> (7 - ping_bit_count)) & 1);
 								}
 
 								received_byte |= (byte)(A.serialport.going_out << (7 - ping_bit_count));
@@ -271,7 +276,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 								{
 									B.serialport.serial_clock = 1;
 									B.serialport.going_out = (byte)(B.serialport.serial_data >> 7);
-									B.serialport.coming_in = (byte)(status_byte >> (7 - ping_bit_count));
+									B.serialport.coming_in = (byte)((status_byte >> (7 - ping_bit_count)) & 1);
 								}
 
 								received_byte |= (byte)(B.serialport.going_out << (7 - ping_bit_count));
@@ -282,7 +287,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 								{
 									C.serialport.serial_clock = 1;
 									C.serialport.going_out = (byte)(C.serialport.serial_data >> 7);
-									C.serialport.coming_in = (byte)(status_byte >> (7 - ping_bit_count));
+									C.serialport.coming_in = (byte)((status_byte >> (7 - ping_bit_count)) & 1);
 								}
 
 								received_byte |= (byte)(C.serialport.going_out << (7 - ping_bit_count));
@@ -293,7 +298,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 								{
 									D.serialport.serial_clock = 1;
 									D.serialport.going_out = (byte)(D.serialport.serial_data >> 7);
-									D.serialport.coming_in = (byte)(status_byte >> (7 - ping_bit_count));
+									D.serialport.coming_in = (byte)((status_byte >> (7 - ping_bit_count)) & 1);
 								}
 
 								received_byte |= (byte)(D.serialport.going_out << (7 - ping_bit_count));
@@ -306,23 +311,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 								// player one can start the transmission phase
 								if (((received_byte & 0xAA) == 0xAA) && (ping_player == 1))
 								{
-									begin_transmitting_cnt = 1;
+									begin_transmitting_cnt += 1;
 
-									if (begin_transmitting_cnt == 3)
+									if ((begin_transmitting_cnt == 2) && (ping_byte >= 2))
 									{
 										is_transmitting = true;
 										is_pinging = false;
 										Console.WriteLine("transmitting");
 									}
 								}
-								else if (((received_byte & 0x88) == 0x88) && (ping_byte >= 2))
+
+								if (((received_byte & 0x88) == 0x88) && (ping_byte >= 2))
 								{
 									status_byte |= (byte)(1 << (3 + ping_player));
 
 									
 								}
 
-								//Console.WriteLine(ping_player + " " + ping_byte + " " + status_byte + " " + received_byte);
+								//if (ping_player == 1) { Console.WriteLine(ping_player + " " + ping_byte + " " + status_byte + " " + received_byte + " " + A.serialport.serial_bits); }
+								Console.WriteLine(ping_player + " " + ping_byte + " " + status_byte + " " + received_byte);
 
 								ping_bit_count = 0;
 								received_byte = 0;
@@ -340,30 +347,59 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 
 									status_byte &= 0xF0;
 									status_byte |= (byte)ping_player;
+
+									time_out_check = true;
+									x4_clock = 128;
 								}									
 							}
 						}		
-							
-						x4_clock = 1024;
 					}
 				}
 				else
 				{
-					// initialize the device from master GB
-					if ((A.serialport.serial_control & 0x81) == 0x80)
+					// wiat for a gameboy to request a ping. Timeout and go to the next one if nothing happening for some time.
+					if ((ping_player == 1) && ((A.serialport.serial_control & 0x81) == 0x80))
 					{
 						is_pinging = true;
-						x4_clock = 1024;
-						ping_player = 1;
-						ping_byte = 0;
-						ping_bit_count = 0;
-						received_byte = 0;
-						begin_transmitting_cnt = 0;
-						status_byte = 0x01; // sending to player 1
+						x4_clock = 512;
+						time_out_check = false;
+					}
+					else if ((ping_player == 2) && ((B.serialport.serial_control & 0x81) == 0x80))
+					{
+						is_pinging = true;
+						x4_clock = 512;
+						time_out_check = false;
+					}
+					else if ((ping_player == 3) && ((C.serialport.serial_control & 0x81) == 0x80))
+					{
+						is_pinging = true;
+						x4_clock = 512;
+						time_out_check = false;
+					}
+					else if ((ping_player == 4) && ((D.serialport.serial_control & 0x81) == 0x80))
+					{
+						is_pinging = true;
+						x4_clock = 512;
+						time_out_check = false;
+					}
+
+					if (time_out_check)
+					{
+						x4_clock--;
+						if (x4_clock == 0)
+						{
+							ping_player++;
+
+							if (ping_player == 5) { ping_player = 1; }
+
+							status_byte &= 0xF0;
+							status_byte |= (byte)ping_player;
+
+							x4_clock = 128;
+						}
 					}
 				}
 				
-
 				// if we hit a frame boundary, update video
 				if (A.vblank_rise)
 				{

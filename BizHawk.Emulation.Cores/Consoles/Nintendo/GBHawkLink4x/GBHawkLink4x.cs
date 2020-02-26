@@ -34,7 +34,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 		public int ping_bit_count;
 		public byte received_byte;
 		public int begin_transmitting_cnt;
-
+		public int transmit_speed;
+		public int num_bytes_transmit;
+		public bool time_out_check;
 
 		public byte A_controller, B_controller, C_controller, D_controller;
 
@@ -117,6 +119,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			B.HardReset();
 			C.HardReset();
 			D.HardReset();
+
+			ping_player = 1;
+			ping_byte = 0;
+			ping_bit_count = 0;
+			received_byte = 0;
+			begin_transmitting_cnt = 0;
+			status_byte = 1;
 		}
 
 		public DisplayType Region => DisplayType.NTSC;
