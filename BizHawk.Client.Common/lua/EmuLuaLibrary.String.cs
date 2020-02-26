@@ -65,7 +65,7 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethodExample("local stbizrep = bizstring.replace( \"Some string\", \"Some\", \"Replaced\" );")]
-		[LuaMethod("replace", "Returns a string that replaces all occurances of str2 in str1 with the value of replace")]
+		[LuaMethod("replace", "Returns a string that replaces all occurrences of str2 in str1 with the value of replace")]
 		public static string Replace(string str, string str2, string replace)
 		{
 			return string.IsNullOrEmpty(str)

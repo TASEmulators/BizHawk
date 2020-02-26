@@ -22,7 +22,7 @@ namespace BizHawk.Client.Common
 
 		protected static LuaFile CurrentFile { get; private set; }
 
-		private static Thread CurrentHostThread;
+		private static Thread _currentHostThread;
 		private static readonly object ThreadMutex = new object();
 
 		public abstract string Name { get; }
@@ -33,7 +33,7 @@ namespace BizHawk.Client.Common
 		{
 			lock (ThreadMutex)
 			{
-				CurrentHostThread = null;
+				_currentHostThread = null;
 				CurrentFile = null;
 			}
 		}
@@ -43,12 +43,12 @@ namespace BizHawk.Client.Common
 		{
 			lock (ThreadMutex)
 			{
-				if (CurrentHostThread != null)
+				if (_currentHostThread != null)
 				{
 					throw new InvalidOperationException("Can't have lua running in two host threads at a time!");
 				}
 
-				CurrentHostThread = Thread.CurrentThread;
+				_currentHostThread = Thread.CurrentThread;
 				CurrentFile = luaFile;
 			}
 		}

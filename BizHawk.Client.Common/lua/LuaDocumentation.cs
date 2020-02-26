@@ -122,14 +122,9 @@ __Types and notation__
 							.Append(i + 1)
 							.Append(":");
 
-						if (parameters[i].IsOptional)
-						{
-							sb.Append($"[{parameters[i].Name}]");
-						}
-						else
-						{
-							sb.Append(parameters[i].Name);
-						}
+						sb.Append(parameters[i].IsOptional
+							? $"[{parameters[i].Name}]"
+							: parameters[i].Name);
 
 						sb.Append("}");
 

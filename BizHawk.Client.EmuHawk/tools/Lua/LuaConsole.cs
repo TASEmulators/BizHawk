@@ -950,7 +950,7 @@ namespace BizHawk.Client.EmuHawk
 					Filter = new FilesystemFilterSet(FilesystemFilter.LuaScripts).ToString()
 				};
 
-				if (sfd.ShowDialog() == DialogResult.OK)
+				if (sfd.ShowDialog().IsOk())
 				{
 					string text = File.ReadAllText(script.Path);
 					File.WriteAllText(sfd.FileName, text);

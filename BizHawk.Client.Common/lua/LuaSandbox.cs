@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using BizHawk.Common;
-
 using NLua;
 
 // TODO - evaluate for re-entrancy problems
@@ -8,7 +8,7 @@ namespace BizHawk.Client.Common
 {
 	public unsafe class LuaSandbox
 	{
-		private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Lua, LuaSandbox> SandboxForThread = new System.Runtime.CompilerServices.ConditionalWeakTable<Lua, LuaSandbox>();
+		private static readonly ConditionalWeakTable<Lua, LuaSandbox> SandboxForThread = new ConditionalWeakTable<Lua, LuaSandbox>();
 
 		public static Action<string> DefaultLogger { get; set; }
 
@@ -103,7 +103,7 @@ namespace BizHawk.Client.Common
 		public static LuaSandbox GetSandbox(Lua thread)
 		{
 			// this is just placeholder.
-			// we shouldnt be calling a sandbox with no thread--construct a sandbox properly
+			// we shouldn't be calling a sandbox with no thread--construct a sandbox properly
 			if (thread == null)
 			{
 				return new LuaSandbox();
