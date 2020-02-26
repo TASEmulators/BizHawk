@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
+// ReSharper disable UnusedMember.Local
+// ReSharper disable UnusedMember.Global
+// ReSharper disable IdentifierTypo
 // ReSharper disable StyleCop.SA1300
 // ReSharper disable InconsistentNaming
 namespace BizHawk.Emulation.Common
@@ -22,7 +25,7 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// quality of the resampler.  values other than those listed are valid, provided they are between MIN and MAX
 		/// </summary>
-		public enum Quality : int
+		public enum Quality
 		{
 			QUALITY_MAX = 10,
 			QUALITY_MIN = 0,

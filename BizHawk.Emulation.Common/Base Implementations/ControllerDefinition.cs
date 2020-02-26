@@ -205,12 +205,7 @@ namespace BizHawk.Emulation.Common
 				}
 
 				// Hack for things like gameboy/ti-83 as opposed to genesis with no controllers plugged in
-				if (allNames.Any(b => b.StartsWith("Up")))
-				{
-					return 1;
-				} 
-
-				return 0;
+				return allNames.Any(b => b.StartsWith("Up")) ? 1 : 0;
 			}
 		}
 

@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Collections.Generic;
 
+// ReSharper disable IdentifierTypo
+// ReSharper disable InconsistentNaming
 // ReSharper disable StringLiteralTypo
 namespace BizHawk.Emulation.Common
 {
@@ -11,10 +13,10 @@ namespace BizHawk.Emulation.Common
 		{
 			// FDS has two OK variants  (http://tcrf.net/Family_Computer_Disk_System)
 			var fdsNintendo = File("57FE1BDEE955BB48D357E463CCBF129496930B62", 8192, "disksys-nintendo.rom", "Bios (Nintendo)");
-			var fdsTwinfc = File("E4E41472C454F928E53EB10E0509BF7D1146ECC1", 8192, "disksys-nintendo.rom", "Bios (TwinFC)");
+			var fdsTwinFc = File("E4E41472C454F928E53EB10E0509BF7D1146ECC1", 8192, "disksys-nintendo.rom", "Bios (TwinFC)");
 			Firmware("NES", "Bios_FDS", "Bios");
 			Option("NES", "Bios_FDS", fdsNintendo);
-			Option("NES", "Bios_FDS", fdsTwinfc);
+			Option("NES", "Bios_FDS", fdsTwinFc);
 
 			FirmwareAndOption("973E10840DB683CF3FAF61BD443090786B3A9F04", 262144, "SNES", "Rom_SGB", "sgb.sfc", "Super GameBoy Rom"); // World (Rev B) ?
 			FirmwareAndOption("A002F4EFBA42775A31185D443F3ED1790B0E949A", 3072, "SNES", "CX4", "cx4.rom", "CX4 Rom");
@@ -57,12 +59,6 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("D3B78C3DBAC55F5199F33F3FE0036439811F7FB3", 16384, "C64", "Drive1541II", "drive-1541ii.bin", "1541-II Disk Drive Rom");
 
 			// ZX Spectrum
-			/* These are now shipped with bizhawk
-            FirmwareAndOption("5EA7C2B824672E914525D1D5C419D71B84A426A2", 16384, "ZXSpectrum", "48ROM", "48.ROM", "Spectrum 48K ROM");
-            FirmwareAndOption("16375D42EA109B47EDDED7A16028DE7FDB3013A1", 32768, "ZXSpectrum", "128ROM", "128.ROM", "Spectrum 128K ROM");
-            FirmwareAndOption("8CAFB292AF58617907B9E6B9093D3588A75849B8", 32768, "ZXSpectrum", "PLUS2ROM", "PLUS2.ROM", "Spectrum 128K +2 ROM");
-            FirmwareAndOption("929BF1A5E5687EBD8D7245F9B513A596C0EC21A4", 65536, "ZXSpectrum", "PLUS3ROM", "PLUS3.ROM", "Spectrum 128K +3 ROM");
-            */
 			FirmwareAndOption("A584272F21DC82C14B7D4F1ED440E23A976E71F0", 32768, "ZXSpectrum", "PentagonROM", "pentagon.rom", "Russian Pentagon Clone ROM");
 			FirmwareAndOption("282EB7BC819AAD2A12FD954E76F7838A4E1A7929", 16384, "ZXSpectrum", "TRDOSROM", "trdos.rom", "TRDOS ROM");
 
@@ -350,7 +346,7 @@ namespace BizHawk.Emulation.Common
 		private static void FirmwareAndOption(string hash, long size, string systemId, string id, string name, string descr)
 		{
 			Firmware(systemId, id, descr);
-			File(hash, size, name, descr, "");
+			File(hash, size, name, descr);
 			_OptionWork(hash, size, systemId, id);
 		}
 
@@ -381,13 +377,13 @@ namespace BizHawk.Emulation.Common
 
 		public enum FirmwareOptionStatus
 		{
-			//This is what we want you to use to get checkmarks, and for TASing
+			// This is what we want you to use to get checkmarks, and for TASing
 			Ideal,
 
-			//This will work with our core
+			// This will work with our core
 			Acceptable,
 
-			//This is a good file, but it doesn't work with our core
+			// This is a good file, but it doesn't work with our core
 			Unacceptable,
 
 			//I know this is weird, you'd think the file is bad
@@ -410,13 +406,8 @@ namespace BizHawk.Emulation.Common
 
 		public static FirmwareRecord LookupFirmwareRecord(string sysId, string firmwareId)
 		{
-			var found =
-				from fr in FirmwareRecords
-				where fr.FirmwareId == firmwareId
-				&& fr.SystemId == sysId
-				select fr;
-
-			return found.FirstOrDefault();
+			return FirmwareRecords
+				.FirstOrDefault(fr => fr.FirmwareId == firmwareId && fr.SystemId == sysId);
 		}
 	} // static class FirmwareDatabase
 }

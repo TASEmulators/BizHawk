@@ -136,29 +136,27 @@ namespace BizHawk.Emulation.Common
 
 					var game = new CompactGameInfo
 					{
-						Hash = RemoveHashType(items[0].ToUpper())
+						Hash = RemoveHashType(items[0].ToUpper()),
+						// remove a hash type identifier. well don't really need them for indexing (they're just there for human purposes)
+						Status = items[1].Trim()
+							switch
+							{
+								"B" => RomStatus.BadDump,
+								"V" => RomStatus.BadDump,
+								"T" => RomStatus.TranslatedRom,
+								"O" => RomStatus.Overdump,
+								"I" => RomStatus.Bios,
+								"D" => RomStatus.Homebrew,
+								"H" => RomStatus.Hack,
+								"U" => RomStatus.Unknown,
+								_ => RomStatus.GoodDump
+							},
+						Name = items[2],
+						System = items[3],
+						MetaData = items.Length >= 6 ? items[5] : null,
+						Region = items.Length >= 7 ? items[6] : "",
+						ForcedCore = items.Length >= 8 ? items[7].ToLowerInvariant() : "",
 					};
-
-					// remove a hash type identifier. well don't really need them for indexing (they're just there for human purposes)
-					game.Status = items[1].Trim()
-					switch
-					{
-						"B" => RomStatus.BadDump,
-						"V" => RomStatus.BadDump,
-						"T" => RomStatus.TranslatedRom,
-						"O" => RomStatus.Overdump,
-						"I" => RomStatus.Bios,
-						"D" => RomStatus.Homebrew,
-						"H" => RomStatus.Hack,
-						"U" => RomStatus.Unknown,
-						_ => RomStatus.GoodDump
-					};
-
-					game.Name = items[2];
-					game.System = items[3];
-					game.MetaData = items.Length >= 6 ? items[5] : null;
-					game.Region = items.Length >= 7 ? items[6] : "";
-					game.ForcedCore = items.Length >= 8 ? items[7].ToLowerInvariant() : "";
 
 					if (DB.ContainsKey(game.Hash))
 					{

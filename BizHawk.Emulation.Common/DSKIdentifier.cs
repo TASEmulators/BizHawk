@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Linq;
+using System.Text;
 
 namespace BizHawk.Emulation.Common
 {
@@ -404,16 +405,7 @@ namespace BizHawk.Emulation.Common
 			public byte[] SectorData { get; set; }
 			public bool ContainsMultipleWeakSectors { get; set; }
 
-			public int GetChecksum256()
-			{
-				int res = 0;
-				foreach (var b in SectorData)
-				{
-					res += b % 256;
-				}
-
-				return res;
-			}
+			public int GetChecksum256() => SectorData.Sum(b => b % 256);
 		}
 
 		#endregion

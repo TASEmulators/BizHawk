@@ -151,7 +151,7 @@ namespace BizHawk.Emulation.Common
 		public static bool MemoryCallbacksAvailable(this IEmulator core)
 		{
 			// TODO: this is a pretty ugly way to handle this
-			var debuggable = (IDebuggable) core?.ServiceProvider.GetService<IDebuggable>();
+			var debuggable = core?.ServiceProvider.GetService<IDebuggable>();
 			if (debuggable != null)
 			{
 				try

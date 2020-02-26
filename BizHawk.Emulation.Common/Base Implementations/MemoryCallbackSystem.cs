@@ -143,7 +143,7 @@ namespace BizHawk.Emulation.Common
 			HasExecutes = _execs.Count > 0;
 			_hasAny = HasReads || HasWrites || HasExecutes;
 
-			return (HasReads != hadReads || HasWrites != hadWrites || HasExecutes != hadExecutes);
+			return HasReads != hadReads || HasWrites != hadWrites || HasExecutes != hadExecutes;
 		}
 
 		private int RemoveInternal(MemoryCallbackDelegate action)
