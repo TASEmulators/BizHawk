@@ -6,14 +6,6 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Common
 {
-	/// <summary>semantically similar to <see cref="Range{T}"/>, but obviously does no checks at runtime</summary>
-	public struct RangeStruct<T> where T : unmanaged, IComparable<T>
-	{
-		public T Start;
-
-		public T EndInclusive;
-	}
-
 	/// <summary>represents a closed range of <typeparamref name="T"/> (class invariant: <see cref="Start"/> &le; <see cref="EndInclusive"/>)</summary>
 	public interface Range<out T> where T : unmanaged, IComparable<T>
 	{
@@ -25,7 +17,7 @@ namespace BizHawk.Common
 	/// <summary>represents a closed range of <typeparamref name="T"/> which can be grown or shrunk (class invariant: <see cref="Start"/> &le; <see cref="EndInclusive"/>)</summary>
 	public class MutableRange<T> : Range<T> where T : unmanaged, IComparable<T>
 	{
-		private RangeStruct<T> r;
+		private (T Start, T EndInclusive) r;
 
 		/// <inheritdoc cref="Overwrite"/>
 		public MutableRange(T start, T endInclusive) => Overwrite(start, endInclusive);
@@ -52,14 +44,18 @@ namespace BizHawk.Common
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="endInclusive"/> &lt; <paramref name="start"/></exception>
 		public void Overwrite(T start, T endInclusive)
 		{
-			var range = new RangeStruct<T> { Start = start, EndInclusive = endInclusive };
-			if (range.EndInclusive.CompareTo(range.Start) < 0) throw new ArgumentOutOfRangeException(nameof(range), range, "range end < start");
-			if (range is RangeStruct<float> fr && (float.IsNaN(fr.Start) || float.IsNaN(fr.EndInclusive))
-				|| range is RangeStruct<double> dr && (double.IsNaN(dr.Start) || double.IsNaN(dr.EndInclusive)))
+			if (endInclusive.CompareTo(start) < 0) throw new ArgumentOutOfRangeException(nameof(endInclusive), endInclusive, "range end < start");
+			if (start is float fs)
 			{
-				throw new ArgumentException("range bound is NaN", nameof(range));
+				if (float.IsNaN(fs)) throw new ArgumentException("range start is NaN", nameof(start));
+				if (endInclusive is float fe && float.IsNaN(fe)) throw new ArgumentException("range end is NaN", nameof(endInclusive));
 			}
-			r = range;
+			else if (start is double ds)
+			{
+				if (double.IsNaN(ds)) throw new ArgumentException("range start is NaN", nameof(start));
+				if (endInclusive is double de && double.IsNaN(de)) throw new ArgumentException("range end is NaN", nameof(endInclusive));
+			}
+			r = (start, endInclusive);
 		}
 	}
 
@@ -107,6 +103,13 @@ namespace BizHawk.Common
 		public static ulong Count(this Range<ulong> range) => range.EndInclusive - range.Start + 1UL;
 
 		public static uint Count(this Range<ushort> range) => (uint) (range.EndInclusive - range.Start + 1);
+
+		public static void Deconstruct<T>(this Range<T> range, out T start, out T endInclusive)
+			where T : unmanaged, IComparable<T>
+		{
+			start = range.Start;
+			endInclusive = range.EndInclusive;
+		}
 
 		public static IEnumerable<byte> Enumerate(this Range<byte> range) => Enumerable.Range(range.Start, (int) range.Count()).Select(i => (byte) i);
 
