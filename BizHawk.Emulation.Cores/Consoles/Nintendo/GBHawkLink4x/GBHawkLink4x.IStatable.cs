@@ -62,12 +62,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			ser.Sync(nameof(x4_clock), ref x4_clock);
 			ser.Sync(nameof(ping_player), ref ping_player);
 			ser.Sync(nameof(ping_byte), ref ping_byte);
-			ser.Sync(nameof(ping_bit_count), ref ping_bit_count);
+			ser.Sync(nameof(bit_count), ref bit_count);
 			ser.Sync(nameof(received_byte), ref received_byte);
 			ser.Sync(nameof(begin_transmitting_cnt), ref begin_transmitting_cnt);
 			ser.Sync(nameof(transmit_speed), ref transmit_speed);
 			ser.Sync(nameof(num_bytes_transmit), ref num_bytes_transmit);
 			ser.Sync(nameof(time_out_check), ref time_out_check);
+			ser.Sync(nameof(ready_to_transmit), ref ready_to_transmit);
+			ser.Sync(nameof(transmit_byte), ref transmit_byte);
+			ser.Sync(nameof(x4_buffer), ref x4_buffer, false);
+			ser.Sync(nameof(buffer_parity), ref buffer_parity);
+			ser.Sync(nameof(pre_transsmit), ref pre_transsmit);
+			ser.Sync(nameof(temp1_rec), ref temp1_rec);
+			ser.Sync(nameof(temp2_rec), ref temp2_rec);
+			ser.Sync(nameof(temp3_rec), ref temp3_rec);
+			ser.Sync(nameof(temp4_rec), ref temp4_rec);
 
 			_controllerDeck.SyncState(ser);
 

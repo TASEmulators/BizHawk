@@ -31,12 +31,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 		public int x4_clock;
 		public int ping_player;
 		public int ping_byte;
-		public int ping_bit_count;
+		public int bit_count;
 		public byte received_byte;
 		public int begin_transmitting_cnt;
 		public int transmit_speed;
 		public int num_bytes_transmit;
 		public bool time_out_check;
+		public bool ready_to_transmit;
+		public int transmit_byte;
+		public byte[] x4_buffer = new byte[0x400 * 2];
+		public bool buffer_parity;
+		public bool pre_transsmit;
+		public byte temp1_rec, temp2_rec, temp3_rec, temp4_rec;
 
 		public byte A_controller, B_controller, C_controller, D_controller;
 
@@ -122,7 +128,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 
 			ping_player = 1;
 			ping_byte = 0;
-			ping_bit_count = 0;
+			bit_count = 0;
 			received_byte = 0;
 			begin_transmitting_cnt = 0;
 			status_byte = 1;
