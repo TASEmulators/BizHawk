@@ -70,8 +70,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly MutableRange<int> _rangeX = new MutableRange<int>(-128, 127);
 		private readonly MutableRange<int> _rangeY = new MutableRange<int>(-128, 127);
-		private RangeStruct<int> _actualRangeX = new RangeStruct<int> { Start = -128, EndInclusive = 127 };
-		private RangeStruct<int> _actualRangeY = new RangeStruct<int> { Start = -128, EndInclusive = 127 };
+		private MutableRange<int> _actualRangeX = (-128).MutableRangeTo(127);
+		private MutableRange<int> _actualRangeY = (-128).MutableRangeTo(127);
 
 		private bool _reverseX;
 		private bool _reverseY;
