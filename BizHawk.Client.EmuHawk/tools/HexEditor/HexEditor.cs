@@ -410,8 +410,7 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
-			using var file = new HawkFile();
-			file.Open(path);
+			using var file = new HawkFile(path);
 
 			if (!file.Exists)
 			{
@@ -429,8 +428,7 @@ namespace BizHawk.Client.EmuHawk
 				return new byte[] { 0xFF };
 			}
 
-			using var file = new HawkFile();
-			file.Open(path);
+			using var file = new HawkFile(path);
 
 			if (!file.Exists)
 			{

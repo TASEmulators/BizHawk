@@ -61,11 +61,11 @@ namespace BizHawk.Client.Common
 							{
 								if (originalIndex == null)
 								{
-									originalIndex = f.GetBoundIndex();
+									originalIndex = f.BoundIndex;
 								}
 
 								f.Unbind();
-								f.BindArchiveMember(ai);
+								f.BindArchiveMember(ai.Value);
 								data = f.GetStream().ReadAllBytes();
 							}
 							else
