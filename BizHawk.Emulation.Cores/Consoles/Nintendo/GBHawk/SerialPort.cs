@@ -110,8 +110,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					if (serial_bits > 0)
 					{
-						byte temp = coming_in;
-						serial_data = (byte)((serial_data << 1) | temp);
+						serial_data = (byte)((serial_data << 1) | coming_in);
 
 						serial_bits--;
 

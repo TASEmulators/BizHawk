@@ -128,7 +128,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 
 			ping_player = 1;
 			ping_byte = 0;
-			bit_count = 0;
+			bit_count = 7;
 			received_byte = 0;
 			begin_transmitting_cnt = 0;
 			status_byte = 1;
