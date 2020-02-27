@@ -1,20 +1,19 @@
-using System;
-
-using DoublePair = System.Tuple<double, double>;
+#nullable enable
 
 namespace BizHawk.Client.Common
 {
 	public static class PolarRectConversion
 	{
-		/// <param name="θ">angle in degrees</param>
-		/// <returns>rectangular (Cartesian) coordinates (x, y)</returns>
-		public static DoublePair PolarDegToRect(double r, double θ) => PolarRadToRect(r, θ * Math.PI / 180);
+		/// <param name="r">radial displacement in range <c>0..181</c> (this is not asserted)</param>
+		/// <param name="θ">angle (in degrees) in range <c>0..359</c> (this is not asserted)</param>
+		/// <returns>rectangular (Cartesian) coordinates <c>(x, y)</c>. <c>x</c> and/or <c>y</c> may be outside the range <c>-128..127</c>.</returns>
+		/// <seealso cref="RectToPolarLookup"/>
+		public static (short, short) PolarToRectLookup(ushort r, ushort θ) => (PolarRectConversionData._rθ2x[r, θ], PolarRectConversionData._rθ2y[r, θ]);
 
-		/// <param name="θ">angle in radians</param>
-		/// <returns>rectangular (Cartesian) coordinates (x, y)</returns>
-		public static DoublePair PolarRadToRect(double r, double θ) => new DoublePair(r * Math.Cos(θ), r * Math.Sin(θ));
-
-		/// <returns>polar coordinates (r, θ) where θ is in degrees</returns>
-		public static DoublePair RectToPolarDeg(double x, double y) => new DoublePair(Math.Sqrt(x * x + y * y), Math.Atan2(y, x) * 180 / Math.PI);
+		/// <param name="x">horizontal component of rectangular (Cartesian) coordinates <c>(x, y)</c>, in range <c>-128..127</c> (this is not asserted)</param>
+		/// <param name="y">vertical component, as <paramref name="x"/></param>
+		/// <returns>polar coordinates <c>(r, θ)</c> where <c>r</c> is radial displacement in range <c>0..181</c> and <c>θ</c> is angle (in degrees) in range <c>0..359</c> (from <c>+x</c> towards <c>+y</c>)</returns>
+		/// <seealso cref="PolarToRectLookup"/>
+		public static (ushort, ushort) RectToPolarLookup(sbyte x, sbyte y) => unchecked((PolarRectConversionData._xy2r[(byte) x, (byte) y], PolarRectConversionData._xy2θ[(byte) x, (byte) y]));
 	}
 }
