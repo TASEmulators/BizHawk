@@ -54,24 +54,22 @@ namespace BizHawk.Client.EmuHawk
 			Refresh();
 		}
 
-		public void SetRangeX(float[] range)
+		public void SetRangeX(Range<int> range)
 		{
-			_actualRangeX.Start = (int) range[0];
-			_actualRangeX.EndInclusive = (int) range[2];
+			_actualRangeX = range;
 			Rerange();
 		}
 
-		public void SetRangeY(float[] range)
+		public void SetRangeY(Range<int> range)
 		{
-			_actualRangeY.Start = (int) range[0];
-			_actualRangeY.EndInclusive = (int) range[2];
+			_actualRangeY = range;
 			Rerange();
 		}
 
-		private readonly MutableRange<int> _rangeX = new MutableRange<int>(-128, 127);
-		private readonly MutableRange<int> _rangeY = new MutableRange<int>(-128, 127);
-		private MutableRange<int> _actualRangeX = (-128).MutableRangeTo(127);
-		private MutableRange<int> _actualRangeY = (-128).MutableRangeTo(127);
+		private Range<int> _rangeX = DefaultRange;
+		private Range<int> _rangeY = DefaultRange;
+		private Range<int> _actualRangeX = DefaultRange;
+		private Range<int> _actualRangeY = DefaultRange;
 
 		private bool _reverseX;
 		private bool _reverseY;
@@ -83,11 +81,11 @@ namespace BizHawk.Client.EmuHawk
 
 			var midX = (_actualRangeX.Start + _actualRangeX.EndInclusive) / 2.0;
 			var halfRangeX = (_reverseX ? -1 : 1) * (_actualRangeX.EndInclusive - _actualRangeX.Start) * _userRangePercentageX / 200.0;
-			_rangeX.Overwrite((int) (midX - halfRangeX), (int) (midX + halfRangeX));
+			_rangeX = ((int) (midX - halfRangeX)).RangeTo((int) (midX + halfRangeX));
 
 			var midY = (_actualRangeY.Start + _actualRangeY.EndInclusive) / 2.0;
 			var halfRangeY = (_reverseY ? -1 : 1) * (_actualRangeY.EndInclusive - _actualRangeY.Start) * _userRangePercentageY / 200.0;
-			_rangeY.Overwrite((int) (midY - halfRangeY), (int) (midY + halfRangeY));
+			_rangeY = ((int) (midY - halfRangeY)).RangeTo((int) (midY + halfRangeY));
 			
 			// re-constrain after changing ranges
 			X = X;
@@ -287,5 +285,7 @@ namespace BizHawk.Client.EmuHawk
 			HasValue = true;
 			Refresh();
 		}
+
+		internal static readonly Range<int> DefaultRange = (-128).RangeTo(127);
 	}
 }
