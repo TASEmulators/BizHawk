@@ -70,7 +70,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public string SecondaryName { get; set; }
+		public string? SecondaryName { get; set; }
 
 		private void VirtualPadAnalogStick_Load(object sender, EventArgs e)
 		{
