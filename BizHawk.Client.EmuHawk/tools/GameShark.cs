@@ -368,9 +368,9 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// Provided by mGBA and endrift
-		private readonly uint[] _gbaGameSharkSeeds = { uint.Parse("09F4FBBD", NumberStyles.HexNumber), uint.Parse("9681884A", NumberStyles.HexNumber), uint.Parse("352027E9", NumberStyles.HexNumber), uint.Parse("F3DEE5A7", NumberStyles.HexNumber) };
-		private readonly uint[] _gbaProActionReplaySeeds = { uint.Parse("7AA9648F", NumberStyles.HexNumber), uint.Parse("7FAE6994", NumberStyles.HexNumber), uint.Parse("C0EFAAD5", NumberStyles.HexNumber), uint.Parse("42712C57", NumberStyles.HexNumber) };
-		
+		private readonly uint[] _gbaGameSharkSeeds = { 0x09F4FBBDU, 0x9681884AU, 0x352027E9U, 0xF3DEE5A7U };
+		private readonly uint[] _gbaProActionReplaySeeds = { 0x7AA9648FU, 0x7FAE6994U, 0xC0EFAAD5U, 0x42712C57U };
+
 		// blnEncrypted is used to see if the previous line for Slide code was encrypted or not.
 		private bool _blnEncrypted;
 
