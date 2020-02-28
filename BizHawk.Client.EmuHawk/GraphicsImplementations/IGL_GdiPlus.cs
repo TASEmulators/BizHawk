@@ -163,8 +163,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public Texture2d LoadTexture(Stream stream)
 		{
-			using (var bmp = new BitmapBuffer(stream, new BitmapLoadOptions()))
-				return (this as IGL).LoadTexture(bmp);
+			using var bmp = new BitmapBuffer(stream, new BitmapLoadOptions());
+			return (this as IGL).LoadTexture(bmp);
 		}
 
 		public Texture2d CreateTexture(int width, int height)

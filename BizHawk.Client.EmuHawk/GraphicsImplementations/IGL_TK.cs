@@ -481,14 +481,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public Texture2d LoadTexture(sd.Bitmap bitmap)
 		{
-			using (var bmp = new BitmapBuffer(bitmap, new BitmapLoadOptions()))
-				return (this as IGL).LoadTexture(bmp);
+			using var bmp = new BitmapBuffer(bitmap, new BitmapLoadOptions());
+			return (this as IGL).LoadTexture(bmp);
 		}
 
 		public Texture2d LoadTexture(Stream stream)
 		{
-			using(var bmp = new BitmapBuffer(stream,new BitmapLoadOptions()))
-				return (this as IGL).LoadTexture(bmp);
+			using var bmp = new BitmapBuffer(stream,new BitmapLoadOptions());
+			return (this as IGL).LoadTexture(bmp);
 		}
 
 		public Texture2d CreateTexture(int width, int height)
@@ -601,8 +601,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public Texture2d LoadTexture(string path)
 		{
-			using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
-				return (this as IGL).LoadTexture(fs);
+			using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+			return (this as IGL).LoadTexture(fs);
 		}
 
 		public Matrix4 CreateGuiProjectionMatrix(int w, int h)
