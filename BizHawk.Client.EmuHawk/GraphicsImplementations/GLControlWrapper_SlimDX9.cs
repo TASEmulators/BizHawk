@@ -1,9 +1,4 @@
 using System;
-using System.Drawing;
-using System.Reflection;
-using System.Threading;
-using System.IO;
-using System.Collections.Generic;
 using System.Windows.Forms;
 
 using BizHawk.Bizware.BizwareGL;
@@ -11,61 +6,58 @@ using SlimDX.Direct3D9;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public class GLControlWrapper_SlimDX9 : Control, IGraphicsControl
+	public class GLControlWrapperSlimDX9 : Control, IGraphicsControl
 	{
-
-		public GLControlWrapper_SlimDX9(IGL_SlimDX9 sdx)
+		public GLControlWrapperSlimDX9(IGL_SlimDX9 sdx)
 		{
-			this.sdx = sdx;
+			_sdx = sdx;
 
-			//uhhh not sure what we need to be doing here
-			//SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 			SetStyle(ControlStyles.Opaque, true);
 			SetStyle(ControlStyles.UserMouse, true);
 
-			Resize += new EventHandler(GLControlWrapper_SlimDX_Resize);
+			Resize += GLControlWrapper_SlimDX_Resize;
 		}
 
 		public bool Vsync;
 
 		void GLControlWrapper_SlimDX_Resize(object sender, EventArgs e)
 		{
-			sdx.RefreshControlSwapChain(this);
+			_sdx.RefreshControlSwapChain(this);
 		}
 
 		protected override void Dispose(bool disposing)
 		{
-			sdx.FreeControlSwapChain(this);
+			_sdx.FreeControlSwapChain(this);
 
 			base.Dispose(disposing);
 		}
 
-		IGL_SlimDX9 sdx;
+		private readonly IGL_SlimDX9 _sdx;
 
-		public Control Control { get { return this; } }
+		public Control Control => this;
 		public SwapChain SwapChain;
 
 		public void SetVsync(bool state)
 		{
 			Vsync = state;
-			sdx.RefreshControlSwapChain(this);
+			_sdx.RefreshControlSwapChain(this);
 		}
 
 		public void Begin()
 		{
-			sdx.BeginControl(this);
+			_sdx.BeginControl(this);
 		}
 
 		public void End()
 		{
-			sdx.EndControl(this);
+			_sdx.EndControl(this);
 		}
 
 		public void SwapBuffers()
 		{
-			sdx.SwapControl(this);
+			_sdx.SwapControl(this);
 		}
 	}
 }

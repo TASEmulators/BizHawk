@@ -2,46 +2,44 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading;
 using BizHawk.Bizware.BizwareGL;
 
 using SlimDX.Direct3D9;
 using OpenTK;
-using d3d9 = SlimDX.Direct3D9;
 using gl = OpenTK.Graphics.OpenGL;
 using sd = System.Drawing;
 using sdi = System.Drawing.Imaging;
 using swf = System.Windows.Forms;
 
-//todo - do a better job selecting shader model? base on caps somehow? try several and catch compilation exceptions (yuck, exceptions)
-
+// todo - do a better job selecting shader model? base on caps somehow? try several and catch compilation exceptions (yuck, exceptions)
 namespace BizHawk.Client.EmuHawk
 {
-
 	public class IGL_SlimDX9 : IGL
 	{
 		const int D3DERR_DEVICELOST = -2005530520;
 		const int D3DERR_DEVICENOTRESET = -2005530519;
 
-		static Direct3D d3d;
-		internal Device dev;
-		INativeWindow OffscreenNativeWindow;
+		private static Direct3D _d3d;
+		internal Device Dev;
+		private readonly INativeWindow _offscreenNativeWindow;
 
-		//rendering state
-		IntPtr _pVertexData;
-		Pipeline _CurrPipeline;
-		GLControlWrapper_SlimDX9 _CurrentControl;
+		// rendering state
+		private IntPtr _pVertexData;
+		private Pipeline _currPipeline;
+		private GLControlWrapperSlimDX9 _currentControl;
 
 		public string API => "D3D9";
 
 		public IGL_SlimDX9()
 		{
-			if (d3d == null)
+			if (_d3d == null)
 			{
-				d3d = new Direct3D();
+				_d3d = new Direct3D();
 			}
 
-			//make an 'offscreen context' so we can at least do things without having to create a window
-			OffscreenNativeWindow = new NativeWindow { ClientSize = new Size(8, 8) };
+			// make an 'offscreen context' so we can at least do things without having to create a window
+			_offscreenNativeWindow = new NativeWindow { ClientSize = new Size(8, 8) };
 
 			CreateDevice();
 			CreateRenderStates();
@@ -51,43 +49,43 @@ namespace BizHawk.Client.EmuHawk
 		{
 			for (; ; )
 			{
-				var status = dev.GetRasterStatus(0);
-				if (status.InVBlank && pass == 0) return; //wait for vblank to begin
-				if (!status.InVBlank && pass == 1) return; //wait for vblank to end
-				//STOP! think you can use System.Threading.SpinWait? No, it's way too slow.
-				//(on my system, the vblank is something like 24 of 1074 scanlines @ 60hz ~= 0.35ms which is an awfully small window to nail)
+				var status = Dev.GetRasterStatus(0);
+				if (status.InVBlank && pass == 0) return; // wait for vblank to begin
+				if (!status.InVBlank && pass == 1) return; // wait for vblank to end
+				// STOP! think you can use System.Threading.SpinWait? No, it's way too slow.
+				// (on my system, the vblank is something like 24 of 1074 scanlines @ 60hz ~= 0.35ms which is an awfully small window to nail)
 			}
 		}
 
 		private void DestroyDevice()
 		{
-			if (dev != null)
+			if (Dev != null)
 			{
-				dev.Dispose();
-				dev = null;
+				Dev.Dispose();
+				Dev = null;
 			}
 		}
 
-		PresentParameters MakePresentParameters()
+		private PresentParameters MakePresentParameters()
 		{
 			return new PresentParameters
 			{
 				BackBufferWidth = 8,
 				BackBufferHeight = 8,
 				BackBufferCount = 2,
-				DeviceWindowHandle = OffscreenNativeWindow.WindowInfo.Handle,
+				DeviceWindowHandle = _offscreenNativeWindow.WindowInfo.Handle,
 				PresentationInterval = PresentInterval.Immediate,
 				EnableAutoDepthStencil = false
 			};
 		}
 
-		void ResetDevice(GLControlWrapper_SlimDX9 control)
+		private void ResetDevice(GLControlWrapperSlimDX9 control)
 		{
 			SuspendRenderTargets();
 			FreeControlSwapChain(control);
 			for (; ; )
 			{
-				var result = dev.TestCooperativeLevel();
+				var result = Dev.TestCooperativeLevel();
 				if (result.IsSuccess)
 					break;
 				if (result.Code == D3DERR_DEVICENOTRESET)
@@ -95,13 +93,15 @@ namespace BizHawk.Client.EmuHawk
 					try
 					{
 						var pp = MakePresentParameters();
-						dev.Reset(pp);
+						Dev.Reset(pp);
 						break;
 					}
 					catch { }
 				}
-				System.Threading.Thread.Sleep(100);
+
+				Thread.Sleep(100);
 			}
+
 			RefreshControlSwapChain(control);
 			ResumeRenderTargets();
 		}
@@ -113,19 +113,19 @@ namespace BizHawk.Client.EmuHawk
 			var pp = MakePresentParameters();
 
 			var flags = CreateFlags.SoftwareVertexProcessing;
-			if ((d3d.GetDeviceCaps(0, DeviceType.Hardware).DeviceCaps & DeviceCaps.HWTransformAndLight) != 0)
+			if ((_d3d.GetDeviceCaps(0, DeviceType.Hardware).DeviceCaps & DeviceCaps.HWTransformAndLight) != 0)
 			{
 				flags = CreateFlags.HardwareVertexProcessing;
 			}
 			
 			flags |= CreateFlags.FpuPreserve;
-			dev = new Device(d3d, 0, DeviceType.Hardware, pp.DeviceWindowHandle, flags, pp);
+			Dev = new Device(_d3d, 0, DeviceType.Hardware, pp.DeviceWindowHandle, flags, pp);
 		}
 
 		void IDisposable.Dispose()
 		{
 			DestroyDevice();
-			d3d.Dispose();
+			_d3d.Dispose();
 		}
 
 		public void Clear(OpenTK.Graphics.OpenGL.ClearBufferMask mask)
@@ -134,11 +134,11 @@ namespace BizHawk.Client.EmuHawk
 			if ((mask & gl.ClearBufferMask.ColorBufferBit) != 0) flags |= ClearFlags.Target;
 			if ((mask & gl.ClearBufferMask.DepthBufferBit) != 0) flags |= ClearFlags.ZBuffer;
 			if ((mask & gl.ClearBufferMask.StencilBufferBit) != 0) flags |= ClearFlags.Stencil;
-			dev.Clear(flags, _clearColor, 0.0f, 0);
+			Dev.Clear(flags, _clearColor, 0.0f, 0);
 		}
 
-		int _clearColor;
-		public void SetClearColor(sd.Color color)
+		private int _clearColor;
+		public void SetClearColor(Color color)
 		{
 			_clearColor = color.ToArgb();
 		}
@@ -149,17 +149,16 @@ namespace BizHawk.Client.EmuHawk
 			return new CacheBlendState(true, colorSource, colorEquation, colorDest, alphaSource, alphaEquation, alphaDest);
 		}
 
-
 		public void FreeTexture(Texture2d tex) {
-			var tw = tex.Opaque as TextureWrapper;
+			var tw = (TextureWrapper)tex.Opaque;
 			tw.Texture.Dispose();
 		}
 
-		class ShaderWrapper // Disposable fields cleaned up by Internal_FreeShader
+		private class ShaderWrapper // Disposable fields cleaned up by Internal_FreeShader
 		{
-			public d3d9.ShaderBytecode bytecode;
-			public d3d9.VertexShader vs;
-			public d3d9.PixelShader ps;
+			public ShaderBytecode bytecode;
+			public VertexShader vs;
+			public PixelShader ps;
 			public Shader IGLShader;
 			public Dictionary<string, string> MapCodeToNative;
 			public Dictionary<string, string> MapNativeToCode;
@@ -170,7 +169,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				ShaderWrapper sw = new ShaderWrapper();
+				var sw = new ShaderWrapper();
 				if (cg)
 				{
 					var cgc = new CGC();
@@ -180,7 +179,7 @@ namespace BizHawk.Client.EmuHawk
 					if (!results.Succeeded)
 					{
 						if (required) throw new InvalidOperationException(results.Errors);
-						else return new Shader(this, null, false);
+						return new Shader(this, null, false);
 					}
 
 					sw.MapCodeToNative = results.MapCodeToNative;
@@ -188,26 +187,27 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				string errors = null;
-				d3d9.ShaderBytecode bytecode = null;
+				ShaderBytecode byteCode;
 
 				try
 				{
-					//cgc can create shaders that will need backwards compatibility...
+					// cgc can create shaders that will need backwards compatibility...
 					string profile = "ps_1_0";
 					if (cg)
+					{
 						profile = "ps_3_0"; //todo - smarter logic somehow
+					}
 
-					//ShaderFlags.EnableBackwardsCompatibility - used this once upon a time (please leave a note about why)
-					//
-					bytecode = d3d9.ShaderBytecode.Compile(source, null, null, entry, profile, ShaderFlags.UseLegacyD3DX9_31Dll, out errors);
+					// ShaderFlags.EnableBackwardsCompatibility - used this once upon a time (please leave a note about why)
+					byteCode = ShaderBytecode.Compile(source, null, null, entry, profile, ShaderFlags.UseLegacyD3DX9_31Dll, out errors);
 				}
 				catch (Exception ex)
 				{
 					throw new InvalidOperationException($"Error compiling shader: {errors}", ex);
 				}
 
-				sw.ps = new PixelShader(dev, bytecode);
-				sw.bytecode = bytecode;
+				sw.ps = new PixelShader(Dev, byteCode);
+				sw.bytecode = byteCode;
 
 				Shader s = new Shader(this, sw, true);
 				sw.IGLShader = s;
@@ -228,7 +228,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				ShaderWrapper sw = new ShaderWrapper();
+				var sw = new ShaderWrapper();
 				if (cg)
 				{
 					var cgc = new CGC();
@@ -246,24 +246,26 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				string errors = null;
-				d3d9.ShaderBytecode bytecode = null;
+				ShaderBytecode byteCode;
 
 				try
 				{
-					//cgc can create shaders that will need backwards compatibility...
+					// cgc can create shaders that will need backwards compatibility...
 					string profile = "vs_1_1";
 					if (cg)
+					{
 						profile = "vs_3_0"; //todo - smarter logic somehow
+					}
 
-					bytecode = d3d9.ShaderBytecode.Compile(source, null, null, entry, profile, ShaderFlags.EnableBackwardsCompatibility, out errors);
+					byteCode = ShaderBytecode.Compile(source, null, null, entry, profile, ShaderFlags.EnableBackwardsCompatibility, out errors);
 				}
 				catch (Exception ex)
 				{
 					throw new InvalidOperationException($"Error compiling shader: {errors}", ex);
 				}
 
-				sw.vs = new VertexShader(dev, bytecode);
-				sw.bytecode = bytecode;
+				sw.vs = new VertexShader(Dev, byteCode);
+				sw.bytecode = byteCode;
 
 				Shader s = new Shader(this, sw, true);
 				sw.IGLShader = s;
@@ -278,19 +280,28 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		BlendOperation ConvertBlendOp(gl.BlendEquationMode glmode)
+		private BlendOperation ConvertBlendOp(gl.BlendEquationMode glMode)
 		{
-			if (glmode == gl.BlendEquationMode.FuncAdd) return BlendOperation.Add;
-			if (glmode == gl.BlendEquationMode.FuncSubtract) return BlendOperation.Subtract;
-			if (glmode == gl.BlendEquationMode.Max) return BlendOperation.Maximum;
-			if (glmode == gl.BlendEquationMode.Min) return BlendOperation.Minimum;
-			if (glmode == gl.BlendEquationMode.FuncReverseSubtract) return BlendOperation.ReverseSubtract;
-			throw new ArgumentOutOfRangeException();
+			switch (glMode)
+			{
+				case gl.BlendEquationMode.FuncAdd:
+					return BlendOperation.Add;
+				case gl.BlendEquationMode.FuncSubtract:
+					return BlendOperation.Subtract;
+				case gl.BlendEquationMode.Max:
+					return BlendOperation.Maximum;
+				case gl.BlendEquationMode.Min:
+					return BlendOperation.Minimum;
+				case gl.BlendEquationMode.FuncReverseSubtract:
+					return BlendOperation.ReverseSubtract;
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
 		}
 
-		Blend ConvertBlendArg(gl.BlendingFactorDest glmode) { return ConvertBlendArg((gl.BlendingFactorSrc)glmode); }
+		private Blend ConvertBlendArg(gl.BlendingFactorDest glMode) => ConvertBlendArg((gl.BlendingFactorSrc)glMode);
 
-		Blend ConvertBlendArg(gl.BlendingFactorSrc glmode) => glmode switch
+		private Blend ConvertBlendArg(gl.BlendingFactorSrc glMode) => glMode switch
 		{
 			gl.BlendingFactorSrc.Zero => Blend.Zero,
 			gl.BlendingFactorSrc.One => Blend.One,
@@ -316,30 +327,29 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SetBlendState(IBlendState rsBlend)
 		{
-			
-			var mybs = rsBlend as CacheBlendState;
-			if (mybs.Enabled)
+			var myBs = (CacheBlendState)rsBlend;
+			if (myBs.Enabled)
 			{
-				dev.SetRenderState(RenderState.AlphaBlendEnable, true);
-				dev.SetRenderState(RenderState.SeparateAlphaBlendEnable, true);
+				Dev.SetRenderState(RenderState.AlphaBlendEnable, true);
+				Dev.SetRenderState(RenderState.SeparateAlphaBlendEnable, true);
 
-				dev.SetRenderState(RenderState.BlendOperation, ConvertBlendOp(mybs.colorEquation));
-				dev.SetRenderState(RenderState.SourceBlend, ConvertBlendArg(mybs.colorSource));
-				dev.SetRenderState(RenderState.DestinationBlend, ConvertBlendArg(mybs.colorDest));
+				Dev.SetRenderState(RenderState.BlendOperation, ConvertBlendOp(myBs.colorEquation));
+				Dev.SetRenderState(RenderState.SourceBlend, ConvertBlendArg(myBs.colorSource));
+				Dev.SetRenderState(RenderState.DestinationBlend, ConvertBlendArg(myBs.colorDest));
 
-				dev.SetRenderState(RenderState.BlendOperationAlpha, ConvertBlendOp(mybs.alphaEquation));
-				dev.SetRenderState(RenderState.SourceBlendAlpha, ConvertBlendArg(mybs.alphaSource));
-				dev.SetRenderState(RenderState.DestinationBlendAlpha, ConvertBlendArg(mybs.alphaDest));
+				Dev.SetRenderState(RenderState.BlendOperationAlpha, ConvertBlendOp(myBs.alphaEquation));
+				Dev.SetRenderState(RenderState.SourceBlendAlpha, ConvertBlendArg(myBs.alphaSource));
+				Dev.SetRenderState(RenderState.DestinationBlendAlpha, ConvertBlendArg(myBs.alphaDest));
 			}
-			else dev.SetRenderState(RenderState.AlphaBlendEnable, false);
+			else Dev.SetRenderState(RenderState.AlphaBlendEnable, false);
 			if (rsBlend == _rsBlendNoneOpaque)
 			{
-				//make sure constant color is set correctly
-				dev.SetRenderState(RenderState.BlendFactor, -1); //white
+				// make sure constant color is set correctly
+				Dev.SetRenderState(RenderState.BlendFactor, -1); // white
 			}
 		}
 
-		void CreateRenderStates()
+		private void CreateRenderStates()
 		{
 			_rsBlendNoneVerbatim = new CacheBlendState(
 				false,
@@ -357,7 +367,7 @@ namespace BizHawk.Client.EmuHawk
 				gl.BlendingFactorSrc.One, gl.BlendEquationMode.FuncAdd, gl.BlendingFactorDest.Zero);
 		}
 
-		CacheBlendState _rsBlendNoneVerbatim, _rsBlendNoneOpaque, _rsBlendNormal;
+		private CacheBlendState _rsBlendNoneVerbatim, _rsBlendNoneOpaque, _rsBlendNormal;
 
 		public IBlendState BlendNoneCopy => _rsBlendNoneVerbatim;
 		public IBlendState BlendNoneOpaque => _rsBlendNoneOpaque;
@@ -373,24 +383,27 @@ namespace BizHawk.Client.EmuHawk
 			{
 				string errors = $"Vertex Shader:\r\n {vertexShader.Errors} \r\n-------\r\nFragment Shader:\r\n{fragmentShader.Errors}";
 				if (required)
+				{
 					throw new InvalidOperationException($"Couldn't build required GL pipeline:\r\n{errors}");
+				}
+
 				var pipeline = new Pipeline(this, null, false, null, null, null) { Errors = errors };
 				return pipeline;
 			}
 
-			VertexElement[] ves = new VertexElement[vertexLayout.Items.Count];
+			var ves = new VertexElement[vertexLayout.Items.Count];
 			int stride = 0;
 			foreach (var kvp in vertexLayout.Items)
 			{
 				var item = kvp.Value;
-				d3d9.DeclarationType decltype = DeclarationType.Float1;
+				DeclarationType declType;
 				switch (item.AttribType)
 				{
 					case gl.VertexAttribPointerType.Float:
-						if (item.Components == 1) decltype = DeclarationType.Float1;
-						else if (item.Components == 2) decltype = DeclarationType.Float2;
-						else if (item.Components == 3) decltype = DeclarationType.Float3;
-						else if (item.Components == 4) decltype = DeclarationType.Float4;
+						if (item.Components == 1) declType = DeclarationType.Float1;
+						else if (item.Components == 2) declType = DeclarationType.Float2;
+						else if (item.Components == 3) declType = DeclarationType.Float3;
+						else if (item.Components == 4) declType = DeclarationType.Float4;
 						else throw new NotSupportedException();
 						stride += 4 * item.Components;
 						break;
@@ -398,7 +411,7 @@ namespace BizHawk.Client.EmuHawk
 						throw new NotSupportedException();
 				}
 
-				d3d9.DeclarationUsage usage = DeclarationUsage.Position;
+				DeclarationUsage usage;
 				byte usageIndex = 0;
 				switch(item.Usage)
 				{
@@ -419,13 +432,12 @@ namespace BizHawk.Client.EmuHawk
 						throw new NotSupportedException();
 				}
 
-				ves[kvp.Key] = new VertexElement(0, (short)item.Offset, decltype, DeclarationMethod.Default, usage, usageIndex);
+				ves[kvp.Key] = new VertexElement(0, (short)item.Offset, declType, DeclarationMethod.Default, usage, usageIndex);
 			}
 
-
-			var pw = new PipelineWrapper()
+			var pw = new PipelineWrapper
 			{
-				VertexDeclaration = new VertexDeclaration(dev, ves),
+				VertexDeclaration = new VertexDeclaration(Dev, ves),
 				VertexShader = vertexShader.Opaque as ShaderWrapper,
 				FragmentShader = fragmentShader.Opaque as ShaderWrapper,
 				VertexStride = stride,
@@ -440,7 +452,7 @@ namespace BizHawk.Client.EmuHawk
 			var vsct = vs.bytecode.ConstantTable;
 			foreach(var ct in new[]{fsct,vsct})
 			{
-				Queue<Tuple<string,EffectHandle>> todo = new Queue<Tuple<string,EffectHandle>>();
+				var todo = new Queue<Tuple<string,EffectHandle>>();
 				int n = ct.Description.Constants;
 				for (int i = 0; i < n; i++)
 				{
@@ -459,22 +471,22 @@ namespace BizHawk.Client.EmuHawk
 
 					if (descr.StructMembers != 0)
 					{
-						string newprefix = $"{prefix}{descr.Name}.";
+						string newPrefix = $"{prefix}{descr.Name}.";
 						for (int j = 0; j < descr.StructMembers; j++)
 						{
-							var subhandle = ct.GetConstant(handle, j);
-							todo.Enqueue(Tuple.Create(newprefix, subhandle));
+							var subHandle = ct.GetConstant(handle, j);
+							todo.Enqueue(Tuple.Create(newPrefix, subHandle));
 						}
 						continue;
 					}
 
-					UniformInfo ui = new UniformInfo();
-					UniformWrapper uw = new UniformWrapper();
+					var ui = new UniformInfo();
+					var uw = new UniformWrapper();
 
 					ui.Opaque = uw;
 					string name = prefix + descr.Name;
 
-					//mehhh not happy about this stuff
+					// meh not happy about this stuff
 					if (fs.MapCodeToNative != null || vs.MapCodeToNative != null)
 					{
 						string key = name.TrimStart('$');
@@ -495,6 +507,7 @@ namespace BizHawk.Client.EmuHawk
 						ui.SamplerIndex = descr.RegisterIndex;
 						uw.SamplerIndex = descr.RegisterIndex;
 					}
+
 					uniforms.Add(ui);
 				}
 			}
@@ -509,9 +522,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var pw = pipeline.Opaque as PipelineWrapper;
 
-			//unavailable pipelines will have no opaque
+			// unavailable pipelines will have no opaque
 			if (pw == null)
+			{
 				return;
+			}
 
 			pw.VertexDeclaration.Dispose();
 			pw.FragmentShader.IGLShader.Release();
@@ -520,52 +535,52 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Internal_FreeShader(Shader shader)
 		{
-			var sw = shader.Opaque as ShaderWrapper;
+			var sw = (ShaderWrapper)shader.Opaque;
 			sw.bytecode.Dispose();
 			sw.ps?.Dispose();
 			sw.vs?.Dispose();
 		}
 
-		class UniformWrapper
+		private class UniformWrapper
 		{
-			public d3d9.EffectHandle EffectHandle;
-			public d3d9.ConstantDescription Description;
+			public EffectHandle EffectHandle;
+			public ConstantDescription Description;
 			public bool FS;
-			public d3d9.ConstantTable CT;
+			public ConstantTable CT;
 			public int SamplerIndex;
 		}
 
-		class PipelineWrapper // Disposable fields cleaned up by FreePipeline
+		private class PipelineWrapper // Disposable fields cleaned up by FreePipeline
 		{
-			public d3d9.VertexDeclaration VertexDeclaration;
+			public VertexDeclaration VertexDeclaration;
 			public ShaderWrapper VertexShader, FragmentShader;
 			public int VertexStride;
-			public d3d9.ConstantTable fsct, vsct;
+			public ConstantTable fsct, vsct;
 		}
 
-		class TextureWrapper
+		private class TextureWrapper
 		{
-			public d3d9.Texture Texture;
+			public Texture Texture;
 			public TextureAddress WrapClamp = TextureAddress.Clamp;
 			public TextureFilter MinFilter = TextureFilter.Point, MagFilter = TextureFilter.Point;
 		}
 
-		public VertexLayout CreateVertexLayout() { return new VertexLayout(this, new IntPtr(0)); }
+		public VertexLayout CreateVertexLayout() => new VertexLayout(this, new IntPtr(0));
 
 		public void BindPipeline(Pipeline pipeline)
 		{
-			_CurrPipeline = pipeline;
+			_currPipeline = pipeline;
 
 			if (pipeline == null)
 			{
-				//unbind? i don't know
+				// unbind? i don't know
 				return;
 			}
 
-			var pw = pipeline.Opaque as PipelineWrapper;
-			dev.PixelShader = pw.FragmentShader.ps;
-			dev.VertexShader = pw.VertexShader.vs;
-			dev.VertexDeclaration = pw.VertexDeclaration;
+			var pw = (PipelineWrapper)pipeline.Opaque;
+			Dev.PixelShader = pw.FragmentShader.ps;
+			Dev.VertexShader = pw.VertexShader.vs;
+			Dev.VertexDeclaration = pw.VertexDeclaration;
 			
 			//not helpful...
 			//pw.vsct.SetDefaults(dev);
@@ -574,116 +589,140 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SetPipelineUniform(PipelineUniform uniform, bool value)
 		{
-			if (uniform.Owner == null) return; //uniform was optimized out
+			if (uniform.Owner == null)
+			{
+				return; // uniform was optimized out
+			}
 
 			foreach (var ui in uniform.UniformInfos)
 			{
-				var uw = ui.Opaque as UniformWrapper;
-				uw.CT.SetValue(dev, uw.EffectHandle, value);
+				var uw = (UniformWrapper)ui.Opaque;
+				uw.CT.SetValue(Dev, uw.EffectHandle, value);
 			}
 		}
 
 		public unsafe void SetPipelineUniformMatrix(PipelineUniform uniform, Matrix4 mat, bool transpose)
 		{
-			if (uniform.Owner == null) return; //uniform was optimized out
+			if (uniform.Owner == null)
+			{
+				return; // uniform was optimized out
+			}
 
 			foreach (var ui in uniform.UniformInfos)
 			{
-				var uw = ui.Opaque as UniformWrapper;
-				uw.CT.SetValue(dev, uw.EffectHandle, mat.ToSlimDXMatrix(!transpose));
+				var uw = (UniformWrapper)ui.Opaque;
+				uw.CT.SetValue(Dev, uw.EffectHandle, mat.ToSlimDXMatrix(!transpose));
 			}
 		}
 
 		public unsafe void SetPipelineUniformMatrix(PipelineUniform uniform, ref Matrix4 mat, bool transpose)
 		{
-			if (uniform.Owner == null) return; //uniform was optimized out
+			if (uniform.Owner == null)
+			{
+				return; // uniform was optimized out
+			}
 
 			foreach (var ui in uniform.UniformInfos)
 			{
-				var uw = ui.Opaque as UniformWrapper;
-				uw.CT.SetValue(dev, uw.EffectHandle, mat.ToSlimDXMatrix(!transpose));
+				var uw = (UniformWrapper)ui.Opaque;
+				uw.CT.SetValue(Dev, uw.EffectHandle, mat.ToSlimDXMatrix(!transpose));
 			}
 		}
 
 		public void SetPipelineUniform(PipelineUniform uniform, Vector4 value)
 		{
-			if (uniform.Owner == null) return; //uniform was optimized out
+			if (uniform.Owner == null)
+			{
+				return; // uniform was optimized out
+			}
 
 			foreach (var ui in uniform.UniformInfos)
 			{
-				var uw = ui.Opaque as UniformWrapper;
-				uw.CT.SetValue(dev, uw.EffectHandle, value.ToSlimDXVector4());
+				var uw = (UniformWrapper)ui.Opaque;
+				uw.CT.SetValue(Dev, uw.EffectHandle, value.ToSlimDXVector4());
 			}
 		}
 
 		public void SetPipelineUniform(PipelineUniform uniform, Vector2 value)
 		{
-			if (uniform.Owner == null) return; //uniform was optimized out
+			if (uniform.Owner == null) return; // uniform was optimized out
 
 			foreach (var ui in uniform.UniformInfos)
 			{
-				var uw = ui.Opaque as UniformWrapper;
-				uw.CT.SetValue(dev, uw.EffectHandle, value.ToSlimDXVector2());
+				var uw = (UniformWrapper)ui.Opaque;
+				uw.CT.SetValue(Dev, uw.EffectHandle, value.ToSlimDXVector2());
 			}
 		}
 
 		public void SetPipelineUniform(PipelineUniform uniform, float value)
 		{
-			if (uniform.Owner == null) return; //uniform was optimized out
+			if (uniform.Owner == null) return; // uniform was optimized out
 			foreach (var ui in uniform.UniformInfos)
 			{
-				var uw = ui.Opaque as UniformWrapper;
-				uw.CT.SetValue(dev, uw.EffectHandle, value);
+				var uw = (UniformWrapper)ui.Opaque;
+				uw.CT.SetValue(Dev, uw.EffectHandle, value);
 			}
 		}
 
 		public unsafe void SetPipelineUniform(PipelineUniform uniform, Vector4[] values)
 		{
-			if (uniform.Owner == null) return; //uniform was optimized out
-			var v = new global::SlimDX.Vector4[values.Length];
+			if (uniform.Owner == null) return; // uniform was optimized out
+			var v = new SlimDX.Vector4[values.Length];
 			for (int i = 0; i < values.Length; i++)
+			{
 				v[i] = values[i].ToSlimDXVector4();
+			}
+
 			foreach (var ui in uniform.UniformInfos)
 			{
-				var uw = ui.Opaque as UniformWrapper;
-				uw.CT.SetValue(dev, uw.EffectHandle, v);
+				var uw = (UniformWrapper)ui.Opaque;
+				uw.CT.SetValue(Dev, uw.EffectHandle, v);
 			}
 		}
 
 		public void SetPipelineUniformSampler(PipelineUniform uniform, Texture2d tex)
 		{
-			if (uniform.Owner == null) return; //uniform was optimized out
+			if (uniform.Owner == null) return; // uniform was optimized out
 			var tw = tex.Opaque as TextureWrapper;
 
 			foreach (var ui in uniform.UniformInfos)
 			{
-				var uw = ui.Opaque as UniformWrapper;
-				dev.SetTexture(uw.SamplerIndex, tw.Texture);
+				var uw = (UniformWrapper)ui.Opaque;
+				Dev.SetTexture(uw.SamplerIndex, tw.Texture);
 
-				dev.SetSamplerState(uw.SamplerIndex, SamplerState.AddressU, tw.WrapClamp);
-				dev.SetSamplerState(uw.SamplerIndex, SamplerState.AddressV, tw.WrapClamp);
-				dev.SetSamplerState(uw.SamplerIndex, SamplerState.MinFilter, tw.MinFilter);
-				dev.SetSamplerState(uw.SamplerIndex, SamplerState.MagFilter, tw.MagFilter);
+				Dev.SetSamplerState(uw.SamplerIndex, SamplerState.AddressU, tw.WrapClamp);
+				Dev.SetSamplerState(uw.SamplerIndex, SamplerState.AddressV, tw.WrapClamp);
+				Dev.SetSamplerState(uw.SamplerIndex, SamplerState.MinFilter, tw.MinFilter);
+				Dev.SetSamplerState(uw.SamplerIndex, SamplerState.MagFilter, tw.MagFilter);
 			}
 		}
 
 		public void SetTextureWrapMode(Texture2d tex, bool clamp)
 		{
-			var tw = tex.Opaque as TextureWrapper;
+			var tw = (TextureWrapper)tex.Opaque;
 			tw.WrapClamp = clamp ? TextureAddress.Clamp : TextureAddress.Wrap;
 		}
 
-		public void TexParameter2d(Texture2d tex, gl.TextureParameterName pname, int param)
+		public void TexParameter2d(Texture2d tex, gl.TextureParameterName pName, int param)
 		{
-			var tw = tex.Opaque as TextureWrapper;
+			var tw = (TextureWrapper)tex.Opaque;
 
-			if(pname == gl.TextureParameterName.TextureMinFilter)
-				tw.MinFilter = (param == (int)gl.TextureMinFilter.Linear) ? TextureFilter.Linear : TextureFilter.Point;
-			if (pname == gl.TextureParameterName.TextureMagFilter)
-				tw.MagFilter = (param == (int)gl.TextureMagFilter.Linear) ? TextureFilter.Linear : TextureFilter.Point;
+			if (pName == gl.TextureParameterName.TextureMinFilter)
+			{
+				tw.MinFilter = param == (int)gl.TextureMinFilter.Linear
+					? TextureFilter.Linear
+					: TextureFilter.Point;
+			}
+
+			if (pName == gl.TextureParameterName.TextureMagFilter)
+			{
+				tw.MagFilter = param == (int)gl.TextureMagFilter.Linear
+					? TextureFilter.Linear 
+					: TextureFilter.Point;
+			}
 		}
 
-		public Texture2d LoadTexture(sd.Bitmap bitmap)
+		public Texture2d LoadTexture(Bitmap bitmap)
 		{
 			using var bmp = new BitmapBuffer(bitmap, new BitmapLoadOptions());
 			return (this as IGL).LoadTexture(bmp);
@@ -695,41 +734,39 @@ namespace BizHawk.Client.EmuHawk
 			return (this as IGL).LoadTexture(bmp);
 		}
 
-		public Texture2d CreateTexture(int width, int height)
-		{
-			return null;
-		}
+		public Texture2d CreateTexture(int width, int height) => null;
 
 		public Texture2d WrapGLTexture2d(IntPtr glTexId, int width, int height)
 		{
-			//not needed 1st pass (except for GL cores)
-			//TODO - need to rip the texturedata. we had code for that somewhere...
+			// not needed 1st pass (except for GL cores)
+			// TODO - need to rip the texture data. we had code for that somewhere...
 			return null;
 		}
 
 		/// <exception cref="InvalidOperationException">GDI+ call returned unexpected data</exception>
 		public unsafe void LoadTextureData(Texture2d tex, BitmapBuffer bmp)
 		{
-			sdi.BitmapData bmp_data = bmp.LockBits();
+			sdi.BitmapData bmpData = bmp.LockBits();
 			var tw = tex.Opaque as TextureWrapper;
 			var dr = tw.Texture.LockRectangle(0, LockFlags.None);
 
-			//TODO - do we need to handle odd sizes, weird pitches here?
-			if (bmp.Width * 4 != bmp_data.Stride)
+			// TODO - do we need to handle odd sizes, weird pitches here?
+			if (bmp.Width * 4 != bmpData.Stride)
+			{
 				throw new InvalidOperationException();
+			}
 
-			dr.Data.WriteRange(bmp_data.Scan0, bmp.Width * bmp.Height * 4);
+			dr.Data.WriteRange(bmpData.Scan0, bmp.Width * bmp.Height * 4);
 			dr.Data.Close();
 
 			tw.Texture.UnlockRectangle(0);
-			bmp.UnlockBits(bmp_data);
+			bmp.UnlockBits(bmpData);
 		}
-
 
 		public Texture2d LoadTexture(BitmapBuffer bmp)
 		{
-			var tex = new d3d9.Texture(dev, bmp.Width, bmp.Height, 1, d3d9.Usage.None, d3d9.Format.A8R8G8B8, d3d9.Pool.Managed);
-			var tw = new TextureWrapper() { Texture = tex };
+			var tex = new Texture(Dev, bmp.Width, bmp.Height, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
+			var tw = new TextureWrapper { Texture = tex };
 			var ret = new Texture2d(this, tw, bmp.Width, bmp.Height);
 			LoadTextureData(ret, bmp);
 			return ret;
@@ -739,16 +776,16 @@ namespace BizHawk.Client.EmuHawk
 		public unsafe BitmapBuffer ResolveTexture2d(Texture2d tex)
 		{
 			//TODO - lazy create and cache resolving target in RT
-			var target = new d3d9.Texture(dev, tex.IntWidth, tex.IntHeight, 1, d3d9.Usage.None, d3d9.Format.A8R8G8B8, d3d9.Pool.SystemMemory);
+			var target = new Texture(Dev, tex.IntWidth, tex.IntHeight, 1, Usage.None, Format.A8R8G8B8, Pool.SystemMemory);
 			var tw = tex.Opaque as TextureWrapper;
-			dev.GetRenderTargetData(tw.Texture.GetSurfaceLevel(0), target.GetSurfaceLevel(0));
+			Dev.GetRenderTargetData(tw.Texture.GetSurfaceLevel(0), target.GetSurfaceLevel(0));
 			var dr = target.LockRectangle(0, LockFlags.ReadOnly);
 			if (dr.Pitch != tex.IntWidth * 4) throw new InvalidOperationException();
 			int[] pixels = new int[tex.IntWidth * tex.IntHeight];
 			dr.Data.ReadRange(pixels, 0, tex.IntWidth * tex.IntHeight);
 			var bb = new BitmapBuffer(tex.IntWidth, tex.IntHeight, pixels);
 			target.UnlockRectangle(0);
-			target.Dispose(); //buffer churn warning
+			target.Dispose(); // buffer churn warning
 			return bb;
 		}
 
@@ -763,15 +800,15 @@ namespace BizHawk.Client.EmuHawk
 
 		public Matrix4 CreateGuiProjectionMatrix(int w, int h)
 		{
-			return CreateGuiProjectionMatrix(new sd.Size(w, h));
+			return CreateGuiProjectionMatrix(new Size(w, h));
 		}
 
-		public Matrix4 CreateGuiViewMatrix(int w, int h, bool autoflip)
+		public Matrix4 CreateGuiViewMatrix(int w, int h, bool autoFlip)
 		{
-			return CreateGuiViewMatrix(new sd.Size(w, h), autoflip);
+			return CreateGuiViewMatrix(new Size(w, h), autoFlip);
 		}
 
-		public Matrix4 CreateGuiProjectionMatrix(sd.Size dims)
+		public Matrix4 CreateGuiProjectionMatrix(Size dims)
 		{
 			Matrix4 ret = Matrix4.Identity;
 			ret.M11 = 2.0f / (float)dims.Width;
@@ -779,20 +816,21 @@ namespace BizHawk.Client.EmuHawk
 			return ret;
 		}
 
-		public Matrix4 CreateGuiViewMatrix(sd.Size dims, bool autoflip)
+		public Matrix4 CreateGuiViewMatrix(Size dims, bool autoFlip)
 		{
 			Matrix4 ret = Matrix4.Identity;
 			ret.M22 = -1.0f;
 			ret.M41 = -(float)dims.Width * 0.5f - 0.5f;
 			ret.M42 = (float)dims.Height * 0.5f + 0.5f;
-			//autoflipping isnt needed on d3d
+
+			// auto-flipping isn't needed on d3d
 			return ret;
 		}
 
 		public void SetViewport(int x, int y, int width, int height)
 		{
-			dev.Viewport = new Viewport(x, y, width, height);
-			dev.ScissorRect = new Rectangle(x, y, width, height);
+			Dev.Viewport = new Viewport(x, y, width, height);
+			Dev.ScissorRect = new Rectangle(x, y, width, height);
 		}
 
 		public void SetViewport(int width, int height)
@@ -811,30 +849,32 @@ namespace BizHawk.Client.EmuHawk
 			SetViewport(r.Left, r.Top, r.Width, r.Height);
 		}
 
-		public void BeginControl(GLControlWrapper_SlimDX9 control)
+		public void BeginControl(GLControlWrapperSlimDX9 control)
 		{
-			_CurrentControl = control;
+			_currentControl = control;
 
-			//this dispose isnt strictly needed but it seems benign
-			var surface = _CurrentControl.SwapChain.GetBackBuffer(0);
-			dev.SetRenderTarget(0, surface);
+			// this dispose isn't strictly needed but it seems benign
+			var surface = _currentControl.SwapChain.GetBackBuffer(0);
+			Dev.SetRenderTarget(0, surface);
 			surface.Dispose();
 		}
 
 		/// <exception cref="InvalidOperationException"><paramref name="control"/> does not match control passed to <see cref="BeginControl"/></exception>
-		public void EndControl(GLControlWrapper_SlimDX9 control)
+		public void EndControl(GLControlWrapperSlimDX9 control)
 		{
-			if (control != _CurrentControl)
+			if (control != _currentControl)
+			{
 				throw new InvalidOperationException();
+			}
 
-			var surface = _CurrentControl.SwapChain.GetBackBuffer(0);
-			dev.SetRenderTarget(0, surface);
+			var surface = _currentControl.SwapChain.GetBackBuffer(0);
+			Dev.SetRenderTarget(0, surface);
 			surface.Dispose();
 
-			_CurrentControl = null;
+			_currentControl = null;
 		}
 
-		public void SwapControl(GLControlWrapper_SlimDX9 control)
+		public void SwapControl(GLControlWrapperSlimDX9 control)
 		{
 			EndControl(control);
 
@@ -843,18 +883,18 @@ namespace BizHawk.Client.EmuHawk
 				var result = control.SwapChain.Present(Present.None);
 				//var rs = dev.GetRasterStatus(0);
 			}
-			catch(d3d9.Direct3D9Exception ex)
+			catch(Direct3D9Exception ex)
 			{
 				if (ex.ResultCode.Code == D3DERR_DEVICELOST)
 					ResetDevice(control);
 			}
 		}
 
-		HashSet<RenderTarget> _renderTargets = new HashSet<RenderTarget>();
+		private readonly HashSet<RenderTarget> _renderTargets = new HashSet<RenderTarget>();
 
 		public void FreeRenderTarget(RenderTarget rt)
 		{
-			var tw = rt.Texture2d.Opaque as TextureWrapper;
+			var tw = (TextureWrapper)rt.Texture2d.Opaque;
 			tw.Texture.Dispose();
 			tw.Texture = null;
 			_renderTargets.Remove(rt);
@@ -862,19 +902,19 @@ namespace BizHawk.Client.EmuHawk
 
 		public RenderTarget CreateRenderTarget(int w, int h)
 		{
-			var tw = new TextureWrapper() { Texture = CreateRenderTargetTexture(w, h) };
+			var tw = new TextureWrapper { Texture = CreateRenderTargetTexture(w, h) };
 			var tex = new Texture2d(this, tw, w, h);
 			var rt = new RenderTarget(this, tw, tex);
 			_renderTargets.Add(rt);
 			return rt;
 		}
 
-		d3d9.Texture CreateRenderTargetTexture(int w, int h)
+		private Texture CreateRenderTargetTexture(int w, int h)
 		{
-			return new d3d9.Texture(dev, w, h, 1, d3d9.Usage.RenderTarget, d3d9.Format.A8R8G8B8, d3d9.Pool.Default);
+			return new Texture(Dev, w, h, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
 		}
 
-		void SuspendRenderTargets()
+		private void SuspendRenderTargets()
 		{
 			foreach (var rt in _renderTargets)
 			{
@@ -884,11 +924,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		void ResumeRenderTargets()
+		private void ResumeRenderTargets()
 		{
 			foreach (var rt in _renderTargets)
 			{
-				var tw = rt.Opaque as TextureWrapper;
+				var tw = (TextureWrapper)rt.Opaque;
 				tw.Texture = CreateRenderTargetTexture(rt.Texture2d.IntWidth, rt.Texture2d.IntHeight);
 			}
 		}
@@ -897,23 +937,23 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (rt == null)
 			{
-				//this dispose is needed for correct device resets, I have no idea why
-				//don't try caching it either
-				var surface = _CurrentControl.SwapChain.GetBackBuffer(0);
-				dev.SetRenderTarget(0, surface);
+				// this dispose is needed for correct device resets, I have no idea why
+				// don't try caching it either
+				var surface = _currentControl.SwapChain.GetBackBuffer(0);
+				Dev.SetRenderTarget(0, surface);
 				surface.Dispose();
 
-				dev.DepthStencilSurface = null;
+				Dev.DepthStencilSurface = null;
 				return;
 			}
 
-			//dispose doesn't seem necessary for reset here...
+			// dispose doesn't seem necessary for reset here...
 			var tw = rt.Opaque as TextureWrapper;
-			dev.SetRenderTarget(0, tw.Texture.GetSurfaceLevel(0));
-			dev.DepthStencilSurface = null;
+			Dev.SetRenderTarget(0, tw.Texture.GetSurfaceLevel(0));
+			Dev.DepthStencilSurface = null;
 		}
 
-		public void FreeControlSwapChain(GLControlWrapper_SlimDX9 control)
+		public void FreeControlSwapChain(GLControlWrapperSlimDX9 control)
 		{
 			if (control.SwapChain != null)
 			{
@@ -922,7 +962,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void RefreshControlSwapChain(GLControlWrapper_SlimDX9 control)
+		public void RefreshControlSwapChain(GLControlWrapperSlimDX9 control)
 		{
 			FreeControlSwapChain(control);
 
@@ -937,12 +977,12 @@ namespace BizHawk.Client.EmuHawk
 				PresentationInterval = control.Vsync ? PresentInterval.One : PresentInterval.Immediate
 			};
 
-			control.SwapChain = new SwapChain(dev, pp);
+			control.SwapChain = new SwapChain(Dev, pp);
 		}
 
 		public IGraphicsControl Internal_CreateGraphicsControl()
 		{
-			var ret = new GLControlWrapper_SlimDX9(this);
+			var ret = new GLControlWrapperSlimDX9(this);
 			RefreshControlSwapChain(ret);
 			return ret;
 		}
@@ -950,22 +990,23 @@ namespace BizHawk.Client.EmuHawk
 		/// <exception cref="NotSupportedException"><paramref name="mode"/> is <see cref="gl.PrimitiveType.TriangleStrip"/></exception>
 		public unsafe void DrawArrays(gl.PrimitiveType mode, int first, int count)
 		{
-			PrimitiveType pt = PrimitiveType.TriangleStrip;
-			
-			if(mode != gl.PrimitiveType.TriangleStrip)
+			var pt = PrimitiveType.TriangleStrip;
+
+			if (mode != gl.PrimitiveType.TriangleStrip)
+			{
 				throw new NotSupportedException();
+			}
 
 			//for tristrip
-			int primCount = (count - 2);
+			int primCount = count - 2;
 
-			var pw = _CurrPipeline.Opaque as PipelineWrapper;
+			var pw = (PipelineWrapper)_currPipeline.Opaque;
 			int stride = pw.VertexStride;
 			byte* ptr = (byte*)_pVertexData.ToPointer() + first * stride;
 
-			dev.DrawUserPrimitives(pt, primCount, (void*)ptr, (uint)stride);
+			Dev.DrawUserPrimitives(pt, primCount, (void*)ptr, (uint)stride);
 		}
 
-		
 		public unsafe void BindArrayData(void* pData)
 		{
 			_pVertexData = new IntPtr(pData);
@@ -973,16 +1014,16 @@ namespace BizHawk.Client.EmuHawk
 
 		public void BeginScene()
 		{
-			dev.BeginScene();
-			dev.SetRenderState(RenderState.CullMode, Cull.None);
-			dev.SetRenderState(RenderState.ZEnable, false);
-			dev.SetRenderState(RenderState.ZWriteEnable, false);
-			dev.SetRenderState(RenderState.Lighting, false);
+			Dev.BeginScene();
+			Dev.SetRenderState(RenderState.CullMode, Cull.None);
+			Dev.SetRenderState(RenderState.ZEnable, false);
+			Dev.SetRenderState(RenderState.ZWriteEnable, false);
+			Dev.SetRenderState(RenderState.Lighting, false);
 		}
 
 		public void EndScene()
 		{
-			dev.EndScene();
+			Dev.EndScene();
 		}
-	} //class IGL_SlimDX
+	}
 }
