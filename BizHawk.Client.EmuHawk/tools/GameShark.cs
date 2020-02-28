@@ -2085,7 +2085,6 @@ namespace BizHawk.Client.EmuHawk
 				_byteSize = 32;
 				MessageBox.Show("The code you entered is not needed by Bizhawk.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
 				_blnUnneeded = true;
-				return;
 			}
 			else if (_ramAddress.StartsWith("0800") && _ramAddress[6] == '0' && _ramAddress[7] == '0')
 			{
@@ -2940,6 +2939,7 @@ namespace BizHawk.Client.EmuHawk
 				MessageBox.Show("All Master System Game Genie Codes need to have a dash after the third character and seventh character.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
+
 			try
 			{
 				// A Watch needs to be generated so we can make a cheat out of that.  This is due to how the Cheat engine works.
