@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -275,6 +276,38 @@ namespace BizHawk.Emulation.Common
 		public static bool IsImplemented(this MethodInfo info)
 		{
 			return !info.GetCustomAttributes(false).Any(a => a is FeatureNotImplementedAttribute);
+		}
+
+		public static IDictionary<string, dynamic> ToDictionary(this IController controller, int? controllerNum = null)
+		{
+			var buttons = new Dictionary<string, dynamic>();
+
+			foreach (var button in controller.Definition.BoolButtons)
+			{
+				if (controllerNum == null)
+				{
+					buttons[button] = controller.IsPressed(button);
+				}
+				else if (button.Length > 2 && button.Substring(0, 2) == $"P{controllerNum}")
+				{
+					var sub = button.Substring(3);
+					buttons[sub] = controller.IsPressed($"P{controllerNum} {sub}");
+				}
+			}
+			foreach (var button in controller.Definition.FloatControls)
+			{
+				if (controllerNum == null)
+				{
+					buttons[button] = controller.GetFloat(button);
+				}
+				else if (button.Length > 2 && button.Substring(0, 2) == $"P{controllerNum}")
+				{
+					var sub = button.Substring(3);
+					buttons[sub] = controller.GetFloat($"P{controllerNum} {sub}");
+				}
+			}
+
+			return buttons;
 		}
 	}
 }
