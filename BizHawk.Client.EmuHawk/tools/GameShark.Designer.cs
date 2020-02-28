@@ -53,7 +53,7 @@
 			this.btnClear.TabIndex = 4;
 			this.btnClear.Text = "Clear";
 			this.btnClear.UseVisualStyleBackColor = true;
-			this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+			this.btnClear.Click += new System.EventHandler(this.BtnClear_Click);
 			// 
 			// lblCheat
 			// 
@@ -85,7 +85,7 @@
 			this.btnGo.TabIndex = 5;
 			this.btnGo.Text = "Convert";
 			this.btnGo.UseVisualStyleBackColor = true;
-			this.btnGo.Click += new System.EventHandler(this.btnGo_Click);
+			this.btnGo.Click += new System.EventHandler(this.Go_Click);
 			// 
 			// lblDescription
 			// 
@@ -124,10 +124,8 @@
 			this.Name = "GameShark";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Cheat Code Converter";
-			this.Load += new System.EventHandler(this.GameShark_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
-
 		}
 
 		#endregion
