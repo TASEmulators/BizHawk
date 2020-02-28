@@ -8,16 +8,14 @@ using BizHawk.Bizware.BizwareGL;
 
 using sd = System.Drawing;
 using sdi = System.Drawing.Imaging;
-using swf = System.Windows.Forms;
 
 //TODO - maybe a layer to cache Graphics parameters (notably, filtering) ?
-
 namespace BizHawk.Client.EmuHawk
 {
 	public class IGL_GdiPlus : IGL
 	{
-		//rendering state
-		RenderTarget _CurrRenderTarget;
+		// rendering state
+		private RenderTarget _currRenderTarget;
 
 		public IGL_GdiPlus()
 		{
@@ -55,23 +53,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 		}
 
-
 		public void FreeTexture(Texture2d tex)
 		{
 			var tw = tex.Opaque as GDIPTextureWrapper;
 			tw.Dispose();
 		}
-		
-		public Shader CreateFragmentShader(bool cg, string source, string entry, bool required)
-		{
-			return null;
-		}
-		public Shader CreateVertexShader(bool cg, string source, string entry, bool required)
-		{
-			return null;
-		}
 
-		public void FreeShader(IntPtr shader) {  }
+		public Shader CreateFragmentShader(bool cg, string source, string entry, bool required) => null;
+		public Shader CreateVertexShader(bool cg, string source, string entry, bool required) => null;
 
 		public void SetBlendState(IBlendState rsBlend)
 		{
@@ -79,7 +68,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		class MyBlendState : IBlendState { }
-		static MyBlendState _rsBlendNoneVerbatim = new MyBlendState(), _rsBlendNoneOpaque = new MyBlendState(), _rsBlendNormal = new MyBlendState();
+		static readonly MyBlendState _rsBlendNoneVerbatim = new MyBlendState(), _rsBlendNoneOpaque = new MyBlendState(), _rsBlendNormal = new MyBlendState();
 
 		public IBlendState BlendNoneCopy => _rsBlendNoneVerbatim;
 		public IBlendState BlendNoneOpaque => _rsBlendNoneOpaque;
@@ -156,8 +145,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public Texture2d LoadTexture(sd.Bitmap bitmap)
 		{
-			var sdbmp = (sd.Bitmap)bitmap.Clone();
-			GDIPTextureWrapper tw = new GDIPTextureWrapper { SDBitmap = sdbmp };
+			var sdBitmap = (Bitmap)bitmap.Clone();
+			GDIPTextureWrapper tw = new GDIPTextureWrapper { SDBitmap = sdBitmap };
 			return new Texture2d(this, tw, bitmap.Width, bitmap.Height);
 		}
 
@@ -167,14 +156,11 @@ namespace BizHawk.Client.EmuHawk
 			return (this as IGL).LoadTexture(bmp);
 		}
 
-		public Texture2d CreateTexture(int width, int height)
-		{
-			return null;
-		}
+		public Texture2d CreateTexture(int width, int height) => null;
 
 		public Texture2d WrapGLTexture2d(IntPtr glTexId, int width, int height)
 		{
-			//TODO - need to rip the texturedata. we had code for that somewhere...
+			// TODO - need to rip the texture data. we had code for that somewhere...
 			return null;
 		}
 
@@ -187,20 +173,20 @@ namespace BizHawk.Client.EmuHawk
 
 		public Texture2d LoadTexture(BitmapBuffer bmp)
 		{
-			//definitely needed (by TextureFrugalizer at least)
-			var sdbmp = bmp.ToSysdrawingBitmap();
-			var tw = new GDIPTextureWrapper { SDBitmap = sdbmp };
+			// definitely needed (by TextureFrugalizer at least)
+			var sdBitmap = bmp.ToSysdrawingBitmap();
+			var tw = new GDIPTextureWrapper { SDBitmap = sdBitmap };
 			return new Texture2d(this, tw, bmp.Width, bmp.Height);
 		}
 
-		public unsafe BitmapBuffer ResolveTexture2d(Texture2d tex)
+		public BitmapBuffer ResolveTexture2d(Texture2d tex)
 		{
 			var tw = tex.Opaque as GDIPTextureWrapper;
-			var blow = new BitmapLoadOptions()
+			var blow = new BitmapLoadOptions
 			{
-				AllowWrap = false //must be an independent resource
+				AllowWrap = false // must be an independent resource
 			};
-			var bb = new BitmapBuffer(tw.SDBitmap,blow); 
+			var bb = new BitmapBuffer(tw.SDBitmap, blow); 
 			return bb;
 		}
 
@@ -217,9 +203,9 @@ namespace BizHawk.Client.EmuHawk
 			return CreateGuiProjectionMatrix(new sd.Size(w, h));
 		}
 
-		public Matrix4 CreateGuiViewMatrix(int w, int h, bool autoflip)
+		public Matrix4 CreateGuiViewMatrix(int w, int h, bool autoFlip)
 		{
-			return CreateGuiViewMatrix(new sd.Size(w, h), autoflip);
+			return CreateGuiViewMatrix(new sd.Size(w, h), autoFlip);
 		}
 
 		public Matrix4 CreateGuiProjectionMatrix(sd.Size dims)
@@ -228,12 +214,12 @@ namespace BizHawk.Client.EmuHawk
 			return Matrix4.Identity;
 		}
 
-		public Matrix4 CreateGuiViewMatrix(sd.Size dims, bool autoflip)
+		public Matrix4 CreateGuiViewMatrix(sd.Size dims, bool autoFlip)
 		{
 			//on account of gdi+ working internally with a default view exactly like we want, we don't need to setup a new one here
 			//furthermore, we _cant_, without inverting the GuiView and GuiProjection before drawing, to completely undo it
 			//this might be feasible, but its kind of slow and annoying and worse, seemingly numerically unstable
-			//if (autoflip && _CurrRenderTarget != null)
+			//if (autoFlip && _CurrRenderTarget != null)
 			//{
 			//  Matrix4 ret = Matrix4.Identity;
 			//  ret.M22 = -1;
@@ -256,12 +242,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			SetViewport(size.Width, size.Height);
 		}
-
-		public void SetViewport(swf.Control control)
-		{
-			
-		}
-
 	
 		public void BeginControl(GLControlWrapper_GdiPlus control)
 		{
@@ -345,8 +325,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var ret = new GLControlWrapper_GdiPlus(this);
 			
-			//create a render target for this control
-			RenderTargetWrapper rtw = new RenderTargetWrapper(this) { Control = ret };
+			// create a render target for this control
+			var rtw = new RenderTargetWrapper(this) { Control = ret };
 			ret.RenderTargetWrapper = rtw;
 			
 			return ret;
@@ -380,7 +360,7 @@ namespace BizHawk.Client.EmuHawk
 				_CurrentOffscreenGraphics = null;
 			}
 
-			_CurrRenderTarget = rt;
+			_currRenderTarget = rt;
 			if (CurrentRenderTargetWrapper != null)
 			{
 				if (CurrentRenderTargetWrapper == CurrentControl.RenderTargetWrapper)
@@ -425,5 +405,4 @@ namespace BizHawk.Client.EmuHawk
 
 
 	} //class IGL_GdiPlus
-
 }
