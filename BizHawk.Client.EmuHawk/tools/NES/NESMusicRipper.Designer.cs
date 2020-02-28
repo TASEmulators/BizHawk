@@ -56,7 +56,7 @@
 			this.btnControl.TabIndex = 0;
 			this.btnControl.Text = "Start";
 			this.btnControl.UseVisualStyleBackColor = true;
-			this.btnControl.Click += new System.EventHandler(this.btnControl_Click);
+			this.btnControl.Click += new System.EventHandler(this.BtnControl_Click);
 			// 
 			// txtDivider
 			// 
@@ -84,7 +84,7 @@
 			this.btnExport.TabIndex = 3;
 			this.btnExport.Text = "Export XRNS File";
 			this.btnExport.UseVisualStyleBackColor = true;
-			this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
+			this.btnExport.Click += new System.EventHandler(this.Export_Click);
 			// 
 			// lblContents
 			// 
