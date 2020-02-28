@@ -1,18 +1,11 @@
 using System;
-using System.Linq;
-using System.Text;
 using System.IO;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.Windows.Forms;
-
 using BizHawk.Bizware.BizwareGL;
 
 using SlimDX.Direct3D9;
 using OpenTK;
-using OpenTK.Graphics;
-
 using d3d9 = SlimDX.Direct3D9;
 using gl = OpenTK.Graphics.OpenGL;
 using sd = System.Drawing;
@@ -48,8 +41,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			//make an 'offscreen context' so we can at least do things without having to create a window
-			OffscreenNativeWindow = new OpenTK.NativeWindow();
-			OffscreenNativeWindow.ClientSize = new sd.Size(8, 8);
+			OffscreenNativeWindow = new NativeWindow { ClientSize = new Size(8, 8) };
 
 			CreateDevice();
 			CreateRenderStates();
@@ -226,8 +218,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (required)
 					throw;
-				var s = new Shader(this, null, false);
-				s.Errors = ex.ToString();
+				var s = new Shader(this, null, false) { Errors = ex.ToString() };
 				return s;
 			}
 		}
@@ -247,7 +238,7 @@ namespace BizHawk.Client.EmuHawk
 					if (!results.Succeeded)
 					{
 						if (required) throw new InvalidOperationException(results.Errors);
-						else return new Shader(this, null, false);
+						return new Shader(this, null, false);
 					}
 
 					sw.MapCodeToNative = results.MapCodeToNative;
@@ -282,8 +273,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (required)
 					throw;
-				var s = new Shader(this, null, false);
-				s.Errors = ex.ToString();
+				var s = new Shader(this, null, false) { Errors = ex.ToString() };
 				return s;
 			}
 		}
@@ -384,8 +374,7 @@ namespace BizHawk.Client.EmuHawk
 				string errors = $"Vertex Shader:\r\n {vertexShader.Errors} \r\n-------\r\nFragment Shader:\r\n{fragmentShader.Errors}";
 				if (required)
 					throw new InvalidOperationException($"Couldn't build required GL pipeline:\r\n{errors}");
-				var pipeline = new Pipeline(this, null, false, null, null, null);
-				pipeline.Errors = errors;
+				var pipeline = new Pipeline(this, null, false, null, null, null) { Errors = errors };
 				return pipeline;
 			}
 

@@ -406,10 +406,11 @@ namespace BizHawk.Client.EmuHawk.Filters
 				OutputSize.Height *= YIS;
 			}
 
-			var outState = new SurfaceState();
-			outState.SurfaceFormat = new SurfaceFormat(OutputSize);
-			outState.SurfaceDisposition = SurfaceDisposition.RenderTarget;
-			DeclareOutput(outState);
+			DeclareOutput(new SurfaceState
+			{
+				SurfaceFormat = new SurfaceFormat(OutputSize),
+				SurfaceDisposition = SurfaceDisposition.RenderTarget
+			});
 		}
 
 		public override Size PresizeOutput(string channel, Size size)

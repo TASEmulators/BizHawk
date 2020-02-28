@@ -45,8 +45,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 
 			var psx = OwnerEmulator as Octoshock;
-			List<string> buttons = new List<string>();
-			buttons.Add("- NONE -");
+			var buttons = new List<string> { "- NONE -" };
 			buttons.AddRange(psx.HackyDiscButtons);
 
 			lvDiscs.Items.Clear();
@@ -167,10 +166,5 @@ namespace BizHawk.Client.EmuHawk
 				UpdateValues();
 			}
 		}
-
-	
-
-
-
 	}
 }

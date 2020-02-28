@@ -445,21 +445,35 @@ namespace BizHawk.Client.EmuHawk
 			float noise_freq = 1789773.0f / (16.0f * (noise_period + 1));
 			int noise_note = FindNearestNote(noise_freq);
 
-			//create the record
-			ApuState rec = new ApuState();
-			rec.pulse0.en = !apu.pulse[0].Debug_IsSilenced;
-			rec.pulse0.vol = (byte)apu.pulse[0].Debug_Volume;
-			rec.pulse0.note = pulse0_note;
-			rec.pulse0.type = (byte)apu.pulse[0].Debug_DutyType;
-			rec.pulse1.en = !apu.pulse[1].Debug_IsSilenced;
-			rec.pulse1.vol = (byte)apu.pulse[1].Debug_Volume;
-			rec.pulse1.note = pulse1_note;
-			rec.pulse1.type = (byte)apu.pulse[1].Debug_DutyType;
-			rec.triangle.en = !apu.triangle.Debug_IsSilenced;
-			rec.triangle.note = tri_note;
-			rec.noise.en = !apu.noise.Debug_IsSilenced;
-			rec.noise.vol = (byte)apu.noise.Debug_Volume;
-			rec.noise.note = noise_note;
+			// create the record
+			var rec = new ApuState
+			{
+				pulse0 =
+				{
+					en = !apu.pulse[0].Debug_IsSilenced,
+					vol = (byte) apu.pulse[0].Debug_Volume,
+					note = pulse0_note,
+					type = (byte) apu.pulse[0].Debug_DutyType
+				},
+				pulse1 =
+				{
+					en = !apu.pulse[1].Debug_IsSilenced,
+					vol = (byte) apu.pulse[1].Debug_Volume,
+					note = pulse1_note,
+					type = (byte) apu.pulse[1].Debug_DutyType
+				},
+				triangle =
+				{
+					en = !apu.triangle.Debug_IsSilenced,
+					note = tri_note
+				},
+				noise =
+				{
+					en = !apu.noise.Debug_IsSilenced,
+					vol = (byte) apu.noise.Debug_Volume,
+					note = noise_note
+				}
+			};
 
 			Log.Add(rec);
 

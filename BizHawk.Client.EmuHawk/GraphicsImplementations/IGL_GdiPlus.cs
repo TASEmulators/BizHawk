@@ -157,8 +157,7 @@ namespace BizHawk.Client.EmuHawk
 		public Texture2d LoadTexture(sd.Bitmap bitmap)
 		{
 			var sdbmp = (sd.Bitmap)bitmap.Clone();
-			GDIPTextureWrapper tw = new GDIPTextureWrapper();
-			tw.SDBitmap = sdbmp;
+			GDIPTextureWrapper tw = new GDIPTextureWrapper { SDBitmap = sdbmp };
 			return new Texture2d(this, tw, bitmap.Width, bitmap.Height);
 		}
 
@@ -190,8 +189,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			//definitely needed (by TextureFrugalizer at least)
 			var sdbmp = bmp.ToSysdrawingBitmap();
-			var tw = new GDIPTextureWrapper();
-			tw.SDBitmap = sdbmp;
+			var tw = new GDIPTextureWrapper { SDBitmap = sdbmp };
 			return new Texture2d(this, tw, bmp.Width, bmp.Height);
 		}
 
@@ -349,8 +347,7 @@ namespace BizHawk.Client.EmuHawk
 			var ret = new GLControlWrapper_GdiPlus(this);
 			
 			//create a render target for this control
-			RenderTargetWrapper rtw = new RenderTargetWrapper(this);
-			rtw.Control = ret;
+			RenderTargetWrapper rtw = new RenderTargetWrapper(this) { Control = ret };
 			ret.RenderTargetWrapper = rtw;
 			
 			return ret;
@@ -364,11 +361,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public unsafe RenderTarget CreateRenderTarget(int w, int h)
 		{
-			GDIPTextureWrapper tw = new GDIPTextureWrapper();
-			tw.SDBitmap = new Bitmap(w,h, sdi.PixelFormat.Format32bppArgb);
+			var tw = new GDIPTextureWrapper
+			{
+				SDBitmap = new Bitmap(w, h, sdi.PixelFormat.Format32bppArgb)
+			};
 			var tex = new Texture2d(this, tw, w, h);
 
-			RenderTargetWrapper rtw = new RenderTargetWrapper(this);
+			var rtw = new RenderTargetWrapper(this);
 			var rt = new RenderTarget(this, rtw, tex);
 			rtw.Target = rt;
 			return rt;

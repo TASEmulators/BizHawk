@@ -4,27 +4,31 @@
 	{
 		public static global::SlimDX.Matrix ToSlimDXMatrix(this OpenTK.Matrix4 m, bool transpose)
 		{
-			global::SlimDX.Matrix	ret = new global::SlimDX.Matrix();
-			ret.M11 = m.M11;
-			ret.M12 = m.M12;
-			ret.M13 = m.M13;
-			ret.M14 = m.M14;
-			ret.M21 = m.M21;
-			ret.M22 = m.M22;
-			ret.M23 = m.M23;
-			ret.M24 = m.M24;
-			ret.M31 = m.M31;
-			ret.M32 = m.M32;
-			ret.M33 = m.M33;
-			ret.M34 = m.M34;
-			ret.M41 = m.M41;
-			ret.M42 = m.M42;
-			ret.M43 = m.M43;
-			ret.M44 = m.M44;
+			global::SlimDX.Matrix ret = new global::SlimDX.Matrix
+			{
+				M11 = m.M11,
+				M12 = m.M12,
+				M13 = m.M13,
+				M14 = m.M14,
+				M21 = m.M21,
+				M22 = m.M22,
+				M23 = m.M23,
+				M24 = m.M24,
+				M31 = m.M31,
+				M32 = m.M32,
+				M33 = m.M33,
+				M34 = m.M34,
+				M41 = m.M41,
+				M42 = m.M42,
+				M43 = m.M43,
+				M44 = m.M44
+			};
 
 			//could be optimized later into the above copies
 			if (transpose)
+			{
 				ret = global::SlimDX.Matrix.Transpose(ret);
+			}
 
 			return ret;
 		}
@@ -38,6 +42,5 @@
 		{
 			return new global::SlimDX.Vector2(v.X, v.Y);
 		}
-
 	}
 }

@@ -71,13 +71,12 @@ namespace BizHawk.Client.EmuHawk
 		public IGL_TK(int major_version, int minor_version, bool forward_compatible)
 		{
 			//make an 'offscreen context' so we can at least do things without having to create a window
-			OffscreenNativeWindow = new NativeWindow();
-			OffscreenNativeWindow.ClientSize = new sd.Size(8, 8);
-			this.GraphicsContext = new GraphicsContext(GraphicsMode.Default, OffscreenNativeWindow.WindowInfo, major_version, minor_version, forward_compatible ? GraphicsContextFlags.ForwardCompatible : GraphicsContextFlags.Default);
+			OffscreenNativeWindow = new NativeWindow { ClientSize = new sd.Size(8, 8) };
+			GraphicsContext = new GraphicsContext(GraphicsMode.Default, OffscreenNativeWindow.WindowInfo, major_version, minor_version, forward_compatible ? GraphicsContextFlags.ForwardCompatible : GraphicsContextFlags.Default);
 			MakeDefaultCurrent();
 
 			//this is important for reasons unknown
-			this.GraphicsContext.LoadAll(); 
+			GraphicsContext.LoadAll(); 
 
 			//misc initialization
 			CreateRenderStates();
@@ -190,8 +189,7 @@ namespace BizHawk.Client.EmuHawk
 				string errors = $"Vertex Shader:\r\n {vertexShader.Errors} \r\n-------\r\nFragment Shader:\r\n{fragmentShader.Errors}";
 				if (required)
 					throw new InvalidOperationException($"Couldn't build required GL pipeline:\r\n{errors}");
-				var pipeline = new Pipeline(this, null, false, null, null, null);
-				pipeline.Errors = errors;
+				var pipeline = new Pipeline(this, null, false, null, null, null) { Errors = errors };
 				return pipeline;
 			}
 
@@ -316,9 +314,7 @@ namespace BizHawk.Client.EmuHawk
 					if (fsw.MapCodeToNative.ContainsKey(name)) name = fsw.MapCodeToNative[name];
 				}
 
-				var ui = new UniformInfo();
-				ui.Name = name;
-				ui.Opaque = loc;
+				var ui = new UniformInfo { Name = name, Opaque = loc };
 
 				if (type == ActiveUniformType.Sampler2D)
 				{

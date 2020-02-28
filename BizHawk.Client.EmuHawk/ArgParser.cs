@@ -175,8 +175,10 @@ namespace BizHawk.Client.EmuHawk
 			//initialize mapped memory files
 			if (mmf_filename != null)
 			{
-				GlobalWin.memoryMappedFiles = new Communication.MemoryMappedFiles();
-				GlobalWin.memoryMappedFiles.Filename = mmf_filename;
+				GlobalWin.memoryMappedFiles = new Communication.MemoryMappedFiles
+				{
+					Filename = mmf_filename
+				};
 			}
 		}
 
