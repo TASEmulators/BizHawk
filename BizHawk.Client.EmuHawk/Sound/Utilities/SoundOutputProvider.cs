@@ -32,19 +32,19 @@ namespace BizHawk.Client.EmuHawk
 		private const int MinResamplingDistanceSamples = 3;
 
 		private Queue<short> _buffer = new Queue<short>();
-		private bool _standaloneMode;
-		private int _targetExtraSamples;
+		private readonly bool _standaloneMode;
+		private readonly int _targetExtraSamples;
 		private int _maxSamplesDeficit;
 
-		private Queue<int> _extraCountHistory = new Queue<int>();
-		private Queue<int> _outputCountHistory = new Queue<int>();
-		private Queue<bool> _hardCorrectionHistory = new Queue<bool>();
+		private readonly Queue<int> _extraCountHistory = new Queue<int>();
+		private readonly Queue<int> _outputCountHistory = new Queue<int>();
+		private readonly Queue<bool> _hardCorrectionHistory = new Queue<bool>();
 
 		private int _baseConsecutiveEmptyFrames;
-		private Queue<bool> _baseEmptyFrameCorrectionHistory = new Queue<bool>();
+		private readonly Queue<bool> _baseEmptyFrameCorrectionHistory = new Queue<bool>();
 
 		private double _lastAdvertisedSamplesPerFrame;
-		private Queue<int> _baseSamplesPerFrame = new Queue<int>();
+		private readonly Queue<int> _baseSamplesPerFrame = new Queue<int>();
 
 		private short[] _outputBuffer = new short[0];
 
@@ -59,6 +59,7 @@ namespace BizHawk.Client.EmuHawk
 				const double targetExtraMs = 10.0;
 				_targetExtraSamples = (int)Math.Ceiling(targetExtraMs * SampleRate / 1000.0);
 			}
+
 			ResetBuffer();
 		}
 
@@ -73,10 +74,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private int EffectiveMaxSamplesDeficit
-		{
-			get { return _maxSamplesDeficit + _targetExtraSamples; }
-		}
+		private int EffectiveMaxSamplesDeficit => _maxSamplesDeficit + _targetExtraSamples;
 
 		public ISoundProvider BaseSoundProvider { get; set; }
 
@@ -168,6 +166,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					_buffer.Enqueue(0);
 				}
+
 				hardCorrected = true;
 			}
 			else if (extraSampleCount > maxSamplesSurplus)
@@ -178,6 +177,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					_buffer.Dequeue();
 				}
+
 				hardCorrected = true;
 			}
 
@@ -226,6 +226,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_baseConsecutiveEmptyFrames = 0;
 			}
+
 			UpdateHistory(_baseEmptyFrameCorrectionHistory, correctedEmptyFrame, MaxHistoryLength);
 
 			if (AdvertisedSamplesPerFrame != _lastAdvertisedSamplesPerFrame)
@@ -233,6 +234,7 @@ namespace BizHawk.Client.EmuHawk
 				_baseSamplesPerFrame.Clear();
 				_lastAdvertisedSamplesPerFrame = AdvertisedSamplesPerFrame;
 			}
+
 			UpdateHistory(_baseSamplesPerFrame, count, BaseSampleRateMaxHistoryLength);
 
 			if (_baseSamplesPerFrame.Count >= BaseSampleRateUsableHistoryLength &&
@@ -303,6 +305,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_outputBuffer = new short[count * ChannelCount];
 			}
+
 			return _outputBuffer;
 		}
 
@@ -312,6 +315,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_resampleBuffer = new short[count * ChannelCount];
 			}
+
 			return _resampleBuffer;
 		}
 
