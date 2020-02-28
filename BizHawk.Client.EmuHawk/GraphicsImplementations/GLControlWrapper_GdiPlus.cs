@@ -1,40 +1,23 @@
-using System;
-using System.Drawing;
-using System.Reflection;
-using System.Threading;
-using System.IO;
-using System.Collections.Generic;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-
 using BizHawk.Bizware.BizwareGL;
-
 
 namespace BizHawk.Client.EmuHawk
 {
 	public class GLControlWrapper_GdiPlus : Control, IGraphicsControl
 	{
-
 		public GLControlWrapper_GdiPlus(IGL_GdiPlus gdi)
 		{
-			Gdi = gdi;
-			//uhhh not sure what we need to be doing here
-			//SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+			_gdi = gdi;
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 			SetStyle(ControlStyles.Opaque, true);
 			SetStyle(ControlStyles.UserMouse, true);
 		}
 
-		protected override void Dispose(bool disposing)
-		{
-			base.Dispose(disposing);
+		private readonly IGL_GdiPlus _gdi;
 
-			//if(MyBufferedGraphics != null)
-		}
-
-		IGL_GdiPlus Gdi;
-
-		public Control Control { get { return this; } }
+		public Control Control => this;
 
 
 		/// <summary>
@@ -44,12 +27,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SetVsync(bool state)
 		{
-			//not really supported now...
+			// not really supported now...
 		}
 
 		public void Begin()
 		{
-			Gdi.BeginControl(this);
+			_gdi.BeginControl(this);
 			RenderTargetWrapper.CreateGraphics();
 			//using (var g = CreateGraphics())
 			//  MyBufferedGraphics = Gdi.MyBufferedGraphicsContext.Allocate(g, ClientRectangle);
@@ -63,25 +46,27 @@ namespace BizHawk.Client.EmuHawk
 
 		public void End()
 		{
-			Gdi.EndControl(this);
+			_gdi.EndControl(this);
 		}
 
 		public void SwapBuffers()
 		{
-			Gdi.SwapControl(this);
+			_gdi.SwapControl(this);
 			if (RenderTargetWrapper.MyBufferedGraphics == null)
+			{
 				return;
+			}
 
 			using (var g = CreateGraphics())
 			{
-				//not sure we had proof we needed this but it cant hurt
-				g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
-				g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighSpeed;
+				// not sure we had proof we needed this but it cant hurt
+				g.CompositingMode = CompositingMode.SourceCopy;
+				g.CompositingQuality = CompositingQuality.HighSpeed;
 				RenderTargetWrapper.MyBufferedGraphics.Render(g);
 			}
 
-			//not too sure about this.. i think we have to re-allocate it so we can support a changed window size. did we do this at the right time anyway?
-			//maybe I should try caching harder, I hate to reallocate these constantly
+			// not too sure about this.. i think we have to re-allocate it so we can support a changed window size. did we do this at the right time anyway?
+			// maybe I should try caching harder, I hate to reallocate these constantly
 			RenderTargetWrapper.CreateGraphics();
 		}
 	}

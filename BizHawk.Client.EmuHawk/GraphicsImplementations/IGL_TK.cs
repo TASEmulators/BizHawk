@@ -1,17 +1,15 @@
-//regarding binding and vertex arrays:
-//http://stackoverflow.com/questions/8704801/glvertexattribpointer-clarification
-//http://stackoverflow.com/questions/9536973/oes-vertex-array-object-and-client-state
-//http://www.opengl.org/wiki/Vertex_Specification
+// regarding binding and vertex arrays:
+// http://stackoverflow.com/questions/8704801/glvertexattribpointer-clarification
+// http://stackoverflow.com/questions/9536973/oes-vertex-array-object-and-client-state
+// http://www.opengl.org/wiki/Vertex_Specification
 
-//etc
-//glBindAttribLocation (programID, 0, "vertexPosition_modelspace");
+// etc
+// glBindAttribLocation (programID, 0, "vertexPosition_modelspace");
 
-//for future reference: c# tesselators
-//http://www.opentk.com/node/437 (AGG#, codes on Tao forums)
+// for future reference: c# tesselators
+// http://www.opentk.com/node/437 (AGG#, codes on Tao forums)
 
 using System;
-using System.Reflection;
-using System.Threading;
 using System.IO;
 using System.Collections.Generic;
 
@@ -35,8 +33,8 @@ namespace BizHawk.Client.EmuHawk
 	public class IGL_TK : IGL
 	{
 		//rendering state
-		Pipeline _CurrPipeline;
-		RenderTarget _CurrRenderTarget;
+		private Pipeline _currPipeline;
+		private RenderTarget _currRenderTarget;
 
 		static IGL_TK()
 		{
@@ -68,11 +66,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public IGL_TK(int major_version, int minor_version, bool forward_compatible)
+		public IGL_TK(int majorVersion, int minorVersion, bool forwardCompatible)
 		{
 			//make an 'offscreen context' so we can at least do things without having to create a window
 			OffscreenNativeWindow = new NativeWindow { ClientSize = new sd.Size(8, 8) };
-			GraphicsContext = new GraphicsContext(GraphicsMode.Default, OffscreenNativeWindow.WindowInfo, major_version, minor_version, forward_compatible ? GraphicsContextFlags.ForwardCompatible : GraphicsContextFlags.Default);
+			GraphicsContext = new GraphicsContext(GraphicsMode.Default, OffscreenNativeWindow.WindowInfo, majorVersion, minorVersion, forwardCompatible ? GraphicsContextFlags.ForwardCompatible : GraphicsContextFlags.Default);
 			MakeDefaultCurrent();
 
 			//this is important for reasons unknown
@@ -85,12 +83,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void BeginScene()
 		{
-			//seems not to be needed...
+			// seems not to be needed...
 		}
 
 		public void EndScene()
 		{
-			//seems not to be needed...
+			// seems not to be needed...
 		}
 
 		void IDisposable.Dispose()
@@ -102,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Clear(ClearBufferMask mask)
 		{
-			GL.Clear((global::OpenTK.Graphics.OpenGL.ClearBufferMask)mask);
+			GL.Clear(mask);
 		}
 		public void SetClearColor(sd.Color color)
 		{
@@ -114,14 +112,14 @@ namespace BizHawk.Client.EmuHawk
 			var glc = new GLControlWrapper(this);
 			glc.CreateControl();
 
-			//now the control's context will be current. annoying! fix it.
+			// now the control's context will be current. annoying! fix it.
 			MakeDefaultCurrent();
-
 
 			return glc;
 		}
 
-		public int GenTexture() { return GL.GenTexture(); }
+		public int GenTexture() => GL.GenTexture();
+
 		public void FreeTexture(Texture2d tex)
 		{
 			GL.DeleteTexture((int)tex.Opaque);
@@ -131,6 +129,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return CreateShader(cg, ShaderType.FragmentShader, source, entry, required);
 		}
+
 		public Shader CreateVertexShader(bool cg, string source, string entry, bool required)
 		{
 			return CreateShader(cg, ShaderType.VertexShader, source, entry, required);
@@ -163,14 +162,14 @@ namespace BizHawk.Client.EmuHawk
 		public IBlendState BlendNoneOpaque => _rsBlendNoneOpaque;
 		public IBlendState BlendNormal => _rsBlendNormal;
 
-		class ShaderWrapper
+		private class ShaderWrapper
 		{
 			public int sid;
 			public Dictionary<string, string> MapCodeToNative;
 			public Dictionary<string, string> MapNativeToCode;
 		}
 
-		class PipelineWrapper
+		private class PipelineWrapper
 		{
 			public int pid;
 			public Shader FragmentShader, VertexShader;
@@ -183,7 +182,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </exception>
 		public Pipeline CreatePipeline(VertexLayout vertexLayout, Shader vertexShader, Shader fragmentShader, bool required, string memo)
 		{
-			//if the shaders arent available, the pipeline isn't either
+			// if the shaders aren't available, the pipeline isn't either
 			if (!vertexShader.Available || !fragmentShader.Available)
 			{
 				string errors = $"Vertex Shader:\r\n {vertexShader.Errors} \r\n-------\r\nFragment Shader:\r\n{fragmentShader.Errors}";
@@ -240,7 +239,6 @@ namespace BizHawk.Client.EmuHawk
 			//  //GL.BindAttribLocation(pid, kvp.Key, name);
 			//}
 
-			
 			GL.LinkProgram(pid);
 			errcode = GL.GetError();
 
@@ -327,13 +325,13 @@ namespace BizHawk.Client.EmuHawk
 				uniforms.Add(ui);
 			}
 
-			//deactivate the program, so we dont accidentally use it
+			// deactivate the program, so we don't accidentally use it
 			GL.UseProgram(0);
 
 			if (!vertexShader.Available) success = false;
 			if (!fragmentShader.Available) success = false;
 
-			var pw = new PipelineWrapper() { pid = pid, VertexShader = vertexShader, FragmentShader = fragmentShader, SamplerLocs = samplers };
+			var pw = new PipelineWrapper { pid = pid, VertexShader = vertexShader, FragmentShader = fragmentShader, SamplerLocs = samplers };
 
 			return new Pipeline(this, pw, success, vertexLayout, uniforms, memo);
 		}
@@ -342,9 +340,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var pw = pipeline.Opaque as PipelineWrapper;
 
-			//unavailable pipelines will have no opaque
+			// unavailable pipelines will have no opaque
 			if (pw == null)
+			{
 				return;
+			}
 
 			GL.DeleteProgram(pw.pid);
 
@@ -361,7 +361,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <exception cref="InvalidOperationException"><paramref name="pipeline"/>.<see cref="Pipeline.Available"/> is <see langword="false"/></exception>
 		public void BindPipeline(Pipeline pipeline)
 		{
-			_CurrPipeline = pipeline;
+			_currPipeline = pipeline;
 
 			if (pipeline == null)
 			{
@@ -384,7 +384,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 
-		public VertexLayout CreateVertexLayout() { return new VertexLayout(this, null); }
+		public VertexLayout CreateVertexLayout() => new VertexLayout(this, null);
 
 		private void BindTexture2d(Texture2d tex)
 		{
@@ -397,10 +397,13 @@ namespace BizHawk.Client.EmuHawk
 			int mode;
 			if (clamp)
 			{
-				mode = (int)global::OpenTK.Graphics.OpenGL.TextureWrapMode.ClampToEdge;
+				mode = (int)TextureWrapMode.ClampToEdge;
 			}
 			else
-				mode = (int)global::OpenTK.Graphics.OpenGL.TextureWrapMode.Repeat;
+			{
+				mode = (int)TextureWrapMode.Repeat;
+			}
+
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, mode);
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, mode);
 		}
@@ -412,7 +415,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void DrawArrays(PrimitiveType mode, int first, int count)
 		{
-			GL.DrawArrays((global::OpenTK.Graphics.OpenGL.PrimitiveType)mode, first, count);
+			GL.DrawArrays(mode, first, count);
 		}
 
 		public void SetPipelineUniform(PipelineUniform uniform, bool value)
@@ -469,14 +472,14 @@ namespace BizHawk.Client.EmuHawk
 				GL.ActiveTexture(selectedUnit);
 			}
 
-			//now bind the texture
+			// now bind the texture
 			GL.BindTexture(TextureTarget.Texture2D, (int)tex.Opaque);
 		}
 
-		public void TexParameter2d(Texture2d tex, TextureParameterName pname, int param)
+		public void TexParameter2d(Texture2d tex, TextureParameterName pName, int param)
 		{
 			BindTexture2d(tex);
-			GL.TexParameter(TextureTarget.Texture2D, (global::OpenTK.Graphics.OpenGL.TextureParameterName)pname, param);
+			GL.TexParameter(TextureTarget.Texture2D, pName, param);
 		}
 
 		public Texture2d LoadTexture(sd.Bitmap bitmap)
@@ -504,15 +507,15 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadTextureData(Texture2d tex, BitmapBuffer bmp)
 		{
-			sdi.BitmapData bmp_data = bmp.LockBits();
+			sdi.BitmapData bmpData = bmp.LockBits();
 			try
 			{
 				GL.BindTexture(TextureTarget.Texture2D, (int)tex.Opaque);
-				GL.TexSubImage2D(TextureTarget.Texture2D, 0, 0, 0, bmp.Width, bmp.Height, PixelFormat.Bgra, PixelType.UnsignedByte, bmp_data.Scan0);
+				GL.TexSubImage2D(TextureTarget.Texture2D, 0, 0, 0, bmp.Width, bmp.Height, PixelFormat.Bgra, PixelType.UnsignedByte, bmpData.Scan0);
 			}
 			finally
 			{
-				bmp.UnlockBits(bmp_data);
+				bmp.UnlockBits(bmpData);
 			}
 		}
 
@@ -526,41 +529,48 @@ namespace BizHawk.Client.EmuHawk
 		public unsafe RenderTarget CreateRenderTarget(int w, int h)
 		{
 			//create a texture for it
-			int texid = GenTexture();
-			Texture2d tex = new Texture2d(this, texid, w, h);
-			GL.BindTexture(TextureTarget.Texture2D,texid);
+			int texId = GenTexture();
+			Texture2d tex = new Texture2d(this, texId, w, h);
+			GL.BindTexture(TextureTarget.Texture2D, texId);
 			GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba8, w, h, 0, PixelFormat.Bgra, PixelType.UnsignedByte, IntPtr.Zero);
 			tex.SetMagFilter(TextureMagFilter.Nearest);
 			tex.SetMinFilter(TextureMinFilter.Nearest);
 
-			//create the FBO
-			int fbid = GL.Ext.GenFramebuffer();
-			GL.Ext.BindFramebuffer(FramebufferTarget.Framebuffer, fbid);
+			// create the FBO
+			int fbId = GL.Ext.GenFramebuffer();
+			GL.Ext.BindFramebuffer(FramebufferTarget.Framebuffer, fbId);
 
 			//bind the tex to the FBO
-			GL.Ext.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, texid, 0);
+			GL.Ext.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, texId, 0);
 
-			//do something, I guess say which colorbuffers are used by the framebuffer
+			// do something, I guess say which color buffers are used by the framebuffer
 			DrawBuffersEnum* buffers = stackalloc DrawBuffersEnum[1];
 			buffers[0] = DrawBuffersEnum.ColorAttachment0;
 			GL.DrawBuffers(1, buffers);
 
-			if (GL.Ext.CheckFramebufferStatus(FramebufferTarget.Framebuffer) != FramebufferErrorCode.FramebufferComplete)
+			if (GL.Ext.CheckFramebufferStatus(FramebufferTarget.Framebuffer) !=
+				FramebufferErrorCode.FramebufferComplete)
+			{
 				throw new InvalidOperationException($"Error creating framebuffer (at {nameof(GL.Ext.CheckFramebufferStatus)})");
+			}
 
-			//since we're done configuring unbind this framebuffer, to return to the default
+			// since we're done configuring unbind this framebuffer, to return to the default
 			GL.Ext.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
 
-			return new RenderTarget(this, fbid, tex);
+			return new RenderTarget(this, fbId, tex);
 		}
 
 		public void BindRenderTarget(RenderTarget rt)
 		{
-			_CurrRenderTarget = rt;
-			if(rt == null)
+			_currRenderTarget = rt;
+			if (rt == null)
+			{
 				GL.Ext.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+			}
 			else
+			{
 				GL.Ext.BindFramebuffer(FramebufferTarget.Framebuffer, (int)rt.Opaque);
+			}
 		}
 
 		public Texture2d LoadTexture(BitmapBuffer bmp)
@@ -631,7 +641,7 @@ namespace BizHawk.Client.EmuHawk
 			ret.M42 = (float)dims.Height * 0.5f;
 			if (autoflip)
 			{
-				if (_CurrRenderTarget == null) { }
+				if (_currRenderTarget == null) { }
 				else
 				{
 					//flip as long as we're not a final render target
@@ -795,7 +805,7 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var kvp in layout.Items)
 			{
-				if(_CurrPipeline.Memo == "gui")
+				if(_currPipeline.Memo == "gui")
 				{
 					GL.VertexAttribPointer(kvp.Key, kvp.Value.Components, (VertexAttribPointerType)kvp.Value.AttribType, kvp.Value.Normalized, kvp.Value.Stride, new IntPtr(pData) + kvp.Value.Offset);
 					GL.EnableVertexAttribArray(kvp.Key);
@@ -804,7 +814,7 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 
-					var pw = _CurrPipeline.Opaque as PipelineWrapper;
+					var pw = _currPipeline.Opaque as PipelineWrapper;
 
 					//comment SNACKPANTS
 					switch (kvp.Value.Usage)

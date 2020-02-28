@@ -1,12 +1,5 @@
-using System;
 using System.Windows.Forms;
-using System.Drawing;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using BizHawk.Bizware.BizwareGL;
-using OpenTK.Graphics.OpenGL;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -18,14 +11,14 @@ namespace BizHawk.Client.EmuHawk
 		public RetainedGraphicsControl(IGL gl)
 			: base(gl)
 		{
-			GL = gl;
-			GuiRenderer = new GuiRenderer(gl);
+			_gl = gl;
+			_guiRenderer = new GuiRenderer(gl);
 		}
 
 		/// <summary>
 		/// Control whether rendering goes into the retaining buffer (it's slower) or straight to the viewport.
 		/// This could be useful as a performance hack, or if someone was very clever, they could wait for a control to get deactivated, enable retaining, and render it one more time.
-		/// Of course, even better still is to be able to repaint viewports continually, but sometimes thats annoying.
+		/// Of course, even better still is to be able to repaint viewports continually, but sometimes that's annoying.
 		/// </summary>
 		public bool Retain
 		{
@@ -34,17 +27,18 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (_retain && !value)
 				{
-					rt.Dispose();
-					rt = null;
+					_rt.Dispose();
+					_rt = null;
 				}
 				_retain = value;
 			}
 		}
-		bool _retain = true;
 
-		IGL GL;
-		RenderTarget rt;
-		GuiRenderer GuiRenderer;
+		private bool _retain = true;
+
+		private readonly IGL _gl;
+		private RenderTarget _rt;
+		private readonly GuiRenderer _guiRenderer;
 
 		public override void Begin()
 		{
@@ -52,52 +46,58 @@ namespace BizHawk.Client.EmuHawk
 			
 			if (_retain)
 			{
-				//TODO - frugalize me
-				rt?.Dispose();
-				rt = GL.CreateRenderTarget(Width, Height);
-				rt.Bind();
+				// TODO - frugalize me
+				_rt?.Dispose();
+				_rt = _gl.CreateRenderTarget(Width, Height);
+				_rt.Bind();
 			}
 		}
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);
-			//todo - check whether we're begun?
+			// todo - check whether we're begun?
 			base.Begin();
 			Draw();
 			base.End();
 		}
 
-		void Draw()
+		private void Draw()
 		{
-			if (rt == null) return;
-			GuiRenderer.Begin(Width, Height);
-			GuiRenderer.SetBlendState(GL.BlendNoneCopy);
-			GuiRenderer.Draw(rt.Texture2d);
-			GuiRenderer.End();
+			if (_rt == null)
+			{
+				return;
+			}
+
+			_guiRenderer.Begin(Width, Height);
+			_guiRenderer.SetBlendState(_gl.BlendNoneCopy);
+			_guiRenderer.Draw(_rt.Texture2d);
+			_guiRenderer.End();
 			base.SwapBuffers();
 		}
 
 		public override void SwapBuffers()
 		{
-			//if we're not retaining, then we havent been collecting into a framebuffer. just swap it
+			// if we're not retaining, then we haven't been collecting into a framebuffer. just swap it
 			if (!_retain)
 			{
 				base.SwapBuffers();
 				return;
 			}
 			
-			//if we're retaining, then we cant draw until we unbind! its semantically a bit odd, but we expect users to call SwapBuffers() before end, so we cant unbind in End() even thoug hit makes a bit more sense.
-			rt.Unbind();
+			// if we're retaining, then we cant draw until we unbind! its semantically a bit odd, but we expect users to call SwapBuffers() before end, so we cant unbind in End() even thoug hit makes a bit more sense.
+			_rt.Unbind();
 			Draw();
 		}
 
 		public override void End()
 		{
 			if (_retain)
-				rt.Unbind();
+			{
+				_rt.Unbind();
+			}
+
 			base.End();
 		}
 	}
-
 }
