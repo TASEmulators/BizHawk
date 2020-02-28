@@ -340,7 +340,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		private byte[] ReadSectorCached(int lba)
 		{
-			//read it if we dont have it cached
+			//read it if we don't have it cached
 			//we wont be caching very much here, it's no big deal
 			//identification is not something we want to take a long time
 			if (!_sectorCache.TryGetValue(lba, out var data))

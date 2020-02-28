@@ -218,7 +218,7 @@ namespace BizHawk.Common
 			if (_extractor == null)
 			{
 				_rootStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-				// we could autobind here, but i dont want to
+				// we could autobind here, but i don't want to
 				// bind it later with the desired extensions.
 			}
 

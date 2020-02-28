@@ -15,7 +15,7 @@ namespace BizHawk.Bizware.BizwareGL
 	/// <summary>
 	/// a software-based bitmap, way easier (and faster) to use than .net's built-in bitmap.
 	/// Only supports a fixed rgba format
-	/// Even though this is IDisposable, you dont have to worry about disposing it normally (that's only for the Bitmap-mimicking)
+	/// Even though this is IDisposable, you don't have to worry about disposing it normally (that's only for the Bitmap-mimicking)
 	/// But you know you can't resist.
 	/// </summary>
 	public unsafe class BitmapBuffer : IDisposable

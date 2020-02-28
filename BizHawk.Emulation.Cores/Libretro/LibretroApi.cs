@@ -114,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		/// <summary>
 		/// Locks a buffer and sets it into libretro. You must pass a delegate to be executed while that buffer is locked.
 		/// This is meant to be used for avoiding a memcpy for large roms (which the core is then just going to memcpy again on its own)
-		/// The memcpy has to happen at some point (libretro semantics specify [not literally, the docs dont say] that the core should finish using the buffer before its init returns)
+		/// The memcpy has to happen at some point (libretro semantics specify [not literally, the docs don't say] that the core should finish using the buffer before its init returns)
 		/// but this limits it to once.
 		/// Moreover, this keeps the c++ side from having to free strings when they're no longer used (and memory management is trickier there, so we try to avoid it)
 		/// </summary>
@@ -196,7 +196,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			public fixed ulong buf_size[(int)BufId.BufId_Num]; //actually a size_t
 
 			//utilities
-			public bool GetBoolValue() => value != 0; // should this be here or by the other helpers? I dont know
+			public bool GetBoolValue() => value != 0; // should this be here or by the other helpers? I don't know
 		}
 
 		public retro_system_av_info AVInfo => comm->env.retro_system_av_info;

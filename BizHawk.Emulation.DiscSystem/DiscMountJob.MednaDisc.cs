@@ -51,7 +51,7 @@
 			{
 				var m_te = md.TOCTracks[i];
 
-				//dont add invalid (absent) items
+				//don't add invalid (absent) items
 				if (!m_te.Valid)
 					continue;
 

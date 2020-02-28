@@ -119,7 +119,7 @@ namespace BizHawk.Emulation.DiscSystem
 				//Indices may need scanning sector by sector. 
 				//It's unlikely that any software would be needing indices anyway.
 				//We should add another index scanning service if that's ever needed.
-				//(note: a CCD should contain indices, but it's not clear whether it's required. logically it shouldnt be)
+				//(note: a CCD should contain indices, but it's not clear whether it's required. logically it shouldn't be)
 			//Notable omission:
 				//Length of the track.
 				//How should this be defined? Between which indices? It's really hard.

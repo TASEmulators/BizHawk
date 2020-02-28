@@ -109,7 +109,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			if (AdpcmIsPlaying == false && (value & 0x20) != 0)
 			{
 				if ((value & 0x40) == 0)
-					Console.WriteLine("a thing thats normally set is not set");
+					Console.WriteLine("a thing that's normally set is not set");
 
 				AdpcmIsPlaying = true;
 				playingSample = 2048;

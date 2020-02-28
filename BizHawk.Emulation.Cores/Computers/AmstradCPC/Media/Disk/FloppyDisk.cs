@@ -346,7 +346,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			//
 			// This scheme looks a little similar to Alkatraz with incorrect sector ID info in many places
 			// and deleted address marks (although these do not seem to show the strict relience on removing the CM mark from ST2 result that Alkatraz does)
-			// There are also data CRC errors but these dont look to be read more than once/checked for changes during load
+			// There are also data CRC errors but these don't look to be read more than once/checked for changes during load
 			// Main identifiers:
 			//
 			// * There are more than 10 cylinders

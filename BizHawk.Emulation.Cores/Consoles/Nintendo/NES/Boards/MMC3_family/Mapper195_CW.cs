@@ -3,7 +3,7 @@
 // It is a Work in Progress
 // Save Ram is broken and the game will not load with save ram written through this mapper
 // This is also true on punes
-// The game also requires 1 screen mirroring modes that other 195 games dont
+// The game also requires 1 screen mirroring modes that other 195 games don't
 // Although the game runs correctly with 195 CHR mapping, other aspects do not work
 // More research is needed
 

@@ -95,7 +95,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 				else
 				{
-					// dont write to VROM
+					// don't write to VROM
 				}
 			}
 			else

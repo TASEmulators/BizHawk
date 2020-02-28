@@ -3,7 +3,7 @@
 //TODO Disc.Structure.Sessions[0].length_aba was 0
 //TODO mednafen 0.9.37 changed some disc region detection heuristics. analyze and apply in c# side. also the SCEX id handling changed, maybe simplified
 
-//TODO - ok, think about this. we MUST load a state with the CDC completely intact. no quickly changing discs. thats madness.
+//TODO - ok, think about this. we MUST load a state with the CDC completely intact. no quickly changing discs. that's madness.
 //well, I could savestate the disc index and validate the disc collection when loading a state.
 //the big problem is, it's completely at odds with the slider-based disc changing model. 
 //but, maybe it can be reconciled with that model by using the disc ejection to our advantage. 
@@ -116,7 +116,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				SystemVidStandard = OctoshockDll.eVidStandard.NTSC;
 			}
 
-			//TODO - known bad firmwares are a no-go. we should refuse to boot them. (thats the mednafen policy)
+			//TODO - known bad firmwares are a no-go. we should refuse to boot them. (that's the mednafen policy)
 			byte[] firmware = comm.CoreFileProvider.GetFirmware("PSX", firmwareRegion, true, "A PSX `" + firmwareRegion + "` region bios file is required");
 
 			//create the instance
@@ -210,7 +210,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			if (fioCfg.Memcards[0]) OctoshockDll.shock_Peripheral_MemcardTransact(psx, 0x01, ref memcardTransaction);
 			if (fioCfg.Memcards[1]) OctoshockDll.shock_Peripheral_MemcardTransact(psx, 0x02, ref memcardTransaction);
 
-			//do this after framebuffers and peripherals and whatever crap are setup. kind of lame, but thats how it is for now
+			//do this after framebuffers and peripherals and whatever crap are setup. kind of lame, but that's how it is for now
 			StudySaveBufferSize();
 		}
 
@@ -380,8 +380,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			int ShockDisc_ReadTOC(IntPtr opaque, OctoshockDll.ShockTOC* read_target, OctoshockDll.ShockTOCTrack* tracks101)
 			{
 				read_target->disc_type = (byte)Disc.TOC.Session1Format;
-				read_target->first_track = (byte)Disc.TOC.FirstRecordedTrackNumber; //i _think_ thats what is meant here
-				read_target->last_track = (byte)Disc.TOC.LastRecordedTrackNumber; //i _think_ thats what is meant here
+				read_target->first_track = (byte)Disc.TOC.FirstRecordedTrackNumber; //i _think_ that's what is meant here
+				read_target->last_track = (byte)Disc.TOC.LastRecordedTrackNumber; //i _think_ that's what is meant here
 
 				tracks101[0].lba = tracks101[0].adr = tracks101[0].control = 0;
 
@@ -489,7 +489,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				for (int multiport = 0; multiport < 4; multiport++)
 				{
 					//note: I would not say this port addressing scheme has been completely successful
-					//however, it may be because i was constantly constrained by having to adapt it to mednafen.. i dont know.
+					//however, it may be because i was constantly constrained by having to adapt it to mednafen.. i don't know.
 
 					int portNum = (port + 1) + ((multiport + 1) << 4);
 					int slot = port * 4 + multiport;
@@ -635,7 +635,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 					if (standard == OctoshockDll.eVidStandard.NTSC)
 					{
-						//dont make this 430, it's already been turned into 400 from 368+30 and then some fudge factor
+						//don't make this 430, it's already been turned into 400 from 368+30 and then some fudge factor
 						VirtualWidth = 400;
 						VirtualHeight = (int)(scanline_num * 300.0f / 240);
 						if (settings.HorizontalClipping == eHorizontalClipping.Basic)
@@ -648,7 +648,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 						if (settings.HorizontalClipping == eHorizontalClipping.Basic)
 							VirtualWidth = 378;
 						//I'll be honest, I was just guessing here mostly
-						//I need the AR to basically work out to be 363/288 (thats what it was in mednafen mode) so...
+						//I need the AR to basically work out to be 363/288 (that's what it was in mednafen mode) so...
 						VirtualHeight = (int)(scanline_num * (400.0f/363*288) / 288);
 					}
 
@@ -718,7 +718,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				|| Frame == 0
 				)
 			{
-				//dont replace default disc with the leave-default placeholder!
+				//don't replace default disc with the leave-default placeholder!
 				if (requestedDisc == -1)
 				{
 
@@ -956,7 +956,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		#region ISoundProvider
 
-		//private short[] sbuff = new short[1454 * 2]; //this is the most ive ever seen.. dont know why. two frames worth i guess
+		//private short[] sbuff = new short[1454 * 2]; //this is the most ive ever seen.. don't know why. two frames worth i guess
 		private short[] sbuff = new short[1611 * 2]; //need this for pal
 		private int sbuffcontains = 0;
 

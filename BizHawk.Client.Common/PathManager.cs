@@ -243,7 +243,7 @@ namespace BizHawk.Client.Common
 
 			filesystemSafeName = RemoveInvalidFileSystemChars(filesystemSafeName);
 
-			// zero 22-jul-2012 - i dont think this is used the same way it used to. game.Name shouldnt be a path, so this stuff is illogical.
+			// zero 22-jul-2012 - i don't think this is used the same way it used to. game.Name shouldn't be a path, so this stuff is illogical.
 			// if game.Name is a path, then someone shouldve made it not-a-path already.
 			// return Path.Combine(Path.GetDirectoryName(filesystemSafeName), Path.GetFileNameWithoutExtension(filesystemSafeName));
 

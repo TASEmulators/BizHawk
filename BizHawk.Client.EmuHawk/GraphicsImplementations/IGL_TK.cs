@@ -212,7 +212,7 @@ namespace BizHawk.Client.EmuHawk
 			////as we go, look for attribute mappings (CGC will happily reorder and rename our attribute mappings)
 			////what's more it will _RESIZE_ them but this seems benign..somehow..
 			////WELLLLLLL we wish we could do that by names
-			////but the shaders dont seem to be adequate quality (oddly named attributes.. texCoord vs texCoord1). need to use semantics instead.
+			////but the shaders don't seem to be adequate quality (oddly named attributes.. texCoord vs texCoord1). need to use semantics instead.
 			//foreach (var kvp in vertexLayout.Items)
 			//{
 			//  string name = kvp.Value.Name;
@@ -264,7 +264,7 @@ namespace BizHawk.Client.EmuHawk
 			//glValidateProgram checks to see whether the executables contained in program can execute given the current OpenGL state
 			//This function is typically useful only during application development.
 			//
-			//So, this is no big deal. we shouldnt be calling validate right now anyway.
+			//So, this is no big deal. we shouldn't be calling validate right now anyway.
 			//conclusion: glValidate is very complicated and is of virtually no use unless your draw calls are returning errors and you want to know why
 			//GL.ValidateProgram(pid);
 			//errcode = GL.GetError();

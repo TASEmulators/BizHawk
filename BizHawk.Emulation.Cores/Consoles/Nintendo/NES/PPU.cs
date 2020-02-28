@@ -368,8 +368,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 					//nes.LogLine("addr wrote vt = {0}, ht = {1}", ppur._vt, ppur._ht);
 					//normally the address isnt observed by the board till it gets clocked by a read or write.
-					//but maybe thats just because a ppu read/write shoves it on the address bus
-					//apparently this shoves it on the address bus, too, or else blargg's mmc3 tests dont pass
+					//but maybe that's just because a ppu read/write shoves it on the address bus
+					//apparently this shoves it on the address bus, too, or else blargg's mmc3 tests don't pass
 					//ONLY if the ppu is not rendering
 					if (ppur.status.sl >= 241 || !PPUON)
 						nes.Board.AddressPPU(ppur.get_2007access());

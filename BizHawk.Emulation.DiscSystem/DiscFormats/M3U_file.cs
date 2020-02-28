@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			foreach (var e in Entries)
 			{
-				//dont change rooted paths
+				//don't change rooted paths
 				if (Path.IsPathRooted(e.Path)) continue;
 				//adjust relative paths
 				e.Path = Path.Combine(basepath, e.Path);

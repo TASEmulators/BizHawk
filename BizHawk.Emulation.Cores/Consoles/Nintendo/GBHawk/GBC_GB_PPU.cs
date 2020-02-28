@@ -1430,7 +1430,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						s_pixel = (byte)(sprite_data[0] + sprite_data[1]);
 						sprite_attr = (byte)SL_sprites_ordered[j * 4 + 3];
 
-						// pixel color of 0 is transparent, so if this is the case we dont have a pixel
+						// pixel color of 0 is transparent, so if this is the case we don't have a pixel
 						if (s_pixel != 0)
 						{
 							have_pixel = true;

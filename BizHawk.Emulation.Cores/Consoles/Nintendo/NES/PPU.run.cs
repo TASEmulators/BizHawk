@@ -434,7 +434,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						int spixel = sl_sprites[256 + xt * 8 + xp];
 						int temp_attr = sl_sprites[512 + xt * 8 + xp];
 						
-						//TODO - make sure we dont trigger spritehit if the edges are masked for either BG or OBJ
+						//TODO - make sure we don't trigger spritehit if the edges are masked for either BG or OBJ
 						//spritehit:
 						//1. is it sprite#0?
 						//2. is the bg pixel nonzero?

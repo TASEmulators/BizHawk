@@ -438,7 +438,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 							Status1 = sector.Status1;
 							Status2 = sector.Status2;
 
-							// we dont need EN
+							// we don't need EN
 							UnSetBit(SR1_EN, ref Status1);
 
 							// If SK=1, the FDC skips the sector with the Deleted Data Address Mark and reads the next sector. 

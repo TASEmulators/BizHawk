@@ -365,7 +365,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (CurrentRenderTargetWrapper == CurrentControl.RenderTargetWrapper)
 				{
-					//dont do anything til swapbuffers
+					//don't do anything til swapbuffers
 				}
 				else
 				{

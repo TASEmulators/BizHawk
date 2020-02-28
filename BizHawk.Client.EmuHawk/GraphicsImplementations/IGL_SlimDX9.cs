@@ -558,7 +558,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (pipeline == null)
 			{
-				//unbind? i dont know
+				//unbind? i don't know
 				return;
 			}
 

@@ -481,7 +481,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 				lineDouble = true;
 
-				// we dont dot double here because the user wanted double res and the game provided double res
+				// we don't dot double here because the user wanted double res and the game provided double res
 				dotDouble = false;
 			}
 			else if (lineDouble)

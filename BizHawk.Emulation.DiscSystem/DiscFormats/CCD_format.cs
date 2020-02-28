@@ -74,7 +74,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 
 			/// <summary>
-			/// the CCD specifies this, but it isnt in the actual disc data as such, it is encoded some other (likely difficult to extract) way and thats why CCD puts it here
+			/// the CCD specifies this, but it isnt in the actual disc data as such, it is encoded some other (likely difficult to extract) way and that's why CCD puts it here
 			/// </summary>
 			public int Session;
 
@@ -413,7 +413,7 @@ namespace BizHawk.Emulation.DiscSystem
 					var track = disc.Session1.Tracks[tnum];
 					sw.WriteLine("[TRACK {0}]", track.Number);
 					sw.WriteLine("MODE={0}", track.Mode);
-					//indexes are BS, dont write them. but we certainly need an index 1
+					//indexes are BS, don't write them. but we certainly need an index 1
 					sw.WriteLine("INDEX 1={0}", track.LBA);
 					sw.WriteLine();
 				}

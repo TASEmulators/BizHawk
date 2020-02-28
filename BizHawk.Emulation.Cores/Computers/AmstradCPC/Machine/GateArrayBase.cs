@@ -350,7 +350,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		/// <summary>
 		/// Only available on machines with a 64KB memory expansion
-		/// Default assume we dont have this
+		/// Default assume we don't have this
 		/// </summary>
 		public virtual void SetRAM(BitArray bi)
 		{

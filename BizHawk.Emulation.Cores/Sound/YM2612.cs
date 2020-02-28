@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Components
 	// ======================================================================
 
 	// TODO: Finish testing Envelope generator
-	// TODO: maybe add guards when changing envelope parameters to immediately change envelope state (ie dont wait for EG cycle?)
+	// TODO: maybe add guards when changing envelope parameters to immediately change envelope state (ie don't wait for EG cycle?)
 	// TODO: Detune
 	// TODO: LFO
 	// TODO: Switch from Perfect Operator to Accurate Operator.

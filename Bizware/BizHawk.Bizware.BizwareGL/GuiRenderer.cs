@@ -57,14 +57,14 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public void SetCornerColor(int which, OpenTK.Graphics.Color4 color)
 		{
-			Flush(); //dont really need to flush with current implementation. we might as well roll modulate color into it too.
+			Flush(); //don't really need to flush with current implementation. we might as well roll modulate color into it too.
 			CornerColors[which] = color;
 		}
 
 		/// <exception cref="ArgumentException"><paramref name="colors"/> does not have exactly <c>4</c> elements</exception>
 		public void SetCornerColors(OpenTK.Graphics.Color4[] colors)
 		{
-			Flush(); //dont really need to flush with current implementation. we might as well roll modulate color into it too.
+			Flush(); //don't really need to flush with current implementation. we might as well roll modulate color into it too.
 			if (colors.Length != 4) throw new ArgumentException("array must be size 4", nameof(colors));
 			for (int i = 0; i < 4; i++)
 				CornerColors[i] = colors[i];
@@ -234,7 +234,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		unsafe void DrawInternal(Art art, float x, float y, float w, float h, bool fx, bool fy)
 		{
-			//TEST: d3d shouldnt ever use this, it was a gl hack. maybe we can handle it some other way in gl (fix the projection? take a render-to-texture arg to the gui view transforms?)
+			//TEST: d3d shouldn't ever use this, it was a gl hack. maybe we can handle it some other way in gl (fix the projection? take a render-to-texture arg to the gui view transforms?)
 			fy = false;
 
 			float u0, v0, u1, v1;

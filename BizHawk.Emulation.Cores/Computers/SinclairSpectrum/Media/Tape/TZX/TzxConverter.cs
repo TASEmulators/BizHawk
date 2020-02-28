@@ -1629,7 +1629,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			int blockSize = blockdata.Length;
 
-			// dont get description info for Pure Data Blocks
+			// don't get description info for Pure Data Blocks
 			if (dataBlockType != DataBlockType.Pure)
 			{
 				if (blockdata[0] == 0x00 && blockSize == 19)

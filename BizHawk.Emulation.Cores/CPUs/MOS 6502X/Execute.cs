@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 {
 	public partial class MOS6502X<TLink>
 	{
-		//dont know whether this system is any faster. hard to get benchmarks someone else try it?
+		//don't know whether this system is any faster. hard to get benchmarks someone else try it?
 		//static ShortBuffer CompiledMicrocode;
 		//static ShortBuffer MicrocodeIndex;
 		static MOS6502X()
@@ -308,7 +308,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			/*VOP_RelativeStuff*/ new Uop[] { Uop.RelBranch_Stage3, Uop.End_BranchSpecial },
 			/*VOP_RelativeStuff2*/ new Uop[] { Uop.RelBranch_Stage4, Uop.End },
 			/*VOP_RelativeStuff2*/ new Uop[] { Uop.End_SuppressInterrupt },
-			//i assume these are dummy fetches.... maybe theyre just nops? supposedly these take 7 cycles so thats the only way i can make sense of it
+			//i assume these are dummy fetches.... maybe theyre just nops? supposedly these take 7 cycles so that's the only way i can make sense of it
 			//one of them might be the next instruction's fetch, and whatever fetch follows it.
 			//the interrupt would then take place if necessary, using a cached PC. but im not so sure about that.
 			/*VOP_NMI*/ new Uop[] { Uop.FetchDummy, Uop.FetchDummy, Uop.PushPCH, Uop.PushPCL, Uop.PushP_NMI, Uop.FetchPCLVector, Uop.FetchPCHVector, Uop.End_SuppressInterrupt },
@@ -472,7 +472,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		void InitOpcodeHandlers()
 		{
-			//delegates arent faster than the switch. pretty sure. dont use it.
+			//delegates arent faster than the switch. pretty sure. don't use it.
 			//opcodeHandlers = new Action[] {
 			//  Unsupported,Fetch1, Fetch1_Real, Fetch2, Fetch3,FetchDummy,
 			//  NOP,JSR,IncPC,
@@ -2276,7 +2276,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
-				//bleh.. redundant code to make sure we dont clobber alu_temp before using it to decide whether to change ea
+				//bleh.. redundant code to make sure we don't clobber alu_temp before using it to decide whether to change ea
 
 				if (alu_temp.Bit(8))
 				{
@@ -2710,7 +2710,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		void ExecuteOneRetry()
 		{
-			//dont know whether this system is any faster. hard to get benchmarks someone else try it?
+			//don't know whether this system is any faster. hard to get benchmarks someone else try it?
 			//Uop uop = (Uop)CompiledMicrocode[MicrocodeIndex[opcode] + mi];
 			Uop uop = Microcode[opcode][mi];
 			switch (uop)

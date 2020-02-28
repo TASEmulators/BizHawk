@@ -30,7 +30,7 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <exception cref="ArgumentException"><paramref name="colors"/> does not have exactly <c>4</c> elements</exception>
 		public void SetCornerColors(OpenTK.Graphics.Color4[] colors)
 		{
-			Flush(); //dont really need to flush with current implementation. we might as well roll modulate color into it too.
+			Flush(); //don't really need to flush with current implementation. we might as well roll modulate color into it too.
 			if (colors.Length != 4) throw new ArgumentException("array must be size 4", nameof(colors));
 			for (int i = 0; i < 4; i++)
 				CornerColors[i] = colors[i];

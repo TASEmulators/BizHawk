@@ -29,7 +29,7 @@ namespace BizHawk.Client.Common
 		public static readonly CopyControllerAdapter MovieOutputHardpoint = new CopyControllerAdapter();
 		public static readonly MultitrackRewiringControllerAdapter MultitrackRewiringAdapter = new MultitrackRewiringControllerAdapter();
 
-		// dont take my word for it, since the final word is actually in RewireInputChain, but here is a guide...
+		// don't take my word for it, since the final word is actually in RewireInputChain, but here is a guide...
 		// user -> Input -> ActiveController -> UDLR -> StickyXORPlayerInputAdapter -> TurboAdapter(TBD) -> Lua(?TBD?) -> ..
 		// .. -> MultitrackRewiringControllerAdapter -> MovieInputSourceAdapter -> (MovieSession) -> MovieOutputAdapter -> ControllerOutput(1) -> Game
 		// (1)->Input Display

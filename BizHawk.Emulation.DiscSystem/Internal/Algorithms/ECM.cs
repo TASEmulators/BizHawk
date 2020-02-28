@@ -276,7 +276,7 @@ namespace BizHawk.Emulation.DiscSystem
 				{
 					int offset = d * 86 + w;
 					CalcECC(src, src_offset, offset, 88, 43, out parity0, out parity1);
-					//store the parities in the sector; thats where theyve got to go anyway
+					//store the parities in the sector; that's where theyve got to go anyway
 					dest[dest_offset + 1118 * 2 + d * 2 + w] = parity0;
 					dest[dest_offset + 1118 * 2 + d * 2 + w + 26 * 2] = parity1;
 				}

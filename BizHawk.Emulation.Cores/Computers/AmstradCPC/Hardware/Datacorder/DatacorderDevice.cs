@@ -710,7 +710,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 // is this a pause block?
                 if (block.BlockDescription == BlockType.PAUS || block.BlockDescription == BlockType.PAUSE_BLOCK)
                 {
-                    // dont autostop the tape here
+                    // don't autostop the tape here
                     return;
                 }
 
@@ -720,11 +720,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 // timeout in t-states (equiv. to blockpause)
                 int timeout = ((_machine.GateArray.FrameLength * 50) / 1000) * blockPause;
 
-                // dont use autostop detection if block has no pause at the end
+                // don't use autostop detection if block has no pause at the end
                 if (timeout == 0)
                     return;
 
-                // dont autostop if there is only 1 block
+                // don't autostop if there is only 1 block
                 if (DataBlocks.Count == 1 || _dataBlocks[_currentDataBlockIndex].BlockDescription == BlockType.CSW_Recording ||
                     _dataBlocks[_currentDataBlockIndex].BlockDescription == BlockType.WAV_Recording
                     )

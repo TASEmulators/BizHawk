@@ -507,7 +507,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					origin = EDetectionOrigin.GameDB;
 					LoadWriteLine("Chose board from bizhawk gamedb: " + choice.board_type);
-					//gamedb entries that dont specify prg/chr sizes can infer it from the ines header
+					//gamedb entries that don't specify prg/chr sizes can infer it from the ines header
 					if (iNesHeaderInfo != null)
 					{
 						if (choice.prg_size == -1) choice.prg_size = iNesHeaderInfo.prg_size;

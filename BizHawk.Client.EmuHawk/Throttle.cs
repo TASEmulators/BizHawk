@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 		int framesSkipped;
 		public bool skipNextFrame;
 
-		//if the emulator is paused then we dont need to behave as if unthrottled
+		//if the emulator is paused then we don't need to behave as if unthrottled
 		public bool signal_paused;
 		public bool signal_frameAdvance;
 		public bool signal_unthrottle;
@@ -30,7 +30,7 @@ namespace BizHawk.Client.EmuHawk
 
 			bool extraThrottle = false;
 
-			//if we're paused, none of this should happen. just clean out our state and dont skip
+			//if we're paused, none of this should happen. just clean out our state and don't skip
 			//notably, if we're frame-advancing, we should be paused.
 			if (signal_paused && !signal_continuousFrameAdvancing)
 			{
@@ -78,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (signal_continuousFrameAdvancing)
 				{
-					//dont ever skip frames when continuous frame advancing. it's meant for precision work.
+					//don't ever skip frames when continuous frame advancing. it's meant for precision work.
 					//but we DO need to throttle
 					if (Global.Config.ClockThrottle)
 						extraThrottle = true;

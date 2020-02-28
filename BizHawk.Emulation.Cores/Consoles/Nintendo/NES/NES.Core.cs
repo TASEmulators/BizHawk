@@ -723,7 +723,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				case 0x4014:
 					//schedule a sprite dma event for beginning 1 cycle in the future.
-					//this receives 2 because thats just the way it works out.
+					//this receives 2 because that's just the way it works out.
 					oam_dma_addr = (ushort)(val << 8);
 					sprdma_countdown = 1;
 					break;

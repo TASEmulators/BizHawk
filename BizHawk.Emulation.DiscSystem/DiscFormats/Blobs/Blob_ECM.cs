@@ -249,7 +249,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			}
 
-			//we dont want to keep churning through this many big byte arrays while reading stuff, so we save a sector cache.
+			//we don't want to keep churning through this many big byte arrays while reading stuff, so we save a sector cache.
 			readonly byte[] Read_SectorBuf = new byte[2352];
 			int Read_LastIndex = 0;
 

@@ -190,7 +190,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					pce.IntDataTransferReady = true;
 
 					// If more sectors, should set the next think-clock to however long it takes to read 1 sector
-					// but I dont. I dont think transfers actually happen sector by sector
+					// but I don't. I don't think transfers actually happen sector by sector
 					// like this, they probably become available as the bits come off the disc.
 					// but lets get some basic functionality before we go crazy.
 					//  Idunno, maybe they do come in a sector at a time.

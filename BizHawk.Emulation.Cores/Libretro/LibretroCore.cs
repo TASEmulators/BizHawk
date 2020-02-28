@@ -1,7 +1,7 @@
 //TODO: it's a bit of a misnomer to call this a 'core'
 //that's libretro nomenclature for a particular core (nes, genesis, doom, etc.) 
 //we should call this LibretroEmulator (yeah, it was originally called that)
-//Since it's an IEmulator.. but... I dont know. Yeah, that's probably best
+//Since it's an IEmulator.. but... I don't know. Yeah, that's probably best
 
 using System;
 using System.IO;
@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			//and I need retro_set_environment set so I can find out if the core supports no-game
 			//therefore, I need a complete environment (including pathing) before I can complete my introspection of the core.
 			//Sucky, but that's life.
-			//I dont even know for sure what paths I should use until... (what?)
+			//I don't even know for sure what paths I should use until... (what?)
 
 
 			//not sure about each of these.. but we may be doing things different than retroarch.
@@ -257,7 +257,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			})
 				definition.BoolButtons.Add(string.Format(item,"RetroPad"));
 
-			definition.BoolButtons.Add("Pointer Pressed"); //TODO: this isnt showing up in the binding panel. I dont want to find out why.
+			definition.BoolButtons.Add("Pointer Pressed"); //TODO: this isnt showing up in the binding panel. I don't want to find out why.
 			definition.FloatControls.Add("Pointer X");
 			definition.FloatControls.Add("Pointer Y");
 			definition.FloatRanges.Add(new ControllerDefinition.FloatRange(-32767, 0, 32767));
@@ -328,7 +328,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			[FeatureNotImplemented]
 			get
 			{
-				//if we dont have saveram, it isnt modified. otherwise, assume it is
+				//if we don't have saveram, it isnt modified. otherwise, assume it is
 				var mem = api.QUERY_GetMemory(LibretroApi.RETRO_MEMORY.SAVE_RAM);
 				
 				//bail if the size is 0

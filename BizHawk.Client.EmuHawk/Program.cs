@@ -51,7 +51,7 @@ namespace BizHawk.Client.EmuHawk
 			//in case assembly resolution fails, such as if we moved them into the dll subdiretory, this event handler can reroute to them
 			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
-			//but before we even try doing that, whack the MOTW from everything in that directory (thats a dll)
+			//but before we even try doing that, whack the MOTW from everything in that directory (that's a dll)
 			//otherwise, some people will have crashes at boot-up due to .net security disliking MOTW.
 			//some people are getting MOTW through a combination of browser used to download bizhawk, and program used to dearchive it
 			//We need to do it here too... otherwise people get exceptions when externaltools we distribute try to startup

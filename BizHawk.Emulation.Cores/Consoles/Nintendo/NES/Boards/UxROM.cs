@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					//but (for chrram): "Use of $00 with no CHR ROM implies that the game is wired to map nametable memory in CHR space. The value $00 MUST NOT be used if a mapper isn't defined to allow this. "
 					//well, i'm not going to do that now. we'll save it for when it's needed
 					//"it's only mapper 218 and no other mappers"
-					//so, dont assume this
+					//so, don't assume this
 					//Cart.vram_size = 8;
 					break;
 
