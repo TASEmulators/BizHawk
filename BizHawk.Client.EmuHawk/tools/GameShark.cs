@@ -2102,7 +2102,7 @@ namespace BizHawk.Client.EmuHawk
 							//4 Byte
 							byteSize = 32;
 						}
-						//I need the Incriment Value (Add to RAM Address)
+						//I need the Increment Value (Add to RAM Address)
 						//I also need the Loop Value
 						incriment = int.Parse(RAMValue.Remove(0, 4), NumberStyles.HexNumber);
 						looper = int.Parse(RAMValue.Remove(4, 4), NumberStyles.HexNumber);
@@ -2664,14 +2664,14 @@ namespace BizHawk.Client.EmuHawk
 				{
 					//We have a Byte sized value
 					var watch = Watch.GenerateWatch(MemoryDomains["RDRAM"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.Byte, Common.DisplayType.Hex, true, txtDescription.Text);
-					//Take Watch, Add our Value we want, and it should be active when addded?
+					//Take Watch, Add our Value we want, and it should be active when added?
 					Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
 				}
 				if (byteSize == 16)
 				{
 					//We have a Word (Double Byte) sized Value
 					var watch = Watch.GenerateWatch(MemoryDomains["RDRAM"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.Word, Common.DisplayType.Hex, true, txtDescription.Text);
-					//Take Watch, Add our Value we want, and it should be active when addded?
+					//Take Watch, Add our Value we want, and it should be active when added?
 					Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
 				}
 			}

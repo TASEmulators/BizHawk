@@ -30,7 +30,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly MainForm _mainForm;
 
 		// friendlier names than the system Ids
-		// Redundant with SystemLookup? Not so fast. That datadrives things. This is one step abstracted. Don't be such a smart guy. Keep this redundant list up to date.
+		// Redundant with SystemLookup? Not so fast. That data drives things. This is one step abstracted. Don't be such a smart guy. Keep this redundant list up to date.
 		private static readonly Dictionary<string, string> SystemGroupNames = new Dictionary<string, string>
 		{
 			["NES"] = "NES",

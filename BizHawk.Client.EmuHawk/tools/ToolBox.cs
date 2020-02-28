@@ -58,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 					continue;
 				if (!typeof(Form).IsAssignableFrom(t))
 					continue;
-				if (typeof(ToolBox).IsAssignableFrom(t))  //yo dawg i head you like toolboxes
+				if (typeof(ToolBox).IsAssignableFrom(t))
 					continue;
 				if (VersionInfo.DeveloperBuild && t.GetCustomAttributes(false).OfType<ToolAttribute>().Any(a => !a.Released))
 					continue;
