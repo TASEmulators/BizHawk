@@ -418,9 +418,11 @@
 		<Compile Update="CoreFeatureAnalysis.cs" SubType="Form" />
 		<Compile Update="CoreFeatureAnalysis.Designer.cs" DependentUpon="CoreFeatureAnalysis.cs" />
 		<EmbeddedResource Update="CoreFeatureAnalysis.resx" DependentUpon="CoreFeatureAnalysis.cs" />
+		<Compile Update="CustomControls/AutosizedLabel.cs" SubType="Component" />
 		<Compile Update="CustomControls/ExceptionBox.cs" SubType="Form" />
 		<Compile Update="CustomControls/ExceptionBox.designer.cs" DependentUpon="ExceptionBox.cs" />
 		<EmbeddedResource Update="CustomControls/ExceptionBox.resx" DependentUpon="ExceptionBox.cs" />
+		<Compile Update="CustomControls/FLPInGroupBox.cs" SubType="Component" />
 		<Compile Update="CustomControls/FolderBrowserDialogEx.cs" SubType="Component" />
 		<Compile Update="CustomControls/HexTextBox.cs" SubType="Component" />
 		<Compile Update="CustomControls/InputRoll/InputRoll.cs" SubType="Component" />
@@ -432,6 +434,9 @@
 		<Compile Update="CustomControls/MsgBox.designer.cs" DependentUpon="MsgBox.cs" />
 		<EmbeddedResource Update="CustomControls/MsgBox.resx" DependentUpon="MsgBox.cs" />
 		<Compile Update="CustomControls/RepeatButton.cs" SubType="Component" />
+		<Compile Update="CustomControls/SingleColumnFLP.cs" SubType="Component" />
+		<Compile Update="CustomControls/SingleRowFLP.cs" SubType="Component" />
+		<Compile Update="CustomControls/TLPInGroupBox.cs" SubType="Component" />
 		<Compile Update="CustomControls/ToolStripEx.cs" SubType="Component" />
 		<Compile Update="CustomControls/TransparentTrackbar.cs" SubType="Component" />
 		<Compile Update="CustomControls/ViewportPanel.cs" SubType="Component" />
