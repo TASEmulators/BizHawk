@@ -105,9 +105,6 @@ namespace BizHawk.Common
 		[DllImport("user32.dll")]
 		public static extern IntPtr GetActiveWindow();
 
-		[DllImport("kernel32.dll", SetLastError=true)]
-		public static extern unsafe uint GetCurrentDirectoryW(uint nBufferLength, byte* pBuffer);
-
 		[DllImport("kernel32", SetLastError = true, EntryPoint = "GetProcAddress")]
 		public static extern IntPtr GetProcAddressOrdinal(IntPtr hModule, IntPtr procName);
 
@@ -141,9 +138,6 @@ namespace BizHawk.Common
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		public static extern IntPtr SendMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
-
-		[DllImport("kernel32.dll", SetLastError = true)]
-		public static extern unsafe bool SetCurrentDirectoryW(byte* lpPathName);
 
 		[DllImport("shell32.dll", CharSet = CharSet.Auto)]
 		public static extern IntPtr SHBrowseForFolder(ref BROWSEINFO bi);

@@ -6,7 +6,7 @@ using NLua;
 // TODO - evaluate for re-entrancy problems
 namespace BizHawk.Client.Common
 {
-	public unsafe class LuaSandbox
+	public class LuaSandbox
 	{
 		private static readonly ConditionalWeakTable<Lua, LuaSandbox> SandboxForThread = new ConditionalWeakTable<Lua, LuaSandbox>();
 
@@ -21,45 +21,18 @@ namespace BizHawk.Client.Common
 
 		private bool CoolSetCurrentDirectory(string path, string currDirSpeedHack = null)
 		{
-			static string CoolGetCurrentDirectory()
-			{
-				if (OSTailoredCode.IsUnixHost) return Environment.CurrentDirectory;
-
-				//HACK to bypass Windows security checks triggered by *getting* the current directory (why), which only slow us down
-				var buf = new byte[32768];
-				fixed (byte* pBuf = &buf[0])
-					return System.Text.Encoding.Unicode.GetString(buf, 0, 2 * (int) Win32Imports.GetCurrentDirectoryW(32767, pBuf));
-			}
-
 			string target = $"{_currentDirectory}\\";
 
 			// first we'll bypass it with a general hack: don't do any setting if the value's already there (even at the OS level, setting the directory can be slow)
 			// yeah I know, not the smoothest move to compare strings here, in case path normalization is happening at some point
 			// but you got any better ideas?
-			if (currDirSpeedHack == null)
-			{
-				currDirSpeedHack = CoolGetCurrentDirectory();
-			}
+			currDirSpeedHack ??= OSTailoredCode.IsUnixHost ? Environment.CurrentDirectory : CWDHacks.Get();
+			if (currDirSpeedHack == path) return true;
 
-			if (currDirSpeedHack == path)
-			{
-				return true;
-			}
-
-			if (OSTailoredCode.IsUnixHost)
-			{
-				if (System.IO.Directory.Exists(_currentDirectory)) //TODO is this necessary with Mono? extra TODO: is this necessary with .NET Core on Windows?
-				{
-					Environment.CurrentDirectory = _currentDirectory;
-					return true;
-				}
-
-				return false;
-			}
-
-			//HACK to bypass Windows security checks triggered by setting the current directory, which only slow us down
-			fixed (byte* pstr = &System.Text.Encoding.Unicode.GetBytes($"{target}\0")[0])
-				return Win32Imports.SetCurrentDirectoryW(pstr);
+			if (!OSTailoredCode.IsUnixHost) return CWDHacks.Set(target);
+			if (!System.IO.Directory.Exists(_currentDirectory)) return false; //TODO is this necessary with Mono? Linux is fine with the CWD being nonexistent. also, is this necessary with .NET Core on Windows? --yoshi
+			Environment.CurrentDirectory = _currentDirectory;
+			return true;
 		}
 
 		private void Sandbox(Action callback, Action exceptionCallback)
