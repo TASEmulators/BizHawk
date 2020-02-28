@@ -1,59 +1,52 @@
-using System;
-using System.Reflection;
-using System.Threading;
-using System.IO;
-using System.Collections.Generic;
 using System.Windows.Forms;
-
 using BizHawk.Bizware.BizwareGL;
-
 using OpenTK;
 using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL;
 
 namespace BizHawk.Client.EmuHawk
 {
-	class GLControlWrapper : GLControl, IGraphicsControl
+	internal class GLControlWrapper : GLControl, IGraphicsControl
 	{
-		//Note: In order to work around bugs in OpenTK which sometimes do things to a context without making that context active first...
-		//we are going to push and pop the context before doing stuff
-
+		// Note: In order to work around bugs in OpenTK which sometimes do things to a context without making that context active first...
+		// we are going to push and pop the context before doing stuff
 		public GLControlWrapper(IGL_TK owner)
 			: base(GraphicsMode.Default, 2, 0, GraphicsContextFlags.Default)
 		{
-			Owner = owner;
-			GLControl = this;
+			_owner = owner;
+			_glControl = this;
 		}
 
-		global::OpenTK.GLControl GLControl;
-		IGL_TK Owner;
+		private readonly GLControl _glControl;
+		private readonly IGL_TK _owner;
 
-		public Control Control { get { return this; } }
-
+		public Control Control => this;
 
 		public void SetVsync(bool state)
 		{
-			//IGraphicsContext curr = global::OpenTK.Graphics.GraphicsContext.CurrentContext;
-			GLControl.MakeCurrent();
-			GLControl.VSync = state;
-			//Owner.MakeContextCurrent(curr, Owner.NativeWindowsForContexts[curr]);
+			_glControl.MakeCurrent();
+			_glControl.VSync = state;
 		}
 
 		public void Begin()
 		{
-			if (!GLControl.Context.IsCurrent)
-				Owner.MakeContextCurrent(GLControl.Context, GLControl.WindowInfo);
+			if (!_glControl.Context.IsCurrent)
+			{
+				_owner.MakeContextCurrent(_glControl.Context, _glControl.WindowInfo);
+			}
 		}
 
 		public void End()
 		{
-			Owner.MakeDefaultCurrent();
+			_owner.MakeDefaultCurrent();
 		}
 
 		public new void SwapBuffers()
 		{
-			if (!GLControl.Context.IsCurrent)
+			if (!_glControl.Context.IsCurrent)
+			{
 				MakeCurrent();
+			}
+
 			base.SwapBuffers();
 		}
 	}
