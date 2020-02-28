@@ -319,8 +319,7 @@ namespace BizHawk.Client.EmuHawk
 					refGraphics = Graphics.FromImage(tw.SDBitmap);
 				}
 
-				if (MyBufferedGraphics != null)
-					MyBufferedGraphics.Dispose();
+				MyBufferedGraphics?.Dispose();
 				MyBufferedGraphics = Gdi.MyBufferedGraphicsContext.Allocate(refGraphics, r);
 				//MyBufferedGraphics.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighSpeed;
 

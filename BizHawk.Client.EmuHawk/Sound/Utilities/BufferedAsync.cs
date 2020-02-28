@@ -53,9 +53,7 @@ namespace BizHawk.Client.EmuHawk
 		public void DiscardSamples()
 		{
 			buffer.Clear();
-
-			if (BaseSoundProvider != null)
-				BaseSoundProvider.DiscardSamples();
+			BaseSoundProvider?.DiscardSamples();
 		}
 
 		/// <exception cref="InvalidOperationException"><see cref="BaseSoundProvider"/>.<see cref="ISoundProvider.SyncMode"/> is not <see cref="SyncSoundMode.Async"/></exception>

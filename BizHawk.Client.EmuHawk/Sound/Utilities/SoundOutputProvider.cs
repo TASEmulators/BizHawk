@@ -94,10 +94,7 @@ namespace BizHawk.Client.EmuHawk
 			_resampleBuffer = new short[0];
 			_resampleLengthRoundingError = 0.0;
 
-			if (BaseSoundProvider != null)
-			{
-				BaseSoundProvider.DiscardSamples();
-			}
+			BaseSoundProvider?.DiscardSamples();
 		}
 
 		private void ResetBuffer()

@@ -53,8 +53,7 @@ namespace BizHawk.Client.EmuHawk
 			if (_retain)
 			{
 				//TODO - frugalize me
-				if (rt != null)
-					rt.Dispose();
+				rt?.Dispose();
 				rt = GL.CreateRenderTarget(Width, Height);
 				rt.Bind();
 			}

@@ -335,8 +335,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var fr in FirmwareDatabase.FirmwareRecords)
 			{
 				var ri = Manager.Resolve(fr);
-				if (ri == null) continue;
-				if (ri.KnownFirmwareFile == null) continue;
+				if (ri?.KnownFirmwareFile == null) continue;
 				if (ri.UserSpecified) continue;
 
 				string fpTarget = PathManager.StandardFirmwareName(ri.KnownFirmwareFile.RecommendedName);

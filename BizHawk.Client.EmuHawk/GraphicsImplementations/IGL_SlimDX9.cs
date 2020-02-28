@@ -522,8 +522,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var sw = shader.Opaque as ShaderWrapper;
 			sw.bytecode.Dispose();
-			if (sw.ps != null) sw.ps.Dispose();
-			if (sw.vs != null) sw.vs.Dispose();
+			sw.ps?.Dispose();
+			sw.vs?.Dispose();
 		}
 
 		class UniformWrapper
