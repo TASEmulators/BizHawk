@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		}
 
 		[FeatureNotImplemented]
-		public IMemoryCallbackSystem MemoryCallbacks { get; } = new MGBAMemoryCallbackSystem();
+		public IMemoryCallbackSystem MemoryCallbacks { get; }
 
 		public bool CanStep(StepType type) => false;
 

@@ -60,6 +60,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				};
 				_tracecb = new LibmGBA.TraceCallback((msg) => _tracer.Put(_traceInfo(msg)));
 				ser.Register(_tracer);
+				MemoryCallbacks = new MGBAMemoryCallbackSystem(_core);
 			}
 			catch
 			{

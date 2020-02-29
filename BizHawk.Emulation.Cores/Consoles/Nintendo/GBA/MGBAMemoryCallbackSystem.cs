@@ -8,6 +8,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	public class MGBAMemoryCallbackSystem : IMemoryCallbackSystem
 	{
+		private readonly IntPtr _core;
+
+		public MGBAMemoryCallbackSystem(IntPtr core)
+		{
+			_core = core;
+		}
+
 		private readonly List<CallbackContainer> _callbacks = new List<CallbackContainer>();
 
 		public string[] AvailableScopes { get; } = { "System Bus" };
