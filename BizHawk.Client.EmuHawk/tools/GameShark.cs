@@ -60,7 +60,6 @@ namespace BizHawk.Client.EmuHawk
 		private string _ramAddress;
 		private string _ramValue;
 		private int _byteSize;
-		private string _testo;
 		private string _singleCheat;
 		private int _loopValue;
 
@@ -2230,7 +2229,7 @@ namespace BizHawk.Client.EmuHawk
 		private void N64()
 		{
 			// This determines what kind of Code we have
-			_testo = _singleCheat.Remove(2, 11);
+			var _testo = _singleCheat.Remove(2, 11);
 
 			// These codes, more or less work without Needing much work.
 			if (_singleCheat.IndexOf(" ") != 8)
@@ -2375,7 +2374,7 @@ namespace BizHawk.Client.EmuHawk
 		private void Psx()
 		{
 			// This determines what kind of Code we have
-			_testo = _singleCheat.Remove(2, 11);
+			var test = _singleCheat.Remove(2, 11);
 
 			// These codes, more or less work without Needing much work.
 			if (_singleCheat.IndexOf(" ") != 8)
@@ -2390,7 +2389,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			switch (_testo)
+			switch (test)
 			{
 				// 30 80 Cheats mean, "Write, don't care otherwise."
 				case "30":
@@ -2484,7 +2483,7 @@ namespace BizHawk.Client.EmuHawk
 		private void Saturn()
 		{
 			// This determines what kind of Code we have
-			_testo = _singleCheat.Remove(2, 11);
+			var test = _singleCheat.Remove(2, 11);
 
 			if (_singleCheat.IndexOf(" ") != 8)
 			{
@@ -2499,8 +2498,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// This is a special test.  Only the first character really matters?  16 or 36?
-			_testo = _testo.Remove(1, 1);
-			switch (_testo)
+			test = test.Remove(1, 1);
+			switch (test)
 			{
 				case "1":
 					_byteSize = 16;
