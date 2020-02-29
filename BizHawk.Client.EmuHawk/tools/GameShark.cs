@@ -2555,14 +2555,12 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// This also handles Game Gear due to shared hardware. Go figure.
-		private void Sms()
+		private void Sms(string cheat)
 		{
-			string ramCompare = null;
-
 			// Game Genie
-			if (_singleCheat.LastIndexOf("-") == 7 && _singleCheat.IndexOf("-") == 3)
+			if (cheat.LastIndexOf("-") == 7 && cheat.IndexOf("-") == 3)
 			{
-				var decoder = new GbGgGameGenieDecoder(_singleCheat);
+				var decoder = new GbGgGameGenieDecoder(cheat);
 				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], decoder.Address, WatchSize.Word, Common.DisplayType.Hex, false, txtDescription.Text);
 				Global.CheatList.Add(decoder.Compare.HasValue
 					? new Cheat(watch, decoder.Value, decoder.Compare)
@@ -2570,7 +2568,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Action Replay
-			else if (_singleCheat.IndexOf("-") == 3 && _singleCheat.Length == 9)
+			else if (cheat.IndexOf("-") == 3 && cheat.Length == 9)
 			{
 				_parseString = _singleCheat;
 				_parseString = _parseString.Remove(0, 2);
@@ -2580,14 +2578,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// It's an Action Replay
-			if (_singleCheat.Length != 9 && _singleCheat.LastIndexOf("-") != 7)
+			if (cheat.Length != 9 && cheat.LastIndexOf("-") != 7)
 			{
 				MessageBox.Show("All Master System Action Replay Codes need to be nine characters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 
 			// Game Genie
-			if (_singleCheat.LastIndexOf("-") != 7 && _singleCheat.IndexOf("-") != 3)
+			if (cheat.LastIndexOf("-") != 7 && cheat.IndexOf("-") != 3)
 			{
 				MessageBox.Show("All Master System Game Genie Codes need to have a dash after the third character and seventh character.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
@@ -2595,14 +2593,8 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				// A Watch needs to be generated so we can make a cheat out of that.  This is due to how the Cheat engine works.
-				// System Bus Domain, The Address to Watch, Byte size (Byte), Hex Display, Description.  Not Big Endian.
 				var watch = Watch.GenerateWatch(MemoryDomains["Main RAM"], long.Parse(_ramAddress, NumberStyles.HexNumber), WatchSize.Byte, Common.DisplayType.Hex, false, txtDescription.Text);
-				
-				// Take Watch, Add our Value we want, and it should be active when added
-				Global.CheatList.Add(ramCompare == null
-					? new Cheat(watch, int.Parse(_ramValue, NumberStyles.HexNumber))
-					: new Cheat(watch, int.Parse(_ramValue, NumberStyles.HexNumber), int.Parse(ramCompare, NumberStyles.HexNumber)));
+				Global.CheatList.Add(new Cheat(watch, int.Parse(_ramValue, NumberStyles.HexNumber)));
 			}
 			catch (Exception ex)
 			{
