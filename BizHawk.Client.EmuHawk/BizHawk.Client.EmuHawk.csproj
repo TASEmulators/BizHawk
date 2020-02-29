@@ -609,9 +609,6 @@
 		<Compile Update="tools/SMS/VDPViewer.cs" SubType="Form" />
 		<Compile Update="tools/SMS/VDPViewer.Designer.cs" DependentUpon="VDPViewer.cs" />
 		<EmbeddedResource Update="tools/SMS/VDPViewer.resx" DependentUpon="VDPViewer.cs" />
-		<Compile Update="tools/SNES/SNESGameGenie.cs" SubType="Form" />
-		<Compile Update="tools/SNES/SNESGameGenie.Designer.cs" DependentUpon="SNESGameGenie.cs" />
-		<EmbeddedResource Update="tools/SNES/SNESGameGenie.resx" DependentUpon="SNESGameGenie.cs" />
 		<Compile Update="tools/SNES/SNESGraphicsDebugger.cs" SubType="Form" />
 		<Compile Update="tools/SNES/SNESGraphicsDebugger.Designer.cs" DependentUpon="SNESGraphicsDebugger.cs" />
 		<EmbeddedResource Update="tools/SNES/SNESGraphicsDebugger.resx" DependentUpon="SNESGraphicsDebugger.cs" />
