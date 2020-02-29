@@ -50,7 +50,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			ser.Sync(nameof(_cableconnected_LR), ref _cableconnected_LR);
 			ser.Sync(nameof(_cableconnected_X), ref _cableconnected_X);
 			ser.Sync(nameof(_cableconnected_4x), ref _cableconnected_4x);
-			ser.Sync(nameof(do_2_next), ref do_2_next);
+			ser.Sync(nameof(do_2_next_1), ref do_2_next_1);
+			ser.Sync(nameof(do_2_next_2), ref do_2_next_2);
 			ser.Sync(nameof(A_controller), ref A_controller);
 			ser.Sync(nameof(B_controller), ref B_controller);
 			ser.Sync(nameof(C_controller), ref C_controller);

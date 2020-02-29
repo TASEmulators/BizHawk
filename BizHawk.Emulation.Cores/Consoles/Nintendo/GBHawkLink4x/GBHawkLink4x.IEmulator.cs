@@ -110,7 +110,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 				if (_cableconnected_UD | _cableconnected_LR | _cableconnected_X | _cableconnected_4x)
 				{
 					_cableconnected_UD = _cableconnected_LR = _cableconnected_X = _cableconnected_4x = false;
-					do_2_next = false;
+					do_2_next_1 = false;
+					do_2_next_2 = false;
 				}
 				else if (controller.IsPressed("Toggle Cable UD"))
 				{
@@ -655,47 +656,45 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 				if (_cableconnected_UD)
 				{
 					// the signal to shift out a bit is when serial_clock = 1
-					if (((A.serialport.serial_clock == 1) || (A.serialport.serial_clock == 2)) && (A.serialport.clk_rate > 0) && !do_2_next)
+					if (((A.serialport.serial_clock == 1) || (A.serialport.serial_clock == 2)) && (A.serialport.clk_rate > 0) && !do_2_next_1)
 					{
 						A.serialport.going_out = (byte)(A.serialport.serial_data >> 7);
 
-						if ((C.serialport.clk_rate == -1) && C.serialport.serial_start && A.serialport.can_pulse)
+						if ((B.serialport.clk_rate == -1) && B.serialport.serial_start && A.serialport.can_pulse)
 						{
-							C.serialport.serial_clock = A.serialport.serial_clock;
-							C.serialport.going_out = (byte)(C.serialport.serial_data >> 7);
-							C.serialport.coming_in = A.serialport.going_out;
+							B.serialport.serial_clock = A.serialport.serial_clock;
+							B.serialport.going_out = (byte)(B.serialport.serial_data >> 7);
+							B.serialport.coming_in = A.serialport.going_out;
 						}
 
-						A.serialport.coming_in = C.serialport.going_out;
+						A.serialport.coming_in = B.serialport.going_out;
 						A.serialport.can_pulse = false;
 					}
-					else if (((C.serialport.serial_clock == 1) || (C.serialport.serial_clock == 2)) && (C.serialport.clk_rate > 0))
+					else if (((B.serialport.serial_clock == 1) || (B.serialport.serial_clock == 2)) && (B.serialport.clk_rate > 0))
 					{
-						do_2_next = false;
+						do_2_next_1 = false;
 
-						C.serialport.going_out = (byte)(C.serialport.serial_data >> 7);
+						B.serialport.going_out = (byte)(B.serialport.serial_data >> 7);
 
-						if ((A.serialport.clk_rate == -1) && A.serialport.serial_start && C.serialport.can_pulse)
+						if ((A.serialport.clk_rate == -1) && A.serialport.serial_start && B.serialport.can_pulse)
 						{
-							A.serialport.serial_clock = C.serialport.serial_clock;
+							A.serialport.serial_clock = B.serialport.serial_clock;
 							A.serialport.going_out = (byte)(A.serialport.serial_data >> 7);
-							A.serialport.coming_in = C.serialport.going_out;
+							A.serialport.coming_in = B.serialport.going_out;
 						}
 
-						C.serialport.coming_in = A.serialport.going_out;
-						C.serialport.can_pulse = false;
+						B.serialport.coming_in = A.serialport.going_out;
+						B.serialport.can_pulse = false;
 
-						if (C.serialport.serial_clock == 2) { do_2_next = true; }
+						if (B.serialport.serial_clock == 2) { do_2_next_1 = true; }
 					}
 					else
 					{
-						do_2_next = false;
+						do_2_next_1 = false;
 					}
-				}
-				else if (_cableconnected_LR)
-				{
+
 					// the signal to shift out a bit is when serial_clock = 1
-					if (((C.serialport.serial_clock == 1) || (C.serialport.serial_clock == 2)) && (C.serialport.clk_rate > 0) && !do_2_next)
+					if (((C.serialport.serial_clock == 1) || (C.serialport.serial_clock == 2)) && (C.serialport.clk_rate > 0) && !do_2_next_2)
 					{
 						C.serialport.going_out = (byte)(C.serialport.serial_data >> 7);
 
@@ -711,7 +710,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 					}
 					else if (((D.serialport.serial_clock == 1) || (D.serialport.serial_clock == 2)) && (D.serialport.clk_rate > 0))
 					{
-						do_2_next = false;
+						do_2_next_2 = false;
 
 						D.serialport.going_out = (byte)(D.serialport.serial_data >> 7);
 
@@ -725,34 +724,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 						D.serialport.coming_in = C.serialport.going_out;
 						D.serialport.can_pulse = false;
 
-						if (D.serialport.serial_clock == 2) { do_2_next = true; }
+						if (D.serialport.serial_clock == 2) { do_2_next_2 = true; }
 					}
 					else
 					{
-						do_2_next = false;
+						do_2_next_2 = false;
 					}
 				}
-				else if (_cableconnected_X)
+				else if (_cableconnected_LR)
 				{
 					// the signal to shift out a bit is when serial_clock = 1
-					if (((D.serialport.serial_clock == 1) || (D.serialport.serial_clock == 2)) && (D.serialport.clk_rate > 0) && !do_2_next)
+					if (((A.serialport.serial_clock == 1) || (A.serialport.serial_clock == 2)) && (A.serialport.clk_rate > 0) && !do_2_next_1)
 					{
-						D.serialport.going_out = (byte)(D.serialport.serial_data >> 7);
-
-						if ((A.serialport.clk_rate == -1) && A.serialport.serial_start && D.serialport.can_pulse)
-						{
-							A.serialport.serial_clock = D.serialport.serial_clock;
-							A.serialport.going_out = (byte)(A.serialport.serial_data >> 7);
-							A.serialport.coming_in = D.serialport.going_out;
-						}
-
-						D.serialport.coming_in = A.serialport.going_out;
-						D.serialport.can_pulse = false;
-					}
-					else if (((A.serialport.serial_clock == 1) || (A.serialport.serial_clock == 2)) && (A.serialport.clk_rate > 0))
-					{
-						do_2_next = false;
-
 						A.serialport.going_out = (byte)(A.serialport.serial_data >> 7);
 
 						if ((D.serialport.clk_rate == -1) && D.serialport.serial_start && A.serialport.can_pulse)
@@ -764,12 +747,144 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 
 						A.serialport.coming_in = D.serialport.going_out;
 						A.serialport.can_pulse = false;
+					}
+					else if (((D.serialport.serial_clock == 1) || (D.serialport.serial_clock == 2)) && (D.serialport.clk_rate > 0))
+					{
+						do_2_next_1 = false;
 
-						if (A.serialport.serial_clock == 2) { do_2_next = true; }
+						D.serialport.going_out = (byte)(D.serialport.serial_data >> 7);
+
+						if ((A.serialport.clk_rate == -1) && A.serialport.serial_start && D.serialport.can_pulse)
+						{
+							A.serialport.serial_clock = D.serialport.serial_clock;
+							A.serialport.going_out = (byte)(A.serialport.serial_data >> 7);
+							A.serialport.coming_in = D.serialport.going_out;
+						}
+
+						D.serialport.coming_in = A.serialport.going_out;
+						D.serialport.can_pulse = false;
+
+						if (D.serialport.serial_clock == 2) { do_2_next_1 = true; }
 					}
 					else
 					{
-						do_2_next = false;
+						do_2_next_1 = false;
+					}
+
+					// the signal to shift out a bit is when serial_clock = 1
+					if (((B.serialport.serial_clock == 1) || (B.serialport.serial_clock == 2)) && (B.serialport.clk_rate > 0) && !do_2_next_2)
+					{
+						B.serialport.going_out = (byte)(B.serialport.serial_data >> 7);
+
+						if ((C.serialport.clk_rate == -1) && C.serialport.serial_start && B.serialport.can_pulse)
+						{
+							C.serialport.serial_clock = B.serialport.serial_clock;
+							C.serialport.going_out = (byte)(C.serialport.serial_data >> 7);
+							C.serialport.coming_in = B.serialport.going_out;
+						}
+
+						B.serialport.coming_in = C.serialport.going_out;
+						B.serialport.can_pulse = false;
+					}
+					else if (((C.serialport.serial_clock == 1) || (C.serialport.serial_clock == 2)) && (C.serialport.clk_rate > 0))
+					{
+						do_2_next_2 = false;
+
+						C.serialport.going_out = (byte)(C.serialport.serial_data >> 7);
+
+						if ((B.serialport.clk_rate == -1) && B.serialport.serial_start && C.serialport.can_pulse)
+						{
+							B.serialport.serial_clock = C.serialport.serial_clock;
+							B.serialport.going_out = (byte)(B.serialport.serial_data >> 7);
+							B.serialport.coming_in = C.serialport.going_out;
+						}
+
+						C.serialport.coming_in = B.serialport.going_out;
+						C.serialport.can_pulse = false;
+
+						if (C.serialport.serial_clock == 2) { do_2_next_2 = true; }
+					}
+					else
+					{
+						do_2_next_2 = false;
+					}
+				}
+				else if (_cableconnected_X)
+				{
+					// the signal to shift out a bit is when serial_clock = 1
+					if (((C.serialport.serial_clock == 1) || (C.serialport.serial_clock == 2)) && (C.serialport.clk_rate > 0) && !do_2_next_1)
+					{
+						C.serialport.going_out = (byte)(C.serialport.serial_data >> 7);
+
+						if ((A.serialport.clk_rate == -1) && A.serialport.serial_start && C.serialport.can_pulse)
+						{
+							A.serialport.serial_clock = C.serialport.serial_clock;
+							A.serialport.going_out = (byte)(A.serialport.serial_data >> 7);
+							A.serialport.coming_in = C.serialport.going_out;
+						}
+
+						C.serialport.coming_in = A.serialport.going_out;
+						C.serialport.can_pulse = false;
+					}
+					else if (((A.serialport.serial_clock == 1) || (A.serialport.serial_clock == 2)) && (A.serialport.clk_rate > 0))
+					{
+						do_2_next_1 = false;
+
+						A.serialport.going_out = (byte)(A.serialport.serial_data >> 7);
+
+						if ((C.serialport.clk_rate == -1) && C.serialport.serial_start && A.serialport.can_pulse)
+						{
+							C.serialport.serial_clock = A.serialport.serial_clock;
+							C.serialport.going_out = (byte)(C.serialport.serial_data >> 7);
+							C.serialport.coming_in = A.serialport.going_out;
+						}
+
+						A.serialport.coming_in = C.serialport.going_out;
+						A.serialport.can_pulse = false;
+
+						if (A.serialport.serial_clock == 2) { do_2_next_1 = true; }
+					}
+					else
+					{
+						do_2_next_1 = false;
+					}
+
+					// the signal to shift out a bit is when serial_clock = 1
+					if (((B.serialport.serial_clock == 1) || (B.serialport.serial_clock == 2)) && (B.serialport.clk_rate > 0) && !do_2_next_2)
+					{
+						B.serialport.going_out = (byte)(B.serialport.serial_data >> 7);
+
+						if ((D.serialport.clk_rate == -1) && D.serialport.serial_start && B.serialport.can_pulse)
+						{
+							D.serialport.serial_clock = B.serialport.serial_clock;
+							D.serialport.going_out = (byte)(D.serialport.serial_data >> 7);
+							D.serialport.coming_in = B.serialport.going_out;
+						}
+
+						B.serialport.coming_in = D.serialport.going_out;
+						B.serialport.can_pulse = false;
+					}
+					else if (((D.serialport.serial_clock == 1) || (D.serialport.serial_clock == 2)) && (D.serialport.clk_rate > 0))
+					{
+						do_2_next_2 = false;
+
+						D.serialport.going_out = (byte)(D.serialport.serial_data >> 7);
+
+						if ((B.serialport.clk_rate == -1) && B.serialport.serial_start && D.serialport.can_pulse)
+						{
+							B.serialport.serial_clock = D.serialport.serial_clock;
+							B.serialport.going_out = (byte)(B.serialport.serial_data >> 7);
+							B.serialport.coming_in = D.serialport.going_out;
+						}
+
+						D.serialport.coming_in = B.serialport.going_out;
+						D.serialport.can_pulse = false;
+
+						if (D.serialport.serial_clock == 2) { do_2_next_2 = true; }
+					}
+					else
+					{
+						do_2_next_2 = false;
 					}
 				}
 

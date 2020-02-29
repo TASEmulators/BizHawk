@@ -23,7 +23,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 		private bool _cableconnected_X = false;
 		private bool _cableconnected_4x = true;
 
-		private bool do_2_next = false;
+		private bool do_2_next_1 = false;
+		private bool do_2_next_2 = false;
 
 		// 4 player adapter variables
 		public bool is_pinging, is_transmitting;
