@@ -2418,23 +2418,13 @@ namespace BizHawk.Client.EmuHawk
 					return;
 			}
 
-			var decoder = new PsxGameSharkDecoder(cheat);
-
 			try
 			{
-				// A Watch needs to be generated so we can make a cheat out of that.  This is due to how the Cheat engine works.
-				// System Bus Domain, The Address to Watch, Byte size (Word), Hex Display, Description.  Big Endian.
+				var decoder = new PsxGameSharkDecoder(cheat);
+
 				// My Concern is that Work RAM High may be incorrect?
-				if (decoder.ByteSize == 1)
-				{
-					var watch = Watch.GenerateWatch(MemoryDomains["MainRAM"], decoder.Address, WatchSize.Byte, Common.DisplayType.Hex, false, txtDescription.Text);
-					Global.CheatList.Add(new Cheat(watch, decoder.Value));
-				}
-				else
-				{
-					var watch = Watch.GenerateWatch(MemoryDomains["MainRAM"], decoder.Address, WatchSize.Word, Common.DisplayType.Hex, false, txtDescription.Text);
-					Global.CheatList.Add(new Cheat(watch, decoder.Value));
-				}
+				var watch = Watch.GenerateWatch(MemoryDomains["MainRAM"], decoder.Address, decoder.Size, Common.DisplayType.Hex, false, txtDescription.Text);
+				Global.CheatList.Add(new Cheat(watch, decoder.Value));
 			}
 			catch (Exception ex)
 			{

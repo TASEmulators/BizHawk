@@ -17,8 +17,7 @@ namespace BizHawk.Client.Common.cheats
 		public int Address { get; private set; }
 		public int Value { get; private set; }
 
-		// TODO: WatchSize
-		public int ByteSize { get; private set; } = 1;
+		public WatchSize Size { get; private set; } = WatchSize.Word;
 
 		// 30XXXXXX 00YY
 		public void Decode()
@@ -39,26 +38,26 @@ namespace BizHawk.Client.Common.cheats
 			}
 
 			var type = _code.Substring(0, 2);
-			ByteSize = type switch
+			Size = type switch
 			{
-				"10" => 2,
-				"11" => 2,
-				"20" => 1,
-				"21" => 1,
-				"30" => 1,
-				"80" => 2,
-				"D0" => 2,
-				"D1" => 2,
-				"D2" => 2,
-				"D3" => 2,
-				"D4" => 2,
-				"D5" => 2,
-				"D6" => 2,
-				"E0" => 1,
-				"E1" => 1,
-				"E2" => 1,
-				"E3" => 1,
-				_ => 1
+				"10" => WatchSize.Word,
+				"11" => WatchSize.Word,
+				"20" => WatchSize.Byte,
+				"21" => WatchSize.Byte,
+				"30" => WatchSize.Byte,
+				"80" => WatchSize.Word,
+				"D0" => WatchSize.Word,
+				"D1" => WatchSize.Word,
+				"D2" => WatchSize.Word,
+				"D3" => WatchSize.Word,
+				"D4" => WatchSize.Word,
+				"D5" => WatchSize.Word,
+				"D6" => WatchSize.Word,
+				"E0" => WatchSize.Byte,
+				"E1" => WatchSize.Byte,
+				"E2" => WatchSize.Byte,
+				"E3" => WatchSize.Byte,
+				_ => WatchSize.Byte
 			};
 
 			var s = _code.Remove(0, 2);
