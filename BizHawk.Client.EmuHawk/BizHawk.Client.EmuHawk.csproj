@@ -525,9 +525,6 @@
 		<Compile Update="tools/GBA/MobileDetailView.cs" SubType="Form" />
 		<Compile Update="tools/GBA/MobileDetailView.Designer.cs" DependentUpon="MobileDetailView.cs" />
 		<EmbeddedResource Update="tools/GBA/MobileDetailView.resx" DependentUpon="MobileDetailView.cs" />
-		<Compile Update="tools/GB/GBGameGenie.cs" SubType="Form" />
-		<Compile Update="tools/GB/GBGameGenie.Designer.cs" DependentUpon="GBGameGenie.cs" />
-		<EmbeddedResource Update="tools/GB/GBGameGenie.resx" DependentUpon="GBGameGenie.cs" />
 		<Compile Update="tools/GB/GBGPUView.cs" SubType="Form" />
 		<Compile Update="tools/GB/GBGPUView.Designer.cs" DependentUpon="GBGPUView.cs" />
 		<EmbeddedResource Update="tools/GB/GBGPUView.resx" DependentUpon="GBGPUView.cs" />
