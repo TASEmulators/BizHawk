@@ -277,21 +277,23 @@ namespace BizHawk.Client.EmuHawk
 			Global.CheatList.Add(new Cheat(watch, decoder.Value));
 		}
 
-		private void Nes(string cheat)
+		private void Nes(string code)
 		{
-			if (cheat.Length != 6 && cheat.Length != 8)
+			if (code.Length != 6 && code.Length != 8)
 			{
 				InputError("Game Genie codes need to be six or eight characters in length.");
 			}
 
-			var description = Description(cheat);
-			var decoder = new NesGameGenieDecoder(cheat);
-
-			var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], decoder.Address, WatchSize.Byte, Common.DisplayType.Hex, false, description);
-			Global.CheatList.Add(
-				decoder.Compare.HasValue
-					? new Cheat(watch, decoder.Value, decoder.Compare.Value, true, Cheat.CompareType.Equal)
-					: new Cheat(watch, decoder.Value));
+			var description = Description(code);
+			var result = NesGameGenieDecoder.Decode(code);
+			if (result.IsValid)
+			{
+				Global.CheatList.Add(result.ToCheat(MemoryDomains.SystemBus, description));
+			}
+			else
+			{
+				InputError("Invalid Game Genie code");
+			}
 		}
 
 		private void Psx(string cheat)

@@ -45,19 +45,11 @@ namespace BizHawk.Client.Common
 		{
 			if (NESAvailable && MemoryDomains != null)
 			{
-				var decoder = new NesGameGenieDecoder(code);
-				var watch = Watch.GenerateWatch(
-					MemoryDomains["System Bus"],
-					decoder.Address,
-					WatchSize.Byte,
-					DisplayType.Hex,
-					false,
-					code);
-
-				Global.CheatList.Add(new Cheat(
-					watch,
-					decoder.Value,
-					decoder.Compare));
+				var result = NesGameGenieDecoder.Decode(code);
+				if (result.IsValid)
+				{
+					Global.CheatList.Add(result.ToCheat(MemoryDomains.SystemBus, ""));
+				}
 			}
 		}
 
@@ -127,9 +119,12 @@ namespace BizHawk.Client.Common
 		{
 			if (NESAvailable)
 			{
-				var decoder = new NesGameGenieDecoder(code);
-				Global.CheatList.RemoveRange(
-					Global.CheatList.Where(c => c.Address == decoder.Address));
+				var decoder = NesGameGenieDecoder.Decode(code);
+				if (decoder.IsValid)
+				{
+					Global.CheatList.RemoveRange(
+						Global.CheatList.Where(c => c.Address == decoder.Address));
+				}
 			}
 		}
 
