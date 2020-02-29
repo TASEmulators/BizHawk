@@ -2341,19 +2341,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (cheat.Length != 6 && cheat.Length != 8)
 			{
-				MessageBox.Show("Game Genie codes need to be six or eight characters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				InputError("Game Genie codes need to be six or eight characters in length.");
 			}
 
+			var description = Description(cheat);
 			var decoder = new NesGameGenieDecoder(cheat);
 
 			try
 			{
-				var description = cheat;
-				if (!string.IsNullOrWhiteSpace(txtDescription.Text))
-				{
-					description = txtDescription.Text;
-				}
-
 				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], decoder.Address, WatchSize.Byte, Common.DisplayType.Hex, false, description);
 				Global.CheatList.Add(
 					decoder.Compare.HasValue
@@ -2447,13 +2442,13 @@ namespace BizHawk.Client.EmuHawk
 			// Address: 0D10BA
 			// Value:  0009
 			// Remove first two octets
-			var _parseString = cheat.Remove(0, 2);
+			var parseString = cheat.Remove(0, 2);
 			
 			// Get RAM Address
-			_ramAddress = _parseString.Remove(6, 5);
+			_ramAddress = parseString.Remove(6, 5);
 			
 			// Get RAM Value
-			_ramValue = _parseString.Remove(0, 7);
+			_ramValue = parseString.Remove(0, 7);
 			try
 			{
 				// A Watch needs to be generated so we can make a cheat out of that.  This is due to how the Cheat engine works.
@@ -2622,6 +2617,13 @@ namespace BizHawk.Client.EmuHawk
 		private void InputError(string message)
 		{
 			MessageBox.Show(message, "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+		}
+
+		private string Description(string cheat)
+		{
+			return !string.IsNullOrWhiteSpace(txtDescription.Text)
+				? txtDescription.Text
+				: cheat;
 		}
 	}
 }
