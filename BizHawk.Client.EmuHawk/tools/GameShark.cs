@@ -55,13 +55,8 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		private string _ramValue;
-
 		private void Go_Click(object sender, EventArgs e)
 		{
-			// Reset Variables
-			_ramValue = null;
-
 			foreach (var l in txtCheat.Lines)
 			{
 				try
