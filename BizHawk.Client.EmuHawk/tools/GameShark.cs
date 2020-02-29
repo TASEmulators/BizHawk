@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Forms;
 using BizHawk.Emulation.Common;
@@ -21,34 +20,6 @@ namespace BizHawk.Client.EmuHawk
 	[Tool(true, new[] { "GB", "GBA", "GEN", "N64", "NES", "PSX", "SAT", "SMS", "SNES" }, new[] { "Snes9x" })]
 	public partial class GameShark : Form, IToolForm, IToolFormAutoConfig
 	{
-		#region Game Genie Dictionary
-
-		// including transposition
-		// Code: D F 4 7 0 9 1 5 6 B C 8 A 2 3 E
-		// Hex:  0 1 2 3 4 5 6 7 8 9 A B C D E F
-		// This only applies to the SNES
-		private readonly Dictionary<char, int> _snesGameGenieTable = new Dictionary<char, int>
-		{
-			['D'] = 0,  // 0000
-			['F'] = 1,  // 0001
-			['4'] = 2,  // 0010
-			['7'] = 3,  // 0011
-			['0'] = 4,  // 0100
-			['9'] = 5,  // 0101
-			['1'] = 6,  // 0110
-			['5'] = 7,  // 0111
-			['6'] = 8,  // 1000
-			['B'] = 9,  // 1001
-			['C'] = 10, // 1010
-			['8'] = 11, // 1011
-			['A'] = 12, // 1100
-			['2'] = 13, // 1101
-			['3'] = 14, // 1110
-			['E'] = 15  // 1111
-		};
-
-		#endregion
-
 		[RequiredService]
 		// ReSharper disable once UnusedAutoPropertyAccessor.Local
 		private IMemoryDomains MemoryDomains { get; set; }
@@ -2693,91 +2664,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SnesGGDecode(string code, ref int val, ref int add)
-		{
-			// Code: D F 4 7 0 9 1 5 6 B C 8 A 2 3 E
-			// Hex:  0 1 2 3 4 5 6 7 8 9 A B C D E F
-			// XXYY-YYYY, where XX is the value, and YY-YYYY is the address.
-			// Char # |   0   |   1   |   2   |   3   |   4   |   5   |   6   |   7   |
-			// Bit  # |3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|
-			// maps to|     Value     |i|j|k|l|q|r|s|t|o|p|a|b|c|d|u|v|w|x|e|f|g|h|m|n|
-			// order  |     Value     |a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|
-			int x;
-
-			// Getting Value
-			if (code.Length > 0)
-			{
-				_snesGameGenieTable.TryGetValue(code[0], out x);
-				val = x << 4;
-			}
-
-			if (code.Length > 1)
-			{
-				_snesGameGenieTable.TryGetValue(code[1], out x);
-				val |= x;
-			}
-
-			// Address
-			if (code.Length > 2)
-			{
-				_snesGameGenieTable.TryGetValue(code[2], out x);
-				add = x << 12;
-			}
-
-			if (code.Length > 3)
-			{
-				_snesGameGenieTable.TryGetValue(code[3], out x);
-				add |= x << 4;
-			}
-
-			if (code.Length > 4)
-			{
-				_snesGameGenieTable.TryGetValue(code[4], out x);
-				add |= (x & 0xC) << 6;
-				add |= (x & 0x3) << 22;
-			}
-
-			if (code.Length > 5)
-			{
-				_snesGameGenieTable.TryGetValue(code[5], out x);
-				add |= (x & 0xC) << 18;
-				add |= (x & 0x3) << 2;
-			}
-
-			if (code.Length > 6)
-			{
-				_snesGameGenieTable.TryGetValue(code[6], out x);
-				add |= (x & 0xC) >> 2;
-				add |= (x & 0x3) << 18;
-			}
-
-			if (code.Length > 7)
-			{
-				_snesGameGenieTable.TryGetValue(code[7], out x);
-				add |= (x & 0xC) << 14;
-				add |= (x & 0x3) << 10;
-			}
-		}
-
 		private void Snes()
 		{
-			bool gameGenie = false;
 			if (_singleCheat.Contains("-") && _singleCheat.Length == 9)
 			{
-				int val = 0, add = 0;
-
-				// We have to remove the - since it will cause issues later on.
-				var input = _singleCheat.Replace("-", "");
-				SnesGGDecode(input, ref val, ref add);
-				_ramAddress = $"{add:X6}";
-				_ramValue = $"{val:X2}";
-
-				// We trim the first value here to make it work.
-				_ramAddress = _ramAddress.Remove(0, 1);
-
-				// Note, it's not actually a byte, but a Word.  However, we are using this to keep from repeating code.
-				_byteSize = 8;
-				gameGenie = true;
+				MessageBox.Show("Game genie codes are not currently supported for SNES", "SNES Game Genie not supported", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				////var decoder = new SnesGameGenieDecoder(_singleCheat);
+				////var watch = Watch.GenerateWatch(MemoryDomains["CARTROM"], decoder.Address, WatchSize.Byte, Common.DisplayType.Hex, false, txtDescription.Text);
+				////Global.CheatList.Add(new Cheat(watch, decoder.Value));
 			}
 
 			// This ONLY applies to Action Replay.
@@ -2817,18 +2711,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (_byteSize == 8)
 				{
-					// Is this correct?
-					if (gameGenie)
-					{
-						MessageBox.Show("Game genie codes are not currently supported for SNES", "SNES Game Genie not supported", MessageBoxButtons.OK, MessageBoxIcon.Error);
-						////var watch = Watch.GenerateWatch(MemoryDomains["CARTROM"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.Byte, Common.DisplayType.Hex, false, txtDescription.Text);
-						////Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
-					}
-					else
-					{
-						var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(_ramAddress, NumberStyles.HexNumber), WatchSize.Byte, Common.DisplayType.Hex, false, txtDescription.Text);
-						Global.CheatList.Add(new Cheat(watch, int.Parse(_ramValue, NumberStyles.HexNumber)));
-					}
+					var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(_ramAddress, NumberStyles.HexNumber), WatchSize.Byte, Common.DisplayType.Hex, false, txtDescription.Text);
+					Global.CheatList.Add(new Cheat(watch, int.Parse(_ramValue, NumberStyles.HexNumber)));
 				}
 			}
 			catch (Exception ex)
