@@ -200,69 +200,18 @@ namespace BizHawk.Client.EmuHawk
 			InputError($"Unknown code type: {code}");
 		}
 
-		private void N64(string cheat)
+		private void N64(string code)
 		{
-			// These codes, more or less work without Needing much work.
-			if (cheat.IndexOf(" ") != 8)
+			var result = N64GameSharkDecoder.Decode(code);
+			if (result.IsValid)
 			{
-				MessageBox.Show("All N64 GameShark Codes need to contain a space after the eighth character", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return;
+				var description = Description(code);
+				Global.CheatList.Add(result.ToCheat(MemoryDomains["RDRAM"], description));
 			}
-
-			if (cheat.Length != 13)
+			else
 			{
-				MessageBox.Show("All N64 GameShark Codes need to be 13 characters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return;
+				InputError(result.Error);
 			}
-
-			switch (cheat.Remove(0, 2))
-			{
-				case "80":
-				case "81":
-				case "A0":
-				case "A1":
-				case "88":
-				case "89":
-					break;
-				// These are compare Address X to Value Y, then apply Value B to Address A
-				// This is not supported, yet
-				// TODO: When BizHawk supports a compare RAM Address's value is true then apply a value to another address, make it a thing.
-				case "D0":
-				case "D1":
-				case "D2":
-				case "D3":
-					MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-					return;
-				// These codes are for Disabling the Expansion Pak.  that's a bad thing?  Assuming bad codes, until told otherwise.
-				case "EE":
-				case "DD":
-				case "CC":
-					InputError("The code you entered is for Disabling the Expansion Pak.  This is not allowed by this tool.");
-					return;
-				// Enable Code
-				// Not Necessary?  Think so?
-				case "DE":
-				// Single Write ON-Boot code.
-				// Not Necessary?  Think so?
-				case "F0":
-				case "F1":
-				case "2A":
-				case "3C":
-				case "FF":
-					InputError("The code you entered is not needed by Bizhawk.");
-					return;
-				// TODO: Make Patch Code (5000XXYY) work.
-				case "50":
-					MessageBox.Show("The code you entered is not supported by this tool.  Please Submit the Game's Name, Cheat/Code and Purpose to the BizHawk forums.", "Tool Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-					return;
-				default:
-					InputError("The GameShark code entered is not a recognized format.");
-					return;
-			}
-
-			var decoder = new N64GameSharkDecoder(cheat);
-			var watch = Watch.GenerateWatch(MemoryDomains["RDRAM"], decoder.Address, decoder.Size, Common.DisplayType.Hex, true, txtDescription.Text);
-			Global.CheatList.Add(new Cheat(watch, decoder.Value));
 		}
 
 		private void Nes(string code)
