@@ -209,7 +209,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						SQ1_vol_state &= 0xF;
 
 						if ((value & 0xF8) == 0) { SQ1_enable = SQ1_swp_enable = false; SQ1_output = 0; }
-						if (!SQ1_enable && (SQ1_st_vol == 15)) { SQ1_output = 2; }
+						if (!SQ1_enable && (SQ1_st_vol >= 8)) { SQ1_output = 8; }
 						Audio_Regs[NR12] = value;
 						break;
 					case 0xFF13:                                        // NR13 (freq low)
@@ -300,7 +300,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							
 						SQ2_vol_state &= 0xF;
 						if ((value & 0xF8) == 0) { SQ2_enable = false; SQ2_output = 0; }
-						if (!SQ2_enable && (SQ2_st_vol == 15)) { SQ2_output = 2; }
+						if (!SQ2_enable && (SQ2_st_vol >= 8)) { SQ2_output = 8; }
 						Audio_Regs[NR22] = value;
 						break;
 					case 0xFF18:                                        // NR23 (freq low)
@@ -429,7 +429,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 						NOISE_vol_state &= 0xF;
 						if ((value & 0xF8) == 0) { NOISE_enable = false; NOISE_output = 0; }
-						if (!NOISE_enable && (NOISE_st_vol == 15)) { NOISE_output = 2; }
+						if (!NOISE_enable && (NOISE_st_vol >= 8)) { NOISE_output = 8; }
 						Audio_Regs[NR42] = value;
 						break;
 					case 0xFF22:                                        // NR43 (shift)
