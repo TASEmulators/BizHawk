@@ -126,7 +126,7 @@ namespace BizHawk.Client.EmuHawk
 						Sms(_singleCheat);
 						break;
 					case "SNES":
-						Snes();
+						Snes(_singleCheat);
 						break;
 				}
 			}
@@ -2591,9 +2591,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void Snes()
+		private void Snes(string cheat)
 		{
-			if (_singleCheat.Contains("-") && _singleCheat.Length == 9)
+			if (cheat.Contains("-") && cheat.Length == 9)
 			{
 				MessageBox.Show("Game genie codes are not currently supported for SNES", "SNES Game Genie not supported", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				////var decoder = new SnesGameGenieDecoder(_singleCheat);
@@ -2602,7 +2602,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// This ONLY applies to Action Replay.
-			if (_singleCheat.Length == 8)
+			if (cheat.Length == 8)
 			{
 				// Sample Code:
 				// 7E18A428
@@ -2618,12 +2618,12 @@ namespace BizHawk.Client.EmuHawk
 				_byteSize = 16;
 			}
 
-			if (_singleCheat.Contains("-") && _singleCheat.Length != 9)
+			if (cheat.Contains("-") && cheat.Length != 9)
 			{
 				MessageBox.Show("Game Genie Codes need to be nine characters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 
-			if (_singleCheat.Length != 9 && _singleCheat.Length != 8)
+			if (cheat.Length != 9 && cheat.Length != 8)
 			{
 				MessageBox.Show("Pro Action Replay Codes need to be eight characters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
