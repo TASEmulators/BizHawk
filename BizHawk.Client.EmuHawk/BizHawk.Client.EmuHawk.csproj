@@ -525,9 +525,6 @@
 		<Compile Update="tools/GBA/MobileDetailView.cs" SubType="Form" />
 		<Compile Update="tools/GBA/MobileDetailView.Designer.cs" DependentUpon="MobileDetailView.cs" />
 		<EmbeddedResource Update="tools/GBA/MobileDetailView.resx" DependentUpon="MobileDetailView.cs" />
-		<Compile Update="tools/GB/GBGameGenie.cs" SubType="Form" />
-		<Compile Update="tools/GB/GBGameGenie.Designer.cs" DependentUpon="GBGameGenie.cs" />
-		<EmbeddedResource Update="tools/GB/GBGameGenie.resx" DependentUpon="GBGameGenie.cs" />
 		<Compile Update="tools/GB/GBGPUView.cs" SubType="Form" />
 		<Compile Update="tools/GB/GBGPUView.Designer.cs" DependentUpon="GBGPUView.cs" />
 		<EmbeddedResource Update="tools/GB/GBGPUView.resx" DependentUpon="GBGPUView.cs" />
@@ -537,9 +534,6 @@
 		<Compile Update="tools/Genesis/GenDbgWind.cs" SubType="Form" />
 		<Compile Update="tools/Genesis/GenDbgWind.Designer.cs" DependentUpon="GenDbgWind.cs" />
 		<EmbeddedResource Update="tools/Genesis/GenDbgWind.resx" DependentUpon="GenDbgWind.cs" />
-		<Compile Update="tools/Genesis/GenGameGenie.cs" SubType="Form" />
-		<Compile Update="tools/Genesis/GenGameGenie.Designer.cs" DependentUpon="GenGameGenie.cs" />
-		<EmbeddedResource Update="tools/Genesis/GenGameGenie.resx" DependentUpon="GenGameGenie.cs" />
 		<Compile Update="tools/Genesis/VDPViewer.cs" SubType="Form" />
 		<Compile Update="tools/Genesis/VDPViewer.Designer.cs" DependentUpon="VDPViewer.cs" />
 		<EmbeddedResource Update="tools/Genesis/VDPViewer.resx" DependentUpon="VDPViewer.cs" />
@@ -589,9 +583,6 @@
 		<Compile Update="tools/NES/BarcodeEntry.Designer.cs" DependentUpon="BarcodeEntry.cs" />
 		<EmbeddedResource Update="tools/NES/BarcodeEntry.resx" DependentUpon="BarcodeEntry.cs" />
 		<Compile Update="tools/NES/NameTableViewer.cs" SubType="Component" />
-		<Compile Update="tools/NES/NESGameGenie.cs" SubType="Form" />
-		<Compile Update="tools/NES/NESGameGenie.Designer.cs" DependentUpon="NESGameGenie.cs" />
-		<EmbeddedResource Update="tools/NES/NESGameGenie.resx" DependentUpon="NESGameGenie.cs" />
 		<Compile Update="tools/NES/NESMusicRipper.cs" SubType="Form" />
 		<Compile Update="tools/NES/NESMusicRipper.Designer.cs" DependentUpon="NESMusicRipper.cs" />
 		<EmbeddedResource Update="tools/NES/NESMusicRipper.resx" DependentUpon="NESMusicRipper.cs" />
@@ -618,9 +609,6 @@
 		<Compile Update="tools/SMS/VDPViewer.cs" SubType="Form" />
 		<Compile Update="tools/SMS/VDPViewer.Designer.cs" DependentUpon="VDPViewer.cs" />
 		<EmbeddedResource Update="tools/SMS/VDPViewer.resx" DependentUpon="VDPViewer.cs" />
-		<Compile Update="tools/SNES/SNESGameGenie.cs" SubType="Form" />
-		<Compile Update="tools/SNES/SNESGameGenie.Designer.cs" DependentUpon="SNESGameGenie.cs" />
-		<EmbeddedResource Update="tools/SNES/SNESGameGenie.resx" DependentUpon="SNESGameGenie.cs" />
 		<Compile Update="tools/SNES/SNESGraphicsDebugger.cs" SubType="Form" />
 		<Compile Update="tools/SNES/SNESGraphicsDebugger.Designer.cs" DependentUpon="SNESGraphicsDebugger.cs" />
 		<EmbeddedResource Update="tools/SNES/SNESGraphicsDebugger.resx" DependentUpon="SNESGraphicsDebugger.cs" />
