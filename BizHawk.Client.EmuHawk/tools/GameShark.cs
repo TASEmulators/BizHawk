@@ -279,11 +279,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Nes(string code)
 		{
-			if (code.Length != 6 && code.Length != 8)
-			{
-				InputError("Game Genie codes need to be six or eight characters in length.");
-			}
-
 			var description = Description(code);
 			var result = NesGameGenieDecoder.Decode(code);
 			if (result.IsValid)
@@ -292,7 +287,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				InputError("Invalid Game Genie code");
+				InputError(result.Error);
 			}
 		}
 

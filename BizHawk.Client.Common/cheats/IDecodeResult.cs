@@ -12,6 +12,7 @@ namespace BizHawk.Client.Common.cheats
 		int? Compare { get; }
 		WatchSize Size { get; }
 		bool IsValid { get; }
+		string Error { get; }
 	}
 
 	public class DecodeResult : IDecodeResult
@@ -21,15 +22,22 @@ namespace BizHawk.Client.Common.cheats
 		public int? Compare { get; internal set; }
 		public WatchSize Size { get; internal set; }
 		public bool IsValid => true;
+		public string Error => "";
 	}
 
 	public class InvalidResult : IDecodeResult
 	{
+		public InvalidResult(string error)
+		{
+			Error = error;
+		}
+
 		public int Address => int.MaxValue;
 		public int Value => int.MaxValue;
 		public int? Compare => null;
 		public WatchSize Size => WatchSize.Separator;
 		public bool IsValid => false;
+		public string Error { get; }
 	}
 
 	public static class DecodeResultExtensions
