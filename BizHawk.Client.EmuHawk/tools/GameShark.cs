@@ -60,7 +60,6 @@ namespace BizHawk.Client.EmuHawk
 		private string _ramAddress;
 		private string _ramValue;
 		private int _byteSize;
-		private string _singleCheat;
 		private int _loopValue;
 
 		// Provided by mGBA and endrift
@@ -92,40 +91,39 @@ namespace BizHawk.Client.EmuHawk
 			_ramValue = null;
 			_byteSize = 0;
 
-			_singleCheat = null;
 			for (int i = 0; i < txtCheat.Lines.Length; i++)
 			{
 				_loopValue = i;
-				_singleCheat = txtCheat.Lines[i].ToUpper();
+				var singleCheat = txtCheat.Lines[i].ToUpper();
 
 				switch (Emulator.SystemId)
 				{
 					case "GB":
-						GameBoy(_singleCheat);
+						GameBoy(singleCheat);
 						break;
 					case "GBA":
-						GBA(_singleCheat);
+						GBA(singleCheat);
 						break;
 					case "GEN":
-						Gen(_singleCheat);
+						Gen(singleCheat);
 						break;
 					case "N64":
-						N64(_singleCheat);
+						N64(singleCheat);
 						break;
 					case "NES":
-						Nes(_singleCheat);
+						Nes(singleCheat);
 						break;
 					case "PSX":
-						Psx(_singleCheat);
+						Psx(singleCheat);
 						break;
 					case "SAT":
-						Saturn(_singleCheat);
+						Saturn(singleCheat);
 						break;
 					case "SMS":
-						Sms(_singleCheat);
+						Sms(singleCheat);
 						break;
 					case "SNES":
-						Snes(_singleCheat);
+						Snes(singleCheat);
 						break;
 				}
 			}
@@ -199,8 +197,8 @@ namespace BizHawk.Client.EmuHawk
 					uint sum = 0xC6EF3720;
 
 					// Let's get the stuff separated.
-					_ramAddress = _singleCheat.Remove(8, 9);
-					_ramValue = _singleCheat.Remove(0, 9);
+					_ramAddress = cheat.Remove(8, 9);
+					_ramValue = cheat.Remove(0, 9);
 
 					// Let's see if this code matches the GameShark.
 					GBAGameShark();
@@ -220,7 +218,7 @@ namespace BizHawk.Client.EmuHawk
 						// We don't have a GameShark code, or we have an encrypted code?
 						// Further testing required.
 						// GameShark Decryption Method
-						_parseString = _singleCheat;
+						_parseString = cheat;
 
 						op1 = uint.Parse(_parseString.Remove(8, 9), NumberStyles.HexNumber);
 						op2 = uint.Parse(_parseString.Remove(0, 9), NumberStyles.HexNumber);
@@ -255,7 +253,7 @@ namespace BizHawk.Client.EmuHawk
 					if (_blnActionReplayMax == false)
 					{
 						// Action Replay Max decryption Method
-						_parseString = _singleCheat;
+						_parseString = cheat;
 						sum = 0xC6EF3720;
 						op1 = uint.Parse(_parseString.Remove(8, 9), NumberStyles.HexNumber);
 						op2 = uint.Parse(_parseString.Remove(0, 9), NumberStyles.HexNumber);
@@ -1787,17 +1785,17 @@ namespace BizHawk.Client.EmuHawk
 				try
 				{
 					_loopValue += 1;
-					_singleCheat = txtCheat.Lines[_loopValue].ToUpper();
+					var singleCheat = txtCheat.Lines[_loopValue].ToUpper();
 
 					// We need to parse now.
-					if (_singleCheat.Length == 17 && _singleCheat.IndexOf(" ") == 8)
+					if (singleCheat.Length == 17 && singleCheat.IndexOf(" ") == 8)
 					{
 						if (_blnEncrypted)
 						{
 							// The code was Encrypted
 							// Decrypt before we do stuff.
 							// Action Replay Max decryption Method
-							_parseString = _singleCheat;
+							_parseString = singleCheat;
 							var sum = 0xC6EF3720;
 							var op1 = uint.Parse(_parseString.Remove(8, 9), NumberStyles.HexNumber);
 							var op2 = uint.Parse(_parseString.Remove(0, 9), NumberStyles.HexNumber);
@@ -1819,8 +1817,8 @@ namespace BizHawk.Client.EmuHawk
 						}
 						else if (_blnEncrypted == false)
 						{
-							_ramAddress = _singleCheat.Remove(8, 9);
-							_ramValue = _singleCheat.Remove(0, 9);
+							_ramAddress = singleCheat.Remove(8, 9);
+							_ramValue = singleCheat.Remove(0, 9);
 						}
 
 						// We need to determine the Byte Size.
