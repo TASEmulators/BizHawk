@@ -100,7 +100,7 @@
 			this.flpButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.flpButtons.Controls.Add(this.Ok);
 			this.flpButtons.Controls.Add(this.Cancel);
-			this.flpButtons.Location = new System.Drawing.Point(55, 61);
+			this.flpButtons.Location = new System.Drawing.Point(161, 61);
 			this.flpButtons.Name = "flpButtons";
 			// 
 			// flpMain
@@ -114,7 +114,7 @@
 			this.flpMain.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
 			this.flpMain.Location = new System.Drawing.Point(0, 0);
 			this.flpMain.Name = "flpMain";
-			this.flpMain.Size = new System.Drawing.Size(217, 55);
+			this.flpMain.Size = new System.Drawing.Size(323, 55);
 			// 
 			// flpPattern
 			// 
@@ -149,7 +149,7 @@
 			this.Controls.Add(this.flpButtons);
 			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.Lightning_MultiSize;
 			this.MaximizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(233, 129);
+			this.MinimumSize = new System.Drawing.Size(339, 129);
 			this.Name = "AutofireConfig";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Autofire Configuration";
