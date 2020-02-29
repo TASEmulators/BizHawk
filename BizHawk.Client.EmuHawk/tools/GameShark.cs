@@ -121,23 +121,21 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Game Shark codes
-			if (code.Length == 8 && code.Contains("-") == false)
+			if (code.Length == 8 && !code.Contains("-"))
 			{
-				var test = code.Remove(2, 6);
-				switch (test)
+				var result = GbGameSharkDecoder.Decode(code);
+				if (result.IsValid)
 				{
-					case "00":
-					case "01":
-						break;
-					default:
-						MessageBox.Show("All GameShark Codes for GameBoy need to start with 00 or 01", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-						return;
+					var description = Description(code);
+					Global.CheatList.Add(result.ToCheat(MemoryDomains.SystemBus, description));
 				}
-
-				var decoder = new GbGameSharkDecoder(code);
-				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], decoder.Address, WatchSize.Word, Common.DisplayType.Hex, false, txtDescription.Text);
-				Global.CheatList.Add(new Cheat(watch, decoder.Value));
+				else
+				{
+					InputError(result.Error);
+				}
 			}
+
+			InputError($"Unknown code type: {code}");
 		}
 
 		private void GBA(string cheat)

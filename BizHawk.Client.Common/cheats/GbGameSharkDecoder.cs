@@ -1,29 +1,36 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 
 namespace BizHawk.Client.Common.cheats
 {
-	// TODO: validate string and throw
-	public class GbGameSharkDecoder
+	public static class GbGameSharkDecoder
 	{
-		private readonly string _code;
-
-		public GbGameSharkDecoder(string code)
-		{
-			_code = code;
-			Decode();
-		}
-
-		public int Address { get; private set; }
-		public int Value { get; private set; }
-
 		// Sample Input for GB/GBC:
 		// 010FF6C1
 		// Becomes:
 		// Address C1F6
 		// Value 0F
-		public void Decode()
+		public static IDecodeResult Decode(string code)
 		{
-			string code = _code.Remove(0, 2);
+			if (code == null)
+			{
+				throw new ArgumentNullException(nameof(code));
+			}
+
+			if (code.Length != 8 || code.Contains("-"))
+			{
+				return new InvalidCheatCode("GameShark codes must be 8 characters with no dashes.");
+			}
+
+			var test = code.Substring(0, 2);
+			if (test != "00" && test != "01")
+			{
+				return new InvalidCheatCode("All GameShark Codes for GameBoy need to start with 00 or 01");
+			}
+
+			var result = new DecodeResult { Size = WatchSize.Byte };
+
+			code = code.Remove(0, 2);
 
 			var valueStr = code.Remove(2, 4);
 			code = code.Remove(0, 2);
@@ -31,8 +38,9 @@ namespace BizHawk.Client.Common.cheats
 			var addrStr = code.Remove(0, 2);
 			addrStr = addrStr + code.Remove(2, 2);
 
-			Value = int.Parse(valueStr, NumberStyles.HexNumber);
-			Address = int.Parse(addrStr, NumberStyles.HexNumber);
+			result.Value = int.Parse(valueStr, NumberStyles.HexNumber);
+			result.Address = int.Parse(addrStr, NumberStyles.HexNumber);
+			return result;
 		}
 	}
 }
