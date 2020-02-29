@@ -349,29 +349,37 @@ namespace BizHawk.Client.EmuHawk
 			InputError($"Unknown code type: {code}");
 		}
 
-		private void Snes(string cheat)
+		private void Snes(string code)
 		{
-			if (cheat.Contains("-") && cheat.Length == 9)
+			if (code.Contains("-") && code.Length == 9)
 			{
 				MessageBox.Show("Game genie codes are not currently supported for SNES", "SNES Game Genie not supported", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				////var decoder = new SnesGameGenieDecoder(_singleCheat);
-				////var watch = Watch.GenerateWatch(MemoryDomains["CARTROM"], decoder.Address, WatchSize.Byte, Common.DisplayType.Hex, false, txtDescription.Text);
-				////Global.CheatList.Add(new Cheat(watch, decoder.Value));
+				//var result = SnesGameGenieDecoder.Decode(code);
+				//if (result.IsValid)
+				//{
+				//	var description = Description(code);
+				//	Global.CheatList.Add(result.ToCheat(MemoryDomains.SystemBus, description));
+				//}
+				//else
+				//{
+				//	InputError(result.Error);
+				//}
 			}
-			else if (cheat.Length == 8)
+			else if (code.Length == 8)
 			{
-				var decoder = new SnesActionReplayDecoder(cheat);
-				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], decoder.Address, WatchSize.Word, Common.DisplayType.Hex, false, txtDescription.Text);
-				Global.CheatList.Add(new Cheat(watch, decoder.Value));
+				var result = GbGameSharkDecoder.Decode(code);
+				if (result.IsValid)
+				{
+					var description = Description(code);
+					Global.CheatList.Add(result.ToCheat(MemoryDomains.SystemBus, description));
+				}
+				else
+				{
+					InputError(result.Error);
+				}
 			}
-			else if (cheat.Contains("-") && cheat.Length != 9)
-			{
-				InputError("Game Genie Codes need to be nine characters in length.");
-			}
-			else if (cheat.Length != 9 && cheat.Length != 8)
-			{
-				InputError("Pro Action Replay Codes need to be eight characters in length.");
-			}
+			
+			InputError($"Unknown code type: {code}");
 		}
 
 		private void BtnClear_Click(object sender, EventArgs e)

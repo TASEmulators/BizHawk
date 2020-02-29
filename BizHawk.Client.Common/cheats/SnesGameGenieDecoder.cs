@@ -1,16 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BizHawk.Client.Common.cheats
 {
-	public class SnesGameGenieDecoder
+	public static class SnesGameGenieDecoder
 	{
-		private readonly string _code;
-
 		// including transposition
 		// Code: D F 4 7 0 9 1 5 6 B C 8 A 2 3 E
 		// Hex:  0 1 2 3 4 5 6 7 8 9 A B C D E F
 		// This only applies to the SNES
-		private readonly Dictionary<char, int> _snesGameGenieTable = new Dictionary<char, int>
+		private static readonly Dictionary<char, int> SNESGameGenieTable = new Dictionary<char, int>
 		{
 			['D'] = 0,  // 0000
 			['F'] = 1,  // 0001
@@ -30,17 +29,18 @@ namespace BizHawk.Client.Common.cheats
 			['E'] = 15  // 1111
 		};
 
-		public SnesGameGenieDecoder(string code)
+		public static IDecodeResult Decode(string code)
 		{
-			_code = code?.Replace("-", "") ?? "";
-			Decode();
-		}
+			if (code == null)
+			{
+				throw new ArgumentNullException(nameof(code));
+			}
 
-		public int Address { get; private set; }
-		public int Value { get; private set; }
+			if (!code.Contains("-") && code.Length != 9)
+			{
+				return new InvalidCheatCode("Game genie codes must be 9 characters with a format of xxyy-yyyy");
+			}
 
-		public void Decode()
-		{
 			// Code: D F 4 7 0 9 1 5 6 B C 8 A 2 3 E
 			// Hex:  0 1 2 3 4 5 6 7 8 9 A B C D E F
 			// XXYY-YYYY, where XX is the value, and YY-YYYY is the address.
@@ -48,61 +48,65 @@ namespace BizHawk.Client.Common.cheats
 			// Bit  # |3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|
 			// maps to|     Value     |i|j|k|l|q|r|s|t|o|p|a|b|c|d|u|v|w|x|e|f|g|h|m|n|
 			// order  |     Value     |a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|
+			var result = new DecodeResult { Size = WatchSize.Byte };
+
 			int x;
 
-			// Getting Value
-			if (_code.Length > 0)
+			// Value
+			if (code.Length > 0)
 			{
-				_snesGameGenieTable.TryGetValue(_code[0], out x);
-				Value = x << 4;
+				SNESGameGenieTable.TryGetValue(code[0], out x);
+				result.Value = x << 4;
 			}
 
-			if (_code.Length > 1)
+			if (code.Length > 1)
 			{
-				_snesGameGenieTable.TryGetValue(_code[1], out x);
-				Value |= x;
+				SNESGameGenieTable.TryGetValue(code[1], out x);
+				result.Value |= x;
 			}
 
 			// Address
-			if (_code.Length > 2)
+			if (code.Length > 2)
 			{
-				_snesGameGenieTable.TryGetValue(_code[2], out x);
-				Address = x << 12;
+				SNESGameGenieTable.TryGetValue(code[2], out x);
+				result.Address = x << 12;
 			}
 
-			if (_code.Length > 3)
+			if (code.Length > 3)
 			{
-				_snesGameGenieTable.TryGetValue(_code[3], out x);
-				Address |= x << 4;
+				SNESGameGenieTable.TryGetValue(code[3], out x);
+				result.Address |= x << 4;
 			}
 
-			if (_code.Length > 4)
+			if (code.Length > 4)
 			{
-				_snesGameGenieTable.TryGetValue(_code[4], out x);
-				Address |= (x & 0xC) << 6;
-				Address |= (x & 0x3) << 22;
+				SNESGameGenieTable.TryGetValue(code[4], out x);
+				result.Address |= (x & 0xC) << 6;
+				result.Address |= (x & 0x3) << 22;
 			}
 
-			if (_code.Length > 5)
+			if (code.Length > 5)
 			{
-				_snesGameGenieTable.TryGetValue(_code[5], out x);
-				Address |= (x & 0xC) << 18;
-				Address |= (x & 0x3) << 2;
+				SNESGameGenieTable.TryGetValue(code[5], out x);
+				result.Address |= (x & 0xC) << 18;
+				result.Address |= (x & 0x3) << 2;
 			}
 
-			if (_code.Length > 6)
+			if (code.Length > 6)
 			{
-				_snesGameGenieTable.TryGetValue(_code[6], out x);
-				Address |= (x & 0xC) >> 2;
-				Address |= (x & 0x3) << 18;
+				SNESGameGenieTable.TryGetValue(code[6], out x);
+				result.Address |= (x & 0xC) >> 2;
+				result.Address |= (x & 0x3) << 18;
 			}
 
-			if (_code.Length > 7)
+			if (code.Length > 7)
 			{
-				_snesGameGenieTable.TryGetValue(_code[7], out x);
-				Address |= (x & 0xC) << 14;
-				Address |= (x & 0x3) << 10;
+				SNESGameGenieTable.TryGetValue(code[7], out x);
+				result.Address |= (x & 0xC) << 14;
+				result.Address |= (x & 0x3) << 10;
 			}
+
+			return result;
 		}
 	}
 }

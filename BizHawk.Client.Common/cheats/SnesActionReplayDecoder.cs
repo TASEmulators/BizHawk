@@ -3,33 +3,30 @@ using System.Globalization;
 
 namespace BizHawk.Client.Common.cheats
 {
-	public class SnesActionReplayDecoder
+	public static class SnesActionReplayDecoder
 	{
-		private readonly string _code;
-
-		public SnesActionReplayDecoder(string code)
-		{
-			_code = code;
-			Decode();
-		}
-
-		public int Address { get; private set; }
-		public int Value { get; private set; }
-		public int ByteSize => 2;
-
 		// Sample Code:
 		// 7E18A428
 		// Address: 7E18A4
 		// Value: 28
-		public void Decode()
+		public static IDecodeResult Decode(string code)
 		{
-			if (_code.Length != 8)
+			if (code == null)
 			{
-				throw new InvalidOperationException("Pro Action Replay Codes need to be eight characters in length.");
+				throw new ArgumentNullException(nameof(code));
 			}
 
-			Address = int.Parse(_code.Remove(6, 2), NumberStyles.HexNumber);
-			Value = int.Parse(_code.Remove(0, 6), NumberStyles.HexNumber);
+			if (code.Length != 8)
+			{
+				return new InvalidCheatCode("Pro Action Replay Codes must to be eight characters.");
+			}
+
+			return new DecodeResult
+			{
+				Size = WatchSize.Word,
+				Address = int.Parse(code.Remove(6, 2), NumberStyles.HexNumber),
+				Value = int.Parse(code.Remove(0, 6), NumberStyles.HexNumber)
+			};
 		}
 	}
 }
