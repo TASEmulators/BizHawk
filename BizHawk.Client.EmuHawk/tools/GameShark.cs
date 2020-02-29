@@ -172,14 +172,9 @@ namespace BizHawk.Client.EmuHawk
 				_ramAddress = _ramAddress + _parseString.Remove(2, 2);
 			}
 
-			// This part, is annoying...
 			try
 			{
-				// A Watch needs to be generated so we can make a cheat out of that.  This is due to how the Cheat engine works.
-				// System Bus Domain, The Address to Watch, Byte size (Byte), Hex Display, Description.  Not Big Endian.
 				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(_ramAddress, NumberStyles.HexNumber), WatchSize.Word, Common.DisplayType.Hex, false, txtDescription.Text);
-				
-				// Take Watch, Add our Value we want, and it should be active when added?
 				Global.CheatList.Add(ramCompare == null
 					? new Cheat(watch, int.Parse(_ramValue, NumberStyles.HexNumber))
 					: new Cheat(watch, int.Parse(_ramValue, NumberStyles.HexNumber), int.Parse(ramCompare, NumberStyles.HexNumber)));
