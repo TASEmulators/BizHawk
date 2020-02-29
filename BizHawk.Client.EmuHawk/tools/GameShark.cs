@@ -1793,10 +1793,10 @@ namespace BizHawk.Client.EmuHawk
 							// The code was Encrypted
 							// Decrypt before we do stuff.
 							// Action Replay Max decryption Method
-							var _parseString = singleCheat;
+							var parseString = singleCheat;
 							var sum = 0xC6EF3720;
-							var op1 = uint.Parse(_parseString.Remove(8, 9), NumberStyles.HexNumber);
-							var op2 = uint.Parse(_parseString.Remove(0, 9), NumberStyles.HexNumber);
+							var op1 = uint.Parse(parseString.Remove(8, 9), NumberStyles.HexNumber);
+							var op2 = uint.Parse(parseString.Remove(0, 9), NumberStyles.HexNumber);
 							
 							// Tiny Encryption Algorithm
 							int j;
@@ -2233,34 +2233,14 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			// This determines what kind of Code we have
-			var _testo = cheat.Remove(2, 11);
-
-			// We need to determine what kind of cheat this is.
-			// I need to determine if this is a Byte or Word.
-			switch (_testo)
+			switch (cheat.Remove(0, 2))
 			{
-				// 80 and 81 are the most common, so let's not get all worried.
 				case "80":
-					_byteSize = 8;
-					break;
 				case "81":
-					_byteSize = 16;
-					break;
-				// Case A0 and A1 means "Write to Uncached address.
 				case "A0":
-					_byteSize = 8;
-					break;
 				case "A1":
-					_byteSize = 16;
-					break;
-				// Do we support the GameShark Button?  No.  But these cheats, can be toggled.  Which "Counts"
-				// <Ocean_Prince> Consequences be damned!
 				case "88":
-					_byteSize = 8;
-					break;
 				case "89":
-					_byteSize = 16;
 					break;
 				// These are compare Address X to Value Y, then apply Value B to Address A
 				// This is not supported, yet
@@ -2275,7 +2255,7 @@ namespace BizHawk.Client.EmuHawk
 				case "EE":
 				case "DD":
 				case "CC":
-					MessageBox.Show("The code you entered is for Disabling the Expansion Pak.  This is not allowed by this tool.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					InputError("The code you entered is for Disabling the Expansion Pak.  This is not allowed by this tool.");
 					return;
 				// Enable Code
 				// Not Necessary?  Think so?
@@ -2287,45 +2267,22 @@ namespace BizHawk.Client.EmuHawk
 				case "2A":
 				case "3C":
 				case "FF":
-					MessageBox.Show("The code you entered is not needed by Bizhawk.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					InputError("The code you entered is not needed by Bizhawk.");
 					return;
 				// TODO: Make Patch Code (5000XXYY) work.
 				case "50":
 					MessageBox.Show("The code you entered is not supported by this tool.  Please Submit the Game's Name, Cheat/Code and Purpose to the BizHawk forums.", "Tool Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
 					return;
 				default:
-					MessageBox.Show("The GameShark code entered is not a recognized format.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					InputError("The GameShark code entered is not a recognized format.");
 					return;
 			}
 
-			// Sample Input for N64:
-			// 8133B21E 08FF
-			// Becomes:
-			// Address 33B21E
-			// Value 08FF
-
-			// Note, 80XXXXXX 00YY
-			// Is Byte, not Word
-			// Remove the 80 Octect
-			var _parseString = cheat.Remove(0, 2);
-
-			// Get RAM Address
-			_ramAddress = _parseString.Remove(6, 5);
-
-			// Get RAM Value
-			_ramValue = _parseString.Remove(0, 7);
 			try
 			{
-				if (_byteSize == 8)
-				{
-					var watch = Watch.GenerateWatch(MemoryDomains["RDRAM"], long.Parse(_ramAddress, NumberStyles.HexNumber), WatchSize.Byte, Common.DisplayType.Hex, true, txtDescription.Text);
-					Global.CheatList.Add(new Cheat(watch, int.Parse(_ramValue, NumberStyles.HexNumber)));
-				}
-				else if (_byteSize == 16)
-				{
-					var watch = Watch.GenerateWatch(MemoryDomains["RDRAM"], long.Parse(_ramAddress, NumberStyles.HexNumber), WatchSize.Word, Common.DisplayType.Hex, true, txtDescription.Text);
-					Global.CheatList.Add(new Cheat(watch, int.Parse(_ramValue, NumberStyles.HexNumber)));
-				}
+				var decoder = new N64GameSharkDecoder(cheat);
+				var watch = Watch.GenerateWatch(MemoryDomains["RDRAM"], decoder.Address, decoder.Size, Common.DisplayType.Hex, true, txtDescription.Text);
+				Global.CheatList.Add(new Cheat(watch, int.Parse(_ramValue, NumberStyles.HexNumber)));
 			}
 			catch (Exception ex)
 			{
