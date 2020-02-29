@@ -2488,13 +2488,13 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_singleCheat.IndexOf(" ") != 8)
 			{
-				MessageBox.Show("All Saturn GameShark Codes need to contain a space after the eighth character", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				InputError("All Saturn GameShark Codes need to contain a space after the eighth character.");
 				return;
 			}
 
 			if (_singleCheat.Length != 13)
 			{
-				MessageBox.Show("All Saturn GameShark Cheats need to be 13 characters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				InputError("All Saturn GameShark Cheats need to be 13 characters in length.");
 				return;
 			}
 
@@ -2581,13 +2581,13 @@ namespace BizHawk.Client.EmuHawk
 			// It's an Action Replay
 			else if (cheat.Length != 9 && cheat.LastIndexOf("-") != 7)
 			{
-				MessageBox.Show("All Master System Action Replay Codes need to be nine characters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				InputError("All Master System Action Replay Codes need to be nine characters in length.");
 			}
 
 			// Game Genie
 			else if (cheat.LastIndexOf("-") != 7 && cheat.IndexOf("-") != 3)
 			{
-				MessageBox.Show("All Master System Game Genie Codes need to have a dash after the third character and seventh character.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				InputError("All Master System Game Genie Codes need to have a dash after the third character and seventh character.");
 			}
 		}
 
@@ -2608,11 +2608,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (cheat.Contains("-") && cheat.Length != 9)
 			{
-				MessageBox.Show("Game Genie Codes need to be nine characters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				InputError("Game Genie Codes need to be nine characters in length.");
 			}
 			else if (cheat.Length != 9 && cheat.Length != 8)
 			{
-				MessageBox.Show("Pro Action Replay Codes need to be eight characters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				InputError("Pro Action Replay Codes need to be eight characters in length.");
 			}
 		}
 
@@ -2625,6 +2625,11 @@ namespace BizHawk.Client.EmuHawk
 				txtDescription.Clear();
 				txtCheat.Clear();
 			}
+		}
+
+		private void InputError(string message)
+		{
+			MessageBox.Show(message, "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
 	}
 }
