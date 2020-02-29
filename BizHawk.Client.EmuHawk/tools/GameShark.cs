@@ -216,10 +216,10 @@ namespace BizHawk.Client.EmuHawk
 						// We don't have a GameShark code, or we have an encrypted code?
 						// Further testing required.
 						// GameShark Decryption Method
-						var _parseString = cheat;
+						var parseString = cheat;
 
-						op1 = uint.Parse(_parseString.Remove(8, 9), NumberStyles.HexNumber);
-						op2 = uint.Parse(_parseString.Remove(0, 9), NumberStyles.HexNumber);
+						op1 = uint.Parse(parseString.Remove(8, 9), NumberStyles.HexNumber);
+						op2 = uint.Parse(parseString.Remove(0, 9), NumberStyles.HexNumber);
 
 						// Tiny Encryption Algorithm
 						for (int i = 0; i < 32; ++i)
@@ -2378,57 +2378,38 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// This determines what kind of Code we have
-			var test = cheat.Remove(2, 11);
+			var test = cheat.Substring(0, 2);
 
 			switch (test)
 			{
-				// 30 80 Cheats mean, "Write, don't care otherwise."
 				case "30":
-					_byteSize = 8;
-					break;
 				case "80":
-					_byteSize = 16;
 					break;
-				// When value hits YYYY, make the next cheat go off
 				case "E0":
-				// E0 byteSize = 8;
 				case "E1":
-				// E1 byteSize = 8;
 				case "E2":
-				// E2 byteSize = 8;
 				case "D0":
-				// D0 byteSize = 16;
 				case "D1":
-				// D1 byteSize = 16;
 				case "D2":
-				// D2 byteSize = 16;
 				case "D3":
-				// D3 byteSize = 16;
 				case "D4":
-				// D4 byteSize = 16;
 				case "D5":
-				// D5 byteSize = 16;
 				case "D6":
-				// D6 byteSize = 16;
-
-				// Increment/Decrement Codes
 				case "10":
-				// 10 byteSize = 16;
 				case "11":
-				// 11 byteSize = 16;
 				case "20":
-				// 20 byteSize = 8
 				case "21":
-					// 21 byteSize = 8
 					MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
 					return;
 				case "C0":
 				case "C1":
+				case "C2":
+					MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					return;
 				// Slow-Mo
 				case "40":
-					MessageBox.Show("The code you entered is not needed by Bizhawk.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					InputError("The code you entered is not needed by Bizhawk.");
 					return;
-				case "C2":
 				case "50":
 					MessageBox.Show("The code you entered is not supported by this tool.  Please Submit the Game's Name, Cheat/Code and Purpose to the BizHawk forums.", "Tool Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
 					return;
@@ -2437,32 +2418,22 @@ namespace BizHawk.Client.EmuHawk
 					return;
 			}
 
-			// Sample Input for PSX:
-			// 800D10BA 0009
-			// Address: 0D10BA
-			// Value:  0009
-			// Remove first two octets
-			var parseString = cheat.Remove(0, 2);
-			
-			// Get RAM Address
-			_ramAddress = parseString.Remove(6, 5);
-			
-			// Get RAM Value
-			_ramValue = parseString.Remove(0, 7);
+			var decoder = new PsxGameSharkDecoder(cheat);
+
 			try
 			{
 				// A Watch needs to be generated so we can make a cheat out of that.  This is due to how the Cheat engine works.
 				// System Bus Domain, The Address to Watch, Byte size (Word), Hex Display, Description.  Big Endian.
 				// My Concern is that Work RAM High may be incorrect?
-				if (_byteSize == 8)
+				if (decoder.ByteSize == 1)
 				{
-					var watch = Watch.GenerateWatch(MemoryDomains["MainRAM"], long.Parse(_ramAddress, NumberStyles.HexNumber), WatchSize.Byte, Common.DisplayType.Hex, false, txtDescription.Text);
-					Global.CheatList.Add(new Cheat(watch, int.Parse(_ramValue, NumberStyles.HexNumber)));
+					var watch = Watch.GenerateWatch(MemoryDomains["MainRAM"], decoder.Address, WatchSize.Byte, Common.DisplayType.Hex, false, txtDescription.Text);
+					Global.CheatList.Add(new Cheat(watch, decoder.Value));
 				}
-				else if (_byteSize == 16)
+				else
 				{
-					var watch = Watch.GenerateWatch(MemoryDomains["MainRAM"], long.Parse(_ramAddress, NumberStyles.HexNumber), WatchSize.Word, Common.DisplayType.Hex, false, txtDescription.Text);
-					Global.CheatList.Add(new Cheat(watch, int.Parse(_ramValue, NumberStyles.HexNumber)));
+					var watch = Watch.GenerateWatch(MemoryDomains["MainRAM"], decoder.Address, WatchSize.Word, Common.DisplayType.Hex, false, txtDescription.Text);
+					Global.CheatList.Add(new Cheat(watch, decoder.Value));
 				}
 			}
 			catch (Exception ex)
@@ -2515,13 +2486,13 @@ namespace BizHawk.Client.EmuHawk
 			// Value:  90
 			// Note, 3XXXXXXX are Big Endian
 			// Remove first two octets
-			var _parseString = cheat.Remove(0, 2);
+			var parseString = cheat.Remove(0, 2);
 
 			// Get RAM Address
-			_ramAddress = _parseString.Remove(6, 5);
+			_ramAddress = parseString.Remove(6, 5);
 
 			// Get RAM Value
-			_ramValue = _parseString.Remove(0, 7);
+			_ramValue = parseString.Remove(0, 7);
 			try
 			{
 				// A Watch needs to be generated so we can make a cheat out of that.  This is due to how the Cheat engine works.
