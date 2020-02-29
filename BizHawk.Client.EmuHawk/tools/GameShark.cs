@@ -78,27 +78,6 @@ namespace BizHawk.Client.EmuHawk
 			['9'] = 31
 		};
 
-		// This only applies to the NES
-		private readonly Dictionary<char, int> _nesGameGenieTable = new Dictionary<char, int>
-		{
-			['A'] = 0,  // 0000
-			['P'] = 1,  // 0001
-			['Z'] = 2,  // 0010
-			['L'] = 3,  // 0011
-			['G'] = 4,  // 0100
-			['I'] = 5,  // 0101
-			['T'] = 6,  // 0110
-			['Y'] = 7,  // 0111
-			['E'] = 8,  // 1000
-			['O'] = 9,  // 1001
-			['X'] = 10, // 1010
-			['U'] = 11, // 1011
-			['K'] = 12, // 1100
-			['S'] = 13, // 1101
-			['V'] = 14, // 1110
-			['N'] = 15, // 1111
-		};
-
 		// including transposition
 		// Code: D F 4 7 0 9 1 5 6 B C 8 A 2 3 E
 		// Hex:  0 1 2 3 4 5 6 7 8 9 A B C D E F
@@ -2607,113 +2586,27 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Nes()
 		{
-			string strCompare = null;
-			if (_singleCheat.Length != 6 || _singleCheat.Length != 8)
-			{
-				int value = 0;
-				int address = 0x8000;
-				int x;
-				int compare = 0;
-
-				// char 3 bit 3 denotes the code length.
-				string code = _singleCheat;
-				if (_singleCheat.Length == 6)
-				{
-					// Char # |   1   |   2   |   3   |   4   |   5   |   6   |
-					// Bit  # |3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|
-					// maps to|1|6|7|8|H|2|3|4|-|I|J|K|L|A|B|C|D|M|N|O|5|E|F|G|
-					_nesGameGenieTable.TryGetValue(code[0], out x);
-					value |= x & 0x07;
-					value |= (x & 0x08) << 4;
-
-					_nesGameGenieTable.TryGetValue(code[1], out x);
-					value |= (x & 0x07) << 4;
-					address |= (x & 0x08) << 4;
-
-					_nesGameGenieTable.TryGetValue(code[2], out x);
-					address |= (x & 0x07) << 4;
-
-					_nesGameGenieTable.TryGetValue(code[3], out x);
-					address |= (x & 0x07) << 12;
-					address |= x & 0x08;
-
-					_nesGameGenieTable.TryGetValue(code[4], out x);
-					address |= x & 0x07;
-					address |= (x & 0x08) << 8;
-
-					_nesGameGenieTable.TryGetValue(code[5], out x);
-					address |= (x & 0x07) << 8;
-					value |= x & 0x08;
-					_ramAddress = $"{address:X4}";
-					_ramValue = $"{value:X2}";
-					strCompare = $"{compare:X2}";
-				}
-				else if (_singleCheat.Length == 8)
-				{
-					// Char # |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |
-					// Bit  # |3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|
-					// maps to|1|6|7|8|H|2|3|4|-|I|J|K|L|A|B|C|D|M|N|O|%|E|F|G|!|^|&|*|5|@|#|$|
-					value = 0;
-					address = 0x8000;
-					compare = 0;
-
-					_nesGameGenieTable.TryGetValue(code[0], out x);
-					value |= x & 0x07;
-					value |= (x & 0x08) << 4;
-
-					_nesGameGenieTable.TryGetValue(code[1], out x);
-					value |= (x & 0x07) << 4;
-					address |= (x & 0x08) << 4;
-
-					_nesGameGenieTable.TryGetValue(code[2], out x);
-					address |= (x & 0x07) << 4;
-
-					_nesGameGenieTable.TryGetValue(code[3], out x);
-					address |= (x & 0x07) << 12;
-					address |= x & 0x08;
-
-					_nesGameGenieTable.TryGetValue(code[4], out x);
-					address |= x & 0x07;
-					address |= (x & 0x08) << 8;
-
-					_nesGameGenieTable.TryGetValue(code[5], out x);
-					address |= (x & 0x07) << 8;
-					compare |= x & 0x08;
-
-					_nesGameGenieTable.TryGetValue(code[6], out x);
-					compare |= x & 0x07;
-					compare |= (x & 0x08) << 4;
-
-					_nesGameGenieTable.TryGetValue(code[7], out x);
-					compare |= (x & 0x07) << 4;
-					value |= x & 0x08;
-					_ramAddress = $"{address:X4}";
-					_ramValue = $"{value:X2}";
-					strCompare = $"{compare:X2}";
-				}
-			}
-
 			if (_singleCheat.Length != 6 && _singleCheat.Length != 8)
 			{
 				MessageBox.Show("Game Genie codes need to be six or eight characters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 
+			var decoder = new NESGameGenieDecoder(_singleCheat);
+
 			try
 			{
-				// A Watch needs to be generated so we can make a cheat out of that.  This is due to how the Cheat engine works.
-				// System Bus Domain, The Address to Watch, Byte size (Word), Hex Display, Description.  Big Endian.
-				// We have a Byte sized value
 				var description = _singleCheat;
 				if (!string.IsNullOrWhiteSpace(txtDescription.Text))
 				{
 					description = txtDescription.Text;
 				}
 
-				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(_ramAddress, NumberStyles.HexNumber), WatchSize.Byte, Common.DisplayType.Hex, false, description);
+				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], decoder.Address, WatchSize.Byte, Common.DisplayType.Hex, false, description);
 				Global.CheatList.Add(
-					strCompare == "00"
-						? new Cheat(watch, int.Parse(_ramValue, NumberStyles.HexNumber))
-						: new Cheat(watch, int.Parse(_ramValue, NumberStyles.HexNumber), int.Parse(strCompare, NumberStyles.HexNumber), true, Cheat.CompareType.Equal));
+					decoder.Compare.HasValue
+						? new Cheat(watch, decoder.Value, decoder.Compare.Value, true, Cheat.CompareType.Equal)
+						: new Cheat(watch, decoder.Value));
+
 			}
 			catch (Exception ex)
 			{
