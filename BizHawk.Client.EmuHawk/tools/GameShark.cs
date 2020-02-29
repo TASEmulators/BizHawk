@@ -83,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 						GBA();
 						break;
 					case "GEN":
-						Gen();
+						Gen(_singleCheat);
 						break;
 					case "N64":
 						// This determines what kind of Code we have
@@ -2164,23 +2164,23 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void Gen()
+		private void Gen(string cheat)
 		{
 			// Game Genie only
-			if (_singleCheat.Length == 9 && _singleCheat.Contains("-"))
+			if (cheat.Length == 9 && cheat.Contains("-"))
 			{
-				if (_singleCheat.IndexOf("-") != 4)
+				if (cheat.IndexOf("-") != 4)
 				{
 					MessageBox.Show("All Genesis Game Genie Codes need to contain a dash after the fourth character", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					return;
 				}
-				if (_singleCheat.Contains("I") | _singleCheat.Contains("O") | _singleCheat.Contains("Q") | _singleCheat.Contains("U"))
+				if (cheat.Contains("I") | cheat.Contains("O") | cheat.Contains("Q") | cheat.Contains("U"))
 				{
 					MessageBox.Show("All Genesis Game Genie Codes do not use I, O, Q or U.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					return;
 				}
 
-				var decoder = new GenesisGameGenieDecoder(_singleCheat);
+				var decoder = new GenesisGameGenieDecoder(cheat);
 
 				// Game Genie, modifies the "ROM" which is why it says, "MD CART"
 				var watch = Watch.GenerateWatch(MemoryDomains["M68K BUS"], decoder.Address, WatchSize.Word, Common.DisplayType.Hex, true, txtDescription.Text);
@@ -2188,10 +2188,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Action Replay?
-			if (_singleCheat.Contains(":"))
+			if (cheat.Contains(":"))
 			{
 				// We start from Zero.
-				if (_singleCheat.IndexOf(":") != 6)
+				if (cheat.IndexOf(":") != 6)
 				{
 					MessageBox.Show(
 						"All Genesis Action Replay/Pro Action Replay Codes need to contain a colon after the sixth character"
@@ -2201,14 +2201,14 @@ namespace BizHawk.Client.EmuHawk
 
 				// Problem: I don't know what the Non-FF Style codes are.
 				// TODO: Fix that.
-				if (_singleCheat.StartsWith("FF") == false)
+				if (cheat.StartsWith("FF") == false)
 				{
 					MessageBox.Show("This Action Replay Code, is not understood by this tool.", "Tool Error"
 						, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 					return;
 				}
 
-				var decoder = new GenesisActionReplayDecoder(_singleCheat);
+				var decoder = new GenesisActionReplayDecoder(cheat);
 
 				try
 				{
