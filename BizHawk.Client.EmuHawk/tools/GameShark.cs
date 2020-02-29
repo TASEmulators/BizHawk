@@ -111,25 +111,19 @@ namespace BizHawk.Client.EmuHawk
 						Gen(_singleCheat);
 						break;
 					case "N64":
-						// This determines what kind of Code we have
-						_testo = _singleCheat.Remove(2, 11);
 						N64();
 						break;
 					case "NES":
 						Nes(_singleCheat);
 						break;
 					case "PSX":
-						// This determines what kind of Code we have
-						_testo = _singleCheat.Remove(2, 11);
 						Psx();
 						break;
 					case "SAT":
-						// This determines what kind of Code we have
-						_testo = _singleCheat.Remove(2, 11);
 						Saturn();
 						break;
 					case "SMS":
-						Sms();
+						Sms(_singleCheat);
 						break;
 					case "SNES":
 						Snes();
@@ -2235,6 +2229,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void N64()
 		{
+			// This determines what kind of Code we have
+			_testo = _singleCheat.Remove(2, 11);
+
 			// These codes, more or less work without Needing much work.
 			if (_singleCheat.IndexOf(" ") != 8)
 			{
@@ -2377,6 +2374,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Psx()
 		{
+			// This determines what kind of Code we have
+			_testo = _singleCheat.Remove(2, 11);
+
 			// These codes, more or less work without Needing much work.
 			if (_singleCheat.IndexOf(" ") != 8)
 			{
@@ -2483,6 +2483,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Saturn()
 		{
+			// This determines what kind of Code we have
+			_testo = _singleCheat.Remove(2, 11);
+
 			if (_singleCheat.IndexOf(" ") != 8)
 			{
 				MessageBox.Show("All Saturn GameShark Codes need to contain a space after the eighth character", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -2570,35 +2573,21 @@ namespace BizHawk.Client.EmuHawk
 			// Action Replay
 			else if (cheat.IndexOf("-") == 3 && cheat.Length == 9)
 			{
-				_parseString = _singleCheat;
-				_parseString = _parseString.Remove(0, 2);
-				_ramAddress = _parseString.Remove(4, 2);
-				_ramAddress = _ramAddress.Replace("-", "");
-				_ramValue = _parseString.Remove(0, 5);
+				var decoder = new SmsActionReplayDecoder(cheat);
+				var watch = Watch.GenerateWatch(MemoryDomains["Main RAM"], decoder.Address, WatchSize.Byte, Common.DisplayType.Hex, false, txtDescription.Text);
+				Global.CheatList.Add(new Cheat(watch, decoder.Value));
 			}
 
 			// It's an Action Replay
-			if (cheat.Length != 9 && cheat.LastIndexOf("-") != 7)
+			else if (cheat.Length != 9 && cheat.LastIndexOf("-") != 7)
 			{
 				MessageBox.Show("All Master System Action Replay Codes need to be nine characters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return;
 			}
 
 			// Game Genie
-			if (cheat.LastIndexOf("-") != 7 && cheat.IndexOf("-") != 3)
+			else if (cheat.LastIndexOf("-") != 7 && cheat.IndexOf("-") != 3)
 			{
 				MessageBox.Show("All Master System Game Genie Codes need to have a dash after the third character and seventh character.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return;
-			}
-
-			try
-			{
-				var watch = Watch.GenerateWatch(MemoryDomains["Main RAM"], long.Parse(_ramAddress, NumberStyles.HexNumber), WatchSize.Byte, Common.DisplayType.Hex, false, txtDescription.Text);
-				Global.CheatList.Add(new Cheat(watch, int.Parse(_ramValue, NumberStyles.HexNumber)));
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show($"An Error occured: {ex.GetType()}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
 
