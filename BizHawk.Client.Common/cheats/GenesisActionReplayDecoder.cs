@@ -16,7 +16,7 @@ namespace BizHawk.Client.Common.cheats
 
 		public int Address { get; private set; }
 		public int Value { get; private set; }
-		public int ByteSize { get; private set; }
+		public WatchSize Size { get; private set; } = WatchSize.Byte;
 
 		public void Decode()
 		{
@@ -31,7 +31,7 @@ namespace BizHawk.Client.Common.cheats
 					// Value: 64
 					Address = int.Parse(parseString.Remove(4, 3), NumberStyles.HexNumber);
 					Value = int.Parse(parseString.Remove(0, 5), NumberStyles.HexNumber);
-					ByteSize = 1;
+					Size = WatchSize.Byte;
 					break;
 				case 11:
 					// Sample Code of 2-Byte:
@@ -41,7 +41,7 @@ namespace BizHawk.Client.Common.cheats
 					// Value: 6411
 					Address = int.Parse(parseString.Remove(4, 5), NumberStyles.HexNumber);
 					Value = int.Parse(parseString.Remove(0, 5), NumberStyles.HexNumber);
-					ByteSize = 2;
+					Size = WatchSize.Word;
 					break;
 				default:
 					// We could have checked above but here is fine, since it's a quick check due to one of three possibilities.

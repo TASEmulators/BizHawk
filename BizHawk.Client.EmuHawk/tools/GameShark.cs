@@ -2186,9 +2186,7 @@ namespace BizHawk.Client.EmuHawk
 				// We start from Zero.
 				if (cheat.IndexOf(":") != 6)
 				{
-					MessageBox.Show(
-						"All Genesis Action Replay/Pro Action Replay Codes need to contain a colon after the sixth character"
-						, "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					InputError("All Genesis Action Replay/Pro Action Replay Codes need to contain a colon after the sixth character");
 					return;
 				}
 
@@ -2201,15 +2199,13 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 
-				var decoder = new GenesisActionReplayDecoder(cheat);
-
 				try
 				{
-					var size = decoder.ByteSize == 1 ? WatchSize.Byte : WatchSize.Word;
+					var decoder = new GenesisActionReplayDecoder(cheat);
 					var watch = Watch.GenerateWatch(
 						MemoryDomains["68K RAM"],
 						decoder.Address,
-						size,
+						decoder.Size,
 						Common.DisplayType.Hex,
 						false,
 						txtDescription.Text);
