@@ -2482,9 +2482,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Saturn()
 		{
-			// This determines what kind of Code we have
-			var test = _singleCheat.Remove(2, 11);
-
 			if (_singleCheat.IndexOf(" ") != 8)
 			{
 				InputError("All Saturn GameShark Codes need to contain a space after the eighth character.");
@@ -2498,7 +2495,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// This is a special test.  Only the first character really matters?  16 or 36?
-			test = test.Remove(1, 1);
+			var test = _singleCheat.Remove(2, 11).Remove(1, 1);
 			switch (test)
 			{
 				case "1":
@@ -2517,7 +2514,7 @@ namespace BizHawk.Client.EmuHawk
 					MessageBox.Show("The code you entered is not needed by Bizhawk.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
 					return;
 				default:
-					MessageBox.Show("The GameShark code entered is not a recognized format.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					InputError("The GameShark code entered is not a recognized format.");
 					return;
 			}
 
