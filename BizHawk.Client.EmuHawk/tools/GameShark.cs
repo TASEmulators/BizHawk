@@ -63,38 +63,45 @@ namespace BizHawk.Client.EmuHawk
 			// Reset Variables
 			_ramValue = null;
 
-			for (int i = 0; i < txtCheat.Lines.Length; i++)
+			foreach (var l in txtCheat.Lines)
 			{
-				var singleCheat = txtCheat.Lines[i].ToUpper();
-				switch (Emulator.SystemId)
+				try
 				{
-					case "GB":
-						GameBoy(singleCheat);
-						break;
-					case "GBA":
-						GBA(singleCheat);
-						break;
-					case "GEN":
-						Gen(singleCheat);
-						break;
-					case "N64":
-						N64(singleCheat);
-						break;
-					case "NES":
-						Nes(singleCheat);
-						break;
-					case "PSX":
-						Psx(singleCheat);
-						break;
-					case "SAT":
-						Saturn(singleCheat);
-						break;
-					case "SMS":
-						Sms(singleCheat);
-						break;
-					case "SNES":
-						Snes(singleCheat);
-						break;
+					var code = l.ToUpper();
+					switch (Emulator.SystemId)
+					{
+						case "GB":
+							GameBoy(code);
+							break;
+						case "GBA":
+							GBA(code);
+							break;
+						case "GEN":
+							Gen(code);
+							break;
+						case "N64":
+							N64(code);
+							break;
+						case "NES":
+							Nes(code);
+							break;
+						case "PSX":
+							Psx(code);
+							break;
+						case "SAT":
+							Saturn(code);
+							break;
+						case "SMS":
+							Sms(code);
+							break;
+						case "SNES":
+							Snes(code);
+							break;
+					}
+				}
+				catch (Exception ex)
+				{
+					MessageBox.Show($"An Error occured: {ex.GetType()}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
 			}
 
