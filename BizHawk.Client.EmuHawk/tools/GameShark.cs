@@ -119,7 +119,7 @@ namespace BizHawk.Client.EmuHawk
 						Psx();
 						break;
 					case "SAT":
-						Saturn();
+						Saturn(_singleCheat);
 						break;
 					case "SMS":
 						Sms(_singleCheat);
@@ -2480,22 +2480,22 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void Saturn()
+		private void Saturn(string cheat)
 		{
-			if (_singleCheat.IndexOf(" ") != 8)
+			if (cheat.IndexOf(" ") != 8)
 			{
 				InputError("All Saturn GameShark Codes need to contain a space after the eighth character.");
 				return;
 			}
 
-			if (_singleCheat.Length != 13)
+			if (cheat.Length != 13)
 			{
 				InputError("All Saturn GameShark Cheats need to be 13 characters in length.");
 				return;
 			}
 
 			// This is a special test.  Only the first character really matters?  16 or 36?
-			var test = _singleCheat.Remove(2, 11).Remove(1, 1);
+			var test = cheat.Remove(2, 11).Remove(1, 1);
 			switch (test)
 			{
 				case "1":
@@ -2524,13 +2524,13 @@ namespace BizHawk.Client.EmuHawk
 			// Value:  90
 			// Note, 3XXXXXXX are Big Endian
 			// Remove first two octets
-			_parseString = _singleCheat.Remove(0, 2);
+			_parseString = cheat.Remove(0, 2);
 
 			// Get RAM Address
-			_ramAddress = _parseString.Remove(6, 5);
+			_ramAddress = cheat.Remove(6, 5);
 
 			// Get RAM Value
-			_ramValue = _parseString.Remove(0, 7);
+			_ramValue = cheat.Remove(0, 7);
 			try
 			{
 				// A Watch needs to be generated so we can make a cheat out of that.  This is due to how the Cheat engine works.
