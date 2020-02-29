@@ -313,7 +313,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		// This also handles Game Gear due to shared hardware. Go figure.
+		// Note: this also handles Game Gear due to shared hardware
 		private void Sms(string code)
 		{
 			// Game Genie
@@ -334,22 +334,19 @@ namespace BizHawk.Client.EmuHawk
 			// Action Replay
 			else if (code.IndexOf("-") == 3 && code.Length == 9)
 			{
-				var decoder = new SmsActionReplayDecoder(code);
-				var watch = Watch.GenerateWatch(MemoryDomains["Main RAM"], decoder.Address, WatchSize.Byte, Common.DisplayType.Hex, false, txtDescription.Text);
-				Global.CheatList.Add(new Cheat(watch, decoder.Value));
+				var result = SmsActionReplayDecoder.Decode(code);
+				if (result.IsValid)
+				{
+					var description = Description(code);
+					Global.CheatList.Add(result.ToCheat(MemoryDomains.SystemBus, description));
+				}
+				else
+				{
+					InputError(result.Error);
+				}
 			}
 
-			// It's an Action Replay
-			else if (code.Length != 9 && code.LastIndexOf("-") != 7)
-			{
-				InputError("All Master System Action Replay Codes need to be nine characters in length.");
-			}
-
-			// Game Genie
-			else if (code.LastIndexOf("-") != 7 && code.IndexOf("-") != 3)
-			{
-				InputError("All Master System Game Genie Codes need to have a dash after the third character and seventh character.");
-			}
+			InputError($"Unknown code type: {code}");
 		}
 
 		private void Snes(string cheat)
