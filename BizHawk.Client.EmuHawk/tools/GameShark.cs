@@ -91,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 						N64();
 						break;
 					case "NES":
-						Nes();
+						Nes(_singleCheat);
 						break;
 					case "PSX":
 						// This determines what kind of Code we have
@@ -2341,18 +2341,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void Nes()
+		private void Nes(string cheat)
 		{
-			if (_singleCheat.Length != 6 && _singleCheat.Length != 8)
+			if (cheat.Length != 6 && cheat.Length != 8)
 			{
 				MessageBox.Show("Game Genie codes need to be six or eight characters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 
-			var decoder = new NesGameGenieDecoder(_singleCheat);
+			var decoder = new NesGameGenieDecoder(cheat);
 
 			try
 			{
-				var description = _singleCheat;
+				var description = cheat;
 				if (!string.IsNullOrWhiteSpace(txtDescription.Text))
 				{
 					description = txtDescription.Text;
