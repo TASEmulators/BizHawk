@@ -104,19 +104,19 @@ namespace BizHawk.Client.EmuHawk
 						GameBoy(_singleCheat);
 						break;
 					case "GBA":
-						GBA();
+						GBA(_singleCheat);
 						break;
 					case "GEN":
 						Gen(_singleCheat);
 						break;
 					case "N64":
-						N64();
+						N64(_singleCheat);
 						break;
 					case "NES":
 						Nes(_singleCheat);
 						break;
 					case "PSX":
-						Psx();
+						Psx(_singleCheat);
 						break;
 					case "SAT":
 						Saturn(_singleCheat);
@@ -177,21 +177,21 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void GBA()
+		private void GBA(string cheat)
 		{
 			// Super Ultra Mega HD BizHawk GameShark/Action Replay/Code Breaker Final Hyper Edition Arcade Remix EX + α GBA Code detection method.
 			// Seriously, it's that complex.
 			_blnEncrypted = false;
 
 			// Check Game Shark/Action Replay (Not Max) Codes
-			if (_singleCheat.Length == 17 && _singleCheat.IndexOf(" ") == 8)
+			if (cheat.Length == 17 && cheat.IndexOf(" ") == 8)
 			{
 				// blnNoCode = true;
 				// Super Ultra Mega HD BizHawk GameShark/Action Replay/Code Breaker Final Hyper Edition Arcade Remix EX + α GBA Code detection method.
 				// Seriously, it's that complex.
 
 				// Check Game Shark/Action Replay (Not Max) Codes
-				if (_singleCheat.Length == 17 && _singleCheat.IndexOf(" ") == 8)
+				if (cheat.Length == 17 && cheat.IndexOf(" ") == 8)
 				{
 					// These are for the Decryption Values for GameShark and Action Replay MAX.
 					uint op1;
@@ -289,7 +289,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// Detect CodeBreaker/GameShark SP/Xploder codes
-				if (_singleCheat.Length == 12 && _singleCheat.IndexOf(" ") != 8)
+				if (cheat.Length == 12 && cheat.IndexOf(" ") != 8)
 				{
 					MessageBox.Show("Codebreaker/GameShark SP/Xploder codes are not supported by this tool.", "Tool error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 					return;
@@ -2226,23 +2226,23 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void N64()
+		private void N64(string cheat)
 		{
-			// This determines what kind of Code we have
-			var _testo = _singleCheat.Remove(2, 11);
-
 			// These codes, more or less work without Needing much work.
-			if (_singleCheat.IndexOf(" ") != 8)
+			if (cheat.IndexOf(" ") != 8)
 			{
 				MessageBox.Show("All N64 GameShark Codes need to contain a space after the eighth character", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 
-			if (_singleCheat.Length != 13)
+			if (cheat.Length != 13)
 			{
 				MessageBox.Show("All N64 GameShark Codes need to be 13 characters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
+
+			// This determines what kind of Code we have
+			var _testo = cheat.Remove(2, 11);
 
 			// We need to determine what kind of cheat this is.
 			// I need to determine if this is a Byte or Word.
@@ -2315,7 +2315,7 @@ namespace BizHawk.Client.EmuHawk
 			// Note, 80XXXXXX 00YY
 			// Is Byte, not Word
 			// Remove the 80 Octect
-			_parseString = _singleCheat.Remove(0, 2);
+			_parseString = cheat.Remove(0, 2);
 
 			// Get RAM Address
 			_ramAddress = _parseString.Remove(6, 5);
@@ -2371,23 +2371,23 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void Psx()
+		private void Psx(string cheat)
 		{
-			// This determines what kind of Code we have
-			var test = _singleCheat.Remove(2, 11);
-
 			// These codes, more or less work without Needing much work.
-			if (_singleCheat.IndexOf(" ") != 8)
+			if (cheat.IndexOf(" ") != 8)
 			{
 				MessageBox.Show("All PSX GameShark Codes need to contain a space after the eighth character", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 
-			if (_singleCheat.Length != 13)
+			if (cheat.Length != 13)
 			{
 				MessageBox.Show("All PSX GameShark Cheats need to be 13 characters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
+
+			// This determines what kind of Code we have
+			var test = cheat.Remove(2, 11);
 
 			switch (test)
 			{
@@ -2451,7 +2451,7 @@ namespace BizHawk.Client.EmuHawk
 			// Address: 0D10BA
 			// Value:  0009
 			// Remove first two octets
-			_parseString = _singleCheat.Remove(0, 2);
+			_parseString = cheat.Remove(0, 2);
 			
 			// Get RAM Address
 			_ramAddress = _parseString.Remove(6, 5);
@@ -2527,10 +2527,10 @@ namespace BizHawk.Client.EmuHawk
 			_parseString = cheat.Remove(0, 2);
 
 			// Get RAM Address
-			_ramAddress = cheat.Remove(6, 5);
+			_ramAddress = _parseString.Remove(6, 5);
 
 			// Get RAM Value
-			_ramValue = cheat.Remove(0, 7);
+			_ramValue = _parseString.Remove(0, 7);
 			try
 			{
 				// A Watch needs to be generated so we can make a cheat out of that.  This is due to how the Cheat engine works.
