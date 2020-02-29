@@ -589,9 +589,6 @@
 		<Compile Update="tools/NES/BarcodeEntry.Designer.cs" DependentUpon="BarcodeEntry.cs" />
 		<EmbeddedResource Update="tools/NES/BarcodeEntry.resx" DependentUpon="BarcodeEntry.cs" />
 		<Compile Update="tools/NES/NameTableViewer.cs" SubType="Component" />
-		<Compile Update="tools/NES/NESGameGenie.cs" SubType="Form" />
-		<Compile Update="tools/NES/NESGameGenie.Designer.cs" DependentUpon="NESGameGenie.cs" />
-		<EmbeddedResource Update="tools/NES/NESGameGenie.resx" DependentUpon="NESGameGenie.cs" />
 		<Compile Update="tools/NES/NESMusicRipper.cs" SubType="Form" />
 		<Compile Update="tools/NES/NESMusicRipper.Designer.cs" DependentUpon="NESMusicRipper.cs" />
 		<EmbeddedResource Update="tools/NES/NESMusicRipper.resx" DependentUpon="NESMusicRipper.cs" />
