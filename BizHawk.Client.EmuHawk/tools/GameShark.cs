@@ -23,26 +23,6 @@ namespace BizHawk.Client.EmuHawk
 	{
 		#region Game Genie Dictionary
 
-		private readonly Dictionary<char, int> _gbGgGameGenieTable = new Dictionary<char, int>
-		{
-			['0'] = 0,
-			['1'] = 1,
-			['2'] = 2,
-			['3'] = 3,
-			['4'] = 4,
-			['5'] = 5,
-			['6'] = 6,
-			['7'] = 7,
-			['8'] = 8,
-			['9'] = 9,
-			['A'] = 10,
-			['B'] = 11,
-			['C'] = 12,
-			['D'] = 13,
-			['E'] = 14,
-			['F'] = 15
-		};
-
 		// including transposition
 		// Code: D F 4 7 0 9 1 5 6 B C 8 A 2 3 E
 		// Hex:  0 1 2 3 4 5 6 7 8 9 A B C D E F
@@ -165,77 +145,6 @@ namespace BizHawk.Client.EmuHawk
 			txtDescription.Clear();
 		}
 
-		// Original Code by adelikat
-		// Decodes GameGear and GameBoy
-		public void GbGgDecode(string code, ref int val, out int add, out int cmp)
-		{
-			// No cypher on value
-			// Char # |   0   |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |
-			// Bit  # |3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|
-			// maps to|      Value    |A|B|C|D|E|F|G|H|I|J|K|L|XOR 0xF|a|b|c|c|NotUsed|e|f|g|h|
-			// proper |      Value    |XOR 0xF|A|B|C|D|E|F|G|H|I|J|K|L|g|h|a|b|Nothing|c|d|e|f|
-			int x;
-
-			// Getting Value
-			if (code.Length > 0)
-			{
-				_gbGgGameGenieTable.TryGetValue(code[0], out x);
-				val = x << 4;
-			}
-
-			if (code.Length > 1)
-			{
-				_gbGgGameGenieTable.TryGetValue(code[1], out x);
-				val |= x;
-			}
-
-			// Address
-			if (code.Length > 2)
-			{
-				_gbGgGameGenieTable.TryGetValue(code[2], out x);
-				add = x << 8;
-			}
-			else
-			{
-				add = -1;
-			}
-
-			if (code.Length > 3)
-			{
-				_gbGgGameGenieTable.TryGetValue(code[3], out x);
-				add |= x << 4;
-			}
-
-			if (code.Length > 4)
-			{
-				_gbGgGameGenieTable.TryGetValue(code[4], out x);
-				add |= x;
-			}
-
-			if (code.Length > 5)
-			{
-				_gbGgGameGenieTable.TryGetValue(code[5], out x);
-				add |= (x ^ 0xF) << 12;
-			}
-
-			// compare need to be full
-			if (code.Length > 8)
-			{
-				_gbGgGameGenieTable.TryGetValue(code[6], out x);
-				var comp = x << 2;
-
-				// 8th character ignored
-				_gbGgGameGenieTable.TryGetValue(code[8], out x);
-				comp |= (x & 0xC) >> 2;
-				comp |= (x & 0x3) << 6;
-				cmp = comp ^ 0xBA;
-			}
-			else
-			{
-				cmp = -1;
-			}
-		}
-
 		private void GameBoy()
 		{
 			string ramCompare = null;
@@ -243,12 +152,11 @@ namespace BizHawk.Client.EmuHawk
 			// Game Genie
 			if (_singleCheat.LastIndexOf("-") == 7 && _singleCheat.IndexOf("-") == 3)
 			{
-				int val = 0;
-				_parseString = _singleCheat.Replace("-", "");
-				GbGgDecode(_parseString, ref val, out var add, out var cmp);
-				_ramAddress = $"{add:X4}";
-				_ramValue = $"{val:X2}";
-				ramCompare = $"{cmp:X2}";
+				var decoder = new GbGgGameGenieDecoder(_singleCheat);
+				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], decoder.Address, WatchSize.Word, Common.DisplayType.Hex, false, txtDescription.Text);
+				Global.CheatList.Add(decoder.Compare.HasValue
+					? new Cheat(watch, decoder.Value, decoder.Compare)
+					: new Cheat(watch, decoder.Value));
 			}
 			else if (_singleCheat.Contains("-") && _singleCheat.LastIndexOf("-") != 7 && _singleCheat.IndexOf("-") != 3)
 			{
@@ -2737,12 +2645,11 @@ namespace BizHawk.Client.EmuHawk
 			// Game Genie
 			if (_singleCheat.LastIndexOf("-") == 7 && _singleCheat.IndexOf("-") == 3)
 			{
-				int val = 0;
-				_parseString = _singleCheat.Replace("-", "");
-				GbGgDecode(_parseString, ref val, out var add, out var cmp);
-				_ramAddress = $"{add:X4}";
-				_ramValue = $"{val:X2}";
-				ramCompare = $"{cmp:X2}";
+				var decoder = new GbGgGameGenieDecoder(_singleCheat);
+				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], decoder.Address, WatchSize.Word, Common.DisplayType.Hex, false, txtDescription.Text);
+				Global.CheatList.Add(decoder.Compare.HasValue
+					? new Cheat(watch, decoder.Value, decoder.Compare)
+					: new Cheat(watch, decoder.Value));
 			}
 
 			// Action Replay
