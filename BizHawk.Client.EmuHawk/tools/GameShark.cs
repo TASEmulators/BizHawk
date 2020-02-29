@@ -33,6 +33,8 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
+		#region IToolForm
+
 		public bool UpdateBefore => true;
 		public bool AskSaveChanges() => true;
 
@@ -52,6 +54,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 		}
 
+		#endregion
+
 		private string _parseString;
 		private string _ramAddress;
 		private string _ramValue;
@@ -59,6 +63,27 @@ namespace BizHawk.Client.EmuHawk
 		private string _testo;
 		private string _singleCheat;
 		private int _loopValue;
+
+		// Provided by mGBA and endrift
+		private readonly uint[] _gbaGameSharkSeeds = { 0x09F4FBBDU, 0x9681884AU, 0x352027E9U, 0xF3DEE5A7U };
+		private readonly uint[] _gbaProActionReplaySeeds = { 0x7AA9648FU, 0x7FAE6994U, 0xC0EFAAD5U, 0x42712C57U };
+
+		// blnEncrypted is used to see if the previous line for Slide code was encrypted or not.
+		private bool _blnEncrypted;
+
+		// blnGameShark means, "This is a Game Shark/Action Replay (Not MAX) code."
+		private bool _blnGameShark;
+
+		// blnActionReplayMax means "This is an Action Replay MAX code."
+		private bool _blnActionReplayMax;
+
+		// blnCodeBreaker means "This is a CodeBreaker code."
+		// Boolean blnCodeBreaker = false;
+		// blnUnhandled means "BizHawk can't do this one or the tool can't."
+		private bool _blnUnhandled;
+
+		// blnUnneeded means "You don't need this code."
+		private bool _blnUnneeded;
 
 		private void Go_Click(object sender, EventArgs e)
 		{
@@ -158,27 +183,6 @@ namespace BizHawk.Client.EmuHawk
 				Global.CheatList.Add(new Cheat(watch, decoder.Value));
 			}
 		}
-
-		// Provided by mGBA and endrift
-		private readonly uint[] _gbaGameSharkSeeds = { 0x09F4FBBDU, 0x9681884AU, 0x352027E9U, 0xF3DEE5A7U };
-		private readonly uint[] _gbaProActionReplaySeeds = { 0x7AA9648FU, 0x7FAE6994U, 0xC0EFAAD5U, 0x42712C57U };
-
-		// blnEncrypted is used to see if the previous line for Slide code was encrypted or not.
-		private bool _blnEncrypted;
-
-		// blnGameShark means, "This is a Game Shark/Action Replay (Not MAX) code."
-		private bool _blnGameShark;
-
-		// blnActionReplayMax means "This is an Action Replay MAX code."
-		private bool _blnActionReplayMax;
-
-		// blnCodeBreaker means "This is a CodeBreaker code."
-		// Boolean blnCodeBreaker = false;
-		// blnUnhandled means "BizHawk can't do this one or the tool can't."
-		private bool _blnUnhandled;
-
-		// blnUnneeded means "You don't need this code."
-		private bool _blnUnneeded;
 
 		private void GBA()
 		{
