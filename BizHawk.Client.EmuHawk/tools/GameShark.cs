@@ -138,16 +138,23 @@ namespace BizHawk.Client.EmuHawk
 			InputError($"Unknown code type: {code}");
 		}
 
-		private void GBA(string cheat)
+		private void GBA(string code)
 		{
-			if (cheat.Length == 12)
+			if (code.Length == 12)
 			{
 				InputError("Codebreaker/GameShark SP/Xploder codes are not yet supported by this tool.");
 			}
 
-			var decoder = new GbaGameSharkDecoder(cheat);
-			var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], decoder.Address, decoder.Size, Common.DisplayType.Hex, false, txtDescription.Text);
-			Global.CheatList.Add(new Cheat(watch, decoder.Value));
+			var result = GbaGameSharkDecoder.Decode(code);
+			if (result.IsValid)
+			{
+				var description = Description(code);
+				Global.CheatList.Add(result.ToCheat(MemoryDomains.SystemBus, description));
+			}
+			else
+			{
+				InputError(result.Error);
+			}
 		}
 
 		private void Gen(string cheat)
