@@ -4,6 +4,13 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 {
 	public partial class LR35902
 	{
+		// local variables for operations, not stated
+		int Reg16_d, Reg16_s, c;
+		ushort ans, ans_l, ans_h, temp;
+		byte a_d;
+		bool imm;
+
+
 		public void Read_Func(ushort dest, ushort src_l, ushort src_h)
 		{
 			ushort addr = (ushort)(Regs[src_l] | (Regs[src_h]) << 8);
@@ -35,15 +42,15 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		public void ADD16_Func(ushort dest_l, ushort dest_h, ushort src_l, ushort src_h)
 		{
-			int Reg16_d = Regs[dest_l] | (Regs[dest_h]  << 8);
-			int Reg16_s = Regs[src_l] | (Regs[src_h] << 8);
+			Reg16_d = Regs[dest_l] | (Regs[dest_h]  << 8);
+			Reg16_s = Regs[src_l] | (Regs[src_h] << 8);
 
 			Reg16_d += Reg16_s;
 
 			FlagC = Reg16_d.Bit(16);
 
-			ushort ans_l = (ushort)(Reg16_d & 0xFF);
-			ushort ans_h = (ushort)((Reg16_d & 0xFF00) >> 8);
+			ans_l = (ushort)(Reg16_d & 0xFF);
+			ans_h = (ushort)((Reg16_d & 0xFF00) >> 8);
 
 			// redo for half carry flag
 			Reg16_d = Regs[dest_l] | ((Regs[dest_h] & 0x0F) << 8);
@@ -60,13 +67,13 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		public void ADD8_Func(ushort dest, ushort src)
 		{
-			int Reg16_d = Regs[dest];
+			Reg16_d = Regs[dest];
 			Reg16_d += Regs[src];
 
 			FlagC = Reg16_d.Bit(8);
 			FlagZ = (Reg16_d & 0xFF) == 0;
 
-			ushort ans = (ushort)(Reg16_d & 0xFF);
+			ans = (ushort)(Reg16_d & 0xFF);
 
 			// redo for half carry flag
 			Reg16_d = Regs[dest] & 0xF;
@@ -81,13 +88,13 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		public void SUB8_Func(ushort dest, ushort src)
 		{
-			int Reg16_d = Regs[dest];
+			Reg16_d = Regs[dest];
 			Reg16_d -= Regs[src];
 
 			FlagC = Reg16_d.Bit(8);
 			FlagZ = (Reg16_d & 0xFF) == 0;
 
-			ushort ans = (ushort)(Reg16_d & 0xFF);
+			ans = (ushort)(Reg16_d & 0xFF);
 
 			// redo for half carry flag
 			Reg16_d = Regs[dest] & 0xF;
@@ -123,7 +130,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		public void SWAP_Func(ushort src)
 		{
-			ushort temp = (ushort)((Regs[src] << 4) & 0xF0);
+			temp = (ushort)((Regs[src] << 4) & 0xF0);
 			Regs[src] = (ushort)(temp | (Regs[src] >> 4));
 
 			FlagZ = Regs[src] == 0;
@@ -147,7 +154,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 		{
 			FlagC = Regs[src].Bit(0);
 
-			ushort temp = (ushort)(Regs[src] & 0x80); // MSB doesn't change in this operation
+			temp = (ushort)(Regs[src] & 0x80); // MSB doesn't change in this operation
 
 			Regs[src] = (ushort)((Regs[src] >> 1) | temp);
 
@@ -221,7 +228,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		public void CP8_Func(ushort dest, ushort src)
 		{
-			int Reg16_d = Regs[dest];
+			Reg16_d = Regs[dest];
 			Reg16_d -= Regs[src];
 
 			FlagC = Reg16_d.Bit(8);
@@ -238,7 +245,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		public void RRC_Func(ushort src)
 		{
-			bool imm = src == Aim;
+			imm = src == Aim;
 			if (imm) { src = A; }
 
 			FlagC = Regs[src].Bit(0);
@@ -252,10 +259,10 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		public void RR_Func(ushort src)
 		{
-			bool imm = src == Aim;
+			imm = src == Aim;
 			if (imm) { src = A; }
 
-			ushort c = (ushort)(FlagC ? 0x80 : 0);
+			c = FlagC ? 0x80 : 0;
 
 			FlagC = Regs[src].Bit(0);
 
@@ -268,10 +275,10 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		public void RLC_Func(ushort src)
 		{
-			bool imm = src == Aim;
+			imm = src == Aim;
 			if (imm) { src = A; }
 
-			ushort c = (ushort)(Regs[src].Bit(7) ? 1 : 0);
+			c = Regs[src].Bit(7) ? 1 : 0;
 			FlagC = Regs[src].Bit(7);
 
 			Regs[src] = (ushort)(((Regs[src] << 1) & 0xFF) | c);
@@ -283,10 +290,10 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		public void RL_Func(ushort src)
 		{
-			bool imm = src == Aim;
+			imm = src == Aim;
 			if (imm) { src = A; }
 
-			ushort c = (ushort)(FlagC ? 1 : 0);
+			c = FlagC ? 1 : 0;
 			FlagC = Regs[src].Bit(7);
 
 			Regs[src] = (ushort)(((Regs[src] << 1) & 0xFF) | c);
@@ -298,12 +305,12 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		public void INC8_Func(ushort src)
 		{
-			int Reg16_d = Regs[src];
+			Reg16_d = Regs[src];
 			Reg16_d += 1;
 
 			FlagZ = (Reg16_d & 0xFF) == 0;
 
-			ushort ans = (ushort)(Reg16_d & 0xFF);
+			ans = (ushort)(Reg16_d & 0xFF);
 
 			// redo for half carry flag
 			Reg16_d = Regs[src] & 0xF;
@@ -317,12 +324,12 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		public void DEC8_Func(ushort src)
 		{
-			int Reg16_d = Regs[src];
+			Reg16_d = Regs[src];
 			Reg16_d -= 1;
 
 			FlagZ = (Reg16_d & 0xFF) == 0;
 
-			ushort ans = (ushort)(Reg16_d & 0xFF);
+			ans = (ushort)(Reg16_d & 0xFF);
 
 			// redo for half carry flag
 			Reg16_d = Regs[src] & 0xF;
@@ -336,7 +343,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		public void INC16_Func(ushort src_l, ushort src_h)
 		{
-			int Reg16_d = Regs[src_l] | (Regs[src_h] << 8);
+			Reg16_d = Regs[src_l] | (Regs[src_h] << 8);
 
 			Reg16_d += 1;
 
@@ -346,7 +353,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		public void DEC16_Func(ushort src_l, ushort src_h)
 		{
-			int Reg16_d = Regs[src_l] | (Regs[src_h] << 8);
+			Reg16_d = Regs[src_l] | (Regs[src_h] << 8);
 
 			Reg16_d -= 1;
 
@@ -356,15 +363,15 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		public void ADC8_Func(ushort dest, ushort src)
 		{
-			int Reg16_d = Regs[dest];
-			int c = FlagC ? 1 : 0;
+			Reg16_d = Regs[dest];
+			c = FlagC ? 1 : 0;
 
 			Reg16_d += (Regs[src] + c);
 
 			FlagC = Reg16_d.Bit(8);
 			FlagZ = (Reg16_d & 0xFF) == 0;
 
-			ushort ans = (ushort)(Reg16_d & 0xFF);
+			ans = (ushort)(Reg16_d & 0xFF);
 
 			// redo for half carry flag
 			Reg16_d = Regs[dest] & 0xF;
@@ -378,15 +385,15 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		public void SBC8_Func(ushort dest, ushort src)
 		{
-			int Reg16_d = Regs[dest];
-			int c = FlagC ? 1 : 0;
+			Reg16_d = Regs[dest];
+			c = FlagC ? 1 : 0;
 
 			Reg16_d -= (Regs[src] + c);
 
 			FlagC = Reg16_d.Bit(8);
 			FlagZ = (Reg16_d & 0xFF) == 0;
 
-			ushort ans = (ushort)(Reg16_d & 0xFF);
+			ans = (ushort)(Reg16_d & 0xFF);
 
 			// redo for half carry flag
 			Reg16_d = Regs[dest] & 0xF;
@@ -401,36 +408,36 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 		// DA code courtesy of AWJ: http://forums.nesdev.com/viewtopic.php?f=20&t=15944
 		public void DA_Func(ushort src)
 		{
-			byte a = (byte)Regs[src];
+			a_d = (byte)Regs[src];
 
 			if (!FlagN)
 			{  // after an addition, adjust if (half-)carry occurred or if result is out of bounds
-				if (FlagC || a > 0x99) { a += 0x60; FlagC = true; }
-				if (FlagH || (a & 0x0f) > 0x09) { a += 0x6; }
+				if (FlagC || a_d > 0x99) { a_d += 0x60; FlagC = true; }
+				if (FlagH || (a_d & 0x0f) > 0x09) { a_d += 0x6; }
 			}
 			else
 			{  // after a subtraction, only adjust if (half-)carry occurred
-				if (FlagC) { a -= 0x60; }
-				if (FlagH) { a -= 0x6; }
+				if (FlagC) { a_d -= 0x60; }
+				if (FlagH) { a_d -= 0x6; }
 			}
 
-			a &= 0xFF;
+			a_d &= 0xFF;
 
-			Regs[src] = a;
+			Regs[src] = a_d;
 
-			FlagZ = a == 0; 
+			FlagZ = a_d == 0; 
 			FlagH = false;
 		}
 
 		// used for signed operations
 		public void ADDS_Func(ushort dest_l, ushort dest_h, ushort src_l, ushort src_h)
 		{
-			int Reg16_d = Regs[dest_l];
-			int Reg16_s = Regs[src_l];
+			Reg16_d = Regs[dest_l];
+			Reg16_s = Regs[src_l];
 
 			Reg16_d += Reg16_s;
 
-			ushort temp = 0;
+			temp = 0;
 
 			// since this is signed addition, calculate the high byte carry appropriately
 			if (Reg16_s.Bit(7))
@@ -449,7 +456,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 				temp = (ushort)(Reg16_d.Bit(8) ? 1 : 0);
 			}
 
-			ushort ans_l = (ushort)(Reg16_d & 0xFF);
+			ans_l = (ushort)(Reg16_d & 0xFF);
 
 			// JR operations do not effect flags
 			if (dest_l != PCl)

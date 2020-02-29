@@ -8,46 +8,40 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 		private void NOP_()
 		{
 			cur_instr = new[]
-			{
-				IDLE,
-				IDLE,
-				HALT_CHK,
-				OP
-			};
+						{IDLE,
+						IDLE,
+						HALT_CHK,
+						OP };
 		}
 
 		private void INC_16(ushort srcL, ushort srcH)
 		{
 			cur_instr = new[]
-			{
-				IDLE,
-				IDLE,
-				IDLE,
-				INC16,
-				srcL,
-				srcH,
-				IDLE,
-				IDLE,
-				HALT_CHK,
-				OP
-			};
+						{IDLE,
+						IDLE,
+						IDLE,
+						INC16,
+						srcL,
+						srcH,
+						IDLE,
+						IDLE,
+						HALT_CHK,
+						OP };
 		}
 
 		private void DEC_16(ushort src_l, ushort src_h)
 		{
 			cur_instr = new[]
-			{
-				IDLE,
-				IDLE,
-				IDLE,
-				DEC16,
-				src_l,
-				src_h,
-				IDLE,
-				IDLE,
-				HALT_CHK,
-				OP
-			};
+						{IDLE,
+						IDLE,
+						IDLE,
+						DEC16,
+						src_l,
+						src_h,
+						IDLE,
+						IDLE,
+						HALT_CHK,
+						OP };
 		}
 
 		private void ADD_16(ushort dest_l, ushort dest_h, ushort src_l, ushort src_h)
@@ -83,119 +77,52 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		private void HALT_()
 		{
-			if (FlagI && (EI_pending == 0) && !interrupts_enabled)
-			{
-				if (is_GBC)
-				{
-					// in GBC mode, the HALT bug is worked around by simply adding a NOP
-					// so it just takes 4 cycles longer to reach the next instruction
-					cur_instr = new[]
-							{IDLE,
-							IDLE,
-							IDLE,
-							OP_G};
-				}
-				else
-				{	// if interrupts are disabled,
-					// a glitchy decrement to the program counter happens
-					{
-						cur_instr = new[]
-							{IDLE,
-							IDLE,
-							IDLE,
-							OP_G};
-					}
-				}
-			}
-			else
-			{
-				cur_instr = new ushort[]
-						{
+			cur_instr = new ushort[]
+						{HALT_FUNC,
 						IDLE,
+						IDLE,
+						OP_G,
 						HALT_CHK,
 						IDLE,
-						HALT, 0 };
-
-				if (!is_GBC) { skip_once = true; }
-				// If the interrupt flag is not currently set, but it does get set in the first check
-				// then a bug is triggered 
-				// With interrupts enabled, this runs the halt command twice 
-				// when they are disabled, it reads the next byte twice
-				if (!FlagI ||(FlagI && !interrupts_enabled)) { Halt_bug_2 = true; }
-				
-			}
+						HALT, 0};
 		}
 
-		private void JR_COND(bool cond)
+		private void JR_COND(ushort cond)
 		{
-			if (cond)
-			{
-				cur_instr = new ushort[]
-							{IDLE,
-							IDLE,
-							IDLE,
-							RD, W, PCl, PCh,
-							IDLE,
-							INC16, PCl, PCh,
-							IDLE,
-							ASGN, Z, 0,
-							IDLE,
-							ADDS, PCl, PCh, W, Z,
-							HALT_CHK,
-							OP };
-			}
-			else
-			{
-				cur_instr = new[]
-							{IDLE,
-							IDLE,
-							IDLE,
-							RD, Z, PCl, PCh,
-							IDLE,
-							INC16, PCl, PCh,
-							HALT_CHK,
-							OP };
-			}
+			cur_instr = new ushort[]
+						{IDLE,
+						IDLE,
+						IDLE,
+						RD, W, PCl, PCh,
+						INC16, PCl, PCh,
+						COND_CHECK, cond, (ushort)0,							
+						IDLE,
+						ASGN, Z, 0,
+						IDLE,
+						ADDS, PCl, PCh, W, Z,
+						HALT_CHK,
+						OP };
 		}
 
-		private void JP_COND(bool cond)
+		private void JP_COND(ushort cond)
 		{
-			if (cond)
-			{
-				cur_instr = new[]
-							{IDLE,
-							IDLE,
-							IDLE,
-							RD, W, PCl, PCh,
-							IDLE,
-							INC16, PCl, PCh,
-							IDLE,
-							RD, Z, PCl, PCh,
-							IDLE,
-							INC16, PCl, PCh,
-							IDLE,
-							TR, PCl, W,
-							IDLE,
-							TR, PCh, Z,
-							HALT_CHK,
-							OP };
-			}
-			else
-			{
-				cur_instr = new[]
-							{IDLE,
-							IDLE,
-							IDLE,
-							RD, W, PCl, PCh,
-							IDLE,
-							INC16, PCl, PCh,
-							IDLE,
-							RD, Z, PCl, PCh,
-							IDLE,
-							INC16, PCl, PCh,
-							HALT_CHK,
-							OP };
-			}
+			cur_instr = new[]
+						{IDLE,
+						IDLE,
+						IDLE,
+						RD, W, PCl, PCh,
+						IDLE,
+						INC16, PCl, PCh,
+						IDLE,
+						RD, Z, PCl, PCh,
+						INC16, PCl, PCh,
+						COND_CHECK, cond, (ushort)1,
+						IDLE,
+						TR, PCl, W,
+						IDLE,
+						TR, PCh, Z,
+						HALT_CHK,
+						OP };
 		}
 
 		private void RET_()
@@ -241,92 +168,58 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 		}
 
 
-		private void RET_COND(bool cond)
+		private void RET_COND(ushort cond)
 		{
-			if (cond)
-			{
-				cur_instr = new[]
-							{IDLE,
-							IDLE,
-							IDLE,
-							IDLE,
-							IDLE,
-							IDLE,
-							IDLE,
-							RD, PCl, SPl, SPh,
-							IDLE,
-							INC16, SPl, SPh,
-							IDLE,
-							RD, PCh, SPl, SPh,
-							IDLE,
-							INC16, SPl, SPh,
-							IDLE,
-							IDLE,
-							IDLE,
-							IDLE,
-							HALT_CHK,
-							OP };
-			}
-			else
-			{
-				cur_instr = new[]
-							{IDLE,
-							IDLE,
-							IDLE,
-							IDLE,
-							IDLE,
-							IDLE,
-							HALT_CHK,
-							OP };
-			}
+			cur_instr = new[]
+						{IDLE,
+						IDLE,
+						IDLE,
+						IDLE,
+						IDLE,
+						COND_CHECK, cond, (ushort)2,
+						IDLE,
+						RD, PCl, SPl, SPh,
+						IDLE,
+						INC16, SPl, SPh,
+						IDLE,
+						RD, PCh, SPl, SPh,
+						IDLE,
+						INC16, SPl, SPh,
+						IDLE,
+						IDLE,
+						IDLE,
+						IDLE,
+						HALT_CHK,
+						OP };
 		}
 
-		private void CALL_COND(bool cond)
+		private void CALL_COND(ushort cond)
 		{
-			if (cond)
-			{
-				cur_instr = new[]
-							{IDLE,
-							IDLE,
-							IDLE,
-							RD, W, PCl, PCh,
-							INC16, PCl, PCh,
-							IDLE,							
-							IDLE,
-							RD, Z, PCl, PCh,
-							INC16, PCl, PCh,
-							IDLE,
-							DEC16, SPl, SPh,
-							IDLE,
-							IDLE,
-							IDLE,
-							IDLE,
-							WR, SPl, SPh, PCh,
-							IDLE,							
-							IDLE,
-							DEC16, SPl, SPh,
-							WR, SPl, SPh, PCl,				
-							TR, PCl, W,
-							TR, PCh, Z,
-							HALT_CHK,
-							OP };
-			}
-			else
-			{
-				cur_instr = new[]
-							{IDLE,
-							IDLE,
-							IDLE,
-							RD, W, PCl, PCh,
-							IDLE,
-							INC16, PCl, PCh,
-							IDLE,
-							RD, Z, PCl, PCh,
-							IDLE,
-							INC16, PCl, PCh,
-							HALT_CHK,
-							OP };
-			}
+			cur_instr = new[]
+						{IDLE,
+						IDLE,
+						IDLE,
+						RD, W, PCl, PCh,
+						INC16, PCl, PCh,
+						IDLE,							
+						IDLE,
+						RD, Z, PCl, PCh,
+						INC16, PCl, PCh,
+						COND_CHECK, cond, (ushort)3,
+						DEC16, SPl, SPh,
+						IDLE,
+						IDLE,
+						IDLE,
+						IDLE,
+						WR, SPl, SPh, PCh,
+						IDLE,							
+						IDLE,
+						DEC16, SPl, SPh,
+						WR, SPl, SPh, PCl,				
+						TR, PCl, W,
+						TR, PCh, Z,
+						HALT_CHK,
+						OP };
 		}
 
 		private void INT_OP(ushort operation, ushort src)

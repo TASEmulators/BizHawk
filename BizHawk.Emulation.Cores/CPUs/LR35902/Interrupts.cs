@@ -9,18 +9,18 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 						DEC16, SPl, SPh,
 						IDLE,
 						WR, SPl, SPh, PCh,
-						IDLE,
+						INT_GET, 4, W,
 						DEC16, SPl, SPh,
-						IDLE,
+						INT_GET, 3, W,
 						WR, SPl, SPh, PCl,
+						INT_GET, 2, W,
 						IDLE,
+						INT_GET, 1, W,
 						IDLE,
-						IDLE,
-						IDLE,
-						IDLE,
+						INT_GET, 0, W,
 						ASGN, PCh, 0,
 						IDLE,
-						INT_GET, W,// NOTE: here is where we check for a cancelled IRQ
+						IDLE,
 						TR, PCl, W,
 						IRQ_CLEAR,
 						IDLE,
@@ -41,13 +41,13 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 						IDLE,
 						IDLE,
 						IDLE,
+						IDLE,						
 						IDLE,
-						IDLE,
-						IDLE,
-						IDLE,
-						IDLE,
-						INT_GET, W,// NOTE: here is where we check for a cancelled IRQ
-						IDLE,
+						INT_GET, 4, W,
+						INT_GET, 3, W,
+						INT_GET, 2, W,
+						INT_GET, 1, W,
+						INT_GET, 0, W,
 						TR, PCl, W,
 						IDLE,
 						ASGN, PCh, 0,
@@ -75,6 +75,9 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			Halt_bug_2 = false;
 			Halt_bug_3 = false;
 			interrupts_enabled = false;
+
+			int_src = 5;
+			int_clear = 0;
 		}
 	}
 }

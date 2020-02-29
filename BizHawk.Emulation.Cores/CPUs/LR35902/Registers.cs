@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		public ushort[] Regs = new ushort[14];
 
-		public bool FlagI;
+		public bool was_FlagI, FlagI;
 
 		public bool FlagC
 		{
