@@ -103,33 +103,27 @@ namespace BizHawk.Client.EmuHawk
 			txtDescription.Clear();
 		}
 
-		private void GameBoy(string cheat)
+		private void GameBoy(string code)
 		{
 			// Game Genie
-			if (cheat.LastIndexOf("-") == 7 && cheat.IndexOf("-") == 3)
+			if (code.LastIndexOf("-") == 7 && code.IndexOf("-") == 3)
 			{
-				var decoder = new GbGgGameGenieDecoder(cheat);
-				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], decoder.Address, WatchSize.Word, Common.DisplayType.Hex, false, txtDescription.Text);
-				Global.CheatList.Add(decoder.Compare.HasValue
-					? new Cheat(watch, decoder.Value, decoder.Compare)
-					: new Cheat(watch, decoder.Value));
-			}
-			else if (cheat.Contains("-") && cheat.LastIndexOf("-") != 7 && cheat.IndexOf("-") != 3)
-			{
-				MessageBox.Show("All GameBoy Game Genie Codes need to have a dash after the third character and seventh character.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return;
+				var result = GbGgGameGenieDecoder.Decode(code);
+				if (result.IsValid)
+				{
+					var description = Description(code);
+					Global.CheatList.Add(result.ToCheat(MemoryDomains.SystemBus, description));
+				}
+				else
+				{
+					InputError(result.Error);
+				}
 			}
 
 			// Game Shark codes
-			if (cheat.Length != 8 && cheat.Contains("-") == false)
+			if (code.Length == 8 && code.Contains("-") == false)
 			{
-				MessageBox.Show("All GameShark Codes need to be Eight characters in Length", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return;
-			}
-
-			if (cheat.Length == 8 && cheat.Contains("-") == false)
-			{
-				var test = cheat.Remove(2, 6);
+				var test = code.Remove(2, 6);
 				switch (test)
 				{
 					case "00":
@@ -140,7 +134,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 				}
 
-				var decoder = new GbGameSharkDecoder(cheat);
+				var decoder = new GbGameSharkDecoder(code);
 				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], decoder.Address, WatchSize.Word, Common.DisplayType.Hex, false, txtDescription.Text);
 				Global.CheatList.Add(new Cheat(watch, decoder.Value));
 			}
@@ -322,34 +316,39 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// This also handles Game Gear due to shared hardware. Go figure.
-		private void Sms(string cheat)
+		private void Sms(string code)
 		{
 			// Game Genie
-			if (cheat.LastIndexOf("-") == 7 && cheat.IndexOf("-") == 3)
+			if (code.LastIndexOf("-") == 7 && code.IndexOf("-") == 3)
 			{
-				var decoder = new GbGgGameGenieDecoder(cheat);
-				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], decoder.Address, WatchSize.Word, Common.DisplayType.Hex, false, txtDescription.Text);
-				Global.CheatList.Add(decoder.Compare.HasValue
-					? new Cheat(watch, decoder.Value, decoder.Compare)
-					: new Cheat(watch, decoder.Value));
+				var result = GbGgGameGenieDecoder.Decode(code);
+				if (result.IsValid)
+				{
+					var description = Description(code);
+					Global.CheatList.Add(result.ToCheat(MemoryDomains.SystemBus, description));
+				}
+				else
+				{
+					InputError(result.Error);
+				}
 			}
 
 			// Action Replay
-			else if (cheat.IndexOf("-") == 3 && cheat.Length == 9)
+			else if (code.IndexOf("-") == 3 && code.Length == 9)
 			{
-				var decoder = new SmsActionReplayDecoder(cheat);
+				var decoder = new SmsActionReplayDecoder(code);
 				var watch = Watch.GenerateWatch(MemoryDomains["Main RAM"], decoder.Address, WatchSize.Byte, Common.DisplayType.Hex, false, txtDescription.Text);
 				Global.CheatList.Add(new Cheat(watch, decoder.Value));
 			}
 
 			// It's an Action Replay
-			else if (cheat.Length != 9 && cheat.LastIndexOf("-") != 7)
+			else if (code.Length != 9 && code.LastIndexOf("-") != 7)
 			{
 				InputError("All Master System Action Replay Codes need to be nine characters in length.");
 			}
 
 			// Game Genie
-			else if (cheat.LastIndexOf("-") != 7 && cheat.IndexOf("-") != 3)
+			else if (code.LastIndexOf("-") != 7 && code.IndexOf("-") != 3)
 			{
 				InputError("All Master System Game Genie Codes need to have a dash after the third character and seventh character.");
 			}
