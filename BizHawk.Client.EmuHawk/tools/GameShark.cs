@@ -9,11 +9,6 @@ using BizHawk.Client.Common.cheats;
 // GBA: Code Breaker (That uses unique Encryption keys)
 // NES: Pro Action Rocky  (When someone asks)
 // SNES: GoldFinger (Action Replay II) Support?
-
-// Clean up the checks to be more robust/less "hacky"
-// They work but feel bad
-
-// Verify all wording in the error reports
 namespace BizHawk.Client.EmuHawk
 {
 	[Tool(true, new[] { "GB", "GBA", "GEN", "N64", "NES", "PSX", "SAT", "SMS", "SNES" }, new[] { "Snes9x" })]
@@ -109,30 +104,14 @@ namespace BizHawk.Client.EmuHawk
 			if (code.LastIndexOf("-") == 7 && code.IndexOf("-") == 3)
 			{
 				var result = GbGgGameGenieDecoder.Decode(code);
-				if (result.IsValid)
-				{
-					var description = Description(code);
-					Global.CheatList.Add(result.ToCheat(MemoryDomains.SystemBus, description));
-				}
-				else
-				{
-					InputError(result.Error);
-				}
+				AddCheat(code, result);
 			}
 
 			// Game Shark codes
 			if (code.Length == 8 && !code.Contains("-"))
 			{
 				var result = GbGameSharkDecoder.Decode(code);
-				if (result.IsValid)
-				{
-					var description = Description(code);
-					Global.CheatList.Add(result.ToCheat(MemoryDomains.SystemBus, description));
-				}
-				else
-				{
-					InputError(result.Error);
-				}
+				AddCheat(code, result);
 			}
 
 			InputError($"Unknown code type: {code}");
@@ -146,15 +125,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var result = GbaGameSharkDecoder.Decode(code);
-			if (result.IsValid)
-			{
-				var description = Description(code);
-				Global.CheatList.Add(result.ToCheat(MemoryDomains.SystemBus, description));
-			}
-			else
-			{
-				InputError(result.Error);
-			}
+			AddCheat(code, result);
 		}
 
 		private void Gen(string code)
@@ -163,38 +134,22 @@ namespace BizHawk.Client.EmuHawk
 			if (code.Length == 9 && code.Contains("-"))
 			{
 				var result = GenesisGameGenieDecoder.Decode(code);
-				if (result.IsValid)
-				{
-					var description = Description(code);
-					Global.CheatList.Add(result.ToCheat(MemoryDomains.SystemBus, description));
-				}
-				else
-				{
-					InputError(result.Error);
-				}
+				AddCheat(code, result);
 			}
 
 			// Action Replay?
 			if (code.Contains(":"))
 			{
-				var result = GenesisActionReplayDecoder.Decode(code);
-				if (result.IsValid)
+				// Problem: I don't know what the Non-FF Style codes are.
+				// TODO: Fix that.
+				if (code.StartsWith("FF") == false)
 				{
-					// Problem: I don't know what the Non-FF Style codes are.
-					// TODO: Fix that.
-					if (code.StartsWith("FF") == false)
-					{
-						MessageBox.Show("This Action Replay Code, is not understood by this tool.", "Tool Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-						return;
-					}
+					MessageBox.Show("This Action Replay Code, is not understood by this tool.", "Tool Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+					return;
+				}
 
-					var description = Description(code);
-					Global.CheatList.Add(result.ToCheat(MemoryDomains.SystemBus, description));
-				}
-				else
-				{
-					InputError(result.Error);
-				}
+				var result = GenesisActionReplayDecoder.Decode(code);
+				AddCheat(code, result);
 			}
 
 			InputError($"Unknown code type: {code}");
@@ -203,59 +158,27 @@ namespace BizHawk.Client.EmuHawk
 		private void N64(string code)
 		{
 			var result = N64GameSharkDecoder.Decode(code);
-			if (result.IsValid)
-			{
-				var description = Description(code);
-				Global.CheatList.Add(result.ToCheat(MemoryDomains["RDRAM"], description));
-			}
-			else
-			{
-				InputError(result.Error);
-			}
+			AddCheat(code, result, "RDRAM");
 		}
 
 		private void Nes(string code)
 		{
 			var result = NesGameGenieDecoder.Decode(code);
-			if (result.IsValid)
-			{
-				var description = Description(code);
-				Global.CheatList.Add(result.ToCheat(MemoryDomains.SystemBus, description));
-			}
-			else
-			{
-				InputError(result.Error);
-			}
+			AddCheat(code, result);
 		}
 
 		private void Psx(string code)
 		{
 			var result = PsxGameSharkDecoder.Decode(code);
-			if (result.IsValid)
-			{
-				var description = Description(code);
-				Global.CheatList.Add(result.ToCheat(MemoryDomains["MainRAM"], description));
-			}
-			else
-			{
-				InputError(result.Error);
-			}
+			AddCheat(code, result, "MainRAM");
 		}
 
 		private void Saturn(string code)
 		{
 			var result = SaturnGameSharkDecoder.Decode(code);
-			if (result.IsValid)
-			{
-				var description = Description(code);
 
-				// Is Work RAM High may be incorrect?
-				Global.CheatList.Add(result.ToCheat(MemoryDomains["Work Ram High"], description));
-			}
-			else
-			{
-				InputError(result.Error);
-			}
+			// Work RAM High may be incorrect?
+			AddCheat(code, result, "Work Ram High");
 		}
 
 		// Note: this also handles Game Gear due to shared hardware
@@ -265,30 +188,14 @@ namespace BizHawk.Client.EmuHawk
 			if (code.LastIndexOf("-") == 7 && code.IndexOf("-") == 3)
 			{
 				var result = GbGgGameGenieDecoder.Decode(code);
-				if (result.IsValid)
-				{
-					var description = Description(code);
-					Global.CheatList.Add(result.ToCheat(MemoryDomains.SystemBus, description));
-				}
-				else
-				{
-					InputError(result.Error);
-				}
+				AddCheat(code, result);
 			}
 
 			// Action Replay
 			else if (code.IndexOf("-") == 3 && code.Length == 9)
 			{
 				var result = SmsActionReplayDecoder.Decode(code);
-				if (result.IsValid)
-				{
-					var description = Description(code);
-					Global.CheatList.Add(result.ToCheat(MemoryDomains.SystemBus, description));
-				}
-				else
-				{
-					InputError(result.Error);
-				}
+				AddCheat(code, result);
 			}
 
 			InputError($"Unknown code type: {code}");
@@ -299,29 +206,13 @@ namespace BizHawk.Client.EmuHawk
 			if (code.Contains("-") && code.Length == 9)
 			{
 				MessageBox.Show("Game genie codes are not currently supported for SNES", "SNES Game Genie not supported", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				//var result = SnesGameGenieDecoder.Decode(code);
-				//if (result.IsValid)
-				//{
-				//	var description = Description(code);
-				//	Global.CheatList.Add(result.ToCheat(MemoryDomains.SystemBus, description));
-				//}
-				//else
-				//{
-				//	InputError(result.Error);
-				//}
+				////var result = SnesGameGenieDecoder.Decode(code);
+				////AddCheat(code, result, "CART ROM");
 			}
 			else if (code.Length == 8)
 			{
 				var result = GbGameSharkDecoder.Decode(code);
-				if (result.IsValid)
-				{
-					var description = Description(code);
-					Global.CheatList.Add(result.ToCheat(MemoryDomains.SystemBus, description));
-				}
-				else
-				{
-					InputError(result.Error);
-				}
+				AddCheat(code, result);
 			}
 			
 			InputError($"Unknown code type: {code}");
@@ -338,16 +229,28 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void AddCheat(string code, IDecodeResult result, string domain = null)
+		{
+			var memoryDomain = domain == null
+				? MemoryDomains.SystemBus
+				: MemoryDomains[domain];
+
+			if (result.IsValid)
+			{
+				var description = !string.IsNullOrWhiteSpace(txtDescription.Text)
+					? txtDescription.Text
+					: code;
+				Global.CheatList.Add(result.ToCheat(memoryDomain, description));
+			}
+			else
+			{
+				InputError(result.Error);
+			}
+		}
+
 		private void InputError(string message)
 		{
 			MessageBox.Show(message, "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-		}
-
-		private string Description(string cheat)
-		{
-			return !string.IsNullOrWhiteSpace(txtDescription.Text)
-				? txtDescription.Text
-				: cheat;
 		}
 	}
 }
