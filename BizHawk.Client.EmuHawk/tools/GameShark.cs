@@ -77,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 				switch (Emulator.SystemId)
 				{
 					case "GB":
-						GameBoy();
+						GameBoy(_singleCheat);
 						break;
 					case "GBA":
 						GBA();
@@ -116,34 +116,34 @@ namespace BizHawk.Client.EmuHawk
 			txtDescription.Clear();
 		}
 
-		private void GameBoy()
+		private void GameBoy(string cheat)
 		{
 			// Game Genie
-			if (_singleCheat.LastIndexOf("-") == 7 && _singleCheat.IndexOf("-") == 3)
+			if (cheat.LastIndexOf("-") == 7 && cheat.IndexOf("-") == 3)
 			{
-				var decoder = new GbGgGameGenieDecoder(_singleCheat);
+				var decoder = new GbGgGameGenieDecoder(cheat);
 				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], decoder.Address, WatchSize.Word, Common.DisplayType.Hex, false, txtDescription.Text);
 				Global.CheatList.Add(decoder.Compare.HasValue
 					? new Cheat(watch, decoder.Value, decoder.Compare)
 					: new Cheat(watch, decoder.Value));
 			}
-			else if (_singleCheat.Contains("-") && _singleCheat.LastIndexOf("-") != 7 && _singleCheat.IndexOf("-") != 3)
+			else if (cheat.Contains("-") && cheat.LastIndexOf("-") != 7 && cheat.IndexOf("-") != 3)
 			{
 				MessageBox.Show("All GameBoy Game Genie Codes need to have a dash after the third character and seventh character.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 
 			// Game Shark codes
-			if (_singleCheat.Length != 8 && _singleCheat.Contains("-") == false)
+			if (cheat.Length != 8 && cheat.Contains("-") == false)
 			{
 				MessageBox.Show("All GameShark Codes need to be Eight characters in Length", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 
-			if (_singleCheat.Length == 8 && _singleCheat.Contains("-") == false)
+			if (cheat.Length == 8 && cheat.Contains("-") == false)
 			{
-				_testo = _singleCheat.Remove(2, 6);
-				switch (_testo)
+				var test = cheat.Remove(2, 6);
+				switch (test)
 				{
 					case "00":
 					case "01":
@@ -153,7 +153,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 				}
 
-				var decoder = new GbGameSharkDecoder(_singleCheat);
+				var decoder = new GbGameSharkDecoder(cheat);
 				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], decoder.Address, WatchSize.Word, Common.DisplayType.Hex, false, txtDescription.Text);
 				Global.CheatList.Add(new Cheat(watch, decoder.Value));
 			}
