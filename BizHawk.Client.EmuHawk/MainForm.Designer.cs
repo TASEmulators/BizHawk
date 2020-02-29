@@ -335,7 +335,6 @@
 			this.GGLsettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GenesisSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.vDPViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.GenesisGameGenieECDC = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator26 = new System.Windows.Forms.ToolStripSeparator();
 			this.GenesisSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.wonderSwanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -2975,7 +2974,6 @@
 			// 
 			this.GenesisSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.vDPViewerToolStripMenuItem,
-			this.GenesisGameGenieECDC,
 			this.toolStripSeparator26,
 			this.GenesisSettingsToolStripMenuItem});
 			this.GenesisSubMenu.Name = "GenesisSubMenu";
@@ -2988,13 +2986,6 @@
 			this.vDPViewerToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.vDPViewerToolStripMenuItem.Text = "&VDP Viewer";
 			this.vDPViewerToolStripMenuItem.Click += new System.EventHandler(this.GenVdpViewerMenuItem_Click);
-			// 
-			// GenesisGameGenieECDC
-			// 
-			this.GenesisGameGenieECDC.Name = "GenesisGameGenieECDC";
-			this.GenesisGameGenieECDC.Size = new System.Drawing.Size(217, 22);
-			this.GenesisGameGenieECDC.Text = "&Game Genie Encoder/Decoder";
-			this.GenesisGameGenieECDC.Click += new System.EventHandler(this.GenesisGameGenieEcDc_Click);
 			// 
 			// toolStripSeparator26
 			// 
@@ -4355,7 +4346,6 @@
 		private System.Windows.Forms.ToolStripMenuItem SaveRAMSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem FlushSaveRAMMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem PSXDiscControlsMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem GenesisGameGenieECDC;
 		private System.Windows.Forms.ToolStripStatusLabel UpdateNotification;
 		private System.Windows.Forms.ToolStripMenuItem PSXControllerSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem MacroToolMenuItem;

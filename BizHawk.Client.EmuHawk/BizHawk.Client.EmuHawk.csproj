@@ -537,9 +537,6 @@
 		<Compile Update="tools/Genesis/GenDbgWind.cs" SubType="Form" />
 		<Compile Update="tools/Genesis/GenDbgWind.Designer.cs" DependentUpon="GenDbgWind.cs" />
 		<EmbeddedResource Update="tools/Genesis/GenDbgWind.resx" DependentUpon="GenDbgWind.cs" />
-		<Compile Update="tools/Genesis/GenGameGenie.cs" SubType="Form" />
-		<Compile Update="tools/Genesis/GenGameGenie.Designer.cs" DependentUpon="GenGameGenie.cs" />
-		<EmbeddedResource Update="tools/Genesis/GenGameGenie.resx" DependentUpon="GenGameGenie.cs" />
 		<Compile Update="tools/Genesis/VDPViewer.cs" SubType="Form" />
 		<Compile Update="tools/Genesis/VDPViewer.Designer.cs" DependentUpon="VDPViewer.cs" />
 		<EmbeddedResource Update="tools/Genesis/VDPViewer.resx" DependentUpon="VDPViewer.cs" />

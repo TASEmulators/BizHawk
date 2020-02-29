@@ -2330,11 +2330,6 @@ namespace BizHawk.Client.EmuHawk
 			GenericCoreConfig.DoDialog(this, "Genesis Settings");
 		}
 
-		private void GenesisGameGenieEcDc_Click(object sender, EventArgs e)
-		{
-			Tools.Load<GenGameGenie>();
-		}
-
 		#endregion
 
 		#region Wondersawn
