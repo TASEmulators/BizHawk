@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Windows.Forms;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
+using BizHawk.Client.Common.cheats;
 
 // TODO:
 // Add Support/Handling for The Following Systems and Devices:
@@ -40,42 +41,6 @@ namespace BizHawk.Client.EmuHawk
 			['D'] = 13,
 			['E'] = 14,
 			['F'] = 15
-		};
-
-		private readonly Dictionary<char, long> _genGameGenieTable = new Dictionary<char, long>
-		{
-			['A'] = 0,
-			['B'] = 1,
-			['C'] = 2,
-			['D'] = 3,
-			['E'] = 4,
-			['F'] = 5,
-			['G'] = 6,
-			['H'] = 7,
-			['J'] = 8,
-			['K'] = 9,
-			['L'] = 10,
-			['M'] = 11,
-			['N'] = 12,
-			['P'] = 13,
-			['R'] = 14,
-			['S'] = 15,
-			['T'] = 16,
-			['V'] = 17,
-			['W'] = 18,
-			['X'] = 19,
-			['Y'] = 20,
-			['Z'] = 21,
-			['0'] = 22,
-			['1'] = 23,
-			['2'] = 24,
-			['3'] = 25,
-			['4'] = 26,
-			['5'] = 27,
-			['6'] = 28,
-			['7'] = 29,
-			['8'] = 30,
-			['9'] = 31
 		};
 
 		// including transposition
@@ -2353,8 +2318,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Gen()
 		{
-			// Game Genie only, for now.
-			// This applies to the Game Genie
+			// Game Genie only
 			if (_singleCheat.Length == 9 && _singleCheat.Contains("-"))
 			{
 				if (_singleCheat.IndexOf("-") != 4)
@@ -2368,39 +2332,11 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 
-				// This is taken from the GenGameGenie.CS file.
-				string code = _singleCheat;
-
-				// Remove the -
-				code = code.Remove(4, 1);
-				long hexCode = 0;
-
-				// convert code to a long binary string
-				foreach (var t in code)
-				{
-					hexCode <<= 5;
-					_genGameGenieTable.TryGetValue(t, out var y);
-					hexCode |= y;
-				}
-
-				long decoded = (hexCode & 0xFF00000000) >> 32;
-				decoded |= hexCode & 0x00FF000000;
-				decoded |= (hexCode & 0x0000FF0000) << 16;
-				decoded |= (hexCode & 0x00000000700) << 5;
-				decoded |= (hexCode & 0x000000F800) >> 3;
-				decoded |= (hexCode & 0x00000000FF) << 16;
-
-				var val = (int)(decoded & 0x000000FFFF);
-				var add = (int)((decoded & 0xFFFFFF0000) >> 16);
-
-				// Make our Strings get the Hex Values.
-				string address = add.ToString("X6");
+				var decoder = new GenesisGameGenieDecoder(_singleCheat);
 
 				// Game Genie, modifies the "ROM" which is why it says, "MD CART"
-				var watch = Watch.GenerateWatch(MemoryDomains["M68K BUS"], long.Parse(address, NumberStyles.HexNumber), WatchSize.Word, Common.DisplayType.Hex, true, txtDescription.Text);
-				
-				// Add Cheat
-				Global.CheatList.Add(new Cheat(watch, val));
+				var watch = Watch.GenerateWatch(MemoryDomains["M68K BUS"], decoder.Address, WatchSize.Word, Common.DisplayType.Hex, true, txtDescription.Text);
+				Global.CheatList.Add(new Cheat(watch, decoder.Value));
 			}
 
 			// Action Replay?
