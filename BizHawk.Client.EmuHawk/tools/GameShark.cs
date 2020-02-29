@@ -56,7 +56,6 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		private string _parseString;
 		private string _ramAddress;
 		private string _ramValue;
 		private int _byteSize;
@@ -86,7 +85,6 @@ namespace BizHawk.Client.EmuHawk
 		private void Go_Click(object sender, EventArgs e)
 		{
 			// Reset Variables
-			_parseString = null;
 			_ramAddress = null;
 			_ramValue = null;
 			_byteSize = 0;
@@ -218,7 +216,7 @@ namespace BizHawk.Client.EmuHawk
 						// We don't have a GameShark code, or we have an encrypted code?
 						// Further testing required.
 						// GameShark Decryption Method
-						_parseString = cheat;
+						var _parseString = cheat;
 
 						op1 = uint.Parse(_parseString.Remove(8, 9), NumberStyles.HexNumber);
 						op2 = uint.Parse(_parseString.Remove(0, 9), NumberStyles.HexNumber);
@@ -253,7 +251,7 @@ namespace BizHawk.Client.EmuHawk
 					if (_blnActionReplayMax == false)
 					{
 						// Action Replay Max decryption Method
-						_parseString = cheat;
+						var _parseString = cheat;
 						sum = 0xC6EF3720;
 						op1 = uint.Parse(_parseString.Remove(8, 9), NumberStyles.HexNumber);
 						op2 = uint.Parse(_parseString.Remove(0, 9), NumberStyles.HexNumber);
@@ -1795,7 +1793,7 @@ namespace BizHawk.Client.EmuHawk
 							// The code was Encrypted
 							// Decrypt before we do stuff.
 							// Action Replay Max decryption Method
-							_parseString = singleCheat;
+							var _parseString = singleCheat;
 							var sum = 0xC6EF3720;
 							var op1 = uint.Parse(_parseString.Remove(8, 9), NumberStyles.HexNumber);
 							var op2 = uint.Parse(_parseString.Remove(0, 9), NumberStyles.HexNumber);
@@ -2313,7 +2311,7 @@ namespace BizHawk.Client.EmuHawk
 			// Note, 80XXXXXX 00YY
 			// Is Byte, not Word
 			// Remove the 80 Octect
-			_parseString = cheat.Remove(0, 2);
+			var _parseString = cheat.Remove(0, 2);
 
 			// Get RAM Address
 			_ramAddress = _parseString.Remove(6, 5);
@@ -2449,7 +2447,7 @@ namespace BizHawk.Client.EmuHawk
 			// Address: 0D10BA
 			// Value:  0009
 			// Remove first two octets
-			_parseString = cheat.Remove(0, 2);
+			var _parseString = cheat.Remove(0, 2);
 			
 			// Get RAM Address
 			_ramAddress = _parseString.Remove(6, 5);
@@ -2522,7 +2520,7 @@ namespace BizHawk.Client.EmuHawk
 			// Value:  90
 			// Note, 3XXXXXXX are Big Endian
 			// Remove first two octets
-			_parseString = cheat.Remove(0, 2);
+			var _parseString = cheat.Remove(0, 2);
 
 			// Get RAM Address
 			_ramAddress = _parseString.Remove(6, 5);
