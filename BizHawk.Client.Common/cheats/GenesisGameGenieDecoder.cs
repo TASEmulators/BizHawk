@@ -3,11 +3,9 @@ using System.Collections.Generic;
 
 namespace BizHawk.Client.Common.cheats
 {
-	public class GenesisGameGenieDecoder
+	public static class GenesisGameGenieDecoder
 	{
-		private readonly string _code;
-
-		private readonly Dictionary<char, long> _genGameGenieTable = new Dictionary<char, long>
+		private static readonly Dictionary<char, long> GameGenieTable = new Dictionary<char, long>
 		{
 			['A'] = 0,
 			['B'] = 1,
@@ -43,35 +41,31 @@ namespace BizHawk.Client.Common.cheats
 			['9'] = 31
 		};
 
-		public GenesisGameGenieDecoder(string code)
+		public static IDecodeResult Decode(string code)
 		{
-			_code = code;
-			Decode();
-		}
-
-		public int Address { get; private set; }
-		public int Value { get; private set; }
-
-		public void Decode()
-		{
-			if (_code.IndexOf("-") != 4)
+			if (code == null)
 			{
-				throw new InvalidOperationException("All Genesis Game Genie Codes need to contain a dash after the fourth character");
+				throw new ArgumentNullException(nameof(code));
 			}
-			if (_code.Contains("I") | _code.Contains("O") | _code.Contains("Q") | _code.Contains("U"))
+
+			if (code.IndexOf("-") != 4)
 			{
-				throw new InvalidOperationException("Genesis Game Genie Codes do not use I, O, Q or U.");
+				return new InvalidCheatCode("Game Genie Codes need to contain a dash after the fourth character");
+			}
+			if (code.Contains("I") | code.Contains("O") | code.Contains("Q") | code.Contains("U"))
+			{
+				return new InvalidCheatCode("Game Genie Codes do not use I, O, Q or U.");
 			}
 
 			// Remove the -
-			string code = _code.Remove(4, 1);
+			code = code.Remove(4, 1);
 			long hexCode = 0;
 
 			// convert code to a long binary string
 			foreach (var t in code)
 			{
 				hexCode <<= 5;
-				_genGameGenieTable.TryGetValue(t, out var y);
+				GameGenieTable.TryGetValue(t, out var y);
 				hexCode |= y;
 			}
 
@@ -82,8 +76,12 @@ namespace BizHawk.Client.Common.cheats
 			decoded |= (hexCode & 0x000000F800) >> 3;
 			decoded |= (hexCode & 0x00000000FF) << 16;
 
-			Value = (int)(decoded & 0x000000FFFF);
-			Address= (int)((decoded & 0xFFFFFF0000) >> 16);
+			return new DecodeResult
+			{
+				Size = WatchSize.Word,
+				Value = (int)(decoded & 0x000000FFFF),
+				Address= (int)((decoded & 0xFFFFFF0000) >> 16)
+			};
 		}
 	}
 }

@@ -4,24 +4,22 @@ using System.Globalization;
 namespace BizHawk.Client.Common.cheats
 {
 	// TODO: validate string and throw
-	public class GenesisActionReplayDecoder
+	public static class GenesisActionReplayDecoder
 	{
-		private readonly string _code;
-
-		public GenesisActionReplayDecoder(string code)
+		public static IDecodeResult Decode(string code)
 		{
-			_code = code;
-			Decode();
-		}
+			if (code == null)
+			{
+				throw new ArgumentNullException(nameof(code));
+			}
 
-		public int Address { get; private set; }
-		public int Value { get; private set; }
-		public WatchSize Size { get; private set; } = WatchSize.Byte;
+			if (code.IndexOf(":") != 6)
+			{
+				return new InvalidCheatCode("Action Replay/Pro Action Replay Codes need to contain a colon after the sixth character.");
+			}
 
-		public void Decode()
-		{
-			var parseString = _code.Remove(0, 2);
-			switch (_code.Length)
+			var parseString = code.Remove(0, 2);
+			switch (code.Length)
 			{
 				case 9:
 					// Sample Code of 1-Byte:
@@ -29,24 +27,26 @@ namespace BizHawk.Client.Common.cheats
 					// Becomes:
 					// Address: F761
 					// Value: 64
-					Address = int.Parse(parseString.Remove(4, 3), NumberStyles.HexNumber);
-					Value = int.Parse(parseString.Remove(0, 5), NumberStyles.HexNumber);
-					Size = WatchSize.Byte;
-					break;
+					return new DecodeResult
+					{
+						Address = int.Parse(parseString.Remove(4, 3), NumberStyles.HexNumber),
+						Value = int.Parse(parseString.Remove(0, 5), NumberStyles.HexNumber),
+						Size = WatchSize.Byte
+					};
 				case 11:
 					// Sample Code of 2-Byte:
 					// FFF761:6411
 					// Becomes:
 					// Address: F761
 					// Value: 6411
-					Address = int.Parse(parseString.Remove(4, 5), NumberStyles.HexNumber);
-					Value = int.Parse(parseString.Remove(0, 5), NumberStyles.HexNumber);
-					Size = WatchSize.Word;
-					break;
+					return new DecodeResult
+					{
+						Address = int.Parse(parseString.Remove(4, 5), NumberStyles.HexNumber),
+						Value = int.Parse(parseString.Remove(0, 5), NumberStyles.HexNumber),
+						Size = WatchSize.Word
+					};
 				default:
-					// We could have checked above but here is fine, since it's a quick check due to one of three possibilities.
-					throw new InvalidOperationException(
-						"All Genesis Action Replay/Pro Action Replay Codes need to be either 9 or 11 characters in length");
+					return new InvalidCheatCode("Action Replay/Pro Action Replay Codes need to be either 9 or 11 characters.");
 			}
 		}
 	}

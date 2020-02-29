@@ -157,58 +157,47 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void Gen(string cheat)
+		private void Gen(string code)
 		{
 			// Game Genie only
-			if (cheat.Length == 9 && cheat.Contains("-"))
+			if (code.Length == 9 && code.Contains("-"))
 			{
-				if (cheat.IndexOf("-") != 4)
+				var result = GenesisGameGenieDecoder.Decode(code);
+				if (result.IsValid)
 				{
-					MessageBox.Show("All Genesis Game Genie Codes need to contain a dash after the fourth character", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return;
+					var description = Description(code);
+					Global.CheatList.Add(result.ToCheat(MemoryDomains.SystemBus, description));
 				}
-				if (cheat.Contains("I") | cheat.Contains("O") | cheat.Contains("Q") | cheat.Contains("U"))
+				else
 				{
-					MessageBox.Show("All Genesis Game Genie Codes do not use I, O, Q or U.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return;
+					InputError(result.Error);
 				}
-
-				var decoder = new GenesisGameGenieDecoder(cheat);
-
-				// Game Genie, modifies the "ROM" which is why it says, "MD CART"
-				var watch = Watch.GenerateWatch(MemoryDomains["M68K BUS"], decoder.Address, WatchSize.Word, Common.DisplayType.Hex, true, txtDescription.Text);
-				Global.CheatList.Add(new Cheat(watch, decoder.Value));
 			}
 
 			// Action Replay?
-			if (cheat.Contains(":"))
+			if (code.Contains(":"))
 			{
-				// We start from Zero.
-				if (cheat.IndexOf(":") != 6)
+				var result = GenesisActionReplayDecoder.Decode(code);
+				if (result.IsValid)
 				{
-					InputError("All Genesis Action Replay/Pro Action Replay Codes need to contain a colon after the sixth character");
-					return;
-				}
+					// Problem: I don't know what the Non-FF Style codes are.
+					// TODO: Fix that.
+					if (code.StartsWith("FF") == false)
+					{
+						MessageBox.Show("This Action Replay Code, is not understood by this tool.", "Tool Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+						return;
+					}
 
-				// Problem: I don't know what the Non-FF Style codes are.
-				// TODO: Fix that.
-				if (cheat.StartsWith("FF") == false)
+					var description = Description(code);
+					Global.CheatList.Add(result.ToCheat(MemoryDomains.SystemBus, description));
+				}
+				else
 				{
-					MessageBox.Show("This Action Replay Code, is not understood by this tool.", "Tool Error"
-						, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-					return;
+					InputError(result.Error);
 				}
-
-				var decoder = new GenesisActionReplayDecoder(cheat);
-				var watch = Watch.GenerateWatch(
-					MemoryDomains["68K RAM"],
-					decoder.Address,
-					decoder.Size,
-					Common.DisplayType.Hex,
-					false,
-					txtDescription.Text);
-				Global.CheatList.Add(new Cheat(watch, decoder.Value));
 			}
+
+			InputError($"Unknown code type: {code}");
 		}
 
 		private void N64(string cheat)
