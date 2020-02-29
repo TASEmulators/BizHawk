@@ -144,7 +144,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(217, 90);
+			this.ClientSize = new System.Drawing.Size(323, 90);
 			this.Controls.Add(this.flpMain);
 			this.Controls.Add(this.flpButtons);
 			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.Lightning_MultiSize;
