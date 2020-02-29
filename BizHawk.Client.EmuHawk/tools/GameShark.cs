@@ -2461,10 +2461,7 @@ namespace BizHawk.Client.EmuHawk
 			switch (test)
 			{
 				case "1":
-					_byteSize = 16;
-					break;
 				case "3":
-					_byteSize = 8;
 					break;
 				// 0 writes once.
 				case "0":
@@ -2480,34 +2477,13 @@ namespace BizHawk.Client.EmuHawk
 					return;
 			}
 
-			// Sample Input for Saturn:
-			// 160949FC 0090
-			// Address: 0949FC
-			// Value:  90
-			// Note, 3XXXXXXX are Big Endian
-			// Remove first two octets
-			var parseString = cheat.Remove(0, 2);
-
-			// Get RAM Address
-			_ramAddress = parseString.Remove(6, 5);
-
-			// Get RAM Value
-			_ramValue = parseString.Remove(0, 7);
 			try
 			{
-				// A Watch needs to be generated so we can make a cheat out of that.  This is due to how the Cheat engine works.
-				// System Bus Domain, The Address to Watch, Byte size (Word), Hex Display, Description.  Big Endian.
+				var decoder = new SaturnGameSharkDecoder(cheat);
+				
 				// My Concern is that Work RAM High may be incorrect?
-				if (_byteSize == 8)
-				{
-					var watch = Watch.GenerateWatch(MemoryDomains["Work Ram High"], long.Parse(_ramAddress, NumberStyles.HexNumber), WatchSize.Byte, Common.DisplayType.Hex, true, txtDescription.Text);
-					Global.CheatList.Add(new Cheat(watch, int.Parse(_ramValue, NumberStyles.HexNumber)));
-				}
-				else if (_byteSize == 16)
-				{
-					var watch = Watch.GenerateWatch(MemoryDomains["Work Ram High"], long.Parse(_ramAddress, NumberStyles.HexNumber), WatchSize.Word, Common.DisplayType.Hex, true, txtDescription.Text);
-					Global.CheatList.Add(new Cheat(watch, int.Parse(_ramValue, NumberStyles.HexNumber)));
-				}
+				var watch = Watch.GenerateWatch(MemoryDomains["Work Ram High"], decoder.Address, decoder.Size, Common.DisplayType.Hex, true, txtDescription.Text);
+				Global.CheatList.Add(new Cheat(watch, decoder.Value));
 			}
 			catch (Exception ex)
 			{

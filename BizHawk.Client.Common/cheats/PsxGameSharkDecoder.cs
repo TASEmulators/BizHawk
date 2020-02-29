@@ -16,6 +16,8 @@ namespace BizHawk.Client.Common.cheats
 
 		public int Address { get; private set; }
 		public int Value { get; private set; }
+
+		// TODO: WatchSize
 		public int ByteSize { get; private set; } = 1;
 
 		// 30XXXXXX 00YY
