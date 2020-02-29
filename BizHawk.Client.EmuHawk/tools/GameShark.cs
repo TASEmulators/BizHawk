@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.Windows.Forms;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
@@ -159,16 +158,9 @@ namespace BizHawk.Client.EmuHawk
 				InputError("Codebreaker/GameShark SP/Xploder codes are not yet supported by this tool.");
 			}
 
-			try
-			{
-				var decoder = new GbaGameSharkDecoder(cheat);
-				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], decoder.Address, decoder.Size, Common.DisplayType.Hex, false, txtDescription.Text);
-				Global.CheatList.Add(new Cheat(watch, decoder.Value));
-			}
-			catch (Exception ex)
-			{
-				DecodeError(ex);
-			}
+			var decoder = new GbaGameSharkDecoder(cheat);
+			var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], decoder.Address, decoder.Size, Common.DisplayType.Hex, false, txtDescription.Text);
+			Global.CheatList.Add(new Cheat(watch, decoder.Value));
 		}
 
 		private void Gen(string cheat)
@@ -213,22 +205,15 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 
-				try
-				{
-					var decoder = new GenesisActionReplayDecoder(cheat);
-					var watch = Watch.GenerateWatch(
-						MemoryDomains["68K RAM"],
-						decoder.Address,
-						decoder.Size,
-						Common.DisplayType.Hex,
-						false,
-						txtDescription.Text);
-					Global.CheatList.Add(new Cheat(watch, decoder.Value));
-				}
-				catch (Exception ex)
-				{
-					MessageBox.Show($"An Error occured: {ex.GetType()}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				}
+				var decoder = new GenesisActionReplayDecoder(cheat);
+				var watch = Watch.GenerateWatch(
+					MemoryDomains["68K RAM"],
+					decoder.Address,
+					decoder.Size,
+					Common.DisplayType.Hex,
+					false,
+					txtDescription.Text);
+				Global.CheatList.Add(new Cheat(watch, decoder.Value));
 			}
 		}
 
@@ -292,16 +277,9 @@ namespace BizHawk.Client.EmuHawk
 					return;
 			}
 
-			try
-			{
-				var decoder = new N64GameSharkDecoder(cheat);
-				var watch = Watch.GenerateWatch(MemoryDomains["RDRAM"], decoder.Address, decoder.Size, Common.DisplayType.Hex, true, txtDescription.Text);
-				Global.CheatList.Add(new Cheat(watch, int.Parse(_ramValue, NumberStyles.HexNumber)));
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show($"An Error occured: {ex.GetType()}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
+			var decoder = new N64GameSharkDecoder(cheat);
+			var watch = Watch.GenerateWatch(MemoryDomains["RDRAM"], decoder.Address, decoder.Size, Common.DisplayType.Hex, true, txtDescription.Text);
+			Global.CheatList.Add(new Cheat(watch, decoder.Value));
 		}
 
 		private void Nes(string cheat)
@@ -314,19 +292,11 @@ namespace BizHawk.Client.EmuHawk
 			var description = Description(cheat);
 			var decoder = new NesGameGenieDecoder(cheat);
 
-			try
-			{
-				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], decoder.Address, WatchSize.Byte, Common.DisplayType.Hex, false, description);
-				Global.CheatList.Add(
-					decoder.Compare.HasValue
-						? new Cheat(watch, decoder.Value, decoder.Compare.Value, true, Cheat.CompareType.Equal)
-						: new Cheat(watch, decoder.Value));
-
-			}
-			catch (Exception ex)
-			{
-				DecodeError(ex);
-			}
+			var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], decoder.Address, WatchSize.Byte, Common.DisplayType.Hex, false, description);
+			Global.CheatList.Add(
+				decoder.Compare.HasValue
+					? new Cheat(watch, decoder.Value, decoder.Compare.Value, true, Cheat.CompareType.Equal)
+					: new Cheat(watch, decoder.Value));
 		}
 
 		private void Psx(string cheat)
@@ -385,18 +355,11 @@ namespace BizHawk.Client.EmuHawk
 					return;
 			}
 
-			try
-			{
-				var decoder = new PsxGameSharkDecoder(cheat);
+			var decoder = new PsxGameSharkDecoder(cheat);
 
-				// My Concern is that Work RAM High may be incorrect?
-				var watch = Watch.GenerateWatch(MemoryDomains["MainRAM"], decoder.Address, decoder.Size, Common.DisplayType.Hex, false, txtDescription.Text);
-				Global.CheatList.Add(new Cheat(watch, decoder.Value));
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show($"An Error occured: {ex.GetType()}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
+			// Is Work RAM High may be incorrect?
+			var watch = Watch.GenerateWatch(MemoryDomains["MainRAM"], decoder.Address, decoder.Size, Common.DisplayType.Hex, false, txtDescription.Text);
+			Global.CheatList.Add(new Cheat(watch, decoder.Value));
 		}
 
 		private void Saturn(string cheat)
@@ -434,18 +397,11 @@ namespace BizHawk.Client.EmuHawk
 					return;
 			}
 
-			try
-			{
-				var decoder = new SaturnGameSharkDecoder(cheat);
-				
-				// My Concern is that Work RAM High may be incorrect?
-				var watch = Watch.GenerateWatch(MemoryDomains["Work Ram High"], decoder.Address, decoder.Size, Common.DisplayType.Hex, true, txtDescription.Text);
-				Global.CheatList.Add(new Cheat(watch, decoder.Value));
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show($"An Error occured: {ex.GetType()}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
+			var decoder = new SaturnGameSharkDecoder(cheat);
+			
+			// Is Work RAM High may be incorrect?
+			var watch = Watch.GenerateWatch(MemoryDomains["Work Ram High"], decoder.Address, decoder.Size, Common.DisplayType.Hex, true, txtDescription.Text);
+			Global.CheatList.Add(new Cheat(watch, decoder.Value));
 		}
 
 		// This also handles Game Gear due to shared hardware. Go figure.
@@ -521,11 +477,6 @@ namespace BizHawk.Client.EmuHawk
 		private void InputError(string message)
 		{
 			MessageBox.Show(message, "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-		}
-
-		private void DecodeError(Exception ex)
-		{
-			MessageBox.Show($"An Error occured: {ex.GetType()}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
 
 		private string Description(string cheat)
