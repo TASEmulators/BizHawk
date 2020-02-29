@@ -118,8 +118,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GameBoy()
 		{
-			string ramCompare = null;
-
 			// Game Genie
 			if (_singleCheat.LastIndexOf("-") == 7 && _singleCheat.IndexOf("-") == 3)
 			{
@@ -155,33 +153,9 @@ namespace BizHawk.Client.EmuHawk
 						return;
 				}
 
-				// Sample Input for GB/GBC:
-				// 010FF6C1
-				// Becomes:
-				// Address C1F6
-				// Value 0F
-				_parseString = _singleCheat.Remove(0, 2);
-
-				// Now we need to break it down a little more.
-				_ramValue = _parseString.Remove(2, 4);
-				_parseString = _parseString.Remove(0, 2);
-
-				// The issue is Endian...  Time to get ultra clever.  And Regret it.
-				// First Half
-				_ramAddress = _parseString.Remove(0, 2);
-				_ramAddress = _ramAddress + _parseString.Remove(2, 2);
-			}
-
-			try
-			{
-				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(_ramAddress, NumberStyles.HexNumber), WatchSize.Word, Common.DisplayType.Hex, false, txtDescription.Text);
-				Global.CheatList.Add(ramCompare == null
-					? new Cheat(watch, int.Parse(_ramValue, NumberStyles.HexNumber))
-					: new Cheat(watch, int.Parse(_ramValue, NumberStyles.HexNumber), int.Parse(ramCompare, NumberStyles.HexNumber)));
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show($"An Error occured: {ex.GetType()}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				var decoder = new GbGameSharkDecoder(_singleCheat);
+				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], decoder.Address, WatchSize.Word, Common.DisplayType.Hex, false, txtDescription.Text);
+				Global.CheatList.Add(new Cheat(watch, decoder.Value));
 			}
 		}
 
