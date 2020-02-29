@@ -4,6 +4,7 @@ using System.Linq;
 
 using NLua;
 
+using BizHawk.Client.Common.cheats;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace BizHawk.Client.Common
+namespace BizHawk.Client.Common.cheats
 {
 	public class NesGameGenieDecoder
 	{
