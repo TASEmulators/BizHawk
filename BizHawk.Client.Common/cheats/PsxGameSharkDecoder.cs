@@ -4,41 +4,30 @@ using System.Globalization;
 namespace BizHawk.Client.Common.cheats
 {
 	// TODO: cheats support comparison type, so we could support a lot more codes, by having Compare and Type properties and parsing
-	public class PsxGameSharkDecoder
+	public static class PsxGameSharkDecoder
 	{
-		private readonly string _code;
-
-		public PsxGameSharkDecoder(string code)
-		{
-			_code = code;
-			Decode();
-		}
-
-		public int Address { get; private set; }
-		public int Value { get; private set; }
-
-		public WatchSize Size { get; private set; } = WatchSize.Word;
-
 		// 30XXXXXX 00YY
-		public void Decode()
+		public static IDecodeResult Decode(string code)
 		{
-			if (_code == null)
+			if (code == null)
 			{
-				throw new ArgumentNullException(nameof(_code));
+				throw new ArgumentNullException(nameof(code));
 			}
 
-			if (_code.IndexOf(" ") != 8)
+			if (code.IndexOf(" ") != 8)
 			{
-				throw new InvalidOperationException("All PSX GameShark Codes need to contain a space after the eighth character.");
+				return new InvalidCheatCode("All PSX GameShark Codes need to contain a space after the eighth character.");
 			}
 
-			if (_code.Length != 13)
+			if (code.Length != 13)
 			{
-				throw new InvalidOperationException("All PSX GameShark Cheats need to be 13 characters in length.");
+				return new InvalidCheatCode("All PSX GameShark Cheats need to be 13 characters in length.");
 			}
 
-			var type = _code.Substring(0, 2);
-			Size = type switch
+			var result = new DecodeResult();
+
+			var type = code.Substring(0, 2);
+			result.Size = type switch
 			{
 				"10" => WatchSize.Word,
 				"11" => WatchSize.Word,
@@ -60,9 +49,11 @@ namespace BizHawk.Client.Common.cheats
 				_ => WatchSize.Byte
 			};
 
-			var s = _code.Remove(0, 2);
-			Address = int.Parse(s.Remove(6, 5), NumberStyles.HexNumber);
-			Value = int.Parse(s.Remove(0, 7), NumberStyles.HexNumber);
+			var s = code.Remove(0, 2);
+			result.Address = int.Parse(s.Remove(6, 5), NumberStyles.HexNumber);
+			result.Value = int.Parse(s.Remove(0, 7), NumberStyles.HexNumber);
+
+			return result;
 		}
 	}
 }

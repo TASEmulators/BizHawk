@@ -25,9 +25,9 @@ namespace BizHawk.Client.Common.cheats
 		public string Error => "";
 	}
 
-	public class InvalidResult : IDecodeResult
+	public class InvalidCheatCode : IDecodeResult
 	{
-		public InvalidResult(string error)
+		public InvalidCheatCode(string error)
 		{
 			Error = error;
 		}

@@ -279,10 +279,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Nes(string code)
 		{
-			var description = Description(code);
 			var result = NesGameGenieDecoder.Decode(code);
 			if (result.IsValid)
 			{
+				var description = Description(code);
 				Global.CheatList.Add(result.ToCheat(MemoryDomains.SystemBus, description));
 			}
 			else
@@ -291,109 +291,34 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void Psx(string cheat)
+		private void Psx(string code)
 		{
-			// These codes, more or less work without Needing much work.
-			if (cheat.IndexOf(" ") != 8)
+			var result = PsxGameSharkDecoder.Decode(code);
+			if (result.IsValid)
 			{
-				MessageBox.Show("All PSX GameShark Codes need to contain a space after the eighth character", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return;
+				var description = Description(code);
+				Global.CheatList.Add(result.ToCheat(MemoryDomains["MainRAM"], description));
 			}
-
-			if (cheat.Length != 13)
+			else
 			{
-				MessageBox.Show("All PSX GameShark Cheats need to be 13 characters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return;
+				InputError(result.Error);
 			}
-
-			// This determines what kind of Code we have
-			var test = cheat.Substring(0, 2);
-
-			switch (test)
-			{
-				case "30":
-				case "80":
-					break;
-				case "E0":
-				case "E1":
-				case "E2":
-				case "D0":
-				case "D1":
-				case "D2":
-				case "D3":
-				case "D4":
-				case "D5":
-				case "D6":
-				case "10":
-				case "11":
-				case "20":
-				case "21":
-					MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-					return;
-				case "C0":
-				case "C1":
-				case "C2":
-					MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-					return;
-				// Slow-Mo
-				case "40":
-					InputError("The code you entered is not needed by Bizhawk.");
-					return;
-				case "50":
-					MessageBox.Show("The code you entered is not supported by this tool.  Please Submit the Game's Name, Cheat/Code and Purpose to the BizHawk forums.", "Tool Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-					return;
-				default:
-					MessageBox.Show("The GameShark code entered is not a recognized format.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return;
-			}
-
-			var decoder = new PsxGameSharkDecoder(cheat);
-
-			// Is Work RAM High may be incorrect?
-			var watch = Watch.GenerateWatch(MemoryDomains["MainRAM"], decoder.Address, decoder.Size, Common.DisplayType.Hex, false, txtDescription.Text);
-			Global.CheatList.Add(new Cheat(watch, decoder.Value));
 		}
 
-		private void Saturn(string cheat)
+		private void Saturn(string code)
 		{
-			if (cheat.IndexOf(" ") != 8)
+			var result = SaturnGameSharkDecoder.Decode(code);
+			if (result.IsValid)
 			{
-				InputError("All Saturn GameShark Codes need to contain a space after the eighth character.");
-				return;
-			}
+				var description = Description(code);
 
-			if (cheat.Length != 13)
+				// Is Work RAM High may be incorrect?
+				Global.CheatList.Add(result.ToCheat(MemoryDomains["Work Ram High"], description));
+			}
+			else
 			{
-				InputError("All Saturn GameShark Cheats need to be 13 characters in length.");
-				return;
+				InputError(result.Error);
 			}
-
-			// This is a special test.  Only the first character really matters?  16 or 36?
-			var test = cheat.Remove(2, 11).Remove(1, 1);
-			switch (test)
-			{
-				case "1":
-				case "3":
-					break;
-				// 0 writes once.
-				case "0":
-				// D is RAM Equal To Activator, do Next Value
-				case "D":
-					MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-					return;
-				case "F":
-					MessageBox.Show("The code you entered is not needed by Bizhawk.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-					return;
-				default:
-					InputError("The GameShark code entered is not a recognized format.");
-					return;
-			}
-
-			var decoder = new SaturnGameSharkDecoder(cheat);
-			
-			// Is Work RAM High may be incorrect?
-			var watch = Watch.GenerateWatch(MemoryDomains["Work Ram High"], decoder.Address, decoder.Size, Common.DisplayType.Hex, true, txtDescription.Text);
-			Global.CheatList.Add(new Cheat(watch, decoder.Value));
 		}
 
 		// This also handles Game Gear due to shared hardware. Go figure.
