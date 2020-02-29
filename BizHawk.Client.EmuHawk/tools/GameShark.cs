@@ -2600,51 +2600,19 @@ namespace BizHawk.Client.EmuHawk
 				////var watch = Watch.GenerateWatch(MemoryDomains["CARTROM"], decoder.Address, WatchSize.Byte, Common.DisplayType.Hex, false, txtDescription.Text);
 				////Global.CheatList.Add(new Cheat(watch, decoder.Value));
 			}
-
-			// This ONLY applies to Action Replay.
-			if (cheat.Length == 8)
+			else if (cheat.Length == 8)
 			{
-				// Sample Code:
-				// 7E18A428
-				// Address: 7E18A4
-				// Value: 28
-				// Remove last two octets
-				_ramAddress = _singleCheat.Remove(6, 2);
-
-				// Get RAM Value
-				_ramValue = _singleCheat.Remove(0, 6);
-
-				// Note, it's a Word.  However, we are using this to keep from repeating code.
-				_byteSize = 16;
+				var decoder = new SnesActionReplayDecoder(cheat);
+				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], decoder.Address, WatchSize.Word, Common.DisplayType.Hex, false, txtDescription.Text);
+				Global.CheatList.Add(new Cheat(watch, decoder.Value));
 			}
-
-			if (cheat.Contains("-") && cheat.Length != 9)
+			else if (cheat.Contains("-") && cheat.Length != 9)
 			{
 				MessageBox.Show("Game Genie Codes need to be nine characters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
-
-			if (cheat.Length != 9 && cheat.Length != 8)
+			else if (cheat.Length != 9 && cheat.Length != 8)
 			{
 				MessageBox.Show("Pro Action Replay Codes need to be eight characters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
-
-			try
-			{
-				// Action Replay
-				if (_byteSize == 16)
-				{
-					var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(_ramAddress, NumberStyles.HexNumber), WatchSize.Word, Common.DisplayType.Hex, false, txtDescription.Text);
-					Global.CheatList.Add(new Cheat(watch, int.Parse(_ramValue, NumberStyles.HexNumber)));
-				}
-				else if (_byteSize == 8)
-				{
-					var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(_ramAddress, NumberStyles.HexNumber), WatchSize.Byte, Common.DisplayType.Hex, false, txtDescription.Text);
-					Global.CheatList.Add(new Cheat(watch, int.Parse(_ramValue, NumberStyles.HexNumber)));
-				}
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show($"An Error occured: {ex.GetType()}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
 
