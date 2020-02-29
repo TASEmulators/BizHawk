@@ -2,6 +2,7 @@
 
 namespace BizHawk.Client.Common.cheats
 {
+	// TODO: validate string and throw
 	public class GbGameSharkDecoder
 	{
 		private readonly string _code;

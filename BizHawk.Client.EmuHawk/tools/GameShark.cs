@@ -2193,7 +2193,9 @@ namespace BizHawk.Client.EmuHawk
 				// We start from Zero.
 				if (_singleCheat.IndexOf(":") != 6)
 				{
-					MessageBox.Show("All Genesis Action Replay/Pro Action Replay Codes need to contain a colon after the sixth character", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					MessageBox.Show(
+						"All Genesis Action Replay/Pro Action Replay Codes need to contain a colon after the sixth character"
+						, "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					return;
 				}
 
@@ -2201,53 +2203,24 @@ namespace BizHawk.Client.EmuHawk
 				// TODO: Fix that.
 				if (_singleCheat.StartsWith("FF") == false)
 				{
-					MessageBox.Show("This Action Replay Code, is not understood by this tool.", "Tool Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+					MessageBox.Show("This Action Replay Code, is not understood by this tool.", "Tool Error"
+						, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 					return;
 				}
 
-				// Now to do some work.
-				// Determine Length, to Determine Byte Size
-				_parseString = _singleCheat.Remove(0, 2);
-				switch (_singleCheat.Length)
-				{
-					case 9:
-						// Sample Code of 1-Byte:
-						// FFF761:64
-						// Becomes:
-						// Address: F761
-						// Value: 64
-						_ramAddress = _parseString.Remove(4, 3);
-						_ramValue = _parseString.Remove(0, 5);
-						_byteSize = 1;
-						break;
-					case 11:
-						// Sample Code of 2-Byte:
-						// FFF761:6411
-						// Becomes:
-						// Address: F761
-						// Value: 6411
-						_ramAddress = _parseString.Remove(4, 5);
-						_ramValue = _parseString.Remove(0, 5);
-						_byteSize = 2;
-						break;
-					default:
-						// We could have checked above but here is fine, since it's a quick check due to one of three possibilities.
-						MessageBox.Show("All Genesis Action Replay/Pro Action Replay Codes need to be either 9 or 11 characters in length", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-						return;
-				}
+				var decoder = new GenesisActionReplayDecoder(_singleCheat);
 
 				try
 				{
-					if (_byteSize == 1)
-					{
-						var watch = Watch.GenerateWatch(MemoryDomains["68K RAM"], long.Parse(_ramAddress, NumberStyles.HexNumber), WatchSize.Byte, Common.DisplayType.Hex, false, txtDescription.Text);
-						Global.CheatList.Add(new Cheat(watch, int.Parse(_ramValue, NumberStyles.HexNumber)));
-					}
-					else if (_byteSize == 2)
-					{
-						var watch = Watch.GenerateWatch(MemoryDomains["68K RAM"], long.Parse(_ramAddress, NumberStyles.HexNumber), WatchSize.Word, Common.DisplayType.Hex, true, txtDescription.Text);
-						Global.CheatList.Add(new Cheat(watch, int.Parse(_ramValue, NumberStyles.HexNumber)));
-					}
+					var size = decoder.ByteSize == 1 ? WatchSize.Byte : WatchSize.Word;
+					var watch = Watch.GenerateWatch(
+						MemoryDomains["68K RAM"],
+						decoder.Address,
+						size,
+						Common.DisplayType.Hex,
+						false,
+						txtDescription.Text);
+					Global.CheatList.Add(new Cheat(watch, decoder.Value));
 				}
 				catch (Exception ex)
 				{
