@@ -2527,7 +2527,7 @@ namespace BizHawk.Client.EmuHawk
 				MessageBox.Show("Game Genie codes need to be six or eight characters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 
-			var decoder = new NESGameGenieDecoder(_singleCheat);
+			var decoder = new NesGameGenieDecoder(_singleCheat);
 
 			try
 			{

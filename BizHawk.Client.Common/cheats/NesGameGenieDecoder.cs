@@ -2,7 +2,7 @@
 
 namespace BizHawk.Client.Common
 {
-	public class NESGameGenieDecoder
+	public class NesGameGenieDecoder
 	{
 		private readonly string _code;
 
@@ -26,7 +26,7 @@ namespace BizHawk.Client.Common
 			['N'] =  15  // 1111
 		};
 
-		public NESGameGenieDecoder(string code)
+		public NesGameGenieDecoder(string code)
 		{
 			_code = code;
 			Decode();

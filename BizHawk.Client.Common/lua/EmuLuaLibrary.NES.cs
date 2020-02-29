@@ -44,7 +44,7 @@ namespace BizHawk.Client.Common
 		{
 			if (NESAvailable && MemoryDomains != null)
 			{
-				var decoder = new NESGameGenieDecoder(code);
+				var decoder = new NesGameGenieDecoder(code);
 				var watch = Watch.GenerateWatch(
 					MemoryDomains["System Bus"],
 					decoder.Address,
@@ -126,7 +126,7 @@ namespace BizHawk.Client.Common
 		{
 			if (NESAvailable)
 			{
-				var decoder = new NESGameGenieDecoder(code);
+				var decoder = new NesGameGenieDecoder(code);
 				Global.CheatList.RemoveRange(
 					Global.CheatList.Where(c => c.Address == decoder.Address));
 			}
