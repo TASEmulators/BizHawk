@@ -4,7 +4,6 @@ namespace BizHawk.Emulation.Common
 {
 	public interface ISynchronizingAudioBuffer
 	{
-		void EnqueueSamples(short[] buf, int samplesProvided);
 		void EnqueueSample(short left, short right);
 		void Clear();
 
@@ -62,17 +61,6 @@ namespace BizHawk.Emulation.Common
 			for (int i = 0; i < 367; i++)
 			{
 				_buffer.Enqueue(new Sample(0, 0));
-			}
-		}
-
-		public void EnqueueSamples(short[] buf, int samplesProvided)
-		{
-			int ctr = 0;
-			for (int i = 0; i < samplesProvided; i++)
-			{
-				short left = buf[ctr++];
-				short right = buf[ctr++];
-				EnqueueSample(left, right);
 			}
 		}
 
