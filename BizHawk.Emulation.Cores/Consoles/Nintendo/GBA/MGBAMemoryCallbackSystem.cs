@@ -45,10 +45,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			var container = new CallbackContainer(callback);
 
-			if (container.Callback.Type != MemoryCallbackType.Execute)
+			if (container.Callback.Type == MemoryCallbackType.Execute)
+			{
+				// TODO
+			}
+			else
 			{
 				LibmGBA.BizSetMemCallback(container.Call);
-				//LibmGBA.BizSetWatchpoint(_core, callback.Address, container.WatchPointType);
+				container.ID = LibmGBA.BizSetWatchpoint(_core, callback.Address.Value, container.WatchPointType);
 			}
 
 			_callbacks.Add(container);
@@ -56,17 +60,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public void Remove(MemoryCallbackDelegate action)
 		{
-			// TODO
+			var cbToRemove = _callbacks.Where(container => container.Callback.Callback == action).FirstOrDefault();
+
+			if (LibmGBA.BizClearWatchpoint(_core, cbToRemove.ID) == true)
+			{
+				_callbacks.Remove(cbToRemove);
+			}
 		}
 
 		public void RemoveAll(IEnumerable<MemoryCallbackDelegate> actions)
 		{
-			// TODO
+			foreach (var action in actions)
+			{
+				Remove(action);
+			}
 		}
 
 		public void Clear()
 		{
-			// TODO
+			foreach (var cb in _callbacks)
+			{
+				if (LibmGBA.BizClearWatchpoint(_core, cb.ID) == true)
+				{
+					_callbacks.Remove(cb);
+				}
+			}
 		}
 
 		public IEnumerator<IMemoryCallback> GetEnumerator() => _callbacks.Select(c => c.Callback).GetEnumerator();
@@ -86,6 +104,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		}
 
 		public IMemoryCallback Callback { get; }
+
+		// the core returns this when setting a wp and needs it to clear that wp
+		public int ID { get; set; }
 
 		public LibmGBA.mWatchpointType WatchPointType
 		{
