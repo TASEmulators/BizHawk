@@ -46,20 +46,6 @@ namespace BizHawk.Emulation.Common
 			_soundProvider = input;
 		}
 
-		/// <summary>detached mode</summary>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="filterWidth"/> is not in 8..65536</exception>
-		public DCFilter(int filterWidth)
-		{
-			if (filterWidth < 8 || filterWidth > 65536)
-			{
-				throw new ArgumentOutOfRangeException();
-			}
-
-			_depth = DepthFromFilterWidth(filterWidth);
-
-			_soundProvider = null;
-		}
-
 		/// <summary>
 		/// pass a set of samples through the filter.  should only be used in detached mode
 		/// </summary>

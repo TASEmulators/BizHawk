@@ -155,7 +155,7 @@ namespace BizHawk.Emulation.Common
 						System = items[3],
 						MetaData = items.Length >= 6 ? items[5] : null,
 						Region = items.Length >= 7 ? items[6] : "",
-						ForcedCore = items.Length >= 8 ? items[7].ToLowerInvariant() : "",
+						ForcedCore = items.Length >= 8 ? items[7].ToLowerInvariant() : ""
 					};
 
 					if (DB.ContainsKey(game.Hash))
