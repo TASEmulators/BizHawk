@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 		public bool IsPressed(string button)
 		{
 			var source = Source.IsPressed(button);
-			source ^= _stickySet.Contains(button);
+			source ^= CurrentStickies.Contains(button);
 			return source;
 		}
 
@@ -38,8 +38,6 @@ namespace BizHawk.Client.Common
 
 		private List<string> _justPressed = new List<string>();
 
-		private readonly HashSet<string> _stickySet = new HashSet<string>();
-
 		// if SetFloat() is called (typically virtual pads), then that float will entirely override the Source input
 		// otherwise, the source is passed thru.
 		private readonly WorkingDictionary<string, float?> _floatSet = new WorkingDictionary<string, float?>();
@@ -56,39 +54,33 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void ClearStickyFloats()
-		{
-			_floatSet.Clear();
-		}
+		public void ClearStickyFloats() => _floatSet.Clear();
 
 		public void SetSticky(string button, bool isSticky)
 		{
 			if (isSticky)
 			{
-				_stickySet.Add(button);
+				CurrentStickies.Add(button);
 			}
 			else
 			{
-				_stickySet.Remove(button);
+				CurrentStickies.Remove(button);
 			}
 		}
 
 		public void Unset(string button)
 		{
-			_stickySet.Remove(button);
+			CurrentStickies.Remove(button);
 			_floatSet.Remove(button);
 		}
 
-		public bool IsSticky(string button)
-		{
-			return _stickySet.Contains(button);
-		}
+		public bool IsSticky(string button) => CurrentStickies.Contains(button);
 
-		public HashSet<string> CurrentStickies => _stickySet;
+		public HashSet<string> CurrentStickies { get; } = new HashSet<string>();
 
 		public void ClearStickies()
 		{
-			_stickySet.Clear();
+			CurrentStickies.Clear();
 			_floatSet.Clear();
 		}
 
@@ -96,13 +88,13 @@ namespace BizHawk.Client.Common
 		{
 			foreach (var button in buttons.Where(button => !_justPressed.Contains(button)))
 			{
-				if (_stickySet.Contains(button))
+				if (CurrentStickies.Contains(button))
 				{
-					_stickySet.Remove(button);
+					CurrentStickies.Remove(button);
 				}
 				else
 				{
-					_stickySet.Add(button);
+					CurrentStickies.Add(button);
 				}
 			}
 
