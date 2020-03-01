@@ -21,15 +21,9 @@ namespace BizHawk.Client.Common
 
 		public ControllerDefinition Definition { get; private set; }
 
-		public bool IsPressed(string button)
-		{
-			return _buttons[button];
-		}
+		public bool IsPressed(string button) => _buttons[button];
 
-		public float GetFloat(string name)
-		{
-			return _floatButtons[name];
-		}
+		public float GetFloat(string name) => _floatButtons[name];
 
 		private readonly WorkingDictionary<string, List<string>> _bindings = new WorkingDictionary<string, List<string>>();
 		private readonly WorkingDictionary<string, bool> _buttons = new WorkingDictionary<string, bool>();
@@ -83,7 +77,7 @@ namespace BizHawk.Client.Common
 					}
 
 					// zero 09-mar-2015 - not sure if adding + 1 here is correct.. but... maybe?
-					float output = 0;
+					float output;
 
 					if (range.Max < range.Min)
 					{
@@ -232,12 +226,6 @@ namespace BizHawk.Client.Common
 		private readonly WorkingDictionary<string, int> _buttonStarts = new WorkingDictionary<string, int>();
 
 		private bool _autofire = true;
-
-		public bool Autofire
-		{
-			get => false;
-			set => _autofire = value;
-		}
 
 		public int On { get; set; }
 		public int Off { get; set; }
