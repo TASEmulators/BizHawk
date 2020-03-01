@@ -80,8 +80,6 @@ namespace BizHawk.Emulation.Cores.Components
 	// and is only used by legacy sound implementations
 	internal class MetaspuSoundProvider : ISoundProvider
 	{
-		private readonly short[] _pullBuffer = new short[1470];
-
 		public MetaspuSoundProvider(ESynchMethod method)
 		{
 			Buffer = Metaspu.MetaspuConstruct(method);
