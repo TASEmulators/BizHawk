@@ -37,18 +37,20 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			if (MemoryDomains != null) // the designer needs this check
+			if (DesignMode)
 			{
-				DomainDropDown.Items.Clear();
-				DomainDropDown.Items.AddRange(MemoryDomains
-					.Where(d => d.Writable)
-					.Select(d => d.ToString())
-					.ToArray());
-
-				DomainDropDown.SelectedItem = MemoryDomains.HasSystemBus
-					? MemoryDomains.SystemBus.ToString()
-					: MemoryDomains.MainMemory.ToString();
+				return;
 			}
+
+			DomainDropDown.Items.Clear();
+			DomainDropDown.Items.AddRange(MemoryDomains
+				.Where(d => d.Writable)
+				.Select(d => d.ToString())
+				.ToArray());
+
+			DomainDropDown.SelectedItem = MemoryDomains.HasSystemBus
+				? MemoryDomains.SystemBus.ToString()
+				: MemoryDomains.MainMemory.ToString();
 
 			SetFormToDefault();
 		}
