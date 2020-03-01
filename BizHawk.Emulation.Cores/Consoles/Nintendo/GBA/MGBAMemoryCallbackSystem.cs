@@ -45,7 +45,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			var container = new CallbackContainer(callback);
 
-			LibmGBA.BizSetMemCallback(container.Call);
+			if (container.Callback.Type != MemoryCallbackType.Execute)
+			{
+				LibmGBA.BizSetMemCallback(container.Call);
+				//LibmGBA.BizSetWatchpoint(_core, callback.Address, container.WatchPointType);
+			}
+
 			_callbacks.Add(container);
 		}
 
