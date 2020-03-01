@@ -113,7 +113,7 @@ namespace BizHawk.Client.Common.movie.import
 			{
 				platform = "GBA";
 				var mGBAName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(MGBAHawk), typeof(CoreAttribute))).CoreName;
-				Result.Movie.HeaderEntries[HeaderKeys.CORE] = mGBAName;
+				Result.Movie.HeaderEntries[HeaderKeys.Core] = mGBAName;
 			}
 
 			if (isGBC)
@@ -126,7 +126,7 @@ namespace BizHawk.Client.Common.movie.import
 				Result.Errors.Add("SGB imports are not currently supported");
 			}
 
-			Result.Movie.HeaderEntries[HeaderKeys.PLATFORM] = platform;
+			Result.Movie.HeaderEntries[HeaderKeys.Platform] = platform;
 
 			// 017 1-byte flags: (values of some boolean emulator options)
 			flags = r.ReadByte();
@@ -154,7 +154,7 @@ namespace BizHawk.Client.Common.movie.import
 			 null-terminated (ASCII?)
 			*/
 			string gameName = NullTerminated(new string(r.ReadChars(12)));
-			Result.Movie.HeaderEntries[HeaderKeys.GAMENAME] = gameName;
+			Result.Movie.HeaderEntries[HeaderKeys.GameName] = gameName;
 
 			// 030 1-byte unsigned char: minor version/revision number of current VBM version, the latest is "1"
 			byte minorVersion = r.ReadByte();
@@ -192,7 +192,7 @@ namespace BizHawk.Client.Common.movie.import
 
 			// After the header is 192 bytes of text. The first 64 of these 192 bytes are for the author's name (or names).
 			string author = NullTerminated(new string(r.ReadChars(64)));
-			Result.Movie.HeaderEntries[HeaderKeys.AUTHOR] = author;
+			Result.Movie.HeaderEntries[HeaderKeys.Author] = author;
 
 			// The following 128 bytes are for a description of the movie. Both parts must be null-terminated.
 			string movieDescription = NullTerminated(new string(r.ReadChars(128)));

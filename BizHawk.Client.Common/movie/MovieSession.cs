@@ -156,7 +156,7 @@ namespace BizHawk.Client.Common
 			var gambatteName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(Gameboy), typeof(CoreAttribute))).CoreName;
 			if (Movie.Core == gambatteName)
 			{
-				var movieCycles = Convert.ToUInt64(Movie.HeaderEntries[HeaderKeys.CYCLECOUNT]);
+				var movieCycles = Convert.ToUInt64(Movie.HeaderEntries[HeaderKeys.CycleCount]);
 				var coreCycles = (Global.Emulator as Gameboy).CycleCount;
 				if (movieCycles != (ulong)coreCycles)
 				{

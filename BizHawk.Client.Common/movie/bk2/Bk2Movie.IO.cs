@@ -169,17 +169,17 @@ namespace BizHawk.Client.Common
 			if (Global.Emulator is Emulation.Cores.Nintendo.SubNESHawk.SubNESHawk)
 			{
 				var _subnes = (Emulation.Cores.Nintendo.SubNESHawk.SubNESHawk)Global.Emulator;
-				Header[HeaderKeys.VBLANKCOUNT] = _subnes.VBL_CNT.ToString();
+				Header[HeaderKeys.VBlankCount] = _subnes.VBL_CNT.ToString();
 			}
 			else if (Global.Emulator is Emulation.Cores.Nintendo.Gameboy.Gameboy)
 			{
 				var _gameboy = (Emulation.Cores.Nintendo.Gameboy.Gameboy)Global.Emulator;
-				Header[HeaderKeys.CYCLECOUNT] = _gameboy.CycleCount.ToString();
+				Header[HeaderKeys.CycleCount] = _gameboy.CycleCount.ToString();
 			}
 			else if (Global.Emulator is Emulation.Cores.Nintendo.SubGBHawk.SubGBHawk)
 			{
 				var _subgb = (Emulation.Cores.Nintendo.SubGBHawk.SubGBHawk)Global.Emulator;
-				Header[HeaderKeys.VBLANKCOUNT] = _subgb.VBL_CNT.ToString();
+				Header[HeaderKeys.VBlankCount] = _subgb.VBL_CNT.ToString();
 			}
 
 			var file = new FileInfo(fn);

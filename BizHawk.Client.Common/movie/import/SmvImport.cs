@@ -17,7 +17,7 @@ namespace BizHawk.Client.Common.movie.import
 		protected override void RunImport()
 		{
 			var bsnesName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(LibsnesCore), typeof(CoreAttribute))).CoreName;
-			Result.Movie.HeaderEntries[HeaderKeys.CORE] = bsnesName;
+			Result.Movie.HeaderEntries[HeaderKeys.Core] = bsnesName;
 
 			using var fs = SourceFile.Open(FileMode.Open, FileAccess.Read);
 			using var r = new BinaryReader(fs);
@@ -30,7 +30,7 @@ namespace BizHawk.Client.Common.movie.import
 				return;
 			}
 
-			Result.Movie.HeaderEntries[HeaderKeys.PLATFORM] = "SNES";
+			Result.Movie.HeaderEntries[HeaderKeys.Platform] = "SNES";
 
 			// 004 4-byte little-endian unsigned int: version number
 			uint versionNumber = r.ReadUInt32();
@@ -116,7 +116,7 @@ namespace BizHawk.Client.Common.movie.import
 
 			// bit 1: if "0", movie is NTSC (60 fps); if "1", movie is PAL (50 fps)
 			bool pal = ((movieFlags >> 1) & 0x1) != 0;
-			Result.Movie.HeaderEntries[HeaderKeys.PAL] = pal.ToString();
+			Result.Movie.HeaderEntries[HeaderKeys.Pal] = pal.ToString();
 
 			// other: reserved, set to 0
 			/*
@@ -185,7 +185,7 @@ namespace BizHawk.Client.Common.movie.import
 			string author = NullTerminated(Encoding.Unicode.GetString(metadata).Trim());
 			if (!string.IsNullOrWhiteSpace(author))
 			{
-				Result.Movie.HeaderEntries[HeaderKeys.AUTHOR] = author;
+				Result.Movie.HeaderEntries[HeaderKeys.Author] = author;
 			}
 
 			if (extraRomInfo == 30)
@@ -197,7 +197,7 @@ namespace BizHawk.Client.Common.movie.import
 
 				// the game name copied from the ROM, truncated to 23 bytes (the game name in the ROM is 21 bytes)
 				string gameName = NullTerminated(Encoding.UTF8.GetString(r.ReadBytes(23)));
-				Result.Movie.HeaderEntries[HeaderKeys.GAMENAME] = gameName;
+				Result.Movie.HeaderEntries[HeaderKeys.GameName] = gameName;
 			}
 
 			SimpleController controllers = new SimpleController

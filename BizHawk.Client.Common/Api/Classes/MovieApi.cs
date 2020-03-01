@@ -135,8 +135,8 @@ namespace BizHawk.Client.Common
 			}
 
 			return new PlatformFrameRates()[
-				movie.HeaderEntries[HeaderKeys.PLATFORM],
-				movie.HeaderEntries.TryGetValue(HeaderKeys.PAL, out var isPal) && isPal == "1"
+				movie.HeaderEntries[HeaderKeys.Platform],
+				movie.HeaderEntries.TryGetValue(HeaderKeys.Pal, out var isPal) && isPal == "1"
 			];
 		}
 	}

@@ -11,7 +11,7 @@ namespace BizHawk.Client.Common
 
 		public BkmMovie()
 		{
-			Header = new BkmHeader { [HeaderKeys.MOVIEVERSION] = "BizHawk v0.0.1" };
+			Header = new BkmHeader { [HeaderKeys.MovieVersion] = "BizHawk v0.0.1" };
 		}
 
 		public string PreferredExtension => "bkm";
@@ -76,8 +76,8 @@ namespace BizHawk.Client.Common
 
 		public string SyncSettingsJson
 		{
-			get => Header[HeaderKeys.SYNCSETTINGS];
-			set => Header[HeaderKeys.SYNCSETTINGS] = value;
+			get => Header[HeaderKeys.SyncSettings];
+			set => Header[HeaderKeys.SyncSettings] = value;
 		}
 
 		public string TextSavestate { get; set; }

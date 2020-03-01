@@ -18,7 +18,7 @@ namespace BizHawk.Client.Common.movie.import
 		protected override void RunImport()
 		{
 			var neshawkName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(NES), typeof(CoreAttribute))).CoreName;
-			Result.Movie.HeaderEntries[HeaderKeys.CORE] = neshawkName;
+			Result.Movie.HeaderEntries[HeaderKeys.Core] = neshawkName;
 
 			using var r = new BinaryReader(SourceFile.Open(FileMode.Open, FileAccess.Read));
 			var signature = new string(r.ReadChars(4));
@@ -28,7 +28,7 @@ namespace BizHawk.Client.Common.movie.import
 				return;
 			}
 
-			Result.Movie.HeaderEntries[HeaderKeys.PLATFORM] = "NES";
+			Result.Movie.HeaderEntries[HeaderKeys.Platform] = "NES";
 
 			var syncSettings = new NES.NESSyncSettings();
 
@@ -74,7 +74,7 @@ namespace BizHawk.Client.Common.movie.import
 			 preference. This means that this site cannot calculate movie lengths reliably.
 			*/
 			bool pal = ((flags >> 2) & 0x1) != 0;
-			Result.Movie.HeaderEntries[HeaderKeys.PAL] = pal.ToString();
+			Result.Movie.HeaderEntries[HeaderKeys.Pal] = pal.ToString();
 
 			// other: reserved, set to 0
 			bool syncHack = ((flags >> 4) & 0x1) != 0;
@@ -124,7 +124,7 @@ namespace BizHawk.Client.Common.movie.import
 			// Advance past null byte.
 			r.ReadByte();
 			string gameName = Encoding.UTF8.GetString(gameBytes.ToArray());
-			Result.Movie.HeaderEntries[HeaderKeys.GAMENAME] = gameName;
+			Result.Movie.HeaderEntries[HeaderKeys.GameName] = gameName;
 
 			/*
 			 After the header comes "metadata", which is UTF8-coded movie title string. The metadata begins after the ROM
@@ -140,7 +140,7 @@ namespace BizHawk.Client.Common.movie.import
 			// Advance past null byte.
 			r.ReadByte();
 			string author = Encoding.UTF8.GetString(authorBytes.ToArray());
-			Result.Movie.HeaderEntries[HeaderKeys.AUTHOR] = author;
+			Result.Movie.HeaderEntries[HeaderKeys.Author] = author;
 
 			// Advance to first byte of input data.
 			r.BaseStream.Position = firstFrameOffset;
@@ -284,7 +284,7 @@ namespace BizHawk.Client.Common.movie.import
 
 			if (fds)
 			{
-				Result.Movie.HeaderEntries[HeaderKeys.BOARDNAME] = "FDS";
+				Result.Movie.HeaderEntries[HeaderKeys.BoardName] = "FDS";
 			}
 
 			syncSettings.Controls = controllerSettings;

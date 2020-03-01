@@ -18,7 +18,7 @@ namespace BizHawk.Client.Common.movie.import
 		protected override void RunImport()
 		{
 			var bsnesName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(LibsnesCore), typeof(CoreAttribute))).CoreName;
-			Result.Movie.HeaderEntries[HeaderKeys.CORE] = bsnesName;
+			Result.Movie.HeaderEntries[HeaderKeys.Core] = bsnesName;
 
 			var hf = new HawkFile(SourceFile.FullName);
 
@@ -77,7 +77,7 @@ namespace BizHawk.Client.Common.movie.import
 						authorList += authorLast;
 					}
 
-					Result.Movie.HeaderEntries[HeaderKeys.AUTHOR] = authorList;
+					Result.Movie.HeaderEntries[HeaderKeys.Author] = authorList;
 					hf.Unbind();
 				}
 				else if (item.Name == "coreversion")
@@ -93,7 +93,7 @@ namespace BizHawk.Client.Common.movie.import
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
 					string gameName = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
-					Result.Movie.HeaderEntries[HeaderKeys.GAMENAME] = gameName;
+					Result.Movie.HeaderEntries[HeaderKeys.GameName] = gameName;
 					hf.Unbind();
 				}
 				else if (item.Name == "gametype")
@@ -120,7 +120,7 @@ namespace BizHawk.Client.Common.movie.import
 					}
 
 					bool pal = gametype == "snes_pal" || gametype == "sgb_pal";
-					Result.Movie.HeaderEntries[HeaderKeys.PAL] = pal.ToString();
+					Result.Movie.HeaderEntries[HeaderKeys.Pal] = pal.ToString();
 					hf.Unbind();
 				}
 				else if (item.Name == "input")
@@ -281,7 +281,7 @@ namespace BizHawk.Client.Common.movie.import
 				}
 			}
 
-			Result.Movie.HeaderEntries[HeaderKeys.PLATFORM] = platform;
+			Result.Movie.HeaderEntries[HeaderKeys.Platform] = platform;
 			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(ss);
 			Global.Config.SnesInSnes9x = false; // This could be annoying to a user if they don't notice we set this preference, but the alternative is for the movie import to fail to load the movie
 		}

@@ -27,7 +27,7 @@ namespace BizHawk.Client.Common.movie.import
 				ss.Port4,
 				ss.Port5);
 
-			Result.Movie.HeaderEntries[HeaderKeys.PLATFORM] = "PCE";
+			Result.Movie.HeaderEntries[HeaderKeys.Platform] = "PCE";
 			using var sr = SourceFile.OpenText();
 			string line;
 
@@ -84,7 +84,7 @@ namespace BizHawk.Client.Common.movie.import
 				}
 				else if (line.ToLower().StartsWith("pcecd"))
 				{
-					Result.Movie.HeaderEntries[HeaderKeys.PLATFORM] = "PCECD";
+					Result.Movie.HeaderEntries[HeaderKeys.Platform] = "PCECD";
 				}
 				else if (line.ToLower().StartsWith("emuversion"))
 				{
@@ -97,15 +97,15 @@ namespace BizHawk.Client.Common.movie.import
 				}
 				else if (line.ToLower().StartsWith("romfilename"))
 				{
-					Result.Movie.HeaderEntries[HeaderKeys.GAMENAME] = ParseHeader(line, "romFilename");
+					Result.Movie.HeaderEntries[HeaderKeys.GameName] = ParseHeader(line, "romFilename");
 				}
 				else if (line.ToLower().StartsWith("cdgamename"))
 				{
-					Result.Movie.HeaderEntries[HeaderKeys.GAMENAME] = ParseHeader(line, "cdGameName");
+					Result.Movie.HeaderEntries[HeaderKeys.GameName] = ParseHeader(line, "cdGameName");
 				}
 				else if (line.ToLower().StartsWith("comment author"))
 				{
-					Result.Movie.HeaderEntries[HeaderKeys.AUTHOR] = ParseHeader(line, "comment author");
+					Result.Movie.HeaderEntries[HeaderKeys.Author] = ParseHeader(line, "comment author");
 				}
 				else if (line.ToLower().StartsWith("rerecordcount"))
 				{

@@ -314,7 +314,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				var region = Global.Emulator.AsRegionable().Region;
 				if (region == Emulation.Common.DisplayType.PAL)
 				{
-					movie.HeaderEntries.Add(HeaderKeys.PAL, "1");
+					movie.HeaderEntries.Add(HeaderKeys.Pal, "1");
 				}
 			}
 
@@ -343,7 +343,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 
 			if (Global.Emulator is Gameboy)
 			{
-				movie.HeaderEntries.Add(HeaderKeys.CYCLECOUNT, "0");
+				movie.HeaderEntries.Add(HeaderKeys.CycleCount, "0");
 			}
 
 			if (Global.Emulator is SMS && ((SMS) Global.Emulator).IsSG1000)
@@ -368,7 +368,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 
 			if (Global.Emulator is SubNESHawk || Global.Emulator is SubGBHawk)
 			{
-				movie.HeaderEntries.Add(HeaderKeys.VBLANKCOUNT, "0");
+				movie.HeaderEntries.Add(HeaderKeys.VBlankCount, "0");
 			}
 
 			movie.Core = ((CoreAttribute)Attribute

@@ -56,7 +56,7 @@ namespace BizHawk.Client.Common
 			ChangeLog = new TasMovieChangeLog(this);
 			TasStateManager = new TasStateManager(this, Global.Config.DefaultTasStateManagerSettings);
 			Session = new TasSession();
-			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0 Tasproj v1.0";
+			Header[HeaderKeys.MovieVersion] = "BizHawk v2.0 Tasproj v1.0";
 			Markers = new TasMovieMarkerList(this);
 			Markers.CollectionChanged += Markers_CollectionChanged;
 			Markers.Add(0, startsFromSavestate ? "Savestate" : "Power on");

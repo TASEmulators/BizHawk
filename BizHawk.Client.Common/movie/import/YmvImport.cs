@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common.movie.import
 	{
 		protected override void RunImport()
 		{
-			Result.Movie.HeaderEntries[HeaderKeys.PLATFORM] = "SAT";
+			Result.Movie.HeaderEntries[HeaderKeys.Platform] = "SAT";
 			var ss = new Saturnus.SyncSettings
 			{
 				Port1 = SaturnusControllerDeck.Device.Gamepad,
@@ -44,7 +44,7 @@ namespace BizHawk.Client.Common.movie.import
 				}
 				else if (line.ToLower().StartsWith("cdGameName"))
 				{
-					Result.Movie.HeaderEntries[HeaderKeys.GAMENAME] = ParseHeader(line, "romFilename");
+					Result.Movie.HeaderEntries[HeaderKeys.GameName] = ParseHeader(line, "romFilename");
 				}
 				else if (line.ToLower().StartsWith("rerecordcount"))
 				{
@@ -73,7 +73,7 @@ namespace BizHawk.Client.Common.movie.import
 				else if (line.ToLower().StartsWith("ispal"))
 				{
 					bool pal = ParseHeader(line, "isPal") == "1";
-					Result.Movie.HeaderEntries[HeaderKeys.PAL] = pal.ToString();
+					Result.Movie.HeaderEntries[HeaderKeys.Pal] = pal.ToString();
 				}
 				else
 				{
