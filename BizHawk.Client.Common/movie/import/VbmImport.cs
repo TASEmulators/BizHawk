@@ -282,7 +282,7 @@ namespace BizHawk.Client.Common.movie.import
 			
 		}
 
-		private SimpleController GbController()
+		private static SimpleController GbController()
 		{
 			return new SimpleController
 			{
@@ -293,9 +293,7 @@ namespace BizHawk.Client.Common.movie.import
 			};
 		}
 
-		private SimpleController GbaController()
-		{
-			return new SimpleController { Definition = GBA.GBAController };
-		}
+		private static SimpleController GbaController()
+			=> new SimpleController { Definition = GBA.GBAController };
 	}
 }
