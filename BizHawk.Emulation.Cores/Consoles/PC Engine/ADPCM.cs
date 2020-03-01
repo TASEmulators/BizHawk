@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 	{
 		ScsiCDBus SCSI;
 		PCEngine pce;
-		MetaspuSoundProvider SoundProvider = new MetaspuSoundProvider(ESynchMethod.Vecna);
+		MetaspuSoundProvider SoundProvider = new MetaspuSoundProvider();
 
 		// ***************************************************************************
 

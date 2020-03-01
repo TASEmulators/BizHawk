@@ -2,14 +2,9 @@
 {
 	public static class Metaspu
 	{
-		public static ISynchronizingAudioBuffer MetaspuConstruct(ESynchMethod method)
+		public static ISynchronizingAudioBuffer MetaspuConstruct()
 		{
 			return new VecnaSynchronizer();
 		}
-	}
-
-	public enum ESynchMethod
-	{
-		Vecna // vecna
 	}
 }
