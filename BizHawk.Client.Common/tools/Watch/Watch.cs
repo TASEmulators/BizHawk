@@ -310,7 +310,7 @@ namespace BizHawk.Client.Common
 				return _domain.PeekUshort(Address, BigEndian);
 			}
 
-			return _domain.PeekUshort(Address % _domain.Size, BigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
+			return _domain.PeekUshort(Address % _domain.Size, BigEndian); // TODO: % size still isn't correct since it could be the last byte of the domain
 		}
 
 		protected uint GetDWord(bool bypassFreeze = false)

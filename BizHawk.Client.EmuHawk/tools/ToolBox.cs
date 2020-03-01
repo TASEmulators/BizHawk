@@ -52,21 +52,15 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ToolBoxStrip.Items.Clear();
 
-			foreach (var t in Assembly.GetAssembly(GetType()).GetTypes())
-			{
-				if (!typeof(IToolForm).IsAssignableFrom(t))
-					continue;
-				if (!typeof(Form).IsAssignableFrom(t))
-					continue;
-				if (typeof(ToolBox).IsAssignableFrom(t))
-					continue;
-				if (VersionInfo.DeveloperBuild && t.GetCustomAttributes(false).OfType<ToolAttribute>().Any(a => !a.Released))
-					continue;
-				if (!ServiceInjector.IsAvailable(Emulator.ServiceProvider, t))
-					continue;
-//				if (!ApiInjector.IsAvailable(, t))
-//					continue;
+			var tools = Assembly.GetAssembly(GetType()).GetTypes()
+				.Where(t => typeof(IToolForm).IsAssignableFrom(t))
+				.Where(t => typeof(Form).IsAssignableFrom(t))
+				.Where(t => !typeof(ToolBox).IsAssignableFrom(t))
+				.Where(t => ServiceInjector.IsAvailable(Emulator.ServiceProvider, t))
+				.Where(t => VersionInfo.DeveloperBuild || t.GetCustomAttributes(false).OfType<ToolAttribute>().Any(a => a.Released));
 
+			foreach (var t in tools)
+			{
 				var instance = Activator.CreateInstance(t);
 
 				var tsb = new ToolStripButton
