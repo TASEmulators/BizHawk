@@ -43,18 +43,17 @@ namespace BizHawk.Client.Common
 		public bool this[string button] => IsPressed(button);
 
 		// Looks for bindings which are activated by the supplied physical button.
-		public List<string> SearchBindings(string button)
-		{
-			return (from kvp in _bindings from boundButton in kvp.Value where boundButton == button select kvp.Key).ToList();
-		}
+		public List<string> SearchBindings(string button) =>
+			_bindings
+				.Where(b => b.Value.Any(v => v == button))
+				.Select(b => b.Key)
+				.ToList();
 
 		// Searches bindings for the controller and returns true if this binding is mapped somewhere in this controller
-		public bool HasBinding(string button)
-		{
-			return _bindings
+		public bool HasBinding(string button) =>
+			_bindings
 				.SelectMany(kvp => kvp.Value)
 				.Any(boundButton => boundButton == button);
-		}
 
 		public void NormalizeFloats(IController controller)
 		{
