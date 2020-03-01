@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 		public int transmit_byte;
 		public byte[] x4_buffer = new byte[0x400 * 2];
 		public bool buffer_parity;
-		public bool pre_transsmit;
+		public bool pre_transmit;
 		public byte temp1_rec, temp2_rec, temp3_rec, temp4_rec;
 
 		public byte A_controller, B_controller, C_controller, D_controller;
@@ -133,6 +133,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			received_byte = 0;
 			begin_transmitting_cnt = 0;
 			status_byte = 1;
+			x4_clock = 32;
 		}
 
 		public DisplayType Region => DisplayType.NTSC;

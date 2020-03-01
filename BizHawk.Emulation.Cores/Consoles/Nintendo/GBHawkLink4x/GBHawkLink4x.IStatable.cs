@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			ser.Sync(nameof(transmit_byte), ref transmit_byte);
 			ser.Sync(nameof(x4_buffer), ref x4_buffer, false);
 			ser.Sync(nameof(buffer_parity), ref buffer_parity);
-			ser.Sync(nameof(pre_transsmit), ref pre_transsmit);
+			ser.Sync(nameof(pre_transmit), ref pre_transmit);
 			ser.Sync(nameof(temp1_rec), ref temp1_rec);
 			ser.Sync(nameof(temp2_rec), ref temp2_rec);
 			ser.Sync(nameof(temp3_rec), ref temp3_rec);
