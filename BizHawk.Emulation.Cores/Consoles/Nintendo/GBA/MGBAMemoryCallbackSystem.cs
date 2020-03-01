@@ -43,6 +43,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				throw new InvalidOperationException($"{callback.Scope} is not currently supported for callbacks");
 			}
 
+			if (!callback.Address.HasValue)
+			{
+				throw new NotImplementedException("Wildcard callbacks (no address specified) not currently implemented.");
+			}
+
 			var container = new CallbackContainer(callback);
 
 			if (container.Callback.Type == MemoryCallbackType.Execute)
