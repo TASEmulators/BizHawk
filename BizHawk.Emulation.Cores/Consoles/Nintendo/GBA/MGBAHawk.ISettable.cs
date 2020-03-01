@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			if (o.DisplayBG2) mask |= LibmGBA.Layers.BG2;
 			if (o.DisplayBG3) mask |= LibmGBA.Layers.BG3;
 			if (o.DisplayOBJ) mask |= LibmGBA.Layers.OBJ;
-			LibmGBA.BizSetLayerMask(_core, mask);
+			LibmGBA.BizSetLayerMask(Core, mask);
 
 			LibmGBA.Sounds smask = 0;
 			if (o.PlayCh0) smask |= LibmGBA.Sounds.CH0;
@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			if (o.PlayCh3) smask |= LibmGBA.Sounds.CH3;
 			if (o.PlayChA) smask |= LibmGBA.Sounds.CHA;
 			if (o.PlayChB) smask |= LibmGBA.Sounds.CHB;
-			LibmGBA.BizSetSoundMask(_core, smask);
+			LibmGBA.BizSetSoundMask(Core, smask);
 
 			var palette = new int[65536];
 			GBColors.ColorType c = GBColors.ColorType.vivid;
@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			GBColors.GetLut(c, palette);
 			for (var i = 32768; i < 65536; i++)
 				palette[i] = palette[i - 32768];
-			LibmGBA.BizSetPalette(_core, palette);
+			LibmGBA.BizSetPalette(Core, palette);
 
 			_settings = o;
 			return false;

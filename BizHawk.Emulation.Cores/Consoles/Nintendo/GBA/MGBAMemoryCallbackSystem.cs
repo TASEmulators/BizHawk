@@ -8,11 +8,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	public class MGBAMemoryCallbackSystem : IMemoryCallbackSystem
 	{
-		private readonly IntPtr _core;
+		private readonly MGBAHawk _mgba;
 
-		public MGBAMemoryCallbackSystem(IntPtr core)
+		public MGBAMemoryCallbackSystem(MGBAHawk mgba)
 		{
-			_core = core;
+			_mgba = mgba;
 		}
 
 		private readonly List<CallbackContainer> _callbacks = new List<CallbackContainer>();
@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			else
 			{
 				LibmGBA.BizSetMemCallback(container.Call);
-				container.ID = LibmGBA.BizSetWatchpoint(_core, callback.Address.Value, container.WatchPointType);
+				container.ID = LibmGBA.BizSetWatchpoint(_mgba.Core, callback.Address.Value, container.WatchPointType);
 			}
 
 			_callbacks.Add(container);
@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			var cbToRemove = _callbacks.Where(container => container.Callback.Callback == action).FirstOrDefault();
 
-			if (LibmGBA.BizClearWatchpoint(_core, cbToRemove.ID) == true)
+			if (LibmGBA.BizClearWatchpoint(_mgba.Core, cbToRemove.ID) == true)
 			{
 				_callbacks.Remove(cbToRemove);
 			}
@@ -80,7 +80,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			foreach (var cb in _callbacks)
 			{
-				if (LibmGBA.BizClearWatchpoint(_core, cb.ID) == true)
+				if (LibmGBA.BizClearWatchpoint(_mgba.Core, cb.ID) == true)
 				{
 					_callbacks.Remove(cb);
 				}

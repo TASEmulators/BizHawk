@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			var values = new int[RegisterNames.Length];
-			LibmGBA.BizGetRegisters(_core, values);
+			LibmGBA.BizGetRegisters(Core, values);
 			var ret = new Dictionary<string, RegisterValue>();
 			for (var i = 0; i < RegisterNames.Length; i++)
 			{

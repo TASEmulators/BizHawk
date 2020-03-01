@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 						throw new ArgumentOutOfRangeException();
 					}
 
-					return LibmGBA.BizReadBus(_core, a);
+					return LibmGBA.BizReadBus(Core, a);
 				},
 				delegate (long addr, byte val)
 				{
@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 						throw new ArgumentOutOfRangeException();
 					}
 
-					LibmGBA.BizWriteBus(_core, a, val);
+					LibmGBA.BizWriteBus(Core, a, val);
 				}, 4));
 
 			_memoryDomains = new MemoryDomainList(mm);
@@ -63,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		private void WireMemoryDomainPointers()
 		{
 			var s = new LibmGBA.MemoryAreas();
-			LibmGBA.BizGetMemoryAreas(_core, s);
+			LibmGBA.BizGetMemoryAreas(Core, s);
 
 			_iwram.Data = s.iwram;
 			_ewram.Data = s.wram;

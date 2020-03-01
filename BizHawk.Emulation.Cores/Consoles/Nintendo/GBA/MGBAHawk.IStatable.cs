@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			IntPtr p = IntPtr.Zero;
 			int size = 0;
-			if (!LibmGBA.BizStartGetState(_core, ref p, ref size))
+			if (!LibmGBA.BizStartGetState(Core, ref p, ref size))
 			{
 				throw new InvalidOperationException("Core failed to save!");
 			}
@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			}
 
 			reader.Read(_savebuff, 0, length);
-			if (!LibmGBA.BizPutState(_core, _savebuff, length))
+			if (!LibmGBA.BizPutState(Core, _savebuff, length))
 			{
 				throw new InvalidOperationException("Core rejected the savestate!");
 			}
