@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Common
 		int OutputSamples(short[] buf, int samplesRequested);
 	}
 
-	internal class VecnaSynchronizer : ISynchronizingAudioBuffer
+	public class VecnaSynchronizer : ISynchronizingAudioBuffer
 	{
 		// vecna's attempt at a fully synchronous sound provider.
 		// It's similar in philosophy to my "BufferedAsync" provider, but BufferedAsync is not

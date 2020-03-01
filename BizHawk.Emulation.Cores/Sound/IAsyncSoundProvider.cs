@@ -80,12 +80,7 @@ namespace BizHawk.Emulation.Cores.Components
 	// and is only used by legacy sound implementations
 	internal class MetaspuSoundProvider : ISoundProvider
 	{
-		public MetaspuSoundProvider()
-		{
-			Buffer = Metaspu.MetaspuConstruct();
-		}
-
-		public ISynchronizingAudioBuffer Buffer { get; }
+		public ISynchronizingAudioBuffer Buffer { get; } = new VecnaSynchronizer();
 
 		public bool CanProvideAsync => true;
 
