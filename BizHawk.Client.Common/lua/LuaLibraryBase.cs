@@ -60,22 +60,13 @@ namespace BizHawk.Client.Common
 
 		protected static Color? ToColor(object o)
 		{
-			if (o == null)
+			return o switch
 			{
-				return null;
-			}
-
-			if (o is double d)
-			{
-				return Color.FromArgb((int)(long)d);
-			}
-
-			if (o is string s)
-			{
-				return Color.FromName(s);
-			}
-
-			return null;
+				double d => Color.FromArgb((int) (long) d),
+				string s => Color.FromName(s),
+				null => null,
+				_ => null
+			};
 		}
 
 		protected void Log(object message)

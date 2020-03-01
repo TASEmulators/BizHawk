@@ -34,22 +34,13 @@ namespace BizHawk.Client.Common.movie.import
 
 			// 004 4-byte little-endian unsigned int: version number
 			uint versionNumber = r.ReadUInt32();
-			string version;
-			switch (versionNumber)
+			var version = versionNumber switch
 			{
-				case 1:
-					version = "1.43";
-					break;
-				case 4:
-					version = "1.51";
-					break;
-				case 5:
-					version = "1.52";
-					break;
-				default:
-					version = "Unknown";
-					break;
-			}
+				1 => "1.43",
+				4 => "1.51",
+				5 => "1.52",
+				_ => "Unknown"
+			};
 
 			Result.Movie.Comments.Add($"{EmulationOrigin} Snes9x version {version}");
 			Result.Movie.Comments.Add($"{MovieOrigin} .SMV");

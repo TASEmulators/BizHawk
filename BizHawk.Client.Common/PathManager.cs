@@ -171,18 +171,10 @@ namespace BizHawk.Client.Common
 		{
 			// determine the number of parent directories in path and return result
 			int x = path.HowMany('\\');
-			if (x > 0)
-			{
-				return path.HowMany("..\\");
-			}
-
-			return 0;
+			return x > 0 ? path.HowMany("..\\") : 0;
 		}
 
-		public static bool IsRecent(string path)
-		{
-			return path == "%recent%";
-		}
+		public static bool IsRecent(string path) => path == "%recent%";
 
 		public static string GetLuaPath()
 		{

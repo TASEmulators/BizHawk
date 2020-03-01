@@ -44,17 +44,12 @@ namespace BizHawk.Client.Common
 
 		public override bool Equals(object obj)
 		{
-			if (obj == null)
+			return obj switch
 			{
-				return false;
-			}
-
-			if (obj is TasMovieMarker marker)
-			{
-				return Frame == marker.Frame;
-			}
-			
-			return false;
+				null => false,
+				TasMovieMarker marker => Frame == marker.Frame,
+				_ => false
+			};
 		}
 
 		public static bool operator ==(TasMovieMarker marker, int frame)

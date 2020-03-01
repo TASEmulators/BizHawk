@@ -342,14 +342,10 @@ namespace BizHawk.Client.Common.movie.import
 			}
 
 			// LSNES frames don't start or end with a |.
-			int start = 1;
 			int end = sections.Length;
-			int playerOffset = 0;
 
-			for (int section = start; section < end; section++)
+			for (int player = 1; player < end; player++)
 			{
-				// The player number is one less than the section number for the reasons explained above.
-				int player = section + playerOffset;
 				string prefix = $"P{player} ";
 				
 				// Gameboy doesn't currently have a prefix saying which player the input is for.
@@ -360,12 +356,12 @@ namespace BizHawk.Client.Common.movie.import
 
 				// Only count lines with that have the right number of buttons and are for valid players.
 				if (
-					sections[section].Length == buttons.Length)
+					sections[player].Length == buttons.Length)
 				{
 					for (int button = 0; button < buttons.Length; button++)
 					{
 						// Consider the button pressed so long as its spot is not occupied by a ".".
-						controllers[prefix + buttons[button]] = sections[section][button] != '.';
+						controllers[prefix + buttons[button]] = sections[player][button] != '.';
 					}
 				}
 			}

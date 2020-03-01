@@ -50,12 +50,7 @@ namespace BizHawk.Client.Common
 				throw new InvalidOperationException("Config Error", ex);
 			}
 
-			if (config == null)
-			{
-				return new T();
-			}
-
-			return config;
+			return config ?? new T();
 		}
 
 		public static void Save(string filepath, object config)

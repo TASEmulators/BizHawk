@@ -162,25 +162,15 @@ namespace BizHawk.Client.Common
 		{
 			int before = _watchList.Count;
 
-			switch (_compareTo)
+			_watchList = _compareTo switch
 			{
-				default:
-				case Compare.Previous:
-					_watchList = ComparePrevious(_watchList).ToList();
-					break;
-				case Compare.SpecificValue:
-					_watchList = CompareSpecificValue(_watchList).ToList();
-					break;
-				case Compare.SpecificAddress:
-					_watchList = CompareSpecificAddress(_watchList).ToList();
-					break;
-				case Compare.Changes:
-					_watchList = CompareChanges(_watchList).ToList();
-					break;
-				case Compare.Difference:
-					_watchList = CompareDifference(_watchList).ToList();
-					break;
-			}
+				Compare.Previous => ComparePrevious(_watchList).ToList(),
+				Compare.SpecificValue => CompareSpecificValue(_watchList).ToList(),
+				Compare.SpecificAddress => CompareSpecificAddress(_watchList).ToList(),
+				Compare.Changes => CompareChanges(_watchList).ToList(),
+				Compare.Difference => CompareDifference(_watchList).ToList(),
+				_ => ComparePrevious(_watchList).ToList()
+			};
 
 			if (_settings.PreviousType == PreviousType.LastSearch)
 			{
@@ -201,20 +191,15 @@ namespace BizHawk.Client.Common
 				? _watchList.BinarySearch(w => w.Address, address)
 				: _watchList.FirstOrDefault(w => w.Address == address), 1);
 
-			switch (_compareTo)
+			return _compareTo switch
 			{
-				default:
-				case Compare.Previous:
-					return !ComparePrevious(listOfOne).Any();
-				case Compare.SpecificValue:
-					return !CompareSpecificValue(listOfOne).Any();
-				case Compare.SpecificAddress:
-					return !CompareSpecificAddress(listOfOne).Any();
-				case Compare.Changes:
-					return !CompareChanges(listOfOne).Any();
-				case Compare.Difference:
-					return !CompareDifference(listOfOne).Any();
-			}
+				Compare.Previous => !ComparePrevious(listOfOne).Any(),
+				Compare.SpecificValue => !CompareSpecificValue(listOfOne).Any(),
+				Compare.SpecificAddress => !CompareSpecificAddress(listOfOne).Any(),
+				Compare.Changes => !CompareChanges(listOfOne).Any(),
+				Compare.Difference => !CompareDifference(listOfOne).Any(),
+				_ => !ComparePrevious(listOfOne).Any()
+			};
 		}
 
 		public int Count => _watchList.Count;
@@ -497,48 +482,28 @@ namespace BizHawk.Client.Common
 			{
 				default:
 				case ComparisonOperator.Equal:
-					if (_settings.Type == DisplayType.Float)
-					{
-						return watchList.Where(w => ToFloat(GetValue(w.Address)) == ToFloat(w.Previous));
-					}
-
-					return watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) == SignExtendAsNeeded(w.Previous));
-
+					return _settings.Type == DisplayType.Float
+						? watchList.Where(w => ToFloat(GetValue(w.Address)) == ToFloat(w.Previous))
+						: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) == SignExtendAsNeeded(w.Previous));
 				case ComparisonOperator.NotEqual:
 					return watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) != SignExtendAsNeeded(w.Previous));
-
 				case ComparisonOperator.GreaterThan:
-					if (_settings.Type == DisplayType.Float)
-					{
-						return watchList.Where(w => ToFloat(GetValue(w.Address)) > ToFloat(w.Previous));
-					}
-
-					return watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) > SignExtendAsNeeded(w.Previous));
-
+					return _settings.Type == DisplayType.Float
+						? watchList.Where(w => ToFloat(GetValue(w.Address)) > ToFloat(w.Previous))
+						: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) > SignExtendAsNeeded(w.Previous));
 				case ComparisonOperator.GreaterThanEqual:
-					if (_settings.Type == DisplayType.Float)
-					{
-						return watchList.Where(w => ToFloat(GetValue(w.Address)) >= ToFloat(w.Previous));
-					}
-
-					return watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) >= SignExtendAsNeeded(w.Previous));
+					return _settings.Type == DisplayType.Float
+						? watchList.Where(w => ToFloat(GetValue(w.Address)) >= ToFloat(w.Previous))
+						: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) >= SignExtendAsNeeded(w.Previous));
 
 				case ComparisonOperator.LessThan:
-					if (_settings.Type == DisplayType.Float)
-					{
-						return watchList.Where(w => ToFloat(GetValue(w.Address)) < ToFloat(w.Previous));
-					}
-
-					return watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) < SignExtendAsNeeded(w.Previous));
-
+					return _settings.Type == DisplayType.Float
+						? watchList.Where(w => ToFloat(GetValue(w.Address)) < ToFloat(w.Previous))
+						: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) < SignExtendAsNeeded(w.Previous));
 				case ComparisonOperator.LessThanEqual:
-					if (_settings.Type == DisplayType.Float)
-					{
-						return watchList.Where(w => ToFloat(GetValue(w.Address)) <= ToFloat(w.Previous));
-					}
-
-					return watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) <= SignExtendAsNeeded(w.Previous));
-
+					return _settings.Type == DisplayType.Float
+						? watchList.Where(w => ToFloat(GetValue(w.Address)) <= ToFloat(w.Previous))
+						: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) <= SignExtendAsNeeded(w.Previous));
 				case ComparisonOperator.DifferentBy:
 					if (DifferentBy.HasValue)
 					{
@@ -573,48 +538,31 @@ namespace BizHawk.Client.Common
 				{
 					default:
 					case ComparisonOperator.Equal:
-						if (_settings.Type == DisplayType.Float)
-						{
-							return watchList.Where(w => ToFloat(GetValue(w.Address)) == ToFloat(compareValue));
-						}
-
-						return watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) == SignExtendAsNeeded(CompareValue.Value));
+						return _settings.Type == DisplayType.Float
+							? watchList.Where(w => ToFloat(GetValue(w.Address)) == ToFloat(compareValue))
+							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) == SignExtendAsNeeded(CompareValue.Value));
 					case ComparisonOperator.NotEqual:
-						if (_settings.Type == DisplayType.Float)
-						{
-							return watchList.Where(w => ToFloat(GetValue(w.Address)) != ToFloat(compareValue));
-						}
-
-						return watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) != SignExtendAsNeeded(compareValue));
-
+						return _settings.Type == DisplayType.Float
+							? watchList.Where(w => ToFloat(GetValue(w.Address)) != ToFloat(compareValue))
+							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) != SignExtendAsNeeded(compareValue));
 					case ComparisonOperator.GreaterThan:
-						if (_settings.Type == DisplayType.Float)
-						{
-							return watchList.Where(w => ToFloat(GetValue(w.Address)) > ToFloat(compareValue));
-						}
-
-						return watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) > SignExtendAsNeeded(compareValue));
+						return _settings.Type == DisplayType.Float
+							? watchList.Where(w => ToFloat(GetValue(w.Address)) > ToFloat(compareValue))
+							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) > SignExtendAsNeeded(compareValue));
 					case ComparisonOperator.GreaterThanEqual:
-						if (_settings.Type == DisplayType.Float)
-						{
-							return watchList.Where(w => ToFloat(GetValue(w.Address)) >= ToFloat(compareValue));
-						}
-
-						return watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) >= SignExtendAsNeeded(compareValue));
+						return _settings.Type == DisplayType.Float
+							? watchList.Where(w => ToFloat(GetValue(w.Address)) >= ToFloat(compareValue))
+							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) >= SignExtendAsNeeded(compareValue));
 					case ComparisonOperator.LessThan:
-						if (_settings.Type == DisplayType.Float)
-						{
-							return watchList.Where(w => ToFloat(GetValue(w.Address)) < ToFloat(compareValue));
-						}
+						return _settings.Type == DisplayType.Float
+							? watchList.Where(w => ToFloat(GetValue(w.Address)) < ToFloat(compareValue))
+							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) < SignExtendAsNeeded(compareValue));
 
-						return watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) < SignExtendAsNeeded(compareValue));
 					case ComparisonOperator.LessThanEqual:
-						if (_settings.Type == DisplayType.Float)
-						{
-							return watchList.Where(w => ToFloat(GetValue(w.Address)) <= ToFloat(compareValue));
-						}
+						return _settings.Type == DisplayType.Float
+							? watchList.Where(w => ToFloat(GetValue(w.Address)) <= ToFloat(compareValue))
+							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) <= SignExtendAsNeeded(compareValue));
 
-						return watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) <= SignExtendAsNeeded(compareValue));
 					case ComparisonOperator.DifferentBy:
 						if (DifferentBy.HasValue)
 						{
@@ -735,47 +683,29 @@ namespace BizHawk.Client.Common
 				{
 					default:
 					case ComparisonOperator.Equal:
-						if (_settings.Type == DisplayType.Float)
-						{
-							return watchList.Where(w => ToFloat(GetValue(w.Address)) - ToFloat(w.Previous) == compareValue);
-						}
-
-						return watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) == compareValue);
+						return _settings.Type == DisplayType.Float
+							? watchList.Where(w => ToFloat(GetValue(w.Address)) - ToFloat(w.Previous) == compareValue)
+							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) == compareValue);
 					case ComparisonOperator.NotEqual:
-						if (_settings.Type == DisplayType.Float)
-						{
-							return watchList.Where(w => ToFloat(GetValue(w.Address)) - w.Previous != compareValue);
-						}
-
-						return watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) != compareValue);
+						return _settings.Type == DisplayType.Float
+							? watchList.Where(w => ToFloat(GetValue(w.Address)) - w.Previous != compareValue)
+							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) != compareValue);
 					case ComparisonOperator.GreaterThan:
-						if (_settings.Type == DisplayType.Float)
-						{
-							return watchList.Where(w => ToFloat(GetValue(w.Address)) - w.Previous > compareValue);
-						}
-
-						return watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) > compareValue);
+						return _settings.Type == DisplayType.Float
+							? watchList.Where(w => ToFloat(GetValue(w.Address)) - w.Previous > compareValue)
+							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) > compareValue);
 					case ComparisonOperator.GreaterThanEqual:
-						if (_settings.Type == DisplayType.Float)
-						{
-							return watchList.Where(w => ToFloat(GetValue(w.Address)) - w.Previous >= compareValue);
-						}
-
-						return watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) >= compareValue);
+						return _settings.Type == DisplayType.Float
+							? watchList.Where(w => ToFloat(GetValue(w.Address)) - w.Previous >= compareValue)
+							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) >= compareValue);
 					case ComparisonOperator.LessThan:
-						if (_settings.Type == DisplayType.Float)
-						{
-							return watchList.Where(w => ToFloat(GetValue(w.Address)) - w.Previous < compareValue);
-						}
-
-						return watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) < compareValue);
+						return _settings.Type == DisplayType.Float
+							? watchList.Where(w => ToFloat(GetValue(w.Address)) - w.Previous < compareValue)
+							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) < compareValue);
 					case ComparisonOperator.LessThanEqual:
-						if (_settings.Type == DisplayType.Float)
-						{
-							return watchList.Where(w => ToFloat(GetValue(w.Address)) - w.Previous <= compareValue);
-						}
-
-						return watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) <= compareValue);
+						return _settings.Type == DisplayType.Float
+							? watchList.Where(w => ToFloat(GetValue(w.Address)) - w.Previous <= compareValue)
+							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) <= compareValue);
 					case ComparisonOperator.DifferentBy:
 						if (DifferentBy.HasValue)
 						{
@@ -802,7 +732,7 @@ namespace BizHawk.Client.Common
 
 		#region Private parts
 
-		private float ToFloat(long val)
+		private static float ToFloat(long val)
 		{
 			var bytes = BitConverter.GetBytes((int)val);
 			return BitConverter.ToSingle(bytes, 0);
@@ -815,48 +745,35 @@ namespace BizHawk.Client.Common
 				return val;
 			}
 
-			switch (_settings.Size)
+			return _settings.Size switch
 			{
-				default:
-				case WatchSize.Byte:
-					return (sbyte)val;
-				case WatchSize.Word:
-					return (short)val;
-				case WatchSize.DWord:
-					return (int)val;
-			}
+				WatchSize.Byte => (sbyte) val,
+				WatchSize.Word => (short) val,
+				WatchSize.DWord => (int) val,
+				_ => (sbyte) val
+			};
 		}
 
 		private long GetValue(long addr)
 		{
 			// do not return sign extended variables from here.
-			switch (_settings.Size)
+			return _settings.Size switch
 			{
-				default:
-				case WatchSize.Byte:
-					var theByte = _settings.Domain.PeekByte(addr % Domain.Size);
-					return theByte;
-
-				case WatchSize.Word:
-					var theWord = _settings.Domain.PeekUshort(addr % Domain.Size, _settings.BigEndian);
-					return theWord;
-
-				case WatchSize.DWord:
-					var theDWord = _settings.Domain.PeekUint(addr % Domain.Size, _settings.BigEndian);
-					return theDWord;
-			}
+				WatchSize.Byte => _settings.Domain.PeekByte(addr % Domain.Size),
+				WatchSize.Word => _settings.Domain.PeekUshort(addr % Domain.Size, _settings.BigEndian),
+				WatchSize.DWord => _settings.Domain.PeekUint(addr % Domain.Size, _settings.BigEndian),
+				_ => _settings.Domain.PeekByte(addr % Domain.Size)
+			};
 		}
 
 		private bool CanDoCompareType(Compare compareType)
 		{
-			switch (_settings.Mode)
+			return _settings.Mode switch
 			{
-				default:
-				case Settings.SearchMode.Detailed:
-					return true;
-				case Settings.SearchMode.Fast:
-					return compareType != Compare.Changes;
-			}
+				Settings.SearchMode.Detailed => true,
+				Settings.SearchMode.Fast => (compareType != Compare.Changes),
+				_ => true
+			};
 		}
 
 		#endregion

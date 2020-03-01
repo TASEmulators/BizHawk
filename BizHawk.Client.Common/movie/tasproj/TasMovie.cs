@@ -395,12 +395,9 @@ namespace BizHawk.Client.Common
 
 		public Guid BranchGuidByIndex(int index)
 		{
-			if (index >= Branches.Count)
-			{
-				return Guid.Empty;
-			}
-
-			return Branches[index].UniqueIdentifier;
+			return index >= Branches.Count
+				? Guid.Empty
+				: Branches[index].UniqueIdentifier;
 		}
 
 		public int BranchIndexByHash(Guid uuid)

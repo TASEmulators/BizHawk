@@ -31,12 +31,7 @@ namespace BizHawk.Client.Common
 					return double.PositiveInfinity;
 				}
 				
-				if (Loaded)
-				{
-					return _log.Count;
-				}
-
-				return 0;
+				return Loaded ? _log.Count : 0;
 			}
 		}
 

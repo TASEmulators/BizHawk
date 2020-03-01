@@ -80,12 +80,7 @@ namespace BizHawk.Client.Common
 			get
 			{
 				var key = systemId + (pal ? "_PAL" : "");
-				if (Rates.ContainsKey(key))
-				{
-					return Rates[key];
-				}
-
-				return 60.0;
+				return Rates.ContainsKey(key) ? Rates[key] : 60.0;
 			}
 		}
 

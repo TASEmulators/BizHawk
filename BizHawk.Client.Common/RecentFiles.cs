@@ -40,28 +40,10 @@ namespace BizHawk.Client.Common
 		[JsonIgnore]
 		public string MostRecent => recentlist.Any() ? recentlist[0] : "";
 
-		public string this[int index]
-		{
-			get
-			{
-				if (recentlist.Any())
-				{
-					return recentlist[index];
-				}
+		public string this[int index] => recentlist.Any() ? recentlist[index] : "";
 
-				return "";
-			}
-		}
-
-		public IEnumerator<string> GetEnumerator()
-		{
-			return recentlist.GetEnumerator();
-		}
-
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
-		}
+		public IEnumerator<string> GetEnumerator() => recentlist.GetEnumerator();
+		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 		public void Clear()
 		{

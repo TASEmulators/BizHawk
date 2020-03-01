@@ -22,16 +22,9 @@ namespace BizHawk.Client.Common
 
 		public string SavestateBinaryBase64Blob
 		{
-			get
-			{
-				if (ContainsKey(HeaderKeys.SAVESTATEBINARYBASE64BLOB))
-				{
-					return this[HeaderKeys.SAVESTATEBINARYBASE64BLOB];
-				}
-
-				return null;
-			}
-
+			get => ContainsKey(HeaderKeys.SAVESTATEBINARYBASE64BLOB)
+				? this[HeaderKeys.SAVESTATEBINARYBASE64BLOB]
+				: null;
 			set
 			{
 				if (value == null)
@@ -48,7 +41,6 @@ namespace BizHawk.Client.Common
 		public new string this[string key]
 		{
 			get => ContainsKey(key) ? base[key] : "";
-
 			set
 			{
 				if (ContainsKey(key))

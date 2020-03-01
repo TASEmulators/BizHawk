@@ -155,14 +155,12 @@ namespace BizHawk.Client.Common.movie.import
 			 Skip the first two sections of the split, which consist of everything before the starting | and the command.
 			 Do not use the section after the last |. In other words, get the sections for the players.
 			*/
-			int start = 2;
 			int end = sections.Length - 1;
-			int playerOffset = -1;
 
-			for (int section = start; section < end; section++)
+			for (int section = 2; section < end; section++)
 			{
 				// The player number is one less than the section number for the reasons explained above.
-				int player = section + playerOffset;
+				int player = section - 1;
 				string prefix = $"P{player} ";
 
 				// Only count lines with that have the right number of buttons and are for valid players.

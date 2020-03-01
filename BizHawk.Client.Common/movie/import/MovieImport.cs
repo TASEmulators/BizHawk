@@ -45,17 +45,14 @@ namespace BizHawk.Client.Common
 				.GetConstructor(new Type[] { })
 				?.Invoke(new object[] { });
 
-			if (importer == null)
-			{
-				return ImportResult.Error($"No importer found for file type {ext}");
-			}
-
-			return importer.Import(path);
+			return importer == null
+				? ImportResult.Error($"No importer found for file type {ext}")
+				: importer.Import(path);
 		}
 
 		private static Type ImporterForExtension(string ext)
 		{
-			return Importers.FirstOrDefault(i => string.Equals(i.Value.Extension, ext, StringComparison.OrdinalIgnoreCase)).Key;
+			return Importers.First(i => string.Equals(i.Value.Extension, ext, StringComparison.OrdinalIgnoreCase)).Key;
 		}
 	}
 }

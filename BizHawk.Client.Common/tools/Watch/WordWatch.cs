@@ -55,10 +55,7 @@ namespace BizHawk.Client.Common
 		/// Get a list a <see cref="DisplayType"/> that can be used for this <see cref="WordWatch"/>
 		/// </summary>
 		/// <returns>An enumeration that contains all valid <see cref="DisplayType"/></returns>
-		public override IEnumerable<DisplayType> AvailableTypes()
-		{
-			return ValidTypes;
-		}
+		public override IEnumerable<DisplayType> AvailableTypes() => ValidTypes;
 
 		/// <summary>
 		/// Reset the previous value; set it to the current one
@@ -193,20 +190,19 @@ namespace BizHawk.Client.Common
 		// TODO: Implements IFormattable
 		public string FormatValue(ushort val)
 		{
-			switch (Type)
+			return Type switch
 			{
-				default:
-				case DisplayType.Unsigned:
-					return val.ToString();
-				case DisplayType.Signed:
-					return ((short)val).ToString();
-				case DisplayType.Hex:
-					return $"{val:X4}";
-				case DisplayType.FixedPoint_12_4:
-					return $"{val / 16.0:F4}";
-				case DisplayType.Binary:
-					return Convert.ToString(val, 2).PadLeft(16, '0').Insert(8, " ").Insert(4, " ").Insert(14, " ");
-			}
+				DisplayType.Unsigned => val.ToString(),
+				DisplayType.Signed => ((short) val).ToString(), DisplayType.Hex => $"{val:X4}",
+				DisplayType.FixedPoint_12_4 => $"{val / 16.0:F4}",
+				DisplayType.Binary => Convert
+					.ToString(val, 2)
+					.PadLeft(16, '0')
+					.Insert(8, " ")
+					.Insert(4, " ")
+					.Insert(14, " "),
+				_ => val.ToString()
+			};
 		}
 
 		/// <summary>

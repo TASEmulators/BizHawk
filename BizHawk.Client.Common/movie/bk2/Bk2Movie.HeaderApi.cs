@@ -50,16 +50,7 @@ namespace BizHawk.Client.Common
 
 		public bool StartsFromSavestate
 		{
-			get
-			{
-				if (Header.ContainsKey(HeaderKeys.STARTSFROMSAVESTATE))
-				{
-					return bool.Parse(Header[HeaderKeys.STARTSFROMSAVESTATE]);
-				}
-
-				return false;
-			}
-
+			get => Header.ContainsKey(HeaderKeys.STARTSFROMSAVESTATE) && bool.Parse(Header[HeaderKeys.STARTSFROMSAVESTATE]);
 			set
 			{
 				if (value)
@@ -75,16 +66,7 @@ namespace BizHawk.Client.Common
 
 		public bool StartsFromSaveRam
 		{
-			get
-			{
-				if (Header.ContainsKey(HeaderKeys.STARTSFROMSAVERAM))
-				{
-					return bool.Parse(Header[HeaderKeys.STARTSFROMSAVERAM]);
-				}
-
-				return false;
-			}
-
+			get => Header.ContainsKey(HeaderKeys.STARTSFROMSAVERAM) && bool.Parse(Header[HeaderKeys.STARTSFROMSAVERAM]);
 			set
 			{
 				if (value)
@@ -106,16 +88,7 @@ namespace BizHawk.Client.Common
 
 		public string GameName
 		{
-			get
-			{
-				if (Header.ContainsKey(HeaderKeys.GAMENAME))
-				{
-					return Header[HeaderKeys.GAMENAME];
-				}
-
-				return "";
-			}
-
+			get => Header.ContainsKey(HeaderKeys.GAMENAME) ? Header[HeaderKeys.GAMENAME] : "";
 			set
 			{
 				if (Header[HeaderKeys.GAMENAME] != value)
@@ -128,16 +101,7 @@ namespace BizHawk.Client.Common
 
 		public string SystemID
 		{
-			get
-			{
-				if (Header.ContainsKey(HeaderKeys.PLATFORM))
-				{
-					return Header[HeaderKeys.PLATFORM];
-				}
-
-				return "";
-			}
-
+			get => Header.ContainsKey(HeaderKeys.PLATFORM) ? Header[HeaderKeys.PLATFORM] : "";
 			set
 			{
 				if (Header[HeaderKeys.PLATFORM] != value)

@@ -80,13 +80,7 @@ namespace BizHawk.Client.Common
 		public bool AttemptToLoadCheatFile()
 		{
 			var file = new FileInfo(_defaultFileName);
-
-			if (file.Exists)
-			{
-				return Load(file.FullName, false);
-			}
-			
-			return false;
+			return file.Exists && Load(file.FullName, false);
 		}
 
 		public void NewList(string defaultFileName, bool autosave = false)
@@ -297,12 +291,9 @@ namespace BizHawk.Client.Common
 				case WatchSize.Byte:
 					return activeCheat.Value;
 				case WatchSize.Word:
-					if (size == WatchSize.Byte)
-					{
-						return GetByteValue(domain, addr);
-					}
-
-					return activeCheat.Value;
+					return size == WatchSize.Byte
+						? GetByteValue(domain, addr)
+						: activeCheat.Value;
 				case WatchSize.DWord:
 					if (size == WatchSize.Byte)
 					{

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -29,47 +29,16 @@ namespace BizHawk.Client.Common
 		}
 
 		public float GetFloat(string name)
-		{
-			if (_floatOverrides.ContainsKey(name))
-			{
-				return _floatOverrides[name];
-			}
+			=> _floatOverrides.ContainsKey(name)
+				? _floatOverrides[name]
+				: 0.0F;
+		
 
-			return 0.0F;
-		}
+		public IEnumerable<string> Overrides => _overrides.Select(kvp => kvp.Key);
 
-		public IEnumerable<string> Overrides
-		{
-			get
-			{
-				foreach (var kvp in _overrides)
-				{
-					yield return kvp.Key;
-				}
-			}
-		}
+		public IEnumerable<string> FloatOverrides => _floatOverrides.Select(kvp => kvp.Key);
 
-		public IEnumerable<string> FloatOverrides
-		{
-			get
-			{
-				foreach (var kvp in _floatOverrides)
-				{
-					yield return kvp.Key;
-				}
-			}
-		}
-
-		public IEnumerable<string> InversedButtons
-		{
-			get
-			{
-				foreach (var name in _inverses)
-				{
-					yield return name;
-				}
-			}
-		}
+		public IEnumerable<string> InversedButtons => _inverses;
 
 		public void SetFloat(string name, float value)
 		{

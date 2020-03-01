@@ -16,7 +16,7 @@ namespace BizHawk.Client.Common
 		{
 			var neshawkName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(NES), typeof(CoreAttribute))).CoreName;
 			Result.Movie.HeaderEntries[HeaderKeys.CORE] = neshawkName;
-			var emulator = "FCEUX";
+			const string emulator = "FCEUX";
 			var platform = "NES"; // TODO: FDS?
 
 			var syncSettings = new NES.NESSyncSettings();

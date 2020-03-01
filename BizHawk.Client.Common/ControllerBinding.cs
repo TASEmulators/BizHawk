@@ -11,15 +11,15 @@ namespace BizHawk.Client.Common
 	{
 		public Controller(ControllerDefinition definition)
 		{
-			_type = definition;
-			for (int i = 0; i < _type.FloatControls.Count; i++)
+			Definition = definition;
+			for (int i = 0; i < Definition.FloatControls.Count; i++)
 			{
-				_floatButtons[_type.FloatControls[i]] = _type.FloatRanges[i].Mid;
-				_floatRanges[_type.FloatControls[i]] = _type.FloatRanges[i];
+				_floatButtons[Definition.FloatControls[i]] = Definition.FloatRanges[i].Mid;
+				_floatRanges[Definition.FloatControls[i]] = Definition.FloatRanges[i];
 			}
 		}
 
-		public ControllerDefinition Definition => _type;
+		public ControllerDefinition Definition { get; private set; }
 
 		public bool IsPressed(string button)
 		{
@@ -37,10 +37,8 @@ namespace BizHawk.Client.Common
 		private readonly Dictionary<string, ControllerDefinition.FloatRange> _floatRanges = new WorkingDictionary<string, ControllerDefinition.FloatRange>();
 		private readonly Dictionary<string, AnalogBind> _floatBinds = new Dictionary<string, AnalogBind>();
 
-		private ControllerDefinition _type;
-
 		/// <summary>don't do this</summary>
-		public void ForceType(ControllerDefinition newType) { _type = newType; }
+		public void ForceType(ControllerDefinition newType) => Definition = newType;
 
 		public bool this[string button] => IsPressed(button);
 
@@ -154,9 +152,7 @@ namespace BizHawk.Client.Common
 		}
 
 		public void ApplyAxisConstraints(string constraintClass)
-		{
-			_type.ApplyAxisConstraints(constraintClass, _floatButtons);
-		}
+			=> Definition.ApplyAxisConstraints(constraintClass, _floatButtons);
 
 		/// <summary>
 		/// merges pressed logical buttons from the supplied controller, effectively ORing it with the current state

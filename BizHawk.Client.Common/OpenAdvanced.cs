@@ -49,28 +49,15 @@ namespace BizHawk.Client.Common
 			int idx = text.IndexOf('*');
 			string type = text.Substring(0, idx);
 			string token = text.Substring(idx + 1);
-			IOpenAdvanced ioa;
 
-			if (type == OpenAdvancedTypes.OpenRom)
+			var ioa = type switch
 			{
-				ioa = new OpenAdvanced_OpenRom();
-			}
-			else if (type == OpenAdvancedTypes.Libretro)
-			{
-				ioa = new OpenAdvanced_Libretro();
-			}
-			else if (type == OpenAdvancedTypes.LibretroNoGame)
-			{
-				ioa = new OpenAdvanced_LibretroNoGame();
-			}
-			else if (type == OpenAdvancedTypes.MAME)
-			{
-				ioa = new OpenAdvanced_MAME();
-			}
-			else
-			{
-				ioa = null;
-			}
+				OpenAdvancedTypes.OpenRom => (IOpenAdvanced)new OpenAdvanced_OpenRom(),
+				OpenAdvancedTypes.Libretro => new OpenAdvanced_Libretro(),
+				OpenAdvancedTypes.LibretroNoGame => new OpenAdvanced_LibretroNoGame(),
+				OpenAdvancedTypes.MAME => new OpenAdvanced_MAME(),
+				_ => null
+			};
 
 			if (ioa == null)
 			{
@@ -83,7 +70,7 @@ namespace BizHawk.Client.Common
 
 		public static string Serialize(IOpenAdvanced ioa)
 		{
-			StringWriter sw = new StringWriter();
+			var sw = new StringWriter();
 			sw.Write("{0}*", ioa.TypeName);
 			ioa.Serialize(sw);
 			return sw.ToString();
