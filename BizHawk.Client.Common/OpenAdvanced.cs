@@ -37,12 +37,11 @@ namespace BizHawk.Client.Common
 
 	public class OpenAdvancedSerializer
 	{
-
 		public static IOpenAdvanced ParseWithLegacy(string text)
 		{
-			if (text.StartsWith("*"))
-				return Deserialize(text.Substring(1));
-			return new OpenAdvanced_OpenRom { Path = text };
+			return text.StartsWith("*")
+				? Deserialize(text.Substring(1))
+				: new OpenAdvanced_OpenRom { Path = text };
 		}
 
 		private static IOpenAdvanced Deserialize(string text)
@@ -93,14 +92,11 @@ namespace BizHawk.Client.Common
 
 	public class OpenAdvanced_Libretro : IOpenAdvanced, IOpenAdvancedLibretro
 	{
-		public OpenAdvanced_Libretro()
-		{
-		}
-
 		public struct Token
 		{
 			public string Path, CorePath;
 		}
+
 		public Token token;
 
 		public string TypeName => "Libretro";
@@ -138,37 +134,28 @@ namespace BizHawk.Client.Common
 
 		public OpenAdvanced_LibretroNoGame(string corePath)
 		{
-			_corePath = corePath;
+			CorePath = corePath;
 		}
 
-		string _corePath;
-
 		public string TypeName => "LibretroNoGame";
-		public string DisplayName => Path.GetFileName(_corePath); // assume we like the filename of the core
+		public string DisplayName => Path.GetFileName(CorePath); // assume we like the filename of the core
 		public string SimplePath => ""; // effectively a signal to not use a game
 
 		public void Deserialize(string str)
 		{
-			_corePath = str;
+			CorePath = str;
 		}
 
 		public void Serialize(TextWriter tw)
 		{
-			tw.Write(_corePath);
+			tw.Write(CorePath);
 		}
 
-		public string CorePath
-		{
-			get => _corePath;
-			set => _corePath = value;
-		}
+		public string CorePath { get; set; }
 	}
 
 	public class OpenAdvanced_OpenRom : IOpenAdvanced
 	{
-		public OpenAdvanced_OpenRom()
-		{}
-
 		public string Path;
 
 		public string TypeName => "OpenRom";
@@ -188,9 +175,6 @@ namespace BizHawk.Client.Common
 
 	public class OpenAdvanced_MAME : IOpenAdvanced
 	{
-		public OpenAdvanced_MAME()
-		{ }
-
 		public string Path;
 
 		public string TypeName => "MAME";
