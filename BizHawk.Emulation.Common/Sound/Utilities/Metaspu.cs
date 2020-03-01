@@ -6,15 +6,12 @@ namespace BizHawk.Emulation.Common
 	{
 		public static ISynchronizingAudioBuffer MetaspuConstruct(ESynchMethod method)
 		{
-			switch (method)
+			return method switch
 			{
-				case ESynchMethod.Nitsuja:
-					return new NitsujaSynchronizer();
-				case ESynchMethod.Vecna:
-					return new VecnaSynchronizer();
-				default:
-					return new NitsujaSynchronizer();
-			}
+				ESynchMethod.Vecna => new VecnaSynchronizer(),
+				ESynchMethod.Nitsuja => new NitsujaSynchronizer(),
+				_ => new NitsujaSynchronizer()
+			};
 		}
 	}
 
