@@ -133,7 +133,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			received_byte = 0;
 			begin_transmitting_cnt = 0;
 			status_byte = 1;
-			x4_clock = 32;
+			x4_clock = 64;
 		}
 
 		public DisplayType Region => DisplayType.NTSC;
