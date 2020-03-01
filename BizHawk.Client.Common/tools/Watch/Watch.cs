@@ -617,12 +617,6 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Gets a value indicating whether the current address is
-		/// within in the range of current <see cref="MemoryDomain"/>
-		/// </summary>
-		public bool IsOutOfRange => !IsSeparator && _domain.Size != 0 && Address >= _domain.Size;
-
-		/// <summary>
 		/// Gets a value that defined if the current <see cref="Watch"/> is actually a <see cref="SeparatorWatch"/>
 		/// </summary>
 		public bool IsSeparator => this is SeparatorWatch;
