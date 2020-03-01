@@ -262,10 +262,10 @@ namespace BizHawk.Client.Common
 				case WatchSize.Byte:
 					return _watch.Address == addr;
 				case WatchSize.Word:
-					return (addr == _watch.Address) || (addr == _watch.Address + 1);
+					return addr == _watch.Address || addr == _watch.Address + 1;
 				case WatchSize.DWord:
-					return (addr == _watch.Address) || (addr == _watch.Address + 1) ||
-						(addr == _watch.Address + 2) || (addr == _watch.Address + 3);
+					return addr == _watch.Address || addr == _watch.Address + 1 ||
+						addr == _watch.Address + 2 || addr == _watch.Address + 3;
 			}
 		}
 
@@ -416,7 +416,7 @@ namespace BizHawk.Client.Common
 		public static bool operator ==(Cheat a, Cheat b)
 		{
 			// If one is null, but not both, return false.
-			if (((object)a == null) || ((object)b == null))
+			if ((object)a == null || (object)b == null)
 			{
 				return false;
 			}
@@ -432,7 +432,7 @@ namespace BizHawk.Client.Common
 		public static bool operator ==(Cheat a, Watch b)
 		{
 			// If one is null, but not both, return false.
-			if (((object)a == null) || ((object)b == null))
+			if ((object)a == null || (object)b == null)
 			{
 				return false;
 			}

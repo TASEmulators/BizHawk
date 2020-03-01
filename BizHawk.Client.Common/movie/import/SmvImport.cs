@@ -154,7 +154,7 @@ namespace BizHawk.Client.Common.movie.import
 			 Extra ROM info is always positioned right before the savestate. Its size is 30 bytes if MOVIE_SYNC_HASROMINFO
 			 is used (and MOVIE_SYNC_DATA_EXISTS is set), 0 bytes otherwise.
 			*/
-			int extraRomInfo = (((syncFlags >> 6) & 0x1) != 0 && (syncFlags & 0x1) != 0) ? 30 : 0;
+			int extraRomInfo = ((syncFlags >> 6) & 0x1) != 0 && (syncFlags & 0x1) != 0 ? 30 : 0;
 
 			// 018 4-byte little-endian unsigned int: offset to the savestate inside file
 			uint savestateOffset = r.ReadUInt32();
@@ -190,7 +190,7 @@ namespace BizHawk.Client.Common.movie.import
 			 from position 32 (0x20 (0x40 for 1.51 and up)) and ends at <savestate_offset -
 			 length_of_extra_rom_info_in_bytes>.
 			*/
-			byte[] metadata = r.ReadBytes((int)(savestateOffset - extraRomInfo - ((version != "1.43") ? 0x40 : 0x20)));
+			byte[] metadata = r.ReadBytes((int)(savestateOffset - extraRomInfo - (version != "1.43" ? 0x40 : 0x20)));
 			string author = NullTerminated(Encoding.Unicode.GetString(metadata).Trim());
 			if (!string.IsNullOrWhiteSpace(author))
 			{

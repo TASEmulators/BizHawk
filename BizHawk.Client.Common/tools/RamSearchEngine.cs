@@ -440,7 +440,7 @@ namespace BizHawk.Client.Common
 					break;
 				case WatchList.DIFF:
 					_watchList = reverse
-						? _watchList.OrderByDescending(w => (GetValue(w.Address) - w.Previous)).ToList()
+						? _watchList.OrderByDescending(w => GetValue(w.Address) - w.Previous).ToList()
 						: _watchList.OrderBy(w => GetValue(w.Address) - w.Previous).ToList();
 
 					break;
@@ -1111,9 +1111,9 @@ namespace BizHawk.Client.Common
 				BigEndian = memoryDomains.MainMemory.EndianType == MemoryDomain.Endian.Big;
 				Size = (WatchSize)memoryDomains.MainMemory.WordSize;
 				Type = DisplayType.Unsigned;
-				Mode = memoryDomains.MainMemory.Size > (1024 * 1024) ?
-					SearchMode.Fast :
-					SearchMode.Detailed;
+				Mode = memoryDomains.MainMemory.Size > 1024 * 1024
+					? SearchMode.Fast
+					: SearchMode.Detailed;
 
 				Domain = memoryDomains.MainMemory;
 				CheckMisAligned = false;

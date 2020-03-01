@@ -197,24 +197,24 @@ namespace BizHawk.Client.Common
 			_localHeader[26] = (byte)nameb.Length;
 			_localHeader[27] = (byte)(nameb.Length >> 8);
 
-			var localHeaderOffset = (int)(_output.Position);
+			var localHeaderOffset = (int)_output.Position;
 
 			_output.Write(_localHeader, 0, _localHeader.Length);
 			_output.Write(nameb, 0, nameb.Length);
 
-			var fileStart = (int)(_output.Position);
+			var fileStart = (int)_output.Position;
 
 			var s2 = new DeflateStream(_output, _level, true);
 			var s3 = new CRC32Stream(s2);
 			callback(s3);
 			s2.Flush();
 
-			var fileEnd = (int)(_output.Position);
+			var fileEnd = (int)_output.Position;
 
 			var crc = s3.Crc;
 			var compressedSize = fileEnd - fileStart;
 			var uncompressedSize = s3.Size;
-			var descriptor = new byte[]
+			var descriptor = new[]
 			{
 				(byte)crc,
 				(byte)(crc >> 8),
@@ -248,12 +248,12 @@ namespace BizHawk.Client.Common
 
 		private void WriteFooter()
 		{
-			var centralHeaderOffset = (int)(_output.Position);
+			var centralHeaderOffset = (int)_output.Position;
 
 			foreach (var blob in _endBlobs)
 				_output.Write(blob, 0, blob.Length);
 
-			var centralHeaderEnd = (int)(_output.Position);
+			var centralHeaderEnd = (int)_output.Position;
 
 			var centralHeaderSize = centralHeaderEnd - centralHeaderOffset;
 

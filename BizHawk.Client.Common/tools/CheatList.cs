@@ -627,7 +627,7 @@ namespace BizHawk.Client.Common
 					if (reverse)
 					{
 						_cheatList = _cheatList
-							.OrderByDescending(c => ((int)c.Size))
+							.OrderByDescending(c => (int)c.Size)
 							.ThenBy(c => c.Name)
 							.ThenBy(c => c.Address ?? 0)
 							.ToList();
@@ -635,7 +635,7 @@ namespace BizHawk.Client.Common
 					else
 					{
 						_cheatList = _cheatList
-							.OrderBy(c => ((int)c.Size))
+							.OrderBy(c => (int)c.Size)
 							.ThenBy(c => c.Name)
 							.ThenBy(c => c.Address ?? 0)
 							.ToList();

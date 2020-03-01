@@ -131,7 +131,7 @@ namespace BizHawk.Client.Common
 						continue;
 					}
 
-					if ((currentFrame % _step > 0) && (currentFrame + 1 != _movie.LastEditedFrame))
+					if (currentFrame % _step > 0 && currentFrame + 1 != _movie.LastEditedFrame)
 					{
 						// ignore the pattern if the state doesn't belong already, drop it blindly and skip everything
 						if (_tsm.Remove(currentFrame))
@@ -154,7 +154,7 @@ namespace BizHawk.Client.Common
 
 					if (_align)
 					{
-						priority -= ((_base * ((1 << zeroCount) * 2 - 1)) >> zeroCount);
+						priority -= (_base * ((1 << zeroCount) * 2 - 1)) >> zeroCount;
 					}
 
 					if (priority > backwardPriority)

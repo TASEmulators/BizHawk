@@ -366,7 +366,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				movie.HeaderEntries.Add("Is32X", "1");
 			}
 
-			if ((Global.Emulator is SubNESHawk) || (Global.Emulator is SubGBHawk))
+			if (Global.Emulator is SubNESHawk || Global.Emulator is SubGBHawk)
 			{
 				movie.HeaderEntries.Add(HeaderKeys.VBLANKCOUNT, "0");
 			}

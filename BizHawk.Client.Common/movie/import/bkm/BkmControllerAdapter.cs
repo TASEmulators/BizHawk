@@ -437,9 +437,9 @@ namespace BizHawk.Client.Common
 
 			for (int player = 1; player <= BkmMnemonicConstants.Players[ControlType]; player++)
 			{
-				int srcindex = (player - 1) * (BkmMnemonicConstants.Buttons[ControlType].Count + (BkmMnemonicConstants.Analogs[ControlType].Count * 4) + 1 + 1);
+				int srcIndex = (player - 1) * (BkmMnemonicConstants.Buttons[ControlType].Count + (BkmMnemonicConstants.Analogs[ControlType].Count * 4) + 1 + 1);
 
-				if (mnemonic.Length < srcindex + 3 + BkmMnemonicConstants.Buttons[ControlType].Count - 1)
+				if (mnemonic.Length < srcIndex + 3 + BkmMnemonicConstants.Buttons[ControlType].Count - 1)
 				{
 					return;
 				}
@@ -447,12 +447,12 @@ namespace BizHawk.Client.Common
 				int start = 3;
 				foreach (string button in BkmMnemonicConstants.Buttons[ControlType].Keys)
 				{
-					Force($"P{player} {button}", c[srcindex + start++]);
+					Force($"P{player} {button}", c[srcIndex + start++]);
 				}
 
 				foreach (string name in BkmMnemonicConstants.Analogs[ControlType].Keys)
 				{
-					Force($"P{player} {name}", int.Parse(mnemonic.Substring(srcindex + start, 4)));
+					Force($"P{player} {name}", int.Parse(mnemonic.Substring(srcIndex + start, 4)));
 					start += 5;
 				}
 			}
