@@ -5,6 +5,8 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Diagnostics;
 using System.Dynamic;
+using System.IO;
+using System.Text;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -182,6 +184,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
+			_memAccess = true;
+			_mamePeriodicComplete.WaitOne();
+
 			IntPtr ptr = LibMAME.mame_lua_get_string("return manager:machine():buffer_save()", out var lengthInBytes);
 
 			if (ptr == IntPtr.Zero)
@@ -200,10 +205,16 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			writer.Write(_mameSaveBuffer.Length);
 			writer.Write(_mameSaveBuffer);
 			writer.Write(Frame);
+
+			_memoryAccessComplete.Set();
+			_memAccess = false;
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
 		{
+			_memAccess = true;
+			_mamePeriodicComplete.WaitOne();
+
 			int length = reader.ReadInt32();
 
 			if (length != _mameSaveBuffer.Length)
@@ -214,7 +225,19 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			reader.Read(_mameSaveBuffer, 0, _mameSaveBuffer.Length);
 			Frame = reader.ReadInt32();
 
-			LibMAME.mame_lua_execute($"manager:machine():buffer_load({ _mameSaveBuffer })");
+			string start = "manager:machine():buffer_load(\"";
+			string end = "\")";
+
+			byte[] command = new byte[start.Length + _mameSaveBuffer.Length + end.Length];
+
+			System.Buffer.BlockCopy(Encoding.ASCII.GetBytes(start), 0, command, 0, start.Length);
+			System.Buffer.BlockCopy(_mameSaveBuffer, 0, command, start.Length, _mameSaveBuffer.Length);
+			System.Buffer.BlockCopy(Encoding.ASCII.GetBytes(end), 0, command, start.Length + _mameSaveBuffer.Length, end.Length);
+
+			LibMAME.mame_lua_execute(command);
+
+			_memoryAccessComplete.Set();
+			_memAccess = false;
 		}
 
 		public byte[] SaveStateBinary()
@@ -403,7 +426,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 							_memAccess = true;
 							_mamePeriodicComplete.WaitOne();
 							addr += firstOffset;
-							LibMAME.mame_lua_execute($"{ MAMELuaCommand.GetSpace }:write_u8({ addr << _systemBusAddressShift }, { val })");
+							LibMAME.mame_lua_execute(Encoding.ASCII.GetBytes($"{ MAMELuaCommand.GetSpace }:write_u8({ addr << _systemBusAddressShift }, { val })"));
 							_memoryAccessComplete.Set();
 							_memAccess = false;
 						}, dataWidth));
@@ -537,11 +560,11 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		{
 			foreach (var fieldPort in _fieldsPorts)
 			{
-				LibMAME.mame_lua_execute(
+				LibMAME.mame_lua_execute(Encoding.ASCII.GetBytes(
 					"manager:machine():ioport()" +
 					$".ports  [\"{ fieldPort.Value }\"]" +
 					$".fields [\"{ fieldPort.Key   }\"]" +
-					$":set_value({ (_controller.IsPressed(fieldPort.Key) ? 1 : 0) })");
+					$":set_value({ (_controller.IsPressed(fieldPort.Key) ? 1 : 0) })"));
 			}
 		}
 
@@ -606,7 +629,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		{
 			if (_exiting)
 			{
-				LibMAME.mame_lua_execute(MAMELuaCommand.Exit);
+				LibMAME.mame_lua_execute(Encoding.ASCII.GetBytes(MAMELuaCommand.Exit));
 				_exiting = false;
 			}
 			
@@ -621,7 +644,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			if (!_paused)
 			{
-				LibMAME.mame_lua_execute(MAMELuaCommand.Step);
+				LibMAME.mame_lua_execute(Encoding.ASCII.GetBytes(MAMELuaCommand.Step));
 				_frameDone = false;
 				_paused = true;
 			}
@@ -682,7 +705,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private void MAMEBootCallback()
 		{
-			LibMAME.mame_lua_execute(MAMELuaCommand.Pause);
+			LibMAME.mame_lua_execute(Encoding.ASCII.GetBytes(MAMELuaCommand.Pause));
 
 			CheckVersions();
 			GetInputFields();
