@@ -89,18 +89,6 @@ namespace BizHawk.Emulation.Cores.Components
 
 		public ISynchronizingAudioBuffer Buffer { get; }
 
-		public MetaspuSoundProvider()
-			: this(ESynchMethod.Vecna)
-		{
-		}
-
-		public void PullSamples(IAsyncSoundProvider source)
-		{
-			Array.Clear(_pullBuffer, 0, 1470);
-			source.GetSamples(_pullBuffer);
-			Buffer.EnqueueSamples(_pullBuffer, 735);
-		}
-
 		public bool CanProvideAsync => true;
 
 		public SyncSoundMode SyncMode => SyncSoundMode.Async;
