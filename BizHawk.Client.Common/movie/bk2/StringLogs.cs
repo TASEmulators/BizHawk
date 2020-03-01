@@ -10,9 +10,9 @@ namespace BizHawk.Client.Common
 	{
 		public static bool DefaultToDisk { get; set; }
 
-		public static bool DefaultToAWE { get; set; }
+		public static bool DefaultToAwe { get; set; }
 
-		/// <exception cref="InvalidOperationException"><see cref="DefaultToAWE"/> is <see langword="true"/> but not running on Windows host</exception>
+		/// <exception cref="InvalidOperationException"><see cref="DefaultToAwe"/> is <see langword="true"/> but not running on Windows host</exception>
 		public static IStringLog MakeStringLog()
 		{
 			if (DefaultToDisk)
@@ -20,7 +20,7 @@ namespace BizHawk.Client.Common
 				return new StreamStringLog(true);
 			}
 
-			if (DefaultToAWE)
+			if (DefaultToAwe)
 			{
 				return OSTailoredCode.IsUnixHost
 					? throw new InvalidOperationException("logging to AWE is only available on Windows for now")
@@ -51,7 +51,7 @@ namespace BizHawk.Client.Common
 	{
 		public IStringLog Clone()
 		{
-			ListStringLog ret = new ListStringLog();
+			 var ret = new ListStringLog();
 			ret.AddRange(this);
 			return ret;
 		}

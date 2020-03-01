@@ -121,7 +121,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.ResolveDefaults();
 
 			StringLogUtil.DefaultToDisk = Global.Config.MoviesOnDisk;
-			StringLogUtil.DefaultToAWE = Global.Config.MoviesInAwe;
+			StringLogUtil.DefaultToAwe = Global.Config.MoviesInAwe;
 
 			// super hacky! this needs to be done first. still not worth the trouble to make this system fully proper
 			if (Array.Exists(args, arg => arg.StartsWith("--gdi", StringComparison.InvariantCultureIgnoreCase)))
