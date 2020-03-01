@@ -60,9 +60,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public void Remove(MemoryCallbackDelegate action)
 		{
-			var cbToRemove = _callbacks.Where(container => container.Callback.Callback == action).FirstOrDefault();
+			var cbToRemove = _callbacks.Single(container => container.Callback.Callback == action);
 
-			if (LibmGBA.BizClearWatchpoint(_mgba.Core, cbToRemove.ID) == true)
+			if (LibmGBA.BizClearWatchpoint(_mgba.Core, cbToRemove.ID))
 			{
 				_callbacks.Remove(cbToRemove);
 			}
@@ -80,7 +80,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			foreach (var cb in _callbacks)
 			{
-				if (LibmGBA.BizClearWatchpoint(_mgba.Core, cb.ID) == true)
+				if (LibmGBA.BizClearWatchpoint(_mgba.Core, cb.ID))
 				{
 					_callbacks.Remove(cb);
 				}
