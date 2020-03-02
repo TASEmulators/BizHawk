@@ -5,6 +5,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -23,51 +24,51 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_programmaticallyChangingValue = true;
 
-			cbEnableMaster.Checked = _config.SoundEnabled;
-			cbEnableNormal.Checked = _config.SoundEnabledNormal;
-			cbEnableRWFF.Checked = _config.SoundEnabledRWFF;
+			cbMasterEnable.Checked = _config.SoundEnabled;
+			cbFullSpeedEnable.Checked = _config.SoundEnabledNormal;
+			cbRewindFFWEnable.Checked = _config.SoundEnabledRWFF;
 			cbMuteFrameAdvance.Checked = _config.MuteFrameAdvance;
 
 			if (OSTailoredCode.IsUnixHost)
 			{
 				// Disable DirectSound and XAudio2 on Mono
-				rbOutputMethodDirectSound.Enabled = false;
-				rbOutputMethodXAudio2.Enabled = false;
+				rbSoundMethodDirectSound.Enabled = false;
+				rbSoundMethodXAudio2.Enabled = false;
 			}
 
-			rbOutputMethodDirectSound.Checked = _config.SoundOutputMethod == ESoundOutputMethod.DirectSound;
-			rbOutputMethodXAudio2.Checked = _config.SoundOutputMethod == ESoundOutputMethod.XAudio2;
-			rbOutputMethodOpenAL.Checked = _config.SoundOutputMethod == ESoundOutputMethod.OpenAL;
-			BufferSizeNumeric.Value = _config.SoundBufferSizeMs;
-			tbNormal.Value = _config.SoundVolume;
-			nudNormal.Value = _config.SoundVolume;
-			tbRWFF.Value = _config.SoundVolumeRWFF;
-			nudRWFF.Value = _config.SoundVolumeRWFF;
+			rbSoundMethodDirectSound.Checked = _config.SoundOutputMethod == ESoundOutputMethod.DirectSound;
+			rbSoundMethodXAudio2.Checked = _config.SoundOutputMethod == ESoundOutputMethod.XAudio2;
+			rbSoundMethodOpenAL.Checked = _config.SoundOutputMethod == ESoundOutputMethod.OpenAL;
+			nudBufferSize.Value = _config.SoundBufferSizeMs;
+			tbFullSpeedVolume.Value = _config.SoundVolume;
+			nudFullSpeedVolume.Value = _config.SoundVolume;
+			tbRewindFFWVolume.Value = _config.SoundVolumeRWFF;
+			nudRewindFFWVolume.Value = _config.SoundVolumeRWFF;
 			UpdateSoundDialog();
 
 			_programmaticallyChangingValue = false;
 		}
 
-		private void Ok_Click(object sender, EventArgs e)
+		private void btnDialogOK_Click(object sender, EventArgs e)
 		{
-			if (rbOutputMethodDirectSound.Checked && (int)BufferSizeNumeric.Value < 60)
+			if (rbSoundMethodDirectSound.Checked && (int)nudBufferSize.Value < 60)
 			{
 				MessageBox.Show("Buffer size must be at least 60 milliseconds for DirectSound.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 			var oldOutputMethod = _config.SoundOutputMethod;
 			var oldDevice = _config.SoundDevice;
-			_config.SoundEnabled = cbEnableMaster.Checked;
-			_config.SoundEnabledNormal = cbEnableNormal.Checked;
-			_config.SoundEnabledRWFF = cbEnableRWFF.Checked;
+			_config.SoundEnabled = cbMasterEnable.Checked;
+			_config.SoundEnabledNormal = cbFullSpeedEnable.Checked;
+			_config.SoundEnabledRWFF = cbRewindFFWEnable.Checked;
 			_config.MuteFrameAdvance = cbMuteFrameAdvance.Checked;
-			if (rbOutputMethodDirectSound.Checked) _config.SoundOutputMethod = ESoundOutputMethod.DirectSound;
-			if (rbOutputMethodXAudio2.Checked) _config.SoundOutputMethod = ESoundOutputMethod.XAudio2;
-			if (rbOutputMethodOpenAL.Checked) _config.SoundOutputMethod = ESoundOutputMethod.OpenAL;
-			_config.SoundBufferSizeMs = (int)BufferSizeNumeric.Value;
-			_config.SoundVolume = tbNormal.Value;
-			_config.SoundVolumeRWFF = tbRWFF.Value;
-			_config.SoundDevice = (string)listBoxSoundDevices.SelectedItem ?? "<default>";
+			if (rbSoundMethodDirectSound.Checked) _config.SoundOutputMethod = ESoundOutputMethod.DirectSound;
+			if (rbSoundMethodXAudio2.Checked) _config.SoundOutputMethod = ESoundOutputMethod.XAudio2;
+			if (rbSoundMethodOpenAL.Checked) _config.SoundOutputMethod = ESoundOutputMethod.OpenAL;
+			_config.SoundBufferSizeMs = (int)nudBufferSize.Value;
+			_config.SoundVolume = tbFullSpeedVolume.Value;
+			_config.SoundVolumeRWFF = tbRewindFFWVolume.Value;
+			_config.SoundDevice = (string)listDevices.SelectedItem ?? "<default>";
 			GlobalWin.Sound.StopSound();
 			if (_config.SoundOutputMethod != oldOutputMethod
 				|| _config.SoundDevice != oldDevice)
@@ -79,7 +80,7 @@ namespace BizHawk.Client.EmuHawk
 			DialogResult = DialogResult.OK;
 		}
 
-		private void Cancel_Click(object sender, EventArgs e)
+		private void btnDialogCancel_Click(object sender, EventArgs e)
 		{
 			Close();
 		}
@@ -89,27 +90,27 @@ namespace BizHawk.Client.EmuHawk
 			IEnumerable<string> deviceNames = Enumerable.Empty<string>();
 			if (!OSTailoredCode.IsUnixHost)
 			{
-				if (rbOutputMethodDirectSound.Checked) deviceNames = DirectSoundSoundOutput.GetDeviceNames();
-				if (rbOutputMethodXAudio2.Checked) deviceNames = XAudio2SoundOutput.GetDeviceNames();
+				if (rbSoundMethodDirectSound.Checked) deviceNames = DirectSoundSoundOutput.GetDeviceNames();
+				if (rbSoundMethodXAudio2.Checked) deviceNames = XAudio2SoundOutput.GetDeviceNames();
 			}
-			if (rbOutputMethodOpenAL.Checked) deviceNames = OpenALSoundOutput.GetDeviceNames();
+			if (rbSoundMethodOpenAL.Checked) deviceNames = OpenALSoundOutput.GetDeviceNames();
 
-			listBoxSoundDevices.Items.Clear();
-			listBoxSoundDevices.Items.Add("<default>");
-			listBoxSoundDevices.SelectedIndex = 0;
+			listDevices.Items.Clear();
+			listDevices.Items.Add("<default>");
+			listDevices.SelectedIndex = 0;
 			foreach (var name in deviceNames)
 			{
-				listBoxSoundDevices.Items.Add(name);
+				listDevices.Items.Add(name);
 				if (name == _config.SoundDevice)
 				{
-					listBoxSoundDevices.SelectedItem = name;
+					listDevices.SelectedItem = name;
 				}
 			}
 		}
 
-		private void OutputMethodRadioButtons_CheckedChanged(object sender, EventArgs e)
+		private void rbSoundMethodAllRadios_CheckedChanged(object sender, EventArgs e)
 		{
-			if (!((RadioButton)sender).Checked)
+			if (!((RadioButtonEx)sender).Checked)
 			{
 				return;
 			}
@@ -117,34 +118,34 @@ namespace BizHawk.Client.EmuHawk
 			PopulateDeviceList();
 		}
 
-		private void TrackBar1_Scroll(object sender, EventArgs e)
+		private void tbFullSpeedVolume_Scroll(object sender, EventArgs e)
 		{
-			nudNormal.Value = tbNormal.Value;
+			nudFullSpeedVolume.Value = tbFullSpeedVolume.Value;
 		}
 
-		private void TbRwff_Scroll(object sender, EventArgs e)
+		private void tbRewindFFWVolume_Scroll(object sender, EventArgs e)
 		{
-			nudRWFF.Value = tbRWFF.Value;
+			nudRewindFFWVolume.Value = tbRewindFFWVolume.Value;
 		}
 
-		private void SoundVolNumeric_ValueChanged(object sender, EventArgs e)
+		private void nudFullSpeedVolume_ValueChanged(object sender, EventArgs e)
 		{
-			tbNormal.Value = (int)nudNormal.Value;
+			tbFullSpeedVolume.Value = (int)nudFullSpeedVolume.Value;
 
 			// If the user is changing the volume, automatically turn on/off sound accordingly
 			if (!_programmaticallyChangingValue)
 			{
-				cbEnableNormal.Checked = tbNormal.Value != 0;
+				cbFullSpeedEnable.Checked = tbFullSpeedVolume.Value != 0;
 			}
 		}
 
 		private void UpdateSoundDialog()
 		{
-			cbEnableRWFF.Enabled = cbEnableNormal.Checked;
-			grpSoundVol.Enabled = cbEnableMaster.Checked;
+			cbRewindFFWEnable.Enabled = cbFullSpeedEnable.Checked;
+			grpVolume.Enabled = cbMasterEnable.Checked;
 		}
 
-		private void UpdateSoundDialog(object sender, EventArgs e)
+		private void cbMasterOrFullSpeed_CheckedChanged(object sender, EventArgs e)
 		{
 			UpdateSoundDialog();
 		}

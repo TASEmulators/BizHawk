@@ -2,24 +2,6 @@
 {
 	partial class SoundConfig
 	{
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private System.ComponentModel.IContainer components = null;
-
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing && (components != null))
-			{
-				components.Dispose();
-			}
-			base.Dispose(disposing);
-		}
-
 		#region Windows Form Designer generated code
 
 		/// <summary>
@@ -28,344 +10,340 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.Cancel = new System.Windows.Forms.Button();
-			this.OK = new System.Windows.Forms.Button();
-			this.cbEnableNormal = new System.Windows.Forms.CheckBox();
-			this.grpSoundVol = new System.Windows.Forms.GroupBox();
-			this.nudRWFF = new System.Windows.Forms.NumericUpDown();
-			this.cbEnableRWFF = new System.Windows.Forms.CheckBox();
-			this.tbRWFF = new System.Windows.Forms.TrackBar();
-			this.label2 = new System.Windows.Forms.Label();
-			this.label1 = new System.Windows.Forms.Label();
-			this.tbNormal = new System.Windows.Forms.TrackBar();
-			this.nudNormal = new System.Windows.Forms.NumericUpDown();
-			this.listBoxSoundDevices = new System.Windows.Forms.ListBox();
-			this.SoundDeviceLabel = new System.Windows.Forms.Label();
-			this.BufferSizeLabel = new System.Windows.Forms.Label();
-			this.BufferSizeNumeric = new System.Windows.Forms.NumericUpDown();
-			this.BufferSizeUnitsLabel = new System.Windows.Forms.Label();
-			this.grpOutputMethod = new System.Windows.Forms.GroupBox();
-			this.rbOutputMethodOpenAL = new System.Windows.Forms.RadioButton();
-			this.rbOutputMethodXAudio2 = new System.Windows.Forms.RadioButton();
-			this.rbOutputMethodDirectSound = new System.Windows.Forms.RadioButton();
-			this.cbMuteFrameAdvance = new System.Windows.Forms.CheckBox();
-			this.cbEnableMaster = new System.Windows.Forms.CheckBox();
-			this.label3 = new System.Windows.Forms.Label();
-			this.grpSoundVol.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.nudRWFF)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.tbRWFF)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.tbNormal)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.nudNormal)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.BufferSizeNumeric)).BeginInit();
-			this.grpOutputMethod.SuspendLayout();
+			this.btnDialogCancel = new BizHawk.WinForms.Controls.SzButtonEx();
+			this.btnDialogOK = new BizHawk.WinForms.Controls.SzButtonEx();
+			this.cbFullSpeedEnable = new BizHawk.WinForms.Controls.CheckBoxEx();
+			this.grpVolume = new BizHawk.WinForms.Controls.LocSzGroupBoxEx();
+			this.flpGrpVolume = new BizHawk.WinForms.Controls.LocSingleRowFLP();
+			this.flpFullSpeed = new BizHawk.WinForms.Controls.SingleColumnFLP();
+			this.lblFullSpeedVolume = new BizHawk.WinForms.Controls.LabelEx();
+			this.tbFullSpeedVolume = new System.Windows.Forms.TrackBar();
+			this.nudFullSpeedVolume = new BizHawk.WinForms.Controls.SzNUDEx();
+			this.flpRWFF = new BizHawk.WinForms.Controls.SingleColumnFLP();
+			this.cbRewindFFWEnable = new BizHawk.WinForms.Controls.CheckBoxEx();
+			this.lblRewindFFWVolume = new BizHawk.WinForms.Controls.LabelEx();
+			this.tbRewindFFWVolume = new System.Windows.Forms.TrackBar();
+			this.nudRewindFFWVolume = new BizHawk.WinForms.Controls.SzNUDEx();
+			this.listDevices = new System.Windows.Forms.ListBox();
+			this.lblDevices = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.lblBufferSizeDesc = new BizHawk.WinForms.Controls.LabelEx();
+			this.nudBufferSize = new BizHawk.WinForms.Controls.SzNUDEx();
+			this.lblBufferSizeUnits = new BizHawk.WinForms.Controls.LabelEx();
+			this.flpDialogButtons = new BizHawk.WinForms.Controls.LocSzSingleRowFLP();
+			this.flpBufferSize = new BizHawk.WinForms.Controls.SingleRowFLP();
+			this.flpFlowRHS = new BizHawk.WinForms.Controls.LocSingleColumnFLP();
+			this.flpFlowRHSTop = new BizHawk.WinForms.Controls.SzColumnsToRightFLP();
+			this.cbMasterEnable = new BizHawk.WinForms.Controls.CheckBoxEx();
+			this.lblMasterEnable = new BizHawk.WinForms.Controls.LocSzLabelEx();
+			this.cbMuteFrameAdvance = new BizHawk.WinForms.Controls.CheckBoxEx();
+			this.grpSoundMethod = new BizHawk.WinForms.Controls.SzGroupBoxEx();
+			this.flpGrpSoundMethod = new BizHawk.WinForms.Controls.LocSingleColumnFLP();
+			this.rbSoundMethodDirectSound = new BizHawk.WinForms.Controls.RadioButtonEx();
+			this.rbSoundMethodXAudio2 = new BizHawk.WinForms.Controls.RadioButtonEx();
+			this.rbSoundMethodOpenAL = new BizHawk.WinForms.Controls.RadioButtonEx();
+			this.grpVolume.SuspendLayout();
+			this.flpGrpVolume.SuspendLayout();
+			this.flpFullSpeed.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.tbFullSpeedVolume)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudFullSpeedVolume)).BeginInit();
+			this.flpRWFF.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.tbRewindFFWVolume)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudRewindFFWVolume)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudBufferSize)).BeginInit();
+			this.flpDialogButtons.SuspendLayout();
+			this.flpBufferSize.SuspendLayout();
+			this.flpFlowRHS.SuspendLayout();
+			this.flpFlowRHSTop.SuspendLayout();
+			this.grpSoundMethod.SuspendLayout();
+			this.flpGrpSoundMethod.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// Cancel
+			// btnDialogCancel
 			// 
-			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(317, 244);
-			this.Cancel.Name = "Cancel";
-			this.Cancel.Size = new System.Drawing.Size(75, 23);
-			this.Cancel.TabIndex = 1;
-			this.Cancel.Text = "&Cancel";
-			this.Cancel.UseVisualStyleBackColor = true;
-			this.Cancel.Click += new System.EventHandler(this.Cancel_Click);
+			this.btnDialogCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.btnDialogCancel.Name = "btnDialogCancel";
+			this.btnDialogCancel.Size = new System.Drawing.Size(75, 23);
+			this.btnDialogCancel.Text = "&Cancel";
+			this.btnDialogCancel.Click += new System.EventHandler(this.btnDialogCancel_Click);
 			// 
-			// OK
+			// btnDialogOK
 			// 
-			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OK.Location = new System.Drawing.Point(236, 244);
-			this.OK.Name = "OK";
-			this.OK.Size = new System.Drawing.Size(75, 23);
-			this.OK.TabIndex = 0;
-			this.OK.Text = "&OK";
-			this.OK.UseVisualStyleBackColor = true;
-			this.OK.Click += new System.EventHandler(this.Ok_Click);
+			this.btnDialogOK.Name = "btnDialogOK";
+			this.btnDialogOK.Size = new System.Drawing.Size(75, 23);
+			this.btnDialogOK.Text = "&OK";
+			this.btnDialogOK.Click += new System.EventHandler(this.btnDialogOK_Click);
 			// 
-			// cbEnableNormal
+			// cbFullSpeedEnable
 			// 
-			this.cbEnableNormal.AutoSize = true;
-			this.cbEnableNormal.Location = new System.Drawing.Point(6, 20);
-			this.cbEnableNormal.Name = "cbEnableNormal";
-			this.cbEnableNormal.Size = new System.Drawing.Size(48, 17);
-			this.cbEnableNormal.TabIndex = 0;
-			this.cbEnableNormal.Text = "Ena.";
-			this.cbEnableNormal.UseVisualStyleBackColor = true;
-			this.cbEnableNormal.CheckedChanged += new System.EventHandler(this.UpdateSoundDialog);
+			this.cbFullSpeedEnable.Name = "cbFullSpeedEnable";
+			this.cbFullSpeedEnable.Text = "Ena.";
+			this.cbFullSpeedEnable.CheckedChanged += new System.EventHandler(this.cbMasterOrFullSpeed_CheckedChanged);
 			// 
-			// grpSoundVol
+			// grpVolume
 			// 
-			this.grpSoundVol.Controls.Add(this.nudRWFF);
-			this.grpSoundVol.Controls.Add(this.cbEnableRWFF);
-			this.grpSoundVol.Controls.Add(this.tbRWFF);
-			this.grpSoundVol.Controls.Add(this.label2);
-			this.grpSoundVol.Controls.Add(this.label1);
-			this.grpSoundVol.Controls.Add(this.tbNormal);
-			this.grpSoundVol.Controls.Add(this.nudNormal);
-			this.grpSoundVol.Controls.Add(this.cbEnableNormal);
-			this.grpSoundVol.Location = new System.Drawing.Point(12, 12);
-			this.grpSoundVol.Name = "grpSoundVol";
-			this.grpSoundVol.Size = new System.Drawing.Size(117, 255);
-			this.grpSoundVol.TabIndex = 2;
-			this.grpSoundVol.TabStop = false;
-			this.grpSoundVol.Text = "Volume";
+			this.grpVolume.Controls.Add(this.flpGrpVolume);
+			this.grpVolume.Location = new System.Drawing.Point(4, 4);
+			this.grpVolume.Name = "grpVolume";
+			this.grpVolume.Size = new System.Drawing.Size(111, 246);
+			this.grpVolume.Text = "Volume";
 			// 
-			// nudRWFF
+			// flpGrpVolume
 			// 
-			this.nudRWFF.Location = new System.Drawing.Point(58, 223);
-			this.nudRWFF.Name = "nudRWFF";
-			this.nudRWFF.Size = new System.Drawing.Size(45, 20);
-			this.nudRWFF.TabIndex = 7;
-			this.nudRWFF.Value = new decimal(new int[] {
+			this.flpGrpVolume.Controls.Add(this.flpFullSpeed);
+			this.flpGrpVolume.Controls.Add(this.flpRWFF);
+			this.flpGrpVolume.Location = new System.Drawing.Point(0, 12);
+			this.flpGrpVolume.Name = "flpGrpVolume";
+			// 
+			// flpFullSpeed
+			// 
+			this.flpFullSpeed.Controls.Add(this.cbFullSpeedEnable);
+			this.flpFullSpeed.Controls.Add(this.lblFullSpeedVolume);
+			this.flpFullSpeed.Controls.Add(this.tbFullSpeedVolume);
+			this.flpFullSpeed.Controls.Add(this.nudFullSpeedVolume);
+			this.flpFullSpeed.Name = "flpFullSpeed";
+			// 
+			// lblFullSpeedVolume
+			// 
+			this.lblFullSpeedVolume.Name = "lblFullSpeedVolume";
+			this.lblFullSpeedVolume.Text = "Normal";
+			// 
+			// tbFullSpeedVolume
+			// 
+			this.tbFullSpeedVolume.LargeChange = 10;
+			this.tbFullSpeedVolume.Location = new System.Drawing.Point(3, 39);
+			this.tbFullSpeedVolume.Maximum = 100;
+			this.tbFullSpeedVolume.Name = "tbFullSpeedVolume";
+			this.tbFullSpeedVolume.Orientation = System.Windows.Forms.Orientation.Vertical;
+			this.tbFullSpeedVolume.Size = new System.Drawing.Size(45, 164);
+			this.tbFullSpeedVolume.TabIndex = 2;
+			this.tbFullSpeedVolume.TickFrequency = 10;
+			this.tbFullSpeedVolume.Scroll += new System.EventHandler(this.tbFullSpeedVolume_Scroll);
+			// 
+			// nudFullSpeedVolume
+			// 
+			this.nudFullSpeedVolume.Name = "nudFullSpeedVolume";
+			this.nudFullSpeedVolume.Size = new System.Drawing.Size(45, 20);
+			this.nudFullSpeedVolume.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+			this.nudFullSpeedVolume.ValueChanged += new System.EventHandler(this.nudFullSpeedVolume_ValueChanged);
+			// 
+			// flpRWFF
+			// 
+			this.flpRWFF.Controls.Add(this.cbRewindFFWEnable);
+			this.flpRWFF.Controls.Add(this.lblRewindFFWVolume);
+			this.flpRWFF.Controls.Add(this.tbRewindFFWVolume);
+			this.flpRWFF.Controls.Add(this.nudRewindFFWVolume);
+			this.flpRWFF.Name = "flpRWFF";
+			// 
+			// cbRewindFFWEnable
+			// 
+			this.cbRewindFFWEnable.Name = "cbRewindFFWEnable";
+			this.cbRewindFFWEnable.Text = "Ena.";
+			// 
+			// lblRewindFFWVolume
+			// 
+			this.lblRewindFFWVolume.Name = "lblRewindFFWVolume";
+			this.lblRewindFFWVolume.Text = "RW && FF";
+			// 
+			// tbRewindFFWVolume
+			// 
+			this.tbRewindFFWVolume.LargeChange = 10;
+			this.tbRewindFFWVolume.Location = new System.Drawing.Point(3, 39);
+			this.tbRewindFFWVolume.Maximum = 100;
+			this.tbRewindFFWVolume.Name = "tbRewindFFWVolume";
+			this.tbRewindFFWVolume.Orientation = System.Windows.Forms.Orientation.Vertical;
+			this.tbRewindFFWVolume.Size = new System.Drawing.Size(45, 164);
+			this.tbRewindFFWVolume.TabIndex = 6;
+			this.tbRewindFFWVolume.TickFrequency = 10;
+			this.tbRewindFFWVolume.Scroll += new System.EventHandler(this.tbRewindFFWVolume_Scroll);
+			// 
+			// nudRewindFFWVolume
+			// 
+			this.nudRewindFFWVolume.Name = "nudRewindFFWVolume";
+			this.nudRewindFFWVolume.Size = new System.Drawing.Size(45, 20);
+			this.nudRewindFFWVolume.Value = new decimal(new int[] {
             100,
             0,
             0,
             0});
 			// 
-			// cbEnableRWFF
+			// listDevices
 			// 
-			this.cbEnableRWFF.AutoSize = true;
-			this.cbEnableRWFF.Location = new System.Drawing.Point(58, 20);
-			this.cbEnableRWFF.Name = "cbEnableRWFF";
-			this.cbEnableRWFF.Size = new System.Drawing.Size(48, 17);
-			this.cbEnableRWFF.TabIndex = 4;
-			this.cbEnableRWFF.Text = "Ena.";
-			this.cbEnableRWFF.UseVisualStyleBackColor = true;
+			this.listDevices.FormattingEnabled = true;
+			this.listDevices.Location = new System.Drawing.Point(3, 110);
+			this.listDevices.Name = "listDevices";
+			this.listDevices.Size = new System.Drawing.Size(254, 95);
+			this.listDevices.TabIndex = 8;
 			// 
-			// tbRWFF
+			// lblDevices
 			// 
-			this.tbRWFF.LargeChange = 10;
-			this.tbRWFF.Location = new System.Drawing.Point(64, 53);
-			this.tbRWFF.Maximum = 100;
-			this.tbRWFF.Name = "tbRWFF";
-			this.tbRWFF.Orientation = System.Windows.Forms.Orientation.Vertical;
-			this.tbRWFF.Size = new System.Drawing.Size(42, 164);
-			this.tbRWFF.TabIndex = 6;
-			this.tbRWFF.TickFrequency = 10;
-			this.tbRWFF.Scroll += new System.EventHandler(this.TbRwff_Scroll);
+			this.lblDevices.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.lblDevices.Location = new System.Drawing.Point(3, 94);
+			this.lblDevices.Name = "lblDevices";
+			this.lblDevices.Text = "Sound Device:";
 			// 
-			// label2
+			// lblBufferSizeDesc
 			// 
-			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(56, 42);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(50, 13);
-			this.label2.TabIndex = 5;
-			this.label2.Text = "RW && FF";
+			this.lblBufferSizeDesc.Name = "lblBufferSizeDesc";
+			this.lblBufferSizeDesc.Text = "Buffer Size:";
 			// 
-			// label1
+			// nudBufferSize
 			// 
-			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(6, 42);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(40, 13);
-			this.label1.TabIndex = 1;
-			this.label1.Text = "Normal";
-			// 
-			// tbNormal
-			// 
-			this.tbNormal.LargeChange = 10;
-			this.tbNormal.Location = new System.Drawing.Point(8, 53);
-			this.tbNormal.Maximum = 100;
-			this.tbNormal.Name = "tbNormal";
-			this.tbNormal.Orientation = System.Windows.Forms.Orientation.Vertical;
-			this.tbNormal.Size = new System.Drawing.Size(42, 164);
-			this.tbNormal.TabIndex = 2;
-			this.tbNormal.TickFrequency = 10;
-			this.tbNormal.Scroll += new System.EventHandler(this.TrackBar1_Scroll);
-			// 
-			// nudNormal
-			// 
-			this.nudNormal.Location = new System.Drawing.Point(5, 223);
-			this.nudNormal.Name = "nudNormal";
-			this.nudNormal.Size = new System.Drawing.Size(45, 20);
-			this.nudNormal.TabIndex = 3;
-			this.nudNormal.Value = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-			this.nudNormal.ValueChanged += new System.EventHandler(this.SoundVolNumeric_ValueChanged);
-			// 
-			// listBoxSoundDevices
-			// 
-			this.listBoxSoundDevices.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.listBoxSoundDevices.FormattingEnabled = true;
-			this.listBoxSoundDevices.Location = new System.Drawing.Point(138, 110);
-			this.listBoxSoundDevices.Name = "listBoxSoundDevices";
-			this.listBoxSoundDevices.Size = new System.Drawing.Size(254, 95);
-			this.listBoxSoundDevices.TabIndex = 8;
-			// 
-			// SoundDeviceLabel
-			// 
-			this.SoundDeviceLabel.AutoSize = true;
-			this.SoundDeviceLabel.Location = new System.Drawing.Point(135, 89);
-			this.SoundDeviceLabel.Name = "SoundDeviceLabel";
-			this.SoundDeviceLabel.Size = new System.Drawing.Size(78, 13);
-			this.SoundDeviceLabel.TabIndex = 7;
-			this.SoundDeviceLabel.Text = "Sound Device:";
-			// 
-			// BufferSizeLabel
-			// 
-			this.BufferSizeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.BufferSizeLabel.AutoSize = true;
-			this.BufferSizeLabel.Location = new System.Drawing.Point(135, 210);
-			this.BufferSizeLabel.Name = "BufferSizeLabel";
-			this.BufferSizeLabel.Size = new System.Drawing.Size(61, 13);
-			this.BufferSizeLabel.TabIndex = 9;
-			this.BufferSizeLabel.Text = "Buffer Size:";
-			// 
-			// BufferSizeNumeric
-			// 
-			this.BufferSizeNumeric.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.BufferSizeNumeric.Location = new System.Drawing.Point(202, 208);
-			this.BufferSizeNumeric.Maximum = new decimal(new int[] {
+			this.nudBufferSize.Maximum = new decimal(new int[] {
             250,
             0,
             0,
             0});
-			this.BufferSizeNumeric.Minimum = new decimal(new int[] {
+			this.nudBufferSize.Minimum = new decimal(new int[] {
             30,
             0,
             0,
             0});
-			this.BufferSizeNumeric.Name = "BufferSizeNumeric";
-			this.BufferSizeNumeric.Size = new System.Drawing.Size(59, 20);
-			this.BufferSizeNumeric.TabIndex = 10;
-			this.BufferSizeNumeric.Value = new decimal(new int[] {
+			this.nudBufferSize.Name = "nudBufferSize";
+			this.nudBufferSize.Size = new System.Drawing.Size(59, 20);
+			this.nudBufferSize.Value = new decimal(new int[] {
             100,
             0,
             0,
             0});
 			// 
-			// BufferSizeUnitsLabel
+			// lblBufferSizeUnits
 			// 
-			this.BufferSizeUnitsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.BufferSizeUnitsLabel.AutoSize = true;
-			this.BufferSizeUnitsLabel.Location = new System.Drawing.Point(267, 210);
-			this.BufferSizeUnitsLabel.Name = "BufferSizeUnitsLabel";
-			this.BufferSizeUnitsLabel.Size = new System.Drawing.Size(63, 13);
-			this.BufferSizeUnitsLabel.TabIndex = 11;
-			this.BufferSizeUnitsLabel.Text = "milliseconds";
+			this.lblBufferSizeUnits.Name = "lblBufferSizeUnits";
+			this.lblBufferSizeUnits.Text = "milliseconds";
 			// 
-			// grpOutputMethod
+			// flpDialogButtons
 			// 
-			this.grpOutputMethod.Controls.Add(this.rbOutputMethodOpenAL);
-			this.grpOutputMethod.Controls.Add(this.rbOutputMethodXAudio2);
-			this.grpOutputMethod.Controls.Add(this.rbOutputMethodDirectSound);
-			this.grpOutputMethod.Location = new System.Drawing.Point(292, 12);
-			this.grpOutputMethod.Name = "grpOutputMethod";
-			this.grpOutputMethod.Size = new System.Drawing.Size(100, 90);
-			this.grpOutputMethod.TabIndex = 12;
-			this.grpOutputMethod.TabStop = false;
-			this.grpOutputMethod.Text = "Output Method";
+			this.flpDialogButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.flpDialogButtons.Controls.Add(this.btnDialogOK);
+			this.flpDialogButtons.Controls.Add(this.btnDialogCancel);
+			this.flpDialogButtons.Location = new System.Drawing.Point(216, 241);
+			this.flpDialogButtons.MinimumSize = new System.Drawing.Size(24, 24);
+			this.flpDialogButtons.Name = "flpDialogButtons";
+			this.flpDialogButtons.Size = new System.Drawing.Size(162, 29);
 			// 
-			// rbOutputMethodOpenAL
+			// flpBufferSize
 			// 
-			this.rbOutputMethodOpenAL.AutoSize = true;
-			this.rbOutputMethodOpenAL.Location = new System.Drawing.Point(6, 65);
-			this.rbOutputMethodOpenAL.Name = "rbOutputMethodOpenAL";
-			this.rbOutputMethodOpenAL.Size = new System.Drawing.Size(64, 17);
-			this.rbOutputMethodOpenAL.TabIndex = 2;
-			this.rbOutputMethodOpenAL.TabStop = true;
-			this.rbOutputMethodOpenAL.Text = "OpenAL";
-			this.rbOutputMethodOpenAL.UseVisualStyleBackColor = true;
-			this.rbOutputMethodOpenAL.CheckedChanged += new System.EventHandler(this.OutputMethodRadioButtons_CheckedChanged);
+			this.flpBufferSize.Controls.Add(this.lblBufferSizeDesc);
+			this.flpBufferSize.Controls.Add(this.nudBufferSize);
+			this.flpBufferSize.Controls.Add(this.lblBufferSizeUnits);
+			this.flpBufferSize.Name = "flpBufferSize";
 			// 
-			// rbOutputMethodXAudio2
+			// flpFlowRHS
 			// 
-			this.rbOutputMethodXAudio2.AutoSize = true;
-			this.rbOutputMethodXAudio2.Location = new System.Drawing.Point(6, 42);
-			this.rbOutputMethodXAudio2.Name = "rbOutputMethodXAudio2";
-			this.rbOutputMethodXAudio2.Size = new System.Drawing.Size(65, 17);
-			this.rbOutputMethodXAudio2.TabIndex = 1;
-			this.rbOutputMethodXAudio2.TabStop = true;
-			this.rbOutputMethodXAudio2.Text = "XAudio2";
-			this.rbOutputMethodXAudio2.UseVisualStyleBackColor = true;
-			this.rbOutputMethodXAudio2.CheckedChanged += new System.EventHandler(this.OutputMethodRadioButtons_CheckedChanged);
+			this.flpFlowRHS.Controls.Add(this.flpFlowRHSTop);
+			this.flpFlowRHS.Controls.Add(this.lblDevices);
+			this.flpFlowRHS.Controls.Add(this.listDevices);
+			this.flpFlowRHS.Controls.Add(this.flpBufferSize);
+			this.flpFlowRHS.Location = new System.Drawing.Point(118, 4);
+			this.flpFlowRHS.Name = "flpFlowRHS";
 			// 
-			// rbOutputMethodDirectSound
+			// flpFlowRHSTop
 			// 
-			this.rbOutputMethodDirectSound.AutoSize = true;
-			this.rbOutputMethodDirectSound.Location = new System.Drawing.Point(6, 19);
-			this.rbOutputMethodDirectSound.Name = "rbOutputMethodDirectSound";
-			this.rbOutputMethodDirectSound.Size = new System.Drawing.Size(84, 17);
-			this.rbOutputMethodDirectSound.TabIndex = 0;
-			this.rbOutputMethodDirectSound.TabStop = true;
-			this.rbOutputMethodDirectSound.Text = "DirectSound";
-			this.rbOutputMethodDirectSound.UseVisualStyleBackColor = true;
-			this.rbOutputMethodDirectSound.CheckedChanged += new System.EventHandler(this.OutputMethodRadioButtons_CheckedChanged);
+			this.flpFlowRHSTop.Controls.Add(this.cbMasterEnable);
+			this.flpFlowRHSTop.Controls.Add(this.lblMasterEnable);
+			this.flpFlowRHSTop.Controls.Add(this.cbMuteFrameAdvance);
+			this.flpFlowRHSTop.Controls.Add(this.grpSoundMethod);
+			this.flpFlowRHSTop.MinimumSize = new System.Drawing.Size(24, 24);
+			this.flpFlowRHSTop.Name = "flpFlowRHSTop";
+			this.flpFlowRHSTop.Size = new System.Drawing.Size(245, 94);
+			// 
+			// cbMasterEnable
+			// 
+			this.cbMasterEnable.Name = "cbMasterEnable";
+			this.cbMasterEnable.Text = "Sound Master Enable";
+			this.cbMasterEnable.CheckedChanged += new System.EventHandler(this.cbMasterOrFullSpeed_CheckedChanged);
+			// 
+			// lblMasterEnable
+			// 
+			this.lblMasterEnable.Location = new System.Drawing.Point(3, 23);
+			this.lblMasterEnable.Name = "lblMasterEnable";
+			this.lblMasterEnable.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
+			this.lblMasterEnable.Size = new System.Drawing.Size(131, 26);
+			this.lblMasterEnable.Text = "Controls whether cores even generate audio.";
 			// 
 			// cbMuteFrameAdvance
 			// 
-			this.cbMuteFrameAdvance.AutoSize = true;
-			this.cbMuteFrameAdvance.Location = new System.Drawing.Point(139, 68);
 			this.cbMuteFrameAdvance.Name = "cbMuteFrameAdvance";
-			this.cbMuteFrameAdvance.Size = new System.Drawing.Size(128, 17);
-			this.cbMuteFrameAdvance.TabIndex = 6;
 			this.cbMuteFrameAdvance.Text = "Mute Frame Advance";
-			this.cbMuteFrameAdvance.UseVisualStyleBackColor = true;
 			// 
-			// cbEnableMaster
+			// grpSoundMethod
 			// 
-			this.cbEnableMaster.AutoSize = true;
-			this.cbEnableMaster.Location = new System.Drawing.Point(139, 16);
-			this.cbEnableMaster.Name = "cbEnableMaster";
-			this.cbEnableMaster.Size = new System.Drawing.Size(128, 17);
-			this.cbEnableMaster.TabIndex = 4;
-			this.cbEnableMaster.Text = "Sound Master Enable";
-			this.cbEnableMaster.UseVisualStyleBackColor = true;
-			this.cbEnableMaster.CheckedChanged += new System.EventHandler(this.UpdateSoundDialog);
+			this.grpSoundMethod.Controls.Add(this.flpGrpSoundMethod);
+			this.grpSoundMethod.Name = "grpSoundMethod";
+			this.grpSoundMethod.Size = new System.Drawing.Size(100, 90);
+			this.grpSoundMethod.Text = "Output Method";
 			// 
-			// label3
+			// flpGrpSoundMethod
 			// 
-			this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.label3.Location = new System.Drawing.Point(161, 35);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(126, 26);
-			this.label3.TabIndex = 5;
-			this.label3.Text = "Controls whether cores even generate audio.";
+			this.flpGrpSoundMethod.Controls.Add(this.rbSoundMethodDirectSound);
+			this.flpGrpSoundMethod.Controls.Add(this.rbSoundMethodXAudio2);
+			this.flpGrpSoundMethod.Controls.Add(this.rbSoundMethodOpenAL);
+			this.flpGrpSoundMethod.Location = new System.Drawing.Point(6, 13);
+			this.flpGrpSoundMethod.Name = "flpGrpSoundMethod";
+			// 
+			// rbSoundMethodDirectSound
+			// 
+			this.rbSoundMethodDirectSound.Name = "rbSoundMethodDirectSound";
+			this.rbSoundMethodDirectSound.Text = "DirectSound";
+			this.rbSoundMethodDirectSound.CheckedChanged += new System.EventHandler(this.rbSoundMethodAllRadios_CheckedChanged);
+			// 
+			// rbSoundMethodXAudio2
+			// 
+			this.rbSoundMethodXAudio2.Name = "rbSoundMethodXAudio2";
+			this.rbSoundMethodXAudio2.Text = "XAudio2";
+			this.rbSoundMethodXAudio2.CheckedChanged += new System.EventHandler(this.rbSoundMethodAllRadios_CheckedChanged);
+			// 
+			// rbSoundMethodOpenAL
+			// 
+			this.rbSoundMethodOpenAL.Name = "rbSoundMethodOpenAL";
+			this.rbSoundMethodOpenAL.Text = "OpenAL";
+			this.rbSoundMethodOpenAL.CheckedChanged += new System.EventHandler(this.rbSoundMethodAllRadios_CheckedChanged);
 			// 
 			// SoundConfig
 			// 
-			this.AcceptButton = this.OK;
+			this.AcceptButton = this.btnDialogOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(404, 279);
-			this.Controls.Add(this.label3);
-			this.Controls.Add(this.cbEnableMaster);
-			this.Controls.Add(this.cbMuteFrameAdvance);
-			this.Controls.Add(this.grpOutputMethod);
-			this.Controls.Add(this.BufferSizeUnitsLabel);
-			this.Controls.Add(this.BufferSizeNumeric);
-			this.Controls.Add(this.BufferSizeLabel);
-			this.Controls.Add(this.SoundDeviceLabel);
-			this.Controls.Add(this.listBoxSoundDevices);
-			this.Controls.Add(this.grpSoundVol);
-			this.Controls.Add(this.OK);
-			this.Controls.Add(this.Cancel);
+			this.CancelButton = this.btnDialogCancel;
+			this.ClientSize = new System.Drawing.Size(382, 274);
+			this.Controls.Add(this.grpVolume);
+			this.Controls.Add(this.flpDialogButtons);
+			this.Controls.Add(this.flpFlowRHS);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-			this.MinimumSize = new System.Drawing.Size(279, 259);
+			this.MinimumSize = new System.Drawing.Size(398, 313);
 			this.Name = "SoundConfig";
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Sound Configuration";
 			this.Load += new System.EventHandler(this.SoundConfig_Load);
-			this.grpSoundVol.ResumeLayout(false);
-			this.grpSoundVol.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.nudRWFF)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.tbRWFF)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.tbNormal)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.nudNormal)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.BufferSizeNumeric)).EndInit();
-			this.grpOutputMethod.ResumeLayout(false);
-			this.grpOutputMethod.PerformLayout();
+			this.grpVolume.ResumeLayout(false);
+			this.grpVolume.PerformLayout();
+			this.flpGrpVolume.ResumeLayout(false);
+			this.flpGrpVolume.PerformLayout();
+			this.flpFullSpeed.ResumeLayout(false);
+			this.flpFullSpeed.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.tbFullSpeedVolume)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudFullSpeedVolume)).EndInit();
+			this.flpRWFF.ResumeLayout(false);
+			this.flpRWFF.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.tbRewindFFWVolume)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudRewindFFWVolume)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudBufferSize)).EndInit();
+			this.flpDialogButtons.ResumeLayout(false);
+			this.flpBufferSize.ResumeLayout(false);
+			this.flpBufferSize.PerformLayout();
+			this.flpFlowRHS.ResumeLayout(false);
+			this.flpFlowRHS.PerformLayout();
+			this.flpFlowRHSTop.ResumeLayout(false);
+			this.flpFlowRHSTop.PerformLayout();
+			this.grpSoundMethod.ResumeLayout(false);
+			this.grpSoundMethod.PerformLayout();
+			this.flpGrpSoundMethod.ResumeLayout(false);
+			this.flpGrpSoundMethod.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -373,28 +351,36 @@
 
 		#endregion
 
-		private System.Windows.Forms.Button Cancel;
-		private System.Windows.Forms.Button OK;
-		private System.Windows.Forms.CheckBox cbEnableNormal;
-		private System.Windows.Forms.GroupBox grpSoundVol;
-		private System.Windows.Forms.NumericUpDown nudNormal;
-		private System.Windows.Forms.TrackBar tbNormal;
-		private System.Windows.Forms.ListBox listBoxSoundDevices;
-		private System.Windows.Forms.Label SoundDeviceLabel;
-		private System.Windows.Forms.Label BufferSizeLabel;
-		private System.Windows.Forms.NumericUpDown BufferSizeNumeric;
-		private System.Windows.Forms.Label BufferSizeUnitsLabel;
-		private System.Windows.Forms.GroupBox grpOutputMethod;
-		private System.Windows.Forms.RadioButton rbOutputMethodXAudio2;
-		private System.Windows.Forms.RadioButton rbOutputMethodDirectSound;
-		private System.Windows.Forms.RadioButton rbOutputMethodOpenAL;
-		private System.Windows.Forms.NumericUpDown nudRWFF;
-		private System.Windows.Forms.CheckBox cbEnableRWFF;
-		private System.Windows.Forms.TrackBar tbRWFF;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.CheckBox cbMuteFrameAdvance;
-		private System.Windows.Forms.CheckBox cbEnableMaster;
-		private System.Windows.Forms.Label label3;
+		private BizHawk.WinForms.Controls.SingleColumnFLP flpFullSpeed;
+		private BizHawk.WinForms.Controls.SingleRowFLP flpBufferSize;
+		private BizHawk.WinForms.Controls.LocSingleColumnFLP flpFlowRHS;
+		private BizHawk.WinForms.Controls.LocSzSingleRowFLP flpDialogButtons;
+		private BizHawk.WinForms.Controls.SingleColumnFLP flpRWFF;
+		private BizHawk.WinForms.Controls.SzButtonEx btnDialogCancel;
+		private BizHawk.WinForms.Controls.SzButtonEx btnDialogOK;
+		private BizHawk.WinForms.Controls.CheckBoxEx cbFullSpeedEnable;
+		private BizHawk.WinForms.Controls.LocSzGroupBoxEx grpVolume;
+		private BizHawk.WinForms.Controls.SzNUDEx nudFullSpeedVolume;
+		private System.Windows.Forms.TrackBar tbFullSpeedVolume;
+		private System.Windows.Forms.ListBox listDevices;
+		private BizHawk.WinForms.Controls.LocLabelEx lblDevices;
+		private BizHawk.WinForms.Controls.LabelEx lblBufferSizeDesc;
+		private BizHawk.WinForms.Controls.SzNUDEx nudBufferSize;
+		private BizHawk.WinForms.Controls.LabelEx lblBufferSizeUnits;
+		private BizHawk.WinForms.Controls.SzNUDEx nudRewindFFWVolume;
+		private BizHawk.WinForms.Controls.CheckBoxEx cbRewindFFWEnable;
+		private System.Windows.Forms.TrackBar tbRewindFFWVolume;
+		private BizHawk.WinForms.Controls.LabelEx lblRewindFFWVolume;
+		private BizHawk.WinForms.Controls.LabelEx lblFullSpeedVolume;
+		private BizHawk.WinForms.Controls.LocSingleRowFLP flpGrpVolume;
+		private BizHawk.WinForms.Controls.SzColumnsToRightFLP flpFlowRHSTop;
+		private BizHawk.WinForms.Controls.CheckBoxEx cbMasterEnable;
+		private BizHawk.WinForms.Controls.LocSzLabelEx lblMasterEnable;
+		private BizHawk.WinForms.Controls.CheckBoxEx cbMuteFrameAdvance;
+		private BizHawk.WinForms.Controls.SzGroupBoxEx grpSoundMethod;
+		private BizHawk.WinForms.Controls.LocSingleColumnFLP flpGrpSoundMethod;
+		private BizHawk.WinForms.Controls.RadioButtonEx rbSoundMethodDirectSound;
+		private BizHawk.WinForms.Controls.RadioButtonEx rbSoundMethodXAudio2;
+		private BizHawk.WinForms.Controls.RadioButtonEx rbSoundMethodOpenAL;
 	}
 }
