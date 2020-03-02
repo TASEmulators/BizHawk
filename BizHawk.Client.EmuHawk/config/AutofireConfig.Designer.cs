@@ -14,12 +14,12 @@
 			this.Cancel = new System.Windows.Forms.Button();
 			this.OnNumeric = new System.Windows.Forms.NumericUpDown();
 			this.OffNumeric = new System.Windows.Forms.NumericUpDown();
-			this.label1 = new BizHawk.Client.EmuHawk.CustomControls.AutosizedLabel();
-			this.label2 = new BizHawk.Client.EmuHawk.CustomControls.AutosizedLabel();
-			this.flpButtons = new BizHawk.Client.EmuHawk.CustomControls.SingleRowFLP();
-			this.flpMain = new BizHawk.Client.EmuHawk.CustomControls.SingleColumnFLP();
-			this.flpPattern = new BizHawk.Client.EmuHawk.CustomControls.SingleRowFLP();
-			this.lblPattern = new BizHawk.Client.EmuHawk.CustomControls.AutosizedLabel();
+			this.label1 = new BizHawk.WinForms.Controls.LabelEx();
+			this.label2 = new BizHawk.WinForms.Controls.LabelEx();
+			this.flpButtons = new BizHawk.WinForms.Controls.LocSzSingleRowFLP();
+			this.flpMain = new BizHawk.WinForms.Controls.LocSzSingleColumnFLP();
+			this.flpPattern = new BizHawk.WinForms.Controls.SingleRowFLP();
+			this.lblPattern = new BizHawk.WinForms.Controls.LabelEx();
 			this.LagFrameCheck = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.OnNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.OffNumeric)).BeginInit();
@@ -102,16 +102,15 @@
 			this.flpButtons.Controls.Add(this.Cancel);
 			this.flpButtons.Location = new System.Drawing.Point(161, 61);
 			this.flpButtons.Name = "flpButtons";
+			this.flpButtons.Size = new System.Drawing.Size(162, 29);
 			// 
 			// flpMain
 			// 
 			this.flpMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.flpMain.AutoSize = false;
 			this.flpMain.Controls.Add(this.flpPattern);
 			this.flpMain.Controls.Add(this.LagFrameCheck);
-			this.flpMain.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
 			this.flpMain.Location = new System.Drawing.Point(0, 0);
 			this.flpMain.Name = "flpMain";
 			this.flpMain.Size = new System.Drawing.Size(323, 55);
@@ -171,12 +170,12 @@
 		private System.Windows.Forms.Button Ok;
 		private System.Windows.Forms.Button Cancel;
 		private System.Windows.Forms.NumericUpDown OffNumeric;
-		private CustomControls.AutosizedLabel label1;
-		private CustomControls.AutosizedLabel label2;
-		private CustomControls.SingleRowFLP flpPattern;
-		private CustomControls.SingleColumnFLP flpMain;
-		private CustomControls.SingleRowFLP flpButtons;
-		private CustomControls.AutosizedLabel lblPattern;
+		private BizHawk.WinForms.Controls.LabelEx label1;
+		private BizHawk.WinForms.Controls.LabelEx label2;
+		private BizHawk.WinForms.Controls.SingleRowFLP flpPattern;
+		private BizHawk.WinForms.Controls.LocSzSingleColumnFLP flpMain;
+		private BizHawk.WinForms.Controls.LocSzSingleRowFLP flpButtons;
+		private BizHawk.WinForms.Controls.LabelEx lblPattern;
 		public System.Windows.Forms.NumericUpDown OnNumeric;
 		private System.Windows.Forms.CheckBox LagFrameCheck;
 	}
