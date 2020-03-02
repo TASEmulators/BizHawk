@@ -62,10 +62,10 @@ namespace BizHawk.Client.Common
 		{
 			return o switch
 			{
+				null => null,
 				double d => Color.FromArgb((int) (long) d),
 				string s => Color.FromName(s),
-				null => null,
-				_ => null
+				_ => (Color?) null
 			};
 		}
 
