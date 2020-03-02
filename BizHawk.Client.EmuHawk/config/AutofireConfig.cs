@@ -23,46 +23,46 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AutofireConfig_Load(object sender, EventArgs e)
 		{
-			if (_config.AutofireOn < OnNumeric.Minimum)
+			if (_config.AutofireOn < nudPatternOn.Minimum)
 			{
-				OnNumeric.Value = OnNumeric.Minimum;
+				nudPatternOn.Value = nudPatternOn.Minimum;
 			}
-			else if (_config.AutofireOn > OnNumeric.Maximum)
+			else if (_config.AutofireOn > nudPatternOn.Maximum)
 			{
-				OnNumeric.Value = OnNumeric.Maximum;
-			}
-			else
-			{
-				OnNumeric.Value = _config.AutofireOn;
-			}
-
-			if (_config.AutofireOff < OffNumeric.Minimum)
-			{
-				OffNumeric.Value = OffNumeric.Minimum;
-			}
-			else if (_config.AutofireOff > OffNumeric.Maximum)
-			{
-				OffNumeric.Value = OffNumeric.Maximum;
+				nudPatternOn.Value = nudPatternOn.Maximum;
 			}
 			else
 			{
-				OffNumeric.Value = _config.AutofireOff;
+				nudPatternOn.Value = _config.AutofireOn;
 			}
 
-			LagFrameCheck.Checked = _config.AutofireLagFrames;
+			if (_config.AutofireOff < nudPatternOff.Minimum)
+			{
+				nudPatternOff.Value = nudPatternOff.Minimum;
+			}
+			else if (_config.AutofireOff > nudPatternOff.Maximum)
+			{
+				nudPatternOff.Value = nudPatternOff.Maximum;
+			}
+			else
+			{
+				nudPatternOff.Value = _config.AutofireOff;
+			}
+
+			cbConsiderLag.Checked = _config.AutofireLagFrames;
 		}
 
-		private void Ok_Click(object sender, EventArgs e)
+		private void btnDialogOK_Click(object sender, EventArgs e)
 		{
-			_autoFireController.On = _config.AutofireOn = (int)OnNumeric.Value;
-			_autoFireController.Off = _config.AutofireOff = (int)OffNumeric.Value;
-			_config.AutofireLagFrames = LagFrameCheck.Checked;
+			_autoFireController.On = _config.AutofireOn = (int)nudPatternOn.Value;
+			_autoFireController.Off = _config.AutofireOff = (int)nudPatternOff.Value;
+			_config.AutofireLagFrames = cbConsiderLag.Checked;
 			_stickyXorAdapter.SetOnOffPatternFromConfig();
 
 			Close();
 		}
 
-		private void Cancel_Click(object sender, EventArgs e)
+		private void btnDialogCancel_Click(object sender, EventArgs e)
 		{
 			Close();
 		}

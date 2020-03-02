@@ -30,981 +30,909 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DisplayConfig));
-			this.btnCancel = new System.Windows.Forms.Button();
-			this.btnOk = new System.Windows.Forms.Button();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.lblScanlines = new System.Windows.Forms.Label();
-			this.lblUserFilterName = new System.Windows.Forms.Label();
-			this.btnSelectUserFilter = new System.Windows.Forms.Button();
-			this.rbUser = new System.Windows.Forms.RadioButton();
-			this.tbScanlineIntensity = new BizHawk.Client.EmuHawk.TransparentTrackBar();
-			this.rbNone = new System.Windows.Forms.RadioButton();
-			this.rbScanlines = new System.Windows.Forms.RadioButton();
-			this.rbHq2x = new System.Windows.Forms.RadioButton();
-			this.checkLetterbox = new System.Windows.Forms.CheckBox();
-			this.checkPadInteger = new System.Windows.Forms.CheckBox();
-			this.grpFinalFilter = new System.Windows.Forms.GroupBox();
-			this.rbFinalFilterBicubic = new System.Windows.Forms.RadioButton();
-			this.rbFinalFilterNone = new System.Windows.Forms.RadioButton();
-			this.rbFinalFilterBilinear = new System.Windows.Forms.RadioButton();
-			this.rbUseRaw = new System.Windows.Forms.RadioButton();
-			this.rbUseSystem = new System.Windows.Forms.RadioButton();
-			this.grpARSelection = new System.Windows.Forms.GroupBox();
-			this.txtCustomARY = new System.Windows.Forms.TextBox();
-			this.label12 = new System.Windows.Forms.Label();
-			this.txtCustomARX = new System.Windows.Forms.TextBox();
-			this.rbUseCustomRatio = new System.Windows.Forms.RadioButton();
-			this.label4 = new System.Windows.Forms.Label();
-			this.txtCustomARHeight = new System.Windows.Forms.TextBox();
-			this.label3 = new System.Windows.Forms.Label();
-			this.txtCustomARWidth = new System.Windows.Forms.TextBox();
-			this.rbUseCustom = new System.Windows.Forms.RadioButton();
-			this.rbOpenGL = new System.Windows.Forms.RadioButton();
-			this.label5 = new System.Windows.Forms.Label();
-			this.tabControl1 = new System.Windows.Forms.TabControl();
-			this.tpAR = new System.Windows.Forms.TabPage();
-			this.groupBox6 = new System.Windows.Forms.GroupBox();
-			this.label16 = new System.Windows.Forms.Label();
-			this.label15 = new System.Windows.Forms.Label();
-			this.txtCropBottom = new System.Windows.Forms.TextBox();
-			this.label17 = new System.Windows.Forms.Label();
-			this.txtCropRight = new System.Windows.Forms.TextBox();
-			this.txtCropTop = new System.Windows.Forms.TextBox();
-			this.label14 = new System.Windows.Forms.Label();
-			this.txtCropLeft = new System.Windows.Forms.TextBox();
-			this.btnDefaults = new System.Windows.Forms.Button();
-			this.cbAutoPrescale = new System.Windows.Forms.CheckBox();
-			this.label11 = new System.Windows.Forms.Label();
-			this.label10 = new System.Windows.Forms.Label();
-			this.nudPrescale = new System.Windows.Forms.NumericUpDown();
-			this.tpDispMethod = new System.Windows.Forms.TabPage();
-			this.label6 = new System.Windows.Forms.Label();
-			this.groupBox3 = new System.Windows.Forms.GroupBox();
-			this.label13 = new System.Windows.Forms.Label();
-			this.cbAlternateVsync = new System.Windows.Forms.CheckBox();
-			this.label8 = new System.Windows.Forms.Label();
-			this.rbD3D9 = new System.Windows.Forms.RadioButton();
-			this.label7 = new System.Windows.Forms.Label();
-			this.rbGDIPlus = new System.Windows.Forms.RadioButton();
-			this.tpMisc = new System.Windows.Forms.TabPage();
-			this.groupBox5 = new System.Windows.Forms.GroupBox();
-			this.rbDisplayAbsoluteZero = new System.Windows.Forms.RadioButton();
-			this.rbDisplayMinimal = new System.Windows.Forms.RadioButton();
-			this.rbDisplayFull = new System.Windows.Forms.RadioButton();
-			this.tabPage1 = new System.Windows.Forms.TabPage();
-			this.cbAllowDoubleclickFullscreen = new System.Windows.Forms.CheckBox();
-			this.groupBox4 = new System.Windows.Forms.GroupBox();
-			this.cbFSAutohideMouse = new System.Windows.Forms.CheckBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.cbFullscreenHacks = new System.Windows.Forms.CheckBox();
-			this.cbStatusBarFullscreen = new System.Windows.Forms.CheckBox();
-			this.cbMenuFullscreen = new System.Windows.Forms.CheckBox();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.lblFrameTypeWindowed = new System.Windows.Forms.Label();
-			this.cbStatusBarWindowed = new System.Windows.Forms.CheckBox();
-			this.label9 = new System.Windows.Forms.Label();
-			this.cbMenuWindowed = new System.Windows.Forms.CheckBox();
-			this.trackbarFrameSizeWindowed = new BizHawk.Client.EmuHawk.TransparentTrackBar();
-			this.cbCaptionWindowed = new System.Windows.Forms.CheckBox();
-			this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+			this.btnDialogCancel = new BizHawk.WinForms.Controls.SzButtonEx();
+			this.btnDialogOK = new BizHawk.WinForms.Controls.SzButtonEx();
+			this.rbDispMethodOpenGL = new BizHawk.WinForms.Controls.RadioButtonEx();
+			this.lblDispMethodOpenGL = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.tcDialog = new System.Windows.Forms.TabControl();
+			this.tpScaling = new BizHawk.WinForms.Controls.TabPageEx();
+			this.flpTpScaling = new BizHawk.WinForms.Controls.SzColumnsToRightFLP();
+			this.flpUserPrescale = new BizHawk.WinForms.Controls.SingleRowFLP();
+			this.lblUserPrescale = new BizHawk.WinForms.Controls.LabelEx();
+			this.nudUserPrescale = new BizHawk.WinForms.Controls.SzNUDEx();
+			this.lblUserPrescaleUnits = new BizHawk.WinForms.Controls.LabelEx();
+			this.grpFilter = new BizHawk.WinForms.Controls.SzGroupBoxEx();
+			this.tlpGrpFilter = new System.Windows.Forms.TableLayoutPanel();
+			this.rbFilterNone = new BizHawk.WinForms.Controls.RadioButtonEx();
+			this.rbFilterUser = new BizHawk.WinForms.Controls.RadioButtonEx();
+			this.rbFilterHq2x = new BizHawk.WinForms.Controls.RadioButtonEx();
+			this.rbFilterScanline = new BizHawk.WinForms.Controls.RadioButtonEx();
+			this.flpFilterUser = new BizHawk.WinForms.Controls.SingleColumnFLP();
+			this.btnFilterUser = new BizHawk.WinForms.Controls.SzButtonEx();
+			this.lblFilterUser = new BizHawk.WinForms.Controls.LabelEx();
+			this.flpFilterScanlineAlpha = new BizHawk.WinForms.Controls.SingleColumnFLP();
+			this.lblFilterScanlineAlpha = new BizHawk.WinForms.Controls.LabelEx();
+			this.tbFilterScanlineAlpha = new BizHawk.Client.EmuHawk.TransparentTrackBar();
+			this.cbAutoPrescale = new BizHawk.WinForms.Controls.CheckBoxEx();
+			this.grpFinalFilter = new BizHawk.WinForms.Controls.SzGroupBoxEx();
+			this.flpGrpFinalFilter = new BizHawk.WinForms.Controls.LocSingleColumnFLP();
+			this.rbFinalFilterNone = new BizHawk.WinForms.Controls.RadioButtonEx();
+			this.rbFinalFilterBilinear = new BizHawk.WinForms.Controls.RadioButtonEx();
+			this.rbFinalFilterBicubic = new BizHawk.WinForms.Controls.RadioButtonEx();
+			this.cbLetterbox = new BizHawk.WinForms.Controls.CheckBoxEx();
+			this.grpAspectRatio = new BizHawk.WinForms.Controls.SzGroupBoxEx();
+			this.flpGrpAspectRatio = new BizHawk.WinForms.Controls.LocSingleColumnFLP();
+			this.rbARSquare = new BizHawk.WinForms.Controls.RadioButtonEx();
+			this.lblAspectRatioNonSquare = new BizHawk.WinForms.Controls.LabelEx();
+			this.rbARBySystem = new BizHawk.WinForms.Controls.RadioButtonEx();
+			this.flpCustomSize = new BizHawk.WinForms.Controls.SingleRowFLP();
+			this.rbARCustomSize = new BizHawk.WinForms.Controls.RadioButtonEx();
+			this.txtARCustomWidth = new BizHawk.WinForms.Controls.SzTextBoxEx();
+			this.lblARCustomSizeSeparator = new BizHawk.WinForms.Controls.LabelEx();
+			this.txtARCustomHeight = new BizHawk.WinForms.Controls.SzTextBoxEx();
+			this.flpCustomAR = new BizHawk.WinForms.Controls.SingleRowFLP();
+			this.rbARCustomRatio = new BizHawk.WinForms.Controls.RadioButtonEx();
+			this.txtARCustomRatioH = new BizHawk.WinForms.Controls.SzTextBoxEx();
+			this.lblARCustomRatioSeparator = new BizHawk.WinForms.Controls.LabelEx();
+			this.txtARCustomRatioV = new BizHawk.WinForms.Controls.SzTextBoxEx();
+			this.cbScaleByInteger = new BizHawk.WinForms.Controls.CheckBoxEx();
+			this.grpCrop = new BizHawk.WinForms.Controls.SzGroupBoxEx();
+			this.flpGrpCrop = new BizHawk.WinForms.Controls.LocSingleRowFLP();
+			this.lblCropLeft = new BizHawk.WinForms.Controls.LabelEx();
+			this.txtCropLeft = new BizHawk.WinForms.Controls.SzTextBoxEx();
+			this.lblCropTop = new BizHawk.WinForms.Controls.LabelEx();
+			this.txtCropTop = new BizHawk.WinForms.Controls.SzTextBoxEx();
+			this.lblCropRight = new BizHawk.WinForms.Controls.LabelEx();
+			this.txtCropRight = new BizHawk.WinForms.Controls.SzTextBoxEx();
+			this.lblCropBottom = new BizHawk.WinForms.Controls.LabelEx();
+			this.txtCropBottom = new BizHawk.WinForms.Controls.SzTextBoxEx();
+			this.btnDefaults = new BizHawk.WinForms.Controls.LocSzButtonEx();
+			this.tpDispMethod = new BizHawk.WinForms.Controls.TabPageEx();
+			this.flpTpDispMethod = new BizHawk.WinForms.Controls.SingleColumnFLP();
+			this.grpDispMethod = new BizHawk.WinForms.Controls.SzGroupBoxEx();
+			this.flpGrpDispMethod = new BizHawk.WinForms.Controls.LocSingleColumnFLP();
+			this.flpD3DSection = new BizHawk.WinForms.Controls.SingleColumnFLP();
+			this.rbDispMethodD3D = new BizHawk.WinForms.Controls.RadioButtonEx();
+			this.lblDispMethodD3D = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.flpD3DAltVSync = new BizHawk.WinForms.Controls.SingleRowFLP();
+			this.cbD3DAltVSync = new BizHawk.WinForms.Controls.CheckBoxEx();
+			this.lblD3DAltVSync = new BizHawk.WinForms.Controls.SzLabelEx();
+			this.rbDispMethodGDIPlus = new BizHawk.WinForms.Controls.RadioButtonEx();
+			this.lblDispMethodGDIPlus = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.lblDispMethodRestartWarning = new BizHawk.WinForms.Controls.LabelEx();
+			this.tpMisc = new BizHawk.WinForms.Controls.TabPageEx();
+			this.grpDispFeatures = new BizHawk.WinForms.Controls.SzGroupBoxEx();
+			this.flpGrpDispFeatures = new BizHawk.WinForms.Controls.LocSingleColumnFLP();
+			this.rbDispFeaturesFull = new BizHawk.WinForms.Controls.RadioButtonEx();
+			this.rbDispFeaturesMinimal = new BizHawk.WinForms.Controls.RadioButtonEx();
+			this.rbDispFeaturesNothing = new BizHawk.WinForms.Controls.RadioButtonEx();
+			this.tpWindow = new BizHawk.WinForms.Controls.TabPageEx();
+			this.flpTpWindow = new BizHawk.WinForms.Controls.SingleColumnFLP();
+			this.flpWindowFSGroups = new BizHawk.WinForms.Controls.SingleRowFLP();
+			this.grpWindowed = new BizHawk.WinForms.Controls.SzGroupBoxEx();
+			this.flpWindowed = new BizHawk.WinForms.Controls.LocSingleColumnFLP();
+			this.flpWindowedFrameType = new BizHawk.WinForms.Controls.SingleRowFLP();
+			this.lblWindowedFrameTypeDesc = new BizHawk.WinForms.Controls.LabelEx();
+			this.lblWindowedFrameTypeReadout = new BizHawk.WinForms.Controls.LabelEx();
+			this.tbWindowedFrameType = new BizHawk.Client.EmuHawk.TransparentTrackBar();
+			this.cbWindowedStatusBar = new BizHawk.WinForms.Controls.CheckBoxEx();
+			this.cbWindowedCaption = new BizHawk.WinForms.Controls.CheckBoxEx();
+			this.cbWindowedMenu = new BizHawk.WinForms.Controls.CheckBoxEx();
+			this.grpFS = new BizHawk.WinForms.Controls.SzGroupBoxEx();
+			this.flpGrpFS = new BizHawk.WinForms.Controls.LocSingleColumnFLP();
+			this.flpFSCheckBoxes = new BizHawk.WinForms.Controls.SzRowsToBottomFLP();
+			this.cbFSStatusBar = new BizHawk.WinForms.Controls.CheckBoxEx();
+			this.cbFSAutohideMouse = new BizHawk.WinForms.Controls.CheckBoxEx();
+			this.cbFSMenu = new BizHawk.WinForms.Controls.CheckBoxEx();
+			this.cbFSWinHacks = new BizHawk.WinForms.Controls.CheckBoxEx();
+			this.lblFSWinHacks = new BizHawk.WinForms.Controls.SzLabelEx();
+			this.cbDoubleClickFS = new BizHawk.WinForms.Controls.CheckBoxEx();
+			this.lnkDocs = new BizHawk.WinForms.Controls.LocLinkLabelEx();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.groupBox1.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).BeginInit();
+			this.flpDialogButtons = new BizHawk.WinForms.Controls.LocSzSingleRowFLP();
+			this.tcDialog.SuspendLayout();
+			this.tpScaling.SuspendLayout();
+			this.flpTpScaling.SuspendLayout();
+			this.flpUserPrescale.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudUserPrescale)).BeginInit();
+			this.grpFilter.SuspendLayout();
+			this.tlpGrpFilter.SuspendLayout();
+			this.flpFilterUser.SuspendLayout();
+			this.flpFilterScanlineAlpha.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.tbFilterScanlineAlpha)).BeginInit();
 			this.grpFinalFilter.SuspendLayout();
-			this.grpARSelection.SuspendLayout();
-			this.tabControl1.SuspendLayout();
-			this.tpAR.SuspendLayout();
-			this.groupBox6.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.nudPrescale)).BeginInit();
+			this.flpGrpFinalFilter.SuspendLayout();
+			this.grpAspectRatio.SuspendLayout();
+			this.flpGrpAspectRatio.SuspendLayout();
+			this.flpCustomSize.SuspendLayout();
+			this.flpCustomAR.SuspendLayout();
+			this.grpCrop.SuspendLayout();
+			this.flpGrpCrop.SuspendLayout();
 			this.tpDispMethod.SuspendLayout();
-			this.groupBox3.SuspendLayout();
+			this.flpTpDispMethod.SuspendLayout();
+			this.grpDispMethod.SuspendLayout();
+			this.flpGrpDispMethod.SuspendLayout();
+			this.flpD3DSection.SuspendLayout();
+			this.flpD3DAltVSync.SuspendLayout();
 			this.tpMisc.SuspendLayout();
-			this.groupBox5.SuspendLayout();
-			this.tabPage1.SuspendLayout();
-			this.groupBox4.SuspendLayout();
-			this.groupBox2.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.trackbarFrameSizeWindowed)).BeginInit();
+			this.grpDispFeatures.SuspendLayout();
+			this.flpGrpDispFeatures.SuspendLayout();
+			this.tpWindow.SuspendLayout();
+			this.flpTpWindow.SuspendLayout();
+			this.flpWindowFSGroups.SuspendLayout();
+			this.grpWindowed.SuspendLayout();
+			this.flpWindowed.SuspendLayout();
+			this.flpWindowedFrameType.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.tbWindowedFrameType)).BeginInit();
+			this.grpFS.SuspendLayout();
+			this.flpGrpFS.SuspendLayout();
+			this.flpFSCheckBoxes.SuspendLayout();
+			this.flpDialogButtons.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// btnCancel
+			// btnDialogCancel
 			// 
-			this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(473, 339);
-			this.btnCancel.Name = "btnCancel";
-			this.btnCancel.Size = new System.Drawing.Size(75, 23);
-			this.btnCancel.TabIndex = 5;
-			this.btnCancel.Text = "Cancel";
-			this.btnCancel.UseVisualStyleBackColor = true;
+			this.btnDialogCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnDialogCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.btnDialogCancel.Name = "btnDialogCancel";
+			this.btnDialogCancel.Size = new System.Drawing.Size(75, 23);
+			this.btnDialogCancel.Text = "Cancel";
 			// 
-			// btnOk
+			// btnDialogOK
 			// 
-			this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnOk.Location = new System.Drawing.Point(392, 339);
-			this.btnOk.Name = "btnOk";
-			this.btnOk.Size = new System.Drawing.Size(75, 23);
-			this.btnOk.TabIndex = 4;
-			this.btnOk.Text = "OK";
-			this.btnOk.UseVisualStyleBackColor = true;
-			this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
+			this.btnDialogOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnDialogOK.Name = "btnDialogOK";
+			this.btnDialogOK.Size = new System.Drawing.Size(75, 23);
+			this.btnDialogOK.Text = "OK";
+			this.btnDialogOK.Click += new System.EventHandler(this.btnDialogOK_Click);
 			// 
-			// groupBox1
+			// rbDispMethodOpenGL
 			// 
-			this.groupBox1.Controls.Add(this.lblScanlines);
-			this.groupBox1.Controls.Add(this.lblUserFilterName);
-			this.groupBox1.Controls.Add(this.btnSelectUserFilter);
-			this.groupBox1.Controls.Add(this.rbUser);
-			this.groupBox1.Controls.Add(this.tbScanlineIntensity);
-			this.groupBox1.Controls.Add(this.rbNone);
-			this.groupBox1.Controls.Add(this.rbScanlines);
-			this.groupBox1.Controls.Add(this.rbHq2x);
-			this.groupBox1.Location = new System.Drawing.Point(6, 33);
-			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(193, 132);
-			this.groupBox1.TabIndex = 7;
-			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "Scaling Filter";
+			this.rbDispMethodOpenGL.Checked = true;
+			this.rbDispMethodOpenGL.Name = "rbDispMethodOpenGL";
+			this.rbDispMethodOpenGL.Text = "OpenGL";
 			// 
-			// lblScanlines
+			// lblDispMethodOpenGL
 			// 
-			this.lblScanlines.AutoSize = true;
-			this.lblScanlines.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lblScanlines.Location = new System.Drawing.Point(104, 39);
-			this.lblScanlines.Name = "lblScanlines";
-			this.lblScanlines.Size = new System.Drawing.Size(15, 13);
-			this.lblScanlines.TabIndex = 11;
-			this.lblScanlines.Text = "%";
-			// 
-			// lblUserFilterName
-			// 
-			this.lblUserFilterName.Location = new System.Drawing.Point(6, 114);
-			this.lblUserFilterName.Name = "lblUserFilterName";
-			this.lblUserFilterName.Size = new System.Drawing.Size(161, 15);
-			this.lblUserFilterName.TabIndex = 10;
-			this.lblUserFilterName.Text = "Will contain user filter name";
-			// 
-			// btnSelectUserFilter
-			// 
-			this.btnSelectUserFilter.Location = new System.Drawing.Point(83, 88);
-			this.btnSelectUserFilter.Name = "btnSelectUserFilter";
-			this.btnSelectUserFilter.Size = new System.Drawing.Size(75, 23);
-			this.btnSelectUserFilter.TabIndex = 5;
-			this.btnSelectUserFilter.Text = "Select";
-			this.btnSelectUserFilter.UseVisualStyleBackColor = true;
-			this.btnSelectUserFilter.Click += new System.EventHandler(this.btnSelectUserFilter_Click);
-			// 
-			// rbUser
-			// 
-			this.rbUser.AutoSize = true;
-			this.rbUser.Location = new System.Drawing.Point(6, 88);
-			this.rbUser.Name = "rbUser";
-			this.rbUser.Size = new System.Drawing.Size(47, 17);
-			this.rbUser.TabIndex = 4;
-			this.rbUser.TabStop = true;
-			this.rbUser.Text = "User";
-			this.rbUser.UseVisualStyleBackColor = true;
-			// 
-			// tbScanlineIntensity
-			// 
-			this.tbScanlineIntensity.LargeChange = 32;
-			this.tbScanlineIntensity.Location = new System.Drawing.Point(83, 55);
-			this.tbScanlineIntensity.Maximum = 256;
-			this.tbScanlineIntensity.Name = "tbScanlineIntensity";
-			this.tbScanlineIntensity.Size = new System.Drawing.Size(70, 42);
-			this.tbScanlineIntensity.TabIndex = 3;
-			this.tbScanlineIntensity.TickFrequency = 32;
-			this.tbScanlineIntensity.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
-			this.tbScanlineIntensity.Scroll += new System.EventHandler(this.tbScanlineIntensity_Scroll);
-			this.tbScanlineIntensity.ValueChanged += new System.EventHandler(this.tbScanlineIntensity_Scroll);
-			// 
-			// rbNone
-			// 
-			this.rbNone.AutoSize = true;
-			this.rbNone.Location = new System.Drawing.Point(6, 19);
-			this.rbNone.Name = "rbNone";
-			this.rbNone.Size = new System.Drawing.Size(51, 17);
-			this.rbNone.TabIndex = 2;
-			this.rbNone.TabStop = true;
-			this.rbNone.Text = "None";
-			this.rbNone.UseVisualStyleBackColor = true;
-			// 
-			// rbScanlines
-			// 
-			this.rbScanlines.AutoSize = true;
-			this.rbScanlines.Location = new System.Drawing.Point(6, 65);
-			this.rbScanlines.Name = "rbScanlines";
-			this.rbScanlines.Size = new System.Drawing.Size(71, 17);
-			this.rbScanlines.TabIndex = 1;
-			this.rbScanlines.TabStop = true;
-			this.rbScanlines.Text = "Scanlines";
-			this.rbScanlines.UseVisualStyleBackColor = true;
-			// 
-			// rbHq2x
-			// 
-			this.rbHq2x.AutoSize = true;
-			this.rbHq2x.Location = new System.Drawing.Point(6, 42);
-			this.rbHq2x.Name = "rbHq2x";
-			this.rbHq2x.Size = new System.Drawing.Size(50, 17);
-			this.rbHq2x.TabIndex = 0;
-			this.rbHq2x.TabStop = true;
-			this.rbHq2x.Text = "Hq2x";
-			this.rbHq2x.UseVisualStyleBackColor = true;
-			// 
-			// checkLetterbox
-			// 
-			this.checkLetterbox.AutoSize = true;
-			this.checkLetterbox.Location = new System.Drawing.Point(209, 12);
-			this.checkLetterbox.Name = "checkLetterbox";
-			this.checkLetterbox.Size = new System.Drawing.Size(173, 17);
-			this.checkLetterbox.TabIndex = 8;
-			this.checkLetterbox.Text = "Maintain aspect ratio (letterbox)";
-			this.checkLetterbox.UseVisualStyleBackColor = true;
-			this.checkLetterbox.CheckedChanged += new System.EventHandler(this.checkLetterbox_CheckedChanged);
-			// 
-			// checkPadInteger
-			// 
-			this.checkPadInteger.AutoSize = true;
-			this.checkPadInteger.Location = new System.Drawing.Point(218, 171);
-			this.checkPadInteger.Name = "checkPadInteger";
-			this.checkPadInteger.Size = new System.Drawing.Size(250, 17);
-			this.checkPadInteger.TabIndex = 9;
-			this.checkPadInteger.Text = "Expand pixels by integers only (e.g. no 1.3333x)";
-			this.checkPadInteger.UseVisualStyleBackColor = true;
-			this.checkPadInteger.CheckedChanged += new System.EventHandler(this.checkPadInteger_CheckedChanged);
-			// 
-			// grpFinalFilter
-			// 
-			this.grpFinalFilter.Controls.Add(this.rbFinalFilterBicubic);
-			this.grpFinalFilter.Controls.Add(this.rbFinalFilterNone);
-			this.grpFinalFilter.Controls.Add(this.rbFinalFilterBilinear);
-			this.grpFinalFilter.Location = new System.Drawing.Point(6, 194);
-			this.grpFinalFilter.Name = "grpFinalFilter";
-			this.grpFinalFilter.Size = new System.Drawing.Size(187, 90);
-			this.grpFinalFilter.TabIndex = 8;
-			this.grpFinalFilter.TabStop = false;
-			this.grpFinalFilter.Text = "Final Filter";
-			// 
-			// rbFinalFilterBicubic
-			// 
-			this.rbFinalFilterBicubic.AutoSize = true;
-			this.rbFinalFilterBicubic.Location = new System.Drawing.Point(6, 64);
-			this.rbFinalFilterBicubic.Name = "rbFinalFilterBicubic";
-			this.rbFinalFilterBicubic.Size = new System.Drawing.Size(142, 17);
-			this.rbFinalFilterBicubic.TabIndex = 3;
-			this.rbFinalFilterBicubic.TabStop = true;
-			this.rbFinalFilterBicubic.Text = "Bicubic (shader. buggy?)";
-			this.rbFinalFilterBicubic.UseVisualStyleBackColor = true;
-			// 
-			// rbFinalFilterNone
-			// 
-			this.rbFinalFilterNone.AutoSize = true;
-			this.rbFinalFilterNone.Location = new System.Drawing.Point(6, 18);
-			this.rbFinalFilterNone.Name = "rbFinalFilterNone";
-			this.rbFinalFilterNone.Size = new System.Drawing.Size(51, 17);
-			this.rbFinalFilterNone.TabIndex = 2;
-			this.rbFinalFilterNone.TabStop = true;
-			this.rbFinalFilterNone.Text = "None";
-			this.rbFinalFilterNone.UseVisualStyleBackColor = true;
-			// 
-			// rbFinalFilterBilinear
-			// 
-			this.rbFinalFilterBilinear.AutoSize = true;
-			this.rbFinalFilterBilinear.Location = new System.Drawing.Point(6, 41);
-			this.rbFinalFilterBilinear.Name = "rbFinalFilterBilinear";
-			this.rbFinalFilterBilinear.Size = new System.Drawing.Size(59, 17);
-			this.rbFinalFilterBilinear.TabIndex = 0;
-			this.rbFinalFilterBilinear.TabStop = true;
-			this.rbFinalFilterBilinear.Text = "Bilinear";
-			this.rbFinalFilterBilinear.UseVisualStyleBackColor = true;
-			// 
-			// rbUseRaw
-			// 
-			this.rbUseRaw.AutoSize = true;
-			this.rbUseRaw.Location = new System.Drawing.Point(6, 19);
-			this.rbUseRaw.Name = "rbUseRaw";
-			this.rbUseRaw.Size = new System.Drawing.Size(240, 17);
-			this.rbUseRaw.TabIndex = 11;
-			this.rbUseRaw.TabStop = true;
-			this.rbUseRaw.Text = "Use 1:1 pixel size (for crispness or debugging)";
-			this.rbUseRaw.UseVisualStyleBackColor = true;
-			this.rbUseRaw.CheckedChanged += new System.EventHandler(this.rbUseRaw_CheckedChanged);
-			// 
-			// rbUseSystem
-			// 
-			this.rbUseSystem.AutoSize = true;
-			this.rbUseSystem.Location = new System.Drawing.Point(16, 58);
-			this.rbUseSystem.Name = "rbUseSystem";
-			this.rbUseSystem.Size = new System.Drawing.Size(167, 17);
-			this.rbUseSystem.TabIndex = 12;
-			this.rbUseSystem.TabStop = true;
-			this.rbUseSystem.Text = "Use system\'s recommendation";
-			this.rbUseSystem.UseVisualStyleBackColor = true;
-			this.rbUseSystem.CheckedChanged += new System.EventHandler(this.rbUseSystem_CheckedChanged);
-			// 
-			// grpARSelection
-			// 
-			this.grpARSelection.Controls.Add(this.txtCustomARY);
-			this.grpARSelection.Controls.Add(this.label12);
-			this.grpARSelection.Controls.Add(this.txtCustomARX);
-			this.grpARSelection.Controls.Add(this.rbUseCustomRatio);
-			this.grpARSelection.Controls.Add(this.label4);
-			this.grpARSelection.Controls.Add(this.txtCustomARHeight);
-			this.grpARSelection.Controls.Add(this.label3);
-			this.grpARSelection.Controls.Add(this.txtCustomARWidth);
-			this.grpARSelection.Controls.Add(this.rbUseCustom);
-			this.grpARSelection.Controls.Add(this.rbUseRaw);
-			this.grpARSelection.Controls.Add(this.rbUseSystem);
-			this.grpARSelection.Location = new System.Drawing.Point(218, 35);
-			this.grpARSelection.Name = "grpARSelection";
-			this.grpARSelection.Size = new System.Drawing.Size(302, 130);
-			this.grpARSelection.TabIndex = 13;
-			this.grpARSelection.TabStop = false;
-			this.grpARSelection.Text = "Aspect Ratio Selection";
-			// 
-			// txtCustomARY
-			// 
-			this.txtCustomARY.Location = new System.Drawing.Point(220, 102);
-			this.txtCustomARY.Name = "txtCustomARY";
-			this.txtCustomARY.Size = new System.Drawing.Size(72, 20);
-			this.txtCustomARY.TabIndex = 19;
-			// 
-			// label12
-			// 
-			this.label12.AutoSize = true;
-			this.label12.Location = new System.Drawing.Point(202, 107);
-			this.label12.Name = "label12";
-			this.label12.Size = new System.Drawing.Size(10, 13);
-			this.label12.TabIndex = 17;
-			this.label12.Text = ":";
-			// 
-			// txtCustomARX
-			// 
-			this.txtCustomARX.Location = new System.Drawing.Point(124, 102);
-			this.txtCustomARX.Name = "txtCustomARX";
-			this.txtCustomARX.Size = new System.Drawing.Size(72, 20);
-			this.txtCustomARX.TabIndex = 18;
-			// 
-			// rbUseCustomRatio
-			// 
-			this.rbUseCustomRatio.AutoSize = true;
-			this.rbUseCustomRatio.Location = new System.Drawing.Point(16, 103);
-			this.rbUseCustomRatio.Name = "rbUseCustomRatio";
-			this.rbUseCustomRatio.Size = new System.Drawing.Size(102, 17);
-			this.rbUseCustomRatio.TabIndex = 16;
-			this.rbUseCustomRatio.TabStop = true;
-			this.rbUseCustomRatio.Text = "Use custom AR:";
-			this.rbUseCustomRatio.UseVisualStyleBackColor = true;
-			// 
-			// label4
-			// 
-			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(13, 41);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(257, 13);
-			this.label4.TabIndex = 12;
-			this.label4.Text = "Allow pixel distortion (e.g. 2x1 pixels, for better AR fit):";
-			// 
-			// txtCustomARHeight
-			// 
-			this.txtCustomARHeight.Location = new System.Drawing.Point(220, 79);
-			this.txtCustomARHeight.Name = "txtCustomARHeight";
-			this.txtCustomARHeight.Size = new System.Drawing.Size(72, 20);
-			this.txtCustomARHeight.TabIndex = 15;
-			// 
-			// label3
-			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(202, 84);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(12, 13);
-			this.label3.TabIndex = 12;
-			this.label3.Text = "x";
-			// 
-			// txtCustomARWidth
-			// 
-			this.txtCustomARWidth.Location = new System.Drawing.Point(124, 79);
-			this.txtCustomARWidth.Name = "txtCustomARWidth";
-			this.txtCustomARWidth.Size = new System.Drawing.Size(72, 20);
-			this.txtCustomARWidth.TabIndex = 14;
-			// 
-			// rbUseCustom
-			// 
-			this.rbUseCustom.AutoSize = true;
-			this.rbUseCustom.Location = new System.Drawing.Point(16, 80);
-			this.rbUseCustom.Name = "rbUseCustom";
-			this.rbUseCustom.Size = new System.Drawing.Size(105, 17);
-			this.rbUseCustom.TabIndex = 13;
-			this.rbUseCustom.TabStop = true;
-			this.rbUseCustom.Text = "Use custom size:";
-			this.rbUseCustom.UseVisualStyleBackColor = true;
-			// 
-			// rbOpenGL
-			// 
-			this.rbOpenGL.AutoSize = true;
-			this.rbOpenGL.Checked = true;
-			this.rbOpenGL.Location = new System.Drawing.Point(6, 103);
-			this.rbOpenGL.Name = "rbOpenGL";
-			this.rbOpenGL.Size = new System.Drawing.Size(65, 17);
-			this.rbOpenGL.TabIndex = 3;
-			this.rbOpenGL.TabStop = true;
-			this.rbOpenGL.Text = "OpenGL";
-			this.rbOpenGL.UseVisualStyleBackColor = true;
-			// 
-			// label5
-			// 
-			this.label5.Location = new System.Drawing.Point(21, 123);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(359, 47);
-			this.label5.TabIndex = 16;
-			this.label5.Text = " • May malfunction on some systems.\r\n • May have increased performance for OpenGL" +
+			this.lblDispMethodOpenGL.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.lblDispMethodOpenGL.Location = new System.Drawing.Point(3, 115);
+			this.lblDispMethodOpenGL.Name = "lblDispMethodOpenGL";
+			this.lblDispMethodOpenGL.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
+			this.lblDispMethodOpenGL.Text = " • May malfunction on some systems.\r\n • May have increased performance for OpenGL" +
     "-based emulation cores.\r\n • May have reduced performance on some systems.\r\n";
 			// 
-			// tabControl1
+			// tcDialog
 			// 
-			this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.tcDialog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.tabControl1.Controls.Add(this.tpAR);
-			this.tabControl1.Controls.Add(this.tpDispMethod);
-			this.tabControl1.Controls.Add(this.tpMisc);
-			this.tabControl1.Controls.Add(this.tabPage1);
-			this.tabControl1.Location = new System.Drawing.Point(12, 12);
-			this.tabControl1.Name = "tabControl1";
-			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(536, 317);
-			this.tabControl1.TabIndex = 17;
+			this.tcDialog.Controls.Add(this.tpScaling);
+			this.tcDialog.Controls.Add(this.tpDispMethod);
+			this.tcDialog.Controls.Add(this.tpMisc);
+			this.tcDialog.Controls.Add(this.tpWindow);
+			this.tcDialog.Location = new System.Drawing.Point(4, 4);
+			this.tcDialog.Name = "tcDialog";
+			this.tcDialog.SelectedIndex = 0;
+			this.tcDialog.Size = new System.Drawing.Size(524, 345);
+			this.tcDialog.TabIndex = 17;
 			// 
-			// tpAR
+			// tpScaling
 			// 
-			this.tpAR.Controls.Add(this.groupBox6);
-			this.tpAR.Controls.Add(this.btnDefaults);
-			this.tpAR.Controls.Add(this.cbAutoPrescale);
-			this.tpAR.Controls.Add(this.label11);
-			this.tpAR.Controls.Add(this.groupBox1);
-			this.tpAR.Controls.Add(this.label10);
-			this.tpAR.Controls.Add(this.checkLetterbox);
-			this.tpAR.Controls.Add(this.nudPrescale);
-			this.tpAR.Controls.Add(this.checkPadInteger);
-			this.tpAR.Controls.Add(this.grpARSelection);
-			this.tpAR.Controls.Add(this.grpFinalFilter);
-			this.tpAR.Location = new System.Drawing.Point(4, 22);
-			this.tpAR.Name = "tpAR";
-			this.tpAR.Padding = new System.Windows.Forms.Padding(3);
-			this.tpAR.Size = new System.Drawing.Size(528, 291);
-			this.tpAR.TabIndex = 0;
-			this.tpAR.Text = "Scaling & Filtering";
-			this.tpAR.UseVisualStyleBackColor = true;
+			this.tpScaling.Controls.Add(this.flpTpScaling);
+			this.tpScaling.Name = "tpScaling";
+			this.tpScaling.Padding = new System.Windows.Forms.Padding(3);
+			this.tpScaling.Text = "Scaling & Filtering";
 			// 
-			// groupBox6
+			// flpTpScaling
 			// 
-			this.groupBox6.Controls.Add(this.label16);
-			this.groupBox6.Controls.Add(this.label15);
-			this.groupBox6.Controls.Add(this.txtCropBottom);
-			this.groupBox6.Controls.Add(this.label17);
-			this.groupBox6.Controls.Add(this.txtCropRight);
-			this.groupBox6.Controls.Add(this.txtCropTop);
-			this.groupBox6.Controls.Add(this.label14);
-			this.groupBox6.Controls.Add(this.txtCropLeft);
-			this.groupBox6.Location = new System.Drawing.Point(218, 195);
-			this.groupBox6.Name = "groupBox6";
-			this.groupBox6.Size = new System.Drawing.Size(302, 61);
-			this.groupBox6.TabIndex = 9;
-			this.groupBox6.TabStop = false;
-			this.groupBox6.Text = "Cropping";
+			this.flpTpScaling.Controls.Add(this.flpUserPrescale);
+			this.flpTpScaling.Controls.Add(this.grpFilter);
+			this.flpTpScaling.Controls.Add(this.cbAutoPrescale);
+			this.flpTpScaling.Controls.Add(this.grpFinalFilter);
+			this.flpTpScaling.Controls.Add(this.cbLetterbox);
+			this.flpTpScaling.Controls.Add(this.grpAspectRatio);
+			this.flpTpScaling.Controls.Add(this.cbScaleByInteger);
+			this.flpTpScaling.Controls.Add(this.grpCrop);
+			this.flpTpScaling.Controls.Add(this.btnDefaults);
+			this.flpTpScaling.MinimumSize = new System.Drawing.Size(24, 24);
+			this.flpTpScaling.Name = "flpTpScaling";
+			this.flpTpScaling.Size = new System.Drawing.Size(516, 319);
 			// 
-			// label16
+			// flpUserPrescale
 			// 
-			this.label16.AutoSize = true;
-			this.label16.Location = new System.Drawing.Point(217, 25);
-			this.label16.Name = "label16";
-			this.label16.Size = new System.Drawing.Size(43, 13);
-			this.label16.TabIndex = 30;
-			this.label16.Text = "Bottom:";
+			this.flpUserPrescale.Controls.Add(this.lblUserPrescale);
+			this.flpUserPrescale.Controls.Add(this.nudUserPrescale);
+			this.flpUserPrescale.Controls.Add(this.lblUserPrescaleUnits);
+			this.flpUserPrescale.Name = "flpUserPrescale";
 			// 
-			// label15
+			// lblUserPrescale
 			// 
-			this.label15.AutoSize = true;
-			this.label15.Location = new System.Drawing.Point(74, 25);
-			this.label15.Name = "label15";
-			this.label15.Size = new System.Drawing.Size(29, 13);
-			this.label15.TabIndex = 29;
-			this.label15.Text = "Top:";
+			this.lblUserPrescale.Name = "lblUserPrescale";
+			this.lblUserPrescale.Text = "User Prescale:";
 			// 
-			// txtCropBottom
+			// nudUserPrescale
 			// 
-			this.txtCropBottom.Location = new System.Drawing.Point(261, 22);
-			this.txtCropBottom.Name = "txtCropBottom";
-			this.txtCropBottom.Size = new System.Drawing.Size(34, 20);
-			this.txtCropBottom.TabIndex = 28;
-			this.txtCropBottom.Text = "8000";
-			// 
-			// label17
-			// 
-			this.label17.AutoSize = true;
-			this.label17.Location = new System.Drawing.Point(144, 25);
-			this.label17.Name = "label17";
-			this.label17.Size = new System.Drawing.Size(35, 13);
-			this.label17.TabIndex = 26;
-			this.label17.Text = "Right:";
-			// 
-			// txtCropRight
-			// 
-			this.txtCropRight.Location = new System.Drawing.Point(180, 22);
-			this.txtCropRight.Name = "txtCropRight";
-			this.txtCropRight.Size = new System.Drawing.Size(34, 20);
-			this.txtCropRight.TabIndex = 25;
-			this.txtCropRight.Text = "8000";
-			// 
-			// txtCropTop
-			// 
-			this.txtCropTop.Location = new System.Drawing.Point(104, 22);
-			this.txtCropTop.Name = "txtCropTop";
-			this.txtCropTop.Size = new System.Drawing.Size(34, 20);
-			this.txtCropTop.TabIndex = 24;
-			this.txtCropTop.Text = "8000";
-			// 
-			// label14
-			// 
-			this.label14.AutoSize = true;
-			this.label14.Location = new System.Drawing.Point(6, 25);
-			this.label14.Name = "label14";
-			this.label14.Size = new System.Drawing.Size(28, 13);
-			this.label14.TabIndex = 16;
-			this.label14.Text = "Left:";
-			// 
-			// txtCropLeft
-			// 
-			this.txtCropLeft.Location = new System.Drawing.Point(34, 22);
-			this.txtCropLeft.Name = "txtCropLeft";
-			this.txtCropLeft.Size = new System.Drawing.Size(34, 20);
-			this.txtCropLeft.TabIndex = 15;
-			this.txtCropLeft.Text = "8000";
-			// 
-			// btnDefaults
-			// 
-			this.btnDefaults.Location = new System.Drawing.Point(447, 262);
-			this.btnDefaults.Name = "btnDefaults";
-			this.btnDefaults.Size = new System.Drawing.Size(75, 23);
-			this.btnDefaults.TabIndex = 18;
-			this.btnDefaults.Text = "Defaults";
-			this.toolTip1.SetToolTip(this.btnDefaults, "Unless I forgot to update the button\'s code when I changed a default");
-			this.btnDefaults.UseVisualStyleBackColor = true;
-			this.btnDefaults.Click += new System.EventHandler(this.btnDefaults_Click);
-			// 
-			// cbAutoPrescale
-			// 
-			this.cbAutoPrescale.AutoSize = true;
-			this.cbAutoPrescale.Location = new System.Drawing.Point(6, 171);
-			this.cbAutoPrescale.Name = "cbAutoPrescale";
-			this.cbAutoPrescale.Size = new System.Drawing.Size(92, 17);
-			this.cbAutoPrescale.TabIndex = 17;
-			this.cbAutoPrescale.Text = "Auto Prescale";
-			this.cbAutoPrescale.UseVisualStyleBackColor = true;
-			// 
-			// label11
-			// 
-			this.label11.AutoSize = true;
-			this.label11.Location = new System.Drawing.Point(140, 11);
-			this.label11.Name = "label11";
-			this.label11.Size = new System.Drawing.Size(14, 13);
-			this.label11.TabIndex = 16;
-			this.label11.Text = "X";
-			// 
-			// label10
-			// 
-			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(7, 11);
-			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(76, 13);
-			this.label10.TabIndex = 15;
-			this.label10.Text = "User Prescale:";
-			// 
-			// nudPrescale
-			// 
-			this.nudPrescale.Location = new System.Drawing.Point(93, 7);
-			this.nudPrescale.Maximum = new decimal(new int[] {
+			this.nudUserPrescale.Maximum = new decimal(new int[] {
             16,
             0,
             0,
             0});
-			this.nudPrescale.Minimum = new decimal(new int[] {
+			this.nudUserPrescale.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
-			this.nudPrescale.Name = "nudPrescale";
-			this.nudPrescale.Size = new System.Drawing.Size(45, 20);
-			this.nudPrescale.TabIndex = 14;
-			this.nudPrescale.Value = new decimal(new int[] {
+			this.nudUserPrescale.Name = "nudUserPrescale";
+			this.nudUserPrescale.Size = new System.Drawing.Size(45, 20);
+			this.nudUserPrescale.Value = new decimal(new int[] {
             1,
             0,
             0,
             0});
+			// 
+			// lblUserPrescaleUnits
+			// 
+			this.lblUserPrescaleUnits.Name = "lblUserPrescaleUnits";
+			this.lblUserPrescaleUnits.Text = "X";
+			// 
+			// grpFilter
+			// 
+			this.grpFilter.Controls.Add(this.tlpGrpFilter);
+			this.grpFilter.Name = "grpFilter";
+			this.grpFilter.Size = new System.Drawing.Size(176, 170);
+			this.grpFilter.Text = "Scaling Filter";
+			// 
+			// tlpGrpFilter
+			// 
+			this.tlpGrpFilter.ColumnCount = 2;
+			this.tlpGrpFilter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tlpGrpFilter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tlpGrpFilter.Controls.Add(this.rbFilterNone, 0, 0);
+			this.tlpGrpFilter.Controls.Add(this.rbFilterUser, 0, 3);
+			this.tlpGrpFilter.Controls.Add(this.rbFilterHq2x, 0, 1);
+			this.tlpGrpFilter.Controls.Add(this.rbFilterScanline, 0, 2);
+			this.tlpGrpFilter.Controls.Add(this.flpFilterUser, 1, 3);
+			this.tlpGrpFilter.Controls.Add(this.flpFilterScanlineAlpha, 1, 2);
+			this.tlpGrpFilter.Location = new System.Drawing.Point(2, 15);
+			this.tlpGrpFilter.Name = "tlpGrpFilter";
+			this.tlpGrpFilter.RowCount = 4;
+			this.tlpGrpFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tlpGrpFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tlpGrpFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tlpGrpFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tlpGrpFilter.Size = new System.Drawing.Size(173, 155);
+			this.tlpGrpFilter.TabIndex = 1;
+			// 
+			// rbFilterNone
+			// 
+			this.rbFilterNone.Name = "rbFilterNone";
+			this.rbFilterNone.Text = "None";
+			// 
+			// rbFilterUser
+			// 
+			this.rbFilterUser.Name = "rbFilterUser";
+			this.rbFilterUser.Text = "User";
+			// 
+			// rbFilterHq2x
+			// 
+			this.rbFilterHq2x.Name = "rbFilterHq2x";
+			this.rbFilterHq2x.Text = "Hq2x";
+			// 
+			// rbFilterScanline
+			// 
+			this.rbFilterScanline.Name = "rbFilterScanline";
+			this.rbFilterScanline.Text = "Scanlines";
+			// 
+			// flpFilterUser
+			// 
+			this.flpFilterUser.Controls.Add(this.btnFilterUser);
+			this.flpFilterUser.Controls.Add(this.lblFilterUser);
+			this.flpFilterUser.Name = "flpFilterUser";
+			// 
+			// btnFilterUser
+			// 
+			this.btnFilterUser.Name = "btnFilterUser";
+			this.btnFilterUser.Size = new System.Drawing.Size(75, 23);
+			this.btnFilterUser.Text = "Select";
+			this.btnFilterUser.Click += new System.EventHandler(this.btnFilterUser_Click);
+			// 
+			// lblFilterUser
+			// 
+			this.lblFilterUser.Name = "lblFilterUser";
+			this.lblFilterUser.Text = "Will contain user filter name";
+			// 
+			// flpFilterScanlineAlpha
+			// 
+			this.flpFilterScanlineAlpha.Controls.Add(this.lblFilterScanlineAlpha);
+			this.flpFilterScanlineAlpha.Controls.Add(this.tbFilterScanlineAlpha);
+			this.flpFilterScanlineAlpha.Name = "flpFilterScanlineAlpha";
+			// 
+			// lblFilterScanlineAlpha
+			// 
+			this.lblFilterScanlineAlpha.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblFilterScanlineAlpha.Name = "lblFilterScanlineAlpha";
+			this.lblFilterScanlineAlpha.Text = "%";
+			// 
+			// tbFilterScanlineAlpha
+			// 
+			this.tbFilterScanlineAlpha.LargeChange = 32;
+			this.tbFilterScanlineAlpha.Location = new System.Drawing.Point(3, 16);
+			this.tbFilterScanlineAlpha.Maximum = 256;
+			this.tbFilterScanlineAlpha.Name = "tbFilterScanlineAlpha";
+			this.tbFilterScanlineAlpha.Size = new System.Drawing.Size(70, 45);
+			this.tbFilterScanlineAlpha.TabIndex = 3;
+			this.tbFilterScanlineAlpha.TickFrequency = 32;
+			this.tbFilterScanlineAlpha.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
+			this.tbFilterScanlineAlpha.Scroll += new System.EventHandler(this.tbFilterScanlineAlpha_Scroll);
+			this.tbFilterScanlineAlpha.ValueChanged += new System.EventHandler(this.tbFilterScanlineAlpha_Scroll);
+			// 
+			// cbAutoPrescale
+			// 
+			this.cbAutoPrescale.Name = "cbAutoPrescale";
+			this.cbAutoPrescale.Text = "Auto Prescale";
+			// 
+			// grpFinalFilter
+			// 
+			this.grpFinalFilter.Controls.Add(this.flpGrpFinalFilter);
+			this.grpFinalFilter.Name = "grpFinalFilter";
+			this.grpFinalFilter.Size = new System.Drawing.Size(158, 88);
+			this.grpFinalFilter.Text = "Final Filter";
+			// 
+			// flpGrpFinalFilter
+			// 
+			this.flpGrpFinalFilter.Controls.Add(this.rbFinalFilterNone);
+			this.flpGrpFinalFilter.Controls.Add(this.rbFinalFilterBilinear);
+			this.flpGrpFinalFilter.Controls.Add(this.rbFinalFilterBicubic);
+			this.flpGrpFinalFilter.Location = new System.Drawing.Point(6, 15);
+			this.flpGrpFinalFilter.Name = "flpGrpFinalFilter";
+			// 
+			// rbFinalFilterNone
+			// 
+			this.rbFinalFilterNone.Name = "rbFinalFilterNone";
+			this.rbFinalFilterNone.Text = "None";
+			// 
+			// rbFinalFilterBilinear
+			// 
+			this.rbFinalFilterBilinear.Name = "rbFinalFilterBilinear";
+			this.rbFinalFilterBilinear.Text = "Bilinear";
+			// 
+			// rbFinalFilterBicubic
+			// 
+			this.rbFinalFilterBicubic.Name = "rbFinalFilterBicubic";
+			this.rbFinalFilterBicubic.Text = "Bicubic (shader. buggy?)";
+			// 
+			// cbLetterbox
+			// 
+			this.cbLetterbox.Name = "cbLetterbox";
+			this.cbLetterbox.Text = "Maintain aspect ratio (letterbox)";
+			this.cbLetterbox.CheckedChanged += new System.EventHandler(this.cbLetterbox_CheckedChanged);
+			// 
+			// grpAspectRatio
+			// 
+			this.grpAspectRatio.Controls.Add(this.flpGrpAspectRatio);
+			this.grpAspectRatio.Name = "grpAspectRatio";
+			this.grpAspectRatio.Size = new System.Drawing.Size(295, 128);
+			this.grpAspectRatio.Text = "Aspect Ratio Selection";
+			// 
+			// flpGrpAspectRatio
+			// 
+			this.flpGrpAspectRatio.Controls.Add(this.rbARSquare);
+			this.flpGrpAspectRatio.Controls.Add(this.lblAspectRatioNonSquare);
+			this.flpGrpAspectRatio.Controls.Add(this.rbARBySystem);
+			this.flpGrpAspectRatio.Controls.Add(this.flpCustomSize);
+			this.flpGrpAspectRatio.Controls.Add(this.flpCustomAR);
+			this.flpGrpAspectRatio.Location = new System.Drawing.Point(6, 15);
+			this.flpGrpAspectRatio.Name = "flpGrpAspectRatio";
+			// 
+			// rbARSquare
+			// 
+			this.rbARSquare.Name = "rbARSquare";
+			this.rbARSquare.Text = "Use 1:1 pixel size (for crispness or debugging)";
+			this.rbARSquare.CheckedChanged += new System.EventHandler(this.rbARSquare_CheckedChanged);
+			// 
+			// lblAspectRatioNonSquare
+			// 
+			this.lblAspectRatioNonSquare.Name = "lblAspectRatioNonSquare";
+			this.lblAspectRatioNonSquare.Text = "Allow pixel distortion (e.g. 2x1 pixels, for better AR fit):";
+			// 
+			// rbARBySystem
+			// 
+			this.rbARBySystem.Name = "rbARBySystem";
+			this.rbARBySystem.Text = "Use system\'s recommendation";
+			this.rbARBySystem.CheckedChanged += new System.EventHandler(this.rbARBySystem_CheckedChanged);
+			// 
+			// flpCustomSize
+			// 
+			this.flpCustomSize.Controls.Add(this.rbARCustomSize);
+			this.flpCustomSize.Controls.Add(this.txtARCustomWidth);
+			this.flpCustomSize.Controls.Add(this.lblARCustomSizeSeparator);
+			this.flpCustomSize.Controls.Add(this.txtARCustomHeight);
+			this.flpCustomSize.Name = "flpCustomSize";
+			// 
+			// rbARCustomSize
+			// 
+			this.rbARCustomSize.Name = "rbARCustomSize";
+			this.rbARCustomSize.Text = "Use custom size:";
+			// 
+			// txtARCustomWidth
+			// 
+			this.txtARCustomWidth.Name = "txtARCustomWidth";
+			this.txtARCustomWidth.Size = new System.Drawing.Size(72, 20);
+			// 
+			// lblARCustomSizeSeparator
+			// 
+			this.lblARCustomSizeSeparator.Name = "lblARCustomSizeSeparator";
+			this.lblARCustomSizeSeparator.Text = "x";
+			// 
+			// txtARCustomHeight
+			// 
+			this.txtARCustomHeight.Name = "txtARCustomHeight";
+			this.txtARCustomHeight.Size = new System.Drawing.Size(72, 20);
+			// 
+			// flpCustomAR
+			// 
+			this.flpCustomAR.Controls.Add(this.rbARCustomRatio);
+			this.flpCustomAR.Controls.Add(this.txtARCustomRatioH);
+			this.flpCustomAR.Controls.Add(this.lblARCustomRatioSeparator);
+			this.flpCustomAR.Controls.Add(this.txtARCustomRatioV);
+			this.flpCustomAR.Name = "flpCustomAR";
+			// 
+			// rbARCustomRatio
+			// 
+			this.rbARCustomRatio.Name = "rbARCustomRatio";
+			this.rbARCustomRatio.Text = "Use custom AR:";
+			// 
+			// txtARCustomRatioH
+			// 
+			this.txtARCustomRatioH.Name = "txtARCustomRatioH";
+			this.txtARCustomRatioH.Size = new System.Drawing.Size(72, 20);
+			// 
+			// lblARCustomRatioSeparator
+			// 
+			this.lblARCustomRatioSeparator.Name = "lblARCustomRatioSeparator";
+			this.lblARCustomRatioSeparator.Text = ":";
+			// 
+			// txtARCustomRatioV
+			// 
+			this.txtARCustomRatioV.Name = "txtARCustomRatioV";
+			this.txtARCustomRatioV.Size = new System.Drawing.Size(72, 20);
+			// 
+			// cbScaleByInteger
+			// 
+			this.cbScaleByInteger.Name = "cbScaleByInteger";
+			this.cbScaleByInteger.Text = "Expand pixels by integers only (e.g. no 1.3333x)";
+			this.cbScaleByInteger.CheckedChanged += new System.EventHandler(this.cbScaleByInteger_CheckedChanged);
+			// 
+			// grpCrop
+			// 
+			this.grpCrop.Controls.Add(this.flpGrpCrop);
+			this.grpCrop.Name = "grpCrop";
+			this.grpCrop.Size = new System.Drawing.Size(329, 43);
+			this.grpCrop.Text = "Cropping";
+			// 
+			// flpGrpCrop
+			// 
+			this.flpGrpCrop.Controls.Add(this.lblCropLeft);
+			this.flpGrpCrop.Controls.Add(this.txtCropLeft);
+			this.flpGrpCrop.Controls.Add(this.lblCropTop);
+			this.flpGrpCrop.Controls.Add(this.txtCropTop);
+			this.flpGrpCrop.Controls.Add(this.lblCropRight);
+			this.flpGrpCrop.Controls.Add(this.txtCropRight);
+			this.flpGrpCrop.Controls.Add(this.lblCropBottom);
+			this.flpGrpCrop.Controls.Add(this.txtCropBottom);
+			this.flpGrpCrop.Location = new System.Drawing.Point(6, 15);
+			this.flpGrpCrop.Name = "flpGrpCrop";
+			// 
+			// lblCropLeft
+			// 
+			this.lblCropLeft.Name = "lblCropLeft";
+			this.lblCropLeft.Text = "Left:";
+			// 
+			// txtCropLeft
+			// 
+			this.txtCropLeft.Name = "txtCropLeft";
+			this.txtCropLeft.Size = new System.Drawing.Size(34, 20);
+			this.txtCropLeft.Text = "8000";
+			// 
+			// lblCropTop
+			// 
+			this.lblCropTop.Name = "lblCropTop";
+			this.lblCropTop.Text = "Top:";
+			// 
+			// txtCropTop
+			// 
+			this.txtCropTop.Name = "txtCropTop";
+			this.txtCropTop.Size = new System.Drawing.Size(34, 20);
+			this.txtCropTop.Text = "8000";
+			// 
+			// lblCropRight
+			// 
+			this.lblCropRight.Name = "lblCropRight";
+			this.lblCropRight.Text = "Right:";
+			// 
+			// txtCropRight
+			// 
+			this.txtCropRight.Name = "txtCropRight";
+			this.txtCropRight.Size = new System.Drawing.Size(34, 20);
+			this.txtCropRight.Text = "8000";
+			// 
+			// lblCropBottom
+			// 
+			this.lblCropBottom.Name = "lblCropBottom";
+			this.lblCropBottom.Text = "Bottom:";
+			// 
+			// txtCropBottom
+			// 
+			this.txtCropBottom.Name = "txtCropBottom";
+			this.txtCropBottom.Size = new System.Drawing.Size(34, 20);
+			this.txtCropBottom.Text = "8000";
+			// 
+			// btnDefaults
+			// 
+			this.btnDefaults.Anchor = System.Windows.Forms.AnchorStyles.Right;
+			this.btnDefaults.Location = new System.Drawing.Point(439, 232);
+			this.btnDefaults.Name = "btnDefaults";
+			this.btnDefaults.Size = new System.Drawing.Size(75, 23);
+			this.btnDefaults.Text = "Defaults";
+			this.toolTip1.SetToolTip(this.btnDefaults, "Unless I forgot to update the button\'s code when I changed a default");
+			this.btnDefaults.Click += new System.EventHandler(this.btnDefaults_Click);
 			// 
 			// tpDispMethod
 			// 
-			this.tpDispMethod.Controls.Add(this.label6);
-			this.tpDispMethod.Controls.Add(this.groupBox3);
-			this.tpDispMethod.Location = new System.Drawing.Point(4, 22);
+			this.tpDispMethod.Controls.Add(this.flpTpDispMethod);
 			this.tpDispMethod.Name = "tpDispMethod";
-			this.tpDispMethod.Size = new System.Drawing.Size(528, 291);
-			this.tpDispMethod.TabIndex = 2;
 			this.tpDispMethod.Text = "Display Method";
-			this.tpDispMethod.UseVisualStyleBackColor = true;
 			// 
-			// label6
+			// flpTpDispMethod
 			// 
-			this.label6.Location = new System.Drawing.Point(3, 258);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(359, 23);
-			this.label6.TabIndex = 18;
-			this.label6.Text = "Changes require restart of program to take effect.\r\n";
+			this.flpTpDispMethod.Controls.Add(this.grpDispMethod);
+			this.flpTpDispMethod.Controls.Add(this.lblDispMethodRestartWarning);
+			this.flpTpDispMethod.Name = "flpTpDispMethod";
 			// 
-			// groupBox3
+			// grpDispMethod
 			// 
-			this.groupBox3.Controls.Add(this.label13);
-			this.groupBox3.Controls.Add(this.cbAlternateVsync);
-			this.groupBox3.Controls.Add(this.label8);
-			this.groupBox3.Controls.Add(this.rbD3D9);
-			this.groupBox3.Controls.Add(this.label7);
-			this.groupBox3.Controls.Add(this.rbGDIPlus);
-			this.groupBox3.Controls.Add(this.label5);
-			this.groupBox3.Controls.Add(this.rbOpenGL);
-			this.groupBox3.Location = new System.Drawing.Point(6, 5);
-			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(415, 241);
-			this.groupBox3.TabIndex = 16;
-			this.groupBox3.TabStop = false;
+			this.grpDispMethod.Controls.Add(this.flpGrpDispMethod);
+			this.grpDispMethod.Name = "grpDispMethod";
+			this.grpDispMethod.Size = new System.Drawing.Size(419, 241);
 			// 
-			// label13
+			// flpGrpDispMethod
 			// 
-			this.label13.Location = new System.Drawing.Point(45, 60);
-			this.label13.Name = "label13";
-			this.label13.Size = new System.Drawing.Size(359, 43);
-			this.label13.TabIndex = 22;
-			this.label13.Text = resources.GetString("label13.Text");
-			this.label13.Click += new System.EventHandler(this.label13_Click);
-			this.label13.DoubleClick += new System.EventHandler(this.label13_Click);
+			this.flpGrpDispMethod.Controls.Add(this.flpD3DSection);
+			this.flpGrpDispMethod.Controls.Add(this.rbDispMethodOpenGL);
+			this.flpGrpDispMethod.Controls.Add(this.lblDispMethodOpenGL);
+			this.flpGrpDispMethod.Controls.Add(this.rbDispMethodGDIPlus);
+			this.flpGrpDispMethod.Controls.Add(this.lblDispMethodGDIPlus);
+			this.flpGrpDispMethod.Location = new System.Drawing.Point(6, 11);
+			this.flpGrpDispMethod.Name = "flpGrpDispMethod";
 			// 
-			// cbAlternateVsync
+			// flpD3DSection
 			// 
-			this.cbAlternateVsync.AutoSize = true;
-			this.cbAlternateVsync.Location = new System.Drawing.Point(28, 60);
-			this.cbAlternateVsync.Name = "cbAlternateVsync";
-			this.cbAlternateVsync.Size = new System.Drawing.Size(15, 14);
-			this.cbAlternateVsync.TabIndex = 21;
-			this.cbAlternateVsync.UseVisualStyleBackColor = true;
+			this.flpD3DSection.Controls.Add(this.rbDispMethodD3D);
+			this.flpD3DSection.Controls.Add(this.lblDispMethodD3D);
+			this.flpD3DSection.Controls.Add(this.flpD3DAltVSync);
+			this.flpD3DSection.Name = "flpD3DSection";
 			// 
-			// label8
+			// rbDispMethodD3D
 			// 
-			this.label8.Location = new System.Drawing.Point(21, 30);
-			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(359, 27);
-			this.label8.TabIndex = 20;
-			this.label8.Text = " • Best compatibility\r\n • May have trouble with OpenGL-based cores (N64)\r\n";
+			this.rbDispMethodD3D.Checked = true;
+			this.rbDispMethodD3D.Name = "rbDispMethodD3D";
+			this.rbDispMethodD3D.Text = "Direct3D9";
 			// 
-			// rbD3D9
+			// lblDispMethodD3D
 			// 
-			this.rbD3D9.AutoSize = true;
-			this.rbD3D9.Checked = true;
-			this.rbD3D9.Location = new System.Drawing.Point(6, 10);
-			this.rbD3D9.Name = "rbD3D9";
-			this.rbD3D9.Size = new System.Drawing.Size(73, 17);
-			this.rbD3D9.TabIndex = 19;
-			this.rbD3D9.TabStop = true;
-			this.rbD3D9.Text = "Direct3D9";
-			this.rbD3D9.UseVisualStyleBackColor = true;
+			this.lblDispMethodD3D.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.lblDispMethodD3D.Location = new System.Drawing.Point(3, 23);
+			this.lblDispMethodD3D.Name = "lblDispMethodD3D";
+			this.lblDispMethodD3D.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
+			this.lblDispMethodD3D.Text = " • Best compatibility\r\n • May have trouble with OpenGL-based cores (N64)\r\n";
 			// 
-			// label7
+			// flpD3DAltVSync
 			// 
-			this.label7.Location = new System.Drawing.Point(21, 191);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(359, 47);
-			this.label7.TabIndex = 18;
-			this.label7.Text = " • Slow; Mainly for compatibility purposes\r\n • Missing many features\r\n • Works be" +
+			this.flpD3DAltVSync.Controls.Add(this.cbD3DAltVSync);
+			this.flpD3DAltVSync.Controls.Add(this.lblD3DAltVSync);
+			this.flpD3DAltVSync.Name = "flpD3DAltVSync";
+			this.flpD3DAltVSync.Padding = new System.Windows.Forms.Padding(32, 0, 0, 0);
+			// 
+			// cbD3DAltVSync
+			// 
+			this.cbD3DAltVSync.Name = "cbD3DAltVSync";
+			// 
+			// lblD3DAltVSync
+			// 
+			this.lblD3DAltVSync.Name = "lblD3DAltVSync";
+			this.lblD3DAltVSync.Size = new System.Drawing.Size(359, 43);
+			this.lblD3DAltVSync.Text = resources.GetString("lblD3DAltVSync.Text");
+			this.lblD3DAltVSync.Click += new System.EventHandler(this.lblD3DAltVSync_Click);
+			this.lblD3DAltVSync.DoubleClick += new System.EventHandler(this.lblD3DAltVSync_Click);
+			// 
+			// rbDispMethodGDIPlus
+			// 
+			this.rbDispMethodGDIPlus.Checked = true;
+			this.rbDispMethodGDIPlus.Name = "rbDispMethodGDIPlus";
+			this.rbDispMethodGDIPlus.Text = "GDI+";
+			// 
+			// lblDispMethodGDIPlus
+			// 
+			this.lblDispMethodGDIPlus.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.lblDispMethodGDIPlus.Location = new System.Drawing.Point(3, 177);
+			this.lblDispMethodGDIPlus.Name = "lblDispMethodGDIPlus";
+			this.lblDispMethodGDIPlus.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
+			this.lblDispMethodGDIPlus.Text = " • Slow; Mainly for compatibility purposes\r\n • Missing many features\r\n • Works be" +
     "tter over Remote Desktop, etc.\r\n";
 			// 
-			// rbGDIPlus
+			// lblDispMethodRestartWarning
 			// 
-			this.rbGDIPlus.AutoSize = true;
-			this.rbGDIPlus.Checked = true;
-			this.rbGDIPlus.Location = new System.Drawing.Point(6, 171);
-			this.rbGDIPlus.Name = "rbGDIPlus";
-			this.rbGDIPlus.Size = new System.Drawing.Size(50, 17);
-			this.rbGDIPlus.TabIndex = 17;
-			this.rbGDIPlus.TabStop = true;
-			this.rbGDIPlus.Text = "GDI+";
-			this.rbGDIPlus.UseVisualStyleBackColor = true;
+			this.lblDispMethodRestartWarning.Name = "lblDispMethodRestartWarning";
+			this.lblDispMethodRestartWarning.Text = "Changes require restart of program to take effect.\r\n";
 			// 
 			// tpMisc
 			// 
-			this.tpMisc.Controls.Add(this.groupBox5);
-			this.tpMisc.Location = new System.Drawing.Point(4, 22);
+			this.tpMisc.Controls.Add(this.grpDispFeatures);
 			this.tpMisc.Name = "tpMisc";
-			this.tpMisc.Size = new System.Drawing.Size(528, 291);
-			this.tpMisc.TabIndex = 3;
 			this.tpMisc.Text = "Misc";
-			this.tpMisc.UseVisualStyleBackColor = true;
 			// 
-			// groupBox5
+			// grpDispFeatures
 			// 
-			this.groupBox5.Controls.Add(this.rbDisplayAbsoluteZero);
-			this.groupBox5.Controls.Add(this.rbDisplayMinimal);
-			this.groupBox5.Controls.Add(this.rbDisplayFull);
-			this.groupBox5.Location = new System.Drawing.Point(6, 6);
-			this.groupBox5.Name = "groupBox5";
-			this.groupBox5.Size = new System.Drawing.Size(371, 96);
-			this.groupBox5.TabIndex = 20;
-			this.groupBox5.TabStop = false;
-			this.groupBox5.Text = "Display Features (for speeding up replays)";
+			this.grpDispFeatures.Controls.Add(this.flpGrpDispFeatures);
+			this.grpDispFeatures.Name = "grpDispFeatures";
+			this.grpDispFeatures.Size = new System.Drawing.Size(217, 87);
+			this.grpDispFeatures.Text = "Display Features (for speeding up replays)";
 			// 
-			// rbDisplayAbsoluteZero
+			// flpGrpDispFeatures
 			// 
-			this.rbDisplayAbsoluteZero.AutoSize = true;
-			this.rbDisplayAbsoluteZero.Location = new System.Drawing.Point(7, 66);
-			this.rbDisplayAbsoluteZero.Name = "rbDisplayAbsoluteZero";
-			this.rbDisplayAbsoluteZero.Size = new System.Drawing.Size(174, 17);
-			this.rbDisplayAbsoluteZero.TabIndex = 2;
-			this.rbDisplayAbsoluteZero.TabStop = true;
-			this.rbDisplayAbsoluteZero.Text = "Absolute Zero - Display Nothing";
-			this.rbDisplayAbsoluteZero.UseVisualStyleBackColor = true;
+			this.flpGrpDispFeatures.Controls.Add(this.rbDispFeaturesFull);
+			this.flpGrpDispFeatures.Controls.Add(this.rbDispFeaturesMinimal);
+			this.flpGrpDispFeatures.Controls.Add(this.rbDispFeaturesNothing);
+			this.flpGrpDispFeatures.Location = new System.Drawing.Point(6, 15);
+			this.flpGrpDispFeatures.Name = "flpGrpDispFeatures";
 			// 
-			// rbDisplayMinimal
+			// rbDispFeaturesFull
 			// 
-			this.rbDisplayMinimal.AutoSize = true;
-			this.rbDisplayMinimal.Enabled = false;
-			this.rbDisplayMinimal.Location = new System.Drawing.Point(7, 43);
-			this.rbDisplayMinimal.Name = "rbDisplayMinimal";
-			this.rbDisplayMinimal.Size = new System.Drawing.Size(185, 17);
-			this.rbDisplayMinimal.TabIndex = 1;
-			this.rbDisplayMinimal.TabStop = true;
-			this.rbDisplayMinimal.Text = "Minimal - Display HUD Only (TBD)";
-			this.rbDisplayMinimal.UseVisualStyleBackColor = true;
+			this.rbDispFeaturesFull.Name = "rbDispFeaturesFull";
+			this.rbDispFeaturesFull.Text = "Full - Display Everything";
 			// 
-			// rbDisplayFull
+			// rbDispFeaturesMinimal
 			// 
-			this.rbDisplayFull.AutoSize = true;
-			this.rbDisplayFull.Location = new System.Drawing.Point(7, 20);
-			this.rbDisplayFull.Name = "rbDisplayFull";
-			this.rbDisplayFull.Size = new System.Drawing.Size(137, 17);
-			this.rbDisplayFull.TabIndex = 0;
-			this.rbDisplayFull.TabStop = true;
-			this.rbDisplayFull.Text = "Full - Display Everything";
-			this.rbDisplayFull.UseVisualStyleBackColor = true;
+			this.rbDispFeaturesMinimal.Enabled = false;
+			this.rbDispFeaturesMinimal.Name = "rbDispFeaturesMinimal";
+			this.rbDispFeaturesMinimal.Text = "Minimal - Display HUD Only (TBD)";
 			// 
-			// tabPage1
+			// rbDispFeaturesNothing
 			// 
-			this.tabPage1.Controls.Add(this.cbAllowDoubleclickFullscreen);
-			this.tabPage1.Controls.Add(this.groupBox4);
-			this.tabPage1.Controls.Add(this.groupBox2);
-			this.tabPage1.Location = new System.Drawing.Point(4, 22);
-			this.tabPage1.Name = "tabPage1";
-			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(528, 291);
-			this.tabPage1.TabIndex = 4;
-			this.tabPage1.Text = "Window";
-			this.tabPage1.UseVisualStyleBackColor = true;
+			this.rbDispFeaturesNothing.Name = "rbDispFeaturesNothing";
+			this.rbDispFeaturesNothing.Text = "Absolute Zero - Display Nothing";
 			// 
-			// cbAllowDoubleclickFullscreen
+			// tpWindow
 			// 
-			this.cbAllowDoubleclickFullscreen.AutoSize = true;
-			this.cbAllowDoubleclickFullscreen.Location = new System.Drawing.Point(12, 223);
-			this.cbAllowDoubleclickFullscreen.Name = "cbAllowDoubleclickFullscreen";
-			this.cbAllowDoubleclickFullscreen.Size = new System.Drawing.Size(471, 17);
-			this.cbAllowDoubleclickFullscreen.TabIndex = 27;
-			this.cbAllowDoubleclickFullscreen.Text = "Allow Double-Click Fullscreen (hold shift to force fullscreen to toggle in case u" +
-    "sing zapper, etc.)";
-			this.cbAllowDoubleclickFullscreen.UseVisualStyleBackColor = true;
+			this.tpWindow.Controls.Add(this.flpTpWindow);
+			this.tpWindow.Name = "tpWindow";
+			this.tpWindow.Padding = new System.Windows.Forms.Padding(3);
+			this.tpWindow.Text = "Window";
 			// 
-			// groupBox4
+			// flpTpWindow
 			// 
-			this.groupBox4.Controls.Add(this.cbFSAutohideMouse);
-			this.groupBox4.Controls.Add(this.label1);
-			this.groupBox4.Controls.Add(this.cbFullscreenHacks);
-			this.groupBox4.Controls.Add(this.cbStatusBarFullscreen);
-			this.groupBox4.Controls.Add(this.cbMenuFullscreen);
-			this.groupBox4.Location = new System.Drawing.Point(143, 6);
-			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(266, 211);
-			this.groupBox4.TabIndex = 27;
-			this.groupBox4.TabStop = false;
-			this.groupBox4.Text = "Fullscreen";
+			this.flpTpWindow.Controls.Add(this.flpWindowFSGroups);
+			this.flpTpWindow.Controls.Add(this.cbDoubleClickFS);
+			this.flpTpWindow.Name = "flpTpWindow";
+			// 
+			// flpWindowFSGroups
+			// 
+			this.flpWindowFSGroups.Controls.Add(this.grpWindowed);
+			this.flpWindowFSGroups.Controls.Add(this.grpFS);
+			this.flpWindowFSGroups.Name = "flpWindowFSGroups";
+			// 
+			// grpWindowed
+			// 
+			this.grpWindowed.Controls.Add(this.flpWindowed);
+			this.grpWindowed.Name = "grpWindowed";
+			this.grpWindowed.Size = new System.Drawing.Size(121, 168);
+			this.grpWindowed.Text = "Windowed";
+			// 
+			// flpWindowed
+			// 
+			this.flpWindowed.Controls.Add(this.flpWindowedFrameType);
+			this.flpWindowed.Controls.Add(this.tbWindowedFrameType);
+			this.flpWindowed.Controls.Add(this.cbWindowedStatusBar);
+			this.flpWindowed.Controls.Add(this.cbWindowedCaption);
+			this.flpWindowed.Controls.Add(this.cbWindowedMenu);
+			this.flpWindowed.Location = new System.Drawing.Point(6, 15);
+			this.flpWindowed.Name = "flpWindowed";
+			// 
+			// flpWindowedFrameType
+			// 
+			this.flpWindowedFrameType.Controls.Add(this.lblWindowedFrameTypeDesc);
+			this.flpWindowedFrameType.Controls.Add(this.lblWindowedFrameTypeReadout);
+			this.flpWindowedFrameType.Name = "flpWindowedFrameType";
+			// 
+			// lblWindowedFrameTypeDesc
+			// 
+			this.lblWindowedFrameTypeDesc.Name = "lblWindowedFrameTypeDesc";
+			this.lblWindowedFrameTypeDesc.Text = "Frame:";
+			// 
+			// lblWindowedFrameTypeReadout
+			// 
+			this.lblWindowedFrameTypeReadout.Name = "lblWindowedFrameTypeReadout";
+			this.lblWindowedFrameTypeReadout.Text = "(frame type)";
+			// 
+			// tbWindowedFrameType
+			// 
+			this.tbWindowedFrameType.LargeChange = 1;
+			this.tbWindowedFrameType.Location = new System.Drawing.Point(3, 27);
+			this.tbWindowedFrameType.Maximum = 2;
+			this.tbWindowedFrameType.Name = "tbWindowedFrameType";
+			this.tbWindowedFrameType.Size = new System.Drawing.Size(99, 45);
+			this.tbWindowedFrameType.TabIndex = 21;
+			this.tbWindowedFrameType.Value = 1;
+			this.tbWindowedFrameType.ValueChanged += new System.EventHandler(this.tbWidowedFrameType_ValueChanged);
+			// 
+			// cbWindowedStatusBar
+			// 
+			this.cbWindowedStatusBar.Name = "cbWindowedStatusBar";
+			this.cbWindowedStatusBar.Text = "Status Bar";
+			// 
+			// cbWindowedCaption
+			// 
+			this.cbWindowedCaption.Name = "cbWindowedCaption";
+			this.cbWindowedCaption.Text = "Caption";
+			// 
+			// cbWindowedMenu
+			// 
+			this.cbWindowedMenu.Name = "cbWindowedMenu";
+			this.cbWindowedMenu.Text = "Menu";
+			// 
+			// grpFS
+			// 
+			this.grpFS.Controls.Add(this.flpGrpFS);
+			this.grpFS.Name = "grpFS";
+			this.grpFS.Size = new System.Drawing.Size(344, 168);
+			this.grpFS.Text = "Fullscreen";
+			// 
+			// flpGrpFS
+			// 
+			this.flpGrpFS.Controls.Add(this.flpFSCheckBoxes);
+			this.flpGrpFS.Controls.Add(this.lblFSWinHacks);
+			this.flpGrpFS.Location = new System.Drawing.Point(6, 15);
+			this.flpGrpFS.Name = "flpGrpFS";
+			// 
+			// flpFSCheckBoxes
+			// 
+			this.flpFSCheckBoxes.Controls.Add(this.cbFSStatusBar);
+			this.flpFSCheckBoxes.Controls.Add(this.cbFSAutohideMouse);
+			this.flpFSCheckBoxes.Controls.Add(this.cbFSMenu);
+			this.flpFSCheckBoxes.Controls.Add(this.cbFSWinHacks);
+			this.flpFSCheckBoxes.MinimumSize = new System.Drawing.Size(24, 24);
+			this.flpFSCheckBoxes.Name = "flpFSCheckBoxes";
+			this.flpFSCheckBoxes.Size = new System.Drawing.Size(228, 72);
+			// 
+			// cbFSStatusBar
+			// 
+			this.cbFSStatusBar.Name = "cbFSStatusBar";
+			this.cbFSStatusBar.Text = "Status Bar";
 			// 
 			// cbFSAutohideMouse
 			// 
-			this.cbFSAutohideMouse.AutoSize = true;
-			this.cbFSAutohideMouse.Location = new System.Drawing.Point(87, 19);
 			this.cbFSAutohideMouse.Name = "cbFSAutohideMouse";
-			this.cbFSAutohideMouse.Size = new System.Drawing.Size(141, 17);
-			this.cbFSAutohideMouse.TabIndex = 28;
 			this.cbFSAutohideMouse.Text = "Auto-Hide Mouse Cursor";
-			this.cbFSAutohideMouse.UseVisualStyleBackColor = true;
 			// 
-			// label1
+			// cbFSMenu
 			// 
-			this.label1.Location = new System.Drawing.Point(7, 88);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(240, 115);
-			this.label1.TabIndex = 27;
-			this.label1.Text = resources.GetString("label1.Text");
+			this.cbFSMenu.Name = "cbFSMenu";
+			this.cbFSMenu.Text = "Menu";
 			// 
-			// cbFullscreenHacks
+			// cbFSWinHacks
 			// 
-			this.cbFullscreenHacks.AutoSize = true;
-			this.cbFullscreenHacks.Location = new System.Drawing.Point(6, 65);
-			this.cbFullscreenHacks.Name = "cbFullscreenHacks";
-			this.cbFullscreenHacks.Size = new System.Drawing.Size(191, 17);
-			this.cbFullscreenHacks.TabIndex = 26;
-			this.cbFullscreenHacks.Text = "Enable Windows Fullscreen Hacks";
-			this.cbFullscreenHacks.UseVisualStyleBackColor = true;
+			this.cbFSWinHacks.Name = "cbFSWinHacks";
+			this.cbFSWinHacks.Text = "Enable Windows Fullscreen Hacks";
 			// 
-			// cbStatusBarFullscreen
+			// lblFSWinHacks
 			// 
-			this.cbStatusBarFullscreen.AutoSize = true;
-			this.cbStatusBarFullscreen.Location = new System.Drawing.Point(6, 19);
-			this.cbStatusBarFullscreen.Name = "cbStatusBarFullscreen";
-			this.cbStatusBarFullscreen.Size = new System.Drawing.Size(75, 17);
-			this.cbStatusBarFullscreen.TabIndex = 23;
-			this.cbStatusBarFullscreen.Text = "Status Bar";
-			this.cbStatusBarFullscreen.UseVisualStyleBackColor = true;
+			this.lblFSWinHacks.Name = "lblFSWinHacks";
+			this.lblFSWinHacks.Size = new System.Drawing.Size(329, 80);
+			this.lblFSWinHacks.Text = resources.GetString("lblFSWinHacks.Text");
 			// 
-			// cbMenuFullscreen
+			// cbDoubleClickFS
 			// 
-			this.cbMenuFullscreen.AutoSize = true;
-			this.cbMenuFullscreen.Location = new System.Drawing.Point(6, 42);
-			this.cbMenuFullscreen.Name = "cbMenuFullscreen";
-			this.cbMenuFullscreen.Size = new System.Drawing.Size(53, 17);
-			this.cbMenuFullscreen.TabIndex = 25;
-			this.cbMenuFullscreen.Text = "Menu";
-			this.cbMenuFullscreen.UseVisualStyleBackColor = true;
+			this.cbDoubleClickFS.Name = "cbDoubleClickFS";
+			this.cbDoubleClickFS.Text = "Allow Double-Click Fullscreen (hold shift to force fullscreen to toggle in case u" +
+    "sing zapper, etc.)";
 			// 
-			// groupBox2
+			// lnkDocs
 			// 
-			this.groupBox2.Controls.Add(this.lblFrameTypeWindowed);
-			this.groupBox2.Controls.Add(this.cbStatusBarWindowed);
-			this.groupBox2.Controls.Add(this.label9);
-			this.groupBox2.Controls.Add(this.cbMenuWindowed);
-			this.groupBox2.Controls.Add(this.trackbarFrameSizeWindowed);
-			this.groupBox2.Controls.Add(this.cbCaptionWindowed);
-			this.groupBox2.Location = new System.Drawing.Point(6, 6);
-			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(131, 211);
-			this.groupBox2.TabIndex = 26;
-			this.groupBox2.TabStop = false;
-			this.groupBox2.Text = "Windowed";
+			this.lnkDocs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.lnkDocs.Location = new System.Drawing.Point(11, 359);
+			this.lnkDocs.Name = "lnkDocs";
+			this.lnkDocs.Text = "Documentation";
+			this.lnkDocs.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkDocs_LinkClicked);
 			// 
-			// lblFrameTypeWindowed
+			// flpDialogButtons
 			// 
-			this.lblFrameTypeWindowed.AutoSize = true;
-			this.lblFrameTypeWindowed.Location = new System.Drawing.Point(51, 17);
-			this.lblFrameTypeWindowed.Name = "lblFrameTypeWindowed";
-			this.lblFrameTypeWindowed.Size = new System.Drawing.Size(62, 13);
-			this.lblFrameTypeWindowed.TabIndex = 26;
-			this.lblFrameTypeWindowed.Text = "(frame type)";
+			this.flpDialogButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.flpDialogButtons.Controls.Add(this.btnDialogOK);
+			this.flpDialogButtons.Controls.Add(this.btnDialogCancel);
+			this.flpDialogButtons.Location = new System.Drawing.Point(362, 351);
+			this.flpDialogButtons.Name = "flpDialogButtons";
+			this.flpDialogButtons.Size = new System.Drawing.Size(162, 29);
 			// 
-			// cbStatusBarWindowed
+			// DisplayConfig
 			// 
-			this.cbStatusBarWindowed.AutoSize = true;
-			this.cbStatusBarWindowed.Location = new System.Drawing.Point(9, 81);
-			this.cbStatusBarWindowed.Name = "cbStatusBarWindowed";
-			this.cbStatusBarWindowed.Size = new System.Drawing.Size(75, 17);
-			this.cbStatusBarWindowed.TabIndex = 23;
-			this.cbStatusBarWindowed.Text = "Status Bar";
-			this.cbStatusBarWindowed.UseVisualStyleBackColor = true;
-			// 
-			// label9
-			// 
-			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(6, 17);
-			this.label9.Name = "label9";
-			this.label9.Size = new System.Drawing.Size(39, 13);
-			this.label9.TabIndex = 22;
-			this.label9.Text = "Frame:";
-			// 
-			// cbMenuWindowed
-			// 
-			this.cbMenuWindowed.AutoSize = true;
-			this.cbMenuWindowed.Location = new System.Drawing.Point(9, 127);
-			this.cbMenuWindowed.Name = "cbMenuWindowed";
-			this.cbMenuWindowed.Size = new System.Drawing.Size(53, 17);
-			this.cbMenuWindowed.TabIndex = 25;
-			this.cbMenuWindowed.Text = "Menu";
-			this.cbMenuWindowed.UseVisualStyleBackColor = true;
-			// 
-			// trackbarFrameSizeWindowed
-			// 
-			this.trackbarFrameSizeWindowed.LargeChange = 1;
-			this.trackbarFrameSizeWindowed.Location = new System.Drawing.Point(6, 33);
-			this.trackbarFrameSizeWindowed.Maximum = 2;
-			this.trackbarFrameSizeWindowed.Name = "trackbarFrameSizeWindowed";
-			this.trackbarFrameSizeWindowed.Size = new System.Drawing.Size(99, 42);
-			this.trackbarFrameSizeWindowed.TabIndex = 21;
-			this.trackbarFrameSizeWindowed.Value = 1;
-			this.trackbarFrameSizeWindowed.ValueChanged += new System.EventHandler(this.TrackBarFrameSizeWindowed_ValueChanged);
-			// 
-			// cbCaptionWindowed
-			// 
-			this.cbCaptionWindowed.AutoSize = true;
-			this.cbCaptionWindowed.Location = new System.Drawing.Point(9, 104);
-			this.cbCaptionWindowed.Name = "cbCaptionWindowed";
-			this.cbCaptionWindowed.Size = new System.Drawing.Size(62, 17);
-			this.cbCaptionWindowed.TabIndex = 24;
-			this.cbCaptionWindowed.Text = "Caption";
-			this.cbCaptionWindowed.UseVisualStyleBackColor = true;
-			// 
-			// linkLabel1
-			// 
-			this.linkLabel1.AutoSize = true;
-			this.linkLabel1.Location = new System.Drawing.Point(12, 404);
-			this.linkLabel1.Name = "linkLabel1";
-			this.linkLabel1.Size = new System.Drawing.Size(79, 13);
-			this.linkLabel1.TabIndex = 18;
-			this.linkLabel1.TabStop = true;
-			this.linkLabel1.Text = "Documentation";
-			this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
-			// 
-			// DisplayConfigLite
-			// 
-			this.AcceptButton = this.btnOk;
+			this.AcceptButton = this.btnDialogOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(564, 374);
-			this.Controls.Add(this.linkLabel1);
-			this.Controls.Add(this.tabControl1);
-			this.Controls.Add(this.btnCancel);
-			this.Controls.Add(this.btnOk);
+			this.CancelButton = this.btnDialogCancel;
+			this.ClientSize = new System.Drawing.Size(530, 385);
+			this.Controls.Add(this.flpDialogButtons);
+			this.Controls.Add(this.lnkDocs);
+			this.Controls.Add(this.tcDialog);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Name = "DisplayConfig";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Display Configuration";
-			this.groupBox1.ResumeLayout(false);
-			this.groupBox1.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).EndInit();
+			this.tcDialog.ResumeLayout(false);
+			this.tpScaling.ResumeLayout(false);
+			this.flpTpScaling.ResumeLayout(false);
+			this.flpTpScaling.PerformLayout();
+			this.flpUserPrescale.ResumeLayout(false);
+			this.flpUserPrescale.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudUserPrescale)).EndInit();
+			this.grpFilter.ResumeLayout(false);
+			this.tlpGrpFilter.ResumeLayout(false);
+			this.tlpGrpFilter.PerformLayout();
+			this.flpFilterUser.ResumeLayout(false);
+			this.flpFilterUser.PerformLayout();
+			this.flpFilterScanlineAlpha.ResumeLayout(false);
+			this.flpFilterScanlineAlpha.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.tbFilterScanlineAlpha)).EndInit();
 			this.grpFinalFilter.ResumeLayout(false);
 			this.grpFinalFilter.PerformLayout();
-			this.grpARSelection.ResumeLayout(false);
-			this.grpARSelection.PerformLayout();
-			this.tabControl1.ResumeLayout(false);
-			this.tpAR.ResumeLayout(false);
-			this.tpAR.PerformLayout();
-			this.groupBox6.ResumeLayout(false);
-			this.groupBox6.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.nudPrescale)).EndInit();
+			this.flpGrpFinalFilter.ResumeLayout(false);
+			this.flpGrpFinalFilter.PerformLayout();
+			this.grpAspectRatio.ResumeLayout(false);
+			this.grpAspectRatio.PerformLayout();
+			this.flpGrpAspectRatio.ResumeLayout(false);
+			this.flpGrpAspectRatio.PerformLayout();
+			this.flpCustomSize.ResumeLayout(false);
+			this.flpCustomSize.PerformLayout();
+			this.flpCustomAR.ResumeLayout(false);
+			this.flpCustomAR.PerformLayout();
+			this.grpCrop.ResumeLayout(false);
+			this.grpCrop.PerformLayout();
+			this.flpGrpCrop.ResumeLayout(false);
+			this.flpGrpCrop.PerformLayout();
 			this.tpDispMethod.ResumeLayout(false);
-			this.groupBox3.ResumeLayout(false);
-			this.groupBox3.PerformLayout();
+			this.tpDispMethod.PerformLayout();
+			this.flpTpDispMethod.ResumeLayout(false);
+			this.flpTpDispMethod.PerformLayout();
+			this.grpDispMethod.ResumeLayout(false);
+			this.grpDispMethod.PerformLayout();
+			this.flpGrpDispMethod.ResumeLayout(false);
+			this.flpGrpDispMethod.PerformLayout();
+			this.flpD3DSection.ResumeLayout(false);
+			this.flpD3DSection.PerformLayout();
+			this.flpD3DAltVSync.ResumeLayout(false);
+			this.flpD3DAltVSync.PerformLayout();
 			this.tpMisc.ResumeLayout(false);
-			this.tpMisc.PerformLayout();
-			this.groupBox5.ResumeLayout(false);
-			this.groupBox5.PerformLayout();
-			this.tabPage1.ResumeLayout(false);
-			this.tabPage1.PerformLayout();
-			this.groupBox4.ResumeLayout(false);
-			this.groupBox4.PerformLayout();
-			this.groupBox2.ResumeLayout(false);
-			this.groupBox2.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.trackbarFrameSizeWindowed)).EndInit();
+			this.grpDispFeatures.ResumeLayout(false);
+			this.grpDispFeatures.PerformLayout();
+			this.flpGrpDispFeatures.ResumeLayout(false);
+			this.flpGrpDispFeatures.PerformLayout();
+			this.tpWindow.ResumeLayout(false);
+			this.tpWindow.PerformLayout();
+			this.flpTpWindow.ResumeLayout(false);
+			this.flpTpWindow.PerformLayout();
+			this.flpWindowFSGroups.ResumeLayout(false);
+			this.grpWindowed.ResumeLayout(false);
+			this.grpWindowed.PerformLayout();
+			this.flpWindowed.ResumeLayout(false);
+			this.flpWindowed.PerformLayout();
+			this.flpWindowedFrameType.ResumeLayout(false);
+			this.flpWindowedFrameType.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.tbWindowedFrameType)).EndInit();
+			this.grpFS.ResumeLayout(false);
+			this.grpFS.PerformLayout();
+			this.flpGrpFS.ResumeLayout(false);
+			this.flpFSCheckBoxes.ResumeLayout(false);
+			this.flpFSCheckBoxes.PerformLayout();
+			this.flpDialogButtons.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -1012,83 +940,105 @@
 
 		#endregion
 
-		private System.Windows.Forms.Button btnCancel;
-		private System.Windows.Forms.Button btnOk;
-		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.RadioButton rbNone;
-		private System.Windows.Forms.RadioButton rbScanlines;
-		private System.Windows.Forms.RadioButton rbHq2x;
-		private BizHawk.Client.EmuHawk.TransparentTrackBar tbScanlineIntensity;
-		private System.Windows.Forms.CheckBox checkLetterbox;
-		private System.Windows.Forms.CheckBox checkPadInteger;
-		private System.Windows.Forms.GroupBox grpFinalFilter;
-		private System.Windows.Forms.RadioButton rbFinalFilterBicubic;
-		private System.Windows.Forms.RadioButton rbFinalFilterNone;
-		private System.Windows.Forms.RadioButton rbFinalFilterBilinear;
-		private System.Windows.Forms.Button btnSelectUserFilter;
-		private System.Windows.Forms.RadioButton rbUser;
-		private System.Windows.Forms.Label lblUserFilterName;
-		private System.Windows.Forms.RadioButton rbUseRaw;
-		private System.Windows.Forms.RadioButton rbUseSystem;
-		private System.Windows.Forms.GroupBox grpARSelection;
-		private System.Windows.Forms.Label lblScanlines;
-		private System.Windows.Forms.TextBox txtCustomARHeight;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.TextBox txtCustomARWidth;
-		private System.Windows.Forms.RadioButton rbUseCustom;
-		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.RadioButton rbOpenGL;
-		private System.Windows.Forms.Label label5;
-		private System.Windows.Forms.TabControl tabControl1;
-		private System.Windows.Forms.TabPage tpAR;
-		private System.Windows.Forms.TabPage tpDispMethod;
-		private System.Windows.Forms.Label label6;
-		private System.Windows.Forms.GroupBox groupBox3;
-		private System.Windows.Forms.Label label7;
-		private System.Windows.Forms.RadioButton rbGDIPlus;
-		private System.Windows.Forms.TabPage tpMisc;
-		private System.Windows.Forms.Label label8;
-		private System.Windows.Forms.RadioButton rbD3D9;
-		private System.Windows.Forms.TabPage tabPage1;
-		private System.Windows.Forms.CheckBox cbStatusBarWindowed;
-		private System.Windows.Forms.Label label9;
-		private BizHawk.Client.EmuHawk.TransparentTrackBar trackbarFrameSizeWindowed;
-		private System.Windows.Forms.CheckBox cbMenuWindowed;
-		private System.Windows.Forms.CheckBox cbCaptionWindowed;
-		private System.Windows.Forms.GroupBox groupBox4;
-		private System.Windows.Forms.CheckBox cbStatusBarFullscreen;
-		private System.Windows.Forms.CheckBox cbMenuFullscreen;
-		private System.Windows.Forms.GroupBox groupBox2;
-		private System.Windows.Forms.Label lblFrameTypeWindowed;
-		private System.Windows.Forms.Label label11;
-		private System.Windows.Forms.Label label10;
-		private System.Windows.Forms.NumericUpDown nudPrescale;
-		private System.Windows.Forms.CheckBox cbFSAutohideMouse;
-		private System.Windows.Forms.GroupBox groupBox5;
-		private System.Windows.Forms.RadioButton rbDisplayAbsoluteZero;
-		private System.Windows.Forms.RadioButton rbDisplayMinimal;
-		private System.Windows.Forms.RadioButton rbDisplayFull;
-		private System.Windows.Forms.CheckBox cbAllowDoubleclickFullscreen;
-		private System.Windows.Forms.LinkLabel linkLabel1;
-		private System.Windows.Forms.RadioButton rbUseCustomRatio;
-		private System.Windows.Forms.TextBox txtCustomARY;
-		private System.Windows.Forms.Label label12;
-		private System.Windows.Forms.TextBox txtCustomARX;
-		private System.Windows.Forms.CheckBox cbAutoPrescale;
-		private System.Windows.Forms.Label label13;
-		private System.Windows.Forms.CheckBox cbAlternateVsync;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.CheckBox cbFullscreenHacks;
-		private System.Windows.Forms.Button btnDefaults;
+		private BizHawk.WinForms.Controls.SzButtonEx btnDialogCancel;
+		private BizHawk.WinForms.Controls.SzButtonEx btnDialogOK;
+		private BizHawk.WinForms.Controls.RadioButtonEx rbDispMethodOpenGL;
+		private BizHawk.WinForms.Controls.LocLabelEx lblDispMethodOpenGL;
+		private System.Windows.Forms.TabControl tcDialog;
+		private BizHawk.WinForms.Controls.TabPageEx tpScaling;
+		private BizHawk.WinForms.Controls.TabPageEx tpDispMethod;
+		private BizHawk.WinForms.Controls.LabelEx lblDispMethodRestartWarning;
+		private BizHawk.WinForms.Controls.SzGroupBoxEx grpDispMethod;
+		private BizHawk.WinForms.Controls.LocLabelEx lblDispMethodGDIPlus;
+		private BizHawk.WinForms.Controls.RadioButtonEx rbDispMethodGDIPlus;
+		private BizHawk.WinForms.Controls.TabPageEx tpMisc;
+		private BizHawk.WinForms.Controls.TabPageEx tpWindow;
+		private BizHawk.WinForms.Controls.CheckBoxEx cbWindowedStatusBar;
+		private BizHawk.WinForms.Controls.LabelEx lblWindowedFrameTypeDesc;
+		private BizHawk.Client.EmuHawk.TransparentTrackBar tbWindowedFrameType;
+		private BizHawk.WinForms.Controls.CheckBoxEx cbWindowedMenu;
+		private BizHawk.WinForms.Controls.CheckBoxEx cbWindowedCaption;
+		private BizHawk.WinForms.Controls.SzGroupBoxEx grpFS;
+		private BizHawk.WinForms.Controls.SzGroupBoxEx grpWindowed;
+		private BizHawk.WinForms.Controls.LabelEx lblWindowedFrameTypeReadout;
+		private BizHawk.WinForms.Controls.SzGroupBoxEx grpDispFeatures;
+		private BizHawk.WinForms.Controls.RadioButtonEx rbDispFeaturesNothing;
+		private BizHawk.WinForms.Controls.RadioButtonEx rbDispFeaturesMinimal;
+		private BizHawk.WinForms.Controls.RadioButtonEx rbDispFeaturesFull;
+		private BizHawk.WinForms.Controls.CheckBoxEx cbDoubleClickFS;
+		private BizHawk.WinForms.Controls.LocLinkLabelEx lnkDocs;
 		private System.Windows.Forms.ToolTip toolTip1;
-		private System.Windows.Forms.GroupBox groupBox6;
-		private System.Windows.Forms.Label label16;
-		private System.Windows.Forms.Label label15;
-		private System.Windows.Forms.TextBox txtCropBottom;
-		private System.Windows.Forms.Label label17;
-		private System.Windows.Forms.TextBox txtCropRight;
-		private System.Windows.Forms.TextBox txtCropTop;
-		private System.Windows.Forms.Label label14;
-		private System.Windows.Forms.TextBox txtCropLeft;
+		private BizHawk.WinForms.Controls.LocSingleColumnFLP flpGrpDispFeatures;
+		private BizHawk.WinForms.Controls.LocSingleColumnFLP flpWindowed;
+		private BizHawk.WinForms.Controls.SingleRowFLP flpWindowedFrameType;
+		private BizHawk.WinForms.Controls.SingleColumnFLP flpTpWindow;
+		private BizHawk.WinForms.Controls.SingleRowFLP flpWindowFSGroups;
+		private BizHawk.WinForms.Controls.LocSzSingleRowFLP flpDialogButtons;
+		private BizHawk.WinForms.Controls.LocSingleColumnFLP flpGrpFS;
+		private BizHawk.WinForms.Controls.SingleColumnFLP flpTpDispMethod;
+		private BizHawk.WinForms.Controls.LocSingleColumnFLP flpGrpDispMethod;
+		private BizHawk.WinForms.Controls.SzColumnsToRightFLP flpTpScaling;
+		private BizHawk.WinForms.Controls.SingleRowFLP flpUserPrescale;
+		private BizHawk.WinForms.Controls.LabelEx lblUserPrescale;
+		private BizHawk.WinForms.Controls.SzNUDEx nudUserPrescale;
+		private BizHawk.WinForms.Controls.LabelEx lblUserPrescaleUnits;
+		private BizHawk.WinForms.Controls.SzGroupBoxEx grpFilter;
+		private System.Windows.Forms.TableLayoutPanel tlpGrpFilter;
+		private BizHawk.WinForms.Controls.RadioButtonEx rbFilterNone;
+		private BizHawk.WinForms.Controls.RadioButtonEx rbFilterUser;
+		private BizHawk.WinForms.Controls.RadioButtonEx rbFilterHq2x;
+		private BizHawk.WinForms.Controls.RadioButtonEx rbFilterScanline;
+		private BizHawk.WinForms.Controls.SingleColumnFLP flpFilterUser;
+		private BizHawk.WinForms.Controls.SzButtonEx btnFilterUser;
+		private BizHawk.WinForms.Controls.LabelEx lblFilterUser;
+		private BizHawk.WinForms.Controls.SingleColumnFLP flpFilterScanlineAlpha;
+		private BizHawk.WinForms.Controls.LabelEx lblFilterScanlineAlpha;
+		private TransparentTrackBar tbFilterScanlineAlpha;
+		private BizHawk.WinForms.Controls.CheckBoxEx cbAutoPrescale;
+		private BizHawk.WinForms.Controls.SzGroupBoxEx grpFinalFilter;
+		private BizHawk.WinForms.Controls.LocSingleColumnFLP flpGrpFinalFilter;
+		private BizHawk.WinForms.Controls.RadioButtonEx rbFinalFilterNone;
+		private BizHawk.WinForms.Controls.RadioButtonEx rbFinalFilterBilinear;
+		private BizHawk.WinForms.Controls.RadioButtonEx rbFinalFilterBicubic;
+		private BizHawk.WinForms.Controls.CheckBoxEx cbLetterbox;
+		private BizHawk.WinForms.Controls.SzGroupBoxEx grpAspectRatio;
+		private BizHawk.WinForms.Controls.LocSingleColumnFLP flpGrpAspectRatio;
+		private BizHawk.WinForms.Controls.RadioButtonEx rbARSquare;
+		private BizHawk.WinForms.Controls.LabelEx lblAspectRatioNonSquare;
+		private BizHawk.WinForms.Controls.RadioButtonEx rbARBySystem;
+		private BizHawk.WinForms.Controls.SingleRowFLP flpCustomSize;
+		private BizHawk.WinForms.Controls.RadioButtonEx rbARCustomSize;
+		private BizHawk.WinForms.Controls.SzTextBoxEx txtARCustomWidth;
+		private BizHawk.WinForms.Controls.LabelEx lblARCustomSizeSeparator;
+		private BizHawk.WinForms.Controls.SzTextBoxEx txtARCustomHeight;
+		private BizHawk.WinForms.Controls.SingleRowFLP flpCustomAR;
+		private BizHawk.WinForms.Controls.RadioButtonEx rbARCustomRatio;
+		private BizHawk.WinForms.Controls.SzTextBoxEx txtARCustomRatioH;
+		private BizHawk.WinForms.Controls.LabelEx lblARCustomRatioSeparator;
+		private BizHawk.WinForms.Controls.SzTextBoxEx txtARCustomRatioV;
+		private BizHawk.WinForms.Controls.CheckBoxEx cbScaleByInteger;
+		private BizHawk.WinForms.Controls.SzGroupBoxEx grpCrop;
+		private BizHawk.WinForms.Controls.LocSingleRowFLP flpGrpCrop;
+		private BizHawk.WinForms.Controls.LabelEx lblCropLeft;
+		private BizHawk.WinForms.Controls.SzTextBoxEx txtCropLeft;
+		private BizHawk.WinForms.Controls.LabelEx lblCropTop;
+		private BizHawk.WinForms.Controls.SzTextBoxEx txtCropTop;
+		private BizHawk.WinForms.Controls.LabelEx lblCropRight;
+		private BizHawk.WinForms.Controls.SzTextBoxEx txtCropRight;
+		private BizHawk.WinForms.Controls.LabelEx lblCropBottom;
+		private BizHawk.WinForms.Controls.SzTextBoxEx txtCropBottom;
+		private BizHawk.WinForms.Controls.LocSzButtonEx btnDefaults;
+		private BizHawk.WinForms.Controls.SzRowsToBottomFLP flpFSCheckBoxes;
+		private BizHawk.WinForms.Controls.CheckBoxEx cbFSStatusBar;
+		private BizHawk.WinForms.Controls.CheckBoxEx cbFSAutohideMouse;
+		private BizHawk.WinForms.Controls.CheckBoxEx cbFSMenu;
+		private BizHawk.WinForms.Controls.CheckBoxEx cbFSWinHacks;
+		private BizHawk.WinForms.Controls.SzLabelEx lblFSWinHacks;
+		private BizHawk.WinForms.Controls.SingleColumnFLP flpD3DSection;
+		private BizHawk.WinForms.Controls.RadioButtonEx rbDispMethodD3D;
+		private BizHawk.WinForms.Controls.LocLabelEx lblDispMethodD3D;
+		private BizHawk.WinForms.Controls.SingleRowFLP flpD3DAltVSync;
+		private BizHawk.WinForms.Controls.CheckBoxEx cbD3DAltVSync;
+		private BizHawk.WinForms.Controls.SzLabelEx lblD3DAltVSync;
 	}
 }
