@@ -11,16 +11,6 @@ namespace BizHawk.Client.Common.RamSearchEngine
 {
 	public class RamSearchEngine
 	{
-		public enum ComparisonOperator
-		{
-			Equal, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, NotEqual, DifferentBy
-		}
-
-		public enum Compare
-		{
-			Previous, SpecificValue, SpecificAddress, Changes, Difference
-		}
-
 		private Compare _compareTo = Compare.Previous;
 
 		private List<IMiniWatch> _watchList = new List<IMiniWatch>();

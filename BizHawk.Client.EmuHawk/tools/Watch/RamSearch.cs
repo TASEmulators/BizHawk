@@ -480,69 +480,69 @@ namespace BizHawk.Client.EmuHawk
 
 		private int? DifferentByValue => DifferentByRadio.Checked ? DifferentByBox.ToRawInt() : null;
 
-		private RamSearchEngine.ComparisonOperator Operator
+		private ComparisonOperator Operator
 		{
 			get
 			{
 				if (NotEqualToRadio.Checked)
 				{
-					return RamSearchEngine.ComparisonOperator.NotEqual;
+					return ComparisonOperator.NotEqual;
 				}
 
 				if (LessThanRadio.Checked)
 				{
-					return RamSearchEngine.ComparisonOperator.LessThan;
+					return ComparisonOperator.LessThan;
 				}
 
 				if (GreaterThanRadio.Checked)
 				{
-					return RamSearchEngine.ComparisonOperator.GreaterThan;
+					return ComparisonOperator.GreaterThan;
 				}
 
 				if (LessThanOrEqualToRadio.Checked)
 				{
-					return RamSearchEngine.ComparisonOperator.LessThanEqual;
+					return ComparisonOperator.LessThanEqual;
 				}
 
 				if (GreaterThanOrEqualToRadio.Checked)
 				{
-					return RamSearchEngine.ComparisonOperator.GreaterThanEqual;
+					return ComparisonOperator.GreaterThanEqual;
 				}
 
 				if (DifferentByRadio.Checked)
 				{
-					return RamSearchEngine.ComparisonOperator.DifferentBy;
+					return ComparisonOperator.DifferentBy;
 				}
 
-				return RamSearchEngine.ComparisonOperator.Equal;
+				return ComparisonOperator.Equal;
 			}
 		}
 
-		private RamSearchEngine.Compare Compare
+		private Compare Compare
 		{
 			get
 			{
 				if (SpecificValueRadio.Checked)
 				{
-					return RamSearchEngine.Compare.SpecificValue;
+					return Compare.SpecificValue;
 				}
 
 				if (SpecificAddressRadio.Checked)
 				{
-					return RamSearchEngine.Compare.SpecificAddress;
+					return Compare.SpecificAddress;
 				}
 
 				if (NumberOfChangesRadio.Checked)
 				{
-					return RamSearchEngine.Compare.Changes;
+					return Compare.Changes;
 				}
 
 				if (DifferenceRadio.Checked)
 				{
-					return RamSearchEngine.Compare.Difference;
+					return Compare.Difference;
 				}
 
-				return RamSearchEngine.Compare.Previous;
+				return Compare.Previous;
 			}
 		}
 
@@ -741,13 +741,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SetComparisonOperator(RamSearchEngine.ComparisonOperator op)
+		private void SetComparisonOperator(ComparisonOperator op)
 		{
 			_searches.Operator = op;
 			WatchListView.Refresh();
 		}
 
-		private void SetCompareTo(RamSearchEngine.Compare comp)
+		private void SetCompareTo(Compare comp)
 		{
 			_searches.CompareTo = comp;
 			WatchListView.Refresh();
@@ -1558,7 +1558,7 @@ namespace BizHawk.Client.EmuHawk
 			SpecificAddressBox.Enabled = false;
 			NumberOfChangesBox.Enabled = false;
 			DifferenceBox.Enabled = false;
-			SetCompareTo(RamSearchEngine.Compare.Previous);
+			SetCompareTo(Compare.Previous);
 		}
 
 		private void SpecificValueRadio_Click(object sender, EventArgs e)
@@ -1579,7 +1579,7 @@ namespace BizHawk.Client.EmuHawk
 			SpecificAddressBox.Enabled = false;
 			NumberOfChangesBox.Enabled = false;
 			DifferenceBox.Enabled = false;
-			SetCompareTo(RamSearchEngine.Compare.SpecificValue);
+			SetCompareTo(Compare.SpecificValue);
 		}
 
 		private void SpecificAddressRadio_Click(object sender, EventArgs e)
@@ -1600,7 +1600,7 @@ namespace BizHawk.Client.EmuHawk
 
 			NumberOfChangesBox.Enabled = false;
 			DifferenceBox.Enabled = false;
-			SetCompareTo(RamSearchEngine.Compare.SpecificAddress);
+			SetCompareTo(Compare.SpecificAddress);
 		}
 
 		private void NumberOfChangesRadio_Click(object sender, EventArgs e)
@@ -1621,7 +1621,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			DifferenceBox.Enabled = false;
-			SetCompareTo(RamSearchEngine.Compare.Changes);
+			SetCompareTo(Compare.Changes);
 		}
 
 		private void DifferenceRadio_Click(object sender, EventArgs e)
@@ -1642,7 +1642,7 @@ namespace BizHawk.Client.EmuHawk
 				DifferenceBox.Focus();
 			}
 
-			SetCompareTo(RamSearchEngine.Compare.Difference);
+			SetCompareTo(Compare.Difference);
 		}
 
 		private void CompareToValue_TextChanged(object sender, EventArgs e)
@@ -1657,37 +1657,37 @@ namespace BizHawk.Client.EmuHawk
 		private void EqualToRadio_Click(object sender, EventArgs e)
 		{
 			DifferentByBox.Enabled = false;
-			SetComparisonOperator(RamSearchEngine.ComparisonOperator.Equal);
+			SetComparisonOperator(ComparisonOperator.Equal);
 		}
 
 		private void NotEqualToRadio_Click(object sender, EventArgs e)
 		{
 			DifferentByBox.Enabled = false;
-			SetComparisonOperator(RamSearchEngine.ComparisonOperator.NotEqual);
+			SetComparisonOperator(ComparisonOperator.NotEqual);
 		}
 
 		private void LessThanRadio_Click(object sender, EventArgs e)
 		{
 			DifferentByBox.Enabled = false;
-			SetComparisonOperator(RamSearchEngine.ComparisonOperator.LessThan);
+			SetComparisonOperator(ComparisonOperator.LessThan);
 		}
 
 		private void GreaterThanRadio_Click(object sender, EventArgs e)
 		{
 			DifferentByBox.Enabled = false;
-			SetComparisonOperator(RamSearchEngine.ComparisonOperator.GreaterThan);
+			SetComparisonOperator(ComparisonOperator.GreaterThan);
 		}
 
 		private void LessThanOrEqualToRadio_Click(object sender, EventArgs e)
 		{
 			DifferentByBox.Enabled = false;
-			SetComparisonOperator(RamSearchEngine.ComparisonOperator.LessThanEqual);
+			SetComparisonOperator(ComparisonOperator.LessThanEqual);
 		}
 
 		private void GreaterThanOrEqualToRadio_Click(object sender, EventArgs e)
 		{
 			DifferentByBox.Enabled = false;
-			SetComparisonOperator(RamSearchEngine.ComparisonOperator.GreaterThanEqual);
+			SetComparisonOperator(ComparisonOperator.GreaterThanEqual);
 		}
 
 		private void DifferentByRadio_Click(object sender, EventArgs e)
@@ -1706,7 +1706,7 @@ namespace BizHawk.Client.EmuHawk
 				DifferentByBox.Focus();
 			}
 
-			SetComparisonOperator(RamSearchEngine.ComparisonOperator.DifferentBy);
+			SetComparisonOperator(ComparisonOperator.DifferentBy);
 		}
 
 		private void DifferentByBox_TextChanged(object sender, EventArgs e)
