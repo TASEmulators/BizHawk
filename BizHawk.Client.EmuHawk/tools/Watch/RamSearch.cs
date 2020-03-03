@@ -71,10 +71,7 @@ namespace BizHawk.Client.EmuHawk
 		[ConfigPersist]
 		public RamSearchSettings Settings { get; set; }
 
-		public bool AskSaveChanges()
-		{
-			return true;
-		}
+		public bool AskSaveChanges() => true;
 
 		public bool UpdateBefore => false;
 
@@ -150,7 +147,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_dropdownDontfire = false;
 
-			if (_settings.Mode == SearchMode.Fast)
+			if (_settings.IsFastMode())
 			{
 				SetToFastMode();
 			}
@@ -606,7 +603,7 @@ namespace BizHawk.Client.EmuHawk
 		private void DoDomainSizeCheck()
 		{
 			if (_settings.Domain.Size >= MaxDetailedSize
-				&& _settings.Mode == SearchMode.Detailed)
+				&& _settings.IsDetailed())
 			{
 				_settings.Mode = SearchMode.Fast;
 				SetReboot(true);
@@ -929,7 +926,7 @@ namespace BizHawk.Client.EmuHawk
 				Message = "Enter a hexadecimal value"
 			};
 
-			while (prompt.ShowHawkDialog() == DialogResult.OK)
+			while (prompt.ShowHawkDialog().IsOk())
 			{
 				try
 				{
@@ -1074,8 +1071,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ModeSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			DetailedMenuItem.Checked = _settings.Mode == SearchMode.Detailed;
-			FastMenuItem.Checked = _settings.Mode == SearchMode.Fast;
+			DetailedMenuItem.Checked = _settings.IsDetailed();
+			FastMenuItem.Checked = _settings.IsFastMode();
 		}
 
 		private void MemoryDomainsSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -1152,8 +1149,8 @@ namespace BizHawk.Client.EmuHawk
 					break;
 			}
 
-			PreviousFrameMenuItem.Enabled = _settings.Mode != SearchMode.Fast;
-			Previous_LastChangeMenuItem.Enabled = _settings.Mode != SearchMode.Fast;
+			PreviousFrameMenuItem.Enabled = _settings.IsDetailed();
+			Previous_LastChangeMenuItem.Enabled = _settings.IsDetailed();
 		}
 
 		private void DetailedMenuItem_Click(object sender, EventArgs e)
@@ -1219,7 +1216,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SearchSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			ClearChangeCountsMenuItem.Enabled = _settings.Mode == SearchMode.Detailed;
+			ClearChangeCountsMenuItem.Enabled = _settings.IsDetailed();
 
 			RemoveMenuItem.Enabled =
 				AddToRamWatchMenuItem.Enabled =
@@ -1411,7 +1408,7 @@ namespace BizHawk.Client.EmuHawk
 			RamSearchMenu.Items.Add(WatchListView.ToColumnsMenu(ColumnToggleCallback));
 
 			_settings = new SearchEngineSettings(MemoryDomains);
-			if (_settings.Mode == SearchMode.Fast)
+			if (_settings.IsFastMode())
 			{
 				SetToFastMode();
 			}

@@ -29,4 +29,13 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		public bool BigEndian { get; set; }
 		public PreviousType PreviousType { get; set; }
 	}
+
+	public static class SearchEngineSettingsExtensions
+	{
+		public static bool IsFastMode(this SearchEngineSettings settings)
+			=> settings.Mode == SearchMode.Fast;
+
+		public static bool IsDetailed(this SearchEngineSettings settings)
+			=> settings.Mode == SearchMode.Detailed;
+	}
 }
