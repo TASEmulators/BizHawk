@@ -69,7 +69,7 @@ namespace  BizHawk.Client.Common.RamSearchEngine
 		public void ClearChangeCount() => ChangeCount = 0;
 	}
 
-	internal sealed class MiniWordWatchDetailed : IMiniWatch, IMiniWatchDetails
+	internal sealed class MiniWordWatchDetailed : IMiniWatchDetails
 	{
 		public long Address { get; }
 
@@ -122,7 +122,7 @@ namespace  BizHawk.Client.Common.RamSearchEngine
 		public void ClearChangeCount() => ChangeCount = 0;
 	}
 
-	internal sealed class MiniDWordWatchDetailed : IMiniWatch, IMiniWatchDetails
+	internal sealed class MiniDWordWatchDetailed : IMiniWatchDetails
 	{
 		public long Address { get; }
 
