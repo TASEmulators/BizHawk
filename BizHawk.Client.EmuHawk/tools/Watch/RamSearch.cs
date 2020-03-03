@@ -29,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 		private string _currentFileName = "";
 
 		private RamSearchEngine _searches;
-		private RamSearchEngine.Settings _settings;
+		private SearchEngineSettings _settings;
 
 		private int _defaultWidth;
 		private int _defaultHeight;
@@ -122,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
 
 			RamSearchMenu.Items.Add(WatchListView.ToColumnsMenu(ColumnToggleCallback));
 
-			_settings = new RamSearchEngine.Settings(MemoryDomains);
+			_settings = new SearchEngineSettings(MemoryDomains);
 			_searches = new RamSearchEngine(_settings, MemoryDomains);
 
 			ErrorIconButton.Visible = false;
@@ -150,7 +150,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_dropdownDontfire = false;
 
-			if (_settings.Mode == RamSearchEngine.Settings.SearchMode.Fast)
+			if (_settings.Mode == SearchEngineSettings.SearchMode.Fast)
 			{
 				SetToFastMode();
 			}
@@ -312,7 +312,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			_settings = new RamSearchEngine.Settings(MemoryDomains);
+			_settings = new SearchEngineSettings(MemoryDomains);
 			_searches = new RamSearchEngine(_settings, MemoryDomains);
 			MessageLabel.Text = "Search restarted";
 			DoDomainSizeCheck();
@@ -606,9 +606,9 @@ namespace BizHawk.Client.EmuHawk
 		private void DoDomainSizeCheck()
 		{
 			if (_settings.Domain.Size >= MaxDetailedSize
-				&& _settings.Mode == RamSearchEngine.Settings.SearchMode.Detailed)
+				&& _settings.Mode == SearchEngineSettings.SearchMode.Detailed)
 			{
-				_settings.Mode = RamSearchEngine.Settings.SearchMode.Fast;
+				_settings.Mode = SearchEngineSettings.SearchMode.Fast;
 				SetReboot(true);
 				MessageLabel.Text = "Large domain, switching to fast mode";
 			}
@@ -768,7 +768,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetToDetailedMode()
 		{
-			_settings.Mode = RamSearchEngine.Settings.SearchMode.Detailed;
+			_settings.Mode = SearchEngineSettings.SearchMode.Detailed;
 			NumberOfChangesRadio.Enabled = true;
 			NumberOfChangesBox.Enabled = true;
 			DifferenceRadio.Enabled = true;
@@ -797,7 +797,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetToFastMode()
 		{
-			_settings.Mode = RamSearchEngine.Settings.SearchMode.Fast;
+			_settings.Mode = SearchEngineSettings.SearchMode.Fast;
 
 			if (_settings.PreviousType == PreviousType.LastFrame || _settings.PreviousType == PreviousType.LastChange)
 			{
@@ -1074,8 +1074,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ModeSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			DetailedMenuItem.Checked = _settings.Mode == RamSearchEngine.Settings.SearchMode.Detailed;
-			FastMenuItem.Checked = _settings.Mode == RamSearchEngine.Settings.SearchMode.Fast;
+			DetailedMenuItem.Checked = _settings.Mode == SearchEngineSettings.SearchMode.Detailed;
+			FastMenuItem.Checked = _settings.Mode == SearchEngineSettings.SearchMode.Fast;
 		}
 
 		private void MemoryDomainsSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -1152,8 +1152,8 @@ namespace BizHawk.Client.EmuHawk
 					break;
 			}
 
-			PreviousFrameMenuItem.Enabled = _settings.Mode != RamSearchEngine.Settings.SearchMode.Fast;
-			Previous_LastChangeMenuItem.Enabled = _settings.Mode != RamSearchEngine.Settings.SearchMode.Fast;
+			PreviousFrameMenuItem.Enabled = _settings.Mode != SearchEngineSettings.SearchMode.Fast;
+			Previous_LastChangeMenuItem.Enabled = _settings.Mode != SearchEngineSettings.SearchMode.Fast;
 		}
 
 		private void DetailedMenuItem_Click(object sender, EventArgs e)
@@ -1219,7 +1219,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SearchSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			ClearChangeCountsMenuItem.Enabled = _settings.Mode == RamSearchEngine.Settings.SearchMode.Detailed;
+			ClearChangeCountsMenuItem.Enabled = _settings.Mode == SearchEngineSettings.SearchMode.Detailed;
 
 			RemoveMenuItem.Enabled =
 				AddToRamWatchMenuItem.Enabled =
@@ -1410,8 +1410,8 @@ namespace BizHawk.Client.EmuHawk
 
 			RamSearchMenu.Items.Add(WatchListView.ToColumnsMenu(ColumnToggleCallback));
 
-			_settings = new RamSearchEngine.Settings(MemoryDomains);
-			if (_settings.Mode == RamSearchEngine.Settings.SearchMode.Fast)
+			_settings = new SearchEngineSettings(MemoryDomains);
+			if (_settings.Mode == SearchEngineSettings.SearchMode.Fast)
 			{
 				SetToFastMode();
 			}

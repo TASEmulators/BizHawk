@@ -14,13 +14,13 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		private Compare _compareTo = Compare.Previous;
 
 		private List<IMiniWatch> _watchList = new List<IMiniWatch>();
-		private readonly Settings _settings;
+		private readonly SearchEngineSettings _settings;
 		private readonly UndoHistory<IMiniWatch> _history = new UndoHistory<IMiniWatch>(true);
 		private bool _isSorted = true; // Tracks whether or not the list is sorted by address, if it is, binary search can be used for finding watches
 
-		public RamSearchEngine(Settings settings, IMemoryDomains memoryDomains)
+		public RamSearchEngine(SearchEngineSettings settings, IMemoryDomains memoryDomains)
 		{
-			_settings = new Settings(memoryDomains)
+			_settings = new SearchEngineSettings(memoryDomains)
 			{
 				Mode = settings.Mode,
 				Domain = settings.Domain,
@@ -32,7 +32,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			};
 		}
 
-		public RamSearchEngine(Settings settings, IMemoryDomains memoryDomains, Compare compareTo, long? compareValue, int? differentBy)
+		public RamSearchEngine(SearchEngineSettings settings, IMemoryDomains memoryDomains, Compare compareTo, long? compareValue, int? differentBy)
 			: this(settings, memoryDomains)
 		{
 			_compareTo = compareTo;
@@ -62,7 +62,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			{
 				default:
 				case WatchSize.Byte:
-					if (_settings.Mode == Settings.SearchMode.Detailed)
+					if (_settings.Mode == SearchEngineSettings.SearchMode.Detailed)
 					{
 						for (int i = 0; i < domain.Size; i++)
 						{
@@ -79,7 +79,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 					break;
 				case WatchSize.Word:
-					if (_settings.Mode == Settings.SearchMode.Detailed)
+					if (_settings.Mode == SearchEngineSettings.SearchMode.Detailed)
 					{
 						for (int i = 0; i < domain.Size - 1; i += _settings.CheckMisAligned ? 1 : 2)
 						{
@@ -96,7 +96,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 					break;
 				case WatchSize.DWord:
-					if (_settings.Mode == Settings.SearchMode.Detailed)
+					if (_settings.Mode == SearchEngineSettings.SearchMode.Detailed)
 					{
 						for (int i = 0; i < domain.Size - 3; i += _settings.CheckMisAligned ? 1 : 4)
 						{
@@ -122,7 +122,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		{
 			get
 			{
-				if (_settings.Mode == Settings.SearchMode.Detailed)
+				if (_settings.Mode == SearchEngineSettings.SearchMode.Detailed)
 				{
 					return Watch.GenerateWatch(
 						_settings.Domain,
@@ -194,7 +194,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		public int Count => _watchList.Count;
 
-		public Settings.SearchMode Mode => _settings.Mode;
+		public SearchEngineSettings.SearchMode Mode => _settings.Mode;
 
 		public MemoryDomain Domain => _settings.Domain;
 
@@ -225,7 +225,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		public void Update()
 		{
-			if (_settings.Mode == Settings.SearchMode.Detailed)
+			if (_settings.Mode == SearchEngineSettings.SearchMode.Detailed)
 			{
 				foreach (IMiniWatchDetails watch in _watchList)
 				{
@@ -247,7 +247,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		/// <exception cref="InvalidOperationException"><see cref="Mode"/> is <see cref="Settings.SearchMode.Fast"/> and <paramref name="type"/> is <see cref="PreviousType.LastFrame"/></exception>
 		public void SetPreviousType(PreviousType type)
 		{
-			if (_settings.Mode == Settings.SearchMode.Fast)
+			if (_settings.Mode == SearchEngineSettings.SearchMode.Fast)
 			{
 				if (type == PreviousType.LastFrame)
 				{
@@ -265,7 +265,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		public void ClearChangeCounts()
 		{
-			if (_settings.Mode == Settings.SearchMode.Detailed)
+			if (_settings.Mode == SearchEngineSettings.SearchMode.Detailed)
 			{
 				foreach (var watch in _watchList.Cast<IMiniWatchDetails>())
 				{
@@ -311,7 +311,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			{
 				default:
 				case WatchSize.Byte:
-					if (_settings.Mode == Settings.SearchMode.Detailed)
+					if (_settings.Mode == SearchEngineSettings.SearchMode.Detailed)
 					{
 						foreach (var addr in addresses)
 						{
@@ -328,7 +328,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 					break;
 				case WatchSize.Word:
-					if (_settings.Mode == Settings.SearchMode.Detailed)
+					if (_settings.Mode == SearchEngineSettings.SearchMode.Detailed)
 					{
 						foreach (var addr in addresses)
 						{
@@ -345,7 +345,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 					break;
 				case WatchSize.DWord:
-					if (_settings.Mode == Settings.SearchMode.Detailed)
+					if (_settings.Mode == SearchEngineSettings.SearchMode.Detailed)
 					{
 						foreach (var addr in addresses)
 						{
@@ -394,7 +394,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 					break;
 				case WatchList.CHANGES:
-					if (_settings.Mode == Settings.SearchMode.Detailed)
+					if (_settings.Mode == SearchEngineSettings.SearchMode.Detailed)
 					{
 						if (reverse)
 						{
@@ -611,7 +611,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		private IEnumerable<IMiniWatch> CompareChanges(IEnumerable<IMiniWatch> watchList)
 		{
-			if (_settings.Mode == Settings.SearchMode.Detailed && CompareValue.HasValue)
+			if (_settings.Mode == SearchEngineSettings.SearchMode.Detailed && CompareValue.HasValue)
 			{
 				var compareValue = CompareValue.Value;
 				switch (Operator)
@@ -760,45 +760,12 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		{
 			return _settings.Mode switch
 			{
-				Settings.SearchMode.Detailed => true,
-				Settings.SearchMode.Fast => (compareType != Compare.Changes),
+				SearchEngineSettings.SearchMode.Detailed => true,
+				SearchEngineSettings.SearchMode.Fast => (compareType != Compare.Changes),
 				_ => true
 			};
 		}
 
 		#endregion
-
-		public class Settings
-		{
-			public Settings(IMemoryDomains memoryDomains)
-			{
-				BigEndian = memoryDomains.MainMemory.EndianType == MemoryDomain.Endian.Big;
-				Size = (WatchSize)memoryDomains.MainMemory.WordSize;
-				Type = DisplayType.Unsigned;
-				Mode = memoryDomains.MainMemory.Size > 1024 * 1024
-					? SearchMode.Fast
-					: SearchMode.Detailed;
-
-				Domain = memoryDomains.MainMemory;
-				CheckMisAligned = false;
-				PreviousType = PreviousType.LastSearch;
-			}
-
-			/*Require restart*/
-			public enum SearchMode
-			{
-				Fast, Detailed
-			}
-
-			public SearchMode Mode { get; set; }
-			public MemoryDomain Domain { get; set; }
-			public WatchSize Size { get; set; }
-			public bool CheckMisAligned { get; set; }
-
-			/*Can be changed mid-search*/
-			public DisplayType Type { get; set; }
-			public bool BigEndian { get; set; }
-			public PreviousType PreviousType { get; set; }
-		}
 	}
 }
