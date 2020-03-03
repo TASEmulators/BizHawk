@@ -10,6 +10,7 @@ using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Client.Common.RamSearchEngine;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;

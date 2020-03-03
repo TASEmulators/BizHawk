@@ -7,7 +7,7 @@ using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 // ReSharper disable PossibleInvalidCastExceptionInForeachLoop
-namespace BizHawk.Client.Common
+namespace BizHawk.Client.Common.RamSearchEngine
 {
 	public class RamSearchEngine
 	{

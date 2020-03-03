@@ -1,6 +1,6 @@
 ﻿using BizHawk.Emulation.Common;
 
-namespace BizHawk.Client.Common
+namespace BizHawk.Client.Common.RamSearchEngine
 {
 	/// <summary>
 	/// Represents a Ram address for watching in the <see cref="RamSearchEngine" />
