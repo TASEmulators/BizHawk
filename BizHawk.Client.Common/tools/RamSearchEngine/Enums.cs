@@ -9,4 +9,9 @@
 	{
 		Previous, SpecificValue, SpecificAddress, Changes, Difference
 	}
+
+	public enum SearchMode
+	{
+		Fast, Detailed
+	}
 }

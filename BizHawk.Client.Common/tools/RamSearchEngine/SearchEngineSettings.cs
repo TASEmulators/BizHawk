@@ -19,11 +19,6 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		}
 
 		/*Require restart*/
-		public enum SearchMode
-		{
-			Fast, Detailed
-		}
-
 		public SearchMode Mode { get; set; }
 		public MemoryDomain Domain { get; set; }
 		public WatchSize Size { get; set; }

@@ -62,7 +62,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			{
 				default:
 				case WatchSize.Byte:
-					if (_settings.Mode == SearchEngineSettings.SearchMode.Detailed)
+					if (_settings.Mode == SearchMode.Detailed)
 					{
 						for (int i = 0; i < domain.Size; i++)
 						{
@@ -79,7 +79,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 					break;
 				case WatchSize.Word:
-					if (_settings.Mode == SearchEngineSettings.SearchMode.Detailed)
+					if (_settings.Mode == SearchMode.Detailed)
 					{
 						for (int i = 0; i < domain.Size - 1; i += _settings.CheckMisAligned ? 1 : 2)
 						{
@@ -96,7 +96,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 					break;
 				case WatchSize.DWord:
-					if (_settings.Mode == SearchEngineSettings.SearchMode.Detailed)
+					if (_settings.Mode == SearchMode.Detailed)
 					{
 						for (int i = 0; i < domain.Size - 3; i += _settings.CheckMisAligned ? 1 : 4)
 						{
@@ -122,7 +122,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		{
 			get
 			{
-				if (_settings.Mode == SearchEngineSettings.SearchMode.Detailed)
+				if (_settings.Mode == SearchMode.Detailed)
 				{
 					return Watch.GenerateWatch(
 						_settings.Domain,
@@ -194,7 +194,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		public int Count => _watchList.Count;
 
-		public SearchEngineSettings.SearchMode Mode => _settings.Mode;
+		public SearchMode Mode => _settings.Mode;
 
 		public MemoryDomain Domain => _settings.Domain;
 
@@ -225,7 +225,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		public void Update()
 		{
-			if (_settings.Mode == SearchEngineSettings.SearchMode.Detailed)
+			if (_settings.Mode == SearchMode.Detailed)
 			{
 				foreach (IMiniWatchDetails watch in _watchList)
 				{
@@ -247,7 +247,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		/// <exception cref="InvalidOperationException"><see cref="Mode"/> is <see cref="Settings.SearchMode.Fast"/> and <paramref name="type"/> is <see cref="PreviousType.LastFrame"/></exception>
 		public void SetPreviousType(PreviousType type)
 		{
-			if (_settings.Mode == SearchEngineSettings.SearchMode.Fast)
+			if (_settings.Mode == SearchMode.Fast)
 			{
 				if (type == PreviousType.LastFrame)
 				{
@@ -265,7 +265,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		public void ClearChangeCounts()
 		{
-			if (_settings.Mode == SearchEngineSettings.SearchMode.Detailed)
+			if (_settings.Mode == SearchMode.Detailed)
 			{
 				foreach (var watch in _watchList.Cast<IMiniWatchDetails>())
 				{
@@ -311,7 +311,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			{
 				default:
 				case WatchSize.Byte:
-					if (_settings.Mode == SearchEngineSettings.SearchMode.Detailed)
+					if (_settings.Mode == SearchMode.Detailed)
 					{
 						foreach (var addr in addresses)
 						{
@@ -328,7 +328,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 					break;
 				case WatchSize.Word:
-					if (_settings.Mode == SearchEngineSettings.SearchMode.Detailed)
+					if (_settings.Mode == SearchMode.Detailed)
 					{
 						foreach (var addr in addresses)
 						{
@@ -345,7 +345,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 					break;
 				case WatchSize.DWord:
-					if (_settings.Mode == SearchEngineSettings.SearchMode.Detailed)
+					if (_settings.Mode == SearchMode.Detailed)
 					{
 						foreach (var addr in addresses)
 						{
@@ -394,7 +394,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 					break;
 				case WatchList.CHANGES:
-					if (_settings.Mode == SearchEngineSettings.SearchMode.Detailed)
+					if (_settings.Mode == SearchMode.Detailed)
 					{
 						if (reverse)
 						{
@@ -611,7 +611,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		private IEnumerable<IMiniWatch> CompareChanges(IEnumerable<IMiniWatch> watchList)
 		{
-			if (_settings.Mode == SearchEngineSettings.SearchMode.Detailed && CompareValue.HasValue)
+			if (_settings.Mode == SearchMode.Detailed && CompareValue.HasValue)
 			{
 				var compareValue = CompareValue.Value;
 				switch (Operator)
@@ -760,8 +760,8 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		{
 			return _settings.Mode switch
 			{
-				SearchEngineSettings.SearchMode.Detailed => true,
-				SearchEngineSettings.SearchMode.Fast => (compareType != Compare.Changes),
+				SearchMode.Detailed => true,
+				SearchMode.Fast => (compareType != Compare.Changes),
 				_ => true
 			};
 		}

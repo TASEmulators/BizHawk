@@ -150,7 +150,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_dropdownDontfire = false;
 
-			if (_settings.Mode == SearchEngineSettings.SearchMode.Fast)
+			if (_settings.Mode == SearchMode.Fast)
 			{
 				SetToFastMode();
 			}
@@ -606,9 +606,9 @@ namespace BizHawk.Client.EmuHawk
 		private void DoDomainSizeCheck()
 		{
 			if (_settings.Domain.Size >= MaxDetailedSize
-				&& _settings.Mode == SearchEngineSettings.SearchMode.Detailed)
+				&& _settings.Mode == SearchMode.Detailed)
 			{
-				_settings.Mode = SearchEngineSettings.SearchMode.Fast;
+				_settings.Mode = SearchMode.Fast;
 				SetReboot(true);
 				MessageLabel.Text = "Large domain, switching to fast mode";
 			}
@@ -768,7 +768,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetToDetailedMode()
 		{
-			_settings.Mode = SearchEngineSettings.SearchMode.Detailed;
+			_settings.Mode = SearchMode.Detailed;
 			NumberOfChangesRadio.Enabled = true;
 			NumberOfChangesBox.Enabled = true;
 			DifferenceRadio.Enabled = true;
@@ -797,7 +797,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetToFastMode()
 		{
-			_settings.Mode = SearchEngineSettings.SearchMode.Fast;
+			_settings.Mode = SearchMode.Fast;
 
 			if (_settings.PreviousType == PreviousType.LastFrame || _settings.PreviousType == PreviousType.LastChange)
 			{
@@ -1074,8 +1074,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ModeSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			DetailedMenuItem.Checked = _settings.Mode == SearchEngineSettings.SearchMode.Detailed;
-			FastMenuItem.Checked = _settings.Mode == SearchEngineSettings.SearchMode.Fast;
+			DetailedMenuItem.Checked = _settings.Mode == SearchMode.Detailed;
+			FastMenuItem.Checked = _settings.Mode == SearchMode.Fast;
 		}
 
 		private void MemoryDomainsSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -1152,8 +1152,8 @@ namespace BizHawk.Client.EmuHawk
 					break;
 			}
 
-			PreviousFrameMenuItem.Enabled = _settings.Mode != SearchEngineSettings.SearchMode.Fast;
-			Previous_LastChangeMenuItem.Enabled = _settings.Mode != SearchEngineSettings.SearchMode.Fast;
+			PreviousFrameMenuItem.Enabled = _settings.Mode != SearchMode.Fast;
+			Previous_LastChangeMenuItem.Enabled = _settings.Mode != SearchMode.Fast;
 		}
 
 		private void DetailedMenuItem_Click(object sender, EventArgs e)
@@ -1219,7 +1219,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SearchSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			ClearChangeCountsMenuItem.Enabled = _settings.Mode == SearchEngineSettings.SearchMode.Detailed;
+			ClearChangeCountsMenuItem.Enabled = _settings.Mode == SearchMode.Detailed;
 
 			RemoveMenuItem.Enabled =
 				AddToRamWatchMenuItem.Enabled =
@@ -1411,7 +1411,7 @@ namespace BizHawk.Client.EmuHawk
 			RamSearchMenu.Items.Add(WatchListView.ToColumnsMenu(ColumnToggleCallback));
 
 			_settings = new SearchEngineSettings(MemoryDomains);
-			if (_settings.Mode == SearchEngineSettings.SearchMode.Fast)
+			if (_settings.Mode == SearchMode.Fast)
 			{
 				SetToFastMode();
 			}
