@@ -62,7 +62,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			{
 				default:
 				case WatchSize.Byte:
-					if (_settings.Mode == SearchMode.Detailed)
+					if (_settings.IsDetailed())
 					{
 						for (int i = 0; i < domain.Size; i++)
 						{
@@ -79,7 +79,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 					break;
 				case WatchSize.Word:
-					if (_settings.Mode == SearchMode.Detailed)
+					if (_settings.IsDetailed())
 					{
 						for (int i = 0; i < domain.Size - 1; i += _settings.CheckMisAligned ? 1 : 2)
 						{
@@ -96,7 +96,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 					break;
 				case WatchSize.DWord:
-					if (_settings.Mode == SearchMode.Detailed)
+					if (_settings.IsDetailed())
 					{
 						for (int i = 0; i < domain.Size - 3; i += _settings.CheckMisAligned ? 1 : 4)
 						{
@@ -122,7 +122,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		{
 			get
 			{
-				if (_settings.Mode == SearchMode.Detailed)
+				if (_settings.IsDetailed())
 				{
 					return Watch.GenerateWatch(
 						_settings.Domain,
@@ -225,7 +225,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		public void Update()
 		{
-			if (_settings.Mode == SearchMode.Detailed)
+			if (_settings.IsDetailed())
 			{
 				foreach (IMiniWatchDetails watch in _watchList)
 				{
@@ -234,25 +234,16 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			}
 		}
 
-		public void SetType(DisplayType type)
-		{
-			_settings.Type = type;
-		}
+		public void SetType(DisplayType type) => _settings.Type = type;
 
-		public void SetEndian(bool bigEndian)
-		{
-			_settings.BigEndian = bigEndian;
-		}
+		public void SetEndian(bool bigEndian) => _settings.BigEndian = bigEndian;
 
 		/// <exception cref="InvalidOperationException"><see cref="Mode"/> is <see cref="Settings.SearchMode.Fast"/> and <paramref name="type"/> is <see cref="PreviousType.LastFrame"/></exception>
 		public void SetPreviousType(PreviousType type)
 		{
-			if (_settings.Mode == SearchMode.Fast)
+			if (_settings.IsFastMode() && type == PreviousType.LastFrame)
 			{
-				if (type == PreviousType.LastFrame)
-				{
-					throw new InvalidOperationException();
-				}
+				throw new InvalidOperationException();
 			}
 
 			_settings.PreviousType = type;
@@ -265,7 +256,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		public void ClearChangeCounts()
 		{
-			if (_settings.Mode == SearchMode.Detailed)
+			if (_settings.IsDetailed())
 			{
 				foreach (var watch in _watchList.Cast<IMiniWatchDetails>())
 				{
@@ -311,7 +302,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			{
 				default:
 				case WatchSize.Byte:
-					if (_settings.Mode == SearchMode.Detailed)
+					if (_settings.IsDetailed())
 					{
 						foreach (var addr in addresses)
 						{
@@ -328,7 +319,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 					break;
 				case WatchSize.Word:
-					if (_settings.Mode == SearchMode.Detailed)
+					if (_settings.IsDetailed())
 					{
 						foreach (var addr in addresses)
 						{
@@ -345,7 +336,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 					break;
 				case WatchSize.DWord:
-					if (_settings.Mode == SearchMode.Detailed)
+					if (_settings.IsDetailed())
 					{
 						foreach (var addr in addresses)
 						{
@@ -394,7 +385,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 					break;
 				case WatchList.CHANGES:
-					if (_settings.Mode == SearchMode.Detailed)
+					if (_settings.IsDetailed())
 					{
 						if (reverse)
 						{
@@ -433,10 +424,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		public bool CanRedo => UndoEnabled && _history.CanRedo;
 
-		public void ClearHistory()
-		{
-			_history.Clear();
-		}
+		public void ClearHistory() => _history.Clear();
 
 		public int Undo()
 		{
@@ -611,7 +599,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		private IEnumerable<IMiniWatch> CompareChanges(IEnumerable<IMiniWatch> watchList)
 		{
-			if (_settings.Mode == SearchMode.Detailed && CompareValue.HasValue)
+			if (_settings.IsDetailed() && CompareValue.HasValue)
 			{
 				var compareValue = CompareValue.Value;
 				switch (Operator)
