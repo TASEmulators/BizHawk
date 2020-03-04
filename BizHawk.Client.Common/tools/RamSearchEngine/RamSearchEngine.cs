@@ -620,41 +620,34 @@ namespace BizHawk.Client.Common.RamSearchEngine
 					case ComparisonOperator.Equal:
 						return watchList
 							.Cast<IMiniWatchDetails>()
-							.Where(w => w.ChangeCount == compareValue)
-							.Cast<IMiniWatch>();
+							.Where(w => w.ChangeCount == compareValue);
 					case ComparisonOperator.NotEqual:
 						return watchList
 							.Cast<IMiniWatchDetails>()
-							.Where(w => w.ChangeCount != compareValue)
-							.Cast<IMiniWatch>();
+							.Where(w => w.ChangeCount != compareValue);
 					case ComparisonOperator.GreaterThan:
 						return watchList
 							.Cast<IMiniWatchDetails>()
-							.Where(w => w.ChangeCount > compareValue)
-							.Cast<IMiniWatch>();
+							.Where(w => w.ChangeCount > compareValue);
 					case ComparisonOperator.GreaterThanEqual:
 						return watchList
 							.Cast<IMiniWatchDetails>()
-							.Where(w => w.ChangeCount >= compareValue)
-							.Cast<IMiniWatch>();
+							.Where(w => w.ChangeCount >= compareValue);
 					case ComparisonOperator.LessThan:
 						return watchList
 							.Cast<IMiniWatchDetails>()
-							.Where(w => w.ChangeCount < compareValue)
-							.Cast<IMiniWatch>();
+							.Where(w => w.ChangeCount < compareValue);
 					case ComparisonOperator.LessThanEqual:
 						return watchList
 							.Cast<IMiniWatchDetails>()
-							.Where(w => w.ChangeCount <= compareValue)
-							.Cast<IMiniWatch>();
+							.Where(w => w.ChangeCount <= compareValue);
 					case ComparisonOperator.DifferentBy:
 						if (DifferentBy.HasValue)
 						{
 							return watchList
 								.Cast<IMiniWatchDetails>()
 								.Where(w => w.ChangeCount + DifferentBy.Value == compareValue
-									|| w.ChangeCount - DifferentBy.Value == compareValue)
-								.Cast<IMiniWatch>();
+									|| w.ChangeCount - DifferentBy.Value == compareValue);
 						}
 
 						throw new InvalidOperationException();
