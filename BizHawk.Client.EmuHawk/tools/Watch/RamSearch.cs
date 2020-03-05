@@ -88,18 +88,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HardSetSizeDropDown(WatchSize size)
 		{
-			switch (size)
+			SizeDropdown.SelectedIndex = size switch
 			{
-				case WatchSize.Byte:
-					SizeDropdown.SelectedIndex = 0;
-					break;
-				case WatchSize.Word:
-					SizeDropdown.SelectedIndex = 1;
-					break;
-				case WatchSize.DWord:
-					SizeDropdown.SelectedIndex = 2;
-					break;
-			}
+				WatchSize.Byte => 0,
+				WatchSize.Word => 1,
+				WatchSize.DWord => 2,
+				_ => SizeDropdown.SelectedIndex
+			};
 		}
 
 		private void ColumnToggleCallback()
@@ -199,24 +194,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var columnName = column.Name;
-			switch (columnName)
+			text = columnName switch
 			{
-				case WatchList.Address:
-					text = _searches[index].AddressString;
-					break;
-				case WatchList.Value:
-					text = _searches[index].ValueString;
-					break;
-				case WatchList.Prev:
-					text = _searches[index].PreviousStr;
-					break;
-				case WatchList.ChangesCol:
-					text = _searches[index].ChangeCount.ToString();
-					break;
-				case WatchList.Diff:
-					text = _searches[index].Diff;
-					break;
-			}
+				WatchList.Address => _searches[index].AddressString,
+				WatchList.Value => _searches[index].ValueString,
+				WatchList.Prev => _searches[index].PreviousStr,
+				WatchList.ChangesCol => _searches[index].ChangeCount.ToString(),
+				WatchList.Diff => _searches[index].Diff,
+				_ => text
+			};
 		}
 
 		private void LoadConfigSettings()
@@ -702,22 +688,14 @@ namespace BizHawk.Client.EmuHawk
 
 			DisplayTypeDropdown.Items.Clear();
 
-			IEnumerable<Common.DisplayType> types = new List<Common.DisplayType>();
-			switch (_settings.Size)
+			var types = _settings.Size switch
 			{
-				case WatchSize.Byte:
-					types = ByteWatch.ValidTypes;
-					break;
+				WatchSize.Byte => ByteWatch.ValidTypes,
+				WatchSize.Word => WordWatch.ValidTypes,
+				WatchSize.DWord => DWordWatch.ValidTypes,
+				_ => new List<Common.DisplayType>()
+			};
 
-				case WatchSize.Word:
-					types = WordWatch.ValidTypes;
-					break;
-
-				case WatchSize.DWord:
-					types = DWordWatch.ValidTypes;
-					break;
-			}
-			
 			foreach (var type in types)
 			{
 				var typeStr = Watch.DisplayTypeToString(type);
@@ -1094,21 +1072,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			DisplayTypeSubMenu.DropDownItems.Clear();
 
-			IEnumerable<Common.DisplayType> types = new List<Common.DisplayType>();
-			switch (_settings.Size)
+			var types = _settings.Size switch
 			{
-				case WatchSize.Byte:
-					types = ByteWatch.ValidTypes;
-					break;
-
-				case WatchSize.Word:
-					types = WordWatch.ValidTypes;
-					break;
-
-				case WatchSize.DWord:
-					types = DWordWatch.ValidTypes;
-					break;
-			}
+				WatchSize.Byte => ByteWatch.ValidTypes,
+				WatchSize.Word => WordWatch.ValidTypes,
+				WatchSize.DWord => DWordWatch.ValidTypes,
+				_ => new List<Common.DisplayType>()
+			};
 
 			foreach (var type in types)
 			{
@@ -1483,22 +1453,13 @@ namespace BizHawk.Client.EmuHawk
 			WatchListView.Refresh();
 		}
 
-		private WatchSize SelectedSize
-		{
-			get
+		private WatchSize SelectedSize =>
+			SizeDropdown.SelectedIndex switch
 			{
-				switch (SizeDropdown.SelectedIndex)
-				{
-					default:
-					case 0:
-						return WatchSize.Byte;
-					case 1:
-						return WatchSize.Word;
-					case 2:
-						return WatchSize.DWord;
-				}
-			}
-		}
+				1 => WatchSize.Word,
+				2 => WatchSize.DWord,
+				_ => WatchSize.Byte
+			};
 
 		private void SizeDropdown_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -1718,17 +1679,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WatchListView_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.KeyCode == Keys.Delete && !e.Control && !e.Alt && !e.Shift)
+			switch (e.KeyCode)
 			{
-				RemoveAddresses();
-			}
-			else if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift) // Copy
-			{
-				CopyWatchesToClipBoard();
-			}
-			else if (e.KeyCode == Keys.Escape && !e.Control && !e.Alt && !e.Shift)
-			{
-				WatchListView.DeselectAll();
+				case Keys.Delete when !e.Control && !e.Alt && !e.Shift:
+					RemoveAddresses();
+					break;
+				case Keys.C when e.Control && !e.Alt && !e.Shift:
+					CopyWatchesToClipBoard();
+					break;
+				case Keys.Escape when !e.Control && !e.Alt && !e.Shift:
+					WatchListView.DeselectAll();
+					break;
 			}
 		}
 
