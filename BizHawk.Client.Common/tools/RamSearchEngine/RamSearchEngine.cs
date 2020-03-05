@@ -311,15 +311,10 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		public void Sort(string column, bool reverse)
 		{
-			_isSorted = false;
+			_isSorted = column == WatchList.Address && !reverse;
 			switch (column)
 			{
 				case WatchList.Address:
-					if (!reverse)
-					{
-						_isSorted = true;
-					}
-
 					_watchList = _watchList.OrderBy(w => w.Address, reverse).ToList();
 					break;
 				case WatchList.Value:
@@ -334,7 +329,8 @@ namespace BizHawk.Client.Common.RamSearchEngine
 						_watchList = _watchList
 							.Cast<IMiniWatchDetails>()
 							.OrderBy(w => w.ChangeCount, reverse)
-							.Cast<IMiniWatch>().ToList();
+							.Cast<IMiniWatch>()
+							.ToList();
 					}
 
 					break;
