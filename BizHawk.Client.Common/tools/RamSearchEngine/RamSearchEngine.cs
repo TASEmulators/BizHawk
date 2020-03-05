@@ -312,7 +312,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			_isSorted = false;
 			switch (column)
 			{
-				case WatchList.ADDRESS:
+				case WatchList.Address:
 					if (!reverse)
 					{
 						_isSorted = true;
@@ -320,13 +320,13 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 					_watchList = _watchList.OrderBy(w => w.Address, reverse).ToList();
 					break;
-				case WatchList.VALUE:
+				case WatchList.Value:
 					_watchList = _watchList.OrderBy(w => GetValue(w.Address), reverse).ToList();
 					break;
-				case WatchList.PREV:
+				case WatchList.Prev:
 					_watchList = _watchList.OrderBy(w => w.Previous, reverse).ToList();
 					break;
-				case WatchList.CHANGES:
+				case WatchList.ChangesCol:
 					if (_settings.IsDetailed())
 					{
 						_watchList = _watchList
@@ -336,7 +336,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 					}
 
 					break;
-				case WatchList.DIFF:
+				case WatchList.Diff:
 					_watchList = _watchList.OrderBy(w => GetValue(w.Address) - w.Previous, reverse).ToList();
 					break;
 			}

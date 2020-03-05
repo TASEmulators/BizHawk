@@ -201,19 +201,19 @@ namespace BizHawk.Client.EmuHawk
 			var columnName = column.Name;
 			switch (columnName)
 			{
-				case WatchList.ADDRESS:
+				case WatchList.Address:
 					text = _searches[index].AddressString;
 					break;
-				case WatchList.VALUE:
+				case WatchList.Value:
 					text = _searches[index].ValueString;
 					break;
-				case WatchList.PREV:
+				case WatchList.Prev:
 					text = _searches[index].PreviousStr;
 					break;
-				case WatchList.CHANGES:
+				case WatchList.ChangesCol:
 					text = _searches[index].ChangeCount.ToString();
 					break;
-				case WatchList.DIFF:
+				case WatchList.Diff:
 					text = _searches[index].Diff;
 					break;
 			}
@@ -772,7 +772,7 @@ namespace BizHawk.Client.EmuHawk
 			DifferentByBox.Enabled = true;
 			ClearChangeCountsToolBarItem.Enabled = true;
 
-			WatchListView.AllColumns[WatchList.CHANGES].Visible = true;
+			WatchListView.AllColumns[WatchList.ChangesCol].Visible = true;
 			ChangesMenuItem.Checked = true;
 
 			ColumnToggleCallback();
@@ -788,7 +788,7 @@ namespace BizHawk.Client.EmuHawk
 					.Single(t => t.Name == "GeneratedColumnsSubMenu"); // TODO - make name a constant
 				return subMenu.DropDownItems
 					.Cast<ToolStripMenuItem>()
-					.Single(t => t.Name == WatchList.CHANGES);
+					.Single(t => t.Name == WatchList.ChangesCol);
 			}
 		}
 
@@ -811,7 +811,7 @@ namespace BizHawk.Client.EmuHawk
 				PreviousValueRadio.Checked = true;
 			}
 
-			WatchListView.AllColumns[WatchList.CHANGES].Visible = false;
+			WatchListView.AllColumns[WatchList.ChangesCol].Visible = false;
 			ChangesMenuItem.Checked = false;
 
 			ColumnToggleCallback();
@@ -964,11 +964,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Columns = new List<RollColumn>
 				{
-					new RollColumn { Text = "Address", Name = WatchList.ADDRESS, Visible = true, UnscaledWidth = 60, Type = ColumnType.Text },
-					new RollColumn { Text = "Value", Name = WatchList.VALUE, Visible = true, UnscaledWidth = 59, Type = ColumnType.Text },
-					new RollColumn { Text = "Prev", Name = WatchList.PREV, Visible = true, UnscaledWidth = 59, Type = ColumnType.Text },
-					new RollColumn { Text = "Changes", Name = WatchList.CHANGES, Visible = true, UnscaledWidth = 60, Type = ColumnType.Text },
-					new RollColumn { Text = "Diff", Name = WatchList.DIFF, Visible = false, UnscaledWidth = 59, Type = ColumnType.Text },
+					new RollColumn { Text = "Address", Name = WatchList.Address, Visible = true, UnscaledWidth = 60, Type = ColumnType.Text },
+					new RollColumn { Text = "Value", Name = WatchList.Value, Visible = true, UnscaledWidth = 59, Type = ColumnType.Text },
+					new RollColumn { Text = "Prev", Name = WatchList.Prev, Visible = true, UnscaledWidth = 59, Type = ColumnType.Text },
+					new RollColumn { Text = "Changes", Name = WatchList.ChangesCol, Visible = true, UnscaledWidth = 60, Type = ColumnType.Text },
+					new RollColumn { Text = "Diff", Name = WatchList.Diff, Visible = false, UnscaledWidth = 59, Type = ColumnType.Text },
 				};
 
 				PreviewMode = true;
