@@ -4,6 +4,7 @@ using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
+using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 
 // ReSharper disable PossibleInvalidCastExceptionInForeachLoop
@@ -198,11 +199,10 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		public MemoryDomain Domain => _settings.Domain;
 
-		/// <exception cref="InvalidOperationException">(from setter) <see cref="Mode"/> is <see cref="Settings.SearchMode.Fast"/> and <paramref name="value"/> is not <see cref="Compare.Changes"/></exception>
+		/// <exception cref="InvalidOperationException">(from setter) <see cref="Mode"/> is <see cref="SearchMode.Fast"/> and <paramref name="value"/> is not <see cref="Compare.Changes"/></exception>
 		public Compare CompareTo
 		{
 			get => _compareTo;
-
 			set
 			{
 				if (CanDoCompareType(value))
@@ -238,7 +238,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		public void SetEndian(bool bigEndian) => _settings.BigEndian = bigEndian;
 
-		/// <exception cref="InvalidOperationException"><see cref="Mode"/> is <see cref="Settings.SearchMode.Fast"/> and <paramref name="type"/> is <see cref="PreviousType.LastFrame"/></exception>
+		/// <exception cref="InvalidOperationException"><see cref="Mode"/> is <see cref="SearchMode.Fast"/> and <paramref name="type"/> is <see cref="PreviousType.LastFrame"/></exception>
 		public void SetPreviousType(PreviousType type)
 		{
 			if (_settings.IsFastMode() && type == PreviousType.LastFrame)
@@ -390,7 +390,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 				default:
 				case ComparisonOperator.Equal:
 					return _settings.Type == DisplayType.Float
-						? watchList.Where(w => GetValue(w.Address).ToFloat() == w.Previous.ToFloat())
+						? watchList.Where(w => GetValue(w.Address).ToFloat().HawkFloatEquality(w.Previous.ToFloat()))
 						: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) == SignExtendAsNeeded(w.Previous));
 				case ComparisonOperator.NotEqual:
 					return watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) != SignExtendAsNeeded(w.Previous));
@@ -417,8 +417,8 @@ namespace BizHawk.Client.Common.RamSearchEngine
 						var differentBy = DifferentBy.Value;
 						if (_settings.Type == DisplayType.Float)
 						{
-							return watchList.Where(w => GetValue(w.Address).ToFloat() + differentBy == w.Previous.ToFloat()
-								|| GetValue(w.Address).ToFloat() - differentBy == w.Previous.ToFloat());
+							return watchList.Where(w => (GetValue(w.Address).ToFloat() + differentBy).HawkFloatEquality(w.Previous.ToFloat())
+								|| (GetValue(w.Address).ToFloat() - differentBy).HawkFloatEquality(w.Previous.ToFloat()));
 						}
 
 						return watchList.Where(w =>
@@ -446,11 +446,11 @@ namespace BizHawk.Client.Common.RamSearchEngine
 					default:
 					case ComparisonOperator.Equal:
 						return _settings.Type == DisplayType.Float
-							? watchList.Where(w => GetValue(w.Address).ToFloat() == compareValue.ToFloat())
-							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) == SignExtendAsNeeded(CompareValue.Value));
+							? watchList.Where(w => GetValue(w.Address).ToFloat().HawkFloatEquality(compareValue.ToFloat()))
+							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) == SignExtendAsNeeded(compareValue));
 					case ComparisonOperator.NotEqual:
 						return _settings.Type == DisplayType.Float
-							? watchList.Where(w => GetValue(w.Address).ToFloat() != compareValue.ToFloat())
+							? watchList.Where(w => !GetValue(w.Address).ToFloat().HawkFloatEquality(compareValue.ToFloat()))
 							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) != SignExtendAsNeeded(compareValue));
 					case ComparisonOperator.GreaterThan:
 						return _settings.Type == DisplayType.Float
@@ -476,8 +476,8 @@ namespace BizHawk.Client.Common.RamSearchEngine
 							var differentBy = DifferentBy.Value;
 							if (_settings.Type == DisplayType.Float)
 							{
-								return watchList.Where(w => GetValue(w.Address).ToFloat() + differentBy == compareValue
-									|| GetValue(w.Address).ToFloat() - differentBy == compareValue);
+								return watchList.Where(w => (GetValue(w.Address).ToFloat() + differentBy).HawkFloatEquality(compareValue)
+									|| (GetValue(w.Address).ToFloat() - differentBy).HawkFloatEquality(compareValue));
 							}
 
 							return watchList.Where(w
@@ -584,11 +584,11 @@ namespace BizHawk.Client.Common.RamSearchEngine
 					default:
 					case ComparisonOperator.Equal:
 						return _settings.Type == DisplayType.Float
-							? watchList.Where(w => GetValue(w.Address).ToFloat() - w.Previous.ToFloat() == compareValue)
+							? watchList.Where(w => (GetValue(w.Address).ToFloat() - w.Previous.ToFloat()).HawkFloatEquality(compareValue))
 							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) == compareValue);
 					case ComparisonOperator.NotEqual:
 						return _settings.Type == DisplayType.Float
-							? watchList.Where(w => GetValue(w.Address).ToFloat() - w.Previous.ToFloat() != compareValue)
+							? watchList.Where(w => !(GetValue(w.Address).ToFloat() - w.Previous.ToFloat()).HawkFloatEquality(compareValue))
 							: watchList.Where(w => SignExtendAsNeeded(GetValue(w.Address)) - SignExtendAsNeeded(w.Previous) != compareValue);
 					case ComparisonOperator.GreaterThan:
 						return _settings.Type == DisplayType.Float
@@ -612,8 +612,8 @@ namespace BizHawk.Client.Common.RamSearchEngine
 							var differentBy = DifferentBy.Value;
 							if (_settings.Type == DisplayType.Float)
 							{
-								return watchList.Where(w => GetValue(w.Address).ToFloat() - w.Previous.ToFloat() + differentBy == compareValue
-									|| GetValue(w.Address).ToFloat() - w.Previous.ToFloat() - differentBy == w.Previous);
+								return watchList.Where(w => (GetValue(w.Address).ToFloat() - w.Previous.ToFloat() + differentBy).HawkFloatEquality(compareValue)
+									|| (GetValue(w.Address).ToFloat() - w.Previous.ToFloat() - differentBy).HawkFloatEquality(w.Previous));
 							}
 
 							return watchList.Where(w
@@ -629,8 +629,6 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		}
 
 		#endregion
-
-		#region Private parts
 
 		private long SignExtendAsNeeded(long val)
 		{
@@ -669,7 +667,5 @@ namespace BizHawk.Client.Common.RamSearchEngine
 				_ => true
 			};
 		}
-
-		#endregion
 	}
 }
