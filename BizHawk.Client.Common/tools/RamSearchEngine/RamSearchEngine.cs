@@ -298,13 +298,15 @@ namespace BizHawk.Client.Common.RamSearchEngine
 				_watchList.Clear();
 			}
 
-			_watchList = _settings.Size switch
+			var list = _settings.Size switch
 			{
-				WatchSize.Byte => addresses.ToBytes(_settings).ToList(),
-				WatchSize.Word => addresses.ToWords(_settings).ToList(),
-				WatchSize.DWord => addresses.ToDWords(_settings).ToList(),
-				_ => addresses.ToBytes(_settings).ToList()
+				WatchSize.Byte => addresses.ToBytes(_settings),
+				WatchSize.Word => addresses.ToWords(_settings),
+				WatchSize.DWord => addresses.ToDWords(_settings),
+				_ => addresses.ToBytes(_settings)
 			};
+
+			_watchList.AddRange(list);
 		}
 
 		public void Sort(string column, bool reverse)
