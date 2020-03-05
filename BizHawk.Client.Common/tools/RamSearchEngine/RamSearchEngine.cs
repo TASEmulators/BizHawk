@@ -63,16 +63,13 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			{
 				default:
 				case WatchSize.Byte:
-					if (_settings.IsDetailed())
+					for (int i = 0; i < domain.Size; i++)
 					{
-						for (int i = 0; i < domain.Size; i++)
+						if (_settings.IsDetailed())
 						{
 							_watchList.Add(new MiniByteWatchDetailed(domain, i));
 						}
-					}
-					else
-					{
-						for (int i = 0; i < domain.Size; i++)
+						else
 						{
 							_watchList.Add(new MiniByteWatch(domain, i));
 						}
@@ -80,16 +77,13 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 					break;
 				case WatchSize.Word:
-					if (_settings.IsDetailed())
+					for (int i = 0; i < domain.Size - 1; i += _settings.CheckMisAligned ? 1 : 2)
 					{
-						for (int i = 0; i < domain.Size - 1; i += _settings.CheckMisAligned ? 1 : 2)
+						if (_settings.IsDetailed())
 						{
 							_watchList.Add(new MiniWordWatchDetailed(domain, i, _settings.BigEndian));
 						}
-					}
-					else
-					{
-						for (int i = 0; i < domain.Size - 1; i += _settings.CheckMisAligned ? 1 : 2)
+						else
 						{
 							_watchList.Add(new MiniWordWatch(domain, i, _settings.BigEndian));
 						}
@@ -97,16 +91,13 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 					break;
 				case WatchSize.DWord:
-					if (_settings.IsDetailed())
+					for (int i = 0; i < domain.Size - 3; i += _settings.CheckMisAligned ? 1 : 4)
 					{
-						for (int i = 0; i < domain.Size - 3; i += _settings.CheckMisAligned ? 1 : 4)
+						if (_settings.IsDetailed())
 						{
 							_watchList.Add(new MiniDWordWatchDetailed(domain, i, _settings.BigEndian));
 						}
-					}
-					else
-					{
-						for (int i = 0; i < domain.Size - 3; i += _settings.CheckMisAligned ? 1 : 4)
+						else
 						{
 							_watchList.Add(new MiniDWordWatch(domain, i, _settings.BigEndian));
 						}
@@ -119,35 +110,17 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		/// <summary>
 		/// Exposes the current watch state based on index
 		/// </summary>
-		public Watch this[int index]
-		{
-			get
-			{
-				if (_settings.IsDetailed())
-				{
-					return Watch.GenerateWatch(
-						_settings.Domain,
-						_watchList[index].Address,
-						_settings.Size,
-						_settings.Type,
-						_settings.BigEndian,
-						"",
-						0,
-						_watchList[index].Previous,
-						((IMiniWatchDetails)_watchList[index]).ChangeCount);
-				}
-
-				return Watch.GenerateWatch(
-						_settings.Domain,
-						_watchList[index].Address,
-						_settings.Size,
-						_settings.Type,
-						_settings.BigEndian,
-						"",
-						0,
-						_watchList[index].Previous);
-			}
-		}
+		public Watch this[int index] =>
+			Watch.GenerateWatch(
+				_settings.Domain,
+				_watchList[index].Address,
+				_settings.Size,
+				_settings.Type,
+				_settings.BigEndian,
+				"",
+				0,
+				_watchList[index].Previous,
+				_settings.IsDetailed() ? ((IMiniWatchDetails)_watchList[index]).ChangeCount : 0);
 
 		public int DoSearch()
 		{
