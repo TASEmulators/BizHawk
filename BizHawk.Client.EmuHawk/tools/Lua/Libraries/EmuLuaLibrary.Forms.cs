@@ -268,9 +268,9 @@ namespace BizHawk.Client.EmuHawk
 					{
 						if (control.Handle == ptr)
 						{
-							if (control is LuaDropDown)
+							if (control is LuaDropDown dd)
 							{
-								return (control as LuaDropDown).SelectedItem.ToString();
+								return dd.SelectedItem.ToString();
 							}
 
 							return control.Text;

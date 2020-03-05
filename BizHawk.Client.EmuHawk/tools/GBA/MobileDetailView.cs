@@ -12,10 +12,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public BmpView BmpView => bmpView1;
 
-		public override string ToString()
-		{
-			return Text;
-		}
+		public override string ToString() => Text;
 
 		private void MobileDetailView_SizeChanged(object sender, EventArgs e)
 		{

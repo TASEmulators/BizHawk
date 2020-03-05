@@ -88,19 +88,18 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public static bool IsModifier (this Key key)
 		{
-			if (key == Key.ShiftLeft)
-				return true;
-			if (key == Key.ShiftRight)
-				return true;
-			if (key == Key.ControlLeft)
-				return true;
-			if (key == Key.ControlRight)
-				return true;
-			if (key == Key.AltLeft)
-				return true;
-			if (key == Key.AltRight)
-				return true;
-			return false;
+			switch (key)
+			{
+				case Key.ShiftLeft:
+				case Key.ShiftRight:
+				case Key.ControlLeft:
+				case Key.ControlRight:
+				case Key.AltLeft:
+				case Key.AltRight:
+					return true;
+				default:
+					return false;
+			}
 		}
 	}
 

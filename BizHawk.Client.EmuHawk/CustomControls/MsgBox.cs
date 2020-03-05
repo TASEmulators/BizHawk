@@ -100,8 +100,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		{
 			if (_msgIcon != null)
 			{
-				Graphics g = e.Graphics;
-				g.DrawIconUnstretched(_msgIcon, new Rectangle(FormXMargin, FormYMargin, _msgIcon.Width, _msgIcon.Height));
+				e.Graphics.DrawIconUnstretched(_msgIcon, new Rectangle(FormXMargin, FormYMargin, _msgIcon.Width, _msgIcon.Height));
 			}
 
 			base.OnPaint(e);
@@ -110,19 +109,14 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		// Get system icon for MessageBoxIcon.
 		private static Icon GetMessageBoxIcon(MessageBoxIcon icon)
 		{
-			switch (icon)
+			return icon switch
 			{
-				case MessageBoxIcon.Asterisk:
-					return SystemIcons.Asterisk;
-				case MessageBoxIcon.Error:
-					return SystemIcons.Error;
-				case MessageBoxIcon.Exclamation:
-					return SystemIcons.Exclamation;
-				case MessageBoxIcon.Question:
-					return SystemIcons.Question;
-				default:
-					return null;
-			}
+				MessageBoxIcon.Asterisk => SystemIcons.Asterisk,
+				MessageBoxIcon.Error => SystemIcons.Error,
+				MessageBoxIcon.Exclamation => SystemIcons.Exclamation,
+				MessageBoxIcon.Question => SystemIcons.Question,
+				_ => null
+			};
 		}
 
 		// Sets button text and returns the width.

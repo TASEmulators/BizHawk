@@ -104,21 +104,14 @@ namespace BizHawk.Client.EmuHawk
 					int.Parse(VideoResolutionYTextBox.Text) : 240;
 			}
 
-			switch (PluginComboBox.Text)
+			_ss.VideoPlugin = PluginComboBox.Text switch
 			{
-				case "Rice":
-					_ss.VideoPlugin = PluginType.Rice;
-					break;
-				case "Glide64":
-					_ss.VideoPlugin = PluginType.Glide;
-					break;
-				case "Glide64mk2":
-					_ss.VideoPlugin = PluginType.GlideMk2;
-					break;
-				case "GLideN64":
-					_ss.VideoPlugin = PluginType.GLideN64;
-					break;
-			}
+				"Rice" => PluginType.Rice,
+				"Glide64" => PluginType.Glide,
+				"Glide64mk2" => PluginType.GlideMk2,
+				"GLideN64" => PluginType.GLideN64,
+				_ => _ss.VideoPlugin
+			};
 
 			// Rice
 			_ss.RicePlugin.NormalAlphaBlender = RiceNormalAlphaBlender_CB.Checked;
@@ -746,15 +739,15 @@ namespace BizHawk.Client.EmuHawk
 			// GLideN64
 			GLideN64_UseDefaultHacks.Checked = _ss.GLideN64Plugin.UseDefaultHacks;
 
-			switch (_ss.GLideN64Plugin.MultiSampling)
+			GLideN64_MultiSampling.SelectedIndex = _ss.GLideN64Plugin.MultiSampling switch
 			{
-				case 0: GLideN64_MultiSampling.SelectedIndex = 0; break;
-				case 2: GLideN64_MultiSampling.SelectedIndex = 1; break;
-				case 4: GLideN64_MultiSampling.SelectedIndex = 2; break;
-				case 8: GLideN64_MultiSampling.SelectedIndex = 3; break;
-				case 16: GLideN64_MultiSampling.SelectedIndex = 4; break;
-				default: GLideN64_MultiSampling.SelectedIndex = 0; break;
-			}
+				0 => 0,
+				2 => 1,
+				4 => 2,
+				8 => 3,
+				16 => 4,
+				_ => 0
+			};
 			GLideN64_AspectRatio
 				.PopulateFromEnum<N64SyncSettings.N64GLideN64PluginSettings.AspectRatioMode>(_ss.GLideN64Plugin.AspectRatio);
 			GLideN64_BufferSwapMode

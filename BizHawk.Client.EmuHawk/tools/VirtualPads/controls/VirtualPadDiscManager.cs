@@ -34,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 
 		object lastCoreOwner;
 
-		void UpdateCoreAssociation()
+		private void UpdateCoreAssociation()
 		{
 			if (lastCoreOwner == OwnerEmulator)
 				return;
@@ -144,9 +144,7 @@ namespace BizHawk.Client.EmuHawk
 #endif
 
 			//emergency measure: if no selection, set no disc
-			if (lvDiscs.SelectedIndices.Count == 0)
-			  Global.StickyXORAdapter.SetFloat(_discSelectName, 0);	
-			else Global.StickyXORAdapter.SetFloat(_discSelectName, lvDiscs.SelectedIndices[0]);
+			Global.StickyXORAdapter.SetFloat(_discSelectName, lvDiscs.SelectedIndices.Count == 0 ? 0 : lvDiscs.SelectedIndices[0]);
 		}
 
 		private void btnClose_Click(object sender, EventArgs e)

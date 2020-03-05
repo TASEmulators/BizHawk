@@ -148,12 +148,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (x.HasValue)
 			{
-				X = X + x.Value;
+				X += x.Value;
 			}
 
 			if (y.HasValue)
 			{
-				Y = Y + y.Value;
+				Y += y.Value;
 			}
 
 			Refresh();

@@ -435,12 +435,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private string DressUpRelative(string path)
 		{
-			if (path.StartsWith(".\\"))
-			{
-				return path.Replace(".\\", "");
-			}
-
-			return path;
+			return path.StartsWith(".\\") ? path.Replace(".\\", "") : path;
 		}
 
 		private void UpdateNumberOfScripts()

@@ -107,15 +107,12 @@ namespace BizHawk.Client.EmuHawk
 			text = "";
 			if (index < _instructions.Count)
 			{
-				switch (column.Name)
+				text = column.Name switch
 				{
-					case DisasmColumnName:
-						text = _instructions[index].Disassembly.TrimEnd();
-						break;
-					case RegistersColumnName:
-						text = _instructions[index].RegisterInfo;
-						break;
-				}
+					DisasmColumnName => _instructions[index].Disassembly.TrimEnd(),
+					RegistersColumnName => _instructions[index].RegisterInfo,
+					_ => text
+				};
 			}
 		}
 
@@ -128,7 +125,7 @@ namespace BizHawk.Client.EmuHawk
 			SetTracerBoxTitle();
 		}
 
-		class CallbackSink : ITraceSink
+		private class CallbackSink : ITraceSink
 		{
 			public void Put(TraceInfo info)
 			{

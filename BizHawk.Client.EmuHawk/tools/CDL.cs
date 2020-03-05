@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 		[ConfigPersist]
 		private bool CDLAutoResume { get; set; } = true;
 
-		void SetCurrentFilename(string fname)
+		private void SetCurrentFilename(string fname)
 		{
 			_currentFilename = fname;
 			Text = _currentFilename == null

@@ -73,11 +73,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("socketServerSuccessful", "returns the status of the last Socket server action")]
 		public bool SocketServerSuccessful()
 		{
-			if (!CheckSocketServer())
-			{
-				return false;
-			}
-			return GlobalWin.socketServer.Successful();
+			return CheckSocketServer() && GlobalWin.socketServer.Successful();
 		}
 
 		[LuaMethod("socketServerSetTimeout", "sets the timeout in milliseconds for receiving messages")]
@@ -130,6 +126,7 @@ namespace BizHawk.Client.EmuHawk
 				Log("Socket server was not initialized, please initialize it via the command line");
 				return false;
 			}
+
 			return true;
 		}
 

@@ -288,22 +288,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				switch (NameTableView.Which)
+				nameTable = NameTableView.Which switch
 				{
-					default:
-					case NameTableViewer.WhichNametable.NT_2000:
-						nameTable = 0;
-						break;
-					case NameTableViewer.WhichNametable.NT_2400:
-						nameTable = 1;
-						break;
-					case NameTableViewer.WhichNametable.NT_2800:
-						nameTable = 2;
-						break;
-					case NameTableViewer.WhichNametable.NT_2C00:
-						nameTable = 3;
-						break;
-				}
+					NameTableViewer.WhichNametable.NT_2000 => 0,
+					NameTableViewer.WhichNametable.NT_2400 => 1,
+					NameTableViewer.WhichNametable.NT_2800 => 2,
+					NameTableViewer.WhichNametable.NT_2C00 => 3,
+					_ => 0
+				};
 
 				tileX = e.X / 16;
 				tileY = e.Y / 16;

@@ -18,7 +18,6 @@ namespace BizHawk.Client.EmuHawk
 		private bool IsSet
 		{
 			get => _isSet;
-
 			set
 			{
 				_isSet = value;
@@ -60,7 +59,6 @@ namespace BizHawk.Client.EmuHawk
 		public bool ReadOnly
 		{
 			get => _readonly;
-
 			set
 			{
 				if (_readonly != value)
@@ -83,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (x.HasValue)
 			{
-				CurrentValue = CurrentValue + x.Value;
+				CurrentValue += x.Value;
 			}
 		}
 
@@ -97,7 +95,6 @@ namespace BizHawk.Client.EmuHawk
 		public string DisplayName
 		{
 			get => _displayName;
-
 			set
 			{
 				_displayName = value ?? "";
@@ -190,7 +187,6 @@ namespace BizHawk.Client.EmuHawk
 		public int CurrentValue
 		{
 			get => AnalogTrackBar.Value;
-
 			set
 			{
 				int val;

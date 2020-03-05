@@ -100,9 +100,8 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 		/// </summary>
 		public Vector2 TransformPoint(string channel, Vector2 point)
 		{
-			for (int i = 0; i < Filters.Count; i++)
+			foreach (var filter in Filters)
 			{
-				var filter = Filters[i];
 				point = filter.TransformPoint(channel, point);
 			}
 

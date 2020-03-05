@@ -1373,21 +1373,14 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is LibsnesCore bsnes)
 			{
 				var s = bsnes.GetSettings();
-				switch (layer)
+				result = layer switch
 				{
-					case 1:
-						result = s.ShowOBJ_0 ^= true;
-						break;
-					case 2:
-						result = s.ShowOBJ_1 ^= true;
-						break;
-					case 3:
-						result = s.ShowOBJ_2 ^= true;
-						break;
-					case 4:
-						result = s.ShowOBJ_3 ^= true;
-						break;
-				}
+					1 => (s.ShowOBJ_0 ^= true),
+					2 => (s.ShowOBJ_1 ^= true),
+					3 => (s.ShowOBJ_2 ^= true),
+					4 => (s.ShowOBJ_3 ^= true),
+					_ => result
+				};
 
 				bsnes.PutSettings(s);
 				AddOnScreenMessage($"Obj {layer} Layer {(result ? "On" : "Off")}");
@@ -1395,21 +1388,14 @@ namespace BizHawk.Client.EmuHawk
 			else if (Emulator is Snes9x snes9X)
 			{
 				var s = snes9X.GetSettings();
-				switch (layer)
+				result = layer switch
 				{
-					case 1:
-						result = s.ShowSprites0 ^= true;
-						break;
-					case 2:
-						result = s.ShowSprites1 ^= true;
-						break;
-					case 3:
-						result = s.ShowSprites2 ^= true;
-						break;
-					case 4:
-						result = s.ShowSprites3 ^= true;
-						break;
-				}
+					1 => (s.ShowSprites0 ^= true),
+					2 => (s.ShowSprites1 ^= true),
+					3 => (s.ShowSprites2 ^= true),
+					4 => (s.ShowSprites3 ^= true),
+					_ => result
+				};
 
 				snes9X.PutSettings(s);
 				AddOnScreenMessage($"Sprite {layer} Layer {(result ? "On" : "Off")}");
@@ -2835,18 +2821,7 @@ namespace BizHawk.Client.EmuHawk
 			PressFrameAdvance = false;
 		}
 
-		public bool IsLagFrame
-		{
-			get
-			{
-				if (Emulator.CanPollInput())
-				{
-					return Emulator.AsInputPollable().IsLagFrame;
-				}
-
-				return false;
-			}
-		}
+		public bool IsLagFrame => Emulator.CanPollInput() && Emulator.AsInputPollable().IsLagFrame;
 
 		private void StepRunLoop_Core(bool force = false)
 		{

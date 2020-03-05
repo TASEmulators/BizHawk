@@ -386,12 +386,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_textTable.Any())
 			{
-				if (_textTable.ContainsKey(val))
-				{
-					return _textTable[val];
-				}
-
-				return '?';
+				return _textTable.ContainsKey(val) ? _textTable[val] : '?';
 			}
 
 			if (val < ' ' || val >= 0x7F)
@@ -412,12 +407,7 @@ namespace BizHawk.Client.EmuHawk
 
 			using var file = new HawkFile(path);
 
-			if (!file.Exists)
-			{
-				return false;
-			}
-
-			return file.IsArchive;
+			return file.Exists && file.IsArchive;
 		}
 
 		private byte[] GetRomBytes()

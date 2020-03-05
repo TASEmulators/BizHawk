@@ -67,11 +67,15 @@ namespace BizHawk.Client.EmuHawk
 			for (int i = 0; i < 8; i++)
 			{
 				var combo = combos[i];
-				if (combo.SelectedIndex == 0) uc.Devices8[i] = OctoshockDll.ePeripheralType.None;
-				if (combo.SelectedIndex == 1) uc.Devices8[i] = OctoshockDll.ePeripheralType.Pad;
-				if (combo.SelectedIndex == 2) uc.Devices8[i] = OctoshockDll.ePeripheralType.DualShock;
-				if (combo.SelectedIndex == 3) uc.Devices8[i] = OctoshockDll.ePeripheralType.DualAnalog;
-				if (combo.SelectedIndex == 4) uc.Devices8[i] = OctoshockDll.ePeripheralType.NegCon;
+				uc.Devices8[i] = combo.SelectedIndex switch
+				{
+					0 => OctoshockDll.ePeripheralType.None,
+					1 => OctoshockDll.ePeripheralType.Pad,
+					2 => OctoshockDll.ePeripheralType.DualShock,
+					3 => OctoshockDll.ePeripheralType.DualAnalog,
+					4 => OctoshockDll.ePeripheralType.NegCon,
+					_ => uc.Devices8[i]
+				};
 			}
 
 			return uc;

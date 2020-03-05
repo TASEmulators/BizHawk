@@ -32,60 +32,42 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ProfileConfig_Load(object sender, EventArgs e)
 		{
-			switch (_config.SelectedProfile)
+			ProfileSelectComboBox.SelectedItem = _config.SelectedProfile switch
 			{
-				default:
-				case ClientProfile.Casual:
-					ProfileSelectComboBox.SelectedItem = "Casual Gaming";
-					break;
-				case ClientProfile.Longplay:
-					ProfileSelectComboBox.SelectedItem = "Longplays";
-					break;
-				case ClientProfile.Tas:
-					ProfileSelectComboBox.SelectedItem = "Tool-assisted Speedruns";
-					break;
-				case ClientProfile.N64Tas:
-					ProfileSelectComboBox.SelectedItem = "N64 Tool-assisted Speedruns";
-					break;
-			}
+				ClientProfile.Casual => "Casual Gaming",
+				ClientProfile.Longplay => "Longplays",
+				ClientProfile.Tas => "Tool-assisted Speedruns",
+				ClientProfile.N64Tas => "N64 Tool-assisted Speedruns",
+				_ => "Casual Gaming"
+			};
 
 			AutoCheckForUpdates.Checked = _config.UpdateAutoCheckEnabled;
 		}
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-			switch (ProfileSelectComboBox.SelectedItem.ToString())
+			_config.SelectedProfile = ProfileSelectComboBox.SelectedItem.ToString() switch
 			{
-				default:
-				case "Custom Profile": // For now
-				case "Casual Gaming":
-					_config.SelectedProfile = ClientProfile.Casual;
-					break;
-				case "Longplays":
-					_config.SelectedProfile = ClientProfile.Longplay;
-					break;
-				case "Tool-assisted Speedruns":
-					_config.SelectedProfile = ClientProfile.Tas;
-					break;
-				case "N64 Tool-assisted Speedruns":
-					_config.SelectedProfile = ClientProfile.N64Tas;
-					break;
-			}
+				"Longplays" => ClientProfile.Longplay,
+				"Tool-assisted Speedruns" => ClientProfile.Tas,
+				"N64 Tool-assisted Speedruns" => ClientProfile.N64Tas,
+				_ => ClientProfile.Casual
+			};
 
 			SetCasual();
 
-			if (_config.SelectedProfile == ClientProfile.Longplay)
+			switch (_config.SelectedProfile)
 			{
-				SetLongPlay();
-			}
-			else if (_config.SelectedProfile == ClientProfile.Tas)
-			{
-				SetTas();
-			}
-			else if (_config.SelectedProfile == ClientProfile.N64Tas)
-			{
-				SetTas();
-				SetN64Tas();
+				case ClientProfile.Longplay:
+					SetLongPlay();
+					break;
+				case ClientProfile.Tas:
+					SetTas();
+					break;
+				case ClientProfile.N64Tas:
+					SetTas();
+					SetN64Tas();
+					break;
 			}
 
 			bool oldUpdateAutoCheckEnabled = _config.UpdateAutoCheckEnabled;

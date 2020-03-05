@@ -312,34 +312,17 @@ namespace BizHawk.Client.EmuHawk
 					BigEndianCheckBox.Checked,
 					NameBox.Text);
 
-				Cheat.CompareType comparisonType;
-				switch (CompareTypeDropDown.SelectedItem.ToString())
+				var comparisonType = CompareTypeDropDown.SelectedItem.ToString() switch
 				{
-					case "":
-						comparisonType = Cheat.CompareType.None;
-						break;
-					case "=":
-						comparisonType = Cheat.CompareType.Equal;
-						break;
-					case ">":
-						comparisonType = Cheat.CompareType.GreaterThan;
-						break;
-					case ">=":
-						comparisonType = Cheat.CompareType.GreaterThanOrEqual;
-						break;
-					case "<":
-						comparisonType = Cheat.CompareType.LessThan;
-						break;
-					case "<=":
-						comparisonType = Cheat.CompareType.LessThanOrEqual;
-						break;
-					case "!=":
-						comparisonType = Cheat.CompareType.NotEqual;
-						break;
-					default:
-						comparisonType = Cheat.CompareType.None;
-						break;
-				}
+					"" => Cheat.CompareType.None,
+					"=" => Cheat.CompareType.Equal,
+					">" => Cheat.CompareType.GreaterThan,
+					">=" => Cheat.CompareType.GreaterThanOrEqual,
+					"<" => Cheat.CompareType.LessThan,
+					"<=" => Cheat.CompareType.LessThanOrEqual,
+					"!=" => Cheat.CompareType.NotEqual,
+					_ => Cheat.CompareType.None
+				};
 
 				return new Cheat(
 					watch,
@@ -348,11 +331,9 @@ namespace BizHawk.Client.EmuHawk
 					true,
 					comparisonType);
 			}
-			else
-			{
-				MessageBox.Show($"{address} is not a valid address for the domain {domain.Name}", "Index out of range", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-				return Cheat.Separator;
-			}
+
+			MessageBox.Show($"{address} is not a valid address for the domain {domain.Name}", "Index out of range", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+			return Cheat.Separator;
 		}
 
 		public void SetAddEvent(Action addCallback)
@@ -369,8 +350,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CompareBox_TextChanged(object sender, EventArgs e)
 		{
-			WatchValueBox compareBox = (WatchValueBox)sender;
-
+			var compareBox = (WatchValueBox)sender;
 			PopulateComparisonTypeBox(string.IsNullOrWhiteSpace(compareBox.Text));
 		}
 

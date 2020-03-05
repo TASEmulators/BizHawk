@@ -278,34 +278,18 @@ namespace BizHawk.Client.EmuHawk
 					text = Watch.DisplayTypeToString(Global.CheatList[index].Type);
 					break;
 				case ComparisonTypeColumn:
-					switch (Global.CheatList[index].ComparisonType)
-					{
-						case Cheat.CompareType.None:
-							text = "";
-							break;
-						case Cheat.CompareType.Equal:
-							text = "=";
-							break;
-						case Cheat.CompareType.GreaterThan:
-							text = ">";
-							break;
-						case Cheat.CompareType.GreaterThanOrEqual:
-							text = ">=";
-							break;
-						case Cheat.CompareType.LessThan:
-							text = "<";
-							break;
-						case Cheat.CompareType.LessThanOrEqual:
-							text = "<=";
-							break;
-						case Cheat.CompareType.NotEqual:
-							text = "!=";
-							break;
-						default:
-							text = "";
-							break;
-					}
-					
+					text = Global.CheatList[index].ComparisonType switch
+						{
+							Cheat.CompareType.None => "",
+							Cheat.CompareType.Equal => "=",
+							Cheat.CompareType.GreaterThan => ">",
+							Cheat.CompareType.GreaterThanOrEqual => ">=",
+							Cheat.CompareType.LessThan => "<",
+							Cheat.CompareType.LessThanOrEqual => "<=",
+							Cheat.CompareType.NotEqual => "!=",
+							_ => ""
+						};
+
 					break;
 			}
 		}

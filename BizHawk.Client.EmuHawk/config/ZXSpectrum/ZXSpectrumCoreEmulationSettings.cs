@@ -98,24 +98,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateBorderNotes(ZXSpectrum.BorderType type)
 		{
-			switch (type)
+			lblBorderInfo.Text = type switch
 			{
-				case ZXSpectrum.BorderType.Full:
-					lblBorderInfo.Text = "Original border sizes";
-					break;
-				case ZXSpectrum.BorderType.Medium:
-					lblBorderInfo.Text = "All borders 24px";
-					break;
-				case ZXSpectrum.BorderType.None:
-					lblBorderInfo.Text = "No border at all";
-					break;
-				case ZXSpectrum.BorderType.Small:
-					lblBorderInfo.Text = "All borders 10px";
-					break;
-				case ZXSpectrum.BorderType.Widescreen:
-					lblBorderInfo.Text = "No top and bottom border (almost 16:9)";
-					break;
-			}
+				ZXSpectrum.BorderType.Full => "Original border sizes",
+				ZXSpectrum.BorderType.Medium => "All borders 24px",
+				ZXSpectrum.BorderType.None => "No border at all",
+				ZXSpectrum.BorderType.Small => "All borders 10px",
+				ZXSpectrum.BorderType.Widescreen => "No top and bottom border (almost 16:9)",
+				_ => lblBorderInfo.Text
+			};
 		}
 	}
 }

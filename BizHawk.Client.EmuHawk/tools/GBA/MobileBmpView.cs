@@ -16,10 +16,7 @@ namespace BizHawk.Client.EmuHawk
 		[Browsable(false)]
 		public bool ShouldDraw => Visible;
 
-		public override string ToString()
-		{
-			return Text;
-		}
+		public override string ToString() => Text;
 
 		public void ChangeViewSize(Size size)
 		{

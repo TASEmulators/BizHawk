@@ -25,47 +25,18 @@ namespace BizHawk.Client.EmuHawk.CoreExtensions
 				return Properties.Resources.CorpHawkSmall;
 			}
 
-			if (core is QuickNES)
+			return core switch
 			{
-				return Properties.Resources.QuickNes;
-			}
-			
-			if (core is LibsnesCore)
-			{
-				return Properties.Resources.bsnes;
-			}
-			
-			if (core is GPGX)
-			{
-				return Properties.Resources.genplus;
-			}
-			
-			if (core is PSP)
-			{
-				return Properties.Resources.ppsspp;
-			}
-			
-			if (core is Gameboy)
-			{
-				return Properties.Resources.gambatte;
-			}
-			
-			if (core is Snes9x)
-			{
-				return Properties.Resources.snes9x;
-			}
-			
-			if (core is MAME)
-			{
-				return Properties.Resources.mame;
-			}
-
-			if (core is MGBAHawk)
-			{
-				return Properties.Resources.mGba;
-			}
-
-			return null;
+				QuickNES _ => Properties.Resources.QuickNes,
+				LibsnesCore _ => Properties.Resources.bsnes,
+				GPGX _ => Properties.Resources.genplus,
+				PSP _ => Properties.Resources.ppsspp,
+				Gameboy _ => Properties.Resources.gambatte,
+				Snes9x _ => Properties.Resources.snes9x,
+				MAME _ => Properties.Resources.mame,
+				MGBAHawk _ => Properties.Resources.mGba,
+				_ => null
+			};
 		}
 
 		public static string DisplayName(this IEmulator core)

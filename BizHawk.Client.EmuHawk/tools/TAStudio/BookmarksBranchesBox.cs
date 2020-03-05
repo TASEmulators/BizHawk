@@ -86,18 +86,13 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			switch (column.Name)
+			text = column.Name switch
 			{
-				case BranchNumberColumnName:
-					text = index.ToString();
-					break;
-				case FrameColumnName:
-					text = GetBranch(index).Frame.ToString();
-					break;
-				case UserTextColumnName:
-					text = GetBranch(index).UserText;
-					break;
-			}
+				BranchNumberColumnName => index.ToString(),
+				FrameColumnName => GetBranch(index).Frame.ToString(),
+				UserTextColumnName => GetBranch(index).UserText,
+				_ => text
+			};
 		}
 
 		private void QueryItemBkColor(int index, RollColumn column, ref Color color)
