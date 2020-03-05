@@ -291,7 +291,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			_watchList = _watchList.Except(removeList).ToList();
 		}
 
-		public void AddRange(List<long> addresses, bool append)
+		public void AddRange(IEnumerable<long> addresses, bool append)
 		{
 			if (!append)
 			{
