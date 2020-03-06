@@ -14,7 +14,7 @@
 		<ProjectReference Include="$(SolutionDir)BizHawk.Emulation.Common/BizHawk.Emulation.Common.csproj" />
 		<Compile Include="$(SolutionDir)Version/svnrev.cs" />
 		<Compile Include="$(SolutionDir)Version/VersionInfo.cs" />
-		<None Include="Resources/*" />
+		<EmbeddedResource Include="Resources/**/*" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Update="Calculator/TI83.*.cs" DependentUpon="TI83.cs" />
@@ -66,8 +66,6 @@
 		<Compile Update="Consoles/Sony/PSX/Octoshock.cs" SubType="Code" />
 		<Compile Update="Consoles/Sony/PSX/Octoshock.*.cs" DependentUpon="Octoshock.cs" />
 		<Compile Update="Consoles/WonderSwan/WonderSwan.*.cs" DependentUpon="WonderSwan.cs" />
-		<Compile Update="Properties/Resources.Designer.cs" AutoGen="true" DependentUpon="Resources.resx" DesignTime="true" />
-		<EmbeddedResource Update="Properties/Resources.resx" LastGenOutput="Resources.Designer.cs" />
 	</ItemGroup>
 	<Import Project="$(SolutionDir)NamespaceAliasHack.targets" />
 </Project>

@@ -76,10 +76,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 
 			var bios = _syncSettings.UseRealBIOS && !sgb
 				? comm.CoreFileProvider.GetFirmware(_cgb ? "GBC" : "GB", "World", true)
-				: Util.DecompressGzipFile(new MemoryStream(_cgb ? Resources.SameboyCgbBoot : Resources.SameboyDmgBoot));
+				: Util.DecompressGzipFile(new MemoryStream(_cgb ? Resources.SameboyCgbBoot.Value : Resources.SameboyDmgBoot.Value));
 
 			var spc = sgb
-				? Util.DecompressGzipFile(new MemoryStream(Resources.SgbCartPresent_SPC))
+				? Util.DecompressGzipFile(new MemoryStream(Resources.SgbCartPresent_SPC.Value))
 				: null;
 
 			_exe.AddReadonlyFile(rom, "game.rom");

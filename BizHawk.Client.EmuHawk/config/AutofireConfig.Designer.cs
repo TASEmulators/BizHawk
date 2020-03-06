@@ -142,6 +142,7 @@
 			this.ClientSize = new System.Drawing.Size(323, 90);
 			this.Controls.Add(this.flpDialog);
 			this.Controls.Add(this.flpDialogButtons);
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.Lightning_MultiSize;
 			this.MaximizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(339, 129);
 			this.Name = "AutofireConfig";

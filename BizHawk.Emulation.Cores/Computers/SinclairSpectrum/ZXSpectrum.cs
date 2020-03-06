@@ -194,22 +194,22 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			switch (names.FirstOrDefault())
 			{
 				case "48ROM":
-					embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.ZX_48_ROM));
+					embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.ZX_48_ROM.Value));
 					break;
 				case "128ROM":
-					embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.ZX_128_ROM));
+					embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.ZX_128_ROM.Value));
 					break;
 				case "PLUS2ROM":
-					embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.ZX_plus2_rom));
+					embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.ZX_plus2_rom.Value));
 					break;
 				case "PLUS2AROM":
-					embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.ZX_plus2a_rom));
+					embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.ZX_plus2a_rom.Value));
 					break;
 				case "PLUS3ROM":
-					byte[] r0 = Util.DecompressGzipFile(new MemoryStream(Resources.Spectrum3_V4_0_ROM0_bin));
-					byte[] r1 = Util.DecompressGzipFile(new MemoryStream(Resources.Spectrum3_V4_0_ROM1_bin));
-					byte[] r2 = Util.DecompressGzipFile(new MemoryStream(Resources.Spectrum3_V4_0_ROM2_bin));
-					byte[] r3 = Util.DecompressGzipFile(new MemoryStream(Resources.Spectrum3_V4_0_ROM3_bin));
+					byte[] r0 = Util.DecompressGzipFile(new MemoryStream(Resources.Spectrum3_V4_0_ROM0_bin.Value));
+					byte[] r1 = Util.DecompressGzipFile(new MemoryStream(Resources.Spectrum3_V4_0_ROM1_bin.Value));
+					byte[] r2 = Util.DecompressGzipFile(new MemoryStream(Resources.Spectrum3_V4_0_ROM2_bin.Value));
+					byte[] r3 = Util.DecompressGzipFile(new MemoryStream(Resources.Spectrum3_V4_0_ROM3_bin.Value));
 					embeddedRom = r0.Concat(r1).Concat(r2).Concat(r3).ToArray();
 					break;
 				default:

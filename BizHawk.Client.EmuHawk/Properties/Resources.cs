@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Windows.Forms;
 
 namespace BizHawk.Client.EmuHawk.Properties {
-	internal class Resources {
+	internal static class Resources {
 		private static readonly Assembly Asm = Assembly.GetExecutingAssembly();
 
 		/// <param name="embedPath">Dir separator is '<c>.</c>'. Path is relative to <c>&lt;NS></c>.</param>
@@ -130,7 +130,6 @@ namespace BizHawk.Client.EmuHawk.Properties {
 		internal static readonly Bitmap NNE = ReadEmbeddedBitmap("NNE");
 		internal static readonly Bitmap NNW = ReadEmbeddedBitmap("NNW");
 		internal static readonly Bitmap noconnect_16x16 = ReadEmbeddedBitmap("noconnect_16x16");
-		internal static readonly Stream nothawk = Asm.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.nothawk.bin");
 		internal static readonly Bitmap NW = ReadEmbeddedBitmap("NW");
 		internal static readonly Bitmap OpenFile = ReadEmbeddedBitmap("OpenFile");
 		internal static readonly Bitmap Paste = ReadEmbeddedBitmap("Paste");
