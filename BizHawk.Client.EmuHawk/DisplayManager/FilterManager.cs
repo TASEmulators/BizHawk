@@ -15,7 +15,7 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 
 	public class SurfaceFormat
 	{
-		public SurfaceFormat(Size size) { Size = size; }
+		public SurfaceFormat(Size size) => Size = size;
 		public Size Size { get; }
 	}
 
@@ -28,8 +28,8 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 			SurfaceDisposition = surfaceDisposition;
 		}
 
-		public SurfaceFormat SurfaceFormat;
-		public SurfaceDisposition SurfaceDisposition;
+		public SurfaceFormat SurfaceFormat { get; set; }
+		public SurfaceDisposition SurfaceDisposition { get; set; }
 	}
 
 	public interface IRenderTargetProvider
@@ -39,7 +39,7 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 
 	public class FilterProgram
 	{
-		private readonly Dictionary<string, BaseFilter> FilterNameIndex = new Dictionary<string, BaseFilter>();
+		private readonly Dictionary<string, BaseFilter> _filterNameIndex = new Dictionary<string, BaseFilter>();
 
 		public List<BaseFilter> Filters = new List<BaseFilter>();
 		public List<ProgramStep> Program = new List<ProgramStep>();
@@ -48,7 +48,7 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 		{
 			get
 			{
-				FilterNameIndex.TryGetValue(name, out var ret);
+				_filterNameIndex.TryGetValue(name, out var ret);
 				return ret;
 			}
 		}
@@ -75,7 +75,7 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 		public void AddFilter(BaseFilter filter, string name = "")
 		{
 			Filters.Add(filter);
-			FilterNameIndex[name] = filter;
+			_filterNameIndex[name] = filter;
 		}
 
 		/// <summary>
@@ -89,9 +89,8 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 				point = filter.UntransformPoint(channel, point);
 			}
 
-			//we COULD handle the case where the output size is 0,0, but it's not mathematically sensible
-			//it should be considered a bug to call this under those conditions
-
+			// we COULD handle the case where the output size is 0,0, but it's not mathematically sensible
+			// it should be considered a bug to call this under those conditions
 			return point;
 		}
 
@@ -105,13 +104,12 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 				point = filter.TransformPoint(channel, point);
 			}
 
-			//we COULD handle the case where the output size is 0,0, but it's not mathematically sensible
-			//it should be considered a bug to call this under those conditions
-			////in case the output size is zero, transform all points to zero, since the above maths may have malfunctioned
-			//var size = Filters[Filters.Count - 1].FindOutput().SurfaceFormat.Size;
-			//if (size.Width == 0) point.X = 0;
-			//if (size.Height == 0) point.Y = 0;
-
+			// we COULD handle the case where the output size is 0,0, but it's not mathematically sensible
+			// it should be considered a bug to call this under those conditions
+			// in case the output size is zero, transform all points to zero, since the above maths may have malfunctioned
+			////var size = Filters[Filters.Count - 1].FindOutput().SurfaceFormat.Size;
+			////if (size.Width == 0) point.X = 0;
+			////if (size.Height == 0) point.Y = 0;
 			return point;
 		}
 
@@ -129,17 +127,17 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 			public string Comment;
 			public override string ToString()
 			{
-				if (Type == ProgramStepType.Run)
-					return $"Run {(int)Args} ({Comment})";
-				if (Type == ProgramStepType.NewTarget)
-					return $"NewTarget {(Size)Args}";
-				if (Type == ProgramStepType.FinalTarget)
-					return "FinalTarget";
-				return null;
+				return Type switch
+				{
+					ProgramStepType.Run => $"Run {(int) Args} ({Comment})",
+					ProgramStepType.NewTarget => $"NewTarget {(Size) Args}",
+					ProgramStepType.FinalTarget => "FinalTarget",
+					_ => null
+				};
 			}
 		}
 
-		public void Compile(string channel, Size insize, Size outsize, bool finalTarget)
+		public void Compile(string channel, Size inSize, Size outsize, bool finalTarget)
 		{
 		RETRY:
 			
@@ -153,10 +151,9 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 			}
 
 			//propagate input size forwards through filter chain to allow a 'flex' filter to determine what its input will be
-			Size presize = insize;
-			for (int i = 0; i < Filters.Count; i++)
+			Size presize = inSize;
+			foreach (var filter in Filters)
 			{
-				var filter = Filters[i];
 				presize = filter.PresizeInput(channel, presize);
 			}
 
@@ -174,7 +171,7 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 			{
 				BaseFilter f = Filters[i];
 
-				//check whether this filter needs input. if so, notify it of the current pipeline state
+				// check whether this filter needs input. if so, notify it of the current pipeline state
 				var iosi = f.FindInput(channel);
 				if (iosi != null)
 				{
@@ -186,16 +183,16 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 						continue;
 					}
 
-					//check if the desired disposition needs to change from texture to render target
-					//(if so, insert a render filter)
+					// check if the desired disposition needs to change from texture to render target
+					// (if so, insert a render filter)
 					if (iosi.SurfaceDisposition == SurfaceDisposition.RenderTarget && currState.SurfaceDisposition == SurfaceDisposition.Texture)
 					{
 						var renderer = new Render();
 						Filters.Insert(i, renderer);
 						goto RETRY;
 					}
-					//check if the desired disposition needs to change from a render target to a texture
-					//(if so, the current render target gets resolved, and made no longer current
+					// check if the desired disposition needs to change from a render target to a texture
+					// (if so, the current render target gets resolved, and made no longer current
 					else if (iosi.SurfaceDisposition == SurfaceDisposition.Texture && currState.SurfaceDisposition == SurfaceDisposition.RenderTarget)
 					{
 						var resolver = new Resolve();
@@ -204,7 +201,7 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 					}
 				}
 
-				//now, the filter will have set its output state depending on its input state. check if it outputs:
+				// now, the filter will have set its output state depending on its input state. check if it outputs:
 				iosi = f.FindOutput(channel);
 				if (iosi != null)
 				{
@@ -218,7 +215,7 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 					}
 					else
 					{
-						//if output disposition is unspecified, change it to whatever we've got right now
+						// if output disposition is unspecified, change it to whatever we've got right now
 						if (iosi.SurfaceDisposition == SurfaceDisposition.Unspecified)
 						{
 							iosi.SurfaceDisposition = currState.SurfaceDisposition;
@@ -242,15 +239,13 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 							currState.SurfaceDisposition = iosi.SurfaceDisposition;
 						}
 					}
-
-
 				}
 
 				Program.Add(new ProgramStep(ProgramStepType.Run, i, f.GetType().Name));
 
-			} //filter loop
+			} // filter loop
 
-			//if the current output disposition is a texture, we need to render it
+			// if the current output disposition is a texture, we need to render it
 			if (currState.SurfaceDisposition == SurfaceDisposition.Texture)
 			{
 				var renderer = new Render();
@@ -258,7 +253,7 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 				goto RETRY;
 			}
 
-			//patch the program so that the final rendertarget set operation is the framebuffer instead
+			// patch the program so that the final RenderTarget set operation is the framebuffer instead
 			if (finalTarget)
 			{
 				for (int i = Program.Count - 1; i >= 0; i--)
