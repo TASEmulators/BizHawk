@@ -229,6 +229,9 @@ namespace BizHawk.Emulation.Common
 				case ".GBA":
 					game.System = "GBA";
 					break;
+				case ".NDS":
+					game.System = "NDS";
+					break;
 
 				case ".SMS":
 					game.System = "SMS";

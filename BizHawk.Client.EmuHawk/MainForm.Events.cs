@@ -2020,6 +2020,21 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		#region NDS
+
+		private void NDSSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			DialogResult result = new NDSSettings().ShowDialog();
+			if (result == DialogResult.OK)
+				GlobalWin.OSD.AddMessage("Settings saved.");
+			else if (result == DialogResult.Yes)
+				FlagNeedsReboot();
+			else
+				GlobalWin.OSD.AddMessage("Settings aborted.");
+		}
+
+		#endregion
+
 		#region PSX
 
 		private void PsxSubMenu_DropDownOpened(object sender, EventArgs e)
