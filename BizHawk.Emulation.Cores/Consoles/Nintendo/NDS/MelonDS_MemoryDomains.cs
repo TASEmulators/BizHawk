@@ -77,13 +77,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			{
 				ushort ret = ARM9Read16((uint)addr);
 				if (bigEndian)
-					ret = BizHawk.Common.BitConverterLE.SwapEndianness(ret);
+					ret = SwapEndianness(ret);
 				return ret;
 			}
 			public override void PokeUshort(long addr, ushort val, bool bigEndian)
 			{
 				if (bigEndian)
-					val = BizHawk.Common.BitConverterLE.SwapEndianness(val);
+					val = SwapEndianness(val);
 				ARM9Write16((uint)addr, val);
 			}
 
@@ -91,14 +91,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			{
 				uint ret = ARM9Read32((uint)addr);
 				if (!bigEndian)
-					ret = BizHawk.Common.BitConverterLE.SwapEndianness(ret);
+					ret = SwapEndianness(ret);
 				return ret;
 
 			}
 			public override void PokeUint(long addr, uint val, bool bigEndian)
 			{
 				if (!bigEndian)
-					val = BizHawk.Common.BitConverterLE.SwapEndianness(val);
+					val = SwapEndianness(val);
 				ARM9Write32((uint)addr, val);
 			}
 		}
@@ -108,5 +108,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			return domains.Values.GetEnumerator();
 		}
 		IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
+
+		public static ushort SwapEndianness(ushort value)
+		{
+			return (ushort)((value >> 8) | (value << 8));
+		}
+
+		public static uint SwapEndianness(uint value)
+		{
+			return (value >> 24) | ((value & 0x00ff0000) >> 8) | ((value & 0x0000ff00) << 8) | (value << 24);
+		}
 	}
 }

@@ -392,13 +392,9 @@ namespace BizHawk.Client.EmuHawk
 
 			// otherwise, have the filter program untransform it
 			Vector2 v = new Vector2(p.X, p.Y);
-<<<<<<< HEAD
 			v = _currentFilterProgram.UntransformPoint("default", v);
-=======
-			v = CurrentFilterProgram.UntransformPoint("default",v);
-			if (Global.SystemInfo.System == ApiHawk.CoreSystem.NintendoDS)
+			if (Global.Emulator.SystemId == "NDS")
 				v.Y = 2 * v.Y - (Global.Emulator as IVideoProvider).BufferHeight;
->>>>>>> DSHawk
 			return new Point((int)v.X, (int)v.Y);
 		}
 

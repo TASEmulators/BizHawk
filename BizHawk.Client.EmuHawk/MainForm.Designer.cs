@@ -4473,5 +4473,7 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator38;
 		private System.Windows.Forms.ToolStripMenuItem NDSSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem NDSSettingsMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem arcadeToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem2;
 	}
 }
