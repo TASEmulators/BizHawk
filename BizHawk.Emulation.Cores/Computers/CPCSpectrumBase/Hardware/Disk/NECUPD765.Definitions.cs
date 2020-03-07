@@ -1,20 +1,20 @@
 ﻿using BizHawk.Common;
 using System;
 
-namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
+namespace BizHawk.Emulation.Cores.Computers.CPCSpectrumBase
 {
 	/// <summary>
 	/// Definitions
 	/// </summary>
 	#region Attribution
 	/*
-        Implementation based on the information contained here:
-        http://www.cpcwiki.eu/index.php/765_FDC
-        and here:
-        http://www.cpcwiki.eu/imgs/f/f3/UPD765_Datasheet_OCRed.pdf
-    */
+		Implementation based on the information contained here:
+		http://www.cpcwiki.eu/index.php/765_FDC
+		and here:
+		http://www.cpcwiki.eu/imgs/f/f3/UPD765_Datasheet_OCRed.pdf
+	*/
 	#endregion
-	public partial class NECUPD765
+	public abstract partial class NECUPD765<TMachine, TDriveState>
 	{
 		#region Enums
 
@@ -692,10 +692,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		private class Command
 		{
-			//          /// <summary>
-			//          /// Mask to remove potential parameter bits (5,6, and or 7) in order to identify the command
-			//          /// </summary>
-			//          public int BitMask { get; set; }
+//			/// <summary>
+//			/// Mask to remove potential parameter bits (5,6, and or 7) in order to identify the command
+//			/// </summary>
+//			public int BitMask { get; set; }
 			/// <summary>
 			/// The command code after bitmask has been applied
 			/// </summary>

@@ -1,5 +1,6 @@
 ﻿using BizHawk.Common;
 using BizHawk.Emulation.Cores.Components.Z80A;
+using BizHawk.Emulation.Cores.Computers.CPCSpectrumBase;
 using BizHawk.Emulation.Cores.Sound;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
@@ -8,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// The abstract class that all emulated models will inherit from
 	/// * Main properties / fields / contruction*
 	/// </summary>
-	public abstract partial class SpectrumBase
+	public abstract partial class SpectrumBase : CPCSpectrumBase.CPCSpectrumBase
 	{
 		#region Devices
 
@@ -66,12 +67,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// The +3 built-in disk drive
 		/// </summary>
-		public virtual NECUPD765 UPDDiskDevice { get; set; }
+		public virtual NECUPD765Spectrum UPDDiskDevice { get; set; }
 
 		/// <summary>
 		/// Holds the currently selected joysticks
 		/// </summary>
-		public virtual IJoystick[] JoystickCollection { get; set; }
+		public virtual IJoystick<JoystickType>[] JoystickCollection { get; set; }
 
 		/// <summary>
 		/// +3/2a printer port strobe

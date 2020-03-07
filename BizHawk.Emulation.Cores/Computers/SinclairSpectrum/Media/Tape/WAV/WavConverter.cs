@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
+using BizHawk.Emulation.Cores.Computers.CPCSpectrumBase;
+
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
 	/// <summary>

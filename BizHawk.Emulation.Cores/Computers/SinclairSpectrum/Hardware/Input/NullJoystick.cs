@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using BizHawk.Emulation.Cores.Computers.CPCSpectrumBase;
+
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
 	/// <summary>
 	/// A null joystick object
 	/// </summary>
-	public class NullJoystick : IJoystick
+	public class NullJoystick : IJoystick<JoystickType>
 	{
 		private int _joyLine;
 		private SpectrumBase _machine;

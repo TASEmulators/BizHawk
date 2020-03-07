@@ -3,20 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
-namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
+namespace BizHawk.Emulation.Cores.Computers.CPCSpectrumBase
 {
 	/// <summary>
 	/// IPortIODevice
 	/// </summary>
 	#region Attribution
 	/*
-        Implementation based on the information contained here:
-        http://www.cpcwiki.eu/index.php/765_FDC
-        and here:
-        http://www.cpcwiki.eu/imgs/f/f3/UPD765_Datasheet_OCRed.pdf
-    */
+		Implementation based on the information contained here:
+		http://www.cpcwiki.eu/index.php/765_FDC
+		and here:
+		http://www.cpcwiki.eu/imgs/f/f3/UPD765_Datasheet_OCRed.pdf
+	*/
 	#endregion
-	public partial class NECUPD765 : IPortIODevice
+	public abstract partial class NECUPD765<TMachine, TDriveState> : IPortIODevice
 	{
 		#region Dev Logging
 
@@ -31,15 +31,15 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 
 		/*
-         * Status read
-         * Data write
-         * Data read
-         * CMD code
-         * CMD string
-         * MT flag
-         * MK flag
-         * SK flag
-         * */
+			Status read
+			Data write
+			Data read
+			CMD code
+			CMD string
+			MT flag
+			MK flag
+			SK flag
+		*/
 		private string[] workingArr = new string[3];
 
 		private void BuildCSVLine()

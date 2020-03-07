@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+using BizHawk.Emulation.Cores.Computers.CPCSpectrumBase;
+
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
 	/// <summary>
@@ -280,7 +282,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		protected void InitJoysticks(List<JoystickType> joys)
 		{
-			var jCollection = new List<IJoystick>();
+			var jCollection = new List<IJoystick<JoystickType>>();
 
 			for (int i = 0; i < joys.Count(); i++)
 			{
@@ -298,7 +300,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Instantiates a new IJoystick object
 		/// </summary>
-		public IJoystick InstantiateJoystick(JoystickType type, int playerNumber)
+		public IJoystick<JoystickType> InstantiateJoystick(JoystickType type, int playerNumber)
 		{
 			switch (type)
 			{
@@ -320,7 +322,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Returns a IJoystick object depending on the type (or null if not found)
 		/// </summary>
-		protected IJoystick LocateUniqueJoystick(JoystickType type)
+		protected IJoystick<JoystickType> LocateUniqueJoystick(JoystickType type)
 		{
 			return JoystickCollection.FirstOrDefault(a => a.JoyType == type);
 		}

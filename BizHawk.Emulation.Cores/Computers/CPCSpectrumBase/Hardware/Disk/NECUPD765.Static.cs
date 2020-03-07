@@ -1,19 +1,19 @@
 ﻿using System.Collections;
 
-namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
+namespace BizHawk.Emulation.Cores.Computers.CPCSpectrumBase
 {
 	/// <summary>
 	/// Static helper methods
 	/// </summary>
 	#region Attribution
 	/*
-        Implementation based on the information contained here:
-        http://www.cpcwiki.eu/index.php/765_FDC
-        and here:
-        http://www.cpcwiki.eu/imgs/f/f3/UPD765_Datasheet_OCRed.pdf
-    */
+		Implementation based on the information contained here:
+		http://www.cpcwiki.eu/index.php/765_FDC
+		and here:
+		http://www.cpcwiki.eu/imgs/f/f3/UPD765_Datasheet_OCRed.pdf
+	*/
 	#endregion
-	public partial class NECUPD765
+	public abstract partial class NECUPD765<TMachine, TDriveState>
 	{
 		/// <summary>
 		/// Returns the specified bit value from supplied byte

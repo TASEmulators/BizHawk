@@ -1,6 +1,6 @@
 ﻿using BizHawk.Common;
 
-namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
+namespace BizHawk.Emulation.Cores.Computers.CPCSpectrumBase
 {
 	/// <summary>
 	/// Represents a beeper/buzzer device

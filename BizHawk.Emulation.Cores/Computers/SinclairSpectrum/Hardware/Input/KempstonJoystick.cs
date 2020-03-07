@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using BizHawk.Emulation.Cores.Computers.CPCSpectrumBase;
+
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
-	public class KempstonJoystick : IJoystick
+	public class KempstonJoystick : IJoystick<JoystickType>
 	{
 		private int _joyLine;
 		private SpectrumBase _machine;

@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			TapeDevice = new DatacorderDevice(autoTape);
 			TapeDevice.Init(this);
 
-			UPDDiskDevice = new NECUPD765();
+			UPDDiskDevice = new NECUPD765CPC();
 			UPDDiskDevice.Init(this);
 
 			InitializeMedia(files);

@@ -1,5 +1,5 @@
 ﻿
-namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
+namespace BizHawk.Emulation.Cores.Computers.CPCSpectrumBase
 {
 	/// <summary>
 	/// Defines an object that can load a floppy disk image
@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	public interface IFDDHost
 	{
 		/// <summary>
-		/// The currently inserted diskimage
+		/// The currently inserted disk image
 		/// </summary>
 		FloppyDisk Disk { get; set; }
 
@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		/// <summary>
 		/// Signs whether the current active drive has a disk inserted
-		/// </summary>   
+		/// </summary>
 		bool FDD_IsDiskLoaded { get; }
 	}
 }

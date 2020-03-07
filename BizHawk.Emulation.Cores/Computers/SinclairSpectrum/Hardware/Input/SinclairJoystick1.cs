@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using BizHawk.Emulation.Cores.Computers.CPCSpectrumBase;
+
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
 	/// <summary>
 	/// Sinclair Joystick LEFT
 	/// Just maps to the standard keyboard and is read the same (from port 0xf7fe)
 	/// </summary>
-	public class SinclairJoystick1 : IJoystick
+	public class SinclairJoystick1 : IJoystick<JoystickType>
 	{
 		//private int _joyLine;
 		private SpectrumBase _machine;

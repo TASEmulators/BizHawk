@@ -1,15 +1,17 @@
 ﻿
-namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
+using System;
+
+namespace BizHawk.Emulation.Cores.Computers.CPCSpectrumBase
 {
 	/// <summary>
 	/// Represents a spectrum joystick
 	/// </summary>
-	public interface IJoystick
+	public interface IJoystick<T> where T : Enum
 	{
 		/// <summary>
 		/// The type of joystick
 		/// </summary>
-		JoystickType JoyType { get; }
+		T JoyType { get; }
 
 		/// <summary>
 		/// Array of all the possibly button press names

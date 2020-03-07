@@ -1,27 +1,29 @@
 ﻿using BizHawk.Common;
 using System.Collections.Generic;
 
-namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
+namespace BizHawk.Emulation.Cores.Computers.CPCSpectrumBase
 {
 	/// <summary>
 	/// The NEC floppy disk controller (and floppy drive) found in the +3
 	/// </summary>
 	#region Attribution
 	/*
-        Implementation based on the information contained here:
-        http://www.cpcwiki.eu/index.php/765_FDC
-        and here:
-        http://www.cpcwiki.eu/imgs/f/f3/UPD765_Datasheet_OCRed.pdf
-    */
+		Implementation based on the information contained here:
+		http://www.cpcwiki.eu/index.php/765_FDC
+		and here:
+		http://www.cpcwiki.eu/imgs/f/f3/UPD765_Datasheet_OCRed.pdf
+	*/
 	#endregion
-	public partial class NECUPD765
+	public abstract partial class NECUPD765<TMachine, TDriveState>
+		where TMachine : CPCSpectrumBase
+		where TDriveState : NECUPD765DriveState
 	{
 		#region Devices
 
 		/// <summary>
-		/// The emulated spectrum machine
+		/// The emulated CPC or Spectrum machine
 		/// </summary>
-		private SpectrumBase _machine;
+		protected TMachine _machine;
 
 		#endregion
 
@@ -38,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Initialization routine
 		/// </summary>
-		public void Init(SpectrumBase machine)
+		public void Init(TMachine machine)
 		{
 			_machine = machine;
 			FDD_Init();
@@ -94,56 +96,56 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		{
 			CommandList = new List<Command>
 			{
-                // read data
-                new Command { CommandDelegate = UPD_ReadData, CommandCode = 0x06, MT = true, MF = true, SK = true, IsRead = true,
+				// read data
+				new Command { CommandDelegate = UPD_ReadData, CommandCode = 0x06, MT = true, MF = true, SK = true, IsRead = true,
 					Direction = CommandDirection.OUT, ParameterByteCount = 8, ResultByteCount = 7 },
-                // read id
-                new Command { CommandDelegate = UPD_ReadID, CommandCode = 0x0a, MF = true, IsRead = true,
+				// read id
+				new Command { CommandDelegate = UPD_ReadID, CommandCode = 0x0a, MF = true, IsRead = true,
 					Direction = CommandDirection.OUT, ParameterByteCount = 1, ResultByteCount = 7 },
-                // specify
-                new Command { CommandDelegate = UPD_Specify, CommandCode = 0x03,
+				// specify
+				new Command { CommandDelegate = UPD_Specify, CommandCode = 0x03,
 					Direction = CommandDirection.OUT, ParameterByteCount = 2, ResultByteCount = 0 },
-                // read diagnostic
-                new Command { CommandDelegate = UPD_ReadDiagnostic, CommandCode = 0x02, MF = true, SK = true, IsRead = true,
+				// read diagnostic
+				new Command { CommandDelegate = UPD_ReadDiagnostic, CommandCode = 0x02, MF = true, SK = true, IsRead = true,
 					Direction = CommandDirection.OUT, ParameterByteCount = 8, ResultByteCount = 7 },
-                // scan equal
-                new Command { CommandDelegate = UPD_ScanEqual, CommandCode = 0x11, MT = true, MF = true, SK = true, IsRead = true,
+				// scan equal
+				new Command { CommandDelegate = UPD_ScanEqual, CommandCode = 0x11, MT = true, MF = true, SK = true, IsRead = true,
 					Direction = CommandDirection.IN, ParameterByteCount = 8, ResultByteCount = 7 },
-                // scan high or equal
-                new Command { CommandDelegate = UPD_ScanHighOrEqual, CommandCode = 0x1d, MT = true, MF = true, SK = true, IsRead = true,
+				// scan high or equal
+				new Command { CommandDelegate = UPD_ScanHighOrEqual, CommandCode = 0x1d, MT = true, MF = true, SK = true, IsRead = true,
 					Direction = CommandDirection.IN, ParameterByteCount = 8, ResultByteCount = 7 },
-                // scan low or equal
-                new Command { CommandDelegate = UPD_ScanLowOrEqual, CommandCode = 0x19, MT = true, MF = true, SK = true, IsRead = true,
+				// scan low or equal
+				new Command { CommandDelegate = UPD_ScanLowOrEqual, CommandCode = 0x19, MT = true, MF = true, SK = true, IsRead = true,
 					Direction = CommandDirection.IN, ParameterByteCount = 8, ResultByteCount = 7 },
-                // read deleted data
-                new Command { CommandDelegate = UPD_ReadDeletedData, CommandCode = 0x0c, MT = true, MF = true, SK = true, IsRead = true,
+				// read deleted data
+				new Command { CommandDelegate = UPD_ReadDeletedData, CommandCode = 0x0c, MT = true, MF = true, SK = true, IsRead = true,
 					Direction = CommandDirection.OUT, ParameterByteCount = 8, ResultByteCount = 7 },
-                // write data
-                new Command { CommandDelegate = UPD_WriteData, CommandCode = 0x05, MT = true, MF = true, IsWrite = true,
+				// write data
+				new Command { CommandDelegate = UPD_WriteData, CommandCode = 0x05, MT = true, MF = true, IsWrite = true,
 					Direction = CommandDirection.IN, ParameterByteCount = 8, ResultByteCount = 7 },
-                // write id
-                new Command { CommandDelegate = UPD_WriteID, CommandCode = 0x0d, MF = true, IsWrite = true,
+				// write id
+				new Command { CommandDelegate = UPD_WriteID, CommandCode = 0x0d, MF = true, IsWrite = true,
 					Direction = CommandDirection.IN, ParameterByteCount = 5, ResultByteCount = 7 },
-                // write deleted data
-                new Command { CommandDelegate = UPD_WriteDeletedData, CommandCode = 0x09, MT = true, MF = true, IsWrite = true,
+				// write deleted data
+				new Command { CommandDelegate = UPD_WriteDeletedData, CommandCode = 0x09, MT = true, MF = true, IsWrite = true,
 					Direction = CommandDirection.IN, ParameterByteCount = 8, ResultByteCount = 7 },
-                // seek
-                new Command { CommandDelegate = UPD_Seek, CommandCode = 0x0f,
+				// seek
+				new Command { CommandDelegate = UPD_Seek, CommandCode = 0x0f,
 					Direction = CommandDirection.OUT, ParameterByteCount = 2, ResultByteCount = 0 },
-                // recalibrate (seek track00)
-                new Command { CommandDelegate = UPD_Recalibrate, CommandCode = 0x07,
+				// recalibrate (seek track00)
+				new Command { CommandDelegate = UPD_Recalibrate, CommandCode = 0x07,
 					Direction = CommandDirection.OUT, ParameterByteCount = 1, ResultByteCount = 0 },
-                // sense interrupt status
-                new Command { CommandDelegate = UPD_SenseInterruptStatus, CommandCode = 0x08,
+				// sense interrupt status
+				new Command { CommandDelegate = UPD_SenseInterruptStatus, CommandCode = 0x08,
 					Direction = CommandDirection.OUT, ParameterByteCount = 0, ResultByteCount = 2 },
-                // sense drive status
-                new Command { CommandDelegate = UPD_SenseDriveStatus, CommandCode = 0x04,
+				// sense drive status
+				new Command { CommandDelegate = UPD_SenseDriveStatus, CommandCode = 0x04,
 					Direction = CommandDirection.OUT, ParameterByteCount = 1, ResultByteCount = 1 },
-                // version
-                new Command { CommandDelegate = UPD_Version, CommandCode = 0x10,
+				// version
+				new Command { CommandDelegate = UPD_Version, CommandCode = 0x10,
 					Direction = CommandDirection.OUT, ParameterByteCount = 0, ResultByteCount = 1 },
-                // invalid
-                new Command { CommandDelegate = UPD_Invalid, CommandCode = 0x00,
+				// invalid
+				new Command { CommandDelegate = UPD_Invalid, CommandCode = 0x00,
 					Direction = CommandDirection.OUT, ParameterByteCount = 0, ResultByteCount = 1 },
 			};
 		}

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
+namespace BizHawk.Emulation.Cores.Computers.CPCSpectrumBase
 {
 	/// <summary>
 	/// Represents a tape block
@@ -52,31 +52,31 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			set => _blockData = value;
 		}
 
-		/*
-        /// <summary>
-        /// An array of bytearray encoded strings (stored in this format for easy Bizhawk serialization)
-        /// Its basically tape information
-        /// </summary>
-        private byte[][] _tapeDescriptionData; 
+#if false
+		/// <summary>
+		/// An array of bytearray encoded strings (stored in this format for easy Bizhawk serialization)
+		/// Its basically tape information
+		/// </summary>
+		private byte[][] _tapeDescriptionData;
 
-        /// <summary>
-        /// Returns the Tape Description Data in a human readable format
-        /// </summary>
-        public List<string> TapeDescriptionData
-        {
-            get
-            {
-                List<string> data = new List<string>();
+		/// <summary>
+		/// Returns the Tape Description Data in a human readable format
+		/// </summary>
+		public List<string> TapeDescriptionData
+		{
+			get
+			{
+				List<string> data = new List<string>();
 
-                foreach (byte[] b in _tapeDescriptionData)
-                {
-                    data.Add(Encoding.ASCII.GetString(b));
-                }
+				foreach (byte[] b in _tapeDescriptionData)
+				{
+					data.Add(Encoding.ASCII.GetString(b));
+				}
 
-                return data;
-            }
-        }
-		*/
+				return data;
+			}
+		}
+#endif
 
 
 		#region Block Meta Data

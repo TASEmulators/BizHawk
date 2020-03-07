@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using BizHawk.Emulation.Cores.Computers.CPCSpectrumBase;
+
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
 	/// <summary>
 	/// Cursor joystick
 	/// Maps to a combination of 0xf7fe and 0xeffe
 	/// </summary>
-	public class CursorJoystick : IJoystick
+	public class CursorJoystick : IJoystick<JoystickType>
 	{
 		//private int _joyLine;
 		private SpectrumBase _machine;

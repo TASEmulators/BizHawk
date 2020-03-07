@@ -1,5 +1,6 @@
 ﻿using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
+using BizHawk.Emulation.Cores.Computers.CPCSpectrumBase;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {

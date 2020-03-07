@@ -1,5 +1,5 @@
 ﻿
-namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
+namespace BizHawk.Emulation.Cores.Computers.CPCSpectrumBase
 {
 	/// <summary>
 	/// The different disk formats ZXHawk currently supports

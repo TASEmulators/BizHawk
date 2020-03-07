@@ -7,6 +7,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+using BizHawk.Emulation.Cores.Computers.CPCSpectrumBase;
+
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
 	/// <summary>
@@ -23,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private CRCT_6845 CRCT => _machine.CRCT;
 		//private CRTDevice CRT => _machine.CRT;
 		private IPSG PSG => _machine.AYDevice;
-		private NECUPD765 FDC => _machine.UPDDiskDevice;
+		private NECUPD765CPC FDC => _machine.UPDDiskDevice;
 		private DatacorderDevice DATACORDER => _machine.TapeDevice;
 		private ushort BUSRQ => CPU.MEMRQ[CPU.bus_pntr];
 		public const ushort PCh = 1;

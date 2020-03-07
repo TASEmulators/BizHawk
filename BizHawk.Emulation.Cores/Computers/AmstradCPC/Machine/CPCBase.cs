@@ -1,5 +1,6 @@
 ﻿using BizHawk.Common;
 using BizHawk.Emulation.Cores.Components.Z80A;
+using BizHawk.Emulation.Cores.Computers.CPCSpectrumBase;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
@@ -7,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// The abstract class that all emulated models will inherit from
 	/// * Main properties / fields / contruction*
 	/// </summary>
-	public abstract partial class CPCBase
+	public abstract partial class CPCBase : CPCSpectrumBase.CPCSpectrumBase
 	{
 		#region Devices
 
@@ -50,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// The Amstrad disk drive
 		/// </summary>
-		public virtual NECUPD765 UPDDiskDevice { get; set; }
+		public virtual NECUPD765CPC UPDDiskDevice { get; set; }
 
 		/// <summary>
 		/// The Cathode Ray Tube Controller chip

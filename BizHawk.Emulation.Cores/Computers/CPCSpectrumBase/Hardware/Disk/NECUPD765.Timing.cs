@@ -1,18 +1,18 @@
 ﻿
-namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
+namespace BizHawk.Emulation.Cores.Computers.CPCSpectrumBase
 {
 	/// <summary>
 	/// Timimng
 	/// </summary>
 	#region Attribution
 	/*
-        Implementation based on the information contained here:
-        http://www.cpcwiki.eu/index.php/765_FDC
-        and here:
-        http://www.cpcwiki.eu/imgs/f/f3/UPD765_Datasheet_OCRed.pdf
-    */
+		Implementation based on the information contained here:
+		http://www.cpcwiki.eu/index.php/765_FDC
+		and here:
+		http://www.cpcwiki.eu/imgs/f/f3/UPD765_Datasheet_OCRed.pdf
+	*/
 	#endregion
-	public partial class NECUPD765
+	public abstract partial class NECUPD765<TMachine, TDriveState>
 	{
 		/// <summary>
 		/// The current Z80 cycle
@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Defines the numbers of Z80 cycles per MS
 		/// </summary>
-		private long CPUCyclesPerMs;
+		protected long CPUCyclesPerMs;
 
 		/// <summary>
 		/// The floppy drive emulated clock speed
@@ -73,23 +73,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Initializes the timing routines
 		/// </summary>
-		private void TimingInit()
-		{
-			// z80 timing
-			double frameSize = _machine.GateArray.FrameLength;
-			double rRate = _machine.GateArray.Z80ClockSpeed / frameSize;
-			long tPerSecond = (long)(frameSize * rRate);
-			CPUCyclesPerMs = tPerSecond / 1000;
-
-			// drive timing
-			double dRate = DriveClock / frameSize;
-			long dPerSecond = (long)(frameSize * dRate);
-			DriveCyclesPerMs = dPerSecond / 1000;
-
-			long TStatesPerDriveCycle = (long)((double)_machine.GateArray.Z80ClockSpeed / DriveClock);
-			StatesPerDriveTick = TStatesPerDriveCycle;
-
-		}
+		protected abstract void TimingInit();
 
 		/// <summary>
 		/// Called by reads to the main status register

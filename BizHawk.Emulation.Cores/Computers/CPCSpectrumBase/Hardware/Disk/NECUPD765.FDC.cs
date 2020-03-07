@@ -3,20 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
+namespace BizHawk.Emulation.Cores.Computers.CPCSpectrumBase
 {
 	/// <summary>
 	/// FDC State and Methods
 	/// </summary>
 	#region Attribution
 	/*
-        Implementation based on the information contained here:
-        http://www.cpcwiki.eu/index.php/765_FDC
-        and here:
-        http://www.cpcwiki.eu/imgs/f/f3/UPD765_Datasheet_OCRed.pdf
-    */
+		Implementation based on the information contained here:
+		http://www.cpcwiki.eu/index.php/765_FDC
+		and here:
+		http://www.cpcwiki.eu/imgs/f/f3/UPD765_Datasheet_OCRed.pdf
+	*/
 	#endregion
-	public partial class NECUPD765
+	public abstract partial class NECUPD765<TMachine, TDriveState>
 	{
 		#region Controller State
 
@@ -210,69 +210,69 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// Main status register (accessed via reads to port 0x2ffd)
 		/// </summary>
 		/*
-             b0..3  DB  FDD0..3 Busy (seek/recalib active, until succesful sense intstat)
-             b4     CB  FDC Busy (still in command-, execution- or result-phase)
-             b5     EXM Execution Mode (still in execution-phase, non_DMA_only)
-             b6     DIO Data Input/Output (0=CPU->FDC, 1=FDC->CPU) (see b7)
-             b7     RQM Request For Master (1=ready for next byte) (see b6 for direction)
-        */
+			b0..3  DB  FDD0..3 Busy (seek/recalib active, until succesful sense intstat)
+			b4     CB  FDC Busy (still in command-, execution- or result-phase)
+			b5     EXM Execution Mode (still in execution-phase, non_DMA_only)
+			b6     DIO Data Input/Output (0=CPU->FDC, 1=FDC->CPU) (see b7)
+			b7     RQM Request For Master (1=ready for next byte) (see b6 for direction)
+		*/
 		private byte StatusMain;
 
 		/// <summary>
 		/// Status Register 0
 		/// </summary>
 		/*
-            b0,1   US  Unit Select (driveno during interrupt)
-            b2     HD  Head Address (head during interrupt)
-            b3     NR  Not Ready (drive not ready or non-existing 2nd head selected)
-            b4     EC  Equipment Check (drive failure or recalibrate failed (retry))
-            b5     SE  Seek End (Set if seek-command completed)
-            b6,7   IC  Interrupt Code (0=OK, 1=aborted:readfail/OK if EN, 2=unknown cmd
-                    or senseint with no int occured, 3=aborted:disc removed etc.)
-        */
+			b0,1   US  Unit Select (driveno during interrupt)
+			b2     HD  Head Address (head during interrupt)
+			b3     NR  Not Ready (drive not ready or non-existing 2nd head selected)
+			b4     EC  Equipment Check (drive failure or recalibrate failed (retry))
+			b5     SE  Seek End (Set if seek-command completed)
+			b6,7   IC  Interrupt Code (0=OK, 1=aborted:readfail/OK if EN, 2=unknown cmd
+			        or senseint with no int occured, 3=aborted:disc removed etc.)
+		*/
 		private byte Status0;
 
 		/// <summary>
 		/// Status Register 1
 		/// </summary>
 		/*
-            b0     MA  Missing Address Mark (Sector_ID or DAM not found)
-            b1     NW  Not Writeable (tried to write/format disc with wprot_tab=on)
-            b2     ND  No Data (Sector_ID not found, CRC fail in ID_field)
-            b3,6   0   Not used
-            b4     OR  Over Run (CPU too slow in execution-phase (ca. 26us/Byte))
-            b5     DE  Data Error (CRC-fail in ID- or Data-Field)
-            b7     EN  End of Track (set past most read/write commands) (see IC)
-        */
+			b0     MA  Missing Address Mark (Sector_ID or DAM not found)
+			b1     NW  Not Writeable (tried to write/format disc with wprot_tab=on)
+			b2     ND  No Data (Sector_ID not found, CRC fail in ID_field)
+			b3,6   0   Not used
+			b4     OR  Over Run (CPU too slow in execution-phase (ca. 26us/Byte))
+			b5     DE  Data Error (CRC-fail in ID- or Data-Field)
+			b7     EN  End of Track (set past most read/write commands) (see IC)
+		*/
 		private byte Status1;
 
 		/// <summary>
 		/// Status Register 2
 		/// </summary>
 		/*
-            b0     MD  Missing Address Mark in Data Field (DAM not found)
-            b1     BC  Bad Cylinder (read/programmed track-ID different and read-ID = FF)
-            b2     SN  Scan Not Satisfied (no fitting sector found)
-            b3     SH  Scan Equal Hit (equal)
-            b4     WC  Wrong Cylinder (read/programmed track-ID different) (see b1)
-            b5     DD  Data Error in Data Field (CRC-fail in data-field)
-            b6     CM  Control Mark (read/scan command found sector with deleted DAM)
-            b7     0   Not Used
-        */
+			b0     MD  Missing Address Mark in Data Field (DAM not found)
+			b1     BC  Bad Cylinder (read/programmed track-ID different and read-ID = FF)
+			b2     SN  Scan Not Satisfied (no fitting sector found)
+			b3     SH  Scan Equal Hit (equal)
+			b4     WC  Wrong Cylinder (read/programmed track-ID different) (see b1)
+			b5     DD  Data Error in Data Field (CRC-fail in data-field)
+			b6     CM  Control Mark (read/scan command found sector with deleted DAM)
+			b7     0   Not Used
+		*/
 		private byte Status2;
 
 		/// <summary>
 		/// Status Register 3
 		/// </summary>
 		/*
-            b0,1   US  Unit Select (pin 28,29 of FDC)
-            b2     HD  Head Address (pin 27 of FDC)
-            b3     TS  Two Side (0=yes, 1=no (!))
-            b4     T0  Track 0 (on track 0 we are)
-            b5     RY  Ready (drive ready signal)
-            b6     WP  Write Protected (write protected)
-            b7     FT  Fault (if supported: 1=Drive failure)
-        */
+			b0,1   US  Unit Select (pin 28,29 of FDC)
+			b2     HD  Head Address (pin 27 of FDC)
+			b3     TS  Two Side (0=yes, 1=no (!))
+			b4     T0  Track 0 (on track 0 we are)
+			b5     RY  Ready (drive ready signal)
+			b6     WP  Write Protected (write protected)
+			b7     FT  Fault (if supported: 1=Drive failure)
+		*/
 		private byte Status3;
 
 		#endregion
@@ -362,8 +362,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 							// calculate maximum transfer capacity
 							if (!CMD_FLAG_MF)
 								maxTransferCap = 3328;
-
-							if (maxTransferCap == 0) { }
 						}
 						else
 						{
@@ -374,22 +372,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 							switch (ActiveCommandParams.SectorSize)
 							{
 								case 1:
-									if (CMD_FLAG_MF)
-										maxTransferCap = 6656;
-									else
-										maxTransferCap = 3840;
+									maxTransferCap = CMD_FLAG_MF ? 6656 : 3840;
 									break;
 								case 2:
-									if (CMD_FLAG_MF)
-										maxTransferCap = 7680;
-									else
-										maxTransferCap = 4096;
+									maxTransferCap = CMD_FLAG_MF ? 7680 : 4096;
 									break;
 								case 3:
-									if (CMD_FLAG_MF)
-										maxTransferCap = 8192;
-									else
-										maxTransferCap = 4096;
+									maxTransferCap = CMD_FLAG_MF ? 8192 : 4096;
 									break;
 							}
 
@@ -681,22 +670,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 							switch (ActiveCommandParams.SectorSize)
 							{
 								case 1:
-									if (CMD_FLAG_MF)
-										maxTransferCap = 6656;
-									else
-										maxTransferCap = 3840;
+									maxTransferCap = CMD_FLAG_MF ? 6656 : 3840;
 									break;
 								case 2:
-									if (CMD_FLAG_MF)
-										maxTransferCap = 7680;
-									else
-										maxTransferCap = 4096;
+									maxTransferCap = CMD_FLAG_MF ? 7680 : 4096;
 									break;
 								case 3:
-									if (CMD_FLAG_MF)
-										maxTransferCap = 8192;
-									else
-										maxTransferCap = 4096;
+									maxTransferCap = CMD_FLAG_MF ? 8192 : 4096;
 									break;
 							}
 
@@ -994,22 +974,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 							switch (ActiveCommandParams.SectorSize)
 							{
 								case 1:
-									if (CMD_FLAG_MF)
-										maxTransferCap = 6656;
-									else
-										maxTransferCap = 3840;
+									maxTransferCap = CMD_FLAG_MF ? 6656 : 3840;
 									break;
 								case 2:
-									if (CMD_FLAG_MF)
-										maxTransferCap = 7680;
-									else
-										maxTransferCap = 4096;
+									maxTransferCap = CMD_FLAG_MF ? 7680 : 4096;
 									break;
 								case 3:
-									if (CMD_FLAG_MF)
-										maxTransferCap = 8192;
-									else
-										maxTransferCap = 4096;
+									maxTransferCap = CMD_FLAG_MF ? 8192 : 4096;
 									break;
 							}
 
@@ -2166,17 +2137,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 						// second byte is the current track id
 						ResBuffer[1] = ActiveDrive.CurrentTrackID;
 					}
-					/*
-                    else if (ActiveDrive.SeekStatus == SEEK_INTACKNOWLEDGED)
-                    {
-                        // DriveA interrupt has already been acknowledged
-                        ActiveDrive.SeekStatus = SEEK_IDLE;
+#if false
+					else if (ActiveDrive.SeekStatus == SEEK_INTACKNOWLEDGED)
+					{
+						// DriveA interrupt has already been acknowledged
+						ActiveDrive.SeekStatus = SEEK_IDLE;
 
-                        ResLength = 1;
-                        Status0 = 192;
-                        ResBuffer[0] = Status0;
-                    }
-                    */
+						ResLength = 1;
+						Status0 = 192;
+						ResBuffer[0] = Status0;
+					}
+#endif
 					else if (ActiveDrive.SeekStatus == SEEK_IDLE)
 					{
 						// SIS with no interrupt
@@ -2381,7 +2352,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					SetBit(MSR_EXM, ref StatusMain);
 					SetBit(MSR_CB, ref StatusMain);
 
-					// overrun detection                    
+					// overrun detection
 					OverrunCounter++;
 					if (OverrunCounter >= 64)
 					{
@@ -2401,15 +2372,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					break;
 			}
 
-			//if (!CheckTiming())
-			//{
-			//    UnSetBit(MSR_EXM, ref StatusMain);
-			//}
+//			if (!CheckTiming()) UnSetBit(MSR_EXM, ref StatusMain);
 
 			return StatusMain;
 		}
 
-		//private int testCount = 0;
 		/// <summary>
 		/// Handles CPU reading from the data register
 		/// </summary>
@@ -2498,7 +2465,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				//// we are in command phase
 				case Phase.Command:
 					// attempt to process this parameter byte
-					//ProcessCommand(data);      
+					//ProcessCommand(data);
 					ActiveCommand.CommandDelegate();
 					break;
 				//// we are in execution phase
@@ -2577,15 +2544,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					CMDIndex = CommandList.Count() - 1;
 				}
 
-				/*
-                if ((CMD_FLAG_MF && !ActiveCommand.MF) ||
-                    (CMD_FLAG_MT && !ActiveCommand.MT) ||
-                    (CMD_FLAG_SK && !ActiveCommand.SK))
-                {
-                    // command byte included spurious bit 5,6 or 7 flags
-                    CMDIndex = CommandList.Count() - 1;
-                }
-                */
+#if false
+				if ((CMD_FLAG_MF && !ActiveCommand.MF) ||
+					(CMD_FLAG_MT && !ActiveCommand.MT) ||
+					(CMD_FLAG_SK && !ActiveCommand.SK))
+				{
+					// command byte included spurious bit 5,6 or 7 flags
+					CMDIndex = CommandList.Count() - 1;
+				}
+#endif
 			}
 
 			CommCounter = 0;
@@ -2595,14 +2562,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// move to command phase
 			ActivePhase = Phase.Command;
 
-			/*
-            // check for invalid SIS
-            if (ActiveInterrupt == InterruptState.None && CMDIndex == CC_SENSE_INTSTATUS)
-            {
-                CMDIndex = CC_INVALID;
-                //ActiveCommand.CommandDelegate(InstructionState.StartResult);
-            }
-            */
+#if false
+			// check for invalid SIS
+			if (ActiveInterrupt == InterruptState.None && CMDIndex == CC_SENSE_INTSTATUS)
+			{
+				CMDIndex = CC_INVALID;
+				//ActiveCommand.CommandDelegate(InstructionState.StartResult);
+			}
+#endif
 
 			// set reslength
 			ResLength = ActiveCommand.ResultByteCount;

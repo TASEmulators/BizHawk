@@ -2,6 +2,8 @@
 using BizHawk.Emulation.Common;
 using System;
 
+using BizHawk.Emulation.Cores.Computers.CPCSpectrumBase;
+
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
 	/// <summary>

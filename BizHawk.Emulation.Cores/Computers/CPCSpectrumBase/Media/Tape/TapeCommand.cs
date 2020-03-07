@@ -1,5 +1,5 @@
 ﻿
-namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
+namespace BizHawk.Emulation.Cores.Computers.CPCSpectrumBase
 {
 	/// <summary>
 	/// Represents the possible commands that can be raised from each tape block

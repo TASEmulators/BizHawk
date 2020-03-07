@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
+namespace BizHawk.Emulation.Cores.Computers.CPCSpectrumBase
 {
 	/// <summary>
 	/// This abstract class defines a logical floppy disk
@@ -307,7 +307,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			//      TrackID is consistent between the sectors although is usually high (233, 237 etc)
 			//      SideID is fairly random looking but with all IDs being even
 			//      SectorID is also fairly random looking but contains both odd and even numbers
-			//            
+			//
 			// There doesnt appear to be any CRC errors in this track, but the sector size is always 1 (256 bytes)
 			// Each sector contains different filler byte
 			// Once track 0 is loaded the CPU completely reads all the sectors in this track one-by-one.
@@ -402,104 +402,104 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			return false;
 		}
 
-		/*
-        /// <summary>
-        /// Should be run at the end of the ParseDisk process
-        /// If speedlock is detected the flag is set in the disk image
-        /// </summary>
-        protected virtual void SpeedlockDetection()
-        {
+#if false
+		/// <summary>
+		/// Should be run at the end of the ParseDisk process
+		/// If speedlock is detected the flag is set in the disk image
+		/// </summary>
+		protected virtual void SpeedlockDetection()
+		{
 
-            if (DiskTracks.Length == 0)
-                return;
+			if (DiskTracks.Length == 0)
+				return;
 
-            // check for speedlock copyright notice
-            string ident = Encoding.ASCII.GetString(DiskData, 0x100, 0x1400);
-            if (!ident.ToUpper().Contains("SPEEDLOCK"))
-            {
-                // speedlock not found
-                return;
-            }
+			// check for speedlock copyright notice
+			string ident = Encoding.ASCII.GetString(DiskData, 0x100, 0x1400);
+			if (!ident.ToUpper().Contains("SPEEDLOCK"))
+			{
+				// speedlock not found
+				return;
+			}
 
-            // get cylinder 0
-            var cyl = DiskTracks[0];
+			// get cylinder 0
+			var cyl = DiskTracks[0];
 
-            // get sector with ID=2
-            var sec = cyl.Sectors.Where(a => a.SectorID == 2).FirstOrDefault();
+			// get sector with ID=2
+			var sec = cyl.Sectors.Where(a => a.SectorID == 2).FirstOrDefault();
 
-            if (sec == null)
-                return;
+			if (sec == null)
+				return;
 
-            // check for already multiple weak copies
-            if (sec.ContainsMultipleWeakSectors || sec.SectorData.Length != 0x80 << sec.SectorSize)
-                return;
+			// check for already multiple weak copies
+			if (sec.ContainsMultipleWeakSectors || sec.SectorData.Length != 0x80 << sec.SectorSize)
+				return;
 
-            // check for invalid crcs in sector 2
-            if (sec.Status1.Bit(5) || sec.Status2.Bit(5))
-            {
-                Protection = ProtectionType.Speedlock;
-            }
-            else
-            {
-                return;
-            }
+			// check for invalid crcs in sector 2
+			if (sec.Status1.Bit(5) || sec.Status2.Bit(5))
+			{
+				Protection = ProtectionType.Speedlock;
+			}
+			else
+			{
+				return;
+			}
 
-            // we are going to create a total of 5 weak sector copies
-            // keeping the original copy
-            byte[] origData = sec.SectorData.ToArray();
-            List<byte> data = new List<byte>();
-            //Random rnd = new Random();
+			// we are going to create a total of 5 weak sector copies
+			// keeping the original copy
+			byte[] origData = sec.SectorData.ToArray();
+			List<byte> data = new List<byte>();
+			//Random rnd = new Random();
 
-            for (int i = 0; i < 6; i++)
-            {
-                for (int s = 0; s < origData.Length; s++)
-                {
-                    if (i == 0)
-                    {
-                        data.Add(origData[s]);
-                        continue;
-                    }
+			for (int i = 0; i < 6; i++)
+			{
+				for (int s = 0; s < origData.Length; s++)
+				{
+					if (i == 0)
+					{
+						data.Add(origData[s]);
+						continue;
+					}
 
-                    // deterministic 'random' implementation
-                    int n = origData[s] + i + 1;
-                    if (n > 0xff)
-                        n = n - 0xff;
-                    else if (n < 0)
-                        n = 0xff + n;
+					// deterministic 'random' implementation
+					int n = origData[s] + i + 1;
+					if (n > 0xff)
+						n = n - 0xff;
+					else if (n < 0)
+						n = 0xff + n;
 
-                    byte nByte = (byte)n;
+					byte nByte = (byte)n;
 
-                    if (s < 336)
-                    {
-                        // non weak data
-                        data.Add(origData[s]);
-                    }
-                    else if (s < 511)
-                    {
-                        // weak data
-                        data.Add(nByte);
-                    }
-                    else if (s == 511)
-                    {
-                        // final sector byte
-                        data.Add(nByte);
-                    }
-                    else
-                    {
-                        // speedlock sector should not be more than 512 bytes
-                        // but in case it is just do non weak
-                        data.Add(origData[i]);
-                    }
-                }
-            }
+					if (s < 336)
+					{
+						// non weak data
+						data.Add(origData[s]);
+					}
+					else if (s < 511)
+					{
+						// weak data
+						data.Add(nByte);
+					}
+					else if (s == 511)
+					{
+						// final sector byte
+						data.Add(nByte);
+					}
+					else
+					{
+						// speedlock sector should not be more than 512 bytes
+						// but in case it is just do non weak
+						data.Add(origData[i]);
+					}
+				}
+			}
 
-            // commit the sector data
-            sec.SectorData = data.ToArray();
-            sec.ContainsMultipleWeakSectors = true;
-            sec.ActualDataByteLength = data.Count();
+			// commit the sector data
+			sec.SectorData = data.ToArray();
+			sec.ContainsMultipleWeakSectors = true;
+			sec.ActualDataByteLength = data.Count();
 
-        }
-        */
+		}
+#endif
 
 		/// <summary>
 		/// Returns the track count for the disk
@@ -591,18 +591,19 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			#region UDI
 
-			public virtual byte TrackType { get; set; }
-			public virtual int TLEN { get; set; }
-			public virtual int CLEN => TLEN / 8 + (TLEN % 8 / 7) / 8;
-			public virtual byte[] TrackData { get; set; }
+			public byte TrackType { get; set; }
+			public int TLEN { get; set; }
+			public int CLEN => TLEN / 8 + (TLEN % 8 / 7) / 8;
+			public byte[] TrackData { get; set; }
 
 			#endregion
 
+#if false
 			/// <summary>
 			/// Presents a contiguous byte array of all sector data for this track
 			/// (including any multiple weak/random data)
 			/// </summary>
-			public virtual byte[] TrackSectorData
+			public byte[] TrackSectorData
 			{
 				get
 				{
@@ -616,19 +617,20 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					return list.ToArray();
 				}
 			}
+#endif
 		}
 
 		public class Sector
 		{
-			public virtual byte TrackNumber { get; set; }
-			public virtual byte SideNumber { get; set; }
-			public virtual byte SectorID { get; set; }
-			public virtual byte SectorSize { get; set; }
-			public virtual byte Status1 { get; set; }
-			public virtual byte Status2 { get; set; }
-			public virtual int ActualDataByteLength { get; set; }
-			public virtual byte[] SectorData { get; set; }
-			public virtual bool ContainsMultipleWeakSectors { get; set; }
+			public byte TrackNumber { get; set; }
+			public byte SideNumber { get; set; }
+			public byte SectorID { get; set; }
+			public byte SectorSize { get; set; }
+			public byte Status1 { get; set; }
+			public byte Status2 { get; set; }
+			public int ActualDataByteLength { get; set; }
+			public byte[] SectorData { get; set; }
+			public bool ContainsMultipleWeakSectors { get; set; }
 
 			public int WeakReadIndex = 0;
 
@@ -693,14 +695,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 						return res;
 
 						/*
-                        int copies = ActualDataByteLength / (0x80 << SectorSize);
-                        Random rnd = new Random();
-                        int r = rnd.Next(0, copies - 1);
-                        int step = r * (0x80 << SectorSize);
-                        byte[] res = new byte[(0x80 << SectorSize)];
-                        Array.Copy(SectorData, step, res, 0, 0x80 << SectorSize);
-                        return res;
-                        */
+						int copies = ActualDataByteLength / (0x80 << SectorSize);
+						Random rnd = new Random();
+						int r = rnd.Next(0, copies - 1);
+						int step = r * (0x80 << SectorSize);
+						byte[] res = new byte[(0x80 << SectorSize)];
+						Array.Copy(SectorData, step, res, 0, 0x80 << SectorSize);
+						return res;
+						*/
 					}
 				}
 			}

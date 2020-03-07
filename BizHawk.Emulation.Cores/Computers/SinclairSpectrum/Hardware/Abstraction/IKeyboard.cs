@@ -1,4 +1,5 @@
 ﻿using BizHawk.Common;
+using BizHawk.Emulation.Cores.Computers.CPCSpectrumBase;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
