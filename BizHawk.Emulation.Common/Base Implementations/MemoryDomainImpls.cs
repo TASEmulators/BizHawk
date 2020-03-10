@@ -8,9 +8,10 @@ namespace BizHawk.Emulation.Common
 	{
 		private Action<long, byte> _poke;
 
-		private Func<ICollection<long>, IEnumerable<byte>> _bulkPeekByte { get; set; }
-		private Func<ICollection<long>, bool, IEnumerable<ushort>> _bulkPeekUshort { get; set; }
-		private Func<ICollection<long>, bool, IEnumerable<uint>> _bulkPeekUint { get; set; }
+		// TODO: use an array of Ranges
+		private Action<Range<long>, byte[]> _bulkPeekByte { get; set; }
+		private Action<Range<long>, bool, ushort[]> _bulkPeekUshort { get; set; }
+		private Action<Range<long>, bool, uint[]> _bulkPeekUint { get; set; }
 
 		public Func<long, byte> Peek { get; set; }
 
@@ -34,43 +35,52 @@ namespace BizHawk.Emulation.Common
 			_poke?.Invoke(addr, val);
 		}
 
-		public override IEnumerable<byte> BulkPeekByte(ICollection<long> addresses)
+		public override void BulkPeekByte(Range<long> addresses, byte[] values)
 		{
 			if (_bulkPeekByte != null)
 			{
-				return _bulkPeekByte.Invoke(addresses);
+				_bulkPeekByte.Invoke(addresses, values);
 			}
 			else
 			{
-				return base.BulkPeekByte(addresses);
+				base.BulkPeekByte(addresses, values);
 			}
 		}
 
-		public override IEnumerable<ushort> BulkPeekUshort(ICollection<long> addresses, bool bigEndian)
+		public override void BulkPeekUshort(Range<long> addresses, bool bigEndian, ushort[] values)
 		{
 			if (_bulkPeekUshort != null)
 			{
-				return _bulkPeekUshort.Invoke(addresses, EndianType == Endian.Big);
+				_bulkPeekUshort.Invoke(addresses, EndianType == Endian.Big, values);
 			}
 			else
 			{
-				return base.BulkPeekUshort(addresses, EndianType == Endian.Big);
+				base.BulkPeekUshort(addresses, EndianType == Endian.Big, values);
 			}
 		}
 
-		public override IEnumerable<uint> BulkPeekUint(ICollection<long> addresses, bool bigEndian)
+		public override void BulkPeekUint(Range<long> addresses, bool bigEndian, uint[] values)
 		{
 			if (_bulkPeekUint != null)
 			{
-				return _bulkPeekUint.Invoke(addresses, EndianType == Endian.Big);
+				_bulkPeekUint.Invoke(addresses, EndianType == Endian.Big, values);
 			}
 			else
 			{
-				return base.BulkPeekUint(addresses, EndianType == Endian.Big);
+				base.BulkPeekUint(addresses, EndianType == Endian.Big, values);
 			}
 		}
 
-		public MemoryDomainDelegate(string name, long size, Endian endian, Func<long, byte> peek, Action<long, byte> poke, int wordSize, Func<ICollection<long>, IEnumerable<byte>> bulkPeekByte = null, Func<ICollection<long>, bool, IEnumerable<ushort>> bulkPeekUshort = null, Func<ICollection<long>, bool, IEnumerable<uint>> bulkPeekUint = null)
+		public MemoryDomainDelegate(
+			string name,
+			long size,
+			Endian endian,
+			Func<long, byte> peek,
+			Action<long, byte> poke,
+			int wordSize,
+			Action<Range<long>, byte[]> bulkPeekByte = null,
+			Action<Range<long>, bool, ushort[]> bulkPeekUshort = null,
+			Action<Range<long>, bool, uint[]> bulkPeekUint = null)
 		{
 			Name = name;
 			EndianType = endian;

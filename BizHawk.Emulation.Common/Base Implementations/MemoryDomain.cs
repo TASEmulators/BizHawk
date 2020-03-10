@@ -1,6 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Common
 {
@@ -105,36 +104,57 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public virtual IEnumerable<byte> BulkPeekByte(ICollection<long> addresses)
+		public virtual void BulkPeekByte(Range<long> addresses, byte[] values)
 		{
-			if (addresses != null)
+			if (addresses == null || values == null)
 			{
-				foreach (var address in addresses)
-				{
-					yield return PeekByte(address);
-				}
+				throw new ArgumentException();
+			}
+
+			if (addresses.EndInclusive - addresses.Start != values.Length)
+			{
+				throw new InvalidOperationException("Invalid length of values array");
+			}
+
+			for (var i = addresses.Start; i < addresses.EndInclusive; i++)
+			{
+				values[i] = PeekByte(i);
 			}
 		}
 
-		public virtual IEnumerable<ushort> BulkPeekUshort(ICollection<long> addresses, bool bigEndian)
+		public virtual void BulkPeekUshort(Range<long> addresses,  bool bigEndian, ushort[] values)
 		{
-			if (addresses != null)
+			if (addresses == null || values == null)
 			{
-				foreach (var address in addresses)
-				{
-					yield return PeekUshort(address, bigEndian);
-				}
+				throw new ArgumentException();
+			}
+
+			if (addresses.EndInclusive - addresses.Start != values.Length)
+			{
+				throw new InvalidOperationException("Invalid length of values array");
+			}
+
+			for (var i = addresses.Start; i < addresses.EndInclusive; i++)
+			{
+				values[i] = PeekUshort(i, bigEndian);
 			}
 		}
 
-		public virtual IEnumerable<uint> BulkPeekUint(ICollection<long> addresses, bool bigEndian)
+		public virtual void BulkPeekUint(Range<long> addresses, bool bigEndian, uint[] values)
 		{
-			if (addresses != null)
+			if (addresses == null || values == null)
 			{
-				foreach (var address in addresses)
-				{
-					yield return PeekUint(address, bigEndian);
-				}
+				throw new ArgumentException();
+			}
+
+			if (addresses.EndInclusive - addresses.Start != values.Length)
+			{
+				throw new InvalidOperationException("Invalid length of values array");
+			}
+
+			for (var i = addresses.Start; i < addresses.EndInclusive; i++)
+			{
+				values[i] = PeekUint(i, bigEndian);
 			}
 		}
 	}

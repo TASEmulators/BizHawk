@@ -603,13 +603,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			Dictionary<long, long> dict = new Dictionary<long, long>();
+			var range = new MutableRange<long>(addresses[0], addresses[0] + addresses.Count);
 
 			switch (DataSize)
 			{
 				default:
 				case 1:
-					{
-						var vals = _domain.BulkPeekByte(addresses).ToList();
+				{
+						var vals = new byte[addresses.Count];
+						_domain.BulkPeekByte(range, vals);
 						for (var i = 0; i < addresses.Count; i++)
 						{
 							dict.Add(addresses[i], vals[i]);
@@ -618,7 +620,8 @@ namespace BizHawk.Client.EmuHawk
 					}
 				case 2:
 					{
-						var vals = _domain.BulkPeekUshort(addresses, BigEndian).ToList();
+						var vals = new ushort[addresses.Count];
+						_domain.BulkPeekUshort(range, BigEndian, vals);
 						for (var i = 0; i < addresses.Count; i++)
 						{
 							dict.Add(addresses[i], vals[i]);
@@ -627,7 +630,8 @@ namespace BizHawk.Client.EmuHawk
 					}
 				case 4:
 					{
-						var vals = _domain.BulkPeekUint(addresses, BigEndian).ToList();
+						var vals = new uint[addresses.Count];
+						_domain.BulkPeekUint(range, BigEndian, vals);
 						for (var i = 0; i < addresses.Count; i++)
 						{
 							dict.Add(addresses[i], vals[i]);
