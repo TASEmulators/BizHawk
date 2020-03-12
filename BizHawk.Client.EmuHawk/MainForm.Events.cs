@@ -3227,6 +3227,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FormDragDrop(object sender, DragEventArgs e)
 		{
+			Sound.StopSound();
 			try
 			{
 				FormDragDrop_internal(e);
@@ -3234,6 +3235,10 @@ namespace BizHawk.Client.EmuHawk
 			catch (Exception ex)
 			{
 				MessageBox.Show($"Exception on drag and drop:\n{ex}");
+			}
+			finally
+			{
+				Sound.StartSound();
 			}
 		}
 
