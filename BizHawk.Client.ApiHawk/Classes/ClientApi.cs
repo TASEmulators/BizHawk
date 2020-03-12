@@ -530,13 +530,10 @@ namespace BizHawk.Client.ApiHawk
 
 		public static void SetSoundOn(bool enable)
 		{
-			Global.Config.SoundEnabled = enable;
+			if (enable != Global.Config.SoundEnabled) InvokeMainFormMethod("ToggleSound");
 		}
 
-		public static bool GetSoundOn()
-		{
-			return Global.Config.SoundEnabled;
-		}
+		public static bool GetSoundOn() => Global.Config.SoundEnabled;
 
 		public static bool IsPaused()
 		{

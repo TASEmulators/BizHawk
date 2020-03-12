@@ -2374,7 +2374,7 @@ namespace BizHawk.Client.EmuHawk
 			Config.DisplayInput ^= true;
 		}
 
-		private void ToggleSound()
+		public void ToggleSound()
 		{
 			Config.SoundEnabled ^= true;
 			Sound.StopSound();
