@@ -175,6 +175,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema ThreeDeeController(int controller)
 		{
+			var axisRanges = SaturnusControllerDeck.ThreeDeeAxisRanges;
 			return new PadSchema
 			{
 				IsConsole = false,
@@ -266,12 +267,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Name = $"P{controller} Stick Horizontal",
 						SecondaryNames = new[] { $"P{controller} Stick Vertical" },
-						MinValue = 0,
-						MidValue = 127,
-						MaxValue = 255,
-						MinValueSec = 0,
-						MidValueSec = 127,
-						MaxValueSec = 255,
+						AxisRange = axisRanges[0],
+						SecondaryAxisRange = axisRanges[1],
 						DisplayName = "",
 						Location = new Point(6, 74),
 						Type = PadSchema.PadInputType.AnalogStick
@@ -440,6 +437,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema MissionControl(int controller)
 		{
+			var axisRanges = SaturnusControllerDeck.MissionAxisRanges;
 			return new PadSchema
 			{
 				DisplayName = "Mission",
@@ -514,12 +512,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Name = $"P{controller} Stick Horizontal",
 						SecondaryNames = new[] { $"P{controller} Stick Vertical" },
-						MinValue = 0,
-						MidValue = 127,
-						MaxValue = 255,
-						MinValueSec = 0,
-						MidValueSec = 127,
-						MaxValueSec = 255,
+						AxisRange = axisRanges[0],
+						SecondaryAxisRange = axisRanges[1],
 						DisplayName = "",
 						Location = new Point(185, 13),
 						Type = PadSchema.PadInputType.AnalogStick
@@ -541,6 +535,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema DualMissionControl(int controller)
 		{
+			var axisRanges = SaturnusControllerDeck.DualMissionAxisRanges;
 			return new PadSchema
 			{
 				DisplayName = "Dual Mission",
@@ -552,12 +547,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Name = $"P{controller} Left Stick Horizontal",
 						SecondaryNames = new[] { $"P{controller} Left Stick Vertical" },
-						MinValue = 0,
-						MidValue = 127,
-						MaxValue = 255,
-						MinValueSec = 0,
-						MidValueSec = 127,
-						MaxValueSec = 255,
+						AxisRange = axisRanges[3],
+						SecondaryAxisRange = axisRanges[4],
 						DisplayName = "",
 						Location = new Point(58, 13),
 						Type = PadSchema.PadInputType.AnalogStick
@@ -577,12 +568,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Name = $"P{controller} Right Stick Horizontal",
 						SecondaryNames = new[] { $"P{controller} Right Stick Vertical" },
-						MinValue = 0,
-						MidValue = 127,
-						MaxValue = 255,
-						MinValueSec = 0,
-						MidValueSec = 127,
-						MaxValueSec = 255,
+						AxisRange = axisRanges[0],
+						SecondaryAxisRange = axisRanges[1],
 						DisplayName = "",
 						Location = new Point(400, 13),
 						Type = PadSchema.PadInputType.AnalogStick

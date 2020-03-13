@@ -185,6 +185,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Right.SyncState(ser);
 			ser.EndSection();
 		}
+
+		internal static readonly ControllerDefinition.AxisRange ArkanoidPaddleRange = new ControllerDefinition.AxisRange(0, 80, 160);
+
+		internal static readonly List<ControllerDefinition.AxisRange> ZapperRanges = new List<ControllerDefinition.AxisRange> { new ControllerDefinition.AxisRange(0, 128, 255), new ControllerDefinition.AxisRange(0, 120, 239) };
 	}
 
 	public class UnpluggedNES : INesPort
@@ -392,7 +396,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			BoolButtons = { "0Fire" },
 			FloatControls = { "0Paddle" },
-			FloatRanges = { new[] { 0.0f, 80.0f, 160.0f } }
+			FloatRanges = { NesDeck.ArkanoidPaddleRange }
 		};
 
 		public void Strobe(StrobeInfo s, IController c)
@@ -557,7 +561,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			BoolButtons = { "0Fire" },
 			FloatControls = { "0Zapper X", "0Zapper Y" },
-			FloatRanges = { new[] { 0.0f, 128.0f, 255.0f }, new[] { 0.0f, 120.0f, 239.0f } }
+			FloatRanges = NesDeck.ZapperRanges
 		};
 
 		public void Strobe(StrobeInfo s, IController c)
@@ -610,7 +614,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			BoolButtons = { "0Fire" },
 			FloatControls = { "0Zapper X", "0Zapper Y" },
-			FloatRanges = { new[] { 0.0f, 128.0f, 255.0f }, new[] { 0.0f, 120.0f, 239.0f } }
+			FloatRanges = NesDeck.ZapperRanges
 		};
 
 		void Latch(IController c)
@@ -752,7 +756,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			BoolButtons = { "0Fire" },
 			FloatControls = { "0Paddle" },
-			FloatRanges = { new[] { 0.0f, 80.0f, 160.0f } }
+			FloatRanges = { NesDeck.ArkanoidPaddleRange }
 		};
 
 		public void Strobe(StrobeInfo s, IController c)
@@ -1012,7 +1016,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			BoolButtons = { "0Click", "0Touch" },
 			FloatControls = { "0Pen X", "0Pen Y" },
-			FloatRanges = { new[] { 0.0f, 128.0f, 255.0f }, new[] { 0.0f, 120.0f, 239.0f } }
+			FloatRanges = NesDeck.ZapperRanges // why would a tablet have the same resolution as a CRT monitor? --yoshi
 		};
 
 		bool resetting;

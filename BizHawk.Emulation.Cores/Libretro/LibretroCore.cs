@@ -260,8 +260,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			definition.BoolButtons.Add("Pointer Pressed"); //TODO: this isnt showing up in the binding panel. I don't want to find out why.
 			definition.FloatControls.Add("Pointer X");
 			definition.FloatControls.Add("Pointer Y");
-			definition.FloatRanges.Add(new ControllerDefinition.FloatRange(-32767, 0, 32767));
-			definition.FloatRanges.Add(new ControllerDefinition.FloatRange(-32767, 0, 32767));
+			definition.FloatRanges.AddRange(ControllerDefinition.CreateAxisRangePair(-32767, 0, 32767, ControllerDefinition.AxisPairOrientation.RightAndUp));
 
 			foreach (var key in new[]{
 				"Key Backspace", "Key Tab", "Key Clear", "Key Return", "Key Pause", "Key Escape",

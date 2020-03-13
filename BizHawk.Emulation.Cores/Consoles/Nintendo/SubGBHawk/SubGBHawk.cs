@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 			ser.Register(_tracer);
 
 			_GBCore.ControllerDefinition.FloatControls.Add("Input Cycle");
-			_GBCore.ControllerDefinition.FloatRanges.Add(new ControllerDefinition.FloatRange(0, 70224, 70224));
+			_GBCore.ControllerDefinition.FloatRanges.Add(new ControllerDefinition.AxisRange(0, 70224, 70224));
 		}
 
 		public GBHawk.GBHawk _GBCore;

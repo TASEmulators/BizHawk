@@ -427,10 +427,10 @@ namespace BizHawk.Client.EmuHawk
 				int digits;
 				if (ControllerType.FloatControls.Contains(kvp.Key))
 				{
-					ControllerDefinition.FloatRange range = ControllerType.FloatRanges
+					ControllerDefinition.AxisRange range = ControllerType.FloatRanges
 						[ControllerType.FloatControls.IndexOf(kvp.Key)];
 					type = ColumnType.Float;
-					digits = Math.Max(kvp.Value.Length, range.MaxDigits());
+					digits = Math.Max(kvp.Value.Length, range.MaxDigits);
 				}
 				else
 				{

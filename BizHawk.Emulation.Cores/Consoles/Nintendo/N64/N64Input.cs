@@ -1,9 +1,12 @@
-﻿using BizHawk.Emulation.Common;
+﻿using System.Collections.Generic;
+using System.Linq;
+
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
-	internal class N64Input
+	public class N64Input
 	{
 		private readonly mupen64plusInputApi _api;
 		public CoreComm CoreComm { get; }
@@ -12,6 +15,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public bool LastFrameInputPolled { get; set; }
 		public bool ThisFrameInputPolled { get; set; }
 		public ControllerDefinition ControllerDefinition => N64ControllerDefinition;
+
+		private static readonly List<ControllerDefinition.AxisRange> AnalogStickRanges = ControllerDefinition.CreateAxisRangePair(-128, 0, 127, ControllerDefinition.AxisPairOrientation.RightAndUp);
 
 		public static readonly ControllerDefinition N64ControllerDefinition = new ControllerDefinition
 		{
@@ -25,17 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			{
 				"P1 X Axis", "P1 Y Axis",
 			},
-			FloatRanges =
-			{
-				new[] {-128.0f, 0.0f, 127.0f},
-				new[] {127.0f, 0.0f, -128.0f},
-				new[] {-128.0f, 0.0f, 127.0f},
-				new[] {127.0f, 0.0f, -128.0f},
-				new[] {-128.0f, 0.0f, 127.0f},
-				new[] {127.0f, 0.0f, -128.0f},
-				new[] {-128.0f, 0.0f, 127.0f},
-				new[] {127.0f, 0.0f, -128.0f}
-			},
+			FloatRanges = AnalogStickRanges.Concat(AnalogStickRanges).Concat(AnalogStickRanges).Concat(AnalogStickRanges).ToList(), //TODO is this supposed to be duplicated? docs say FloatRanges.Count should equal FloatControls.Count --yoshi
 			AxisConstraints =
 			{
 				new ControllerDefinition.AxisConstraint { Class = "Natural Circle", Type = ControllerDefinition.AxisConstraintType.Circular, Params = new object[] {"P1 X Axis", "P1 Y Axis", 127.0f} }
@@ -44,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		private readonly IInputPollable _emuCore;
 
-		public N64Input(IInputPollable emuCore, mupen64plusApi core, CoreComm comm, N64SyncSettings.N64ControllerSettings[] controllerSettings)
+		internal N64Input(IInputPollable emuCore, mupen64plusApi core, CoreComm comm, N64SyncSettings.N64ControllerSettings[] controllerSettings)
 		{
 			_emuCore = emuCore;
 			_api = new mupen64plusInputApi(core);

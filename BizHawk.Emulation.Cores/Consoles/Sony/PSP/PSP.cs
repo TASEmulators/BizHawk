@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using BizHawk.Emulation.Common;
 
@@ -40,6 +41,12 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 			attachedcore = this;
 		}
 
+		/// <remarks>TODO</remarks>
+		private static readonly List<ControllerDefinition.AxisRange> AnalogStickRanges = ControllerDefinition.CreateAxisRangePair(-1, 0, 1, ControllerDefinition.AxisPairOrientation.RightAndUp);
+
+		/// <remarks>TODO</remarks>
+		private static readonly ControllerDefinition.AxisRange TriggerRange = new ControllerDefinition.AxisRange(-1, 0, 1);
+
 		public static readonly ControllerDefinition PSPController = new ControllerDefinition
 		{
 			Name = "PSP Controller",
@@ -51,17 +58,12 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 			},
 			FloatControls =
 			{
-				"Left Stick X", "Left Stick Y", "Right Stick X", "Right Stick Y", "Left Trigger", "Right Trigger"
+				"Left Stick X", "Left Stick Y",
+				"Right Stick X", "Right Stick Y",
+				"Left Trigger",
+				"Right Trigger"
 			},
-			FloatRanges = // TODO
-			{
-				new[] {-1.0f, 0.0f, 1.0f},
-				new[] {-1.0f, 0.0f, 1.0f},
-				new[] {-1.0f, 0.0f, 1.0f},
-				new[] {-1.0f, 0.0f, 1.0f},
-				new[] {-1.0f, 0.0f, 1.0f},
-				new[] {-1.0f, 0.0f, 1.0f},
-			}
+			FloatRanges = AnalogStickRanges.Concat(AnalogStickRanges).Concat(new List<ControllerDefinition.AxisRange> { TriggerRange, TriggerRange }).ToList()
 		};
 
 		public ControllerDefinition ControllerDefinition => PSPController;

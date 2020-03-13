@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using BizHawk.Emulation.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Client.Common;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -338,9 +339,9 @@ namespace BizHawk.Client.EmuHawk
 						if (column.Type == ColumnType.Float)
 						{
 							// feos: this could be cached, but I don't notice any slowdown this way either
-							ControllerDefinition.FloatRange range = ControllerType.FloatRanges
+							ControllerDefinition.AxisRange range = ControllerType.FloatRanges
 								[ControllerType.FloatControls.IndexOf(columnName)];
-							if (text == range.Mid.ToString())
+							if (text == ((float) range.Mid).ToString())
 							{
 								text = "";
 							}
@@ -1190,29 +1191,7 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 
-				float value = _floatPaintState + increment;
-				ControllerDefinition.FloatRange range = ControllerType.FloatRanges
-					[ControllerType.FloatControls.IndexOf(_floatEditColumn)];
-
-				// Range for N64 Y axis has max -128 and min 127. That should probably be fixed in ControllerDefinition.cs.
-				// SuuperW: I really don't think changing it would break anything, but adelikat isn't so sure.
-				float rMax = range.Max;
-				float rMin = range.Min;
-				if (rMax < rMin)
-				{
-					rMax = range.Min;
-					rMin = range.Max;
-				}
-
-				if (value > rMax)
-				{
-					value = rMax;
-				}
-				else if (value < rMin)
-				{
-					value = rMin;
-				}
-
+				var value = (_floatPaintState + increment).ConstrainWithin(ControllerType.FloatRanges[ControllerType.FloatControls.IndexOf(_floatEditColumn)].FloatRange);
 				CurrentTasMovie.SetFloatState(_floatEditRow, _floatEditColumn, value);
 				_floatTypedValue = value.ToString();
 
@@ -1285,23 +1264,13 @@ namespace BizHawk.Client.EmuHawk
 			float prev = value;
 			string prevTyped = _floatTypedValue;
 
-			ControllerDefinition.FloatRange range = ControllerType.FloatRanges
-				[ControllerType.FloatControls.IndexOf(_floatEditColumn)];
-
-			float rMax = range.Max;
-			float rMin = range.Min;
-
-			// Range for N64 Y axis has max -128 and min 127. That should probably be fixed ControllerDefinition.cs, but I'll put a quick fix here anyway.
-			if (rMax < rMin)
-			{
-				rMax = range.Min;
-				rMin = range.Max;
-			}
+			var range = ControllerType.FloatRanges[ControllerType.FloatControls.IndexOf(_floatEditColumn)];
+			var (rMin, rMax) = range.FloatRange;
 
 			// feos: typing past max digits overwrites existing value, not touching the sign
 			// but doesn't handle situations where the range is like -50 through 100, where minimum is negative and has less digits
 			// it just uses 3 as maxDigits there too, leaving room for typing impossible values (that are still ignored by the game and then clamped)
-			int maxDigits = range.MaxDigits();
+			int maxDigits = range.MaxDigits;
 			int curDigits = _floatTypedValue.Length;
 			string curMinus;
 			if (_floatTypedValue.StartsWith("-"))

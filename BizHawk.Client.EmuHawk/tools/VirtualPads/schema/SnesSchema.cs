@@ -212,6 +212,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema Mouse(int controller)
 		{
+			var controllerDefRanges = new SnesMouseController().Definition.FloatRanges;
 			return new PadSchema
 			{
 				IsConsole = false,
@@ -221,12 +222,8 @@ namespace BizHawk.Client.EmuHawk
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} Mouse X",
-						MinValue = -128,
-						MidValue = 0,
-						MaxValue = 127,
-						MinValueSec = 127,
-						MidValueSec = 0,
-						MaxValueSec = -128,
+						AxisRange = controllerDefRanges[0],
+						SecondaryAxisRange = controllerDefRanges[1],
 						DisplayName = "",
 						Location = new Point(6, 14),
 						Type = PadSchema.PadInputType.AnalogStick

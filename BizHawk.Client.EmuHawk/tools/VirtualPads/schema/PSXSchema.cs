@@ -46,6 +46,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema DualShockController(int controller)
 		{
+			var stickRanges = Octoshock.DualShockStickRanges;
 			return new PadSchema
 			{
 				IsConsole = false,
@@ -176,12 +177,8 @@ namespace BizHawk.Client.EmuHawk
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} LStick X",
-						MinValue = 0,
-						MidValue = 128,
-						MaxValue = 255,
-						MinValueSec = 0,
-						MidValueSec = 128,
-						MaxValueSec = 255,
+						AxisRange = stickRanges[0],
+						SecondaryAxisRange = stickRanges[1],
 						DisplayName = "",
 						Location = new Point(3, 120),
 						Type = PadSchema.PadInputType.AnalogStick
@@ -189,12 +186,8 @@ namespace BizHawk.Client.EmuHawk
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} RStick X",
-						MinValue = 0,
-						MidValue = 128,
-						MaxValue = 255,
-						MinValueSec = 0,
-						MidValueSec = 128,
-						MaxValueSec = 255,
+						AxisRange = stickRanges[0],
+						SecondaryAxisRange = stickRanges[1],
 						DisplayName = "",
 						Location = new Point(260, 120),
 						Type = PadSchema.PadInputType.AnalogStick

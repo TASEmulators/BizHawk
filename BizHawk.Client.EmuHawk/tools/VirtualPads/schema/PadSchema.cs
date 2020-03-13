@@ -2,6 +2,8 @@
 using System.Drawing;
 using System.Windows.Forms;
 
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public class PadSchema
@@ -40,6 +42,10 @@ namespace BizHawk.Client.EmuHawk
 			public object OwnerEmulator { get; set; }
 
 			public Orientation Orientation { get; set; } // For Single Float controls
+
+			// for Analog Stick controls
+			public ControllerDefinition.AxisRange? AxisRange { get; set; }
+			public ControllerDefinition.AxisRange? SecondaryAxisRange { get; set; }
 		}
 	}
 }

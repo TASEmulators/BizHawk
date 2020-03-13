@@ -15,6 +15,7 @@ using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 using Newtonsoft.Json;
@@ -216,6 +217,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public string SystemId => "PSX";
 
+		public static readonly IReadOnlyList<ControllerDefinition.AxisRange> DualShockStickRanges = ControllerDefinition.CreateAxisRangePair(0, 128, 255, ControllerDefinition.AxisPairOrientation.RightAndDown);
+
 		public static ControllerDefinition CreateControllerDefinition(SyncSettings syncSettings)
 		{
 			var definition = new ControllerDefinition { Name = "PSX Front Panel" };
@@ -249,10 +252,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 								"P" + pnum + " L"
 							});
 
-					definition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
-					definition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
-					definition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
-					definition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
+					var axisRange = new ControllerDefinition.AxisRange(0, 128, 255);
+					definition.FloatRanges.Add(axisRange);
+					definition.FloatRanges.Add(axisRange);
+					definition.FloatRanges.Add(axisRange);
+					definition.FloatRanges.Add(axisRange);
 				}
 				else
 				{
@@ -289,10 +293,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 								"P" + pnum + " RStick Y"
 							});
 
-						definition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
-						definition.FloatRanges.Add(new[] { 255.0f, 128.0f, 0.0f });
-						definition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
-						definition.FloatRanges.Add(new[] { 255.0f, 128.0f, 0.0f });
+						definition.FloatRanges.AddRange(DualShockStickRanges.Concat(DualShockStickRanges).ToList());
 					}
 				}
 			}
@@ -307,9 +308,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			definition.FloatControls.Add("Disc Select");
 
 			definition.FloatRanges.Add(
-				//new[] {-1f,-1f,-1f} //this is carefully chosen so that we end up with a -1 disc by default (indicating that it's never been set)
+				//new ControllerDefinition.AxisRange(-1, -1, -1) //this is carefully chosen so that we end up with a -1 disc by default (indicating that it's never been set)
 				//hmm.. I don't see why this wouldn't work
-				new[] { 0f, 1f, 1f }
+				new ControllerDefinition.AxisRange(0, 1, 1)
 			);
 
 			return definition;

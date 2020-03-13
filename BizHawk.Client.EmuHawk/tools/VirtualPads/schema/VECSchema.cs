@@ -107,6 +107,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema AnalogController(int controller)
 		{
+			var controllerDefRanges = new AnalogControls(controller).Definition.FloatRanges;
 			return new PadSchema
 			{
 				IsConsole = false,
@@ -145,12 +146,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Name = $"P{controller} Stick X",
 						Location = new Point(2, 80),
-						MinValue = 127,
-						MidValue = 0,
-						MaxValue = -128,
-						MinValueSec = -128,
-						MidValueSec = 0,
-						MaxValueSec = 127,
+						AxisRange = controllerDefRanges[0],
+						SecondaryAxisRange = controllerDefRanges[1],
 						Type = PadSchema.PadInputType.AnalogStick,
 						SecondaryNames = new[]
 						{
