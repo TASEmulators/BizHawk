@@ -25,9 +25,6 @@ namespace BizHawk.Emulation.Common
 		public string RomStatusAnnotation { get; set; }
 		public string RomStatusDetails { get; set; }
 
-		public int ScreenLogicalOffsetX { get; set; }
-		public int ScreenLogicalOffsetY { get; set; }
-
 		// size hint to a/v out resizer.  this probably belongs in VideoProvider?  but it's somewhat different than VirtualWidth...
 		public int NominalWidth { get; set; } = 640;
 		public int NominalHeight { get; set; } = 480;

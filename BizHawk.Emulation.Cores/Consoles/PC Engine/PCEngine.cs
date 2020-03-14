@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		"Vecna",
 		isPorted: false,
 		isReleased: true)]
-	public sealed partial class PCEngine : IEmulator, ISaveRam, IInputPollable,
+	public sealed partial class PCEngine : IEmulator, ISaveRam, IInputPollable, IVideoLogicalOffsets,
 		IDebuggable, ISettable<PCEngine.PCESettings, PCEngine.PCESyncSettings>, IDriveLight, ICodeDataLogger
 	{
 		[CoreConstructor(new[] { "PCE", "SGX" })]
@@ -48,6 +48,10 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				_syncSettings.Port4,
 				_syncSettings.Port5);
 		}
+
+		int IVideoLogicalOffsets.ScreenX => 0;
+
+		int IVideoLogicalOffsets.ScreenY => Settings.Top_Line;
 
 		public PCEngine(CoreComm comm, GameInfo game, Disc disc, object settings, object syncSettings)
 		{

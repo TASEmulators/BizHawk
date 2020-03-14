@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		portedUrl: "https://github.com/kode54/QuickNES",
 		singleInstance: false)]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
-	public partial class QuickNES : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IInputPollable, IBoardInfo,
+	public partial class QuickNES : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IInputPollable, IBoardInfo, IVideoLogicalOffsets,
 		IStatable, IDebuggable, ISettable<QuickNES.QuickNESSettings, QuickNES.QuickNESSyncSettings>, Cores.Nintendo.NES.INESPPUViewable
 	{
 		static QuickNES()
@@ -84,6 +84,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		static readonly DynamicLibraryImportResolver Resolver;
 
 		public IEmulatorServiceProvider ServiceProvider { get; }
+
+		int IVideoLogicalOffsets.ScreenX => _settings.ClipLeftAndRight ? 8 : 0;
+
+		int IVideoLogicalOffsets.ScreenY => _settings.ClipTopAndBottom ? 8 : 0;
 
 		#region FPU precision
 

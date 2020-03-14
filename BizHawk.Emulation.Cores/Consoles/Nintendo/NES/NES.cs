@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		"zeromus, natt, alyosha, adelikat",
 		isPorted: false,
 		isReleased: true)]
-	public partial class NES : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable,
+	public partial class NES : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, IVideoLogicalOffsets,
 		IBoardInfo, ISettable<NES.NESSettings, NES.NESSyncSettings>, ICodeDataLogger
 	{
 		[CoreConstructor("NES")]
@@ -124,6 +124,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public CoreComm CoreComm { get; }
 
 		public DisplayType Region => _display_type;
+
+		int IVideoLogicalOffsets.ScreenX => Settings.ClipLeftAndRight
+			? 8
+			: 0;
+
+		int IVideoLogicalOffsets.ScreenY => Region == DisplayType.NTSC
+			? Settings.NTSC_TopLine
+			: Settings.PAL_TopLine;
 
 		public class MyVideoProvider : IVideoProvider
 		{
