@@ -36,9 +36,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			InitMemoryCallbacks();
 			CoreComm = comm;
 
-			comm.NominalWidth = 160;
-			comm.NominalHeight = 144;
-
 			ThrowExceptionForBadRom(file);
 			BoardName = MapperName(file);
 

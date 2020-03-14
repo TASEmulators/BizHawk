@@ -69,9 +69,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				};
 				ser.Register<ITraceable>(Tracer);
 
-				CoreComm.NominalWidth = 240;
-				CoreComm.NominalHeight = 160;
-
 				GameCode = Encoding.ASCII.GetString(file, 0xac, 4);
 				Console.WriteLine("Game code \"{0}\"", GameCode);
 

@@ -53,8 +53,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 				ServiceProvider = ser;
 				CoreComm = comm;
-				CoreComm.NominalWidth = 240;
-				CoreComm.NominalHeight = 160;
 				PutSettings(_settings);
 
 				_tracer = new TraceBuffer

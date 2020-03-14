@@ -25,10 +25,6 @@ namespace BizHawk.Emulation.Common
 		public string RomStatusAnnotation { get; set; }
 		public string RomStatusDetails { get; set; }
 
-		// size hint to a/v out resizer.  this probably belongs in VideoProvider?  but it's somewhat different than VirtualWidth...
-		public int NominalWidth { get; set; } = 640;
-		public int NominalHeight { get; set; } = 480;
-
 		/// <summary>
 		/// Gets a message to show. reasonably annoying (dialog box), shouldn't be used most of the time
 		/// </summary>
