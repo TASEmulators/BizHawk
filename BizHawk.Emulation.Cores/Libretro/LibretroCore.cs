@@ -18,10 +18,9 @@ namespace BizHawk.Emulation.Cores.Libretro
 	{
 		private LibretroApi api;
 
-		public LibretroCore(CoreComm nextComm, string corePath)
+		// TODO: codepath just for introspection (lighter weight; no speex, no controls, etc.)
+		public LibretroCore(CoreComm nextComm, GameInfo game, string corePath)
 		{
-			//TODO: codepath just for introspection (lighter weight; no speex, no controls, etc.)
-
 			ServiceProvider = new BasicServiceProvider(this);
 			_SyncSettings = new SyncSettings();
 			CoreComm = nextComm;
@@ -32,17 +31,17 @@ namespace BizHawk.Emulation.Cores.Libretro
 			if (api.comm->env.retro_api_version != 1)
 				throw new InvalidOperationException("Unsupported Libretro API version (or major error in interop)");
 
-			//SO: I think I need these paths set before I call retro_set_environment
-			//and I need retro_set_environment set so I can find out if the core supports no-game
-			//therefore, I need a complete environment (including pathing) before I can complete my introspection of the core.
-			//Sucky, but that's life.
-			//I don't even know for sure what paths I should use until... (what?)
+			// SO: I think I need these paths set before I call retro_set_environment
+			// and I need retro_set_environment set so I can find out if the core supports no-game
+			// therefore, I need a complete environment (including pathing) before I can complete my introspection of the core.
+			// Sucky, but that's life.
+			// I don't even know for sure what paths I should use until... (what?)
 
 
-			//not sure about each of these.. but we may be doing things different than retroarch.
-			//I wish I could initialize these with placeholders during a separate introspection codepath..
-			string SystemDirectory = CoreComm.CoreFileProvider.GetRetroSystemPath();
-			string SaveDirectory = CoreComm.CoreFileProvider.GetRetroSaveRAMDirectory();
+			// not sure about each of these.. but we may be doing things different than retroarch.
+			// I wish I could initialize these with placeholders during a separate introspection codepath..
+			string SystemDirectory = CoreComm.CoreFileProvider.GetRetroSystemPath(game);
+			string SaveDirectory = CoreComm.CoreFileProvider.GetRetroSaveRAMDirectory(game);
 			string CoreDirectory = Path.GetDirectoryName(corePath);
 			string CoreAssetsDirectory = Path.GetDirectoryName(corePath);
 

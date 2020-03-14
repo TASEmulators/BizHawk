@@ -291,24 +291,20 @@ namespace BizHawk.Client.Common
 
 				if (OpenAdvanced is OpenAdvanced_Libretro)
 				{
-					string codePathPart = Path.GetFileNameWithoutExtension(nextComm.LaunchLibretroCore);
-
-					var retro = new LibretroCore(nextComm, nextComm.LaunchLibretroCore);
-					nextEmulator = retro;
-
 					// kind of dirty.. we need to stash this, and then we can unstash it in a moment, in case the core doesn't fail
 					var oldGame = Global.Game;
 
+					// must be done before LoadNoGame (which triggers retro_init and the paths to be consumed by the core)
+					// game name == name of core
+					string codePathPart = Path.GetFileNameWithoutExtension(nextComm.LaunchLibretroCore);
+					Global.Game = game = new GameInfo { Name = codePathPart, System = "Libretro" };
+					var retro = new LibretroCore(nextComm, game, nextComm.LaunchLibretroCore);
+					nextEmulator = retro;
+
 					if (retro.Description.SupportsNoGame && string.IsNullOrEmpty(path))
 					{
-						// must be done before LoadNoGame (which triggers retro_init and the paths to be consumed by the core)
-						// game name == name of core
-						var gameName = codePathPart;
-						Global.Game = game = new GameInfo { Name = gameName, System = "Libretro" };
-
 						// if we are allowed to run NoGame and we don't have a game, boot up the core that way
 						bool ret = retro.LoadNoGame();
-
 						Global.Game = oldGame;
 
 						if (!ret)
@@ -321,11 +317,6 @@ namespace BizHawk.Client.Common
 					else
 					{
 						bool ret;
-
-						// must be done before LoadNoGame (which triggers retro_init and the paths to be consumed by the core)
-						// game name == name of core + extensionless_game_filename
-						var gameName = Path.Combine(codePathPart, Path.GetFileNameWithoutExtension(file.Name));
-						Global.Game = game = new GameInfo { Name = gameName, System = "Libretro" };
 
 						// if the core requires an archive file, then try passing the filename of the archive
 						// (but do we ever need to actually load the contents of the archive file into ram?)

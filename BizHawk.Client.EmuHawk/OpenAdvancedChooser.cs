@@ -78,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 				//nope, we need to navigate to the dll path. this was a bad idea anyway. so many dlls get loaded, something to resolve them is needed
 				var coreComm = new CoreComm(null, null);
 				CoreFileProvider.SyncCoreCommInputSignals(coreComm);
-				using var retro = new LibretroCore(coreComm, core);
+				using var retro = new LibretroCore(coreComm, Global.Game, core);
 				btnLibretroLaunchGame.Enabled = true;
 				if (retro.Description.SupportsNoGame)
 					btnLibretroLaunchNoGame.Enabled = true;

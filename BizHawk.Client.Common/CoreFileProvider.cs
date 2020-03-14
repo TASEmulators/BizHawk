@@ -17,19 +17,13 @@ namespace BizHawk.Client.Common
 		}
 
 		public string DllPath()
-		{
-			return Path.Combine(PathManager.GetExeDirectoryAbsolute(), "dll");
-		}
+			=> Path.Combine(PathManager.GetExeDirectoryAbsolute(), "dll");
 
-		public string GetRetroSaveRAMDirectory()
-		{
-			return PathManager.RetroSaveRAMDirectory(Global.Game);
-		}
+		public string GetRetroSaveRAMDirectory(GameInfo game)
+			=> PathManager.RetroSaveRAMDirectory(game);
 
-		public string GetRetroSystemPath()
-		{
-			return PathManager.RetroSystemPath(Global.Game);
-		}
+		public string GetRetroSystemPath(GameInfo game)
+			=> PathManager.RetroSystemPath(game);
 
 		#region EmuLoadHelper api
 

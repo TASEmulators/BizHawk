@@ -15,12 +15,12 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// produces a path that contains saveram... because libretro cores need it
 		/// </summary>
-		string GetRetroSaveRAMDirectory();
+		string GetRetroSaveRAMDirectory(GameInfo game);
 
 		/// <summary>
 		/// produces a path for use as a libretro system path (different for each core)
 		/// </summary>
-		string GetRetroSystemPath();
+		string GetRetroSystemPath(GameInfo game);
 
 		#region EmuLoadHelper api
 
