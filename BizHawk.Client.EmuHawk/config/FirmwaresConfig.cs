@@ -28,6 +28,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class FirmwaresConfig : Form
 	{
 		private readonly MainForm _mainForm;
+		private readonly Config _config;
 
 		// friendlier names than the system Ids
 		// Redundant with SystemLookup? Not so fast. That data drives things. This is one step abstracted. Don't be such a smart guy. Keep this redundant list up to date.
@@ -91,11 +92,10 @@ namespace BizHawk.Client.EmuHawk
 		private string _currSelectorDir;
 		private readonly ListViewSorter _listViewSorter;
 
-		private string FirmwaresPath => Global.Config.PathEntries.FirmwaresPathFragment;
-
-		public FirmwaresConfig(MainForm mainForm, bool retryLoadRom = false, string reloadRomPath = null)
+		public FirmwaresConfig(MainForm mainForm, Config config, bool retryLoadRom = false, string reloadRomPath = null)
 		{
 			_mainForm = mainForm;
+			_config = config;
 			InitializeComponent();
 
 			// prep ImageList for ListView with 3 item states for {idUnsure, idMissing, idOk}
@@ -247,15 +247,24 @@ namespace BizHawk.Client.EmuHawk
 		private void DoScan()
 		{
 			lvFirmwares.BeginUpdate();
-			Manager.DoScanAndResolve(FirmwaresPath);
+			Manager.DoScanAndResolve(
+				_config.PathEntries.FirmwaresPathFragment,
+				_config.FirmwareUserSpecifications);
 
 			// for each type of firmware, try resolving and record the result
 			foreach (ListViewItem lvi in lvFirmwares.Items)
 			{
 				var fr = lvi.Tag as FirmwareDatabase.FirmwareRecord;
-				var ri = Manager.Resolve(FirmwaresPath, fr, true);
-				for(int i=4;i<=7;i++)
+				var ri = Manager.Resolve(
+					_config.PathEntries.FirmwaresPathFragment,
+					_config.FirmwareUserSpecifications,
+					fr,
+					true);
+
+				for (int i = 4; i <= 7; i++)
+				{
 					lvi.SubItems[i].Text = "";
+				}
 
 				if (ri == null)
 				{
@@ -333,11 +342,11 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			Manager.DoScanAndResolve(FirmwaresPath);
+			Manager.DoScanAndResolve(_config.PathEntries.FirmwaresPathFragment, _config.FirmwareUserSpecifications);
 
 			foreach (var fr in FirmwareDatabase.FirmwareRecords)
 			{
-				var ri = Manager.Resolve(FirmwaresPath, fr);
+				var ri = Manager.Resolve(_config.PathEntries.FirmwaresPathFragment, _config.FirmwareUserSpecifications, fr);
 				if (ri?.KnownFirmwareFile == null) continue;
 				if (ri.UserSpecified) continue;
 

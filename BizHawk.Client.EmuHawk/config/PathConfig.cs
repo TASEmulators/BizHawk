@@ -178,7 +178,7 @@ namespace BizHawk.Client.EmuHawk
 								return;
 							}
 
-							using var f = new FirmwaresConfig(_mainForm) { TargetSystem = "Global" };
+							using var f = new FirmwaresConfig(_mainForm, _config) { TargetSystem = "Global" };
 							f.ShowDialog(this);
 						};
 

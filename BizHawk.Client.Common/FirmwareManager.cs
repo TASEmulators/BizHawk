@@ -41,7 +41,7 @@ namespace BizHawk.Client.Common
 			public string FirmwareId { get; set; }
 		}
 
-		public ResolutionInfo Resolve(string firmwaresPath, FirmwareDatabase.FirmwareRecord record, bool forbidScan = false)
+		public ResolutionInfo Resolve(string firmwaresPath, IDictionary<string, string> userSpecifications, FirmwareDatabase.FirmwareRecord record, bool forbidScan = false)
 		{
 			// purpose of forbidScan: sometimes this is called from a loop in Scan(). we don't want to repeatedly DoScanAndResolve in that case, its already been done.
 			bool first = true;
@@ -55,7 +55,7 @@ namespace BizHawk.Client.Common
 			{
 				if (!forbidScan)
 				{
-					DoScanAndResolve(firmwaresPath);
+					DoScanAndResolve(firmwaresPath, userSpecifications);
 				}
 
 				first = false;
@@ -66,9 +66,9 @@ namespace BizHawk.Client.Common
 		}
 
 		// Requests the specified firmware. tries really hard to scan and resolve as necessary
-		public string Request(string firmwaresPath, string sysId, string firmwareId)
+		public string Request(string firmwaresPath, IDictionary<string, string> userSpecifications, string sysId, string firmwareId)
 		{
-			var resolved = Resolve(firmwaresPath, FirmwareDatabase.LookupFirmwareRecord(sysId, firmwareId));
+			var resolved = Resolve(firmwaresPath, userSpecifications, FirmwareDatabase.LookupFirmwareRecord(sysId, firmwareId));
 			if (resolved == null)
 			{
 				return null;
@@ -138,7 +138,7 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
-		public void DoScanAndResolve(string firmwaresPath)
+		public void DoScanAndResolve(string firmwaresPath, IDictionary<string, string> userSpecifications)
 		{
 			// build a list of file sizes. Only those will be checked during scanning
 			var sizes = new HashSet<long>();
@@ -148,6 +148,7 @@ namespace BizHawk.Client.Common
 			}
 
 			using var reader = new RealFirmwareReader();
+
 			// build a list of files under the global firmwares path, and build a hash for each of them while we're at it
 			var todo = new Queue<DirectoryInfo>();
 			todo.Enqueue(new DirectoryInfo(PathManager.MakeAbsolutePath(firmwaresPath, null)));
@@ -162,9 +163,9 @@ namespace BizHawk.Client.Common
 				}
 
 				// we're going to allow recursing into subdirectories, now. its been verified to work OK
-				foreach (var disub in di.GetDirectories())
+				foreach (var subDir in di.GetDirectories())
 				{
-					todo.Enqueue(disub);
+					todo.Enqueue(subDir);
 				}
 				
 				foreach (var fi in di.GetFiles())
@@ -217,7 +218,7 @@ namespace BizHawk.Client.Common
 			foreach (var fr in FirmwareDatabase.FirmwareRecords)
 			{
 				// do we have a user specification for this firmware record?
-				if (Global.Config.FirmwareUserSpecifications.TryGetValue(fr.ConfigKey, out var userSpec))
+				if (userSpecifications.TryGetValue(fr.ConfigKey, out var userSpec))
 				{
 					// flag it as user specified
 					if (!_resolutionDictionary.TryGetValue(fr, out ResolutionInfo ri))
