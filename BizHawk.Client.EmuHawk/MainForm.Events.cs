@@ -3000,10 +3000,8 @@ namespace BizHawk.Client.EmuHawk
 			string details = Emulator.CoreComm.RomStatusDetails;
 			if (!string.IsNullOrEmpty(details))
 			{
-				Sound.StopSound();
 				Tools.Load<LogWindow>();
 				((LogWindow) Tools.Get<LogWindow>()).ShowReport("Dump Status Report", details);
-				Sound.StartSound();
 			}
 		}
 

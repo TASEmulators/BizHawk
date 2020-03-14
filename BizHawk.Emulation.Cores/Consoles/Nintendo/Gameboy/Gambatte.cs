@@ -36,8 +36,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			InitMemoryCallbacks();
 			CoreComm = comm;
 
-			comm.RomStatusAnnotation = null;
-			comm.RomStatusDetails = null;
 			comm.NominalWidth = 160;
 			comm.NominalHeight = 144;
 
