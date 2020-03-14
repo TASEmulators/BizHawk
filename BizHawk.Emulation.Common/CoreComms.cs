@@ -17,6 +17,8 @@ namespace BizHawk.Emulation.Common
 			Notify = notifyMessage;
 		}
 
+		public CoreComm Clone() => (CoreComm)MemberwiseClone();
+
 		public ICoreFileProvider CoreFileProvider { get; set; }
 
 		// a core should set these if you wish to provide rom status information yourself. otherwise it will be calculated by the frontend in a way you may not like, using RomGame-related concepts.
