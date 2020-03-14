@@ -867,7 +867,7 @@ namespace BizHawk.Client.Common
 						{
 							// need to get rid of this hack at some point
 							rom = new RomGame(file);
-							((CoreFileProvider)nextComm.CoreFileProvider).SubfileDirectory = Path.GetDirectoryName(path.Replace("|", "")); // Dirty hack to get around archive filenames (since we are just getting the directory path, it is safe to mangle the filename
+							nextComm.CoreFileProvider.SubfileDirectory = Path.GetDirectoryName(path.Replace("|", "")); // Dirty hack to get around archive filenames (since we are just getting the directory path, it is safe to mangle the filename
 							byte[] romData = null;
 							byte[] xmlData = rom.FileData;
 
@@ -963,8 +963,8 @@ namespace BizHawk.Client.Common
 							// The user picked nothing in the Core picker
 							break;
 						case "83P":
-							var ti83Bios = ((CoreFileProvider)nextComm.CoreFileProvider).GetFirmware("TI83", "Rom", true);
-							var ti83BiosPath = ((CoreFileProvider)nextComm.CoreFileProvider).GetFirmwarePath("TI83", "Rom", true);
+							var ti83Bios = nextComm.CoreFileProvider.GetFirmware("TI83", "Rom", true);
+							var ti83BiosPath = nextComm.CoreFileProvider.GetFirmwarePath("TI83", "Rom", true);
 							using (var ti83AsHawkFile = new HawkFile(ti83BiosPath))
 							{
 								var ti83BiosAsRom = new RomGame(ti83AsHawkFile);
@@ -995,7 +995,7 @@ namespace BizHawk.Client.Common
 							else
 							{
 								// need to get rid of this hack at some point
-								((CoreFileProvider)nextComm.CoreFileProvider).SubfileDirectory = Path.GetDirectoryName(path.Replace("|", "")); // Dirty hack to get around archive filenames (since we are just getting the directory path, it is safe to mangle the filename
+								nextComm.CoreFileProvider.SubfileDirectory = Path.GetDirectoryName(path.Replace("|", "")); // Dirty hack to get around archive filenames (since we are just getting the directory path, it is safe to mangle the filename
 								var romData = isXml ? null : rom.FileData;
 								var xmlData = isXml ? rom.FileData : null;
 								var snes = new LibsnesCore(game, romData, xmlData, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());

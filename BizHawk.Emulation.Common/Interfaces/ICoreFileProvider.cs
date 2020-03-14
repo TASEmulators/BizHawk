@@ -7,6 +7,8 @@ namespace BizHawk.Emulation.Common
 	/// </summary>
 	public interface ICoreFileProvider
 	{
+		string SubfileDirectory { get; set; }
+
 		/// <summary>
 		/// Produces a path to the requested file, expected to be parallel to the running rom. for example: cue+bin files or SFC+PCM (MSU-1 games)
 		/// </summary>
