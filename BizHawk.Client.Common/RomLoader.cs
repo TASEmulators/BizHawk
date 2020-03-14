@@ -242,7 +242,7 @@ namespace BizHawk.Client.Common
 			return discs;
 		}
 
-		public bool LoadRom(string path, CoreComm nextComm, bool forceAccurateCore = false,
+		public bool LoadRom(string path, CoreComm nextComm, string launchLibretroCore, bool forceAccurateCore = false,
 			int recursiveCount = 0) // forceAccurateCore is currently just for Quicknes vs Neshawk but could be used for other situations
 		{
 			if (recursiveCount > 1) // hack to stop recursive calls from endlessly rerunning if we can't load it
@@ -295,9 +295,9 @@ namespace BizHawk.Client.Common
 
 					// must be done before LoadNoGame (which triggers retro_init and the paths to be consumed by the core)
 					// game name == name of core
-					string codePathPart = Path.GetFileNameWithoutExtension(nextComm.LaunchLibretroCore);
+					string codePathPart = Path.GetFileNameWithoutExtension(launchLibretroCore);
 					Global.Game = game = new GameInfo { Name = codePathPart, System = "Libretro" };
-					var retro = new LibretroCore(nextComm, game, nextComm.LaunchLibretroCore);
+					var retro = new LibretroCore(nextComm, game, launchLibretroCore);
 					nextEmulator = retro;
 
 					if (retro.Description.SupportsNoGame && string.IsNullOrEmpty(path))
@@ -1183,7 +1183,7 @@ namespace BizHawk.Client.Common
 						DoMessageCallback("Unable to use quicknes, using NESHawk instead");
 					}
 
-					return LoadRom(path, nextComm, true, recursiveCount + 1);
+					return LoadRom(path, nextComm, launchLibretroCore, true, recursiveCount + 1);
 				}
 
 				if (ex is MissingFirmwareException)
@@ -1196,7 +1196,7 @@ namespace BizHawk.Client.Common
 					// To avoid catch-22, disable SGB mode
 					Global.Config.GbAsSgb = false;
 					DoMessageCallback("Failed to load a GB rom in SGB mode.  Disabling SGB Mode.");
-					return LoadRom(path, nextComm, false, recursiveCount + 1);
+					return LoadRom(path, nextComm, launchLibretroCore, false, recursiveCount + 1);
 				}
 
 				// handle exceptions thrown by the new detected systems that BizHawk does not have cores for

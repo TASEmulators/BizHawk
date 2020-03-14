@@ -32,9 +32,6 @@ namespace BizHawk.Emulation.Common
 		public int NominalWidth { get; set; } = 640;
 		public int NominalHeight { get; set; } = 480;
 
-		// I know we want to get rid of CoreComm, but while it's still here, I'll use it for this
-		public string LaunchLibretroCore { get; set; }
-
 		/// <summary>
 		/// Gets a message to show. reasonably annoying (dialog box), shouldn't be used most of the time
 		/// </summary>

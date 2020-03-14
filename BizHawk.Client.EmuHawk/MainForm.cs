@@ -3604,8 +3604,7 @@ namespace BizHawk.Client.EmuHawk
 						ioaRetro.CorePath = Config.LibretroCore;
 					}
 
-					nextComm.LaunchLibretroCore = ioaRetro.CorePath;
-					if (nextComm.LaunchLibretroCore == null)
+					if (ioaRetro.CorePath == null)
 					{
 						throw new InvalidOperationException("Can't load a file via Libretro until a core is specified");
 					}
@@ -3619,7 +3618,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				CoreFileProvider.SyncCoreCommInputSignals(nextComm);
-				var result = loader.LoadRom(path, nextComm);
+				var result = loader.LoadRom(path, nextComm, ioaRetro?.CorePath);
 
 				// we need to replace the path in the OpenAdvanced with the canonical one the user chose.
 				// It can't be done until loader.LoadRom happens (for CanonicalFullPath)

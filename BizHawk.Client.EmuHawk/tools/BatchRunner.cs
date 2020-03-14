@@ -133,7 +133,7 @@ namespace BizHawk.Client.EmuHawk
 			bool result;
 			try
 			{
-				result = _ldr.LoadRom(f, _comm);
+				result = _ldr.LoadRom(f, _comm, null);
 			}
 			catch (Exception e)
 			{
