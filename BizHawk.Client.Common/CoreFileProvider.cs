@@ -7,13 +7,13 @@ namespace BizHawk.Client.Common
 {
 	public class CoreFileProvider : ICoreFileProvider
 	{
-		public FirmwareManager FirmwareManager { get; set; }
-
+		private readonly FirmwareManager _firmwareManager;
 		private readonly Action<string> _showWarning;
 
-		public CoreFileProvider(Action<string> showWarning)
+		public CoreFileProvider(Action<string> showWarning, FirmwareManager firmwareManager)
 		{
 			_showWarning = showWarning;
+			_firmwareManager = firmwareManager;
 		}
 
 		public string DllPath()
@@ -43,7 +43,7 @@ namespace BizHawk.Client.Common
 		/// <exception cref="MissingFirmwareException">not found and <paramref name="required"/> is true</exception>
 		private string GetFirmwarePath(string sysId, string firmwareId, bool required, string msg = null)
 		{
-			var path = FirmwareManager.Request(Global.Config.PathEntries.FirmwaresPathFragment, Global.Config.FirmwareUserSpecifications, sysId, firmwareId);
+			var path = _firmwareManager.Request(Global.Config.PathEntries.FirmwaresPathFragment, Global.Config.FirmwareUserSpecifications, sysId, firmwareId);
 			if (path != null && !File.Exists(path))
 			{
 				path = null;
@@ -107,9 +107,7 @@ namespace BizHawk.Client.Common
 		// this should go away now
 		public static void SyncCoreCommInputSignals(CoreComm target)
 		{
-			var cfp = new CoreFileProvider(target.ShowMessage);
-			target.CoreFileProvider = cfp;
-			cfp.FirmwareManager = Global.FirmwareManager;
+			target.CoreFileProvider = new CoreFileProvider(target.ShowMessage, Global.FirmwareManager);
 		}
 	}
 }
