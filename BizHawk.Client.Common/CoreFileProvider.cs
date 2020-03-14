@@ -62,7 +62,7 @@ namespace BizHawk.Client.Common
 		/// <exception cref="MissingFirmwareException">not found and <paramref name="required"/> is true</exception>
 		public string GetFirmwarePath(string sysId, string firmwareId, bool required, string msg = null)
 		{
-			var path = FirmwareManager.Request(sysId, firmwareId);
+			var path = FirmwareManager.Request(Global.Config.PathEntries.FirmwaresPathFragment, sysId, firmwareId);
 			if (path != null && !File.Exists(path))
 			{
 				path = null;

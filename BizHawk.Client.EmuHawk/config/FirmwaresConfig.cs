@@ -91,6 +91,8 @@ namespace BizHawk.Client.EmuHawk
 		private string _currSelectorDir;
 		private readonly ListViewSorter _listViewSorter;
 
+		private string FirmwaresPath => Global.Config.PathEntries.FirmwaresPathFragment;
+
 		public FirmwaresConfig(MainForm mainForm, bool retryLoadRom = false, string reloadRomPath = null)
 		{
 			_mainForm = mainForm;
@@ -245,13 +247,13 @@ namespace BizHawk.Client.EmuHawk
 		private void DoScan()
 		{
 			lvFirmwares.BeginUpdate();
-			Manager.DoScanAndResolve();
+			Manager.DoScanAndResolve(FirmwaresPath);
 
 			// for each type of firmware, try resolving and record the result
 			foreach (ListViewItem lvi in lvFirmwares.Items)
 			{
 				var fr = lvi.Tag as FirmwareDatabase.FirmwareRecord;
-				var ri = Manager.Resolve(fr, true);
+				var ri = Manager.Resolve(FirmwaresPath, fr, true);
 				for(int i=4;i<=7;i++)
 					lvi.SubItems[i].Text = "";
 
@@ -315,8 +317,9 @@ namespace BizHawk.Client.EmuHawk
 
 					lvi.SubItems[6].Text = ri.Size.ToString();
 
-					if (ri.Hash != null) lvi.SubItems[7].Text = $"sha1:{ri.Hash}";
-					else lvi.SubItems[7].Text = "";
+					lvi.SubItems[7].Text = ri.Hash != null
+						? $"sha1:{ri.Hash}"
+						: "";
 				}
 			}
 
@@ -330,11 +333,11 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			Manager.DoScanAndResolve();
+			Manager.DoScanAndResolve(FirmwaresPath);
 
 			foreach (var fr in FirmwareDatabase.FirmwareRecords)
 			{
-				var ri = Manager.Resolve(fr);
+				var ri = Manager.Resolve(FirmwaresPath, fr);
 				if (ri?.KnownFirmwareFile == null) continue;
 				if (ri.UserSpecified) continue;
 
@@ -650,7 +653,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					// blech. the worst extraction code in the universe.
 					string extractPath = $"{Path.GetTempFileName()}.dir";
-					DirectoryInfo di = Directory.CreateDirectory(extractPath);
+					var di = Directory.CreateDirectory(extractPath);
 
 					try
 					{
