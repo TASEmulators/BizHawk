@@ -37,11 +37,6 @@ namespace BizHawk.Client.Common
 			return PathManager.RetroSystemPath(Global.Game);
 		}
 
-		public string GetGameBasePath()
-		{
-			return PathManager.GetGameBasePath(Global.Game);
-		}
-
 		#region EmuLoadHelper api
 
 		private void FirmwareWarn(string sysID, string firmwareID, bool required, string msg = null)

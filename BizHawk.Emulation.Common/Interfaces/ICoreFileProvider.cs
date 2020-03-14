@@ -30,8 +30,6 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		string GetRetroSystemPath();
 
-		string GetGameBasePath();
-
 		#region EmuLoadHelper api
 
 		/// <summary>
