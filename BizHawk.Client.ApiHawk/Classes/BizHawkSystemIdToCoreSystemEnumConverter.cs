@@ -83,9 +83,6 @@ namespace BizHawk.Client.ApiHawk
 				case "PSX":
 					return CoreSystem.Playstation;
 
-				case "PSP":
-					return CoreSystem.PSP;
-
 				case "SAT":
 					return CoreSystem.Saturn;
 

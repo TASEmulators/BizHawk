@@ -24,7 +24,6 @@
 		Genesis,
 		Saturn,
 		MasterSystem,
-		PSP,
 		Playstation,
 		WonderSwan,
 		Libretro,
