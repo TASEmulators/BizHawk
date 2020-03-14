@@ -82,14 +82,7 @@ namespace BizHawk.Client.EmuHawk
 			// its.. weird. don't ask.
 		}
 
-		private CoreComm CreateCoreComm()
-		{
-			return new CoreComm(ShowMessageCoreComm, NotifyCoreComm)
-			{
-				ActivateGLContext = gl => GLManager.Activate((GLManager.ContextRef)gl),
-				DeactivateGLContext = () => GLManager.Deactivate()
-			};
-		}
+		private CoreComm CreateCoreComm() => new CoreComm(ShowMessageCoreComm, NotifyCoreComm);
 
 		public MainForm(string[] args)
 		{

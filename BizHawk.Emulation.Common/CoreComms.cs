@@ -44,8 +44,5 @@ namespace BizHawk.Emulation.Common
 		/// Gets a message to show. less annoying (OSD message). Should be used for ignorable helpful messages
 		/// </summary>
 		public Action<string> Notify { get; }
-
-		public Action<object> ActivateGLContext { get; set; }
-		public Action DeactivateGLContext { get; set; } // this shouldn't be necessary.. frontend should be changing context before it does anything.. but for now..
 	}
 }
