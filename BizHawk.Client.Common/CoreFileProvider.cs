@@ -17,11 +17,6 @@ namespace BizHawk.Client.Common
 			_showWarning = showWarning;
 		}
 
-		public string PathSubfile(string fname)
-		{
-			return Path.Combine(SubfileDirectory ?? "", fname);
-		}
-
 		public string DllPath()
 		{
 			return Path.Combine(PathManager.GetExeDirectoryAbsolute(), "dll");
