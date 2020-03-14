@@ -18,7 +18,7 @@ namespace BizHawk.Client.Common
 			public string Hash { get; set; }
 		}
 
-		public List<FirmwareEventArgs> RecentlyServed { get; }
+		public List<FirmwareEventArgs> RecentlyServed { get; } = new List<FirmwareEventArgs>();
 
 		public class ResolutionInfo
 		{
@@ -41,23 +41,13 @@ namespace BizHawk.Client.Common
 			public string FirmwareId { get; set; }
 		}
 
-		public FirmwareManager()
-		{
-			RecentlyServed = new List<FirmwareEventArgs>();
-		}
-
-		public ResolutionInfo Resolve(string sysId, string firmwareId)
-		{
-			return Resolve(FirmwareDatabase.LookupFirmwareRecord(sysId, firmwareId));
-		}
-
 		public ResolutionInfo Resolve(FirmwareDatabase.FirmwareRecord record, bool forbidScan = false)
 		{
 			// purpose of forbidScan: sometimes this is called from a loop in Scan(). we don't want to repeatedly DoScanAndResolve in that case, its already been done.
 			bool first = true;
 
 		RETRY:
-		_resolutionDictionary.TryGetValue(record, out var resolved);
+			_resolutionDictionary.TryGetValue(record, out var resolved);
 
 			// couldn't find it! do a scan and resolve to try harder
 			// NOTE: this could result in bad performance in some cases if the scanning happens repeatedly..
@@ -78,7 +68,7 @@ namespace BizHawk.Client.Common
 		// Requests the specified firmware. tries really hard to scan and resolve as necessary
 		public string Request(string sysId, string firmwareId)
 		{
-			var resolved = Resolve(sysId, firmwareId);
+			var resolved = Resolve(FirmwareDatabase.LookupFirmwareRecord(sysId, firmwareId));
 			if (resolved == null)
 			{
 				return null;
@@ -97,7 +87,6 @@ namespace BizHawk.Client.Common
 
 		private class RealFirmwareReader : IDisposable
 		{
-			private readonly List<RealFirmwareFile> _files = new List<RealFirmwareFile>();
 			private SHA1 _sha1 = SHA1.Create();
 
 			public void Dispose()
@@ -109,7 +98,6 @@ namespace BizHawk.Client.Common
 			public RealFirmwareFile Read(FileInfo fi)
 			{
 				var rff = new RealFirmwareFile { FileInfo = fi };
-				long len = fi.Length;
 
 				using (var fs = fi.OpenRead())
 				{
@@ -118,7 +106,6 @@ namespace BizHawk.Client.Common
 
 				rff.Hash = _sha1.Hash.BytesToHexString();
 				Dict[rff.Hash] = rff;
-				_files.Add(rff);
 				return rff;
 			}
 
