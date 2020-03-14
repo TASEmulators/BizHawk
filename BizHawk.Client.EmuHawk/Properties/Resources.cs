@@ -142,7 +142,6 @@ namespace BizHawk.Client.EmuHawk.Properties {
 		internal static readonly Bitmap placeholder_bitmap = ReadEmbeddedBitmap("placeholder_bitmap");
 		internal static readonly Icon poke_MultiSize = ReadEmbeddedIcon("poke");
 		internal static readonly Bitmap poke = ReadEmbeddedBitmap("poke");
-		internal static readonly Bitmap ppsspp = ReadEmbeddedBitmap("ppsspp");
 		internal static readonly Icon Previous_MultiSize = ReadEmbeddedIcon("Previous");
 		internal static readonly Bitmap Previous = ReadEmbeddedBitmap("Previous");
 		internal static readonly Icon QuickNes_MultiSize = ReadEmbeddedIcon("QuickNes");

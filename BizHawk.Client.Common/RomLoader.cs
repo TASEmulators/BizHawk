@@ -19,7 +19,6 @@ using BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.GGHawkLink;
-using BizHawk.Emulation.Cores.Sony.PSP;
 using BizHawk.Emulation.Cores.Sony.PSX;
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
 using BizHawk.Emulation.Cores.Arcades.MAME;
@@ -564,9 +563,6 @@ namespace BizHawk.Client.Common
 						case "SAT":
 							nextEmulator = new Saturnus(nextComm, new[] { disc }, Deterministic,
 								(Saturnus.Settings)GetCoreSettings<Saturnus>(), (Saturnus.SyncSettings)GetCoreSyncSettings<Saturnus>());
-							break;
-						case "PSP":
-							nextEmulator = new PSP(nextComm, file.Name);
 							break;
 						case "PSX":
 							nextEmulator = new Octoshock(nextComm, new List<Disc>(new[] { disc }), new List<string>(new[] { Path.GetFileNameWithoutExtension(path) }), null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
