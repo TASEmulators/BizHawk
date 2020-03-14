@@ -65,10 +65,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//TODO - this should be turned into a state machine
 		public sealed class PPUREGS
 		{
-			PPU ppu;
-			public PPUREGS(PPU ppu)
+			public PPUREGS()
 			{
-				this.ppu = ppu;
 				reset();
 			}
 
@@ -207,13 +205,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return 0x2000 | (v << 0xB) | (h << 0xA) | 0x3C0 | ((vt & 0x1C) << 1) | ((ht & 0x1C) >> 2);
 			}
 
-			//address line 3 relates to the pattern table fetch occuring (the PPU always makes them in pairs).
-			public int get_ptread(int par)
-			{
-				int s = ppu.reg_2000.bg_pattern_hi;
-				return (s << 0xC) | (par << 0x4) | fv;
-			}
-
 			public void increment2007(bool rendering, bool by32)
 			{
 				if (rendering)
@@ -307,7 +298,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//TODO - would like to reconstitute the entire PPU instead of all this..
 			reg_2000 = new Reg_2000(this);
 			reg_2001 = new Reg_2001();
-			ppur = new PPUREGS(this);
+			ppur = new PPUREGS();
 			Reg2002_objoverflow = false;
 			Reg2002_objhit = false;
 			Reg2002_vblank_active = false;
