@@ -33,16 +33,6 @@ namespace BizHawk.Emulation.Common
 		#region EmuLoadHelper api
 
 		/// <summary>
-		/// get path to a firmware
-		/// </summary>
-		/// <param name="sysId">The system id</param>
-		/// <param name="firmwareId">The firmware id</param>
-		/// <param name="required">if true, result is guaranteed to be valid; else null is possible if not found</param>
-		/// <param name="msg">message to show if fail to get</param>
-		[Obsolete]
-		string GetFirmwarePath(string sysId, string firmwareId, bool required, string msg = null);
-
-		/// <summary>
 		/// Get a firmware as a byte array
 		/// </summary>
 		/// <param name="sysId">the core systemID</param>

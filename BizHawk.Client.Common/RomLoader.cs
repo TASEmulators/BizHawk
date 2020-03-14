@@ -964,7 +964,9 @@ namespace BizHawk.Client.Common
 							break;
 						case "83P":
 							var ti83Bios = nextComm.CoreFileProvider.GetFirmware("TI83", "Rom", true);
-							var ti83BiosPath = nextComm.CoreFileProvider.GetFirmwarePath("TI83", "Rom", true);
+
+							// TODO: make the ti-83 a proper firmware file
+							var ti83BiosPath = Global.FirmwareManager.Request(Global.Config.PathEntries.FirmwaresPathFragment, Global.Config.FirmwareUserSpecifications, "TI83", "Rom");
 							using (var ti83AsHawkFile = new HawkFile(ti83BiosPath))
 							{
 								var ti83BiosAsRom = new RomGame(ti83AsHawkFile);
