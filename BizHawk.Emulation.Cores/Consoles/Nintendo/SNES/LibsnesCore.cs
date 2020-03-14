@@ -14,7 +14,7 @@ using BizHawk.Emulation.Cores.Components.W65816;
 // TODO 
 // libsnes needs to be modified to support multiple instances - THIS IS NECESSARY - or else loading one game and then another breaks things
 // edit - this is a lot of work
-// wrap dll code around some kind of library-accessing interface so that it doesnt malfunction if the dll is unavailablecd
+// wrap dll code around some kind of library-accessing interface so that it doesn't malfunction if the dll is unavailable
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
 	[Core(

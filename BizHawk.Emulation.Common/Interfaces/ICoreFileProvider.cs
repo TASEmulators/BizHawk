@@ -7,8 +7,6 @@ namespace BizHawk.Emulation.Common
 	/// </summary>
 	public interface ICoreFileProvider
 	{
-		string SubfileDirectory { get; set; }
-
 		/// <summary>
 		/// produces a path that contains emulation related DLL and exe files
 		/// </summary>

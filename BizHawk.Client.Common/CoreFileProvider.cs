@@ -7,7 +7,6 @@ namespace BizHawk.Client.Common
 {
 	public class CoreFileProvider : ICoreFileProvider
 	{
-		public string SubfileDirectory { get; set; }
 		public FirmwareManager FirmwareManager { get; set; }
 
 		private readonly Action<string> _showWarning;
@@ -118,13 +117,7 @@ namespace BizHawk.Client.Common
 		// this should go away now
 		public static void SyncCoreCommInputSignals(CoreComm target)
 		{
-			string superhack = null;
-			if (target.CoreFileProvider is CoreFileProvider)
-			{
-				superhack = ((CoreFileProvider)target.CoreFileProvider).SubfileDirectory;
-			}
-
-			var cfp = new CoreFileProvider(target.ShowMessage) { SubfileDirectory = superhack };
+			var cfp = new CoreFileProvider(target.ShowMessage);
 			target.CoreFileProvider = cfp;
 			cfp.FirmwareManager = Global.FirmwareManager;
 		}
