@@ -25,8 +25,6 @@ namespace BizHawk.Client.Common
 		public string GetRetroSystemPath(GameInfo game)
 			=> PathManager.RetroSystemPath(game);
 
-		#region EmuLoadHelper api
-
 		private void FirmwareWarn(string sysID, string firmwareID, bool required, string msg = null)
 		{
 			if (required)
@@ -105,8 +103,6 @@ namespace BizHawk.Client.Common
 
 			return ret;
 		}
-
-		#endregion
 
 		// this should go away now
 		public static void SyncCoreCommInputSignals(CoreComm target)

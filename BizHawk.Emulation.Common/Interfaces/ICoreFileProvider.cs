@@ -22,8 +22,6 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		string GetRetroSystemPath(GameInfo game);
 
-		#region EmuLoadHelper api
-
 		/// <summary>
 		/// Get a firmware as a byte array
 		/// </summary>
@@ -34,7 +32,5 @@ namespace BizHawk.Emulation.Common
 		byte[] GetFirmware(string sysId, string firmwareId, bool required, string msg = null);
 
 		byte[] GetFirmwareWithGameInfo(string sysId, string firmwareId, bool required, out GameInfo gi, string msg = null);
-
-		#endregion
 	}
 }
