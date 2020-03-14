@@ -25,117 +25,50 @@ namespace BizHawk.Client.ApiHawk
 		/// <exception cref="IndexOutOfRangeException">Thrown when SystemId hasn't been found</exception>
 		public object Convert(object value, Type targetType, object parameter, CultureInfo cultureInfo)
 		{
-			switch ((string)value)
+			return (string) value switch
 			{
-				case "AppleII":
-					return CoreSystem.AppleII;
-
-				case "A26":
-					return CoreSystem.Atari2600;
-
-				case "A78":
-					return CoreSystem.Atari7800;
-
-				case "Coleco":
-					return CoreSystem.ColecoVision;
-
-				case "C64":
-					return CoreSystem.Commodore64;
-
-				case "DGB":
-					return CoreSystem.DualGameBoy;
-
-				case "GB":
-					return CoreSystem.GameBoy;
-
-				case "GBA":
-					return CoreSystem.GameBoyAdvance;
-
-				case "GEN":
-					return CoreSystem.Genesis;
-
-				case "INTV":
-					return CoreSystem.Intellivision;
-
-				case "Libretro":
-					return CoreSystem.Libretro;
-
-				case "Lynx":
-					return CoreSystem.Lynx;
-
-				case "SMS":
-					return CoreSystem.MasterSystem;
-
-				case "NES":
-					return CoreSystem.NES;
-
-				case "N64":
-					return CoreSystem.Nintendo64;
-
-				case "NULL":
-					return CoreSystem.Null;
-
-				case "PCE":
-				case "PCECD":
-				case "SGX":
-					return CoreSystem.PCEngine;
-
-				case "PSX":
-					return CoreSystem.Playstation;
-
-				case "SAT":
-					return CoreSystem.Saturn;
-
-				case "SNES":
-					return CoreSystem.SNES;
-
-				case "TI83":
-					return CoreSystem.TI83;
-
-				case "VEC":
-					return CoreSystem.Vectrex;
-
-				case "WSWAN":
-					return CoreSystem.WonderSwan;
-
-				case "ZXSpectrum":
-					return CoreSystem.ZXSpectrum;
-
-				case "AmstradCPC":
-					return CoreSystem.AmstradCPC;
-
-				case "GGL":
-					return CoreSystem.GGL;
-
-				case "ChannelF":
-					return CoreSystem.ChannelF;
-
-				case "GB3x":
-					return CoreSystem.GB3x;
-
-				case "GB4x":
-					return CoreSystem.GB4x;
-
-				case "MAME":
-					return CoreSystem.MAME;
-
-				case "O2":
-					return CoreSystem.Odyssey2;
-
-				case "MSX":
-					return CoreSystem.MSX;
-
-				case "VB":
-				case "NGP":
-				case "DNGP":
-				case "SGB":
-				case "UZE":
-				case "PCFX":
-					return 0; // like I give a shit
-
-				default:
-					throw new IndexOutOfRangeException($"{value} is missing in convert list");
-			}
+				"AppleII" => CoreSystem.AppleII,
+				"A26" => CoreSystem.Atari2600,
+				"A78" => CoreSystem.Atari7800,
+				"Coleco" => CoreSystem.ColecoVision,
+				"C64" => CoreSystem.Commodore64,
+				"DGB" => CoreSystem.DualGameBoy,
+				"GB" => CoreSystem.GameBoy,
+				"GBA" => CoreSystem.GameBoyAdvance,
+				"GEN" => CoreSystem.Genesis,
+				"INTV" => CoreSystem.Intellivision,
+				"Libretro" => CoreSystem.Libretro,
+				"Lynx" => CoreSystem.Lynx,
+				"SMS" => CoreSystem.MasterSystem,
+				"NES" => CoreSystem.NES,
+				"N64" => CoreSystem.Nintendo64,
+				"NULL" => CoreSystem.Null,
+				"PCE" => CoreSystem.PCEngine,
+				"PCECD" => CoreSystem.PCEngine,
+				"SGX" => CoreSystem.PCEngine,
+				"PSX" => CoreSystem.Playstation,
+				"SAT" => CoreSystem.Saturn,
+				"SNES" => CoreSystem.SNES,
+				"TI83" => CoreSystem.TI83,
+				"VEC" => CoreSystem.Vectrex,
+				"WSWAN" => CoreSystem.WonderSwan,
+				"ZXSpectrum" => CoreSystem.ZXSpectrum,
+				"AmstradCPC" => CoreSystem.AmstradCPC,
+				"GGL" => CoreSystem.GGL,
+				"ChannelF" => CoreSystem.ChannelF,
+				"GB3x" => CoreSystem.GB3x,
+				"GB4x" => CoreSystem.GB4x,
+				"MAME" => CoreSystem.MAME,
+				"O2" => CoreSystem.Odyssey2,
+				"MSX" => CoreSystem.MSX,
+				"VB" => CoreSystem.VirtualBoy,
+				"NGP" => CoreSystem.NeoGeoPocket,
+				"DNGP" => CoreSystem.NeoGeoPocket,
+				"SGB" => CoreSystem.SuperGameBoy,
+				"UZE" => CoreSystem.UzeBox,
+				"PCFX" => CoreSystem.PcFx,
+				_ => throw new IndexOutOfRangeException($"{value} is missing in convert list")
+			};
 		}
 
 
@@ -162,89 +95,35 @@ namespace BizHawk.Client.ApiHawk
 		/// <exception cref="IndexOutOfRangeException">Thrown when <see cref="CoreSystem"/> hasn't been found</exception>
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo cultureInfo)
 		{
-			switch ((CoreSystem)value)
+			return (CoreSystem) value switch
 			{
-				case CoreSystem.AppleII:
-					return "AppleII";
-
-				case CoreSystem.Atari2600:
-					return "A26";
-
-				case CoreSystem.Atari7800:
-					return "A78";
-
-				case CoreSystem.ColecoVision:
-					return "Coleco";
-
-				case CoreSystem.Commodore64:
-					return "C64";
-
-				case CoreSystem.DualGameBoy:
-					return "DGB";
-
-				case CoreSystem.GameBoy:
-					return "GB";
-
-				case CoreSystem.GameBoyAdvance:
-					return "GBA";
-
-				case CoreSystem.Genesis:
-					return "GEN";
-
-				case CoreSystem.Intellivision:
-					return "INTV";
-
-				case CoreSystem.Libretro:
-					return "Libretro";
-
-				case CoreSystem.Lynx:
-					return "Lynx";
-
-				case CoreSystem.MasterSystem:
-					return "SMS";
-
-				case CoreSystem.NES:
-					return "NES";
-
-				case CoreSystem.Nintendo64:
-					return "N64";
-
-				case CoreSystem.Null:
-					return "NULL";
-
-				case CoreSystem.PCEngine:
-					return "PCE";
-
-				case CoreSystem.Playstation:
-					return "PSX";
-
-				case CoreSystem.PSP:
-					return "PSP";
-
-				case CoreSystem.Saturn:
-					return "SAT";
-
-				case CoreSystem.SNES:
-					return "SNES";
-
-				case CoreSystem.TI83:
-					return "TI83";
-
-				case CoreSystem.WonderSwan:
-					return "WSWAN";
-
-				case CoreSystem.ZXSpectrum:
-					return "ZXSpectrum";
-
-				case CoreSystem.AmstradCPC:
-					return "AmstradCPC";
-
-				case CoreSystem.Odyssey2:
-					return "O2";
-
-				default:
-					throw new IndexOutOfRangeException($"{value} is missing in convert list");
-			}
+				CoreSystem.AppleII => "AppleII",
+				CoreSystem.Atari2600 => "A26",
+				CoreSystem.Atari7800 => "A78",
+				CoreSystem.ColecoVision => "Coleco",
+				CoreSystem.Commodore64 => "C64",
+				CoreSystem.DualGameBoy => "DGB",
+				CoreSystem.GameBoy => "GB",
+				CoreSystem.GameBoyAdvance => "GBA",
+				CoreSystem.Genesis => "GEN",
+				CoreSystem.Intellivision => "INTV",
+				CoreSystem.Libretro => "Libretro",
+				CoreSystem.Lynx => "Lynx",
+				CoreSystem.MasterSystem => "SMS",
+				CoreSystem.NES => "NES",
+				CoreSystem.Nintendo64 => "N64",
+				CoreSystem.Null => "NULL",
+				CoreSystem.PCEngine => "PCE",
+				CoreSystem.Playstation => "PSX",
+				CoreSystem.Saturn => "SAT",
+				CoreSystem.SNES => "SNES",
+				CoreSystem.TI83 => "TI83",
+				CoreSystem.WonderSwan => "WSWAN",
+				CoreSystem.ZXSpectrum => "ZXSpectrum",
+				CoreSystem.AmstradCPC => "AmstradCPC",
+				CoreSystem.Odyssey2 => "O2",
+				_ => throw new IndexOutOfRangeException($"{value} is missing in convert list")
+			};
 		}
 
 

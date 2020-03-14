@@ -38,6 +38,9 @@
 		ChannelF,
 		Odyssey2,
 		MAME,
-		MSX
+		MSX,
+		SuperGameBoy,
+		UzeBox,
+		PcFx
 	}
 }
