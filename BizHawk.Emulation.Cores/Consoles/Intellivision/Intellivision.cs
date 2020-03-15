@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		IBoardInfo, IDebuggable, ISettable<Intellivision.IntvSettings, Intellivision.IntvSyncSettings>
 	{
 		[CoreConstructor("INTV")]
-		public Intellivision(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
+		public Intellivision(CoreComm comm, byte[] rom, object settings, object syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;

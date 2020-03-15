@@ -682,11 +682,9 @@ namespace BizHawk.Client.Common
 
 								break;
 							case "AppleII":
-								var assets = xmlGame.Assets.Select(a => Database.GetGameInfo(a.Value, a.Key));
 								var roms = xmlGame.Assets.Select(a => a.Value);
 								nextEmulator = new AppleII(
 									nextComm,
-									assets,
 									roms,
 									(AppleII.Settings)GetCoreSettings<AppleII>());
 								break;
