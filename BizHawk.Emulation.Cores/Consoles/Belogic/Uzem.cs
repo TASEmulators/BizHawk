@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Belogic
 
 		[CoreConstructor("UZE")]
 		public Uzem(CoreComm comm, byte[] rom)
-			:base(comm, new Configuration
+			: base(comm, new Configuration
 			{
 				DefaultWidth = 720,
 				DefaultHeight = 224,
