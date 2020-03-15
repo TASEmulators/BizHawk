@@ -142,35 +142,6 @@ namespace BizHawk.Client.Common
 			return GetExeDirectoryAbsolute();
 		}
 
-		public static string RemoveParents(string path, string workingpath)
-		{
-			// determines number of parents, then removes directories from working path, return absolute path result
-			// Ex: "..\..\Bob\", "C:\Projects\Emulators\Bizhawk" will return "C:\Projects\Bob\" 
-			int x = NumParentDirectories(path);
-			if (x > 0)
-			{
-				int y = path.HowMany("..\\");
-				int z = workingpath.HowMany("\\");
-				if (y >= z)
-				{
-					// Return drive letter only, working path must be absolute?
-				}
-
-				return "";
-			}
-
-			return path;
-		}
-
-		public static int NumParentDirectories(string path)
-		{
-			// determine the number of parent directories in path and return result
-			int x = path.HowMany('\\');
-			return x > 0 ? path.HowMany("..\\") : 0;
-		}
-
-		public static bool IsRecent(string path) => path == "%recent%";
-
 		public static string GetLuaPath()
 		{
 			return MakeAbsolutePath(Global.Config.PathEntries.LuaPathFragment, null);
@@ -299,14 +270,6 @@ namespace BizHawk.Client.Common
 							Global.Config.PathEntries[game.System, "Base"];
 
 			return Path.Combine(MakeAbsolutePath(pathEntry.Path, game.System), name);
-		}
-
-		public static string GetGameBasePath(GameInfo game)
-		{
-			var name = FilesystemSafeName(game);
-
-			var pathEntry = Global.Config.PathEntries[game.System, "Base"];
-			return MakeAbsolutePath(pathEntry.Path, game.System);
 		}
 
 		public static string GetSaveStatePath(GameInfo game)
@@ -486,5 +449,4 @@ namespace BizHawk.Client.Common
 			}
 		}
 	}
-
 }
