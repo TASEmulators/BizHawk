@@ -83,11 +83,5 @@ namespace BizHawk.Client.Common
 
 			return ret;
 		}
-
-		// this should go away now
-		public static void SyncCoreCommInputSignals(CoreComm target)
-		{
-			target.CoreFileProvider = new CoreFileProvider(target.ShowMessage, Global.FirmwareManager);
-		}
 	}
 }

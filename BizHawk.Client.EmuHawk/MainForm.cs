@@ -82,7 +82,11 @@ namespace BizHawk.Client.EmuHawk
 			// its.. weird. don't ask.
 		}
 
-		private CoreComm CreateCoreComm() => new CoreComm(ShowMessageCoreComm, NotifyCoreComm);
+		private CoreComm CreateCoreComm()
+		{
+			var cfp = new CoreFileProvider(ShowMessageCoreComm, Global.FirmwareManager);
+			return new CoreComm(ShowMessageCoreComm, NotifyCoreComm, cfp);
+		}
 
 		public MainForm(string[] args)
 		{
@@ -3613,7 +3617,6 @@ namespace BizHawk.Client.EmuHawk
 					//path = ioa_openrom.Path;
 				}
 
-				CoreFileProvider.SyncCoreCommInputSignals(nextComm);
 				var result = loader.LoadRom(path, nextComm, ioaRetro?.CorePath);
 
 				// we need to replace the path in the OpenAdvanced with the canonical one the user chose.
@@ -3639,7 +3642,6 @@ namespace BizHawk.Client.EmuHawk
 					string openAdvancedArgs = $"*{OpenAdvancedSerializer.Serialize(ioa)}";
 					Emulator = loader.LoadedEmulator;
 					Global.Game = loader.Game;
-					CoreFileProvider.SyncCoreCommInputSignals(nextComm);
 					InputManager.SyncControls();
 
 					if (oaOpenrom != null && Path.GetExtension(oaOpenrom.Path.Replace("|", "")).ToLowerInvariant() == ".xml" && !(Emulator is LibsnesCore))
@@ -3898,7 +3900,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				CloseGame(clearSram);
 				var coreComm = CreateCoreComm();
-				CoreFileProvider.SyncCoreCommInputSignals(coreComm);
 				Emulator = new NullEmulator();
 				Global.Game = GameInfo.NullInstance;
 

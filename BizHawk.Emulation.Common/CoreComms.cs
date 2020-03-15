@@ -9,15 +9,19 @@ namespace BizHawk.Emulation.Common
 	/// </summary>
 	public class CoreComm
 	{
-		public CoreComm(Action<string> showMessage, Action<string> notifyMessage)
+		public CoreComm(
+			Action<string> showMessage,
+			Action<string> notifyMessage,
+			ICoreFileProvider coreFileProvider)
 		{
 			ShowMessage = showMessage;
 			Notify = notifyMessage;
+			CoreFileProvider = coreFileProvider;
 		}
 
 		public CoreComm Clone() => (CoreComm)MemberwiseClone();
 
-		public ICoreFileProvider CoreFileProvider { get; set; }
+		public ICoreFileProvider CoreFileProvider { get; }
 
 		/// <summary>
 		/// Gets a message to show. reasonably annoying (dialog box), shouldn't be used most of the time

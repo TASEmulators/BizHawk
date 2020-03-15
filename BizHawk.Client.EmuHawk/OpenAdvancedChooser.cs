@@ -76,8 +76,8 @@ namespace BizHawk.Client.EmuHawk
 				////LibRetroEmulator should be able to survive having this stub corecomm
 				//NEW COMMENTS:
 				//nope, we need to navigate to the dll path. this was a bad idea anyway. so many dlls get loaded, something to resolve them is needed
-				var coreComm = new CoreComm(null, null);
-				CoreFileProvider.SyncCoreCommInputSignals(coreComm);
+				var cfp = new CoreFileProvider(s => { }, Global.FirmwareManager);
+				var coreComm = new CoreComm(null, null, cfp);
 				using var retro = new LibretroCore(coreComm, Global.Game, core);
 				btnLibretroLaunchGame.Enabled = true;
 				if (retro.Description.SupportsNoGame)
