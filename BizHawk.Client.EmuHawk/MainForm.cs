@@ -1405,7 +1405,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				ofd.InitialDirectory = PathManager.GetPathType("Libretro", "Cores");
+				ofd.InitialDirectory = Config.PathEntries.AbsolutePathForType("Libretro", "Cores");
 				if (!Directory.Exists(ofd.InitialDirectory))
 				{
 					Directory.CreateDirectory(ofd.InitialDirectory);

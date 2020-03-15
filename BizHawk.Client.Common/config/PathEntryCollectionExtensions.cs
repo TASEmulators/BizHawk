@@ -51,6 +51,12 @@ namespace BizHawk.Client.Common
 				?? collection["Global", "Base"];
 		}
 
+		public static string AbsolutePathForType(this PathEntryCollection collection, string systemId, string type)
+		{
+			var path = collection.EntryWithFallback(type, systemId).Path;
+			return collection.AbsolutePathFor(path, systemId);
+		}
+
 		/// <summary>
 		/// Returns an absolute path for the given relative path.
 		/// If provided, the systemId will be used to generate the path.
@@ -187,9 +193,9 @@ namespace BizHawk.Client.Common
 			return collection.AbsolutePathFor(path, null);
 		}
 
-		public static string RomAbsolutePath(this PathEntryCollection collection, string sysId = null)
+		public static string RomAbsolutePath(this PathEntryCollection collection, string systemId = null)
 		{
-			if (string.IsNullOrWhiteSpace(sysId))
+			if (string.IsNullOrWhiteSpace(systemId))
 			{
 				return collection.AbsolutePathFor(collection["Global_NULL", "ROM"].Path, "Global_NULL");
 			}
@@ -199,7 +205,7 @@ namespace BizHawk.Client.Common
 				return Environment.SpecialFolder.Recent.ToString();
 			}
 
-			var path = collection[sysId, "ROM"];
+			var path = collection[systemId, "ROM"];
 
 			if (path == null || !PathManager.PathIsSet(path.Path))
 			{
@@ -211,7 +217,7 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			return collection.AbsolutePathFor(path.Path, sysId);
+			return collection.AbsolutePathFor(path.Path, systemId);
 		}
 
 		public static string SaveRamAbsolutePath(this PathEntryCollection collection, GameInfo game, bool movieIsActive)
@@ -242,14 +248,14 @@ namespace BizHawk.Client.Common
 			return collection.AbsolutePathFor(pathEntry.Path,systemId);
 		}
 
-		public static string ScreenshotAbsolutePathFor(this PathEntryCollection collection, string system)
+		public static string ScreenshotAbsolutePathFor(this PathEntryCollection collection, string systemId)
 		{
-			return collection.AbsolutePathFor(collection[system, "Screenshots"].Path, system);
+			return collection.AbsolutePathFor(collection[systemId, "Screenshots"].Path, systemId);
 		}
 
-		public static string PalettesAbsolutePathFor(this PathEntryCollection collection, string system)
+		public static string PalettesAbsolutePathFor(this PathEntryCollection collection, string systemId)
 		{
-			return collection.AbsolutePathFor(collection[system, "Palettes"].Path, system);
+			return collection.AbsolutePathFor(collection[systemId, "Palettes"].Path, systemId);
 		}
 
 		private static string ResolveToolsPath(this PathEntryCollection collection, string subPath)

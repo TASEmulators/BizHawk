@@ -190,12 +190,6 @@ namespace BizHawk.Client.Common
 			return Path.Combine(Global.Config.PathEntries.AbsolutePathFor(pathEntry.Path, game.System), name);
 		}
 
-		public static string GetPathType(string system, string type)
-		{
-			var path = Global.Config.PathEntries.EntryWithFallback(type, system).Path;
-			return Global.Config.PathEntries.AbsolutePathFor(path, system);
-		}
-
 		public static string ScreenshotPrefix(GameInfo game)
 		{
 			var name = FilesystemSafeName(game);
