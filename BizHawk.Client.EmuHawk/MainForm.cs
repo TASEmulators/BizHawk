@@ -217,7 +217,7 @@ namespace BizHawk.Client.EmuHawk
 			_throttle = new Throttle();
 
 			var comm = CreateCoreComm();
-			Emulator = new NullEmulator(comm);
+			Emulator = new NullEmulator();
 			GlobalWin.Tools = new ToolManager(this, Config, Emulator);
 			Global.CheatList = new CheatCollection();
 			CheatList.Changed += Tools.UpdateCheatRelatedTools;
@@ -3884,7 +3884,7 @@ namespace BizHawk.Client.EmuHawk
 			Emulator.Dispose();
 			var coreComm = CreateCoreComm();
 			CoreFileProvider.SyncCoreCommInputSignals(coreComm);
-			Emulator = new NullEmulator(coreComm);
+			Emulator = new NullEmulator();
 			ClientApi.UpdateEmulatorAndVP(Emulator);
 			Global.ActiveController = new Controller(NullController.Instance.Definition);
 			Global.AutoFireController = _autofireNullControls;
@@ -3904,7 +3904,7 @@ namespace BizHawk.Client.EmuHawk
 				CloseGame(clearSram);
 				var coreComm = CreateCoreComm();
 				CoreFileProvider.SyncCoreCommInputSignals(coreComm);
-				Emulator = new NullEmulator(coreComm);
+				Emulator = new NullEmulator();
 				Global.Game = GameInfo.NullInstance;
 
 				Tools.Restart(Emulator);

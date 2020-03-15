@@ -20,10 +20,9 @@
 	{
 		private readonly int[] _frameBuffer = new int[NullVideo.DefaultWidth * NullVideo.DefaultHeight];
 
-		public NullEmulator(CoreComm comm)
+		public NullEmulator()
 		{
 			ServiceProvider = new BasicServiceProvider(this);
-			CoreComm = comm;
 		}
 
 		#region IEmulator
@@ -45,8 +44,6 @@
 		}
 
 		public string BoardName => null;
-
-		public CoreComm CoreComm { get; }
 
 		public void Dispose()
 		{
