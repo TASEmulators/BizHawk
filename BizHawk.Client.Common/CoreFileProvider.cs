@@ -54,7 +54,7 @@ namespace BizHawk.Client.Common
 		private byte[] GetFirmwareWithPath(string sysId, string firmwareId, bool required, string msg, out string path)
 		{
 			var firmwarePath = _firmwareManager.Request(
-				_pathEntries.FirmwaresPathFragment,
+				_pathEntries,
 				_firmwareUserSpecifications,
 				sysId,
 				firmwareId);

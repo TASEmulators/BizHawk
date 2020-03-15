@@ -248,7 +248,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			lvFirmwares.BeginUpdate();
 			Manager.DoScanAndResolve(
-				_config.PathEntries.FirmwaresPathFragment,
+				_config.PathEntries,
 				_config.FirmwareUserSpecifications);
 
 			// for each type of firmware, try resolving and record the result
@@ -256,7 +256,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var fr = lvi.Tag as FirmwareDatabase.FirmwareRecord;
 				var ri = Manager.Resolve(
-					_config.PathEntries.FirmwaresPathFragment,
+					_config.PathEntries,
 					_config.FirmwareUserSpecifications,
 					fr,
 					true);
@@ -342,11 +342,11 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			Manager.DoScanAndResolve(_config.PathEntries.FirmwaresPathFragment, _config.FirmwareUserSpecifications);
+			Manager.DoScanAndResolve(_config.PathEntries, _config.FirmwareUserSpecifications);
 
 			foreach (var fr in FirmwareDatabase.FirmwareRecords)
 			{
-				var ri = Manager.Resolve(_config.PathEntries.FirmwaresPathFragment, _config.FirmwareUserSpecifications, fr);
+				var ri = Manager.Resolve(_config.PathEntries, _config.FirmwareUserSpecifications, fr);
 				if (ri?.KnownFirmwareFile == null) continue;
 				if (ri.UserSpecified) continue;
 

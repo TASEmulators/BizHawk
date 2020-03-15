@@ -41,7 +41,7 @@ namespace BizHawk.Client.Common
 			public string FirmwareId { get; set; }
 		}
 
-		public ResolutionInfo Resolve(string firmwaresPath, IDictionary<string, string> userSpecifications, FirmwareDatabase.FirmwareRecord record, bool forbidScan = false)
+		public ResolutionInfo Resolve(PathEntryCollection pathEntries, IDictionary<string, string> userSpecifications, FirmwareDatabase.FirmwareRecord record, bool forbidScan = false)
 		{
 			// purpose of forbidScan: sometimes this is called from a loop in Scan(). we don't want to repeatedly DoScanAndResolve in that case, its already been done.
 			bool first = true;
@@ -55,7 +55,7 @@ namespace BizHawk.Client.Common
 			{
 				if (!forbidScan)
 				{
-					DoScanAndResolve(firmwaresPath, userSpecifications);
+					DoScanAndResolve(pathEntries, userSpecifications);
 				}
 
 				first = false;
@@ -66,9 +66,9 @@ namespace BizHawk.Client.Common
 		}
 
 		// Requests the specified firmware. tries really hard to scan and resolve as necessary
-		public string Request(string firmwaresPath, IDictionary<string, string> userSpecifications, string sysId, string firmwareId)
+		public string Request(PathEntryCollection pathEntries, IDictionary<string, string> userSpecifications, string sysId, string firmwareId)
 		{
-			var resolved = Resolve(firmwaresPath, userSpecifications, FirmwareDatabase.LookupFirmwareRecord(sysId, firmwareId));
+			var resolved = Resolve(pathEntries, userSpecifications, FirmwareDatabase.LookupFirmwareRecord(sysId, firmwareId));
 			if (resolved == null)
 			{
 				return null;
@@ -138,7 +138,7 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
-		public void DoScanAndResolve(string firmwaresPath, IDictionary<string, string> userSpecifications)
+		public void DoScanAndResolve(PathEntryCollection pathEntries, IDictionary<string, string> userSpecifications)
 		{
 			// build a list of file sizes. Only those will be checked during scanning
 			var sizes = new HashSet<long>();
@@ -151,7 +151,7 @@ namespace BizHawk.Client.Common
 
 			// build a list of files under the global firmwares path, and build a hash for each of them while we're at it
 			var todo = new Queue<DirectoryInfo>();
-			todo.Enqueue(new DirectoryInfo(Global.Config.PathEntries.AbsolutePathFor(firmwaresPath, null)));
+			todo.Enqueue(new DirectoryInfo(pathEntries.AbsolutePathFor(pathEntries.FirmwaresPathFragment, null)));
 	
 			while (todo.Count != 0)
 			{
