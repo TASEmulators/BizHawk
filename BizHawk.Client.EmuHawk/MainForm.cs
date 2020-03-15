@@ -228,7 +228,6 @@ namespace BizHawk.Client.EmuHawk
 
 			Emulator = new NullEmulator();
 			GlobalWin.Tools = new ToolManager(this, Config, Emulator);
-			Global.CheatList = new CheatCollection();
 			CheatList.Changed += Tools.UpdateCheatRelatedTools;
 
 			UpdateStatusSlots();
@@ -840,8 +839,6 @@ namespace BizHawk.Client.EmuHawk
 			get => Global.Game;
 			set => Global.Game = value;
 		}
-
-		private GLManager GLManager => GlobalWin.GLManager;
 
 		private Sound Sound => GlobalWin.Sound;
 		private CheatCollection CheatList => Global.CheatList;
