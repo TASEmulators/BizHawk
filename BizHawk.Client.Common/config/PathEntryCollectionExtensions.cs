@@ -17,7 +17,7 @@ namespace BizHawk.Client.Common
 				: collection[systemId, "Base"]?.Path ?? "";
 		}
 
-		public static string GlobalBaseAsAbsolute(this PathEntryCollection collection)
+		public static string GlobalBaseAbsolutePath(this PathEntryCollection collection)
 		{
 			var globalBase = collection["Global", "Base"].Path;
 
@@ -82,7 +82,7 @@ namespace BizHawk.Client.Common
 			// This function translates relative path and special identifiers in absolute paths
 			if (path.Length < 1)
 			{
-				return collection.GlobalBaseAsAbsolute();
+				return collection.GlobalBaseAbsolutePath();
 			}
 
 			if (path == "%recent%")
@@ -110,13 +110,13 @@ namespace BizHawk.Client.Common
 
 				if (path.Length == 1)
 				{
-					return collection.GlobalBaseAsAbsolute();
+					return collection.GlobalBaseAbsolutePath();
 				}
 
 				if (path[0] == '.')
 				{
 					path = path.Remove(0, 1);
-					path = path.Insert(0, collection.GlobalBaseAsAbsolute());
+					path = path.Insert(0, collection.GlobalBaseAbsolutePath());
 				}
 
 				return path;

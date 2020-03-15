@@ -107,7 +107,7 @@ namespace BizHawk.Client.Common
 		public static string TryMakeRelative(string absolutePath, string system = null)
 		{
 			var parentPath = string.IsNullOrWhiteSpace(system)
-				? Global.Config.PathEntries.GlobalBaseAsAbsolute()
+				? Global.Config.PathEntries.GlobalBaseAbsolutePath()
 				: Global.Config.PathEntries.AbsolutePathFor(Global.Config.PathEntries.BaseFor(system), system);
 #if true
 			if (!IsSubfolder(parentPath, absolutePath)) return absolutePath;
