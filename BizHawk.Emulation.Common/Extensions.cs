@@ -258,6 +258,16 @@ namespace BizHawk.Emulation.Common
 			return (0, 0);
 		}
 
+		public static string RomDetails(this IEmulator core)
+		{
+			if (core != null && core.ServiceProvider.HasService<IRomInfo>())
+			{
+				return core.ServiceProvider.GetService<IRomInfo>().RomDetails;
+			}
+
+			return "";
+		}
+
 		public static int VsyncNumerator(this IEmulator core)
 		{
 			if (core != null && core.HasVideoProvider())
