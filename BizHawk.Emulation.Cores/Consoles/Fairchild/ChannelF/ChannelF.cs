@@ -15,7 +15,6 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
-			CoreComm = comm;
 			MemoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
 
 			ControllerDefinition = ChannelFControllerDefinition;

@@ -19,11 +19,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
-
-			CoreComm = comm;
-
 			_rom = rom;
-
 			_settings = (IntvSettings)settings ?? new IntvSettings();
 			_syncSettings = (IntvSyncSettings)syncSettings ?? new IntvSyncSettings();
 
@@ -63,8 +59,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 			Connect();
 
-			LoadExecutiveRom(CoreComm.CoreFileProvider.GetFirmware("INTV", "EROM", true, "Executive ROM is required."));
-			LoadGraphicsRom(CoreComm.CoreFileProvider.GetFirmware("INTV", "GROM", true, "Graphics ROM is required."));
+			LoadExecutiveRom(comm.CoreFileProvider.GetFirmware("INTV", "EROM", true, "Executive ROM is required."));
+			LoadGraphicsRom(comm.CoreFileProvider.GetFirmware("INTV", "GROM", true, "Graphics ROM is required."));
 
 			_tracer = new TraceBuffer { Header = _cpu.TraceHeader };
 			ser.Register<ITraceable>(_tracer);

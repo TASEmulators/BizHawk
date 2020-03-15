@@ -17,9 +17,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
-			CoreComm = comm;
 			_syncSettings = (ColecoSyncSettings)syncSettings ?? new ColecoSyncSettings();
-			bool skipbios = _syncSettings.SkipBiosIntro;
+			bool skipBios = _syncSettings.SkipBiosIntro;
 
 			_cpu = new Z80A
 			{
@@ -42,12 +41,12 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			ser.Register<IStatable>(new StateSerializer(SyncState));
 
 			// TODO: hack to allow bios-less operation would be nice, no idea if its feasible
-			_biosRom = CoreComm.CoreFileProvider.GetFirmware("Coleco", "Bios", true, "Coleco BIOS file is required.");
+			_biosRom = comm.CoreFileProvider.GetFirmware("Coleco", "Bios", true, "Coleco BIOS file is required.");
 
-			// gamedb can overwrite the syncsettings; this is ok
+			// gamedb can overwrite the SyncSettings; this is ok
 			if (game["NoSkip"])
 			{
-				skipbios = false;
+				skipBios = false;
 			}
 
 			use_SGM = _syncSettings.UseSGM;
@@ -57,7 +56,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				Console.WriteLine("Using the Super Game Module");
 			}
 			
-			LoadRom(rom, skipbios);
+			LoadRom(rom, skipBios);
 			SetupMemoryDomains();
 
 			_tracer.Header = _cpu.TraceHeader;

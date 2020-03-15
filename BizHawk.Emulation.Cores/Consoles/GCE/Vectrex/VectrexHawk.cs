@@ -17,7 +17,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 	{
 		public byte[] RAM = new byte[0x400];
 
-
 		public byte[] _bios, minestorm;
 		public readonly byte[] _rom;	
 
@@ -49,8 +48,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			audio = new Audio();
 			ppu = new PPU();
 			serialport = new SerialPort();
-
-			CoreComm = comm;
 
 			_settings = (VectrexSettings)settings ?? new VectrexSettings();
 			_syncSettings = (VectrexSyncSettings)syncSettings ?? new VectrexSyncSettings();

@@ -140,8 +140,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			_lagCount = 0;
 		}
 
-		public CoreComm CoreComm { get; }
-
 		public void Dispose()
 		{
 		}
