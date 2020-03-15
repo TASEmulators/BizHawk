@@ -43,13 +43,13 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		//note: its annoying that we have to have a disc before constructing this.
 		//might want to change that later. HOWEVER - we need to definitely have a region, at least
-		public Octoshock(CoreComm comm, List<DiscSystem.Disc> discs, List<string> discNames, byte[] exe, object settings, object syncSettings)
+		public Octoshock(CoreComm comm, List<Disc> discs, List<string> discNames, byte[] exe, object settings, object syncSettings)
 		{
 			Load(comm, discs, discNames, exe, settings, syncSettings, null);
 			OctoshockDll.shock_PowerOn(psx);
 		}
 
-		void Load(CoreComm comm, List<DiscSystem.Disc> discs, List<string> discNames, byte[] exe, object settings, object syncSettings, PSF psf)
+		void Load(CoreComm comm, List<Disc> discs, List<string> discNames, byte[] exe, object settings, object syncSettings, PSF psf)
 		{
 			ConnectTracer();
 			CoreComm = comm;
@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				foreach (var disc in discs)
 				{
 					var discInterface = new DiscInterface(disc,
-						(di) =>
+						di =>
 						{
 							//if current disc this delegate disc, activity is happening
 							if (di == currentDiscInterface)
@@ -138,7 +138,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 					BufferHeight = 288;
 				}
 				CurrentVideoSize = new System.Drawing.Size(BufferWidth, BufferHeight);
-				var ri = Octoshock.CalculateResolution(SystemVidStandard, _Settings, BufferWidth, BufferHeight);
+				var ri = CalculateResolution(SystemVidStandard, _Settings, BufferWidth, BufferHeight);
 				BufferWidth = VirtualWidth = ri.Resolution.Width;
 				BufferHeight = VirtualHeight = ri.Resolution.Height;
 				//VideoProvider_Padding = new System.Drawing.Size(50,50);
