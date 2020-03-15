@@ -1355,7 +1355,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadTableFileMenuItem_Click(object sender, EventArgs e)
 		{
-			string initialDirectory = PathManager.MakeAbsolutePath(Config.PathEntries.ToolsPathFragment, null);
+			string initialDirectory = Config.PathEntries.ToolsAbsolutePath();
 			var romName = Config.RecentRoms.MostRecent.Contains('|')
 				? Config.RecentRoms.MostRecent.Split('|').Last()
 				: Config.RecentRoms.MostRecent;

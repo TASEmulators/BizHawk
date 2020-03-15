@@ -352,7 +352,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var file = OpenFileDialog(
 					CurrentFileName,
-					PathManager.MakeAbsolutePath(Config.PathEntries.ToolsPathFragment, null),
+					Config.PathEntries.ToolsAbsolutePath(),
 					"Bot files",
 					"bot");
 
@@ -374,7 +374,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var file = SaveFileDialog(
 					CurrentFileName,
-					PathManager.MakeAbsolutePath(Config.PathEntries.ToolsPathFragment, null),
+					Config.PathEntries.ToolsAbsolutePath(),
 					"Bot files",
 					"bot");
 

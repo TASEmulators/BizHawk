@@ -103,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 				var ofd = new OpenFileDialog
 				{
 					FileName = filename,
-					InitialDirectory = PathManager.MakeAbsolutePath(Config.PathEntries.MoviesPathFragment, null),
+					InitialDirectory = Config.PathEntries.MovieAbsolutePath(),
 					Filter = new FilesystemFilterSet(
 						new FilesystemFilter("All Available Files", MovieService.MovieExtensions.Reverse().ToArray()),
 						FilesystemFilter.TAStudioProjects,

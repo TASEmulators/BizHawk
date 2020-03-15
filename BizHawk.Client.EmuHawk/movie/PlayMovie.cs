@@ -237,7 +237,7 @@ namespace BizHawk.Client.EmuHawk
 			MovieView.VirtualListSize = 0;
 			MovieView.Update();
 
-			var directory = PathManager.MakeAbsolutePath(_config.PathEntries.MoviesPathFragment, null);
+			var directory = _config.PathEntries.MovieAbsolutePath();
 			if (!Directory.Exists(directory))
 			{
 				Directory.CreateDirectory(directory);
@@ -571,7 +571,7 @@ namespace BizHawk.Client.EmuHawk
 			using var ofd = new OpenFileDialog
 			{
 				Filter = new FilesystemFilterSet(FilesystemFilter.BizHawkMovies, FilesystemFilter.TAStudioProjects).ToString(),
-				InitialDirectory = PathManager.MakeAbsolutePath(_config.PathEntries.MoviesPathFragment, null)
+				InitialDirectory = _config.PathEntries.MovieAbsolutePath()
 			};
 
 			var result = ofd.ShowHawkDialog();

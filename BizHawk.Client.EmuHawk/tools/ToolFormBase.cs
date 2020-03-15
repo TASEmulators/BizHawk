@@ -67,14 +67,14 @@ namespace BizHawk.Client.EmuHawk
 			return new FileInfo(sfd.FileName);
 		}
 
-		public static FileInfo GetWatchFileFromUser(string currentFile)
+		public FileInfo GetWatchFileFromUser(string currentFile)
 		{
-			return OpenFileDialog(currentFile, PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPathFragment, null), "Watch Files", "wch");
+			return OpenFileDialog(currentFile, Config.PathEntries.WatchAbsolutePath(), "Watch Files", "wch");
 		}
 
-		public static FileInfo GetWatchSaveFileFromUser(string currentFile)
+		public FileInfo GetWatchSaveFileFromUser(string currentFile)
 		{
-			return SaveFileDialog(currentFile, PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPathFragment, null), "Watch Files", "wch");
+			return SaveFileDialog(currentFile, Config.PathEntries.WatchAbsolutePath(), "Watch Files", "wch");
 		}
 
 		public void ViewInHexEditor(MemoryDomain domain, IEnumerable<long> addresses, WatchSize size)

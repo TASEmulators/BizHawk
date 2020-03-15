@@ -21,7 +21,7 @@ namespace BizHawk.Client.EmuHawk
 		public TasMovie CurrentTasMovie => Global.MovieSession.Movie as TasMovie;
 
 		public bool IsInMenuLoop { get; private set; }
-		public string StatesPath => PathManager.MakeAbsolutePath(Config.PathEntries["Global", "TAStudio states"].Path, null);
+		public string StatesPath => Config.PathEntries.TastudioStatesAbsolutePath();
 
 		private readonly List<TasClipboardEntry> _tasClipboard = new List<TasClipboardEntry>();
 		private const string CursorColumnName = "CursorColumn";
@@ -855,7 +855,7 @@ namespace BizHawk.Client.EmuHawk
 		private static string DefaultTasProjName()
 		{
 			return Path.Combine(
-				PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
+				Global.Config.PathEntries.MovieAbsolutePath(),
 				$"{TasMovie.DefaultProjectName}.{TasMovie.Extension}");
 		}
 
@@ -865,7 +865,7 @@ namespace BizHawk.Client.EmuHawk
 		private static string SuggestedTasProjName()
 		{
 			return Path.Combine(
-				PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
+				Global.Config.PathEntries.MovieAbsolutePath(),
 				$"{PathManager.FilesystemSafeName(Global.Game)}.{TasMovie.Extension}");
 		}
 
@@ -909,7 +909,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var file = SaveFileDialog(
 				filename,
-				PathManager.MakeAbsolutePath(Config.PathEntries.MoviesPathFragment, null),
+				Global.Config.PathEntries.MovieAbsolutePath(),
 				"Tas Project Files",
 				"tasproj");
 

@@ -151,7 +151,7 @@ namespace BizHawk.Client.Common
 
 			// build a list of files under the global firmwares path, and build a hash for each of them while we're at it
 			var todo = new Queue<DirectoryInfo>();
-			todo.Enqueue(new DirectoryInfo(PathManager.MakeAbsolutePath(firmwaresPath, null)));
+			todo.Enqueue(new DirectoryInfo(Global.Config.PathEntries.AbsolutePathFor(firmwaresPath, null)));
 	
 			while (todo.Count != 0)
 			{

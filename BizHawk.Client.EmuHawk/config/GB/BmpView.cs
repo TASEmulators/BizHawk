@@ -91,9 +91,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SaveFile()
 		{
-			string path = PathManager.MakeAbsolutePath(
-				Global.Config.PathEntries[Global.Emulator.SystemId, "Screenshots"].Path,
-				Global.Emulator.SystemId);
+			string path = Global.Config.PathEntries.ScreenshotAbsolutePathFor(Global.Emulator.SystemId);
 
 			var di = new DirectoryInfo(path);
 

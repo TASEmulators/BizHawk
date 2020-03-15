@@ -62,6 +62,7 @@ namespace BizHawk.Client.EmuHawk
 
 			HandleToggleLightAndLink();
 			SetStatusBar();
+			_stateSlots.Update(SaveStatePrefix());
 
 			// New version notification
 			UpdateChecker.CheckComplete += (s2, e2) =>
@@ -1041,9 +1042,16 @@ namespace BizHawk.Client.EmuHawk
 			AddOnScreenMessage("Screenshot (client) saved to clipboard.");
 		}
 
+		private string ScreenshotPrefix()
+		{
+			var screenPath = Config.PathEntries.ScreenshotAbsolutePathFor(Game.System);
+			var name = PathManager.FilesystemSafeName(Game);
+			return Path.Combine(screenPath, name);
+		}
+
 		public void TakeScreenshot()
 		{
-			var basename = $"{PathManager.ScreenshotPrefix(Game)}.{DateTime.Now:yyyy-MM-dd HH.mm.ss}";
+			var basename = $"{ScreenshotPrefix()}.{DateTime.Now:yyyy-MM-dd HH.mm.ss}";
 
 			var fnameBare = $"{basename}.png";
 			var fname = $"{basename} (0).png";
@@ -1405,7 +1413,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				ofd.InitialDirectory = PathManager.GetPathType("Libretro", "Cores");
+				ofd.InitialDirectory = Config.PathEntries.AbsolutePathForType("Libretro", "Cores");
 				if (!Directory.Exists(ofd.InitialDirectory))
 				{
 					Directory.CreateDirectory(ofd.InitialDirectory);
@@ -1646,10 +1654,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				try // zero says: this is sort of sketchy... but this is no time for rearchitecting
 				{
+					var saveRamPath = Config.PathEntries.SaveRamAbsolutePath(Game, MovieSession.Movie.IsActive());
 					if (Config.AutosaveSaveRAM)
 					{
-						var saveram = new FileInfo(PathManager.SaveRamPath(Game));
-						var autosave = new FileInfo(PathManager.AutoSaveRamPath(Game));
+						var saveram = new FileInfo(saveRamPath);
+						var autosave = new FileInfo(Config.PathEntries.AutoSaveRamAbsolutePath(Game, MovieSession.Movie.IsActive()));
 						if (autosave.Exists && autosave.LastWriteTime > saveram.LastWriteTime)
 						{
 							AddOnScreenMessage("AutoSaveRAM is newer than last saved SaveRAM");
@@ -1662,7 +1671,7 @@ namespace BizHawk.Client.EmuHawk
 					// GBA vba-next core will try to eat anything, regardless of size
 					if (Emulator is VBANext || Emulator is MGBAHawk || Emulator is NeoGeoPort)
 					{
-						sram = File.ReadAllBytes(PathManager.SaveRamPath(Game));
+						sram = File.ReadAllBytes(saveRamPath);
 					}
 					else
 					{
@@ -1677,8 +1686,7 @@ namespace BizHawk.Client.EmuHawk
 
 						// why do we silently truncate\pad here instead of warning\erroring?
 						sram = new byte[oldRam.Length];
-						using var reader = new BinaryReader(
-							new FileStream(PathManager.SaveRamPath(Game), FileMode.Open, FileAccess.Read));
+						using var reader = new BinaryReader(new FileStream(saveRamPath, FileMode.Open, FileAccess.Read));
 						reader.Read(sram, 0, sram.Length);
 					}
 
@@ -1696,16 +1704,18 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator.HasSaveRam())
 			{
+				bool movieIsActive = MovieSession.Movie.IsActive();
 				string path;
 				if (autosave)
 				{
-					path = PathManager.AutoSaveRamPath(Game);
+					path = Config.PathEntries.AutoSaveRamAbsolutePath(Game, movieIsActive);
 					AutoFlushSaveRamIn = Config.FlushSaveRamFrames;
 				}
 				else
 				{
-					path = PathManager.SaveRamPath(Game);
+					path =  Config.PathEntries.SaveRamAbsolutePath(Game, movieIsActive);
 				}
+
 				var file = new FileInfo(path);
 				var newPath = $"{path}.new";
 				var newFile = new FileInfo(newPath);
@@ -2116,7 +2126,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveSlotSelectedMessage()
 		{
 			int slot = Config.SaveSlot;
-			string emptyPart = _stateSlots.HasSlot(slot) ? "" : " (empty)";
+			string emptyPart = HasSlot(slot) ? "" : " (empty)";
 			string message = $"Slot {slot}{emptyPart} selected.";
 			AddOnScreenMessage(message);
 		}
@@ -2235,7 +2245,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using var ofd = new OpenFileDialog
 			{
-				InitialDirectory = PathManager.GetRomsPath(Emulator.SystemId),
+				InitialDirectory = Config.PathEntries.RomAbsolutePath(Emulator.SystemId),
 				Filter = RomFilter,
 				RestoreDirectory = false,
 				FilterIndex = _lastOpenRomFilter
@@ -2422,7 +2432,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private Color SlotForeColor(int slot)
 		{
-			return _stateSlots.HasSlot(slot)
+			return HasSlot(slot)
 				? Config.SaveSlot == slot
 					? SystemColors.HighlightText
 					: SystemColors.WindowText
@@ -2438,7 +2448,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateStatusSlots()
 		{
-			_stateSlots.Update();
+			_stateSlots.Update(SaveStatePrefix());
 
 			Slot0StatusButton.ForeColor = SlotForeColor(0);
 			Slot1StatusButton.ForeColor = SlotForeColor(1);
@@ -3232,12 +3242,12 @@ namespace BizHawk.Client.EmuHawk
 						if (Game != null)
 						{
 							sfd.FileName = $"{PathManager.FilesystemSafeName(Game)}.{ext}"; // don't use Path.ChangeExtension, it might wreck game names with dots in them
-							sfd.InitialDirectory = PathManager.MakeAbsolutePath(Config.PathEntries.AvPathFragment, null);
+							sfd.InitialDirectory = Config.PathEntries.AvAbsolutePath();
 						}
 						else
 						{
 							sfd.FileName = "NULL";
-							sfd.InitialDirectory = PathManager.MakeAbsolutePath(Config.PathEntries.AvPathFragment, null);
+							sfd.InitialDirectory = Config.PathEntries.AvAbsolutePath();
 						}
 
 						sfd.Filter = new FilesystemFilterSet(new FilesystemFilter(ext, new[] { ext })).ToString();
@@ -3455,6 +3465,48 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Scheduled for refactor
 
+		public string SaveStatePrefix()
+		{
+			var name = PathManager.FilesystemSafeName(Game);
+
+			// Neshawk and Quicknes have incompatible savestates, store the name to keep them separate
+			if (Emulator.SystemId == "NES")
+			{
+				name += $".{Emulator.Attributes().CoreName}";
+			}
+
+			// Gambatte and GBHawk have incompatible savestates, store the name to keep them separate
+			if (Emulator.SystemId == "GB")
+			{
+				name += $".{Emulator.Attributes().CoreName}";
+			}
+
+			if (Emulator is Snes9x) // Keep snes9x savestate away from libsnes, we want to not be too tedious so bsnes names will just have the profile name not the core name
+			{
+				name += $".{Emulator.Attributes().CoreName}";
+			}
+
+			// Bsnes profiles have incompatible savestates so save the profile name
+			if (Emulator is LibsnesCore bsnes)
+			{
+				name += $".{bsnes.CurrentProfile}";
+			}
+
+			if (Emulator.SystemId == "GBA")
+			{
+				name += $".{Emulator.Attributes().CoreName}";
+			}
+
+			if (MovieSession.Movie.IsActive())
+			{
+				name += $".{Path.GetFileNameWithoutExtension(MovieSession.Movie.Filename)}";
+			}
+
+			var pathEntry = Config.PathEntries.SaveStateAbsolutePath(Game.System);
+
+			return Path.Combine(pathEntry, name);
+		}
+
 		private void ShowMessageCoreComm(string message)
 		{
 			MessageBox.Show(this, message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -3526,7 +3578,7 @@ namespace BizHawk.Client.EmuHawk
 			if (args.OpenAdvanced is OpenAdvanced_OpenRom)
 			{
 				var leftPart = path.Split('|')[0];
-				Config.LastRomPath = Path.GetFullPath(Path.GetDirectoryName(leftPart) ?? "");
+				Config.PathEntries.LastRomPath = Path.GetFullPath(Path.GetDirectoryName(leftPart) ?? "");
 			}
 
 			return true;
@@ -3727,11 +3779,12 @@ namespace BizHawk.Client.EmuHawk
 					// Don't load Save Ram if a movie is being loaded
 					if (!MovieSession.MovieIsQueued)
 					{
-						if (File.Exists(PathManager.SaveRamPath(loader.Game)))
+						var movieIsActive = MovieSession.Movie.IsActive();
+						if (File.Exists(Config.PathEntries.SaveRamAbsolutePath(loader.Game, movieIsActive)))
 						{
 							LoadSaveRam();
 						}
-						else if (Config.AutosaveSaveRAM && File.Exists(PathManager.AutoSaveRamPath(loader.Game)))
+						else if (Config.AutosaveSaveRAM && File.Exists(Config.PathEntries.SaveRamAbsolutePath(loader.Game, movieIsActive)))
 						{
 							AddOnScreenMessage("AutoSaveRAM found, but SaveRAM was not saved");
 						}
@@ -3765,7 +3818,7 @@ namespace BizHawk.Client.EmuHawk
 
 					RewireSound();
 					Tools.UpdateCheatRelatedTools(null, null);
-					if (Config.AutoLoadLastSaveSlot && _stateSlots.HasSlot(Config.SaveSlot))
+					if (Config.AutoLoadLastSaveSlot && HasSlot(Config.SaveSlot))
 					{
 						LoadQuickSave($"QuickSave{Config.SaveSlot}");
 					}
@@ -3843,7 +3896,7 @@ namespace BizHawk.Client.EmuHawk
 			GameIsClosing = true;
 			if (clearSram)
 			{
-				var path = PathManager.SaveRamPath(Game);
+				var path = Config.PathEntries.SaveRamAbsolutePath(Game, MovieSession.Movie.IsActive());
 				if (File.Exists(path))
 				{
 					File.Delete(path);
@@ -4050,7 +4103,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var path = $"{PathManager.SaveStatePrefix(Game)}.{quickSlotName}.State";
+			var path = $"{SaveStatePrefix()}.{quickSlotName}.State";
 			if (!File.Exists(path))
 			{
 				AddOnScreenMessage($"Unable to load {quickSlotName}.State");
@@ -4116,7 +4169,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var path = $"{PathManager.SaveStatePrefix(Game)}.{quickSlotName}.State";
+			var path = $"{SaveStatePrefix()}.{quickSlotName}.State";
 
 			var file = new FileInfo(path);
 			if (file.Directory != null && !file.Directory.Exists)
@@ -4158,7 +4211,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var path = PathManager.GetSaveStatePath(Game);
+			var path = Config.PathEntries.SaveStateAbsolutePath(Game.System);
 
 			var file = new FileInfo(path);
 			if (file.Directory != null && !file.Directory.Exists)
@@ -4172,7 +4225,7 @@ namespace BizHawk.Client.EmuHawk
 				DefaultExt = "State",
 				Filter = new FilesystemFilterSet(FilesystemFilter.EmuHawkSaveStates).ToString(),
 				InitialDirectory = path,
-				FileName = $"{PathManager.SaveStatePrefix(Game)}.QuickSave0.State"
+				FileName = $"{SaveStatePrefix()}.QuickSave0.State"
 			};
 
 			var result = sfd.ShowHawkDialog();
@@ -4202,7 +4255,7 @@ namespace BizHawk.Client.EmuHawk
 
 			using var ofd = new OpenFileDialog
 			{
-				InitialDirectory = PathManager.GetSaveStatePath(Game),
+				InitialDirectory = Config.PathEntries.SaveStateAbsolutePath(Game.System),
 				Filter = new FilesystemFilterSet(FilesystemFilter.EmuHawkSaveStates).ToString(),
 				RestoreDirectory = true
 			};

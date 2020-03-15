@@ -68,57 +68,59 @@ namespace BizHawk.Client.EmuHawk
 			RecentRomSubMenu.DropDownItems.AddRange(Config.RecentRoms.RecentMenu(LoadRomFromRecent, "ROM", romLoading: true));
 		}
 
+		private bool HasSlot(int slot) => _stateSlots.HasSlot(slot, SaveStatePrefix());
+
 		private void SaveStateSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			SaveState0MenuItem.Font = new Font(
 				SaveState0MenuItem.Font.FontFamily,
 				SaveState0MenuItem.Font.Size,
-				 _stateSlots.HasSlot(0) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
+				 HasSlot(0) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
 
 			SaveState1MenuItem.Font = new Font(
 				SaveState1MenuItem.Font.FontFamily,
 				SaveState1MenuItem.Font.Size,
-				_stateSlots.HasSlot(1) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
+				HasSlot(1) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
 
 			SaveState2MenuItem.Font = new Font(
 				SaveState2MenuItem.Font.FontFamily,
 				SaveState2MenuItem.Font.Size,
-				_stateSlots.HasSlot(2) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
+				HasSlot(2) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
 
 			SaveState3MenuItem.Font = new Font(
 				SaveState3MenuItem.Font.FontFamily,
 				SaveState3MenuItem.Font.Size,
-				_stateSlots.HasSlot(3) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
+				HasSlot(3) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
 
 			SaveState4MenuItem.Font = new Font(
 				SaveState4MenuItem.Font.FontFamily,
 				SaveState4MenuItem.Font.Size,
-				_stateSlots.HasSlot(4) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
+				HasSlot(4) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
 
 			SaveState5MenuItem.Font = new Font(
 				SaveState5MenuItem.Font.FontFamily,
 				SaveState5MenuItem.Font.Size,
-				_stateSlots.HasSlot(5) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
+				HasSlot(5) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
 
 			SaveState6MenuItem.Font = new Font(
 				SaveState6MenuItem.Font.FontFamily,
 				SaveState6MenuItem.Font.Size,
-				_stateSlots.HasSlot(6) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
+				HasSlot(6) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
 
 			SaveState7MenuItem.Font = new Font(
 				SaveState7MenuItem.Font.FontFamily,
 				SaveState7MenuItem.Font.Size,
-				_stateSlots.HasSlot(7) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
+				HasSlot(7) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
 
 			SaveState8MenuItem.Font = new Font(
 				SaveState8MenuItem.Font.FontFamily,
 				SaveState8MenuItem.Font.Size,
-				_stateSlots.HasSlot(8) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
+				HasSlot(8) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
 
 			SaveState9MenuItem.Font = new Font(
 				SaveState9MenuItem.Font.FontFamily,
 				SaveState9MenuItem.Font.Size,
-				_stateSlots.HasSlot(9) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
+				HasSlot(9) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
 
 			SaveState1MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 1"].Bindings;
 			SaveState2MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 2"].Bindings;
@@ -149,16 +151,16 @@ namespace BizHawk.Client.EmuHawk
 
 			AutoloadLastSlotMenuItem.Checked = Config.AutoLoadLastSaveSlot;
 
-			LoadState1MenuItem.Enabled = _stateSlots.HasSlot(1);
-			LoadState2MenuItem.Enabled = _stateSlots.HasSlot(2);
-			LoadState3MenuItem.Enabled = _stateSlots.HasSlot(3);
-			LoadState4MenuItem.Enabled = _stateSlots.HasSlot(4);
-			LoadState5MenuItem.Enabled = _stateSlots.HasSlot(5);
-			LoadState6MenuItem.Enabled = _stateSlots.HasSlot(6);
-			LoadState7MenuItem.Enabled = _stateSlots.HasSlot(7);
-			LoadState8MenuItem.Enabled = _stateSlots.HasSlot(8);
-			LoadState9MenuItem.Enabled = _stateSlots.HasSlot(9);
-			LoadState0MenuItem.Enabled = _stateSlots.HasSlot(0);
+			LoadState1MenuItem.Enabled = HasSlot(1);
+			LoadState2MenuItem.Enabled = HasSlot(2);
+			LoadState3MenuItem.Enabled = HasSlot(3);
+			LoadState4MenuItem.Enabled = HasSlot(4);
+			LoadState5MenuItem.Enabled = HasSlot(5);
+			LoadState6MenuItem.Enabled = HasSlot(6);
+			LoadState7MenuItem.Enabled = HasSlot(7);
+			LoadState8MenuItem.Enabled = HasSlot(8);
+			LoadState9MenuItem.Enabled = HasSlot(9);
+			LoadState0MenuItem.Enabled = HasSlot(0);
 		}
 
 		private void SaveSlotSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -352,7 +354,7 @@ namespace BizHawk.Client.EmuHawk
 			/* CLONE OF CODE FROM OpenRom (mostly) */
 			using var ofd = new OpenFileDialog
 			{
-				InitialDirectory = PathManager.GetRomsPath(Emulator.SystemId),
+				InitialDirectory = Config.PathEntries.RomAbsolutePath(Emulator.SystemId),
 				Filter = filter,
 				RestoreDirectory = false,
 				FilterIndex = _lastOpenRomFilter,
@@ -366,7 +368,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var file = new FileInfo(ofd.FileName);
-			Config.LastRomPath = file.DirectoryName;
+			Config.PathEntries.LastRomPath = file.DirectoryName;
 			_lastOpenRomFilter = ofd.FilterIndex;
 			/*************************/
 
@@ -508,7 +510,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using var ofd = new OpenFileDialog
 			{
-				InitialDirectory = PathManager.GetRomsPath(Emulator.SystemId),
+				InitialDirectory = Config.PathEntries.RomAbsolutePath(Emulator.SystemId),
 				Multiselect = true,
 				Filter = MovieImport.AvailableImporters.ToString("Movie Files"),
 				RestoreDirectory = false
@@ -538,7 +540,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var file = ToolFormBase.SaveFileDialog(
 				filename,
-				PathManager.MakeAbsolutePath(Config.PathEntries.MoviesPathFragment, null),
+				Config.PathEntries.MovieAbsolutePath(),
 				"Movie Files",
 				MovieSession.Movie.PreferredExtension);
 
@@ -622,7 +624,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ScreenshotAsMenuItem_Click(object sender, EventArgs e)
 		{
-			var path = $"{PathManager.ScreenshotPrefix(Game)}.{DateTime.Now:yyyy-MM-dd HH.mm.ss}.png";
+			var path = $"{ScreenshotPrefix()}.{DateTime.Now:yyyy-MM-dd HH.mm.ss}.png";
 
 			using var sfd = new SaveFileDialog
 			{
@@ -1864,7 +1866,7 @@ namespace BizHawk.Client.EmuHawk
 				using var ofd = new OpenFileDialog
 				{
 					Filter = new FilesystemFilterSet(new FilesystemFilter("TI-83 Program Files", new[] { "83p", "8xp" })).ToString(),
-					InitialDirectory = PathManager.GetRomsPath(Emulator.SystemId),
+					InitialDirectory = Config.PathEntries.RomAbsolutePath(Emulator.SystemId),
 					RestoreDirectory = true
 				};
 
@@ -2796,6 +2798,8 @@ namespace BizHawk.Client.EmuHawk
 				showMenuVisible = true; // I decided this was always possible in chrome-less mode, we'll see what they think
 			}
 
+			var movieIsActive = MovieSession.Movie.IsActive();
+
 			ShowMenuContextMenuItem.Visible =
 				ShowMenuContextMenuSeparator.Visible =
 				showMenuVisible;
@@ -2814,7 +2818,7 @@ namespace BizHawk.Client.EmuHawk
 			RecordMovieContextMenuItem.Visible =
 				PlayMovieContextMenuItem.Visible =
 				LoadLastMovieContextMenuItem.Visible =
-				!Emulator.IsNull() && MovieSession.Movie.NotActive();
+				!Emulator.IsNull() && !movieIsActive;
 
 			RestartMovieContextMenuItem.Visible =
 				StopMovieContextMenuItem.Visible =
@@ -2822,24 +2826,24 @@ namespace BizHawk.Client.EmuHawk
 				ViewCommentsContextMenuItem.Visible =
 				SaveMovieContextMenuItem.Visible =
 				SaveMovieAsContextMenuItem.Visible =
-				MovieSession.Movie.IsActive();
+					movieIsActive;
 
-			BackupMovieContextMenuItem.Visible = MovieSession.Movie.IsActive();
+			BackupMovieContextMenuItem.Visible = movieIsActive;
 
-			StopNoSaveContextMenuItem.Visible = MovieSession.Movie.IsActive() && MovieSession.Movie.Changes;
+			StopNoSaveContextMenuItem.Visible = movieIsActive && MovieSession.Movie.Changes;
 
-			AddSubtitleContextMenuItem.Visible = !Emulator.IsNull() && MovieSession.Movie.IsActive() && !MovieSession.ReadOnly;
+			AddSubtitleContextMenuItem.Visible = !Emulator.IsNull() && movieIsActive && !MovieSession.ReadOnly;
 
 			ConfigContextMenuItem.Visible = _inFullscreen;
 
-			ClearSRAMContextMenuItem.Visible = File.Exists(PathManager.SaveRamPath(Game));
+			ClearSRAMContextMenuItem.Visible = File.Exists(Config.PathEntries.SaveRamAbsolutePath(Game, movieIsActive));
 
 			ContextSeparator_AfterROM.Visible = OpenRomContextMenuItem.Visible || LoadLastRomContextMenuItem.Visible;
 
 			LoadLastRomContextMenuItem.Enabled = !Config.RecentRoms.Empty;
 			LoadLastMovieContextMenuItem.Enabled = !Config.RecentMovies.Empty;
 
-			if (MovieSession.Movie.IsActive())
+			if (movieIsActive)
 			{
 				if (MovieSession.ReadOnly)
 				{
@@ -2853,7 +2857,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			var file = new FileInfo($"{PathManager.SaveStatePrefix(Game)}.QuickSave{Config.SaveSlot}.State.bak");
+			var file = new FileInfo($"{SaveStatePrefix()}.QuickSave{Config.SaveSlot}.State.bak");
 
 			if (file.Exists)
 			{
@@ -2976,7 +2980,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UndoSavestateContextMenuItem_Click(object sender, EventArgs e)
 		{
-			_stateSlots.SwapBackupSavestate($"{PathManager.SaveStatePrefix(Game)}.QuickSave{Config.SaveSlot}.State");
+			_stateSlots.SwapBackupSavestate($"{SaveStatePrefix()}.QuickSave{Config.SaveSlot}.State");
 			AddOnScreenMessage($"Save slot {Config.SaveSlot} restored.");
 		}
 
@@ -3026,7 +3030,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (e.Button == MouseButtons.Left)
 			{
-				if (_stateSlots.HasSlot(slot))
+				if (HasSlot(slot))
 				{
 					LoadQuickSave($"QuickSave{slot}");
 				}

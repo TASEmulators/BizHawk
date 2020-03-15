@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 			var sfd = new SaveFileDialog
 				{
 					FileName = $"{PathManager.FilesystemSafeName(Global.Game)}-Patterns",
-					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries["NES", "Screenshots"].Path, "NES"),
+					InitialDirectory = Global.Config.PathEntries.ScreenshotAbsolutePathFor("NES"),
 					Filter = FilesystemFilterSet.Screenshots.ToString(),
 					RestoreDirectory = true
 				};

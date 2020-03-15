@@ -243,7 +243,7 @@ namespace BizHawk.Client.EmuHawk
 				_watches.Clear();
 				foreach (var item in LuaImp.ScriptList.Where(s => !s.IsSeparator))
 				{
-					var processedPath = PathManager.TryMakeRelative(item.Path);
+					var processedPath = Config.PathEntries.TryMakeRelative(item.Path);
 					string pathToLoad = ProcessPath(processedPath);
 
 					CreateFileWatcher(pathToLoad);
@@ -281,7 +281,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadLuaFile(string path)
 		{
-			var processedPath = PathManager.TryMakeRelative(path);
+			var processedPath = Config.PathEntries.TryMakeRelative(path);
 
 			var alreadyInSession = LuaImp.ScriptList.Any(t => processedPath == t.Path);
 			if (alreadyInSession)
@@ -570,12 +570,12 @@ namespace BizHawk.Client.EmuHawk
 			else if (Global.Game != null)
 			{
 				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-				sfd.InitialDirectory = PathManager.GetLuaPath();
+				sfd.InitialDirectory = Config.PathEntries.LuaAbsolutePath();
 			}
 			else
 			{
 				sfd.FileName = "NULL";
-				sfd.InitialDirectory = PathManager.GetLuaPath();
+				sfd.InitialDirectory = Config.PathEntries.LuaAbsolutePath();
 			}
 
 			sfd.Filter = SessionsFSFilterSet.ToString();
@@ -705,7 +705,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var ofd = new OpenFileDialog
 			{
-				InitialDirectory = PathManager.GetLuaPath(),
+				InitialDirectory = Config.PathEntries.LuaAbsolutePath(),
 				Filter = SessionsFSFilterSet.ToString(),
 				RestoreDirectory = true,
 				Multiselect = false
@@ -781,7 +781,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				InitialDirectory = !string.IsNullOrWhiteSpace(LuaImp.ScriptList.Filename) ?
 					Path.GetDirectoryName(LuaImp.ScriptList.Filename) :
-					PathManager.MakeAbsolutePath(Config.PathEntries.LuaPathFragment, null),
+					Config.PathEntries.LuaAbsolutePath(),
 				DefaultExt = ".lua",
 				FileName = !string.IsNullOrWhiteSpace(LuaImp.ScriptList.Filename) ?
 					Path.GetFileNameWithoutExtension(LuaImp.ScriptList.Filename) :
@@ -811,7 +811,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var ofd = new OpenFileDialog
 			{
-				InitialDirectory = PathManager.GetLuaPath(),
+				InitialDirectory = Config.PathEntries.LuaAbsolutePath(),
 				Filter = new FilesystemFilterSet(FilesystemFilter.LuaScripts, FilesystemFilter.TextFiles).ToString(),
 				RestoreDirectory = true,
 				Multiselect = true

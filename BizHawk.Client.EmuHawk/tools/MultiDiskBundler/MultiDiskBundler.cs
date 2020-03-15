@@ -232,7 +232,7 @@ namespace BizHawk.Client.EmuHawk
 		private void BrowseBtn_Click(object sender, EventArgs e)
 		{
 			string filename = "";
-			string initialDirectory = PathManager.MakeAbsolutePath(Config.PathEntries.MultiDiskBundlesFragment, "Global_NULL");
+			string initialDirectory = Config.PathEntries.MultiDiskAbsolutePath();
 
 			if (!Global.Game.IsNullInstance())
 			{

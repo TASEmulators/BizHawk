@@ -67,7 +67,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using var ofd = new OpenFileDialog
 			{
-				InitialDirectory = PathManager.MakeAbsolutePath(_parent.Config.PathEntries["Global_NULL", "ROM"].Path, "Global_NULL"),
+				InitialDirectory = _parent.Config.PathEntries.RomAbsolutePath(),
 				Filter = MainForm.RomFilter,
 				RestoreDirectory = true
 			};
