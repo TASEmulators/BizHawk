@@ -185,10 +185,10 @@ namespace BizHawk.Client.Common
 
 				// get all options for this firmware (in order)
 				var fr1 = fr;
-				var options =
-					from fo in FirmwareDatabase.FirmwareOptions
-					where fo.SystemId == fr1.SystemId && fo.FirmwareId == fr1.FirmwareId && fo.IsAcceptableOrIdeal
-					select fo;
+				var options = FirmwareDatabase.FirmwareOptions
+						.Where(fo => fo.SystemId == fr1.SystemId
+							&& fo.FirmwareId == fr1.FirmwareId
+							&& fo.IsAcceptableOrIdeal);
 
 				// try each option
 				foreach (var fo in options)
@@ -245,16 +245,14 @@ namespace BizHawk.Client.Common
 					ri.Size = fi.Length;
 					ri.Hash = rff.Hash;
 
-					// check whether it was a known file anyway, and go ahead and bind to the known file, as a perk (the firmwares config doesnt really use this information right now)
+					// check whether it was a known file anyway, and go ahead and bind to the known file, as a perk (the firmwares config doesn't really use this information right now)
 					if (FirmwareDatabase.FirmwareFilesByHash.TryGetValue(rff.Hash, out var ff))
 					{
 						ri.KnownFirmwareFile = ff;
 
 						// if the known firmware file is for a different firmware, flag it so we can show a warning
-						var option =
-							(from fo in FirmwareDatabase.FirmwareOptions
-								where fo.Hash == rff.Hash && fo.ConfigKey != fr.ConfigKey
-								select fr).FirstOrDefault();
+						var option = FirmwareDatabase.FirmwareOptions
+							.FirstOrDefault(fo => fo.Hash == rff.Hash && fo.ConfigKey != fr.ConfigKey);
 
 						if (option != null)
 						{
