@@ -461,8 +461,8 @@ namespace BizHawk.Client.Common
 
 			if (!record && emulator.SystemId == "NES") // For NES we need special logic since the movie will drive which core to load
 			{
-				var quicknesName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(QuickNES), typeof(CoreAttribute))).CoreName;
-				var neshawkName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(NES), typeof(CoreAttribute))).CoreName;
+				var quicknesName =  typeof(QuickNES).CoreName();
+				var neshawkName = typeof(NES).CoreName();
 
 				// If either is specified use that, else use whatever is currently set
 				if (movie.Core == quicknesName)
@@ -478,10 +478,10 @@ namespace BizHawk.Client.Common
 			}
 			else if (!record && emulator.SystemId == "SNES") // ditto with snes9x vs bsnes
 			{
-				var snes9xName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(Snes9x), typeof(CoreAttribute))).CoreName;
-				var bsnesName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(LibsnesCore), typeof(CoreAttribute))).CoreName;
+				var snes9XName = typeof(Snes9x).CoreName();
+				var bsnesName = typeof(LibsnesCore).CoreName();
 
-				if (movie.Core == snes9xName)
+				if (movie.Core == snes9XName)
 				{
 					PreviousSnesInSnes9x = Global.Config.SnesInSnes9x;
 					Global.Config.SnesInSnes9x = true;
@@ -494,8 +494,8 @@ namespace BizHawk.Client.Common
 			}
 			else if (!record && emulator.SystemId == "GBA") // ditto with GBA, we should probably architect this at some point, this isn't sustainable
 			{
-				var mGBAName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(MGBAHawk), typeof(CoreAttribute))).CoreName;
-				var vbaNextName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(VBANext), typeof(CoreAttribute))).CoreName;
+				var mGBAName = typeof(MGBAHawk).CoreName();
+				var vbaNextName = typeof(VBANext).CoreName();
 
 				if (movie.Core == mGBAName)
 				{
@@ -510,8 +510,8 @@ namespace BizHawk.Client.Common
 			}
 			else if (!record && (emulator.SystemId == "GB" || emulator.SystemId == "GBC"))
 			{
-				var gbHawkName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(GBHawk), typeof(CoreAttribute))).CoreName;
-				var gambatteName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(Gameboy), typeof(CoreAttribute))).CoreName;
+				var gbHawkName = typeof(GBHawk).CoreName();
+				var gambatteName = typeof(Gameboy).CoreName();
 
 				if (movie.Core == gbHawkName)
 				{
