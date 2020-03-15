@@ -70,6 +70,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			SetupMemoryDomains();
 		}
 
+		private CoreComm CoreComm { get; }
+
 		public string RomDetails { get; }
 
 		// Currently we will require at least one rom.  If multiple they MUST be all the same media type in the same format

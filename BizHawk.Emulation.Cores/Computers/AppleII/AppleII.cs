@@ -32,7 +32,6 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
-			CoreComm = comm;
 
 			_tracer = new TraceBuffer
 			{

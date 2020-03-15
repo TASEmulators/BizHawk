@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		public ControllerDefinition ControllerDefinition => current_controller;
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound)
-		{			
+		{
 			_controller = controller;
 
 			byte ctrl1_byte = 0xFF;
@@ -149,8 +149,6 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			_lagCount = 0;
 			_isLag = false;
 		}
-
-		public CoreComm CoreComm { get; }
 
 		public void Dispose()
 		{

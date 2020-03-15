@@ -18,7 +18,6 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			ServiceProvider = new BasicServiceProvider(this);
 			Settings = (MSXSettings)settings ?? new MSXSettings();
 			SyncSettings = (MSXSyncSettings)syncSettings ?? new MSXSyncSettings();
-			CoreComm = comm;
 
 			RomData = rom;
 			int size = RomData.Length;

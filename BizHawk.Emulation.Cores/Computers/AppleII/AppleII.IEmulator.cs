@@ -29,8 +29,6 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			IsLagFrame = false;
 		}
 
-		public CoreComm CoreComm { get; }
-
 		public void Dispose()
 		{
 		}

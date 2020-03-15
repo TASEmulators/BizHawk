@@ -180,6 +180,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		};
 		private int diagIndex = 1;
 
+		internal CoreComm CoreComm { get; }
+
 		private byte[] GetFirmware(int length, params string[] names)
 		{
 			if (DiagRom & File.Exists(Directory.GetCurrentDirectory() + diagRoms[diagIndex]))
