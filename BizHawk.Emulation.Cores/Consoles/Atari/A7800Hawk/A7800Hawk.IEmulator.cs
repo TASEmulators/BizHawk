@@ -326,8 +326,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			_isLag = false;
 		}
 
-		public CoreComm CoreComm { get; }
-
 		public void Dispose()
 		{
 			maria = null;

@@ -16,13 +16,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		IRegionable, ICreateGameDBEntries, ISettable<Atari2600.A2600Settings, Atari2600.A2600SyncSettings>
 	{
 		[CoreConstructor("A26")]
-		public Atari2600(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
+		public Atari2600(GameInfo game, byte[] rom, object settings, object syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 
 			_ram = new byte[128];
-			CoreComm = comm;
 			Settings = (A2600Settings)settings ?? new A2600Settings();
 			SyncSettings = (A2600SyncSettings)syncSettings ?? new A2600SyncSettings();
 
@@ -102,14 +101,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				newgame.AddOption("NTSC");
 			}
 
-			// give the emu a minimal of input\output connections so it doesn't crash
-			var comm = new CoreComm(null, null);
-
-
 			// here we advance past start up irregularities to see how long a frame is based on calls to Vsync
 			// we run 72 frames, then run 270 scanlines worth of cycles.
 			// if we don't hit a new frame, we can be pretty confident we are in PAL
-			using var emu = new Atari2600(new CoreComm(null, null), newgame, rom, null, null);
+			using var emu = new Atari2600(newgame, rom, null, null);
 			for (int i = 0; i < 72; i++)
 			{
 				emu.FrameAdvance(NullController.Instance, false, false);
