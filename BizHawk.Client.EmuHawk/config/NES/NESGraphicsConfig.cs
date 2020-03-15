@@ -55,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using var ofd = new OpenFileDialog
 			{
-				InitialDirectory = PathManager.MakeAbsolutePath(_config.PathEntries["NES", "Palettes"].Path, "NES"),
+				InitialDirectory = _config.PathEntries.PalettesAbsolutePathFor("NES"),
 				Filter = new FilesystemFilterSet(FilesystemFilter.Palettes).ToString(),
 				RestoreDirectory = true
 			};

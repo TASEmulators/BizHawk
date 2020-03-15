@@ -274,7 +274,7 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					// lazy substring extraction. really should do a better job
-					var basePath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null) + Path.DirectorySeparatorChar;
+					var basePath = _config.PathEntries.FirmwareAbsolutePath() + Path.DirectorySeparatorChar;
 					
 					var path = ri.FilePath.Replace(basePath, "");
 
@@ -351,7 +351,7 @@ namespace BizHawk.Client.EmuHawk
 				if (ri.UserSpecified) continue;
 
 				var fpTarget = Path.Combine(
-					PathManager.MakeAbsolutePath(_config.PathEntries.FirmwaresPathFragment, null),
+					_config.PathEntries.FirmwareAbsolutePath(),
 					ri.KnownFirmwareFile.RecommendedName);
 				string fpSource = ri.FilePath;
 
@@ -371,7 +371,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void tbbOpenFolder_Click(object sender, EventArgs e)
 		{
-			var frmWares = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null);
+			var frmWares =  _config.PathEntries.FirmwareAbsolutePath();
 			if (!Directory.Exists(frmWares))
 			{
 				Directory.CreateDirectory(frmWares);
@@ -407,7 +407,7 @@ namespace BizHawk.Client.EmuHawk
 				InitialDirectory = _currSelectorDir,
 				RestoreDirectory = true
 			};
-			string firmwarePath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null);
+			string firmwarePath =  _config.PathEntries.FirmwareAbsolutePath();
 
 			if (ofd.ShowDialog() == DialogResult.OK)
 			{
@@ -591,7 +591,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RefreshBasePath()
 		{
 			string oldBasePath = _currSelectorDir;
-			linkBasePath.Text = _currSelectorDir = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null);
+			linkBasePath.Text = _currSelectorDir =  _config.PathEntries.FirmwareAbsolutePath();
 			if (oldBasePath != _currSelectorDir)
 			{
 				DoScan();
@@ -655,7 +655,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RunImportJob(IEnumerable<string> files)
 		{
 			bool didSomething = false;
-			var basePath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null);
+			var basePath =  _config.PathEntries.FirmwareAbsolutePath();
 			string errors = "";
 			foreach(var f in files)
 			{

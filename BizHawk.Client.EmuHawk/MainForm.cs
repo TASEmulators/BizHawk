@@ -3232,12 +3232,12 @@ namespace BizHawk.Client.EmuHawk
 						if (Game != null)
 						{
 							sfd.FileName = $"{PathManager.FilesystemSafeName(Game)}.{ext}"; // don't use Path.ChangeExtension, it might wreck game names with dots in them
-							sfd.InitialDirectory = PathManager.MakeAbsolutePath(Config.PathEntries.AvPathFragment, null);
+							sfd.InitialDirectory = Config.PathEntries.AvAbsolutePath();
 						}
 						else
 						{
 							sfd.FileName = "NULL";
-							sfd.InitialDirectory = PathManager.MakeAbsolutePath(Config.PathEntries.AvPathFragment, null);
+							sfd.InitialDirectory = Config.PathEntries.AvAbsolutePath();
 						}
 
 						sfd.Filter = new FilesystemFilterSet(new FilesystemFilter(ext, new[] { ext })).ToString();

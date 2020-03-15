@@ -538,7 +538,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var file = ToolFormBase.SaveFileDialog(
 				filename,
-				PathManager.MakeAbsolutePath(Config.PathEntries.MoviesPathFragment, null),
+				Config.PathEntries.MovieAbsolutePath(),
 				"Movie Files",
 				MovieSession.Movie.PreferredExtension);
 

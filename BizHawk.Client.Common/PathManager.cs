@@ -56,18 +56,6 @@ namespace BizHawk.Client.Common
 			DefaultIniPath = newDefaultIniPath;
 		}
 
-		public static string MakeAbsolutePath(string path, string system)
-		{
-			// warning: supposedly Path.GetFullPath accesses directories (and needs permissions)
-			// if this poses a problem, we need to paste code from .net or mono sources and fix them to not pose problems, rather than homebrew stuff
-			return Path.GetFullPath(Global.Config.PathEntries.AbsolutePathFor(path, system));
-		}
-
-		public static string GetLuaPath()
-		{
-			return MakeAbsolutePath(Global.Config.PathEntries.LuaPathFragment, null);
-		}
-
 		// Decides if a path is non-empty, not . and not .\
 		private static bool PathIsSet(string path)
 		{
@@ -94,11 +82,11 @@ namespace BizHawk.Client.Common
 
 				if (path != null && PathIsSet(path.Path))
 				{
-					return MakeAbsolutePath(path.Path, null);
+					return Global.Config.PathEntries.AbsolutePathFor(path.Path, null);
 				}
 			}
 
-			return MakeAbsolutePath(path.Path, sysId);
+			return Global.Config.PathEntries.AbsolutePathFor(path.Path, sysId);
 		}
 
 		public static string RemoveInvalidFileSystemChars(string name)
@@ -147,7 +135,7 @@ namespace BizHawk.Client.Common
 			var pathEntry = Global.Config.PathEntries[game.System, "Save RAM"] ??
 							Global.Config.PathEntries[game.System, "Base"];
 
-			return $"{Path.Combine(MakeAbsolutePath(pathEntry.Path, game.System), name)}.SaveRAM";
+			return $"{Path.Combine(Global.Config.PathEntries.AbsolutePathFor(pathEntry.Path, game.System), name)}.SaveRAM";
 		}
 		
 		public static string AutoSaveRamPath(GameInfo game)
@@ -174,7 +162,7 @@ namespace BizHawk.Client.Common
 			var pathEntry = Global.Config.PathEntries[game.System, "Save RAM"] ??
 							Global.Config.PathEntries[game.System, "Base"];
 
-			return Path.Combine(MakeAbsolutePath(pathEntry.Path, game.System), name);
+			return Path.Combine(Global.Config.PathEntries.AbsolutePathFor(pathEntry.Path, game.System), name);
 		}
 
 		public static string RetroSystemPath(GameInfo game)
@@ -190,7 +178,7 @@ namespace BizHawk.Client.Common
 			var pathEntry = Global.Config.PathEntries[game.System, "System"] ??
 							Global.Config.PathEntries[game.System, "Base"];
 
-			return Path.Combine(MakeAbsolutePath(pathEntry.Path, game.System), name);
+			return Path.Combine(Global.Config.PathEntries.AbsolutePathFor(pathEntry.Path, game.System), name);
 		}
 
 		public static string GetSaveStatePath(GameInfo game)
@@ -198,7 +186,7 @@ namespace BizHawk.Client.Common
 			var pathEntry = Global.Config.PathEntries[game.System, "Savestates"] ??
 							Global.Config.PathEntries[game.System, "Base"];
 
-			return MakeAbsolutePath(pathEntry.Path, game.System);
+			return Global.Config.PathEntries.AbsolutePathFor(pathEntry.Path, game.System);
 		}
 
 		public static string SaveStatePrefix(GameInfo game)
@@ -241,7 +229,7 @@ namespace BizHawk.Client.Common
 			var pathEntry = Global.Config.PathEntries[game.System, "Savestates"] ??
 							Global.Config.PathEntries[game.System, "Base"];
 
-			return Path.Combine(MakeAbsolutePath(pathEntry.Path, game.System), name);
+			return Path.Combine(Global.Config.PathEntries.AbsolutePathFor(pathEntry.Path, game.System), name);
 		}
 
 		public static string GetCheatsPath(GameInfo game)
@@ -249,13 +237,13 @@ namespace BizHawk.Client.Common
 			var pathEntry = Global.Config.PathEntries[game.System, "Cheats"] ??
 							Global.Config.PathEntries[game.System, "Base"];
 
-			return MakeAbsolutePath(pathEntry.Path, game.System);
+			return Global.Config.PathEntries.AbsolutePathFor(pathEntry.Path, game.System);
 		}
 
 		public static string GetPathType(string system, string type)
 		{
 			var path = Global.Config.PathEntries.EntryWithFallback(type, system).Path;
-			return MakeAbsolutePath(path, system);
+			return Global.Config.PathEntries.AbsolutePathFor(path, system);
 		}
 
 		public static string ScreenshotPrefix(GameInfo game)
@@ -265,7 +253,7 @@ namespace BizHawk.Client.Common
 			var pathEntry = Global.Config.PathEntries[game.System, "Screenshots"] ??
 							Global.Config.PathEntries[game.System, "Base"];
 
-			return Path.Combine(MakeAbsolutePath(pathEntry.Path, game.System), name);
+			return Path.Combine(Global.Config.PathEntries.AbsolutePathFor(pathEntry.Path, game.System), name);
 		}
 
 		/// <summary>
@@ -276,7 +264,7 @@ namespace BizHawk.Client.Common
 		{
 			var parentPath = string.IsNullOrWhiteSpace(system)
 				? Global.Config.PathEntries.GlobalBaseAsAbsolute()
-				: MakeAbsolutePath(Global.Config.PathEntries.BaseFor(system), system);
+				: Global.Config.PathEntries.AbsolutePathFor(Global.Config.PathEntries.BaseFor(system), system);
 #if true
 			if (!IsSubfolder(parentPath, absolutePath)) return absolutePath;
 

@@ -130,6 +130,8 @@ namespace BizHawk.Client.Common
 		}
 
 		// Some frequently requested paths, made into a property for convenience
+		public string TastudioStatesPathFragment => Global.Config.PathEntries["Global", "TAStudio states"].Path;
+
 		public string ToolsPathFragment => Global.Config.PathEntries["Global", "Tools"].Path;
 
 		public string WatchPathFragment => ResolveToolsPath(Global.Config.PathEntries["Global", "Watch (.wch)"].Path);
@@ -465,7 +467,14 @@ namespace BizHawk.Client.Common
 		/// Logic will fallback until an absolute path is found,
 		/// using Global Base as a last resort
 		/// </summary>
-		public static string AbsolutePathFor(this PathEntryCollection collection,  string path, string systemId)
+		public static string AbsolutePathFor(this PathEntryCollection collection, string path, string systemId)
+		{
+			// warning: supposedly Path.GetFullPath accesses directories (and needs permissions)
+			// if this poses a problem, we need to paste code from .net or mono sources and fix them to not pose problems, rather than homebrew stuff
+			return Path.GetFullPath(collection.AbsolutePathForInner(path, systemId));
+		}
+
+		private static string AbsolutePathForInner(this PathEntryCollection collection,  string path, string systemId)
 		{
 			// Hack
 			if (systemId == "Global")
@@ -526,6 +535,71 @@ namespace BizHawk.Client.Common
 
 			// all bad paths default to EXE
 			return PathManager.GetExeDirectoryAbsolute();
+		}
+
+		public static string MovieAbsolutePath(this PathEntryCollection collection)
+		{
+			return collection.AbsolutePathFor(collection.MoviesPathFragment, null);
+		}
+
+		public static string MovieBackupsAbsolutePath(this PathEntryCollection collection)
+		{
+			return collection.AbsolutePathFor(collection.MoviesBackupsPathFragment, null);
+		}
+
+		public static string AvAbsolutePath(this PathEntryCollection collection)
+		{
+			return collection.AbsolutePathFor(collection.AvPathFragment, null);
+		}
+
+		public static string LuaAbsolutePath(this PathEntryCollection collection)
+		{
+			return collection.AbsolutePathFor(collection.LuaPathFragment, null);
+		}
+
+		public static string FirmwareAbsolutePath(this PathEntryCollection collection)
+		{
+			return collection.AbsolutePathFor(collection.FirmwaresPathFragment, null);
+		}
+
+		public static string LogAbsolutePath(this PathEntryCollection collection)
+		{
+			return collection.AbsolutePathFor(collection.LogPathFragment, null);
+		}
+
+		public static string WatchAbsolutePath(this PathEntryCollection collection)
+		{
+			return collection.AbsolutePathFor(collection.WatchPathFragment, null);
+		}
+
+		public static string ToolsAbsolutePath(this PathEntryCollection collection)
+		{
+			return collection.AbsolutePathFor(collection.ToolsPathFragment, null);
+		}
+
+		public static string TastudioStatesAbsolutePath(this PathEntryCollection collection)
+		{
+			return collection.AbsolutePathFor(collection.TastudioStatesPathFragment, null);
+		}
+
+		public static string MultiDiskAbsolutePath(this PathEntryCollection collection)
+		{
+			return collection.AbsolutePathFor(collection.MultiDiskBundlesFragment, null);
+		}
+
+		public static string RomAbsolutePath(this PathEntryCollection collection)
+		{
+			return collection.AbsolutePathFor(collection["Global_NULL", "ROM"].Path, "Global_NULL");
+		}
+
+		public static string ScreenshotAbsolutePathFor(this PathEntryCollection collection, string system)
+		{
+			return collection.AbsolutePathFor(collection[system, "Screenshots"].Path, system);
+		}
+
+		public static string PalettesAbsolutePathFor(this PathEntryCollection collection, string system)
+		{
+			return collection.AbsolutePathFor(collection[system, "Palettes"].Path, system);
 		}
 	}
 }

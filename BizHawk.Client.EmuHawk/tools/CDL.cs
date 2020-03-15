@@ -322,7 +322,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var file = OpenFileDialog(
 				_currentFilename,
-				PathManager.MakeAbsolutePath(Config.PathEntries.LogPathFragment, null),
+				Config.PathEntries.LogAbsolutePath(),
 				"Code Data Logger Files",
 				"cdl");
 
@@ -371,7 +371,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var file = SaveFileDialog(
 				_currentFilename,
-				PathManager.MakeAbsolutePath(Config.PathEntries.LogPathFragment, null),
+				Config.PathEntries.LogAbsolutePath(),
 				"Code Data Logger Files",
 				"cdl");
 
@@ -396,9 +396,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				var file = ToolFormBase.OpenFileDialog(
+				var file = OpenFileDialog(
 					_currentFilename,
-					PathManager.MakeAbsolutePath(Config.PathEntries.LogPathFragment, null),
+					Config.PathEntries.LogAbsolutePath(),
 					"Code Data Logger Files",
 					"cdl");
 
@@ -494,7 +494,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					_autoloading = true;
 					var autoResumeFile = $"{PathManager.FilesystemSafeName(Global.Game)}.cdl";
-					var autoResumeDir = PathManager.MakeAbsolutePath(Config.PathEntries.LogPathFragment, null);
+					var autoResumeDir = Config.PathEntries.LogAbsolutePath();
 					var autoResumePath = Path.Combine(autoResumeDir, autoResumeFile);
 					if (File.Exists(autoResumePath))
 					{

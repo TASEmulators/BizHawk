@@ -277,7 +277,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private string SuggestedFolder()
 		{
-			return PathManager.MakeAbsolutePath(Path.Combine(
+			return Config.PathEntries.AbsolutePathFor(Path.Combine(
 				Config.PathEntries["Global", "Macros"].Path,
 				PathManager.FilesystemSafeName(Global.Game)), null);
 		}

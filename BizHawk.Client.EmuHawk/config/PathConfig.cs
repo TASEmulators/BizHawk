@@ -208,7 +208,7 @@ namespace BizHawk.Client.EmuHawk
 			PathTabControl.Visible = true;
 		}
 
-		private static void BrowseFolder(TextBox box, string name, string system)
+		private void BrowseFolder(TextBox box, string name, string system)
 		{
 			// Ugly hack, we don't want to pass in the system in for system base and global paths
 			if (name == "Base" || system == "Global" || system == "Global_NULL")
@@ -224,7 +224,7 @@ namespace BizHawk.Client.EmuHawk
 				using var f = new FolderBrowserDialog
 				{
 					Description = $"Set the directory for {name}",
-					SelectedPath = PathManager.MakeAbsolutePath(box.Text, system)
+					SelectedPath = _config.PathEntries.AbsolutePathFor(box.Text, system)
 				};
 				result = f.ShowDialog();
 				selectedPath = f.SelectedPath;
@@ -234,12 +234,12 @@ namespace BizHawk.Client.EmuHawk
 				using var f = new FolderBrowserEx
 				{
 					Description = $"Set the directory for {name}",
-					SelectedPath = PathManager.MakeAbsolutePath(box.Text, system)
+					SelectedPath = _config.PathEntries.AbsolutePathFor(box.Text, system)
 				};
 				result = f.ShowDialog();
 				selectedPath = f.SelectedPath;
 			}
-			if (result == DialogResult.OK)
+			if (result.IsOk())
 			{
 				box.Text = PathManager.TryMakeRelative(selectedPath, system);
 			}
