@@ -1579,65 +1579,62 @@ namespace BizHawk.Client.EmuHawk
 			DumpStatusButton.Image = Properties.Resources.Blank;
 			DumpStatusButton.ToolTipText = "";
 
-			if (Emulator.IsNull() || Game == null)
+			if (Emulator.IsNull() || Game.IsNullInstance())
 			{
 				return;
 			}
 
 			var status = Game.Status;
-			string annotation;
 			if (status == RomStatus.BadDump)
 			{
 				DumpStatusButton.Image = Properties.Resources.ExclamationRed;
-				annotation = "Warning: Bad ROM Dump";
+				DumpStatusButton.ToolTipText = "Warning: Bad ROM Dump";
 			}
 			else if (status == RomStatus.Overdump)
 			{
 				DumpStatusButton.Image = Properties.Resources.ExclamationRed;
-				annotation = "Warning: Overdump";
+				DumpStatusButton.ToolTipText = "Warning: Overdump";
 			}
 			else if (status == RomStatus.NotInDatabase)
 			{
 				DumpStatusButton.Image = Properties.Resources.RetroQuestion;
-				annotation = "Warning: Unknown ROM";
+				DumpStatusButton.ToolTipText = "Warning: Unknown ROM";
 			}
 			else if (status == RomStatus.TranslatedRom)
 			{
 				DumpStatusButton.Image = Properties.Resources.Translation;
-				annotation = "Translated ROM";
+				DumpStatusButton.ToolTipText = "Translated ROM";
 			}
 			else if (status == RomStatus.Homebrew)
 			{
 				DumpStatusButton.Image = Properties.Resources.HomeBrew;
-				annotation = "Homebrew ROM";
+				DumpStatusButton.ToolTipText = "Homebrew ROM";
 			}
 			else if (Game.Status == RomStatus.Hack)
 			{
 				DumpStatusButton.Image = Properties.Resources.Hack;
-				annotation = "Hacked ROM";
+				DumpStatusButton.ToolTipText = "Hacked ROM";
 			}
 			else if (Game.Status == RomStatus.Unknown)
 			{
 				DumpStatusButton.Image = Properties.Resources.Hack;
-				annotation = "Warning: ROM of Unknown Character";
+				DumpStatusButton.ToolTipText = "Warning: ROM of Unknown Character";
 			}
 			else
 			{
 				DumpStatusButton.Image = Properties.Resources.GreenCheck;
-				annotation = "Verified good dump";
+				DumpStatusButton.ToolTipText = "Verified good dump";
 			}
 
 			if (!string.IsNullOrEmpty(Emulator.CoreComm.RomStatusAnnotation))
 			{
-				annotation = Emulator.CoreComm.RomStatusAnnotation;
+				DumpStatusButton.ToolTipText = Emulator.CoreComm.RomStatusAnnotation;
 
-				if (annotation == "Multi-disk bundler")
+				if (DumpStatusButton.ToolTipText == "Multi-disk bundler")
 				{
 					DumpStatusButton.Image = Properties.Resources.RetroQuestion;
 				}
 			}
-
-			DumpStatusButton.ToolTipText = annotation;
 		}
 
 		private void LoadSaveRam()
