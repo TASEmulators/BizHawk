@@ -2350,7 +2350,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (string.IsNullOrEmpty(path))
 			{
-				path = PathManager.DefaultIniPath;
+				path = Config.DefaultIniPath;
 			}
 
 			ConfigService.Save(path, Config);

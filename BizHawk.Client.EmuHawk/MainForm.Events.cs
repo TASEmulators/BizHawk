@@ -1339,7 +1339,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveConfigAsMenuItem_Click(object sender, EventArgs e)
 		{
-			var path = PathManager.DefaultIniPath;
+			var path = Config.DefaultIniPath;
 			using var sfd = new SaveFileDialog
 			{
 				InitialDirectory = Path.GetDirectoryName(path),
@@ -1356,15 +1356,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadConfigMenuItem_Click(object sender, EventArgs e)
 		{
-			Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
+			Config = ConfigService.Load<Config>(Config.DefaultIniPath);
 			Config.ResolveDefaults();
 			InitControls(); // rebind hotkeys
-			AddOnScreenMessage($"Config file loaded: {PathManager.DefaultIniPath}");
+			AddOnScreenMessage($"Config file loaded: {Config.DefaultIniPath}");
 		}
 
 		private void LoadConfigFromMenuItem_Click(object sender, EventArgs e)
 		{
-			var path = PathManager.DefaultIniPath;
+			var path = Config.DefaultIniPath;
 			using var ofd = new OpenFileDialog
 			{
 				InitialDirectory = Path.GetDirectoryName(path),
