@@ -79,11 +79,6 @@ namespace BizHawk.Client.Common
 			return Global.Config.PathEntries[system, "Base"].Path;
 		}
 
-		public static string StandardFirmwareName(string name)
-		{
-			return Path.Combine(MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null), name);
-		}
-
 		public static string MakeAbsolutePath(string path, string system)
 		{
 			//warning: supposedly Path.GetFullPath accesses directories (and needs permissions)

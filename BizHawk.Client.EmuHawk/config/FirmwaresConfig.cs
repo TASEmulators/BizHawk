@@ -350,7 +350,9 @@ namespace BizHawk.Client.EmuHawk
 				if (ri?.KnownFirmwareFile == null) continue;
 				if (ri.UserSpecified) continue;
 
-				string fpTarget = PathManager.StandardFirmwareName(ri.KnownFirmwareFile.RecommendedName);
+				var fpTarget = Path.Combine(
+					PathManager.MakeAbsolutePath(_config.PathEntries.FirmwaresPathFragment, null),
+					ri.KnownFirmwareFile.RecommendedName);
 				string fpSource = ri.FilePath;
 
 				try
