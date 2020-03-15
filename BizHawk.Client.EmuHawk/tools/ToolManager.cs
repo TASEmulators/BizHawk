@@ -863,10 +863,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public string GenerateDefaultCheatFilename()
 		{
-			var pathEntry = _config.PathEntries[Global.Game.System, "Cheats"]
-							?? _config.PathEntries[Global.Game.System, "Base"];
-
-			var path = _config.PathEntries.AbsolutePathFor(pathEntry.Path, Global.Game.System);
+			var path = _config.PathEntries.CheatsAbsolutePath(Global.Game.System);
 
 			var f = new FileInfo(path);
 			if (f.Directory != null && f.Directory.Exists == false)
