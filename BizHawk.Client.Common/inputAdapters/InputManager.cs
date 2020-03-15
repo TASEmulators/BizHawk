@@ -35,12 +35,12 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public static void SyncControls()
+		public static void SyncControls(IEmulator emulator, Config config)
 		{
-			var def = Global.Emulator.ControllerDefinition;
+			var def = emulator.ControllerDefinition;
 
-			Global.ActiveController = BindToDefinition(def, Global.Config.AllTrollers, Global.Config.AllTrollersAnalog);
-			Global.AutoFireController = BindToDefinitionAF(def, Global.Emulator, Global.Config.AllTrollersAutoFire);
+			Global.ActiveController = BindToDefinition(def, config.AllTrollers, config.AllTrollersAnalog);
+			Global.AutoFireController = BindToDefinitionAF(def, emulator, config.AllTrollersAutoFire);
 
 			// allow propagating controls that are in the current controller definition but not in the prebaked one
 			// these two lines shouldn't be required anymore under the new system?
