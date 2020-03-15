@@ -460,8 +460,7 @@ namespace BizHawk.Client.Common
 						sw.WriteLine("-------------------------");
 					}
 
-					nextEmulator = new Octoshock(nextComm, discs, discNames, null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
-					nextEmulator.CoreComm.RomStatusDetails = sw.ToString();
+					nextEmulator = new Octoshock(nextComm, discs, discNames, null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>(), sw.ToString());
 					game = new GameInfo
 					{
 						Name = Path.GetFileNameWithoutExtension(file.Name),
@@ -565,10 +564,10 @@ namespace BizHawk.Client.Common
 								(Saturnus.Settings)GetCoreSettings<Saturnus>(), (Saturnus.SyncSettings)GetCoreSyncSettings<Saturnus>());
 							break;
 						case "PSX":
-							nextEmulator = new Octoshock(nextComm, new List<Disc>(new[] { disc }), new List<string>(new[] { Path.GetFileNameWithoutExtension(path) }), null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
+							string romDetails;
 							if (game.IsRomStatusBad() || game.Status == RomStatus.NotInDatabase)
 							{
-								nextEmulator.CoreComm.RomStatusDetails = "Disc could not be identified as known-good. Look for a better rip.";
+								romDetails = "Disc could not be identified as known-good. Look for a better rip.";
 							}
 							else
 							{
@@ -578,9 +577,10 @@ namespace BizHawk.Client.Common
 								sw.WriteLine("According to redump.org, the ideal hash for entire disc is: CRC32:{0:X8}", game.GetStringValue("dh"));
 								sw.WriteLine("The file you loaded hasn't been hashed entirely (it would take too long)");
 								sw.WriteLine("Compare it with the full hash calculated by the PSX menu's Hash Discs tool");
-								nextEmulator.CoreComm.RomStatusDetails = sw.ToString();
+								romDetails = sw.ToString();
 							}
 
+							nextEmulator = new Octoshock(nextComm, new List<Disc>(new[] { disc }), new List<string>(new[] { Path.GetFileNameWithoutExtension(path) }), null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>(), romDetails);
 							break;
 						case "PCFX":
 							nextEmulator = new Tst(nextComm, new[] { disc },
@@ -791,8 +791,7 @@ namespace BizHawk.Client.Common
 								}
 
 								// todo: copy pasta from PSX .cue section
-								nextEmulator = new Octoshock(nextComm, discs, discNames, null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
-								nextEmulator.CoreComm.RomStatusDetails = sw.ToString();
+								nextEmulator = new Octoshock(nextComm, discs, discNames, null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>(), sw.ToString());
 								game = new GameInfo
 								{
 									Name = Path.GetFileNameWithoutExtension(file.Name),
@@ -883,7 +882,6 @@ namespace BizHawk.Client.Common
 					PSF psf = new PSF();
 					psf.Load(path, cbDeflater);
 					nextEmulator = new Octoshock(nextComm, psf, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
-					nextEmulator.CoreComm.RomStatusDetails = "It's a PSF, what do you want. Oh, tags maybe?";
 
 					// total garbage, this
 					rom = new RomGame(file);
@@ -1114,8 +1112,7 @@ namespace BizHawk.Client.Common
 								: CoreInventory.Instance["GBA", "VBA-Next"];
 							break;
 						case "PSX":
-							nextEmulator = new Octoshock(nextComm, null, null, rom.FileData, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
-							nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
+							nextEmulator = new Octoshock(nextComm, null, null, rom.FileData, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>(), "PSX etc.");
 							break;
 						case "Arcade":
 							nextEmulator = new MAME(nextComm, file.Directory, file.CanonicalName, GetCoreSyncSettings<MAME>(), out var gameName);

@@ -37,20 +37,21 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 	{
 		public Octoshock(CoreComm comm, PSF psf, object settings, object syncSettings)
 		{
-			Load(comm, null, null, null, settings, syncSettings, psf);
+			Load(comm, null, null, null, settings, syncSettings, psf, romDetails);
 			OctoshockDll.shock_PowerOn(psx);
 		}
 
 		//note: its annoying that we have to have a disc before constructing this.
 		//might want to change that later. HOWEVER - we need to definitely have a region, at least
-		public Octoshock(CoreComm comm, List<Disc> discs, List<string> discNames, byte[] exe, object settings, object syncSettings)
+		public Octoshock(CoreComm comm, List<Disc> discs, List<string> discNames, byte[] exe, object settings, object syncSettings, string romDetails)
 		{
-			Load(comm, discs, discNames, exe, settings, syncSettings, null);
+			Load(comm, discs, discNames, exe, settings, syncSettings, null, romDetails);
 			OctoshockDll.shock_PowerOn(psx);
 		}
 
-		void Load(CoreComm comm, List<Disc> discs, List<string> discNames, byte[] exe, object settings, object syncSettings, PSF psf)
+		void Load(CoreComm comm, List<Disc> discs, List<string> discNames, byte[] exe, object settings, object syncSettings, PSF psf, string romDetails)
 		{
+			CoreComm.RomStatusDetails = romDetails;
 			ConnectTracer();
 			CoreComm = comm;
 			DriveLightEnabled = true;
