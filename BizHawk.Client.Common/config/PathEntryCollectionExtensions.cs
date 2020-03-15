@@ -234,6 +234,14 @@ namespace BizHawk.Client.Common
 			return path.Insert(path.Length - 8, ".AutoSaveRAM");
 		}
 
+		public static string CheatsAbsolutePath(this PathEntryCollection collection, string systemId)
+		{
+			var pathEntry = collection[systemId, "Cheats"]
+				?? collection[systemId, "Base"];
+
+			return collection.AbsolutePathFor(pathEntry.Path,systemId);
+		}
+
 		public static string ScreenshotAbsolutePathFor(this PathEntryCollection collection, string system)
 		{
 			return collection.AbsolutePathFor(collection[system, "Screenshots"].Path, system);

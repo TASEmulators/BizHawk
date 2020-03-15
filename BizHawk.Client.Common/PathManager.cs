@@ -190,14 +190,6 @@ namespace BizHawk.Client.Common
 			return Path.Combine(Global.Config.PathEntries.AbsolutePathFor(pathEntry.Path, game.System), name);
 		}
 
-		public static string GetCheatsPath(GameInfo game)
-		{
-			var pathEntry = Global.Config.PathEntries[game.System, "Cheats"] ??
-							Global.Config.PathEntries[game.System, "Base"];
-
-			return Global.Config.PathEntries.AbsolutePathFor(pathEntry.Path, game.System);
-		}
-
 		public static string GetPathType(string system, string type)
 		{
 			var path = Global.Config.PathEntries.EntryWithFallback(type, system).Path;
