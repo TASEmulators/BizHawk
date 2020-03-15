@@ -954,7 +954,7 @@ namespace BizHawk.Client.Common
 							{
 								var ti83BiosAsRom = new RomGame(ti83AsHawkFile);
 								var ti83 = new TI83(ti83BiosAsRom.GameInfo, ti83Bios, GetCoreSettings<TI83>());
-								ti83.LinkPort.SendFileToCalc(File.OpenRead(path), false);
+								ti83.LinkPort.SendFileToCalc(File.OpenRead(path.Split('|').First()), false);
 								nextEmulator = ti83;
 							}
 
