@@ -5,33 +5,77 @@ using BizHawk.Client.Common.InputAdapterExtensions;
 
 namespace BizHawk.Client.Common
 {
+	
+	// don't take my word for it, but here is a guide...
+	// user -> Input -> ActiveController -> UDLR -> StickyXORPlayerInputAdapter -> TurboAdapter(TBD) -> Lua(?TBD?) -> ..
+	// .. -> MultitrackRewiringControllerAdapter -> MovieInputSourceAdapter -> (MovieSession) -> MovieOutputAdapter -> ControllerOutput(1) -> Game
+	// (1)->Input Display
 	public class InputManager
 	{
+		// the movie will be spliced in between these if it is present
+		public CopyControllerAdapter MovieInputSourceAdapter { get;  } = new CopyControllerAdapter();
+		public CopyControllerAdapter MovieOutputHardpoint { get; } = new CopyControllerAdapter();
+		public MultitrackRewiringControllerAdapter MultitrackRewiringAdapter { get; } = new MultitrackRewiringControllerAdapter();
+
+		// the original source controller, bound to the user, sort of the "input" port for the chain, i think
+		public Controller ActiveController { get; set; } // TODO: private setter, add a method that takes both controllers in 
+
+		// rapid fire version on the user controller, has its own key bindings and is OR'ed against ActiveController
+		public AutofireController AutoFireController { get; set; } // TODO: private setter, add a method that takes both controllers in 
+
+		// the "output" port for the controller chain.
+		public CopyControllerAdapter ControllerOutput { get; } = new CopyControllerAdapter();
+
+		public UdlrControllerAdapter UdLRControllerAdapter { get; } = new UdlrControllerAdapter();
+
+		public AutoFireStickyXorAdapter AutofireStickyXorAdapter { get; } = new AutoFireStickyXorAdapter();
+
+		/// <summary>
+		/// provides an opportunity to mutate the player's input in an autohold style
+		/// </summary>
+		public StickyXorAdapter StickyXorAdapter { get; } = new StickyXorAdapter();
+
+		/// <summary>
+		/// Used to AND to another controller, used for <see cref="JoypadApi.Set(Dictionary{string, bool}, int?)">JoypadApi.Set</see>
+		/// </summary>
+		public OverrideAdapter ButtonOverrideAdapter { get; } = new OverrideAdapter();
+
+		/// <summary>
+		/// fire off one-frame logical button clicks here. useful for things like ti-83 virtual pad and reset buttons
+		/// </summary>
+		public ClickyVirtualPadController ClickyVirtualPadController { get; } = new ClickyVirtualPadController();
+
+		// Input state for game controller inputs are coalesced here
+		// This relies on a client specific implementation!
+		public SimpleController ControllerInputCoalescer { get; set; }
+
+		public Controller ClientControls { get; set; }
+
 		public void RewireInputChain()
 		{
-			Global.ControllerInputCoalescer.Clear();
-			Global.ControllerInputCoalescer.Definition = Global.ActiveController.Definition;
+			ControllerInputCoalescer.Clear();
+			ControllerInputCoalescer.Definition = ActiveController.Definition;
 
-			Global.UD_LR_ControllerAdapter.Source = Global.ActiveController.Or(Global.AutoFireController);
+			UdLRControllerAdapter.Source = ActiveController.Or(AutoFireController);
 
-			Global.StickyXORAdapter.Source = Global.UD_LR_ControllerAdapter;
-			Global.AutofireStickyXORAdapter.Source = Global.StickyXORAdapter;
+			StickyXorAdapter.Source = UdLRControllerAdapter;
+			AutofireStickyXorAdapter.Source = StickyXorAdapter;
 
-			Global.MultitrackRewiringAdapter.Source = Global.AutofireStickyXORAdapter;
-			Global.MovieInputSourceAdapter.Source = Global.MultitrackRewiringAdapter;
-			Global.ControllerOutput.Source = Global.MovieOutputHardpoint;
+			MultitrackRewiringAdapter.Source = AutofireStickyXorAdapter;
+			MovieInputSourceAdapter.Source = MultitrackRewiringAdapter;
+			ControllerOutput.Source = MovieOutputHardpoint;
 
-			Global.MovieSession.MovieControllerAdapter.Definition = Global.MovieInputSourceAdapter.Definition;
+			Global.MovieSession.MovieControllerAdapter.Definition = MovieInputSourceAdapter.Definition;
 
 			// connect the movie session before MovieOutputHardpoint if it is doing anything
 			// otherwise connect the MovieInputSourceAdapter to it, effectively bypassing the movie session
 			if (Global.MovieSession != null)
 			{
-				Global.MovieOutputHardpoint.Source = Global.MovieSession.MovieControllerAdapter;
+				MovieOutputHardpoint.Source = Global.MovieSession.MovieControllerAdapter;
 			}
 			else
 			{
-				Global.MovieOutputHardpoint.Source = Global.MovieInputSourceAdapter;
+				MovieOutputHardpoint.Source = MovieInputSourceAdapter;
 			}
 		}
 
@@ -39,13 +83,13 @@ namespace BizHawk.Client.Common
 		{
 			var def = emulator.ControllerDefinition;
 
-			Global.ActiveController = BindToDefinition(def, config.AllTrollers, config.AllTrollersAnalog);
-			Global.AutoFireController = BindToDefinitionAF(def, emulator, config.AllTrollersAutoFire);
+			ActiveController = BindToDefinition(def, config.AllTrollers, config.AllTrollersAnalog);
+			AutoFireController = BindToDefinitionAF(def, emulator, config.AllTrollersAutoFire);
 
 			// allow propagating controls that are in the current controller definition but not in the prebaked one
 			// these two lines shouldn't be required anymore under the new system?
-			Global.ActiveController.ForceType(new ControllerDefinition(def));
-			Global.ClickyVirtualPadController.Definition = new ControllerDefinition(def);
+			ActiveController.ForceType(new ControllerDefinition(def));
+			ClickyVirtualPadController.Definition = new ControllerDefinition(def);
 			RewireInputChain();
 		}
 

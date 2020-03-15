@@ -1011,7 +1011,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AutofireMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new AutofireConfig(Config, AutoFireController, AutofireStickyXORAdapter);
+			using var form = new AutofireConfig(Config, InputManager.AutoFireController, InputManager.AutofireStickyXorAdapter);
 			var result = form.ShowDialog();
 			AddOnScreenMessage(result.IsOk()
 				? "Autofire settings saved"
@@ -1658,7 +1658,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (MovieSession.Movie.Mode != MovieMode.Play)
 			{
-				ClickyVirtualPadController.Click("FDS Eject");
+				InputManager.ClickyVirtualPadController.Click("FDS Eject");
 				AddOnScreenMessage("FDS disk ejected.");
 			}
 		}
@@ -1670,7 +1670,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (MovieSession.Movie.Mode != MovieMode.Play)
 				{
-					ClickyVirtualPadController.Click("Insert Coin P1");
+					InputManager.ClickyVirtualPadController.Click("Insert Coin P1");
 					AddOnScreenMessage("P1 Coin Inserted");
 				}
 			}
@@ -1683,7 +1683,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (MovieSession.Movie.Mode != MovieMode.Play)
 				{
-					ClickyVirtualPadController.Click("Insert Coin P2");
+					InputManager.ClickyVirtualPadController.Click("Insert Coin P2");
 					AddOnScreenMessage("P2 Coin Inserted");
 				}
 			}
@@ -1696,7 +1696,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (MovieSession.Movie.Mode != MovieMode.Play)
 				{
-					ClickyVirtualPadController.Click("Service Switch");
+					InputManager.ClickyVirtualPadController.Click("Service Switch");
 					AddOnScreenMessage("Service Switch Pressed");
 				}
 			}

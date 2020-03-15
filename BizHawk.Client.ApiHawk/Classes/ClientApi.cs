@@ -359,7 +359,7 @@ namespace BizHawk.Client.ApiHawk
 			{
 				if (joypad.Inputs == 0)
 				{
-					AutoFireStickyXorAdapter joypadAdapter = Global.AutofireStickyXORAdapter;
+					AutoFireStickyXorAdapter joypadAdapter = Global.InputManager.AutofireStickyXorAdapter;
 					joypadAdapter.ClearStickies();
 				}
 				else
@@ -368,7 +368,7 @@ namespace BizHawk.Client.ApiHawk
 					{
 						if (joypad.Inputs.HasFlag(button))
 						{
-							AutoFireStickyXorAdapter joypadAdapter = Global.AutofireStickyXORAdapter;
+							AutoFireStickyXorAdapter joypadAdapter = Global.InputManager.AutofireStickyXorAdapter;
 							joypadAdapter.SetSticky(
 								RunningSystem == SystemInfo.GB
 									? $"{JoypadConverter.ConvertBack(button, RunningSystem)}"
@@ -408,7 +408,7 @@ namespace BizHawk.Client.ApiHawk
 		/// </summary>
 		private static void GetAllInputs()
 		{
-			var joypadAdapter = Global.AutofireStickyXORAdapter;
+			var joypadAdapter = Global.InputManager.AutofireStickyXorAdapter;
 
 			var pressedButtons = joypadAdapter.Definition.BoolButtons
 				.Where(b => joypadAdapter.IsPressed(b));

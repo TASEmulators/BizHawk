@@ -20,6 +20,8 @@ namespace BizHawk.Client.EmuHawk
 		[ConfigPersist]
 		public bool TI83ToolTips { get; set; } = true;
 
+		private ClickyVirtualPadController ClickyVirtualPadController => Global.InputManager.ClickyVirtualPadController;
+
 		private void TI83KeyPad_Load(object sender, EventArgs e)
 		{
 			if (TI83ToolTips)
@@ -147,252 +149,252 @@ namespace BizHawk.Client.EmuHawk
 
 		private void EnterButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("ENTER");
+			ClickyVirtualPadController.Click("ENTER");
 		}
 
 		private void DashButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("DASH");
+			ClickyVirtualPadController.Click("DASH");
 		}
 
 		private void OneButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("1");
+			ClickyVirtualPadController.Click("1");
 		}
 
 		private void TwoButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("2");
+			ClickyVirtualPadController.Click("2");
 		}
 
 		private void ThreeButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("3");
+			ClickyVirtualPadController.Click("3");
 		}
 
 		private void FourButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("4");
+			ClickyVirtualPadController.Click("4");
 		}
 
 		private void FiveButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("5");
+			ClickyVirtualPadController.Click("5");
 		}
 
 		private void SixButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("6");
+			ClickyVirtualPadController.Click("6");
 		}
 
 		private void SevenButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("7");
+			ClickyVirtualPadController.Click("7");
 		}
 
 		private void EightButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("8");
+			ClickyVirtualPadController.Click("8");
 		}
 
 		private void NineButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("9");
+			ClickyVirtualPadController.Click("9");
 		}
 
 		private void OnButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("ON");
+			ClickyVirtualPadController.Click("ON");
 		}
 
 		private void StoButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("STO");
+			ClickyVirtualPadController.Click("STO");
 		}
 
 		private void PlusButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("PLUS");
+			ClickyVirtualPadController.Click("PLUS");
 		}
 
 		private void LnButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("LN");
+			ClickyVirtualPadController.Click("LN");
 		}
 
 		private void MinusButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("MINUS");
+			ClickyVirtualPadController.Click("MINUS");
 		}
 
 		private void LogButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("LOG");
+			ClickyVirtualPadController.Click("LOG");
 		}
 
 		private void MultiplyButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("MULTIPLY");
+			ClickyVirtualPadController.Click("MULTIPLY");
 		}
 
 		private void SquaredButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("SQUARED");
+			ClickyVirtualPadController.Click("SQUARED");
 		}
 
 		private void CommaButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("COMMA");
+			ClickyVirtualPadController.Click("COMMA");
 		}
 
 		private void ParaOpenButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("PARAOPEN");
+			ClickyVirtualPadController.Click("PARAOPEN");
 		}
 
 		private void ParaCloseButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("PARACLOSE");
+			ClickyVirtualPadController.Click("PARACLOSE");
 		}
 
 		private void DivideButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("DIVIDE");
+			ClickyVirtualPadController.Click("DIVIDE");
 		}
 
 		private void Neg1Button_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("NEG1");
+			ClickyVirtualPadController.Click("NEG1");
 		}
 
 		private void SinButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("SIN");
+			ClickyVirtualPadController.Click("SIN");
 		}
 
 		private void CosButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("COS");
+			ClickyVirtualPadController.Click("COS");
 		}
 
 		private void TanButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("TAN");
+			ClickyVirtualPadController.Click("TAN");
 		}
 
 		private void ExpButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("EXP");
+			ClickyVirtualPadController.Click("EXP");
 		}
 
 		private void MathButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("MATH");
+			ClickyVirtualPadController.Click("MATH");
 		}
 
 		private void MaxtrixButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("MATRIX");
+			ClickyVirtualPadController.Click("MATRIX");
 		}
 
 		private void PrgmButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("PRGM");
+			ClickyVirtualPadController.Click("PRGM");
 		}
 
 		private void VarsButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("VARS");
+			ClickyVirtualPadController.Click("VARS");
 		}
 
 		private void ClearButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("CLEAR");
+			ClickyVirtualPadController.Click("CLEAR");
 		}
 
 		private void AlphaButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("ALPHA");
+			ClickyVirtualPadController.Click("ALPHA");
 		}
 
 		private void XButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("X");
+			ClickyVirtualPadController.Click("X");
 		}
 
 		private void StatButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("STAT");
+			ClickyVirtualPadController.Click("STAT");
 		}
 
 		private void SecondButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("2ND");
+			ClickyVirtualPadController.Click("2ND");
 		}
 
 		private void ModeButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("MODE");
+			ClickyVirtualPadController.Click("MODE");
 		}
 
 		private void DelButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("DEL");
+			ClickyVirtualPadController.Click("DEL");
 		}
 
 		private void LeftButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("LEFT");
+			ClickyVirtualPadController.Click("LEFT");
 		}
 
 		private void DownButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("DOWN");
+			ClickyVirtualPadController.Click("DOWN");
 		}
 
 		private void RightButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("RIGHT");
+			ClickyVirtualPadController.Click("RIGHT");
 		}
 
 		private void UpButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("UP");
+			ClickyVirtualPadController.Click("UP");
 		}
 
 		private void YButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("Y");
+			ClickyVirtualPadController.Click("Y");
 		}
 
 		private void WindowButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("WINDOW");
+			ClickyVirtualPadController.Click("WINDOW");
 		}
 
 		private void ZoomButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("ZOOM");
+			ClickyVirtualPadController.Click("ZOOM");
 		}
 
 		private void TraceButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("TRACE");
+			ClickyVirtualPadController.Click("TRACE");
 		}
 
 		private void GraphButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("GRAPH");
+			ClickyVirtualPadController.Click("GRAPH");
 		}
 
 		private void PeriodButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("DOT");
+			ClickyVirtualPadController.Click("DOT");
 		}
 
 		private void ZeroButton_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("0");
+			ClickyVirtualPadController.Click("0");
 		}
 
 		#endregion

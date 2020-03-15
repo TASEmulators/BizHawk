@@ -469,7 +469,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				AutoPatternBool p = BoolPatterns[index];
-				Global.AutofireStickyXORAdapter.SetSticky(button, isOn.Value, p);
+				Global.InputManager.AutofireStickyXorAdapter.SetSticky(button, isOn.Value, p);
 			}
 			else
 			{
@@ -489,7 +489,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				AutoPatternFloat p = FloatPatterns[index];
-				Global.AutofireStickyXORAdapter.SetFloat(button, value, p);
+				Global.InputManager.AutofireStickyXorAdapter.SetFloat(button, value, p);
 			}
 		}
 

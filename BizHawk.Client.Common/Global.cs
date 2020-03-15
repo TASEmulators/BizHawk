@@ -26,50 +26,6 @@ namespace BizHawk.Client.Common
 
 		public static InputManager InputManager { get; } = new InputManager();
 
-		// the movie will be spliced in between these if it is present
-		public static CopyControllerAdapter MovieInputSourceAdapter { get;  } = new CopyControllerAdapter();
-		public static CopyControllerAdapter MovieOutputHardpoint { get; } = new CopyControllerAdapter();
-		public static MultitrackRewiringControllerAdapter MultitrackRewiringAdapter { get; } = new MultitrackRewiringControllerAdapter();
-
-		// don't take my word for it, since the final word is actually in RewireInputChain, but here is a guide...
-		// user -> Input -> ActiveController -> UDLR -> StickyXORPlayerInputAdapter -> TurboAdapter(TBD) -> Lua(?TBD?) -> ..
-		// .. -> MultitrackRewiringControllerAdapter -> MovieInputSourceAdapter -> (MovieSession) -> MovieOutputAdapter -> ControllerOutput(1) -> Game
-		// (1)->Input Display
-
-		// the original source controller, bound to the user, sort of the "input" port for the chain, i think
-		public static Controller ActiveController { get; set; }
-
-		// rapid fire version on the user controller, has its own key bindings and is OR'ed against ActiveController
-		public static AutofireController AutoFireController { get; set; }
-
-		// the "output" port for the controller chain.
-		public static CopyControllerAdapter ControllerOutput { get; } = new CopyControllerAdapter();
-
-		public static UdlrControllerAdapter UD_LR_ControllerAdapter { get; } = new UdlrControllerAdapter();
-
-		public static AutoFireStickyXorAdapter AutofireStickyXORAdapter { get; } = new AutoFireStickyXorAdapter();
-
-		/// <summary>
-		/// provides an opportunity to mutate the player's input in an autohold style
-		/// </summary>
-		public static StickyXorAdapter StickyXORAdapter { get; } = new StickyXorAdapter();
-
-		/// <summary>
-		/// Used to AND to another controller, used for <see cref="JoypadApi.Set(Dictionary{string, bool}, int?)">JoypadApi.Set</see>
-		/// </summary>
-		public static OverrideAdapter ButtonOverrideAdapter { get; } = new OverrideAdapter();
-
-		/// <summary>
-		/// fire off one-frame logical button clicks here. useful for things like ti-83 virtual pad and reset buttons
-		/// </summary>
-		public static ClickyVirtualPadController ClickyVirtualPadController { get; } = new ClickyVirtualPadController();
-
-		public static Controller ClientControls { get; set; }
-
-		// Input state for game controller inputs are coalesced here
-		// This relies on a client specific implementation!
-		public static SimpleController ControllerInputCoalescer { get; set; }
-
 		public static Dictionary<string, object> UserBag { get; set; } = new Dictionary<string, object>();
 	}
 }

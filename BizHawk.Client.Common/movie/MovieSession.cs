@@ -147,7 +147,7 @@ namespace BizHawk.Client.Common
 			MovieControllerAdapter.LatchFromSource(input);
 			if (MultiTrack.IsActive)
 			{
-				Global.MultitrackRewiringAdapter.Source = MovieControllerAdapter;
+				Global.InputManager.MultitrackRewiringAdapter.Source = MovieControllerAdapter;
 			}
 		}
 
@@ -237,7 +237,7 @@ namespace BizHawk.Client.Common
 		{
 			if (!Movie.IsActive())
 			{
-				LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+				LatchInputFromPlayer(Global.InputManager.MovieInputSourceAdapter);
 			}
 			else if (Movie.IsFinished())
 			{
@@ -248,7 +248,7 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+					LatchInputFromPlayer(Global.InputManager.MovieInputSourceAdapter);
 				}
 			}
 			else if (Movie.IsPlaying())
@@ -264,20 +264,20 @@ namespace BizHawk.Client.Common
 					// Movie may go into finished mode as a result from latching
 					if (!Movie.IsFinished())
 					{
-						if (Global.ClientControls.IsPressed("Scrub Input"))
+						if (Global.InputManager.ClientControls.IsPressed("Scrub Input"))
 						{
-							LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+							LatchInputFromPlayer(Global.InputManager.MovieInputSourceAdapter);
 							ClearFrame();
 						}
 						else if (Global.Config.MoviePlaybackPokeMode)
 						{
-							LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+							LatchInputFromPlayer(Global.InputManager.MovieInputSourceAdapter);
 							var lg = Movie.LogGeneratorInstance();
-							lg.SetSource(Global.MovieOutputHardpoint);
+							lg.SetSource(Global.InputManager.MovieOutputHardpoint);
 							if (!lg.IsEmpty)
 							{
-								LatchInputFromPlayer(Global.MovieInputSourceAdapter);
-								Movie.PokeFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
+								LatchInputFromPlayer(Global.InputManager.MovieInputSourceAdapter);
+								Movie.PokeFrame(Global.Emulator.Frame, Global.InputManager.MovieOutputHardpoint);
 							}
 							else
 							{
@@ -305,17 +305,17 @@ namespace BizHawk.Client.Common
 			{
 				if (MultiTrack.IsActive)
 				{
-					LatchMultitrackPlayerInput(Global.MultitrackRewiringAdapter);
+					LatchMultitrackPlayerInput(Global.InputManager.MultitrackRewiringAdapter);
 				}
 				else
 				{
-					LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+					LatchInputFromPlayer(Global.InputManager.MovieInputSourceAdapter);
 				}
 			}
 
 			// the movie session makes sure that the correct input has been read and merged to its MovieControllerAdapter;
 			// this has been wired to Global.MovieOutputHardpoint in RewireInputChain
-			Movie.RecordFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
+			Movie.RecordFrame(Global.Emulator.Frame, Global.InputManager.MovieOutputHardpoint);
 		}
 
 		public void HandleMovieAfterFrameLoop()
@@ -368,7 +368,7 @@ namespace BizHawk.Client.Common
 				}
 				else if (Movie.IsFinished())
 				{
-					LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+					LatchInputFromPlayer(Global.InputManager.MovieInputSourceAdapter);
 				}
 			}
 			else

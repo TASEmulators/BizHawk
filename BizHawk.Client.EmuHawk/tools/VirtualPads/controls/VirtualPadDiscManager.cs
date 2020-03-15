@@ -140,11 +140,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 #if false // not a valid way to fight unselection, it results in craptons of ping-ponging logic and eventual malfunction
 			if (lvDiscs.SelectedIndices.Count == 0) lvDiscs.SelectedIndices.Add(0);
-			Global.StickyXORAdapter.SetFloat(_discSelectName, lvDiscs.SelectedIndices[0]);
+			Global.InputManager.StickyXORAdapter.SetFloat(_discSelectName, lvDiscs.SelectedIndices[0]);
 #endif
 
 			//emergency measure: if no selection, set no disc
-			Global.StickyXORAdapter.SetFloat(_discSelectName, lvDiscs.SelectedIndices.Count == 0 ? 0 : lvDiscs.SelectedIndices[0]);
+			Global.InputManager.StickyXorAdapter.SetFloat(_discSelectName, lvDiscs.SelectedIndices.Count == 0 ? 0 : lvDiscs.SelectedIndices[0]);
 		}
 
 		private void btnClose_Click(object sender, EventArgs e)

@@ -164,8 +164,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetAnalog()
 		{
-			Global.StickyXORAdapter.SetFloat(XName, HasValue ? X : (int?)null);
-			Global.StickyXORAdapter.SetFloat(YName, HasValue ? Y : (int?)null);
+			Global.InputManager.StickyXorAdapter.SetFloat(XName, HasValue ? X : (int?)null);
+			Global.InputManager.StickyXorAdapter.SetFloat(YName, HasValue ? Y : (int?)null);
 			Refresh();
 		}
 

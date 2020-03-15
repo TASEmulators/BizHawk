@@ -32,12 +32,12 @@ namespace BizHawk.Client.EmuHawk
 
 				foreach (var button in lg.Definition.BoolButtons)
 				{
-					Global.ButtonOverrideAdapter.SetButton(button, lg.IsPressed(button));
+					Global.InputManager.ButtonOverrideAdapter.SetButton(button, lg.IsPressed(button));
 				}
 
 				foreach (var floatButton in lg.Definition.FloatControls)
 				{
-					Global.ButtonOverrideAdapter.SetFloat(floatButton, lg.GetFloat(floatButton));
+					Global.InputManager.ButtonOverrideAdapter.SetFloat(floatButton, lg.GetFloat(floatButton));
 				}
 
 				return lg;

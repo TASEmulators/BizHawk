@@ -78,10 +78,10 @@ namespace BizHawk.Client.EmuHawk
 			manualR.Value = 0;
 			manualTheta.Value = 0;
 			//see HOOMOO
-			Global.AutofireStickyXORAdapter.SetSticky(AnalogStick.XName, false);
-			Global.StickyXORAdapter.Unset(AnalogStick.XName);
-			Global.AutofireStickyXORAdapter.SetSticky(AnalogStick.YName, false);
-			Global.StickyXORAdapter.Unset(AnalogStick.YName);
+			Global.InputManager.AutofireStickyXorAdapter.SetSticky(AnalogStick.XName, false);
+			Global.InputManager.StickyXorAdapter.Unset(AnalogStick.XName);
+			Global.InputManager.AutofireStickyXorAdapter.SetSticky(AnalogStick.YName, false);
+			Global.InputManager.StickyXorAdapter.Unset(AnalogStick.YName);
 			AnalogStick.HasValue = false;
 		}
 
