@@ -19,9 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			ser.Register<IDisassemblable>(new ArmV4Disassembler());
 			ServiceProvider = ser;
 
-			CoreComm = comm;
-
-			byte[] biosfile = CoreComm.CoreFileProvider.GetFirmware("GBA", "Bios", true, "GBA bios file is mandatory.");
+			byte[] biosfile = comm.CoreFileProvider.GetFirmware("GBA", "Bios", true, "GBA bios file is mandatory.");
 			if (file.Length > 32 * 1024 * 1024)
 				throw new ArgumentException("ROM is too big to be a GBA ROM!");
 			if (biosfile.Length != 16 * 1024)
@@ -130,8 +128,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		/// set in the ROM internal header
 		/// </summary>
 		public string GameCode { get; }
-
-		public CoreComm CoreComm { get; }
 
 		public void Dispose()
 		{

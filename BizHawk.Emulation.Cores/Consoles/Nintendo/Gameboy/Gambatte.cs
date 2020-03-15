@@ -34,7 +34,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			};
 			ser.Register<ITraceable>(Tracer);
 			InitMemoryCallbacks();
-			CoreComm = comm;
 
 			ThrowExceptionForBadRom(file);
 			BoardName = MapperName(file);
@@ -94,7 +93,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				{
 					Bios = comm.CoreFileProvider.GetFirmware("GBC", "World", true, "BIOS Not Found, Cannot Load");
 					IsCgb = true;
-				}				
+				}
+
 				if (LibGambatte.gambatte_loadbios(GambatteState, Bios, (uint)Bios.Length) != 0)
 				{
 					throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_loadbios)}() returned non-zero (bios error)");

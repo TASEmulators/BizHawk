@@ -17,7 +17,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			GambatteLinkSettings linkSettings = (GambatteLinkSettings)settings ?? new GambatteLinkSettings();
 			GambatteLinkSyncSettings linkSyncSettings = (GambatteLinkSyncSettings)syncSettings ?? new GambatteLinkSyncSettings();
 
-			CoreComm = comm;
 			L = new Gameboy(comm.Clone(), leftinfo, leftrom, linkSettings.L, linkSyncSettings.L, deterministic);
 			R = new Gameboy(comm.Clone(), rightinfo, rightrom, linkSettings.R, linkSyncSettings.R, deterministic);
 
