@@ -38,8 +38,8 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			var temp_sync_L = new SMS.SmsSyncSettings();
 			var temp_sync_R = new SMS.SmsSyncSettings();
 
-			L = new SMS(comm.Clone(), game_L, rom_L, temp_set_L, temp_sync_L);
-			R = new SMS(comm.Clone(), game_R, rom_R, temp_set_R, temp_sync_R);
+			L = new SMS(comm, game_L, rom_L, temp_set_L, temp_sync_L);
+			R = new SMS(comm, game_R, rom_R, temp_set_R, temp_sync_R);
 
 			ser.Register<IVideoProvider>(this);
 			ser.Register<ISoundProvider>(this); 

@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			var subNesSettings = (NES.NES.NESSettings)settings ?? new NES.NES.NESSettings();
 			var subNesSyncSettings = (NES.NES.NESSyncSettings)syncSettings ?? new NES.NES.NESSyncSettings();
 
-			_nesCore = new NES.NES(comm.Clone(), game, rom, subNesSettings, subNesSyncSettings)
+			_nesCore = new NES.NES(comm, game, rom, subNesSettings, subNesSyncSettings)
 			{
 				using_reset_timing = true
 			};

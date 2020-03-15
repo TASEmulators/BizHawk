@@ -88,10 +88,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			tempSyncC.RTCOffset = Link4xSyncSettings.RTCOffset_C;
 			tempSyncD.RTCOffset = Link4xSyncSettings.RTCOffset_D;
 
-			A = new GBHawk.GBHawk(comm.Clone(), game_A, rom_A, tempSetA, tempSyncA);
-			B = new GBHawk.GBHawk(comm.Clone(), game_B, rom_B, tempSetB, tempSyncB);
-			C = new GBHawk.GBHawk(comm.Clone(), game_C, rom_C, tempSetC, tempSyncC);
-			D = new GBHawk.GBHawk(comm.Clone(), game_D, rom_D, tempSetD, tempSyncD);
+			A = new GBHawk.GBHawk(comm, game_A, rom_A, tempSetA, tempSyncA);
+			B = new GBHawk.GBHawk(comm, game_B, rom_B, tempSetB, tempSyncB);
+			C = new GBHawk.GBHawk(comm, game_C, rom_C, tempSetC, tempSyncC);
+			D = new GBHawk.GBHawk(comm, game_D, rom_D, tempSetD, tempSyncD);
 
 			ser.Register<IVideoProvider>(this);
 			ser.Register<ISoundProvider>(this); 

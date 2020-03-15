@@ -6,6 +6,7 @@ namespace BizHawk.Emulation.Common
 	/// This object facilitates communications between client and core
 	/// The primary use is to provide a client => core communication, such as providing client-side callbacks for a core to use
 	/// Any communications that can be described as purely a Core -> Client system, should be provided as an <seealso cref="IEmulatorService"/> instead
+	/// It is important that by design this class stay immutable
 	/// </summary>
 	public class CoreComm
 	{
@@ -18,8 +19,6 @@ namespace BizHawk.Emulation.Common
 			Notify = notifyMessage;
 			CoreFileProvider = coreFileProvider;
 		}
-
-		public CoreComm Clone() => (CoreComm)MemberwiseClone();
 
 		public ICoreFileProvider CoreFileProvider { get; }
 

@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 			var subGBSettings = (GBHawk.GBHawk.GBSettings)settings ?? new GBHawk.GBHawk.GBSettings();
 			var subGBSyncSettings = (GBHawk.GBHawk.GBSyncSettings)syncSettings ?? new GBHawk.GBHawk.GBSyncSettings();
 
-			_GBCore = new GBHawk.GBHawk(comm.Clone(), game, rom, subGBSettings, subGBSyncSettings);
+			_GBCore = new GBHawk.GBHawk(comm, game, rom, subGBSettings, subGBSyncSettings);
 
 			HardReset();
 			current_cycle = 0;
