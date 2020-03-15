@@ -55,7 +55,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Used to AND to another controller, used for <see cref="JoypadApi.Set(Dictionary{string, bool}, int?)">JoypadApi.Set</see>
 		/// </summary>
-		public static OverrideAdapter ButtonOverrideAdaptor { get; } = new OverrideAdapter();
+		public static OverrideAdapter ButtonOverrideAdapter { get; } = new OverrideAdapter();
 
 		/// <summary>
 		/// fire off one-frame logical button clicks here. useful for things like ti-83 virtual pad and reset buttons

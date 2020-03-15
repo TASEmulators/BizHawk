@@ -38,8 +38,8 @@ namespace BizHawk.Client.Common
 				LogCallback($"invalid mnemonic string: {inputLogEntry}");
 				return;
 			}
-			foreach (var button in lg.Definition.BoolButtons) Global.ButtonOverrideAdaptor.SetButton(button, lg.IsPressed(button));
-			foreach (var floatButton in lg.Definition.FloatControls) Global.ButtonOverrideAdaptor.SetFloat(floatButton, lg.GetFloat(floatButton));
+			foreach (var button in lg.Definition.BoolButtons) Global.ButtonOverrideAdapter.SetButton(button, lg.IsPressed(button));
+			foreach (var floatButton in lg.Definition.FloatControls) Global.ButtonOverrideAdapter.SetFloat(floatButton, lg.GetFloat(floatButton));
 		}
 
 		public void Set(Dictionary<string, bool> buttons, int? controller = null)
@@ -55,9 +55,9 @@ namespace BizHawk.Client.Common
 			try
 			{
 				var buttonToSet = controller == null ? button : $"P{controller} {button}";
-				if (state == null) Global.ButtonOverrideAdaptor.UnSet(buttonToSet);
-				else Global.ButtonOverrideAdaptor.SetButton(buttonToSet, state.Value);
-				Global.ActiveController.Overrides(Global.ButtonOverrideAdaptor);
+				if (state == null) Global.ButtonOverrideAdapter.UnSet(buttonToSet);
+				else Global.ButtonOverrideAdapter.SetButton(buttonToSet, state.Value);
+				Global.ActiveController.Overrides(Global.ButtonOverrideAdapter);
 			}
 			catch
 			{

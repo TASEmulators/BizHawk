@@ -785,7 +785,7 @@ namespace BizHawk.Client.EmuHawk
 					foreach (var button in lg.Definition.BoolButtons)
 					{
 						// TODO: make an input adapter specifically for the bot?
-						Global.ButtonOverrideAdaptor.SetButton(button, lg.IsPressed(button));
+						Global.ButtonOverrideAdapter.SetButton(button, lg.IsPressed(button));
 					}
 				}
 				else

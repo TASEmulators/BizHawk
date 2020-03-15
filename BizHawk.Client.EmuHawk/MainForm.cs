@@ -584,7 +584,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// autohold/autofire must not be affected by the following inputs
-				Global.ActiveController.Overrides(Global.ButtonOverrideAdaptor);
+				Global.ActiveController.Overrides(Global.ButtonOverrideAdapter);
 
 				if (Tools.Has<LuaConsole>() && !SuppressLua)
 				{
@@ -2902,7 +2902,7 @@ namespace BizHawk.Client.EmuHawk
 
 				// zero 03-may-2014 - moved this before call to UpdateToolsBefore(), since it seems to clear the state which a lua event.framestart is going to want to alter
 				ClickyVirtualPadController.FrameTick();
-				Global.ButtonOverrideAdaptor.FrameTick();
+				Global.ButtonOverrideAdapter.FrameTick();
 
 				if (Tools.Has<LuaConsole>() && !SuppressLua)
 				{
