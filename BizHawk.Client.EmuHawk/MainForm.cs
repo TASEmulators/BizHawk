@@ -62,6 +62,7 @@ namespace BizHawk.Client.EmuHawk
 
 			HandleToggleLightAndLink();
 			SetStatusBar();
+			_stateSlots.Update(SaveStatePrefix());
 
 			// New version notification
 			UpdateChecker.CheckComplete += (s2, e2) =>
@@ -2125,7 +2126,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveSlotSelectedMessage()
 		{
 			int slot = Config.SaveSlot;
-			string emptyPart = _stateSlots.HasSlot(slot) ? "" : " (empty)";
+			string emptyPart = HasSlot(slot) ? "" : " (empty)";
 			string message = $"Slot {slot}{emptyPart} selected.";
 			AddOnScreenMessage(message);
 		}
@@ -2431,7 +2432,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private Color SlotForeColor(int slot)
 		{
-			return _stateSlots.HasSlot(slot)
+			return HasSlot(slot)
 				? Config.SaveSlot == slot
 					? SystemColors.HighlightText
 					: SystemColors.WindowText
@@ -2447,7 +2448,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateStatusSlots()
 		{
-			_stateSlots.Update();
+			_stateSlots.Update(SaveStatePrefix());
 
 			Slot0StatusButton.ForeColor = SlotForeColor(0);
 			Slot1StatusButton.ForeColor = SlotForeColor(1);
@@ -3464,6 +3465,48 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Scheduled for refactor
 
+		public string SaveStatePrefix()
+		{
+			var name = PathManager.FilesystemSafeName(Game);
+
+			// Neshawk and Quicknes have incompatible savestates, store the name to keep them separate
+			if (Emulator.SystemId == "NES")
+			{
+				name += $".{Emulator.Attributes().CoreName}";
+			}
+
+			// Gambatte and GBHawk have incompatible savestates, store the name to keep them separate
+			if (Emulator.SystemId == "GB")
+			{
+				name += $".{Emulator.Attributes().CoreName}";
+			}
+
+			if (Emulator is Snes9x) // Keep snes9x savestate away from libsnes, we want to not be too tedious so bsnes names will just have the profile name not the core name
+			{
+				name += $".{Emulator.Attributes().CoreName}";
+			}
+
+			// Bsnes profiles have incompatible savestates so save the profile name
+			if (Emulator is LibsnesCore bsnes)
+			{
+				name += $".{bsnes.CurrentProfile}";
+			}
+
+			if (Emulator.SystemId == "GBA")
+			{
+				name += $".{Emulator.Attributes().CoreName}";
+			}
+
+			if (MovieSession.Movie.IsActive())
+			{
+				name += $".{Path.GetFileNameWithoutExtension(MovieSession.Movie.Filename)}";
+			}
+
+			var pathEntry = Config.PathEntries.SaveStateAbsolutePath(Game.System);
+
+			return Path.Combine(pathEntry, name);
+		}
+
 		private void ShowMessageCoreComm(string message)
 		{
 			MessageBox.Show(this, message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -3775,7 +3818,7 @@ namespace BizHawk.Client.EmuHawk
 
 					RewireSound();
 					Tools.UpdateCheatRelatedTools(null, null);
-					if (Config.AutoLoadLastSaveSlot && _stateSlots.HasSlot(Config.SaveSlot))
+					if (Config.AutoLoadLastSaveSlot && HasSlot(Config.SaveSlot))
 					{
 						LoadQuickSave($"QuickSave{Config.SaveSlot}");
 					}
@@ -4060,7 +4103,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var path = $"{PathManager.SaveStatePrefix(Game)}.{quickSlotName}.State";
+			var path = $"{SaveStatePrefix()}.{quickSlotName}.State";
 			if (!File.Exists(path))
 			{
 				AddOnScreenMessage($"Unable to load {quickSlotName}.State");
@@ -4126,7 +4169,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var path = $"{PathManager.SaveStatePrefix(Game)}.{quickSlotName}.State";
+			var path = $"{SaveStatePrefix()}.{quickSlotName}.State";
 
 			var file = new FileInfo(path);
 			if (file.Directory != null && !file.Directory.Exists)
@@ -4182,7 +4225,7 @@ namespace BizHawk.Client.EmuHawk
 				DefaultExt = "State",
 				Filter = new FilesystemFilterSet(FilesystemFilter.EmuHawkSaveStates).ToString(),
 				InitialDirectory = path,
-				FileName = $"{PathManager.SaveStatePrefix(Game)}.QuickSave0.State"
+				FileName = $"{SaveStatePrefix()}.QuickSave0.State"
 			};
 
 			var result = sfd.ShowHawkDialog();

@@ -10,12 +10,7 @@ namespace BizHawk.Client.Common
 		private readonly bool[] _slots = new bool[10];
 		private readonly bool[] _redo = new bool[10];
 
-		public SaveSlotManager()
-		{
-			Update();
-		}
-
-		public void Update()
+		public void Update(string saveStatePrefix)
 		{
 			if (Global.Game == null || Global.Emulator == null)
 			{
@@ -35,7 +30,7 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					var file = new FileInfo($"{PathManager.SaveStatePrefix(Global.Game)}.QuickSave{i}.State");
+					var file = new FileInfo($"{saveStatePrefix}.QuickSave{i}.State");
 					if (file.Directory != null && file.Directory.Exists == false)
 					{
 						file.Directory.Create();
@@ -46,7 +41,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public bool HasSlot(int slot)
+		public bool HasSlot(int slot, string savestatePrefix)
 		{
 			if (!Global.Emulator.HasSavestates())
 			{
@@ -58,7 +53,7 @@ namespace BizHawk.Client.Common
 				return false;
 			}
 
-			Update();
+			Update(savestatePrefix);
 			return _slots[slot];
 		}
 

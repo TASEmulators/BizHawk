@@ -5,8 +5,6 @@ using System.Reflection;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Nintendo.SNES;
-using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 
 namespace BizHawk.Client.Common
 {
@@ -100,49 +98,6 @@ namespace BizHawk.Client.Common
 			}
 
 			return Path.Combine(filesystemDir, filesystemSafeName);
-		}
-
-		public static string SaveStatePrefix(GameInfo game)
-		{
-			var name = FilesystemSafeName(game);
-
-			// Neshawk and Quicknes have incompatible savestates, store the name to keep them separate
-			if (Global.Emulator.SystemId == "NES")
-			{
-				name += $".{Global.Emulator.Attributes().CoreName}";
-			}
-
-			// Gambatte and GBHawk have incompatible savestates, store the name to keep them separate
-			if (Global.Emulator.SystemId == "GB")
-			{
-				name += $".{Global.Emulator.Attributes().CoreName}";
-			}
-
-			if (Global.Emulator is Snes9x) // Keep snes9x savestate away from libsnes, we want to not be too tedious so bsnes names will just have the profile name not the core name
-			{
-				name += $".{Global.Emulator.Attributes().CoreName}";
-			}
-
-			// Bsnes profiles have incompatible savestates so save the profile name
-			if (Global.Emulator is LibsnesCore)
-			{
-				name += $".{((LibsnesCore)Global.Emulator).CurrentProfile}";
-			}
-
-			if (Global.Emulator.SystemId == "GBA")
-			{
-				name += $".{Global.Emulator.Attributes().CoreName}";
-			}
-
-			if (Global.MovieSession.Movie.IsActive())
-			{
-				name += $".{Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename)}";
-			}
-
-			var pathEntry = Global.Config.PathEntries[game.System, "Savestates"] ??
-							Global.Config.PathEntries[game.System, "Base"];
-
-			return Path.Combine(Global.Config.PathEntries.AbsolutePathFor(pathEntry.Path, game.System), name);
 		}
 
 		/// <summary>

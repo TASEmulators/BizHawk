@@ -68,57 +68,59 @@ namespace BizHawk.Client.EmuHawk
 			RecentRomSubMenu.DropDownItems.AddRange(Config.RecentRoms.RecentMenu(LoadRomFromRecent, "ROM", romLoading: true));
 		}
 
+		private bool HasSlot(int slot) => _stateSlots.HasSlot(slot, SaveStatePrefix());
+
 		private void SaveStateSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			SaveState0MenuItem.Font = new Font(
 				SaveState0MenuItem.Font.FontFamily,
 				SaveState0MenuItem.Font.Size,
-				 _stateSlots.HasSlot(0) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
+				 HasSlot(0) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
 
 			SaveState1MenuItem.Font = new Font(
 				SaveState1MenuItem.Font.FontFamily,
 				SaveState1MenuItem.Font.Size,
-				_stateSlots.HasSlot(1) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
+				HasSlot(1) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
 
 			SaveState2MenuItem.Font = new Font(
 				SaveState2MenuItem.Font.FontFamily,
 				SaveState2MenuItem.Font.Size,
-				_stateSlots.HasSlot(2) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
+				HasSlot(2) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
 
 			SaveState3MenuItem.Font = new Font(
 				SaveState3MenuItem.Font.FontFamily,
 				SaveState3MenuItem.Font.Size,
-				_stateSlots.HasSlot(3) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
+				HasSlot(3) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
 
 			SaveState4MenuItem.Font = new Font(
 				SaveState4MenuItem.Font.FontFamily,
 				SaveState4MenuItem.Font.Size,
-				_stateSlots.HasSlot(4) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
+				HasSlot(4) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
 
 			SaveState5MenuItem.Font = new Font(
 				SaveState5MenuItem.Font.FontFamily,
 				SaveState5MenuItem.Font.Size,
-				_stateSlots.HasSlot(5) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
+				HasSlot(5) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
 
 			SaveState6MenuItem.Font = new Font(
 				SaveState6MenuItem.Font.FontFamily,
 				SaveState6MenuItem.Font.Size,
-				_stateSlots.HasSlot(6) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
+				HasSlot(6) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
 
 			SaveState7MenuItem.Font = new Font(
 				SaveState7MenuItem.Font.FontFamily,
 				SaveState7MenuItem.Font.Size,
-				_stateSlots.HasSlot(7) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
+				HasSlot(7) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
 
 			SaveState8MenuItem.Font = new Font(
 				SaveState8MenuItem.Font.FontFamily,
 				SaveState8MenuItem.Font.Size,
-				_stateSlots.HasSlot(8) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
+				HasSlot(8) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
 
 			SaveState9MenuItem.Font = new Font(
 				SaveState9MenuItem.Font.FontFamily,
 				SaveState9MenuItem.Font.Size,
-				_stateSlots.HasSlot(9) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
+				HasSlot(9) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
 
 			SaveState1MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 1"].Bindings;
 			SaveState2MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 2"].Bindings;
@@ -149,16 +151,16 @@ namespace BizHawk.Client.EmuHawk
 
 			AutoloadLastSlotMenuItem.Checked = Config.AutoLoadLastSaveSlot;
 
-			LoadState1MenuItem.Enabled = _stateSlots.HasSlot(1);
-			LoadState2MenuItem.Enabled = _stateSlots.HasSlot(2);
-			LoadState3MenuItem.Enabled = _stateSlots.HasSlot(3);
-			LoadState4MenuItem.Enabled = _stateSlots.HasSlot(4);
-			LoadState5MenuItem.Enabled = _stateSlots.HasSlot(5);
-			LoadState6MenuItem.Enabled = _stateSlots.HasSlot(6);
-			LoadState7MenuItem.Enabled = _stateSlots.HasSlot(7);
-			LoadState8MenuItem.Enabled = _stateSlots.HasSlot(8);
-			LoadState9MenuItem.Enabled = _stateSlots.HasSlot(9);
-			LoadState0MenuItem.Enabled = _stateSlots.HasSlot(0);
+			LoadState1MenuItem.Enabled = HasSlot(1);
+			LoadState2MenuItem.Enabled = HasSlot(2);
+			LoadState3MenuItem.Enabled = HasSlot(3);
+			LoadState4MenuItem.Enabled = HasSlot(4);
+			LoadState5MenuItem.Enabled = HasSlot(5);
+			LoadState6MenuItem.Enabled = HasSlot(6);
+			LoadState7MenuItem.Enabled = HasSlot(7);
+			LoadState8MenuItem.Enabled = HasSlot(8);
+			LoadState9MenuItem.Enabled = HasSlot(9);
+			LoadState0MenuItem.Enabled = HasSlot(0);
 		}
 
 		private void SaveSlotSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -2855,7 +2857,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			var file = new FileInfo($"{PathManager.SaveStatePrefix(Game)}.QuickSave{Config.SaveSlot}.State.bak");
+			var file = new FileInfo($"{SaveStatePrefix()}.QuickSave{Config.SaveSlot}.State.bak");
 
 			if (file.Exists)
 			{
@@ -2978,7 +2980,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UndoSavestateContextMenuItem_Click(object sender, EventArgs e)
 		{
-			_stateSlots.SwapBackupSavestate($"{PathManager.SaveStatePrefix(Game)}.QuickSave{Config.SaveSlot}.State");
+			_stateSlots.SwapBackupSavestate($"{SaveStatePrefix()}.QuickSave{Config.SaveSlot}.State");
 			AddOnScreenMessage($"Save slot {Config.SaveSlot} restored.");
 		}
 
@@ -3028,7 +3030,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (e.Button == MouseButtons.Left)
 			{
-				if (_stateSlots.HasSlot(slot))
+				if (HasSlot(slot))
 				{
 					LoadQuickSave($"QuickSave{slot}");
 				}
