@@ -4,7 +4,6 @@ using System.IO;
 using System.Reflection;
 
 using BizHawk.Common;
-using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
@@ -52,33 +51,6 @@ namespace BizHawk.Client.Common
 			DefaultIniPath = newDefaultIniPath;
 		}
 
-		/// <summary>
-		/// Gets absolute base as derived from EXE
-		/// </summary>
-		public static string GetGlobalBasePathAbsolute()
-		{
-			var gbase = Global.Config.PathEntries.GlobalBaseFragment;
-
-			// if %exe% prefixed then substitute exe path and repeat
-			if(gbase.StartsWith("%exe%",StringComparison.InvariantCultureIgnoreCase))
-				gbase = GetExeDirectoryAbsolute() + gbase.Substring(5);
-
-			//rooted paths get returned without change
-			//(this is done after keyword substitution to avoid problems though)
-			if (Path.IsPathRooted(gbase))
-				return gbase;
-
-			//not-rooted things are relative to exe path
-			gbase = Path.Combine(GetExeDirectoryAbsolute(), gbase);
-
-			return gbase;
-		}
-
-		public static string GetPlatformBase(string system)
-		{
-			return Global.Config.PathEntries[system, "Base"].Path;
-		}
-
 		public static string MakeAbsolutePath(string path, string system)
 		{
 			//warning: supposedly Path.GetFullPath accesses directories (and needs permissions)
@@ -86,7 +58,7 @@ namespace BizHawk.Client.Common
 			return Path.GetFullPath(MakeAbsolutePathInner(path, system));
 		}
 
-		static string MakeAbsolutePathInner(string path, string system)
+		private static string MakeAbsolutePathInner(string path, string system)
 		{
 			// Hack
 			if (system == "Global")
@@ -97,7 +69,7 @@ namespace BizHawk.Client.Common
 			// This function translates relative path and special identifiers in absolute paths
 			if (path.Length < 1)
 			{
-				return GetGlobalBasePathAbsolute();
+				return Global.Config.PathEntries.GlobalBaseAsAbsolute();
 			}
 
 			if (path == "%recent%")
@@ -115,18 +87,18 @@ namespace BizHawk.Client.Common
 				if (!string.IsNullOrWhiteSpace(system))
 				{
 					path = path.Remove(0, 1);
-					path = path.Insert(0, GetPlatformBase(system));
+					path = path.Insert(0, Global.Config.PathEntries.BaseFor(system));
 				}
 
 				if (path.Length == 1)
 				{
-					return GetGlobalBasePathAbsolute();
+					return Global.Config.PathEntries.GlobalBaseAsAbsolute();
 				}
 
 				if (path[0] == '.')
 				{
 					path = path.Remove(0, 1);
-					path = path.Insert(0, GetGlobalBasePathAbsolute());
+					path = path.Insert(0, Global.Config.PathEntries.GlobalBaseAsAbsolute());
 				}
 
 				return path;
@@ -333,7 +305,7 @@ namespace BizHawk.Client.Common
 
 		public static string GetPathType(string system, string type)
 		{
-			var path = GetPathEntryWithFallback(type, system).Path;
+			var path = Global.Config.PathEntries.EntryWithFallback(type, system).Path;
 			return MakeAbsolutePath(path, system);
 		}
 
@@ -354,8 +326,8 @@ namespace BizHawk.Client.Common
 		public static string TryMakeRelative(string absolutePath, string system = null)
 		{
 			var parentPath = string.IsNullOrWhiteSpace(system)
-				? GetGlobalBasePathAbsolute()
-				: MakeAbsolutePath(GetPlatformBase(system), system);
+				? Global.Config.PathEntries.GlobalBaseAsAbsolute()
+				: MakeAbsolutePath(Global.Config.PathEntries.BaseFor(system), system);
 #if true
 			if (!IsSubfolder(parentPath, absolutePath)) return absolutePath;
 
@@ -414,26 +386,6 @@ namespace BizHawk.Client.Common
 				if (new Uri(childUri.FullName) == parentUri) return true;
 			}
 			return false;
-		}
-
-		/// <summary>
-		/// Don't only valid system ids to system ID, pathType is ROM, Screenshot, etc
-		/// Returns the desired path, if does not exist, returns platform base, else it returns base
-		/// </summary>
-		private static PathEntry GetPathEntryWithFallback(string pathType, string systemId)
-		{
-			var entry = Global.Config.PathEntries[systemId, pathType];
-			if (entry == null)
-			{
-				entry = Global.Config.PathEntries[systemId, "Base"];
-			}
-
-			if (entry == null)
-			{
-				entry = Global.Config.PathEntries["Global", "Base"];
-			}
-
-			return entry;
 		}
 
 		/// <summary>

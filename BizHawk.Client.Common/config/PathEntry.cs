@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -408,5 +409,53 @@ namespace BizHawk.Client.Common
 			new PathEntry { System = "MSX", SystemDisplayName = "MSX", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
 			new PathEntry { System = "MSX", SystemDisplayName = "MSX", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
 		};
+	}
+
+	public static class PathEntryExtensions
+	{
+		/// <summary>
+		/// Returns the base path of the given system.
+		/// If the system can not be found, an empty string is returned
+		/// </summary>
+		public static string BaseFor(this PathEntryCollection collection, string systemId)
+		{
+			return string.IsNullOrWhiteSpace(systemId)
+				? ""
+				: collection[systemId, "Base"]?.Path ?? "";
+		}
+
+		public static string GlobalBaseAsAbsolute(this PathEntryCollection collection)
+		{
+			var globalBase = collection.GlobalBaseFragment;
+
+			// if %exe% prefixed then substitute exe path and repeat
+			if (globalBase.StartsWith("%exe%", StringComparison.InvariantCultureIgnoreCase))
+			{
+				globalBase = PathManager.GetExeDirectoryAbsolute() + globalBase.Substring(5);
+			}
+
+			// rooted paths get returned without change
+			// (this is done after keyword substitution to avoid problems though)
+			if (Path.IsPathRooted(globalBase))
+			{
+				return globalBase;
+			}
+
+			// not-rooted things are relative to exe path
+			globalBase = Path.Combine(PathManager.GetExeDirectoryAbsolute(), globalBase);
+			return globalBase;
+		}
+
+		/// <summary>
+		/// Returns an entry for the given system and pathType (ROM, screenshot, etc)
+		/// but falls back to the base system or global system if it fails
+		/// to find pathType or systemId
+		/// </summary>
+		public static PathEntry EntryWithFallback(this PathEntryCollection collection, string pathType, string systemId)
+		{
+			return (collection[systemId, pathType] 
+				?? collection[systemId, "Base"])
+				?? collection["Global", "Base"];
+		}
 	}
 }
