@@ -352,7 +352,7 @@ namespace BizHawk.Client.EmuHawk
 			/* CLONE OF CODE FROM OpenRom (mostly) */
 			using var ofd = new OpenFileDialog
 			{
-				InitialDirectory = PathManager.GetRomsPath(Emulator.SystemId),
+				InitialDirectory = Config.PathEntries.RomAbsolutePath(Emulator.SystemId),
 				Filter = filter,
 				RestoreDirectory = false,
 				FilterIndex = _lastOpenRomFilter,
@@ -508,7 +508,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using var ofd = new OpenFileDialog
 			{
-				InitialDirectory = PathManager.GetRomsPath(Emulator.SystemId),
+				InitialDirectory = Config.PathEntries.RomAbsolutePath(Emulator.SystemId),
 				Multiselect = true,
 				Filter = MovieImport.AvailableImporters.ToString("Movie Files"),
 				RestoreDirectory = false
@@ -1864,7 +1864,7 @@ namespace BizHawk.Client.EmuHawk
 				using var ofd = new OpenFileDialog
 				{
 					Filter = new FilesystemFilterSet(new FilesystemFilter("TI-83 Program Files", new[] { "83p", "8xp" })).ToString(),
-					InitialDirectory = PathManager.GetRomsPath(Emulator.SystemId),
+					InitialDirectory = Config.PathEntries.RomAbsolutePath(Emulator.SystemId),
 					RestoreDirectory = true
 				};
 

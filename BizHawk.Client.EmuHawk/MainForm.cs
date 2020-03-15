@@ -2235,7 +2235,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using var ofd = new OpenFileDialog
 			{
-				InitialDirectory = PathManager.GetRomsPath(Emulator.SystemId),
+				InitialDirectory = Config.PathEntries.RomAbsolutePath(Emulator.SystemId),
 				Filter = RomFilter,
 				RestoreDirectory = false,
 				FilterIndex = _lastOpenRomFilter

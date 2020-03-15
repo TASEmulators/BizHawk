@@ -186,9 +186,31 @@ namespace BizHawk.Client.Common
 			return collection.AbsolutePathFor(path, null);
 		}
 
-		public static string RomAbsolutePath(this PathEntryCollection collection)
+		public static string RomAbsolutePath(this PathEntryCollection collection, string sysId = null)
 		{
-			return collection.AbsolutePathFor(collection["Global_NULL", "ROM"].Path, "Global_NULL");
+			if (string.IsNullOrWhiteSpace(sysId))
+			{
+				return collection.AbsolutePathFor(collection["Global_NULL", "ROM"].Path, "Global_NULL");
+			}
+
+			if (Global.Config.UseRecentForRoms) // PathManager TODO: how about we movie this value into path entry collection?
+			{
+				return Environment.SpecialFolder.Recent.ToString();
+			}
+
+			var path = collection[sysId, "ROM"];
+
+			if (path == null || !PathManager.PathIsSet(path.Path))
+			{
+				path = collection["Global", "ROM"];
+
+				if (path != null && PathManager.PathIsSet(path.Path))
+				{
+					return collection.AbsolutePathFor(path.Path, null);
+				}
+			}
+
+			return collection.AbsolutePathFor(path.Path, sysId);
 		}
 
 		public static string ScreenshotAbsolutePathFor(this PathEntryCollection collection, string system)

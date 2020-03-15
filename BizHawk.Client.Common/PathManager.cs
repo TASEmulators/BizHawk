@@ -57,7 +57,7 @@ namespace BizHawk.Client.Common
 		}
 
 		// Decides if a path is non-empty, not . and not .\
-		private static bool PathIsSet(string path)
+		public static bool PathIsSet(string path)
 		{
 			if (!string.IsNullOrWhiteSpace(path))
 			{
@@ -65,28 +65,6 @@ namespace BizHawk.Client.Common
 			}
 
 			return false;
-		}
-
-		public static string GetRomsPath(string sysId)
-		{
-			if (Global.Config.UseRecentForRoms)
-			{
-				return Environment.SpecialFolder.Recent.ToString();
-			}
-
-			var path = Global.Config.PathEntries[sysId, "ROM"];
-
-			if (path == null || !PathIsSet(path.Path))
-			{
-				path = Global.Config.PathEntries["Global", "ROM"];
-
-				if (path != null && PathIsSet(path.Path))
-				{
-					return Global.Config.PathEntries.AbsolutePathFor(path.Path, null);
-				}
-			}
-
-			return Global.Config.PathEntries.AbsolutePathFor(path.Path, sysId);
 		}
 
 		public static string RemoveInvalidFileSystemChars(string name)
