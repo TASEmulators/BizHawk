@@ -16,7 +16,7 @@ namespace BizHawk.Common.PathExtensions
 		/// <summary>
 		/// Decides if a path is non-empty, not . and not .\
 		/// </summary>
-		public static bool PathIsSet(this string path)
+		public static bool PathIsSet(this string? path)
 		{
 			return !string.IsNullOrWhiteSpace(path) && path != "." && path != ".\\";
 		}
@@ -47,7 +47,7 @@ namespace BizHawk.Common.PathExtensions
 			}
 
 			var parentUri = new Uri(parentPath);
-			for (var childUri = new DirectoryInfo(childPath).Parent; childUri != null; childUri = childUri?.Parent)
+			for (var childUri = new DirectoryInfo(childPath).Parent; childUri != null; childUri = childUri.Parent)
 			{
 				if (new Uri(childUri.FullName) == parentUri) return true;
 			}
