@@ -33,10 +33,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		"Mednafen Team",
 		isPorted: true,
 		isReleased: true)]
-	public unsafe partial class Octoshock : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IDriveLight, ISettable<Octoshock.Settings, Octoshock.SyncSettings>, IRegionable, IInputPollable
+	public unsafe partial class Octoshock : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IDriveLight, ISettable<Octoshock.Settings, Octoshock.SyncSettings>, IRegionable, IInputPollable, IRomInfo
 	{
 		public Octoshock(CoreComm comm, PSF psf, object settings, object syncSettings)
 		{
+			string romDetails = "It's a PSF, what do you want. Oh, tags maybe?";
 			Load(comm, null, null, null, settings, syncSettings, psf, romDetails);
 			OctoshockDll.shock_PowerOn(psx);
 		}
@@ -51,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		void Load(CoreComm comm, List<Disc> discs, List<string> discNames, byte[] exe, object settings, object syncSettings, PSF psf, string romDetails)
 		{
-			CoreComm.RomStatusDetails = romDetails;
+			RomDetails = romDetails;
 			ConnectTracer();
 			CoreComm = comm;
 			DriveLightEnabled = true;
@@ -215,6 +216,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			//do this after framebuffers and peripherals and whatever crap are setup. kind of lame, but that's how it is for now
 			StudySaveBufferSize();
 		}
+
+		public string RomDetails { get; private set; }
 
 		public string SystemId => "PSX";
 

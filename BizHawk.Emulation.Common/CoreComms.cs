@@ -21,10 +21,6 @@ namespace BizHawk.Emulation.Common
 
 		public ICoreFileProvider CoreFileProvider { get; set; }
 
-		// a core should set these if you wish to provide rom status information yourself. otherwise it will be calculated by the frontend in a way you may not like, using RomGame-related concepts.
-		public string RomStatusAnnotation { get; set; }
-		public string RomStatusDetails { get; set; }
-
 		/// <summary>
 		/// Gets a message to show. reasonably annoying (dialog box), shouldn't be used most of the time
 		/// </summary>

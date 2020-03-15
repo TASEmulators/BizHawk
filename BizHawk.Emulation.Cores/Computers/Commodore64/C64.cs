@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		"SaxxonPike",
 		isPorted: false,
 		isReleased: true)]
-	public sealed partial class C64 : IEmulator, IRegionable, IBoardInfo
+	public sealed partial class C64 : IEmulator, IRegionable, IBoardInfo, IRomInfo
 	{
 		public C64(CoreComm comm, IEnumerable<byte[]> roms, GameInfo game, object settings, object syncSettings)
 		{
@@ -64,11 +64,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			if (_board.CartPort.IsConnected)
 			{
 				// There are no multi-cart cart games, so just hardcode .First()
-				CoreComm.RomStatusDetails = $"{game.Name}\r\nSHA1:{_roms.First().HashSHA1()}\r\nMD5:{roms.First().HashMD5()}\r\nMapper Impl \"{_board.CartPort.CartridgeType}\"";
+				RomDetails = $"{game.Name}\r\nSHA1:{_roms.First().HashSHA1()}\r\nMD5:{roms.First().HashMD5()}\r\nMapper Impl \"{_board.CartPort.CartridgeType}\"";
 			}
 
 			SetupMemoryDomains();
 		}
+
+		public string RomDetails { get; }
 
 		// Currently we will require at least one rom.  If multiple they MUST be all the same media type in the same format
 		// Given a good enough use case we could in theory expand those requirements, but for now we need a sanity check

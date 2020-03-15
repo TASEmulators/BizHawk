@@ -343,7 +343,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			HardReset();
 
 			// Show mapper class on romstatusdetails
-			CoreComm.RomStatusDetails = $"{this._game.Name}\r\nSHA1:{Rom.HashSHA1()}\r\nMD5:{Rom.HashMD5()}\r\nMapper Impl \"{_mapper.GetType()}\"";
+			RomDetails = $"{_game.Name}\r\nSHA1:{Rom.HashSHA1()}\r\nMD5:{Rom.HashMD5()}\r\nMapper Impl \"{_mapper.GetType()}\"";
 
 			// Some games (ex. 3D tic tac toe), turn off the screen for extended periods, so we need to allow for this here.
 			if (_game.GetOptionsDict().ContainsKey("SP_FRAME"))

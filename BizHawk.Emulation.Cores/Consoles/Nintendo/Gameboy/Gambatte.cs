@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		singleInstance: false)]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class Gameboy : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IInputPollable, ICodeDataLogger,
-		IBoardInfo, IDebuggable, ISettable<Gameboy.GambatteSettings, Gameboy.GambatteSyncSettings>,
+		IBoardInfo, IRomInfo, IDebuggable, ISettable<Gameboy.GambatteSettings, Gameboy.GambatteSyncSettings>,
 		IGameboyCommon, ICycleTiming, ILinkable
 	{
 		[CoreConstructor(new[] { "GB", "GBC" })]
@@ -115,7 +115,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				InitMemoryDomains();
 
-				CoreComm.RomStatusDetails = $"{game.Name}\r\nSHA1:{file.HashSHA1()}\r\nMD5:{file.HashMD5()}\r\n";
+				RomDetails = $"{game.Name}\r\nSHA1:{file.HashSHA1()}\r\nMD5:{file.HashMD5()}\r\n";
 
 				byte[] buff = new byte[32];
 				LibGambatte.gambatte_romtitle(GambatteState, buff);
@@ -138,6 +138,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				throw;
 			}
 		}
+
+		public string RomDetails { get; }
 
 		/// <summary>
 		/// the nominal length of one frame

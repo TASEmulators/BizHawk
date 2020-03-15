@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		isReleased: true)]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class GambatteLink : IEmulator, IVideoProvider, ISoundProvider, IInputPollable, ISaveRam, IStatable, ILinkable,
-		IBoardInfo, IDebuggable, ISettable<GambatteLink.GambatteLinkSettings, GambatteLink.GambatteLinkSyncSettings>, ICodeDataLogger
+		IBoardInfo, IRomInfo, IDebuggable, ISettable<GambatteLink.GambatteLinkSettings, GambatteLink.GambatteLinkSyncSettings>, ICodeDataLogger
 	{
 		public GambatteLink(CoreComm comm, GameInfo leftinfo, byte[] leftrom, GameInfo rightinfo, byte[] rightrom, object settings, object syncSettings, bool deterministic)
 		{
@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			L.ConnectMemoryCallbackSystem(_memorycallbacks);
 			R.ConnectMemoryCallbackSystem(_memorycallbacks);
 
-			comm.RomStatusDetails = "LEFT:\r\n" + L.CoreComm.RomStatusDetails + "RIGHT:\r\n" + R.CoreComm.RomStatusDetails;
+			RomDetails = "LEFT:\r\n" + L.RomDetails + "RIGHT:\r\n" + R.RomDetails;
 
 			LinkConnected = true;
 
@@ -45,6 +45,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			SetMemoryDomains();
 		}
+
+		public string RomDetails { get; }
 
 		public bool LinkConnected
 		{

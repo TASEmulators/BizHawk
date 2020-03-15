@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		"Vecna",
 		isPorted: false,
 		isReleased: true)]
-	public sealed partial class PCEngine : IEmulator, ISaveRam, IInputPollable, IVideoLogicalOffsets,
+	public sealed partial class PCEngine : IEmulator, ISaveRam, IInputPollable, IVideoLogicalOffsets, IRomInfo,
 		IDebuggable, ISettable<PCEngine.PCESettings, PCEngine.PCESyncSettings>, IDriveLight, ICodeDataLogger
 	{
 		[CoreConstructor(new[] { "PCE", "SGX" })]
@@ -101,7 +101,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			Init(game, rom);
 
 			// the default RomStatusDetails don't do anything with Disc
-			CoreComm.RomStatusDetails = $"{game.Name}\r\nDisk partial hash:{new DiscHasher(disc).OldHash()}";
+			RomDetails = $"{game.Name}\r\nDisk partial hash:{new DiscHasher(disc).OldHash()}";
 
 			_controllerDeck = new PceControllerDeck(
 				_syncSettings.Port1,
@@ -110,6 +110,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				_syncSettings.Port4,
 				_syncSettings.Port5);
 		}
+
+		public string RomDetails { get; }
 
 		// ROM
 		private byte[] RomData;

@@ -1626,16 +1626,18 @@ namespace BizHawk.Client.EmuHawk
 				DumpStatusButton.ToolTipText = "Verified good dump";
 			}
 
-			if (!string.IsNullOrEmpty(Emulator.CoreComm.RomStatusAnnotation))
+			if (_multiDiskMode)
 			{
-				DumpStatusButton.ToolTipText = Emulator.CoreComm.RomStatusAnnotation;
-
-				if (DumpStatusButton.ToolTipText == "Multi-disk bundler")
-				{
-					DumpStatusButton.Image = Properties.Resources.RetroQuestion;
-				}
+				DumpStatusButton.ToolTipText = "Multi-disk bundler";
+				DumpStatusButton.Image = Properties.Resources.RetroQuestion;
 			}
 		}
+
+		private bool _multiDiskMode;
+
+		// Rom details as decided by MainForm, which shouldn't happen, the RomLoader or Core should be doing this
+		// Better is to just keep the game and rom hashes as properties and then generate the rom info from this
+		private string _defaultRomDetails = "";
 
 		private void LoadSaveRam()
 		{
@@ -3671,8 +3673,8 @@ namespace BizHawk.Client.EmuHawk
 							}
 						}
 
-						Emulator.CoreComm.RomStatusDetails = xSw.ToString();
-						Emulator.CoreComm.RomStatusAnnotation = "Multi-disk bundler";
+						_defaultRomDetails = xSw.ToString();
+						_multiDiskMode = true;
 					}
 
 					if (loader.LoadedEmulator is NES nes)
@@ -3697,14 +3699,15 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-					if (Emulator.CoreComm.RomStatusDetails == null && loader.Rom != null)
+					var romDetails = Emulator.RomDetails();
+					if (string.IsNullOrWhiteSpace(romDetails) && loader.Rom != null)
 					{
-						Emulator.CoreComm.RomStatusDetails = $"{loader.Game.Name}\r\nSHA1:{loader.Rom.RomData.HashSHA1()}\r\nMD5:{loader.Rom.RomData.HashMD5()}\r\n";
+						_defaultRomDetails = $"{loader.Game.Name}\r\nSHA1:{loader.Rom.RomData.HashSHA1()}\r\nMD5:{loader.Rom.RomData.HashMD5()}\r\n";
 					}
-					else if (Emulator.CoreComm.RomStatusDetails == null && loader.Rom == null)
+					else if (string.IsNullOrWhiteSpace(romDetails) && loader.Rom == null)
 					{
 						// single disc game
-						Emulator.CoreComm.RomStatusDetails = $"{loader.Game.Name}\r\nSHA1:N/A\r\nMD5:N/A\r\n";
+						_defaultRomDetails = $"{loader.Game.Name}\r\nSHA1:N/A\r\nMD5:N/A\r\n";
 					}
 
 					if (Emulator.HasBoardInfo())

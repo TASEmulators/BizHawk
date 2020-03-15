@@ -2997,7 +2997,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DumpStatusButton_Click(object sender, EventArgs e)
 		{
-			string details = Emulator.CoreComm.RomStatusDetails;
+			string details = Emulator.RomDetails();
+			if (string.IsNullOrWhiteSpace(details))
+			{
+				details = _defaultRomDetails;
+			}
+
 			if (!string.IsNullOrEmpty(details))
 			{
 				Tools.Load<LogWindow>();

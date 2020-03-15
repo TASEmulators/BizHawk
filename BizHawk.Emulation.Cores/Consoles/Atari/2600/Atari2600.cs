@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		isPorted: false,
 		isReleased: true)]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(ISaveRam) })]
-	public partial class Atari2600 : IEmulator, IDebuggable, IInputPollable, IBoardInfo,
+	public partial class Atari2600 : IEmulator, IDebuggable, IInputPollable, IBoardInfo, IRomInfo,
 		IRegionable, ICreateGameDBEntries, ISettable<Atari2600.A2600Settings, Atari2600.A2600SyncSettings>
 	{
 		[CoreConstructor("A26")]
@@ -60,6 +60,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.Register<ISoundProvider>(_dcfilter);
 			ser.Register<IStatable>(new StateSerializer(SyncState));
 		}
+
+		public string RomDetails { get; private set; }
 
 		private readonly Atari2600ControllerDeck _controllerDeck;
 

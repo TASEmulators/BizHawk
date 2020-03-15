@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		isPorted: false,
 		isReleased: true)]
 	public partial class NES : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, IVideoLogicalOffsets,
-		IBoardInfo, ISettable<NES.NESSettings, NES.NESSyncSettings>, ICodeDataLogger
+		IBoardInfo, IRomInfo, ISettable<NES.NESSettings, NES.NESSyncSettings>, ICodeDataLogger
 	{
 		[CoreConstructor("NES")]
 		public NES(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
@@ -80,6 +80,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		static readonly bool USE_DATABASE = true;
 		public RomStatus RomStatus;
+
+		public string RomDetails { get; private set; }
 
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
@@ -636,31 +638,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Board.InitialRegisterValues = InitialMapperRegisterValues;
 			Board.Configure(origin);
 
+			string romDetailsHeader = "";
 			if (origin == EDetectionOrigin.BootGodDB)
 			{
 				RomStatus = RomStatus.GoodDump;
-				CoreComm.RomStatusAnnotation = "Identified from BootGod's database";
+				romDetailsHeader = "Identified from BootGod's database";
 			}
 			if (origin == EDetectionOrigin.UNIF)
 			{
 				RomStatus = RomStatus.NotInDatabase;
-				CoreComm.RomStatusAnnotation = "Inferred from UNIF header; somewhat suspicious";
+				romDetailsHeader = "Inferred from UNIF header; somewhat suspicious";
 			}
 			if (origin == EDetectionOrigin.INES)
 			{
 				RomStatus = RomStatus.NotInDatabase;
-				CoreComm.RomStatusAnnotation = "Inferred from iNES header; potentially wrong";
+				romDetailsHeader = "Inferred from iNES header; potentially wrong";
 			}
+
 			if (origin == EDetectionOrigin.GameDB)
 			{
-				if (choice.bad)
-				{
-					RomStatus = RomStatus.BadDump;
-				}
-				else
-				{
-					RomStatus = choice.DB_GameInfo.Status;
-				}
+				RomStatus = choice.bad
+					? RomStatus.BadDump
+					: choice.DB_GameInfo.Status;
 			}
 
 			byte[] trainer = null;
@@ -716,7 +715,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			LoadReport.Flush();
-			CoreComm.RomStatusDetails = LoadReport.ToString();
+			RomDetails = romDetailsHeader + "\n\n" + LoadReport;
 
 			// IF YOU DO ANYTHING AT ALL BELOW THIS LINE, MAKE SURE THE APPROPRIATE CHANGE IS MADE TO FDS (if applicable)
 
