@@ -71,13 +71,12 @@ namespace BizHawk.Client.EmuHawk
 			// scan the current libretro core to see if it can be launched with NoGame,and other stuff
 			try
 			{
-				//OLD COMMENTS:
-				////a stub corecomm. to reinforce that this won't touch the frontend at all!
-				////LibRetroEmulator should be able to survive having this stub corecomm
-				//NEW COMMENTS:
-				//nope, we need to navigate to the dll path. this was a bad idea anyway. so many dlls get loaded, something to resolve them is needed
-				var cfp = new CoreFileProvider(s => { }, Global.FirmwareManager);
-				var coreComm = new CoreComm(null, null, cfp);
+				var cfp = new CoreFileProvider(
+					Console.WriteLine,
+					Global.FirmwareManager,
+					Global.Config.PathEntries,
+					Global.Config.FirmwareUserSpecifications);
+				var coreComm = new CoreComm(Console.WriteLine, Console.WriteLine, cfp);
 				using var retro = new LibretroCore(coreComm, Global.Game, core);
 				btnLibretroLaunchGame.Enabled = true;
 				if (retro.Description.SupportsNoGame)

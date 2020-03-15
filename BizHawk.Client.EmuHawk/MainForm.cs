@@ -86,7 +86,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private CoreComm CreateCoreComm()
 		{
-			var cfp = new CoreFileProvider(ShowMessageCoreComm, Global.FirmwareManager);
+			var cfp = new CoreFileProvider(
+				ShowMessageCoreComm,
+				Global.FirmwareManager,
+				Config.PathEntries,
+				Config.FirmwareUserSpecifications);
 			return new CoreComm(ShowMessageCoreComm, NotifyCoreComm, cfp);
 		}
 

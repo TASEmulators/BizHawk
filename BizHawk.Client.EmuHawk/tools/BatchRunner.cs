@@ -73,7 +73,7 @@ namespace BizHawk.Client.EmuHawk
 			_ldr = new RomLoader();
 			_ldr.OnLoadError += OnLoadError;
 			_ldr.ChooseArchive = ChooseArchive;
-			var cfp = new CoreFileProvider(CommMessage, Global.FirmwareManager);
+			var cfp = new CoreFileProvider(CommMessage, Global.FirmwareManager, Global.Config.PathEntries, Global.Config.FirmwareUserSpecifications);
 			_comm = new CoreComm(CommMessage, CommMessage, cfp);
 		}
 

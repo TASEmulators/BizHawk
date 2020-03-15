@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
@@ -9,22 +10,31 @@ namespace BizHawk.Client.Common
 	{
 		private readonly FirmwareManager _firmwareManager;
 		private readonly Action<string> _showWarning;
+		private readonly PathEntryCollection _pathEntries;
+		private readonly IDictionary<string, string> _firmwareUserSpecifications;
 
-		public CoreFileProvider(Action<string> showWarning, FirmwareManager firmwareManager)
+		public CoreFileProvider(
+			Action<string> showWarning,
+			FirmwareManager firmwareManager,
+			PathEntryCollection pathEntries,
+			IDictionary<string, string> firmwareUserSpecifications)
 		{
 			_showWarning = showWarning;
 			_firmwareManager = firmwareManager;
+			_pathEntries = pathEntries;
+			_firmwareManager = firmwareManager;
+			_firmwareUserSpecifications = firmwareUserSpecifications;
 		}
 
 		public string DllPath() => PathUtils.GetDllDirectory();
 
 		// Poop
 		public string GetRetroSaveRAMDirectory(GameInfo game)
-			=> Global.Config.PathEntries.RetroSaveRamAbsolutePath(game, Global.MovieSession.Movie.IsActive(), Global.MovieSession.Movie.Filename);
+			=> _pathEntries.RetroSaveRamAbsolutePath(game, Global.MovieSession.Movie.IsActive(), Global.MovieSession.Movie.Filename);
 
 		// Poop
 		public string GetRetroSystemPath(GameInfo game)
-			=> Global.Config.PathEntries.RetroSystemAbsolutePath(game);
+			=> _pathEntries.RetroSystemAbsolutePath(game);
 
 		private void FirmwareWarn(string sysID, string firmwareID, bool required, string msg = null)
 		{
@@ -44,8 +54,8 @@ namespace BizHawk.Client.Common
 		private byte[] GetFirmwareWithPath(string sysId, string firmwareId, bool required, string msg, out string path)
 		{
 			var firmwarePath = _firmwareManager.Request(
-				Global.Config.PathEntries.FirmwaresPathFragment,
-				Global.Config.FirmwareUserSpecifications,
+				_pathEntries.FirmwaresPathFragment,
+				_firmwareUserSpecifications,
 				sysId,
 				firmwareId);
 
