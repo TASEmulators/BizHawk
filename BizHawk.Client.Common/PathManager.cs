@@ -14,7 +14,8 @@ namespace BizHawk.Client.Common
 	{
 		static PathManager()
 		{
-			SetDefaultIniPath(MakeProgramRelativePath("config.ini"));
+			var defaultIni = Path.Combine(GetExeDirectoryAbsolute(), "config.ini");
+			SetDefaultIniPath(defaultIni);
 		}
 
 		public static string GetExeDirectoryAbsolute()
@@ -28,12 +29,16 @@ namespace BizHawk.Client.Common
 			return path;
 		}
 
+		// TODO: this always makes an absolute path!
+		// Needs to be fixed, the intent was to turn an absolute path
+		// into one relative to the exe
+		// for instance: C:\BizHawk\Lua becomes .\Lua (if EmuHawk.Exe is in C:\BizHawk)
 		/// <summary>
 		/// Makes a path relative to the %exe% directory
 		/// </summary>
 		public static string MakeProgramRelativePath(string path)
 		{
-			return MakeAbsolutePath($"%exe%/{path}", null);
+			return Path.Combine(GetExeDirectoryAbsolute(), path);
 		}
 
 		public static string GetDllDirectory()
