@@ -101,9 +101,9 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public string FirmwaresPathFragment => Global.Config.PathEntries["Global", "Firmware"].Path;
+		public string FirmwaresPathFragment => this["Global", "Firmware"].Path;
 
-		internal string TempFilesFragment => Global.Config.PathEntries["Global", "Temp Files"].Path;
+		internal string TempFilesFragment => this["Global", "Temp Files"].Path;
 
 		public static List<PathEntry> DefaultValues => new List<PathEntry>
 		{
