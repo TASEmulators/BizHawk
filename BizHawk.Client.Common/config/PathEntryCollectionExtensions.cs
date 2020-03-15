@@ -90,7 +90,7 @@ namespace BizHawk.Client.Common
 
 			if (path.StartsWith("%rom%"))
 			{
-				return Global.Config.LastRomPath + path.Substring(5);
+				return collection.LastRomPath + path.Substring(5);
 			}
 
 			if (path[0] == '.')
@@ -193,7 +193,7 @@ namespace BizHawk.Client.Common
 				return collection.AbsolutePathFor(collection["Global_NULL", "ROM"].Path, "Global_NULL");
 			}
 
-			if (Global.Config.UseRecentForRoms) // PathManager TODO: how about we movie this value into path entry collection?
+			if (collection.UseRecentForRoms)
 			{
 				return Environment.SpecialFolder.Recent.ToString();
 			}

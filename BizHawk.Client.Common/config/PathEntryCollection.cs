@@ -28,6 +28,9 @@ namespace BizHawk.Client.Common
 			Paths.Add(p);
 		}
 
+		public bool UseRecentForRoms { get; set; }
+		public string LastRomPath { get; set; } = ".";
+
 		public IEnumerator<PathEntry> GetEnumerator() => Paths.GetEnumerator();
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 

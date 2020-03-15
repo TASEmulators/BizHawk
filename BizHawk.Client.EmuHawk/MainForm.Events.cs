@@ -366,7 +366,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var file = new FileInfo(ofd.FileName);
-			Config.LastRomPath = file.DirectoryName;
+			Config.PathEntries.LastRomPath = file.DirectoryName;
 			_lastOpenRomFilter = ofd.FilterIndex;
 			/*************************/
 

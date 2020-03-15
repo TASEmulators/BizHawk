@@ -37,9 +37,6 @@ namespace BizHawk.Client.Common
 			[".cue"] =  ""
 		};
 
-		// Path Settings ************************************/
-		public bool UseRecentForRoms { get; set; }
-		public string LastRomPath { get; set; } = ".";
 		public PathEntryCollection PathEntries { get; set; } = new PathEntryCollection();
 
 		// BIOS Paths
