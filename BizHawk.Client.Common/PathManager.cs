@@ -145,16 +145,6 @@ namespace BizHawk.Client.Common
 			return Path.Combine(Global.Config.PathEntries.AbsolutePathFor(pathEntry.Path, game.System), name);
 		}
 
-		public static string ScreenshotPrefix(GameInfo game)
-		{
-			var name = FilesystemSafeName(game);
-
-			var pathEntry = Global.Config.PathEntries[game.System, "Screenshots"] ??
-							Global.Config.PathEntries[game.System, "Base"];
-
-			return Path.Combine(Global.Config.PathEntries.AbsolutePathFor(pathEntry.Path, game.System), name);
-		}
-
 		/// <summary>
 		/// Takes an absolute path and attempts to convert it to a relative, based on the system, 
 		/// or global base if no system is supplied, if it is not a subfolder of the base, it will return the path unaltered

@@ -622,7 +622,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ScreenshotAsMenuItem_Click(object sender, EventArgs e)
 		{
-			var path = $"{PathManager.ScreenshotPrefix(Game)}.{DateTime.Now:yyyy-MM-dd HH.mm.ss}.png";
+			var path = $"{ScreenshotPrefix()}.{DateTime.Now:yyyy-MM-dd HH.mm.ss}.png";
 
 			using var sfd = new SaveFileDialog
 			{

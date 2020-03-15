@@ -295,7 +295,10 @@ namespace BizHawk.Client.Common
 
 		public static string ScreenshotAbsolutePathFor(this PathEntryCollection collection, string systemId)
 		{
-			return collection.AbsolutePathFor(collection[systemId, "Screenshots"].Path, systemId);
+			var entry = collection[systemId, "Screenshots"]
+				?? collection[systemId, "Base"];
+
+			return collection.AbsolutePathFor(entry.Path, systemId);
 		}
 
 		public static string PalettesAbsolutePathFor(this PathEntryCollection collection, string systemId)

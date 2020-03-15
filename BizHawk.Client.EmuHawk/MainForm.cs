@@ -1041,9 +1041,16 @@ namespace BizHawk.Client.EmuHawk
 			AddOnScreenMessage("Screenshot (client) saved to clipboard.");
 		}
 
+		private string ScreenshotPrefix()
+		{
+			var screenPath = Config.PathEntries.ScreenshotAbsolutePathFor(Game.System);
+			var name = PathManager.FilesystemSafeName(Game);
+			return Path.Combine(screenPath, name);
+		}
+
 		public void TakeScreenshot()
 		{
-			var basename = $"{PathManager.ScreenshotPrefix(Game)}.{DateTime.Now:yyyy-MM-dd HH.mm.ss}";
+			var basename = $"{ScreenshotPrefix()}.{DateTime.Now:yyyy-MM-dd HH.mm.ss}";
 
 			var fnameBare = $"{basename}.png";
 			var fname = $"{basename} (0).png";
