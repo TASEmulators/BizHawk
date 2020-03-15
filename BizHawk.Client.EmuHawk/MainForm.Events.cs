@@ -2796,6 +2796,8 @@ namespace BizHawk.Client.EmuHawk
 				showMenuVisible = true; // I decided this was always possible in chrome-less mode, we'll see what they think
 			}
 
+			var movieIsActive = MovieSession.Movie.IsActive();
+
 			ShowMenuContextMenuItem.Visible =
 				ShowMenuContextMenuSeparator.Visible =
 				showMenuVisible;
@@ -2814,7 +2816,7 @@ namespace BizHawk.Client.EmuHawk
 			RecordMovieContextMenuItem.Visible =
 				PlayMovieContextMenuItem.Visible =
 				LoadLastMovieContextMenuItem.Visible =
-				!Emulator.IsNull() && MovieSession.Movie.NotActive();
+				!Emulator.IsNull() && !movieIsActive;
 
 			RestartMovieContextMenuItem.Visible =
 				StopMovieContextMenuItem.Visible =
@@ -2822,24 +2824,24 @@ namespace BizHawk.Client.EmuHawk
 				ViewCommentsContextMenuItem.Visible =
 				SaveMovieContextMenuItem.Visible =
 				SaveMovieAsContextMenuItem.Visible =
-				MovieSession.Movie.IsActive();
+					movieIsActive;
 
-			BackupMovieContextMenuItem.Visible = MovieSession.Movie.IsActive();
+			BackupMovieContextMenuItem.Visible = movieIsActive;
 
-			StopNoSaveContextMenuItem.Visible = MovieSession.Movie.IsActive() && MovieSession.Movie.Changes;
+			StopNoSaveContextMenuItem.Visible = movieIsActive && MovieSession.Movie.Changes;
 
-			AddSubtitleContextMenuItem.Visible = !Emulator.IsNull() && MovieSession.Movie.IsActive() && !MovieSession.ReadOnly;
+			AddSubtitleContextMenuItem.Visible = !Emulator.IsNull() && movieIsActive && !MovieSession.ReadOnly;
 
 			ConfigContextMenuItem.Visible = _inFullscreen;
 
-			ClearSRAMContextMenuItem.Visible = File.Exists(PathManager.SaveRamPath(Game));
+			ClearSRAMContextMenuItem.Visible = File.Exists(Config.PathEntries.SaveRamAbsolutePath(Game, movieIsActive));
 
 			ContextSeparator_AfterROM.Visible = OpenRomContextMenuItem.Visible || LoadLastRomContextMenuItem.Visible;
 
 			LoadLastRomContextMenuItem.Enabled = !Config.RecentRoms.Empty;
 			LoadLastMovieContextMenuItem.Enabled = !Config.RecentMovies.Empty;
 
-			if (MovieSession.Movie.IsActive())
+			if (movieIsActive)
 			{
 				if (MovieSession.ReadOnly)
 				{

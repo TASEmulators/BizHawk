@@ -102,26 +102,6 @@ namespace BizHawk.Client.Common
 			return Path.Combine(filesystemDir, filesystemSafeName);
 		}
 
-		public static string SaveRamPath(GameInfo game)
-		{
-			var name = FilesystemSafeName(game);
-			if (Global.MovieSession.Movie.IsActive())
-			{
-				name += $".{Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename)}";
-			}
-
-			var pathEntry = Global.Config.PathEntries[game.System, "Save RAM"] ??
-							Global.Config.PathEntries[game.System, "Base"];
-
-			return $"{Path.Combine(Global.Config.PathEntries.AbsolutePathFor(pathEntry.Path, game.System), name)}.SaveRAM";
-		}
-		
-		public static string AutoSaveRamPath(GameInfo game)
-		{
-			var path = SaveRamPath(game);
-			return path.Insert(path.Length - 8, ".AutoSaveRAM");
-		}
-
 		public static string RetroSaveRAMDirectory(GameInfo game)
 		{
 			// hijinx here to get the core name out of the game name

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
@@ -211,6 +212,26 @@ namespace BizHawk.Client.Common
 			}
 
 			return collection.AbsolutePathFor(path.Path, sysId);
+		}
+
+		public static string SaveRamAbsolutePath(this PathEntryCollection collection, GameInfo game, bool movieIsActive)
+		{
+			var name = PathManager.FilesystemSafeName(game);
+			if (movieIsActive)
+			{
+				name += $".{Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename)}";
+			}
+
+			var pathEntry = collection[game.System, "Save RAM"]
+				?? collection[game.System, "Base"];
+
+			return $"{Path.Combine(collection.AbsolutePathFor(pathEntry.Path, game.System), name)}.SaveRAM";
+		}
+
+		public static string AutoSaveRamAbsolutePath(this PathEntryCollection collection, GameInfo game, bool movieIsActive)
+		{
+			var path = collection.SaveRamAbsolutePath(game, movieIsActive);
+			return path.Insert(path.Length - 8, ".AutoSaveRAM");
 		}
 
 		public static string ScreenshotAbsolutePathFor(this PathEntryCollection collection, string system)

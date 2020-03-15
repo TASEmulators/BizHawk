@@ -1646,10 +1646,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				try // zero says: this is sort of sketchy... but this is no time for rearchitecting
 				{
+					var saveRamPath = Config.PathEntries.SaveRamAbsolutePath(Game, MovieSession.Movie.IsActive());
 					if (Config.AutosaveSaveRAM)
 					{
-						var saveram = new FileInfo(PathManager.SaveRamPath(Game));
-						var autosave = new FileInfo(PathManager.AutoSaveRamPath(Game));
+						var saveram = new FileInfo(saveRamPath);
+						var autosave = new FileInfo(Config.PathEntries.AutoSaveRamAbsolutePath(Game, MovieSession.Movie.IsActive()));
 						if (autosave.Exists && autosave.LastWriteTime > saveram.LastWriteTime)
 						{
 							AddOnScreenMessage("AutoSaveRAM is newer than last saved SaveRAM");
@@ -1662,7 +1663,7 @@ namespace BizHawk.Client.EmuHawk
 					// GBA vba-next core will try to eat anything, regardless of size
 					if (Emulator is VBANext || Emulator is MGBAHawk || Emulator is NeoGeoPort)
 					{
-						sram = File.ReadAllBytes(PathManager.SaveRamPath(Game));
+						sram = File.ReadAllBytes(saveRamPath);
 					}
 					else
 					{
@@ -1677,8 +1678,7 @@ namespace BizHawk.Client.EmuHawk
 
 						// why do we silently truncate\pad here instead of warning\erroring?
 						sram = new byte[oldRam.Length];
-						using var reader = new BinaryReader(
-							new FileStream(PathManager.SaveRamPath(Game), FileMode.Open, FileAccess.Read));
+						using var reader = new BinaryReader(new FileStream(saveRamPath, FileMode.Open, FileAccess.Read));
 						reader.Read(sram, 0, sram.Length);
 					}
 
@@ -1696,16 +1696,18 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator.HasSaveRam())
 			{
+				bool movieIsActive = MovieSession.Movie.IsActive();
 				string path;
 				if (autosave)
 				{
-					path = PathManager.AutoSaveRamPath(Game);
+					path = Config.PathEntries.AutoSaveRamAbsolutePath(Game, movieIsActive);
 					AutoFlushSaveRamIn = Config.FlushSaveRamFrames;
 				}
 				else
 				{
-					path = PathManager.SaveRamPath(Game);
+					path =  Config.PathEntries.SaveRamAbsolutePath(Game, movieIsActive);
 				}
+
 				var file = new FileInfo(path);
 				var newPath = $"{path}.new";
 				var newFile = new FileInfo(newPath);
@@ -3727,11 +3729,12 @@ namespace BizHawk.Client.EmuHawk
 					// Don't load Save Ram if a movie is being loaded
 					if (!MovieSession.MovieIsQueued)
 					{
-						if (File.Exists(PathManager.SaveRamPath(loader.Game)))
+						var movieIsActive = MovieSession.Movie.IsActive();
+						if (File.Exists(Config.PathEntries.SaveRamAbsolutePath(loader.Game, movieIsActive)))
 						{
 							LoadSaveRam();
 						}
-						else if (Config.AutosaveSaveRAM && File.Exists(PathManager.AutoSaveRamPath(loader.Game)))
+						else if (Config.AutosaveSaveRAM && File.Exists(Config.PathEntries.SaveRamAbsolutePath(loader.Game, movieIsActive)))
 						{
 							AddOnScreenMessage("AutoSaveRAM found, but SaveRAM was not saved");
 						}
@@ -3843,7 +3846,7 @@ namespace BizHawk.Client.EmuHawk
 			GameIsClosing = true;
 			if (clearSram)
 			{
-				var path = PathManager.SaveRamPath(Game);
+				var path = Config.PathEntries.SaveRamAbsolutePath(Game, MovieSession.Movie.IsActive());
 				if (File.Exists(path))
 				{
 					File.Delete(path);
