@@ -100,33 +100,6 @@ namespace BizHawk.Client.Common
 			return Path.Combine(filesystemDir, filesystemSafeName);
 		}
 
-		/// <summary>
-		/// Takes an absolute path and attempts to convert it to a relative, based on the system, 
-		/// or global base if no system is supplied, if it is not a subfolder of the base, it will return the path unaltered
-		/// </summary>
-		public static string TryMakeRelative(string absolutePath, string system = null)
-		{
-			var parentPath = string.IsNullOrWhiteSpace(system)
-				? Global.Config.PathEntries.GlobalBaseAbsolutePath()
-				: Global.Config.PathEntries.AbsolutePathFor(Global.Config.PathEntries.BaseFor(system), system);
-#if true
-			if (!IsSubfolder(parentPath, absolutePath)) return absolutePath;
-
-			return OSTailoredCode.IsUnixHost
-				? "./" + OSTailoredCode.SimpleSubshell("realpath", $"--relative-to=\"{parentPath}\" \"{absolutePath}\"", $"invalid path {absolutePath} or missing realpath binary")
-				: absolutePath.Replace(parentPath, ".");
-#else // written for Unix port but may be useful for .NET Core
-			if (!IsSubfolder(parentPath, absolutePath))
-			{
-				return OSTailoredCode.IsUnixHost && parentPath.TrimEnd('.') == $"{absolutePath}/" ? "." : absolutePath;
-			}
-
-			return OSTailoredCode.IsUnixHost
-				? absolutePath.Replace(parentPath.TrimEnd('.'), "./")
-				: absolutePath.Replace(parentPath, ".");
-#endif
-		}
-
 		public static string MakeRelativeTo(string absolutePath, string basePath)
 		{
 			if (IsSubfolder(basePath, absolutePath))

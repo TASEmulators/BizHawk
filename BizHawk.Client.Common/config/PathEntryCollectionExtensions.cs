@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -304,6 +305,33 @@ namespace BizHawk.Client.Common
 		public static string PalettesAbsolutePathFor(this PathEntryCollection collection, string systemId)
 		{
 			return collection.AbsolutePathFor(collection[systemId, "Palettes"].Path, systemId);
+		}
+
+		/// <summary>
+		/// Takes an absolute path and attempts to convert it to a relative, based on the system,
+		/// or global base if no system is supplied, if it is not a subfolder of the base, it will return the path unaltered
+		/// </summary>
+		public static string TryMakeRelative(this PathEntryCollection collection, string absolutePath, string system = null)
+		{
+			var parentPath = string.IsNullOrWhiteSpace(system)
+				? collection.GlobalBaseAbsolutePath()
+				: collection.AbsolutePathFor(collection.BaseFor(system), system);
+#if true
+			if (!PathManager.IsSubfolder(parentPath, absolutePath)) return absolutePath;
+
+			return OSTailoredCode.IsUnixHost
+				? "./" + OSTailoredCode.SimpleSubshell("realpath", $"--relative-to=\"{parentPath}\" \"{absolutePath}\"", $"invalid path {absolutePath} or missing realpath binary")
+				: absolutePath.Replace(parentPath, ".");
+#else // written for Unix port but may be useful for .NET Core
+			if (!IsSubfolder(parentPath, absolutePath))
+			{
+				return OSTailoredCode.IsUnixHost && parentPath.TrimEnd('.') == $"{absolutePath}/" ? "." : absolutePath;
+			}
+
+			return OSTailoredCode.IsUnixHost
+				? absolutePath.Replace(parentPath.TrimEnd('.'), "./")
+				: absolutePath.Replace(parentPath, ".");
+#endif
 		}
 
 		private static string ResolveToolsPath(this PathEntryCollection collection, string subPath)

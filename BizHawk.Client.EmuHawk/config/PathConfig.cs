@@ -241,7 +241,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			if (result.IsOk())
 			{
-				box.Text = PathManager.TryMakeRelative(selectedPath, system);
+				box.Text = _config.PathEntries.TryMakeRelative(selectedPath, system);
 			}
 		}
 

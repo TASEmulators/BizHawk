@@ -243,7 +243,7 @@ namespace BizHawk.Client.EmuHawk
 				_watches.Clear();
 				foreach (var item in LuaImp.ScriptList.Where(s => !s.IsSeparator))
 				{
-					var processedPath = PathManager.TryMakeRelative(item.Path);
+					var processedPath = Config.PathEntries.TryMakeRelative(item.Path);
 					string pathToLoad = ProcessPath(processedPath);
 
 					CreateFileWatcher(pathToLoad);
@@ -281,7 +281,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadLuaFile(string path)
 		{
-			var processedPath = PathManager.TryMakeRelative(path);
+			var processedPath = Config.PathEntries.TryMakeRelative(path);
 
 			var alreadyInSession = LuaImp.ScriptList.Any(t => processedPath == t.Path);
 			if (alreadyInSession)
