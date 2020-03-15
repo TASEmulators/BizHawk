@@ -58,65 +58,9 @@ namespace BizHawk.Client.Common
 
 		public static string MakeAbsolutePath(string path, string system)
 		{
-			//warning: supposedly Path.GetFullPath accesses directories (and needs permissions)
-			//if this poses a problem, we need to paste code from .net or mono sources and fix them to not pose problems, rather than homebrew stuff
-			return Path.GetFullPath(MakeAbsolutePathInner(path, system));
-		}
-
-		private static string MakeAbsolutePathInner(string path, string system)
-		{
-			// Hack
-			if (system == "Global")
-			{
-				system = null;
-			}
-
-			// This function translates relative path and special identifiers in absolute paths
-			if (path.Length < 1)
-			{
-				return Global.Config.PathEntries.GlobalBaseAsAbsolute();
-			}
-
-			if (path == "%recent%")
-			{
-				return Environment.SpecialFolder.Recent.ToString();
-			}
-
-			if (path.StartsWith("%exe%"))
-				return GetExeDirectoryAbsolute() + path.Substring(5);
-			if (path.StartsWith("%rom%"))
-				return Global.Config.LastRomPath + path.Substring(5);
-
-			if (path[0] == '.')
-			{
-				if (!string.IsNullOrWhiteSpace(system))
-				{
-					path = path.Remove(0, 1);
-					path = path.Insert(0, Global.Config.PathEntries.BaseFor(system));
-				}
-
-				if (path.Length == 1)
-				{
-					return Global.Config.PathEntries.GlobalBaseAsAbsolute();
-				}
-
-				if (path[0] == '.')
-				{
-					path = path.Remove(0, 1);
-					path = path.Insert(0, Global.Config.PathEntries.GlobalBaseAsAbsolute());
-				}
-
-				return path;
-			}
-
-			if (Path.IsPathRooted(path))
-				return path;
-
-			//handling of initial .. was removed (Path.GetFullPath can handle it)
-			//handling of file:// or file:\\ was removed  (can Path.GetFullPath handle it? not sure)
-
-			// all bad paths default to EXE
-			return GetExeDirectoryAbsolute();
+			// warning: supposedly Path.GetFullPath accesses directories (and needs permissions)
+			// if this poses a problem, we need to paste code from .net or mono sources and fix them to not pose problems, rather than homebrew stuff
+			return Path.GetFullPath(Global.Config.PathEntries.AbsolutePathFor(path, system));
 		}
 
 		public static string GetLuaPath()

@@ -457,5 +457,75 @@ namespace BizHawk.Client.Common
 				?? collection[systemId, "Base"])
 				?? collection["Global", "Base"];
 		}
+
+		/// <summary>
+		/// Returns an absolute path for the given relative path.
+		/// If provided, the systemId will be used to generate the path.
+		/// Wildcards are supported.
+		/// Logic will fallback until an absolute path is found,
+		/// using Global Base as a last resort
+		/// </summary>
+		public static string AbsolutePathFor(this PathEntryCollection collection,  string path, string systemId)
+		{
+			// Hack
+			if (systemId == "Global")
+			{
+				systemId = null;
+			}
+
+			// This function translates relative path and special identifiers in absolute paths
+			if (path.Length < 1)
+			{
+				return collection.GlobalBaseAsAbsolute();
+			}
+
+			if (path == "%recent%")
+			{
+				return Environment.SpecialFolder.Recent.ToString();
+			}
+
+			if (path.StartsWith("%exe%"))
+			{
+				return PathManager.GetExeDirectoryAbsolute() + path.Substring(5);
+			}
+
+			if (path.StartsWith("%rom%"))
+			{
+				return Global.Config.LastRomPath + path.Substring(5);
+			}
+
+			if (path[0] == '.')
+			{
+				if (!string.IsNullOrWhiteSpace(systemId))
+				{
+					path = path.Remove(0, 1);
+					path = path.Insert(0, collection.BaseFor(systemId));
+				}
+
+				if (path.Length == 1)
+				{
+					return collection.GlobalBaseAsAbsolute();
+				}
+
+				if (path[0] == '.')
+				{
+					path = path.Remove(0, 1);
+					path = path.Insert(0, collection.GlobalBaseAsAbsolute());
+				}
+
+				return path;
+			}
+
+			if (Path.IsPathRooted(path))
+			{
+				return path;
+			}
+
+			//handling of initial .. was removed (Path.GetFullPath can handle it)
+			//handling of file:// or file:\\ was removed  (can Path.GetFullPath handle it? not sure)
+
+			// all bad paths default to EXE
+			return PathManager.GetExeDirectoryAbsolute();
+		}
 	}
 }
