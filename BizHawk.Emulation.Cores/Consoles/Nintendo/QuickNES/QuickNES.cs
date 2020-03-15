@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		}
 
 		[CoreConstructor("NES")]
-		public QuickNES(CoreComm comm, byte[] file, object settings, object syncSettings)
+		public QuickNES(byte[] file, object settings, object syncSettings)
 		{
 			FP = OSTailoredCode.IsUnixHost
 				? (IFPCtrl) new Unix_FPCtrl()
@@ -39,8 +39,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			using (FP.Save())
 			{
 				ServiceProvider = new BasicServiceProvider(this);
-				CoreComm = comm;
-
 				Context = QN.qn_new();
 				if (Context == IntPtr.Zero)
 				{
@@ -245,8 +243,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			IsLagFrame = false;
 			LagCount = 0;
 		}
-
-		public CoreComm CoreComm { get; }
 
 		#region bootgod
 

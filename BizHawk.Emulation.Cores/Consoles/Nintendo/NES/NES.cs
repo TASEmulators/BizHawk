@@ -34,7 +34,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			SyncSettings = (NESSyncSettings)syncSettings ?? new NESSyncSettings();
 			ControllerSettings = SyncSettings.Controls;
-			CoreComm = comm;
 
 			BootGodDB.Initialize();
 			videoProvider = new MyVideoProvider(this);
@@ -122,8 +121,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public bool IsVS => _isVS;
 
 		public bool IsFDS => Board is FDS;
-
-		public CoreComm CoreComm { get; }
 
 		public DisplayType Region => _display_type;
 
