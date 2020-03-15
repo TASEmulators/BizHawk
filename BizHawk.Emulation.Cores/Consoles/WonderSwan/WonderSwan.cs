@@ -12,10 +12,9 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		IInputPollable, IDebuggable
 	{
 		[CoreConstructor("WSWAN")]
-		public WonderSwan(CoreComm comm, byte[] file, bool deterministic, object settings, object syncSettings)
+		public WonderSwan(byte[] file, bool deterministic, object settings, object syncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
-			CoreComm = comm;
 			_settings = (Settings)settings ?? new Settings();
 			_syncSettings = (SyncSettings)syncSettings ?? new SyncSettings();
 			
@@ -82,8 +81,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 			return true;
 		}
-
-		public CoreComm CoreComm { get; }
 
 		public void ResetCounters()
 		{

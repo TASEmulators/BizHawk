@@ -54,7 +54,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		{
 			RomDetails = romDetails;
 			ConnectTracer();
-			CoreComm = comm;
 			DriveLightEnabled = true;
 
 			_Settings = (Settings)settings ?? new Settings();
@@ -327,7 +326,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		private int[] frameBuffer = new int[0];
 		private Random rand = new Random();
-		public CoreComm CoreComm { get; private set; }
 
 		//we can only have one active core at a time, due to the lib being so static.
 		//so we'll track the current one here and detach the previous one whenever a new one is booted up.
