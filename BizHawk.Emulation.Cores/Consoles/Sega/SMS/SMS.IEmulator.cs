@@ -170,8 +170,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			_isLag = false;
 		}
 
-		public CoreComm CoreComm { get; }
-
 		public void Dispose()
 		{
 			if (blip_L != null)

@@ -287,6 +287,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		}
 
+		private CoreComm CoreComm { get; }
+
 		void CDRead(int lba, IntPtr dest, bool audio)
 		{
 			if ((uint)_discIndex < _cds.Length)

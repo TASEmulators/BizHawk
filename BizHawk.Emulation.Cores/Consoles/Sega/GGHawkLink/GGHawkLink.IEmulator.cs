@@ -284,8 +284,6 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			_isLag = false;
 		}
 
-		public CoreComm CoreComm { get; }
-
 		public void Dispose()
 		{
 			L.Dispose();
@@ -381,11 +379,6 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 		{
 			L.DiscardSamples();
 			R.DiscardSamples();
-		}
-
-		private void GetSamples(short[] samples)
-		{
-
 		}
 
 		public void DisposeSound()

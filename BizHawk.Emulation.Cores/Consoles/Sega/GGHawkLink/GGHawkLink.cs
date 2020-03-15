@@ -32,8 +32,6 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			linkSyncSettings = (GGLinkSyncSettings)syncSettings ?? new GGLinkSyncSettings();
 			_controllerDeck = new GGHawkLinkControllerDeck(GGHawkLinkControllerDeck.DefaultControllerName, GGHawkLinkControllerDeck.DefaultControllerName);
 
-			CoreComm = comm;
-
 			var temp_set_L = new SMS.SmsSettings();
 			var temp_set_R = new SMS.SmsSettings();
 
