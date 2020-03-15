@@ -24,6 +24,8 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public static int SoundMaxBufferDeficitMs { get; set; }
 
+		public static InputManager InputManager { get; } = new InputManager();
+
 		// the movie will be spliced in between these if it is present
 		public static CopyControllerAdapter MovieInputSourceAdapter { get;  } = new CopyControllerAdapter();
 		public static CopyControllerAdapter MovieOutputHardpoint { get; } = new CopyControllerAdapter();

@@ -457,7 +457,7 @@ namespace BizHawk.Client.Common
 
 			// Note: this populates MovieControllerAdapter's Type with the appropriate controller
 			// Don't set it to a movie instance of the adapter or you will lose the definition!
-			InputManager.RewireInputChain();
+			Global.InputManager.RewireInputChain();
 
 			if (!record && emulator.SystemId == "NES") // For NES we need special logic since the movie will drive which core to load
 			{

@@ -815,6 +815,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private InputManager InputManager => Global.InputManager;
+
 		private IVideoProvider _currentVideoProvider = NullVideo.Instance;
 
 		private ISoundProvider _currentSoundProvider = new NullSound(44100 / 60); // Reasonable default until we have a core instance

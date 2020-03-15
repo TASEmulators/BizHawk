@@ -5,9 +5,9 @@ using BizHawk.Client.Common.InputAdapterExtensions;
 
 namespace BizHawk.Client.Common
 {
-	public static class InputManager
+	public class InputManager
 	{
-		public static void RewireInputChain()
+		public void RewireInputChain()
 		{
 			Global.ControllerInputCoalescer.Clear();
 			Global.ControllerInputCoalescer.Definition = Global.ActiveController.Definition;
@@ -35,7 +35,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public static void SyncControls(IEmulator emulator, Config config)
+		public void SyncControls(IEmulator emulator, Config config)
 		{
 			var def = emulator.ControllerDefinition;
 
