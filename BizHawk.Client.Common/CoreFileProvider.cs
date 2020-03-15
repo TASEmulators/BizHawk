@@ -19,11 +19,13 @@ namespace BizHawk.Client.Common
 		public string DllPath()
 			=> Path.Combine(PathManager.GetExeDirectoryAbsolute(), "dll");
 
+		// Poop
 		public string GetRetroSaveRAMDirectory(GameInfo game)
-			=> PathManager.RetroSaveRAMDirectory(game);
+			=> Global.Config.PathEntries.RetroSaveRamAbsolutePath(game, Global.MovieSession.Movie.IsActive(), Global.MovieSession.Movie.Filename);
 
+		// Poop
 		public string GetRetroSystemPath(GameInfo game)
-			=> PathManager.RetroSystemPath(game);
+			=> Global.Config.PathEntries.RetroSystemAbsolutePath(game);
 
 		private void FirmwareWarn(string sysID, string firmwareID, bool required, string msg = null)
 		{
