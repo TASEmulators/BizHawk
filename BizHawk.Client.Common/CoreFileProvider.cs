@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -16,8 +16,7 @@ namespace BizHawk.Client.Common
 			_firmwareManager = firmwareManager;
 		}
 
-		public string DllPath()
-			=> Path.Combine(PathManager.GetExeDirectoryAbsolute(), "dll");
+		public string DllPath() => PathUtils.GetDllDirectory();
 
 		// Poop
 		public string GetRetroSaveRAMDirectory(GameInfo game)

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 
 using BizHawk.Common;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Libretro;
@@ -1081,7 +1082,7 @@ namespace BizHawk.Client.Common
 							}
 							break;
 						case "A78":
-							var gameDbPath = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb_a7800.csv");
+							var gameDbPath = Path.Combine(PathUtils.GetExeDirectoryAbsolute(), "gamedb", "gamedb_a7800.csv");
 							nextEmulator = new A7800Hawk(nextComm, game, rom.RomData, gameDbPath, GetCoreSettings<A7800Hawk>(), GetCoreSyncSettings<A7800Hawk>());
 							break;
 						case "C64":

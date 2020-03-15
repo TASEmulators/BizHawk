@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.IO;
+using System.Reflection;
 
 namespace BizHawk.Common.PathExtensions
 {
@@ -93,6 +94,38 @@ namespace BizHawk.Common.PathExtensions
 			}
 
 			return Path.Combine(filesystemDir, filesystemSafeName);
+		}
+
+		
+		// TODO: this always makes an absolute path!
+		// Needs to be fixed, the intent was to turn an absolute path
+		// into one relative to the exe
+		// for instance: C:\BizHawk\Lua becomes .\Lua (if EmuHawk.Exe is in C:\BizHawk)
+		/// <summary>
+		/// Makes a path relative to the %exe% directory
+		/// </summary>
+		public static string MakeProgramRelativePath(this string path)
+		{
+			return Path.Combine(PathUtils.GetExeDirectoryAbsolute(), path);
+		}
+	}
+
+	public static class PathUtils
+	{
+		public static string GetExeDirectoryAbsolute()
+		{
+			var path = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+			if (path.EndsWith(Path.DirectorySeparatorChar.ToString()))
+			{
+				path = path.Remove(path.Length - 1, 1);
+			}
+
+			return path;
+		}
+
+		public static string GetDllDirectory()
+		{
+			return Path.Combine(GetExeDirectoryAbsolute(), "dll");
 		}
 	}
 }

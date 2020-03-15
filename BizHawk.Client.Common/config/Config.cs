@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using BizHawk.Common;
+using BizHawk.Common.PathExtensions;
 
 namespace BizHawk.Client.Common
 {
 	public class Config
 	{
-		public static string ControlDefaultPath => Path.Combine(PathManager.GetExeDirectoryAbsolute(), "defctrl.json");
+		public static string ControlDefaultPath => Path.Combine(PathUtils.GetExeDirectoryAbsolute(), "defctrl.json");
 
 		public Config()
 		{

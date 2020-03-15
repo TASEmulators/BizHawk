@@ -856,7 +856,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					string pathToLoad = Path.IsPathRooted(item.Path)
 					? item.Path
-					: PathManager.MakeProgramRelativePath(item.Path);
+					: item.Path.MakeProgramRelativePath();
 
 					LuaImp.SpawnAndSetFileThread(pathToLoad, item);
 					LuaSandbox.CreateSandbox(item.Thread, Path.GetDirectoryName(pathToLoad));
@@ -900,7 +900,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return Path.IsPathRooted(path)
 				? path
-				: PathManager.MakeProgramRelativePath(path);
+				: path.MakeProgramRelativePath();
 		}
 
 		private void EditScriptMenuItem_Click(object sender, EventArgs e)

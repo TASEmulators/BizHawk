@@ -234,8 +234,8 @@ namespace BizHawk.Client.EmuHawk
 			// we could background thread this later instead if we wanted to be real clever
 			NES.BootGodDB.GetDatabaseBytes = () =>
 			{
-				string xmlPath = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "NesCarts.xml");
-				string x7zPath = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "NesCarts.7z");
+				string xmlPath = Path.Combine(PathUtils.GetExeDirectoryAbsolute(), "gamedb", "NesCarts.xml");
+				string x7zPath = Path.Combine(PathUtils.GetExeDirectoryAbsolute(), "gamedb", "NesCarts.7z");
 				bool loadXml = File.Exists(xmlPath);
 				using var nesCartFile = new HawkFile(loadXml ? xmlPath : x7zPath);
 				if (!loadXml)
@@ -256,11 +256,11 @@ namespace BizHawk.Client.EmuHawk
 				MessageBox.Show(e.Message);
 			}
 
-			Database.LoadDatabase(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb.txt"));
+			Database.LoadDatabase(Path.Combine(PathUtils.GetExeDirectoryAbsolute(), "gamedb", "gamedb.txt"));
 
 			// TODO GL - a lot of disorganized wiring-up here
 			// installed separately on Unix (via package manager or from https://developer.nvidia.com/cg-toolkit-download), look in $PATH
-			CGC.CGCBinPath = OSTailoredCode.IsUnixHost ? "cgc" : Path.Combine(PathManager.GetDllDirectory(), "cgc.exe");
+			CGC.CGCBinPath = OSTailoredCode.IsUnixHost ? "cgc" : Path.Combine(PathUtils.GetDllDirectory(), "cgc.exe");
 			PresentationPanel = new PresentationPanel(this, Config, GlobalWin.GL)
 			{
 				GraphicsControl = { MainWindow = true }

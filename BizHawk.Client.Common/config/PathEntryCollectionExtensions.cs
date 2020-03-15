@@ -26,7 +26,7 @@ namespace BizHawk.Client.Common
 			// if %exe% prefixed then substitute exe path and repeat
 			if (globalBase.StartsWith("%exe%", StringComparison.InvariantCultureIgnoreCase))
 			{
-				globalBase = PathManager.GetExeDirectoryAbsolute() + globalBase.Substring(5);
+				globalBase = PathUtils.GetExeDirectoryAbsolute() + globalBase.Substring(5);
 			}
 
 			// rooted paths get returned without change
@@ -37,7 +37,7 @@ namespace BizHawk.Client.Common
 			}
 
 			// not-rooted things are relative to exe path
-			globalBase = Path.Combine(PathManager.GetExeDirectoryAbsolute(), globalBase);
+			globalBase = Path.Combine(PathUtils.GetExeDirectoryAbsolute(), globalBase);
 			return globalBase;
 		}
 
@@ -94,7 +94,7 @@ namespace BizHawk.Client.Common
 
 			if (path.StartsWith("%exe%"))
 			{
-				return PathManager.GetExeDirectoryAbsolute() + path.Substring(5);
+				return PathUtils.GetExeDirectoryAbsolute() + path.Substring(5);
 			}
 
 			if (path.StartsWith("%rom%"))
@@ -133,7 +133,7 @@ namespace BizHawk.Client.Common
 			//handling of file:// or file:\\ was removed  (can Path.GetFullPath handle it? not sure)
 
 			// all bad paths default to EXE
-			return PathManager.GetExeDirectoryAbsolute();
+			return PathUtils.GetExeDirectoryAbsolute();
 		}
 
 		public static string MovieAbsolutePath(this PathEntryCollection collection)
