@@ -781,7 +781,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				InitialDirectory = !string.IsNullOrWhiteSpace(LuaImp.ScriptList.Filename) ?
 					Path.GetDirectoryName(LuaImp.ScriptList.Filename) :
-					Config.PathEntries.AbsolutePathFor(Config.PathEntries.LuaPathFragment, null), // TODO: use Lua specific extension
+					Config.PathEntries.LuaAbsolutePath(),
 				DefaultExt = ".lua",
 				FileName = !string.IsNullOrWhiteSpace(LuaImp.ScriptList.Filename) ?
 					Path.GetFileNameWithoutExtension(LuaImp.ScriptList.Filename) :

@@ -111,7 +111,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private static string ResolveToolsPath(string subPath)
+		internal static string ResolveToolsPath(string subPath)
 		{
 			if (Path.IsPathRooted(subPath) || subPath.StartsWith("%"))
 			{
@@ -129,33 +129,9 @@ namespace BizHawk.Client.Common
 			return Path.Combine(toolsPath, subPath);
 		}
 
-		// Some frequently requested paths, made into a property for convenience
-		public string TastudioStatesPathFragment => Global.Config.PathEntries["Global", "TAStudio states"].Path;
-
-		public string ToolsPathFragment => Global.Config.PathEntries["Global", "Tools"].Path;
-
-		public string WatchPathFragment => ResolveToolsPath(Global.Config.PathEntries["Global", "Watch (.wch)"].Path);
-
-		public string MultiDiskBundlesFragment => ResolveToolsPath(Global.Config.PathEntries["Global", "Multi-Disk Bundles"].Path);
-
-		public string LogPathFragment => ResolveToolsPath(Global.Config.PathEntries["Global", "Debug Logs"].Path);
-
-		public string MoviesPathFragment => Global.Config.PathEntries["Global", "Movies"].Path;
-
-		public string MoviesBackupsPathFragment => Global.Config.PathEntries["Global", "Movie backups"].Path;
-
-		public string LuaPathFragment => Global.Config.PathEntries["Global", "Lua"].Path;
-
 		public string FirmwaresPathFragment => Global.Config.PathEntries["Global", "Firmware"].Path;
 
-		public string AvPathFragment => Global.Config.PathEntries["Global", "A/V Dumps"].Path;
-
-		public string GlobalRomFragment => Global.Config.PathEntries["Global", "ROM"].Path;
-
-		public string TempFilesFragment => Global.Config.PathEntries["Global", "Temp Files"].Path;
-
-		// this one is special
-		public string GlobalBaseFragment => Global.Config.PathEntries["Global", "Base"].Path;
+		internal string TempFilesFragment => Global.Config.PathEntries["Global", "Temp Files"].Path;
 
 		public static List<PathEntry> DefaultValues => new List<PathEntry>
 		{
@@ -428,7 +404,7 @@ namespace BizHawk.Client.Common
 
 		public static string GlobalBaseAsAbsolute(this PathEntryCollection collection)
 		{
-			var globalBase = collection.GlobalBaseFragment;
+			var globalBase = collection["Global", "Base"].Path;
 
 			// if %exe% prefixed then substitute exe path and repeat
 			if (globalBase.StartsWith("%exe%", StringComparison.InvariantCultureIgnoreCase))
@@ -539,22 +515,26 @@ namespace BizHawk.Client.Common
 
 		public static string MovieAbsolutePath(this PathEntryCollection collection)
 		{
-			return collection.AbsolutePathFor(collection.MoviesPathFragment, null);
+			var path = collection["Global", "Movies"].Path;
+			return collection.AbsolutePathFor(path, null);
 		}
 
 		public static string MovieBackupsAbsolutePath(this PathEntryCollection collection)
 		{
-			return collection.AbsolutePathFor(collection.MoviesBackupsPathFragment, null);
+			var path = collection["Global", "Movie backups"].Path;
+			return collection.AbsolutePathFor(path, null);
 		}
 
 		public static string AvAbsolutePath(this PathEntryCollection collection)
 		{
-			return collection.AbsolutePathFor(collection.AvPathFragment, null);
+			var path = collection["Global", "A/V Dumps"].Path;
+			return collection.AbsolutePathFor(path, null);
 		}
 
 		public static string LuaAbsolutePath(this PathEntryCollection collection)
 		{
-			return collection.AbsolutePathFor(collection.LuaPathFragment, null);
+			var path = collection["Global", "Lua"].Path;
+			return collection.AbsolutePathFor(path, null);
 		}
 
 		public static string FirmwareAbsolutePath(this PathEntryCollection collection)
@@ -564,27 +544,32 @@ namespace BizHawk.Client.Common
 
 		public static string LogAbsolutePath(this PathEntryCollection collection)
 		{
-			return collection.AbsolutePathFor(collection.LogPathFragment, null);
+			var path = PathEntryCollection.ResolveToolsPath(collection["Global", "Debug Logs"].Path);
+			return collection.AbsolutePathFor(path, null);
 		}
 
 		public static string WatchAbsolutePath(this PathEntryCollection collection)
 		{
-			return collection.AbsolutePathFor(collection.WatchPathFragment, null);
+			var path = 	PathEntryCollection.ResolveToolsPath(collection["Global", "Watch (.wch)"].Path);
+			return collection.AbsolutePathFor(path, null);
 		}
 
 		public static string ToolsAbsolutePath(this PathEntryCollection collection)
 		{
-			return collection.AbsolutePathFor(collection.ToolsPathFragment, null);
+			var path = collection["Global", "Tools"].Path;
+			return collection.AbsolutePathFor(path, null);
 		}
 
 		public static string TastudioStatesAbsolutePath(this PathEntryCollection collection)
 		{
-			return collection.AbsolutePathFor(collection.TastudioStatesPathFragment, null);
+			var path = collection["Global", "TAStudio states"].Path;
+			return collection.AbsolutePathFor(path, null);
 		}
 
 		public static string MultiDiskAbsolutePath(this PathEntryCollection collection)
 		{
-			return collection.AbsolutePathFor(collection.MultiDiskBundlesFragment, null);
+			var path = PathEntryCollection.ResolveToolsPath(collection["Global", "Multi-Disk Bundles"].Path);
+			return collection.AbsolutePathFor(path, null);
 		}
 
 		public static string RomAbsolutePath(this PathEntryCollection collection)
