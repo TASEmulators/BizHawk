@@ -111,24 +111,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		internal static string ResolveToolsPath(string subPath)
-		{
-			if (Path.IsPathRooted(subPath) || subPath.StartsWith("%"))
-			{
-				return subPath;
-			}
-
-			var toolsPath = Global.Config.PathEntries["Global", "Tools"].Path;
-
-			// Hack for backwards compatibility, prior to 1.11.5, .wch files were in .\Tools, we don't want that to turn into .Tools\Tools
-			if (subPath == "Tools")
-			{
-				return toolsPath;
-			}
-
-			return Path.Combine(toolsPath, subPath);
-		}
-
 		public string FirmwaresPathFragment => Global.Config.PathEntries["Global", "Firmware"].Path;
 
 		internal string TempFilesFragment => Global.Config.PathEntries["Global", "Temp Files"].Path;
@@ -544,13 +526,13 @@ namespace BizHawk.Client.Common
 
 		public static string LogAbsolutePath(this PathEntryCollection collection)
 		{
-			var path = PathEntryCollection.ResolveToolsPath(collection["Global", "Debug Logs"].Path);
+			var path = collection.ResolveToolsPath(collection["Global", "Debug Logs"].Path);
 			return collection.AbsolutePathFor(path, null);
 		}
 
 		public static string WatchAbsolutePath(this PathEntryCollection collection)
 		{
-			var path = 	PathEntryCollection.ResolveToolsPath(collection["Global", "Watch (.wch)"].Path);
+			var path = 	collection.ResolveToolsPath(collection["Global", "Watch (.wch)"].Path);
 			return collection.AbsolutePathFor(path, null);
 		}
 
@@ -568,7 +550,7 @@ namespace BizHawk.Client.Common
 
 		public static string MultiDiskAbsolutePath(this PathEntryCollection collection)
 		{
-			var path = PathEntryCollection.ResolveToolsPath(collection["Global", "Multi-Disk Bundles"].Path);
+			var path = collection.ResolveToolsPath(collection["Global", "Multi-Disk Bundles"].Path);
 			return collection.AbsolutePathFor(path, null);
 		}
 
@@ -585,6 +567,24 @@ namespace BizHawk.Client.Common
 		public static string PalettesAbsolutePathFor(this PathEntryCollection collection, string system)
 		{
 			return collection.AbsolutePathFor(collection[system, "Palettes"].Path, system);
+		}
+
+		private static string ResolveToolsPath(this PathEntryCollection collection, string subPath)
+		{
+			if (Path.IsPathRooted(subPath) || subPath.StartsWith("%"))
+			{
+				return subPath;
+			}
+
+			var toolsPath = collection["Global", "Tools"].Path;
+
+			// Hack for backwards compatibility, prior to 1.11.5, .wch files were in .\Tools, we don't want that to turn into .Tools\Tools
+			if (subPath == "Tools")
+			{
+				return toolsPath;
+			}
+
+			return Path.Combine(toolsPath, subPath);
 		}
 	}
 }
