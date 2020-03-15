@@ -183,6 +183,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			RefreshPalette();
 		}
 
+		internal CoreComm CoreComm { get; }
+
 		private readonly string _baseRomPath = "";
 
 		private string PathSubfile(string fname) => Path.Combine(_baseRomPath, fname);

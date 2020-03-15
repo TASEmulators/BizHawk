@@ -20,10 +20,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		IDebuggable, ISettable<PCEngine.PCESettings, PCEngine.PCESyncSettings>, IDriveLight, ICodeDataLogger
 	{
 		[CoreConstructor(new[] { "PCE", "SGX" })]
-		public PCEngine(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
+		public PCEngine(GameInfo game, byte[] rom, object settings, object syncSettings)
 		{
-			CoreComm = comm;
-
 			switch (game.System)
 			{
 				default:
@@ -55,32 +53,31 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public PCEngine(CoreComm comm, GameInfo game, Disc disc, object settings, object syncSettings)
 		{
-			CoreComm = comm;
 			SystemId = "PCECD";
 			Type = NecSystemType.TurboCD;
 			this.disc = disc;
 			Settings = (PCESettings)settings ?? new PCESettings();
 			_syncSettings = (PCESyncSettings)syncSettings ?? new PCESyncSettings();
 
-			byte[] rom = CoreComm.CoreFileProvider.GetFirmwareWithGameInfo("PCECD", "Bios", true, out var biosInfo,
+			byte[] rom = comm.CoreFileProvider.GetFirmwareWithGameInfo("PCECD", "Bios", true, out var biosInfo,
 				"PCE-CD System Card not found. Please check the BIOS settings in Config->Firmwares.");
 
 			if (biosInfo.Status == RomStatus.BadDump)
 			{
-				CoreComm.ShowMessage(
+				comm.ShowMessage(
 					"The PCE-CD System Card you have selected is known to be a bad dump. This may cause problems playing PCE-CD games.\n\n"
 					+ "It is recommended that you find a good dump of the system card. Sorry to be the bearer of bad news!");
 			}
 			else if (biosInfo.NotInDatabase)
 			{
-				CoreComm.ShowMessage(
+				comm.ShowMessage(
 					"The PCE-CD System Card you have selected is not recognized in our database. That might mean it's a bad dump, or isn't the correct rom.");
 			}
 			else if (biosInfo["BIOS"] == false)
 			{
 				// zeromus says: someone please write a note about how this could possibly happen.
 				// it seems like this is a relic of using gameDB for storing whether something is a bios? firmwareDB should be handling it now.
-				CoreComm.ShowMessage(
+				comm.ShowMessage(
 					"The PCE-CD System Card you have selected is not a BIOS image. You may have selected the wrong rom. FYI-Please report this to developers, I don't think this error message should happen.");
 			}
 
@@ -91,7 +88,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 			if (game["NeedSuperSysCard"] && game["SuperSysCard"] == false)
 			{
-				CoreComm.ShowMessage(
+				comm.ShowMessage(
 					"This game requires a version 3.0 System card and won't run with the system card you've selected. Try selecting a 3.0 System Card in the firmware configuration.");
 				throw new Exception();
 			}
