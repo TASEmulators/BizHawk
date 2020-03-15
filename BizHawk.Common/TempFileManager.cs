@@ -124,7 +124,7 @@ namespace BizHawk.Common
 
 		public static void HelperSetTempPath(string path)
 		{
-			//yes... this is how we're doing it, for now, until it's proven to be troublesome
+			// yes... this is how we're doing it, for now, until it's proven to be troublesome
 			Directory.CreateDirectory(path);
 			Environment.SetEnvironmentVariable("TMP", path);
 			Environment.SetEnvironmentVariable("TEMP", path);

@@ -325,7 +325,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			SaveSettings();
 
-			PathManager.RefreshTempPath();
+			_config.PathEntries.RefreshTempPath();
 			_mainForm.AddOnScreenMessage("Path settings saved");
 			Close();
 		}

@@ -334,6 +334,19 @@ namespace BizHawk.Client.Common
 #endif
 		}
 
+		/// <summary>
+		/// Puts the currently configured temp path into the environment for use as actual temp directory
+		/// </summary>
+		public static void RefreshTempPath(this PathEntryCollection collection)
+		{
+			if (!string.IsNullOrWhiteSpace(collection.TempFilesFragment))
+			{
+				// TODO - BUG - needs to route through PathManager.MakeAbsolutePath or something similar, but how?
+				string target = collection.TempFilesFragment;
+				TempFileManager.HelperSetTempPath(target);
+			}
+		}
+
 		private static string ResolveToolsPath(this PathEntryCollection collection, string subPath)
 		{
 			if (Path.IsPathRooted(subPath) || subPath.StartsWith("%"))

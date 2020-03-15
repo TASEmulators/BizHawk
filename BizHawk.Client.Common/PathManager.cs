@@ -76,9 +76,9 @@ namespace BizHawk.Client.Common
 		{
 			var filesystemSafeName = game.Name
 				.Replace("|", "+")
-				.Replace(":", " -") // adelikat - Path.GetFileName scraps everything to the left of a colon unfortunately, so we need this hack here
-				.Replace("\"", "")  // adelikat - Ivan Ironman Stewart's Super Off-Road has quotes in game name
-				.Replace("/", "+"); // Narry - Mario Bros / Duck hunt has a slash in the name which GetDirectoryName and GetFileName treat as if it were a folder
+				.Replace(":", " -") // Path.GetFileName scraps everything to the left of a colon unfortunately, so we need this hack here
+				.Replace("\"", "")  // Ivan IronMan Stewart's Super Off-Road has quotes in game name
+				.Replace("/", "+"); // Mario Bros / Duck hunt has a slash in the name which GetDirectoryName and GetFileName treat as if it were a folder
 
 			// zero 06-nov-2015 - regarding the below, i changed my mind. for libretro i want subdirectories here.
 			var filesystemDir = Path.GetDirectoryName(filesystemSafeName);
@@ -87,7 +87,7 @@ namespace BizHawk.Client.Common
 			filesystemSafeName = RemoveInvalidFileSystemChars(filesystemSafeName);
 
 			// zero 22-jul-2012 - i don't think this is used the same way it used to. game.Name shouldn't be a path, so this stuff is illogical.
-			// if game.Name is a path, then someone shouldve made it not-a-path already.
+			// if game.Name is a path, then someone should have made it not-a-path already.
 			// return Path.Combine(Path.GetDirectoryName(filesystemSafeName), Path.GetFileNameWithoutExtension(filesystemSafeName));
 
 			// adelikat:
@@ -140,19 +140,6 @@ namespace BizHawk.Client.Common
 				if (new Uri(childUri.FullName) == parentUri) return true;
 			}
 			return false;
-		}
-
-		/// <summary>
-		/// Puts the currently configured temp path into the environment for use as actual temp directory
-		/// </summary>
-		public static void RefreshTempPath()
-		{
-			if (Global.Config.PathEntries.TempFilesFragment != "")
-			{
-				//TODO - BUG - needs to route through PathManager.MakeAbsolutePath or something similar, but how?
-				string target = Global.Config.PathEntries.TempFilesFragment;
-				BizHawk.Common.TempFileManager.HelperSetTempPath(target);
-			}
 		}
 	}
 }
