@@ -285,6 +285,14 @@ namespace BizHawk.Client.Common
 			return collection.AbsolutePathFor(pathEntry.Path,systemId);
 		}
 
+		public static string SaveStateAbsolutePath(this PathEntryCollection collection, string systemId)
+		{
+			var pathEntry = collection[systemId, "Savestates"]
+				?? collection[systemId, "Base"];
+
+			return collection.AbsolutePathFor(pathEntry.Path, systemId);
+		}
+
 		public static string ScreenshotAbsolutePathFor(this PathEntryCollection collection, string systemId)
 		{
 			return collection.AbsolutePathFor(collection[systemId, "Screenshots"].Path, systemId);

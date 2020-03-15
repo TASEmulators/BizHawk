@@ -4161,7 +4161,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var path = PathManager.GetSaveStatePath(Game);
+			var path = Config.PathEntries.SaveStateAbsolutePath(Game.System);
 
 			var file = new FileInfo(path);
 			if (file.Directory != null && !file.Directory.Exists)
@@ -4205,7 +4205,7 @@ namespace BizHawk.Client.EmuHawk
 
 			using var ofd = new OpenFileDialog
 			{
-				InitialDirectory = PathManager.GetSaveStatePath(Game),
+				InitialDirectory = Config.PathEntries.SaveStateAbsolutePath(Game.System),
 				Filter = new FilesystemFilterSet(FilesystemFilter.EmuHawkSaveStates).ToString(),
 				RestoreDirectory = true
 			};

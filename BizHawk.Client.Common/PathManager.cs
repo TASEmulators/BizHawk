@@ -102,14 +102,6 @@ namespace BizHawk.Client.Common
 			return Path.Combine(filesystemDir, filesystemSafeName);
 		}
 
-		public static string GetSaveStatePath(GameInfo game)
-		{
-			var pathEntry = Global.Config.PathEntries[game.System, "Savestates"] ??
-							Global.Config.PathEntries[game.System, "Base"];
-
-			return Global.Config.PathEntries.AbsolutePathFor(pathEntry.Path, game.System);
-		}
-
 		public static string SaveStatePrefix(GameInfo game)
 		{
 			var name = FilesystemSafeName(game);
