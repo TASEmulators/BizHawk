@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using BizHawk.Common;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -208,11 +209,11 @@ namespace BizHawk.Client.Common
 
 			var path = collection[systemId, "ROM"];
 
-			if (path == null || !PathManager.PathIsSet(path.Path))
+			if (!path.Path.PathIsSet())
 			{
 				path = collection["Global", "ROM"];
 
-				if (path != null && PathManager.PathIsSet(path.Path))
+				if (path.Path.PathIsSet())
 				{
 					return collection.AbsolutePathFor(path.Path, null);
 				}
@@ -223,7 +224,7 @@ namespace BizHawk.Client.Common
 
 		public static string SaveRamAbsolutePath(this PathEntryCollection collection, GameInfo game, bool movieIsActive)
 		{
-			var name = PathManager.FilesystemSafeName(game);
+			var name = game.Name.FilesystemSafeName();
 			if (movieIsActive)
 			{
 				name += $".{Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename)}";
@@ -238,11 +239,11 @@ namespace BizHawk.Client.Common
 		// Shenanigans
 		public static string RetroSaveRamAbsolutePath(this PathEntryCollection collection, GameInfo game, bool movieIsActive, string movieFilename)
 		{
-			var name = PathManager.FilesystemSafeName(game);
+			var name = game.Name.FilesystemSafeName();
 			name = Path.GetDirectoryName(name);
 			if (name == "")
 			{
-				name = PathManager.FilesystemSafeName(game);
+				name = game.Name.FilesystemSafeName();
 			}
 
 			if (movieIsActive)
@@ -259,11 +260,11 @@ namespace BizHawk.Client.Common
 		// Shenanigans
 		public static string RetroSystemAbsolutePath(this PathEntryCollection collection, GameInfo game)
 		{
-			var name = PathManager.FilesystemSafeName(game);
+			var name = game.Name.FilesystemSafeName();
 			name = Path.GetDirectoryName(name);
 			if (string.IsNullOrEmpty(name))
 			{
-				name = PathManager.FilesystemSafeName(game);
+				name = game.Name.FilesystemSafeName();
 			}
 
 			var pathEntry = collection[game.System, "System"]
@@ -317,7 +318,10 @@ namespace BizHawk.Client.Common
 				? collection.GlobalBaseAbsolutePath()
 				: collection.AbsolutePathFor(collection.BaseFor(system), system);
 #if true
-			if (!PathManager.IsSubfolder(parentPath, absolutePath)) return absolutePath;
+			if (!absolutePath.IsSubfolderOf(parentPath))
+			{
+				return absolutePath;
+			}
 
 			return OSTailoredCode.IsUnixHost
 				? "./" + OSTailoredCode.SimpleSubshell("realpath", $"--relative-to=\"{parentPath}\" \"{absolutePath}\"", $"invalid path {absolutePath} or missing realpath binary")

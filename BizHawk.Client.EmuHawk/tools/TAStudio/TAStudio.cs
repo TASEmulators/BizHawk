@@ -11,6 +11,7 @@ using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.MovieConversionExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 
 namespace BizHawk.Client.EmuHawk
@@ -866,7 +867,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return Path.Combine(
 				Global.Config.PathEntries.MovieAbsolutePath(),
-				$"{PathManager.FilesystemSafeName(Global.Game)}.{TasMovie.Extension}");
+				$"{Global.Game.Name.FilesystemSafeName()}.{TasMovie.Extension}");
 		}
 
 		private void SaveTas()

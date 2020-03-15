@@ -10,6 +10,7 @@ using System.Xml.Linq;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Client.EmuHawk
@@ -239,7 +240,7 @@ namespace BizHawk.Client.EmuHawk
 				filename = NameBox.Text;
 				if (string.IsNullOrWhiteSpace(filename))
 				{
-					filename = Path.ChangeExtension(PathManager.FilesystemSafeName(Global.Game), ".xml");
+					filename = Path.ChangeExtension(Global.Game.Name.FilesystemSafeName(), ".xml");
 				}
 
 				initialDirectory = Path.GetDirectoryName(filename);
@@ -267,7 +268,7 @@ namespace BizHawk.Client.EmuHawk
 			if (OSTailoredCode.IsUnixHost)
 			{
 #if true
-				return PathManager.IsSubfolder(toPath, fromPath)
+				return fromPath.IsSubfolderOf(toPath)
 					? "./" + OSTailoredCode.SimpleSubshell("realpath", $"--relative-to=\"{toPath}\" \"{fromPath}\"", $"invalid path {fromPath} or missing realpath binary")
 					: fromPath;
 #else // written for Unix port but may be useful for .NET Core

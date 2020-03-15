@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Common;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -569,7 +570,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (Global.Game != null)
 			{
-				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
+				sfd.FileName = Global.Game.Name.FilesystemSafeName();
 				sfd.InitialDirectory = Config.PathEntries.LuaAbsolutePath();
 			}
 			else

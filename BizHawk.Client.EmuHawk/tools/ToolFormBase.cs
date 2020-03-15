@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
-using BizHawk.Emulation.Common;
-
 using BizHawk.Client.Common;
-using System.Drawing;
+using BizHawk.Common.PathExtensions;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -26,7 +26,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				FileName = !string.IsNullOrWhiteSpace(currentFile)
 					? Path.GetFileName(currentFile)
-					: $"{PathManager.FilesystemSafeName(Global.Game)}.{fileExt}",
+					: $"{Global.Game.Name.FilesystemSafeName()}.{fileExt}",
 				InitialDirectory = path,
 				Filter = new FilesystemFilterSet(new FilesystemFilter(fileType, new[] { fileExt })).ToString(),
 				RestoreDirectory = true
@@ -52,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				FileName = !string.IsNullOrWhiteSpace(currentFile)
 					? Path.GetFileName(currentFile)
-					: $"{PathManager.FilesystemSafeName(Global.Game)}.{fileExt}",
+					: $"{Global.Game.Name.FilesystemSafeName()}.{fileExt}",
 				InitialDirectory = path,
 				Filter = new FilesystemFilterSet(new FilesystemFilter(fileType, new[] { fileExt })).ToString(),
 				RestoreDirectory = true,

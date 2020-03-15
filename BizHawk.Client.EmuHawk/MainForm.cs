@@ -27,6 +27,7 @@ using BizHawk.Emulation.Cores.Nintendo.GBHawkLink;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.CoreExtensions;
 using BizHawk.Client.ApiHawk;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common.Base_Implementations;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 using BizHawk.Emulation.Cores.Consoles.SNK;
@@ -1045,7 +1046,7 @@ namespace BizHawk.Client.EmuHawk
 		private string ScreenshotPrefix()
 		{
 			var screenPath = Config.PathEntries.ScreenshotAbsolutePathFor(Game.System);
-			var name = PathManager.FilesystemSafeName(Game);
+			var name = Game.Name.FilesystemSafeName();
 			return Path.Combine(screenPath, name);
 		}
 
@@ -3241,7 +3242,7 @@ namespace BizHawk.Client.EmuHawk
 						using var sfd = new SaveFileDialog();
 						if (Game != null)
 						{
-							sfd.FileName = $"{PathManager.FilesystemSafeName(Game)}.{ext}"; // don't use Path.ChangeExtension, it might wreck game names with dots in them
+							sfd.FileName = $"{Game.Name.FilesystemSafeName()}.{ext}"; // don't use Path.ChangeExtension, it might wreck game names with dots in them
 							sfd.InitialDirectory = Config.PathEntries.AvAbsolutePath();
 						}
 						else
@@ -3467,7 +3468,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public string SaveStatePrefix()
 		{
-			var name = PathManager.FilesystemSafeName(Game);
+			var name = Game.Name.FilesystemSafeName();
 
 			// Neshawk and Quicknes have incompatible savestates, store the name to keep them separate
 			if (Emulator.SystemId == "NES")

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using BizHawk.Common.PathExtensions;
 using Newtonsoft.Json;
 
 namespace BizHawk.Client.Common
@@ -47,7 +48,7 @@ namespace BizHawk.Client.Common
 			}
 
 			// we don't have anything for the system in question.  add a set of stock paths
-			var systemPath = $"{PathManager.RemoveInvalidFileSystemChars(system)}_INTERIM";
+			var systemPath = $"{system.RemoveInvalidFileSystemChars()}_INTERIM";
 			var systemDisp = $"{system} (INTERIM)";
 
 			Paths.AddRange(new[]

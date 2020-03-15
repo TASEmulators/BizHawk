@@ -6,6 +6,7 @@ using System.IO;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Common.PathExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -279,7 +280,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return Config.PathEntries.AbsolutePathFor(Path.Combine(
 				Config.PathEntries["Global", "Macros"].Path,
-				PathManager.FilesystemSafeName(Global.Game)), null);
+				Global.Game.Name.FilesystemSafeName()), null);
 		}
 
 		#endregion

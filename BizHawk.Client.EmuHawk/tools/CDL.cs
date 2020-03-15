@@ -6,6 +6,7 @@ using BizHawk.Emulation.Common;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Common.PathExtensions;
 
 // TODO - select which memorydomains go out to the CDL file. will this cause a problem when re-importing it? 
 // perhaps missing domains shouldn't fail a check
@@ -493,7 +494,7 @@ namespace BizHawk.Client.EmuHawk
 				try
 				{
 					_autoloading = true;
-					var autoResumeFile = $"{PathManager.FilesystemSafeName(Global.Game)}.cdl";
+					var autoResumeFile = $"{Global.Game.Name.FilesystemSafeName()}.cdl";
 					var autoResumeDir = Config.PathEntries.LogAbsolutePath();
 					var autoResumePath = Path.Combine(autoResumeDir, autoResumeFile);
 					if (File.Exists(autoResumePath))

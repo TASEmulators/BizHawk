@@ -6,6 +6,7 @@ using System.Linq;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.MovieConversionExtensions;
+using BizHawk.Common.PathExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -197,7 +198,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RecordMovie_Load(object sender, EventArgs e)
 		{
-			RecordBox.Text = PathManager.FilesystemSafeName(_game);
+			RecordBox.Text = _game.Name.FilesystemSafeName();
 			StartFromCombo.SelectedIndex = 0;
 			DefaultAuthorCheckBox.Checked = _config.UseDefaultAuthor;
 			if (_config.UseDefaultAuthor)

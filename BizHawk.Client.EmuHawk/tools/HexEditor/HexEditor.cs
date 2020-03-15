@@ -12,6 +12,7 @@ using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Common.IOExtensions;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
@@ -969,7 +970,7 @@ namespace BizHawk.Client.EmuHawk
 				, FileName =
 					_domain.Name == "File on Disk"
 						? RomName
-						: PathManager.FilesystemSafeName(Global.Game)
+						: Global.Game.Name.FilesystemSafeName()
 			};
 
 			var result = sfd.ShowHawkDialog();
@@ -982,7 +983,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				FileName = _domain.Name == "File on Disk"
 					? $"{Path.GetFileNameWithoutExtension(RomName)}.txt"
-					: PathManager.FilesystemSafeName(Global.Game),
+					: Global.Game.Name.FilesystemSafeName(),
 				Filter = new FilesystemFilterSet(FilesystemFilter.TextFiles).ToString(),
 				InitialDirectory = RomDirectory,
 				RestoreDirectory = true

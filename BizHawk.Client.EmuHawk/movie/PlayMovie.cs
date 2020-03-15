@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -167,7 +168,7 @@ namespace BizHawk.Client.EmuHawk
 			// Pull out matching names
 			for (var i = 0; i < _movieList.Count; i++)
 			{
-				if (PathManager.FilesystemSafeName(_game) == _movieList[i].GameName)
+				if (_game.Name.FilesystemSafeName() == _movieList[i].GameName)
 				{
 					indices.Add(i);
 				}

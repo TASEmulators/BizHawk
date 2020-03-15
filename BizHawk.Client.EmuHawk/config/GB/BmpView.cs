@@ -8,6 +8,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Common.PathExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -102,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 
 			using var sfd = new SaveFileDialog
 			{
-				FileName = $"{PathManager.FilesystemSafeName(Global.Game)}-Palettes",
+				FileName = $"{Global.Game.Name.FilesystemSafeName()}-Palettes",
 				InitialDirectory = path,
 				Filter = FilesystemFilterSet.Screenshots.ToString(),
 				RestoreDirectory = true

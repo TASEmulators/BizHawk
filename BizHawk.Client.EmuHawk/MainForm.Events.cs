@@ -19,6 +19,7 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Emulation.Cores.Computers.AppleII;
 using BizHawk.Client.ApiHawk;
 using BizHawk.Common;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Cores.Atari.A7800Hawk;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
@@ -535,7 +536,7 @@ namespace BizHawk.Client.EmuHawk
 			var filename = MovieSession.Movie.Filename;
 			if (string.IsNullOrWhiteSpace(filename))
 			{
-				filename = PathManager.FilesystemSafeName(Game);
+				filename = Game.Name.FilesystemSafeName();
 			}
 
 			var file = ToolFormBase.SaveFileDialog(
