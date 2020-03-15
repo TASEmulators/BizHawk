@@ -1115,7 +1115,7 @@ namespace BizHawk.Client.Common
 							nextEmulator = new Octoshock(nextComm, null, null, rom.FileData, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>(), "PSX etc.");
 							break;
 						case "Arcade":
-							nextEmulator = new MAME(nextComm, file.Directory, file.CanonicalName, GetCoreSyncSettings<MAME>(), out var gameName);
+							nextEmulator = new MAME(file.Directory, file.CanonicalName, GetCoreSyncSettings<MAME>(), out var gameName);
 							rom.GameInfo.Name = gameName;
 							break;
 						case "GEN":
