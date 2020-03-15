@@ -9,7 +9,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 	public class N64Input
 	{
 		private readonly mupen64plusInputApi _api;
-		public CoreComm CoreComm { get; }
 		public IController Controller { get; set; }
 
 		public bool LastFrameInputPolled { get; set; }
@@ -39,11 +38,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		private readonly IInputPollable _emuCore;
 
-		internal N64Input(IInputPollable emuCore, mupen64plusApi core, CoreComm comm, N64SyncSettings.N64ControllerSettings[] controllerSettings)
+		internal N64Input(IInputPollable emuCore, mupen64plusApi core, N64SyncSettings.N64ControllerSettings[] controllerSettings)
 		{
 			_emuCore = emuCore;
 			_api = new mupen64plusInputApi(core);
-			CoreComm = comm;
 
 			_api.SetM64PInputCallback(GetControllerInput);
 
