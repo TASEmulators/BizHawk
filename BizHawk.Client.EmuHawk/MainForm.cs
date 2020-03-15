@@ -216,7 +216,6 @@ namespace BizHawk.Client.EmuHawk
 
 			_throttle = new Throttle();
 
-			var comm = CreateCoreComm();
 			Emulator = new NullEmulator();
 			GlobalWin.Tools = new ToolManager(this, Config, Emulator);
 			Global.CheatList = new CheatCollection();
@@ -250,7 +249,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				MessageBox.Show(e.Message);
 			}
-
 
 			Database.LoadDatabase(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb.txt"));
 
@@ -318,7 +316,6 @@ namespace BizHawk.Client.EmuHawk
 			Input.Initialize(this);
 			InitControls();
 
-			CoreFileProvider.SyncCoreCommInputSignals(comm);
 			Global.ActiveController = new Controller(NullController.Instance.Definition);
 			Global.AutoFireController = _autofireNullControls;
 			Global.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
@@ -3882,8 +3879,6 @@ namespace BizHawk.Client.EmuHawk
 
 			CheatList.SaveOnClose();
 			Emulator.Dispose();
-			var coreComm = CreateCoreComm();
-			CoreFileProvider.SyncCoreCommInputSignals(coreComm);
 			Emulator = new NullEmulator();
 			ClientApi.UpdateEmulatorAndVP(Emulator);
 			Global.ActiveController = new Controller(NullController.Instance.Definition);
