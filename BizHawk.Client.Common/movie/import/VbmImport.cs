@@ -3,6 +3,7 @@ using System.IO;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Nintendo.GBHawk;
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.Common.movie.import
 {
@@ -276,10 +277,15 @@ namespace BizHawk.Client.Common.movie.import
 			}
 			else
 			{
-				Global.Config.GbUseGbHawk = true;
-				Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(new GBHawk.GBSyncSettings());
-			}
-			
+				if (Global.Config.GbUseGbHawk || Global.Config.UseSubGBHawk)
+				{
+					Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(new GBHawk.GBSyncSettings());
+				}
+				else
+				{
+					Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(new Gameboy.GambatteSyncSettings());
+				}							
+			}			
 		}
 
 		private static SimpleController GbController()
