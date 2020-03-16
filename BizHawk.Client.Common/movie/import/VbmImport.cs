@@ -117,10 +117,13 @@ namespace BizHawk.Client.Common.movie.import
 				Result.Movie.HeaderEntries[HeaderKeys.Core] = mGBAName;
 			}
 
+			// deprecated
+			/*
 			if (isGBC)
 			{
 				platform = "GBC";
 			}
+			*/
 
 			if (isSGB)
 			{
