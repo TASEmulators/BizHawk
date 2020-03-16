@@ -23,6 +23,9 @@
 		<Reference Include="BizHawk.Emulation.DiscSystem"
 			HintPath="$(ProjectDir)../../output/BizHawk.Emulation.DiscSystem.dll"
 			Private="true" />
+		<Reference Include="BizHawk.WinForms.Controls"
+			HintPath="$(ProjectDir)../../output/BizHawk.WinForms.Controls.dll"
+			Private="true" />
 	</ItemGroup>
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<Copy SourceFiles="$(OutputPath)$(MSBuildProjectName).dll" DestinationFolder="$(ProjectDir)../../output/ExternalTools" />
