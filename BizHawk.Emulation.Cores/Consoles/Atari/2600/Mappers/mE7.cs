@@ -54,7 +54,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_ramBank1Toggle = 0;
 			_ram = new byte[2048];
 			_enableRam0 = false;
-			base.HardReset();
 		}
 
 		public override byte[] CartRam => _ram;

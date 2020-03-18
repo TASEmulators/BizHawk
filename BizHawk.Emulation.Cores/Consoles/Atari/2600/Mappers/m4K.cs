@@ -6,6 +6,8 @@
 		{
 		}
 
+		public override void HardReset() { }
+
 		public override byte ReadMemory(ushort addr)
 		{
 			if (addr < 0x1000)

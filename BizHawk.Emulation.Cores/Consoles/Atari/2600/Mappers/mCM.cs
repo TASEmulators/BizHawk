@@ -203,8 +203,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_column = 0;
 			_funcKey = false;
 			_shiftKey = false;
-
-			base.HardReset();
 		}
 
 		public override void SyncState(Serializer ser)

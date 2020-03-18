@@ -2,9 +2,9 @@
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
-	public class MapperBase
+	public abstract class MapperBase
 	{
-		public MapperBase(Atari2600 core)
+		protected MapperBase(Atari2600 core)
 		{
 			Core = core;
 		}
@@ -33,11 +33,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 		}
 
-		public virtual void HardReset()
-		{
-		}
+		public abstract void HardReset();
 
 		// This is here purely for mapper 3E because it needs the 13th bit to determine bankswitching (but only receives the first 12 on read memory)
-		public bool Bit13 { get; set; }
+		public bool Bit13 { protected get; set; }
 	}
 }

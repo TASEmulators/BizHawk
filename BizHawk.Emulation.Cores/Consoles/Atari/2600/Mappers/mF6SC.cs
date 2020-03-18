@@ -28,7 +28,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			_bank4K = 0;
 			_ram = new byte[128];
-			base.HardReset();
 		}
 
 		public override byte ReadMemory(ushort addr) => ReadMem(addr, false);

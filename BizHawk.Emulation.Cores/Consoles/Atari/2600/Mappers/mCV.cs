@@ -34,7 +34,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public override void HardReset()
 		{
 			_ram = new byte[1024];
-			base.HardReset();
 		}
 
 		public override byte ReadMemory(ushort addr)

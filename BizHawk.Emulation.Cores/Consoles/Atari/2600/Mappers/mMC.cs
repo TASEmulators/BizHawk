@@ -64,5 +64,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			throw new NotImplementedException();
 		}
+
+		public override void HardReset() { }
 	}
 }

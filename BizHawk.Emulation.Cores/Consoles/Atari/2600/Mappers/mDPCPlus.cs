@@ -65,8 +65,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_currentRandomVal = 0;
 			_elapsedCycles = 85;
 			_fractionalClocks = 0;
-
-			base.HardReset();
 		}
 
 		public override void ClockCpu()

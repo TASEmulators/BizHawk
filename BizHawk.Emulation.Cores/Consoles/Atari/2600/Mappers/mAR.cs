@@ -155,7 +155,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_elapsedCycles = 0;
 
 			InitializeSettings();
-			base.HardReset();
 		}
 
 		public override void SyncState(Serializer ser)

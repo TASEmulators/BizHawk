@@ -50,7 +50,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public override void HardReset()
 		{
 			_romBank2K = 0;
-			base.HardReset();
 		}
 
 		public override byte ReadMemory(ushort addr) => ReadMem(addr, false);
