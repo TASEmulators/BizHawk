@@ -22,16 +22,15 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	Example Games:
 		Frogger II - Threedeep! (1983) (Parker Bros)
 	*/
-
 	internal class mE0 : MapperBase 
 	{
-		public mE0(Atari2600 core) : base(core)
-		{
-		}
-
 		private int _toggle1;
 		private int _toggle2;
 		private int _toggle3;
+
+		public mE0(Atari2600 core) : base(core)
+		{
+		}
 
 		public override void SyncState(Serializer ser)
 		{
@@ -48,6 +47,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_toggle3 = 0;
 			base.HardReset();
 		}
+
+		public override byte ReadMemory(ushort addr) => ReadMem(addr, false);
+
+		public override byte PeekMemory(ushort addr) => ReadMem(addr, true);
+
+		public override void WriteMemory(ushort addr, byte value)
+			=> WriteMem(addr, value, poke: false);
+
+		public override void PokeMemory(ushort addr, byte value)
+			=> WriteMem(addr, value, poke: true);
 
 		private byte ReadMem(ushort addr, bool peek)
 		{
@@ -79,16 +88,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			return Core.Rom[(7 * 1024) + (addr & 0x3FF)]; // 7 because final bank is always set to last
 		}
 
-		public override byte ReadMemory(ushort addr)
-		{
-			return ReadMem(addr, false);
-		}
-
-		public override byte PeekMemory(ushort addr)
-		{
-			return ReadMem(addr, true);
-		}
-
 		private void WriteMem(ushort addr, byte value, bool poke)
 		{
 			if (!poke)
@@ -100,16 +99,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				base.WriteMemory(addr, value);
 			}
-		}
-
-		public override void WriteMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, poke: false);
-		}
-
-		public override void PokeMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, poke: true);
 		}
 
 		private void Address(ushort addr)

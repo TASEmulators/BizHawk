@@ -17,11 +17,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	 */
 	internal class mCV : MapperBase
 	{
+		private byte[] _ram = new byte[1024];
+
 		public mCV(Atari2600 core) : base(core)
 		{
 		}
-
-		private byte[] _ram = new byte[1024];
 
 		public override byte[] CartRam => _ram;
 
@@ -51,16 +51,19 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			
 			if (addr >= 0x1800 && addr < 0x2000)
 			{
-				return Core.Rom[(addr & 0x7FF)];
+				return Core.Rom[addr & 0x7FF];
 			}
 			
 			return base.ReadMemory(addr);
 		}
 
-		public override byte PeekMemory(ushort addr)
-		{
-			return ReadMemory(addr);
-		}
+		public override byte PeekMemory(ushort addr) => ReadMemory(addr);
+
+		public override void WriteMemory(ushort addr, byte value)
+			=> WriteMem(addr, value, false);
+
+		public override void PokeMemory(ushort addr, byte value)
+			=> WriteMem(addr, value, true);
 
 		private void WriteMem(ushort addr, byte value, bool poke)
 		{
@@ -70,18 +73,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 			else if (addr >= 0x1400 && addr < 0x1800)
 			{
-				_ram[(addr & 0x3FF)] = value;
+				_ram[addr & 0x3FF] = value;
 			}
-		}
-
-		public override void WriteMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, poke: false);
-		}
-
-		public override void PokeMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, poke: true);
 		}
 	}
 }

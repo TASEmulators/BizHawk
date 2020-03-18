@@ -8,21 +8,38 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	*/
 	internal class mF8SC : MapperBase
 	{
+		private int _bank4K;
+		private byte[] _ram = new byte[128];
+
 		public mF8SC(Atari2600 core) : base(core)
 		{
 		}
-
-		private int _bank_4K;
-		private byte[] _ram = new byte[128];
 
 		public override byte[] CartRam => _ram;
 
 		public override void HardReset()
 		{
-			_bank_4K = 0;
+			_bank4K = 0;
 			_ram = new byte[128];
 			base.HardReset();
 		}
+
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync("bank_4k", ref _bank4K);
+			ser.Sync("auxRam", ref _ram, false);
+		}
+
+		public override byte ReadMemory(ushort addr) => ReadMem(addr, false);
+
+		public override byte PeekMemory(ushort addr) => ReadMem(addr, true);
+
+		public override void WriteMemory(ushort addr, byte value)
+			=> WriteMem(addr, value, false);
+
+		public override void PokeMemory(ushort addr, byte value)
+			=> WriteMem(addr, value, true);
 
 		private byte ReadMem(ushort addr, bool peek)
 		{
@@ -44,20 +61,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			if (addr < 0x1100)
 			{
-				return _ram[(addr & 0x7F)];
+				return _ram[addr & 0x7F];
 			}
 
-			return Core.Rom[(_bank_4K << 12) + (addr & 0xFFF)];
-		}
-
-		public override byte ReadMemory(ushort addr)
-		{
-			return ReadMem(addr, false);
-		}
-
-		public override byte PeekMemory(ushort addr)
-		{
-			return ReadMem(addr, true);
+			return Core.Rom[(_bank4K << 12) + (addr & 0xFFF)];
 		}
 
 		private void WriteMem(ushort addr, byte value, bool poke)
@@ -77,32 +84,15 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 		}
 
-		public override void WriteMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, poke: false);
-		}
-
-		public override void PokeMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, poke: true);
-		}
-
-		public override void SyncState(Serializer ser)
-		{
-			base.SyncState(ser);
-			ser.Sync("bank_4k", ref _bank_4K);
-			ser.Sync("auxRam", ref _ram, false);
-		}
-
 		private void Address(ushort addr)
 		{
 			if (addr == 0x1FF8)
 			{
-				_bank_4K = 0;
+				_bank4K = 0;
 			}
 			else if (addr == 0x1FF9)
 			{
-				_bank_4K = 1;
+				_bank4K = 1;
 			}
 		}
 	}

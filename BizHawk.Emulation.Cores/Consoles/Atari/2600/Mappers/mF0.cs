@@ -3,10 +3,10 @@
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	/*
-	F0 (Megaboy)
+	F0 (MegaBoy)
 	-----
 
-	This was used on one game, "megaboy".. Some kind of educational cartridge.  It supports
+	This was used on one game, "MegaBoy".. Some kind of educational cartridge.  It supports
 	64K of ROM making it the biggest single production game made during the original run
 	of the 2600.
 
@@ -17,7 +17,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	bank is numbered by means of one of the ROM locations, and the code simply keeps accessing
 	1FF0 until the bank it is looking for comes up.
 	*/
-
 	internal class mF0 : MapperBase 
 	{
 		private int _bank;
@@ -38,6 +37,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			base.HardReset();
 		}
 
+		public override byte ReadMemory(ushort addr) => ReadMem(addr, false);
+
+		public override byte PeekMemory(ushort addr) => ReadMem(addr, true);
+
+		public override void WriteMemory(ushort addr, byte value)
+			=> WriteMem(addr, value,  false);
+
+		public override void PokeMemory(ushort addr, byte value)
+			=> WriteMem(addr, value, true);
+
 		private byte ReadMem(ushort addr, bool peek)
 		{
 			if (!peek)
@@ -56,16 +65,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			return Core.Rom[(_bank << 12) + (addr & 0xFFF)];
 		}
 
-		public override byte ReadMemory(ushort addr)
-		{
-			return ReadMem(addr, false);
-		}
-
-		public override byte PeekMemory(ushort addr)
-		{
-			return ReadMem(addr, true);
-		}
-
 		private void WriteMem(ushort addr, byte value, bool poke)
 		{
 			if (addr < 0x1000)
@@ -76,16 +75,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				Increment();
 			}
-		}
-
-		public override void WriteMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, poke: false);
-		}
-
-		public override void PokeMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, poke: true);
 		}
 
 		private void Increment()

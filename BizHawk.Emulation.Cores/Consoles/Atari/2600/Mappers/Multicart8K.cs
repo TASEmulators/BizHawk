@@ -2,9 +2,6 @@
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
-	/*
-		Mapper used for multi-cart 8K games
-	*/
 	internal class Multicart8K : MapperBase
 	{
 		private int _bank4K;
@@ -33,6 +30,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			IncrementGame();
 		}
 
+		public override byte ReadMemory(ushort addr) => ReadMem(addr, false);
+
+		public override byte PeekMemory(ushort addr) => ReadMem(addr, true);
+
+		public override void WriteMemory(ushort addr, byte value)
+			=> WriteMem(addr, value, false);
+
+		public override void PokeMemory(ushort addr, byte value)
+			=> WriteMem(addr, value, true);
+
 		private void IncrementGame()
 		{
 			_currentGame++;
@@ -57,16 +64,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			return Core.Rom[(_bank4K << 12) + (addr & 0xFFF) + (_currentGame * 8192)];
 		}
 
-		public override byte ReadMemory(ushort addr)
-		{
-			return ReadMem(addr, false);
-		}
-
-		public override byte PeekMemory(ushort addr)
-		{
-			return ReadMem(addr, true);
-		}
-
 		private void WriteMem(ushort addr, byte value, bool poke)
 		{
 			if (!poke)
@@ -78,16 +75,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				base.WriteMemory(addr, value);
 			}
-		}
-
-		public override void WriteMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, poke: false);
-		}
-
-		public override void PokeMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, poke: true);
 		}
 
 		private void Address(ushort addr)

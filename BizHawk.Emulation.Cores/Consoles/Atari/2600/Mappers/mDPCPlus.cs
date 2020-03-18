@@ -11,11 +11,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	*/
 	internal class mDPCPlus : MapperBase
 	{
-		// TODO: PokeMem, and everything else
-		public mDPCPlus(Atari2600 core) : base(core)
-		{
-			throw new NotImplementedException();
-		}
+		// Table for computing the input bit of the random number generator's
+		// shift register (it's the NOT of the EOR of four bits)
+		private readonly byte[] _randomInputBits = { 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1 };
 
 		private int[] _counters = new int[8];
 		private byte[] _tops = new byte[8];
@@ -29,11 +27,14 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private float _fractionalClocks; // Fractional DPC music OSC clocks unused during the last update
 
 		private byte[] _dspData;
-		public byte[] DspData => _dspData ??= Core.Rom.Skip(8192).Take(2048).ToArray();
 
-		// Table for computing the input bit of the random number generator's
-		// shift register (it's the NOT of the EOR of four bits)
-		private readonly byte[] _randomInputBits = { 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1 };
+		// TODO: PokeMem, and everything else
+		public mDPCPlus(Atari2600 core) : base(core)
+		{
+			throw new NotImplementedException();
+		}
+
+		public byte[] DspData => _dspData ??= Core.Rom.Skip(8192).Take(2048).ToArray();
 
 		public override void SyncState(Serializer ser)
 		{
@@ -71,6 +72,83 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public override void ClockCpu()
 		{
 			_elapsedCycles++;
+		}
+
+		public override byte ReadMemory(ushort addr) => ReadMem(addr, false);
+
+		public override byte PeekMemory(ushort addr) => ReadMem(addr, true);
+
+		public override void WriteMemory(ushort addr, byte value)
+		{
+			if (addr < 0x1000)
+			{
+				base.WriteMemory(addr, value);
+				return;
+			}
+
+			Address(addr);
+			ClockRandomNumberGenerator();
+
+			if (addr >= 0x1040 && addr < 0x1080)
+			{
+				var index = addr & 0x07;
+				var function = (addr >> 3) & 0x07;
+
+				switch (function)
+				{
+					// DFx top count
+					case 0x00:
+						_tops[index] = value;
+						_flags[index] = 0x00;
+						break;
+
+					// DFx bottom count
+					case 0x01:
+						_bottoms[index] = value;
+						break;
+
+					// DFx counter low
+					case 0x02:
+						if (index >= 5 && _musicModes[index - 5])
+						{
+							// Data fetcher is in music mode so its low counter value
+							// should be loaded from the top register not the poked value
+							_counters[index] = (_counters[index] & 0x0700) |
+								_tops[index];
+						}
+						else
+						{
+							// Data fetcher is either not a music mode data fetcher or it
+							// isn't in music mode so it's low counter value should be loaded
+							// with the poked value
+							_counters[index] = (_counters[index] & 0x0700) | value;
+						}
+
+						break;
+
+					// DFx counter high
+					case 0x03:
+						_counters[index] = (ushort)(((value & 0x07) << 8)
+							| (_counters[index] & 0x00ff));
+
+						// Execute special code for music mode data fetchers
+						if (index >= 5)
+						{
+							_musicModes[index - 5] = (value & 0x10) > 0;
+
+							// NOTE: We are not handling the clock source input for
+							// the music mode data fetchers.  We're going to assume
+							// they always use the OSC input.
+						}
+
+						break;
+
+					// Random Number Generator Reset
+					case 0x06:
+						_currentRandomVal = 1;
+						break;
+				}
+			}
 		}
 
 		private byte ReadMem(ushort addr, bool peek)
@@ -171,89 +249,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 
 			return Core.Rom[(_bank4K << 12) + (addr & 0xFFF)];
-		}
-
-		public override byte ReadMemory(ushort addr)
-		{
-			return ReadMem(addr, false);
-		}
-
-		public override byte PeekMemory(ushort addr)
-		{
-			return ReadMem(addr, true);
-		}
-
-		public override void WriteMemory(ushort addr, byte value)
-		{
-			if (addr < 0x1000)
-			{
-				base.WriteMemory(addr, value);
-				return;
-			}
-
-			Address(addr);
-			ClockRandomNumberGenerator();
-
-			if (addr >= 0x1040 && addr < 0x1080)
-			{
-				var index = addr & 0x07;
-				var function = (addr >> 3) & 0x07;
-
-				switch (function)
-				{
-					// DFx top count
-					case 0x00:
-						_tops[index] = value;
-						_flags[index] = 0x00;
-						break;
-
-					// DFx bottom count
-					case 0x01:
-						_bottoms[index] = value;
-						break;
-
-					// DFx counter low
-					case 0x02:
-						if ((index >= 5) && _musicModes[index - 5])
-						{
-							// Data fetcher is in music mode so its low counter value
-							// should be loaded from the top register not the poked value
-							_counters[index] = (_counters[index] & 0x0700) |
-								_tops[index];
-						}
-						else
-						{
-							// Data fetcher is either not a music mode data fetcher or it
-							// isn't in music mode so it's low counter value should be loaded
-							// with the poked value
-							_counters[index] = (_counters[index] & 0x0700) | value;
-						}
-
-						break;
-
-					// DFx counter high
-					case 0x03:
-						_counters[index] = (ushort)(((value & 0x07) << 8) |
-							(_counters[index] & 0x00ff));
-
-						// Execute special code for music mode data fetchers
-						if (index >= 5)
-						{
-							_musicModes[index - 5] = (value & 0x10) > 0;
-
-							// NOTE: We are not handling the clock source input for
-							// the music mode data fetchers.  We're going to assume
-							// they always use the OSC input.
-						}
-
-						break;
-
-					// Random Number Generator Reset
-					case 0x06:
-						_currentRandomVal = 1;
-						break;
-				}
-			}
 		}
 
 		private void Address(ushort addr)

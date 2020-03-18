@@ -9,7 +9,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	Again, this works like F8 and F6 except now there's 8 4K banks.  Selection is performed
 	by accessing 1FF4 through 1FFB.
 	*/
-
 	internal class mF4 :MapperBase 
 	{
 		private int _toggle;
@@ -30,6 +29,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			base.HardReset();
 		}
 
+		public override byte ReadMemory(ushort addr) => ReadMem(addr, false);
+
+		public override byte PeekMemory(ushort addr) => ReadMem(addr, true);
+
+		public override void WriteMemory(ushort addr, byte value)
+			=> WriteMem(addr, value, false);
+
+		public override void PokeMemory(ushort addr, byte value)
+			=> WriteMem(addr, value, true);
+
 		private byte ReadMem(ushort addr, bool peek)
 		{
 			if (!peek)
@@ -45,16 +54,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			return Core.Rom[(_toggle << 12) + (addr & 0xFFF)];
 		}
 
-		public override byte ReadMemory(ushort addr)
-		{
-			return ReadMem(addr, false);
-		}
-
-		public override byte PeekMemory(ushort addr)
-		{
-			return ReadMem(addr, true);
-		}
-
 		private void WriteMem(ushort addr, byte value, bool poke)
 		{
 			if (!poke)
@@ -68,27 +67,20 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 		}
 
-		public override void WriteMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, poke: false);
-		}
-
-		public override void PokeMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, poke: true);
-		}
-
 		private void Address(ushort addr)
 		{
-			if (addr == 0x1FF4) _toggle = 0;
-			if (addr == 0x1FF5) _toggle = 1;
-			if (addr == 0x1FF6) _toggle = 2;
-			if (addr == 0x1FF7) _toggle = 3;
-			if (addr == 0x1FF8) _toggle = 4;
-			if (addr == 0x1FF9) _toggle = 5;
-			if (addr == 0x1FF9) _toggle = 5;
-			if (addr == 0x1FFA) _toggle = 6;
-			if (addr == 0x1FFB) _toggle = 7;
+			_toggle = addr switch
+			{
+				0x1FF4 => 0,
+				0x1FF5 => 1,
+				0x1FF6 => 2,
+				0x1FF7 => 3,
+				0x1FF8 => 4,
+				0x1FF9 => 5,
+				0x1FFA => 6,
+				0x1FFB => 7,
+				_ => _toggle
+			};
 		}
 	}
 }

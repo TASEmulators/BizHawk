@@ -8,7 +8,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 	Apparently some of Sega's games have banks that are physically flipped, so even though this game uses a common mapper, the initial bank that gets pointed to is incorrect.
 	*/
-
 	internal class mF8_sega : MapperBase
 	{
 		private int _bank4K = 1;
@@ -29,6 +28,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			base.HardReset();
 		}
 
+		public override byte ReadMemory(ushort addr) => ReadMem(addr, false);
+
+		public override byte PeekMemory(ushort addr) => ReadMem(addr, true);
+
+		public override void WriteMemory(ushort addr, byte value)
+			=> WriteMem(addr, value, false);
+
+		public override void PokeMemory(ushort addr, byte value)
+			=>	WriteMem(addr, value, true);
+
 		private byte ReadMem(ushort addr, bool peek)
 		{
 			if (!peek)
@@ -44,16 +53,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			return Core.Rom[(_bank4K << 12) + (addr & 0xFFF)];
 		}
 
-		public override byte ReadMemory(ushort addr)
-		{
-			return ReadMem(addr, false);
-		}
-
-		public override byte PeekMemory(ushort addr)
-		{
-			return ReadMem(addr, true);
-		}
-
 		private void WriteMem(ushort addr, byte value, bool poke)
 		{
 			if (!poke)
@@ -65,16 +64,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				base.WriteMemory(addr, value);
 			}
-		}
-
-		public override void WriteMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, poke: false);
-		}
-
-		public override void PokeMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, poke: true);
 		}
 
 		private void Address(ushort addr)

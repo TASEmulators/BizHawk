@@ -9,28 +9,38 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	*/
 	internal class mEFSC : MapperBase
 	{
+		private int _bank4K;
+		private byte[] _ram = new byte[128];
+
 		public mEFSC(Atari2600 core) : base(core)
 		{
 		}
-
-		private int _bank4k;
-		private byte[] _ram = new byte[128];
 
 		public override byte[] CartRam => _ram;
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("bank4k", ref _bank4k);
+			ser.Sync("bank4k", ref _bank4K);
 			ser.Sync("auxRam", ref _ram, false);
 		}
 
 		public override void HardReset()
 		{
-			_bank4k = 0;
+			_bank4K = 0;
 			_ram = new byte[128];
 			base.HardReset();
 		}
+
+		public override byte ReadMemory(ushort addr) => ReadMem(addr, false);
+
+		public override byte PeekMemory(ushort addr) => ReadMem(addr, true);
+
+		public override void WriteMemory(ushort addr, byte value)
+			=> WriteMem(addr, value, false);
+
+		public override void PokeMemory(ushort addr, byte value)
+			=> WriteMem(addr, value, true);
 
 		private byte ReadMem(ushort addr, bool peek)
 		{
@@ -52,20 +62,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			if (addr < 0x1100)
 			{
-				return _ram[(addr & 0x7F)];
+				return _ram[addr & 0x7F];
 			}
 
-			return Core.Rom[(_bank4k << 12) + (addr & 0xFFF)];
-		}
-
-		public override byte ReadMemory(ushort addr)
-		{
-			return ReadMem(addr, false);
-		}
-
-		public override byte PeekMemory(ushort addr)
-		{
-			return ReadMem(addr, true);
+			return Core.Rom[(_bank4K << 12) + (addr & 0xFFF)];
 		}
 
 		private void WriteMem(ushort addr, byte value, bool poke)
@@ -85,34 +85,28 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 		}
 
-		public override void WriteMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, poke: false);
-		}
-
-		public override void PokeMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, poke: true);
-		}
-
 		private void Address(ushort addr)
 		{
-			if (addr == 0x1FE0) _bank4k = 0;
-			if (addr == 0x1FE1) _bank4k = 1;
-			if (addr == 0x1FE2) _bank4k = 2;
-			if (addr == 0x1FE3) _bank4k = 3;
-			if (addr == 0x1FE4) _bank4k = 4;
-			if (addr == 0x1FE5) _bank4k = 5;
-			if (addr == 0x1FE6) _bank4k = 6;
-			if (addr == 0x1FE7) _bank4k = 7;
-			if (addr == 0x1FE8) _bank4k = 8;
-			if (addr == 0x1FE9) _bank4k = 9;
-			if (addr == 0x1FEA) _bank4k = 10;
-			if (addr == 0x1FEB) _bank4k = 11;
-			if (addr == 0x1FEC) _bank4k = 12;
-			if (addr == 0x1FED) _bank4k = 13;
-			if (addr == 0x1FEE) _bank4k = 14;
-			if (addr == 0x1FEF) _bank4k = 15;
+			_bank4K = addr switch
+			{
+				0x1FE0 => 0,
+				0x1FE1 => 1,
+				0x1FE2 => 2,
+				0x1FE3 => 3,
+				0x1FE4 => 4,
+				0x1FE5 => 5,
+				0x1FE6 => 6,
+				0x1FE7 => 7,
+				0x1FE8 => 8,
+				0x1FE9 => 9,
+				0x1FEA => 10,
+				0x1FEB => 11,
+				0x1FEC => 12,
+				0x1FED => 13,
+				0x1FEE => 14,
+				0x1FEF => 15,
+				_ => _bank4K
+			};
 		}
 	}
 }
