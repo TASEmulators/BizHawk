@@ -60,17 +60,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		// keeps track of tia cycles, 3 cycles per CPU cycle
 		private int cyc_counter;
 
-		private MapperBase SetMultiCartMapper(int romLength, int gameTotal)
-		{
-			return (romLength / gameTotal) switch
-			{
-				1024 * 2 => new Multicart2K(this, gameTotal),
-				1024 * 4 => new Multicart4K(this, gameTotal),
-				1024 * 8 => new Multicart8K(this, gameTotal),
-				_ => new Multicart4K(this, gameTotal)
-			};
-		}
-
 		internal byte BaseReadMemory(ushort addr)
 		{
 			addr = (ushort)(addr & 0x1FFF);
@@ -163,12 +152,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			return temp;
 		}
 
-		private byte PeekMemory(ushort addr)
-		{
-			var temp = _mapper.PeekMemory((ushort)(addr & 0x1FFF));
-			return temp;
-		}
-
 		private void WriteMemory(ushort addr, byte value)
 		{
 			if (addr != _lastAddress)
@@ -196,48 +179,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private void RebootCore()
 		{
 			// Regenerate mapper here to make sure its state is entirely clean
-			_mapper = _game.GetOptionsDict()["m"] switch
-			{
-				"2IN1" => SetMultiCartMapper(Rom.Length, 2),
-				"4IN1" => SetMultiCartMapper(Rom.Length, 4),
-				"8IN1" => SetMultiCartMapper(Rom.Length, 8),
-				"16IN1" => SetMultiCartMapper(Rom.Length, 16),
-				"32IN1" => SetMultiCartMapper(Rom.Length, 32),
-				"AR" => new mAR(this),
-				"4K" => new m4K(this),
-				"2K" => new m2K(this),
-				"CM" => new mCM(this),
-				"CV" => new mCV(this),
-				"DPC" => new mDPC(this),
-				"DPC+" => new mDPCPlus(this),
-				"F8" => new mF8(this),
-				"F8SC" => new mF8SC(this),
-				"F6" => new mF6(this),
-				"F6SC" => new mF6SC(this),
-				"F4" => new mF4(this),
-				"F4SC" => new mF4SC(this),
-				"FE" => new mFE(this),
-				"E0" => new mE0(this),
-				"3F" => new m3F(this),
-				"FA" => new mFA(this),
-				"FA2" => new mFA2(this),
-				"E7" => new mE7(this),
-				"F0" => new mF0(this),
-				"UA" => new mUA(this),
-				"F8_sega" => new mF8_sega(this),
-
-				// Homebrew mappers
-				"3E" => new m3E(this),
-				"0840" => new m0840(this),
-				"MC" => new mMC(this),
-				"EF" => new mEF(this),
-				"EFSC" => new mEFSC(this),
-				"X07" => new mX07(this),
-				"4A50" => new m4A50(this),
-				"SB" => new mSB(this),
-				_ => throw new InvalidOperationException("mapper not supported: " + _game.GetOptionsDict()["m"])
-			};
-
+			_mapper = CreateMapper(this, _game.GetOptionsDict()["m"], Rom.Length);
 			_lagCount = 0;
 			Cpu = new MOS6502X<CpuLink>(new CpuLink(this));
 
@@ -280,6 +222,62 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					SP_RESET = true;
 				}
 			}
+		}
+
+		private static MapperBase CreateMapper(Atari2600 core, string mapperName, int romLength)
+		{
+			static MapperBase SetMultiCartMapper(Atari2600 core, int romLength, int gameTotal)
+			{
+				return (romLength / gameTotal) switch
+				{
+					1024 * 2 => new Multicart2K(core, gameTotal),
+					1024 * 4 => new Multicart4K(core, gameTotal),
+					1024 * 8 => new Multicart8K(core, gameTotal),
+					_ => new Multicart4K(core, gameTotal)
+				};
+			}
+
+			return mapperName switch
+			{
+				"2IN1" => SetMultiCartMapper(core, romLength, 2),
+				"4IN1" => SetMultiCartMapper(core, romLength, 4),
+				"8IN1" => SetMultiCartMapper(core, romLength, 8),
+				"16IN1" => SetMultiCartMapper(core, romLength, 16),
+				"32IN1" => SetMultiCartMapper(core, romLength, 32),
+				"AR" => new mAR(core),
+				"4K" => new m4K(core),
+				"2K" => new m2K(core),
+				"CM" => new mCM(core),
+				"CV" => new mCV(core),
+				"DPC" => new mDPC(core),
+				"DPC+" => new mDPCPlus(core),
+				"F8" => new mF8(core),
+				"F8SC" => new mF8SC(core),
+				"F6" => new mF6(core),
+				"F6SC" => new mF6SC(core),
+				"F4" => new mF4(core),
+				"F4SC" => new mF4SC(core),
+				"FE" => new mFE(core),
+				"E0" => new mE0(core),
+				"3F" => new m3F(core),
+				"FA" => new mFA(core),
+				"FA2" => new mFA2(core),
+				"E7" => new mE7(core),
+				"F0" => new mF0(core),
+				"UA" => new mUA(core),
+				"F8_sega" => new mF8_sega(core),
+
+				// Homebrew mappers
+				"3E" => new m3E(core),
+				"0840" => new m0840(core),
+				"MC" => new mMC(core),
+				"EF" => new mEF(core),
+				"EFSC" => new mEFSC(core),
+				"X07" => new mX07(core),
+				"4A50" => new m4A50(core),
+				"SB" => new mSB(core),
+				_ => throw new InvalidOperationException("mapper not supported: " + mapperName)
+			};
 		}
 
 		private bool _pal;
