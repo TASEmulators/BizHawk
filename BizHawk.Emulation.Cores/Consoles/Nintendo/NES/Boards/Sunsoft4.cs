@@ -13,25 +13,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int prg_bank_mask, chr_bank_mask, nt_bank_mask;
 
 		//state
-		ByteBuffer chr_regs_2k = new ByteBuffer(4);
-		ByteBuffer nt_regs = new ByteBuffer(2);
-		ByteBuffer prg_regs_16k = new ByteBuffer(2);
+		byte[] chr_regs_2k = new byte[4];
+		byte[] nt_regs = new byte[2];
+		byte[] prg_regs_16k = new byte[2];
 		bool flag_m, flag_r;
-
-		public override void Dispose()
-		{
-			base.Dispose();
-			chr_regs_2k.Dispose();
-			nt_regs.Dispose();
-			prg_regs_16k.Dispose();
-		}
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(chr_regs_2k), ref chr_regs_2k);
-			ser.Sync(nameof(nt_regs), ref nt_regs);
-			ser.Sync(nameof(prg_regs_16k), ref prg_regs_16k);
+			ser.Sync(nameof(chr_regs_2k), ref chr_regs_2k, false);
+			ser.Sync(nameof(nt_regs), ref nt_regs, false);
+			ser.Sync(nameof(prg_regs_16k), ref prg_regs_16k, false);
 			ser.Sync(nameof(flag_m), ref flag_m);
 			ser.Sync(nameof(flag_r), ref flag_r);
 		}

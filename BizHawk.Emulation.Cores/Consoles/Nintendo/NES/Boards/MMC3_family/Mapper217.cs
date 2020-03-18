@@ -4,9 +4,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public sealed class Mapper217 : MMC3Board_Base
 	{
-		private ByteBuffer exRegs = new ByteBuffer(4);
+		private byte[] exRegs = new byte[4];
 
-		public ByteBuffer prg_regs_8k = new ByteBuffer(4);
+		public byte[] prg_regs_8k = new byte[4];
 		private int prg_mask_8k, chr_mask_1k;
 		private byte[] regs_sec = { 0, 6, 3, 7, 5, 2, 4, 1 };
 
@@ -39,18 +39,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			exRegs.Dispose();
-			prg_regs_8k.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(exRegs), ref exRegs);
-			ser.Sync(nameof(prg_regs_8k), ref prg_regs_8k);
+			ser.Sync(nameof(exRegs), ref exRegs, false);
+			ser.Sync(nameof(prg_regs_8k), ref prg_regs_8k, false);
 			ser.Sync(nameof(prg_mask), ref prg_mask_8k);
 			ser.Sync(nameof(chr_mask), ref chr_mask_1k);
 		}

@@ -6,8 +6,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// Adpated from FCEUX src
 	public sealed class Mapper183 : NES.NESBoardBase
 	{
-		private ByteBuffer prg = new ByteBuffer(4);
-		private ByteBuffer chr = new ByteBuffer(8);
+		private byte[] prg = new byte[4];
+		private byte[] chr = new byte[8];
 
 		private int IRQLatch = 0;
 		private int IRQCount = 0;
@@ -33,18 +33,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			prg.Dispose();
-			chr.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(prg), ref prg);
-			ser.Sync(nameof(chr), ref chr);
+			ser.Sync(nameof(prg), ref prg, false);
+			ser.Sync(nameof(chr), ref chr, false);
 		}
 
 		private void SetMirroring(int mirr)

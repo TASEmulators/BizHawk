@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public sealed class Mapper090 : NES.NESBoardBase
 	{
-		ByteBuffer prg_regs = new ByteBuffer(4);
+		byte[] prg_regs = new byte[4];
 		int[] chr_regs = new int[8];
 		int[] nt_regs = new int[4];
 
@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int[] chr_banks = new int[8];
 		int[] chr_latches = new int[2];
 
-		ByteBuffer ram_bytes = new ByteBuffer(5);
+		byte[] ram_bytes = new byte[5];
 
 		[MapperProp]
 		public bool dipswitch_0;
@@ -131,14 +131,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			base.SyncState(ser);
 
-			ser.Sync(nameof(prg_regs), ref prg_regs);
+			ser.Sync(nameof(prg_regs), ref prg_regs, false);
 			ser.Sync(nameof(chr_regs), ref chr_regs, false);
 			ser.Sync(nameof(chr_latches), ref chr_latches, false);
 			ser.Sync(nameof(nt_regs), ref nt_regs, false);
 
 			ser.Sync(nameof(prg_banks), ref prg_banks, false);
 			ser.Sync(nameof(chr_banks), ref chr_banks, false);
-			ser.Sync(nameof(ram_bytes), ref ram_bytes);
+			ser.Sync(nameof(ram_bytes), ref ram_bytes, false);
 
 			ser.Sync(nameof(dipswitch_0), ref dipswitch_0);
 			ser.Sync(nameof(dipswitch_1), ref dipswitch_1);
@@ -181,13 +181,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(a12_old), ref a12_old);
 
 			Sync();
-		}
-
-		public override void Dispose()
-		{
-			prg_regs.Dispose();
-			ram_bytes.Dispose();
-			base.Dispose();
 		}
 
 		private void Sync()

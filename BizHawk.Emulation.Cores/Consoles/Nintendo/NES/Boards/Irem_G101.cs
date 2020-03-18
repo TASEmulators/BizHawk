@@ -15,23 +15,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		bool oneScreenHack;
 
 		//state
-		ByteBuffer prg_regs_8k = new ByteBuffer(8);
-		ByteBuffer chr_regs_1k = new ByteBuffer(8);
+		byte[] prg_regs_8k = new byte[8];
+		byte[] chr_regs_1k = new byte[8];
 		int prg_mode, mirror_mode;
-
-		public override void Dispose()
-		{
-			prg_regs_8k.Dispose();
-			chr_regs_1k.Dispose();
-		}
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(prg_regs_8k), ref prg_regs_8k);
-			ser.Sync(nameof(chr_regs_1k), ref chr_regs_1k);
-			ser.Sync(nameof(prg_mode), ref chr_regs_1k);
-			ser.Sync(nameof(mirror_mode), ref chr_regs_1k);
+			ser.Sync(nameof(prg_regs_8k), ref prg_regs_8k, false);
+			ser.Sync(nameof(chr_regs_1k), ref chr_regs_1k, false);
+			ser.Sync(nameof(prg_mode), ref prg_mode);
+			ser.Sync(nameof(mirror_mode), ref mirror_mode);
 		}
 
 		public override bool Configure(NES.EDetectionOrigin origin)

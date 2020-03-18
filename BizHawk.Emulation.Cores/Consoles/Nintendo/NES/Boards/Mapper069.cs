@@ -61,8 +61,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		//state
 		int addr_reg;
-		ByteBuffer regs = new ByteBuffer(12);
-		ByteBuffer prg_banks_8k = new ByteBuffer(4);
+		byte[] regs = new byte[12];
+		byte[] prg_banks_8k = new byte[4];
 		int wram_bank;
 		bool wram_ram_selected, wram_ram_enabled;
 		ushort irq_counter;
@@ -74,8 +74,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			base.SyncState(ser);
 			ser.Sync(nameof(addr_reg), ref addr_reg);
-			ser.Sync(nameof(regs), ref regs);
-			ser.Sync(nameof(prg_banks_8k), ref prg_banks_8k);
+			ser.Sync(nameof(regs), ref regs, false);
+			ser.Sync(nameof(prg_banks_8k), ref prg_banks_8k, false);
 			ser.Sync(nameof(wram_bank), ref wram_bank);
 			ser.Sync(nameof(wram_ram_selected), ref wram_ram_selected);
 			ser.Sync(nameof(wram_ram_enabled), ref wram_ram_enabled);
@@ -85,13 +85,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(irq_asserted), ref irq_asserted);
 			ser.Sync(nameof(clock_counter), ref clock_counter);
 			SyncIrq();
-		}
-
-		public override void Dispose()
-		{
-			base.Dispose();
-			regs.Dispose();
-			prg_banks_8k.Dispose();
 		}
 
 		public override bool Configure(NES.EDetectionOrigin origin)

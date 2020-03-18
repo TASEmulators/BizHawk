@@ -129,15 +129,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				mirroring[3] = d;
 			}
 
-			protected void ApplyMemoryMapMask(int mask, ByteBuffer map)
+			protected void ApplyMemoryMapMask(int mask, byte[] map)
 			{
 				byte bmask = (byte)mask;
-				for (int i = 0; i < map.Len; i++)
+				for (int i = 0; i < map.Length; i++)
 					map[i] &= bmask;
 			}
 
 			//make sure you have bank-masked the map 
-			protected int ApplyMemoryMap(int blockSizeBits, ByteBuffer map, int addr)
+			protected int ApplyMemoryMap(int blockSizeBits, byte[] map, int addr)
 			{
 				int bank = addr >> blockSizeBits;
 				int ofs = addr & ((1 << blockSizeBits) - 1);

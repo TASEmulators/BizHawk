@@ -9,8 +9,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		//state
 		int mirror;
-		ByteBuffer prg_banks_8k = new ByteBuffer(4);
-		ByteBuffer chr_banks_8k = new ByteBuffer(1);
+		byte[] prg_banks_8k = new byte[4];
+		byte[] chr_banks_8k = new byte[1];
 		Bit sbw;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -44,13 +44,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ApplyMemoryMapMask(chr_bank_mask_8k, chr_banks_8k);
 
 			return true;
-		}
-
-		public override void Dispose()
-		{
-			prg_banks_8k.Dispose();
-			chr_banks_8k.Dispose();
-			base.Dispose();
 		}
 
 		static readonly EMirrorType[] kMirrorTypes = {EMirrorType.Vertical,EMirrorType.Horizontal,EMirrorType.OneScreenA,EMirrorType.OneScreenB};
@@ -125,8 +118,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			base.SyncState(ser);
 			ser.Sync(nameof(mirror), ref mirror);
-			ser.Sync(nameof(prg_banks_8k), ref prg_banks_8k);
-			ser.Sync(nameof(chr_banks_8k), ref chr_banks_8k);
+			ser.Sync(nameof(prg_banks_8k), ref prg_banks_8k, false);
+			ser.Sync(nameof(chr_banks_8k), ref chr_banks_8k, false);
 			ser.Sync(nameof(sbw), ref sbw);
 		}
 	}

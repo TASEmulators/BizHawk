@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public sealed class Mapper142 : NES.NESBoardBase
 	{
-		private ByteBuffer reg = new ByteBuffer(8);
+		private byte[] reg = new byte[8];
 		private byte cmd;
 		private int lastBank;
 
@@ -28,15 +28,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			reg.Dispose();
-			base.Dispose();
-		}
-
 		public override byte ReadWRAM(int addr)
 		{
-			return ROM[(reg[4] << 13) + (addr & 0x1FFF)];		
+			return ROM[(reg[4] << 13) + (addr & 0x1FFF)];
 		}
 
 		public override byte ReadPRG(int addr)

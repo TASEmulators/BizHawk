@@ -12,8 +12,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		//state
 		bool toggle;
-		ByteBuffer prg_banks_16k = new ByteBuffer(2);
-		ByteBuffer chr_banks_2k = new ByteBuffer(4);
+		byte[] prg_banks_16k = new byte[2];
+		byte[] chr_banks_2k = new byte[4];
 		int irq_counter;
 		bool irq_enable;
 		bool irq_asserted;
@@ -28,8 +28,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			base.SyncState(ser);
 			ser.Sync(nameof(toggle), ref toggle);
-			ser.Sync(nameof(prg_banks_16k), ref prg_banks_16k);
-			ser.Sync(nameof(chr_banks_2k), ref chr_banks_2k);
+			ser.Sync(nameof(prg_banks_16k), ref prg_banks_16k, false);
+			ser.Sync(nameof(chr_banks_2k), ref chr_banks_2k, false);
 			ser.Sync(nameof(irq_counter), ref irq_counter);
 			ser.Sync(nameof(irq_enable), ref irq_enable);
 			ser.Sync(nameof(irq_asserted), ref irq_asserted);

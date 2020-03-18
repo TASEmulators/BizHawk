@@ -115,8 +115,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		//state
 		int prg_bank_16k, prg_bank_8k;
-		ByteBuffer prg_banks_8k = new ByteBuffer(4);
-		ByteBuffer chr_banks_1k = new ByteBuffer(8);
+		byte[] prg_banks_8k = new byte[4];
+		byte[] chr_banks_1k = new byte[8];
 		bool irq_mode;
 		bool irq_enabled, irq_pending, irq_autoen;
 		byte irq_reload;
@@ -127,20 +127,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		bool NTROM;
 		int PPUBankingMode;
 
-		public override void Dispose()
-		{
-			base.Dispose();
-			prg_banks_8k.Dispose();
-			chr_banks_1k.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
 			VRC6Sound.SyncState(ser);
 			ser.Sync(nameof(prg_bank_16k), ref prg_bank_16k);
 			ser.Sync(nameof(prg_bank_8k), ref prg_bank_8k);
-			ser.Sync(nameof(chr_banks_1k), ref chr_banks_1k);
+			ser.Sync(nameof(chr_banks_1k), ref chr_banks_1k, false);
 			ser.Sync(nameof(irq_mode), ref irq_mode);
 			ser.Sync(nameof(irq_enabled), ref irq_enabled);
 			ser.Sync(nameof(irq_pending), ref irq_pending);

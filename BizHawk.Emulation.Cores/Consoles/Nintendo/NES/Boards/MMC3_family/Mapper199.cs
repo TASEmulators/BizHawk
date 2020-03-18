@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public sealed class Mapper199 : MMC3Board_Base
 	{
-		private ByteBuffer exRegs = new ByteBuffer(4);
+		private byte[] exRegs = new byte[4];
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -26,16 +26,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			exRegs.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(exRegs), ref exRegs);
+			ser.Sync(nameof(exRegs), ref exRegs, false);
 		}
 
 		public override byte ReadPPU(int addr)

@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int chr_bank_mask_2k;
 		int prg_bank_mask_8k;
 		int cur_reg = 0;
-		ByteBuffer regs = new ByteBuffer(4);
+		byte[] regs = new byte[4];
 		bool lock_regs = false;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -30,15 +30,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			regs.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync(nameof(regs), ref regs);
+			ser.Sync(nameof(regs), ref regs, false);
 			ser.Sync(nameof(lock_regs), ref lock_regs);
 			base.SyncState(ser);
 		}
@@ -54,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				regs[cur_reg] = value;
 				IncrementCounter();
 				Sync45();
-				}
+			}
 		}
 
 		private void Sync45()
@@ -78,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			lock_regs = false;
 			cur_reg = 0;
-			regs = new ByteBuffer(4);
+			regs = new byte[4];
 			base.NESSoftReset();
 		}
 

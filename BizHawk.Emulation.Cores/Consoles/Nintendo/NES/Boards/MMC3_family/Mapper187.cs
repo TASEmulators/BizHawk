@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// Adapted from FCEUX src
 	public class Mapper187 : MMC3Board_Base
 	{
-		private ByteBuffer exRegs = new ByteBuffer(2);
+		private byte[] exRegs = new byte[2];
 
 		private readonly byte[] prot_data = { 0x83, 0x83, 0x42, 0x00 };
 
@@ -23,16 +23,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			exRegs.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("expregs", ref exRegs);
+			ser.Sync("expregs", ref exRegs, false);
 		}
 
 		public override void WritePRG(int addr, byte value)

@@ -8,9 +8,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// http://problemkaputt.de/everynes.htm#mapper83cony
 	public class ConyA : NES.NESBoardBase
 	{
-		private ByteBuffer prg_regs = new ByteBuffer(4);
-		private ByteBuffer low = new ByteBuffer(4); // some kind of security feature?
-		private ByteBuffer chr_regs = new ByteBuffer(8);
+		private byte[] prg_regs = new byte[4];
+		private byte[] low = new byte[4]; // some kind of security feature?
+		private byte[] chr_regs = new byte[8];
 
 		private int prg_bank_mask_16k, prg_bank_mask_8k, chr_bank_mask_2k;
 		private int IRQCount;
@@ -40,19 +40,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void Dispose()
-		{
-			prg_regs.Dispose();
-			low.Dispose();
-			chr_regs.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(prg_regs), ref prg_regs);
-			ser.Sync(nameof(chr_regs), ref chr_regs);
+			ser.Sync(nameof(prg_regs), ref prg_regs, false);
+			ser.Sync(nameof(chr_regs), ref chr_regs, false);
 			ser.Sync(nameof(IRQCount), ref IRQCount);
 			ser.Sync(nameof(IRQa), ref IRQa);
 			ser.Sync(nameof(bank), ref bank);
@@ -208,9 +200,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	public class ConyB : NES.NESBoardBase
 	{
-		private ByteBuffer prg_regs = new ByteBuffer(4);
-		private ByteBuffer low = new ByteBuffer(4); // some kind of security feature?
-		private ByteBuffer chr_regs = new ByteBuffer(8);
+		private byte[] prg_regs = new byte[4];
+		private byte[] low = new byte[4]; // some kind of security feature?
+		private byte[] chr_regs = new byte[8];
 
 		private int prg_bank_mask_16k, prg_bank_mask_8k, chr_bank_mask_2k;
 		private int IRQCount;
@@ -242,8 +234,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(prg_regs), ref prg_regs);
-			ser.Sync(nameof(chr_regs), ref chr_regs);
+			ser.Sync(nameof(prg_regs), ref prg_regs, false);
+			ser.Sync(nameof(chr_regs), ref chr_regs, false);
 			ser.Sync(nameof(IRQCount), ref IRQCount);
 			ser.Sync(nameof(IRQa), ref IRQa);
 			ser.Sync(nameof(bank), ref bank);
@@ -399,8 +391,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	public class ConyC : NES.NESBoardBase
 	{
-		private ByteBuffer prg_regs = new ByteBuffer(2);
-		private ByteBuffer chr_regs = new ByteBuffer(8);
+		private byte[] prg_regs = new byte[2];
+		private byte[] chr_regs = new byte[8];
 
 		private int prg_bank_mask_16k;
 		private int IRQCount;
@@ -433,8 +425,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(chr_regs), ref chr_regs);
-			ser.Sync(nameof(prg_regs), ref prg_regs);
+			ser.Sync(nameof(chr_regs), ref chr_regs, false);
+			ser.Sync(nameof(prg_regs), ref prg_regs, false);
 		}
 
 		public override void WritePRG(int addr, byte value)

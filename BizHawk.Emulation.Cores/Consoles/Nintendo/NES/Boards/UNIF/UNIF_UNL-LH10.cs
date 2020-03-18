@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public sealed class UNIF_UNL_LH10 : NES.NESBoardBase
 	{
-		private ByteBuffer reg = new ByteBuffer(8);
+		private byte[] reg = new byte[8];
 		private int cmd;
 
 		private int prg_bank_mask_8;
@@ -28,15 +28,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			reg.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync(nameof(reg), ref reg);
+			ser.Sync(nameof(reg), ref reg, false);
 			ser.Sync(nameof(cmd), ref cmd);
 			base.SyncState(ser);
 		}

@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public sealed class Mapper208 : MMC3Board_Base
 	{
-		private ByteBuffer exRegs = new ByteBuffer(6);
+		private byte[] exRegs = new byte[6];
 
 		private readonly byte[] lut = {
 			0x59, 0x59, 0x59, 0x59, 0x59, 0x59, 0x59, 0x59, 0x59, 0x49, 0x19, 0x09, 0x59, 0x49, 0x19, 0x09,
@@ -39,16 +39,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			exRegs.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("expregs", ref exRegs);
+			ser.Sync("expregs", ref exRegs, false);
 		}
 
 		public override byte ReadPRG(int addr)

@@ -68,20 +68,4 @@ namespace BizHawk.Common
 
 		~CBuffer() { Dispose(true); }
 	}
-
-	public sealed class ByteBuffer : CBuffer<byte>
-	{
-		public ByteBuffer(int amt) : base(amt,1) { }
-		public ByteBuffer(byte[] arr) : base(arr,1) { }
-		public byte this[int index]
-		{
-			#if DEBUG
-				get => this.Arr[index];
-				set => this.Arr[index] = value;
-			#else
-				set => Write08(index, value);
-				get => Read08(index);
-			#endif
-		}
-	}
 }

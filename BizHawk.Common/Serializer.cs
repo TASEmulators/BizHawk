@@ -166,11 +166,6 @@ namespace BizHawk.Common
 			}
 		}
 
-		public void Sync(string name, ref ByteBuffer byteBuf)
-		{
-			SyncBuffer(name, 1, byteBuf.Len, byteBuf.Ptr);
-		}
-
 		public void Sync(string name, ref byte[] val, bool useNull)
 		{
 			if (IsText)
