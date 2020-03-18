@@ -15,24 +15,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int prg_bank_mask, chr_bank_mask;
 
 		//state
-		ByteBuffer prg_regs_8k = new ByteBuffer(4);
-		ByteBuffer chr_regs_1k = new ByteBuffer(8);
+		byte[] prg_regs_8k = new byte[4];
+		byte[] chr_regs_1k = new byte[8];
 		bool irq_counter_enabled, irq_asserted;
 		ushort irq_counter, irq_reload;
 		int clock_counter;
 
-		public override void Dispose()
-		{
-			base.Dispose();
-			prg_regs_8k.Dispose();
-			chr_regs_1k.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(prg_regs_8k), ref prg_regs_8k);
-			ser.Sync(nameof(chr_regs_1k), ref chr_regs_1k);
+			ser.Sync(nameof(prg_regs_8k), ref prg_regs_8k, false);
+			ser.Sync(nameof(chr_regs_1k), ref chr_regs_1k, false);
 			ser.Sync(nameof(irq_counter_enabled), ref irq_counter_enabled);
 			ser.Sync(nameof(irq_asserted), ref irq_asserted);
 			ser.Sync(nameof(irq_counter), ref irq_counter);

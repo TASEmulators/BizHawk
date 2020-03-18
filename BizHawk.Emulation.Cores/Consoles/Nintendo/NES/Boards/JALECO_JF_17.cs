@@ -23,8 +23,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		//state
 		int latch;
-		ByteBuffer prg_banks_16k = new ByteBuffer(2);
-		ByteBuffer chr_banks_8k = new ByteBuffer(1);
+		byte[] prg_banks_16k = new byte[2];
+		byte[] chr_banks_8k = new byte[1];
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -56,19 +56,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ApplyMemoryMapMask(chr_bank_mask_8k, chr_banks_8k);
 		}
 
-		public override void Dispose()
-		{
-			prg_banks_16k.Dispose();
-			chr_banks_8k.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
 			ser.Sync(nameof(latch), ref latch);
-			ser.Sync(nameof(prg_banks_16k), ref prg_banks_16k);
-			ser.Sync(nameof(chr_banks_8k), ref chr_banks_8k);
+			ser.Sync(nameof(prg_banks_16k), ref prg_banks_16k, false);
+			ser.Sync(nameof(chr_banks_8k), ref chr_banks_8k, false);
 		}
 
 		public override void WritePRG(int addr, byte value)

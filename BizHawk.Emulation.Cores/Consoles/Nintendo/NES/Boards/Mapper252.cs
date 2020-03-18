@@ -6,8 +6,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// Adapted from FCEUX src
 	public sealed class Mapper252 : NES.NESBoardBase
 	{
-		private ByteBuffer preg = new ByteBuffer(2);
-		private ByteBuffer creg = new ByteBuffer(8);
+		private byte[] preg = new byte[2];
+		private byte[] creg = new byte[8];
 
 		private int prg_bank_mask_8k, chr_bank_mask_1k;
 		private int IRQLatch, IRQClock, IRQCount;
@@ -33,18 +33,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			preg.Dispose();
-			creg.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(preg), ref preg);
-			ser.Sync(nameof(creg), ref creg);
+			ser.Sync(nameof(preg), ref preg, false);
+			ser.Sync(nameof(creg), ref creg, false);
 		}
 
 		public override void ClockCPU()
@@ -60,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						IRQSignal=true;
 						IRQCount = IRQLatch;
-					}					
+					}
 				}
 			}
 		}

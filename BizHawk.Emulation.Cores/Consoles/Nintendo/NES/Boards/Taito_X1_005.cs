@@ -45,23 +45,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int prg_bank_mask, chr_bank_mask;
 		bool tlsrewire = false;
 		// state
-		ByteBuffer chr_regs_1k = new ByteBuffer(8);
-		ByteBuffer prg_regs_8k = new ByteBuffer(4);
+		byte[] chr_regs_1k = new byte[8];
+		byte[] prg_regs_8k = new byte[4];
 		bool wramenable = false;
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(chr_regs_1k), ref chr_regs_1k);
-			ser.Sync(nameof(prg_regs_8k), ref prg_regs_8k);
+			ser.Sync(nameof(chr_regs_1k), ref chr_regs_1k, false);
+			ser.Sync(nameof(prg_regs_8k), ref prg_regs_8k, false);
 			ser.Sync(nameof(wramenable), ref wramenable);
-		}
-
-		public override void Dispose()
-		{
-			base.Dispose();
-			chr_regs_1k.Dispose();
-			prg_regs_8k.Dispose();
 		}
 
 		public override bool Configure(NES.EDetectionOrigin origin)

@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// Adapted from Nestopia src
 	public sealed class Mapper121 : MMC3Board_Base
 	{
-		private ByteBuffer exRegs = new ByteBuffer(3);
+		private byte[] exRegs = new byte[3];
 
 		private readonly byte[] lut = { 0x00, 0x83, 0x42, 0x00 };
 
@@ -23,16 +23,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			exRegs.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(exRegs), ref exRegs);
+			ser.Sync(nameof(exRegs), ref exRegs, false);
 		}
 
 		public override byte ReadEXP(int addr)

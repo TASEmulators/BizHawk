@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public virtual bool HasCartRam => false;
 
-		public virtual ByteBuffer CartRam => new ByteBuffer(0);
+		public virtual byte[] CartRam => new byte[0];
 
 		public virtual byte ReadMemory(ushort addr)
 		{
@@ -31,10 +31,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		}
 
 		public virtual void SyncState(Serializer ser)
-		{
-		}
-
-		public virtual void Dispose()
 		{
 		}
 

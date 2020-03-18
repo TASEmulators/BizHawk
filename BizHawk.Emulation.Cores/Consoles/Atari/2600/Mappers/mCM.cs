@@ -180,7 +180,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	internal class mCM : MapperBase
 	{
 		// TODO: PokeMem
-		private ByteBuffer _ram = new ByteBuffer(2048);
+		private byte[] _ram = new byte[2048];
 		private int _bank4K = 3; // On Start up, controller port is all 1's, so start on the last bank, flags enabled
 		private bool _disableRam = true;
 		private bool _writeMode;
@@ -188,15 +188,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private bool _funcKey;
 		private bool _shiftKey;
 
-		public override void Dispose()
-		{
-			_ram.Dispose();
-			base.Dispose();
-		}
-
 		public override void HardReset()
 		{
-			_ram = new ByteBuffer(2048);
+			_ram = new byte[2048];
 			_bank4K = 3;
 			_disableRam = true;
 			_writeMode = true;
@@ -209,7 +203,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync("cartRam", ref _ram);
+			ser.Sync("cartRam", ref _ram, false);
 			ser.Sync("bank4k", ref _bank4K);
 			ser.Sync("column", ref _column);
 			ser.Sync("disableRam", ref _disableRam);

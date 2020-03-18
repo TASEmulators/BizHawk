@@ -4,8 +4,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public class Mapper186 : NES.NESBoardBase
 	{
-		private ByteBuffer _SRAM = new ByteBuffer(3072);
-		private ByteBuffer regs = new ByteBuffer(4);
+		private byte[] _SRAM = new byte[3072];
+		private byte[] regs = new byte[4];
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -20,17 +20,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			_SRAM.Dispose();
-			regs.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync("SRAM", ref _SRAM);
-			ser.Sync(nameof(regs), ref regs);
+			ser.Sync("SRAM", ref _SRAM, false);
+			ser.Sync(nameof(regs), ref regs, false);
 			base.SyncState(ser);
 		}
 

@@ -42,11 +42,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		byte jump2_outer_bank; // needed to select between banks in 512K jump2 board
 
 		//regenerable state
-		IntBuffer prg_banks_16k = new IntBuffer(2);
+		int[] prg_banks_16k = new int[2];
 
 		//state
 		int prg_reg_16k;
-		ByteBuffer regs = new ByteBuffer(8);
+		byte[] regs = new byte[8];
 		bool irq_enabled;
 		ushort irq_counter;
 		ushort irq_latch;
@@ -57,20 +57,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			base.SyncState(ser);
 			ser.Sync(nameof(prg_reg_16k), ref prg_reg_16k);
-			ser.Sync(nameof(regs), ref regs);
+			ser.Sync(nameof(regs), ref regs, false);
 			ser.Sync(nameof(irq_counter), ref irq_counter);
 			ser.Sync(nameof(irq_enabled), ref irq_enabled);
 			ser.Sync(nameof(irq_latch), ref irq_latch);
 			eprom?.SyncState(ser);
 			reader?.SyncState(ser);
 			SyncPRG();
-		}
-
-		public override void Dispose()
-		{
-			base.Dispose();
-			regs.Dispose();
-			prg_banks_16k.Dispose();
 		}
 
 		public override bool Configure(NES.EDetectionOrigin origin)

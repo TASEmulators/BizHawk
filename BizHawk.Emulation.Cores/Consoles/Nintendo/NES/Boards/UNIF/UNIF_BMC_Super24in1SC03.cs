@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public sealed class UNIF_BMC_Super24in1SC03 : MMC3Board_Base
 	{
-		private ByteBuffer exRegs = new ByteBuffer(3);
+		private byte[] exRegs = new byte[3];
 		private readonly int[] masko8 = { 63, 31, 15, 1, 3, 0, 0, 0 };
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -25,16 +25,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			exRegs.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(exRegs), ref exRegs);
+			ser.Sync(nameof(exRegs), ref exRegs, false);
 		}
 
 		public override void WriteEXP(int addr, byte value)

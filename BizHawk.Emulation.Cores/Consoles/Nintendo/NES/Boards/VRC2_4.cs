@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int[] chr_bank_reg_1k = new int[16];
 		bool prg_mode;
 		public byte[] prg_banks_8k = new byte[4];
-		public IntBuffer chr_banks_1k = new IntBuffer(8);
+		public int[] chr_banks_1k = new int[8];
 		bool irq_mode;
 		bool irq_enabled, irq_pending, irq_autoen;
 		byte irq_reload;
@@ -85,12 +85,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		bool isPirate = false;
 		// needed for 2-in-1 - Yuu Yuu + Dragonball Z [p1][!]
 		bool _isBMC = false;
-
-		public override void Dispose()
-		{
-			base.Dispose();
-			chr_banks_1k.Dispose();
-		}
 
 		public override void SyncState(Serializer ser)
 		{

@@ -45,12 +45,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SyncCHR();
 		}
 
-		public void Dispose()
-		{
-			chr_banks_4k.Dispose();
-			prg_banks_16k.Dispose();
-		}
-
 		public void SyncState(Serializer ser)
 		{
 			scnt.SyncState(ser);
@@ -93,8 +87,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int prg;
 
 		//regenerable state
-		readonly IntBuffer chr_banks_4k = new IntBuffer(2);
-		readonly IntBuffer prg_banks_16k = new IntBuffer(2);
+		readonly int[] chr_banks_4k = new int[2];
+		readonly int[] prg_banks_16k = new int[2];
 
 		public class MMC1_SerialController
 		{
@@ -541,12 +535,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (!disablemirror)
 				SetMirrorType(mmc1.mirror);
 			ppuclock = pputimeout;
-		}
-
-		public override void Dispose()
-		{
-			base.Dispose();
-			mmc1?.Dispose();
 		}
 	} //class SxROM
 

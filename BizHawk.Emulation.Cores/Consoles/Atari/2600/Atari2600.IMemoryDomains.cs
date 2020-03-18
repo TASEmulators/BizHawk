@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				domains.Add(new MemoryDomainDelegate(
 					"Cart Ram",
-					_mapper.CartRam.Len,
+					_mapper.CartRam.Length,
 					MemoryDomain.Endian.Little,
 					addr => _mapper.CartRam[(int)addr],
 					(addr, value) => _mapper.CartRam[(int)addr] = value, 1));

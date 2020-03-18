@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private const int RamBank1Offset = 1024;
 		private int _rombank1K;
 		private int _rambank1Toggle;
-		private ByteBuffer _ram = new ByteBuffer(2048);
+		private byte[] _ram = new byte[2048];
 
 		private bool _enableRam0;
 
@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			base.SyncState(ser);
 			ser.Sync("toggle", ref _rombank1K);
-			ser.Sync("ram", ref _ram);
+			ser.Sync("ram", ref _ram, false);
 			ser.Sync("EnableRam0", ref _enableRam0);
 			ser.Sync("rambank1_toggle", ref _rambank1Toggle);
 		}
@@ -49,20 +49,14 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			_rombank1K = 0;
 			_rambank1Toggle = 0;
-			_ram = new ByteBuffer(2048);
+			_ram = new byte[2048];
 			_enableRam0 = false;
 			base.HardReset();
 		}
 
-		public override void Dispose()
-		{
-			base.Dispose();
-			_ram.Dispose();
-		}
-
 		public override bool HasCartRam => true;
 
-		public override ByteBuffer CartRam => _ram;
+		public override byte[] CartRam => _ram;
 
 		private byte ReadMem(ushort addr, bool peek)
 		{

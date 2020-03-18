@@ -17,25 +17,19 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	internal class mFA : MapperBase 
 	{
 		private int _toggle;
-		private ByteBuffer _ram = new ByteBuffer(256);
+		private byte[] _ram = new byte[256];
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
 			ser.Sync("toggle", ref _toggle);
-			ser.Sync("auxRam", ref _ram);
-		}
-
-		public override void Dispose()
-		{
-			_ram.Dispose();
-			base.Dispose();
+			ser.Sync("auxRam", ref _ram, false);
 		}
 
 		public override void HardReset()
 		{
 			_toggle = 0;
-			_ram = new ByteBuffer(256);
+			_ram = new byte[256];
 			base.HardReset();
 		}
 

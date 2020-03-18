@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int prg_bank_mask_32k, chr_bank_mask_4k;
 
 		//state
-		ByteBuffer chr = new ByteBuffer(2);
+		byte[] chr = new byte[2];
 		int prg;
 
 
@@ -33,12 +33,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			chr[1] = 1;
 
 			return true;
-		}
-
-		public override void Dispose()
-		{
-			chr.Dispose();
-			base.Dispose();
 		}
 
 		public override byte ReadPPU(int addr)
@@ -83,7 +77,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			base.SyncState(ser);
 			ser.Sync(nameof(prg), ref prg);
-			ser.Sync(nameof(chr), ref chr);
+			ser.Sync(nameof(chr), ref chr, false);
 		}
 	}
 }

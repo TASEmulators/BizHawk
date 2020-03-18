@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int prg_bank_mask_8k;
 
 		//state
-		ByteBuffer prg_banks_8k = new ByteBuffer(4);
+		byte[] prg_banks_8k = new byte[4];
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -39,12 +39,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SetMirrorType(EMirrorType.Horizontal);
 
 			return true;
-		}
-
-		public override void Dispose()
-		{
-			prg_banks_8k.Dispose();
-			base.Dispose();
 		}
 
 		public override byte ReadPRG(int addr)
@@ -100,7 +94,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(prg_banks_8k), ref prg_banks_8k);
+			ser.Sync(nameof(prg_banks_8k), ref prg_banks_8k, false);
 		}
 	}
 }

@@ -6,8 +6,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 		//http://wiki.nesdev.com/w/index.php/INES_Mapper_018
 
-		ByteBuffer prg_banks_8k = new ByteBuffer(4);
-		ByteBuffer chr_banks_1k = new ByteBuffer(8);
+		byte[] prg_banks_8k = new byte[4];
+		byte[] chr_banks_1k = new byte[8];
 		int chr_bank_mask_1k, prg_bank_mask_8k;
 		int ppuclock;
 		int irqclock;
@@ -51,21 +51,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync(nameof(prg_banks_8k), ref prg_banks_8k);
-			ser.Sync(nameof(chr_banks_1k), ref chr_banks_1k);
+			ser.Sync(nameof(prg_banks_8k), ref prg_banks_8k, false);
+			ser.Sync(nameof(chr_banks_1k), ref chr_banks_1k, false);
 			ser.Sync(nameof(ppuclock), ref ppuclock);
 			ser.Sync(nameof(irqclock), ref irqclock);
 			ser.Sync(nameof(irqreload), ref irqreload);
 			ser.Sync(nameof(irqcountwidth), ref irqcountwidth);
 			ser.Sync(nameof(irqcountpaused), ref irqcountpaused);
 			base.SyncState(ser);
-		}
-
-		public override void Dispose()
-		{
-			prg_banks_8k.Dispose();
-			chr_banks_1k.Dispose();
-			base.Dispose();
 		}
 
 		public override void WritePRG(int addr, byte value)

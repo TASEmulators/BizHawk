@@ -3,20 +3,19 @@
 //fceux contains a comment in mmc3.cpp:
 //Code for emulating iNES mappers 4,12,44,45,47,49,52,74,114,115,116,118,119,165,205,214,215,245,249,250,254
 
-using System;
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class MMC3 : IDisposable
+	public class MMC3
 	{
 		//state
 		public int reg_addr;
 		public bool get_chr_mode => chr_mode; // one of the pirate mappers needs this
 		public bool chr_mode;
 		public bool prg_mode;
-		public ByteBuffer regs = new ByteBuffer(8);
+		public byte[] regs = new byte[8];
 
 		public byte mirror;
 		int a12_old;
@@ -32,8 +31,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int irq_countdown;
 
 		//volatile state
-		public ByteBuffer chr_regs_1k = new ByteBuffer(8);
-		public ByteBuffer prg_regs_8k = new ByteBuffer(4);
+		public byte[] chr_regs_1k = new byte[8];
+		public byte[] prg_regs_8k = new byte[4];
 
 		//configuration
 		public enum EMMC3Type
@@ -51,13 +50,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 		bool oldIrqType;
-
-		public virtual void Dispose()
-		{
-			regs.Dispose();
-			chr_regs_1k.Dispose();
-			prg_regs_8k.Dispose();
-		}
 
 		public NES.NESBoardBase.EMirrorType MirrorType
 		{
@@ -150,7 +142,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(reg_addr), ref reg_addr);
 			ser.Sync(nameof(chr_mode), ref chr_mode);
 			ser.Sync(nameof(prg_mode), ref prg_mode);
-			ser.Sync(nameof(regs), ref regs);
+			ser.Sync(nameof(regs), ref regs, false);
 			ser.Sync(nameof(mirror), ref mirror);
 			ser.Sync(nameof(a12_old), ref a12_old);
 			ser.Sync(nameof(irq_reload), ref irq_reload);
@@ -336,11 +328,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		//configuration
 		protected int prg_mask, chr_mask;
-
-		public override void Dispose()
-		{
-			mmc3?.Dispose();
-		}
 
 		public override void SyncState(Serializer ser)
 		{

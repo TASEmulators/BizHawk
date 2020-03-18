@@ -5,15 +5,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public sealed class Mapper090 : NES.NESBoardBase
 	{
-		ByteBuffer prg_regs = new ByteBuffer(4);
-		IntBuffer chr_regs = new IntBuffer(8);
-		IntBuffer nt_regs = new IntBuffer(4);
+		byte[] prg_regs = new byte[4];
+		int[] chr_regs = new int[8];
+		int[] nt_regs = new int[4];
 
-		IntBuffer prg_banks = new IntBuffer(4);
-		IntBuffer chr_banks = new IntBuffer(8);
-		IntBuffer chr_latches = new IntBuffer(2);
+		int[] prg_banks = new int[4];
+		int[] chr_banks = new int[8];
+		int[] chr_latches = new int[2];
 
-		ByteBuffer ram_bytes = new ByteBuffer(5);
+		byte[] ram_bytes = new byte[5];
 
 		[MapperProp]
 		public bool dipswitch_0;
@@ -131,14 +131,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			base.SyncState(ser);
 
-			ser.Sync(nameof(prg_regs), ref prg_regs);
-			ser.Sync(nameof(chr_regs), ref chr_regs);
-			ser.Sync(nameof(chr_latches), ref chr_latches);
-			ser.Sync(nameof(nt_regs), ref nt_regs);
+			ser.Sync(nameof(prg_regs), ref prg_regs, false);
+			ser.Sync(nameof(chr_regs), ref chr_regs, false);
+			ser.Sync(nameof(chr_latches), ref chr_latches, false);
+			ser.Sync(nameof(nt_regs), ref nt_regs, false);
 
-			ser.Sync(nameof(prg_banks), ref prg_banks);
-			ser.Sync(nameof(chr_banks), ref chr_banks);
-			ser.Sync(nameof(ram_bytes), ref ram_bytes);
+			ser.Sync(nameof(prg_banks), ref prg_banks, false);
+			ser.Sync(nameof(chr_banks), ref chr_banks, false);
+			ser.Sync(nameof(ram_bytes), ref ram_bytes, false);
 
 			ser.Sync(nameof(dipswitch_0), ref dipswitch_0);
 			ser.Sync(nameof(dipswitch_1), ref dipswitch_1);
@@ -183,18 +183,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Sync();
 		}
 
-		public override void Dispose()
-		{
-			prg_regs.Dispose();
-			chr_regs.Dispose();
-			chr_latches.Dispose();
-			nt_regs.Dispose();
-			prg_banks.Dispose();
-			chr_banks.Dispose();
-			ram_bytes.Dispose();
-			base.Dispose();
-		}
-
 		private void Sync()
 		{
 			SyncIRQ();
@@ -203,7 +191,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SyncNametables();
 		}
 
-		private void SetBank(IntBuffer target, byte offset, byte size, int value)
+		private void SetBank(int[] target, byte offset, byte size, int value)
 		{
 			value &= ~(size - 1);
 			for (int i = 0; i < size; i++)

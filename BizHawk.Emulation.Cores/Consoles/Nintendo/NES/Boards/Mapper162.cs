@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public sealed class Mapper162 : NES.NESBoardBase
 	{
-		private ByteBuffer reg = new ByteBuffer(8);
+		private byte[] reg = new byte[8];
 		private int prg_bank_mask_32k;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -26,15 +26,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			reg.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync("regs", ref reg);
+			ser.Sync("regs", ref reg, false);
 			base.SyncState(ser);
 		}
 

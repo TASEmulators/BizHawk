@@ -17,28 +17,22 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	 */
 	internal class mCV : MapperBase
 	{
-		private ByteBuffer _ram = new ByteBuffer(1024);
+		private byte[] _ram = new byte[1024];
 
 		public override bool HasCartRam => true;
 
-		public override ByteBuffer CartRam => _ram;
+		public override byte[] CartRam => _ram;
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("aux_ram", ref _ram);
+			ser.Sync("aux_ram", ref _ram, false);
 		}
 
 		public override void HardReset()
 		{
-			_ram = new ByteBuffer(1024);
+			_ram = new byte[1024];
 			base.HardReset();
-		}
-
-		public override void Dispose()
-		{
-			_ram.Dispose();
-			base.Dispose();
 		}
 
 		public override byte ReadMemory(ushort addr)

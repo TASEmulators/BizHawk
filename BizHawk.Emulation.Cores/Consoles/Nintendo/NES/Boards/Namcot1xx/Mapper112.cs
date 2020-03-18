@@ -10,11 +10,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		//state
 		int reg_addr;
-		ByteBuffer regs = new ByteBuffer(8);
+		byte[] regs = new byte[8];
 
 		//volatile state
-		IntBuffer chr_regs_1k = new IntBuffer(8);
-		ByteBuffer prg_regs_8k = new ByteBuffer(4);
+		int[] chr_regs_1k = new int[8];
+		byte[] prg_regs_8k = new byte[4];
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -36,19 +36,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			base.Dispose();
-			regs.Dispose();
-			chr_regs_1k.Dispose();
-			prg_regs_8k.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
 			ser.Sync(nameof(reg_addr), ref reg_addr);
-			ser.Sync(nameof(regs), ref regs);
+			ser.Sync(nameof(regs), ref regs, false);
 			ser.Sync(nameof(chr_outer_reg), ref chr_outer_reg);
 			Sync();
 		}
