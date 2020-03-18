@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		}
 
 		private ByteBuffer _superChargerImage = new ByteBuffer(8192);
-		private IntBuffer _imageOffsets = new IntBuffer(2);
+		private int[] _imageOffsets = new int[2];
 		private bool _writePending;
 		private int _distinctAccesses;
 		private bool _writeEnabled;
@@ -171,7 +171,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public override void HardReset()
 		{
 			_superChargerImage = new ByteBuffer(8192);
-			_imageOffsets = new IntBuffer(2);
+			_imageOffsets = new int[2];
 			_writePending = false;
 			_distinctAccesses = 0;
 
@@ -194,7 +194,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public override void Dispose()
 		{
 			_superChargerImage.Dispose();
-			_imageOffsets.Dispose();
 			_loadedImages.Dispose();
 			_header.Dispose();
 			base.Dispose();
@@ -203,7 +202,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public override void SyncState(Serializer ser)
 		{
 			ser.Sync("superChargerImage", ref _superChargerImage);
-			ser.Sync("imageOffsets", ref _imageOffsets);
+			ser.Sync("imageOffsets", ref _imageOffsets, false);
 			ser.Sync("writePending", ref _writePending);
 			ser.Sync("distinctAccesses", ref _distinctAccesses);
 
@@ -225,7 +224,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public override void ClockCpu()
 		{
 			_elapsedCycles++;
-			
 		}
 
 		private byte ReadMem(ushort addr, bool peek)

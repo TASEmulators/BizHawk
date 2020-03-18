@@ -229,7 +229,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		// shift register (it's the NOT of the EOR of four bits)
 		private readonly byte[] _randomInputBits = { 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1 };
 
-		private IntBuffer _counters = new IntBuffer(8);
+		private int[] _counters = new int[8];
 		private ByteBuffer _tops = new ByteBuffer(8);
 		private ByteBuffer _flags = new ByteBuffer(8);
 		private ByteBuffer _bottoms = new ByteBuffer(8);
@@ -246,7 +246,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public override void Dispose()
 		{
 			base.Dispose();
-			_counters.Dispose();
 			_tops.Dispose();
 			_flags.Dispose();
 			_bottoms.Dispose();
@@ -256,7 +255,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			base.SyncState(ser);
 
-			ser.Sync("counters", ref _counters);
+			ser.Sync("counters", ref _counters, false);
 			ser.Sync("tops", ref _tops);
 			ser.Sync("flags", ref _flags);
 			ser.Sync("bottoms", ref _bottoms);
@@ -272,7 +271,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public override void HardReset()
 		{
-			_counters = new IntBuffer(8);
+			_counters = new int[8];
 			_tops = new ByteBuffer(8);
 			_flags = new ByteBuffer(8);
 			_bottoms = new ByteBuffer(8);
