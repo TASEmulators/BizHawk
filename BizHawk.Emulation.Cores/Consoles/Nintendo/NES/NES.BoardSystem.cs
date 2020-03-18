@@ -6,14 +6,13 @@ using System.Xml;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-//TODO - consider bytebuffer for mirroring
 //TODO - could stringpool the bootgod DB for a pedantic optimization
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	partial class NES
 	{
-		public interface INESBoard : IDisposable
+		public interface INESBoard
 		{
 			//base class pre-configuration
 			void Create(NES nes);
@@ -117,8 +116,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				get => irq_signal;
 				set => irq_signal = value;
 			}
-
-			public virtual void Dispose() { }
 
 			int[] mirroring = new int[4];
 			protected void SetMirroring(int a, int b, int c, int d)
@@ -414,7 +411,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				Buffer.BlockCopy(Board.SaveRam, 0, newboard.SaveRam, 0, Board.SaveRam.Length);
 			}
-			Board.Dispose();
+
 			Board = newboard;
 			ppu.HasClockPPU = Board.GetType().GetMethod(nameof(INESBoard.ClockPPU)).DeclaringType != typeof(NESBoardBase);
 		}
@@ -492,7 +489,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			lock(INESBoardImplementors)
 				foreach (var type in INESBoardImplementors)
 				{
-					using NESBoardBase board = (NESBoardBase)Activator.CreateInstance(type);
+					NESBoardBase board = (NESBoardBase)Activator.CreateInstance(type);
 					//unif demands that the boards set themselves up with expected legal values based on the board size
 					//except, i guess, for the rom/chr sizes. go figure.
 					//so, disable the asserts here
