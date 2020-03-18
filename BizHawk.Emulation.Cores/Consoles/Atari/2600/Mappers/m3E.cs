@@ -27,8 +27,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private bool _hasRam;
 		private byte[] _ram = new byte[256 * 1024]; // Up to 256k
 
-		public override bool HasCartRam => true;
-
 		public override byte[] CartRam => _ram;
 
 		public override void SyncState(Serializer ser)

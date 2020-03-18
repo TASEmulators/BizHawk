@@ -6,8 +6,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	{
 		public Atari2600 Core { get; set; }
 
-		public virtual bool HasCartRam => false;
-
 		public virtual byte[] CartRam => new byte[0];
 
 		public virtual byte ReadMemory(ushort addr)

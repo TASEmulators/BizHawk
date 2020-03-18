@@ -54,8 +54,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			base.HardReset();
 		}
 
-		public override bool HasCartRam => true;
-
 		public override byte[] CartRam => _ram;
 
 		private byte ReadMem(ushort addr, bool peek)

@@ -87,8 +87,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 		}
 
-		public override bool HasCartRam => true;
-
 		public override byte[] CartRam => _ram;
 
 		public override void SyncState(Serializer ser)

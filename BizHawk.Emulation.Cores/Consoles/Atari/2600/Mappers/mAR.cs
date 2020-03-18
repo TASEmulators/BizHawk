@@ -164,8 +164,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		#endregion
 
-		public override bool HasCartRam => true;
-
 		public override byte[] CartRam => _superChargerImage;
 
 		public override void HardReset()
