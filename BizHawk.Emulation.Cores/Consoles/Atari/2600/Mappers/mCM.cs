@@ -179,10 +179,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	*/
 	internal class mCM : MapperBase
 	{
-		public mCM(Atari2600 core) : base(core)
-		{
-		}
-
 		// TODO: PokeMem
 		private byte[] _ram = new byte[2048];
 		private int _bank4K = 3; // On Start up, controller port is all 1's, so start on the last bank, flags enabled
@@ -191,6 +187,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private int _column;
 		private bool _funcKey;
 		private bool _shiftKey;
+
+		public mCM(Atari2600 core) : base(core)
+		{
+		}
+
+		public override byte[] CartRam => _ram;
 
 		public override void HardReset()
 		{
