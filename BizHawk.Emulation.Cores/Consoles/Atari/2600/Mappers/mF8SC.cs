@@ -9,16 +9,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	internal class mF8SC : MapperBase
 	{
 		private int _bank_4K;
-		private ByteBuffer _ram = new ByteBuffer(128);
+		private byte[] _ram = new byte[128];
 
 		public override bool HasCartRam => true;
 
-		public override ByteBuffer CartRam => _ram;
+		public override byte[] CartRam => _ram;
 
 		public override void HardReset()
 		{
 			_bank_4K = 0;
-			_ram = new ByteBuffer(128);
+			_ram = new byte[128];
 			base.HardReset();
 		}
 
@@ -89,13 +89,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			base.SyncState(ser);
 			ser.Sync("bank_4k", ref _bank_4K);
-			ser.Sync("auxRam", ref _ram);
-		}
-
-		public override void Dispose()
-		{
-			base.Dispose();
-			_ram.Dispose();
+			ser.Sync("auxRam", ref _ram, false);
 		}
 
 		private void Address(ushort addr)

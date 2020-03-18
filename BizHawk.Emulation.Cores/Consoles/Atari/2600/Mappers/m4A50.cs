@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 	internal class m4A50 : MapperBase 
 	{
-		private ByteBuffer _ram = new ByteBuffer(32768);
+		private byte[] _ram = new byte[32768];
 
 		private byte _lastData = 0xFF;
 		private ushort _lastAddress = 0xFFFF;
@@ -89,17 +89,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public override bool HasCartRam => true;
 
-		public override ByteBuffer CartRam => _ram;
-
-		public override void Dispose()
-		{
-			_ram.Dispose();
-			base.Dispose();
-		}
+		public override byte[] CartRam => _ram;
 
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync("cartRam", ref _ram);
+			ser.Sync("cartRam", ref _ram, false);
 
 			ser.Sync("lastData", ref _lastData);
 			ser.Sync("lastAddress", ref _lastAddress);
@@ -117,7 +111,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public override void HardReset()
 		{
-			_ram = new ByteBuffer(32768);
+			_ram = new byte[32768];
 
 			_lastData = 0xFF;
 			_lastAddress = 0xFFFF;

@@ -39,15 +39,15 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			InitializeSettings();
 		}
 
-		private ByteBuffer _superChargerImage = new ByteBuffer(8192);
+		private byte[] _superChargerImage = new byte[8192];
 		private int[] _imageOffsets = new int[2];
 		private bool _writePending;
 		private int _distinctAccesses;
 		private bool _writeEnabled;
 		private byte _dataHoldRegister;
 		private byte _numberOfLoadImages;
-		private ByteBuffer _loadedImages;
-		private ByteBuffer _header = new ByteBuffer(256);
+		private byte[] _loadedImages;
+		private byte[] _header = new byte[256];
 		private bool _powerIndicator; // Indicates if the ROM's power is on or off
 		private int _powerRomCycle; // Indicates when the power was last turned on
 		private int _size;
@@ -63,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_numberOfLoadImages = (byte)(_size / 8448);
 
 			// TODO: why are we making a redundant copy?
-			_loadedImages = new ByteBuffer(_size);
+			_loadedImages = new byte[_size];
 			for (int i = 0; i < size; i++)
 			{
 				_loadedImages[i] = Core.Rom[i];
@@ -166,11 +166,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public override bool HasCartRam => true;
 
-		public override ByteBuffer CartRam => _superChargerImage;
+		public override byte[] CartRam => _superChargerImage;
 
 		public override void HardReset()
 		{
-			_superChargerImage = new ByteBuffer(8192);
+			_superChargerImage = new byte[8192];
 			_imageOffsets = new int[2];
 			_writePending = false;
 			_distinctAccesses = 0;
@@ -180,7 +180,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_numberOfLoadImages = 0;
 			_loadedImages = null;
 			
-			_header = new ByteBuffer(256);
+			_header = new byte[256];
 			_powerIndicator = false;
 			_powerRomCycle = 0;
 			_size = 0;
@@ -191,17 +191,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			base.HardReset();
 		}
 
-		public override void Dispose()
-		{
-			_superChargerImage.Dispose();
-			_loadedImages.Dispose();
-			_header.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync("superChargerImage", ref _superChargerImage);
+			ser.Sync("superChargerImage", ref _superChargerImage, false);
 			ser.Sync("imageOffsets", ref _imageOffsets, false);
 			ser.Sync("writePending", ref _writePending);
 			ser.Sync("distinctAccesses", ref _distinctAccesses);
@@ -209,9 +201,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.Sync("writeEnabled", ref _writeEnabled);
 			ser.Sync("dataHoldRegister", ref _dataHoldRegister);
 			ser.Sync("numberOfLoadImages", ref _numberOfLoadImages);
-			ser.Sync("loadedImages", ref _loadedImages);
+			ser.Sync("loadedImages", ref _loadedImages, false);
 
-			ser.Sync("header", ref _header);
+			ser.Sync("header", ref _header, false);
 			ser.Sync("powerIndicator", ref _powerIndicator);
 			ser.Sync("powerRomCycle", ref _powerRomCycle);
 			ser.Sync("size", ref _size);
@@ -466,7 +458,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 						_header[i] = _loadedImages[(image * 8448) + 8192 + i];
 					}
 
-					if (Checksum(_header.Arr.Take(8).ToArray()) != 0x55)
+					if (Checksum(_header.Take(8).ToArray()) != 0x55)
 					{
 						Console.WriteLine("WARNING: The Supercharger header checksum is invalid...");
 					}
@@ -479,7 +471,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					{
 						int bank = _header[16 + j] & 0x03;
 						int page = (_header[16 + j] >> 2) & 0x07;
-						var src = _loadedImages.Arr.Skip((image * 8448) + (j * 256)).Take(256).ToArray();
+						var src = _loadedImages.Skip((image * 8448) + (j * 256)).Take(256).ToArray();
 						byte sum = (byte)(Checksum(src) + _header[16 + j] + _header[64 + j]);
 
 						if (!invalidPageChecksumSeen && (sum != 0x55))

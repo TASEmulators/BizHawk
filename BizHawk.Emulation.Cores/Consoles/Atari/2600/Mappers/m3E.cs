@@ -25,18 +25,18 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private int _lowbank2K;
 		private int _rambank1K;
 		private bool _hasRam;
-		private ByteBuffer _ram = new ByteBuffer(256 * 1024); // Up to 256k
+		private byte[] _ram = new byte[256 * 1024]; // Up to 256k
 
 		public override bool HasCartRam => true;
 
-		public override ByteBuffer CartRam => _ram;
+		public override byte[] CartRam => _ram;
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
 			ser.Sync("lowbank_2k", ref _lowbank2K);
 			ser.Sync("rambank_1k", ref _rambank1K);
-			ser.Sync("cart_ram", ref _ram);
+			ser.Sync("cart_ram", ref _ram, false);
 			ser.Sync("hasRam", ref _hasRam);
 		}
 
@@ -45,14 +45,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_lowbank2K = 0;
 			_rambank1K = 0;
 			_hasRam = false;
-			_ram = new ByteBuffer(256 * 1024);
+			_ram = new byte[256 * 1024];
 			base.HardReset();
-		}
-
-		public override void Dispose()
-		{
-			base.Dispose();
-			_ram.Dispose();
 		}
 
 		public override byte ReadMemory(ushort addr)

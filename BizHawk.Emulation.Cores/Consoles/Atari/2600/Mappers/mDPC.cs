@@ -230,9 +230,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private readonly byte[] _randomInputBits = { 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1 };
 
 		private int[] _counters = new int[8];
-		private ByteBuffer _tops = new ByteBuffer(8);
-		private ByteBuffer _flags = new ByteBuffer(8);
-		private ByteBuffer _bottoms = new ByteBuffer(8);
+		private byte[] _tops = new byte[8];
+		private byte[] _flags = new byte[8];
+		private byte[] _bottoms = new byte[8];
 		private bool[] _musicModes = new bool[3];
 
 		private int _bank4K;
@@ -243,22 +243,14 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private byte[] _dspData;
 		public byte[] DspData => _dspData ??= Core.Rom.Skip(8192).Take(2048).ToArray();
 
-		public override void Dispose()
-		{
-			base.Dispose();
-			_tops.Dispose();
-			_flags.Dispose();
-			_bottoms.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
 
 			ser.Sync("counters", ref _counters, false);
-			ser.Sync("tops", ref _tops);
-			ser.Sync("flags", ref _flags);
-			ser.Sync("bottoms", ref _bottoms);
+			ser.Sync("tops", ref _tops, false);
+			ser.Sync("flags", ref _flags, false);
+			ser.Sync("bottoms", ref _bottoms, false);
 			ser.Sync("musicMode0", ref _musicModes[0]); // Silly, but I didn't want to support bool[] in Serializer just for this one variable
 			ser.Sync("musicMode1", ref _musicModes[1]);
 			ser.Sync("musicMode2", ref _musicModes[2]);
@@ -272,9 +264,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public override void HardReset()
 		{
 			_counters = new int[8];
-			_tops = new ByteBuffer(8);
-			_flags = new ByteBuffer(8);
-			_bottoms = new ByteBuffer(8);
+			_tops = new byte[8];
+			_flags = new byte[8];
+			_bottoms = new byte[8];
 			_musicModes = new bool[3];
 			_bank4K = 0;
 			_currentRandomVal = 0;
