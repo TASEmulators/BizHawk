@@ -22,6 +22,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	*/
 	internal class m3E : MapperBase
 	{
+		public m3E(Atari2600 core) : base(core)
+		{
+		}
+
 		private int _lowbank2K;
 		private int _rambank1K;
 		private bool _hasRam;

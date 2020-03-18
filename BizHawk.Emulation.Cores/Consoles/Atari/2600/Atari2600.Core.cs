@@ -60,18 +60,15 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		// keeps track of tia cycles, 3 cycles per CPU cycle
 		private int cyc_counter;
 
-		private static MapperBase SetMultiCartMapper(int romLength, int gameTotal)
+		private MapperBase SetMultiCartMapper(int romLength, int gameTotal)
 		{
-			switch (romLength / gameTotal)
+			return (romLength / gameTotal) switch
 			{
-				case 1024 * 2: // 2K
-					return new Multicart2K(gameTotal);
-				default:
-				case 1024 * 4: // 4K
-					return new Multicart4K(gameTotal);
-				case 1024 * 8: // 8K
-					return new Multicart8K(gameTotal);
-			}
+				1024 * 2 => new Multicart2K(this, gameTotal),
+				1024 * 4 => new Multicart4K(this, gameTotal),
+				1024 * 8 => new Multicart8K(this, gameTotal),
+				_ => new Multicart4K(this, gameTotal)
+			};
 		}
 
 		internal byte BaseReadMemory(ushort addr)
@@ -199,123 +196,47 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private void RebootCore()
 		{
 			// Regenerate mapper here to make sure its state is entirely clean
-			switch (_game.GetOptionsDict()["m"])
+			_mapper = _game.GetOptionsDict()["m"] switch
 			{
-				case "2IN1":
-					_mapper = SetMultiCartMapper(Rom.Length, 2);
-					break;
-				case "4IN1":
-					_mapper = SetMultiCartMapper(Rom.Length, 4);
-					break;
-				case "8IN1":
-					_mapper = SetMultiCartMapper(Rom.Length, 8);
-					break;
-				case "16IN1":
-					_mapper = SetMultiCartMapper(Rom.Length, 16);
-					break;
-				case "32IN1":
-					_mapper = SetMultiCartMapper(Rom.Length, 32);
-					break;
-				case "AR":
-					_mapper = new mAR(this); // This mapper has to set up configurations in the contructor.
-					break;
-				case "4K":
-					_mapper = new m4K();
-					break;
-				case "2K":
-					_mapper = new m2K();
-					break;
-				case "CM":
-					_mapper = new mCM();
-					break;
-				case "CV":
-					_mapper = new mCV();
-					break;
-				case "DPC":
-					_mapper = new mDPC();
-					break;
-				case "DPC+":
-					_mapper = new mDPCPlus();
-					break;
-				case "F8":
-					_mapper = new mF8();
-					break;
-				case "F8SC":
-					_mapper = new mF8SC();
-					break;
-				case "F6":
-					_mapper = new mF6();
-					break;
-				case "F6SC":
-					_mapper = new mF6SC();
-					break;
-				case "F4":
-					_mapper = new mF4();
-					break;
-				case "F4SC":
-					_mapper = new mF4SC();
-					break;
-				case "FE":
-					_mapper = new mFE();
-					break;
-				case "E0":
-					_mapper = new mE0();
-					break;
-				case "3F":
-					_mapper = new m3F();
-					break;
-				case "FA":
-					_mapper = new mFA();
-					break;
-				case "FA2":
-					_mapper = new mFA2();
-					break;
-				case "E7":
-					_mapper = new mE7();
-					break;
-				case "F0":
-					_mapper = new mF0();
-					break;
-				case "UA":
-					_mapper = new mUA();
-					break;
-
-				// Special Sega Mapper which has swapped banks
-				case "F8_sega":
-					_mapper = new mF8_sega();
-					break;
+				"2IN1" => SetMultiCartMapper(Rom.Length, 2),
+				"4IN1" => SetMultiCartMapper(Rom.Length, 4),
+				"8IN1" => SetMultiCartMapper(Rom.Length, 8),
+				"16IN1" => SetMultiCartMapper(Rom.Length, 16),
+				"32IN1" => SetMultiCartMapper(Rom.Length, 32),
+				"AR" => new mAR(this),
+				"4K" => new m4K(this),
+				"2K" => new m2K(this),
+				"CM" => new mCM(this),
+				"CV" => new mCV(this),
+				"DPC" => new mDPC(this),
+				"DPC+" => new mDPCPlus(this),
+				"F8" => new mF8(this),
+				"F8SC" => new mF8SC(this),
+				"F6" => new mF6(this),
+				"F6SC" => new mF6SC(this),
+				"F4" => new mF4(this),
+				"F4SC" => new mF4SC(this),
+				"FE" => new mFE(this),
+				"E0" => new mE0(this),
+				"3F" => new m3F(this),
+				"FA" => new mFA(this),
+				"FA2" => new mFA2(this),
+				"E7" => new mE7(this),
+				"F0" => new mF0(this),
+				"UA" => new mUA(this),
+				"F8_sega" => new mF8_sega(this),
 
 				// Homebrew mappers
-				case "3E":
-					_mapper = new m3E();
-					break;
-				case "0840":
-					_mapper = new m0840();
-					break;
-				case "MC":
-					_mapper = new mMC();
-					break;
-				case "EF":
-					_mapper = new mEF();
-					break;
-				case "EFSC":
-					_mapper = new mEFSC();
-					break;
-				case "X07":
-					_mapper = new mX07();
-					break;
-				case "4A50":
-					_mapper = new m4A50();
-					break;
-				case "SB":
-					_mapper = new mSB();
-					break;
-
-				default:
-					throw new InvalidOperationException("mapper not supported: " + _game.GetOptionsDict()["m"]);
-			}
-
-			_mapper.Core = this;
+				"3E" => new m3E(this),
+				"0840" => new m0840(this),
+				"MC" => new mMC(this),
+				"EF" => new mEF(this),
+				"EFSC" => new mEFSC(this),
+				"X07" => new mX07(this),
+				"4A50" => new m4A50(this),
+				"SB" => new mSB(this),
+				_ => throw new InvalidOperationException("mapper not supported: " + _game.GetOptionsDict()["m"])
+			};
 
 			_lagCount = 0;
 			Cpu = new MOS6502X<CpuLink>(new CpuLink(this));
@@ -342,7 +263,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			HardReset();
 
-			// Show mapper class on romstatusdetails
 			RomDetails = $"{_game.Name}\r\nSHA1:{Rom.HashSHA1()}\r\nMD5:{Rom.HashMD5()}\r\nMapper Impl \"{_mapper.GetType()}\"";
 
 			// Some games (ex. 3D tic tac toe), turn off the screen for extended periods, so we need to allow for this here.

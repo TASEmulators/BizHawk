@@ -14,6 +14,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 	internal class mUA : MapperBase 
 	{
+		public mUA(Atari2600 core) : base(core)
+		{
+		}
+
 		private int _toggle;
 
 		public override void SyncState(Serializer ser)

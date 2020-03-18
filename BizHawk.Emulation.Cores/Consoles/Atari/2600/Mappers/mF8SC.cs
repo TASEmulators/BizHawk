@@ -8,6 +8,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	*/
 	internal class mF8SC : MapperBase
 	{
+		public mF8SC(Atari2600 core) : base(core)
+		{
+		}
+
 		private int _bank_4K;
 		private byte[] _ram = new byte[128];
 

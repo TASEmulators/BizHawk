@@ -10,6 +10,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	*/
 	internal class mFA2 : MapperBase
 	{
+		public mFA2(Atari2600 core) : base(core)
+		{
+		}
+
 		private int _bank4k;
 		private byte[] _ram = new  byte[256];
 

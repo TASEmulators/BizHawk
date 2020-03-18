@@ -23,6 +23,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	*/
 	internal class m0840 : MapperBase 
 	{
+		public m0840(Atari2600 core) : base(core)
+		{
+		}
+
 		private int _bank4K;
 
 		public override void SyncState(Serializer ser)

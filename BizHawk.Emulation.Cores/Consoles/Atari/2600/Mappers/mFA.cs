@@ -19,6 +19,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private int _toggle;
 		private byte[] _ram = new byte[256];
 
+		public mFA(Atari2600 core) : base(core)
+		{
+		}
+
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);

@@ -2,6 +2,10 @@
 {
 	internal class m4K : MapperBase
 	{
+		public m4K(Atari2600 core) : base(core)
+		{
+		}
+
 		public override byte ReadMemory(ushort addr)
 		{
 			if (addr < 0x1000)

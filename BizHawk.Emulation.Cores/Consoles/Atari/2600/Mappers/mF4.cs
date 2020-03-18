@@ -14,6 +14,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	{
 		private int _toggle;
 
+		public mF4(Atari2600 core) : base(core)
+		{
+		}
+
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);

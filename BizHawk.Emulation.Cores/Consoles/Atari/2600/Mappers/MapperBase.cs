@@ -4,29 +4,26 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	public class MapperBase
 	{
-		public Atari2600 Core { get; set; }
+		public MapperBase(Atari2600 core)
+		{
+			Core = core;
+		}
+
+		protected readonly Atari2600 Core;
 
 		public virtual byte[] CartRam => new byte[0];
 
 		public virtual byte ReadMemory(ushort addr)
-		{
-			return Core.BaseReadMemory(addr);
-		}
+			=> Core.BaseReadMemory(addr);
 
 		public virtual byte PeekMemory(ushort addr)
-		{
-			return Core.BasePeekMemory(addr);
-		}
+			=> Core.BasePeekMemory(addr);
 
 		public virtual void WriteMemory(ushort addr, byte value)
-		{
-			Core.BaseWriteMemory(addr, value);
-		}
+			=> Core.BaseWriteMemory(addr, value);
 
 		public virtual void PokeMemory(ushort addr, byte value)
-		{
-			Core.BasePokeMemory(addr, value);
-		}
+			=> Core.BasePokeMemory(addr, value);
 
 		public virtual void SyncState(Serializer ser)
 		{

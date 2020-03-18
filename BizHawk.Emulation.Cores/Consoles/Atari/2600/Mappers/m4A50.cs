@@ -43,6 +43,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 	internal class m4A50 : MapperBase 
 	{
+		public m4A50(Atari2600 core) : base(core)
+		{
+		}
+
 		private byte[] _ram = new byte[32768];
 
 		private byte _lastData = 0xFF;

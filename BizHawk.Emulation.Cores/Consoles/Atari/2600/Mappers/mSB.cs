@@ -11,6 +11,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private int _bank4K;
 		private int myStartBank => (Core.Rom.Length >> 12) - 1;
 
+		public mSB(Atari2600 core) : base(core)
+		{
+		}
+
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);

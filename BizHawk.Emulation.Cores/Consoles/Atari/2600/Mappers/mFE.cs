@@ -56,6 +56,10 @@
 	*/
 	internal class mFE : MapperBase 
 	{
+		public mFE(Atari2600 core) : base(core)
+		{
+		}
+
 		public override byte ReadMemory(ushort addr)
 		{
 			if (addr < 0x1000)

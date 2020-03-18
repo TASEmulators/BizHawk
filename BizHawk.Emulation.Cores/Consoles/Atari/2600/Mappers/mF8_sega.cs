@@ -13,6 +13,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	{
 		private int _bank4K = 1;
 
+		public mF8_sega(Atari2600 core) : base(core)
+		{
+		}
+
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);

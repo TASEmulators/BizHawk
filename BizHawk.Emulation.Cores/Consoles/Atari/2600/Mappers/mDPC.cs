@@ -225,6 +225,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	 */
 	internal class mDPC : MapperBase
 	{
+		public mDPC(Atari2600 core) : base(core)
+		{
+		}
+
 		// Table for computing the input bit of the random number generator's
 		// shift register (it's the NOT of the EOR of four bits)
 		private readonly byte[] _randomInputBits = { 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1 };

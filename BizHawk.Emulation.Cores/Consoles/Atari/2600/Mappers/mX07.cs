@@ -35,6 +35,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 	internal class mX07 : MapperBase
 	{
+		public mX07(Atari2600 core) : base(core)
+		{
+		}
+
 		private int _rombank2K;
 
 		public override void SyncState(Serializer ser)

@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	internal class mDPCPlus : MapperBase
 	{
 		// TODO: PokeMem, and everything else
-		public mDPCPlus()
+		public mDPCPlus(Atari2600 core) : base(core)
 		{
 			throw new NotImplementedException();
 		}

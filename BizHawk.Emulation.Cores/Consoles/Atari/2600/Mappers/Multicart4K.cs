@@ -10,7 +10,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private int _gameTotal;
 		private int _currentGame;
 
-		public Multicart4K(int gameTotal)
+		public Multicart4K(Atari2600 core, int gameTotal)
+			: base(core)
 		{
 			_gameTotal = gameTotal;
 			_currentGame = 0;

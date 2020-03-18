@@ -23,6 +23,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 	internal class m3F : MapperBase 
 	{
+		public m3F(Atari2600 core) : base(core)
+		{
+		}
+
 		private int _lowbank2K;
 
 		public override void SyncState(Serializer ser)

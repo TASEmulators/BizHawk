@@ -17,6 +17,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	 */
 	internal class mCV : MapperBase
 	{
+		public mCV(Atari2600 core) : base(core)
+		{
+		}
+
 		private byte[] _ram = new byte[1024];
 
 		public override byte[] CartRam => _ram;

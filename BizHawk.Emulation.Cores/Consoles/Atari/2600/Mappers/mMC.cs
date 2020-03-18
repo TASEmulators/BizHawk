@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 	internal class mMC : MapperBase 
 	{
-		public mMC()
+		public mMC(Atari2600 core) : base(core)
 		{
 			throw new NotImplementedException();
 		}

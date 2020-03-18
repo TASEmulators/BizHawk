@@ -33,9 +33,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	internal class mAR : MapperBase
 	{
-		public mAR(Atari2600 core)
+		public mAR(Atari2600 core) : base(core)
 		{
-			Core = core;
 			InitializeSettings();
 		}
 

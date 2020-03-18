@@ -25,6 +25,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 	internal class mE0 : MapperBase 
 	{
+		public mE0(Atari2600 core) : base(core)
+		{
+		}
+
 		private int _toggle1;
 		private int _toggle2;
 		private int _toggle3;
