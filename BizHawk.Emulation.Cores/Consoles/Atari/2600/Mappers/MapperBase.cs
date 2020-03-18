@@ -34,10 +34,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 		}
 
-		public virtual void Dispose()
-		{
-		}
-
 		public virtual void ClockCpu()
 		{
 		}
