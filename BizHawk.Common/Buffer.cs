@@ -100,20 +100,4 @@ namespace BizHawk.Common
 			#endif
 		}
 	}
-
-	public sealed class ShortBuffer : CBuffer<short>
-	{
-		public ShortBuffer(int amt) : base(amt, 2) { }
-		public ShortBuffer(short[] arr) : base(arr, 2) { }
-		public short this[int index]
-		{
-#if DEBUG
-				get => this.Arr[index];
-				set => this.Arr[index] = value;
-#else
-			set => Write32(index << 1, (uint)value);
-			get => (short)Read16(index << 1);
-#endif
-		}
-	}
 }
