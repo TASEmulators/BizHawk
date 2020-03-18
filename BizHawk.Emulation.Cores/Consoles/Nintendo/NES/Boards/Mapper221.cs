@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public class Mapper221 : NES.NESBoardBase
 	{
-		IntBuffer regs = new IntBuffer(2);
+		int[] regs = new int[2];
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync(nameof(regs), ref regs);
+			ser.Sync(nameof(regs), ref regs, false);
 			base.SyncState(ser);
 		}
 

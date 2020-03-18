@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		byte jump2_outer_bank; // needed to select between banks in 512K jump2 board
 
 		//regenerable state
-		IntBuffer prg_banks_16k = new IntBuffer(2);
+		int[] prg_banks_16k = new int[2];
 
 		//state
 		int prg_reg_16k;
@@ -70,7 +70,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			base.Dispose();
 			regs.Dispose();
-			prg_banks_16k.Dispose();
 		}
 
 		public override bool Configure(NES.EDetectionOrigin origin)

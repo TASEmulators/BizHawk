@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	public class Mapper197_MMC3 : MMC3
 	{
 		//This board has 512k CHR ROM, so the ByteBuffer in the base class deosn't suffice.
-		public IntBuffer chr_regs_1k_512 = new IntBuffer(8);
+		public int[] chr_regs_1k_512 = new int[8];
 
 		public Mapper197_MMC3(NES.NESBoardBase board, int num_prg_banks) : base(board, num_prg_banks)
 		{
@@ -59,13 +59,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(chr_regs_1k_512), ref chr_regs_1k_512);
-		}
-
-		public override void Dispose()
-		{
-			base.Dispose();
-			chr_regs_1k_512.Dispose();
+			ser.Sync(nameof(chr_regs_1k_512), ref chr_regs_1k_512, false);
 		}
 
 		public override int Get_CHRBank_1K(int addr)
@@ -74,6 +68,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			bank_1k = chr_regs_1k_512[bank_1k];
 			return bank_1k;
 		}
-
 	}
 }

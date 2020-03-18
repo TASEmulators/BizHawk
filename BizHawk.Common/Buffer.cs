@@ -84,20 +84,4 @@ namespace BizHawk.Common
 			#endif
 		}
 	}
-
-	public sealed class IntBuffer : CBuffer<int>
-	{
-		public IntBuffer(int amt) : base(amt, 4) { }
-		public IntBuffer(int[] arr) : base(arr,4) { }
-		public int this[int index]
-		{
-			#if DEBUG
-				get => this.Arr[index];
-				set => this.Arr[index] = value;
-			#else
-				set => Write32(index<<2, (uint) value);
-				get => (int)Read32(index<<2);
-			#endif
-		}
-	}
 }

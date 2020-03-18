@@ -29,19 +29,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int exram_mode, chr_mode, prg_mode;
 		int chr_reg_high;
 		int ab_mode;
-		IntBuffer regs_a = new IntBuffer(8);
-		IntBuffer regs_b = new IntBuffer(4);
-		IntBuffer regs_prg = new IntBuffer(4);
-		IntBuffer nt_modes = new IntBuffer(4);
+		int[] regs_a = new int[8];
+		int[] regs_b = new int[4];
+		int[] regs_prg = new int[4];
+		int[] nt_modes = new int[4];
 		byte nt_fill_tile, nt_fill_attrib;
 		int wram_bank;
 		byte[] EXRAM = new byte[1024];
 		byte multiplicand, multiplier;
 		MMC5Audio audio;
 		//regeneratable state
-		IntBuffer a_banks_1k = new IntBuffer(8);
-		IntBuffer b_banks_1k = new IntBuffer(8);
-		IntBuffer prg_banks_8k = new IntBuffer(4);
+		int[] a_banks_1k = new int[8];
+		int[] b_banks_1k = new int[8];
+		int[] prg_banks_8k = new int[4];
 		byte product_low, product_high;
 		int last_nt_read;
 		bool irq_audio;
@@ -71,10 +71,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(prg_mode), ref prg_mode);
 			ser.Sync(nameof(chr_reg_high), ref chr_reg_high);
 			ser.Sync(nameof(ab_mode), ref ab_mode);
-			ser.Sync(nameof(regs_a), ref regs_a);
-			ser.Sync(nameof(regs_b), ref regs_b);
-			ser.Sync(nameof(regs_prg), ref regs_prg);
-			ser.Sync(nameof(nt_modes), ref nt_modes);
+			ser.Sync(nameof(regs_a), ref regs_a, false);
+			ser.Sync(nameof(regs_b), ref regs_b, false);
+			ser.Sync(nameof(regs_prg), ref regs_prg, false);
+			ser.Sync(nameof(nt_modes), ref nt_modes, false);
 			ser.Sync(nameof(nt_fill_tile), ref nt_fill_tile);
 			ser.Sync(nameof(nt_fill_attrib), ref nt_fill_attrib);
 			ser.Sync(nameof(wram_bank), ref wram_bank);
@@ -86,17 +86,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SyncMultiplier();
 			SyncIRQ();
 			audio.SyncState(ser);
-		}
-
-		public override void Dispose()
-		{
-			regs_a.Dispose();
-			regs_b.Dispose();
-			regs_prg.Dispose();
-			a_banks_1k.Dispose();
-			b_banks_1k.Dispose();
-			prg_banks_8k.Dispose();
-			nt_modes.Dispose();
 		}
 
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -719,7 +708,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			audio.Clock();
 		}
 
-		void SetBank(IntBuffer target, int offset, int size, int value)
+		void SetBank(int[] target, int offset, int size, int value)
 		{
 			value &= ~(size-1);
 			for (int i = 0; i < size; i++)
@@ -802,9 +791,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					SetBank(b_banks_1k, 7, 1, regs_b[3]);
 					break;
 			}
-
-
 		}
-
 	}
 }

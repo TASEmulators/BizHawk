@@ -5,8 +5,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	public sealed class UNIF_BMC_FK23C : MMC3Board_Base
 	{
 		private ByteBuffer exRegs = new ByteBuffer(8);
-		private IntBuffer chr_regs_1k = new IntBuffer(8);
-		public IntBuffer prg_regs_8k = new IntBuffer(4);
+		private int[] chr_regs_1k = new int[8];
+		public int[] prg_regs_8k = new int[4];
 
 		[MapperProp]
 		public bool dip_switch;
@@ -74,8 +74,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void Dispose()
 		{
 			exRegs.Dispose();
-			chr_regs_1k.Dispose();
-			prg_regs_8k.Dispose();
 			base.Dispose();
 		}
 
@@ -83,7 +81,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			base.SyncState(ser);
 			ser.Sync(nameof(exRegs), ref exRegs);
-			ser.Sync(nameof(prg_regs_8k), ref prg_regs_8k);
+			ser.Sync(nameof(prg_regs_8k), ref prg_regs_8k, false);
 			ser.Sync(nameof(prg_mask), ref prg_mask_8k);
 			ser.Sync(nameof(chr_mask), ref chr_mask_1k);
 			ser.Sync(nameof(dip_switch), ref dip_switch);

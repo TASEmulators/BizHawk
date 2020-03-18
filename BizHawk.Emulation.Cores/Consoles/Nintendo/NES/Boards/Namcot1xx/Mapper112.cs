@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		ByteBuffer regs = new ByteBuffer(8);
 
 		//volatile state
-		IntBuffer chr_regs_1k = new IntBuffer(8);
+		int[] chr_regs_1k = new int[8];
 		ByteBuffer prg_regs_8k = new ByteBuffer(4);
 
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -40,7 +40,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			base.Dispose();
 			regs.Dispose();
-			chr_regs_1k.Dispose();
 			prg_regs_8k.Dispose();
 		}
 

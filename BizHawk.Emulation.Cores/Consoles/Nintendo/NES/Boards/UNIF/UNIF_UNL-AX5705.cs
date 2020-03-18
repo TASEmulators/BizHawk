@@ -6,8 +6,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// Super Mario Bros. Pocker Mali (Unl)
 	public class UNIF_UNL_AX5705 : NES.NESBoardBase
 	{
-		private IntBuffer prg_reg = new IntBuffer(2);
-		private IntBuffer chr_reg = new IntBuffer(8);
+		private int[] prg_reg = new int[2];
+		private int[] chr_reg = new int[8];
 
 		private int _prgMask8k;
 		private int _chrMask1k;
@@ -33,8 +33,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(prg_reg), ref prg_reg);
-			ser.Sync(nameof(chr_reg), ref chr_reg);
+			ser.Sync(nameof(prg_reg), ref prg_reg, false);
+			ser.Sync(nameof(chr_reg), ref chr_reg, false);
 		}
 
 		public override void WritePRG(int addr, byte value)

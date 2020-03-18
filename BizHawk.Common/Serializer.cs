@@ -171,11 +171,6 @@ namespace BizHawk.Common
 			SyncBuffer(name, 1, byteBuf.Len, byteBuf.Ptr);
 		}
 
-		public void Sync(string name, ref IntBuffer byteBuf)
-		{
-			SyncBuffer(name, 4, byteBuf.Len, byteBuf.Ptr);
-		}
-
 		public void Sync(string name, ref byte[] val, bool useNull)
 		{
 			if (IsText)
