@@ -11,8 +11,11 @@
 
 			} //switch(msg)
 
+			// TODO: do we want this ever?
+#if false
 			Message(eMessage.Resume);
 			return true;
+#endif
 		}
 	}
 }
