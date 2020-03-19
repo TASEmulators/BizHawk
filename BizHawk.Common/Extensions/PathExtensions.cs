@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.Linq;
 using System.IO;
 using System.Reflection;
@@ -66,7 +68,7 @@ namespace BizHawk.Common.PathExtensions
 			return absolutePath;
 		}
 
-		public static string FilesystemSafeName(this string? name)
+		public static string FilesystemSafeName(this string name)
 		{
 			name ??= "";
 
