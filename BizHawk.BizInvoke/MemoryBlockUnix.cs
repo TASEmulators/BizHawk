@@ -16,8 +16,10 @@ namespace BizHawk.BizInvoke
 		public MemoryBlockUnix(ulong start, ulong size) : base(start, size)
 		{
 			throw new NotImplementedException($"{nameof(MemoryBlockUnix)} ctor");
+			#if false
 			_fd = memfd_create("MemoryBlockUnix", 0);
 			if (_fd == -1) throw new InvalidOperationException($"{nameof(memfd_create)}() returned -1");
+			#endif
 		}
 
 		/// <exception cref="InvalidOperationException"><see cref="MemoryBlockBase.Active"/> is <see langword="true"/> or failed to map memory</exception>
