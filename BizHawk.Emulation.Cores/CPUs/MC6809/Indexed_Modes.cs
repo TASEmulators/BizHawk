@@ -347,7 +347,6 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 							Regs[IDX_EA] = Regs[indexed_reg];
 							Index_Op_Builder();
 							return; // need to return here or else we run into the code below invalidating irq_pntr
-							break;
 						case 0x5:
 							Regs[IDX_EA] = (ushort)(Regs[indexed_reg] + (((Regs[B] & 0x80) == 0x80) ? (Regs[B] | 0xFF00) : Regs[B]));
 							PopulateCURINSTR(IDX_OP_BLD);
