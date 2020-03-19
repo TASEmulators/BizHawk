@@ -247,7 +247,7 @@ namespace BizHawk.Emulation.Common
 			return core.ServiceProvider.GetService<IBoardInfo>();
 		}
 
-		public static (int x, int y) ScreenLogicalOffsets(this IEmulator core)
+		public static (int X, int Y) ScreenLogicalOffsets(this IEmulator core)
 		{
 			if (core != null && core.ServiceProvider.HasService<IVideoLogicalOffsets>())
 			{
