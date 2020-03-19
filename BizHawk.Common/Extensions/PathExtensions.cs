@@ -78,7 +78,6 @@ namespace BizHawk.Common.PathExtensions
 
 			// zero 06-nov-2015 - regarding the below, i changed my mind. for libretro i want subdirectories here.
 			var filesystemDir = Path.GetDirectoryName(filesystemSafeName);
-			if (string.IsNullOrEmpty(filesystemDir)) throw new Exception();
 			filesystemSafeName = Path.GetFileName(filesystemSafeName);
 
 			filesystemSafeName = filesystemSafeName.RemoveInvalidFileSystemChars();
@@ -115,8 +114,7 @@ namespace BizHawk.Common.PathExtensions
 	{
 		public static string GetExeDirectoryAbsolute()
 		{
-			var path = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
-			if (string.IsNullOrEmpty(path)) throw new Exception();
+			var path = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 			if (path.EndsWith(Path.DirectorySeparatorChar.ToString()))
 			{
 				path = path.Remove(path.Length - 1, 1);
