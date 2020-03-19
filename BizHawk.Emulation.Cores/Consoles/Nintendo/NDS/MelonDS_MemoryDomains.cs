@@ -16,11 +16,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		private void InitMemoryDomains()
 		{
-			_mainMemory = new MemoryDomainIntPtr("RAM", MemoryDomain.Endian.Little, (IntPtr)GetMainMemory(), GetMainMemorySize(), true, 4);
+			MainMemory = new MemoryDomainIntPtr("RAM", MemoryDomain.Endian.Little, (IntPtr)GetMainMemory(), GetMainMemorySize(), true, 4);
 			SystemBus = new MelonSystemBus();
 
 			domains = new SortedList<string, MemoryDomain>();
-			domains.Add("RAM", _mainMemory);
+			domains.Add("RAM", MainMemory);
 			domains.Add("System Bus", SystemBus);
 		}
 
@@ -30,8 +30,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			return domains.ContainsKey(name);
 		}
 
-		private MemoryDomain _mainMemory;
-		public MemoryDomain MainMemory { get => _mainMemory; set => throw new NotImplementedException(); }
+		public MemoryDomain MainMemory { get; private set; }
 
 		[DllImport(dllPath)]
 		private static extern byte* GetMainMemory();
@@ -40,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		// NDS has two CPUs, with different memory mappings.
 		public bool HasSystemBus => true;
-		public MemoryDomain SystemBus { get; set; }
+		public MemoryDomain SystemBus { get; private set; }
 		private class MelonSystemBus : MemoryDomain
 		{
 			[DllImport(dllPath)]
