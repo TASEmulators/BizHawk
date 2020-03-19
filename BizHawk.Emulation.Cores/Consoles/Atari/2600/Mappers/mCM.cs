@@ -177,7 +177,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	by two 20K resistors, then it goes through a hex inverting schmitt trigger to
 	square it up.  This then runs into bit 7 of portA.
 	*/
-	internal class mCM : MapperBase
+	internal sealed class mCM : MapperBase
 	{
 		// TODO: PokeMem
 		private byte[] _ram = new byte[2048];

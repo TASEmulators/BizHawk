@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	1FE0-1FEF.  Accessing one of these will select the desired bank. 1FE0 = bank 0,
 	1FE1 = bank 1, etc.
 	*/
-	internal class mEF : MapperBase 
+	internal sealed class mEF : MapperBase 
 	{
 		private int _toggle;
 

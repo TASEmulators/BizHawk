@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	register, and this has been done... however do not think 512K ROMs have been made just
 	yet.
 	*/
-	internal class m3F : MapperBase 
+	internal sealed class m3F : MapperBase 
 	{
 		private int _lowBank2K;
 

@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
   
 	There are six (or seven) 4K banks and 256 bytes of RAM.
 	*/
-	internal class mFA2 : MapperBase
+	internal sealed class mFA2 : MapperBase
 	{
 		private int _bank4K;
 		private byte[] _ram = new  byte[256];

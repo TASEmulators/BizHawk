@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	so when the switch occurs, the code won't crash.
 	*/
 
-	internal class mF8 : MapperBase
+	internal sealed class mF8 : MapperBase
 	{
 		private int _bank4K;
 

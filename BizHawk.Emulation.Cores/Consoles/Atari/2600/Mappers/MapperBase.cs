@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
-	public abstract class MapperBase
+	internal abstract class MapperBase
 	{
 		protected MapperBase(Atari2600 core)
 		{

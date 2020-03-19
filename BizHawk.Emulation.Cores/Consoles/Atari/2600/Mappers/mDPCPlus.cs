@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	display bank, 1K frequency table and the DPC chip.  For complete details on
 	the DPC chip see David P. Crane's United States Patent Number 4,644,495.
 	*/
-	internal class mDPCPlus : MapperBase
+	internal sealed class mDPCPlus : MapperBase
 	{
 		// Table for computing the input bit of the random number generator's
 		// shift register (it's the NOT of the EOR of four bits)

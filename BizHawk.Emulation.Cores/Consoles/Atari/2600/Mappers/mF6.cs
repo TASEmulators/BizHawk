@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	select one of the 4 banks.  i.e. 1FF6 selects bank 0, 1FF7 selects bank 1, etc.
 	*/
 
-	internal class mF6 : MapperBase 
+	internal sealed class mF6 : MapperBase 
 	{
 		private int _toggle;
 

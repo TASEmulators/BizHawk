@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	B is the bank we will select. So, accessing 0800 will select bank 0, and 0840
 	will select bank 1.
 	*/
-	internal class m0840 : MapperBase
+	internal sealed class m0840 : MapperBase
 	{
 		private int _bank4K;
 

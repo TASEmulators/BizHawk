@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	There are 16 4K banks (total of 64K ROM) with 128 bytes of RAM.
 	Accessing $1FE0 - $1FEF switches to each bank.
 	*/
-	internal class mEFSC : MapperBase
+	internal sealed class mEFSC : MapperBase
 	{
 		private int _bank4K;
 		private byte[] _ram = new byte[128];

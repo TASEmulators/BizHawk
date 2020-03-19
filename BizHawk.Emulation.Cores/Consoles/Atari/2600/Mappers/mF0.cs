@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	bank is numbered by means of one of the ROM locations, and the code simply keeps accessing
 	1FF0 until the bank it is looking for comes up.
 	*/
-	internal class mF0 : MapperBase 
+	internal sealed class mF0 : MapperBase 
 	{
 		private int _bank;
 

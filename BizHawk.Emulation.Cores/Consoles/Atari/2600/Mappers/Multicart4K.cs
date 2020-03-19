@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
-	internal class Multicart4K : MapperBase
+	internal sealed class Multicart4K : MapperBase
 	{
 		private int _gameTotal;
 		private int _currentGame;

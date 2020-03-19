@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
-	internal class m2K : MapperBase
+	internal sealed class m2K : MapperBase
 	{
 		public m2K(Atari2600 core) : base(core)
 		{

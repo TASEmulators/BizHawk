@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	Example games:
 		Magicard
 	 */
-	internal class mCV : MapperBase
+	internal sealed class mCV : MapperBase
 	{
 		private byte[] _ram = new byte[1024];
 

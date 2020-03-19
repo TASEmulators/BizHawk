@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	Again, this works like F8 and F6 except now there's 8 4K banks.  Selection is performed
 	by accessing 1FF4 through 1FFB.
 	*/
-	internal class mF4 :MapperBase 
+	internal sealed class mF4 :MapperBase 
 	{
 		private int _toggle;
 

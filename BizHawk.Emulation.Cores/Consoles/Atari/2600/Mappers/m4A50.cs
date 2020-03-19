@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	bytes of ROM.
 	*/
 
-	internal class m4A50 : MapperBase 
+	internal sealed class m4A50 : MapperBase 
 	{
 		private byte[] _ram = new byte[32768];
 

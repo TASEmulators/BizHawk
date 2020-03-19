@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	address bus.  An actual system doesn't have that luxury, unfortunately, so it must
 	disregard accesses to 3C-3F instead.
 	*/
-	internal class mMC : MapperBase 
+	internal sealed class mMC : MapperBase 
 	{
 		public mMC(Atari2600 core) : base(core)
 		{

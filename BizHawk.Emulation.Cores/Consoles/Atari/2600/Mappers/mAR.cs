@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	p = ROM Power (0 = enabled, 1 = off.)  Only power the ROM if you're
 	 wanting to access the ROM for multi-loads.  Otherwise set to 1.
 	*/
-	internal class mAR : MapperBase
+	internal sealed class mAR : MapperBase
 	{
 		#region SuperCharger Data
 
