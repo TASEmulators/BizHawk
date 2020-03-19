@@ -104,18 +104,18 @@ namespace BizHawk.Client.EmuHawk
 			HawkFile.DearchivalMethod = SharpCompressDearchivalMethod.Instance;
 
 			string cmdConfigFile = ArgParser.GetCmdConfigFile(args);
-			if (cmdConfigFile != null) PathManager.SetDefaultIniPath(cmdConfigFile);
+			if (cmdConfigFile != null) Config.SetDefaultIniPath(cmdConfigFile);
 
 			try
 			{
-				Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
+				Global.Config = ConfigService.Load<Config>(Config.DefaultIniPath);
 			}
 			catch (Exception e)
 			{
 				new ExceptionBox(e).ShowDialog();
 				new ExceptionBox("Since your config file is corrupted or from a different BizHawk version, we're going to recreate it. Back it up before proceeding if you want to investigate further.").ShowDialog();
-				File.Delete(PathManager.DefaultIniPath);
-				Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
+				File.Delete(Config.DefaultIniPath);
+				Global.Config = ConfigService.Load<Config>(Config.DefaultIniPath);
 			}
 
 			Global.Config.ResolveDefaults();

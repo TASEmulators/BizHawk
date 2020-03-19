@@ -5,9 +5,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public class Mapper253 : NES.NESBoardBase
 	{
-		private ByteBuffer prg = new ByteBuffer(2);
-		private ByteBuffer chrlo = new ByteBuffer(8);
-		private ByteBuffer chrhi = new ByteBuffer(8);
+		private byte[] prg = new byte[2];
+		private byte[] chrlo = new byte[8];
+		private byte[] chrhi = new byte[8];
 		private bool vlock;
 		private int IRQLatch, IRQClock, IRQCount;
 		private bool IRQa;
@@ -31,20 +31,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			prg.Dispose();
-			chrlo.Dispose();
-			chrhi.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("preg", ref prg);
-			ser.Sync(nameof(chrlo), ref chrlo);
-			ser.Sync(nameof(chrhi), ref chrhi);
+			ser.Sync("preg", ref prg, false);
+			ser.Sync(nameof(chrlo), ref chrlo, false);
+			ser.Sync(nameof(chrhi), ref chrhi, false);
 		}
 
 		public override void ClockCPU()

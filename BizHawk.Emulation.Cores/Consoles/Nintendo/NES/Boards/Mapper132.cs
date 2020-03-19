@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// specs pulled from Nintendulator sources
 	public sealed class Mapper132 : NES.NESBoardBase
 	{
-		private ByteBuffer reg = new ByteBuffer(4);
+		private byte[] reg = new byte[4];
 
 		//configuraton
 		int prg_mask, chr_mask;
@@ -37,12 +37,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SetMirrorType(Cart.pad_h, Cart.pad_v);
 			//SetMirrorType(EMirrorType.Vertical);
 			return true;
-		}
-
-		public override void Dispose()
-		{
-			reg.Dispose();
-			base.Dispose();
 		}
 
 		public void sync(byte value)
@@ -121,8 +115,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(prg), ref prg);
 			ser.Sync(nameof(is172), ref is172);
 			ser.Sync(nameof(is173), ref is173);
-			ser.Sync(nameof(reg), ref reg);
+			ser.Sync(nameof(reg), ref reg, false);
 		}
-
 	}
 }

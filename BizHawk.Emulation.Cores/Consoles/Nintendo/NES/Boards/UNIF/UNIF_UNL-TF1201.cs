@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private byte prg0;
 		private byte prg1;
 		private byte swap;
-		private ByteBuffer chr = new ByteBuffer(8);
+		private byte[] chr = new byte[8];
 
 		private bool IRQa;
 		private int IRQCount;
@@ -31,19 +31,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			chr.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
 			ser.Sync(nameof(prg0), ref prg0);
 			ser.Sync(nameof(prg1), ref prg1);
 			ser.Sync(nameof(swap), ref swap);
-			ser.Sync(nameof(chr), ref chr);
+			ser.Sync(nameof(chr), ref chr, false);
 			ser.Sync(nameof(IRQa), ref IRQa);
 			ser.Sync(nameof(IRQCount), ref IRQCount);
 			ser.Sync(nameof(IRQpre), ref IRQpre);

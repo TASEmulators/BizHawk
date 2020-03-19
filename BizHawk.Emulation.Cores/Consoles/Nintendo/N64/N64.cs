@@ -21,12 +21,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		/// <summary>
 		/// Create mupen64plus Emulator
 		/// </summary>
-		/// <param name="comm">Core communication object</param>
 		/// <param name="game">Game information of game to load</param>
 		/// <param name="rom">Rom that should be loaded</param>
 		/// <param name="syncSettings">N64SyncSettings object</param>
 		[CoreConstructor("N64")]
-		public N64(CoreComm comm, GameInfo game, byte[] file, object settings, object syncSettings)
+		public N64(GameInfo game, byte[] file, object settings, object syncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			InputCallbacks = new InputCallbackSystem();
@@ -39,8 +38,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			{
 				SaveType = 1;
 			}
-
-			CoreComm = comm;
 
 			_syncSettings = (N64SyncSettings)syncSettings ?? new N64SyncSettings();
 			_settings = (N64Settings)settings ?? new N64Settings();
@@ -94,7 +91,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			// Order is important because the register with the mupen core
 			_videoProvider = new N64VideoProvider(api, videosettings);
 			_audioProvider = new N64Audio(api);
-			_inputProvider = new N64Input(this.AsInputPollable(), api, comm, this._syncSettings.Controllers);
+			_inputProvider = new N64Input(this.AsInputPollable(), api, _syncSettings.Controllers);
 			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(_videoProvider);
 			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(_audioProvider.Resampler);
 
@@ -259,8 +256,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		}
 
 		public string SystemId => "N64";
-
-		public CoreComm CoreComm { get; }
 
 		public DisplayType Region => _display_type;
 

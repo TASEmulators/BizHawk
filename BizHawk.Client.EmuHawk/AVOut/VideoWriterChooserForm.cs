@@ -12,14 +12,20 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public partial class VideoWriterChooserForm : Form
 	{
-		private readonly int _captureWidth, _captureHeight;
+		private readonly int _captureWidth = 640;
+		private readonly int _captureHeight = 480;
 
 		private VideoWriterChooserForm(MainForm mainForm, IEmulator emulator, Config config)
 		{
 			InitializeComponent();
 
-			_captureWidth = emulator.CoreComm.NominalWidth;
-			_captureHeight = emulator.CoreComm.NominalHeight;
+			// TODO: do we want to use virtual w/h?
+			if (emulator.HasVideoProvider())
+			{
+				var videoProvider = emulator.AsVideoProvider();
+				_captureWidth = videoProvider.BufferWidth;
+				_captureHeight = videoProvider.BufferHeight;
+			}
 
 			if (config.AviCaptureOsd)
 			{

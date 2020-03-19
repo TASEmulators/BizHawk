@@ -59,15 +59,14 @@ namespace BizHawk.Client.EmuHawk
 		private Graphics GetGraphics()
 		{
 			var g = _GUISurface?.GetGraphics() ?? Graphics.FromImage(_nullGraphicsBitmap);
-			// we don't like CoreComm, right? Someone should find a different way to do this then.
-			var tx = Emulator.CoreComm.ScreenLogicalOffsetX;
-			var ty = Emulator.CoreComm.ScreenLogicalOffsetY;
+			var (tx, ty) = Emulator.ScreenLogicalOffsets();
 			if (tx != 0 || ty != 0)
 			{
 				var transform = g.Transform;
 				transform.Translate(-tx, -ty);
 				g.Transform = transform;
 			}
+
 			return g;
 		}
 
@@ -488,8 +487,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				x -= Emulator.CoreComm.ScreenLogicalOffsetX;
-				y -= Emulator.CoreComm.ScreenLogicalOffsetY;
+				var (ox, oy) = Emulator.ScreenLogicalOffsets();
+				x -= ox;
+				y -= oy;
 			}
 
 			var pos = new MessagePosition{ X = x, Y = y, Anchor = (MessagePosition.AnchorType)a };

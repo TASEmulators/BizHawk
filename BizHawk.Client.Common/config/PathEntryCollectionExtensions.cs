@@ -1,0 +1,372 @@
+﻿using System;
+using System.IO;
+using BizHawk.Common;
+using BizHawk.Common.PathExtensions;
+using BizHawk.Emulation.Common;
+
+namespace BizHawk.Client.Common
+{
+	public static class PathEntryExtensions
+	{
+		/// <summary>
+		/// Returns the base path of the given system.
+		/// If the system can not be found, an empty string is returned
+		/// </summary>
+		public static string BaseFor(this PathEntryCollection collection, string systemId)
+		{
+			return string.IsNullOrWhiteSpace(systemId)
+				? ""
+				: collection[systemId, "Base"]?.Path ?? "";
+		}
+
+		public static string GlobalBaseAbsolutePath(this PathEntryCollection collection)
+		{
+			var globalBase = collection["Global", "Base"].Path;
+
+			// if %exe% prefixed then substitute exe path and repeat
+			if (globalBase.StartsWith("%exe%", StringComparison.InvariantCultureIgnoreCase))
+			{
+				globalBase = PathUtils.GetExeDirectoryAbsolute() + globalBase.Substring(5);
+			}
+
+			// rooted paths get returned without change
+			// (this is done after keyword substitution to avoid problems though)
+			if (Path.IsPathRooted(globalBase))
+			{
+				return globalBase;
+			}
+
+			// not-rooted things are relative to exe path
+			globalBase = Path.Combine(PathUtils.GetExeDirectoryAbsolute(), globalBase);
+			return globalBase;
+		}
+
+		/// <summary>
+		/// Returns an entry for the given system and pathType (ROM, screenshot, etc)
+		/// but falls back to the base system or global system if it fails
+		/// to find pathType or systemId
+		/// </summary>
+		public static PathEntry EntryWithFallback(this PathEntryCollection collection, string pathType, string systemId)
+		{
+			return (collection[systemId, pathType] 
+				?? collection[systemId, "Base"])
+				?? collection["Global", "Base"];
+		}
+
+		public static string AbsolutePathForType(this PathEntryCollection collection, string systemId, string type)
+		{
+			var path = collection.EntryWithFallback(type, systemId).Path;
+			return collection.AbsolutePathFor(path, systemId);
+		}
+
+		/// <summary>
+		/// Returns an absolute path for the given relative path.
+		/// If provided, the systemId will be used to generate the path.
+		/// Wildcards are supported.
+		/// Logic will fallback until an absolute path is found,
+		/// using Global Base as a last resort
+		/// </summary>
+		public static string AbsolutePathFor(this PathEntryCollection collection, string path, string systemId)
+		{
+			// warning: supposedly Path.GetFullPath accesses directories (and needs permissions)
+			// if this poses a problem, we need to paste code from .net or mono sources and fix them to not pose problems, rather than homebrew stuff
+			return Path.GetFullPath(collection.AbsolutePathForInner(path, systemId));
+		}
+
+		private static string AbsolutePathForInner(this PathEntryCollection collection,  string path, string systemId)
+		{
+			// Hack
+			if (systemId == "Global")
+			{
+				systemId = null;
+			}
+
+			// This function translates relative path and special identifiers in absolute paths
+			if (path.Length < 1)
+			{
+				return collection.GlobalBaseAbsolutePath();
+			}
+
+			if (path == "%recent%")
+			{
+				return Environment.SpecialFolder.Recent.ToString();
+			}
+
+			if (path.StartsWith("%exe%"))
+			{
+				return PathUtils.GetExeDirectoryAbsolute() + path.Substring(5);
+			}
+
+			if (path.StartsWith("%rom%"))
+			{
+				return collection.LastRomPath + path.Substring(5);
+			}
+
+			if (path[0] == '.')
+			{
+				if (!string.IsNullOrWhiteSpace(systemId))
+				{
+					path = path.Remove(0, 1);
+					path = path.Insert(0, collection.BaseFor(systemId));
+				}
+
+				if (path.Length == 1)
+				{
+					return collection.GlobalBaseAbsolutePath();
+				}
+
+				if (path[0] == '.')
+				{
+					path = path.Remove(0, 1);
+					path = path.Insert(0, collection.GlobalBaseAbsolutePath());
+				}
+
+				return path;
+			}
+
+			if (Path.IsPathRooted(path))
+			{
+				return path;
+			}
+
+			//handling of initial .. was removed (Path.GetFullPath can handle it)
+			//handling of file:// or file:\\ was removed  (can Path.GetFullPath handle it? not sure)
+
+			// all bad paths default to EXE
+			return PathUtils.GetExeDirectoryAbsolute();
+		}
+
+		public static string MovieAbsolutePath(this PathEntryCollection collection)
+		{
+			var path = collection["Global", "Movies"].Path;
+			return collection.AbsolutePathFor(path, null);
+		}
+
+		public static string MovieBackupsAbsolutePath(this PathEntryCollection collection)
+		{
+			var path = collection["Global", "Movie backups"].Path;
+			return collection.AbsolutePathFor(path, null);
+		}
+
+		public static string AvAbsolutePath(this PathEntryCollection collection)
+		{
+			var path = collection["Global", "A/V Dumps"].Path;
+			return collection.AbsolutePathFor(path, null);
+		}
+
+		public static string LuaAbsolutePath(this PathEntryCollection collection)
+		{
+			var path = collection["Global", "Lua"].Path;
+			return collection.AbsolutePathFor(path, null);
+		}
+
+		public static string FirmwareAbsolutePath(this PathEntryCollection collection)
+		{
+			return collection.AbsolutePathFor(collection.FirmwaresPathFragment, null);
+		}
+
+		public static string LogAbsolutePath(this PathEntryCollection collection)
+		{
+			var path = collection.ResolveToolsPath(collection["Global", "Debug Logs"].Path);
+			return collection.AbsolutePathFor(path, null);
+		}
+
+		public static string WatchAbsolutePath(this PathEntryCollection collection)
+		{
+			var path = 	collection.ResolveToolsPath(collection["Global", "Watch (.wch)"].Path);
+			return collection.AbsolutePathFor(path, null);
+		}
+
+		public static string ToolsAbsolutePath(this PathEntryCollection collection)
+		{
+			var path = collection["Global", "Tools"].Path;
+			return collection.AbsolutePathFor(path, null);
+		}
+
+		public static string TastudioStatesAbsolutePath(this PathEntryCollection collection)
+		{
+			var path = collection["Global", "TAStudio states"].Path;
+			return collection.AbsolutePathFor(path, null);
+		}
+
+		public static string MultiDiskAbsolutePath(this PathEntryCollection collection)
+		{
+			var path = collection.ResolveToolsPath(collection["Global", "Multi-Disk Bundles"].Path);
+			return collection.AbsolutePathFor(path, null);
+		}
+
+		public static string RomAbsolutePath(this PathEntryCollection collection, string systemId = null)
+		{
+			if (string.IsNullOrWhiteSpace(systemId))
+			{
+				return collection.AbsolutePathFor(collection["Global_NULL", "ROM"].Path, "Global_NULL");
+			}
+
+			if (collection.UseRecentForRoms)
+			{
+				return Environment.SpecialFolder.Recent.ToString();
+			}
+
+			var path = collection[systemId, "ROM"];
+
+			if (!path.Path.PathIsSet())
+			{
+				path = collection["Global", "ROM"];
+
+				if (path.Path.PathIsSet())
+				{
+					return collection.AbsolutePathFor(path.Path, null);
+				}
+			}
+
+			return collection.AbsolutePathFor(path.Path, systemId);
+		}
+
+		public static string SaveRamAbsolutePath(this PathEntryCollection collection, GameInfo game, bool movieIsActive)
+		{
+			var name = game.Name.FilesystemSafeName();
+			if (movieIsActive)
+			{
+				name += $".{Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename)}";
+			}
+
+			var pathEntry = collection[game.System, "Save RAM"]
+				?? collection[game.System, "Base"];
+
+			return $"{Path.Combine(collection.AbsolutePathFor(pathEntry.Path, game.System), name)}.SaveRAM";
+		}
+
+		// Shenanigans
+		public static string RetroSaveRamAbsolutePath(this PathEntryCollection collection, GameInfo game, bool movieIsActive, string movieFilename)
+		{
+			var name = game.Name.FilesystemSafeName();
+			name = Path.GetDirectoryName(name);
+			if (name == "")
+			{
+				name = game.Name.FilesystemSafeName();
+			}
+
+			if (movieIsActive)
+			{
+				name = Path.Combine(name, $"movie-{Path.GetFileNameWithoutExtension(movieFilename)}");
+			}
+
+			var pathEntry = collection[game.System, "Save RAM"]
+				?? collection[game.System, "Base"];
+
+			return Path.Combine(collection.AbsolutePathFor(pathEntry.Path, game.System), name);
+		}
+
+		// Shenanigans
+		public static string RetroSystemAbsolutePath(this PathEntryCollection collection, GameInfo game)
+		{
+			var name = game.Name.FilesystemSafeName();
+			name = Path.GetDirectoryName(name);
+			if (string.IsNullOrEmpty(name))
+			{
+				name = game.Name.FilesystemSafeName();
+			}
+
+			var pathEntry = collection[game.System, "System"]
+				?? collection[game.System, "Base"];
+
+			return Path.Combine(collection.AbsolutePathFor(pathEntry.Path, game.System), name);
+		}
+
+		public static string AutoSaveRamAbsolutePath(this PathEntryCollection collection, GameInfo game, bool movieIsActive)
+		{
+			var path = collection.SaveRamAbsolutePath(game, movieIsActive);
+			return path.Insert(path.Length - 8, ".AutoSaveRAM");
+		}
+
+		public static string CheatsAbsolutePath(this PathEntryCollection collection, string systemId)
+		{
+			var pathEntry = collection[systemId, "Cheats"]
+				?? collection[systemId, "Base"];
+
+			return collection.AbsolutePathFor(pathEntry.Path,systemId);
+		}
+
+		public static string SaveStateAbsolutePath(this PathEntryCollection collection, string systemId)
+		{
+			var pathEntry = collection[systemId, "Savestates"]
+				?? collection[systemId, "Base"];
+
+			return collection.AbsolutePathFor(pathEntry.Path, systemId);
+		}
+
+		public static string ScreenshotAbsolutePathFor(this PathEntryCollection collection, string systemId)
+		{
+			var entry = collection[systemId, "Screenshots"]
+				?? collection[systemId, "Base"];
+
+			return collection.AbsolutePathFor(entry.Path, systemId);
+		}
+
+		public static string PalettesAbsolutePathFor(this PathEntryCollection collection, string systemId)
+		{
+			return collection.AbsolutePathFor(collection[systemId, "Palettes"].Path, systemId);
+		}
+
+		/// <summary>
+		/// Takes an absolute path and attempts to convert it to a relative, based on the system,
+		/// or global base if no system is supplied, if it is not a subfolder of the base, it will return the path unaltered
+		/// </summary>
+		public static string TryMakeRelative(this PathEntryCollection collection, string absolutePath, string system = null)
+		{
+			var parentPath = string.IsNullOrWhiteSpace(system)
+				? collection.GlobalBaseAbsolutePath()
+				: collection.AbsolutePathFor(collection.BaseFor(system), system);
+#if true
+			if (!absolutePath.IsSubfolderOf(parentPath))
+			{
+				return absolutePath;
+			}
+
+			return OSTailoredCode.IsUnixHost
+				? "./" + OSTailoredCode.SimpleSubshell("realpath", $"--relative-to=\"{parentPath}\" \"{absolutePath}\"", $"invalid path {absolutePath} or missing realpath binary")
+				: absolutePath.Replace(parentPath, ".");
+#else // written for Unix port but may be useful for .NET Core
+			if (!IsSubfolder(parentPath, absolutePath))
+			{
+				return OSTailoredCode.IsUnixHost && parentPath.TrimEnd('.') == $"{absolutePath}/" ? "." : absolutePath;
+			}
+
+			return OSTailoredCode.IsUnixHost
+				? absolutePath.Replace(parentPath.TrimEnd('.'), "./")
+				: absolutePath.Replace(parentPath, ".");
+#endif
+		}
+
+		/// <summary>
+		/// Puts the currently configured temp path into the environment for use as actual temp directory
+		/// </summary>
+		public static void RefreshTempPath(this PathEntryCollection collection)
+		{
+			if (!string.IsNullOrWhiteSpace(collection.TempFilesFragment))
+			{
+				// TODO - BUG - needs to route through PathManager.MakeAbsolutePath or something similar, but how?
+				string target = collection.TempFilesFragment;
+				TempFileManager.HelperSetTempPath(target);
+			}
+		}
+
+		private static string ResolveToolsPath(this PathEntryCollection collection, string subPath)
+		{
+			if (Path.IsPathRooted(subPath) || subPath.StartsWith("%"))
+			{
+				return subPath;
+			}
+
+			var toolsPath = collection["Global", "Tools"].Path;
+
+			// Hack for backwards compatibility, prior to 1.11.5, .wch files were in .\Tools, we don't want that to turn into .Tools\Tools
+			if (subPath == "Tools")
+			{
+				return toolsPath;
+			}
+
+			return Path.Combine(toolsPath, subPath);
+		}
+	}
+}

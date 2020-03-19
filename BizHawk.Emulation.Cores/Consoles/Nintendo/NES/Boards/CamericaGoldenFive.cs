@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// Adapted from 
 	public sealed class CamericaGoldenFive : NES.NESBoardBase
 	{
-		private ByteBuffer regs = new ByteBuffer(2);
+		private byte[] regs = new byte[2];
 
 		private int prg_bank_mask_16k;
 
@@ -26,16 +26,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			regs.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("reg", ref regs);
+			ser.Sync("reg", ref regs, false);
 		}
 
 		public override void WritePRG(int addr, byte value)

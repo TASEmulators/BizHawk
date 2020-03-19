@@ -118,7 +118,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				.Select(b => "P" + PortNum + " " + b)
 				.ToList(),
 				FloatControls = { "P" + PortNum + " Tilt X", "P" + PortNum + " Tilt Y" },
-				FloatRanges = { new[] { -45.0f, 0, 45.0f }, new[] { -45.0f, 0, 45.0f } }
+				FloatRanges = ControllerDefinition.CreateAxisRangePair(-45, 0, 45, ControllerDefinition.AxisPairOrientation.RightAndUp) //TODO verify direction against hardware
 			};
 		}
 

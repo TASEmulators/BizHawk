@@ -6,34 +6,39 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	Cartridge class used for Atari's 16K bankswitched games with
 	128 bytes of RAM.  There are four 4K banks.
 	*/
-	internal class mF6SC : MapperBase
+	internal sealed class mF6SC : MapperBase
 	{
-		private int _bank4k;
-		private ByteBuffer _ram = new ByteBuffer(128);
+		private int _bank4K;
+		private byte[] _ram = new byte[128];
 
-		public override bool HasCartRam => true;
+		public mF6SC(Atari2600 core) : base(core)
+		{
+		}
 
-		public override ByteBuffer CartRam => _ram;
+		public override byte[] CartRam => _ram;
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("bank_4k", ref _bank4k);
-			ser.Sync("auxRam", ref _ram);
-		}
-
-		public override void Dispose()
-		{
-			base.Dispose();
-			_ram.Dispose();
+			ser.Sync("bank_4k", ref _bank4K);
+			ser.Sync("auxRam", ref _ram, false);
 		}
 
 		public override void HardReset()
 		{
-			_bank4k = 0;
-			_ram = new ByteBuffer(128);
-			base.HardReset();
+			_bank4K = 0;
+			_ram = new byte[128];
 		}
+
+		public override byte ReadMemory(ushort addr) => ReadMem(addr, false);
+
+		public override byte PeekMemory(ushort addr) => ReadMem(addr, true);
+
+		public override void WriteMemory(ushort addr, byte value)
+			=> WriteMem(addr, value, false);
+
+		public override void PokeMemory(ushort addr, byte value)
+			=> WriteMem(addr, value, true);
 
 		private byte ReadMem(ushort addr, bool peek)
 		{
@@ -58,17 +63,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				return _ram[(addr & 0x7F)];
 			}
 
-			return Core.Rom[(_bank4k << 12) + (addr & 0xFFF)];
-		}
-
-		public override byte ReadMemory(ushort addr)
-		{
-			return ReadMem(addr, false);
-		}
-
-		public override byte PeekMemory(ushort addr)
-		{
-			return ReadMem(addr, true);
+			return Core.Rom[(_bank4K << 12) + (addr & 0xFFF)];
 		}
 
 		private void WriteMem(ushort addr, byte value, bool poke)
@@ -88,22 +83,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 		}
 
-		public override void WriteMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, poke: false);
-		}
-
-		public override void PokeMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, poke: true);
-		}
-
 		private void Address(ushort addr)
 		{
-			if (addr == 0x1FF6) _bank4k = 0;
-			if (addr == 0x1FF7) _bank4k = 1;
-			if (addr == 0x1FF8) _bank4k = 2;
-			if (addr == 0x1FF9) _bank4k = 3;
+			_bank4K = addr switch
+			{
+				0x1FF6 => 0,
+				0x1FF7 => 1,
+				0x1FF8 => 2,
+				0x1FF9 => 3,
+				_ => _bank4K
+			};
 		}
 	}
 }

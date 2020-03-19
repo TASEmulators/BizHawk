@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -167,7 +168,7 @@ namespace BizHawk.Client.EmuHawk
 			// Pull out matching names
 			for (var i = 0; i < _movieList.Count; i++)
 			{
-				if (PathManager.FilesystemSafeName(_game) == _movieList[i].GameName)
+				if (_game.Name.FilesystemSafeName() == _movieList[i].GameName)
 				{
 					indices.Add(i);
 				}
@@ -237,7 +238,7 @@ namespace BizHawk.Client.EmuHawk
 			MovieView.VirtualListSize = 0;
 			MovieView.Update();
 
-			var directory = PathManager.MakeAbsolutePath(_config.PathEntries.MoviesPathFragment, null);
+			var directory = _config.PathEntries.MovieAbsolutePath();
 			if (!Directory.Exists(directory))
 			{
 				Directory.CreateDirectory(directory);
@@ -571,7 +572,7 @@ namespace BizHawk.Client.EmuHawk
 			using var ofd = new OpenFileDialog
 			{
 				Filter = new FilesystemFilterSet(FilesystemFilter.BizHawkMovies, FilesystemFilter.TAStudioProjects).ToString(),
-				InitialDirectory = PathManager.MakeAbsolutePath(_config.PathEntries.MoviesPathFragment, null)
+				InitialDirectory = _config.PathEntries.MovieAbsolutePath()
 			};
 
 			var result = ofd.ShowHawkDialog();

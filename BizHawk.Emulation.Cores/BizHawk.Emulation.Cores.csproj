@@ -12,6 +12,7 @@
 		<Reference Include="Virtu" HintPath="$(SolutionDir)References/Virtu.dll" Private="true" />
 		<ProjectReference Include="$(SolutionDir)BizHawk.BizInvoke/BizHawk.BizInvoke.csproj" />
 		<ProjectReference Include="$(SolutionDir)BizHawk.Emulation.Common/BizHawk.Emulation.Common.csproj" />
+		<ProjectReference Include="$(SolutionDir)BizHawk.Emulation.DiscSystem/BizHawk.Emulation.DiscSystem.csproj" />
 		<Compile Include="$(SolutionDir)Version/svnrev.cs" />
 		<Compile Include="$(SolutionDir)Version/VersionInfo.cs" />
 		<EmbeddedResource Include="Resources/**/*" />

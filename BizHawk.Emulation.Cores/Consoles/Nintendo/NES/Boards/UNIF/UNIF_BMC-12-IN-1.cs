@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public sealed class UNIF_BMC_12_IN_1 : NES.NESBoardBase
 	{
-		private ByteBuffer regs = new ByteBuffer(2);
+		private byte[] regs = new byte[2];
 		private byte ctrl;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -23,15 +23,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync(nameof(regs), ref regs);
+			ser.Sync(nameof(regs), ref regs, false);
 			ser.Sync(nameof(ctrl), ref ctrl);
 			base.SyncState(ser);
-		}
-
-		public override void Dispose()
-		{
-			regs.Dispose();
-			base.Dispose();
 		}
 
 		public override void WritePRG(int addr, byte value)

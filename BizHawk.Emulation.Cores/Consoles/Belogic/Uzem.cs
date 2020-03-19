@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Belogic
 
 		[CoreConstructor("UZE")]
 		public Uzem(CoreComm comm, byte[] rom)
-			:base(comm, new Configuration
+			: base(comm, new Configuration
 			{
 				DefaultWidth = 720,
 				DefaultHeight = 224,
@@ -65,11 +65,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Belogic
 			{
 				"P1 Mouse X", "P1 Mouse Y"
 			},
-			FloatRanges =
-			{
-				new[] { -127f, 0f, 127f },
-				new[] { -127f, 0f, 127f }
-			}
+			FloatRanges = ControllerDefinition.CreateAxisRangePair(-127, 0, 127, ControllerDefinition.AxisPairOrientation.RightAndUp) //TODO verify direction against hardware
 		};
 
 		private static readonly string[] PadBits =

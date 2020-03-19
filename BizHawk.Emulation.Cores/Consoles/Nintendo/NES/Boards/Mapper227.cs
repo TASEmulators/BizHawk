@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//state
 		int prg;
 		bool vram_protected;
-		ByteBuffer prg_banks_16k = new ByteBuffer(2);
+		byte[] prg_banks_16k = new byte[2];
 
 		//1200-in-1
 		//[NJXXX] Xiang Shuai Chuan Qi
@@ -34,12 +34,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			vram_protected = false;
 			prg_banks_16k[0] = prg_banks_16k[1] = 0;
 			return true;
-		}
-
-		public override void Dispose()
-		{
-			prg_banks_16k.Dispose();
-			base.Dispose();
 		}
 
 		public override byte ReadPRG(int addr)

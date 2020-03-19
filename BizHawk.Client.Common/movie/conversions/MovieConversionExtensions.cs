@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBHawk;
@@ -292,7 +293,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 
 			if (Global.Game != null)
 			{
-				movie.GameName = PathManager.FilesystemSafeName(Global.Game);
+				movie.GameName = Global.Game.Name.FilesystemSafeName();
 				movie.Hash = Global.Game.Hash;
 				if (Global.Game.FirmwareHash != null)
 				{

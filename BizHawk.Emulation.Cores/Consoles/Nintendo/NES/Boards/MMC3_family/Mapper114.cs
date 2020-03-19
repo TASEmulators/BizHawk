@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// Mapper for Aladdin Super Game
 	public sealed class Mapper114 : MMC3Board_Base
 	{
-		private ByteBuffer EXPREGS = new ByteBuffer(2);
+		private byte[] EXPREGS = new byte[2];
 
 		private int prg_mask_16;
 
@@ -28,16 +28,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			EXPREGS.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("expregs", ref EXPREGS);
+			ser.Sync("expregs", ref EXPREGS, false);
 		}
 
 		public override void WriteEXP(int addr, byte value)

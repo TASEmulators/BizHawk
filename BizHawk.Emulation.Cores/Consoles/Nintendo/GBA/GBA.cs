@@ -4,6 +4,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	public static class GBA
 	{
+		private static readonly ControllerDefinition.AxisRange TiltRange = new ControllerDefinition.AxisRange(-32767, 0, 32767);
+
 		public static readonly ControllerDefinition GBAController = new ControllerDefinition
 		{
 			Name = "GBA Controller",
@@ -13,14 +15,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			},
 			FloatControls =
 			{
-				"Tilt X", "Tilt Y", "Tilt Z", "Light Sensor"
+				"Tilt X", "Tilt Y", "Tilt Z",
+				"Light Sensor"
 			},
 			FloatRanges =
 			{
-				new[] { -32767f, 0f, 32767f },
-				new[] { -32767f, 0f, 32767f },
-				new[] { -32767f, 0f, 32767f },
-				new[] { 0f, 100f, 200f },
+				TiltRange, TiltRange, TiltRange,
+				new ControllerDefinition.AxisRange(0, 100, 200),
 			}
 		};
 	}

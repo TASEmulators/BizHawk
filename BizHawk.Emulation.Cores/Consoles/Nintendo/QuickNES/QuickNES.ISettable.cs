@@ -28,9 +28,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			RecalculateCrops();
 			CalculatePalette();
 
-			CoreComm.ScreenLogicalOffsetX = o.ClipLeftAndRight ? 8 : 0;
-			CoreComm.ScreenLogicalOffsetY = o.ClipTopAndBottom ? 8 : 0;
-
 			return false;
 		}
 

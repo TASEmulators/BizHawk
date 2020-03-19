@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int prg_bank_mask_16k;
 
 		//regenerable state
-		IntBuffer prg_banks_16k = new IntBuffer(2);
+		int[] prg_banks_16k = new int[2];
 
 		//state
 		MMC1.MMC1_SerialController scnt;
@@ -74,12 +74,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			irq_destination = 0x20000000 | (val << 25);
 		}
 
-		public override void Dispose()
-		{
-			base.Dispose();
-			prg_banks_16k.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
@@ -95,7 +89,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(init_sequence), ref init_sequence);
 			ser.Sync(nameof(chip_select), ref chip_select);
 			ser.Sync(nameof(wram_disable), ref wram_disable);
-			ser.Sync(nameof(prg_banks_16k), ref prg_banks_16k);
+			ser.Sync(nameof(prg_banks_16k), ref prg_banks_16k, false);
 			if (ser.IsReader) Sync();
 		}
 

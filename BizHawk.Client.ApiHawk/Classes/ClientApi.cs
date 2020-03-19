@@ -162,7 +162,7 @@ namespace BizHawk.Client.ApiHawk
 		/// <param name="name">Savestate friendly name</param>
 		public static void LoadState(string name)
 		{
-			InvokeMainFormMethod("LoadState", new object[] { Path.Combine(PathManager.GetSaveStatePath(Global.Game), $"{name}.State"), name, false, false });
+			InvokeMainFormMethod("LoadState", new object[] { Path.Combine(Global.Config.PathEntries.SaveStateAbsolutePath(Global.Game.System), $"{name}.State"), name, false, false });
 		}
 
 
@@ -245,7 +245,7 @@ namespace BizHawk.Client.ApiHawk
 		/// <param name="name">Savestate friendly name</param>
 		public static void SaveState(string name)
 		{
-			InvokeMainFormMethod("SaveState", new object[] { Path.Combine(PathManager.GetSaveStatePath(Global.Game), $"{name}.State"), name, false });
+			InvokeMainFormMethod("SaveState", new object[] { Path.Combine(Global.Config.PathEntries.SaveStateAbsolutePath(Global.Game.System), $"{name}.State"), name, false });
 		}
 
 		/// <summary>
@@ -359,7 +359,7 @@ namespace BizHawk.Client.ApiHawk
 			{
 				if (joypad.Inputs == 0)
 				{
-					AutoFireStickyXorAdapter joypadAdapter = Global.AutofireStickyXORAdapter;
+					AutoFireStickyXorAdapter joypadAdapter = Global.InputManager.AutofireStickyXorAdapter;
 					joypadAdapter.ClearStickies();
 				}
 				else
@@ -368,7 +368,7 @@ namespace BizHawk.Client.ApiHawk
 					{
 						if (joypad.Inputs.HasFlag(button))
 						{
-							AutoFireStickyXorAdapter joypadAdapter = Global.AutofireStickyXORAdapter;
+							AutoFireStickyXorAdapter joypadAdapter = Global.InputManager.AutofireStickyXorAdapter;
 							joypadAdapter.SetSticky(
 								RunningSystem == SystemInfo.GB
 									? $"{JoypadConverter.ConvertBack(button, RunningSystem)}"
@@ -408,7 +408,7 @@ namespace BizHawk.Client.ApiHawk
 		/// </summary>
 		private static void GetAllInputs()
 		{
-			var joypadAdapter = Global.AutofireStickyXORAdapter;
+			var joypadAdapter = Global.InputManager.AutofireStickyXorAdapter;
 
 			var pressedButtons = joypadAdapter.Definition.BoolButtons
 				.Where(b => joypadAdapter.IsPressed(b));
@@ -530,13 +530,10 @@ namespace BizHawk.Client.ApiHawk
 
 		public static void SetSoundOn(bool enable)
 		{
-			Global.Config.SoundEnabled = enable;
+			if (enable != Global.Config.SoundEnabled) InvokeMainFormMethod("ToggleSound");
 		}
 
-		public static bool GetSoundOn()
-		{
-			return Global.Config.SoundEnabled;
-		}
+		public static bool GetSoundOn() => Global.Config.SoundEnabled;
 
 		public static bool IsPaused()
 		{

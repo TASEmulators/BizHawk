@@ -7,8 +7,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// Adapted from FCEUX src
 	public sealed class UNIF_BMC_Ghostbusters63in1 : NES.NESBoardBase
 	{
-		private ByteBuffer reg = new ByteBuffer(2);
-		private readonly int[] banks = new [] { 0, 0, 524288, 1048576};
+		private byte[] reg = new byte[2];
+		private readonly int[] banks = { 0, 0, 524288, 1048576 };
 		private int bank;
 
 		[MapperProp]
@@ -31,15 +31,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			reg.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync(nameof(reg), ref reg);
+			ser.Sync(nameof(reg), ref reg, false);
 			ser.Sync(nameof(bank), ref bank);
 			ser.Sync(nameof(bank), ref Ghostbusters63in1_63set);
 			ser.Sync(nameof(bank), ref Ghostbusters63in1_chip_22_select);

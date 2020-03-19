@@ -11,26 +11,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int chr_bank_mask_4k;
 
 		//state
-		IntBuffer prg_banks_8k = new IntBuffer(4);
-		IntBuffer chr_banks_4k = new IntBuffer(2);
+		int[] prg_banks_8k = new int[4];
+		int[] chr_banks_4k = new int[2];
 		int[] chr_regs_4k = new int[2];
 
 		//the VS actually does have 2 KB of nametable address space
 		//let's make the extra space here, instead of in the main NES to avoid confusion
 		byte[] CIRAM_VS = new byte[0x800];
 
-		public override void Dispose()
-		{
-			base.Dispose();
-			prg_banks_8k.Dispose();
-			chr_banks_4k.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(prg_banks_8k), ref prg_banks_8k);
-			ser.Sync(nameof(chr_banks_4k), ref chr_banks_4k);
+			ser.Sync(nameof(prg_banks_8k), ref prg_banks_8k, false);
+			ser.Sync(nameof(chr_banks_4k), ref chr_banks_4k, false);
 			if (NES.IsVS)
 			{
 				ser.Sync("VS_CIRAM", ref CIRAM_VS, false);

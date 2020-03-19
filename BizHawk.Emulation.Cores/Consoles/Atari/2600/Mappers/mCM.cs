@@ -6,7 +6,7 @@ using BizHawk.Common.NumberExtensions;
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	/*
-	* Spectravideo Compumate Add-on Kevtris Documentation
+	Spectra-video Compumate Add-on Kevtris Documentation
 
 	This is more than just a cartridge mapper- it's also a "computer" add-on.  
 	There's two 8K EPROMs soldered on top of each other.  There's two short
@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 	1000-1FFF : selectable 4K ROM bank (selected by D0, D1 on portA)
 
-	On powerup, the port is all 1's, so the last bank of ROM is enabled, RAM is
+	On power up, the port is all 1's, so the last bank of ROM is enabled, RAM is
 	disabled.
 
 	when RAM is enabled:
@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	Bit 6 of portA clocks the 4017.  Each rising edge advances the column one
 	count.
 
-	There's 10 columns labelled 0-9, and 4 rows, labelled 0-3.
+	There's 10 columns labeled 0-9, and 4 rows, labeled 0-3.
 
 							 Column
 
@@ -104,8 +104,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	*/
 
 	/*
-	* Spectravideo Compumate Add-on Stella Documentation
-	Cartridge class used for SpectraVideo CompuMate bankswitched games.
+	* SpectraVideo Compumate Add-on Stella Documentation
+	Cartridge class used for SpectraVideo Compumate bankswitched games.
 
 	This is more than just a cartridge mapper - it's also a "computer" add-on.  
 	There's two 8K EPROMs soldered on top of each other.  There's two short
@@ -129,12 +129,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			D1 = bank select high bit
 			D0 = bank select low bit
 
-	INPT0: D7 = FUNC key input (0 on startup / 1 = key pressed)
-	INPT1: D7 = always HIGH input (pulled high thru 20K resistor)
-	INPT2: D7 = always HIGH input (pulled high thru 20K resistor)
-	INPT3: D7 = SHIFT key input (0 on startup / 1 = key pressed)
-	INPT4: D7 = keyboard row 0 input (0 = key pressed)
-	INPT5: D7 = keyboard row 2 input (0 = key pressed)
+	INPUT0: D7 = FUNC key input (0 on startup / 1 = key pressed)
+	INPUT1: D7 = always HIGH input (pulled high thru 20K resistor)
+	INPUT2: D7 = always HIGH input (pulled high thru 20K resistor)
+	INPUT3: D7 = SHIFT key input (0 on startup / 1 = key pressed)
+	INPUT4: D7 = keyboard row 0 input (0 = key pressed)
+	INPUT5: D7 = keyboard row 2 input (0 = key pressed)
 
 	The keyboard's composed of a 4017 1 of 10 counter, driving the 10 columns of
 	the keyboard.  It has 4 rows.  The 4 row outputs are buffered by inverters.
@@ -145,7 +145,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	Bit 6 of portA clocks the 4017.  Each rising edge advances the column one
 	count.
 
-	There's 10 columns labelled 0-9, and 4 rows, labelled 0-3.
+	There's 10 columns labeled 0-9, and 4 rows, labeled 0-3.
 
 							Column
 
@@ -177,10 +177,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	by two 20K resistors, then it goes through a hex inverting schmitt trigger to
 	square it up.  This then runs into bit 7 of portA.
 	*/
-	internal class mCM : MapperBase
+	internal sealed class mCM : MapperBase
 	{
 		// TODO: PokeMem
-		private ByteBuffer _ram = new ByteBuffer(2048);
+		private byte[] _ram = new byte[2048];
 		private int _bank4K = 3; // On Start up, controller port is all 1's, so start on the last bank, flags enabled
 		private bool _disableRam = true;
 		private bool _writeMode;
@@ -188,28 +188,26 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private bool _funcKey;
 		private bool _shiftKey;
 
-		public override void Dispose()
+		public mCM(Atari2600 core) : base(core)
 		{
-			_ram.Dispose();
-			base.Dispose();
 		}
+
+		public override byte[] CartRam => _ram;
 
 		public override void HardReset()
 		{
-			_ram = new ByteBuffer(2048);
+			_ram = new byte[2048];
 			_bank4K = 3;
 			_disableRam = true;
 			_writeMode = true;
 			_column = 0;
 			_funcKey = false;
 			_shiftKey = false;
-
-			base.HardReset();
 		}
 
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync("cartRam", ref _ram);
+			ser.Sync("cartRam", ref _ram, false);
 			ser.Sync("bank4k", ref _bank4K);
 			ser.Sync("column", ref _column);
 			ser.Sync("disableRam", ref _disableRam);
@@ -220,11 +218,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			base.SyncState(ser);
 		}
 
-		private byte ReadMem(ushort addr, bool peek)
-		{
+		public override byte ReadMemory(ushort addr)
+		{ 
 			// A unique feature of the keyboard is that it changes the operation of inputs 0-3 
 			// by holding them high in the no-button-pressed state.
-			// However exposing this behaviour to the rest of the system would be overly cunmbersome
+			// However exposing this behaviour to the rest of the system would be overly cumbersome
 			// so instead we bypass these cases here
 			if ((addr & 0x000F) == 8 && (addr & 0x1080) == 0 && addr < 1000)
 			{
@@ -280,19 +278,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			throw new Exception("this hasn't been tested");
 		}
 
-		public override byte ReadMemory(ushort addr)
-		{
-			return ReadMem(addr, false);
-		}
+		public override byte PeekMemory(ushort addr) => ReadMemory(addr);
 
-		public override byte PeekMemory(ushort addr)
-		{
-			return ReadMem(addr,true);
-		}
+		public override void WriteMemory(ushort addr, byte value)
+			=> WriteMem(addr, value, false);
+
+		public override void PokeMemory(ushort addr, byte value)
+			=> WriteMem(addr, value, true);
 
 		private void WriteMem(ushort addr, byte value, bool poke)
 		{
-			// Mimicking the 6532 logic for accessing port A, for testing
 			////var isPortA = false; // adelikat: Commented out this variable to remove a warning.  Should this be deleted or is this supposed to be actually used?
 
 			if ((addr & 0x0200) == 0) // If the RS bit is not set, this is a ram write
@@ -323,7 +318,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 
 			if (addr == 0x280 && !poke) // Stella uses only 280
-			////if (isPortA && !poke)
+				////if (isPortA && !poke)
 			{
 				var bit5 = value.Bit(5);
 				var bit4 = value.Bit(4);
@@ -362,16 +357,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				base.WriteMemory(addr, value);
 			}
-		}
-
-		public override void WriteMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, false);
-		}
-
-		public override void PokeMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, true);
 		}
 	}
 }

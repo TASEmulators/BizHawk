@@ -21,8 +21,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int chr_bank_mask_1k;
 
 		//state
-		IntBuffer prg_banks_8k = new IntBuffer(4);
-		IntBuffer chr_banks_1k = new IntBuffer(12);
+		int[] prg_banks_8k = new int[4];
+		int[] chr_banks_1k = new int[12];
 		bool[] vram_enable = new bool[3];
 
 		int irq_counter;
@@ -35,18 +35,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		byte prgram_write = 0;
 
-		public override void Dispose()
-		{
-			base.Dispose();
-			prg_banks_8k.Dispose();
-			chr_banks_1k.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(prg_banks_8k), ref prg_banks_8k);
-			ser.Sync(nameof(chr_banks_1k), ref chr_banks_1k);
+			ser.Sync(nameof(prg_banks_8k), ref prg_banks_8k, false);
+			ser.Sync(nameof(chr_banks_1k), ref chr_banks_1k, false);
 			for (int i = 0; i < vram_enable.Length; i++)
 				ser.Sync("vram_enable_" + i, ref vram_enable[i]);
 			ser.Sync(nameof(irq_counter), ref irq_counter);
@@ -137,7 +130,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 			}
 		}
-
 
 		public override void WritePRG(int addr, byte value)
 		{

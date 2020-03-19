@@ -21,18 +21,17 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			AppleIIController.BoolButtons.AddRange(ExtraButtons);
 		}
 
-		public AppleII(CoreComm comm, IEnumerable<GameInfo> gameInfoSet, IEnumerable<byte[]> romSet, Settings settings)
-			: this(comm, gameInfoSet.First(), romSet.First(), settings)
+		public AppleII(CoreComm comm, IEnumerable<byte[]> romSet, Settings settings)
+			: this(comm, romSet.First(), settings)
 		{
 			_romSet = romSet.ToList();
 		}
 
 		[CoreConstructor("AppleII")]
-		public AppleII(CoreComm comm, GameInfo game, byte[] rom, Settings settings)
+		public AppleII(CoreComm comm, byte[] rom, Settings settings)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
-			CoreComm = comm;
 
 			_tracer = new TraceBuffer
 			{

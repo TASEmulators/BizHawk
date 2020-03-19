@@ -5,21 +5,20 @@
 
 //TODO - prg is 4 bits, chr is 6 bits
 
-using System;
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//also, Namcot109, Namcot118, Namcot119 chips are this exact same thing
-	public class Namcot108Chip : IDisposable
+	public class Namcot108Chip
 	{
 		//state
 		int reg_addr;
-		ByteBuffer regs = new ByteBuffer(8);
+		byte[] regs = new byte[8];
 
 		//volatile state
-		ByteBuffer chr_regs_1k = new ByteBuffer(8);
-		ByteBuffer prg_regs_8k = new ByteBuffer(4);
+		byte[] chr_regs_1k = new byte[8];
+		byte[] prg_regs_8k = new byte[4];
 
 		NES.NESBoardBase board;
 		public Namcot108Chip(NES.NESBoardBase board)
@@ -29,17 +28,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Sync();
 		}
 
-		public void Dispose()
-		{
-			regs.Dispose();
-			chr_regs_1k.Dispose();
-			prg_regs_8k.Dispose();
-		}
-
 		public virtual void SyncState(Serializer ser)
 		{
 			ser.Sync(nameof(reg_addr), ref reg_addr);
-			ser.Sync(nameof(regs), ref regs);
+			ser.Sync(nameof(regs), ref regs, false);
 			Sync();
 		}
 
@@ -111,11 +103,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int tko_security = 0;
 		static byte[] TKO = { 0xFF, 0xBF, 0xB7, 0x97, 0x97, 0x17, 0x57, 0x4F, 0x6F, 0x6B, 0xEB, 0xA9, 0xB1, 0x90, 0x94, 0x14,
 										 0x56, 0x4E, 0x6F, 0x6B, 0xEB, 0xA9, 0xB1, 0x90, 0xD4, 0x5C, 0x3E, 0x26, 0x87, 0x83, 0x13, 0x51};
-
-		public override void Dispose()
-		{
-			mapper?.Dispose();
-		}
 
 		public override void SyncState(Serializer ser)
 		{
@@ -199,7 +186,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			else
 				base.WritePPU(addr, value);
 		}
-
 
 		public override void WritePRG(int addr, byte value)
 		{

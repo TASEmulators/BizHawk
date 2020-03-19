@@ -6,6 +6,7 @@ using System.Linq;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.MovieConversionExtensions;
+using BizHawk.Common.PathExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -64,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 						path = path.Insert(0, Path.DirectorySeparatorChar.ToString());
 					}
 
-					path = PathManager.MakeAbsolutePath(_config.PathEntries.MoviesPathFragment, null) + path;
+					path = _config.PathEntries.MovieAbsolutePath() + path;
 
 					if (!MovieService.MovieExtensions.Contains(Path.GetExtension(path)))
 					{
@@ -158,7 +159,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BrowseBtn_Click(object sender, EventArgs e)
 		{
-			string movieFolderPath = PathManager.MakeAbsolutePath(_config.PathEntries.MoviesPathFragment, null);
+			string movieFolderPath = _config.PathEntries.MovieAbsolutePath();
 			
 			// Create movie folder if it doesn't already exist
 			try
@@ -197,7 +198,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RecordMovie_Load(object sender, EventArgs e)
 		{
-			RecordBox.Text = PathManager.FilesystemSafeName(_game);
+			RecordBox.Text = _game.Name.FilesystemSafeName();
 			StartFromCombo.SelectedIndex = 0;
 			DefaultAuthorCheckBox.Checked = _config.UseDefaultAuthor;
 			if (_config.UseDefaultAuthor)

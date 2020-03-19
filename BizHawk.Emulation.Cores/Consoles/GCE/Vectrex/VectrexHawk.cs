@@ -17,7 +17,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 	{
 		public byte[] RAM = new byte[0x400];
 
-
 		public byte[] _bios, minestorm;
 		public readonly byte[] _rom;	
 
@@ -33,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		public SerialPort serialport;
 
 		[CoreConstructor("VEC")]
-		public VectrexHawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ object settings, object syncSettings)
+		public VectrexHawk(CoreComm comm, byte[] rom, object settings, object syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
 
@@ -50,8 +49,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			ppu = new PPU();
 			serialport = new SerialPort();
 
-			CoreComm = comm;
-
 			_settings = (VectrexSettings)settings ?? new VectrexSettings();
 			_syncSettings = (VectrexSyncSettings)syncSettings ?? new VectrexSyncSettings();
 			_controllerDeck = new VectrexHawkControllerDeck(_syncSettings.Port1, _syncSettings.Port2);
@@ -59,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			byte[] Bios = null;
 			byte[] Mine = null;
 
-			Bios = comm.CoreFileProvider.GetFirmware("Vectrex", "Bios", true, "BIOS Not Found, Cannot Load");			
+			Bios = comm.CoreFileProvider.GetFirmware("Vectrex", "Bios", true, "BIOS Not Found, Cannot Load");
 			_bios = Bios;
 
 			Mine = comm.CoreFileProvider.GetFirmware("Vectrex", "Minestorm", true, "Minestorm Not Found, Cannot Load");

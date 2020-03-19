@@ -12,18 +12,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		bool mirror_control_enabled;
 
 		//state
-		IntBuffer prg_banks_16k = new IntBuffer(2);
-
-		public override void Dispose()
-		{
-			base.Dispose();
-			prg_banks_16k.Dispose();
-		}
+		int[] prg_banks_16k = new int[2];
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(prg_banks_16k), ref prg_banks_16k);
+			ser.Sync(nameof(prg_banks_16k), ref prg_banks_16k, false);
 		}
 
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -99,19 +93,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int prg_bank_mask_16k;
 
 		//state
-		IntBuffer prg_banks_16k = new IntBuffer(2);
+		int[] prg_banks_16k = new int[2];
 		int prg_block, prg_page;
-
-		public override void Dispose()
-		{
-			base.Dispose();
-			prg_banks_16k.Dispose();
-		}
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(prg_banks_16k), ref prg_banks_16k);
+			ser.Sync(nameof(prg_banks_16k), ref prg_banks_16k, false);
 			ser.Sync(nameof(prg_block), ref prg_block);
 			ser.Sync(nameof(prg_page), ref prg_page);
 		}

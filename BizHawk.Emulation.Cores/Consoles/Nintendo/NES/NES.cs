@@ -14,8 +14,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		"zeromus, natt, alyosha, adelikat",
 		isPorted: false,
 		isReleased: true)]
-	public partial class NES : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable,
-		IBoardInfo, ISettable<NES.NESSettings, NES.NESSyncSettings>, ICodeDataLogger
+	public partial class NES : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, IVideoLogicalOffsets,
+		IBoardInfo, IRomInfo, ISettable<NES.NESSettings, NES.NESSyncSettings>, ICodeDataLogger
 	{
 		[CoreConstructor("NES")]
 		public NES(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
@@ -34,7 +34,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			SyncSettings = (NESSyncSettings)syncSettings ?? new NESSyncSettings();
 			ControllerSettings = SyncSettings.Controls;
-			CoreComm = comm;
 
 			BootGodDB.Initialize();
 			videoProvider = new MyVideoProvider(this);
@@ -81,6 +80,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		static readonly bool USE_DATABASE = true;
 		public RomStatus RomStatus;
 
+		public string RomDetails { get; private set; }
+
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
 		private NES()
@@ -121,9 +122,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public bool IsFDS => Board is FDS;
 
-		public CoreComm CoreComm { get; }
-
 		public DisplayType Region => _display_type;
+
+		int IVideoLogicalOffsets.ScreenX => Settings.ClipLeftAndRight
+			? 8
+			: 0;
+
+		int IVideoLogicalOffsets.ScreenY => Region == DisplayType.NTSC
+			? Settings.NTSC_TopLine
+			: Settings.PAL_TopLine;
 
 		public class MyVideoProvider : IVideoProvider
 		{
@@ -628,31 +635,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Board.InitialRegisterValues = InitialMapperRegisterValues;
 			Board.Configure(origin);
 
+			string romDetailsHeader = "";
 			if (origin == EDetectionOrigin.BootGodDB)
 			{
 				RomStatus = RomStatus.GoodDump;
-				CoreComm.RomStatusAnnotation = "Identified from BootGod's database";
+				romDetailsHeader = "Identified from BootGod's database";
 			}
 			if (origin == EDetectionOrigin.UNIF)
 			{
 				RomStatus = RomStatus.NotInDatabase;
-				CoreComm.RomStatusAnnotation = "Inferred from UNIF header; somewhat suspicious";
+				romDetailsHeader = "Inferred from UNIF header; somewhat suspicious";
 			}
 			if (origin == EDetectionOrigin.INES)
 			{
 				RomStatus = RomStatus.NotInDatabase;
-				CoreComm.RomStatusAnnotation = "Inferred from iNES header; potentially wrong";
+				romDetailsHeader = "Inferred from iNES header; potentially wrong";
 			}
+
 			if (origin == EDetectionOrigin.GameDB)
 			{
-				if (choice.bad)
-				{
-					RomStatus = RomStatus.BadDump;
-				}
-				else
-				{
-					RomStatus = choice.DB_GameInfo.Status;
-				}
+				RomStatus = choice.bad
+					? RomStatus.BadDump
+					: choice.DB_GameInfo.Status;
 			}
 
 			byte[] trainer = null;
@@ -708,7 +712,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			LoadReport.Flush();
-			CoreComm.RomStatusDetails = LoadReport.ToString();
+			RomDetails = romDetailsHeader + "\n\n" + LoadReport;
 
 			// IF YOU DO ANYTHING AT ALL BELOW THIS LINE, MAKE SURE THE APPROPRIATE CHANGE IS MADE TO FDS (if applicable)
 

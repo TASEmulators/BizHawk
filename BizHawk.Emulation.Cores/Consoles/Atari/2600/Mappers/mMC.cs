@@ -3,10 +3,10 @@
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	/*
-	MC (Megacart)
+	MC (MegaCart)
 	-----
 
-	This is the mapper for the "Chris Wilkson's Megacart".  
+	This is the mapper for the "Chris Wilkson's MegaCart".
 
 	Only four addresses are used to bankswitch on this one.
 
@@ -33,11 +33,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	says:
 
 	"
-	  Megacart Specification, Rev1.1
+	  MegaCart Specification, Rev1.1
 	  (c) 1997 Chris Wilkson
 	  cwilkson@mit.edu
 
-	  Because the console's memory is randomized at powerup, there is no way to
+	  Because the console's memory is randomized at power up, there is no way to
 	  predict the data initially contained in the "hot addresses".  Therefore,
 	  hardware will force slot 3 to always point to ROM block $FF immediately
 	  after any read or write to the RESET vector at $FFFC-$FFFD.  Block $FF
@@ -58,12 +58,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	address bus.  An actual system doesn't have that luxury, unfortunately, so it must
 	disregard accesses to 3C-3F instead.
 	*/
-
-	internal class mMC : MapperBase 
+	internal sealed class mMC : MapperBase 
 	{
-		public mMC()
+		public mMC(Atari2600 core) : base(core)
 		{
 			throw new NotImplementedException();
 		}
+
+		public override void HardReset() { }
 	}
 }

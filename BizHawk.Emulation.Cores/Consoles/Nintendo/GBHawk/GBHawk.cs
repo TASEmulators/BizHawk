@@ -103,8 +103,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			audio = new Audio();
 			serialport = new SerialPort();
 
-			CoreComm = comm;
-
 			_settings = (GBSettings)settings ?? new GBSettings();
 			_syncSettings = (GBSyncSettings)syncSettings ?? new GBSyncSettings();
 			_controllerDeck = new GBHawkControllerDeck(_syncSettings.Port1);

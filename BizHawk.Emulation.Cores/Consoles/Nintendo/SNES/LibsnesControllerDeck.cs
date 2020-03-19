@@ -20,6 +20,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			Payload
 		}
 
+		/// <remarks>
+		/// problem: when you're in 240 line mode, the limit on Y needs to be 240. when you're in 224 mode, it needs to be 224.
+		/// perhaps the deck needs to account for this...
+		/// for reference Snes9x is always in 224 mode
+		/// </remarks>
+		public static readonly List<ControllerDefinition.AxisRange> LightGunRanges = new List<ControllerDefinition.AxisRange> { new ControllerDefinition.AxisRange(0, 128, 256), new ControllerDefinition.AxisRange(0, 0, 240) };
+
 		private static ILibsnesController Factory(ControllerType t, LibsnesCore.SnesSyncSettings ss)
 		{
 			switch (t)
@@ -284,11 +291,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				"0Mouse X",
 				"0Mouse Y"
 			},
-			FloatRanges =
-			{
-				new[] { -127f, 0f, 127f },
-				new[] { -127f, 0f, 127f }
-			}
+			FloatRanges = ControllerDefinition.CreateAxisRangePair(-127, 0, 127, ControllerDefinition.AxisPairOrientation.RightAndUp) //TODO verify direction against hardware
 		};
 
 		public ControllerDefinition Definition => _definition;
@@ -343,13 +346,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				"0Scope X",
 				"0Scope Y"
 			},
-			FloatRanges =
-			{
-				// problem: when you're in 240 line mode, the limit on Y needs to be 240.
-				// when you're in 224 mode, it needs to be 224.  perhaps the deck needs to account for this...
-				new[] { 0f, 128f, 256f },
-				new[] { 0f, 0f, 240f }
-			}
+			FloatRanges = LibsnesControllerDeck.LightGunRanges
 		};
 
 		public ControllerDefinition Definition => _definition;
@@ -398,15 +395,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				"1Justifier X",
 				"1Justifier Y",
 			},
-			FloatRanges =
-			{
-				// problem: when you're in 240 line mode, the limit on Y needs to be 240.
-				// when you're in 224 mode, it needs to be 224.  perhaps the deck needs to account for this...
-				new[] { 0f, 128f, 256f },
-				new[] { 0f, 0f, 240f },
-				new[] { 0f, 128f, 256f },
-				new[] { 0f, 0f, 240f }
-			}
+			FloatRanges = LibsnesControllerDeck.LightGunRanges.Concat(LibsnesControllerDeck.LightGunRanges).ToList()
 		};
 
 		public ControllerDefinition Definition => _definition;

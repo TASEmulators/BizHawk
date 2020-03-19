@@ -86,8 +86,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			LagCount = 0;
 		}
 
-		public CoreComm CoreComm { get; }
-
 		public void Dispose()
 		{
 			if (!_disposed)

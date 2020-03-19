@@ -214,11 +214,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 					"0Mouse X",
 					"0Mouse Y"
 				},
-				FloatRanges =
-				{
-					new[] { -127f, 0f, 127f },
-					new[] { -127f, 0f, 127f }
-				}
+				FloatRanges = ControllerDefinition.CreateAxisRangePair(-127, 0, 127, ControllerDefinition.AxisPairOrientation.RightAndUp) //TODO verify direction against hardware
 			};
 
 			public override ControllerDefinition Definition => _definition;
@@ -240,12 +236,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 					"0Scope X",
 					"0Scope Y"
 				},
-				FloatRanges =
-				{
-					// snes9x is always in 224 mode
-					new[] { 0f, 128f, 256f },
-					new[] { 0f, 0f, 240f }
-				}
+				FloatRanges = SNES.LibsnesControllerDeck.LightGunRanges
 			};
 
 			public override ControllerDefinition Definition => _definition;
@@ -265,12 +256,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 					"0Justifier X",
 					"0Justifier Y",
 				},
-				FloatRanges =
-				{
-					// snes9x is always in 224 mode
-					new[] { 0f, 128f, 256f },
-					new[] { 0f, 0f, 240f },
-				}
+				FloatRanges = SNES.LibsnesControllerDeck.LightGunRanges
 			};
 
 			public override ControllerDefinition Definition => _definition;

@@ -90,7 +90,7 @@ namespace BizHawk.Client.Common
 						{
 							int val;
 							int i = _source.Definition.FloatControls.IndexOf(button);
-							int mid = (int)_source.Definition.FloatRanges[i].Mid;
+							var mid = _source.Definition.FloatRanges[i].Mid;
 
 							if (createEmpty)
 							{

@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-
+using System.Security.AccessControl;
 using BizHawk.Common;
 
 namespace BizHawk.Client.Common
@@ -67,13 +68,11 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	internal class StreamStringLog : IStringLog
 	{
-		private readonly Stream stream;
+		private readonly Stream _stream;
 		private readonly List<long> _offsets = new List<long>();
 		private readonly BinaryWriter _bw;
 		private readonly BinaryReader _br;
 		private readonly bool _mDisk;
-
-		private long _cursor;
 
 		public StreamStringLog(bool disk)
 		{
@@ -81,15 +80,15 @@ namespace BizHawk.Client.Common
 			if (disk)
 			{
 				var path = TempFileManager.GetTempFilename("movieOnDisk");
-				stream = new FileStream(path, FileMode.Create, System.Security.AccessControl.FileSystemRights.FullControl, FileShare.None, 4 * 1024, FileOptions.DeleteOnClose);
+				_stream = new FileStream(path, FileMode.Create, FileSystemRights.FullControl, FileShare.None, 4 * 1024, FileOptions.DeleteOnClose);
 			}
 			else
 			{
-				stream = new AWEMemoryStream();
+				_stream = new AWEMemoryStream();
 			}
 
-			_bw = new BinaryWriter(stream);
-			_br = new BinaryReader(stream);
+			_bw = new BinaryWriter(_stream);
+			_br = new BinaryReader(_stream);
 		}
 
 		public IStringLog Clone()
@@ -105,22 +104,21 @@ namespace BizHawk.Client.Common
 
 		public void Dispose()
 		{
-			stream.Dispose();
+			_stream.Dispose();
 		}
 
 		public int Count => _offsets.Count;
 
 		public void Clear()
 		{
-			stream.SetLength(0);
+			_stream.SetLength(0);
 			_offsets.Clear();
-			_cursor = 0;
 		}
 
 		public void Add(string str)
 		{
-			stream.Position = stream.Length;
-			_offsets.Add(stream.Position);
+			_stream.Position = _stream.Length;
+			_offsets.Add(_stream.Position);
 			_bw.Write(str);
 			_bw.Flush();
 		}
@@ -135,14 +133,14 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				stream.Position = _offsets[index];
+				_stream.Position = _offsets[index];
 				return _br.ReadString();
 			}
 
 			set
 			{
-				stream.Position = stream.Length;
-				_offsets[index] = stream.Position;
+				_stream.Position = _stream.Length;
+				_offsets[index] = _stream.Position;
 				_bw.Write(value);
 				_bw.Flush();
 			}
@@ -150,8 +148,8 @@ namespace BizHawk.Client.Common
 
 		public void Insert(int index, string val)
 		{
-			stream.Position = stream.Length;
-			_offsets.Insert(index, stream.Position);
+			_stream.Position = _stream.Length;
+			_offsets.Insert(index, _stream.Position);
 			_bw.Write(val);
 			_bw.Flush();
 		}
@@ -178,9 +176,9 @@ namespace BizHawk.Client.Common
 			private int _index = -1;
 
 			public string Current => Log[_index];
-			object System.Collections.IEnumerator.Current => Log[_index];
+			object IEnumerator.Current => Log[_index];
 
-			bool System.Collections.IEnumerator.MoveNext()
+			bool IEnumerator.MoveNext()
 			{
 				_index++;
 				if (_index >= Log.Count)
@@ -192,7 +190,7 @@ namespace BizHawk.Client.Common
 				return true;
 			}
 
-			void System.Collections.IEnumerator.Reset() { _index = -1; }
+			void IEnumerator.Reset() { _index = -1; }
 			
 			public void Dispose() { }
 		}
@@ -202,7 +200,7 @@ namespace BizHawk.Client.Common
 			return new Enumerator { Log = this };
 		}
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return new Enumerator { Log = this };
 		}

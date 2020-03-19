@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// Adapted from FCEUX src
 	public class UNIF_BMC_64in1_NR : NES.NESBoardBase
 	{
-		private ByteBuffer regs = new ByteBuffer(4);
+		private byte[] regs = new byte[4];
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -23,12 +23,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			regs[3] = 0;
 
 			return true;
-		}
-
-		public override void Dispose()
-		{
-			regs.Dispose();
-			base.Dispose();
 		}
 
 		public override void WriteEXP(int addr, byte value)
@@ -89,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(regs), ref regs);
+			ser.Sync(nameof(regs), ref regs, false);
 		}
 	}
 }

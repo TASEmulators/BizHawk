@@ -59,8 +59,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			_controllerDeck = new GBHawkLink4xControllerDeck(GBHawkLink4xControllerDeck.DefaultControllerName, GBHawkLink4xControllerDeck.DefaultControllerName, 
 															 GBHawkLink4xControllerDeck.DefaultControllerName, GBHawkLink4xControllerDeck.DefaultControllerName);
 
-			CoreComm = comm;
-
 			var tempSetA = new GBHawk.GBHawk.GBSettings();
 			var tempSetB = new GBHawk.GBHawk.GBSettings();
 			var tempSetC = new GBHawk.GBHawk.GBSettings();
@@ -90,17 +88,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			tempSyncC.RTCOffset = Link4xSyncSettings.RTCOffset_C;
 			tempSyncD.RTCOffset = Link4xSyncSettings.RTCOffset_D;
 
-			A = new GBHawk.GBHawk(new CoreComm(comm.ShowMessage, comm.Notify) { CoreFileProvider = comm.CoreFileProvider },
-				game_A, rom_A, tempSetA, tempSyncA);
-
-			B = new GBHawk.GBHawk(new CoreComm(comm.ShowMessage, comm.Notify) { CoreFileProvider = comm.CoreFileProvider },
-				game_B, rom_B, tempSetB, tempSyncB);
-
-			C = new GBHawk.GBHawk(new CoreComm(comm.ShowMessage, comm.Notify) { CoreFileProvider = comm.CoreFileProvider },
-				game_C, rom_C, tempSetC, tempSyncC);
-
-			D = new GBHawk.GBHawk(new CoreComm(comm.ShowMessage, comm.Notify) { CoreFileProvider = comm.CoreFileProvider },
-				game_D, rom_D, tempSetD, tempSyncD);
+			A = new GBHawk.GBHawk(comm, game_A, rom_A, tempSetA, tempSyncA);
+			B = new GBHawk.GBHawk(comm, game_B, rom_B, tempSetB, tempSyncB);
+			C = new GBHawk.GBHawk(comm, game_C, rom_C, tempSetC, tempSyncC);
+			D = new GBHawk.GBHawk(comm, game_D, rom_D, tempSetD, tempSyncD);
 
 			ser.Register<IVideoProvider>(this);
 			ser.Register<ISoundProvider>(this); 

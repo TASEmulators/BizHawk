@@ -32,8 +32,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 			Settings = o;
 
-			CoreComm.ScreenLogicalOffsetY = Settings.Top_Line;
-
 			return ret;
 		}
 

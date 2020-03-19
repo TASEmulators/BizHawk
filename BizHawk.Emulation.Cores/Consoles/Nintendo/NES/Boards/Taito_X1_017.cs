@@ -3,81 +3,20 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
+	// http://wiki.nesdev.com/w/index.php/INES_Mapper_082
 	public sealed class Taito_X1_017 : NES.NESBoardBase
 	{
-		/*
-		ines Mapper 82
-		http://wiki.nesdev.com/w/index.php/INES_Mapper_082
-
-		 *  Example Games:
-		 --------------------------
-		 SD Keiji - Blader
-		
- 
- 
-		 Notes:
-		 ---------------------------
-		 Regs appear at $7EFx, I'm unsure whether or not PRG-RAM can exist at $6000-7FFF
- 
- 
-		 Registers:
-		 ---------------------------
- 
-		   $7EF0-7EF5:  CHR Regs
- 
-		   $7EF6:  [.... ..CM]  CHR Mode/Mirroring
-			 C = CHR Mode select
-			 M = Mirroring:
-				0 = Horz
-				1 = Vert
- 
-		   $7EFA:  [PPPP PP..]  PRG Reg 0 (8k @ $8000)
-		   $7EFB:  [PPPP PP..]  PRG Reg 1 (8k @ $A000)
-		   $7EFC:  [PPPP PP..]  PRG Reg 2 (8k @ $C000)
- 
- 
-		 CHR Setup:
-		 ---------------------------
- 
-						 $0000   $0400   $0800   $0C00   $1000   $1400   $1800   $1C00 
-					   +---------------+---------------+-------+-------+-------+-------+
-		 CHR Mode 0:   |    <$7EF0>    |    <$7EF1>    | $7EF2 | $7EF3 | $7EF4 | $7EF5 |
-					   +---------------+---------------+---------------+---------------+
-		 CHR Mode 1:   | $7EF2 | $7EF3 | $7EF4 | $7EF5 |    <$7EF0>    |    <$7EF1>    |
-					   +-------+-------+-------+-------+---------------+---------------+
- 
- 
-		 PRG Setup:
-		 ---------------------------
- 
-			   $8000   $A000   $C000   $E000  
-			 +-------+-------+-------+-------+
-			 | $7EFA | $7EFB | $7EFC | { -1} |
-			 +-------+-------+-------+-------+
- 
-		 Note:  remember that the low 2 bits are not used (right-shift written values by 2)
-		*/
-
-		// config
-		int prg_bank_mask, chr_bank_mask;
-		// state
-		ByteBuffer prg_regs_8k = new ByteBuffer(4);
-		ByteBuffer chr_regs_1k = new ByteBuffer(8);
-		bool ChrMode;
-		bool[] wramenable = new bool[3];
-
-		public override void Dispose()
-		{
-			base.Dispose();
-			chr_regs_1k.Dispose();
-			prg_regs_8k.Dispose();
-		}
+		private int prg_bank_mask, chr_bank_mask;
+		private byte[] prg_regs_8k = new byte[4];
+		private byte[] chr_regs_1k = new byte[8];
+		private bool ChrMode;
+		private bool[] wramenable = new bool[3];
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(prg_regs_8k), ref prg_regs_8k);
-			ser.Sync(nameof(chr_regs_1k), ref chr_regs_1k);
+			ser.Sync(nameof(prg_regs_8k), ref prg_regs_8k, false);
+			ser.Sync(nameof(chr_regs_1k), ref chr_regs_1k, false);
 			ser.Sync(nameof(ChrMode), ref ChrMode);
 			for (int i = 0; i < wramenable.Length; i++)
 				ser.Sync("wramenable_" + i, ref wramenable[i]);
@@ -109,9 +48,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override byte ReadWRAM(int addr)
 		{
 			if (addr < 0x1400 && wramenable[addr >> 11])
+			{
 				return WRAM[addr];
-			else
-				return NES.DB;
+			}
+
+			return NES.DB;
 		}
 
 		public override void WriteWRAM(int addr, byte value)
@@ -194,10 +135,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr = (bank_1k << 10) | ofs;
 				return VROM[addr];
 			}
-			else
-			{
-				return base.ReadPPU(addr);
-			}
+
+			return base.ReadPPU(addr);
 		}
 	}
 }

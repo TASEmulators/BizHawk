@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using BizHawk.Bizware.BizwareGL;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.FilterManager;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Sony.PSX;
 
@@ -81,17 +82,17 @@ namespace BizHawk.Client.EmuHawk
 
 			if (GL is IGL_TK || GL is IGL_SlimDX9)
 			{
-				var fiHq2x = new FileInfo(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk/hq2x.cgp"));
+				var fiHq2x = new FileInfo(Path.Combine(PathUtils.GetExeDirectoryAbsolute(), "Shaders/BizHawk/hq2x.cgp"));
 				if (fiHq2x.Exists)
 				{
 					using var stream = fiHq2x.OpenRead();
-					ShaderChain_hq2x = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
+					ShaderChain_hq2x = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.Combine(PathUtils.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
 				}
-				var fiScanlines = new FileInfo(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk/BizScanlines.cgp"));
+				var fiScanlines = new FileInfo(Path.Combine(PathUtils.GetExeDirectoryAbsolute(), "Shaders/BizHawk/BizScanlines.cgp"));
 				if (fiScanlines.Exists)
 				{
 					using var stream = fiScanlines.OpenRead();
-					ShaderChain_scanlines = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
+					ShaderChain_scanlines = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.Combine(PathUtils.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
 				}
 
 				string bicubicPath = "Shaders/BizHawk/bicubic-fast.cgp";
@@ -99,11 +100,11 @@ namespace BizHawk.Client.EmuHawk
 				{
 					bicubicPath = "Shaders/BizHawk/bicubic-normal.cgp";
 				}
-				var fiBicubic = new FileInfo(Path.Combine(PathManager.GetExeDirectoryAbsolute(), bicubicPath));
+				var fiBicubic = new FileInfo(Path.Combine(PathUtils.GetExeDirectoryAbsolute(), bicubicPath));
 				if (fiBicubic.Exists)
 				{
 					using var stream = fiBicubic.Open(FileMode.Open, FileAccess.Read, FileShare.Read);
-					ShaderChain_bicubic = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
+					ShaderChain_bicubic = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.Combine(PathUtils.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
 				}
 			}
 

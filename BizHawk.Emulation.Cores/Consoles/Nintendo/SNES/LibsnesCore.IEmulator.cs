@@ -98,8 +98,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			IsLagFrame = false;
 		}
 
-		public CoreComm CoreComm { get; }
-
 		public void Dispose()
 		{
 			if (_disposed)

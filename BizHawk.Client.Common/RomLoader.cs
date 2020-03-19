@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 
 using BizHawk.Common;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Libretro;
@@ -19,7 +20,6 @@ using BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.GGHawkLink;
-using BizHawk.Emulation.Cores.Sony.PSP;
 using BizHawk.Emulation.Cores.Sony.PSX;
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
 using BizHawk.Emulation.Cores.Arcades.MAME;
@@ -243,7 +243,7 @@ namespace BizHawk.Client.Common
 			return discs;
 		}
 
-		public bool LoadRom(string path, CoreComm nextComm, bool forceAccurateCore = false,
+		public bool LoadRom(string path, CoreComm nextComm, string launchLibretroCore, bool forceAccurateCore = false,
 			int recursiveCount = 0) // forceAccurateCore is currently just for Quicknes vs Neshawk but could be used for other situations
 		{
 			if (recursiveCount > 1) // hack to stop recursive calls from endlessly rerunning if we can't load it
@@ -291,24 +291,20 @@ namespace BizHawk.Client.Common
 
 				if (OpenAdvanced is OpenAdvanced_Libretro)
 				{
-					string codePathPart = Path.GetFileNameWithoutExtension(nextComm.LaunchLibretroCore);
-
-					var retro = new LibretroCore(nextComm, nextComm.LaunchLibretroCore);
-					nextEmulator = retro;
-
 					// kind of dirty.. we need to stash this, and then we can unstash it in a moment, in case the core doesn't fail
 					var oldGame = Global.Game;
 
+					// must be done before LoadNoGame (which triggers retro_init and the paths to be consumed by the core)
+					// game name == name of core
+					string codePathPart = Path.GetFileNameWithoutExtension(launchLibretroCore);
+					Global.Game = game = new GameInfo { Name = codePathPart, System = "Libretro" };
+					var retro = new LibretroCore(nextComm, game, launchLibretroCore);
+					nextEmulator = retro;
+
 					if (retro.Description.SupportsNoGame && string.IsNullOrEmpty(path))
 					{
-						// must be done before LoadNoGame (which triggers retro_init and the paths to be consumed by the core)
-						// game name == name of core
-						var gameName = codePathPart;
-						Global.Game = game = new GameInfo { Name = gameName, System = "Libretro" };
-
 						// if we are allowed to run NoGame and we don't have a game, boot up the core that way
 						bool ret = retro.LoadNoGame();
-
 						Global.Game = oldGame;
 
 						if (!ret)
@@ -321,11 +317,6 @@ namespace BizHawk.Client.Common
 					else
 					{
 						bool ret;
-
-						// must be done before LoadNoGame (which triggers retro_init and the paths to be consumed by the core)
-						// game name == name of core + extensionless_game_filename
-						var gameName = Path.Combine(codePathPart, Path.GetFileNameWithoutExtension(file.Name));
-						Global.Game = game = new GameInfo { Name = gameName, System = "Libretro" };
 
 						// if the core requires an archive file, then try passing the filename of the archive
 						// (but do we ever need to actually load the contents of the archive file into ram?)
@@ -470,8 +461,7 @@ namespace BizHawk.Client.Common
 						sw.WriteLine("-------------------------");
 					}
 
-					nextEmulator = new Octoshock(nextComm, discs, discNames, null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
-					nextEmulator.CoreComm.RomStatusDetails = sw.ToString();
+					nextEmulator = new Octoshock(nextComm, discs, discNames, null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>(), sw.ToString());
 					game = new GameInfo
 					{
 						Name = Path.GetFileNameWithoutExtension(file.Name),
@@ -574,14 +564,11 @@ namespace BizHawk.Client.Common
 							nextEmulator = new Saturnus(nextComm, new[] { disc }, Deterministic,
 								(Saturnus.Settings)GetCoreSettings<Saturnus>(), (Saturnus.SyncSettings)GetCoreSyncSettings<Saturnus>());
 							break;
-						case "PSP":
-							nextEmulator = new PSP(nextComm, file.Name);
-							break;
 						case "PSX":
-							nextEmulator = new Octoshock(nextComm, new List<Disc>(new[] { disc }), new List<string>(new[] { Path.GetFileNameWithoutExtension(path) }), null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
+							string romDetails;
 							if (game.IsRomStatusBad() || game.Status == RomStatus.NotInDatabase)
 							{
-								nextEmulator.CoreComm.RomStatusDetails = "Disc could not be identified as known-good. Look for a better rip.";
+								romDetails = "Disc could not be identified as known-good. Look for a better rip.";
 							}
 							else
 							{
@@ -591,9 +578,10 @@ namespace BizHawk.Client.Common
 								sw.WriteLine("According to redump.org, the ideal hash for entire disc is: CRC32:{0:X8}", game.GetStringValue("dh"));
 								sw.WriteLine("The file you loaded hasn't been hashed entirely (it would take too long)");
 								sw.WriteLine("Compare it with the full hash calculated by the PSX menu's Hash Discs tool");
-								nextEmulator.CoreComm.RomStatusDetails = sw.ToString();
+								romDetails = sw.ToString();
 							}
 
+							nextEmulator = new Octoshock(nextComm, new List<Disc>(new[] { disc }), new List<string>(new[] { Path.GetFileNameWithoutExtension(path) }), null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>(), romDetails);
 							break;
 						case "PCFX":
 							nextEmulator = new Tst(nextComm, new[] { disc },
@@ -695,11 +683,9 @@ namespace BizHawk.Client.Common
 
 								break;
 							case "AppleII":
-								var assets = xmlGame.Assets.Select(a => Database.GetGameInfo(a.Value, a.Key));
 								var roms = xmlGame.Assets.Select(a => a.Value);
 								nextEmulator = new AppleII(
 									nextComm,
-									assets,
 									roms,
 									(AppleII.Settings)GetCoreSettings<AppleII>());
 								break;
@@ -804,8 +790,7 @@ namespace BizHawk.Client.Common
 								}
 
 								// todo: copy pasta from PSX .cue section
-								nextEmulator = new Octoshock(nextComm, discs, discNames, null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
-								nextEmulator.CoreComm.RomStatusDetails = sw.ToString();
+								nextEmulator = new Octoshock(nextComm, discs, discNames, null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>(), sw.ToString());
 								game = new GameInfo
 								{
 									Name = Path.GetFileNameWithoutExtension(file.Name),
@@ -867,14 +852,13 @@ namespace BizHawk.Client.Common
 						{
 							// need to get rid of this hack at some point
 							rom = new RomGame(file);
-							((CoreFileProvider)nextComm.CoreFileProvider).SubfileDirectory = Path.GetDirectoryName(path.Replace("|", "")); // Dirty hack to get around archive filenames (since we are just getting the directory path, it is safe to mangle the filename
-							byte[] romData = null;
+							var basePath = Path.GetDirectoryName(path.Replace("|", "")); // Dirty hack to get around archive filenames (since we are just getting the directory path, it is safe to mangle the filename
 							byte[] xmlData = rom.FileData;
 
 							game = rom.GameInfo;
 							game.System = "SNES";
 
-							var snes = new LibsnesCore(game, romData, xmlData, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
+							var snes = new LibsnesCore(game, null, xmlData, basePath, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
 							nextEmulator = snes;
 						}
 						catch
@@ -897,7 +881,6 @@ namespace BizHawk.Client.Common
 					PSF psf = new PSF();
 					psf.Load(path, cbDeflater);
 					nextEmulator = new Octoshock(nextComm, psf, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
-					nextEmulator.CoreComm.RomStatusDetails = "It's a PSF, what do you want. Oh, tags maybe?";
 
 					// total garbage, this
 					rom = new RomGame(file);
@@ -963,13 +946,15 @@ namespace BizHawk.Client.Common
 							// The user picked nothing in the Core picker
 							break;
 						case "83P":
-							var ti83Bios = ((CoreFileProvider)nextComm.CoreFileProvider).GetFirmware("TI83", "Rom", true);
-							var ti83BiosPath = ((CoreFileProvider)nextComm.CoreFileProvider).GetFirmwarePath("TI83", "Rom", true);
+							var ti83Bios = nextComm.CoreFileProvider.GetFirmware("TI83", "Rom", true);
+
+							// TODO: make the ti-83 a proper firmware file
+							var ti83BiosPath = Global.FirmwareManager.Request(Global.Config.PathEntries, Global.Config.FirmwareUserSpecifications, "TI83", "Rom");
 							using (var ti83AsHawkFile = new HawkFile(ti83BiosPath))
 							{
 								var ti83BiosAsRom = new RomGame(ti83AsHawkFile);
-								var ti83 = new TI83(nextComm, ti83BiosAsRom.GameInfo, ti83Bios, GetCoreSettings<TI83>());
-								ti83.LinkPort.SendFileToCalc(File.OpenRead(path), false);
+								var ti83 = new TI83(ti83BiosAsRom.GameInfo, ti83Bios, GetCoreSettings<TI83>());
+								ti83.LinkPort.SendFileToCalc(File.OpenRead(path.Split('|').First()), false);
 								nextEmulator = ti83;
 							}
 
@@ -995,10 +980,10 @@ namespace BizHawk.Client.Common
 							else
 							{
 								// need to get rid of this hack at some point
-								((CoreFileProvider)nextComm.CoreFileProvider).SubfileDirectory = Path.GetDirectoryName(path.Replace("|", "")); // Dirty hack to get around archive filenames (since we are just getting the directory path, it is safe to mangle the filename
+								var basePath = Path.GetDirectoryName(path.Replace("|", "")); // Dirty hack to get around archive filenames (since we are just getting the directory path, it is safe to mangle the filename
 								var romData = isXml ? null : rom.FileData;
 								var xmlData = isXml ? rom.FileData : null;
-								var snes = new LibsnesCore(game, romData, xmlData, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
+								var snes = new LibsnesCore(game, romData, xmlData, basePath, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
 								nextEmulator = snes;
 							}
 
@@ -1058,7 +1043,7 @@ namespace BizHawk.Client.Common
 								{
 									game.System = "SNES";
 									game.AddOption("SGB");
-									var snes = new LibsnesCore(game, rom.FileData, null, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
+									var snes = new LibsnesCore(game, rom.FileData, null, null, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
 									nextEmulator = snes;
 								}
 								else
@@ -1087,7 +1072,7 @@ namespace BizHawk.Client.Common
 								{
 									game.System = "SNES";
 									game.AddOption("SGB");
-									var snes = new LibsnesCore(game, rom.FileData, null, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
+									var snes = new LibsnesCore(game, rom.FileData, null, null, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
 									nextEmulator = snes;
 								}
 								else
@@ -1097,7 +1082,7 @@ namespace BizHawk.Client.Common
 							}
 							break;
 						case "A78":
-							var gameDbPath = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb_a7800.csv");
+							var gameDbPath = Path.Combine(PathUtils.GetExeDirectoryAbsolute(), "gamedb", "gamedb_a7800.csv");
 							nextEmulator = new A7800Hawk(nextComm, game, rom.RomData, gameDbPath, GetCoreSettings<A7800Hawk>(), GetCoreSyncSettings<A7800Hawk>());
 							break;
 						case "C64":
@@ -1126,11 +1111,10 @@ namespace BizHawk.Client.Common
 								: CoreInventory.Instance["GBA", "VBA-Next"];
 							break;
 						case "PSX":
-							nextEmulator = new Octoshock(nextComm, null, null, rom.FileData, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
-							nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
+							nextEmulator = new Octoshock(nextComm, null, null, rom.FileData, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>(), "PSX etc.");
 							break;
 						case "Arcade":
-							nextEmulator = new MAME(nextComm, file.Directory, file.CanonicalName, GetCoreSyncSettings<MAME>(), out var gameName);
+							nextEmulator = new MAME(file.Directory, file.CanonicalName, GetCoreSyncSettings<MAME>(), out var gameName);
 							rom.GameInfo.Name = gameName;
 							break;
 						case "GEN":
@@ -1195,7 +1179,7 @@ namespace BizHawk.Client.Common
 						DoMessageCallback("Unable to use quicknes, using NESHawk instead");
 					}
 
-					return LoadRom(path, nextComm, true, recursiveCount + 1);
+					return LoadRom(path, nextComm, launchLibretroCore, true, recursiveCount + 1);
 				}
 
 				if (ex is MissingFirmwareException)
@@ -1208,7 +1192,7 @@ namespace BizHawk.Client.Common
 					// To avoid catch-22, disable SGB mode
 					Global.Config.GbAsSgb = false;
 					DoMessageCallback("Failed to load a GB rom in SGB mode.  Disabling SGB Mode.");
-					return LoadRom(path, nextComm, false, recursiveCount + 1);
+					return LoadRom(path, nextComm, launchLibretroCore, false, recursiveCount + 1);
 				}
 
 				// handle exceptions thrown by the new detected systems that BizHawk does not have cores for

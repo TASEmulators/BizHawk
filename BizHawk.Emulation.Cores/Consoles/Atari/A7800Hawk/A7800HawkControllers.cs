@@ -276,7 +276,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				.Select(b => "P" + PortNum + " " + b)
 				.ToList(),
 				FloatControls = { "P" + PortNum + " X", "P" + PortNum + " Y" },
-				FloatRanges = { new[] { 1.0f, 160, 320.0f }, new[] { 1.0f, 121, 242.0f } }
+				FloatRanges = { new ControllerDefinition.AxisRange(1, 160, 320), new ControllerDefinition.AxisRange(1, 121, 242) }
 			};
 		}
 		

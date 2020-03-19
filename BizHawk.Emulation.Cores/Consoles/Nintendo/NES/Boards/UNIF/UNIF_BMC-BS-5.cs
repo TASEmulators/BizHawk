@@ -7,8 +7,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		[MapperProp]
 		public int BMC_BS_5_DipSwitch;
 
-		private IntBuffer reg_prg = new IntBuffer(4);
-		private IntBuffer reg_chr = new IntBuffer(4);
+		private int[] reg_prg = new int[4];
+		private int[] reg_chr = new int[4];
 
 		private int _prgMask8k;
 		private int _chrMask2k;
@@ -53,8 +53,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(reg_prg), ref reg_prg);
-			ser.Sync(nameof(reg_chr), ref reg_chr);
+			ser.Sync(nameof(reg_prg), ref reg_prg, false);
+			ser.Sync(nameof(reg_chr), ref reg_chr, false);
 			ser.Sync(nameof(BMC_BS_5_DipSwitch), ref BMC_BS_5_DipSwitch);
 		}
 

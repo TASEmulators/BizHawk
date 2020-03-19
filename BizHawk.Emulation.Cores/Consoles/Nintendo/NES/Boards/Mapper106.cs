@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public sealed class Mapper106 : NES.NESBoardBase
 	{
-		private ByteBuffer regs = new ByteBuffer(16);
+		private byte[] regs = new byte[16];
 
 		private int prg_bank_mask_8k;
 		private int chr_bank_mask_1k;
@@ -34,15 +34,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			regs.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync(nameof(regs), ref regs);
+			ser.Sync(nameof(regs), ref regs, false);
 			ser.Sync(nameof(IRQa), ref IRQa);
 			ser.Sync(nameof(IRQCount), ref IRQCount);
 			base.SyncState(ser);

@@ -37,59 +37,53 @@ namespace BizHawk.Client.EmuHawk
 		public bool HasValue;
 		public bool ReadOnly { private get; set; }
 
-		public string XName = string.Empty;
-		public string YName = string.Empty;
+		public string XName { get; private set; } = string.Empty;
+		public string YName { get; private set; } = string.Empty;
 
 		private IController _previous;
 
-		private sbyte _userRangePercentageX = 100;
-		private sbyte _userRangePercentageY = 100;
+		private int _userRangePercentageX = 100;
+		private int _userRangePercentageY = 100;
 
-		public void SetUserRange(decimal rx, decimal ry)
+		public void SetUserRange(int rx, int ry)
 		{
-			_userRangePercentageX = (sbyte) rx;
-			_userRangePercentageY = (sbyte) ry;
+			_userRangePercentageX = rx.ConstrainWithin(PercentRange);
+			_userRangePercentageY = ry.ConstrainWithin(PercentRange);
 
 			Rerange();
 			Refresh();
 		}
 
-		public void SetRangeX(Range<int> range)
+		public void Init(string nameX, ControllerDefinition.AxisRange rangeX, string nameY, ControllerDefinition.AxisRange rangeY)
 		{
-			_actualRangeX = range;
+			Name = XName = nameX;
+			_fullRangeX = rangeX;
+			YName = nameY;
+			_fullRangeY = rangeY;
 			Rerange();
 		}
 
-		public void SetRangeY(Range<int> range)
-		{
-			_actualRangeY = range;
-			Rerange();
-		}
-
-		private Range<int> _rangeX = DefaultRange;
-		private Range<int> _rangeY = DefaultRange;
-		private Range<int> _actualRangeX = DefaultRange;
-		private Range<int> _actualRangeY = DefaultRange;
+		private Range<int> _rangeX = 0.RangeTo(0);
+		private Range<int> _rangeY = 0.RangeTo(0);
+		private ControllerDefinition.AxisRange _fullRangeX;
+		private ControllerDefinition.AxisRange _fullRangeY;
 
 		private bool _reverseX;
 		private bool _reverseY;
 
 		private void Rerange()
 		{
-			_reverseX = _userRangePercentageX < 0;
-			_reverseY = _userRangePercentageY < 0;
+			_reverseX = _fullRangeX.IsReversed ^ _userRangePercentageX < 0;
+			_reverseY = _fullRangeY.IsReversed ^ _userRangePercentageY < 0;
 
-			var midX = (_actualRangeX.Start + _actualRangeX.EndInclusive) / 2.0;
-			var halfRangeX = (_reverseX ? -1 : 1) * (_actualRangeX.EndInclusive - _actualRangeX.Start) * _userRangePercentageX / 200.0;
-			_rangeX = ((int) (midX - halfRangeX)).RangeTo((int) (midX + halfRangeX));
+			_rangeX = (_fullRangeX.Mid - (_fullRangeX.Mid - _fullRangeX.Min) * _userRangePercentageX / 100)
+				.RangeTo(_fullRangeX.Mid + (_fullRangeX.Max - _fullRangeX.Mid) * _userRangePercentageX / 100);
+			_rangeY = (_fullRangeY.Mid - (_fullRangeY.Mid - _fullRangeY.Min) * _userRangePercentageY / 100)
+				.RangeTo(_fullRangeY.Mid + (_fullRangeY.Max - _fullRangeY.Mid) * _userRangePercentageY / 100);
 
-			var midY = (_actualRangeY.Start + _actualRangeY.EndInclusive) / 2.0;
-			var halfRangeY = (_reverseY ? -1 : 1) * (_actualRangeY.EndInclusive - _actualRangeY.Start) * _userRangePercentageY / 200.0;
-			_rangeY = ((int) (midY - halfRangeY)).RangeTo((int) (midY + halfRangeY));
-			
-			// re-constrain after changing ranges
-			X = X;
-			Y = Y;
+			_x = _x.ConstrainWithin(_rangeX);
+			_y = _y.ConstrainWithin(_rangeY);
+			SetAnalog();
 		}
 
 		/// <remarks>
@@ -104,7 +98,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </remarks>
 		private int MaybeReversedInX(int i) => _reverseX ? _rangeX.Start + _rangeX.EndInclusive - i : i;
 		/// <inheritdoc cref="MaybeReversedInX"/>
-		private int MaybeReversedInY(int i) => _reverseY ? _rangeY.Start + _rangeY.EndInclusive - i : i;
+		private int MaybeReversedInY(int i) => _reverseY ? i : _rangeY.Start + _rangeY.EndInclusive - i;
 
 		private int PixelSizeX => (int)(_rangeX.Count() * ScaleX);
 		private int PixelSizeY => (int)(_rangeY.Count() * ScaleY);
@@ -170,8 +164,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetAnalog()
 		{
-			Global.StickyXORAdapter.SetFloat(XName, HasValue ? X : (int?)null);
-			Global.StickyXORAdapter.SetFloat(YName, HasValue ? Y : (int?)null);
+			Global.InputManager.StickyXorAdapter.SetFloat(XName, HasValue ? X : (int?)null);
+			Global.InputManager.StickyXorAdapter.SetFloat(YName, HasValue ? Y : (int?)null);
 			Refresh();
 		}
 
@@ -286,6 +280,6 @@ namespace BizHawk.Client.EmuHawk
 			Refresh();
 		}
 
-		internal static readonly Range<int> DefaultRange = (-128).RangeTo(127);
+		private static readonly Range<int> PercentRange = 0.RangeTo(100);
 	}
 }

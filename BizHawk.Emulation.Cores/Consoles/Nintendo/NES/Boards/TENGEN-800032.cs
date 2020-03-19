@@ -11,10 +11,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int chr_bank_mask_1k;
 
 		//regenerable state
-		IntBuffer prg_banks_8k = new IntBuffer(4);
-		IntBuffer chr_banks_1k = new IntBuffer(8);
+		int[] prg_banks_8k = new int[4];
+		int[] chr_banks_1k = new int[8];
 		//state
-		IntBuffer regs = new IntBuffer(16);
+		int[] regs = new int[16];
 		int address;
 		bool chr_1k, chr_mode, prg_mode;
 		//irq
@@ -28,19 +28,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int irq_countdown_2 = 0;
 		bool clock_scanline_irq;
 
-
-		public override void Dispose()
-		{
-			base.Dispose();
-			prg_banks_8k.Dispose();
-			chr_banks_1k.Dispose();
-			regs.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(regs), ref regs);
+			ser.Sync(nameof(regs), ref regs, false);
 			ser.Sync(nameof(address), ref address);
 			ser.Sync(nameof(chr_1k), ref chr_1k);
 			ser.Sync(nameof(chr_mode), ref chr_mode);

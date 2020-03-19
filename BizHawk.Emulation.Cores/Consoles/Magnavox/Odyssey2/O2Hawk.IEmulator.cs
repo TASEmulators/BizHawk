@@ -164,8 +164,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			_islag = false;
 		}
 
-		public CoreComm CoreComm { get; }
-
 		public void Dispose()
 		{
 			ppu.DisposeSound();

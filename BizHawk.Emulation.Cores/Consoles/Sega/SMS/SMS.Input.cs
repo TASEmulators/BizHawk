@@ -1,4 +1,7 @@
-﻿using BizHawk.Emulation.Common;
+﻿using System.Collections.Generic;
+using System.Linq;
+
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
@@ -41,8 +44,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			},
 			FloatRanges =
 			{
-				new ControllerDefinition.FloatRange(0, 128, 255),
-				new ControllerDefinition.FloatRange(0, 128, 255)
+				new ControllerDefinition.AxisRange(0, 128, 255),
+				new ControllerDefinition.AxisRange(0, 128, 255)
 			}
 		};
 
@@ -60,10 +63,13 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			},
 			FloatRanges =
 			{
-				new ControllerDefinition.FloatRange(0, 64, 127),
-				new ControllerDefinition.FloatRange(0, 500, 1000)
+				new ControllerDefinition.AxisRange(0, 64, 127),
+				new ControllerDefinition.AxisRange(0, 500, 1000)
 			}
 		};
+
+		/// <remarks>TODO verify direction against hardware</remarks>
+		private static readonly List<ControllerDefinition.AxisRange> SportsPadTrackballRanges = ControllerDefinition.CreateAxisRangePair(-64, 0, 63, ControllerDefinition.AxisPairOrientation.RightAndUp);
 
 		public static readonly ControllerDefinition SMSSportsPadController = new ControllerDefinition
 		{
@@ -79,13 +85,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				"P1 X", "P1 Y",
 				"P2 X", "P2 Y"
 			},
-			FloatRanges =
-			{
-				new ControllerDefinition.FloatRange(-64, 0, 63),
-				new ControllerDefinition.FloatRange(-64, 0, 63),
-				new ControllerDefinition.FloatRange(-64, 0, 63),
-				new ControllerDefinition.FloatRange(-64, 0, 63)
-			}
+			FloatRanges = SportsPadTrackballRanges.Concat(SportsPadTrackballRanges).ToList()
 		};
 
 		public static readonly ControllerDefinition SMSKeyboardController = new ControllerDefinition

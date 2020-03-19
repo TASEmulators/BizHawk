@@ -9,8 +9,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//http://wiki.nesdev.com/w/index.php/INES_Mapper_091
 		*/
 
-		ByteBuffer chr_regs_2k = new ByteBuffer(4);
-		ByteBuffer prg_regs_8k = new ByteBuffer(4);
+		byte[] chr_regs_2k = new byte[4];
+		byte[] prg_regs_8k = new byte[4];
 		int chr_bank_mask_2k, prg_bank_mask_8k;
 		MMC3 mmc3;
 
@@ -43,19 +43,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			prg_regs_8k.Dispose();
-			chr_regs_2k.Dispose();
-			mmc3?.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			mmc3.SyncState(ser);
-			ser.Sync("prg_regs", ref prg_regs_8k);
-			ser.Sync("chr_regs", ref chr_regs_2k);
+			ser.Sync("prg_regs", ref prg_regs_8k, false);
+			ser.Sync("chr_regs", ref chr_regs_2k, false);
 			base.SyncState(ser);
 		}
 

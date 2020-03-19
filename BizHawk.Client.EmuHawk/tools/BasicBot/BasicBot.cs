@@ -352,7 +352,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var file = OpenFileDialog(
 					CurrentFileName,
-					PathManager.MakeAbsolutePath(Config.PathEntries.ToolsPathFragment, null),
+					Config.PathEntries.ToolsAbsolutePath(),
 					"Bot files",
 					"bot");
 
@@ -374,7 +374,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var file = SaveFileDialog(
 					CurrentFileName,
-					PathManager.MakeAbsolutePath(Config.PathEntries.ToolsPathFragment, null),
+					Config.PathEntries.ToolsAbsolutePath(),
 					"Bot files",
 					"bot");
 
@@ -785,7 +785,7 @@ namespace BizHawk.Client.EmuHawk
 					foreach (var button in lg.Definition.BoolButtons)
 					{
 						// TODO: make an input adapter specifically for the bot?
-						Global.ButtonOverrideAdaptor.SetButton(button, lg.IsPressed(button));
+						Global.InputManager.ButtonOverrideAdapter.SetButton(button, lg.IsPressed(button));
 					}
 				}
 				else
@@ -923,7 +923,7 @@ namespace BizHawk.Client.EmuHawk
 				double probability = _cachedControlProbabilities[button];
 				bool pressed = !(rand.Next(100) < probability);
 
-				Global.ClickyVirtualPadController.SetBool(button, pressed);
+				Global.InputManager.ClickyVirtualPadController.SetBool(button, pressed);
 			}
 
 			_currentBotAttempt.Log.Add(_logGenerator.GenerateLogEntry());
@@ -977,7 +977,7 @@ namespace BizHawk.Client.EmuHawk
 			MessageLabel.Text = "Running...";
 			_cachedControlProbabilities = ControlProbabilities;
 			_logGenerator = Global.MovieSession.LogGeneratorInstance();
-			_logGenerator.SetSource(Global.ClickyVirtualPadController);
+			_logGenerator.SetSource(Global.InputManager.ClickyVirtualPadController);
 		}
 
 		private string CanStart()

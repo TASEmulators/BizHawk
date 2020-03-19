@@ -9,6 +9,7 @@ using System.Threading;
 using System.Diagnostics;
 
 using BizHawk.Common;
+using BizHawk.Client.ApiHawk;
 
 // ReSharper disable StringLiteralTypo
 // ReSharper disable UnusedMember.Global
@@ -173,19 +174,11 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("client.SetSoundOn( true );")]
 		[LuaMethod("SetSoundOn", "Sets the state of the Sound On toggle")]
-		public static void SetSoundOn(bool enable)
-		{
-			Global.Config.SoundEnabled = enable;
-			GlobalWin.Sound.StopSound();
-			GlobalWin.Sound.StartSound();
-		}
+		public static void SetSoundOn(bool enable) => ClientApi.SetSoundOn(enable);
 
 		[LuaMethodExample("if ( client.GetSoundOn( ) ) then\r\n\tconsole.log( \"Gets the state of the Sound On toggle\" );\r\nend;")]
 		[LuaMethod("GetSoundOn", "Gets the state of the Sound On toggle")]
-		public static bool GetSoundOn()
-		{
-			return Global.Config.SoundEnabled;
-		}
+		public static bool GetSoundOn() => ClientApi.GetSoundOn();
 
 		[LuaMethodExample("client.SetClientExtraPadding( 5, 10, 15, 20 );")]
 		[LuaMethod("SetClientExtraPadding", "Sets the extra padding added to the 'native' surface so that you can draw HUD elements in predictable placements")]

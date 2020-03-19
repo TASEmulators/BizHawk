@@ -15,6 +15,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		protected PeRunner _exe;
 		protected LibWaterboxCore.MemoryArea[] _memoryAreas;
 		private LibWaterboxCore.EmptyCallback _inputCallback;
+		protected CoreComm CoreComm { get; }
 
 		public class Configuration
 		{
@@ -229,7 +230,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		public CoreComm CoreComm { get; }
 		public int Frame { get; private set; }
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; set; }

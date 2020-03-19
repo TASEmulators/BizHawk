@@ -28,7 +28,7 @@ namespace BizHawk.Client.Common
 		private readonly WorkingDictionary<string, List<string>> _bindings = new WorkingDictionary<string, List<string>>();
 		private readonly WorkingDictionary<string, bool> _buttons = new WorkingDictionary<string, bool>();
 		private readonly WorkingDictionary<string, float> _floatButtons = new WorkingDictionary<string, float>();
-		private readonly Dictionary<string, ControllerDefinition.FloatRange> _floatRanges = new WorkingDictionary<string, ControllerDefinition.FloatRange>();
+		private readonly Dictionary<string, ControllerDefinition.AxisRange> _floatRanges = new WorkingDictionary<string, ControllerDefinition.AxisRange>();
 		private readonly Dictionary<string, AnalogBind> _floatBinds = new Dictionary<string, AnalogBind>();
 
 		/// <summary>don't do this</summary>
@@ -79,7 +79,7 @@ namespace BizHawk.Client.Common
 					// zero 09-mar-2015 - not sure if adding + 1 here is correct.. but... maybe?
 					float output;
 
-					if (range.Max < range.Min)
+					if (range.IsReversed)
 					{
 						output = (((input * multiplier) + 10000.0f) * (range.Min - range.Max + 1) / 20000.0f) + range.Max;
 					}
@@ -90,22 +90,8 @@ namespace BizHawk.Client.Common
 
 					// zero 09-mar-2015 - at this point, we should only have integers, since that's all 100% of consoles ever see
 					// if this becomes a problem we can add flags to the range and update GUIs to be able to display floats
-					output = (int)output;
 
-					float lowerBound = Math.Min(range.Min, range.Max);
-					float upperBound = Math.Max(range.Min, range.Max);
-
-					if (output < lowerBound)
-					{
-						output = lowerBound;
-					}
-
-					if (output > upperBound)
-					{
-						output = upperBound;
-					}
-
-					_floatButtons[outKey] = output;
+					_floatButtons[outKey] = output.ConstrainWithin(range.FloatRange);
 				}
 			}
 		}

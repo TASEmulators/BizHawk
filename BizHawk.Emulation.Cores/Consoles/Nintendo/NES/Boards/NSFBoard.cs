@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// PRG bankswitching
 		/// </summary>
-		IntBuffer prg_banks_4k = new IntBuffer(8);
+		int[] prg_banks_4k = new int[8];
 
 		/// <summary>
 		/// whether vectors are currently patched. they should not be patched when running init/play routines because data from the ends of banks might get used
@@ -75,16 +75,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			prg_banks_4k.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(prg_banks_4k), ref prg_banks_4k);
+			ser.Sync(nameof(prg_banks_4k), ref prg_banks_4k, false);
 			ser.Sync(nameof(Patch_Vectors), ref Patch_Vectors);
 			ser.Sync(nameof(CurrentSong), ref CurrentSong);
 			ser.Sync(nameof(InitPending), ref InitPending);

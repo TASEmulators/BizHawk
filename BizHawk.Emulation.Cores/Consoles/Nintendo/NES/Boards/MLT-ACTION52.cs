@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int chr_reg;
 		public int chip_offset;
 		public bool cheetahmen = false;
-		ByteBuffer eRAM = new ByteBuffer(4);
+		byte[] eRAM = new byte[4];
 		int chr_bank_mask_8k, prg_bank_mask_16k, prg_bank_mask_32k;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -54,14 +54,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(chr_reg), ref chr_reg);
 			ser.Sync(nameof(prg_mode), ref prg_mode);
 			ser.Sync("chip", ref chip_offset);
-			ser.Sync(nameof(eRAM), ref eRAM);
+			ser.Sync(nameof(eRAM), ref eRAM, false);
 			base.SyncState(ser);
-		}
-
-		public override void Dispose()
-		{
-			eRAM.Dispose();
-			base.Dispose();
 		}
 
 		public override void WriteEXP(int addr, byte value)

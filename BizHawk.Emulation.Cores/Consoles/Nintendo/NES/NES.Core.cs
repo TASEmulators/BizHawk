@@ -3,7 +3,6 @@
 using System;
 using System.Linq;
 
-using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.M6502;
 
@@ -171,7 +170,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (using_reset_timing && ControllerDefinition.FloatControls.Count == 0)
 			{
 				ControllerDefinition.FloatControls.Add("Reset Cycle");
-				ControllerDefinition.FloatRanges.Add(new ControllerDefinition.FloatRange(0, 0, 500000));
+				ControllerDefinition.FloatRanges.Add(new ControllerDefinition.AxisRange(0, 0, 500000));
 			}
 
 			// don't replace the magicSoundProvider on reset, as it's not needed
@@ -434,9 +433,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//at least it should be, but something is off with that (start up time?) so it is 3,3,3,4,3 for now
 		//NTSC:
 		//sequence of ppu clocks per cpu clock: 3
-		public ByteBuffer cpu_sequence;
-		static ByteBuffer cpu_sequence_NTSC = new ByteBuffer(new byte[] { 3, 3, 3, 3, 3 });
-		static ByteBuffer cpu_sequence_PAL = new ByteBuffer(new byte[] { 3, 3, 3, 4, 3 });
+		public byte[] cpu_sequence;
+		static byte[] cpu_sequence_NTSC = { 3, 3, 3, 3, 3 };
+		static byte[] cpu_sequence_PAL = { 3, 3, 3, 4, 3 };
 		public int cpu_deadcounter;
 
 		public int oam_dma_index;

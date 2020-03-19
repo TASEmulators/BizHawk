@@ -13,31 +13,39 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	accessing 1FF8, 1FF9, and 1FFA.   There's also 256 bytes of RAM mapped into 1000-11FF.
 	The write port is at 1000-10FF, and the read port is 1100-11FF.
 	 */
-
-	internal class mFA : MapperBase 
+	internal sealed class mFA : MapperBase 
 	{
 		private int _toggle;
-		private ByteBuffer _ram = new ByteBuffer(256);
+		private byte[] _ram = new byte[256];
+
+		public mFA(Atari2600 core) : base(core)
+		{
+		}
+
+		public override byte[] CartRam => _ram;
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
 			ser.Sync("toggle", ref _toggle);
-			ser.Sync("auxRam", ref _ram);
-		}
-
-		public override void Dispose()
-		{
-			_ram.Dispose();
-			base.Dispose();
+			ser.Sync("auxRam", ref _ram, false);
 		}
 
 		public override void HardReset()
 		{
 			_toggle = 0;
-			_ram = new ByteBuffer(256);
-			base.HardReset();
+			_ram = new byte[256];
 		}
+
+		public override byte ReadMemory(ushort addr) => ReadMem(addr, false);
+
+		public override byte PeekMemory(ushort addr) => ReadMem(addr, true);
+
+		public override void WriteMemory(ushort addr, byte value)
+			=> WriteMem(addr, value, false);
+
+		public override void PokeMemory(ushort addr, byte value)
+			=> WriteMem(addr, value, true);	
 
 		private byte ReadMem(ushort addr, bool peek)
 		{
@@ -64,16 +72,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			return Core.Rom[(_toggle << 12) + (addr & 0xFFF)];
 		}
 
-		public override byte ReadMemory(ushort addr)
-		{
-			return ReadMem(addr, false);
-		}
-
-		public override byte PeekMemory(ushort addr)
-		{
-			return ReadMem(addr, true);
-		}
-
 		private void WriteMem(ushort addr, byte value, bool poke)
 		{
 			if (!poke)
@@ -91,21 +89,15 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 		}
 
-		public override void WriteMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, poke: false);
-		}
-
-		public override void PokeMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, poke: true);
-		}
-
 		private void Address(ushort addr)
 		{
-			if (addr == 0x1FF8) _toggle = 0;
-			if (addr == 0x1FF9) _toggle = 1;
-			if (addr == 0x1FFA) _toggle = 2;
+			_toggle = addr switch
+			{
+				0x1FF8 => 0,
+				0x1FF9 => 1,
+				0x1FFA => 2,
+				_ => _toggle
+			};
 		}
 	}
 }

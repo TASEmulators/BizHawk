@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public ushort rom_bank;
 
 		public byte[] _bios;
-		public readonly byte[] _rom;		
+		public readonly byte[] _rom;
 		public readonly byte[] header = new byte[0x50];
 
 		public byte[] cart_RAM;
@@ -56,8 +56,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			};
 			
 			serialport = new SerialPort();
-
-			CoreComm = comm;
 
 			_settings = (O2Settings)settings ?? new O2Settings();
 			_syncSettings = (O2SyncSettings)syncSettings ?? new O2SyncSettings();

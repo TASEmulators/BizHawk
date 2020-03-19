@@ -95,6 +95,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			SetupMemoryDomains();
 		}
 
+		internal CoreComm CoreComm { get; }
+
 		public Action HardReset;
 		public Action SoftReset;
 

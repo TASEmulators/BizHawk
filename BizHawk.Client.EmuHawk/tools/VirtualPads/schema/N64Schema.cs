@@ -24,6 +24,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema StandardController(int controller)
 		{
+			var controllerDefRanges = N64Input.N64ControllerDefinition.FloatRanges;
 			return new PadSchema
 			{
 				IsConsole = false,
@@ -135,12 +136,8 @@ namespace BizHawk.Client.EmuHawk
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} X Axis",
-						MinValue = -128,
-						MidValue = 0,
-						MaxValue = 127,
-						MinValueSec = 127,
-						MidValueSec = 0,
-						MaxValueSec = -128,
+						AxisRange = controllerDefRanges[0],
+						SecondaryAxisRange = controllerDefRanges[1],
 						DisplayName = "",
 						Location = new Point(6, 14),
 						Type = PadSchema.PadInputType.AnalogStick

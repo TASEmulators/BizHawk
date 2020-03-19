@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// Ported from FCEUX
 	public sealed class Mapper220 : NES.NESBoardBase
 	{
-		private ByteBuffer reg = new ByteBuffer(8);
+		private byte[] reg = new byte[8];
 		private int prg_mask_2k;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -24,15 +24,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			reg.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync(nameof(reg), ref reg);
+			ser.Sync(nameof(reg), ref reg, false);
 			base.SyncState(ser);
 		}
 

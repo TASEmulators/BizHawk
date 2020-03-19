@@ -26,9 +26,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				videoProvider.right = 255;
 			}
 
-			CoreComm.ScreenLogicalOffsetX = videoProvider.left;
-			CoreComm.ScreenLogicalOffsetY = Region == DisplayType.NTSC ? Settings.NTSC_TopLine : Settings.PAL_TopLine;
-
 			SetPalette(Settings.Palette);
 
 			apu.m_vol = Settings.APU_vol;

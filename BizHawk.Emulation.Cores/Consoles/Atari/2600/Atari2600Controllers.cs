@@ -121,7 +121,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				.Select(b => $"P{PortNum} " + b)
 				.ToList(),
 				FloatControls = { "P" + PortNum + " Paddle X 1" , "P" + PortNum + " Paddle X 2" },
-				FloatRanges = { new[] { -127.0f, 0, 127.0f }, new[] { -127.0f, 0, 127.0f } }
+				FloatRanges = { new ControllerDefinition.AxisRange(-127, 0, 127), new ControllerDefinition.AxisRange(-127, 0, 127) }
 			};
 		}
 
@@ -238,7 +238,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				.Select(b => $"P{PortNum} " + b)
 				.ToList(),
 				FloatControls = { "P" + PortNum + " Wheel X 1", "P" + PortNum + " Wheel X 2" },
-				FloatRanges = { new[] { -127.0f, 0, 127.0f }, new[] { -127.0f, 0, 127.0f } }
+				FloatRanges = { new ControllerDefinition.AxisRange(-127, 0, 127), new ControllerDefinition.AxisRange(-127, 0, 127) }
 			};
 		}
 

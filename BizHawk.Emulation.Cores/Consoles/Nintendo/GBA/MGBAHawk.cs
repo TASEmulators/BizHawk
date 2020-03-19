@@ -52,9 +52,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				ser.Register<IMemoryDomains>(_memoryDomains);
 
 				ServiceProvider = ser;
-				CoreComm = comm;
-				CoreComm.NominalWidth = 240;
-				CoreComm.NominalHeight = 160;
 				PutSettings(_settings);
 
 				_tracer = new TraceBuffer
@@ -150,8 +147,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			LagCount = 0;
 			IsLagFrame = false;
 		}
-
-		public CoreComm CoreComm { get; }
 
 		public void Dispose()
 		{

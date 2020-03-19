@@ -13,27 +13,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		//state
 		byte prg_reg;
-		IntBuffer prg_banks_8k = new IntBuffer(4);
-		IntBuffer chr_banks_4k = new IntBuffer(4);
-		IntBuffer chr_latches = new IntBuffer(2);
+		int[] prg_banks_8k = new int[4];
+		int[] chr_banks_4k = new int[4];
+		int[] chr_latches = new int[2];
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
 			ser.Sync(nameof(prg_reg), ref prg_reg);
-			ser.Sync(nameof(chr_banks_4k), ref chr_banks_4k);
-			ser.Sync(nameof(chr_latches), ref chr_latches);
+			ser.Sync(nameof(chr_banks_4k), ref chr_banks_4k, false);
+			ser.Sync(nameof(chr_latches), ref chr_latches, false);
 
 			if (ser.IsReader)
 				SyncPRG();
-		}
-
-		public override void Dispose()
-		{
-			base.Dispose();
-			prg_banks_8k.Dispose();
-			chr_banks_4k.Dispose();
-			chr_latches.Dispose();
 		}
 
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -167,7 +159,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			addr = (bank_8k << 13) | ofs;
 			return ROM[addr];
 		}
-
-
 	}
 }

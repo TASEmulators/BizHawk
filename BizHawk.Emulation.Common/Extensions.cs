@@ -247,6 +247,27 @@ namespace BizHawk.Emulation.Common
 			return core.ServiceProvider.GetService<IBoardInfo>();
 		}
 
+		public static (int X, int Y) ScreenLogicalOffsets(this IEmulator core)
+		{
+			if (core != null && core.ServiceProvider.HasService<IVideoLogicalOffsets>())
+			{
+				var offsets = core.ServiceProvider.GetService<IVideoLogicalOffsets>();
+				return (offsets.ScreenX, offsets.ScreenY);
+			}
+
+			return (0, 0);
+		}
+
+		public static string RomDetails(this IEmulator core)
+		{
+			if (core != null && core.ServiceProvider.HasService<IRomInfo>())
+			{
+				return core.ServiceProvider.GetService<IRomInfo>().RomDetails;
+			}
+
+			return "";
+		}
+
 		public static int VsyncNumerator(this IEmulator core)
 		{
 			if (core != null && core.HasVideoProvider())
@@ -272,7 +293,18 @@ namespace BizHawk.Emulation.Common
 			return core.VsyncNumerator() / (double)core.VsyncDenominator();
 		}
 
-		// TODO: a better place for this
+		// TODO: a better place for these
+		public static string CoreName(this Type type)
+		{
+			if (type == null)
+			{
+				return "";
+			}
+
+			var attr = (CoreAttribute)Attribute.GetCustomAttribute(type, typeof(CoreAttribute));
+			return attr?.CoreName ?? "";
+		}
+
 		public static bool IsImplemented(this MethodInfo info)
 		{
 			return !info.GetCustomAttributes(false).Any(a => a is FeatureNotImplementedAttribute);

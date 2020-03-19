@@ -224,8 +224,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 			_islag = false;
 		}
 
-		public CoreComm CoreComm { get; }
-
 		public void Dispose()
 		{
 			L.Dispose();

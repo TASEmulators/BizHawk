@@ -12,6 +12,7 @@ using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Common.IOExtensions;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
@@ -517,7 +518,7 @@ namespace BizHawk.Client.EmuHawk
 		private string GenerateMemoryViewString(bool forWindow)
 		{
 			var rowStr = new StringBuilder();
-
+			var test = MakeValues();
 			for (var i = 0; i < _rowsVisible; i++)
 			{
 				_row = i + HexScrollBar.Value;
@@ -531,21 +532,23 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (_addr + j + DataSize <= _domain.Size)
 					{
-						int tVal = 0;
-						for (int k = 0; k < DataSize; k++)
-						{
-							int tNext = MakeValue(1, _addr + j + k);
-							if (BigEndian)
-							{
-								tVal += (tNext << (k * 8));
-							}
-							else
-							{
-								tVal += (tNext << ((DataSize - k - 1) * 8));
-							}
-						}
+						var addressVal = test[_addr + j];
+						rowStr.AppendFormat(_digitFormatString, addressVal);
+						//int tVal = 0;
+						//for (int k = 0; k < DataSize; k++)
+						//{
+						//	int tNext = MakeValue(1, _addr + j + k);
+						//	if (BigEndian)
+						//	{
+						//		tVal += (tNext << (k * 8));
+						//	}
+						//	else
+						//	{
+						//		tVal += (tNext << ((DataSize - k - 1) * 8));
+						//	}
+						//}
 
-						rowStr.AppendFormat(_digitFormatString, tVal);
+						//rowStr.AppendFormat(_digitFormatString, tVal);
 					}
 					else
 					{
@@ -575,6 +578,70 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			return rowStr.ToString();
+		}
+
+		private Dictionary<long, long> MakeValues()
+		{
+			var addresses = new List<long>();
+
+			for (var i = 0; i < _rowsVisible; i++)
+			{
+				_row = i + HexScrollBar.Value;
+				_addr = _row << 4;
+				if (_addr >= _domain.Size)
+				{
+					break;
+				}
+
+				for (var j = 0; j < 16; j += DataSize)
+				{
+					if (_addr + j + DataSize <= _domain.Size)
+					{
+						var address = _addr + j;
+						addresses.Add(address);
+					}
+				}
+			}
+
+			Dictionary<long, long> dict = new Dictionary<long, long>();
+			var range = new MutableRange<long>(addresses[0], addresses[0] + addresses.Count);
+
+			switch (DataSize)
+			{
+				default:
+				case 1:
+				{
+						var vals = new byte[addresses.Count];
+						_domain.BulkPeekByte(range, vals);
+						for (var i = 0; i < addresses.Count; i++)
+						{
+							dict.Add(addresses[i], vals[i]);
+						}
+						break;
+					}
+				case 2:
+					{
+						var vals = new ushort[addresses.Count];
+						_domain.BulkPeekUshort(range, BigEndian, vals);
+						for (var i = 0; i < addresses.Count; i++)
+						{
+							dict.Add(addresses[i], vals[i]);
+						}
+						break;
+					}
+				case 4:
+					{
+						var vals = new uint[addresses.Count];
+						_domain.BulkPeekUint(range, BigEndian, vals);
+						for (var i = 0; i < addresses.Count; i++)
+						{
+							dict.Add(addresses[i], vals[i]);
+						}
+						break;
+					}
+			}
+
+			return dict;
 		}
 
 		private byte MakeByte(long address)
@@ -903,7 +970,7 @@ namespace BizHawk.Client.EmuHawk
 				, FileName =
 					_domain.Name == "File on Disk"
 						? RomName
-						: PathManager.FilesystemSafeName(Global.Game)
+						: Global.Game.Name.FilesystemSafeName()
 			};
 
 			var result = sfd.ShowHawkDialog();
@@ -916,7 +983,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				FileName = _domain.Name == "File on Disk"
 					? $"{Path.GetFileNameWithoutExtension(RomName)}.txt"
-					: PathManager.FilesystemSafeName(Global.Game),
+					: Global.Game.Name.FilesystemSafeName(),
 				Filter = new FilesystemFilterSet(FilesystemFilter.TextFiles).ToString(),
 				InitialDirectory = RomDirectory,
 				RestoreDirectory = true
@@ -1289,7 +1356,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadTableFileMenuItem_Click(object sender, EventArgs e)
 		{
-			string initialDirectory = PathManager.MakeAbsolutePath(Config.PathEntries.ToolsPathFragment, null);
+			string initialDirectory = Config.PathEntries.ToolsAbsolutePath();
 			var romName = Config.RecentRoms.MostRecent.Contains('|')
 				? Config.RecentRoms.MostRecent.Split('|').Last()
 				: Config.RecentRoms.MostRecent;

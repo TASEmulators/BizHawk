@@ -166,8 +166,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			IsLagFrame = false;
 		}
 
-		public CoreComm CoreComm { get; }
-
 		public void Dispose()
 		{
 			if (!_disposed)

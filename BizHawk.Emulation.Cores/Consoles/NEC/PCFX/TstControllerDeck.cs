@@ -140,11 +140,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 			{
 				BoolButtons = { "0Mouse Left", "0Mouse Right" },
 				FloatControls = { "0X", "0Y" },
-				FloatRanges =
-				{
-					new[] { -127f, 0f, 127f },
-					new[] { -127f, 0f, 127f }
-				}
+				FloatRanges = ControllerDefinition.CreateAxisRangePair(-127, 0, 127, ControllerDefinition.AxisPairOrientation.RightAndUp) //TODO verify direction against hardware
 			};
 
 			public ControllerDefinition Definition => _definition;

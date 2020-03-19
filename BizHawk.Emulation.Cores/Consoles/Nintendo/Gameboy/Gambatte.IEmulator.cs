@@ -91,8 +91,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			frameOverflow = 0;
 		}
 
-		public CoreComm CoreComm { get; }
-
 		public void Dispose()
 		{
 			if (GambatteState != IntPtr.Zero)

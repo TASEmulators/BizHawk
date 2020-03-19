@@ -7,7 +7,6 @@ using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
-using BizHawk.Emulation.Cores.Sony.PSP;
 using BizHawk.Emulation.Cores.Arcades.MAME;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
@@ -30,7 +29,6 @@ namespace BizHawk.Client.EmuHawk.CoreExtensions
 				QuickNES _ => Properties.Resources.QuickNes,
 				LibsnesCore _ => Properties.Resources.bsnes,
 				GPGX _ => Properties.Resources.genplus,
-				PSP _ => Properties.Resources.ppsspp,
 				Gameboy _ => Properties.Resources.gambatte,
 				Snes9x _ => Properties.Resources.snes9x,
 				MAME _ => Properties.Resources.mame,

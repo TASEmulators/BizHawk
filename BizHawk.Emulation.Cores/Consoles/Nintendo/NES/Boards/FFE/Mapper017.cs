@@ -5,8 +5,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public class Mapper017 : NES.NESBoardBase
 	{
-		private ByteBuffer prg_regs_8k = new ByteBuffer(4);
-		private ByteBuffer chr_regs_1k = new ByteBuffer(8);
+		private byte[] prg_regs_8k = new byte[4];
+		private byte[] chr_regs_1k = new byte[8];
 
 		private int prg_mask_8k;
 		private int chr_mask_1k;
@@ -98,19 +98,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void Dispose()
-		{
-			base.Dispose();
-			prg_regs_8k.Dispose();
-			chr_regs_1k.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
 
-			ser.Sync(nameof(prg_regs_8k), ref prg_regs_8k);
-			ser.Sync(nameof(chr_regs_1k), ref chr_regs_1k);
+			ser.Sync(nameof(prg_regs_8k), ref prg_regs_8k, false);
+			ser.Sync(nameof(chr_regs_1k), ref chr_regs_1k, false);
 
 			ser.Sync(nameof(irq_enable), ref irq_enable);
 			ser.Sync(nameof(irq_pending), ref irq_pending);

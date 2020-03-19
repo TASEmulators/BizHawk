@@ -135,11 +135,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static bool SaveAs()
+		private bool SaveAs()
 		{
 			var file = SaveFileDialog(
 				Global.CheatList.CurrentFileName,
-				PathManager.GetCheatsPath(Global.Game),
+				Config.PathEntries.CheatsAbsolutePath(Global.Game.System),
 				"Cheat Files",
 				"cht");
 
@@ -375,7 +375,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var file = OpenFileDialog(
 				Global.CheatList.CurrentFileName,
-				PathManager.GetCheatsPath(Global.Game),
+				Config.PathEntries.CheatsAbsolutePath(Global.Game.System),
 				"Cheat Files",
 				"cht");
 

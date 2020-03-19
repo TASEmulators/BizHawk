@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using BizHawk.Common.PathExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -138,8 +139,7 @@ namespace BizHawk.Client.Common
 						sb
 							.Append(file.Enabled ? "1" : "0")
 							.Append(' ')
-							.Append(PathManager.MakeRelativeTo(PathManager.MakeAbsolutePath(file.Path, ""),
-								Path.GetDirectoryName(path)))
+							.Append(Global.Config.PathEntries.AbsolutePathFor(file.Path, "").MakeRelativeTo(Path.GetDirectoryName(path)))
 							.AppendLine();
 					}
 				}
