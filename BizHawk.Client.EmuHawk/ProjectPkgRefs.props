@@ -1,31 +1,25 @@
 <Project>
 	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" PrivateAssets="All" />
-		<Reference Include="$(MachineNuGetPackageDir)/newtonsoft.json/12.0.3/lib/net45/Newtonsoft.Json.dll"
+		<Reference Include="$(NUGET_PACKAGES)/newtonsoft.json/12.0.3/lib/net45/Newtonsoft.Json.dll"
 			FusionName="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed"
 			Name="Newtonsoft.Json"
 			Private="true"
 			SpecificVersion="true" />
-		<!--<PackageReference Include="OpenTK" Version="3.0.1" PrivateAssets="All" />
-		<Reference Include="$(MachineNuGetPackageDir)/opentk/3.0.1/lib/net20/OpenTK.dll"
-			FusionName="OpenTK, Version=3.0.1.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4"
-			Name="OpenTK"
-			Private="true"
-			SpecificVersion="true" />-->
 		<PackageReference Include="OpenTK.GLControl" Version="3.0.1" PrivateAssets="All" />
-		<Reference Include="$(MachineNuGetPackageDir)/opentk.glcontrol/3.0.1/lib/net20/OpenTK.GLControl.dll"
+		<Reference Include="$(NUGET_PACKAGES)/opentk.glcontrol/3.0.1/lib/net20/OpenTK.GLControl.dll"
 			FusionName="OpenTK.GLControl, Version=3.0.1.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4"
 			Name="OpenTK.GLControl"
 			Private="true"
 			SpecificVersion="true" />
 		<PackageReference Include="SharpZipLib" Version="1.1.0" PrivateAssets="All" />
-		<Reference Include="$(MachineNuGetPackageDir)/sharpziplib/1.1.0/lib/net45/ICSharpCode.SharpZipLib.dll"
+		<Reference Include="$(NUGET_PACKAGES)/sharpziplib/1.1.0/lib/net45/ICSharpCode.SharpZipLib.dll"
 			FusionName="ICSharpCode.SharpZipLib, Version=1.1.0.145, Culture=neutral, PublicKeyToken=1b03e6acf1164f73"
 			Name="ICSharpCode.SharpZipLib"
 			Private="true"
 			SpecificVersion="true" />
 		<PackageReference Include="System.Drawing.Common" Version="4.7.0" PrivateAssets="All" />
-		<Reference Include="$(MachineNuGetPackageDir)/system.drawing.common/4.7.0/lib/net461/System.Drawing.Common.dll"
+		<Reference Include="$(NUGET_PACKAGES)/system.drawing.common/4.7.0/lib/net461/System.Drawing.Common.dll"
 			FusionName="System.Drawing.Common, Version=4.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51"
 			Name="System.Drawing.Common"
 			Private="true"

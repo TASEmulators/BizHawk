@@ -12,7 +12,7 @@ build:
       - output
     when: always
   script:
-    - dotnet build BizHawk.sln -c Release -m -p:MachineNuGetPackageDir=$HOME/.nuget/packages
+    - Dist/BuildRelease.sh -p:MachineRunAnalyzersDuringBuild=true
   stage: build
 
 deploy_artifact:
