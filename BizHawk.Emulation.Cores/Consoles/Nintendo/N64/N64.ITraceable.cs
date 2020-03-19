@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using System.Text;
-
-using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
 

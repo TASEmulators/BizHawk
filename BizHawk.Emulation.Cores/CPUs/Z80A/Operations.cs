@@ -1,5 +1,4 @@
 ﻿using BizHawk.Common.NumberExtensions;
-using System;
 
 namespace BizHawk.Emulation.Cores.Components.Z80A
 {
@@ -97,13 +96,13 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		}
 
 		public void IN_A_N_INC_Func(ushort dest, ushort src_l, ushort src_h)
-        {
-            Regs[dest] = ReadHardware((ushort)(Regs[src_l] | (Regs[src_h]) << 8));
-            Regs[DB] = Regs[dest];
+		{
+			Regs[dest] = ReadHardware((ushort)(Regs[src_l] | (Regs[src_h]) << 8));
+			Regs[DB] = Regs[dest];
 			INC16_Func(src_l, src_h);
-        }
+		}
 
-        public void TR_Func(ushort dest, ushort src)
+		public void TR_Func(ushort dest, ushort src)
 		{
 			Regs[dest] = Regs[src];
 		}

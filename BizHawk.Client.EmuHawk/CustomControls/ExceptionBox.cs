@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace BizHawk.Client.EmuHawk
@@ -79,12 +74,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			protected override void OnPaint(PaintEventArgs e)
 			{
-				Rectangle rc = this.ClientRectangle;
+				Rectangle rc = ClientRectangle;
 				StringFormat fmt = new StringFormat(StringFormat.GenericTypographic);
-				using (var br = new SolidBrush(this.ForeColor))
-				{
-					e.Graphics.DrawString(this.Text, this.Font, br, rc, fmt);
-				}
+				using var br = new SolidBrush(ForeColor);
+				e.Graphics.DrawString(this.Text, this.Font, br, rc, fmt);
 			}
 		}
 

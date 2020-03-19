@@ -34,7 +34,8 @@
 				}
 			}
 
-			/*TriangleWave = new short[512];
+#if false
+			TriangleWave = new short[512];
 			for (int i = 0; i < 256; i++)
 				TriangleWave[i] = (short)((ushort.MaxValue*i/256)-short.MinValue);
 			for (int i = 0; i < 256; i++)
@@ -49,7 +50,8 @@
 			for (int i=0; i<1024; i++)
 			{
 				SineWave[i] = (short) (Math.Sin(i*Math.PI*2/1024d)*32767);
-			}*/
+			}
+#endif
 		}
 	}
 }

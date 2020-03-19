@@ -61,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 						"-c:a aac -c:v libx264 -f mp4", false, "mp4"),
 					new FormatPreset("WebM", "VP8 video and Vorbis audio in a WebM container.",
 						"-c:a libvorbis -c:v libvpx -auto-alt-ref 0 -f webm", false, "webm"),
-					new FormatPreset("Ogg", "Theora video and Vorbis audio in an Ogg contrainer.",
+					new FormatPreset("Ogg", "Theora video and Vorbis audio in an Ogg container.",
 						"-c:a libvorbis -c:v libtheora -f ogg", false, "ogg"),
 					new FormatPreset("Xvid", "Xvid video and MP3 audio in an AVI container.",
 						"-c:a libmp3lame -c:v libxvid -f avi", false, "avi"),

@@ -1,8 +1,7 @@
 ﻿using System;
-using System.IO;
 using System.Runtime.InteropServices;
 
-using BizHawk.Common.BizInvoke;
+using BizHawk.BizInvoke;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.Common;
@@ -140,8 +139,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 				SetMemoryDomains();
 
-				InputCallback = new LibGPGX.input_cb(input_callback);
-				Core.gpgx_set_input_callback(InputCallback);
+				_inputCallback = new LibGPGX.input_cb(input_callback);
+				Core.gpgx_set_input_callback(_inputCallback);
 
 				// process the non-init settings now
 				PutSettings(_settings);
@@ -152,8 +151,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				InitMemCallbacks();
 				KillMemCallbacks();
 
-				Tracer = new GPGXTraceBuffer(this, MemoryDomains, this);
-				(ServiceProvider as BasicServiceProvider).Register<ITraceable>(Tracer);
+				_tracer = new GPGXTraceBuffer(this, _memoryDomains, this);
+				(ServiceProvider as BasicServiceProvider).Register<ITraceable>(_tracer);
 			}
 
 			_romfile = null;
@@ -186,7 +185,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			Teamplayer,
 			Wayplay,
 			Mouse
-		};
+		}
 
 
 		/// <summary>
@@ -312,7 +311,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					byte[] data = new byte[2048];
 					_cdReaders[_discIndex].ReadLBA_2048(lba, data, 0);
 					Marshal.Copy(data, 0, dest, 2048);
-					_drivelight = true;
+					_driveLight = true;
 				}
 			}
 		}
@@ -385,7 +384,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			return (LibGPGX.INPUT_DEVICE[])input.dev.Clone();
 		}
 
-		public bool IsMegaCD { get { return _cds != null; } }
+		public bool IsMegaCD => _cds != null;
 
 		public class VDPView : IMonitor
 		{
@@ -429,6 +428,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			return new VDPView(v, _elf);
 		}
 
-		public DisplayType Region { get; private set; }
+		public DisplayType Region { get; }
 	}
 }

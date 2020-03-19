@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.ColecoVision
 {
-	public partial class ColecoVision : IEmulator, IStatable, ISettable<ColecoVision.ColecoSettings, ColecoVision.ColecoSyncSettings>
+	public partial class ColecoVision : IEmulator, ISettable<ColecoVision.ColecoSettings, ColecoVision.ColecoSyncSettings>
 	{
 		public ColecoSettings GetSettings()
 		{
@@ -54,11 +54,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			[JsonIgnore]
 			public string Port1
 			{
-				get
-				{
-					return _port1;
-				}
-
+				get => _port1;
 				set
 				{
 					if (!ColecoVisionControllerDeck.ValidControllerTypes.ContainsKey(value))
@@ -73,11 +69,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			[JsonIgnore]
 			public string Port2
 			{
-				get
-				{
-					return _port2;
-				}
-
+				get => _port2;
 				set
 				{
 					if (!ColecoVisionControllerDeck.ValidControllerTypes.ContainsKey(value))

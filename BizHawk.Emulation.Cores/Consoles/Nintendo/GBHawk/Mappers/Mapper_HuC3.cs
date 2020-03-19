@@ -1,7 +1,6 @@
-﻿using System;
-using BizHawk.Common;
+﻿using BizHawk.Common;
 
-using BizHawk.Emulation.Common.Components.LR35902;
+using BizHawk.Emulation.Cores.Components.LR35902;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
@@ -23,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int RTC_low_clock;
 		public int RTC_seconds;
 
-		public override void Initialize()
+		public override void Reset()
 		{
 			ROM_bank = 0;
 			RAM_bank = 0;
@@ -243,7 +242,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
-		public override void RTC_Get(byte value, int index)
+		public override void RTC_Get(int value, int index)
 		{
 			time |= (uint)((value & 0xFF) << index);
 		}

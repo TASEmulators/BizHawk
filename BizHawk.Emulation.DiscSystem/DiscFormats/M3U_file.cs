@@ -1,7 +1,4 @@
-﻿using System;
-using System.Text;
-using System.IO;
-using System.Globalization;
+﻿using System.IO;
 using System.Collections.Generic;
 
 namespace BizHawk.Emulation.DiscSystem
@@ -11,9 +8,7 @@ namespace BizHawk.Emulation.DiscSystem
 		public static M3U_File Read(StreamReader sr)
 		{
 			M3U_File ret = new M3U_File();
-			if (!ret.Parse(sr))
-				return null;
-			else return ret;
+			return !ret.Parse(sr) ? null : ret;
 		}
 
 		bool Parse(StreamReader sr)
@@ -35,13 +30,13 @@ namespace BizHawk.Emulation.DiscSystem
 					}
 					if (line.StartsWith("#EXTINF:"))
 					{
-						//TODO - maybe we shouldnt be so harsh. should probably add parse options.
+						//TODO - maybe we shouldn't be so harsh. should probably add parse options.
 						if (!ext) continue;
 
 						line = line.Substring(8);
 						int cidx = line.IndexOf(',');
 
-						//dont know what to do with this, but its a comment, so ignore it
+						//don't know what to do with this, but its a comment, so ignore it
 						if (cidx == -1)
 							continue;
 
@@ -74,7 +69,7 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			foreach (var e in Entries)
 			{
-				//dont change rooted paths
+				//don't change rooted paths
 				if (Path.IsPathRooted(e.Path)) continue;
 				//adjust relative paths
 				e.Path = Path.Combine(basepath, e.Path);

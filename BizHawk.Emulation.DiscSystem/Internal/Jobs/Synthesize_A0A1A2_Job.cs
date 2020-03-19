@@ -1,7 +1,4 @@
 using System;
-using System.Linq;
-using System.Text;
-using System.IO;
 using System.Collections.Generic;
 
 //TODO - generate correct Q subchannel CRC
@@ -34,9 +31,8 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public SessionFormat IN_Session1Format;
 
-		/// <summary>
-		/// Appends the new entries to the provided list
-		/// </summary>
+		/// <summary>appends the new entries to the provided list</summary>
+		/// <exception cref="InvalidOperationException"><see cref="IN_Session1Format"/> is <see cref="SessionFormat.None"/> or a non-member</exception>
 		public void Run(List<RawTOCEntry> entries)
 		{
 			//NOTE: entries are inserted at the beginning due to observations of CCD indicating they might need to be that way

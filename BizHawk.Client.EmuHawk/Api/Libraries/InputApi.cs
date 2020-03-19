@@ -1,33 +1,23 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Collections.Generic;
 using System.Windows.Forms;
 
-using BizHawk.Client.ApiHawk;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public sealed class InputApi : IInput
 	{
-		public InputApi() : base()
-		{ }
-
-		public Dictionary<string,bool> Get()
+		public Dictionary<string, bool> Get()
 		{
 			var buttons = new Dictionary<string, bool>();
-			foreach (var kvp in Global.ControllerInputCoalescer.BoolButtons().Where(kvp => kvp.Value))
-			{
-				buttons[kvp.Key] = true;
-			}
-
+			foreach (var kvp in Global.ControllerInputCoalescer.BoolButtons().Where(kvp => kvp.Value)) buttons[kvp.Key] = true;
 			return buttons;
 		}
 
 		public Dictionary<string, dynamic> GetMouse()
 		{
 			var buttons = new Dictionary<string, dynamic>();
-
 			// TODO - need to specify whether in "emu" or "native" coordinate space.
 			var p = GlobalWin.DisplayManager.UntransformPoint(Control.MousePosition);
 			buttons["X"] = p.X;

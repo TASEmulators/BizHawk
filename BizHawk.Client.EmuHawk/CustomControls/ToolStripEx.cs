@@ -8,30 +8,18 @@ using System.Windows.Forms;
 /// </summary>
 public class ToolStripEx : ToolStrip
 {
-	private bool clickThrough = true;
-	
 	/// <summary>
 	/// Gets or sets whether the ToolStripEx honors item clicks when its containing form does
 	/// not have input focus.
 	/// </summary>
-	public bool ClickThrough
-	{
-		get
-		{
-			return clickThrough;
-		}
-		set
-		{
-			clickThrough = value;
-		}
-	}
+	public bool ClickThrough { get; set; } = true;
 
 	protected override void WndProc(ref Message m)
 	{
 		base.WndProc(ref m);
-		if (clickThrough &&
-			m.Msg == NativeConstants.WM_MOUSEACTIVATE &&
-			m.Result == (IntPtr)NativeConstants.MA_ACTIVATEANDEAT)
+		if (ClickThrough
+			&& m.Msg == NativeConstants.WM_MOUSEACTIVATE
+			&& m.Result == (IntPtr)NativeConstants.MA_ACTIVATEANDEAT)
 		{
 			m.Result = (IntPtr)NativeConstants.MA_ACTIVATE;
 		}
@@ -43,30 +31,18 @@ public class ToolStripEx : ToolStrip
 /// </summary>
 public class MenuStripEx : MenuStrip
 {
-	private bool clickThrough = true;
-
 	/// <summary>
 	/// Gets or sets whether the ToolStripEx honors item clicks when its containing form does
 	/// not have input focus.
 	/// </summary>
-	public bool ClickThrough
-	{
-		get
-		{
-			return clickThrough;
-		}
-		set
-		{
-			clickThrough = value;
-		}
-	}
+	public bool ClickThrough { get; set; } = true;
 
 	protected override void WndProc(ref Message m)
 	{
 		base.WndProc(ref m);
-		if (clickThrough &&
-			m.Msg == NativeConstants.WM_MOUSEACTIVATE &&
-			m.Result == (IntPtr)NativeConstants.MA_ACTIVATEANDEAT)
+		if (ClickThrough
+			&& m.Msg == NativeConstants.WM_MOUSEACTIVATE
+			&& m.Result == (IntPtr)NativeConstants.MA_ACTIVATEANDEAT)
 		{
 			m.Result = (IntPtr)NativeConstants.MA_ACTIVATE;
 		}
@@ -78,30 +54,18 @@ public class MenuStripEx : MenuStrip
 /// </summary>
 public class StatusStripEx : StatusStrip
 {
-	private bool clickThrough = true;
-
 	/// <summary>
 	/// Gets or sets whether the ToolStripEx honors item clicks when its containing form does
 	/// not have input focus.
 	/// </summary>
-	public bool ClickThrough
-	{
-		get
-		{
-			return clickThrough;
-		}
-		set
-		{
-			clickThrough = value;
-		}
-	}
+	public bool ClickThrough { get; set; } = true;
 
 	protected override void WndProc(ref Message m)
 	{
 		base.WndProc(ref m);
-		if (clickThrough &&
-			m.Msg == NativeConstants.WM_MOUSEACTIVATE &&
-			m.Result == (IntPtr)NativeConstants.MA_ACTIVATEANDEAT)
+		if (ClickThrough
+			&& m.Msg == NativeConstants.WM_MOUSEACTIVATE
+			&& m.Result == (IntPtr)NativeConstants.MA_ACTIVATEANDEAT)
 		{
 			m.Result = (IntPtr)NativeConstants.MA_ACTIVATE;
 		}

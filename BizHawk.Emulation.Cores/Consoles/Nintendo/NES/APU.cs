@@ -11,8 +11,6 @@
 // TODO - refactor length counter to be separate component
 
 using System;
-using System.Collections.Generic;
-
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 
@@ -32,19 +30,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			this.nes = nes;
 			dmc = new DMCUnit(this, pal);
-			if (pal)
-			{
-				sequencer_lut = sequencer_lut_pal;
-			}
-			else
-			{
-				sequencer_lut = sequencer_lut_ntsc;
-			}
+			sequencer_lut = pal ? sequencer_lut_pal : sequencer_lut_ntsc;
 			
 			noise = new NoiseUnit(this, pal);
 			triangle = new TriangleUnit(this);
-			pulse[0] = new PulseUnit(this, 0);
-			pulse[1] = new PulseUnit(this, 1);
+			pulse[0] = new PulseUnit(this, 1);
+			pulse[1] = new PulseUnit(this, 0);
 			if (old != null)
 			{
 				m_vol = old.m_vol;
@@ -63,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		static byte[] TRIANGLE_TABLE =
 		{
 			15, 14, 13, 12, 11, 10,  9,  8,  7,  6,  5,  4,  3,  2,  1,  0,
- 			0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15
+			0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15
 		};
 		static int[] NOISE_TABLE_NTSC =
 		{
@@ -156,10 +147,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					case 3:
 						if (apu.len_clock_active)
 						{
-							if (len_cnt==0)
+							if (len_cnt == 0)
 							{
-								len_cnt = LENGTH_TABLE[(val >> 3) & 0x1F]+1;
-							}						
+								len_cnt = LENGTH_TABLE[(val >> 3) & 0x1F] + 1;
+							}
 						} else
 						{
 							len_cnt = LENGTH_TABLE[(val >> 3) & 0x1F];
@@ -167,7 +158,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 						timer_reload_value = (timer_reload_value & 0xFF) | ((val & 0x07) << 8);
 						timer_raw_reload_value = timer_reload_value * 2 + 2;
-						duty_step = 0; 
+						duty_step = 0;
 						env_start_flag = 1;
 
 						// allow the lenctr_en to kill the len_cnt
@@ -202,7 +193,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				// this should be optimized to update only when `timer_reload_value` changes
 				int sweep_shifter = timer_reload_value >> sweep_shiftcount;
 				if (sweep_negate == 1)
-					sweep_shifter = -sweep_shifter + unit;
+					sweep_shifter = -sweep_shifter - unit;
 				sweep_shifter += timer_reload_value;
 
 				// this sweep logic is always enabled:
@@ -234,7 +225,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 				}
 
-				// env_loopdoubles as "halt length counter"
+				// env_loop doubles as "halt length counter"
 				if ((env_loop == 0 || len_halt) && len_cnt > 0)
 					len_cnt--;
 			}
@@ -307,31 +298,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
-			public bool Debug_IsSilenced
-			{
-				get
-				{
-					if (swp_silence || len_cnt == 0)
-						return true;
-					else return false;
-				}
-			}
+			public bool Debug_IsSilenced => swp_silence || len_cnt == 0;
 
-			public int Debug_DutyType
-			{
-				get
-				{
-					return duty_cnt;
-				}
-			}
+			public int Debug_DutyType => duty_cnt;
 
-			public int Debug_Volume
-			{
-				get
-				{
-					return env_output;
-				}
-			}
+			public int Debug_Volume => env_output;
 		}
 
 		public sealed class NoiseUnit
@@ -371,25 +342,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				get
 				{
 					if (len_cnt == 0) return true;
-					else return false;
+					return false;
 				}
 			}
 
-			public int Debug_Period
-			{
-				get
-				{
-					return period_cnt;
-				}
-			}
+			public int Debug_Period => period_cnt;
 
-			public int Debug_Volume
-			{
-				get
-				{
-					return env_output;
-				}
-			}
+			public int Debug_Volume => env_output;
 
 			public void SyncState(Serializer ser)
 			{
@@ -416,7 +375,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ser.EndSection();
 			}
 
-			public bool IsLenCntNonZero() { return len_cnt > 0; }
+			public bool IsLenCntNonZero() => len_cnt > 0;
 
 			public void WriteReg(int addr, byte val)
 			{
@@ -623,13 +582,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
-			public int Debug_PeriodValue
-			{
-				get
-				{
-					return timer_cnt;
-				}
-			}
+			public int Debug_PeriodValue => timer_cnt;
 
 			public void Run()
 			{
@@ -724,7 +677,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			int out_shift, out_bits_remaining, out_deltacounter;
 			bool out_silence;
 
-			public int sample { get { return out_deltacounter /* - 64*/; } }
+			public int sample => out_deltacounter /* - 64*/;
 
 			public void SyncState(Serializer ser)
 			{
@@ -786,7 +739,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						{
 							delay = 3;
 						}
-					}					
+					}
 				}
 
 				// I did some tests in Visual 2A03 and there seems to be some delay betwen when a DMC is first needed and when the 
@@ -863,7 +816,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					// If the DMC bit is clear, the DMC bytes remaining will be set to 0 
 					// and the DMC will silence when it empties.
 					sample_length = 0;
-					}
+				}
 				else
 				{
 					// only start playback if playback is stopped
@@ -1003,14 +956,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		int[][] sequencer_lut = new int[2][];
 
-		static int[][] sequencer_lut_ntsc = new int[][]{
-			new int[]{7457,14913,22371,29830},
-			new int[]{7457,14913,22371,29830,37282}
+		static int[][] sequencer_lut_ntsc = {
+			new[]{7457,14913,22371,29830},
+			new[]{7457,14913,22371,29830,37282}
 		};
 
-		static int[][] sequencer_lut_pal = new int[][]{
-			new int[]{8313,16627,24939,33254},
-			new int[]{8313,16627,24939,33254,41566}
+		static int[][] sequencer_lut_pal = {
+			new[]{8313,16627,24939,33254},
+			new[]{8313,16627,24939,33254,41566}
 		};
 
 		void sequencer_write_tick(byte val)
@@ -1335,7 +1288,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			nes._irq_apu = irq_pending;
 
 			// since the units run concurrently, the APU frame sequencer is ran last because
-			// it can change the ouput values of the pulse/triangle channels
+			// it can change the output values of the pulse/triangle channels
 			// we want the changes to affect it on the *next* cycle.
 
 			if (sequencer_irq_flag == false)
@@ -1345,8 +1298,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				if (DebugCallbackTimer == 0)
 				{
-					if (DebugCallback != null)
-						DebugCallback();
+					DebugCallback?.Invoke();
 					DebugCallbackTimer = DebugCallbackDivider;
 				}
 				else DebugCallbackTimer--;
@@ -1402,7 +1354,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return mix;
 			}
 
-			return oldmix;			
+			return oldmix;
 		}
 	}
 }

@@ -48,6 +48,11 @@
 
 		public void Stop()
 		{
+			if (Thread == null)
+			{
+				return;
+			}
+
 			State = RunState.Disabled;
 			//if(NLua.Lua.WhichLua == "NLua")
 				Thread.GetTable("keepalives")[Thread] = null;
@@ -56,18 +61,18 @@
 
 		public void Toggle()
 		{
-			if (State == RunState.Paused)
+			switch (State)
 			{
-				State = RunState.Running;
-			}
-			else if (State == RunState.Disabled)
-			{
-				State = RunState.Running;
-				FrameWaiting = false;
-			}
-			else
-			{
-				State = RunState.Disabled;
+				case RunState.Paused:
+					State = RunState.Running;
+					break;
+				case RunState.Disabled:
+					State = RunState.Running;
+					FrameWaiting = false;
+					break;
+				default:
+					State = RunState.Disabled;
+					break;
 			}
 		}
 

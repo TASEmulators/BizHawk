@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
+﻿using System.Collections.Generic;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.M6502;
 
@@ -11,19 +8,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 	{
 		public string Cpu
 		{
-			get
-			{
-				return "6502";
-			}
+			get => "6502";
 			set
 			{
 			}
 		}
 
-		public string PCRegisterName
-		{
-			get { return "PC"; }
-		}
+		public string PCRegisterName => "PC";
 
 		public IEnumerable<string> AvailableCpus
 		{

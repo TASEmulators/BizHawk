@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public bool slow_access = false;
 		public int slow_countdown;
 
-		public bool FrameAdvance(IController controller, bool render, bool rendersound)
+		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
 			if (_tracer.Enabled)
 			{
@@ -77,16 +77,16 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				HardReset();
 			}
 
-			_islag = true;
+			_isLag = true;
 
 			GetControllerState(controller);
 			GetConsoleState(controller);
 
 			maria.RunFrame();
 
-			if (_islag)
+			if (_isLag)
 			{
-				_lagcount++;
+				_lagCount++;
 			}
 
 			return true;
@@ -322,8 +322,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public void ResetCounters()
 		{
 			_frame = 0;
-			_lagcount = 0;
-			_islag = false;
+			_lagCount = 0;
+			_isLag = false;
 		}
 
 		public CoreComm CoreComm { get; }

@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-using BizHawk.Client.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 
@@ -14,9 +13,9 @@ namespace BizHawk.Client.EmuHawk
 		public IDebuggable Core { get; set; }
 		public GenericDebugger ParentDebugger { get; set; }
 
-		private bool _supressChangeEvents = false;
-		private bool _canGetCpuRegisters = false;
-		private bool _canSetCpuRegisters = false;
+		private bool _suppressChangeEvents;
+		private bool _canGetCpuRegisters;
+		private bool _canSetCpuRegisters;
 
 		public RegisterBoxControl()
 		{
@@ -24,67 +23,52 @@ namespace BizHawk.Client.EmuHawk
 			AutoScroll = true;
 		}
 
-		private void RegisterBoxControl_Load(object sender, EventArgs e)
-		{
-		}
-
-		public void NewUpdate(ToolFormUpdateType type) { }
-
 		public void UpdateValues()
 		{
-			if (this.Enabled)
+			if (Enabled)
 			{
 				var registers = Core.GetCpuFlagsAndRegisters();
-				_supressChangeEvents = true;
+				_suppressChangeEvents = true;
 
 				foreach (var register in registers)
 				{
 					if (Controls.OfType<Panel>().Any(p => p.Name == "FlagPanel"))
 					{
-						Controls
-							.OfType<Panel>()
+						foreach (var checkbox in Controls.OfType<Panel>()
 							.First(p => p.Name == "FlagPanel")
 							.Controls
-							.OfType<CheckBox>()
-							.ToList()
-							.ForEach(checkbox =>
+							.OfType<CheckBox>())
+						{
+							if (checkbox.Name == register.Key)
 							{
-								if (checkbox.Name == register.Key)
-								{
-									checkbox.Checked = register.Value.Value == 1;
-								}
-							});
+								checkbox.Checked = register.Value.Value == 1;
+							}
+						}
 					}
 
 					if (_canSetCpuRegisters)
 					{
-						Controls
-							.OfType<TextBox>()
-							.ToList()
-							.ForEach(textbox =>
+						foreach (var textBox in Controls.OfType<TextBox>())
+						{
+							if (textBox.Name == register.Key)
 							{
-								if (textbox.Name == register.Key)
-								{
-									textbox.Text = register.Value.Value.ToHexString(register.Value.BitSize / 4);
-								}
-							});
+								textBox.Text = register.Value.Value.ToHexString(register.Value.BitSize / 4);
+							}
+						}
 					}
 					else
 					{
-						Controls
-							.OfType<Label>()
-							.ToList()
-							.ForEach(label =>
+						foreach (var label in Controls.OfType<Label>())
+						{
+							if (label.Name == register.Key)
 							{
-								if (label.Name == register.Key)
-								{
-									label.Text = register.Value.Value.ToHexString(register.Value.BitSize / 4);
-								}
-							});
+								label.Text = register.Value.Value.ToHexString(register.Value.BitSize / 4);
+							}
+						}
 					}
 				}
 
-				_supressChangeEvents = false;
+				_suppressChangeEvents = false;
 			}
 		}
 
@@ -94,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				try
 				{
-					var registers = Core.GetCpuFlagsAndRegisters();
+					Core.GetCpuFlagsAndRegisters();
 					return true;
 				}
 				catch (NotImplementedException)
@@ -126,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void GenerateUI()
 		{
-			this.Controls.Clear();
+			Controls.Clear();
 
 			_canGetCpuRegisters = CanGetCpuRegisters;
 			_canSetCpuRegisters = CanSetCpuRegisters;
@@ -134,7 +118,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!_canGetCpuRegisters && !_canSetCpuRegisters)
 			{
 				ParentDebugger.DisableRegisterBox();
-				this.Enabled = false;
+				Enabled = false;
 			}
 
 			var registers = Core.GetCpuFlagsAndRegisters();
@@ -142,7 +126,7 @@ namespace BizHawk.Client.EmuHawk
 			int y = UIHelper.ScaleY(0);
 
 			var maxCharSize = registers.Where(r => r.Value.BitSize != 1).Max(r => r.Key.Length);
-			var width = maxCharSize * (int)this.Font.Size;
+			var width = maxCharSize * (int)Font.Size;
 			if (width < 20)
 			{
 				width = 20;
@@ -150,7 +134,7 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var register in registers.Where(r => r.Value.BitSize != 1))
 			{
-				this.Controls.Add(new Label
+				Controls.Add(new Label
 				{
 					Text = register.Key,
 					Location = new Point(UIHelper.ScaleX(5), y + UIHelper.ScaleY(2)),
@@ -171,7 +155,7 @@ namespace BizHawk.Client.EmuHawk
 
 					t.TextChanged += (o, e) =>
 					{
-						if (!_supressChangeEvents)
+						if (!_suppressChangeEvents)
 						{
 							try
 							{
@@ -190,11 +174,11 @@ namespace BizHawk.Client.EmuHawk
 						}
 					};
 
-					this.Controls.Add(t);
+					Controls.Add(t);
 				}
 				else
 				{
-					this.Controls.Add(new Label
+					Controls.Add(new Label
 					{
 						Name = register.Key,
 						Text = register.Value.Value.ToHexString(register.Value.BitSize / 4),
@@ -235,7 +219,7 @@ namespace BizHawk.Client.EmuHawk
 
 					c.CheckedChanged += (o, e) =>
 					{
-						if (!_supressChangeEvents)
+						if (!_suppressChangeEvents)
 						{
 							try
 							{
@@ -243,9 +227,9 @@ namespace BizHawk.Client.EmuHawk
 							}
 							catch (InvalidOperationException) // TODO: This is hacky stuff because NES doesn't support setting flags!  Need to know when a core supports this or not, and enable/disable the box accordingly
 							{
-								_supressChangeEvents = true;
+								_suppressChangeEvents = true;
 								c.Checked = !c.Checked;
-								_supressChangeEvents = false;
+								_suppressChangeEvents = false;
 								c.Enabled = false;
 							}
 						}
@@ -254,7 +238,7 @@ namespace BizHawk.Client.EmuHawk
 					p.Controls.Add(c);
 				}
 
-				this.Controls.Add(p);
+				Controls.Add(p);
 			}
 		}
 	}

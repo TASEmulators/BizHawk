@@ -1,24 +1,37 @@
-﻿using System;
-using System.Drawing;
+﻿#nullable enable
+
+using System;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
-using System.Windows;
-using BizHawk.Common.NumberExtensions;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class VirtualPadAnalogStick : UserControl, IVirtualPadControl
 	{
-		#region Fields
+		/// <summary>for coordinate transformation when non orthogonal (like PSX for example)</summary>
+		private int rangeAverageX;
 
-		private bool _programmaticallyUpdatingNumerics;
-		private bool _readonly;
-		private int rangeAverageX; //for coordinate transformation when non orthogonal (like PSX for example)
+		/// <inheritdoc cref="rangeAverageX"/>
 		private int rangeAverageY;
 
-		#endregion
+		private Range<int> _rangeX = AnalogStickPanel.DefaultRange;
+
+		private Range<int> _rangeY = AnalogStickPanel.DefaultRange;
+
+		private bool _readonly;
+
+		private bool _reverseX;
+
+		private bool _reverseY;
+
+		private bool _updatingFromAnalog;
+
+		private bool _updatingFromPolar;
+
+		private bool _updatingFromXY;
 
 		public VirtualPadAnalogStick()
 		{
@@ -31,53 +44,57 @@ namespace BizHawk.Client.EmuHawk
 			manualTheta.ValueChanged += PolarNumeric_Changed;
 		}
 
-		public float[] RangeX = new float[] { -128f, 0.0f, 127f };
-		public float[] RangeY = new float[] { -128f, 0.0f, 127f };
-		private bool ReverseX;
-		private bool ReverseY;
+		public float[] RangeX
+		{
+			set
+			{
+				if (value.Length != 3) throw new ArgumentException("must be float[3]", nameof(value));
+#if false
+				_midX = (int) value[1];
+#endif
+				_reverseX = value[2] < value[0];
+				_rangeX = _reverseX ? ((int) value[2]).RangeTo((int) value[0]) : ((int) value[0]).RangeTo((int) value[2]);
+			}
+		}
 
-		public string SecondaryName { get; set; }
+		public float[] RangeY
+		{
+			set
+			{
+				if (value.Length != 3) throw new ArgumentException("must be float[3]", nameof(value));
+#if false
+				_midY = (int) value[1];
+#endif
+				_reverseY = value[2] < value[0];
+				_rangeY = _reverseY ? ((int) value[2]).RangeTo((int) value[0]) : ((int) value[0]).RangeTo((int) value[2]);
+			}
+		}
 
+		public string? SecondaryName { get; set; }
 
 		private void VirtualPadAnalogStick_Load(object sender, EventArgs e)
 		{
-			AnalogStick.Name = Name;
-			AnalogStick.XName = Name;
-			AnalogStick.YName = !string.IsNullOrEmpty(SecondaryName)
-				? SecondaryName
-				: Name.Replace("X", "Y"); // Fallback
-			if (RangeX[0] > RangeX[2])
-			{
-				RangeX = new[] { RangeX[2], RangeX[1], RangeX[0] };
-				ReverseX = true;
-			}
-			AnalogStick.SetRangeX(RangeX);
-			if (RangeY[0] > RangeY[2])
-			{
-				RangeY = new[] { RangeY[2], RangeY[1], RangeY[0] };
-				ReverseY = true;
-			}
-			AnalogStick.SetRangeY(RangeY);
+			AnalogStick.XName = AnalogStick.Name = Name;
+			AnalogStick.SetRangeX(_rangeX);
+			AnalogStick.YName = !string.IsNullOrEmpty(SecondaryName) ? SecondaryName : Name.Replace("X", "Y");
+			AnalogStick.SetRangeY(_rangeY);
 
-			ManualX.Minimum = (decimal)RangeX[0];
-			ManualX.Maximum = (decimal)RangeX[2];
-
-			ManualY.Minimum = (decimal)RangeX[0];
-			ManualY.Maximum = (decimal)RangeX[2];
-
+			ManualX.Minimum = _rangeX.Start;
+			ManualX.Maximum = _rangeX.EndInclusive;
+			ManualY.Minimum = _rangeY.Start;
+			ManualY.Maximum = _rangeY.EndInclusive;
 			MaxXNumeric.Minimum = 1;
 			MaxXNumeric.Maximum = 100;
-			MaxXNumeric.Value = 100;
-
 			MaxYNumeric.Minimum = 1;
 			MaxYNumeric.Maximum = 100;
-			MaxYNumeric.Value = 100; // Note: these trigger change events that change the analog stick too
 
-			rangeAverageX = (int)((RangeX[0] + RangeX[2]) / 2);
-			rangeAverageY = (int)((RangeY[0] + RangeY[2]) / 2);
+			// these trigger Change events that set the analog stick's values too
+			MaxXNumeric.Value = 100;
+			MaxYNumeric.Value = 100;
+
+			rangeAverageX = (_rangeX.Start + _rangeX.EndInclusive) / 2;
+			rangeAverageY = (_rangeY.Start + _rangeY.EndInclusive) / 2;
 		}
-
-		#region IVirtualPadControl Implementation
 
 		public void UpdateValues()
 		{
@@ -105,45 +122,32 @@ namespace BizHawk.Client.EmuHawk
 			AnalogStick.HasValue = false;
 		}
 
-		public void Clear()
-		{
-			AnalogStick.Clear();
-		}
+		public void Clear() => AnalogStick.Clear();
 
 		public bool ReadOnly
 		{
-			get
-			{
-				return _readonly;
-			}
-
+			get => _readonly;
 			set
 			{
-				if (_readonly != value)
-				{
-					XLabel.Enabled =
-						ManualX.Enabled =
-						YLabel.Enabled =
-						ManualY.Enabled =
-						MaxLabel.Enabled =
-						MaxXNumeric.Enabled =
-						MaxYNumeric.Enabled =
-						manualR.Enabled =
-						rLabel.Enabled =
-						manualTheta.Enabled =
-						thetaLabel.Enabled =
+				if (_readonly == value) return;
+				XLabel.Enabled =
+					ManualX.Enabled =
+					YLabel.Enabled =
+					ManualY.Enabled =
+					MaxLabel.Enabled =
+					MaxXNumeric.Enabled =
+					MaxYNumeric.Enabled =
+					manualR.Enabled =
+					rLabel.Enabled =
+					manualTheta.Enabled =
+					thetaLabel.Enabled =
 						!value;
-
-					AnalogStick.ReadOnly =
-						_readonly =
+				AnalogStick.ReadOnly =
+					_readonly =
 						value;
-
-					Refresh();
-				}
+				Refresh();
 			}
 		}
-
-		#endregion
 
 		public void Bump(int? x, int? y)
 		{
@@ -162,118 +166,90 @@ namespace BizHawk.Client.EmuHawk
 			SetNumericsFromAnalog();
 		}
 
-		public void SetPrevious(IController previous)
-		{
-			AnalogStick.SetPrevious(previous);
-		}
+		public void SetPrevious(IController previous) => AnalogStick.SetPrevious(previous);
 
 		private void ManualXY_ValueChanged(object sender, EventArgs e)
 		{
-			SetAnalogControlFromNumerics();
+			if (_updatingFromAnalog || _updatingFromPolar) return;
+			_updatingFromXY = true;
+
+			var x = (sbyte) ManualX.Value;
+			var y = (sbyte) ManualY.Value;
+			var (r, θ) = PolarRectConversion.RectToPolarLookup(x, y);
+			SetAnalog(x, y);
+			SetPolar(r, θ);
+
+			_updatingFromXY = false;
 		}
+
 		private void MaxManualXY_ValueChanged(object sender, EventArgs e)
-		{
-			SetAnalogMaxFromNumerics();
-		}
+			=> AnalogStick.SetUserRange(_reverseX ? -MaxXNumeric.Value : MaxXNumeric.Value, _reverseY ? -MaxYNumeric.Value : MaxYNumeric.Value);
 
 		private void PolarNumeric_Changed(object sender, EventArgs e)
 		{
-			ManualX.ValueChanged -= ManualXY_ValueChanged; //TODO is setting and checking a bool faster than subscription?
-			ManualY.ValueChanged -= ManualXY_ValueChanged;
+			if (_updatingFromAnalog || _updatingFromXY) return;
+			_updatingFromPolar = true;
 
-			var rect = PolarRectConversion.PolarDegToRect((double) manualR.Value, (double) manualTheta.Value);
-			rect = new Tuple<double, double>(
-				rangeAverageX + Math.Ceiling(rect.Item1).Clamp(-127, 127),
-				rangeAverageY + Math.Ceiling(rect.Item2).Clamp(-127, 127));
-			ManualX.Value = (decimal) rect.Item1;
-			ManualY.Value = (decimal) rect.Item2;
-			AnalogStick.X = (int) rect.Item1;
-			AnalogStick.Y = (int) rect.Item2;
-			AnalogStick.HasValue = true;
-			AnalogStick.Refresh();
+			var (x, y) = PolarRectConversion.PolarToRectLookup((ushort) manualR.Value, (ushort) manualTheta.Value);
+			var x1 = (rangeAverageX + x).ConstrainWithin(_rangeX);
+			var y1 = (rangeAverageY + y).ConstrainWithin(_rangeY);
+			SetAnalog(x1, y1);
+			SetXY(x1, y1);
 
-			ManualX.ValueChanged += ManualXY_ValueChanged;
-			ManualY.ValueChanged += ManualXY_ValueChanged;
+			_updatingFromPolar = false;
 		}
 
-		private void SetAnalogControlFromNumerics()
+		private void SetAnalog(int x, int y)
 		{
-			if (!_programmaticallyUpdatingNumerics)
-			{
-				AnalogStick.X = (int)ManualX.Value;
-				AnalogStick.Y = (int)ManualY.Value;
-				AnalogStick.HasValue = true;
-				AnalogStick.Refresh();
-			}
+			AnalogStick.X = x;
+			AnalogStick.Y = y;
+			AnalogStick.HasValue = true;
+			AnalogStick.Refresh();
+		}
+
+		/// <remarks>setting <see cref="NumericUpDown.Value"/> causes a draw, so we avoid it unless necessary</remarks>
+		private void SetPolar(decimal r, decimal θ)
+		{
+			if (manualR.Value != r) manualR.Value = r;
+			if (manualTheta.Value != θ) manualTheta.Value = θ;
+		}
+
+		/// <inheritdoc cref="SetPolar"/>
+		private void SetXY(decimal x, decimal y)
+		{
+			if (ManualX.Value != x) ManualX.Value = x;
+			if (ManualY.Value != y) ManualY.Value = y;
 		}
 
 		private void SetNumericsFromAnalog()
 		{
-			_programmaticallyUpdatingNumerics = true;
+			_updatingFromAnalog = true;
 
 			if (AnalogStick.HasValue)
 			{
-				// Setting .Value of a numeric causes a draw, so avoid it unless necessary
-				if (ManualX.Value != AnalogStick.X)
-				{
-					ManualX.Value = AnalogStick.X;
-				}
-
-				if (ManualY.Value != AnalogStick.Y)
-				{
-					ManualY.Value = AnalogStick.Y;
-				}
+				var x = AnalogStick.X - rangeAverageX;
+				var y = AnalogStick.Y - rangeAverageY;
+				var (r, θ) = PolarRectConversion.RectToPolarLookup((sbyte) x, (sbyte) y);
+				SetPolar(r, θ);
+				SetXY(x, y);
 			}
 			else
 			{
-				if (ManualX.Value != 0)
-				{
-					ManualX.Value = 0;
-				}
-
-				if (ManualY.Value != 0)
-				{
-					ManualY.Value = 0;
-				}
+				SetPolar(0, 0);
+				SetXY(0, 0);
 			}
 
-			manualR.ValueChanged -= PolarNumeric_Changed;
-			manualTheta.ValueChanged -= PolarNumeric_Changed;
-
-			var polar = PolarRectConversion.RectToPolarDeg(AnalogStick.X - rangeAverageX, AnalogStick.Y - rangeAverageY);
-			manualR.Value = (decimal) polar.Item1;
-			manualTheta.Value = (decimal) polar.Item2;
-
-			manualR.ValueChanged += PolarNumeric_Changed;
-			manualTheta.ValueChanged += PolarNumeric_Changed;
-
-			_programmaticallyUpdatingNumerics = false;
+			_updatingFromAnalog = false;
 		}
 
 		private void AnalogStick_MouseDown(object sender, MouseEventArgs e)
 		{
-			if (!ReadOnly)
-			{
-				_programmaticallyUpdatingNumerics = true;
-				SetNumericsFromAnalog();
-				_programmaticallyUpdatingNumerics = false;
-			}
+			if (!ReadOnly) SetNumericsFromAnalog();
 		}
 
 		private void AnalogStick_MouseMove(object sender, MouseEventArgs e)
 		{
-			if (!ReadOnly)
-			{
-				_programmaticallyUpdatingNumerics = true;
-				SetNumericsFromAnalog();
-				_programmaticallyUpdatingNumerics = false;
-			}
-		}
-
-		private void SetAnalogMaxFromNumerics()
-		{
-			if (!_programmaticallyUpdatingNumerics)
-				AnalogStick.SetUserRange(ReverseX ? -MaxXNumeric.Value : MaxXNumeric.Value, ReverseY ? -MaxYNumeric.Value : MaxYNumeric.Value);
+			if (!ReadOnly) SetNumericsFromAnalog();
 		}
 	}
 }

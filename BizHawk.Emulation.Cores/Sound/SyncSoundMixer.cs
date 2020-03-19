@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Components
 {
@@ -27,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Components
 		/// </summary>
 		public short FinalMaxVolume
 		{
-			get { return _finalMaxVolume; }
+			get => _finalMaxVolume;
 			set
 			{
 				_finalMaxVolume = value;
@@ -41,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Components
 		/// </summary>
 		public SoundMixBalance MixBalanceMethod
 		{
-			get { return _mixBalanceMethod; }
+			get => _mixBalanceMethod;
 			set
 			{
 				_mixBalanceMethod = value;

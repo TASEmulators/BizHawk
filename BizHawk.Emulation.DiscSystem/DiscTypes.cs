@@ -1,8 +1,4 @@
 using System;
-using System.Linq;
-using System.Text;
-using System.IO;
-using System.Collections.Generic;
 
 namespace BizHawk.Emulation.DiscSystem
 {
@@ -44,8 +40,8 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public int DecimalValue
 		{
-			get { return (BCDValue & 0xF) + ((BCDValue >> 4) & 0xF) * 10; }
-			set { BCDValue = IntToBCD(value); }
+			get => (BCDValue & 0xF) + ((BCDValue >> 4) & 0xF) * 10;
+			set => BCDValue = IntToBCD(value);
 		}
 
 		/// <summary>
@@ -63,15 +59,13 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public static int BCDToInt(byte n)
 		{
-			var bcd = new BCD2();
-			bcd.BCDValue = n;
+			var bcd = new BCD2 { BCDValue = n };
 			return bcd.DecimalValue;
 		}
 
 		public static byte IntToBCD(int n)
 		{
-			int ones;
-			int tens = Math.DivRem(n, 10, out ones);
+			int tens = Math.DivRem(n, 10, out var ones);
 			return (byte)((tens << 4) | ones);
 		}
 
@@ -133,14 +127,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// The string representation of the MSF
 		/// </summary>
-		public string Value
-		{
-			get
-			{
-				if (!Valid) return "--:--:--";
-				return $"{(Negative ? '-' : '+')}{MIN:D2}:{SEC:D2}:{FRAC:D2}";
-			}
-		}
+		public string Value => !Valid ? "--:--:--" : $"{(Negative ? '-' : '+')}{MIN:D2}:{SEC:D2}:{FRAC:D2}";
 
 		public readonly byte MIN, SEC, FRAC;
 		public readonly bool Valid, Negative;
@@ -148,7 +135,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// The fully multiplied out flat-address Sector number
 		/// </summary>
-		public int Sector { get { return MIN * 60 * 75 + SEC * 75 + FRAC; } }
+		public int Sector => MIN * 60 * 75 + SEC * 75 + FRAC;
 
 		/// <summary>
 		/// creates timestamp from the supplied MSF
@@ -179,9 +166,6 @@ namespace BizHawk.Emulation.DiscSystem
 			Valid = true;
 		}
 
-		public override string ToString()
-		{
-			return Value;
-		}
+		public override string ToString() => Value;
 	}
 }

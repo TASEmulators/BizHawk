@@ -1,75 +1,61 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BizHawk.Common
 {
 	public class DescribableEnumConverter : EnumConverter
 	{
-		private Type enumType;
+		private readonly Type enumType;
 
 		public DescribableEnumConverter(Type type) : base(type)
 		{
 			enumType = type;
 		}
 
-		public override bool CanConvertTo(ITypeDescriptorContext context, Type destType)
+		public override bool CanConvertFrom(ITypeDescriptorContext context, Type srcType) => srcType == typeof(string);
+
+		public override bool CanConvertTo(ITypeDescriptorContext context, Type destType) => destType == typeof(string);
+
+		public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
 		{
-			return destType == typeof(string);
+			var valueStr = value?.ToString() ?? throw new ArgumentException($"got null {nameof(value)}");
+			return Enum.Parse(
+				enumType,
+				enumType.GetFields(BindingFlags.Public | BindingFlags.Static)
+					.FirstOrDefault(fi => valueStr.Equals((fi.GetCustomAttribute(typeof(DisplayAttribute)) as DisplayAttribute)?.Name))?.Name
+					?? valueStr
+			);
 		}
 
-		public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture,
-			object value, Type destType)
+		public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destType)
 		{
-			var fi = enumType.GetField(Enum.GetName(enumType, value));
-			var attr = (DisplayAttribute)fi.GetCustomAttribute(typeof(DisplayAttribute));
-			if (attr != null)
-				return attr.Name;
-			else
-				return value.ToString();
-		}
-
-		public override bool CanConvertFrom(ITypeDescriptorContext context, Type srcType)
-		{
-			return srcType == typeof(string);
-		}
-
-		public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture,
-			object value)
-		{
-			foreach (var fi in enumType.GetFields(BindingFlags.Public | BindingFlags.Static))
+			var fieldName = Enum.GetName(enumType, value ?? throw new ArgumentException($"got null {nameof(value)}"));
+			if (fieldName != null)
 			{
-				var attr = (DisplayAttribute)fi.GetCustomAttribute(typeof(DisplayAttribute));
-				if (attr != null && attr.Name.Equals(value))
-					return Enum.Parse(enumType, fi.Name);
+				var fieldInfo = enumType.GetField(fieldName);
+				if (fieldInfo != null)
+				{
+					var found = fieldInfo.GetCustomAttribute(typeof(DisplayAttribute));
+					if (found is DisplayAttribute da) return da.Name;
+				}
 			}
-			return Enum.Parse(enumType, (string)value);
+#pragma warning disable CS8603 // value can't be null here, it would've thrown already
+			return value.ToString();
+#pragma warning restore CS8603
 		}
 
-		public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
-		{
-			return true;
-		}
+		public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context) => new StandardValuesCollection(
+			enumType.GetFields(BindingFlags.Public | BindingFlags.Static)
+				.Select(fi => fi.GetValue(null))
+				.ToList()
+		);
 
-		public override bool GetStandardValuesExclusive(ITypeDescriptorContext context)
-		{
-			return true;
-		}
+		public override bool GetStandardValuesExclusive(ITypeDescriptorContext context) => true;
 
-		public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
-		{
-			var ret = new List<object>();
-			foreach (var fi in enumType.GetFields(BindingFlags.Public | BindingFlags.Static))
-			{
-				ret.Add(fi.GetValue(null));
-			}
-			return new StandardValuesCollection(ret);
-		}
+		public override bool GetStandardValuesSupported(ITypeDescriptorContext context) => true;
 	}
 }

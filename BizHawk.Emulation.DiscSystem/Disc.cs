@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Text;
-using System.IO;
 using System.Collections.Generic;
 
 //ARCHITECTURE NOTE:
@@ -38,9 +35,9 @@ namespace BizHawk.Emulation.DiscSystem
 		public DiscStructure Structure;
 
 		/// <summary>
-		/// DiscStructure.Session 1 of the disc, since that's all thats needed most of the time.
+		/// DiscStructure.Session 1 of the disc, since that's all that's needed most of the time.
 		/// </summary>
-		public DiscStructure.Session Session1 { get { return Structure.Sessions[1]; } }
+		public DiscStructure.Session Session1 => Structure.Sessions[1];
 
 		/// <summary>
 		/// The name of a disc. Loosely based on the filename. Just for informational purposes.
@@ -49,7 +46,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		/// <summary>
 		/// The DiscTOCRaw corresponding to the RawTOCEntries.
-		/// TODO - there's one of these for every session, so... having one here doesnt make sense
+		/// TODO - there's one of these for every session, so... having one here doesn't make sense
 		/// so... 
 		/// TODO - remove me
 		/// </summary>
@@ -81,8 +78,7 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			int totsize = lba_count * 2048;
 			byte[] ret = new byte[totsize];
-			var dsr = new DiscSectorReader(this);
-			dsr.Policy.DeterministicClearBuffer = false;
+			var dsr = new DiscSectorReader(this) { Policy = { DeterministicClearBuffer = false } };
 			for (int i = 0; i < lba_count; i++)
 			{
 				dsr.ReadLBA_2048(lba_start + i, ret, i*2048);

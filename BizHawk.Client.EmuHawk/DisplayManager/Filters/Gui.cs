@@ -1,20 +1,9 @@
 using System;
-using System.Linq;
-using System.Diagnostics;
-using System.Collections.Generic;
-using System.IO;
 using System.Drawing;
-
-using BizHawk.Common;
-using BizHawk.Client.Common;
-using BizHawk.Client.EmuHawk;
 using BizHawk.Client.EmuHawk.FilterManager;
 
 using BizHawk.Bizware.BizwareGL;
-using BizHawk.Bizware.BizwareGL.Drivers.OpenTK;
-
 using OpenTK;
-using OpenTK.Graphics;
 
 namespace BizHawk.Client.EmuHawk.Filters
 {
@@ -22,7 +11,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 	/// applies letterboxing logic to figure out how to fit the source dimensions into the target dimensions.
 	/// In the future this could also apply rules like integer-only scaling, etc.
 	/// </summary>
-	class LetterboxingLogic
+	public class LetterboxingLogic
 	{
 		/// <summary>
 		/// the location within the destination region of the output content (scaled and translated)
@@ -39,7 +28,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 		/// </summary>
 		public LetterboxingLogic() { }
 
-		//do maths on the viewport and the native resolution and the user settings to get a display rectangle
+		// do maths on the viewport and the native resolution and the user settings to get a display rectangle
 		public LetterboxingLogic(bool maintainAspect, bool maintainInteger, int targetWidth, int targetHeight, int sourceWidth, int sourceHeight, Size textureSize, Size virtualSize)
 		{
 			int textureWidth = textureSize.Width;
@@ -53,15 +42,17 @@ namespace BizHawk.Client.EmuHawk.Filters
 			sourceWidth = (int)virtualWidth;
 			sourceHeight = (int)virtualHeight;
 
-			//this doesnt make sense
+			// this doesn't make sense
 			if (!maintainAspect)
+			{
 				maintainInteger = false;
+			}
 
 			float widthScale = (float)targetWidth / sourceWidth;
 			float heightScale = (float)targetHeight / sourceHeight;
 
 			if (maintainAspect 
-				//zero 20-jul-2014 - hacks upon hacks, this function needs rewriting
+				// zero 20-jul-2014 - hacks upon hacks, this function needs rewriting
 				&& !maintainInteger
 				)
 			{
@@ -71,51 +62,53 @@ namespace BizHawk.Client.EmuHawk.Filters
 
 			if (maintainInteger)
 			{
-				//just totally different code
-				//apply the zooming algorithm (pasted and reworked, for now)
-				//ALERT COPYPASTE LAUNDROMAT
+				// just totally different code
+				// apply the zooming algorithm (pasted and reworked, for now)
+				// ALERT COPYPASTE LAUNDROMAT
 
 				Vector2 VS = new Vector2(virtualWidth, virtualHeight);
 				Vector2 BS = new Vector2(textureWidth, textureHeight);
 				Vector2 AR = Vector2.Divide(VS, BS);
-				float target_par = (AR.X / AR.Y);
+				float targetPar = (AR.X / AR.Y);
 				Vector2 PS = new Vector2(1, 1); //this would malfunction for AR <= 0.5 or AR >= 2.0
 
 				for(;;)
 				{
-					//TODO - would be good not to run this per frame....
-					Vector2[] trials = new[] {
-								PS + new Vector2(1, 0),
-								PS + new Vector2(0, 1),
-								PS + new Vector2(1, 1)
-							};
-					bool[] trials_limited = new bool[3] { false,false,false};
+					// TODO - would be good not to run this per frame....
+					Vector2[] trials =
+					{
+						PS + new Vector2(1, 0),
+						PS + new Vector2(0, 1),
+						PS + new Vector2(1, 1)
+					};
+
+					bool[] trialsLimited = new bool[3] { false,false,false};
 					int bestIndex = -1;
 					float bestValue = 1000.0f;
 					for (int t = 0; t < trials.Length; t++)
 					{
 						Vector2 vTrial = trials[t];
-						trials_limited[t] = false;
+						trialsLimited[t] = false;
 
 						//check whether this is going to exceed our allotted area
-						int test_vw = (int)(vTrial.X * textureWidth);
-						int test_vh = (int)(vTrial.Y * textureHeight);
-						if (test_vw > targetWidth) trials_limited[t] = true;
-						if (test_vh > targetHeight) trials_limited[t] = true;
+						int testVw = (int)(vTrial.X * textureWidth);
+						int testVh = (int)(vTrial.Y * textureHeight);
+						if (testVw > targetWidth) trialsLimited[t] = true;
+						if (testVh > targetHeight) trialsLimited[t] = true;
 
-						//I.
-						float test_ar = vTrial.X / vTrial.Y;
+						// I.
+						float testAr = vTrial.X / vTrial.Y;
 
-						//II.
-						//Vector2 calc = Vector2.Multiply(trials[t], VS);
-						//float test_ar = calc.X / calc.Y;
+						// II.
+						// Vector2 calc = Vector2.Multiply(trials[t], VS);
+						// float test_ar = calc.X / calc.Y;
 
-						//not clear which approach is superior
-						float deviation_linear = Math.Abs(test_ar - target_par);
-						float deviation_geom = test_ar / target_par;
-						if (deviation_geom < 1) deviation_geom = 1.0f / deviation_geom;
+						// not clear which approach is superior
+						float deviationLinear = Math.Abs(testAr - targetPar);
+						float deviationGeom = testAr / targetPar;
+						if (deviationGeom < 1) deviationGeom = 1.0f / deviationGeom;
 
-						float value = deviation_linear;
+						float value = deviationLinear;
 						if (value < bestValue)
 						{
 							bestIndex = t;
@@ -123,20 +116,20 @@ namespace BizHawk.Client.EmuHawk.Filters
 						}
 					}
 
-					//last result was best, so bail out
+					// last result was best, so bail out
 					if (bestIndex == -1)
 						break;
 
-					//if the winner ran off the edge, bail out
-					if (trials_limited[bestIndex])
+					// if the winner ran off the edge, bail out
+					if (trialsLimited[bestIndex])
 						break;
 
 					PS = trials[bestIndex];
 				}
 
-				//"fix problems with gameextrapadding in >1x window scales" (other edits were made, maybe theyre whats important)
-				//vw = (int)(PS.X * oldSourceWidth);
-				//vh = (int)(PS.Y * oldSourceHeight);
+				// "fix problems with gameextrapadding in >1x window scales" (other edits were made, maybe theyre whats important)
+				// vw = (int)(PS.X * oldSourceWidth);
+				// vh = (int)(PS.Y * oldSourceHeight);
 				vw = (int)(PS.X * sourceWidth);
 				vh = (int)(PS.Y * sourceHeight);
 				widthScale = PS.X;
@@ -148,27 +141,31 @@ namespace BizHawk.Client.EmuHawk.Filters
 				vh = (int)(heightScale * sourceHeight);
 			}
 
-			//theres only one sensible way to letterbox in case we're shrinking a dimension: "pan & scan" to the center
-			//this is unlikely to be what the user wants except in the one case of maybe shrinking off some overscan area
-			//instead, since we're more about biz than gaming, lets shrink the view to fit in the small dimension
+			// there's only one sensible way to letterbox in case we're shrinking a dimension: "pan & scan" to the center
+			// this is unlikely to be what the user wants except in the one case of maybe shrinking off some overscan area
+			// instead, since we're more about biz than gaming, lets shrink the view to fit in the small dimension
 			if (targetWidth < vw)
+			{
 				vw = targetWidth;
+			}
+
 			if (targetHeight < vh)
+			{
 				vh = targetHeight;
+			}
 
 			//determine letterboxing parameters
 			vx = (targetWidth - vw) / 2;
 			vy = (targetHeight - vh) / 2;
 
-			//zero 09-oct-2014 - changed this for TransformPoint. scenario: basic 1x (but system-specified AR) NES window.
-			//vw would be 293 but WidthScale would be 1.0. I think it should be something different.
-			//FinalPresentation doesnt use the LL.WidthScale, so this is unlikely to be breaking anything old that depends on it
-			//WidthScale = widthScale;
-			//HeightScale = heightScale;
+			// zero 09-oct-2014 - changed this for TransformPoint. scenario: basic 1x (but system-specified AR) NES window.
+			// vw would be 293 but WidthScale would be 1.0. I think it should be something different.
+			// FinalPresentation doesn't use the LL.WidthScale, so this is unlikely to be breaking anything old that depends on it
+			// WidthScale = widthScale;
+			// HeightScale = heightScale;
 			WidthScale = (float)vw / oldSourceWidth;
 			HeightScale = (float)vh / oldSourceHeight;
 		}
-
 	}
 
 	public class FinalPresentation : BaseFilter
@@ -179,23 +176,22 @@ namespace BizHawk.Client.EmuHawk.Filters
 		}
 
 		public eFilterOption FilterOption = eFilterOption.None;
-		public RetroShaderChain BicubicFilter;
 
 		public FinalPresentation(Size size)
 		{
 			this.OutputSize = size;
 		}
 
-		Size OutputSize, InputSize;
+		private Size OutputSize, InputSize;
 		public Size TextureSize, VirtualTextureSize;
 		public int BackgroundColor;
 		public bool AutoPrescale;
 		public IGuiRenderer GuiRenderer;
 		public bool Flip;
 		public IGL GL;
-		bool nop;
-		LetterboxingLogic LL;
-		Size ContentSize;
+		private bool nop;
+		private LetterboxingLogic LL;
+		private Size ContentSize;
 
 		public bool Config_FixAspectRatio, Config_FixScaleInteger, Config_PadOnly;
 
@@ -289,10 +285,10 @@ namespace BizHawk.Client.EmuHawk.Filters
 			ContentSize = new Size(LL.vw,LL.vh);
 
 			if (InputSize == OutputSize) //any reason we need to check vx and vy?
-				IsNOP = true;
+				IsNop = true;
 		}
 
-		public Size GetContentSize() { return ContentSize; }
+		public Size GetContentSize() => ContentSize;
 
 		public override Vector2 UntransformPoint(string channel, Vector2 point)
 		{
@@ -361,10 +357,10 @@ namespace BizHawk.Client.EmuHawk.Filters
 
 		public override void SetInputFormat(string channel, SurfaceState state)
 		{
-			var OutputSize = state.SurfaceFormat.Size;
-			OutputSize.Width *= Scale;
-			OutputSize.Height *= Scale;
-			var ss = new SurfaceState(new SurfaceFormat(OutputSize), SurfaceDisposition.RenderTarget);
+			var outputSize = state.SurfaceFormat.Size;
+			outputSize.Width *= Scale;
+			outputSize.Height *= Scale;
+			var ss = new SurfaceState(new SurfaceFormat(outputSize), SurfaceDisposition.RenderTarget);
 			DeclareOutput(ss, channel);
 		}
 
@@ -381,8 +377,8 @@ namespace BizHawk.Client.EmuHawk.Filters
 
 	public class AutoPrescaleFilter : BaseFilter
 	{
-		Size OutputSize, InputSize;
-		int XIS, YIS;
+		private Size OutputSize, InputSize;
+		private int XIS, YIS;
 
 		public override void Initialize()
 		{
@@ -402,7 +398,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 
 			if (XIS <= 1 && YIS <= 1)
 			{
-				IsNOP = true;
+				IsNop = true;
 			}
 			else
 			{
@@ -410,10 +406,11 @@ namespace BizHawk.Client.EmuHawk.Filters
 				OutputSize.Height *= YIS;
 			}
 
-			var outState = new SurfaceState();
-			outState.SurfaceFormat = new SurfaceFormat(OutputSize);
-			outState.SurfaceDisposition = SurfaceDisposition.RenderTarget;
-			DeclareOutput(outState);
+			DeclareOutput(new SurfaceState
+			{
+				SurfaceFormat = new SurfaceFormat(OutputSize),
+				SurfaceDisposition = SurfaceDisposition.RenderTarget
+			});
 		}
 
 		public override Size PresizeOutput(string channel, Size size)
@@ -422,19 +419,20 @@ namespace BizHawk.Client.EmuHawk.Filters
 			return base.PresizeOutput(channel, size);
 		}
 
-		public override Size PresizeInput(string channel, Size insize)
+		public override Size PresizeInput(string channel, Size inSize)
 		{
-			InputSize = insize;
-			return insize;
+			InputSize = inSize;
+			return inSize;
 		}
+
 		public override void Run()
 		{
-			FilterProgram.GuiRenderer.Begin(OutputSize); //hope this didnt change
+			FilterProgram.GuiRenderer.Begin(OutputSize); // hope this didn't change
 			FilterProgram.GuiRenderer.SetBlendState(FilterProgram.GL.BlendNoneCopy);
 			FilterProgram.GuiRenderer.Modelview.Scale(XIS,YIS);
 			FilterProgram.GuiRenderer.Draw(InputTexture);
 			FilterProgram.GuiRenderer.End();
-	  }
+		}
 	}
 
 	public class LuaLayer : BaseFilter
@@ -448,11 +446,11 @@ namespace BizHawk.Client.EmuHawk.Filters
 			DeclareOutput(state);
 		}
 
-		Texture2d Texture;
+		private Texture2d _texture;
 
 		public void SetTexture(Texture2d tex)
 		{
-			Texture = tex;
+			_texture = tex;
 		}
 
 		public override void Run()
@@ -460,7 +458,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 			var outSize = FindOutput().SurfaceFormat.Size;
 			FilterProgram.GuiRenderer.Begin(outSize);
 			FilterProgram.GuiRenderer.SetBlendState(FilterProgram.GL.BlendNormal);
-			FilterProgram.GuiRenderer.Draw(Texture);
+			FilterProgram.GuiRenderer.Draw(_texture);
 			FilterProgram.GuiRenderer.End();
 		}
 	}
@@ -486,8 +484,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 
 		public override void Run()
 		{
-			if (RenderCallback == null) return;
-			RenderCallback();
+			RenderCallback?.Invoke();
 		}
 	}
 }

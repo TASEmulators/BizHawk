@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -11,39 +12,33 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool IsInstalled(TextEditors editor)
 		{
-			switch (editor)
+			return editor switch
 			{
-				case TextEditors.Sublime2:
-					return IsSublimeInstalled();
-				case TextEditors.NotePad:
-					return IsNotepadInstalled();
-			}
-
-			return false;
+				TextEditors.Sublime2 => IsSublimeInstalled(),
+				TextEditors.NotePad => IsNotepadInstalled(),
+				_ => false
+			};
 		}
 
 		public bool IsBizLuaRegistered(TextEditors editor)
 		{
-			switch (editor)
+			return editor switch
 			{
-				case TextEditors.Sublime2:
-					return IsBizLuaSublimeInstalled();
-				case TextEditors.NotePad:
-					return IsBizLuaNotepadInstalled();
-			}
-
-			return false;
+				TextEditors.Sublime2 => IsBizLuaSublimeInstalled(),
+				TextEditors.NotePad => IsBizLuaNotepadInstalled(),
+				_ => false
+			};
 		}
 
-		public void InstallBizLua(TextEditors editor)
+		public void InstallBizLua(TextEditors editor, LuaDocumentation docs)
 		{
 			switch (editor)
 			{
 				case TextEditors.Sublime2:
-					InstallBizLuaToSublime2();
+					InstallBizLuaToSublime2(docs);
 					break;
 				case TextEditors.NotePad:
-					InstallBizLuaToNotepad();
+					InstallBizLuaToNotepad(docs);
 					break;
 			}
 		}
@@ -56,26 +51,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// The most likely location of the app, eventually we should consider looking through the registry or installed apps as a more robust way to detect it;
 			string exePath = @"C:\Program Files\Sublime Text 2\sublime_text.exe";
-
-			if (File.Exists(exePath))
-			{
-				return true;
-			}
-
-			return false;
+			return File.Exists(exePath);
 		}
 
 		private bool IsNotepadInstalled()
 		{
 			// The most likely location of the app, eventually we should consider looking through the registry or installed apps as a more robust way to detect it;
 			string exePath = @"C:\Program Files (x86)\Notepad++\notepad++.exe";
-
-			if (File.Exists(exePath))
-			{
-				return true;
-			}
-
-			return false;
+			return File.Exists(exePath);
 		}
 
 		private string SublimeLuaPath = @"Sublime Text 2\Packages\Lua";
@@ -84,13 +67,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool IsBizLuaSublimeInstalled()
 		{
 			var bizCompletions = Path.Combine(AppDataFolder, SublimeLuaPath, SublimeCompletionsFilename);
-
-			if (File.Exists(bizCompletions))
-			{
-				return true;
-			}
-
-			return false;
+			return File.Exists(bizCompletions);
 		}
 
 		private string NotepadPath = "TODO";
@@ -99,28 +76,22 @@ namespace BizHawk.Client.EmuHawk
 		private bool IsBizLuaNotepadInstalled()
 		{
 			var bizCompletions = Path.Combine(AppDataFolder, NotepadPath, NotepadAutoCompleteFileName);
-
-			if (File.Exists(bizCompletions))
-			{
-				return true;
-			}
-
-			return false;
+			return File.Exists(bizCompletions);
 		}
 
-		private void InstallBizLuaToSublime2()
+		private void InstallBizLuaToSublime2(LuaDocumentation docs)
 		{
 			var bizCompletions = Path.Combine(AppDataFolder, SublimeLuaPath, SublimeCompletionsFilename);
 
-			var text = GlobalWin.Tools.LuaConsole.LuaImp.Docs.ToSublime2CompletionList();
+			var text = docs.ToSublime2CompletionList();
 			File.WriteAllText(bizCompletions, text);
 		}
 
-		private void InstallBizLuaToNotepad()
+		private void InstallBizLuaToNotepad(LuaDocumentation docs)
 		{
 			var bizAutocomplete = Path.Combine(AppDataFolder, NotepadPath, NotepadAutoCompleteFileName);
 
-			var text = GlobalWin.Tools.LuaConsole.LuaImp.Docs.ToNotepadPlusPlusAutoComplete();
+			var text = docs.ToNotepadPlusPlusAutoComplete();
 
 			// TODO
 			//File.WriteAllText(bizCompletions, text);

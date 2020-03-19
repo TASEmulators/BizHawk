@@ -42,38 +42,34 @@ namespace BizHawk.Client.Common
 			Global.ActiveController = BindToDefinition(def, Global.Config.AllTrollers, Global.Config.AllTrollersAnalog);
 			Global.AutoFireController = BindToDefinitionAF(def, Global.Emulator, Global.Config.AllTrollersAutoFire);
 
-			// allow propogating controls that are in the current controller definition but not in the prebaked one
+			// allow propagating controls that are in the current controller definition but not in the prebaked one
 			// these two lines shouldn't be required anymore under the new system?
 			Global.ActiveController.ForceType(new ControllerDefinition(def));
 			Global.ClickyVirtualPadController.Definition = new ControllerDefinition(def);
 			RewireInputChain();
 		}
 
-		private static Controller BindToDefinition(ControllerDefinition def, IDictionary<string, Dictionary<string, string>> allbinds, IDictionary<string, Dictionary<string, Config.AnalogBind>> analogbinds)
+		private static Controller BindToDefinition(ControllerDefinition def, IDictionary<string, Dictionary<string, string>> allBinds, IDictionary<string, Dictionary<string, AnalogBind>> analogBinds)
 		{
 			var ret = new Controller(def);
-			Dictionary<string, string> binds;
-			if (allbinds.TryGetValue(def.Name, out binds))
+			if (allBinds.TryGetValue(def.Name, out var binds))
 			{
-				foreach (var cbutton in def.BoolButtons)
+				foreach (var btn in def.BoolButtons)
 				{
-					string bind;
-					if (binds.TryGetValue(cbutton, out bind))
+					if (binds.TryGetValue(btn, out var bind))
 					{
-						ret.BindMulti(cbutton, bind);
+						ret.BindMulti(btn, bind);
 					}
 				}
 			}
 
-			Dictionary<string, Config.AnalogBind> abinds;
-			if (analogbinds.TryGetValue(def.Name, out abinds))
+			if (analogBinds.TryGetValue(def.Name, out var aBinds))
 			{
-				foreach (var cbutton in def.FloatControls)
+				foreach (var btn in def.FloatControls)
 				{
-					Config.AnalogBind bind;
-					if (abinds.TryGetValue(cbutton, out bind))
+					if (aBinds.TryGetValue(btn, out var bind))
 					{
-						ret.BindFloat(cbutton, bind);
+						ret.BindFloat(btn, bind);
 					}
 				}
 			}
@@ -81,18 +77,16 @@ namespace BizHawk.Client.Common
 			return ret;
 		}
 
-		private static AutofireController BindToDefinitionAF(ControllerDefinition def, IEmulator emulator, IDictionary<string, Dictionary<string, string>> allbinds)
+		private static AutofireController BindToDefinitionAF(ControllerDefinition def, IEmulator emulator, IDictionary<string, Dictionary<string, string>> allBinds)
 		{
 			var ret = new AutofireController(def, emulator);
-			Dictionary<string, string> binds;
-			if (allbinds.TryGetValue(def.Name, out binds))
+			if (allBinds.TryGetValue(def.Name, out var binds))
 			{
-				foreach (var cbutton in def.BoolButtons)
+				foreach (var btn in def.BoolButtons)
 				{
-					string bind;
-					if (binds.TryGetValue(cbutton, out bind))
+					if (binds.TryGetValue(btn, out var bind))
 					{
-						ret.BindMulti(cbutton, bind);
+						ret.BindMulti(btn, bind);
 					}
 				}
 			}

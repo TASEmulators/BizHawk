@@ -1,38 +1,35 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using BizHawk.Emulation.Common;
-
 
 namespace BizHawk.Emulation.Cores.WonderSwan
 {
 	partial class WonderSwan : ISaveRam
 	{
-		byte[] saverambuff;
+		private byte[] _saveramBuff;
 
-		void InitISaveRam()
+		private void InitISaveRam()
 		{
-			saverambuff = new byte[BizSwan.bizswan_saveramsize(Core)];
+			_saveramBuff = new byte[BizSwan.bizswan_saveramsize(Core)];
 		}
 
 		public byte[] CloneSaveRam()
 		{
-			if (!BizSwan.bizswan_saveramsave(Core, saverambuff, saverambuff.Length))
+			if (!BizSwan.bizswan_saveramsave(Core, _saveramBuff, _saveramBuff.Length))
+			{
 				throw new InvalidOperationException($"{nameof(BizSwan.bizswan_saveramsave)}() returned false!");
-			return (byte[])saverambuff.Clone();
+			}
+
+			return (byte[])_saveramBuff.Clone();
 		}
 
 		public void StoreSaveRam(byte[] data)
 		{
 			if (!BizSwan.bizswan_saveramload(Core, data, data.Length))
+			{
 				throw new InvalidOperationException($"{nameof(BizSwan.bizswan_saveramload)}() returned false!");
+			}
 		}
 
-		public bool SaveRamModified
-		{
-			get { return BizSwan.bizswan_saveramsize(Core) > 0; }
-		}
+		public bool SaveRamModified => BizSwan.bizswan_saveramsize(Core) > 0;
 	}
 }

@@ -2,7 +2,7 @@
 using System.Linq;
 
 using BizHawk.Common;
-/**
+/*
   This is the cartridge class for Arcadia (aka Starpath) Supercharger 
   games.  Christopher Salomon provided most of the technical details 
   used in creating this class.  A good description of the Supercharger

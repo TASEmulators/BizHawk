@@ -3,8 +3,8 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.Components.x86
 {
-	public interface x86CpuType { };
-	public struct Intel8086 : x86CpuType { };
+	public interface x86CpuType { }
+	public struct Intel8086 : x86CpuType { }
 
 	public sealed partial class x86<CpuType> where CpuType : struct, x86CpuType
 	{
@@ -66,18 +66,66 @@ namespace BizHawk.Emulation.Cores.Components.x86
 		}
 
 		// We expect these properties to get inlined by the CLR -- at some point we should test this assumption
-		public ushort AX { get { return RegAX.Word; } set { RegAX.Word = value; } }
-		public ushort BX { get { return RegBX.Word; } set { RegBX.Word = value; } }
-		public ushort CX { get { return RegCX.Word; } set { RegCX.Word = value; } }
-		public ushort DX { get { return RegDX.Word; } set { RegDX.Word = value; } }
-		public byte AL { get { return RegAX.Low; } set { RegAX.Low = value; } }
-		public byte BL { get { return RegBX.Low; } set { RegBX.Low = value; } }
-		public byte CL { get { return RegCX.Low; } set { RegCX.Low = value; } }
-		public byte DL { get { return RegDX.Low; } set { RegDX.Low = value; } }
-		public byte AH { get { return RegAX.High; } set { RegAX.High = value; } }
-		public byte BH { get { return RegBX.High; } set { RegBX.High = value; } }
-		public byte CH { get { return RegCX.High; } set { RegCX.High = value; } }
-		public byte DH { get { return RegDX.High; } set { RegDX.High = value; } }
+		public ushort AX
+		{
+			get => RegAX.Word;
+			set => RegAX.Word = value;
+		}
+		public ushort BX
+		{
+			get => RegBX.Word;
+			set => RegBX.Word = value;
+		}
+		public ushort CX
+		{
+			get => RegCX.Word;
+			set => RegCX.Word = value;
+		}
+		public ushort DX
+		{
+			get => RegDX.Word;
+			set => RegDX.Word = value;
+		}
+		public byte AL
+		{
+			get => RegAX.Low;
+			set => RegAX.Low = value;
+		}
+		public byte BL
+		{
+			get => RegBX.Low;
+			set => RegBX.Low = value;
+		}
+		public byte CL
+		{
+			get => RegCX.Low;
+			set => RegCX.Low = value;
+		}
+		public byte DL
+		{
+			get => RegDX.Low;
+			set => RegDX.Low = value;
+		}
+		public byte AH
+		{
+			get => RegAX.High;
+			set => RegAX.High = value;
+		}
+		public byte BH
+		{
+			get => RegBX.High;
+			set => RegBX.High = value;
+		}
+		public byte CH
+		{
+			get => RegCX.High;
+			set => RegCX.High = value;
+		}
+		public byte DH
+		{
+			get => RegDX.High;
+			set => RegDX.High = value;
+		}
 	}
 
 	[StructLayout(LayoutKind.Explicit)]

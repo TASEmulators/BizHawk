@@ -1,16 +1,15 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Reflection;
 
 namespace BizHawk.Common
 {
-	/// <summary>
-	/// causes DeepEquality to ignore this field when determining equality
-	/// </summary>
+	/// <summary>Annotated fields will not be used by <see cref="DeepEquality"/> for comparison.</summary>
 	[AttributeUsage(AttributeTargets.Field)]
-	public class DeepEqualsIgnoreAttribute : Attribute
+	public sealed class DeepEqualsIgnoreAttribute : Attribute
 	{
 	}
 
@@ -50,32 +49,10 @@ namespace BizHawk.Common
 			}
 		}
 
-		/// <summary>
-		/// test if two arrays are equal in contents; arrays should have same type
-		/// </summary>
-		private static bool ArrayEquals<T>(T[] o1, T[] o2)
-		{
-			if (o1.Length != o2.Length)
-			{
-				return false;
-			}
-
-			for (int i = 0; i < o1.Length; i++)
-			{
-				if (!DeepEquals(o1[i], o2[i]))
-				{
-					return false;
-				}
-			}
-
-			return true;
-		}
-
 		static MethodInfo ArrayEqualsGeneric = typeof(DeepEquality).GetMethod("ArrayEquals", BindingFlags.NonPublic | BindingFlags.Static);
 
-		/// <summary>
-		/// test if two objects are equal field by field (with deep inspection of each field)
-		/// </summary>
+		/// <summary>test if two objects <paramref name="o1"/> and <paramref name="o2"/> are equal, field-by-field (with deep inspection of each field)</summary>
+		/// <exception cref="InvalidOperationException"><paramref name="o1"/> is an array with rank > 1 or is a non-zero-indexed array</exception>
 		public static bool DeepEquals(object o1, object o2)
 		{
 			if (o1 == o2)
@@ -101,7 +78,7 @@ namespace BizHawk.Common
 				// this is actually pretty fast; it allows using fast ldelem and stelem opcodes on
 				// arbitrary array types without emitting custom IL
 				var method = ArrayEqualsGeneric.MakeGenericMethod(new Type[] { t1.GetElementType() });
-				return (bool)method.Invoke(null, new object[] { o1, o2 });
+				return (bool)method.Invoke(null, new[] { o1, o2 });
 			}
 
 			if (t1.IsPrimitive)

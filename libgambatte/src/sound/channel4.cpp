@@ -17,22 +17,25 @@
 //
 
 #include "channel4.h"
+#include "psgdef.h"
 #include "../savestate.h"
 #include <algorithm>
 
-static unsigned long toPeriod(unsigned const nr3) {
-	unsigned s = (nr3 >> 4) + 3;
-	unsigned r = nr3 & 7;
+using namespace gambatte;
 
-	if (!r) {
-		r = 1;
-		--s;
+namespace {
+	static unsigned long toPeriod(unsigned const nr3) {
+		unsigned s = nr3 / (1u * psg_nr43_s & -psg_nr43_s) + 3;
+		unsigned r = nr3 & psg_nr43_r;
+
+		if (!r) {
+			r = 1;
+			--s;
+		}
+
+		return r << s;
 	}
-
-	return r << s;
 }
-
-namespace gambatte {
 
 Channel4::Lfsr::Lfsr()
 : backupCounter_(counter_disabled)
@@ -48,17 +51,18 @@ void Channel4::Lfsr::updateBackupCounter(unsigned long const cc) {
 		unsigned long periods = (cc - backupCounter_) / period + 1;
 		backupCounter_ += periods * period;
 
-		if (master_ && nr3_ < 0xE0) {
-			if (nr3_ & 8) {
+		if (master_ && nr3_ < 0xE * (1u * psg_nr43_s & -psg_nr43_s)) {
+			if (nr3_ & psg_nr43_7biten) {
 				while (periods > 6) {
 					unsigned const xored = (reg_ << 1 ^ reg_) & 0x7E;
-					reg_ = (reg_ >> 6 & ~0x7E) | xored | xored << 8;
+					reg_ = (reg_ >> 6 & ~0x7Eu) | xored | xored << 8;
 					periods -= 6;
 				}
 
 				unsigned const xored = ((reg_ ^ reg_ >> 1) << (7 - periods)) & 0x7F;
-				reg_ = (reg_ >> periods & ~(0x80 - (0x80 >> periods))) | xored | xored << 8;
-			} else {
+				reg_ = (reg_ >> periods & ~(0x80u - (0x80 >> periods))) | xored | xored << 8;
+			}
+			else {
 				while (periods > 15) {
 					reg_ = reg_ ^ reg_ >> 1;
 					periods -= 15;
@@ -76,13 +80,13 @@ void Channel4::Lfsr::reviveCounter(unsigned long cc) {
 }
 
 inline void Channel4::Lfsr::event() {
-	if (nr3_ < 0xE0) {
+	if (nr3_ < 0xE * (1u * psg_nr43_s & -psg_nr43_s)) {
 		unsigned const shifted = reg_ >> 1;
 		unsigned const xored = (reg_ ^ shifted) & 1;
 		reg_ = shifted | xored << 14;
 
-		if (nr3_ & 8)
-			reg_ = (reg_ & ~0x40) | xored << 6;
+		if (nr3_ & psg_nr43_7biten)
+			reg_ = (reg_ & ~0x40u) | xored << 6;
 	}
 
 	counter_ += toPeriod(nr3_);
@@ -92,6 +96,7 @@ inline void Channel4::Lfsr::event() {
 void Channel4::Lfsr::nr3Change(unsigned newNr3, unsigned long cc) {
 	updateBackupCounter(cc);
 	nr3_ = newNr3;
+	counter_ = cc;
 }
 
 void Channel4::Lfsr::nr4Init(unsigned long cc) {
@@ -106,6 +111,13 @@ void Channel4::Lfsr::reset(unsigned long cc) {
 	nr3_ = 0;
 	disableMaster();
 	backupCounter_ = cc + toPeriod(nr3_);
+}
+
+void Channel4::Lfsr::resetCc(unsigned long cc, unsigned long newCc) {
+	updateBackupCounter(cc);
+	backupCounter_ -= cc - newCc;
+	if (counter_ != counter_disabled)
+		counter_ -= cc - newCc;
 }
 
 void Channel4::Lfsr::resetCounters(unsigned long oldCc) {
@@ -137,7 +149,6 @@ Channel4::Channel4()
 , lengthCounter_(disableMaster_, 0x3F)
 , envelopeUnit_(staticOutputTest_)
 , nextEventUnit_(0)
-, cycleCounter_(0)
 , soMask_(0)
 , prevOut_(0)
 , nr4_(0)
@@ -152,49 +163,44 @@ void Channel4::setEvent() {
 		nextEventUnit_ = &lengthCounter_;
 }
 
-void Channel4::setNr1(unsigned data) {
-	lengthCounter_.nr1Change(data, nr4_, cycleCounter_);
+void Channel4::setNr1(unsigned data, unsigned long cc) {
+	lengthCounter_.nr1Change(data, nr4_, cc);
 	setEvent();
 }
 
-void Channel4::setNr2(unsigned data) {
+void Channel4::setNr2(unsigned data, unsigned long cc) {
 	if (envelopeUnit_.nr2Change(data))
 		disableMaster_();
 	else
-		staticOutputTest_(cycleCounter_);
+		staticOutputTest_(cc);
 
 	setEvent();
 }
 
-void Channel4::setNr4(unsigned const data) {
-	lengthCounter_.nr4Change(nr4_, data, cycleCounter_);
+void Channel4::setNr4(unsigned const data, unsigned long const cc) {
+	lengthCounter_.nr4Change(nr4_, data, cc);
 	nr4_ = data;
 
-	if (data & 0x80) { // init-bit
-		nr4_ &= 0x7F;
-		master_ = !envelopeUnit_.nr4Init(cycleCounter_);
-
+	if (nr4_ & psg_nr4_init) {
+		nr4_ -= psg_nr4_init;
+		master_ = !envelopeUnit_.nr4Init(cc);
 		if (master_)
-			lfsr_.nr4Init(cycleCounter_);
+			lfsr_.nr4Init(cc);
 
-		staticOutputTest_(cycleCounter_);
+		staticOutputTest_(cc);
 	}
 
 	setEvent();
 }
 
-void Channel4::setSo(unsigned long soMask) {
+void Channel4::setSo(unsigned long soMask, unsigned long cc) {
 	soMask_ = soMask;
-	staticOutputTest_(cycleCounter_);
+	staticOutputTest_(cc);
 	setEvent();
 }
 
-void Channel4::reset() {
-	// cycleCounter >> 12 & 7 represents the frame sequencer position.
-	cycleCounter_ &= 0xFFF;
-	cycleCounter_ += ~(cycleCounter_ + 2) << 1 & 0x1000;
-
-	lfsr_.reset(cycleCounter_);
+void Channel4::reset(unsigned long cc) {
+	lfsr_.reset(cc);
 	envelopeUnit_.reset();
 	setEvent();
 }
@@ -202,53 +208,49 @@ void Channel4::reset() {
 void Channel4::loadState(SaveState const &state) {
 	lfsr_.loadState(state);
 	envelopeUnit_.loadState(state.spu.ch4.env, state.mem.ioamhram.get()[0x121],
-	                        state.spu.cycleCounter);
+		state.spu.cycleCounter);
 	lengthCounter_.loadState(state.spu.ch4.lcounter, state.spu.cycleCounter);
 
-	cycleCounter_ = state.spu.cycleCounter;
 	nr4_ = state.spu.ch4.nr4;
 	master_ = state.spu.ch4.master;
 }
 
-void Channel4::update(uint_least32_t *buf, unsigned long const soBaseVol, unsigned long cycles) {
+void Channel4::update(uint_least32_t* buf, unsigned long const soBaseVol, unsigned long cc, unsigned long const end) {
 	unsigned long const outBase = envelopeUnit_.dacIsOn() ? soBaseVol & soMask_ : 0;
-	unsigned long const outLow = outBase * (0 - 15ul);
-	unsigned long const endCycles = cycleCounter_ + cycles;
+	unsigned long const outLow = outBase * -15;
 
-	for (;;) {
-		unsigned long const outHigh = outBase * (envelopeUnit_.getVolume() * 2 - 15ul);
-		unsigned long const nextMajorEvent = std::min(nextEventUnit_->counter(), endCycles);
+	while (cc < end) {
+		unsigned long const outHigh = outBase * (envelopeUnit_.getVolume() * 2l - 15);
+		unsigned long const nextMajorEvent = std::min(nextEventUnit_->counter(), end);
 		unsigned long out = lfsr_.isHighState() ? outHigh : outLow;
-
-		while (lfsr_.counter() <= nextMajorEvent) {
+		if (lfsr_.counter() <= nextMajorEvent) {
+			Lfsr lfsr = lfsr_;
+			while (lfsr.counter() <= nextMajorEvent) {
+				*buf += out - prevOut_;
+				prevOut_ = out;
+				buf += lfsr.counter() - cc;
+				cc = lfsr.counter();
+				lfsr.event();
+				out = lfsr.isHighState() ? outHigh : outLow;
+			}
+			lfsr_ = lfsr;
+		}
+		if (cc < nextMajorEvent) {
 			*buf += out - prevOut_;
 			prevOut_ = out;
-			buf += lfsr_.counter() - cycleCounter_;
-			cycleCounter_ = lfsr_.counter();
-
-			lfsr_.event();
-			out = lfsr_.isHighState() ? outHigh : outLow;
+			buf += nextMajorEvent - cc;
+			cc = nextMajorEvent;
 		}
-
-		if (cycleCounter_ < nextMajorEvent) {
-			*buf += out - prevOut_;
-			prevOut_ = out;
-			buf += nextMajorEvent - cycleCounter_;
-			cycleCounter_ = nextMajorEvent;
-		}
-
 		if (nextEventUnit_->counter() == nextMajorEvent) {
 			nextEventUnit_->event();
 			setEvent();
-		} else
-			break;
+		}
 	}
 
-	if (cycleCounter_ >= SoundUnit::counter_max) {
-		lengthCounter_.resetCounters(cycleCounter_);
-		lfsr_.resetCounters(cycleCounter_);
-		envelopeUnit_.resetCounters(cycleCounter_);
-		cycleCounter_ -= SoundUnit::counter_max;
+	if (cc >= SoundUnit::counter_max) {
+		lengthCounter_.resetCounters(cc);
+		lfsr_.resetCounters(cc);
+		envelopeUnit_.resetCounters(cc);
 	}
 }
 
@@ -264,12 +266,9 @@ SYNCFUNC(Channel4)
 	EVS(nextEventUnit_, &lengthCounter_, 3);
 	EES(nextEventUnit_, NULL);
 
-	NSS(cycleCounter_);
 	NSS(soMask_);
 	NSS(prevOut_);
 
 	NSS(nr4_);
 	NSS(master_);
-}
-
 }

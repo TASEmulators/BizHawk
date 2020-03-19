@@ -13,11 +13,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public string Cpu
 		{
-			get
-			{
-				return "6510";
-			}
-
+			get => "6510";
 			set
 			{
 			}

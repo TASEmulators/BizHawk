@@ -1,11 +1,10 @@
 ﻿using BizHawk.Common;
-using BizHawk.Common.BizInvoke;
+using BizHawk.BizInvoke;
 using BizHawk.Common.BufferExtensions;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 
 namespace BizHawk.Emulation.Cores.Waterbox
@@ -29,14 +28,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// <summary>
 		/// everything to swap in for context switches
 		/// </summary>
-		private List<MemoryBlock> _memoryBlocks = new List<MemoryBlock>();
+		private List<MemoryBlockBase> _memoryBlocks = new List<MemoryBlockBase>();
 
 		/// <summary>
 		/// an informative name for each memory block:  used for debugging purposes
 		/// </summary>
 		private List<string> _memoryBlockNames = new List<string>();
 
-		protected void AddMemoryBlock(MemoryBlock block, string name)
+		protected void AddMemoryBlock(MemoryBlockBase block, string name)
 		{
 			_memoryBlocks.Add(block);
 			_memoryBlockNames.Add(name);
@@ -70,17 +69,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 #endif
 			public Swappable Loaded
 			{
-				get
-				{
-					// if somehow an object died without being disposed,
-					// the MemoryBlock finalizer will have unloaded the memory
-					// and so we can treat it as if no Swappable was attached
-					return (Swappable)LoadedRef.Target;
-				}
-				set
-				{
-					LoadedRef.Target = value;
-				}
+				// if somehow an object died without being disposed,
+				// the MemoryBlock finalizer will have unloaded the memory
+				// and so we can treat it as if no Swappable was attached
+				get => (Swappable)LoadedRef.Target;
+				set => LoadedRef.Target = value;
 			}
 		}
 
@@ -98,8 +91,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 #endif
 			if (_currentLockInfo.Loaded != this)
 			{
-				if (_currentLockInfo.Loaded != null)
-					_currentLockInfo.Loaded.DeactivateInternal();
+				_currentLockInfo.Loaded?.DeactivateInternal();
 				_currentLockInfo.Loaded = null;
 				ActivateInternal();
 				_currentLockInfo.Loaded = this;

@@ -3,25 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
-using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class NESSyncSettingsForm : Form
 	{
+		private readonly MainForm _mainForm;
 		private readonly DataTableDictionaryBind<string, string> _dataTableDictionary;
 		private readonly NES.NESSyncSettings _syncSettings;
 
-		public NESSyncSettingsForm()
+		public NESSyncSettingsForm(
+			MainForm mainForm,
+			NES.NESSyncSettings syncSettings,
+			bool hasMapperProperties)
 		{
+			_mainForm = mainForm;
+			_syncSettings = syncSettings;
 			InitializeComponent();
 
-			_syncSettings = ((NES)Global.Emulator).GetSyncSettings();
-
-			if (((NES)Global.Emulator).HasMapperProperties)
+			if (hasMapperProperties)
 			{
 				_dataTableDictionary = new DataTableDictionaryBind<string, string>(_syncSettings.BoardProperties);
 				dataGridView1.DataSource = _dataTableDictionary.Table;
@@ -64,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 				typeof(NES.NESSyncSettings.Region),
 				(string)RegionComboBox.SelectedItem);
 
-			List<byte> oldRam = _syncSettings.InitialWRamStatePattern?.ToList() ?? new List<byte>();
+			var oldRam = _syncSettings.InitialWRamStatePattern ?? new List<byte>();
 
 			if (!string.IsNullOrWhiteSpace(RamPatternOverrideBox.Text))
 			{
@@ -85,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 			DialogResult = DialogResult.OK;
 			if (changed)
 			{
-				GlobalWin.MainForm.PutCoreSyncSettings(_syncSettings);
+				_mainForm.PutCoreSyncSettings(_syncSettings);
 			}
 		}
 

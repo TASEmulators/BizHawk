@@ -18,10 +18,7 @@ namespace BizHawk.Client.Common
 
 		// pass floats solely from the original source
 		// this works in the code because SourceOr is the autofire controller
-		public float GetFloat(string name)
-		{
-			return Source.GetFloat(name);
-		}
+		public float GetFloat(string name) => Source.GetFloat(name);
 
 		internal IController Source { get; set; }
 		internal IController SourceAnd { get; set; }
@@ -43,15 +40,11 @@ namespace BizHawk.Client.Common
 
 		// pass floats solely from the original source
 		// this works in the code because SourceOr is the autofire controller
-		public float GetFloat(string name)
-		{
-			return Source.GetFloat(name);
-		}
+		public float GetFloat(string name) => Source.GetFloat(name);
 
 		internal IController Source { get; set; }
 		internal IController SourceXor { get; set; }
 	}
-
 
 	public class ORAdapter : IController
 	{
@@ -65,10 +58,7 @@ namespace BizHawk.Client.Common
 
 		// pass floats solely from the original source
 		// this works in the code because SourceOr is the autofire controller
-		public float GetFloat(string name)
-		{
-			return Source.GetFloat(name);
-		}
+		public float GetFloat(string name) => Source.GetFloat(name);
 
 		internal IController Source { get; set; }
 		internal IController SourceOr { get; set; }

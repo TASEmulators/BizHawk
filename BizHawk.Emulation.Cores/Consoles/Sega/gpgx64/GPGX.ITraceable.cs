@@ -1,15 +1,12 @@
-﻿using BizHawk.Emulation.Common;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿using System.Text;
 using BizHawk.Common.NumberExtensions;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
 	public partial class GPGX
 	{
-		private readonly ITraceable Tracer;
+		private readonly ITraceable _tracer;
 
 		public class GPGXTraceBuffer : CallbackBasedTraceBuffer
 		{
@@ -23,8 +20,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			{
 				var regs = DebuggableCore.GetCpuFlagsAndRegisters();
 				uint pc = (uint)regs["M68K PC"].Value;
-				int length;
-				var disasm = Disassembler.Disassemble(MemoryDomains.SystemBus, pc & 0xFFFFFF, out length);
+				var disasm = Disassembler.Disassemble(MemoryDomains.SystemBus, pc & 0xFFFFFF, out _);
 
 				var traceInfo = new TraceInfo
 				{

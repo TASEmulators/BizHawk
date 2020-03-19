@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 
+using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
-using System.Linq;
 
 namespace BizHawk.Emulation.Common
 {
@@ -31,9 +32,8 @@ namespace BizHawk.Emulation.Common
 
 		public static GameInfo CheckDatabase(string hash)
 		{
-			CompactGameInfo cgi;
-			var hashNotype = RemoveHashType(hash);
-			DB.TryGetValue(hashNotype, out cgi);
+			var hashNoType = RemoveHashType(hash);
+			DB.TryGetValue(hashNoType, out var cgi);
 			if (cgi == null)
 			{
 				Console.WriteLine($"DB: hash {hash} not in game database.");
@@ -110,94 +110,72 @@ namespace BizHawk.Emulation.Common
 
 		public static void LoadDatabase(string path)
 		{
-			using (var reader = new StreamReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
+			using var reader = new StreamReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
+			while (reader.EndOfStream == false)
 			{
-				while (reader.EndOfStream == false)
+				var line = reader.ReadLine() ?? "";
+				try
 				{
-					var line = reader.ReadLine() ?? "";
-					try
+					if (line.StartsWith(";"))
 					{
-						if (line.StartsWith(";")) 
-						{
-							continue; // comment
-						}
-
-						if (line.StartsWith("#"))
-						{
-							LoadDatabase_Escape(line, Path.GetDirectoryName(path));
-							continue;
-						}
-
-						if (line.Trim().Length == 0)
-						{
-							continue;
-						}
-
-						var items = line.Split('\t');
-
-						var game = new CompactGameInfo
-						{
-							Hash = RemoveHashType(items[0].ToUpper())
-						};
-
-						// remove a hash type identifier. well don't really need them for indexing (theyre just there for human purposes)
-						switch (items[1].Trim())
-						{
-							case "B":
-								game.Status = RomStatus.BadDump;
-								break;
-							case "V":
-								game.Status = RomStatus.BadDump;
-								break;
-							case "T":
-								game.Status = RomStatus.TranslatedRom;
-								break;
-							case "O":
-								game.Status = RomStatus.Overdump;
-								break;
-							case "I":
-								game.Status = RomStatus.Bios;
-								break;
-							case "D":
-								game.Status = RomStatus.Homebrew;
-								break;
-							case "H":
-								game.Status = RomStatus.Hack;
-								break;
-							case "U":
-								game.Status = RomStatus.Unknown;
-								break;
-							default:
-								game.Status = RomStatus.GoodDump;
-								break;
-						}
-
-						game.Name = items[2];
-						game.System = items[3];
-						game.MetaData = items.Length >= 6 ? items[5] : null;
-						game.Region = items.Length >= 7 ? items[6] : "";
-						game.ForcedCore = items.Length >= 8 ? items[7].ToLowerInvariant() : "";
-
-						if (DB.ContainsKey(game.Hash))
-						{
-							Console.WriteLine("gamedb: Multiple hash entries {0}, duplicate detected on \"{1}\" and \"{2}\"", game.Hash, game.Name, DB[game.Hash].Name);
-						}
-
-						DB[game.Hash] = game;
+						continue; // comment
 					}
-					catch
+
+					if (line.StartsWith("#"))
 					{
-						Console.WriteLine($"Error parsing database entry: {line}");
+						LoadDatabase_Escape(line, Path.GetDirectoryName(path));
+						continue;
 					}
+
+					if (line.Trim().Length == 0)
+					{
+						continue;
+					}
+
+					var items = line.Split('\t');
+
+					var game = new CompactGameInfo
+					{
+						Hash = RemoveHashType(items[0].ToUpper()),
+						// remove a hash type identifier. well don't really need them for indexing (they're just there for human purposes)
+						Status = items[1].Trim()
+							switch
+							{
+								"B" => RomStatus.BadDump,
+								"V" => RomStatus.BadDump,
+								"T" => RomStatus.TranslatedRom,
+								"O" => RomStatus.Overdump,
+								"I" => RomStatus.Bios,
+								"D" => RomStatus.Homebrew,
+								"H" => RomStatus.Hack,
+								"U" => RomStatus.Unknown,
+								_ => RomStatus.GoodDump
+							},
+						Name = items[2],
+						System = items[3],
+						MetaData = items.Length >= 6 ? items[5] : null,
+						Region = items.Length >= 7 ? items[6] : "",
+						ForcedCore = items.Length >= 8 ? items[7].ToLowerInvariant() : ""
+					};
+
+					if (DB.ContainsKey(game.Hash))
+					{
+						Console.WriteLine("gamedb: Multiple hash entries {0}, duplicate detected on \"{1}\" and \"{2}\"", game.Hash, game.Name, DB[game.Hash].Name);
+					}
+
+					DB[game.Hash] = game;
+				}
+				catch
+				{
+					Console.WriteLine($"Error parsing database entry: {line}");
 				}
 			}
 		}
 
 		public static GameInfo GetGameInfo(byte[] romData, string fileName)
 		{
-			CompactGameInfo cgi;
 			var hash = $"{CRC32.Calculate(romData):X8}";
-			if (DB.TryGetValue(hash, out cgi))
+			if (DB.TryGetValue(hash, out var cgi))
 			{
 				return new GameInfo(cgi);
 			}
@@ -238,8 +216,8 @@ namespace BizHawk.Emulation.Common
 					break;
 
 				case ".SFC":
-				case ".SMC": 
-					game.System = "SNES"; 
+				case ".SMC":
+					game.System = "SNES";
 					break;
 
 				case ".GB":
@@ -302,30 +280,29 @@ namespace BizHawk.Emulation.Common
 				case ".D64":
 				case ".T64":
 				case ".G64":
-				case ".CRT":				
+				case ".CRT":
 					game.System = "C64";
 					break;
 
-                case ".TZX":
-                case ".PZX":
-                case ".CSW":
-                case ".WAV":
-                    game.System = "ZXSpectrum";
-                    break;
+				case ".TZX":
+				case ".PZX":
+				case ".CSW":
+				case ".WAV":
+					game.System = "ZXSpectrum";
+					break;
 
-                case ".CDT":
-                    game.System = "AmstradCPC";
-                    break;
+				case ".CDT":
+					game.System = "AmstradCPC";
+					break;
 
-                case ".TAP":
-                    byte[] head = romData.Take(8).ToArray();
-                    if (System.Text.Encoding.Default.GetString(head).Contains("C64-TAPE"))
-                        game.System = "C64";
-                    else
-                        game.System = "ZXSpectrum";
-                    break;
+				case ".TAP":
+					byte[] head = romData.Take(8).ToArray();
+					game.System = Encoding.Default.GetString(head).Contains("C64-TAPE")
+						? "C64"
+						: "ZXSpectrum";
+					break;
 
-                case ".Z64":
+				case ".Z64":
 				case ".V64":
 				case ".N64":
 					game.System = "N64";
@@ -349,9 +326,9 @@ namespace BizHawk.Emulation.Common
 					break;
 
 				case ".DSK":
-                    var dId = new DSKIdentifier(romData);
-                    game.System = dId.IdentifiedSystem;
-                    break;                    
+					var dId = new DskIdentifier(romData);
+					game.System = dId.IdentifiedSystem;
+					break;
 
 				case ".PO":
 				case ".DO":
@@ -374,6 +351,7 @@ namespace BizHawk.Emulation.Common
 				case ".UZE":
 					game.System = "UZE";
 					break;
+
 				case ".32X":
 					game.System = "32X";
 					game.AddOption("32X", "true");
@@ -382,6 +360,12 @@ namespace BizHawk.Emulation.Common
 				case ".VEC":
 					game.System = "VEC";
 					game.AddOption("VEC", "true");
+					break;
+
+				// refactor to use mame db (output of "mame -listxml" command)
+				// there's no good definition for Arcade anymore, so we might limit to coin-based machines?
+				case ".ZIP":
+					game.System = "Arcade";
 					break;
 			}
 

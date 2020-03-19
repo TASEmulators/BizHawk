@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace BizHawk.Emulation.Common.IEmulatorExtensions
+namespace BizHawk.Emulation.Common
 {
-	public static class Extensions
+	public static class EmulatorExtensions
 	{
 		public static CoreAttribute Attributes(this IEmulator core)
 		{
@@ -20,12 +21,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool HasVideoProvider(this IEmulator core)
 		{
-			if (core == null)
-			{
-				return false;
-			}
-
-			return core.ServiceProvider.HasService<IVideoProvider>();
+			return core != null && core.ServiceProvider.HasService<IVideoProvider>();
 		}
 
 		public static IVideoProvider AsVideoProvider(this IEmulator core)
@@ -44,12 +40,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool HasSoundProvider(this IEmulator core)
 		{
-			if (core == null)
-			{
-				return false;
-			}
-
-			return core.ServiceProvider.HasService<ISoundProvider>();
+			return core != null && core.ServiceProvider.HasService<ISoundProvider>();
 		}
 
 		public static ISoundProvider AsSoundProvider(this IEmulator core)
@@ -70,12 +61,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool HasMemoryDomains(this IEmulator core)
 		{
-			if (core == null)
-			{
-				return false;
-			}
-
-			return core.ServiceProvider.HasService<IMemoryDomains>();
+			return core != null && core.ServiceProvider.HasService<IMemoryDomains>();
 		}
 
 		public static IMemoryDomains AsMemoryDomains(this IEmulator core)
@@ -85,12 +71,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool HasSaveRam(this IEmulator core)
 		{
-			if (core == null)
-			{
-				return false;
-			}
-
-			return core.ServiceProvider.HasService<ISaveRam>();
+			return core != null && core.ServiceProvider.HasService<ISaveRam>();
 		}
 
 		public static ISaveRam AsSaveRam(this IEmulator core)
@@ -100,12 +81,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool HasSavestates(this IEmulator core)
 		{
-			if (core == null)
-			{
-				return false;
-			}
-
-			return core.ServiceProvider.HasService<IStatable>();
+			return core != null && core.ServiceProvider.HasService<IStatable>();
 		}
 
 		public static IStatable AsStatable(this IEmulator core)
@@ -115,12 +91,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool CanPollInput(this IEmulator core)
 		{
-			if (core == null)
-			{
-				return false;
-			}
-
-			return core.ServiceProvider.HasService<IInputPollable>();
+			return core != null && core.ServiceProvider.HasService<IInputPollable>();
 		}
 
 		public static IInputPollable AsInputPollable(this IEmulator core)
@@ -130,13 +101,8 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool InputCallbacksAvailable(this IEmulator core)
 		{
-			if (core == null)
-			{
-				return false;
-			}
-
 			// TODO: this is a pretty ugly way to handle this
-			var pollable = core.ServiceProvider.GetService<IInputPollable>();
+			var pollable = core?.ServiceProvider.GetService<IInputPollable>();
 			if (pollable != null)
 			{
 				try
@@ -155,12 +121,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool HasDriveLight(this IEmulator core)
 		{
-			if (core == null)
-			{
-				return false;
-			}
-
-			return core.ServiceProvider.HasService<IDriveLight>();
+			return core != null && core.ServiceProvider.HasService<IDriveLight>();
 		}
 
 		public static IDriveLight AsDriveLight(this IEmulator core)
@@ -170,12 +131,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool CanDebug(this IEmulator core)
 		{
-			if (core == null)
-			{
-				return false;
-			}
-
-			return core.ServiceProvider.HasService<IDebuggable>();
+			return core != null && core.ServiceProvider.HasService<IDebuggable>();
 		}
 
 		public static IDebuggable AsDebuggable(this IEmulator core)
@@ -185,12 +141,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool CpuTraceAvailable(this IEmulator core)
 		{
-			if (core == null)
-			{
-				return false;
-			}
-
-			return core.ServiceProvider.HasService<ITraceable>();
+			return core != null && core.ServiceProvider.HasService<ITraceable>();
 		}
 
 		public static ITraceable AsTracer(this IEmulator core)
@@ -200,13 +151,8 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool MemoryCallbacksAvailable(this IEmulator core)
 		{
-			if (core == null)
-			{
-				return false;
-			}
-
 			// TODO: this is a pretty ugly way to handle this
-			var debuggable = (IDebuggable)core.ServiceProvider.GetService<IDebuggable>();
+			var debuggable = core?.ServiceProvider.GetService<IDebuggable>();
 			if (debuggable != null)
 			{
 				try
@@ -243,38 +189,17 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool CanDisassemble(this IEmulator core)
 		{
-			if (core == null)
-			{
-				return false;
-			}
-
-			return core.ServiceProvider.HasService<IDisassemblable>();
+			return core != null && core.ServiceProvider.HasService<IDisassemblable>();
 		}
 
-		public static IDisassemblable AsDissassembler(this IEmulator core)
+		public static IDisassemblable AsDisassembler(this IEmulator core)
 		{
 			return core.ServiceProvider.GetService<IDisassemblable>();
 		}
 
-		public static bool CanPoke(this MemoryDomain d)
-		{
-			if (!d.Writable)
-			{
-				return false;
-			}
-
-			// once upon a time, we did a try { poke(peek) } here, but that was before Writable was added. the poke(peek) is not acceptable. If there are further problems, make sure Writable is correct.
-			return true;
-		}
-
 		public static bool HasRegions(this IEmulator core)
 		{
-			if (core == null)
-			{
-				return false;
-			}
-
-			return core.ServiceProvider.HasService<IRegionable>();
+			return core != null && core.ServiceProvider.HasService<IRegionable>();
 		}
 
 		public static IRegionable AsRegionable(this IEmulator core)
@@ -284,12 +209,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool CanCDLog(this IEmulator core)
 		{
-			if (core == null)
-			{
-				return false;
-			}
-
-			return core.ServiceProvider.HasService<ICodeDataLogger>();
+			return core != null && core.ServiceProvider.HasService<ICodeDataLogger>();
 		}
 
 		public static ICodeDataLogger AsCodeDataLogger(this IEmulator core)
@@ -304,22 +224,12 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool UsesLinkCable(this IEmulator core)
 		{
-			if (core == null)
-			{
-				return false;
-			}
-
-			return core.ServiceProvider.HasService<ILinkable>();
+			return core != null && core.ServiceProvider.HasService<ILinkable>();
 		}
 
 		public static bool CanGenerateGameDBEntries(this IEmulator core)
 		{
-			if (core == null)
-			{
-				return false;
-			}
-
-			return core.ServiceProvider.HasService<ICreateGameDBEntries>();
+			return core != null && core.ServiceProvider.HasService<ICreateGameDBEntries>();
 		}
 
 		public static ICreateGameDBEntries AsGameDBEntryGenerator(this IEmulator core)
@@ -329,12 +239,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool HasBoardInfo(this IEmulator core)
 		{
-			if (core == null)
-			{
-				return false;
-			}
-
-			return core.ServiceProvider.HasService<IBoardInfo>();
+			return core != null && core.ServiceProvider.HasService<IBoardInfo>();
 		}
 
 		public static IBoardInfo AsBoardInfo(this IEmulator core)
@@ -367,28 +272,42 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			return core.VsyncNumerator() / (double)core.VsyncDenominator();
 		}
 
-		// TODO: a better place for these
+		// TODO: a better place for this
 		public static bool IsImplemented(this MethodInfo info)
 		{
-			// If a method is marked as Not implemented, it is not implemented no matter what the body is
-			if (info.GetCustomAttributes(false).Any(a => a is FeatureNotImplementedAttribute))
-			{
-				return false;
-			}
-
-			// adelikat: we can't rely on this anymore
-			// Some methods throw an exception by design, such as ISoundProvider.GetSamplesAsync()
-			// If async is not provided by the implementation this method will throw an exception
-			// We need to figure out a reliable way to check specifically for a NotImplementedException, then maybe this method will be more useful
-			// If a method is not marked but all it does is throw an exception, consider it not implemented
-			////return !info.ThrowsError();
-
-			return true;
+			return !info.GetCustomAttributes(false).Any(a => a is FeatureNotImplementedAttribute);
 		}
 
-		public static bool IsImplemented(this PropertyInfo info)
+		public static IDictionary<string, dynamic> ToDictionary(this IController controller, int? controllerNum = null)
 		{
-			return !info.GetCustomAttributes(false).Any(a => a is FeatureNotImplementedAttribute);
+			var buttons = new Dictionary<string, dynamic>();
+
+			foreach (var button in controller.Definition.BoolButtons)
+			{
+				if (controllerNum == null)
+				{
+					buttons[button] = controller.IsPressed(button);
+				}
+				else if (button.Length > 2 && button.Substring(0, 2) == $"P{controllerNum}")
+				{
+					var sub = button.Substring(3);
+					buttons[sub] = controller.IsPressed($"P{controllerNum} {sub}");
+				}
+			}
+			foreach (var button in controller.Definition.FloatControls)
+			{
+				if (controllerNum == null)
+				{
+					buttons[button] = controller.GetFloat(button);
+				}
+				else if (button.Length > 2 && button.Substring(0, 2) == $"P{controllerNum}")
+				{
+					var sub = button.Substring(3);
+					buttons[sub] = controller.GetFloat($"P{controllerNum} {sub}");
+				}
+			}
+
+			return buttons;
 		}
 	}
 }

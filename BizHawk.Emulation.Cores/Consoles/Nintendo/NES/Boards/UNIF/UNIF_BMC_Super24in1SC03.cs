@@ -1,5 +1,4 @@
 ﻿using BizHawk.Common;
-using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -96,7 +95,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 				else
 				{
-					// dont write to VROM
+					// don't write to VROM
 				}
 			}
 			else

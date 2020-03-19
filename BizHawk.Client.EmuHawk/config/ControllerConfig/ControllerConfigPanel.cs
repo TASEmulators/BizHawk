@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.Client.EmuHawk
 {
 	// this is a little messy right now because of remnants of the old config system
@@ -32,7 +30,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private Size _panelSize = new Size(0, 0);
 
-		private bool _autotab;
+		private bool _autoTab;
 
 		public ControllerConfigPanel()
 		{
@@ -54,16 +52,16 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="saveConfigObject">if non-null, save to possibly different config object than originally initialized from</param>
 		public void Save(Dictionary<string, string> saveConfigObject = null)
 		{
-			var saveto = saveConfigObject ?? _realConfigObject;
+			var saveTo = saveConfigObject ?? _realConfigObject;
 			for (int button = 0; button < _buttons.Count; button++)
 			{
-				saveto[_buttons[button]] = _inputs[button].Bindings;
+				saveTo[_buttons[button]] = _inputs[button].Bindings;
 			}
 		}
 
-		public void LoadSettings(Dictionary<string, string> configobj, bool autotab, List<string> configbuttons = null, int? width = null, int? height = null)
+		public void LoadSettings(Dictionary<string, string> config, bool autoTab, List<string> buttons = null, int? width = null, int? height = null)
 		{
-			_autotab = autotab;
+			_autoTab = autoTab;
 			if (width.HasValue && height.HasValue)
 			{
 				_panelSize = new Size(width.Value, height.Value);
@@ -73,8 +71,8 @@ namespace BizHawk.Client.EmuHawk
 				_panelSize = Size;
 			}
 			
-			_realConfigObject = configobj;
-			_realConfigButtons = configbuttons;
+			_realConfigObject = config;
+			_realConfigButtons = buttons;
 			SetButtonList();
 			Startup();
 			SetWidgetStrings();
@@ -94,8 +92,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			for (int button = 0; button < _buttons.Count; button++)
 			{
-				string s;
-				if (!_realConfigObject.TryGetValue(_buttons[button], out s))
+				if (!_realConfigObject.TryGetValue(_buttons[button], out var s))
 				{
 					s = "";
 				}
@@ -122,7 +119,7 @@ namespace BizHawk.Client.EmuHawk
 					Location = new Point(x, y),
 					Size = new Size(_inputSize, UIHelper.ScaleY(23)),
 					TabIndex = i,
-					AutoTab = _autotab
+					AutoTab = _autoTab
 				};
 
 				iw.SetupTooltip(Tooltip, null);

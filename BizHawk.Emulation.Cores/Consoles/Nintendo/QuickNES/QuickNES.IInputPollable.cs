@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		public IInputCallbackSystem InputCallbacks
 		{
 			[FeatureNotImplemented]
-			get { throw new NotImplementedException(); }
+			get => throw new NotImplementedException();
 		}
 	}
 }

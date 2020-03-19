@@ -1,7 +1,5 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
-using Jellyfish.Virtu.Services;
 using System.ComponentModel;
 using System.Linq;
 
@@ -143,10 +141,25 @@ namespace Jellyfish.Virtu
 		Reset = 2305843009213693952UL,
 	}
 
+	public sealed class Keyboard
+	{
+		static Keyboard()
+		{
+			for (int i = 0; i < 62; i++)
+			{
+				// http://stackoverflow.com/questions/2650080/how-to-get-c-sharp-enum-description-from-value
+				Keys value = (Keys)(1UL << i);
+				var fi = typeof(Keys).GetField(value.ToString());
+				var attr = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
+				string name = attr[0].Description;
+				DescriptionsToKeys[name] = value;
+			}
+		}
 
-    public sealed class Keyboard : MachineComponent
-    {
-		private static readonly uint[] KeyAsciiData = new uint[]
+		// ReSharper disable once UnusedMember.Global
+		public static IEnumerable<string> GetKeyNames() => DescriptionsToKeys.Keys.ToList();
+
+		private static readonly uint[] KeyAsciiData =
 		{
 			// https://archive.org/stream/Apple_IIe_Technical_Reference_Manual#page/n47/mode/2up
 			// 0xNNCCSSBB    normal, control, shift both
@@ -210,33 +223,15 @@ namespace Jellyfish.Virtu
 			0x7a1a5a1a, // z
 		};
 
-		/// <param name="key">0 - 55</param>
+		// key: 0 - 55
 		private static int KeyToAscii(int key, bool control, bool shift)
 		{
-			int s = control ? (shift ? 0 : 16) : (shift ? 8 : 24);
+			int s = control ? shift ? 0 : 16 : shift ? 8 : 24;
 			return (int)(KeyAsciiData[key] >> s & 0x7f);
 		}
 
-		private static Dictionary<string, Keys> DescriptionsToKeys = new Dictionary<string, Keys>();
-
-		static Keyboard()
-		{
-			for (int i = 0; i < 62; i++)
-			{
-				// http://stackoverflow.com/questions/2650080/how-to-get-c-sharp-enum-description-from-value
-				Keys value = (Keys)(1UL << i);
-				var fi = typeof(Keys).GetField(value.ToString());
-				var attr = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
-				string name = attr[0].Description;
-				DescriptionsToKeys[name] = value;
-			}
-
-		}
-
-		public static IEnumerable<string> GetKeyNames()
-		{
-			return DescriptionsToKeys.Keys.ToList();
-		}
+		// ReSharper disable once InconsistentNaming
+		private static readonly Dictionary<string, Keys> DescriptionsToKeys = new Dictionary<string, Keys>();
 
 		private static Keys FromStrings(IEnumerable<string> keynames)
 		{
@@ -245,18 +240,9 @@ namespace Jellyfish.Virtu
 			{
 				ret |= DescriptionsToKeys[s];
 			}
+
 			return ret;
 		}
-
-		public Keyboard() { }
-		public Keyboard(Machine machine) :
-            base(machine)
-        {
-        }
-
-        public override void Initialize()
-        {
-        }
 
 		public static bool WhiteAppleDown;
 		public static bool BlackAppleDown;
@@ -264,19 +250,13 @@ namespace Jellyfish.Virtu
 		/// <summary>
 		/// Call this at 60hz with all of the currently pressed keys
 		/// </summary>
+		// ReSharper disable once UnusedMember.Global
 		public void SetKeys(IEnumerable<string> keynames)
 		{
 			Keys keys = FromStrings(keynames);
 
-			if (keys.HasFlag(Keys.WhiteApple))
-				WhiteAppleDown = true;
-			else
-				WhiteAppleDown = false;
-
-			if (keys.HasFlag(Keys.BlackApple))
-				BlackAppleDown = true;
-			else
-				BlackAppleDown = false;
+			WhiteAppleDown = keys.HasFlag(Keys.WhiteApple);
+			BlackAppleDown = keys.HasFlag(Keys.BlackApple);
 
 			if (keys.HasFlag(Keys.Reset) && keys.HasFlag(Keys.Control)) { } // TODO: reset console
 
@@ -284,11 +264,11 @@ namespace Jellyfish.Virtu
 			bool shift = keys.HasFlag(Keys.Shift);
 
 			bool caps = keys.HasFlag(Keys.CapsLock);
-			if (caps && !CurrentCapsLockState) // leading edge: toggle capslock
+			if (caps && !_currentCapsLockState) // leading edge: toggle CapsLock
 			{
 				CapsActive ^= true;
 			}
-			CurrentCapsLockState = caps;
+			_currentCapsLockState = caps;
 			shift ^= CapsActive;
 
 			// work with only the first 56 real keys
@@ -298,7 +278,7 @@ namespace Jellyfish.Virtu
 
 			if (!IsAnyKeyDown)
 			{
-				CurrentKeyPressed = -1;
+				_currentKeyPressed = -1;
 				return;
 			}
 
@@ -306,76 +286,68 @@ namespace Jellyfish.Virtu
 			// that would be somehow resolved by the scan pattern.  we don't emulate that.
 
 			// instead, just arbitrarily choose the lowest key in our list
-			
+
 			// BSF
-			int NewKeyPressed = 0;
+			int newKeyPressed = 0;
 			while ((k & 1) == 0)
 			{
 				k >>= 1;
-				NewKeyPressed++;
+				newKeyPressed++;
 			}
 
-			if (NewKeyPressed != CurrentKeyPressed)
+			if (newKeyPressed != _currentKeyPressed)
 			{
 				// strobe, start new repeat cycle
 				Strobe = true;
-				Latch = KeyToAscii(NewKeyPressed, control, shift);
-				//if (Latch >= 0x20 && Latch < 0x7f)
-				//	Console.WriteLine("Latch: {0:x2}, {1}", Latch, (char)Latch);
- 				//else
-				//	Console.WriteLine("Latch: {0:x2}", Latch);
-				FramesToRepeat = KeyRepeatStart;
+				Latch = KeyToAscii(newKeyPressed, control, shift);
+				_framesToRepeat = KeyRepeatStart;
 			}
 			else
 			{
 				// check for repeat
-				FramesToRepeat--;
-				if (FramesToRepeat == 0)
+				_framesToRepeat--;
+				if (_framesToRepeat == 0)
 				{
 					Strobe = true;
-					Latch = KeyToAscii(NewKeyPressed, control, shift);
-					//if (Latch >= 0x20 && Latch < 0x7f)
-					//	Console.WriteLine("Latch: {0:x2}, {1}", Latch, (char)Latch);
-					//else
-					//	Console.WriteLine("Latch: {0:x2}", Latch);
-					FramesToRepeat = KeyRepeatRate;
+					Latch = KeyToAscii(newKeyPressed, control, shift);
+					_framesToRepeat = KeyRepeatRate;
 				}
 			}
 
-			CurrentKeyPressed = NewKeyPressed;
+			_currentKeyPressed = newKeyPressed;
 		}
 
+		public void ResetStrobe()
+		{
+			Strobe = false;
+		}
 
-        public void ResetStrobe()
-        {
-            Strobe = false;
-        }
-		
 		/// <summary>
 		/// true if any of the 56 basic keys are pressed
 		/// </summary>
 		public bool IsAnyKeyDown { get; private set; }
+
 		/// <summary>
 		/// the currently latched key; 7 bits.
 		/// </summary>
 		public int Latch { get; private set; }
-        public bool Strobe { get; private set; }
+		public bool Strobe { get; private set; }
 
 		/// <summary>
 		/// true if caps lock is active
 		/// </summary>
-		public bool CapsActive { get; private set; }
+		private bool CapsActive { get; set; }
 
-		private bool CurrentCapsLockState;
+		private bool _currentCapsLockState;
 
 		/// <summary>
 		/// 0-55, -1 = none
 		/// </summary>
-		private int CurrentKeyPressed;
+		private int _currentKeyPressed;
 
-		private int FramesToRepeat;
+		private int _framesToRepeat;
 
 		private const int KeyRepeatRate = 6; // 10hz
 		private const int KeyRepeatStart = 40; // ~666ms?
-    }
+	}
 }

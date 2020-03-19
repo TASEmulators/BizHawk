@@ -6,6 +6,7 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Client.EmuHawk
 {
 	[Schema("C64")]
+	// ReSharper disable once UnusedMember.Global
 	public class C64Schema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)

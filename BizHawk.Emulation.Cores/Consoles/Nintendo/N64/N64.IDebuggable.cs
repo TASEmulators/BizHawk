@@ -77,10 +77,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			throw new NotImplementedException();
 		}
 
-		public IMemoryCallbackSystem MemoryCallbacks
-		{
-			get { return _memorycallbacks; }
-		}
+		public IMemoryCallbackSystem MemoryCallbacks { get; }
 
 		private readonly MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
 
@@ -100,10 +97,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		}
 
 		[FeatureNotImplemented]
-		public long TotalExecutedCycles
-		{
-			get { throw new NotImplementedException(); }
-		}
+		public long TotalExecutedCycles => throw new NotImplementedException();
 
 		public void Step(StepType type)
 		{

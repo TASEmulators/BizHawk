@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.IO;
-using System.Collections.Generic;
-
-using BizHawk.Common;
-using BizHawk.Common.BufferExtensions;
 using BizHawk.Common.IOExtensions;
-
-using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {

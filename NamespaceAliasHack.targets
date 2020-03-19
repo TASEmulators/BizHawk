@@ -1,0 +1,11 @@
+<Project>
+	<!-- Prevents name collision by aliasing transient dependency's global namespace (exposed as linqbridge::System.Action instead of duplicate global::System.Action).
+		Credit to @gertjvr on GitHub in this comment: https://github.com/NuGet/Home/issues/4989#issuecomment-310565840 -->
+	<Target Name="NamespaceAliasHack" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">
+		<ItemGroup>
+			<ReferencePath Condition=" '%(FileName)' == 'LinqBridge' ">
+				<Aliases>linqbridge</Aliases>
+			</ReferencePath>
+		</ItemGroup>
+	</Target>
+</Project>

@@ -1,4 +1,6 @@
-﻿using BizHawk.Common;
+﻿using System;
+
+using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
@@ -275,7 +277,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 
 			// Attempting to read while in write mode
-			throw new NotTestedException();
+			throw new Exception("this hasn't been tested");
 		}
 
 		public override byte ReadMemory(ushort addr)
@@ -290,7 +292,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		private void WriteMem(ushort addr, byte value, bool poke)
 		{
-			// Mimicking the 6532 logic for accesing port A, for testing
+			// Mimicking the 6532 logic for accessing port A, for testing
 			////var isPortA = false; // adelikat: Commented out this variable to remove a warning.  Should this be deleted or is this supposed to be actually used?
 
 			if ((addr & 0x0200) == 0) // If the RS bit is not set, this is a ram write

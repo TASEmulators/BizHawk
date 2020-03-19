@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Runtime.InteropServices;
-
+using System.Runtime.CompilerServices;
 using BizHawk.Common;
-
 using NLua;
 
 // TODO - evaluate for re-entrancy problems
 namespace BizHawk.Client.Common
 {
-	public unsafe class LuaSandbox
+	public class LuaSandbox
 	{
-		private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Lua, LuaSandbox> SandboxForThread = new System.Runtime.CompilerServices.ConditionalWeakTable<Lua, LuaSandbox>();
+		private static readonly ConditionalWeakTable<Lua, LuaSandbox> SandboxForThread = new ConditionalWeakTable<Lua, LuaSandbox>();
 
 		public static Action<string> DefaultLogger { get; set; }
 
@@ -21,65 +19,20 @@ namespace BizHawk.Client.Common
 
 		private string _currentDirectory;
 
-		[DllImport("kernel32.dll", SetLastError = true)]
-		static extern bool SetCurrentDirectoryW(byte* lpPathName);
-		[DllImport("kernel32.dll", SetLastError=true)]
-		static extern uint GetCurrentDirectoryW(uint nBufferLength, byte* pBuffer);
-
 		private bool CoolSetCurrentDirectory(string path, string currDirSpeedHack = null)
 		{
 			string target = $"{_currentDirectory}\\";
 
-			// first we'll bypass it with a general hack: dont do any setting if the value's already there (even at the OS level, setting the directory can be slow)
+			// first we'll bypass it with a general hack: don't do any setting if the value's already there (even at the OS level, setting the directory can be slow)
 			// yeah I know, not the smoothest move to compare strings here, in case path normalization is happening at some point
 			// but you got any better ideas?
-			if (currDirSpeedHack == null)
-			{
-				currDirSpeedHack = CoolGetCurrentDirectory();
-			}
+			currDirSpeedHack ??= OSTailoredCode.IsUnixHost ? Environment.CurrentDirectory : CWDHacks.Get();
+			if (currDirSpeedHack == path) return true;
 
-			if (currDirSpeedHack == path)
-			{
-				return true;
-			}
-
-			if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
-			{
-				// WARNING: setting the current directory is SLOW!!! security checks for some reason.
-				// so we're bypassing it with windows hacks
-				fixed (byte* pstr = &System.Text.Encoding.Unicode.GetBytes($"{target}\0")[0])
-					return SetCurrentDirectoryW(pstr);
-			}
-			else
-			{
-				if (System.IO.Directory.Exists(_currentDirectory)) // race condition for great justice
-                {
-                	Environment.CurrentDirectory = _currentDirectory; // thats right, you can't set a directory as current that doesnt exist because .net's got to do SENSELESS SLOW-ASS SECURITY CHECKS on it and it can't do that on a NONEXISTENT DIRECTORY
-                	return true;
-                }
-                else
-                {
-                	return false;
-                }
-			}
-		}
-
-		private string CoolGetCurrentDirectory()
-		{
-			if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
-			{
-				// GUESS WHAT!
-				// .NET DOES A SECURITY CHECK ON THE DIRECTORY WE JUST RETRIEVED
-				// AS IF ASKING FOR THE CURRENT DIRECTORY IS EQUIVALENT TO TRYING TO ACCESS IT
-				// SCREW YOU
-				var buf = new byte[32768];
-				fixed (byte* pBuf = &buf[0])
-					return System.Text.Encoding.Unicode.GetString(buf, 0, 2 * (int) GetCurrentDirectoryW(32767, pBuf));
-			}
-			else
-			{
-				return Environment.CurrentDirectory;
-			}
+			if (!OSTailoredCode.IsUnixHost) return CWDHacks.Set(target);
+			if (!System.IO.Directory.Exists(_currentDirectory)) return false; //TODO is this necessary with Mono? Linux is fine with the CWD being nonexistent. also, is this necessary with .NET Core on Windows? --yoshi
+			Environment.CurrentDirectory = _currentDirectory;
+			return true;
 		}
 
 		private void Sandbox(Action callback, Action exceptionCallback)
@@ -119,10 +72,11 @@ namespace BizHawk.Client.Common
 			return sandbox;
 		}
 
+		/// <exception cref="InvalidOperationException">could not get sandbox reference for thread (<see cref="CreateSandbox"/> has not been called)</exception>
 		public static LuaSandbox GetSandbox(Lua thread)
 		{
 			// this is just placeholder.
-			// we shouldnt be calling a sandbox with no thread--construct a sandbox properly
+			// we shouldn't be calling a sandbox with no thread--construct a sandbox properly
 			if (thread == null)
 			{
 				return new LuaSandbox();
@@ -130,8 +84,7 @@ namespace BizHawk.Client.Common
 
 			lock (SandboxForThread)
 			{
-				LuaSandbox sandbox;
-				if (SandboxForThread.TryGetValue(thread, out sandbox))
+				if (SandboxForThread.TryGetValue(thread, out var sandbox))
 				{
 					return sandbox;
 				}

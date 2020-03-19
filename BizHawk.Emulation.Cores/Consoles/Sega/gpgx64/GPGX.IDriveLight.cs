@@ -4,9 +4,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
 	public partial class GPGX : IDriveLight
 	{
-		public bool DriveLightEnabled { get; private set; }
+		public bool DriveLightEnabled { get; }
 		public bool DriveLightOn { get; private set; }
 
-		private bool _drivelight;
+		private bool _driveLight;
 	}
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 {
@@ -11,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
-		public bool FrameAdvance(IController controller, bool render, bool rendersound)
+		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
 			//Console.WriteLine("-----------------------FRAME-----------------------");
 			//Update the color palette if a setting changed
@@ -56,9 +55,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 			_frame++;
 
-			if (controller.IsPressed("Power"))
+			if (controller.IsPressed("P1 Power"))
 			{
-				HardReset();
+				L.HardReset();
+			}
+			if (controller.IsPressed("P2 Power"))
+			{
+				R.HardReset();
 			}
 
 			bool cablediscosignalNew = controller.IsPressed("Toggle Cable");
@@ -103,11 +106,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 				if (_cableconnected)
 				{
 					// the signal to shift out a bit is when serial_clock = 1
-					if (((L.serialport.serial_clock == 1) || (L.serialport.serial_clock == 2)) && !do_r_next)
+					if (((L.serialport.serial_clock == 1) || (L.serialport.serial_clock == 2)) && (L.serialport.clk_rate > 0) && !do_r_next)
 					{
 						L.serialport.going_out = (byte)(L.serialport.serial_data >> 7);
 
-						if ((R.serialport.clk_rate == -1) && R.serialport.serial_start)
+						if ((R.serialport.clk_rate == -1) && R.serialport.serial_start && L.serialport.can_pulse)
 						{
 							R.serialport.serial_clock = L.serialport.serial_clock;
 							R.serialport.going_out = (byte)(R.serialport.serial_data >> 7);
@@ -115,14 +118,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 						}
 
 						L.serialport.coming_in = R.serialport.going_out;
+						L.serialport.can_pulse = false;
 					}
-					else if ((R.serialport.serial_clock == 1) || (R.serialport.serial_clock == 2))
+					else if (((R.serialport.serial_clock == 1) || (R.serialport.serial_clock == 2)) && (R.serialport.clk_rate > 0))
 					{
 						do_r_next = false;
 
 						R.serialport.going_out = (byte)(R.serialport.serial_data >> 7);
 
-						if ((L.serialport.clk_rate == -1) && L.serialport.serial_start)
+						if ((L.serialport.clk_rate == -1) && L.serialport.serial_start && R.serialport.can_pulse)
 						{
 							L.serialport.serial_clock = R.serialport.serial_clock;
 							L.serialport.going_out = (byte)(L.serialport.serial_data >> 7);
@@ -130,6 +134,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 						}
 
 						R.serialport.coming_in = L.serialport.going_out;
+						R.serialport.can_pulse = false;
 
 						if (R.serialport.serial_clock == 2) { do_r_next = true; }
 					}
@@ -139,8 +144,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 					}
 
 					// do IR transfer
-					L.IR_receive = R.IR_signal;
-					R.IR_receive = L.IR_signal;
+					if (L.IR_write > 0)
+					{
+						L.IR_write--;
+						if (L.IR_write ==0)
+						{
+							R.IR_receive = L.IR_signal;
+							if ((R.IR_self & R.IR_receive) == 2) { R.IR_reg |= 2; }
+							else { R.IR_reg &= 0xFD;}
+							if ((L.IR_self & L.IR_receive) == 2) { L.IR_reg |= 2; }
+							else { L.IR_reg &= 0xFD; }
+						}
+					}
+
+					if (R.IR_write > 0)
+					{
+						R.IR_write--;
+						if (R.IR_write == 0)
+						{
+							L.IR_receive = R.IR_signal;
+							if ((L.IR_self & L.IR_receive) == 2) { L.IR_reg |= 2; }
+							else { L.IR_reg &= 0xFD; }
+							if ((R.IR_self & R.IR_receive) == 2) { R.IR_reg |= 2; }
+							else { R.IR_reg &= 0xFD; }
+						}
+					}
 				}
 
 				// if we hit a frame boundary, update video
@@ -173,7 +201,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 					R.vblank_rise = false;
 					do_frame_fill = true;
 				}
-			}			
+			}
 		}
 
 		public void GetControllerState(IController controller)
@@ -206,35 +234,56 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 		#region Video provider
 
-		public int _frameHz = 60;
-
 		public int[] _vidbuffer = new int[160 * 2 * 144];
 
-		public int[] GetVideoBuffer()
-		{
-			return _vidbuffer;		
-		}
+		public int[] GetVideoBuffer() => _vidbuffer;
 
 		public void FillVideoBuffer()
 		{
-			// combine the 2 video buffers from the instances
-			for (int i = 0; i < 144; i++)
+			if (linkSettings.VideoSet == GBLinkSettings.VideoSrc.Both)
 			{
-				for (int j = 0; j < 160; j++)
+				// combine the 2 video buffers from the instances
+				for (int i = 0; i < 144; i++)
 				{
-					_vidbuffer[i * 320 + j] = L.frame_buffer[i * 160 + j];
-					_vidbuffer[i * 320 + j + 160] = R.frame_buffer[i * 160 + j];
+					for (int j = 0; j < 160; j++)
+					{
+						_vidbuffer[i * 320 + j] = L.frame_buffer[i * 160 + j];
+						_vidbuffer[i * 320 + j + 160] = R.frame_buffer[i * 160 + j];
+					}
+				}
+			}
+			else if (linkSettings.VideoSet == GBLinkSettings.VideoSrc.Left)
+			{
+				// combine the 2 video buffers from the instances
+				for (int i = 0; i < 144; i++)
+				{
+					for (int j = 0; j < 160; j++)
+					{
+						_vidbuffer[i * 160 + j] = L.frame_buffer[i * 160 + j];
+					}
+				}
+			}
+			else
+			{
+				// combine the 2 video buffers from the instances
+				for (int i = 0; i < 144; i++)
+				{
+					for (int j = 0; j < 160; j++)
+					{
+						_vidbuffer[i * 160 + j] = R.frame_buffer[i * 160 + j];
+					}
 				}
 			}
 		}
 
-		public int VirtualWidth => 160 * 2;
+		public int VirtualWidth => (linkSettings.VideoSet == GBLinkSettings.VideoSrc.Both) ? 160 * 2 : 160;
 		public int VirtualHeight => 144;
-		public int BufferWidth => 160 * 2;
+		public int BufferWidth => (linkSettings.VideoSet == GBLinkSettings.VideoSrc.Both) ? 160 * 2 : 160;
 		public int BufferHeight => 144;
+
 		public int BackgroundColor => unchecked((int)0xFF000000);
-		public int VsyncNumerator => _frameHz;
-		public int VsyncDenominator => 1;
+		public int VsyncNumerator => 262144;
+		public int VsyncDenominator => 4389;
 
 		public static readonly uint[] color_palette_BW = { 0xFFFFFFFF , 0xFFAAAAAA, 0xFF555555, 0xFF000000 };
 		public static readonly uint[] color_palette_Gr = { 0xFFA4C505, 0xFF88A905, 0xFF1D551D, 0xFF052505 };
@@ -259,24 +308,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			short[] temp_samp_L;
-			short[] temp_samp_R;
-
-			int nsamp_L;
-			int nsamp_R;
-
-			L.audio.GetSamplesSync(out temp_samp_L, out nsamp_L);
-			R.audio.GetSamplesSync(out temp_samp_R, out nsamp_R);
+			L.audio.GetSamplesSync(out var tempSampL, out var nsampL);
+			R.audio.GetSamplesSync(out var tempSampR, out var nsampR);
 
 			if (linkSettings.AudioSet == GBLinkSettings.AudioSrc.Left)
 			{
-				samples = temp_samp_L;
-				nsamp = nsamp_L;
+				samples = tempSampL;
+				nsamp = nsampL;
 			}
 			else if (linkSettings.AudioSet == GBLinkSettings.AudioSrc.Right)
 			{
-				samples = temp_samp_R;
-				nsamp = nsamp_R;
+				samples = tempSampR;
+				nsamp = nsampR;
 			}
 			else
 			{
@@ -294,11 +337,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 		{
 			L.audio.DiscardSamples();
 			R.audio.DiscardSamples();
-		}
-
-		private void GetSamples(short[] samples)
-		{
-
 		}
 
 		public void DisposeSound()

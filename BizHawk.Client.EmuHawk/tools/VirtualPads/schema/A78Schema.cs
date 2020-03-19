@@ -9,6 +9,7 @@ using BizHawk.Emulation.Cores.Atari.A7800Hawk;
 namespace BizHawk.Client.EmuHawk
 {
 	[Schema("A78")]
+	// ReSharper disable once UnusedMember.Global
 	public class A78Schema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
@@ -19,15 +20,14 @@ namespace BizHawk.Client.EmuHawk
 
 	internal static class Atari7800HawkSchema
 	{
-		private static string UnpluggedControllerName => typeof(UnpluggedController).DisplayName();
 		private static string StandardControllerName => typeof(StandardController).DisplayName();
 		private static string ProLineControllerName => typeof(ProLineController).DisplayName();
 
 		public static IEnumerable<PadSchema> GetPadSchemas(A7800Hawk core)
 		{
-			var A78SyncSettings = core.GetSyncSettings().Clone();
-			var port1 = A78SyncSettings.Port1;
-			var port2 = A78SyncSettings.Port2;
+			var a78SyncSettings = core.GetSyncSettings().Clone();
+			var port1 = a78SyncSettings.Port1;
+			var port2 = a78SyncSettings.Port2;
 
 			if (port1 == StandardControllerName)
 			{

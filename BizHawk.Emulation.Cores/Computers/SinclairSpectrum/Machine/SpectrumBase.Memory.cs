@@ -55,8 +55,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         protected int ROMPaged;
         public virtual int _ROMpaged
         {
-            get { return ROMPaged; }
-            set { ROMPaged = value; }
+            get => ROMPaged;
+            set => ROMPaged = value;
         }
 
         /* 

@@ -4,13 +4,7 @@
 //(the bridge wraps libretro API and presents a very different interface)
 
 using System;
-using System.Diagnostics;
-using System.IO;
-using System.IO.Pipes;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.IO.MemoryMappedFiles;
-
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Libretro
@@ -22,9 +16,6 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		//YUCK
 		public LibretroCore core;
-
-		[DllImport("msvcrt.dll", EntryPoint = "memcpy", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
-		public static unsafe extern void* CopyMemory(void* dest, void* src, ulong count);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate IntPtr DllInit(IntPtr dllModule);
@@ -49,18 +40,20 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		public LibretroApi(string dllPath, string corePath)
 		{
-			InstanceName = "libretro_" + Guid.NewGuid().ToString();
+			T GetTypedDelegate<T>(string proc) where T : Delegate => (T) Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddrOrThrow(proc), typeof(T));
+
+			InstanceName = "libretro_" + Guid.NewGuid();
 
 			var pipeName = InstanceName;
 
 			instanceDll = new InstanceDll(dllPath);
 			instanceDllCore = new InstanceDll(corePath);
 
-			var dllinit = (DllInit)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("DllInit"), typeof(DllInit));
-			Message = (MessageApi)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("Message"), typeof(MessageApi));
-			_copyBuffer = (BufferApi)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("CopyBuffer"), typeof(BufferApi));
-			_setBuffer = (BufferApi)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("SetBuffer"), typeof(BufferApi));
-			SetVariable = (SetVariableApi)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("SetVariable"), typeof(SetVariableApi));
+			var dllinit = GetTypedDelegate<DllInit>("DllInit");
+			Message = GetTypedDelegate<MessageApi>("Message");
+			_copyBuffer = GetTypedDelegate<BufferApi>("CopyBuffer");
+			_setBuffer = GetTypedDelegate<BufferApi>("SetBuffer");
+			SetVariable = GetTypedDelegate<SetVariableApi>("SetVariable");
 
 			comm = (CommStruct*)dllinit(instanceDllCore.HModule).ToPointer();
 
@@ -68,10 +61,10 @@ namespace BizHawk.Emulation.Cores.Libretro
 			//ALSO: this should be done by the core, I think, not the API. No smarts should be in here
 			comm->env.retro_perf_callback.get_cpu_features = IntPtr.Zero;
 			//retro_perf_callback.get_cpu_features = new LibRetro.retro_get_cpu_features_t(() => (ulong)(
-			//		(Win32PInvokes.IsProcessorFeaturePresent(Win32PInvokes.ProcessorFeature.InstructionsXMMIAvailable) ? LibRetro.RETRO_SIMD.SSE : 0) |
-			//		(Win32PInvokes.IsProcessorFeaturePresent(Win32PInvokes.ProcessorFeature.InstructionsXMMI64Available) ? LibRetro.RETRO_SIMD.SSE2 : 0) |
-			//		(Win32PInvokes.IsProcessorFeaturePresent(Win32PInvokes.ProcessorFeature.InstructionsSSE3Available) ? LibRetro.RETRO_SIMD.SSE3 : 0) |
-			//		(Win32PInvokes.IsProcessorFeaturePresent(Win32PInvokes.ProcessorFeature.InstructionsMMXAvailable) ? LibRetro.RETRO_SIMD.MMX : 0)
+			//		(ProcessorFeatureImports.IsProcessorFeaturePresent(ProcessorFeatureImports.ProcessorFeature.InstructionsXMMIAvailable) ? LibRetro.RETRO_SIMD.SSE : 0) |
+			//		(ProcessorFeatureImports.IsProcessorFeaturePresent(ProcessorFeatureImports.ProcessorFeature.InstructionsXMMI64Available) ? LibRetro.RETRO_SIMD.SSE2 : 0) |
+			//		(ProcessorFeatureImports.IsProcessorFeaturePresent(ProcessorFeatureImports.ProcessorFeature.InstructionsSSE3Available) ? LibRetro.RETRO_SIMD.SSE3 : 0) |
+			//		(ProcessorFeatureImports.IsProcessorFeaturePresent(ProcessorFeatureImports.ProcessorFeature.InstructionsMMXAvailable) ? LibRetro.RETRO_SIMD.MMX : 0)
 			//	));
 			//retro_perf_callback.get_perf_counter = new LibRetro.retro_perf_get_counter_t(() => System.Diagnostics.Stopwatch.GetTimestamp());
 			//retro_perf_callback.get_time_usec = new LibRetro.retro_perf_get_time_usec_t(() => DateTime.Now.Ticks / 10);
@@ -121,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		/// <summary>
 		/// Locks a buffer and sets it into libretro. You must pass a delegate to be executed while that buffer is locked.
 		/// This is meant to be used for avoiding a memcpy for large roms (which the core is then just going to memcpy again on its own)
-		/// The memcpy has to happen at some point (libretro semantics specify [not literally, the docs dont say] that the core should finish using the buffer before its init returns)
+		/// The memcpy has to happen at some point (libretro semantics specify [not literally, the docs don't say] that the core should finish using the buffer before its init returns)
 		/// but this limits it to once.
 		/// Moreover, this keeps the c++ side from having to free strings when they're no longer used (and memory management is trickier there, so we try to avoid it)
 		/// </summary>
@@ -203,11 +196,9 @@ namespace BizHawk.Emulation.Cores.Libretro
 			public fixed ulong buf_size[(int)BufId.BufId_Num]; //actually a size_t
 
 			//utilities
-			public bool GetBoolValue() { return value != 0; } //should this be here or by the other helpers? I dont know
+			public bool GetBoolValue() => value != 0; // should this be here or by the other helpers? I don't know
 		}
 
-		public retro_system_av_info AVInfo { get { return comm->env.retro_system_av_info; } }
-
+		public retro_system_av_info AVInfo => comm->env.retro_system_av_info;
 	} //class
-
 }

@@ -1,52 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 
-using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.ApiHawk;
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 
 {
 	public static class ApiManager
 	{
-		private static ApiContainer container;
-		private static void Register(IEmulatorServiceProvider serviceProvider)
+		private static ApiContainer _container;
+		private static IExternalApiProvider Register(IEmulatorServiceProvider serviceProvider)
 		{
-			// Register external apis
-			var apis = Assembly
-				.Load("BizHawk.Client.ApiHawk")
-				.GetTypes()
-				.Where(t => typeof(IExternalApi).IsAssignableFrom(t))
-				.Where(t => t.IsSealed)
-				.Where(t => ServiceInjector.IsAvailable(serviceProvider, t))
-				.ToList();
-
-			apis.AddRange(
-				Assembly
-				.GetAssembly(typeof(ApiContainer))
-				.GetTypes()
-				.Where(t => typeof(IExternalApi).IsAssignableFrom(t))
-				.Where(t => t.IsSealed)
-				.Where(t => ServiceInjector.IsAvailable(serviceProvider, t)));
-
-			foreach (var api in apis)
+			foreach (var api in Assembly.Load("BizHawk.Client.Common").GetTypes()
+				.Concat(Assembly.Load("BizHawk.Client.ApiHawk").GetTypes())
+				.Concat(Assembly.GetAssembly(typeof(ApiContainer)).GetTypes())
+				.Where(t => typeof(IExternalApi).IsAssignableFrom(t) && t.IsSealed && ServiceInjector.IsAvailable(serviceProvider, t)))
 			{
 				var instance = (IExternalApi)Activator.CreateInstance(api);
 				ServiceInjector.UpdateServices(serviceProvider, instance);
 				Libraries.Add(api, instance);
 			}
-			container = new ApiContainer(Libraries);
-			GlobalWin.ApiProvider = new BasicApiProvider(container);
+			_container = new ApiContainer(Libraries);
+			return new BasicApiProvider(_container);
 		}
+
 		private static readonly Dictionary<Type, IExternalApi> Libraries = new Dictionary<Type, IExternalApi>();
-		public static void Restart(IEmulatorServiceProvider newServiceProvider)
+		public static IExternalApiProvider Restart(IEmulatorServiceProvider newServiceProvider)
 		{
 			Libraries.Clear();
-			Register(newServiceProvider);
+			return Register(newServiceProvider);
 		}
 	}
 }

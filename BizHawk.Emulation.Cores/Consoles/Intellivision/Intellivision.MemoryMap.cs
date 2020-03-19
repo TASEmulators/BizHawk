@@ -42,14 +42,14 @@
 						if (addr==0x01FE)
 						{
 							if (!peek)
-								_islag = false;
+								_isLag = false;
 							return _psg.Register[14];
 						}
 
 						if (addr == 0x01FF)
 						{
 							if (!peek)
-								_islag = false;
+								_isLag = false;
 							return _psg.Register[15];
 						}
 						break;

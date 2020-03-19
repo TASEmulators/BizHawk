@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.IO.Pipes;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.IO.MemoryMappedFiles;
-
-using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Libretro
 {
@@ -55,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 			[MarshalAs(UnmanagedType.U1)]
 			public bool registered;
-		};
+		}
 
 		//perf callbacks
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]

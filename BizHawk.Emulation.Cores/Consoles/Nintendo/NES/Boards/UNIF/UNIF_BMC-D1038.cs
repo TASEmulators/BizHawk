@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private int DipswitchMask = 3;
 
-		private bool Prg16kMode {  get { return _reg.Bit(7);  } }
+		private bool Prg16kMode => _reg.Bit(7);
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{

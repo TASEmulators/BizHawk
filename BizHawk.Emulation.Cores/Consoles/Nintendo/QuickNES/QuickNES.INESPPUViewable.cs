@@ -1,56 +1,41 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
+using System.Runtime.InteropServices;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
-using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
 	public partial class QuickNES : INESPPUViewable
 	{
 		// todo: don't just call the callbacks at the end of frame; use the scanline info
-		private Action CB1;
-		private Action CB2;
+		private Action _callBack1;
+		private Action _callBack2;
 
-		public int[] GetPalette()
-		{
-			return VideoPalette;
-		}
+		public int[] GetPalette() => _videoPalette;
 
-		private byte R2000 { get { return QN.qn_get_reg2000(Context); } }
+		private byte R2000 => QN.qn_get_reg2000(Context);
 
-		public bool BGBaseHigh
-		{
-			get { return (R2000 & 0x10) != 0; }
-		}
+		public bool BGBaseHigh => (R2000 & 0x10) != 0;
 
-		public bool SPBaseHigh
-		{
-			get { return (R2000 & 0x08) != 0; }
-		}
+		public bool SPBaseHigh => (R2000 & 0x08) != 0;
 
-		public bool SPTall
-		{
-			get { return (R2000 & 0x20) != 0; }
-		}
+		public bool SPTall => (R2000 & 0x20) != 0;
 
-		private byte[] ppubusbuf = new byte[0x3000];
+		private readonly byte[] ppubusbuf = new byte[0x3000];
 		public byte[] GetPPUBus()
 		{
 			QN.qn_peek_ppubus(Context, ppubusbuf);
 			return ppubusbuf;
 		}
 
-		private byte[] palrambuf = new byte[0x20];
+		private readonly byte[] palrambuf = new byte[0x20];
 		public byte[] GetPalRam()
 		{
 			Marshal.Copy(QN.qn_get_palmem(Context), palrambuf, 0, 0x20);
 			return palrambuf;
 		}
 
-		byte[] oambuf = new byte[0x100];
+		private readonly byte[] oambuf = new byte[0x100];
 		public byte[] GetOam()
 		{
 			Marshal.Copy(QN.qn_get_oammem(Context), oambuf, 0, 0x100);
@@ -68,10 +53,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			throw new InvalidOperationException();
 		}
 
-		public bool ExActive
-		{
-			get { return false; }
-		}
+		public bool ExActive => false;
 
 		public byte[] GetExRam()
 		{
@@ -85,22 +67,22 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public void InstallCallback1(Action cb, int sl)
 		{
-			CB1 = cb;
+			_callBack1 = cb;
 		}
 
 		public void InstallCallback2(Action cb, int sl)
 		{
-			CB2 = cb;
+			_callBack2 = cb;
 		}
 
 		public void RemoveCallback1()
 		{
-			CB1 = null;
+			_callBack1 = null;
 		}
 
 		public void RemoveCallback2()
 		{
-			CB2 = null;
+			_callBack2 = null;
 		}
 	}
 }

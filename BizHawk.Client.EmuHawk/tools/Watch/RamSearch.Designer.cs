@@ -30,14 +30,8 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			System.Windows.Forms.ToolStripMenuItem SearchMenuItem;
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RamSearch));
 			this.TotalSearchLabel = new System.Windows.Forms.Label();
-			this.WatchListView = new BizHawk.Client.EmuHawk.VirtualListView();
-			this.AddressColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.ValueColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.PreviousColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.ChangesColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.DiffColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.WatchListView = new InputRoll();
 			this.ListViewContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.DoSearchContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.NewSearchContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -184,65 +178,29 @@
 			// 
 			// WatchListView
 			// 
+			this.WatchListView.CellWidthPadding = 3;
 			this.WatchListView.AllowColumnReorder = true;
+			this.WatchListView.AllowColumnResize = true;
 			this.WatchListView.AllowDrop = true;
 			this.WatchListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.WatchListView.BlazingFast = false;
-			this.WatchListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.AddressColumn,
-            this.ValueColumn,
-            this.PreviousColumn,
-            this.ChangesColumn,
-            this.DiffColumn});
 			this.WatchListView.ContextMenuStrip = this.ListViewContextMenu;
 			this.WatchListView.FullRowSelect = true;
 			this.WatchListView.GridLines = true;
-			this.WatchListView.HideSelection = false;
-			this.WatchListView.ItemCount = 0;
+			this.WatchListView.RowCount = 0;
 			this.WatchListView.Location = new System.Drawing.Point(9, 65);
 			this.WatchListView.Name = "WatchListView";
-			this.WatchListView.SelectAllInProgress = false;
-			this.WatchListView.selectedItem = -1;
 			this.WatchListView.Size = new System.Drawing.Size(230, 366);
 			this.WatchListView.TabIndex = 1;
-			this.WatchListView.UseCompatibleStateImageBehavior = false;
-			this.WatchListView.UseCustomBackground = true;
-			this.WatchListView.View = System.Windows.Forms.View.Details;
-			this.WatchListView.VirtualMode = true;
-			this.WatchListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.WatchListView_ColumnClick);
+			this.WatchListView.MultiSelect = true;
+			this.WatchListView.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.WatchListView_ColumnClick);
 			this.WatchListView.SelectedIndexChanged += new System.EventHandler(this.WatchListView_SelectedIndexChanged);
-			this.WatchListView.VirtualItemsSelectionRangeChanged += new System.Windows.Forms.ListViewVirtualItemsSelectionRangeChangedEventHandler(this.WatchListView_VirtualItemsSelectionRangeChanged);
 			this.WatchListView.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewRamSearch_DragDrop);
 			this.WatchListView.DragEnter += new System.Windows.Forms.DragEventHandler(this.DragEnterWrapper);
 			this.WatchListView.Enter += new System.EventHandler(this.WatchListView_Enter);
 			this.WatchListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.WatchListView_KeyDown);
 			this.WatchListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.WatchListView_MouseDoubleClick);
-			// 
-			// AddressColumn
-			// 
-			this.AddressColumn.Text = "Address";
-			this.AddressColumn.Width = 61;
-			// 
-			// ValueColumn
-			// 
-			this.ValueColumn.Text = "Value";
-			this.ValueColumn.Width = 48;
-			// 
-			// PreviousColumn
-			// 
-			this.PreviousColumn.Text = "Prev";
-			this.PreviousColumn.Width = 48;
-			// 
-			// ChangesColumn
-			// 
-			this.ChangesColumn.Text = "Changes";
-			this.ChangesColumn.Width = 55;
-			// 
-			// DiffColumn
-			// 
-			this.DiffColumn.Text = "Diff";
 			// 
 			// ListViewContextMenu
 			// 
@@ -297,7 +255,7 @@
 			// 
 			this.AddToRamWatchContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.FindHS;
 			this.AddToRamWatchContextMenuItem.Name = "AddToRamWatchContextMenuItem";
-			this.AddToRamWatchContextMenuItem.ShortcutKeyDisplayString = "Ctrl+R";
+			this.AddToRamWatchContextMenuItem.ShortcutKeyDisplayString = "Ctrl+W";
 			this.AddToRamWatchContextMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.AddToRamWatchContextMenuItem.Text = "Add to RAM Watch";
 			this.AddToRamWatchContextMenuItem.Click += new System.EventHandler(this.AddToRamWatchMenuItem_Click);
@@ -1049,7 +1007,7 @@
 			// DoSearchToolButton
 			// 
 			this.DoSearchToolButton.Enabled = false;
-			this.DoSearchToolButton.Image = ((System.Drawing.Image)(resources.GetObject("DoSearchToolButton.Image")));
+			this.DoSearchToolButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.search;
 			this.DoSearchToolButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.DoSearchToolButton.Name = "DoSearchToolButton";
 			this.DoSearchToolButton.Size = new System.Drawing.Size(65, 22);
@@ -1089,7 +1047,7 @@
 			// ClearChangeCountsToolBarItem
 			// 
 			this.ClearChangeCountsToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.ClearChangeCountsToolBarItem.Image = ((System.Drawing.Image)(resources.GetObject("ClearChangeCountsToolBarItem.Image")));
+			this.ClearChangeCountsToolBarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.placeholder_bitmap;
 			this.ClearChangeCountsToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.ClearChangeCountsToolBarItem.Name = "ClearChangeCountsToolBarItem";
 			this.ClearChangeCountsToolBarItem.Size = new System.Drawing.Size(23, 22);
@@ -1395,7 +1353,7 @@
 			this.Controls.Add(this.WatchListView);
 			this.Controls.Add(this.TotalSearchLabel);
 			this.Controls.Add(this.RamSearchMenu);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.search_MultiSize;
 			this.MainMenuStrip = this.RamSearchMenu;
 			this.MinimumSize = new System.Drawing.Size(290, 399);
 			this.Name = "RamSearch";
@@ -1422,11 +1380,7 @@
 		#endregion
 
 		private System.Windows.Forms.Label TotalSearchLabel;
-		VirtualListView WatchListView;
-		private System.Windows.Forms.ColumnHeader AddressColumn;
-		private System.Windows.Forms.ColumnHeader ValueColumn;
-		private System.Windows.Forms.ColumnHeader PreviousColumn;
-		private System.Windows.Forms.ColumnHeader ChangesColumn;
+		InputRoll WatchListView;
 		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem OpenMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SaveAsMenuItem;
@@ -1530,7 +1484,6 @@
 		private WatchValueBox DifferenceBox;
 		private System.Windows.Forms.ToolStripMenuItem AutoSearchMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
-		private System.Windows.Forms.ColumnHeader DiffColumn;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
 		private System.Windows.Forms.ToolStripButton UndoToolBarButton;
 		private System.Windows.Forms.ToolStripButton RedoToolBarItem;

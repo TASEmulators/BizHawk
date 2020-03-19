@@ -10,16 +10,16 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 		public int LagCount
 		{
-			get { return _lagCount; }
-			set { _lagCount = value; }
+			get => _lagCount;
+			set => _lagCount = value;
 		}
 
 		public IInputCallbackSystem InputCallbacks { get; } = new InputCallbackSystem();
 
 		public bool IsLagFrame
 		{
-			get { return _isLag; }
-			set { _isLag = value; }
+			get => _isLag;
+			set => _isLag = value;
 		}
 	}
 }

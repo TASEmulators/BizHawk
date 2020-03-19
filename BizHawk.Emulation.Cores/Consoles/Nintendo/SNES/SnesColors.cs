@@ -79,7 +79,7 @@
 			BizHawk,
 			BSNES,
 			Snes9x
-		};
+		}
 
 		//I separated these out to try and make them lazy construct, but it didnt work. try it some other way later.
 

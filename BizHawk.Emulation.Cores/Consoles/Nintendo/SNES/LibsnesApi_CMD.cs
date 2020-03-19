@@ -1,6 +1,4 @@
-﻿using System;
-
-using BizHawk.Common;
+﻿using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
@@ -63,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			using (_exe.EnterExit())
 			{
-				//why don't we need this for the other loads? I dont know, our XML handling is really confusing
+				//why don't we need this for the other loads? I don't know, our XML handling is really confusing
 				string xml = rom_xml == null ? null : System.Text.Encoding.ASCII.GetString(rom_xml);
 
 				SetAscii(0, xml ?? "", () =>

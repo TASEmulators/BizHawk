@@ -1,47 +1,42 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 
-using BizHawk.Client.ApiHawk;
+using BizHawk.Client.Common;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public sealed class SaveStateApi : ISaveState
 	{
-		public SaveStateApi() : base()
-		{ }
+		public SaveStateApi(Action<string> logCallback)
+		{
+			LogCallback = logCallback;
+		}
 
-		public void Load(string path)
+		public SaveStateApi() : this(Console.WriteLine) {}
+
+		private readonly Action<string> LogCallback;
+
+		public void Load(string path, bool suppressOSD)
 		{
 			if (!File.Exists(path))
 			{
-				Console.WriteLine($"could not find file: {path}");
+				LogCallback($"could not find file: {path}");
+				return;
 			}
-			else
-			{
-				GlobalWin.MainForm.LoadState(path, Path.GetFileName(path), true);
-			}
+			GlobalWin.MainForm.LoadState(path, Path.GetFileName(path), true, suppressOSD);
 		}
 
-		public void LoadSlot(int slotNum)
+		public void LoadSlot(int slotNum, bool suppressOSD)
 		{
-			if (slotNum >= 0 && slotNum <= 9)
-			{
-				GlobalWin.MainForm.LoadQuickSave($"QuickSave{slotNum}", true);
-			}
+			if (0.RangeTo(9).Contains(slotNum)) GlobalWin.MainForm.LoadQuickSave($"QuickSave{slotNum}", true, suppressOSD);
 		}
 
-		public void Save(string path)
-		{
-			GlobalWin.MainForm.SaveState(path, path, true);
-		}
+		public void Save(string path, bool suppressOSD) => GlobalWin.MainForm.SaveState(path, path, true, suppressOSD);
 
-		public void SaveSlot(int slotNum)
+		public void SaveSlot(int slotNum, bool suppressOSD)
 		{
-			if (slotNum >= 0 && slotNum <= 9)
-			{
-				GlobalWin.MainForm.SaveQuickSave($"QuickSave{slotNum}");
-			}
+			if (0.RangeTo(9).Contains(slotNum)) GlobalWin.MainForm.SaveQuickSave($"QuickSave{slotNum}", true, suppressOSD);
 		}
 	}
 }

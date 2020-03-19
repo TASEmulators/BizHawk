@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			return format;
 		}
 
-		readonly static string[] mnemonics = new string[]
+		static readonly string[] mnemonics =
 		{
 			"NOP", "LD BC, nn", "LD (BC), A", "INC BC", //0x04
 			"INC B", "DEC B", "LD B, n", "RLCA", //0x08
@@ -94,7 +94,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			"CALL M, nn", "[FD]", "CP n", "RST $38", //0x100
 		};
 
-		readonly static string[] mnemonicsDD = new string[]
+		static readonly string[] mnemonicsDD =
 		{
 			"NOP", "LD BC, nn", "LD (BC), A", "INC BC", //0x04
 			"INC B", "DEC B", "LD B, n", "RLCA", //0x08
@@ -162,7 +162,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			"CALL M, nn", "[!!DD FD!!]", "CP n", "RST $38", //0x100
 		};
 
-		readonly static string[] mnemonicsFD = new string[]
+		static readonly string[] mnemonicsFD =
 		{
 			"NOP", "LD BC, nn", "LD (BC), A", "INC BC", //0x04
 			"INC B", "DEC B", "LD B, n", "RLCA", //0x08
@@ -230,7 +230,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			"CALL M, nn", "[!FD FD!]", "CP n", "RST $38", //0x100
 		};
 
-		readonly static string[] mnemonicsDDCB = new string[]
+		static readonly string[] mnemonicsDDCB =
 		{
 			"RLC (IX+d)->B", "RLC (IX+d)->C", "RLC (IX+d)->D", "RLC (IX+d)->E", "RLC (IX+d)->H", "RLC (IX+d)->L", "RLC (IX+d)", "RLC (IX+d)->A", 
 			"RRC (IX+d)->B", "RRC (IX+d)->C", "RRC (IX+d)->D", "RRC (IX+d)->E", "RRC (IX+d)->H", "RRC (IX+d)->L", "RRC (IX+d)", "RRC (IX+d)->A", 
@@ -266,7 +266,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			"SET 7 (IX+d)->B", "SET 7 (IX+d)->C", "SET 7 (IX+d)->D", "SET 7 (IX+d)->E", "SET 7 (IX+d)->H", "SET 7 (IX+d)->L", "SET 7 (IX+d)", "SET 7 (IX+d)->A", 
 		};
 
-		readonly static string[] mnemonicsFDCB = new string[]
+		static readonly string[] mnemonicsFDCB =
 		{
 			"RLC (IY+d)->B", "RLC (IY+d)->C", "RLC (IY+d)->D", "RLC (IY+d)->E", "RLC (IY+d)->H", "RLC (IY+d)->L", "RLC (IY+d)", "RLC (IY+d)->A", 
 			"RRC (IY+d)->B", "RRC (IY+d)->C", "RRC (IY+d)->D", "RRC (IY+d)->E", "RRC (IY+d)->H", "RRC (IY+d)->L", "RRC (IY+d)", "RRC (IY+d)->A", 
@@ -302,7 +302,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			"SET 7 (IY+d)->B", "SET 7 (IY+d)->C", "SET 7 (IY+d)->D", "SET 7 (IY+d)->E", "SET 7 (IY+d)->H", "SET 7 (IY+d)->L", "SET 7 (IY+d)", "SET 7 (IY+d)->A", 
 		};
 
-		readonly static string[] mnemonicsCB = new string[]
+		static readonly string[] mnemonicsCB =
 		{
 			"RLC B", "RLC C", "RLC D", "RLC E", "RLC H", "RLC L", "RLC (HL)", "RLC A", 
 			"RRC B", "RRC C", "RRC D", "RRC E", "RRC H", "RRC L", "RRC (HL)", "RRC A",
@@ -338,7 +338,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			"SET 7, B", "SET 7, C", "SET 7, D", "SET 7, E", "SET 7, H", "SET 7, L", "SET 7, (HL)", "SET 7, A",
 		};
 
-		readonly static string[] mnemonicsED = new string[]
+		static readonly string[] mnemonicsED =
 		{
 			"NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", 
 			"NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", 
@@ -435,14 +435,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 		public string Cpu
 		{
-			get { return "Z80"; }
+			get => "Z80";
 			set { }
 		}
 
-		public string PCRegisterName
-		{
-			get { return "PC"; }
-		}
+		public string PCRegisterName => "PC";
 
 		public IEnumerable<string> AvailableCpus
 		{

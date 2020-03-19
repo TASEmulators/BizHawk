@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.IO;
 using System.Text;
 
@@ -34,7 +36,7 @@ namespace BizHawk.Common.IOExtensions
 
 		public static string ReadStringUtf8NullTerminated(this BinaryReader br)
 		{
-			var ms = new MemoryStream();
+			using var ms = new MemoryStream();
 			for (;;)
 			{
 				var b = br.ReadByte();
@@ -114,39 +116,6 @@ namespace BizHawk.Common.IOExtensions
 			{
 				bw.Write(t);
 			}
-		}
-
-		public static int[] ReadInt32s(this BinaryReader br, int num)
-		{
-			int[] ret = new int[num];
-			for (int i = 0; i < num; i++)
-			{
-				ret[i] = br.ReadInt32();
-			}
-
-			return ret;
-		}
-
-		public static short[] ReadInt16s(this BinaryReader br, int num)
-		{
-			short[] ret = new short[num];
-			for (int i = 0; i < num; i++)
-			{
-				ret[i] = br.ReadInt16();
-			}
-
-			return ret;
-		}
-
-		public static ushort[] ReadUInt16s(this BinaryReader br, int num)
-		{
-			ushort[] ret = new ushort[num];
-			for (int i = 0; i < num; i++)
-			{
-				ret[i] = br.ReadUInt16();
-			}
-
-			return ret;
 		}
 
 		public static void WriteBit(this BinaryWriter bw, Bit bit)

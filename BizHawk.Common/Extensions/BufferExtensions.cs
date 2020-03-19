@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -8,17 +10,6 @@ namespace BizHawk.Common.BufferExtensions
 {
 	public static class BufferExtensions
 	{
-		[Obsolete] // do we know of any situation where SaveAsHexFast doesn't work?
-		public static void SaveAsHex(this byte[] buffer, TextWriter writer)
-		{
-			foreach (var b in buffer)
-			{
-				writer.Write("{0:X2}", b);
-			}
-
-			writer.WriteLine();
-		}
-
 		private static readonly char[] HexConvArr = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
 		public static unsafe void SaveAsHexFast(this byte[] buffer, TextWriter writer)
@@ -40,57 +31,7 @@ namespace BizHawk.Common.BufferExtensions
 			writer.WriteLine();
 		}
 
-		[Obsolete] // do we know of any situation where SaveAsHexFast doesn't work?
-		public static void SaveAsHex(this byte[] buffer, TextWriter writer, int length)
-		{
-			for (int i = 0; i < length; i++)
-			{
-				writer.Write("{0:X2}", buffer[i]);
-			}
-
-			writer.WriteLine();
-		}
-
-		public static void SaveAsHex(this short[] buffer, TextWriter writer)
-		{
-			foreach (var b in buffer)
-			{
-				writer.Write("{0:X4}", b);
-			}
-
-			writer.WriteLine();
-		}
-
-		public static void SaveAsHex(this ushort[] buffer, TextWriter writer)
-		{
-			foreach (var b in buffer)
-			{
-				writer.Write("{0:X4}", b);
-			}
-
-			writer.WriteLine();
-		}
-
-		public static void SaveAsHex(this int[] buffer, TextWriter writer)
-		{
-			foreach (int b in buffer)
-			{
-				writer.Write("{0:X8}", b);
-			}
-
-			writer.WriteLine();
-		}
-
-		public static void SaveAsHex(this uint[] buffer, TextWriter writer)
-		{
-			foreach (var b in buffer)
-			{
-				writer.Write("{0:X8}", b);
-			}
-
-			writer.WriteLine();
-		}
-
+		/// <exception cref="Exception"><paramref name="hex"/> has an odd number of chars</exception>
 		public static void ReadFromHex(this byte[] buffer, string hex)
 		{
 			if (hex.Length % 2 != 0)
@@ -105,6 +46,7 @@ namespace BizHawk.Common.BufferExtensions
 			}
 		}
 
+		/// <exception cref="Exception"><paramref name="buffer"/> can't hold the same number of bytes as <paramref name="hex"/></exception>
 		public static unsafe void ReadFromHexFast(this byte[] buffer, string hex)
 		{
 			if (buffer.Length * 2 != hex.Length)
@@ -124,48 +66,6 @@ namespace BizHawk.Common.BufferExtensions
 					*dst++ = (byte)(Hex2Int(*src++) << 4 | Hex2Int(*src++));
 					count--;
 				}
-			}
-		}
-
-		public static void ReadFromHex(this short[] buffer, string hex)
-		{
-			if (hex.Length % 4 != 0)
-			{
-				throw new Exception("Hex value string does not appear to be properly formatted.");
-			}
-
-			for (int i = 0; i < buffer.Length && i * 4 < hex.Length; i++)
-			{
-				var shorthex = string.Concat(hex[i * 4], hex[(i * 4) + 1], hex[(i * 4) + 2], hex[(i * 4) + 3]);
-				buffer[i] = short.Parse(shorthex, NumberStyles.HexNumber);
-			}
-		}
-
-		public static void ReadFromHex(this ushort[] buffer, string hex)
-		{
-			if (hex.Length % 4 != 0)
-			{
-				throw new Exception("Hex value string does not appear to be properly formatted.");
-			}
-
-			for (int i = 0; i < buffer.Length && i * 4 < hex.Length; i++)
-			{
-				var ushorthex = string.Concat(hex[i * 4], hex[(i * 4) + 1], hex[(i * 4) + 2], hex[(i * 4) + 3]);
-				buffer[i] = ushort.Parse(ushorthex, NumberStyles.HexNumber);
-			}
-		}
-
-		public static void ReadFromHex(this int[] buffer, string hex)
-		{
-			if (hex.Length % 8 != 0)
-			{
-				throw new Exception("Hex value string does not appear to be properly formatted.");
-			}
-
-			for (int i = 0; i < buffer.Length && i * 8 < hex.Length; i++)
-			{
-				var inthex = hex.Substring(i * 8, 8);
-				buffer[i] = int.Parse(inthex, NumberStyles.HexNumber);
 			}
 		}
 
@@ -197,11 +97,9 @@ namespace BizHawk.Common.BufferExtensions
 
 		public static string HashMD5(this byte[] data, int offset, int len)
 		{
-			using (var md5 = MD5.Create())
-			{
-				md5.ComputeHash(data, offset, len);
-				return md5.Hash.BytesToHexString();
-			}
+			using var md5 = MD5.Create();
+			md5.ComputeHash(data, offset, len);
+			return md5.Hash.BytesToHexString();
 		}
 
 		public static string HashMD5(this byte[] data)
@@ -211,11 +109,9 @@ namespace BizHawk.Common.BufferExtensions
 
 		public static string HashSHA1(this byte[] data, int offset, int len)
 		{
-			using (var sha1 = SHA1.Create())
-			{
-				sha1.ComputeHash(data, offset, len);
-				return sha1.Hash.BytesToHexString();
-			}
+			using var sha1 = SHA1.Create();
+			sha1.ComputeHash(data, offset, len);
+			return sha1.Hash.BytesToHexString();
 		}
 
 		public static string HashSHA1(this byte[] data)

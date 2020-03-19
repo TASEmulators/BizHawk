@@ -8,18 +8,10 @@ namespace BizHawk.Client.EmuHawk
 		public SNESGraphicsViewer()
 		{
 			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
-			if(!DesignMode)
+			if (!DesignMode)
+			{
 				BackColor = Color.Transparent;
-		}
-
-		protected override void OnPaint(PaintEventArgs e)
-		{
-			base.OnPaint(e);
-		}
-
-		protected override void Dispose(bool disposing)
-		{
-			base.Dispose(disposing);
+			}
 		}
 	}
 }

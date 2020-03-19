@@ -1,24 +1,18 @@
 //TODO: it's a bit of a misnomer to call this a 'core'
 //that's libretro nomenclature for a particular core (nes, genesis, doom, etc.) 
 //we should call this LibretroEmulator (yeah, it was originally called that)
-//Since it's an IEmulator.. but... I dont know. Yeah, that's probably best
+//Since it's an IEmulator.. but... I don't know. Yeah, that's probably best
 
 using System;
-using System.Linq;
-using System.Xml;
-using System.Xml.Linq;
 using System.IO;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-
-using BizHawk.Common;
-using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Libretro
 {
-	[Core("Libretro", "zeromus")]
-	[ServiceNotApplicable(typeof(IDriveLight))]
+	[Core("Libretro", "zeromus", isPorted: false, isReleased: false)]
+	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public unsafe partial class LibretroCore : IEmulator, ISettable<LibretroCore.Settings, LibretroCore.SyncSettings>,
 		ISaveRam, IStatable, IVideoProvider, IInputPollable
 	{
@@ -42,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			//and I need retro_set_environment set so I can find out if the core supports no-game
 			//therefore, I need a complete environment (including pathing) before I can complete my introspection of the core.
 			//Sucky, but that's life.
-			//I dont even know for sure what paths I should use until... (what?)
+			//I don't even know for sure what paths I should use until... (what?)
 
 
 			//not sure about each of these.. but we may be doing things different than retroarch.
@@ -77,8 +71,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			//api.CMD_unload_cartridge();
 			//api.CMD_term();
 
-			if(resampler != null)
-				resampler.Dispose();
+			resampler?.Dispose();
 
 			api.Dispose();
 
@@ -86,9 +79,9 @@ namespace BizHawk.Emulation.Cores.Libretro
 				vidBufferHandle.Free();
 		}
 
-		public CoreComm CoreComm { get; private set; }
+		public CoreComm CoreComm { get; }
 
-		public RetroDescription Description { get; private set; }
+		public RetroDescription Description { get; }
 
 		public bool LoadData(byte[] data, string id)
 		{
@@ -130,27 +123,27 @@ namespace BizHawk.Emulation.Cores.Libretro
 			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(resampler);
 		}
 
-		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+		public IEmulatorServiceProvider ServiceProvider { get; }
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			return new Dictionary<string, RegisterValue>();
 		}
 
-		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
+		public IInputCallbackSystem InputCallbacks => _inputCallbacks;
 		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
 
 		public ITraceable Tracer { get; private set; }
 		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
 
-		public bool CanStep(StepType type) { return false; }
+		public bool CanStep(StepType type) => false;
 
 		[FeatureNotImplemented]
-		public void Step(StepType type) { throw new NotImplementedException(); }
+		public void Step(StepType type) => throw new NotImplementedException();
 		[FeatureNotImplemented]
-		public void SetCpuRegister(string register, int value) { throw new NotImplementedException(); }
+		public void SetCpuRegister(string register, int value) => throw new NotImplementedException();
 		[FeatureNotImplemented]
-		public long TotalExecutedCycles { get { throw new NotImplementedException(); } }
+		public long TotalExecutedCycles => throw new NotImplementedException();
 
 		private IController _controller;
 
@@ -176,7 +169,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		}
 
 		//video provider
-		int IVideoProvider.BackgroundColor { get { return 0; } }
+		int IVideoProvider.BackgroundColor => 0;
 		int[] IVideoProvider.GetVideoBuffer() { return vidBuffer; }
 
 		public int VirtualWidth
@@ -186,10 +179,9 @@ namespace BizHawk.Emulation.Cores.Libretro
 				var dar = api.AVInfo.geometry.aspect_ratio;
 				if(dar<=0)
 					return vidWidth;
-				else if (dar > 1.0f)
+				if (dar > 1.0f)
 					return (int)(vidHeight * dar);
-				else
-					return vidWidth;
+				return vidWidth;
 			}
 		}
 		public int VirtualHeight
@@ -201,8 +193,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 					return vidHeight;
 				if (dar < 1.0f)
 					return (int)(vidWidth / dar);
-				else
-					return vidHeight;
+				return vidHeight;
 			}
 		}
 
@@ -211,8 +202,8 @@ namespace BizHawk.Emulation.Cores.Libretro
 			SetVideoBuffer(api.comm->env.fb_width, api.comm->env.fb_height);
 		}
 
-		int IVideoProvider.BufferWidth { get { return vidWidth; } }
-		int IVideoProvider.BufferHeight { get { return vidHeight; } }
+		int IVideoProvider.BufferWidth => vidWidth;
+		int IVideoProvider.BufferHeight => vidHeight;
 
 		public int VsyncNumerator { get; private set; }
 		public int VsyncDenominator { get; private set; }
@@ -232,7 +223,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 			// todo: more precise?
 			uint spsnum = (uint)sps * 1000;
-			uint spsden = (uint)1000;
+			uint spsden = 1000U;
 
 			resampler = new SpeexResampler(SpeexResampler.Quality.QUALITY_DESKTOP, 44100 * spsden, spsnum, (uint)sps, 44100, null, null);
 		}
@@ -266,7 +257,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			})
 				definition.BoolButtons.Add(string.Format(item,"RetroPad"));
 
-			definition.BoolButtons.Add("Pointer Pressed"); //TODO: this isnt showing up in the binding panel. I dont want to find out why.
+			definition.BoolButtons.Add("Pointer Pressed"); //TODO: this isnt showing up in the binding panel. I don't want to find out why.
 			definition.FloatControls.Add("Pointer X");
 			definition.FloatControls.Add("Pointer Y");
 			definition.FloatRanges.Add(new ControllerDefinition.FloatRange(-32767, 0, 32767));
@@ -294,16 +285,20 @@ namespace BizHawk.Emulation.Cores.Libretro
 			return definition;
 		}
 
-		public ControllerDefinition ControllerDefinition { get; private set; }
+		public ControllerDefinition ControllerDefinition { get; }
 
 		int timeFrameCounter;
-		public int Frame { get { return timeFrameCounter; } set { timeFrameCounter = value; } }
+		public int Frame
+		{
+			get => timeFrameCounter;
+			set => timeFrameCounter = value;
+		}
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; set; }
-		public string SystemId { get { return "Libretro"; } }
-		public bool DeterministicEmulation { get { return false; } }
+		public string SystemId => "Libretro";
+		public bool DeterministicEmulation => false;
 
-	#region ISaveRam
+		#region ISaveRam
 		//TODO - terrible things will happen if this changes at runtime
 
 		byte[] saverambuff = new byte[0];
@@ -333,7 +328,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			[FeatureNotImplemented]
 			get
 			{
-				//if we dont have saveram, it isnt modified. otherwise, assume it is
+				//if we don't have saveram, it isnt modified. otherwise, assume it is
 				var mem = api.QUERY_GetMemory(LibretroApi.RETRO_MEMORY.SAVE_RAM);
 				
 				//bail if the size is 0
@@ -344,7 +339,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			}
 
 			[FeatureNotImplemented]
-			set { throw new NotImplementedException(); }
+			set => throw new NotImplementedException();
 		}
 
 		#endregion
@@ -359,20 +354,6 @@ namespace BizHawk.Emulation.Cores.Libretro
 		#region savestates
 
 		private byte[] savebuff, savebuff2;
-
-		public void SaveStateText(System.IO.TextWriter writer)
-		{
-			var temp = SaveStateBinary();
-			temp.SaveAsHex(writer);
-		}
-
-		public void LoadStateText(System.IO.TextReader reader)
-		{
-			string hex = reader.ReadLine();
-			byte[] state = new byte[hex.Length / 2];
-			state.ReadFromHex(hex);
-			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
-		}
 
 		public void SaveStateBinary(System.IO.BinaryWriter writer)
 		{
@@ -421,8 +402,6 @@ namespace BizHawk.Emulation.Cores.Libretro
 			ms.Close();
 			return savebuff2;
 		}
-
-		public bool BinarySaveStatesPreferred { get { return true; } }
 
 		#endregion
 

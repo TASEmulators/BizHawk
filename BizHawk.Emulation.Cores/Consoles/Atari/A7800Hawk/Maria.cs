@@ -5,7 +5,7 @@ using BizHawk.Common;
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
 	// Emulates the Atari 7800 Maria graphics chip
-	public class Maria
+	public sealed class Maria
 	{
 		public A7800Hawk Core { get; set; }
 
@@ -192,16 +192,11 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 				if (cycle == 453 && !sl_DMA_complete && do_dma && (DMA_phase == DMA_GRAPHICS || DMA_phase == DMA_HEADER))
 				{
-					if (current_DLL_offset == 0)
-					{
-						DMA_phase = DMA_SHUTDOWN_LAST;
-					}
-					else
-					{
-						DMA_phase = DMA_SHUTDOWN_OTHER;
-					}
+					DMA_phase = current_DLL_offset == 0
+						? DMA_SHUTDOWN_LAST
+						: DMA_SHUTDOWN_OTHER;
 
-					DMA_phase_counter = 0;				
+					DMA_phase_counter = 0;
 				}
 				
 				Core.RunCPUCycle();
@@ -296,15 +291,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					Core.tia._hsyncCnt = 0;
 					Core.cpu.RDY = true;
 
-					// swap sacnline buffers
-					if (GFX_index == 1)
-					{
-						GFX_index = 0;
-					}
-					else
-					{
-						GFX_index = 1;
-					}
+					// swap scanline buffers
+					GFX_index = GFX_index == 1 ? 0 : 1;
 				}
 			}
 		}
@@ -377,7 +365,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 								GFX_Objects[header_counter].addr |= (ushort)(temp << 8);
 								header_pointer++;
 								temp = ReadMemory((ushort)(current_DLL_addr + header_pointer));
-								int temp_w = (temp & 0x1F); // this is the 2's complement of width (for reasons that escape me)
+								int temp_w = temp & 0x1F; // this is the 2's complement of width (for reasons that escape me)
 
 								if (temp_w == 0)
 								{
@@ -591,7 +579,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 						Core.cpu_resume_pending = true;
 						sl_DMA_complete = true;
 
-						// on the last line of a zone, we load up the disply list list for the next zone.
+						// on the last line of a zone, we load up the display list list for the next zone.
 						display_zone_counter++;
 						ushort temp_addr = (ushort)(display_zone_pointer + 3 * display_zone_counter);
 						byte temp = ReadMemory(temp_addr);

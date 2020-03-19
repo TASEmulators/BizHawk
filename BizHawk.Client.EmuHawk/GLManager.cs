@@ -1,7 +1,6 @@
 using System;
 using BizHawk.Bizware.BizwareGL;
 
-
 namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
@@ -11,7 +10,6 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private GLManager()
 		{
-
 		}
 
 		public void Dispose()
@@ -20,28 +18,27 @@ namespace BizHawk.Client.EmuHawk
 
 		public static GLManager Instance { get; private set; }
 
-		Bizware.BizwareGL.Drivers.OpenTK.IGL_TK MainContext;
-
-		public static void CreateInstance(Bizware.BizwareGL.Drivers.OpenTK.IGL_TK mainContext)
+		/// <exception cref="InvalidOperationException">instance already created</exception>
+		public static void CreateInstance()
 		{
-			if (Instance != null) throw new InvalidOperationException($"Attempted to create more than one {nameof(GLManager)}");
+			if (Instance != null)
+			{
+				throw new InvalidOperationException($"Attempted to create more than one {nameof(GLManager)}");
+			}
+
 			Instance = new GLManager();
-			Instance.MainContext = mainContext;
 		}
 
 		public void ReleaseGLContext(object o)
 		{
-			ContextRef cr = (ContextRef)o;
-			cr.gl.Dispose();
+			var cr = (ContextRef)o;
+			cr.GL.Dispose();
 		}
 
-		//[System.Runtime.InteropServices.DllImport("opengl32.dll")]
-		//bool wglShareLists(IntPtr hglrc1, IntPtr hglrc2);
-
-		public ContextRef CreateGLContext(int major_version, int minor_version, bool forward_compatible)
+		public ContextRef CreateGLContext(int majorVersion, int minorVersion, bool forwardCompatible)
 		{
-			var gl = new Bizware.BizwareGL.Drivers.OpenTK.IGL_TK(major_version, minor_version, forward_compatible);
-			var ret = new ContextRef { gl = gl };
+			var gl = new IGL_TK(majorVersion, minorVersion, forwardCompatible);
+			var ret = new ContextRef { GL = gl };
 			return ret;
 		}
 
@@ -49,27 +46,16 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new ContextRef
 			{
-				gc = gc,
-				gl = gc.IGL
+				Gc = gc,
+				GL = gc.IGL
 			};
 		}
 
-		/// <summary>
-		/// This might not be a GL implementation. If it isnt GL, then setting it as active context is just NOP
-		/// </summary>
-		public ContextRef GetContextForIGL(IGL gl)
-		{
-			return new ContextRef
-			{
-				gl = gl
-			};
-		}
-
-		ContextRef ActiveContext;
+		private ContextRef _activeContext;
 
 		public void Invalidate()
 		{
-			ActiveContext = null;
+			_activeContext = null;
 		}
 
 		public void Activate(ContextRef cr)
@@ -77,26 +63,32 @@ namespace BizHawk.Client.EmuHawk
 			bool begun = false;
 
 			//this needs a begin signal to set the swap chain to the next backbuffer
-			if (cr.gl is BizHawk.Bizware.BizwareGL.Drivers.SlimDX.IGL_SlimDX9)
+			if (cr.GL is IGL_SlimDX9)
 			{
-				cr.gc.Begin();
+				cr.Gc.Begin();
 				begun = true;
 			}
 
-			if (cr == ActiveContext)
+			if (cr == _activeContext)
+			{
 				return;
+			}
 
-			ActiveContext = cr;
-			if (cr.gc != null)
+			_activeContext = cr;
+			if (cr.Gc != null)
 			{
 				//TODO - this is checking the current context inside to avoid an extra NOP context change. make this optional or remove it, since we're tracking it here
-				if(!begun)
-					cr.gc.Begin();
+				if (!begun)
+				{
+					cr.Gc.Begin();
+				}
 			}
-			else if (cr.gl != null)
+			else
 			{
-				if(cr.gl is BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK)
-					((BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK)cr.gl).MakeDefaultCurrent();
+				if (cr.GL is IGL_TK tk)
+				{
+					tk.MakeDefaultCurrent();
+				}
 			}
 		}
 
@@ -107,8 +99,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public class ContextRef
 		{
-			public IGL gl;
-			public GraphicsControl gc;
+			public IGL GL { get; set; }
+			public GraphicsControl Gc { get; set; }
 		}
 	}
 }

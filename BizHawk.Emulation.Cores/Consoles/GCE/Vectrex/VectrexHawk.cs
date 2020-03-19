@@ -2,7 +2,7 @@
 
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.Components.MC6809;
+using BizHawk.Emulation.Cores.Components.MC6809;
 
 namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 {
@@ -11,8 +11,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		"",
 		isPorted: false,
 		isReleased: true)]
-	[ServiceNotApplicable(typeof(IDriveLight))]
-	public partial class VectrexHawk : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable, 
+	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
+	public partial class VectrexHawk : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, 
 	ISettable<VectrexHawk.VectrexSettings, VectrexHawk.VectrexSyncSettings>
 	{
 		public byte[] RAM = new byte[0x400];
@@ -117,7 +117,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 			_tracer = new TraceBuffer { Header = cpu.TraceHeader };
 			ser.Register<ITraceable>(_tracer);
-
+			ser.Register<IStatable>(new StateSerializer(SyncState));
 			SetupMemoryDomains();
 			HardReset();
 

@@ -16,7 +16,6 @@ namespace BizHawk.Client.Common
 		}
 
 		private readonly Watch _watch;
-		private readonly CompareType _comparisonType;
 		private int? _compare;
 		private int _val;
 		private bool _enabled;
@@ -27,7 +26,7 @@ namespace BizHawk.Client.Common
 			_watch = watch;
 			_compare = compare;
 			_val = value;
-			_comparisonType = comparisonType;
+			ComparisonType = comparisonType;
 
 			Pulse();
 		}
@@ -88,24 +87,15 @@ namespace BizHawk.Client.Common
 
 		public string AddressStr => _watch.AddressString;
 
-		public string ValueStr
-		{
-			get
-			{
-				switch (_watch.Size)
+		public string ValueStr =>
+			_watch.Size switch
 				{
-					default:
-					case WatchSize.Separator:
-						return "";
-					case WatchSize.Byte:
-						return (_watch as ByteWatch).FormatValue((byte)_val);
-					case WatchSize.Word:
-						return (_watch as WordWatch).FormatValue((ushort)_val);
-					case WatchSize.DWord:
-						return (_watch as DWordWatch).FormatValue((uint)_val);
-				}
-			}
-		}
+					WatchSize.Byte => ((ByteWatch) _watch).FormatValue((byte)_val),
+					WatchSize.Word => ((WordWatch) _watch).FormatValue((ushort)_val),
+					WatchSize.DWord => ((DWordWatch) _watch).FormatValue((uint)_val),
+					WatchSize.Separator => "",
+					_ => ""
+				};
 
 		public string CompareStr
 		{
@@ -113,25 +103,21 @@ namespace BizHawk.Client.Common
 			{
 				if (_compare.HasValue)
 				{
-					switch (_watch.Size)
+					return _watch.Size switch
 					{
-						default:
-						case WatchSize.Separator:
-							return "";
-						case WatchSize.Byte:
-							return (_watch as ByteWatch).FormatValue((byte)_compare.Value);
-						case WatchSize.Word:
-							return (_watch as WordWatch).FormatValue((ushort)_compare.Value);
-						case WatchSize.DWord:
-							return (_watch as DWordWatch).FormatValue((uint)_compare.Value);
-					}
+						WatchSize.Byte => ((ByteWatch) _watch).FormatValue((byte)_compare.Value),
+						WatchSize.Word => ((WordWatch) _watch).FormatValue((ushort)_compare.Value),
+						WatchSize.DWord => ((DWordWatch) _watch).FormatValue((uint)_compare.Value),
+						WatchSize.Separator => "",
+						_ => ""
+					};
 				}
 				
 				return "";
 			}
 		}
 
-		public CompareType ComparisonType => _comparisonType;
+		public CompareType ComparisonType { get; }
 
 		public void Enable(bool handleChange = true)
 		{
@@ -171,15 +157,10 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private string GetStringForPulse(int val)
-		{
-			if (_watch.Type == DisplayType.Hex)
-			{
-				return val.ToString("X8");
-			}
-			
-			return val.ToString();
-		}
+		private string GetStringForPulse(int val) =>
+			_watch.Type == DisplayType.Hex
+				? val.ToString("X8")
+				: val.ToString();
 
 		public void Pulse()
 		{
@@ -187,7 +168,7 @@ namespace BizHawk.Client.Common
 			{
 				if (_compare.HasValue)
 				{
-					switch (_comparisonType)
+					switch (ComparisonType)
 					{
 						default:
 						case CompareType.None: // This should never happen, but it's here just in case.  adelikat: And yet it does! Cheat Code converter doesn't do this.  Changing this to default to equal since 99.9999% of all cheats are going to be equals
@@ -240,13 +221,13 @@ namespace BizHawk.Client.Common
 					switch (_watch.Size)
 					{
 						case WatchSize.Byte:
-							_watch.Poke((_watch as ByteWatch).FormatValue((byte)_val));
+							_watch.Poke(((ByteWatch)_watch).FormatValue((byte)_val));
 							break;
 						case WatchSize.Word:
-							_watch.Poke((_watch as WordWatch).FormatValue((ushort)_val));
+							_watch.Poke(((WordWatch)_watch).FormatValue((ushort)_val));
 							break;
 						case WatchSize.DWord:
-							_watch.Poke((_watch as DWordWatch).FormatValue((uint)_val));
+							_watch.Poke(((DWordWatch)_watch).FormatValue((uint)_val));
 							break;
 					}
 				}
@@ -263,10 +244,10 @@ namespace BizHawk.Client.Common
 				case WatchSize.Byte:
 					return _watch.Address == addr;
 				case WatchSize.Word:
-					return (addr == _watch.Address) || (addr == _watch.Address + 1);
+					return addr == _watch.Address || addr == _watch.Address + 1;
 				case WatchSize.DWord:
-					return (addr == _watch.Address) || (addr == _watch.Address + 1) ||
-						(addr == _watch.Address + 2) || (addr == _watch.Address + 3);
+					return addr == _watch.Address || addr == _watch.Address + 1 ||
+						addr == _watch.Address + 2 || addr == _watch.Address + 3;
 			}
 		}
 
@@ -323,12 +304,12 @@ namespace BizHawk.Client.Common
 					else
 					{
 						if (addr == _watch.Address)
-						{							
+						{
 							return (byte)(_val & 0xFF);
 						}
 
 						if (addr == _watch.Address + 1)
-						{							
+						{
 							return (byte)((_val >> 8) & 0xFF);
 						}
 
@@ -381,8 +362,8 @@ namespace BizHawk.Client.Common
 		}
 
 		public void SetType(DisplayType type)
-		{			
-			if (_watch.IsDiplayTypeAvailable(type))
+		{
+			if (_watch.IsDisplayTypeAvailable(type))
 			{
 				_watch.Type = type;
 				Changes();
@@ -396,15 +377,13 @@ namespace BizHawk.Client.Common
 
 		public override bool Equals(object obj)
 		{
-			if (obj is Watch)
+			if (obj is Watch watch)
 			{
-				var watch = obj as Watch;
 				return Domain == watch.Domain && Address == watch.Address;
 			}
 
-			if (obj is Cheat)
+			if (obj is Cheat cheat)
 			{
-				var cheat = obj as Cheat;
 				return Domain == cheat.Domain && Address == cheat.Address;
 			}
 
@@ -419,7 +398,7 @@ namespace BizHawk.Client.Common
 		public static bool operator ==(Cheat a, Cheat b)
 		{
 			// If one is null, but not both, return false.
-			if (((object)a == null) || ((object)b == null))
+			if ((object)a == null || (object)b == null)
 			{
 				return false;
 			}
@@ -435,7 +414,7 @@ namespace BizHawk.Client.Common
 		public static bool operator ==(Cheat a, Watch b)
 		{
 			// If one is null, but not both, return false.
-			if (((object)a == null) || ((object)b == null))
+			if ((object)a == null || (object)b == null)
 			{
 				return false;
 			}

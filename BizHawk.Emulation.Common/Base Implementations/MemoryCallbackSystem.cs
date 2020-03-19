@@ -33,15 +33,13 @@ namespace BizHawk.Emulation.Common
 		private readonly ObservableCollection<IMemoryCallback> _writes = new ObservableCollection<IMemoryCallback>();
 		private readonly ObservableCollection<IMemoryCallback> _execs = new ObservableCollection<IMemoryCallback>();
 
-		private bool _hasReads;
-		private bool _hasWrites;
-		private bool _hasExecutes;
 		private bool _hasAny;
 
 		public bool ExecuteCallbacksAvailable { get; }
 
 		public string[] AvailableScopes { get; }
 
+		/// <exception cref="InvalidOperationException">scope of <paramref name="callback"/> isn't available</exception>
 		public void Add(IMemoryCallback callback)
 		{
 			if (!AvailableScopes.Contains(callback.Scope))
@@ -70,6 +68,8 @@ namespace BizHawk.Emulation.Common
 
 		private static void Call(ObservableCollection<IMemoryCallback> cbs, uint addr, uint value, uint flags, string scope)
 		{
+			// ReSharper disable once ForCanBeConvertedToForeach
+			// Intentionally a for loop - https://github.com/TASVideos/BizHawk/issues/1823
 			for (int i = 0; i < cbs.Count; i++)
 			{
 				if (!cbs[i].Address.HasValue || (cbs[i].Scope == scope && cbs[i].Address == (addr & cbs[i].AddressMask)))
@@ -81,84 +81,69 @@ namespace BizHawk.Emulation.Common
 
 		public void CallMemoryCallbacks(uint addr, uint value, uint flags, string scope)
 		{
-			if (!_hasAny) return;
-
-			if (_hasReads)
+			if (!_hasAny)
 			{
-				if((flags & (uint)MemoryCallbackFlags.AccessRead)!=0)
+				return;
+			}
+
+			if (HasReads)
+			{
+				if ((flags & (uint) MemoryCallbackFlags.AccessRead) != 0)
+				{
 					Call(_reads, addr, value, flags, scope);
+				}
 			}
 
-			if (_hasWrites)
+			if (HasWrites)
 			{
-				if((flags & (uint)MemoryCallbackFlags.AccessWrite)!=0)
+				if ((flags & (uint) MemoryCallbackFlags.AccessWrite) != 0)
+				{
 					Call(_writes, addr, value, flags, scope);
+				}
 			}
 
-			if (_hasExecutes)
+			if (HasExecutes)
 			{
-				if((flags & (uint)MemoryCallbackFlags.AccessExecute)!=0)
+				if ((flags & (uint) MemoryCallbackFlags.AccessExecute) != 0)
+				{
 					Call(_execs, addr, value, flags, scope);
+				}
 			}
 		}
 
-		public void CallReads(uint addr, uint value, uint flags, string scope)
-		{
-			if (_hasReads)
-			{
-				Call(_reads, addr, value, flags, scope);
-			}
-		}
+		public bool HasReads { get; private set; }
 
-		public void CallWrites(uint addr, uint value, uint flags, string scope)
-		{
-			if (_hasWrites)
-			{
-				Call(_writes, addr, value, flags, scope);
-			}
-		}
+		public bool HasWrites { get; private set; }
 
-		public void CallExecutes(uint addr, uint value, uint flags, string scope)
-		{
-			if (_hasExecutes)
-			{
-				Call(_execs, addr, value, flags, scope);
-			}
-		}
-
-		public bool HasReads => _hasReads;
-
-		public bool HasWrites => _hasWrites;
-
-		public bool HasExecutes => _hasExecutes;
+		public bool HasExecutes { get; private set; }
 
 		public bool HasReadsForScope(string scope)
 		{
-			return _reads.Where(e => e.Scope == scope).Any();
+			return _reads.Any(e => e.Scope == scope);
 		}
 
 		public bool HasWritesForScope(string scope)
 		{
-			return _writes.Where(e => e.Scope == scope).Any();
+			return _writes.Any(e => e.Scope == scope);
 		}
 
 		public bool HasExecutesForScope(string scope)
 		{
-			return _execs.Where(e => e.Scope == scope).Any();
+			return _execs.Any(e => e.Scope == scope);
 		}
 
 		private bool UpdateHasVariables()
 		{
-			bool hadReads = _hasReads;
-			bool hadWrites = _hasWrites;
-			bool hadExecutes = _hasExecutes;
+			bool hadReads = HasReads;
+			bool hadWrites = HasWrites;
+			bool hadExecutes = HasExecutes;
 
-			_hasReads = _reads.Count > 0;
-			_hasWrites = _writes.Count > 0;
-			_hasExecutes = _execs.Count > 0;
-			_hasAny = _hasReads || _hasWrites || _hasExecutes;
+			HasReads = _reads.Count > 0;
+			HasWrites = _writes.Count > 0;
+			HasExecutes = _execs.Count > 0;
+			_hasAny = HasReads || HasWrites || HasExecutes;
 
-			return (_hasReads != hadReads || _hasWrites != hadWrites || _hasExecutes != hadExecutes);
+			return HasReads != hadReads || HasWrites != hadWrites || HasExecutes != hadExecutes;
 		}
 
 		private int RemoveInternal(MemoryCallbackDelegate action)
@@ -313,11 +298,6 @@ namespace BizHawk.Emulation.Common
 	{
 		public MemoryCallback(string scope, MemoryCallbackType type, string name, MemoryCallbackDelegate callback, uint? address, uint? mask)
 		{
-			if (type == MemoryCallbackType.Execute && !address.HasValue)
-			{
-				throw new InvalidOperationException("When assigning an execute callback, an address must be specified");
-			}
-
 			Type = type;
 			Name = name;
 			Callback = callback;

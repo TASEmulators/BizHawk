@@ -1,6 +1,4 @@
-﻿using System;
-
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
@@ -143,7 +141,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			switch (SyncSettings.ControllerType)
 			{
-				case "Paddle":
+				case SmsSyncSettings.ControllerTypes.Paddle:
 					{
 						// use analog values from a controller, see http://www.smspower.org/Development/Paddle
 
@@ -200,11 +198,11 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					}
 					break;
 
-				case "Light Phaser":
+				case SmsSyncSettings.ControllerTypes.LightPhaser:
 					if (_controller.IsPressed("P1 Trigger")) value &= 0xEF;
 					break;
 
-				case "Sports Pad":
+				case SmsSyncSettings.ControllerTypes.SportsPad:
 					{
 						int p1X;
 						if (_controller.IsPressed("P1 Left"))
@@ -238,7 +236,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 						else
 							p2Y = (int)_controller.GetFloat("P2 Y");
 
-						if (_region == "Japan")
+						if (_region == SmsSyncSettings.Regions.Japan)
 						{
 							p1X += 128;
 							p1Y += 128;
@@ -262,7 +260,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 						}
 						else if (!Controller1SelectHigh && (Controller1State % 2 == 1))
 						{
-							if (++Controller1State == (_region == "Japan" ? 6 : 4))
+							if (++Controller1State == (_region == SmsSyncSettings.Regions.Japan ? 6 : 4))
 								Controller1State = 0;
 						}
 						if (Controller2SelectHigh && (Controller2State % 2 == 0))
@@ -271,7 +269,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 						}
 						else if (!Controller2SelectHigh && (Controller2State % 2 == 1))
 						{
-							if (++Controller2State == (_region == "Japan" ? 6 : 4))
+							if (++Controller2State == (_region == SmsSyncSettings.Regions.Japan ? 6 : 4))
 								Controller2State = 0;
 						}
 
@@ -312,7 +310,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 								break;
 						}
 
-						if (_region != "Japan")
+						if (_region != SmsSyncSettings.Regions.Japan)
 						{
 							// Buttons like normal in Export
 							if (_controller.IsPressed("P1 B1")) value &= 0xEF;
@@ -353,7 +351,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					}
 					break;
 
-				case "Keyboard":
+				case SmsSyncSettings.ControllerTypes.Keyboard:
 					{
 						// use keyboard map to get each bit
 
@@ -395,7 +393,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			switch (SyncSettings.ControllerType)
 			{
-				case "Paddle":
+				case SmsSyncSettings.ControllerTypes.Paddle:
 					{
 						// use analog values from a controller, see http://www.smspower.org/Development/Paddle
 
@@ -427,7 +425,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					}
 					break;
 
-				case "Light Phaser":
+				case SmsSyncSettings.ControllerTypes.LightPhaser:
 					if (LatchLightPhaser)
 					{
 						value &= 0xBF;
@@ -435,7 +433,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					}
 					break;
 
-				case "Sports Pad":
+				case SmsSyncSettings.ControllerTypes.SportsPad:
 					{
 						int p2X;
 						if (_controller.IsPressed("P2 Left"))
@@ -453,7 +451,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 						else
 							p2Y = (int)_controller.GetFloat("P2 Y");
 
-						if (_region == "Japan")
+						if (_region == SmsSyncSettings.Regions.Japan)
 						{
 							p2X += 128;
 							p2Y += 128;
@@ -472,7 +470,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 						}
 						else if (!Controller2SelectHigh && (Controller2State % 2 == 1))
 						{
-							if (++Controller2State == (_region == "Japan" ? 6 : 4))
+							if (++Controller2State == (_region == SmsSyncSettings.Regions.Japan ? 6 : 4))
 								Controller2State = 0;
 						}
 
@@ -495,7 +493,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 								if ((p2Y & 0x08) == 0) value &= 0xFD;
 								break;
 						}
-						if (_region != "Japan")
+						if (_region != SmsSyncSettings.Regions.Japan)
 						{
 							// Buttons like normal in Export
 							if (_controller.IsPressed("P2 B1")) value &= 0xFB;
@@ -510,7 +508,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					}
 					break;
 
-				case "Keyboard":
+				case SmsSyncSettings.ControllerTypes.Keyboard:
 					{
 						value &= 0x7F;
 
@@ -542,7 +540,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			if ((Port3F & 0x0F) == 5)
 			{
-				if (_region == "Japan")
+				if (_region == SmsSyncSettings.Regions.Japan)
 				{
 					value &= 0x3F;
 				}
@@ -563,7 +561,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			const int phaserRadius = 4;
 
 			// specifically lightgun needs to do things on a per-line basis
-			if (SyncSettings.ControllerType == "Light Phaser")
+			if (SyncSettings.ControllerType == SmsSyncSettings.ControllerTypes.LightPhaser)
 			{
 				byte phaserX = (byte)(_controller.GetFloat("P1 X") + 20);
 				int phaserY = (int)_controller.GetFloat("P1 Y");
@@ -601,7 +599,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				value ^= 0x80;
 			}
 
-			if (RegionStr == "Japan")
+			if (_region == SmsSyncSettings.Regions.Japan)
 			{
 				value ^= 0x40;
 			}
@@ -614,7 +612,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			// The 3F port's TH slot is also used on games in some games in Export BIOS to clock the paddle state
 			// Re: the paddle: Yes it's silly considering the paddle was never released outside Japan but the games think otherwise
 
-			if (_region != "Japan")
+			if (_region != SmsSyncSettings.Regions.Japan)
 			{
 				if ((Port3F & 0x02) == 0x00)
 				{
@@ -637,7 +635,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		private void PostsetControllerState(int pin)
 		{
 			// for the benefit of the Japan region
-			if (_region == "Japan" && (++ControllerTick) == 2)
+			if (_region == SmsSyncSettings.Regions.Japan && (++ControllerTick) == 2)
 			{
 				ControllerTick = 0;
 
@@ -653,4 +651,4 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 		}
 	}
-}
+} 

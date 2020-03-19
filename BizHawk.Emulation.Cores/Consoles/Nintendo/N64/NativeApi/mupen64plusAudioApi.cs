@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using BizHawk.Emulation.Cores.Nintendo.N64;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 {
@@ -10,9 +9,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// Handle to native audio plugin
 		/// </summary>
 		private IntPtr AudDll;
-
-		[DllImport("kernel32.dll")]
-		public static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
 
 		/// <summary>
 		/// Gets the size of the mupen64plus audio buffer
@@ -44,13 +40,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <param name="core">Core with loaded core api</param>
 		public mupen64plusAudioApi(mupen64plusApi core)
 		{
+			T GetAudioDelegate<T>(string proc) where T : Delegate => mupen64plusApi.GetTypedDelegate<T>(AudDll, proc);
+
 			AudDll = core.AttachPlugin(mupen64plusApi.m64p_plugin_type.M64PLUGIN_AUDIO,
 				"mupen64plus-audio-bkm.dll");
 
 			// Connect dll functions
-			dllGetBufferSize = (GetBufferSize)Marshal.GetDelegateForFunctionPointer(GetProcAddress(AudDll, "GetBufferSize"), typeof(GetBufferSize));
-			dllReadAudioBuffer = (ReadAudioBuffer)Marshal.GetDelegateForFunctionPointer(GetProcAddress(AudDll, "ReadAudioBuffer"), typeof(ReadAudioBuffer));
-			dllGetAudioRate = (GetAudioRate)Marshal.GetDelegateForFunctionPointer(GetProcAddress(AudDll, "GetAudioRate"), typeof(GetAudioRate));
+			dllGetBufferSize = GetAudioDelegate<GetBufferSize>("GetBufferSize");
+			dllReadAudioBuffer = GetAudioDelegate<ReadAudioBuffer>("ReadAudioBuffer");
+			dllGetAudioRate = GetAudioDelegate<GetAudioRate>("GetAudioRate");
 		}
 
 		/// <summary>

@@ -111,9 +111,6 @@
     <ClInclude Include="src\video\ly_counter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\video\m0_irq.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\video\next_m0_time.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -121,6 +118,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\video\sprite_mapper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\interrupter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\array.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sound\psgdef.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\video\mstat_irq.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\video\lcddef.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -201,6 +213,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\video\sprite_mapper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Interrupter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

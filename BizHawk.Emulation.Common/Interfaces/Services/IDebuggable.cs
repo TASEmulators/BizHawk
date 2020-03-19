@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Common
 {
@@ -46,9 +47,10 @@ namespace BizHawk.Emulation.Common
 
 	public class RegisterValue
 	{
-		public ulong Value { get; private set; }
-		public byte BitSize { get; private set; }
+		public ulong Value { get; }
+		public byte BitSize { get; }
 
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="bitSize"/> not in 1..64</exception>
 		public RegisterValue(ulong val, byte bitSize)
 		{
 			if (bitSize == 64)
@@ -57,7 +59,7 @@ namespace BizHawk.Emulation.Common
 			}
 			else if (bitSize > 64 || bitSize == 0)
 			{
-				throw new System.ArgumentOutOfRangeException(nameof(bitSize), $"{nameof(BitSize)} must be in 1..64");
+				throw new ArgumentOutOfRangeException(nameof(bitSize), $"{nameof(BitSize)} must be in 1..64");
 			}
 			else
 			{
@@ -121,49 +123,14 @@ namespace BizHawk.Emulation.Common
 			BitSize = 64;
 		}
 
-		public static implicit operator RegisterValue(bool val)
-		{
-			return new RegisterValue(val);
-		}
-
-		public static implicit operator RegisterValue(byte val)
-		{
-			return new RegisterValue(val);
-		}
-
-		public static implicit operator RegisterValue(sbyte val)
-		{
-			return new RegisterValue(val);
-		}
-
-		public static implicit operator RegisterValue(ushort val)
-		{
-			return new RegisterValue(val);
-		}
-
-		public static implicit operator RegisterValue(short val)
-		{
-			return new RegisterValue(val);
-		}
-
-		public static implicit operator RegisterValue(uint val)
-		{
-			return new RegisterValue(val);
-		}
-
-		public static implicit operator RegisterValue(int val)
-		{
-			return new RegisterValue(val);
-		}
-
-		public static implicit operator RegisterValue(ulong val)
-		{
-			return new RegisterValue(val);
-		}
-
-		public static implicit operator RegisterValue(long val)
-		{
-			return new RegisterValue(val);
-		}
+		public static implicit operator RegisterValue(bool val) => new RegisterValue(val);
+		public static implicit operator RegisterValue(byte val) => new RegisterValue(val);
+		public static implicit operator RegisterValue(sbyte val) => new RegisterValue(val);
+		public static implicit operator RegisterValue(ushort val) => new RegisterValue(val);
+		public static implicit operator RegisterValue(short val) => new RegisterValue(val);
+		public static implicit operator RegisterValue(uint val) => new RegisterValue(val);
+		public static implicit operator RegisterValue(int val) => new RegisterValue(val);
+		public static implicit operator RegisterValue(ulong val) => new RegisterValue(val);
+		public static implicit operator RegisterValue(long val) => new RegisterValue(val);
 	}
 }

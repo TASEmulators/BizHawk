@@ -1,5 +1,6 @@
 ﻿using System;
 using BizHawk.Client.Common;
+using BizHawk.Common;
 
 namespace BizHawk.Client.ApiHawk
 {
@@ -10,11 +11,10 @@ namespace BizHawk.Client.ApiHawk
 	{
 		#region Fields
 
-		private SystemInfo _System;
-		private JoypadButton _PressedButtons;
-		private float _AnalogX;
-		private float _AnalogY;
-		private int _Player;
+		private JoypadButton _pressedButtons;
+		private float _analogX;
+		private float _analogY;
+		private int _player;
 
 		#endregion
 
@@ -25,15 +25,16 @@ namespace BizHawk.Client.ApiHawk
 		/// </summary>
 		/// <param name="system">What <see cref="SystemInfo"/> this <see cref="Joypad"/> is used for</param>
 		/// <param name="player">Which player this controller is assigned to</param>
+		/// <exception cref="IndexOutOfRangeException"><paramref name="player"/> not in range <c>1..max</c> where <c>max</c> is <paramref name="system"/>.<see cref="SystemInfo.MaxControllers"/></exception>
 		internal Joypad(SystemInfo system, int player)
 		{
-			if (player < 1 || player > system.MaxControllers)
+			if (!1.RangeTo(system.MaxControllers).Contains(player))
 			{
 				throw new InvalidOperationException($"{player} is invalid for {system.DisplayName}");
 			}
 
-			_System = system;
-			_Player = player;
+			System = system;
+			_player = player;
 		}
 
 		#endregion
@@ -46,19 +47,17 @@ namespace BizHawk.Client.ApiHawk
 		/// <param name="input">Input to add</param>
 		public void AddInput(JoypadButton input)
 		{
-			input &= _System.AvailableButtons;
-			_PressedButtons |= input;
+			input &= System.AvailableButtons;
+			_pressedButtons |= input;
 		}
-
 
 		/// <summary>
 		/// Clear inputs
 		/// </summary>
 		public void ClearInputs()
 		{
-			_PressedButtons = 0;
+			_pressedButtons = 0;
 		}
-
 
 		/// <summary>
 		/// Remove specified input to current ones
@@ -66,44 +65,31 @@ namespace BizHawk.Client.ApiHawk
 		/// <param name="input">Input to remove</param>
 		public void RemoveInput(JoypadButton input)
 		{
-			_PressedButtons ^= input;
+			_pressedButtons ^= input;
 		}
 
 		#endregion
-
 
 		#region Properties
 
 		/// <summary>
 		/// Gets or sets X value for Analog stick
 		/// </summary>
-		/// <remarks>The value you get will aways be rounded to 0 decimal</remarks>
+		/// <remarks>The value you get will always be rounded to 0 decimal</remarks>
 		public float AnalogX
 		{
-			get
-			{
-				return (float)Math.Round(_AnalogX, 0);
-			}
-			set
-			{
-				_AnalogX = value;
-			}
+			get => (float)Math.Round(_analogX, 0);
+			set => _analogX = value;
 		}
 
 		/// <summary>
 		/// Gets or sets Y value for Analog stick
 		/// </summary>
-		/// <remarks>The value you get will aways be rounded to 0 decimal</remarks>
+		/// <remarks>The value you get will always be rounded to 0 decimal</remarks>
 		public float AnalogY
 		{
-			get
-			{
-				return (float)Math.Round(_AnalogY, 0);
-			}
-			set
-			{
-				_AnalogY = value;
-			}
+			get => (float)Math.Round(_analogY, 0);
+			set => _analogY = value;
 		}
 
 		/// <summary>
@@ -113,27 +99,18 @@ namespace BizHawk.Client.ApiHawk
 		/// <remarks>It overrides all existing inputs</remarks>
 		public JoypadButton Inputs
 		{
-			get
-			{
-				return _PressedButtons;
-			}
+			get => _pressedButtons;
 			set
 			{
-				value &= _System.AvailableButtons;
-				_PressedButtons = value;
+				value &= System.AvailableButtons;
+				_pressedButtons = value;
 			}
 		}
 
 		/// <summary>
 		/// Gets <see cref="SystemInfo"/> for current <see cref="Joypad"/>
 		/// </summary>
-		public SystemInfo System
-		{
-			get
-			{
-				return _System;
-			}
-		}
+		public SystemInfo System { get; }
 
 		#endregion
 	}

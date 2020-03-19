@@ -13,21 +13,12 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			[Description("Choose a monochrome monitor.")]
 			public bool Monochrome { get; set; }
 
-			public Settings Clone()
-			{
-				return (Settings)MemberwiseClone();
-			}
+			public Settings Clone() => (Settings)MemberwiseClone();
 		}
 
-		public Settings GetSettings()
-		{
-			return _settings.Clone();
-		}
+		public Settings GetSettings() => _settings.Clone();
 
-		public object GetSyncSettings()
-		{
-			return null;
-		}
+		public object GetSyncSettings() => null;
 
 		public bool PutSettings(Settings o)
 		{
@@ -39,9 +30,6 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			return false;
 		}
 
-		public bool PutSyncSettings(object o)
-		{
-			return false;
-		}
+		public bool PutSyncSettings(object o) => false;
 	}
 }

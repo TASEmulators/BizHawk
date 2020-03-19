@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		/// <summary>
 		/// the syncsettings that this run of emulation is using (was passed to ctor)
 		/// </summary>
-		private QuickNESSyncSettings _syncSettings;
+		private readonly QuickNESSyncSettings _syncSettings;
 
 		/// <summary>
 		/// the syncsettings that were requested but won't be used yet
@@ -60,8 +60,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			[DisplayName("Visible Sprites")]
 			public int NumSprites
 			{
-				get { return _NumSprites; }
-				set { _NumSprites = Math.Min(64, Math.Max(0, value)); }
+				get => _NumSprites;
+				set => _NumSprites = Math.Min(64, Math.Max(0, value));
 			}
 
 			[JsonIgnore]
@@ -80,15 +80,22 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			[Browsable(false)]
 			public byte[] Palette
 			{
-				get { return _Palette; }
+				get => _Palette;
 				set
 				{
 					if (value == null)
+					{
 						throw new ArgumentNullException();
-					else if (value.Length == 64 * 8 * 3)
+					}
+
+					if (value.Length == 64 * 8 * 3)
+					{
 						_Palette = value;
+					}
 					else
+					{
 						throw new ArgumentOutOfRangeException();
+					}
 				}
 			}
 
@@ -120,7 +127,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 				if (nColors == 512)
 				{
-					//just copy the palette directly
+					// just copy the palette directly
 					for (int c = 0; c < nColors; c++)
 					{
 						_Palette[c * 3 + 0] = pal[c, 0];
@@ -130,7 +137,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				}
 				else
 				{
-					//use quickNES's deemph calculator
+					// use quickNES's deemph calculator
 					for (int c = 0; c < 64; c++)
 					{
 						int a = c & 63;
@@ -183,7 +190,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			public static bool NeedsReboot(QuickNESSyncSettings x, QuickNESSyncSettings y)
 			{
 				// the core can handle dynamic plugging and unplugging, but that changes
-				// the controllerdefinition, and we're not ready for that
+				// the ControllerDefinition, and we're not ready for that
 				return !DeepEquality.DeepEquals(x, y);
 			}
 		}

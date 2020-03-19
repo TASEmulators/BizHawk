@@ -64,7 +64,6 @@
             "-",
             "-",
             "-"}, -1);
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PCESoundDebugger));
 			this.btnExport = new System.Windows.Forms.Button();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.lvPsgWaveforms = new System.Windows.Forms.ListView();
@@ -94,7 +93,7 @@
 			this.btnExport.TabIndex = 0;
 			this.btnExport.Text = "Export";
 			this.btnExport.UseVisualStyleBackColor = true;
-			this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
+			this.btnExport.Click += new System.EventHandler(this.BtnExport_Click);
 			// 
 			// groupBox1
 			// 
@@ -128,7 +127,6 @@
 			this.lvPsgWaveforms.UseCompatibleStateImageBehavior = false;
 			this.lvPsgWaveforms.View = System.Windows.Forms.View.Details;
 			this.lvPsgWaveforms.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.lvPsgWaveforms_AfterLabelEdit);
-			this.lvPsgWaveforms.ItemActivate += new System.EventHandler(this.lvPsgWaveforms_ItemActivate);
 			this.lvPsgWaveforms.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lvPsgWaveforms_KeyDown);
 			// 
 			// colName
@@ -150,7 +148,7 @@
 			this.btnReset.TabIndex = 1;
 			this.btnReset.Text = "Reset";
 			this.btnReset.UseVisualStyleBackColor = true;
-			this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
+			this.btnReset.Click += new System.EventHandler(this.BtnReset_Click);
 			// 
 			// groupBox2
 			// 
@@ -187,7 +185,6 @@
 			this.lvChEn.UseCompatibleStateImageBehavior = false;
 			this.lvChEn.View = System.Windows.Forms.View.List;
 			this.lvChEn.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.lvChEn_ItemChecked);
-			this.lvChEn.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.lvChEn_ItemSelectionChanged);
 			// 
 			// groupBox3
 			// 
@@ -264,7 +261,7 @@
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.SoundMenuStrip);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.Bug_MultiSize;
 			this.MainMenuStrip = this.SoundMenuStrip;
 			this.Name = "PCESoundDebugger";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

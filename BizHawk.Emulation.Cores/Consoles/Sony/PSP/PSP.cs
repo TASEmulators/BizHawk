@@ -10,6 +10,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 		"hrydgard",
 		isPorted: true,
 		isReleased: false,
+		portedVersion: null,
+		portedUrl: null,
 		singleInstance: true)]
 	public class PSP : IEmulator, IVideoProvider, ISoundProvider
 	{
@@ -62,10 +64,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 			}
 		};
 
-		public ControllerDefinition ControllerDefinition { get { return PSPController; } }
-		public bool DeterministicEmulation { get { return true; } }
-		public string SystemId { get { return "PSP"; } }
-		public CoreComm CoreComm { get; private set; }
+		public ControllerDefinition ControllerDefinition => PSPController;
+		public bool DeterministicEmulation => true;
+		public string SystemId => "PSP";
+		public CoreComm CoreComm { get; }
 
 		PPSSPPDll.LogCB logcallback = null;
 		Queue<string> debugmsgs = new Queue<string>();
@@ -87,7 +89,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 		static PSP attachedcore = null;
 		object glcontext;
 
-		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+		public IEmulatorServiceProvider ServiceProvider { get; }
 
 		public void Dispose()
 		{
@@ -165,29 +167,23 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 		const int screenwidth = 480;
 		const int screenheight = 272;
 		readonly int[] screenbuffer = new int[screenwidth * screenheight];
-		public int[] GetVideoBuffer() { return screenbuffer; }
-		public int VirtualWidth { get { return screenwidth; } }
-		public int VirtualHeight { get { return screenheight; } }
-		public int BufferWidth { get { return screenwidth; } }
-		public int BufferHeight { get { return screenheight; } }
-		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
+		public int[] GetVideoBuffer() => screenbuffer;
+		public int VirtualWidth => screenwidth;
+		public int VirtualHeight => screenheight;
+		public int BufferWidth => screenwidth;
+		public int BufferHeight => screenheight;
+		public int BackgroundColor => unchecked((int)0xff000000);
 
 		public int VsyncNumerator
 		{
 			[FeatureNotImplemented]
-			get
-			{
-				return NullVideo.DefaultVsyncNum;
-			}
+			get => NullVideo.DefaultVsyncNum;
 		}
 
 		public int VsyncDenominator
 		{
 			[FeatureNotImplemented]
-			get
-			{
-				return NullVideo.DefaultVsyncDen;
-			}
+			get => NullVideo.DefaultVsyncDen;
 		}
 
 		readonly short[] audiobuffer = new short[2048 * 2];
@@ -202,10 +198,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 		{
 		}
 
-		public bool CanProvideAsync
-		{
-			get { return false; }
-		}
+		public bool CanProvideAsync => false;
 
 		public void SetSyncMode(SyncSoundMode mode)
 		{
@@ -215,10 +208,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 			}
 		}
 
-		public SyncSoundMode SyncMode
-		{
-			get { return SyncSoundMode.Sync; }
-		}
+		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
 		public void GetSamplesAsync(short[] samples)
 		{

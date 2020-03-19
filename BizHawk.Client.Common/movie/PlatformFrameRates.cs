@@ -5,8 +5,8 @@ namespace BizHawk.Client.Common
 {
 	public class PlatformFrameRates
 	{
-		// these are political numbers, designed to be in accord with tasvideos.org tradition. theyre not necessarily mathematical factualities (although they may be in some cases)
-		// it would be nice if we could turn this into a rational expression natively, and also, to write some comments about the derivation and ideal values (since this seems to be where theyre all collected)
+		// these are political numbers, designed to be in accord with tasvideos.org tradition. they're not necessarily mathematical factualities (although they may be in some cases)
+		// it would be nice if we could turn this into a rational expression natively, and also, to write some comments about the derivation and ideal values (since this seems to be where they're all collected)
 		// are we collecting them anywhere else? for avi-writing code perhaps?
 
 		// just some constants, according to specs
@@ -20,10 +20,10 @@ namespace BizHawk.Client.Common
 			["NES_PAL"] = 50.006977968268290849,
 			["FDS"] = 60.098813897440515532,
 			["FDS_PAL"] = 50.006977968268290849,
-			["SNES"] = (double)21477272 / (4 * 341 * 262), // 60.098475521
-			["SNES_PAL"] = (double)21281370 / (4 * 341 * 312), // 50.0069789082
-			["SGB"] = (double)21477272 / (4 * 341 * 262), // 60.098475521
-			["SGB_PAL"] = (double)21281370 / (4 * 341 * 312), // 50.0069789082
+			["SNES"] = 21477272.0 / (4 * 341 * 262), // 60.098475521
+			["SNES_PAL"] = 21281370.0 / (4 * 341 * 312), // 50.0069789082
+			["SGB"] = 21477272.0 / (4 * 341 * 262), // 60.098475521
+			["SGB_PAL"] = 21281370.0 / (4 * 341 * 312), // 50.0069789082
 			["PCE"] = (7159090.90909090 / 455 / 263), // 59.8261054535
 			["PCECD"] = (7159090.90909090 / 455 / 263), // 59.8261054535
 			["SMS"] = (3579545 / 262.0 / 228.0), // 59.9227434043
@@ -38,6 +38,7 @@ namespace BizHawk.Client.Common
 			["WSWAN"] = (3072000.0 / (159 * 256)), // 75.4716981132
 			["GB"] = 262144.0 / 4389.0, // 59.7275005696
 			["GBC"] = 262144.0 / 4389.0, // 59.7275005696
+			["GB_Clock"] = 2097152.0,
 			["GBA"] = 262144.0 / 4389.0, // 59.7275005696 
 			["GEN"] = 53693175 / (3420.0 * 262),
 			["GEN_PAL"] = 53203424 / (3420.0 * 313),
@@ -61,51 +62,52 @@ namespace BizHawk.Client.Common
 			["C64_DREAN"] = PALNCarrier * 2 / 7 / 312 / 65,
 			["INTV"] = 59.92,
 
-            ["ZXSpectrum_PAL"] = 50.080128205,
-            ["AmstradCPC_PAL"] = 50.08012820512821,
+			["ZXSpectrum_PAL"] = 50.080128205,
+			["AmstradCPC_PAL"] = 50.08012820512821,
 
-            // according to ryphecha, using
-            // clocks[2] = { 53.693182e06, 53.203425e06 }; //ntsc console, pal console
-            // lpf[2][2] = { { 263, 262.5 }, { 314, 312.5 } }; //ntsc,pal; noninterlaced, interlaced
-            // cpl[2] = { 3412.5, 3405 }; //ntsc mode, pal mode
-            // PAL PS1: 0, PAL Mode: 0, Interlaced: 0 --- 59.826106 (53.693182e06/(263*3412.5))
-            // PAL PS1: 0, PAL Mode: 0, Interlaced: 1 --- 59.940060 (53.693182e06/(262.5*3412.5))
-            // PAL PS1: 1, PAL Mode: 1, Interlaced: 0 --- 49.761427 (53.203425e06/(314*3405))
-            // PAL PS1: 1, PAL Mode: 1, Interlaced: 1 --- 50.000282(53.203425e06/(312.5*3405))
-        };
+			// according to ryphecha, using
+			// clocks[2] = { 53.693182e06, 53.203425e06 }; //ntsc console, pal console
+			// lpf[2][2] = { { 263, 262.5 }, { 314, 312.5 } }; //ntsc,pal; non-interlaced, interlaced
+			// cpl[2] = { 3412.5, 3405 }; //ntsc mode, pal mode
+			// PAL PS1: 0, PAL Mode: 0, Interlaced: 0 --- 59.826106 (53.693182e06/(263*3412.5))
+			// PAL PS1: 0, PAL Mode: 0, Interlaced: 1 --- 59.940060 (53.693182e06/(262.5*3412.5))
+			// PAL PS1: 1, PAL Mode: 1, Interlaced: 0 --- 49.761427 (53.203425e06/(314*3405))
+			// PAL PS1: 1, PAL Mode: 1, Interlaced: 1 --- 50.000282(53.203425e06/(312.5*3405))
+		};
 
 		public double this[string systemId, bool pal]
 		{
 			get
 			{
 				var key = systemId + (pal ? "_PAL" : "");
-				if (Rates.ContainsKey(key))
-				{
-					return Rates[key];
-				}
-
-				return 60.0;
+				return Rates.ContainsKey(key) ? Rates[key] : 60.0;
 			}
 		}
 
 		public TimeSpan MovieTime(IMovie movie)
 		{
-			var dblseconds = GetSeconds(movie);
-			var seconds = (int)(dblseconds % 60);
+			var dblSeconds = GetSeconds(movie);
+			var seconds = (int)(dblSeconds % 60);
 			var days = seconds / 86400;
 			var hours = seconds / 3600;
 			var minutes = (seconds / 60) % 60;
-			var milliseconds = (int)((dblseconds - seconds) * 1000);
+			var milliseconds = (int)((dblSeconds - seconds) * 1000);
 			return new TimeSpan(days, hours, minutes, seconds, milliseconds);
 		}
 
 		private double Fps(IMovie movie)
 		{
-			var system = movie.HeaderEntries[HeaderKeys.PLATFORM];
-			var pal = movie.HeaderEntries.ContainsKey(HeaderKeys.PAL) &&
-				movie.HeaderEntries[HeaderKeys.PAL] == "1";
+			var system = movie.HeaderEntries[HeaderKeys.Platform];
+			var core = movie.HeaderEntries[HeaderKeys.Core];
+			var pal = movie.HeaderEntries.ContainsKey(HeaderKeys.Pal)
+				&& movie.HeaderEntries[HeaderKeys.Pal] == "1";
 
-				return this[system, pal];
+			if (movie.HeaderEntries.ContainsKey(HeaderKeys.CycleCount) && core == "Gambatte")
+			{
+				system = "GB_Clock";
+			}
+
+			return this[system, pal];
 		}
 
 		private double GetSeconds(IMovie movie)

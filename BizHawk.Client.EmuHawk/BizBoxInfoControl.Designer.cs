@@ -92,7 +92,6 @@
 			this.Controls.Add(this.CoreNameLabel);
 			this.Name = "BizBoxInfoControl";
 			this.Size = new System.Drawing.Size(359, 25);
-			this.Load += new System.EventHandler(this.BizBoxInfoControl_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

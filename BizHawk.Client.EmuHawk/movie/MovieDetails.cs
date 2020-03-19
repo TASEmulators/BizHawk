@@ -7,15 +7,8 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public class MovieDetails
 	{
-		public string Keys { get; set; }
-		public string Values { get; set; }
-		public Color BackgroundColor { get; set; }
-
-		public MovieDetails()
-		{
-			Keys = "";
-			Values = "";
-			BackgroundColor = Color.White;
-		}
+		public string Keys { get; set; } = "";
+		public string Values { get; set; } = "";
+		public Color BackgroundColor { get; set; } = Color.White;
 	}
 }

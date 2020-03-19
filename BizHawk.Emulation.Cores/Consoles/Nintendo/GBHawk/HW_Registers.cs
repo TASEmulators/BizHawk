@@ -1,7 +1,5 @@
 ﻿using System;
-using BizHawk.Emulation.Common;
 using BizHawk.Common.NumberExtensions;
-using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
@@ -114,7 +112,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF4F: // VBK
 					if (GBC_compat)
 					{
-						ret = VRAM_Bank;
+						ret = (byte)(0xFE | VRAM_Bank);
 					}
 					else
 					{
@@ -144,18 +142,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					break;
 
 				case 0xFF56:
-					if (is_GBC)
+					if (GBC_compat)
 					{
 						// can receive data
 						if ((IR_reg & 0xC0) == 0xC0)
 						{
-							ret = (byte)(IR_reg | (IR_self | IR_receive | IR_mask));
+							ret = IR_reg;
 						}
 						else
 						{
 							ret = (byte)(IR_reg | 2);
 						}
-							
 					}
 					else
 					{
@@ -432,7 +429,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if ((IR_reg & 0x1) == 0x1) { IR_signal = (byte)(0 | IR_mask); } else { IR_signal = 2; }
 						
 						// receive own signal if IR on and receive on
-						if ((IR_reg & 0xC1) == 0xC1) { IR_self = 0; } else { IR_self = 2; }
+						if ((IR_reg & 0xC1) == 0xC1) { IR_self = (byte)(0 | IR_mask); } else { IR_self = 2; }
+
+						IR_write = 8;
 					}
 					break;
 
@@ -512,6 +511,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public void Register_Reset()
 		{
 			input_register = 0xCF; // not reading any input
+
+			REG_FFFF = 0;
+			REG_FF0F = 0xE0;
+			REG_FF0F_OLD = 0xE0;
 
 			//undocumented registers
 			undoc_6C = 0xFE;

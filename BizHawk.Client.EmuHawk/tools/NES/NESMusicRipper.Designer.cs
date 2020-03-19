@@ -56,7 +56,7 @@
 			this.btnControl.TabIndex = 0;
 			this.btnControl.Text = "Start";
 			this.btnControl.UseVisualStyleBackColor = true;
-			this.btnControl.Click += new System.EventHandler(this.btnControl_Click);
+			this.btnControl.Click += new System.EventHandler(this.BtnControl_Click);
 			// 
 			// txtDivider
 			// 
@@ -84,7 +84,7 @@
 			this.btnExport.TabIndex = 3;
 			this.btnExport.Text = "Export XRNS File";
 			this.btnExport.UseVisualStyleBackColor = true;
-			this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
+			this.btnExport.Click += new System.EventHandler(this.Export_Click);
 			// 
 			// lblContents
 			// 
@@ -189,12 +189,11 @@
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.textBox1);
 			this.Controls.Add(this.menuStrip1);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.NESControllerIcon_MultiSize;
 			this.Name = "NESMusicRipper";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Music Ripper";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.NESMusicRipper_FormClosed);
-			this.Load += new System.EventHandler(this.NESMusicRipper_Load);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.groupBox2.ResumeLayout(false);

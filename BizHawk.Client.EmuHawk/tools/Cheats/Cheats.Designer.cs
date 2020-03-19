@@ -29,15 +29,7 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Cheats));
-			this.CheatListView = new BizHawk.Client.EmuHawk.VirtualListView();
-			this.CheatName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.Address = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.Value = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.Compare = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.ComparisonType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.On = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.Domain = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.CheatListView = new InputRoll();
 			this.CheatsContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.ToggleContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RemoveContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -101,77 +93,28 @@
 			// 
 			// CheatListView
 			// 
+			this.CheatListView.CellWidthPadding = 3;
 			this.CheatListView.AllowColumnReorder = true;
+			this.CheatListView.AllowColumnResize = true;
+			this.CheatListView.MultiSelect = true;
 			this.CheatListView.AllowDrop = true;
 			this.CheatListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.CheatListView.AutoArrange = false;
-			this.CheatListView.BlazingFast = false;
-			this.CheatListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.CheatName,
-            this.Address,
-            this.Value,
-            this.Compare,
-            this.ComparisonType,
-            this.On,
-            this.Domain});
 			this.CheatListView.ContextMenuStrip = this.CheatsContextMenu;
 			this.CheatListView.FullRowSelect = true;
 			this.CheatListView.GridLines = true;
-			this.CheatListView.HideSelection = false;
-			this.CheatListView.ItemCount = 0;
+			this.CheatListView.RowCount = 0;
 			this.CheatListView.Location = new System.Drawing.Point(12, 72);
 			this.CheatListView.Name = "CheatListView";
-			this.CheatListView.SelectAllInProgress = false;
-			this.CheatListView.selectedItem = -1;
 			this.CheatListView.Size = new System.Drawing.Size(414, 321);
 			this.CheatListView.TabIndex = 1;
-			this.CheatListView.UseCompatibleStateImageBehavior = false;
-			this.CheatListView.UseCustomBackground = true;
-			this.CheatListView.View = System.Windows.Forms.View.Details;
-			this.CheatListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.CheatListView_ColumnClick);
+			this.CheatListView.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.CheatListView_ColumnClick);
 			this.CheatListView.SelectedIndexChanged += new System.EventHandler(this.CheatListView_SelectedIndexChanged);
-			this.CheatListView.Click += new System.EventHandler(this.CheatListView_Click);
 			this.CheatListView.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewCheatForm_DragDrop);
 			this.CheatListView.DragEnter += new System.Windows.Forms.DragEventHandler(this.NewCheatForm_DragEnter);
 			this.CheatListView.DoubleClick += new System.EventHandler(this.CheatListView_DoubleClick);
 			this.CheatListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.CheatListView_KeyDown);
-			// 
-			// CheatName
-			// 
-			this.CheatName.Text = "Name";
-			this.CheatName.Width = 104;
-			// 
-			// Address
-			// 
-			this.Address.Text = "Address";
-			this.Address.Width = 52;
-			// 
-			// Value
-			// 
-			this.Value.Text = "Value";
-			this.Value.Width = 40;
-			// 
-			// Compare
-			// 
-			this.Compare.Text = "Compare";
-			// 
-			// ComparisonType
-			// 
-			this.ComparisonType.Text = "Comparison Type";
-			this.ComparisonType.Width = 194;
-			// 
-			// On
-			// 
-			this.On.Text = "On";
-			this.On.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-			this.On.Width = 40;
-			// 
-			// Domain
-			// 
-			this.Domain.Text = "Domain";
-			this.Domain.Width = 75;
 			// 
 			// CheatsContextMenu
 			// 
@@ -403,6 +346,8 @@
 			// 
 			this.DisableAllCheatsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Stop;
 			this.DisableAllCheatsMenuItem.Name = "DisableAllCheatsMenuItem";
+			this.DisableAllCheatsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Back)));
+			this.DisableAllCheatsMenuItem.ShortcutKeyDisplayString = "Ctrl + Backspace";
 			this.DisableAllCheatsMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.DisableAllCheatsMenuItem.Text = "Disable all";
 			this.DisableAllCheatsMenuItem.Click += new System.EventHandler(this.DisableAllCheatsMenuItem_Click);
@@ -527,7 +472,7 @@
 			// NewToolBarItem
 			// 
 			this.NewToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.NewToolBarItem.Image = ((System.Drawing.Image)(resources.GetObject("NewToolBarItem.Image")));
+			this.NewToolBarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.NewFile;
 			this.NewToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.NewToolBarItem.Name = "NewToolBarItem";
 			this.NewToolBarItem.Size = new System.Drawing.Size(23, 22);
@@ -537,7 +482,7 @@
 			// OpenToolBarItem
 			// 
 			this.OpenToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.OpenToolBarItem.Image = ((System.Drawing.Image)(resources.GetObject("OpenToolBarItem.Image")));
+			this.OpenToolBarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.OpenFile;
 			this.OpenToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.OpenToolBarItem.Name = "OpenToolBarItem";
 			this.OpenToolBarItem.Size = new System.Drawing.Size(23, 22);
@@ -547,7 +492,7 @@
 			// SaveToolBarItem
 			// 
 			this.SaveToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.SaveToolBarItem.Image = ((System.Drawing.Image)(resources.GetObject("SaveToolBarItem.Image")));
+			this.SaveToolBarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.SaveAs;
 			this.SaveToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.SaveToolBarItem.Name = "SaveToolBarItem";
 			this.SaveToolBarItem.Size = new System.Drawing.Size(23, 22);
@@ -612,7 +557,7 @@
 			// LoadGameGenieToolbarItem
 			// 
 			this.LoadGameGenieToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.LoadGameGenieToolbarItem.Image = ((System.Drawing.Image)(resources.GetObject("LoadGameGenieToolbarItem.Image")));
+			this.LoadGameGenieToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.placeholder_bitmap;
 			this.LoadGameGenieToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.LoadGameGenieToolbarItem.Name = "LoadGameGenieToolbarItem";
 			this.LoadGameGenieToolbarItem.Size = new System.Drawing.Size(75, 22);
@@ -673,7 +618,7 @@
 			this.Controls.Add(this.toolStrip1);
 			this.Controls.Add(this.CheatsMenu);
 			this.Controls.Add(this.CheatListView);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.Freeze_MultiSize;
 			this.MinimumSize = new System.Drawing.Size(285, 384);
 			this.Name = "Cheats";
 			this.Text = "Cheats";
@@ -693,14 +638,7 @@
 
 		#endregion
 
-		private VirtualListView CheatListView;
-		private System.Windows.Forms.ColumnHeader CheatName;
-		private System.Windows.Forms.ColumnHeader Address;
-		private System.Windows.Forms.ColumnHeader Value;
-		private System.Windows.Forms.ColumnHeader ComparisonType;
-		private System.Windows.Forms.ColumnHeader Compare;
-		private System.Windows.Forms.ColumnHeader On;
-		private System.Windows.Forms.ColumnHeader Domain;
+		private InputRoll CheatListView;
 		private MenuStripEx CheatsMenu;
 		private System.Windows.Forms.ToolStripMenuItem FileSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem NewMenuItem;

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using System.IO;
 using System.Globalization;
 using System.Collections.Generic;
@@ -75,7 +74,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 
 			/// <summary>
-			/// the CCD specifies this, but it isnt in the actual disc data as such, it is encoded some other (likely difficult to extract) way and thats why CCD puts it here
+			/// the CCD specifies this, but it isnt in the actual disc data as such, it is encoded some other (likely difficult to extract) way and that's why CCD puts it here
 			/// </summary>
 			public int Session;
 
@@ -167,10 +166,11 @@ namespace BizHawk.Emulation.DiscSystem
 				TryGetValue(key, out def);
 				return def;
 			}
+
+			/// <exception cref="CCDParseException"><paramref name="key"/> not found in <see langword="this"/></exception>
 			public int FetchOrFail(string key)
 			{
-				int ret;
-				if(!TryGetValue(key, out ret))
+				if(!TryGetValue(key, out var ret))
 					throw new CCDParseException($"Malformed or unexpected CCD format: missing required [Entry] key: {key}");
 				return ret;
 			}
@@ -192,8 +192,10 @@ namespace BizHawk.Emulation.DiscSystem
 				if (line == "") continue;
 				if (line.StartsWith("["))
 				{
-					currSection = new CCDSection();
-					currSection.Name = line.Trim('[', ']').ToUpper();
+					currSection = new CCDSection
+					{
+						Name = line.Trim('[', ']').ToUpper()
+					};
 					sections.Add(currSection);
 				}
 				else
@@ -234,9 +236,7 @@ namespace BizHawk.Emulation.DiscSystem
 			return version;
 		}
 
-		/// <summary>
-		/// Parses a CCD file contained in the provided stream
-		/// </summary>
+		/// <exception cref="CCDParseException">parsed <see cref="CCDFile.DataTracksScrambled"/> is <c>1</c>, parsed session number is not <c>1</c>, or malformed entry</exception>
 		public CCDFile ParseFrom(Stream stream)
 		{
 			CCDFile ccdf = new CCDFile();
@@ -322,7 +322,7 @@ namespace BizHawk.Emulation.DiscSystem
 			public List<RawTOCEntry> RawTOCEntries;
 			public CCDFile ParsedCCDFile;
 			public bool Valid;
-			public Exception FailureException;
+			public CCDParseException FailureException;
 			public string ImgPath;
 			public string SubPath;
 			public string CcdPath;
@@ -330,10 +330,12 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public static LoadResults LoadCCDPath(string path)
 		{
-			LoadResults ret = new LoadResults();
-			ret.CcdPath = path;
-			ret.ImgPath = Path.ChangeExtension(path, ".img");
-			ret.SubPath = Path.ChangeExtension(path, ".sub");
+			var ret = new LoadResults
+			{
+				CcdPath = path,
+				ImgPath = Path.ChangeExtension(path, ".img"),
+				SubPath = Path.ChangeExtension(path, ".sub")
+			};
 			try
 			{
 				if (!File.Exists(path)) throw new CCDParseException("Malformed CCD format: nonexistent CCD file!");
@@ -411,7 +413,7 @@ namespace BizHawk.Emulation.DiscSystem
 					var track = disc.Session1.Tracks[tnum];
 					sw.WriteLine("[TRACK {0}]", track.Number);
 					sw.WriteLine("MODE={0}", track.Mode);
-					//indexes are BS, dont write them. but we certainly need an index 1
+					//indexes are BS, don't write them. but we certainly need an index 1
 					sw.WriteLine("INDEX 1={0}", track.LBA);
 					sw.WriteLine();
 				}
@@ -423,21 +425,17 @@ namespace BizHawk.Emulation.DiscSystem
 			string imgPath = Path.ChangeExtension(path, ".img");
 			string subPath = Path.ChangeExtension(path, ".sub");
 			var buf2448 = new byte[2448];
-		  DiscSectorReader dsr = new DiscSectorReader(disc);
+			DiscSectorReader dsr = new DiscSectorReader(disc);
 
-			using (var imgFile = File.OpenWrite(imgPath))
-				using (var subFile = File.OpenWrite(subPath))
-				{
-
-					int nLBA = disc.Session1.LeadoutLBA;
-					for (int lba = 0; lba < nLBA; lba++)
-					{
-						dsr.ReadLBA_2448(lba, buf2448, 0);
-						imgFile.Write(buf2448, 0, 2352);
-						subFile.Write(buf2448, 2352, 96);
-					}
-				}
-			
+			using var imgFile = File.OpenWrite(imgPath);
+			using var subFile = File.OpenWrite(subPath);
+			int nLBA = disc.Session1.LeadoutLBA;
+			for (int lba = 0; lba < nLBA; lba++)
+			{
+				dsr.ReadLBA_2448(lba, buf2448, 0);
+				imgFile.Write(buf2448, 0, 2352);
+				subFile.Write(buf2448, 2352, 96);
+			}
 		}
 
 		class SS_CCD : ISectorSynthJob2448
@@ -471,10 +469,7 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 		}
 
-
-		/// <summary>
-		/// Loads a CCD at the specified path to a Disc object
-		/// </summary>
+		/// <exception cref="CCDParseException">file <paramref name="ccdPath"/> not found, nonexistent IMG file, nonexistent SUB file, IMG or SUB file not multiple of <c>2352 B</c>, or IMG and SUB files differ in length</exception>
 		public Disc LoadCCDToDisc(string ccdPath, DiscMountPolicy IN_DiscMountPolicy)
 		{
 			var loadResults = LoadCCDPath(ccdPath);

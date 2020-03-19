@@ -1,36 +1,37 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Calculators;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class TI83PaletteConfig : Form
 	{
-		public TI83PaletteConfig()
+		private readonly MainForm _mainForm;
+		private readonly TI83.TI83Settings _settings;
+
+		public TI83PaletteConfig(
+			MainForm mainForm,
+			TI83.TI83Settings settings)
 		{
+			_mainForm = mainForm;
+			_settings = settings;
 			InitializeComponent();
 		}
 
 		private void TI83PaletteConfig_Load(object sender, EventArgs e)
 		{
-			var s = ((TI83)Global.Emulator).GetSettings();
-
 			// Alpha hack because Winform is lame with colors
-			BackgroundPanel.BackColor = Color.FromArgb(255, Color.FromArgb((int)s.BGColor));
-			ForeGroundPanel.BackColor = Color.FromArgb(255, Color.FromArgb((int)s.ForeColor));
+			BackgroundPanel.BackColor = Color.FromArgb(255, Color.FromArgb((int)_settings.BGColor));
+			ForeGroundPanel.BackColor = Color.FromArgb(255, Color.FromArgb((int)_settings.ForeColor));
 		}
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-			var ti83 = (TI83)Global.Emulator;
-			var s = ti83.GetSettings();
-			s.BGColor = (uint)BackgroundPanel.BackColor.ToArgb();
-			s.ForeColor = (uint)ForeGroundPanel.BackColor.ToArgb();
+			_settings.BGColor = (uint)BackgroundPanel.BackColor.ToArgb();
+			_settings.ForeColor = (uint)ForeGroundPanel.BackColor.ToArgb();
 
-			ti83.PutSettings(s);
+			_mainForm.PutCoreSettings(_settings);
 
 			DialogResult = DialogResult.OK;
 			Close();
@@ -49,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 			// and the rgb order is switched
 			int customColor = BackgroundPanel.BackColor.R | BackgroundPanel.BackColor.G << 8 | BackgroundPanel.BackColor.B << 16;
 
-			var dlg = new ColorDialog
+			using var dlg = new ColorDialog
 			{
 				AllowFullOpen = true,
 				AnyColor = true,
@@ -70,7 +71,7 @@ namespace BizHawk.Client.EmuHawk
 			// and the rgb order is switched
 			int customColor = ForeGroundPanel.BackColor.R | ForeGroundPanel.BackColor.G << 8 | ForeGroundPanel.BackColor.B << 16;
 
-			var dlg = new ColorDialog
+			using var dlg = new ColorDialog
 			{
 				AllowFullOpen = true,
 				AnyColor = true,

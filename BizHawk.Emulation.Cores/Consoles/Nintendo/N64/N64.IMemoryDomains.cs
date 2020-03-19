@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		{
 			int size = api.get_memory_size(id);
 
-			//if this type of memory isnt available, dont make the memory domain
+			//if this type of memory isnt available, don't make the memory domain
 			if (size == 0)
 			{
 				return;

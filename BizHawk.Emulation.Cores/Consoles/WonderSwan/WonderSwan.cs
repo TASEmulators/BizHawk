@@ -6,8 +6,8 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.WonderSwan
 {
-	[Core("Cygne/Mednafen", "Dox, Mednafen Team", true, true, "0.9.36.5", "http://mednafen.sourceforge.net/")]
-	[ServiceNotApplicable(typeof(IDriveLight), typeof(IRegionable))]
+	[Core("Cygne/Mednafen", "Dox, Mednafen Team", true, true, "0.9.36.5", "http://mednafen.sourceforge.net/", false)]
+	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(IRegionable) })]
 	public partial class WonderSwan : IEmulator, IVideoProvider, ISoundProvider,
 		IInputPollable, IDebuggable
 	{
@@ -16,8 +16,8 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
-			_Settings = (Settings)settings ?? new Settings();
-			_SyncSettings = (SyncSettings)syncSettings ?? new SyncSettings();
+			_settings = (Settings)settings ?? new Settings();
+			_syncSettings = (SyncSettings)syncSettings ?? new SyncSettings();
 			
 			DeterministicEmulation = deterministic; // when true, remember to force the RTC flag!
 			Core = BizSwan.bizswan_new();
@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 				throw new InvalidOperationException($"{nameof(BizSwan.bizswan_new)}() returned NULL!");
 			try
 			{
-				var ss = _SyncSettings.GetNativeSettings();
+				var ss = _syncSettings.GetNativeSettings();
 				if (deterministic)
 					ss.userealtime = false;
 
@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 				InitISaveRam();
 
 				InitVideo(rotate);
-				PutSettings(_Settings);
+				PutSettings(_settings);
 				InitIMemoryDomains();
 
 				InitIStatable();
@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			}
 		}
 
-		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+		public IEmulatorServiceProvider ServiceProvider { get; }
 
 		public void Dispose()
 		{
@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			return true;
 		}
 
-		public CoreComm CoreComm { get; private set; }
+		public CoreComm CoreComm { get; }
 
 		public void ResetCounters()
 		{
@@ -98,16 +98,16 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; set; }
 
-		public string SystemId { get { return "WSWAN"; } }
-		public bool DeterministicEmulation { get; private set; }
+		public string SystemId => "WSWAN";
+		public bool DeterministicEmulation { get; }
 
 		#region Debugging
 
 		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
-		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
+		public IInputCallbackSystem InputCallbacks => _inputCallbacks;
 
 		private readonly MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem(new[] { "System Bus" }); // This isn't an actual memory domain in this core (yet), but there's nothing that enforces that it has to be
-		public IMemoryCallbackSystem MemoryCallbacks { get { return _memorycallbacks; } }
+		public IMemoryCallbackSystem MemoryCallbacks => _memorycallbacks;
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
@@ -127,13 +127,13 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			throw new NotImplementedException();
 		}
 
-		public bool CanStep(StepType type) { return false; }
+		public bool CanStep(StepType type) => false;
 
 		[FeatureNotImplemented]
-		public void Step(StepType type) { throw new NotImplementedException(); }
+		public void Step(StepType type) => throw new NotImplementedException();
 
 		[FeatureNotImplemented]
-		public long TotalExecutedCycles {  get { throw new NotImplementedException(); } }
+		public long TotalExecutedCycles => throw new NotImplementedException();
 
 		BizSwan.MemoryCallback ReadCallbackD;
 		BizSwan.MemoryCallback WriteCallbackD;
@@ -203,16 +203,13 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		private int[] vbuff = new int[224 * 144];
 
-		public int[] GetVideoBuffer()
-		{
-			return vbuff;
-		}
+		public int[] GetVideoBuffer() => vbuff;
 
-		public int VirtualWidth { get { return BufferWidth; } }
-		public int VirtualHeight { get { return BufferHeight; } }
+		public int VirtualWidth => BufferWidth;
+		public int VirtualHeight => BufferHeight;
 		public int BufferWidth { get; private set; }
 		public int BufferHeight { get; private set; }
-		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
+		public int BackgroundColor => unchecked((int)0xff000000);
 
 		public int VsyncNumerator => 3072000; // master CPU clock, also pixel clock
 		public int VsyncDenominator => (144 + 15) * (224 + 32); // 144 vislines, 15 vblank lines; 224 vispixels, 32 hblank pixels

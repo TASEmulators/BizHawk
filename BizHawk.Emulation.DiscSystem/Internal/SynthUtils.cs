@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-
 namespace BizHawk.Emulation.DiscSystem
 {
 	static class SynthUtils
@@ -23,7 +19,7 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 
 		/// <summary>
-		/// Caclulates the checksum of the provided Q subchannel buffer
+		/// Calculates the checksum of the provided Q subchannel buffer
 		/// </summary>
 		public static ushort SubQ_CalcChecksum(byte[] buf12, int offset)
 		{
@@ -153,7 +149,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// Converts the useful (but unrealistic) deinterleaved data into the useless (but realistic) interleaved subchannel format.
 		/// </summary>
-		public unsafe static void InterleaveSubcodeInplace(byte[] buf, int buf_index)
+		public static unsafe void InterleaveSubcodeInplace(byte[] buf, int buf_index)
 		{
 			byte* out_buf = stackalloc byte[96];
 
@@ -181,7 +177,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// Converts the useless (but realistic) interleaved subchannel data into a useful (but unrealistic) deinterleaved format.
 		/// </summary>
-		public unsafe static void DeinterleaveSubcodeInplace(byte[] buf, int buf_index)
+		public static unsafe void DeinterleaveSubcodeInplace(byte[] buf, int buf_index)
 		{
 			byte* out_buf = stackalloc byte[96];
 

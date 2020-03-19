@@ -21,26 +21,19 @@ namespace BizHawk.Client.Common
 	{
 		#region Fields
 
-		public const string ADDRESS = "AddressColumn";
-		public const string VALUE = "ValueColumn";
-		public const string PREV = "PrevColumn";
-		public const string CHANGES = "ChangesColumn";
-		public const string DIFF = "DiffColumn";
-		public const string TYPE = "TypeColumn";
-		public const string DOMAIN = "DomainColumn";
-		public const string NOTES = "NotesColumn";
+		public const string Address = "AddressColumn";
+		public const string Value = "ValueColumn";
+		public const string Prev = "PrevColumn";
+		public const string ChangesCol = "ChangesColumn";
+		public const string Diff = "DiffColumn";
+		public const string Type = "TypeColumn";
+		public const string Domain = "DomainColumn";
+		public const string Notes = "NotesColumn";
 
-		private static readonly WatchDomainComparer DomainComparer = new WatchDomainComparer();
-		private static readonly WatchAddressComparer AddressComparer = new WatchAddressComparer();
-		private static readonly WatchFullDisplayTypeComparer DisplayTypeComparer = new WatchFullDisplayTypeComparer();
-		private static readonly WatchValueComparer ValueComparer = new WatchValueComparer();
-		private static readonly WatchPreviousValueComparer PreviousValueComparer = new WatchPreviousValueComparer();
-		private static readonly WatchValueDifferenceComparer ValueDifferenceComparer = new WatchValueDifferenceComparer();
-		private static readonly WatchChangeCountComparer ChangeCountComparer = new WatchChangeCountComparer();
-		private static readonly WatchNoteComparer NoteComparer = new WatchNoteComparer();
+		private static readonly Dictionary<string, IComparer<Watch>> WatchComparers;
 
 		private readonly List<Watch> _watchList = new List<Watch>(0);
-		private readonly string _systemid;
+		private readonly string _systemId;
 		private IMemoryDomains _memoryDomains;
 
 		#endregion
@@ -48,15 +41,34 @@ namespace BizHawk.Client.Common
 		#region cTor(s)
 
 		/// <summary>
+		/// Static constructor for the <see cref="WatchList"/> class.
+		/// </summary>
+		static WatchList()
+		{
+			// Initialize mapping of columns to comparers for sorting.
+			WatchComparers = new Dictionary<string, IComparer<Watch>>
+			{
+				{ Address, new WatchAddressComparer() },
+				{ Value, new WatchValueComparer() },
+				{ Prev, new WatchPreviousValueComparer() },
+				{ ChangesCol, new WatchChangeCountComparer() },
+				{ Diff, new WatchValueDifferenceComparer() },
+				{ Type, new WatchFullDisplayTypeComparer() },
+				{ Domain, new WatchDomainComparer() },
+				{ Notes, new WatchNoteComparer() }
+			};
+		}
+
+		/// <summary>
 		/// Initializes a new instance of the <see cref="WatchList"/> class
 		/// that will contains a set of <see cref="Watch"/>
 		/// </summary>
 		/// <param name="core">All available memory domains</param>
-		/// <param name="systemid">System identifier (NES, SNES, ...)</param>
-		public WatchList(IMemoryDomains core, string systemid)
+		/// <param name="systemId">System identifier (NES, SNES, ...)</param>
+		public WatchList(IMemoryDomains core, string systemId)
 		{
 			_memoryDomains = core;
-			_systemid = systemid;
+			_systemId = systemId;
 		}
 
 		#endregion
@@ -102,9 +114,6 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		/// <param name="array">The one-dimension <see cref="Array"/> that will serve as destination to copy</param>
 		/// <param name="arrayIndex">Zero-based index where the copy should starts</param>
-		/// <exception cref="ArgumentNullException"></exception>
-		/// <exception cref="ArgumentOutOfRangeException"></exception>
-		/// <exception cref="ArgumentException"></exception>
 		public void CopyTo(Watch[] array, int arrayIndex)
 		{
 			_watchList.CopyTo(array, arrayIndex);
@@ -146,7 +155,6 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		/// <param name="index">The zero-base index where the <see cref="Watch"/> should be inserted</param>
 		/// <param name="watch"><see cref="Watch"/> to insert</param>
-		/// <exception cref="ArgumentOutOfRangeException"></exception>
 		public void Insert(int index, Watch watch)
 		{
 			_watchList.Insert(index, watch);
@@ -156,7 +164,6 @@ namespace BizHawk.Client.Common
 		/// Removes item at the specified index
 		/// </summary>
 		/// <param name="index">Zero-based index of the <see cref="Watch"/> to remove</param>
-		/// <exception cref="ArgumentOutOfRangeException"></exception>
 		public void RemoveAt(int index)
 		{
 			_watchList.RemoveAt(index);
@@ -213,118 +220,35 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Sort the current list based on one of the constant
+		/// Sort the current list based on one of the column constants.
 		/// </summary>
-		/// <param name="column">Value that specify sorting base</param>
-		/// <param name="reverse">Value that define the ordering. Ascending (true) or descending (false)</param>
+		/// <param name="column">The column to sort by.</param>
+		/// <param name="reverse">Defines the order of the sort. Ascending (true) or descending (false)</param>
 		public void OrderWatches(string column, bool reverse)
 		{
-			switch (column)
+			var separatorIndices = new List<int>();
+			for (var i = 0; i < _watchList.Count; i++)
 			{
-				case ADDRESS:
-					if (reverse)
-					{
-						_watchList.Sort(AddressComparer);
-						_watchList.Reverse();
-					}
-					else
-					{
-						_watchList.Sort();
-					}
-
-					break;
-
-				case VALUE:
-					if (reverse)
-					{
-						_watchList.Sort(ValueComparer);
-						_watchList.Reverse();
-					}
-					else
-					{
-						_watchList.Sort(ValueComparer);
-					}
-
-					break;
-
-				case PREV:
-					if (reverse)
-					{
-						_watchList.Sort(PreviousValueComparer);
-						_watchList.Reverse();
-					}
-					else
-					{
-						_watchList.Sort(PreviousValueComparer);
-					}
-
-					break;
-
-				case DIFF:
-					if (reverse)
-					{
-						_watchList.Sort(ValueDifferenceComparer);
-						_watchList.Reverse();
-					}
-					else
-					{
-						_watchList.Sort(ValueDifferenceComparer);
-					}
-
-					break;
-
-				case CHANGES:
-					if (reverse)
-					{
-						_watchList.Sort(ChangeCountComparer);
-						_watchList.Reverse();
-					}
-					else
-					{
-						_watchList.Sort(ChangeCountComparer);
-					}
-
-					break;
-
-				case DOMAIN:
-					if (reverse)
-					{
-						_watchList.Sort(DomainComparer);
-						_watchList.Reverse();
-					}
-					else
-					{
-						_watchList.Sort(DomainComparer);
-					}
-
-					break;
-
-				case TYPE:
-					if (reverse)
-					{
-						_watchList.Sort(DisplayTypeComparer);
-						_watchList.Reverse();
-					}
-					else
-					{
-						_watchList.Sort(DisplayTypeComparer);
-					}
-
-					break;
-
-				case NOTES:
-					if (reverse)
-					{
-						_watchList.Sort(NoteComparer);
-						_watchList.Reverse();
-					}
-					else
-					{
-						_watchList.Sort(NoteComparer);
-					}
-
-					break;
+				if (_watchList[i].IsSeparator)
+				{
+					separatorIndices.Add(i);
+				}
 			}
+			separatorIndices.Add(_watchList.Count);
+
+			// Sort "blocks" of addresses between separators.
+			int startIndex = 0;
+			foreach (int index in separatorIndices)
+			{
+				_watchList.Sort(startIndex, index - startIndex, WatchComparers[column]);
+				if (reverse)
+				{
+					_watchList.Reverse(startIndex, index - startIndex);
+				}
+				startIndex = index + 1;
+			}
+
+			Changes = true;
 		}
 
 		/// <summary>
@@ -388,15 +312,8 @@ namespace BizHawk.Client.Common
 		/// <returns><see cref="Watch"/> at the specified index</returns>
 		public Watch this[int index]
 		{
-			get
-			{
-				return _watchList[index];
-			}
-
-			set
-			{
-				_watchList[index] = value;
-			}
+			get => _watchList[index];
+			set => _watchList[index] = value;
 		}
 
 		#endregion IList<Watch>
@@ -414,13 +331,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets the number of <see cref="Watch"/> that are not <see cref="SeparatorWatch"/>
 		/// </summary>
-		public int WatchCount
-		{
-			get
-			{
-				return _watchList.Count(watch => !watch.IsSeparator);
-			}
-		}
+		public int WatchCount => _watchList.Count(watch => !watch.IsSeparator);
 
 		#endregion
 
@@ -465,7 +376,7 @@ namespace BizHawk.Client.Common
 			using (var sw = new StreamWriter(CurrentFileName))
 			{
 				var sb = new StringBuilder();
-				sb.Append("SystemID ").AppendLine(_systemid);
+				sb.Append("SystemID ").AppendLine(_systemId);
 
 				foreach (var watch in _watchList)
 				{
@@ -607,14 +518,7 @@ namespace BizHawk.Client.Common
 				CurrentFileName = path;
 			}
 
-			if (!append)
-			{
-				Changes = false;
-			}
-			else
-			{
-				Changes = true;
-			}
+			Changes = append;
 
 			return true;
 		}

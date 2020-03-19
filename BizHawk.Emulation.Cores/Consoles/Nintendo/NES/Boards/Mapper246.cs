@@ -1,63 +1,10 @@
 ﻿using BizHawk.Common;
 
+// http://wiki.nesdev.com/w/index.php/INES_Mapper_246
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public sealed class Mapper246 : NES.NESBoardBase
 	{
-		/*
-		Here are Disch's original notes:  
-		========================
-		=  Mapper 246          =
-		========================
-
-
-		Example Game:
-		--------------------------
-		Fong Shen Bang - Zhu Lu Zhi Zhan
-
-
-		Notes:
-		--------------------------
-
-		Regs lie at $6000-67FF, but SRAM exists at $6800-7FFF.
-
-		Don't know if there's only 6k of SRAM, or if there's 8k, but the first 2k is inaccessable.  I find the latter
-		more likely.
-
-
-		Registers:
-		---------------------------
-
-		Range,Mask:   $6000-67FF, $6007
-
-
-		$6000-6003:  PRG Regs
-		$6004-6007:  CHR Regs
-
-
-		CHR Setup:
-		---------------------------
-
-		$0000   $0400   $0800   $0C00   $1000   $1400   $1800   $1C00 
-		+---------------+---------------+---------------+---------------+
-		|     $6004     |     $6005     |     $6006     |     $6007     |
-		+---------------+---------------+---------------+---------------+
-
-
-		PRG Setup:
-		---------------------------
-
-		$8000   $A000   $C000   $E000  
-		+-------+-------+-------+-------+
-		| $6000 | $6001 | $6002 | $6003 |
-		+-------+-------+-------+-------+
-
-
-		Powerup/Reset:
-		---------------------------
-		$6003 set to $FF on powerup (and probably reset, but not sure).
-		*/
-
 		int prg_bank_mask_8k;
 		ByteBuffer prg_banks_8k = new ByteBuffer(4);
 
@@ -149,10 +96,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr = ApplyMemoryMap(11, chr_banks_2k, addr);
 				return base.ReadPPUChr(addr);
 			}
-			else
-			{
-				return base.ReadPPU(addr);
-			}
+
+			return base.ReadPPU(addr);
 		}
 
 		public override byte ReadPRG(int addr)

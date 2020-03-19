@@ -1,23 +1,16 @@
-using System;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
-
-using BizHawk.Common;
-using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
 	/// encapsulates thread-safe concept of pending/current display surfaces, reusing buffers where matching 
-	/// sizes are available and keeping them cleaned up when they dont seem like theyll need to be used anymore
+	/// sizes are available and keeping them cleaned up when they don't seem like they'll need to be used anymore
 	/// </summary>
-	class SwappableDisplaySurfaceSet
+	public class SwappableDisplaySurfaceSet
 	{
-		DisplaySurface Pending, Current;
-		bool IsPending;
-		Queue<DisplaySurface> ReleasedSurfaces = new Queue<DisplaySurface>();
+		private DisplaySurface _pending, _current;
+		private bool _isPending;
+		private readonly Queue<DisplaySurface> _releasedSurfaces = new Queue<DisplaySurface>();
 
 		/// <summary>
 		/// retrieves a surface with the specified size, reusing an old buffer if available and clearing if requested
@@ -29,16 +22,22 @@ namespace BizHawk.Client.EmuHawk
 				DisplaySurface trial;
 				lock (this)
 				{
-					if (ReleasedSurfaces.Count == 0) break;
-					trial = ReleasedSurfaces.Dequeue();
+					if (_releasedSurfaces.Count == 0) break;
+					trial = _releasedSurfaces.Dequeue();
 				}
 				if (trial.Width == width && trial.Height == height)
 				{
-					if (needsClear) trial.Clear();
+					if (needsClear)
+					{
+						trial.Clear();
+					}
+
 					return trial;
 				}
+
 				trial.Dispose();
 			}
+
 			return new DisplaySurface(width, height);
 		}
 
@@ -49,15 +48,15 @@ namespace BizHawk.Client.EmuHawk
 		{
 			lock (this)
 			{
-				if (Pending != null) ReleasedSurfaces.Enqueue(Pending);
-				Pending = newPending;
-				IsPending = true;
+				if (_pending != null) _releasedSurfaces.Enqueue(_pending);
+				_pending = newPending;
+				_isPending = true;
 			}
 		}
 
 		public void ReleaseSurface(DisplaySurface surface)
 		{
-			lock (this) ReleasedSurfaces.Enqueue(surface);
+			lock (this) _releasedSurfaces.Enqueue(surface);
 		}
 
 		/// <summary>
@@ -67,16 +66,16 @@ namespace BizHawk.Client.EmuHawk
 		{
 			lock (this)
 			{
-				if (IsPending)
+				if (_isPending)
 				{
-					if (Current != null) ReleasedSurfaces.Enqueue(Current);
-					Current = Pending;
-					Pending = null;
-					IsPending = false;
+					if (_current != null) _releasedSurfaces.Enqueue(_current);
+					_current = _pending;
+					_pending = null;
+					_isPending = false;
 				}
 			}
-			return Current;
+
+			return _current;
 		}
 	}
-
 }

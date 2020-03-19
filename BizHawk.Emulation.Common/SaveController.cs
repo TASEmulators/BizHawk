@@ -45,8 +45,8 @@ namespace BizHawk.Emulation.Common
 		public void DeSerialize(BinaryReader b)
 		{
 			_buttons.Clear();
-			int numbuttons = b.ReadInt32();
-			for (int i = 0; i < numbuttons; i++)
+			int numButtons = b.ReadInt32();
+			for (int i = 0; i < numButtons; i++)
 			{
 				string k = b.ReadString();
 				float v = b.ReadSingle();
@@ -54,9 +54,8 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		/// <summary>
-		/// This controller's definition changes to that of source
-		/// </summary>
+		/// <summary>replace this controller's definition with that of <paramref name="source"/></summary>
+		/// <exception cref="Exception">definition of <paramref name="source"/> has a button and an analog control with the same name</exception>
 		public void CopyFrom(IController source)
 		{
 			Definition = source.Definition;

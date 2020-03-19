@@ -1,6 +1,4 @@
 using System;
-using System.Globalization;
-
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.Z80A;
 
@@ -12,8 +10,8 @@ namespace BizHawk.Emulation.Cores.Calculators
 		"zeromus",
 		isPorted: false,
 		isReleased: true)]
-	[ServiceNotApplicable(typeof(ISoundProvider), typeof(ISaveRam), typeof(IRegionable), typeof(IDriveLight), typeof(IBoardInfo))]
-	public partial class TI83 : IEmulator, IVideoProvider, IStatable, IDebuggable, IInputPollable, ISettable<TI83.TI83Settings, object>
+	[ServiceNotApplicable(new[] { typeof(IBoardInfo), typeof(IDriveLight), typeof(IRegionable), typeof(ISaveRam), typeof(ISoundProvider) })]
+	public partial class TI83 : IEmulator, IVideoProvider, IDebuggable, IInputPollable, ISettable<TI83.TI83Settings, object>
 	{
 		[CoreConstructor("TI83")]
 		public TI83(CoreComm comm, GameInfo game, byte[] rom, object settings)
@@ -42,6 +40,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 			ser.Register<ITraceable>(_tracer);
 			ser.Register<IDisassemblable>(_cpu);
+			ser.Register<IStatable>(new StateSerializer(SyncState));
 		}
 
 		private readonly TraceBuffer _tracer;
@@ -210,9 +209,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 					TIM_mult = ((value & 0x10) == 0x10) ? 1800 : 1620;
 
-					TIM_hit = (int)Math.Floor((double)TIM_mult / (3 + TIM_frq * 2));
-
-					TIM_hit = (int)Math.Floor((double)6000000 / TIM_hit);
+					TIM_hit = (int) Math.Floor(6000000.0 / Math.Floor((double) TIM_mult / (2 * TIM_frq + 3)));
 
 					// Bit 0 is some form of memory mapping
 

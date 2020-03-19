@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 		//state
 		public int reg_addr;
-		public bool get_chr_mode { get { return chr_mode; } } // one of the pirate mappers needs this
+		public bool get_chr_mode => chr_mode; // one of the pirate mappers needs this
 		public bool chr_mode;
 		public bool prg_mode;
 		public ByteBuffer regs = new ByteBuffer(8);
@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		EMMC3Type _mmc3type = EMMC3Type.None;
 		public EMMC3Type MMC3Type
 		{
-			get { return _mmc3type; }
+			get => _mmc3type;
 			set
 			{
 				_mmc3type = value;
@@ -339,7 +339,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void Dispose()
 		{
-			if(mmc3 != null) mmc3.Dispose();
+			mmc3?.Dispose();
 		}
 
 		public override void SyncState(Serializer ser)
@@ -377,7 +377,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return VROM[addr + extra_vrom];
 				else return VRAM[addr];
 			}
-			else return base.ReadPPU(addr);
+
+			return base.ReadPPU(addr);
 		}
 
 		public override void WritePPU(int addr, byte value)

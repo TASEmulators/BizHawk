@@ -29,6 +29,7 @@ namespace BizHawk.Client.Common
 				bfSize = (uint)Marshal.SizeOf(this);
 			}
 
+			/// <exception cref="InvalidOperationException">misformatted data</exception>
 			public static BITMAPFILEHEADER FromStream(Stream s)
 			{
 				var ret = GetObject<BITMAPFILEHEADER>(s);
@@ -62,6 +63,7 @@ namespace BizHawk.Client.Common
 				biSize = (uint)Marshal.SizeOf(this);
 			}
 
+			/// <exception cref="InvalidOperationException">misformatted data</exception>
 			public static BITMAPINFOHEADER FromStream(Stream s)
 			{
 				var ret = GetObject<BITMAPINFOHEADER>(s);
@@ -231,15 +233,11 @@ namespace BizHawk.Client.Common
 			public int BufferHeight { get; set; }
 			public int BackgroundColor => unchecked((int)0xff000000);
 
-			public int VsyncNumerator
-			{
-				get { throw new InvalidOperationException(); }
-			}
+			/// <exception cref="InvalidOperationException">always</exception>
+			public int VsyncNumerator => throw new InvalidOperationException();
 
-			public int VsyncDenominator
-			{
-				get { throw new InvalidOperationException(); }
-			}
+			/// <exception cref="InvalidOperationException">always</exception>
+			public int VsyncDenominator => throw new InvalidOperationException();
 		}
 
 		public static unsafe bool Load(IVideoProvider v, Stream s)

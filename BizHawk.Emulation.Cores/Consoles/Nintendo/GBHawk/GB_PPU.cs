@@ -39,6 +39,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						VRAM_access_write = true;
 						OAM_access_read = true;
 						OAM_access_write = true;
+
+						clear_screen = true;
 					}
 
 					if (!LCDC.Bit(7) && value.Bit(7))
@@ -160,6 +162,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						// meaning it will pick up where it left off if re-enabled later
 						// so we don't reset it in the scanline loop
 						window_y_tile = 0;
+						window_y_latch = window_y;
 						window_y_tile_inc = 0;
 						window_started = false;
 						if (!LCDC.Bit(5)) { window_is_reset = true; }
@@ -464,7 +467,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				total_counter = 0;
 
 				// TODO: If Window is turned on midscanline what happens? When is this check done exactly?
-				if ((window_started && window_latch) || (window_is_reset && !window_latch && (LY >= window_y)))
+				if ((window_started && window_latch) || (window_is_reset && !window_latch && (LY >= window_y_latch)))
 				{
 					window_y_tile_inc++;
 					if (window_y_tile_inc==8)
@@ -482,7 +485,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 
 			// before anything else, we have to check if windowing is in effect
-			if (window_latch && !window_started && (LY >= window_y) && (pixel_counter >= (window_x_latch - 7)) && (window_x_latch < 167))
+			if (window_latch && !window_started && (LY >= window_y_latch) && (pixel_counter >= (window_x_latch - 7)) && (window_x_latch < 167))
 			{
 				/*
 				Console.Write(LY);
@@ -495,17 +498,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				Console.Write(" ");
 				Console.WriteLine(pixel_counter);
 				*/
-				if (window_x_latch <= 7)
+				if (window_x_latch == 0)
 				{
 					// if the window starts at zero, we still do the first access to the BG
 					// but then restart all over again at the window
-					read_case = 9;
+					if ((render_offset % 7) <= 6)
+					{
+						read_case = 9;
+					}
+					else
+					{
+						read_case = 10;
+					}
 				}
 				else
 				{
-					// otherwise, just restart the whole process as if starting BG again
 					read_case = 4;
 				}
+
 				window_pre_render = true;
 
 				window_counter = 0;
@@ -788,13 +798,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								// here we set up rendering
 								// unlike for the normal background case, there is no pre-render period for the window
 								// so start shifting in data to the screen right away
-								render_offset = 0;
-								render_counter = 8;
+								if (window_x_latch <= 7)
+								{
+									if (render_offset == 0)
+									{
+										read_case = 4;
+									}
+									else
+									{
+										read_case = 9 + render_offset - 1;
+									}
+									render_counter = 8 - render_offset;
+
+									render_offset = 7 - window_x_latch;
+								}
+								else
+								{
+									render_offset = 0;
+									read_case = 4;
+									render_counter = 8;							
+								}
+
 								latch_counter = 0;
 								latch_new_data = true;
-
 								window_pre_render = false;
-								read_case = 4;
 							}
 							else
 							{
@@ -833,6 +860,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						// but this information is thrown away, so it's faster to do this then constantly check
 						// for it in read case 0
 						read_case = 4;
+						break;
+					case 10:
+					case 11:
+					case 12:
+					case 13:
+					case 14:
+					case 15:
+					case 16:
+					case 17:
+						read_case--;
 						break;
 				}
 				internal_cycle++;
@@ -1048,7 +1085,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						s_pixel = (byte)(sprite_data[0] + sprite_data[1]);
 						sprite_attr = (byte)SL_sprites_ordered[j * 4 + 3];
 
-						// pixel color of 0 is transparent, so if this is the case we dont have a pixel
+						// pixel color of 0 is transparent, so if this is the case we don't have a pixel
 						if (s_pixel != 0)
 						{
 							have_pixel = true;
@@ -1153,6 +1190,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			window_y = 0x0;
 			window_x = 0x0;
 			window_x_latch = 0xFF;
+			window_y_latch = 0xFF;
 			LY_inc = 1;
 			no_scan = false;
 			OAM_access_read = true;

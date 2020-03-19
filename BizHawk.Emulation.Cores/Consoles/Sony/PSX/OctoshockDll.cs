@@ -7,7 +7,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Sony.PSX
 {
-	public unsafe static class OctoshockDll
+	public static unsafe class OctoshockDll
 	{
 		const CallingConvention cc = CallingConvention.Cdecl;
 		const string dd = "octoshock.dll";
@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public enum eShockStep
 		{
 			Frame
-		};
+		}
 
 		public enum eShockFramebufferFlags
 		{
@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			GPURAM = 3, //512K
 			SPURAM = 4, //512K
 			DCache = 5 //1K
-		};
+		}
 
 		public enum eShockStateTransaction : int
 		{
@@ -63,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			Write = 2, //writes from the frontend to the memcard
 			Read = 3, //reads from the memcard to the frontend. Also clears the dirty flag
 			CheckDirty = 4, //checks whether the memcard is dirty
-		};
+		}
 
 
 		public enum ePeripheralType : int
@@ -77,7 +77,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			NegCon = 4,
 
 			Multitap = 10,
-		};
+		}
 
 		/// <summary>
 		/// this is implemented as an overall render type instead of a horizontal clip control
@@ -89,7 +89,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			Normal,
 			ClipOverscan,
 			Framebuffer
-		};
+		}
 
 		public enum eShockDeinterlaceMode : int
 		{
@@ -120,7 +120,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		{
 			public eRegion region;
 			public unsafe fixed sbyte id[5]; //SCEI, SCEA, SCEE, etc. with null terminator
-		};
+		}
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct ShockTOCTrack
@@ -128,7 +128,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			public byte adr;
 			public byte control;
 			public uint lba;
-		};
+		}
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct ShockTOC
@@ -136,7 +136,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			public byte first_track;
 			public byte last_track;
 			public byte disc_type;
-		};
+		}
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct ShockFramebufferInfo
@@ -145,7 +145,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			[MarshalAs(UnmanagedType.I4)]
 			public eShockFramebufferFlags flags;
 			public void* ptr;
-		};
+		}
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct ShockRenderOptions
@@ -154,7 +154,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			public eShockRenderType renderType;
 			public eShockDeinterlaceMode deinterlaceMode;
 			public bool skip;
-		};
+		}
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct ShockMemcardTransaction
@@ -162,7 +162,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			[MarshalAs(UnmanagedType.I4)]
 			public eShockMemcardTransaction transaction;
 			public void* buffer128k;
-		};
+		}
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct ShockRegisters_CPU
@@ -172,7 +172,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			public uint IN_BD_SLOT;
 			public uint LO, HI;
 			public uint SR, CAUSE, EPC;
-		};
+		}
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct ShockStateTransaction
@@ -181,7 +181,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			public void* buffer;
 			public int bufferLength;
 			public TextStateFPtrs ff;
-		};
+		}
 
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]

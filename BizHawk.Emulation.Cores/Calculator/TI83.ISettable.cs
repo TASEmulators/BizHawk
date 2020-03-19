@@ -4,16 +4,16 @@ namespace BizHawk.Emulation.Cores.Calculators
 {
 	public partial class TI83 : ISettable<TI83.TI83Settings, object>
 	{
-		private TI83Settings Settings;
+		private TI83Settings _settings;
 
 		public TI83Settings GetSettings()
 		{
-			return Settings.Clone();
+			return _settings.Clone();
 		}
 
 		public bool PutSettings(TI83Settings o)
 		{
-			Settings = o;
+			_settings = o;
 			return false;
 		}
 
@@ -29,13 +29,8 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 		public class TI83Settings
 		{
-			public uint BGColor = 0x889778;
-			public uint ForeColor = 0x36412D;
-
-			public TI83Settings()
-			{
-
-			}
+			public uint BGColor { get; set; } = 0x889778;
+			public uint ForeColor { get; set; } = 0x36412D;
 
 			public TI83Settings Clone()
 			{

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
-using BizHawk.Common.NumberExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
@@ -182,18 +181,14 @@ namespace BizHawk.Client.Common
 		// TODO: Implements IFormattable
 		public string FormatValue(byte val)
 		{
-			switch (Type)
+			return Type switch
 			{
-				default:
-				case DisplayType.Unsigned:
-					return val.ToString();
-				case DisplayType.Signed:
-					return ((sbyte)val).ToString();
-				case DisplayType.Hex:
-					return $"{val:X2}";
-				case DisplayType.Binary:
-					return Convert.ToString(val, 2).PadLeft(8, '0').Insert(4, " ");
-			}
+				DisplayType.Unsigned => val.ToString(),
+				DisplayType.Signed => ((sbyte) val).ToString(),
+				DisplayType.Hex => $"{val:X2}",
+				DisplayType.Binary => Convert.ToString(val, 2).PadLeft(8, '0').Insert(4, " "),
+				_ => val.ToString()
+			};
 		}
 
 		/// <summary>

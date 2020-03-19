@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.Client.ApiHawk
 {
 	/// <summary>
@@ -14,7 +16,7 @@ namespace BizHawk.Client.ApiHawk
 	/// <seealso cref="IExternalApiProvider"/> 
 	public class BasicApiProvider : IExternalApiProvider
 	{
-		private readonly Dictionary<Type, IExternalApi> _Apis = new Dictionary<Type, IExternalApi>();
+		private readonly Dictionary<Type, IExternalApi> _apis;
 
 		public BasicApiProvider(IApiContainer container)
 		{
@@ -25,13 +27,12 @@ namespace BizHawk.Client.ApiHawk
 			// this also fully allows apis that are not IExternalApi
 			var libs = container.Libraries;
 
-			_Apis = libs;
+			_apis = libs;
 		}
 
-		/// <summary>
-		/// the client can call this to register an additional Api
-		/// </summary>
-		/// <typeparam name="T">The <seealso cref="IExternalApi"/> to register</typeparam>
+		/// <summary>the client can call this to register an additional API</summary>
+		/// <typeparam name="T">the type, inheriting <see cref="IExternalApi"/>, to be registered</typeparam>
+		/// <exception cref="ArgumentNullException"><paramref name="api"/> is null</exception>
 		public void Register<T>(T api)
 			where T : IExternalApi
 		{
@@ -40,7 +41,7 @@ namespace BizHawk.Client.ApiHawk
 				throw new ArgumentNullException(nameof(api));
 			}
 
-			_Apis[typeof(T)] = api;
+			_apis[typeof(T)] = api;
 		}
 
 		public T GetApi<T>()
@@ -51,14 +52,8 @@ namespace BizHawk.Client.ApiHawk
 
 		public object GetApi(Type t)
 		{
-			IExternalApi Api;
-			KeyValuePair<Type, IExternalApi>[] k = _Apis.Where(kvp => t.IsAssignableFrom(kvp.Key)).ToArray();
-			if (k.Length > 0)
-			{
-				return k[0].Value;
-			}
-
-			return null;
+			var k = _apis.Where(kvp => t.IsAssignableFrom(kvp.Key)).ToArray();
+			return k.Length > 0 ? k[0].Value : null;
 		}
 
 		public bool HasApi<T>()
@@ -67,17 +62,8 @@ namespace BizHawk.Client.ApiHawk
 			return HasApi(typeof(T));
 		}
 
-		public bool HasApi(Type t)
-		{
-			return _Apis.ContainsKey(t);
-		}
+		public bool HasApi(Type t) => _apis.ContainsKey(t);
 
-		public IEnumerable<Type> AvailableApis
-		{
-			get
-			{
-				return _Apis.Select(d => d.Key);
-			}
-		}
+		public IEnumerable<Type> AvailableApis => _apis.Select(d => d.Key);
 	}
 }

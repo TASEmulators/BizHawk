@@ -7,13 +7,14 @@ using BizHawk.Emulation.Cores.Consoles.Vectrex;
 namespace BizHawk.Client.EmuHawk
 {
 	[Schema("VEC")]
-	public class VECSchema : IVirtualPadSchema
+	// ReSharper disable once UnusedMember.Global
+	public class VecSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
-			var VECSyncSettings = ((VectrexHawk)core).GetSyncSettings().Clone();
-			var port1 = VECSyncSettings.Port1;
-			var port2 = VECSyncSettings.Port2;
+			var vecSyncSettings = ((VectrexHawk)core).GetSyncSettings().Clone();
+			var port1 = vecSyncSettings.Port1;
+			var port2 = vecSyncSettings.Port2;
 
 			if (port1 == "Vectrex Digital Controller")
 			{

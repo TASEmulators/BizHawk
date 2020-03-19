@@ -2,27 +2,19 @@
 
 A multi-system emulator written in C#. As well as quality-of-life features for casual players, it also has recording/playback and debugging tools, making it the first choice for TASers (Tool-Assisted Speedrunners).
 
-[![unique systems emulated | 27](https://img.shields.io/badge/unique_systems_emulated-27-darkgreen.svg?logo=data:image/png;base64,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&style=popout)](#cores)
 [![GitHub latest release](https://img.shields.io/github/release/TASVideos/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk/releases/latest)
 [![dev builds | AppVeyor](https://img.shields.io/badge/dev_builds-AppVeyor-orange.svg?logo=appveyor&logoColor=333333&style=popout)](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/history)
-[![Windows prereqs | GitHub](https://img.shields.io/badge/Windows_prereqs-GitHub-darkred.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk-Prereqs/releases/latest)
 [![GitHub open issues counter](https://img.shields.io/github/issues-raw/TASVideos/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk/issues)
 
-***
-
-Click the "release" button above to grab the latest stable version ([changelog at TASVideos](http://tasvideos.org/Bizhawk/ReleaseHistory.html)). 
-
-New user on Windows? Install the prerequisites first, click the "prereqs" button to get that and see [*Installing*](#windows-78110) for info.
-
-**Never mix different versions** of BizHawk — Keep each version in its own folder.
+---
 
 Jump to:
 * Installing
-	* [Windows 7/8.1/10](#windows-78110)
-	* [GNU+Linux](#gnulinux)
+	* [Windows](#windows)
+	* [Unix](#unix)
 * Building
-	* [Windows 7/8.1/10](#windows-78110-1)
-	* [GNU+Linux](#gnulinux-1)
+	* [Windows](#windows-1)
+	* [Unix](#unix-1)
 * [Usage](#usage)
 	* [TASing](#tasing)
 	* [Testing](#testing)
@@ -88,39 +80,29 @@ See [*Usage*](#usage) below for info on basic config needed to play games.
 
 ## Installing
 
-### Windows 7/8.1/10
+### Windows
 
-Released binaries can be found right here on GitHub:
+Released binaries can be found right here on GitHub (also linked at the top of this readme):
 
 [![Windows | binaries](https://img.shields.io/badge/Windows-binaries-%230078D6.svg?logo=windows&logoColor=0078D6&style=popout)](https://github.com/TASVideos/BizHawk/releases/latest)
 
-Click `BizHawk-<version>.zip` to download it. Also note the changelog, the full version of which is [here at TASVideos](http://tasvideos.org/Bizhawk/ReleaseHistory.html). **Don't mix different versions** of BizHawk, keep each version in its own folder.
+Click `BizHawk-<version>.zip` to download it. Also note the changelog, the full version of which is [here at TASVideos](http://tasvideos.org/Bizhawk/ReleaseHistory.html). Extract it anywhere, but **don't mix different versions** of BizHawk, keep each version in its own folder. Run `EmuHawk.exe` to start. You may move or rename the folder containing `EmuHawk.exe`, even to another drive — as long as you keep all the files together, and the prerequisites are installed when you go to run it.
 
-**Note**: Before you start (by running `EmuHawk.exe`), you'll need the Windows-only prerequisites installed. You can get them all at once with [this program](https://github.com/TASVideos/BizHawk-Prereqs/releases/latest) (you don't need to do this every time BizHawk updates, check the date on its release page, but it can't hurt installing it again to be sure). The specific libraries it installs are:
-* .NET Framework 4.6.1
-* Visual C++ Redists
-	* 2010 SP1
-	* 2012
-	* 2015
-* Direct3D 9
+EmuHawk does have some prerequisites which it can't work without (it will let you know if they're missing). The list is [here](https://github.com/TASVideos/BizHawk-Prereqs/blob/e364066a0f79ad560d6725e6088d680293e09e30/README), and we've made an all-in-one installer which you can get [here](https://github.com/TASVideos/BizHawk-Prereqs/releases/tag/2.1). You should only have to run this once per machine, unless the changelog says we need something extra.
 
-BizHawk functions like a "portable" program, you may move or rename the folder containing `EmuHawk.exe`, even to another drive — as long as you keep all the files together, and the prerequisites are installed when you go to run it.
+We will be [following Microsoft](https://support.microsoft.com/en-us/help/13853/windows-lifecycle-fact-sheet) in dropping Windows support, that is, we reserve the right to ignore your problems unless you've updated to at least Win10 1809 "Redstone 5" or Win8.1 KB4530702 (latest at time of writing).
 
-Following [Microsoft's support lifecycle](https://support.microsoft.com/en-us/help/13853/windows-lifecycle-fact-sheet), Win10 is supported from 1803 "Redstone 4", Win8 is supported from 8.1 (*not* 8.0), and Win7 is supported from SP1 (ends Jan 2020, upgrade to Win10 or try [ReactOS](https://reactos.org/joining/faqs)).
-
-A "backport" release, [1.13.2](https://github.com/TASVideos/BizHawk/releases/tag/1.13.2), is available for users of Windows XP and/or 32-bit Windows. Being in the 1.x series, many bugs remain and features are missing.
+A "backport" release, [1.13.2](https://github.com/TASVideos/BizHawk/releases/tag/1.13.2), is available for users of Windows XP, 7, or 8.1 32-bit. It has many bugs that will never be fixed and it doesn't have all the features of the later versions.
 
 [to top](#bizhawk)
 
-### GNU+Linux
+### Unix
 
-*...or, as I’ve recently taken to calling it, Mono+GNU+Linux.*
+**IMPORTANT**: Unix support is a work-in-progress! It is *not* complete, does *not* look very nice, and is *not* ready for anything that needs accuracy.
 
-**IMPORTANT**: Linux support is a work-in-progress! It is *not* complete, does *not* look very nice, and is *not* ready for anything that needs accuracy.
+You'll need to either build BizHawk yourself (see [*Building*](#unix-1) below), or download a dev build (see [*Testing*](#testing) below; please note some features are broken in dev builds for unknown reasons).
 
-You'll need to either build BizHawk yourself (see [*Building*](#gnulinux-1) below), or download a dev build (see [*Testing*](#testing) below).
-
-The runtime dependencies are: Mono "complete", Mono VB.NET, WINE (just `libwine` if available), glibc, NVIDIA's `cgc` utility, and your distro's LSB implementation. Run `EmuHawkMono.sh` to start Mono with the right library and executable paths — you can run it from anywhere, so putting it in a .desktop file is fine. If running the script doesn't start EmuHawk, it might be because the library path for your distro isn't known (if you use a terminal, it will say so in the output).
+The runtime dependencies are: Mono "complete", Mono VB.NET, WINE (just `libwine` if available), glibc, OpenAL, NVIDIA's `cgc` utility, and your distro's LSB implementation. Run `EmuHawkMono.sh` to start Mono with the right library and executable paths—you can run it from anywhere, so putting it in a .desktop file is fine.
 
 The systems that currently work are: GB + GBC (GBHawk), NES (NesHawk), SMS, Atari 7800, and some classic home computers. Nothing other than EmuHawk has been ported. See [#1430](https://github.com/TASVideos/BizHawk/issues/1430) for progress.
 
@@ -128,33 +110,30 @@ The systems that currently work are: GB + GBC (GBHawk), NES (NesHawk), SMS, Atar
 
 ## Building
 
-### Windows 7/8.1/10
+### Windows
 
-If you have WSL, Git BASH, or similar, clone the repo with:
+If you don't have Git, download [an archive of `master`](https://github.com/TASVideos/BizHawk/archive/master.zip). If you have WSL, Git BASH, or similar, clone the repo with:
 ```
 git clone https://github.com/TASVideos/BizHawk.git BizHawk_master
 # or ssh: git clone git@github.com:TASVideos/BizHawk.git BizHawk_master
 ```
-...or use a [Git GUI](https://desktop.github.com). Otherwise, you'll have to download an archive from GitHub.
 
-Once it's downloaded and extracted, go into the repo's `Dist` folder and run `BuildAndPackage_Release.bat`. BizHawk will be built as a .zip just like any other release.
+Once it's downloaded and extracted, go into the repo's `Dist` folder and run `BuildAndPackage_Release.bat`. This is the same process used by AppVeyor.
 
-For anything more complicated than just building, you'll need an IDE like [VS Community 2019](https://visualstudio.microsoft.com/vs/community), currently the best free C# IDE (if you can get JetBrains tools, use Rider). Open `BizHawk.sln` with VS to start and use the toolbar to choose `BizHawk.Client.EmuHawk | Release` and build. See [Compiling at TASVideos](http://tasvideos.org/Bizhawk/Compiling.html) (somewhat outdated) for more detailed instructions.
+For anything more complicated than just building, you'll need an IDE like [VS Community 2019](https://visualstudio.microsoft.com/vs/community), currently the best free C# IDE (you may prefer Rider, MonoDevelop, or something else). To build with VS, open `BizHawk.sln` and use the toolbar to choose `Release | Any CPU | BizHawk.Client.EmuHawk` and click the Start button. See [*Compiling* at TASVideos](http://tasvideos.org/Bizhawk/Compiling.html) for more detailed instructions (warning: somewhat outdated).
 
 [to top](#bizhawk)
 
-### GNU+Linux
+### Unix
 
-Note: Currently, *running* (not building) requires WINE, but only the bundled libraries. **BizHawk should not run on WINE**.
-
-If there is a package named `bizhawk-git` or similar in the same repo as the normal package, install that to build master. Otherwise, building is as easy as:
+Before you can build, you need `msbuild` (which should include `nuget`) You may need to [add a repo](https://www.mono-project.com/download/stable/), if so, if may conflict with the distro's Mono package. Once it's installed, run:
 ```sh
-git clone https://github.com/TASVideos/BizHawk.git BizHawk_master && BizHawk_master/Dist/BuildRelease.sh
-# or ssh: git clone git@github.com:TASVideos/BizHawk.git BizHawk_master && BizHawk_master/Dist/BuildRelease.sh
-# devs may use `Dist/BuildDebug.sh` instead to get `#if DEBUG` code compiled into the binaries
+git clone https://github.com/TASVideos/BizHawk.git BizHawk_master && cd BizHawk_master
+# or ssh: git clone git@github.com:TASVideos/BizHawk.git BizHawk_master && cd BizHawk_master
+Dist/BuildRelease.sh
 ```
 
-Once built, see [*Installing*](#gnulinux) above, the built output is `BizHawk_master/output`. Again, if your distro isn't in the list, you might get an "Unknown distro" warning in the terminal, and EmuHawk may not open or may show the missing dependencies dialog. You may need to add your distro to the case statement in the script, setting `libpath` to the location of `d3dx9_43.dll.so` (please do share if you get it working).
+The assemblies are put in `output`, so if you have the runtime dependencies (see [*Installing*](#unix)) you can call `output/EmuHawkMono.sh`. You may need to add the WINE library path to the script—find `d3dx9_43.dll.so` and update the case statement accordingly (and then please post it to [#1430](https://github.com/TASVideos/BizHawk/issues/1430) or in IRC).
 
 [to top](#bizhawk)
 
@@ -277,7 +256,7 @@ Virtual Boy | Virtual Boyee |
 WonderSwan / Color | Cygne |
 ZX Spectrum | ZXHawk |
 
-Amstrad CPC, Magnavox Odyssey², and Sony PSP emulation are works-in-progress and there is **no ETA**. Cores for other systems are only conceptual. If you want to help speed up development, ask on IRC (see below).
+Amstrad CPC, Fairchild Channel F, Magnavox Odyssey², Sony PSP, and MB Vectrex emulation, and a MAME frontend, are works-in-progress and there is **no ETA**. Cores for other systems are only conceptual. If you want to help speed up development, ask on IRC (see below).
 
 [to top](#bizhawk)
 

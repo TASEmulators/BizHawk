@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MsgBox));
 			this.chkBx = new System.Windows.Forms.CheckBox();
 			this.btn1 = new System.Windows.Forms.Button();
 			this.btn2 = new System.Windows.Forms.Button();
@@ -61,7 +60,7 @@
 			this.btn1.Text = "Button1";
 			this.btn1.UseVisualStyleBackColor = true;
 			this.btn1.Visible = false;
-			this.btn1.Click += new System.EventHandler(this.btn_Click);
+			this.btn1.Click += new System.EventHandler(this.ButtonClick);
 			// 
 			// btn2
 			// 
@@ -74,7 +73,7 @@
 			this.btn2.Text = "Button2";
 			this.btn2.UseVisualStyleBackColor = true;
 			this.btn2.Visible = false;
-			this.btn2.Click += new System.EventHandler(this.btn_Click);
+			this.btn2.Click += new System.EventHandler(this.ButtonClick);
 			// 
 			// messageLbl
 			// 
@@ -97,7 +96,7 @@
 			this.btn3.Text = "Button3";
 			this.btn3.UseVisualStyleBackColor = true;
 			this.btn3.Visible = false;
-			this.btn3.Click += new System.EventHandler(this.btn_Click);
+			this.btn3.Click += new System.EventHandler(this.ButtonClick);
 			// 
 			// DialogBox
 			// 
@@ -105,14 +104,13 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.btn1;
 			this.ClientSize = new System.Drawing.Size(485, 149);
-			this.ControlBox = false;
 			this.Controls.Add(this.btn3);
 			this.Controls.Add(this.chkBx);
 			this.Controls.Add(this.btn1);
 			this.Controls.Add(this.btn2);
 			this.Controls.Add(this.messageLbl);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.MsgBox_MultiSize;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "DialogBox";

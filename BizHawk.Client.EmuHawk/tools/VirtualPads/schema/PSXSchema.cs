@@ -8,7 +8,8 @@ using BizHawk.Emulation.Cores.Sony.PSX;
 namespace BizHawk.Client.EmuHawk
 {
 	[Schema("PSX")]
-	public class PSXSchema : IVirtualPadSchema
+	// ReSharper disable once UnusedMember.Global
+	public class PsxSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
@@ -23,20 +24,20 @@ namespace BizHawk.Client.EmuHawk
 					continue;
 				}
 
-				int pnum = i + 1;
+				int pNum = i + 1;
 				if (fioConfig.DevicesPlayer[i] == OctoshockDll.ePeripheralType.DualAnalog || fioConfig.DevicesPlayer[i] == OctoshockDll.ePeripheralType.DualShock)
 				{
-					yield return DualShockController(pnum);
+					yield return DualShockController(pNum);
 				}
 
 				if (fioConfig.DevicesPlayer[i] == OctoshockDll.ePeripheralType.Pad)
 				{
-					yield return GamePadController(pnum);
+					yield return GamePadController(pNum);
 				}
 
 				if (fioConfig.DevicesPlayer[i] == OctoshockDll.ePeripheralType.NegCon)
 				{
-					yield return NeGcon(pnum);
+					yield return NeGcon(pNum);
 				}
 			}
 

@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		"sinamas/natt",
 		isPorted: true,
 		isReleased: true)]
-	[ServiceNotApplicable(typeof(IDriveLight))]
+	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class GambatteLink : IEmulator, IVideoProvider, ISoundProvider, IInputPollable, ISaveRam, IStatable, ILinkable,
 		IBoardInfo, IDebuggable, ISettable<GambatteLink.GambatteLinkSettings, GambatteLink.GambatteLinkSyncSettings>, ICodeDataLogger
 	{
@@ -53,8 +53,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public bool LinkConnected
 		{
-			get { return _cableconnected; }
-			set { _cableconnected = value; }
+			get => _cableconnected;
+			set => _cableconnected = value;
 		}
 
 		private bool _disposed = false;

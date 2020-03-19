@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using BizHawk.Emulation.Common;
 using BizHawk.Common;
-using System.Reflection;
 using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
@@ -140,8 +138,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			this.Left = Left;
 			this.Right = Right;
-			List<ControlDefUnMerger> cdum;
-			Definition = ControllerDefinitionMerger.GetMerged(new[] { Left.GetDefinition(), Right.GetDefinition() }, out cdum);
+			Definition = ControllerDefinitionMerger.GetMerged(new[] { Left.GetDefinition(), Right.GetDefinition() }, out var cdum);
 			LeftU = cdum[0];
 			RightU = cdum[1];
 
@@ -686,9 +683,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public FamicomDeck(IFamicomExpansion ExpSlot, LightgunDelegate PPUCallback)
 		{
 			Player3 = ExpSlot;
-			List<ControlDefUnMerger> cdum;
 			Definition = ControllerDefinitionMerger.GetMerged(
-				new[] { Player1.GetDefinition(), Player2.GetDefinition(), Player3.GetDefinition() }, out cdum);
+				new[] { Player1.GetDefinition(), Player2.GetDefinition(), Player3.GetDefinition() }, out var cdum);
 			Definition.BoolButtons.Add("P2 Microphone");
 			Player1U = cdum[0];
 			Player2U = cdum[1];
@@ -1164,14 +1160,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		[JsonIgnore]
 		private bool _Famicom;
-		public bool Famicom { get { return _Famicom; } set { _Famicom = value; } }
+		public bool Famicom
+		{
+			get => _Famicom;
+			set => _Famicom = value;
+		}
 		[JsonIgnore]
 		private string _NesLeftPort;
 		[JsonIgnore]
 		private string _NesRightPort;
 		public string NesLeftPort
 		{
-			get { return _NesLeftPort; }
+			get => _NesLeftPort;
 			set
 			{
 				if (NesPortDevices.ContainsKey(value))
@@ -1182,7 +1182,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 		public string NesRightPort
 		{
-			get { return _NesRightPort; }
+			get => _NesRightPort;
 			set
 			{
 				if (NesPortDevices.ContainsKey(value))
@@ -1195,7 +1195,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private string _FamicomExpPort;
 		public string FamicomExpPort
 		{
-			get { return _FamicomExpPort; }
+			get => _FamicomExpPort;
 			set
 			{
 				if (FamicomExpansions.ContainsKey(value))

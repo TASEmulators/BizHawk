@@ -28,10 +28,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private BreakpointOperation Operation
 		{
-			get
-			{
-				return _operation;
-			}
+			get => _operation;
 
 			set
 			{
@@ -104,22 +101,19 @@ namespace BizHawk.Client.EmuHawk
 
 		public uint Address
 		{
-			get { return (uint)AddressBox.ToRawInt().Value & AddressMask; }
-			set { AddressBox.SetFromLong(value & AddressMask); }
+			get => (uint)AddressBox.ToRawInt().Value & AddressMask;
+			set => AddressBox.SetFromLong(value & AddressMask);
 		}
 
 		public uint AddressMask
 		{
-			get { return (uint)AddressMaskBox.ToRawInt().Value; }
-			set { AddressMaskBox.SetFromLong(value); }
+			get => (uint)AddressMaskBox.ToRawInt().Value;
+			set => AddressMaskBox.SetFromLong(value);
 		}
 
 		public long MaxAddressSize
 		{
-			get
-			{
-				return AddressBox.GetMax();
-			}
+			get => AddressBox.GetMax();
 
 			set
 			{

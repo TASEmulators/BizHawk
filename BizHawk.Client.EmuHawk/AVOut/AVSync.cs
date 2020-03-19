@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
 
@@ -9,12 +10,16 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public AudioStretcher(IVideoWriter w)
 		{
-			this.w = w;
+			this.W = w;
 		}
 
 		private long _soundRemainder; // audio timekeeping for video dumping
 
-		public void DumpAV(IVideoProvider v, ISoundProvider asyncSoundProvider, out short[] samples, out int samplesprovided)
+		/// <exception cref="InvalidOperationException">
+		/// <paramref name="asyncSoundProvider"/>'s mode is not <see cref="SyncSoundMode.Async"/>, or
+		/// A/V parameters haven't been set (need to call <see cref="SetAudioParameters"/> and <see cref="SetMovieParameters"/>)
+		/// </exception>
+		public void DumpAV(IVideoProvider v, ISoundProvider asyncSoundProvider, out short[] samples, out int samplesProvided)
 		{
 			// Sound refactor TODO: we could try set it here, but we want the client to be responsible for mode switching? There may be non-trivial complications with when to switch modes that we don't want this object worrying about
 			if (asyncSoundProvider.SyncMode != SyncSoundMode.Async)
@@ -22,21 +27,21 @@ namespace BizHawk.Client.EmuHawk
 				throw new InvalidOperationException("Only async mode is supported, set async mode before passing in the sound provider");
 			}
 
-			if (!aset || !vset)
+			if (!ASet || !VSet)
 				throw new InvalidOperationException("Must set params first!");
 
-			long nsampnum = samplerate * (long)fpsden + _soundRemainder;
-			long nsamp = nsampnum / fpsnum;
+			long nSampNum = Samplerate * (long)FpsDen + _soundRemainder;
+			long nsamp = nSampNum / FpsNum;
 
 			// exactly remember fractional parts of an audio sample
-			_soundRemainder = nsampnum % fpsnum;
+			_soundRemainder = nSampNum % FpsNum;
 
-			samples = new short[nsamp * channels];
+			samples = new short[nsamp * Channels];
 			asyncSoundProvider.GetSamplesAsync(samples);
-			samplesprovided = (int)nsamp;
+			samplesProvided = (int)nsamp;
 
-			w.AddFrame(v);
-			w.AddSamples(samples);
+			W.AddFrame(v);
+			W.AddSamples(samples);
 		}
 	}
 
@@ -45,40 +50,41 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public VideoStretcher(IVideoWriter w)
 		{
-			this.w = w;
+			W = w;
 		}
 
 		private short[] _samples = new short[0];
 
-		// how many extra audio samples there are (* fpsnum)
-		private long exaudio_num;
+		// how many extra audio samples there are (* fpsNum)
+		private long _exAudioNum;
 
-		private bool pset = false;
-		private long threshone;
-		private long threshmore;
-		private long threshtotal;
+		private bool _pSet;
+		private long _threshOne;
+		private long _threshMore;
+		private long _threshTotal;
 
 		private void VerifyParams()
 		{
-			if (!aset || !vset)
+			if (!ASet || !VSet)
 			{
 				throw new InvalidOperationException("Must set params first!");
 			}
 
-			if (!pset)
+			if (!_pSet)
 			{
-				pset = true;
+				_pSet = true;
 
-				// each video frame committed counts as (fpsden * samplerate / fpsnum) audio samples
-				threshtotal = fpsden * (long)samplerate;
+				// each video frame committed counts as (fpsDen * samplerate / fpsNum) audio samples
+				_threshTotal = FpsDen * (long)Samplerate;
 
 				// blah blah blah
-				threshone = (long)(threshtotal * 0.4);
-				threshmore = (long)(threshtotal * 0.9);
+				_threshOne = (long)(_threshTotal * 0.4);
+				_threshMore = (long)(_threshTotal * 0.9);
 			}
 		}
 
-		public void DumpAV(IVideoProvider v, ISoundProvider syncSoundProvider, out short[] samples, out int samplesprovided)
+		/// <exception cref="InvalidOperationException"><paramref name="syncSoundProvider"/>'s mode is not <see cref="SyncSoundMode.Sync"/></exception>
+		public void DumpAV(IVideoProvider v, ISoundProvider syncSoundProvider, out short[] samples, out int samplesProvided)
 		{
 			// Sound refactor TODO: we could just set it here, but we want the client to be responsible for mode switching? There may be non-trivial complications with when to switch modes that we don't want this object worrying about
 			if (syncSoundProvider.SyncMode != SyncSoundMode.Sync)
@@ -87,77 +93,78 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			VerifyParams();
-			syncSoundProvider.GetSamplesSync(out samples, out samplesprovided);
-			exaudio_num += samplesprovided * (long)fpsnum;
+			syncSoundProvider.GetSamplesSync(out samples, out samplesProvided);
+			_exAudioNum += samplesProvided * (long)FpsNum;
 
 			// todo: scan for duplicate frames (ie, video content exactly matches previous frame) and for them, skip the threshone step
 			// this is a good idea, but expensive on time.  is it worth it?
-			if (exaudio_num >= threshone)
+			if (_exAudioNum >= _threshOne)
 			{
 				// add frame once
-				w.AddFrame(v);
-				exaudio_num -= threshtotal;
+				W.AddFrame(v);
+				_exAudioNum -= _threshTotal;
 			}
 			else
 			{
 				Console.WriteLine("Dropped Frame!");
 			}
-			while (exaudio_num >= threshmore)
+			while (_exAudioNum >= _threshMore)
 			{
 				// add frame again!
-				w.AddFrame(v);
-				exaudio_num -= threshtotal;
+				W.AddFrame(v);
+				_exAudioNum -= _threshTotal;
 				Console.WriteLine("Dupped Frame!");
 			}
 
 			// a bit of hackey due to the fact that this api can't read a
 			// usable buffer length separately from the actual length of the buffer
-			if (samples.Length == samplesprovided * channels)
+			if (samples.Length == samplesProvided * Channels)
 			{
-				w.AddSamples(samples);
+				W.AddSamples(samples);
 			}
 			else
 			{
-				if (_samples.Length != samplesprovided * channels)
+				if (_samples.Length != samplesProvided * Channels)
 				{
-					_samples = new short[samplesprovided * channels];
+					_samples = new short[samplesProvided * Channels];
 				}
 
-				Buffer.BlockCopy(samples, 0, _samples, 0, samplesprovided * channels * sizeof(short));
-				w.AddSamples(_samples);
+				Buffer.BlockCopy(samples, 0, _samples, 0, samplesProvided * Channels * sizeof(short));
+				W.AddSamples(_samples);
 			}
 		}
 	}
 
-	public abstract class AVStretcher : VWWrap, IVideoWriter
+	public abstract class AVStretcher : VwWrap, IVideoWriter
 	{
-		protected int fpsnum;
-		protected int fpsden;
-		protected bool vset = false;
+		protected int FpsNum;
+		protected int FpsDen;
+		protected bool VSet;
 
-		protected int samplerate;
-		protected int channels;
-		protected int bits;
-		protected bool aset = false;
+		protected int Samplerate;
+		protected int Channels;
+		protected int Bits;
+		protected bool ASet;
 
-
-		public new virtual void SetMovieParameters(int fpsnum, int fpsden)
+		/// <exception cref="InvalidOperationException">already set</exception>
+		public new virtual void SetMovieParameters(int fpsNum, int fpsDen)
 		{
-			if (vset)
+			if (VSet)
 			{
 				throw new InvalidOperationException();
 			}
 
-			vset = true;
-			this.fpsnum = fpsnum;
-			this.fpsden = fpsden;
+			VSet = true;
+			FpsNum = fpsNum;
+			FpsDen = fpsDen;
 
-			base.SetMovieParameters(fpsnum, fpsden);
+			base.SetMovieParameters(fpsNum, fpsDen);
 		}
 
+		/// <exception cref="InvalidOperationException">already set, or <paramref name="bits"/> is not <c>16</c></exception>
 		public new virtual void SetAudioParameters(int sampleRate, int channels, int bits)
 		{
-			if (aset)
+			if (ASet)
 			{
 				throw new InvalidOperationException();
 			}
@@ -167,10 +174,10 @@ namespace BizHawk.Client.EmuHawk
 				throw new InvalidOperationException("Only 16 bit audio is supported!");
 			}
 
-			aset = true;
-			this.samplerate = sampleRate;
-			this.channels = channels;
-			this.bits = bits;
+			ASet = true;
+			Samplerate = sampleRate;
+			Channels = channels;
+			Bits = bits;
 
 			base.SetAudioParameters(sampleRate, channels, bits);
 		}
@@ -180,94 +187,95 @@ namespace BizHawk.Client.EmuHawk
 			// this writer will never support this capability
 		}
 
+		/// <exception cref="InvalidOperationException">always</exception>
 		public new virtual void AddFrame(IVideoProvider source)
 		{
 			throw new InvalidOperationException("Must call AddAV()!");
 		}
 
+		/// <exception cref="InvalidOperationException">always</exception>
 		public new virtual void AddSamples(short[] samples)
 		{
 			throw new InvalidOperationException("Must call AddAV()!");
 		}
-
 	}
 
-	public abstract class VWWrap : IVideoWriter
+	public abstract class VwWrap : IVideoWriter
 	{
-		protected IVideoWriter w;
+		protected IVideoWriter W;
 
-		public bool UsesAudio => w.UsesAudio;
+		public bool UsesAudio => W.UsesAudio;
 
-		public bool UsesVideo => w.UsesVideo;
+		public bool UsesVideo => W.UsesVideo;
 
 		public void SetVideoCodecToken(IDisposable token)
 		{
-			w.SetVideoCodecToken(token);
+			W.SetVideoCodecToken(token);
 		}
 
 		public void SetDefaultVideoCodecToken()
 		{
-			w.SetDefaultVideoCodecToken();
+			W.SetDefaultVideoCodecToken();
 		}
 
 		public void OpenFile(string baseName)
 		{
-			w.OpenFile(baseName);
+			W.OpenFile(baseName);
 		}
 
 		public void CloseFile()
 		{
-			w.CloseFile();
+			W.CloseFile();
 		}
 
 		public void SetFrame(int frame)
 		{
-			w.SetFrame(frame);
+			W.SetFrame(frame);
 		}
 
 		public void AddFrame(IVideoProvider source)
 		{
-			w.AddFrame(source);
+			W.AddFrame(source);
 		}
 
 		public void AddSamples(short[] samples)
 		{
-			w.AddSamples(samples);
+			W.AddSamples(samples);
 		}
 
-		public IDisposable AcquireVideoCodecToken(System.Windows.Forms.IWin32Window hwnd)
+		public IDisposable AcquireVideoCodecToken(IWin32Window hwnd)
 		{
-			return w.AcquireVideoCodecToken(hwnd);
+			return W.AcquireVideoCodecToken(hwnd);
 		}
 
-		public void SetMovieParameters(int fpsnum, int fpsden)
+		public void SetMovieParameters(int fpsNum, int fpsDen)
 		{
-			w.SetMovieParameters(fpsnum, fpsden);
+			W.SetMovieParameters(fpsNum, fpsDen);
 		}
 
 		public void SetVideoParameters(int width, int height)
 		{
-			w.SetVideoParameters(width, height);
+			W.SetVideoParameters(width, height);
 		}
 
 		public void SetAudioParameters(int sampleRate, int channels, int bits)
 		{
-			w.SetAudioParameters(sampleRate, channels, bits);
+			W.SetAudioParameters(sampleRate, channels, bits);
 		}
 
-		public void SetMetaData(string gameName, string authors, ulong lengthMS, ulong rerecords)
+		public void SetMetaData(string gameName, string authors, ulong lengthMs, ulong rerecords)
 		{
-			w.SetMetaData(gameName, authors, lengthMS, rerecords);
+			W.SetMetaData(gameName, authors, lengthMs, rerecords);
 		}
 
 		public string DesiredExtension()
 		{
-			return w.DesiredExtension();
+			return W.DesiredExtension();
 		}
 
 		public void Dispose()
 		{
-			w.Dispose();
+			W.Dispose();
 		}
 	}
 }

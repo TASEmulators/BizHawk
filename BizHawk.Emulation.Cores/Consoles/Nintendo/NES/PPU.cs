@@ -13,9 +13,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int preNMIlines;
 		int postNMIlines;
 		bool chopdot;
-		public enum Region { NTSC, PAL, Dendy, RGB };
+		public enum Region { NTSC, PAL, Dendy, RGB }
 		Region _region;
-		public Region region { set { _region = value; SyncRegion(); } get { return _region; } }
+		public Region region
+		{
+			set { _region = value; SyncRegion(); }
+			get => _region;
+		}
 		void SyncRegion()
 		{
 			switch (region)
@@ -93,7 +97,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private int[] _currentLuma = PaletteLumaNES;
 
-		public int[] CurrentLuma { get { return _currentLuma; } set { _currentLuma = value; } }
+		public int[] CurrentLuma
+		{
+			get => _currentLuma;
+			set => _currentLuma = value;
+		}
 
 		// true = light sensed
 		public bool LightGunCallback(int x, int y)
@@ -310,30 +318,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			byte bg_byte;
 			for (int i = 0; i < 34; i++)
 			{
-				string str = "bgdata" + i.ToString() + "at";
+				string str = "bgdata" + i + "at";
 				bg_byte = bgdata[i].at; ser.Sync(str, ref bg_byte); bgdata[i].at = bg_byte;
-				str = "bgdata" + i.ToString() + "nt";
+				str = "bgdata" + i + "nt";
 				bg_byte = bgdata[i].nt; ser.Sync(str, ref bg_byte); bgdata[i].nt = bg_byte;
-				str = "bgdata" + i.ToString() + "pt0";
+				str = "bgdata" + i + "pt0";
 				bg_byte = bgdata[i].pt_0; ser.Sync(str, ref bg_byte); bgdata[i].pt_0 = bg_byte;
-				str = "bgdata" + i.ToString() + "pt1";
+				str = "bgdata" + i + "pt1";
 				bg_byte = bgdata[i].pt_1; ser.Sync(str, ref bg_byte); bgdata[i].pt_1 = bg_byte;
 			}
 
 			byte oam_byte;
 			for (int i = 0; i < 64; i++)
 			{
-				string str = "oamdata" + i.ToString() + "y";
+				string str = "oamdata" + i + "y";
 				oam_byte = t_oam[i].oam_y; ser.Sync(str, ref oam_byte); t_oam[i].oam_y = oam_byte;
-				str = "oamdata" + i.ToString() + "ind";
+				str = "oamdata" + i + "ind";
 				oam_byte = t_oam[i].oam_ind; ser.Sync(str, ref oam_byte); t_oam[i].oam_ind = oam_byte;
-				str = "oamdata" + i.ToString() + "attr";
+				str = "oamdata" + i + "attr";
 				oam_byte = t_oam[i].oam_attr; ser.Sync(str, ref oam_byte); t_oam[i].oam_attr = oam_byte;
-				str = "oamdata" + i.ToString() + "x";
+				str = "oamdata" + i + "x";
 				oam_byte = t_oam[i].oam_x; ser.Sync(str, ref oam_byte); t_oam[i].oam_x = oam_byte;
-				str = "oamdata" + i.ToString() + "p0";
+				str = "oamdata" + i + "p0";
 				oam_byte = t_oam[i].patterns_0; ser.Sync(str, ref oam_byte); t_oam[i].patterns_0 = oam_byte;
-				str = "oamdata" + i.ToString() + "p1";
+				str = "oamdata" + i + "p1";
 				oam_byte = t_oam[i].patterns_1; ser.Sync(str, ref oam_byte); t_oam[i].patterns_1 = oam_byte;
 			}
 		}
@@ -360,8 +368,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 					//nes.LogLine("addr wrote vt = {0}, ht = {1}", ppur._vt, ppur._ht);
 					//normally the address isnt observed by the board till it gets clocked by a read or write.
-					//but maybe thats just because a ppu read/write shoves it on the address bus
-					//apparently this shoves it on the address bus, too, or else blargg's mmc3 tests dont pass
+					//but maybe that's just because a ppu read/write shoves it on the address bus
+					//apparently this shoves it on the address bus, too, or else blargg's mmc3 tests don't pass
 					//ONLY if the ppu is not rendering
 					if (ppur.status.sl >= 241 || !PPUON)
 						nes.Board.AddressPPU(ppur.get_2007access());

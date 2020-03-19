@@ -6,12 +6,7 @@
 	/// <seealso cref="ITraceable" />
 	public class TraceBuffer : ITraceable
 	{
-		public TraceBuffer()
-		{
-			Header = "Instructions";
-		}
-
-		public string Header { get; set; }
+		public string Header { get; set; } = "Instructions";
 
 		public ITraceSink Sink { private get; set; }
 

@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// Whether the CDL is tracking a block with the given name
 		/// </summary>
-		bool Has(string blockname);
+		bool Has(string blockName);
 
 		/// <summary>
 		/// Gets or sets a value indicating whether the status is active.

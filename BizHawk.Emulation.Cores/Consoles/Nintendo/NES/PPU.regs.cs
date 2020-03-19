@@ -28,10 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public byte Value
 			{
-				get
-				{
-					return (byte)(color_disable | (show_bg_leftmost << 1) | (show_obj_leftmost << 2) | (show_bg << 3) | (show_obj << 4) | (intense_green << 5) | (intense_blue << 6) | (intense_red << 7));
-				}
+				get => (byte)(color_disable | (show_bg_leftmost << 1) | (show_obj_leftmost << 2) | (show_bg << 3) | (show_obj << 4) | (intense_green << 5) | (intense_blue << 6) | (intense_red << 7));
 				set
 				{
 					color_disable = (value & 1);
@@ -47,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public bool PPUON { get { return show_bg_new || show_obj_new; } }
+		public bool PPUON => show_bg_new || show_obj_new;
 
 
 		// this byte is used to simulate open bus reads and writes
@@ -60,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public struct PPUSTATUS
 		{
 			public int sl;
-			public bool rendering { get { return sl >= 0 && sl < 241; } }
+			public bool rendering => sl >= 0 && sl < 241;
 			public int cycle;
 		}
 
@@ -256,7 +253,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				v &= 1;
 				fv &= 7;
 			}
-		};
+		}
 
 		public sealed class Reg_2000
 		{
@@ -278,10 +275,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public byte Value
 			{
-				get
-				{
-					return (byte)(ppu.ppur._h | (ppu.ppur._v << 1) | (vram_incr32 << 2) | (obj_pattern_hi << 3) | (bg_pattern_hi << 4) | (obj_size_16 << 5) | (ppu_layer << 6) | (vblank_nmi_gen << 7));
-				}
+				get => (byte)(ppu.ppur._h | (ppu.ppur._v << 1) | (vram_incr32 << 2) | (obj_pattern_hi << 3) | (bg_pattern_hi << 4) | (obj_size_16 << 5) | (ppu_layer << 6) | (vblank_nmi_gen << 7));
 				set
 				{
 					ppu.ppur._h = value & 1;

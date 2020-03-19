@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BizBox));
 			this.OK = new System.Windows.Forms.Button();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.linkLabel1 = new System.Windows.Forms.LinkLabel();
@@ -40,6 +39,7 @@
 			this.linkLabel2 = new System.Windows.Forms.LinkLabel();
 			this.linkLabel3 = new System.Windows.Forms.LinkLabel();
 			this.DateLabel = new System.Windows.Forms.Label();
+			this.DeveloperBuildLabel = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -163,6 +163,16 @@
 			this.DateLabel.TabIndex = 21;
 			this.DateLabel.Text = "timestamp goes here";
 			// 
+			// DeveloperBuildLabel
+			// 
+			this.DeveloperBuildLabel.AutoSize = true;
+			this.DeveloperBuildLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.DeveloperBuildLabel.Location = new System.Drawing.Point(194, 137);
+			this.DeveloperBuildLabel.Name = "DeveloperBuildLabel";
+			this.DeveloperBuildLabel.Size = new System.Drawing.Size(240, 37);
+			this.DeveloperBuildLabel.TabIndex = 22;
+			this.DeveloperBuildLabel.Text = "Developer Build";
+			// 
 			// BizBox
 			// 
 			this.AcceptButton = this.OK;
@@ -170,6 +180,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.OK;
 			this.ClientSize = new System.Drawing.Size(448, 536);
+			this.Controls.Add(this.DeveloperBuildLabel);
 			this.Controls.Add(this.DateLabel);
 			this.Controls.Add(this.linkLabel3);
 			this.Controls.Add(this.linkLabel2);
@@ -181,7 +192,7 @@
 			this.Controls.Add(this.linkLabel1);
 			this.Controls.Add(this.pictureBox1);
 			this.Controls.Add(this.OK);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.logo;
 			this.MinimumSize = new System.Drawing.Size(453, 253);
 			this.Name = "BizBox";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -207,5 +218,6 @@
 		private System.Windows.Forms.LinkLabel linkLabel2;
         private System.Windows.Forms.LinkLabel linkLabel3;
 		private System.Windows.Forms.Label DateLabel;
+		private System.Windows.Forms.Label DeveloperBuildLabel;
 	}
 }

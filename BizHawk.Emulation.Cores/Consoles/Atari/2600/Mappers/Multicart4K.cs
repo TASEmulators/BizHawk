@@ -10,9 +10,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private int _gameTotal;
 		private int _currentGame;
 
-		public Multicart4K(int gametotal)
+		public Multicart4K(int gameTotal)
 		{
-			_gameTotal = gametotal;
+			_gameTotal = gameTotal;
 			_currentGame = 0;
 		}
 
@@ -47,9 +47,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			return Core.Rom[(addr & 0xFFF) + (_currentGame * 4096)];
 		}
 
-		public override byte PeekMemory(ushort addr)
-		{
-			return ReadMemory(addr);
-		}
+		public override byte PeekMemory(ushort addr) => ReadMemory(addr);
 	}
 }

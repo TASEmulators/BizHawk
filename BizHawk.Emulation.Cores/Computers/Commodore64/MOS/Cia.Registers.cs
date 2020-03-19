@@ -1,7 +1,4 @@
-﻿using BizHawk.Common.NumberExtensions;
-using System;
-
-namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
+﻿namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	public sealed partial class Cia
 	{

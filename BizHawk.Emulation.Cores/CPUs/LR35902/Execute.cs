@@ -1,6 +1,4 @@
-using System;
-
-namespace BizHawk.Emulation.Common.Components.LR35902
+namespace BizHawk.Emulation.Cores.Components.LR35902
 {
 	public partial class LR35902
 	{
@@ -11,7 +9,8 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 
 		// variables for executing instructions
 		public int instr_pntr = 0;
-		public ushort[] cur_instr;
+		public ushort[] cur_instr = new ushort [60];
+		public ushort[] instr_table = new ushort[256 * 2 * 60 + 60 * 8];
 		public int opcode;
 		public bool CB_prefix;
 		public bool halted;
@@ -19,11 +18,14 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 		public bool jammed;
 		public int LY;
 
-		public void FetchInstruction(byte opcode)
+		// unsaved variables
+		public bool checker;
+
+		public void BuildInstructionTable()
 		{
-			if (!CB_prefix)
+			for (int i = 0; i < 256; i++)
 			{
-				switch (opcode)
+				switch (i)
 				{
 					case 0x00: NOP_();									break; // NOP
 					case 0x01: LD_IND_16(C, B, PCl, PCh);				break; // LD BC, nn
@@ -49,7 +51,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 					case 0x15: INT_OP(DEC8, D);							break; // DEC D
 					case 0x16: LD_IND_8_INC(D, PCl, PCh);				break; // LD D, n
 					case 0x17: INT_OP(RL, Aim);							break; // RLA
-					case 0x18: JR_COND(true);							break; // JR, r8
+					case 0x18: JR_COND(ALWAYS_T);						break; // JR, r8
 					case 0x19: ADD_16(L, H, E, D);						break; // ADD HL, DE
 					case 0x1A: REG_OP_IND(TR, A, E, D);					break; // LD A, (DE)
 					case 0x1B: DEC_16(E, D);							break; // DEC DE
@@ -57,7 +59,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 					case 0x1D: INT_OP(DEC8, E);							break; // DEC E
 					case 0x1E: LD_IND_8_INC(E, PCl, PCh);				break; // LD E, n
 					case 0x1F: INT_OP(RR, Aim);							break; // RRA
-					case 0x20: JR_COND(!FlagZ);							break; // JR NZ, r8
+					case 0x20: JR_COND(FLAG_NZ);						break; // JR NZ, r8
 					case 0x21: LD_IND_16(L, H, PCl, PCh);				break; // LD HL, nn
 					case 0x22: LD_8_IND_INC(L, H, A);					break; // LD (HL+), A
 					case 0x23: INC_16(L, H);							break; // INC HL
@@ -65,7 +67,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 					case 0x25: INT_OP(DEC8, H);							break; // DEC H
 					case 0x26: LD_IND_8_INC(H, PCl, PCh);				break; // LD H, n
 					case 0x27: INT_OP(DA, A);							break; // DAA
-					case 0x28: JR_COND(FlagZ);							break; // JR Z, r8
+					case 0x28: JR_COND(FLAG_Z);							break; // JR Z, r8
 					case 0x29: ADD_16(L, H, L, H);						break; // ADD HL, HL
 					case 0x2A: LD_IND_8_INC_HL(A, L, H);				break; // LD A, (HL+)
 					case 0x2B: DEC_16(L, H);							break; // DEC HL
@@ -73,7 +75,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 					case 0x2D: INT_OP(DEC8, L);							break; // DEC L
 					case 0x2E: LD_IND_8_INC(L, PCl, PCh);				break; // LD L, n
 					case 0x2F: INT_OP(CPL, A);							break; // CPL
-					case 0x30: JR_COND(!FlagC);							break; // JR NC, r8
+					case 0x30: JR_COND(FLAG_NC);						break; // JR NC, r8
 					case 0x31: LD_IND_16(SPl, SPh, PCl, PCh);			break; // LD SP, nn
 					case 0x32: LD_8_IND_DEC(L, H, A);					break; // LD (HL-), A
 					case 0x33: INC_16(SPl, SPh);						break; // INC SP
@@ -81,7 +83,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 					case 0x35: DEC_8_IND(L, H);							break; // DEC (HL)
 					case 0x36: LD_8_IND_IND(L, H, PCl, PCh);			break; // LD (HL), n
 					case 0x37: INT_OP(SCF, A);							break; // SCF
-					case 0x38: JR_COND(FlagC);							break; // JR C, r8
+					case 0x38: JR_COND(FLAG_C);							break; // JR C, r8
 					case 0x39: ADD_16(L, H, SPl, SPh);					break; // ADD HL, SP
 					case 0x3A: LD_IND_8_DEC_HL(A, L, H);				break; // LD A, (HL-)
 					case 0x3B: DEC_16(SPl, SPh);						break; // DEC SP
@@ -217,35 +219,35 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 					case 0xBD: REG_OP(CP8, A, L);						break; // CP A, L
 					case 0xBE: REG_OP_IND(CP8, A, L, H);				break; // CP A, (HL)
 					case 0xBF: REG_OP(CP8, A, A);						break; // CP A, A
-					case 0xC0: RET_COND(!FlagZ);						break; // Ret NZ
+					case 0xC0: RET_COND(FLAG_NZ);						break; // Ret NZ
 					case 0xC1: POP_(C, B);								break; // POP BC
-					case 0xC2: JP_COND(!FlagZ);							break; // JP NZ
-					case 0xC3: JP_COND(true);							break; // JP
-					case 0xC4: CALL_COND(!FlagZ);						break; // CALL NZ
+					case 0xC2: JP_COND(FLAG_NZ);						break; // JP NZ
+					case 0xC3: JP_COND(ALWAYS_T);						break; // JP
+					case 0xC4: CALL_COND(FLAG_NZ);						break; // CALL NZ
 					case 0xC5: PUSH_(C, B);								break; // PUSH BC
 					case 0xC6: REG_OP_IND_INC(ADD8, A, PCl, PCh);		break; // ADD A, n
 					case 0xC7: RST_(0);									break; // RST 0
-					case 0xC8: RET_COND(FlagZ);							break; // RET Z
+					case 0xC8: RET_COND(FLAG_Z);						break; // RET Z
 					case 0xC9: RET_();									break; // RET
-					case 0xCA: JP_COND(FlagZ);							break; // JP Z
+					case 0xCA: JP_COND(FLAG_Z);							break; // JP Z
 					case 0xCB: PREFIX_();								break; // PREFIX
-					case 0xCC: CALL_COND(FlagZ);						break; // CALL Z
-					case 0xCD: CALL_COND(true);							break; // CALL
+					case 0xCC: CALL_COND(FLAG_Z);						break; // CALL Z
+					case 0xCD: CALL_COND(ALWAYS_T);						break; // CALL
 					case 0xCE: REG_OP_IND_INC(ADC8, A, PCl, PCh);		break; // ADC A, n
 					case 0xCF: RST_(0x08);								break; // RST 0x08
-					case 0xD0: RET_COND(!FlagC);						break; // Ret NC
+					case 0xD0: RET_COND(FLAG_NC);						break; // Ret NC
 					case 0xD1: POP_(E, D);								break; // POP DE
-					case 0xD2: JP_COND(!FlagC);							break; // JP NC
+					case 0xD2: JP_COND(FLAG_NC);						break; // JP NC
 					case 0xD3: JAM_();									break; // JAM
-					case 0xD4: CALL_COND(!FlagC);						break; // CALL NC
+					case 0xD4: CALL_COND(FLAG_NC);						break; // CALL NC
 					case 0xD5: PUSH_(E, D);								break; // PUSH DE
 					case 0xD6: REG_OP_IND_INC(SUB8, A, PCl, PCh);		break; // SUB A, n
 					case 0xD7: RST_(0x10);								break; // RST 0x10
-					case 0xD8: RET_COND(FlagC);							break; // RET C
+					case 0xD8: RET_COND(FLAG_C);						break; // RET C
 					case 0xD9: RETI_();									break; // RETI
-					case 0xDA: JP_COND(FlagC);							break; // JP C
+					case 0xDA: JP_COND(FLAG_C);							break; // JP C
 					case 0xDB: JAM_();									break; // JAM
-					case 0xDC: CALL_COND(FlagC);						break; // CALL C
+					case 0xDC: CALL_COND(FLAG_C);						break; // CALL C
 					case 0xDD: JAM_();									break; // JAM
 					case 0xDE: REG_OP_IND_INC(SBC8, A, PCl, PCh);		break; // SBC A, n
 					case 0xDF: RST_(0x18);								break; // RST 0x18
@@ -282,11 +284,13 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 					case 0xFE: REG_OP_IND_INC(CP8, A, PCl, PCh);		break; // XOR A, n
 					case 0xFF: RST_(0x38);								break; // RST 0x38
 				}
-			}
-			else
-			{
-				CB_prefix = false;
-				switch (opcode)
+
+				for (int j = 0; j < cur_instr.Length; j++)
+				{
+					instr_table[i * 60 + j] = cur_instr[j];
+				}
+
+				switch (i)
 				{
 					case 0x00: INT_OP(RLC, B);							break; // RLC B
 					case 0x01: INT_OP(RLC, C);							break; // RLC C
@@ -545,7 +549,69 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 					case 0xFE: BIT_OP_IND(SET, 7, L, H);				break; // SET 7, (HL)
 					case 0xFF: BIT_OP(SET, 7, A);						break; // SET 7, A
 				}
+
+				for (int j = 0; j < cur_instr.Length; j++)
+				{
+					instr_table[256 * 60 + i * 60 + j] = cur_instr[j];
+				}
 			}
+
+			// other miscellaneous vectors
+
+			// reset
+			instr_table[256 * 60 * 2] = IDLE;
+			instr_table[256 * 60 * 2 + 1] = IDLE;
+			instr_table[256 * 60 * 2 + 2] = HALT_CHK;
+			instr_table[256 * 60 * 2 + 3] = OP;
+
+			// halt loop
+			instr_table[256 * 60 * 2 + 60] = IDLE;
+			instr_table[256 * 60 * 2 + 60 + 1] = IDLE;
+			instr_table[256 * 60 * 2 + 60 + 2] = IDLE;
+			instr_table[256 * 60 * 2 + 60 + 3] = OP;
+
+			// skipped loop
+			instr_table[256 * 60 * 2 + 60 * 2] = IDLE;
+			instr_table[256 * 60 * 2 + 60 * 2 + 1] = IDLE;
+			instr_table[256 * 60 * 2 + 60 * 2 + 2] = IDLE;
+			instr_table[256 * 60 * 2 + 60 * 2 + 3] = HALT;
+			instr_table[256 * 60 * 2 + 60 * 2 + 4] = (ushort)0;
+
+			// GBC Halt loop
+			instr_table[256 * 60 * 2 + 60 * 3] = IDLE;
+			instr_table[256 * 60 * 2 + 60 * 3 + 1] = IDLE;
+			instr_table[256 * 60 * 2 + 60 * 3 + 2] = HALT_CHK;
+			instr_table[256 * 60 * 2 + 60 * 3 + 3] = HALT;
+			instr_table[256 * 60 * 2 + 60 * 3 + 4] = (ushort)0;
+
+			// spec Halt loop
+			instr_table[256 * 60 * 2 + 60 * 4] = HALT_CHK;
+			instr_table[256 * 60 * 2 + 60 * 4 + 1] = IDLE;
+			instr_table[256 * 60 * 2 + 60 * 4 + 2] = IDLE;
+			instr_table[256 * 60 * 2 + 60 * 4 + 3] = HALT;
+			instr_table[256 * 60 * 2 + 60 * 4 + 4] = (ushort)0;
+
+			// Stop loop
+			instr_table[256 * 60 * 2 + 60 * 5] = IDLE;
+			instr_table[256 * 60 * 2 + 60 * 5 + 1] = IDLE;
+			instr_table[256 * 60 * 2 + 60 * 5 + 2] = IDLE;
+			instr_table[256 * 60 * 2 + 60 * 5 + 3] = STOP;
+
+			// interrupt vectors
+			INTERRUPT_();
+
+			for (int i = 0; i < cur_instr.Length; i++)
+			{
+				instr_table[256 * 60 * 2 + 60 * 6 + i] = cur_instr[i];
+			}
+
+			INTERRUPT_GBC_NOP();
+
+			for (int i = 0; i < cur_instr.Length; i++)
+			{
+				instr_table[256 * 60 * 2 + 60 * 7 + i] = cur_instr[i];
+			}
+
 		}
 	}
 }

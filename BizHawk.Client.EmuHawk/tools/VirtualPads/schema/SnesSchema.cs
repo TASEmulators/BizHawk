@@ -8,23 +8,24 @@ using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 namespace BizHawk.Client.EmuHawk
 {
 	[Schema("SNES")]
+	// ReSharper disable once UnusedMember.Global
 	public class SnesSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
-			if (core is LibsnesCore)
+			if (core is LibsnesCore bsnes)
 			{
-				return GetBsnesPadSchemas(core);
+				return GetBsnesPadSchemas(bsnes);
 			}
 
-			return GetSnes9xPadSchemas(core);
+			return GetSnes9xPadSchemas((Snes9x)core);
 		}
-		private IEnumerable<PadSchema> GetSnes9xPadSchemas(IEmulator core)
+		private IEnumerable<PadSchema> GetSnes9xPadSchemas(Snes9x core)
 		{
 			// Only standard controller is supported on the left port
 			yield return StandardController(1);
 
-			Snes9x.SyncSettings syncSettings = ((Snes9x)core).GetSyncSettings();
+			Snes9x.SyncSettings syncSettings = core.GetSyncSettings();
 			LibSnes9x.RightPortDevice rightPort = syncSettings.RightPort;
 
 			switch (rightPort)
@@ -53,14 +54,14 @@ namespace BizHawk.Client.EmuHawk
 			yield return ConsoleButtons();
 		}
 
-		private IEnumerable<PadSchema> GetBsnesPadSchemas(IEmulator core)
+		private IEnumerable<PadSchema> GetBsnesPadSchemas(LibsnesCore core)
 		{
-			var syncsettings = ((LibsnesCore)core).GetSyncSettings();
+			var syncSettings = core.GetSyncSettings();
 
 			var ports = new[]
 			{
-				syncsettings.LeftPort,
-				syncsettings.RightPort
+				syncSettings.LeftPort,
+				syncSettings.RightPort
 			};
 
 			int offset = 0;
@@ -252,7 +253,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new PadSchema
 			{
-				DisplayName = "Superscope",
+				DisplayName = "Super Scope",
 				IsConsole = false,
 				DefaultSize = new Size(356, 290),
 				MaxSize = new Size(356, 290),

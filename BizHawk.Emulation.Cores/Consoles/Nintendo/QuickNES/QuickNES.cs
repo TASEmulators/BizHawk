@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Common.BizInvoke;
+using BizHawk.BizInvoke;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
@@ -14,14 +16,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		isPorted: true,
 		isReleased: true,
 		portedVersion: "0.7.0",
-		portedUrl: "https://github.com/kode54/QuickNES")]
-	[ServiceNotApplicable(typeof(IDriveLight))]
+		portedUrl: "https://github.com/kode54/QuickNES",
+		singleInstance: false)]
+	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class QuickNES : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IInputPollable, IBoardInfo,
 		IStatable, IDebuggable, ISettable<QuickNES.QuickNESSettings, QuickNES.QuickNESSyncSettings>, Cores.Nintendo.NES.INESPPUViewable
 	{
 		static QuickNES()
 		{
-			Resolver = new DynamicLibraryImportResolver(LibQuickNES.dllname);
+			Resolver = new DynamicLibraryImportResolver($"libquicknes{(OSTailoredCode.IsUnixHost ? ".dll.so.0.7.0" : ".dll")}");
 			QN = BizInvoker.GetInvoker<LibQuickNES>(Resolver, CallingConventionAdapters.Native);
 			QN.qn_setup_mappers();
 		}
@@ -29,11 +32,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		[CoreConstructor("NES")]
 		public QuickNES(CoreComm comm, byte[] file, object settings, object syncSettings)
 		{
+			FP = OSTailoredCode.IsUnixHost
+				? (IFPCtrl) new Unix_FPCtrl()
+				: new Win32_FPCtrl();
+
 			using (FP.Save())
 			{
 				ServiceProvider = new BasicServiceProvider(this);
 				CoreComm = comm;
-				
+
 				Context = QN.qn_new();
 				if (Context == IntPtr.Zero)
 				{
@@ -76,36 +83,43 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		static readonly LibQuickNES QN;
 		static readonly DynamicLibraryImportResolver Resolver;
 
-		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+		public IEmulatorServiceProvider ServiceProvider { get; }
 
 		#region FPU precision
 
-		private class FPCtrl : IDisposable
+		private interface IFPCtrl : IDisposable
 		{
-			[DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
-			public static extern uint _control87(uint @new, uint mask);
+			IDisposable Save();
+		}
 
-			public static void PrintCurrentFP()
-			{
-				uint curr = _control87(0, 0);
-				Console.WriteLine("Current FP word: 0x{0:x8}", curr);
-			}
+		private class Win32_FPCtrl : IFPCtrl
+		{
+			[Conditional("DEBUG")]
+			public static void PrintCurrentFP() => Console.WriteLine($"Current FP word: 0x{Win32Imports._control87(0, 0):X8}");
 
-			uint cw;
+			private uint cw;
 
 			public IDisposable Save()
 			{
-				cw = _control87(0, 0);
-				_control87(0x00000, 0x30000);
+				cw = Win32Imports._control87(0, 0);
+				Win32Imports._control87(0x00000, 0x30000);
 				return this;
 			}
+
 			public void Dispose()
 			{
-				_control87(cw, 0x30000);
+				Win32Imports._control87(cw, 0x30000);
 			}
 		}
 
-		FPCtrl FP = new FPCtrl();
+		private class Unix_FPCtrl : IFPCtrl
+		{
+			public IDisposable Save() => this;
+
+			public void Dispose() {}
+		}
+
+		IFPCtrl FP;
 
 		#endregion
 
@@ -189,11 +203,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				if (controller.IsPressed("Reset"))
 					QN.qn_reset(Context, false);
 
-				int j1, j2;
-				SetPads(controller, out j1, out j2);
+				SetPads(controller, out var j1, out var j2);
 
 				if (Tracer.Enabled)
-					QN.qn_set_tracecb(Context, _tracecb);
+					QN.qn_set_tracecb(Context, _traceCb);
 				else
 					QN.qn_set_tracecb(Context, null);
 
@@ -208,19 +221,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				if (rendersound)
 					DrainAudio();
 
-				if (CB1 != null) CB1();
-				if (CB2 != null) CB2();
-			}
+				_callBack1?.Invoke();
+				_callBack2?.Invoke();
 
-			return true;
+				return true;
+			}
 		}
 
 		IntPtr Context;
 		public int Frame { get; private set; }
 
-		public string SystemId { get { return "NES"; } }
-		public bool DeterministicEmulation { get { return true; } }
-		public string BoardName { get; private set; }
+		public string SystemId => "NES";
+		public bool DeterministicEmulation => true;
+		public string BoardName { get; }
 
 		public void ResetCounters()
 		{
@@ -229,11 +242,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			LagCount = 0;
 		}
 
-		public CoreComm CoreComm
-		{
-			get;
-			private set;
-		}
+		public CoreComm CoreComm { get; }
 
 		#region bootgod
 

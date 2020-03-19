@@ -15,11 +15,7 @@ namespace BizHawk.Client.Common
 
 		public bool Changes
 		{
-			get
-			{
-				return _changes;
-			}
-
+			get => _changes;
 			set
 			{
 				_changes = value;
@@ -32,15 +28,8 @@ namespace BizHawk.Client.Common
 
 		public string Filename
 		{
-			get
-			{
-				return _filename;
-			}
-
-			set
-			{
-				_filename = value ?? "";
-			}
+			get => _filename;
+			set => _filename = value ?? "";
 		}
 
 		public void StopAllScripts()
@@ -100,7 +89,7 @@ namespace BizHawk.Client.Common
 							if (!Path.IsPathRooted(scriptPath))
 							{
 								var directory = Path.GetDirectoryName(path);
-								scriptPath = Path.GetFullPath(Path.Combine(directory, scriptPath));
+								scriptPath = Path.GetFullPath(Path.Combine(directory ?? "", scriptPath));
 							}
 
 							Add(new LuaFile(scriptPath)
@@ -140,11 +129,19 @@ namespace BizHawk.Client.Common
 				var sb = new StringBuilder();
 				foreach (var file in this)
 				{
-					sb
-						.Append(file.Enabled ? "1" : "0")
-						.Append(' ')
-						.Append(PathManager.MakeRelativeTo(PathManager.MakeAbsolutePath(file.Path, ""), Path.GetDirectoryName(path)))
-						.AppendLine();
+					if (file.IsSeparator)
+					{
+						sb.AppendLine("---");
+					}
+					else
+					{
+						sb
+							.Append(file.Enabled ? "1" : "0")
+							.Append(' ')
+							.Append(PathManager.MakeRelativeTo(PathManager.MakeAbsolutePath(file.Path, ""),
+								Path.GetDirectoryName(path)))
+							.AppendLine();
+					}
 				}
 
 				sw.Write(sb.ToString());

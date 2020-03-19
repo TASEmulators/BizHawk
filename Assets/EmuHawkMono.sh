@@ -18,4 +18,10 @@ if [ -z "$libpath" ]; then
 	libpath="/usr/lib/wine"
 fi
 export LD_LIBRARY_PATH="$libpath"
-mono ./EmuHawk.exe >EmuHawkMono_laststdout.txt
+if [ "$1" = "--mono-no-redirect" ]; then
+	shift
+	printf "(received --mono-no-redirect, stdout was not captured)\n" >EmuHawkMono_laststdout.txt
+	mono ./EmuHawk.exe "$@"
+else
+	mono ./EmuHawk.exe "$@" >EmuHawkMono_laststdout.txt
+fi

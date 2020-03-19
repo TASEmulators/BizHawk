@@ -31,7 +31,7 @@ General:
   much more frequently than was done on Hucards, and our framebuffer/active display strategy starts to look more silly.
   Oh well, though. Changing this is a Native Version Core feature, not a C# Core feature.
 
-Eagan's Rendered Sprite Demo - demonstrates sprites that shouldnt be displayed (so does Turbo Engine!)
+Eagan's Rendered Sprite Demo - demonstrates sprites that shouldn't be displayed (so does Turbo Engine!)
 
 ===================================
 Games that need TV Emulation (to varying degrees)

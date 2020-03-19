@@ -1,3 +1,5 @@
+#nullable disable
+
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -81,17 +83,15 @@ namespace BizHawk.Common
 		List<AWEMemoryBlock> mBlocks = new List<AWEMemoryBlock>();
 		IntPtr mWindow;
 
-		public override bool CanRead { get { return true; } }
-		public override bool CanSeek { get { return true; } }
-		public override bool CanWrite { get { return true; } }
+		public override bool CanRead => true;
+		public override bool CanSeek => true;
+		public override bool CanWrite => true;
 		public override void Flush() { }
-		public override long Length { get { return mLength; } }
+		public override long Length => mLength;
+
 		public override long Position
 		{
-			get
-			{
-				return mPosition;
-			}
+			get => mPosition;
 			set
 			{
 				if (!Ensure(value + 1))
@@ -151,7 +151,7 @@ namespace BizHawk.Common
 				{
 					mCurrBlock = block;
 					if (!mBlocks[block].Map(mWindow))
-						throw new Exception($"Couldn't map required memory for {nameof(AWEMemoryStream)}.{nameof(AWEMemoryStream.Write)}");
+						throw new Exception($"Couldn't map required memory for {nameof(AWEMemoryStream)}.{nameof(Write)}");
 				}
 				Marshal.Copy(IntPtr.Add(mWindow, blockOfs), buffer, offset, todo);
 				count -= todo;
@@ -165,7 +165,7 @@ namespace BizHawk.Common
 		{
 			long end = mPosition + count;
 			if (!Ensure(end))
-				throw new OutOfMemoryException($"Couldn't reserve required resources for {nameof(AWEMemoryStream)}.{nameof(AWEMemoryStream.Write)}");
+				throw new OutOfMemoryException($"Couldn't reserve required resources for {nameof(AWEMemoryStream)}.{nameof(Write)}");
 			SetLength(end);
 			while (count > 0)
 			{
@@ -181,7 +181,7 @@ namespace BizHawk.Common
 				{
 					mCurrBlock = block;
 					if (!mBlocks[block].Map(mWindow))
-						throw new Exception($"Couldn't map required memory for {nameof(AWEMemoryStream)}.{nameof(AWEMemoryStream.Write)}");
+						throw new Exception($"Couldn't map required memory for {nameof(AWEMemoryStream)}.{nameof(Write)}");
 				}
 				Marshal.Copy(buffer, offset, IntPtr.Add(mWindow, blockOfs), todo);
 				count -= todo;
@@ -237,14 +237,14 @@ namespace BizHawk.Common
 
 				public uint LowPart
 				{
-					get { return lp; }
-					set { lp = value; }
+					get => lp;
+					set => lp = value;
 				}
 
 				public int HighPart
 				{
-					get { return hp; }
-					set { hp = value; }
+					get => hp;
+					set => hp = value;
 				}
 			}
 
@@ -256,14 +256,14 @@ namespace BizHawk.Common
 
 				public LUID LUID
 				{
-					get { return luid; }
-					set { luid = value; }
+					get => luid;
+					set => luid = value;
 				}
 
 				public uint Attributes
 				{
-					get { return attributes; }
-					set { attributes = value; }
+					get => attributes;
+					set => attributes = value;
 				}
 			}
 
@@ -276,14 +276,14 @@ namespace BizHawk.Common
 
 				public uint PrivilegeCount
 				{
-					get { return prvct; }
-					set { prvct = value; }
+					get => prvct;
+					set => prvct = value;
 				}
 
 				public LUID_AND_ATTRIBUTES[] Privileges
 				{
-					get { return privileges; }
-					set { privileges = value; }
+					get => privileges;
+					set => privileges = value;
 				}
 			}
 
@@ -336,8 +336,7 @@ namespace BizHawk.Common
 					return false;
 				}
 				var tkp = new TOKEN_PRIVILEGES { PrivilegeCount = 1, Privileges = new LUID_AND_ATTRIBUTES[1] };
-				LUID luid;
-				if (!LookupPrivilegeValue(null, PrivilegeName, out luid))
+				if (!LookupPrivilegeValue(null, PrivilegeName, out var luid))
 				{
 					Marshal.ThrowExceptionForHR(Marshal.GetHRForLastWin32Error());
 					return false;
@@ -373,16 +372,21 @@ namespace BizHawk.Common
 				lock (StaticLock)
 				{
 					if (PrivilegeAcquired)
+					{
 						return true;
+					}
+
 					if (EnableDisablePrivilege("SeLockMemoryPrivilege", true))
 					{
 						PrivilegeAcquired = true;
 						return true;
 					}
-					else return false;
+
+					return false;
 				}
 			}
 
+			/// <exception cref="InvalidOperationException"><paramref name="byteSize"/> is equivalent to more than <see cref="UInt32.MaxValue">uint.MaxValue</see> pages</exception>
 			public bool Allocate(int byteSize)
 			{
 				if (!TryAcquirePrivilege())
@@ -433,13 +437,7 @@ namespace BizHawk.Common
 				}
 			}
 
-			uint NumPages
-			{
-				get
-				{
-					return (uint)(pageList.Length / (uint)IntPtr.Size);
-				}
-			}
+			uint NumPages => (uint)(pageList.Length / (uint)IntPtr.Size);
 
 			protected virtual void Dispose(bool disposing)
 			{

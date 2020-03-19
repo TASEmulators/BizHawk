@@ -1,55 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-
+﻿using System.Collections.Generic;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	public sealed partial class Chip6510 : IDebuggable
 	{
-		IDictionary<string, RegisterValue> IDebuggable.GetCpuFlagsAndRegisters()
-		{
-			return new Dictionary<string, RegisterValue>
-			{
-				["A"] = _cpu.A,
-				["X"] = _cpu.X,
-				["Y"] = _cpu.Y,
-				["S"] = _cpu.S,
-				["PC"] = _cpu.PC,
-				["Flag C"] = _cpu.FlagC,
-				["Flag Z"] = _cpu.FlagZ,
-				["Flag I"] = _cpu.FlagI,
-				["Flag D"] = _cpu.FlagD,
-				["Flag B"] = _cpu.FlagB,
-				["Flag V"] = _cpu.FlagV,
-				["Flag N"] = _cpu.FlagN,
-				["Flag T"] = _cpu.FlagT
-			};
-		}
+		IDictionary<string, RegisterValue> IDebuggable.GetCpuFlagsAndRegisters() => _cpu.GetCpuFlagsAndRegisters();
 
-		void IDebuggable.SetCpuRegister(string register, int value)
-		{
-			switch (register)
-			{
-				default:
-					throw new InvalidOperationException();
-				case "A":
-					_cpu.A = (byte)value;
-					break;
-				case "X":
-					_cpu.X = (byte)value;
-					break;
-				case "Y":
-					_cpu.Y = (byte)value;
-					break;
-				case "S":
-					_cpu.S = (byte)value;
-					break;
-				case "PC":
-					_cpu.PC = (ushort)value;
-					break;
-			}
-		}
+		void IDebuggable.SetCpuRegister(string register, int value) => _cpu.SetCpuRegister(register, value);
 
 		bool IDebuggable.CanStep(StepType type)
 		{

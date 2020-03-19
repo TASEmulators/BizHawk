@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Common
 
 		public bool Has(string name)
 		{
-			return this.FirstOrDefault((md) => md.Name == name) != null;
+			return this.Any(md => md.Name == name);
 		}
 
 		public MemoryDomainList(IList<MemoryDomain> domains)
@@ -24,44 +24,15 @@ namespace BizHawk.Emulation.Common
 		{
 		}
 
-		public MemoryDomain this[string name]
-		{
-			get
-			{
-				return this.FirstOrDefault(x => x.Name == name);
-			}
-		}
+		public MemoryDomain this[string name] => this.FirstOrDefault(x => x.Name == name);
 
 		public MemoryDomain MainMemory
 		{
-			get
-			{
-				if (_mainMemory != null)
-				{
-					return _mainMemory;
-				}
-
-				return this.First();
-			}
-
-			set
-			{
-				_mainMemory = value;
-			}
+			get => _mainMemory ?? this.First();
+			set => _mainMemory = value;
 		}
 
-		public bool HasSystemBus
-		{
-			get
-			{
-				if (_systemBus != null)
-				{
-					return true;
-				}
-
-				return this.Any(x => x.Name == "System Bus");
-			}
-		}
+		public bool HasSystemBus => _systemBus != null || this.Any(x => x.Name == "System Bus");
 
 		public MemoryDomain SystemBus
 		{
@@ -72,20 +43,10 @@ namespace BizHawk.Emulation.Common
 					return _systemBus;
 				}
 
-				var bus = this.FirstOrDefault(x => x.Name == "System Bus");
-
-				if (bus != null)
-				{
-					return bus;
-				}
-
-				return MainMemory;
+				return this.FirstOrDefault(x => x.Name == "System Bus") ?? MainMemory;
 			}
 
-			set
-			{
-				_systemBus = value;
-			}
+			set => _systemBus = value;
 		}
 
 		/// <summary>
@@ -96,8 +57,7 @@ namespace BizHawk.Emulation.Common
 			var domains = this.ToDictionary(m => m.Name);
 			foreach (var src in other)
 			{
-				MemoryDomain dst;
-				if (domains.TryGetValue(src.Name, out dst))
+				if (domains.TryGetValue(src.Name, out var dst))
 				{
 					TryMerge<MemoryDomainByteArray>(dst, src, (d, s) => d.Data = s.Data);
 					TryMerge<MemoryDomainIntPtr>(dst, src, (d, s) => d.Data = s.Data);
@@ -114,9 +74,7 @@ namespace BizHawk.Emulation.Common
 		private static void TryMerge<T>(MemoryDomain dest, MemoryDomain src, Action<T, T> func)
 			where T : MemoryDomain
 		{
-			var d1 = dest as T;
-			var s1 = src as T;
-			if (d1 != null && s1 != null)
+			if (dest is T d1 && src is T s1)
 			{
 				func(d1, s1);
 			}

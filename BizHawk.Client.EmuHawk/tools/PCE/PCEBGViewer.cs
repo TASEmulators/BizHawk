@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
+
+using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Common;
 
@@ -11,19 +12,14 @@ namespace BizHawk.Client.EmuHawk
 	public partial class PceBgViewer : Form, IToolFormAutoConfig
 	{
 		[RequiredService]
-		private PCEngine _pce { get; set; }
+		private PCEngine PCE { get; set; }
 
 		[ConfigPersist]
+		// ReSharper disable once UnusedMember.Local
 		private int RefreshRateConfig
 		{
-			get
-			{
-				return RefreshRate.Value;
-			}
-			set
-			{
-				RefreshRate.Value = Math.Max(Math.Min(value, RefreshRate.Maximum), RefreshRate.Minimum);
-			}
+			get => RefreshRate.Value;
+			set => RefreshRate.Value = Math.Max(Math.Min(value, RefreshRate.Maximum), RefreshRate.Minimum);
 		}
 
 		private int _vdcType;
@@ -34,23 +30,19 @@ namespace BizHawk.Client.EmuHawk
 			Activated += (o, e) => Generate();
 		}
 
-		private void PceBgViewer_Load(object sender, EventArgs e)
-		{
-		}
-
 		#region Public API
 
-		public bool AskSaveChanges() { return true; }
-		public bool UpdateBefore { get { return true; } }
+		public bool AskSaveChanges() => true;
+		public bool UpdateBefore => true;
 
 		public unsafe void Generate()
 		{
-			if (_pce.Frame % RefreshRate.Value != 0)
+			if (PCE.Frame % RefreshRate.Value != 0)
 			{
 				return;
 			}
 
-			var vdc = _vdcType == 0 ? _pce.VDC1 : _pce.VDC2;
+			var vdc = _vdcType == 0 ? PCE.VDC1 : PCE.VDC2;
 
 			var width = 8 * vdc.BatWidth;
 			var height = 8 * vdc.BatHeight;
@@ -74,11 +66,11 @@ namespace BizHawk.Client.EmuHawk
 					byte c = vdc.PatternBuffer[(tileNo * 64) + (yOfs * 8) + xOfs];
 					if (c == 0)
 					{
-						*p = _pce.VCE.Palette[0];
+						*p = PCE.VCE.Palette[0];
 					}
 					else
 					{
-						*p = _pce.VCE.Palette[paletteBase + c];
+						*p = PCE.VCE.Palette[paletteBase + c];
 					}
 				}
 
@@ -114,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			VDC2MenuItem.Enabled = _pce.SystemId == "SGX";
+			VDC2MenuItem.Enabled = PCE.SystemId == "SGX";
 
 			VDC1MenuItem.Checked = _vdcType == 0;
 			VDC2MenuItem.Checked = _vdcType == 1;
@@ -139,7 +131,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Canvas_MouseMove(object sender, MouseEventArgs e)
 		{
-			var vdc = _vdcType == 0 ? _pce.VDC1 : _pce.VDC2;
+			var vdc = _vdcType == 0 ? PCE.VDC1 : PCE.VDC2;
 			int xTile = e.X / 8;
 			int yTile = e.Y / 8;
 			int tileNo = vdc.VRAM[(ushort)((yTile * vdc.BatWidth) + xTile)] & 0x07FF;

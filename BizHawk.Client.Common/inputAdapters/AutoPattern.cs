@@ -4,7 +4,6 @@
 	{
 		public AutoPatternBool()
 		{
-			Pattern = new[] { true };
 		}
 
 		/// <summary>
@@ -34,7 +33,7 @@
 		private int _index;
 
 		public bool SkipsLag { get; } = true;
-		public bool[] Pattern { get; }
+		public bool[] Pattern { get; } = { true };
 		public int Loop { get; }
 
 		/// <summary>
@@ -77,7 +76,6 @@
 		/// </summary>
 		public AutoPatternFloat()
 		{
-			Pattern = new[] { 0f };
 		}
 
 		/// <summary>
@@ -112,7 +110,7 @@
 		private int _index;
 
 		public bool SkipsLag { get; } = true;
-		public float[] Pattern { get; }
+		public float[] Pattern { get; } = { 0f };
 		public int Loop { get; }
 
 		/// <summary>

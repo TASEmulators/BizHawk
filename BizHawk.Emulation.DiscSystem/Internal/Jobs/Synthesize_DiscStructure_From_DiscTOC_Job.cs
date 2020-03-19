@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 namespace BizHawk.Emulation.DiscSystem
 {
@@ -9,10 +8,10 @@ namespace BizHawk.Emulation.DiscSystem
 		public DiscTOC TOCRaw;
 		public DiscStructure Result;
 
+		/// <exception cref="InvalidOperationException">first track of <see cref="TOCRaw"/> is not <c>1</c></exception>
 		public void Run()
 		{
-			var dsr = new DiscSectorReader(IN_Disc);
-			dsr.Policy.DeterministicClearBuffer = false;
+			var dsr = new DiscSectorReader(IN_Disc) { Policy = { DeterministicClearBuffer = false } };
 
 			Result = new DiscStructure();
 			var session = new DiscStructure.Session();
@@ -25,7 +24,7 @@ namespace BizHawk.Emulation.DiscSystem
 				throw new InvalidOperationException($"Unsupported: {nameof(TOCRaw.FirstRecordedTrackNumber)} != 1");
 
 			//add a lead-in track
-			session.Tracks.Add(new DiscStructure.Track()
+			session.Tracks.Add(new DiscStructure.Track
 			{
 				Number = 0,
 				Control = EControlQ.None, //we'll set this later
@@ -36,7 +35,7 @@ namespace BizHawk.Emulation.DiscSystem
 			for (int i = 0; i < ntracks; i++)
 			{
 				var item = TOCRaw.TOCItems[i + 1];
-				var track = new DiscStructure.Track()
+				var track = new DiscStructure.Track
 				{
 					Number = i + 1,
 					Control = item.Control,
@@ -60,7 +59,7 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 
 			//add lead-out track
-			session.Tracks.Add(new DiscStructure.Track()
+			session.Tracks.Add(new DiscStructure.Track
 			{
 				Number = 0xA0, //right?
 				//kind of a guess, but not completely

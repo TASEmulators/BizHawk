@@ -6,33 +6,19 @@ namespace BizHawk.Emulation.Cores.Intellivision
 	{
 		public int LagCount
 		{
-			get
-			{
-				return _lagcount;
-			}
-
-			set
-			{
-				_lagcount = value;
-			}
+			get => _lagCount;
+			set => _lagCount = value;
 		}
 
 		public bool IsLagFrame
 		{
-			get
-			{
-				return _islag;
-			}
-
-			set
-			{
-				_islag = value;
-			}
+			get => _isLag;
+			set => _isLag = value;
 		}
 
 		public IInputCallbackSystem InputCallbacks { get; } = new InputCallbackSystem();
 
-		private bool _islag;
-		private int _lagcount;
+		private bool _isLag;
+		private int _lagCount;
 	}
 }

@@ -17,9 +17,8 @@ namespace BizHawk.Emulation.Common
 			Active = true;
 		}
 
-		/// <summary>
-		/// Pins the managed arrays. Not that we expect them to be allocated, but in case we do, seeing thish ere will remind us to check for the pin condition and abort
-		/// </summary>
+		/// <summary>Pins the managed arrays. Not that we expect them to be allocated, but in case we do, seeing this here will remind us to check for the pin condition and abort</summary>
+		/// <exception cref="InvalidOperationException">if called more than once per instantiation</exception>
 		public void Pin()
 		{
 			if (_pins.Count != 0)
@@ -62,10 +61,7 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// Whether the CDL is tracking a block with the given name
 		/// </summary>
-		public bool Has(string blockname)
-		{
-			return ContainsKey(blockname);
-		}
+		public bool Has(string blockName) => ContainsKey(blockName);
 
 		/// <summary>
 		/// This is just a hook, if needed, to readily suspend logging, without having to rewire the core
@@ -112,6 +108,10 @@ namespace BizHawk.Emulation.Common
 			return true;
 		}
 
+		/// <exception cref="InvalidDataException">
+		/// <paramref name="other"/> is not the same length as <see langword="this"/>, or
+		/// any value differs in size from the corresponding value in <paramref name="other"/>
+		/// </exception>
 		public void LogicalOrFrom(ICodeDataLog other)
 		{
 			if (Count != other.Count)
@@ -121,17 +121,17 @@ namespace BizHawk.Emulation.Common
 
 			foreach (var kvp in other)
 			{
-				byte[] fromdata = kvp.Value;
-				byte[] todata = this[kvp.Key];
+				byte[] fromData = kvp.Value;
+				byte[] toData = this[kvp.Key];
 
-				if (fromdata.Length != todata.Length)
+				if (fromData.Length != toData.Length)
 				{
 					throw new InvalidDataException("Memory regions must be the same size!");
 				}
 
-				for (int i = 0; i < todata.Length; i++)
+				for (int i = 0; i < toData.Length; i++)
 				{
-					todata[i] |= fromdata[i];
+					toData[i] |= fromData[i];
 				}
 			}
 		}
@@ -187,23 +187,17 @@ namespace BizHawk.Emulation.Common
 			return SaveInternal(new MemoryStream(), false);
 		}
 
+		/// <exception cref="InvalidDataException">contents of <paramref name="s"/> do not begin with valid file header</exception>
 		public void Load(Stream s)
 		{
 			var br = new BinaryReader(s);
 			string id = br.ReadString();
-			if (id == "BIZHAWK-CDL-1")
+			SubType = id switch
 			{
-				SubType = "PCE";
-			}
-			else if (id == "BIZHAWK-CDL-2")
-			{
-				SubType = br.ReadString().TrimEnd(' ');
-			}
-			else
-			{
-				throw new InvalidDataException("File is not a Bizhawk CDL file!");
-			}
-
+				"BIZHAWK-CDL-1" => "PCE",
+				"BIZHAWK-CDL-2" => br.ReadString().TrimEnd(' '),
+				_ => throw new InvalidDataException("File is not a BizHawk CDL file!"),
+			};
 			int count = br.ReadInt32();
 			for (int i = 0; i < count; i++)
 			{
@@ -212,9 +206,7 @@ namespace BizHawk.Emulation.Common
 				byte[] data = br.ReadBytes(len);
 				this[key] = data;
 			}
-
 		}
-	
 	}
 }
 

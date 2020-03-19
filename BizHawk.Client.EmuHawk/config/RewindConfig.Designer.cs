@@ -29,10 +29,9 @@
 		private void InitializeComponent()
 		{
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RewindConfig));
             this.OK = new System.Windows.Forms.Button();
             this.Cancel = new System.Windows.Forms.Button();
-            this.SmallLabel1 = new System.Windows.Forms.Label();
+            this.SmallLabel = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label10 = new System.Windows.Forms.Label();
             this.LargeStateEnabledBox = new System.Windows.Forms.CheckBox();
@@ -41,11 +40,11 @@
             this.LargeLabel2 = new System.Windows.Forms.Label();
             this.LargeLabel3 = new System.Windows.Forms.Label();
             this.LargeSavestateNumeric = new System.Windows.Forms.NumericUpDown();
-            this.LargeLabel1 = new System.Windows.Forms.Label();
+            this.LargeLabel = new System.Windows.Forms.Label();
             this.MediumLabel2 = new System.Windows.Forms.Label();
             this.MediumLabel3 = new System.Windows.Forms.Label();
             this.MediumSavestateNumeric = new System.Windows.Forms.NumericUpDown();
-            this.MediumLabel1 = new System.Windows.Forms.Label();
+            this.MediumLabel = new System.Windows.Forms.Label();
             this.SmallLabel2 = new System.Windows.Forms.Label();
             this.SmallLabel3 = new System.Windows.Forms.Label();
             this.SmallSavestateNumeric = new System.Windows.Forms.NumericUpDown();
@@ -85,7 +84,6 @@
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.rbStatesText = new System.Windows.Forms.RadioButton();
             this.rbStatesBinary = new System.Windows.Forms.RadioButton();
-            this.rbStatesDefault = new System.Windows.Forms.RadioButton();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.btnResetCompression = new System.Windows.Forms.Button();
             this.trackBarCompression = new System.Windows.Forms.TrackBar();
@@ -147,13 +145,13 @@
             // 
             // SmallLabel1
             // 
-            this.SmallLabel1.AutoSize = true;
-            this.SmallLabel1.Location = new System.Drawing.Point(40, 40);
-            this.SmallLabel1.Name = "SmallLabel1";
-            this.SmallLabel1.Size = new System.Drawing.Size(166, 13);
-            this.SmallLabel1.TabIndex = 2;
-            this.SmallLabel1.Text = "Small savestates (less than 32KB)";
-            this.SmallLabel1.Click += new System.EventHandler(this.SmallLabel1_Click);
+            this.SmallLabel.AutoSize = true;
+            this.SmallLabel.Location = new System.Drawing.Point(40, 40);
+            this.SmallLabel.Name = "SmallLabel";
+            this.SmallLabel.Size = new System.Drawing.Size(166, 13);
+            this.SmallLabel.TabIndex = 2;
+            this.SmallLabel.Text = "Small savestates (less than 32KB)";
+            this.SmallLabel.Click += new System.EventHandler(this.SmallLabel_Click);
             // 
             // groupBox1
             // 
@@ -164,15 +162,15 @@
             this.groupBox1.Controls.Add(this.LargeLabel2);
             this.groupBox1.Controls.Add(this.LargeLabel3);
             this.groupBox1.Controls.Add(this.LargeSavestateNumeric);
-            this.groupBox1.Controls.Add(this.LargeLabel1);
+            this.groupBox1.Controls.Add(this.LargeLabel);
             this.groupBox1.Controls.Add(this.MediumLabel2);
             this.groupBox1.Controls.Add(this.MediumLabel3);
             this.groupBox1.Controls.Add(this.MediumSavestateNumeric);
-            this.groupBox1.Controls.Add(this.MediumLabel1);
+            this.groupBox1.Controls.Add(this.MediumLabel);
             this.groupBox1.Controls.Add(this.SmallLabel2);
             this.groupBox1.Controls.Add(this.SmallLabel3);
             this.groupBox1.Controls.Add(this.SmallSavestateNumeric);
-            this.groupBox1.Controls.Add(this.SmallLabel1);
+            this.groupBox1.Controls.Add(this.SmallLabel);
             this.groupBox1.Location = new System.Drawing.Point(12, 90);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(371, 118);
@@ -186,7 +184,7 @@
             this.label10.Location = new System.Drawing.Point(6, 20);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(40, 13);
-            this.label10.TabIndex = 17;
+            this.label10.TabIndex = 0;
             this.label10.Text = "Enable";
             // 
             // LargeStateEnabledBox
@@ -195,7 +193,7 @@
             this.LargeStateEnabledBox.Location = new System.Drawing.Point(9, 87);
             this.LargeStateEnabledBox.Name = "LargeStateEnabledBox";
             this.LargeStateEnabledBox.Size = new System.Drawing.Size(15, 14);
-            this.LargeStateEnabledBox.TabIndex = 16;
+            this.LargeStateEnabledBox.TabIndex = 11;
             this.LargeStateEnabledBox.UseVisualStyleBackColor = true;
             this.LargeStateEnabledBox.CheckStateChanged += new System.EventHandler(this.LargeStateEnabledBox_CheckStateChanged);
             // 
@@ -205,7 +203,7 @@
             this.MediumStateEnabledBox.Location = new System.Drawing.Point(9, 63);
             this.MediumStateEnabledBox.Name = "MediumStateEnabledBox";
             this.MediumStateEnabledBox.Size = new System.Drawing.Size(15, 14);
-            this.MediumStateEnabledBox.TabIndex = 15;
+            this.MediumStateEnabledBox.TabIndex = 6;
             this.MediumStateEnabledBox.UseVisualStyleBackColor = true;
             this.MediumStateEnabledBox.CheckStateChanged += new System.EventHandler(this.MediumStateEnabledBox_CheckStateChanged);
             // 
@@ -215,7 +213,7 @@
             this.SmallStateEnabledBox.Location = new System.Drawing.Point(9, 39);
             this.SmallStateEnabledBox.Name = "SmallStateEnabledBox";
             this.SmallStateEnabledBox.Size = new System.Drawing.Size(15, 14);
-            this.SmallStateEnabledBox.TabIndex = 14;
+            this.SmallStateEnabledBox.TabIndex = 1;
             this.SmallStateEnabledBox.UseVisualStyleBackColor = true;
             this.SmallStateEnabledBox.CheckStateChanged += new System.EventHandler(this.SmallStateEnabledBox_CheckStateChanged);
             // 
@@ -234,7 +232,7 @@
             this.LargeLabel3.Location = new System.Drawing.Point(307, 88);
             this.LargeLabel3.Name = "LargeLabel3";
             this.LargeLabel3.Size = new System.Drawing.Size(38, 13);
-            this.LargeLabel3.TabIndex = 12;
+            this.LargeLabel3.TabIndex = 15;
             this.LargeLabel3.Text = "frames";
             // 
             // LargeSavestateNumeric
@@ -252,7 +250,7 @@
             0});
             this.LargeSavestateNumeric.Name = "LargeSavestateNumeric";
             this.LargeSavestateNumeric.Size = new System.Drawing.Size(38, 20);
-            this.LargeSavestateNumeric.TabIndex = 11;
+            this.LargeSavestateNumeric.TabIndex = 14;
             this.LargeSavestateNumeric.Value = new decimal(new int[] {
             1,
             0,
@@ -262,13 +260,13 @@
             // 
             // LargeLabel1
             // 
-            this.LargeLabel1.AutoSize = true;
-            this.LargeLabel1.Location = new System.Drawing.Point(40, 88);
-            this.LargeLabel1.Name = "LargeLabel1";
-            this.LargeLabel1.Size = new System.Drawing.Size(179, 13);
-            this.LargeLabel1.TabIndex = 10;
-            this.LargeLabel1.Text = "Large savestates (more than 100KB)";
-            this.LargeLabel1.Click += new System.EventHandler(this.LargeLabel1_Click);
+            this.LargeLabel.AutoSize = true;
+            this.LargeLabel.Location = new System.Drawing.Point(40, 88);
+            this.LargeLabel.Name = "LargeLabel";
+            this.LargeLabel.Size = new System.Drawing.Size(179, 13);
+            this.LargeLabel.TabIndex = 12;
+            this.LargeLabel.Text = "Large savestates (more than 100KB)";
+            this.LargeLabel.Click += new System.EventHandler(this.LargeLabel_Click);
             // 
             // MediumLabel2
             // 
@@ -276,7 +274,7 @@
             this.MediumLabel2.Location = new System.Drawing.Point(227, 64);
             this.MediumLabel2.Name = "MediumLabel2";
             this.MediumLabel2.Size = new System.Drawing.Size(33, 13);
-            this.MediumLabel2.TabIndex = 9;
+            this.MediumLabel2.TabIndex = 8;
             this.MediumLabel2.Text = "every";
             // 
             // MediumLabel3
@@ -285,7 +283,7 @@
             this.MediumLabel3.Location = new System.Drawing.Point(307, 64);
             this.MediumLabel3.Name = "MediumLabel3";
             this.MediumLabel3.Size = new System.Drawing.Size(38, 13);
-            this.MediumLabel3.TabIndex = 8;
+            this.MediumLabel3.TabIndex = 10;
             this.MediumLabel3.Text = "frames";
             // 
             // MediumSavestateNumeric
@@ -303,7 +301,7 @@
             0});
             this.MediumSavestateNumeric.Name = "MediumSavestateNumeric";
             this.MediumSavestateNumeric.Size = new System.Drawing.Size(38, 20);
-            this.MediumSavestateNumeric.TabIndex = 7;
+            this.MediumSavestateNumeric.TabIndex = 9;
             this.MediumSavestateNumeric.Value = new decimal(new int[] {
             1,
             0,
@@ -313,13 +311,13 @@
             // 
             // MediumLabel1
             // 
-            this.MediumLabel1.AutoSize = true;
-            this.MediumLabel1.Location = new System.Drawing.Point(40, 64);
-            this.MediumLabel1.Name = "MediumLabel1";
-            this.MediumLabel1.Size = new System.Drawing.Size(160, 13);
-            this.MediumLabel1.TabIndex = 6;
-            this.MediumLabel1.Text = "Medium savestates (32 - 100KB)";
-            this.MediumLabel1.Click += new System.EventHandler(this.MediumLabel1_Click);
+            this.MediumLabel.AutoSize = true;
+            this.MediumLabel.Location = new System.Drawing.Point(40, 64);
+            this.MediumLabel.Name = "MediumLabel";
+            this.MediumLabel.Size = new System.Drawing.Size(160, 13);
+            this.MediumLabel.TabIndex = 7;
+            this.MediumLabel.Text = "Medium savestates (32 - 100KB)";
+            this.MediumLabel.Click += new System.EventHandler(this.MediumLabel_Click);
             // 
             // SmallLabel2
             // 
@@ -327,7 +325,7 @@
             this.SmallLabel2.Location = new System.Drawing.Point(227, 40);
             this.SmallLabel2.Name = "SmallLabel2";
             this.SmallLabel2.Size = new System.Drawing.Size(33, 13);
-            this.SmallLabel2.TabIndex = 5;
+            this.SmallLabel2.TabIndex = 3;
             this.SmallLabel2.Text = "every";
             // 
             // SmallLabel3
@@ -336,7 +334,7 @@
             this.SmallLabel3.Location = new System.Drawing.Point(307, 40);
             this.SmallLabel3.Name = "SmallLabel3";
             this.SmallLabel3.Size = new System.Drawing.Size(38, 13);
-            this.SmallLabel3.TabIndex = 4;
+            this.SmallLabel3.TabIndex = 5;
             this.SmallLabel3.Text = "frames";
             // 
             // SmallSavestateNumeric
@@ -354,7 +352,7 @@
             0});
             this.SmallSavestateNumeric.Name = "SmallSavestateNumeric";
             this.SmallSavestateNumeric.Size = new System.Drawing.Size(38, 20);
-            this.SmallSavestateNumeric.TabIndex = 3;
+            this.SmallSavestateNumeric.TabIndex = 4;
             this.SmallSavestateNumeric.Value = new decimal(new int[] {
             1,
             0,
@@ -399,10 +397,10 @@
             this.MediumStateTrackbar.Minimum = 1;
             this.MediumStateTrackbar.Name = "MediumStateTrackbar";
             this.MediumStateTrackbar.Size = new System.Drawing.Size(186, 45);
-            this.MediumStateTrackbar.TabIndex = 7;
+            this.MediumStateTrackbar.TabIndex = 1;
             this.MediumStateTrackbar.TickFrequency = 256;
             this.MediumStateTrackbar.Value = 1;
-            this.MediumStateTrackbar.ValueChanged += new System.EventHandler(this.MediumStateTrackbar_ValueChanged);
+            this.MediumStateTrackbar.ValueChanged += new System.EventHandler(this.MediumStateTrackBar_ValueChanged);
             // 
             // groupBox2
             // 
@@ -417,7 +415,7 @@
             this.groupBox2.Location = new System.Drawing.Point(12, 387);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(371, 105);
-            this.groupBox2.TabIndex = 8;
+            this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "State Size Definition";
             // 
@@ -436,7 +434,7 @@
             0});
             this.LargeStateUpDown.Name = "LargeStateUpDown";
             this.LargeStateUpDown.Size = new System.Drawing.Size(52, 20);
-            this.LargeStateUpDown.TabIndex = 14;
+            this.LargeStateUpDown.TabIndex = 6;
             this.LargeStateUpDown.Value = new decimal(new int[] {
             256,
             0,
@@ -459,7 +457,7 @@
             0});
             this.MediumStateUpDown.Name = "MediumStateUpDown";
             this.MediumStateUpDown.Size = new System.Drawing.Size(52, 20);
-            this.MediumStateUpDown.TabIndex = 13;
+            this.MediumStateUpDown.TabIndex = 2;
             this.MediumStateUpDown.Value = new decimal(new int[] {
             1,
             0,
@@ -473,7 +471,7 @@
             this.LargeStateSizeLabel.Location = new System.Drawing.Point(312, 71);
             this.LargeStateSizeLabel.Name = "LargeStateSizeLabel";
             this.LargeStateSizeLabel.Size = new System.Drawing.Size(21, 13);
-            this.LargeStateSizeLabel.TabIndex = 12;
+            this.LargeStateSizeLabel.TabIndex = 7;
             this.LargeStateSizeLabel.Text = "KB";
             // 
             // label5
@@ -482,7 +480,7 @@
             this.label5.Location = new System.Drawing.Point(27, 63);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(34, 13);
-            this.label5.TabIndex = 11;
+            this.label5.TabIndex = 4;
             this.label5.Text = "Large";
             // 
             // LargeStateTrackbar
@@ -493,10 +491,10 @@
             this.LargeStateTrackbar.Minimum = 256;
             this.LargeStateTrackbar.Name = "LargeStateTrackbar";
             this.LargeStateTrackbar.Size = new System.Drawing.Size(186, 45);
-            this.LargeStateTrackbar.TabIndex = 10;
+            this.LargeStateTrackbar.TabIndex = 5;
             this.LargeStateTrackbar.TickFrequency = 1024;
             this.LargeStateTrackbar.Value = 256;
-            this.LargeStateTrackbar.ValueChanged += new System.EventHandler(this.LargeStateTrackbar_ValueChanged);
+            this.LargeStateTrackbar.ValueChanged += new System.EventHandler(this.LargeStateTrackBar_ValueChanged);
             // 
             // MediumStateSizeLabel
             // 
@@ -504,7 +502,7 @@
             this.MediumStateSizeLabel.Location = new System.Drawing.Point(313, 35);
             this.MediumStateSizeLabel.Name = "MediumStateSizeLabel";
             this.MediumStateSizeLabel.Size = new System.Drawing.Size(21, 13);
-            this.MediumStateSizeLabel.TabIndex = 9;
+            this.MediumStateSizeLabel.TabIndex = 3;
             this.MediumStateSizeLabel.Text = "KB";
             // 
             // label2
@@ -513,7 +511,7 @@
             this.label2.Location = new System.Drawing.Point(18, 31);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(44, 13);
-            this.label2.TabIndex = 8;
+            this.label2.TabIndex = 0;
             this.label2.Text = "Medium";
             // 
             // groupBox3
@@ -531,7 +529,7 @@
             this.groupBox3.Location = new System.Drawing.Point(12, 214);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(371, 167);
-            this.groupBox3.TabIndex = 9;
+            this.groupBox3.TabIndex = 4;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Rewind Options";
             // 
@@ -683,7 +681,7 @@
             this.groupBox4.Location = new System.Drawing.Point(12, 12);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(371, 72);
-            this.groupBox4.TabIndex = 12;
+            this.groupBox4.TabIndex = 2;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Current Statistics";
             // 
@@ -763,18 +761,17 @@
             // 
             this.groupBox6.Controls.Add(this.rbStatesText);
             this.groupBox6.Controls.Add(this.rbStatesBinary);
-            this.groupBox6.Controls.Add(this.rbStatesDefault);
             this.groupBox6.Location = new System.Drawing.Point(22, 78);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(215, 48);
-            this.groupBox6.TabIndex = 0;
+            this.groupBox6.TabIndex = 4;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Type";
             // 
             // rbStatesText
             // 
             this.rbStatesText.AutoSize = true;
-            this.rbStatesText.Location = new System.Drawing.Point(163, 18);
+            this.rbStatesText.Location = new System.Drawing.Point(88, 18);
             this.rbStatesText.Name = "rbStatesText";
             this.rbStatesText.Size = new System.Drawing.Size(46, 17);
             this.rbStatesText.TabIndex = 1;
@@ -785,24 +782,13 @@
             // rbStatesBinary
             // 
             this.rbStatesBinary.AutoSize = true;
-            this.rbStatesBinary.Location = new System.Drawing.Point(88, 18);
+            this.rbStatesBinary.Location = new System.Drawing.Point(6, 18);
             this.rbStatesBinary.Name = "rbStatesBinary";
             this.rbStatesBinary.Size = new System.Drawing.Size(54, 17);
             this.rbStatesBinary.TabIndex = 1;
             this.rbStatesBinary.TabStop = true;
             this.rbStatesBinary.Text = "Binary";
             this.rbStatesBinary.UseVisualStyleBackColor = true;
-            // 
-            // rbStatesDefault
-            // 
-            this.rbStatesDefault.AutoSize = true;
-            this.rbStatesDefault.Location = new System.Drawing.Point(6, 18);
-            this.rbStatesDefault.Name = "rbStatesDefault";
-            this.rbStatesDefault.Size = new System.Drawing.Size(59, 17);
-            this.rbStatesDefault.TabIndex = 0;
-            this.rbStatesDefault.TabStop = true;
-            this.rbStatesDefault.Text = "Default";
-            this.rbStatesDefault.UseVisualStyleBackColor = true;
             // 
             // btnResetCompression
             // 
@@ -811,7 +797,7 @@
             this.btnResetCompression.Location = new System.Drawing.Point(243, 34);
             this.btnResetCompression.Name = "btnResetCompression";
             this.btnResetCompression.Size = new System.Drawing.Size(27, 27);
-            this.btnResetCompression.TabIndex = 23;
+            this.btnResetCompression.TabIndex = 3;
             this.toolTip1.SetToolTip(this.btnResetCompression, "Reset to default");
             this.btnResetCompression.UseVisualStyleBackColor = true;
             this.btnResetCompression.Click += new System.EventHandler(this.BtnResetCompression_Click);
@@ -823,7 +809,7 @@
             this.trackBarCompression.Maximum = 9;
             this.trackBarCompression.Name = "trackBarCompression";
             this.trackBarCompression.Size = new System.Drawing.Size(157, 45);
-            this.trackBarCompression.TabIndex = 20;
+            this.trackBarCompression.TabIndex = 1;
             this.toolTip1.SetToolTip(this.trackBarCompression, "0 = None; 9 = Maximum");
             this.trackBarCompression.Value = 1;
             this.trackBarCompression.ValueChanged += new System.EventHandler(this.TrackBarCompression_ValueChanged);
@@ -838,7 +824,7 @@
             0});
             this.nudCompression.Name = "nudCompression";
             this.nudCompression.Size = new System.Drawing.Size(52, 20);
-            this.nudCompression.TabIndex = 22;
+            this.nudCompression.TabIndex = 2;
             this.nudCompression.Value = new decimal(new int[] {
             1,
             0,
@@ -866,7 +852,7 @@
             this.groupBox7.Location = new System.Drawing.Point(389, 12);
             this.groupBox7.Name = "groupBox7";
             this.groupBox7.Size = new System.Drawing.Size(342, 408);
-            this.groupBox7.TabIndex = 2;
+            this.groupBox7.TabIndex = 6;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Savestate Options";
             // 
@@ -983,7 +969,7 @@
             this.label12.Location = new System.Drawing.Point(19, 21);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(96, 13);
-            this.label12.TabIndex = 24;
+            this.label12.TabIndex = 0;
             this.label12.Text = "Compression Level";
             // 
             // RewindConfig
@@ -1001,7 +987,7 @@
             this.Controls.Add(this.Cancel);
             this.Controls.Add(this.OK);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.Previous_MultiSize;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "RewindConfig";
@@ -1040,7 +1026,7 @@
 
 		private System.Windows.Forms.Button OK;
 		private System.Windows.Forms.Button Cancel;
-		private System.Windows.Forms.Label SmallLabel1;
+		private System.Windows.Forms.Label SmallLabel;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.Label SmallLabel2;
 		private System.Windows.Forms.Label SmallLabel3;
@@ -1048,11 +1034,11 @@
 		private System.Windows.Forms.Label LargeLabel2;
 		private System.Windows.Forms.Label LargeLabel3;
 		private System.Windows.Forms.NumericUpDown LargeSavestateNumeric;
-		private System.Windows.Forms.Label LargeLabel1;
+		private System.Windows.Forms.Label LargeLabel;
 		private System.Windows.Forms.Label MediumLabel2;
 		private System.Windows.Forms.Label MediumLabel3;
 		private System.Windows.Forms.NumericUpDown MediumSavestateNumeric;
-		private System.Windows.Forms.Label MediumLabel1;
+		private System.Windows.Forms.Label MediumLabel;
 		private System.Windows.Forms.Label label10;
 		private System.Windows.Forms.CheckBox LargeStateEnabledBox;
 		private System.Windows.Forms.CheckBox MediumStateEnabledBox;
@@ -1089,7 +1075,6 @@
 				private System.Windows.Forms.GroupBox groupBox6;
 				private System.Windows.Forms.RadioButton rbStatesText;
 				private System.Windows.Forms.RadioButton rbStatesBinary;
-				private System.Windows.Forms.RadioButton rbStatesDefault;
 				private System.Windows.Forms.ToolTip toolTip1;
 				private System.Windows.Forms.TrackBar trackBarCompression;
 				private System.Windows.Forms.NumericUpDown nudCompression;

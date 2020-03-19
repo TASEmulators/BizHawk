@@ -241,7 +241,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private float _fractionalClocks; // Fractional DPC music OSC clocks unused during the last update
 
 		private byte[] _dspData;
-		public byte[] DspData => _dspData ?? (_dspData = Core.Rom.Skip(8192).Take(2048).ToArray());
+		public byte[] DspData => _dspData ??= Core.Rom.Skip(8192).Take(2048).ToArray();
 
 		public override void Dispose()
 		{
@@ -502,7 +502,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			// Using bits 7, 5, 4, & 3 of the shift register compute the input
 			// bit for the shift register
 			var bit = _randomInputBits[((_currentRandomVal >> 3) & 0x07) | 
-				(((_currentRandomVal & 0x80) > 0) ? 0x08 : 0x00)];
+				((_currentRandomVal & 0x80) > 0 ? 0x08 : 0x00)];
 
 			// Update the shift register 
 			_currentRandomVal = (byte)((_currentRandomVal << 1) | bit);

@@ -9,14 +9,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public byte[] CloneSaveRam()
 		{
-			if (BRAM != null)
-			{
-				return (byte[])BRAM.Clone();
-			}
-			else
-			{
-				return null;
-			}
+			return (byte[]) BRAM?.Clone();
 		}
 
 		public void StoreSaveRam(byte[] data)

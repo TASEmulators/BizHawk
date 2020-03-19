@@ -1,52 +1,21 @@
 ﻿using System.IO;
-
 using BizHawk.Common;
-using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
-	public partial class GBHawk : IStatable
+	public partial class GBHawk
 	{
-		public bool BinarySaveStatesPreferred => true;
-
-		public void SaveStateText(TextWriter writer)
-		{
-			SyncState(new Serializer(writer));
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			SyncState(new Serializer(reader));
-		}
-
-		public void SaveStateBinary(BinaryWriter bw)
-		{
-			SyncState(new Serializer(bw));
-		}
-
-		public void LoadStateBinary(BinaryReader br)
-		{
-			SyncState(new Serializer(br));
-		}
-
-		public byte[] SaveStateBinary()
-		{
-			MemoryStream ms = new MemoryStream();
-			BinaryWriter bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			return ms.ToArray();
-		}
-
 		private void SyncState(Serializer ser)
 		{
 			byte[] core = null;
 			if (ser.IsWriter)
 			{
-				var ms = new MemoryStream();
+				using var ms = new MemoryStream();
 				ms.Close();
 				core = ms.ToArray();
 			}
+
+			ser.BeginSection("Gameboy");
 			cpu.SyncState(ser);
 			mapper.SyncState(ser);
 			timer.SyncState(ser);
@@ -54,7 +23,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			serialport.SyncState(ser);
 			audio.SyncState(ser);
 
-			ser.BeginSection("Gameboy");
 			ser.Sync(nameof(core), ref core, false);
 			ser.Sync("Lag", ref _lagcount);
 			ser.Sync("Frame", ref _frame);
@@ -95,6 +63,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(IR_signal), ref IR_signal);
 			ser.Sync(nameof(IR_receive), ref IR_receive);
 			ser.Sync(nameof(IR_self), ref IR_self);
+			ser.Sync(nameof(IR_write), ref IR_write);
 
 			ser.Sync(nameof(undoc_6C), ref undoc_6C);
 			ser.Sync(nameof(undoc_72), ref undoc_72);

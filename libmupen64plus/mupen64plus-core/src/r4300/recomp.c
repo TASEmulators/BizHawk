@@ -430,26 +430,30 @@ static void RDSUBU(void)
 
 static void RTGE(void)
 {
-   dst->ops = current_instruction_table.NI;
-   recomp_func = genni;
+   dst->ops = current_instruction_table.TGE;
+   recomp_func = gentge;
+   recompile_standard_r_type();
 }
 
 static void RTGEU(void)
 {
-   dst->ops = current_instruction_table.NI;
-   recomp_func = genni;
+   dst->ops = current_instruction_table.TGEU;
+   recomp_func = gentgeu;
+   recompile_standard_r_type();
 }
 
 static void RTLT(void)
 {
-   dst->ops = current_instruction_table.NI;
-   recomp_func = genni;
+   dst->ops = current_instruction_table.TLT;
+   recomp_func = gentlt;
+   recompile_standard_r_type();
 }
 
 static void RTLTU(void)
 {
-   dst->ops = current_instruction_table.NI;
-   recomp_func = genni;
+   dst->ops = current_instruction_table.TLTU;
+   recomp_func = gentltu;
+   recompile_standard_r_type();
 }
 
 static void RTEQ(void)
@@ -461,8 +465,9 @@ static void RTEQ(void)
 
 static void RTNE(void)
 {
-   dst->ops = current_instruction_table.NI;
-   recomp_func = genni;
+   dst->ops = current_instruction_table.TNE;
+   recomp_func = gentne;
+   recompile_standard_r_type();
 }
 
 static void RDSLL(void)

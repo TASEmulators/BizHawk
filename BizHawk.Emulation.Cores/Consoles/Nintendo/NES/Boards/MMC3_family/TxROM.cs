@@ -25,12 +25,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-
-		public override void SyncState(Serializer ser)
-		{
-			base.SyncState(ser);
-		}
-
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
 			//analyze board type
@@ -125,8 +119,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			return true;
 		}
-
 	}
-
-
 }

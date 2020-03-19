@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			prg_regs_8k.Dispose();
 			chr_regs_2k.Dispose();
-			if(mmc3 != null) mmc3.Dispose();
+			mmc3?.Dispose();
 			base.Dispose();
 		}
 

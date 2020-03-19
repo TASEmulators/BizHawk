@@ -144,9 +144,6 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			throw new NotImplementedException();
 		}
 
-		public long TotalExecutedCycles
-		{
-			get { return (long)L.Cpu.TotalExecutedCycles; }
-		}
+		public long TotalExecutedCycles => L.Cpu.TotalExecutedCycles;
 	}
 }

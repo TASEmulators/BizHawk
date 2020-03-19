@@ -36,10 +36,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			throw new NotImplementedException();
 		}
 
-		public IMemoryCallbackSystem MemoryCallbacks
-		{
-			get { return _memoryCallbacks; }
-		}
+		public IMemoryCallbackSystem MemoryCallbacks => _memoryCallbacks;
 
 		public bool CanStep(StepType type) { return false; }
 
@@ -47,12 +44,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public void Step(StepType type) { throw new NotImplementedException(); }
 
 		[FeatureNotImplemented]
-		public long TotalExecutedCycles
-		{
-			get { throw new NotImplementedException(); }
-		}
+		public long TotalExecutedCycles => throw new NotImplementedException();
 
-		private readonly MemoryCallbackSystem _memoryCallbacks = new MemoryCallbackSystem(new[] { "M68K BUS", "" });
+		private readonly MemoryCallbackSystem _memoryCallbacks = new MemoryCallbackSystem(new[] { "M68K BUS" });
 
 		private LibGPGX.mem_cb ExecCallback;
 		private LibGPGX.mem_cb ReadCallback;

@@ -125,7 +125,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			vbagbnew,
 			vbabgbold,
 			gba
-		};
+		}
 
 		public static int[] GetLut(ColorType c)
 		{

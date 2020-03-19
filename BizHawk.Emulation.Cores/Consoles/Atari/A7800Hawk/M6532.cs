@@ -1,10 +1,9 @@
 ﻿using BizHawk.Common;
-using System;
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
 	// Emulates the M6532 RIOT Chip
-	public class M6532
+	public sealed class M6532
 	{
 		public A7800Hawk Core { get; set; }
 
@@ -34,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			var registerAddr = (ushort)(addr & 0x0007);
 			if (registerAddr == 0x00)
 			{
-				Core._islag = false;
+				Core._isLag = false;
 
 				// Read Output reg A
 				// Combine readings from player 1 and player 2
@@ -53,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			
 			if (registerAddr == 0x02)
 			{
-				Core._islag = false;
+				Core._isLag = false;
 
 				// Read Output reg B
 				byte temp = Core.con_state;
@@ -225,7 +224,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			{
 				PrescalerCount--;
 
-				if ((PrescalerCount == 0) || Overflowed)
+				if (PrescalerCount == 0 || Overflowed)
 				{
 					Value--;
 

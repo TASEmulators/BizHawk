@@ -35,13 +35,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		public IMemoryCallbackSystem MemoryCallbacks
 		{
 			[FeatureNotImplemented]
-			get { throw new NotImplementedException(); }
+			get => throw new NotImplementedException();
 		}
 
 		[FeatureNotImplemented]
-		public long TotalExecutedCycles
-		{
-			get { throw new NotImplementedException(); }
-		}
+		public long TotalExecutedCycles => throw new NotImplementedException();
 	}
 }

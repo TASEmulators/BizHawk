@@ -1,32 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	partial class NES : INESPPUViewable
 	{
-		public int[] GetPalette()
-		{
-			return palette_compiled;
-		}
+		public int[] GetPalette() => palette_compiled;
 
-		public bool BGBaseHigh
-		{
-			get { return ppu.reg_2000.bg_pattern_hi; }
-		}
+		public bool BGBaseHigh => ppu.reg_2000.bg_pattern_hi;
 
-		public bool SPBaseHigh
-		{
-			get { return ppu.reg_2000.obj_pattern_hi; }
-		}
+		public bool SPBaseHigh => ppu.reg_2000.obj_pattern_hi;
 
-		public bool SPTall
-		{
-			get { return ppu.reg_2000.obj_size_16; }
-		}
+		public bool SPTall => ppu.reg_2000.obj_size_16;
 
 		public byte[] GetPPUBus()
 		{
@@ -38,20 +23,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return ret;
 		}
 
-		public byte[] GetPalRam()
-		{
-			return ppu.PALRAM;
-		}
+		public byte[] GetPalRam() => ppu.PALRAM;
 
-		public byte[] GetOam()
-		{
-			return ppu.OAM;
-		}
+		public byte[] GetOam() => ppu.OAM;
 
-		public byte PeekPPU(int addr)
-		{
-			return Board.PeekPPU(addr);
-		}
+		public byte PeekPPU(int addr) => Board.PeekPPU(addr);
 
 		public byte[] GetExTiles()
 		{
@@ -65,27 +41,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public bool ExActive
-		{
-			get { return Board is ExROM && (Board as ExROM).ExAttrActive; }
-		}
+		public bool ExActive => Board is ExROM ex && ex.ExAttrActive;
 
 		public byte[] GetExRam()
 		{
-			if (Board is ExROM)
+			if (Board is ExROM ex)
 			{
-				return (Board as ExROM).GetExRAMArray();
+				return ex.GetExRAMArray();
 			}
-			else
-			{
-				throw new InvalidOperationException();
-			}
+
+			throw new InvalidOperationException();
 		}
 
-		public MemoryDomain GetCHRROM()
-		{
-			return _memoryDomains["CHR VROM"];
-		}
+		public MemoryDomain GetCHRROM() => _memoryDomains["CHR VROM"];
 
 
 		public void InstallCallback1(Action cb, int sl)

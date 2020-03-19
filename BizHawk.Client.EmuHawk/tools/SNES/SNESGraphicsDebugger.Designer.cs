@@ -2661,7 +2661,7 @@
 			// messagetimer
 			// 
 			this.messagetimer.Interval = 5000;
-			this.messagetimer.Tick += new System.EventHandler(this.messagetimer_Tick);
+			this.messagetimer.Tick += new System.EventHandler(this.MessageTimer_Tick);
 			// 
 			// SNESGraphicsDebugger
 			// 

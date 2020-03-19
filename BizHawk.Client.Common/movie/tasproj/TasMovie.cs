@@ -6,100 +6,62 @@ using System.IO;
 using System.Linq;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.Common
 {
 	public sealed partial class TasMovie : Bk2Movie, INotifyPropertyChanged
 	{
 		private readonly Bk2MnemonicConstants _mnemonics = new Bk2MnemonicConstants();
-		private readonly IStateManager _stateManager;
-		private readonly TasLagLog _lagLog = new TasLagLog();
-		private readonly Dictionary<int, IController> _inputStateCache = new Dictionary<int, IController>();
-		private BackgroundWorker _progressReportWorker;
 
-		public readonly IStringLog VerificationLog = StringLogUtil.MakeStringLog(); // For movies that do not begin with power-on, this is the input required to get into the initial state
-		public readonly TasBranchCollection Branches = new TasBranchCollection();
-		public readonly TasSession Session;
+		public IStringLog VerificationLog { get; } = StringLogUtil.MakeStringLog(); // For movies that do not begin with power-on, this is the input required to get into the initial state
+		public TasBranchCollection Branches { get; } = new TasBranchCollection();
+		public TasSession Session { get; private set; }
 
 		public new const string Extension = "tasproj";
 		public const string DefaultProjectName = "default";
 		public string NewBranchText { get; set; } = "";
-		public int LastEditedFrame { get; set; } = -1;
+		public int LastEditedFrame { get; private set; } = -1;
 		public bool LastPositionStable { get; set; } = true;
 		public TasMovieMarkerList Markers { get; private set; }
 		public bool BindMarkersToInput { get; set; }
-		public bool UseInputCache { get; set; }
 		public int CurrentBranch { get; set; }
 
-		public TasLagLog TasLagLog => _lagLog;
-		public IStringLog InputLog => Log;
-		public int BranchCount => Branches.Count;
-		public int LastStatedFrame => _stateManager.Last;
+		public TasLagLog TasLagLog { get; } = new TasLagLog();
+
+		public int LastStatedFrame => TasStateManager.Last;
 		public override string PreferredExtension => Extension;
-		public IStateManager TasStateManager => _stateManager;
+		public IStateManager TasStateManager { get; }
+
+		public IStringLog CloneInput()
+		{
+			return Log.Clone();
+		}
 
 		public TasMovieRecord this[int index] => new TasMovieRecord
 		{
-			HasState = _stateManager.HasState(index),
+			HasState = TasStateManager.HasState(index),
 			LogEntry = GetInputLogEntry(index),
-			Lagged = _lagLog[index + 1],
-			WasLagged = _lagLog.History(index + 1)
+			Lagged = TasLagLog[index + 1],
+			WasLagged = TasLagLog.History(index + 1)
 		};
 
-	    public TasMovie(string path, bool startsFromSavestate = false, BackgroundWorker progressReportWorker = null)
-			: base(path)
+		/// <exception cref="InvalidOperationException">loaded core does not implement <see cref="IStatable"/></exception>
+		public TasMovie(string path = null, bool startsFromSavestate = false) : base(path)
 		{
-			// TODO: how to call the default constructor AND the base(path) constructor?  And is base(path) calling base() ?
-			_progressReportWorker = progressReportWorker;
 			if (!Global.Emulator.HasSavestates())
 			{
 				throw new InvalidOperationException($"Cannot create a {nameof(TasMovie)} against a core that does not implement {nameof(IStatable)}");
 			}
 
 			ChangeLog = new TasMovieChangeLog(this);
-			_stateManager = new TasStateManager(this);
-			Session = new TasSession(this);
-			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0 Tasproj v1.0";
+			TasStateManager = new TasStateManager(this, Global.Config.DefaultTasStateManagerSettings);
+			Session = new TasSession();
+			Header[HeaderKeys.MovieVersion] = "BizHawk v2.0 Tasproj v1.0";
 			Markers = new TasMovieMarkerList(this);
 			Markers.CollectionChanged += Markers_CollectionChanged;
 			Markers.Add(0, startsFromSavestate ? "Savestate" : "Power on");
 			BindMarkersToInput = false;
 			CurrentBranch = -1;
-		}
-
-		public TasMovie(bool startsFromSavestate = false, BackgroundWorker progressReportWorker = null)
-		{
-			_progressReportWorker = progressReportWorker;
-			if (!Global.Emulator.HasSavestates())
-			{
-				throw new InvalidOperationException($"Cannot create a {nameof(TasMovie)} against a core that does not implement {nameof(IStatable)}");
-			}
-
-			ChangeLog = new TasMovieChangeLog(this);
-			_stateManager = new TasStateManager(this);
-			Session = new TasSession(this);
-			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0 Tasproj v1.0";
-			Markers = new TasMovieMarkerList(this);
-			Markers.CollectionChanged += Markers_CollectionChanged;
-			Markers.Add(0, startsFromSavestate ? "Savestate" : "Power on");
-			BindMarkersToInput = false;
-			CurrentBranch = -1;
-		}
-
-		public void NewBGWorker(BackgroundWorker newWorker)
-		{
-			_progressReportWorker = newWorker;
-		}
-
-		public void ReportProgress(double percent)
-		{
-			if (percent > 100d)
-			{
-				return;
-			}
-
-			_progressReportWorker?.ReportProgress((int)percent);
 		}
 
 		// TODO: use LogGenerators rather than string comparisons
@@ -133,12 +95,12 @@ namespace BizHawk.Client.Common
 
 		public override void SwitchToPlay()
 		{
-			Mode = Moviemode.Play;
+			Mode = MovieMode.Play;
 		}
 
 		public override void SwitchToRecord()
 		{
-			Mode = Moviemode.Record;
+			Mode = MovieMode.Record;
 		}
 
 		/// <summary>
@@ -147,8 +109,8 @@ namespace BizHawk.Client.Common
 		/// <param name="frame">The last frame that can be valid.</param>
 		private void InvalidateAfter(int frame)
 		{
-			var anyInvalidated = _lagLog.RemoveFrom(frame);
-			_stateManager.Invalidate(frame + 1);
+			var anyInvalidated = TasLagLog.RemoveFrom(frame);
+			TasStateManager.Invalidate(frame + 1);
 			Changes = anyInvalidated;
 			LastEditedFrame = frame;
 
@@ -164,27 +126,11 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public string DisplayValue(int frame, string buttonName)
 		{
-			if (UseInputCache && _inputStateCache.ContainsKey(frame))
-			{
-				return CreateDisplayValueForButton(_inputStateCache[frame], buttonName);
-			}
-
 			var adapter = GetInputState(frame);
-
-			if (UseInputCache)
-			{
-				_inputStateCache.Add(frame, adapter);
-			}
-
 			return CreateDisplayValueForButton(adapter, buttonName);
 		}
 
-		public void FlushInputCache()
-		{
-			_inputStateCache.Clear();
-		}
-
-		public string CreateDisplayValueForButton(IController adapter, string buttonName)
+		private string CreateDisplayValueForButton(IController adapter, string buttonName)
 		{
 			if (adapter.Definition.BoolButtons.Contains(buttonName))
 			{
@@ -215,9 +161,9 @@ namespace BizHawk.Client.Common
 
 		public void ClearGreenzone()
 		{
-			if (_stateManager.Any())
+			if (TasStateManager.Any())
 			{
-				_stateManager.Clear();
+				TasStateManager.Clear();
 				Changes = true;
 			}
 		}
@@ -232,17 +178,17 @@ namespace BizHawk.Client.Common
 				LastPositionStable = false;
 			}
 
-			_lagLog[Global.Emulator.Frame] = Global.Emulator.AsInputPollable().IsLagFrame;
+			TasLagLog[Global.Emulator.Frame] = Global.Emulator.AsInputPollable().IsLagFrame;
 
-			if (!_stateManager.HasState(Global.Emulator.Frame))
+			if (!TasStateManager.HasState(Global.Emulator.Frame))
 			{
-				_stateManager.Capture(Global.Emulator.Frame == LastEditedFrame - 1);
+				TasStateManager.Capture(Global.Emulator.Frame == LastEditedFrame - 1);
 			}
 		}
 
 		public void ClearLagLog()
 		{
-			_lagLog.Clear();
+			TasLagLog.Clear();
 		}
 
 		public void CopyLog(IEnumerable<string> log)
@@ -299,10 +245,10 @@ namespace BizHawk.Client.Common
 
 					if (line.Contains("Frame 0x")) // NES stores frame count in hex, yay
 					{
-						var strs = line.Split('x');
+						var split = line.Split('x');
 						try
 						{
-							stateFrame = int.Parse(strs[1], NumberStyles.HexNumber);
+							stateFrame = int.Parse(split[1], NumberStyles.HexNumber);
 						}
 						catch
 						{
@@ -312,10 +258,10 @@ namespace BizHawk.Client.Common
 					}
 					else if (line.Contains("Frame "))
 					{
-						var strs = line.Split(' ');
+						var split = line.Split(' ');
 						try
 						{
-							stateFrame = int.Parse(strs[1]);
+							stateFrame = int.Parse(split[1]);
 						}
 						catch
 						{
@@ -397,23 +343,23 @@ namespace BizHawk.Client.Common
 				errorMessage = "Savestate Frame number failed to parse";
 			}
 
-			var stateFramei = stateFrame ?? 0;
+			var stateFrameValue = stateFrame ?? 0;
 
-			if (stateFramei > 0 && stateFramei < Log.Count)
+			if (stateFrameValue > 0 && stateFrameValue < Log.Count)
 			{
 				if (!Global.Config.VBAStyleMovieLoadState)
 				{
-					Truncate(stateFramei);
+					Truncate(stateFrameValue);
 				}
 			}
-			else if (stateFramei > Log.Count) // Post movie savestate
+			else if (stateFrameValue > Log.Count) // Post movie savestate
 			{
 				if (!Global.Config.VBAStyleMovieLoadState)
 				{
 					Truncate(Log.Count);
 				}
 
-				Mode = Moviemode.Finished;
+				Mode = MovieMode.Finished;
 			}
 
 			if (IsCountingRerecords)
@@ -423,7 +369,7 @@ namespace BizHawk.Client.Common
 
 			if (_timelineBranchFrame.HasValue)
 			{
-				_lagLog.RemoveFrom(_timelineBranchFrame.Value);
+				TasLagLog.RemoveFrom(_timelineBranchFrame.Value);
 				TasStateManager.Invalidate(_timelineBranchFrame.Value);
 			}
 
@@ -447,19 +393,16 @@ namespace BizHawk.Client.Common
 			return Branches.SingleOrDefault(b => b.UniqueIdentifier == id);
 		}
 
-		public int BranchHashByIndex(int index)
+		public Guid BranchGuidByIndex(int index)
 		{
-			if (index >= Branches.Count)
-			{
-				return -1;
-			}
-
-			return Branches[index].UniqueIdentifier.GetHashCode();
+			return index >= Branches.Count
+				? Guid.Empty
+				: Branches[index].UniqueIdentifier;
 		}
 
-		public int BranchIndexByHash(int hash)
+		public int BranchIndexByHash(Guid uuid)
 		{
-			TasBranch branch = Branches.SingleOrDefault(b => b.UniqueIdentifier.GetHashCode() == hash);
+			TasBranch branch = Branches.SingleOrDefault(b => b.UniqueIdentifier == uuid);
 			if (branch == null)
 			{
 				return -1;
@@ -502,15 +445,8 @@ namespace BizHawk.Client.Common
 			Log?.Dispose();
 			Log = branch.InputLog.Clone();
 
-			if (divergentPoint.HasValue)
-			{
-				InvalidateAfter(divergentPoint.Value);
-			}
-			else
-			{
-				InvalidateAfter(branch.InputLog.Count);
-			}
-			
+			InvalidateAfter(divergentPoint ?? branch.InputLog.Count);
+
 			if (BindMarkersToInput) // pretty critical not to erase them
 			{
 				Markers = branch.Markers;
@@ -555,11 +491,7 @@ namespace BizHawk.Client.Common
 		private bool _changes;
 		public override bool Changes
 		{
-			get
-			{
-				return _changes;
-			}
-
+			get => _changes;
 			protected set
 			{
 				if (_changes != value)

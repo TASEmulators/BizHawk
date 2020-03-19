@@ -36,17 +36,8 @@
 
 		private void Render()
 		{
-			if (_rasterX == _hblankEndCheckXRaster)
-				_hblank = false;
-			if (_rasterX == _hblankStartCheckXRaster)
-				_hblank = true;
-
-			_renderEnabled = !_hblank && !_vblank;
-			_pixelCounter = 4;
-			while (--_pixelCounter >= 0)
+			void PreRenderBorder()
 			{
-				#region PRE-RENDER BORDER
-
 				// check left border
 				if (_borderCheckLEnable && (_rasterX == _borderL))
 				{
@@ -61,8 +52,25 @@
 				// check right border
 				if (_borderCheckREnable && (_rasterX == _borderR))
 					_borderOnMain = true;
+			}
 
-				#endregion
+			void PostRenderBorder()
+			{
+				// border doesn't work with the background buffer
+				_borderPixel = _pixBorderBuffer[_pixBufferBorderIndex];
+				_pixBorderBuffer[_pixBufferBorderIndex] = _borderColor;
+			}
+
+			if (_rasterX == _hblankEndCheckXRaster)
+				_hblank = false;
+			if (_rasterX == _hblankStartCheckXRaster)
+				_hblank = true;
+
+			_renderEnabled = !_hblank && !_vblank;
+			_pixelCounter = 4;
+			while (--_pixelCounter >= 0)
+			{
+				PreRenderBorder();
 
 				// render graphics
 				if ((_srColorEnable & SrMask1) != 0)
@@ -190,12 +198,7 @@
 					}
 				}
 
-				#region POST-RENDER BORDER
-
-				// border doesn't work with the background buffer
-				_borderPixel = _pixBorderBuffer[_pixBufferBorderIndex];
-				_pixBorderBuffer[_pixBufferBorderIndex] = _borderColor;
-				#endregion
+				PostRenderBorder();
 
 				// plot pixel if within viewing area
 				if (_renderEnabled)

@@ -4,9 +4,10 @@ using System.Linq;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
+using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 using BizHawk.Emulation.Cores.Nintendo.SubNESHawk;
+using BizHawk.Emulation.Cores.Nintendo.SubGBHawk;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive;
 
@@ -313,7 +314,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				var region = Global.Emulator.AsRegionable().Region;
 				if (region == Emulation.Common.DisplayType.PAL)
 				{
-					movie.HeaderEntries.Add(HeaderKeys.PAL, "1");
+					movie.HeaderEntries.Add(HeaderKeys.Pal, "1");
 				}
 			}
 
@@ -330,22 +331,32 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				}
 			}
 
-			if (Global.Emulator is Gameboy && (Global.Emulator as Gameboy).IsCGBMode())
+			if (Global.Emulator is GBHawk && ((GBHawk)Global.Emulator).is_GBC)
 			{
 				movie.HeaderEntries.Add("IsCGBMode", "1");
 			}
 
-			if (Global.Emulator is SMS && (Global.Emulator as SMS).IsSG1000)
+			if (Global.Emulator is Gameboy && ((Gameboy) Global.Emulator).IsCGBMode())
+			{
+				movie.HeaderEntries.Add("IsCGBMode", "1");
+			}
+
+			if (Global.Emulator is Gameboy)
+			{
+				movie.HeaderEntries.Add(HeaderKeys.CycleCount, "0");
+			}
+
+			if (Global.Emulator is SMS && ((SMS) Global.Emulator).IsSG1000)
 			{
 				movie.HeaderEntries.Add("IsSGMode", "1");
-            }
+			}
 
-			if (Global.Emulator is SMS && (Global.Emulator as SMS).IsGameGear)
+			if (Global.Emulator is SMS && ((SMS) Global.Emulator).IsGameGear)
 			{
 				movie.HeaderEntries.Add("IsGGMode", "1");
 			}
 
-			if (Global.Emulator is GPGX && (Global.Emulator as GPGX).IsMegaCD)
+			if (Global.Emulator is GPGX && ((GPGX) Global.Emulator).IsMegaCD)
 			{
 				movie.HeaderEntries.Add("IsSegaCDMode", "1");
 			}
@@ -355,9 +366,9 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				movie.HeaderEntries.Add("Is32X", "1");
 			}
 
-			if (Global.Emulator is SubNESHawk)
+			if (Global.Emulator is SubNESHawk || Global.Emulator is SubGBHawk)
 			{
-				movie.HeaderEntries.Add("VBlankCount", "0");
+				movie.HeaderEntries.Add(HeaderKeys.VBlankCount, "0");
 			}
 
 			movie.Core = ((CoreAttribute)Attribute

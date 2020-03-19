@@ -1,6 +1,4 @@
-﻿using BizHawk.Common;
-
-namespace BizHawk.Emulation.Cores.Nintendo.NES
+﻿namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// adapted from Nestopia src
 	public sealed class UNIF_UNL_KOF97 : MMC3Board_Base

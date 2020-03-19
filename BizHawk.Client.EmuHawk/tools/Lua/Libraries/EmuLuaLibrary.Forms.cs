@@ -149,11 +149,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (control.Handle == ptr)
 					{
-						var luaEvents = form.ControlEvents.Where(x => x.Control == ptr).ToList();
-						foreach (var luaEvent in luaEvents)
-						{
-							form.ControlEvents.Remove(luaEvent);
-						}
+						form.ControlEvents.RemoveAll(x => x.Control == ptr);
 					}
 				}
 			}
@@ -272,9 +268,9 @@ namespace BizHawk.Client.EmuHawk
 					{
 						if (control.Handle == ptr)
 						{
-							if (control is LuaDropDown)
+							if (control is LuaDropDown dd)
 							{
-								return (control as LuaDropDown).SelectedItem.ToString();
+								return dd.SelectedItem.ToString();
 							}
 
 							return control.Text;
@@ -306,9 +302,9 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (control.Handle == ptr)
 					{
-						if (control is LuaCheckbox)
+						if (control is LuaCheckbox checkbox)
 						{
-							return (control as LuaCheckbox).Checked;
+							return checkbox.Checked;
 						}
 
 						return false;
@@ -364,7 +360,7 @@ namespace BizHawk.Client.EmuHawk
 			"newform", "creates a new default dialog, if both width and height are specified it will create a dialog of the specified size. If title is specified it will be the caption of the dialog, else the dialog caption will be 'Lua Dialog'. The function will return an int representing the handle of the dialog created.")]
 		public int NewForm(int? width = null, int? height = null, string title = null, LuaFunction onClose = null)
 		{
-			var form = new LuaWinform(CurrentThread);
+			var form = new LuaWinform(CurrentFile, GlobalWin.Tools.LuaConsole.LuaImp);
 			_luaForms.Add(form);
 			if (width.HasValue && height.HasValue)
 			{
@@ -395,12 +391,11 @@ namespace BizHawk.Client.EmuHawk
 			return (int)form.Handle;
 		}
 
-		[LuaMethodExample("local stforope = forms.openfile( \"C:\\filename.bin\", \"C:\\\", \"All files ( *.* )|*.*\");")]
+		[LuaMethodExample(@"local filename = forms.openfile(""C:\filename.bin"", ""C:\"", ""Raster Images (*.bmp;*.gif;*.jpg;*.png)|*.bmp;*.gif;*.jpg;*.png|All Files (*.*)|*.*"")")]
 		[LuaMethod(
 			"openfile", "Creates a standard openfile dialog with optional parameters for the filename, directory, and filter. The return value is the directory that the user picked. If they chose to cancel, it will return an empty string")]
-		public string OpenFile(string fileName = null, string initialDirectory = null, string filter = "All files (*.*)|*.*")
+		public string OpenFile(string fileName = null, string initialDirectory = null, string filter = null)
 		{
-			// filterext format ex: "Image Files(*.BMP;*.JPG;*.GIF)|*.BMP;*.JPG;*.GIF|All files (*.*)|*.*"
 			var openFileDialog1 = new OpenFileDialog();
 			if (initialDirectory != null)
 			{
@@ -412,11 +407,8 @@ namespace BizHawk.Client.EmuHawk
 				openFileDialog1.FileName = fileName;
 			}
 
-			if (filter != null)
-			{
-				openFileDialog1.AddExtension = true;
-				openFileDialog1.Filter = filter;
-			}
+			openFileDialog1.AddExtension = true;
+			openFileDialog1.Filter = filter ?? FilesystemFilter.AllFilesEntry;
 
 			if (openFileDialog1.ShowDialog() == DialogResult.OK)
 			{
@@ -1306,6 +1298,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		/// <exception cref="Exception">misformatted colour</exception>
 		[LuaMethodExample("forms.setproperty( 332, \"Property\", \"Property value\" );")]
 		[LuaMethod("setproperty", "Attempts to set the given property of the widget with the given value.  Note: not all properties will be able to be represented for the control to accept")]
 		public void SetProperty(int handle, string property, object value)

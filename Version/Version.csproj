@@ -1,56 +1,24 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Target Name="Build">
-    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Command="&quot;$(MSBuildProjectDirectory)\subwcrev.bat&quot; $(MSBuildProjectDirectory)" />
-  </Target>
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{0CE8B337-08E3-4602-BF10-C4D4C75D2F13}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>Version</RootNamespace>
-    <AssemblyName>Version</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <!--<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>-->
-    <CodeAnalysisRuleSet Condition=" '$(OS)' == 'Windows_NT' ">MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <!--<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>-->
-    <CodeAnalysisRuleSet Condition=" '$(OS)' == 'Windows_NT' ">MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
-    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
-  </PropertyGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent>"$(ProjectDir)..\Build\BizHawk.Build.Tool.exe" GIT_REV --wc "$(ProjectDir).." --template "$(ProjectDir)svnrev_template" --out "$(ProjectDir)svnrev.cs"</PreBuildEvent>
-  </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="dummy.cs" />
-  </ItemGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<DebugType>pdbonly</DebugType>
+		<DefineConstants>TRACE</DefineConstants>
+		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+		<ErrorReport>prompt</ErrorReport>
+		<Optimize>true</Optimize>
+		<OutputPath>./bin</OutputPath>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+		<TargetFramework>netstandard2.0</TargetFramework>
+	</PropertyGroup>
+	<ItemGroup>
+		<!-- svnrev.cs / VersionInfo.cs are only used in other projects -->
+		<Compile Include="dummy.cs" /><!-- there was a bug in 1.x when no source files were included, including an empty file fixed it -->
+	</ItemGroup>
+	<Target Name="Build">
+		<!-- when is this called? it has never run and failed on Linux -->
+		<Exec Command="&quot;$(MSBuildProjectDirectory)\subwcrev.bat&quot; $(MSBuildProjectDirectory)" Condition=" '$(OS)' == 'Windows_NT' " WorkingDirectory="$(MSBuildProjectDirectory)" />
+	</Target>
+	<Target Name="PreBuild" AfterTargets="PreBuildEvent">
+		<Exec Command='"$(ProjectDir)..\Build\BizHawk.Build.Tool.exe" GIT_REV --wc "$(ProjectDir).." --template "$(ProjectDir)svnrev_template" --out "$(ProjectDir)svnrev.cs"' Condition=" '$(OS)' == 'Windows_NT' " />
+		<Exec Command='"$(ProjectDir)../Build/standin.sh"' Condition=" '$(OS)' != 'Windows_NT' " />
+	</Target>
 </Project>

@@ -1,8 +1,4 @@
-﻿using System;
-
-using BizHawk.Emulation.Common;
-
-using BizHawk.Emulation.Cores.Nintendo.GBHawk;
+﻿using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 {
@@ -11,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 		"",
 		isPorted: false,
 		isReleased: true)]
-	[ServiceNotApplicable(typeof(IDriveLight))]
+	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class GBHawkLink : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable, ILinkable,
 	ISettable<GBHawkLink.GBLinkSettings, GBHawkLink.GBLinkSyncSettings>
 	{
@@ -36,6 +32,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 		public GBHawkLink(CoreComm comm, GameInfo game_L, byte[] rom_L, GameInfo game_R, byte[] rom_R, /*string gameDbFn,*/ object settings, object syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
+			ServiceProvider = ser;
 
 			linkSettings = (GBLinkSettings)settings ?? new GBLinkSettings();
 			linkSyncSettings = (GBLinkSyncSettings)syncSettings ?? new GBLinkSyncSettings();
@@ -52,10 +49,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 			temp_sync_L.ConsoleMode = linkSyncSettings.ConsoleMode_L;
 			temp_sync_R.ConsoleMode = linkSyncSettings.ConsoleMode_R;
 
-			temp_sync_L.DivInitialTime = linkSyncSettings.DivInitialTime_L;
-			temp_sync_R.DivInitialTime = linkSyncSettings.DivInitialTime_R;
+			temp_sync_L.GBACGB = linkSyncSettings.GBACGB;
+			temp_sync_R.GBACGB = linkSyncSettings.GBACGB;
+
 			temp_sync_L.RTCInitialTime = linkSyncSettings.RTCInitialTime_L;
 			temp_sync_R.RTCInitialTime = linkSyncSettings.RTCInitialTime_R;
+			temp_sync_L.RTCOffset = linkSyncSettings.RTCOffset_L;
+			temp_sync_R.RTCOffset = linkSyncSettings.RTCOffset_R;
 
 			L = new GBHawk.GBHawk(new CoreComm(comm.ShowMessage, comm.Notify) { CoreFileProvider = comm.CoreFileProvider },
 				game_L, rom_L, temp_set_L, temp_sync_L);
@@ -69,7 +69,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 			_tracer = new TraceBuffer { Header = L.cpu.TraceHeader };
 			ser.Register<ITraceable>(_tracer);
 
-			ServiceProvider = ser;
+			_lStates = L.ServiceProvider.GetService<IStatable>();
+			_rStates = R.ServiceProvider.GetService<IStatable>();
 
 			SetupMemoryDomains();
 
@@ -92,8 +93,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 		public bool LinkConnected
 		{
-			get { return _cableconnected; }
-			set { _cableconnected = value; }
+			get => _cableconnected;
+			set => _cableconnected = value;
 		}
 
 		private void ExecFetch(ushort addr)

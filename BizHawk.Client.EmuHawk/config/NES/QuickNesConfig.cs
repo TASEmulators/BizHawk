@@ -10,16 +10,23 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class QuickNesConfig : Form
 	{
-		private QuickNES.QuickNESSettings _settings;
+		private readonly MainForm _mainForm;
+		private readonly Config _config;
+		private readonly QuickNES.QuickNESSettings _settings;
 
-		public QuickNesConfig()
+		public QuickNesConfig(
+			MainForm mainForm,
+			Config config,
+			QuickNES.QuickNESSettings settings)
 		{
+			_mainForm = mainForm;
+			_config = config;
+			_settings = settings;
 			InitializeComponent();
 		}
 
 		private void QuickNesConfig_Load(object sender, EventArgs e)
 		{
-			_settings = ((QuickNES)Global.Emulator).GetSettings();
 			propertyGrid1.SelectedObject = _settings;
 			SetPaletteImage();
 		}
@@ -72,10 +79,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ButtonPal_Click(object sender, EventArgs e)
 		{
-			var ofd = new OpenFileDialog
+			using var ofd = new OpenFileDialog
 			{
-				InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries["NES", "Palettes"].Path, "NES"),
-				Filter = "Palette Files (.pal)|*.PAL|All Files (*.*)|*.*",
+				InitialDirectory = PathManager.MakeAbsolutePath(_config.PathEntries["NES", "Palettes"].Path, "NES"),
+				Filter = new FilesystemFilterSet(FilesystemFilter.Palettes).ToString(),
 				RestoreDirectory = true
 			};
 
@@ -97,7 +104,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ButtonOk_Click(object sender, EventArgs e)
 		{
-			GlobalWin.MainForm.PutCoreSettings(_settings);
+			_mainForm.PutCoreSettings(_settings);
 			DialogResult = DialogResult.OK;
 			Close();
 		}

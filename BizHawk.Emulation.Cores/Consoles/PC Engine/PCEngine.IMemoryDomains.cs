@@ -8,15 +8,15 @@ namespace BizHawk.Emulation.Cores.PCEngine
 {
 	public sealed partial class PCEngine
 	{
-		private Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new Dictionary<string, MemoryDomainByteArray>();
-		private bool _memoryDomainsInit = false;
+		private readonly Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new Dictionary<string, MemoryDomainByteArray>();
+		private bool _memoryDomainsInit;
 		private MemoryDomainList _memoryDomains;
 
 		private void SetupMemoryDomains()
 		{
 			var domains = new List<MemoryDomain>(2);
 
-			var SystemBusDomain = new MemoryDomainDelegate("System Bus (21 bit)", 0x200000, MemoryDomain.Endian.Little,
+			var systemBusDomain = new MemoryDomainDelegate("System Bus (21 bit)", 0x200000, MemoryDomain.Endian.Little,
 				(addr) =>
 				{
 					if (addr < 0 || addr >= 0x200000)
@@ -30,9 +30,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					Cpu.WriteMemory21((int)addr, value);
 				},
 				wordSize: 2);
-			domains.Add(SystemBusDomain);
+			domains.Add(systemBusDomain);
 
-			var CpuBusDomain = new MemoryDomainDelegate("System Bus", 0x10000, MemoryDomain.Endian.Little,
+			var cpuBusDomain = new MemoryDomainDelegate("System Bus", 0x10000, MemoryDomain.Endian.Little,
 				(addr) =>
 				{
 					if (addr < 0 || addr >= 0x10000)
@@ -46,14 +46,16 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					Cpu.WriteMemory((ushort)addr, value);
 				},
 				wordSize: 2);
-			domains.Add(CpuBusDomain);
+			domains.Add(cpuBusDomain);
 
 			SyncAllByteArrayDomains();
 
-			_memoryDomains = new MemoryDomainList(domains.Concat(_byteArrayDomains.Values).ToList());
-			_memoryDomains.SystemBus = CpuBusDomain;
-			_memoryDomains.MainMemory = _byteArrayDomains["Main Memory"];
-			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(_memoryDomains);
+			_memoryDomains = new MemoryDomainList(domains.Concat(_byteArrayDomains.Values).ToList())
+			{
+				SystemBus = cpuBusDomain, MainMemory = _byteArrayDomains["Main Memory"]
+			};
+
+			((BasicServiceProvider) ServiceProvider).Register<IMemoryDomains>(_memoryDomains);
 			_memoryDomainsInit = true;
 		}
 

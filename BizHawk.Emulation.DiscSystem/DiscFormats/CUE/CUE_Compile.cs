@@ -1,6 +1,4 @@
 using System;
-using System.Linq;
-using System.Text;
 using System.IO;
 using System.Collections.Generic;
 
@@ -253,17 +251,15 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				//TODO - fix exception-throwing inside
 				//TODO - verify stream-disposing semantics
 				var fs = File.OpenRead(choice);
-				using (var blob = new Disc.Blob_WaveFile())
+				using var blob = new Disc.Blob_WaveFile();
+				try
 				{
-					try
-					{
-						blob.Load(fs);
-						cfi.Type = CompiledCueFileType.WAVE;
-					}
-					catch
-					{
-						cfi.Type = CompiledCueFileType.DecodeAudio;
-					}
+					blob.Load(fs);
+					cfi.Type = CompiledCueFileType.WAVE;
+				}
+				catch
+				{
+					cfi.Type = CompiledCueFileType.DecodeAudio;
 				}
 			}
 			else if (blobPathExt == ".APE") cfi.Type = CompiledCueFileType.DecodeAudio;
@@ -353,7 +349,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 				//well now, if it's the first in the file, an implicit index will take its value from 00:00:00 in the file
 				//this is the kind of thing I sought to solve originally by 'interpreting' the file, but it seems easy enough to handle this way
-				//my carlin.cue tests this but test cases shouldnt be hard to find
+				//my carlin.cue tests this but test cases shouldn't be hard to find
 				if (curr_track.IsFirstInFile)
 					index0.FileMSF = new Timestamp(0);
 
@@ -396,10 +392,11 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 		void AddIndex(CUE_File.Command.INDEX indexCommand)
 		{
-			var newindex = new CompiledCueIndex();
-			newindex.FileMSF = indexCommand.Timestamp;
-			newindex.Number = indexCommand.Number;
-			curr_track.Indexes.Add(newindex);
+			curr_track.Indexes.Add(new CompiledCueIndex
+			{
+				FileMSF = indexCommand.Timestamp,
+				Number = indexCommand.Number
+			});
 		}
 
 		public void Run()

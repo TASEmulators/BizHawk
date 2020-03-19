@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using BizHawk.Common;
-using BizHawk.Common.NumberExtensions;
+﻿using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -65,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				SetMirrorType(!exnmt.Bit(0) ? EMirrorType.Vertical : EMirrorType.Horizontal);
 		}
 
-		readonly static byte[] modes = { 5, 5, 3, 1 };
+		static readonly byte[] modes = { 5, 5, 3, 1 };
 		public override byte ReadPPU(int addr)
 		{
 			if (addr < 0x2000)

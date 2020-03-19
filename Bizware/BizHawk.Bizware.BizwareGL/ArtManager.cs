@@ -44,8 +44,8 @@ namespace BizHawk.Bizware.BizwareGL
 		/// </summary>
 		public Art LoadArt(string path)
 		{
-			using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
-				return LoadArtInternal(new BitmapBuffer(path, new BitmapLoadOptions()));
+			using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+			return LoadArtInternal(new BitmapBuffer(path, new BitmapLoadOptions()));
 		}
 
 		Art LoadArtInternal(BitmapBuffer tex)
@@ -70,23 +70,23 @@ namespace BizHawk.Bizware.BizwareGL
 			IsOpened = false;
 			IsClosedForever = forever;
 
-			//first, cleanup old stuff
+			// first, cleanup old stuff
 			foreach (var tex in ManagedTextures)
 				tex.Dispose();
 			ManagedTextures.Clear();
 
-			//prepare input for atlas process and perform atlas
-			//add 2 extra pixels for padding on all sides
-			List<TexAtlas.RectItem> atlasItems = new List<TexAtlas.RectItem>();
+			// prepare input for atlas process and perform atlas
+			// add 2 extra pixels for padding on all sides
+			var atlasItems = new List<TexAtlas.RectItem>();
 			foreach (var kvp in ArtLooseTextureAssociation)
 				atlasItems.Add(new TexAtlas.RectItem(kvp.Value.Width+2, kvp.Value.Height+2, kvp));
 			var results = TexAtlas.PackAtlas(atlasItems);
 
-			//this isnt supported yet:
+			// this isn't supported yet:
 			if (results.Atlases.Count > 1)
 				throw new InvalidOperationException("Art files too big for atlas");
 
-			//prepare the output buffer
+			// prepare the output buffer
 			BitmapBuffer bmpResult = new BitmapBuffer(results.Atlases[0].Size);
 
 			//for each item, copy it into the output buffer and set the tex parameters on them
@@ -142,7 +142,7 @@ namespace BizHawk.Bizware.BizwareGL
 		/// </summary>
 		private void AssertIsOpen(bool state) { if (IsOpened != state) throw new InvalidOperationException($"{nameof(ArtManager)} instance is not open!"); }
 
-		public IGL Owner { get; private set; }
+		public IGL Owner { get; }
 
 		public bool IsOpened { get; private set; }
 		public bool IsClosedForever { get; private set; }
@@ -150,16 +150,16 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <summary>
 		/// This is used to remember the original bitmap sources for art files. Once the ArtManager is closed forever, this will be purged
 		/// </summary>
-		Dictionary<Art, BitmapBuffer> ArtLooseTextureAssociation = new Dictionary<Art, BitmapBuffer>();
+		readonly Dictionary<Art, BitmapBuffer> ArtLooseTextureAssociation = new Dictionary<Art, BitmapBuffer>();
 
 		/// <summary>
 		/// Physical texture resources, which exist after this ArtManager has been closed
 		/// </summary>
-		List<Texture2d> ManagedTextures = new List<Texture2d>();
+		readonly List<Texture2d> ManagedTextures = new List<Texture2d>();
 
 		/// <summary>
 		/// All the Arts managed by this instance
 		/// </summary>
-		List<Art> ManagedArts = new List<Art>();
+		readonly List<Art> ManagedArts = new List<Art>();
 	}
 }

@@ -8,7 +8,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
-	public partial class GBHawk : IEmulator, IStatable, ISettable<GBHawk.GBSettings, GBHawk.GBSyncSettings>
+	public partial class GBHawk : IEmulator, ISettable<GBHawk.GBSettings, GBHawk.GBSyncSettings>
 	{
 		public GBSettings GetSettings()
 		{
@@ -49,10 +49,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			[DefaultValue(PaletteType.BW)]
 			public PaletteType Palette { get; set; }
 
-
 			public GBSettings Clone()
 			{
 				return (GBSettings)MemberwiseClone();
+			}
+
+			public GBSettings()
+			{
+				SettingsUtil.SetDefaultValues(this);
 			}
 		}
 
@@ -75,7 +79,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			[DefaultValue(ControllerType.Default)]
 			public ControllerType GBController
 			{
-				get { return _GBController; }
+				get => _GBController;
 				set
 				{
 					if (value == ControllerType.Default) { Port1 = GBHawkControllerDeck.DefaultControllerName; }
@@ -107,17 +111,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			[DefaultValue(0)]
 			public int RTCInitialTime
 			{
-				get { return _RTCInitialTime; }
-				set { _RTCInitialTime = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value)); }
+				get => _RTCInitialTime;
+				set => _RTCInitialTime = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value));
 			}
 
-			[DisplayName("Timer Div Initial Time")]
-			[Description("Don't change from 0 unless it's hardware accurate. GBA GBC mode is known to be 8.")]
-			[DefaultValue(8)]
-			public int DivInitialTime
+			[DisplayName("RTC Offset")]
+			[Description("Set error in RTC clocking (-127 to 127)")]
+			[DefaultValue(0)]
+			public int RTCOffset
 			{
-				get { return _DivInitialTime; }
-				set { _DivInitialTime = Math.Min((ushort)65535, (ushort)value); }
+				get => _RTCOffset;
+				set => _RTCOffset = Math.Max(-127, Math.Min(127, value));
 			}
 
 			[DisplayName("Use Existing SaveRAM")]
@@ -125,16 +129,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			[DefaultValue(false)]
 			public bool Use_SRAM { get; set; }
 
-
 			[JsonIgnore]
 			private int _RTCInitialTime;
 			[JsonIgnore]
+			private int _RTCOffset;
+			[JsonIgnore]
 			public ushort _DivInitialTime = 8;
-
 
 			public GBSyncSettings Clone()
 			{
 				return (GBSyncSettings)MemberwiseClone();
+			}
+
+			public GBSyncSettings()
+			{
+				SettingsUtil.SetDefaultValues(this);
 			}
 
 			public static bool NeedsReboot(GBSyncSettings x, GBSyncSettings y)

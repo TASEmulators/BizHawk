@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private byte _reg0;
 		private byte _reg1;
 
-		private bool Prg16kMode { get { return _reg0.Bit(4); } }
+		private bool Prg16kMode => _reg0.Bit(4);
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private byte _reg0;
 		private byte _reg1;
 
-		private bool Prg16kMode { get { return _reg0.Bit(4); } }
+		private bool Prg16kMode => _reg0.Bit(4);
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{

@@ -13,11 +13,6 @@ namespace BizHawk.Emulation.Common
 	{
 		public ControllerDefinition()
 		{
-			BoolButtons = new List<string>();
-			FloatControls = new List<string>();
-			FloatRanges = new List<FloatRange>();
-			AxisConstraints = new List<AxisConstraint>();
-			CategoryLabels = new Dictionary<string, string>();
 		}
 
 		public ControllerDefinition(ControllerDefinition source)
@@ -39,30 +34,30 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// Gets or sets a list of all button types that have a boolean (on/off) value
 		/// </summary>
-		public List<string> BoolButtons { get; set; }
+		public List<string> BoolButtons { get; set; } = new List<string>();
 
 		/// <summary>
 		/// Gets a list of all non-boolean types, that can be represented by a numerical value (such as analog controls, stylus coordinates, etc
 		/// </summary>
-		public List<string> FloatControls { get; }
+		public List<string> FloatControls { get; } = new List<string>();
 
 		/// <summary>
 		/// Gets a list of all float ranges for each float control (must be one to one with FloatControls)
 		/// FloatRanges include the min/max/default values
 		/// </summary>
-		public List<FloatRange> FloatRanges { get; }
+		public List<FloatRange> FloatRanges { get; } = new List<FloatRange>();
 
 		/// <summary>
 		/// Gets the axis constraints that apply artificial constraints to float values
 		/// For instance, a N64 controller's analog range is actually larger than the amount allowed by the plastic that artificially constrains it to lower values
 		/// Axis constraints provide a way to technically allow the full range but have a user option to constrain down to typical values that a real control would have
 		/// </summary>
-		public List<AxisConstraint> AxisConstraints { get; }
+		public List<AxisConstraint> AxisConstraints { get; } = new List<AxisConstraint>();
 
 		/// <summary>
 		/// Gets the category labels. These labels provide a means of categorizing controls in various controller display and config screens
 		/// </summary>
-		public Dictionary<string, string> CategoryLabels { get; }
+		public Dictionary<string, string> CategoryLabels { get; } = new Dictionary<string, string>();
 
 		public void ApplyAxisConstraints(string constraintClass, IDictionary<string, float> floatButtons)
 		{
@@ -82,23 +77,23 @@ namespace BizHawk.Emulation.Common
 				{
 					case AxisConstraintType.Circular:
 						{
-							string xaxis = constraint.Params[0] as string;
-							string yaxis = constraint.Params[1] as string;
+							string xAxis = constraint.Params[0] as string ?? "";
+							string yAxis = constraint.Params[1] as string ?? "";
 							float range = (float)constraint.Params[2];
-							if (!floatButtons.ContainsKey(xaxis)) break;
-							if (!floatButtons.ContainsKey(yaxis)) break;
-							double xval = floatButtons[xaxis];
-							double yval = floatButtons[yaxis];
-							double length = Math.Sqrt((xval * xval) + (yval * yval));
+							if (!floatButtons.ContainsKey(xAxis)) break;
+							if (!floatButtons.ContainsKey(yAxis)) break;
+							double xVal = floatButtons[xAxis];
+							double yVal = floatButtons[yAxis];
+							double length = Math.Sqrt((xVal * xVal) + (yVal * yVal));
 							if (length > range)
 							{
 								double ratio = range / length;
-								xval *= ratio;
-								yval *= ratio;
+								xVal *= ratio;
+								yVal *= ratio;
 							}
 
-							floatButtons[xaxis] = (float)xval;
-							floatButtons[yaxis] = (float)yval;
+							floatButtons[xAxis] = (float)xVal;
+							floatButtons[yAxis] = (float)yVal;
 							break;
 						}
 				}
@@ -122,7 +117,8 @@ namespace BizHawk.Emulation.Common
 				Max = max;
 			}
 
-			// for terse construction
+			/// <summary>for terse construction</summary>
+			/// <exception cref="ArgumentException">length <paramref name="f"/> is not <c>3</c></exception>
 			public static implicit operator FloatRange(float[] f)
 			{
 				if (f.Length != 3)
@@ -167,7 +163,7 @@ namespace BizHawk.Emulation.Common
 				List<string> list = new List<string>(FloatControls);
 				list.AddRange(BoolButtons);
 
-				// starts with console buttons, then each plasyer's buttons individually
+				// starts with console buttons, then each player's buttons individually
 				List<string>[] ret = new List<string>[PlayerCount + 1];
 				for (int i = 0; i < ret.Length; i++)
 				{
@@ -186,14 +182,9 @@ namespace BizHawk.Emulation.Common
 		public int PlayerNumber(string buttonName)
 		{
 			var match = PlayerRegex.Match(buttonName);
-			if (match.Success)
-			{
-				return int.Parse(match.Groups[1].Value);
-			}
-			else
-			{
-				return 0;
-			}
+			return match.Success
+				? int.Parse(match.Groups[1].Value)
+				: 0;
 		}
 
 		private static readonly Regex PlayerRegex = new Regex("^P(\\d+) ");
@@ -214,12 +205,7 @@ namespace BizHawk.Emulation.Common
 				}
 
 				// Hack for things like gameboy/ti-83 as opposed to genesis with no controllers plugged in
-				if (allNames.Any(b => b.StartsWith("Up")))
-				{
-					return 1;
-				} 
-
-				return 0;
+				return allNames.Any(b => b.StartsWith("Up")) ? 1 : 0;
 			}
 		}
 

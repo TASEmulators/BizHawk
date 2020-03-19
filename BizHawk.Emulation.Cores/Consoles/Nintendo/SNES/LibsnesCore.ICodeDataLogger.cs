@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				cdl["SGB_HRAM"] = new byte[_memoryDomains["SGB HRAM"].Size];
 				cdl["SGB_WRAM"] = new byte[_memoryDomains["SGB WRAM"].Size];
 
-				if (_memoryDomains.Has("SGB_CARTRAM"))
+				if (_memoryDomains.Has("SGB CARTRAM"))
 					cdl["SGB_CARTRAM"] = new byte[_memoryDomains["SGB CARTRAM"].Size];
 			}
 

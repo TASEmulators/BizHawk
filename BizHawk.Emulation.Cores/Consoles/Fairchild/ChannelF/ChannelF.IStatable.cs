@@ -1,44 +1,9 @@
-﻿using System;
-using System.IO;
-using BizHawk.Common;
-using BizHawk.Common.BufferExtensions;
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
-	public partial class ChannelF : IStatable
+	public partial class ChannelF
 	{
-		public bool BinarySaveStatesPreferred => true;
-
-		public void SaveStateText(TextWriter writer)
-		{
-			SyncState(new Serializer(writer));
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			SyncState(new Serializer(reader));
-		}
-
-		public void SaveStateBinary(BinaryWriter bw)
-		{
-			SyncState(new Serializer(bw));
-		}
-
-		public void LoadStateBinary(BinaryReader br)
-		{
-			SyncState(new Serializer(br));
-		}
-
-		public byte[] SaveStateBinary()
-		{
-			MemoryStream ms = new MemoryStream();
-			BinaryWriter bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			return ms.ToArray();
-		}
-
 		private void SyncState(Serializer ser)
 		{
 			ser.BeginSection("ChannelF");

@@ -2,7 +2,7 @@
 {
 	partial class MultiDiskBundler
 	{
-		/// <summary>
+		/// <summary>SystemLabel
 		/// Required designer variable.
 		/// </summary>
 		private System.ComponentModel.IContainer components = null;
@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MultiDiskBundler));
             this.MultiDiskMenuStrip = new System.Windows.Forms.MenuStrip();
             this.SaveRunButton = new System.Windows.Forms.Button();
             this.CancelBtn = new System.Windows.Forms.Button();
@@ -142,15 +141,16 @@
             "C64",
             "GB",
 			"GB3x",
-            "PCFX",
+			"GB4x",
+			"PCFX",
             "PSX",
             "SAT",
             "ZXSpectrum",
             "AmstradCPC",
             "Game Gear"});
-            this.SystemDropDown.Location = new System.Drawing.Point(425, 75);
+            this.SystemDropDown.Location = new System.Drawing.Point(405, 75);
             this.SystemDropDown.Name = "SystemDropDown";
-            this.SystemDropDown.Size = new System.Drawing.Size(69, 21);
+            this.SystemDropDown.Size = new System.Drawing.Size(89, 21);
             this.SystemDropDown.TabIndex = 14;
             this.SystemDropDown.SelectedIndexChanged += new System.EventHandler(this.SystemDropDown_SelectedIndexChanged);
             // 
@@ -158,7 +158,7 @@
             // 
             this.SystemLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.SystemLabel.AutoSize = true;
-            this.SystemLabel.Location = new System.Drawing.Point(375, 78);
+            this.SystemLabel.Location = new System.Drawing.Point(355, 78);
             this.SystemLabel.Name = "SystemLabel";
             this.SystemLabel.Size = new System.Drawing.Size(44, 13);
             this.SystemLabel.TabIndex = 15;
@@ -189,7 +189,7 @@
             this.Controls.Add(this.CancelBtn);
             this.Controls.Add(this.SaveRunButton);
             this.Controls.Add(this.MultiDiskMenuStrip);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.dual_MultiSize;
             this.MainMenuStrip = this.MultiDiskMenuStrip;
             this.Name = "MultiDiskBundler";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

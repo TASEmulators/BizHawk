@@ -6,7 +6,9 @@ uint8 SuperFX::bus_read(unsigned addr) {
       add_clocks(6);
       synchronize_cpu();
     }
-    return cartridge.rom.read((((addr & 0x3f0000) >> 1) | (addr & 0x7fff)) & rom_mask);
+    auto myaddr = (((addr & 0x3f0000) >> 1) | (addr & 0x7fff)) & rom_mask;
+    cdlInfo.set(eCDLog_AddrType_CARTROM, addr);
+    return cartridge.rom.read(myaddr);
   }
 
   if((addr & 0xe00000) == 0x400000) {  //$40-5f:0000-ffff
@@ -14,7 +16,9 @@ uint8 SuperFX::bus_read(unsigned addr) {
       add_clocks(6);
       synchronize_cpu();
     }
-    return cartridge.rom.read(addr & rom_mask);
+    auto myaddr = addr & rom_mask;
+    cdlInfo.set(eCDLog_AddrType_CARTROM, myaddr);
+    return cartridge.rom.read(myaddr);
   }
 
   if((addr & 0xe00000) == 0x600000) {  //$60-7f:0000-ffff

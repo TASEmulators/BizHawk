@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using BizHawk.Emulation.Common;
 using System.ComponentModel;
 using BizHawk.Common;
@@ -11,8 +8,8 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 {
 	partial class WonderSwan : ISettable<WonderSwan.Settings, WonderSwan.SyncSettings>
 	{
-		Settings _Settings;
-		SyncSettings _SyncSettings;
+		private Settings _settings;
+		private SyncSettings _syncSettings;
 
 		public class Settings
 		{
@@ -44,9 +41,11 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 				ret.BWPalette = new uint[16];
 				for (int i = 0; i < 16; i++)
+				{
 					ret.BWPalette[i] = (uint)BWPalette[i].ToArgb() | 0xff000000;
+				}
 
-				// default color algorithm from wonderswan
+				// default color algorithm from WonderSwan
 				// todo: we could give options like the gameboy cores have
 				ret.ColorPalette = new uint[4096];
 				for (int r = 0; r < 16; r++)
@@ -55,12 +54,10 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 					{
 						for (int b = 0; b < 16; b++)
 						{
-							uint neo_r, neo_g, neo_b;
-
-							neo_r = (uint)r * 17;
-							neo_g = (uint)g * 17;
-							neo_b = (uint)b * 17;
-							ret.ColorPalette[r << 8 | g << 4 | b] = 0xff000000 | neo_r << 16 | neo_g << 8 | neo_b << 0;
+							var neoR = (uint)r * 17;
+							var neoG = (uint)g * 17;
+							var neoB = (uint)b * 17;
+							ret.ColorPalette[r << 8 | g << 4 | b] = 0xff000000 | neoR << 16 | neoG << 8 | neoB << 0;
 						}
 					}
 				}
@@ -157,28 +154,22 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			}
 		}
 
-		public Settings GetSettings()
-		{
-			return _Settings.Clone();
-		}
+		public Settings GetSettings() => _settings.Clone();
 
-		public SyncSettings GetSyncSettings()
-		{
-			return _SyncSettings.Clone();
-		}
+		public SyncSettings GetSyncSettings() => _syncSettings.Clone();
 
 		public bool PutSettings(Settings o)
 		{
-			_Settings = o;
-			var native = _Settings.GetNativeSettings();
+			_settings = o;
+			var native = _settings.GetNativeSettings();
 			BizSwan.bizswan_putsettings(Core, ref native);
 			return false;
 		}
 
 		public bool PutSyncSettings(SyncSettings o)
 		{
-			bool ret = SyncSettings.NeedsReboot(o, _SyncSettings);
-			_SyncSettings = o;
+			bool ret = SyncSettings.NeedsReboot(o, _syncSettings);
+			_syncSettings = o;
 			return ret;
 		}
 

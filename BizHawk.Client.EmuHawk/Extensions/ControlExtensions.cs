@@ -3,19 +3,18 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
-using System.Runtime.InteropServices;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Common;
 using BizHawk.Common.ReflectionExtensions;
-using BizHawk.Client.Common;
 
-
-namespace BizHawk.Client.EmuHawk.WinFormExtensions
+namespace BizHawk.Client.EmuHawk
 {
 	public static class ControlExtensions
 	{
+		/// <exception cref="ArgumentException"><typeparamref name="T"/> does not inherit <see cref="Enum"/></exception>
 		public static void PopulateFromEnum<T>(this ComboBox box, object enumVal)
 			where T : struct, IConvertible
 		{
@@ -43,44 +42,7 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 			return control.BeginInvoke(action);
 		}
 
-		public static void AddColumn(this ListView listView, string columnName, bool enabled, int columnWidth)
-		{
-			if (enabled)
-			{
-				if (listView.Columns[columnName] == null)
-				{
-					var column = new ColumnHeader
-					{
-						Name = columnName,
-						Text = columnName.Replace("Column", ""),
-						Width = columnWidth,
-					};
-
-					listView.Columns.Add(column);
-				}
-			}
-		}
-
-		public static void AddColumn(this ListView listView, ToolDialogSettings.Column column)
-		{
-			if (column.Visible)
-			{
-				if (listView.Columns[column.Name] == null)
-				{
-					var lsstViewColumn = new ColumnHeader
-					{
-						Name = column.Name,
-						Text = column.Name.Replace("Column", ""),
-						Width = column.Width,
-						DisplayIndex = column.Index
-					};
-
-					listView.Columns.Add(lsstViewColumn);
-				}
-			}
-		}
-
-		public static ToolStripMenuItem GenerateColumnsMenu(this ToolDialogSettings.ColumnList list, Action changeCallback)
+		public static ToolStripMenuItem ToColumnsMenu(this InputRoll inputRoll, Action changeCallback)
 		{
 			var menu = new ToolStripMenuItem
 			{
@@ -88,32 +50,30 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 				Text = "Columns"
 			};
 
-			var dummyList = list;
+			var columns = inputRoll.AllColumns;
 
-			foreach (var column in dummyList)
+			foreach (var column in columns)
 			{
 				var menuItem = new ToolStripMenuItem
 				{
 					Name = column.Name,
-					Text = column.Name.Replace("Column", "")
+					Text = $"{column.Text} ({column.Name})",
+					Checked = column.Visible,
+					CheckOnClick = true,
+					Tag = column.Name
 				};
 
-				menuItem.Click += (o, ev) =>
+				menuItem.CheckedChanged += (o, ev) =>
 				{
-					dummyList[menuItem.Name].Visible ^= true;
+					var sender = (ToolStripMenuItem)o;
+					columns.Find(c => c.Name == (string)sender.Tag).Visible = sender.Checked;
+					columns.ColumnsChanged();
 					changeCallback();
+					inputRoll.Refresh();
 				};
 
 				menu.DropDownItems.Add(menuItem);
 			}
-
-			menu.DropDownOpened += (o, e) =>
-			{
-				foreach (var column in dummyList)
-				{
-					(menu.DropDownItems[column.Name] as ToolStripMenuItem).Checked = column.Visible;
-				}
-			};
 
 			return menu;
 		}
@@ -121,6 +81,48 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 		public static Point ChildPointToScreen(this Control control, Control child)
 		{
 			return control.PointToScreen(new Point(child.Location.X, child.Location.Y));
+		}
+
+		public static Color Add(this Color color, int val)
+		{
+			var col = color.ToArgb();
+			col += val;
+			return Color.FromArgb(col);
+		}
+
+		public static T Clone<T>(this T controlToClone)
+			where T : Control
+		{
+			PropertyInfo[] controlProperties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+			Type t = controlToClone.GetType();
+			T instance = Activator.CreateInstance(t) as T;
+
+			t.GetProperty("AutoSize")?.SetValue(instance, false, null);
+
+			for (int i = 0; i < 3; i++)
+			{
+				foreach (var propInfo in controlProperties)
+				{
+					if (!propInfo.CanWrite)
+					{
+						continue;
+					}
+
+					if (propInfo.Name != "AutoSize" && propInfo.Name != "WindowTarget")
+					{
+						propInfo.SetValue(instance, propInfo.GetValue(controlToClone, null), null);
+					}
+				}
+			}
+
+			if (instance is RetainedViewportPanel panel)
+			{
+				var cloneBmp = (controlToClone as RetainedViewportPanel).GetBitmap().Clone() as Bitmap;
+				panel.SetBitmap(cloneBmp);
+			}
+
+			return instance;
 		}
 
 		#region Enumerable to Enumerable<T>
@@ -139,16 +141,6 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 			return tabControl.TabPages.Cast<TabPage>();
 		}
 
-		public static IEnumerable<int> SelectedIndices(this ListView listView)
-		{
-			return listView.SelectedIndices.Cast<int>();
-		}
-
-		public static IEnumerable<ColumnHeader> ColumnHeaders(this ListView listView)
-		{
-			return listView.Columns.OfType<ColumnHeader>();
-		}
-
 		#endregion
 	}
 
@@ -165,7 +157,7 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 				form.StartPosition = FormStartPosition.Manual;
 				form.Location = position;
 			}
-			var result = (owner == null ? form.ShowDialog(new Form() { TopMost = true }) : form.ShowDialog(owner));
+			var result = (owner == null ? form.ShowDialog(new Form { TopMost = true }) : form.ShowDialog(owner));
 			GlobalWin.Sound.StartSound();
 			return result;
 		}
@@ -176,9 +168,8 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 		public static DialogResult ShowHawkDialog(this CommonDialog form)
 		{
 			GlobalWin.Sound.StopSound();
-			var tempForm = new Form() { TopMost = true };
+			using var tempForm = new Form { TopMost = true };
 			var result = form.ShowDialog(tempForm);
-			tempForm.Dispose();
 			GlobalWin.Sound.StartSound();
 			return result;
 		}
@@ -186,53 +177,6 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 
 	public static class ListViewExtensions
 	{
-		[StructLayout(LayoutKind.Sequential)]
-		public struct HDITEM
-		{
-			public Mask mask;
-			public int cxy;
-			[MarshalAs(UnmanagedType.LPTStr)]
-			public string pszText;
-			public IntPtr hbm;
-			public int cchTextMax;
-			public Format fmt;
-			public IntPtr lParam;
-			// _WIN32_IE >= 0x0300 
-			public int iImage;
-			public int iOrder;
-			// _WIN32_IE >= 0x0500
-			public uint type;
-			public IntPtr pvFilter;
-			// _WIN32_WINNT >= 0x0600
-			public uint state;
-
-			[Flags]
-			public enum Mask
-			{
-				Format = 0x4,       // HDI_FORMAT
-			};
-
-			[Flags]
-			public enum Format
-			{
-				SortDown = 0x200,   // HDF_SORTDOWN
-				SortUp = 0x400,     // HDF_SORTUP
-			};
-		};
-
-		public const int LVM_FIRST = 0x1000;
-		public const int LVM_GETHEADER = LVM_FIRST + 31;
-
-		public const int HDM_FIRST = 0x1200;
-		public const int HDM_GETITEM = HDM_FIRST + 11;
-		public const int HDM_SETITEM = HDM_FIRST + 12;
-
-		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-		static extern IntPtr SendMessage(IntPtr hWnd, UInt32 msg, IntPtr wParam, IntPtr lParam);
-
-		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-		static extern IntPtr SendMessage(IntPtr hWnd, UInt32 msg, IntPtr wParam, ref HDITEM lParam);
-
 		/// <summary>
 		/// Dumps the contents of the ListView into a tab separated list of lines
 		/// </summary>
@@ -251,7 +195,7 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 			{
 				foreach (ListViewItem.ListViewSubItem item in listViewControl.Items[index].SubItems)
 				{
-					if (!String.IsNullOrWhiteSpace(item.Text))
+					if (!string.IsNullOrWhiteSpace(item.Text))
 					{
 						sb.Append(item.Text).Append('\t');
 					}
@@ -270,46 +214,49 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 			return sb.ToString();
 		}
 
+		/// <exception cref="Win32Exception">unmanaged call failed</exception>
 		public static void SetSortIcon(this ListView listViewControl, int columnIndex, SortOrder order)
 		{
-			IntPtr columnHeader = SendMessage(listViewControl.Handle, LVM_GETHEADER, IntPtr.Zero, IntPtr.Zero);
-			for (int columnNumber = 0; columnNumber <= listViewControl.Columns.Count - 1; columnNumber++)
+			const int LVM_GETHEADER = 4127;
+			const int HDM_GETITEM = 4619;
+			const int HDM_SETITEM = 4620;
+			var columnHeader = Win32Imports.SendMessage(listViewControl.Handle, LVM_GETHEADER, IntPtr.Zero, IntPtr.Zero);
+			for (int columnNumber = 0, l = listViewControl.Columns.Count; columnNumber < l; columnNumber++)
 			{
 				var columnPtr = new IntPtr(columnNumber);
-				var item = new HDITEM
+				var item = new Win32Imports.HDITEM { mask = Win32Imports.HDITEM.Mask.Format };
+				if (Win32Imports.SendMessage(columnHeader, HDM_GETITEM, columnPtr, ref item) == IntPtr.Zero) throw new Win32Exception();
+				if (columnNumber != columnIndex || order == SortOrder.None)
 				{
-					mask = HDITEM.Mask.Format
-				};
-
-				if (SendMessage(columnHeader, HDM_GETITEM, columnPtr, ref item) == IntPtr.Zero)
-				{
-					throw new Win32Exception();
+					item.fmt &= ~Win32Imports.HDITEM.Format.SortDown & ~Win32Imports.HDITEM.Format.SortUp;
 				}
-
-				if (order != SortOrder.None && columnNumber == columnIndex)
+				else if (order == SortOrder.Ascending)
 				{
-					switch (order)
-					{
-						case SortOrder.Ascending:
-							item.fmt &= ~HDITEM.Format.SortDown;
-							item.fmt |= HDITEM.Format.SortUp;
-							break;
-						case SortOrder.Descending:
-							item.fmt &= ~HDITEM.Format.SortUp;
-							item.fmt |= HDITEM.Format.SortDown;
-							break;
-					}
+					item.fmt &= ~Win32Imports.HDITEM.Format.SortDown;
+					item.fmt |= Win32Imports.HDITEM.Format.SortUp;
 				}
-				else
+				else if (order == SortOrder.Descending)
 				{
-					item.fmt &= ~HDITEM.Format.SortDown & ~HDITEM.Format.SortUp;
+					item.fmt &= ~Win32Imports.HDITEM.Format.SortUp;
+					item.fmt |= Win32Imports.HDITEM.Format.SortDown;
 				}
-
-				if (SendMessage(columnHeader, HDM_SETITEM, columnPtr, ref item) == IntPtr.Zero)
-				{
-					throw new Win32Exception();
-				}
+				if (Win32Imports.SendMessage(columnHeader, HDM_SETITEM, columnPtr, ref item) == IntPtr.Zero) throw new Win32Exception();
 			}
+		}
+
+		public static bool IsOk(this DialogResult dialogResult)
+		{
+			return dialogResult == DialogResult.OK;
+		}
+
+		/// <summary>
+		/// Sets the desired effect if data is present, else None
+		/// </summary>
+		public static void Set(this DragEventArgs e, DragDropEffects effect)
+		{
+			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop)
+				? effect
+				: DragDropEffects.None;
 		}
 	}
 }

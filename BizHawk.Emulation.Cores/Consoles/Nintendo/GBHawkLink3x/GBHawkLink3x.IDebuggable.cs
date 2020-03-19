@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
@@ -9,69 +9,41 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 	{
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			return new Dictionary<string, RegisterValue>
-			{
-				/*
-				["A"] = cpu.A,
-				["X"] = cpu.X,
-				["Y"] = cpu.Y,
-				["S"] = cpu.S,
-				["PC"] = cpu.PC,
-				["Flag C"] = cpu.FlagC,
-				["Flag Z"] = cpu.FlagZ,
-				["Flag I"] = cpu.FlagI,
-				["Flag D"] = cpu.FlagD,
-				["Flag B"] = cpu.FlagB,
-				["Flag V"] = cpu.FlagV,
-				["Flag N"] = cpu.FlagN,
-				["Flag T"] = cpu.FlagT
-				*/
-			};
+			var left = L.GetCpuFlagsAndRegisters()
+				.Select(reg => new KeyValuePair<string, RegisterValue>("Left " + reg.Key, reg.Value));
+
+			var center = C.GetCpuFlagsAndRegisters()
+				.Select(reg => new KeyValuePair<string, RegisterValue>("Center " + reg.Key, reg.Value));
+
+			var right = R.GetCpuFlagsAndRegisters()
+				.Select(reg => new KeyValuePair<string, RegisterValue>("Right " + reg.Key, reg.Value));
+
+			return left.Union(center).Union(right).ToDictionary(pair => pair.Key, pair => pair.Value);
 		}
 
 		public void SetCpuRegister(string register, int value)
 		{
-			switch (register)
+			if (register.StartsWith("Left "))
 			{
-				default:
-					throw new InvalidOperationException();
-				case "A":
-					//cpu.A = (byte)value;
-					break;
-				case "X":
-					//cpu.X = (byte)value;
-					break;
-				case "Y":
-					//cpu.Y = (byte)value;
-					break;
-				case "S":
-					//cpu.S = (byte)value;
-					break;
-				case "PC":
-					//cpu.PC = (ushort)value;
-					break;
-				case "Flag I":
-					//cpu.FlagI = value > 0;
-					break;
+				L.SetCpuRegister(register.Replace("Left ", ""), value);
+			}
+			else if (register.StartsWith("Center "))
+			{
+				C.SetCpuRegister(register.Replace("Center ", ""), value);
+			}
+			else if (register.StartsWith("Right "))
+			{
+				R.SetCpuRegister(register.Replace("Right ", ""), value);
 			}
 		}
 
 		public IMemoryCallbackSystem MemoryCallbacks { get; } = new MemoryCallbackSystem(new[] { "System Bus" });
 
-		public bool CanStep(StepType type)
-		{
-			return false;
-		}
+		public bool CanStep(StepType type) => false;
 
 		[FeatureNotImplemented]
-		public void Step(StepType type)
-		{
-			throw new NotImplementedException();
-		}
+		public void Step(StepType type) => throw new NotImplementedException();
 
-		public long TotalExecutedCycles
-		{
-			get { return (long)L.cpu.TotalExecutedCycles; }
-		}
+		public long TotalExecutedCycles => (long)L.cpu.TotalExecutedCycles;
 	}
 }

@@ -137,11 +137,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool Active
 		{
-			get
-			{
-				return _active;
-			}
-
+			get => _active;
 			set
 			{
 				if (!ReadOnly)

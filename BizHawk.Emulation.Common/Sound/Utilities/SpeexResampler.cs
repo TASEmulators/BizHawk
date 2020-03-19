@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
+// ReSharper disable UnusedMember.Local
+// ReSharper disable UnusedMember.Global
+// ReSharper disable IdentifierTypo
 // ReSharper disable StyleCop.SA1300
 // ReSharper disable InconsistentNaming
 namespace BizHawk.Emulation.Common
@@ -10,7 +13,7 @@ namespace BizHawk.Emulation.Common
 	/// </summary>
 	public class SpeexResampler : IDisposable, ISoundProvider
 	{
-		// to accept an ISyncSoundProvder input
+		// to accept an ISyncSoundProvider input
 		private readonly ISoundProvider _input;
 
 		// function to call to dispatch output
@@ -22,13 +25,13 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// quality of the resampler.  values other than those listed are valid, provided they are between MIN and MAX
 		/// </summary>
-		public enum Quality : int
+		public enum Quality
 		{
 			QUALITY_MAX = 10,
 			QUALITY_MIN = 0,
 			QUALITY_DEFAULT = 4,
 			QUALITY_VOIP = 3,
-			QUALITY_DESKTOP = 5,
+			QUALITY_DESKTOP = 5
 		}
 
 		private static class LibSpeexDSP
@@ -288,9 +291,6 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="SpeexResampler"/> class
-		/// </summary>
 		/// <param name="quality">0 to 10</param>
 		/// <param name="rationum">numerator of sample rate change ratio (inrate / outrate)</param>
 		/// <param name="ratioden">denominator of sample rate change ratio (inrate / outrate)</param>
@@ -298,6 +298,8 @@ namespace BizHawk.Emulation.Common
 		/// <param name="srateout">sampling rate out, rounded to nearest hz</param>
 		/// <param name="drainer">function which accepts output as produced. if null, act as an <seealso cref="ISoundProvider"/></param>
 		/// <param name="input">source to take input from when output is requested. if null, no auto-fetching</param>
+		/// <exception cref="ArgumentException"><paramref name="drainer"/> and <paramref name="input"/> are both non-null</exception>
+		/// <exception cref="Exception">unmanaged call failed</exception>
 		public SpeexResampler(Quality quality, uint rationum, uint ratioden, uint sratein, uint srateout, Action<short[], int> drainer = null, ISoundProvider input = null)
 		{
 			if (drainer != null && input != null)
@@ -369,9 +371,8 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		/// <summary>
-		/// flush as many input samples as possible, generating output samples right now
-		/// </summary>
+		/// <summary>flush as many input samples as possible, generating output samples right now</summary>
+		/// <exception cref="Exception">unmanaged call failed</exception>
 		public void Flush()
 		{
 			uint inal = (uint)_inbufpos / 2;
@@ -387,11 +388,6 @@ namespace BizHawk.Emulation.Common
 			}
 
 			_inbufpos = 0;
-
-			////Buffer.BlockCopy(inbuf, (int)inal * 2 * sizeof(short), inbuf, 0, inbufpos - (int)inal * 2);
-			////inbufpos -= (int)inal * 2;
-
-			// dispatch outbuf
 			_drainer(_outbuf, (int)outal);
 		}
 
@@ -427,9 +423,7 @@ namespace BizHawk.Emulation.Common
 		{
 			if (_input != null)
 			{
-				short[] sampin;
-				int nsampin;
-				_input.GetSamplesSync(out sampin, out nsampin);
+				_input.GetSamplesSync(out var sampin, out int nsampin);
 				EnqueueSamples(sampin, nsampin);
 			}
 
@@ -448,11 +442,13 @@ namespace BizHawk.Emulation.Common
 
 		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
+		/// <exception cref="InvalidOperationException">always</exception>
 		public void GetSamplesAsync(short[] samples)
 		{
 			throw new InvalidOperationException("Async mode is not supported.");
 		}
 
+		/// <exception cref="NotSupportedException"><paramref name="mode"/> is <see cref="SyncSoundMode.Async"/></exception>
 		public void SetSyncMode(SyncSoundMode mode)
 		{
 			if (mode == SyncSoundMode.Async)

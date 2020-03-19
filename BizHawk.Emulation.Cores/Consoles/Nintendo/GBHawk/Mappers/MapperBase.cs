@@ -1,7 +1,5 @@
 ﻿using BizHawk.Common;
-using System;
-
-using BizHawk.Emulation.Common.Components.LR35902;
+using BizHawk.Emulation.Cores.Components.LR35902;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
@@ -35,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 		}
 
-		public virtual void Initialize()
+		public virtual void Reset()
 		{
 		}
 
@@ -43,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 		}
 
-		public virtual void RTC_Get(byte value, int index)
+		public virtual void RTC_Get(int value, int index)
 		{
 		}
 

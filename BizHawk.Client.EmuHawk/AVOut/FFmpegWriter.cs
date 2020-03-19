@@ -86,9 +86,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				_ffmpeg = OSTailoredCode.ConstructSubshell(
-					OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
-						? Path.Combine(PathManager.GetDllDirectory(), "ffmpeg.exe")
-						: "ffmpeg",
+					OSTailoredCode.IsUnixHost ? "ffmpeg" : Path.Combine(PathManager.GetDllDirectory(), "ffmpeg.exe"),
 					$"-y -f nut -i - {_token.Commandline} \"{_baseName}{(_segment == 0 ? string.Empty : $"_{_segment}")}{_ext}\"",
 					checkStdout: false,
 					checkStderr: true // ffmpeg sends informative display to stderr, and nothing to stdout
@@ -96,7 +94,7 @@ namespace BizHawk.Client.EmuHawk
 
 				_commandline = $"ffmpeg {_ffmpeg.StartInfo.Arguments}";
 
-				_ffmpeg.ErrorDataReceived += new DataReceivedEventHandler(StderrHandler);
+				_ffmpeg.ErrorDataReceived += StderrHandler;
 
 				_stderr = new Queue<string>(Consolebuffer);
 
@@ -139,7 +137,12 @@ namespace BizHawk.Client.EmuHawk
 			//ffmpeg.StandardInput.Close();
 
 			// how long should we wait here?
-			_ffmpeg.WaitForExit(20000);
+			if (_ffmpeg.WaitForExit(20000))
+			{
+				// Known MS bug: WaitForExit(time) waits for the process to exit but doesn't wait for event handling to finish.
+				//               If WaitForExit(time) returns true, this call waits for message pump to clear out events.
+				_ffmpeg.WaitForExit();
+			}
 			_ffmpeg.Dispose();
 			_ffmpeg = null;
 			_stderr = null;
@@ -176,7 +179,7 @@ namespace BizHawk.Client.EmuHawk
 			return s.ToString();
 		}
 
-
+		/// <exception cref="Exception">FFmpeg call failed</exception>
 		public void AddFrame(IVideoProvider source)
 		{
 			if (source.BufferWidth != width || source.BufferHeight != height)
@@ -208,7 +211,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return FFmpegWriterForm.DoFFmpegWriterDlg(hwnd);
 		}
-	
+
+		/// <exception cref="ArgumentException"><paramref name="token"/> does not inherit <see cref="FFmpegWriterForm.FormatPreset"/></exception>
 		public void SetVideoCodecToken(IDisposable token)
 		{
 			if (token is FFmpegWriterForm.FormatPreset)
@@ -226,10 +230,10 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private int fpsnum, fpsden, width, height, sampleRate, channels;
 
-		public void SetMovieParameters(int fpsnum, int fpsden)
+		public void SetMovieParameters(int fpsNum, int fpsDen)
 		{
-			this.fpsnum = fpsnum;
-			this.fpsden = fpsden;
+			this.fpsnum = fpsNum;
+			this.fpsden = fpsDen;
 		}
 
 		public void SetVideoParameters(int width, int height)
@@ -263,6 +267,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		/// <exception cref="Exception">FFmpeg call failed</exception>
 		public void AddSamples(short[] samples)
 		{
 			if (_ffmpeg.HasExited)
@@ -287,6 +292,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="bits"/> is not <c>16</c></exception>
 		public void SetAudioParameters(int sampleRate, int channels, int bits)
 		{
 			if (bits != 16)

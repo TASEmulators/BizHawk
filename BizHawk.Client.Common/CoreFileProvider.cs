@@ -27,11 +27,6 @@ namespace BizHawk.Client.Common
 			return Path.Combine(PathManager.GetExeDirectoryAbsolute(), "dll");
 		}
 
-		public string GetSaveRAMPath()
-		{
-			return PathManager.SaveRamPath(Global.Game);
-		}
-
 		public string GetRetroSaveRAMDirectory()
 		{
 			return PathManager.RetroSaveRAMDirectory(Global.Game);
@@ -53,17 +48,18 @@ namespace BizHawk.Client.Common
 		{
 			if (required)
 			{
-				var fullmsg = $"Couldn't find required firmware \"{sysID}:{firmwareID}\".  This is fatal{(msg != null ? $": {msg}" : ".")}";
-				throw new MissingFirmwareException(fullmsg);
+				var fullMsg = $"Couldn't find required firmware \"{sysID}:{firmwareID}\".  This is fatal{(msg != null ? $": {msg}" : ".")}";
+				throw new MissingFirmwareException(fullMsg);
 			}
 
 			if (msg != null)
 			{
-				var fullmsg = $"Couldn't find firmware \"{sysID}:{firmwareID}\".  Will attempt to continue: {msg}";
-				_showWarning(fullmsg);
+				var fullMsg = $"Couldn't find firmware \"{sysID}:{firmwareID}\".  Will attempt to continue: {msg}";
+				_showWarning(fullMsg);
 			}
 		}
 
+		/// <exception cref="MissingFirmwareException">not found and <paramref name="required"/> is true</exception>
 		public string GetFirmwarePath(string sysId, string firmwareId, bool required, string msg = null)
 		{
 			var path = FirmwareManager.Request(sysId, firmwareId);
@@ -104,16 +100,17 @@ namespace BizHawk.Client.Common
 			return ret;
 		}
 
+		/// <exception cref="MissingFirmwareException">not found and <paramref name="required"/> is true</exception>
 		public byte[] GetFirmware(string sysId, string firmwareId, bool required, string msg = null)
 		{
 			string unused;
 			return GetFirmwareWithPath(sysId, firmwareId, required, msg, out unused);
 		}
 
+		/// <exception cref="MissingFirmwareException">not found and <paramref name="required"/> is true</exception>
 		public byte[] GetFirmwareWithGameInfo(string sysId, string firmwareId, bool required, out GameInfo gi, string msg = null)
 		{
-			string path;
-			byte[] ret = GetFirmwareWithPath(sysId, firmwareId, required, msg, out path);
+			byte[] ret = GetFirmwareWithPath(sysId, firmwareId, required, msg, out var path);
 			if (ret != null && path != null)
 			{
 				gi = Database.GetGameInfo(ret, path);

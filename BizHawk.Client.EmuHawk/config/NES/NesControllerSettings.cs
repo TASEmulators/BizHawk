@@ -1,29 +1,22 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
-
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
-using BizHawk.Emulation.Cores.Nintendo.SubNESHawk;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class NesControllerSettings : Form
 	{
+		private readonly MainForm _mainForm;
 		private readonly NES.NESSyncSettings _syncSettings;
 
-		public NesControllerSettings()
+		public NesControllerSettings(
+			MainForm mainForm,
+			NES.NESSyncSettings syncSettings)
 		{
+			_mainForm = mainForm;
+			_syncSettings = syncSettings;
 			InitializeComponent();
-			if (Global.Emulator is NES)
-			{
-				_syncSettings = ((NES)Global.Emulator).GetSyncSettings();
-			}
-			else
-			{
-				_syncSettings = ((SubNESHawk)Global.Emulator).GetSyncSettings();
-			}
-			
 
 			// TODO: use combobox extension and add descriptions to enum values
 			comboBoxFamicom.Items.AddRange(NESControlSettings.GetFamicomExpansionValues().ToArray());
@@ -45,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-			var ctrls = new NESControlSettings
+			var controls = new NESControlSettings
 			{
 				Famicom = checkBoxFamicom.Checked,
 				FamicomExpPort = (string)comboBoxFamicom.SelectedItem,
@@ -53,13 +46,13 @@ namespace BizHawk.Client.EmuHawk
 				NesRightPort = (string)comboBoxNESR.SelectedItem
 			};
 
-			bool changed = NESControlSettings.NeedsReboot(ctrls, _syncSettings.Controls);
+			bool changed = NESControlSettings.NeedsReboot(controls, _syncSettings.Controls);
 
-			_syncSettings.Controls = ctrls;
+			_syncSettings.Controls = controls;
 
 			if (changed)
 			{
-				GlobalWin.MainForm.PutCoreSyncSettings(_syncSettings);
+				_mainForm.PutCoreSyncSettings(_syncSettings);
 			}
 
 			DialogResult = DialogResult.OK;
@@ -68,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CancelBtn_Click(object sender, EventArgs e)
 		{
-			GlobalWin.OSD.AddMessage("Controller settings aborted");
+			_mainForm.AddOnScreenMessage("Controller settings aborted");
 			DialogResult = DialogResult.Cancel;
 			Close();
 		}

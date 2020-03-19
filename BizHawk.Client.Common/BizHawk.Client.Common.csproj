@@ -1,336 +1,50 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{24A0AA3C-B25F-4197-B23D-476D6462DBA0}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BizHawk.Client.Common</RootNamespace>
-    <AssemblyName>BizHawk.Client.Common</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\output\dll\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;DOTNET20;UNMANAGED;COMPRESS;WINDOWS</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <!--<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>-->
-    <CodeAnalysisRuleSet Condition=" '$(OS)' == 'Windows_NT' ">MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
-    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>..\output\dll\</OutputPath>
-    <DefineConstants>TRACE;DOTNET20;UNMANAGED;COMPRESS;WINDOWS</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <!--<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>-->
-    <CodeAnalysisRuleSet Condition=" '$(OS)' == 'Windows_NT' ">MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
-    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>..\References\ICSharpCode.SharpZipLib.dll</HintPath>
-    </Reference>
-    <Reference Include="Ionic.Zip">
-      <HintPath>..\References\Ionic.Zip.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\References\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="NLua">
-      <HintPath>..\output\dll\nlua\NLua.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.SQLite, Version=1.0.105.2, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\References\x64\SQLite\System.Data.SQLite.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\Version\svnrev.cs">
-      <Link>svnrev.cs</Link>
-    </Compile>
-    <Compile Include="..\Version\VersionInfo.cs">
-      <Link>VersionInfo.cs</Link>
-    </Compile>
-    <Compile Include="7z\ArchiveEmulationStreamProxy.cs" />
-    <Compile Include="7z\ArchiveExtractCallback.cs" />
-    <Compile Include="7z\ArchiveOpenCallback.cs" />
-    <Compile Include="7z\ArchiveUpdateCallback.cs" />
-    <Compile Include="7z\COM.cs" />
-    <Compile Include="7z\Common.cs" />
-    <Compile Include="7z\EventArgs.cs" />
-    <Compile Include="7z\Exceptions.cs" />
-    <Compile Include="7z\FileSignatureChecker.cs" />
-    <Compile Include="7z\Formats.cs" />
-    <Compile Include="7z\LibraryFeature.cs" />
-    <Compile Include="7z\LibraryManager.cs" />
-    <Compile Include="7z\LzmaDecodeStream.cs" />
-    <Compile Include="7z\LzmaEncodeStream.cs" />
-    <Compile Include="7z\LzmaProgressCallback.cs" />
-    <Compile Include="7z\NativeMethods.cs" />
-    <Compile Include="7z\sdk\Common\CRC.cs" />
-    <Compile Include="7z\sdk\Common\InBuffer.cs" />
-    <Compile Include="7z\sdk\Common\OutBuffer.cs" />
-    <Compile Include="7z\sdk\Compress\LZMA\LzmaBase.cs" />
-    <Compile Include="7z\sdk\Compress\LZMA\LzmaDecoder.cs" />
-    <Compile Include="7z\sdk\Compress\LZMA\LzmaEncoder.cs" />
-    <Compile Include="7z\sdk\Compress\LZ\IMatchFinder.cs" />
-    <Compile Include="7z\sdk\Compress\LZ\LzBinTree.cs" />
-    <Compile Include="7z\sdk\Compress\LZ\LzInWindow.cs" />
-    <Compile Include="7z\sdk\Compress\LZ\LzOutWindow.cs" />
-    <Compile Include="7z\sdk\Compress\RangeCoder\RangeCoder.cs" />
-    <Compile Include="7z\sdk\Compress\RangeCoder\RangeCoderBit.cs" />
-    <Compile Include="7z\sdk\Compress\RangeCoder\RangeCoderBitTree.cs" />
-    <Compile Include="7z\sdk\ICoder.cs" />
-    <Compile Include="7z\SevenZipCompressor.cs" />
-    <Compile Include="7z\SevenZipCompressorAsynchronous.cs" />
-    <Compile Include="7z\SevenZipExtractor.cs" />
-    <Compile Include="7z\SevenZipExtractorAsynchronous.cs" />
-    <Compile Include="7z\SevenZipSfx.cs" />
-    <Compile Include="7z\StreamWrappers.cs" />
-    <Compile Include="Api\CoreSystem.cs" />
-    <Compile Include="Api\JoypadButton.cs" />
-    <Compile Include="BinarySaveStates.cs" />
-    <Compile Include="BitmapBufferVideoProvider.cs" />
-    <Compile Include="config\Binding.cs" />
-    <Compile Include="config\Config.cs" />
-    <Compile Include="config\ConfigPersistAttribute.cs" />
-    <Compile Include="config\ConfigService.cs" />
-    <Compile Include="config\PathEntry.cs" />
-    <Compile Include="config\ToolDialogSettings.cs" />
-    <Compile Include="ControllerBinding.cs" />
-    <Compile Include="CoreFileProvider.cs" />
-    <Compile Include="ExceptionClasses.cs" />
-    <Compile Include="Extensions.cs" />
-    <Compile Include="FirmwareManager.cs" />
-    <Compile Include="FrameworkFastZipWriter.cs" />
-    <Compile Include="FrameworkZipWriter.cs" />
-    <Compile Include="Global.cs" />
-    <Compile Include="inputAdapters\AutoPattern.cs" />
-    <Compile Include="inputAdapters\BitwiseAdapters.cs" />
-    <Compile Include="inputAdapters\ClickyVirtualPadController.cs" />
-    <Compile Include="inputAdapters\CopyController.cs" />
-    <Compile Include="inputAdapters\InputAdapterExtensions.cs" />
-    <Compile Include="inputAdapters\StickyAdapters.cs" />
-    <Compile Include="inputAdapters\InputManager.cs" />
-    <Compile Include="inputAdapters\OverrideAdaptor.cs" />
-    <Compile Include="inputAdapters\SimpleController.cs" />
-    <Compile Include="inputAdapters\UDLRController.cs" />
-    <Compile Include="input\PolarRectConversion.cs" />
-    <Compile Include="IonicZipWriter.cs" />
-    <Compile Include="IPS.cs" />
-    <Compile Include="IZipWriter.cs" />
-    <Compile Include="KeyTurbo.cs" />
-    <Compile Include="lua\EmuLuaLibrary.Bit.cs" />
-    <Compile Include="lua\EmuLuaLibrary.Emu.cs" />
-    <Compile Include="lua\EmuLuaLibrary.Events.cs" />
-    <Compile Include="lua\EmuLuaLibrary.GameInfo.cs" />
-    <Compile Include="lua\EmuLuaLibrary.Genesis.cs" />
-    <Compile Include="lua\EmuLuaLibrary.Joypad.cs" />
-    <Compile Include="lua\EmuLuaLibrary.MainMemory.cs" />
-    <Compile Include="lua\EmuLuaLibrary.Memory.cs" />
-    <Compile Include="lua\EmuLuaLibrary.MemorySavestate.cs" />
-    <Compile Include="lua\EmuLuaLibrary.Movie.cs" />
-    <Compile Include="lua\EmuLuaLibrary.NES.cs" />
-    <Compile Include="lua\EmuLuaLibrary.SNES.cs" />
-    <Compile Include="lua\EmuLuaLibrary.SQL.cs" />
-    <Compile Include="lua\EmuLuaLibrary.String.cs" />
-    <Compile Include="lua\EmuLuaLibrary.UserData.cs" />
-    <Compile Include="lua\EnvironmentSandbox.cs" />
-    <Compile Include="lua\LuaAttributes.cs" />
-    <Compile Include="lua\LuaDocumentation.cs" />
-    <Compile Include="lua\LuaFile.cs" />
-    <Compile Include="lua\LuaFileList.cs" />
-    <Compile Include="lua\LuaFunctionList.cs" />
-    <Compile Include="lua\LuaHelper.cs" />
-    <Compile Include="lua\LuaLibraryBase.cs" />
-    <Compile Include="lua\LuaMemoryBase.cs" />
-    <Compile Include="lua\LuaSandbox.cs" />
-    <Compile Include="lua\NamedLuaFunction.cs" />
-    <Compile Include="miniz\LibMiniz.cs" />
-    <Compile Include="miniz\MinizZipWriter.cs" />
-    <Compile Include="movie\bk2\Bk2ControllerAdapter.cs" />
-    <Compile Include="movie\bk2\Bk2Header.cs" />
-    <Compile Include="movie\bk2\Bk2LogEntryGenerator.cs" />
-    <Compile Include="movie\bk2\Bk2FloatConstants.cs" />
-    <Compile Include="movie\bk2\Bk2MnemonicConstants.cs" />
-    <Compile Include="movie\bk2\Bk2Movie.cs" />
-    <Compile Include="movie\bk2\Bk2Movie.HeaderApi.cs">
-      <DependentUpon>Bk2Movie.cs</DependentUpon>
-    </Compile>
-    <Compile Include="movie\bk2\StringLogs.cs" />
-    <Compile Include="movie\import\PXMImport.cs" />
-    <Compile Include="movie\tasproj\IStateManager.cs" />
-    <Compile Include="movie\tasproj\StateManagerDecay.cs" />
-    <Compile Include="movie\tasproj\TasBranch.cs" />
-    <Compile Include="movie\tasproj\TasMovie.History.cs" />
-    <Compile Include="movie\bk2\Bk2Movie.InputLog.cs">
-      <DependentUpon>Bk2Movie.cs</DependentUpon>
-    </Compile>
-    <Compile Include="movie\bk2\Bk2Movie.IO.cs">
-      <DependentUpon>Bk2Movie.cs</DependentUpon>
-    </Compile>
-    <Compile Include="movie\bk2\Bk2Movie.ModeApi.cs">
-      <DependentUpon>Bk2Movie.cs</DependentUpon>
-    </Compile>
-    <Compile Include="movie\bkm\BkmControllerAdapter.cs" />
-    <Compile Include="movie\bkm\BkmHeader.cs" />
-    <Compile Include="movie\bkm\BkmLogEntryGenerator.cs" />
-    <Compile Include="movie\bkm\BkmMnemonicConstants.cs" />
-    <Compile Include="movie\bkm\BkmMovie.cs" />
-    <Compile Include="movie\bkm\BkmMovie.HeaderApi.cs">
-      <DependentUpon>BkmMovie.cs</DependentUpon>
-    </Compile>
-    <Compile Include="movie\bkm\BkmMovie.InputLog.cs">
-      <DependentUpon>BkmMovie.cs</DependentUpon>
-    </Compile>
-    <Compile Include="movie\bkm\BkmMovie.IO.cs">
-      <DependentUpon>BkmMovie.cs</DependentUpon>
-    </Compile>
-    <Compile Include="movie\bkm\BkmMovie.ModeApi.cs">
-      <DependentUpon>BkmMovie.cs</DependentUpon>
-    </Compile>
-    <Compile Include="movie\conversions\MovieConversionExtensions.cs" />
-    <Compile Include="movie\HeaderKeys.cs" />
-    <Compile Include="movie\import\Fm2Import.cs" />
-    <Compile Include="movie\import\IMovieImport.cs" />
-    <Compile Include="movie\import\MovieImport.cs" />
-    <Compile Include="movie\import\PJMImport.cs" />
-    <Compile Include="movie\interfaces\ILogEntryGenerator.cs" />
-    <Compile Include="movie\interfaces\IMovie.cs" />
-    <Compile Include="movie\interfaces\IMovieController.cs" />
-    <Compile Include="movie\interfaces\IMovieSession.cs" />
-    <Compile Include="movie\MovieService.cs" />
-    <Compile Include="movie\MovieSession.cs" />
-    <Compile Include="movie\MultitrackRecording.cs" />
-    <Compile Include="movie\PlatformFrameRates.cs" />
-    <Compile Include="movie\Subtitle.cs" />
-    <Compile Include="movie\SubtitleList.cs" />
-    <Compile Include="movie\tasproj\TasLagLog.cs" />
-    <Compile Include="movie\tasproj\TasMovie.Editing.cs">
-      <DependentUpon>TasMovie.cs</DependentUpon>
-    </Compile>
-    <Compile Include="movie\tasproj\TasMovie.IO.cs">
-      <DependentUpon>TasMovie.cs</DependentUpon>
-    </Compile>
-    <Compile Include="movie\tasproj\TasMovie.cs" />
-    <Compile Include="movie\tasproj\TasMovieMarker.cs" />
-    <Compile Include="movie\tasproj\TasSession.cs" />
-    <Compile Include="movie\tasproj\TasStateManager.cs" />
-    <Compile Include="movie\tasproj\TasMovieRecord.cs" />
-    <Compile Include="movie\tasproj\TasStateManagerSettings.cs" />
-    <Compile Include="NESGameGenieEncoderDecoder.cs" />
-    <Compile Include="OpenAdvanced.cs" />
-    <Compile Include="PathManager.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QuickBmpFile.cs" />
-    <Compile Include="RecentFiles.cs" />
-    <Compile Include="rewind\Rewinder.cs" />
-    <Compile Include="rewind\RewindThreader.cs" />
-    <Compile Include="rewind\StreamBlobDatabase.cs" />
-    <Compile Include="RomGame.cs" />
-    <Compile Include="RomLoader.cs" />
-    <Compile Include="SaveSlotManager.cs" />
-    <Compile Include="SavestateManager.cs" />
-    <Compile Include="SevenZipSharpArchiveHandler.cs" />
-    <Compile Include="SevenZipWriter.cs" />
-    <Compile Include="SharpZipWriter.cs" />
-    <Compile Include="SystemInfo.cs" />
-    <Compile Include="tools\Cheat.cs" />
-    <Compile Include="tools\CheatList.cs" />
-    <Compile Include="tools\Interfaces\IToolForm.cs" />
-    <Compile Include="tools\Interfaces\IToolFormAutoConfig.cs" />
-    <Compile Include="tools\Watch\ByteWatch.cs" />
-    <Compile Include="tools\Watch\DisplayType.cs" />
-    <Compile Include="tools\Watch\DWordWatch.cs" />
-    <Compile Include="tools\Watch\PreviousType.cs" />
-    <Compile Include="tools\RamSearchEngine.cs" />
-    <Compile Include="tools\Watch\SeparatorWatch.cs" />
-    <Compile Include="tools\Watch\Watch.cs" />
-    <Compile Include="tools\Watch\WatchList\WatchChangeCountComparer.cs" />
-    <Compile Include="tools\Watch\WatchList\WatchDisplayTypeComparer.cs" />
-    <Compile Include="tools\Watch\WatchList\WatchEqualityComparer.cs" />
-    <Compile Include="tools\Watch\WatchList\WatchDomainComparer.cs" />
-    <Compile Include="tools\Watch\WatchList\WatchAddressComparer.cs" />
-    <Compile Include="tools\Watch\WatchList\WatchList.cs" />
-    <Compile Include="tools\Watch\WatchList\WatchNoteComparer.cs" />
-    <Compile Include="tools\Watch\WatchList\WatchPreviousValueComparer.cs" />
-    <Compile Include="tools\Watch\WatchList\WatchValueComparer.cs" />
-    <Compile Include="tools\Watch\WatchList\WatchValueDifferenceComparer.cs" />
-    <Compile Include="tools\Watch\WatchSize.cs" />
-    <Compile Include="tools\Watch\WordWatch.cs" />
-    <Compile Include="XmlGame.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\BizHawk.Common\BizHawk.Common.csproj">
-      <Project>{866F8D13-0678-4FF9-80A4-A3993FD4D8A3}</Project>
-      <Name>BizHawk.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\BizHawk.Emulation.Common\BizHawk.Emulation.Common.csproj">
-      <Project>{e1a23168-b571-411c-b360-2229e7225e0e}</Project>
-      <Name>BizHawk.Emulation.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\BizHawk.Emulation.Cores\BizHawk.Emulation.Cores.csproj">
-      <Project>{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}</Project>
-      <Name>BizHawk.Emulation.Cores</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\BizHawk.Emulation.DiscSystem\BizHawk.Emulation.DiscSystem.csproj">
-      <Project>{f51946ea-827f-4d82-b841-1f2f6d060312}</Project>
-      <Name>BizHawk.Emulation.DiscSystem</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Bizware\BizHawk.Bizware.BizwareGL.GdiPlus\BizHawk.Bizware.BizwareGL.GdiPlus.csproj">
-      <Project>{337ca23e-65e7-44e1-9411-97ee08bb8116}</Project>
-      <Name>BizHawk.Bizware.BizwareGL.GdiPlus</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Bizware\BizHawk.Bizware.BizwareGL.OpenTK\BizHawk.Bizware.BizwareGL.OpenTK.csproj">
-      <Project>{5160CFB1-5389-47C1-B7F6-8A0DC97641EE}</Project>
-      <Name>BizHawk.Bizware.BizwareGL.OpenTK</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Bizware\BizHawk.Bizware.BizwareGL.SlimDX\BizHawk.Bizware.BizwareGL.SlimDX.csproj">
-      <Project>{E6B436B1-A3CD-4C9A-8F76-5D7154726884}</Project>
-      <Name>BizHawk.Bizware.BizwareGL.SlimDX</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Bizware\BizHawk.Bizware.BizwareGL\BizHawk.Bizware.BizwareGL.csproj">
-      <Project>{9F84A0B2-861E-4EF4-B89B-5E2A3F38A465}</Project>
-      <Name>BizHawk.Bizware.BizwareGL</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="$(SolutionDir)MainSlnCommon.props" />
+	<PropertyGroup>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<TargetFramework>net48</TargetFramework>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
+		<Reference Include="Microsoft.CSharp" />
+		<!--<Reference Include="System" />-->
+		<!--<Reference Include="System.Core" />-->
+		<!--<Reference Include="System.Data" />-->
+		<!--<Reference Include="System.Data.DataSetExtensions" />-->
+		<Reference Include="System.Data.SQLite, Version=1.0.105.2, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=AMD64">
+			<SpecificVersion>False</SpecificVersion>
+			<HintPath>$(SolutionDir)References/x64/SQLite/System.Data.SQLite.dll</HintPath>
+		</Reference>
+		<!--<Reference Include="System.Drawing" />-->
+		<Reference Include="System.IO.Compression" />
+		<!--<Reference Include="System.Windows.Forms" />-->
+		<!--<Reference Include="System.Xml" />-->
+		<!--<Reference Include="System.Xml.Linq" />-->
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Ionic.Zip" Version="1.9.1.8" PrivateAssets="All" />
+		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" PrivateAssets="All" />
+		<Reference Include="NLua"
+			HintPath="$(SolutionDir)output/dll/nlua/NLua.dll"
+			Private="False" />
+		<PackageReference Include="SharpCompress" Version="0.24.0" PrivateAssets="All" />
+		<PackageReference Include="SharpZipLib" Version="1.1.0" PrivateAssets="All" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="$(SolutionDir)BizHawk.Emulation.Cores/BizHawk.Emulation.Cores.csproj" />
+		<ProjectReference Include="$(SolutionDir)Bizware/BizHawk.Bizware.BizwareGL/BizHawk.Bizware.BizwareGL.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Include="$(SolutionDir)Version/svnrev.cs" />
+		<Compile Include="$(SolutionDir)Version/VersionInfo.cs" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Update="movie/bk2/Bk2Movie.HeaderApi.cs" DependentUpon="Bk2Movie.cs" />
+		<Compile Update="movie/bk2/Bk2Movie.InputLog.cs" DependentUpon="Bk2Movie.cs" />
+		<Compile Update="movie/bk2/Bk2Movie.IO.cs" DependentUpon="Bk2Movie.cs" />
+		<Compile Update="movie/bk2/Bk2Movie.ModeApi.cs" DependentUpon="Bk2Movie.cs" />
+		<Compile Update="movie/tasproj/TasMovie.Editing.cs" DependentUpon="TasMovie.cs" />
+		<Compile Update="movie/tasproj/TasMovie.IO.cs" DependentUpon="TasMovie.cs" />
+	</ItemGroup>
+	<Import Project="$(SolutionDir)NamespaceAliasHack.targets" />
 </Project>

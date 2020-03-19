@@ -1,6 +1,5 @@
 ﻿//TODO - correctly emulate PPU OFF state
 
-using System;
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 
@@ -12,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			public byte nt, at;
 			public byte pt_0, pt_1;
-		};
+		}
 
 		BGDataRecord[] bgdata = new BGDataRecord[34]; 
 
@@ -308,9 +307,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 								if (yp >= read_value && yp < read_value + spriteHeight && spr_true_count == 0)
 								{
 									//a flag gets set if sprite zero is in range
-									if (oam_index == reg_2003)
-										sprite_zero_in_range = true;
-
+									if (oam_index == reg_2003) { sprite_zero_in_range = true; }
+										
 									spr_true_count++;
 									soam_m_index++;
 								}
@@ -436,13 +434,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						int spixel = sl_sprites[256 + xt * 8 + xp];
 						int temp_attr = sl_sprites[512 + xt * 8 + xp];
 						
-						//TODO - make sure we dont trigger spritehit if the edges are masked for either BG or OBJ
+						//TODO - make sure we don't trigger spritehit if the edges are masked for either BG or OBJ
 						//spritehit:
 						//1. is it sprite#0?
 						//2. is the bg pixel nonzero?
 						//then, it is spritehit.
 						Reg2002_objhit |= (sprite_zero_go && s == 0 && pixel != 0 && rasterpos < 255 && show_bg_new && show_obj_new);
-
 						//priority handling, if in front of BG:
 						bool drawsprite = !(((temp_attr & 0x20) != 0) && ((pixel & 3) != 0));
 						if (drawsprite && nes.Settings.DispSprites)
@@ -466,7 +463,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						ppur.increment_hsc();
 
-						if (ppur.status.cycle == 256)
+						if ((ppur.status.cycle == 256) && ppu_was_on)
 						{
 							ppur.increment_vs();
 						}
@@ -540,7 +537,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						ppur.increment_hsc();
 
-						if (ppur.status.cycle == 256)
+						if ((ppur.status.cycle == 256) && ppu_was_on)
 						{
 							ppur.increment_vs();
 						}

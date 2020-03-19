@@ -1,7 +1,4 @@
-﻿using System;
-
-using BizHawk.Emulation.Common;
-
+﻿using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
@@ -11,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 		"",
 		isPorted: false,
 		isReleased: false)]
-	[ServiceNotApplicable(typeof(IDriveLight))]
+	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class GGHawkLink : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable, ILinkable,
 	ISettable<GGHawkLink.GGLinkSettings, GGHawkLink.GGLinkSyncSettings>
 	{
@@ -37,11 +34,11 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 			CoreComm = comm;
 
-			var temp_set_L = new SMS.SMSSettings();
-			var temp_set_R = new SMS.SMSSettings();
+			var temp_set_L = new SMS.SmsSettings();
+			var temp_set_R = new SMS.SmsSettings();
 
-			var temp_sync_L = new SMS.SMSSyncSettings();
-			var temp_sync_R = new SMS.SMSSyncSettings();
+			var temp_sync_L = new SMS.SmsSyncSettings();
+			var temp_sync_R = new SMS.SmsSyncSettings();
 
 			L = new SMS(new CoreComm(comm.ShowMessage, comm.Notify) { CoreFileProvider = comm.CoreFileProvider },
 				game_L, rom_L, temp_set_L, temp_sync_L);
@@ -63,6 +60,9 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 			L.stand_alone = false;
 			R.stand_alone = false;
+
+			_lStates = L.ServiceProvider.GetService<IStatable>();
+			_rStates = R.ServiceProvider.GetService<IStatable>();
 		}
 
 		public void HardReset()
@@ -81,8 +81,8 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 		public bool LinkConnected
 		{
-			get { return _cableconnected; }
-			set { _cableconnected = value; }
+			get => _cableconnected;
+			set => _cableconnected = value;
 		}
 
 		private void ExecFetch(ushort addr)

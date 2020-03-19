@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GameShark));
 			this.mnuGameShark = new System.Windows.Forms.MenuStrip();
 			this.btnClear = new System.Windows.Forms.Button();
 			this.lblCheat = new System.Windows.Forms.Label();
@@ -54,7 +53,7 @@
 			this.btnClear.TabIndex = 4;
 			this.btnClear.Text = "Clear";
 			this.btnClear.UseVisualStyleBackColor = true;
-			this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+			this.btnClear.Click += new System.EventHandler(this.BtnClear_Click);
 			// 
 			// lblCheat
 			// 
@@ -86,7 +85,7 @@
 			this.btnGo.TabIndex = 5;
 			this.btnGo.Text = "Convert";
 			this.btnGo.UseVisualStyleBackColor = true;
-			this.btnGo.Click += new System.EventHandler(this.btnGo_Click);
+			this.btnGo.Click += new System.EventHandler(this.Go_Click);
 			// 
 			// lblDescription
 			// 
@@ -118,17 +117,15 @@
 			this.Controls.Add(this.txtCheat);
 			this.Controls.Add(this.btnGo);
 			this.Controls.Add(this.mnuGameShark);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.Shark_MultiSize;
 			this.MainMenuStrip = this.mnuGameShark;
 			this.MaximizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(230, 155);
 			this.Name = "GameShark";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Cheat Code Converter";
-			this.Load += new System.EventHandler(this.GameShark_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
-
 		}
 
 		#endregion

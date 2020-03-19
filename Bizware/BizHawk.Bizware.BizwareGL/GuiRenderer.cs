@@ -4,19 +4,17 @@
 
 using System;
 using System.Diagnostics;
-using System.Collections;
-using System.Collections.Generic;
-using sd = System.Drawing;
-
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+
+using sd = System.Drawing;
 
 namespace BizHawk.Bizware.BizwareGL
 {
 	/// <summary>
 	/// A simple renderer useful for rendering GUI stuff. 
 	/// When doing GUI rendering, run everything through here (if you need a GL feature not done through here, run it through here first)
-	/// Call Begin, then draw, then End, and dont use other Renderers or GL calls in the meantime, unless you know what youre doing.
+	/// Call Begin, then draw, then End, and don't use other Renderers or GL calls in the meantime, unless you know what you're doing.
 	/// This can perform batching (well.. maybe not yet), which is occasionally necessary for drawing large quantities of things.
 	/// </summary>
 	public class GuiRenderer : IDisposable, IGuiRenderer
@@ -52,21 +50,21 @@ namespace BizHawk.Bizware.BizwareGL
 			CurrPipeline = DefaultPipeline = Owner.CreatePipeline(VertexLayout, vs, ps, true, "xgui");
 		}
 
-		OpenTK.Graphics.Color4[] CornerColors = new OpenTK.Graphics.Color4[4] {
+		readonly OpenTK.Graphics.Color4[] CornerColors = new OpenTK.Graphics.Color4[4] {
 			new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f),new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f),new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f),new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f)
 		};
 
 
 		public void SetCornerColor(int which, OpenTK.Graphics.Color4 color)
 		{
-			Flush(); //dont really need to flush with current implementation. we might as well roll modulate color into it too.
+			Flush(); //don't really need to flush with current implementation. we might as well roll modulate color into it too.
 			CornerColors[which] = color;
 		}
 
-
+		/// <exception cref="ArgumentException"><paramref name="colors"/> does not have exactly <c>4</c> elements</exception>
 		public void SetCornerColors(OpenTK.Graphics.Color4[] colors)
 		{
-			Flush(); //dont really need to flush with current implementation. we might as well roll modulate color into it too.
+			Flush(); //don't really need to flush with current implementation. we might as well roll modulate color into it too.
 			if (colors.Length != 4) throw new ArgumentException("array must be size 4", nameof(colors));
 			for (int i = 0; i < 4; i++)
 				CornerColors[i] = colors[i];
@@ -77,6 +75,7 @@ namespace BizHawk.Bizware.BizwareGL
 			DefaultPipeline.Dispose();
 		}
 
+		/// <exception cref="InvalidOperationException"><see cref="IsActive"/> is <see langword="true"/></exception>
 		public void SetPipeline(Pipeline pipeline)
 		{
 			if (IsActive)
@@ -118,7 +117,7 @@ namespace BizHawk.Bizware.BizwareGL
 		MatrixStack _Projection, _Modelview;
 		public MatrixStack Projection
 		{
-			get { return _Projection; }
+			get => _Projection;
 			set
 			{
 				_Projection = value;
@@ -127,7 +126,7 @@ namespace BizHawk.Bizware.BizwareGL
 		}
 		public MatrixStack Modelview
 		{
-			get { return _Modelview; }
+			get => _Modelview;
 			set
 			{
 				_Modelview = value;
@@ -147,7 +146,7 @@ namespace BizHawk.Bizware.BizwareGL
 			Owner.SetViewport(width, height);
 		}
 
-
+		/// <exception cref="InvalidOperationException">no pipeline set (need to call <see cref="SetPipeline"/>)</exception>
 		public void Begin()
 		{
 			//uhhmmm I want to throw an exception if its already active, but its annoying.
@@ -176,7 +175,7 @@ namespace BizHawk.Bizware.BizwareGL
 			//no batching, nothing to do here yet
 		}
 
-
+		/// <exception cref="InvalidOperationException"><see cref="IsActive"/> is <see langword="false"/></exception>
 		public void End()
 		{
 			if (!IsActive)
@@ -235,7 +234,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		unsafe void DrawInternal(Art art, float x, float y, float w, float h, bool fx, bool fy)
 		{
-			//TEST: d3d shouldnt ever use this, it was a gl hack. maybe we can handle it some other way in gl (fix the projection? take a render-to-texture arg to the gui view transforms?)
+			//TEST: d3d shouldn't ever use this, it was a gl hack. maybe we can handle it some other way in gl (fix the projection? take a render-to-texture arg to the gui view transforms?)
 			fy = false;
 
 			float u0, v0, u1, v1;
@@ -341,10 +340,11 @@ namespace BizHawk.Bizware.BizwareGL
 		}
 
 		public bool IsActive { get; private set; }
-		public IGL Owner { get; private set; }
+		public IGL Owner { get; }
 
-		VertexLayout VertexLayout;
-		Pipeline CurrPipeline, DefaultPipeline;
+		readonly VertexLayout VertexLayout;
+		Pipeline CurrPipeline;
+		readonly Pipeline DefaultPipeline;
 
 		//state cache
 		Texture2d sTexture;

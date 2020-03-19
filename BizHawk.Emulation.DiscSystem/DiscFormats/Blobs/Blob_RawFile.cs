@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.IO;
+﻿using System.IO;
 
 namespace BizHawk.Emulation.DiscSystem
 {
@@ -10,10 +8,7 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			public string PhysicalPath
 			{
-				get
-				{
-					return physicalPath;
-				}
+				get => physicalPath;
 				set
 				{
 					physicalPath = value;
@@ -50,13 +45,7 @@ namespace BizHawk.Emulation.DiscSystem
 					fs.Position = target;
 				return fs.Read(buffer, offset, count);
 			}
-			public long Length
-			{
-				get
-				{
-					return length;
-				}
-			}
+			public long Length => length;
 		}
 	}
 }

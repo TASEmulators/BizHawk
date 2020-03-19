@@ -7,28 +7,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 	{
 		public byte[] CloneSaveRam()
 		{
-			if (cart_RAM != null)
-			{
-				return (byte[])cart_RAM.Clone();
-			}
-			else
-			{
-				return null;
-			}
+			return (byte[])cart_RAM?.Clone();
 		}
 
 		public void StoreSaveRam(byte[] data)
 		{
-			Buffer.BlockCopy(data, 0, cart_RAM, 0, data.Length);
-			Console.WriteLine("loading SRAM here");
+			if (_syncSettings.Use_SRAM)
+			{
+				Buffer.BlockCopy(data, 0, cart_RAM, 0, data.Length);
+				Console.WriteLine("loading SRAM here");
+			}
 		}
 
-		public bool SaveRamModified
-		{
-			get 
-			{
-				return has_bat & _syncSettings.Use_SRAM;
-			}	
-		}
+		public bool SaveRamModified => has_bat & _syncSettings.Use_SRAM;
 	}
 }

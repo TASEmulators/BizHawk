@@ -17,9 +17,7 @@ namespace BizHawk.Client.Common
 		private readonly long _mCapacity;
 
 		private byte[] _mAllocatedBuffer;
-		private Stream _mStream;
 		private LinkedListNode<ListItem> _mHead, _mTail;
-		private long _mSize;
 
 		public StreamBlobDatabase(bool onDisk, long capacity, StreamBlobDatabaseBufferManager mBufferManage)
 		{
@@ -32,19 +30,19 @@ namespace BizHawk.Client.Common
 				// I checked the DeleteOnClose operation to make sure it cleans up when the process is aborted, and it seems to.
 				// Otherwise we would have a more complex tempfile management problem here.
 				// 4KB buffer chosen due to similarity to .net defaults, and fear of anything larger making hiccups for small systems (we could try asyncing this stuff though...)
-				_mStream = new FileStream(path, FileMode.Create, System.Security.AccessControl.FileSystemRights.FullControl, FileShare.None, 4 * 1024, FileOptions.DeleteOnClose);
+				Stream = new FileStream(path, FileMode.Create, System.Security.AccessControl.FileSystemRights.FullControl, FileShare.None, 4 * 1024, FileOptions.DeleteOnClose);
 			}
 			else
 			{
 				_mAllocatedBuffer = _mBufferManage(null, ref _mCapacity, true);
-				_mStream = new MemoryStream(_mAllocatedBuffer);
+				Stream = new MemoryStream(_mAllocatedBuffer);
 			}
 		}
 
 		/// <summary>
 		/// Gets the amount of the buffer that's used
 		/// </summary>
-		public long Size => _mSize;
+		public long Size { get; private set; }
 
 		/// <summary>
 		/// Gets the current fullness ratio (Size/Capacity). Note that this wont reach 100% due to the buffer size not being a multiple of a fixed savestate size.
@@ -59,12 +57,12 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets the underlying stream to 
 		/// </summary>
-		public Stream Stream => _mStream;
+		public Stream Stream { get; private set; }
 
 		public void Dispose()
 		{
-			_mStream.Dispose();
-			_mStream = null;
+			Stream.Dispose();
+			Stream = null;
 			if (_mAllocatedBuffer != null)
 			{
 				long capacity = 0;
@@ -76,7 +74,7 @@ namespace BizHawk.Client.Common
 		public void Clear()
 		{
 			_mHead = _mTail = null;
-			_mSize = 0;
+			Size = 0;
 			_mBookmarks.Clear();
 		}
 
@@ -88,8 +86,8 @@ namespace BizHawk.Client.Common
 			var buf = seg.Array;
 			int len = seg.Count;
 			long offset = Enqueue(0, len);
-			_mStream.Position = offset;
-			_mStream.Write(buf, seg.Offset, len);
+			Stream.Position = offset;
+			Stream.Write(buf, seg.Offset, len);
 		}
 
 		/// <summary>
@@ -108,14 +106,14 @@ namespace BizHawk.Client.Common
 		private MemoryStream CreateMemoryStream(ListItem item)
 		{
 			var buf = new byte[item.Length];
-			_mStream.Position = item.Index;
-			_mStream.Read(buf, 0, item.Length);
+			Stream.Position = item.Index;
+			Stream.Read(buf, 0, item.Length);
 			return new MemoryStream(buf, 0, item.Length, false, true);
 		}
 
 		public long Enqueue(int timestamp, int amount)
 		{
-			_mSize += amount;
+			Size += amount;
 
 			if (_mHead == null)
 			{
@@ -126,7 +124,7 @@ namespace BizHawk.Client.Common
 			long target = _mHead.Value.EndExclusive + amount;
 			if (_mTail != null && target <= _mTail.Value.Index)
 			{
-				// theres room to add a new head before the tail
+				// there's room to add a new head before the tail
 				_mHead = _mBookmarks.AddAfter(_mHead, new ListItem(timestamp, _mHead.Value.EndExclusive, amount));
 				goto CLEANUP;
 			}
@@ -136,7 +134,7 @@ namespace BizHawk.Client.Common
 			{
 				if (target <= _mCapacity)
 				{
-					// theres room to add a new head before the end of capacity
+					// there's room to add a new head before the end of capacity
 					_mHead = _mBookmarks.AddAfter(_mHead, new ListItem(timestamp, _mHead.Value.EndExclusive, amount));
 					goto CLEANUP;
 				}
@@ -161,10 +159,10 @@ namespace BizHawk.Client.Common
 					break;
 				}
 
-				if (_mHead.Value.EndExclusive > _mTail.Value.Index && _mHead.Value.Index <= _mTail.Value.Index && _mHead != _mTail)
+				if (_mHead.Value.Index.RangeToExclusive(_mHead.Value.EndExclusive).Contains(_mTail.Value.Index) && _mHead != _mTail)
 				{
 					var nextTail = _mTail.Next;
-					_mSize -= _mTail.Value.Length;
+					Size -= _mTail.Value.Length;
 					_mBookmarks.Remove(_mTail);
 					_mTail = nextTail;
 				}
@@ -188,6 +186,7 @@ namespace BizHawk.Client.Common
 			return _mHead.Value.Index;
 		}
 
+		/// <exception cref="InvalidOperationException">empty</exception>
 		public ListItem Pop()
 		{
 			if (_mHead == null)
@@ -196,7 +195,7 @@ namespace BizHawk.Client.Common
 			}
 
 			var ret = _mHead.Value;
-			_mSize -= ret.Length;
+			Size -= ret.Length;
 			LinkedListNode<ListItem> nextHead = _mHead.Previous;
 			_mBookmarks.Remove(_mHead);
 			if (_mHead == _mTail)
@@ -209,6 +208,7 @@ namespace BizHawk.Client.Common
 			return ret;
 		}
 
+		/// <exception cref="InvalidOperationException">empty</exception>
 		public ListItem Peek()
 		{
 			if (_mHead == null)
@@ -219,6 +219,7 @@ namespace BizHawk.Client.Common
 			return _mHead.Value;
 		}
 
+		/// <exception cref="InvalidOperationException">empty</exception>
 		public ListItem Dequeue()
 		{
 			if (_mTail == null)
@@ -227,7 +228,7 @@ namespace BizHawk.Client.Common
 			}
 
 			var ret = _mTail.Value;
-			_mSize -= ret.Length;
+			Size -= ret.Length;
 			var nextTail = _mTail.Next;
 			_mBookmarks.Remove(_mTail);
 			if (_mTail == _mHead)

@@ -62,16 +62,6 @@
 			// 
 			this.ManualX.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.ManualX.Location = new System.Drawing.Point(205, 3);
-			this.ManualX.Maximum = new decimal(new int[] {
-            127,
-            0,
-            0,
-            0});
-			this.ManualX.Minimum = new decimal(new int[] {
-            127,
-            0,
-            0,
-            -2147483648});
 			this.ManualX.Name = "ManualX";
 			this.ManualX.Size = new System.Drawing.Size(44, 20);
 			this.ManualX.TabIndex = 24;
@@ -91,16 +81,6 @@
 			// 
 			this.ManualY.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.ManualY.Location = new System.Drawing.Point(205, 29);
-			this.ManualY.Maximum = new decimal(new int[] {
-            127,
-            0,
-            0,
-            0});
-			this.ManualY.Minimum = new decimal(new int[] {
-            127,
-            0,
-            0,
-            -2147483648});
 			this.ManualY.Name = "ManualY";
 			this.ManualY.RightToLeft = System.Windows.Forms.RightToLeft.No;
 			this.ManualY.Size = new System.Drawing.Size(44, 20);
@@ -121,16 +101,6 @@
 			// 
 			this.MaxXNumeric.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.MaxXNumeric.Location = new System.Drawing.Point(205, 124);
-			this.MaxXNumeric.Maximum = new decimal(new int[] {
-            127,
-            0,
-            0,
-            0});
-			this.MaxXNumeric.Minimum = new decimal(new int[] {
-            127,
-            0,
-            0,
-            -2147483648});
 			this.MaxXNumeric.Name = "MaxXNumeric";
 			this.MaxXNumeric.Size = new System.Drawing.Size(44, 20);
 			this.MaxXNumeric.TabIndex = 28;
@@ -141,16 +111,6 @@
 			// 
 			this.MaxYNumeric.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.MaxYNumeric.Location = new System.Drawing.Point(205, 147);
-			this.MaxYNumeric.Maximum = new decimal(new int[] {
-            127,
-            0,
-            0,
-            0});
-			this.MaxYNumeric.Minimum = new decimal(new int[] {
-            127,
-            0,
-            0,
-            -2147483648});
 			this.MaxYNumeric.Name = "MaxYNumeric";
 			this.MaxYNumeric.RightToLeft = System.Windows.Forms.RightToLeft.No;
 			this.MaxYNumeric.Size = new System.Drawing.Size(44, 20);
@@ -171,13 +131,8 @@
 			// manualR
 			// 
 			this.manualR.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.manualR.DecimalPlaces = 2;
 			this.manualR.Location = new System.Drawing.Point(193, 58);
-			this.manualR.Maximum = new decimal(new int[] {
-            182,
-            0,
-            0,
-            0});
+			this.manualR.Maximum = 181.0M;
 			this.manualR.Name = "manualR";
 			this.manualR.Size = new System.Drawing.Size(56, 20);
 			this.manualR.TabIndex = 31;
@@ -185,18 +140,8 @@
 			// manualTheta
 			// 
 			this.manualTheta.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.manualTheta.DecimalPlaces = 2;
 			this.manualTheta.Location = new System.Drawing.Point(193, 84);
-			this.manualTheta.Maximum = new decimal(new int[] {
-            360,
-            0,
-            0,
-            0});
-			this.manualTheta.Minimum = new decimal(new int[] {
-            360,
-            0,
-            0,
-            -2147483648});
+			this.manualTheta.Maximum = 359.0M;
 			this.manualTheta.Name = "manualTheta";
 			this.manualTheta.Size = new System.Drawing.Size(56, 20);
 			this.manualTheta.TabIndex = 33;
@@ -209,7 +154,7 @@
 			this.thetaLabel.Name = "thetaLabel";
 			this.thetaLabel.Size = new System.Drawing.Size(20, 13);
 			this.thetaLabel.TabIndex = 32;
-			this.thetaLabel.Text = "θ °";
+			this.thetaLabel.Text = "θ (°)";
 			// 
 			// AnalogStick
 			// 

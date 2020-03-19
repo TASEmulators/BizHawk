@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         protected int tapeMediaIndex;
         public int TapeMediaIndex
         {
-            get { return tapeMediaIndex; }
+            get => tapeMediaIndex;
             set
             {
                 int tmp = value;
@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         protected int diskMediaIndex;
         public int DiskMediaIndex
         {
-            get { return diskMediaIndex; }
+            get => diskMediaIndex;
             set
             {
                 int tmp = value;

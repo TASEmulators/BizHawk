@@ -1,15 +1,11 @@
-﻿using BizHawk.Common;
-using BizHawk.Common.NumberExtensions;
-using System;
-
-using BizHawk.Emulation.Common.Components.LR35902;
+﻿using BizHawk.Emulation.Cores.Components.LR35902;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	// Default mapper with no bank switching
 	public class MapperDefault : MapperBase
 	{
-		public override void Initialize()
+		public override void Reset()
 		{
 			// nothing to initialize
 		}

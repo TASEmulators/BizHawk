@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (frame <= Emulator.Frame)
 				{
-					if ((Mainform.EmulatorPaused || !Mainform.IsSeeking)
+					if ((MainForm.EmulatorPaused || !MainForm.IsSeeking)
 						&& !CurrentTasMovie.LastPositionStable)
 					{
 						LastPositionFrame = Emulator.Frame;
@@ -25,12 +25,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		// SuuperW: I changed this to public so that it could be used by MarkerControl.cs
 		public void GoToFrame(int frame, bool fromLua = false, bool fromRewinding = false)
 		{
 			// If seeking to a frame before or at the end of the movie, use StartAtNearestFrameAndEmulate
 			// Otherwise, load the latest state (if not already there) and seek while recording.
-			WasRecording = CurrentTasMovie.IsRecording || WasRecording;
+			WasRecording = CurrentTasMovie.IsRecording() || WasRecording;
 
 			if (frame <= CurrentTasMovie.InputLogLength)
 			{
@@ -43,11 +42,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (frame == Emulator.Frame + 1) // We are at the end of the movie and advancing one frame, therefore we are recording, simply emulate a frame
 				{
-					bool wasPaused = Mainform.EmulatorPaused;
-					Mainform.FrameAdvance();
+					bool wasPaused = MainForm.EmulatorPaused;
+					MainForm.FrameAdvance();
 					if (!wasPaused)
 					{
-						Mainform.UnpauseEmulator();
+						MainForm.UnpauseEmulator();
 					}
 				}
 				else
@@ -78,11 +77,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void GoToNextFrame()
-		{
-			GoToFrame(Emulator.Frame + 1);
-		}
-
 		public void GoToPreviousMarker()
 		{
 			if (Emulator.Frame > 0)
@@ -100,18 +94,15 @@ namespace BizHawk.Client.EmuHawk
 			GoToFrame(next);
 		}
 
-		public void GoToMarker(TasMovieMarker marker)
-		{
-			GoToFrame(marker.Frame);
-		}
-
 		/// <summary>
 		/// Makes the given frame visible. If no frame is given, makes the current frame visible.
 		/// </summary>
 		public void SetVisibleIndex(int? indexThatMustBeVisible = null)
 		{
 			if (TasView.AlwaysScroll && _leftButtonHeld)
+			{
 				return;
+			}
 
 			if (!indexThatMustBeVisible.HasValue)
 			{

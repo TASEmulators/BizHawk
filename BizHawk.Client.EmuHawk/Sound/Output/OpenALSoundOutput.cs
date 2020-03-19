@@ -17,6 +17,7 @@ namespace BizHawk.Client.EmuHawk
 		private int _sourceID;
 		private BufferPool _bufferPool;
 		private int _currentSamplesQueued;
+		private short[] _tempSampleBuffer;
 
 		public OpenALSoundOutput(Sound sound)
 		{
@@ -37,8 +38,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public static IEnumerable<string> GetDeviceNames()
 		{
-			if (!Alc.IsExtensionPresent(IntPtr.Zero, "ALC_ENUMERATION_EXT")) return Enumerable.Empty<string>();
-			return Alc.GetString(IntPtr.Zero, AlcGetStringList.AllDevicesSpecifier);
+			return !Alc.IsExtensionPresent(IntPtr.Zero, "ALC_ENUMERATION_EXT")
+				? Enumerable.Empty<string>()
+				: Alc.GetString(IntPtr.Zero, AlcGetStringList.AllDevicesSpecifier);
 		}
 
 		private int BufferSizeSamples { get; set; }
@@ -94,11 +96,17 @@ namespace BizHawk.Client.EmuHawk
 			return samplesNeeded;
 		}
 
-		public void WriteSamples(short[] samples, int sampleCount)
+		public void WriteSamples(short[] samples, int sampleOffset, int sampleCount)
 		{
 			if (sampleCount == 0) return;
 			UnqueueProcessedBuffers();
 			int byteCount = sampleCount * Sound.BlockAlign;
+			if (sampleOffset != 0)
+			{
+				AllocateTempSampleBuffer(sampleCount);
+				Buffer.BlockCopy(samples, sampleOffset * Sound.BlockAlign, _tempSampleBuffer, 0, byteCount);
+				samples = _tempSampleBuffer;
+			}
 			var buffer = _bufferPool.Obtain(byteCount);
 			AL.BufferData(buffer.BufferID, ALFormat.Stereo16, samples, byteCount, Sound.SampleRate);
 			AL.SourceQueueBuffer(_sourceID, buffer.BufferID);
@@ -122,9 +130,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private int GetSource(ALGetSourcei param)
 		{
-			int value;
-			AL.GetSource(_sourceID, param, out value);
+			AL.GetSource(_sourceID, param, out var value);
 			return value;
+		}
+
+		private void AllocateTempSampleBuffer(int sampleCount)
+		{
+			int length = sampleCount * Sound.ChannelCount;
+			if (_tempSampleBuffer == null || _tempSampleBuffer.Length < length)
+			{
+				_tempSampleBuffer = new short[length];
+			}
 		}
 
 		private class BufferPool : IDisposable

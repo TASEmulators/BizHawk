@@ -12,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		public AnalogBindControl(string buttonName, Config.AnalogBind bind)
+		public AnalogBindControl(string buttonName, AnalogBind bind)
 			: this()
 		{
 			_bind = bind;
@@ -25,20 +25,20 @@ namespace BizHawk.Client.EmuHawk
 			textBox1.Text = bind.Value;
 		}
 
-		public string ButtonName { get; private set; }
-		public Config.AnalogBind Bind => _bind;
+		public string ButtonName { get; }
+		public AnalogBind Bind => _bind;
 
-		private Config.AnalogBind _bind;
+		private AnalogBind _bind;
 		private bool _listening;
 
 		private void Timer1_Tick(object sender, EventArgs e)
 		{
-			string bindval = Input.Instance.GetNextFloatEvent();
-			if (bindval != null)
+			string bindValue = Input.Instance.GetNextFloatEvent();
+			if (bindValue != null)
 			{
 				timer1.Stop();
 				_listening = false;
-				_bind.Value = bindval;
+				_bind.Value = bindValue;
 				textBox1.Text = Bind.Value;
 				buttonBind.Text = "Bind!";
 				Input.Instance.StopListeningForFloatEvents();

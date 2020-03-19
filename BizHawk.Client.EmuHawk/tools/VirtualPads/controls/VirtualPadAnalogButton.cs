@@ -17,11 +17,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _isSet = false;
 		private bool IsSet
 		{
-			get
-			{
-				return _isSet;
-			}
-
+			get => _isSet;
 			set
 			{
 				_isSet = value;
@@ -62,11 +58,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool ReadOnly
 		{
-			get
-			{
-				return _readonly;
-			}
-
+			get => _readonly;
 			set
 			{
 				if (_readonly != value)
@@ -89,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (x.HasValue)
 			{
-				CurrentValue = CurrentValue + x.Value;
+				CurrentValue += x.Value;
 			}
 		}
 
@@ -102,11 +94,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public string DisplayName
 		{
-			get
-			{
-				return _displayName;
-			}
-
+			get => _displayName;
 			set
 			{
 				_displayName = value ?? "";
@@ -119,10 +107,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public int MaxValue
 		{
-			get
-			{
-				return _maxValue;
-			}
+			get => _maxValue;
 
 			set
 			{
@@ -137,10 +122,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public int MinValue
 		{
-			get
-			{
-				return _minValue;
-			}
+			get => _minValue;
 
 			set
 			{
@@ -155,10 +137,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public Orientation Orientation
 		{
-			get
-			{
-				return AnalogTrackBar.Orientation;
-			}
+			get => AnalogTrackBar.Orientation;
 
 			set
 			{
@@ -207,11 +186,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public int CurrentValue
 		{
-			get
-			{
-				return AnalogTrackBar.Value;
-			}
-
+			get => AnalogTrackBar.Value;
 			set
 			{
 				int val;

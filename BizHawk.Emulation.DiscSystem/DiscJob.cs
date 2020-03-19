@@ -1,8 +1,5 @@
 using System;
-using System.Linq;
-using System.Text;
 using System.IO;
-using System.Collections.Generic;
 
 namespace BizHawk.Emulation.DiscSystem
 {
@@ -58,5 +55,5 @@ namespace BizHawk.Emulation.DiscSystem
 
 	class DiscJobAbortException : Exception
 	{
-	};
+	}
 }

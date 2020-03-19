@@ -61,30 +61,25 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			{
 				if ((Port3E & 0x48) == 0x48) // cart and bios disabled, return empty bus
 					return new CDLog_MapResults();
-				else if (BiosMapped && BiosRom != null)
+				if (BiosMapped && BiosRom != null)
 					return new CDLog_MapResults(); //bios tracking of CDL is not supported
-				else if (address < 1024)
-					return new CDLog_MapResults() { Type = CDLog_AddrType.ROM, Address = address };
-				else if (address < 0x4000)
-					return new CDLog_MapResults() { Type = CDLog_AddrType.ROM, Address = (RomBank0 * BankSize) + address };
-				else if (address < 0x8000)
-					return new CDLog_MapResults() { Type = CDLog_AddrType.ROM, Address = (RomBank1 * BankSize) + (address & BankSizeMask) };
-				else
+				if (address < 1024)
+					return new CDLog_MapResults { Type = CDLog_AddrType.ROM, Address = address };
+				if (address < 0x4000)
+					return new CDLog_MapResults { Type = CDLog_AddrType.ROM, Address = (RomBank0 * BankSize) + address };
+				if (address < 0x8000)
+					return new CDLog_MapResults { Type = CDLog_AddrType.ROM, Address = (RomBank1 * BankSize) + (address & BankSizeMask) };
+				switch (SaveRamBank)
 				{
-					switch (SaveRamBank)
-					{
-						case 0: return new CDLog_MapResults() { Type = CDLog_AddrType.ROM, Address = (RomBank2 * BankSize) + (address & BankSizeMask) };
-						case 1: return new CDLog_MapResults(); // a serial IO port
-						case 2: return new CDLog_MapResults(); // a serial IO port
-						default:
-							return new CDLog_MapResults() { Type = CDLog_AddrType.MainRAM, Address = address & RamSizeMask };
-					}
+					case 0: return new CDLog_MapResults { Type = CDLog_AddrType.ROM, Address = (RomBank2 * BankSize) + (address & BankSizeMask) };
+					case 1: return new CDLog_MapResults(); // a serial IO port
+					case 2: return new CDLog_MapResults(); // a serial IO port
+					default:
+						return new CDLog_MapResults { Type = CDLog_AddrType.MainRAM, Address = address & RamSizeMask };
 				}
 			}
-			else
-			{
-				return new CDLog_MapResults() { Type = CDLog_AddrType.MainRAM, Address = address & RamSizeMask };
-			}
+
+			return new CDLog_MapResults { Type = CDLog_AddrType.MainRAM, Address = address & RamSizeMask };
 		}
 
 		void WriteMemoryEEPROM(ushort address, byte value)
@@ -100,7 +95,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					EEPROM.Write(value, SaveRAM);
 					return;
 				}
-				else System.Console.WriteLine("Game attempt to use SRAM but SRAM not present");
+
+				Console.WriteLine("Game attempt to use SRAM but SRAM not present");
 			}
 
 			if (address >= 0xFFFC)
@@ -116,7 +112,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				else if (address == 0xFFFD) RomBank0 = (byte)(value % RomBanks);
 				else if (address == 0xFFFE) RomBank1 = (byte)(value % RomBanks);
 				else if (address == 0xFFFF) RomBank2 = (byte)(value % RomBanks);
-				return;
 			}
 		}
 

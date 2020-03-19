@@ -276,7 +276,7 @@ namespace BizHawk.Emulation.DiscSystem
 				{
 					int offset = d * 86 + w;
 					CalcECC(src, src_offset, offset, 88, 43, out parity0, out parity1);
-					//store the parities in the sector; thats where theyve got to go anyway
+					//store the parities in the sector; that's where theyve got to go anyway
 					dest[dest_offset + 1118 * 2 + d * 2 + w] = parity0;
 					dest[dest_offset + 1118 * 2 + d * 2 + w + 26 * 2] = parity1;
 				}
@@ -287,51 +287,51 @@ namespace BizHawk.Emulation.DiscSystem
 			SetSectorAddress(src, src_offset, address);
 		}
 
+#if false
+		/// <summary>
+		/// Finite Field math helpers. Adapted from: http://en.wikiversity.org/wiki/Reed%E2%80%93Solomon_codes_for_coders
+		/// Only used by alternative implementations of ECM techniques
+		/// </summary>
+		static class FFUtil
+		{
+			public static byte gf_div(byte x, byte y)
+			{
+				if (y == 0)
+					return 0; //? error ?
+				if (x == 0)
+					return 0;
+				int q = gf_log[x] + 255 - gf_log[y];
+				return gf_exp[q];
+			}
 
-		///// <summary>
-		///// Finite Field math helpers. Adapted from: http://en.wikiversity.org/wiki/Reed%E2%80%93Solomon_codes_for_coders
-		///// Only used by alternative implementations of ECM techniques
-		///// </summary>
-		//static class FFUtil
-		//{
-		//  public static byte gf_div(byte x, byte y)
-		//  {
-		//    if (y == 0)
-		//      return 0; //? error ?
-		//    if (x == 0)
-		//      return 0;
-		//    int q = gf_log[x] + 255 - gf_log[y];
-		//    return gf_exp[q];
-		//  }
+			public static byte gf_mul(byte x, byte y)
+			{
+				if (x == 0 || y == 0)
+					return 0;
+				return gf_exp[gf_log[x] + gf_log[y]];
+			}
 
-		//  public static byte gf_mul(byte x, byte y)
-		//  {
-		//    if (x == 0 || y == 0)
-		//      return 0;
-		//    return gf_exp[gf_log[x] + gf_log[y]];
-		//  }
+			static byte[] gf_exp = new byte[512];
+			static byte[] gf_log = new byte[256];
+			static FFUtil()
+			{
+				for (int i = 0; i < 512; i++) gf_exp[i] = 1;
+				for (int i = 0; i < 256; i++) gf_log[i] = 0;
+				int x = 1;
+				for (int i = 1; i < 255; i++)
+				{
+					x <<= 1;
+					if ((x & 0x100) != 0)
+						x ^= 0x11d; //yellowbook specified primitive polynomial
+					gf_exp[i] = (byte)x;
+					gf_log[x] = (byte)i;
+				}
+				for (int i = 255; i < 512; i++)
+					gf_exp[i] = gf_exp[(byte)(i - 255)];
+			}
 
-		//  static byte[] gf_exp = new byte[512];
-		//  static byte[] gf_log = new byte[256];
-		//  static FFUtil()
-		//  {
-		//    for (int i = 0; i < 512; i++) gf_exp[i] = 1;
-		//    for (int i = 0; i < 256; i++) gf_log[i] = 0;
-		//    int x = 1;
-		//    for (int i = 1; i < 255; i++)
-		//    {
-		//      x <<= 1;
-		//      if ((x & 0x100) != 0)
-		//        x ^= 0x11d; //yellowbook specified primitive polynomial
-		//      gf_exp[i] = (byte)x;
-		//      gf_log[x] = (byte)i;
-		//    }
-		//    for (int i = 255; i < 512; i++)
-		//      gf_exp[i] = gf_exp[(byte)(i - 255)];
-		//  }
-
-		//} //static class FFUtil
-
+		} //static class FFUtil
+#endif
 	} //static class ECM
 
 }

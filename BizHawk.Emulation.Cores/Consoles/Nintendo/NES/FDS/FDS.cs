@@ -115,10 +115,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// returns the currently set disk image.  no effect on emulation (provided the image is not modified).
 		/// </summary>
-		public byte[] GetDiskImage()
-		{
-			return diskimage;
-		}
+		public byte[] GetDiskImage() => diskimage;
 
 		// as we have [INESBoardImplCancel], this will only be called with an fds disk image
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -146,7 +143,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		// with a bit of change, these methods could work with a better disk format
 
-		public int NumSides { get { return diskimage[4]; } }
+		public int NumSides => diskimage[4];
 
 		public void Eject()
 		{
@@ -222,8 +219,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				diskdrive.ApplyDiff(diskdiffs[(int)currentside]);
 		}
 
-		public override byte[] SaveRam
-		{ get { throw new Exception("FDS Saveram: Must access with method api!"); } }
+		public override byte[] SaveRam => throw new Exception("FDS Saveram: Must access with method api!");
 
 
 		public MemoryDomain GetDiskPeeker()
@@ -235,8 +231,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			IRQSignal = _diskirq || _timerirq;
 		}
-		bool diskirq { get { return _diskirq; } set { _diskirq = value; SetIRQ(); } }
-		bool timerirq { get { return _timerirq; } set { _timerirq = value; SetIRQ(); } }
+		bool diskirq
+		{
+			get => _diskirq;
+			set { _diskirq = value; SetIRQ(); }
+		}
+		bool timerirq
+		{
+			get => _timerirq;
+			set { _timerirq = value; SetIRQ(); }
+		}
 		int timerirq_cd;
 		bool timer_irq_active;
 

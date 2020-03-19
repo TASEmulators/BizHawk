@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		public IInputCallbackSystem InputCallbacks
 		{
 			[FeatureNotImplemented]
-			get { throw new NotImplementedException(); }
+			get => throw new NotImplementedException();
 		}
 	}
 }

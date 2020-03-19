@@ -43,9 +43,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			if (ControllerDefinition.Name == "Vectrex Analog Controller")
 			{
 				// joystick position is based on pot reading
-				joy1_LR = (byte)(Math.Floor(controller.GetFloat("P1 Stick X")) + 128);
+				joy1_LR = (byte)(255 - (Math.Floor(controller.GetFloat("P1 Stick X")) + 128));
 				joy1_UD = (byte)(Math.Floor(controller.GetFloat("P1 Stick Y")) + 128);
-				joy2_LR = (byte)(Math.Floor(controller.GetFloat("P2 Stick X")) + 128);
+				joy2_LR = (byte)(255 - (Math.Floor(controller.GetFloat("P2 Stick X")) + 128));
 				joy2_UD = (byte)(Math.Floor(controller.GetFloat("P2 Stick Y")) + 128);
 			}
 			else

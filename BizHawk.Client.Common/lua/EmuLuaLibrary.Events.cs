@@ -4,10 +4,9 @@ using System.ComponentModel;
 
 using NLua;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 
-using BizHawk.Emulation.Cores.Nintendo.N64;
-
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Local
 namespace BizHawk.Client.Common
 {
 	[Description("A library for registering lua functions to emulator events.\n All events support multiple registered methods.\nAll registered event methods can be named and return a Guid when registered")]
@@ -25,8 +24,6 @@ namespace BizHawk.Client.Common
 		[OptionalService]
 		private IMemoryDomains Domains { get; set; }
 
-		private readonly LuaFunctionList _luaFunctions = new LuaFunctionList();
-
 		public EventLuaLibrary(Lua lua)
 			: base(lua) { }
 
@@ -37,102 +34,82 @@ namespace BizHawk.Client.Common
 
 		#region Events Library Helpers
 
-		public void CallExitEvent(Lua thread)
+		public void CallExitEvent(LuaFile luaFile)
 		{
-			var exitCallbacks = _luaFunctions.Where(l => l.Lua == thread && l.Event == "OnExit");
+			var exitCallbacks = RegisteredFunctions
+				.ForFile(luaFile)
+				.ForEvent("OnExit");
+
 			foreach (var exitCallback in exitCallbacks)
 			{
 				exitCallback.Call();
 			}
 		}
 
-		public LuaFunctionList RegisteredFunctions => _luaFunctions;
+		public LuaFunctionList RegisteredFunctions { get; } = new LuaFunctionList();
 
 		public void CallSaveStateEvent(string name)
 		{
-			var lfs = _luaFunctions.Where(l => l.Event == "OnSavestateSave").ToList();
-			if (lfs.Any())
+			var lfs = RegisteredFunctions.Where(l => l.Event == "OnSavestateSave");
+			try
 			{
-				try
+				foreach (var lf in lfs)
 				{
-					foreach (var lf in lfs)
-					{
-						lf.Call(name);
-					}
+					lf.Call(name);
 				}
-				catch (Exception e)
-				{
-					Log($"error running function attached by lua function event.onsavestate\nError message: {e.Message}");
-				}
+			}
+			catch (Exception e)
+			{
+				Log($"error running function attached by lua function event.onsavestate\nError message: {e.Message}");
 			}
 		}
 
 		public void CallLoadStateEvent(string name)
 		{
-			var lfs = _luaFunctions.Where(l => l.Event == "OnSavestateLoad").ToList();
-			if (lfs.Any())
+			var lfs = RegisteredFunctions.Where(l => l.Event == "OnSavestateLoad");
+			try
 			{
-				try
+				foreach (var lf in lfs)
 				{
-					foreach (var lf in lfs)
-					{
-						lf.Call(name);
-					}
+					lf.Call(name);
 				}
-				catch (Exception e)
-				{
-					Log($"error running function attached by lua function event.onloadstate\nError message: {e.Message}");
-				}
+			}
+			catch (Exception e)
+			{
+				Log($"error running function attached by lua function event.onloadstate\nError message: {e.Message}");
 			}
 		}
 
 		public void CallFrameBeforeEvent()
 		{
-			var lfs = _luaFunctions.Where(l => l.Event == "OnFrameStart").ToList();
-			if (lfs.Any())
+			var lfs = RegisteredFunctions.Where(l => l.Event == "OnFrameStart");
+			try
 			{
-				try
+				foreach (var lf in lfs)
 				{
-					foreach (var lf in lfs)
-					{
-						lf.Call();
-					}
+					lf.Call();
 				}
-				catch (Exception e)
-				{
-					Log($"error running function attached by lua function event.onframestart\nError message: {e.Message}");
-				}
+			}
+			catch (Exception e)
+			{
+				Log($"error running function attached by lua function event.onframestart\nError message: {e.Message}");
 			}
 		}
 
 		public void CallFrameAfterEvent()
 		{
-			var lfs = _luaFunctions.Where(l => l.Event == "OnFrameEnd").ToList();
-			if (lfs.Any())
+			var lfs = RegisteredFunctions.Where(l => l.Event == "OnFrameEnd");
+			try
 			{
-				try
+				foreach (var lf in lfs)
 				{
-					foreach (var lf in lfs)
-					{
-						lf.Call();
-					}
-				}
-				catch (Exception e)
-				{
-					Log($"error running function attached by lua function event.onframeend\nError message: {e.Message}");
+					lf.Call();
 				}
 			}
-		}
-
-		private bool N64CoreTypeDynarec()
-		{
-			//if ((Emulator as N64)?.GetSyncSettings().Core == N64SyncSettings.CoreType.Dynarec)
-			//{
-			//	Log("N64 Error: Memory callbacks are not implemented for Dynamic Recompiler core type\nUse Interpreter or Pure Interpreter\n");
-			//	return true;
-			//}
-
-			return false;
+			catch (Exception e)
+			{
+				Log($"error running function attached by lua function event.onframeend\nError message: {e.Message}");
+			}
 		}
 
 		private void LogMemoryCallbacksNotImplemented()
@@ -145,6 +122,11 @@ namespace BizHawk.Client.Common
 			Log($"{Emulator.Attributes().CoreName} does not implement memory execute callbacks");
 		}
 
+		private void LogScopeNotAvailable(string scope)
+		{
+			Log($"{scope} is not an avaialble scope for {Emulator.Attributes().CoreName}");
+		}
+
 		#endregion
 
 
@@ -152,8 +134,8 @@ namespace BizHawk.Client.Common
 		[LuaMethod("onframeend", "Calls the given lua function at the end of each frame, after all emulation and drawing has completed. Note: this is the default behavior of lua scripts")]
 		public string OnFrameEnd(LuaFunction luaf, string name = null)
 		{
-			var nlf = new NamedLuaFunction(luaf, "OnFrameEnd", LogOutputCallback, CurrentThread, name);
-			_luaFunctions.Add(nlf);
+			var nlf = new NamedLuaFunction(luaf, "OnFrameEnd", LogOutputCallback, CurrentFile, name);
+			RegisteredFunctions.Add(nlf);
 			return nlf.Guid.ToString();
 		}
 
@@ -161,8 +143,8 @@ namespace BizHawk.Client.Common
 		[LuaMethod("onframestart", "Calls the given lua function at the beginning of each frame before any emulation and drawing occurs")]
 		public string OnFrameStart(LuaFunction luaf, string name = null)
 		{
-			var nlf = new NamedLuaFunction(luaf, "OnFrameStart", LogOutputCallback, CurrentThread, name);
-			_luaFunctions.Add(nlf);
+			var nlf = new NamedLuaFunction(luaf, "OnFrameStart", LogOutputCallback, CurrentFile, name);
+			RegisteredFunctions.Add(nlf);
 			return nlf.Guid.ToString();
 		}
 
@@ -170,8 +152,8 @@ namespace BizHawk.Client.Common
 		[LuaMethod("oninputpoll", "Calls the given lua function after each time the emulator core polls for input")]
 		public string OnInputPoll(LuaFunction luaf, string name = null)
 		{
-			var nlf = new NamedLuaFunction(luaf, "OnInputPoll", LogOutputCallback, CurrentThread, name);
-			_luaFunctions.Add(nlf);
+			var nlf = new NamedLuaFunction(luaf, "OnInputPoll", LogOutputCallback, CurrentFile, name);
+			RegisteredFunctions.Add(nlf);
 
 			if (InputPollableCore != null)
 			{
@@ -200,38 +182,30 @@ namespace BizHawk.Client.Common
 		[LuaMethod("onloadstate", "Fires after a state is loaded. Receives a lua function name, and registers it to the event immediately following a successful savestate event")]
 		public string OnLoadState(LuaFunction luaf, string name = null)
 		{
-			var nlf = new NamedLuaFunction(luaf, "OnSavestateLoad", LogOutputCallback, CurrentThread, name);
-			_luaFunctions.Add(nlf);
+			var nlf = new NamedLuaFunction(luaf, "OnSavestateLoad", LogOutputCallback, CurrentFile, name);
+			RegisteredFunctions.Add(nlf);
 			return nlf.Guid.ToString();
 		}
 
 		[LuaMethodExample("local steveonm = event.onmemoryexecute(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the given address is executed by the core\" );\r\n\tend\r\n\t, 0x200, \"Frame name\", \"System Bus\" );")]
 		[LuaMethod("onmemoryexecute", "Fires after the given address is executed by the core")]
-		public string OnMemoryExecute(LuaFunction luaf, uint address, string name = null, string domain = null)
+		public string OnMemoryExecute(LuaFunction luaf, uint address, string name = null, string scope = null)
 		{
 			try
 			{
 				if (DebuggableCore != null && DebuggableCore.MemoryCallbacksAvailable() &&
 					DebuggableCore.MemoryCallbacks.ExecuteCallbacksAvailable)
 				{
-					if (N64CoreTypeDynarec())
+					if (!HasScope(scope))
 					{
+						LogScopeNotAvailable(scope);
 						return Guid.Empty.ToString();
 					}
 
-					var nlf = new NamedLuaFunction(luaf, "OnMemoryExecute", LogOutputCallback, CurrentThread, name);
-					_luaFunctions.Add(nlf);
-
-					if (string.IsNullOrWhiteSpace(domain))
-					{
-						if (Domains != null && Domains.HasSystemBus)
-						{
-							domain = Domains.SystemBus.Name;
-						}
-					}
-
+					var nlf = new NamedLuaFunction(luaf, "OnMemoryExecute", LogOutputCallback, CurrentFile, name);
+					RegisteredFunctions.Add(nlf);
 					DebuggableCore.MemoryCallbacks.Add(
-						new MemoryCallback(domain, MemoryCallbackType.Execute, "Lua Hook", nlf.MemCallback, address, null));
+						new MemoryCallback(ProcessScope(scope), MemoryCallbackType.Execute, "Lua Hook", nlf.MemCallback, address, null));
 					return nlf.Guid.ToString();
 				}
 			}
@@ -245,32 +219,61 @@ namespace BizHawk.Client.Common
 			return Guid.Empty.ToString();
 		}
 
-		[LuaMethodExample("local steveonm = event.onmemoryread(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the given address is read by the core. If no address is given, it will attach to every memory read\" );\r\n\tend\r\n\t, 0x200, \"Frame name\" );")]
-		[LuaMethod("onmemoryread", "Fires after the given address is read by the core. If no address is given, it will attach to every memory read")]
-		public string OnMemoryRead(LuaFunction luaf, uint? address = null, string name = null, string domain = null)
+		[LuaMethodExample("local steveonm = event.onmemoryexecuteany(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after any address is executed by the core (CPU-intensive)\" );\r\n\tend\r\n\t, \"Frame name\", \"System Bus\" );")]
+		[LuaMethod("onmemoryexecuteany", "Fires after any address is executed by the core (CPU-intensive)")]
+		public string OnMemoryExecuteAny(LuaFunction luaf, string name = null, string scope = null)
 		{
 			try
 			{
-				if (DebuggableCore != null && DebuggableCore.MemoryCallbacksAvailable())
+				if (DebuggableCore?.MemoryCallbacksAvailable() == true
+					&& DebuggableCore.MemoryCallbacks.ExecuteCallbacksAvailable)
 				{
-					if (N64CoreTypeDynarec())
+					if (!HasScope(scope))
 					{
+						LogScopeNotAvailable(scope);
 						return Guid.Empty.ToString();
 					}
 
-					var nlf = new NamedLuaFunction(luaf, "OnMemoryRead", LogOutputCallback, CurrentThread, name);
-					_luaFunctions.Add(nlf);
+					var nlf = new NamedLuaFunction(luaf, "OnMemoryExecuteAny", LogOutputCallback, CurrentFile, name);
+					RegisteredFunctions.Add(nlf);
+					DebuggableCore.MemoryCallbacks.Add(new MemoryCallback(
+						ProcessScope(scope),
+						MemoryCallbackType.Execute,
+						"Lua Hook",
+						nlf.MemCallback,
+						null,
+						null
+					));
+					return nlf.Guid.ToString();
+				}
+				// fall through
+			}
+			catch (NotImplementedException)
+			{
+				// fall through
+			}
+			LogMemoryExecuteCallbacksNotImplemented();
+			return Guid.Empty.ToString();
+		}
 
-					if (string.IsNullOrWhiteSpace(domain))
+		[LuaMethodExample("local steveonm = event.onmemoryread(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the given address is read by the core. If no address is given, it will attach to every memory read\" );\r\n\tend\r\n\t, 0x200, \"Frame name\" );")]
+		[LuaMethod("onmemoryread", "Fires after the given address is read by the core. If no address is given, it will attach to every memory read")]
+		public string OnMemoryRead(LuaFunction luaf, uint? address = null, string name = null, string scope = null)
+		{
+			try
+			{
+				if (DebuggableCore?.MemoryCallbacksAvailable() == true)
+				{
+					if (!HasScope(scope))
 					{
-						if (Domains != null && Domains.HasSystemBus)
-						{
-							domain = Domains.SystemBus.Name;
-						}
+						LogScopeNotAvailable(scope);
+						return Guid.Empty.ToString();
 					}
 
+					var nlf = new NamedLuaFunction(luaf, "OnMemoryRead", LogOutputCallback, CurrentFile, name);
+					RegisteredFunctions.Add(nlf);
 					DebuggableCore.MemoryCallbacks.Add(
-						new MemoryCallback(domain, MemoryCallbackType.Read, "Lua Hook", nlf.MemCallback, address, null));
+						new MemoryCallback(ProcessScope(scope), MemoryCallbackType.Read, "Lua Hook", nlf.MemCallback, address, null));
 					return nlf.Guid.ToString();
 				}
 			}
@@ -286,30 +289,22 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local steveonm = event.onmemorywrite(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the given address is written by the core. If no address is given, it will attach to every memory write\" );\r\n\tend\r\n\t, 0x200, \"Frame name\" );")]
 		[LuaMethod("onmemorywrite", "Fires after the given address is written by the core. If no address is given, it will attach to every memory write")]
-		public string OnMemoryWrite(LuaFunction luaf, uint? address = null, string name = null, string domain = null)
+		public string OnMemoryWrite(LuaFunction luaf, uint? address = null, string name = null, string scope = null)
 		{
 			try
 			{
-				if (DebuggableCore != null && DebuggableCore.MemoryCallbacksAvailable())
+				if (DebuggableCore?.MemoryCallbacksAvailable() == true)
 				{
-					if (N64CoreTypeDynarec())
+					if (!HasScope(scope))
 					{
+						LogScopeNotAvailable(scope);
 						return Guid.Empty.ToString();
 					}
 
-					var nlf = new NamedLuaFunction(luaf, "OnMemoryWrite", LogOutputCallback, CurrentThread, name);
-					_luaFunctions.Add(nlf);
-
-					if (string.IsNullOrWhiteSpace(domain))
-					{
-						if (Domains != null && Domains.HasSystemBus)
-						{
-							domain = Domains.SystemBus.Name;
-						}
-					}
-
+					var nlf = new NamedLuaFunction(luaf, "OnMemoryWrite", LogOutputCallback, CurrentFile, name);
+					RegisteredFunctions.Add(nlf);
 					DebuggableCore.MemoryCallbacks.Add(
-						new MemoryCallback(domain, MemoryCallbackType.Write, "Lua Hook", nlf.MemCallback, address, null));
+						new MemoryCallback(ProcessScope(scope), MemoryCallbackType.Write, "Lua Hook", nlf.MemCallback, address, null));
 					return nlf.Guid.ToString();
 				}
 			}
@@ -327,8 +322,8 @@ namespace BizHawk.Client.Common
 		[LuaMethod("onsavestate", "Fires after a state is saved")]
 		public string OnSaveState(LuaFunction luaf, string name = null)
 		{
-			var nlf = new NamedLuaFunction(luaf, "OnSavestateSave", LogOutputCallback, CurrentThread, name);
-			_luaFunctions.Add(nlf);
+			var nlf = new NamedLuaFunction(luaf, "OnSavestateSave", LogOutputCallback, CurrentFile, name);
+			RegisteredFunctions.Add(nlf);
 			return nlf.Guid.ToString();
 		}
 
@@ -336,8 +331,8 @@ namespace BizHawk.Client.Common
 		[LuaMethod("onexit", "Fires after the calling script has stopped")]
 		public string OnExit(LuaFunction luaf, string name = null)
 		{
-			var nlf = new NamedLuaFunction(luaf, "OnExit", LogOutputCallback, CurrentThread, name);
-			_luaFunctions.Add(nlf);
+			var nlf = new NamedLuaFunction(luaf, "OnExit", LogOutputCallback, CurrentFile, name);
+			RegisteredFunctions.Add(nlf);
 			return nlf.Guid.ToString();
 		}
 
@@ -345,9 +340,9 @@ namespace BizHawk.Client.Common
 		[LuaMethod("unregisterbyid", "Removes the registered function that matches the guid. If a function is found and remove the function will return true. If unable to find a match, the function will return false.")]
 		public bool UnregisterById(string guid)
 		{
-			foreach (var nlf in _luaFunctions.Where(nlf => nlf.Guid.ToString() == guid.ToString()))
+			foreach (var nlf in RegisteredFunctions.Where(nlf => nlf.Guid.ToString() == guid))
 			{
-				_luaFunctions.Remove(nlf);
+				RegisteredFunctions.Remove(nlf);
 				return true;
 			}
 
@@ -358,13 +353,44 @@ namespace BizHawk.Client.Common
 		[LuaMethod("unregisterbyname", "Removes the first registered function that matches Name. If a function is found and remove the function will return true. If unable to find a match, the function will return false.")]
 		public bool UnregisterByName(string name)
 		{
-			foreach (var nlf in _luaFunctions.Where(nlf => nlf.Name == name))
+			foreach (var nlf in RegisteredFunctions.Where(nlf => nlf.Name == name))
 			{
-				_luaFunctions.Remove(nlf);
+				RegisteredFunctions.Remove(nlf);
 				return true;
 			}
 
 			return false;
+		}
+
+		[LuaMethodExample("local scopes = event.availableScopes();")]
+		[LuaMethod("availableScopes", "Lists the available scopes that can be passed into memory events")]
+		public LuaTable AvailableScopes()
+		{
+			return DebuggableCore?.MemoryCallbacksAvailable() == true
+				? DebuggableCore.MemoryCallbacks.AvailableScopes.ToLuaTable(Lua)
+				: Lua.NewTable();
+		}
+
+		private string ProcessScope(string scope)
+		{
+			if (string.IsNullOrWhiteSpace(scope))
+			{
+				if (Domains != null && Domains.HasSystemBus)
+				{
+					scope = Domains.SystemBus.Name;
+				}
+				else
+				{
+					scope = DebuggableCore.MemoryCallbacks.AvailableScopes.First();
+				}
+			}
+
+			return scope;
+		}
+
+		private bool HasScope(string scope)
+		{
+			return string.IsNullOrWhiteSpace(scope) || DebuggableCore.MemoryCallbacks.AvailableScopes.Contains(scope);
 		}
 	}
 }

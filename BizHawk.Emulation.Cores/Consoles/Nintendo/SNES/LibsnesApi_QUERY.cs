@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
-
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
@@ -31,8 +29,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public byte* QUERY_get_memory_data(SNES_MEMORY id)
 		{
 			string name = QUERY_MemoryNameForId(id);
-			IntPtr ret;
-			_sharedMemoryBlocks.TryGetValue(name, out ret);
+			_sharedMemoryBlocks.TryGetValue(name, out var ret);
 			return (byte*)ret;
 		}
 

@@ -3,6 +3,8 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 
+using BizHawk.Common;
+
 namespace BizHawk.Client.Common
 {
 	public class SubtitleList : List<Subtitle>
@@ -16,10 +18,7 @@ namespace BizHawk.Client.Common
 			AddColorTag = false;
 		}
 
-		public IEnumerable<Subtitle> GetSubtitles(int frame)
-		{
-			return this.Where(t => frame >= t.Frame && frame <= t.Frame + t.Duration);
-		}
+		public IEnumerable<Subtitle> GetSubtitles(int frame) => this.Where(t => t.Frame.RangeTo(t.Frame + t.Duration).Contains(frame));
 
 		public override string ToString()
 		{
@@ -35,22 +34,22 @@ namespace BizHawk.Client.Common
 			{
 				try
 				{
-					var subparts = subtitleStr.Split(' ');
+					var subParts = subtitleStr.Split(' ');
 
-					// Unfortunately I made the file format space delminated so this hack is necessary to get the message
+					// Unfortunately I made the file format space delaminated so this hack is necessary to get the message
 					var message = "";
-					for (var i = 6; i < subparts.Length; i++)
+					for (var i = 6; i < subParts.Length; i++)
 					{
-						message += subparts[i] + ' ';
+						message += subParts[i] + ' ';
 					}
 
 					Add(new Subtitle 
 					{
-						Frame = int.Parse(subparts[1]),
-						X = int.Parse(subparts[2]),
-						Y = int.Parse(subparts[3]),
-						Duration = int.Parse(subparts[4]),
-						Color = uint.Parse(subparts[5], NumberStyles.HexNumber),
+						Frame = int.Parse(subParts[1]),
+						X = int.Parse(subParts[2]),
+						Y = int.Parse(subParts[3]),
+						Duration = int.Parse(subParts[4]),
+						Color = uint.Parse(subParts[5], NumberStyles.HexNumber),
 						Message = message.Trim()
 					});
 
@@ -78,18 +77,18 @@ namespace BizHawk.Client.Common
 		{
 			int index = 1;
 			var sb = new StringBuilder();
-			List<Subtitle> subs = new List<Subtitle>();
+			var subs = new List<Subtitle>();
 			foreach (var subtitle in this)
 			{
 				subs.Add(new Subtitle(subtitle));
 			}
 
-			// absense of line wrap forces miltiline subtitle macros
+			// absence of line wrap forces multiline subtitle macros
 			// so we sort them just in case and optionally concat back to a single unit
 			// todo: instead of making this pretty, add the line wrap feature to subtitles
 			if (ConcatMultilines)
 			{
-				int lastframe = 0;
+				int lastFrame = 0;
 				subs = subs.OrderBy(s => s.Frame).ThenBy(s => s.Y).ToList();
 
 				for (int i = 0;; i++)
@@ -101,19 +100,19 @@ namespace BizHawk.Client.Common
 
 					subs[i].Message = subs[i].Message.Trim();
 
-					if (i > 0 && lastframe == subs[i].Frame)
+					if (i > 0 && lastFrame == subs[i].Frame)
 					{
 						subs[i].Message = $"{subs[i - 1].Message} {subs[i].Message}";
 						subs.Remove(subs[i - 1]);
 						i--;
 					}
 
-					lastframe = subs[i].Frame;
+					lastFrame = subs[i].Frame;
 				}
 			}
 			else
 			{
-				// srt stacks musltilines upwards
+				// srt stacks multilines upwards
 				subs = subs.OrderBy(s => s.Frame).ThenByDescending(s => s.Y).ToList();
 			}
 

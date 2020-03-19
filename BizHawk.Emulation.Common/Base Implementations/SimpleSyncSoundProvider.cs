@@ -12,6 +12,7 @@ namespace BizHawk.Emulation.Common.Base_Implementations
 
 		public bool CanProvideAsync => false;
 
+		/// <exception cref="ArgumentException"><paramref name="mode"/> is not <see cref="SyncSoundMode.Sync"/></exception>
 		public void SetSyncMode(SyncSoundMode mode)
 		{
 			if (mode != SyncSoundMode.Sync)
@@ -48,6 +49,7 @@ namespace BizHawk.Emulation.Common.Base_Implementations
 			_nsamp = 0;
 		}
 
+		/// <exception cref="NotImplementedException">always</exception>
 		public void GetSamplesAsync(short[] samples)
 		{
 			throw new NotImplementedException();

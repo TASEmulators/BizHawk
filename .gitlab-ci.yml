@@ -1,0 +1,33 @@
+image: mcr.microsoft.com/dotnet/core/sdk:3.1
+
+stages:
+  - build
+  - deploy
+
+build:
+  artifacts:
+    expire_in: "30 minutes"
+    name: "BizHawk_tempbuild_$CI_COMMIT_REF_SLUG"
+    paths:
+      - output
+    when: always
+  script:
+    - dotnet build BizHawk.sln -c Release -m -p:MachineNuGetPackageDir=$HOME/.nuget/packages
+  stage: build
+
+deploy_artifact:
+  artifacts:
+    expire_in: "1 month"
+    name: "BizHawk_devbuild_$CI_COMMIT_REF_SLUG"
+    paths:
+      - output
+  only:
+    - master
+  script:
+    - ''
+  stage: deploy
+
+cache:
+  key: "$CI_COMMIT_REF_SLUG"
+  paths:
+    - packages

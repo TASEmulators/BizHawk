@@ -9,13 +9,13 @@ namespace BizHawk.Client.Common
 	/// Filters input for things called Up and Down while considering the client's AllowUD_LR option. 
 	/// This is a bit gross but it is unclear how to do it more nicely
 	/// </summary>
-	public class UD_LR_ControllerAdapter : IController
+	public class UdlrControllerAdapter : IController
 	{
 		public ControllerDefinition Definition => Source.Definition;
 
 		public bool IsPressed(string button)
 		{
-			if (Global.Config.AllowUD_LR)
+			if (Global.Config.AllowUdlr)
 			{
 				return Source.IsPressed(button);
 			}
@@ -40,7 +40,7 @@ namespace BizHawk.Client.Common
 						return false;
 					}
 
-					if (Global.Config.ForbidUD_LR)
+					if (Global.Config.ForbidUdlr)
 					{
 						return false;
 					}
@@ -69,7 +69,7 @@ namespace BizHawk.Client.Common
 						return false;
 					}
 
-					if (Global.Config.ForbidUD_LR)
+					if (Global.Config.ForbidUdlr)
 					{
 						return false;
 					}
@@ -98,7 +98,7 @@ namespace BizHawk.Client.Common
 						return false;
 					}
 
-					if (Global.Config.ForbidUD_LR)
+					if (Global.Config.ForbidUdlr)
 					{
 						return false;
 					}
@@ -127,7 +127,7 @@ namespace BizHawk.Client.Common
 						return false;
 					}
 
-					if (Global.Config.ForbidUD_LR)
+					if (Global.Config.ForbidUdlr)
 					{
 						return false;
 					}

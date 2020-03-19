@@ -1,58 +1,22 @@
 ﻿using System.IO;
 
 using BizHawk.Common;
-using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Calculators
 {
-	public partial class TI83 : IStatable
+	public partial class TI83
 	{
-		public bool BinarySaveStatesPreferred
-		{
-			get { return true; }
-		}
-
-		public void SaveStateText(TextWriter writer)
-		{
-			SyncState(new Serializer(writer));
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			SyncState(new Serializer(reader));
-		}
-
-		public void SaveStateBinary(BinaryWriter bw)
-		{
-			SyncState(new Serializer(bw));
-		}
-
-		public void LoadStateBinary(BinaryReader br)
-		{
-			SyncState(new Serializer(br));
-		}
-
-		public byte[] SaveStateBinary()
-		{
-			MemoryStream ms = new MemoryStream();
-			BinaryWriter bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			return ms.ToArray();
-		}
-
 		private void SyncState(Serializer ser)
 		{
-			byte[] core = null;
 			if (ser.IsWriter)
 			{
 				var ms = new MemoryStream();
 				ms.Close();
-				core = ms.ToArray();
+				ms.ToArray();
 			}
-			_cpu.SyncState(ser);
 
 			ser.BeginSection(nameof(TI83));
+			_cpu.SyncState(ser);
 			ser.Sync("RAM", ref _ram, false);
 			ser.Sync("romPageLow3Bits", ref _romPageLow3Bits);
 			ser.Sync("romPageHighBit", ref _romPageHighBit);

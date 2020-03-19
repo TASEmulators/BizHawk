@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Linq;
-using System.Text;
 using System.IO;
-using System.Collections.Generic;
-
 using BizHawk.Emulation.DiscSystem.CUE;
 
 namespace BizHawk.Emulation.DiscSystem
@@ -47,6 +43,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public bool OUT_SlowLoadAborted;
 
+		/// <exception cref="NotSupportedException"><see cref="IN_DiscInterface"/> is <see cref="DiscInterface.LibMirage"/></exception>
 		public void Run()
 		{
 			switch (IN_DiscInterface)
@@ -67,11 +64,11 @@ namespace BizHawk.Emulation.DiscSystem
 
 				//generate toc and structure:
 				//1. TOCRaw from RawTOCEntries
-				var tocSynth = new Synthesize_DiscTOC_From_RawTOCEntries_Job() { Entries = OUT_Disc.RawTOCEntries };
+				var tocSynth = new Synthesize_DiscTOC_From_RawTOCEntries_Job { Entries = OUT_Disc.RawTOCEntries };
 				tocSynth.Run();
 				OUT_Disc.TOC = tocSynth.Result;
 				//2. Structure from TOCRaw
-				var structureSynth = new Synthesize_DiscStructure_From_DiscTOC_Job() { IN_Disc = OUT_Disc, TOCRaw = OUT_Disc.TOC };
+				var structureSynth = new Synthesize_DiscStructure_From_DiscTOC_Job { IN_Disc = OUT_Disc, TOCRaw = OUT_Disc.TOC };
 				structureSynth.Run();
 				OUT_Disc.Structure = structureSynth.Result;
 
@@ -79,7 +76,7 @@ namespace BizHawk.Emulation.DiscSystem
 				//currently, we let mednafen take care of its own leadout track (we'll make that controllable later)
 				if (IN_DiscInterface != DiscInterface.MednaDisc)
 				{
-					var ss_leadout = new SS_Leadout()
+					var ss_leadout = new SS_Leadout
 					{
 						SessionNumber = 1,
 						Policy = IN_DiscMountPolicy
@@ -130,10 +127,8 @@ namespace BizHawk.Emulation.DiscSystem
 				//TODO - make sure code is designed so no matter what happens, a disc is disposed in case of errors.
 				//perhaps the CUE_Format2 (once renamed to something like Context) can handle that
 				var cuePath = IN_FromPath;
-				var cueContext = new CUE_Context();
-				cueContext.DiscMountPolicy = IN_DiscMountPolicy;
+				var cueContext = new CUE_Context { DiscMountPolicy = IN_DiscMountPolicy, Resolver = cfr };
 
-				cueContext.Resolver = cfr;
 				if (!cfr.IsHardcodedResolve) cfr.SetBaseDirectory(Path.GetDirectoryName(infile));
 
 				//parse the cue file
@@ -149,11 +144,13 @@ namespace BizHawk.Emulation.DiscSystem
 				if (!okParse)
 					goto DONE;
 
-				//compile the cue file:
-				//includes this work: resolve required bin files and find out what it's gonna take to load the cue
-				var compileJob = new CompileCueJob();
-				compileJob.IN_CueContext = cueContext;
-				compileJob.IN_CueFile = parseJob.OUT_CueFile;
+				// compile the cue file:
+				// includes this work: resolve required bin files and find out what it's gonna take to load the cue
+				var compileJob = new CompileCueJob
+				{
+					IN_CueContext = cueContext,
+					IN_CueFile = parseJob.OUT_CueFile
+				};
 				bool okCompile = true;
 				try { compileJob.Run(); }
 				catch (DiscJobAbortException) { okCompile = false; compileJob.FinishLog();  }
@@ -171,8 +168,7 @@ namespace BizHawk.Emulation.DiscSystem
 				}
 
 				//actually load it all up
-				var loadJob = new LoadCueJob();
-				loadJob.IN_CompileJob = compileJob;
+				var loadJob = new LoadCueJob { IN_CompileJob = compileJob };
 				loadJob.Run();
 				//TODO - need better handling of log output
 				if (!string.IsNullOrEmpty(loadJob.OUT_Log)) Console.WriteLine(loadJob.OUT_Log);
@@ -186,11 +182,11 @@ namespace BizHawk.Emulation.DiscSystem
 				CCD_Format ccdLoader = new CCD_Format();
 				OUT_Disc = ccdLoader.LoadCCDToDisc(IN_FromPath, IN_DiscMountPolicy);
 			}
-            else if (ext == ".mds")
-            {
-                MDS_Format mdsLoader = new MDS_Format();
-                OUT_Disc = mdsLoader.LoadMDSToDisc(IN_FromPath, IN_DiscMountPolicy);
-            }
+			else if (ext == ".mds")
+			{
+				MDS_Format mdsLoader = new MDS_Format();
+				OUT_Disc = mdsLoader.LoadMDSToDisc(IN_FromPath, IN_DiscMountPolicy);
+			}
 
 
 		DONE:
@@ -198,7 +194,7 @@ namespace BizHawk.Emulation.DiscSystem
 			//setup the lowest level synth provider
 			if (OUT_Disc != null)
 			{
-				var sssp = new ArraySectorSynthProvider()
+				var sssp = new ArraySectorSynthProvider
 				{
 					Sectors = OUT_Disc._Sectors,
 					FirstLBA = -150

@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		"zeromus, natt, alyosha, adelikat",
 		isPorted: false,
 		isReleased: true)]
-	public partial class NES : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable,
+	public partial class NES : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable,
 		IBoardInfo, ISettable<NES.NESSettings, NES.NESSyncSettings>, ICodeDataLogger
 	{
 		[CoreConstructor("NES")]
@@ -23,27 +23,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 
-			byte[] fdsbios = comm.CoreFileProvider.GetFirmware("NES", "Bios_FDS", false);
-			if (fdsbios != null && fdsbios.Length == 40976)
+			byte[] fdsBios = comm.CoreFileProvider.GetFirmware("NES", "Bios_FDS", false);
+			if (fdsBios != null && fdsBios.Length == 40976)
 			{
 				comm.ShowMessage("Your FDS BIOS is a bad dump.  BizHawk will attempt to use it, but no guarantees!  You should find a new one.");
 				var tmp = new byte[8192];
-				Buffer.BlockCopy(fdsbios, 16 + 8192 * 3, tmp, 0, 8192);
-				fdsbios = tmp;
+				Buffer.BlockCopy(fdsBios, 16 + 8192 * 3, tmp, 0, 8192);
+				fdsBios = tmp;
 			}
 
 			SyncSettings = (NESSyncSettings)syncSettings ?? new NESSyncSettings();
 			ControllerSettings = SyncSettings.Controls;
 			CoreComm = comm;
 
-			MemoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
 			BootGodDB.Initialize();
 			videoProvider = new MyVideoProvider(this);
-			Init(game, rom, fdsbios);
-			if (Board is FDS)
+			Init(game, rom, fdsBios);
+			if (Board is FDS fds)
 			{
 				DriveLightEnabled = true;
-				(Board as FDS).SetDriveLightCallback((val) => DriveLightOn = val);
+				fds.SetDriveLightCallback(val => DriveLightOn = val);
 				// bit of a hack: we don't have a private gamedb for FDS, but the frontend
 				// expects this to be set.
 				RomStatus = game.Status;
@@ -63,20 +62,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Register<ITraceable>(Tracer);
 			ser.Register<IVideoProvider>(videoProvider);
 			ser.Register<ISoundProvider>(this);
-
-			if (Board is BANDAI_FCG_1)
+			ser.Register<IStatable>(new StateSerializer(SyncState)
 			{
-				var reader = (Board as BANDAI_FCG_1).reader;
+				LoadStateCallback = SetupMemoryDomains
+			});
+
+			if (Board is BANDAI_FCG_1 bandai)
+			{
+				var reader = bandai.reader;
 				// not all BANDAI FCG 1 boards have a barcode reader
 				if (reader != null)
-					ser.Register<DatachBarcode>(reader);
+				{
+					ser.Register(reader);
+				}
 			}
 		}
 
 		static readonly bool USE_DATABASE = true;
 		public RomStatus RomStatus;
 
-		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+		public IEmulatorServiceProvider ServiceProvider { get; }
 
 		private NES()
 		{
@@ -112,19 +117,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public bool IsVS
-		{
-			get { return _isVS; }
-		}
+		public bool IsVS => _isVS;
 
-		public bool IsFDS
-		{
-			get { return Board is FDS; }
-		}
+		public bool IsFDS => Board is FDS;
 
-		public CoreComm CoreComm { get; private set; }
+		public CoreComm CoreComm { get; }
 
-		public DisplayType Region { get { return _display_type; } }
+		public DisplayType Region => _display_type;
 
 		public class MyVideoProvider : IVideoProvider
 		{
@@ -223,10 +222,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 				}
 			}
-			public int VirtualWidth { get { return (int)(BufferWidth * 1.146); } }
-			public int VirtualHeight { get { return BufferHeight; } }
-			public int BufferWidth { get { return right - left + 1; } }
-			public int BackgroundColor { get { return 0; } }
+			public int VirtualWidth => (int)(BufferWidth * 1.146);
+			public int VirtualHeight => BufferHeight;
+			public int BufferWidth => right - left + 1;
+			public int BackgroundColor => 0;
+
 			public int BufferHeight
 			{
 				get
@@ -262,7 +262,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public ControllerDefinition ControllerDefinition { get; private set; }
 
 		private int _frame;
-		public int Frame { get { return _frame; } set { _frame = value; } }
+		public int Frame { get => _frame;
+			set => _frame = value;
+		}
 
 		public void ResetCounters()
 		{
@@ -273,11 +275,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public long Timestamp { get; private set; }
 
-		public bool DeterministicEmulation { get { return true; } }
+		public bool DeterministicEmulation => true;
 
-		public string SystemId { get { return "NES"; } }
+		public string SystemId => "NES";
 
-		public string GameName { get { return game_name; } }
+		public string GameName => game_name;
 
 		public enum EDetectionOrigin
 		{
@@ -505,7 +507,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					origin = EDetectionOrigin.GameDB;
 					LoadWriteLine("Chose board from bizhawk gamedb: " + choice.board_type);
-					//gamedb entries that dont specify prg/chr sizes can infer it from the ines header
+					//gamedb entries that don't specify prg/chr sizes can infer it from the ines header
 					if (iNesHeaderInfo != null)
 					{
 						if (choice.prg_size == -1) choice.prg_size = iNesHeaderInfo.prg_size;
@@ -658,7 +660,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//create the board's rom and vrom
 			if (iNesHeaderInfo != null)
 			{
-				var ms = new MemoryStream(file, false);
+				using var ms = new MemoryStream(file, false);
 				ms.Seek(16, SeekOrigin.Begin); // ines header
 				//pluck the necessary bytes out of the file
 				if (iNesHeaderInfo.trainer_size != 0)
@@ -779,7 +781,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		private ITraceable Tracer { get; set; }
+		private ITraceable Tracer { get; }
 	}
 }
 

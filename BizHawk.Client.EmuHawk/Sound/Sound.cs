@@ -2,7 +2,6 @@
 using System.Threading;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Common;
 
@@ -16,8 +15,6 @@ namespace BizHawk.Client.EmuHawk
 		public const int BlockAlign = BytesPerSample * ChannelCount;
 
 		private bool _disposed;
-		private bool _unjamSoundThrottle;
-
 		private readonly ISoundOutput _outputDevice;
 		private readonly SoundOutputProvider _outputProvider = new SoundOutputProvider(); // Buffer for Sync sources
 		private readonly BufferedAsync _bufferedAsync = new BufferedAsync(); // Buffer for Async sources
@@ -25,16 +22,20 @@ namespace BizHawk.Client.EmuHawk
 
 		public Sound(IntPtr mainWindowHandle)
 		{
-			if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
+			if (OSTailoredCode.IsUnixHost)
 			{
-				if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.OpenAL)
+				// at the moment unix/mono can only support OpenAL (so ignore whatever is set in the config)
+				_outputDevice = new OpenALSoundOutput(this);
+			}
+			else
+			{
+				if (Global.Config.SoundOutputMethod == ESoundOutputMethod.OpenAL)
 					_outputDevice = new OpenALSoundOutput(this);
-				if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.DirectSound)
-					_outputDevice = new DirectSoundSoundOutput(this, mainWindowHandle);
-				if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.XAudio2)
+				if (Global.Config.SoundOutputMethod == ESoundOutputMethod.DirectSound)
+					_outputDevice = new DirectSoundSoundOutput(this, mainWindowHandle, Global.Config.SoundDevice);
+				if (Global.Config.SoundOutputMethod == ESoundOutputMethod.XAudio2)
 					_outputDevice = new XAudio2SoundOutput(this);
 			}
-			else _outputDevice = new OpenALSoundOutput(this); // at the moment unix/mono can only support OpenAL (so ignore whatever is set in the config)
 
 			if (_outputDevice == null)
 				_outputDevice = new DummySoundOutput(this);
@@ -74,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_outputDevice.StopSound();
 
-			if (_bufferedProvider != null) _bufferedProvider.DiscardSamples();
+			_bufferedProvider?.DiscardSamples();
 
 			Global.SoundMaxBufferDeficitMs = 0;
 
@@ -118,9 +119,8 @@ namespace BizHawk.Client.EmuHawk
 			// Fill device buffer with silence but leave enough room for one frame
 			int samplesPerFrame = (int)Math.Round(SampleRate / (double)Global.Emulator.VsyncRate());
 			int silenceSamples = Math.Max(samplesNeeded - samplesPerFrame, 0);
-			_outputDevice.WriteSamples(new short[silenceSamples * 2], silenceSamples);
+			_outputDevice.WriteSamples(new short[silenceSamples * 2], 0, silenceSamples);
 			samplesNeeded -= silenceSamples;
-			_unjamSoundThrottle = isUnderrun;
 
 			if (isUnderrun)
 			{
@@ -133,7 +133,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!Global.Config.SoundEnabled || !IsStarted || _bufferedProvider == null || _disposed)
 			{
-				if (_bufferedProvider != null) _bufferedProvider.DiscardSamples();
+				_bufferedProvider?.DiscardSamples();
 				return;
 			}
 
@@ -141,14 +141,16 @@ namespace BizHawk.Client.EmuHawk
 			if (atten > 1) atten = 1;
 			_outputDevice.ApplyVolumeSettings(atten);
 
-			short[] samples;
 			int samplesNeeded = _outputDevice.CalculateSamplesNeeded();
-			int samplesProvided;
+			short[] samples;
+			int sampleOffset;
+			int sampleCount;
 
 			if (atten == 0)
 			{
 				samples = new short[samplesNeeded * ChannelCount];
-				samplesProvided = samplesNeeded;
+				sampleOffset = 0;
+				sampleCount = samplesNeeded;
 
 				_bufferedProvider.DiscardSamples();
 			}
@@ -156,25 +158,34 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Global.Config.SoundThrottle)
 				{
-					_outputProvider.BaseSoundProvider.GetSamplesSync(out samples, out samplesProvided);
+					_outputProvider.BaseSoundProvider.GetSamplesSync(out samples, out sampleCount);
+					sampleOffset = 0;
 
-					if (Global.DisableSecondaryThrottling && samplesProvided > samplesNeeded)
+					if (Global.DisableSecondaryThrottling && sampleCount > samplesNeeded)
 					{
 						return;
 					}
 
-					while (samplesProvided > samplesNeeded)
+					int samplesPerMs = SampleRate / 1000;
+					int outputThresholdMs = 20;
+					while (sampleCount > samplesNeeded)
 					{
-						Thread.Sleep((samplesProvided - samplesNeeded) / (SampleRate / 1000)); // Let the audio clock control sleep time
-						samplesNeeded = _outputDevice.CalculateSamplesNeeded();
-						if (_unjamSoundThrottle)
+						if (samplesNeeded >= outputThresholdMs * samplesPerMs)
 						{
-							//may be garbage, but what can we do?
-							samplesProvided = samplesNeeded;
-							break;
+							// If we were given a large enough number of samples (e.g. larger than the device's
+							// buffer), the device will never need that many samples no matter how long we
+							// wait, so we have to start splitting up the output
+							_outputDevice.WriteSamples(samples, sampleOffset, samplesNeeded);
+							sampleOffset += samplesNeeded;
+							sampleCount -= samplesNeeded;
 						}
+						else
+						{
+							// Let the audio clock control sleep time
+							Thread.Sleep(Math.Min((sampleCount - samplesNeeded) / samplesPerMs, outputThresholdMs));
+						}
+						samplesNeeded = _outputDevice.CalculateSamplesNeeded();
 					}
-					_unjamSoundThrottle = false;
 				}
 				else
 				{
@@ -182,7 +193,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						_outputProvider.OnVolatility();
 					}
-					_outputProvider.GetSamples(samplesNeeded, out samples, out samplesProvided);
+					_outputProvider.GetSamples(samplesNeeded, out samples, out sampleCount);
+					sampleOffset = 0;
 				}
 			}
 			else if (_bufferedProvider == _bufferedAsync)
@@ -191,14 +203,15 @@ namespace BizHawk.Client.EmuHawk
 
 				_bufferedAsync.GetSamplesAsync(samples);
 
-				samplesProvided = samplesNeeded;
+				sampleOffset = 0;
+				sampleCount = samplesNeeded;
 			}
 			else
 			{
 				return;
 			}
 
-			_outputDevice.WriteSamples(samples, samplesProvided);
+			_outputDevice.WriteSamples(samples, sampleOffset, sampleCount);
 		}
 
 		public static int MillisecondsToSamples(int milliseconds)

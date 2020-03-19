@@ -2,24 +2,6 @@
 {
 	partial class AutofireConfig
 	{
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private System.ComponentModel.IContainer components = null;
-
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing && (components != null))
-			{
-				components.Dispose();
-			}
-			base.Dispose(disposing);
-		}
-
 		#region Windows Form Designer generated code
 
 		/// <summary>
@@ -28,165 +10,168 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AutofireConfig));
-			this.Ok = new System.Windows.Forms.Button();
-			this.Cancel = new System.Windows.Forms.Button();
-			this.OnNumeric = new System.Windows.Forms.NumericUpDown();
-			this.OffNumeric = new System.Windows.Forms.NumericUpDown();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.LagFrameCheck = new System.Windows.Forms.CheckBox();
-			((System.ComponentModel.ISupportInitialize)(this.OnNumeric)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.OffNumeric)).BeginInit();
-			this.groupBox1.SuspendLayout();
+			this.btnDialogOK = new BizHawk.WinForms.Controls.SzButtonEx();
+			this.btnDialogCancel = new BizHawk.WinForms.Controls.SzButtonEx();
+			this.nudPatternOn = new BizHawk.WinForms.Controls.SzNUDEx();
+			this.nudPatternOff = new BizHawk.WinForms.Controls.SzNUDEx();
+			this.lblPatternOn = new BizHawk.WinForms.Controls.LabelEx();
+			this.lblPatternOff = new BizHawk.WinForms.Controls.LabelEx();
+			this.flpDialogButtons = new BizHawk.WinForms.Controls.LocSzSingleRowFLP();
+			this.flpDialog = new BizHawk.WinForms.Controls.LocSzSingleColumnFLP();
+			this.flpPattern = new BizHawk.WinForms.Controls.SingleRowFLP();
+			this.lblPatternDesc = new BizHawk.WinForms.Controls.LabelEx();
+			this.cbConsiderLag = new BizHawk.WinForms.Controls.CheckBoxEx();
+			((System.ComponentModel.ISupportInitialize)(this.nudPatternOn)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudPatternOff)).BeginInit();
+			this.flpDialogButtons.SuspendLayout();
+			this.flpDialog.SuspendLayout();
+			this.flpPattern.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// Ok
+			// btnDialogOK
 			// 
-			this.Ok.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.Ok.Location = new System.Drawing.Point(108, 140);
-			this.Ok.Name = "Ok";
-			this.Ok.Size = new System.Drawing.Size(75, 23);
-			this.Ok.TabIndex = 5;
-			this.Ok.Text = "&OK";
-			this.Ok.UseVisualStyleBackColor = true;
-			this.Ok.Click += new System.EventHandler(this.Ok_Click);
+			this.btnDialogOK.Name = "btnDialogOK";
+			this.btnDialogOK.Size = new System.Drawing.Size(75, 23);
+			this.btnDialogOK.Text = "&OK";
+			this.btnDialogOK.Click += new System.EventHandler(this.btnDialogOK_Click);
 			// 
-			// Cancel
+			// btnDialogCancel
 			// 
-			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(189, 140);
-			this.Cancel.Name = "Cancel";
-			this.Cancel.Size = new System.Drawing.Size(75, 23);
-			this.Cancel.TabIndex = 7;
-			this.Cancel.Text = "&Cancel";
-			this.Cancel.UseVisualStyleBackColor = true;
-			this.Cancel.Click += new System.EventHandler(this.Cancel_Click);
+			this.btnDialogCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.btnDialogCancel.Name = "btnDialogCancel";
+			this.btnDialogCancel.Size = new System.Drawing.Size(75, 23);
+			this.btnDialogCancel.Text = "&Cancel";
+			this.btnDialogCancel.Click += new System.EventHandler(this.btnDialogCancel_Click);
 			// 
-			// OnNumeric
+			// nudPatternOn
 			// 
-			this.OnNumeric.Location = new System.Drawing.Point(10, 32);
-			this.OnNumeric.Maximum = new decimal(new int[] {
+			this.nudPatternOn.Maximum = new decimal(new int[] {
             512,
             0,
             0,
             0});
-			this.OnNumeric.Minimum = new decimal(new int[] {
+			this.nudPatternOn.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
-			this.OnNumeric.Name = "OnNumeric";
-			this.OnNumeric.Size = new System.Drawing.Size(74, 20);
-			this.OnNumeric.TabIndex = 2;
-			this.OnNumeric.Value = new decimal(new int[] {
+			this.nudPatternOn.Name = "nudPatternOn";
+			this.nudPatternOn.Size = new System.Drawing.Size(48, 20);
+			this.nudPatternOn.Value = new decimal(new int[] {
             1,
             0,
             0,
             0});
 			// 
-			// OffNumeric
+			// nudPatternOff
 			// 
-			this.OffNumeric.Location = new System.Drawing.Point(101, 32);
-			this.OffNumeric.Maximum = new decimal(new int[] {
+			this.nudPatternOff.Maximum = new decimal(new int[] {
             512,
             0,
             0,
             0});
-			this.OffNumeric.Minimum = new decimal(new int[] {
+			this.nudPatternOff.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
-			this.OffNumeric.Name = "OffNumeric";
-			this.OffNumeric.Size = new System.Drawing.Size(74, 20);
-			this.OffNumeric.TabIndex = 3;
-			this.OffNumeric.Value = new decimal(new int[] {
+			this.nudPatternOff.Name = "nudPatternOff";
+			this.nudPatternOff.Size = new System.Drawing.Size(48, 20);
+			this.nudPatternOff.Value = new decimal(new int[] {
             1,
             0,
             0,
             0});
 			// 
-			// label1
+			// lblPatternOn
 			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(10, 16);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(21, 13);
-			this.label1.TabIndex = 4;
-			this.label1.Text = "On";
+			this.lblPatternOn.Name = "lblPatternOn";
+			this.lblPatternOn.Text = "on,";
 			// 
-			// label2
+			// lblPatternOff
 			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(101, 16);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(21, 13);
-			this.label2.TabIndex = 5;
-			this.label2.Text = "Off";
+			this.lblPatternOff.Name = "lblPatternOff";
+			this.lblPatternOff.Text = "off";
 			// 
-			// groupBox1
+			// flpDialogButtons
 			// 
-			this.groupBox1.Controls.Add(this.label1);
-			this.groupBox1.Controls.Add(this.label2);
-			this.groupBox1.Controls.Add(this.OnNumeric);
-			this.groupBox1.Controls.Add(this.OffNumeric);
-			this.groupBox1.Location = new System.Drawing.Point(13, 12);
-			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(184, 70);
-			this.groupBox1.TabIndex = 6;
-			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "Autofire Pattern";
+			this.flpDialogButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.flpDialogButtons.Controls.Add(this.btnDialogOK);
+			this.flpDialogButtons.Controls.Add(this.btnDialogCancel);
+			this.flpDialogButtons.Location = new System.Drawing.Point(161, 61);
+			this.flpDialogButtons.Name = "flpDialogButtons";
+			this.flpDialogButtons.Size = new System.Drawing.Size(162, 29);
 			// 
-			// LagFrameCheck
+			// flpDialog
 			// 
-			this.LagFrameCheck.AutoSize = true;
-			this.LagFrameCheck.Location = new System.Drawing.Point(13, 100);
-			this.LagFrameCheck.Name = "LagFrameCheck";
-			this.LagFrameCheck.Size = new System.Drawing.Size(164, 17);
-			this.LagFrameCheck.TabIndex = 8;
-			this.LagFrameCheck.Text = "Take lag frames into account";
-			this.LagFrameCheck.UseVisualStyleBackColor = true;
+			this.flpDialog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.flpDialog.Controls.Add(this.flpPattern);
+			this.flpDialog.Controls.Add(this.cbConsiderLag);
+			this.flpDialog.Location = new System.Drawing.Point(0, 0);
+			this.flpDialog.Name = "flpDialog";
+			this.flpDialog.Size = new System.Drawing.Size(323, 55);
+			// 
+			// flpPattern
+			// 
+			this.flpPattern.Controls.Add(this.lblPatternDesc);
+			this.flpPattern.Controls.Add(this.nudPatternOn);
+			this.flpPattern.Controls.Add(this.lblPatternOn);
+			this.flpPattern.Controls.Add(this.nudPatternOff);
+			this.flpPattern.Controls.Add(this.lblPatternOff);
+			this.flpPattern.Name = "flpPattern";
+			// 
+			// lblPatternDesc
+			// 
+			this.lblPatternDesc.Name = "lblPatternDesc";
+			this.lblPatternDesc.Text = "Pattern:";
+			// 
+			// cbConsiderLag
+			// 
+			this.cbConsiderLag.Name = "cbConsiderLag";
+			this.cbConsiderLag.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
+			this.cbConsiderLag.Text = "Take lag frames into account";
 			// 
 			// AutofireConfig
 			// 
-			this.AcceptButton = this.Ok;
+			this.AcceptButton = this.btnDialogOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(276, 175);
-			this.Controls.Add(this.LagFrameCheck);
-			this.Controls.Add(this.groupBox1);
-			this.Controls.Add(this.Cancel);
-			this.Controls.Add(this.Ok);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.CancelButton = this.btnDialogCancel;
+			this.ClientSize = new System.Drawing.Size(323, 90);
+			this.Controls.Add(this.flpDialog);
+			this.Controls.Add(this.flpDialogButtons);
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.Lightning_MultiSize;
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(512, 512);
-			this.MinimumSize = new System.Drawing.Size(218, 179);
+			this.MinimumSize = new System.Drawing.Size(339, 129);
 			this.Name = "AutofireConfig";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Autofire Configuration";
 			this.Load += new System.EventHandler(this.AutofireConfig_Load);
-			((System.ComponentModel.ISupportInitialize)(this.OnNumeric)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.OffNumeric)).EndInit();
-			this.groupBox1.ResumeLayout(false);
-			this.groupBox1.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudPatternOn)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudPatternOff)).EndInit();
+			this.flpDialogButtons.ResumeLayout(false);
+			this.flpDialog.ResumeLayout(false);
+			this.flpDialog.PerformLayout();
+			this.flpPattern.ResumeLayout(false);
+			this.flpPattern.PerformLayout();
 			this.ResumeLayout(false);
-			this.PerformLayout();
 
 		}
 
 		#endregion
 
-		private System.Windows.Forms.Button Ok;
-		private System.Windows.Forms.Button Cancel;
-		private System.Windows.Forms.NumericUpDown OffNumeric;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.GroupBox groupBox1;
-		public System.Windows.Forms.NumericUpDown OnNumeric;
-		private System.Windows.Forms.CheckBox LagFrameCheck;
+		private BizHawk.WinForms.Controls.SzButtonEx btnDialogOK;
+		private BizHawk.WinForms.Controls.SzButtonEx btnDialogCancel;
+		private BizHawk.WinForms.Controls.SzNUDEx nudPatternOff;
+		private BizHawk.WinForms.Controls.LabelEx lblPatternOn;
+		private BizHawk.WinForms.Controls.LabelEx lblPatternOff;
+		private BizHawk.WinForms.Controls.SingleRowFLP flpPattern;
+		private BizHawk.WinForms.Controls.LocSzSingleColumnFLP flpDialog;
+		private BizHawk.WinForms.Controls.LocSzSingleRowFLP flpDialogButtons;
+		private BizHawk.WinForms.Controls.LabelEx lblPatternDesc;
+		public BizHawk.WinForms.Controls.SzNUDEx nudPatternOn;
+		private BizHawk.WinForms.Controls.CheckBoxEx cbConsiderLag;
 	}
 }

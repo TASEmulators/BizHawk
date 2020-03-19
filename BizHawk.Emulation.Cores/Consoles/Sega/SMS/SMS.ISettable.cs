@@ -1,86 +1,122 @@
-﻿using BizHawk.Emulation.Common;
+﻿using System.ComponentModel;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
-	public partial class SMS : ISettable<SMS.SMSSettings, SMS.SMSSyncSettings>
+	public partial class SMS : ISettable<SMS.SmsSettings, SMS.SmsSyncSettings>
 	{
-		public SMSSettings GetSettings()
-		{
-			return Settings.Clone();
-		}
+		public SmsSettings GetSettings() => Settings.Clone();
 
-		public SMSSyncSettings GetSyncSettings()
-		{
-			return SyncSettings.Clone();
-		}
+		public SmsSyncSettings GetSyncSettings() => SyncSettings.Clone();
 
-		public bool PutSettings(SMSSettings o)
+		public bool PutSettings(SmsSettings o)
 		{
-			bool ret = SMSSettings.RebootNeeded(Settings, o);
+			bool ret = SmsSettings.RebootNeeded(Settings, o);
 			Settings = o;
 			return ret;
 		}
 
-		public bool PutSyncSettings(SMSSyncSettings o)
+		public bool PutSyncSettings(SmsSyncSettings o)
 		{
-			bool ret = SMSSyncSettings.RebootNeeded(SyncSettings, o);
+			bool ret = SmsSyncSettings.RebootNeeded(SyncSettings, o);
 			SyncSettings = o;
 			return ret;
 		}
 
-		internal SMSSettings Settings { get; private set; }
-		internal SMSSyncSettings SyncSettings { get; private set; }
+		internal SmsSettings Settings { get; private set; }
+		internal SmsSyncSettings SyncSettings { get; private set; }
 
-		public class SMSSettings
+		public class SmsSettings
 		{
 			// Game settings
-			public bool ForceStereoSeparation = false;
-			public bool SpriteLimit = false;
-			public bool Fix3D = true;
-			public bool DisplayOverscan = false;
+			public bool ForceStereoSeparation { get; set; }
+			public bool SpriteLimit { get; set; }
 
-			// GG settings
-			public bool ShowClippedRegions = false;
-			public bool HighlightActiveDisplayRegion = false;
+			[DisplayName("Fix 3D")]
+			[Description("SMS only")]
+			public bool Fix3D { get; set; } = true;
+
+			[DisplayName("Display Overscan")]
+			[Description("Not applicable to Game Gear")]
+			public bool DisplayOverscan { get; set; }
+
+			[DisplayName("Show Clipped Regions")]
+			[Description("Game Gear only")]
+			public bool ShowClippedRegions { get; set; }
+
+			[DisplayName("Highlight Active Display Region")]
+			[Description("Game Gear only")]
+			public bool HighlightActiveDisplayRegion { get; set; }
 
 			// graphics settings
-			public bool DispBG = true;
-			public bool DispOBJ = true;
+			[DisplayName("Display Background")]
+			public bool DispBG { get; set; } = true;
 
-			public SMSSettings Clone()
-			{
-				return (SMSSettings)MemberwiseClone();
-			}
+			[DisplayName("Display Objects")]
+			public bool DispOBJ { get; set; } = true;
 
-			public static bool RebootNeeded(SMSSettings x, SMSSettings y)
-			{
-				return false;
-			}
+			public SmsSettings Clone() => (SmsSettings)MemberwiseClone();
+
+			public static bool RebootNeeded(SmsSettings x, SmsSettings y) => false;
 		}
 
-		public class SMSSyncSettings
+		public class SmsSyncSettings
 		{
-			public bool EnableFM = true;
-			public bool AllowOverlock = false;
-			public bool UseBIOS = true;
-			public string ConsoleRegion = "Auto";
-			public string DisplayType = "Auto";
-			public string ControllerType = "Standard";
+			[DisplayName("Enable FM")]
+			[Description("SMS only")]
+			public bool EnableFm { get; set; } = true;
 
-			public SMSSyncSettings Clone()
-			{
-				return (SMSSyncSettings)MemberwiseClone();
-			}
+			[DisplayName("Allow Overclock")]
+			[Description("SMS only")]
+			public bool AllowOverClock { get; set; }
 
-			public static bool RebootNeeded(SMSSyncSettings x, SMSSyncSettings y)
+			[DisplayName("Use BIOS")]
+			[Description("Must be Enabled for TAS")]
+			public bool UseBios { get; set; } = true;
+
+			[DisplayName("Region")]
+			public Regions ConsoleRegion { get; set; } = Regions.Auto;
+
+			[DisplayName("Display Type")]
+			public DisplayTypes DisplayType { get; set; } = DisplayTypes.Auto;
+
+			[DisplayName("Controller Type")]
+			[Description("Currently controllers can not be configured separately")]
+			public ControllerTypes ControllerType { get; set; } = ControllerTypes.Standard;
+
+			public SmsSyncSettings Clone() => (SmsSyncSettings)MemberwiseClone();
+
+			public static bool RebootNeeded(SmsSyncSettings x, SmsSyncSettings y)
 			{
 				return
-					x.EnableFM != y.EnableFM ||
-					x.AllowOverlock != y.AllowOverlock ||
-					x.UseBIOS != y.UseBIOS ||
-					x.ConsoleRegion != y.ConsoleRegion ||
-					x.DisplayType != y.DisplayType ||
-					x.ControllerType != y.ControllerType;
+					x.EnableFm != y.EnableFm
+					|| x.AllowOverClock != y.AllowOverClock
+					|| x.UseBios != y.UseBios
+					|| x.ConsoleRegion != y.ConsoleRegion
+					|| x.DisplayType != y.DisplayType
+					|| x.ControllerType != y.ControllerType;
+			}
+
+			public enum ControllerTypes
+			{
+				Standard,
+				Paddle,
+				LightPhaser,
+				SportsPad,
+				Keyboard
+			}
+
+			public enum Regions
+			{
+				Export,
+				Japan,
+				Korea,
+				Auto
+			}
+
+			public enum DisplayTypes
+			{
+				Ntsc, Pal, Auto
 			}
 		}
 	}

@@ -9,15 +9,14 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		"Vecna",
 		isPorted: false,
 		isReleased: true)]
-	[ServiceNotApplicable(typeof(ISaveRam), typeof(IDriveLight))]
-	public sealed partial class ColecoVision : IEmulator, IDebuggable, IInputPollable, IStatable, ISettable<ColecoVision.ColecoSettings, ColecoVision.ColecoSyncSettings>
+	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(ISaveRam) })]
+	public sealed partial class ColecoVision : IEmulator, IDebuggable, IInputPollable, ISettable<ColecoVision.ColecoSettings, ColecoVision.ColecoSyncSettings>
 	{
 		[CoreConstructor("Coleco")]
 		public ColecoVision(CoreComm comm, GameInfo game, byte[] rom, object syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
-			MemoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
 			CoreComm = comm;
 			_syncSettings = (ColecoSyncSettings)syncSettings ?? new ColecoSyncSettings();
 			bool skipbios = _syncSettings.SkipBiosIntro;
@@ -40,6 +39,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 			_vdp = new TMS9918A(_cpu);
 			ser.Register<IVideoProvider>(_vdp);
+			ser.Register<IStatable>(new StateSerializer(SyncState));
 
 			// TODO: hack to allow bios-less operation would be nice, no idea if its feasible
 			_biosRom = CoreComm.CoreFileProvider.GetFirmware("Coleco", "Bios", true, "Coleco BIOS file is required.");

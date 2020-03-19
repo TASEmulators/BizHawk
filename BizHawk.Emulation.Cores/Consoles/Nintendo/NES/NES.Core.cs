@@ -66,10 +66,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// for debugging only!
 		/// </summary>
-		public INESBoard GetBoard()
-		{
-			return Board;
-		}
+		public INESBoard GetBoard() => Board;
 
 		#region Audio
 
@@ -78,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public int old_s = 0;
 
-		public bool CanProvideAsync { get { return false; } }
+		public bool CanProvideAsync => false;
 
 		public void SetSyncMode(SyncSoundMode mode)
 		{
@@ -93,10 +90,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			throw new NotSupportedException("Async not supported");
 		}
 
-		public SyncSoundMode SyncMode
-		{
-			get { return SyncSoundMode.Sync; }
-		}
+		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
 		public void Dispose()
 		{
@@ -148,17 +142,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// set controller definition first time only
 			if (ControllerDefinition == null)
 			{
-				ControllerDefinition = new ControllerDefinition(ControllerDeck.GetDefinition());
-				ControllerDefinition.Name = "NES Controller";
+				ControllerDefinition = new ControllerDefinition(ControllerDeck.GetDefinition())
+				{
+					Name = "NES Controller"
+				};
+
 				// controls other than the deck
 				ControllerDefinition.BoolButtons.Add("Power");
 				ControllerDefinition.BoolButtons.Add("Reset");
-				if (Board is FDS)
+				if (Board is FDS b)
 				{
-					var b = Board as FDS;
 					ControllerDefinition.BoolButtons.Add("FDS Eject");
 					for (int i = 0; i < b.NumSides; i++)
+					{
 						ControllerDefinition.BoolButtons.Add("FDS Insert " + i);
+					}
 				}
 
 				if (_isVS)
@@ -170,7 +168,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			// Add in the reset timing float control for subneshawk
-			if (using_reset_timing && (ControllerDefinition.FloatControls.Count() == 0))
+			if (using_reset_timing && ControllerDefinition.FloatControls.Count == 0)
 			{
 				ControllerDefinition.FloatControls.Add("Reset Cycle");
 				ControllerDefinition.FloatRanges.Add(new ControllerDefinition.FloatRange(0, 0, 500000));
@@ -295,7 +293,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			_controller = controller;
 
 			if (Tracer.Enabled)
-				cpu.TraceCallback = (s) => Tracer.Put(s);
+				cpu.TraceCallback = s => Tracer.Put(s);
 			else
 				cpu.TraceCallback = null;
 
@@ -725,7 +723,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				case 0x4014:
 					//schedule a sprite dma event for beginning 1 cycle in the future.
-					//this receives 2 because thats just the way it works out.
+					//this receives 2 because that's just the way it works out.
 					oam_dma_addr = (ushort)(val << 8);
 					sprdma_countdown = 1;
 					break;

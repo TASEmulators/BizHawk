@@ -1,29 +1,28 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.NEC.PCFX;
 
 namespace BizHawk.Client.EmuHawk
 {
 	[Schema("PCFX")]
+	// ReSharper disable once UnusedMember.Global
 	public class PcfxSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
 			var ss = ((Tst)core).GetSyncSettings();
 
-			List<PadSchema> _schemas = new List<PadSchema>();
+			var schemas = new List<PadSchema>();
 			if (ss.Port1 != ControllerType.None || ss.Port2 != ControllerType.None)
 			{
 				switch (ss.Port1)
 				{
 					case ControllerType.Gamepad:
-						_schemas.Add(StandardController(1));
+						schemas.Add(StandardController(1));
 						break;
 					case ControllerType.Mouse:
-						_schemas.Add(Mouse(1));
+						schemas.Add(Mouse(1));
 						break;
 				}
 
@@ -31,15 +30,15 @@ namespace BizHawk.Client.EmuHawk
 				switch (ss.Port2)
 				{
 					case ControllerType.Gamepad:
-						_schemas.Add(StandardController(controllerNum));
+						schemas.Add(StandardController(controllerNum));
 						break;
 					case ControllerType.Mouse:
-						_schemas.Add(Mouse(controllerNum));
+						schemas.Add(Mouse(controllerNum));
 						break;
 				}
 			}
 
-			return _schemas;
+			return schemas;
 		}
 
 		private static PadSchema StandardController(int controller)

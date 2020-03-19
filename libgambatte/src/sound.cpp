@@ -43,12 +43,13 @@ Clock) clock timer on transition to step.
 
 */
 
-namespace gambatte {
+using namespace gambatte;
 
 PSG::PSG()
 : buffer_(0)
 , bufferPos_(0)
 , lastUpdate_(0)
+, cycleCounter_(0)
 , soVol_(0)
 , rsum_(0x8000) // initialize to 0x8000 to prevent borrows from high word, xor away later
 , enabled_(false)
@@ -60,11 +61,41 @@ void PSG::init(bool cgb) {
 	ch3_.init(cgb);
 }
 
-void PSG::reset() {
+void PSG::reset(bool ds) {
+	int const divOffset = lastUpdate_ & ds;
+	unsigned long const cc = cycleCounter_ + divOffset;
+	// cycleCounter >> 12 & 7 represents the frame sequencer position.
+	cycleCounter_ = (cc & 0xFFF) + 2 * (~(cc + 1 + !ds) & 0x800);
+	lastUpdate_ = ((lastUpdate_ + 3) & -4) - !ds;
 	ch1_.reset();
 	ch2_.reset();
 	ch3_.reset();
-	ch4_.reset();
+	ch4_.reset(cycleCounter_);
+}
+
+void PSG::divReset(bool ds) {
+	int const divOffset = lastUpdate_ & ds;
+	unsigned long const cc = cycleCounter_ + divOffset;
+	cycleCounter_ = (cc & -0x1000) + 2 * (cc & 0x800) - divOffset;
+	ch1_.resetCc(cc - divOffset, cycleCounter_);
+	ch2_.resetCc(cc - divOffset, cycleCounter_);
+	ch3_.resetCc(cc - divOffset, cycleCounter_);
+	ch4_.resetCc(cc - divOffset, cycleCounter_);
+}
+
+void PSG::speedChange(unsigned long const cpuCc, bool const ds) {
+	generateSamples(cpuCc, ds);
+	lastUpdate_ -= ds;
+	// correct for cycles since DIV reset (if any).
+	if (!ds) {
+		unsigned long const cc = cycleCounter_;
+		unsigned const divCycles = cc & 0xFFF;
+		cycleCounter_ = cc - divCycles / 2 - lastUpdate_ % 2;
+		ch1_.resetCc(cc, cycleCounter_);
+		ch2_.resetCc(cc, cycleCounter_);
+		ch3_.resetCc(cc, cycleCounter_);
+		ch4_.resetCc(cc, cycleCounter_);
+	}
 }
 
 void PSG::setStatePtrs(SaveState &state) {
@@ -77,23 +108,26 @@ void PSG::loadState(SaveState const &state) {
 	ch3_.loadState(state);
 	ch4_.loadState(state);
 
-	lastUpdate_ = state.cpu.cycleCounter;
+	cycleCounter_ = state.spu.cycleCounter;
+	lastUpdate_ = state.cpu.cycleCounter - (1 - state.spu.lastUpdate) % 4u;
 	setSoVolume(state.mem.ioamhram.get()[0x124]);
 	mapSo(state.mem.ioamhram.get()[0x125]);
 	enabled_ = state.mem.ioamhram.get()[0x126] >> 7 & 1;
 }
 
-void PSG::accumulateChannels(unsigned long const cycles) {
-	uint_least32_t *const buf = buffer_ + bufferPos_;
-	std::memset(buf, 0, cycles * sizeof *buf);
-	ch1_.update(buf, soVol_, cycles);
-	ch2_.update(buf, soVol_, cycles);
-	ch3_.update(buf, soVol_, cycles);
-	ch4_.update(buf, soVol_, cycles);
+inline void PSG::accumulateChannels(unsigned long const cycles) {
+	unsigned long const cc = cycleCounter_;
+	uint_least32_t* const buf = buffer_ + bufferPos_;
+	std::memset(buf, 0, cycles * sizeof * buf);
+	ch1_.update(buf, soVol_, cc, cc + cycles);
+	ch2_.update(buf, soVol_, cc, cc + cycles);
+	ch3_.update(buf, soVol_, cc, cc + cycles);
+	ch4_.update(buf, soVol_, cc, cc + cycles);
+	cycleCounter_ = (cc + cycles) % SoundUnit::counter_max;
 }
 
-void PSG::generateSamples(unsigned long const cycleCounter, bool const doubleSpeed) {
-	unsigned long const cycles = (cycleCounter - lastUpdate_) >> (1 + doubleSpeed);
+void PSG::generateSamples(unsigned long const cpuCc, bool const doubleSpeed) {
+	unsigned long const cycles = (cpuCc - lastUpdate_) >> (1 + doubleSpeed);
 	lastUpdate_ += cycles << (1 + doubleSpeed);
 
 	if (cycles)
@@ -168,10 +202,10 @@ void PSG::setSoVolume(unsigned nr50) {
 
 void PSG::mapSo(unsigned nr51) {
 	unsigned long so = nr51 * so1Mul() + (nr51 >> 4) * so2Mul();
-	ch1_.setSo((so      & 0x00010001) * 0xFFFF);
-	ch2_.setSo((so >> 1 & 0x00010001) * 0xFFFF);
+	ch1_.setSo((so      & 0x00010001) * 0xFFFF, cycleCounter_);
+	ch2_.setSo((so >> 1 & 0x00010001) * 0xFFFF, cycleCounter_);
 	ch3_.setSo((so >> 2 & 0x00010001) * 0xFFFF);
-	ch4_.setSo((so >> 3 & 0x00010001) * 0xFFFF);
+	ch4_.setSo((so >> 3 & 0x00010001) * 0xFFFF, cycleCounter_);
 }
 
 unsigned PSG::getStatus() const {
@@ -189,9 +223,8 @@ SYNCFUNC(PSG)
 	SSS(ch3_);
 	SSS(ch4_);
 	NSS(lastUpdate_);
+	NSS(cycleCounter_);
 	NSS(soVol_);
 	NSS(rsum_);
 	NSS(enabled_);
-}
-
 }

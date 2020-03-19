@@ -1,10 +1,8 @@
-﻿using BizHawk.Common.BizInvoke;
+﻿using BizHawk.BizInvoke;
 using BizHawk.Emulation.Common;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
@@ -13,11 +11,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	/// </summary>
 	internal sealed class Heap : IBinaryStateable, IDisposable
 	{
-		public MemoryBlock Memory { get; private set; }
+		public MemoryBlockBase Memory { get; private set; }
 		/// <summary>
 		/// name, used in identifying errors
 		/// </summary>
-		public string Name { get; private set; }
+		public string Name { get; }
 		/// <summary>
 		/// total number of bytes used
 		/// </summary>
@@ -32,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public Heap(ulong start, ulong size, string name)
 		{
-			Memory = new MemoryBlock(start, size);
+			Memory = MemoryBlockBase.CallPlatformCtor(start, size);
 			Used = 0;
 			Name = name;
 			Console.WriteLine("Created heap `{1}` at {0:x16}:{2:x16}", start, name, start + size);
@@ -63,8 +61,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				throw new InvalidOperationException($"Failed to allocate {size} bytes from heap {Name}");
 			}
-			ulong ret = Memory.Start + allocstart;
-			Memory.Protect(Memory.Start + Used, newused - Used, MemoryBlock.Protection.RW);
+			ulong ret = Memory.AddressRange.Start + allocstart;
+			Memory.Protect(Memory.AddressRange.Start + Used, newused - Used, MemoryBlockBase.Protection.RW);
 			Used = newused;
 			Console.WriteLine($"Allocated {size} bytes on {Name}, utilization {Used}/{Memory.Size} ({100.0 * Used / Memory.Size:0.#}%)");
 			return ret;
@@ -74,8 +72,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			if (!Sealed)
 			{
-				Memory.Protect(Memory.Start, Used, MemoryBlock.Protection.R);
-				_hash = WaterboxUtils.Hash(Memory.GetStream(Memory.Start, Used, false));
+				Memory.Protect(Memory.AddressRange.Start, Used, MemoryBlockBase.Protection.R);
+				_hash = WaterboxUtils.Hash(Memory.GetStream(Memory.AddressRange.Start, Used, false));
 				Sealed = true;
 			}
 			else
@@ -91,7 +89,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			if (!Sealed)
 			{
 				bw.Write(Memory.XorHash);
-				var ms = Memory.GetXorStream(Memory.Start, WaterboxUtils.AlignUp(Used), false);
+				var ms = Memory.GetXorStream(Memory.AddressRange.Start, WaterboxUtils.AlignUp(Used), false);
 				ms.CopyTo(bw.BaseStream);
 			}
 			else
@@ -118,9 +116,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				}
 				var usedAligned = WaterboxUtils.AlignUp(used);
 
-				Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.None);
-				Memory.Protect(Memory.Start, used, MemoryBlock.Protection.RW);
-				var ms = Memory.GetXorStream(Memory.Start, usedAligned, true);
+				Memory.Protect(Memory.AddressRange.Start, Memory.Size, MemoryBlockBase.Protection.None);
+				Memory.Protect(Memory.AddressRange.Start, used, MemoryBlockBase.Protection.RW);
+				var ms = Memory.GetXorStream(Memory.AddressRange.Start, usedAligned, true);
 				WaterboxUtils.CopySome(br.BaseStream, ms, (long)usedAligned);
 				Used = used;
 			}

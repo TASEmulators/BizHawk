@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 
-using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
 
@@ -9,24 +8,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
 	public partial class N64 : IStatable
 	{
-		public bool BinarySaveStatesPreferred { get { return true; } }
-
-		// these functions are all exact copy paste from gambatte.
-		// if something's wrong here, it's probably wrong there too
-		public void SaveStateText(TextWriter writer)
-		{
-			var temp = SaveStateBinary();
-			temp.SaveAsHexFast(writer);
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			var hex = reader.ReadLine();
-			var state = new byte[hex.Length / 2];
-			state.ReadFromHexFast(hex);
-			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
-		}
-
 		public void SaveStateBinary(BinaryWriter writer)
 		{
 			byte[] data = SaveStatePrivateBuff;
@@ -82,8 +63,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				SaveStateBinaryPrivateBuff = new byte[lenwant];
 			}
 
-			var ms = new MemoryStream(SaveStateBinaryPrivateBuff);
-			var bw = new BinaryWriter(ms);
+			using var ms = new MemoryStream(SaveStateBinaryPrivateBuff);
+			using var bw = new BinaryWriter(ms);
 			SaveStateBinary(bw);
 			bw.Flush();
 

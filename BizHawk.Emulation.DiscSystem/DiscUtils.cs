@@ -6,8 +6,7 @@ namespace BizHawk.Emulation.DiscSystem
 	{
 		static byte IntToBCD(int n)
 		{
-			int ones;
-			int tens = Math.DivRem(n, 10, out ones);
+			int tens = Math.DivRem(n, 10, out var ones);
 			return (byte)((tens << 4) | ones);
 		}
 
@@ -26,7 +25,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public static void Convert_LBA_To_AMSF(int lba, out byte m, out byte s, out byte f)
 		{
-			lba += 150; //dont do this anymore
+			lba += 150; //don't do this anymore
 			m = (byte)(lba / 75 / 60);
 			s = (byte)((lba - (m * 75 * 60)) / 75);
 			f = (byte)(lba - (m * 75 * 60) - (s * 75));
@@ -37,7 +36,5 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			return f + (s * 75) + (m * 75 * 60) - 150;
 		}
-
 	}
-
 }

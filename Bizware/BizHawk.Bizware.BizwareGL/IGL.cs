@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Drawing;
-using swf=System.Windows.Forms;
 
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
@@ -100,7 +99,7 @@ namespace BizHawk.Bizware.BizwareGL
 		void BeginScene();
 
 		/// <summary>
-		/// Indicates end of scene rendering; use after alldraw calls as per normal
+		/// Indicates end of scene rendering; use after all draw calls as per normal
 		/// </summary>
 		void EndScene();
 
@@ -173,7 +172,7 @@ namespace BizHawk.Bizware.BizwareGL
 		void SetTextureWrapMode(Texture2d tex, bool clamp);
 
 		/// <summary>
-		/// Loads the texture with new data. This isnt supposed to be especially versatile, it just blasts a bitmap buffer into the texture
+		/// Loads the texture with new data. This isn't supposed to be especially versatile, it just blasts a bitmap buffer into the texture
 		/// </summary>
 		void LoadTextureData(Texture2d tex, BitmapBuffer bmp);
 
@@ -207,10 +206,12 @@ namespace BizHawk.Bizware.BizwareGL
 		/// </summary>
 		void SetViewport(int width, int height);
 
+#if false // Unused and WinForms unavailable on .NET Standard
 		/// <summary>
 		/// sets the viewport (and scissor) according to the client area of the provided control
 		/// </summary>
-		void SetViewport(swf.Control control);
+		void SetViewport(System.Windows.Forms.Control control);
+#endif
 
 		/// <summary>
 		/// sets the viewport (and scissor) according to the provided specifications

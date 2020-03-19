@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Client.EmuHawk
 {
-	partial class JMDForm
+	partial class JmdForm
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -52,7 +52,6 @@
             this.okButton.TabIndex = 0;
             this.okButton.Text = "OK";
             this.okButton.UseVisualStyleBackColor = true;
-            this.okButton.Click += new System.EventHandler(this.okButton_Click);
             // 
             // threadsBar
             // 
@@ -60,7 +59,7 @@
             this.threadsBar.Name = "threadsBar";
             this.threadsBar.Size = new System.Drawing.Size(104, 45);
             this.threadsBar.TabIndex = 5;
-            this.threadsBar.Scroll += new System.EventHandler(this.threadsBar_Scroll);
+            this.threadsBar.Scroll += new System.EventHandler(this.ThreadsBar_Scroll);
             // 
             // compressionBar
             // 
@@ -68,7 +67,7 @@
             this.compressionBar.Name = "compressionBar";
             this.compressionBar.Size = new System.Drawing.Size(104, 45);
             this.compressionBar.TabIndex = 9;
-            this.compressionBar.Scroll += new System.EventHandler(this.compressionBar_Scroll);
+            this.compressionBar.Scroll += new System.EventHandler(this.CompressionBar_Scroll);
             // 
             // threadLeft
             // 
@@ -136,7 +135,6 @@
             this.cancelButton.TabIndex = 1;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
-            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
             // JMDForm
             // 
@@ -155,7 +153,7 @@
             this.Controls.Add(this.compressionBar);
             this.Controls.Add(this.threadsBar);
             this.Controls.Add(this.okButton);
-            this.Name = "JMDForm";
+            this.Name = "JmdForm";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "JMD Compression Options";

@@ -1,5 +1,5 @@
 ﻿using BizHawk.Common;
-using BizHawk.Common.BizInvoke;
+using BizHawk.BizInvoke;
 using BizHawk.Emulation.Common;
 using PeNet;
 using System;
@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			public bool W { get; set; }
 			public bool R { get; set; }
 			public bool X { get; set; }
-			public MemoryBlock.Protection Prot { get; set; }
+			public MemoryBlockBase.Protection Prot { get; set; }
 			public ulong DiskStart { get; set; }
 			public ulong DiskSize { get; set; }
 		}
@@ -51,22 +51,22 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private readonly byte[] _fileHash;
 
 		public ulong Size { get; }
-		public ulong Start { get; private set; }
+		public ulong Start { get; }
 
-		public long LoadOffset { get; private set; }
+		public long LoadOffset { get; }
 
-		public MemoryBlock Memory { get; private set; }
+		public MemoryBlockBase Memory { get; private set; }
 
-		public IntPtr EntryPoint { get; private set; }
+		public IntPtr EntryPoint { get; }
 
 		/// <summary>
-		/// for midipix-built PEs, pointer to the construtors to run during init
+		/// for midipix-built PEs, pointer to the constructors to run during init
 		/// </summary>
-		public IntPtr CtorList { get; private set; }
+		public IntPtr CtorList { get; }
 		/// <summary>
 		/// for midipix-build PEs, pointer to the destructors to run during fini
 		/// </summary>
-		public IntPtr DtorList { get; private set; }
+		public IntPtr DtorList { get; }
 
 		// true if the seal process has completed, including .idata and .sealed set to readonly,
 		// xorstate taken
@@ -135,7 +135,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				ulong start = Start + s.VirtualAddress;
 				ulong length = s.VirtualSize;
 
-				MemoryBlock.Protection prot;
+				MemoryBlockBase.Protection prot;
 				var r = (s.Characteristics & (uint)Constants.SectionFlags.IMAGE_SCN_MEM_READ) != 0;
 				var w = (s.Characteristics & (uint)Constants.SectionFlags.IMAGE_SCN_MEM_WRITE) != 0;
 				var x = (s.Characteristics & (uint)Constants.SectionFlags.IMAGE_SCN_MEM_EXECUTE) != 0;
@@ -144,7 +144,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					throw new InvalidOperationException("Write and Execute not allowed");
 				}
 
-				prot = x ? MemoryBlock.Protection.RX : w ? MemoryBlock.Protection.RW : MemoryBlock.Protection.R;
+				prot = x ? MemoryBlockBase.Protection.RX : w ? MemoryBlockBase.Protection.RW : MemoryBlockBase.Protection.R;
 
 				var section = new Section
 				{
@@ -172,9 +172,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			// OK, NOW MOUNT
 
 			LoadOffset = (long)Start - (long)_pe.ImageNtHeaders.OptionalHeader.ImageBase;
-			Memory = new MemoryBlock(Start, Size);
+			Memory = MemoryBlockBase.CallPlatformCtor(Start, Size);
 			Memory.Activate();
-			Memory.Protect(Start, Size, MemoryBlock.Protection.RW);
+			Memory.Protect(Start, Size, MemoryBlockBase.Protection.RW);
 
 			// copy headers
 			Marshal.Copy(fileData, 0, Z.US(Start), (int)_pe.ImageNtHeaders.OptionalHeader.SizeOfHeaders);
@@ -247,8 +247,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			// NB: Hints are not the same as Ordinals
 			foreach (var import in _pe.ImportedFunctions)
 			{
-				Dictionary<string, IntPtr> module;
-				if (!ImportsByModule.TryGetValue(import.DLL, out module))
+				if (!ImportsByModule.TryGetValue(import.DLL, out var module))
 				{
 					module = new Dictionary<string, IntPtr>();
 					ImportsByModule.Add(import.DLL, module);
@@ -260,8 +259,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				module.Add(import.Name, Z.US(dest));
 			}
 
-			Section midipix;
-			if (_sectionsByName.TryGetValue(".midipix", out midipix))
+			if (_sectionsByName.TryGetValue(".midipix", out Section midipix))
 			{
 				var dataOffset = midipix.DiskStart;
 				CtorList = Z.SS(BitConverter.ToInt64(fileData, (int)(dataOffset + 0x30)) + LoadOffset);
@@ -293,7 +291,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// </summary>
 		private void ProtectMemory()
 		{
-			Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.R);
+			Memory.Protect(Memory.AddressRange.Start, Memory.Size, MemoryBlockBase.Protection.R);
 
 			foreach (var s in _sections)
 			{
@@ -301,12 +299,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		public IntPtr Resolve(string entryPoint)
-		{
-			IntPtr ret;
-			ExportsByName.TryGetValue(entryPoint, out ret);
-			return ret;
-		}
+		public IntPtr? GetProcAddrOrNull(string entryPoint) => ExportsByName.TryGetValue(entryPoint, out var ret) ? ret : (IntPtr?) null;
+
+		public IntPtr GetProcAddrOrThrow(string entryPoint) => GetProcAddrOrNull(entryPoint) ?? throw new InvalidOperationException($"could not find {entryPoint} in exports");
 
 		public void ConnectImports(string moduleName, IImportResolver module)
 		{
@@ -314,14 +309,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			// when we need to restore a savestate from another run.  so imports might or might not be sealed
 
 			if (_everythingSealed && _imports != null)
-				Memory.Protect(_imports.Start, _imports.Size, MemoryBlock.Protection.RW);
+				Memory.Protect(_imports.Start, _imports.Size, MemoryBlockBase.Protection.RW);
 
-			Dictionary<string, IntPtr> imports;
-			if (ImportsByModule.TryGetValue(moduleName, out imports))
+			if (ImportsByModule.TryGetValue(moduleName, out var imports))
 			{
 				foreach (var kvp in imports)
 				{
-					var valueArray = new IntPtr[] { module.SafeResolve(kvp.Key) };
+					var valueArray = new IntPtr[] { module.GetProcAddrOrThrow(kvp.Key) };
 					Marshal.Copy(valueArray, 0, kvp.Value, 1);
 				}
 			}
@@ -427,7 +421,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				// unlikely to get this far if the previous checks pssed
 				throw new InvalidOperationException("Trickys elves moved on you!");
 
-			Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.RW);
+			Memory.Protect(Memory.AddressRange.Start, Memory.Size, MemoryBlockBase.Protection.RW);
 
 			foreach (var s in _sections)
 			{

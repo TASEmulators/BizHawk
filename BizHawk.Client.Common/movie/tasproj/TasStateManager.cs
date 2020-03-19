@@ -5,7 +5,6 @@ using System.Linq;
 
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -20,6 +19,8 @@ namespace BizHawk.Client.Common
 
 		// TODO: pass this in, and find a solution to a stale reference (this is instantiated BEFORE a new core instance is made, making this one stale if it is simply set in the constructor
 		private IStatable Core => Global.Emulator.AsStatable();
+		private IEmulator Emulator => Global.Emulator;
+
 		private readonly StateManagerDecay _decay;
 		private readonly TasMovie _movie;
 
@@ -30,13 +31,14 @@ namespace BizHawk.Client.Common
 		private int _stateFrequency;
 		
 		private int MaxStates => (int)(Settings.Cap / _expectedStateSize) +
-			(int)((ulong)Settings.DiskCapacitymb * 1024 * 1024 / _expectedStateSize);
+			(int)((ulong)Settings.DiskCapacityMb * 1024 * 1024 / _expectedStateSize);
 		private int FileStateGap => 1 << Settings.FileStateGap;
 
-		public TasStateManager(TasMovie movie)
+		/// <exception cref="InvalidOperationException">loaded core expects savestate size of <c>0 B</c></exception>
+		public TasStateManager(TasMovie movie, TasStateManagerSettings settings)
 		{
 			_movie = movie;
-			Settings = new TasStateManagerSettings(Global.Config.DefaultTasProjSettings);
+			Settings = new TasStateManagerSettings(settings);
 
 			if (_movie.StartsFromSavestate)
 			{
@@ -84,18 +86,10 @@ namespace BizHawk.Client.Common
 			? _states.Last().Key
 			: 0;
 
-		private byte[] InitialState
-		{
-			get
-			{
-				if (_movie.StartsFromSavestate)
-				{
-					return _movie.BinarySavestate;
-				}
-
-				return _states[0];
-			}
-		}
+		private byte[] InitialState =>
+			_movie.StartsFromSavestate
+				? _movie.BinarySavestate
+				: _states[0];
 
 		public bool Any()
 		{
@@ -119,7 +113,7 @@ namespace BizHawk.Client.Common
 		public void Capture(bool force = false)
 		{
 			bool shouldCapture;
-			int frame = Global.Emulator.Frame;
+			int frame = Emulator.Frame;
 
 			if (_movie.StartsFromSavestate && frame == 0) // Never capture frame 0 on savestate anchored movies since we have it anyway
 			{
@@ -179,29 +173,15 @@ namespace BizHawk.Client.Common
 			return _states.ContainsKey(frame);
 		}
 
+		/// <returns>true iff any frames were invalidated</returns>
 		public bool Invalidate(int frame)
 		{
-			bool anyInvalidated = false;
-
-			if (Any())
-			{
-				if (frame == 0) // Never invalidate frame 0
-				{
-					frame = 1;
-				}
-
-				List<KeyValuePair<int, byte[]>> statesToRemove = _states.Where(s => s.Key >= frame).ToList();
-				anyInvalidated = statesToRemove.Any();
-
-				foreach (var state in statesToRemove)
-				{
-					Remove(state.Key);
-				}
-
-				InvalidateCallback?.Invoke(frame);
-			}
-
-			return anyInvalidated;
+			if (!Any()) return false;
+			if (frame == 0) frame = 1; // Never invalidate frame 0
+			var statesToRemove = _states.Where(s => s.Key >= frame).ToList();
+			foreach (var state in statesToRemove) Remove(state.Key);
+			InvalidateCallback?.Invoke(frame);
+			return statesToRemove.Count != 0;
 		}
 
 		public bool Remove(int frame)
@@ -348,7 +328,7 @@ namespace BizHawk.Client.Common
 			// if the size is still too big, exclude states form the beginning
 			// still leave marker states
 			int index = 0;
-			while (saveUsed > (ulong)Settings.DiskSaveCapacitymb * 1024 * 1024)
+			while (saveUsed > (ulong)Settings.DiskSaveCapacityMb * 1024 * 1024)
 			{
 				do
 				{
@@ -370,7 +350,7 @@ namespace BizHawk.Client.Common
 
 			// if there are enough markers to still be over the limit, remove marker frames
 			index = 0;
-			while (saveUsed > (ulong)Settings.DiskSaveCapacitymb * 1024 * 1024)
+			while (saveUsed > (ulong)Settings.DiskSaveCapacityMb * 1024 * 1024)
 			{
 				if (!ret.Contains(++index))
 				{

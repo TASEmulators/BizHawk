@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
@@ -26,8 +25,7 @@ namespace BizHawk.Client.EmuHawk
 		public void ActivateThreaded()
 		{
 			ewh = new EventWaitHandle(false, EventResetMode.AutoReset);
-			threadPaint = new Thread(PaintProc);
-			threadPaint.IsBackground = true;
+			threadPaint = new Thread(PaintProc) { IsBackground = true };
 			threadPaint.Start();
 		}
 
@@ -63,27 +61,25 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (bmp != null)
 			{
-				using (Graphics g = CreateGraphics())
+				using Graphics g = CreateGraphics();
+				g.PixelOffsetMode = PixelOffsetMode.HighSpeed;
+				g.InterpolationMode = InterpolationMode.NearestNeighbor;
+				g.CompositingMode = CompositingMode.SourceCopy;
+				g.CompositingQuality = CompositingQuality.HighSpeed;
+				if (ScaleImage)
 				{
-					g.PixelOffsetMode = PixelOffsetMode.HighSpeed;
 					g.InterpolationMode = InterpolationMode.NearestNeighbor;
-					g.CompositingMode = CompositingMode.SourceCopy;
-					g.CompositingQuality = CompositingQuality.HighSpeed;
-					if (ScaleImage)
+					g.PixelOffsetMode = PixelOffsetMode.Half;
+					g.DrawImage(bmp, 0, 0, Width, Height);
+				}
+				else
+				{
+					using (var sb = new SolidBrush(Color.Black))
 					{
-						g.InterpolationMode = InterpolationMode.NearestNeighbor;
-						g.PixelOffsetMode = PixelOffsetMode.Half;
-						g.DrawImage(bmp, 0, 0, Width, Height);
+						g.FillRectangle(sb, bmp.Width, 0, Width - bmp.Width, Height);
+						g.FillRectangle(sb, 0, bmp.Height, bmp.Width, Height - bmp.Height);
 					}
-					else
-					{
-						using (var sb = new SolidBrush(Color.Black))
-						{
-							g.FillRectangle(sb, bmp.Width, 0, Width - bmp.Width, Height);
-							g.FillRectangle(sb, 0, bmp.Height, bmp.Width, Height - bmp.Height);
-						}
-						g.DrawImageUnscaled(bmp, 0, 0);
-					}
+					g.DrawImageUnscaled(bmp, 0, 0);
 				}
 			}
 
@@ -130,15 +126,6 @@ namespace BizHawk.Client.EmuHawk
 				ewh.Set();
 		}
 
-		//Size logicalSize;
-		////int pitch;
-		//public void SetLogicalSize(int w, int h)
-		//{
-		//    if (bmp != null) bmp.Dispose();
-		//    bmp = new Bitmap(w, h, PixelFormat.Format32bppArgb);
-		//    logicalSize = new Size(w, h);
-		//}
-
 		/// <summary>
 		/// Takes ownership of the provided bitmap and will use it for future painting
 		/// </summary>
@@ -163,7 +150,6 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnPaintBackground(PaintEventArgs pevent)
 		{
-
 		}
 
 
@@ -171,69 +157,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			SignalPaint();
 			base.OnPaint(e);
-		}
-
-	}
-
-	/// <summary>
-	/// A dumb panel which functions as a placeholder for framebuffer painting
-	/// </summary>
-	public class ViewportPanel : Control
-	{
-		public ViewportPanel()
-		{
-			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
-			SetStyle(ControlStyles.UserPaint, true);
-			SetStyle(ControlStyles.DoubleBuffer, true);
-			SetStyle(ControlStyles.Opaque, true);
-			SetStyle(ControlStyles.UserMouse, true);
-		}
-	}
-
-	/// <summary>
-	/// A ViewportPanel with a vertical scroll bar
-	/// </summary>
-	public class ScrollableViewportPanel : UserControl
-	{
-		TableLayoutPanel table;
-		ViewportPanel view;
-		VScrollBar scroll;
-
-		public ViewportPanel View { get { return view; } }
-		public VScrollBar Scrollbar { get { return scroll; } }
-
-		public int ScrollMax { get { return Scrollbar.Maximum; } set { Scrollbar.Maximum = value; } }
-		public int ScrollLargeChange { get { return Scrollbar.LargeChange; } set { Scrollbar.LargeChange = value; } }
-
-		public ScrollableViewportPanel()
-		{
-			InitializeComponent();
-		}
-
-		public void InitializeComponent() 
-		{
-			table = new TableLayoutPanel();
-			view = new ViewportPanel();
-			scroll = new VScrollBar();
-
-			scroll.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Bottom;
-			view.Dock = DockStyle.Fill;
-
-			table.Dock = DockStyle.Fill;
-			table.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-			table.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-			table.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize, 0));
-			table.RowCount = 1;
-			table.ColumnCount = 2;
-			table.Controls.Add(view);
-			table.Controls.Add(scroll);
-			table.SetColumn(view, 0);
-			table.SetColumn(scroll, 1);
-
-			scroll.Scroll += (sender, e) => OnScroll(e);
-			view.Paint += (sender, e) => OnPaint(e);
-
-			Controls.Add(table);
 		}
 	}
 }

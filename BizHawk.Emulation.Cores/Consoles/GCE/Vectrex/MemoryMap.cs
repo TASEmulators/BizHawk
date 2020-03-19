@@ -1,6 +1,4 @@
-﻿using System;
-
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Emulation.Common;
 
 /*
 	0x0000 - 0x7FFF		ROM

@@ -14,9 +14,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			api.LoadSaveram(data);
 		}
 
-		public bool SaveRamModified
-		{
-			get { return true; }
-		}
+		public bool SaveRamModified => true;
 	}
 }

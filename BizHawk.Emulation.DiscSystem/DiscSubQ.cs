@@ -6,7 +6,7 @@
 //http://www.jbum.com/cdg_revealed.html
 
 //NOTES: the 'subchannel Q' stuff here has a lot to do with the q-Mode 1. q-Mode 2 is different, 
-//and q-Mode 1 technically is defined a little differently in the lead-in area, although the fields align so the datastructures can be reused
+//and q-Mode 1 technically is defined a little differently in the lead-in area, although the fields align so the data structures can be reused
 
 //Q subchannel basic structure: (quick ref: https://en.wikipedia.org/wiki/Compact_Disc_subcode)
 //Byte 1: (aka `status`)
@@ -24,7 +24,6 @@ namespace BizHawk.Emulation.DiscSystem
 	public enum EControlQ
 	{
 		None = 0,
-
 		PRE = 1, //Pre-emphasis enabled (audio tracks only)
 		DCP = 2, //Digital copy permitted
 		DATA = 4, //set for data tracks, clear for audio tracks
@@ -33,7 +32,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 	/// <summary>
 	/// Why did I make this a struct? I thought there might be a shitton of these and I was trying to cut down on object creation churn during disc-loading.
-	/// But I ended up mostly just having a shitton of byte[] for each buffer (I could improve that later to possibly reference a blob on top of a memorystream)
+	/// But I ended up mostly just having a shitton of byte[] for each buffer (I could improve that later to possibly reference a blob on top of a MemoryStream)
 	/// So, I should probably change that.
 	/// </summary>
 	public struct SubchannelQ
@@ -92,7 +91,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// Retrieves the initial set of timestamps (min,sec,frac) as a convenient Timestamp
 		/// </summary>
 		public int Timestamp {
-			get { return MSF.ToInt(min.DecimalValue, sec.DecimalValue, frame.DecimalValue); }
+			get => MSF.ToInt(min.DecimalValue, sec.DecimalValue, frame.DecimalValue);
 			set {
 				var ts = new Timestamp(value);
 				min.DecimalValue = ts.MIN; sec.DecimalValue = ts.SEC; frame.DecimalValue = ts.FRAC;
@@ -104,7 +103,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// TODO - rename everything AP here, it's nonsense. (the P is)
 		/// </summary>
 		public int AP_Timestamp { 
-			get { return MSF.ToInt(ap_min.DecimalValue, ap_sec.DecimalValue, ap_frame.DecimalValue); }
+			get => MSF.ToInt(ap_min.DecimalValue, ap_sec.DecimalValue, ap_frame.DecimalValue);
 			set {
 				var ts = new Timestamp(value);
 				ap_min.DecimalValue = ts.MIN; ap_sec.DecimalValue = ts.SEC; ap_frame.DecimalValue = ts.FRAC;
@@ -130,12 +129,12 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// Retrives the ADR field of the q_status member (low 4 bits)
 		/// </summary>
-		public int ADR { get { return q_status & 0xF; } }
+		public int ADR => q_status & 0xF;
 
 		/// <summary>
 		/// Retrieves the CONTROL field of the q_status member (high 4 bits)
 		/// </summary>
-		public EControlQ CONTROL { get { return (EControlQ)((q_status >> 4) & 0xF); } }
+		public EControlQ CONTROL => (EControlQ)((q_status >> 4) & 0xF);
 	}
 	
 }

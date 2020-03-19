@@ -1,13 +1,11 @@
-﻿using System;
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 {
 	public partial class GGHawkLink
 	{
-		private IMemoryDomains MemoryDomains;
+		private IMemoryDomains _memoryDomains;
 
 		public void SetupMemoryDomains()
 		{
@@ -73,18 +71,18 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 			if (L.SaveRAM != null)
 			{
-				var CartRamL = new MemoryDomainByteArray("Cart RAM L", MemoryDomain.Endian.Little, L.SaveRAM, true, 1);
-				domains.Add(CartRamL);
+				var cartRamL = new MemoryDomainByteArray("Cart RAM L", MemoryDomain.Endian.Little, L.SaveRAM, true, 1);
+				domains.Add(cartRamL);
 			}
 
 			if (R.SaveRAM != null)
 			{
-				var CartRamR = new MemoryDomainByteArray("Cart RAM R", MemoryDomain.Endian.Little, R.SaveRAM, true, 1);
-				domains.Add(CartRamR);
+				var cartRamR = new MemoryDomainByteArray("Cart RAM R", MemoryDomain.Endian.Little, R.SaveRAM, true, 1);
+				domains.Add(cartRamR);
 			}
 
-			MemoryDomains = new MemoryDomainList(domains);
-			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
+			_memoryDomains = new MemoryDomainList(domains);
+			((BasicServiceProvider) ServiceProvider).Register(_memoryDomains);
 		}
 
 		private byte PeekSystemBusL(long addr)

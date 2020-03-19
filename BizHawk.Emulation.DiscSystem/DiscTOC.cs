@@ -1,7 +1,3 @@
-using System;
-using System.Text;
-using System.Collections.Generic;
-
 namespace BizHawk.Emulation.DiscSystem
 {
 	/// <summary>
@@ -40,7 +36,7 @@ namespace BizHawk.Emulation.DiscSystem
 			/// <summary>
 			/// Whether the Control indicates that this is data
 			/// </summary>
-			public bool IsData { get { return (Control & EControlQ.DATA) != 0; } }
+			public bool IsData => (Control & EControlQ.DATA) != 0;
 
 			/// <summary>
 			/// The location of the track (Index 1)
@@ -63,9 +59,6 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// The timestamp of the leadout track. In other words, the end of the user area.
 		/// </summary>
-		public int LeadoutLBA { get { return TOCItems[100].LBA; } }
+		public int LeadoutLBA => TOCItems[100].LBA;
 	}
-
-	
-
 }

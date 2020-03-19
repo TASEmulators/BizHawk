@@ -1,6 +1,4 @@
-﻿using System;
-
-using BizHawk.Common;
+﻿using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.Z80A;
 
@@ -14,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		// VDP State
 		public byte[] VRAM = new byte[0x4000]; //16kb video RAM
 		public byte[] CRAM; // SMS = 32 bytes, GG = 64 bytes CRAM
-		public byte[] Registers = new byte[] { 0x06, 0x80, 0xFF, 0xFF, 0xFF, 0xFF, 0xFB, 0xF0, 0x00, 0x00, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00 };
+		public byte[] Registers = { 0x06, 0x80, 0xFF, 0xFF, 0xFF, 0xFF, 0xFB, 0xF0, 0x00, 0x00, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00 };
 		public byte StatusByte;
 
 		const int Command_VramRead = 0x00;
@@ -40,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public bool SpriteLimit;
 		public int IPeriod = 228;
-		public VdpMode VdpMode { get { return mode; } }
+		public VdpMode VdpMode => mode;
 
 		public int FrameHeight = 192;
 		public int ScanLine;
@@ -49,22 +47,22 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public int[] GameGearFrameBuffer = new int[160 * 144];
 		public int[] OverscanFrameBuffer = null;
 
-		public bool Mode1Bit { get { return (Registers[1] & 16) > 0; } }
-		public bool Mode2Bit { get { return (Registers[0] & 2) > 0; } }
-		public bool Mode3Bit { get { return (Registers[1] & 8) > 0; } }
-		public bool Mode4Bit { get { return (Registers[0] & 4) > 0; } }
-		public bool ShiftSpritesLeft8Pixels { get { return (Registers[0] & 8) > 0; } }
-		public bool EnableLineInterrupts { get { return (Registers[0] & 16) > 0; } }
-		public bool LeftBlanking { get { return (Registers[0] & 32) > 0; } }
-		public bool HorizScrollLock { get { return (Registers[0] & 64) > 0; } }
-		public bool VerticalScrollLock { get { return (Registers[0] & 128) > 0; } }
-		public bool EnableDoubledSprites { get { return (Registers[1] & 1) > 0; } }
-		public bool EnableLargeSprites { get { return (Registers[1] & 2) > 0; } }
-		public bool EnableFrameInterrupts { get { return (Registers[1] & 32) > 0; } }
-		public bool DisplayOn { get { return (Registers[1] & 64) > 0; } }
-		public int SpriteAttributeTableBase { get { return ((Registers[5] >> 1) << 8) & 0x3FFF; } }
-		public int SpriteTileBase { get { return (Registers[6] & 4) > 0 ? 256 : 0; } }
-		public byte BackdropColor { get { return (byte)(16 + (Registers[7] & 15)); } }
+		public bool Mode1Bit => (Registers[1] & 16) > 0;
+		public bool Mode2Bit => (Registers[0] & 2) > 0;
+		public bool Mode3Bit => (Registers[1] & 8) > 0;
+		public bool Mode4Bit => (Registers[0] & 4) > 0;
+		public bool ShiftSpritesLeft8Pixels => (Registers[0] & 8) > 0;
+		public bool EnableLineInterrupts => (Registers[0] & 16) > 0;
+		public bool LeftBlanking => (Registers[0] & 32) > 0;
+		public bool HorizScrollLock => (Registers[0] & 64) > 0;
+		public bool VerticalScrollLock => (Registers[0] & 128) > 0;
+		public bool EnableDoubledSprites => (Registers[1] & 1) > 0;
+		public bool EnableLargeSprites => (Registers[1] & 2) > 0;
+		public bool EnableFrameInterrupts => (Registers[1] & 32) > 0;
+		public bool DisplayOn => (Registers[1] & 64) > 0;
+		public int SpriteAttributeTableBase => ((Registers[5] >> 1) << 8) & 0x3FFF;
+		public int SpriteTileBase => (Registers[6] & 4) > 0 ? 256 : 0;
+		public byte BackdropColor => (byte)(16 + (Registers[7] & 15));
 
 		int NameTableBase;
 		int ColorTableBase;
@@ -357,7 +355,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				{
 					HIntPending = true;
 					if (EnableLineInterrupts)
-					{;
+					{
 						Cpu.FlagI = true;
 					}
 					lineIntLinesRemaining = Registers[0x0A];
@@ -442,15 +440,15 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			{
 				if (mode == VdpMode.SMS && Sms.Settings.DisplayOverscan)
 					return OverscanFrameWidth;
-				if (mode == MasterSystem.VdpMode.SMS)
+				if (mode == VdpMode.SMS)
 					return 293;
-				else if (Sms.Settings.ShowClippedRegions)
+				if (Sms.Settings.ShowClippedRegions)
 					return 256;
-				else
-					return 160;
+				return 160;
 			}
 		}
-		public int VirtualHeight { get { return BufferHeight; } }
+		public int VirtualHeight => BufferHeight;
+
 		public int BufferWidth
 		{
 			get
@@ -475,10 +473,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 		}
 
-		public int BackgroundColor
-		{
-			get { return Palette[BackdropColor]; }
-		}
+		public int BackgroundColor => Palette[BackdropColor];
 
 		public int VsyncNumerator => DisplayType == DisplayType.NTSC ? 60 : 50;
 

@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Client.EmuHawk
+﻿using BizHawk.Client.Common;
+
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class TAStudio : IControlMainform
 	{
@@ -38,30 +40,33 @@
 			BookMarkControl.LoadBranchExternal(slot);
 		}
 
-		public void SelectSlot(int slot)
+		public bool SelectSlot(int slot)
 		{
 			BookMarkControl.SelectBranchExternal(slot);
+			return false;
 		}
 
-		public void PreviousSlot()
+		public bool PreviousSlot()
 		{
 			BookMarkControl.SelectBranchExternal(false);
+			return false;
 		}
 
-		public void NextSlot()
+		public bool NextSlot()
 		{
 			BookMarkControl.SelectBranchExternal(true);
+			return false;
 		}
 
 		public bool WantsToControlReadOnly => true;
 
 		public void ToggleReadOnly()
 		{
-			if (CurrentTasMovie.IsPlaying)
+			if (CurrentTasMovie.IsPlaying())
 			{
 				TastudioRecordMode();
 			}
-			else if (CurrentTasMovie.IsRecording)
+			else if (CurrentTasMovie.IsRecording())
 			{
 				TastudioPlayMode();
 			}
@@ -87,15 +92,15 @@
 		public bool Rewind()
 		{
 			// copy pasted from TasView_MouseWheel(), just without notch logic
-			if (Mainform.IsSeeking && !Mainform.EmulatorPaused)
+			if (MainForm.IsSeeking && !MainForm.EmulatorPaused)
 			{
-				Mainform.PauseOnFrame--;
+				MainForm.PauseOnFrame--;
 
 				// that's a weird condition here, but for whatever reason it works best
-				if (Emulator.Frame >= Mainform.PauseOnFrame)
+				if (Emulator.Frame >= MainForm.PauseOnFrame)
 				{
-					Mainform.PauseEmulator();
-					Mainform.PauseOnFrame = null;
+					MainForm.PauseEmulator();
+					MainForm.PauseOnFrame = null;
 					StopSeeking();
 					GoToPreviousFrame();
 				}

@@ -282,7 +282,7 @@ namespace BizHawk.Client.Common
 				["Cursor Left/Right"] = 'l',
 				["Space"] = '_'
 			},
-            ["ZXSpectrum"] = new Dictionary<string, char>
+			["ZXSpectrum"] = new Dictionary<string, char>
 			{
 				["Caps Shift"] = '^',
 				["Caps Lock"] = 'L',
@@ -311,13 +311,13 @@ namespace BizHawk.Client.Common
 				["Insert Previous Disk"] = '{',
 				["Get Disk Status"] = 's',
 				["Return"] = 'e',
-                ["Space"] = '-',
-                ["Up Cursor"] = 'u',
-                ["Down Cursor"] = 'd',
-                ["Left Cursor"] = 'l',
-                ["Right Cursor"] = 'r'
-            },
-            ["N64"] = new Dictionary<string, char>
+				["Space"] = '-',
+				["Up Cursor"] = 'u',
+				["Down Cursor"] = 'd',
+				["Left Cursor"] = 'l',
+				["Right Cursor"] = 'r'
+			},
+			["N64"] = new Dictionary<string, char>
 			{
 				["C Up"] = 'u',
 				["C Down"] = 'd',
@@ -343,6 +343,13 @@ namespace BizHawk.Client.Common
 				["Toggle Cable LC"] = 'L',
 				["Toggle Cable CR"] = 'C',
 				["Toggle Cable RL"] = 'R'
+			},
+			["GB4x"] = new Dictionary<string, char>
+			{
+				["Toggle Cable UD"] = 'U',
+				["Toggle Cable LR"] = 'L',
+				["Toggle Cable X"] = 'X',
+				["Toggle Cable 4x"] = '4'
 			},
 			["Lynx"] = new Dictionary<string, char>
 			{

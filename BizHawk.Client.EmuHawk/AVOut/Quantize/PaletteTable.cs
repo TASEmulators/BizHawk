@@ -12,66 +12,58 @@
 // Copyright (C) Joshua Bell
 /////////////////////////////////////////////////////////////////////////////////
 
-//Bizhawk says: adapted from https://github.com/inexorabletash/PcxFileType/blob/master/Quantize
+//BizHawk says: adapted from https://github.com/inexorabletash/PcxFileType/blob/master/Quantize
 
 using System.Drawing;
 
 namespace BizHawk.Client.EmuHawk
 {
-    public sealed class PaletteTable
-    {
-        private Color[] palette;
+	public sealed class PaletteTable
+	{
+		private readonly Color[] _palette;
 
-        public Color this[int index]
-        {
-            get
-            {
-                return this.palette[index];
-            }
+		public Color this[int index]
+		{
+			get => _palette[index];
+			set => _palette[index] = value;
+		}
 
-            set
-            {
-                this.palette[index] = value;
-            }
-        }
+		private int GetDistanceSquared(Color a, Color b)
+		{
+			int dsq = 0; // delta squared
 
-        private int GetDistanceSquared(Color a, Color b)
-        {
-            int dsq = 0; // delta squared
-            int v; 
+			var v = a.B - b.B;
+			dsq += v * v;
+			v = a.G - b.G;
+			dsq += v * v;
+			v = a.R - b.R;
+			dsq += v * v;
 
-            v = a.B - b.B;
-            dsq += v * v;
-            v = a.G - b.G;
-            dsq += v * v;
-            v = a.R - b.R;
-            dsq += v * v;
+			return dsq;
+		}
 
-            return dsq;
-        }
+		public int FindClosestPaletteIndex(Color pixel)
+		{
+			int dsqBest = int.MaxValue;
+			int ret = 0;
 
-        public int FindClosestPaletteIndex(Color pixel)
-        {
-            int dsqBest = int.MaxValue;
-            int ret = 0;
+			for (int i = 0; i < _palette.Length; ++i)
+			{
+				int dsq = GetDistanceSquared(_palette[i], pixel);
 
-            for (int i = 0; i < this.palette.Length; ++i)
-            {
-                int dsq = GetDistanceSquared(this.palette[i], pixel);
+				if (dsq < dsqBest)
+				{
+					dsqBest = dsq;
+					ret = i;
+				}
+			}
 
-                if (dsq < dsqBest)
-                {
-                    dsqBest = dsq;
-                    ret = i;
-                }
-            }
+			return ret;
+		}
 
-            return ret;
-        }
-
-        public PaletteTable(Color[] palette)
-        {
-            this.palette = (Color[])palette.Clone();
-        }
-    }
+		public PaletteTable(Color[] palette)
+		{
+			_palette = (Color[])palette.Clone();
+		}
+	}
 }

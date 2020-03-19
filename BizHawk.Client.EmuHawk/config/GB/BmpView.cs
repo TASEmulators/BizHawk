@@ -7,7 +7,7 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
-using BizHawk.Client.EmuHawk.WinFormExtensions;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -75,6 +75,7 @@ namespace BizHawk.Client.EmuHawk
 				BMP.Dispose();
 			}
 
+
 			BMP = new Bitmap(w, h, PixelFormat.Format32bppArgb);
 			BmpView_SizeChanged(null, null);
 			Refresh();
@@ -82,17 +83,17 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Clear()
 		{
-			var lockdata = BMP.LockBits(new Rectangle(0, 0, BMP.Width, BMP.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-			Win32.MemSet(lockdata.Scan0, 0xff, (uint)(lockdata.Height * lockdata.Stride));
-			BMP.UnlockBits(lockdata);
+			var lockBits = BMP.LockBits(new Rectangle(0, 0, BMP.Width, BMP.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+			Win32Imports.MemSet(lockBits.Scan0, 0xff, (uint)(lockBits.Height * lockBits.Stride));
+			BMP.UnlockBits(lockBits);
 			Refresh();
 		}
 
 		public void SaveFile()
 		{
 			string path = PathManager.MakeAbsolutePath(
-						Global.Config.PathEntries[Global.Emulator.SystemId, "Screenshots"].Path,
-						Global.Emulator.SystemId);
+				Global.Config.PathEntries[Global.Emulator.SystemId, "Screenshots"].Path,
+				Global.Emulator.SystemId);
 
 			var di = new DirectoryInfo(path);
 
@@ -101,11 +102,11 @@ namespace BizHawk.Client.EmuHawk
 				di.Create();
 			}
 
-			var sfd = new SaveFileDialog
+			using var sfd = new SaveFileDialog
 			{
 				FileName = $"{PathManager.FilesystemSafeName(Global.Game)}-Palettes",
 				InitialDirectory = path,
-				Filter = "PNG (*.png)|*.png|Bitmap (*.bmp)|*.bmp|All Files|*.*",
+				Filter = FilesystemFilterSet.Screenshots.ToString(),
 				RestoreDirectory = true
 			};
 

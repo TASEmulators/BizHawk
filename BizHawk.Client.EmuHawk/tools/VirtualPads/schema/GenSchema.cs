@@ -3,24 +3,24 @@ using System.Drawing;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
-using BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive;
 
 namespace BizHawk.Client.EmuHawk
 {
 	[Schema("GEN")]
+	// ReSharper disable once UnusedMember.Global
 	public class GenSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
-			if (core is GPGX)
+			if (core is GPGX gpgx)
 			{
-				return GpgxPadSchemas((GPGX)core);
+				return GpgxPadSchemas(gpgx);
 			}
 
-			return PicoPadSchemas((PicoDrive)core);
+			return PicoPadSchemas();
 		}
 
-		private IEnumerable<PadSchema> PicoPadSchemas(PicoDrive core)
+		private IEnumerable<PadSchema> PicoPadSchemas()
 		{
 			yield return SixButtonController(1);
 			yield return SixButtonController(2);
@@ -29,9 +29,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private IEnumerable<PadSchema> GpgxPadSchemas(GPGX core)
 		{
-			var devs = (core).GetDevices();
+			var devices = core.GetDevices();
 			int player = 1;
-			foreach (var dev in devs)
+			foreach (var dev in devices)
 			{
 				switch (dev)
 				{
@@ -53,7 +53,7 @@ namespace BizHawk.Client.EmuHawk
 						yield return Activator(player);
 						break;
 					case LibGPGX.INPUT_DEVICE.DEVICE_XE_A1P:
-						yield return XE1AP(player);
+						yield return Xe1AP(player);
 						break;
 					default:
 						// TO DO
@@ -429,7 +429,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
-		private static PadSchema XE1AP(int controller)
+		private static PadSchema Xe1AP(int controller)
 		{
 			return new PadSchema
 			{

@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.DiscSystem
 	partial class Disc
 	{
 		/// <summary>
-		/// TODO - doublecheck that riffmaster is not filling memory at load-time but reading through to the disk
+		/// TODO - double-check that riffmaster is not filling memory at load-time but reading through to the disk
 		/// TODO - clarify stream disposing semantics
 		/// </summary>
 		internal class Blob_WaveFile : IBlob
@@ -29,10 +29,7 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				public string PhysicalPath
 				{
-					get
-					{
-						return physicalPath;
-					}
+					get => physicalPath;
 					set
 					{
 						physicalPath = value;
@@ -65,13 +62,7 @@ namespace BizHawk.Emulation.DiscSystem
 						fs.Position = target;
 					return fs.Read(buffer, offset, count);
 				}
-				public long Length
-				{
-					get
-					{
-						return length;
-					}
-				}
+				public long Length => length;
 			}
 
 			public void Load(byte[] waveData)
@@ -84,6 +75,7 @@ namespace BizHawk.Emulation.DiscSystem
 				Load(stream);
 			}
 
+			/// <exception cref="Blob_WaveFile_Exception">not a valid RIFF WAVE file with exactly one data chunk containing two 16-bit PCM channels at 44.1 kHz</exception>
 			public void Load(Stream stream)
 			{
 				try
@@ -143,12 +135,11 @@ namespace BizHawk.Emulation.DiscSystem
 			RiffMaster RiffSource;
 			long waveDataStreamPos;
 			long mDataLength;
-			public long Length { get { return mDataLength; } }
+			public long Length => mDataLength;
 
 			public void Dispose()
 			{
-				if (RiffSource != null)
-					RiffSource.Dispose();
+				RiffSource?.Dispose();
 				RiffSource = null;
 			}
 		}

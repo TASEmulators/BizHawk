@@ -1,0 +1,1 @@
+make -j && gzip -c libsnes.wbx > ../../output/dll/libsnes.wbx.gz

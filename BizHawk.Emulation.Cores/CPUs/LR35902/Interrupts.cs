@@ -1,6 +1,4 @@
-using System;
-
-namespace BizHawk.Emulation.Common.Components.LR35902
+namespace BizHawk.Emulation.Cores.Components.LR35902
 {
 	public partial class LR35902
 	{
@@ -11,20 +9,20 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						DEC16, SPl, SPh,
 						IDLE,
 						WR, SPl, SPh, PCh,
-						IDLE,
+						INT_GET, 4, W,
 						DEC16, SPl, SPh,
-						INT_GET, W,// NOTE: here is where we check for a cancelled IRQ
+						INT_GET, 3, W,
 						WR, SPl, SPh, PCl,
+						INT_GET, 2, W,
 						IDLE,
+						INT_GET, 1, W,
 						IDLE,
-						IDLE,
-						IDLE,
-						IDLE,
-						IDLE,
+						INT_GET, 0, W,
+						ASGN, PCh, 0,
 						IDLE,
 						IDLE,
 						TR, PCl, W,
-						ASGN, PCh, 0,
+						IRQ_CLEAR,
 						IDLE,
 						OP };
 		}
@@ -37,30 +35,31 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						IDLE,
 						WR, SPl, SPh, PCh,
 						IDLE,
-						INT_GET, W,// NOTE: here is where we check for a cancelled IRQ
 						DEC16, SPl, SPh,
+						IDLE,
 						WR, SPl, SPh, PCl,
 						IDLE,
 						IDLE,
 						IDLE,
+						IDLE,						
 						IDLE,
+						INT_GET, 4, W,
+						INT_GET, 3, W,
+						INT_GET, 2, W,
+						INT_GET, 1, W,
+						INT_GET, 0, W,
 						TR, PCl, W,
+						IDLE,
 						ASGN, PCh, 0,
-						IDLE,
-						IDLE,
-						IDLE,
-						IDLE,
-						IDLE,
-						IDLE,
-						IDLE,
-						IDLE,
-						IDLE,
+						IRQ_CLEAR,
+						IDLE,				
 						OP };
 		}
 
 		private static ushort[] INT_vectors = new ushort[] {0x40, 0x48, 0x50, 0x58, 0x60, 0x00};
 
 		public ushort int_src;
+		public byte int_clear;
 		public int stop_time;
 		public bool stop_check;
 		public bool is_GBC; // GBC automatically adds a NOP to avoid the HALT bug (according to Sinimas)
@@ -75,6 +74,10 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 			skip_once = false;
 			Halt_bug_2 = false;
 			Halt_bug_3 = false;
+			interrupts_enabled = false;
+
+			int_src = 5;
+			int_clear = 0;
 		}
 	}
 }

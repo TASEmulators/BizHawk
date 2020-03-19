@@ -4,21 +4,18 @@ using System.IO;
 using System.Drawing.Imaging;
 
 using BizHawk.Client.Common;
-using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public sealed class SpriteViewer : Control
 	{
-		public Bitmap sprites;
-
-		private readonly Size pSize;
+		public Bitmap Sprites { get; set; }
 
 		public SpriteViewer()
 		{
 			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
-			pSize = new Size(256, 96);
-			sprites = new Bitmap(pSize.Width, pSize.Height);
+			var pSize = new Size(256, 96);
+			Sprites = new Bitmap(pSize.Width, pSize.Height);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.DoubleBuffer, true);
@@ -29,10 +26,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Display(Graphics g)
 		{
-			unchecked
-			{
-				g.DrawImage(sprites, 1, 1);
-			}
+			g.DrawImage(Sprites, 1, 1);
 		}
 
 		private void SpriteViewer_Paint(object sender, PaintEventArgs e)
@@ -46,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					FileName = $"{PathManager.FilesystemSafeName(Global.Game)}-Sprites",
 					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries["NES", "Screenshots"].Path, "NES"),
-					Filter = "PNG (*.png)|*.png|Bitmap (*.bmp)|*.bmp|All Files|*.*",
+					Filter = FilesystemFilterSet.Screenshots.ToString(),
 					RestoreDirectory = true
 				};
 
@@ -57,8 +51,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var file = new FileInfo(sfd.FileName);
-			Bitmap b = new Bitmap(Width, Height);
-			Rectangle rect = new Rectangle(new Point(0, 0), Size);
+			var b = new Bitmap(Width, Height);
+			var rect = new Rectangle(new Point(0, 0), Size);
 			DrawToBitmap(b, rect);
 
 			ImageFormat i;
@@ -79,14 +73,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ScreenshotToClipboard()
 		{
-			Bitmap b = new Bitmap(Width, Height);
-			Rectangle rect = new Rectangle(new Point(0, 0), Size);
+			var b = new Bitmap(Width, Height);
+			var rect = new Rectangle(new Point(0, 0), Size);
 			DrawToBitmap(b, rect);
 
-			using (var img = b)
-			{
-				Clipboard.SetImage(img);
-			}
+			using var img = b;
+			Clipboard.SetImage(img);
 		}
 	}
 }

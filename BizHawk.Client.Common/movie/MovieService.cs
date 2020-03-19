@@ -2,8 +2,6 @@
 using System.IO;
 using System.Linq;
 
-using BizHawk.Client.Common.MovieConversionExtensions;
-
 namespace BizHawk.Client.Common
 {
 	public static class MovieService
@@ -11,55 +9,27 @@ namespace BizHawk.Client.Common
 		public static IMovie Get(string path)
 		{
 			// TODO: change IMovies to take HawkFiles only and not path
-			if (Path.GetExtension(path).EndsWith("tasproj"))
+			if (Path.GetExtension(path)?.EndsWith("tasproj") ?? false)
 			{
 				return new TasMovie(path);
 			}
 
-			if (Path.GetExtension(path).EndsWith("bkm"))
-			{
-				var bkm = new BkmMovie(path);
-				bkm.Load(false);
-
-				// Hackery to fix how things used to work
-				if (bkm.SystemID == "GBC")
-				{
-					bkm.SystemID = "GB";
-				}
-
-				return bkm.ToBk2();
-			}
-
-			// Default to bk2
 			return new Bk2Movie(path);
 		}
 
 		/// <summary>
 		/// Gets the file extension for the default movie implementation used in the client
 		/// </summary>
-		public static string DefaultExtension => "bk2";
+		public const string DefaultExtension = "bk2";
 
 		/// <summary>
 		/// Gets a list of extensions for all <seealso cref="IMovie"/> implementations
 		/// </summary>
-		public static IEnumerable<string> MovieExtensions
-		{
-			get
-			{
-				yield return "bkm";
-				yield return "bk2";
-				yield return "tasproj";
-			}
-		}
+		public static IEnumerable<string> MovieExtensions => new[] { DefaultExtension, TasMovie.Extension };
 
 		public static bool IsValidMovieExtension(string ext)
 		{
-			if (MovieExtensions.Contains(ext.ToLower().Replace(".", "")))
-			{
-				return true;
-			}
-
-			return false;
+			return MovieExtensions.Contains(ext.ToLower().Replace(".", ""));
 		}
 
 		/// <summary>

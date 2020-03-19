@@ -16,9 +16,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public bool PutSettings(SnesSettings o)
 		{
-			bool refreshneeded = o.Palette != _settings.Palette;
+			bool refreshNeeded = o.Palette != _settings.Palette;
 			_settings = o;
-			if (refreshneeded)
+			if (refreshNeeded)
 			{
 				RefreshPalette();
 			}

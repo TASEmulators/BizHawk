@@ -1,22 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BizHawk.Client.EmuHawk
 {
 	[AttributeUsage(AttributeTargets.Class)]
-	public class ToolAttribute : Attribute
+	public sealed class ToolAttribute : Attribute
 	{
-		public ToolAttribute(bool released, string[] supportedSystems, string[] unsupportedCores = null)
+		public ToolAttribute(bool released, string[] supportedSystems, string[] unsupportedCores)
 		{
 			Released = released;
-			SupportedSystems = supportedSystems;
-            UnsupportedCores = unsupportedCores;
+			SupportedSystems = supportedSystems ?? Enumerable.Empty<string>();
+			UnsupportedCores = unsupportedCores ?? Enumerable.Empty<string>();
 		}
 
-		public bool Released { get; private set; }
+		public ToolAttribute(bool released, string[] supportedSystems) : this(released, supportedSystems, null) {}
 
-		public IEnumerable<string> SupportedSystems { get; private set; }
+		public bool Released { get; }
 
-        public IEnumerable<string> UnsupportedCores { get; private set; }
+		public IEnumerable<string> SupportedSystems { get; }
+
+		public IEnumerable<string> UnsupportedCores { get; }
 	}
 }

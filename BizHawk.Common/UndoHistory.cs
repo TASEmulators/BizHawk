@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#nullable disable
+
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BizHawk.Common
@@ -13,12 +15,6 @@ namespace BizHawk.Common
 		public UndoHistory(bool enabled)
 		{
 			MaxUndoLevels = 5;
-			Enabled = enabled;
-		}
-
-		public UndoHistory(IEnumerable<T> newState, bool enabled)
-		{
-			AddState(newState);
 			Enabled = enabled;
 		}
 

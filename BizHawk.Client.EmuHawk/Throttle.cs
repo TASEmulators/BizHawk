@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.Threading;
 
 using BizHawk.Client.Common;
@@ -17,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 		int framesSkipped;
 		public bool skipNextFrame;
 
-		//if the emulator is paused then we dont need to behave as if unthrottled
+		//if the emulator is paused then we don't need to behave as if unthrottled
 		public bool signal_paused;
 		public bool signal_frameAdvance;
 		public bool signal_unthrottle;
@@ -31,7 +30,7 @@ namespace BizHawk.Client.EmuHawk
 
 			bool extraThrottle = false;
 
-			//if we're paused, none of this should happen. just clean out our state and dont skip
+			//if we're paused, none of this should happen. just clean out our state and don't skip
 			//notably, if we're frame-advancing, we should be paused.
 			if (signal_paused && !signal_continuousFrameAdvancing)
 			{
@@ -45,7 +44,8 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			//heres some ideas for how to begin cleaning this up
+#if false
+			//here's some ideas for how to begin cleaning this up
 			////at this point, its assumed that we're running.
 			////this could be a free run, an unthrottled run, or a 'continuous frame advance' (aka continuous) run
 			////free run: affected by frameskips and throttles
@@ -53,16 +53,15 @@ namespace BizHawk.Client.EmuHawk
 			////continuous run: affected by frameskips and throttles
 			////so continuous and free are the same?
 
-			//bool continuous_run = signal_continuousFrameAdvancing;
-			//bool unthrottled_run = signal_unthrottle;
-			//bool free_run = !continuous_run && !unthrottled_run;
+			bool continuous_run = signal_continuousFrameAdvancing;
+			bool unthrottled_run = signal_unthrottle;
+			bool free_run = !continuous_run && !unthrottled_run;
 
-			//bool do_throttle, do_skip;
-			//if (continuous_run || free_run)
-			//  do_throttle = do_skip = true;
-			//else if (unthrottled_run)
-			//  do_skip = true;
-			//else throw new InvalidOperationException();
+			bool do_throttle, do_skip;
+			if (continuous_run || free_run) do_throttle = do_skip = true;
+			else if (unthrottled_run) do_skip = true;
+			else throw new InvalidOperationException();
+#endif
 
 			int skipRate = (forceFrameSkip < 0) ? Global.Config.FrameSkip : forceFrameSkip;
 			int ffSkipRate = (forceFrameSkip < 0) ? 3 : forceFrameSkip;
@@ -79,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (signal_continuousFrameAdvancing)
 				{
-					//dont ever skip frames when continuous frame advancing. it's meant for precision work.
+					//don't ever skip frames when continuous frame advancing. it's meant for precision work.
 					//but we DO need to throttle
 					if (Global.Config.ClockThrottle)
 						extraThrottle = true;
@@ -138,35 +137,9 @@ namespace BizHawk.Client.EmuHawk
 				return (ulong)Environment.TickCount;
 		}
 
-		private interface PlatformSpecificSysTimer
-		{
-			uint TimeBeginPeriod(uint ms);
-		}
-		private class WinSysTimer : PlatformSpecificSysTimer
-		{
-			[DllImport("winmm.dll", EntryPoint = "timeBeginPeriod")]
-			private static extern uint timeBeginPeriod(uint uMilliseconds);
-			public uint TimeBeginPeriod(uint ms)
-			{
-				return timeBeginPeriod(ms);
-			}
-		}
-		private class UnixMonoSysTimer : PlatformSpecificSysTimer
-		{
-			public uint TimeBeginPeriod(uint ms)
-			{
-				// we are not going to bother trying to set a minimum resolution for periodic timers
-				// (on linux I don't think you can set this in user code)
-				return ms;
-			}
-		}
-		static PlatformSpecificSysTimer sysTimer = OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
-			? (PlatformSpecificSysTimer) new WinSysTimer()
-			: new UnixMonoSysTimer();
-		static uint TimeBeginPeriod(uint ms)
-		{
-			return sysTimer.TimeBeginPeriod(ms);
-		}
+		static readonly Func<uint, uint> TimeBeginPeriod = OSTailoredCode.IsUnixHost
+			? u => u
+			: (Func<uint, uint>) Win32Imports.timeBeginPeriod;
 
 		static readonly int tmethod;
 		static readonly ulong afsfreq;
@@ -256,17 +229,17 @@ namespace BizHawk.Client.EmuHawk
 
 
 			// reset way-out-of-range values
-			if (diff > 1)
-				diff = 1;
-			if (error > 1 || error < -1)
-				error = 0;
-			if (diffUnthrottled > 1)
+			if (diff > 1.0f)
+				diff = 1.0f;
+			if (!(-1.0f).RangeTo(1.0f).Contains(error))
+				error = 0.0f;
+			if (diffUnthrottled > 1.0f)
 				diffUnthrottled = desiredspf;
 
 			float derivative = (error - lastError) / diff;
 			lastError = error;
 
-			integral = integral + (error * diff);
+			integral += error * diff;
 			integral *= 0.99f; // since our integral isn't reliable, reduce it to 0 over time.
 
 			// "PID controller" constants

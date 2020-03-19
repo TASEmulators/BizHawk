@@ -5,34 +5,46 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 	public partial class Z80A
 	{
 		private bool iff1;
-		public bool IFF1 { get { return iff1; } set { iff1 = value; } }
+		public bool IFF1
+		{
+			get => iff1;
+			set => iff1 = value;
+		}
 
 		private bool iff2;
-		public bool IFF2 { get { return iff2; } set { iff2 = value; } }
+		public bool IFF2
+		{
+			get => iff2;
+			set => iff2 = value;
+		}
 
 		private bool nonMaskableInterrupt;
 		public bool NonMaskableInterrupt
 		{
-			get { return nonMaskableInterrupt; }
+			get => nonMaskableInterrupt;
 			set { if (value && !nonMaskableInterrupt) NonMaskableInterruptPending = true; nonMaskableInterrupt = value; }
 		}
 
 		private bool nonMaskableInterruptPending;
-		public bool NonMaskableInterruptPending { get { return nonMaskableInterruptPending; } set { nonMaskableInterruptPending = value; } }
+		public bool NonMaskableInterruptPending
+		{
+			get => nonMaskableInterruptPending;
+			set => nonMaskableInterruptPending = value;
+		}
 
 		private int interruptMode;
 		public int InterruptMode
 		{
-			get { return interruptMode; }
+			get => interruptMode;
 			set { if (value < 0 || value > 2) throw new ArgumentOutOfRangeException(); interruptMode = value; }
 		}
 
 		public Action IRQCallback = delegate () { };
 		public Action NMICallback = delegate () { };
 
-        // this will be a few cycles off for now
-        // it should suffice for now until Alyosha returns from hiatus
-        public Action IRQACKCallback = delegate () { };
+		// this will be a few cycles off for now
+		// it should suffice for now until Alyosha returns from hiatus
+		public Action IRQACKCallback = delegate () { };
 
 		private void NMI_()
 		{
@@ -73,7 +85,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			PopulateBUSRQ(0, 0, 0, 0, PCh, 0, 0);
 			PopulateMEMRQ(0, 0, 0, 0, PCh, 0, 0);
 			IRQS = 7;
-        }
+		}
 
 		// Just jump to $0038
 		private void INTERRUPT_1()
@@ -96,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			PopulateBUSRQ(0, 0, 0, 0, I, 0, 0, SPh, 0, 0, SPh, 0, 0);
 			PopulateMEMRQ(0, 0, 0, 0, I, 0, 0, SPh, 0, 0, SPh, 0, 0);
 			IRQS = 13;
-        }
+		}
 
 		// Interrupt mode 2 uses the I vector combined with a byte on the data bus
 		private void INTERRUPT_2()
@@ -125,7 +137,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			PopulateBUSRQ(0, 0, 0, 0, I, 0, 0, SPh, 0, 0, SPh, 0, 0, W, 0, 0, W, 0, 0);
 			PopulateMEMRQ(0, 0, 0, 0, I, 0, 0, SPh, 0, 0, SPh, 0, 0, W, 0, 0, W, 0, 0);
 			IRQS = 19;
-        }
+		}
 
 		private void ResetInterrupts()
 		{

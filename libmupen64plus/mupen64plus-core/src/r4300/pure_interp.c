@@ -373,7 +373,12 @@ static cpu_instruction_table pure_interpreter_table = {
 
    SYSCALL,
 
+   TGE,
+   TGEU,
+   TLT,
+   TLTU,
    TEQ,
+   TNE,
 
    NOP,
    RESERVED,

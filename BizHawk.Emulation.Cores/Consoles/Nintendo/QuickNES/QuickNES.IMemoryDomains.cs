@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				}, 1));
 
 			_memoryDomains = new MemoryDomainList(mm);
-			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(_memoryDomains);
+			((BasicServiceProvider) ServiceProvider).Register(_memoryDomains);
 		}
 
 		private IMemoryDomains _memoryDomains;

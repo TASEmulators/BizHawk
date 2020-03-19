@@ -18,16 +18,11 @@ namespace BizHawk.Client.EmuHawk
 			_outputProvider.DiscardSamples();
 		}
 
-		public bool CanProvideAsync
-		{
-			get { return true; }
-		}
+		public bool CanProvideAsync => true;
 
-		public SyncSoundMode SyncMode
-		{
-			get { return SyncSoundMode.Async; }
-		}
+		public SyncSoundMode SyncMode => SyncSoundMode.Async;
 
+		/// <exception cref="NotSupportedException"><paramref name="mode"/> is not <see cref="SyncSoundMode.Async"/></exception>
 		public void SetSyncMode(SyncSoundMode mode)
 		{
 			if (mode != SyncSoundMode.Async)
@@ -36,6 +31,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		/// <exception cref="InvalidOperationException">always</exception>
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
 			throw new InvalidOperationException("Sync mode is not supported.");

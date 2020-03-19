@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Xml;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-
+using System.Xml;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
@@ -19,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//base class pre-configuration
 			void Create(NES nes);
 			//one-time inherited classes configuration 
-			bool Configure(NES.EDetectionOrigin origin);
+			bool Configure(EDetectionOrigin origin);
 			//one-time base class configuration (which can take advantage of any information setup by the more-informed Configure() method)
 			void PostConfigure();
 			
@@ -56,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			void ApplyCustomAudio(short[] samples);
 
 			Dictionary<string, string> InitialRegisterValues { get; set; }
-		};
+		}
 
 		[INESBoardImpl]
 		public abstract class NESBoardBase : INESBoard
@@ -68,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public enum EMirrorType
 			{
 				Vertical, Horizontal,
-				OneScreenA, OneScreenB,
+				OneScreenA, OneScreenB
 			}
 
 			public virtual void Create(NES nes)
@@ -78,22 +77,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public virtual void NESSoftReset()
 			{
-
 			}
 
 			Dictionary<string, string> _initialRegisterValues = new Dictionary<string, string>();
-			public Dictionary<string, string> InitialRegisterValues { get { return _initialRegisterValues; } set { _initialRegisterValues = value; } }
+			public Dictionary<string, string> InitialRegisterValues
+			{
+				get => _initialRegisterValues;
+				set => _initialRegisterValues = value;
+			}
 
-			public abstract bool Configure(NES.EDetectionOrigin origin);
+			public abstract bool Configure(EDetectionOrigin origin);
 			public virtual void ClockPPU() { }
 			public virtual void ClockCPU() { }
 			public virtual void AtVsyncNMI() { }
 
-			public CartInfo Cart { get { return NES.cart; } }
+			public CartInfo Cart => NES.cart;
 			public NES NES { get; set; }
 
 			//this is set to true when SyncState is called, so that we know the base class SyncState was used
-			public bool SyncStateFlag = false;
+			public bool SyncStateFlag;
 
 			public virtual void SyncState(Serializer ser)
 			{
@@ -110,7 +112,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			private bool irq_signal;
-			public bool IRQSignal { get { return irq_signal; } set { irq_signal = value; } }
+			public bool IRQSignal
+			{
+				get => irq_signal;
+				set => irq_signal = value;
+			}
 
 			public virtual void Dispose() { }
 
@@ -146,10 +152,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					if (pad_v == 0)
 						return EMirrorType.OneScreenA;
 					else return EMirrorType.Horizontal;
-				else
-					if (pad_v == 0)
-						return EMirrorType.Vertical;
-					else return EMirrorType.OneScreenB;
+				if (pad_v == 0)
+					return EMirrorType.Vertical;
+				return EMirrorType.OneScreenB;
 			}
 
 			protected void SetMirrorType(int pad_h, int pad_v)
@@ -201,10 +206,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				wram_mask = (Cart.wram_size * 1024) - 1;
 			}
 
-			public virtual byte ReadWRAM(int addr) {
+			public virtual byte ReadWRAM(int addr)
+			{
 				if (wram != null)
 					return wram[addr & wram_mask];
-				else return NES.DB;
+				return NES.DB;
 			}
 
 			public virtual void WriteEXP(int addr, byte value) { }
@@ -247,7 +253,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				if (VROM != null)
 					return VROM[addr];
-				else return VRAM[addr];
+				return VRAM[addr];
 			}
 
 			public virtual byte ReadPPU(int addr)
@@ -256,12 +262,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					if (VROM != null)
 						return VROM[addr];
-					else return VRAM[addr];
+					return VRAM[addr];
 				}
-				else
-				{
-					return NES.CIRAM[ApplyMirroring(addr)];
-				}
+
+				return NES.CIRAM[ApplyMirroring(addr)];
 			}
 
 			/// <summary>
@@ -295,8 +299,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
-			public byte[] WRAM { get { return wram; } set { wram = value; } }
-			public byte[] VRAM { get { return vram; } set { vram = value; } }
+			public byte[] WRAM
+			{
+				get => wram;
+				set => wram = value;
+			}
+			public byte[] VRAM
+			{
+				get => vram;
+				set => vram = value;
+			}
 			public byte[] ROM { get; set; }
 			public byte[] VROM { get; set; }
 			byte[] wram, vram;
@@ -324,19 +336,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public virtual void ApplyCustomAudio(short[] samples) { }
 
-			public bool DisableConfigAsserts = false;
+			public bool DisableConfigAsserts;
 		}
 
 		//this will be used to track classes that implement boards
 		[AttributeUsage(AttributeTargets.Class)]
-		public class INESBoardImplAttribute : Attribute { }
-		//this tracks derived boards that shouldnt be used by the implementation scanner
+		public sealed class INESBoardImplAttribute : Attribute { }
+		//this tracks derived boards that shouldn't be used by the implementation scanner
 		[AttributeUsage(AttributeTargets.Class)]
-		public class INESBoardImplCancelAttribute : Attribute { }
+		public sealed class INESBoardImplCancelAttribute : Attribute { }
 		static List<Type> INESBoardImplementors = new List<Type>();
 		//flags it as being priority, i.e. in the top of the list
 		[AttributeUsage(AttributeTargets.Class)]
-		public class INESBoardImplPriorityAttribute : Attribute { }
+		public sealed class INESBoardImplPriorityAttribute : Attribute { }
 
 		static INESBoard CreateBoardInstance(Type boardType)
 		{
@@ -353,7 +365,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return board;
 		}
 
-		public string BoardName { get { return Board.GetType().Name; } }
+		public string BoardName => Board.GetType().Name;
 
 		void BoardSystemHardReset()
 		{
@@ -475,33 +487,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// </summary>
 		static Type FindBoard(CartInfo cart, EDetectionOrigin origin, Dictionary<string, string> properties)
 		{
-			NES nes = new NES();
-			nes.cart = cart;
+			NES nes = new NES { cart = cart };
 			Type ret = null;
 			lock(INESBoardImplementors)
 				foreach (var type in INESBoardImplementors)
 				{
-					using (NESBoardBase board = (NESBoardBase)Activator.CreateInstance(type))
-					{
-						//unif demands that the boards set themselves up with expected legal values based on the board size
-						//except, i guess, for the rom/chr sizes. go figure.
-						//so, disable the asserts here
-						if (origin == EDetectionOrigin.UNIF)
-							board.DisableConfigAsserts = true;
+					using NESBoardBase board = (NESBoardBase)Activator.CreateInstance(type);
+					//unif demands that the boards set themselves up with expected legal values based on the board size
+					//except, i guess, for the rom/chr sizes. go figure.
+					//so, disable the asserts here
+					if (origin == EDetectionOrigin.UNIF)
+						board.DisableConfigAsserts = true;
 
-						board.Create(nes);
-						board.InitialRegisterValues = properties;
-						if (board.Configure(origin))
-						{
+					board.Create(nes);
+					board.InitialRegisterValues = properties;
+					if (board.Configure(origin))
+					{
 #if DEBUG
-							if (ret != null)
-								throw new Exception($"Boards {ret} and {type} both responded to {nameof(NESBoardBase.Configure)}!");
-							else
-								ret = type;
+						if (ret != null)
+							throw new Exception($"Boards {ret} and {type} both responded to {nameof(NESBoardBase.Configure)}!");
+						ret = type;
 #else
 							return type;
 #endif
-						}
 					}
 				}
 			return ret;
@@ -722,28 +730,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public List<CartInfo> Identify(string sha1)
 			{
-				lock (syncroot)
-				{
-					if (!sha1_table.ContainsKey(sha1))
-						return new List<CartInfo>();
-					else
-						return sha1_table[sha1];
-				}
+				lock (syncroot) return sha1_table[sha1];
 			}
 		}
 	}
 
 	[AttributeUsage(AttributeTargets.Field)]
-	public class MapperPropAttribute : Attribute
+	public sealed class MapperPropAttribute : Attribute
 	{
-		public string Name { get; private set; }
-		public MapperPropAttribute(string Name)
+		public string Name { get; }
+
+		public MapperPropAttribute(string name)
 		{
-			this.Name = Name;
+			Name = name;
 		}
+
 		public MapperPropAttribute()
 		{
-			this.Name = null;
+			Name = null;
 		}
 	}
 
@@ -777,8 +781,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						string Name = ((MapperPropAttribute)attrib).Name ?? field.Name;
 
-						string Value;
-						if (board.InitialRegisterValues.TryGetValue(Name, out Value))
+						if (board.InitialRegisterValues.TryGetValue(Name, out var Value))
 						{
 							try
 							{

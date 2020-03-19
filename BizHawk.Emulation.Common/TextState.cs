@@ -23,11 +23,13 @@ namespace BizHawk.Emulation.Common
 
 			// methods named "ShouldSerialize*" are detected and dynamically invoked by JSON.NET
 			// if they return false during serialization, the field/prop is omitted from the created json
+			// ReSharper disable once UnusedMember.Global
 			public bool ShouldSerializeData()
 			{
 				return Data.Count > 0;
 			}
 
+			// ReSharper disable once UnusedMember.Global
 			public bool ShouldSerializeObjects()
 			{
 				return Objects.Count > 0;
@@ -42,7 +44,7 @@ namespace BizHawk.Emulation.Common
 		[JsonIgnore]
 		private Node Current => Nodes.Peek();
 
-	    public void Prepare()
+		public void Prepare()
 		{
 			Nodes = new Stack<Node>();
 			Nodes.Push(Root);
@@ -55,6 +57,7 @@ namespace BizHawk.Emulation.Common
 			Current.Data.Add(name, d); // will except for us if the key is already present
 		}
 
+		/// <exception cref="InvalidOperationException"><paramref name="length"/> does not match the length of the data saved as <paramref name="name"/></exception>
 		public void Load(IntPtr data, int length, string name)
 		{
 			byte[] d = Current.Data[name];
@@ -83,8 +86,7 @@ namespace BizHawk.Emulation.Common
 		{
 			// works for either save or load, but as a consequence cannot report intelligent
 			// errors about section name mismatches
-			Node next = null;
-			Current.Objects.TryGetValue(name, out next);
+			Current.Objects.TryGetValue(name, out var next);
 			if (next == null)
 			{
 				next = new Node();
@@ -94,6 +96,7 @@ namespace BizHawk.Emulation.Common
 			Nodes.Push(next);
 		}
 
+		/// <exception cref="InvalidOperationException"><paramref name="name"/> doesn't match the section being closed</exception>
 		public void ExitSection(string name)
 		{
 			Node last = Nodes.Pop();
@@ -110,10 +113,10 @@ namespace BizHawk.Emulation.Common
 		{
 			return new TextStateFPtrs
 			{
-				Save = new TextStateFPtrs.DataFunction(Save),
+				Save = Save,
 				Load = null,
-				EnterSection = new TextStateFPtrs.SectionFunction(EnterSectionSave),
-				ExitSection = new TextStateFPtrs.SectionFunction(ExitSection)
+				EnterSection = EnterSectionSave,
+				ExitSection = ExitSection
 			};
 		}
 
@@ -122,9 +125,9 @@ namespace BizHawk.Emulation.Common
 			return new TextStateFPtrs
 			{
 				Save = null,
-				Load = new TextStateFPtrs.DataFunction(Load),
-				EnterSection = new TextStateFPtrs.SectionFunction(EnterSectionLoad),
-				ExitSection = new TextStateFPtrs.SectionFunction(ExitSection)
+				Load = Load,
+				EnterSection = EnterSectionLoad,
+				ExitSection = ExitSection
 			};
 		}
 	}

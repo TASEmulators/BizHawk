@@ -7,20 +7,20 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 	{
 		public int LagCount
 		{
-			get { return _lagCount; }
-			set { _lagCount = value; }
+			get => _lagCount;
+			set => _lagCount = value;
 		}
 
 		public bool IsLagFrame
 		{
-			get { return _isLag; }
-			set { _isLag = value; }
+			get => _isLag;
+			set => _isLag = value;
 		}
 
 		public IInputCallbackSystem InputCallbacks
 		{
 			[FeatureNotImplemented]
-			get { throw new NotImplementedException(); }
+			get => throw new NotImplementedException();
 		}
 
 		private int _lagCount = 0;

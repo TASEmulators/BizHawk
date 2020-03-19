@@ -6,26 +6,26 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Client.EmuHawk
 {
 	[Schema("GB")]
-	public class GBSchema : IVirtualPadSchema
+	// ReSharper disable once UnusedMember.Global
+	public class GbSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
-			if (core.ControllerDefinition.Name == "Gameboy Controller + Tilt")
+			switch (core.ControllerDefinition.Name)
 			{
-				yield return StandardControllerH();
-				yield return ConsoleButtonsH();
-				yield return TiltControls();
-			}
-			else if (core.ControllerDefinition.Name == "Gameboy Controller H")
-			{
-				yield return StandardControllerH();
-				yield return ConsoleButtonsH();
-			}
-			else
-			{
-				yield return StandardController();
-				yield return ConsoleButtons();
-
+				case "Gameboy Controller + Tilt":
+					yield return StandardControllerH();
+					yield return ConsoleButtonsH();
+					yield return TiltControls();
+					break;
+				case "Gameboy Controller H":
+					yield return StandardControllerH();
+					yield return ConsoleButtonsH();
+					break;
+				default:
+					yield return StandardController();
+					yield return ConsoleButtons();
+					break;
 			}
 		}
 

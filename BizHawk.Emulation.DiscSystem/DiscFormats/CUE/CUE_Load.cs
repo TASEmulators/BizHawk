@@ -1,5 +1,5 @@
 //TODO:
-//"The first index of a file must start at 00:00:00" - if this isnt the case, we'll be doing nonsense for sure. so catch it
+//"The first index of a file must start at 00:00:00" - if this isn't the case, we'll be doing nonsense for sure. so catch it
 //Recover the idea of TOCPoints maybe, as it's a more flexible way of generating the structure.
 
 //TODO
@@ -18,8 +18,6 @@
 //POSTGAP commands are special : TBD
 
 using System;
-using System.Linq;
-using System.Text;
 using System.IO;
 using System.Collections.Generic;
 
@@ -282,9 +280,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					SS_Base ss = null;
 					if (generateGap)
 					{
-						var ss_gap = new SS_Gap();
-						ss_gap.TrackType = qTrack.CompiledCueTrack.TrackType;
-						ss = ss_gap;
+						ss = new SS_Gap { TrackType = qTrack.CompiledCueTrack.TrackType };
 					}
 					else
 					{
@@ -355,8 +351,10 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				int specifiedPostgapLength = cct.PostgapLength.Sector;
 				for (int s = 0; s < specifiedPostgapLength; s++)
 				{
-					var ss = new SS_Gap();
-					ss.TrackType = cct.TrackType; //TODO - old track type in some < -150 cases?
+					var ss = new SS_Gap
+					{
+						TrackType = cct.TrackType  // TODO - old track type in some < -150 cases?
+					};
 
 					//-subq-
 					byte ADR = 1;

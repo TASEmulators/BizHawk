@@ -1,56 +1,25 @@
-﻿using System.IO;
-
-using BizHawk.Common;
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
-	public partial class A7800Hawk : IStatable
+	public partial class A7800Hawk
 	{
-		public bool BinarySaveStatesPreferred => true;
-
-		public void SaveStateText(TextWriter writer)
-		{
-			SyncState(new Serializer(writer));
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			SyncState(new Serializer(reader));
-		}
-
-		public void SaveStateBinary(BinaryWriter bw)
-		{
-			SyncState(new Serializer(bw));
-		}
-
-		public void LoadStateBinary(BinaryReader br)
-		{
-			SyncState(new Serializer(br));
-		}
-
-		public byte[] SaveStateBinary()
-		{
-			MemoryStream ms = new MemoryStream();
-			BinaryWriter bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			return ms.ToArray();
-		}
-
 		private void SyncState(Serializer ser)
 		{
+			ser.BeginSection("Atari7800");
+
 			cpu.SyncState(ser);
 			tia.SyncState(ser);
 			maria.SyncState(ser);
 			m6532.SyncState(ser);
+			ser.BeginSection("Mapper");
 			mapper.SyncState(ser);
+			ser.EndSection();
 			pokey.SyncState(ser);
 
-			ser.BeginSection("Atari7800");
-			ser.Sync("Lag", ref _lagcount);
+			ser.Sync("Lag", ref _lagCount);
 			ser.Sync("Frame", ref _frame);
-			ser.Sync("IsLag", ref _islag);
+			ser.Sync("IsLag", ref _isLag);
 			_controllerDeck.SyncState(ser);
 
 			ser.Sync(nameof(A7800_control_register), ref A7800_control_register);
@@ -69,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			ser.Sync(nameof(cpu_resume_pending), ref cpu_resume_pending);
 
 			ser.Sync(nameof(slow_access), ref slow_access);
-			ser.Sync(nameof(slow_access), ref slow_countdown);
+			ser.Sync(nameof(slow_countdown), ref slow_countdown);
 			ser.Sync("small flag", ref small_flag);
 			ser.Sync("pal kara", ref PAL_Kara);
 			ser.Sync("Cart RAM", ref cart_RAM);

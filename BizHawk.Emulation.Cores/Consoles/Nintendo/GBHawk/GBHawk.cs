@@ -2,7 +2,7 @@
 
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.Components.LR35902;
+using BizHawk.Emulation.Cores.Components.LR35902;
 
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 using System.Runtime.InteropServices;
@@ -14,8 +14,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		"",
 		isPorted: false,
 		isReleased: true)]
-	[ServiceNotApplicable(typeof(IDriveLight))]
-	public partial class GBHawk : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable, IGameboyCommon,
+	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
+	public partial class GBHawk : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, IGameboyCommon,
 	ISettable<GBHawk.GBSettings, GBHawk.GBSyncSettings>
 	{
 		// this register controls whether or not the GB BIOS is mapped into memory
@@ -55,6 +55,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public bool speed_switch;
 		public bool HDMA_transfer; // stalls CPU when in progress
 		public byte IR_reg, IR_mask, IR_signal, IR_receive, IR_self;
+		public int IR_write;
 
 		// several undocumented GBC Registers
 		public byte undoc_6C, undoc_72, undoc_73, undoc_74, undoc_75, undoc_76, undoc_77;
@@ -83,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		private static byte[] GBA_override = { 0xFF, 0x00, 0xCD, 0x03, 0x35, 0xAA, 0x31, 0x90, 0x94, 0x00, 0x00, 0x00, 0x00 };
 
-		[CoreConstructor("GB", "GBC")]
+		[CoreConstructor(new[] { "GB", "GBC" })]
 		public GBHawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ object settings, object syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
@@ -163,17 +164,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			Buffer.BlockCopy(rom, 0x100, header, 0, 0x50);
 
-			if (is_GBC && (header[0x43] == 0))
+			if (is_GBC && ((header[0x43] != 0x80) && (header[0x43] != 0xC0)))
 			{
-				ppu = new GBC_PPU_GB();
+				ppu = new GBC_GB_PPU();
 			}
 
 			Console.WriteLine("MD5: " + rom.HashMD5(0, rom.Length));
 			Console.WriteLine("SHA1: " + rom.HashSHA1(0, rom.Length));
 			_rom = rom;
 			Setup_Mapper();
-
-			_frameHz = 60;
 
 			timer.Core = this;
 			audio.Core = this;
@@ -189,8 +188,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			_tracer = new TraceBuffer { Header = cpu.TraceHeader };
 			ser.Register<ITraceable>(_tracer);
-
+			ser.Register<IStatable>(new StateSerializer(SyncState, false));
 			SetupMemoryDomains();
+			cpu.SetCallbacks(ReadMemory, PeekMemory, PeekMemory, WriteMemory);
 			HardReset();
 
 			iptr0 = Marshal.AllocHGlobal(VRAM.Length + 1);
@@ -288,7 +288,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			GBC_compat = is_GBC;
 			in_vblank = true; // we start off in vblank since the LCD is off
 			in_vblank_old = true;
-
+			double_speed = false;
+			VRAM_Bank = 0;
 			RAM_Bank = 1; // RAM bank always starts as 1 (even writing zero still sets 1)
 
 			Register_Reset();
@@ -296,9 +297,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ppu.Reset();
 			audio.Reset();
 			serialport.Reset();
-
-			cpu.SetCallbacks(ReadMemory, PeekMemory, PeekMemory, WriteMemory);
-
+			mapper.Reset();
+			cpu.Reset();
+			
 			_vidbuffer = new int[VirtualWidth * VirtualHeight];
 			frame_buffer = new int[VirtualWidth * VirtualHeight];
 		}
@@ -340,8 +341,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0x1E: mapper = new MapperMBC5();		mppr = "MBC5";		has_bat = true;		break;
 				case 0x20: mapper = new MapperMBC6();		mppr = "MBC6";							break;
 				case 0x22: mapper = new MapperMBC7();		mppr = "MBC7";		has_bat = true;		break;
-				case 0xFC: mapper = new MapperCamera();		mppr = "CAM";							break;
-				case 0xFD: mapper = new MapperTAMA5();		mppr = "TAMA5";							break;
+				case 0xFC: mapper = new MapperCamera();		mppr = "CAM";		has_bat = true;		break;
+				case 0xFD: mapper = new MapperTAMA5();		mppr = "TAMA5";		has_bat = true;		break;
 				case 0xFE: mapper = new MapperHuC3();		mppr = "HuC3";							break;
 				case 0xFF: mapper = new MapperHuC1();		mppr = "HuC1";							break;
 
@@ -452,8 +453,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				has_bat = true;
 			}
 
+			// TAMA5 has 0x1000 bytes of RAM, regardless of any header info
+			if (mppr == "TAMA5")
+			{
+				cart_RAM = new byte[0x20];
+				has_bat = true;
+			}
+
 			mapper.Core = this;
-			mapper.Initialize();
 
 			if (cart_RAM != null && (mppr != "MBC7"))
 			{
@@ -465,32 +472,35 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 			}
 			
-			// Extra RTC initialization for mbc3
+			// Extra RTC initialization for mbc3, HuC3, and TAMA5
 			if (mppr == "MBC3")
 			{
 				Use_MT = true;
+
+				mapper.RTC_Get(_syncSettings.RTCOffset, 5);
+
 				int days = (int)Math.Floor(_syncSettings.RTCInitialTime / 86400.0);
 
 				int days_upper = ((days & 0x100) >> 8) | ((days & 0x200) >> 2);
 
-				mapper.RTC_Get((byte)days_upper, 4);
-				mapper.RTC_Get((byte)(days & 0xFF), 3);
+				mapper.RTC_Get(days_upper, 4);
+				mapper.RTC_Get(days & 0xFF, 3);
 
 				int remaining = _syncSettings.RTCInitialTime - (days * 86400);
 
 				int hours = (int)Math.Floor(remaining / 3600.0);
 
-				mapper.RTC_Get((byte)(hours & 0xFF), 2);
+				mapper.RTC_Get(hours & 0xFF, 2);
 
 				remaining = remaining - (hours * 3600);
 
 				int minutes = (int)Math.Floor(remaining / 60.0);
 
-				mapper.RTC_Get((byte)(minutes & 0xFF), 1);
+				mapper.RTC_Get(minutes & 0xFF, 1);
 
 				remaining = remaining - (minutes * 60);
 
-				mapper.RTC_Get((byte)(remaining & 0xFF), 0);
+				mapper.RTC_Get(remaining & 0xFF, 0);
 			}
 
 			if (mppr == "HuC3")
@@ -499,23 +509,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				int years = (int)Math.Floor(_syncSettings.RTCInitialTime / 31536000.0);
 
-				mapper.RTC_Get((byte)years, 24);
+				mapper.RTC_Get(years, 24);
 
 				int remaining = _syncSettings.RTCInitialTime - (years * 31536000);
 
 				int days = (int)Math.Floor(remaining / 86400.0);
 				int days_upper = (days >> 8) & 0xF;
 
-				mapper.RTC_Get((byte)days_upper, 20);
-				mapper.RTC_Get((byte)(days & 0xFF), 12);
+				mapper.RTC_Get(days_upper, 20);
+				mapper.RTC_Get(days & 0xFF, 12);
 
 				remaining = remaining - (days * 86400);
 
 				int minutes = (int)Math.Floor(remaining / 60.0);
 				int minutes_upper = (minutes >> 8) & 0xF;
 
-				mapper.RTC_Get((byte)(minutes_upper), 8);
-				mapper.RTC_Get((byte)(remaining & 0xFF), 0);
+				mapper.RTC_Get(minutes_upper, 8);
+				mapper.RTC_Get(remaining & 0xFF, 0);
+			}
+
+			if (mppr == "TAMA5")
+			{
+				Use_MT = true;
+
+				// currently no date / time input for TAMA5
+
 			}
 		}
 	}

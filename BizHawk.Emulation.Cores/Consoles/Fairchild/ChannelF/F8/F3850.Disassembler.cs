@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.ChannelF
@@ -39,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		}
 
 
-		readonly static string[] mnemonics = new string[]
+		static readonly string[] mnemonics = new string[]
 		{
 			"LR A, KU",			// 0x00
 			"LR A, KL",			// 0x01
@@ -324,14 +320,11 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		public string Cpu
 		{
-			get { return "F3850"; }
+			get => "F3850";
 			set { }
 		}
 
-		public string PCRegisterName
-		{
-			get { return "PC"; }
-		}
+		public string PCRegisterName => "PC";
 
 		public IEnumerable<string> AvailableCpus
 		{

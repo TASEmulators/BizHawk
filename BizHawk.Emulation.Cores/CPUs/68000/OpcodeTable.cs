@@ -121,7 +121,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			foreach (var opcode in opList)
 			{
 				int opc = Convert.ToInt32(opcode, 2);
-				if (Opcodes[opc] != null && instr.NotIn("movea", "andi2sr", "eori2sr", "ori2sr", "ext", "dbcc", "swap", "cmpm"))
+				if (Opcodes[opc] != null && !instr.In("movea", "andi2sr", "eori2sr", "ori2sr", "ext", "dbcc", "swap", "cmpm"))
 					Console.WriteLine("Setting opcode for {0}, a handler is already set. overwriting. {1:X4}", instr, opc);
 				Opcodes[opc] = exec;
 			}
@@ -171,182 +171,182 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 		static readonly string[] Xn3 = { "000", "001", "010", "011", "100", "101", "110", "111" };
 
 		static readonly string[] Xn3Am3 = {
-            "000000", // Dn   Data register
-            "001000",
-            "010000",
-            "011000",
-            "100000",
-            "101000",
-            "110000",
-            "111000",
+			"000000", // Dn   Data register
+			"001000",
+			"010000",
+			"011000",
+			"100000",
+			"101000",
+			"110000",
+			"111000",
 
-            "000001", // An    Address register
-            "001001",
-            "010001",
-            "011001",
-            "100001",
-            "101001",
-            "110001",
-            "111001",
+			"000001", // An    Address register
+			"001001",
+			"010001",
+			"011001",
+			"100001",
+			"101001",
+			"110001",
+			"111001",
 
-            "000010", // (An) Address
-            "001010",
-            "010010",
-            "011010",
-            "100010",
-            "101010",
-            "110010",
-            "111010",
+			"000010", // (An) Address
+			"001010",
+			"010010",
+			"011010",
+			"100010",
+			"101010",
+			"110010",
+			"111010",
 
-            "000011", // (An)+ Address with Postincrement
-            "001011",
-            "010011",
-            "011011",
-            "100011",
-            "101011",
-            "110011",
-            "111011",
+			"000011", // (An)+ Address with Postincrement
+			"001011",
+			"010011",
+			"011011",
+			"100011",
+			"101011",
+			"110011",
+			"111011",
 
-            "000100", // -(An) Address with Predecrement
-            "001100",
-            "010100",
-            "011100",
-            "100100",
-            "101100",
-            "110100",
-            "111100",
+			"000100", // -(An) Address with Predecrement
+			"001100",
+			"010100",
+			"011100",
+			"100100",
+			"101100",
+			"110100",
+			"111100",
 
-            "000101", // (d16, An) Address with Displacement
-            "001101",
-            "010101",
-            "011101",
-            "100101",
-            "101101",
-            "110101",
-            "111101",
+			"000101", // (d16, An) Address with Displacement
+			"001101",
+			"010101",
+			"011101",
+			"100101",
+			"101101",
+			"110101",
+			"111101",
 
-            "000110", // (d8, An, Xn) Address with Index
-            "001110",
-            "010110",
-            "011110",
-            "100110",
-            "101110",
-            "110110",
-            "111110",
+			"000110", // (d8, An, Xn) Address with Index
+			"001110",
+			"010110",
+			"011110",
+			"100110",
+			"101110",
+			"110110",
+			"111110",
 
-            "010111", // (d16, PC)     PC with Displacement
-            "011111", // (d8, PC, Xn)  PC with Index
-            "000111", // (xxx).W       Absolute Short
-            "001111", // (xxx).L       Absolute Long
-            "100111", // #imm          Immediate            
-        };
+			"010111", // (d16, PC)     PC with Displacement
+			"011111", // (d8, PC, Xn)  PC with Index
+			"000111", // (xxx).W       Absolute Short
+			"001111", // (xxx).L       Absolute Long
+			"100111", // #imm          Immediate            
+		};
 
 		static readonly string[] Am3Xn3 = {
-            "000000", // Dn   Data register
-            "000001",
-            "000010",
-            "000011",
-            "000100",
-            "000101",
-            "000110",
-            "000111",
+			"000000", // Dn   Data register
+			"000001",
+			"000010",
+			"000011",
+			"000100",
+			"000101",
+			"000110",
+			"000111",
 
-            "001000", // An    Address register
-            "001001",
-            "001010",
-            "001011",
-            "001100",
-            "001101",
-            "001110",
-            "001111",
+			"001000", // An    Address register
+			"001001",
+			"001010",
+			"001011",
+			"001100",
+			"001101",
+			"001110",
+			"001111",
 
-            "010000", // (An) Address
-            "010001",
-            "010010",
-            "010011",
-            "010100",
-            "010101",
-            "010110",
-            "010111",
+			"010000", // (An) Address
+			"010001",
+			"010010",
+			"010011",
+			"010100",
+			"010101",
+			"010110",
+			"010111",
 
-            "011000", // (An)+ Address with Postincrement
-            "011001",
-            "011010",
-            "011011",
-            "011100",
-            "011101",
-            "011110",
-            "011111",
+			"011000", // (An)+ Address with Postincrement
+			"011001",
+			"011010",
+			"011011",
+			"011100",
+			"011101",
+			"011110",
+			"011111",
 
-            "100000", // -(An) Address with Predecrement
-            "100001",
-            "100010",
-            "100011",
-            "100100",
-            "100101",
-            "100110",
-            "100111",
+			"100000", // -(An) Address with Predecrement
+			"100001",
+			"100010",
+			"100011",
+			"100100",
+			"100101",
+			"100110",
+			"100111",
 
-            "101000", // (d16, An) Address with Displacement
-            "101001",
-            "101010",
-            "101011",
-            "101100",
-            "101101",
-            "101110",
-            "101111",
+			"101000", // (d16, An) Address with Displacement
+			"101001",
+			"101010",
+			"101011",
+			"101100",
+			"101101",
+			"101110",
+			"101111",
 
-            "110000", // (d8, An, Xn) Address with Index
-            "110001",
-            "110010",
-            "110011",
-            "110100",
-            "110101",
-            "110110",
-            "110111",
+			"110000", // (d8, An, Xn) Address with Index
+			"110001",
+			"110010",
+			"110011",
+			"110100",
+			"110101",
+			"110110",
+			"110111",
 
-            "111010", // (d16, PC)     PC with Displacement
-            "111011", // (d8, PC, Xn)  PC with Index
-            "111000", // (xxx).W       Absolute Short
-            "111001", // (xxx).L       Absolute Long
-            "111100", // #imm          Immediate            
-        };
+			"111010", // (d16, PC)     PC with Displacement
+			"111011", // (d8, PC, Xn)  PC with Index
+			"111000", // (xxx).W       Absolute Short
+			"111001", // (xxx).L       Absolute Long
+			"111100", // #imm          Immediate            
+		};
 
 		static readonly string[] ConditionMain = {
-            "0010", // HI  Higher (unsigned)
-            "0011", // LS  Lower or Same (unsigned)
-            "0100", // CC  Carry Clear (aka Higher or Same, unsigned)
-            "0101", // CS  Carry Set (aka Lower, unsigned)
-            "0110", // NE  Not Equal
-            "0111", // EQ  Equal
-            "1000", // VC  Overflow Clear
-            "1001", // VS  Overflow Set
-            "1010", // PL  Plus
-            "1011", // MI  Minus
-            "1100", // GE  Greater or Equal (signed)
-            "1101", // LT  Less Than (signed)
-            "1110", // GT  Greater Than (signed)
-            "1111"  // LE  Less or Equal (signed)
-        };
+			"0010", // HI  Higher (unsigned)
+			"0011", // LS  Lower or Same (unsigned)
+			"0100", // CC  Carry Clear (aka Higher or Same, unsigned)
+			"0101", // CS  Carry Set (aka Lower, unsigned)
+			"0110", // NE  Not Equal
+			"0111", // EQ  Equal
+			"1000", // VC  Overflow Clear
+			"1001", // VS  Overflow Set
+			"1010", // PL  Plus
+			"1011", // MI  Minus
+			"1100", // GE  Greater or Equal (signed)
+			"1101", // LT  Less Than (signed)
+			"1110", // GT  Greater Than (signed)
+			"1111"  // LE  Less or Equal (signed)
+		};
 
 		static readonly string[] ConditionAll = {
-            "0000", // T   True 
-            "0001", // F   False            
-            "0010", // HI  Higher (unsigned)
-            "0011", // LS  Lower or Same (unsigned)
-            "0100", // CC  Carry Clear (aka Higher or Same, unsigned)
-            "0101", // CS  Carry Set (aka Lower, unsigned)
-            "0110", // NE  Not Equal
-            "0111", // EQ  Equal
-            "1000", // VC  Overflow Clear
-            "1001", // VS  Overflow Set
-            "1010", // PL  Plus
-            "1011", // MI  Minus
-            "1100", // GE  Greater or Equal (signed)
-            "1101", // LT  Less Than (signed)
-            "1110", // GT  Greater Than (signed)
-            "1111"  // LE  Less or Equal (signed)
-        };
+			"0000", // T   True 
+			"0001", // F   False            
+			"0010", // HI  Higher (unsigned)
+			"0011", // LS  Lower or Same (unsigned)
+			"0100", // CC  Carry Clear (aka Higher or Same, unsigned)
+			"0101", // CS  Carry Set (aka Lower, unsigned)
+			"0110", // NE  Not Equal
+			"0111", // EQ  Equal
+			"1000", // VC  Overflow Clear
+			"1001", // VS  Overflow Set
+			"1010", // PL  Plus
+			"1011", // MI  Minus
+			"1100", // GE  Greater or Equal (signed)
+			"1101", // LT  Less Than (signed)
+			"1110", // GT  Greater Than (signed)
+			"1111"  // LE  Less or Equal (signed)
+		};
 
 		#endregion
 	}

@@ -1,15 +1,12 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Newtonsoft.Json;
 
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
-	public partial class GambatteLink : IStatable
+	public partial class GambatteLink : ITextStatable
 	{
-		public bool BinarySaveStatesPreferred { get { return true; } }
-
 		public void SaveStateText(TextWriter writer)
 		{
 			var s = new DGBSerialized

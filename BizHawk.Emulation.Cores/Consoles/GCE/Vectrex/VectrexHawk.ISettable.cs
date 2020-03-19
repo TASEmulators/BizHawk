@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 using Newtonsoft.Json;
 
@@ -8,7 +7,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 {
-	public partial class VectrexHawk : IEmulator, IStatable, ISettable<VectrexHawk.VectrexSettings, VectrexHawk.VectrexSyncSettings>
+	public partial class VectrexHawk : IEmulator, ISettable<VectrexHawk.VectrexSettings, VectrexHawk.VectrexSyncSettings>
 	{
 		public VectrexSettings GetSettings()
 		{
@@ -43,6 +42,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			{
 				return (VectrexSettings)MemberwiseClone();
 			}
+
+			public VectrexSettings()
+			{
+				SettingsUtil.SetDefaultValues(this);
+			}
 		}
 
 		public class VectrexSyncSettings
@@ -66,7 +70,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			[DefaultValue(ControllerType.Digital)]
 			public ControllerType VectrexController1
 			{
-				get { return _VectrexController1; }
+				get => _VectrexController1;
 				set
 				{
 					if (value == ControllerType.Digital) { Port1 = VectrexHawkControllerDeck.DefaultControllerName; }
@@ -81,7 +85,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			[DefaultValue(ControllerType.Digital)]
 			public ControllerType VectrexController2
 			{
-				get { return _VectrexController2; }
+				get => _VectrexController2;
 				set
 				{
 					if (value == ControllerType.Digital) { Port2 = VectrexHawkControllerDeck.DefaultControllerName; }
@@ -94,6 +98,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			public VectrexSyncSettings Clone()
 			{
 				return (VectrexSyncSettings)MemberwiseClone();
+			}
+
+			public VectrexSyncSettings()
+			{
+				SettingsUtil.SetDefaultValues(this);
 			}
 
 			public static bool NeedsReboot(VectrexSyncSettings x, VectrexSyncSettings y)

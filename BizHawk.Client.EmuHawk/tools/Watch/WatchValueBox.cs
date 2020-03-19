@@ -23,11 +23,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public WatchSize ByteSize
 		{
-			get
-			{
-				return _size;
-			}
-
+			get => _size;
 			set
 			{
 				var changed = _size != value;
@@ -37,21 +33,13 @@ namespace BizHawk.Client.EmuHawk
 				{
 					SetMaxLength();
 
-					bool isTypeCompatible = false;
-					switch (value)
+					var isTypeCompatible = value switch
 					{
-						case WatchSize.Byte:
-							isTypeCompatible = ByteWatch.ValidTypes.Any(t => t == _type);
-							break;
-
-						case WatchSize.Word:
-							isTypeCompatible = WordWatch.ValidTypes.Any(t => t == _type);
-							break;
-
-						case WatchSize.DWord:
-							isTypeCompatible = DWordWatch.ValidTypes.Any(t => t == _type);
-							break;
-					}
+						WatchSize.Byte => ByteWatch.ValidTypes.Any(t => t == _type),
+						WatchSize.Word => WordWatch.ValidTypes.Any(t => t == _type),
+						WatchSize.DWord => DWordWatch.ValidTypes.Any(t => t == _type),
+						_ => false
+					};
 
 					if (!isTypeCompatible)
 					{
@@ -65,70 +53,39 @@ namespace BizHawk.Client.EmuHawk
 
 		public DisplayType Type
 		{
-			get
-			{
-				return _type;
-			}
-
+			get => _type;
 			set
 			{
-				_type = value;
 				var val = ToRawInt();
+				_type = value;
 				SetMaxLength();
 				SetFromRawInt(val);
 			}
 		}
 
-		private uint MaxUnsignedInt
-		{
-			get
+		private uint MaxUnsignedInt =>
+			ByteSize switch
 			{
-				switch (ByteSize)
-				{
-					default:
-					case WatchSize.Byte:
-						return byte.MaxValue;
-					case WatchSize.Word:
-						return ushort.MaxValue;
-					case WatchSize.DWord:
-						return uint.MaxValue;
-				}
-			}
-		}
+				WatchSize.Word => ushort.MaxValue,
+				WatchSize.DWord => uint.MaxValue,
+				_ => byte.MaxValue
+			};
 
-		private int MaxSignedInt
-		{
-			get
+		private int MaxSignedInt =>
+			ByteSize switch
 			{
-				switch (ByteSize)
-				{
-					default:
-					case WatchSize.Byte:
-						return sbyte.MaxValue;
-					case WatchSize.Word:
-						return short.MaxValue;
-					case WatchSize.DWord:
-						return int.MaxValue;
-				}
-			}
-		}
+				WatchSize.Word => short.MaxValue,
+				WatchSize.DWord => int.MaxValue,
+				_ => sbyte.MaxValue
+			};
 
-		private int MinSignedInt
-		{
-			get
+		private int MinSignedInt =>
+			ByteSize switch
 			{
-				switch (ByteSize)
-				{
-					default:
-					case WatchSize.Byte:
-						return sbyte.MinValue;
-					case WatchSize.Word:
-						return short.MinValue;
-					case WatchSize.DWord:
-						return int.MinValue;
-				}
-			}
-		}
+				WatchSize.Word => short.MinValue,
+				WatchSize.DWord => int.MinValue,
+				_ => sbyte.MinValue
+			};
 
 		private double Max12_4 => MaxUnsignedInt / 16.0;
 
@@ -181,65 +138,39 @@ namespace BizHawk.Client.EmuHawk
 					MaxLength = 8;
 					break;
 				case DisplayType.Binary:
-					switch (_size)
+					MaxLength = _size switch
 					{
-						default:
-						case WatchSize.Byte:
-							MaxLength = 8;
-							break;
-						case WatchSize.Word:
-							MaxLength = 16;
-							break;
-					}
-
+						WatchSize.Byte => 8,
+						WatchSize.Word => 16,
+						_ => 8
+					};
 					break;
 				case DisplayType.Hex:
-					switch (_size)
+					MaxLength = _size switch
 					{
-						default:
-						case WatchSize.Byte:
-							MaxLength = 2;
-							break;
-						case WatchSize.Word:
-							MaxLength = 4;
-							break;
-						case WatchSize.DWord:
-							MaxLength = 8;
-							break;
-					}
-
+						WatchSize.Byte => 2,
+						WatchSize.Word => 4,
+						WatchSize.DWord => 8,
+						_ => 2
+					};
 					break;
 				case DisplayType.Signed:
-					switch (_size)
+					MaxLength = _size switch
 					{
-						default:
-						case WatchSize.Byte:
-							MaxLength = 4;
-							break;
-						case WatchSize.Word:
-							MaxLength = 6;
-							break;
-						case WatchSize.DWord:
-							MaxLength = 11;
-							break;
-					}
-
+						WatchSize.Byte => 4,
+						WatchSize.Word => 6,
+						WatchSize.DWord => 11,
+						_ => 4
+					};
 					break;
 				case DisplayType.Unsigned:
-					switch (_size)
+					MaxLength = _size switch
 					{
-						default:
-						case WatchSize.Byte:
-							MaxLength = 3;
-							break;
-						case WatchSize.Word:
-							MaxLength = 5;
-							break;
-						case WatchSize.DWord:
-							MaxLength = 10;
-							break;
-					}
-
+						WatchSize.Byte => 3,
+						WatchSize.Word => 5,
+						WatchSize.DWord => 10,
+						_ => 3
+					};
 					break;
 				case DisplayType.FixedPoint_12_4:
 					MaxLength = 9;
@@ -363,18 +294,18 @@ namespace BizHawk.Client.EmuHawk
 						Text = uval.ToString();
 						break;
 					case DisplayType.Binary:
-						var bval = (uint)(ToRawInt() ?? 0);
-						if (bval == MaxUnsignedInt)
+						var bVal = (uint)(ToRawInt() ?? 0);
+						if (bVal == MaxUnsignedInt)
 						{
-							bval = 0;
+							bVal = 0;
 						}
 						else
 						{
-							bval++;
+							bVal++;
 						}
 
 						var numBits = ((int)ByteSize) * 8;
-						Text = Convert.ToString(bval, 2).PadLeft(numBits, '0');
+						Text = Convert.ToString(bVal, 2).PadLeft(numBits, '0');
 						break;
 					case DisplayType.Hex:
 						var hexVal = (uint)(ToRawInt() ?? 0);
@@ -429,17 +360,17 @@ namespace BizHawk.Client.EmuHawk
 						Text = f16val.ToString();
 						break;
 					case DisplayType.Float:
-						var dval = double.Parse(text);
-						if (dval > double.MaxValue - 1)
+						var dVal = double.Parse(text);
+						if (dVal > double.MaxValue - 1)
 						{
-							dval = 0;
+							dVal = 0;
 						}
 						else
 						{
-							dval++;
+							dVal++;
 						}
 
-						Text = dval.ToString();
+						Text = dVal.ToString();
 						break;
 				}
 			}
@@ -479,18 +410,18 @@ namespace BizHawk.Client.EmuHawk
 						Text = uval.ToString();
 						break;
 					case DisplayType.Binary:
-						var bval = (uint)(ToRawInt() ?? 0);
-						if (bval == 0)
+						var bVal = (uint)(ToRawInt() ?? 0);
+						if (bVal == 0)
 						{
-							bval = MaxUnsignedInt;
+							bVal = MaxUnsignedInt;
 						}
 						else
 						{
-							bval--;
+							bVal--;
 						}
 
 						var numBits = ((int)ByteSize) * 8;
-						Text = Convert.ToString(bval, 2).PadLeft(numBits, '0');
+						Text = Convert.ToString(bVal, 2).PadLeft(numBits, '0');
 						break;
 					case DisplayType.Hex:
 						var hexVal = (uint)(ToRawInt() ?? 0);
@@ -618,9 +549,7 @@ namespace BizHawk.Client.EmuHawk
 				case DisplayType.Signed:
 					if (Text.IsSigned())
 					{
-						if (Text == "-")
-							return 0;
-						return int.Parse(Text);
+						return Text == "-" ? 0 : int.Parse(Text);
 					}
 
 					break;
@@ -700,9 +629,9 @@ namespace BizHawk.Client.EmuHawk
 						Text = uval.ToString();
 						break;
 					case DisplayType.Binary:
-						var bval = (uint)val.Value;
+						var bVal = (uint)val.Value;
 						var numBits = ((int)ByteSize) * 8;
-						Text = Convert.ToString(bval, 2).PadLeft(numBits, '0');
+						Text = Convert.ToString(bVal, 2).PadLeft(numBits, '0');
 						break;
 					case DisplayType.Hex:
 						Text = val.Value.ToHexString(MaxLength);

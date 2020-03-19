@@ -1,58 +1,23 @@
 ﻿using System.IO;
 
 using BizHawk.Common;
-using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.ColecoVision
 {
-	public partial class ColecoVision : IStatable
+	public partial class ColecoVision
 	{
-		public bool BinarySaveStatesPreferred
-		{
-			get { return true; }
-		}
-
-		public void SaveStateText(TextWriter writer)
-		{
-			SyncState(new Serializer(writer));
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			SyncState(new Serializer(reader));
-		}
-
-		public void SaveStateBinary(BinaryWriter bw)
-		{
-			SyncState(new Serializer(bw));
-		}
-
-		public void LoadStateBinary(BinaryReader br)
-		{
-			SyncState(new Serializer(br));
-		}
-
-		public byte[] SaveStateBinary()
-		{
-			MemoryStream ms = new MemoryStream();
-			BinaryWriter bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			return ms.ToArray();
-		}
-
 		private void SyncState(Serializer ser)
 		{
 			byte[] core = null;
 			if (ser.IsWriter)
 			{
-				var ms = new MemoryStream();
+				using var ms = new MemoryStream();
 				ms.Close();
 				core = ms.ToArray();
 			}
-			_cpu.SyncState(ser);
 
-			ser.BeginSection("Coleco");		
+			ser.BeginSection("Coleco");
+			_cpu.SyncState(ser);
 			_vdp.SyncState(ser);
 			ControllerDeck.SyncState(ser);
 			PSG.SyncState(ser);

@@ -23,7 +23,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
-			InputCallbacks = new InputCallbackSystem();
 
 			CoreComm = comm;
 			_roms = roms?.ToList() ?? new List<byte[]>();
@@ -60,6 +59,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 			_tracer = new TraceBuffer { Header = _board.Cpu.TraceHeader };
 			ser.Register<ITraceable>(_tracer);
+			ser.Register<IStatable>(new StateSerializer(SyncState));
 
 			if (_board.CartPort.IsConnected)
 			{

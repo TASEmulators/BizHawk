@@ -1,0 +1,17 @@
+# in case we have libs that need to build before cores, I split this up into two parts
+LIBS = emulibc libco
+CORES = gpgx libsnes pcfx vb ngp picodrive sameboy ss uzem
+
+default: all
+
+FORCE:
+
+$(CORES) : FORCE $(LIBS)
+	make -C $@ $(MAKECMDGOALS)
+
+$(LIBS) ::
+	make -C $@ $(MAKECMDGOALS)
+
+
+all clean : $(CORES)
+

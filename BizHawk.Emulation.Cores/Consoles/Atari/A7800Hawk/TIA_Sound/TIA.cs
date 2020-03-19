@@ -1,9 +1,7 @@
-﻿using System;
-
-namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
+﻿namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
 	// Emulates the TIA
-	public partial class TIA
+	public sealed partial class TIA
 	{
 		public A7800Hawk Core { get; set; }
 
@@ -93,57 +91,49 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			{
 				if ((Core.m6532._outputB & 0x04) == 0 && (Core.m6532._ddRb & 0x04) == 0x04)
 				{
-					Core._islag = false;
+					Core._isLag = false;
 					return (byte)(Core.p1_fire_2x & 0x80);
 				}
-				else
-				{
-					return 0;
-				}			
+
+				return 0;
 			}
 
 			if (maskedAddr == 0x09) // INPT1
 			{
 				if ((Core.m6532._outputB & 0x04) == 0 && (Core.m6532._ddRb & 0x04) == 0x04)
 				{
-					Core._islag = false;
+					Core._isLag = false;
 					return (byte)((Core.p1_fire_2x & 0x40)<<1);
 				}
-				else
-				{
-					return 0;
-				}
+
+				return 0;
 			}
 
 			if (maskedAddr == 0x0A) // INPT2
 			{
 				if ((Core.m6532._outputB & 0x10) == 0 && (Core.m6532._ddRb & 0x10) == 0x10)
 				{
-					Core._islag = false;
+					Core._isLag = false;
 					return (byte)(Core.p2_fire_2x & 0x80);
 				}
-				else
-				{
-					return 0;
-				}
+
+				return 0;
 			}
 
 			if (maskedAddr == 0x0B) // INPT3
 			{
 				if ((Core.m6532._outputB & 0x10) == 0 && (Core.m6532._ddRb & 0x10) == 0x10)
 				{
-					Core._islag = false;
+					Core._isLag = false;
 					return (byte)((Core.p2_fire_2x & 0x40)<<1);
 				}
-				else
-				{
-					return 0;
-				}
+
+				return 0;
 			}
 
 			if (maskedAddr == 0x0C) // INPT4
 			{
-				Core._islag = false;
+				Core._isLag = false;
 
 				if (!Core.p1_is_2button)
 				{
@@ -151,43 +141,37 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					{
 						return Core.p1_fire;
 					}
-					else
-					{
-						return Core.lg_1_trigger_hit;
-					}			
+
+					return Core.lg_1_trigger_hit;
 				}
-				else if ((Core.m6532._outputB & 0x04) != 0 || (Core.m6532._ddRb & 0x04) != 0x04)
+
+				if ((Core.m6532._outputB & 0x04) != 0 || (Core.m6532._ddRb & 0x04) != 0x04)
 				{
 					return Core.p1_fire;
 				}
-				else
-				{
-					return 0x80;
-				}
+
+				return 0x80;
 			}
 
 			if (maskedAddr == 0x0D) // INPT5
 			{
-				Core._islag = false;
+				Core._isLag = false;
 				if (!Core.p2_is_2button)
 				{
 					if (!Core.p2_is_lightgun)
 					{
 						return Core.p2_fire;
 					}
-					else
-					{
-						return Core.lg_2_trigger_hit;
-					}
+
+					return Core.lg_2_trigger_hit;
 				}
-				else if ((Core.m6532._outputB & 0x10) != 0 || (Core.m6532._ddRb & 0x10) != 0x10)
+
+				if ((Core.m6532._outputB & 0x10) != 0 || (Core.m6532._ddRb & 0x10) != 0x10)
 				{
 					return Core.p2_fire;
 				}
-				else
-				{
-					return 0x80;
-				}
+
+				return 0x80;
 			}
 
 			return 0;

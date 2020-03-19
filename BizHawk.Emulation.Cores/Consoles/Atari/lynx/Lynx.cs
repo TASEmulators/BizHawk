@@ -6,8 +6,8 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Lynx
 {
-	[Core("Handy", "K. Wilkins, Mednafen Team", true, true, "mednafen 0-9-34-1", "http://mednafen.sourceforge.net/")]
-	[ServiceNotApplicable(typeof(ISettable<,>), typeof(IDriveLight), typeof(IRegionable))]
+	[Core("Handy", "K. Wilkins, Mednafen Team", true, true, "mednafen 0-9-34-1", "http://mednafen.sourceforge.net/", false)]
+	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(IRegionable), typeof(ISettable<,>) })]
 	public partial class Lynx : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IInputPollable
 	{
 		[CoreConstructor("Lynx")]
@@ -27,8 +27,8 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			byte[] realfile = null;
 
 			{
-				var ms = new MemoryStream(file, false);
-				var br = new BinaryReader(ms);
+				using var ms = new MemoryStream(file, false);
+				using var br = new BinaryReader(ms);
 				string header = Encoding.ASCII.GetString(br.ReadBytes(4));
 				int p0 = br.ReadUInt16();
 				int p1 = br.ReadUInt16();
@@ -92,8 +92,8 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			Core = LibLynx.Create(realfile, realfile.Length, bios, bios.Length, pagesize0, pagesize1, false);
 			try
 			{
-				_savebuff = new byte[LibLynx.BinStateSize(Core)];
-				_savebuff2 = new byte[_savebuff.Length + 13];
+				_saveBuff = new byte[LibLynx.BinStateSize(Core)];
+				_saveBuff2 = new byte[_saveBuff.Length + 13];
 
 				int rot = game.OptionPresent("rotate") ? int.Parse(game.OptionValue("rotate")) : 0;
 				LibLynx.SetRotation(Core, rot);
@@ -128,9 +128,9 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 				LibLynx.Reset(Core);
 			}
 
-			int samples = _soundbuff.Length;
-			IsLagFrame = LibLynx.Advance(Core, GetButtons(controller), _videobuff, _soundbuff, ref samples);
-			_numsamp = samples / 2; // sound provider wants number of sample pairs
+			int samples = _soundBuff.Length;
+			IsLagFrame = LibLynx.Advance(Core, GetButtons(controller), _videoBuff, _soundBuff, ref samples);
+			_numSamp = samples / 2; // sound provider wants number of sample pairs
 			if (IsLagFrame)
 			{
 				LagCount++;

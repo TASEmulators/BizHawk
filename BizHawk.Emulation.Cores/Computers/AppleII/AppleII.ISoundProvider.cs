@@ -9,12 +9,12 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			_machine.Speaker.AudioService.GetSamples(out samples, out nsamp);
+			_machine.Memory.Speaker.GetSamples(out samples, out nsamp);
 		}
 
 		public void DiscardSamples()
 		{
-			_machine.Speaker.AudioService.Clear();
+			_machine.Memory.Speaker.Clear();
 		}
 
 		public SyncSoundMode SyncMode => SyncSoundMode.Sync;

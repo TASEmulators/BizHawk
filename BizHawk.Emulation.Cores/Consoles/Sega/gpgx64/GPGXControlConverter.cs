@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
@@ -14,16 +10,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		struct CName
 		{
-			public string Name;
-			public LibGPGX.INPUT_KEYS Key;
-			public CName(string Name, LibGPGX.INPUT_KEYS Key)
+			public readonly string Name;
+			public readonly LibGPGX.INPUT_KEYS Key;
+			public CName(string name, LibGPGX.INPUT_KEYS key)
 			{
-				this.Name = Name;
-				this.Key = Key;
+				Name = name;
+				Key = key;
 			}
 		}
 
-		static CName[] Genesis3 =
+		private static readonly CName[] Genesis3 =
 		{
 			new CName("Up", LibGPGX.INPUT_KEYS.INPUT_UP),
 			new CName("Down", LibGPGX.INPUT_KEYS.INPUT_DOWN),
@@ -35,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			new CName("Start", LibGPGX.INPUT_KEYS.INPUT_START),
 		};
 
-		static CName[] Genesis6 = 
+		private static readonly CName[] Genesis6 = 
 		{
 			new CName("Up", LibGPGX.INPUT_KEYS.INPUT_UP),
 			new CName("Down", LibGPGX.INPUT_KEYS.INPUT_DOWN),
@@ -51,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			new CName("Mode", LibGPGX.INPUT_KEYS.INPUT_MODE),
 		};
 
-		static CName[] Mouse =
+		private static readonly CName[] Mouse =
 		{
 			new CName("Mouse Left", LibGPGX.INPUT_KEYS.INPUT_MOUSE_LEFT),
 			new CName("Mouse Center", LibGPGX.INPUT_KEYS.INPUT_MOUSE_CENTER),
@@ -59,13 +55,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			new CName("Mouse Start", LibGPGX.INPUT_KEYS.INPUT_MOUSE_START),
 		};
 
-		static CName[] Lightgun =
+		private static readonly CName[] Lightgun =
 		{
 			new CName("Lightgun Trigger", LibGPGX.INPUT_KEYS.INPUT_MENACER_TRIGGER),
 			new CName("Lightgun Start", LibGPGX.INPUT_KEYS.INPUT_MENACER_START),
 		};
 
-		static CName[] Activator = 
+		private static readonly CName[] Activator = 
 		{
 			new CName("1L", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_1L),
 			new CName("1U", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_1U),
@@ -85,7 +81,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			new CName("8U", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_8U),
 		};
 
-		static CName[] XEA1P =
+		private static readonly CName[] Xea1P =
 		{
 			new CName("XE A", LibGPGX.INPUT_KEYS.INPUT_XE_A),
 			new CName("XE B", LibGPGX.INPUT_KEYS.INPUT_XE_B),
@@ -97,81 +93,85 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			new CName("XE E2", LibGPGX.INPUT_KEYS.INPUT_XE_E2),
 		};
 
-		static ControllerDefinition.FloatRange MouseRange = new ControllerDefinition.FloatRange(-256, 0, 255);
+		private static readonly ControllerDefinition.FloatRange MouseRange = new ControllerDefinition.FloatRange(-256, 0, 255);
+		
 		// lightgun needs to be transformed to match the current screen resolution
-		static ControllerDefinition.FloatRange LightgunRange = new ControllerDefinition.FloatRange(0, 5000, 10000);
+		private static readonly ControllerDefinition.FloatRange LightgunRange = new ControllerDefinition.FloatRange(0, 5000, 10000);
 
-		static ControllerDefinition.FloatRange XEA1PRange = new ControllerDefinition.FloatRange(-128, 0, 127);
+		private static readonly ControllerDefinition.FloatRange Xea1PRange = new ControllerDefinition.FloatRange(-128, 0, 127);
 
-		LibGPGX.InputData target = null;
-		IController source = null;
+		private LibGPGX.InputData _target;
+		private IController _source;
 
-		List<Action> Converts = new List<Action>();
+		private readonly List<Action> _converts = new List<Action>();
 
-		public ControllerDefinition ControllerDef { get; private set; }
+		public ControllerDefinition ControllerDef { get; }
 
-		void AddToController(int idx, int player, IEnumerable<CName> Buttons)
+		void AddToController(int idx, int player, IEnumerable<CName> buttons)
 		{
-			foreach (var Button in Buttons)
+			foreach (var button in buttons)
 			{
-				string Name = $"P{player} {Button.Name}";
-				ControllerDef.BoolButtons.Add(Name);
-				var ButtonFlag = Button.Key;
-				Converts.Add(delegate()
+				string name = $"P{player} {button.Name}";
+				ControllerDef.BoolButtons.Add(name);
+				var buttonFlag = button.Key;
+				_converts.Add(delegate
 				{
-					if (source.IsPressed(Name))
-						target.pad[idx] |= ButtonFlag;
+					if (_source.IsPressed(name))
+					{
+						_target.pad[idx] |= buttonFlag;
+					}
 				});
 			}
 		}
 
-		void DoMouseAnalog(int idx, int player)
+		private void DoMouseAnalog(int idx, int player)
 		{
-			string NX = $"P{player} Mouse X";
-			string NY = $"P{player} Mouse Y";
-			ControllerDef.FloatControls.Add(NX);
-			ControllerDef.FloatControls.Add(NY);
+			string nx = $"P{player} Mouse X";
+			string ny = $"P{player} Mouse Y";
+			ControllerDef.FloatControls.Add(nx);
+			ControllerDef.FloatControls.Add(ny);
 			ControllerDef.FloatRanges.Add(MouseRange);
 			ControllerDef.FloatRanges.Add(MouseRange);
-			Converts.Add(delegate()
+			_converts.Add(delegate
 			{
-				target.analog[(2 * idx) + 0] = (short)source.GetFloat(NX);
-				target.analog[(2 * idx) + 1] = (short)source.GetFloat(NY);
+				_target.analog[(2 * idx) + 0] = (short)_source.GetFloat(nx);
+				_target.analog[(2 * idx) + 1] = (short)_source.GetFloat(ny);
 			});
 		}
 
-		void DoLightgunAnalog(int idx, int player)
+		private void DoLightgunAnalog(int idx, int player)
 		{
-			string NX = $"P{player} Lightgun X";
-			string NY = $"P{player} Lightgun Y";
-			ControllerDef.FloatControls.Add(NX);
-			ControllerDef.FloatControls.Add(NY);
+			string nx = $"P{player} Lightgun X";
+			string ny = $"P{player} Lightgun Y";
+			ControllerDef.FloatControls.Add(nx);
+			ControllerDef.FloatControls.Add(ny);
 			ControllerDef.FloatRanges.Add(LightgunRange);
 			ControllerDef.FloatRanges.Add(LightgunRange);
-			Converts.Add(delegate()
+			_converts.Add(delegate
 			{
-				target.analog[(2 * idx) + 0] = (short)(source.GetFloat(NX) / 10000.0f * (ScreenWidth - 1));
-				target.analog[(2 * idx) + 1] = (short)(source.GetFloat(NY) / 10000.0f * (ScreenHeight - 1));
+				_target.analog[(2 * idx) + 0] = (short)(_source.GetFloat(nx) / 10000.0f * (ScreenWidth - 1));
+				_target.analog[(2 * idx) + 1] = (short)(_source.GetFloat(ny) / 10000.0f * (ScreenHeight - 1));
 			});
 		}
 
-		void DoXEA1PAnalog(int idx, int player)
+		private void DoXea1PAnalog(int idx, int player)
 		{
-			string NX = $"P{player} Stick X";
-			string NY = $"P{player} Stick Y";
-			string NZ = $"P{player} Stick Z";
-			ControllerDef.FloatControls.Add(NX);
-			ControllerDef.FloatControls.Add(NY);
-			ControllerDef.FloatControls.Add(NZ);
-			ControllerDef.FloatRanges.Add(XEA1PRange);
-			ControllerDef.FloatRanges.Add(XEA1PRange);
-			ControllerDef.FloatRanges.Add(XEA1PRange);
-			Converts.Add(delegate()
+			string nx = $"P{player} Stick X";
+			string ny = $"P{player} Stick Y";
+			string nz = $"P{player} Stick Z";
+			ControllerDef.FloatControls.Add(nx);
+			ControllerDef.FloatControls.Add(ny);
+			ControllerDef.FloatControls.Add(nz);
+			ControllerDef.FloatRanges.Add(Xea1PRange);
+			ControllerDef.FloatRanges.Add(Xea1PRange);
+			ControllerDef.FloatRanges.Add(Xea1PRange);
+			_converts.Add(delegate
 			{
-				target.analog[(2 * idx) + 0] = (short)(source.GetFloat(NX));
-				target.analog[(2 * idx) + 1] = (short)(source.GetFloat(NY));
+				_target.analog[(2 * idx) + 0] = (short)_source.GetFloat(nx);
+				_target.analog[(2 * idx) + 1] = (short)_source.GetFloat(ny);
+
 				// +2 is correct in how gpgx internally does this
-				target.analog[(2 * idx) + 2] = (short)(source.GetFloat(NZ));
+				_target.analog[(2 * idx) + 2] = (short)(_source.GetFloat(nz));
 			});
 		}
 
@@ -230,8 +230,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 						player++;
 						break;
 					case LibGPGX.INPUT_DEVICE.DEVICE_XE_A1P:
-						AddToController(i, player, XEA1P);
-						DoXEA1PAnalog(i, player);
+						AddToController(i, player, Xea1P);
+						DoXea1PAnalog(i, player);
 						player++;
 						break;
 					case LibGPGX.INPUT_DEVICE.DEVICE_PICO:
@@ -247,13 +247,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public void Convert(IController source, LibGPGX.InputData target)
 		{
-			this.source = source;
-			this.target = target;
+			_source = source;
+			_target = target;
 			target.ClearAllBools();
-			foreach (var f in Converts)
+			foreach (var f in _converts)
+			{
 				f();
-			this.source = null;
-			this.target = null;
+			}
+			_source = null;
+			_target = null;
 		}
 
 		/// <summary>
@@ -264,6 +266,5 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		/// must be set for proper lightgun operation
 		/// </summary>
 		public int ScreenHeight { get; set; }
-
 	}
 }

@@ -14,10 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public int BackgroundColor => 0;
 
-		public int[] GetVideoBuffer()
-		{
-			return _videoBuffer;
-		}
+		public int[] GetVideoBuffer() => _videoBuffer;
 
 		public int VsyncNumerator { get; }
 		public int VsyncDenominator { get; }

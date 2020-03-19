@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
-using System.Text;
 
 namespace BizHawk.Client.Common
 {
@@ -12,13 +9,13 @@ namespace BizHawk.Client.Common
 		private ZipArchive _archive;
 		private readonly CompressionLevel _level;
 
-		public FrameworkZipWriter(string path, int compressionlevel)
+		public FrameworkZipWriter(string path, int compressionLevel)
 		{
 			_archive = new ZipArchive(new FileStream(path, FileMode.Create, FileAccess.Write),
 				ZipArchiveMode.Create, false);
-			if (compressionlevel == 0)
+			if (compressionLevel == 0)
 				_level = CompressionLevel.NoCompression;
-			else if (compressionlevel < 5)
+			else if (compressionLevel < 5)
 				_level = CompressionLevel.Fastest;
 			else
 				_level = CompressionLevel.Optimal;
@@ -26,10 +23,8 @@ namespace BizHawk.Client.Common
 
 		public void WriteItem(string name, Action<Stream> callback)
 		{
-			using (var stream = _archive.CreateEntry(name, _level).Open())
-			{
-				callback(stream);
-			}
+			using var stream = _archive.CreateEntry(name, _level).Open();
+			callback(stream);
 		}
 
 		public void Dispose()

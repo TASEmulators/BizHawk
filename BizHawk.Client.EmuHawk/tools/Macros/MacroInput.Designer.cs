@@ -82,14 +82,14 @@
 			this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
 			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
 			this.saveAsToolStripMenuItem.Text = "Save Selected As...";
-			this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
+			this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.SaveAsToolStripMenuItem_Click);
 			// 
 			// loadMacroToolStripMenuItem
 			// 
 			this.loadMacroToolStripMenuItem.Name = "loadMacroToolStripMenuItem";
 			this.loadMacroToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
 			this.loadMacroToolStripMenuItem.Text = "Load Macro...";
-			this.loadMacroToolStripMenuItem.Click += new System.EventHandler(this.loadMacroToolStripMenuItem_Click);
+			this.loadMacroToolStripMenuItem.Click += new System.EventHandler(this.LoadMacroToolStripMenuItem_Click);
 			// 
 			// RecentToolStripMenuItem
 			// 
@@ -127,7 +127,7 @@
 			this.NameTextbox.Size = new System.Drawing.Size(99, 20);
 			this.NameTextbox.TabIndex = 4;
 			this.NameTextbox.Text = "Zone 0";
-			this.NameTextbox.TextChanged += new System.EventHandler(this.NameTextbox_TextChanged);
+			this.NameTextbox.TextChanged += new System.EventHandler(this.NameTextBox_TextChanged);
 			// 
 			// ReplaceBox
 			// 

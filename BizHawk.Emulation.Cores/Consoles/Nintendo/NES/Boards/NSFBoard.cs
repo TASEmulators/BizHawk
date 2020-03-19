@@ -306,7 +306,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			NES.WriteMemory(0x4016, 1);
 			NES.WriteMemory(0x4016, 0);
 
-			//read pad and create rising edge button signals so we dont trigger events as quickly as we hold the button down
+			//read pad and create rising edge button signals so we don't trigger events as quickly as we hold the button down
 			int currButtons = 0;
 			for (int i = 0; i < 8; i++)
 			{
@@ -358,11 +358,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override byte ReadPPU(int addr)
 		{
 			return 0;
-		}
-
-		public override byte ReadWRAM(int addr)
-		{
-			return base.ReadWRAM(addr);
 		}
 
 		public override byte ReadPRG(int addr)

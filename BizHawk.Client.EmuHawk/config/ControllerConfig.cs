@@ -8,21 +8,21 @@ using System.Windows.Forms;
 using BizHawk.Common;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class ControllerConfig : Form
 	{
 		private const int MaxPlayers = 12;
-		private static readonly Dictionary<string, Bitmap> ControllerImages = new Dictionary<string, Bitmap>();
-		private readonly ControllerDefinition _theDefinition;
+		private static readonly Dictionary<string, Lazy<Bitmap>> ControllerImages = new Dictionary<string, Lazy<Bitmap>>();
+		private readonly IEmulator _emulator;
+		private readonly Config _config;
 
 		static ControllerConfig()
 		{
 			ControllerImages.Add("NES Controller", Properties.Resources.NES_Controller);
 			ControllerImages.Add("SNES Controller", Properties.Resources.SNES_Controller);
-			ControllerImages.Add("Nintento 64 Controller", Properties.Resources.N64);
+			ControllerImages.Add("Nintendo 64 Controller", Properties.Resources.N64);
 			ControllerImages.Add("Gameboy Controller", Properties.Resources.GBController);
 			ControllerImages.Add("Gameboy Controller H", Properties.Resources.GBController);
 			ControllerImages.Add("Gameboy Controller + Tilt", Properties.Resources.GBController);
@@ -44,12 +44,11 @@ namespace BizHawk.Client.EmuHawk
 
 			ControllerImages.Add("WonderSwan Controller", Properties.Resources.WonderSwanColor);
 			ControllerImages.Add("Lynx Controller", Properties.Resources.Lynx);
-			ControllerImages.Add("PSX Gamepad Controller", Properties.Resources.PSX_Original_Controller);
-			ControllerImages.Add("PSX DualShock Controller", Properties.Resources.psx_dualshock);
+			ControllerImages.Add("PSX Front Panel", Properties.Resources.psx_dualshock);
 			ControllerImages.Add("Apple IIe Keyboard", Properties.Resources.AppleIIKeyboard);
 			ControllerImages.Add("VirtualBoy Controller", Properties.Resources.VBoyController);
 			ControllerImages.Add("NeoGeo Portable Controller", Properties.Resources.NGPController);
-			
+			ControllerImages.Add("MAME Controller", Properties.Resources.ArcadeController);
 		}
 
 		protected override void OnActivated(EventArgs e)
@@ -64,13 +63,14 @@ namespace BizHawk.Client.EmuHawk
 			Input.Instance.ControlInputFocus(this, Input.InputFocus.Mouse, false);
 		}
 
-		private ControllerConfig()
+		private void ControllerConfig_Load(object sender, EventArgs e)
 		{
-			InitializeComponent();
-			Closing += (o, e) =>
-			{
-				buttonOK.Focus(); // A very dirty hack to avoid https://code.google.com/p/bizhawk/issues/detail?id=161
-			};
+			Text = $"{_emulator.ControllerDefinition.Name} Configuration";
+		}
+
+		private void ControllerConfig_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			Input.Instance.ClearEvents();
 		}
 
 		private delegate Control PanelCreator<T>(Dictionary<string, T> settings, List<string> buttons, Size size);
@@ -82,26 +82,25 @@ namespace BizHawk.Client.EmuHawk
 			return cp;
 		}
 
-		private static Control CreateAnalogPanel(Dictionary<string, Config.AnalogBind> settings, List<string> buttons, Size size)
+		private static Control CreateAnalogPanel(Dictionary<string, AnalogBind> settings, List<string> buttons, Size size)
 		{
 			return new AnalogBindPanel(settings, buttons) { Dock = DockStyle.Fill, AutoScroll = true };
 		}
 
-		private static void LoadToPanel<T>(Control dest, string controllerName, IList<string> controllerButtons, Dictionary<string,string> categoryLabels, IDictionary<string, Dictionary<string, T>> settingsblock, T defaultvalue, PanelCreator<T> createpanel)
+		private void LoadToPanel<T>(Control dest, string controllerName, IList<string> controllerButtons, Dictionary<string,string> categoryLabels, IDictionary<string, Dictionary<string, T>> settingsBlock, T defaultValue, PanelCreator<T> createPanel)
 		{
-			Dictionary<string, T> settings;
-			if (!settingsblock.TryGetValue(controllerName, out settings))
+			if (!settingsBlock.TryGetValue(controllerName, out var settings))
 			{
 				settings = new Dictionary<string, T>();
-				settingsblock[controllerName] = settings;
+				settingsBlock[controllerName] = settings;
 			}
 
-			// check to make sure that the settings object has all of the appropriate boolbuttons
+			// check to make sure that the settings object has all of the appropriate bool buttons
 			foreach (var button in controllerButtons)
 			{
 				if (!settings.Keys.Contains(button))
 				{
-					settings[button] = defaultvalue;
+					settings[button] = defaultValue;
 				}
 			}
 
@@ -150,77 +149,85 @@ namespace BizHawk.Client.EmuHawk
 			if (buckets[0].Count == controllerButtons.Count)
 			{
 				// everything went into bucket 0, so make no tabs at all
-				dest.Controls.Add(createpanel(settings, controllerButtons.ToList(), dest.Size));
+				dest.Controls.Add(createPanel(settings, controllerButtons.ToList(), dest.Size));
 			}
 			else
 			{
 				// create multiple player tabs
 				var tt = new TabControl { Dock = DockStyle.Fill };
 				dest.Controls.Add(tt);
-				int pageidx = 0;
+				int pageIdx = 0;
 				for (int i = 1; i <= MaxPlayers; i++)
 				{
 					if (buckets[i].Count > 0)
 					{
-						string tabname = Global.Emulator.SystemId != "WSWAN" ? $"Player {i}" : i == 1 ? "Normal" : "Rotated"; // hack
-						tt.TabPages.Add(tabname);
-						tt.TabPages[pageidx].Controls.Add(createpanel(settings, buckets[i], tt.Size));
-						pageidx++;
+						string tabName = _emulator.SystemId != "WSWAN" ? $"Player {i}" : i == 1 ? "Normal" : "Rotated"; // hack
+						tt.TabPages.Add(tabName);
+						tt.TabPages[pageIdx].Controls.Add(createPanel(settings, buckets[i], tt.Size));
+						pageIdx++;
 					}
 				}
 
 				foreach (var cat in categoryBuckets)
 				{
-					string tabname = cat.Key;
-					tt.TabPages.Add(tabname);
-					tt.TabPages[pageidx].Controls.Add(createpanel(settings, cat.Value, tt.Size));
+					string tabName = cat.Key;
+					tt.TabPages.Add(tabName);
+					tt.TabPages[pageIdx].Controls.Add(createPanel(settings, cat.Value, tt.Size));
 
-                    // zxhawk hack - it uses multiple categoryLabels
-                    if (Global.Emulator.SystemId == "ZXSpectrum" || Global.Emulator.SystemId == "AmstradCPC" || Global.Emulator.SystemId == "ChannelF")
-                        pageidx++;
-
-                }
+					// ZxHawk hack - it uses multiple categoryLabels
+					if (_emulator.SystemId == "ZXSpectrum"
+						|| _emulator.SystemId == "AmstradCPC"
+						|| _emulator.SystemId == "ChannelF")
+					{
+						pageIdx++;
+					}
+				}
 
 				if (buckets[0].Count > 0)
 				{
-                    // ZXHawk needs to skip this bit
-                    if (Global.Emulator.SystemId == "ZXSpectrum" || Global.Emulator.SystemId == "AmstradCPC" || Global.Emulator.SystemId == "ChannelF")
-                        return;
+					// ZXHawk needs to skip this bit
+					if (_emulator.SystemId == "ZXSpectrum" || _emulator.SystemId == "AmstradCPC" || _emulator.SystemId == "ChannelF")
+						return;
 
-                    string tabname = (Global.Emulator.SystemId == "C64") ? "Keyboard" : "Console"; // hack
-                    tt.TabPages.Add(tabname);
-                    tt.TabPages[pageidx].Controls.Add(createpanel(settings, buckets[0], tt.Size));
-                }
-            }
+					string tabName =
+						(_emulator.SystemId == "C64") ? "Keyboard" :
+						(_emulator.SystemId == "MAME") ? "Misc" :
+						"Console"; // hack
+					tt.TabPages.Add(tabName);
+					tt.TabPages[pageIdx].Controls.Add(createPanel(settings, buckets[0], tt.Size));
+				}
+			}
 		}
 
-		public ControllerConfig(ControllerDefinition def)
-			: this()
+		public ControllerConfig(
+			IEmulator emulator,
+			Config config)
 		{
-			_theDefinition = def;
+			_emulator = emulator;
+			_config = config;
+			
+			InitializeComponent();
+
 			SuspendLayout();
-			LoadPanels(Global.Config);
+			LoadPanels(_config);
 
-			rbUDLRAllow.Checked = Global.Config.AllowUD_LR;
-			rbUDLRForbid.Checked = Global.Config.ForbidUD_LR;
-			rbUDLRPriority.Checked = !Global.Config.AllowUD_LR && !Global.Config.ForbidUD_LR;
-			checkBoxAutoTab.Checked = Global.Config.InputConfigAutoTab;
+			rbUDLRAllow.Checked = _config.AllowUdlr;
+			rbUDLRForbid.Checked = _config.ForbidUdlr;
+			rbUDLRPriority.Checked = !_config.AllowUdlr && !_config.ForbidUdlr;
+			checkBoxAutoTab.Checked = _config.InputConfigAutoTab;
 
-			SetControllerPicture(def.Name);
-
-			var analog = tabControl1.TabPages[0];
-
+			SetControllerPicture(_emulator.ControllerDefinition.Name);
 			ResumeLayout();
 		}
 
 		private void LoadPanels(
 			IDictionary<string, Dictionary<string, string>> normal,
 			IDictionary<string, Dictionary<string, string>> autofire,
-			IDictionary<string, Dictionary<string, Config.AnalogBind>> analog)
+			IDictionary<string, Dictionary<string, AnalogBind>> analog)
 		{
-			LoadToPanel(NormalControlsTab, _theDefinition.Name, _theDefinition.BoolButtons, _theDefinition.CategoryLabels, normal, "", CreateNormalPanel);
-			LoadToPanel(AutofireControlsTab, _theDefinition.Name, _theDefinition.BoolButtons, _theDefinition.CategoryLabels, autofire, "", CreateNormalPanel);
-			LoadToPanel(AnalogControlsTab, _theDefinition.Name, _theDefinition.FloatControls, _theDefinition.CategoryLabels, analog, new Config.AnalogBind("", 1.0f, 0.1f), CreateAnalogPanel);
+			LoadToPanel(NormalControlsTab, _emulator.ControllerDefinition.Name, _emulator.ControllerDefinition.BoolButtons, _emulator.ControllerDefinition.CategoryLabels, normal, "", CreateNormalPanel);
+			LoadToPanel(AutofireControlsTab, _emulator.ControllerDefinition.Name, _emulator.ControllerDefinition.BoolButtons, _emulator.ControllerDefinition.CategoryLabels, autofire, "", CreateNormalPanel);
+			LoadToPanel(AnalogControlsTab, _emulator.ControllerDefinition.Name, _emulator.ControllerDefinition.FloatControls, _emulator.ControllerDefinition.CategoryLabels, analog, new AnalogBind("", 1.0f, 0.1f), CreateAnalogPanel);
 
 			if (AnalogControlsTab.Controls.Count == 0)
 			{
@@ -228,7 +235,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void LoadPanels(ControlDefaults cd)
+		private void LoadPanels(DefaultControls cd)
 		{
 			LoadPanels(cd.AllTrollers, cd.AllTrollersAutoFire, cd.AllTrollersAnalog);
 		}
@@ -240,12 +247,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetControllerPicture(string controlName)
 		{
-			Bitmap bmp;
-			if (!ControllerImages.TryGetValue(controlName, out bmp))
-			{
-				bmp = Properties.Resources.Help;
-			}
-
+			ControllerImages.TryGetValue(controlName, out var lazyBmp);
+			var bmp = lazyBmp?.Value ?? Properties.Resources.Help;
 			pictureBox1.Image = bmp;
 			pictureBox1.Size = bmp.Size;
 			tableLayoutPanel1.ColumnStyles[1].Width = bmp.Width;
@@ -255,10 +258,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var pictureBox2 = new PictureBox
 					{
-						Image = Properties.Resources.C64Keyboard,
-						Size = Properties.Resources.C64Keyboard.Size
+						Image = Properties.Resources.C64Keyboard.Value,
+						Size = Properties.Resources.C64Keyboard.Value.Size
 					};
-				tableLayoutPanel1.ColumnStyles[1].Width = Properties.Resources.C64Keyboard.Width;
+				tableLayoutPanel1.ColumnStyles[1].Width = Properties.Resources.C64Keyboard.Value.Width;
 				pictureBox1.Height /= 2;
 				pictureBox1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 				pictureBox1.Dock = DockStyle.Top;
@@ -268,35 +271,35 @@ namespace BizHawk.Client.EmuHawk
 				pictureBox2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
 			}
 
-            if (controlName == "ZXSpectrum Controller")
-            {
-                pictureBox1.Image = Properties.Resources.ZXSpectrumKeyboards;
-                pictureBox1.Size = Properties.Resources.ZXSpectrumKeyboards.Size;
-                tableLayoutPanel1.ColumnStyles[1].Width = Properties.Resources.ZXSpectrumKeyboards.Width;
-            }
+			if (controlName == "ZXSpectrum Controller")
+			{
+				pictureBox1.Image = Properties.Resources.ZXSpectrumKeyboards.Value;
+				pictureBox1.Size = Properties.Resources.ZXSpectrumKeyboards.Value.Size;
+				tableLayoutPanel1.ColumnStyles[1].Width = Properties.Resources.ZXSpectrumKeyboards.Value.Width;
+			}
 
 			if (controlName == "ChannelF Controller")
 			{
 
 			}
 
-            if (controlName == "AmstradCPC Controller")
-            {
-                /*
-                pictureBox1.Image = Properties.Resources.ZXSpectrumKeyboards;
-                pictureBox1.Size = Properties.Resources.ZXSpectrumKeyboards.Size;
-                tableLayoutPanel1.ColumnStyles[1].Width = Properties.Resources.ZXSpectrumKeyboards.Width;
-                */
-            }
-        }
+			if (controlName == "AmstradCPC Controller")
+			{
+#if false
+				pictureBox1.Image = Properties.Resources.ZXSpectrumKeyboards.Value;
+				pictureBox1.Size = Properties.Resources.ZXSpectrumKeyboards.Value.Size;
+				tableLayoutPanel1.ColumnStyles[1].Width = Properties.Resources.ZXSpectrumKeyboards.Value.Width;
+#endif
+			}
+		}
 
 		// lazy methods, but they're not called often and actually
 		// tracking all of the ControllerConfigPanels wouldn't be simpler
 		private static void SetAutoTab(Control c, bool value)
 		{
-			if (c is ControllerConfigPanel)
+			if (c is ControllerConfigPanel panel)
 			{
-				(c as ControllerConfigPanel).SetAutoTab(value);
+				panel.SetAutoTab(value);
 			}
 			else if (c is AnalogBindPanel)
 			{
@@ -313,24 +316,24 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Save()
 		{
-			ActOnControlCollection<ControllerConfigPanel>(NormalControlsTab, c => c.Save(Global.Config.AllTrollers[_theDefinition.Name]));
-			ActOnControlCollection<ControllerConfigPanel>(AutofireControlsTab, c => c.Save(Global.Config.AllTrollersAutoFire[_theDefinition.Name]));
-			ActOnControlCollection<AnalogBindPanel>(AnalogControlsTab, c => c.Save(Global.Config.AllTrollersAnalog[_theDefinition.Name]));
+			ActOnControlCollection<ControllerConfigPanel>(NormalControlsTab, c => c.Save(_config.AllTrollers[_emulator.ControllerDefinition.Name]));
+			ActOnControlCollection<ControllerConfigPanel>(AutofireControlsTab, c => c.Save(_config.AllTrollersAutoFire[_emulator.ControllerDefinition.Name]));
+			ActOnControlCollection<AnalogBindPanel>(AnalogControlsTab, c => c.Save(_config.AllTrollersAnalog[_emulator.ControllerDefinition.Name]));
 		}
 
-		private void SaveToDefaults(ControlDefaults cd)
+		private void SaveToDefaults(DefaultControls cd)
 		{
-			ActOnControlCollection<ControllerConfigPanel>(NormalControlsTab, c => c.Save(cd.AllTrollers[_theDefinition.Name]));
-			ActOnControlCollection<ControllerConfigPanel>(AutofireControlsTab, c => c.Save(cd.AllTrollersAutoFire[_theDefinition.Name]));
-			ActOnControlCollection<AnalogBindPanel>(AnalogControlsTab, c => c.Save(cd.AllTrollersAnalog[_theDefinition.Name]));
+			ActOnControlCollection<ControllerConfigPanel>(NormalControlsTab, c => c.Save(cd.AllTrollers[_emulator.ControllerDefinition.Name]));
+			ActOnControlCollection<ControllerConfigPanel>(AutofireControlsTab, c => c.Save(cd.AllTrollersAutoFire[_emulator.ControllerDefinition.Name]));
+			ActOnControlCollection<AnalogBindPanel>(AnalogControlsTab, c => c.Save(cd.AllTrollersAnalog[_emulator.ControllerDefinition.Name]));
 		}
 
 		private static void ActOnControlCollection<T>(Control c, Action<T> proc)
 			where T : Control
 		{
-			if (c is T)
+			if (c is T control)
 			{
-				proc(c as T);
+				proc(control);
 			}
 			else if (c.HasChildren)
 			{
@@ -348,39 +351,26 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ButtonOk_Click(object sender, EventArgs e)
 		{
-			Global.Config.AllowUD_LR = rbUDLRAllow.Checked;
-			Global.Config.ForbidUD_LR = rbUDLRForbid.Checked;
-			Global.Config.InputConfigAutoTab = checkBoxAutoTab.Checked;
+			_config.AllowUdlr = rbUDLRAllow.Checked;
+			_config.ForbidUdlr = rbUDLRForbid.Checked;
+			_config.InputConfigAutoTab = checkBoxAutoTab.Checked;
 
 			Save();
 
-			GlobalWin.OSD.AddMessage("Controller settings saved");
 			DialogResult = DialogResult.OK;
 			Close();
 		}
 
 		private void ButtonCancel_Click(object sender, EventArgs e)
 		{
-			GlobalWin.OSD.AddMessage("Controller config aborted");
 			Close();
-		}
-
-		private void NewControllerConfig_Load(object sender, EventArgs e)
-		{
-			Text = $"{_theDefinition.Name} Configuration";
 		}
 
 		private static TabControl GetTabControl(IEnumerable controls)
 		{
-			if (controls != null)
-			{
-				return controls
-					.OfType<TabControl>()
-					.Select(c => c)
-					.FirstOrDefault();
-			}
-
-			return null;
+			return controls?.OfType<TabControl>()
+				.Select(c => c)
+				.FirstOrDefault();
 		}
 
 		private void ButtonLoadDefaults_Click(object sender, EventArgs e)
@@ -395,9 +385,9 @@ namespace BizHawk.Client.EmuHawk
 			int? wasTabbedPage2 = null;
 			int? wasTabbedPage3 = null;
 
-			if (tb1 != null && tb1.SelectedTab != null) { wasTabbedPage1 = tb1.SelectedIndex; }
-			if (tb2 != null && tb2.SelectedTab != null) { wasTabbedPage2 = tb2.SelectedIndex; }
-			if (tb3 != null && tb3.SelectedTab != null) { wasTabbedPage3 = tb3.SelectedIndex; }
+			if (tb1?.SelectedTab != null) { wasTabbedPage1 = tb1.SelectedIndex; }
+			if (tb2?.SelectedTab != null) { wasTabbedPage2 = tb2.SelectedIndex; }
+			if (tb3?.SelectedTab != null) { wasTabbedPage3 = tb3.SelectedIndex; }
 
 			NormalControlsTab.Controls.Clear();
 			AutofireControlsTab.Controls.Clear();
@@ -406,7 +396,7 @@ namespace BizHawk.Client.EmuHawk
 			// load panels directly from the default config.
 			// this means that the changes are NOT committed.  so "Cancel" works right and you
 			// still have to hit OK at the end.
-			var cd = ConfigService.Load<ControlDefaults>(Config.ControlDefaultPath);
+			var cd = ConfigService.Load<DefaultControls>(Config.ControlDefaultPath);
 			LoadPanels(cd);
 
 			tabControl1.SelectTab(wasTabbedMain);
@@ -414,28 +404,19 @@ namespace BizHawk.Client.EmuHawk
 			if (wasTabbedPage1.HasValue)
 			{
 				var newTb1 = GetTabControl(NormalControlsTab.Controls);
-				if (newTb1 != null)
-				{
-					newTb1.SelectTab(wasTabbedPage1.Value);
-				}
+				newTb1?.SelectTab(wasTabbedPage1.Value);
 			}
 
 			if (wasTabbedPage2.HasValue)
 			{
 				var newTb2 = GetTabControl(AutofireControlsTab.Controls);
-				if (newTb2 != null)
-				{
-					newTb2.SelectTab(wasTabbedPage2.Value);
-				}
+				newTb2?.SelectTab(wasTabbedPage2.Value);
 			}
 
 			if (wasTabbedPage3.HasValue)
 			{
 				var newTb3 = GetTabControl(AnalogControlsTab.Controls);
-				if (newTb3 != null)
-				{
-					newTb3.SelectTab(wasTabbedPage3.Value);
-				}
+				newTb3?.SelectTab(wasTabbedPage3.Value);
 			}
 
 			tabControl1.ResumeLayout();
@@ -448,10 +429,10 @@ namespace BizHawk.Client.EmuHawk
 			var result = MessageBox.Show(this, "OK to overwrite defaults for current control scheme?", "Save Defaults", MessageBoxButtons.YesNo);
 			if (result == DialogResult.Yes)
 			{
-				var cd = ConfigService.Load<ControlDefaults>(Config.ControlDefaultPath);
-				cd.AllTrollers[_theDefinition.Name] = new Dictionary<string, string>();
-				cd.AllTrollersAutoFire[_theDefinition.Name] = new Dictionary<string, string>();
-				cd.AllTrollersAnalog[_theDefinition.Name] = new Dictionary<string, Config.AnalogBind>();
+				var cd = ConfigService.Load<DefaultControls>(Config.ControlDefaultPath);
+				cd.AllTrollers[_emulator.ControllerDefinition.Name] = new Dictionary<string, string>();
+				cd.AllTrollersAutoFire[_emulator.ControllerDefinition.Name] = new Dictionary<string, string>();
+				cd.AllTrollersAnalog[_emulator.ControllerDefinition.Name] = new Dictionary<string, AnalogBind>();
 
 				SaveToDefaults(cd);
 
@@ -461,19 +442,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClearWidgetAndChildren(Control c)
 		{
-			if (c is InputCompositeWidget)
+			if (c is InputCompositeWidget widget)
 			{
-				(c as InputCompositeWidget).Clear();
+				widget.Clear();
 			}
 
-			if (c is InputWidget)
+			if (c is InputWidget inputWidget)
 			{
-				(c as InputWidget).ClearAll();
+				inputWidget.ClearAll();
 			}
 
-			if (c is AnalogBindControl)
+			if (c is AnalogBindControl control)
 			{
-				(c as AnalogBindControl).Unbind_Click(null, null);
+				control.Unbind_Click(null, null);
 			}
 
 			if (c.Controls().Any())

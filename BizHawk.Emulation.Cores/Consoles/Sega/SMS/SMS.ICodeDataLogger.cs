@@ -63,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			ExecFirst = 0x01,
 			ExecOperand = 0x02,
 			Data = 0x04
-		};
+		}
 
 		public struct CDLog_MapResults
 		{

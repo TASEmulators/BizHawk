@@ -1,9 +1,6 @@
 ﻿using BizHawk.Emulation.Common;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 {
@@ -42,10 +39,9 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 				}
 			}).ToArray();
 
-			List<ControlDefUnMerger> tmp;
 			Definition = ControllerDefinitionMerger.GetMerged(
 				_devices.Select(d => d.Definition),
-				out tmp);
+				out var tmp);
 			_cdums = tmp.ToArray();
 
 			Definition.Name = "PC-FX Controller";

@@ -29,8 +29,10 @@ namespace BizHawk.Emulation.DiscSystem
 			SpecialCRC32 crc = new SpecialCRC32();
 			byte[] buffer2352 = new byte[2352];
 
-			var dsr = new DiscSectorReader(disc);
-			dsr.Policy.DeterministicClearBuffer = false; //live dangerously
+			var dsr = new DiscSectorReader(disc)
+			{
+				Policy = { DeterministicClearBuffer = false } // live dangerously
+			};
 
 			//hash the TOC
 			crc.Add((int)disc.TOC.Session1Format);
@@ -63,8 +65,11 @@ namespace BizHawk.Emulation.DiscSystem
 			SpecialCRC32 crc = new SpecialCRC32();
 			byte[] buffer2352 = new byte[2352];
 
-			var dsr = new DiscSectorReader(disc);
-			dsr.Policy.DeterministicClearBuffer = false; //live dangerously
+			var dsr = new DiscSectorReader(disc)
+			{
+				Policy = { DeterministicClearBuffer = false } // live dangerously
+			};
+
 
 			//read all sectors for redump hash
 			for (int i = 0; i < disc.Session1.LeadoutLBA; i++)
@@ -123,6 +128,11 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 
 			uint current = 0xFFFFFFFF;
+
+			/// <exception cref="ArgumentOutOfRangeException">
+			/// <paramref name="offset"/> is negative, or
+			/// end index (<paramref name="offset"/> + <paramref name="size"/>) is beyond the end of <paramref name="data"/>
+			/// </exception>
 			public unsafe void Add(byte[] data, int offset, int size)
 			{
 				if (offset + size > data.Length)
@@ -150,12 +160,16 @@ namespace BizHawk.Emulation.DiscSystem
 			/// <summary>
 			/// The negated output (the typical result of the CRC calculation)
 			/// </summary>
-			public uint Result { get { return current ^ 0xFFFFFFFF; } }
+			public uint Result => current ^ 0xFFFFFFFF;
 
 			/// <summary>
 			/// The raw non-negated output
 			/// </summary>
-			public uint Current { get { return current; } set { current = value; } }
+			public uint Current
+			{
+				get => current;
+				set => current = value;
+			}
 
 			uint gf2_matrix_times(uint[] mat, uint vec)
 			{

@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Text;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
-	[Core("mGBA", "endrift", true, true, "0.7.2", "https://mgba.io/", false)]
-	[ServiceNotApplicable(typeof(IDriveLight), typeof(IRegionable))]
+	[Core("mGBA", "endrift", true, true, "0.8", "https://mgba.io/", false)]
+	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(IRegionable) })]
 	public partial class MGBAHawk : IEmulator, IVideoProvider, ISoundProvider, IGBAGPUViewable,
 		ISaveRam, IStatable, IInputPollable, ISettable<MGBAHawk.Settings, MGBAHawk.SyncSettings>,
 		IDebuggable
@@ -55,6 +56,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				CoreComm.NominalWidth = 240;
 				CoreComm.NominalHeight = 160;
 				PutSettings(_settings);
+
+				_tracer = new TraceBuffer
+				{
+					Header = "ARM7: PC, machine code, mnemonic, operands, registers"
+				};
+				_tracecb = new LibmGBA.TraceCallback((msg) => _tracer.Put(_traceInfo(msg)));
+				ser.Register(_tracer);
 			}
 			catch
 			{
@@ -67,6 +75,33 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public ControllerDefinition ControllerDefinition => GBA.GBAController;
 
+		private ITraceable _tracer { get; set; }
+
+		private LibmGBA.TraceCallback _tracecb { get; set; }
+
+		private TraceInfo _traceInfo(string msg)
+		{
+			var disasm = msg.Split('|')[1];
+			var split = disasm.Split(':');
+			var machineCode = split[0].PadLeft(8);
+			var instruction = split[1].Trim();
+			var regs = GetCpuFlagsAndRegisters();
+			var wordSize = (regs["CPSR"].Value & 32) == 0 ? 4UL : 2UL;
+			var pc = regs["R15"].Value - wordSize * 2;
+			var sb = new StringBuilder();
+
+			for (var i = 0; i < RegisterNames.Length; i++)
+			{
+				sb.Append($" { RegisterNames[i] }:{ regs[RegisterNames[i]].Value:X8}");
+			}
+
+			return new TraceInfo
+			{
+				Disassembly = $"{pc:X8}: { machineCode }  { instruction }".PadRight(50),
+				RegisterInfo = sb.ToString()
+			};
+		}
+
 		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
 			Frame++;
@@ -78,12 +113,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				WireMemoryDomainPointers();
 			}
 
+			LibmGBA.BizSetTraceCallback(_tracer.Enabled ? _tracecb : null);
+
 			IsLagFrame = LibmGBA.BizAdvance(
 				_core,
 				VBANext.GetButtons(controller),
-				_videobuff,
+				render ? _videobuff : _dummyvideobuff,
 				ref _nsamp,
-				_soundbuff,
+				rendersound ? _soundbuff : _dummysoundbuff,
 				RTCTime(),
 				(short)controller.GetFloat("Tilt X"),
 				(short)controller.GetFloat("Tilt Y"),

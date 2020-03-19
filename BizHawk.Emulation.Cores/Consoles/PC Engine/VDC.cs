@@ -1,7 +1,6 @@
 ﻿using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.H6280;
-using System;
 
 namespace BizHawk.Emulation.Cores.PCEngine
 {
@@ -194,7 +193,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			{
 				case 0: // return status byte;
 					retval = StatusByte;
-					StatusByte = 0; // maybe bit 6 should be preserved. but we dont currently emulate it.
+					StatusByte = 0; // maybe bit 6 should be preserved. but we don't currently emulate it.
 					cpu.IRQ1Assert = false;
 					return retval;
 				case 1: // unused
@@ -217,8 +216,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		internal void RunDmaForScanline()
 		{
-			// TODO: dont do this all in one scanline. I guess it can do about 227 words per scanline.
-			// TODO: to be honest, dont do it in a block per scanline. put it in the CPU think function.
+			// TODO: don't do this all in one scanline. I guess it can do about 227 words per scanline.
+			// TODO: to be honest, don't do it in a block per scanline. put it in the CPU think function.
 			//Console.WriteLine("******************************* Doing some dma ******************************");
 			int advanceSource = (Registers[DCR] & 4) == 0 ? +1 : -1;
 			int advanceDest = (Registers[DCR] & 8) == 0 ? +1 : -1;

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-
+﻿using System.Collections.Generic;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
-using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 // ReSharper disable StyleCop.SA1401
 namespace BizHawk.Client.Common
@@ -15,7 +11,6 @@ namespace BizHawk.Client.Common
 		public static GameInfo Game;
 		public static CheatCollection CheatList;
 		public static FirmwareManager FirmwareManager;
-		public static Rewinder Rewinder;
 
 		public static IMovieSession MovieSession = new MovieSession();
 
@@ -29,12 +24,12 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public static int SoundMaxBufferDeficitMs;
 
-		// the movie will be spliced inbetween these if it is present
+		// the movie will be spliced in between these if it is present
 		public static readonly CopyControllerAdapter MovieInputSourceAdapter = new CopyControllerAdapter();
 		public static readonly CopyControllerAdapter MovieOutputHardpoint = new CopyControllerAdapter();
 		public static readonly MultitrackRewiringControllerAdapter MultitrackRewiringAdapter = new MultitrackRewiringControllerAdapter();
 
-		// dont take my word for it, since the final word is actually in RewireInputChain, but here is a guide...
+		// don't take my word for it, since the final word is actually in RewireInputChain, but here is a guide...
 		// user -> Input -> ActiveController -> UDLR -> StickyXORPlayerInputAdapter -> TurboAdapter(TBD) -> Lua(?TBD?) -> ..
 		// .. -> MultitrackRewiringControllerAdapter -> MovieInputSourceAdapter -> (MovieSession) -> MovieOutputAdapter -> ControllerOutput(1) -> Game
 		// (1)->Input Display
@@ -48,7 +43,7 @@ namespace BizHawk.Client.Common
 		// the "output" port for the controller chain.
 		public static readonly CopyControllerAdapter ControllerOutput = new CopyControllerAdapter();
 
-		public static readonly UD_LR_ControllerAdapter UD_LR_ControllerAdapter = new UD_LR_ControllerAdapter();
+		public static readonly UdlrControllerAdapter UD_LR_ControllerAdapter = new UdlrControllerAdapter();
 
 		public static readonly AutoFireStickyXorAdapter AutofireStickyXORAdapter = new AutoFireStickyXorAdapter();
 
@@ -58,9 +53,9 @@ namespace BizHawk.Client.Common
 		public static readonly StickyXorAdapter StickyXORAdapter = new StickyXorAdapter();
 
 		/// <summary>
-		/// Used to AND to another controller, used for Joypad.Set()
+		/// Used to AND to another controller, used for <see cref="JoypadApi.Set(System.Collections.Generic.Dictionary{string,bool},System.Nullable{int})">JoypadApi.Set</see>
 		/// </summary>
-		public static readonly OverrideAdaptor LuaAndAdaptor = new OverrideAdaptor();
+		public static readonly OverrideAdapter ButtonOverrideAdaptor = new OverrideAdapter();
 
 		/// <summary>
 		/// fire off one-frame logical button clicks here. useful for things like ti-83 virtual pad and reset buttons
@@ -72,99 +67,6 @@ namespace BizHawk.Client.Common
 		// Input state which has been estine for game controller inputs are coalesce here
 		// This relies on a client specific implementation!
 		public static SimpleController ControllerInputCoalescer;
-
-		public static SystemInfo SystemInfo
-		{
-			get
-			{
-				switch (Emulator.SystemId)
-				{ 
-					default:
-					case "NULL":
-						return SystemInfo.Null;
-					case "NES":
-						return SystemInfo.Nes;
-					case "INTV":
-						return SystemInfo.Intellivision;
-					case "SG":
-						return SystemInfo.SG;
-					case "SMS":
-						if ((Emulator as SMS).IsGameGear)
-						{
-							return SystemInfo.GG;
-						}
-
-						if ((Emulator as SMS).IsSG1000)
-						{
-							return SystemInfo.SG;
-						}
-
-						return SystemInfo.SMS;
-					case "PCECD":
-						return SystemInfo.PCECD;
-					case "PCE":
-						return SystemInfo.PCE;
-					case "SGX":
-						return SystemInfo.SGX;
-					case "GEN":
-						return SystemInfo.Genesis;
-					case "TI83":
-						return SystemInfo.TI83;
-					case "SNES":
-						return SystemInfo.SNES;
-					case "GB":
-						/*
-						if ((Emulator as IGameboyCommon).IsCGBMode())
-						{
-							return SystemInfo.GBC;
-						}
-						*/
-						return SystemInfo.GB;
-					case "A26":
-						return SystemInfo.Atari2600;
-					case "A78":
-						return SystemInfo.Atari7800;
-					case "C64":
-						return SystemInfo.C64;
-					case "Coleco":
-						return SystemInfo.Coleco;
-					case "GBA":
-						return SystemInfo.GBA;
-					case "NDS":
-						return SystemInfo.NDS;
-					case "N64":
-						return SystemInfo.N64;
-					case "SAT":
-						return SystemInfo.Saturn;
-					case "DGB":
-						return SystemInfo.DualGB;
-					case "GB3x":
-						return SystemInfo.GB3x;
-					case "WSWAN":
-						return SystemInfo.WonderSwan;
-					case "Lynx":
-						return SystemInfo.Lynx;
-					case "PSX":
-						return SystemInfo.PSX;
-					case "AppleII":
-						return SystemInfo.AppleII;
-					case "Libretro":
-						return SystemInfo.Libretro;
-					case "VB":
-						return SystemInfo.VirtualBoy;
-					case "VEC":
-						return SystemInfo.Vectrex;
-					case "NGP":
-						return SystemInfo.NeoGeoPocket;
-                    case "ZXSpectrum":
-                        return SystemInfo.ZXSpectrum;
-                    case "AmstradCPC":
-                        return SystemInfo.AmstradCPC;
-					case "ChannelF":
-						return SystemInfo.ChannelF;
-				}
-			}
-		}
 
 		public static Dictionary<string, object> UserBag = new Dictionary<string, object>();
 	}

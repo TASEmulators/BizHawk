@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
@@ -15,8 +15,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				bool lag;
-				var result = _lagLog.TryGetValue(frame, out lag);
+				var result = _lagLog.TryGetValue(frame, out var lag);
 				if (result)
 				{
 					return lag;
@@ -85,8 +84,7 @@ namespace BizHawk.Client.Common
 
 		public bool? History(int frame)
 		{
-			bool wasLag;
-			var result = _wasLag.TryGetValue(frame, out wasLag);
+			var result = _wasLag.TryGetValue(frame, out var wasLag);
 			if (result)
 			{
 				return wasLag;
@@ -112,8 +110,7 @@ namespace BizHawk.Client.Common
 
 		private void RemoveLagEntry(int frame)
 		{
-			bool lag;
-			var result = _lagLog.TryGetValue(frame, out lag);
+			var result = _lagLog.TryGetValue(frame, out var lag);
 			if (result)
 			{
 				_wasLag[frame] = lag;

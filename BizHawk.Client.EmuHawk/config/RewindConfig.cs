@@ -2,29 +2,36 @@
 using System.Windows.Forms;
 using System.Drawing;
 
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class RewindConfig : Form
 	{
+		private readonly Rewinder _rewinder;
+		private readonly Config _config;
+		private readonly IStatable _statableCore;
+
 		private long _stateSize;
 		private int _mediumStateSize;
 		private int _largeStateSize;
-		private int _stateSizeCategory = 1; // 1 = small, 2 = med, 3 = larg //TODO: enum
+		private int _stateSizeCategory = 1; // 1 = small, 2 = med, 3 = large // TODO: enum
 
-		public RewindConfig()
+		public RewindConfig(Rewinder rewinder, Config config, IStatable statableCore)
 		{
+			_rewinder = rewinder;
+			_config = config;
+			_statableCore = statableCore;
 			InitializeComponent();
 		}
 
 		private void RewindConfig_Load(object sender, EventArgs e)
 		{
-			if (Global.Rewinder.HasBuffer)
+			if (_rewinder.HasBuffer)
 			{
-				FullnessLabel.Text = $"{Global.Rewinder.FullnessRatio * 100:0.00}%";
-				RewindFramesUsedLabel.Text = Global.Rewinder.Count.ToString();
+				FullnessLabel.Text = $"{_rewinder.FullnessRatio * 100:0.00}%";
+				RewindFramesUsedLabel.Text = _rewinder.Count.ToString();
 			}
 			else
 			{
@@ -32,24 +39,24 @@ namespace BizHawk.Client.EmuHawk
 				RewindFramesUsedLabel.Text = "N/A";
 			}
 
-			RewindSpeedNumeric.Value = Global.Config.RewindSpeedMultiplier;
-			DiskBufferCheckbox.Checked = Global.Config.Rewind_OnDisk;
-			RewindIsThreadedCheckbox.Checked = Global.Config.Rewind_IsThreaded;
-			_stateSize = Global.Emulator.AsStatable().SaveStateBinary().Length;
-			BufferSizeUpDown.Value = Math.Max(Global.Config.Rewind_BufferSize, BufferSizeUpDown.Minimum);
+			RewindSpeedNumeric.Value = _config.Rewind.SpeedMultiplier;
+			DiskBufferCheckbox.Checked = _config.Rewind.OnDisk;
+			RewindIsThreadedCheckbox.Checked = _config.Rewind.IsThreaded;
+			_stateSize = _statableCore.SaveStateBinary().Length;
+			BufferSizeUpDown.Value = Math.Max(_config.Rewind.BufferSize, BufferSizeUpDown.Minimum);
 
-			_mediumStateSize = Global.Config.Rewind_MediumStateSize;
-			_largeStateSize = Global.Config.Rewind_LargeStateSize;
+			_mediumStateSize = _config.Rewind.MediumStateSize;
+			_largeStateSize = _config.Rewind.LargeStateSize;
 
-			UseDeltaCompression.Checked = Global.Config.Rewind_UseDelta;
+			UseDeltaCompression.Checked = _config.Rewind.UseDelta;
 
-			SmallSavestateNumeric.Value = Global.Config.RewindFrequencySmall;
-			MediumSavestateNumeric.Value = Global.Config.RewindFrequencyMedium;
-			LargeSavestateNumeric.Value = Global.Config.RewindFrequencyLarge;
+			SmallSavestateNumeric.Value = _config.Rewind.FrequencySmall;
+			MediumSavestateNumeric.Value = _config.Rewind.FrequencyMedium;
+			LargeSavestateNumeric.Value = _config.Rewind.FrequencyLarge;
 
-			SmallStateEnabledBox.Checked = Global.Config.RewindEnabledSmall;
-			MediumStateEnabledBox.Checked = Global.Config.RewindEnabledMedium;
-			LargeStateEnabledBox.Checked = Global.Config.RewindEnabledLarge;
+			SmallStateEnabledBox.Checked = _config.Rewind.EnabledSmall;
+			MediumStateEnabledBox.Checked = _config.Rewind.EnabledMedium;
+			LargeStateEnabledBox.Checked = _config.Rewind.EnabledLarge;
 
 			SetSmallEnabled();
 			SetMediumEnabled();
@@ -57,24 +64,23 @@ namespace BizHawk.Client.EmuHawk
 
 			SetStateSize();
 
-			var mediumStateSizeKb = Global.Config.Rewind_MediumStateSize / 1024;
-			var largeStateSizeKb = Global.Config.Rewind_LargeStateSize / 1024;
+			var mediumStateSizeKb = _config.Rewind.MediumStateSize / 1024;
+			var largeStateSizeKb = _config.Rewind.LargeStateSize / 1024;
 
 			MediumStateTrackbar.Value = mediumStateSizeKb;
 			MediumStateUpDown.Value = mediumStateSizeKb;
 			LargeStateTrackbar.Value = largeStateSizeKb;
 			LargeStateUpDown.Value = largeStateSizeKb;
 
-			nudCompression.Value = Global.Config.SaveStateCompressionLevelNormal;
+			nudCompression.Value = _config.SaveStateCompressionLevelNormal;
 
-			rbStatesDefault.Checked = Global.Config.SaveStateType == Config.SaveStateTypeE.Default;
-			rbStatesBinary.Checked = Global.Config.SaveStateType == Config.SaveStateTypeE.Binary;
-			rbStatesText.Checked = Global.Config.SaveStateType == Config.SaveStateTypeE.Text;
+			rbStatesBinary.Checked = _config.SaveStateType == SaveStateTypeE.Binary;
+			rbStatesText.Checked = _config.SaveStateType == SaveStateTypeE.Text;
 
-			BackupSavestatesCheckbox.Checked = Global.Config.BackupSavestates;
-			ScreenshotInStatesCheckbox.Checked = Global.Config.SaveScreenshotWithStates;
-			LowResLargeScreenshotsCheckbox.Checked = !Global.Config.NoLowResLargeScreenshotWithStates;
-			BigScreenshotNumeric.Value = Global.Config.BigScreenshotSize / 1024;
+			BackupSavestatesCheckbox.Checked = _config.BackupSavestates;
+			ScreenshotInStatesCheckbox.Checked = _config.SaveScreenshotWithStates;
+			LowResLargeScreenshotsCheckbox.Checked = !_config.NoLowResLargeScreenshotWithStates;
+			BigScreenshotNumeric.Value = _config.BigScreenshotSize / 1024;
 
 			ScreenshotInStatesCheckbox_CheckedChanged(null, null);
 		}
@@ -102,34 +108,32 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetStateSize()
 		{
-			double num = _stateSize / 1024.0;
-
 			StateSizeLabel.Text = FormatKB(_stateSize);
 
-			SmallLabel1.Text = $"Small savestates (less than {_mediumStateSize / 1024}KB)";
-			MediumLabel1.Text = $"Medium savestates ({_mediumStateSize / 1024} - {_largeStateSize / 1024}KB)";
-			LargeLabel1.Text = $"Large savestates ({_largeStateSize / 1024}KB or more)";
+			SmallLabel.Text = $"Small savestates (less than {_mediumStateSize / 1024}KB)";
+			MediumLabel.Text = $"Medium savestates ({_mediumStateSize / 1024} - {_largeStateSize / 1024}KB)";
+			LargeLabel.Text = $"Large savestates ({_largeStateSize / 1024}KB or more)";
 
 			if (_stateSize >= _largeStateSize)
 			{
 				_stateSizeCategory = 3;
-				SmallLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Regular);
-				MediumLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Regular);
-				LargeLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Italic);
+				SmallLabel.Font = new Font(SmallLabel.Font, FontStyle.Regular);
+				MediumLabel.Font = new Font(SmallLabel.Font, FontStyle.Regular);
+				LargeLabel.Font = new Font(SmallLabel.Font, FontStyle.Italic);
 			}
 			else if (_stateSize >= _mediumStateSize)
 			{
 				_stateSizeCategory = 2;
-				SmallLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Regular);
-				MediumLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Italic);
-				LargeLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Regular);
+				SmallLabel.Font = new Font(SmallLabel.Font, FontStyle.Regular);
+				MediumLabel.Font = new Font(SmallLabel.Font, FontStyle.Italic);
+				LargeLabel.Font = new Font(SmallLabel.Font, FontStyle.Regular);
 			}
 			else
 			{
 				_stateSizeCategory = 1;
-				SmallLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Italic);
-				MediumLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Regular);
-				LargeLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Regular);
+				SmallLabel.Font = new Font(SmallLabel.Font, FontStyle.Italic);
+				MediumLabel.Font = new Font(SmallLabel.Font, FontStyle.Regular);
+				LargeLabel.Font = new Font(SmallLabel.Font, FontStyle.Regular);
 			}
 
 			CalculateEstimates();
@@ -137,75 +141,74 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
-			GlobalWin.OSD.AddMessage("Rewind config aborted");
 			Close();
 		}
 
 		private bool TriggerRewindSettingsReload { get; set; }
 
-		private void PutRewindSetting<T>(ref T setting, T value) where T : IEquatable<T>
+		private T PutRewindSetting<T>(T setting, T value) where T : IEquatable<T>
 		{
 			if (setting.Equals(value))
 			{
-				return;
+				return setting;
 			}
 
-			setting = value;
 			TriggerRewindSettingsReload = true;
+			return value;
 		}
 
 		private void Ok_Click(object sender, EventArgs e)
 		{
 			// These settings are used by DoRewindSettings, which we'll only call if anything actually changed (i.e. preserve rewind history if possible)
-			PutRewindSetting(ref Global.Config.RewindEnabledSmall, SmallStateEnabledBox.Checked);
-			PutRewindSetting(ref Global.Config.RewindEnabledMedium, MediumStateEnabledBox.Checked);
-			PutRewindSetting(ref Global.Config.RewindEnabledLarge, LargeStateEnabledBox.Checked);
-			PutRewindSetting(ref Global.Config.RewindFrequencySmall, (int)SmallSavestateNumeric.Value);
-			PutRewindSetting(ref Global.Config.RewindFrequencyMedium, (int)MediumSavestateNumeric.Value);
-			PutRewindSetting(ref Global.Config.RewindFrequencyLarge, (int)LargeSavestateNumeric.Value);
-			PutRewindSetting(ref Global.Config.Rewind_OnDisk, DiskBufferCheckbox.Checked);
-			PutRewindSetting(ref Global.Config.Rewind_UseDelta, UseDeltaCompression.Checked);
-			PutRewindSetting(ref Global.Config.Rewind_IsThreaded, RewindIsThreadedCheckbox.Checked);
-			PutRewindSetting(ref Global.Config.Rewind_BufferSize, (int)BufferSizeUpDown.Value);
-			PutRewindSetting(ref Global.Config.Rewind_MediumStateSize, (int)MediumStateUpDown.Value * 1024);
-			PutRewindSetting(ref Global.Config.Rewind_LargeStateSize, (int)LargeStateUpDown.Value * 1024);
+			_config.Rewind.UseDelta = PutRewindSetting(_config.Rewind.UseDelta, UseDeltaCompression.Checked);
+			_config.Rewind.EnabledSmall = PutRewindSetting(_config.Rewind.EnabledSmall, SmallStateEnabledBox.Checked);
+			_config.Rewind.EnabledMedium = PutRewindSetting(_config.Rewind.EnabledMedium, MediumStateEnabledBox.Checked);
+			_config.Rewind.EnabledLarge = PutRewindSetting(_config.Rewind.EnabledLarge, LargeStateEnabledBox.Checked);
+			_config.Rewind.FrequencySmall = PutRewindSetting(_config.Rewind.FrequencySmall, (int)SmallSavestateNumeric.Value);
+			_config.Rewind.FrequencyMedium = PutRewindSetting(_config.Rewind.FrequencyMedium, (int)MediumSavestateNumeric.Value);
+			_config.Rewind.FrequencyLarge = PutRewindSetting(_config.Rewind.FrequencyLarge, (int)LargeSavestateNumeric.Value);
+			_config.Rewind.MediumStateSize = PutRewindSetting(_config.Rewind.MediumStateSize, (int)MediumStateUpDown.Value * 1024);
+			_config.Rewind.LargeStateSize = PutRewindSetting(_config.Rewind.LargeStateSize, (int)LargeStateUpDown.Value * 1024);
+			_config.Rewind.BufferSize = PutRewindSetting(_config.Rewind.BufferSize, (int)BufferSizeUpDown.Value);
+			_config.Rewind.OnDisk = PutRewindSetting(_config.Rewind.OnDisk, DiskBufferCheckbox.Checked);
+			_config.Rewind.IsThreaded = PutRewindSetting(_config.Rewind.IsThreaded, RewindIsThreadedCheckbox.Checked);
+
 			if (TriggerRewindSettingsReload)
 			{
-				Global.Rewinder.Initialize();
+				_rewinder.Initialize();
 			}
 
 			// These settings are not used by DoRewindSettings
-			Global.Config.RewindSpeedMultiplier = (int)RewindSpeedNumeric.Value;
-			Global.Config.SaveStateCompressionLevelNormal = (int)nudCompression.Value;
-			if (rbStatesDefault.Checked) Global.Config.SaveStateType = Config.SaveStateTypeE.Default;
-			if (rbStatesBinary.Checked) Global.Config.SaveStateType = Config.SaveStateTypeE.Binary;
-			if (rbStatesText.Checked) Global.Config.SaveStateType = Config.SaveStateTypeE.Text;
-			Global.Config.BackupSavestates = BackupSavestatesCheckbox.Checked;
-			Global.Config.SaveScreenshotWithStates = ScreenshotInStatesCheckbox.Checked;
-			Global.Config.NoLowResLargeScreenshotWithStates = !LowResLargeScreenshotsCheckbox.Checked;
-			Global.Config.BigScreenshotSize = (int)BigScreenshotNumeric.Value * 1024;
+			_config.Rewind.SpeedMultiplier = (int)RewindSpeedNumeric.Value;
+			_config.SaveStateCompressionLevelNormal = (int)nudCompression.Value;
+			if (rbStatesBinary.Checked) _config.SaveStateType = SaveStateTypeE.Binary;
+			if (rbStatesText.Checked) _config.SaveStateType = SaveStateTypeE.Text;
+			_config.BackupSavestates = BackupSavestatesCheckbox.Checked;
+			_config.SaveScreenshotWithStates = ScreenshotInStatesCheckbox.Checked;
+			_config.NoLowResLargeScreenshotWithStates = !LowResLargeScreenshotsCheckbox.Checked;
+			_config.BigScreenshotSize = (int)BigScreenshotNumeric.Value * 1024;
 
-			GlobalWin.OSD.AddMessage("Rewind and State settings saved");
+			DialogResult = DialogResult.OK;
 			Close();
 		}
 
 		private void SetSmallEnabled()
 		{
-			SmallLabel1.Enabled = SmallLabel2.Enabled
+			SmallLabel.Enabled = SmallLabel2.Enabled
 				= SmallSavestateNumeric.Enabled = SmallLabel3.Enabled
 				= SmallStateEnabledBox.Checked;
 		}
 
 		private void SetMediumEnabled()
 		{
-			MediumLabel1.Enabled = MediumLabel2.Enabled
+			MediumLabel.Enabled = MediumLabel2.Enabled
 				= MediumSavestateNumeric.Enabled = MediumLabel3.Enabled
 				= MediumStateEnabledBox.Checked;
 		}
 
 		private void SetLargeEnabled()
 		{
-			LargeLabel1.Enabled = LargeLabel2.Enabled
+			LargeLabel.Enabled = LargeLabel2.Enabled
 				= LargeSavestateNumeric.Enabled = LargeLabel3.Enabled
 				= LargeStateEnabledBox.Checked;
 		}
@@ -225,22 +228,22 @@ namespace BizHawk.Client.EmuHawk
 			SetLargeEnabled();
 		}
 
-		private void LargeLabel1_Click(object sender, EventArgs e)
+		private void LargeLabel_Click(object sender, EventArgs e)
 		{
 			LargeStateEnabledBox.Checked ^= true;
 		}
 
-		private void MediumLabel1_Click(object sender, EventArgs e)
+		private void MediumLabel_Click(object sender, EventArgs e)
 		{
 			MediumStateEnabledBox.Checked ^= true;
 		}
 
-		private void SmallLabel1_Click(object sender, EventArgs e)
+		private void SmallLabel_Click(object sender, EventArgs e)
 		{
 			SmallStateEnabledBox.Checked ^= true;
 		}
 
-		private void MediumStateTrackbar_ValueChanged(object sender, EventArgs e)
+		private void MediumStateTrackBar_ValueChanged(object sender, EventArgs e)
 		{
 			MediumStateUpDown.Value = ((TrackBar)sender).Value;
 			if (MediumStateUpDown.Value > LargeStateUpDown.Value)
@@ -268,7 +271,7 @@ namespace BizHawk.Client.EmuHawk
 			SetStateSize();
 		}
 
-		private void LargeStateTrackbar_ValueChanged(object sender, EventArgs e)
+		private void LargeStateTrackBar_ValueChanged(object sender, EventArgs e)
 		{
 			if (LargeStateTrackbar.Value < MediumStateTrackbar.Value)
 			{
@@ -308,9 +311,9 @@ namespace BizHawk.Client.EmuHawk
 
 			if (UseDeltaCompression.Checked || _stateSize == 0)
 			{
-				if (Global.Rewinder.Count > 0)
+				if (_rewinder.Count > 0)
 				{
-					avgStateSize = Global.Rewinder.Size / Global.Rewinder.Count;
+					avgStateSize = _rewinder.Size / _rewinder.Count;
 				}
 				else
 				{
@@ -380,7 +383,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TrackBarCompression_ValueChanged(object sender, EventArgs e)
 		{
-			// TODO - make a UserControl which is trackbar and NUD combined
+			// TODO - make a UserControl which is TrackBar and NUD combined
 			nudCompression.Value = ((TrackBar)sender).Value;
 		}
 

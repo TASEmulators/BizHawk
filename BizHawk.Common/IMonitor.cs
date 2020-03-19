@@ -5,6 +5,7 @@ namespace BizHawk.Common
 	public interface IMonitor
 	{
 		void Enter();
+
 		void Exit();
 	}
 
@@ -20,7 +21,8 @@ namespace BizHawk.Common
 		private class EnterExitWrapper : IDisposable
 		{
 			private readonly IMonitor _m;
-			private bool _disposed = false;
+
+			private bool _disposed;
 
 			public EnterExitWrapper(IMonitor m)
 			{

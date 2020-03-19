@@ -3,13 +3,16 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class GenericDebugger : Form, IToolFormAutoConfig, IControlMainform
+	public partial class GenericDebugger : ToolFormBase, IToolFormAutoConfig, IControlMainform
 	{
+		private const string AddressColumnName = "Address";
+		private const string InstructionColumnName = "Instruction";
+
 		public GenericDebugger()
 		{
 			InitializeComponent();
@@ -17,17 +20,30 @@ namespace BizHawk.Client.EmuHawk
 
 			DisassemblerView.QueryItemText += DisassemblerView_QueryItemText;
 			DisassemblerView.QueryItemBkColor += DisassemblerView_QueryItemBkColor;
-			DisassemblerView.VirtualMode = true;
-		}
-
-		private void GenericDebugger_Load(object sender, EventArgs e)
-		{
+			DisassemblerView.AllColumns.Clear();
+			DisassemblerView.AllColumns.AddRange(new[]
+			{
+				new RollColumn
+				{
+					Name = AddressColumnName,
+					Text = AddressColumnName,
+					UnscaledWidth = 94,
+					Type = ColumnType.Text
+				},
+				new RollColumn
+				{
+					Name = InstructionColumnName,
+					Text = InstructionColumnName,
+					UnscaledWidth = 291,
+					Type = ColumnType.Text
+				}
+			});
 		}
 
 		private void EngageDebugger()
 		{
 			_disassemblyLines.Clear();
-			GlobalWin.MainForm.OnPauseChanged += OnPauseChanged;
+			MainForm.OnPauseChanged += OnPauseChanged;
 			CancelSeekBtn.Enabled = false;
 			if (CanDisassemble)
 			{
@@ -75,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				DisassemblerBox.Enabled = false;
-				DisassemblerView.ItemCount = 0;
+				DisassemblerView.RowCount = 0;
 				DisassemblerBox.Controls.Add(new Label
 				{
 					Location = new Point(UIHelper.ScaleX(35), UIHelper.ScaleY(23)),
@@ -92,8 +108,9 @@ namespace BizHawk.Client.EmuHawk
 
 			if (CanUseMemoryCallbacks)
 			{
+				BreakPointControl1.MainForm = MainForm;
 				BreakPointControl1.Core = Debuggable;
-				BreakPointControl1.MCS = MemoryCallbacks;
+				BreakPointControl1.Mcs = MemoryCallbacks;
 				BreakPointControl1.ParentDebugger = this;
 				BreakPointControl1.MemoryDomains = MemoryDomains;
 				BreakPointControl1.GenerateUI();
@@ -142,7 +159,7 @@ namespace BizHawk.Client.EmuHawk
 		private void DisengageDebugger()
 		{
 			BreakPointControl1.Shutdown();
-			GlobalWin.MainForm.OnPauseChanged -= OnPauseChanged;
+			MainForm.OnPauseChanged -= OnPauseChanged;
 		}
 
 		public void DisableRegisterBox()
@@ -165,7 +182,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OnCpuDropDownIndexChanged(object sender, EventArgs e)
 		{
-			Disassembler.Cpu = (sender as ComboBox).SelectedItem.ToString();
+			Disassembler.Cpu = ((ComboBox) sender).SelectedItem.ToString();
 		}
 
 		#region File
@@ -179,13 +196,9 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Debug
 
-		private void DebugSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-		}
-
 		private void RunBtn_Click(object sender, EventArgs e)
 		{
-			GlobalWin.MainForm.UnpauseEmulator();
+			MainForm.UnpauseEmulator();
 		}
 
 		private void StepIntoMenuItem_Click(object sender, EventArgs e)

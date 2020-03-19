@@ -2,19 +2,11 @@
 {
 	public static class Colors
 	{
-		public static int ARGB(byte red, byte green, byte blue)
-		{
-			return (int)((uint)((red << 0x10) | (green << 8) | blue | (0xFF << 0x18)));
-		}
+		/// <remarks>This is just <c>Color.FromArgb(alpha, red, green, blue).ToArgb()</c> with extra steps.</remarks>
+		public static int ARGB(byte red, byte green, byte blue, byte alpha = 0xFF) => unchecked((int) ((uint) (alpha << 24) | (uint) (red << 16) | (uint) (green << 8) | blue));
 
-		public static int ARGB(byte red, byte green, byte blue, byte alpha)
-		{
-			return (int)((uint)((red << 0x10) | (green << 8) | blue | (alpha << 0x18)));
-		}
-
-		public static int Luminosity(byte lum)
-		{
-			return (int)((uint)((lum << 0x10) | (lum << 8) | lum | (0xFF << 0x18)));
-		}
+#if false
+		public static int Luminosity(byte lum) => ARGB(lum, lum, lum);
+#endif
 	}
 }

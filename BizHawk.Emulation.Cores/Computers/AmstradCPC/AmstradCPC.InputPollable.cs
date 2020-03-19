@@ -1,29 +1,28 @@
-﻿using System;
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
-    /// <summary>
-    /// CPCHawk: Core Class
-    /// * IInputPollable *
-    /// </summary>
-    public partial class AmstradCPC : IInputPollable
-    {
-        public int LagCount
-        {
-            get { return _lagCount; }
-            set { _lagCount = value; }
-        }
+	/// <summary>
+	/// CPCHawk: Core Class
+	/// * IInputPollable *
+	/// </summary>
+	public partial class AmstradCPC : IInputPollable
+	{
+		public int LagCount
+		{
+			get => _lagCount;
+			set => _lagCount = value;
+		}
 
-        public bool IsLagFrame
-        {
-            get { return _isLag; }
-            set { _isLag = value; }
-        }
+		public bool IsLagFrame
+		{
+			get => _isLag;
+			set => _isLag = value;
+		}
 
-        public IInputCallbackSystem InputCallbacks { get; }
+		public IInputCallbackSystem InputCallbacks { get; } = new InputCallbackSystem();
 
-        private int _lagCount = 0;
-        private bool _isLag = false;
-    }
+		private int _lagCount = 0;
+		private bool _isLag = false;
+	}
 }

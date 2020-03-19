@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Newtonsoft.Json;
 using BizHawk.Bizware.BizwareGL;
 
@@ -32,13 +31,7 @@ namespace BizHawk.Client.Common
 		{
 			if (item.UniqueIdentifier == Guid.Empty)
 			{
-				var currentHashes = this.Select(b => b.UniqueIdentifier.GetHashCode()).ToList();
-
-				do
-				{
-					item.UniqueIdentifier = Guid.NewGuid();
-				}
-				while (currentHashes.Contains(item.UniqueIdentifier.GetHashCode()));
+				item.UniqueIdentifier = Guid.NewGuid();
 			}
 
 			base.Add(item);

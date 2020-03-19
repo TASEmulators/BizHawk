@@ -12,8 +12,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class DirectSoundSoundOutput : ISoundOutput
 	{
+		private readonly Sound _sound;
 		private bool _disposed;
-		private Sound _sound;
 		private DirectSound _device;
 		private SecondarySoundBuffer _deviceBuffer;
 		private int _actualWriteOffsetBytes = -1;
@@ -21,11 +21,11 @@ namespace BizHawk.Client.EmuHawk
 		private long _lastWriteTime;
 		private int _lastWriteCursor;
 
-		public DirectSoundSoundOutput(Sound sound, IntPtr mainWindowHandle)
+		public DirectSoundSoundOutput(Sound sound, IntPtr mainWindowHandle, string soundDevice)
 		{
 			_sound = sound;
 
-			var deviceInfo = DirectSound.GetDevices().FirstOrDefault(d => d.Description == Global.Config.SoundDevice);
+			var deviceInfo = DirectSound.GetDevices().FirstOrDefault(d => d.Description == soundDevice);
 			_device = deviceInfo != null ? new DirectSound(deviceInfo.DriverGuid) : new DirectSound();
 			_device.SetCooperativeLevel(mainWindowHandle, CooperativeLevel.Priority);
 		}
@@ -42,15 +42,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public static IEnumerable<string> GetDeviceNames()
 		{
-			return DirectSound.GetDevices().Select(d => d.Description).ToList();
+			return DirectSound.GetDevices().Select(d => d.Description);
 		}
 
 		private int BufferSizeSamples { get; set; }
 
-		private int BufferSizeBytes
-		{
-			get { return BufferSizeSamples * Sound.BlockAlign; }
-		}
+		private int BufferSizeBytes => BufferSizeSamples * Sound.BlockAlign;
 
 		public int MaxSamplesDeficit { get; private set; }
 
@@ -152,12 +149,10 @@ namespace BizHawk.Client.EmuHawk
 			return (end - start + size) % size;
 		}
 
-		public void WriteSamples(short[] samples, int sampleCount)
+		public void WriteSamples(short[] samples, int sampleOffset, int sampleCount)
 		{
 			if (sampleCount == 0) return;
-			int total = sampleCount * Sound.ChannelCount;
-			if (total > samples.Length) { total = samples.Length; }
-			_deviceBuffer.Write(samples, 0, total, _actualWriteOffsetBytes, LockFlags.None);
+			_deviceBuffer.Write(samples, sampleOffset * Sound.ChannelCount, sampleCount * Sound.ChannelCount, _actualWriteOffsetBytes, LockFlags.None);
 			_actualWriteOffsetBytes = (_actualWriteOffsetBytes + (sampleCount * Sound.BlockAlign)) % BufferSizeBytes;
 			_filledBufferSizeBytes += sampleCount * Sound.BlockAlign;
 		}

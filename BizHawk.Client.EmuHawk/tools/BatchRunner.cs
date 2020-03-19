@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.IO;
 using BizHawk.Common;
-using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
-
-
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Nintendo.GBA;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -15,196 +12,198 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public class ProgressEventArgs
 		{
-			public int Completed { get; private set; }
-			public int Total { get; private set; }
+			public int Completed { get; }
+			public int Total { get; }
 			public bool ShouldCancel { get; set; }
-			public ProgressEventArgs(int Completed, int Total)
+			public ProgressEventArgs(int completed, int total)
 			{
-				this.Completed = Completed;
-				this.Total = Total;
+				Completed = completed;
+				Total = total;
 			}
 		}
+
 		public delegate void ProgressEventHandler(object sender, ProgressEventArgs e);
 		public event ProgressEventHandler OnProgress;
 
-		List<string> files;
-		RomLoader ldr;
-		CoreComm Comm;
-		int numframes = 0;
-		int multiindex = 0;
-		bool multihasnext = false;
+		private readonly List<string> _files;
+		private readonly List<Result> _results = new List<Result>();
+		private readonly RomLoader _ldr;
+		private readonly CoreComm _comm;
+		private readonly int _numFrames;
 
-		List<Result> Results = new List<Result>();
-		Result current;
+		private int _multiIndex;
+		private bool _multiHasNext;
+		private Result _current;
 
 		public class Result
 		{
-			public string Filename; // name of file
-			public string Fullname; // filename + subfilename
-			public GameInfo GI;
+			public string Filename { get; set; } // name of file
+			public string Fullname { get; set; } // filename + subfilename
+			public GameInfo Game { get; set; }
 
-			public Type CoreType; // actual type of the core that was returned
+			public Type CoreType { get; set; } // actual type of the core that was returned
 			public enum EStatus
 			{
 				ExceptOnLoad, // exception thrown on load
 				ErrorOnLoad, // error method thrown on load
-				FalseOnLoad, // romloader returned false with no other information
+				FalseOnLoad, // RomLoader returned false with no other information
 				ExceptOnAdv, // exception thrown on frame advance
 				Success, // load fully complete
-			};
-			public EStatus Status; // what happened
-			public List<string> Messages = new List<string>();
+			}
 
-			public int Frames; // number of frames successfully run
-			public int LaggedFrames; // number of those that were lagged
+			public EStatus Status { get; set; } // what happened
+			public List<string> Messages { get; set; } = new List<string>();
 
-			public string BoardName; // iemulator's board name return (could be null!)
+			public int Frames { get; set; } // number of frames successfully run
+			public int LaggedFrames { get; set; } // number of those that were lagged
 
-			public void DumpToTW(System.IO.TextWriter tw)
+			public string BoardName { get; set; } // IEmulator's board name return (could be null!)
+
+			public void DumpTo(TextWriter tw)
 			{
-				tw.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}", Filename, Fullname, CoreType, Status, Frames, LaggedFrames, GI.Hash, BoardName);
+				tw.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}", Filename, Fullname, CoreType, Status, Frames, LaggedFrames, Game.Hash, BoardName);
 			}
 		}
 
-		public BatchRunner(IEnumerable<string> files, int numframes)
+		public BatchRunner(IEnumerable<string> files, int numFrames)
 		{
-			this.files = new List<string>(files);
-			this.numframes = numframes;
+			_files = new List<string>(files);
+			_numFrames = numFrames;
 
-			ldr = new RomLoader();
-			ldr.OnLoadError += OnLoadError;
-			ldr.ChooseArchive = ChooseArchive;
-			Comm = new CoreComm(CommMessage, CommMessage);
-			CoreFileProvider.SyncCoreCommInputSignals(Comm);
+			_ldr = new RomLoader();
+			_ldr.OnLoadError += OnLoadError;
+			_ldr.ChooseArchive = ChooseArchive;
+			_comm = new CoreComm(CommMessage, CommMessage);
+			CoreFileProvider.SyncCoreCommInputSignals(_comm);
 		}
 
-		void OnLoadError(object sender, RomLoader.RomErrorArgs e)
+		private void OnLoadError(object sender, RomLoader.RomErrorArgs e)
 		{
-			current.Status = Result.EStatus.ErrorOnLoad;
-			current.Messages.Add($"{nameof(OnLoadError)}: {e.AttemptedCoreLoad}, {e.Message}, {e.Type}");
+			_current.Status = Result.EStatus.ErrorOnLoad;
+			_current.Messages.Add($"{nameof(OnLoadError)}: {e.AttemptedCoreLoad}, {e.Message}, {e.Type}");
 		}
 
-		void CommMessage(string msg)
+		private void CommMessage(string msg)
 		{
-			current.Messages.Add($"{nameof(CommMessage)}: {msg}");
+			_current.Messages.Add($"{nameof(CommMessage)}: {msg}");
 		}
 
-		int? ChooseArchive(HawkFile hf)
+		private int? ChooseArchive(HawkFile hf)
 		{
-			int ret = multiindex;
-			multiindex++;
-			multihasnext = multiindex < hf.ArchiveItems.Count;
+			int ret = _multiIndex;
+			_multiIndex++;
+			_multiHasNext = _multiIndex < hf.ArchiveItems.Count;
 			return ret;
 		}
 
 		public List<Result> Run()
 		{
-			Results.Clear();
-			current = null;
+			_results.Clear();
+			_current = null;
 			RunInternal();
-			return new List<Result>(Results);
+			return new List<Result>(_results);
 		}
 
-		void RunInternal()
+		private void RunInternal()
 		{
-			for (int i = 0; i < files.Count; i++)
+			for (int i = 0; i < _files.Count; i++)
 			{
-				string f = files[i];
-				multihasnext = false;
-				multiindex = 0;
+				string f = _files[i];
+				_multiHasNext = false;
+				_multiIndex = 0;
 				do
 				{
 					LoadOne(f);
-				} while (multihasnext);
+				} while (_multiHasNext);
 				if (OnProgress != null)
 				{
-					var e = new ProgressEventArgs(i + 1, files.Count);
+					var e = new ProgressEventArgs(i + 1, _files.Count);
 					OnProgress(this, e);
 					if (e.ShouldCancel)
+					{
 						return;
+					}
 				}
 			}
 		}
 
-
-		void LoadOne(string f)
+		private void LoadOne(string f)
 		{
-			current = new Result { Filename = f };
-			bool result = false;
+			_current = new Result { Filename = f };
+			bool result;
 			try
 			{
-				result = ldr.LoadRom(f, Comm);
+				result = _ldr.LoadRom(f, _comm);
 			}
 			catch (Exception e)
 			{
-				current.Status = Result.EStatus.ExceptOnLoad;
-				current.Messages.Add(e.ToString());
-				Results.Add(current);
-				current = null;
+				_current.Status = Result.EStatus.ExceptOnLoad;
+				_current.Messages.Add(e.ToString());
+				_results.Add(_current);
+				_current = null;
 				return;
 			}
-			current.Fullname = ldr.CanonicalFullPath;
-			if (current.Status == Result.EStatus.ErrorOnLoad)
+
+			_current.Fullname = _ldr.CanonicalFullPath;
+			if (_current.Status == Result.EStatus.ErrorOnLoad)
 			{
-				Results.Add(current);
-				current = null;
+				_results.Add(_current);
+				_current = null;
 				return;
 			}
+
 			if (result == false)
 			{
-				current.Status = Result.EStatus.FalseOnLoad;
-				Results.Add(current);
-				current = null;
+				_current.Status = Result.EStatus.FalseOnLoad;
+				_results.Add(_current);
+				_current = null;
 				return;
 			}
 
-			using (IEmulator emu = ldr.LoadedEmulator)
+			using (IEmulator emu = _ldr.LoadedEmulator)
 			{
-				current.GI = ldr.Game;
-				current.CoreType = emu.GetType();
+				_current.Game = _ldr.Game;
+				_current.CoreType = emu.GetType();
 				var controller = new Controller(emu.ControllerDefinition);
-				current.BoardName = emu.HasBoardInfo() ? emu.AsBoardInfo().BoardName : null;
+				_current.BoardName = emu.HasBoardInfo() ? emu.AsBoardInfo().BoardName : null;
 				// hack
-				if (emu is Emulation.Cores.Nintendo.GBA.VBANext)
+				if (emu is VBANext vba)
 				{
-					current.BoardName = (emu as Emulation.Cores.Nintendo.GBA.VBANext).GameCode;
+					_current.BoardName = vba.GameCode;
 				}
 
-				current.Frames = 0;
-				current.LaggedFrames = 0;
+				_current.Frames = 0;
+				_current.LaggedFrames = 0;
 
-				for (int i = 0; i < numframes; i++)
+				for (int i = 0; i < _numFrames; i++)
 				{
 					try
 					{
-						int nsamp;
-						short[] samp;
-						emu.FrameAdvance(controller, true, true);
+						emu.FrameAdvance(controller, true);
 						
 						// some cores really really really like it if you drain their audio every frame
 						if (emu.HasSoundProvider())
 						{
-							emu.AsSoundProvider().GetSamplesSync(out samp, out nsamp);
+							emu.AsSoundProvider().GetSamplesSync(out _, out _);
 						}
 
-						current.Frames++;
+						_current.Frames++;
 						if (emu.CanPollInput() && emu.AsInputPollable().IsLagFrame)
-							current.LaggedFrames++;
+							_current.LaggedFrames++;
 					}
 					catch (Exception e)
 					{
-						current.Messages.Add(e.ToString());
-						current.Status = Result.EStatus.ExceptOnAdv;
-						Results.Add(current);
-						current = null;
+						_current.Messages.Add(e.ToString());
+						_current.Status = Result.EStatus.ExceptOnAdv;
+						_results.Add(_current);
+						_current = null;
 						return;
 					}
 				}
 			}
-			current.Status = Result.EStatus.Success;
-			Results.Add(current);
-			current = null;
-			return;
+			_current.Status = Result.EStatus.Success;
+			_results.Add(_current);
+			_current = null;
 		}
 	}
 }

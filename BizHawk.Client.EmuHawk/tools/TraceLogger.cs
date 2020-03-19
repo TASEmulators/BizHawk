@@ -8,11 +8,10 @@ using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
-using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class TraceLogger : Form, IToolFormAutoConfig
+	public partial class TraceLogger : ToolFormBase, IToolFormAutoConfig
 	{
 		[RequiredService]
 		private ITraceable Tracer { get; set; }
@@ -24,22 +23,25 @@ namespace BizHawk.Client.EmuHawk
 		private int FileSizeCap { get; set; }
 
 		[ConfigPersist]
-		private int DisasmColumnWidth { 
-			get { return this.Disasm.Width; }
-			set { this.Disasm.Width = value; }
-		}
-
-		[ConfigPersist]
-		private int RegistersColumnWidth
+		private List<RollColumn> Columns
 		{
-			get { return this.Registers.Width; }
-			set { this.Registers.Width = value; }
+			get => TraceView.AllColumns;
+			set
+			{
+				TraceView.AllColumns.Clear();
+				foreach (var column in value)
+				{
+					TraceView.AllColumns.Add(column);
+				}
+
+				TraceView.AllColumns.ColumnsChanged();
+			}
 		}
 
 		private FileInfo _logFile;
 		private FileInfo LogFile
 		{
-			get { return _logFile; }
+			get => _logFile;
 			set
 			{
 				_logFile = value;
@@ -47,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private List<TraceInfo> _instructions = new List<TraceInfo>();
+		private readonly List<TraceInfo> _instructions = new List<TraceInfo>();
 		private StreamWriter _streamWriter;
 		private bool _splitFile;
 		private string _baseName;
@@ -55,12 +57,13 @@ namespace BizHawk.Client.EmuHawk
 		private int _segmentCount;
 		private ulong _currentSize;
 
+		private const string DisasmColumnName = "Disasm";
+		private const string RegistersColumnName = "Registers";
 		public TraceLogger()
 		{
 			InitializeComponent();
 
 			TraceView.QueryItemText += TraceView_QueryItemText;
-			TraceView.VirtualMode = true;
 
 			Closing += (o, e) =>
 			{
@@ -70,39 +73,46 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			MaxLines = 10000;
-			FileSizeCap = 150; // make 1 frame of tracelog for n64/psx fit in
+			FileSizeCap = 150; // make 1 frame of trace log for n64/psx fit in
 			_splitFile = FileSizeCap != 0;
+
+			TraceView.AllColumns.Clear();
+			TraceView.AllColumns.Add(new RollColumn
+			{
+				Name = DisasmColumnName,
+				Text = DisasmColumnName,
+				UnscaledWidth = 239,
+				Type = ColumnType.Text
+			});
+			TraceView.AllColumns.Add(new RollColumn
+			{
+				Name = RegistersColumnName,
+				Text = RegistersColumnName,
+				UnscaledWidth = 357,
+				Type = ColumnType.Text
+			});
 		}
 
-		public bool UpdateBefore
-		{
-			get { return false; }
-		}
+		public bool UpdateBefore => false;
 
-		public bool AskSaveChanges()
-		{
-			return true;
-		}
+		public bool AskSaveChanges() => true;
 
 		private void SaveConfigSettings()
 		{
 			//Tracer.Enabled = LoggingEnabled.Checked;
 		}
 
-		private void TraceView_QueryItemText(int index, int column, out string text)
+		private void TraceView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = "";
 			if (index < _instructions.Count)
 			{
-				switch (column)
+				text = column.Name switch
 				{
-					case 0:
-						text = _instructions[index].Disassembly.TrimEnd();
-						break;
-					case 1:
-						text = _instructions[index].RegisterInfo;
-						break;
-				}
+					DisasmColumnName => _instructions[index].Disassembly.TrimEnd(),
+					RegistersColumnName => _instructions[index].RegisterInfo,
+					_ => text
+				};
 			}
 		}
 
@@ -115,14 +125,14 @@ namespace BizHawk.Client.EmuHawk
 			SetTracerBoxTitle();
 		}
 
-		class CallbackSink : ITraceSink
+		private class CallbackSink : ITraceSink
 		{
 			public void Put(TraceInfo info)
 			{
-				putter(info);
+				Putter(info);
 			}
 
-			public Action<TraceInfo> putter;
+			public Action<TraceInfo> Putter { get; set; }
 		}
 
 		public void UpdateValues() { }
@@ -133,11 +143,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (ToWindowRadio.Checked)
 				{
-					// setting to zero first fixes an exception when scrolling the view
-					// how or why I don't know
-					// it's hidden behind an internal class ListViewNativeItemCollection
-					TraceView.VirtualListSize = 0;
-					TraceView.VirtualListSize = _instructions.Count;		
+					TraceView.RowCount = _instructions.Count;
 				}
 				else
 				{
@@ -152,12 +158,9 @@ namespace BizHawk.Client.EmuHawk
 					//connect tracer to sink for next frame
 					if (ToWindowRadio.Checked)
 					{
-						//update listview with most recent results
-						TraceView.BlazingFast = !GlobalWin.MainForm.EmulatorPaused;
-
-						Tracer.Sink = new CallbackSink()
+						Tracer.Sink = new CallbackSink
 						{
-							putter = (info) =>
+							Putter = info =>
 							{
 								if (_instructions.Count >= MaxLines)
 								{
@@ -175,7 +178,7 @@ namespace BizHawk.Client.EmuHawk
 							StartLogFile(true);
 						}
 						Tracer.Sink = new CallbackSink {
-							putter = (info) =>
+							Putter = (info) =>
 							{
 								//no padding supported. core should be doing this!
 								var data = $"{info.Disassembly} {info.RegisterInfo}";
@@ -210,7 +213,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ClearList()
 		{
 			_instructions.Clear();
-			TraceView.ItemCount = 0;
+			TraceView.RowCount = 0;
 			SetTracerBoxTitle();
 		}
 
@@ -233,7 +236,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_instructions.RemoveRange(0, _instructions.Count - MaxLines);
 			}
-			TraceView.ItemCount = _instructions.Count;
+			TraceView.RowCount = _instructions.Count;
 		}
 
 		private void SetTracerBoxTitle()
@@ -278,11 +281,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private FileInfo GetFileFromUser()
 		{
-			var sfd = new SaveFileDialog();
+			using var sfd = new SaveFileDialog();
 			if (LogFile == null)
 			{
 				sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + _extension;
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null);
+				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Config.PathEntries.LogPathFragment, null);
 			}
 			else if (!string.IsNullOrWhiteSpace(LogFile.FullName))
 			{
@@ -292,20 +295,16 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				sfd.FileName = Path.GetFileNameWithoutExtension(LogFile.FullName);
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null);
+				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Config.PathEntries.LogPathFragment, null);
 			}
 
-			sfd.Filter = "Log Files (*.log)|*.log|Text Files (*.txt)|*.txt|All Files|*.*";
+			sfd.Filter = new FilesystemFilterSet(
+				new FilesystemFilter("Log Files", new[] { "log" }),
+				FilesystemFilter.TextFiles
+			).ToString();
 			sfd.RestoreDirectory = true;
 			var result = sfd.ShowHawkDialog();
-			if (result == DialogResult.OK)
-			{
-				return new FileInfo(sfd.FileName);
-			}
-			else
-			{
-				return null;
-			}
+			return result.IsOk() ? new FileInfo(sfd.FileName) : null;
 		}
 
 		#region Events
@@ -319,7 +318,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				StartLogFile();
 				DumpToDisk();
-				GlobalWin.OSD.AddMessage($"Log dumped to {LogFile.FullName}");
+				MainForm.AddOnScreenMessage($"Log dumped to {LogFile.FullName}");
 				CloseFile();
 			}
 		}
@@ -331,7 +330,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CopyMenuItem_Click(object sender, EventArgs e)
 		{
-			var indices = TraceView.SelectedIndices;
+			var indices = TraceView.SelectedRows.ToList();
 
 			if (indices.Count > 0)
 			{
@@ -348,13 +347,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			for (var i = 0; i < _instructions.Count; i++)
 			{
-				TraceView.SelectItem(i, true);
+				TraceView.SelectRow(i, true);
 			}
 		}
 
 		private void MaxLinesMenuItem_Click(object sender, EventArgs e)
 		{
-			var prompt = new InputPrompt
+			using var prompt = new InputPrompt
 			{
 				StartLocation = this.ChildPointToScreen(TraceView),
 				TextInputType = InputPrompt.InputType.Unsigned,
@@ -375,7 +374,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SegmentSizeMenuItem_Click(object sender, EventArgs e)
 		{
-			var prompt = new InputPrompt
+			using var prompt = new InputPrompt
 			{
 				StartLocation = this.ChildPointToScreen(TraceView),
 				TextInputType = InputPrompt.InputType.Unsigned,

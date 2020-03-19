@@ -17,30 +17,28 @@
 //
 
 #include "channel1.h"
+#include "psgdef.h"
 #include "../savestate.h"
 #include <algorithm>
 
-namespace gambatte {
+using namespace gambatte;
 
 Channel1::SweepUnit::SweepUnit(MasterDisabler &disabler, DutyUnit &dutyUnit)
 : disableMaster_(disabler)
 , dutyUnit_(dutyUnit)
 , shadow_(0)
 , nr0_(0)
-, negging_(false)
+, neg_(false)
 , cgb_(false)
 {
 }
 
 unsigned Channel1::SweepUnit::calcFreq() {
-	unsigned freq = shadow_ >> (nr0_ & 0x07);
-
-	if (nr0_ & 0x08) {
-		freq = shadow_ - freq;
-		negging_ = true;
-	} else
-		freq = shadow_ + freq;
-
+	unsigned const freq = nr0_ & psg_nr10_neg
+		? shadow_ - (shadow_ >> (nr0_ & psg_nr10_rsh))
+		: shadow_ + (shadow_ >> (nr0_ & psg_nr10_rsh));
+	if (nr0_ & psg_nr10_neg)
+		neg_ = true;
 	if (freq & 2048)
 		disableMaster_();
 
@@ -48,12 +46,12 @@ unsigned Channel1::SweepUnit::calcFreq() {
 }
 
 void Channel1::SweepUnit::event() {
-	unsigned long const period = nr0_ >> 4 & 0x07;
+	unsigned long const period = (nr0_ & psg_nr10_time) / (1u * psg_nr10_time & -psg_nr10_time);
 
 	if (period) {
 		unsigned const freq = calcFreq();
 
-		if (!(freq & 2048) && (nr0_ & 0x07)) {
+		if (!(freq & 2048) && nr0_ & psg_nr10_rsh) {
 			shadow_ = freq;
 			dutyUnit_.setFreq(freq, counter_);
 			calcFreq();
@@ -65,25 +63,25 @@ void Channel1::SweepUnit::event() {
 }
 
 void Channel1::SweepUnit::nr0Change(unsigned newNr0) {
-	if (negging_ && !(newNr0 & 0x08))
+	if (neg_ && !(newNr0 & 0x08))
 		disableMaster_();
 
 	nr0_ = newNr0;
 }
 
 void Channel1::SweepUnit::nr4Init(unsigned long const cc) {
-	negging_ = false;
+	neg_ = false;
 	shadow_ = dutyUnit_.freq();
 
-	unsigned const period = nr0_ >> 4 & 0x07;
-	unsigned const shift = nr0_ & 0x07;
+	unsigned const period = (nr0_ & psg_nr10_time) / (1u * psg_nr10_time & -psg_nr10_time);
+	unsigned const rsh = nr0_ & psg_nr10_rsh;
 
-	if (period | shift)
+	if (period | rsh)
 		counter_ = ((((cc + 2 + cgb_ * 2) >> 14) + (period ? period : 8)) << 14) + 2;
 	else
 		counter_ = counter_disabled;
 
-	if (shift)
+	if (rsh)
 		calcFreq();
 }
 
@@ -95,7 +93,7 @@ void Channel1::SweepUnit::loadState(SaveState const &state) {
 	counter_ = std::max(state.spu.ch1.sweep.counter, state.spu.cycleCounter);
 	shadow_ = state.spu.ch1.sweep.shadow;
 	nr0_ = state.spu.ch1.sweep.nr0;
-	negging_ = state.spu.ch1.sweep.negging;
+	neg_ = state.spu.ch1.sweep.neg;
 }
 
 template<bool isReader>
@@ -104,7 +102,7 @@ void Channel1::SweepUnit::SyncState(NewState *ns)
 	NSS(counter_);
 	NSS(shadow_);
 	NSS(nr0_);
-	NSS(negging_);
+	NSS(neg_);
 	NSS(cgb_);
 }
 
@@ -115,7 +113,6 @@ Channel1::Channel1()
 , envelopeUnit_(staticOutputTest_)
 , sweepUnit_(disableMaster_, dutyUnit_)
 , nextEventUnit_(0)
-, cycleCounter_(0)
 , soMask_(0)
 , prevOut_(0)
 , nr4_(0)
@@ -137,52 +134,48 @@ void Channel1::setNr0(unsigned data) {
 	setEvent();
 }
 
-void Channel1::setNr1(unsigned data) {
-	lengthCounter_.nr1Change(data, nr4_, cycleCounter_);
-	dutyUnit_.nr1Change(data, cycleCounter_);
+void Channel1::setNr1(unsigned data, unsigned long cc) {
+	lengthCounter_.nr1Change(data, nr4_, cc);
+	dutyUnit_.nr1Change(data, cc);
 	setEvent();
 }
 
-void Channel1::setNr2(unsigned data) {
+void Channel1::setNr2(unsigned data, unsigned long cc) {
 	if (envelopeUnit_.nr2Change(data))
 		disableMaster_();
 	else
-		staticOutputTest_(cycleCounter_);
+		staticOutputTest_(cc);
 
 	setEvent();
 }
 
-void Channel1::setNr3(unsigned data) {
-	dutyUnit_.nr3Change(data, cycleCounter_);
+void Channel1::setNr3(unsigned data, unsigned long cc) {
+	dutyUnit_.nr3Change(data, cc);
 	setEvent();
 }
 
-void Channel1::setNr4(unsigned const data) {
-	lengthCounter_.nr4Change(nr4_, data, cycleCounter_);
+void Channel1::setNr4(unsigned data, unsigned long cc, unsigned long ref) {
+	lengthCounter_.nr4Change(nr4_, data, cc);
+	dutyUnit_.nr4Change(data, cc, ref, master_);
 	nr4_ = data;
-	dutyUnit_.nr4Change(data, cycleCounter_, master_);
 
-	if (data & 0x80) { // init-bit
-		nr4_ &= 0x7F;
-		master_ = !envelopeUnit_.nr4Init(cycleCounter_);
-		sweepUnit_.nr4Init(cycleCounter_);
-		staticOutputTest_(cycleCounter_);
+	if (nr4_ & psg_nr4_init) {
+		nr4_ -= psg_nr4_init;
+		master_ = !envelopeUnit_.nr4Init(cc);
+		sweepUnit_.nr4Init(cc);
+		staticOutputTest_(cc);
 	}
 
 	setEvent();
 }
 
-void Channel1::setSo(unsigned long soMask) {
+void Channel1::setSo(unsigned long soMask, unsigned long cc) {
 	soMask_ = soMask;
-	staticOutputTest_(cycleCounter_);
+	staticOutputTest_(cc);
 	setEvent();
 }
 
 void Channel1::reset() {
-	// cycleCounter >> 12 & 7 represents the frame sequencer position.
-	cycleCounter_ &= 0xFFF;
-	cycleCounter_ += ~(cycleCounter_ + 2) << 1 & 0x1000;
-
 	dutyUnit_.reset();
 	envelopeUnit_.reset();
 	sweepUnit_.reset();
@@ -196,58 +189,51 @@ void Channel1::init(bool cgb) {
 void Channel1::loadState(SaveState const &state) {
 	sweepUnit_.loadState(state);
 	dutyUnit_.loadState(state.spu.ch1.duty, state.mem.ioamhram.get()[0x111],
-	                    state.spu.ch1.nr4, state.spu.cycleCounter);
+		state.spu.ch1.nr4, state.spu.cycleCounter);
 	envelopeUnit_.loadState(state.spu.ch1.env, state.mem.ioamhram.get()[0x112],
-	                        state.spu.cycleCounter);
+		state.spu.cycleCounter);
 	lengthCounter_.loadState(state.spu.ch1.lcounter, state.spu.cycleCounter);
 
-	cycleCounter_ = state.spu.cycleCounter;
 	nr4_ = state.spu.ch1.nr4;
 	master_ = state.spu.ch1.master;
 }
 
-void Channel1::update(uint_least32_t *buf, unsigned long const soBaseVol, unsigned long cycles) {
+void Channel1::update(uint_least32_t* buf, unsigned long const soBaseVol, unsigned long cc, unsigned long const end) {
 	unsigned long const outBase = envelopeUnit_.dacIsOn() ? soBaseVol & soMask_ : 0;
-	unsigned long const outLow = outBase * (0 - 15ul);
-	unsigned long const endCycles = cycleCounter_ + cycles;
+	unsigned long const outLow = outBase * -15;
 
-	for (;;) {
+	while (cc < end) {
 		unsigned long const outHigh = master_
-		                            ? outBase * (envelopeUnit_.getVolume() * 2 - 15ul)
-		                            : outLow;
-		unsigned long const nextMajorEvent = std::min(nextEventUnit_->counter(), endCycles);
+			? outBase * (envelopeUnit_.getVolume() * 2l - 15)
+			: outLow;
+		unsigned long const nextMajorEvent = std::min(nextEventUnit_->counter(), end);
 		unsigned long out = dutyUnit_.isHighState() ? outHigh : outLow;
 
 		while (dutyUnit_.counter() <= nextMajorEvent) {
 			*buf = out - prevOut_;
 			prevOut_ = out;
-			buf += dutyUnit_.counter() - cycleCounter_;
-			cycleCounter_ = dutyUnit_.counter();
-
+			buf += dutyUnit_.counter() - cc;
+			cc = dutyUnit_.counter();
 			dutyUnit_.event();
 			out = dutyUnit_.isHighState() ? outHigh : outLow;
 		}
-
-		if (cycleCounter_ < nextMajorEvent) {
+		if (cc < nextMajorEvent) {
 			*buf = out - prevOut_;
 			prevOut_ = out;
-			buf += nextMajorEvent - cycleCounter_;
-			cycleCounter_ = nextMajorEvent;
+			buf += nextMajorEvent - cc;
+			cc = nextMajorEvent;
 		}
-
 		if (nextEventUnit_->counter() == nextMajorEvent) {
 			nextEventUnit_->event();
 			setEvent();
-		} else
-			break;
+		}
 	}
 
-	if (cycleCounter_ >= SoundUnit::counter_max) {
-		dutyUnit_.resetCounters(cycleCounter_);
-		lengthCounter_.resetCounters(cycleCounter_);
-		envelopeUnit_.resetCounters(cycleCounter_);
-		sweepUnit_.resetCounters(cycleCounter_);
-		cycleCounter_ -= SoundUnit::counter_max;
+	if (cc >= SoundUnit::counter_max) {
+		dutyUnit_.resetCounters(cc);
+		lengthCounter_.resetCounters(cc);
+		envelopeUnit_.resetCounters(cc);
+		sweepUnit_.resetCounters(cc);
 	}
 }
 
@@ -265,12 +251,9 @@ SYNCFUNC(Channel1)
 	EVS(nextEventUnit_, &lengthCounter_, 4);
 	EES(nextEventUnit_, NULL);
 
-	NSS(cycleCounter_);
 	NSS(soMask_);
 	NSS(prevOut_);
 
 	NSS(nr4_);
 	NSS(master_);
-}
-
 }

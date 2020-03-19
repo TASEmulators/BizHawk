@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-
-using BizHawk.Common.BufferExtensions;
 
 namespace BizHawk.Emulation.DiscSystem
 {
@@ -63,6 +60,7 @@ namespace BizHawk.Emulation.DiscSystem
 		int cachedSector;
 		DiscSectorReader dsr;
 
+		/// <exception cref="NotSupportedException"><paramref name="view"/> is not <see cref="DiscSectorReaderPolicy.EUserData2048Mode.AssumeMode1"/> or <see cref="DiscSectorReaderPolicy.EUserData2048Mode.AssumeMode2_Form1"/></exception>
 		public DiscStream(Disc disc, EDiscStreamView view, int from_lba)
 		{
 			SectorSize = 2048;
@@ -89,15 +87,15 @@ namespace BizHawk.Emulation.DiscSystem
 			cachedSectorBuffer = new byte[SectorSize];
 		}
 
-		public override bool CanRead { get { return true; } }
-		public override bool CanSeek { get { return true; } }
-		public override bool CanWrite { get { return false; } }
+		public override bool CanRead => true;
+		public override bool CanSeek => true;
+		public override bool CanWrite => false;
 		public override void Flush() { throw new NotImplementedException(); }
-		public override long Length { get { return NumSectors * SectorSize; } }
+		public override long Length => NumSectors * SectorSize;
 
 		public override long Position
 		{
-			get { return currPosition; }
+			get => currPosition;
 			set
 			{
 				currPosition = value;

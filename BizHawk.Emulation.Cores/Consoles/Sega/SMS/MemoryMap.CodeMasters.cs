@@ -22,10 +22,10 @@
 
 		CDLog_MapResults MapMemoryCM(ushort address, bool write)
 		{
-			if (address < 0x4000) return new CDLog_MapResults() { Type = CDLog_AddrType.ROM, Address = address };
-			else if (address < 0x8000) return new CDLog_MapResults() { Type = CDLog_AddrType.ROM, Address = (RomBank1 * BankSize) + (address & BankSizeMask) };
-			else if (address < 0xC000) return new CDLog_MapResults() { Type = CDLog_AddrType.ROM, Address = (RomBank2 * BankSize) + (address & BankSizeMask) };
-			else return new CDLog_MapResults() { Type = CDLog_AddrType.MainRAM, Address = address & RamSizeMask };
+			if (address < 0x4000) return new CDLog_MapResults { Type = CDLog_AddrType.ROM, Address = address };
+			if (address < 0x8000) return new CDLog_MapResults { Type = CDLog_AddrType.ROM, Address = (RomBank1 * BankSize) + (address & BankSizeMask) };
+			if (address < 0xC000) return new CDLog_MapResults { Type = CDLog_AddrType.ROM, Address = (RomBank2 * BankSize) + (address & BankSizeMask) };
+			return new CDLog_MapResults { Type = CDLog_AddrType.MainRAM, Address = address & RamSizeMask };
 		}
 
 		void WriteMemoryCM(ushort address, byte value)
@@ -74,21 +74,22 @@
 
 		CDLog_MapResults MapMemoryCMRam(ushort address, bool write)
 		{
-			if (address < 0x4000) return new CDLog_MapResults() { Type = CDLog_AddrType.ROM, Address = address };
-			else if (address < 0x8000)
+			if (address < 0x4000) return new CDLog_MapResults { Type = CDLog_AddrType.ROM, Address = address };
+			if (address < 0x8000)
 			{
 				if (address >= 0x6000 && RomBank3 == 1)
-					return new CDLog_MapResults() { Type = CDLog_AddrType.CartRAM, Address = address & 0x1FFF };
-				else
-					return new CDLog_MapResults() { Type = CDLog_AddrType.ROM, Address = (RomBank1 * BankSize) + (address & BankSizeMask) };
+					return new CDLog_MapResults { Type = CDLog_AddrType.CartRAM, Address = address & 0x1FFF };
+				return new CDLog_MapResults { Type = CDLog_AddrType.ROM, Address = (RomBank1 * BankSize) + (address & BankSizeMask) };
 			}
-			else if (address < 0xC000)
+
+			if (address < 0xC000)
 			{
 				if (address >= 0xA000 && RomBank3 == 1)
-					return new CDLog_MapResults() { Type = CDLog_AddrType.CartRAM, Address = address & 0x1FFF };
-				return new CDLog_MapResults() { Type = CDLog_AddrType.ROM, Address = (RomBank2 * BankSize) + (address & BankSizeMask) };
+					return new CDLog_MapResults { Type = CDLog_AddrType.CartRAM, Address = address & 0x1FFF };
+				return new CDLog_MapResults { Type = CDLog_AddrType.ROM, Address = (RomBank2 * BankSize) + (address & BankSizeMask) };
 			}
-			else return new CDLog_MapResults() { Type = CDLog_AddrType.MainRAM, Address = address & RamSizeMask };
+
+			return new CDLog_MapResults { Type = CDLog_AddrType.MainRAM, Address = address & RamSizeMask };
 		}
 
 		void WriteMemoryCMRam(ushort address, byte value)

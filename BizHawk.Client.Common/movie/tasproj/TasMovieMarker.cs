@@ -28,9 +28,9 @@ namespace BizHawk.Client.Common
 			Message = split[1];
 		}
 
-		public virtual int Frame { get; }
+		public int Frame { get; }
 
-		public virtual string Message { get; set; }
+		public string Message { get; set; }
 
 		public override string ToString()
 		{
@@ -44,17 +44,12 @@ namespace BizHawk.Client.Common
 
 		public override bool Equals(object obj)
 		{
-			if (obj == null)
+			return obj switch
 			{
-				return false;
-			}
-
-			if (obj is TasMovieMarker)
-			{
-				return Frame == ((TasMovieMarker)obj).Frame;
-			}
-			
-			return false;
+				null => false,
+				TasMovieMarker marker => Frame == marker.Frame,
+				_ => false
+			};
 		}
 
 		public static bool operator ==(TasMovieMarker marker, int frame)

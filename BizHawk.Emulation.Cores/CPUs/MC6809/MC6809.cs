@@ -1,9 +1,10 @@
 using System;
 
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 // Motorola Corp 6809
-namespace BizHawk.Emulation.Common.Components.MC6809
+namespace BizHawk.Emulation.Cores.Components.MC6809
 {
 	public sealed partial class MC6809
 	{
@@ -148,7 +149,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			FetchOperand = 2,
 			Data = 4,
 			Write = 8
-		};
+		}
 
 		// Execute instructions
 		public void ExecuteOne()
@@ -161,10 +162,10 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 					// do nothing
 					break;
 				case OP:
-					// Read the opcode of the next instruction					
-					if (OnExecFetch != null) OnExecFetch(PC);
-					if (TraceCallback != null) TraceCallback(State());
-					if (CDLCallback != null) CDLCallback(PC, eCDLogMemFlags.FetchFirst);
+					// Read the opcode of the next instruction
+					OnExecFetch?.Invoke(PC);
+					TraceCallback?.Invoke(State());
+					CDLCallback?.Invoke(PC, eCDLogMemFlags.FetchFirst);
 					FetchInstruction(ReadMemory(Regs[PC]++));
 					instr_pntr = 0;
 					irq_pntr = -1;
@@ -233,7 +234,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							Regs[reg_d_ad] = (ushort)((Regs[reg_h_ad] << 8) | Regs[reg_l_ad]);
 							break;
 						case JPE:
-							if (!FlagE) { instr_pntr = 44; irq_pntr = 10; };
+							if (!FlagE) { instr_pntr = 44; irq_pntr = 10; }
 							break;
 						case IDX_DCDE:
 							Index_decode();
@@ -472,7 +473,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 						irq_pntr = -1;
 						IRQS = 3;
 
-						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====CWAI NMI====", RegisterInfo = "" }); }
+						TraceCallback?.Invoke(new TraceInfo { Disassembly = "====CWAI NMI====", RegisterInfo = "" });
 					}
 					else if (FIRQPending && !FlagF)
 					{
@@ -485,7 +486,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 						irq_pntr = -1;
 						IRQS = 3;
 
-						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====CWAI FIRQ====", RegisterInfo = "" }); }
+						TraceCallback?.Invoke(new TraceInfo { Disassembly = "====CWAI FIRQ====", RegisterInfo = "" });
 					}
 					else if (IRQPending && !FlagI)
 					{
@@ -498,21 +499,90 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 						irq_pntr = -1;
 						IRQS = 3;
 
-						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====CWAI IRQ====", RegisterInfo = "" }); }
+						TraceCallback?.Invoke(new TraceInfo { Disassembly = "====CWAI IRQ====", RegisterInfo = "" });
 					}
 					else
 					{
 						PopulateCURINSTR(CWAI);
-						irq_pntr = 0;
+						irq_pntr = instr_pntr = 0;
 						IRQS = -1;
 					}
 					instr_pntr = 0;
 					break;
 				case SYNC:
-					IN_SYNC = true;
-					IRQS = 1;				
-					instr_pntr = irq_pntr = 0;
-					PopulateCURINSTR(SYNC);
+					if (NMIPending)
+					{
+						NMIPending = false;
+						IN_SYNC = false;
+
+						Regs[ADDR] = 0xFFFC;
+						PopulateCURINSTR(RD_INC, ALU, ADDR,
+										RD_INC, ALU2, ADDR,
+										SET_ADDR, PC, ALU, ALU2);
+						irq_pntr = -1;
+						IRQS = 3;
+
+						TraceCallback?.Invoke(new TraceInfo { Disassembly = "====SYNC NMI====", RegisterInfo = "" });
+					}
+					else if (FIRQPending)
+					{
+						if (!FlagF)
+						{
+							FIRQPending = false;
+
+							Regs[ADDR] = 0xFFF6;
+							PopulateCURINSTR(RD_INC, ALU, ADDR,
+											RD_INC, ALU2, ADDR,
+											SET_ADDR, PC, ALU, ALU2);
+							irq_pntr = -1;
+							IRQS = 3;
+
+							TraceCallback?.Invoke(new TraceInfo { Disassembly = "====SYNC FIRQ====", RegisterInfo = "" });
+						}
+						else
+						{
+							FIRQPending = false;
+							IN_SYNC = false;
+							IRQS = 2;
+							instr_pntr = irq_pntr = 0;
+							PopulateCURINSTR(IDLE,
+											IDLE);
+						}
+					}
+					else if (IRQPending)
+					{
+						if (!FlagI)
+						{
+							IRQPending = false;
+							IN_SYNC = false;
+
+							Regs[ADDR] = 0xFFF8;
+							PopulateCURINSTR(RD_INC, ALU, ADDR,
+											RD_INC, ALU2, ADDR,
+											SET_ADDR, PC, ALU, ALU2);
+							irq_pntr = -1;
+							IRQS = 3;
+
+							TraceCallback?.Invoke(new TraceInfo { Disassembly = "====SYNC IRQ====", RegisterInfo = "" });
+						}
+						else
+						{
+							FIRQPending = false;
+							IN_SYNC = false;
+							IRQS = 2;
+							instr_pntr = irq_pntr = 0;
+							PopulateCURINSTR(IDLE,
+											IDLE);
+						}
+					}
+					else
+					{
+						IN_SYNC = true;
+						IRQS = -1;
+						instr_pntr = irq_pntr = 0;
+						PopulateCURINSTR(SYNC);
+					}
+					
 					break;
 			}
 
@@ -523,65 +593,33 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 				{
 					NMIPending = false;
 
-					if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====NMI====", RegisterInfo = "" }); }
+					TraceCallback?.Invoke(new TraceInfo { Disassembly = "====NMI====", RegisterInfo = "" });
 
-					IN_SYNC = false;
 					NMI_();
 					NMICallback();
 					instr_pntr = irq_pntr = 0;
 				}
 				// fast IRQ has next priority
-				else if (FIRQPending)
+				else if (FIRQPending && !FlagF)
 				{
-					if (!FlagF)
-					{
-						FIRQPending = false;
+					FIRQPending = false;
 
-						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====FIRQ====", RegisterInfo = "" }); }
+					TraceCallback?.Invoke(new TraceInfo { Disassembly = "====FIRQ====", RegisterInfo = "" });
 
-						IN_SYNC = false;
-						FIRQ_();
-						FIRQCallback();
-						instr_pntr = irq_pntr = 0;
-					}
-					else if (IN_SYNC)
-					{
-						FIRQPending = false;
-
-						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====SYNC====", RegisterInfo = "" }); }
-
-						IN_SYNC = false;
-						IRQS = 1;
-						instr_pntr = irq_pntr = 0;
-						PopulateCURINSTR(IDLE);
-					}
+					FIRQ_();
+					FIRQCallback();
+					instr_pntr = irq_pntr = 0;
 				}
-				// then regular IRQ				
+				// then regular IRQ
 				else if (IRQPending && !FlagI)
 				{
-					if (!FlagI)
-					{
-						IRQPending = false;
+					IRQPending = false;
 
-						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====IRQ====", RegisterInfo = "" }); }
-
-						IN_SYNC = false;
-						IRQ_();
-						IRQCallback();
-						instr_pntr = irq_pntr = 0;
-					}
-					else if (IN_SYNC)
-					{
-						IRQPending = false;
-
-						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====SYNC====", RegisterInfo = "" }); }
-
-						IN_SYNC = false;
-						IRQS = 1;
-						instr_pntr = irq_pntr = 0;
-						PopulateCURINSTR(IDLE);
-					}
-				}				
+					TraceCallback?.Invoke(new TraceInfo { Disassembly = "====IRQ====", RegisterInfo = "" });
+					IRQ_();
+					IRQCallback();
+					instr_pntr = irq_pntr = 0;
+				}
 				// otherwise start the next instruction
 				else
 				{
@@ -598,10 +636,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 
 		public Action<TraceInfo> TraceCallback;
 
-		public string TraceHeader
-		{
-			get { return "MC6809: PC, machine code, mnemonic, operands, registers (A, B, X, Y, US, SP, DP, CC), Cy, flags (EFHINZVC)"; }
-		}
+		public string TraceHeader => "MC6809: PC, machine code, mnemonic, operands, registers (A, B, X, Y, US, SP, DP, CC), Cy, flags (EFHINZVC)";
 
 		public TraceInfo State(bool disassemble = true)
 		{
@@ -628,7 +663,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 					FlagN ? "N" : "n",
 					FlagZ ? "Z" : "z",
 					FlagV ? "V" : "v",
-					FlagC ? "C" : "c"			
+					FlagC ? "C" : "c"
 					)
 			};
 		}

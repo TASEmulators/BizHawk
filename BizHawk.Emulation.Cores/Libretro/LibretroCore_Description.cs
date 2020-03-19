@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Libretro
@@ -46,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		public string Name;
 		public string Description;
 		public string[] Options;
-		public string DefaultOption { get { return Options[0]; } }
+		public string DefaultOption => Options[0];
 
 		public override string ToString() => $"{Name} ({Description}) = ({string.Join("|", Options)})";
 	}

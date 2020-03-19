@@ -1,6 +1,4 @@
-﻿using System;
-
-// X = don't care
+﻿// X = don't care
 /*
 1. TIA   0000 00XX 0000 0000 - 0000 00XX 0001 1111
 2. MARIA 0000 00XX 0010 0000 - 0000 00XX 0011 1111
@@ -30,13 +28,12 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				{
 					return 0xFF; // TODO: what to return here?
 				}
-				else
-				{
-					slow_access = true;
-					return tia.ReadMemory((ushort)(addr & 0x1F), false);
-				}
+
+				slow_access = true;
+				return tia.ReadMemory((ushort)(addr & 0x1F), false);
 			}
-			else if ((addr & 0xFCE0) == 0x20)
+			
+			if ((addr & 0xFCE0) == 0x20)
 			{
 				if ((A7800_control_register & 0x2) > 0)
 				{
@@ -47,54 +44,61 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					return 0x80; // TODO: What if Maria is off?
 				}
 			}
-			else if ((addr & 0xFF80) == 0x280)
+			
+			if ((addr & 0xFF80) == 0x280)
 			{
 				slow_access = true;
 				return m6532.ReadMemory(addr, false);
 			}
-			else if ((addr & 0xFE80) == 0x480)
+			
+			if ((addr & 0xFE80) == 0x480)
 			{
 				slow_access = true;
 				return RAM_6532[addr & 0x7F];
 			}
-			else if ((addr >= 0x1800) && (addr < 0x2800))
+			
+			if ((addr >= 0x1800) && (addr < 0x2800))
 			{
 				return RAM[addr -0x1800];
 			}
-			else if ((addr >= 0x40) && (addr < 0x100))
+			
+			if ((addr >= 0x40) && (addr < 0x100))
 			{
 				// RAM block 0
 				return RAM[addr - 0x40 + 0x840];
 			}
-			else if ((addr >= 0x140) && (addr < 0x200))
+			
+			if ((addr >= 0x140) && (addr < 0x200))
 			{
 				// RAM block 1
 				return RAM[addr - 0x140 + 0x940];
 			}
-			else if ((addr >= 0x2800) && (addr < 0x3000))
+
+			if ((addr >= 0x2800) && (addr < 0x3000))
 			{
 				// this mirror evidently does not exist on hardware despite being in the documentation
 				return 0xFF;// RAM[(addr & 0x7FF) + 0x800];
 			}
-			else if ((addr >= 0x3000) && (addr < 0x4000))
+
+			if ((addr >= 0x3000) && (addr < 0x4000))
 			{
 				// could be either RAM mirror or ROM
 				return mapper.ReadMemory(addr);
 			}
-			else if ((addr >= 0x400) && (addr < 0x480))
+
+			if ((addr >= 0x400) && (addr < 0x480))
 			{
 				// cartridge space available
 				return mapper.ReadMemory(addr);
 			}
-			else if ((addr >= 0x500) && (addr < 0x1800))
+
+			if ((addr >= 0x500) && (addr < 0x1800))
 			{
 				// cartridge space available
 				return mapper.ReadMemory(addr);
 			}
-			else
-			{
-				return mapper.ReadMemory(addr);
-			}
+
+			return mapper.ReadMemory(addr);
 		}
 
 		public void WriteMemory(ushort addr, byte value)

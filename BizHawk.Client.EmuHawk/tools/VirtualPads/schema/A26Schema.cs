@@ -7,6 +7,7 @@ using BizHawk.Emulation.Cores.Atari.Atari2600;
 namespace BizHawk.Client.EmuHawk
 {
 	[Schema("A26")]
+	// ReSharper disable once UnusedMember.Global
 	public class A26Schema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
@@ -30,20 +31,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema PadSchemaFromSetting(Atari2600ControllerTypes type, int controller)
 		{
-			switch (type)
+			return type switch
 			{
-				default:
-				case Atari2600ControllerTypes.Unplugged:
-					return null;
-				case Atari2600ControllerTypes.Joystick:
-					return StandardController(controller);
-				case Atari2600ControllerTypes.Paddle:
-					return PaddleController(controller);
-				case Atari2600ControllerTypes.BoostGrip:
-					return BoostGripController(controller);
-				case Atari2600ControllerTypes.Driving:
-					return DrivingController(controller);
-			}
+				Atari2600ControllerTypes.Unplugged => null,
+				Atari2600ControllerTypes.Joystick => StandardController(controller),
+				Atari2600ControllerTypes.Paddle => PaddleController(controller),
+				Atari2600ControllerTypes.BoostGrip => BoostGripController(controller),
+				Atari2600ControllerTypes.Driving => DrivingController(controller),
+				_ => null
+			};
 		}
 
 		private static PadSchema StandardController(int controller)

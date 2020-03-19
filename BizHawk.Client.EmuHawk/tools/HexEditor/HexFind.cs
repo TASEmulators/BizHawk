@@ -7,8 +7,11 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class HexFind : Form
 	{
-		public HexFind()
+		private readonly HexEditor _hexEditor;
+
+		public HexFind(HexEditor hexEditor)
 		{
+			_hexEditor = hexEditor;
 			InitializeComponent();
 			ChangeCasing();
 		}
@@ -18,12 +21,11 @@ namespace BizHawk.Client.EmuHawk
 		public bool InitialText { get; set; }
 
 		public Point InitialLocation { get; set; }
-		
 
 		public string InitialValue
 		{
-			get { return FindBox.Text; }
-			set { FindBox.Text = value ?? ""; }
+			get => FindBox.Text;
+			set => FindBox.Text = value ?? "";
 		}
 
 		private void HexFind_Load(object sender, EventArgs e)
@@ -55,25 +57,25 @@ namespace BizHawk.Client.EmuHawk
 				return FindBox.Text;
 			}
 
-			var bytes = GlobalWin.Tools.HexEditor.ConvertTextToBytes(FindBox.Text);
+			var bytes = _hexEditor.ConvertTextToBytes(FindBox.Text);
 
-			var bytestring = new StringBuilder();
+			var byteString = new StringBuilder();
 			foreach (var b in bytes)
 			{
-				bytestring.Append($"{b:X2}");
+				byteString.Append($"{b:X2}");
 			}
 
-			return bytestring.ToString();
+			return byteString.ToString();
 		}
 
 		private void Find_Prev_Click(object sender, EventArgs e)
 		{
-			GlobalWin.Tools.HexEditor.FindPrev(GetFindBoxChars(), false);
+			_hexEditor.FindPrev(GetFindBoxChars(), false);
 		}
 
 		private void Find_Next_Click(object sender, EventArgs e)
 		{
-			GlobalWin.Tools.HexEditor.FindNext(GetFindBoxChars(), false);
+			_hexEditor.FindNext(GetFindBoxChars(), false);
 		}
 
 		private void ChangeCasing()

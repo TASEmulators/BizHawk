@@ -8,7 +8,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class SubtitleMaker : Form
 	{
-		public Subtitle Sub = new Subtitle();
+		public Subtitle Sub { get; set; } = new Subtitle();
 
 		public SubtitleMaker()
 		{

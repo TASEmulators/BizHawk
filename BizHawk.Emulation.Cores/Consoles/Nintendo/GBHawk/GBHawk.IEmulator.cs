@@ -1,7 +1,6 @@
 ﻿using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
@@ -50,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			_frame++;
 
-			if (controller.IsPressed("Power"))
+			if (controller.IsPressed("P1 Power"))
 			{
 				HardReset();
 			}
@@ -118,6 +117,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				if (in_vblank && !in_vblank_old)
 				{
+					_islag = false;
+
 					// update the controller state on VBlank
 					GetControllerState(controller);
 
@@ -131,6 +132,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				REG_FF0F_OLD = REG_FF0F;
 
 				in_vblank_old = in_vblank;
+			}
+
+			// turn off the screen so the image doesnt persist
+			// but don't turn off blank_frame yet, it still needs to be true until the next VBL
+			// this doesn't run for GBC, some games, ex MIB the series 2, rely on the screens persistence while off to make video look smooth.
+			// But some GB gams, ex Battletoads, turn off the screen for a long time from the middle of the frame, so need to be cleared.
+			if (ppu.clear_screen)
+			{
+				for (int j = 0; j < frame_buffer.Length; j++) { frame_buffer[j] = (int)color_palette[0]; }
+				ppu.clear_screen = false;
 			}
 		}
 
@@ -248,6 +259,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			Acc_Y_state = _controllerDeck.ReadAccY1(controller);
 		}
 
+
+
 		public int Frame => _frame;
 
 		public string SystemId => "GB";
@@ -274,8 +287,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		}
 
 		#region Video provider
-
-		public int _frameHz = 60;
 
 		public int[] _vidbuffer;
 
@@ -306,7 +317,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						_vidbuffer[i] = (int)color_palette[0];
 					}
 				}
-
+				
 				for (int j = 0; j < frame_buffer.Length; j++) { frame_buffer[j] = _vidbuffer[j]; }
 
 				ppu.blank_frame = false;
@@ -318,8 +329,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int BufferWidth => 160;
 		public int BufferHeight => 144;
 		public int BackgroundColor => unchecked((int)0xFF000000);
-		public int VsyncNumerator => _frameHz;
-		public int VsyncDenominator => 1;
+		public int VsyncNumerator => 262144;
+		public int VsyncDenominator => 4389;
 
 		public static readonly uint[] color_palette_BW = { 0xFFFFFFFF , 0xFFAAAAAA, 0xFF555555, 0xFF000000 };
 		public static readonly uint[] color_palette_Gr = { 0xFFA4C505, 0xFF88A905, 0xFF1D551D, 0xFF052505 };

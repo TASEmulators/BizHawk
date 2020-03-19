@@ -122,14 +122,9 @@ __Types and notation__
 							.Append(i + 1)
 							.Append(":");
 
-						if (parameters[i].IsOptional)
-						{
-							sb.Append($"[{parameters[i].Name}]");
-						}
-						else
-						{
-							sb.Append(parameters[i].Name);
-						}
+						sb.Append(parameters[i].IsOptional
+							? $"[{parameters[i].Name}]"
+							: parameters[i].Name);
 
 						sb.Append("}");
 
@@ -186,13 +181,13 @@ __Types and notation__
 
 		public string Example => _luaExampleAttribute?.Example;
 
-		private string _paramterList = null;
+		private string _parameterList;
 
 		public string ParameterList
 		{
 			get
 			{
-				if (_paramterList == null)
+				if (_parameterList == null)
 				{
 					var parameters = _method.GetParameters();
 
@@ -218,14 +213,14 @@ __Types and notation__
 					}
 
 					list.Append(')');
-					_paramterList = list.ToString();
+					_parameterList = list.ToString();
 				}
 
-				return _paramterList;
+				return _parameterList;
 			}
 		}
 
-		private string TypeCleanup(string str)
+		private static string TypeCleanup(string str)
 		{
 			return str
 				.Replace("System", "")

@@ -16,7 +16,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			typeof(StandardController),
 			typeof(PaddleController),
 			typeof(BoostGripController),
-			typeof(DrivingController)
+			typeof(DrivingController),
+			typeof(KeyboardController)
 		};
 
 		public Atari2600ControllerDeck(Atari2600ControllerTypes controller1, Atari2600ControllerTypes controller2)

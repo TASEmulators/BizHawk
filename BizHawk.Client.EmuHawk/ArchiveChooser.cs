@@ -6,31 +6,27 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 using BizHawk.Common;
-using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class ArchiveChooser : Form
 	{
-		IList<ListViewItem> archiveItems = new List<ListViewItem>();
-		ToolTip errorBalloon = new ToolTip();
+		private readonly IList<ListViewItem> _archiveItems = new List<ListViewItem>();
+		private readonly ToolTip _errorBalloon = new ToolTip();
 
-		static bool useRegEx = false;
-		static bool matchWhileTyping = true;
+		private static bool _useRegEx;
+		private static bool _matchWhileTyping = true;
 
-		public ArchiveChooser(HawkFile hawkfile)
+		public ArchiveChooser(HawkFile hawkFile)
 		{
 			InitializeComponent();
 
-			errorBalloon.IsBalloon = true;
-			errorBalloon.InitialDelay = 0;
-			if (useRegEx)
-				radRegEx.Checked = true;
-			else
-				radSimple.Checked = true;
-			cbInstantFilter.Checked = matchWhileTyping;
+			_errorBalloon.IsBalloon = true;
+			_errorBalloon.InitialDelay = 0;
+			radRegEx.Checked = _useRegEx;
+			cbInstantFilter.Checked = _matchWhileTyping;
 
-			var items = hawkfile.ArchiveItems;
+			var items = hawkFile.ArchiveItems;
 			for (int i = 0; i < items.Count; i++)
 			{
 				var item = items[i];
@@ -39,10 +35,10 @@ namespace BizHawk.Client.EmuHawk
 				lvi.Text = item.Name;
 				long size = item.Size;
 				var extension = Path.GetExtension(item.Name);
-				if (extension != null && (size % 1024 == 16 && extension.ToUpper() == ".NES"))
+				if (extension != null && size % 1024 == 16 && extension.ToUpper() == ".NES")
 					size -= 16;
 				lvi.SubItems[1].Text = Util.FormatFileSize(size);
-				archiveItems.Add(lvi);
+				_archiveItems.Add(lvi);
 			}
 
 			InitializeFileView();
@@ -50,13 +46,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InitializeFileView()
 		{
-			archiveItems.OrderBy(x => x.Name);
-
 			lvMembers.BeginUpdate();
 			try
 			{
 				lvMembers.Items.Clear();
-				foreach (ListViewItem i in archiveItems)
+				foreach (ListViewItem i in _archiveItems.OrderBy(x => x.Name))
 				{
 					lvMembers.Items.Add(i);
 				}
@@ -107,12 +101,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void cbInstantFilter_CheckedChanged(object sender, EventArgs e)
 		{
-			matchWhileTyping = cbInstantFilter.Checked;
+			_matchWhileTyping = cbInstantFilter.Checked;
 		}
 
 		private void radRegEx_CheckedChanged(object sender, EventArgs e)
 		{
-			useRegEx = radRegEx.Checked;
+			_useRegEx = radRegEx.Checked;
 		}
 
 		private void tbFilter_TextChanged(object sender, EventArgs e)
@@ -132,7 +126,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				errorBalloon.Hide(tb);
+				_errorBalloon.Hide(tb);
 				var searchMatcher = CreateMatcher(tb.Text);
 				if (searchMatcher != null)
 				{
@@ -145,8 +139,8 @@ namespace BizHawk.Client.EmuHawk
 				errMsg = errMsg.Substring(errMsg.IndexOf('-') + 2);
 
 				// Balloon is bugged on first invocation
-				errorBalloon.Show($"Error parsing RegEx: {errMsg}", tb);
-				errorBalloon.Show($"Error parsing RegEx: {errMsg}", tb);
+				_errorBalloon.Show($"Error parsing RegEx: {errMsg}", tb);
+				_errorBalloon.Show($"Error parsing RegEx: {errMsg}", tb);
 			}
 		}
 
@@ -177,8 +171,8 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				// Balloon is bugged on first invocation
-				errorBalloon.Show("Could not find search text", tbSearch);
-				errorBalloon.Show("Could not find search text", tbSearch);
+				_errorBalloon.Show("Could not find search text", tbSearch);
+				_errorBalloon.Show("Could not find search text", tbSearch);
 			}
 		}
 
@@ -188,7 +182,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				lvMembers.Items.Clear();
-				foreach (ListViewItem item in archiveItems)
+				foreach (ListViewItem item in _archiveItems)
 				{
 					if (searchMatcher.Matches(item))
 					{
@@ -205,7 +199,7 @@ namespace BizHawk.Client.EmuHawk
 		private interface IMatcher
 		{
 			bool Matches(ListViewItem value);
-		};
+		}
 
 		private class SimpleMatcher : IMatcher
 		{
@@ -223,7 +217,7 @@ namespace BizHawk.Client.EmuHawk
 
 				return true;
 			}
-		};
+		}
 
 		private class RegExMatcher : IMatcher
 		{
@@ -232,7 +226,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return Matcher.IsMatch(value.Text);
 			}
-		};
+		}
 
 		private IMatcher CreateMatcher(string searchKey)
 		{

@@ -244,7 +244,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 						uint[] outputImage = new uint[image_offset];
 
 						int palette = command_data[2];
-						uint[] colors = new uint[] {
+						uint[] colors = {
 							0xFFFFFFFFU,
 							0xFFAAAAAAU,
 							0xFF555555U,

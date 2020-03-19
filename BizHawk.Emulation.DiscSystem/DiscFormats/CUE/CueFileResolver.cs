@@ -1,6 +1,3 @@
-using System;
-using System.Linq;
-using System.Text;
 using System.IO;
 using System.Collections.Generic;
 
@@ -35,7 +32,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		{
 			this.baseDir = baseDir;
 			diBasedir = new DirectoryInfo(baseDir);
-			//list all files, so we dont scan repeatedly.
+			//list all files, so we don't scan repeatedly.
 			fisBaseDir = MyFileInfosFromFileInfos(diBasedir.GetFiles());
 		}
 
@@ -83,7 +80,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				di = new FileInfo(path).Directory;
 				//fileInfos = di.GetFiles(Path.GetFileNameWithoutExtension(path)); //does this work?
 				fileInfos = MyFileInfosFromFileInfos(di.GetFiles()); //we (probably) have to enumerate all the files to do a search anyway, so might as well do this
-				//TODO - dont do the search until a resolve fails
+				//TODO - don't do the search until a resolve fails
 			}
 			else
 			{

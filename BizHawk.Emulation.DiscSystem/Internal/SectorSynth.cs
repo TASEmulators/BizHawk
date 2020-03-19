@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace BizHawk.Emulation.DiscSystem
 {
@@ -134,8 +133,7 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			int index = lba - FirstLBA;
 			if (index < 0) return null;
-			if (index >= Sectors.Count) return null;
-			return Sectors[index];
+			return index >= Sectors.Count ? null : Sectors[index];
 		}
 	}
 
@@ -166,9 +164,7 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 		public ISectorSynthJob2448 Get(int lba)
 		{
-			if (Condition(lba))
-				return Patch;
-			else return Parent.Get(lba);
+			return Condition(lba) ? Patch : Parent.Get(lba);
 		}
 	}
 

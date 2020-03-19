@@ -10,22 +10,15 @@ namespace BizHawk.Client.EmuHawk
 {
 	public abstract class PlatformEmuLuaLibrary
 	{
-		public LuaDocumentation Docs { get; protected set; }
-
+		public readonly LuaDocumentation Docs = new LuaDocumentation();
+		public abstract LuaFunctionList RegisteredFunctions { get; }
 		public GuiLuaLibrary GuiLibrary => (GuiLuaLibrary) Libraries[typeof(GuiLuaLibrary)];
-
-		public bool IsRebootingCore { get; set; } // pretty hacky.. we dont want a lua script to be able to restart itself by rebooting the core
-
 		protected readonly Dictionary<Type, LuaLibraryBase> Libraries = new Dictionary<Type, LuaLibraryBase>();
-
-		public EventWaitHandle LuaWait { get; protected set; }
-
-		public IEnumerable<LuaFile> RunningScripts
-		{
-			get { return ScriptList.Where(lf => lf.Enabled); }
-		}
-
+		public IEnumerable<LuaFile> RunningScripts => ScriptList.Where(lf => lf.Enabled);
 		public readonly LuaFileList ScriptList = new LuaFileList();
+
+		public bool IsRebootingCore { get; set; } // pretty hacky.. we don't want a lua script to be able to restart itself by rebooting the core
+		public EventWaitHandle LuaWait { get; protected set; }
 
 		public abstract void CallExitEvent(LuaFile lf);
 		public abstract void CallFrameAfterEvent();
@@ -35,9 +28,8 @@ namespace BizHawk.Client.EmuHawk
 		public abstract void Close();
 		public abstract void EndLuaDrawing();
 		public abstract void ExecuteString(string command);
-		public abstract LuaFunctionList GetRegisteredFunctions();
 		public abstract void Restart(IEmulatorServiceProvider newServiceProvider);
-		public abstract EmuLuaLibrary.ResumeResult ResumeScriptFromThreadOf(LuaFile lf);
+		public abstract EmuLuaLibrary.ResumeResult ResumeScript(LuaFile lf);
 		public abstract void SpawnAndSetFileThread(string pathToLoad, LuaFile lf);
 		public abstract void StartLuaDrawing();
 		public abstract void WindowClosed(IntPtr handle);

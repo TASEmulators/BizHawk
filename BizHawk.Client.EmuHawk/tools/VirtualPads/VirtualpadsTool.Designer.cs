@@ -29,7 +29,6 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VirtualpadTool));
 			this.ControllerBox = new System.Windows.Forms.GroupBox();
 			this.PadBoxContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.clearAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -170,7 +169,7 @@
 			this.ClientSize = new System.Drawing.Size(452, 312);
 			this.Controls.Add(this.ControllerBox);
 			this.Controls.Add(this.PadMenu);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController_MultiSize;
 			this.Name = "VirtualpadTool";
 			this.Text = "Virtual Pads";
 			this.Load += new System.EventHandler(this.VirtualpadTool_Load);

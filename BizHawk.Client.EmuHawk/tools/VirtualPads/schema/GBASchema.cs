@@ -7,7 +7,8 @@ using BizHawk.Emulation.Cores.Nintendo.GBA;
 namespace BizHawk.Client.EmuHawk
 {
 	[Schema("GBA")]
-	public class GBASchema : IVirtualPadSchema
+	// ReSharper disable once UnusedMember.Global
+	public class GbaSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{

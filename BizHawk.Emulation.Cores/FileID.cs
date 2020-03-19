@@ -2,11 +2,9 @@
 using System.IO;
 using System.Collections.Generic;
 
-using BizHawk.Common;
-
 //HOW TO USE
-//we dont expect anyone to use this fully yet. It's just over-engineered for future use.
-//for now, just use it when you truly dont know what to do with a file.
+//we don't expect anyone to use this fully yet. It's just over-engineered for future use.
+//for now, just use it when you truly don't know what to do with a file.
 //This system depends heavily on the provided extension. We're not going to exhaustively try every format all the time. If someone loads a cue which is named .sfc, we cant cope with that. 
 //However, common mistakes will be handled, on an as-needed basis.
 
@@ -24,7 +22,7 @@ namespace BizHawk.Emulation.Cores
 	public enum FileIDType
 	{
 		None, 
-		Multiple, //dont think this makes sense. shouldnt the multiple options be returned?
+		Multiple, //don't think this makes sense. shouldn't the multiple options be returned?
 
 		Disc, //an unknown disc
 		PSX, PSX_EXE, PSF,
@@ -42,8 +40,8 @@ namespace BizHawk.Emulation.Cores
 		WS, WSC, NGC,
 
 		C64, 
-        ZXSpectrum,
-        AmstradCPC,
+		ZXSpectrum,
+		AmstradCPC,
 		INT,
 		A26, A52, A78, LNX,
 
@@ -169,8 +167,7 @@ namespace BizHawk.Emulation.Cores
 			if(job.Extension != null)
 			{
 				//first test everything associated with this extension
-				ExtensionInfo handler = null;
-				if (ExtensionHandlers.TryGetValue(ext, out handler))
+				if (ExtensionHandlers.TryGetValue(ext, out var handler))
 				{
 					foreach (var del in handler.Testers)
 					{
@@ -576,7 +573,7 @@ namespace BizHawk.Emulation.Cores
 			}
 
 			//well... guess it's a disc.
-			//since it's just a bin, we dont need the user to provide a DiscSystem disc.
+			//since it's just a bin, we don't need the user to provide a DiscSystem disc.
 			//lets just analyze this as best we can.
 			//of course, it's a lot of redundant logic with the discsystem disc checker.
 			//but you kind of need different approaches when loading a hugely unstructured bin file

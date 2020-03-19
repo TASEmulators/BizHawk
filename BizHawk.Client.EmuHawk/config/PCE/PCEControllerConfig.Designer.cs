@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PCEControllerConfig));
             this.CancelBtn = new System.Windows.Forms.Button();
             this.OkBtn = new System.Windows.Forms.Button();
             this.ControllerPropertyGrid = new System.Windows.Forms.PropertyGrid();
@@ -77,7 +76,7 @@
             this.Controls.Add(this.CancelBtn);
             this.Controls.Add(this.OkBtn);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController_MultiSize;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "PCEControllerConfig";

@@ -17,121 +17,125 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// underlying file being written to
 		/// </summary>
-		BinaryWriter file;
+		private BinaryWriter _file;
 
 		/// <summary>
 		/// sequence of files to write to (split on 32 bit limit)
 		/// </summary>
-		IEnumerator<Stream> filechain;
+		private IEnumerator<Stream> _fileChain;
 
 		/// <summary>
 		/// samplerate in HZ
 		/// </summary>
-		int samplerate;
+		private int _sampleRate;
 
 		/// <summary>
 		/// number of audio channels
 		/// </summary>
-		int numchannels;
+		private int _numChannels;
 
 		/// <summary>
 		/// number of bytes of PCM data written to current file
 		/// </summary>
-		UInt64 numbytes;
+		private ulong _numBytes;
 
 		/// <summary>
 		/// number of bytes after which a file split should be made
 		/// </summary>
-		const UInt64 splitpoint = 2 * 1000 * 1000 * 1000;
+		private const ulong SplitPoint = 2 * 1000 * 1000 * 1000;
 
 		/// <summary>
 		/// write riff headers to current file
 		/// </summary>
-		private void writeheaders()
+		private void WriteHeaders()
 		{
-			file.Write(Encoding.ASCII.GetBytes("RIFF")); // ChunkID
-			file.Write((uint)0); // ChunkSize
-			file.Write(Encoding.ASCII.GetBytes("WAVE")); // Format
+			_file.Write(Encoding.ASCII.GetBytes("RIFF")); // ChunkID
+			_file.Write(0U); // ChunkSize
+			_file.Write(Encoding.ASCII.GetBytes("WAVE")); // Format
 
-			file.Write(Encoding.ASCII.GetBytes("fmt ")); // SubchunkID
-			file.Write((uint)16); // SubchunkSize
-			file.Write((ushort)1); // AudioFormat (PCM)
-			file.Write((ushort)numchannels); // NumChannels
-			file.Write((uint)samplerate); // SampleRate
-			file.Write((uint)(samplerate * numchannels * 2)); // ByteRate
-			file.Write((ushort)(numchannels * 2)); // BlockAlign
-			file.Write((ushort)16); // BitsPerSample
+			_file.Write(Encoding.ASCII.GetBytes("fmt ")); // SubchunkID
+			_file.Write(16U); // SubchunkSize
+			_file.Write((ushort)1U); // AudioFormat (PCM)
+			_file.Write((ushort)_numChannels); // NumChannels
+			_file.Write((uint)_sampleRate); // SampleRate
+			_file.Write((uint)(_sampleRate * _numChannels * 2)); // ByteRate
+			_file.Write((ushort)(_numChannels * 2)); // BlockAlign
+			_file.Write((ushort)16U); // BitsPerSample
 
-			file.Write(Encoding.ASCII.GetBytes("data")); // SubchunkID
-			file.Write((uint)0); // SubchunkSize
+			_file.Write(Encoding.ASCII.GetBytes("data")); // SubchunkID
+			_file.Write(0U); // SubchunkSize
 		}
 
 		/// <summary>
 		/// seek back to beginning of file and fix header sizes (if possible)
 		/// </summary>
-		private void finalizeheaders()
+		private void FinalizeHeaders()
 		{
-			if (numbytes + 36 >= 0x100000000)
+			if (_numBytes + 36 >= 0x100000000)
+			{
 				// passed 4G limit, nothing to be done
 				return;
+			}
+
 			try
 			{
-				file.Seek(4, SeekOrigin.Begin);
-				file.Write((uint)(36 + numbytes));
-				file.Seek(40, SeekOrigin.Begin);
-				file.Write((uint)(numbytes));
+				_file.Seek(4, SeekOrigin.Begin);
+				_file.Write((uint)(36 + _numBytes));
+				_file.Seek(40, SeekOrigin.Begin);
+				_file.Write((uint)(_numBytes));
 			}
 			catch (NotSupportedException)
-			{	// unseekable; oh well
+			{
+				// unseekable; oh well
 			}
 		}
 
 		/// <summary>
 		/// close current underlying stream
 		/// </summary>
-		private void closecurrent()
+		private void CloseCurrent()
 		{
-			if (file != null)
+			if (_file != null)
 			{
-				finalizeheaders();
-				file.Close();
-				file.Dispose();
+				FinalizeHeaders();
+				_file.Close();
+				_file.Dispose();
 			}
 
-			file = null;
+			_file = null;
 		}
 
 		/// <summary>
 		/// open a new underlying stream
 		/// </summary>
-		private void opencurrent(Stream next)
+		private void OpenCurrent(Stream next)
 		{
-			file = new BinaryWriter(next, Encoding.ASCII);
-			numbytes = 0;
-			writeheaders();
+			_file = new BinaryWriter(next, Encoding.ASCII);
+			_numBytes = 0;
+			WriteHeaders();
 		}
 
 		/// <summary>
 		/// write samples to file
 		/// </summary>
 		/// <param name="samples">samples to write; should contain one for each channel</param>
-		public void writesamples(short[] samples)
+		public void WriteSamples(short[] samples)
 		{
-			file.Write(samples);
-			numbytes += (ulong)(samples.Length * sizeof(short));
+			_file.Write(samples);
+			_numBytes += (ulong)(samples.Length * sizeof(short));
 
 			// try splitting if we can
-			if (numbytes >= splitpoint && filechain != null)
+			if (_numBytes >= SplitPoint && _fileChain != null)
 			{
-				if (!filechain.MoveNext())
+				if (!_fileChain.MoveNext())
 				{	// out of files, just keep on writing to this one
-					filechain = null;
+					_fileChain = null;
 				}
 				else
 				{
-					Stream next = filechain.Current;
-					closecurrent();
-					opencurrent(next);
+					Stream next = _fileChain.Current;
+					CloseCurrent();
+					OpenCurrent(next);
 				}
 			}
 		}
@@ -146,15 +150,15 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void Close()
 		{
-			closecurrent();
+			CloseCurrent();
 		}
 
 		/// <summary>
 		/// checks sampling rate, number of channels for validity
 		/// </summary>
-		private void checkargs()
+		private void CheckArgs()
 		{
-			if (samplerate < 1 || numchannels < 1)
+			if (_sampleRate < 1 || _numChannels < 1)
 			{
 				throw new ArgumentException("Bad samplerate/numchannels");
 			}
@@ -165,15 +169,15 @@ namespace BizHawk.Client.EmuHawk
 		/// no attempt is made to split
 		/// </summary>
 		/// <param name="s">WavWriter now owns this stream</param>
-		/// <param name="samplerate">sampling rate in HZ</param>
-		/// <param name="numchannels">number of audio channels</param>
-		public WavWriter(Stream s, int samplerate, int numchannels)
+		/// <param name="sampleRate">sampling rate in HZ</param>
+		/// <param name="numChannels">number of audio channels</param>
+		public WavWriter(Stream s, int sampleRate, int numChannels)
 		{
-			this.samplerate = samplerate;
-			this.numchannels = numchannels;
-			filechain = null;
-			checkargs();
-			opencurrent(s);
+			_sampleRate = sampleRate;
+			_numChannels = numChannels;
+			_fileChain = null;
+			CheckArgs();
+			OpenCurrent(s);
 		}
 
 		/// <summary>
@@ -182,22 +186,23 @@ namespace BizHawk.Client.EmuHawk
 		/// if the enumerator runs out before the audio stream does, the last file could be >2G
 		/// </summary>
 		/// <param name="ss">WavWriter now owns any of these streams that it enumerates</param>
-		/// <param name="samplerate">sampling rate in HZ</param>
-		/// <param name="numchannels">number of audio channels</param>
-		public WavWriter(IEnumerator<Stream> ss, int samplerate, int numchannels)
+		/// <param name="sampleRate">sampling rate in HZ</param>
+		/// <param name="numChannels">number of audio channels</param>
+		/// <exception cref="ArgumentException"><paramref name="ss"/> cannot be progressed</exception>
+		public WavWriter(IEnumerator<Stream> ss, int sampleRate, int numChannels)
 		{
-			this.samplerate = samplerate;
-			this.numchannels = numchannels;
-			checkargs();
-			filechain = ss;
+			_sampleRate = sampleRate;
+			_numChannels = numChannels;
+			CheckArgs();
+			_fileChain = ss;
 
 			// advance to first
-			if (!filechain.MoveNext())
+			if (!_fileChain.MoveNext())
 			{
 				throw new ArgumentException("Iterator was empty!");
 			}
 
-			opencurrent(ss.Current);
+			OpenCurrent(ss.Current);
 		}
 	}
 
@@ -209,7 +214,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public void SetVideoCodecToken(IDisposable token) { }
 		public void AddFrame(IVideoProvider source) { }
-		public void SetMovieParameters(int fpsnum, int fpsden) { }
+		public void SetMovieParameters(int fpsNum, int fpsDen) { }
 		public void SetVideoParameters(int width, int height) { }
 		public void SetFrame(int frame) { }
 
@@ -228,37 +233,38 @@ namespace BizHawk.Client.EmuHawk
 			return new WavWriterVToken();
 		}
 
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="bits"/> is not <c>16</c></exception>
 		public void SetAudioParameters(int sampleRate, int channels, int bits)
 		{
-			this.sampleRate = sampleRate;
-			this.channels = channels;
+			this._sampleRate = sampleRate;
+			this._channels = channels;
 			if (bits != 16)
 			{
 				throw new ArgumentException("Only support 16bit audio!");
 			}
 		}
 
-		public void SetMetaData(string gameName, string authors, ulong lengthMS, ulong rerecords)
+		public void SetMetaData(string gameName, string authors, ulong lengthMs, ulong rerecords)
 		{
 			// not implemented
 		}
 
 		public void Dispose()
 		{
-			wavwriter?.Dispose();
+			_wavWriter?.Dispose();
 		}
 
-		private WavWriter wavwriter = null;
-		private int sampleRate = 0;
-		private int channels = 0;
+		private WavWriter _wavWriter;
+		private int _sampleRate;
+		private int _channels;
 
 		/// <summary>
 		/// create a simple wav stream iterator
 		/// </summary>
 		private static IEnumerator<Stream> CreateStreamIterator(string template)
 		{
-			string dir = Path.GetDirectoryName(template);
-			string baseName = Path.GetFileNameWithoutExtension(template);
+			string dir = Path.GetDirectoryName(template) ?? "";
+			string baseName = Path.GetFileNameWithoutExtension(template) ?? "";
 			string ext = Path.GetExtension(template);
 			yield return new FileStream(template, FileMode.Create);
 			int counter = 1;
@@ -271,25 +277,22 @@ namespace BizHawk.Client.EmuHawk
 
 		public void OpenFile(string baseName)
 		{
-			wavwriter = new WavWriter(CreateStreamIterator(baseName), sampleRate, channels);
+			_wavWriter = new WavWriter(CreateStreamIterator(baseName), _sampleRate, _channels);
 		}
 
 		public void CloseFile()
 		{
-			wavwriter.Close();
-			wavwriter.Dispose();
-			wavwriter = null;
+			_wavWriter.Close();
+			_wavWriter.Dispose();
+			_wavWriter = null;
 		}
 
 		public void AddSamples(short[] samples)
 		{
-			wavwriter.writesamples(samples);
+			_wavWriter.WriteSamples(samples);
 		}
 
-		public string DesiredExtension()
-		{
-			return "wav";
-		}
+		public string DesiredExtension() => "wav";
 
 		public void SetDefaultVideoCodecToken()
 		{

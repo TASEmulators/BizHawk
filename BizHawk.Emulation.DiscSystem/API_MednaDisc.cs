@@ -1,9 +1,7 @@
 using System;
-using System.Text;
-using System.IO;
-using System.Globalization;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
+
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.DiscSystem
 {
@@ -14,6 +12,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// </summary>
 	public unsafe class MednaDisc : IDisposable
 	{
+		/// <exception cref="InvalidOperationException"><see cref="IsLibraryAvailable"/> is <see langword="false"/> (could not load <c>mednadisc.dll</c>), or unmanaged call failed</exception>
 		public MednaDisc(string pathToDisc)
 		{
 			if (!IsLibraryAvailable)
@@ -48,63 +47,56 @@ namespace BizHawk.Emulation.DiscSystem
 				mednadisc_ReadSector(handle, LBA, pBuffer + offset);
 		}
 
-		//public void ReadSubcodeDeinterleaved(int LBA, byte[] buffer, int offset)
-		//{
-		//  fixed (byte* pBuffer = buf2442)
-		//    mednadisc_ReadSector(handle, LBA, pBuffer);
-		//  SubcodeUtils.Deinterleave(buf2442, 2352, buffer, offset);
-		//}
+#if false
+		public void ReadSubcodeDeinterleaved(int LBA, byte[] buffer, int offset)
+		{
+			fixed (byte* pBuffer = buf2442)
+				mednadisc_ReadSector(handle, LBA, pBuffer);
+			SynthUtils.DeinterleaveSubcode(buf2442, 2352, buffer, offset);
+		}
 
-		//public void ReadSubcodeChannel(int LBA, int number, byte[] buffer, int offset)
-		//{
-		//  fixed (byte* pBuffer = buf2442)
-		//    mednadisc_ReadSector(handle, LBA, pBuffer);
-		//  SubcodeUtils.Deinterleave(buf2442, 2352, buf96, 0);
-		//  for (int i = 0; i < 12; i++)
-		//    buffer[offset + i] = buf96[number * 12 + i];
-		//}
+		public void ReadSubcodeChannel(int LBA, int number, byte[] buffer, int offset)
+		{
+			fixed (byte* pBuffer = buf2442)
+				mednadisc_ReadSector(handle, LBA, pBuffer);
+			SynthUtils.DeinterleaveSubcode(buf2442, 2352, buf96, 0);
+			for (int i = 0; i < 12; i++)
+				buffer[offset + i] = buf96[number * 12 + i];
+		}
 
-		//public void Read_2352(int LBA, byte[] buffer, int offset)
-		//{
-		//  fixed (byte* pBuffer = buf2442)
-		//    mednadisc_ReadSector(handle, LBA, pBuffer);
-		//  Buffer.BlockCopy(buf2442, 0, buffer, offset, 2352);
-		//}
+		public void Read_2352(int LBA, byte[] buffer, int offset)
+		{
+			fixed (byte* pBuffer = buf2442)
+				mednadisc_ReadSector(handle, LBA, pBuffer);
+			Buffer.BlockCopy(buf2442, 0, buffer, offset, 2352);
+		}
 
-		//public void Read_2048(int LBA, byte[] buffer, int offset)
-		//{
-		//  //this depends on CD-XA mode and such. so we need to read the mode bytes
-		//  //HEY!!!!!! SHOULD THIS BE DONE BASED ON THE CLAIMED TRACK TYPE, OR ON WHATS IN THE SECTOR?
-		//  //this is kind of a function of the CD reader.. it's not clear how this function should work.
-		//  //YIKES!!!!!!!!!!!!!!
-		//  //well, we need to scrutinize it for CCD files anyway, so...
-		//  //this sucks.
+		public void Read_2048(int LBA, byte[] buffer, int offset)
+		{
+			//this depends on CD-XA mode and such. so we need to read the mode bytes
+			//HEY!!!!!! SHOULD THIS BE DONE BASED ON THE CLAIMED TRACK TYPE, OR ON WHATS IN THE SECTOR?
+			//this is kind of a function of the CD reader.. it's not clear how this function should work.
+			//YIKES!!!!!!!!!!!!!!
+			//well, we need to scrutinize it for CCD files anyway, so...
+			//this sucks.
 
-		//  fixed (byte* pBuffer = buf2442)
-		//    mednadisc_ReadSector(handle, LBA, pBuffer);
+			fixed (byte* pBuffer = buf2442)
+				mednadisc_ReadSector(handle, LBA, pBuffer);
 
-		//  byte mode = buf2442[15];
-		//  if (mode == 1)
-		//    Buffer.BlockCopy(buf2442, 16, buffer, offset, 2048);
-		//  else
-		//    Buffer.BlockCopy(buf2442, 24, buffer, offset, 2048); //PSX assumptions about CD-XA.. BAD BAD BAD
-		//}
+			byte mode = buf2442[15];
+			if (mode == 1)
+				Buffer.BlockCopy(buf2442, 16, buffer, offset, 2048);
+			else
+				Buffer.BlockCopy(buf2442, 24, buffer, offset, 2048); //PSX assumptions about CD-XA.. BAD BAD BAD
+		}
+#endif
 
 		static void CheckLibrary()
 		{
-			IntPtr lib = LoadLibrary("mednadisc.dll");
-			if (lib == IntPtr.Zero)
-			{
-				_IsLibraryAvailable = false;
-				return;
-			}
-			IntPtr addr = GetProcAddress(lib, "mednadisc_LoadCD");
-			FreeLibrary(lib);
-			if (addr == IntPtr.Zero)
-			{
-				_IsLibraryAvailable = false;
-			}
-			_IsLibraryAvailable = true;
+			var lib = OSTailoredCode.LinkedLibManager.LoadOrNull("mednadisc.dll");
+			_IsLibraryAvailable = lib != null
+				&& OSTailoredCode.LinkedLibManager.GetProcAddrOrNull(lib.Value, "mednadisc_LoadCD") != null;
+			if (lib != null) OSTailoredCode.LinkedLibManager.FreeByPtr(lib.Value);
 		}
 
 		static MednaDisc()
@@ -113,7 +105,7 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 
 		static bool _IsLibraryAvailable;
-		public static bool IsLibraryAvailable { get { return _IsLibraryAvailable; } }
+		public static bool IsLibraryAvailable => _IsLibraryAvailable;
 
 		public void Dispose()
 		{
@@ -127,7 +119,7 @@ namespace BizHawk.Emulation.DiscSystem
 			public byte first_track;
 			public byte last_track;
 			public byte disc_type;
-		};
+		}
 
 		[StructLayout(LayoutKind.Explicit)]
 		public struct MednadiscTOCTrack
@@ -139,15 +131,8 @@ namespace BizHawk.Emulation.DiscSystem
 			//can't be a bool due to marshalling...
 			[FieldOffset(8)] public byte _validByte;
 
-			public bool Valid { get { return _validByte != 0; } }
-		};
-
-		[DllImport("kernel32.dll")]
-		static extern IntPtr LoadLibrary(string dllToLoad);
-		[DllImport("kernel32.dll")]
-		static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
-		[DllImport("kernel32.dll")]
-		static extern bool FreeLibrary(IntPtr hModule);
+			public bool Valid => _validByte != 0;
+		}
 
 		[DllImport("mednadisc.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern IntPtr mednadisc_LoadCD(string path);

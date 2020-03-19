@@ -1,18 +1,23 @@
+#nullable disable
+
 using System.IO;
+using System.Reflection;
 
 internal static class VersionInfo
 {
 	// keep this updated at every major release
-	public const string Mainversion = "2.3.2"; // Use numbers only or the new version notification won't work
-	public static readonly string RELEASEDATE = "June 18, 2019";
-	public static readonly bool DeveloperBuild = false;
-	public static readonly string HomePage = "http://tasvideos.org/BizHawk.html";
+	public const string MainVersion = "2.4.0"; // Use numbers only or the new version notification won't work
+	public const string ReleaseDate = "January 18, 2020";
+	public const string HomePage = "http://tasvideos.org/BizHawk.html";
+	public static readonly bool DeveloperBuild = true;
 
 	public static readonly string CustomBuildString;
 
 	public static string GetEmuVersion()
 	{
-		return DeveloperBuild ? ("GIT " + SubWCRev.GIT_BRANCH + "#" + SubWCRev.GIT_SHORTHASH) : ("Version " + Mainversion);
+		return DeveloperBuild
+			? "GIT " + SubWCRev.GIT_BRANCH + "#" + SubWCRev.GIT_SHORTHASH
+			: "Version " + MainVersion;
 	}
 
 	static VersionInfo()
@@ -29,10 +34,10 @@ internal static class VersionInfo
 		}
 	}
 
-	// code copied to avoid depending on code in otherp rojects
+	// code copied to avoid depending on code in other projects
 	private static string GetExeDirectoryAbsolute()
 	{
-		var path = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+		var path = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? "";
 		if (path.EndsWith(Path.DirectorySeparatorChar.ToString()))
 		{
 			path = path.Remove(path.Length - 1, 1);

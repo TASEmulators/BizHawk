@@ -3,6 +3,7 @@ using System.ComponentModel;
 
 using NLua;
 
+// ReSharper disable UnusedMember.Global
 namespace BizHawk.Client.Common
 {
 	[Description("A library for performing standard bitwise operations.")]
@@ -74,9 +75,9 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local inbitars = bit.arshift( -1000, 4 );")]
 		[LuaMethod("arshift", "Arithmetic shift right of 'val' by 'amt' bits")]
-		public static int Arshift(int val, int amt)
+		public static int Arshift(uint val, int amt)
 		{
-			return val >> amt;
+			return (int)val >> amt;
 		}
 
 		[LuaMethodExample("if ( bit.check( -12345, 35 ) ) then\r\n\tconsole.log( \"Returns result of bit 'pos' being set in 'num'\" );\r\nend;")]
@@ -90,7 +91,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod("set", "Sets the bit 'pos' in 'num'")]
 		public static uint Set(uint num, int pos)
 		{
-			return (uint)(num | (uint)1 << pos);
+			return (uint)(num | 1U << pos);
 		}
 
 		[LuaMethodExample("local lobitcle = bit.clear( 25, 35 );")]

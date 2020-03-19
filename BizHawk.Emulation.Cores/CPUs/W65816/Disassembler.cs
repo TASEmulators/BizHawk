@@ -28,18 +28,13 @@ namespace BizHawk.Emulation.Cores.Components.W65816
 			get { yield return "W65816"; }
 		}
 
-
-		public string PCRegisterName
-		{
-			get { return "PC"; }
-		}
+		public string PCRegisterName => "PC";
 
 		public string Disassemble(MemoryDomain m, uint addr, out int length)
 		{
 			byte P = 0; //TODO - user preferences somehow...
 			return disassemblerCpu.Disassemble(addr, m.PeekByte, ref P, out length);
 		}
-
 	}
 
 	class W65816
@@ -249,7 +244,7 @@ namespace BizHawk.Emulation.Cores.Components.W65816
 				default:
 					length = 1;
 					return "???";
-			};
+			}
 
 			// Parse out parameter list
 			switch (opcode)

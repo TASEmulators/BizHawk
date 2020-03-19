@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
-using BizHawk.Emulation.Common.IEmulatorExtensions;
+using System.Linq;
 
 namespace BizHawk.Emulation.Common
 {
@@ -18,6 +17,7 @@ namespace BizHawk.Emulation.Common
 	/// <seealso cref="IDisassemblable"/> 
 	public abstract class CallbackBasedTraceBuffer : ITraceable
 	{
+		/// <exception cref="InvalidOperationException"><paramref name="debuggableCore"/> does not provide memory callback support or does not implement <see cref="IDebuggable.GetCpuFlagsAndRegisters"/></exception>
 		protected CallbackBasedTraceBuffer(IDebuggable debuggableCore, IMemoryDomains memoryDomains, IDisassemblable disassembler)
 		{
 			if (!debuggableCore.MemoryCallbacksAvailable())
@@ -71,7 +71,8 @@ namespace BizHawk.Emulation.Common
 
 				if (_sink != null)
 				{
-					DebuggableCore.MemoryCallbacks.Add(new TracingMemoryCallback(TraceFromCallback));
+					var scope = DebuggableCore.MemoryCallbacks.AvailableScopes.First(); // This will be an issue when cores use this trace buffer and utilize multiple scopes
+					DebuggableCore.MemoryCallbacks.Add(new TracingMemoryCallback(TraceFromCallback, scope));
 				}
 			}
 		}
@@ -80,9 +81,10 @@ namespace BizHawk.Emulation.Common
 
 		public class TracingMemoryCallback : IMemoryCallback
 		{
-			public TracingMemoryCallback(MemoryCallbackDelegate callback)
+			public TracingMemoryCallback(MemoryCallbackDelegate callback, string scope)
 			{
 				Callback = callback;
+				Scope = scope;
 			}
 
 			public MemoryCallbackType Type => MemoryCallbackType.Execute;
@@ -95,7 +97,7 @@ namespace BizHawk.Emulation.Common
 
 			public uint? AddressMask => null;
 
-			public string Scope => ""; // This will be relevant if/when the trace logger can trace anything other than the system bus
+			public string Scope { get; }
 		}
 	}
 }

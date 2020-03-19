@@ -46,8 +46,6 @@ namespace BizHawk.Emulation.Common
 			NotInDatabase = false
 		};
 
-		public bool IsNullInstance => System == "NULL";
-
 		internal GameInfo(CompactGameInfo cgi)
 		{
 			Name = cgi.Name;
@@ -84,12 +82,7 @@ namespace BizHawk.Emulation.Common
 
 		public string OptionValue(string option)
 		{
-			if (Options.ContainsKey(option))
-			{
-				return Options[option];
-			}
-
-			return null;
+			return Options.ContainsKey(option) ? Options[option] : null;
 		}
 
 		public int GetIntValue(string option)
@@ -177,6 +170,14 @@ namespace BizHawk.Emulation.Common
 				var value = parts.Length > 1 ? parts[1] : "";
 				Options[key] = value;
 			}
+		}
+	}
+
+	public static class GameInfoExtensions
+	{
+		public static bool IsNullInstance(this GameInfo game)
+		{
+			return game == null || game.System == "NULL";
 		}
 	}
 }

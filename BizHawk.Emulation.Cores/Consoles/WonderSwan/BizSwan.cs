@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
 using BizHawk.Emulation.Common;
@@ -134,7 +132,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			PS = 12,
 			SS = 13,
 			DS0 = 14
-		};
+		}
 
 		[Flags]
 		public enum Buttons : uint

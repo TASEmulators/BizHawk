@@ -6,25 +6,25 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
 	public partial class GPGX : IVideoProvider
 	{
-		public int[] GetVideoBuffer() { return vidbuff; }
+		public int[] GetVideoBuffer() => _vidBuff;
 
-		public int VirtualWidth { get { return 320; } }
+		public int VirtualWidth => 320;
 
-		public int VirtualHeight { get { return 224; } }
+		public int VirtualHeight => 224;
 
-		public int BufferWidth { get { return vwidth; } }
+		public int BufferWidth => _vwidth;
 
-		public int BufferHeight { get { return vheight; } }
+		public int BufferHeight => _vheight;
 
-		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
+		public int BackgroundColor => unchecked((int)0xff000000);
 
 		public int VsyncNumerator { get; }
 
 		public int VsyncDenominator { get; }
 
-		private int[] vidbuff = new int[0];
-		private int vwidth;
-		private int vheight;
+		private int[] _vidBuff = new int[0];
+		private int _vwidth;
+		private int _vheight;
 
 		private void UpdateVideoInitial()
 		{
@@ -33,11 +33,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			// so instead, just assume a 320x224 size now; if that happens to be wrong, it'll be fixed soon enough.
 
-			vwidth = 320;
-			vheight = 224;
-			vidbuff = new int[vwidth * vheight];
-			for (int i = 0; i < vidbuff.Length; i++)
-				vidbuff[i] = unchecked((int)0xff000000);
+			_vwidth = 320;
+			_vheight = 224;
+			_vidBuff = new int[_vwidth * _vheight];
+			for (int i = 0; i < _vidBuff.Length; i++)
+			{
+				_vidBuff[i] = unchecked((int)0xff000000);
+			}
 		}
 
 		private unsafe void UpdateVideo()
@@ -50,25 +52,24 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			using (_elf.EnterExit())
 			{
-				int gppitch, gpwidth, gpheight;
 				IntPtr src = IntPtr.Zero;
 
-				Core.gpgx_get_video(out gpwidth, out gpheight, out gppitch, ref src);
+				Core.gpgx_get_video(out var gpwidth, out var gpheight, out var gppitch, ref src);
 
-				vwidth = gpwidth;
-				vheight = gpheight;
+				_vwidth = gpwidth;
+				_vheight = gpheight;
 
-				if (_settings.PadScreen320 && vwidth == 256)
-					vwidth = 320;
+				if (_settings.PadScreen320 && _vwidth == 256)
+					_vwidth = 320;
 
-				int xpad = (vwidth - gpwidth) / 2;
-				int xpad2 = vwidth - gpwidth - xpad;
+				int xpad = (_vwidth - gpwidth) / 2;
+				int xpad2 = _vwidth - gpwidth - xpad;
 
-				if (vidbuff.Length < vwidth * vheight)
-					vidbuff = new int[vwidth * vheight];
+				if (_vidBuff.Length < _vwidth * _vheight)
+					_vidBuff = new int[_vwidth * _vheight];
 
 				int rinc = (gppitch / 4) - gpwidth;
-				fixed (int* pdst_ = vidbuff)
+				fixed (int* pdst_ = _vidBuff)
 				{
 					int* pdst = pdst_;
 					int* psrc = (int*)src;

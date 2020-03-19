@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.DiscSystem
 			ret.TOCItems[0].Control = 0;
 			ret.TOCItems[0].Exists = false;
 
-			//just in case this doesnt get set...
+			//just in case this doesn't get set...
 			ret.FirstRecordedTrackNumber = 0;
 			ret.LastRecordedTrackNumber = 0;
 

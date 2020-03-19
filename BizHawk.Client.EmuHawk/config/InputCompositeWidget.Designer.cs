@@ -30,7 +30,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InputCompositeWidget));
 			this.btnSpecial = new System.Windows.Forms.Button();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.widget = new BizHawk.Client.EmuHawk.InputWidget();
@@ -39,7 +38,7 @@
 			// 
 			// btnSpecial
 			// 
-			this.btnSpecial.Image = ((System.Drawing.Image)(resources.GetObject("btnSpecial.Image")));
+			this.btnSpecial.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.arrow_black_down;
 			this.btnSpecial.Location = new System.Drawing.Point(472, 0);
 			this.btnSpecial.Margin = new System.Windows.Forms.Padding(2, 0, 0, 0);
 			this.btnSpecial.Name = "btnSpecial";

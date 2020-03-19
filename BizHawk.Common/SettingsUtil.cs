@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -24,8 +26,7 @@ namespace BizHawk.Common
 		/// <param name="obj">the obj to act on</param>
 		public static void SetDefaultValues<T>(T obj)
 		{
-			DefaultValueSetter f;
-			if (!DefaultValueSetters.TryGetValue(typeof(T), out f))
+			if (!DefaultValueSetters.TryGetValue(typeof(T), out var f))
 			{
 				f = CreateSetter(typeof(T));
 				DefaultValueSetters[typeof(T)] = f;

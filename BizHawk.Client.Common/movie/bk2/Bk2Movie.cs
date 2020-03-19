@@ -2,29 +2,26 @@
 using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.Common
 {
 	public partial class Bk2Movie : IMovie
 	{
-		public Bk2Movie(string filename)
-			: this()
-		{
-			Rerecords = 0;
-			Filename = filename;
-		}
+		private Bk2ControllerAdapter _adapter;
 
-		public Bk2Movie()
+		public Bk2Movie(string filename = null)
 		{
 			Subtitles = new SubtitleList();
 			Comments = new List<string>();
 
-			Filename = "";
+			Filename = filename ?? string.Empty;
 			IsCountingRerecords = true;
-			Mode = Moviemode.Inactive;
+			if (filename != null) Rerecords = 0;
+			Mode = MovieMode.Inactive;
 			MakeBackup = true;
 
-			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0.0";
+			Header[HeaderKeys.MovieVersion] = "BizHawk v2.0.0";
 
 			Log = StringLogUtil.MakeStringLog();
 		}
@@ -35,11 +32,7 @@ namespace BizHawk.Client.Common
 
 		public string Filename
 		{
-			get
-			{
-				return _filename;
-			}
-
+			get => _filename;
 			set
 			{
 				_filename = value;
@@ -75,20 +68,25 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public int InputLogLength
-		{
-			get
-			{
-				return Log.Count;
-			}
-		}
+		public int InputLogLength => Log.Count;
 
-		public int TimeLength
+		public ulong TimeLength
 		{
 			get
 			{
-				if (Header.ContainsKey("VBlankCount")) { return Convert.ToInt32(Header["VBlankCount"]); }
-				return Log.Count;
+				if (Header.ContainsKey(HeaderKeys.VBlankCount))
+				{
+					return Convert.ToUInt64(Header[HeaderKeys.VBlankCount]);
+				}
+				else if (Header.ContainsKey(HeaderKeys.CycleCount))
+				{
+					var gambatteName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(Gameboy), typeof(CoreAttribute))).CoreName;
+					if (Header[HeaderKeys.Core] == gambatteName)
+					{
+						return Convert.ToUInt64(Header[HeaderKeys.CycleCount]);
+					}
+				}
+				return (ulong)Log.Count;
 			}
 		}
 
@@ -137,31 +135,34 @@ namespace BizHawk.Client.Common
 		{
 			if (frame < FrameCount && frame >= 0)
 			{
-				int getframe;
+				if (_adapter == null)
+				{
+					_adapter = new Bk2ControllerAdapter
+					{
+						Definition = Global.MovieSession.MovieControllerAdapter.Definition
+					};
+				}
+
+				int getFrame;
 
 				if (LoopOffset.HasValue)
 				{
 					if (frame < Log.Count)
 					{
-						getframe = frame;
+						getFrame = frame;
 					}
 					else
 					{
-						getframe = ((frame - LoopOffset.Value) % (Log.Count - LoopOffset.Value)) + LoopOffset.Value;
+						getFrame = ((frame - LoopOffset.Value) % (Log.Count - LoopOffset.Value)) + LoopOffset.Value;
 					}
 				}
 				else
 				{
-					getframe = frame;
+					getFrame = frame;
 				}
 
-				var adapter = new Bk2ControllerAdapter
-				{
-					Definition = Global.MovieSession.MovieControllerAdapter.Definition
-				};
-
-				adapter.SetControllersAsMnemonic(Log[getframe]);
-				return adapter;
+				_adapter.SetControllersAsMnemonic(Log[getFrame]);
+				return _adapter;
 			}
 
 			return null;

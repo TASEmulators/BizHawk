@@ -6,17 +6,17 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 	{
 		public bool IsLagFrame
 		{
-			get { return _isLagFrame; }
-			set { _isLagFrame = value; }
+			get => _isLagFrame;
+			set => _isLagFrame = value;
 		}
 
 		public int LagCount
 		{
-			get { return _lagCount; }
-			set { _lagCount = value; }
+			get => _lagCount;
+			set => _lagCount = value;
 		}
 
-		public IInputCallbackSystem InputCallbacks { get; }
+		public IInputCallbackSystem InputCallbacks { get; } = new InputCallbackSystem();
 
 		private bool _isLagFrame;
 		private int _lagCount;

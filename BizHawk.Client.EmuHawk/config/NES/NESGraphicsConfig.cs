@@ -5,7 +5,6 @@ using System.Windows.Forms;
 using BizHawk.Common;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
-using BizHawk.Emulation.Cores.Nintendo.SubNESHawk;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -15,29 +14,24 @@ namespace BizHawk.Client.EmuHawk
 		// Allow selection of palette file from archive
 		// Hotkeys for BG & Sprite display toggle
 		// NTSC filter settings? Hue, Tint (This should probably be a client thing, not a nes specific thing?)
-		private NES _nes;
-		private SubNESHawk _subneshawk;
+		private readonly MainForm _mainForm;
+		private readonly Config _config;
 		private NES.NESSettings _settings;
-		private Bitmap _bmp;
+		//private Bitmap _bmp;
 
-		public NESGraphicsConfig()
+		public NESGraphicsConfig(
+			MainForm mainForm,
+			Config config,
+			NES.NESSettings settings)
 		{
+			_mainForm = mainForm;
+			_config = config;
+			_settings = settings;
 			InitializeComponent();
 		}
 
 		private void NESGraphicsConfig_Load(object sender, EventArgs e)
 		{
-			if (Global.Emulator is NES)
-			{
-				_nes = (NES)Global.Emulator;
-				_settings = _nes.GetSettings();
-			}
-			else
-			{
-				_subneshawk = (SubNESHawk)Global.Emulator;
-				_settings = _subneshawk.GetSettings();
-			}
-
 			LoadStuff();
 		}
 
@@ -59,12 +53,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BrowsePalette_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog ofd = new OpenFileDialog
-				{
-					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries["NES", "Palettes"].Path, "NES"),
-					Filter = "Palette Files (.pal)|*.PAL|All Files (*.*)|*.*",
-					RestoreDirectory = true
-				};
+			using var ofd = new OpenFileDialog
+			{
+				InitialDirectory = PathManager.MakeAbsolutePath(_config.PathEntries["NES", "Palettes"].Path, "NES"),
+				Filter = new FilesystemFilterSet(FilesystemFilter.Palettes).ToString(),
+				RestoreDirectory = true
+			};
 
 			var result = ofd.ShowDialog();
 			if (result != DialogResult.OK)
@@ -79,28 +73,28 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetPaletteImage()
 		{
-			var pal = ResolvePalette(false);
+			var pal = ResolvePalette();
 
 			int w = pictureBoxPalette.Size.Width;
 			int h = pictureBoxPalette.Size.Height;
 
-			_bmp = new Bitmap(w, h);
+			var bmp = new Bitmap(w, h);
 			for (int j = 0; j < h; j++)
 			{
 				int cy = j * 4 / h;
 				for (int i = 0; i < w; i++)
 				{
 					int cx = i * 16 / w;
-					int cindex = (cy * 16) + cx;
-					Color col = Color.FromArgb(0xff, pal[cindex, 0], pal[cindex, 1], pal[cindex, 2]);
-					_bmp.SetPixel(i, j, col);
+					int cIndex = (cy * 16) + cx;
+					Color col = Color.FromArgb(0xff, pal[cIndex, 0], pal[cIndex, 1], pal[cIndex, 2]);
+					bmp.SetPixel(i, j, col);
 				}
 			}
 
-			pictureBoxPalette.Image = _bmp;
+			pictureBoxPalette.Image = bmp;
 		}
 
-		private byte[,] ResolvePalette(bool showmsg = false)
+		private byte[,] ResolvePalette(bool showMsg = false)
 		{
 			if (AutoLoadPalette.Checked) // checkbox checked: try to load palette from file
 			{
@@ -111,32 +105,29 @@ namespace BizHawk.Client.EmuHawk
 					if (palette.Exists)
 					{
 						var data = Palettes.Load_FCEUX_Palette(HawkFile.ReadAllBytes(palette.Name));
-						if (showmsg)
+						if (showMsg)
 						{
-							GlobalWin.OSD.AddMessage($"Palette file loaded: {palette.Name}");
+							_mainForm.AddOnScreenMessage($"Palette file loaded: {palette.Name}");
 						}
 
 						return data;
 					}
-					else
-					{
-						return _settings.Palette;
-					}
-				}
-				else // no filename: interpret this as "reset to default"
-				{
-					if (showmsg)
-					{
-						GlobalWin.OSD.AddMessage("Standard Palette set");
-					}
 
-					return (byte[,])Palettes.QuickNESPalette.Clone();
+					return _settings.Palette;
 				}
+				
+				// no filename: interpret this as "reset to default"
+				if (showMsg)
+				{
+					_mainForm.AddOnScreenMessage("Standard Palette set");
+				}
+
+				return (byte[,])Palettes.QuickNESPalette.Clone();
+				
 			}
-			else // checkbox unchecked: we're reusing whatever palette was set
-			{
-				return _settings.Palette;
-			}
+			
+			// checkbox unchecked: we're reusing whatever palette was set
+			return _settings.Palette;
 		}
 
 		private void Ok_Click(object sender, EventArgs e)
@@ -157,15 +148,7 @@ namespace BizHawk.Client.EmuHawk
 				_settings.BackgroundColor &= 0x00FFFFFF;
 			}
 
-			if (Global.Emulator is NES)
-			{
-				_nes.PutSettings(_settings);
-			}
-			else
-			{
-				_subneshawk.PutSettings(_settings);
-			}
-
+			_mainForm.PutCoreSettings(_settings);
 			Close();
 		}
 

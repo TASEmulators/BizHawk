@@ -10,7 +10,6 @@ namespace BizHawk.Client.EmuHawk
 	public partial class VirtualPadTargetScreen : UserControl, IVirtualPadControl
 	{
 		private readonly Pen BlackPen = new Pen(Brushes.Black, 2);
-		private readonly Pen WhitePen = new Pen(Brushes.White, 2);
 		private readonly Pen GrayPen = new Pen(Brushes.Gray, 2);
 		private readonly Pen RedPen = new Pen(Brushes.Red, 2);
 
@@ -19,8 +18,8 @@ namespace BizHawk.Client.EmuHawk
 		private bool _readonly;
 		private bool _isSet; // The tool has to keep track of this because there is currently no way to know if a float button is being autoheld or just held
 		
-		private int? _overrideX = null;
-		private int? _overrideY = null;
+		private int? _overrideX;
+		private int? _overrideY;
 
 		public VirtualPadTargetScreen()
 		{
@@ -76,10 +75,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool ReadOnly
 		{
-			get
-			{
-				return _readonly;
-			}
+			get => _readonly;
 
 			set
 			{
@@ -106,14 +102,11 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		// Size of the extra controls to the right / bottom of the target panel at 96 DPI
-		private Size PaddingSize
-		{
-			get { return new Size(0, 30); }
-		}
+		private Size PaddingSize => new Size(0, 30);
 
 		public Size TargetSize
 		{
-			get { return TargetPanel.Size; }
+			get => TargetPanel.Size;
 			set
 			{
 				TargetPanel.Size = value;
@@ -155,12 +148,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (x.HasValue)
 			{
-				X = X + x.Value;
+				X += x.Value;
 			}
 
 			if (y.HasValue)
 			{
-				Y = Y + y.Value;
+				Y += y.Value;
 			}
 
 			Refresh();
@@ -171,11 +164,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public int X
 		{
-			get
-			{
-				return _overrideX ?? (int)(Global.StickyXORAdapter.GetFloat(XName) / MultiplierX);
-			}
-
+			get => _overrideX ?? (int)(Global.StickyXORAdapter.GetFloat(XName) / MultiplierX);
 			set
 			{
 				if (value < 0)
@@ -198,11 +187,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 		public int Y
 		{
-			get
-			{
-				return _overrideY ?? (int)(Global.StickyXORAdapter.GetFloat(YName) / MultiplierY);
-			}
-
+			get => _overrideY ?? (int)(Global.StickyXORAdapter.GetFloat(YName) / MultiplierY);
 			set
 			{
 				if (value < 0)

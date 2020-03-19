@@ -17,20 +17,20 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				}
 
 				// Sorta a hack but why not
-				PortDEEnabled = SyncSettings.ControllerType == "Keyboard";
+				PortDEEnabled = SyncSettings.ControllerType == SmsSyncSettings.ControllerTypes.Keyboard;
 
 				switch(SyncSettings.ControllerType)
 				{
-					case "Paddle":
+					case SmsSyncSettings.ControllerTypes.Paddle:
 						return SMSPaddleController;
-					case "Light Phaser":
+					case SmsSyncSettings.ControllerTypes.LightPhaser:
 						// scale the vertical to the display mode
 						SMSLightPhaserController.FloatRanges[1] = new ControllerDefinition.FloatRange(0, Vdp.FrameHeight / 2, Vdp.FrameHeight - 1);
 
 						return SMSLightPhaserController;
-					case "Sports Pad":
+					case SmsSyncSettings.ControllerTypes.SportsPad:
 						return SMSSportsPadController;
-					case "Keyboard":
+					case SmsSyncSettings.ControllerTypes.Keyboard:
 						return SMSKeyboardController;
 					default:
 						return SmsController;
@@ -197,7 +197,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public int old_s_L = 0;
 		public int old_s_R = 0;
 
-		public bool CanProvideAsync { get { return false; } }
+		public bool CanProvideAsync => false;
 
 		public void SetSyncMode(SyncSoundMode mode)
 		{
@@ -212,10 +212,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			throw new NotSupportedException("Async not supported");
 		}
 
-		public SyncSoundMode SyncMode
-		{
-			get { return SyncSoundMode.Sync; }
-		}
+		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{

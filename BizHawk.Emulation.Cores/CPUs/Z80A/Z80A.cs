@@ -1,7 +1,5 @@
 using System;
-using System.Globalization;
-using System.IO;
-
+using System.Collections.Generic;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Common.NumberExtensions;
@@ -80,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public const ushort RST = 65;
 		public const ushort REP_OP_I = 66;
 		public const ushort REP_OP_O = 67;
-        public const ushort IN_A_N_INC = 68;
+		public const ushort IN_A_N_INC = 68;
 		public const ushort RD_INC_TR_PC = 69; // transfer WZ to PC after read
 		public const ushort WR_TR_PC = 70; // transfer WZ to PC after write
 		public const ushort OUT_INC = 71;
@@ -115,6 +113,130 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			IRQS = 3;
 			instr_pntr = mem_pntr = bus_pntr = irq_pntr = 0;
 			NO_prefix = true;
+		}
+
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
+		{
+			return new Dictionary<string, RegisterValue>
+			{
+				["A"] = Regs[A],
+				["AF"] = Regs[F] + (Regs[A] << 8),
+				["B"] = Regs[B],
+				["BC"] = Regs[C] + (Regs[B] << 8),
+				["C"] = Regs[C],
+				["D"] = Regs[D],
+				["DE"] = Regs[E] + (Regs[D] << 8),
+				["E"] = Regs[E],
+				["F"] = Regs[F],
+				["H"] = Regs[H],
+				["HL"] = Regs[L] + (Regs[H] << 8),
+				["I"] = Regs[I],
+				["IX"] = Regs[Ixl] + (Regs[Ixh] << 8),
+				["IY"] = Regs[Iyl] + (Regs[Iyh] << 8),
+				["L"] = Regs[L],
+				["PC"] = Regs[PCl] + (Regs[PCh] << 8),
+				["R"] = Regs[R],
+				["Shadow AF"] = Regs[F_s] + (Regs[A_s] << 8),
+				["Shadow BC"] = Regs[C_s] + (Regs[B_s] << 8),
+				["Shadow DE"] = Regs[E_s] + (Regs[D_s] << 8),
+				["Shadow HL"] = Regs[L_s] + (Regs[H_s] << 8),
+				["SP"] = Regs[Iyl] + (Regs[Iyh] << 8),
+				["Flag C"] = FlagC,
+				["Flag N"] = FlagN,
+				["Flag P/V"] = FlagP,
+				["Flag 3rd"] = Flag3,
+				["Flag H"] = FlagH,
+				["Flag 5th"] = Flag5,
+				["Flag Z"] = FlagZ,
+				["Flag S"] = FlagS
+			};
+		}
+
+		public void SetCpuRegister(string register, int value)
+		{
+			switch (register)
+			{
+				default:
+					throw new InvalidOperationException();
+				case "A":
+					Regs[A] = (ushort)value;
+					break;
+				case "AF":
+					Regs[F] = (ushort)(value & 0xFF);
+					Regs[A] = (ushort)(value & 0xFF00);
+					break;
+				case "B":
+					Regs[B] = (ushort)value;
+					break;
+				case "BC":
+					Regs[C] = (ushort)(value & 0xFF);
+					Regs[B] = (ushort)(value & 0xFF00);
+					break;
+				case "C":
+					Regs[C] = (ushort)value;
+					break;
+				case "D":
+					Regs[D] = (ushort)value;
+					break;
+				case "DE":
+					Regs[E] = (ushort)(value & 0xFF);
+					Regs[D] = (ushort)(value & 0xFF00);
+					break;
+				case "E":
+					Regs[E] = (ushort)value;
+					break;
+				case "F":
+					Regs[F] = (ushort)value;
+					break;
+				case "H":
+					Regs[H] = (ushort)value;
+					break;
+				case "HL":
+					Regs[L] = (ushort)(value & 0xFF);
+					Regs[H] = (ushort)(value & 0xFF00);
+					break;
+				case "I":
+					Regs[I] = (ushort)value;
+					break;
+				case "IX":
+					Regs[Ixl] = (ushort)(value & 0xFF);
+					Regs[Ixh] = (ushort)(value & 0xFF00);
+					break;
+				case "IY":
+					Regs[Iyl] = (ushort)(value & 0xFF);
+					Regs[Iyh] = (ushort)(value & 0xFF00);
+					break;
+				case "L":
+					Regs[L] = (ushort)value;
+					break;
+				case "PC":
+					Regs[PCl] = (ushort)(value & 0xFF);
+					Regs[PCh] = (ushort)(value & 0xFF00);
+					break;
+				case "R":
+					Regs[R] = (ushort)value;
+					break;
+				case "Shadow AF":
+					Regs[F_s] = (ushort)(value & 0xFF);
+					Regs[A_s] = (ushort)(value & 0xFF00);
+					break;
+				case "Shadow BC":
+					Regs[C_s] = (ushort)(value & 0xFF);
+					Regs[B_s] = (ushort)(value & 0xFF00);
+					break;
+				case "Shadow DE":
+					Regs[E_s] = (ushort)(value & 0xFF);
+					Regs[D_s] = (ushort)(value & 0xFF00);
+					break;
+				case "Shadow HL":
+					Regs[L_s] = (ushort)(value & 0xFF);
+					Regs[H_s] = (ushort)(value & 0xFF00);
+					break;
+				case "SP":
+					Regs[SPl] = (ushort)(value & 0xFF);
+					Regs[SPh] = (ushort)(value & 0xFF00);
+					break;
+			}
 		}
 
 		public IMemoryCallbackSystem MemoryCallbacks { get; set; }
@@ -181,8 +303,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					break;
 				case OP_F:
 					// Read the opcode of the next instruction	
-					if (OnExecFetch != null) OnExecFetch(RegPC);
-					if (TraceCallback != null) TraceCallback(State());
+					OnExecFetch?.Invoke(RegPC);
+					TraceCallback?.Invoke(State());
 					opcode = FetchMemory(RegPC++);
 					FetchInstruction();
 					
@@ -406,7 +528,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					I_skip = true;
 					
 					// for prefetched case, the PC stays on the BUS one cycle longer
-					if ((src_t == IXCBpre) || (src_t == IXCBpre)) { BUSRQ[0] = PCh; }
+					if ((src_t == IXCBpre) || (src_t == IYCBpre)) { BUSRQ[0] = PCh; }
 
 					break;
 				case ASGN:
@@ -436,8 +558,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					IN_INC_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case IN_A_N_INC:
-                    IN_A_N_INC_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-                    break;
+					IN_A_N_INC_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					break;
 				case NEG:
 					NEG_8_Func(cur_instr[instr_pntr++]);
 					break;
@@ -653,10 +775,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 				{
 					nonMaskableInterruptPending = false;
 
-					if (TraceCallback != null)
-					{
-						TraceCallback(new TraceInfo { Disassembly = "====NMI====", RegisterInfo = "" });
-					}
+					TraceCallback?.Invoke(new TraceInfo { Disassembly = "====NMI====", RegisterInfo = "" });
 
 					iff2 = iff1;
 					iff1 = false;
@@ -677,10 +796,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					iff1 = iff2 = false;
 					EI_pending = 0;
 
-					if (TraceCallback != null)
-					{
-						TraceCallback(new TraceInfo { Disassembly = "====IRQ====", RegisterInfo = "" });
-					}
+					TraceCallback?.Invoke(new TraceInfo { Disassembly = "====IRQ====", RegisterInfo = "" });
 
 					switch (interruptMode)
 					{
@@ -733,10 +849,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		// tracer stuff
 		public Action<TraceInfo> TraceCallback;
 
-		public string TraceHeader
-		{
-			get { return "Z80A: PC, machine code, mnemonic, operands, registers (AF, BC, DE, HL, IX, IY, SP, Cy), flags (CNP3H5ZS)"; }
-		}
+		public string TraceHeader => "Z80A: PC, machine code, mnemonic, operands, registers (AF, BC, DE, HL, IX, IY, SP, Cy), flags (CNP3H5ZS)";
 
 		public TraceInfo State(bool disassemble = true)
 		{
@@ -781,7 +894,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 		/// <summary>
 		/// Optimization method to set BUSRQ
-		/// </summary>		
+		/// </summary>
 		private void PopulateBUSRQ(ushort d0 = 0, ushort d1 = 0, ushort d2 = 0, ushort d3 = 0, ushort d4 = 0, ushort d5 = 0, ushort d6 = 0, ushort d7 = 0, ushort d8 = 0,
 			ushort d9 = 0, ushort d10 = 0, ushort d11 = 0, ushort d12 = 0, ushort d13 = 0, ushort d14 = 0, ushort d15 = 0, ushort d16 = 0, ushort d17 = 0, ushort d18 = 0)
 		{
@@ -796,7 +909,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 		/// <summary>
 		/// Optimization method to set MEMRQ
-		/// </summary>	
+		/// </summary>
 		private void PopulateMEMRQ(ushort d0 = 0, ushort d1 = 0, ushort d2 = 0, ushort d3 = 0, ushort d4 = 0, ushort d5 = 0, ushort d6 = 0, ushort d7 = 0, ushort d8 = 0,
 			ushort d9 = 0, ushort d10 = 0, ushort d11 = 0, ushort d12 = 0, ushort d13 = 0, ushort d14 = 0, ushort d15 = 0, ushort d16 = 0, ushort d17 = 0, ushort d18 = 0)
 		{

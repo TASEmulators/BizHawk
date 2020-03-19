@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BizHawk.Client.ApiHawk
+namespace BizHawk.Client.Common
 {
 	/// <summary>
 	/// This enumeration list all buttons

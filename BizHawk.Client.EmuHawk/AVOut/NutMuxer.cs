@@ -11,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 	/// implements a simple muxer for the NUT media format
 	/// http://ffmpeg.org/~michael/nut.txt
 	/// </summary>
-	class NutMuxer
+	public class NutMuxer
 	{
 		// this code isn't really any good for general purpose nut creation
 
@@ -19,8 +19,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public class ReusableBufferPool<T>
 		{
-			private List<T[]> _available = new List<T[]>();
-			private ICollection<T[]> _inuse = new HashSet<T[]>();
+			private readonly List<T[]> _available = new List<T[]>();
+			private readonly ICollection<T[]> _inUse = new HashSet<T[]>();
 
 			private readonly int _capacity;
 
@@ -32,13 +32,15 @@ namespace BizHawk.Client.EmuHawk
 
 			private T[] GetBufferInternal(int length, bool zerofill, Func<T[], bool> criteria)
 			{
-				if (_inuse.Count == _capacity)
+				if (_inUse.Count == _capacity)
+				{
 					throw new InvalidOperationException();
+				}
 
 				T[] candidate = _available.FirstOrDefault(criteria);
 				if (candidate == null)
 				{
-					if (_available.Count + _inuse.Count == _capacity)
+					if (_available.Count + _inUse.Count == _capacity)
 					{
 						// out of space! should not happen often
 						Console.WriteLine("Purging");
@@ -49,10 +51,14 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					if (zerofill)
+					{
 						Array.Clear(candidate, 0, candidate.Length);
+					}
+
 					_available.Remove(candidate);
 				}
-				_inuse.Add(candidate);
+
+				_inUse.Add(candidate);
 				return candidate;
 			}
 
@@ -66,10 +72,14 @@ namespace BizHawk.Client.EmuHawk
 				return GetBufferInternal(length, zerofill, a => a.Length >= length && a.Length / (float)length <= 2.0f);
 			}
 
+			/// <exception cref="ArgumentException"><paramref name="buffer"/> is not in use</exception>
 			public void ReleaseBuffer(T[] buffer)
 			{
-				if (!_inuse.Remove(buffer))
+				if (!_inUse.Remove(buffer))
+				{
 					throw new ArgumentException();
+				}
+
 				_available.Add(buffer);
 			}
 		}
@@ -81,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// variable length value, unsigned
 		/// </summary>
-		static void WriteVarU(ulong v, Stream stream)
+		private static void WriteVarU(ulong v, Stream stream)
 		{
 			byte[] b = new byte[10];
 			int i = 0;
@@ -93,8 +103,11 @@ namespace BizHawk.Client.EmuHawk
 					b[i++] = (byte)(v & 127);
 				v /= 128;
 			} while (v > 0);
+
 			for (; i > 0; i--)
+			{
 				stream.WriteByte(b[i - 1]);
+			}
 		}
 
 		/// <summary>
@@ -103,37 +116,30 @@ namespace BizHawk.Client.EmuHawk
 		static void WriteVarU(int v, Stream stream)
 		{
 			if (v < 0)
+			{
 				throw new ArgumentOutOfRangeException(nameof(v), "unsigned must be non-negative");
+			}
+
 			WriteVarU((ulong)v, stream);
 		}
 
 		/// <summary>
 		/// variable length value, unsigned
 		/// </summary>
-		static void WriteVarU(long v, Stream stream)
+		private static void WriteVarU(long v, Stream stream)
 		{
 			if (v < 0)
+			{
 				throw new ArgumentOutOfRangeException(nameof(v), "unsigned must be non-negative");
-			WriteVarU((ulong)v, stream);
-		}
+			}
 
-		/// <summary>
-		/// variable length value, signed
-		/// </summary>
-		static void WriteVarS(long v, Stream stream)
-		{
-			ulong temp;
-			if (v < 0)
-				temp = 1 + 2 * (ulong)(-v);
-			else
-				temp = 2 * (ulong)(v);
-			WriteVarU(temp - 1, stream);
+			WriteVarU((ulong)v, stream);
 		}
 
 		/// <summary>
 		/// utf-8 string with length prepended
 		/// </summary>
-		static void WriteString(string s, Stream stream)
+		private static void WriteString(string s, Stream stream)
 		{
 			WriteBytes(Encoding.UTF8.GetBytes(s), stream);
 		}
@@ -150,7 +156,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// big endian 64 bit unsigned
 		/// </summary>
-		static void WriteBE64(ulong v, Stream stream)
+		private static void WriteBe64(ulong v, Stream stream)
 		{
 			byte[] b = new byte[8];
 			for (int i = 7; i >= 0; i--)
@@ -158,13 +164,14 @@ namespace BizHawk.Client.EmuHawk
 				b[i] = (byte)(v & 255);
 				v >>= 8;
 			}
+
 			stream.Write(b, 0, 8);
 		}
 
 		/// <summary>
 		/// big endian 32 bit unsigned
 		/// </summary>
-		static void WriteBE32(uint v, Stream stream)
+		private static void WriteBe32(uint v, Stream stream)
 		{
 			byte[] b = new byte[4];
 			for (int i = 3; i >= 0; i--)
@@ -172,20 +179,7 @@ namespace BizHawk.Client.EmuHawk
 				b[i] = (byte)(v & 255);
 				v >>= 8;
 			}
-			stream.Write(b, 0, 4);
-		}
 
-		/// <summary>
-		/// big endian 32 bit unsigned
-		/// </summary>
-		static void WriteBE32(int v, Stream stream)
-		{
-			byte[] b = new byte[4];
-			for (int i = 3; i >= 0; i--)
-			{
-				b[i] = (byte)(v & 255);
-				v >>= 8;
-			}
 			stream.Write(b, 0, 4);
 		}
 
@@ -193,7 +187,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#region CRC calculator
 
-		static readonly uint[] CRCtable = new uint[]
+		private static readonly uint[] CrcTable =
 		{
 			0x00000000, 0x04C11DB7, 0x09823B6E, 0x0D4326D9,
 			0x130476DC, 0x17C56B6B, 0x1A864DB2, 0x1E475005,
@@ -205,14 +199,14 @@ namespace BizHawk.Client.EmuHawk
 		/// seems to be different than standard CRC32?????
 		/// </summary>
 		/// <returns>crc32, nut variant</returns>
-		static uint NutCRC32(byte[] buf)
+		private static uint NutCRC32(byte[] buf)
 		{
 			uint crc = 0;
-			for (int i = 0; i < buf.Length; i++)
+			foreach (var b in buf)
 			{
-				crc ^= (uint)buf[i] << 24;
-				crc = (crc << 4) ^ CRCtable[crc >> 28];
-				crc = (crc << 4) ^ CRCtable[crc >> 28];
+				crc ^= (uint)b << 24;
+				crc = (crc << 4) ^ CrcTable[crc >> 28];
+				crc = (crc << 4) ^ CrcTable[crc >> 28];
 			}
 			return crc;
 		}
@@ -220,9 +214,9 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		/// <summary>
-		/// writes a single packet out, including checksums
+		/// writes a single packet out, including CheckSums
 		/// </summary>
-		class NutPacket : Stream
+		private class NutPacket : Stream
 		{
 			public enum StartCode : ulong
 			{
@@ -231,24 +225,23 @@ namespace BizHawk.Client.EmuHawk
 				Syncpoint = 0x4e4be4adeeca4569,
 				Index = 0x4e58dd672f23e64e,
 				Info = 0x4e49ab68b596ba78
-			};
+			}
 
-			MemoryStream data;
-			StartCode startcode;
-			Stream underlying;
+			private MemoryStream _data;
+			private readonly StartCode _startCode;
+			private readonly Stream _underlying;
 
 			/// <summary>
 			/// create a new NutPacket
 			/// </summary>
-			/// <param name="startcode">startcode for this packet</param>
+			/// <param name="startCode">startCode for this packet</param>
 			/// <param name="underlying">stream to write to</param>
-			public NutPacket(StartCode startcode, Stream underlying)
+			public NutPacket(StartCode startCode, Stream underlying)
 			{
-				data = new MemoryStream();
-				this.startcode = startcode;
-				this.underlying = underlying;
+				_data = new MemoryStream();
+				_startCode = startCode;
+				_underlying = underlying;
 			}
-
 
 			public override bool CanRead => false;
 
@@ -264,38 +257,29 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// first, prep header
 				var header = new MemoryStream();
-				WriteBE64((ulong)startcode, header);
-				WriteVarU(data.Length + 4, header); // +4 for checksum
-				if (data.Length > 4092)
+				WriteBe64((ulong)_startCode, header);
+				WriteVarU(_data.Length + 4, header); // +4 for checksum
+				if (_data.Length > 4092)
 				{
-					WriteBE32(NutCRC32(header.ToArray()), header);
+					WriteBe32(NutCRC32(header.ToArray()), header);
 				}
 
 				var tmp = header.ToArray();
-				underlying.Write(tmp, 0, tmp.Length);
+				_underlying.Write(tmp, 0, tmp.Length);
 
-				tmp = data.ToArray();
-				underlying.Write(tmp, 0, tmp.Length);
-				WriteBE32(NutCRC32(tmp), underlying);
+				tmp = _data.ToArray();
+				_underlying.Write(tmp, 0, tmp.Length);
+				WriteBe32(NutCRC32(tmp), _underlying);
 
-				data = null;
+				_data = null;
 			}
 			
-			public override long Length
-			{
-				get { throw new NotImplementedException(); }
-			}
+			public override long Length => throw new NotImplementedException();
 
 			public override long Position
 			{
-				get
-				{
-					throw new NotImplementedException();
-				}
-				set
-				{
-					throw new NotImplementedException();
-				}
+				get => throw new NotImplementedException();
+				set => throw new NotImplementedException();
 			}
 
 			public override int Read(byte[] buffer, int offset, int count)
@@ -315,7 +299,7 @@ namespace BizHawk.Client.EmuHawk
 			
 			public override void Write(byte[] buffer, int offset, int count)
 			{
-				data.Write(buffer, offset, count);
+				_data.Write(buffer, offset, count);
 			}
 		}
 
@@ -324,59 +308,51 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// stores basic AV parameters
 		/// </summary>
-		class AVParams
+		private class AVParams
 		{
-			public int width, height, samplerate, fpsnum, fpsden, channels;
+			public int Width { get; set; }
+			public int Height { get; set; }
+			public int Samplerate { get; set; }
+			public int FpsNum { get; set; }
+			public int FpsDen { get; set; }
+			public int Channels { get; set; }
+
 			/// <summary>
-			/// puts fpsnum, fpsden in lowest terms
+			/// puts fpsNum, fpsDen in lowest terms
 			/// </summary>
 			public void Reduce()
 			{
-				int gcd = (int) BigInteger.GreatestCommonDivisor(new BigInteger(fpsnum), new BigInteger(fpsden));
-				fpsnum /= gcd;
-				fpsden /= gcd;
+				int gcd = (int)BigInteger.GreatestCommonDivisor(new BigInteger(FpsNum), new BigInteger(FpsDen));
+				FpsNum /= gcd;
+				FpsDen /= gcd;
 			}
 		}
 
-		/// <summary>
-		/// stores basic AV parameters
-		/// </summary>
-		AVParams avparams;
+		// stores basic AV parameters
+		private readonly AVParams _avParams;
 
-		/// <summary>
-		/// target output for nut stream
-		/// </summary>
-		Stream output;
+		// target output for nut stream
+		private Stream _output;
 
-		/// <summary>
-		/// PTS of video stream.  timebase is 1/framerate, so this is equal to number of frames
-		/// </summary>
-		ulong videopts;
+		// PTS of video stream.  timebase is 1/framerate, so this is equal to number of frames
+		private ulong _videoOpts;
 
-		/// <summary>
-		/// PTS of audio stream.  timebase is 1/samplerate, so this is equal to number of samples
-		/// </summary>
-		ulong audiopts;
+		// PTS of audio stream.  timebase is 1/samplerate, so this is equal to number of samples
+		private ulong _audioPts;
 
-		/// <summary>
-		/// has EOR been writen on this stream?
-		/// </summary>
-		bool videodone;
-		/// <summary>
-		/// has EOR been written on this stream?
-		/// </summary>
-		bool audiodone;
+		// has EOR been written on this stream?
+		private bool _videoDone;
+		
+		// has EOR been written on this stream?
+		private bool _audioDone;
 
-		/// <summary>
-		/// video packets waiting to be written
-		/// </summary>
-		Queue<NutFrame> videoqueue;
-		/// <summary>
-		/// audio packets waiting to be written
-		/// </summary>
-		Queue<NutFrame> audioqueue;
+		// video packets waiting to be written
+		private readonly Queue<NutFrame> _videoQueue;
+		
+		// audio packets waiting to be written
+		private readonly Queue<NutFrame> _audioQueue;
 
-		ReusableBufferPool<byte> _bufferpool = new ReusableBufferPool<byte>(12);
+		readonly ReusableBufferPool<byte> _bufferPool = new ReusableBufferPool<byte>(12);
 
 		#endregion
 
@@ -385,13 +361,13 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// write out the main header
 		/// </summary>
-		void writemainheader()
+		private void WriteMainHeader()
 		{
 			// note: this file starttag not actually part of main headers
 			var tmp = Encoding.ASCII.GetBytes("nut/multimedia container\0");
-			output.Write(tmp, 0, tmp.Length);
+			_output.Write(tmp, 0, tmp.Length);
 
-			var header = new NutPacket(NutPacket.StartCode.Main, output);
+			var header = new NutPacket(NutPacket.StartCode.Main, _output);
 
 			WriteVarU(3, header); // version
 			WriteVarU(2, header); // stream_count
@@ -399,15 +375,15 @@ namespace BizHawk.Client.EmuHawk
 
 			WriteVarU(2, header); // time_base_count
 			// timebase is length of single frame, so reversed num+den is intentional
-			WriteVarU(avparams.fpsden, header); // time_base_num[0]
-			WriteVarU(avparams.fpsnum, header); // time_base_den[0]
+			WriteVarU(_avParams.FpsDen, header); // time_base_num[0]
+			WriteVarU(_avParams.FpsNum, header); // time_base_den[0]
 			WriteVarU(1, header); // time_base_num[1]
-			WriteVarU(avparams.samplerate, header); // time_base_den[1]
+			WriteVarU(_avParams.Samplerate, header); // time_base_den[1]
 
 			// frame flag compression is ignored for simplicity
 			for (int i = 0; i < 255; i++) // not 256 because entry 0x4e is skipped (as it would indicate a startcode)
 			{
-				WriteVarU((1 << 12), header); // tmp_flag = FLAG_CODED
+				WriteVarU(1 << 12, header); // tmp_flag = FLAG_CODED
 				WriteVarU(0, header); // tmp_fields
 			}
 
@@ -420,12 +396,10 @@ namespace BizHawk.Client.EmuHawk
 			header.Flush();
 		}
 
-		/// <summary>
-		/// write out the 0th stream header (video)
-		/// </summary>
-		void writevideoheader()
+		// write out the 0th stream header (video)
+		private void WriteVideoHeader()
 		{
-			var header = new NutPacket(NutPacket.StartCode.Stream, output);
+			var header = new NutPacket(NutPacket.StartCode.Stream, _output);
 			WriteVarU(0, header); // stream_id
 			WriteVarU(0, header); // stream_class = video
 			WriteString("BGRA", header); // fourcc = "BGRA"
@@ -437,8 +411,8 @@ namespace BizHawk.Client.EmuHawk
 			WriteBytes(new byte[0], header); // codec_specific_data
 
 			// stream_class = video
-			WriteVarU(avparams.width, header); // width
-			WriteVarU(avparams.height, header); // height
+			WriteVarU(_avParams.Width, header); // width
+			WriteVarU(_avParams.Height, header); // height
 			WriteVarU(1, header); // sample_width
 			WriteVarU(1, header); // sample_height
 			WriteVarU(18, header); // colorspace_type = full range rec709 (avisynth's "PC.709")
@@ -446,26 +420,24 @@ namespace BizHawk.Client.EmuHawk
 			header.Flush();
 		}
 
-		/// <summary>
-		/// write out the 1st stream header (audio)
-		/// </summary>
-		void writeaudioheader()
+		// write out the 1st stream header (audio)
+		private void WriteAudioHeader()
 		{
-			var header = new NutPacket(NutPacket.StartCode.Stream, output);
+			var header = new NutPacket(NutPacket.StartCode.Stream, _output);
 			WriteVarU(1, header); // stream_id
 			WriteVarU(1, header); // stream_class = audio
 			WriteString("\x01\x00\x00\x00", header); // fourcc = 01 00 00 00
 			WriteVarU(1, header); // time_base_id = 1
 			WriteVarU(8, header); // msb_pts_shift
-			WriteVarU(avparams.samplerate, header); // max_pts_distance
+			WriteVarU(_avParams.Samplerate, header); // max_pts_distance
 			WriteVarU(0, header); // decode_delay
 			WriteVarU(0, header); // stream_flags = none; no FIXED_FPS because we aren't guaranteeing same-size audio chunks
 			WriteBytes(new byte[0], header); // codec_specific_data
 
 			// stream_class = audio
-			WriteVarU(avparams.samplerate, header); // samplerate_num
+			WriteVarU(_avParams.Samplerate, header); // samplerate_num
 			WriteVarU(1, header); // samplerate_den
-			WriteVarU(avparams.channels, header); // channel_count
+			WriteVarU(_avParams.Channels, header); // channel_count
 
 			header.Flush();
 		}
@@ -476,75 +448,84 @@ namespace BizHawk.Client.EmuHawk
 		/// stores a single frame with syncpoint, in mux-ready form
 		/// used because reordering of audio and video can be needed for proper interleave
 		/// </summary>
-		class NutFrame
+		private class NutFrame
 		{
 			/// <summary>
 			/// data ready to be written to stream/disk
 			/// </summary>
-			byte[] data;
+			private readonly byte[] _data;
 
 			/// <summary>
 			/// valid length of the data
 			/// </summary>
-			int actual_length;
+			private readonly int _actualLength;
 
 			/// <summary>
 			/// presentation timestamp
 			/// </summary>
-			ulong pts;
+			private readonly ulong _pts;
 
 			/// <summary>
 			/// fraction of the specified timebase
 			/// </summary>
-			ulong ptsnum, ptsden;
+			private readonly ulong _ptsNum;
 
-			ReusableBufferPool<byte> _pool;
+			/// <summary>
+			/// fraction of the specified timebase
+			/// </summary>
+			private readonly ulong _ptsDen;
+
+			private readonly ReusableBufferPool<byte> _pool;
 
 			/// <param name="payload">frame data</param>
-			/// <param name="payloadlen">actual length of frame data</param>
+			/// <param name="payLoadLen">actual length of frame data</param>
 			/// <param name="pts">presentation timestamp</param>
-			/// <param name="ptsnum">numerator of timebase</param>
-			/// <param name="ptsden">denominator of timebase</param>
-			/// <param name="ptsindex">which timestamp base is used, assumed to be also stream number</param>
-			public NutFrame(byte[] payload, int payloadlen, ulong pts, ulong ptsnum, ulong ptsden, int ptsindex, ReusableBufferPool<byte> pool)
+			/// <param name="ptsNum">numerator of timebase</param>
+			/// <param name="ptsDen">denominator of timebase</param>
+			/// <param name="ptsIndex">which timestamp base is used, assumed to be also stream number</param>
+			public NutFrame(byte[] payload, int payLoadLen, ulong pts, ulong ptsNum, ulong ptsDen, int ptsIndex, ReusableBufferPool<byte> pool)
 			{
-				this.pts = pts;
-				this.ptsnum = ptsnum;
-				this.ptsden = ptsden;
+				_pts = pts;
+				_ptsNum = ptsNum;
+				_ptsDen = ptsDen;
 
-				this._pool = pool;
-				data = pool.GetBufferAtLeast(payloadlen + 2048);
-				var frame = new MemoryStream(data);
+				_pool = pool;
+				_data = pool.GetBufferAtLeast(payLoadLen + 2048);
+				var frame = new MemoryStream(_data);
 
 				// create syncpoint
 				var sync = new NutPacket(NutPacket.StartCode.Syncpoint, frame);
-				WriteVarU(pts * 2 + (ulong)ptsindex, sync); // global_key_pts
+				WriteVarU(pts * 2 + (ulong)ptsIndex, sync); // global_key_pts
 				WriteVarU(1, sync); // back_ptr_div_16, this is wrong
 				sync.Flush();
 
 
-				var frameheader = new MemoryStream();
-				frameheader.WriteByte(0); // frame_code
+				var frameHeader = new MemoryStream();
+				frameHeader.WriteByte(0); // frame_code
+
 				// frame_flags = FLAG_CODED, so:
 				int flags = 0;
 				flags |= 1 << 0; // FLAG_KEY
-				if (payloadlen == 0)
+				if (payLoadLen == 0)
+				{
 					flags |= 1 << 1; // FLAG_EOR
+				}
+
 				flags |= 1 << 3; // FLAG_CODED_PTS
 				flags |= 1 << 4; // FLAG_STREAM_ID
 				flags |= 1 << 5; // FLAG_SIZE_MSB
 				flags |= 1 << 6; // FLAG_CHECKSUM
-				WriteVarU(flags, frameheader);
-				WriteVarU(ptsindex, frameheader); // stream_id
-				WriteVarU(pts + 256, frameheader); // coded_pts = pts + 1 << msb_pts_shift
-				WriteVarU(payloadlen, frameheader); // data_size_msb
+				WriteVarU(flags, frameHeader);
+				WriteVarU(ptsIndex, frameHeader); // stream_id
+				WriteVarU(pts + 256, frameHeader); // coded_pts = pts + 1 << msb_pts_shift
+				WriteVarU(payLoadLen, frameHeader); // data_size_msb
 
-				var frameheaderarr = frameheader.ToArray();
-				frame.Write(frameheaderarr, 0, frameheaderarr.Length);
-				WriteBE32(NutCRC32(frameheaderarr), frame); // checksum
-				frame.Write(payload, 0, payloadlen);
+				var frameHeaderArr = frameHeader.ToArray();
+				frame.Write(frameHeaderArr, 0, frameHeaderArr.Length);
+				WriteBe32(NutCRC32(frameHeaderArr), frame); // checksum
+				frame.Write(payload, 0, payLoadLen);
 
-				actual_length = (int)frame.Position;
+				_actualLength = (int)frame.Position;
 			}
 
 			/// <summary>
@@ -552,19 +533,19 @@ namespace BizHawk.Client.EmuHawk
 			/// </summary>
 			public static bool operator <=(NutFrame lhs, NutFrame rhs)
 			{
-				BigInteger left = new BigInteger(lhs.pts);
-				left = left * lhs.ptsnum * rhs.ptsden;
-				BigInteger right = new BigInteger(rhs.pts);
-				right = right * rhs.ptsnum * lhs.ptsden;
+				BigInteger left = new BigInteger(lhs._pts);
+				left = left * lhs._ptsNum * rhs._ptsDen;
+				BigInteger right = new BigInteger(rhs._pts);
+				right = right * rhs._ptsNum * lhs._ptsDen;
 
 				return left <= right;
 			}
 			public static bool operator >=(NutFrame lhs, NutFrame rhs)
 			{
-				BigInteger left = new BigInteger(lhs.pts);
-				left = left * lhs.ptsnum * rhs.ptsden;
-				BigInteger right = new BigInteger(rhs.pts);
-				right = right * rhs.ptsnum * lhs.ptsden;
+				BigInteger left = new BigInteger(lhs._pts);
+				left = left * lhs._ptsNum * rhs._ptsDen;
+				BigInteger right = new BigInteger(rhs._pts);
+				right = right * rhs._ptsNum * lhs._ptsDen;
 
 				return left >= right;
 			}
@@ -574,57 +555,71 @@ namespace BizHawk.Client.EmuHawk
 			/// </summary>
 			public void WriteData(Stream dest)
 			{
-				dest.Write(data, 0, actual_length);
-				_pool.ReleaseBuffer(data);
-				//dbg.WriteLine($"{pts},{ptsnum},{ptsden}");
+				dest.Write(_data, 0, _actualLength);
+				_pool.ReleaseBuffer(_data);
 			}
 		}
 
-		/// <summary>
-		/// write a video frame to the stream
-		/// </summary>
+		/// <summary>write a video frame to the stream</summary>
 		/// <param name="data">raw video data; if length 0, write EOR</param>
+		/// <exception cref="Exception">internal error, possible A/V desync</exception>
+		/// <exception cref="InvalidOperationException">already written EOR</exception>
 		public void WriteVideoFrame(int[] video)
 		{
-			if (videodone)
+			if (_videoDone)
 				throw new InvalidOperationException("Can't write data after end of relevance!");
-			if (audioqueue.Count > 5)
-				throw new Exception("A\\V Desync?");
-			int datalen = video.Length * sizeof(int);
-			byte[] data = _bufferpool.GetBufferAtLeast(datalen);
-			Buffer.BlockCopy(video, 0, data, 0, datalen);
-			if (datalen == 0)
-				videodone = true;
-			var f = new NutFrame(data, datalen, videopts, (ulong) avparams.fpsden, (ulong) avparams.fpsnum, 0, _bufferpool);
-			_bufferpool.ReleaseBuffer(data);
-			videopts++;
-			videoqueue.Enqueue(f);
-			while (audioqueue.Count > 0 && f >= audioqueue.Peek())
-				audioqueue.Dequeue().WriteData(output);
+			if (_audioQueue.Count > 5)
+				throw new Exception("A/V Desync?");
+			int dataLen = video.Length * sizeof(int);
+			byte[] data = _bufferPool.GetBufferAtLeast(dataLen);
+			Buffer.BlockCopy(video, 0, data, 0, dataLen);
+			if (dataLen == 0)
+			{
+				_videoDone = true;
+			}
+
+			var f = new NutFrame(data, dataLen, _videoOpts, (ulong) _avParams.FpsDen, (ulong) _avParams.FpsNum, 0, _bufferPool);
+			_bufferPool.ReleaseBuffer(data);
+			_videoOpts++;
+			_videoQueue.Enqueue(f);
+			while (_audioQueue.Count > 0 && f >= _audioQueue.Peek())
+			{
+				_audioQueue.Dequeue().WriteData(_output);
+			}
 		}
 
-		/// <summary>
-		/// write an audio frame to the stream
-		/// </summary>
+		/// <summary>write an audio frame to the stream</summary>
 		/// <param name="data">raw audio data; if length 0, write EOR</param>
+		/// <exception cref="Exception">internal error, possible A/V desync</exception>
+		/// <exception cref="InvalidOperationException">already written EOR</exception>
 		public void WriteAudioFrame(short[] samples)
 		{
-			if (audiodone)
+			if (_audioDone)
+			{
 				throw new Exception("Can't write audio after end of relevance!");
-			if (videoqueue.Count > 5)
-				throw new Exception("A\\V Desync?");
-			int datalen = samples.Length * sizeof(short);
-			byte[] data = _bufferpool.GetBufferAtLeast(datalen);
-			Buffer.BlockCopy(samples, 0, data, 0, datalen);
-			if (datalen == 0)
-				audiodone = true;
+			}
 
-			var f = new NutFrame(data, datalen, audiopts, 1, (ulong)avparams.samplerate, 1, _bufferpool);
-			_bufferpool.ReleaseBuffer(data);
-			audiopts += (ulong)samples.Length / (ulong)avparams.channels;
-			audioqueue.Enqueue(f);
-			while (videoqueue.Count > 0 && f >= videoqueue.Peek())
-				videoqueue.Dequeue().WriteData(output);
+			if (_videoQueue.Count > 5)
+			{
+				throw new Exception("A/V Desync?");
+			}
+
+			int dataLen = samples.Length * sizeof(short);
+			byte[] data = _bufferPool.GetBufferAtLeast(dataLen);
+			Buffer.BlockCopy(samples, 0, data, 0, dataLen);
+			if (dataLen == 0)
+			{
+				_audioDone = true;
+			}
+
+			var f = new NutFrame(data, dataLen, _audioPts, 1, (ulong)_avParams.Samplerate, 1, _bufferPool);
+			_bufferPool.ReleaseBuffer(data);
+			_audioPts += (ulong)samples.Length / (ulong)_avParams.Channels;
+			_audioQueue.Enqueue(f);
+			while (_videoQueue.Count > 0 && f >= _videoQueue.Peek())
+			{
+				_videoQueue.Dequeue().WriteData(_output);
+			}
 		}
 
 		/// <summary>
@@ -632,35 +627,38 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		/// <param name="width">video width</param>
 		/// <param name="height">video height</param>
-		/// <param name="fpsnum">fps numerator</param>
-		/// <param name="fpsden">fps denominator</param>
+		/// <param name="fpsNum">fps numerator</param>
+		/// <param name="fpsDen">fps denominator</param>
 		/// <param name="samplerate">audio samplerate</param>
 		/// <param name="channels">audio number of channels</param>
 		/// <param name="underlying">Stream to write to</param>
-		public NutMuxer(int width, int height, int fpsnum, int fpsden, int samplerate, int channels, Stream underlying)
+		public NutMuxer(int width, int height, int fpsNum, int fpsDen, int samplerate, int channels, Stream underlying)
 		{
-			avparams = new AVParams();
-			avparams.width = width;
-			avparams.height = height;
-			avparams.fpsnum = fpsnum;
-			avparams.fpsden = fpsden;
-			avparams.Reduce(); // timebases in nut MUST be relatively prime
-			avparams.samplerate = samplerate;
-			avparams.channels = channels;
-			output = underlying;
+			_avParams = new AVParams
+			{
+				Width = width,
+				Height = height,
+				FpsNum = fpsNum,
+				FpsDen = fpsDen
+			};
 
-			audiopts = 0;
-			videopts = 0;
+			_avParams.Reduce(); // TimeBases in nut MUST be relatively prime
+			_avParams.Samplerate = samplerate;
+			_avParams.Channels = channels;
+			_output = underlying;
 
-			audioqueue = new Queue<NutFrame>();
-			videoqueue = new Queue<NutFrame>();
+			_audioPts = 0;
+			_videoOpts = 0;
 
-			writemainheader();
-			writevideoheader();
-			writeaudioheader();
+			_audioQueue = new Queue<NutFrame>();
+			_videoQueue = new Queue<NutFrame>();
 
-			videodone = false;
-			audiodone = false;
+			WriteMainHeader();
+			WriteVideoHeader();
+			WriteAudioHeader();
+
+			_videoDone = false;
+			_audioDone = false;
 		}
 
 		/// <summary>
@@ -669,26 +667,41 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void Finish()
 		{
-			if (!videodone)
+			if (!_videoDone)
+			{
 				WriteVideoFrame(new int[0]);
-			if (!audiodone)
+			}
+
+			if (!_audioDone)
+			{
 				WriteAudioFrame(new short[0]);
+			}
 
 			// flush any remaining queued packets
-			while (audioqueue.Count > 0 && videoqueue.Count > 0)
+			while (_audioQueue.Count > 0 && _videoQueue.Count > 0)
 			{
-				if (audioqueue.Peek() <= videoqueue.Peek())
-					audioqueue.Dequeue().WriteData(output);
+				if (_audioQueue.Peek() <= _videoQueue.Peek())
+				{
+					_audioQueue.Dequeue().WriteData(_output);
+				}
 				else
-					videoqueue.Dequeue().WriteData(output);
+				{
+					_videoQueue.Dequeue().WriteData(_output);
+				}
 			}
-			while (audioqueue.Count > 0)
-				audioqueue.Dequeue().WriteData(output);
-			while (videoqueue.Count > 0)
-				videoqueue.Dequeue().WriteData(output);
 
-			output.Close();
-			output = null;
+			while (_audioQueue.Count > 0)
+			{
+				_audioQueue.Dequeue().WriteData(_output);
+			}
+
+			while (_videoQueue.Count > 0)
+			{
+				_videoQueue.Dequeue().WriteData(_output);
+			}
+
+			_output.Close();
+			_output = null;
 		}
 	}
 }

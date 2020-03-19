@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
-	public partial class A7800Hawk : IEmulator, IStatable, ISettable<A7800Hawk.A7800Settings, A7800Hawk.A7800SyncSettings>
+	public partial class A7800Hawk : IEmulator, ISettable<A7800Hawk.A7800Settings, A7800Hawk.A7800SyncSettings>
 	{
 		public A7800Settings GetSettings()
 		{
@@ -40,6 +40,11 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			{
 				return (A7800Settings)MemberwiseClone();
 			}
+
+			public A7800Settings()
+			{
+				SettingsUtil.SetDefaultValues(this);
+			}
 		}
 
 		public class A7800SyncSettings
@@ -51,17 +56,14 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			[JsonIgnore]
 			public string Filter
 			{
-				get { return _Filter; }
-				set
-				{
-					_Filter = value;
-				}
+				get => _Filter;
+				set => _Filter = value;
 			}
 
 			[JsonIgnore]
 			public string Port1
 			{
-				get { return _port1; }
+				get => _port1;
 				set
 				{
 					if (!A7800HawkControllerDeck.ValidControllerTypes.ContainsKey(value))
@@ -76,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			[JsonIgnore]
 			public string Port2
 			{
-				get { return _port2; }
+				get => _port2;
 				set
 				{
 					if (!A7800HawkControllerDeck.ValidControllerTypes.ContainsKey(value))
@@ -91,6 +93,11 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			public A7800SyncSettings Clone()
 			{
 				return (A7800SyncSettings)MemberwiseClone();
+			}
+
+			public A7800SyncSettings()
+			{
+				SettingsUtil.SetDefaultValues(this);
 			}
 
 			public static bool NeedsReboot(A7800SyncSettings x, A7800SyncSettings y)

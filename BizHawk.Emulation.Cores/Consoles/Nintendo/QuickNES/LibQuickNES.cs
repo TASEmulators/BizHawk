@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-using BizHawk.Common.BizInvoke;
+using BizHawk.BizInvoke;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
 	public abstract class LibQuickNES
 	{
-		public const string dllname = "libquicknes.dll";
-
 		/// <summary>
 		/// setup extra mappers.  should be done before anything else
 		/// </summary>

@@ -9,8 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	{
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			LibsnesApi.CPURegs regs;
-			Api.QUERY_peek_cpu_regs(out regs);
+			Api.QUERY_peek_cpu_regs(out var regs);
 
 			bool fn = (regs.p & 0x80) != 0;
 			bool fv = (regs.p & 0x40) != 0;
@@ -71,9 +70,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		}
 
 		[FeatureNotImplemented]
-		public long TotalExecutedCycles
-		{
-			get { throw new NotImplementedException(); }
-		}
+		public long TotalExecutedCycles => throw new NotImplementedException();
 	}
 }

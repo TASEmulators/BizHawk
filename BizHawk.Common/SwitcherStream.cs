@@ -1,3 +1,5 @@
+#nullable disable
+
 using System;
 using System.IO;
 
@@ -15,10 +17,6 @@ namespace BizHawk.Common
 		// switchstream method? flush old stream?
 		private Stream _currStream;
 
-		public SwitcherStream()
-		{
-		}
-
 		/// <summary>
 		/// if this is enabled, seeks to Begin,0 will get ignored; anything else will be an exception
 		/// </summary>
@@ -32,13 +30,10 @@ namespace BizHawk.Common
 
 		public override long Length => _currStream.Length;
 
+		/// <exception cref="InvalidOperationException">(from setter) <see cref="DenySeekHack"/> is <see langword="true"/> and <paramref name="value"/> is not <c>0</c></exception>
 		public override long Position
 		{
-			get
-			{
-				return _currStream.Position;
-			}
-
+			get => _currStream.Position;
 			set
 			{
 				if (DenySeekHack)
@@ -55,11 +50,6 @@ namespace BizHawk.Common
 			}
 		}
 
-		public void SetCurrStream(Stream str)
-		{
-			_currStream = str;
-		}
-
 		public override void Flush()
 		{
 			_currStream.Flush();
@@ -70,6 +60,7 @@ namespace BizHawk.Common
 			return _currStream.Read(buffer, offset, count);
 		}
 
+		/// <exception cref="InvalidOperationException"><see cref="DenySeekHack"/> is <see langword="true"/> and either <paramref name="value"/> is not <c>0</c> or <paramref name="origin"/> is not <see cref="SeekOrigin.Begin"/></exception>
 		public override long Seek(long offset, SeekOrigin origin)
 		{
 			if (DenySeekHack)

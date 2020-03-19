@@ -3,7 +3,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
-	// adelikat: changing settings to default object until there are actually settings, as the ui depends on it to know if there are any settings avaialable
+	// adelikat: changing settings to default object until there are actually settings, as the ui depends on it to know if there are any settings available
 	public partial class C64 : ISettable<C64.C64Settings, C64.C64SyncSettings>
 	{
 		public C64Settings GetSettings()
@@ -35,11 +35,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		{
 			[DisplayName("Border type")]
 			[Description("Select how to show the border area\n" +
-                "NORMAL:\t Horizontal and Vertical border both set to 32 pixels (although horizontal will appear narrower due to pixel density)\n" +
-                "SMALL PROPORTIONAL:\t Horizontal and Vertical border both set to 16 pixels (although horizontal will appear narrower due to pixel density)\n" +
-                "SMALL FIXED:\t Horizontal border is set to 16 pixels and vertical is made slightly smaller so as to appear horizontal and vertical are the same after pixel density has been applied\n" +
-                "NONE:\t Only the pixel buffer is rendered"
-                )]
+				"NORMAL:\t Horizontal and Vertical border both set to 32 pixels (although horizontal will appear narrower due to pixel density)\n" +
+				"SMALL PROPORTIONAL:\t Horizontal and Vertical border both set to 16 pixels (although horizontal will appear narrower due to pixel density)\n" +
+				"SMALL FIXED:\t Horizontal border is set to 16 pixels and vertical is made slightly smaller so as to appear horizontal and vertical are the same after pixel density has been applied\n" +
+				"NONE:\t Only the pixel buffer is rendered"
+				)]
 			[DefaultValue(BorderType.SmallProportional)]
 			public BorderType BorderType { get; set; }
 

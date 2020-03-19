@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Common
 		/// If no address is specified the callback will be hooked to all addresses
 		/// Note: an execute callback can not be added without an address, else an InvalidOperationException will occur
 		/// </summary>
-		/// <exception cref="InvalidCastException">Thrown when the <see cref="IMemoryCallback.Scope"/> property of the <see cref="IMemoryCallback"/> is not in the <see cref="AvailableScopes"/></exception>
+		/// <exception cref="InvalidOperationException">Thrown when the <see cref="IMemoryCallback.Scope"/> property of the <see cref="IMemoryCallback"/> is not in the <see cref="AvailableScopes"/></exception>
 		void Add(IMemoryCallback callback);
 
 		/// <summary>
@@ -126,6 +126,6 @@ namespace BizHawk.Emulation.Common
 		AccessExecute = 0x04 << 12,
 		CPUUnknown = 0x00 << 8,
 		CPUZero = 0x01 << 8,
-		DomainUnknown = 0x00,
+		DomainUnknown = 0x00
 	}
 }

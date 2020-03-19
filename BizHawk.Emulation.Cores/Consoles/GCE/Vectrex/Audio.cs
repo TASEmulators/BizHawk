@@ -282,7 +282,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 				}
 				else
 				{
-					v = (short)(sound_out_A ? VolumeTable[vol_A] : 0);
+					v = (short)(sound_out_A ? VolumeTable[env_E] : 0);
 				}
 
 				if (env_vol_B == 0)
@@ -354,6 +354,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			samples = new short[nsamp * 2];
 
 			_blip.ReadSamples(samples, nsamp, true);
+
+			for (int i = 0; i < nsamp * 2; i += 2)
+			{
+				samples[i + 1] = samples[i];
+			}
 
 			master_audio_clock = 0;
 		}

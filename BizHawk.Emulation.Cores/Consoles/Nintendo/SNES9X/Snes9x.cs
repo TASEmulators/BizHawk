@@ -1,10 +1,7 @@
 ﻿using System;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
-using BizHawk.Common.BizInvoke;
-using System.Runtime.InteropServices;
 using System.IO;
-using BizHawk.Common.BufferExtensions;
 using System.ComponentModel;
 using BizHawk.Common;
 using System.Collections.Generic;
@@ -14,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 {
 	[Core("Snes9x", "", true, true,
 		"5e0319ab3ef9611250efb18255186d0dc0d7e125", "https://github.com/snes9xgit/snes9x", false)]
-	[ServiceNotApplicable(typeof(IDriveLight))]
+	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public class Snes9x : WaterboxCore, 
 		ISettable<Snes9x.Settings, Snes9x.SyncSettings>, IRegionable
 	{
@@ -32,8 +29,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 				SystemId = "SNES"
 			})
 		{
-			settings = settings ?? new Settings();
-			syncSettings = syncSettings ?? new SyncSettings();
+			settings ??= new Settings();
+			syncSettings ??= new SyncSettings();
 
 			_core = PreInit<LibSnes9x>(new PeRunnerOptions
 			{

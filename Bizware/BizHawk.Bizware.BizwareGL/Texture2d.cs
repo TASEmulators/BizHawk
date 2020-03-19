@@ -1,8 +1,5 @@
 using System;
 using System.Drawing;
-
-using OpenTK;
-using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 
 namespace BizHawk.Bizware.BizwareGL
@@ -66,21 +63,21 @@ namespace BizHawk.Bizware.BizwareGL
 			SetMagFilter(TextureMagFilter.Nearest);
 		}
 
-		public IGL Owner { get; private set; }
+		public IGL Owner { get; }
 		public object Opaque { get; private set; }
 		
-		//note.. this was a lame idea. convenient, but weird. lets just change this back to ints.
-		public float Width { get; private set; }
-		public float Height { get; private set; }
+		// note.. this was a lame idea. convenient, but weird. lets just change this back to ints.
+		public float Width { get; }
+		public float Height { get; }
 
-		public int IntWidth { get { return (int)Width; } }
-		public int IntHeight { get { return (int)Height; } }
-		public Rectangle Rectangle { get { return new Rectangle(0, 0, IntWidth, IntHeight); } }
-		public Size Size { get { return new Size(IntWidth, IntHeight); } }
+		public int IntWidth => (int)Width;
+		public int IntHeight => (int)Height;
+		public Rectangle Rectangle => new Rectangle(0, 0, IntWidth, IntHeight);
+		public Size Size => new Size(IntWidth, IntHeight);
 
 		/// <summary>
 		/// opengl sucks, man. seriously, screw this (textures from render targets are upside down)
-		/// (couldnt we fix it up in the matrices somewhere?)
+		/// (couldn't we fix it up in the matrices somewhere?)
 		/// </summary>
 		public bool IsUpsideDown;
 	}

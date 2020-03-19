@@ -6,59 +6,14 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public interface ISticky : IController
+	public class StickyXorAdapter : IController
 	{
-		bool StickyIsInEffect(string button);
-	}
-
-	/// <summary>
-	/// Used by input display, to determine if either autofire or regular stickies
-	/// are "in effect" because we color this scenario differently
-	/// </summary>
-	public class StickyOrAdapter : IController
-	{
-		public ControllerDefinition Definition => Source.Definition;
-
-		public bool IsPressed(string button)
-		{
-			return Source.StickyIsInEffect(button)
-				|| SourceStickyOr.StickyIsInEffect(button);
-		}
-
-		// pass floats solely from the original source
-		// this works in the code because SourceOr is the autofire controller
-		public float GetFloat(string name)
-		{
-			int i = Source.Definition.FloatControls.IndexOf(name);
-			return Source.Definition.FloatRanges[i].Mid; // Floats don't make sense in sticky land
-		}
-
-		public ISticky Source { get; set; }
-		public ISticky SourceStickyOr { get; set; }
-	}
-
-	public class StickyXorAdapter : ISticky, IController
-	{
-		/// <summary>
-		/// Determines if a sticky is current mashing the button itself,
-		/// If sticky is not set then false, if set, it returns true if the Source is not pressed, else false
-		/// </summary>
-		public bool StickyIsInEffect(string button)
-		{
-			if (IsSticky(button))
-			{
-				return !Source.IsPressed(button);
-			}
-
-			return false;
-		}
-
 		public ControllerDefinition Definition => Source.Definition;
 
 		public bool IsPressed(string button)
 		{
 			var source = Source.IsPressed(button);
-			source ^= _stickySet.Contains(button);
+			source ^= CurrentStickies.Contains(button);
 			return source;
 		}
 
@@ -83,8 +38,6 @@ namespace BizHawk.Client.Common
 
 		private List<string> _justPressed = new List<string>();
 
-		private readonly HashSet<string> _stickySet = new HashSet<string>();
-
 		// if SetFloat() is called (typically virtual pads), then that float will entirely override the Source input
 		// otherwise, the source is passed thru.
 		private readonly WorkingDictionary<string, float?> _floatSet = new WorkingDictionary<string, float?>();
@@ -101,39 +54,33 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void ClearStickyFloats()
-		{
-			_floatSet.Clear();
-		}
+		public void ClearStickyFloats() => _floatSet.Clear();
 
 		public void SetSticky(string button, bool isSticky)
 		{
 			if (isSticky)
 			{
-				_stickySet.Add(button);
+				CurrentStickies.Add(button);
 			}
 			else
 			{
-				_stickySet.Remove(button);
+				CurrentStickies.Remove(button);
 			}
 		}
 
 		public void Unset(string button)
 		{
-			_stickySet.Remove(button);
+			CurrentStickies.Remove(button);
 			_floatSet.Remove(button);
 		}
 
-		public bool IsSticky(string button)
-		{
-			return _stickySet.Contains(button);
-		}
+		public bool IsSticky(string button) => CurrentStickies.Contains(button);
 
-		public HashSet<string> CurrentStickies => _stickySet;
+		public HashSet<string> CurrentStickies { get; } = new HashSet<string>();
 
 		public void ClearStickies()
 		{
-			_stickySet.Clear();
+			CurrentStickies.Clear();
 			_floatSet.Clear();
 		}
 
@@ -141,13 +88,13 @@ namespace BizHawk.Client.Common
 		{
 			foreach (var button in buttons.Where(button => !_justPressed.Contains(button)))
 			{
-				if (_stickySet.Contains(button))
+				if (CurrentStickies.Contains(button))
 				{
-					_stickySet.Remove(button);
+					CurrentStickies.Remove(button);
 				}
 				else
 				{
-					_stickySet.Add(button);
+					CurrentStickies.Add(button);
 				}
 			}
 
@@ -155,22 +102,8 @@ namespace BizHawk.Client.Common
 		}
 	}
 
-	public class AutoFireStickyXorAdapter : ISticky, IController
+	public class AutoFireStickyXorAdapter : IController
 	{
-		/// <summary>
-		/// Determines if a sticky is current mashing the button itself,
-		/// If sticky is not set then false, if set, it returns true if the Source is not pressed, else false
-		/// </summary>
-		public bool StickyIsInEffect(string button)
-		{
-			if (IsSticky(button))
-			{
-				return !Source.IsPressed(button);
-			}
-
-			return false;
-		}
-
 		public ControllerDefinition Definition => Source.Definition;
 
 		public bool IsPressed(string button)

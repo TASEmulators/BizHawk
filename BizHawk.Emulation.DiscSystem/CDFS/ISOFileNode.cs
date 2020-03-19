@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace BizHawk.Emulation.DiscSystem
+﻿namespace BizHawk.Emulation.DiscSystem
 {
 	/// <summary>
 	/// Representation of a file in the file system.

@@ -6,17 +6,42 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
+	public enum MovieMode
+	{
+		/// <summary>
+		/// There is no movie loaded
+		/// </summary>
+		Inactive,
+
+		/// <summary>
+		/// The movie is in playback mode
+		/// </summary>
+		Play,
+
+		/// <summary>
+		/// The movie is currently recording
+		/// </summary>
+		Record,
+
+		/// <summary>
+		/// The movie has played past the end, but is still loaded in memory
+		/// </summary>
+		Finished
+	}
+
 	// TODO: message callback / event handler
 	// TODO: consider other event handlers, switching modes?
 	public interface IMovie
 	{
 		#region Status
 
+		/// <summary>
+		/// Gets the current movie mode
+		/// </summary>
+		MovieMode Mode { get; }
+
 		bool IsCountingRerecords { get; set; }
-		bool IsActive { get; }
-		bool IsPlaying { get; }
-		bool IsRecording { get; }
-		bool IsFinished { get; }
+
 		bool Changes { get; }
 
 		#endregion
@@ -37,7 +62,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets the actual length of time a movie lasts for. For subframe cores, this will be different then the above two options
 		/// </summary>
-		int TimeLength { get; }
+		ulong TimeLength { get; }
 
 		/// <summary>
 		/// Gets the file extension for the current <see cref="IMovie"/> implementation
@@ -217,5 +242,15 @@ namespace BizHawk.Client.Common
 		IController GetInputState(int frame);
 
 		#endregion
+	}
+
+	public static class MovieExtensions
+	{
+		public static bool IsActive(this IMovie movie) => movie?.Mode != MovieMode.Inactive;
+		public static bool NotActive(this IMovie movie) => movie == null || movie.Mode == MovieMode.Inactive;
+		public static bool IsPlaying(this IMovie movie) => movie?.Mode == MovieMode.Play || movie?.Mode == MovieMode.Finished;
+		public static bool IsRecording(this IMovie movie) => movie?.Mode == MovieMode.Record;
+		public static bool IsFinished(this IMovie movie) => movie.Mode == MovieMode.Finished;
+		public static bool IsPlayingOrRecording(this IMovie movie) => movie?.Mode == MovieMode.Play || movie?.Mode == MovieMode.Record;
 	}
 }

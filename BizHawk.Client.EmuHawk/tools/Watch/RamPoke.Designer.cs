@@ -28,7 +28,6 @@ namespace BizHawk.Client.EmuHawk
         /// </summary>
         private void InitializeComponent()
         {
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RamPoke));
 			this.label1 = new System.Windows.Forms.Label();
 			this.OK = new System.Windows.Forms.Button();
 			this.Cancel = new System.Windows.Forms.Button();
@@ -227,7 +226,7 @@ namespace BizHawk.Client.EmuHawk
 			this.Controls.Add(this.AddressBox);
 			this.Controls.Add(this.label1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.poke_MultiSize;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "RamPoke";

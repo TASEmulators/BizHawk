@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StateHistorySettings_Load(object sender, EventArgs e)
 		{
-			_stateSizeMb = Statable.SaveStateBinary().Length / (decimal)1024 / (decimal)1024;
+			_stateSizeMb = Statable.SaveStateBinary().Length / 1048576.0M;
 
 			MemCapacityNumeric.Maximum = 1024 * 8;
 			MemCapacityNumeric.Minimum = _stateSizeMb + 1;
@@ -30,9 +30,9 @@ namespace BizHawk.Client.EmuHawk
 			MemStateGapDividerNumeric.Maximum = Statable.SaveStateBinary().Length / 1024 / 2 + 1;
 			MemStateGapDividerNumeric.Minimum = Math.Max(Statable.SaveStateBinary().Length / 1024 / 16, 1);
 
-			MemCapacityNumeric.Value = NumberExtensions.Clamp(_settings.Capacitymb, MemCapacityNumeric.Minimum, MemCapacityNumeric.Maximum);
-			DiskCapacityNumeric.Value = NumberExtensions.Clamp(_settings.DiskCapacitymb, MemCapacityNumeric.Minimum, MemCapacityNumeric.Maximum);
-			FileCapacityNumeric.Value = NumberExtensions.Clamp(_settings.DiskSaveCapacitymb, MemCapacityNumeric.Minimum, MemCapacityNumeric.Maximum);
+			MemCapacityNumeric.Value = NumberExtensions.Clamp(_settings.CapacityMb, MemCapacityNumeric.Minimum, MemCapacityNumeric.Maximum);
+			DiskCapacityNumeric.Value = NumberExtensions.Clamp(_settings.DiskCapacityMb, MemCapacityNumeric.Minimum, MemCapacityNumeric.Maximum);
+			FileCapacityNumeric.Value = NumberExtensions.Clamp(_settings.DiskSaveCapacityMb, MemCapacityNumeric.Minimum, MemCapacityNumeric.Maximum);
 			MemStateGapDividerNumeric.Value = NumberExtensions.Clamp(_settings.MemStateGapDivider, MemStateGapDividerNumeric.Minimum, MemStateGapDividerNumeric.Maximum);
 
 			FileStateGapNumeric.Value = _settings.FileStateGap;
@@ -46,9 +46,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-			_settings.Capacitymb = (int)MemCapacityNumeric.Value;
-			_settings.DiskCapacitymb = (int)DiskCapacityNumeric.Value;
-			_settings.DiskSaveCapacitymb = (int)FileCapacityNumeric.Value;
+			_settings.CapacityMb = (int)MemCapacityNumeric.Value;
+			_settings.DiskCapacityMb = (int)DiskCapacityNumeric.Value;
+			_settings.DiskSaveCapacityMb = (int)FileCapacityNumeric.Value;
 			_settings.MemStateGapDivider = (int)MemStateGapDividerNumeric.Value;
 			_settings.FileStateGap = (int)FileStateGapNumeric.Value;
 			DialogResult = DialogResult.OK;

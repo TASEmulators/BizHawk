@@ -1,9 +1,5 @@
 ﻿using BizHawk.Emulation.Common;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Sound
 {
@@ -41,10 +37,8 @@ namespace BizHawk.Emulation.Cores.Sound
 
 		public void Fetch()
 		{
-			int nsampl, nsampr;
-			short[] sampl, sampr;
-			_left.GetSamplesSync(out sampl, out nsampl);
-			_right.GetSamplesSync(out sampr, out nsampr);
+			_left.GetSamplesSync(out var sampl, out int nsampl);
+			_right.GetSamplesSync(out var sampr, out var nsampr);
 
 			int n = Math.Min(nsampl + _leftOverflowCount, nsampr + _rightOverflowCount);
 			

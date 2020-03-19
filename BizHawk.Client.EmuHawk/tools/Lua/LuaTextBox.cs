@@ -62,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.KeyData == (Keys.Control | Keys.A))
 			{
-				base.SelectAll();
+				SelectAll();
 			}
 			else
 			{
@@ -76,11 +76,11 @@ namespace BizHawk.Client.EmuHawk
 			switch (_boxType)
 			{
 				case BoxType.Hex:
-					var hval = uint.Parse(text, NumberStyles.HexNumber);
-					if (hval < uint.MaxValue)
+					var hVal = uint.Parse(text, NumberStyles.HexNumber);
+					if (hVal < uint.MaxValue)
 					{
-						hval++;
-						Text = hval.ToString("X");
+						hVal++;
+						Text = hVal.ToString("X");
 					}
 					else
 					{
@@ -123,11 +123,11 @@ namespace BizHawk.Client.EmuHawk
 			switch (_boxType)
 			{
 				case BoxType.Hex:
-					var hval = uint.Parse(text, NumberStyles.HexNumber);
-					if (hval > 0)
+					var hVal = uint.Parse(text, NumberStyles.HexNumber);
+					if (hVal > 0)
 					{
-						hval--;
-						Text = hval.ToString("X");
+						hVal--;
+						Text = hVal.ToString("X");
 					}
 
 					break;

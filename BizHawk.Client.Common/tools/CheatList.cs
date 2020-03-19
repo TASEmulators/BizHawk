@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -25,7 +24,6 @@ namespace BizHawk.Client.Common
 		private const string ComparisonType = "ComparisonTypeColumn";
 
 		private List<Cheat> _cheatList = new List<Cheat>();
-		private string _currentFileName = "";
 		private string _defaultFileName = "";
 		private bool _changes;
 
@@ -34,23 +32,13 @@ namespace BizHawk.Client.Common
 
 		public int Count => _cheatList.Count;
 
-		public int CheatCount
-		{
-			get { return _cheatList.Count(c => !c.IsSeparator); }
-		}
+		public int CheatCount => _cheatList.Count(c => !c.IsSeparator);
 
-		public int ActiveCount
-		{
-			get { return _cheatList.Count(c => c.Enabled); }
-		}
+		public int ActiveCount => _cheatList.Count(c => c.Enabled);
 
 		public bool Changes
 		{
-			get
-			{
-				return _changes;
-			}
-
+			get => _changes;
 			set
 			{
 				_changes = value;
@@ -61,19 +49,15 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public string CurrentFileName => _currentFileName;
+		public string CurrentFileName { get; private set; } = "";
 
 		public bool IsReadOnly => false;
 
 		public Cheat this[int index] => _cheatList[index];
 
-		public Cheat this[MemoryDomain domain, long address]
-		{
-			get
-			{
-				return _cheatList.FirstOrDefault(cheat => cheat.Domain == domain && cheat.Address == address);
-			}
-		}
+		public Cheat this[MemoryDomain domain, long address] =>
+			_cheatList.FirstOrDefault(cheat => cheat.Domain == domain && cheat.Address == address);
+
 
 		public IEnumerator<Cheat> GetEnumerator()
 		{
@@ -96,13 +80,7 @@ namespace BizHawk.Client.Common
 		public bool AttemptToLoadCheatFile()
 		{
 			var file = new FileInfo(_defaultFileName);
-
-			if (file.Exists)
-			{
-				return Load(file.FullName, false);
-			}
-			
-			return false;
+			return file.Exists && Load(file.FullName, false);
 		}
 
 		public void NewList(string defaultFileName, bool autosave = false)
@@ -111,21 +89,27 @@ namespace BizHawk.Client.Common
 
 			if (_cheatList.Any() && _changes && autosave)
 			{
-				if (string.IsNullOrEmpty(_currentFileName))
+				if (string.IsNullOrEmpty(CurrentFileName))
 				{
-					_currentFileName = _defaultFileName;
+					CurrentFileName = _defaultFileName;
 				}
 
 				Save();
 			}
 
 			_cheatList.Clear();
-			_currentFileName = "";
+			CurrentFileName = "";
 			Changes = false;
 		}
 
+		/// <exception cref="ArgumentNullException"><paramref name="cheat"/> is null</exception>
 		public void Add(Cheat cheat)
 		{
+			if (cheat is null)
+			{
+				throw new ArgumentNullException($"{nameof(cheat)} can not be null");
+			}
+
 			if (cheat.IsSeparator)
 			{
 				_cheatList.Add(cheat);
@@ -222,7 +206,7 @@ namespace BizHawk.Client.Common
 
 		public void RemoveRange(IEnumerable<Cheat> cheats)
 		{
-			foreach (var cheat in cheats.ToList())
+			foreach (var cheat in cheats.ToList()) // enumerate passed IEnumerable because it may depend on the value of _cheatList
 			{
 				_cheatList.Remove(cheat);
 			}
@@ -232,12 +216,7 @@ namespace BizHawk.Client.Common
 
 		public void RemoveRange(IEnumerable<Watch> watches)
 		{
-			var removeList = _cheatList.Where(cheat => watches.Any(w => w == cheat)).ToList();
-			foreach (var cheat in removeList)
-			{
-				_cheatList.Remove(cheat);
-			}
-
+			_cheatList.RemoveAll(cheat => watches.Any(w => w == cheat));
 			Changes = true;
 		}
 
@@ -312,12 +291,9 @@ namespace BizHawk.Client.Common
 				case WatchSize.Byte:
 					return activeCheat.Value;
 				case WatchSize.Word:
-					if (size == WatchSize.Byte)
-					{
-						return GetByteValue(domain, addr);
-					}
-
-					return activeCheat.Value;
+					return size == WatchSize.Byte
+						? GetByteValue(domain, addr)
+						: activeCheat.Value;
 				case WatchSize.DWord:
 					if (size == WatchSize.Byte)
 					{
@@ -343,28 +319,28 @@ namespace BizHawk.Client.Common
 			{
 				if (Changes && _cheatList.Any())
 				{
-					if (string.IsNullOrWhiteSpace(_currentFileName))
+					if (string.IsNullOrWhiteSpace(CurrentFileName))
 					{
-						_currentFileName = _defaultFileName;
+						CurrentFileName = _defaultFileName;
 					}
 
-					SaveFile(_currentFileName);
+					SaveFile(CurrentFileName);
 				}
-				else if (!_cheatList.Any() && !string.IsNullOrWhiteSpace(_currentFileName))
+				else if (!_cheatList.Any() && !string.IsNullOrWhiteSpace(CurrentFileName))
 				{
-					new FileInfo(_currentFileName).Delete();
+					new FileInfo(CurrentFileName).Delete();
 				}
 			}
 		}
 
 		public bool Save()
 		{
-			if (string.IsNullOrWhiteSpace(_currentFileName))
+			if (string.IsNullOrWhiteSpace(CurrentFileName))
 			{
-				_currentFileName = _defaultFileName;
+				CurrentFileName = _defaultFileName;
 			}
 
-			return SaveFile(_currentFileName);
+			return SaveFile(CurrentFileName);
 		}
 
 		public bool SaveFile(string path)
@@ -389,7 +365,9 @@ namespace BizHawk.Client.Common
 						}
 						else
 						{
-							// Set to hex for saving 
+							// Set to hex for saving
+							var tempCheatType = cheat.Type;
+
 							cheat.SetType(DisplayType.Hex);
 
 							sb
@@ -404,14 +382,17 @@ namespace BizHawk.Client.Common
 								.Append((cheat.BigEndian ?? false) ? '1' : '0').Append('\t')
 								.Append(cheat.ComparisonType).Append('\t')
 								.AppendLine();
+
+							cheat.SetType(tempCheatType);
+
 						}
 					}
 
 					sw.WriteLine(sb.ToString());
 				}
 
-				_currentFileName = path;
-				Global.Config.RecentCheats.Add(_currentFileName);
+				CurrentFileName = path;
+				Global.Config.RecentCheats.Add(CurrentFileName);
 				Changes = false;
 				return true;
 			}
@@ -431,7 +412,7 @@ namespace BizHawk.Client.Common
 
 			if (!append)
 			{
-				_currentFileName = path;
+				CurrentFileName = path;
 			}
 
 			using (var sr = file.OpenText())
@@ -455,7 +436,7 @@ namespace BizHawk.Client.Common
 							int? compare;
 							var size = WatchSize.Byte;
 							var type = DisplayType.Hex;
-							var bigendian = false;
+							var bigEndian = false;
 							Cheat.CompareType comparisonType = Cheat.CompareType.None;
 
 							if (s.Length < 6)
@@ -485,13 +466,13 @@ namespace BizHawk.Client.Common
 							{
 								size = Watch.SizeFromChar(vals[6][0]);
 								type = Watch.DisplayTypeFromChar(vals[7][0]);
-								bigendian = vals[8] == "1";
+								bigEndian = vals[8] == "1";
 							}
 							
 							// For backwards compatibility, don't assume these values exist
 							if (vals.Length > 9)
 							{
-								if (!Enum.TryParse<Cheat.CompareType>(vals[9], out comparisonType))
+								if (!Enum.TryParse(vals[9], out comparisonType))
 								{
 									continue; // Not sure if this is the best answer, could just resort to ==
 								}
@@ -502,7 +483,7 @@ namespace BizHawk.Client.Common
 								address,
 								size,
 								type,
-								bigendian,
+								bigEndian,
 								name);
 
 							Add(new Cheat(watch, value, compare, !Global.Config.DisableCheatsOnLoad && enabled, comparisonType));
@@ -637,7 +618,7 @@ namespace BizHawk.Client.Common
 					if (reverse)
 					{
 						_cheatList = _cheatList
-							.OrderByDescending(c => ((int)c.Size))
+							.OrderByDescending(c => (int)c.Size)
 							.ThenBy(c => c.Name)
 							.ThenBy(c => c.Address ?? 0)
 							.ToList();
@@ -645,7 +626,7 @@ namespace BizHawk.Client.Common
 					else
 					{
 						_cheatList = _cheatList
-							.OrderBy(c => ((int)c.Size))
+							.OrderBy(c => (int)c.Size)
 							.ThenBy(c => c.Name)
 							.ThenBy(c => c.Address ?? 0)
 							.ToList();
@@ -730,7 +711,7 @@ namespace BizHawk.Client.Common
 				Cheat = c;
 			}
 
-			public Cheat Cheat { get; private set; }
+			public Cheat Cheat { get; }
 		}
 	}
 }

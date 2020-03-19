@@ -5,21 +5,14 @@ using Newtonsoft.Json;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 {
 	public partial class GBHawkLink : IEmulator, IStatable, ISettable<GBHawkLink.GBLinkSettings, GBHawkLink.GBLinkSyncSettings>
 	{
-		public GBLinkSettings GetSettings()
-		{
-			return linkSettings.Clone();
-		}
+		public GBLinkSettings GetSettings() => linkSettings.Clone();
 
-		public GBLinkSyncSettings GetSyncSettings()
-		{
-			return linkSyncSettings.Clone();
-		}
+		public GBLinkSyncSettings GetSyncSettings() => linkSyncSettings.Clone();
 
 		public bool PutSettings(GBLinkSettings o)
 		{
@@ -56,15 +49,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 				Both
 			}
 
+			public enum VideoSrc
+			{
+				Left,
+				Right,
+				Both
+			}
+
 			[DisplayName("Audio Selection")]
 			[Description("Choose Audio Source. Both will produce Stereo sound.")]
 			[DefaultValue(AudioSrc.Left)]
 			public AudioSrc AudioSet { get; set; }
 
-			public GBLinkSettings Clone()
-			{
-				return (GBLinkSettings)MemberwiseClone();
-			}
+			[DisplayName("Video Selection")]
+			[Description("Choose Video Source.")]
+			[DefaultValue(VideoSrc.Both)]
+			public VideoSrc VideoSet { get; set; }
+
+			public GBLinkSettings Clone() => (GBLinkSettings)MemberwiseClone();
+
+			public GBLinkSettings() => SettingsUtil.SetDefaultValues(this);
 		}
 
 		public class GBLinkSyncSettings
@@ -89,8 +93,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 			[DefaultValue(0)]
 			public int RTCInitialTime_L
 			{
-				get { return _RTCInitialTime_L; }
-				set { _RTCInitialTime_L = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value)); }
+				get => _RTCInitialTime_L;
+				set => _RTCInitialTime_L = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value));
 			}
 
 			[DisplayName("RTC Initial Time R")]
@@ -98,26 +102,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 			[DefaultValue(0)]
 			public int RTCInitialTime_R
 			{
-				get { return _RTCInitialTime_R; }
-				set { _RTCInitialTime_R = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value)); }
+				get => _RTCInitialTime_R;
+				set => _RTCInitialTime_R = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value));
 			}
 
-			[DisplayName("Timer Div Initial Time L")]
-			[Description("Don't change from 0 unless it's hardware accurate. GBA GBC mode is known to be 8.")]
-			[DefaultValue(8)]
-			public int DivInitialTime_L
+			[DisplayName("RTC Offset L")]
+			[Description("Set error in RTC clocking (-127 to 127)")]
+			[DefaultValue(0)]
+			public int RTCOffset_L
 			{
-				get { return _DivInitialTime_L; }
-				set { _DivInitialTime_L = Math.Min((ushort)65535, (ushort)value); }
+				get => _RTCOffset_L;
+				set => _RTCOffset_L = Math.Max(-127, Math.Min(127, value));
 			}
 
-			[DisplayName("Timer Div Initial Time R")]
-			[Description("Don't change from 0 unless it's hardware accurate. GBA GBC mode is known to be 8.")]
-			[DefaultValue(8)]
-			public int DivInitialTime_R
+			[DisplayName("RTC Offset R")]
+			[Description("Set error in RTC clocking (-127 to 127)")]
+			[DefaultValue(0)]
+			public int RTCOffset_R
 			{
-				get { return _DivInitialTime_R; }
-				set { _DivInitialTime_R = Math.Min((ushort)65535, (ushort)value); }
+				get => _RTCOffset_R;
+				set => _RTCOffset_R = Math.Max(-127, Math.Min(127, value));
 			}
 
 			[DisplayName("Use Existing SaveRAM")]
@@ -127,15 +131,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 			[JsonIgnore]
 			private int _RTCInitialTime_L;
+			[JsonIgnore]
 			private int _RTCInitialTime_R;
 			[JsonIgnore]
+			private int _RTCOffset_L;
+			[JsonIgnore]
+			private int _RTCOffset_R;
+			[JsonIgnore]
 			public ushort _DivInitialTime_L = 8;
+			[JsonIgnore]
 			public ushort _DivInitialTime_R = 8;
 
-			public GBLinkSyncSettings Clone()
-			{
-				return (GBLinkSyncSettings)MemberwiseClone();
-			}
+			public GBLinkSyncSettings Clone() => (GBLinkSyncSettings)MemberwiseClone();
+
+			public GBLinkSyncSettings() => SettingsUtil.SetDefaultValues(this);
 
 			public static bool NeedsReboot(GBLinkSyncSettings x, GBLinkSyncSettings y)
 			{

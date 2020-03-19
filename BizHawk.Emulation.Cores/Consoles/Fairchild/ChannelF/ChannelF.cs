@@ -1,6 +1,4 @@
 ﻿using System;
-using BizHawk.Common;
-using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.ChannelF
@@ -10,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		"Asnivor",
 		isPorted: false,
 		isReleased: false)]
-	[ServiceNotApplicable(typeof(IDriveLight))]
+	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class ChannelF
 	{
 		public ChannelF(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
@@ -18,7 +16,6 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 			CoreComm = comm;
-			InputCallbacks = new InputCallbackSystem();
 			MemoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
 
 			ControllerDefinition = ChannelFControllerDefinition;
@@ -48,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			ser.Register<ITraceable>(_tracer);
 			ser.Register<IDisassemblable>(CPU);
 			ser.Register<ISoundProvider>(this);
-
+			ser.Register<IStatable>(new StateSerializer(SyncState));
 			SetupMemoryDomains();
 		}
 

@@ -1,68 +1,11 @@
 ﻿using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 
+// http://wiki.nesdev.com/w/index.php/INES_Mapper_233
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public sealed class Mapper233 : NES.NESBoardBase
 	{
-		/*
-		Here are Disch's original notes:  
-		========================
-		=  Mapper 233          =
-		========================
-
-
-		Example Game:
-		--------------------------
-		???? "42-in-1"  ????
-
-
-		Notes:
-		---------------------------
-		Sources report this mapper as "42-in-1" with description layed out below.  I did not test this,
-		since I could not find a copy of the ROM in question.  The only ROM I have that's marked as
-		233 is "Unknown Multicart 1", and it does *not* follow the description in this doc at all.
-
-		There is a "Super 42-in-1"... but that is mapper 226.  226, by the way, is strikingly similar
-		to the below description.  I wonder if below description really applies to 233?
-
-
-
-		Registers:
-		---------------------------
-
-		$8000-FFFF:  [MMOP PPPP]
-		M = Mirroring
-		O = PRG Mode
-		P = PRG Page
-
-
-		PRG Setup:
-		---------------------------
-
-					  $8000   $A000   $C000   $E000  
-					+-------------------------------+
-		PRG Mode 0: |            <$8000>            |
-					+-------------------------------+
-		PRG Mode 1: |     $8000     |     $8000     |
-					+---------------+---------------+
-
-
-		Mirroring:
-		---------------------------
-
-		'M' mirroring bits:
-		%00 = See below
-		%01 = Vert
-		%10 = Horz
-		%11 = 1ScB
-
-
-		Mode %00 (almost, but not quite 1ScA):
-		[  NTA  ][  NTA  ]
-		[  NTA  ][  NTB  ]
-		*/
-
 		public int prg_page;
 		public bool prg_mode;
 
@@ -116,10 +59,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return ROM[((prg_page >> 1) * 0x8000) + addr];
 			}
-			else
-			{
-				return ROM[(prg_page * 0x4000) + (addr & 0x3FFF)];
-			}
+
+			return ROM[(prg_page * 0x4000) + (addr & 0x3FFF)];
 		}
 	}
 }

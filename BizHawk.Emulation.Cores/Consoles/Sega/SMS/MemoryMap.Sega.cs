@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BizHawk.Emulation.Cores.Sega.MasterSystem
+﻿namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
 	public partial class SMS
 	{
@@ -19,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		const ushort BankSizeMask = 0x3FFF;
 		const ushort RamSizeMask = 0x1FFF;
 
-		bool BiosMapped { get { return (Port3E & 0x40) == 0x40; } }
+		bool BiosMapped => (Port3E & 0x40) == 0x40;
 
 		byte ReadMemorySega(ushort address)
 		{

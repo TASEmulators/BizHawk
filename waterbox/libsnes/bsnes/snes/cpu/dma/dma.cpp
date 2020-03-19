@@ -26,6 +26,7 @@ bool CPU::dma_addr_valid(uint32 abus) {
 
 uint8 CPU::dma_read(uint32 abus) {
   if(dma_addr_valid(abus) == false) return 0x00;
+  cdlInfo.currFlags = eCDLog_Flags_DMAData;
   return bus.read(abus);
 }
 

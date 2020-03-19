@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Client.EmuHawk
 {
-	partial class GBGPUView
+	partial class GbGpuView
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GBGPUView));
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
@@ -361,7 +360,7 @@
 			this.buttonChangeColor.TabIndex = 1;
 			this.buttonChangeColor.Text = "Change Color...";
 			this.buttonChangeColor.UseVisualStyleBackColor = true;
-			this.buttonChangeColor.Click += new System.EventHandler(this.buttonChangeColor_Click);
+			this.buttonChangeColor.Click += new System.EventHandler(this.ButtonChangeColor_Click);
 			// 
 			// panelSpriteBackColor
 			// 
@@ -505,15 +504,13 @@
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.menuStrip1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.gambatte_MultiSize;
 			this.MainMenuStrip = this.menuStrip1;
-			this.Name = "GBGPUView";
+			this.Name = "GbGpuView";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "GPU Viewer";
-			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.GBGPUView_FormClosing);
-			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.GBGPUView_FormClosed);
-			this.Load += new System.EventHandler(this.GBGPUView_Load);
-			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GBGPUView_KeyDown);
+			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.GbGpuView_FormClosed);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GbGpuView_KeyDown);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.groupBox2.ResumeLayout(false);

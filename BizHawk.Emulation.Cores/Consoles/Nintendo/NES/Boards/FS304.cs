@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace BizHawk.Emulation.Cores.Nintendo.NES
+﻿namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public class FS304 : NES.NESBoardBase
 	{

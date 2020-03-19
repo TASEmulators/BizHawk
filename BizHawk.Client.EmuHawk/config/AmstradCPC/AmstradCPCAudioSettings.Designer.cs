@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Client.EmuHawk
 {
-    partial class AmstradCPCAudioSettings
+    partial class AmstradCpcAudioSettings
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AmstradCPCAudioSettings));
 			this.OkBtn = new System.Windows.Forms.Button();
 			this.CancelBtn = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
@@ -158,8 +157,8 @@
 			this.Controls.Add(this.CancelBtn);
 			this.Controls.Add(this.OkBtn);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.Name = "AmstradCPCAudioSettings";
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController_MultiSize;
+			this.Name = "AmstradCpcAudioSettings";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Audio Settings";
 			this.Load += new System.EventHandler(this.IntvControllerSettings_Load);

@@ -11,8 +11,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		"Micro500, Alyosha, adelikat, natt",
 		isPorted: false,
 		isReleased: true)]
-	[ServiceNotApplicable(typeof(ISaveRam), typeof(IDriveLight))]
-	public partial class Atari2600 : IEmulator, IStatable, IDebuggable, IInputPollable, IBoardInfo,
+	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(ISaveRam) })]
+	public partial class Atari2600 : IEmulator, IDebuggable, IInputPollable, IBoardInfo,
 		IRegionable, ICreateGameDBEntries, ISettable<Atari2600.A2600Settings, Atari2600.A2600SyncSettings>
 	{
 		[CoreConstructor("A26")]
@@ -58,6 +58,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.Register<ITraceable>(Tracer);
 			ser.Register<IVideoProvider>(_tia);
 			ser.Register<ISoundProvider>(_dcfilter);
+			ser.Register<IStatable>(new StateSerializer(SyncState));
 		}
 
 		private readonly Atari2600ControllerDeck _controllerDeck;
@@ -75,7 +76,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				Name = _game.Name,
 				System = "A26",
-				MetaData = "m=" + _mapper.GetType().ToString().Split('.').ToList().Last(),
+				MetaData = "m=" + _mapper.GetType().ToString().Split('.').Last(),
 				Hash = Rom.HashSHA1(),
 				Region = _game.Region,
 				Status = RomStatus.Unknown
@@ -106,23 +107,21 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			// here we advance past start up irregularities to see how long a frame is based on calls to Vsync
 			// we run 72 frames, then run 270 scanlines worth of cycles.
 			// if we don't hit a new frame, we can be pretty confident we are in PAL
-			using (Atari2600 emu = new Atari2600(new CoreComm(null, null), newgame, rom, null, null))
+			using var emu = new Atari2600(new CoreComm(null, null), newgame, rom, null, null);
+			for (int i = 0; i < 72; i++)
 			{
-				for (int i = 0; i < 72; i++)
-				{
-					emu.FrameAdvance(NullController.Instance, false, false);
-				}
-
-				for (int i = 0; i < 61560; i++)
-				{
-					emu.Cycle();
-				}
-
-				bool pal = !emu._tia.New_Frame;
-
-				Console.WriteLine("PAL Detection: {0}", pal);
-				return pal;
+				emu.FrameAdvance(NullController.Instance, false, false);
 			}
+
+			for (int i = 0; i < 61560; i++)
+			{
+				emu.Cycle();
+			}
+
+			bool pal = !emu._tia.New_Frame;
+
+			Console.WriteLine("PAL Detection: {0}", pal);
+			return pal;
 		}
 	}
 }

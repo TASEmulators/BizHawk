@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.InteropServices;
 using System.IO;
+
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
@@ -25,35 +25,22 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 	public class GenDbgHlp : IDisposable
 	{
-		private static class Win32
-		{
-			[DllImport("kernel32.dll")]
-			public static extern IntPtr LoadLibrary(string dllToLoad);
-			[DllImport("kernel32.dll")]
-			public static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
-			[DllImport("kernel32.dll")]
-			public static extern bool FreeLibrary(IntPtr hModule);
-		}
-
 		// config
 		const string modulename = "libgenplusgx.dll";
 		const string symbolname = @"D:\encodes\bizhawksrc\genplus-gx\libretro\msvc\Debug\vars.txt";
 		const int start = 0x0c7d8000 - 0x0c540000;
 		const int length = 0x01082000;
 
-		bool disposed = false;
+		private bool disposed => DllBase == IntPtr.Zero;
 
 		public void Dispose()
 		{
-			if (!disposed)
-			{
-				Win32.FreeLibrary(DllBase);
-				DllBase = IntPtr.Zero;
-				disposed = true;
-			}
+			if (DllBase == IntPtr.Zero) return; // already freed
+			OSTailoredCode.LinkedLibManager.FreeByPtr(DllBase);
+			DllBase = IntPtr.Zero;
 		}
 
-		IntPtr DllBase;
+		private IntPtr DllBase;
 
 		List<Symbol> SymbolsByAddr = new List<Symbol>();
 		Dictionary<string, Symbol> SymbolsByName = new Dictionary<string, Symbol>();
@@ -72,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		}
 
 
-		unsafe public void Cmp(int statex, int statey)
+		public unsafe void Cmp(int statex, int statey)
 		{
 			if (disposed) throw new ObjectDisposedException(this.GetType().ToString());
 			List<Tuple<int, int>> bads = new List<Tuple<int, int>>();
@@ -145,10 +132,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				}
 				SymbolsByAddr.Sort();
 			}
-
-			DllBase = Win32.LoadLibrary(modulename);
-			if (DllBase == IntPtr.Zero)
-				throw new Exception();
+			DllBase = OSTailoredCode.LinkedLibManager.LoadOrThrow(modulename);
 		}
 
 		public List<Symbol> Find(IntPtr addr, int length)

@@ -38,17 +38,21 @@
             this.btnSetLibretroCore = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.btnClassicLaunchGame = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.btnMAMELaunchGame = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label3
             // 
             this.label3.Location = new System.Drawing.Point(6, 25);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(250, 29);
+            this.label3.Size = new System.Drawing.Size(198, 45);
             this.label3.TabIndex = 5;
-            this.label3.Text = "Load a rom with the classic BizHawk autodetection method. But why not just use Op" +
+            this.label3.Text = "Load a ROM with the classic BizHawk autodetection method. But why not just use Op" +
     "en Rom?";
             // 
             // label2
@@ -72,8 +76,9 @@
             // 
             // btnCancel
             // 
+            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(370, 176);
+            this.btnCancel.Location = new System.Drawing.Point(370, 221);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 2;
@@ -132,16 +137,16 @@
             // 
             this.groupBox3.Controls.Add(this.btnClassicLaunchGame);
             this.groupBox3.Controls.Add(this.label3);
-            this.groupBox3.Location = new System.Drawing.Point(12, 99);
+            this.groupBox3.Location = new System.Drawing.Point(235, 99);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(277, 100);
+            this.groupBox3.Size = new System.Drawing.Size(210, 100);
             this.groupBox3.TabIndex = 6;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "BizHawk Classic";
             // 
             // btnClassicLaunchGame
             // 
-            this.btnClassicLaunchGame.Location = new System.Drawing.Point(169, 71);
+            this.btnClassicLaunchGame.Location = new System.Drawing.Point(102, 71);
             this.btnClassicLaunchGame.Name = "btnClassicLaunchGame";
             this.btnClassicLaunchGame.Size = new System.Drawing.Size(102, 23);
             this.btnClassicLaunchGame.TabIndex = 6;
@@ -149,12 +154,43 @@
             this.btnClassicLaunchGame.UseVisualStyleBackColor = true;
             this.btnClassicLaunchGame.Click += new System.EventHandler(this.btnClassicLaunchGame_Click);
             // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.btnMAMELaunchGame);
+            this.groupBox1.Location = new System.Drawing.Point(13, 99);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(216, 100);
+            this.groupBox1.TabIndex = 7;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "MAME Arcade";
+            // 
+            // label1
+            // 
+            this.label1.Location = new System.Drawing.Point(6, 25);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(204, 42);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "Load .zip archive as MAME Arcade ROM (do not unzip)";
+            this.label1.Click += new System.EventHandler(this.btnMAMELaunchGame_Click);
+            // 
+            // btnMAMELaunchGame
+            // 
+            this.btnMAMELaunchGame.Location = new System.Drawing.Point(108, 71);
+            this.btnMAMELaunchGame.Name = "btnMAMELaunchGame";
+            this.btnMAMELaunchGame.Size = new System.Drawing.Size(102, 23);
+            this.btnMAMELaunchGame.TabIndex = 0;
+            this.btnMAMELaunchGame.Text = "Launch Game";
+            this.btnMAMELaunchGame.UseVisualStyleBackColor = true;
+            this.btnMAMELaunchGame.Click += new System.EventHandler(this.btnMAMELaunchGame_Click);
+            // 
             // OpenAdvancedChooser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(457, 208);
+            this.ClientSize = new System.Drawing.Size(457, 256);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.btnCancel);
@@ -167,6 +203,7 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
 
 		}
@@ -183,5 +220,8 @@
 		private System.Windows.Forms.Button btnLibretroLaunchGame;
 		private System.Windows.Forms.GroupBox groupBox3;
 		private System.Windows.Forms.Button btnClassicLaunchGame;
+		private System.Windows.Forms.GroupBox groupBox1;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Button btnMAMELaunchGame;
 	}
 }

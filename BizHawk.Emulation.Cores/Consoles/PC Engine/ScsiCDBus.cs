@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public bool BSY
 		{
-			get { return bsy; }
+			get => bsy;
 			set
 			{
 				if (value != BSY) signalsChanged = true;
@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public bool SEL
 		{
-			get { return sel; }
+			get => sel;
 			set
 			{
 				if (value != SEL) signalsChanged = true;
@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public bool CD // CONTROL = true, DATA = false
 		{
-			get { return cd; }
+			get => cd;
 			set
 			{
 				if (value != CD) signalsChanged = true;
@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public bool IO // INPUT = true, OUTPUT = false
 		{
-			get { return io; }
+			get => io;
 			set
 			{
 				if (value != IO) signalsChanged = true;
@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public bool MSG
 		{
-			get { return msg; }
+			get => msg;
 			set
 			{
 				if (value != MSG) signalsChanged = true;
@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public bool REQ
 		{
-			get { return req; }
+			get => req;
 			set
 			{
 				if (value != REQ) signalsChanged = true;
@@ -92,7 +92,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public bool ACK
 		{
-			get { return ack; }
+			get => ack;
 			set
 			{
 				if (value != ACK) signalsChanged = true;
@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public bool ATN
 		{
-			get { return atn; }
+			get => atn;
 			set
 			{
 				if (value != ATN) signalsChanged = true;
@@ -112,7 +112,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public bool RST
 		{
-			get { return rst; }
+			get => rst;
 			set
 			{
 				if (value != RST) signalsChanged = true;
@@ -190,7 +190,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					pce.IntDataTransferReady = true;
 
 					// If more sectors, should set the next think-clock to however long it takes to read 1 sector
-					// but I dont. I dont think transfers actually happen sector by sector
+					// but I don't. I don't think transfers actually happen sector by sector
 					// like this, they probably become available as the bits come off the disc.
 					// but lets get some basic functionality before we go crazy.
 					//  Idunno, maybe they do come in a sector at a time.
@@ -552,8 +552,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 						// zero 07-jul-2015 - I may have broken this
 						int totalLbaLength = disc.Session1.LeadoutLBA;
 
-						byte m, s, f;
-						DiscUtils.Convert_LBA_To_AMSF(totalLbaLength + 150, out m, out s, out f);
+						DiscUtils.Convert_LBA_To_AMSF(totalLbaLength + 150, out var m, out var s, out var f);
 
 						DataIn.Clear();
 						DataIn.Enqueue(m.BinToBCD());
@@ -577,8 +576,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 						else
 							lbaPos = tracks[track].LBA;
 
-						byte m, s, f;
-						DiscUtils.Convert_LBA_To_AMSF(lbaPos, out m, out s, out f);
+						DiscUtils.Convert_LBA_To_AMSF(lbaPos, out var m, out var s, out var f);
 
 						DataIn.Clear();
 						DataIn.Enqueue(m.BinToBCD());

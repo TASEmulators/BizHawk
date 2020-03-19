@@ -43,10 +43,9 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		/// <summary>
-		/// the core can call this to register an additional service
-		/// </summary>
-		/// <typeparam name="T">The <seealso cref="IEmulatorService"/> to register</typeparam>
+		/// <summary>the core can call this to register an additional service</summary>
+		/// <typeparam name="T">The <see cref="IEmulatorService"/> to register</typeparam>
+		/// <exception cref="ArgumentNullException"><paramref name="provider"/> is null</exception>
 		public void Register<T>(T provider) 
 			where T : IEmulatorService
 		{
@@ -66,13 +65,7 @@ namespace BizHawk.Emulation.Common
 
 		public object GetService(Type t)
 		{
-			object service;
-			if (_services.TryGetValue(t, out service))
-			{
-				return service;
-			}
-
-			return null;
+			return _services.TryGetValue(t, out var service) ? service : null;
 		}
 
 		public bool HasService<T>()
@@ -86,12 +79,6 @@ namespace BizHawk.Emulation.Common
 			return _services.ContainsKey(t);
 		}
 
-		public IEnumerable<Type> AvailableServices
-		{
-			get
-			{
-				return _services.Select(d => d.Key);
-			}
-		}
+		public IEnumerable<Type> AvailableServices =>_services.Select(d => d.Key);
 	}
 }

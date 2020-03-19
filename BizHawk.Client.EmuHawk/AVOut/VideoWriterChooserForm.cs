@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -11,25 +12,25 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public partial class VideoWriterChooserForm : Form
 	{
-		private VideoWriterChooserForm()
+		private readonly int _captureWidth, _captureHeight;
+
+		private VideoWriterChooserForm(MainForm mainForm, IEmulator emulator, Config config)
 		{
 			InitializeComponent();
 
-			CaptureWidth = Global.Emulator.CoreComm.NominalWidth;
-			CaptureHeight = Global.Emulator.CoreComm.NominalHeight;
+			_captureWidth = emulator.CoreComm.NominalWidth;
+			_captureHeight = emulator.CoreComm.NominalHeight;
 
-			if (Global.Config.AVI_CaptureOSD)
+			if (config.AviCaptureOsd)
 			{
-				using (var bb = GlobalWin.MainForm.CaptureOSD())
-				{
-					CaptureWidth = bb.Width;
-					CaptureHeight = bb.Height;
-				}
+				using var bb = mainForm.CaptureOSD();
+				_captureWidth = bb.Width;
+				_captureHeight = bb.Height;
 			}
 
-			lblSize.Text = $"Size:\r\n{CaptureWidth}x{CaptureHeight}";
+			lblSize.Text = $"Size:\r\n{_captureWidth}x{_captureHeight}";
 
-			if (CaptureWidth % 4 != 0 || CaptureHeight % 4 != 0)
+			if (_captureWidth % 4 != 0 || _captureHeight % 4 != 0)
 			{
 				lblResolutionWarning.Visible = true;
 			}
@@ -39,36 +40,43 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private int CaptureWidth, CaptureHeight;
-
 		/// <summary>
 		/// chose an IVideoWriter
 		/// </summary>
 		/// <param name="list">list of IVideoWriters to choose from</param>
 		/// <param name="owner">parent window</param>
+		/// <param name="emulator">The current emulator</param>
 		/// <returns>user choice, or null on Cancel\Close\invalid</returns>
-		public static IVideoWriter DoVideoWriterChoserDlg(IEnumerable<VideoWriterInfo> list, IWin32Window owner, out int resizew, out int resizeh, out bool pad, ref bool audiosync)
+		public static IVideoWriter DoVideoWriterChooserDlg(
+			IEnumerable<VideoWriterInfo> list,
+			MainForm owner,
+			IEmulator emulator,
+			Config config,
+			out int resizeW,
+			out int resizeH,
+			out bool pad,
+			ref bool audioSync)
 		{
-			VideoWriterChooserForm dlg = new VideoWriterChooserForm
+			var dlg = new VideoWriterChooserForm(owner, emulator, config)
 			{
 				labelDescriptionBody = { Text = "" }
 			};
 
 			int idx = 0;
-			int idx_select = -1;
+			int idxSelect = -1;
 			dlg.listBox1.BeginUpdate();
 			foreach (var vw in list)
 			{
 				dlg.listBox1.Items.Add(vw);
-				if (vw.Attribs.ShortName == Global.Config.VideoWriter)
+				if (vw.Attribs.ShortName == config.VideoWriter)
 				{
-					idx_select = idx;
+					idxSelect = idx;
 				}
 
 				idx++;
 			}
 
-			dlg.listBox1.SelectedIndex = idx_select;
+			dlg.listBox1.SelectedIndex = idxSelect;
 			dlg.listBox1.EndUpdate();
 
 			foreach (Control c in dlg.panelSizeSelect.Controls)
@@ -76,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 				c.Enabled = false;
 			}
 
-			dlg.checkBoxASync.Checked = audiosync;
+			dlg.checkBoxASync.Checked = audioSync;
 			DialogResult result = dlg.ShowDialog(owner);
 
 			IVideoWriter ret;
@@ -85,7 +93,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var vwi = (VideoWriterInfo)dlg.listBox1.SelectedItem;
 				ret = vwi.Create();
-				Global.Config.VideoWriter = vwi.Attribs.ShortName;
+				config.VideoWriter = vwi.Attribs.ShortName;
 			}
 			else
 			{
@@ -94,30 +102,30 @@ namespace BizHawk.Client.EmuHawk
 
 			if (ret != null && dlg.checkBoxResize.Checked)
 			{
-				resizew = dlg.numericTextBoxW.IntValue;
-				resizeh = dlg.numericTextBoxH.IntValue;
+				resizeW = dlg.numericTextBoxW.IntValue;
+				resizeH = dlg.numericTextBoxH.IntValue;
 			}
 			else
 			{
-				resizew = -1;
-				resizeh = -1;
+				resizeW = -1;
+				resizeH = -1;
 			}
 
 			pad = dlg.checkBoxPad.Checked;
-			audiosync = dlg.checkBoxASync.Checked;
+			audioSync = dlg.checkBoxASync.Checked;
 
 			dlg.Dispose();
 			return ret;
 		}
 
-		private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+		private void ListBox1_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			labelDescriptionBody.Text = listBox1.SelectedIndex != -1
 				? ((VideoWriterInfo)listBox1.SelectedItem).Attribs.Description
 				: "";
 		}
 
-		private void checkBoxResize_CheckedChanged(object sender, EventArgs e)
+		private void CheckBoxResize_CheckedChanged(object sender, EventArgs e)
 		{
 			foreach (Control c in panelSizeSelect.Controls)
 			{
@@ -125,13 +133,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void buttonAuto_Click(object sender, EventArgs e)
+		private void ButtonAuto_Click(object sender, EventArgs e)
 		{
-			numericTextBoxW.Text = CaptureWidth.ToString();
-			numericTextBoxH.Text = CaptureHeight.ToString();
+			numericTextBoxW.Text = _captureWidth.ToString();
+			numericTextBoxH.Text = _captureHeight.ToString();
 		}
 
-		private void buttonOK_Click(object sender, EventArgs e)
+		private void ButtonOK_Click(object sender, EventArgs e)
 		{
 			if (checkBoxResize.Checked)
 			{

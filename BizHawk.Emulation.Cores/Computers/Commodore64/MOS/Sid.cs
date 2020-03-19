@@ -324,7 +324,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			//re-sample back down to the original number of samples
 			for (double i = 0; i < nsamp; i++)
 			{
-				_outputBufferFiltered[(int)i + _filterIndex] = (int)(_fftBuffer[(int)Math.Ceiling((i / (nsamp - 1) * (nsamp_2 - 1)))]/(nsamp_2/2));
+				_outputBufferFiltered[(int)i + _filterIndex] = (int)(_fftBuffer[(int)Math.Ceiling((i / (nsamp - 1) * (nsamp_2 - 1)))] * _fft.CorrectionScaleFactor);
 
 				if (_outputBufferFiltered[(int)i + _filterIndex] < 0)
 				{

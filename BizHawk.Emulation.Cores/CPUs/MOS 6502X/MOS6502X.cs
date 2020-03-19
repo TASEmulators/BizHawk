@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 using BizHawk.Common;
@@ -44,9 +45,53 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			FlagI = true;
 		}
 
-		public string TraceHeader
+		public string TraceHeader => "6502: PC, machine code, mnemonic, operands, registers (A, X, Y, P, SP), flags (NVTBDIZCR)";
+
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			get { return "6502: PC, machine code, mnemonic, operands, registers (A, X, Y, P, SP), flags (NVTBDIZCR)"; }
+			return new Dictionary<string, RegisterValue>
+			{
+				["A"] = A,
+				["X"] = X,
+				["Y"] = Y,
+				["S"] = S,
+				["PC"] = PC,
+				["Flag C"] = FlagC,
+				["Flag Z"] = FlagZ,
+				["Flag I"] = FlagI,
+				["Flag D"] = FlagD,
+				["Flag B"] = FlagB,
+				["Flag V"] = FlagV,
+				["Flag N"] = FlagN,
+				["Flag T"] = FlagT
+			};
+		}
+
+		public void SetCpuRegister(string register, int value)
+		{
+			switch (register)
+			{
+				default:
+					throw new InvalidOperationException();
+				case "A":
+					A = (byte)value;
+					break;
+				case "X":
+					X = (byte)value;
+					break;
+				case "Y":
+					Y = (byte)value;
+					break;
+				case "S":
+					S = (byte)value;
+					break;
+				case "PC":
+					PC = (ushort)value;
+					break;
+				case "Flag I":
+					FlagI = value > 0;
+					break;
+			}
 		}
 
 		public TraceInfo State(bool disassemble = true)
@@ -59,9 +104,8 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				};
 			}
 
-			int length;
 			string rawbytes = "";
-			string disasm = Disassemble(PC, out length);
+			string disasm = Disassemble(PC, out var length);
 
 			for (int i = 0; i < length; i++)
 			{
@@ -93,7 +137,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			};
 		}
 
-		public bool AtStart { get { return opcode == VOP_Fetch1 || Microcode[opcode][mi] >= Uop.End; } }
+		public bool AtStart => opcode == VOP_Fetch1 || Microcode[opcode][mi] >= Uop.End;
 
 		public TraceInfo TraceState()
 		{
@@ -163,57 +207,57 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		/// <summary>Carry Flag</summary>
 		public bool FlagC
 		{
-			get { return (P & 0x01) != 0; }
-			private set { P = (byte)((P & ~0x01) | (value ? 0x01 : 0x00)); }
+			get => (P & 0x01) != 0;
+			private set => P = (byte)((P & ~0x01) | (value ? 0x01 : 0x00));
 		}
 
 		/// <summary>Zero Flag</summary>
 		public bool FlagZ
 		{
-			get { return (P & 0x02) != 0; }
-			private set { P = (byte)((P & ~0x02) | (value ? 0x02 : 0x00)); }
+			get => (P & 0x02) != 0;
+			private set => P = (byte)((P & ~0x02) | (value ? 0x02 : 0x00));
 		}
 
 		/// <summary>Interrupt Disable Flag</summary>
 		public bool FlagI
 		{
-			get { return (P & 0x04) != 0; }
-			set { P = (byte)((P & ~0x04) | (value ? 0x04 : 0x00)); }
+			get => (P & 0x04) != 0;
+			set => P = (byte)((P & ~0x04) | (value ? 0x04 : 0x00));
 		}
 
 		/// <summary>Decimal Mode Flag</summary>
 		public bool FlagD
 		{
-			get { return (P & 0x08) != 0; }
-			private set { P = (byte)((P & ~0x08) | (value ? 0x08 : 0x00)); }
+			get => (P & 0x08) != 0;
+			private set => P = (byte)((P & ~0x08) | (value ? 0x08 : 0x00));
 		}
 
 		/// <summary>Break Flag</summary>
 		public bool FlagB
 		{
-			get { return (P & 0x10) != 0; }
-			private set { P = (byte)((P & ~0x10) | (value ? 0x10 : 0x00)); }
+			get => (P & 0x10) != 0;
+			private set => P = (byte)((P & ~0x10) | (value ? 0x10 : 0x00));
 		}
 
 		/// <summary>T... Flag</summary>
 		public bool FlagT
 		{
-			get { return (P & 0x20) != 0; }
-			private set { P = (byte)((P & ~0x20) | (value ? 0x20 : 0x00)); }
+			get => (P & 0x20) != 0;
+			private set => P = (byte)((P & ~0x20) | (value ? 0x20 : 0x00));
 		}
 
 		/// <summary>Overflow Flag</summary>
 		public bool FlagV
 		{
-			get { return (P & 0x40) != 0; }
-			private set { P = (byte)((P & ~0x40) | (value ? 0x40 : 0x00)); }
+			get => (P & 0x40) != 0;
+			private set => P = (byte)((P & ~0x40) | (value ? 0x40 : 0x00));
 		}
 
 		/// <summary>Negative Flag</summary>
 		public bool FlagN
 		{
-			get { return (P & 0x80) != 0; }
-			private set { P = (byte)((P & ~0x80) | (value ? 0x80 : 0x00)); }
+			get => (P & 0x80) != 0;
+			private set => P = (byte)((P & ~0x80) | (value ? 0x80 : 0x00));
 		}
 
 		public long TotalExecutedCycles;

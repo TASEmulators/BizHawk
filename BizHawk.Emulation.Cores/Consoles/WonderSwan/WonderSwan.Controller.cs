@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.WonderSwan
 {
@@ -41,7 +37,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 				"Rotate"
 			}
 		};
-		public ControllerDefinition ControllerDefinition { get { return WonderSwanController; } }
+		public ControllerDefinition ControllerDefinition => WonderSwanController;
 
 		BizSwan.Buttons GetButtons(IController controller)
 		{

@@ -29,7 +29,7 @@ class LyCounter;
 class LycIrq {
 public:
 	LycIrq();
-	void doEvent(unsigned char *ifreg, LyCounter const &lyCounter);
+	bool doEvent(LyCounter const& lyCounter);
 	unsigned lycReg() const { return lycRegSrc_; }
 	void loadState(SaveState const &state);
 	unsigned long time() const { return time_; }

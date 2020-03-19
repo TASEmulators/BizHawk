@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 	{
 		public TraceBuffer Tracer { get; private set; }
 
-		private LibQuickNES.TraceCallback _tracecb;
+		private LibQuickNES.TraceCallback _traceCb;
 
 		private const string TraceHeader = "6502: PC, mnemonic, operands, registers (A, X, Y, P, SP)";
 
@@ -26,10 +26,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			ushort pc = (ushort)s[4];
 			byte p = (byte)s[5];
 
-			byte opcode = (byte)s[6];
-
-			int notused = 0;
-			string opcodeStr = MOS6502X.Disassemble(pc, out notused, (address) => _memoryDomains.SystemBus.PeekByte(address));
+			string opcodeStr = MOS6502X.Disassemble(pc, out _, address => _memoryDomains.SystemBus.PeekByte(address));
 
 			Tracer.Put(new TraceInfo
 			{
@@ -46,8 +43,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		private void ConnectTracer()
 		{
 			Tracer = new TraceBuffer { Header = TraceHeader };
-			(ServiceProvider as BasicServiceProvider).Register<ITraceable>(Tracer);
-			_tracecb = new LibQuickNES.TraceCallback(MakeTrace);
+			((BasicServiceProvider) ServiceProvider).Register<ITraceable>(Tracer);
+			_traceCb = MakeTrace;
 		}
 	}
 }

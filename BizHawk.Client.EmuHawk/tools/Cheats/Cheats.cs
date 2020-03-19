@@ -9,7 +9,6 @@ using System.Windows.Forms;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
-using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -43,7 +42,6 @@ namespace BizHawk.Client.EmuHawk
 
 			CheatListView.QueryItemText += CheatListView_QueryItemText;
 			CheatListView.QueryItemBkColor += CheatListView_QueryItemBkColor;
-			CheatListView.VirtualMode = true;
 
 			_sortedColumn = "";
 			_sortReverse = false;
@@ -80,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void UpdateDialog()
 		{
-			CheatListView.ItemCount = Global.CheatList.Count;
+			CheatListView.RowCount = Global.CheatList.Count;
 			TotalLabel.Text = $"{Global.CheatList.CheatCount} {(Global.CheatList.CheatCount == 1 ? "cheat" : "cheats")} {Global.CheatList.ActiveCount} active";
 		}
 
@@ -92,11 +90,11 @@ namespace BizHawk.Client.EmuHawk
 				var loadResult = Global.CheatList.Load(path, append: false);
 				if (!loadResult)
 				{
-					Global.Config.RecentCheats.HandleLoadError(path);
+					Config.RecentCheats.HandleLoadError(path);
 				}
 				else
 				{
-					Global.Config.RecentCheats.Add(path);
+					Config.RecentCheats.Add(path);
 					UpdateDialog();
 					UpdateMessageLabel();
 				}
@@ -132,7 +130,7 @@ namespace BizHawk.Client.EmuHawk
 					Global.CheatList.Load(file.FullName, append);
 					UpdateDialog();
 					UpdateMessageLabel();
-					Global.Config.RecentCheats.Add(Global.CheatList.CurrentFileName);
+					Config.RecentCheats.Add(Global.CheatList.CurrentFileName);
 				}
 			}
 		}
@@ -150,28 +148,43 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Cheats_Load(object sender, EventArgs e)
 		{
+			// Hack for previous config settings
+			if (Settings.Columns.Any(c => string.IsNullOrWhiteSpace(c.Text)))
+			{
+				Settings = new CheatsSettings();
+			}
+
 			TopMost = Settings.TopMost;
 			CheatEditor.MemoryDomains = Core;
 			LoadConfigSettings();
+			CheatsMenu.Items.Add(CheatListView.ToColumnsMenu(ColumnToggleCallback));
 			ToggleGameGenieButton();
 			CheatEditor.SetAddEvent(AddCheat);
 			CheatEditor.SetEditEvent(EditCheat);
 			UpdateDialog();
+		}
 
-			CheatsMenu.Items.Add(Settings.Columns.GenerateColumnsMenu(ColumnToggleCallback));
+		private void SetColumns()
+		{
+			foreach (var column in Settings.Columns)
+			{
+				if (CheatListView.AllColumns[column.Name] == null)
+				{
+					CheatListView.AllColumns.Add(column);
+				}
+			}
 		}
 
 		private void ColumnToggleCallback()
 		{
-			SaveColumnInfo(CheatListView, Settings.Columns);
-			LoadColumnInfo(CheatListView, Settings.Columns);
+			Settings.Columns = CheatListView.AllColumns;
 		}
 
 		private void ToggleGameGenieButton()
 		{
 			GameGenieToolbarSeparator.Visible =
 				LoadGameGenieToolbarItem.Visible =
-				GlobalWin.Tools.IsAvailable<GameShark>();
+				Tools.IsAvailable<GameShark>();
 		}
 
 		private void AddCheat()
@@ -195,7 +208,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveConfigSettings()
 		{
-			SaveColumnInfo(CheatListView, Settings.Columns);
+			Settings.Columns = CheatListView.AllColumns;
 
 			if (WindowState == FormWindowState.Normal)
 			{
@@ -221,10 +234,11 @@ namespace BizHawk.Client.EmuHawk
 				Size = Settings.WindowSize;
 			}
 
-			LoadColumnInfo(CheatListView, Settings.Columns);
+			CheatListView.AllColumns.Clear();
+			SetColumns();
 		}
 
-		private void CheatListView_QueryItemText(int index, int column, out string text)
+		private void CheatListView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = "";
 			if (index >= Global.CheatList.Count || Global.CheatList[index].IsSeparator)
@@ -232,7 +246,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var columnName = CheatListView.Columns[column].Name;
+			var columnName = column.Name;
 
 			switch (columnName)
 			{
@@ -264,39 +278,23 @@ namespace BizHawk.Client.EmuHawk
 					text = Watch.DisplayTypeToString(Global.CheatList[index].Type);
 					break;
 				case ComparisonTypeColumn:
-					switch (Global.CheatList[index].ComparisonType)
-					{
-						case Cheat.CompareType.None:
-							text = "";
-							break;
-						case Cheat.CompareType.Equal:
-							text = "=";
-							break;
-						case Cheat.CompareType.GreaterThan:
-							text = ">";
-							break;
-						case Cheat.CompareType.GreaterThanOrEqual:
-							text = ">=";
-							break;
-						case Cheat.CompareType.LessThan:
-							text = "<";
-							break;
-						case Cheat.CompareType.LessThanOrEqual:
-							text = "<=";
-							break;
-						case Cheat.CompareType.NotEqual:
-							text = "!=";
-							break;
-						default:
-							text = "";
-							break;
-					}
-					
+					text = Global.CheatList[index].ComparisonType switch
+						{
+							Cheat.CompareType.None => "",
+							Cheat.CompareType.Equal => "=",
+							Cheat.CompareType.GreaterThan => ">",
+							Cheat.CompareType.GreaterThanOrEqual => ">=",
+							Cheat.CompareType.LessThan => "<",
+							Cheat.CompareType.LessThanOrEqual => "<=",
+							Cheat.CompareType.NotEqual => "!=",
+							_ => ""
+						};
+
 					break;
 			}
 		}
 
-		private void CheatListView_QueryItemBkColor(int index, int column, ref Color color)
+		private void CheatListView_QueryItemBkColor(int index, RollColumn column, ref Color color)
 		{
 			if (index < Global.CheatList.Count)
 			{
@@ -311,33 +309,24 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private IEnumerable<int> SelectedIndices => CheatListView.SelectedIndices.Cast<int>();
+		private IEnumerable<int> SelectedIndices => CheatListView.SelectedRows;
 
-		private IEnumerable<Cheat> SelectedItems
-		{
-			get { return SelectedIndices.Select(index => Global.CheatList[index]); }
-		}
+		private IEnumerable<Cheat> SelectedItems => SelectedIndices.Select(index => Global.CheatList[index]);
 
-		private IEnumerable<Cheat> SelectedCheats
-		{
-			get { return SelectedItems.Where(x => !x.IsSeparator); }
-		}
+		private IEnumerable<Cheat> SelectedCheats => SelectedItems.Where(x => !x.IsSeparator);
 
 		private void DoSelectedIndexChange()
 		{
-			if (!CheatListView.SelectAllInProgress)
+			if (SelectedCheats.Any())
 			{
-				if (SelectedCheats.Any())
-				{
-					var cheat = SelectedCheats.First();
-					CheatEditor.SetCheat(cheat);
-					CheatGroupBox.Text = $"Editing Cheat {cheat.Name} - {cheat.AddressStr}";
-				}
-				else
-				{
-					CheatEditor.ClearForm();
-					CheatGroupBox.Text = "New Cheat";
-				}
+				var cheat = SelectedCheats.First();
+				CheatEditor.SetCheat(cheat);
+				CheatGroupBox.Text = $"Editing Cheat {cheat.Name} - {cheat.AddressStr}";
+			}
+			else
+			{
+				CheatEditor.ClearForm();
+				CheatGroupBox.Text = "New Cheat";
 			}
 		}
 
@@ -346,7 +335,7 @@ namespace BizHawk.Client.EmuHawk
 			var result = !Global.CheatList.Changes || AskSaveChanges();
 			if (result)
 			{
-				Global.CheatList.NewList(ToolManager.GenerateDefaultCheatFilename());
+				Global.CheatList.NewList(Tools.GenerateDefaultCheatFilename());
 				UpdateDialog();
 				UpdateMessageLabel();
 				ToggleGameGenieButton();
@@ -374,8 +363,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			RecentSubMenu.DropDownItems.Clear();
-			RecentSubMenu.DropDownItems.AddRange(
-				Global.Config.RecentCheats.RecentMenu(LoadFileFromRecent));
+			RecentSubMenu.DropDownItems.AddRange(Config.RecentCheats.RecentMenu(LoadFileFromRecent, "Cheats", noAutoload: true));
 		}
 
 		private void NewMenuItem_Click(object sender, EventArgs e)
@@ -434,11 +422,12 @@ namespace BizHawk.Client.EmuHawk
 				ToggleMenuItem.Enabled =
 				SelectedIndices.Any();
 
-			DisableAllCheatsMenuItem.Enabled = Global.CheatList.ActiveCount > 0;
+			// Always leave enabled even if no cheats enabled. This way the hotkey will always work however a new cheat is enabled
+			// DisableAllCheatsMenuItem.Enabled = Global.CheatList.ActiveCount > 0;
 
 			GameGenieSeparator.Visible =
 				OpenGameGenieEncoderDecoderMenuItem.Visible =
-				GlobalWin.Tools.IsAvailable<GameShark>();
+				Tools.IsAvailable<GameShark>();
 		}
 
 		private void RemoveCheatMenuItem_Click(object sender, EventArgs e)
@@ -451,7 +440,7 @@ namespace BizHawk.Client.EmuHawk
 					Global.CheatList.Remove(item);
 				}
 
-				CheatListView.SelectedIndices.Clear();
+				CheatListView.DeselectAll();
 				UpdateDialog();
 			}
 		}
@@ -486,12 +475,12 @@ namespace BizHawk.Client.EmuHawk
 				Global.CheatList.Insert(index - 1, cheat);
 			}
 
-			var newindices = indices.Select(t => t - 1).ToList();
+			var newIndices = indices.Select(t => t - 1);
 
-			CheatListView.SelectedIndices.Clear();
-			foreach (var newi in newindices)
+			CheatListView.DeselectAll();
+			foreach (var index in newIndices)
 			{
-				CheatListView.SelectItem(newi, true);
+				CheatListView.SelectRow(index, true);
 			}
 
 			UpdateMessageLabel();
@@ -515,12 +504,12 @@ namespace BizHawk.Client.EmuHawk
 
 			UpdateMessageLabel();
 
-			var newindices = indices.Select(t => t + 1).ToList();
+			var newIndices = indices.Select(t => t + 1);
 
-			CheatListView.SelectedIndices.Clear();
-			foreach (var newi in newindices)
+			CheatListView.DeselectAll();
+			foreach (var index in newIndices)
 			{
-				CheatListView.SelectItem(newi, true);
+				CheatListView.SelectRow(index, true);
 			}
 
 			UpdateDialog();
@@ -533,18 +522,21 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToggleMenuItem_Click(object sender, EventArgs e)
 		{
-			SelectedCheats.ToList().ForEach(x => x.Toggle());
+			foreach (var x in SelectedCheats)
+			{
+				x.Toggle();
+			}
 			CheatListView.Refresh();
 		}
 
 		private void DisableAllCheatsMenuItem_Click(object sender, EventArgs e)
-		{
+		{	
 			Global.CheatList.DisableAll();
 		}
 
 		private void OpenGameGenieEncoderDecoderMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.Tools.LoadGameGenieEc();
+			Tools.LoadGameGenieEc();
 		}
 
 		#endregion
@@ -553,10 +545,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			AlwaysLoadCheatsMenuItem.Checked = Global.Config.LoadCheatFileByGame;
-			AutoSaveCheatsMenuItem.Checked = Global.Config.CheatsAutoSaveOnClose;
-			DisableCheatsOnLoadMenuItem.Checked = Global.Config.DisableCheatsOnLoad;
-			AutoloadMenuItem.Checked = Global.Config.RecentCheats.AutoLoad;
+			AlwaysLoadCheatsMenuItem.Checked = Config.LoadCheatFileByGame;
+			AutoSaveCheatsMenuItem.Checked = Config.CheatsAutoSaveOnClose;
+			DisableCheatsOnLoadMenuItem.Checked = Config.DisableCheatsOnLoad;
+			AutoloadMenuItem.Checked = Config.RecentCheats.AutoLoad;
 			SaveWindowPositionMenuItem.Checked = Settings.SaveWindowPosition;
 			AlwaysOnTopMenuItem.Checked = Settings.TopMost;
 			FloatingWindowMenuItem.Checked = Settings.FloatingWindow;
@@ -564,22 +556,22 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AlwaysLoadCheatsMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.LoadCheatFileByGame ^= true;
+			Config.LoadCheatFileByGame ^= true;
 		}
 
 		private void AutoSaveCheatsMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.CheatsAutoSaveOnClose ^= true;
+			Config.CheatsAutoSaveOnClose ^= true;
 		}
 
 		private void CheatsOnOffLoadMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.DisableCheatsOnLoad ^= true;
+			Config.DisableCheatsOnLoad ^= true;
 		}
 
 		private void AutoloadMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.RecentCheats.AutoLoad ^= true;
+			Config.RecentCheats.AutoLoad ^= true;
 		}
 
 		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
@@ -608,23 +600,20 @@ namespace BizHawk.Client.EmuHawk
 					.OfType<ToolStripMenuItem>()
 					.First(x => x.Name == "GeneratedColumnsSubMenu"));
 
-			CheatsMenu.Items.Add(Settings.Columns.GenerateColumnsMenu(ColumnToggleCallback));
+			CheatsMenu.Items.Add(CheatListView.ToColumnsMenu(ColumnToggleCallback));
 
-			Global.Config.DisableCheatsOnLoad = false;
-			Global.Config.LoadCheatFileByGame = true;
-			Global.Config.CheatsAutoSaveOnClose = true;
+			Config.DisableCheatsOnLoad = false;
+			Config.LoadCheatFileByGame = true;
+			Config.CheatsAutoSaveOnClose = true;
 
 			RefreshFloatingWindowControl(Settings.FloatingWindow);
-			LoadColumnInfo(CheatListView, Settings.Columns);
+			CheatListView.AllColumns.Clear();
+			SetColumns();
 		}
 
 		#endregion
 
 		#region ListView and Dialog Events
-
-		private void CheatListView_Click(object sender, EventArgs e)
-		{
-		}
 
 		private void CheatListView_DoubleClick(object sender, EventArgs e)
 		{
@@ -648,9 +637,9 @@ namespace BizHawk.Client.EmuHawk
 			DoSelectedIndexChange();
 		}
 
-		private void CheatListView_ColumnClick(object sender, ColumnClickEventArgs e)
+		private void CheatListView_ColumnClick(object sender, InputRoll.ColumnClickEventArgs e)
 		{
-			var column = CheatListView.Columns[e.Column];
+			var column = e.Column;
 			if (column.Name != _sortedColumn)
 			{
 				_sortReverse = false;
@@ -676,7 +665,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewCheatForm_DragEnter(object sender, DragEventArgs e)
 		{
-			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+			e.Set(DragDropEffects.Copy);
 		}
 
 		private void CheatsContextMenu_Opening(object sender, CancelEventArgs e)
@@ -693,7 +682,7 @@ namespace BizHawk.Client.EmuHawk
 			var selected = SelectedCheats.ToList();
 			if (selected.Any())
 			{
-				GlobalWin.Tools.Load<HexEditor>();
+				Tools.Load<HexEditor>();
 
 				if (selected.Select(x => x.Domain).Distinct().Count() > 1)
 				{
@@ -720,22 +709,21 @@ namespace BizHawk.Client.EmuHawk
 		{
 			public CheatsSettings()
 			{
-				Columns = new ColumnList
+				Columns = new List<RollColumn>
 				{
-					new Column { Name = NameColumn, Visible = true, Index = 0, Width = 128 },
-					new Column { Name = AddressColumn, Visible = true, Index = 1, Width = 60 },
-					new Column { Name = ValueColumn, Visible = true, Index = 2, Width = 59 },
-					new Column { Name = CompareColumn, Visible = true, Index = 3, Width = 59 },
-					new Column { Name = ComparisonTypeColumn, Visible = true, Index = 4, Width = 60 },
-					new Column { Name = OnColumn, Visible = false, Index = 5, Width = 28 },
-					new Column { Name = DomainColumn, Visible = true, Index = 6, Width = 55 },
-					new Column { Name = SizeColumn, Visible = true, Index = 7, Width = 55 },
-					new Column { Name = EndianColumn, Visible = false, Index = 8, Width = 55 },
-					new Column { Name = TypeColumn, Visible = false, Index = 9, Width = 55 }
+					new RollColumn { Text = "Names", Name = NameColumn, Visible = true, UnscaledWidth = 128, Type = ColumnType.Text },
+					new RollColumn { Text = "Address", Name = AddressColumn, Visible = true, UnscaledWidth = 60, Type = ColumnType.Text },
+					new RollColumn { Text = "Value", Name = ValueColumn, Visible = true, UnscaledWidth = 59, Type = ColumnType.Text },
+					new RollColumn { Text = "Compare", Name = CompareColumn, Visible = true, UnscaledWidth = 63, Type = ColumnType.Text },
+					new RollColumn { Text = "Compare Type", Name = ComparisonTypeColumn, Visible = true, UnscaledWidth = 98, Type = ColumnType.Text },
+					new RollColumn { Text = "On", Name = OnColumn, Visible = false, UnscaledWidth = 28, Type = ColumnType.Text },
+					new RollColumn { Text = "Size", Name = SizeColumn, Visible = true, UnscaledWidth = 55, Type = ColumnType.Text },
+					new RollColumn { Text = "Endian", Name = EndianColumn, Visible = false, UnscaledWidth = 55, Type = ColumnType.Text },
+					new RollColumn { Text = "Display Type", Name = TypeColumn, Visible = false, UnscaledWidth = 88, Type = ColumnType.Text }
 				};
 			}
 
-			public ColumnList Columns { get; set; }
+			public List<RollColumn> Columns { get; set; }
 		}
 	}
 }

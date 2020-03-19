@@ -77,13 +77,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			prg_regs_8k.Dispose();
 			chr_regs_1k.Dispose();
-			if (mmc3 != null) mmc3.Dispose();
+			mmc3?.Dispose();
 		}
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			if(mmc3 != null) mmc3.SyncState(ser);
+			mmc3?.SyncState(ser);
 			ser.Sync(nameof(prg_regs_8k), ref prg_regs_8k);
 			ser.Sync(nameof(chr_regs_1k), ref chr_regs_1k);
 			ser.Sync(nameof(mirror_mode), ref mirror_mode);
@@ -130,9 +130,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		void SyncMirror()
 		{
-			if (mirror_mode == 0)
-				SetMirrorType(EMirrorType.Vertical);
-			else SetMirrorType(EMirrorType.Horizontal);
+			SetMirrorType(mirror_mode == 0 ? EMirrorType.Vertical : EMirrorType.Horizontal);
 		}
 
 		public override void WritePRG(int addr, byte value)
@@ -214,8 +212,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr = (bank_1k << 10) | ofs;
 				return VROM[addr];
 			}
-			else
-				return base.ReadPPU(addr);
+
+			return base.ReadPPU(addr);
 		}
 
 		public override byte ReadPRG(int addr)

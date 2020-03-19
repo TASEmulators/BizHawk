@@ -12,8 +12,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	{
 		private readonly GameInfo _game;
 
-		private TIA _tia;
-		private M6532 _m6532;
+		public TIA _tia;
+		public M6532 _m6532;
 		private DCFilter _dcfilter;
 		private MapperBase _mapper;
 		private byte[] _ram;
@@ -317,7 +317,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			_mapper.Core = this;
 
-			_lagcount = 0;
+			_lagCount = 0;
 			Cpu = new MOS6502X<CpuLink>(new CpuLink(this));
 
 			if (_game["PAL"])

@@ -55,13 +55,7 @@ namespace BizHawk.Client.Common
 			return GetEnumerator();
 		}
 
-		public Binding this[string index]
-		{
-			get
-			{
-				return Bindings.FirstOrDefault(b => b.DisplayName == index) ?? new Binding();
-			}
-		}
+		public Binding this[string index] => Bindings.FirstOrDefault(b => b.DisplayName == index) ?? new Binding();
 
 		private static Binding Bind(string tabGroup, string displayName, string bindings = "", string defaultBinding = "", string toolTip = "")
 		{
@@ -96,13 +90,8 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			List<Binding> entriesToRemove = (from entry in Bindings let binding = DefaultValues.FirstOrDefault(b => b.DisplayName == entry.DisplayName) where binding == null select entry).ToList();
-
 			// Remove entries that no longer exist in defaults
-			foreach (Binding entry in entriesToRemove)
-			{
-				Bindings.Remove(entry);
-			}
+			Bindings.RemoveAll(entry => DefaultValues.All(b => b.DisplayName != entry.DisplayName));
 		}
 
 		private static List<Binding> _defaultValues;
@@ -129,7 +118,7 @@ namespace BizHawk.Client.Common
 						Bind("General", "Autohold"),
 						Bind("General", "Clear Autohold"),
 						Bind("General", "Screenshot", "F12"),
-						Bind("General", "Full Screen", "Alt+Return"),
+						Bind("General", "Full Screen", "Alt+Enter"),
 						Bind("General", "Open ROM", "Ctrl+O"),
 						Bind("General", "Close ROM", "Ctrl+W"),
 						Bind("General", "Load Last ROM"),
@@ -144,9 +133,9 @@ namespace BizHawk.Client.Common
 						Bind("General", "Volume Down"),
 						Bind("General", "Record A/V"),
 						Bind("General", "Stop A/V"),
-						Bind("General", "Larger Window", "Alt+UpArrow"),
-						Bind("General", "Smaller Window", "Alt+DownArrow"),
-						Bind("General", "Increase Speed", "Equals"),
+						Bind("General", "Larger Window", "Alt+Up"),
+						Bind("General", "Smaller Window", "Alt+Down"),
+						Bind("General", "Increase Speed", "Plus"),
 						Bind("General", "Decrease Speed", "Minus"),
 						Bind("General", "Reboot Core", "Ctrl+R"),
 						Bind("General", "Toggle Sound"),
@@ -176,16 +165,16 @@ namespace BizHawk.Client.Common
 						Bind("Save States", "Load State 7", "F7"),
 						Bind("Save States", "Load State 8", "F8"),
 						Bind("Save States", "Load State 9", "F9"),
-						Bind("Save States", "Select State 0", "D0"),
-						Bind("Save States", "Select State 1", "D1"),
-						Bind("Save States", "Select State 2", "D2"),
-						Bind("Save States", "Select State 3", "D3"),
-						Bind("Save States", "Select State 4", "D4"),
-						Bind("Save States", "Select State 5", "D5"),
-						Bind("Save States", "Select State 6", "D6"),
-						Bind("Save States", "Select State 7", "D7"),
-						Bind("Save States", "Select State 8", "D8"),
-						Bind("Save States", "Select State 9", "D9"),
+						Bind("Save States", "Select State 0", "Number0"),
+						Bind("Save States", "Select State 1", "Number1"),
+						Bind("Save States", "Select State 2", "Number2"),
+						Bind("Save States", "Select State 3", "Number3"),
+						Bind("Save States", "Select State 4", "Number4"),
+						Bind("Save States", "Select State 5", "Number5"),
+						Bind("Save States", "Select State 6", "Number6"),
+						Bind("Save States", "Select State 7", "Number7"),
+						Bind("Save States", "Select State 8", "Number8"),
+						Bind("Save States", "Select State 9", "Number9"),
 						Bind("Save States", "Save Named State"),
 						Bind("Save States", "Load Named State"),
 						Bind("Save States", "Previous Slot"),
@@ -228,16 +217,22 @@ namespace BizHawk.Client.Common
 						Bind("TAStudio", "Toggle Follow Cursor", "Shift+F"),
 						Bind("TAStudio", "Toggle Auto-Restore", "Shift+R"),
 						Bind("TAStudio", "Toggle Turbo Seek", "Shift+S"),
+						Bind("TAStudio", "Undo", "Ctrl+Z"), // TODO: these are getting not unique enough
+						Bind("TAStudio", "Redo", "Ctrl+Y"),
+						Bind("TAStudio", "Sel. bet. Markers", "Ctrl+A"),
+						Bind("TAStudio", "Select All", "Ctrl+Shift+A"),
+						Bind("TAStudio", "Reselect Clip.", "Ctrl+B"),
 						Bind("TAStudio", "Clear Frames", "Delete"),
 						Bind("TAStudio", "Insert Frame", "Insert"),
+						Bind("TAStudio", "Insert # Frames", "Ctrl+Shift+Insert"),
 						Bind("TAStudio", "Delete Frames", "Ctrl+Delete"),
 						Bind("TAStudio", "Clone Frames", "Ctrl+Insert"),
-						Bind("TAStudio", "Analog Increment", "UpArrow"),
-						Bind("TAStudio", "Analog Decrement", "DownArrow"),
-						Bind("TAStudio", "Analog Incr. by 10", "Shift+UpArrow"),
-						Bind("TAStudio", "Analog Decr. by 10", "Shift+DownArrow"),
-						Bind("TAStudio", "Analog Maximum", "RightArrow"),
-						Bind("TAStudio", "Analog Minimum", "LeftArrow"),
+						Bind("TAStudio", "Analog Increment", "Up"),
+						Bind("TAStudio", "Analog Decrement", "Down"),
+						Bind("TAStudio", "Analog Incr. by 10", "Shift+Up"),
+						Bind("TAStudio", "Analog Decr. by 10", "Shift+Down"),
+						Bind("TAStudio", "Analog Maximum", "Right"),
+						Bind("TAStudio", "Analog Minimum", "Left"),
 
 						Bind("SNES", "Toggle BG 1"),
 						Bind("SNES", "Toggle BG 2"),

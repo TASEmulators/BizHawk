@@ -1,6 +1,4 @@
-﻿using System;
-
-using BizHawk.Common;
+﻿using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.ColecoVision
@@ -190,7 +188,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 							noise_clock = Chan_tone[2] + 1;
 						}
 
-						noise_clock *= 2;					
+						noise_clock *= 2;
 					}
 					
 					if (clock_A == 0)

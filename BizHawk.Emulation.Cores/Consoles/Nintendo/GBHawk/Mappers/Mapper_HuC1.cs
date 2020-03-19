@@ -1,8 +1,5 @@
 ﻿using BizHawk.Common;
-using BizHawk.Common.NumberExtensions;
-using System;
-
-using BizHawk.Emulation.Common.Components.LR35902;
+using BizHawk.Emulation.Cores.Components.LR35902;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
@@ -16,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int RAM_mask;
 		public bool IR_signal;
 
-		public override void Initialize()
+		public override void Reset()
 		{
 			ROM_bank = 0;
 			RAM_bank = 0;

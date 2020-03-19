@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Components.H6280
@@ -10,14 +7,11 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 	{
 		public string Cpu
 		{
-			get { return "6280"; }
+			get => "6280";
 			set { }
 		}
 
-		public string PCRegisterName
-		{
-			get { return "PC"; }
-		}
+		public string PCRegisterName => "PC";
 
 		public IEnumerable<string> AvailableCpus
 		{
@@ -27,8 +21,8 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 		public string Disassemble(MemoryDomain m, uint addr, out int length)
 		{
 			return DisassembleExt((ushort)addr, out length,
-				(a) => m.PeekByte(a),
-				(a) => (ushort)(m.PeekByte(a) | m.PeekByte(a + 1) << 8));
+				a => m.PeekByte(a),
+				a => (ushort)(m.PeekByte(a) | m.PeekByte(a + 1) << 8));
 		}
 	}
 }

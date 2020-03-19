@@ -1,5 +1,4 @@
 ﻿using BizHawk.Common;
-using System;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -98,10 +97,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				var bank = EXPREGS[0] & 0x1F & prg_mask_16;
 				return ROM[(bank << 14) + (addr & 0x3FFF)];
 			}
-			else
-			{
-				return base.ReadPRG(addr);
-			}
+
+			return base.ReadPRG(addr);
 		}
 	}
 }

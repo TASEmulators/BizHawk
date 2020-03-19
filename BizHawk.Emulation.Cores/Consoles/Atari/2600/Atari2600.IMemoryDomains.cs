@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	{
 		internal IMemoryDomains MemoryDomains;
 		private readonly Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new Dictionary<string, MemoryDomainByteArray>();
-		private bool _memoryDomainsInit = false;
+		private bool _memoryDomainsInit;
 
 		private void SetupMemoryDomains()
 		{
@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			SyncAllByteArrayDomains();
 
 			MemoryDomains = new MemoryDomainList(_byteArrayDomains.Values.Concat(domains).ToList());
-			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
+			((BasicServiceProvider)ServiceProvider).Register(MemoryDomains);
 
 			_memoryDomainsInit = true;
 		}
@@ -57,9 +57,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			SyncByteArrayDomain("Main RAM", _ram);
 
-			if (_mapper is mDPC)
+			if (_mapper is mDPC dpc)
 			{
-				SyncByteArrayDomain("DPC", (_mapper as mDPC).DspData);
+				SyncByteArrayDomain("DPC", dpc.DspData);
 			}
 		}
 

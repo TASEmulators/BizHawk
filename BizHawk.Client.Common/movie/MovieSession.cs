@@ -3,11 +3,12 @@ using System.IO;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
-using BizHawk.Emulation.Cores.Atari.A7800Hawk;
+using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 
 namespace BizHawk.Client.Common
 {
@@ -15,13 +16,6 @@ namespace BizHawk.Client.Common
 
 	public class MovieSession : IMovieSession
 	{
-		public MovieSession()
-		{
-			ReadOnly = true;
-			MovieControllerAdapter = MovieService.DefaultInstance.LogGeneratorInstance().MovieControllerAdapter;
-			MultiTrack = new MultitrackRecorder();
-		}
-
 		/// <summary>
 		/// Gets the queued movie
 		/// When initializing a movie, it will be stored here until Rom processes have been completed, then it will be moved to the Movie property
@@ -32,12 +26,13 @@ namespace BizHawk.Client.Common
 		// This wrapper but the logic could change, don't make the client code understand these details
 		public bool MovieIsQueued => QueuedMovie != null;
 
-		public MultitrackRecorder MultiTrack { get; }
-		public IMovieController MovieControllerAdapter { get; set; }
+		public MultitrackRecorder MultiTrack { get; } = new MultitrackRecorder();
+		public IMovieController MovieControllerAdapter { get; set; } = MovieService.DefaultInstance.LogGeneratorInstance().MovieControllerAdapter;
 
 		public IMovie Movie { get; set; }
-		public bool ReadOnly { get; set; }
+		public bool ReadOnly { get; set; } = true;
 		public Action<string> MessageCallback { get; set; }
+		public Action<string> PopupCallback { get; set; }
 		public Func<string, string, bool> AskYesNoCallback { get; set; }
 
 		/// <summary>
@@ -72,7 +67,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				if (Movie.IsActive && !Movie.IsFinished && Global.Emulator.Frame > 0)
+				if (Movie.IsPlayingOrRecording() && Global.Emulator.Frame > 0)
 				{
 					return Movie.GetInputState(Global.Emulator.Frame - 1);
 				}
@@ -85,13 +80,18 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				if (Movie.IsActive && !Movie.IsFinished && Global.Emulator.Frame > 1)
+				if (Movie.IsPlayingOrRecording() && Global.Emulator.Frame > 1)
 				{
 					return Movie.GetInputState(Global.Emulator.Frame - 2);
 				}
 
 				return null;
 			}
+		}
+
+		private void PopupMessage(string message)
+		{
+			PopupCallback?.Invoke(message);
 		}
 
 		private void Output(string message)
@@ -153,6 +153,17 @@ namespace BizHawk.Client.Common
 
 		private void HandlePlaybackEnd()
 		{
+			var gambatteName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(Gameboy), typeof(CoreAttribute))).CoreName;
+			if (Movie.Core == gambatteName)
+			{
+				var movieCycles = Convert.ToUInt64(Movie.HeaderEntries[HeaderKeys.CycleCount]);
+				var coreCycles = (Global.Emulator as Gameboy).CycleCount;
+				if (movieCycles != (ulong)coreCycles)
+				{
+					PopupMessage($"Cycle count in the movie ({movieCycles}) doesn't match the emulated value ({coreCycles}).");
+				}
+			}
+
 			// TODO: mainform callback to update on mode change
 			switch (Global.Config.MovieEndAction)
 			{
@@ -175,28 +186,21 @@ namespace BizHawk.Client.Common
 			ModeChangedCallback();
 		}
 
-		// Movie Refactor TODO: delete me, any code calling this is poorly designed
-		public bool MovieLoad()
-		{
-			MovieControllerAdapter = Movie.LogGeneratorInstance().MovieControllerAdapter;
-			return Movie.Load(false);
-		}
-
 		public void StopMovie(bool saveChanges = true)
 		{
 			var message = "Movie ";
-			if (Movie.IsRecording)
+			if (Movie.IsRecording())
 			{
 				message += "recording ";
 			}
-			else if (Movie.IsPlaying)
+			else if (Movie.IsPlaying())
 			{
 				message += "playback ";
 			}
 
 			message += "stopped.";
 
-			if (Movie.IsActive)
+			if (Movie.IsActive())
 			{
 				var result = Movie.Stop(saveChanges);
 				if (result)
@@ -214,7 +218,7 @@ namespace BizHawk.Client.Common
 
 		public void HandleMovieSaveState(TextWriter writer)
 		{
-			if (Movie.IsActive)
+			if (Movie.IsActive())
 			{
 				Movie.WriteInputLog(writer);
 			}
@@ -222,7 +226,7 @@ namespace BizHawk.Client.Common
 
 		public void ClearFrame()
 		{
-			if (Movie.IsPlaying)
+			if (Movie.IsPlaying())
 			{
 				Movie.ClearFrame(Global.Emulator.Frame);
 				Output($"Scrubbed input at frame {Global.Emulator.Frame}");
@@ -231,11 +235,11 @@ namespace BizHawk.Client.Common
 
 		public void HandleMovieOnFrameLoop()
 		{
-			if (!Movie.IsActive)
+			if (!Movie.IsActive())
 			{
 				LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 			}
-			else if (Movie.IsFinished)
+			else if (Movie.IsFinished())
 			{
 				if (Global.Emulator.Frame < Movie.FrameCount) // This scenario can happen from rewinding (suddenly we are back in the movie, so hook back up to the movie
 				{
@@ -247,18 +251,18 @@ namespace BizHawk.Client.Common
 					LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 				}
 			}
-			else if (Movie.IsPlaying)
+			else if (Movie.IsPlaying())
 			{
 				LatchInputFromLog();
 
-				if (Movie.IsRecording) // The movie end situation can cause the switch to record mode, in that case we need to capture some input for this frame
+				if (Movie.IsRecording()) // The movie end situation can cause the switch to record mode, in that case we need to capture some input for this frame
 				{
 					HandleFrameLoopForRecordMode();
 				}
 				else
 				{
 					// Movie may go into finished mode as a result from latching
-					if (!Movie.IsFinished)
+					if (!Movie.IsFinished())
 					{
 						if (Global.ClientControls.IsPressed("Scrub Input"))
 						{
@@ -276,14 +280,15 @@ namespace BizHawk.Client.Common
 								Movie.PokeFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
 							}
 							else
-							{ // Why, this was already done?
+							{
+								// Why, this was already done?
 								LatchInputFromLog();
 							}
 						}
 					}
 				}
 			}
-			else if (Movie.IsRecording)
+			else if (Movie.IsRecording())
 			{
 				HandleFrameLoopForRecordMode();
 			}
@@ -291,8 +296,8 @@ namespace BizHawk.Client.Common
 
 		private void HandleFrameLoopForRecordMode()
 		{
-			// we don't want tasmovie to latch user input outside its internal recording mode, so limit it to autohold
-			if (Movie is TasMovie && Movie.IsPlaying)
+			// we don't want TasMovie to latch user input outside its internal recording mode, so limit it to autohold
+			if (Movie is TasMovie && Movie.IsPlaying())
 			{
 				MovieControllerAdapter.LatchSticky();
 			}
@@ -315,48 +320,25 @@ namespace BizHawk.Client.Common
 
 		public void HandleMovieAfterFrameLoop()
 		{
-			if (Movie is TasMovie)
+			if (Movie is TasMovie tasMovie)
 			{
-				(Movie as TasMovie).GreenzoneCurrentFrame();
-				if (Movie.IsPlaying && Global.Emulator.Frame >= Movie.InputLogLength)
+				tasMovie.GreenzoneCurrentFrame();
+				if (tasMovie.IsPlaying() && Global.Emulator.Frame >= tasMovie.InputLogLength)
 				{
 					HandleFrameLoopForRecordMode();
 				}
 			}
-			else if (Movie.IsPlaying && !Movie.IsFinished && Global.Emulator.Frame >= Movie.InputLogLength)
+			else if (Movie.Mode == MovieMode.Play && Global.Emulator.Frame >= Movie.InputLogLength)
 			{
 				HandlePlaybackEnd();
 			}
 		}
 
-		public bool HandleMovieLoadState(string path)
+		public bool CheckSavestateTimeline(TextReader reader)
 		{
-			using (var sr = new StreamReader(path))
+			if (Movie.IsActive() && ReadOnly)
 			{
-				return HandleMovieLoadState(sr);
-			}
-		}
-
-		// TODO: maybe someone who understands more about what's going on here could rename these step1 and step2 into something more descriptive
-		public bool HandleMovieLoadState_HackyStep2(TextReader reader)
-		{
-			if (!Movie.IsActive)
-			{
-				return true;
-			}
-
-			if (ReadOnly)
-			{
-			}
-			else
-			{
-				string errorMsg;
-
-				//// fixme: this is evil (it causes crashes in binary states because InflaterInputStream can't have its position set, even to zero.
-				////((StreamReader)reader).BaseStream.Position = 0;
-				////((StreamReader)reader).DiscardBufferedData();
-				// edit: zero 18-apr-2014 - this was solved by HackyStep1 and HackyStep2, so that the zip stream can be re-acquired instead of needing its position reset
-				var result = Movie.ExtractInputLog(reader, out errorMsg);
+				var result = Movie.CheckTimeLines(reader, out var errorMsg);
 				if (!result)
 				{
 					Output(errorMsg);
@@ -369,49 +351,42 @@ namespace BizHawk.Client.Common
 
 		public bool HandleMovieLoadState(TextReader reader)
 		{
-			if (!HandleMovieLoadState_HackyStep1(reader))
-			{
-				return false;
-			}
-
-			return HandleMovieLoadState_HackyStep2(reader);
-		}
-
-		public bool HandleMovieLoadState_HackyStep1(TextReader reader)
-		{
-			if (!Movie.IsActive)
+			if (Movie.NotActive())
 			{
 				return true;
 			}
 
 			if (ReadOnly)
 			{
-				string errorMsg;
-				var result = Movie.CheckTimeLines(reader, out errorMsg);
-				if (!result)
-				{
-					Output(errorMsg);
-					return false;
-				}
-
-				if (Movie.IsRecording)
+				if (Movie.IsRecording())
 				{
 					Movie.SwitchToPlay();
 				}
-				else if (Movie.IsFinished)
+				else if (Movie.IsPlaying())
+				{
+					LatchInputFromLog();
+				}
+				else if (Movie.IsFinished())
 				{
 					LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 				}
 			}
 			else
 			{
-				if (Movie.IsFinished)
+				if (Movie.IsFinished())
 				{
-					Movie.StartNewRecording(); 
+					Movie.StartNewRecording();
 				}
-				else if (Movie.IsPlaying)
+				else if (Movie.IsPlaying())
 				{
 					Movie.SwitchToRecord();
+				}
+
+				var result = Movie.ExtractInputLog(reader, out var errorMsg);
+				if (!result)
+				{
+					Output(errorMsg);
+					return false;
 				}
 			}
 
@@ -420,7 +395,7 @@ namespace BizHawk.Client.Common
 
 		public void ToggleMultitrack()
 		{
-			if (Movie.IsActive)
+			if (Movie.IsActive())
 			{
 				if (Global.Config.VBAStyleMovieLoadState)
 				{
@@ -461,10 +436,12 @@ namespace BizHawk.Client.Common
 
 		// The behavior here is to only temporarily override these settings when playing a movie and then restore the user's preferred settings
 		// A more elegant approach would be appreciated
-		public bool? PreviousNES_InQuickNES { get; set; }
-		public bool? PreviousSNES_InSnes9x { get; set; }
-		public bool? PreviousGBA_UsemGBA { get; set; }
+		public bool? PreviousNesInQuickNES { get; set; }
+		public bool? PreviousSnesInSnes9x { get; set; }
+		public bool? PreviousGbaUsemGba { get; set; }
+		public bool? PreviousGbUseGbHawk { get; set; }
 
+		/// <exception cref="MoviePlatformMismatchException"><paramref name="record"/> is <see langword="false"/> and <paramref name="movie"/>.<see cref="IMovie.SystemID"/> does not match <paramref name="emulator"/>.<see cref="IEmulator.SystemId"/></exception>
 		public void QueueNewMovie(IMovie movie, bool record, IEmulator emulator)
 		{
 			if (!record) // The semantics of record is that we are starting a new movie, and even wiping a pre-existing movie with the same path, but non-record means we are loading an existing movie into playback mode
@@ -478,7 +455,7 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			// Note: this populates MovieControllerAdapter's Type with the approparite controller
+			// Note: this populates MovieControllerAdapter's Type with the appropriate controller
 			// Don't set it to a movie instance of the adapter or you will lose the definition!
 			InputManager.RewireInputChain();
 
@@ -490,13 +467,13 @@ namespace BizHawk.Client.Common
 				// If either is specified use that, else use whatever is currently set
 				if (movie.Core == quicknesName)
 				{
-					PreviousNES_InQuickNES = Global.Config.NES_InQuickNES;
-					Global.Config.NES_InQuickNES = true;
+					PreviousNesInQuickNES = Global.Config.NesInQuickNes;
+					Global.Config.NesInQuickNes = true;
 				}
 				else if (movie.Core == neshawkName)
 				{
-					PreviousNES_InQuickNES = Global.Config.NES_InQuickNES;
-					Global.Config.NES_InQuickNES = false;
+					PreviousNesInQuickNES = Global.Config.NesInQuickNes;
+					Global.Config.NesInQuickNes = false;
 				}
 			}
 			else if (!record && emulator.SystemId == "SNES") // ditto with snes9x vs bsnes
@@ -506,13 +483,13 @@ namespace BizHawk.Client.Common
 
 				if (movie.Core == snes9xName)
 				{
-					PreviousSNES_InSnes9x = Global.Config.SNES_InSnes9x;
-					Global.Config.SNES_InSnes9x = true;
+					PreviousSnesInSnes9x = Global.Config.SnesInSnes9x;
+					Global.Config.SnesInSnes9x = true;
 				}
 				else if (movie.Core == bsnesName)
 				{
-					PreviousSNES_InSnes9x = Global.Config.SNES_InSnes9x;
-					Global.Config.SNES_InSnes9x = false;
+					PreviousSnesInSnes9x = Global.Config.SnesInSnes9x;
+					Global.Config.SnesInSnes9x = false;
 				}
 			}
 			else if (!record && emulator.SystemId == "GBA") // ditto with GBA, we should probably architect this at some point, this isn't sustainable
@@ -522,17 +499,33 @@ namespace BizHawk.Client.Common
 
 				if (movie.Core == mGBAName)
 				{
-					PreviousGBA_UsemGBA = Global.Config.GBA_UsemGBA;
-					Global.Config.GBA_UsemGBA = true;
+					PreviousGbaUsemGba = Global.Config.GbaUsemGba;
+					Global.Config.GbaUsemGba = true;
 				}
 				else if (movie.Core == vbaNextName)
 				{
-					PreviousGBA_UsemGBA = Global.Config.GBA_UsemGBA;
-					Global.Config.GBA_UsemGBA = false;
+					PreviousGbaUsemGba = Global.Config.GbaUsemGba;
+					Global.Config.GbaUsemGba = false;
+				}
+			}
+			else if (!record && (emulator.SystemId == "GB" || emulator.SystemId == "GBC"))
+			{
+				var gbHawkName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(GBHawk), typeof(CoreAttribute))).CoreName;
+				var gambatteName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(Gameboy), typeof(CoreAttribute))).CoreName;
+
+				if (movie.Core == gbHawkName)
+				{
+					PreviousGbUseGbHawk = Global.Config.GbUseGbHawk;
+					Global.Config.GbUseGbHawk = true;
+				}
+				else if (movie.Core == gambatteName)
+				{
+					PreviousGbUseGbHawk = Global.Config.GbUseGbHawk;
+					Global.Config.GbUseGbHawk = false;
 				}
 			}
 
-			if (record) // This is a hack really, we need to set the movie to its propert state so that it will be considered active later
+			if (record) // This is a hack really, we need to set the movie to its proper state so that it will be considered active later
 			{
 				movie.SwitchToRecord();
 			}

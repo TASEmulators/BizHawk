@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Cores.Waterbox;
-using BizHawk.Common.BizInvoke;
+using BizHawk.BizInvoke;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
@@ -29,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	{
 		static LibsnesApi()
 		{
-			if (sizeof(CommStruct) != 232)
+			if (sizeof(CommStruct) != 280)
 			{
 				throw new InvalidOperationException("sizeof(comm)");
 			}
@@ -119,7 +118,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		/// <summary>
 		/// Locks a buffer and sets it into libretro. You must pass a delegate to be executed while that buffer is locked.
 		/// This is meant to be used for avoiding a memcpy for large roms (which the core is then just going to memcpy again on its own)
-		/// The memcpy has to happen at some point (libretro semantics specify [not literally, the docs dont say] that the core should finish using the buffer before its init returns)
+		/// The memcpy has to happen at some point (libretro semantics specify [not literally, the docs don't say] that the core should finish using the buffer before its init returns)
 		/// but this limits it to once.
 		/// Moreover, this keeps the c++ side from having to free strings when they're no longer used (and memory management is trickier there, so we try to avoid it)
 		/// </summary>
@@ -159,7 +158,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			CARTROM, CARTRAM, WRAM, APURAM,
 			SGB_CARTROM, SGB_CARTRAM, SGB_WRAM, SGB_HRAM,
 			NUM
-		};
+		}
 
 		public enum eTRACE : uint
 		{
@@ -175,7 +174,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			CPUData = 0x04,
 			DMAData = 0x08, //not supported yet
 			BRR = 0x80,
-		};
+		}
 
 		snes_video_refresh_t video_refresh;
 		snes_input_poll_t input_poll;
@@ -228,19 +227,67 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			byte _BG4_Prio0, _BG4_Prio1;
 			byte _Obj_Prio0, _Obj_Prio1, _Obj_Prio2, _Obj_Prio3;
 
-			public bool BG1_Prio0 { get { return _BG1_Prio0 != 0; } set { _BG1_Prio0 = (byte)(value ? 1 : 0); } }
-			public bool BG1_Prio1 { get { return _BG1_Prio1 != 0; } set { _BG1_Prio1 = (byte)(value ? 1 : 0); } }
-			public bool BG2_Prio0 { get { return _BG2_Prio0 != 0; } set { _BG2_Prio0 = (byte)(value ? 1 : 0); } }
-			public bool BG2_Prio1 { get { return _BG2_Prio1 != 0; } set { _BG2_Prio1 = (byte)(value ? 1 : 0); } }
-			public bool BG3_Prio0 { get { return _BG3_Prio0 != 0; } set { _BG3_Prio0 = (byte)(value ? 1 : 0); } }
-			public bool BG3_Prio1 { get { return _BG3_Prio1 != 0; } set { _BG3_Prio1 = (byte)(value ? 1 : 0); } }
-			public bool BG4_Prio0 { get { return _BG4_Prio0 != 0; } set { _BG4_Prio0 = (byte)(value ? 1 : 0); } }
-			public bool BG4_Prio1 { get { return _BG4_Prio1 != 0; } set { _BG4_Prio1 = (byte)(value ? 1 : 0); } }
+			public bool BG1_Prio0
+			{
+				get => _BG1_Prio0 != 0;
+				set => _BG1_Prio0 = (byte)(value ? 1 : 0);
+			}
+			public bool BG1_Prio1
+			{
+				get => _BG1_Prio1 != 0;
+				set => _BG1_Prio1 = (byte)(value ? 1 : 0);
+			}
+			public bool BG2_Prio0
+			{
+				get => _BG2_Prio0 != 0;
+				set => _BG2_Prio0 = (byte)(value ? 1 : 0);
+			}
+			public bool BG2_Prio1
+			{
+				get => _BG2_Prio1 != 0;
+				set => _BG2_Prio1 = (byte)(value ? 1 : 0);
+			}
+			public bool BG3_Prio0
+			{
+				get => _BG3_Prio0 != 0;
+				set => _BG3_Prio0 = (byte)(value ? 1 : 0);
+			}
+			public bool BG3_Prio1
+			{
+				get => _BG3_Prio1 != 0;
+				set => _BG3_Prio1 = (byte)(value ? 1 : 0);
+			}
+			public bool BG4_Prio0
+			{
+				get => _BG4_Prio0 != 0;
+				set => _BG4_Prio0 = (byte)(value ? 1 : 0);
+			}
+			public bool BG4_Prio1
+			{
+				get => _BG4_Prio1 != 0;
+				set => _BG4_Prio1 = (byte)(value ? 1 : 0);
+			}
 
-			public bool Obj_Prio0 { get { return _Obj_Prio0 != 0; } set { _Obj_Prio0 = (byte)(value ? 1 : 0); } }
-			public bool Obj_Prio1 { get { return _Obj_Prio1 != 0; } set { _Obj_Prio1 = (byte)(value ? 1 : 0); } }
-			public bool Obj_Prio2 { get { return _Obj_Prio2 != 0; } set { _Obj_Prio2 = (byte)(value ? 1 : 0); } }
-			public bool Obj_Prio3 { get { return _Obj_Prio3 != 0; } set { _Obj_Prio3 = (byte)(value ? 1 : 0); } }
+			public bool Obj_Prio0
+			{
+				get => _Obj_Prio0 != 0;
+				set => _Obj_Prio0 = (byte)(value ? 1 : 0);
+			}
+			public bool Obj_Prio1
+			{
+				get => _Obj_Prio1 != 0;
+				set => _Obj_Prio1 = (byte)(value ? 1 : 0);
+			}
+			public bool Obj_Prio2
+			{
+				get => _Obj_Prio2 != 0;
+				set => _Obj_Prio2 = (byte)(value ? 1 : 0);
+			}
+			public bool Obj_Prio3
+			{
+				get => _Obj_Prio3 != 0;
+				set => _Obj_Prio3 = (byte)(value ? 1 : 0);
+			}
 		}
 
 		[StructLayout(LayoutKind.Explicit)]
@@ -296,19 +343,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			[FieldOffset(128)]
 			//bleck. this is a long so that it can be a 32/64bit pointer
-			public fixed long cdl_ptr[4];
-			[FieldOffset(160)]
-			public fixed int cdl_size[4];
-
-			[FieldOffset(176)]
-			public CPURegs cpuregs;
-			[FieldOffset(212)]
-			public LayerEnables layerEnables;
+			public fixed long cdl_ptr[8];
+			[FieldOffset(192)]
+			public fixed int cdl_size[8];
 
 			[FieldOffset(224)]
+			public CPURegs cpuregs;
+			[FieldOffset(260)]
+			public LayerEnables layerEnables;
+
+			[FieldOffset(272)]
 			//static configuration-type information which can be grabbed off the core at any time without even needing a QUERY command
 			public SNES_REGION region;
-			[FieldOffset(228)]
+			[FieldOffset(276)]
 			public SNES_MAPPER mapper;
 
 			//utilities

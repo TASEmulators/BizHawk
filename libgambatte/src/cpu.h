@@ -73,8 +73,8 @@ public:
 		mem_.setLinkCallback(callback);
 	}
 
-	LoadRes load(char const *romfiledata, unsigned romfilelength, bool forceDmg, bool multicartCompat) {
-		return mem_.loadROM(romfiledata, romfilelength, forceDmg, multicartCompat);
+	LoadRes load(char const *romfiledata, unsigned romfilelength, unsigned flags) {
+		return mem_.loadROM(romfiledata, romfilelength, flags);
 	}
 
 	bool loaded() const { return mem_.loaded(); }
@@ -94,7 +94,6 @@ public:
 	void setRtcDivisorOffset(long const rtcDivisorOffset) { mem_.setRtcDivisorOffset(rtcDivisorOffset); }
 
 	void setBios(char const *buffer, std::size_t size) { mem_.setBios(buffer, size); }
-	bool gbIsCgb() { return mem_.gbIsCgb(); }
 
 	unsigned char externalRead(unsigned short addr) {return mem_.peek(addr); }
 
@@ -115,7 +114,8 @@ private:
 	unsigned short sp;
 	unsigned hf1, hf2, zf, cf;
 	unsigned char a, b, c, d, e, /*f,*/ h, l;
-	bool skip_;
+	unsigned char opcode_;
+	bool prefetched_;
 
 	int *interruptAddresses;
 	int numInterruptAddresses;

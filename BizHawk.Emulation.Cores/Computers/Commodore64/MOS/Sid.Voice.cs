@@ -179,10 +179,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			public int FrequencyLo
 			{
-				get
-				{
-					return _frequency & 0xFF;
-				}
+				get => _frequency & 0xFF;
 				set
 				{
 					_frequency &= 0xFF00;
@@ -192,10 +189,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			public int FrequencyHi
 			{
-				get
-				{
-					return _frequency >> 8;
-				}
+				get => _frequency >> 8;
 				set
 				{
 					_frequency &= 0x00FF;
@@ -205,37 +199,30 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			public int Output(Voice ringModSource)
 			{
-
+				if (_waveform != 0)
 				{
-					if (_waveform != 0)
+					_waveformIndex = (_accumulator ^ (ringModSource._accumulator & _ringMsbMask)) >> 12;
+					_output = _wave[_waveformIndex] & (_noPulse | _pulse) & _noNoiseOrNoise;
+					if (_waveform > 8)
 					{
-						_waveformIndex = (_accumulator ^ (ringModSource._accumulator & _ringMsbMask)) >> 12;
-						_output = _wave[_waveformIndex] & (_noPulse | _pulse) & _noNoiseOrNoise;
-						if (_waveform > 8)
-						{
-							WriteShiftReg();
-						}
+						WriteShiftReg();
 					}
-					else
-					{
-						if (_floatOutputTtl != 0 && --_floatOutputTtl == 0)
-						{
-							_output = 0x000;
-						}
-					}
-
-					_pulse = _accumulator >> 12 >= _pulseWidth ? 0xFFF : 0x000;
-					return _output;
 				}
+				else
+				{
+					if (_floatOutputTtl != 0 && --_floatOutputTtl == 0)
+					{
+						_output = 0x000;
+					}
+				}
+
+				_pulse = _accumulator >> 12 >= _pulseWidth ? 0xFFF : 0x000;
+				return _output;
 			}
 
 			public int PulseWidthLo
 			{
-				get
-				{
-					return _pulseWidth & 0xFF;
-				}
-
+				get => _pulseWidth & 0xFF;
 				set
 				{
 					_pulseWidth &= 0x0F00;
@@ -245,11 +232,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			public int PulseWidthHi
 			{
-				get
-				{
-					return _pulseWidth >> 8;
-				}
-
+				get => _pulseWidth >> 8;
 				set
 				{
 					_pulseWidth &= 0x00FF;
@@ -304,6 +287,5 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				_wave = _waveTable[_waveform & 0x07];
 			}
 		}
-
 	}
 }

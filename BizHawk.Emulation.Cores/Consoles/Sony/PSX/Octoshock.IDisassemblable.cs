@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using System.Collections.Generic;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Sony.PSX
@@ -11,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 	{
 		public string Cpu
 		{
-			get { return "R3000A"; }
+			get => "R3000A";
 			set { }
 		}
 
@@ -23,10 +19,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			}
 		}
 
-		public string PCRegisterName
-		{
-			get { return "pc"; }
-		}
+		public string PCRegisterName => "pc";
 
 		public string Disassemble(MemoryDomain m, uint addr, out int length)
 		{

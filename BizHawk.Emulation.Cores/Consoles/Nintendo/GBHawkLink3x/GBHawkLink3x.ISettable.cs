@@ -5,21 +5,14 @@ using Newtonsoft.Json;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 {
 	public partial class GBHawkLink3x : IEmulator, IStatable, ISettable<GBHawkLink3x.GBLink3xSettings, GBHawkLink3x.GBLink3xSyncSettings>
 	{
-		public GBLink3xSettings GetSettings()
-		{
-			return Link3xSettings.Clone();
-		}
+		public GBLink3xSettings GetSettings() => Link3xSettings.Clone();
 
-		public GBLink3xSyncSettings GetSyncSettings()
-		{
-			return Link3xSyncSettings.Clone();
-		}
+		public GBLink3xSyncSettings GetSyncSettings() => Link3xSyncSettings.Clone();
 
 		public bool PutSettings(GBLink3xSettings o)
 		{
@@ -35,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 		}
 
 		private GBLink3xSettings Link3xSettings = new GBLink3xSettings();
-		public GBLink3xSyncSettings Link3xSyncSettings = new GBLink3xSyncSettings();
+		private GBLink3xSyncSettings Link3xSyncSettings = new GBLink3xSyncSettings();
 
 		public class GBLink3xSettings
 		{
@@ -67,10 +60,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 			[DefaultValue(AudioSrc.Left)]
 			public AudioSrc AudioSet { get; set; }
 
-			public GBLink3xSettings Clone()
-			{
-				return (GBLink3xSettings)MemberwiseClone();
-			}
+			public GBLink3xSettings Clone() => (GBLink3xSettings)MemberwiseClone();
+
+			public GBLink3xSettings() => SettingsUtil.SetDefaultValues(this);
 		}
 
 		public class GBLink3xSyncSettings
@@ -100,8 +92,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 			[DefaultValue(0)]
 			public int RTCInitialTime_L
 			{
-				get { return _RTCInitialTime_L; }
-				set { _RTCInitialTime_L = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value)); }
+				get => _RTCInitialTime_L;
+				set => _RTCInitialTime_L = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value));
 			}
 
 			[DisplayName("RTC Initial Time C")]
@@ -109,8 +101,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 			[DefaultValue(0)]
 			public int RTCInitialTime_C
 			{
-				get { return _RTCInitialTime_C; }
-				set { _RTCInitialTime_C = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value)); }
+				get => _RTCInitialTime_C;
+				set => _RTCInitialTime_C = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value));
 			}
 
 			[DisplayName("RTC Initial Time R")]
@@ -118,35 +110,35 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 			[DefaultValue(0)]
 			public int RTCInitialTime_R
 			{
-				get { return _RTCInitialTime_R; }
-				set { _RTCInitialTime_R = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value)); }
+				get => _RTCInitialTime_R;
+				set => _RTCInitialTime_R = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value));
 			}
 
-			[DisplayName("Timer Div Initial Time L")]
-			[Description("Don't change from 0 unless it's hardware accurate. GBA GBC mode is known to be 8.")]
-			[DefaultValue(8)]
-			public int DivInitialTime_L
+			[DisplayName("RTC Offset L")]
+			[Description("Set error in RTC clocking (-127 to 127)")]
+			[DefaultValue(0)]
+			public int RTCOffset_L
 			{
-				get { return _DivInitialTime_L; }
-				set { _DivInitialTime_L = Math.Min((ushort)65535, (ushort)value); }
+				get => _RTCOffset_L;
+				set => _RTCOffset_L = Math.Max(-127, Math.Min(127, value));
 			}
 
-			[DisplayName("Timer Div Initial Time C")]
-			[Description("Don't change from 0 unless it's hardware accurate. GBA GBC mode is known to be 8.")]
-			[DefaultValue(8)]
-			public int DivInitialTime_C
+			[DisplayName("RTC Offset C")]
+			[Description("Set error in RTC clocking (-127 to 127)")]
+			[DefaultValue(0)]
+			public int RTCOffset_C
 			{
-				get { return _DivInitialTime_C; }
-				set { _DivInitialTime_C = Math.Min((ushort)65535, (ushort)value); }
+				get => _RTCOffset_C;
+				set => _RTCOffset_C = Math.Max(-127, Math.Min(127, value));
 			}
 
-			[DisplayName("Timer Div Initial Time R")]
-			[Description("Don't change from 0 unless it's hardware accurate. GBA GBC mode is known to be 8.")]
-			[DefaultValue(8)]
-			public int DivInitialTime_R
+			[DisplayName("RTC Offset R")]
+			[Description("Set error in RTC clocking (-127 to 127)")]
+			[DefaultValue(0)]
+			public int RTCOffset_R
 			{
-				get { return _DivInitialTime_R; }
-				set { _DivInitialTime_R = Math.Min((ushort)65535, (ushort)value); }
+				get => _RTCOffset_R;
+				set => _RTCOffset_R = Math.Max(-127, Math.Min(127, value));
 			}
 
 			[DisplayName("Use Existing SaveRAM")]
@@ -156,17 +148,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 
 			[JsonIgnore]
 			private int _RTCInitialTime_L;
+			[JsonIgnore]
 			private int _RTCInitialTime_C;
+			[JsonIgnore]
 			private int _RTCInitialTime_R;
 			[JsonIgnore]
+			private int _RTCOffset_L;
+			[JsonIgnore]
+			private int _RTCOffset_C;
+			[JsonIgnore]
+			private int _RTCOffset_R;
+			[JsonIgnore]
 			public ushort _DivInitialTime_L = 8;
+			[JsonIgnore]
 			public ushort _DivInitialTime_C = 8;
+			[JsonIgnore]
 			public ushort _DivInitialTime_R = 8;
 
-			public GBLink3xSyncSettings Clone()
-			{
-				return (GBLink3xSyncSettings)MemberwiseClone();
-			}
+			public GBLink3xSyncSettings Clone() => (GBLink3xSyncSettings)MemberwiseClone();
+
+			public GBLink3xSyncSettings() => SettingsUtil.SetDefaultValues(this);
 
 			public static bool NeedsReboot(GBLink3xSyncSettings x, GBLink3xSyncSettings y)
 			{

@@ -9,21 +9,21 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 		{
 			if ((L.SaveRAM != null) || (R.SaveRAM != null))
 			{
-				int Len1 = 0;
-				int Len2 = 0;
+				int len1 = 0;
+				int len2 = 0;
 				int index = 0;
 
 				if (L.SaveRAM != null)
 				{
-					Len1 = L.SaveRAM.Length;
+					len1 = L.SaveRAM.Length;
 				}
 
 				if (R.SaveRAM != null)
 				{
-					Len2 = R.SaveRAM.Length;
+					len2 = R.SaveRAM.Length;
 				}
 
-				byte[] temp = new byte[Len1 + Len2];
+				byte[] temp = new byte[len1 + len2];
 
 				if (L.SaveRAM != null)
 				{
@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 				if (R.SaveRAM != null)
 				{
-					for (int i = 0; i < L.SaveRAM.Length; i++)
+					for (int i = 0; i < R.SaveRAM.Length; i++)
 					{
 						temp[index] = R.SaveRAM[i];
 						index++;
@@ -45,23 +45,21 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 				return temp;
 			}
-			else
-			{
-				return null;
-			}
+
+			return null;
 		}
 
 		public void StoreSaveRam(byte[] data)
 		{
-			if ((L.SaveRAM != null) && (R.SaveRAM == null))
+			if (L.SaveRAM != null && R.SaveRAM == null)
 			{
 				Buffer.BlockCopy(data, 0, L.SaveRAM, 0, L.SaveRAM.Length);
 			}
-			else if ((R.SaveRAM != null) && (L.SaveRAM == null))
+			else if (R.SaveRAM != null && L.SaveRAM == null)
 			{
 				Buffer.BlockCopy(data, 0, R.SaveRAM, 0, R.SaveRAM.Length);
 			}
-			else if ((R.SaveRAM != null) && (L.SaveRAM != null))
+			else if (R.SaveRAM != null && L.SaveRAM != null)
 			{
 				Buffer.BlockCopy(data, 0, L.SaveRAM, 0, L.SaveRAM.Length);
 				Buffer.BlockCopy(data, L.SaveRAM.Length, R.SaveRAM, 0, R.SaveRAM.Length);
@@ -70,12 +68,6 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			Console.WriteLine("loading SRAM here");
 		}
 
-		public bool SaveRamModified
-		{
-			get 
-			{
-				return linkSyncSettings.Use_SRAM;
-			}	
-		}
+		public bool SaveRamModified => linkSyncSettings.Use_SRAM;
 	}
 }

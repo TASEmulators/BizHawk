@@ -1,6 +1,4 @@
-﻿using System;
-
-using BizHawk.Common;
+﻿using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.ColecoVision
@@ -281,7 +279,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 					}
 					else
 					{
-						v = (short)(sound_out_A ? VolumeTable[vol_A] : 0);
+						v = (short)(sound_out_A ? VolumeTable[env_E] : 0);
 					}
 					
 					if (env_vol_B == 0)

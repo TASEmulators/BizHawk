@@ -1,6 +1,3 @@
-using System.Runtime.InteropServices;
-using System;
-
 namespace BizHawk.Emulation.Cores.Components.Z80A
 {
 	public partial class Z80A
@@ -64,55 +61,55 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 		public bool FlagC
 		{
-			get { return (Regs[5] & 0x01) != 0; }
-			set { Regs[5] = (ushort)((Regs[5] & ~0x01) | (value ? 0x01 : 0x00)); }
+			get => (Regs[5] & 0x01) != 0;
+			set => Regs[5] = (ushort)((Regs[5] & ~0x01) | (value ? 0x01 : 0x00));
 		}
 
 		public bool FlagN
 		{
-			get { return (Regs[5] & 0x02) != 0; }
-			set { Regs[5] = (ushort)((Regs[5] & ~0x02) | (value ? 0x02 : 0x00)); }
+			get => (Regs[5] & 0x02) != 0;
+			set => Regs[5] = (ushort)((Regs[5] & ~0x02) | (value ? 0x02 : 0x00));
 		}
 
 		public bool FlagP
 		{
-			get { return (Regs[5] & 0x04) != 0; }
-			set { Regs[5] = (ushort)((Regs[5] & ~0x04) | (value ? 0x04 : 0x00)); }
+			get => (Regs[5] & 0x04) != 0;
+			set => Regs[5] = (ushort)((Regs[5] & ~0x04) | (value ? 0x04 : 0x00));
 		}
 
 		public bool Flag3
 		{
-			get { return (Regs[5] & 0x08) != 0; }
-			set { Regs[5] = (ushort)((Regs[5] & ~0x08) | (value ? 0x08 : 0x00)); }
+			get => (Regs[5] & 0x08) != 0;
+			set => Regs[5] = (ushort)((Regs[5] & ~0x08) | (value ? 0x08 : 0x00));
 		}
 
 		public bool FlagH
 		{
-			get { return (Regs[5] & 0x10) != 0; }
-			set { Regs[5] = (ushort)((Regs[5] & ~0x10) | (value ? 0x10 : 0x00)); }
+			get => (Regs[5] & 0x10) != 0;
+			set => Regs[5] = (ushort)((Regs[5] & ~0x10) | (value ? 0x10 : 0x00));
 		}
 
 		public bool Flag5
 		{
-			get { return (Regs[5] & 0x20) != 0; }
-			set { Regs[5] = (ushort)((Regs[5] & ~0x20) | (value ? 0x20 : 0x00)); }
+			get => (Regs[5] & 0x20) != 0;
+			set => Regs[5] = (ushort)((Regs[5] & ~0x20) | (value ? 0x20 : 0x00));
 		}
 
 		public bool FlagZ
 		{
-			get { return (Regs[5] & 0x40) != 0; }
-			set { Regs[5] = (ushort)((Regs[5] & ~0x40) | (value ? 0x40 : 0x00)); }
+			get => (Regs[5] & 0x40) != 0;
+			set => Regs[5] = (ushort)((Regs[5] & ~0x40) | (value ? 0x40 : 0x00));
 		}
 
 		public bool FlagS
 		{
-			get { return (Regs[5] & 0x80) != 0; }
-			set { Regs[5] = (ushort)((Regs[5] & ~0x80) | (value ? 0x80 : 0x00)); }
+			get => (Regs[5] & 0x80) != 0;
+			set => Regs[5] = (ushort)((Regs[5] & ~0x80) | (value ? 0x80 : 0x00));
 		}
 
 		public ushort RegPC
 		{
-			get { return (ushort)(Regs[0] | (Regs[1] << 8)); }
+			get => (ushort)(Regs[0] | (Regs[1] << 8));
 			set
 			{
 				Regs[0] = (ushort)(value & 0xFF);

@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern int gambatte_runfor(IntPtr core, short[] soundbuf, ref uint samples);
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		unsafe public static extern int gambatte_runfor(IntPtr core, short* soundbuf, ref uint samples);
+		public static extern unsafe int gambatte_runfor(IntPtr core, short* soundbuf, ref uint samples);
 
 		/// <summary>
 		/// blit from internal framebuffer to provided framebuffer
@@ -91,7 +91,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <param name="core">opaque state pointer</param>
 		/// <param name="pitch">in pixels</param>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		unsafe public static extern void gambatte_blitto(IntPtr core, int* videobuf, int pitch);
+		public static extern unsafe void gambatte_blitto(IntPtr core, int* videobuf, int pitch);
 		/// <summary>
 		/// blit from internal framebuffer to provided framebuffer
 		/// </summary>
@@ -116,7 +116,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			BG_PALETTE = 0,
 			SP1_PALETTE = 1,
 			SP2_PALETTE = 2
-		};
+		}
 
 		/// <param name="core">opaque state pointer</param>
 		/// <param name="palnum">in [0, 2]: One of BG_PALETTE, SP1_PALETTE and SP2_PALETTE.</param>

@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Client.EmuHawk
 {
-	partial class GBAGPUView
+	partial class GbaGpuView
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -29,7 +29,6 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GBAGPUView));
 			this.listBoxWidgets = new System.Windows.Forms.ListBox();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.label1 = new System.Windows.Forms.Label();
@@ -175,16 +174,15 @@
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.listBoxWidgets);
 			this.Controls.Add(this.menuStrip1);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.gba_MultiSize.Value;
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.menuStrip1;
-			this.Name = "GBAGPUView";
+			this.Name = "GbaGpuView";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "GBA GPU Viewer";
-			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.GBAGPUView_FormClosed);
-			this.Load += new System.EventHandler(this.GBAGPUView_Load);
-			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GBAGPUView_KeyDown);
+			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.GbaGpuView_FormClosed);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GbaGpuView_KeyDown);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);

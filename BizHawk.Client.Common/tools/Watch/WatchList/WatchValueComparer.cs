@@ -51,21 +51,18 @@ namespace BizHawk.Client.Common
 				{
 					return 0;
 				}
-				else if (xValue.Equals(yValue))
+
+				if (xValue.Equals(yValue))
 				{
 					if (x.Address.Equals(y.Address))
 					{
 						return x.Size.CompareTo(y.Size);
 					}
-					else
-					{
-						return x.Address.CompareTo(y.Address);
-					}
+
+					return x.Address.CompareTo(y.Address);
 				}
-				else
-				{
-					return xValue.CompareTo(yValue);
-				}
+
+				return xValue.CompareTo(yValue);
 			}
 		}
 	}

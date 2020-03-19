@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Linq;
 using System.Threading;
 
 using NLua;
@@ -21,9 +20,9 @@ namespace BizHawk.Client.Common
 			LogOutputCallback = logOutputCallback;
 		}
 
-		protected static Lua CurrentThread { get; private set; }
+		protected static LuaFile CurrentFile { get; private set; }
 
-		private static Thread CurrentHostThread;
+		private static Thread _currentHostThread;
 		private static readonly object ThreadMutex = new object();
 
 		public abstract string Name { get; }
@@ -34,22 +33,23 @@ namespace BizHawk.Client.Common
 		{
 			lock (ThreadMutex)
 			{
-				CurrentHostThread = null;
-				CurrentThread = null;
+				_currentHostThread = null;
+				CurrentFile = null;
 			}
 		}
 
-		public static void SetCurrentThread(Lua luaThread)
+		/// <exception cref="InvalidOperationException">attempted to have Lua running in two host threads at once</exception>
+		public static void SetCurrentThread(LuaFile luaFile)
 		{
 			lock (ThreadMutex)
 			{
-				if (CurrentHostThread != null)
+				if (_currentHostThread != null)
 				{
 					throw new InvalidOperationException("Can't have lua running in two host threads at a time!");
 				}
 
-				CurrentHostThread = Thread.CurrentThread;
-				CurrentThread = luaThread;
+				_currentHostThread = Thread.CurrentThread;
+				CurrentFile = luaFile;
 			}
 		}
 
@@ -58,29 +58,15 @@ namespace BizHawk.Client.Common
 			return (int)(double)luaArg;
 		}
 
-		protected static uint LuaUInt(object luaArg)
-		{
-			return (uint)(double)luaArg;
-		}
-
 		protected static Color? ToColor(object o)
 		{
-			if (o == null)
+			return o switch
 			{
-				return null;
-			}
-
-			if (o.GetType() == typeof(double))
-			{
-				return Color.FromArgb((int)(long)(double)o);
-			}
-
-			if (o.GetType() == typeof(string))
-			{
-				return Color.FromName(o.ToString());
-			}
-
-			return null;
+				null => null,
+				double d => Color.FromArgb((int) (long) d),
+				string s => Color.FromName(s),
+				_ => (Color?) null
+			};
 		}
 
 		protected void Log(object message)
@@ -91,19 +77,11 @@ namespace BizHawk.Client.Common
 		public void LuaRegister(Type callingLibrary, LuaDocumentation docs = null)
 		{
 			Lua.NewTable(Name);
-
-			var luaAttr = typeof(LuaMethodAttribute);
-
-			var methods = GetType()
-				.GetMethods()
-				.Where(m => m.GetCustomAttributes(luaAttr, false).Any());
-
-			foreach (var method in methods)
+			foreach (var method in GetType().GetMethods())
 			{
-				var luaMethodAttr = (LuaMethodAttribute)method.GetCustomAttributes(luaAttr, false).First();
-				var luaName = $"{Name}.{luaMethodAttr.Name}";
-				Lua.RegisterFunction(luaName, this, method);
-
+				var foundAttrs = method.GetCustomAttributes(typeof(LuaMethodAttribute), false);
+				if (foundAttrs.Length == 0) continue;
+				Lua.RegisterFunction($"{Name}.{((LuaMethodAttribute) foundAttrs[0]).Name}", this, method);
 				docs?.Add(new LibraryFunction(Name, callingLibrary.Description(), method));
 			}
 		}

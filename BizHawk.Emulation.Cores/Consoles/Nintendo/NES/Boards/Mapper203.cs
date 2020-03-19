@@ -1,47 +1,10 @@
 ﻿using BizHawk.Common;
 
+// https://wiki.nesdev.com/w/index.php/INES_Mapper_203
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public sealed class Mapper203 : NES.NESBoardBase
 	{
-		/*
-		Here are Disch's original notes:  
-		 ========================
-		 =  Mapper 203          =
-		 ========================
- 
-		 Example Games:
-		 --------------------------
-		 35-in-1
- 
- 
-		 Registers:
-		 ---------------------------
- 
- 
-		   $8000-FFFF:  [PPPP PPCC]
-			 P = PRG Reg
-			 C = CHR Reg
- 
- 
-		 CHR Setup:
-		 ---------------------------
- 
-			   $0000   $0400   $0800   $0C00   $1000   $1400   $1800   $1C00 
-			 +---------------------------------------------------------------+
-			 |                             $8000                             |
-			 +---------------------------------------------------------------+
- 
- 
-		 PRG Setup:
-		 ---------------------------
- 
-			  $8000   $A000   $C000   $E000  
-			 +---------------+---------------+
-			 |     $8000     |     $8000     |
-			 +---------------+---------------+
-		*/
-
 		int prg_reg_16k, chr_reg_8k;
 		int prg_bank_mask_16k;
 		int chr_bank_mask_8k;

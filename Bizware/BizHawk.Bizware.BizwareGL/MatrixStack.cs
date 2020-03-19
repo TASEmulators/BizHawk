@@ -1,4 +1,3 @@
-using System;
 using System.Drawing;
 using System.Collections.Generic;
 
@@ -21,7 +20,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public bool IsDirty;
 
-		Stack<Matrix4> stack = new Stack<Matrix4>();
+		readonly Stack<Matrix4> stack = new Stack<Matrix4>();
 
 		/// <summary>
 		/// This is made public for performance reasons, to avoid lame copies of the matrix when necessary. Don't mess it up!

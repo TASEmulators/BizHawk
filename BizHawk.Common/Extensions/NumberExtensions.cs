@@ -1,28 +1,30 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.Linq;
 
 namespace BizHawk.Common.NumberExtensions
 {
 	public static class NumberExtensions
 	{
-		public static string ToHexString(this int n, int numdigits)
+		public static string ToHexString(this int n, int numDigits)
 		{
-			return string.Format($"{{0:X{numdigits}}}", n);
+			return string.Format($"{{0:X{numDigits}}}", n);
 		}
 
-		public static string ToHexString(this uint n, int numdigits)
+		public static string ToHexString(this uint n, int numDigits)
 		{
-			return string.Format($"{{0:X{numdigits}}}", n);
+			return string.Format($"{{0:X{numDigits}}}", n);
 		}
 
-		public static string ToHexString(this long n, int numdigits)
+		public static string ToHexString(this long n, int numDigits)
 		{
-			return string.Format($"{{0:X{numdigits}}}", n);
+			return string.Format($"{{0:X{numDigits}}}", n);
 		}
 
-		public static string ToHexString(this ulong n, int numdigits)
+		public static string ToHexString(this ulong n, int numDigits)
 		{
-			return string.Format($"{{0:X{numdigits}}}", n);
+			return string.Format($"{{0:X{numDigits}}}", n);
 		}
 
 		public static bool Bit(this byte b, int index)
@@ -61,7 +63,7 @@ namespace BizHawk.Common.NumberExtensions
 		/// </summary>
 		public static int NumHexDigits(this long i)
 		{
-			// now this is a bit of a trick. if it was less than 0, it mustve been >= 0x80000000 and so takes all 8 digits
+			// now this is a bit of a trick. if it was less than 0, it must have been >= 0x80000000 and so takes all 8 digits
 			if (i < 0)
 			{
 				return 8;
@@ -99,7 +101,7 @@ namespace BizHawk.Common.NumberExtensions
 		}
 
 		/// <summary>
-		/// Force the value to be strictly between min and max (both exclued)
+		/// Force the value to be strictly between min and max (both excluded)
 		/// </summary>
 		/// <typeparam name="T">Anything that implements <see cref="IComparable{T}"/></typeparam>
 		/// <param name="val">Value that will be clamped</param>
@@ -122,5 +124,17 @@ namespace BizHawk.Common.NumberExtensions
 		}
 		
 		public static int RoundToInt(this float f) => (int) Math.Round(f);
+
+		/// <summary>2^-53</summary>
+		private const double ExtremelySmallNumber = 1.1102230246251565E-16;
+
+		/// <inheritdoc cref="HawkFloatEquality(float,float,float)"/>
+		public static bool HawkFloatEquality(this double d, double other, double ε = ExtremelySmallNumber) => Math.Abs(other - d) < ε;
+
+		/// <summary>2^-24</summary>
+		private const float ReallySmallNumber = 5.96046448E-08f;
+
+		/// <remarks>don't use this in cores without picking a suitable ε</remarks>
+		public static bool HawkFloatEquality(this float f, float other, float ε = ReallySmallNumber) => Math.Abs(other - f) < ε;
 	}
 }

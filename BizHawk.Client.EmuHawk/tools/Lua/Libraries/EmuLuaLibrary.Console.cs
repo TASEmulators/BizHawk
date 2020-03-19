@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -45,29 +44,20 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("log", "Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable")]
 		public static void Log(params object[] outputs)
 		{
-			if (GlobalWin.Tools.Has<LuaConsole>())
-			{
-				LogWithSeparator("\t", "\n", outputs);
-			}
+			LogWithSeparator("\t", "\n", outputs);
 		}
 
-		//// Single param version is used by logOutputCallback of some libraries.
+		// Single param version is used by logOutputCallback of some libraries.
 		public static void LogOutput(object output)
 		{
-			if (GlobalWin.Tools.Has<LuaConsole>())
-			{
-				Log(output);
-			}
+			Log(output);
 		}
 
 		[LuaMethodExample("console.writeline( \"New log line.\" );")]
 		[LuaMethod("writeline", "Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable")]
 		public static void WriteLine(params object[] outputs)
 		{
-			if (GlobalWin.Tools.Has<LuaConsole>())
-			{
-				LogWithSeparator("\n", "\n", outputs);
-			}
+			LogWithSeparator("\n", "\n", outputs);
 		}
 
 		[LuaMethodExample("console.write( \"New log message.\" );")]
@@ -80,6 +70,34 @@ namespace BizHawk.Client.EmuHawk
 		// Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable
 		private static void LogWithSeparator(string separator, string terminator, params object[] outputs)
 		{
+			static string SerializeTable(LuaTable lti)
+			{
+				var keyObjs = lti.Keys;
+				var valueObjs = lti.Values;
+				if (keyObjs.Count != valueObjs.Count)
+				{
+					throw new IndexOutOfRangeException("each value must be paired with one key, they differ in number");
+				}
+
+				var values = new object[keyObjs.Count];
+				var kvpIndex = 0;
+				foreach (var valueObj in valueObjs)
+				{
+					values[kvpIndex++] = valueObj;
+				}
+
+				return string.Concat(keyObjs.Cast<object>()
+					.Select((kObj, i) => $"\"{kObj}\": \"{values[i]}\"\n")
+					.OrderBy(s => s)
+				);
+			}
+
+			static void SerializeAndWrite(object output) => GlobalWin.Tools.LuaConsole.WriteToOutputWindow(
+				output is LuaTable table
+					? SerializeTable(table)
+					: output?.ToString() ?? "nil"
+			);
+
 			if (!GlobalWin.Tools.Has<LuaConsole>())
 			{
 				return;
@@ -91,60 +109,17 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			for (var outIndex = 0; outIndex < outputs.Length; outIndex++)
+			SerializeAndWrite(outputs[0]);
+			for (int outIndex = 1, indexAfterLast = outputs.Length; outIndex != indexAfterLast; outIndex++)
 			{
-				var output = outputs[outIndex];
-
-				if (outIndex != 0)
-				{
-					GlobalWin.Tools.LuaConsole.WriteToOutputWindow(separator);
-				}
-
-				if (output == null)
-				{
-					GlobalWin.Tools.LuaConsole.WriteToOutputWindow("nil");
-				}
-				else
-				{
-					if (output is LuaTable)
-					{
-						var sb = new StringBuilder();
-						var lti = output as LuaTable;
-
-						var keys = (from object key in lti.Keys select key.ToString()).ToList();
-						var values = (from object value in lti.Values select value.ToString()).ToList();
-
-						var kvps = new List<KeyValuePair<string, string>>();
-						for (var i = 0; i < keys.Count; i++)
-						{
-							if (i < values.Count)
-							{
-								kvps.Add(new KeyValuePair<string, string>(keys[i], values[i]));
-							}
-						}
-
-						kvps = kvps.OrderBy(x => x.Key).ToList();
-						foreach (var kvp in kvps)
-						{
-							sb
-								.Append("\"")
-								.Append(kvp.Key)
-								.Append("\": \"")
-								.Append(kvp.Value)
-								.Append("\"")
-								.AppendLine();
-						}
-
-						GlobalWin.Tools.LuaConsole.WriteToOutputWindow(sb.ToString());
-					}
-					else
-					{
-						GlobalWin.Tools.LuaConsole.WriteToOutputWindow(output.ToString());
-					}
-				}
+				GlobalWin.Tools.LuaConsole.WriteToOutputWindow(separator);
+				SerializeAndWrite(outputs[outIndex]);
 			}
 
-			GlobalWin.Tools.LuaConsole.WriteToOutputWindow(terminator);
+			if (!string.IsNullOrEmpty(terminator))
+			{
+				GlobalWin.Tools.LuaConsole.WriteToOutputWindow(terminator);
+			}
 		}
 	}
 }

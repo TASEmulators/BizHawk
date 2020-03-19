@@ -64,7 +64,7 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			byte[] savestateCopy = null;
+			byte[] savestateCopy;
 			while (_stateBufferPool.TryPop(out savestateCopy) && savestateCopy.Length != coreSavestate.Length)
 			{
 				savestateCopy = null;

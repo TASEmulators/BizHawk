@@ -3,7 +3,7 @@
 //TODO Disc.Structure.Sessions[0].length_aba was 0
 //TODO mednafen 0.9.37 changed some disc region detection heuristics. analyze and apply in c# side. also the SCEX id handling changed, maybe simplified
 
-//TODO - ok, think about this. we MUST load a state with the CDC completely intact. no quickly changing discs. thats madness.
+//TODO - ok, think about this. we MUST load a state with the CDC completely intact. no quickly changing discs. that's madness.
 //well, I could savestate the disc index and validate the disc collection when loading a state.
 //the big problem is, it's completely at odds with the slider-based disc changing model. 
 //but, maybe it can be reconciled with that model by using the disc ejection to our advantage. 
@@ -14,12 +14,14 @@ using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.IO;
-using System.Linq;
 using System.Collections.Generic;
+using System.Text;
+
 using Newtonsoft.Json;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Common;
+using BizHawk.Emulation.DiscSystem;
 
 #pragma warning disable 649 //adelikat: Disable dumb warnings until this file is complete
 
@@ -88,8 +90,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			if (discInterfaces.Count != 0)
 			{
 				//determine region of one of the discs
-				OctoshockDll.ShockDiscInfo discInfo;
-				OctoshockDll.shock_AnalyzeDisc(discInterfaces[0].OctoshockHandle, out discInfo);
+				OctoshockDll.shock_AnalyzeDisc(discInterfaces[0].OctoshockHandle, out var discInfo);
 
 				//try to acquire the appropriate firmware
 				if (discInfo.region == OctoshockDll.eRegion.EU) firmwareRegion = "E";
@@ -115,7 +116,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				SystemVidStandard = OctoshockDll.eVidStandard.NTSC;
 			}
 
-			//TODO - known bad firmwares are a no-go. we should refuse to boot them. (thats the mednafen policy)
+			//TODO - known bad firmwares are a no-go. we should refuse to boot them. (that's the mednafen policy)
 			byte[] firmware = comm.CoreFileProvider.GetFirmware("PSX", firmwareRegion, true, "A PSX `" + firmwareRegion + "` region bios file is required");
 
 			//create the instance
@@ -209,17 +210,15 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			if (fioCfg.Memcards[0]) OctoshockDll.shock_Peripheral_MemcardTransact(psx, 0x01, ref memcardTransaction);
 			if (fioCfg.Memcards[1]) OctoshockDll.shock_Peripheral_MemcardTransact(psx, 0x02, ref memcardTransaction);
 
-			//do this after framebuffers and peripherals and whatever crap are setup. kind of lame, but thats how it is for now
+			//do this after framebuffers and peripherals and whatever crap are setup. kind of lame, but that's how it is for now
 			StudySaveBufferSize();
 		}
 
-		public string SystemId { get { return "PSX"; } }
+		public string SystemId => "PSX";
 
 		public static ControllerDefinition CreateControllerDefinition(SyncSettings syncSettings)
 		{
-			ControllerDefinition definition = new ControllerDefinition();
-			definition.Name = "PSX DualShock Controller"; // <-- for compatibility
-														  //ControllerDefinition.Name = "PSX FrontIO"; // TODO - later rename to this, I guess, so it's less misleading. don't want to wreck keybindings yet.
+			var definition = new ControllerDefinition { Name = "PSX Front Panel" };
 
 			var cfg = syncSettings.FIOConfig.ToLogical();
 
@@ -381,8 +380,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			int ShockDisc_ReadTOC(IntPtr opaque, OctoshockDll.ShockTOC* read_target, OctoshockDll.ShockTOCTrack* tracks101)
 			{
 				read_target->disc_type = (byte)Disc.TOC.Session1Format;
-				read_target->first_track = (byte)Disc.TOC.FirstRecordedTrackNumber; //i _think_ thats what is meant here
-				read_target->last_track = (byte)Disc.TOC.LastRecordedTrackNumber; //i _think_ thats what is meant here
+				read_target->first_track = (byte)Disc.TOC.FirstRecordedTrackNumber; //i _think_ that's what is meant here
+				read_target->last_track = (byte)Disc.TOC.LastRecordedTrackNumber; //i _think_ that's what is meant here
 
 				tracks101[0].lba = tracks101[0].adr = tracks101[0].control = 0;
 
@@ -428,7 +427,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		List<DiscInterface> discInterfaces = new List<DiscInterface>();
 		DiscInterface currentDiscInterface;
 
-		public DisplayType Region { get { return SystemVidStandard == OctoshockDll.eVidStandard.PAL ? DisplayType.PAL : DisplayType.NTSC; } }
+		public DisplayType Region => SystemVidStandard == OctoshockDll.eVidStandard.PAL ? DisplayType.PAL : DisplayType.NTSC;
 
 		public OctoshockDll.eRegion SystemRegion { get; private set; }
 		public OctoshockDll.eVidStandard SystemVidStandard { get; private set; }
@@ -447,8 +446,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		void Attach()
 		{
 			//attach this core as the current
-			if (CurrOctoshockCore != null)
-				CurrOctoshockCore.Dispose();
+			CurrOctoshockCore?.Dispose();
 			CurrOctoshockCore = this;
 
 			//the psx instance cant be created until the desired region is known, which needs a disc, so we need the dll static attached first
@@ -458,6 +456,22 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		{
 		}
 
+		public string CalculateDiscHashes()
+		{
+			var sb = new StringBuilder();
+			try
+			{
+				foreach (var disc in Discs)
+				{
+					sb.Append($"{new DiscHasher(disc).Calculate_PSX_RedumpHash():X8} {disc.Name}\r\n");
+				}
+			}
+			catch
+			{
+				// ignored
+			}
+			return sb.ToString();
+		}
 
 		public void ResetCounters()
 		{
@@ -475,7 +489,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				for (int multiport = 0; multiport < 4; multiport++)
 				{
 					//note: I would not say this port addressing scheme has been completely successful
-					//however, it may be because i was constantly constrained by having to adapt it to mednafen.. i dont know.
+					//however, it may be because i was constantly constrained by having to adapt it to mednafen.. i don't know.
 
 					int portNum = (port + 1) + ((multiport + 1) << 4);
 					int slot = port * 4 + multiport;
@@ -550,7 +564,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public class ResolutionInfo
 		{
 			public System.Drawing.Size Resolution, Padding;
-			public System.Drawing.Size Total { get { return System.Drawing.Size.Add(Resolution, Padding); } }
+			public System.Drawing.Size Total => System.Drawing.Size.Add(Resolution, Padding);
 		}
 
 		/// <summary>
@@ -621,7 +635,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 					if (standard == OctoshockDll.eVidStandard.NTSC)
 					{
-						//dont make this 430, it's already been turned into 400 from 368+30 and then some fudge factor
+						//don't make this 430, it's already been turned into 400 from 368+30 and then some fudge factor
 						VirtualWidth = 400;
 						VirtualHeight = (int)(scanline_num * 300.0f / 240);
 						if (settings.HorizontalClipping == eHorizontalClipping.Basic)
@@ -634,7 +648,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 						if (settings.HorizontalClipping == eHorizontalClipping.Basic)
 							VirtualWidth = 378;
 						//I'll be honest, I was just guessing here mostly
-						//I need the AR to basically work out to be 363/288 (thats what it was in mednafen mode) so...
+						//I need the AR to basically work out to be 363/288 (that's what it was in mednafen mode) so...
 						VirtualHeight = (int)(scanline_num * (400.0f/363*288) / 288);
 					}
 
@@ -704,7 +718,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				|| Frame == 0
 				)
 			{
-				//dont replace default disc with the leave-default placeholder!
+				//don't replace default disc with the leave-default placeholder!
 				if (requestedDisc == -1)
 				{
 
@@ -856,19 +870,18 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public IInputCallbackSystem InputCallbacks
 		{
 			[FeatureNotImplemented]
-			get
-			{ throw new NotImplementedException(); }
+			get => throw new NotImplementedException();
 		}
 
 		[FeatureNotImplemented]
-		public bool DeterministicEmulation { get { return true; } }
+		public bool DeterministicEmulation => true;
 
-		public int[] GetVideoBuffer() { return frameBuffer; }
+		public int[] GetVideoBuffer() => frameBuffer;
 		public int VirtualWidth { get; private set; }
 		public int VirtualHeight { get; private set; }
 		public int BufferWidth { get; private set; }
 		public int BufferHeight { get; private set; }
-		public int BackgroundColor { get { return 0; } }
+		public int BackgroundColor => 0;
 		public int VsyncNumerator { get; private set; }
 		public int VsyncDenominator { get; private set; }
 
@@ -914,10 +927,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		unsafe void SetMemoryDomains()
 		{
 			var mmd = new List<MemoryDomain>();
-			IntPtr ptr;
-			int size;
 
-			OctoshockDll.shock_GetMemData(psx, out ptr, out size, OctoshockDll.eMemType.MainRAM);
+			OctoshockDll.shock_GetMemData(psx, out var ptr, out var size, OctoshockDll.eMemType.MainRAM);
 			mmd.Add(new MemoryDomainIntPtr("MainRAM", MemoryDomain.Endian.Little, ptr, size, true, 4));
 
 			OctoshockDll.shock_GetMemData(psx, out ptr, out size, OctoshockDll.eMemType.GPURAM);
@@ -945,7 +956,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		#region ISoundProvider
 
-		//private short[] sbuff = new short[1454 * 2]; //this is the most ive ever seen.. dont know why. two frames worth i guess
+		//private short[] sbuff = new short[1454 * 2]; //this is the most ive ever seen.. don't know why. two frames worth i guess
 		private short[] sbuff = new short[1611 * 2]; //need this for pal
 		private int sbuffcontains = 0;
 
@@ -960,10 +971,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			sbuffcontains = 0;
 		}
 
-		public bool CanProvideAsync
-		{
-			get { return false; }
-		}
+		public bool CanProvideAsync => false;
 
 		public void SetSyncMode(SyncSoundMode mode)
 		{
@@ -973,10 +981,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			}
 		}
 
-		public SyncSoundMode SyncMode
-		{
-			get { return SyncSoundMode.Sync; }
-		}
+		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
 		public void GetSamplesAsync(short[] samples)
 		{
@@ -1055,62 +1060,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		#region Savestates
 		//THIS IS STILL AWFUL
 
-		JsonSerializer ser = new JsonSerializer() { Formatting = Formatting.Indented };
-
-		class TextStateData
-		{
-			public int Frame;
-			public int LagCount;
-			public bool IsLagFrame;
-			public bool CurrentDiscEjected;
-			public int CurrentDiscIndexMounted;
-		}
-
-		public void SaveStateText(TextWriter writer)
-		{
-			var s = new TextState<TextStateData>();
-			s.Prepare();
-
-			var transaction = new OctoshockDll.ShockStateTransaction()
-			{
-				transaction = OctoshockDll.eShockStateTransaction.TextSave,
-				ff = s.GetFunctionPointersSave()
-			};
-			int result = OctoshockDll.shock_StateTransaction(psx, ref transaction);
-			if (result != OctoshockDll.SHOCK_OK)
-				throw new InvalidOperationException($"{nameof(OctoshockDll.eShockStateTransaction)}.{nameof(OctoshockDll.eShockStateTransaction.TextSave)} returned error!");
-
-			s.ExtraData.IsLagFrame = IsLagFrame;
-			s.ExtraData.LagCount = LagCount;
-			s.ExtraData.Frame = Frame;
-			s.ExtraData.CurrentDiscEjected = CurrentTrayOpen;
-			s.ExtraData.CurrentDiscIndexMounted = CurrentDiscIndexMounted;
-
-			ser.Serialize(writer, s);
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			var s = (TextState<TextStateData>)ser.Deserialize(reader, typeof(TextState<TextStateData>));
-			s.Prepare();
-			var transaction = new OctoshockDll.ShockStateTransaction()
-			{
-				transaction = OctoshockDll.eShockStateTransaction.TextLoad,
-				ff = s.GetFunctionPointersLoad()
-			};
-
-			int result = OctoshockDll.shock_StateTransaction(psx, ref transaction);
-			if (result != OctoshockDll.SHOCK_OK)
-				throw new InvalidOperationException($"{nameof(OctoshockDll.eShockStateTransaction)}.{nameof(OctoshockDll.eShockStateTransaction.TextLoad)} returned error!");
-
-			IsLagFrame = s.ExtraData.IsLagFrame;
-			LagCount = s.ExtraData.LagCount;
-			Frame = s.ExtraData.Frame;
-			CurrentTrayOpen = s.ExtraData.CurrentDiscEjected;
-			CurrentDiscIndexMounted = s.ExtraData.CurrentDiscIndexMounted;
-			PokeDisc();
-		}
-
 		byte[] savebuff;
 		byte[] savebuff2;
 
@@ -1181,19 +1130,14 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public byte[] SaveStateBinary()
 		{
 			//this are objectionable shenanigans, but theyre required to get the extra info in the stream. we need a better approach.
-			var ms = new MemoryStream(savebuff2, true);
-			var bw = new BinaryWriter(ms);
+			using var ms = new MemoryStream(savebuff2, true);
+			using var bw = new BinaryWriter(ms);
 			SaveStateBinary(bw);
 			bw.Flush();
 			if (ms.Position != savebuff2.Length)
 				throw new InvalidOperationException();
 			ms.Close();
 			return savebuff2;
-		}
-
-		public bool BinarySaveStatesPreferred
-		{
-			get { return true; }
 		}
 
 		#endregion

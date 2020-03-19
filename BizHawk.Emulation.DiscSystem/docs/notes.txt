@@ -91,7 +91,7 @@
  * as seen in yabause, there are 1000 u32s in this format:
  * Ctrl[4bit] Adr[4bit] StartFrameAddressFAD[24bit] (nonexisting tracks are 0xFFFFFFFF)
  * Followed by Fist Track Information, Last Track Information..
- * Ctrl[4bit] Adr[4bit] FirstTrackNumber/LastTrackNumber[8bit] and then some stuff I dont understand
+ * Ctrl[4bit] Adr[4bit] FirstTrackNumber/LastTrackNumber[8bit] and then some stuff I don't understand
  * ..and Read Out Information:
  * Ctrl[4bit] Adr[4bit] ReadOutStartFrameAddress[24bit]
  * 

@@ -1,5 +1,4 @@
-﻿using System;
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
@@ -9,10 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public bool IsLagFrame { get; set; }
 
-		public IInputCallbackSystem InputCallbacks
-		{
-			get { return _inputCallbacks; }
-		}
+		public IInputCallbackSystem InputCallbacks => _inputCallbacks;
 
 		private InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
 	}

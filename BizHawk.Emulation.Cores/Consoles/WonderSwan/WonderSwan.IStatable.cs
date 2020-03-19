@@ -8,15 +8,15 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.WonderSwan
 {
-	partial class WonderSwan: IStatable
+	partial class WonderSwan: ITextStatable
 	{
-		void InitIStatable()
+		private void InitIStatable()
 		{
 			savebuff = new byte[BizSwan.bizswan_binstatesize(Core)];
 			savebuff2 = new byte[savebuff.Length + 13];
 		}
 
-		JsonSerializer ser = new JsonSerializer() { Formatting = Formatting.Indented };
+		JsonSerializer ser = new JsonSerializer { Formatting = Formatting.Indented };
 
 		[StructLayout(LayoutKind.Sequential)]
 		class TextStateData
@@ -88,19 +88,14 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		public byte[] SaveStateBinary()
 		{
-			var ms = new MemoryStream(savebuff2, true);
-			var bw = new BinaryWriter(ms);
+			using var ms = new MemoryStream(savebuff2, true);
+			using var bw = new BinaryWriter(ms);
 			SaveStateBinary(bw);
 			bw.Flush();
 			if (ms.Position != savebuff2.Length)
 				throw new InvalidOperationException();
 			ms.Close();
 			return savebuff2;
-		}
-
-		public bool BinarySaveStatesPreferred
-		{
-			get { return true; }
 		}
 	}
 }

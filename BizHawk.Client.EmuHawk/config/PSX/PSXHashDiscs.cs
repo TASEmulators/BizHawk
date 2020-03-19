@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Windows.Forms;
 
-using BizHawk.Client.Common;
-using BizHawk.Emulation.DiscSystem;
 using BizHawk.Emulation.Cores.Sony.PSX;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class PSXHashDiscs : Form
 	{
-		public PSXHashDiscs()
+		private readonly Octoshock _psx;
+
+		public PSXHashDiscs(Octoshock psx)
 		{
+			_psx = psx;
 			InitializeComponent();
 		}
 
@@ -18,20 +19,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			txtHashes.Text = "";
 			btnHash.Enabled = false;
-			try
-			{
-				var psx = (Octoshock)Global.Emulator;
-				foreach (var disc in psx.Discs)
-				{
-					DiscHasher hasher = new DiscHasher(disc);
-					uint hash = hasher.Calculate_PSX_RedumpHash();
-					txtHashes.Text += $"{hash:X8} {disc.Name}\r\n";
-				}
-			}
-			finally
-			{
-				btnHash.Enabled = true;
-			}
+			txtHashes.Text = _psx.CalculateDiscHashes();
+			btnHash.Enabled = true;
 		}
 	}
 }

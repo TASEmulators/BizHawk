@@ -1,25 +1,26 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
-
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Intellivision;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class IntvControllerSettings : Form
 	{
-		private Intellivision.IntvSyncSettings _syncSettings;
+		private readonly MainForm _mainForm;
+		private readonly Intellivision.IntvSyncSettings _syncSettings;
 
-		public IntvControllerSettings()
+		public IntvControllerSettings(
+			MainForm mainForm,
+			Intellivision.IntvSyncSettings syncSettings)
 		{
+			_mainForm = mainForm;
+			_syncSettings = syncSettings;
 			InitializeComponent();
 		}
 
 		private void IntvControllerSettings_Load(object sender, EventArgs e)
 		{
-			_syncSettings = ((Intellivision)Global.Emulator).GetSyncSettings().Clone();
-
 			var possibleControllers = IntellivisionControllerDeck.ValidControllerTypes.Select(t => t.Key);
 
 			foreach (var val in possibleControllers)
@@ -43,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 				_syncSettings.Port1 = Port1ComboBox.SelectedItem.ToString();
 				_syncSettings.Port2 = Port2ComboBox.SelectedItem.ToString();
 
-				GlobalWin.MainForm.PutCoreSyncSettings(_syncSettings);
+				_mainForm.PutCoreSyncSettings(_syncSettings);
 			}
 
 			DialogResult = DialogResult.OK;
@@ -52,7 +53,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CancelBtn_Click(object sender, EventArgs e)
 		{
-			GlobalWin.OSD.AddMessage("Controller settings aborted");
+			_mainForm.AddOnScreenMessage("Controller settings aborted");
 			DialogResult = DialogResult.Cancel;
 			Close();
 		}

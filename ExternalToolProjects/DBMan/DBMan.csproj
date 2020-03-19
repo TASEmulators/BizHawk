@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="$(ProjectDir)../ExtToolCommon.props" />
+	<Import Project="$(ProjectDir)../NET48ExternalToolForm.targets" />
+	<PropertyGroup>
+		<GenerateResourceMSBuildArchitecture Condition=" '$(GenerateResourceMSBuildArchitecture)' == '' ">CurrentArchitecture</GenerateResourceMSBuildArchitecture>
+		<GenerateResourceMSBuildRuntime Condition=" '$(GenerateResourceMSBuildRuntime)' == '' ">CurrentRuntime</GenerateResourceMSBuildRuntime>
+		<GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+	</PropertyGroup>
+	<ItemGroup>
+		<Reference Include="CSharp-SQLite"
+			HintPath="$(ProjectDir)CSharp-SQLite.dll"
+			Private="true" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Update="CustomMainForm.cs" SubType="Form" />
+		<Compile Update="DATTools/DATConverter.cs" SubType="Form" />
+		<Compile Update="DATTools/DATConverter.Designer.cs" DependentUpon="DATConverter.cs" />
+		<Compile Update="DBMan.cs" SubType="Form" />
+		<Compile Update="DBMan.Designer.cs" DependentUpon="DBMan.cs" />
+		<EmbeddedResource Update="DBMan.resx" DependentUpon="DBMan.cs" />
+		<Compile Update="Properties/Settings.Designer.cs" AutoGen="true" DependentUpon="Settings.settings" DesignTime="true" />
+		<None Update="Properties/Settings.settings" LastGenOutput="Settings.Designer.cs" />
+	</ItemGroup>
+</Project>

@@ -5,13 +5,12 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 
+using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Client.ApiHawk;
-using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class ToolBox : Form, IToolForm
+	public partial class ToolBox : ToolFormBase, IToolForm
 	{
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
@@ -31,8 +30,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void NewUpdate(ToolFormUpdateType type) { }
 
-		public bool AskSaveChanges() { return true;  }
-		public bool UpdateBefore { get { return false; } }
+		public bool AskSaveChanges() => true;
+		public bool UpdateBefore => false;
 		public void UpdateValues() { }
 
 		public void FastUpdate()
@@ -53,37 +52,27 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ToolBoxStrip.Items.Clear();
 
-			foreach (var t in Assembly.GetAssembly(GetType()).GetTypes())
-			{
-				if (!typeof(IToolForm).IsAssignableFrom(t))
-					continue;
-				if (!typeof(Form).IsAssignableFrom(t))
-					continue;
-				if (typeof(ToolBox).IsAssignableFrom(t))  //yo dawg i head you like toolboxes
-					continue;
-				if (VersionInfo.DeveloperBuild && t.GetCustomAttributes(false).OfType<ToolAttribute>().Any(a => !a.Released))
-					continue;
-				if (t == typeof(GBGameGenie)) // Hack, this tool is specific to a system id and a sub-system (gb and gg) we have no reasonable way to declare a dependency like that
-					continue;
-				if (!ServiceInjector.IsAvailable(Emulator.ServiceProvider, t))
-					continue;
-//				if (!ApiInjector.IsAvailable(, t))
-//					continue;
-				if (t == typeof(HexView) && OSTailoredCode.CurrentOS != OSTailoredCode.DistinctOS.Windows)
-					continue; // Skip this tool on Unix. It isn't finished and only causes exceptions
+			var tools = Assembly.GetAssembly(GetType()).GetTypes()
+				.Where(t => typeof(IToolForm).IsAssignableFrom(t))
+				.Where(t => typeof(Form).IsAssignableFrom(t))
+				.Where(t => !typeof(ToolBox).IsAssignableFrom(t))
+				.Where(t => ServiceInjector.IsAvailable(Emulator.ServiceProvider, t))
+				.Where(t => VersionInfo.DeveloperBuild || t.GetCustomAttributes(false).OfType<ToolAttribute>().Any(a => a.Released));
 
+			foreach (var t in tools)
+			{
 				var instance = Activator.CreateInstance(t);
 
 				var tsb = new ToolStripButton
 				{
-					Image = (instance as Form).Icon.ToBitmap(),
-					Text = (instance as Form).Text,
-					DisplayStyle = (instance as Form).ShowIcon ? ToolStripItemDisplayStyle.Image : ToolStripItemDisplayStyle.Text
+					Image = ((Form) instance).Icon.ToBitmap(),
+					Text = ((Form) instance).Text,
+					DisplayStyle = ((Form) instance).ShowIcon ? ToolStripItemDisplayStyle.Image : ToolStripItemDisplayStyle.Text
 				};
 
 				tsb.Click += (o, e) =>
 				{
-					GlobalWin.Tools.Load(t);
+					Tools.Load(t);
 					Close();
 				};
 
@@ -98,13 +87,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// Provide LINQ capabilities to an outdated form collection
-		private IEnumerable<ToolStripItem> ToolBoxItems
-		{
-			get
-			{
-				return ToolBoxStrip.Items.Cast<ToolStripItem>();
-			}
-		}
+		private IEnumerable<ToolStripItem> ToolBoxItems => ToolBoxStrip.Items.Cast<ToolStripItem>();
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
 		{
@@ -113,10 +96,8 @@ namespace BizHawk.Client.EmuHawk
 				Close();
 				return true;
 			}
-			else
-			{
-				return base.ProcessCmdKey(ref msg, keyData);
-			}
+
+			return base.ProcessCmdKey(ref msg, keyData);
 		}
 	}
 }

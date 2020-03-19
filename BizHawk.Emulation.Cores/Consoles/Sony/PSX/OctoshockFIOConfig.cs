@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace BizHawk.Emulation.Cores.Sony.PSX
+﻿namespace BizHawk.Emulation.Cores.Sony.PSX
 {
 	/// <summary>
 	/// Represents a user's view of what equipment is plugged into the PSX FIO
@@ -48,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		/// <summary>
 		/// Total number of connected memcards
 		/// </summary>
-		public int NumMemcards { get { return (Memcards[0] ? 1 : 0) + (Memcards[1] ? 1 : 0); } }
+		public int NumMemcards => (Memcards[0] ? 1 : 0) + (Memcards[1] ? 1 : 0);
 
 		internal void PopulateFrom(OctoshockFIOConfigUser userConfig)
 		{

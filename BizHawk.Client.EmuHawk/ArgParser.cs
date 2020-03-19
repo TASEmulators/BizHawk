@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
-using System.Windows.Forms;
 
 namespace BizHawk.Client.EmuHawk
 {
-	class ArgParser
+	public class ArgParser
 	//parses command line arguments and adds the values to a class attribute
 	//default values are null for strings and false for boolean
 	//the last value will overwrite previously set values
@@ -28,6 +27,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool startFullscreen = false;
 		public string luaScript = null;
 		public bool luaConsole = false;
+		public bool printVersion = false;
 		public int socket_port = 0;
 		public string socket_ip = null;
 		public string mmf_filename = null;
@@ -35,6 +35,7 @@ namespace BizHawk.Client.EmuHawk
 		public string URL_post = null;
 		public bool? audiosync = null;
 
+		/// <exception cref="ArgParserException"><c>--socket_ip</c> passed without specifying <c>--socket_port</c> or vice-versa</exception>
 		public void ParseArguments(string[] args)
 		{
 			for (int i = 0; i < args.Length; i++)
@@ -82,6 +83,10 @@ namespace BizHawk.Client.EmuHawk
 
 					// automatically set dump length to maximum frame
 					_autoDumpLength = _currAviWriterFrameList.OrderBy(x => x).Last();
+				}
+				else if (arg.StartsWith("--version"))
+				{
+					printVersion = true;
 				}
 				else if (arg.StartsWith("--dump-name="))
 				{
@@ -156,7 +161,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			//inititalize socket server
+			// initialize socket server
 			if (socket_ip != null && socket_port > 0)
 			{
 				GlobalWin.socketServer = new Communication.SocketServer();
@@ -170,8 +175,10 @@ namespace BizHawk.Client.EmuHawk
 			//initialize mapped memory files
 			if (mmf_filename != null)
 			{
-				GlobalWin.memoryMappedFiles = new Communication.MemoryMappedFiles();
-				GlobalWin.memoryMappedFiles.Filename = mmf_filename;
+				GlobalWin.memoryMappedFiles = new Communication.MemoryMappedFiles
+				{
+					Filename = mmf_filename
+				};
 			}
 		}
 
@@ -180,13 +187,8 @@ namespace BizHawk.Client.EmuHawk
 			return args.FirstOrDefault(arg => arg.StartsWith("--config=", StringComparison.InvariantCultureIgnoreCase))?.Substring(9);
 		}
 	}
-
-	class ArgParserException : Exception
+	public class ArgParserException : Exception
 	{
-		public ArgParserException()
-		{
-		}
-
 		public ArgParserException(string message) : base(message)
 		{
 		}

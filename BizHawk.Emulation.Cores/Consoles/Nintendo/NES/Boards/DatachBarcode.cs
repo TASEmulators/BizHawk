@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -59,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int stream_idx;
 		byte[] data = new byte[0];
 
-		byte streamoutput { get { return data[stream_idx]; } }
+		byte streamoutput => data[stream_idx];
 
 		public void SyncState(Serializer ser)
 		{
@@ -111,8 +107,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void Transfer(string s)
 		{
-			string why;
-			if (!ValidString(s, out why))
+			if (!ValidString(s, out var why))
 				throw new InvalidOperationException(why);
 
 			Reset();

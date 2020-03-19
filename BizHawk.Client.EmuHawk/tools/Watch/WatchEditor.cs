@@ -11,9 +11,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class WatchEditor : Form
 	{
-		public enum Mode { New, Duplicate, Edit };
-
-		private readonly List<Watch> _watchList = new List<Watch>();
+		public enum Mode { New, Duplicate, Edit }
 
 		public Emu.IMemoryDomains MemoryDomains { get; set; }
 
@@ -23,9 +21,9 @@ namespace BizHawk.Client.EmuHawk
 		private bool _changedSize;
 		private bool _changedDisplayType;
 
-		public Mode EditorMode { get { return _mode; } }
-		public List<Watch> Watches { get { return _watchList; } }
-		public Point InitialLocation = new Point(0, 0);
+		public List<Watch> Watches { get; } = new List<Watch>();
+
+		public Point InitialLocation { get; set;  } = new Point(0, 0);
 
 		public WatchEditor()
 		{
@@ -39,6 +37,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Location = InitialLocation;
 			}
+
 			_loading = false;
 			SetAddressBoxProperties();
 
@@ -46,57 +45,46 @@ namespace BizHawk.Client.EmuHawk
 			{
 				default:
 				case Mode.New:
-					switch (MemoryDomains.First().WordSize)
+					SizeDropDown.SelectedItem = MemoryDomains.First().WordSize switch
 					{
-						default:
-						case 1:
-							SizeDropDown.SelectedItem = SizeDropDown.Items[0];
-							break;
-						case 2:
-							SizeDropDown.SelectedItem = SizeDropDown.Items[1];
-							break;
-						case 4:
-							SizeDropDown.SelectedItem = SizeDropDown.Items[2];
-							break;
-					}
+						1 => SizeDropDown.Items[0],
+						2 => SizeDropDown.Items[1],
+						4 => SizeDropDown.Items[2],
+						_ => SizeDropDown.Items[0]
+					};
 					break;
 				case Mode.Duplicate:
 				case Mode.Edit:
-					switch (_watchList[0].Size)
+					SizeDropDown.SelectedItem = Watches[0].Size switch
 					{
-						case WatchSize.Byte:
-							SizeDropDown.SelectedItem = SizeDropDown.Items[0];
-							break;
-						case WatchSize.Word:
-							SizeDropDown.SelectedItem = SizeDropDown.Items[1];
-							break;
-						case WatchSize.DWord:
-							SizeDropDown.SelectedItem = SizeDropDown.Items[2];
-							break;
-					}
+						WatchSize.Byte => SizeDropDown.Items[0],
+						WatchSize.Word => SizeDropDown.Items[1],
+						WatchSize.DWord => SizeDropDown.Items[2],
+						_ => SizeDropDown.SelectedItem
+					};
 
-					var index = DisplayTypeDropDown.Items.IndexOf(Watch.DisplayTypeToString(_watchList[0].Type));
+					var index = DisplayTypeDropDown.Items.IndexOf(Watch.DisplayTypeToString(Watches[0].Type));
 					DisplayTypeDropDown.SelectedItem = DisplayTypeDropDown.Items[index];
 
-					if (_watchList.Count > 1)
+					if (Watches.Count > 1)
 					{
 						NotesBox.Enabled = false;
 						NotesBox.Text = "";
 
 						AddressBox.Enabled = false;
-						AddressBox.Text = _watchList.Select(a => a.AddressString).Aggregate((addrStr, nextStr) => $"{addrStr},{nextStr}");
+						AddressBox.Text = Watches.Select(a => a.AddressString).Aggregate((addrStr, nextStr) => $"{addrStr},{nextStr}");
 
 						BigEndianCheckBox.ThreeState = true;
 
-						if (_watchList.Select(s => s.Size).Distinct().Count() > 1)
+						if (Watches.Select(s => s.Size).Distinct().Count() > 1)
 						{
 							DisplayTypeDropDown.Enabled = false;
 						}
 					}
 					else
 					{
-						NotesBox.Text = _watchList[0].Notes;
-						AddressBox.SetFromLong(_watchList[0].Address);
+						NotesBox.Text = Watches[0].Notes;
+						AddressBox.SetFromLong(Watches[0].Address);
 					}
 
 					SetBigEndianCheckBox();
@@ -109,7 +97,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (watches != null)
 			{
-				_watchList.AddRange(watches);
+				Watches.AddRange(watches);
 			}
 
 			_mode = mode;
@@ -117,6 +105,7 @@ namespace BizHawk.Client.EmuHawk
 			DomainDropDown.Items.Clear();
 			DomainDropDown.Items.AddRange(MemoryDomains
 				.Select(d => d.ToString())
+				.Cast<object>()
 				.ToArray());
 			DomainDropDown.SelectedItem = domain.ToString();
 
@@ -125,19 +114,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetTitle()
 		{
-			switch (_mode)
+			Text = _mode switch
 			{
-				default:
-				case Mode.New:
-					Text = "New Watch";
-					break;
-				case Mode.Edit:
-					Text = $"Edit {(_watchList.Count == 1 ? "Watch" : "Watches")}";
-					break;
-				case Mode.Duplicate:
-					Text = "Duplicate Watch";
-					break;
-			}
+				Mode.New => "New Watch",
+				Mode.Edit => $"Edit {(Watches.Count == 1 ? "Watch" : "Watches")}",
+				Mode.Duplicate => "Duplicate Watch",
+				_ => "New Watch"
+			};
 		}
 
 		private void SetAddressBoxProperties()
@@ -160,7 +143,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				default:
 				case 0:
-					foreach(DisplayType t in ByteWatch.ValidTypes)
+					foreach (DisplayType t in ByteWatch.ValidTypes)
 					{
 						DisplayTypeDropDown.Items.Add(Watch.DisplayTypeToString(t));
 					}
@@ -186,37 +169,34 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetBigEndianCheckBox()
 		{
-			if (_watchList != null)
+			if (Watches.Count > 1)
 			{
-				if (_watchList.Count > 1)
-				{
-					// Aggregate state
-					var hasBig = _watchList.Any(x => x.BigEndian);
-					var hasLittle = _watchList.Any(x => x.BigEndian == false);
+				// Aggregate state
+				var hasBig = Watches.Any(x => x.BigEndian);
+				var hasLittle = Watches.Any(x => x.BigEndian == false);
 
-					if (hasBig && hasLittle)
-					{
-						BigEndianCheckBox.Checked = true;
-						BigEndianCheckBox.CheckState = CheckState.Indeterminate;
-					}
-					else if (hasBig)
-					{
-						BigEndianCheckBox.Checked = true;
-					}
-					else
-					{
-						BigEndianCheckBox.Checked = false;
-					}
-				}
-				else if (_watchList.Count == 1)
+				if (hasBig && hasLittle)
 				{
-					BigEndianCheckBox.Checked = _watchList[0].BigEndian;
-					return;
+					BigEndianCheckBox.Checked = true;
+					BigEndianCheckBox.CheckState = CheckState.Indeterminate;
+				}
+				else if (hasBig)
+				{
+					BigEndianCheckBox.Checked = true;
+				}
+				else
+				{
+					BigEndianCheckBox.Checked = false;
 				}
 			}
+			else if (Watches.Count == 1)
+			{
+				BigEndianCheckBox.Checked = Watches[0].BigEndian;
+				return;
+			}
 
-			var domain = MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString()) ??
-						 MemoryDomains.MainMemory;
+			var domain = MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString())
+				?? MemoryDomains.MainMemory;
 			BigEndianCheckBox.Checked = domain.EndianType == Emu.MemoryDomain.Endian.Big;
 		}
 
@@ -240,17 +220,17 @@ namespace BizHawk.Client.EmuHawk
 					var address = AddressBox.ToLong() ?? 0;
 					var notes = NotesBox.Text;
 					var type = Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString());
-					var bigendian = BigEndianCheckBox.Checked;
+					var bigEndian = BigEndianCheckBox.Checked;
 					switch (SizeDropDown.SelectedIndex)
 					{
 						case 0:
-							_watchList.Add(Watch.GenerateWatch(domain, address, WatchSize.Byte, type, bigendian, notes));
+							Watches.Add(Watch.GenerateWatch(domain, address, WatchSize.Byte, type, bigEndian, notes));
 							break;
 						case 1:
-							_watchList.Add(Watch.GenerateWatch(domain, address, WatchSize.Word, type, bigendian, notes));
+							Watches.Add(Watch.GenerateWatch(domain, address, WatchSize.Word, type, bigEndian, notes));
 							break;
 						case 2:
-							_watchList.Add(Watch.GenerateWatch(domain, address, WatchSize.DWord, type, bigendian, notes));
+							Watches.Add(Watch.GenerateWatch(domain, address, WatchSize.DWord, type, bigEndian, notes));
 							break;
 					}
 
@@ -260,11 +240,11 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case Mode.Duplicate:
 					var tempWatchList = new List<Watch>();
-					tempWatchList.AddRange(_watchList);
-					_watchList.Clear();
+					tempWatchList.AddRange(Watches);
+					Watches.Clear();
 					foreach (var watch in tempWatchList)
 					{
-						_watchList.Add(Watch.GenerateWatch(
+						Watches.Add(Watch.GenerateWatch(
 								watch.Domain,
 								watch.Address,
 								watch.Size,
@@ -282,47 +262,40 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DoEdit()
 		{
-			if (_watchList.Count == 1)
+			if (Watches.Count == 1)
 			{
-				_watchList[0].Notes = NotesBox.Text;
+				Watches[0].Notes = NotesBox.Text;
 			}
 
 			if (_changedSize)
 			{
-				for (var i = 0; i < _watchList.Count; i++)
+				for (var i = 0; i < Watches.Count; i++)
 				{
-					var size = WatchSize.Byte;
-					switch (SizeDropDown.SelectedIndex)
+					var size = SizeDropDown.SelectedIndex switch
 					{
-						case 0:
-							size = WatchSize.Byte;
-							break;
-						case 1:
-							size = WatchSize.Word;
-							break;
-						case 2:
-							size = WatchSize.DWord;
-							break;
-					}
+						1 => WatchSize.Word,
+						2 => WatchSize.DWord,
+						_ => WatchSize.Byte
+					};
 
-					_watchList[i] = Watch.GenerateWatch(
-						_watchList[i].Domain,
-						_watchList.Count == 1 ? AddressBox.ToRawInt() ?? 0 : _watchList[i].Address,
+					Watches[i] = Watch.GenerateWatch(
+						Watches[i].Domain,
+						Watches.Count == 1 ? AddressBox.ToRawInt() ?? 0 : Watches[i].Address,
 						size,
-						_watchList[i].Type,
-						_watchList[i].BigEndian,
-						_watchList[i].Notes);
+						Watches[i].Type,
+						Watches[i].BigEndian,
+						Watches[i].Notes);
 				}
 			}
 
 			if (_changedDisplayType)
 			{
-				_watchList.ForEach(x => x.Type = Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString()));
+				Watches.ForEach(x => x.Type = Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString()));
 			}
 
 			if (BigEndianCheckBox.CheckState != CheckState.Indeterminate)
 			{
-				_watchList.ForEach(x => x.BigEndian = BigEndianCheckBox.Checked);
+				Watches.ForEach(x => x.BigEndian = BigEndianCheckBox.Checked);
 			}
 		}
 

@@ -35,9 +35,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
 			this.Name = "RegisterBoxControl";
 			this.Size = new System.Drawing.Size(240, 217);
-			this.Load += new System.EventHandler(this.RegisterBoxControl_Load);
 			this.ResumeLayout(false);
-
 		}
 
 		#endregion

@@ -1,10 +1,4 @@
-﻿using BizHawk.Common;
-using BizHawk.Common.NumberExtensions;
-using System;
-
-using BizHawk.Emulation.Common.Components.MC6809;
-
-namespace BizHawk.Emulation.Cores.Consoles.Vectrex
+﻿namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 {
 	// Default mapper with no bank switching
 	// make sure peekmemory and poke memory don't effect the rest of the system!

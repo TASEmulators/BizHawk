@@ -1,20 +1,7 @@
-using System;
-using System.Linq;
-using System.Diagnostics;
-using System.Collections.Generic;
-using System.IO;
 using System.Drawing;
-
-using BizHawk.Common;
-using BizHawk.Client.Common;
-using BizHawk.Client.EmuHawk;
 using BizHawk.Client.EmuHawk.FilterManager;
 
 using BizHawk.Bizware.BizwareGL;
-using BizHawk.Bizware.BizwareGL.Drivers.OpenTK;
-
-using OpenTK;
-using OpenTK.Graphics;
 
 namespace BizHawk.Client.EmuHawk.Filters
 {
@@ -22,12 +9,12 @@ namespace BizHawk.Client.EmuHawk.Filters
 	{
 		public SourceImage(Size size)
 		{
-			this.Size = size;
+			_size = size;
 		}
 
-		Size Size;
+		private readonly Size _size;
 
-		public Texture2d Texture;
+		public Texture2d Texture { get; set; }
 
 		public override void Run()
 		{
@@ -36,7 +23,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 
 		public override void Initialize()
 		{
-			DeclareOutput(new SurfaceState(new SurfaceFormat(Size), SurfaceDisposition.Texture));
+			DeclareOutput(new SurfaceState(new SurfaceFormat(_size), SurfaceDisposition.Texture));
 		}
 
 		public override void SetInputFormat(string channel, SurfaceState format)
@@ -48,7 +35,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 	/// <summary>
 	/// transforms an input texture to an output render target (by rendering it)
 	/// </summary>
-	class Render : BaseFilter
+	public class Render : BaseFilter
 	{
 		public override void Initialize()
 		{
@@ -70,7 +57,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 		}
 	}
 
-	class Resolve : BaseFilter
+	public class Resolve : BaseFilter
 	{
 		public override void Initialize()
 		{

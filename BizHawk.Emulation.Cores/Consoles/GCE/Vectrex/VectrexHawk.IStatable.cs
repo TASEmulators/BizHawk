@@ -1,43 +1,10 @@
 ﻿using System.IO;
-
 using BizHawk.Common;
-using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 {
-	public partial class VectrexHawk : IStatable
+	public partial class VectrexHawk
 	{
-		public bool BinarySaveStatesPreferred => true;
-
-		public void SaveStateText(TextWriter writer)
-		{
-			SyncState(new Serializer(writer));
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			SyncState(new Serializer(reader));
-		}
-
-		public void SaveStateBinary(BinaryWriter bw)
-		{
-			SyncState(new Serializer(bw));
-		}
-
-		public void LoadStateBinary(BinaryReader br)
-		{
-			SyncState(new Serializer(br));
-		}
-
-		public byte[] SaveStateBinary()
-		{
-			MemoryStream ms = new MemoryStream();
-			BinaryWriter bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			return ms.ToArray();
-		}
-
 		private void SyncState(Serializer ser)
 		{
 			byte[] core = null;
@@ -48,13 +15,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 				core = ms.ToArray();
 			}
 
+			ser.BeginSection("VECTREX");
+
 			cpu.SyncState(ser);
 			mapper.SyncState(ser);
 			ppu.SyncState(ser);
 			serialport.SyncState(ser);
 			audio.SyncState(ser);
-
-			ser.BeginSection("VECTREX");
 
 			ser.Sync(nameof(RAM), ref RAM, false);
 

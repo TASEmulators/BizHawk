@@ -15,11 +15,7 @@ namespace BizHawk.Client.Common
 
 		public string SyncSettingsJson
 		{
-			get
-			{
-				return _syncSettingsJson;
-			}
-
+			get => _syncSettingsJson;
 			set
 			{
 				if (_syncSettingsJson != value)
@@ -34,75 +30,57 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				if (!Header.ContainsKey(HeaderKeys.RERECORDS))
+				if (!Header.ContainsKey(HeaderKeys.Rerecords))
 				{
-					Header[HeaderKeys.RERECORDS] = "0";
+					Header[HeaderKeys.Rerecords] = "0";
 				}
 
-				return ulong.Parse(Header[HeaderKeys.RERECORDS]);
+				return ulong.Parse(Header[HeaderKeys.Rerecords]);
 			}
 
 			set
 			{
-				if (Header[HeaderKeys.RERECORDS] != value.ToString())
+				if (Header[HeaderKeys.Rerecords] != value.ToString())
 				{
 					Changes = true;
-					Header[HeaderKeys.RERECORDS] = value.ToString();
+					Header[HeaderKeys.Rerecords] = value.ToString();
 				}
 			}
 		}
 
 		public bool StartsFromSavestate
 		{
-			get
-			{
-				if (Header.ContainsKey(HeaderKeys.STARTSFROMSAVESTATE))
-				{
-					return bool.Parse(Header[HeaderKeys.STARTSFROMSAVESTATE]);
-				}
-
-				return false;
-			}
-
+			get => Header.ContainsKey(HeaderKeys.StartsFromSavestate) && bool.Parse(Header[HeaderKeys.StartsFromSavestate]);
 			set
 			{
 				if (value)
 				{
-					Header[HeaderKeys.STARTSFROMSAVESTATE] = "True";
+					Header[HeaderKeys.StartsFromSavestate] = "True";
 				}
 				else
 				{
-					Header.Remove(HeaderKeys.STARTSFROMSAVESTATE);
+					Header.Remove(HeaderKeys.StartsFromSavestate);
 				}
 			}
 		}
 
 		public bool StartsFromSaveRam
 		{
-			get
-			{
-				if (Header.ContainsKey(HeaderKeys.STARTSFROMSAVERAM))
-				{
-					return bool.Parse(Header[HeaderKeys.STARTSFROMSAVERAM]);
-				}
-
-				return false;
-			}
-
+			get => Header.ContainsKey(HeaderKeys.StartsFromSaveram) && bool.Parse(Header[HeaderKeys.StartsFromSaveram]);
 			set
 			{
 				if (value)
 				{
-					if (!Header.ContainsKey(HeaderKeys.STARTSFROMSAVERAM))
+					if (!Header.ContainsKey(HeaderKeys.StartsFromSaveram))
 					{
-						Header.Add(HeaderKeys.STARTSFROMSAVERAM, "True");
+						Header.Add(HeaderKeys.StartsFromSaveram, "True");
 					}
 				}
 				else
 				{
-					if (Header.ContainsKey(HeaderKeys.STARTSFROMSAVERAM))
+					if (Header.ContainsKey(HeaderKeys.StartsFromSaveram))
 					{
-						Header.Remove(HeaderKeys.STARTSFROMSAVERAM);
+						Header.Remove(HeaderKeys.StartsFromSaveram);
 					}
 				}
 			}
@@ -110,146 +88,104 @@ namespace BizHawk.Client.Common
 
 		public string GameName
 		{
-			get
-			{
-				if (Header.ContainsKey(HeaderKeys.GAMENAME))
-				{
-					return Header[HeaderKeys.GAMENAME];
-				}
-
-				return "";
-			}
-
+			get => Header.ContainsKey(HeaderKeys.GameName) ? Header[HeaderKeys.GameName] : "";
 			set
 			{
-				if (Header[HeaderKeys.GAMENAME] != value)
+				if (Header[HeaderKeys.GameName] != value)
 				{
 					Changes = true;
-					Header[HeaderKeys.GAMENAME] = value;
+					Header[HeaderKeys.GameName] = value;
 				}
 			}
 		}
 
 		public string SystemID
 		{
-			get
-			{
-				if (Header.ContainsKey(HeaderKeys.PLATFORM))
-				{
-					return Header[HeaderKeys.PLATFORM];
-				}
-
-				return "";
-			}
-
+			get => Header.ContainsKey(HeaderKeys.Platform) ? Header[HeaderKeys.Platform] : "";
 			set
 			{
-				if (Header[HeaderKeys.PLATFORM] != value)
+				if (Header[HeaderKeys.Platform] != value)
 				{
 					Changes = true;
-					Header[HeaderKeys.PLATFORM] = value;
+					Header[HeaderKeys.Platform] = value;
 				}
 			}
 		}
 
 		public string Hash
 		{
-			get
-			{
-				return Header[HeaderKeys.SHA1];
-			}
-
+			get => Header[HeaderKeys.Sha1];
 			set
 			{
-				if (Header[HeaderKeys.SHA1] != value)
+				if (Header[HeaderKeys.Sha1] != value)
 				{
 					Changes = true;
-					Header[HeaderKeys.SHA1] = value;
+					Header[HeaderKeys.Sha1] = value;
 				}
 			}
 		}
 
 		public string Author
 		{
-			get
-			{
-				return Header[HeaderKeys.AUTHOR];
-			}
-
+			get => Header[HeaderKeys.Author];
 			set
 			{
-				if (Header[HeaderKeys.AUTHOR] != value)
+				if (Header[HeaderKeys.Author] != value)
 				{
 					Changes = true;
-					Header[HeaderKeys.AUTHOR] = value;
+					Header[HeaderKeys.Author] = value;
 				}
 			}
 		}
 
 		public string Core
 		{
-			get
-			{
-				return Header[HeaderKeys.CORE];
-			}
-
+			get => Header[HeaderKeys.Core];
 			set
 			{
-				if (Header[HeaderKeys.CORE] != value)
+				if (Header[HeaderKeys.Core] != value)
 				{
 					Changes = true;
-					Header[HeaderKeys.CORE] = value;
+					Header[HeaderKeys.Core] = value;
 				}
 			}
 		}
 
 		public string BoardName
 		{
-			get
-			{
-				return Header[HeaderKeys.BOARDNAME];
-			}
-
+			get => Header[HeaderKeys.BoardName];
 			set
 			{
-				if (Header[HeaderKeys.BOARDNAME] != value)
+				if (Header[HeaderKeys.BoardName] != value)
 				{
 					Changes = true;
-					Header[HeaderKeys.BOARDNAME] = value;
+					Header[HeaderKeys.BoardName] = value;
 				}
 			}
 		}
 
 		public string EmulatorVersion
 		{
-			get
-			{
-				return Header[HeaderKeys.EMULATIONVERSION];
-			}
-
+			get => Header[HeaderKeys.EmulationVersion];
 			set
 			{
-				if (Header[HeaderKeys.EMULATIONVERSION] != value)
+				if (Header[HeaderKeys.EmulationVersion] != value)
 				{
 					Changes = true;
-					Header[HeaderKeys.EMULATIONVERSION] = value;
+					Header[HeaderKeys.EmulationVersion] = value;
 				}
 			}
 		}
 
 		public string FirmwareHash
 		{
-			get
-			{
-				return Header[HeaderKeys.FIRMWARESHA1];
-			}
-
+			get => Header[HeaderKeys.FirmwareSha1];
 			set
 			{
-				if (Header[HeaderKeys.FIRMWARESHA1] != value)
+				if (Header[HeaderKeys.FirmwareSha1] != value)
 				{
 					Changes = true;
-					Header[HeaderKeys.FIRMWARESHA1] = value;
+					Header[HeaderKeys.FirmwareSha1] = value;
 				}
 			}
 		}
@@ -258,7 +194,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				var offsetStr = Header[HeaderKeys.LOOPOFFSET];
+				var offsetStr = Header[HeaderKeys.LoopOffset];
 				if (!string.IsNullOrWhiteSpace(offsetStr))
 				{
 					return int.Parse(offsetStr);
@@ -271,11 +207,11 @@ namespace BizHawk.Client.Common
 			{
 				if (value.HasValue)
 				{
-					Header[HeaderKeys.LOOPOFFSET] = value.ToString();
+					Header[HeaderKeys.LoopOffset] = value.ToString();
 				}
 				else
 				{
-					Header.Remove(HeaderKeys.LOOPOFFSET);
+					Header.Remove(HeaderKeys.LoopOffset);
 				}
 			}
 		}

@@ -1,16 +1,12 @@
 ﻿using BizHawk.Common;
-using BizHawk.Common.BizInvoke;
+using BizHawk.BizInvoke;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Sound;
 using BizHawk.Emulation.Cores.Waterbox;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Consoles.SNK
@@ -210,9 +206,9 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 				_push = push;
 				_pull = pull;
 				_exporter = BizExvoker.GetExvoker(this, CallingConventionAdapters.Waterbox);
-				_readcb = _exporter.SafeResolve("CommsReadCallback");
-				_pollcb = _exporter.SafeResolve("CommsPollCallback");
-				_writecb = _exporter.SafeResolve("CommsWriteCallback");
+				_readcb = _exporter.GetProcAddrOrThrow("CommsReadCallback");
+				_pollcb = _exporter.GetProcAddrOrThrow("CommsPollCallback");
+				_writecb = _exporter.GetProcAddrOrThrow("CommsWriteCallback");
 				ConnectPointers();
 			}
 

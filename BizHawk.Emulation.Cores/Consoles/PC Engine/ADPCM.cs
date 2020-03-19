@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 	{
 		ScsiCDBus SCSI;
 		PCEngine pce;
-		MetaspuSoundProvider SoundProvider = new MetaspuSoundProvider(ESynchMethod.Vecna);
+		MetaspuSoundProvider SoundProvider = new MetaspuSoundProvider();
 
 		// ***************************************************************************
 
@@ -30,9 +30,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public bool AdpcmIsPlaying;
 		public bool HalfReached;
 		public bool EndReached;
-		public bool AdpcmBusyWriting { get { return AdpcmCdDmaRequested; } }
-		public bool AdpcmBusyReading { get { return ReadPending; } }
-		public bool AdpcmCdDmaRequested { get { return (Port180B & 3) != 0; } }
+		public bool AdpcmBusyWriting => AdpcmCdDmaRequested;
+		public bool AdpcmBusyReading => ReadPending;
+		public bool AdpcmCdDmaRequested => (Port180B & 3) != 0;
 
 		// ***************************************************************************
 
@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		byte port180E;
 		public byte Port180E
 		{
-			get { return port180E; }
+			get => port180E;
 			set
 			{
 				port180E = value;
@@ -109,7 +109,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			if (AdpcmIsPlaying == false && (value & 0x20) != 0)
 			{
 				if ((value & 0x40) == 0)
-					Console.WriteLine("a thing thats normally set is not set");
+					Console.WriteLine("a thing that's normally set is not set");
 
 				AdpcmIsPlaying = true;
 				playingSample = 2048;

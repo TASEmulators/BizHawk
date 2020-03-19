@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 
-using BizHawk.Common.BufferExtensions;
-
-//some old junk
-
+// some old junk
 namespace BizHawk.Emulation.DiscSystem
 {
 	[Serializable]
@@ -14,11 +10,9 @@ namespace BizHawk.Emulation.DiscSystem
 			: base($"A disc attempted to reference a file which could not be accessed or loaded: {fname}", inner)
 		{
 		}
-		public DiscReferenceException(string fname, string extrainfo)
-			: base($"A disc attempted to reference a file which could not be accessed or loaded:\n\n{fname}\n\n{extrainfo}")
+		public DiscReferenceException(string fname, string extraInfo)
+			: base($"A disc attempted to reference a file which could not be accessed or loaded:\n\n{fname}\n\n{extraInfo}")
 		{
 		}
 	}
-
-	
 }

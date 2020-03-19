@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BizHawk.Client.Common.Miniz
 {
@@ -14,6 +10,7 @@ namespace BizHawk.Client.Common.Miniz
 		private uint _flags;
 		private static readonly byte[] _shitcock = new byte[32 * 1024 * 1024];
 
+		/// <exception cref="InvalidOperationException">unmanaged call failed</exception>
 		public MinizZipWriter(string path, int compressionlevel)
 		{
 			_zip = Marshal.AllocHGlobal(128);
@@ -54,6 +51,7 @@ namespace BizHawk.Client.Common.Miniz
 			}
 		}
 
+		/// <exception cref="InvalidOperationException">unmanaged call failed</exception>
 		public void WriteItem(string name, Action<Stream> callback)
 		{
 			lock (_shitcock)

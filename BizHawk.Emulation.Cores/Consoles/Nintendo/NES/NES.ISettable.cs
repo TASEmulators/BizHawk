@@ -1,24 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using System.ComponentModel;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public partial class NES : ISettable<NES.NESSettings, NES.NESSyncSettings>
 	{
-		public NESSettings GetSettings()
-		{
-			return Settings.Clone();
-		}
+		public NESSettings GetSettings() => Settings.Clone();
 
-		public NESSyncSettings GetSyncSettings()
-		{
-			return SyncSettings.Clone();
-		}
+		public NESSyncSettings GetSyncSettings() => SyncSettings.Clone();
 
 		public bool PutSettings(NESSettings o)
 		{
@@ -64,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				NTSC,
 				PAL,
 				Dendy
-			};
+			}
 
 			public Region RegionOverride = Region.Default;
 

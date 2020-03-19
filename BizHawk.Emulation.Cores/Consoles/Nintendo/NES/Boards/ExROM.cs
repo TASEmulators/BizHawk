@@ -1,5 +1,4 @@
 ﻿using System;
-
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components;
@@ -18,7 +17,7 @@ using BizHawk.Emulation.Cores.Components;
 //FUTURE - we may need to split this into a separate MMC5 class. but for now it is just a pain.
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	[NES.INESBoardImplPriority]
+	[NES.INESBoardImplPriorityAttribute]
 	public sealed class ExROM : NES.NESBoardBase
 	{
 		//configuraton
@@ -55,12 +54,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// use with caution
 		/// </summary>
-		public byte[] GetExRAMArray()
-		{
-			return EXRAM;
-		}
+		public byte[] GetExRAMArray() => EXRAM;
 
-		public bool ExAttrActive { get { return exram_mode == 1; } }
+		public bool ExAttrActive => exram_mode == 1;
 
 		public override void SyncState(Serializer ser)
 		{
@@ -140,7 +136,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			PoweronState();
 
 			if (NES.apu != null)
-				audio = new MMC5Audio(NES.apu.ExternalQueue, (e) => { irq_audio = e; SyncIRQ(); });
+				audio = new MMC5Audio(NES.apu.ExternalQueue, e => { irq_audio = e; SyncIRQ(); });
 
 			return true;
 		}
@@ -216,10 +212,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		byte ReadWRAMActual(int bank, int offs)
 		{
 			int? bbank = MaskWRAM(bank);
-			if (bbank.HasValue)
-				return WRAM[(int)bbank << 13 | offs];
-			else
-				return NES.DB;
+			return bbank.HasValue
+				? WRAM[(int)bbank << 13 | offs]
+				: NES.DB;
 		}
 
 		//this could be handy, but probably not. I did it on accident.
@@ -269,10 +264,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					bank_1k = b_banks_1k[bank_1k];
 				else
 				{
-					if (ab_mode == 0)
-						bank_1k = a_banks_1k[bank_1k];
-					else
-						bank_1k = b_banks_1k[bank_1k];
+					bank_1k = ab_mode == 0
+						? a_banks_1k[bank_1k]
+						: b_banks_1k[bank_1k];
 				}
 			}
 			else
@@ -292,58 +286,56 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr = MapCHR(addr);
 				return (VROM ?? VRAM)[addr];
 			}
+
+			addr -= 0x2000;
+			int nt_entry = addr & 0x3FF;
+			if (nt_entry < 0x3C0)
+			{
+				//track the last nametable entry read so that subsequent pattern and attribute reads will know which exram address to use
+				last_nt_read = nt_entry;
+			}
 			else
 			{
-				addr -= 0x2000;
-				int nt_entry = addr & 0x3FF;
-				if (nt_entry < 0x3C0)
+				//attribute table
+				if (exram_mode == 1)
 				{
-					//track the last nametable entry read so that subsequent pattern and attribute reads will know which exram address to use
-					last_nt_read = nt_entry;
+					//attribute will be in the top 2 bits of the exram byte
+					int exram_addr = last_nt_read;
+					int attribute = EXRAM[exram_addr] >> 6;
+					//calculate tile address by getting x/y from last nametable
+					int tx = last_nt_read & 0x1F;
+					int ty = last_nt_read / 32;
+					//attribute table address is just these coords shifted
+					int atx = tx >> 1;
+					int aty = ty >> 1;
+					//figure out how we need to shift the attribute to fake out the ppu
+					int at_shift = ((aty & 1) << 1) + (atx & 1);
+					at_shift <<= 1;
+					attribute <<= at_shift;
+					return (byte)attribute;
 				}
-				else
-				{
-					//attribute table
-					if (exram_mode == 1)
-					{
-						//attribute will be in the top 2 bits of the exram byte
-						int exram_addr = last_nt_read;
-						int attribute = EXRAM[exram_addr] >> 6;
-						//calculate tile address by getting x/y from last nametable
-						int tx = last_nt_read & 0x1F;
-						int ty = last_nt_read / 32;
-						//attribute table address is just these coords shifted
-						int atx = tx >> 1;
-						int aty = ty >> 1;
-						//figure out how we need to shift the attribute to fake out the ppu
-						int at_shift = ((aty & 1) << 1) + (atx & 1);
-						at_shift <<= 1;
-						attribute <<= at_shift;
-						return (byte)attribute;
-					}
-				}
-				int nt = (addr >> 10) & 3; // &3 to read from the NT mirrors at 3xxx
-				int offset = addr & ((1 << 10) - 1);
-				nt = nt_modes[nt];
-				switch (nt)
-				{
-					case 0: //NES internal NTA
-						return NES.CIRAM[offset];
-					case 1: //NES internal NTB
-						return NES.CIRAM[0x400 | offset];
-					case 2: //use ExRAM as NT
-						//TODO - additional r/w security
-						if (exram_mode >= 2)
-							return 0;
-						else
-							return EXRAM[offset];
-					case 3: // Fill Mode
-						if (offset >= 0x3c0)
-							return nt_fill_attrib;
-						else
-							return nt_fill_tile;
-					default: throw new Exception();
-				}
+			}
+			int nt = (addr >> 10) & 3; // &3 to read from the NT mirrors at 3xxx
+			int offset = addr & ((1 << 10) - 1);
+			nt = nt_modes[nt];
+			switch (nt)
+			{
+				case 0: //NES internal NTA
+					return NES.CIRAM[offset];
+				case 1: //NES internal NTB
+					return NES.CIRAM[0x400 | offset];
+				case 2: //use ExRAM as NT
+					//TODO - additional r/w security
+					if (exram_mode >= 2)
+						return 0;
+					else
+						return EXRAM[offset];
+				case 3: // Fill Mode
+					if (offset >= 0x3c0)
+						return nt_fill_attrib;
+					else
+						return nt_fill_tile;
+				default: throw new Exception();
 			}
 		}
 
@@ -354,58 +346,56 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr = MapCHR(addr);
 				return (VROM ?? VRAM)[addr];
 			}
+
+			addr -= 0x2000;
+			int nt_entry = addr & 0x3FF;
+			if (nt_entry < 0x3C0)
+			{
+				//track the last nametable entry read so that subsequent pattern and attribute reads will know which exram address to use
+				//last_nt_read = nt_entry;
+			}
 			else
 			{
-				addr -= 0x2000;
-				int nt_entry = addr & 0x3FF;
-				if (nt_entry < 0x3C0)
+				//attribute table
+				if (exram_mode == 1)
 				{
-					//track the last nametable entry read so that subsequent pattern and attribute reads will know which exram address to use
-					//last_nt_read = nt_entry;
+					//attribute will be in the top 2 bits of the exram byte
+					int exram_addr = last_nt_read;
+					int attribute = EXRAM[exram_addr] >> 6;
+					//calculate tile address by getting x/y from last nametable
+					int tx = last_nt_read & 0x1F;
+					int ty = last_nt_read / 32;
+					//attribute table address is just these coords shifted
+					int atx = tx >> 1;
+					int aty = ty >> 1;
+					//figure out how we need to shift the attribute to fake out the ppu
+					int at_shift = ((aty & 1) << 1) + (atx & 1);
+					at_shift <<= 1;
+					attribute <<= at_shift;
+					return (byte)attribute;
 				}
-				else
-				{
-					//attribute table
-					if (exram_mode == 1)
-					{
-						//attribute will be in the top 2 bits of the exram byte
-						int exram_addr = last_nt_read;
-						int attribute = EXRAM[exram_addr] >> 6;
-						//calculate tile address by getting x/y from last nametable
-						int tx = last_nt_read & 0x1F;
-						int ty = last_nt_read / 32;
-						//attribute table address is just these coords shifted
-						int atx = tx >> 1;
-						int aty = ty >> 1;
-						//figure out how we need to shift the attribute to fake out the ppu
-						int at_shift = ((aty & 1) << 1) + (atx & 1);
-						at_shift <<= 1;
-						attribute <<= at_shift;
-						return (byte)attribute;
-					}
-				}
-				int nt = (addr >> 10) & 3; // &3 to read from the NT mirrors at 3xxx
-				int offset = addr & ((1 << 10) - 1);
-				nt = nt_modes[nt];
-				switch (nt)
-				{
-					case 0: //NES internal NTA
-						return NES.CIRAM[offset];
-					case 1: //NES internal NTB
-						return NES.CIRAM[0x400 | offset];
-					case 2: //use ExRAM as NT
-						//TODO - additional r/w security
-						if (exram_mode >= 2)
-							return 0;
-						else
-							return EXRAM[offset];
-					case 3: // Fill Mode
-						if (offset >= 0x3c0)
-							return nt_fill_attrib;
-						else
-							return nt_fill_tile;
-					default: throw new Exception();
-				}
+			}
+			int nt = (addr >> 10) & 3; // &3 to read from the NT mirrors at 3xxx
+			int offset = addr & ((1 << 10) - 1);
+			nt = nt_modes[nt];
+			switch (nt)
+			{
+				case 0: //NES internal NTA
+					return NES.CIRAM[offset];
+				case 1: //NES internal NTB
+					return NES.CIRAM[0x400 | offset];
+				case 2: //use ExRAM as NT
+					//TODO - additional r/w security
+					if (exram_mode >= 2)
+						return 0;
+					else
+						return EXRAM[offset];
+				case 3: // Fill Mode
+					if (offset >= 0x3c0)
+						return nt_fill_attrib;
+					else
+						return nt_fill_tile;
+				default: throw new Exception();
 			}
 		}
 
@@ -442,22 +432,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void WriteWRAM(int addr, byte value)
-		{
-			WriteWRAMActual(wram_bank, addr & 0x1fff, value);
-		}
+		public override void WriteWRAM(int addr, byte value) => WriteWRAMActual(wram_bank, addr & 0x1fff, value);
 
-		public override byte ReadWRAM(int addr)
-		{
-			return ReadWRAMActual(wram_bank, addr & 0x1fff);
-		}
+		public override byte ReadWRAM(int addr) => ReadWRAMActual(wram_bank, addr & 0x1fff);
 
 		public override byte ReadPRG(int addr)
 		{
-			bool ram;
 			byte ret;
 			int offs = addr & 0x1fff;
-			int bank = PRGGetBank(addr, out ram);
+			int bank = PRGGetBank(addr, out var ram);
 
 			if (ram)
 				ret = ReadWRAMActual(bank, offs);
@@ -472,18 +455,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr >= 0x8000)
 				return PeekPRG(addr - 0x8000);
-			else if (addr >= 0x6000)
+			if (addr >= 0x6000)
 				return ReadWRAM(addr - 0x6000);
-			else
-				return PeekEXP(addr - 0x4000);
+			return PeekEXP(addr - 0x4000);
 		}
 
 		public byte PeekPRG(int addr)
 		{
-			bool ram;
 			byte ret;
 			int offs = addr & 0x1fff;
-			int bank = PRGGetBank(addr, out ram);
+			int bank = PRGGetBank(addr, out var ram);
 
 			if (ram)
 				ret = ReadWRAMActual(bank, offs);
@@ -496,8 +477,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WritePRG(int addr, byte value)
 		{
-			bool ram;
-			int bank = PRGGetBank(addr, out ram);
+			int bank = PRGGetBank(addr, out var ram);
 			if (ram)
 				WriteWRAMActual(bank, addr & 0x1fff, value);
 		}

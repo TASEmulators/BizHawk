@@ -1,9 +1,8 @@
-﻿using System;
-using BizHawk.Common;
+﻿using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
-	public partial class TIA
+	public sealed partial class TIA
 	{
 		public class Audio
 		{
@@ -110,18 +109,17 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 							One5();
 							on = One4();
 							break;
-
 						case 0x01:
 							// Both run, but the 5 bit is ignored
 							on = Run4();
-							//Run5();
+							Run5();
 							break;
 						case 0x02:
 							if ((sr5 & 0x0f) == 0 || (sr5 & 0x0f) == 0x0f)
 							{
 								on = Run4();
+								Run5();
 							}
-
 							Run5();
 							break;
 						case 0x03:
@@ -129,21 +127,17 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 							{
 								on = Run4();
 							}
-
 							break;
-
 						case 0x04:
 							Run5();
 							One4();
 							on = Run1();
 							break;
-
 						case 0x05:
 							One5();
 							Run4();
 							on = Run1();
 							break;
-							
 						case 0x06:
 						case 0x0a:
 							Run5();
@@ -155,14 +149,11 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 							{
 								on = true;
 							}
-
 							break;
-
 						case 0x07:
 						case 0x09:
 							on = Run5();
 							break;
-							
 						case 0x08:
 							on = Run9();
 							break;
@@ -172,21 +163,22 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 							{
 								on = Run1();
 							}
-
 							break;
 						case 0x0e:
 							if (Run3())
 							{
 								goto case 0x06;
 							}
-
 							break;
 						case 0x0f:
-							if (Run3())
+							// poly5 output to div 6
+							if (Run5())
 							{
-								goto case 0x07;
+								if (Run3())
+								{
+									on = Run1();
+								}
 							}
-
 							break;
 					}
 				}
