@@ -94,13 +94,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			ControllerDefinition.BoolButtons.Add("Touch");
 			ControllerDefinition.FloatControls.Add("TouchX");
-			ControllerDefinition.FloatRanges.Add(new ControllerDefinition.FloatRange(0, 128, 255));
+			ControllerDefinition.FloatRanges.Add(new ControllerDefinition.AxisRange(0, 128, 255));
 			ControllerDefinition.FloatControls.Add("TouchY");
-			ControllerDefinition.FloatRanges.Add(new ControllerDefinition.FloatRange(0, 96, 191));
+			ControllerDefinition.FloatRanges.Add(new ControllerDefinition.AxisRange(0, 96, 191));
 
 			CoreComm = comm;
-			CoreComm.NominalWidth = 256;
-			CoreComm.NominalHeight = 192;
 
 			if (!Init())
 				throw new Exception("Failed to init NDS.");
