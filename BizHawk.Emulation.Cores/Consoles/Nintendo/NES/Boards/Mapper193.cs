@@ -2,55 +2,14 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
+	// http://wiki.nesdev.com/w/index.php/INES_Mapper_193
 	public sealed class Mapper193 : NES.NESBoardBase 
 	{
-		/*
-		* ========================
-		=  Mapper 193          =
-		========================
+		private int prg_bank_mask_8k;
+		private byte[] prg_banks_8k = new byte[4];
 
-
-		Example Game:
-		--------------------------
-		Fighting Hero (Unl)
-
-
-
-		Registers:
-		---------------------------
-		Regs at $6000-7FFF = no SRAM
-
-		Range,Mask:   $6000-7FFF, $6003
-
-
-		$6000:  CHR Reg 0
-		$6001:  CHR Reg 1
-		$6002:  CHR Reg 2
-		$6003:  PRG Reg
-
-
-		CHR Setup:
-		---------------------------
-
-		$0000   $0400   $0800   $0C00   $1000   $1400   $1800   $1C00 
-		+-------------------------------+---------------+---------------+
-		|           <<$6000>>           |    <$6001>    |    <$6002>    |
-		+-------------------------------+---------------+---------------+
-
-		PRG Setup:
-		---------------------------
-
-		$8000   $A000   $C000   $E000  
-		+-------+-------+-------+-------+
-		| $6003 | { -3} | { -2} | { -1} |
-		+-------+-------+-------+-------+
-		*/
-
-		int prg_bank_mask_8k;
-		byte[] prg_banks_8k = new byte[4];
-
-		int chr_bank_mask_2k;
-		byte[] chr_banks_2k = new byte[4];
+		private int chr_bank_mask_2k;
+		private byte[] chr_banks_2k = new byte[4];
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -76,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		void SyncMap()
+		private void SyncMap()
 		{
 			ApplyMemoryMapMask(prg_bank_mask_8k, prg_banks_8k);
 			ApplyMemoryMapMask(chr_bank_mask_2k, chr_banks_2k);
@@ -118,10 +77,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr = ApplyMemoryMap(11, chr_banks_2k, addr);
 				return base.ReadPPUChr(addr);
 			}
-			else
-			{
-				return base.ReadPPU(addr);
-			}
+
+			return base.ReadPPU(addr);
 		}
 
 		public override byte ReadPRG(int addr)
