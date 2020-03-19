@@ -18,6 +18,8 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="$(SolutionDir)BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
+		<Compile Include="$(SolutionDir)Version/svnrev.cs" />
+		<Compile Include="$(SolutionDir)Version/VersionInfo.cs" />
 	</ItemGroup>
 	<Import Project="$(SolutionDir)NamespaceAliasHack.targets" />
 </Project>
