@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using System.IO;
 
@@ -11,12 +7,12 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
 	[Core("MelonDS", "Arisotura", false, false, null, null, true)]
-	unsafe public partial class MelonDS : IEmulator
+	public unsafe partial class MelonDS : IEmulator
 	{
-		private BasicServiceProvider _serviceProvider;
+		private readonly BasicServiceProvider _serviceProvider;
 		public IEmulatorServiceProvider ServiceProvider => _serviceProvider;
 
-		public ControllerDefinition ControllerDefinition { get; private set; }
+		public ControllerDefinition ControllerDefinition { get; }
 
 		public int Frame => GetFrameCount();
 
@@ -24,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public bool DeterministicEmulation => true;
 
-		public CoreComm CoreComm { get; private set; }
+		internal CoreComm CoreComm { get; }
 
 		public void Dispose()
 		{

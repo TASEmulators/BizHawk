@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 
 using BizHawk.Emulation.Common;
@@ -129,7 +126,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				}
 			}
 			[JsonIgnore]
-			public short nicknameLength { get => userSettings[0x1A]; }
+			public short nicknameLength => userSettings[0x1A];
+
 			[JsonIgnore]
 			public long rtcOffset
 			{

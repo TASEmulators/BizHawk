@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 using BizHawk.Emulation.Common;
 using System.IO;
@@ -12,8 +7,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
 	unsafe partial class MelonDS : IStatable
 	{
-		public bool BinarySaveStatesPreferred => true;
-
 		public void LoadStateBinary(BinaryReader reader)
 		{
 			MemoryStream mStream = new MemoryStream();
@@ -21,11 +14,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			LoadStateByteArray(mStream.GetBuffer(), (int)mStream.Length);
 		}
-		public void LoadStateText(TextReader reader)
-		{
-			string str = reader.ReadToEnd();
-			LoadStateByteArray(Convert.FromBase64String(str));
-		}
+
 		private void LoadStateByteArray(byte[] data, int length = -1)
 		{
 			if (length == -1) length = data.Length;
@@ -51,12 +40,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		{
 			byte[] data = SaveStateBinary();
 			writer.Write(data);
-		}
-
-		public void SaveStateText(TextWriter writer)
-		{
-			string str = Convert.ToBase64String(SaveStateBinary());
-			writer.Write(str);
 		}
 
 		[DllImport(dllPath)]
