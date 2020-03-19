@@ -89,8 +89,8 @@ namespace BizHawk.Client.EmuHawk
 			if (!VersionInfo.DeveloperBuild && !OSTC.IsUnixHost)
 			{
 				var thisversion = typeof(Program).Assembly.GetName().Version;
-				var utilversion = Assembly.Load(new AssemblyName("Bizhawk.Client.Common")).GetName().Version;
-				var emulversion = Assembly.Load(new AssemblyName("Bizhawk.Emulation.Cores")).GetName().Version;
+				var utilversion = Assembly.Load(new AssemblyName("BizHawk.Client.Common")).GetName().Version;
+				var emulversion = Assembly.Load(new AssemblyName("BizHawk.Emulation.Cores")).GetName().Version;
 
 				if (thisversion != utilversion || thisversion != emulversion)
 				{
