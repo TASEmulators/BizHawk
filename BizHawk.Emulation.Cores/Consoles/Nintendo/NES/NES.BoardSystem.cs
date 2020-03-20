@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Xml;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -395,70 +394,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public List<CartInfo> Identify(string sha1)
 			{
 				lock (syncroot) return sha1_table[sha1];
-			}
-		}
-	}
-
-	[AttributeUsage(AttributeTargets.Field)]
-	public sealed class MapperPropAttribute : Attribute
-	{
-		public string Name { get; }
-
-		public MapperPropAttribute(string name)
-		{
-			Name = name;
-		}
-
-		public MapperPropAttribute()
-		{
-			Name = null;
-		}
-	}
-
-	internal static class AutoMapperProps
-	{
-		public static void Populate(INesBoard board, NES.NESSyncSettings settings)
-		{
-			var fields = board.GetType().GetFields();
-			foreach (var field in fields)
-			{
-				var attrib = field.GetCustomAttributes(typeof(MapperPropAttribute), false).OfType<MapperPropAttribute>().SingleOrDefault();
-				if (attrib == null)
-					continue;
-				string Name = attrib.Name ?? field.Name;
-				if (!settings.BoardProperties.ContainsKey(Name))
-				{
-					settings.BoardProperties.Add(Name, (string)Convert.ChangeType(field.GetValue(board), typeof(string)));
-				}
-			}
-		}
-
-		public static void Apply(INesBoard board)
-		{
-			var fields = board.GetType().GetFields();
-			foreach (var field in fields)
-			{
-				var attribs = field.GetCustomAttributes(false);
-				foreach (var attrib in attribs)
-				{
-					if (attrib is MapperPropAttribute)
-					{
-						string Name = ((MapperPropAttribute)attrib).Name ?? field.Name;
-
-						if (board.InitialRegisterValues.TryGetValue(Name, out var Value))
-						{
-							try
-							{
-								field.SetValue(board, Convert.ChangeType(Value, field.FieldType));
-							}
-							catch (Exception e) when (e is InvalidCastException || e is FormatException || e is OverflowException)
-							{
-								throw new InvalidDataException("Auto Mapper Properties were in a bad format!", e);
-							}
-						}
-						break;
-					}
-				}
 			}
 		}
 	}
