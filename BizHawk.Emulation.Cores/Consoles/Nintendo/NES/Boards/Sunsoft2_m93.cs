@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//game=shanghai ; chip=sunsoft-2 ; pcb=SUNSOFT-3R
 	//this is confusing. see docs/sunsoft.txt
-	public sealed class Sunsoft2_Mapper93 : NES.NESBoardBase
+	public sealed class Sunsoft2_Mapper93 : NesBoardBase
 	{
 		int prg_bank_mask_16k;
 		byte prg_bank_16k;
@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_banks_16k[0] = prg_bank_16k;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			prg_bank_16k = (byte)((value >> 4) & 15);
 			SyncPRG();
@@ -53,14 +53,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// there is no mirroring control on this board; only a hardwired H\V
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_16k = addr >> 14;
 			int ofs = addr & ((1 << 14) - 1);
 			bank_16k = prg_banks_16k[bank_16k];
 			bank_16k &= prg_bank_mask_16k;
 			addr = (bank_16k << 14) | ofs;
-			return ROM[addr];
+			return Rom[addr];
 		}
 	}
 }

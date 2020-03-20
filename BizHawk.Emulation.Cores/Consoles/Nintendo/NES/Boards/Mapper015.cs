@@ -3,7 +3,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper015 : NES.NESBoardBase
+	public sealed class Mapper015 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_8k;
@@ -41,13 +41,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			addr = ApplyMemoryMap(13, prg_banks_8k, addr);
-			return ROM[addr];
+			return Rom[addr];
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			int mode = addr & 3;
 			int prg_high = value & 0x3F;

@@ -35,13 +35,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int block, prg;
 		bool mode;
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			if (!mmc3.wram_enable || mmc3.wram_write_protect) return;
 			mode = value.Bit(0);
 			prg = (value >> 4) & 3;
 			block = (value >> 6) & 3;
-			base.WriteWRAM(addr, value);
+			base.WriteWram(addr, value);
 		}
 
 

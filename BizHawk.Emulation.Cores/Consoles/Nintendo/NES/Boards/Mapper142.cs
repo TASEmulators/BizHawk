@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper142 : NES.NESBoardBase
+	public sealed class Mapper142 : NesBoardBase
 	{
 		private byte[] reg = new byte[8];
 		private byte cmd;
@@ -28,32 +28,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
-			return ROM[(reg[4] << 13) + (addr & 0x1FFF)];
+			return Rom[(reg[4] << 13) + (addr & 0x1FFF)];
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 
-			if (addr < 0x2000) { return ROM[(reg[1] << 13) + (addr & 0x1FFF)]; }
-			if (addr < 0x4000) { return ROM[(reg[2] << 13) + (addr & 0x1FFF)]; }
-			if (addr < 0x6000) { return ROM[(reg[3] << 13) + (addr & 0x1FFF)]; }
+			if (addr < 0x2000) { return Rom[(reg[1] << 13) + (addr & 0x1FFF)]; }
+			if (addr < 0x4000) { return Rom[(reg[2] << 13) + (addr & 0x1FFF)]; }
+			if (addr < 0x6000) { return Rom[(reg[3] << 13) + (addr & 0x1FFF)]; }
 
-			return ROM[(lastBank << 13) + (addr & 0x1FFF)];		
+			return Rom[(lastBank << 13) + (addr & 0x1FFF)];		
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			Write(addr + 0x4000, value);
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			Write(addr + 0x6000, value);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			Write(addr + 0x8000, value);
 		}
@@ -68,12 +68,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					IRQa = 0;
 					IRQCount = 0;
 
-					IRQSignal = true;
+					IrqSignal = true;
 				}
 			}
 		}
 
-		public override void ClockPPU()
+		public override void ClockPpu()
 		{
 			IRQHook(1);
 		}
@@ -83,29 +83,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (addr & 0xF000)
 			{
 				case 0x8000:
-					IRQSignal = false;
+					IrqSignal = false;
 					IRQCount = (IRQCount & 0x000F) | (value & 0x0F);
 					isirqused = true;
 					break;
 				case 0x9000:
-					IRQSignal = false;
+					IrqSignal = false;
 					IRQCount = (IRQCount & 0x00F0) | ((value & 0x0F) << 4);
 					isirqused = true;
 					break;
 				case 0xA000:
-					IRQSignal = false;
+					IrqSignal = false;
 					IRQCount = (IRQCount & 0x0F00) | ((value & 0x0F) << 8);
 					isirqused = true;
 					break;
 				case 0xB000:
-					IRQSignal = false;
+					IrqSignal = false;
 					IRQCount = (IRQCount & 0xF000) | (value << 12);
 					isirqused = true;
 					break;
 				case 0xC000:
 					if (isirqused)
 					{
-						IRQSignal = false;
+						IrqSignal = false;
 						IRQa = 1;
 					}
 					break;

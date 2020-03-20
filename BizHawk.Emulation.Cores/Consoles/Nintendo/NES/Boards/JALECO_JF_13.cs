@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//Moero!! Pro Yakyuu (Black)
 	//Moero!! Pro Yakyuu (Red)
 
-	public sealed class JALECO_JF_13 : NES.NESBoardBase
+	public sealed class JALECO_JF_13 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_32k;
@@ -39,23 +39,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if (addr < 0x8000)
-				return ROM[addr + (prg * 0x8000)];
+				return Rom[addr + (prg * 0x8000)];
 			else
-				return base.ReadPRG(addr);
+				return base.ReadPrg(addr);
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
-				return VROM[(addr & 0x1FFF) + (chr * 0x2000)];
+				return Vrom[(addr & 0x1FFF) + (chr * 0x2000)];
 			else
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			switch (addr & 0x1000)
 			{

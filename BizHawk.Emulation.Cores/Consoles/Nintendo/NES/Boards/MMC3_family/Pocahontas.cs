@@ -48,15 +48,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(chr_mask), ref chr_mask_1k);
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			if (addr == 0x1000) { exRegs[0] = value; }
 			if (addr == 0x1001) { exRegs[1] = value; }
 
-			base.WriteEXP(addr, value);
+			base.WriteExp(addr, value);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			addr += 0x8000;
 
@@ -76,30 +76,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				value = (byte)((value & 0xC0) | regs_sec[value & 0x07]);
 				exRegs[2] = 1;
 
-				base.WritePRG(0x0000, value);
+				base.WritePrg(0x0000, value);
 			}
 			else if (addr < 0xE000)
 			{
 				if (exRegs[2] >0)
 				{
 					exRegs[2] = 0;
-					base.WritePRG(0x0001, value);
+					base.WritePrg(0x0001, value);
 				}
 			}
 			else if (addr < 0xF000)
 			{
 				// nothing
-				base.WritePRG(0x6000, value);
+				base.WritePrg(0x6000, value);
 			}
 			else
 			{
-				base.WritePRG(0x6001, value);
-				base.WritePRG(0x4000, value);
-				base.WritePRG(0x4001, value);
+				base.WritePrg(0x6001, value);
+				base.WritePrg(0x4000, value);
+				base.WritePrg(0x4001, value);
 			}
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
@@ -108,23 +108,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				bank_1k |= (exRegs[1] << 6 & 0x100);
 				bank_1k &= chr_mask_1k;
 				addr = (bank_1k << 10) | (addr & 0x3FF);
-				return VROM[addr];
+				return Vrom[addr];
 			}
-			else return base.ReadPPU(addr);
+			else return base.ReadPpu(addr);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank = exRegs[0] & 0xF;
 			if ((exRegs[0] & 0x80)>0)
 			{
 				if ((exRegs[0] & 0x20)>0)
 				{
-					return ROM[((bank >> 1) << 15) + (addr & 0x7FFF)];
+					return Rom[((bank >> 1) << 15) + (addr & 0x7FFF)];
 				}
 				else
 				{
-					return ROM[((bank) << 14) + (addr & 0x3FFF)];
+					return Rom[((bank) << 14) + (addr & 0x3FFF)];
 				}
 			}
 
@@ -132,7 +132,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				bank = mmc3.Get_PRGBank_8K(addr);
 				bank &= prg_mask_8k;
-				return ROM[(bank << 13) + (addr & 0x1FFF)];
+				return Rom[(bank << 13) + (addr & 0x1FFF)];
 			}
 			
 		}

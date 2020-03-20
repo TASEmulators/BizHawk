@@ -3,7 +3,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper236 : NES.NESBoardBase
+	public sealed class Mapper236 : NesBoardBase
 	{
 		[MapperProp]
 		public byte CartSwitch_70in1 = 0xd;
@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("Cart_Switch", ref CartSwitch_800in1);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			addr += 0x8000;
 			if ((addr & 0x4000) > 0)
@@ -74,7 +74,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			switch (bank_mode)
 			{
@@ -96,22 +96,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						addr = (addr & 0x7FF0) | ((isLargeBanks ? CartSwitch_800in1 : CartSwitch_70in1) & 0xf);
 					}
-					return ROM[(bank << 14) + (addr & 0x3FFF)];
+					return Rom[(bank << 14) + (addr & 0x3FFF)];
 				case 0x20:
-					return ROM[(((large_bank | prg_bank) >> 1) << 15) + addr];
+					return Rom[(((large_bank | prg_bank) >> 1) << 15) + addr];
 				case 0x30:
-					return ROM[((large_bank | prg_bank) << 14) + (addr & 0x3FFF)];
+					return Rom[((large_bank | prg_bank) << 14) + (addr & 0x3FFF)];
 			}
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
-			if (addr < 0x2000 && VROM != null)
+			if (addr < 0x2000 && Vrom != null)
 			{
-				return VROM[(chr_bank << 13) + (addr & 0x1FFF)];
+				return Vrom[(chr_bank << 13) + (addr & 0x1FFF)];
 			}
 
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 	}
 }

@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class UNIF_UNL_BB : NES.NESBoardBase
+	public sealed class UNIF_UNL_BB : NesBoardBase
 	{
 		private byte reg, chr;
 		private int prg_mask_32k;
@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			addr += 0x8000;
 			if ((addr & 0x9000) == 0x8000)
@@ -44,24 +44,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
-			return ROM[((reg & 3) << 13) + addr];
+			return Rom[((reg & 3) << 13) + addr];
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[(prg_mask_32k << 15) + addr];
+			return Rom[(prg_mask_32k << 15) + addr];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
-				return VROM[((chr & 3) << 13) + addr];
+				return Vrom[((chr & 3) << 13) + addr];
 			}
 
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 	}
 }

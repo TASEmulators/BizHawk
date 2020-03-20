@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			if (addr == 0x1000)
 			{
@@ -99,21 +99,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				exRegs[2] = value;
 			}
 
-			base.WriteEXP(addr, value);
+			base.WriteExp(addr, value);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			switch ((addr + 0x8000) & 0xE001)
 			{
 				case 0x8000:
 					if (exRegs[2] > 0)
 					{
-						base.WritePRG(0x4000, value);
+						base.WritePrg(0x4000, value);
 					}
 					else
 					{
-						base.WritePRG(0x0000, value);
+						base.WritePrg(0x0000, value);
 						sync_prg();
 					}
 					break;
@@ -123,12 +123,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						value = (byte)((value & 0xC0) | regs_sec[value & 0x07]);
 						exRegs[3] = 1;
 
-						base.WritePRG(0x0000, value);
+						base.WritePrg(0x0000, value);
 						sync_prg();
 					}
 					else
 					{
-						base.WritePRG(0x0001, value);
+						base.WritePrg(0x0001, value);
 						sync_prg();
 					}
 					break;
@@ -138,7 +138,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						if ((exRegs[3] > 0) && ((exRegs[0] & 0x80) == 0 || (mmc3.reg_addr & 0x7) < 6))
 						{
 							exRegs[3] = 0;
-							base.WritePRG(0x0001, value);
+							base.WritePrg(0x0001, value);
 							sync_prg();
 						}
 					}
@@ -167,16 +167,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						}
 					} else
 					{
-						base.WritePRG(0x2001, value);
+						base.WritePrg(0x2001, value);
 					}
 					break;
 			}
 
 			if (addr>=0x4000) 
-				base.WritePRG(addr, value);
+				base.WritePrg(addr, value);
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
@@ -188,17 +188,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				bank_1k |= (exRegs[1] << 8 & 0x300);
 				bank_1k &= chr_mask_1k;
 				addr = (bank_1k << 10) | (addr & 0x3FF);
-				return VROM[addr];
+				return Vrom[addr];
 			}
-			else return base.ReadPPU(addr);
+			else return base.ReadPpu(addr);
 		}
 
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank = addr >> 13;
 			bank = prg_regs_8k[bank];
-			return ROM[(bank << 13) + (addr & 0x1FFF)];
+			return Rom[(bank << 13) + (addr & 0x1FFF)];
 		}
 	}
 }

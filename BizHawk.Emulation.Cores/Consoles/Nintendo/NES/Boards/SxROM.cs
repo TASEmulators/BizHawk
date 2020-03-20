@@ -70,13 +70,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int chr_mode;
 		public int prg_mode;
 		public int prg_slot; // complicated
-		public NES.NESBoardBase.EMirrorType mirror;
-		static readonly NES.NESBoardBase.EMirrorType[] _mirrorTypes =
+		public NesBoardBase.EMirrorType mirror;
+		static readonly NesBoardBase.EMirrorType[] _mirrorTypes =
 		{
-			NES.NESBoardBase.EMirrorType.OneScreenA,
-			NES.NESBoardBase.EMirrorType.OneScreenB,
-			NES.NESBoardBase.EMirrorType.Vertical,
-			NES.NESBoardBase.EMirrorType.Horizontal
+			NesBoardBase.EMirrorType.OneScreenA,
+			NesBoardBase.EMirrorType.OneScreenB,
+			NesBoardBase.EMirrorType.Vertical,
+			NesBoardBase.EMirrorType.Horizontal
 		};
 
 		//register 1,2:
@@ -146,7 +146,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_slot = 1;
 			chr_mode = 1;
 			scnt.Reset();
-			mirror = NES.NESBoardBase.EMirrorType.Horizontal;
+			mirror = NesBoardBase.EMirrorType.Horizontal;
 			SyncCHR();
 			SyncPRG();
 		}
@@ -236,7 +236,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	}
 
 	[NES.INESBoardImplPriority]
-	public class SxROM : NES.NESBoardBase
+	public class SxROM : NesBoardBase
 	{
 		//configuration
 		protected int prg_mask, chr_mask;
@@ -258,13 +258,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>number of cycles since last WritePRG()</summary>
 		uint ppuclock;
 
-		public override void ClockPPU()
+		public override void ClockPpu()
 		{
 			if (ppuclock < pputimeout)
 				ppuclock++;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			// mmc1 ignores subsequent writes that are very close together
 			if (ppuclock >= pputimeout)
@@ -276,26 +276,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
 			if (_is_snrom)
 			{
 				if (!mmc1.wram_disable && chr_wram_enable)
-					return base.ReadWRAM(addr);	
+					return base.ReadWram(addr);	
 				else
 					return NES.DB;	
 			}
 			else
 			{
-				return base.ReadWRAM(addr);
+				return base.ReadWram(addr);
 			}	
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank = mmc1.Get_PRGBank(addr) & prg_mask;
 			addr = (bank << 14) | (addr & 0x3FFF);
-			return ROM[addr];
+			return Rom[addr];
 		}
 
 		int Gen_CHR_Address(int addr)
@@ -305,7 +305,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return addr;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
@@ -321,8 +321,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr = Gen_CHR_Address(addr);
 
 				if (Cart.vram_size != 0)
-					return VRAM[addr & vram_mask];
-				else return VROM[addr];
+					return Vram[addr & vram_mask];
+				else return Vrom[addr];
 			}
 			else
 			{
@@ -339,19 +339,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 				}
 				else
-					return base.ReadPPU(addr);
+					return base.ReadPpu(addr);
 					
 			}
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (NES._isVS)
 			{
 				if (addr < 0x2000)
 				{
-					if (VRAM != null)
-						VRAM[Gen_CHR_Address(addr) & vram_mask] = value;
+					if (Vram != null)
+						Vram[Gen_CHR_Address(addr) & vram_mask] = value;
 				}
 				else
 				{
@@ -378,9 +378,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 
 				if (Cart.vram_size != 0)
-					VRAM[Gen_CHR_Address(addr) & vram_mask] = value;
+					Vram[Gen_CHR_Address(addr) & vram_mask] = value;
 			}
-			else base.WritePPU(addr, value);
+			else base.WritePpu(addr, value);
 		}
 
 		public override void SyncState(Serializer ser)
@@ -569,14 +569,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return (wram_bank_8k << 13) | ofs;
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
-			base.WriteWRAM(Map_WRAM(addr), value);
+			base.WriteWram(Map_WRAM(addr), value);
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
-			return base.ReadWRAM(Map_WRAM(addr));
+			return base.ReadWram(Map_WRAM(addr));
 		}
 	}
 
@@ -609,14 +609,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return (wram_bank_8k << 13) | ofs;
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
-			base.WriteWRAM(Map_WRAM(addr), value);
+			base.WriteWram(Map_WRAM(addr), value);
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
-			return base.ReadWRAM(Map_WRAM(addr));
+			return base.ReadWram(Map_WRAM(addr));
 		}
 	}
 
@@ -650,7 +650,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank = mmc1.Get_PRGBank(addr);
 			int chr_bank = mmc1.Get_CHRBank_4K(0);
@@ -658,7 +658,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			bank |= (bank_bit18 << 4);
 			bank &= prg_mask;
 			addr = (bank << 14) | (addr & 0x3FFF);
-			return ROM[addr];
+			return Rom[addr];
 		}
 	}
 }

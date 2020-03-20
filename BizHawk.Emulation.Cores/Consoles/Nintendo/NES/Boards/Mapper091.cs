@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper91 : NES.NESBoardBase
+	public sealed class Mapper91 : NesBoardBase
 	{
 		/*
 		*Note: Street Fighter III (Unl) is actually mapper 197.  However variations such as Street Fighter III (9 Fighter) and Mari Street Fighter III use this mapper
@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			switch (addr & 0x7003)
 			{
@@ -84,34 +84,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void ClockPPU()
+		public override void ClockPpu()
 		{
 			mmc3.ClockPPU();
 		}
 
-		public override void AddressPPU(int addr)
+		public override void AddressPpu(int addr)
 		{
 			mmc3.AddressPPU(addr);
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				int bank_2k = (addr >> 11);
 				bank_2k = chr_regs_2k[bank_2k];
 				bank_2k &= chr_bank_mask_2k;
-				return VROM[(bank_2k * 0x800) + (addr & 0x7ff)];
+				return Vrom[(bank_2k * 0x800) + (addr & 0x7ff)];
 			}
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_8k = addr >> 13;
 			bank_8k = prg_regs_8k[bank_8k];
 			bank_8k &= prg_bank_mask_8k;
-			return ROM[(bank_8k * 0x2000) + (addr & 0x1FFF)];
+			return Rom[(bank_8k * 0x2000) + (addr & 0x1FFF)];
 		}
 	}
 }

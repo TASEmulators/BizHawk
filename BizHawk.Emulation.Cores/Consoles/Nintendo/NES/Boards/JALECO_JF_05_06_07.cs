@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	Ninja Jajamaru Kun - JF_06
 	Argus (J) - JF_07
 	*/
-	public sealed class JALECO_JF_05_06_07 : NES.NESBoardBase
+	public sealed class JALECO_JF_05_06_07 : NesBoardBase
 	{
 		int prg_byte_mask;
 		int chr;
@@ -56,24 +56,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(chr), ref chr);
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			// 2 bits, but flipped
 			chr = value << 1 & 2 | value >> 1 & 1;
 			chr &= chr_mask_8k;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
-				return VROM[addr | chr << 13];
+				return Vrom[addr | chr << 13];
 			else
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[addr & prg_byte_mask];
+			return Rom[addr & prg_byte_mask];
 		}
 	}
 }

@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	//also mapper 048 (same as 33 but with an extra chip)
 
-	public sealed class TAITO_TC0190FMC : NES.NESBoardBase
+	public sealed class TAITO_TC0190FMC : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask, chr_bank_mask;
@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		class MMC3Variant : MMC3
 		{
-			public MMC3Variant(NES.NESBoardBase board)
+			public MMC3Variant(NesBoardBase board)
 			: base(board,0)
 			{
 			}
@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (!irq_pending)
 				{
 					delay = 0;
-					board.IRQSignal = false;
+					board.IrqSignal = false;
 				}
 				pending = irq_pending;
 			}
@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					
 					delay--;
 					if(delay==0 && irq_pending)
-						board.IRQSignal = true;
+						board.IrqSignal = true;
 
 				}
 			}
@@ -126,7 +126,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SetMirrorType(mirror_mode == 0 ? EMirrorType.Vertical : EMirrorType.Horizontal);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if (pal16)
 				addr &= 0xE003;
@@ -194,7 +194,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
@@ -203,29 +203,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				bank_1k = chr_regs_1k[bank_1k];
 				bank_1k &= chr_bank_mask;
 				addr = (bank_1k << 10) | ofs;
-				return VROM[addr];
+				return Vrom[addr];
 			}
 
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_8k = addr >> 13;
 			int ofs = addr & ((1 << 13) - 1);
 			bank_8k = prg_regs_8k[bank_8k];
 			bank_8k &= prg_bank_mask;
 			addr = (bank_8k << 13) | ofs;
-			return ROM[addr];
+			return Rom[addr];
 		}
 
-		public override void ClockPPU()
+		public override void ClockPpu()
 		{
 			if(pal16)
 				mmc3.ClockPPU();
 		}
 
-		public override void AddressPPU(int addr)
+		public override void AddressPpu(int addr)
 		{
 			if (pal16)
 				mmc3.AddressPPU(addr);

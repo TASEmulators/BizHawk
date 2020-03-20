@@ -3,7 +3,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class Mapper244 : NES.NESBoardBase
+	public class Mapper244 : NesBoardBase
 	{
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -48,22 +48,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("prgRegister", ref _prgRegister);
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
-				return VROM[(_chrRegister * 0x2000) + (addr & 0x1FFF)];
+				return Vrom[(_chrRegister * 0x2000) + (addr & 0x1FFF)];
 			}
 
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[(_prgRegister * 0x8000) + (addr & 0x7FFF)];
+			return Rom[(_prgRegister * 0x8000) + (addr & 0x7FFF)];
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if ((value & 0x08) > 0)
 			{

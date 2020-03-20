@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// tetris (unl)
 	// behaves identically to CNROM for the one board it is on, but supports more (64K prg, 64K chr)
 	// http://kevtris.org/mappers/tengen/800008.html
-	public sealed class TENGEN_800008 : NES.NESBoardBase
+	public sealed class TENGEN_800008 : NesBoardBase
 	{
 		int prg_mask;
 		int chr_mask;
@@ -32,23 +32,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			value = HandleNormalPRGConflict(addr, value);
 			prg = value >> 3 & prg_mask;
 			chr = value & chr_mask;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[addr | prg << 15];
+			return Rom[addr | prg << 15];
 		}
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
-				return VROM[addr | chr << 13];
+				return Vrom[addr | chr << 13];
 			else
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 		}
 
 		public override void SyncState(Serializer ser)

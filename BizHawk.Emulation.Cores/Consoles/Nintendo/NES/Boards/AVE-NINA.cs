@@ -4,7 +4,7 @@ using BizHawk.Common.NumberExtensions;
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//AKA half of mapper 034 (the other half is BxROM which is entirely different..)
-	public sealed class AVE_NINA_001 : NES.NESBoardBase
+	public sealed class AVE_NINA_001 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_32k, chr_bank_mask_4k;
@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
@@ -49,18 +49,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				int ofs = addr & ((1 << 12) - 1);
 				bank_4k = chr_banks_4k[bank_4k];
 				addr = (bank_4k << 12) | ofs;
-				return VROM[addr];
+				return Vrom[addr];
 			}
-			else return base.ReadPPU(addr);
+			else return base.ReadPpu(addr);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			addr |= (prg_bank_32k << 15);
-			return ROM[addr];
+			return Rom[addr];
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			switch (addr)
 			{
@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				default:
 					//apparently these regs are patched in over the WRAM..
-					base.WriteWRAM(addr, value);
+					base.WriteWram(addr, value);
 					break;
 			}
 		}
@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// according to the latest on nesdev:
 	// mapper 079: [.... PCCC] @ 4100
 	// mapper 113: [MCPP PCCC] @ 4100  (no games for this are in bootgod)
-	class AVE_NINA_006 : NES.NESBoardBase
+	class AVE_NINA_006 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_32k, chr_bank_mask_8k;
@@ -141,7 +141,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		//FCEUX responds to this for PRG writes as well.. ?
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			addr &= 0x4100;
 			switch (addr)
@@ -158,7 +158,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if (isMapper79)
 			{
@@ -166,33 +166,33 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 			{
-				base.WritePRG(addr, value);
+				base.WritePrg(addr, value);
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			addr |= (prg_bank_32k << 15);
 
 			// Some HES games are coming in with only 16 kb of PRG
 			// Othello, and Sidewinder for instance
-			if (ROM.Length < 0x8000)
+			if (Rom.Length < 0x8000)
 			{
 				addr &= 0x3FFF;
 			}
 
-			return ROM[addr];
+			return Rom[addr];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				addr |= ((chr_bank_8k & chr_bank_mask_8k) << 13);
-				return VROM[addr];
+				return Vrom[addr];
 			}
 			else
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 		}
 	}
 

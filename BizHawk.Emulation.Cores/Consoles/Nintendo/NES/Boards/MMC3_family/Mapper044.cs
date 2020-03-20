@@ -29,9 +29,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		int block_select;
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
-			base.WritePRG(addr, value);
+			base.WritePrg(addr, value);
 
 			switch (addr & 0x6001)
 			{

@@ -3,7 +3,7 @@
 // https://wiki.nesdev.com/w/index.php/INES_Mapper_203
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper203 : NES.NESBoardBase
+	public sealed class Mapper203 : NesBoardBase
 	{
 		int prg_reg_16k, chr_reg_8k;
 		int prg_bank_mask_16k;
@@ -32,24 +32,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			prg_reg_16k = (value >> 2) & prg_bank_mask_16k;
 			chr_reg_8k = (value & 0x03) & chr_bank_mask_8k;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[(prg_reg_16k * 0x4000) + (addr & 0x3FFF)];
+			return Rom[(prg_reg_16k * 0x4000) + (addr & 0x3FFF)];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
-				return VROM[(chr_reg_8k * 0x2000) + addr];
+				return Vrom[(chr_reg_8k * 0x2000) + addr];
 			}
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 	}
 }

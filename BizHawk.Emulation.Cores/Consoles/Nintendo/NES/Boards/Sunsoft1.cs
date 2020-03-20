@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//AKA mapper 184
 	//Sunsoft-1 chips, EXCEPT for fantasy zone.
 	//this is confusing. see docs/sunsoft.txt
-	public sealed class Sunsoft1 : NES.NESBoardBase
+	public sealed class Sunsoft1 : NesBoardBase
 	{
 		int chr_mask;
 		int left_piece = 0;
@@ -34,22 +34,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 
 			if (addr < 0x1000)
 			{
-				return VROM[(addr & 0xFFF) + (left_piece * 0x1000)];
+				return Vrom[(addr & 0xFFF) + (left_piece * 0x1000)];
 			}
 			else if (addr < 0x2000)
 			{
-				return VROM[(addr & 0xFFF) + (right_piece * 0x1000)];
+				return Vrom[(addr & 0xFFF) + (right_piece * 0x1000)];
 			}
 
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			left_piece = value & 7 & chr_mask;
 			// the bank at ppu $1000 has only 2 selection bits.  the high bit is frozen to 1

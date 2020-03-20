@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// china
 	// behavior from fceux
-	public sealed class Mapper177 : NES.NESBoardBase
+	public sealed class Mapper177 : NesBoardBase
 	{
 		private int prg;
 
@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			prg = value & 0x1f;
 
@@ -32,9 +32,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				SetMirrorType(EMirrorType.Vertical);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[addr | prg << 15];
+			return Rom[addr | prg << 15];
 		}
 
 		public override void SyncState(Serializer ser)

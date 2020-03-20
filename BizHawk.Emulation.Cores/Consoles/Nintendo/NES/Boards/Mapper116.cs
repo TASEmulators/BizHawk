@@ -6,14 +6,14 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper116 : NES.NESBoardBase
+	public sealed class Mapper116 : NesBoardBase
 	{
 		[NES.INESBoardImplCancel]
 		class MMC3_CustomBoard : MMC3Board_Base
 		{
-			public override void WritePRG(int addr, byte value)
+			public override void WritePrg(int addr, byte value)
 			{
-				base.WritePRG(addr, value);
+				base.WritePrg(addr, value);
 				SetMirrorType(mmc3.MirrorType);  //often redundant, but gets the job done
 			}
 
@@ -126,12 +126,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	
 		void SyncRoms()
 		{
-			foreach (var board in new NES.NESBoardBase[] { mmc3, vrc2, mmc1 })
+			foreach (var board in new NesBoardBase[] { mmc3, vrc2, mmc1 })
 			{
-				board.ROM = ROM;
-				board.VROM = VROM;
-				board.VRAM = VRAM;
-				board.WRAM = WRAM;
+				board.Rom = Rom;
+				board.Vrom = Vrom;
+				board.Vram = Vram;
+				board.Wram = Wram;
 			}
 		}
 
@@ -167,36 +167,36 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (mode == 3) Console.WriteLine("(mmc1)");
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			WriteModeControl(addr + 0x4000, value);
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			switch (mode)
 			{
-				case 0: vrc2.WritePPU(addr, value); break;
-				case 1: mmc3.WritePPU(addr, value); break;
+				case 0: vrc2.WritePpu(addr, value); break;
+				case 1: mmc3.WritePpu(addr, value); break;
 				case 2:
-				case 3: mmc1.WritePPU(addr, value); break;
+				case 3: mmc1.WritePpu(addr, value); break;
 			}
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			switch (mode)
 			{
-				case 0: return vrc2.ReadPPU(addr);
-				case 1: return mmc3.ReadPPU(addr);
+				case 0: return vrc2.ReadPpu(addr);
+				case 1: return mmc3.ReadPpu(addr);
 				case 2:
-				case 3: return mmc1.ReadPPU(addr);
+				case 3: return mmc1.ReadPpu(addr);
 
 			}
 			return 0;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			Console.WriteLine("{0:X4} = {1:X2}", addr+0x8000, value);
 			switch (mode)
@@ -206,39 +206,39 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					if((addr & 0xF000) < 0xB000) addr &= 0xF000; //Garou Densetsu Special depends on this
 					addr -= 0x8000;
 
-					vrc2.WritePRG(addr, value); 
+					vrc2.WritePrg(addr, value); 
 					break;
-				case 1: mmc3.WritePRG(addr, value); break;
+				case 1: mmc3.WritePrg(addr, value); break;
 				case 2:
-				case 3: mmc1.WritePRG(addr, value); break;
+				case 3: mmc1.WritePrg(addr, value); break;
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			switch (mode)
 			{
-				case 0: return vrc2.ReadPRG(addr);
-				case 1: return mmc3.ReadPRG(addr);
+				case 0: return vrc2.ReadPrg(addr);
+				case 1: return mmc3.ReadPrg(addr);
 				case 2:
-				case 3: return mmc1.ReadPRG(addr);
+				case 3: return mmc1.ReadPrg(addr);
 			}
 			return 0;
 		}
 
-		public override void AddressPPU(int addr)
+		public override void AddressPpu(int addr)
 		{
-			mmc3.AddressPPU(addr);
+			mmc3.AddressPpu(addr);
 		}
 
-		public override void ClockPPU()
+		public override void ClockPpu()
 		{
 			switch (mode)
 			{
 				case 0: break;
-				case 1: mmc3.ClockPPU(); break;
+				case 1: mmc3.ClockPpu(); break;
 				case 2:
-				case 3: mmc1.ClockPPU(); break;
+				case 3: mmc1.ClockPpu(); break;
 
 			}
 		}

@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//mapper 24 + 26
 	//If you change any of the IRQ logic here, be sure to change it in VRC 4/7 as well.
-	public sealed class VRC6 : NES.NESBoardBase
+	public sealed class VRC6 : NesBoardBase
 	{
 		#region CHRLUT
 		// what did i do in a previous life to deserve this?
@@ -160,7 +160,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		void SyncIRQ()
 		{
-			IRQSignal = (irq_pending && irq_enabled);
+			IrqSignal = (irq_pending && irq_enabled);
 		}
 
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -199,14 +199,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			return true;
 		}
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_8k = addr >> 13;
 			int ofs = addr & ((1 << 13) - 1);
 			bank_8k = prg_banks_8k[bank_8k];
 			bank_8k &= prg_bank_mask_8k;
 			addr = (bank_8k << 13) | ofs;
-			return ROM[addr];
+			return Rom[addr];
 		}
 
 		int MapPPU(int addr)
@@ -221,21 +221,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return addr & 0x3ff | bank << 10;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr >= 0x2000 && !NTROM)
 				return NES.CIRAM[MapPPU(addr) & 0x7ff];
 			else
-				return VROM[MapPPU(addr) & chr_byte_mask];
+				return Vrom[MapPPU(addr) & chr_byte_mask];
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr >= 0x2000 && !NTROM)
 				NES.CIRAM[MapPPU(addr) & 0x7ff] = value;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if (newer_variant)
 			{
@@ -359,7 +359,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				irq_counter++;
 		}
 
-		public override void ClockCPU()
+		public override void ClockCpu()
 		{
 			VRC6Sound.Clock();
 

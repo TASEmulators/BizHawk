@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// 32K prgrom blocks and 8k chrrom blocks
 	// behavior gleamed from FCEUX
 	// "Qi Wang - Chinese Chess (MGC-001) (Ch) [!]" and "Twin Eagle (Sachen) [!]" seem to have problems; the latter needs PAL
-	public sealed class SachenSimple : NES.NESBoardBase
+	public sealed class SachenSimple : NesBoardBase
 	{
 		Action<byte> ExpWrite = null;
 		Action<byte> PrgWrite = null;
@@ -81,27 +81,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			chr = value & 3 & chr_mask;
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			if (ExpWrite != null && (addr & 0x100) != 0)
 				ExpWrite(value);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			PrgWrite?.Invoke(value);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[(addr & prg_addr_mask) + (prg << 15)];
+			return Rom[(addr & prg_addr_mask) + (prg << 15)];
 		}
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
-				return VROM[addr + (chr << 13)];
+				return Vrom[addr + (chr << 13)];
 			else
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 		}
 
 		public override void SyncState(Serializer ser)

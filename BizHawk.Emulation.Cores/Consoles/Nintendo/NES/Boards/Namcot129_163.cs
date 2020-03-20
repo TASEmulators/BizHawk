@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// what we have here should work for everything that's actually a 129 or 163,
 	// and some of the 175/340 (mapper 210)
 	[NES.INESBoardImplPriority]
-	public sealed class Namcot129_163 : NES.NESBoardBase
+	public sealed class Namcot129_163 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_8k;
@@ -91,7 +91,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override byte ReadEXP(int addr)
+		public override byte ReadExp(int addr)
 		{
 			addr &= 0xF800;
 			switch (addr)
@@ -103,10 +103,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x1800:
 					return (byte)((irq_counter >> 8) | (irq_enabled ? 0x8000 : 0));
 			}
-			return base.ReadEXP(addr);
+			return base.ReadExp(addr);
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			addr &= 0xF800;
 			switch (addr)
@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			addr &= 0xF800;
 			switch (addr)
@@ -168,17 +168,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_8k = addr >> 13;
 			int ofs = addr & ((1 << 13) - 1);
 			bank_8k = prg_banks_8k[bank_8k];
 			addr = (bank_8k << 13) | ofs;
-			return ROM[addr];
+			return Rom[addr];
 		}
 
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			int bank_1k = addr >> 10;
 			if (bank_1k >= 12)
@@ -197,7 +197,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				// mapped to VROM; nothing to do
 			}
 		}
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			int bank_1k = addr >> 10;
 			if (bank_1k >= 12)
@@ -214,13 +214,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			else
 			{
 				bank_1k &= chr_bank_mask_1k;
-				return VROM[bank_1k << 10 | ofs];
+				return Vrom[bank_1k << 10 | ofs];
 			}
 		}
 
 		void SyncIRQ()
 		{
-			IRQSignal = (irq_pending && irq_enabled);
+			IrqSignal = (irq_pending && irq_enabled);
 		}
 
 		void TriggerIRQ()
@@ -241,7 +241,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			else irq_counter++;
 		}
 
-		public override void ClockCPU()
+		public override void ClockCpu()
 		{
 			if (irq_enabled)
 			{
@@ -264,8 +264,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				if (Cart.wram_battery)
 				{
-					if (WRAM != null)
-						return WRAM;
+					if (Wram != null)
+						return Wram;
 					else
 						return audio.GetSaveRam();
 				}
@@ -276,7 +276,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			// top 4 bits must be in this arrangement to write at all
 			if ((prgram_write & 0xf0) == 0x40)
@@ -284,7 +284,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				// then the bit corresponding to the 2K subsection must be 0
 				if (!prgram_write.Bit(addr >> 11))
 				{
-					base.WriteWRAM(addr, value);
+					base.WriteWram(addr, value);
 				}
 			}
 		}

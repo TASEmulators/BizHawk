@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper164 : NES.NESBoardBase 
+	public sealed class Mapper164 : NesBoardBase 
 	{
 		// http://wiki.nesdev.com/w/index.php/INES_Mapper_164
 
@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			addr = (addr + 0x4000) & 0x7300;
 			switch (addr)
@@ -41,11 +41,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank = (_prgHigh << 4) | (_prgLow & 0xF);
 			bank &= prg_bank_mask_32k;
-			return ROM[(bank * 0x8000) + (addr & 0x7FFF)];
+			return Rom[(bank * 0x8000) + (addr & 0x7FFF)];
 		}
 
 		public override void SyncState(Serializer ser)
@@ -55,10 +55,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("prgLow", ref _prgLow);
 		}
 
-		public override void NESSoftReset()
+		public override void NesSoftReset()
 		{
 			_prgHigh = 0xFF;
-			base.NESSoftReset();
+			base.NesSoftReset();
 		}
 	}
 }

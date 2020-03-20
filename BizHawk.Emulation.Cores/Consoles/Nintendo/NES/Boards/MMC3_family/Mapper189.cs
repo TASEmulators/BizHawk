@@ -30,9 +30,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return (prg * 4) + block_8k;
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
-			base.WriteWRAM(addr, value);
+			base.WriteWram(addr, value);
 			int prg_a = value & 0xF;
 			int prg_b = (value>>4)&0xF;
 			prg = prg_a | prg_b;
@@ -44,9 +44,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(prg), ref prg);
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
-			WriteWRAM(addr, value);
+			WriteWram(addr, value);
 		}
 
 	}

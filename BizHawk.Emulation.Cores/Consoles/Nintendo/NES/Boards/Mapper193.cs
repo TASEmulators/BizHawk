@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// http://wiki.nesdev.com/w/index.php/INES_Mapper_193
-	public sealed class Mapper193 : NES.NESBoardBase 
+	public sealed class Mapper193 : NesBoardBase 
 	{
 		private int prg_bank_mask_8k;
 		private byte[] prg_banks_8k = new byte[4];
@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(chr_banks_2k), ref chr_banks_2k, false);
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			addr &= 0x6003;
 			switch (addr)
@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SyncMap();
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
@@ -78,13 +78,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return base.ReadPPUChr(addr);
 			}
 
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			addr = ApplyMemoryMap(13, prg_banks_8k, addr);
-			return ROM[addr];
+			return Rom[addr];
 		}
 	}
 }

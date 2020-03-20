@@ -25,27 +25,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr >= 0x2000)
 			{
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 			}
 
 			int bank_1k = Get_CHRBank_1K(addr);
 			if (bank_1k.Bit(7))
 			{
 				//this is referencing chr ram
-				return VRAM[addr & 0x7FF];
+				return Vram[addr & 0x7FF];
 			}
-			else return base.ReadPPU(addr);
+			else return base.ReadPpu(addr);
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr >= 0x2000)
 			{
-				base.WritePPU(addr, value);
+				base.WritePpu(addr, value);
 				return;
 			}
 
@@ -53,9 +53,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (bank_1k.Bit(7))
 			{
 				//this is referencing chr ram
-				VRAM[addr & 0x7FF] = value;
+				Vram[addr & 0x7FF] = value;
 			}
-			else base.WritePPU(addr, value);
+			else base.WritePpu(addr, value);
 		}
 
 	}

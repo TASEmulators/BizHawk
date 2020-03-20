@@ -3,7 +3,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper226 : NES.NESBoardBase
+	public sealed class Mapper226 : NesBoardBase
 	{
 		// http://wiki.nesdev.com/w/index.php/INES_Mapper_226
 		public int prg_page;
@@ -38,12 +38,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void NESSoftReset()
+		public override void NesSoftReset()
 		{
 			resetFlag ^= true;
 			prg_page = 0;
 			prg_mode = false;
-			base.NESSoftReset();
+			base.NesSoftReset();
 		}
 
 		public override void SyncState(Serializer ser)
@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			addr &= 1;
 			if (addr == 0)
@@ -80,18 +80,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 		
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int baseAddr = resetSwitchMode && resetFlag ? 0x80000 : 0;
 
 			if (prg_mode == false)
-			{				
-				return ROM[baseAddr + (( ((prg_page >> 1) & prg_mask_32k) << 15) + (addr & 0x7FFF))];
-			}
-			else
 			{
-				return ROM[baseAddr + (((prg_page & prg_mask_16k) << 14) + (addr & 0x3FFF))];
+				return Rom[baseAddr + (( ((prg_page >> 1) & prg_mask_32k) << 15) + (addr & 0x7FFF))];
 			}
+
+			return Rom[baseAddr + (((prg_page & prg_mask_16k) << 14) + (addr & 0x3FFF))];
 		}
 	}
 }

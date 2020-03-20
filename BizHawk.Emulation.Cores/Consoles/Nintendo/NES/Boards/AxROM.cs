@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//generally mapper7
 
 	[NES.INESBoardImplPriority]
-	public sealed class AxROM : NES.NESBoardBase
+	public sealed class AxROM : NesBoardBase
 	{
 		//configuration
 		bool bus_conflict;
@@ -58,30 +58,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			prg_mask_32k = Cart.prg_size / 32 - 1;
-			SetMirrorType(NES.NESBoardBase.EMirrorType.OneScreenA);
+			SetMirrorType(NesBoardBase.EMirrorType.OneScreenA);
 
 			return true;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if (Cart.prg_size ==  16)
 			{
-				return ROM[(addr & 0x3FFF) | prg << 15];
+				return Rom[(addr & 0x3FFF) | prg << 15];
 			}
 
-			return ROM[addr | prg << 15];
+			return Rom[addr | prg << 15];
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
-			if (ROM != null && bus_conflict)
+			if (Rom != null && bus_conflict)
 				value = HandleNormalPRGConflict(addr,value);
 			prg = value & prg_mask_32k;
 			if ((value & 0x10) == 0)
-				SetMirrorType(NES.NESBoardBase.EMirrorType.OneScreenA);
+				SetMirrorType(NesBoardBase.EMirrorType.OneScreenA);
 			else
-				SetMirrorType(NES.NESBoardBase.EMirrorType.OneScreenB);
+				SetMirrorType(NesBoardBase.EMirrorType.OneScreenB);
 		}
 
 		public override void SyncState(Serializer ser)

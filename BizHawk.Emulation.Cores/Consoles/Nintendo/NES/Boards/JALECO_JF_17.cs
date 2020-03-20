@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//when the top 2 bits arent 0, theyre written to the latch
 	//interestingly, this works (for pinball quest) only when bus conflicts are applied, otherwise the game cant get past the title
 
-	public sealed class JALECO_JF_17 : NES.NESBoardBase
+	public sealed class JALECO_JF_17 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_16k;
@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(chr_banks_8k), ref chr_banks_8k, false);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			//Console.WriteLine("MAP {0:X4} = {1:X2}", addr, value);
 
@@ -86,20 +86,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			addr = ApplyMemoryMap(14, prg_banks_16k, addr);
-			return ROM[addr];
+			return Rom[addr];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				addr = ApplyMemoryMap(13, chr_banks_8k, addr);
 				return base.ReadPPUChr(addr);
 			}
-			else return base.ReadPPU(addr);
+			else return base.ReadPpu(addr);
 		}
 	}
 }

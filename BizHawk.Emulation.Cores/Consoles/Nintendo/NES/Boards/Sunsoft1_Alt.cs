@@ -11,7 +11,7 @@
 	 * In any event, here is how it's actually emulated.
 	 */
 
-	public sealed class Sunsoft1_Alt : NES.NESBoardBase
+	public sealed class Sunsoft1_Alt : NesBoardBase
 	{
 		int prg;
 
@@ -25,17 +25,17 @@
 			return true;
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			prg = value & 7;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if (addr >= 0x4000)
-				return ROM[addr & 0x3fff | 7 << 14];
+				return Rom[addr & 0x3fff | 7 << 14];
 			else
-				return ROM[addr & 0x3fff | prg << 14];
+				return Rom[addr & 0x3fff | prg << 14];
 		}
 
 		public override void SyncState(BizHawk.Common.Serializer ser)

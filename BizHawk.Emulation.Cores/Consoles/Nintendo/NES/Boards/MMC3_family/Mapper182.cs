@@ -18,25 +18,25 @@
 			return true;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			addr += 0x8000;
 			switch (addr & 0xE001)
 			{
 				case 0x8000: break; //?
-				case 0x8001: base.WritePRG(0xA000,value); break;
+				case 0x8001: base.WritePrg(0xA000,value); break;
 				case 0xA000:
 					value = (byte)scramble_A000(value);
-					base.WritePRG(0x8000,value);
+					base.WritePrg(0x8000,value);
 					break;
 				case 0xA001: break; //?
-				case 0xC000: base.WritePRG(0x8001, value); break;
+				case 0xC000: base.WritePrg(0x8001, value); break;
 				case 0xC001:
-					base.WritePRG(0xC000, value);
-					base.WritePRG(0xC001, value);
+					base.WritePrg(0xC000, value);
+					base.WritePrg(0xC001, value);
 					break;
 				default:
-					base.WritePRG(addr, value);
+					base.WritePrg(addr, value);
 					break;
 			}
 		}

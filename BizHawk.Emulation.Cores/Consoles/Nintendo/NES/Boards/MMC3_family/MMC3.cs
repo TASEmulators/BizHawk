@@ -51,23 +51,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 		bool oldIrqType;
 
-		public NES.NESBoardBase.EMirrorType MirrorType
+		public NesBoardBase.EMirrorType MirrorType
 		{
 			get
 			{
 				switch (mirror)
 				{
 					default:
-					case 0: return NES.NESBoardBase.EMirrorType.Vertical;
-					case 1: return NES.NESBoardBase.EMirrorType.Horizontal;
-					case 2: return NES.NESBoardBase.EMirrorType.OneScreenA;
-					case 3: return NES.NESBoardBase.EMirrorType.OneScreenB;
+					case 0: return NesBoardBase.EMirrorType.Vertical;
+					case 1: return NesBoardBase.EMirrorType.Horizontal;
+					case 2: return NesBoardBase.EMirrorType.OneScreenA;
+					case 3: return NesBoardBase.EMirrorType.OneScreenB;
 				}
 			}
 		}
 
-		protected NES.NESBoardBase board;
-		public MMC3(NES.NESBoardBase board, int num_prg_banks)
+		protected NesBoardBase board;
+		public MMC3(NesBoardBase board, int num_prg_banks)
 		{
 			MirrorMask = 1;
 			this.board = board;
@@ -309,19 +309,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 	}
 
-	public abstract class MMC3Board_Base : NES.NESBoardBase
+	public abstract class MMC3Board_Base : NesBoardBase
 	{
 		//state
 		public MMC3 mmc3;
 		public int extra_vrom;
 
 
-		public override void AddressPPU(int addr)
+		public override void AddressPpu(int addr)
 		{
 			mmc3.AddressPPU(addr);
 		}
 
-		public override void ClockPPU()
+		public override void ClockPpu()
 		{
 			mmc3.ClockPPU();
 		}
@@ -355,42 +355,42 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return addr;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				addr = MapCHR(addr);
-				if (VROM != null)
-					return VROM[addr + extra_vrom];
-				else return VRAM[addr];
+				if (Vrom != null)
+					return Vrom[addr + extra_vrom];
+				else return Vram[addr];
 			}
 
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000)
 			{
-				if (VRAM == null) return;
+				if (Vram == null) return;
 				addr = MapCHR(addr);
-				VRAM[addr] = value;
+				Vram[addr] = value;
 			}
-			base.WritePPU(addr, value);
+			base.WritePpu(addr, value);
 		}
 
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			mmc3.WritePRG(addr, value);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_8k = Get_PRGBank_8K(addr);
 			bank_8k &= prg_mask;
 			addr = (bank_8k << 13) | (addr & 0x1FFF);
-			return ROM[addr];
+			return Rom[addr];
 		}
 
 		protected virtual void BaseSetup()

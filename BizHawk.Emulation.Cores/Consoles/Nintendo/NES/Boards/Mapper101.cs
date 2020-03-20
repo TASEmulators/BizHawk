@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// good dumps of this rom are on Mapper087; only bad dumps with CHR banks out of order go here
 	// nothing else uses this, other than hypothetical homebrews which might prefer it to CxROM
 	// because of no bus conflicts
-	public sealed class Mapper101 : NES.NESBoardBase
+	public sealed class Mapper101 : NesBoardBase
 	{
 		//configuration
 		int chr_bank_mask_8k;
@@ -43,18 +43,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				int ofs = addr & ((1 << 13) - 1);
 				addr = (chr_bank_8k << 13) | ofs;
-				return VROM[addr];
+				return Vrom[addr];
 			}
-			else return base.ReadPPU(addr);
+			else return base.ReadPpu(addr);
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			chr_bank_8k = value & chr_bank_mask_8k;
 		}

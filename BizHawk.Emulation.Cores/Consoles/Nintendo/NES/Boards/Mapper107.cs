@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper107 : NES.NESBoardBase
+	public sealed class Mapper107 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_32k, chr_bank_mask_8k;
@@ -37,25 +37,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				int ofs = addr & ((1 << 13) - 1);
 				addr = (chr_bank_8k << 13) | ofs;
-				return VROM[addr];
+				return Vrom[addr];
 			}
-			else return base.ReadPPU(addr);
+			else return base.ReadPpu(addr);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int ofs = addr & ((1 << 15) - 1);
 			addr = (prg_bank_32k << 15) | ofs;
-			return ROM[addr];
+			return Rom[addr];
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			chr_bank_8k = value;
 			prg_bank_32k = value >> 1;

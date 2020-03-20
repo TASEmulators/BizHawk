@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// basic on FCEUX src
-	public sealed class Mapper150 : NES.NESBoardBase
+	public sealed class Mapper150 : NesBoardBase
 	{
 		private byte[] latch = new byte[8];
 		private int cmd;
@@ -34,14 +34,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(cmd), ref cmd);
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			addr += 0x4000;
 			Write(addr, value);
 			SetMirroring(latch[2]);
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			addr += 0x6000;
 			Write(addr, value);
@@ -98,7 +98,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadEXP(int addr)
+		public override byte ReadExp(int addr)
 		{
 			byte ret;
 			addr += 0x4000;
@@ -114,21 +114,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return ret;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[((latch[0] & prg_mask) << 15) + addr];
+			return Rom[((latch[0] & prg_mask) << 15) + addr];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				int bank = latch[1] | latch[3] | latch[4];
 				bank &= chr_mask;
-				return VROM[(bank << 13) + addr];
+				return Vrom[(bank << 13) + addr];
 			}
 
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 	}
 }

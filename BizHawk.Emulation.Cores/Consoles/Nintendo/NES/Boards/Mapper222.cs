@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Bad Dudes.7z|Dragon Ninja (J) [p1][!].nes
 	// irq doesn't work right; easily seen in any level but level 1
-	public sealed class Mapper222 : NES.NESBoardBase
+	public sealed class Mapper222 : NesBoardBase
 	{
 		int prg_bank_mask_8k;
 		int chr_bank_mask_1k;
@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			addr &= 0x7003;
 			switch (addr)
@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				//case 0x7001:
 					// this is of course sort of VRC like... except it doesn't work right
 					irq_time = value;
-					IRQSignal = false;
+					IrqSignal = false;
 					irq_counting = true;
 					if (value == 0)
 						irq_counting = false;
@@ -87,20 +87,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}*/
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[addr & 0x1fff | prg[addr >> 13] << 13];
+			return Rom[addr & 0x1fff | prg[addr >> 13] << 13];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
-				return VROM[addr & 0x3ff | chr[addr >> 10] << 10];
+				return Vrom[addr & 0x3ff | chr[addr >> 10] << 10];
 			else
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 		}
 
-		public override void ClockCPU()
+		public override void ClockCpu()
 		{
 			if (irq_counting)
 			{
@@ -108,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (irq_time >= 240)
 				{
 					//irq_counting = false;
-					IRQSignal = true;
+					IrqSignal = true;
 					//irq_time = 0;
 					Console.WriteLine("IRQ TRIG: SL {0}", NES.ppu.ppur.status.sl);
 				}

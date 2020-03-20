@@ -2,7 +2,7 @@
 {
 	// rewires pins to use internal CIRAM as both nametable and pattern data, so
 	// the entire cart is just a single PRGROM chip (plus CIC)
-	public sealed class Mapper218 : NES.NESBoardBase
+	public sealed class Mapper218 : NesBoardBase
 	{
 		//configuration
 		int prg_byte_mask;
@@ -62,20 +62,20 @@
 			return addr;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			return NES.CIRAM[TransformPPU(addr)];
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			NES.CIRAM[TransformPPU(addr)] = value;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			addr &= prg_byte_mask;
-			return ROM[addr];
+			return Rom[addr];
 		}
 	}
 }

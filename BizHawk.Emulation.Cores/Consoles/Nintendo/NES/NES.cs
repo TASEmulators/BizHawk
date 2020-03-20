@@ -360,11 +360,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				cart = new CartInfo();
 				var nsfboard = new NSFBoard();
 				nsfboard.Create(this);
-				nsfboard.ROM = rom;
+				nsfboard.Rom = rom;
 				nsfboard.InitNSF( nsf);
 				nsfboard.InitialRegisterValues = InitialMapperRegisterValues;
 				nsfboard.Configure(origin);
-				nsfboard.WRAM = new byte[cart.wram_size * 1024];
+				nsfboard.Wram = new byte[cart.wram_size * 1024];
 				Board = nsfboard;
 				Board.PostConfigure();
 				AutoMapperProps.Populate(Board, SyncSettings);
@@ -400,9 +400,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				//create the vram and wram if necessary
 				if (cart.wram_size != 0)
-					Board.WRAM = new byte[cart.wram_size * 1024];
+					Board.Wram = new byte[cart.wram_size * 1024];
 				if (cart.vram_size != 0)
-					Board.VRAM = new byte[cart.vram_size * 1024];
+					Board.Vram = new byte[cart.vram_size * 1024];
 
 				Board.PostConfigure();
 				AutoMapperProps.Populate(Board, SyncSettings);
@@ -673,24 +673,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					ms.Read(trainer, 0, 512);
 				}
 
-				Board.ROM = new byte[choice.prg_size * 1024];
-				ms.Read(Board.ROM, 0, Board.ROM.Length);
+				Board.Rom = new byte[choice.prg_size * 1024];
+				ms.Read(Board.Rom, 0, Board.Rom.Length);
 
 				if (choice.chr_size > 0)
 				{
-					Board.VROM = new byte[choice.chr_size * 1024];
-					int vrom_copy_size = ms.Read(Board.VROM, 0, Board.VROM.Length);
+					Board.Vrom = new byte[choice.chr_size * 1024];
+					int vrom_copy_size = ms.Read(Board.Vrom, 0, Board.Vrom.Length);
 
-					if (vrom_copy_size < Board.VROM.Length)
-						LoadWriteLine("Less than the expected VROM was found in the file: {0} < {1}", vrom_copy_size, Board.VROM.Length);
+					if (vrom_copy_size < Board.Vrom.Length)
+						LoadWriteLine("Less than the expected VROM was found in the file: {0} < {1}", vrom_copy_size, Board.Vrom.Length);
 				}
 				if (choice.prg_size != iNesHeaderInfo.prg_size || choice.chr_size != iNesHeaderInfo.chr_size)
 					LoadWriteLine("Warning: Detected choice has different filesizes than the INES header!");
 			}
 			else if (unif != null)
 			{
-				Board.ROM = unif.PRG;
-				Board.VROM = unif.CHR;
+				Board.Rom = unif.PRG;
+				Board.Vrom = unif.CHR;
 			}
 			else
 			{
@@ -698,16 +698,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				var ms = new MemoryStream(file, false);
 				ms.Seek(0, SeekOrigin.Begin);
 
-				Board.ROM = new byte[choice.prg_size * 1024];
-				ms.Read(Board.ROM, 0, Board.ROM.Length);
+				Board.Rom = new byte[choice.prg_size * 1024];
+				ms.Read(Board.Rom, 0, Board.Rom.Length);
 
 				if (choice.chr_size > 0)
 				{
-					Board.VROM = new byte[choice.chr_size * 1024];
-					int vrom_copy_size = ms.Read(Board.VROM, 0, Board.VROM.Length);
+					Board.Vrom = new byte[choice.chr_size * 1024];
+					int vrom_copy_size = ms.Read(Board.Vrom, 0, Board.Vrom.Length);
 
-					if (vrom_copy_size < Board.VROM.Length)
-						LoadWriteLine("Less than the expected VROM was found in the file: {0} < {1}", vrom_copy_size, Board.VROM.Length);
+					if (vrom_copy_size < Board.Vrom.Length)
+						LoadWriteLine("Less than the expected VROM was found in the file: {0} < {1}", vrom_copy_size, Board.Vrom.Length);
 				}
 			}
 
@@ -718,9 +718,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			//create the vram and wram if necessary
 			if (cart.wram_size != 0)
-				Board.WRAM = new byte[cart.wram_size * 1024];
+				Board.Wram = new byte[cart.wram_size * 1024];
 			if (cart.vram_size != 0)
-				Board.VRAM = new byte[cart.vram_size * 1024];
+				Board.Vram = new byte[cart.vram_size * 1024];
 
 			Board.PostConfigure();
 			AutoMapperProps.Populate(Board, SyncSettings);

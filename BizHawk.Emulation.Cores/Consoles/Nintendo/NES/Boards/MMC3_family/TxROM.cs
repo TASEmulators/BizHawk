@@ -8,9 +8,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	[NES.INESBoardImplPriority]
 	public sealed class TxROM : MMC3Board_Base
 	{
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
-			base.WritePRG(addr, value);
+			base.WritePrg(addr, value);
 			SetMirrorType(mmc3.MirrorType);  //often redundant, but gets the job done
 		}
 	
@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			get
 			{
 				if (!Cart.wram_battery) return null;
-				return WRAM;
+				return Wram;
 				//some boards have a wram that is backed-up or not backed-up. need to handle that somehow
 				//(nestopia splits it into NVWRAM and WRAM but i didnt like that at first.. but it may player better with this architecture)
 			}

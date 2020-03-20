@@ -36,15 +36,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		//mapper 095's chief unique contribution is to add this nametable rewiring logic: CHR A15 directly controls CIRAM A10
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
-			if (addr < 0x2000) return base.ReadPPU(addr);
-			else return base.ReadPPU(RewireNametable(addr, 5));
+			if (addr < 0x2000) return base.ReadPpu(addr);
+			else return base.ReadPpu(RewireNametable(addr, 5));
 		}
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
-			if (addr < 0x2000) base.WritePPU(addr, value);
-			else base.WritePPU(RewireNametable(addr, 5), value);
+			if (addr < 0x2000) base.WritePpu(addr, value);
+			else base.WritePpu(RewireNametable(addr, 5), value);
 		}
 	}
 }

@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//iNES Mapper 97
 	//Kaiketsu Yanchamaru (Kid Niki 1)
 
-	public sealed class IREM_TAM_S1 : NES.NESBoardBase
+	public sealed class IREM_TAM_S1 : NesBoardBase
 	{
 		int prg_bank_mask_16k;
 		byte prg_bank_16k;
@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_banks_16k[1] = prg_bank_16k;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			prg_bank_16k = (byte)(value & 15);
 			SyncPRG();
@@ -64,14 +64,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_16k = addr >> 14;
 			int ofs = addr & ((1 << 14) - 1);
 			bank_16k = prg_banks_16k[bank_16k];
 			bank_16k &= prg_bank_mask_16k;
 			addr = (bank_16k << 14) | ofs;
-			return ROM[addr];
+			return Rom[addr];
 		}
 	}
 }

@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// http://www.qmtpro.com/~nes/drip/dripmap.txt
 	// http://wiki.nesdev.com/w/index.php/UNIF/UNL-DripGame
-	public class UNIF_UNL_DripGame : NES.NESBoardBase
+	public class UNIF_UNL_DripGame : NesBoardBase
 	{
 		[MapperProp]
 		public bool DripGameDipSwitch;
@@ -122,13 +122,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void ClockCPU()
+		public override void ClockCpu()
 		{
 			if (irqvalue > 0)
 			{
 				irqvalue--;
 				if (irqvalue == 0)
-					IRQSignal = true;
+					IrqSignal = true;
 			}
 			if (warmupclock > 0)
 			{
@@ -138,7 +138,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			sound1.Clock();
 		}
 
-		public override byte ReadEXP(int addr)
+		public override byte ReadExp(int addr)
 		{
 			switch (addr & 0xf800)
 			{
@@ -157,7 +157,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if (addr < 0x4000) // regs
 			{
@@ -180,7 +180,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						irqbuffer = value;
 						return;
 					case 9: // irqh
-						IRQSignal = false; // ack
+						IrqSignal = false; // ack
 						if ((value & 0x80) != 0) // enable
 						{
 							irqvalue = value << 8 & 0x7f00 | irqbuffer;
@@ -219,16 +219,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[addr & 0x3fff | prg[addr >> 14] << 14];
+			return Rom[addr & 0x3fff | prg[addr >> 14] << 14];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
-				return VROM[addr & 0x7ff | chr[addr >> 11] << 11];
+				return Vrom[addr & 0x7ff | chr[addr >> 11] << 11];
 			}
 
 			int mappedaddr = addr & 0x3ff | nt[addr >> 10 & 3] << 10;
@@ -242,16 +242,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return NES.CIRAM[mappedaddr];
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr >= 0x2000)
 				NES.CIRAM[addr & 0x3ff | nt[addr >> 10 & 3] << 10] = value;
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			if (sramwrite)
-				base.WriteWRAM(addr, value);
+				base.WriteWram(addr, value);
 		}
 
 		private class SoundChannel

@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.EndSection();
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			if (addr < 0x1000)
 			{
@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			// addresses are scrambled
 			if (addr >= 0x4000)
@@ -65,18 +65,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				addr = (addr & 0xFFFE) | ((addr >> 2) & 1) | ((addr >> 3) & 1) | ((addr >> 1) & 1);
 			}
-			base.WritePRG(addr, value);
+			base.WritePrg(addr, value);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if (prgmode)
 			{
-				return ROM[addr | prgreg << 15];
+				return Rom[addr | prgreg << 15];
 			}
 			else
 			{
-				return base.ReadPRG(addr);
+				return base.ReadPrg(addr);
 			}
 		}
 

@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper241 : NES.NESBoardBase
+	public sealed class Mapper241 : NesBoardBase
 	{
 		//163 is for nanjing games
 
@@ -31,22 +31,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override byte ReadEXP(int addr)
+		public override byte ReadExp(int addr)
 		{
 			//some kind of magic number..
 			return 0x50;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			prg_banks_32k[0] = value;
 			ApplyMemoryMapMask(prg_bank_mask_32k, prg_banks_32k);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			addr = ApplyMemoryMap(15, prg_banks_32k, addr);
-			return ROM[addr];
+			return Rom[addr];
 		}
 
 		public override void SyncState(Serializer ser)

@@ -3,7 +3,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper175 : NES.NESBoardBase
+	public sealed class Mapper175 : NesBoardBase
 	{
 		private bool delay;
 
@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if (addr == 0)
 			{
@@ -73,17 +73,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
-				return VROM[(chrReg << 13) + addr];
+				return Vrom[(chrReg << 13) + addr];
 			}
 
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if (addr == 0x7FFC)
 			{
@@ -93,15 +93,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (addr < 0x4000)
 			{
-				return ROM[(prgReg8 << 14) + (addr & 0x3FFF)];
+				return Rom[(prgReg8 << 14) + (addr & 0x3FFF)];
 			}
 			else if (addr < 0x6000)
 			{
-				return ROM[(prgRegC << 13) + (addr & 0x1FFF)];
+				return Rom[(prgRegC << 13) + (addr & 0x1FFF)];
 			}
 			else
 			{
-				return ROM[(prgRegE << 13) + (addr & 0x1FFF)];
+				return Rom[(prgRegE << 13) + (addr & 0x1FFF)];
 			}
 		}
 	}

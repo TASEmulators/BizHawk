@@ -2,7 +2,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper034 : NES.NESBoardBase
+	public sealed class Mapper034 : NesBoardBase
 	{
 		// zombie board that tries to handle both bxrom and ave-nina at once
 
@@ -35,25 +35,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
-				return (VROM ?? VRAM)[addr & 0xfff | chr[addr >> 12] << 12];
+				return (Vrom ?? Vram)[addr & 0xfff | chr[addr >> 12] << 12];
 			else
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[addr | prg << 15];
+			return Rom[addr | prg << 15];
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			prg = value & prg_bank_mask_32k;
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			switch (addr)
 			{
@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				default:
 					// on NINA, the regs sit on top of WRAM
-					base.WriteWRAM(addr, value);
+					base.WriteWram(addr, value);
 					break;
 			}
 		}

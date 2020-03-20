@@ -4,7 +4,7 @@ using BizHawk.Common.NumberExtensions;
 // http://wiki.nesdev.com/w/index.php/INES_Mapper_058
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper058 : NES.NESBoardBase
+	public sealed class Mapper058 : NesBoardBase
 	{
 		bool prg_mode = false;
 		int chr_reg;
@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			prg_mode = addr.Bit(6);
 			if (addr.Bit(7))
@@ -51,25 +51,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			chr_reg = (addr >> 3) & 0x07;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if (prg_mode == false)
 			{
-				return ROM[((prg_reg >> 1) * 0x8000) + addr];
+				return Rom[((prg_reg >> 1) * 0x8000) + addr];
 			}
 			else
 			{
-				return ROM[(prg_reg * 0x4000) + (addr & 0x3FFF)];
+				return Rom[(prg_reg * 0x4000) + (addr & 0x3FFF)];
 			}
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
-				return VROM[(chr_reg * 0x2000) + addr];
+				return Vrom[(chr_reg * 0x2000) + addr];
 			}
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 	}
 }

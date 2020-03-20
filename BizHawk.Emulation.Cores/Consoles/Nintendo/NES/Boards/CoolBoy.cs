@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			if (addr < 0x1000)
 			{
@@ -120,7 +120,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(exp), ref exp, false);
 		}
 
-		public override void NESSoftReset()
+		public override void NesSoftReset()
 		{
 			Array.Clear(exp, 0, 4);
 		}

@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//Cybernoid
 
 	[NES.INESBoardImplPriority]
-	public sealed class CNROM : NES.NESBoardBase
+	public sealed class CNROM : NesBoardBase
 	{
 		//configuration
 		int prg_byte_mask, chr_mask;
@@ -96,7 +96,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if (bus_conflict)
 				value = HandleNormalPRGConflict(addr, value);
@@ -135,7 +135,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (chr_enabled == false)
 			{
@@ -143,11 +143,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			if (addr < 0x2000)
 			{
-				return VROM[addr + (chr << 13)];
+				return Vrom[addr + (chr << 13)];
 			}
 			else
 			{
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 			}
 		}
 
@@ -159,9 +159,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(chr_enabled), ref chr_enabled);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[addr & prg_byte_mask];
+			return Rom[addr & prg_byte_mask];
 		}
 	}
 }

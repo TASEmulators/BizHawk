@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class INLNSF : NES.NESBoardBase
+	public class INLNSF : NesBoardBase
 	{
 
 		// config
@@ -40,17 +40,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			if (addr >= 0x1000)
 				prg[addr & 0x07] = value & prg_bank_mask_4k;
 			else
-				base.WriteEXP(addr, value);
+				base.WriteExp(addr, value);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[prg[(addr & 0x7000) >> 12] << 12 | addr & 0x0fff];
+			return Rom[prg[(addr & 0x7000) >> 12] << 12 | addr & 0x0fff];
 		}
 	}
 }

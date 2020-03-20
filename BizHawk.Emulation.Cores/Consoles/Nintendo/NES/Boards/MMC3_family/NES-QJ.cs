@@ -13,9 +13,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(block), ref block);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
-			base.WritePRG(addr, value);
+			base.WritePrg(addr, value);
 			SetMirrorType(mmc3.MirrorType);  //often redundant, but gets the job done
 		}
 
@@ -51,11 +51,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return (base.Get_CHRBank_1K(addr) & 0x7F) + block * 128;
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
 			return (byte)block;
 		}
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			if (mmc3.wram_enable && !mmc3.wram_write_protect)
 			{

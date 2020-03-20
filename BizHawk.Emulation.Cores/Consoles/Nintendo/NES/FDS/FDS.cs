@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	 * http://nesdev.com/diskspec.txt - not useless
 	 */
 	[NES.INESBoardImplCancel]
-	public class FDS : NES.NESBoardBase
+	public class FDS : NesBoardBase
 	{
 		#region configuration
 		/// <summary>FDS bios image; should be 8192 bytes</summary>
@@ -229,7 +229,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		void SetIRQ()
 		{
-			IRQSignal = _diskirq || _timerirq;
+			IrqSignal = _diskirq || _timerirq;
 		}
 		bool diskirq
 		{
@@ -244,7 +244,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int timerirq_cd;
 		bool timer_irq_active;
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			//if (addr == 0x0025)
 			//	Console.WriteLine("W{0:x4}:{1:x2} {2:x4}", addr + 0x4000, value, NES.cpu.PC);
@@ -307,7 +307,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			diskirq = diskdrive.irq;
 		}
 
-		public override byte ReadEXP(int addr)
+		public override byte ReadExp(int addr)
 		{
 			byte ret = NES.DB;
 
@@ -363,7 +363,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return 0; // lazy
 		}
 
-		public override void ClockCPU()
+		public override void ClockCpu()
 		{
 			if ((timerreg & 2) != 0 && diskenable)
 			{
@@ -402,34 +402,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			audio.Clock();
 		}
 
-		public override void ClockPPU()
+		public override void ClockPpu()
 		{
 			diskdrive.Clock();
 			diskirq = diskdrive.irq;
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
-			return WRAM[addr & 0x1fff];
+			return Wram[addr & 0x1fff];
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
-			WRAM[addr & 0x1fff] = value;
+			Wram[addr & 0x1fff] = value;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if (addr >= 0x6000)
 				return biosrom[addr & 0x1fff];
 			else
-				return WRAM[addr + 0x2000];
+				return Wram[addr + 0x2000];
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if (addr < 0x6000)
-				WRAM[addr + 0x2000] = value;
+				Wram[addr + 0x2000] = value;
 		}
 	}
 }

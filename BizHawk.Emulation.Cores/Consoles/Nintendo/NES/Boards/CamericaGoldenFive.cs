@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Adapted from 
-	public sealed class CamericaGoldenFive : NES.NESBoardBase
+	public sealed class CamericaGoldenFive : NesBoardBase
 	{
 		private byte[] regs = new byte[2];
 
@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("reg", ref regs, false);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if (addr < 0x2000) // 80000
 			{
@@ -48,15 +48,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if (addr < 0x4000)
 			{
-				return ROM[((regs[0]) << 14) + (addr & 0x3FFF)];
+				return Rom[((regs[0]) << 14) + (addr & 0x3FFF)];
 			}
 			else
 			{
-				return ROM[((regs[1]) << 14) + (addr & 0x3FFF)];
+				return Rom[((regs[1]) << 14) + (addr & 0x3FFF)];
 			}
 		}
 	}

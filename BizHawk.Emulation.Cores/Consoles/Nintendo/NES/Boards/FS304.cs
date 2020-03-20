@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class FS304 : NES.NESBoardBase
+	public class FS304 : NesBoardBase
 	{
 		// waixing?
 
@@ -27,7 +27,7 @@
 			return true;
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			switch (addr & 0x1300)
 			{
@@ -47,9 +47,9 @@
 			prg &= prg_mask_32k;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[addr | prg << 15];
+			return Rom[addr | prg << 15];
 		}
 	}
 }

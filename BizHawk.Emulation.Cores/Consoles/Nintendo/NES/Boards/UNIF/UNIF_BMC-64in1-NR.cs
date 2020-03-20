@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Adapted from FCEUX src
-	public class UNIF_BMC_64in1_NR : NES.NESBoardBase
+	public class UNIF_BMC_64in1_NR : NesBoardBase
 	{
 		private byte[] regs = new byte[4];
 
@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			if (addr >= 0x1000 && addr <= 0x1003)
 			{
@@ -33,51 +33,51 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				SetMirrorType((regs[0] & 0x20) > 0 ? EMirrorType.Horizontal : EMirrorType.Vertical);
 			}
 
-			base.WriteEXP(addr, value);
+			base.WriteExp(addr, value);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			regs[3] = value;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if ((regs[0] & 0x80) > 0)
 			{
 				if ((regs[1] & 0x80) > 0)
 				{
-					return ROM[((regs[1] & 0x1F) * 0x8000) + (addr & 0x7FFF)];
+					return Rom[((regs[1] & 0x1F) * 0x8000) + (addr & 0x7FFF)];
 				}
 				else
 				{
 					int bank = ((regs[1] & 0x1f) << 1) | ((regs[1] >> 6) & 1);
-					return ROM[(bank * 0x4000) + (addr & 0x3FFF)];
+					return Rom[(bank * 0x4000) + (addr & 0x3FFF)];
 				}
 			}
 			else
 			{
 				if (addr < 0x4000)
 				{
-					return ROM[(addr & 0x3FFF)];
+					return Rom[(addr & 0x3FFF)];
 				}
 				else
 				{
 					int bank = ((regs[1] & 0x1f) << 1) | ((regs[1] >> 6) & 1);
-					return ROM[(bank * 0x4000) + (addr & 0x3FFF)];
+					return Rom[(bank * 0x4000) + (addr & 0x3FFF)];
 				}
 			}
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				int bank = (regs[2] << 2) | ((regs[0] >> 1) & 3);
-				return VROM[(bank * 0x2000) + (addr & 0x1FFF)];
+				return Vrom[(bank * 0x2000) + (addr & 0x1FFF)];
 			}
 
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 
 		public override void SyncState(Serializer ser)

@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			int nt = value >> 7;
 
@@ -92,28 +92,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			if ((addr & 0x6001) != 0x2000)
-				base.WritePRG(addr, value);
+				base.WritePrg(addr, value);
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
-			if (addr < 0x2000) return base.ReadPPU(addr);
+			if (addr < 0x2000) return base.ReadPpu(addr);
 			else
 			{
 				int nt = ((addr - 0x2000) >> 10) & 0x3;
 				addr = 0x2000 + (addr & 0x3FF) + (nametables[nt] << 10);
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 
 			}
 		}
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
-			if (addr < 0x2000) base.WritePPU(addr, value);
+			if (addr < 0x2000) base.WritePpu(addr, value);
 			else
 			{
 				int nt = ((addr - 0x2000) >> 10) & 0x3;
 				addr = 0x2000 + (addr & 0x3FF) + (nametables[nt] << 10);
-				base.WritePPU(addr, value);
+				base.WritePpu(addr, value);
 			}
 
 		}

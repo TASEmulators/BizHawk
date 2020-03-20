@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//TODO - bus conflicts
 
 	[NES.INESBoardImplPriority]
-	public sealed class GxROM : NES.NESBoardBase
+	public sealed class GxROM : NesBoardBase
 	{
 		//configuraton
 		int prg_mask, chr_mask;
@@ -55,21 +55,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			return true;
 		}
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[addr + (prg<<15)];
+			return Rom[addr + (prg<<15)];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
-				return VROM[addr + (chr << 13)];
+				return Vrom[addr + (chr << 13)];
 			}
-			else return base.ReadPPU(addr);
+			else return base.ReadPpu(addr);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			chr = ((value & 7) & chr_mask);
 			prg = (((value>>4) & 3) & prg_mask);

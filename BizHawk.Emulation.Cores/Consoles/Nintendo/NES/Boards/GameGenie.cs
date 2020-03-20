@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// this is an internal testing thing, not really for using
 
-	public class GameGenie : NES.NESBoardBase
+	public class GameGenie : NesBoardBase
 	{
 		static byte[] PatternTables = new byte[256];
 
@@ -49,23 +49,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if (addr < 0x4000)
 				return NES.DB;
 			else
-				return ROM[addr & 0xfff];
+				return Rom[addr & 0xfff];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr >= 0x2000)
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 			else
 				return PatternTables[addr & 0xff];
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			NES.LogLine("{0:x4}<={1:x2}", addr + 0x8000, value);
 		}

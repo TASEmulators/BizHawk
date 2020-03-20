@@ -3,7 +3,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class MLT_MAX15 : NES.NESBoardBase
+	public sealed class MLT_MAX15 : NesBoardBase
 	{
 		//http://wiki.nesdev.com/w/index.php/INES_Mapper_234
 
@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void NESSoftReset()
+		public override void NesSoftReset()
 		{
 			mode = false;
 			block_high = 0;
@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_bank = 0;
 			chr_bank_high = 0;
 			reg_0_locked = false;
-			base.NESSoftReset();
+			base.NesSoftReset();
 			SetMirrorType(EMirrorType.Vertical);
 		}
 
@@ -56,11 +56,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if (addr < 0x7F80)
 			{
-				base.WritePRG(addr, value);
+				base.WritePrg(addr, value);
 			}
 			else
 			{
@@ -106,7 +106,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank;
 			if (mode)
@@ -118,18 +118,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				bank = (block_high << 1) | block_low;
 			}
 			
-			byte value = ROM[((bank & prg_bank_mask_32k) * 0x8000) + (addr & 0x7FFF)];
+			byte value = Rom[((bank & prg_bank_mask_32k) * 0x8000) + (addr & 0x7FFF)];
 
 			if (addr >= 0x7F80)
 			{
-				WritePRG(addr, value);
+				WritePrg(addr, value);
 			}
 			
 			return value;
 			
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
@@ -143,9 +143,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					bank = (block_high << 3) | (block_low << 2) | chr_bank_high;
 				}
 
-				return VROM[((bank & chr_bank_mask_8k) * 0x2000) + (addr & 0x1FFF)];
+				return Vrom[((bank & chr_bank_mask_8k) * 0x2000) + (addr & 0x1FFF)];
 			}
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 	}
 }

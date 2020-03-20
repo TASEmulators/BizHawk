@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper235 : NES.NESBoardBase
+	public sealed class Mapper235 : NesBoardBase
 	{
 		private int _reg;
 
@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("reg", ref _reg);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if ((_reg & 0x800) > 0)
 			{
@@ -48,16 +48,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					
 				}
 
-				return ROM[((bank & _prg16BankMask) * 0x4000) + (addr & 0x3FFF)];
+				return Rom[((bank & _prg16BankMask) * 0x4000) + (addr & 0x3FFF)];
 			}
 			else
 			{
 				int bank = ((_reg & 0x300) >> 4) | (_reg & 0x1F);
-				return ROM[((bank & _prg32BankMask) * 0x8000) + (addr & 0x7FFF)];
+				return Rom[((bank & _prg32BankMask) * 0x8000) + (addr & 0x7FFF)];
 			}
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			_reg = addr;
 			SyncMirroring();

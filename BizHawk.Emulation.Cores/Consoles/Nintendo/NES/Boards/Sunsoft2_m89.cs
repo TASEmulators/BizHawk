@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//AKA Sunsoft-2 chip (SUNSOFT-3 pcb)
 	//game=Tenka no Goikenban: Mito Koumon ; chip=sunsoft-2 ; pcb = SUNSOFT-3
 	//this is confusing. see docs/sunsoft.txt
-	public sealed class Mapper89 : NES.NESBoardBase
+	public sealed class Mapper89 : NesBoardBase
 	{
 		int chr;
 		int prg_bank_mask_16k;
@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_banks_16k[0] = prg_bank_16k;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			prg_bank_16k = (byte)((value >> 4) & 7);
 			SyncPRG();
@@ -59,22 +59,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			chr = ((value & 0x07) + ((value >> 7) * 0x08));
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_16k = addr >> 14;
 			int ofs = addr & ((1 << 14) - 1);
 			bank_16k = prg_banks_16k[bank_16k];
 			bank_16k &= prg_bank_mask_16k;
 			addr = (bank_16k << 14) | ofs;
-			return ROM[addr];
+			return Rom[addr];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
-				return VROM[(addr & 0x1FFF) + (chr * 0x2000)];
+				return Vrom[(addr & 0x1FFF) + (chr * 0x2000)];
 			else
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 		}
 	}
 }

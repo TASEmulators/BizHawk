@@ -33,20 +33,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//and that even though 8KB is really here, only 4KB gets used.
 		//still, purists could validate it.
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				//read patterns from mapper controlled area
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 			}
 			else
 			{
-				return VRAM[addr & 0xFFF];
+				return Vram[addr & 0xFFF];
 			}
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000)
 			{
@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 			{
-				VRAM[addr & 0xFFF] = value;
+				Vram[addr & 0xFFF] = value;
 			}
 		}
 

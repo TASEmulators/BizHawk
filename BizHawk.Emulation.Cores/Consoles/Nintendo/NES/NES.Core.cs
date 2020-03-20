@@ -19,8 +19,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public byte[] ram;
 		public byte[] CIRAM; //AKA nametables
 		string game_name = ""; //friendly name exposed to user and used as filename base
-		CartInfo cart; //the current cart prototype. should be moved into the board, perhaps
-		internal INESBoard Board; //the board hardware that is currently driving things
+		internal CartInfo cart; //the current cart prototype. should be moved into the board, perhaps
+		internal INesBoard Board; //the board hardware that is currently driving things
 		EDetectionOrigin origin = EDetectionOrigin.None;
 		int sprdma_countdown;
 
@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// for debugging only!
 		/// </summary>
-		public INESBoard GetBoard() => Board;
+		public INesBoard GetBoard() => Board;
 
 		#region Audio
 
@@ -269,11 +269,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				if (cart.DB_GameInfo.Hash == "00C50062A2DECE99580063777590F26A253AAB6B") // Silva Saga
 				{
-					for (int i = 0; i < Board.WRAM.Length; i++)
+					for (int i = 0; i < Board.Wram.Length; i++)
 					{
-						Board.WRAM[i] = 0xFF;
+						Board.Wram[i] = 0xFF;
 					}
-				}			
+				}
 			}
 		}
 
@@ -299,7 +299,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			lagged = true;
 			if (resetSignal)
 			{
-				Board.NESSoftReset();
+				Board.NesSoftReset();
 				cpu.NESSoftReset();
 				apu.NESSoftReset();
 				ppu.NESSoftReset();
@@ -536,16 +536,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (cpu.RDY && !IRQ_delay)
 			{
-				cpu.IRQ = _irq_apu || Board.IRQSignal;
+				cpu.IRQ = _irq_apu || Board.IrqSignal;
 			}
 			else if (special_case_delay || apu.dmc_dma_countdown == 3)
 			{
-				cpu.IRQ = _irq_apu || Board.IRQSignal;
+				cpu.IRQ = _irq_apu || Board.IrqSignal;
 				special_case_delay = false;
 			}
 
 			cpu.ExecuteOne();
-			Board.ClockCPU();
+			Board.ClockCpu();
 
 			int s = apu.EmitSample();
 
@@ -904,8 +904,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (addr >= 0x8000)
 			{
-				//easy optimization, since rom reads are so common, move this up (reordering the rest of these elseifs is not easy)
-				ret = Board.ReadPRG(addr - 0x8000);
+				// easy optimization, since rom reads are so common, move this up (reordering the rest of these else ifs is not easy)
+				ret = Board.ReadPrg(addr - 0x8000);
 			}
 			else if (addr < 0x0800)
 			{
@@ -921,15 +921,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else if (addr < 0x4020)
 			{
-				ret = ReadReg(addr); //we're not rebasing the register just to keep register names canonical			
+				ret = ReadReg(addr); // we're not rebasing the register just to keep register names canonical
 			}
 			else if (addr < 0x6000)
 			{
-				ret = Board.ReadEXP(addr - 0x4000);
+				ret = Board.ReadExp(addr - 0x4000);
 			}
 			else
 			{
-				ret = Board.ReadWRAM(addr - 0x6000);
+				ret = Board.ReadWram(addr - 0x6000);
 			}
 
 			// handle cheats (currently cheats can only freeze read only areas)
@@ -982,15 +982,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else if (addr < 0x6000)
 			{
-				Board.WriteEXP(addr - 0x4000, value);
+				Board.WriteExp(addr - 0x4000, value);
 			}
 			else if (addr < 0x8000)
 			{
-				Board.WriteWRAM(addr - 0x6000, value);
+				Board.WriteWram(addr - 0x6000, value);
 			}
 			else
 			{
-				Board.WritePRG(addr - 0x8000, value);
+				Board.WritePrg(addr - 0x8000, value);
 			}
 
 			uint flags = (uint)(MemoryCallbackFlags.CPUZero | MemoryCallbackFlags.AccessWrite | MemoryCallbackFlags.SizeByte);

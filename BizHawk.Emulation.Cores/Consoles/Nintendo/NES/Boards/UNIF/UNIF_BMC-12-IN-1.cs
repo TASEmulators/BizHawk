@@ -3,7 +3,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class UNIF_BMC_12_IN_1 : NES.NESBoardBase
+	public sealed class UNIF_BMC_12_IN_1 : NesBoardBase
 	{
 		private byte[] regs = new byte[2];
 		private byte ctrl;
@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			addr += 0x8000;
 			switch (addr & 0xE000)
@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SetMirrorType(horizontal ? EMirrorType.Horizontal : EMirrorType.Vertical);
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
@@ -68,13 +68,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					bank = regs[1] >> 3 | (basebank << 2);
 				}
 
-				return VROM[(bank << 12) + (addr & 0xFFF)];
+				return Vrom[(bank << 12) + (addr & 0xFFF)];
 			}
 
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			var basebank = (ctrl & 3) << 3;
 			int bank = 0;
@@ -103,7 +103,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
-			return ROM[(bank << 14) + (addr & 0x3FFF)];
+			return Rom[(bank << 14) + (addr & 0x3FFF)];
 		}
 	}
 }

@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	//NOTE - fceux support for this mapper has some kind of -4 cpu cycle delay built into the timer. not sure yet whether we need that
 
-	public sealed class Irem_H3001 : NES.NESBoardBase
+	public sealed class Irem_H3001 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask, chr_bank_mask;
@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}*/
 
-		public override void ClockCPU()
+		public override void ClockCpu()
 		{
 			if (irq_counter == 0) return;
 			if (!irq_counter_enabled) return;
@@ -81,20 +81,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		void SyncIRQ()
 		{
-			IRQSignal = irq_asserted;
+			IrqSignal = irq_asserted;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_8k = addr >> 13;
 			int ofs = addr & ((1 << 13) - 1);
 			bank_8k = prg_regs_8k[bank_8k];
 			bank_8k &= prg_bank_mask;
 			addr = (bank_8k << 13) | ofs;
-			return ROM[addr];
+			return Rom[addr];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
@@ -103,13 +103,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				bank_1k = chr_regs_1k[bank_1k];
 				bank_1k &= chr_bank_mask;
 				addr = (bank_1k << 10) | ofs;
-				return VROM[addr];
+				return Vrom[addr];
 			}
 			else
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			switch (addr)
 			{

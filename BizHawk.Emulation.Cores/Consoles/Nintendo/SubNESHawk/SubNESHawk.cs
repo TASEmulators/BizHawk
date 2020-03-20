@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 
 		private void SoftReset()
 		{
-			_nesCore.Board.NESSoftReset();
+			_nesCore.Board.NesSoftReset();
 			_nesCore.cpu.NESSoftReset();
 			_nesCore.apu.NESSoftReset();
 			_nesCore.ppu.NESSoftReset();

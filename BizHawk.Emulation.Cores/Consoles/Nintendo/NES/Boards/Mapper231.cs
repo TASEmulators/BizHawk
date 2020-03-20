@@ -4,7 +4,7 @@ using BizHawk.Common.NumberExtensions;
 // http://wiki.nesdev.com/w/index.php/INES_Mapper_231
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper231 : NES.NESBoardBase
+	public sealed class Mapper231 : NesBoardBase
 	{
 		public int prg_reg;
 		public int prg_bank_mask_16k;
@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if (addr.Bit(7))
 			{
@@ -46,10 +46,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_reg &= prg_bank_mask_16k;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank = prg_reg;
-			return ROM[(bank << 14) + addr - 0x4000];
+			return Rom[(bank << 14) + addr - 0x4000];
 		}
 	}
 }

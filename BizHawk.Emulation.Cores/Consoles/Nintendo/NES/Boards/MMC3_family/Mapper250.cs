@@ -18,9 +18,9 @@
 			return true;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
-			base.WritePRG(addr & 0x6000 | addr >> 10 & 1, (byte)(addr & 0xff));
+			base.WritePrg(addr & 0x6000 | addr >> 10 & 1, (byte)(addr & 0xff));
 		}
 	}
 }

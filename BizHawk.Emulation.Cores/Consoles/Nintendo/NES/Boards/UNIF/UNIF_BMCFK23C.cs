@@ -171,7 +171,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			if (addr>0x1000)
 			{
@@ -184,10 +184,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 			else
-				base.WriteEXP(addr, value);
+				base.WriteExp(addr, value);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if ((exRegs[0] & 0x40)>0)
 			{
@@ -196,7 +196,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else switch ((addr+0x8000) & 0xE001)
 				{
-					case 0x8000: base.WritePRG(addr,value); UpdatePrg(); UpdateChr(); break;
+					case 0x8000: base.WritePrg(addr,value); UpdatePrg(); UpdateChr(); break;
 					case 0x8001:
 
 						if (((exRegs[3] << 2) & (mmc3.cmd & 0x8))>0)
@@ -208,7 +208,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						}
 						else
 						{
-							base.WritePRG(addr, value);
+							base.WritePrg(addr, value);
 							UpdatePrg();
 							UpdateChr();
 						}
@@ -224,16 +224,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							SetMirrorType(EMirrorType.Horizontal);
 						}
 						break;
-					case 0xA001: base.WritePRG(addr, value); break;
-					case 0xC000: base.WritePRG(addr, value); break;
-					case 0xC001: base.WritePRG(addr, value); break;
-					case 0xE000: base.WritePRG(addr, value); break;
-					case 0xE001: base.WritePRG(addr, value); break;
+					case 0xA001: base.WritePrg(addr, value); break;
+					case 0xC000: base.WritePrg(addr, value); break;
+					case 0xC001: base.WritePrg(addr, value); break;
+					case 0xE000: base.WritePrg(addr, value); break;
+					case 0xE001: base.WritePrg(addr, value); break;
 
 				}
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
@@ -245,16 +245,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				else
 					addr = (bank_1k << 10) | (addr & 0x3FF);
 
-				return VROM[addr];
+				return Vrom[addr];
 			}
-			else return base.ReadPPU(addr);
+			else return base.ReadPpu(addr);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank = addr >> 13;
 			bank = prg_regs_8k[bank];
-			return ROM[(bank << 13) + (addr & 0x1FFF)];
+			return Rom[(bank << 13) + (addr & 0x1FFF)];
 		}
 	}
 }

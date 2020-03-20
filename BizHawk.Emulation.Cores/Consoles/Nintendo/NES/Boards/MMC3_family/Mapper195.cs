@@ -20,39 +20,39 @@
 			return true;
 		}
 
-		public override byte ReadEXP(int addr)
+		public override byte ReadExp(int addr)
 		{
 			if (addr >= 0x1000)
 			{
-				return WRAM[addr-0x1000];
+				return Wram[addr-0x1000];
 			}
 
-			return base.ReadEXP(addr);
+			return base.ReadExp(addr);
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			if (addr >= 0x1000)
 			{
-				WRAM[addr - 0x1000] = value;
+				Wram[addr - 0x1000] = value;
 			}
 			
-			base.WriteEXP(addr, value);
+			base.WriteExp(addr, value);
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			if (!mmc3.wram_enable || mmc3.wram_write_protect) return;
-			base.WriteWRAM(addr+0x1000, value);
+			base.WriteWram(addr+0x1000, value);
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
 			if (!mmc3.wram_enable) return NES.DB;
-			return base.ReadWRAM(addr+0x1000);
+			return base.ReadWram(addr+0x1000);
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
@@ -60,19 +60,19 @@
 
 				if (bank_1k<=3)
 				{
-					return VRAM[(bank_1k << 10) + (addr & 0x3FF)];
+					return Vram[(bank_1k << 10) + (addr & 0x3FF)];
 				}
 				else
 				{
 					addr = MapCHR(addr);
-					return VROM[addr + extra_vrom];
+					return Vrom[addr + extra_vrom];
 				}
 			}
 			else
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000)
 			{
@@ -80,7 +80,7 @@
 
 				if (bank_1k <= vram_bank_mask_1k)
 				{
-					VRAM[(bank_1k  << 10) + (addr & 0x3FF)] = value;
+					Vram[(bank_1k  << 10) + (addr & 0x3FF)] = value;
 				}
 				else
 				{
@@ -88,7 +88,7 @@
 				}
 			}
 			else 
-				base.WritePPU(addr, value);
+				base.WritePpu(addr, value);
 		}
 	}
 }

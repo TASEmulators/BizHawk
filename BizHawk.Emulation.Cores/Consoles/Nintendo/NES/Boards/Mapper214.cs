@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Super Gun 20-in-1
 	// http://wiki.nesdev.com/w/index.php/INES_Mapper_214
-	public class Mapper214 : NES.NESBoardBase
+	public class Mapper214 : NesBoardBase
 	{
 		private int _chrReg, _prgReg;
 
@@ -29,25 +29,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("chrReg", ref _chrReg);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			_chrReg = addr & 3;
 			_prgReg = (addr >> 2) & 3;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[(_prgReg * 0x4000) + (addr & 0x3FFF)];
+			return Rom[(_prgReg * 0x4000) + (addr & 0x3FFF)];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
-				return VROM[(_chrReg * 0x2000) + (addr & 0x1FFF)];
+				return Vrom[(_chrReg * 0x2000) + (addr & 0x1FFF)];
 			}
 
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 	}
 }

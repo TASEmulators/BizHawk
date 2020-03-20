@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//mapper 21 + 22 + 23 + 25 (docs largely in 021.txt for VRC4 and 22.txt for VRC2)
 	//If you change any of the IRQ logic here, be sure to change it in VRC 3/6/7 as well.
-	public sealed class VRC2_4 : NES.NESBoardBase
+	public sealed class VRC2_4 : NesBoardBase
 	{
 		#region addressmaps
 		// remaps addresses into vrc2b form
@@ -147,7 +147,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		void SyncIRQ()
 		{
-			IRQSignal = (irq_pending && irq_enabled);
+			IrqSignal = (irq_pending && irq_enabled);
 		}
 
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -270,31 +270,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			return true;
 		}
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_8k = addr >> 13;
 			int ofs = addr & ((1 << 13) - 1);
 			bank_8k = prg_banks_8k[bank_8k];
 			bank_8k &= prg_bank_mask_8k;
 			addr = (bank_8k << 13) | ofs;
-			return ROM[addr];
+			return Rom[addr];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
-			if (addr < 0x2000 && VROM != null)
+			if (addr < 0x2000 && Vrom != null)
 			{
 				int bank_1k = addr >> 10;
 				int ofs = addr & ((1 << 10) - 1);
 				bank_1k = chr_banks_1k[bank_1k];
 				addr = (bank_1k << 10) | ofs;
 
-				return VROM[addr + extra_vrom];
+				return Vrom[addr + extra_vrom];
 			}
-			else return base.ReadPPU(addr);
+			else return base.ReadPpu(addr);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			//Console.WriteLine("mapping {0:X4} = {1:X2}", addr + 0x8000, value);
 			addr = remap(addr);
@@ -349,10 +349,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x1001: //$9001
 					switch (value & (type - 1)) // VRC2 only supports V, H, and not A, B
 					{
-						case 0: SetMirrorType(NES.NESBoardBase.EMirrorType.Vertical); break;
-						case 1: SetMirrorType(NES.NESBoardBase.EMirrorType.Horizontal); break;
-						case 2: SetMirrorType(NES.NESBoardBase.EMirrorType.OneScreenA); break;
-						case 3: SetMirrorType(NES.NESBoardBase.EMirrorType.OneScreenB); break;
+						case 0: SetMirrorType(NesBoardBase.EMirrorType.Vertical); break;
+						case 1: SetMirrorType(NesBoardBase.EMirrorType.Horizontal); break;
+						case 2: SetMirrorType(NesBoardBase.EMirrorType.OneScreenA); break;
+						case 3: SetMirrorType(NesBoardBase.EMirrorType.OneScreenB); break;
 					}
 					break;
 
@@ -466,7 +466,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				irq_counter++;
 		}
 
-		public override void ClockCPU()
+		public override void ClockCpu()
 		{
 			if (irq_pending)
 			{
@@ -495,20 +495,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// a single bit of data can be read at 6000:6fff on some VRC2 carts without wram
 		// games will lock if they can't do this
 		// this isn't a problem in many emus, because if you put wram at 6000:7fff unconditionally, it works.
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
 			if (!latch6k_exists)
-				return base.ReadWRAM(addr);
+				return base.ReadWram(addr);
 			else if (addr >= 0x1000)
 				return NES.DB;
 			else
 				return (byte)(NES.DB & 0xfe | latch6k_value);
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			if (!latch6k_exists)
-				base.WriteWRAM(addr, value);
+				base.WriteWram(addr, value);
 			else if (addr < 0x1000)
 				latch6k_value = value & 1;
 		}

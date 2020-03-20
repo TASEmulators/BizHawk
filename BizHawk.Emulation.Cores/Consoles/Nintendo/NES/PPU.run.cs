@@ -174,7 +174,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			else if (ppur.status.cycle == (3 + NMI_offset) && ppur.status.sl == 241 + preNMIlines)
 			{
 				if (nmi_destiny) { nes.cpu.NMI = true; }
-				nes.Board.AtVsyncNMI();
+				nes.Board.AtVsyncNmi();
 			}
 
 			if (ppur.status.cycle == 340)

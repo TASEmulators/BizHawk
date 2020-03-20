@@ -1,7 +1,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	[NES.INESBoardImplPriority]
-	public sealed class NROM : NES.NESBoardBase
+	public sealed class NROM : NesBoardBase
 	{
 		//configuration
 		int prg_byte_mask;
@@ -85,10 +85,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			addr &= prg_byte_mask;
-			return ROM[addr];
+			return Rom[addr];
 		}
 	}
 }

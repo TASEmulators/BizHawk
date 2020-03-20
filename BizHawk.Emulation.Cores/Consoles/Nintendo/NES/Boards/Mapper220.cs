@@ -4,7 +4,7 @@ using BizHawk.Common.NumberExtensions;
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Ported from FCEUX
-	public sealed class Mapper220 : NES.NESBoardBase
+	public sealed class Mapper220 : NesBoardBase
 	{
 		private byte[] reg = new byte[8];
 		private int prg_mask_2k;
@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			addr += 0x8000;
 			switch (addr & 0xF003)
@@ -64,28 +64,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
 			int i = ((addr >> 11) & 3) + 4;
 			int bank = reg[i] & prg_mask_2k;
-			return ROM[(bank << 11) + (addr & 0x7FF)];
+			return Rom[(bank << 11) + (addr & 0x7FF)];
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				int i = (addr >> 11) & 3;
 				int bank = reg[i] & prg_mask_2k;
-				return ROM[(bank << 11) + (addr & 0x7FF)];
+				return Rom[(bank << 11) + (addr & 0x7FF)];
 			}
 			else if (addr < 0x4000)
 			{
-				return ROM[0x1A000 /* bank 0xd*/ + (addr & 0x1FFF)];
+				return Rom[0x1A000 /* bank 0xd*/ + (addr & 0x1FFF)];
 			}
 			else
 			{
-				return ROM[0x1C000 /* bank 7*/ + (addr & 0x3FFF)];
+				return Rom[0x1C000 /* bank 7*/ + (addr & 0x3FFF)];
 			}
 		}
 	}

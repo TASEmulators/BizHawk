@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Farid_UNROM_8_in_1 : NES.NESBoardBase
+	public sealed class Farid_UNROM_8_in_1 : NesBoardBase
 	{
 		// http://forums.nesdev.com/viewtopic.php?f=9&t=11099
 
@@ -27,7 +27,7 @@
 			return true;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			prginner = value & 7;
 			int newc = value >> 7;
@@ -41,11 +41,11 @@
 			c = newc;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bnk = addr >= 0x4000 ? 7 : prginner;
 			bnk |= prgouter << 3;
-			return ROM[bnk << 14 | addr & 0x3fff];
+			return Rom[bnk << 14 | addr & 0x3fff];
 		}
 
 		public override void SyncState(BizHawk.Common.Serializer ser)
@@ -57,7 +57,7 @@
 			ser.Sync(nameof(prgouter), ref prgouter);
 		}
 
-		public override void NESSoftReset()
+		public override void NesSoftReset()
 		{
 			e = 0;
 			prgouter = 0;

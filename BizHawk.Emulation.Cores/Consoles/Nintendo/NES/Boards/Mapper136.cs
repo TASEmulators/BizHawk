@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Mei Loi Siu Ji (Metal Fighter) (Sachen) [!]
-	public sealed class Mapper136 : NES.NESBoardBase
+	public sealed class Mapper136 : NesBoardBase
 	{
 		private int _chrBankMask_8k;
 		private int _chrRegister;
@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			if ((addr & 0x103) == 0x102)
 			{
@@ -31,11 +31,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 			{
-				base.WriteEXP(addr, value);
+				base.WriteExp(addr, value);
 			}
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if ((addr & 0x103) == 0x102)
 			{
@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadEXP(int addr)
+		public override byte ReadExp(int addr)
 		{
 			if (addr == 0x100)
 			{
@@ -51,19 +51,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 			{
-				return base.ReadEXP(addr);
+				return base.ReadExp(addr);
 			}
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				int bank = _chrRegister & _chrBankMask_8k;
-				return VROM[(bank * 0x2000) + (addr & 0x1FFF)];
+				return Vrom[(bank * 0x2000) + (addr & 0x1FFF)];
 			}
 
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 
 		public override void SyncState(Serializer ser)

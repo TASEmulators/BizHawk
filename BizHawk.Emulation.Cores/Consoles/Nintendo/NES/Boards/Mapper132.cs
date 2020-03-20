@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Creatom
 	// specs pulled from Nintendulator sources
-	public sealed class Mapper132 : NES.NESBoardBase
+	public sealed class Mapper132 : NesBoardBase
 	{
 		private byte[] reg = new byte[4];
 
@@ -56,12 +56,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			chr &= chr_mask;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			sync(value);
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			if (addr <= 0x103 && addr >= 0x100)
 				reg[addr & 0x03] = value;
@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		}
 
-		public override byte ReadEXP(int addr)
+		public override byte ReadExp(int addr)
 		{
 
 			/*if ((addr & 0x100) != 0)
@@ -85,27 +85,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return NES.DB;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			// Xiao Ma Li (Ch) has 16k prg (mapped to both 0x8000 and 0xC000)
 			if (Cart.prg_size == 16)
 			{
-				return ROM[addr & 0x3FFF];
+				return Rom[addr & 0x3FFF];
 			}
 			else
 			{
-				return ROM[addr + ((prg & prg_mask) << 15)];
+				return Rom[addr + ((prg & prg_mask) << 15)];
 			}
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
-				return VROM[addr + (chr << 13)];
+				return Vrom[addr + (chr << 13)];
 			}
 
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 
 		public override void SyncState(Serializer ser)

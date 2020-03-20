@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//This board has 512k CHR ROM, so the ByteBuffer in the base class deosn't suffice.
 		public int[] chr_regs_1k_512 = new int[8];
 
-		public Mapper197_MMC3(NES.NESBoardBase board, int num_prg_banks) : base(board, num_prg_banks)
+		public Mapper197_MMC3(NesBoardBase board, int num_prg_banks) : base(board, num_prg_banks)
 		{
 			
 		}

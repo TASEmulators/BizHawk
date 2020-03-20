@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// smb2j (us pirate)
-	public sealed class Mapper040 : NES.NESBoardBase
+	public sealed class Mapper040 : NesBoardBase
 	{
 		int prg = 0;
 		int irqcnt = 0;
@@ -23,25 +23,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
 			// bank 6 fixed
-			return ROM[addr + 0xc000];
+			return Rom[addr + 0xc000];
 		}
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if ((addr & 0x6000) == 0x4000)
 				addr += prg;
-			return ROM[addr + 0x8000];
+			return Rom[addr + 0x8000];
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			switch (addr & 0x6000)
 			{
 				case 0x0000:
 					irqcnt = 0;
-					IRQSignal = false;
+					IrqSignal = false;
 					irqactive = false;
 					break;
 				case 0x2000:
@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void ClockCPU()
+		public override void ClockCpu()
 		{
 			if (irqactive)
 			{
@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (irqcnt >= 4096)
 				{
 					irqcnt = 4096;
-					IRQSignal = true;
+					IrqSignal = true;
 				}
 			}
 		}

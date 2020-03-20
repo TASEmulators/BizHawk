@@ -36,9 +36,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		bool prg_mode_mapper;
 		int prg_page, chr_block_or;
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
-			base.WriteWRAM(addr, value);
+			base.WriteWram(addr, value);
 			switch (addr & 1)
 			{
 				case 0:

@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Doki Doki Panic (FDS port)
 	// "BTL 2708"
-	public sealed class Mapper103 : NES.NESBoardBase
+	public sealed class Mapper103 : NesBoardBase
 	{
 		int prg;
 		bool romenable;
@@ -27,32 +27,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			// writes always go to wram, even if rom is mapped in for read
-			WRAM[addr] = value;
+			Wram[addr] = value;
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
 			if (romenable)
-				return ROM[addr | prg << 13];
+				return Rom[addr | prg << 13];
 			else
-				return WRAM[addr];
+				return Wram[addr];
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if (!romenable && addr >= 0x3800 && addr < 0x5800)
-				return WRAM[addr - 0x1800];
+				return Wram[addr - 0x1800];
 			else
-				return ROM[addr | 0x18000];
+				return Rom[addr | 0x18000];
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if (addr >= 0x3800 && addr < 0x5800)
-				WRAM[addr - 0x1800] = value;
+				Wram[addr - 0x1800] = value;
 			else
 			{
 				switch (addr & 0x7000)

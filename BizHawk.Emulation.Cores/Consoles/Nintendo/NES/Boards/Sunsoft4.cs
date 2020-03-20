@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//After Burner & After Burner 2
 	//Maharaja
 
-	public sealed class Sunsoft4 : NES.NESBoardBase
+	public sealed class Sunsoft4 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask, chr_bank_mask, nt_bank_mask;
@@ -62,17 +62,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_16k = addr >> 14;
 			int ofs = addr & ((1 << 14) - 1);
 			bank_16k = prg_regs_16k[bank_16k];
 			bank_16k &= prg_bank_mask;
 			addr = (bank_16k << 14) | ofs;
-			return ROM[addr];
+			return Rom[addr];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				bank_2k = chr_regs_2k[bank_2k];
 				bank_2k &= chr_bank_mask;
 				addr = (bank_2k << 11) | ofs;
-				return VROM[addr];
+				return Vrom[addr];
 			}
 			else
 			{
@@ -96,13 +96,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					bank_1k = nt_regs[bank_1k] + 0x80;
 					bank_1k &= nt_bank_mask;
 					addr = (bank_1k << 10) | ofs;
-					return VROM[addr];
+					return Vrom[addr];
 				}
-				else return base.ReadPPU(addr);
+				else return base.ReadPpu(addr);
 			}
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			//Console.WriteLine("W{0:x4} {1:x2}", addr + 0x8000, value);
 			switch (addr & 0xF000)

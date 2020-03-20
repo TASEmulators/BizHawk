@@ -40,18 +40,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return addr;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
-			if (addr < 0x2000) return VROM[RewireCHR(addr)];
-			else return base.ReadPPU(addr);
+			if (addr < 0x2000) return Vrom[RewireCHR(addr)];
+			else return base.ReadPpu(addr);
 		}
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000) { }
-			else base.WritePPU(addr, value);
+			else base.WritePpu(addr, value);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if (value.Bit(6))
 			{
@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				SetMirrorType(EMirrorType.OneScreenA);
 			}
 
-			base.WritePRG(addr, value);
+			base.WritePrg(addr, value);
 		}
 	}
 }

@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//Arkanoid 2 (J)
 	//Gegege no Kitarou 2
 
-	public sealed class TAITO_74_161_161_32 : NES.NESBoardBase
+	public sealed class TAITO_74_161_161_32 : NesBoardBase
 	{
 		int chr;
 		int prg_bank_mask_16k;
@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_banks_16k[0] = prg_bank_16k;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			chr = (byte)(value & 15);
 			prg_bank_16k = (byte)((value >> 4) & 7);
@@ -57,22 +57,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				SetMirrorType(EMirrorType.OneScreenA);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_16k = addr >> 14;
 			int ofs = addr & ((1 << 14) - 1);
 			bank_16k = prg_banks_16k[bank_16k];
 			bank_16k &= prg_bank_mask_16k;
 			addr = (bank_16k << 14) | ofs;
-			return ROM[addr];
+			return Rom[addr];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
-				return VROM[(addr & 0x1FFF) + (chr * 0x2000)];
+				return Vrom[(addr & 0x1FFF) + (chr * 0x2000)];
 			else
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 		}
 	}
 }

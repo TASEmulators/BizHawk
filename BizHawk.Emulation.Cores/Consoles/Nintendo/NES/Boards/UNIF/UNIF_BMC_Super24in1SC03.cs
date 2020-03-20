@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(exRegs), ref exRegs, false);
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			switch (addr)
 			{
@@ -43,10 +43,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					exRegs[2] = value; break;
 			}
 
-			base.WriteEXP(addr, value);
+			base.WriteExp(addr, value);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_8k = addr >> 13;
 			bank_8k = mmc3.prg_regs_8k[bank_8k];
@@ -54,10 +54,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			int NV= bank_8k & masko8[exRegs[0] & 7];
 			NV |= (exRegs[1] << 1);
 
-			return ROM[(NV << 13) + (addr & 0x1FFF)];
+			return Rom[(NV << 13) + (addr & 0x1FFF)];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
@@ -65,19 +65,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				if ((exRegs[0] & 0x20)>0)
 				{
-					return VRAM[(bank_1k << 10) + (addr & 0x3FF)];
+					return Vram[(bank_1k << 10) + (addr & 0x3FF)];
 				}
 				else
 				{
 					bank_1k = bank_1k | (exRegs[2] << 3);
-					return VROM[(bank_1k << 10) + (addr & 0x3FF)];
+					return Vrom[(bank_1k << 10) + (addr & 0x3FF)];
 				}
 			}
 			else
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000)
 			{
@@ -85,7 +85,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				if ((exRegs[0] & 0x20) > 0)
 				{
-					VRAM[(bank_1k << 10) + (addr & 0x3FF)]=value;
+					Vram[(bank_1k << 10) + (addr & 0x3FF)]=value;
 				}
 				else
 				{
@@ -93,7 +93,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 			else
-				base.WritePPU(addr, value);
+				base.WritePpu(addr, value);
 		}
 	}
 }

@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Magic Kid GooGoo
-	public sealed class Mapper190 : NES.NESBoardBase
+	public sealed class Mapper190 : NesBoardBase
 	{
 		//state
 		int prg_reg;
@@ -34,19 +34,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if (addr < 0x4000)
 			{
-				return ROM[(prg_reg * 0x4000) + addr];
+				return Rom[(prg_reg * 0x4000) + addr];
 			}
 			else
 			{
-				return ROM[addr - 0x4000];
+				return Rom[addr - 0x4000];
 			}
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
@@ -54,13 +54,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				int ofs = addr & ((1 << 11) - 1);
 				bank = chr_reg[bank];
 				addr = (bank << 11) | ofs;
-				return VROM[addr];
+				return Vrom[addr];
 			}
 			else
-				return base.ReadPPU(addr);		
+				return base.ReadPpu(addr);		
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			int addr_temp = addr & 0xF000;
 			switch (addr_temp)

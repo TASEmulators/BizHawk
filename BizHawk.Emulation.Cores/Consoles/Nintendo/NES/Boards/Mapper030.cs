@@ -4,7 +4,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class Mapper030 : NES.NESBoardBase
+	public class Mapper030 : NesBoardBase
 	{
 
 		enum flashmode { fm_default, fm_erase, fm_write, fm_id }
@@ -108,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		static readonly int[] addr_bank = new int[5] { 1, 0, 1, 1, 0 };
 		static readonly byte[] addr_data = new byte[5] { 0xAA, 0x55, 0x80, 0xAA, 0x55 };
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if ((!Cart.wram_battery) || (addr >= 0x4000))
 			{
@@ -173,7 +173,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						increment_flash_write_count(addr);
 						for (int i = 0; i < 0x1000; i++)
-							flash_rom[(prg << 14 | addr & 0x3000) + i + Cart.prg_size] = ROM[(prg << 14 | addr & 0x3000) + i];
+							flash_rom[(prg << 14 | addr & 0x3000) + i + Cart.prg_size] = Rom[(prg << 14 | addr & 0x3000) + i];
 					}
 					flash_rom[Cart.prg_size + (prg << 14 | addr & 0x3fff)] &= value;
 					flash_state = 0;
@@ -187,7 +187,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank = addr >= 0x4000 ? prg_bank_mask_16k : prg;
 			if (Cart.wram_battery)
@@ -216,23 +216,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (get_flash_write_count(addr) > 0)
 					return flash_rom[Cart.prg_size + (bank << 14 | addr & 0x3fff)];
 			}
-			return ROM[bank << 14 | addr & 0x3fff];
+			return Rom[bank << 14 | addr & 0x3fff];
 		}
 
 		public override byte[] SaveRam => flash_rom;
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
-				return VRAM[addr | chr << 13];
-			return base.ReadPPU(addr);
+				return Vram[addr | chr << 13];
+			return base.ReadPpu(addr);
 		}
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000)
-				VRAM[addr | chr << 13] = value;
+				Vram[addr | chr << 13] = value;
 			else
-				base.WritePPU(addr, value);
+				base.WritePpu(addr, value);
 		}
 	}
 }

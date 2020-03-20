@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper188 : NES.NESBoardBase
+	public sealed class Mapper188 : NesBoardBase
 	{
 		// config
 		int prg_16k_mask;
@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			prg = value;
 		}
@@ -39,17 +39,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank = prg;
 			if (addr >= 0x4000)
 				bank = 15;
 			bank ^= 8; // bad dumps?
 			bank &= prg_16k_mask;
-			return ROM[addr & 0x3fff | bank << 14];
+			return Rom[addr & 0x3fff | bank << 14];
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
 			return 3;
 		}

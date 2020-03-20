@@ -3,7 +3,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper60 : NES.NESBoardBase
+	public sealed class Mapper60 : NesBoardBase
 	{
 		// http://wiki.nesdev.com/w/index.php/INES_Mapper_060
 
@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(_reg), ref _reg);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			_reg = addr;
 
@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SetMirrorType(mirr > 0 ? EMirrorType.Vertical : EMirrorType.Horizontal);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if ((_reg & 0x100) > 0)
 			{
@@ -61,28 +61,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (IsPrg16Mode)
 			{
 				int bank = (_reg >> 4) & 7;
-				return ROM[(bank * 0x4000) + (addr & 0x3FFF)];
+				return Rom[(bank * 0x4000) + (addr & 0x3FFF)];
 			}
 			else
 			{
 				int bank = (_reg >> 5) & 3;
-				return ROM[(bank * 0x8000) + (addr & 0x7FFF)];
+				return Rom[(bank * 0x8000) + (addr & 0x7FFF)];
 			}
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 
-				return VROM[((_reg & 7) * 0x2000) + (addr & 0x1FFF)];
+				return Vrom[((_reg & 7) * 0x2000) + (addr & 0x1FFF)];
 			}
 
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 	}
 
-	public class Reset4in1 : NES.NESBoardBase
+	public class Reset4in1 : NesBoardBase
 	{
 		private int resetSwitch = 0;
 
@@ -110,25 +110,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override void NESSoftReset()
+		public override void NesSoftReset()
 		{
 			resetSwitch = (resetSwitch + 1) & 3;
-			base.NESSoftReset();
+			base.NesSoftReset();
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[(resetSwitch << 14) + (addr & 0x3FFF)];
+			return Rom[(resetSwitch << 14) + (addr & 0x3FFF)];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
-				return VROM[(resetSwitch << 13) + addr];
+				return Vrom[(resetSwitch << 13) + addr];
 			}
 
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 	}
 }

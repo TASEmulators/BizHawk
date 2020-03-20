@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
@@ -34,15 +34,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					addr = ((bank_1k&0x3f) << 10) | (addr & 0x3FF);
 					addr &= 0x1FFF;
-					return VRAM[addr];
+					return Vram[addr];
 				}
-				else return base.ReadPPU(addr);
+				else return base.ReadPpu(addr);
 			}
 			else
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000)
 			{
@@ -52,14 +52,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					addr = ((bank_1k & 0x3f) << 10) | (addr & 0x3FF);
 					addr &= 0x1FFF;
-					VRAM[addr] = value;
+					Vram[addr] = value;
 				}
 				//else
 					// if this address is mapped to chrrom and not chrram, the write just does nothing
 					//base.WritePPU(addr, value);					
 			}
 			else
-				base.WritePPU(addr, value);
+				base.WritePpu(addr, value);
 		}
 
 	}

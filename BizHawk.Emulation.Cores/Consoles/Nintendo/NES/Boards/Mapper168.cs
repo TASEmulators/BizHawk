@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// defaults to off, the control regs are write only, and cannot be reenabled.  so...
 
 	// todo: special controller, and IRQ is possibly wrong
-	public sealed class Mapper168 : NES.NESBoardBase
+	public sealed class Mapper168 : NesBoardBase
 	{
 		int prg = 0;
 		int chr = 0;
@@ -33,11 +33,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			return addr >= 0x4000
-				? ROM[addr + 0x8000]
-				: ROM[addr + (prg << 14)];
+				? Rom[addr + 0x8000]
+				: Rom[addr + (prg << 14)];
 		}
 
 		// the chr reg on hardware is supposedly bitscrambled and then inverted from
@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return chr;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if (addr < 0x4000)
 			{
@@ -56,31 +56,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				prg = value >> 6 & 3;
 			}
 			else if (addr == 0x7080) // ack
-				IRQSignal = false;
+				IrqSignal = false;
 			else if (addr == 0x7000) // start count
 				irqclock = 0;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x1000)
-				return VRAM[addr | Scramble(0) << 12];
+				return Vram[addr | Scramble(0) << 12];
 			if (addr < 0x2000)
-				return VRAM[(addr & 0xfff) | Scramble(chr) << 12];
-			return base.ReadPPU(addr);
+				return Vram[(addr & 0xfff) | Scramble(chr) << 12];
+			return base.ReadPpu(addr);
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x1000)
-				VRAM[addr | Scramble(0) << 12] = value;
+				Vram[addr | Scramble(0) << 12] = value;
 			else if (addr < 0x2000)
-				VRAM[(addr & 0xfff) | Scramble(chr) << 12] = value;
+				Vram[(addr & 0xfff) | Scramble(chr) << 12] = value;
 			else
-				base.WritePPU(addr, value);
+				base.WritePpu(addr, value);
 		}
 
-		public override byte[] SaveRam => VRAM;
+		public override byte[] SaveRam => Vram;
 
 		public override void SyncState(Serializer ser)
 		{
@@ -90,12 +90,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(irqclock), ref irqclock);
 		}
 
-		public override void ClockCPU()
+		public override void ClockCpu()
 		{
 			if (irqclock == 2048 - 1)
 			{
 				irqclock++;
-				IRQSignal = true;
+				IrqSignal = true;
 			}
 			else if (irqclock < 2048 - 1)
 			{

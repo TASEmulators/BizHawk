@@ -1,7 +1,7 @@
 ﻿using BizHawk.Common;
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class UNIF_UNL_EDU2000 : NES.NESBoardBase
+	public class UNIF_UNL_EDU2000 : NesBoardBase
 	{
 		private int _reg;
 
@@ -28,14 +28,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("reg", ref _reg);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			_reg = value;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[((_reg & _prgMask32) * 0x8000) + (addr & 0x7FFF)];
+			return Rom[((_reg & _prgMask32) * 0x8000) + (addr & 0x7FFF)];
 		}
 	}
 }

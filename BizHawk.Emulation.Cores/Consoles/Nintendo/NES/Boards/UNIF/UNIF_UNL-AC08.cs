@@ -3,7 +3,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class UNIF_UNL_AC08 : NES.NESBoardBase
+	public sealed class UNIF_UNL_AC08 : NesBoardBase
 	{
 		private int reg;
 
@@ -26,17 +26,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			if (addr == 0x25)
 			{
 				SetMirrorType(value.Bit(3) ? EMirrorType.Horizontal : EMirrorType.Vertical);
 			}
 
-			base.WriteEXP(addr, value);
+			base.WriteExp(addr, value);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if (addr == 1)
 			{
@@ -48,14 +48,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
-			return ROM[(reg << 13) + addr];
+			return Rom[(reg << 13) + addr];
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[0x20000 + addr];
+			return Rom[0x20000 + addr];
 		}
 	}
 }

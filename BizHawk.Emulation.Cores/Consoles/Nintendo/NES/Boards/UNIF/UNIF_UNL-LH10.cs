@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class UNIF_UNL_LH10 : NES.NESBoardBase
+	public sealed class UNIF_UNL_LH10 : NesBoardBase
 	{
 		private byte[] reg = new byte[8];
 		private int cmd;
@@ -35,11 +35,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if (addr>=0x4000 && addr<0x6000)
 			{
-				WRAM[addr - 0x4000] = value;
+				Wram[addr - 0x4000] = value;
 				return;
 			}
 
@@ -54,12 +54,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
-			return ROM[ROM.Length - 0x4000 + addr];
+			return Rom[Rom.Length - 0x4000 + addr];
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank = 0;
 			if (addr < 0x2000)
@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else if (addr < 0x6000)
 			{
-				return WRAM[addr - 0x4000];
+				return Wram[addr - 0x4000];
 			}
 			else
 			{
@@ -80,7 +80,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			bank &= prg_bank_mask_8;
-			return ROM[(bank << 13) + (addr & 0x1FFF)];
+			return Rom[(bank << 13) + (addr & 0x1FFF)];
 		}
 	}
 }

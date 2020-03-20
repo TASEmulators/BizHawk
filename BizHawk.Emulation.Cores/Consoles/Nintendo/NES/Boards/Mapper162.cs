@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper162 : NES.NESBoardBase
+	public sealed class Mapper162 : NesBoardBase
 	{
 		private byte[] reg = new byte[8];
 		private int prg_bank_mask_32k;
@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			if (addr >= 0x1000)
 			{
@@ -40,11 +40,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 			{
-				base.WriteEXP(addr, value);
+				base.WriteExp(addr, value);
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank = 0;
 			switch (reg[3] & 7)
@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 			}
 
-			return ROM[((bank & prg_bank_mask_32k) << 15) + addr];
+			return Rom[((bank & prg_bank_mask_32k) << 15) + addr];
 		}
 	}
 }

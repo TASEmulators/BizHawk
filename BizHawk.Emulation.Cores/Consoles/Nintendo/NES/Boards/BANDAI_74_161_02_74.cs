@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// http://wiki.nesdev.com/w/index.php/INES_Mapper_096
-	public sealed class BANDAI_74_161_02_74 : NES.NESBoardBase
+	public sealed class BANDAI_74_161_02_74 : NesBoardBase
 	{
 		int chr_block;
 		int chr_pos = 0;
@@ -35,19 +35,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("prg_bank_16k", ref prg_bank_32k);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			prg_bank_32k = (byte)(value & 0x03);
 			chr_block = (value >> 2) & 0x01;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_32k = prg_bank_32k & prg_bank_mask_32k;
-			return ROM[(bank_32k << 15) + addr];
+			return Rom[(bank_32k << 15) + addr];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
@@ -55,32 +55,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					if (chr_block == 1)
 					{
-						return VRAM[(0x1000 * 3 * 2) + addr];
+						return Vram[(0x1000 * 3 * 2) + addr];
 					}
 					else
 					{
-						return VRAM[(0x1000 * 3) + addr];
+						return Vram[(0x1000 * 3) + addr];
 					}
 				}
 				else
 				{
 					if (chr_block == 1)
 					{
-						return VRAM[(0x1000 * chr_pos * 2) + addr];
+						return Vram[(0x1000 * chr_pos * 2) + addr];
 					}
 					else
 					{
-						return VRAM[(0x1000 * chr_pos * 2) + addr];
+						return Vram[(0x1000 * chr_pos * 2) + addr];
 					}
 				}
 			}
 			else
 			{
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 			}
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000)
 			{
@@ -88,31 +88,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					if (chr_block == 1)
 					{
-						VRAM[(0x1000 * 3 * 2) + addr] = value;
+						Vram[(0x1000 * 3 * 2) + addr] = value;
 					}
 					else
 					{
-						VRAM[(0x1000 * 3) + addr] = value;
+						Vram[(0x1000 * 3) + addr] = value;
 					}
 				}
 				{
 					if (chr_block == 1)
 					{
-						VRAM[(0x1000 * chr_pos * 2) + addr] = value;
+						Vram[(0x1000 * chr_pos * 2) + addr] = value;
 					}
 					else
 					{
-						VRAM[(0x1000 * chr_pos * 2) + addr] = value;
+						Vram[(0x1000 * chr_pos * 2) + addr] = value;
 					}
 				}
 			}
 			else
 			{
-				base.WritePPU(addr, value);
+				base.WritePpu(addr, value);
 			}
 		}
 
-		public override void AddressPPU(int addr)
+		public override void AddressPpu(int addr)
 		{
 			byte newpos;
 			if ((addr & 0x3000) != 0x2000) return;
@@ -123,7 +123,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				chr_pos = newpos;
 			}
 
-			base.AddressPPU(addr);
+			base.AddressPpu(addr);
 		}
 	}
 }

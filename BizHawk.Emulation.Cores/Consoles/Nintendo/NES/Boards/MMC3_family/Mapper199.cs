@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(exRegs), ref exRegs, false);
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
@@ -42,43 +42,43 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						if (mmc3.regs[0]<8)
 						{
-							return VRAM[(mmc3.regs[0] << 10) + (addr & 0x3FF)];
+							return Vram[(mmc3.regs[0] << 10) + (addr & 0x3FF)];
 						} else
 						{
-							return VROM[(mmc3.regs[0] << 10) + (addr & 0x3FF)];
+							return Vrom[(mmc3.regs[0] << 10) + (addr & 0x3FF)];
 						}
 					}
 					else if (addr<0x800)
 					{
 						if (exRegs[2] < 8)
 						{
-							return VRAM[(exRegs[2] << 10) + (addr & 0x3FF)];
+							return Vram[(exRegs[2] << 10) + (addr & 0x3FF)];
 						}
 						else
 						{
-							return VROM[(exRegs[2] << 10) + (addr & 0x3FF)];
+							return Vrom[(exRegs[2] << 10) + (addr & 0x3FF)];
 						}
 					}
 					else if (addr < 0xC00)
 					{
 						if (mmc3.regs[1] < 8)
 						{
-							return VRAM[(mmc3.regs[1] << 10) + (addr & 0x3FF)];
+							return Vram[(mmc3.regs[1] << 10) + (addr & 0x3FF)];
 						}
 						else
 						{
-							return VROM[(mmc3.regs[1] << 10) + (addr & 0x3FF)];
+							return Vrom[(mmc3.regs[1] << 10) + (addr & 0x3FF)];
 						}
 					}
 					else
 					{
 						if (exRegs[3] < 8)
 						{
-							return VRAM[(exRegs[3] << 10) + (addr & 0x3FF)];
+							return Vram[(exRegs[3] << 10) + (addr & 0x3FF)];
 						}
 						else
 						{
-							return VROM[(exRegs[3] << 10) + (addr & 0x3FF)];
+							return Vrom[(exRegs[3] << 10) + (addr & 0x3FF)];
 						}
 					}
 				}
@@ -87,19 +87,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					int bank_1k = Get_CHRBank_1K(addr);
 					if (bank_1k < 8)
 					{
-						return VRAM[(bank_1k << 10) + (addr & 0x3FF)];
+						return Vram[(bank_1k << 10) + (addr & 0x3FF)];
 					}
 					else
 					{
-						return VROM[(bank_1k << 10) + (addr & 0x3FF)];
+						return Vrom[(bank_1k << 10) + (addr & 0x3FF)];
 					}
 				}
 			}
 			else
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000)
 			{
@@ -109,7 +109,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						if (mmc3.regs[0] < 8)
 						{
-							VRAM[(mmc3.regs[0] << 10) + (addr & 0x3FF)]=value;
+							Vram[(mmc3.regs[0] << 10) + (addr & 0x3FF)]=value;
 						}
 						else
 						{
@@ -120,7 +120,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						if (exRegs[2] < 8)
 						{
-							VRAM[(exRegs[2] << 10) + (addr & 0x3FF)]=value;
+							Vram[(exRegs[2] << 10) + (addr & 0x3FF)]=value;
 						}
 						else
 						{
@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						if (mmc3.regs[1] < 8)
 						{
-							VRAM[(mmc3.regs[1] << 10) + (addr & 0x3FF)]=value;
+							Vram[(mmc3.regs[1] << 10) + (addr & 0x3FF)]=value;
 						}
 						else
 						{
@@ -142,7 +142,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						if (exRegs[3] < 8)
 						{
-							VRAM[(exRegs[3] << 10) + (addr & 0x3FF)]=value;
+							Vram[(exRegs[3] << 10) + (addr & 0x3FF)]=value;
 						}
 						else
 						{
@@ -155,7 +155,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					int bank_1k = Get_CHRBank_1K(addr);
 					if (bank_1k < 8)
 					{
-						VRAM[(bank_1k << 10) + (addr & 0x3FF)]=value;
+						Vram[(bank_1k << 10) + (addr & 0x3FF)]=value;
 					}
 					else
 					{
@@ -164,7 +164,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 			else
-				base.WritePPU(addr, value);
+				base.WritePpu(addr, value);
 		}
 
 		protected override int Get_PRGBank_8K(int addr)
@@ -181,14 +181,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return base.Get_PRGBank_8K(addr);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if ((addr == 1) && ((mmc3.cmd & 0x8) > 0))
 			{
 				exRegs[mmc3.cmd & 3] = value;
 			}
 			else 
-				base.WritePRG(addr, value);
+				base.WritePrg(addr, value);
 		}
 	}
 }

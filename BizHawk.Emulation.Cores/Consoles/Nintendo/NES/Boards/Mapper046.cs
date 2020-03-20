@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper046 : NES.NESBoardBase
+	public sealed class Mapper046 : NesBoardBase
 	{
 		//Rumblestation 15-in-1 (Unl).nes
 
@@ -23,32 +23,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int prg_bank_32k_H, prg_bank_32k_L,
 			chr_bank_8k_H, chr_bank_8k_L;
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			prg_bank_32k_H = value & 0x0F;
 			chr_bank_8k_H = value >> 4;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			prg_bank_32k_L = value & 0x01;
 			chr_bank_8k_L = (value >> 4) & 0x07;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
-				return VROM[addr + (((chr_bank_8k_H << 3) + chr_bank_8k_L) * 0x2000)];
+				return Vrom[addr + (((chr_bank_8k_H << 3) + chr_bank_8k_L) * 0x2000)];
 			}
-			else return base.ReadPPU(addr);
+			else return base.ReadPpu(addr);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			//TODO: High bits
 			int offset = (prg_bank_32k_H << 1) + prg_bank_32k_L;
-			return ROM[addr + (offset * 0x8000)];
+			return Rom[addr + (offset * 0x8000)];
 		}
 
 		public override bool Configure(NES.EDetectionOrigin origin)

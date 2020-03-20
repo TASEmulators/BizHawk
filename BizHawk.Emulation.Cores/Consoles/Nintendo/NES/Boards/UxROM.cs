@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// why are there no bus conflicts in here???????
 
 	[NES.INESBoardImplPriority]
-	public sealed class UxROM : NES.NESBoardBase
+	public sealed class UxROM : NesBoardBase
 	{
 		//configuration
 		int prg_mask;
@@ -95,23 +95,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int block = addr >> 14;
 			int page = block == 1 ? prg_mask : prg;
 			int ofs = addr & 0x3FFF;
-			return ROM[(page << 14) | ofs];
+			return Rom[(page << 14) | ofs];
 		}
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			prg = adjust_prg(value) & prg_mask;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
-				return VRAM[addr & vram_byte_mask];
+				return Vram[addr & vram_byte_mask];
 			}
 			else
 			{
@@ -128,15 +128,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 				}
 				else
-					return base.ReadPPU(addr);
+					return base.ReadPpu(addr);
 			}
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000)
 			{
-				VRAM[addr & vram_byte_mask] = value;
+				Vram[addr & vram_byte_mask] = value;
 			}
 			else if (NES._isVS)
 			{
@@ -155,7 +155,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 			else
-				base.WritePPU(addr,value);
+				base.WritePpu(addr,value);
 		}
 
 		public override void SyncState(Serializer ser)

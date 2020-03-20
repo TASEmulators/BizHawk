@@ -30,9 +30,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		int block0, block1;
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
-			base.WriteEXP(addr, value);
+			base.WriteExp(addr, value);
 			block0 = value & 1;
 			block1 = (value >> 4) & 1;
 		}

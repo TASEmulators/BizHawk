@@ -6,7 +6,7 @@ using BizHawk.Common.NumberExtensions;
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//AKA mapper 105
-	public sealed class NES_EVENT : NES.NESBoardBase
+	public sealed class NES_EVENT : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_16k;
@@ -231,23 +231,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//board.NES.LogLine("mapping.. prg_mode={0}, prg_slot{1}, prg={2}", prg_mode, prg_slot, prg);
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			if (!wram_disable)
 			{
-				base.WriteWRAM(addr, value);
+				base.WriteWram(addr, value);
 			}
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
-			return wram_disable ? NES.DB : base.ReadWRAM(addr);
+			return wram_disable ? NES.DB : base.ReadWram(addr);
 		}
 
-		public override void NESSoftReset()
+		public override void NesSoftReset()
 		{
 			InitValues();
-			base.NESSoftReset();
+			base.NesSoftReset();
 		}
 
 		private void InitValues()
@@ -261,22 +261,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Sync();
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			scnt.Write(addr, value);
 		}
 
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_16k = addr >> 14;
 			int ofs = addr & ((1 << 14) - 1);
 			bank_16k = prg_banks_16k[bank_16k];
 			addr = (bank_16k << 14) | ofs;
-			return ROM[addr];
+			return Rom[addr];
 		}
 
-		public override void ClockCPU()
+		public override void ClockCpu()
 		{
 			if (irq_enable)
 			{

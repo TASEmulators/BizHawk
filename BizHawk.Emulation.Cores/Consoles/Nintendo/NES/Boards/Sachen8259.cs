@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// describes Sachen8259A/B/C.  D is in a different class
 	// behavior from fceumm
 
-	public class Sachen8259ABC : NES.NESBoardBase
+	public class Sachen8259ABC : NesBoardBase
 	{
 		// config
 		int prg_bank_mask_32k;
@@ -60,11 +60,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			Write(addr, value);
 		}
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			Write(addr, value);
 		}
@@ -121,17 +121,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank = prg & prg_bank_mask_32k;
-			return ROM[addr | bank << 15];
+			return Rom[addr | bank << 15];
 		}
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
-				if(VROM == null)
-					return base.ReadPPU(addr);
+				if(Vrom == null)
+					return base.ReadPpu(addr);
 
 				int idx = addr >> 11;
 				// in addition to fixing V-mirroring, simple fixes us to 1 bank
@@ -142,11 +142,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				bank <<= shiftout;
 				bank |= idx & shiftmask;
 				bank &= chr_bank_mask_2k;
-				return VROM[addr & 0x7ff | bank << 11];
+				return Vrom[addr & 0x7ff | bank << 11];
 			}
 			else
 			{
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 			}
 		}
 
@@ -173,7 +173,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	// i think there's something wrong with the mapper implementation; but the game
 	// sucks so hard, it's hard to tell
-	public class Sachen8259D : NES.NESBoardBase
+	public class Sachen8259D : NesBoardBase
 	{
 		// config
 		int prg_bank_mask_32k;
@@ -211,11 +211,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			Write(addr, value);
 		}
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			Write(addr, value);
 		}
@@ -278,21 +278,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank = prg & prg_bank_mask_32k;
-			return ROM[addr | bank << 15];
+			return Rom[addr | bank << 15];
 		}
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				int bank = chr[addr >> 10] & chr_bank_mask_1k;
-				return VROM[addr & 0x3ff | bank << 10];
+				return Vrom[addr & 0x3ff | bank << 10];
 			}
 			else
 			{
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 			}
 		}
 

@@ -12,330 +12,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	partial class NES
 	{
-		public interface INESBoard
-		{
-			//base class pre-configuration
-			void Create(NES nes);
-			//one-time inherited classes configuration 
-			bool Configure(EDetectionOrigin origin);
-			//one-time base class configuration (which can take advantage of any information setup by the more-informed Configure() method)
-			void PostConfigure();
-			
-			//gets called once per PPU clock, for boards with complex behaviour which must be monitoring clock (i.e. mmc3 irq counter)
-			void ClockPPU();
-			//gets called once per CPU clock; typically for boards with M2 counters
-			void ClockCPU();
-
-			byte PeekCart(int addr);
-
-			byte ReadPRG(int addr);
-			byte ReadPPU(int addr); byte PeekPPU(int addr);
-			void AddressPPU(int addr);
-			byte ReadWRAM(int addr);
-			byte ReadEXP(int addr);
-			byte ReadReg2xxx(int addr);
-			byte PeekReg2xxx(int addr);
-			void WritePRG(int addr, byte value);
-			void WritePPU(int addr, byte value);
-			void WriteWRAM(int addr, byte value);
-			void WriteEXP(int addr, byte value);
-			void WriteReg2xxx(int addr, byte value);
-			void NESSoftReset();
-			void AtVsyncNMI();
-			byte[] SaveRam { get; }
-			byte[] WRAM { get; set; }
-			byte[] VRAM { get; set; }
-			byte[] ROM { get; set; }
-			byte[] VROM { get; set; }
-			void SyncState(Serializer ser);
-			bool IRQSignal { get; }
-
-			//mixes the board's custom audio into the supplied sample buffer
-			void ApplyCustomAudio(short[] samples);
-
-			Dictionary<string, string> InitialRegisterValues { get; set; }
-		}
-
-		[INESBoardImpl]
-		public abstract class NESBoardBase : INESBoard
-		{
-			/// <summary>
-			/// These are used by SetMirroring() to provide the base class nametable mirroring service.
-			/// Apparently, these are not used for internal build configuration logics
-			/// </summary>
-			public enum EMirrorType
-			{
-				Vertical, Horizontal,
-				OneScreenA, OneScreenB
-			}
-
-			public virtual void Create(NES nes)
-			{
-				this.NES = nes;
-			}
-
-			public virtual void NESSoftReset()
-			{
-			}
-
-			Dictionary<string, string> _initialRegisterValues = new Dictionary<string, string>();
-			public Dictionary<string, string> InitialRegisterValues
-			{
-				get => _initialRegisterValues;
-				set => _initialRegisterValues = value;
-			}
-
-			public abstract bool Configure(EDetectionOrigin origin);
-			public virtual void ClockPPU() { }
-			public virtual void ClockCPU() { }
-			public virtual void AtVsyncNMI() { }
-
-			public CartInfo Cart => NES.cart;
-			public NES NES { get; set; }
-
-			//this is set to true when SyncState is called, so that we know the base class SyncState was used
-			public bool SyncStateFlag;
-
-			public virtual void SyncState(Serializer ser)
-			{
-				ser.Sync(nameof(vram), ref vram, true);
-				ser.Sync(nameof(wram), ref wram, true);
-				for (int i = 0; i < 4; i++) ser.Sync("mirroring" + i, ref mirroring[i]);
-				ser.Sync(nameof(irq_signal), ref irq_signal);
-				SyncStateFlag = true;
-			}
-
-			public virtual void SyncIRQ(bool flag)
-			{
-				IRQSignal = flag;
-			}
-
-			private bool irq_signal;
-			public bool IRQSignal
-			{
-				get => irq_signal;
-				set => irq_signal = value;
-			}
-
-			int[] mirroring = new int[4];
-			protected void SetMirroring(int a, int b, int c, int d)
-			{
-				mirroring[0] = a;
-				mirroring[1] = b;
-				mirroring[2] = c;
-				mirroring[3] = d;
-			}
-
-			protected void ApplyMemoryMapMask(int mask, byte[] map)
-			{
-				byte bmask = (byte)mask;
-				for (int i = 0; i < map.Length; i++)
-					map[i] &= bmask;
-			}
-
-			//make sure you have bank-masked the map 
-			protected int ApplyMemoryMap(int blockSizeBits, byte[] map, int addr)
-			{
-				int bank = addr >> blockSizeBits;
-				int ofs = addr & ((1 << blockSizeBits) - 1);
-				bank = map[bank];
-				addr = (bank << blockSizeBits) | ofs;
-				return addr;
-			}
-
-			public static EMirrorType CalculateMirrorType(int pad_h, int pad_v)
-			{
-				if (pad_h == 0)
-					if (pad_v == 0)
-						return EMirrorType.OneScreenA;
-					else return EMirrorType.Horizontal;
-				if (pad_v == 0)
-					return EMirrorType.Vertical;
-				return EMirrorType.OneScreenB;
-			}
-
-			protected void SetMirrorType(int pad_h, int pad_v)
-			{
-				SetMirrorType(CalculateMirrorType(pad_h, pad_v));
-			}
-
-			public void SetMirrorType(EMirrorType mirrorType)
-			{
-				switch (mirrorType)
-				{
-					case EMirrorType.Horizontal: SetMirroring(0, 0, 1, 1); break;
-					case EMirrorType.Vertical: SetMirroring(0, 1, 0, 1); break;
-					case EMirrorType.OneScreenA: SetMirroring(0, 0, 0, 0); break;
-					case EMirrorType.OneScreenB: SetMirroring(1, 1, 1, 1); break;
-					default: SetMirroring(-1, -1, -1, -1); break; //crash!
-				}
-			}
-
-			protected int ApplyMirroring(int addr)
-			{
-				int block = (addr >> 10) & 3;
-				block = mirroring[block];
-				int ofs = addr & 0x3FF;
-				return (block << 10) | ofs;
-			}
-
-			protected byte HandleNormalPRGConflict(int addr, byte value)
-			{
-				byte old_value = value;
-				value &= ReadPRG(addr);
-				//Debug.Assert(old_value == value, "Found a test case of bus conflict. please report.");
-				//report: pinball quest (J). also: double dare
-				return value;
-			}
-
-			public virtual byte ReadPRG(int addr) { return ROM[addr]; }
-			public virtual void WritePRG(int addr, byte value) { }
-
-			public virtual void WriteWRAM(int addr, byte value)
-			{
-				if(wram != null)
-					wram[addr & wram_mask] = value;
-			}
-
-			private int wram_mask;
-			public virtual void PostConfigure()
-			{
-				wram_mask = (Cart.wram_size * 1024) - 1;
-			}
-
-			public virtual byte ReadWRAM(int addr)
-			{
-				if (wram != null)
-					return wram[addr & wram_mask];
-				return NES.DB;
-			}
-
-			public virtual void WriteEXP(int addr, byte value) { }
-			public virtual byte ReadEXP(int addr) { 
-				return NES.DB;
-			}
-
-			public virtual byte ReadReg2xxx(int addr)
-			{
-				return NES.ppu.ReadReg(addr & 7);
-			}
-
-			public virtual byte PeekReg2xxx(int addr)
-			{
-				return NES.ppu.PeekReg(addr & 7);
-			}
-
-			public virtual void WriteReg2xxx(int addr, byte value)
-			{
-				NES.ppu.WriteReg(addr, value);
-			}
-
-			public virtual void WritePPU(int addr, byte value)
-			{
-				if (addr < 0x2000)
-				{
-					if (VRAM != null)
-						VRAM[addr] = value;
-				}
-				else
-				{
-					NES.CIRAM[ApplyMirroring(addr)] = value;
-				}
-			}
-
-			public virtual void AddressPPU(int addr) { }
-			public virtual byte PeekPPU(int addr) { return ReadPPU(addr); }
-
-			protected virtual byte ReadPPUChr(int addr)
-			{
-				if (VROM != null)
-					return VROM[addr];
-				return VRAM[addr];
-			}
-
-			public virtual byte ReadPPU(int addr)
-			{
-				if (addr < 0x2000)
-				{
-					if (VROM != null)
-						return VROM[addr];
-					return VRAM[addr];
-				}
-
-				return NES.CIRAM[ApplyMirroring(addr)];
-			}
-
-			/// <summary>
-			/// derived classes should override this if they have peek-unsafe logic
-			/// </summary>
-			public virtual byte PeekCart(int addr)
-			{
-				byte ret;
-				if (addr >= 0x8000)
-				{
-					ret = ReadPRG(addr - 0x8000); //easy optimization, since rom reads are so common, move this up (reordering the rest of these elseifs is not easy)
-				}
-				else if (addr < 0x6000)
-				{
-					ret = ReadEXP(addr - 0x4000);
-				}
-				else
-				{
-					ret = ReadWRAM(addr - 0x6000);
-				}
-
-				return ret;
-			}
-
-			public virtual byte[] SaveRam
-			{
-				get
-				{
-					if (!Cart.wram_battery) return null;
-					return WRAM;
-				}
-			}
-
-			public byte[] WRAM
-			{
-				get => wram;
-				set => wram = value;
-			}
-			public byte[] VRAM
-			{
-				get => vram;
-				set => vram = value;
-			}
-			public byte[] ROM { get; set; }
-			public byte[] VROM { get; set; }
-			byte[] wram, vram;
-
-			protected void Assert(bool test, string comment, params object[] args)
-			{
-				if (!test) throw new Exception(string.Format(comment, args));
-			}
-			protected void Assert(bool test)
-			{
-				if (!test) throw new Exception("assertion failed in board setup!");
-			}
-			protected void AssertPrg(params int[] prg) { Assert_memtype(Cart.prg_size, "prg", prg); }
-			protected void AssertChr(params int[] chr) { Assert_memtype(Cart.chr_size, "chr", chr); }
-			protected void AssertWram(params int[] wram) { Assert_memtype(Cart.wram_size, "wram", wram); }
-			protected void AssertVram(params int[] vram) { Assert_memtype(Cart.vram_size, "vram", vram); }
-			protected void Assert_memtype(int value, string name, int[] valid)
-			{
-				// only disable vram and wram asserts, as UNIF knows its prg and chr sizes
-				if (DisableConfigAsserts && (name == "wram" || name == "vram")) return;
-				foreach (int i in valid) if (value == i) return;
-				Assert(false, "unhandled {0} size of {1}", name,value);
-			}
-			protected void AssertBattery(bool has_bat) { Assert(Cart.wram_battery == has_bat); }
-
-			public virtual void ApplyCustomAudio(short[] samples) { }
-
-			public bool DisableConfigAsserts;
-		}
-
 		//this will be used to track classes that implement boards
 		[AttributeUsage(AttributeTargets.Class)]
 		public sealed class INESBoardImplAttribute : Attribute { }
@@ -347,9 +23,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		[AttributeUsage(AttributeTargets.Class)]
 		public sealed class INESBoardImplPriorityAttribute : Attribute { }
 
-		static INESBoard CreateBoardInstance(Type boardType)
+		static INesBoard CreateBoardInstance(Type boardType)
 		{
-			var board = (INESBoard)Activator.CreateInstance(boardType);
+			var board = (INesBoard)Activator.CreateInstance(boardType);
 			lock (INESBoardImplementors)
 			{
 				//put the one we chose at the top of the list, for quicker access in the future
@@ -366,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		void BoardSystemHardReset()
 		{
-			INESBoard newboard;
+			INesBoard newboard;
 			// FDS and NSF have a unique activation setup
 			if (Board is FDS)
 			{
@@ -393,12 +69,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// in case the user actually changed something in the UI
 			newboard.InitialRegisterValues = Board.InitialRegisterValues;
 			newboard.Configure(origin);
-			newboard.ROM = Board.ROM;
-			newboard.VROM = Board.VROM;
-			if (Board.WRAM != null)
-				newboard.WRAM = new byte[Board.WRAM.Length];
-			if (Board.VRAM != null)
-				newboard.VRAM = new byte[Board.VRAM.Length];
+			newboard.Rom = Board.Rom;
+			newboard.Vrom = Board.Vrom;
+			if (Board.Wram != null)
+				newboard.Wram = new byte[Board.Wram.Length];
+			if (Board.Vram != null)
+				newboard.Vram = new byte[Board.Vram.Length];
 			newboard.PostConfigure();
 			// the old board's sram must be restored
 			if (newboard is FDS)
@@ -413,7 +89,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			Board = newboard;
-			ppu.HasClockPPU = Board.GetType().GetMethod(nameof(INESBoard.ClockPPU)).DeclaringType != typeof(NESBoardBase);
+			ppu.HasClockPPU = Board.GetType().GetMethod(nameof(INesBoard.ClockPpu)).DeclaringType != typeof(NesBoardBase);
 		}
 
 
@@ -489,7 +165,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			lock(INESBoardImplementors)
 				foreach (var type in INESBoardImplementors)
 				{
-					NESBoardBase board = (NESBoardBase)Activator.CreateInstance(type);
+					NesBoardBase board = (NesBoardBase)Activator.CreateInstance(type);
 					//unif demands that the boards set themselves up with expected legal values based on the board size
 					//except, i guess, for the rom/chr sizes. go figure.
 					//so, disable the asserts here
@@ -750,7 +426,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	public static class AutoMapperProps
 	{
-		public static void Populate(NES.INESBoard board, NES.NESSyncSettings settings)
+		public static void Populate(INesBoard board, NES.NESSyncSettings settings)
 		{
 			var fields = board.GetType().GetFields();
 			foreach (var field in fields)
@@ -766,7 +442,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public static void Apply(NES.INESBoard board)
+		public static void Apply(INesBoard board)
 		{
 			var fields = board.GetType().GetFields();
 			foreach (var field in fields)

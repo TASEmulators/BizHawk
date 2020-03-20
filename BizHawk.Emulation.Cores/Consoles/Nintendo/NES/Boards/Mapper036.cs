@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// mapper036
 	// Strike Wolf (MGC-014) [!].nes
 	// Using https://wiki.nesdev.com/w/index.php/INES_Mapper_036
-	public sealed class Mapper036 : NES.NESBoardBase
+	public sealed class Mapper036 : NesBoardBase
 	{
 		int chr;
 		int prg;
@@ -34,31 +34,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
-				return VROM[addr | chr << 13];
+				return Vrom[addr | chr << 13];
 			else
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[addr | prg << 15];
+			return Rom[addr | prg << 15];
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			// either hack emulation of a weird bus conflict, or crappy pirate safeguard
 			prg = (R >> 4) & prg_mask;
 		}
 
-		public override byte ReadEXP(int addr)
+		public override byte ReadExp(int addr)
 		{
 			return (byte)(R | (NES.DB & 0xCF));
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			Console.WriteLine(addr);
 			Console.WriteLine(value);

@@ -37,11 +37,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			if (lock_regs)
 			{
-				base.WriteWRAM(addr, value);
+				base.WriteWram(addr, value);
 			}
 			else
 			{
@@ -68,22 +68,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void NESSoftReset()
+		public override void NesSoftReset()
 		{
 			lock_regs = false;
 			cur_reg = 0;
 			regs = new byte[4];
-			base.NESSoftReset();
+			base.NesSoftReset();
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_8k = Get_PRGBank_8K(addr);
 			bank_8k &= (regs[3] & 0x3F) ^ 0x3F;
 			bank_8k |= regs[1];
 			bank_8k &= prg_mask;
 			addr = (bank_8k << 13) | (addr & 0x1FFF);
-			return ROM[addr];
+			return Rom[addr];
 		}
 
 		private int CHR_AND()

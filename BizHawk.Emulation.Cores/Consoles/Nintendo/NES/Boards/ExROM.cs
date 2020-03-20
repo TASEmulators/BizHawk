@@ -18,7 +18,7 @@ using BizHawk.Emulation.Cores.Components;
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	[NES.INESBoardImplPriorityAttribute]
-	public sealed class ExROM : NES.NESBoardBase
+	public sealed class ExROM : NesBoardBase
 	{
 		//configuraton
 		int prg_bank_mask_8k, chr_bank_mask_1k; //board setup (to be isolated from mmc5 code later, when we need the separate mmc5 class)
@@ -195,14 +195,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			int? bbank = MaskWRAM(bank);
 			if (bbank.HasValue)
-				WRAM[(int)bbank << 13 | offs] = value;
+				Wram[(int)bbank << 13 | offs] = value;
 		}
 
 		byte ReadWRAMActual(int bank, int offs)
 		{
 			int? bbank = MaskWRAM(bank);
 			return bbank.HasValue
-				? WRAM[(int)bbank << 13 | offs]
+				? Wram[(int)bbank << 13 | offs]
 				: NES.DB;
 		}
 
@@ -268,12 +268,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return addr;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				addr = MapCHR(addr);
-				return (VROM ?? VRAM)[addr];
+				return (Vrom ?? Vram)[addr];
 			}
 
 			addr -= 0x2000;
@@ -333,7 +333,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (addr < 0x2000)
 			{
 				addr = MapCHR(addr);
-				return (VROM ?? VRAM)[addr];
+				return (Vrom ?? Vram)[addr];
 			}
 
 			addr -= 0x2000;
@@ -388,12 +388,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000)
 			{
-				if (VRAM != null)
-					VRAM[MapCHR(addr)] = value;
+				if (Vram != null)
+					Vram[MapCHR(addr)] = value;
 			}
 			else
 			{
@@ -421,11 +421,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void WriteWRAM(int addr, byte value) => WriteWRAMActual(wram_bank, addr & 0x1fff, value);
+		public override void WriteWram(int addr, byte value) => WriteWRAMActual(wram_bank, addr & 0x1fff, value);
 
-		public override byte ReadWRAM(int addr) => ReadWRAMActual(wram_bank, addr & 0x1fff);
+		public override byte ReadWram(int addr) => ReadWRAMActual(wram_bank, addr & 0x1fff);
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			byte ret;
 			int offs = addr & 0x1fff;
@@ -434,7 +434,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (ram)
 				ret = ReadWRAMActual(bank, offs);
 			else
-				ret = ROM[bank << 13 | offs];
+				ret = Rom[bank << 13 | offs];
 			if (addr < 0x4000)
 				audio.ReadROMTrigger(ret);
 			return ret;
@@ -445,7 +445,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (addr >= 0x8000)
 				return PeekPRG(addr - 0x8000);
 			if (addr >= 0x6000)
-				return ReadWRAM(addr - 0x6000);
+				return ReadWram(addr - 0x6000);
 			return PeekEXP(addr - 0x4000);
 		}
 
@@ -458,20 +458,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (ram)
 				ret = ReadWRAMActual(bank, offs);
 			else
-				ret = ROM[bank << 13 | offs];
+				ret = Rom[bank << 13 | offs];
 			//if (addr < 0x4000)
 			//	audio.ReadROMTrigger(ret);
 			return ret;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			int bank = PRGGetBank(addr, out var ram);
 			if (ram)
 				WriteWRAMActual(bank, addr & 0x1fff, value);
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			//NES.LogLine("MMC5 WriteEXP: ${0:x4} = ${1:x2}", addr, value);
 			if (addr >= 0x1000 && addr <= 0x1015)
@@ -585,7 +585,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			product_high = (byte)((result>>8) & 0xFF);
 		}
 
-		public override byte ReadEXP(int addr)
+		public override byte ReadExp(int addr)
 		{
 			byte ret = 0xFF;
 			switch (addr)
@@ -663,10 +663,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		void SyncIRQ()
 		{
-			IRQSignal = (irq_pending && irq_enabled) || irq_audio;
+			IrqSignal = (irq_pending && irq_enabled) || irq_audio;
 		}
 
-		public override void ClockPPU()
+		public override void ClockPpu()
 		{
 			if (NES.ppu.ppur.status.cycle != 336)
 				return;
@@ -703,7 +703,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		}
 
-		public override void ClockCPU()
+		public override void ClockCpu()
 		{
 			audio.Clock();
 		}

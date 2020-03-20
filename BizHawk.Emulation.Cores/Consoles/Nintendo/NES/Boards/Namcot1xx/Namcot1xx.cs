@@ -20,8 +20,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		byte[] chr_regs_1k = new byte[8];
 		byte[] prg_regs_8k = new byte[4];
 
-		NES.NESBoardBase board;
-		public Namcot108Chip(NES.NESBoardBase board)
+		NesBoardBase board;
+		public Namcot108Chip(NesBoardBase board)
 		{
 			this.board = board;
 
@@ -87,7 +87,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 	}
 
-	public abstract class Namcot108Board_Base : NES.NESBoardBase
+	public abstract class Namcot108Board_Base : NesBoardBase
 	{
 		//state
 		protected Namcot108Chip mapper;
@@ -131,18 +131,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return addr;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				addr = MapCHR(addr);
-				if (VROM != null)
+				if (Vrom != null)
 				{
 					addr &= chr_byte_mask;
-					return VROM[addr];
+					return Vrom[addr];
 				}
 
-				return VRAM[addr];
+				return Vram[addr];
 			}
 
 			if (NES._isVS)
@@ -156,16 +156,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return CIRAM_VS[addr - 0x800];
 			}
 
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000)
 			{
-				if (VRAM == null) return;
+				if (Vram == null) return;
 				addr = MapCHR(addr);
-				VRAM[addr] = value;
+				Vram[addr] = value;
 			}
 			else if (NES._isVS)
 			{
@@ -184,20 +184,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 			else
-				base.WritePPU(addr, value);
+				base.WritePpu(addr, value);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			mapper.WritePRG(addr, value);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_8k = Get_PRGBank_8K(addr);
 			bank_8k &= prg_mask;
 			addr = (bank_8k << 13) | (addr & 0x1FFF);
-			return ROM[addr];
+			return Rom[addr];
 		}
 
 		// there are 3 namco games which each use their own ICs for security in different ways
@@ -205,10 +205,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// 16 = Super Xevious
 		// 32 = TKO Boxing
 		// 48 = RBI Baseball
-		public override byte ReadEXP(int addr)
+		public override byte ReadExp(int addr)
 		{
 			if (!NES._isVS)
-				return base.ReadEXP(addr);
+				return base.ReadExp(addr);
 
 			if (Cart.vs_security == 16)
 			{
@@ -239,7 +239,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 
 				else
-					return base.ReadEXP(addr - 0x4000);
+					return base.ReadExp(addr - 0x4000);
 			}
 			else if (Cart.vs_security==32)
 			{

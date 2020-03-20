@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class BANDAI_74_161_161_32 : NES.NESBoardBase
+	public sealed class BANDAI_74_161_161_32 : NesBoardBase
 	{
 		//Mapper 70
 		//Example Games:
@@ -48,29 +48,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_banks_16k[0] = prg_bank_16k;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			prg_bank_16k = (byte)((value >> 4) & 15);
 			chr = value & 15;
 			SyncPRG();
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_16k = addr >> 14;
 			int ofs = addr & ((1 << 14) - 1);
 			bank_16k = prg_banks_16k[bank_16k];
 			bank_16k &= prg_bank_mask_16k;
 			addr = (bank_16k << 14) | ofs;
-			return ROM[addr];
+			return Rom[addr];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
-				return VROM[(addr & 0x1FFF) + (chr * 0x2000)];
+				return Vrom[(addr & 0x1FFF) + (chr * 0x2000)];
 			else
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 		}
 	}
 }

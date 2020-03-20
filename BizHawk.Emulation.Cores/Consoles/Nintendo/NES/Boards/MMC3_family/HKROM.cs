@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(wram_l_enabled_write), ref wram_l_enabled_write);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			switch (addr & 0x6001)
 			{
@@ -73,10 +73,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 					break;
 			}
-			base.WritePRG(addr, value);
+			base.WritePrg(addr, value);
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			if (addr < 0x1000)
 				return;
@@ -90,10 +90,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			bool write_enabled = (block == 1) ? wram_h_enabled_write : wram_l_enabled_write;
 
 			if (write_enabled && block_enabled)
-				base.WriteWRAM(addr, value);
+				base.WriteWram(addr, value);
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
 			byte open_bus = 0xFF; //open bus
 			if (addr < 0x1000)
@@ -110,7 +110,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return open_bus;
 
 			if (block_enabled)
-				return base.ReadWRAM(addr);
+				return base.ReadWram(addr);
 			return 0;
 		}
 

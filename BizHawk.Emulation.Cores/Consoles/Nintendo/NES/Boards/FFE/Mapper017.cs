@@ -3,7 +3,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class Mapper017 : NES.NESBoardBase
+	public class Mapper017 : NesBoardBase
 	{
 		private byte[] prg_regs_8k = new byte[4];
 		private byte[] chr_regs_1k = new byte[8];
@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			switch (addr & 0x7FF)
 			{
@@ -110,38 +110,38 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(irq_count), ref irq_count);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_8k = prg_regs_8k[addr >> 13];
 			bank_8k &= prg_mask_8k;
 			int offset = addr & 0x1FFF;
-			return ROM[bank_8k << 13 | offset];
+			return Rom[bank_8k << 13 | offset];
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
-			if (addr < 0x2000 && VRAM != null)
+			if (addr < 0x2000 && Vram != null)
 			{
-				VRAM[addr] = value;
+				Vram[addr] = value;
 			}
-			base.WritePPU(addr, value);
+			base.WritePpu(addr, value);
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
-				if (VRAM != null) return VRAM[addr];
+				if (Vram != null) return Vram[addr];
 
 				int bank_1k = chr_regs_1k[addr >> 10];
 				bank_1k &= chr_mask_1k;
 				int offset = addr & 0x3FF;
-				return VROM[bank_1k << 10 | offset];
+				return Vrom[bank_1k << 10 | offset];
 			}
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 
-		public override void ClockCPU()
+		public override void ClockCpu()
 		{
 			if (irq_enable)
 			{

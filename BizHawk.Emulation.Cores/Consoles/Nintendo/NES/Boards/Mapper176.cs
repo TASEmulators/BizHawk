@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper176 : NES.NESBoardBase
+	public sealed class Mapper176 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_8k, chr_bank_mask_8k;
@@ -52,13 +52,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SetMirrorType(kMirrorTypes[mirror]);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			addr = ApplyMemoryMap(13,prg_banks_8k,addr);
-			return ROM[addr];
+			return Rom[addr];
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			switch (addr)
 			{
@@ -72,14 +72,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				addr = ApplyMemoryMap(13, chr_banks_8k, addr);
 				return base.ReadPPUChr(addr);
 			}
-			else return base.ReadPPU(addr);
+			else return base.ReadPpu(addr);
 		}
 
 		void SetPrg32k(int value)
@@ -89,7 +89,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ApplyMemoryMapMask(prg_bank_mask_8k, prg_banks_8k);
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			switch (addr)
 			{

@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//AKA mapper 071
 	//TODO - apparently this mapper contains good nes timing test cases
-	public sealed class Camerica_Mapper071 : NES.NESBoardBase
+	public sealed class Camerica_Mapper071 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_16k;
@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			addr &= 0x7000;
 			switch (addr)
@@ -76,18 +76,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_16k = addr >> 14;
 			int ofs = addr & ((1 << 14) - 1);
 			bank_16k = prg_banks_16k[bank_16k];
 			addr = (bank_16k << 14) | ofs;
-			return ROM[addr];
+			return Rom[addr];
 		}
 	}
 
 	//AKA mapper 232
-	class Camerica_Mapper232 : NES.NESBoardBase
+	class Camerica_Mapper232 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_16k;
@@ -128,7 +128,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			addr &= 0x4000;
 			switch (addr)
@@ -152,13 +152,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_banks_16k[1] &= prg_bank_mask_16k;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_16k = addr >> 14;
 			int ofs = addr & ((1 << 14) - 1);
 			bank_16k = prg_banks_16k[bank_16k];
 			addr = (bank_16k<<14) | ofs;
-			return ROM[addr];
+			return Rom[addr];
 		}
 	}
 

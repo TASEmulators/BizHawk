@@ -4,7 +4,7 @@ using BizHawk.Common.NumberExtensions;
 // http://wiki.nesdev.com/w/index.php/INES_Mapper_228
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class MLT_ACTION52 : NES.NESBoardBase
+	public sealed class MLT_ACTION52 : NesBoardBase
 	{
 		[MapperProp]
 		public bool prg_mode = false;
@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			if (addr >= 0x1800)
 			{
@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadEXP(int addr)
+		public override byte ReadExp(int addr)
 		{
 			if (addr >= 0x1800)
 			{
@@ -74,11 +74,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 			{
-				return base.ReadEXP(addr);
+				return base.ReadExp(addr);
 			}
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			//$8000-FFFF:    [.... ..CC]   Low 2 bits of CHR
 			//A~[..MH HPPP PPO. CCCC]
@@ -117,25 +117,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
-				return VROM[((chr_reg & chr_bank_mask_8k) * 0x2000) + addr];
+				return Vrom[((chr_reg & chr_bank_mask_8k) * 0x2000) + addr];
 			}
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if (prg_mode == false)
 			{
 				int bank = (prg_reg >> 1) & prg_bank_mask_32k;
-				return ROM[(bank * 0x8000) + addr + chip_offset];
+				return Rom[(bank * 0x8000) + addr + chip_offset];
 			}
 			else
 			{
-				return ROM[((prg_reg & prg_bank_mask_16k) * 0x4000) + (addr & 0x3FFF) + chip_offset];
+				return Rom[((prg_reg & prg_bank_mask_16k) * 0x4000) + (addr & 0x3FFF) + chip_offset];
 			}
 		}
 	}

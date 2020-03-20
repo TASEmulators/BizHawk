@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Meikyuu Jiin Dababa (FDS Conversion)
-	public sealed class Mapper108 : NES.NESBoardBase
+	public sealed class Mapper108 : NesBoardBase
 	{
 		private int prg;
 
@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if (addr < 0xFFF
 				|| addr >= 0x7000) // hack ported from FCEUX to support Bubble Bobble (FDS Conversion, Kaiser Hacked) (Unl) [p1][!]
@@ -34,14 +34,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[addr | 0x18000];
+			return Rom[addr | 0x18000];
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
-			return ROM[addr | prg << 13];
+			return Rom[addr | prg << 13];
 		}
 
 		public override void SyncState(Serializer ser)

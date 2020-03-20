@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//mapper 85
 	//If you change any of the IRQ logic here, be sure to change it in VRC 2/3/4/6 as well.
-	public sealed class VRC7 : NES.NESBoardBase
+	public sealed class VRC7 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_8k, chr_bank_mask_1k;
@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		void SyncIRQ()
 		{
-			IRQSignal = (irq_pending && irq_enabled);
+			IrqSignal = (irq_pending && irq_enabled);
 		}
 
 
@@ -128,13 +128,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			return true;
 		}
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_8k = addr >> 13;
 			int ofs = addr & ((1 << 13) - 1);
 			bank_8k = prg_banks_8k[bank_8k];
 			addr = (bank_8k << 13) | ofs;
-			return ROM[addr];
+			return Rom[addr];
 		}
 
 		int Map_PPU(int addr)
@@ -146,27 +146,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return addr;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				addr = Map_PPU(addr);
 				if (Cart.vram_size != 0)
-					return base.ReadPPU(addr);
+					return base.ReadPpu(addr);
 
-				return VROM[addr];
+				return Vrom[addr];
 			}
 
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000)
 			{
-				base.WritePPU(Map_PPU(addr),value);
+				base.WritePpu(Map_PPU(addr),value);
 			}
-			else base.WritePPU(addr, value);
+			else base.WritePpu(addr, value);
 		}
 
 		public override void ApplyCustomAudio(short[] samples)
@@ -185,7 +185,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			//Console.WriteLine("    mapping {0:X4} = {1:X2}", addr, value);
 			addr = remap(addr);
@@ -291,7 +291,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				irq_counter++;
 		}
 
-		public override void ClockCPU()
+		public override void ClockCpu()
 		{
 			if (irq_pending)
 			{
