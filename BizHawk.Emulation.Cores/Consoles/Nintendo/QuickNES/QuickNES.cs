@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.BizInvoke;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
@@ -20,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		singleInstance: false)]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class QuickNES : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IInputPollable, IBoardInfo, IVideoLogicalOffsets,
-		IStatable, IDebuggable, ISettable<QuickNES.QuickNESSettings, QuickNES.QuickNESSyncSettings>, Cores.Nintendo.NES.INESPPUViewable
+		IStatable, IDebuggable, ISettable<QuickNES.QuickNESSettings, QuickNES.QuickNESSyncSettings>, INESPPUViewable
 	{
 		static QuickNES()
 		{
@@ -252,11 +254,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		void ComputeBootGod()
 		{
 			// inefficient, sloppy, etc etc
-			Emulation.Cores.Nintendo.NES.NES.BootGodDB.Initialize();
+			BootGodDb.Initialize();
 			var chrrom = _memoryDomains["CHR VROM"];
 			var prgrom = _memoryDomains["PRG ROM"];
 
-			var ms = new System.IO.MemoryStream();
+			var ms = new MemoryStream();
 			for (int i = 0; i < prgrom.Size; i++)
 				ms.WriteByte(prgrom.PeekByte(i));
 			if (chrrom != null)
@@ -273,7 +275,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			}
 
 			sha1 = "sha1:" + sha1; // huh?
-			var carts = Emulation.Cores.Nintendo.NES.NES.BootGodDB.Instance.Identify(sha1);
+			var carts = BootGodDb.Instance.Identify(sha1);
 
 			if (carts.Count > 0)
 			{

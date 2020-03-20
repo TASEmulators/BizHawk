@@ -1,19 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Xml;
-using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-//TODO - could stringpool the bootgod DB for a pedantic optimization
-
+//TODO - could stringpool the BootGod DB for a pedantic optimization
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	partial class NES
 	{
 		static List<Type> INESBoardImplementors = new List<Type>();
 
-		static INesBoard CreateBoardInstance(Type boardType)
+		private static INesBoard CreateBoardInstance(Type boardType)
 		{
 			var board = (INesBoard)Activator.CreateInstance(boardType);
 			lock (INESBoardImplementors)
@@ -30,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public string BoardName => Board.GetType().Name;
 
-		void BoardSystemHardReset()
+		private void BoardSystemHardReset()
 		{
 			INesBoard newboard;
 			// FDS and NSF have a unique activation setup
@@ -144,10 +140,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// </summary>
 		CartInfo IdentifyFromBootGodDB(IEnumerable<string> hash_sha1)
 		{
-			BootGodDB.Initialize();
+			BootGodDb.Initialize();
 			foreach (var hash in hash_sha1)
 			{
-				List<CartInfo> choices = BootGodDB.Instance.Identify(hash);
+				List<CartInfo> choices = BootGodDb.Instance.Identify(hash);
 				//pick the first board for this hash arbitrarily. it probably doesn't make a difference
 				if (choices.Count != 0)
 					return choices[0];
@@ -218,144 +214,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			return cart;
-		}
-
-		public class BootGodDB
-		{
-			static object staticsyncroot = new object();
-			object syncroot = new object();
-
-			bool validate = true;
-
-			private static BootGodDB _Instance;
-			public static BootGodDB Instance
-			{
-				get { lock (staticsyncroot) { return _Instance; } }
-			}
-			private static Func<byte[]> _GetDatabaseBytes;
-			public static Func<byte[]> GetDatabaseBytes
-			{
-				set { lock (staticsyncroot) { _GetDatabaseBytes = value; } }
-			}
-			public static void Initialize()
-			{
-				lock (staticsyncroot)
-				{
-					if (_Instance == null)
-						_Instance = new BootGodDB();
-				}
-			}
-			int ParseSize(string str)
-			{
-				int temp = 0;
-				if(validate) if (!str.EndsWith("k")) throw new Exception();
-				int len=str.Length-1;
-				for (int i = 0; i < len; i++)
-				{
-					temp *= 10;
-					temp += (str[i] - '0');
-				}
-				return temp;
-			}
-			public BootGodDB()
-			{
-				//notes: there can be multiple each of prg,chr,wram,vram
-				//we arent tracking the individual hashes yet.
-
-				//in anticipation of any slowness annoying people, and just for shits and giggles, i made a super fast parser
-				int state=0;
-				var xmlreader = XmlReader.Create(new MemoryStream(_GetDatabaseBytes()));
-				CartInfo currCart = null;
-				string currName = null;
-				while (xmlreader.Read())
-				{
-					switch (state)
-					{
-						case 0:
-							if (xmlreader.NodeType == XmlNodeType.Element && xmlreader.Name == "game")
-							{
-								currName = xmlreader.GetAttribute("name");
-								state = 1;
-							}
-							break;
-						case 2:
-							if (xmlreader.NodeType == XmlNodeType.Element && xmlreader.Name == "board")
-							{
-								currCart.BoardType = xmlreader.GetAttribute("type");
-								currCart.Pcb = xmlreader.GetAttribute("pcb");
-								int mapper = int.Parse(xmlreader.GetAttribute("mapper"));
-								if (validate && mapper > 255) throw new Exception("didnt expect mapper>255!");
-								// we don't actually use this value at all; only the board name
-								state = 3;
-							}
-							break;
-						case 3:
-							if (xmlreader.NodeType == XmlNodeType.Element)
-							{
-								switch(xmlreader.Name)
-								{
-									case "prg":
-										currCart.PrgSize += (short)ParseSize(xmlreader.GetAttribute("size"));
-										break;
-									case "chr":
-										currCart.ChrSize += (short)ParseSize(xmlreader.GetAttribute("size"));
-										break;
-									case "vram":
-										currCart.VramSize += (short)ParseSize(xmlreader.GetAttribute("size"));
-										break;
-									case "wram":
-										currCart.WramSize += (short)ParseSize(xmlreader.GetAttribute("size"));
-										if (xmlreader.GetAttribute("battery") != null)
-											currCart.WramBattery = true;
-										break;
-									case "pad":
-										currCart.PadH = byte.Parse(xmlreader.GetAttribute("h"));
-										currCart.PadV = byte.Parse(xmlreader.GetAttribute("v"));
-										break;
-									case "chip":
-										currCart.Chips.Add(xmlreader.GetAttribute("type"));
-										break;
-								}
-							} else 
-							if (xmlreader.NodeType == XmlNodeType.EndElement && xmlreader.Name == "board")
-							{
-								state = 4;
-							}
-							break;
-						case 4:
-							if (xmlreader.NodeType == XmlNodeType.EndElement && xmlreader.Name == "cartridge")
-							{
-								sha1_table[currCart.Sha1].Add(currCart);
-								currCart = null;
-								state = 5;
-							}
-							break;
-						case 5:
-						case 1:
-							if (xmlreader.NodeType == XmlNodeType.Element && xmlreader.Name == "cartridge")
-							{
-								currCart = new CartInfo();
-								currCart.System = xmlreader.GetAttribute("system");
-								currCart.Sha1 = "sha1:" + xmlreader.GetAttribute("sha1");
-								currCart.Name = currName;
-								state = 2;
-							}
-							if (xmlreader.NodeType == XmlNodeType.EndElement && xmlreader.Name == "game")
-							{
-								currName = null;
-								state = 0;
-							}
-							break;
-					}
-				} //end xmlreader loop
-			}
-
-			Bag<string, CartInfo> sha1_table = new Bag<string, CartInfo>();
-
-			public List<CartInfo> Identify(string sha1)
-			{
-				lock (syncroot) return sha1_table[sha1];
-			}
 		}
 	}
 }

@@ -235,7 +235,7 @@ namespace BizHawk.Client.EmuHawk
 
 			// In order to allow late construction of this database, we hook up a delegate here to dearchive the data and provide it on demand
 			// we could background thread this later instead if we wanted to be real clever
-			NES.BootGodDB.GetDatabaseBytes = () =>
+			BootGodDb.GetDatabaseBytes = () =>
 			{
 				string xmlPath = Path.Combine(PathUtils.GetExeDirectoryAbsolute(), "gamedb", "NesCarts.xml");
 				string x7zPath = Path.Combine(PathUtils.GetExeDirectoryAbsolute(), "gamedb", "NesCarts.7z");
