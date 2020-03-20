@@ -55,20 +55,58 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 			bool frame_chk = true;
 
-			while (frame_chk)
+			if (is_pal)
 			{
-				ppu.tick();
-				ppu.tick();
-				serialport.serial_transfer_tick();
-				ppu.Audio_tick();
-				cpu.ExecuteOne();
-
-				if (!in_vblank && in_vblank_old)
+				// PAL timing is: 17.7 / 5 ppu
+				// and 17.7 / 9 for cpu (divide by 3 externally then by 3 again internally)
+				int ticker = 0;
+				
+				while (frame_chk)
 				{
-					frame_chk = false;
-				}
+					ticker++;
 
-				in_vblank_old = in_vblank;
+					if ((ticker % 5) == 0)
+					{
+						ppu.tick();
+
+						if ((ticker % 10) == 0)
+						{
+							ppu.Audio_tick();
+						}
+					}
+
+					if ((ticker % 9) == 0)
+					{
+						serialport.serial_transfer_tick();
+						cpu.ExecuteOne();
+					}
+
+					if (!in_vblank && in_vblank_old)
+					{
+						frame_chk = false;
+					}
+
+					in_vblank_old = in_vblank;
+				}
+			}
+			else
+			{
+				// NTSC is 2 to 1 ppu to cpu ticks
+				while (frame_chk)
+				{
+					ppu.tick();
+					ppu.tick();
+					serialport.serial_transfer_tick();
+					ppu.Audio_tick();
+					cpu.ExecuteOne();
+
+					if (!in_vblank && in_vblank_old)
+					{
+						frame_chk = false;
+					}
+
+					in_vblank_old = in_vblank;
+				}
 			}
 		}
 
@@ -184,7 +222,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public void SendVideoBuffer()
 		{
-			for (int j = 0; j < 240; j++) 
+			for (int j = 0; j < pic_height; j++) 
 			{
 				for (int i = 0; i < 320; i++)
 				{
@@ -199,10 +237,12 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			}
 		}
 
+		public int pic_height;
+
 		public int VirtualWidth => 320;
-		public int VirtualHeight => 240;
+		public int VirtualHeight => pic_height;
 		public int BufferWidth => 320;
-		public int BufferHeight => 240;
+		public int BufferHeight => pic_height;
 		public int BackgroundColor => unchecked((int)0xFF000000);
 		public int VsyncNumerator => _frameHz;
 		public int VsyncDenominator => 1;

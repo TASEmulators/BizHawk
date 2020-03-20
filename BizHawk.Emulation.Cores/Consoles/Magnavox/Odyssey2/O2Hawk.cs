@@ -39,6 +39,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public PPU ppu;
 		public SerialPort serialport;
 
+		public bool is_pal;
+
 		[CoreConstructor("O2")]
 		public O2Hawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ object settings, object syncSettings)
 		{
@@ -99,23 +101,23 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			SetupMemoryDomains();
 			HardReset();
 
-			/*
-			for (int i = 0; i < 64; i++)
-			{
-				cpu.Regs[i] = (byte)i;
-			}
-			
+			// set up differences between PAL and NTSC systems
+			is_pal = true;
+			pic_height = 288;
+			_frameHz = 50;
 
-			for (int j = 0; j < 0x80; j++)
+			if ((game.Region == "US") || (game.Region == "EU-US") || (game.Region == null))
 			{
-				RAM[j] = (byte)j;
+				is_pal = false;
+				pic_height = 240;
+				_frameHz = 60;
 			}
 
-			for (int k = 0; k < 0x100; k++)
-			{
-				ppu.WriteReg(k, (byte)k);
-			}
-			*/
+			ppu.set_region(is_pal);
+
+
+			_vidbuffer = new int[372 * pic_height];
+			frame_buffer = new int[320 * pic_height];
 		}
 
 		public DisplayType Region => DisplayType.NTSC;
@@ -135,9 +137,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			serialport.Reset();
 
 			cpu.SetCallbacks(ReadMemory, PeekMemory, PeekMemory, WriteMemory);
-
-			_vidbuffer = new int[372 * 240];
-			frame_buffer = new int[320 * 240];
 		}
 
 		private void ExecFetch(ushort addr)
