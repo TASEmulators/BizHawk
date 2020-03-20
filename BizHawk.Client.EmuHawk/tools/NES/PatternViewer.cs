@@ -4,7 +4,7 @@ using System.IO;
 using System.Drawing.Imaging;
 
 using BizHawk.Client.Common;
-using BizHawk.Common.PathExtensions;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var sfd = new SaveFileDialog
 				{
-					FileName = $"{Global.Game.Name.FilesystemSafeName()}-Patterns",
+					FileName = $"{Global.Game.FilesystemSafeName()}-Patterns",
 					InitialDirectory = Global.Config.PathEntries.ScreenshotAbsolutePathFor("NES"),
 					Filter = FilesystemFilterSet.Screenshots.ToString(),
 					RestoreDirectory = true

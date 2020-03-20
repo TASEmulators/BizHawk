@@ -8,9 +8,9 @@ namespace BizHawk.Client.Common
 {
 	public class Config
 	{
-		public static string ControlDefaultPath => Path.Combine(PathUtils.GetExeDirectoryAbsolute(), "defctrl.json");
+		public static string ControlDefaultPath => Path.Combine(PathUtils.ExeDirectoryPath, "defctrl.json");
 		
-		public static string DefaultIniPath { get; private set; } = Path.Combine(PathUtils.GetExeDirectoryAbsolute(), "config.ini");
+		public static string DefaultIniPath { get; private set; } = Path.Combine(PathUtils.ExeDirectoryPath, "config.ini");
 
 		// Shenanigans
 		public static void SetDefaultIniPath(string newDefaultIniPath)

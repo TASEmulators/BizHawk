@@ -280,7 +280,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return Config.PathEntries.AbsolutePathFor(Path.Combine(
 				Config.PathEntries["Global", "Macros"].Path,
-				Global.Game.Name.FilesystemSafeName()), null);
+				Global.Game.FilesystemSafeName()), null);
 		}
 
 		#endregion

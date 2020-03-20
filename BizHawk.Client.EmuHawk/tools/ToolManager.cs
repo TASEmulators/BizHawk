@@ -871,7 +871,7 @@ namespace BizHawk.Client.EmuHawk
 				f.Directory.Create();
 			}
 
-			return Path.Combine(path, $"{Global.Game.Name.FilesystemSafeName()}.cht");
+			return Path.Combine(path, $"{Global.Game.FilesystemSafeName()}.cht");
 		}
 
 		public void UpdateCheatRelatedTools(object sender, CheatCollection.CheatListEventArgs e)

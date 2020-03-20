@@ -26,7 +26,7 @@ namespace BizHawk.Client.Common
 			// if %exe% prefixed then substitute exe path and repeat
 			if (globalBase.StartsWith("%exe%", StringComparison.InvariantCultureIgnoreCase))
 			{
-				globalBase = PathUtils.GetExeDirectoryAbsolute() + globalBase.Substring(5);
+				globalBase = PathUtils.ExeDirectoryPath + globalBase.Substring(5);
 			}
 
 			// rooted paths get returned without change
@@ -37,7 +37,7 @@ namespace BizHawk.Client.Common
 			}
 
 			// not-rooted things are relative to exe path
-			globalBase = Path.Combine(PathUtils.GetExeDirectoryAbsolute(), globalBase);
+			globalBase = Path.Combine(PathUtils.ExeDirectoryPath, globalBase);
 			return globalBase;
 		}
 
@@ -94,7 +94,7 @@ namespace BizHawk.Client.Common
 
 			if (path.StartsWith("%exe%"))
 			{
-				return PathUtils.GetExeDirectoryAbsolute() + path.Substring(5);
+				return PathUtils.ExeDirectoryPath + path.Substring(5);
 			}
 
 			if (path.StartsWith("%rom%"))
@@ -133,7 +133,7 @@ namespace BizHawk.Client.Common
 			//handling of file:// or file:\\ was removed  (can Path.GetFullPath handle it? not sure)
 
 			// all bad paths default to EXE
-			return PathUtils.GetExeDirectoryAbsolute();
+			return PathUtils.ExeDirectoryPath;
 		}
 
 		public static string MovieAbsolutePath(this PathEntryCollection collection)
@@ -224,7 +224,7 @@ namespace BizHawk.Client.Common
 
 		public static string SaveRamAbsolutePath(this PathEntryCollection collection, GameInfo game, bool movieIsActive)
 		{
-			var name = game.Name.FilesystemSafeName();
+			var name = game.FilesystemSafeName();
 			if (movieIsActive)
 			{
 				name += $".{Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename)}";
@@ -239,11 +239,11 @@ namespace BizHawk.Client.Common
 		// Shenanigans
 		public static string RetroSaveRamAbsolutePath(this PathEntryCollection collection, GameInfo game, bool movieIsActive, string movieFilename)
 		{
-			var name = game.Name.FilesystemSafeName();
+			var name = game.FilesystemSafeName();
 			name = Path.GetDirectoryName(name);
 			if (name == "")
 			{
-				name = game.Name.FilesystemSafeName();
+				name = game.FilesystemSafeName();
 			}
 
 			if (movieIsActive)
@@ -260,11 +260,11 @@ namespace BizHawk.Client.Common
 		// Shenanigans
 		public static string RetroSystemAbsolutePath(this PathEntryCollection collection, GameInfo game)
 		{
-			var name = game.Name.FilesystemSafeName();
+			var name = game.FilesystemSafeName();
 			name = Path.GetDirectoryName(name);
 			if (string.IsNullOrEmpty(name))
 			{
-				name = game.Name.FilesystemSafeName();
+				name = game.FilesystemSafeName();
 			}
 
 			var pathEntry = collection[game.System, "System"]
@@ -312,31 +312,11 @@ namespace BizHawk.Client.Common
 		/// Takes an absolute path and attempts to convert it to a relative, based on the system,
 		/// or global base if no system is supplied, if it is not a subfolder of the base, it will return the path unaltered
 		/// </summary>
-		public static string TryMakeRelative(this PathEntryCollection collection, string absolutePath, string system = null)
-		{
-			var parentPath = string.IsNullOrWhiteSpace(system)
+		public static string TryMakeRelative(this PathEntryCollection collection, string absolutePath, string system = null) => absolutePath.MakeRelativeTo(
+			string.IsNullOrWhiteSpace(system)
 				? collection.GlobalBaseAbsolutePath()
-				: collection.AbsolutePathFor(collection.BaseFor(system), system);
-#if true
-			if (!absolutePath.IsSubfolderOf(parentPath))
-			{
-				return absolutePath;
-			}
-
-			return OSTailoredCode.IsUnixHost
-				? "./" + OSTailoredCode.SimpleSubshell("realpath", $"--relative-to=\"{parentPath}\" \"{absolutePath}\"", $"invalid path {absolutePath} or missing realpath binary")
-				: absolutePath.Replace(parentPath, ".");
-#else // written for Unix port but may be useful for .NET Core
-			if (!IsSubfolder(parentPath, absolutePath))
-			{
-				return OSTailoredCode.IsUnixHost && parentPath.TrimEnd('.') == $"{absolutePath}/" ? "." : absolutePath;
-			}
-
-			return OSTailoredCode.IsUnixHost
-				? absolutePath.Replace(parentPath.TrimEnd('.'), "./")
-				: absolutePath.Replace(parentPath, ".");
-#endif
-		}
+				: collection.AbsolutePathFor(collection.BaseFor(system), system)
+		);
 
 		/// <summary>
 		/// Puts the currently configured temp path into the environment for use as actual temp directory
