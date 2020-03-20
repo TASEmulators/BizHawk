@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "TENGEN-800008":
 					AssertPrg(32, 64);
@@ -26,8 +26,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_mask = (Cart.prg_size / 32) - 1;
-			chr_mask = (Cart.chr_size / 8) - 1;
+			prg_mask = (Cart.PrgSize / 32) - 1;
+			chr_mask = (Cart.ChrSize / 8) - 1;
 
 			return true;
 		}

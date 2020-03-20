@@ -123,11 +123,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (biosrom == null || biosrom.Length != 8192)
 				throw new MissingFirmwareException("FDS bios image needed!");
 
-			Cart.vram_size = 8;
-			Cart.wram_size = 32;
-			Cart.wram_battery = false;
-			Cart.system = "Famicom";
-			Cart.board_type = "FAMICOM_DISK_SYSTEM";
+			Cart.VramSize = 8;
+			Cart.WramSize = 32;
+			Cart.WramBattery = false;
+			Cart.System = "Famicom";
+			Cart.BoardType = "FAMICOM_DISK_SYSTEM";
 
 			diskdrive = new RamAdapter();
 			if (NES.apu != null)

@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "NAMCOT-3446": // Megami Tensei: Digital Devil Story
 				case "MAPPER076":
@@ -27,13 +27,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			SetMirrorType(EMirrorType.Vertical);
-			chr_bank_mask_2k = Cart.chr_size / 2 - 1;
-			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
+			chr_bank_mask_2k = Cart.ChrSize / 2 - 1;
+			prg_bank_mask_8k = Cart.PrgSize / 8 - 1;
 
 			prg[3] = prg_bank_mask_8k;
 			prg[2] = prg_bank_mask_8k - 1;
 
-			Cart.wram_size = 0;
+			Cart.WramSize = 0;
 
 			return true;
 		}

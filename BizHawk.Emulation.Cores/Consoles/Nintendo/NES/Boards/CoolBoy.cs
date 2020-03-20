@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "UNIF_COOLBOY":
 					AssertChr(0);
@@ -25,8 +25,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			Cart.vram_size = 128;
-			Cart.wram_size = 0;
+			Cart.VramSize = 128;
+			Cart.WramSize = 0;
 
 			BaseSetup();
 

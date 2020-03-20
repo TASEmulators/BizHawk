@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			adjust_prg = (x) => x;
 
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER0002-00":
 					//probably a mistake. 
@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 
 				case "MAPPER002":
-					AssertChr(0); Cart.vram_size = 8;
+					AssertChr(0); Cart.VramSize = 8;
 					break;
 
 				case "NES-UNROM": //mega man
@@ -88,9 +88,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 			//these boards always have 8KB of VRAM
-			vram_byte_mask = (Cart.vram_size*1024) - 1;
-			prg_mask = (Cart.prg_size / 16) - 1;
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			vram_byte_mask = (Cart.VramSize*1024) - 1;
+			prg_mask = (Cart.PrgSize / 16) - 1;
+			SetMirrorType(Cart.PadH, Cart.PadV);
 
 			return true;
 		}

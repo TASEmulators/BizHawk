@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "AVE-NINA-02": // untested
 				case "AVE-NINA-01": //Impossible Mission 2 (U)
@@ -33,10 +33,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_bank_mask_32k = Cart.prg_size / 32 - 1;
-			chr_bank_mask_4k = Cart.chr_size / 4 - 1;
+			prg_bank_mask_32k = Cart.PrgSize / 32 - 1;
+			chr_bank_mask_4k = Cart.ChrSize / 4 - 1;
 
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			SetMirrorType(Cart.PadH, Cart.PadV);
 
 			return true;
 		}
@@ -108,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER079": // Puzzle (Unl)
 					isMapper79 = true;
@@ -122,7 +122,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "AVE-NINA-06": //Blackjack (U)
 				case "AVE-NINA-03": //F-15 City War (U)
 				case "AVE-MB-91": //Deathbots (U)
-					if (Cart.chips.Count == 0) // some boards had no mapper chips on them
+					if (Cart.Chips.Count == 0) // some boards had no mapper chips on them
 						return false;
 					AssertPrg(32, 64); AssertChr(32, 64); AssertWram(0); AssertVram(0);
 					break;
@@ -131,10 +131,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_bank_mask_32k = Cart.prg_size / 32 - 1;
-			chr_bank_mask_8k = Cart.chr_size / 8 - 1;
+			prg_bank_mask_32k = Cart.PrgSize / 32 - 1;
+			chr_bank_mask_8k = Cart.ChrSize / 8 - 1;
 
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			SetMirrorType(Cart.PadH, Cart.PadV);
 			prg_bank_32k = 0;
 
 			return true;

@@ -155,29 +155,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			fix_chr = (b) => b;
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				// for INES, we assume VRC4 in many cases where it might be VRC2
 				case "MAPPER021":
 					type = 4;
 					remap = AddrA1A2_A6A7;
-					Cart.wram_size = 8;
+					Cart.WramSize = 8;
 					break;
 				case "MAPPER022":
 					type = 2;
 					remap = AddrA1A0;
-					Cart.wram_size = 8; // should be latch_exists = true but forget that
+					Cart.WramSize = 8; // should be latch_exists = true but forget that
 					fix_chr = (b) => (b >> 1);
 					break;
 				case "MAPPER023":
 					type = 4;
 					remap = AddrA0A1_A2A3;
-					Cart.wram_size = 8;
+					Cart.WramSize = 8;
 					break;
 				case "MAPPER023_BMC":
 					type = 4;
 					remap = AddrA0A1_A2A3;
-					Cart.wram_size = 8;
+					Cart.WramSize = 8;
 					_isBMC = true;
 					prg_banks_8k[0] = (byte)(prg_bank_reg_8k[0]);
 					prg_banks_8k[1] = (byte)(prg_bank_reg_8k[1]);
@@ -187,7 +187,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "MAPPER025":
 					type = 4;
 					remap = AddrA3A2_A1A0;
-					Cart.wram_size = 8;
+					Cart.WramSize = 8;
 					break;
 				case "UNIF_UNL-T-230":
 					isPirate = true;
@@ -207,7 +207,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "KONAMI-VRC-4":
 					AssertPrg(128, 256); AssertChr(128, 256); AssertVram(0); AssertWram(0, 2, 8);
 					type = 4;
-					switch (Cart.pcb)
+					switch (Cart.Pcb)
 					{
 						case "352398": // vrc4a A1 A2
 							remap = AddrA1A2; break;
@@ -226,9 +226,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "KONAMI-VRC-2":
 					AssertPrg(128, 256); AssertChr(128, 256); AssertVram(0); AssertWram(0, 8);
 					type = 2;
-					if (Cart.wram_size == 0)
+					if (Cart.WramSize == 0)
 						latch6k_exists = true;
-					switch (Cart.pcb)
+					switch (Cart.Pcb)
 					{
 						case "351618": // vrc2a A1 A0
 							remap = AddrA1A0;
@@ -249,15 +249,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							remap = AddrA1A0;
 							break;
 						default:
-							throw new Exception($"Unknown PCB type for VRC2: \"{Cart.pcb}\"");
+							throw new Exception($"Unknown PCB type for VRC2: \"{Cart.Pcb}\"");
 					}
 					break;
 				default:
 					return false;
 			}
 
-			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
-			chr_bank_mask_1k = Cart.chr_size - 1;
+			prg_bank_mask_8k = Cart.PrgSize / 8 - 1;
+			chr_bank_mask_1k = Cart.ChrSize - 1;
 
 			// prg regs are 5 bits wide in all VRC2 and VRC4, believe it or not
 			// todo: we don't even need this, do we?  removing it would

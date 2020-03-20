@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER099":
 					NES._isVS = true;
@@ -29,8 +29,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_byte_mask = Cart.prg_size * 1024 - 1;
-			chr_mask = (Cart.chr_size / 8) - 1;
+			prg_byte_mask = Cart.PrgSize * 1024 - 1;
+			chr_mask = (Cart.ChrSize / 8) - 1;
 
 			//update the state of the dip switches
 			//this is only done at power on
@@ -109,7 +109,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override byte ReadPrg(int addr)
 		{
-			if (Cart.prg_size==48)
+			if (Cart.PrgSize==48)
 			{
 				if (addr<0x2000)
 				{

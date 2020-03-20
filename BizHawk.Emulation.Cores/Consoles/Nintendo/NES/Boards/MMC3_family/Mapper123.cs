@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER123": // Nestopia suggests this board is mapper 123, I do not have any ROMs with this ines header info to confirm
 				case "UNIF_UNL-H2288":

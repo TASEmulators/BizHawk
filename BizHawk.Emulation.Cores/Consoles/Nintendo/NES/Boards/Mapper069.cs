@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "SUNSOFT-5B": //Gimmick! (J)
 					AssertPrg(256); AssertChr(128); AssertWram(0); AssertVram(0); AssertBattery(false);
@@ -90,7 +90,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "NES-JLROM": // Mr Gimmick
 					AssertPrg(256); AssertChr(128); AssertWram(0); AssertVram(0); AssertBattery(false);
@@ -120,9 +120,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		protected void BaseConfigure()
 		{
-			prg_bank_mask_8k = (Cart.prg_size / 8) - 1;
-			wram_bank_mask_8k = (Cart.wram_size / 8) - 1;
-			chr_bank_mask_1k = Cart.chr_size - 1;
+			prg_bank_mask_8k = (Cart.PrgSize / 8) - 1;
+			wram_bank_mask_8k = (Cart.WramSize / 8) - 1;
+			chr_bank_mask_1k = Cart.ChrSize - 1;
 			prg_banks_8k[3] = 0xFF;
 			SetMirrorType(EMirrorType.Vertical);
 		}

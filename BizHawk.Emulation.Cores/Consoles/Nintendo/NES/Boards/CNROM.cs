@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER185":
 				case "HVC-CNROM+SECURITY":
@@ -84,13 +84,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				default:
 					return false;
 			}
-			if (Cart.pcb == "9011-N02") // othello
+			if (Cart.Pcb == "9011-N02") // othello
 				copyprotection = true;
-			prg_byte_mask = Cart.prg_size * 1024 - 1;
-			chr_mask = (Cart.chr_size / 8) - 1;
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			prg_byte_mask = Cart.PrgSize * 1024 - 1;
+			chr_mask = (Cart.ChrSize / 8) - 1;
+			SetMirrorType(Cart.PadH, Cart.PadV);
 
-			if (Cart.sha1 == "sha1:4C9C05FAD6F6F33A92A27C2EDC1E7DE12D7F216D")
+			if (Cart.Sha1 == "sha1:4C9C05FAD6F6F33A92A27C2EDC1E7DE12D7F216D")
 				seicross = true;
 
 			return true;

@@ -6,7 +6,7 @@
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER195":
 					break;
@@ -14,7 +14,7 @@
 					return false;
 			}
 
-			vram_bank_mask_1k = Cart.vram_size / 1 - 1;
+			vram_bank_mask_1k = Cart.VramSize / 1 - 1;
 			
 			BaseSetup();
 			return true;

@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER018":
 				case "JALECO-JF-23":
@@ -34,8 +34,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			chr_bank_mask_1k = Cart.chr_size / 1 - 1;
-			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
+			chr_bank_mask_1k = Cart.ChrSize / 1 - 1;
+			prg_bank_mask_8k = Cart.PrgSize / 8 - 1;
 			prg_banks_8k[3] = 0xFF;
 
 			// i have no idea what power-on defaults are supposed to be used

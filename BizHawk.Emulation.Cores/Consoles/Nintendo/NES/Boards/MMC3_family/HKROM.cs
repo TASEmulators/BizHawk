@@ -17,16 +17,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "NES-HKROM":
 					AssertPrg(256); AssertChr(256); AssertVram(0); AssertWram(0,1);
-					Cart.wram_size = 1; //1K of wram is in the mmc6
-					Cart.wram_battery = true; //and its battery backed.
+					Cart.WramSize = 1; //1K of wram is in the mmc6
+					Cart.WramBattery = true; //and its battery backed.
 					break;
 				case "MAPPER004_MMC6":
-					Cart.wram_size = 1; //1K of wram is in the mmc6
-					Cart.wram_battery = true; //and its battery backed.
+					Cart.WramSize = 1; //1K of wram is in the mmc6
+					Cart.WramBattery = true; //and its battery backed.
 					break;
 				default:
 					return false;

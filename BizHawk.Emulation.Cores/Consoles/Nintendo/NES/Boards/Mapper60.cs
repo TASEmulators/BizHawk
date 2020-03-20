@@ -17,11 +17,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER060":
 					// Hack, Reset 4-in-1 is a different board but still assign to mapper 60
-					if (Cart.prg_size != 64 || Cart.chr_size != 32)
+					if (Cart.PrgSize != 64 || Cart.ChrSize != 32)
 					{
 						break;
 					}
@@ -88,11 +88,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER060":
 					// Hack, Reset 4-in-1 is a different board but still assign to mapper 60
-					if (Cart.prg_size == 64 && Cart.chr_size == 32)
+					if (Cart.PrgSize == 64 && Cart.ChrSize == 32)
 					{
 						break;
 					}

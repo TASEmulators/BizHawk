@@ -7,10 +7,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER119":
-					Cart.vram_size = 8; Cart.wram_size = 0; // Junk ROMs get these wrong
+					Cart.VramSize = 8; Cart.WramSize = 0; // Junk ROMs get these wrong
 					break;
 				case "NES-TQROM": // High Speed and Pin Bot
 					AssertPrg(128); AssertChr(64); AssertVram(8); AssertWram(0);

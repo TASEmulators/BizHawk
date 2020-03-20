@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER034": // 3-D Battles of World Runner, The (U) [b5].nes
 					// TODO: No idea what to assert here
@@ -25,11 +25,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			Cart.wram_size = 8;
-			prg_bank_mask_32k = Cart.prg_size / 32 - 1;
-			chr_bank_mask_4k = Cart.chr_size / 4 - 1;
+			Cart.WramSize = 8;
+			prg_bank_mask_32k = Cart.PrgSize / 32 - 1;
+			chr_bank_mask_4k = Cart.ChrSize / 4 - 1;
 
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			SetMirrorType(Cart.PadH, Cart.PadV);
 			chr[1] = 1;
 
 			return true;

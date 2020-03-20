@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER068":
 					break;
@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					AssertPrg(128); AssertChr(128,256); AssertVram(0); AssertWram(0,8); 
 					break;
 				case "UNIF_NES-NTBROM":
-					AssertPrg(128 + 16); AssertChr(128); Cart.wram_size = 8; Cart.vram_size = 0;
+					AssertPrg(128 + 16); AssertChr(128); Cart.WramSize = 8; Cart.VramSize = 0;
 					/* The actual cart had 128k prg, with a small slot on the top that can load an optional daughterboard.
 					 * The UNIF dump has this as an extra 16k prg lump.  I don't know how this lump is actually used,
 					 * though.
@@ -54,11 +54,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			SetMirrorType(EMirrorType.Vertical);
 			prg_regs_16k[1] = 0xFF;
-			prg_bank_mask = Cart.prg_size / 16 - 1;
-			if (Cart.prg_size == 128 + 16)
+			prg_bank_mask = Cart.PrgSize / 16 - 1;
+			if (Cart.PrgSize == 128 + 16)
 				prg_bank_mask = 7; // ignore extra prg lump
-			chr_bank_mask = Cart.chr_size / 2 - 1;
-			nt_bank_mask = Cart.chr_size - 1;
+			chr_bank_mask = Cart.ChrSize / 2 - 1;
+			nt_bank_mask = Cart.ChrSize - 1;
 			return true;
 		}
 

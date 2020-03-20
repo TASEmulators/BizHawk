@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER066":
 					AssertPrg(32, 64, 128); AssertChr(8, 16, 32, 64); AssertVram(0); AssertWram(0,8);
@@ -38,16 +38,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "BANDAI-GNROM":
 				case "HVC-GNROM":
 				case "NES-MHROM": //Super Mario Bros. / Duck Hunt
-					AssertPrg(Cart.board_type == "NES-MHROM" ? 64 : 128); AssertChr(8, 16, 32); AssertVram(0); AssertWram(0);
+					AssertPrg(Cart.BoardType == "NES-MHROM" ? 64 : 128); AssertChr(8, 16, 32); AssertVram(0); AssertWram(0);
 					break;
 
 				default:
 					return false;
 			}
 
-			prg_mask = (Cart.prg_size / 32) - 1;
-			chr_mask = (Cart.chr_size / 8) - 1;
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			prg_mask = (Cart.PrgSize / 32) - 1;
+			chr_mask = (Cart.ChrSize / 8) - 1;
+			SetMirrorType(Cart.PadH, Cart.PadV);
 
 			if(origin == EDetectionOrigin.INES)
 				Console.WriteLine("Caution! This board (inferred from iNES) might have wrong mirr.type");

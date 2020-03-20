@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int _reg;
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "UNIF_UNL-CC-21":
 					break;
@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr < 0x2000)
 			{
-				if (Cart.chr_size == 8192)
+				if (Cart.ChrSize == 8192)
 				{
 					return Vrom[((_reg & 1) * 0xFFF) + (addr & 0xFFF)];
 				}

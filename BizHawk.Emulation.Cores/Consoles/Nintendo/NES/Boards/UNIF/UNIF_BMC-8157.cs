@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "UNIF_BMC-8157":
 					break;
@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			_prgMask16k = Cart.prg_size / 16 - 1;
+			_prgMask16k = Cart.PrgSize / 16 - 1;
 
 			AutoMapperProps.Apply(this);
 
@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (_4in1Mode)
 			{
-				if (((_cmdreg & 0x100) > 0) && Cart.prg_size < 1024)
+				if (((_cmdreg & 0x100) > 0) && Cart.PrgSize < 1024)
 				{
 					addr = (addr & 0xFFF0) + (1);
 				}

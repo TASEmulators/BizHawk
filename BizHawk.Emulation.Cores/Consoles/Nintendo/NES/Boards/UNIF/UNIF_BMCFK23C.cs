@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "UNIF_BMC-FK23C":
 				case "MAPPER176":
@@ -43,8 +43,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			BaseSetup();
 
-			prg_mask_8k = Cart.prg_size / 8 - 1;
-			chr_mask_1k = Cart.chr_size - 1;
+			prg_mask_8k = Cart.PrgSize / 8 - 1;
+			chr_mask_1k = Cart.ChrSize - 1;
 
 			prg_regs_8k[0] = 0;
 			prg_regs_8k[1] = 1;

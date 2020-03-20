@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				// see notes above that explain some of this in more detail
 
@@ -92,7 +92,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				case "MAPPER159": // [3]
 					AssertPrg(128, 256); AssertChr(128, 256);
-					Cart.wram_size = 0;
+					Cart.WramSize = 0;
 					regs_prg_enable = true;
 					regs_wram_enable = false;
 					eprom = new SEEPROM(false);
@@ -104,7 +104,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					regs_wram_enable = false;
 					break;
 				case "MAPPER016": // [7]
-					if (Cart.prg_size > 256)
+					if (Cart.PrgSize > 256)
 					{
 						// you have two options:
 						// 1) assume prg > 256 => jump2 (aka mapper 153, type [5])
@@ -115,7 +115,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						goto case "MAPPER153";
 					}
 					AssertPrg(128, 256); AssertChr(128, 256);
-					Cart.wram_size = 0;
+					Cart.WramSize = 0;
 					regs_prg_enable = true;
 					regs_wram_enable = true;
 					eprom = new SEEPROM(true);
@@ -123,8 +123,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "MAPPER153": // [5]
 					AssertPrg(512);
 					AssertChr(0);
-					Cart.vram_size = 8;
-					Cart.wram_size = 8;
+					Cart.VramSize = 8;
+					Cart.WramSize = 8;
 					regs_prg_enable = true;
 					regs_wram_enable = false;
 					jump2 = true;
@@ -145,8 +145,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					// bootgod doesn't have any of these recorded
 					AssertPrg(128, 256);
 					AssertChr(0);
-					Cart.vram_size = 8;
-					Cart.wram_size = 0;
+					Cart.VramSize = 8;
+					Cart.WramSize = 0;
 					regs_prg_enable = true;
 					regs_wram_enable = false;
 					// 24C02 is present on all boards
@@ -160,13 +160,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_bank_mask_16k = (Cart.prg_size / 16) - 1;
+			prg_bank_mask_16k = (Cart.PrgSize / 16) - 1;
 
 			// for Jump2 boards, we only mask up to 256K, the outer bank is determined seperately
 			if (jump2)
 				prg_bank_mask_16k = 256 / 16 - 1;
 
-			chr_bank_mask_1k = Cart.chr_size - 1;
+			chr_bank_mask_1k = Cart.ChrSize - 1;
 			
 			SetMirrorType(EMirrorType.Vertical);
 

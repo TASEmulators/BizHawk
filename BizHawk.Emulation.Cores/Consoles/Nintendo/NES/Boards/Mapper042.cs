@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER042":
 					break;
@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			AssertPrg(128);
 
-			if (Cart.vram_size == 0)
+			if (Cart.VramSize == 0)
 				AssertChr(128);
 			else
 			{
@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				AssertChr(0);
 			}
 
-			Cart.wram_size = 0;
+			Cart.WramSize = 0;
 			// not sure on initial mirroring
 			SetMirrorType(EMirrorType.Vertical);
 			return true;

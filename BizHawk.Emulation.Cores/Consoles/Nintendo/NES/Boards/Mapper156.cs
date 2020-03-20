@@ -18,15 +18,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER156":
 					break;
 				default:
 					return false;
 			}
-			prg_mask = Cart.prg_size / 16 - 1;
-			chr_mask = Cart.chr_size / 1 - 1;
+			prg_mask = Cart.PrgSize / 16 - 1;
+			chr_mask = Cart.ChrSize / 1 - 1;
 			SetMirrorType(EMirrorType.OneScreenA);
 			return true;
 		}

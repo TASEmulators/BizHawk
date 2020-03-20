@@ -165,7 +165,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER024":
 					newer_variant = false;
@@ -174,9 +174,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					newer_variant = true;
 					break;
 				case "KONAMI-VRC-6":
-					if (Cart.pcb == "351951")
+					if (Cart.Pcb == "351951")
 						newer_variant = false;
-					else if (Cart.pcb == "351949A")
+					else if (Cart.Pcb == "351949A")
 						newer_variant = true;
 					else throw new Exception("Unknown PCB type for VRC6");
 					AssertPrg(256); AssertChr(128, 256);
@@ -186,9 +186,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			AssertVram(0); AssertWram(0, 8);
 
-			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
-			chr_bank_mask_1k = Cart.chr_size - 1;
-			chr_byte_mask = Cart.chr_size * 1024 - 1;
+			prg_bank_mask_8k = Cart.PrgSize / 8 - 1;
+			chr_bank_mask_1k = Cart.ChrSize - 1;
+			chr_byte_mask = Cart.ChrSize * 1024 - 1;
 
 			prg_bank_16k = 0;
 			prg_bank_8k = 0;

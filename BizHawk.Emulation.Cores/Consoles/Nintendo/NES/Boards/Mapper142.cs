@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER142":
 				case "UNIF_UNL-KS7032":
@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			SetMirrorType(EMirrorType.Horizontal);
-			_lastBank = Cart.prg_size / 8 - 1;
+			_lastBank = Cart.PrgSize / 8 - 1;
 
 			return true;
 		}

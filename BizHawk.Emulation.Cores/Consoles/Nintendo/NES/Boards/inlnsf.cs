@@ -19,12 +19,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER031":
 					AssertChr(0, 8);
-					if(Cart.chr_size == 0)
-						Cart.vram_size = 8;
+					if(Cart.ChrSize == 0)
+						Cart.VramSize = 8;
 					break;
 				case "MAPPER0031-00":
 					AssertVram(8);
@@ -32,10 +32,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				default:
 					return false;
 			}
-			SetMirrorType(CalculateMirrorType(Cart.pad_h, Cart.pad_v));
+			SetMirrorType(CalculateMirrorType(Cart.PadH, Cart.PadV));
 			AssertPrg(16, 32, 64, 128, 256, 512, 1024);
-			Cart.wram_size = 0;
-			prg_bank_mask_4k = Cart.prg_size / 4 - 1;
+			Cart.WramSize = 0;
+			prg_bank_mask_4k = Cart.PrgSize / 4 - 1;
 			prg[7] = prg_bank_mask_4k;
 			return true;
 		}

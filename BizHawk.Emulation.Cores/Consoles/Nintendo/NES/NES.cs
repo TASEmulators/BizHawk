@@ -341,7 +341,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				LoadWriteLine("Found UNIF header:");
 				LoadWriteLine(unif.CartInfo);
 				LoadWriteLine("Since this is UNIF we can confidently parse PRG/CHR banks to hash.");
-				hash_sha1 = unif.CartInfo.sha1;
+				hash_sha1 = unif.CartInfo.Sha1;
 				hash_sha1_several.Add(hash_sha1);
 				LoadWriteLine("headerless rom hash: {0}", hash_sha1);
 			}
@@ -359,7 +359,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				nsfboard.InitNSF( nsf);
 				nsfboard.InitialRegisterValues = InitialMapperRegisterValues;
 				nsfboard.Configure(origin);
-				nsfboard.Wram = new byte[cart.wram_size * 1024];
+				nsfboard.Wram = new byte[cart.WramSize * 1024];
 				Board = nsfboard;
 				Board.PostConfigure();
 				AutoMapperProps.Populate(Board, SyncSettings);
@@ -394,10 +394,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				Board = fdsboard;
 
 				//create the vram and wram if necessary
-				if (cart.wram_size != 0)
-					Board.Wram = new byte[cart.wram_size * 1024];
-				if (cart.vram_size != 0)
-					Board.Vram = new byte[cart.vram_size * 1024];
+				if (cart.WramSize != 0)
+					Board.Wram = new byte[cart.WramSize * 1024];
+				if (cart.VramSize != 0)
+					Board.Vram = new byte[cart.VramSize * 1024];
 
 				Board.PostConfigure();
 				AutoMapperProps.Populate(Board, SyncSettings);
@@ -463,23 +463,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					LoadWriteLine("headerless rom hash: {0}", hash_sha1);
 					LoadWriteLine("headerless rom hash:  {0}", hash_md5);
 
-					if (iNesHeaderInfo.prg_size == 16)
+					if (iNesHeaderInfo.PrgSize == 16)
 					{
 						//8KB prg can't be stored in iNES format, which counts 16KB prg banks.
 						//so a correct hash will include only 8KB.
 						LoadWriteLine("Since this rom has a 16 KB PRG, we'll hash it as 8KB too for bootgod's DB:");
 						var msTemp = new MemoryStream();
 						msTemp.Write(file, 16, 8 * 1024); //add prg
-						if (file.Length >= (16 * 1024 + iNesHeaderInfo.chr_size * 1024 + 16))
+						if (file.Length >= (16 * 1024 + iNesHeaderInfo.ChrSize * 1024 + 16))
 						{
 							// This assumes that even though the PRG is only 8k the CHR is still written
 							// 16k into the file, which is not always the case (e.x. Galaxian RevA)
-							msTemp.Write(file, 16 + 16 * 1024, iNesHeaderInfo.chr_size * 1024); //add chr
+							msTemp.Write(file, 16 + 16 * 1024, iNesHeaderInfo.ChrSize * 1024); //add chr
 						}
-						else if (file.Length >= (8 * 1024 + iNesHeaderInfo.chr_size * 1024 + 16))
+						else if (file.Length >= (8 * 1024 + iNesHeaderInfo.ChrSize * 1024 + 16))
 						{
 							// maybe the PRG is only 8k
-							msTemp.Write(file, 16 + 8 * 1024, iNesHeaderInfo.chr_size * 1024); //add chr
+							msTemp.Write(file, 16 + 8 * 1024, iNesHeaderInfo.ChrSize * 1024); //add chr
 						}
 						else
 						{
@@ -508,22 +508,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				else
 				{
 					origin = EDetectionOrigin.GameDB;
-					LoadWriteLine("Chose board from bizhawk gamedb: " + choice.board_type);
+					LoadWriteLine("Chose board from bizhawk gamedb: " + choice.BoardType);
 					//gamedb entries that don't specify prg/chr sizes can infer it from the ines header
 					if (iNesHeaderInfo != null)
 					{
-						if (choice.prg_size == -1) choice.prg_size = iNesHeaderInfo.prg_size;
-						if (choice.chr_size == -1) choice.chr_size = iNesHeaderInfo.chr_size;
-						if (choice.vram_size == -1) choice.vram_size = iNesHeaderInfo.vram_size;
-						if (choice.wram_size == -1) choice.wram_size = iNesHeaderInfo.wram_size;
+						if (choice.PrgSize == -1) choice.PrgSize = iNesHeaderInfo.PrgSize;
+						if (choice.ChrSize == -1) choice.ChrSize = iNesHeaderInfo.ChrSize;
+						if (choice.VramSize == -1) choice.VramSize = iNesHeaderInfo.VramSize;
+						if (choice.WramSize == -1) choice.WramSize = iNesHeaderInfo.WramSize;
 					}
 					else if (unif != null)
 					{
-						if (choice.prg_size == -1) choice.prg_size = unif.CartInfo.prg_size;
-						if (choice.chr_size == -1) choice.chr_size = unif.CartInfo.chr_size;
+						if (choice.PrgSize == -1) choice.PrgSize = unif.CartInfo.PrgSize;
+						if (choice.ChrSize == -1) choice.ChrSize = unif.CartInfo.ChrSize;
 						// unif has no wram\vram sizes; hope the board impl can figure it out...
-						if (choice.vram_size == -1) choice.vram_size = 0;
-						if (choice.wram_size == -1) choice.wram_size = 0;
+						if (choice.VramSize == -1) choice.VramSize = 0;
+						if (choice.WramSize == -1) choice.WramSize = 0;
 					}
 				}
 				
@@ -556,8 +556,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					//well, we know we can't have much of a NES game if there's no VROM unless there's VRAM instead.
 					//so if the VRAM isn't set, choose 8 for it.
 					//TODO - unif loading code may need to use VROR flag to transform chr_size=8 to vram_size=8 (need example)
-					if (choice.chr_size == 0 && choice.vram_size == 0)
-						choice.vram_size = 8;
+					if (choice.ChrSize == 0 && choice.VramSize == 0)
+						choice.VramSize = 8;
 					//(do we need to suppress this in case theres a CHR rom? probably not. nes board base will use ram if no rom is available)
 					origin = EDetectionOrigin.UNIF;
 				}
@@ -597,7 +597,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
-			game_name = choice.name;
+			game_name = choice.Name;
 
 			//find a INESBoard to handle this
 			if (choice != null)
@@ -605,16 +605,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			else
 				throw new Exception("Unable to detect ROM");
 			if (boardType == null)
-				throw new Exception("No class implements the necessary board type: " + choice.board_type);
+				throw new Exception("No class implements the necessary board type: " + choice.BoardType);
 
-			if (choice.DB_GameInfo != null)
-				choice.bad = choice.DB_GameInfo.IsRomStatusBad();
+			if (choice.GameInfo != null)
+				choice.Bad = choice.GameInfo.IsRomStatusBad();
 
 			LoadWriteLine("Final game detection results:");
 			LoadWriteLine(choice);
 			LoadWriteLine("\"" + game_name + "\"");
 			LoadWriteLine("Implemented by: class " + boardType.Name);
-			if (choice.bad)
+			if (choice.Bad)
 			{
 				LoadWriteLine("~~ ONE WAY OR ANOTHER, THIS DUMP IS KNOWN TO BE *BAD* ~~");
 				LoadWriteLine("~~ YOU SHOULD FIND A BETTER FILE ~~");
@@ -649,9 +649,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (origin == EDetectionOrigin.GameDB)
 			{
-				RomStatus = choice.bad
+				RomStatus = choice.Bad
 					? RomStatus.BadDump
-					: choice.DB_GameInfo.Status;
+					: choice.GameInfo.Status;
 			}
 
 			byte[] trainer = null;
@@ -662,24 +662,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				using var ms = new MemoryStream(file, false);
 				ms.Seek(16, SeekOrigin.Begin); // ines header
 				//pluck the necessary bytes out of the file
-				if (iNesHeaderInfo.trainer_size != 0)
+				if (iNesHeaderInfo.TrainerSize != 0)
 				{
 					trainer = new byte[512];
 					ms.Read(trainer, 0, 512);
 				}
 
-				Board.Rom = new byte[choice.prg_size * 1024];
+				Board.Rom = new byte[choice.PrgSize * 1024];
 				ms.Read(Board.Rom, 0, Board.Rom.Length);
 
-				if (choice.chr_size > 0)
+				if (choice.ChrSize > 0)
 				{
-					Board.Vrom = new byte[choice.chr_size * 1024];
+					Board.Vrom = new byte[choice.ChrSize * 1024];
 					int vrom_copy_size = ms.Read(Board.Vrom, 0, Board.Vrom.Length);
 
 					if (vrom_copy_size < Board.Vrom.Length)
 						LoadWriteLine("Less than the expected VROM was found in the file: {0} < {1}", vrom_copy_size, Board.Vrom.Length);
 				}
-				if (choice.prg_size != iNesHeaderInfo.prg_size || choice.chr_size != iNesHeaderInfo.chr_size)
+				if (choice.PrgSize != iNesHeaderInfo.PrgSize || choice.ChrSize != iNesHeaderInfo.ChrSize)
 					LoadWriteLine("Warning: Detected choice has different filesizes than the INES header!");
 			}
 			else if (unif != null)
@@ -693,12 +693,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				var ms = new MemoryStream(file, false);
 				ms.Seek(0, SeekOrigin.Begin);
 
-				Board.Rom = new byte[choice.prg_size * 1024];
+				Board.Rom = new byte[choice.PrgSize * 1024];
 				ms.Read(Board.Rom, 0, Board.Rom.Length);
 
-				if (choice.chr_size > 0)
+				if (choice.ChrSize > 0)
 				{
-					Board.Vrom = new byte[choice.chr_size * 1024];
+					Board.Vrom = new byte[choice.ChrSize * 1024];
 					int vrom_copy_size = ms.Read(Board.Vrom, 0, Board.Vrom.Length);
 
 					if (vrom_copy_size < Board.Vrom.Length)
@@ -712,17 +712,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// IF YOU DO ANYTHING AT ALL BELOW THIS LINE, MAKE SURE THE APPROPRIATE CHANGE IS MADE TO FDS (if applicable)
 
 			//create the vram and wram if necessary
-			if (cart.wram_size != 0)
-				Board.Wram = new byte[cart.wram_size * 1024];
-			if (cart.vram_size != 0)
-				Board.Vram = new byte[cart.vram_size * 1024];
+			if (cart.WramSize != 0)
+				Board.Wram = new byte[cart.WramSize * 1024];
+			if (cart.VramSize != 0)
+				Board.Vram = new byte[cart.VramSize * 1024];
 
 			Board.PostConfigure();
 			AutoMapperProps.Populate(Board, SyncSettings);
 
 			// set up display type
 
-			NESSyncSettings.Region fromrom = DetectRegion(cart.system);
+			NESSyncSettings.Region fromrom = DetectRegion(cart.System);
 			NESSyncSettings.Region fromsettings = SyncSettings.RegionOverride;
 
 			if (fromsettings != NESSyncSettings.Region.Default)

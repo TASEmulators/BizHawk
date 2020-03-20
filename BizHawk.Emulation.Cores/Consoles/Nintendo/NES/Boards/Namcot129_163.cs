@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER019":
 					AssertVram(0);
@@ -78,8 +78,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (NES.apu != null)
 				audio = new Namco163Audio(NES.apu.ExternalQueue);
 
-			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
-			chr_bank_mask_1k = Cart.chr_size / 1 - 1;
+			prg_bank_mask_8k = Cart.PrgSize / 8 - 1;
+			chr_bank_mask_1k = Cart.ChrSize / 1 - 1;
 
 			prg_banks_8k[3] = (byte)(0xFF & prg_bank_mask_8k);
 			prg_banks_8k[2] = (byte)(0xFF & prg_bank_mask_8k)-1;
@@ -262,7 +262,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			get
 			{
-				if (Cart.wram_battery)
+				if (Cart.WramBattery)
 				{
 					if (Wram != null)
 						return Wram;

@@ -12,7 +12,7 @@
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "UNIF_FARID_UNROM_8-IN-1":
 					AssertPrg(1024);
@@ -22,8 +22,8 @@
 					return false;
 			}
 
-			Cart.vram_size = 8;
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			Cart.VramSize = 8;
+			SetMirrorType(Cart.PadH, Cart.PadV);
 			return true;
 		}
 

@@ -63,10 +63,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			string oldBoardType = Cart.board_type;
+			string oldBoardType = Cart.BoardType;
 
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER116":
 					break;
@@ -74,9 +74,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 			
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			SetMirrorType(Cart.PadH, Cart.PadV);
 
-			Cart.board_type = "MAPPER116_HACKY";
+			Cart.BoardType = "MAPPER116_HACKY";
 
 			vrc2 = new VRC2_4();
 			vrc2.Create(NES);
@@ -104,7 +104,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			mmc1.Configure(origin);
 			mmc1_reset();
 
-			Cart.board_type = oldBoardType;
+			Cart.BoardType = oldBoardType;
 
 			mode = 0;
 			Sync();

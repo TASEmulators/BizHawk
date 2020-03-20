@@ -17,11 +17,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER007":
 					bus_conflict = false;
-					Cart.vram_size = 8;
+					Cart.VramSize = 8;
 					break;
 
 				case "NES-ANROM": //marble madness
@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_mask_32k = Cart.prg_size / 32 - 1;
+			prg_mask_32k = Cart.PrgSize / 32 - 1;
 			SetMirrorType(EMirrorType.OneScreenA);
 
 			return true;
@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override byte ReadPrg(int addr)
 		{
-			if (Cart.prg_size ==  16)
+			if (Cart.PrgSize ==  16)
 			{
 				return Rom[(addr & 0x3FFF) | prg << 15];
 			}

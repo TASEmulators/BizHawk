@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER146":
 				case "UNL-SA-016-1M":
@@ -54,11 +54,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			AssertPrg(16, 32, 64, 128);
 			AssertChr(8, 16, 32, 64, 128);
 			AssertVram(0);
-			Cart.wram_size = 0;
-			prg_mask = Cart.prg_size / 32 - 1;
-			chr_mask = Cart.chr_size / 8 - 1;
-			prg_addr_mask = Cart.prg_size * 1024 - 1;
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			Cart.WramSize = 0;
+			prg_mask = Cart.PrgSize / 32 - 1;
+			chr_mask = Cart.ChrSize / 8 - 1;
+			prg_addr_mask = Cart.PrgSize * 1024 - 1;
+			SetMirrorType(Cart.PadH, Cart.PadV);
 			return true;
 		}
 

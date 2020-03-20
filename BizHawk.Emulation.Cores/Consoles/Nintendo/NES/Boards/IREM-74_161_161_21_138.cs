@@ -13,10 +13,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER077":
-					Cart.vram_size = 8;
+					Cart.VramSize = 8;
 					break;
 				case "IREM-74*161/161/21/138":
 					AssertVram(8);

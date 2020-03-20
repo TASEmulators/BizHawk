@@ -4,7 +4,7 @@
 	{
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER055": // Nestopia calls this mapper 55, I know of no dumps with the designation though
 				case "UNIF_BTL-MARIO1-MALEE2":

@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			get
 			{
-				if (!Cart.wram_battery) return null;
+				if (!Cart.WramBattery) return null;
 				return Wram;
 				//some boards have a wram that is backed-up or not backed-up. need to handle that somehow
 				//(nestopia splits it into NVWRAM and WRAM but i didnt like that at first.. but it may player better with this architecture)
@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER116_HACKY":
 					break;
@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "TXROM-HOMEBREW": // should this even exist?
 					break;
 				case "MAPPER004":
-					if (Cart.inesmirroring == 2) // send these to TVROM
+					if (Cart.InesMirroring == 2) // send these to TVROM
 						return false;
 					break;
 				case "NES-TBROM": //tecmo world cup soccer (DE) [untested]
@@ -98,8 +98,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					AssertBattery(false);
 					break;
 				case "UNIF_TSROM":
-					Cart.wram_size = 8;
-					Cart.wram_battery = false;
+					Cart.WramSize = 8;
+					Cart.WramBattery = false;
 					break;
 				case "ACCLAIM-MC-ACC": //alien 3 (U), bart simpson vs the world (U)
 					AssertPrg(128, 256); AssertChr(128, 256); AssertVram(0); AssertWram(0);

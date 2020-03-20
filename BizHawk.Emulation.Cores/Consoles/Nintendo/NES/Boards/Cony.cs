@@ -20,13 +20,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER083":
-					if (Cart.prg_size == 128)
+					if (Cart.PrgSize == 128)
 					{
-						prg_bank_mask_8k = Cart.prg_size / 8 - 1;
-						prg_bank_mask_16k = Cart.prg_size / 16 - 1;
+						prg_bank_mask_8k = Cart.PrgSize / 8 - 1;
+						prg_bank_mask_16k = Cart.PrgSize / 16 - 1;
 						chr_bank_mask_2k = 127;
 						//prg_regs[0] = 0xC;
 						//prg_regs[1] = 0xB;
@@ -210,14 +210,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER083":
-					if (Cart.prg_size == 256)
+					if (Cart.PrgSize == 256)
 					{
-						prg_bank_mask_16k = Cart.prg_size / 16 - 1;
-						prg_bank_mask_8k = Cart.prg_size / 8 - 1;
-						chr_bank_mask_2k = Cart.prg_size / 2 - 1;
+						prg_bank_mask_16k = Cart.PrgSize / 16 - 1;
+						prg_bank_mask_8k = Cart.PrgSize / 8 - 1;
+						chr_bank_mask_2k = Cart.PrgSize / 2 - 1;
 
 						//prg_regs[1] = (byte)prg_bank_mask_16k;
 						//is_2k_bank = true;
@@ -397,18 +397,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER083":
 					// We need one of the Cony boards to throw an error on an unexpected cart size, so we picked this one
-					if (Cart.prg_size != 128 && Cart.prg_size != 256 && Cart.prg_size != 1024)
+					if (Cart.PrgSize != 128 && Cart.PrgSize != 256 && Cart.PrgSize != 1024)
 					{
-						throw new InvalidOperationException("Unexpected prg size of " + Cart.prg_size + " for Mapper 83");
+						throw new InvalidOperationException("Unexpected prg size of " + Cart.PrgSize + " for Mapper 83");
 					}
 
-					if (Cart.prg_size == 1024)
+					if (Cart.PrgSize == 1024)
 					{
-						prg_bank_mask_16k = Cart.prg_size / 16 - 1;
+						prg_bank_mask_16k = Cart.PrgSize / 16 - 1;
 
 						prg_regs[1] = (byte)prg_bank_mask_16k;
 						return true;

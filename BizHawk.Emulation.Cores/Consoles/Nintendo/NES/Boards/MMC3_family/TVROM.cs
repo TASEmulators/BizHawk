@@ -5,12 +5,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER004":
-					if (Cart.inesmirroring != 2) // send these to TxROM
+					if (Cart.InesMirroring != 2) // send these to TxROM
 						return false;
-					Cart.vram_size = 8;
+					Cart.VramSize = 8;
 					break;
 
 

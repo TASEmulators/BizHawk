@@ -17,11 +17,11 @@
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			if (Cart.board_type != "SUNSOFT-1" || Cart.pcb != "SUNSOFT-4")
+			if (Cart.BoardType != "SUNSOFT-1" || Cart.Pcb != "SUNSOFT-4")
 				return false;
 
 			AssertChr(0); AssertVram(8); AssertWram(0); AssertPrg(128);
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			SetMirrorType(Cart.PadH, Cart.PadV);
 			return true;
 		}
 

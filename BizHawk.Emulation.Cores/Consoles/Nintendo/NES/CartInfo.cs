@@ -8,37 +8,43 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	/// </summary>
 	public class CartInfo
 	{
-		public GameInfo DB_GameInfo;
-		public string name;
+		public GameInfo GameInfo { get; set; }
+		public string Name { get; set; }
 
-		public int trainer_size;
-		public int chr_size;
-		public int prg_size;
-		public int wram_size, vram_size;
-		public byte pad_h, pad_v;
-		public bool wram_battery;
-		public bool bad;
-		/// <summary>in [0,3]; combination of bits 0 and 3 of flags6.  try not to use; will be null for bootgod-identified roms always</summary>
-		public int? inesmirroring;
+		public int TrainerSize { get; set; }
+		public int ChrSize { get; set; }
+		public int PrgSize { get; set; }
+		public int WramSize { get; set; }
+		public int VramSize { get; set; }
+		public byte PadH { get; set; }
+		public byte PadV { get; set; }
+		public bool WramBattery { get; set; }
+		public bool Bad { get; set; }
 
-		public string board_type;
-		public string pcb;
+		/// <summary>
+		/// in [0,3]; combination of bits 0 and 3 of flags6.
+		/// try not to use; will be null for BootGod-identified roms always
+		/// </summary>
+		public int? InesMirroring { get; set; }
 
-		public string sha1;
-		public string system;
-		public List<string> chips = new List<string>();
+		public string BoardType { get; set; }
+		public string Pcb { get; set; }
 
-		public string palette; // Palette override for VS system
-		public byte vs_security; // for VS system games that do a ppu dheck
+		public string Sha1 { get; set; }
+		public string System { get; set; }
+		public List<string> Chips { get; set; } = new List<string>();
+
+		public string Palette { get; set; } // Palette override for VS system
+		public byte VsSecurity { get; set; } // for VS system games that do a ppu check
 
 		public override string ToString() => string.Join(",",
-			$"pr={prg_size}",
-			$"ch={chr_size}",
-			$"wr={wram_size}",
-			$"vr={vram_size}",
-			$"ba={(wram_battery ? 1 : 0)}",
-			$"pa={pad_h}|{pad_v}",
-			$"brd={board_type}",
-			$"sys={system}");
+			$"pr={PrgSize}",
+			$"ch={ChrSize}",
+			$"wr={WramSize}",
+			$"vr={VramSize}",
+			$"ba={(WramBattery ? 1 : 0)}",
+			$"pa={PadH}|{PadV}",
+			$"brd={BoardType}",
+			$"sys={System}");
 	}
 }

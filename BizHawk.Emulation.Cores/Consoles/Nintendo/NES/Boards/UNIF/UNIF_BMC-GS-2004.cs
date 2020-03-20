@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "UNIF_BMC-GS-2004":
 					break;
@@ -21,10 +21,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			
-			_prgMask32k = (Cart.prg_size - 8) / 32 - 1;
+			_prgMask32k = (Cart.PrgSize - 8) / 32 - 1;
 
 			// Last 8k of Prg goes into 6000-7FFF 
-			_wramOffset = ((Cart.prg_size - 8) / 32) * 0x8000;
+			_wramOffset = ((Cart.PrgSize - 8) / 32) * 0x8000;
 
 			SetMirrorType(EMirrorType.Vertical);
 

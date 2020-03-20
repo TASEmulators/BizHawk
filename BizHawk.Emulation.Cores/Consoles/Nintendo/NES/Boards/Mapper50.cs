@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER050":
 					break;
@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 			prg_bank = 0;
-			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
+			prg_bank_mask_8k = Cart.PrgSize / 8 - 1;
 			SetMirrorType(EMirrorType.Vertical);
 			return true;
 		}

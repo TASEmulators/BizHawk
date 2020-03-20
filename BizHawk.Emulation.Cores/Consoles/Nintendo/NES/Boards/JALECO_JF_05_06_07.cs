@@ -22,13 +22,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER087":
 					AssertPrg(8, 16, 32);
 					AssertChr(8, 16, 32);
 					AssertVram(0);
-					Cart.wram_size = 0;
+					Cart.WramSize = 0;
 					break;
 				case "JALECO-JF-05":
 				case "JALECO-JF-06":
@@ -43,9 +43,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				default:
 					return false;
 			}
-			prg_byte_mask = Cart.prg_size * 1024 - 1;
-			chr_mask_8k = Cart.chr_size / 8 - 1;
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			prg_byte_mask = Cart.PrgSize * 1024 - 1;
+			chr_mask_8k = Cart.ChrSize / 8 - 1;
+			SetMirrorType(Cart.PadH, Cart.PadV);
 
 			return true;
 		}

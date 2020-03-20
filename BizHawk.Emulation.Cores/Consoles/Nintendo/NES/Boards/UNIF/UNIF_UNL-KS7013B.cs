@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "UNIF_UNL-KS7013B":
 					break;
@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_mask_16k = Cart.prg_size / 16 - 1;
+			prg_mask_16k = Cart.PrgSize / 16 - 1;
 
 			return true;
 		}

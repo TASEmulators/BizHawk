@@ -60,36 +60,36 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prgrom = prgs.ToArray();
 			chrrom = chrs.ToArray();
 
-			ci.prg_size = (short)(prgrom.Length / 1024);
-			ci.chr_size = (short)(chrrom.Length / 1024);
+			ci.PrgSize = (short)(prgrom.Length / 1024);
+			ci.ChrSize = (short)(chrrom.Length / 1024);
 
 			if (chunks.TryGetValue("MIRR", out var tmp))
 			{
 				switch (tmp[0])
 				{
 					case 0: // hmirror
-						ci.pad_h = 0;
-						ci.pad_v = 1;
+						ci.PadH = 0;
+						ci.PadV = 1;
 						break;
 					case 1: // vmirror
-						ci.pad_h = 1;
-						ci.pad_v = 0;
+						ci.PadH = 1;
+						ci.PadV = 0;
 						break;
 				}
 			}
 
 			if (chunks.TryGetValue("MAPR", out tmp))
 			{
-				ci.board_type = new BinaryReader(new MemoryStream(tmp)).ReadStringUtf8NullTerminated();
+				ci.BoardType = new BinaryReader(new MemoryStream(tmp)).ReadStringUtf8NullTerminated();
 			}
 
-			ci.board_type = ci.board_type.TrimEnd('\0');
-			ci.board_type = "UNIF_" + ci.board_type;
+			ci.BoardType = ci.BoardType.TrimEnd('\0');
+			ci.BoardType = "UNIF_" + ci.BoardType;
 
 			if (chunks.TryGetValue("BATR", out tmp))
 			{
 				// apparently, this chunk just existing means battery is yes
-				ci.wram_battery = true;
+				ci.WramBattery = true;
 			}
 
 			// is there any way using System.Security.Cryptography.SHA1 to compute the hash of
@@ -100,7 +100,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ms.Write(chrrom, 0, chrrom.Length);
 				ms.Close();
 				byte[] all = ms.ToArray();
-				ci.sha1 = "sha1:" + all.HashSHA1(0, all.Length);
+				ci.Sha1 = "sha1:" + all.HashSHA1(0, all.Length);
 			}
 
 			// other code will expect this

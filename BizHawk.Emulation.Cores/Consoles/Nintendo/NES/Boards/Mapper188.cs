@@ -11,20 +11,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER188":
 					AssertVram(8);
 					AssertChr(0);
 					AssertPrg(128, 256);
-					Cart.wram_size = 0;
+					Cart.WramSize = 0;
 					break;
 				default:
 					return false;
 			}
 
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
-			prg_16k_mask = Cart.prg_size / 16 - 1;
+			SetMirrorType(Cart.PadH, Cart.PadV);
+			prg_16k_mask = Cart.PrgSize / 16 - 1;
 			return true;
 		}
 

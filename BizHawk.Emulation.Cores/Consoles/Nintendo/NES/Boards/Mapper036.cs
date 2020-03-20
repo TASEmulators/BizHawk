@@ -18,18 +18,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER036":
 					AssertVram(0);
-					Cart.wram_size = 0; // AssertWram(0); // GoodNES good dump of Strike Wolf specifies 8kb of wram
+					Cart.WramSize = 0; // AssertWram(0); // GoodNES good dump of Strike Wolf specifies 8kb of wram
 					break;
 				default:
 					return false;
 			}
-			chr_mask = Cart.chr_size / 8 - 1;
-			prg_mask = Cart.prg_size / 32 - 1;
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			chr_mask = Cart.ChrSize / 8 - 1;
+			prg_mask = Cart.PrgSize / 32 - 1;
+			SetMirrorType(Cart.PadH, Cart.PadV);
 			return true;
 		}
 

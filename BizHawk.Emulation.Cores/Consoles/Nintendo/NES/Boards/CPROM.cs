@@ -12,13 +12,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER013":
 					AssertPrg(32);
 					AssertChr(0);
-					Cart.vram_size = 16;
-					Cart.wram_size = 0;
+					Cart.VramSize = 16;
+					Cart.WramSize = 0;
 					break;
 
 				case "NES-CPROM": //videomation

@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "NES-TLSROM": //pro sport hockey (U)
 					AssertPrg(128); AssertChr(128); AssertVram(0); AssertWram(0);
@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				case "MAPPER158":
 					// as above
-					AssertVram(0); Cart.wram_size = 0;
+					AssertVram(0); Cart.WramSize = 0;
 					break;
 				case "HVC-TLSROM":
 					AssertPrg(256); AssertChr(128); AssertVram(0); AssertWram(0);

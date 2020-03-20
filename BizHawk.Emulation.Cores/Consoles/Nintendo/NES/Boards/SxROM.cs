@@ -320,7 +320,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				addr = Gen_CHR_Address(addr);
 
-				if (Cart.vram_size != 0)
+				if (Cart.VramSize != 0)
 					return Vram[addr & vram_mask];
 				else return Vrom[addr];
 			}
@@ -377,7 +377,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						chr_wram_enable = true;
 				}
 
-				if (Cart.vram_size != 0)
+				if (Cart.VramSize != 0)
 					Vram[Gen_CHR_Address(addr) & vram_mask] = value;
 			}
 			else base.WritePpu(addr, value);
@@ -395,7 +395,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER116_HACKY":
 					break;
@@ -417,13 +417,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "NES-SIEPROM":
 					// there's no way to define PRG oversize for mapper001 due to how the MMC1 regs work
 					// so 512KB must mean SUROM or SXROM.  SUROM is more common, so we try that
-					if (Cart.prg_size > 256)
+					if (Cart.PrgSize > 256)
 						return false;
 					break;
 				case "MAPPER171": // Tui Do Woo Ma Jeung
-					AssertPrg(32); AssertChr(32); Cart.wram_size = 0;
+					AssertPrg(32); AssertChr(32); Cart.WramSize = 0;
 					disablemirror = true;
-					SetMirrorType(Cart.pad_h, Cart.pad_v);
+					SetMirrorType(Cart.PadH, Cart.PadV);
 					break;
 				case "NES-SAROM": //dragon warrior
 					AssertPrg(64); AssertChr(16, 32, 64); AssertVram(0); AssertWram(8); 
@@ -521,12 +521,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		protected void BaseConfigure()
 		{
 			mmc1 = new MMC1();
-			prg_mask = (Cart.prg_size / 16) - 1;
-			vram_mask = (Cart.vram_size*1024) - 1;
-			chr_mask = (Cart.chr_size / 8 * 2) - 1;
+			prg_mask = (Cart.PrgSize / 16) - 1;
+			vram_mask = (Cart.VramSize*1024) - 1;
+			chr_mask = (Cart.ChrSize / 8 * 2) - 1;
 			//Chip n Dale (PC10) has a nonstandard chr size, which makes the mask nonsense
 			// let's put in a special case to deal with it
-			if (Cart.chr_size==136)
+			if (Cart.ChrSize==136)
 			{
 				chr_mask = (128 / 8 * 2) - 1;
 			}
@@ -544,7 +544,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//TODO - only the latter 8KB is supposed to be battery backed
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "NES-SOROM": //Nobunaga's Ambition
 				case "HVC-SOROM": // KHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN
@@ -586,7 +586,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//it also has some WRAM select bits like SoROM
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "HVC-SXROM": //final fantasy 1& 2
 					AssertPrg(128, 256, 512); AssertChr(0); AssertVram(8); AssertWram(32);
@@ -626,16 +626,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			//SUROM uses CHR A16 to control the upper address line (PRG A18) of its 512KB PRG ROM.
 
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER001":
 					// we try to heuristic match to iNES 001 roms with big PRG only
-					if (Cart.prg_size <= 256)
+					if (Cart.PrgSize <= 256)
 						return false;
 					AssertPrg(512); AssertChr(0);
-					Cart.vram_size = 8;
-					Cart.wram_size = 8;
-					Cart.wram_battery = true; // all SUROM boards had batteries
+					Cart.VramSize = 8;
+					Cart.WramSize = 8;
+					Cart.WramBattery = true; // all SUROM boards had batteries
 					Console.WriteLine("Guessing SUROM for 512KiB PRG ROM");
 					break;
 				case "NES-SUROM": //dragon warrior 4

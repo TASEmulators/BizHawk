@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "NAMCOT-3453":
 				case "MAPPER154":
@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			BaseSetup();
 			SetMirrorType(EMirrorType.OneScreenA);
 
-			chr_bank_mask_1k = Cart.chr_size - 1;
+			chr_bank_mask_1k = Cart.ChrSize - 1;
 
 			return true;
 		}

@@ -155,7 +155,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private int _wramMask;
 		public virtual void PostConfigure()
 		{
-			_wramMask = (Cart.wram_size * 1024) - 1;
+			_wramMask = (Cart.WramSize * 1024) - 1;
 		}
 
 		public virtual byte ReadWram(int addr)
@@ -245,7 +245,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return ret;
 		}
 
-		public virtual byte[] SaveRam => Cart.wram_battery ? Wram : null;
+		public virtual byte[] SaveRam => Cart.WramBattery ? Wram : null;
 
 		public byte[] Wram
 		{
@@ -272,10 +272,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (!test) throw new Exception("assertion failed in board setup!");
 		}
 
-		protected void AssertPrg(params int[] prg) => AssertMemType(Cart.prg_size, "prg", prg);
-		protected void AssertChr(params int[] chr) => AssertMemType(Cart.chr_size, "chr", chr);
-		protected void AssertWram(params int[] wram) => AssertMemType(Cart.wram_size, "wram", wram);
-		protected void AssertVram(params int[] vram) => AssertMemType(Cart.vram_size, "vram", vram);
+		protected void AssertPrg(params int[] prg) => AssertMemType(Cart.PrgSize, "prg", prg);
+		protected void AssertChr(params int[] chr) => AssertMemType(Cart.ChrSize, "chr", chr);
+		protected void AssertWram(params int[] wram) => AssertMemType(Cart.WramSize, "wram", wram);
+		protected void AssertVram(params int[] vram) => AssertMemType(Cart.VramSize, "vram", vram);
 
 		protected void AssertMemType(int value, string name, int[] valid)
 		{
@@ -285,7 +285,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Assert(false, "unhandled {0} size of {1}", name,value);
 		}
 
-		protected void AssertBattery(bool hasBattery) => Assert(Cart.wram_battery == hasBattery);
+		protected void AssertBattery(bool hasBattery) => Assert(Cart.WramBattery == hasBattery);
 
 		public virtual void ApplyCustomAudio(short[] samples)
 		{

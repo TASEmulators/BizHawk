@@ -9,7 +9,7 @@
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "Mapper029":
 				case "UNIF_JERKFACE":
@@ -21,9 +21,9 @@
 			SetMirrorType(EMirrorType.Vertical);
 			AssertChr(0);
 			AssertPrg(32, 64, 128, 256, 512, 1024);
-			Cart.wram_size = 8;
-			Cart.vram_size = 32;
-			prg_bank_mask_16k = Cart.prg_size / 16 - 1;
+			Cart.WramSize = 8;
+			Cart.VramSize = 32;
+			prg_bank_mask_16k = Cart.PrgSize / 16 - 1;
 			return true;
 		}
 

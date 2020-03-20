@@ -7,17 +7,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER197":
 					break;
 				default:
 					return false;
 			}
-			int num_prg_banks = Cart.prg_size / 8;
+			int num_prg_banks = Cart.PrgSize / 8;
 			prg_mask = num_prg_banks - 1;
 
-			int num_chr_banks = (Cart.chr_size);
+			int num_chr_banks = (Cart.ChrSize);
 			chr_mask = num_chr_banks - 1;
 
 			mmc3 = new Mapper197_MMC3(this, num_prg_banks);

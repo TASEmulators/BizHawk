@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER162":
 				case "UNIF_UNL-FS304":
@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_bank_mask_32k = Cart.prg_size / 32 - 1;
+			prg_bank_mask_32k = Cart.PrgSize / 32 - 1;
 
 			reg[0] = 3;
 			reg[3] = 7;

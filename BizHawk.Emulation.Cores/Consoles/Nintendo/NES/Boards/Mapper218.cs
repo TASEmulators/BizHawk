@@ -10,20 +10,20 @@
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER218":
 					// the cart actually has 0k vram, but due to massive abuse of the ines format, is labeled as 8k
 					// supposed vram is (correctly) not used in our implementation
 					AssertPrg(8, 16, 32); AssertChr(0); /*AssertVram(0);*/ AssertWram(0);
-					Cart.vram_size = 0; // force vram size 0
+					Cart.VramSize = 0; // force vram size 0
 					break;
 				default:
 					return false;
 			}
 
 			// due to massive abuse of the ines format, the mirroring and 4 screen bits have slightly different meanings
-			switch (Cart.inesmirroring)
+			switch (Cart.InesMirroring)
 			{
 				case 1: // VA10 to PA10
 					// pattern: ABABABAB
@@ -49,7 +49,7 @@
 					// we need an ines identification for correct mirroring
 					return false;
 			}
-			prg_byte_mask = (Cart.prg_size * 1024) - 1;
+			prg_byte_mask = (Cart.PrgSize * 1024) - 1;
 			return true;
 		}
 

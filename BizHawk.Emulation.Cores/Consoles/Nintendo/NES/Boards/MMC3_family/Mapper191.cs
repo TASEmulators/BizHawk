@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER191":
 					break;
@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			//this board has 2k of chr ram
-			Cart.vram_size = 2;
+			Cart.VramSize = 2;
 			BaseSetup();
 
 			//theres a possibly bogus Q Boy rom using this mapper but I have no idea what emulator its supposed to boot in, for proof

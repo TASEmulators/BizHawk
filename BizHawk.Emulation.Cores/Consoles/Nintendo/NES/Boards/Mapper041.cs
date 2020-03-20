@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER041":
 				case "MLT-CALTRON6IN1":
@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			AssertPrg(256);
 			AssertChr(128);
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			SetMirrorType(Cart.PadH, Cart.PadV);
 			return true;
 		}
 

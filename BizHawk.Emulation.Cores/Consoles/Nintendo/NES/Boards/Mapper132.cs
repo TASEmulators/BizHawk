@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER132":
 				case "UNIF_UNL-22211":
@@ -32,9 +32,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_mask = Cart.prg_size / 32 - 1;
-			chr_mask = Cart.chr_size / 8 - 1;
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			prg_mask = Cart.PrgSize / 32 - 1;
+			chr_mask = Cart.ChrSize / 8 - 1;
+			SetMirrorType(Cart.PadH, Cart.PadV);
 			//SetMirrorType(EMirrorType.Vertical);
 			return true;
 		}
@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override byte ReadPrg(int addr)
 		{
 			// Xiao Ma Li (Ch) has 16k prg (mapped to both 0x8000 and 0xC000)
-			if (Cart.prg_size == 16)
+			if (Cart.PrgSize == 16)
 			{
 				return Rom[addr & 0x3FFF];
 			}

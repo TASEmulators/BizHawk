@@ -8,7 +8,7 @@
 	{
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER143":
 				case "UNIF_UNL-SA-NROM":
@@ -18,7 +18,7 @@
 			}
 			AssertPrg(32);
 			AssertChr(8);
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			SetMirrorType(Cart.PadH, Cart.PadV);
 			return true;
 		}
 

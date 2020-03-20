@@ -14,21 +14,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER184":
 					break;
 
 				case "SUNSOFT-1":
 					//this will catch fantasy zone, which isn't emulated the same as the other SUNSOFT-1 boards
-					if (Cart.pcb == "SUNSOFT-4")
+					if (Cart.Pcb == "SUNSOFT-4")
 						return false;
 					break;
 				default:
 					return false;
 			}
-			chr_mask = (Cart.chr_size / 4) - 1;
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			chr_mask = (Cart.ChrSize / 4) - 1;
+			SetMirrorType(Cart.PadH, Cart.PadV);
 			return true;
 		}
 

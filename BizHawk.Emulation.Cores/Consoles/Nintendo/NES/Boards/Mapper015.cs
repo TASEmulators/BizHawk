@@ -14,18 +14,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER015":
 					break;
 				default:
 					return false;
 			}
-			prg_bank_mask_8k = (Cart.prg_size / 8) - 1;
+			prg_bank_mask_8k = (Cart.PrgSize / 8) - 1;
 
 			// not a maskable size (BF=10111111)
 			// so just set mask to FF and hope for the best
-			if (Cart.prg_size==192)
+			if (Cart.PrgSize==192)
 			{
 				prg_bank_mask_8k = 0xFF;
 			}

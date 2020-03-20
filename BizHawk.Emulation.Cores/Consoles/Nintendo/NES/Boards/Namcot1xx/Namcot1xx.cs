@@ -205,7 +205,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (!NES._isVS)
 				return base.ReadExp(addr);
 
-			if (Cart.vs_security == 16)
+			if (Cart.VsSecurity == 16)
 			{
 				addr += 0x4000;
 				if (addr == 0x54FF)
@@ -236,7 +236,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				else
 					return base.ReadExp(addr - 0x4000);
 			}
-			else if (Cart.vs_security==32)
+			else if (Cart.VsSecurity==32)
 			{
 				if (addr==0x1E00)
 				{
@@ -250,7 +250,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 				return NES.DB;
 			}
-			else if (Cart.vs_security == 48)
+			else if (Cart.VsSecurity == 48)
 			{
 				if (addr == 0x1E00)
 				{
@@ -280,10 +280,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		protected virtual void BaseSetup()
 		{
-			int num_prg_banks = Cart.prg_size / 8;
+			int num_prg_banks = Cart.PrgSize / 8;
 			prg_mask = num_prg_banks - 1;
 
-			int num_chr_banks = (Cart.chr_size);
+			int num_chr_banks = (Cart.ChrSize);
 			chr_byte_mask = (num_chr_banks*1024) - 1;
 
 			mapper = new Namcot108Chip(this);

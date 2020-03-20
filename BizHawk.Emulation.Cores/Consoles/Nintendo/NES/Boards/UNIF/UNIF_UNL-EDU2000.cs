@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "UNIF_UNL-EDU2000":
 					break;
@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			_prgMask32 = Cart.prg_size / 32 - 1;
+			_prgMask32 = Cart.PrgSize / 32 - 1;
 
 			return true;
 		}

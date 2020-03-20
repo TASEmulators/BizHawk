@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER225":
 				case "MAPPER255": // Duplicate of 225 accoring to: http://problemkaputt.de/everynes.htm
@@ -22,9 +22,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				default:
 					return false;
 			}
-			chr_bank_mask_8k = Cart.chr_size / 8 - 1;
-			prg_bank_mask_16k = Cart.prg_size / 16 - 1;
-			prg_bank_mask_32k = Cart.prg_size / 32 - 1;
+			chr_bank_mask_8k = Cart.ChrSize / 8 - 1;
+			prg_bank_mask_16k = Cart.PrgSize / 16 - 1;
+			prg_bank_mask_32k = Cart.PrgSize / 32 - 1;
 
 			SetMirrorType(EMirrorType.Vertical);
 

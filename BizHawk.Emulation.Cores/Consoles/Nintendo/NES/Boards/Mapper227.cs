@@ -15,16 +15,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER227":
 					//AssertVram(16);
-					Cart.vram_size = 16;
+					Cart.VramSize = 16;
 					break;
 				default:
 					return false;
 			}
-			_prgBankMask16K = (Cart.prg_size / 16) - 1;
+			_prgBankMask16K = (Cart.PrgSize / 16) - 1;
 
 			SetMirrorType(EMirrorType.Vertical);
 			_vramProtected = false;

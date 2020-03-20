@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "CAMERICA-GAMEGENIE":
 					break;
@@ -41,8 +41,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 			AssertChr(0); AssertPrg(4);
-			Cart.wram_size = 0;
-			Cart.vram_size = 0;
+			Cart.WramSize = 0;
+			Cart.VramSize = 0;
 
 			SetMirroring(0, 0, 0, 0);
 

@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER028":
 					break;
@@ -31,10 +31,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			AssertPrg(32, 64, 128, 256, 512, 1024, 2048);
 			AssertChr(0);
-			chr_mask_8k = Cart.chr_size / 8 - 1;
-			prg_mask_16k = Cart.prg_size / 16 - 1;
-			Cart.wram_size = 0;
-			Cart.vram_size = 32;
+			chr_mask_8k = Cart.ChrSize / 8 - 1;
+			prg_mask_16k = Cart.PrgSize / 16 - 1;
+			Cart.WramSize = 0;
+			Cart.VramSize = 32;
 			// the only part of initial state that is important is that
 			// C000:FFFF contains the tail end of the rom
 			outer = 63;

@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER096":
 				case "BANDAI-74*161/02/74":
@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 			chr_block = 0;
-			prg_bank_mask_32k = Cart.prg_size / 32 - 1;
+			prg_bank_mask_32k = Cart.PrgSize / 32 - 1;
 			return true;
 		}
 

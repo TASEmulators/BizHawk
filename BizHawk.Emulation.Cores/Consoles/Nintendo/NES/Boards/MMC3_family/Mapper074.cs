@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER074":
 					break;
@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			Vram = new byte[2048];
 
-			if (Cart.chr_size == 0 && Cart.board_type == "MAPPER074") 
+			if (Cart.ChrSize == 0 && Cart.BoardType == "MAPPER074") 
 				throw new Exception("Mapper074 carts MUST have chr rom!");
 			BaseSetup();
 			return true;

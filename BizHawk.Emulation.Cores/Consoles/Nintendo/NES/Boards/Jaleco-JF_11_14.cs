@@ -28,7 +28,7 @@ Other chips used: Sunsoft-1
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER140":
 					break;
@@ -39,7 +39,7 @@ Other chips used: Sunsoft-1
 				default:
 					return false;
 			}
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			SetMirrorType(Cart.PadH, Cart.PadV);
 			return true;
 		}
 

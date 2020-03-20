@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			int prg_mask_hack = 1;
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER226":
 					break;
@@ -32,8 +32,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_page = 0;
 			prg_mode = false;
 
-			prg_mask_32k = (Cart.prg_size / prg_mask_hack) / 32 - 1;
-			prg_mask_16k = (Cart.prg_size / prg_mask_hack) / 16 - 1;
+			prg_mask_32k = (Cart.PrgSize / prg_mask_hack) / 32 - 1;
+			prg_mask_16k = (Cart.PrgSize / prg_mask_hack) / 16 - 1;
 
 			return true;
 		}

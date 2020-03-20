@@ -167,54 +167,54 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			//try generating a bootgod cart descriptor from the game database
 			var dict = gi.GetOptionsDict();
-			cart.DB_GameInfo = gi;
+			cart.GameInfo = gi;
 			if (!dict.ContainsKey("board"))
 				throw new Exception("NES gamedb entries must have a board identifier!");
-			cart.board_type = dict["board"];
+			cart.BoardType = dict["board"];
 			if (dict.ContainsKey("system"))
-				cart.system = dict["system"];
-			cart.prg_size = -1;
-			cart.vram_size = -1;
-			cart.wram_size = -1;
-			cart.chr_size = -1;
+				cart.System = dict["system"];
+			cart.PrgSize = -1;
+			cart.VramSize = -1;
+			cart.WramSize = -1;
+			cart.ChrSize = -1;
 			if (dict.ContainsKey("PRG"))
-				cart.prg_size = short.Parse(dict["PRG"]);
+				cart.PrgSize = short.Parse(dict["PRG"]);
 			if (dict.ContainsKey("CHR"))
-				cart.chr_size = short.Parse(dict["CHR"]);
+				cart.ChrSize = short.Parse(dict["CHR"]);
 			if(dict.ContainsKey("VRAM"))
-				cart.vram_size = short.Parse(dict["VRAM"]);
+				cart.VramSize = short.Parse(dict["VRAM"]);
 			if (dict.ContainsKey("WRAM"))
-				cart.wram_size = short.Parse(dict["WRAM"]);
+				cart.WramSize = short.Parse(dict["WRAM"]);
 			if (dict.ContainsKey("PAD_H"))
-				cart.pad_h = byte.Parse(dict["PAD_H"]);
+				cart.PadH = byte.Parse(dict["PAD_H"]);
 			if (dict.ContainsKey("PAD_V"))
-				cart.pad_v = byte.Parse(dict["PAD_V"]);
+				cart.PadV = byte.Parse(dict["PAD_V"]);
 			if(dict.ContainsKey("MIR"))
 				if (dict["MIR"] == "H")
 				{
-					cart.pad_v = 1; cart.pad_h = 0;
+					cart.PadV = 1; cart.PadH = 0;
 				}
 				else if (dict["MIR"] == "V")
 				{
-					cart.pad_h = 1; cart.pad_v = 0;
+					cart.PadH = 1; cart.PadV = 0;
 				}
 			if (dict.ContainsKey("BAD"))
-				cart.bad = true;
+				cart.Bad = true;
 			if (dict.ContainsKey("MMC3"))
-				cart.chips.Add(dict["MMC3"]);
+				cart.Chips.Add(dict["MMC3"]);
 			if (dict.ContainsKey("PCB"))
-				cart.pcb = dict["PCB"];
+				cart.Pcb = dict["PCB"];
 			if (dict.ContainsKey("BATT"))
-				cart.wram_battery = bool.Parse(dict["BATT"]);
+				cart.WramBattery = bool.Parse(dict["BATT"]);
 
 			if(dict.ContainsKey("palette"))
 			{
-				cart.palette = dict["palette"];
+				cart.Palette = dict["palette"];
 			}
 
 			if (dict.ContainsKey("vs_security"))
 			{
-				cart.vs_security = byte.Parse(dict["vs_security"]);
+				cart.VsSecurity = byte.Parse(dict["vs_security"]);
 			}
 
 			return cart;
@@ -281,8 +281,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						case 2:
 							if (xmlreader.NodeType == XmlNodeType.Element && xmlreader.Name == "board")
 							{
-								currCart.board_type = xmlreader.GetAttribute("type");
-								currCart.pcb = xmlreader.GetAttribute("pcb");
+								currCart.BoardType = xmlreader.GetAttribute("type");
+								currCart.Pcb = xmlreader.GetAttribute("pcb");
 								int mapper = int.Parse(xmlreader.GetAttribute("mapper"));
 								if (validate && mapper > 255) throw new Exception("didnt expect mapper>255!");
 								// we don't actually use this value at all; only the board name
@@ -295,25 +295,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 								switch(xmlreader.Name)
 								{
 									case "prg":
-										currCart.prg_size += (short)ParseSize(xmlreader.GetAttribute("size"));
+										currCart.PrgSize += (short)ParseSize(xmlreader.GetAttribute("size"));
 										break;
 									case "chr":
-										currCart.chr_size += (short)ParseSize(xmlreader.GetAttribute("size"));
+										currCart.ChrSize += (short)ParseSize(xmlreader.GetAttribute("size"));
 										break;
 									case "vram":
-										currCart.vram_size += (short)ParseSize(xmlreader.GetAttribute("size"));
+										currCart.VramSize += (short)ParseSize(xmlreader.GetAttribute("size"));
 										break;
 									case "wram":
-										currCart.wram_size += (short)ParseSize(xmlreader.GetAttribute("size"));
+										currCart.WramSize += (short)ParseSize(xmlreader.GetAttribute("size"));
 										if (xmlreader.GetAttribute("battery") != null)
-											currCart.wram_battery = true;
+											currCart.WramBattery = true;
 										break;
 									case "pad":
-										currCart.pad_h = byte.Parse(xmlreader.GetAttribute("h"));
-										currCart.pad_v = byte.Parse(xmlreader.GetAttribute("v"));
+										currCart.PadH = byte.Parse(xmlreader.GetAttribute("h"));
+										currCart.PadV = byte.Parse(xmlreader.GetAttribute("v"));
 										break;
 									case "chip":
-										currCart.chips.Add(xmlreader.GetAttribute("type"));
+										currCart.Chips.Add(xmlreader.GetAttribute("type"));
 										break;
 								}
 							} else 
@@ -325,7 +325,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						case 4:
 							if (xmlreader.NodeType == XmlNodeType.EndElement && xmlreader.Name == "cartridge")
 							{
-								sha1_table[currCart.sha1].Add(currCart);
+								sha1_table[currCart.Sha1].Add(currCart);
 								currCart = null;
 								state = 5;
 							}
@@ -335,9 +335,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							if (xmlreader.NodeType == XmlNodeType.Element && xmlreader.Name == "cartridge")
 							{
 								currCart = new CartInfo();
-								currCart.system = xmlreader.GetAttribute("system");
-								currCart.sha1 = "sha1:" + xmlreader.GetAttribute("sha1");
-								currCart.name = currName;
+								currCart.System = xmlreader.GetAttribute("system");
+								currCart.Sha1 = "sha1:" + xmlreader.GetAttribute("sha1");
+								currCart.Name = currName;
 								state = 2;
 							}
 							if (xmlreader.NodeType == XmlNodeType.EndElement && xmlreader.Name == "game")

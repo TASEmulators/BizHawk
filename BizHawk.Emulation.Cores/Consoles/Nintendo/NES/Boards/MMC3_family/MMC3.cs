@@ -64,10 +64,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			MirrorMask = 1;
 			this.board = board;
-			if (board.Cart.chips.Contains("MMC3A")) MMC3Type = EMMC3Type.MMC3A;
-			else if (board.Cart.chips.Contains("MMC3B")) MMC3Type = EMMC3Type.MMC3BSharp;
-			else if (board.Cart.chips.Contains("MMC3BNONSHARP")) MMC3Type = EMMC3Type.MMC3BNonSharp;
-			else if (board.Cart.chips.Contains("MMC3C")) MMC3Type = EMMC3Type.MMC3C;
+			if (board.Cart.Chips.Contains("MMC3A")) MMC3Type = EMMC3Type.MMC3A;
+			else if (board.Cart.Chips.Contains("MMC3B")) MMC3Type = EMMC3Type.MMC3BSharp;
+			else if (board.Cart.Chips.Contains("MMC3BNONSHARP")) MMC3Type = EMMC3Type.MMC3BNonSharp;
+			else if (board.Cart.Chips.Contains("MMC3C")) MMC3Type = EMMC3Type.MMC3C;
 			else MMC3Type = EMMC3Type.MMC3C; //arbitrary choice. is it the best choice?
 
 			//initial values seem necessary
@@ -388,10 +388,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		protected virtual void BaseSetup()
 		{
-			int num_prg_banks = Cart.prg_size / 8;
+			int num_prg_banks = Cart.PrgSize / 8;
 			prg_mask = num_prg_banks - 1;
 
-			int num_chr_banks = (Cart.chr_size);
+			int num_chr_banks = (Cart.ChrSize);
 			if (num_chr_banks == 0) // vram only board
 				num_chr_banks = 8;
 			chr_mask = num_chr_banks - 1;

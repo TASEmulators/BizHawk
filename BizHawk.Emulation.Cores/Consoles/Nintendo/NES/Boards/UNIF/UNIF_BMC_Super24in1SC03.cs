@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private readonly int[] masko8 = { 63, 31, 15, 1, 3, 0, 0, 0 };
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "UNIF_BMC-Super24in1SC03":
 					break;

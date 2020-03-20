@@ -92,10 +92,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER005":
-					Cart.wram_size = 64;
+					Cart.WramSize = 64;
 					break;
 				case "NES-ELROM": //Castlevania 3 - Dracula's Curse (U)
 				case "HVC-ELROM":
@@ -116,12 +116,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
+			prg_bank_mask_8k = Cart.PrgSize / 8 - 1;
 
-			if (Cart.chr_size > 0)
-				chr_bank_mask_1k = Cart.chr_size - 1;
+			if (Cart.ChrSize > 0)
+				chr_bank_mask_1k = Cart.ChrSize - 1;
 			else
-				chr_bank_mask_1k = Cart.vram_size - 1;
+				chr_bank_mask_1k = Cart.VramSize - 1;
 
 			PoweronState();
 
@@ -169,7 +169,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int? MaskWRAM(int bank)
 		{
 			bank &= 7;
-			switch (Cart.wram_size)
+			switch (Cart.WramSize)
 			{
 				case 0:
 					return null;

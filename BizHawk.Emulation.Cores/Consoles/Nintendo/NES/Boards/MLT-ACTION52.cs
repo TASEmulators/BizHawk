@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER228":
 				case "MLT-ACTION52":
@@ -29,11 +29,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			AssertPrg(256, 1536);
 
-			chr_bank_mask_8k = Cart.chr_size / 8 - 1;
-			prg_bank_mask_16k = Cart.prg_size / 16 - 1;
-			prg_bank_mask_32k = Cart.prg_size / 32 - 1;
+			chr_bank_mask_8k = Cart.ChrSize / 8 - 1;
+			prg_bank_mask_16k = Cart.PrgSize / 16 - 1;
+			prg_bank_mask_32k = Cart.PrgSize / 32 - 1;
 
-			if (Cart.prg_size == 256)
+			if (Cart.PrgSize == 256)
 			{
 				cheetahmen = true;
 			}

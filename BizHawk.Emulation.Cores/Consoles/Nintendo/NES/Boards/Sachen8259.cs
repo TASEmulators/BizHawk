@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				// quite a few crappy games on these boards, shouldn't be hard to find examples?
 				case "MAPPER141":
@@ -44,16 +44,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				default:
 					return false;
 			}
-			Cart.wram_size = 0; // cart responds to regs in 6000:7fff
+			Cart.WramSize = 0; // cart responds to regs in 6000:7fff
 
 			//zero 13-dec-2014 - Q-boy is example of game with vram, apparently.
 			//lets only clear vram if theres a chr rom
-			if(Cart.chr_size != 0)
-				Cart.vram_size = 0;
+			if(Cart.ChrSize != 0)
+				Cart.VramSize = 0;
 
 			shiftmask = (1 << shiftout) - 1;
-			prg_bank_mask_32k = Cart.prg_size / 32 - 1;
-			chr_bank_mask_2k = Cart.chr_size / 2 - 1;
+			prg_bank_mask_32k = Cart.PrgSize / 32 - 1;
+			chr_bank_mask_2k = Cart.ChrSize / 2 - 1;
 
 			SetMirrorType(EMirrorType.Vertical);
 
@@ -186,7 +186,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				// only game i'm aware of is "The Great Wall"
 				case "MAPPER137":
@@ -196,10 +196,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				default:
 					return false;
 			}
-			Cart.wram_size = 0; // cart responds to regs in 6000:7fff
-			Cart.vram_size = 0;
-			prg_bank_mask_32k = Cart.prg_size / 32 - 1;
-			chr_bank_mask_1k = Cart.chr_size / 1 - 1;
+			Cart.WramSize = 0; // cart responds to regs in 6000:7fff
+			Cart.VramSize = 0;
+			prg_bank_mask_32k = Cart.PrgSize / 32 - 1;
+			chr_bank_mask_1k = Cart.ChrSize / 1 - 1;
 
 			// last 4k of chr is fixed
 			chr[4] = 0x1c;

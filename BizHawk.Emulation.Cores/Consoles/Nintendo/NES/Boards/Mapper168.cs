@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER168":
 				case "UNL-RACERMATE":
@@ -25,11 +25,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 			AssertPrg(64);
-			Cart.chr_size = 0; //AssertChr(0); //shitty dumps
-			Cart.vram_size = 64; //AssertVram(64); //shitty dumps
-			Cart.wram_size = 0; //AssertWram(0); // shitty dumps
+			Cart.ChrSize = 0; //AssertChr(0); //shitty dumps
+			Cart.VramSize = 64; //AssertVram(64); //shitty dumps
+			Cart.WramSize = 0; //AssertWram(0); // shitty dumps
 			//AssertBattery(true); // battery is handled directly
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			SetMirrorType(Cart.PadH, Cart.PadV);
 			return true;
 		}
 

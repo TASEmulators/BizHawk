@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER045":
 				case "UNIF_BMC-SuperHIK8in1":
@@ -24,8 +24,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			chr_bank_mask_2k = Cart.chr_size / 2 - 1;
-			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
+			chr_bank_mask_2k = Cart.ChrSize / 2 - 1;
+			prg_bank_mask_8k = Cart.PrgSize / 8 - 1;
 			BaseSetup();
 			return true;
 		}

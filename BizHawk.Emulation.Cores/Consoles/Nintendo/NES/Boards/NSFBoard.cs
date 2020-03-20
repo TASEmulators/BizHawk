@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			Cart.wram_size = 8;
+			Cart.WramSize = 8;
 
 			return true;
 		}

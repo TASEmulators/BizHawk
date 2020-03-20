@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER080":
 					break;
@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					tlsrewire = true;
 					break;
 				case "TAITO-X1-005":
-					if (Cart.pcb == "アシユラー")
+					if (Cart.Pcb == "アシユラー")
 						tlsrewire = true;
 					break;
 				default:
@@ -76,11 +76,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			SetMirrorType(EMirrorType.Vertical);
-			chr_bank_mask = Cart.chr_size / 1 - 1;
-			prg_bank_mask = Cart.prg_size / 8 - 1;
+			chr_bank_mask = Cart.ChrSize / 1 - 1;
+			prg_bank_mask = Cart.PrgSize / 8 - 1;
 			
 			// the chip has 128 bytes of WRAM built into it, which we have to instantiate ourselves
-			Cart.wram_size = 0;
+			Cart.WramSize = 0;
 
 			prg_regs_8k[3] = 0xFF;
 			return true;

@@ -38,12 +38,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "NAMCOT-175":
 					//wagyan land 2
 					//splatter house
-					SetMirrorType(Cart.pad_h, Cart.pad_v);
+					SetMirrorType(Cart.PadH, Cart.PadV);
 					break;
 				case "NAMCOT-340":
 					//family circuit '91
@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					// not sure what to do here because the popular public collection
 					// has nothing in mapper 210 except some mortal kombat pirate cart
 					enablemirror = true;
-					SetMirrorType(Cart.pad_h, Cart.pad_v);
+					SetMirrorType(Cart.PadH, Cart.PadV);
 					break;
 				default:
 					return false;
@@ -64,8 +64,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			AssertChr(64, 128, 256);
 			AssertVram(0);
 
-			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
-			chr_bank_mask_1k = Cart.chr_size / 1 - 1;
+			prg_bank_mask_8k = Cart.PrgSize / 8 - 1;
+			chr_bank_mask_1k = Cart.ChrSize / 1 - 1;
 			prg[3] = prg_bank_mask_8k;
 			return true;
 		}

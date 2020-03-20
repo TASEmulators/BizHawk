@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				// http://wiki.nesdev.com/w/index.php/INES_Mapper_176
 				// Mapper 176 was originally used for some Waixing boards, but goodNES 3.23 seems to go with CaH4e3's opinion that this mapper is FK23C
@@ -27,8 +27,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				default:
 					return false;
 			}
-			prg_bank_mask_8k = (Cart.prg_size / 8) - 1;
-			chr_bank_mask_8k = (Cart.chr_size / 8) - 1;
+			prg_bank_mask_8k = (Cart.PrgSize / 8) - 1;
+			chr_bank_mask_8k = (Cart.ChrSize / 8) - 1;
 
 			mirror = 0;
 			SyncMirror();

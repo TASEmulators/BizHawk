@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "UNIF_UNL-LH10":
 					//NES._isVS = true;
@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_bank_mask_8 = Cart.prg_size / 8 - 1;
+			prg_bank_mask_8 = Cart.PrgSize / 8 - 1;
 
 			//SetMirrorType(Cart.pad_h, Cart.pad_v);
 			SetMirrorType(EMirrorType.Vertical);

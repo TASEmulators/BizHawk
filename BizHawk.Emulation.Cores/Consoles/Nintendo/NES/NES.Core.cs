@@ -245,24 +245,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// Let's hard code those cases here
 			// these will be defined through the gameDB exclusively for now.
 
-			if (cart.DB_GameInfo!=null)
+			if (cart.GameInfo!=null)
 			{
 				
-				if (cart.DB_GameInfo.Hash == "60FC5FA5B5ACCAF3AEFEBA73FC8BFFD3C4DAE558" // Camerica Golden 5
-					|| cart.DB_GameInfo.Hash == "BAD382331C30B22A908DA4BFF2759C25113CC26A" // Camerica Golden 5
-					|| cart.DB_GameInfo.Hash == "40409FEC8249EFDB772E6FFB2DCD41860C6CCA23" // Camerica Pegasus 4-in-1
+				if (cart.GameInfo.Hash == "60FC5FA5B5ACCAF3AEFEBA73FC8BFFD3C4DAE558" // Camerica Golden 5
+					|| cart.GameInfo.Hash == "BAD382331C30B22A908DA4BFF2759C25113CC26A" // Camerica Golden 5
+					|| cart.GameInfo.Hash == "40409FEC8249EFDB772E6FFB2DCD41860C6CCA23" // Camerica Pegasus 4-in-1
 					)
 				{
 					ram[0x701] = 0xFF;
 				}
 				
-				if (cart.DB_GameInfo.Hash == "68ABE1E49C9E9CCEA978A48232432C252E5912C0") // Dancing Blocks
+				if (cart.GameInfo.Hash == "68ABE1E49C9E9CCEA978A48232432C252E5912C0") // Dancing Blocks
 				{
 					ram[0xEC] = 0;
 					ram[0xED] = 0;
 				}
 
-				if (cart.DB_GameInfo.Hash == "00C50062A2DECE99580063777590F26A253AAB6B") // Silva Saga
+				if (cart.GameInfo.Hash == "00C50062A2DECE99580063777590F26A253AAB6B") // Silva Saga
 				{
 					for (int i = 0; i < Board.Wram.Length; i++)
 					{
@@ -995,7 +995,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// the palette for each VS game needs to be chosen explicitly since there are 6 different ones.
 		public void PickVSPalette(CartInfo cart)
 		{
-			switch (cart.palette)
+			switch (cart.Palette)
 			{
 				case "2C05": SetPalette(Palettes.palette_2c03_2c05); ppu.CurrentLuma = PPU.PaletteLuma2C03; break;
 				case "2C04-1": SetPalette(Palettes.palette_2c04_001); ppu.CurrentLuma = PPU.PaletteLuma2C04_1; break;
@@ -1007,7 +1007,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//since this will run for every VS game, let's get security setting too
 			//values below 16 are for the 2c05 PPU
 			//values 16,32,48 are for Namco games and dealt with in mapper 206
-			_isVS2c05 = (byte)(cart.vs_security & 15);
+			_isVS2c05 = (byte)(cart.VsSecurity & 15);
 		}
 
 	}

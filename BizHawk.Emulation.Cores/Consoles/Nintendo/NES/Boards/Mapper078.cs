@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			holydiver = false;
 
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER078":
 					break;
@@ -28,8 +28,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
-			prg_bank_mask_16k = (Cart.prg_size / 16) - 1;
+			SetMirrorType(Cart.PadH, Cart.PadV);
+			prg_bank_mask_16k = (Cart.PrgSize / 16) - 1;
 			prg_banks_16k[1] = 0xFF;
 			return true;
 		}

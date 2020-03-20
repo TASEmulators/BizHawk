@@ -80,7 +80,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER085":
 					// as in some VRC2/VRC4 cases, this is actually a "composite" mapping that catches
@@ -90,7 +90,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				case "KONAMI-VRC-7":
 					AssertPrg(128, 512); AssertChr(0, 128); AssertVram(0, 8); AssertWram(0, 8);
-					if (Cart.pcb == "353429")
+					if (Cart.Pcb == "353429")
 					{
 						//tiny toons 2
 						// for consistency, we map the addr line used for the FM chip even though
@@ -98,7 +98,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						remap = (addr) => (addr & 0xF000) | ((addr & 0x8) >> 3) | (addr & 0x20) >> 4;
 						fm = null;
 					}
-					else if (Cart.pcb == "352402")
+					else if (Cart.Pcb == "352402")
 					{
 						//lagrange point
 						remap = addr => ((addr & 0xF000) | ((addr & 0x30) >> 4));
@@ -110,8 +110,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "MAPPER117":
 					// not sure quite what this is
 					// different address mapping, and somewhat different irq logic
-					Cart.vram_size = 0;
-					Cart.wram_size = 0;
+					Cart.VramSize = 0;
+					Cart.WramSize = 0;
 					remap = RemapM117;
 					fm = null;
 					break;
@@ -119,7 +119,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
+			prg_bank_mask_8k = Cart.PrgSize / 8 - 1;
 			chr_bank_mask_1k = 0xff; // Cart.chr_size - 1;
 
 			SetMirrorType(EMirrorType.Vertical);
@@ -151,7 +151,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (addr < 0x2000)
 			{
 				addr = Map_PPU(addr);
-				if (Cart.vram_size != 0)
+				if (Cart.VramSize != 0)
 					return base.ReadPpu(addr);
 
 				return Vrom[addr];

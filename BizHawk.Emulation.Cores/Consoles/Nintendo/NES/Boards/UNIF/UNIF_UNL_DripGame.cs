@@ -78,22 +78,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "UNIF_UNL-DRIPGAME":
 					break;
 				default:
 					return false;
 			}
-			Cart.wram_size = 8;
-			Cart.wram_battery = false;
+			Cart.WramSize = 8;
+			Cart.WramBattery = false;
 			AssertPrg(16, 32, 64, 128, 256); // 4 bits x 16
 			AssertChr(8, 16, 32); // 4 bits x 2
 
 			AutoMapperProps.Apply(this);
 
-			prgmask = Cart.prg_size / 16 - 1;
-			chrmask = Cart.prg_size / 2 - 1;
+			prgmask = Cart.PrgSize / 16 - 1;
+			chrmask = Cart.PrgSize / 2 - 1;
 
 			prg[1] = prgmask;
 			SetMirror(0);

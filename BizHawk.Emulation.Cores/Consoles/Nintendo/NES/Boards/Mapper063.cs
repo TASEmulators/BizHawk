@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER063":
 					break;
@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			Cart.wram_size = 0;
+			Cart.WramSize = 0;
 			// not sure on initial mirroring
 			SetMirrorType(EMirrorType.Vertical);
 

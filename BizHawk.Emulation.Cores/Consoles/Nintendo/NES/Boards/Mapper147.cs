@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER147":
 				case "UNIF_UNL-TC-U01-1.5M":
@@ -23,10 +23,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			_chrBankMask_8k = Cart.chr_size / 8 - 1;
-			_prgBankMask_32k = Cart.prg_size / 32 - 1;
+			_chrBankMask_8k = Cart.ChrSize / 8 - 1;
+			_prgBankMask_32k = Cart.PrgSize / 32 - 1;
 
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			SetMirrorType(Cart.PadH, Cart.PadV);
 
 			return true;
 		}
