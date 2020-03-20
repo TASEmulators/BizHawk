@@ -9,13 +9,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private byte[] preg = new byte[2];
 		private byte[] creg = new byte[8];
 
-		private int prg_bank_mask_8k, chr_bank_mask_1k;
-		private int IRQLatch, IRQClock, IRQCount;
-		private bool IRQa;
+		private int _prgBankMask8K, _chrBankMask1K;
+		private int _irqLatch, _irqClock, _irqCount;
+		private bool _irqA;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
-			//analyze board type
 			switch (Cart.board_type)
 			{
 				case "MAPPER252":
@@ -23,12 +22,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				default:
 					return false;
 			}
+
 			AssertPrg(256);
 			AssertChr(128);
 			AssertVram(2);
 			AssertWram(8);
-			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
-			chr_bank_mask_1k = Cart.chr_size - 1;
+			_prgBankMask8K = Cart.prg_size / 8 - 1;
+			_chrBankMask1K = Cart.chr_size - 1;
 			SetMirrorType(EMirrorType.Vertical);
 			return true;
 		}
@@ -38,26 +38,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 			ser.Sync(nameof(preg), ref preg, false);
 			ser.Sync(nameof(creg), ref creg, false);
+			ser.Sync(nameof(_irqLatch), ref _irqLatch);
+			ser.Sync(nameof(_irqClock), ref _irqClock);
+			ser.Sync(nameof(_irqCount), ref _irqCount);
+			ser.Sync(nameof(_irqA), ref _irqA);
 		}
 
 		public override void ClockCpu()
 		{
-			if (IRQa)
+			if (_irqA)
 			{
-				IRQClock += 3;
-				if (IRQClock >= 341)
+				_irqClock += 3;
+				if (_irqClock >= 341)
 				{
-					IRQClock -= 341;
-					IRQCount++;
-					if (IRQCount==0x100)
+					_irqClock -= 341;
+					_irqCount++;
+					if (_irqCount==0x100)
 					{
 						IrqSignal=true;
-						IRQCount = IRQLatch;
+						_irqCount = _irqLatch;
 					}
 				}
 			}
 		}
-
 
 		public override void WritePrg(int addr, byte value)
 		{
@@ -90,9 +93,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						preg[1] = value;
 						break;
 
-					case 0xF000: IrqSignal = false; IRQLatch &= 0xF0; IRQLatch |= value & 0xF; break;
-					case 0xF004: IrqSignal = false; IRQLatch &= 0x0F; IRQLatch |= value << 4; break;
-					case 0xF008: IrqSignal = false; IRQClock = 0; IRQCount = IRQLatch; IRQa = value.Bit(1); break;
+					case 0xF000: IrqSignal = false; _irqLatch &= 0xF0; _irqLatch |= value & 0xF; break;
+					case 0xF004: IrqSignal = false; _irqLatch &= 0x0F; _irqLatch |= value << 4; break;
+					case 0xF008: IrqSignal = false; _irqClock = 0; _irqCount = _irqLatch; _irqA = value.Bit(1); break;
 
 				}
 			}
@@ -104,19 +107,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (addr < 0x2000)
 			{
-				bank = preg[0] & prg_bank_mask_8k;
+				bank = preg[0] & _prgBankMask8K;
 			}
 			else if (addr < 0x4000)
 			{
-				bank = preg[1] & prg_bank_mask_8k;
+				bank = preg[1] & _prgBankMask8K;
 			}
 			else if (addr < 0x6000)
 			{
-				bank = prg_bank_mask_8k - 1;
+				bank = _prgBankMask8K - 1;
 			}
 			else
 			{
-				bank = prg_bank_mask_8k;
+				bank = _prgBankMask8K;
 			}
 
 
@@ -137,7 +140,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 				else
 				{
-					bank = (creg[x] & chr_bank_mask_1k) << 10;
+					bank = (creg[x] & _chrBankMask1K) << 10;
 					return Vrom[bank + (addr & 0x3FF)];
 				}
 

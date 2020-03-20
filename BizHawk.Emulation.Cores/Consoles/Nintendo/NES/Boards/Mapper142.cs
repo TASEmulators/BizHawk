@@ -4,13 +4,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public sealed class Mapper142 : NesBoardBase
 	{
-		private byte[] reg = new byte[8];
-		private byte cmd;
-		private int lastBank;
+		private byte[] _reg = new byte[8];
+		private byte _cmd;
+		private int _lastBank;
 
-		private bool isirqused = false;
-		private byte IRQa = 0;
-		private int IRQCount = 0;
+		private bool _isIrqUsed;
+		private byte _irqA;
+		private int _irqCount;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -22,25 +22,37 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				default:
 					return false;
 			}
+
 			SetMirrorType(EMirrorType.Horizontal);
-			lastBank = Cart.prg_size / 8 - 1;
+			_lastBank = Cart.prg_size / 8 - 1;
 
 			return true;
 		}
 
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync(nameof(_reg), ref _reg, false);
+			ser.Sync(nameof(_cmd), ref _cmd);
+			ser.Sync(nameof(_lastBank), ref _lastBank);
+			ser.Sync(nameof(_isIrqUsed), ref _isIrqUsed);
+			ser.Sync(nameof(_irqA), ref _irqA);
+			ser.Sync(nameof(_irqCount), ref _irqCount);
+		}
+
 		public override byte ReadWram(int addr)
 		{
-			return Rom[(reg[4] << 13) + (addr & 0x1FFF)];
+			return Rom[(_reg[4] << 13) + (addr & 0x1FFF)];
 		}
 
 		public override byte ReadPrg(int addr)
 		{
 
-			if (addr < 0x2000) { return Rom[(reg[1] << 13) + (addr & 0x1FFF)]; }
-			if (addr < 0x4000) { return Rom[(reg[2] << 13) + (addr & 0x1FFF)]; }
-			if (addr < 0x6000) { return Rom[(reg[3] << 13) + (addr & 0x1FFF)]; }
+			if (addr < 0x2000) { return Rom[(_reg[1] << 13) + (addr & 0x1FFF)]; }
+			if (addr < 0x4000) { return Rom[(_reg[2] << 13) + (addr & 0x1FFF)]; }
+			if (addr < 0x6000) { return Rom[(_reg[3] << 13) + (addr & 0x1FFF)]; }
 
-			return Rom[(lastBank << 13) + (addr & 0x1FFF)];		
+			return Rom[(_lastBank << 13) + (addr & 0x1FFF)];
 		}
 
 		public override void WriteExp(int addr, byte value)
@@ -60,13 +72,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private void IRQHook(int a)
 		{
-			if (IRQa > 0)
+			if (_irqA > 0)
 			{
-				IRQCount += a;
-				if (IRQCount >= 0xFFFF)
+				_irqCount += a;
+				if (_irqCount >= 0xFFFF)
 				{
-					IRQa = 0;
-					IRQCount = 0;
+					_irqA = 0;
+					_irqCount = 0;
 
 					IrqSignal = true;
 				}
@@ -84,37 +96,37 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				case 0x8000:
 					IrqSignal = false;
-					IRQCount = (IRQCount & 0x000F) | (value & 0x0F);
-					isirqused = true;
+					_irqCount = (_irqCount & 0x000F) | (value & 0x0F);
+					_isIrqUsed = true;
 					break;
 				case 0x9000:
 					IrqSignal = false;
-					IRQCount = (IRQCount & 0x00F0) | ((value & 0x0F) << 4);
-					isirqused = true;
+					_irqCount = (_irqCount & 0x00F0) | ((value & 0x0F) << 4);
+					_isIrqUsed = true;
 					break;
 				case 0xA000:
 					IrqSignal = false;
-					IRQCount = (IRQCount & 0x0F00) | ((value & 0x0F) << 8);
-					isirqused = true;
+					_irqCount = (_irqCount & 0x0F00) | ((value & 0x0F) << 8);
+					_isIrqUsed = true;
 					break;
 				case 0xB000:
 					IrqSignal = false;
-					IRQCount = (IRQCount & 0xF000) | (value << 12);
-					isirqused = true;
+					_irqCount = (_irqCount & 0xF000) | (value << 12);
+					_isIrqUsed = true;
 					break;
 				case 0xC000:
-					if (isirqused)
+					if (_isIrqUsed)
 					{
 						IrqSignal = false;
-						IRQa = 1;
+						_irqA = 1;
 					}
 					break;
 
 				case 0xE000:
-					cmd = (byte)(value & 7);
+					_cmd = (byte)(value & 7);
 					break;
 				case 0xF000:
-					reg[cmd] = value;
+					_reg[_cmd] = value;
 					break;
 			}
 		}

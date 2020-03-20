@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	public class ConyA : NesBoardBase
 	{
 		private byte[] prg_regs = new byte[4];
-		private byte[] low = new byte[4]; // some kind of security feature?
+		private byte[] _low = new byte[4]; // some kind of security feature?
 		private byte[] chr_regs = new byte[8];
 
 		private int prg_bank_mask_16k, prg_bank_mask_8k, chr_bank_mask_2k;
@@ -51,6 +51,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(mode), ref mode);
 			ser.Sync(nameof(is_2k_bank), ref is_2k_bank);
 			ser.Sync(nameof(is_not_2k_bank), ref is_not_2k_bank);
+			ser.Sync(nameof(_low), ref _low, false);
 		}
 
 		public void Mirroring()
@@ -158,10 +159,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					bank = prg_bank_mask_8k;
 
 				return Rom[(bank << 13) + (addr & 0x1FFF)];
-
-
 			}
-
 		}
 
 		public override void ClockCpu()
@@ -181,7 +179,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void WriteExp(int addr, byte value)
 		{
 			if (addr >= 0x1100 && addr <= 0x1103)
-				low[addr & 0x3] = value;
+				_low[addr & 0x3] = value;
 			else
 				base.WriteExp(addr, value);
 		}
@@ -191,7 +189,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (addr == 0x1000)
 				return (byte)((NES.DB & 0xFC) | 0);
 			else if (addr >= 0x1100 && addr <= 0x1103)
-				return low[addr & 0x3];
+				return _low[addr & 0x3];
 			else
 				return base.ReadExp(addr);
 
@@ -201,7 +199,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	public class ConyB : NesBoardBase
 	{
 		private byte[] prg_regs = new byte[4];
-		private byte[] low = new byte[4]; // some kind of security feature?
+		private byte[] _low = new byte[4]; // some kind of security feature?
 		private byte[] chr_regs = new byte[8];
 
 		private int prg_bank_mask_16k, prg_bank_mask_8k, chr_bank_mask_2k;
@@ -242,6 +240,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(mode), ref mode);
 			ser.Sync(nameof(is_2k_bank), ref is_2k_bank);
 			ser.Sync(nameof(is_not_2k_bank), ref is_not_2k_bank);
+			ser.Sync(nameof(_low), ref _low, false);
 		}
 
 		public void Mirroring()
@@ -370,7 +369,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void WriteExp(int addr, byte value)
 		{
 			if (addr >= 0x1100 && addr <= 0x1103)
-				low[addr & 0x3] = value;
+				_low[addr & 0x3] = value;
 			else
 				base.WriteExp(addr, value);
 		}
@@ -380,7 +379,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (addr == 0x1000)
 				return (byte)((NES.DB & 0xFC) | 0);
 			else if (addr >= 0x1100 && addr <= 0x1103)
-				return low[addr & 0x3];
+				return _low[addr & 0x3];
 			else
 				return base.ReadExp(addr);
 
@@ -395,8 +394,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private byte[] chr_regs = new byte[8];
 
 		private int prg_bank_mask_16k;
-		private int IRQCount;
-		private bool IRQa, IRQ_enable;
+		private int _irqCount;
+		private bool _irqA, _irqEnable;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -427,6 +426,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 			ser.Sync(nameof(chr_regs), ref chr_regs, false);
 			ser.Sync(nameof(prg_regs), ref prg_regs, false);
+			ser.Sync(nameof(_irqCount), ref _irqCount);
+			ser.Sync(nameof(_irqA), ref _irqA);
+			ser.Sync(nameof(_irqEnable), ref _irqEnable);
 		}
 
 		public override void WritePrg(int addr, byte value)
@@ -443,19 +445,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			else if (addr == 0x200)
 			{
-				IRQCount &= 0xFF00; IRQCount |= value;
+				_irqCount &= 0xFF00; _irqCount |= value;
 				IrqSignal = false;
 			}
 
 			else if (addr == 0x201)
 			{
-				IRQCount &= 0xFF;
-				IRQCount |= value << 8;
-				IRQa = true;
+				_irqCount &= 0xFF;
+				_irqCount |= value << 8;
+				_irqA = true;
 			}
 			else if (addr == 0x0100)
 			{
-				IRQ_enable = value.Bit(7);
+				_irqEnable = value.Bit(7);
 			}
 		}
 
@@ -483,13 +485,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void ClockCpu()
 		{
-			if (IRQa)
+			if (_irqA)
 			{
-				IRQCount--;
-				if (IRQCount == 0)
+				_irqCount--;
+				if (_irqCount == 0)
 				{
-					IRQCount = 0xFFFF;
-					IrqSignal = IRQ_enable;
+					_irqCount = 0xFFFF;
+					IrqSignal = _irqEnable;
 				}
 			}
 		}

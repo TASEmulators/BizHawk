@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	public sealed class UNIF_BMC_FK23C : MMC3Board_Base
 	{
 		private byte[] exRegs = new byte[8];
-		private int[] chr_regs_1k = new int[8];
+		private int[] _chrRegs1K = new int[8];
 		public int[] prg_regs_8k = new int[4];
 
 		[MapperProp]
@@ -56,14 +56,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			byte r1_0 = (byte)(mmc3.regs[1] & ~1);
 			byte r1_1 = (byte)(mmc3.regs[1] | 1);
 
-			chr_regs_1k[0] = r0_0;
-			chr_regs_1k[1] = r0_1;
-			chr_regs_1k[2] = r1_0;
-			chr_regs_1k[3] = r1_1;
-			chr_regs_1k[4] = mmc3.regs[2];
-			chr_regs_1k[5] = mmc3.regs[3];
-			chr_regs_1k[6] = mmc3.regs[4];
-			chr_regs_1k[7] = mmc3.regs[5];
+			_chrRegs1K[0] = r0_0;
+			_chrRegs1K[1] = r0_1;
+			_chrRegs1K[2] = r1_0;
+			_chrRegs1K[3] = r1_1;
+			_chrRegs1K[4] = mmc3.regs[2];
+			_chrRegs1K[5] = mmc3.regs[3];
+			_chrRegs1K[6] = mmc3.regs[4];
+			_chrRegs1K[7] = mmc3.regs[5];
 
 			UpdateChr_2();
 			UpdatePrg_2();
@@ -75,6 +75,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			base.SyncState(ser);
 			ser.Sync(nameof(exRegs), ref exRegs, false);
+			ser.Sync(nameof(_chrRegs1K), ref _chrRegs1K, false);
 			ser.Sync(nameof(prg_regs_8k), ref prg_regs_8k, false);
 			ser.Sync(nameof(prg_mask), ref prg_mask_8k);
 			ser.Sync(nameof(chr_mask), ref chr_mask_1k);
@@ -88,7 +89,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				int bank = mmc3.chr_regs_1k[i];
 				if (((exRegs[0] & 0x40) == 0) && (((exRegs[3] & 0x2) == 0) || (i != 1 && i != 3)))
-					chr_regs_1k[i] = ((exRegs[2] & 0x7F) << 3 | bank );
+					_chrRegs1K[i] = ((exRegs[2] & 0x7F) << 3 | bank );
 			}
 		}
 
@@ -97,22 +98,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if ((exRegs[0] & 0x40) > 0)
 			{
 				int bank = (exRegs[2] | unromChr);
-				chr_regs_1k[0] = bank;
-				chr_regs_1k[1] = bank;//(bank + 1);
-				chr_regs_1k[2] = bank;//(bank + 2);
-				chr_regs_1k[3] = bank;//(bank + 3);
-				chr_regs_1k[4] = bank;//(bank + 4);
-				chr_regs_1k[5] = bank;//(bank + 5);
-				chr_regs_1k[6] = bank;//(bank + 6);
-				chr_regs_1k[7] = bank;//(bank + 7);
+				_chrRegs1K[0] = bank;
+				_chrRegs1K[1] = bank;//(bank + 1);
+				_chrRegs1K[2] = bank;//(bank + 2);
+				_chrRegs1K[3] = bank;//(bank + 3);
+				_chrRegs1K[4] = bank;//(bank + 4);
+				_chrRegs1K[5] = bank;//(bank + 5);
+				_chrRegs1K[6] = bank;//(bank + 6);
+				_chrRegs1K[7] = bank;//(bank + 7);
 			}
 			else
 			{
 				if ((exRegs[3] & 0x2) > 0)
 				{
 					int bank = (exRegs[2] & 0x7F) << 3;
-					chr_regs_1k[1] = (bank | exRegs[6]);
-					chr_regs_1k[3] = (bank | exRegs[7]);
+					_chrRegs1K[1] = (bank | exRegs[6]);
+					_chrRegs1K[3] = (bank | exRegs[7]);
 				}
 				UpdateChr();
 			}
@@ -238,7 +239,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (addr < 0x2000)
 			{
 				int bank_1k = addr >> 10;
-				bank_1k = chr_regs_1k[bank_1k];
+				bank_1k = _chrRegs1K[bank_1k];
 				
 				if ((exRegs[0] & 0x40) > 0)
 					addr = (bank_1k << 13) | (addr & 0x1FFF);

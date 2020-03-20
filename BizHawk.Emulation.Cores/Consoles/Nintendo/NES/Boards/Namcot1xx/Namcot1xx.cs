@@ -1,30 +1,23 @@
-﻿//see http://nesdev.parodius.com/bbs/viewtopic.php?t=5426&sid=e7472c15a758ebf05c588c8330c2187f
-//and http://nesdev.parodius.com/bbs/viewtopic.php?t=311
-//for some info on NAMCOT 108
-//but mostly http://wiki.nesdev.com/w/index.php/INES_Mapper_206
+﻿using BizHawk.Common;
 
+// see http://nesdev.parodius.com/bbs/viewtopic.php?t=5426&sid=e7472c15a758ebf05c588c8330c2187f
+// and http://nesdev.parodius.com/bbs/viewtopic.php?t=311
+// for some info on NAMCOT 108
+// but mostly http://wiki.nesdev.com/w/index.php/INES_Mapper_206
 //TODO - prg is 4 bits, chr is 6 bits
-
-using BizHawk.Common;
-
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	//also, Namcot109, Namcot118, Namcot119 chips are this exact same thing
+	// also, Namcot109, Namcot118, Namcot119 chips are this exact same thing
 	public class Namcot108Chip
 	{
-		//state
-		int reg_addr;
-		byte[] regs = new byte[8];
+		private int reg_addr;
+		private byte[] regs = new byte[8];
 
-		//volatile state
-		byte[] chr_regs_1k = new byte[8];
-		byte[] prg_regs_8k = new byte[4];
+		private byte[] _chrRegs1K = new byte[8];
+		private byte[] _prgRegs8K = new byte[4];
 
-		NesBoardBase board;
 		public Namcot108Chip(NesBoardBase board)
 		{
-			this.board = board;
-
 			Sync();
 		}
 
@@ -32,6 +25,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			ser.Sync(nameof(reg_addr), ref reg_addr);
 			ser.Sync(nameof(regs), ref regs, false);
+			ser.Sync(nameof(_chrRegs1K), ref _chrRegs1K, false);
+			ser.Sync(nameof(_prgRegs8K), ref _prgRegs8K, false);
 			Sync();
 		}
 
@@ -52,37 +47,37 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		void Sync()
 		{
-			prg_regs_8k[0] = regs[6];
-			prg_regs_8k[1] = regs[7];
-			prg_regs_8k[2] = 0xFE;
-			prg_regs_8k[3] = 0xFF;
+			_prgRegs8K[0] = regs[6];
+			_prgRegs8K[1] = regs[7];
+			_prgRegs8K[2] = 0xFE;
+			_prgRegs8K[3] = 0xFF;
 
 			byte r0_0 = (byte)(regs[0] & ~1);
 			byte r0_1 = (byte)(regs[0] | 1);
 			byte r1_0 = (byte)(regs[1] & ~1);
 			byte r1_1 = (byte)(regs[1] | 1);
 
-			chr_regs_1k[0] = r0_0;
-			chr_regs_1k[1] = r0_1;
-			chr_regs_1k[2] = r1_0;
-			chr_regs_1k[3] = r1_1;
-			chr_regs_1k[4] = regs[2];
-			chr_regs_1k[5] = regs[3];
-			chr_regs_1k[6] = regs[4];
-			chr_regs_1k[7] = regs[5];
+			_chrRegs1K[0] = r0_0;
+			_chrRegs1K[1] = r0_1;
+			_chrRegs1K[2] = r1_0;
+			_chrRegs1K[3] = r1_1;
+			_chrRegs1K[4] = regs[2];
+			_chrRegs1K[5] = regs[3];
+			_chrRegs1K[6] = regs[4];
+			_chrRegs1K[7] = regs[5];
 		}
 
 		public int Get_PRGBank_8K(int addr)
 		{
 			int bank_8k = addr >> 13;
-			bank_8k = prg_regs_8k[bank_8k];
+			bank_8k = _prgRegs8K[bank_8k];
 			return bank_8k;
 		}
 
 		public int Get_CHRBank_1K(int addr)
 		{
 			int bank_1k = addr >> 10;
-			bank_1k = chr_regs_1k[bank_1k];
+			bank_1k = _chrRegs1K[bank_1k];
 			return bank_1k;
 		}
 	}
