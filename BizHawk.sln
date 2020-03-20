@@ -49,9 +49,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Bizware.BizwareGL",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Client.ApiHawk", "BizHawk.Client.ApiHawk\BizHawk.Client.ApiHawk.csproj", "{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.BizInvoke", "BizHawk.BizInvoke\BizHawk.BizInvoke.csproj", "{E5D76DC1-84A8-47AF-BE25-E76F06D2FBBC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.BizInvoke", "BizHawk.BizInvoke\BizHawk.BizInvoke.csproj", "{E5D76DC1-84A8-47AF-BE25-E76F06D2FBBC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.WinForms.Controls", "BizHawk.WinForms.Controls\BizHawk.WinForms.Controls.csproj", "{B5A2214B-3CB0-48C4-8DB1-98B38D48AC4A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.WinForms.Controls", "BizHawk.WinForms.Controls\BizHawk.WinForms.Controls.csproj", "{B5A2214B-3CB0-48C4-8DB1-98B38D48AC4A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -120,6 +120,7 @@ Global
 		{197D4314-8A9F-49BA-977D-54ACEFAEB6BA} = {3627C08B-3E43-4224-9DA4-40BD69495FBC}
 		{9F84A0B2-861E-4EF4-B89B-5E2A3F38A465} = {0540A9A6-977E-466D-8BD3-1D8590BD5282}
 		{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA} = {B51F1139-3D2C-41BE-A762-EF1F9B41EACA}
+		{B5A2214B-3CB0-48C4-8DB1-98B38D48AC4A} = {B51F1139-3D2C-41BE-A762-EF1F9B41EACA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9B9E4316-9185-412E-B951-A63355ACA956}
