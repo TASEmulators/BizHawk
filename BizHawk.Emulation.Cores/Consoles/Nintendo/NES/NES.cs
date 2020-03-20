@@ -339,9 +339,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				unif = new Unif(new MemoryStream(file));
 				LoadWriteLine("Found UNIF header:");
-				LoadWriteLine(unif.CartInfo);
+				LoadWriteLine(unif.Cart);
 				LoadWriteLine("Since this is UNIF we can confidently parse PRG/CHR banks to hash.");
-				hash_sha1 = unif.CartInfo.Sha1;
+				hash_sha1 = unif.Cart.Sha1;
 				hash_sha1_several.Add(hash_sha1);
 				LoadWriteLine("headerless rom hash: {0}", hash_sha1);
 			}
@@ -519,8 +519,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 					else if (unif != null)
 					{
-						if (choice.PrgSize == -1) choice.PrgSize = unif.CartInfo.PrgSize;
-						if (choice.ChrSize == -1) choice.ChrSize = unif.CartInfo.ChrSize;
+						if (choice.PrgSize == -1) choice.PrgSize = unif.Cart.PrgSize;
+						if (choice.ChrSize == -1) choice.ChrSize = unif.Cart.ChrSize;
 						// unif has no wram\vram sizes; hope the board impl can figure it out...
 						if (choice.VramSize == -1) choice.VramSize = 0;
 						if (choice.WramSize == -1) choice.WramSize = 0;
@@ -549,7 +549,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (unif != null)
 				{
 					LoadWriteLine("Using information from UNIF header");
-					choice = unif.CartInfo;
+					choice = unif.Cart;
 					//ok, i have this Q-Boy rom with no VROM and no VRAM.
 					//we also certainly have games with VROM and no VRAM.
 					//looks like FCEUX policy is to allocate 8KB of chr ram no matter what UNLESS certain flags are set. but what's the justification for this? please leave a note if you go debugging in it again.
@@ -684,8 +684,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else if (unif != null)
 			{
-				Board.Rom = unif.PRG;
-				Board.Vrom = unif.CHR;
+				Board.Rom = unif.Prg;
+				Board.Vrom = unif.Chr;
 			}
 			else
 			{
