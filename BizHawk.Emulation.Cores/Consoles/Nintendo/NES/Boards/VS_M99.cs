@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//VS System Mapper 99
 
-	[NES.INESBoardImplPriority]
+	[NesBoardImplPriority]
 	public sealed class MAPPER99 : NesBoardBase
 	{
 		//configuration

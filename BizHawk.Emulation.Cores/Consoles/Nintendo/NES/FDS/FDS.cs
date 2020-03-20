@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	 * http://wiki.nesdev.com/w/index.php/Family_Computer_Disk_System - these two documents
 	 * http://nesdev.com/diskspec.txt - not useless
 	 */
-	[NES.INESBoardImplCancel]
+	[NesBoardImplCancel]
 	public class FDS : NesBoardBase
 	{
 		#region configuration

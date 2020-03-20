@@ -235,7 +235,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 	}
 
-	[NES.INESBoardImplPriority]
+	[NesBoardImplPriority]
 	public class SxROM : NesBoardBase
 	{
 		//configuration

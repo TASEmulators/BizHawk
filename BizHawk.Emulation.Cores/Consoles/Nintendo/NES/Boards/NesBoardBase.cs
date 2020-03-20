@@ -4,7 +4,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	[NES.INESBoardImpl]
+	[NesBoardImpl]
 	public abstract class NesBoardBase : INesBoard
 	{
 		/// <summary>

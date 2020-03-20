@@ -27,6 +27,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
+		public override void NesSoftReset()
+		{
+			for (int i = 0; i < regs.Length; i++)
+			{
+				regs[i] = 0;
+			}
+		}
+
 		public override void WritePrg(int addr, byte value)
 		{
 			if (addr < 0x4000)

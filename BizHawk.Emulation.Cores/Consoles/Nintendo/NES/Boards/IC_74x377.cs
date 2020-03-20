@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//Crystal Mines
 	//Metal Fighter
 
-	[NES.INESBoardImplPriority]
+	[NesBoardImplPriority]
 	public sealed class IC_74x377 : NesBoardBase
 	{
 		//configuration

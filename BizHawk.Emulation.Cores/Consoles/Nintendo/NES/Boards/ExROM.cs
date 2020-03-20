@@ -17,7 +17,7 @@ using BizHawk.Emulation.Cores.Components;
 //FUTURE - we may need to split this into a separate MMC5 class. but for now it is just a pain.
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	[NES.INESBoardImplPriorityAttribute]
+	[NesBoardImplPriority]
 	public sealed class ExROM : NesBoardBase
 	{
 		private int prg_bank_mask_8k, chr_bank_mask_1k; //board setup (to be isolated from mmc5 code later, when we need the separate mmc5 class)

@@ -3,7 +3,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	[NES.INESBoardImplPriority]
+	[NesBoardImplPriority]
 	public class Namcot175_340 : NesBoardBase
 	{
 		/*

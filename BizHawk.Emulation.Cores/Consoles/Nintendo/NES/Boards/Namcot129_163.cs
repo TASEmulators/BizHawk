@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	// what we have here should work for everything that's actually a 129 or 163,
 	// and some of the 175/340 (mapper 210)
-	[NES.INESBoardImplPriority]
+	[NesBoardImplPriority]
 	public sealed class Namcot129_163 : NesBoardBase
 	{
 		//configuration

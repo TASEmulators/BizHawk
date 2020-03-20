@@ -1,6 +1,6 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	[NES.INESBoardImplPriority]
+	[NesBoardImplPriority]
 	public sealed class NROM : NesBoardBase
 	{
 		//configuration

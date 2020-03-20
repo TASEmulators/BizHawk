@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public sealed class Mapper116 : NesBoardBase
 	{
-		[NES.INESBoardImplCancel]
+		[NesBoardImplCancel]
 		class MMC3_CustomBoard : MMC3Board_Base
 		{
 			public override void WritePrg(int addr, byte value)

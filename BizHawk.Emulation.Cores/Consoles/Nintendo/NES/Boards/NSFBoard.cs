@@ -17,7 +17,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	[NES.INESBoardImplCancel]
+	[NesBoardImplCancel]
 	public sealed class NSFBoard : NesBoardBase
 	{
 		//------------------------------

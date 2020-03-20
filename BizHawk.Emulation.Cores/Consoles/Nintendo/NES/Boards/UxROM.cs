@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	// why are there no bus conflicts in here???????
 
-	[NES.INESBoardImplPriority]
+	[NesBoardImplPriority]
 	public sealed class UxROM : NesBoardBase
 	{
 		//configuration

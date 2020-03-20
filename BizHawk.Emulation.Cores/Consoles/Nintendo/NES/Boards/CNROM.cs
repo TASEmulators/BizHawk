@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//Bump 'n' Jump
 	//Cybernoid
 
-	[NES.INESBoardImplPriority]
+	[NesBoardImplPriority]
 	public sealed class CNROM : NesBoardBase
 	{
 		//configuration

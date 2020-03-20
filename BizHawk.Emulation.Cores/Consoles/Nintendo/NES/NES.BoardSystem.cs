@@ -12,16 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	partial class NES
 	{
-		//this will be used to track classes that implement boards
-		[AttributeUsage(AttributeTargets.Class)]
-		public sealed class INESBoardImplAttribute : Attribute { }
-		//this tracks derived boards that shouldn't be used by the implementation scanner
-		[AttributeUsage(AttributeTargets.Class)]
-		public sealed class INESBoardImplCancelAttribute : Attribute { }
 		static List<Type> INESBoardImplementors = new List<Type>();
-		//flags it as being priority, i.e. in the top of the list
-		[AttributeUsage(AttributeTargets.Class)]
-		public sealed class INESBoardImplPriorityAttribute : Attribute { }
 
 		static INesBoard CreateBoardInstance(Type boardType)
 		{
@@ -101,12 +92,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//scan types in this assembly to find ones that implement boards to add them to the list
 			foreach (Type type in typeof(NES).Assembly.GetTypes())
 			{
-				var attrs = type.GetCustomAttributes(typeof(INESBoardImplAttribute), true);
+				var attrs = type.GetCustomAttributes(typeof(NesBoardImplAttribute), true);
 				if (attrs.Length == 0) continue;
 				if (type.IsAbstract) continue;
-				var cancelAttrs = type.GetCustomAttributes(typeof(INESBoardImplCancelAttribute), true);
+				var cancelAttrs = type.GetCustomAttributes(typeof(NesBoardImplCancelAttribute), true);
 				if (cancelAttrs.Length != 0) continue;
-				var priorityAttrs = type.GetCustomAttributes(typeof(INESBoardImplPriorityAttribute), true);
+				var priorityAttrs = type.GetCustomAttributes(typeof(NesBoardImplPriorityAttribute), true);
 				if (priorityAttrs.Length != 0)
 					highPriority.Add(type);
 				else normalPriority.Add(type);

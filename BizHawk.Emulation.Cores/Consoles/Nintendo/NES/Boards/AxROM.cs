@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//generally mapper7
 
-	[NES.INESBoardImplPriority]
+	[NesBoardImplPriority]
 	public sealed class AxROM : NesBoardBase
 	{
 		//configuration
