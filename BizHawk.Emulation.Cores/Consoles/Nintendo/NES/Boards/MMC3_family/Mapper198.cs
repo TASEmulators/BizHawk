@@ -1,8 +1,7 @@
 ﻿namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class Mapper198 : MMC3Board_Base
+	internal sealed class Mapper198 : MMC3Board_Base
 	{
-
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)

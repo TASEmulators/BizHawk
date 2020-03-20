@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Mei Loi Siu Ji (Metal Fighter) (Sachen) [!]
-	public sealed class Mapper136 : NesBoardBase
+	internal sealed class Mapper136 : NesBoardBase
 	{
 		private int _chrBankMask_8k;
 		private int _chrRegister;

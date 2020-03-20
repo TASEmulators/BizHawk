@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//AKA Sunsoft-2 chip (SUNSOFT-3 pcb)
 	//game=Tenka no Goikenban: Mito Koumon ; chip=sunsoft-2 ; pcb = SUNSOFT-3
 	//this is confusing. see docs/sunsoft.txt
-	public sealed class Mapper89 : NesBoardBase
+	internal sealed class Mapper89 : NesBoardBase
 	{
 		int chr;
 		int prg_bank_mask_16k;

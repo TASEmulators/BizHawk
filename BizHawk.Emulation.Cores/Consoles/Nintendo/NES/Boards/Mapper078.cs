@@ -3,7 +3,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper078 : NesBoardBase 
+	internal sealed class Mapper078 : NesBoardBase 
 	{
 		bool holydiver;
 		int chr;

@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class UNIF_UNL_43272 : NesBoardBase
+	internal sealed class UNIF_UNL_43272 : NesBoardBase
 	{
 		private int latche;
 

@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// http://wiki.nesdev.com/w/index.php/INES_Mapper_154
-	public sealed class Mapper154 : Namcot108Board_Base
+	internal sealed class Mapper154 : Namcot108Board_Base
 	{
 		//configuration
 		int chr_bank_mask_1k;

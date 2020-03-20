@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//generally mapper7
 
 	[NesBoardImplPriority]
-	public sealed class AxROM : NesBoardBase
+	internal sealed class AxROM : NesBoardBase
 	{
 		//configuration
 		bool bus_conflict;

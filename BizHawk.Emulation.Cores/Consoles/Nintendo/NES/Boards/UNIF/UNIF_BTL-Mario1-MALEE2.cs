@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper055 : NesBoardBase
+	internal sealed class Mapper055 : NesBoardBase
 	{
 		public override bool Configure(EDetectionOrigin origin)
 		{

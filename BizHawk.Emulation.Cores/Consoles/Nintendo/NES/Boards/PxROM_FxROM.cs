@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//AKA MMC2 Mike Tyson's Punch-Out!!
 	//AKA MMC4 (similar enough to combine in one fle)
-	public sealed class PxROM_FxROM : NesBoardBase
+	internal sealed class PxROM_FxROM : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_8k, chr_bank_mask_4k;

@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	//the 4screen implementation is a bit of a guess, but it seems to work
 
-	public sealed class IREM_74_161_161_21_138 : NesBoardBase
+	internal sealed class IREM_74_161_161_21_138 : NesBoardBase
 	{
 		int chr, prg;
 		public override bool Configure(EDetectionOrigin origin)

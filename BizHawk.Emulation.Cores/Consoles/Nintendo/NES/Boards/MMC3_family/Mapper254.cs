@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper254 : MMC3Board_Base
+	internal sealed class Mapper254 : MMC3Board_Base
 	{
 		private byte[] regs = new byte[2];
 

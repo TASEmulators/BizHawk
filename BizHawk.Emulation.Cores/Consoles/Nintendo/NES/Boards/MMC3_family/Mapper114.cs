@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Mapper for Aladdin Super Game
-	public sealed class Mapper114 : MMC3Board_Base
+	internal sealed class Mapper114 : MMC3Board_Base
 	{
 		private byte[] EXPREGS = new byte[2];
 

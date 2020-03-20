@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// china
 	// behavior from fceux
-	public sealed class Mapper177 : NesBoardBase
+	internal sealed class Mapper177 : NesBoardBase
 	{
 		private int prg;
 

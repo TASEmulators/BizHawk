@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//Moero!! Pro Yakyuu (Black)
 	//Moero!! Pro Yakyuu (Red)
 
-	public sealed class JALECO_JF_13 : NesBoardBase
+	internal sealed class JALECO_JF_13 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_32k;

@@ -3,7 +3,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class UNIF_BMC_A65AS : NesBoardBase
+	internal class UNIF_BMC_A65AS : NesBoardBase
 	{
 		private int _prgReg;
 		private bool _isPrg32kMode;

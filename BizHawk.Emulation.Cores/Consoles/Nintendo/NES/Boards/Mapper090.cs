@@ -3,7 +3,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper090 : NesBoardBase
+	internal sealed class Mapper090 : NesBoardBase
 	{
 		byte[] prg_regs = new byte[4];
 		int[] chr_regs = new int[8];

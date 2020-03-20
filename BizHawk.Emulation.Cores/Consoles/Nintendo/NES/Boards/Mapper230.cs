@@ -4,7 +4,7 @@ using BizHawk.Common.NumberExtensions;
 // http://wiki.nesdev.com/w/index.php/INES_Mapper_230
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper230 : NesBoardBase
+	internal sealed class Mapper230 : NesBoardBase
 	{
 		//TODO: soft reset back to contra = fails
 		public int prg_page;

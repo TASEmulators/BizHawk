@@ -13,7 +13,7 @@
 	Consequently, CHR is split into two halves. $0xxx can only have CHR from the first 64K, $1xxx can only have CHR from the second 64K.
 	*/
 
-	public sealed class Mapper088 : Namcot108Board_Base
+	internal sealed class Mapper088 : Namcot108Board_Base
 	{
 		//configuration
 		int chr_bank_mask_1k;

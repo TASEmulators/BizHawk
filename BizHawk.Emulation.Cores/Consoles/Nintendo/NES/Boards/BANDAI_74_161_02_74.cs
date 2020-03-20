@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// http://wiki.nesdev.com/w/index.php/INES_Mapper_096
-	public sealed class BANDAI_74_161_02_74 : NesBoardBase
+	internal sealed class BANDAI_74_161_02_74 : NesBoardBase
 	{
 		int chr_block;
 		int chr_pos = 0;

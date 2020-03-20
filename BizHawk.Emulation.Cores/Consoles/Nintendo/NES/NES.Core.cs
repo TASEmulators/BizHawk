@@ -62,11 +62,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//Sound config
 		public void SetVol1(int v) { apu.m_vol = v; }
 
-		/// <summary>
-		/// for debugging only!
-		/// </summary>
-		public INesBoard GetBoard() => Board;
-
 		#region Audio
 
 		BlipBuffer blip = new BlipBuffer(4096);

@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// TODO -- different MMC1 revisions handle wram_disable differently; on some it doesn't work at all; on others,
 	//         it works, but with different initial states possible.  we only emulate the first case
 
-	public sealed class MMC1
+	internal sealed class MMC1
 	{
 		public MMC1_SerialController scnt = new MMC1_SerialController();
 
@@ -236,7 +236,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	}
 
 	[NesBoardImplPriority]
-	public class SxROM : NesBoardBase
+	internal class SxROM : NesBoardBase
 	{
 		//configuration
 		protected int prg_mask, chr_mask;
@@ -538,7 +538,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 	} //class SxROM
 
-	class SoROM : SuROM
+	internal sealed class SoROM : SuROM
 	{
 		//this uses a CHR bit to select WRAM banks
 		//TODO - only the latter 8KB is supposed to be battery backed
@@ -620,7 +620,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 	}
 
-	class SuROM : SxROM
+	internal class SuROM : SxROM
 	{
 		public override bool Configure(EDetectionOrigin origin)
 		{

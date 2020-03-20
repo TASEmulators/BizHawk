@@ -8,7 +8,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// also, Namcot109, Namcot118, Namcot119 chips are this exact same thing
-	public class Namcot108Chip
+	internal class Namcot108Chip
 	{
 		private int reg_addr;
 		private byte[] regs = new byte[8];
@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 	}
 
-	public abstract class Namcot108Board_Base : NesBoardBase
+	internal abstract class Namcot108Board_Base : NesBoardBase
 	{
 		//state
 		protected Namcot108Chip mapper;

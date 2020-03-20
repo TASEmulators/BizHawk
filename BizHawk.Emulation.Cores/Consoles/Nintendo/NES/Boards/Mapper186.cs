@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class Mapper186 : NesBoardBase
+	internal class Mapper186 : NesBoardBase
 	{
 		private byte[] _SRAM = new byte[3072];
 		private byte[] regs = new byte[4];

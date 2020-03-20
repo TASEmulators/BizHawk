@@ -4,7 +4,7 @@ using BizHawk.Common.NumberExtensions;
 // http://wiki.nesdev.com/w/index.php/INES_Mapper_231
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper231 : NesBoardBase
+	internal sealed class Mapper231 : NesBoardBase
 	{
 		public int prg_reg;
 		public int prg_bank_mask_16k;

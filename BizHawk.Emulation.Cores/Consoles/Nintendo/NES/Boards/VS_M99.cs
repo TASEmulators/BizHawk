@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//VS System Mapper 99
 
 	[NesBoardImplPriority]
-	public sealed class MAPPER99 : NesBoardBase
+	internal sealed class MAPPER99 : NesBoardBase
 	{
 		//configuration
 		int prg_byte_mask, chr_mask;

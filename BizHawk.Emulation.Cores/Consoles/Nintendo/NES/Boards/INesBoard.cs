@@ -3,12 +3,12 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public enum EDetectionOrigin
+	internal enum EDetectionOrigin
 	{
 		None, BootGodDB, GameDB, INES, UNIF, FDS, NSF
 	}
 
-	public interface INesBoard
+	internal interface INesBoard
 	{
 		// base class pre-configuration
 		void Create(NES nes);

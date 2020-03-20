@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//Major League
 	//Kaiketsu Yanchamaru 2
 
-	public sealed class Irem_G101 : NesBoardBase
+	internal sealed class Irem_G101 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask, chr_bank_mask;

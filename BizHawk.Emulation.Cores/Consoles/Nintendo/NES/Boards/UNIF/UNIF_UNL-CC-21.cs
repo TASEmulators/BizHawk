@@ -3,7 +3,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class UNIF_UNL_CC_21 : NesBoardBase
+	internal sealed class UNIF_UNL_CC_21 : NesBoardBase
 	{
 		int _reg;
 		public override bool Configure(EDetectionOrigin origin)

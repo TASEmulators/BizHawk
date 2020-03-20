@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	 * http://nesdev.com/diskspec.txt - not useless
 	 */
 	[NesBoardImplCancel]
-	public class FDS : NesBoardBase
+	internal sealed class FDS : NesBoardBase
 	{
 		#region configuration
 		/// <summary>FDS bios image; should be 8192 bytes</summary>

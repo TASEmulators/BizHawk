@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Tetris Fily 6-in-1 (GS-2004) (U) [!]
-	public class UNIF_BMC_GS_2004 : NesBoardBase
+	internal sealed class UNIF_BMC_GS_2004 : NesBoardBase
 	{
 		private int _reg = 0xFF;
 

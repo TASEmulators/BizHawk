@@ -4,10 +4,9 @@ using System;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	// mapper036
 	// Strike Wolf (MGC-014) [!].nes
 	// Using https://wiki.nesdev.com/w/index.php/INES_Mapper_036
-	public sealed class Mapper036 : NesBoardBase
+	internal sealed class Mapper036 : NesBoardBase
 	{
 		int chr;
 		int prg;

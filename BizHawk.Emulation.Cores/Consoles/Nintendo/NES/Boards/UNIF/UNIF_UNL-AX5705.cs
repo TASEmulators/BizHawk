@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Logic copied from FCEUX
 	// Super Mario Bros. Pocker Mali (Unl)
-	public class UNIF_UNL_AX5705 : NesBoardBase
+	internal sealed class UNIF_UNL_AX5705 : NesBoardBase
 	{
 		private int[] prg_reg = new int[2];
 		private int[] chr_reg = new int[8];

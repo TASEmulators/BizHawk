@@ -8,7 +8,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class MMC3
+	internal class MMC3
 	{
 		//state
 		public int reg_addr;
@@ -302,7 +302,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 	}
 
-	public abstract class MMC3Board_Base : NesBoardBase
+	internal abstract class MMC3Board_Base : NesBoardBase
 	{
 		//state
 		public MMC3 mmc3;

@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	 * 
 	 */
 
-	public sealed class TAITO_X1_005 : NesBoardBase
+	internal sealed class TAITO_X1_005 : NesBoardBase
 	{
 		// config
 		int prg_bank_mask, chr_bank_mask;

@@ -4,7 +4,7 @@ using BizHawk.Common.NumberExtensions;
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//http://wiki.nesdev.com/w/index.php/INES_Mapper_044
-	public sealed class Mapper049 : MMC3Board_Base
+	internal sealed class Mapper049 : MMC3Board_Base
 	{
 		public override bool Configure(EDetectionOrigin origin)
 		{

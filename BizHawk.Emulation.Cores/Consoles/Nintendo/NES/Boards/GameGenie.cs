@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// this is an internal testing thing, not really for using
 
-	public class GameGenie : NesBoardBase
+	internal sealed class GameGenie : NesBoardBase
 	{
 		static byte[] PatternTables = new byte[256];
 

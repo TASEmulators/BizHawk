@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Mapper 83 seems to be a hacky mess that represents 3 different Cony cartridges
 	// http://problemkaputt.de/everynes.htm#mapper83cony
-	public class ConyA : NesBoardBase
+	internal sealed class ConyA : NesBoardBase
 	{
 		private byte[] prg_regs = new byte[4];
 		private byte[] _low = new byte[4]; // some kind of security feature?
@@ -196,7 +196,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 	}
 
-	public class ConyB : NesBoardBase
+	internal sealed class ConyB : NesBoardBase
 	{
 		private byte[] prg_regs = new byte[4];
 		private byte[] _low = new byte[4]; // some kind of security feature?
@@ -386,9 +386,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 	}
 
-	
-
-	public class ConyC : NesBoardBase
+	internal sealed class ConyC : NesBoardBase
 	{
 		private byte[] prg_regs = new byte[2];
 		private byte[] chr_regs = new byte[8];

@@ -8,13 +8,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	/// These are used by SetMirroring() to provide the base class nametable mirroring service.
 	/// Apparently, these are not used for internal build configuration logic
 	/// </summary>
-	public enum EMirrorType
+	internal enum EMirrorType
 	{
 		Vertical, Horizontal, OneScreenA, OneScreenB
 	}
 
 	[NesBoardImpl]
-	public abstract class NesBoardBase : INesBoard
+	internal abstract class NesBoardBase : INesBoard
 	{
 		public virtual void Create(NES nes)
 		{

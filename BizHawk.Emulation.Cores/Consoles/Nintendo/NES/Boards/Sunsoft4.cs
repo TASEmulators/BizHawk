@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//After Burner & After Burner 2
 	//Maharaja
 
-	public sealed class Sunsoft4 : NesBoardBase
+	internal sealed class Sunsoft4 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask, chr_bank_mask, nt_bank_mask;

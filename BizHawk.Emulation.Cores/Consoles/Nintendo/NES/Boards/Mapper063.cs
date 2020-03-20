@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper063 : NesBoardBase
+	internal sealed class Mapper063 : NesBoardBase
 	{
 		int prg0, prg1, prg2, prg3;
 		bool open_bus;

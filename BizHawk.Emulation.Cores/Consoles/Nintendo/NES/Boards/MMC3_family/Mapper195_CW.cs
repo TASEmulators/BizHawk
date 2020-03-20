@@ -9,7 +9,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper195_CW : MMC3Board_Base
+	internal sealed class Mapper195_CW : MMC3Board_Base
 	{
 		private int vram_bank_mask_1k;
 

@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class INLNSF : NesBoardBase
+	internal sealed class INLNSF : NesBoardBase
 	{
 
 		// config

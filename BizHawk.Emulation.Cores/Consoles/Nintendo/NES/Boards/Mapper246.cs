@@ -3,7 +3,7 @@
 // http://wiki.nesdev.com/w/index.php/INES_Mapper_246
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper246 : NesBoardBase
+	internal sealed class Mapper246 : NesBoardBase
 	{
 		int prg_bank_mask_8k;
 		byte[] prg_banks_8k = new byte[4];

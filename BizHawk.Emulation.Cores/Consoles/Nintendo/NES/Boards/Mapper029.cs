@@ -1,7 +1,7 @@
 ﻿namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// what is this?
-	public class Mapper029 : NesBoardBase
+	internal sealed class Mapper029 : NesBoardBase
 	{
 		int prg;
 		int chr;

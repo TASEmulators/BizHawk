@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class UNIF_UNL_KS7012 : NesBoardBase
+	internal sealed class UNIF_UNL_KS7012 : NesBoardBase
 	{
 		private int reg;
 

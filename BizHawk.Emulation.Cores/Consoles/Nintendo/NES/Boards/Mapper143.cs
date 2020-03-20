@@ -4,7 +4,7 @@
 	// NROM plus random copy protection circuit
 
 	// dancing blocks refuses to run; see comments below	
-	public sealed class Mapper143 : NesBoardBase
+	internal sealed class Mapper143 : NesBoardBase
 	{
 		public override bool Configure(EDetectionOrigin origin)
 		{

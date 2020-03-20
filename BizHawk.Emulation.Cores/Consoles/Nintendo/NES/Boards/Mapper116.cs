@@ -6,7 +6,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper116 : NesBoardBase
+	internal sealed class Mapper116 : NesBoardBase
 	{
 		[NesBoardImplCancel]
 		class MMC3_CustomBoard : MMC3Board_Base

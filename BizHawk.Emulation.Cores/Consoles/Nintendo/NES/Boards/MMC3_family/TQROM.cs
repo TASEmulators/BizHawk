@@ -2,7 +2,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//aka mapper 119
 	//just high speed and pinbot with an MMC3 and some custom logic to select between chr rom and chr ram
-	public sealed class TQSROM : MMC3Board_Base
+	internal sealed class TQSROM : MMC3Board_Base
 	{
 		public override bool Configure(EDetectionOrigin origin)
 		{

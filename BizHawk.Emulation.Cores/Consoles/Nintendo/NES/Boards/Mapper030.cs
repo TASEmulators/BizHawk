@@ -4,9 +4,8 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class Mapper030 : NesBoardBase
+	internal sealed class Mapper030 : NesBoardBase
 	{
-
 		enum flashmode { fm_default, fm_erase, fm_write, fm_id }
 
 		// config

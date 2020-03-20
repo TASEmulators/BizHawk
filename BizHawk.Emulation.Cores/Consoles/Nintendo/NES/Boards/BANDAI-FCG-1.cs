@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	Every real instance of [1], [2], [3], [4] had 128K or 256K of each of chr and prg.
 	*/
 
-	public sealed class BANDAI_FCG_1 : NesBoardBase 
+	internal sealed class BANDAI_FCG_1 : NesBoardBase 
 	{
 		//configuration
 		int prg_bank_mask_16k, chr_bank_mask_1k;

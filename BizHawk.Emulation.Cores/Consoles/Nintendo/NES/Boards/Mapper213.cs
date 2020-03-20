@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// 9999999-in-1 [p2]
 	// http://wiki.nesdev.com/w/index.php/INES_Mapper_213
-	public class Mapper213 : NesBoardBase
+	internal sealed class Mapper213 : NesBoardBase
 	{
 		private int _reg;
 

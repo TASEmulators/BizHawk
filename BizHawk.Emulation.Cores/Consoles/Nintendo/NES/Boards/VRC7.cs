@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//mapper 85
 	//If you change any of the IRQ logic here, be sure to change it in VRC 2/3/4/6 as well.
-	public sealed class VRC7 : NesBoardBase
+	internal sealed class VRC7 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_8k, chr_bank_mask_1k;

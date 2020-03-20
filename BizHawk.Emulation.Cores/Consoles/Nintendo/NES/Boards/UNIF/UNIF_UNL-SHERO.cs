@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class UNIF_UNL_SHERO : MMC3Board_Base
+	internal class UNIF_UNL_SHERO : MMC3Board_Base
 	{
 		[MapperProp]
 		public bool RegionAsia = false;

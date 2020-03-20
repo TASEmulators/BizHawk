@@ -6,7 +6,7 @@ using BizHawk.Common.NumberExtensions;
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//AKA mapper 105
-	public sealed class NES_EVENT : NesBoardBase
+	internal sealed class NES_EVENT : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_16k;

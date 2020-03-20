@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class UNIF_BMC_FK23C : MMC3Board_Base
+	internal sealed class UNIF_BMC_FK23C : MMC3Board_Base
 	{
 		private byte[] exRegs = new byte[8];
 		private int[] _chrRegs1K = new int[8];

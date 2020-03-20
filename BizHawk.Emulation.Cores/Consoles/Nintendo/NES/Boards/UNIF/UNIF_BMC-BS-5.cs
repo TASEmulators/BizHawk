@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class UNIF_BMC_BS_5 : NesBoardBase
+	internal sealed class UNIF_BMC_BS_5 : NesBoardBase
 	{
 		[MapperProp]
 		public int BMC_BS_5_DipSwitch;

@@ -4,7 +4,7 @@ using BizHawk.Common.NumberExtensions;
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Supervision 16-in-1 [p1].nes
-	public sealed class Mapper053 : NesBoardBase
+	internal sealed class Mapper053 : NesBoardBase
 	{
 		private byte _reg0;
 		private byte _reg1;
@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// Supervision 16-in-1 [U][p1][!].unf
 	// Same as Mapper 53, except the 32kb PRG chip is at the end of the ROM space instead of the beginning
 	// These could have been combined to reduce some code, but at the cost of being more convoluted
-	public sealed class UNIF_BMC_Supervision16in1 : NesBoardBase
+	internal sealed class UNIF_BMC_Supervision16in1 : NesBoardBase
 	{
 		private byte _reg0;
 		private byte _reg1;

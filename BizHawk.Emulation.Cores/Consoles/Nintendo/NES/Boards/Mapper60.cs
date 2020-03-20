@@ -3,7 +3,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper60 : NesBoardBase
+	internal sealed class Mapper60 : NesBoardBase
 	{
 		// http://wiki.nesdev.com/w/index.php/INES_Mapper_060
 
@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 	}
 
-	public class Reset4in1 : NesBoardBase
+	internal sealed class Reset4in1 : NesBoardBase
 	{
 		private int resetSwitch = 0;
 

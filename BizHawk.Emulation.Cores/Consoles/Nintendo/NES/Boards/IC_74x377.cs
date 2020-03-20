@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//Metal Fighter
 
 	[NesBoardImplPriority]
-	public sealed class IC_74x377 : NesBoardBase
+	internal sealed class IC_74x377 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_32k, chr_bank_mask_8k;

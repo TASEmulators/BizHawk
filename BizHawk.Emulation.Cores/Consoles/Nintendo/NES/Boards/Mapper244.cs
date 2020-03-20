@@ -3,7 +3,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class Mapper244 : NesBoardBase
+	internal sealed class Mapper244 : NesBoardBase
 	{
 		public override bool Configure(EDetectionOrigin origin)
 		{

@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class UNIF_UNL_LH10 : NesBoardBase
+	internal sealed class UNIF_UNL_LH10 : NesBoardBase
 	{
 		private byte[] reg = new byte[8];
 		private int cmd;

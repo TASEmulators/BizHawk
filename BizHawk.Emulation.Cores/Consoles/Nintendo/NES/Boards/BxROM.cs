@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//AKA half of mapper 034 (the other half is AVE_NINA_001 which is entirely different..)
-	public sealed class BxROM : NesBoardBase
+	internal sealed class BxROM : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_32k;

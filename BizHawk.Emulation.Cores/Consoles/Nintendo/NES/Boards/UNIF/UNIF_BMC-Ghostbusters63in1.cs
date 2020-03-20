@@ -5,7 +5,7 @@ using System;
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Adapted from FCEUX src
-	public sealed class UNIF_BMC_Ghostbusters63in1 : NesBoardBase
+	internal sealed class UNIF_BMC_Ghostbusters63in1 : NesBoardBase
 	{
 		private byte[] reg = new byte[2];
 		private readonly int[] banks = { 0, 0, 524288, 1048576 };

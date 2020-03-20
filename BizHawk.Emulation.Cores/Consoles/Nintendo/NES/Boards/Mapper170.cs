@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper170 : NesBoardBase
+	internal sealed class Mapper170 : NesBoardBase
 	{
 		private byte reg;
 

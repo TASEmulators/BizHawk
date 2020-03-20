@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Bad Dudes.7z|Dragon Ninja (J) [p1][!].nes
 	// irq doesn't work right; easily seen in any level but level 1
-	public sealed class Mapper222 : NesBoardBase
+	internal sealed class Mapper222 : NesBoardBase
 	{
 		int prg_bank_mask_8k;
 		int chr_bank_mask_1k;

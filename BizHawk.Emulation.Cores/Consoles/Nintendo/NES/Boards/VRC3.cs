@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//mapper 73 AKA salamander
 	//different IRQ logic than other VRC
-	public sealed class VRC3 : NesBoardBase
+	internal sealed class VRC3 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_16k;

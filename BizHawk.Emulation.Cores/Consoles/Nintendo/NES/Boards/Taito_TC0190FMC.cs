@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	//also mapper 048 (same as 33 but with an extra chip)
 
-	public sealed class TAITO_TC0190FMC : NesBoardBase
+	internal sealed class TAITO_TC0190FMC : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask, chr_bank_mask;

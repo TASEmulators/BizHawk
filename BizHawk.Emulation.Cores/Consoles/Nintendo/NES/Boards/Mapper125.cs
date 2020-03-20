@@ -3,7 +3,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper125 : NesBoardBase
+	internal sealed class Mapper125 : NesBoardBase
 	{
 		private byte reg;
 		private int prg_bank_mask_8k;

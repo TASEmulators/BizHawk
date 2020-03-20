@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	//Near Identical to Jaleco JF 17, except for a slight PRG setup
 
-	public sealed class JALECO_JF_19 : NesBoardBase
+	internal sealed class JALECO_JF_19 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_16k;

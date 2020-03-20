@@ -4,7 +4,7 @@ using BizHawk.Common.NumberExtensions;
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// http://wiki.nesdev.com/w/index.php/INES_Mapper_082
-	public sealed class Taito_X1_017 : NesBoardBase
+	internal sealed class Taito_X1_017 : NesBoardBase
 	{
 		private int prg_bank_mask, chr_bank_mask;
 		private byte[] prg_regs_8k = new byte[4];

@@ -11,7 +11,7 @@
 	 * In any event, here is how it's actually emulated.
 	 */
 
-	public sealed class Sunsoft1_Alt : NesBoardBase
+	internal sealed class Sunsoft1_Alt : NesBoardBase
 	{
 		int prg;
 

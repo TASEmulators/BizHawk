@@ -3,7 +3,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper045 : MMC3Board_Base
+	internal sealed class Mapper045 : MMC3Board_Base
 	{
 		//http://wiki.nesdev.com/w/index.php/INES_Mapper_045
 

@@ -4,7 +4,7 @@ using BizHawk.Common.NumberExtensions;
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Ported from FCEUX
-	public sealed class Mapper220 : NesBoardBase
+	internal sealed class Mapper220 : NesBoardBase
 	{
 		private byte[] reg = new byte[8];
 		private int prg_mask_2k;

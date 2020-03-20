@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class FS304 : NesBoardBase
+	internal sealed class FS304 : NesBoardBase
 	{
 		// waixing?
 

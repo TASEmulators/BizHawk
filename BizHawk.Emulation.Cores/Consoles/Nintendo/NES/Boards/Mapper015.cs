@@ -3,7 +3,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper015 : NesBoardBase
+	internal sealed class Mapper015 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_8k;

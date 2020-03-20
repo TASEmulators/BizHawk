@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class NovelDiamond : NesBoardBase
+	internal sealed class NovelDiamond : NesBoardBase
 	{
 		int prg;
 		int chr;

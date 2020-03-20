@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Crime Busters (Brazil) (Unl)
-	public sealed class Mapper038 : NesBoardBase
+	internal sealed class Mapper038 : NesBoardBase
 	{
 		//configuraton
 		int prg_mask, chr_mask;

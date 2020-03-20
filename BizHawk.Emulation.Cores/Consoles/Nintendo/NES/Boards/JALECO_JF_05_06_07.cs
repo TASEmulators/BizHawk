@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	Ninja Jajamaru Kun - JF_06
 	Argus (J) - JF_07
 	*/
-	public sealed class JALECO_JF_05_06_07 : NesBoardBase
+	internal sealed class JALECO_JF_05_06_07 : NesBoardBase
 	{
 		int prg_byte_mask;
 		int chr;

@@ -1,7 +1,7 @@
 ﻿using BizHawk.Common;
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class UNIF_UNL_EDU2000 : NesBoardBase
+	internal sealed class UNIF_UNL_EDU2000 : NesBoardBase
 	{
 		private int _reg;
 

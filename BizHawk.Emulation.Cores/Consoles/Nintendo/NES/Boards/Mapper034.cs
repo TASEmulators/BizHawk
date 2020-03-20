@@ -2,7 +2,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper034 : NesBoardBase
+	internal sealed class Mapper034 : NesBoardBase
 	{
 		// zombie board that tries to handle both bxrom and ave-nina at once
 

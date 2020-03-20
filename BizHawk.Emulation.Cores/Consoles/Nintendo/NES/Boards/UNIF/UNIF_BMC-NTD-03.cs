@@ -3,7 +3,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class UNIF_BMC_NTD_03 : NesBoardBase
+	internal sealed class UNIF_BMC_NTD_03 : NesBoardBase
 	{
 		private int latche;
 

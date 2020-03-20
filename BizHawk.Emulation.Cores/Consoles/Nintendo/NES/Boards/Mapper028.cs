@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// http://wiki.nesdev.com/w/index.php/User:Tepples/Multi-discrete_mapper
-	public sealed class Mapper028 : NesBoardBase
+	internal sealed class Mapper028 : NesBoardBase
 	{
 		// config
 		int chr_mask_8k;

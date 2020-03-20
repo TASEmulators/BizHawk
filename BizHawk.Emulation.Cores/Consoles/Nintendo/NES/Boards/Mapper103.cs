@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Doki Doki Panic (FDS port)
 	// "BTL 2708"
-	public sealed class Mapper103 : NesBoardBase
+	internal sealed class Mapper103 : NesBoardBase
 	{
 		int prg;
 		bool romenable;

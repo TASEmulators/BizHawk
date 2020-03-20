@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// 65-in-1 (NT766) [p1][U][!]
 	// 74-in-1 (NT886) [p1][U][!]
 	// 77-in-1 (NT141) [p1][U][!]
-	public sealed class UNIF_BMC_D1038 : NesBoardBase
+	internal sealed class UNIF_BMC_D1038 : NesBoardBase
 	{
 		[MapperProp]
 		public int D1038_Dipswitch;

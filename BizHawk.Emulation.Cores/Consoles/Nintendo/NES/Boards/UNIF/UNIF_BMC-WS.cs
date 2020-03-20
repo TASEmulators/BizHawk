@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Based on Nitnendulator src
-	public sealed class UNIF_BMC_WS : NesBoardBase
+	internal sealed class UNIF_BMC_WS : NesBoardBase
 	{
 		private byte _reg0;
 		private byte _reg1;

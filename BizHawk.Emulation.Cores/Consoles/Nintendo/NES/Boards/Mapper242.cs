@@ -17,7 +17,7 @@ mirroring - both
 	 * Wai Xing Zhan Shi (Ch)
 	 */
 
-	public sealed class Mapper242 : NesBoardBase
+	internal sealed class Mapper242 : NesBoardBase
 	{
 		int prg;
 

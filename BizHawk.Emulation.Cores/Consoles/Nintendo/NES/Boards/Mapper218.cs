@@ -2,7 +2,7 @@
 {
 	// rewires pins to use internal CIRAM as both nametable and pattern data, so
 	// the entire cart is just a single PRGROM chip (plus CIC)
-	public sealed class Mapper218 : NesBoardBase
+	internal sealed class Mapper218 : NesBoardBase
 	{
 		//configuration
 		int prg_byte_mask;

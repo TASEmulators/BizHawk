@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// aka NAMCOT-3446
 	// just a mapper206 with a few lines changed;
 	// but easiest described in code with a separate, independent class
-	public sealed class Mapper076 : NesBoardBase
+	internal sealed class Mapper076 : NesBoardBase
 	{
 		// config
 		int chr_bank_mask_2k;

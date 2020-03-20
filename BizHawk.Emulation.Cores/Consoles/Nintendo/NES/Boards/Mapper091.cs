@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper91 : NesBoardBase
+	internal sealed class Mapper91 : NesBoardBase
 	{
 		/*
 		*Note: Street Fighter III (Unl) is actually mapper 197.  However variations such as Street Fighter III (9 Fighter) and Mari Street Fighter III use this mapper

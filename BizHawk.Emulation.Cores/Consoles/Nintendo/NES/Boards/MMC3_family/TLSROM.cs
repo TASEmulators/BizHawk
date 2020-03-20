@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//aka mapper 118
 	//wires the mapper outputs to control the nametables
-	public sealed class TLSROM : MMC3Board_Base
+	internal sealed class TLSROM : MMC3Board_Base
 	{
 		public int[] nametables = new int[4];
 

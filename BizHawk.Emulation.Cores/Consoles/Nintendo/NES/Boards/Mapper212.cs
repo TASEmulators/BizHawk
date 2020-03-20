@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// 999999-in-1
 	// 1000000-in-1
 	// http://wiki.nesdev.com/w/index.php/INES_Mapper_212
-	public class Mapper212 : NesBoardBase
+	internal sealed class Mapper212 : NesBoardBase
 	{
 		private int _reg;
 		private int prg_bank_mask_32k, prg_bank_mask_16k, chr_bank_mask_8k;

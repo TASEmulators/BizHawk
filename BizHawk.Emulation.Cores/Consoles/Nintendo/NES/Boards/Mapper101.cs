@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// good dumps of this rom are on Mapper087; only bad dumps with CHR banks out of order go here
 	// nothing else uses this, other than hypothetical homebrews which might prefer it to CxROM
 	// because of no bus conflicts
-	public sealed class Mapper101 : NesBoardBase
+	internal sealed class Mapper101 : NesBoardBase
 	{
 		//configuration
 		int chr_bank_mask_8k;

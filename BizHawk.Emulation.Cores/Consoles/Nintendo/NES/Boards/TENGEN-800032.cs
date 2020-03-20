@@ -4,7 +4,7 @@ using BizHawk.Common.NumberExtensions;
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//AKA mapper 64
-	public sealed class TENGEN_800032 : NesBoardBase
+	internal sealed class TENGEN_800032 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_8k;

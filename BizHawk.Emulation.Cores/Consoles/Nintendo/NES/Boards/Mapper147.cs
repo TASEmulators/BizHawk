@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Challenge of the Dragon (Sachen) [!]
 	// Chinese KungFu (Sachen-JAP) [!]
-	public sealed class Mapper147 : NesBoardBase
+	internal sealed class Mapper147 : NesBoardBase
 	{
 		private int _chrBankMask_8k;
 		private int _prgBankMask_32k;

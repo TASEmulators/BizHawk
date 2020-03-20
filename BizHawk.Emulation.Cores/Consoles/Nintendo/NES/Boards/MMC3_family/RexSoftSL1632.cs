@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// p-p-p-p-pirate?
 	// http://svn.opennestopia.staulkor.com/Nestopia/core/board/NstBoardRexSoftSl1632.cpp
-	public class RexSoftSL1632 : MMC3Board_Base
+	internal sealed class RexSoftSL1632 : MMC3Board_Base
 	{
 		// state
 		byte exmode;

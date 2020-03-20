@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//mapper 21 + 22 + 23 + 25 (docs largely in 021.txt for VRC4 and 22.txt for VRC2)
 	//If you change any of the IRQ logic here, be sure to change it in VRC 3/6/7 as well.
-	public sealed class VRC2_4 : NesBoardBase
+	internal sealed class VRC2_4 : NesBoardBase
 	{
 		#region addressmaps
 

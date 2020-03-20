@@ -4,7 +4,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class CoolBoy : MMC3Board_Base
+	internal sealed class CoolBoy : MMC3Board_Base
 	{
 		// eldritch horror pirate multicart
 		// 32MB prg rom, no prg ram, no chr rom, 128KB chr ram

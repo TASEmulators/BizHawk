@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	//NOTE - fceux support for this mapper has some kind of -4 cpu cycle delay built into the timer. not sure yet whether we need that
 
-	public sealed class Irem_H3001 : NesBoardBase
+	internal sealed class Irem_H3001 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask, chr_bank_mask;

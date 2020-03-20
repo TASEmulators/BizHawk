@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// Tetris Family 12-in-1 (GS-2013) [U][!]
 	// This cart is 2 ROMs in 1
 	// Pretty much the UNIF_BMC-GS_2004 board, with more Rom tacked on
-	public class UNIF_BMC_GS_2013 : NesBoardBase
+	internal sealed class UNIF_BMC_GS_2013 : NesBoardBase
 	{
 		private int _reg = 0xFF;
 		private bool _isRom2 = true;

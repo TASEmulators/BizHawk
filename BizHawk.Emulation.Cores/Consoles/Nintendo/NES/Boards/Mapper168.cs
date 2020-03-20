@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// defaults to off, the control regs are write only, and cannot be reenabled.  so...
 
 	// todo: special controller, and IRQ is possibly wrong
-	public sealed class Mapper168 : NesBoardBase
+	internal sealed class Mapper168 : NesBoardBase
 	{
 		int prg = 0;
 		int chr = 0;

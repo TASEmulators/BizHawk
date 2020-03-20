@@ -1,7 +1,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	[NesBoardImplPriority]
-	public sealed class NROM : NesBoardBase
+	internal sealed class NROM : NesBoardBase
 	{
 		//configuration
 		int prg_byte_mask;

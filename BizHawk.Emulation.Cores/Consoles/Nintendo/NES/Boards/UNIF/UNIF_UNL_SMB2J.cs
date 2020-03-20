@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class UNIF_UNL_SMB2J : NesBoardBase
+	internal sealed class UNIF_UNL_SMB2J : NesBoardBase
 	{
 		int prg = 0;
 		int prg_count;

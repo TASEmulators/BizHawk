@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//mapper 24 + 26
 	//If you change any of the IRQ logic here, be sure to change it in VRC 4/7 as well.
-	public sealed class VRC6 : NesBoardBase
+	internal sealed class VRC6 : NesBoardBase
 	{
 		#region CHRLUT
 		// what did i do in a previous life to deserve this?

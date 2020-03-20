@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//AKA mapper 071
 	//TODO - apparently this mapper contains good nes timing test cases
-	public sealed class Camerica_Mapper071 : NesBoardBase
+	internal sealed class Camerica_Mapper071 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_16k;

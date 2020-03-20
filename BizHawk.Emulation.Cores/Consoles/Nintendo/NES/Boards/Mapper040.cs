@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// smb2j (us pirate)
-	public sealed class Mapper040 : NesBoardBase
+	internal sealed class Mapper040 : NesBoardBase
 	{
 		int prg = 0;
 		int irqcnt = 0;

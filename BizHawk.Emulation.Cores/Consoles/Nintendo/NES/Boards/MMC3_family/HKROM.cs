@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//aka MMC6 aka StarTropics and StarTropics 2
 	//for simplicity's sake, the behaviour of mmc6 is wrapped up into this board since it isnt used anywhere else
-	public sealed class HKROM : MMC3Board_Base
+	internal sealed class HKROM : MMC3Board_Base
 	{
 		//configuration
 

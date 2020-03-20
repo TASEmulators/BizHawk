@@ -2,8 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	// Adapted from 
-	public sealed class CamericaGoldenFive : NesBoardBase
+	internal sealed class CamericaGoldenFive : NesBoardBase
 	{
 		private byte[] regs = new byte[2];
 

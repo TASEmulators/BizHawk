@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Meikyuu Jiin Dababa (FDS Conversion)
-	public sealed class Mapper108 : NesBoardBase
+	internal sealed class Mapper108 : NesBoardBase
 	{
 		private int prg;
 

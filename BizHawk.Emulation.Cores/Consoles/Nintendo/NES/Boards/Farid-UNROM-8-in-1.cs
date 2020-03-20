@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Farid_UNROM_8_in_1 : NesBoardBase
+	internal sealed class Farid_UNROM_8_in_1 : NesBoardBase
 	{
 		// http://forums.nesdev.com/viewtopic.php?f=9&t=11099
 

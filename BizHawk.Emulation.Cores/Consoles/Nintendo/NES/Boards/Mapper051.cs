@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper051 : NesBoardBase
+	internal sealed class Mapper051 : NesBoardBase
 	{
 		private int _bank;
 		private int _mode = 2;

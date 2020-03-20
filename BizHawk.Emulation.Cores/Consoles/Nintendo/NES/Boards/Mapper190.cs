@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Magic Kid GooGoo
-	public sealed class Mapper190 : NesBoardBase
+	internal sealed class Mapper190 : NesBoardBase
 	{
 		//state
 		int prg_reg;

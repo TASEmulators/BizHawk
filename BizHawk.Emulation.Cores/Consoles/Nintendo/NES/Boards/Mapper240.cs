@@ -3,7 +3,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper240 : NesBoardBase
+	internal sealed class Mapper240 : NesBoardBase
 	{
 		//MHROM (mapper60) -like but wider regs (4 prg, 4 chr instead of 2 prg, 2 chr) and on EXP bus
 

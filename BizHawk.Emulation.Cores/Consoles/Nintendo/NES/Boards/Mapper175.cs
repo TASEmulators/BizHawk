@@ -3,7 +3,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper175 : NesBoardBase
+	internal sealed class Mapper175 : NesBoardBase
 	{
 		private bool delay;
 

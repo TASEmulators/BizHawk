@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//Mapper 069 is FME7 
 	//or, Sunsoft-5, which is FME7 with additional sound hardware
 
-	public sealed class Sunsoft_5 : Sunsoft_FME7
+	internal sealed class Sunsoft_5 : Sunsoft_FME7
 	{
 		Sunsoft5BAudio audio;
 
@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 	}
 
-	public class Sunsoft_FME7 : NesBoardBase
+	internal class Sunsoft_FME7 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_8k, chr_bank_mask_1k, wram_bank_mask_8k;

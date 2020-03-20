@@ -6,7 +6,7 @@ using BizHawk.Common;
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	[NesBoardImplPriority]
-	public sealed class TxROM : MMC3Board_Base
+	internal sealed class TxROM : MMC3Board_Base
 	{
 		public override void WritePrg(int addr, byte value)
 		{

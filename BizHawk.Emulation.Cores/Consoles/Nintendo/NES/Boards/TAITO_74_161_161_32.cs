@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//Arkanoid 2 (J)
 	//Gegege no Kitarou 2
 
-	public sealed class TAITO_74_161_161_32 : NesBoardBase
+	internal sealed class TAITO_74_161_161_32 : NesBoardBase
 	{
 		int chr;
 		int prg_bank_mask_16k;

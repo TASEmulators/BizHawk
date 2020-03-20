@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper046 : NesBoardBase
+	internal sealed class Mapper046 : NesBoardBase
 	{
 		//Rumblestation 15-in-1 (Unl).nes
 

@@ -415,7 +415,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 	}
 
-	public static class AutoMapperProps
+	internal static class AutoMapperProps
 	{
 		public static void Populate(INesBoard board, NES.NESSyncSettings settings)
 		{

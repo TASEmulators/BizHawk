@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper241 : NesBoardBase
+	internal sealed class Mapper241 : NesBoardBase
 	{
 		//163 is for nanjing games
 

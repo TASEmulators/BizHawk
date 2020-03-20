@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//TODO - bus conflicts
 
 	[NesBoardImplPriority]
-	public sealed class GxROM : NesBoardBase
+	internal sealed class GxROM : NesBoardBase
 	{
 		//configuraton
 		int prg_mask, chr_mask;

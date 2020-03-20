@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// http://www.qmtpro.com/~nes/drip/dripmap.txt
 	// http://wiki.nesdev.com/w/index.php/UNIF/UNL-DripGame
-	public class UNIF_UNL_DripGame : NesBoardBase
+	internal sealed class UNIF_UNL_DripGame : NesBoardBase
 	{
 		[MapperProp]
 		public bool DripGameDipSwitch;

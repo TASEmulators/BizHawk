@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//game=shanghai ; chip=sunsoft-2 ; pcb=SUNSOFT-3R
 	//this is confusing. see docs/sunsoft.txt
-	public sealed class Sunsoft2_Mapper93 : NesBoardBase
+	internal sealed class Sunsoft2_Mapper93 : NesBoardBase
 	{
 		int prg_bank_mask_16k;
 		byte prg_bank_16k;

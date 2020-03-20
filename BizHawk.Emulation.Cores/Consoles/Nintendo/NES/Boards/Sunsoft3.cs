@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//AKA mapper 67
 	//this may be confusing due to general chaos with the early sunsoft mappers. see docs/sunsoft.txt
-	public sealed class Sunsoft3 : NesBoardBase
+	internal sealed class Sunsoft3 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_16k, chr_bank_mask_2k;

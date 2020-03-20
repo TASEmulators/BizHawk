@@ -3,7 +3,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper236 : NesBoardBase
+	internal sealed class Mapper236 : NesBoardBase
 	{
 		[MapperProp]
 		public byte CartSwitch_70in1 = 0xd;

@@ -2,7 +2,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class NES_QJ : MMC3Board_Base
+	internal sealed class NES_QJ : MMC3Board_Base
 	{
 		//state
 		int block;

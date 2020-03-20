@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// describes Sachen8259A/B/C.  D is in a different class
 	// behavior from fceumm
 
-	public class Sachen8259ABC : NesBoardBase
+	internal sealed class Sachen8259ABC : NesBoardBase
 	{
 		// config
 		int prg_bank_mask_32k;
@@ -173,7 +173,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	// i think there's something wrong with the mapper implementation; but the game
 	// sucks so hard, it's hard to tell
-	public class Sachen8259D : NesBoardBase
+	internal sealed class Sachen8259D : NesBoardBase
 	{
 		// config
 		int prg_bank_mask_32k;

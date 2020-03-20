@@ -4,7 +4,7 @@ using BizHawk.Common.NumberExtensions;
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//AKA half of mapper 034 (the other half is BxROM which is entirely different..)
-	public sealed class AVE_NINA_001 : NesBoardBase
+	internal sealed class AVE_NINA_001 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_32k, chr_bank_mask_4k;

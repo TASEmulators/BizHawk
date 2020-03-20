@@ -3,7 +3,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class Mapper196 : MMC3Board_Base
+	internal sealed class Mapper196 : MMC3Board_Base
 	{
 		// pirate crap
 		// behavior from fceumm

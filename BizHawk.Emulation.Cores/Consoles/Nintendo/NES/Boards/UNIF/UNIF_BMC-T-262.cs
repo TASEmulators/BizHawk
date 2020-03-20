@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class UNIF_BMC_T_262 : NesBoardBase
+	internal class UNIF_BMC_T_262 : NesBoardBase
 	{
 		private bool _mode;
 		private bool _locked;

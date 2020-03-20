@@ -3,8 +3,8 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	// Adpated from FCEUX src
-	public sealed class Mapper183 : NesBoardBase
+	// Adapted from FCEUX src
+	internal sealed class Mapper183 : NesBoardBase
 	{
 		private byte[] prg = new byte[4];
 		private byte[] chr = new byte[8];

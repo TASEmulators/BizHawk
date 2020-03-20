@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Super Gun 20-in-1
 	// http://wiki.nesdev.com/w/index.php/INES_Mapper_214
-	public class Mapper214 : NesBoardBase
+	internal sealed class Mapper214 : NesBoardBase
 	{
 		private int _chrReg, _prgReg;
 

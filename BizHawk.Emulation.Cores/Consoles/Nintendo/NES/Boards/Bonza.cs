@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 
 	// Magic Jewelry 2 (Unl)
-	public class Bonza : NesBoardBase
+	internal sealed class Bonza : NesBoardBase
 	{
 		private int _chrReg;
 		private int _prgReg;

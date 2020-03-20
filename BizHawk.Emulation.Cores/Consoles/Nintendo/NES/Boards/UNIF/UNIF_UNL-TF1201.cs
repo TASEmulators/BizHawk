@@ -3,7 +3,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class UNIF_UNL_TF1201 : NesBoardBase
+	internal class UNIF_UNL_TF1201 : NesBoardBase
 	{
 		private byte prg0;
 		private byte prg1;

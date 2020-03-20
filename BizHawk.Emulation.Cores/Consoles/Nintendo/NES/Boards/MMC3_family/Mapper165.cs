@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// Fire Emblem (Ch)
 	// mmc3 with mmc2-style chr swapping
 	// seem to be some graphical glitches...
-	public sealed class Mapper165 : MMC3Board_Base
+	internal sealed class Mapper165 : MMC3Board_Base
 	{
 		bool latch0 = false;
 		bool latch1 = false;

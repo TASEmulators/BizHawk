@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Adapted from FCEUX src
-	public sealed class Mapper238 : MMC3Board_Base
+	internal sealed class Mapper238 : MMC3Board_Base
 	{
 		private readonly int[] lut = { 0x00, 0x02, 0x02, 0x03 };
 		private byte reg;

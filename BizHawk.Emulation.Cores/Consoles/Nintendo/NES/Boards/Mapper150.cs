@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// basic on FCEUX src
-	public sealed class Mapper150 : NesBoardBase
+	internal sealed class Mapper150 : NesBoardBase
 	{
 		private byte[] latch = new byte[8];
 		private int cmd;

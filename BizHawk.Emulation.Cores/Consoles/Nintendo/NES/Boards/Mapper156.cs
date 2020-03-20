@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	* Buzz and Waldog (K)
 	* General's Son (K) 
 	*/
-	public sealed class Mapper156 : NesBoardBase
+	internal sealed class Mapper156 : NesBoardBase
 	{
 		int prg_mask;
 		int chr_mask;

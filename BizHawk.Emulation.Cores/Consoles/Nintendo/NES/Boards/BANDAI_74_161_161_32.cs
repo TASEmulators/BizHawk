@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class BANDAI_74_161_161_32 : NesBoardBase
+	internal sealed class BANDAI_74_161_161_32 : NesBoardBase
 	{
 		//Mapper 70
 		//Example Games:

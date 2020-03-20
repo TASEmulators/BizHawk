@@ -1,6 +1,6 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class TVROM : MMC3Board_Base
+	internal sealed class TVROM : MMC3Board_Base
 	{
 		public override bool Configure(EDetectionOrigin origin)
 		{

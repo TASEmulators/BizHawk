@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//http://wiki.nesdev.com/w/index.php/INES_Mapper_044
-	public class Mapper044 : MMC3Board_Base
+	internal class Mapper044 : MMC3Board_Base
 	{
 		public sealed override bool Configure(EDetectionOrigin origin)
 		{

@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper197 : MMC3Board_Base
+	internal sealed class Mapper197 : MMC3Board_Base
 	{
 		public override bool Configure(EDetectionOrigin origin)
 		{
@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 	}
 
-	public class Mapper197_MMC3 : MMC3
+	internal sealed class Mapper197_MMC3 : MMC3
 	{
 		//This board has 512k CHR ROM, so the ByteBuffer in the base class deosn't suffice.
 		public int[] chr_regs_1k_512 = new int[8];

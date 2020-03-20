@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Creatom
 	// specs pulled from Nintendulator sources
-	public sealed class Mapper132 : NesBoardBase
+	internal sealed class Mapper132 : NesBoardBase
 	{
 		private byte[] reg = new byte[4];
 

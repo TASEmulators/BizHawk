@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//AKA mapper 184
 	//Sunsoft-1 chips, EXCEPT for fantasy zone.
 	//this is confusing. see docs/sunsoft.txt
-	public sealed class Sunsoft1 : NesBoardBase
+	internal sealed class Sunsoft1 : NesBoardBase
 	{
 		int chr_mask;
 		int left_piece = 0;

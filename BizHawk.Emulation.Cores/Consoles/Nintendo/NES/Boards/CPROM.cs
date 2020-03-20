@@ -2,7 +2,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class CPROM : NesBoardBase
+	internal sealed class CPROM : NesBoardBase
 	{
 		//generally mapper 13
 

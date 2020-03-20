@@ -4,7 +4,7 @@ using BizHawk.Common.NumberExtensions;
 // http://wiki.nesdev.com/w/index.php/INES_Mapper_061
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper61 : NesBoardBase
+	internal sealed class Mapper61 : NesBoardBase
 	{
 		public int prg_page;
 		public bool prg_mode;

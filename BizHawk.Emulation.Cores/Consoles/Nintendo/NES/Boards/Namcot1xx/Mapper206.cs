@@ -2,7 +2,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//various japanese Namcot108 boards plus DEROM
 	[NesBoardImplPriority]
-	public sealed class Mapper206 : Namcot108Board_Base
+	internal sealed class Mapper206 : Namcot108Board_Base
 	{
 		public override bool Configure(EDetectionOrigin origin)
 		{

@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Adapted from FCEUX src
-	public class Mapper187 : MMC3Board_Base
+	internal sealed class Mapper187 : MMC3Board_Base
 	{
 		private byte[] exRegs = new byte[2];
 
