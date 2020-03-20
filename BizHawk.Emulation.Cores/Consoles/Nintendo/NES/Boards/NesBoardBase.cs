@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public virtual void ClockCpu() { }
 		public virtual void AtVsyncNmi() { }
 
-		public NES.CartInfo Cart => NES.cart;
+		public CartInfo Cart => NES.cart;
 		public NES NES { get; set; }
 
 		//this is set to true when SyncState is called, so that we know the base class SyncState was used

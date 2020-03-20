@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	/// </summary>
 	public class Unif
 	{
-		NES.CartInfo ci = new NES.CartInfo();
+		CartInfo ci = new CartInfo();
 		byte[] prgrom;
 		byte[] chrrom;
 
@@ -108,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				chrrom = null;
 		}
 
-		public NES.CartInfo CartInfo => ci;
+		public CartInfo CartInfo => ci;
 		public byte[] PRG => prgrom;
 		public byte[] CHR => chrrom;
 	}
