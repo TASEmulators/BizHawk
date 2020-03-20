@@ -11,6 +11,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	public sealed class VRC2_4 : NesBoardBase
 	{
 		#region addressmaps
+
 		// remaps addresses into vrc2b form
 		// all varieties of vrc2&4 require A15 = 1 (ie, we're in 8000:ffff), and key on A14:A12 in the same way
 		// in addition, each variety has two other bits; a "low bit" and a "high bit"
@@ -56,35 +57,35 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		#endregion
 
-		//configuration
-		int prg_bank_mask_8k, chr_bank_mask_1k;
-		int prg_reg_mask_8k;
-		Func<int, int> remap;
-		Func<int, int> fix_chr;
-		int type;
-		bool latch6k_exists = false;
+		private int prg_bank_mask_8k, chr_bank_mask_1k;
+		private int prg_reg_mask_8k;
+		private Func<int, int> remap;
+		private Func<int, int> fix_chr;
+		private int type;
+		private bool latch6k_exists = false;
+
 		// it's been verified that this should be true on all real VRC4 chips, and
 		// that some vrc4 boards support it: http://forums.nesdev.com/viewtopic.php?t=8569
 		// but no vrc4 game ever used it
-		bool extrabig_chr = false;
+		private bool extrabig_chr = false;
 
 		//state
-		public int[] prg_bank_reg_8k = new int[2];
+		private int[] prg_bank_reg_8k = new int[2];
 		public int[] chr_bank_reg_1k = new int[16];
-		bool prg_mode;
+		private bool _prgMode;
 		public byte[] prg_banks_8k = new byte[4];
 		public int[] chr_banks_1k = new int[8];
-		bool irq_mode;
-		bool irq_enabled, irq_pending, irq_autoen;
-		byte irq_reload;
-		byte irq_counter;
-		int irq_prescaler;
+		private bool irq_mode;
+		private bool irq_enabled, irq_pending, irq_autoen;
+		private byte irq_reload;
+		private byte irq_counter;
+		private int irq_prescaler;
 		public int extra_vrom;
-		int latch6k_value;
+		private int latch6k_value;
 
-		bool isPirate = false;
+		private bool isPirate = false;
 		// needed for 2-in-1 - Yuu Yuu + Dragonball Z [p1][!]
-		bool _isBMC = false;
+		private bool _isBMC = false;
 
 		public override void SyncState(Serializer ser)
 		{
@@ -99,6 +100,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(irq_counter), ref irq_counter);
 			ser.Sync(nameof(irq_prescaler), ref irq_prescaler);
 			ser.Sync(nameof(extra_vrom), ref extra_vrom);
+			ser.Sync(nameof(_prgMode), ref _prgMode);
 			if (latch6k_exists)
 				ser.Sync(nameof(latch6k_value), ref latch6k_value);
 			//SyncPRG();
@@ -113,7 +115,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (!_isBMC)
 			{
-				if (prg_mode)
+				if (_prgMode)
 				{
 					prg_banks_8k[0] = 0xFE;
 					prg_banks_8k[1] = (byte)(prg_bank_reg_8k[1]);
@@ -308,7 +310,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				if (addr < 0x1000)
 				{
-					prg_banks_8k[prg_mode?1:0] = (byte)((prg_banks_8k[0] & 0x20) | (value & 0x1F));
+					prg_banks_8k[_prgMode?1:0] = (byte)((prg_banks_8k[0] & 0x20) | (value & 0x1F));
 					return;
 				}
 				else if (addr >= 0x2000 && addr < 0x3000)
@@ -358,7 +360,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				case 0x1002: //$9002
 				case 0x1003: //$9003
-					if (type == 4) prg_mode = value.Bit(1);
+					if (type == 4) _prgMode = value.Bit(1);
 					else goto case 0x1000;
 					SyncPRG();
 					break;

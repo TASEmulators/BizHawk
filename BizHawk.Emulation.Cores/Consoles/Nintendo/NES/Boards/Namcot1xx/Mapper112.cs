@@ -12,16 +12,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int reg_addr;
 		byte[] regs = new byte[8];
 
-		//volatile state
-		int[] chr_regs_1k = new int[8];
-		byte[] prg_regs_8k = new byte[4];
+		private int[] _chrRegs1K = new int[8];
+		private byte[] _prgRegs8K = new byte[4];
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
 			//analyze board type
 			switch (Cart.board_type)
 			{
-				case "MAPPER112":	
+				case "MAPPER112":
 					break;
 				default:
 					return false;
@@ -42,6 +41,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(reg_addr), ref reg_addr);
 			ser.Sync(nameof(regs), ref regs, false);
 			ser.Sync(nameof(chr_outer_reg), ref chr_outer_reg);
+			ser.Sync(nameof(_chrRegs1K), ref _chrRegs1K, false);
+			ser.Sync(nameof(_prgRegs8K), ref _prgRegs8K, false);
+
 			Sync();
 		}
 
@@ -77,10 +79,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		void Sync()
 		{
-			prg_regs_8k[0] = regs[0];
-			prg_regs_8k[1] = regs[1];
-			prg_regs_8k[2] = 0xFE;
-			prg_regs_8k[3] = 0xFF;
+			_prgRegs8K[0] = regs[0];
+			_prgRegs8K[1] = regs[1];
+			_prgRegs8K[2] = 0xFE;
+			_prgRegs8K[3] = 0xFF;
 
 			byte r0_0 = (byte)(regs[2] & ~1);
 			byte r0_1 = (byte)(regs[2] | 1);
@@ -92,27 +94,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			int temp6 = (chr_outer_reg & 0x40) << 2;
 			int temp7 = (chr_outer_reg & 0x80) << 1;
 
-			chr_regs_1k[0] = r0_0;
-			chr_regs_1k[1] = r0_1;
-			chr_regs_1k[2] = r1_0;
-			chr_regs_1k[3] = r1_1;
-			chr_regs_1k[4] = temp4 | regs[4];
-			chr_regs_1k[5] = temp5 | regs[5];
-			chr_regs_1k[6] = temp6 | regs[6];
-			chr_regs_1k[7] = temp7 | regs[7];
+			_chrRegs1K[0] = r0_0;
+			_chrRegs1K[1] = r0_1;
+			_chrRegs1K[2] = r1_0;
+			_chrRegs1K[3] = r1_1;
+			_chrRegs1K[4] = temp4 | regs[4];
+			_chrRegs1K[5] = temp5 | regs[5];
+			_chrRegs1K[6] = temp6 | regs[6];
+			_chrRegs1K[7] = temp7 | regs[7];
 		}
 
 		public int Get_PRGBank_8K(int addr)
 		{
 			int bank_8k = addr >> 13;
-			bank_8k = prg_regs_8k[bank_8k];
+			bank_8k = _prgRegs8K[bank_8k];
 			return bank_8k;
 		}
 
 		public int Get_CHRBank_1K(int addr)
 		{
 			int bank_1k = addr >> 10;
-			bank_1k = chr_regs_1k[bank_1k];
+			bank_1k = _chrRegs1K[bank_1k];
 			return bank_1k;
 		}
 

@@ -20,31 +20,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	[NES.INESBoardImplPriorityAttribute]
 	public sealed class ExROM : NesBoardBase
 	{
-		//configuraton
-		int prg_bank_mask_8k, chr_bank_mask_1k; //board setup (to be isolated from mmc5 code later, when we need the separate mmc5 class)
+		private int prg_bank_mask_8k, chr_bank_mask_1k; //board setup (to be isolated from mmc5 code later, when we need the separate mmc5 class)
 
-		//state
-		int irq_target, irq_counter;
-		bool irq_enabled, irq_pending, in_frame;
-		int exram_mode, chr_mode, prg_mode;
-		int chr_reg_high;
-		int ab_mode;
-		int[] regs_a = new int[8];
-		int[] regs_b = new int[4];
-		int[] regs_prg = new int[4];
-		int[] nt_modes = new int[4];
-		byte nt_fill_tile, nt_fill_attrib;
-		int wram_bank;
-		byte[] EXRAM = new byte[1024];
-		byte multiplicand, multiplier;
-		MMC5Audio audio;
-		//regeneratable state
-		int[] a_banks_1k = new int[8];
-		int[] b_banks_1k = new int[8];
-		int[] prg_banks_8k = new int[4];
-		byte product_low, product_high;
-		int last_nt_read;
-		bool irq_audio;
+		private int irq_target, irq_counter;
+		private bool irq_enabled, irq_pending, in_frame;
+		private int exram_mode, chr_mode, prg_mode;
+		private int chr_reg_high;
+		private int ab_mode;
+		private int[] regs_a = new int[8];
+		private int[] regs_b = new int[4];
+		private int[] regs_prg = new int[4];
+		private int[] nt_modes = new int[4];
+		private byte nt_fill_tile, nt_fill_attrib;
+		private int wram_bank;
+		private byte[] EXRAM = new byte[1024];
+		private byte multiplicand, multiplier;
+		private MMC5Audio audio;
+
+		private int[] _aBanks1K = new int[8];
+		private int[] _bBanks1K = new int[8];
+		private int[] _prgBanks8K = new int[4];
+		private byte product_low, product_high;
+		private int last_nt_read;
+		private bool irq_audio;
 
 		public MemoryDomain GetExRAM()
 		{
@@ -61,6 +59,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
+			ser.Sync(nameof(_aBanks1K), ref _aBanks1K, false);
+			ser.Sync(nameof(_bBanks1K), ref _bBanks1K, false);
+			ser.Sync(nameof(_prgBanks8K), ref _prgBanks8K, false);
 			ser.Sync(nameof(irq_target), ref irq_target);
 			ser.Sync(nameof(irq_counter), ref irq_counter);
 			ser.Sync(nameof(irq_enabled), ref irq_enabled);
@@ -147,7 +148,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int PRGGetBank(int addr, out bool ram)
 		{
 			int bank_8k = addr >> 13;
-			bank_8k = prg_banks_8k[bank_8k];
+			bank_8k = _prgBanks8K[bank_8k];
 			ram = (bank_8k & 0x80) == 0;
 			if (!ram)
 				bank_8k &= prg_bank_mask_8k;
@@ -248,19 +249,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				bool isPattern = NES.ppu.PPUON;
 				if (NES.ppu.ppuphase == PPU.PPU_PHASE_OBJ && isPattern)
-					bank_1k = a_banks_1k[bank_1k];
+					bank_1k = _aBanks1K[bank_1k];
 				else if (NES.ppu.ppuphase == PPU.PPU_PHASE_BG && isPattern)
-					bank_1k = b_banks_1k[bank_1k];
+					bank_1k = _bBanks1K[bank_1k];
 				else
 				{
 					bank_1k = ab_mode == 0
-						? a_banks_1k[bank_1k]
-						: b_banks_1k[bank_1k];
+						? _aBanks1K[bank_1k]
+						: _bBanks1K[bank_1k];
 				}
 			}
 			else
 			{
-				bank_1k = a_banks_1k[bank_1k];
+				bank_1k = _aBanks1K[bank_1k];
 			}
 		
 			bank_1k &= chr_bank_mask_1k;
@@ -724,22 +725,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (prg_mode)
 			{
 				case 0:
-					SetBank(prg_banks_8k, 0, 4, regs_prg[3]&~3);
+					SetBank(_prgBanks8K, 0, 4, regs_prg[3]&~3);
 					break;
 				case 1:
-					SetBank(prg_banks_8k, 0, 2, regs_prg[1] & ~1);
-					SetBank(prg_banks_8k, 2, 2, regs_prg[3] & ~1);
+					SetBank(_prgBanks8K, 0, 2, regs_prg[1] & ~1);
+					SetBank(_prgBanks8K, 2, 2, regs_prg[3] & ~1);
 					break;
 				case 2:
-					SetBank(prg_banks_8k, 0, 2, regs_prg[1] & ~1);
-					SetBank(prg_banks_8k, 2, 1, regs_prg[2]);
-					SetBank(prg_banks_8k, 3, 1, regs_prg[3]);
+					SetBank(_prgBanks8K, 0, 2, regs_prg[1] & ~1);
+					SetBank(_prgBanks8K, 2, 1, regs_prg[2]);
+					SetBank(_prgBanks8K, 3, 1, regs_prg[3]);
 					break;
 				case 3:
-					SetBank(prg_banks_8k, 0, 1, regs_prg[0]);
-					SetBank(prg_banks_8k, 1, 1, regs_prg[1]);
-					SetBank(prg_banks_8k, 2, 1, regs_prg[2]);
-					SetBank(prg_banks_8k, 3, 1, regs_prg[3]);
+					SetBank(_prgBanks8K, 0, 1, regs_prg[0]);
+					SetBank(_prgBanks8K, 1, 1, regs_prg[1]);
+					SetBank(_prgBanks8K, 2, 1, regs_prg[2]);
+					SetBank(_prgBanks8K, 3, 1, regs_prg[3]);
 					break;
 			}
 		}
@@ -753,42 +754,42 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (chr_mode)
 			{
 				case 0:
-					SetBank(a_banks_1k, 0, 8, regs_a[7] * 8);
-					SetBank(b_banks_1k, 0, 8, regs_b[3] * 8);
+					SetBank(_aBanks1K, 0, 8, regs_a[7] * 8);
+					SetBank(_bBanks1K, 0, 8, regs_b[3] * 8);
 					break;
 				case 1:
-					SetBank(a_banks_1k, 0, 4, regs_a[3] * 4);
-					SetBank(a_banks_1k, 4, 4, regs_a[7] * 4);
-					SetBank(b_banks_1k, 0, 4, regs_b[3] * 4);
-					SetBank(b_banks_1k, 4, 4, regs_b[3] * 4);
+					SetBank(_aBanks1K, 0, 4, regs_a[3] * 4);
+					SetBank(_aBanks1K, 4, 4, regs_a[7] * 4);
+					SetBank(_bBanks1K, 0, 4, regs_b[3] * 4);
+					SetBank(_bBanks1K, 4, 4, regs_b[3] * 4);
 					break;
 				case 2:
-					SetBank(a_banks_1k, 0, 2, regs_a[1] * 2);
-					SetBank(a_banks_1k, 2, 2, regs_a[3] * 2);
-					SetBank(a_banks_1k, 4, 2, regs_a[5] * 2);
-					SetBank(a_banks_1k, 6, 2, regs_a[7] * 2);
-					SetBank(b_banks_1k, 0, 2, regs_b[1] * 2);
-					SetBank(b_banks_1k, 2, 2, regs_b[3] * 2);
-					SetBank(b_banks_1k, 4, 2, regs_b[1] * 2);
-					SetBank(b_banks_1k, 6, 2, regs_b[3] * 2);
+					SetBank(_aBanks1K, 0, 2, regs_a[1] * 2);
+					SetBank(_aBanks1K, 2, 2, regs_a[3] * 2);
+					SetBank(_aBanks1K, 4, 2, regs_a[5] * 2);
+					SetBank(_aBanks1K, 6, 2, regs_a[7] * 2);
+					SetBank(_bBanks1K, 0, 2, regs_b[1] * 2);
+					SetBank(_bBanks1K, 2, 2, regs_b[3] * 2);
+					SetBank(_bBanks1K, 4, 2, regs_b[1] * 2);
+					SetBank(_bBanks1K, 6, 2, regs_b[3] * 2);
 					break;
 				case 3:
-					SetBank(a_banks_1k, 0, 1, regs_a[0]);
-					SetBank(a_banks_1k, 1, 1, regs_a[1]);
-					SetBank(a_banks_1k, 2, 1, regs_a[2]);
-					SetBank(a_banks_1k, 3, 1, regs_a[3]);
-					SetBank(a_banks_1k, 4, 1, regs_a[4]);
-					SetBank(a_banks_1k, 5, 1, regs_a[5]);
-					SetBank(a_banks_1k, 6, 1, regs_a[6]);
-					SetBank(a_banks_1k, 7, 1, regs_a[7]);
-					SetBank(b_banks_1k, 0, 1, regs_b[0]);
-					SetBank(b_banks_1k, 1, 1, regs_b[1]);
-					SetBank(b_banks_1k, 2, 1, regs_b[2]);
-					SetBank(b_banks_1k, 3, 1, regs_b[3]);
-					SetBank(b_banks_1k, 4, 1, regs_b[0]);
-					SetBank(b_banks_1k, 5, 1, regs_b[1]);
-					SetBank(b_banks_1k, 6, 1, regs_b[2]);
-					SetBank(b_banks_1k, 7, 1, regs_b[3]);
+					SetBank(_aBanks1K, 0, 1, regs_a[0]);
+					SetBank(_aBanks1K, 1, 1, regs_a[1]);
+					SetBank(_aBanks1K, 2, 1, regs_a[2]);
+					SetBank(_aBanks1K, 3, 1, regs_a[3]);
+					SetBank(_aBanks1K, 4, 1, regs_a[4]);
+					SetBank(_aBanks1K, 5, 1, regs_a[5]);
+					SetBank(_aBanks1K, 6, 1, regs_a[6]);
+					SetBank(_aBanks1K, 7, 1, regs_a[7]);
+					SetBank(_bBanks1K, 0, 1, regs_b[0]);
+					SetBank(_bBanks1K, 1, 1, regs_b[1]);
+					SetBank(_bBanks1K, 2, 1, regs_b[2]);
+					SetBank(_bBanks1K, 3, 1, regs_b[3]);
+					SetBank(_bBanks1K, 4, 1, regs_b[0]);
+					SetBank(_bBanks1K, 5, 1, regs_b[1]);
+					SetBank(_bBanks1K, 6, 1, regs_b[2]);
+					SetBank(_bBanks1K, 7, 1, regs_b[3]);
 					break;
 			}
 		}
