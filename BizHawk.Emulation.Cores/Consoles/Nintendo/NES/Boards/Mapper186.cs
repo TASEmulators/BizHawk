@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private byte[] _SRAM = new byte[3072];
 		private byte[] regs = new byte[4];
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
 			{

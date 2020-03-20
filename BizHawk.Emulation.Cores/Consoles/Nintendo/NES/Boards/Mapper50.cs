@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		ushort irq_counter = 0;
 		bool irq_ready = false;
 		int ppu_cyclecount = 0;
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
 			switch (Cart.board_type)

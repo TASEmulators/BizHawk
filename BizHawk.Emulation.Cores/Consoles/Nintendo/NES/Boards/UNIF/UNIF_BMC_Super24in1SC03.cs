@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 		private byte[] exRegs = new byte[3];
 		private readonly int[] masko8 = { 63, 31, 15, 1, 3, 0, 0, 0 };
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
 			{

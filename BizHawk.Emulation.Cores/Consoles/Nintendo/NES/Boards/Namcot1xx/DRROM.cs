@@ -3,7 +3,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//this board contains a Namcot 109 and some extra ram for nametables
 	public sealed class DRROM : Namcot108Board_Base
 	{
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
 			switch (Cart.board_type)

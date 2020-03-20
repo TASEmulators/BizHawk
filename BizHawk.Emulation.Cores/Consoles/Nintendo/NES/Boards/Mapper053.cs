@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private bool Prg16kMode => _reg0.Bit(4);
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
 			{
@@ -90,7 +90,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private bool Prg16kMode => _reg0.Bit(4);
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
 			{

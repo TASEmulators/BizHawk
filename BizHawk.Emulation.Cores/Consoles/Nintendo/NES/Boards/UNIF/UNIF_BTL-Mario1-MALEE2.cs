@@ -2,7 +2,7 @@
 {
 	public sealed class Mapper055 : NesBoardBase
 	{
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
 			{

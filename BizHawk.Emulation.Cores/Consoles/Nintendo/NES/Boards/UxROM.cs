@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//let's make the extra space here, instead of in the main NES to avoid confusion
 		byte[] CIRAM_VS = new byte[0x800];
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			adjust_prg = (x) => x;
 

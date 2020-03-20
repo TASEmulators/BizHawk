@@ -118,7 +118,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public byte[] GetDiskImage() => diskimage;
 
 		// as we have [INESBoardImplCancel], this will only be called with an fds disk image
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			if (biosrom == null || biosrom.Length != 8192)
 				throw new MissingFirmwareException("FDS bios image needed!");

@@ -93,7 +93,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (ser.IsReader) Sync();
 		}
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
 			{

@@ -5,7 +5,7 @@
 	// presumably the board contains an MMC3 clone with some unique edge case behavior; unknown
 	public sealed class Mapper250 : MMC3Board_Base
 	{
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
 			{

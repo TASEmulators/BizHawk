@@ -70,13 +70,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int chr_mode;
 		public int prg_mode;
 		public int prg_slot; // complicated
-		public NesBoardBase.EMirrorType mirror;
-		static readonly NesBoardBase.EMirrorType[] _mirrorTypes =
+		public EMirrorType mirror;
+		static readonly EMirrorType[] _mirrorTypes =
 		{
-			NesBoardBase.EMirrorType.OneScreenA,
-			NesBoardBase.EMirrorType.OneScreenB,
-			NesBoardBase.EMirrorType.Vertical,
-			NesBoardBase.EMirrorType.Horizontal
+			EMirrorType.OneScreenA,
+			EMirrorType.OneScreenB,
+			EMirrorType.Vertical,
+			EMirrorType.Horizontal
 		};
 
 		//register 1,2:
@@ -146,7 +146,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_slot = 1;
 			chr_mode = 1;
 			scnt.Reset();
-			mirror = NesBoardBase.EMirrorType.Horizontal;
+			mirror = EMirrorType.Horizontal;
 			SyncCHR();
 			SyncPRG();
 		}
@@ -393,7 +393,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ser.Sync("VS_CIRAM", ref CIRAM_VS, false);
 		}
 	
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
 			{
@@ -542,7 +542,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 		//this uses a CHR bit to select WRAM banks
 		//TODO - only the latter 8KB is supposed to be battery backed
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
 			{
@@ -584,7 +584,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 		//SXROM's PRG behaves similar to SuROM (and so inherits from it)
 		//it also has some WRAM select bits like SoROM
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
 			{
@@ -622,7 +622,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	class SuROM : SxROM
 	{
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//SUROM uses CHR A16 to control the upper address line (PRG A18) of its 512KB PRG ROM.
 

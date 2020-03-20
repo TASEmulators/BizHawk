@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		byte[] prg_banks_16k = new byte[2];
 		byte[] chr_banks_8k = new byte[1];
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
 			{

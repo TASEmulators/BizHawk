@@ -4,19 +4,18 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
+	/// <summary>
+	/// These are used by SetMirroring() to provide the base class nametable mirroring service.
+	/// Apparently, these are not used for internal build configuration logic
+	/// </summary>
+	public enum EMirrorType
+	{
+		Vertical, Horizontal, OneScreenA, OneScreenB
+	}
+
 	[NesBoardImpl]
 	public abstract class NesBoardBase : INesBoard
 	{
-		/// <summary>
-		/// These are used by SetMirroring() to provide the base class nametable mirroring service.
-		/// Apparently, these are not used for internal build configuration logic
-		/// </summary>
-		public enum EMirrorType
-		{
-			Vertical, Horizontal,
-			OneScreenA, OneScreenB
-		}
-
 		public virtual void Create(NES nes)
 		{
 			NES = nes;
@@ -28,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public Dictionary<string, string> InitialRegisterValues { get; set; }
 
-		public abstract bool Configure(NES.EDetectionOrigin origin);
+		public abstract bool Configure(EDetectionOrigin origin);
 		public virtual void ClockPpu() { }
 		public virtual void ClockCpu() { }
 		public virtual void AtVsyncNmi() { }

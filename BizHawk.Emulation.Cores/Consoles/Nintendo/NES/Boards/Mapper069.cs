@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 		Sunsoft5BAudio audio;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
 			switch (Cart.board_type)
@@ -87,7 +87,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SyncIrq();
 		}
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
 			switch (Cart.board_type)

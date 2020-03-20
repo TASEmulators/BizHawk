@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//VirtuaNES has its own class that implements 248. I think it's wrong (MAME and/or MESS may have switched to using 115 at some point)
 	public sealed class Mapper115 : MMC3Board_Base
 	{
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
 			switch (Cart.board_type)

@@ -15,7 +15,7 @@
 	{
 		int prg;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			if (Cart.board_type != "SUNSOFT-1" || Cart.pcb != "SUNSOFT-4")
 				return false;

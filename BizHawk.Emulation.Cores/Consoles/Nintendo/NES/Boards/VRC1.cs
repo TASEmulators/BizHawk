@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
 			{
@@ -159,9 +159,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				case 0x1000: //[.... .BAM]   Mirroring, CHR reg high bits
 					if(value.Bit(0))
-						SetMirrorType(NesBoardBase.EMirrorType.Horizontal);
+						SetMirrorType(EMirrorType.Horizontal);
 					else
-						SetMirrorType(NesBoardBase.EMirrorType.Vertical);
+						SetMirrorType(EMirrorType.Vertical);
 					chr_regs_4k[0] &= 0x0F;
 					chr_regs_4k[1] &= 0x0F;
 					if (value.Bit(1)) chr_regs_4k[0] |= 0x10;

@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//state
 		//(none)
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure.
 			//contrary to expectations, some NROM games may have WRAM if theyve been identified through iNES. lame.

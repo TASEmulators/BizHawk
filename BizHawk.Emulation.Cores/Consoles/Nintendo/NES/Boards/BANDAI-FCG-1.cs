@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SyncPRG();
 		}
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
 			{
@@ -222,10 +222,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 9:
 					switch (value & 3)
 					{
-						case 0: SetMirrorType(NesBoardBase.EMirrorType.Vertical); break;
-						case 1: SetMirrorType(NesBoardBase.EMirrorType.Horizontal); break;
-						case 2: SetMirrorType(NesBoardBase.EMirrorType.OneScreenA); break;
-						case 3: SetMirrorType(NesBoardBase.EMirrorType.OneScreenB); break;
+						case 0: SetMirrorType(EMirrorType.Vertical); break;
+						case 1: SetMirrorType(EMirrorType.Horizontal); break;
+						case 2: SetMirrorType(EMirrorType.OneScreenA); break;
+						case 3: SetMirrorType(EMirrorType.OneScreenB); break;
 					}
 					break;
 				case 0xA:

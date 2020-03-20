@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int[] chr = new int[4]; // 6 bits of chr, 3 from an outer bank
 		bool simple; // when true, we're in some sort of "simplified" mode
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
 			{
@@ -184,7 +184,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int prg;
 		int[] chr = new int[8];
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
 			{

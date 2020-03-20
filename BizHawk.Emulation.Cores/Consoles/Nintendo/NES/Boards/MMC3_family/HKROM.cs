@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		bool wram_h_enabled, wram_l_enabled;
 		bool wram_h_enabled_write, wram_l_enabled_write;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
 			switch (Cart.board_type)

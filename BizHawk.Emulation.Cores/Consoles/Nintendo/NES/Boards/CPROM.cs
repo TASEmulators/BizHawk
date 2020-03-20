@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//state
 		int chr;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
 			switch (Cart.board_type)
@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//TODO - assert that mirror type is vertical?
 			//set it in the cart?
 
-			SetMirrorType(NesBoardBase.EMirrorType.Vertical);
+			SetMirrorType(EMirrorType.Vertical);
 
 			return true;
 		}

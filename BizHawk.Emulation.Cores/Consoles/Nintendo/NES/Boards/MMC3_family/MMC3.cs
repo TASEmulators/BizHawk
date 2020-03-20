@@ -51,20 +51,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 		bool oldIrqType;
 
-		public NesBoardBase.EMirrorType MirrorType
+		public EMirrorType MirrorType => mirror switch
 		{
-			get
-			{
-				switch (mirror)
-				{
-					default:
-					case 0: return NesBoardBase.EMirrorType.Vertical;
-					case 1: return NesBoardBase.EMirrorType.Horizontal;
-					case 2: return NesBoardBase.EMirrorType.OneScreenA;
-					case 3: return NesBoardBase.EMirrorType.OneScreenB;
-				}
-			}
-		}
+			1 => EMirrorType.Horizontal,
+			2 => EMirrorType.OneScreenA,
+			3 => EMirrorType.OneScreenB,
+			_ => EMirrorType.Vertical
+		};
 
 		protected NesBoardBase board;
 		public MMC3(NesBoardBase board, int num_prg_banks)

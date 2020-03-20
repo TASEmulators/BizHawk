@@ -288,11 +288,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public string GameName => game_name;
 
-		public enum EDetectionOrigin
-		{
-			None, BootGodDB, GameDB, INES, UNIF, FDS, NSF
-		}
-
 		StringWriter LoadReport;
 		void LoadWriteLine(string format, params object[] arg)
 		{

@@ -10,7 +10,7 @@
 		int prginner;
 		int prgouter; // guaranteed to be 0 on powerup
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
 			{

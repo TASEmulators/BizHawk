@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//state
 		int prg, chr;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
 			switch (Cart.board_type)
@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			chr_mask = (Cart.chr_size / 8) - 1;
 			SetMirrorType(Cart.pad_h, Cart.pad_v);
 
-			if(origin == NES.EDetectionOrigin.INES)
+			if(origin == EDetectionOrigin.INES)
 				Console.WriteLine("Caution! This board (inferred from iNES) might have wrong mirr.type");
 
 

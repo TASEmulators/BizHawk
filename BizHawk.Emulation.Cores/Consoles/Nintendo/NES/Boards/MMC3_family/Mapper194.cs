@@ -4,7 +4,7 @@
 	{
 		//http://wiki.nesdev.com/w/index.php/INES_Mapper_194
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
 			switch (Cart.board_type)

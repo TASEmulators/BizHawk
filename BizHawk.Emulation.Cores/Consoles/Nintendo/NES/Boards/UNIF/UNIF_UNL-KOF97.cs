@@ -3,7 +3,7 @@
 	// adapted from Nestopia src
 	public sealed class UNIF_UNL_KOF97 : MMC3Board_Base
 	{
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
 			{

@@ -4,7 +4,7 @@
 	{
 		private int vram_bank_mask_1k;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
 			{

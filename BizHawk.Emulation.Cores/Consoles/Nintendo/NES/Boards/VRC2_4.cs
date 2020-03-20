@@ -152,7 +152,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			IrqSignal = (irq_pending && irq_enabled);
 		}
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			fix_chr = (b) => b;
 			switch (Cart.board_type)
@@ -351,10 +351,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x1001: //$9001
 					switch (value & (type - 1)) // VRC2 only supports V, H, and not A, B
 					{
-						case 0: SetMirrorType(NesBoardBase.EMirrorType.Vertical); break;
-						case 1: SetMirrorType(NesBoardBase.EMirrorType.Horizontal); break;
-						case 2: SetMirrorType(NesBoardBase.EMirrorType.OneScreenA); break;
-						case 3: SetMirrorType(NesBoardBase.EMirrorType.OneScreenB); break;
+						case 0: SetMirrorType(EMirrorType.Vertical); break;
+						case 1: SetMirrorType(EMirrorType.Horizontal); break;
+						case 2: SetMirrorType(EMirrorType.OneScreenA); break;
+						case 3: SetMirrorType(EMirrorType.OneScreenB); break;
 					}
 					break;
 

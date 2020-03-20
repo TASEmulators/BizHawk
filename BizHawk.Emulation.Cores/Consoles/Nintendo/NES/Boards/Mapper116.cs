@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				SetMirrorType(mmc3.MirrorType);  //often redundant, but gets the job done
 			}
 
-			public override bool Configure(NES.EDetectionOrigin origin)
+			public override bool Configure(EDetectionOrigin origin)
 			{
 				BaseSetup();
 				return true;
@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SyncIRQ(mmc3.mmc3.irq_pending);
 		}
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			string oldBoardType = Cart.board_type;
 

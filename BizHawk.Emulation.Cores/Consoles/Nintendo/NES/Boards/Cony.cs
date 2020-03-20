@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private byte bank, mode;
 		private bool is_2k_bank, is_not_2k_bank;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
 			{
@@ -208,7 +208,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private byte bank, mode;
 		private bool is_2k_bank, is_not_2k_bank;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
 			{
@@ -397,7 +397,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private int _irqCount;
 		private bool _irqA, _irqEnable;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
 			{

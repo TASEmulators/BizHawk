@@ -25,7 +25,7 @@ Other chips used: Sunsoft-1
 	{
 		int chr, prg;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
 			switch (Cart.board_type)

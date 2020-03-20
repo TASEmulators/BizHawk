@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private bool resetFlag = false;
 		private bool resetSwitchMode = false;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			int prg_mask_hack = 1;
 			switch (Cart.board_type)
