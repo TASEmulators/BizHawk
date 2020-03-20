@@ -7,17 +7,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	[AttributeUsage(AttributeTargets.Field)]
 	public sealed class MapperPropAttribute : Attribute
 	{
-		public string Name { get; }
-
-		public MapperPropAttribute(string name)
-		{
-			Name = name;
-		}
-
-		public MapperPropAttribute()
-		{
-			Name = null;
-		}
 	}
 
 	internal static class AutoMapperProps
@@ -29,8 +18,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				var attrib = field.GetCustomAttributes(typeof(MapperPropAttribute), false).OfType<MapperPropAttribute>().SingleOrDefault();
 				if (attrib == null)
+				{
 					continue;
-				string name = attrib.Name ?? field.Name;
+				}
+
+				string name = field.Name;
 				if (!settings.BoardProperties.ContainsKey(name))
 				{
 					settings.BoardProperties.Add(name, (string)Convert.ChangeType(field.GetValue(board), typeof(string)));
@@ -46,15 +38,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				var attribs = field.GetCustomAttributes(false);
 				foreach (var attrib in attribs)
 				{
-					if (attrib is MapperPropAttribute mapperProp)
+					if (attrib is MapperPropAttribute)
 					{
-						string name = mapperProp.Name ?? field.Name;
+						string name = field.Name;
 
-						if (board.InitialRegisterValues.TryGetValue(name, out var Value))
+						if (board.InitialRegisterValues.TryGetValue(name, out var value))
 						{
 							try
 							{
-								field.SetValue(board, Convert.ChangeType(Value, field.FieldType));
+								field.SetValue(board, Convert.ChangeType(value, field.FieldType));
 							}
 							catch (Exception e) when (e is InvalidCastException || e is FormatException || e is OverflowException)
 							{
