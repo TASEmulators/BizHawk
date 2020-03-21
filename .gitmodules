@@ -18,3 +18,4 @@
 [submodule "melonds"]
 	path = melonds
 	url = https://github.com/TASVideos/melonDS.git
+	branch = SuuperW_DSHawk
