@@ -82,12 +82,16 @@ namespace BizHawk.Client.EmuHawk
 			
 			if (schemaType != null)
 			{
-				var padschemas = (Activator.CreateInstance(schemaType) as IVirtualPadSchema).GetPadSchemas(Emulator);
+				var padSchemas = ((IVirtualPadSchema)Activator.CreateInstance(schemaType))
+					.GetPadSchemas(Emulator)
+					.ToList();
+
 				if (VersionInfo.DeveloperBuild)
 				{
-					CheckPads(padschemas, Emulator.ControllerDefinition);
+					CheckPads(padSchemas, Emulator.ControllerDefinition);
 				}
-				var pads = padschemas.Select(s => new VirtualPad(s));
+
+				var pads = padSchemas.Select(s => new VirtualPad(s));
 
 				if (pads.Any())
 				{
@@ -100,40 +104,46 @@ namespace BizHawk.Client.EmuHawk
 		{
 			foreach (var control in ControllerPanel.Controls)
 			{
-				VirtualPad vp = control as VirtualPad;
-				if (vp == null) continue;
+				var vp = control as VirtualPad;
+				if (vp == null)
+				{
+					continue;
+				}
+
 				if (vp.PadSchemaDisplayName == padSchemaName)
+				{
 					ControllerPanel.ScrollControlIntoView(vp);
+				}
 			}
 		}
 
-		private void CheckPads(IEnumerable<PadSchema> schemas, BizHawk.Emulation.Common.ControllerDefinition def)
+		private void CheckPads(IEnumerable<PadSchema> schemas, ControllerDefinition def)
 		{
-			HashSet<string> analogs = new HashSet<string>(def.FloatControls);
-			HashSet<string> bools = new HashSet<string>(def.BoolButtons);
+			var analogs = new HashSet<string>(def.FloatControls);
+			var bools = new HashSet<string>(def.BoolButtons);
 
 			foreach (var schema in schemas)
 			{
 				foreach (var button in schema.Buttons)
 				{
-					HashSet<string> searchset = null;
+					var searchSet = new HashSet<string>();
 					switch (button.Type)
 					{
 						case PadSchema.PadInputType.AnalogStick:
 						case PadSchema.PadInputType.FloatSingle:
 						case PadSchema.PadInputType.TargetedPair:
 							// analog
-							searchset = analogs;
+							searchSet = analogs;
 							break;
 						case PadSchema.PadInputType.Boolean:
-							searchset = bools;
+							searchSet = bools;
 							break;
 						case PadSchema.PadInputType.DiscManager:
-							searchset = bools;
-							searchset.UnionWith(analogs);
+							searchSet = bools;
+							searchSet.UnionWith(analogs);
 							break;
 					}
-					if (!searchset.Contains(button.Name))
+					if (!searchSet.Contains(button.Name))
 					{
 						MessageBox.Show(this,
 							$"Schema warning: Schema entry '{schema.DisplayName}':'{button.Name}' will not correspond to any control in definition '{def.Name}'",
@@ -187,7 +197,7 @@ namespace BizHawk.Client.EmuHawk
 				Readonly = false;
 			}
 
-			if (!Readonly && !StickyPads && !Control.MouseButtons.HasFlag(MouseButtons.Left))
+			if (!Readonly && !StickyPads && !MouseButtons.HasFlag(MouseButtons.Left))
 			{
 				Pads.ForEach(pad => pad.Clear());
 			}
