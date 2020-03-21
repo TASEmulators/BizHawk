@@ -48,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 				ErrorOnLoad, // error method thrown on load
 				FalseOnLoad, // RomLoader returned false with no other information
 				ExceptOnAdv, // exception thrown on frame advance
-				Success, // load fully complete
+				Success // load fully complete
 			}
 
 			public EStatus Status { get; set; } // what happened

@@ -70,7 +70,7 @@ namespace BizHawk.Client.EmuHawk
 					new FormatPreset("FLV", "AVC video and AAC audio in a Flash Video container.",
 						"-c:a aac -c:v libx264 -f flv", false, "flv"),
 					new FormatPreset("[Custom]", "Write your own ffmpeg command. For advanced users only.",
-						"-c:a foo -c:v bar -f baz", true, "foobar"),
+						"-c:a foo -c:v bar -f baz", true, "foobar")
 				};
 			}
 

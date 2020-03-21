@@ -434,7 +434,7 @@ namespace BizHawk.Client.EmuHawk
 				VertexDeclaration = new VertexDeclaration(Dev, ves),
 				VertexShader = vertexShader.Opaque as ShaderWrapper,
 				FragmentShader = fragmentShader.Opaque as ShaderWrapper,
-				VertexStride = stride,
+				VertexStride = stride
 			};
 
 			//scan uniforms from constant tables

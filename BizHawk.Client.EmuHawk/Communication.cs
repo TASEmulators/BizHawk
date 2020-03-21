@@ -128,7 +128,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var values = new Dictionary<string, string>
 				{
-					["payload"] = payload,
+					["payload"] = payload
 				};
 				FormUrlEncodedContent content = new FormUrlEncodedContent(values);
 				return Post(PostUrl, content).Result;

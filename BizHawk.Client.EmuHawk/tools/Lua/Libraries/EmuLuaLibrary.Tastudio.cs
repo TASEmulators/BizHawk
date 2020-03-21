@@ -41,13 +41,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			InputChange,
 			InsertFrames,
-			DeleteFrames,
+			DeleteFrames
 		}
 
 		private enum InputChangeTypes
 		{
 			Bool,
-			Float,
+			Float
 		}
 
 		public class TastudioBranchInfo

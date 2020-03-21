@@ -431,7 +431,7 @@ namespace BizHawk.Client.EmuHawk
 				VideoProvider = videoProvider,
 				Simulate = displayNothing,
 				ChainOutsize = GraphicsControl.Size,
-				IncludeOSD = true,
+				IncludeOSD = true
 			};
 			UpdateSourceInternal(job);
 		}
@@ -651,7 +651,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				VideoProvider = fvp,
 				Simulate = true,
-				ChainOutsize = chainOutsize,
+				ChainOutsize = chainOutsize
 			};
 			var filterProgram = UpdateSourceInternal(job);
 

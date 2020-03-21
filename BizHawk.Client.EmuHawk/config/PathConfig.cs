@@ -38,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 			"%exe%",
 			"%rom%",
 			".\\",
-			"..\\",
+			"..\\"
 		};
 
 		public PathConfig(MainForm mainForm, Config config)
@@ -134,7 +134,7 @@ namespace BizHawk.Client.EmuHawk
 						MinimumSize = new Size(UIHelper.ScaleX(26), UIHelper.ScaleY(23)),
 						AutoCompleteMode = AutoCompleteMode.SuggestAppend,
 						AutoCompleteCustomSource = AutoCompleteOptions,
-						AutoCompleteSource = AutoCompleteSource.CustomSource,
+						AutoCompleteSource = AutoCompleteSource.CustomSource
 					};
 
 					var btn = new Button
@@ -144,7 +144,7 @@ namespace BizHawk.Client.EmuHawk
 						Location = new Point(widgetOffset, y + buttonOffsetY),
 						Size = new Size(buttonWidth, buttonHeight),
 						Name = path.Type,
-						Anchor = AnchorStyles.Top | AnchorStyles.Right,
+						Anchor = AnchorStyles.Top | AnchorStyles.Right
 					};
 
 					var tempBox = box;
@@ -191,7 +191,7 @@ namespace BizHawk.Client.EmuHawk
 						Location = new Point(widgetOffset + buttonWidth + padding + infoPadding, y + UIHelper.ScaleY(4)),
 						Size = new Size(UIHelper.ScaleX(100), UIHelper.ScaleY(15)),
 						Name = path.Type,
-						Anchor = AnchorStyles.Top | AnchorStyles.Right,
+						Anchor = AnchorStyles.Top | AnchorStyles.Right
 					};
 
 					t.Controls.Add(label);

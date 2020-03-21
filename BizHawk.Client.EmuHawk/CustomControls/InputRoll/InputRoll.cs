@@ -946,7 +946,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Name = "RotateMenuItem",
 					Text = "Rotate",
-					ShortcutKeyDisplayString = RotateHotkeyStr,
+					ShortcutKeyDisplayString = RotateHotkeyStr
 				};
 
 				rotate.Click += (o, ev) => { HorizontalOrientation ^= true; };

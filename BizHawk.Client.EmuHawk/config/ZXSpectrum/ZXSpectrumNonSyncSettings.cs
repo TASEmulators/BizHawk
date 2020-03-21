@@ -121,7 +121,7 @@ namespace BizHawk.Client.EmuHawk
 				System.Drawing.Color.FromArgb(0x00, 0xFF, 0x00),
 				System.Drawing.Color.FromArgb(0x00, 0xFF, 0xFF),
 				System.Drawing.Color.FromArgb(0xFF, 0xFF, 0x00),
-				System.Drawing.Color.FromArgb(0xFF, 0xFF, 0xFF),
+				System.Drawing.Color.FromArgb(0xFF, 0xFF, 0xFF)
 			};
 
 			cd.CustomColors = new[]
@@ -141,7 +141,7 @@ namespace BizHawk.Client.EmuHawk
 				System.Drawing.ColorTranslator.ToOle(colors[12]),
 				System.Drawing.ColorTranslator.ToOle(colors[13]),
 				System.Drawing.ColorTranslator.ToOle(colors[14]),
-				System.Drawing.ColorTranslator.ToOle(colors[15]),
+				System.Drawing.ColorTranslator.ToOle(colors[15])
 			};
 
 			cd.Color = c;

@@ -111,7 +111,7 @@ namespace BizHawk.Client.EmuHawk
 			//
 			// Summary:
 			//     The ALT modifier key.
-			Alt = 262144,
+			Alt = 262144
 		}
 
 		public static Input Instance { get; private set; }

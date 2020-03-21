@@ -260,7 +260,7 @@ namespace BizHawk.Client.EmuHawk
 				Filter = Path.GetFileName(path),
 				NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
 							 | NotifyFilters.FileName | NotifyFilters.DirectoryName,
-				EnableRaisingEvents = true,
+				EnableRaisingEvents = true
 			};
 
 			// TODO, Deleted and Renamed events

@@ -524,7 +524,7 @@ namespace BizHawk.Client.EmuHawk
 				Cell relativeCell = new Cell
 				{
 					RowIndex = cell.RowIndex - visibleRows.Start,
-					Column = cell.Column,
+					Column = cell.Column
 				};
 				relativeCell.RowIndex -= CountLagFramesAbsolute(relativeCell.RowIndex.Value);
 

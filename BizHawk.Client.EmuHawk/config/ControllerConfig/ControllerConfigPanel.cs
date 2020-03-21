@@ -131,7 +131,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Location = new Point(x + _inputSize + _labelPadding, y + UIHelper.ScaleY(3)),
 					Size = new Size(UIHelper.ScaleX(100), UIHelper.ScaleY(15)),
-					Text = _buttons[i].Replace('_', ' ').Trim(),
+					Text = _buttons[i].Replace('_', ' ').Trim()
 				};
 
 				////Tooltip.SetToolTip(label, null); //??? not supported yet

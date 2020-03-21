@@ -490,7 +490,7 @@ namespace BizHawk.Client.EmuHawk
 		enum eDisplayType
 		{
 			BG1 = 1, BG2 = 2, BG3 = 3, BG4 = 4, OBJTiles0, OBJTiles1, Tiles2bpp, Tiles4bpp, Tiles8bpp, TilesMode7, TilesMode7Ext, TilesMode7DC, Sprites, OBJ,
-			BG1Screen = 101, BG2Screen = 102, BG3Screen = 103, BG4Screen = 104, 
+			BG1Screen = 101, BG2Screen = 102, BG3Screen = 103, BG4Screen = 104
 		}
 		static bool IsDisplayTypeBG(eDisplayType type) { return type == eDisplayType.BG1 || type == eDisplayType.BG2 || type == eDisplayType.BG3 || type == eDisplayType.BG4; }
 		static bool IsDisplayTypeOBJ(eDisplayType type) { return type == eDisplayType.OBJTiles0 || type == eDisplayType.OBJTiles1; }

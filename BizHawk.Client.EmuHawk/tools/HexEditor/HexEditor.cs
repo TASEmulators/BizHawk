@@ -1312,7 +1312,7 @@ namespace BizHawk.Client.EmuHawk
 					new FilesystemFilter("Binary", new[] { "bin" }),
 					new FilesystemFilter("Save Files", new[] { "sav" })
 				).ToString(),
-				RestoreDirectory = true,
+				RestoreDirectory = true
 			};
 
 			var result = sfd.ShowHawkDialog();

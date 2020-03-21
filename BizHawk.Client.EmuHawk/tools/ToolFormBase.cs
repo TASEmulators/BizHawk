@@ -55,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 					: $"{Global.Game.FilesystemSafeName()}.{fileExt}",
 				InitialDirectory = path,
 				Filter = new FilesystemFilterSet(new FilesystemFilter(fileType, new[] { fileExt })).ToString(),
-				RestoreDirectory = true,
+				RestoreDirectory = true
 			};
 
 			var result = sfd.ShowHawkDialog();

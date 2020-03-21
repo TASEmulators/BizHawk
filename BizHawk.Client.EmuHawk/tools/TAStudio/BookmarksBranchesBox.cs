@@ -71,7 +71,7 @@ namespace BizHawk.Client.EmuHawk
 					Name = UserTextColumnName,
 					Text = "UserText",
 					UnscaledWidth = 90
-				},
+				}
 			});
 		}
 

@@ -946,7 +946,7 @@ namespace BizHawk.Client.EmuHawk
 					new RollColumn { Text = "Value", Name = WatchList.Value, Visible = true, UnscaledWidth = 59, Type = ColumnType.Text },
 					new RollColumn { Text = "Prev", Name = WatchList.Prev, Visible = true, UnscaledWidth = 59, Type = ColumnType.Text },
 					new RollColumn { Text = "Changes", Name = WatchList.ChangesCol, Visible = true, UnscaledWidth = 60, Type = ColumnType.Text },
-					new RollColumn { Text = "Diff", Name = WatchList.Diff, Visible = false, UnscaledWidth = 59, Type = ColumnType.Text },
+					new RollColumn { Text = "Diff", Name = WatchList.Diff, Visible = false, UnscaledWidth = 59, Type = ColumnType.Text }
 				};
 
 				PreviewMode = true;
@@ -1086,7 +1086,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Name = $"{type}ToolStripMenuItem",
 						Text = Watch.DisplayTypeToString(type),
-						Checked = _settings.Type == type,
+						Checked = _settings.Type == type
 					};
 				var type1 = type;
 				item.Click += (o, ev) => DoDisplayTypeClick(type1);

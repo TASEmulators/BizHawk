@@ -59,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 			["AmstradCPC"] = "Amstrad CPC",
 			["ChannelF"] = "Channel F",
 			["Vectrex"] = "Vectrex",
-			["MSX"] = "MSX",
+			["MSX"] = "MSX"
 		};
 
 		public string TargetSystem { get; set; }
