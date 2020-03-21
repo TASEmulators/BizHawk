@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk.tools.VirtualPads.schema
 				DefaultSize = new Size(50, 35),
 				Buttons = new []
 				{
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = "Lid",
 						Location = new Point(8, 8)
@@ -39,67 +39,67 @@ namespace BizHawk.Client.EmuHawk.tools.VirtualPads.schema
 				DefaultSize = new Size(440, 260),
 				Buttons = new []
 				{
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = "Up",
 						Icon = Properties.Resources.BlueUp,
 						Location = new Point(14, 79)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = "Down",
 						Icon = Properties.Resources.BlueDown,
 						Location = new Point(14, 122)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = "Left",
 						Icon = Properties.Resources.Back,
 						Location = new Point(2, 100)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = "Right",
 						Icon = Properties.Resources.Forward,
 						Location = new Point(24, 100)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = "L",
 						Location = new Point(2, 10)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = "R",
 						Location = new Point(366, 10)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = "Start",
 						Location = new Point(341, 179)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = "Select",
 						Location = new Point(341, 201)
 					},
 
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = "Y",
 						Location = new Point(341, 100)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = "B",
 						Location = new Point(365, 113)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = "X",
 						Location = new Point(341, 76)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = "A",
 						DisplayName = "A",
@@ -107,18 +107,18 @@ namespace BizHawk.Client.EmuHawk.tools.VirtualPads.schema
 					},
 
 					// Screen
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = "TouchX",
 						Location = new Point(72, 35),
-						Type = PadSchema.PadInputType.TargetedPair,
+						Type = PadInputType.TargetedPair,
 						TargetSize = new Size(256, 192),
 						SecondaryNames = new[]
 						{
 							"TouchY"
 						}
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = "Touch",
 						Location = new Point(72, 10)

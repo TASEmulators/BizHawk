@@ -52,31 +52,31 @@ namespace BizHawk.Client.EmuHawk
 				MaxSize = new Size(174, 74),
 				Buttons = new[]
 				{
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Up",
 						Icon = Properties.Resources.BlueUp,
 						Location = new Point(23, 15)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Down",
 						Icon = Properties.Resources.BlueDown,
 						Location = new Point(23, 36)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Left",
 						Icon = Properties.Resources.Back,
 						Location = new Point(2, 24)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Right",
 						Icon = Properties.Resources.Forward,
 						Location = new Point(44, 24)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Button",
 						DisplayName = "B",
@@ -96,34 +96,34 @@ namespace BizHawk.Client.EmuHawk
 				MaxSize = new Size(334, 94),
 				Buttons = new[]
 				{
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Button 1",
 						DisplayName = "B1",
 						Location = new Point(5, 24)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Button 2",
 						DisplayName = "B2",
 						Location = new Point(5, 48)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Paddle X 1",
 						DisplayName = "Paddle X 1",
 						Location = new Point(55, 17),
-						Type = PadSchema.PadInputType.FloatSingle,
+						Type = PadInputType.FloatSingle,
 						TargetSize = new Size(128, 69),
 						MaxValue = 127,
 						MinValue = -127
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Paddle X 2",
 						DisplayName = "Paddle X 2",
 						Location = new Point(193, 17),
-						Type = PadSchema.PadInputType.FloatSingle,
+						Type = PadInputType.FloatSingle,
 						TargetSize = new Size(128, 69),
 						MaxValue = 127,
 						MinValue = -127
@@ -142,43 +142,43 @@ namespace BizHawk.Client.EmuHawk
 				MaxSize = new Size(174, 74),
 				Buttons = new[]
 				{
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Up",
 						Icon = Properties.Resources.BlueUp,
 						Location = new Point(23, 15)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Down",
 						Icon = Properties.Resources.BlueDown,
 						Location = new Point(23, 36)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Left",
 						Icon = Properties.Resources.Back,
 						Location = new Point(2, 24)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Right",
 						Icon = Properties.Resources.Forward,
 						Location = new Point(44, 24)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Button",
 						DisplayName = "B",
 						Location = new Point(132, 24)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Button 1",
 						DisplayName = "B1",
 						Location = new Point(68, 36)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Button 2",
 						DisplayName = "B2",
@@ -198,28 +198,28 @@ namespace BizHawk.Client.EmuHawk
 				MaxSize = new Size(334, 94),
 				Buttons = new[]
 				{
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Button",
 						DisplayName = "B1",
 						Location = new Point(5, 24)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Wheel X 1",
 						DisplayName = "Wheel X 1",
 						Location = new Point(55, 17),
-						Type = PadSchema.PadInputType.FloatSingle,
+						Type = PadInputType.FloatSingle,
 						TargetSize = new Size(128, 69),
 						MaxValue = 127,
 						MinValue = -127
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Wheel X 2",
 						DisplayName = "Wheel X 2",
 						Location = new Point(193, 17),
-						Type = PadSchema.PadInputType.FloatSingle,
+						Type = PadInputType.FloatSingle,
 						TargetSize = new Size(128, 69),
 						MaxValue = 127,
 						MinValue = -127
@@ -237,28 +237,28 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(185, 75),
 				Buttons = new[]
 				{
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = "Select",
 						Location = new Point(10, 15)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = "Reset",
 						Location = new Point(60, 15)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = "Power",
 						Location = new Point(108, 15)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = "Toggle Left Difficulty",
 						DisplayName = "Left Difficulty",
 						Location = new Point(10, 40)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = "Toggle Right Difficulty",
 						DisplayName = "Right Difficulty",

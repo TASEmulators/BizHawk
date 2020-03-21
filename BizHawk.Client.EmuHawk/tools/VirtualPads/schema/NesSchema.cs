@@ -169,12 +169,12 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(150, 50),
 				Buttons = new[]
 				{
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = "Reset",
 						Location = new Point(10, 15)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = "Power",
 						Location = new Point(58, 15)
@@ -185,19 +185,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema FdsConsoleButtons(int diskSize)
 		{
-			var buttons = new List<PadSchema.ButtonSchema>
+			var buttons = new List<ButtonSchema>
 			{
-				new PadSchema.ButtonSchema
+				new ButtonSchema
 				{
 					Name = "Reset",
 					Location = new Point(10, 15)
 				},
-				new PadSchema.ButtonSchema
+				new ButtonSchema
 				{
 					Name = "Power",
 					Location = new Point(58, 15)
 				},
-				new PadSchema.ButtonSchema
+				new ButtonSchema
 				{
 					Name = "FDS Eject",
 					DisplayName = "Eject",
@@ -207,7 +207,7 @@ namespace BizHawk.Client.EmuHawk
 
 			for (var i = 0; i < diskSize; i++)
 			{
-				buttons.Add(new PadSchema.ButtonSchema
+				buttons.Add(new ButtonSchema
 				{
 					Name = $"FDS Insert {i}",
 					DisplayName = $"Insert {i}",
@@ -240,49 +240,49 @@ namespace BizHawk.Client.EmuHawk
 				MaxSize = new Size(174, 74),
 				Buttons = new[]
 				{
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Up",
 						Icon = Properties.Resources.BlueUp,
 						Location = new Point(23, 15)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Down",
 						Icon = Properties.Resources.BlueDown,
 						Location = new Point(23, 36)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Left",
 						Icon = Properties.Resources.Back,
 						Location = new Point(2, 24)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Right",
 						Icon = Properties.Resources.Forward,
 						Location = new Point(44, 24)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} B",
 						DisplayName = "B",
 						Location = new Point(124, 24)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} A",
 						DisplayName = "A",
 						Location = new Point(147, 24)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Select",
 						DisplayName = "s",
 						Location = new Point(72, 24)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Start",
 						DisplayName = "S",
@@ -303,43 +303,43 @@ namespace BizHawk.Client.EmuHawk
 				MaxSize = new Size(174, 74),
 				Buttons = new[]
 				{
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Up",
 						Icon = Properties.Resources.BlueUp,
 						Location = new Point(23, 15)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Down",
 						Icon = Properties.Resources.BlueDown,
 						Location = new Point(23, 36)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Left",
 						Icon = Properties.Resources.Back,
 						Location = new Point(2, 24)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Right",
 						Icon = Properties.Resources.Forward,
 						Location = new Point(44, 24)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} B",
 						DisplayName = "B",
 						Location = new Point(124, 24)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} A",
 						DisplayName = "A",
 						Location = new Point(147, 24)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Microphone",
 						DisplayName = "Mic",
@@ -359,18 +359,18 @@ namespace BizHawk.Client.EmuHawk
 				MaxSize = new Size(356, 290),
 				Buttons = new[]
 				{
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Zapper X",
 						Location = new Point(14, 17),
-						Type = PadSchema.PadInputType.TargetedPair,
+						Type = PadInputType.TargetedPair,
 						TargetSize = new Size(256, 240),
 						SecondaryNames = new[]
 						{
 							$"P{controller} Zapper Y"
 						}
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Fire",
 						DisplayName = "Fire",
@@ -390,16 +390,16 @@ namespace BizHawk.Client.EmuHawk
 				MaxSize = new Size(380, 110),
 				Buttons = new[]
 				{
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Paddle",
 						DisplayName = "Arkanoid Paddle",
 						Location = new Point(14, 17),
-						Type = PadSchema.PadInputType.FloatSingle,
+						Type = PadInputType.FloatSingle,
 						TargetSize = new Size(380, 69),
 						MaxValue = 160
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Fire",
 						DisplayName = "Fire",
@@ -418,74 +418,74 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(154, 114),
 				Buttons = new[]
 				{
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} PP1",
 						DisplayName = "1  ",
 						Location = new Point(14, 17)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} PP2",
 						DisplayName = "2  ",
 						Location = new Point(45, 17)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} PP3",
 						DisplayName = "3  ",
 						Location = new Point(76, 17)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} PP4",
 						DisplayName = "4  ",
 						Location = new Point(107, 17)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} PP5",
 						DisplayName = "5  ",
 						Location = new Point(14, 48)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} PP6",
 						DisplayName = "6  ",
 						Location = new Point(45, 48)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} PP7",
 						DisplayName = "7  ",
 						Location = new Point(76, 48)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} PP8",
 						DisplayName = "8  ",
 						Location = new Point(107, 48)
 					},
 
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} PP9",
 						DisplayName = "9  ",
 						Location = new Point(14, 79)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} PP10",
 						DisplayName = "10",
 						Location = new Point(45, 79)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} PP11",
 						DisplayName = "11",
 						Location = new Point(76, 79)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} PP12",
 						DisplayName = "12",
@@ -505,24 +505,24 @@ namespace BizHawk.Client.EmuHawk
 				MaxSize = new Size(356, 290),
 				Buttons = new[]
 				{
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Pen X",
 						Location = new Point(14, 17),
-						Type = PadSchema.PadInputType.TargetedPair,
+						Type = PadInputType.TargetedPair,
 						TargetSize = new Size(256, 240),
 						SecondaryNames = new[]
 						{
 							$"P{controller} Pen Y"
 						}
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Click",
 						DisplayName = "Click",
 						Location = new Point(284, 17)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Touch",
 						DisplayName = "Touch",
@@ -541,433 +541,433 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(560, 180),
 				Buttons = new[]
 				{
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} F1",
 						DisplayName = "    F1    ",
 						Location = new Point(23, 15)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} F2",
 						DisplayName = "    F2    ",
 						Location = new Point(76, 15)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} F3",
 						DisplayName = "    F3    ",
 						Location = new Point(129, 15)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} F4",
 						DisplayName = "    F4    ",
 						Location = new Point(182, 15)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} F5",
 						DisplayName = "    F5    ",
 						Location = new Point(235, 15)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} F6",
 						DisplayName = "    F6    ",
 						Location = new Point(288, 15)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} F7",
 						DisplayName = "    F7    ",
 						Location = new Point(341, 15)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} F8",
 						DisplayName = "    F8    ",
 						Location = new Point(394, 15)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} 1",
 						DisplayName = "1",
 						Location = new Point(36, 38)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} 2",
 						DisplayName = "2",
 						Location = new Point(60, 38)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} 3",
 						DisplayName = "3",
 						Location = new Point(84, 38)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} 4",
 						DisplayName = "4",
 						Location = new Point(108, 38)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} 5",
 						DisplayName = "5",
 						Location = new Point(132, 38)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} 6",
 						DisplayName = "6",
 						Location = new Point(156, 38)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} 7",
 						DisplayName = "7",
 						Location = new Point(180, 38)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} 8",
 						DisplayName = "8",
 						Location = new Point(204, 38)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} 9",
 						DisplayName = "9",
 						Location = new Point(228, 38)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} 0",
 						DisplayName = "0",
 						Location = new Point(252, 38)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Minus",
 						DisplayName = "-",
 						Location = new Point(276, 38)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Caret",
 						DisplayName = "^",
 						Location = new Point(296, 38)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Yen",
 						DisplayName = "¥",
 						Location = new Point(320, 38)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Stop",
 						DisplayName = "STOP",
 						Location = new Point(344, 38)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Escape",
 						DisplayName = "ESC",
 						Location = new Point(15, 61)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Q",
 						DisplayName = "Q",
 						Location = new Point(54, 61)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} W",
 						DisplayName = "W",
 						Location = new Point(80, 61)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} E",
 						DisplayName = "E",
 						Location = new Point(108, 61)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} R",
 						DisplayName = "R",
 						Location = new Point(132, 61)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} T",
 						DisplayName = "T",
 						Location = new Point(158, 61)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Y",
 						DisplayName = "Y",
 						Location = new Point(182, 61)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} U",
 						DisplayName = "U",
 						Location = new Point(206, 61)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} I",
 						DisplayName = "I",
 						Location = new Point(232, 61)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} O",
 						DisplayName = "O",
 						Location = new Point(252, 61)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} P",
 						DisplayName = "P",
 						Location = new Point(278, 61)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} At",
 						DisplayName = "@",
 						Location = new Point(302, 61)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Left Bracket",
 						DisplayName = "[",
 						Location = new Point(330, 61)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Return",
 						DisplayName = "RETURN",
 						Location = new Point(350, 61)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Control",
 						DisplayName = "CTR",
 						Location = new Point(30, 84)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} A",
 						DisplayName = "A",
 						Location = new Point(70, 84)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} S",
 						DisplayName = "S",
 						Location = new Point(94, 84)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} D",
 						DisplayName = "D",
 						Location = new Point(118, 84)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} F",
 						DisplayName = "F",
 						Location = new Point(144, 84)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} G",
 						DisplayName = "G",
 						Location = new Point(168, 84)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} H",
 						DisplayName = "H",
 						Location = new Point(194, 84)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} J",
 						DisplayName = "J",
 						Location = new Point(220, 84)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} K",
 						DisplayName = "K",
 						Location = new Point(242, 84)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} L",
 						DisplayName = "L",
 						Location = new Point(266, 84)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Semicolon",
 						DisplayName = ";",
 						Location = new Point(290, 84)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Colon",
 						DisplayName = ":",
 						Location = new Point(311, 84)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Right Bracket",
 						DisplayName = "]",
 						Location = new Point(332, 84)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} カナ",
 						DisplayName = "カナ",
 						Location = new Point(352, 84)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Left Shift",
 						DisplayName = "SHIFT",
 						Location = new Point(10, 107)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Z",
 						DisplayName = "Z",
 						Location = new Point(58, 107)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} X",
 						DisplayName = "X",
 						Location = new Point(82, 107)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} C",
 						DisplayName = "C",
 						Location = new Point(106, 107)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} V",
 						DisplayName = "V",
 						Location = new Point(130, 107)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} B",
 						DisplayName = "B",
 						Location = new Point(154, 107)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} N",
 						DisplayName = "N",
 						Location = new Point(178, 107)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} M",
 						DisplayName = "M",
 						Location = new Point(203, 107)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Comma",
 						DisplayName = ",",
 						Location = new Point(229, 107)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Period",
 						DisplayName = ".",
 						Location = new Point(249, 107)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Slash",
 						DisplayName = "/",
 						Location = new Point(270, 107)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Underscore",
 						DisplayName = "_",
 						Location = new Point(292, 107)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Right Shift",
 						DisplayName = "SHIFT",
 						Location = new Point(316, 107)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Graph",
 						DisplayName = "GRPH",
 						Location = new Point(82, 130)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Space",
 						DisplayName = "                  SPACE                  ",
 						Location = new Point(130, 130)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Clear/Home",
 						DisplayName = " CLR\nHOME",
 						Location = new Point(420, 46)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Insert",
 						DisplayName = "\nINS",
 						Location = new Point(470, 46)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Delete",
 						DisplayName = "\nDEL",
 						Location = new Point(506, 46)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Up",
 						DisplayName = "  ↑  ",
 						Location = new Point(468, 86)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Down",
 						DisplayName = "  ↓  ",
 						Location = new Point(468, 134)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Left",
 						DisplayName = "  ←  ",
 						Location = new Point(446, 110)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Right",
 						DisplayName = "  ➝  ",

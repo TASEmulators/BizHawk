@@ -25,49 +25,49 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(174, 79),
 				Buttons = new[]
 				{
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controllerNum} Up",
 						Icon = Properties.Resources.BlueUp,
 						Location = new Point(14, 12)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controllerNum} Down",
 						Icon = Properties.Resources.BlueDown,
 						Location = new Point(14, 56)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controllerNum} Left",
 						Icon = Properties.Resources.Back,
 						Location = new Point(2, 34)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controllerNum} Right",
 						Icon = Properties.Resources.Forward,
 						Location = new Point(24, 34)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controllerNum} B",
 						DisplayName = "B",
 						Location = new Point(122, 34)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controllerNum} A",
 						DisplayName = "A",
 						Location = new Point(146, 34)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controllerNum} Select",
 						DisplayName = "s",
 						Location = new Point(52, 34)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controllerNum} Start",
 						DisplayName = "S",

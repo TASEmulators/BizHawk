@@ -55,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				switch (button.Type)
 				{
-					case PadSchema.PadInputType.Boolean:
+					case PadInputType.Boolean:
 						var buttonControl = new VirtualPadButton
 						{
 							Name = button.Name,
@@ -75,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 						PadBox.Controls.Add(buttonControl);
 						break;
-					case PadSchema.PadInputType.AnalogStick:
+					case PadInputType.AnalogStick:
 						PadBox.Controls.Add(new VirtualPadAnalogStick
 						{
 							Name = button.Name,
@@ -86,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 							RangeY = button.SecondaryAxisRange ?? throw new Exception()
 						});
 						break;
-					case PadSchema.PadInputType.TargetedPair:
+					case PadInputType.TargetedPair:
 						PadBox.Controls.Add(new VirtualPadTargetScreen
 						{
 							Name = button.Name,
@@ -98,7 +98,7 @@ namespace BizHawk.Client.EmuHawk
 							RangeY = button.MaxValue // TODO: ability to have a different Y than X
 						});
 						break;
-					case PadSchema.PadInputType.FloatSingle:
+					case PadInputType.FloatSingle:
 						PadBox.Controls.Add(new VirtualPadAnalogButton
 						{
 							Name = button.Name,
@@ -110,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 							Orientation = button.Orientation
 						});
 						break;
-					case PadSchema.PadInputType.DiscManager:
+					case PadInputType.DiscManager:
 						PadBox.Controls.Add(new VirtualPadDiscManager(button.SecondaryNames)
 						{
 							Name = button.Name,

@@ -28,31 +28,31 @@ namespace BizHawk.Client.EmuHawk
 				MaxSize = new Size(174, 74),
 				Buttons = new[]
 				{
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Up",
 						Icon = Properties.Resources.BlueUp,
 						Location = new Point(23, 15)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Down",
 						Icon = Properties.Resources.BlueDown,
 						Location = new Point(23, 36)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Left",
 						Icon = Properties.Resources.Back,
 						Location = new Point(2, 24)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Right",
 						Icon = Properties.Resources.Forward,
 						Location = new Point(44, 24)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = $"P{controller} Button",
 						DisplayName = "B",
@@ -146,7 +146,7 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(500, 170)
 			};
 
-			var btns = new List<PadSchema.ButtonSchema>();
+			var btns = new List<ButtonSchema>();
 
 			int rowHeight = 29; //24
 			int stdButtonWidth = 29; //24
@@ -181,7 +181,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (b.IsActive)
 				{
-					var btn = new PadSchema.ButtonSchema
+					var btn = new ButtonSchema
 					{
 						Name = b.Name,
 						DisplayName = disp,
@@ -207,31 +207,31 @@ namespace BizHawk.Client.EmuHawk
 				MaxSize = new Size(174, 74),
 				Buttons = new[]
 				{
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = "Play Tape",
 						Icon = Properties.Resources.Play,
 						Location = new Point(23, 22)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = "Stop Tape",
 						Icon = Properties.Resources.Stop,
 						Location = new Point(53, 22)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = "RTZ Tape",
 						Icon = Properties.Resources.BackMore,
 						Location = new Point(83, 22)
 					},
-					 new PadSchema.ButtonSchema
+					 new ButtonSchema
 					{
 						Name = "Insert Next Tape",
 						DisplayName = "NEXT TAPE",
 						Location = new Point(23, 52)
 					},
-					new PadSchema.ButtonSchema
+					new ButtonSchema
 					{
 						Name = "Insert Previous Tape",
 						DisplayName = "PREV TAPE",

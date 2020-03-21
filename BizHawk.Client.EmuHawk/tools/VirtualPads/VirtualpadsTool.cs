@@ -129,16 +129,16 @@ namespace BizHawk.Client.EmuHawk
 					var searchSet = new HashSet<string>();
 					switch (button.Type)
 					{
-						case PadSchema.PadInputType.AnalogStick:
-						case PadSchema.PadInputType.FloatSingle:
-						case PadSchema.PadInputType.TargetedPair:
+						case PadInputType.AnalogStick:
+						case PadInputType.FloatSingle:
+						case PadInputType.TargetedPair:
 							// analog
 							searchSet = analogs;
 							break;
-						case PadSchema.PadInputType.Boolean:
+						case PadInputType.Boolean:
 							searchSet = bools;
 							break;
-						case PadSchema.PadInputType.DiscManager:
+						case PadInputType.DiscManager:
 							searchSet = bools;
 							searchSet.UnionWith(analogs);
 							break;
