@@ -64,7 +64,8 @@
 			// btnCancel
 			// 
 			this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnCancel.Location = new System.Drawing.Point(144, 175);
+			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.btnCancel.Location = new System.Drawing.Point(163, 179);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(60, 23);
 			this.btnCancel.TabIndex = 1;
@@ -75,7 +76,7 @@
 			// btnSave
 			// 
 			this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnSave.Location = new System.Drawing.Point(78, 175);
+			this.btnSave.Location = new System.Drawing.Point(97, 179);
 			this.btnSave.Name = "btnSave";
 			this.btnSave.Size = new System.Drawing.Size(60, 23);
 			this.btnSave.TabIndex = 1;
@@ -102,6 +103,8 @@
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox1.Controls.Add(this.numBirthDay);
 			this.groupBox1.Controls.Add(this.numBirthMonth);
 			this.groupBox1.Controls.Add(this.label3);
@@ -111,7 +114,7 @@
 			this.groupBox1.Controls.Add(this.label1);
 			this.groupBox1.Location = new System.Drawing.Point(12, 35);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(192, 106);
+			this.groupBox1.Size = new System.Drawing.Size(211, 110);
 			this.groupBox1.TabIndex = 4;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Firmware settings";
@@ -121,11 +124,6 @@
 			this.numBirthDay.Location = new System.Drawing.Point(133, 69);
 			this.numBirthDay.Maximum = new decimal(new int[] {
             31,
-            0,
-            0,
-            0});
-			this.numBirthDay.Minimum = new decimal(new int[] {
-            0,
             0,
             0,
             0});
@@ -143,11 +141,6 @@
 			this.numBirthMonth.Location = new System.Drawing.Point(91, 69);
 			this.numBirthMonth.Maximum = new decimal(new int[] {
             12,
-            0,
-            0,
-            0});
-			this.numBirthMonth.Minimum = new decimal(new int[] {
-            0,
             0,
             0,
             0});
@@ -207,7 +200,7 @@
 			// btnDefault
 			// 
 			this.btnDefault.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnDefault.Location = new System.Drawing.Point(12, 175);
+			this.btnDefault.Location = new System.Drawing.Point(31, 179);
 			this.btnDefault.Name = "btnDefault";
 			this.btnDefault.Size = new System.Drawing.Size(60, 23);
 			this.btnDefault.TabIndex = 1;
@@ -217,20 +210,22 @@
 			// 
 			// dtpStartupTime
 			// 
+			this.dtpStartupTime.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.dtpStartupTime.CustomFormat = "yyyy-MM-dd HH:mm:ss";
 			this.dtpStartupTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-			this.dtpStartupTime.Location = new System.Drawing.Point(68, 147);
+			this.dtpStartupTime.Location = new System.Drawing.Point(75, 151);
 			this.dtpStartupTime.MaxDate = new System.DateTime(2099, 12, 31, 23, 59, 59, 0);
 			this.dtpStartupTime.MinDate = new System.DateTime(2000, 1, 1, 0, 0, 0, 0);
 			this.dtpStartupTime.Name = "dtpStartupTime";
-			this.dtpStartupTime.Size = new System.Drawing.Size(136, 20);
+			this.dtpStartupTime.Size = new System.Drawing.Size(148, 20);
 			this.dtpStartupTime.TabIndex = 5;
 			this.dtpStartupTime.Value = new System.DateTime(2000, 1, 1, 0, 0, 0, 0);
 			// 
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(12, 150);
+			this.label4.Location = new System.Drawing.Point(12, 154);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(57, 13);
 			this.label4.TabIndex = 6;
@@ -238,9 +233,11 @@
 			// 
 			// NDSSettings
 			// 
+			this.AcceptButton = this.btnDefault;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(216, 210);
+			this.CancelButton = this.btnCancel;
+			this.ClientSize = new System.Drawing.Size(235, 214);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.dtpStartupTime);
 			this.Controls.Add(this.groupBox1);
@@ -248,8 +245,13 @@
 			this.Controls.Add(this.btnSave);
 			this.Controls.Add(this.btnCancel);
 			this.Controls.Add(this.chkBootToFirmware);
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
+			this.MinimumSize = new System.Drawing.Size(251, 249);
 			this.Name = "NDSSettings";
-			this.Text = "NDSSettings";
+			this.ShowIcon = false;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+			this.Text = "NDS Settings";
 			this.Load += new System.EventHandler(this.NDSSettings_Load);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
