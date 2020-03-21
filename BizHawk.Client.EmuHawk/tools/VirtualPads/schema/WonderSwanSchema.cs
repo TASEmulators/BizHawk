@@ -215,7 +215,6 @@ namespace BizHawk.Client.EmuHawk
 					new PadSchema.ButtonSchema
 					{
 						Name = "Power",
-						DisplayName = "Power",
 						Location = new Point(7, 15),
 						Type = PadSchema.PadInputType.Boolean
 					}

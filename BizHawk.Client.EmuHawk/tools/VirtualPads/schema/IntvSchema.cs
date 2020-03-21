@@ -410,7 +410,6 @@ namespace BizHawk.Client.EmuHawk
 						Name = $"P{controller} Disc X",
 						AxisRange = controllerDefRanges[0],
 						SecondaryAxisRange = controllerDefRanges[1],
-						DisplayName = "",
 						Location = new Point(1, 121),
 						Type = PadSchema.PadInputType.AnalogStick
 					}

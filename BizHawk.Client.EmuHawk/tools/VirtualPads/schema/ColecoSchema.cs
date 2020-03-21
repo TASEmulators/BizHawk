@@ -48,7 +48,6 @@ namespace BizHawk.Client.EmuHawk
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} Up",
-						DisplayName = "",
 						Icon = Properties.Resources.BlueUp,
 						Location = new Point(50, 11),
 						Type = PadSchema.PadInputType.Boolean
@@ -56,7 +55,6 @@ namespace BizHawk.Client.EmuHawk
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} Down",
-						DisplayName = "",
 						Icon = Properties.Resources.BlueDown,
 						Location = new Point(50, 32),
 						Type = PadSchema.PadInputType.Boolean
@@ -64,7 +62,6 @@ namespace BizHawk.Client.EmuHawk
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} Left",
-						DisplayName = "",
 						Icon = Properties.Resources.Back,
 						Location = new Point(29, 22),
 						Type = PadSchema.PadInputType.Boolean
@@ -72,7 +69,6 @@ namespace BizHawk.Client.EmuHawk
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} Right",
-						DisplayName = "",
 						Icon = Properties.Resources.Forward,
 						Location = new Point(71, 22),
 						Type = PadSchema.PadInputType.Boolean
@@ -197,7 +193,6 @@ namespace BizHawk.Client.EmuHawk
 						Name = $"P{controller} Disc X",
 						AxisRange = controllerDefRanges[0],
 						SecondaryAxisRange = controllerDefRanges[1],
-						DisplayName = "",
 						Location = new Point(6, 14),
 						Type = PadSchema.PadInputType.AnalogStick
 					},
@@ -223,7 +218,6 @@ namespace BizHawk.Client.EmuHawk
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} Up",
-						DisplayName = "",
 						Icon = Properties.Resources.BlueUp,
 						Location = new Point(50, 11),
 						Type = PadSchema.PadInputType.Boolean
@@ -231,7 +225,6 @@ namespace BizHawk.Client.EmuHawk
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} Down",
-						DisplayName = "",
 						Icon = Properties.Resources.BlueDown,
 						Location = new Point(50, 32),
 						Type = PadSchema.PadInputType.Boolean
@@ -239,7 +232,6 @@ namespace BizHawk.Client.EmuHawk
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} Left",
-						DisplayName = "",
 						Icon = Properties.Resources.Back,
 						Location = new Point(29, 22),
 						Type = PadSchema.PadInputType.Boolean
@@ -247,7 +239,6 @@ namespace BizHawk.Client.EmuHawk
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} Right",
-						DisplayName = "",
 						Icon = Properties.Resources.Forward,
 						Location = new Point(71, 22),
 						Type = PadSchema.PadInputType.Boolean

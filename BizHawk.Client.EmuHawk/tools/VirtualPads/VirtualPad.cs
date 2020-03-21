@@ -59,9 +59,13 @@ namespace BizHawk.Client.EmuHawk
 						var buttonControl = new VirtualPadButton
 						{
 							Name = button.Name,
-							Text = button.DisplayName,
+							Text = button.Icon != null
+								? null
+								: string.IsNullOrWhiteSpace(button.DisplayName)
+									? button.Name
+									: button.DisplayName,
 							Location = UIHelper.Scale(button.Location),
-							Image = button.Icon,
+							Image = button.Icon
 						};
 						if (button.Icon != null && UIHelper.AutoScaleFactorX > 1F && UIHelper.AutoScaleFactorY > 1F)
 						{
@@ -110,7 +114,6 @@ namespace BizHawk.Client.EmuHawk
 						PadBox.Controls.Add(new VirtualPadDiscManager(button.SecondaryNames)
 						{
 							Name = button.Name,
-							//DisplayName = button.DisplayName,
 							Location = UIHelper.Scale(button.Location),
 							Size = UIHelper.Scale(button.TargetSize),
 							OwnerEmulator = button.OwnerEmulator

@@ -41,7 +41,6 @@ namespace BizHawk.Client.EmuHawk
 					new PadSchema.ButtonSchema
 					{
 						Name = "Up",
-						DisplayName = "",
 						Icon = Properties.Resources.BlueUp,
 						Location = new Point(14, 12),
 						Type = PadSchema.PadInputType.Boolean
@@ -49,7 +48,6 @@ namespace BizHawk.Client.EmuHawk
 					new PadSchema.ButtonSchema
 					{
 						Name = "Down",
-						DisplayName = "",
 						Icon = Properties.Resources.BlueDown,
 						Location = new Point(14, 56),
 						Type = PadSchema.PadInputType.Boolean
@@ -57,7 +55,6 @@ namespace BizHawk.Client.EmuHawk
 					new PadSchema.ButtonSchema
 					{
 						Name = "Left",
-						DisplayName = "",
 						Icon = Properties.Resources.Back,
 						Location = new Point(2, 34),
 						Type = PadSchema.PadInputType.Boolean
@@ -65,7 +62,6 @@ namespace BizHawk.Client.EmuHawk
 					new PadSchema.ButtonSchema
 					{
 						Name = "Right",
-						DisplayName = "",
 						Icon = Properties.Resources.Forward,
 						Location = new Point(24, 34),
 						Type = PadSchema.PadInputType.Boolean
@@ -73,14 +69,12 @@ namespace BizHawk.Client.EmuHawk
 					new PadSchema.ButtonSchema
 					{
 						Name = "B",
-						DisplayName = "B",
 						Location = new Point(122, 34),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = "A",
-						DisplayName = "A",
 						Location = new Point(146, 34),
 						Type = PadSchema.PadInputType.Boolean
 					},
@@ -114,7 +108,6 @@ namespace BizHawk.Client.EmuHawk
 					new PadSchema.ButtonSchema
 					{
 						Name = "Power",
-						DisplayName = "Power",
 						Location = new Point(10, 15),
 						Type = PadSchema.PadInputType.Boolean
 					}
@@ -134,7 +127,6 @@ namespace BizHawk.Client.EmuHawk
 					new PadSchema.ButtonSchema
 					{
 						Name = "P1 Up",
-						DisplayName = "",
 						Icon = Properties.Resources.BlueUp,
 						Location = new Point(14, 12),
 						Type = PadSchema.PadInputType.Boolean
@@ -142,7 +134,6 @@ namespace BizHawk.Client.EmuHawk
 					new PadSchema.ButtonSchema
 					{
 						Name = "P1 Down",
-						DisplayName = "",
 						Icon = Properties.Resources.BlueDown,
 						Location = new Point(14, 56),
 						Type = PadSchema.PadInputType.Boolean
@@ -150,7 +141,6 @@ namespace BizHawk.Client.EmuHawk
 					new PadSchema.ButtonSchema
 					{
 						Name = "P1 Left",
-						DisplayName = "",
 						Icon = Properties.Resources.Back,
 						Location = new Point(2, 34),
 						Type = PadSchema.PadInputType.Boolean
@@ -158,7 +148,6 @@ namespace BizHawk.Client.EmuHawk
 					new PadSchema.ButtonSchema
 					{
 						Name = "P1 Right",
-						DisplayName = "",
 						Icon = Properties.Resources.Forward,
 						Location = new Point(24, 34),
 						Type = PadSchema.PadInputType.Boolean
@@ -207,7 +196,6 @@ namespace BizHawk.Client.EmuHawk
 					new PadSchema.ButtonSchema
 					{
 						Name = "P1 Power",
-						DisplayName = "Power",
 						Location = new Point(10, 15),
 						Type = PadSchema.PadInputType.Boolean
 					}
