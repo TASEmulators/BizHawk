@@ -199,8 +199,8 @@
 			// 
 			// btnDefault
 			// 
-			this.btnDefault.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnDefault.Location = new System.Drawing.Point(31, 179);
+			this.btnDefault.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.btnDefault.Location = new System.Drawing.Point(12, 179);
 			this.btnDefault.Name = "btnDefault";
 			this.btnDefault.Size = new System.Drawing.Size(60, 23);
 			this.btnDefault.TabIndex = 1;
@@ -231,7 +231,7 @@
 			this.label4.TabIndex = 6;
 			this.label4.Text = "Date/time:";
 			// 
-			// NDSSettings
+			// NdsSettings
 			// 
 			this.AcceptButton = this.btnDefault;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
