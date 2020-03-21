@@ -45,30 +45,10 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(128, 200),
 				Buttons = new[]
 				{
-					new ButtonSchema
-					{
-						Name = $"P{controller} Up",
-						Icon = Properties.Resources.BlueUp,
-						Location = new Point(50, 11)
-					},
-					new ButtonSchema
-					{
-						Name = $"P{controller} Down",
-						Icon = Properties.Resources.BlueDown,
-						Location = new Point(50, 32)
-					},
-					new ButtonSchema
-					{
-						Name = $"P{controller} Left",
-						Icon = Properties.Resources.Back,
-						Location = new Point(29, 22)
-					},
-					new ButtonSchema
-					{
-						Name = $"P{controller} Right",
-						Icon = Properties.Resources.Forward,
-						Location = new Point(71, 22)
-					},
+					ButtonSchema.Up($"P{controller} Up", 50, 11),
+					ButtonSchema.Down($"P{controller} Down", 50, 32),
+					ButtonSchema.Left($"P{controller} Left", 29, 22),
+					ButtonSchema.Right($"P{controller} Right", 71, 22),
 					new ButtonSchema
 					{
 						Name = $"P{controller} L",
@@ -196,31 +176,10 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(195, 260),
 				Buttons = new[]
 				{
-					new ButtonSchema
-					{
-						Name = $"P{controller} Up",
-						Icon = Properties.Resources.BlueUp,
-						Location = new Point(50, 11)
-					},
-					new ButtonSchema
-					{
-						Name = $"P{controller} Down",
-						Icon = Properties.Resources.BlueDown,
-						Location = new Point(50, 32)
-					},
-					new ButtonSchema
-					{
-						Name = $"P{controller} Left",
-						Icon = Properties.Resources.Back,
-						Location = new Point(29, 22)
-					},
-					new ButtonSchema
-					{
-						Name = $"P{controller} Right",
-						Icon = Properties.Resources.Forward,
-						Location = new Point(71, 22)
-					},
-
+					ButtonSchema.Up($"P{controller} Up", 50, 11),
+					ButtonSchema.Down($"P{controller} Down", 50, 32),
+					ButtonSchema.Left($"P{controller} Left", 29, 22),
+					ButtonSchema.Right($"P{controller} Right", 71, 22),
 					new ButtonSchema
 					{
 						Name = $"P{controller} Key 1",

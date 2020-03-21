@@ -74,30 +74,10 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(250, 100),
 				Buttons = new[]
 				{
-					new ButtonSchema
-					{
-						Name = $"P{controller} Up",
-						Icon = Properties.Resources.BlueUp,
-						Location = new Point(34, 17)
-					},
-					new ButtonSchema
-					{
-						Name = $"P{controller} Down",
-						Icon = Properties.Resources.BlueDown,
-						Location = new Point(34, 61)
-					},
-					new ButtonSchema
-					{
-						Name = $"P{controller} Left",
-						Icon = Properties.Resources.Back,
-						Location = new Point(22, 39)
-					},
-					new ButtonSchema
-					{
-						Name = $"P{controller} Right",
-						Icon = Properties.Resources.Forward,
-						Location = new Point(44, 39)
-					},
+					ButtonSchema.Up($"P{controller} Up", 34, 17),
+					ButtonSchema.Down($"P{controller} Down", 34, 61),
+					ButtonSchema.Left($"P{controller} Left", 22, 39),
+					ButtonSchema.Right($"P{controller} Right", 44, 39),
 					new ButtonSchema
 					{
 						Name = $"P{controller} Start",
@@ -165,30 +145,10 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(458, 285),
 				Buttons = new[]
 				{
-					new ButtonSchema
-					{
-						Name = $"P{controller} Up",
-						Icon = Properties.Resources.BlueUp,
-						Location = new Point(290, 77)
-					},
-					new ButtonSchema
-					{
-						Name = $"P{controller} Down",
-						Icon = Properties.Resources.BlueDown,
-						Location = new Point(290, 121)
-					},
-					new ButtonSchema
-					{
-						Name = $"P{controller} Left",
-						Icon = Properties.Resources.Back,
-						Location = new Point(278, 99)
-					},
-					new ButtonSchema
-					{
-						Name = $"P{controller} Right",
-						Icon = Properties.Resources.Forward,
-						Location = new Point(300, 99)
-					},
+					ButtonSchema.Up($"P{controller} Up", 290, 77),
+					ButtonSchema.Down($"P{controller} Down", 290, 121),
+					ButtonSchema.Left($"P{controller} Left", 278, 99),
+					ButtonSchema.Right($"P{controller} Right", 300, 99),
 					new ButtonSchema
 					{
 						Name = $"P{controller} Start",
@@ -328,18 +288,8 @@ namespace BizHawk.Client.EmuHawk
 						MinValue = 0,
 						MaxValue = 255
 					},
-					new ButtonSchema
-					{
-						Name = $"P{controller} Up",
-						Icon = Properties.Resources.BlueUp,
-						Location = new Point(150, 20)
-					},
-					new ButtonSchema
-					{
-						Name = $"P{controller} Down",
-						Icon = Properties.Resources.BlueDown,
-						Location = new Point(150, 43)
-					},
+					ButtonSchema.Up($"P{controller} Up", 150, 20),
+					ButtonSchema.Down($"P{controller} Down", 150, 43),
 					new ButtonSchema
 					{
 						Name = $"P{controller} A",

@@ -39,30 +39,10 @@ namespace BizHawk.Client.EmuHawk.tools.VirtualPads.schema
 				DefaultSize = new Size(440, 260),
 				Buttons = new []
 				{
-					new ButtonSchema
-					{
-						Name = "Up",
-						Icon = Properties.Resources.BlueUp,
-						Location = new Point(14, 79)
-					},
-					new ButtonSchema
-					{
-						Name = "Down",
-						Icon = Properties.Resources.BlueDown,
-						Location = new Point(14, 122)
-					},
-					new ButtonSchema
-					{
-						Name = "Left",
-						Icon = Properties.Resources.Back,
-						Location = new Point(2, 100)
-					},
-					new ButtonSchema
-					{
-						Name = "Right",
-						Icon = Properties.Resources.Forward,
-						Location = new Point(24, 100)
-					},
+					ButtonSchema.Up("Up", 14, 79),
+					ButtonSchema.Down("Down", 14, 122),
+					ButtonSchema.Left("Left", 2, 100),
+					ButtonSchema.Right("Right", 24, 100),
 					new ButtonSchema
 					{
 						Name = "L",
@@ -83,7 +63,6 @@ namespace BizHawk.Client.EmuHawk.tools.VirtualPads.schema
 						Name = "Select",
 						Location = new Point(341, 201)
 					},
-
 					new ButtonSchema
 					{
 						Name = "Y",
@@ -102,7 +81,6 @@ namespace BizHawk.Client.EmuHawk.tools.VirtualPads.schema
 					new ButtonSchema
 					{
 						Name = "A",
-						DisplayName = "A",
 						Location = new Point(366, 86)
 					},
 

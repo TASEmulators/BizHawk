@@ -23,30 +23,10 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(222, 103),
 				Buttons = new[]
 				{
-					new ButtonSchema
-					{
-						Name = "L_Up",
-						Icon = Properties.Resources.BlueUp,
-						Location = new Point(14, 36)
-					},
-					new ButtonSchema
-					{
-						Name = "L_Down",
-						Icon = Properties.Resources.BlueDown,
-						Location = new Point(14, 80)
-					},
-					new ButtonSchema
-					{
-						Name = "L_Left",
-						Icon = Properties.Resources.Back,
-						Location = new Point(2, 58)
-					},
-					new ButtonSchema
-					{
-						Name = "L_Right",
-						Icon = Properties.Resources.Forward,
-						Location = new Point(24, 58)
-					},
+					ButtonSchema.Up("L_Up", 14, 36),
+					ButtonSchema.Down("L_Down", 14, 80),
+					ButtonSchema.Left("L_Left", 2, 58),
+					ButtonSchema.Right("L_Right", 24, 58),
 					new ButtonSchema
 					{
 						Name = "B",
@@ -69,30 +49,10 @@ namespace BizHawk.Client.EmuHawk
 						DisplayName = "S",
 						Location = new Point(74, 58)
 					},
-					new ButtonSchema
-					{
-						Name = "R_Up",
-						Icon = Properties.Resources.BlueUp,
-						Location = new Point(188, 36)
-					},
-					new ButtonSchema
-					{
-						Name = "R_Down",
-						Icon = Properties.Resources.BlueDown,
-						Location = new Point(188, 80)
-					},
-					new ButtonSchema
-					{
-						Name = "R_Left",
-						Icon = Properties.Resources.Back,
-						Location = new Point(176, 58)
-					},
-					new ButtonSchema
-					{
-						Name = "R_Right",
-						Icon = Properties.Resources.Forward,
-						Location = new Point(198, 58)
-					},
+					ButtonSchema.Up("R_Up", 188, 36),
+					ButtonSchema.Down("R_Down", 188, 80),
+					ButtonSchema.Left("R_Left", 176, 58),
+					ButtonSchema.Right("R_Right", 198, 58),
 					new ButtonSchema
 					{
 						Name = "L",
@@ -119,7 +79,6 @@ namespace BizHawk.Client.EmuHawk
 					new ButtonSchema
 					{
 						Name = "Power",
-						DisplayName = "Power",
 						Location = new Point(10, 15)
 					}
 				}

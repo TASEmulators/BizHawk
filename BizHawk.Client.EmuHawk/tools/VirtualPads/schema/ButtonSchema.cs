@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
@@ -37,5 +36,33 @@ namespace BizHawk.Client.EmuHawk
 		// for Analog Stick controls
 		public ControllerDefinition.AxisRange? AxisRange { get; set; }
 		public ControllerDefinition.AxisRange? SecondaryAxisRange { get; set; }
+
+		public static ButtonSchema Up(string name, int x, int y) => new ButtonSchema
+		{
+			Name = name,
+			Icon = Properties.Resources.BlueUp,
+			Location = new Point(x, y)
+		};
+
+		public static ButtonSchema Down(string name, int x, int y) => new ButtonSchema
+		{
+			Name = name,
+			Icon = Properties.Resources.BlueDown,
+			Location = new Point(x, y)
+		};
+
+		public static ButtonSchema Left(string name, int x, int y) => new ButtonSchema
+		{
+			Name = name,
+			Icon = Properties.Resources.Back,
+			Location = new Point(x, y)
+		};
+
+		public static ButtonSchema Right(string name, int x, int y) => new ButtonSchema
+		{
+			Name = name,
+			Icon = Properties.Resources.Forward,
+			Location = new Point(x, y)
+		};
 	}
 }

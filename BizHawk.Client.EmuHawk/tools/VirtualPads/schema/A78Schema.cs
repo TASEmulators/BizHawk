@@ -61,30 +61,10 @@ namespace BizHawk.Client.EmuHawk
 				MaxSize = new Size(174, 74),
 				Buttons = new[]
 				{
-					new ButtonSchema
-					{
-						Name = $"P{controller} Up",
-						Icon = Properties.Resources.BlueUp,
-						Location = new Point(23, 15)
-					},
-					new ButtonSchema
-					{
-						Name = $"P{controller} Down",
-						Icon = Properties.Resources.BlueDown,
-						Location = new Point(23, 36)
-					},
-					new ButtonSchema
-					{
-						Name = $"P{controller} Left",
-						Icon = Properties.Resources.Back,
-						Location = new Point(2, 24)
-					},
-					new ButtonSchema
-					{
-						Name = $"P{controller} Right",
-						Icon = Properties.Resources.Forward,
-						Location = new Point(44, 24)
-					},
+					ButtonSchema.Up($"P{controller} Up", 23, 15),
+					ButtonSchema.Down($"P{controller} Down", 23, 36),
+					ButtonSchema.Left($"P{controller} Left", 2, 24),
+					ButtonSchema.Right($"P{controller} Right", 44, 24), 
 					new ButtonSchema
 					{
 						Name = $"P{controller} Trigger",

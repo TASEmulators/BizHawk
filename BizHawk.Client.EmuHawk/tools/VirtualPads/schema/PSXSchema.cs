@@ -54,30 +54,10 @@ namespace BizHawk.Client.EmuHawk
 				DisplayName = $"DualShock Player{controller}",
 				Buttons = new[]
 				{
-					new ButtonSchema
-					{
-						Name = $"P{controller} Up",
-						Icon = Properties.Resources.BlueUp,
-						Location = new Point(32, 50)
-					},
-					new ButtonSchema
-					{
-						Name = $"P{controller} Down",
-						Icon = Properties.Resources.BlueDown,
-						Location = new Point(32, 71)
-					},
-					new ButtonSchema
-					{
-						Name = $"P{controller} Left",
-						Icon = Properties.Resources.Back,
-						Location = new Point(11, 62)
-					},
-					new ButtonSchema
-					{
-						Name = $"P{controller} Right",
-						Icon = Properties.Resources.Forward,
-						Location = new Point(53, 62)
-					},
+					ButtonSchema.Up($"P{controller} Up", 32, 50),
+					ButtonSchema.Down($"P{controller} Down", 32, 71),
+					ButtonSchema.Left($"P{controller} Left", 11, 62),
+					ButtonSchema.Right($"P{controller} Right", 53, 62),
 					new ButtonSchema
 					{
 						Name = $"P{controller} L1",
@@ -179,30 +159,10 @@ namespace BizHawk.Client.EmuHawk
 				DisplayName = $"Gamepad Player{controller}",
 				Buttons = new[]
 				{
-					new ButtonSchema
-					{
-						Name = $"P{controller} Up",
-						Icon = Properties.Resources.BlueUp,
-						Location = new Point(37, 55)
-					},
-					new ButtonSchema
-					{
-						Name = $"P{controller} Down",
-						Icon = Properties.Resources.BlueDown,
-						Location = new Point(37, 76)
-					},
-					new ButtonSchema
-					{
-						Name = $"P{controller} Left",
-						Icon = Properties.Resources.Back,
-						Location = new Point(16, 67)
-					},
-					new ButtonSchema
-					{
-						Name = $"P{controller} Right",
-						Icon = Properties.Resources.Forward,
-						Location = new Point(58, 67)
-					},
+					ButtonSchema.Up($"P{controller} Up", 37, 55),
+					ButtonSchema.Down($"P{controller} Down", 37, 76),
+					ButtonSchema.Left($"P{controller} Left", 16, 67),
+					ButtonSchema.Right($"P{controller} Right", 58, 67),
 					new ButtonSchema
 					{
 						Name = $"P{controller} L1",
@@ -276,30 +236,10 @@ namespace BizHawk.Client.EmuHawk
 				DisplayName = $"NeGcon Player{controller}",
 				Buttons = new[]
 				{
-					new ButtonSchema
-					{
-						Name = $"P{controller} Up",
-						Icon = Properties.Resources.BlueUp,
-						Location = new Point(36, 83)
-					},
-					new ButtonSchema
-					{
-						Name = $"P{controller} Down",
-						Icon = Properties.Resources.BlueDown,
-						Location = new Point(36, 104)
-					},
-					new ButtonSchema
-					{
-						Name = $"P{controller} Left",
-						Icon = Properties.Resources.Back,
-						Location = new Point(15, 95)
-					},
-					new ButtonSchema
-					{
-						Name = $"P{controller} Right",
-						Icon = Properties.Resources.Forward,
-						Location = new Point(57, 95)
-					},
+					ButtonSchema.Up($"P{controller} Up", 36, 83),
+					ButtonSchema.Down($"P{controller} Down", 36, 104),
+					ButtonSchema.Left($"P{controller} Left", 15, 95),
+					ButtonSchema.Right($"P{controller} Right", 57, 95),
 					new ButtonSchema
 					{
 						Name = $"P{controller} Start",
