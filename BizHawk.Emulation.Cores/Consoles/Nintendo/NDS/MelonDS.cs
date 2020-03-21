@@ -68,19 +68,18 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private static extern void FrameAdvance(short buttons, byte touchX, byte touchY);
 
 		[CoreConstructor("NDS")]
-		public MelonDS(byte[] file, CoreComm comm, object settings, object syncsettings)
+		public MelonDS(byte[] file, CoreComm comm, object settings, object syncSettings)
 		{
 			_serviceProvider = new BasicServiceProvider(this);
-			ControllerDefinition = new ControllerDefinition();
-			ControllerDefinition.Name = "NDS Controller";
-			ControllerDefinition.BoolButtons.Add("Left");
-			ControllerDefinition.BoolButtons.Add("Right");
+			ControllerDefinition = new ControllerDefinition { Name = "NDS Controller" };
 			ControllerDefinition.BoolButtons.Add("Up");
 			ControllerDefinition.BoolButtons.Add("Down");
-			ControllerDefinition.BoolButtons.Add("A");
+			ControllerDefinition.BoolButtons.Add("Right");
+			ControllerDefinition.BoolButtons.Add("Left");
+			ControllerDefinition.BoolButtons.Add("Y");
 			ControllerDefinition.BoolButtons.Add("B");
 			ControllerDefinition.BoolButtons.Add("X");
-			ControllerDefinition.BoolButtons.Add("Y");
+			ControllerDefinition.BoolButtons.Add("A");
 			ControllerDefinition.BoolButtons.Add("L");
 			ControllerDefinition.BoolButtons.Add("R");
 			ControllerDefinition.BoolButtons.Add("Start");
@@ -100,7 +99,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				throw new Exception("Failed to init NDS.");
 
 			SetUpFiles();
-			PutSyncSettings(syncsettings as MelonSyncSettings);
+			PutSyncSettings(syncSettings as MelonSyncSettings);
 
 			InitMemoryDomains();
 
