@@ -35,6 +35,7 @@ namespace BizHawk.Client.EmuHawk.Properties {
 		internal static readonly Bitmap BlueUp = ReadEmbeddedBitmap("BlueUp");
 		internal static readonly Bitmap Both = ReadEmbeddedBitmap("Both");
 		internal static readonly Bitmap bsnes = ReadEmbeddedBitmap("bsnes");
+		internal static readonly Bitmap melonDS = ReadEmbeddedBitmap("melonDS");
 		internal static readonly Icon Bug_MultiSize = ReadEmbeddedIcon("Bug");
 		internal static readonly Bitmap Bug = ReadEmbeddedBitmap("Bug");
 		internal static readonly Icon calculator_MultiSize = ReadEmbeddedIcon("calculator");

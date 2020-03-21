@@ -8,6 +8,7 @@ using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Arcades.MAME;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
@@ -33,6 +34,7 @@ namespace BizHawk.Client.EmuHawk.CoreExtensions
 				Snes9x _ => Properties.Resources.snes9x,
 				MAME _ => Properties.Resources.mame,
 				MGBAHawk _ => Properties.Resources.mGba,
+				MelonDS _ => Properties.Resources.melonDS,
 				_ => null
 			};
 		}
