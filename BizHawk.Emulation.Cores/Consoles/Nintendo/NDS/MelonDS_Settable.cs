@@ -9,28 +9,22 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
 	unsafe partial class MelonDS : ISettable<object, MelonDS.MelonSyncSettings>
 	{
-		public object GetSettings()
-		{
-			return new object();
-		}
+		public object GetSettings() => new object();
 
 		public MelonSyncSettings GetSyncSettings()
 		{
 			MelonSyncSettings ret = new MelonSyncSettings();
-			fixed (byte* ptr = ret.userSettings)
+			fixed (byte* ptr = ret.UserSettings)
 			{
 				if (!GetUserSettings(ptr))
 					return null;
 			}
-			ret.bootToFirmware = !GetDirectBoot();
-			ret.timeAtBoot = GetTimeAtBoot();
+			ret.BootToFirmware = !GetDirectBoot();
+			ret.TimeAtBoot = GetTimeAtBoot();
 			return ret;
 		}
 
-		public bool PutSettings(object o)
-		{
-			return false;
-		}
+		public bool PutSettings(object o) => false;
 
 		public bool PutSyncSettings(MelonSyncSettings o)
 		{
@@ -41,12 +35,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 			else
 			{
-				fixed (byte* ptr = o.userSettings)
+				fixed (byte* ptr = o.UserSettings)
 					SetUserSettings(ptr);
 			}
 
-			SetDirectBoot(!o.bootToFirmware);
-			SetTimeAtBoot(o.timeAtBoot);
+			SetDirectBoot(!o.BootToFirmware);
+			SetTimeAtBoot(o.TimeAtBoot);
 
 			// At present, no sync settings can be modified without requiring a reboot.
 			return true;
@@ -56,7 +50,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private static extern bool GetUserSettings(byte* dst);
 		[DllImport(dllPath)]
 		private static extern int getUserSettingsLength();
-		static int userSettingsLength = getUserSettingsLength();
+
+		private static readonly int UserSettingsLength = getUserSettingsLength();
+
 		[DllImport(dllPath)]
 		private static extern void SetUserSettings(byte* src);
 
@@ -70,76 +66,74 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		[DllImport(dllPath)]
 		private static extern uint GetTimeAtBoot();
 
-		unsafe public class MelonSettings
-		{
-		}
-
 		public class MelonSyncSettings
 		{
 			public MelonSyncSettings()
 			{
-				userSettings = new byte[userSettingsLength];
+				UserSettings = new byte[UserSettingsLength];
 			}
 
 			public MelonSyncSettings Clone() => (MelonSyncSettings)MemberwiseClone();
 
-			public bool bootToFirmware = false;
-			public uint timeAtBoot = 946684800; // 2000-01-01 00:00:00 (earliest date possible on a DS)
-			public byte[] userSettings;
+			public bool BootToFirmware { get; set; }
+			public uint TimeAtBoot { get; set; } = 946684800; // 2000-01-01 00:00:00 (earliest date possible on a DS)
+
+			[JsonProperty]
+			internal byte[] UserSettings;
 
 			[JsonIgnore]
-			public byte favoriteColor
+			public byte FavoriteColor
 			{
-				get => userSettings[2];
-				set { userSettings[2] = value; }
+				get => UserSettings[2];
+				set => UserSettings[2] = value;
 			}
 
 			[JsonIgnore]
-			public byte birthdayMonth
+			public byte BirthdayMonth
 			{
-				get => userSettings[3];
-				set { userSettings[3] = value; }
+				get => UserSettings[3];
+				set => UserSettings[3] = value;
 			}
 
 			[JsonIgnore]
-			public byte birthdayDay
+			public byte BirthdayDay
 			{
-				get => userSettings[4];
-				set { userSettings[4] = value; }
+				get => UserSettings[4];
+				set => UserSettings[4] = value;
 			}
 
-			const int maxNicknameLength = 10;
+			private const int MaxNicknameLength = 10;
 
 			[JsonIgnore]
-			public string nickname
+			public string Nickname
 			{
 				get
 				{
-					fixed (byte* ptr = userSettings)
-						return Encoding.Unicode.GetString(ptr + 6, nicknameLength * 2);
+					fixed (byte* ptr = UserSettings)
+						return Encoding.Unicode.GetString(ptr + 6, NicknameLength * 2);
 				}
 				set
 				{
-					if (value.Length > maxNicknameLength) value = value.Substring(0, maxNicknameLength);
-					byte[] nick = new byte[maxNicknameLength * 2 + 2];
+					if (value.Length > MaxNicknameLength) value = value.Substring(0, MaxNicknameLength);
+					byte[] nick = new byte[MaxNicknameLength * 2 + 2];
 					// I do not know how an actual NDS would handle characters that require more than 2 bytes to encode.
 					// They can't be input normally, so I will ignore attempts to set a nickname that uses them.
 					if (Encoding.Unicode.GetBytes(value, 0, value.Length, nick, 0) != value.Length * 2)
 						return;
 					// The extra 2 bytes on the end will overwrite nickname length, which is set immediately after
-					nick.CopyTo(userSettings, 6);
-					userSettings[0x1A] = (byte)value.Length;
+					nick.CopyTo(UserSettings, 6);
+					UserSettings[0x1A] = (byte)value.Length;
 				}
 			}
 
 			[JsonIgnore]
-			public short nicknameLength => userSettings[0x1A];
+			public short NicknameLength => UserSettings[0x1A];
 
 			[JsonIgnore]
-			public long rtcOffset
+			public long RtcOffset
 			{
-				get => BitConverter.ToInt64(userSettings, 0x68);
-				set => BitConverter.GetBytes(value).CopyTo(userSettings, 0x68);
+				get => BitConverter.ToInt64(UserSettings, 0x68);
+				set => BitConverter.GetBytes(value).CopyTo(UserSettings, 0x68);
 			}
 		}
 	}

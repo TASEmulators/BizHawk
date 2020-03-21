@@ -21,12 +21,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NDSSettings_Load(object sender, EventArgs e)
 		{
-			chkBootToFirmware.Checked = _syncSettings.bootToFirmware;
-			txtName.Text = _syncSettings.nickname;
-			cbxFavColor.SelectedIndex = _syncSettings.favoriteColor;
-			numBirthDay.Value = _syncSettings.birthdayDay;
-			numBirthMonth.Value = _syncSettings.birthdayMonth;
-			dtpStartupTime.Value = DateTimeOffset.FromUnixTimeSeconds(_syncSettings.timeAtBoot).UtcDateTime;
+			chkBootToFirmware.Checked = _syncSettings.BootToFirmware;
+			txtName.Text = _syncSettings.Nickname;
+			cbxFavColor.SelectedIndex = _syncSettings.FavoriteColor;
+			numBirthDay.Value = _syncSettings.BirthdayDay;
+			numBirthMonth.Value = _syncSettings.BirthdayMonth;
+			dtpStartupTime.Value = DateTimeOffset.FromUnixTimeSeconds(_syncSettings.TimeAtBoot).UtcDateTime;
 		}
 
 		private void numBirthMonth_ValueChanged(object sender, EventArgs e)
@@ -63,15 +63,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveBtn_Click(object sender, EventArgs e)
 		{
-			_syncSettings.bootToFirmware = chkBootToFirmware.Checked;
-			_syncSettings.nickname = txtName.Text;
-			_syncSettings.favoriteColor = (byte)cbxFavColor.SelectedIndex;
-			_syncSettings.birthdayDay = (byte)numBirthDay.Value;
-			_syncSettings.birthdayMonth = (byte)numBirthMonth.Value;
+			_syncSettings.BootToFirmware = chkBootToFirmware.Checked;
+			_syncSettings.Nickname = txtName.Text;
+			_syncSettings.FavoriteColor = (byte)cbxFavColor.SelectedIndex;
+			_syncSettings.BirthdayDay = (byte)numBirthDay.Value;
+			_syncSettings.BirthdayMonth = (byte)numBirthMonth.Value;
 
 			// Converting to local time is necessary, because user-set values are "unspecified" which ToUnixTimeSeconds assumes are local.
 			// But ToLocalTime assumes these are UTC. So here we are adding and then subtracting the UTC-to-local offset.
-			_syncSettings.timeAtBoot = (uint)new DateTimeOffset(dtpStartupTime.Value.ToLocalTime()).ToUnixTimeSeconds();
+			_syncSettings.TimeAtBoot = (uint)new DateTimeOffset(dtpStartupTime.Value.ToLocalTime()).ToUnixTimeSeconds();
 
 			_mainForm.PutCoreSyncSettings(_syncSettings);
 			DialogResult =  DialogResult.OK;
