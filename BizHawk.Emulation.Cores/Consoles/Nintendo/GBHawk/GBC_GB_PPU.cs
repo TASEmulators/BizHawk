@@ -478,59 +478,73 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						// timings are slightly different if we just turned on the LCD
 						// there is no mode 2  (presumably it missed the trigger)
-						// mode 3 is very short, probably in some self test mode before turning on?
-
-						if (cycle == 8)
+						if (cycle < 85)
 						{
-							if (LY != LYC)
+							if (cycle == 8)
 							{
-								LYC_INT = false;
-								STAT &= 0xFB;
+								// clear the sprite table
+								for (int k = 0; k < 10; k++)
+								{
+									SL_sprites[k * 4] = 0;
+									SL_sprites[k * 4 + 1] = 0;
+									SL_sprites[k * 4 + 2] = 0;
+									SL_sprites[k * 4 + 3] = 0;
+								}
+
+								if (LY != LYC)
+								{
+									LYC_INT = false;
+									STAT &= 0xFB;
+								}
+
+								if ((LY == LYC) && !STAT.Bit(2))
+								{
+									// set STAT coincidence FLAG and interrupt flag if it is enabled
+									STAT |= 0x04;
+									if (STAT.Bit(6)) { LYC_INT = true; }
+								}
 							}
 
-							if ((LY == LYC) && !STAT.Bit(2))
+							if (cycle == 84)
 							{
-								// set STAT coincidence FLAG and interrupt flag if it is enabled
-								STAT |= 0x04;
-								if (STAT.Bit(6)) { LYC_INT = true; }
+								STAT &= 0xFC;
+								STAT |= 0x03;
+								OAM_INT = false;
+
+								OAM_access_read = false;
+								OAM_access_write = false;
+								VRAM_access_read = false;
+								VRAM_access_write = false;
 							}
 						}
-
-						if (cycle == 84)
+						else
 						{
-							STAT &= 0xFC;
-							STAT |= 0x03;
-							OAM_INT = false;
+							if (cycle >= 85)
+							{
+								if (cycle == 85)
+								{
+									// x-scroll is expected to be latched one cycle later 
+									// this is fine since nothing has started in the rendering until the second cycle
+									// calculate the column number of the tile to start with
+									x_tile = (int)Math.Floor((float)(scroll_x) / 8);
+									render_offset = scroll_x % 8;
+								}
 
-							OAM_access_read = false;
-							OAM_access_write = false;
-							VRAM_access_read = false;
-							VRAM_access_write = false;
-						}
-
-						if (cycle == 256)
-						{
-							STAT &= 0xFC;
-							OAM_INT = false;
-
-							if (STAT.Bit(3)) { HBL_INT = true; }
-
-							OAM_access_read = true;
-							OAM_access_write = true;
-							VRAM_access_read = true;
-							VRAM_access_write = true;
+								// render the screen and handle hblank
+								render(cycle - 85);
+							}
 						}
 					}
 					else
 					{
-						if (cycle < 80)
+						if (cycle <= 80)
 						{
 							if (cycle == 2)
 							{
 								if (LY != 0)
 								{
 									HBL_INT = false;
-									
+
 									if (STAT.Bit(5)) { OAM_INT = true; }
 								}
 							}
@@ -547,37 +561,37 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								}
 							}
 
-							// here OAM scanning is performed
-							OAM_scan(cycle);
-						}
-						else if ((cycle >= 80) && (LY < 144))
-						{
-							if (cycle >= 83)
-							{
-								if (cycle == 84)
-								{
-									STAT &= 0xFC;
-									STAT |= 0x03;
-									OAM_INT = false;
-									OAM_access_write = false;
-									VRAM_access_write = false;
-
-									// x-scroll is expected to be latched one cycle later 
-									// this is fine since nothing has started in the rendering until the second cycle
-									// calculate the column number of the tile to start with
-									x_tile = (int)Math.Floor((float)(scroll_x) / 8);
-									render_offset = scroll_x % 8;
-								}
-
-								// render the screen and handle hblank
-								render(cycle - 83);
-							}
-							else if (cycle == 80)
+							if (cycle == 80)
 							{
 								OAM_access_read = false;
 								OAM_access_write = true;
 								VRAM_access_read = false;
 							}
+							else
+							{
+								// here OAM scanning is performed
+								OAM_scan(cycle);
+							}
+						}
+						else if (cycle >= 83)
+						{
+							if (cycle == 84)
+							{
+								STAT &= 0xFC;
+								STAT |= 0x03;
+								OAM_INT = false;
+								OAM_access_write = false;
+								VRAM_access_write = false;
+
+								// x-scroll is expected to be latched one cycle later 
+								// this is fine since nothing has started in the rendering until the second cycle
+								// calculate the column number of the tile to start with
+								x_tile = (int)Math.Floor((float)(scroll_x) / 8);
+								render_offset = scroll_x % 8;
+							}
+
+							// render the screen and handle hblank
+							render(cycle - 83);
 						}
 					}
 				}
