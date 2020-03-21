@@ -419,6 +419,11 @@ namespace BizHawk.Client.Common
 				["IV"] = '4',
 				["V"] = '5',
 				["VI"] = '6',
+			},
+			["NDS"] = new Dictionary<string, char>
+			{
+				["Lid"] = 'P',
+				["Touch"] = 'T'
 			}
 		};
 	}
