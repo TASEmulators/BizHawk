@@ -15,3 +15,6 @@
 	path = mgba
 	url = https://github.com/TASVideos/mgba.git
 	branch = bizhawk-0.6
+[submodule "melonds"]
+	path = melonds
+	url = https://github.com/TASVideos/melonDS.git
