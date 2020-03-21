@@ -118,7 +118,7 @@ namespace BizHawk.Emulation.Common
 
 			for (var i = addresses.Start; i < addresses.EndInclusive; i++)
 			{
-				values[i] = PeekByte(i);
+				values[i - addresses.Start] = PeekByte(i);
 			}
 		}
 
