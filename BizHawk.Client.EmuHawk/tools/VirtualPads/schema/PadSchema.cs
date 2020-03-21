@@ -28,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			public string Name { get; set; }
 			public string DisplayName { get; set; }
-			public PadInputType Type { get; set; }
+			public PadInputType Type { get; set; } = PadInputType.Boolean;
 			public Point Location { get; set; }
 			public Bitmap Icon { get; set; }
 			public Size TargetSize { get; set; } // Specifically for TargetedPair, specifies the screen size

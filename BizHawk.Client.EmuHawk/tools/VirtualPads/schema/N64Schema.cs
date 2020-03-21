@@ -35,99 +35,85 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Name = $"P{controller} DPad U",
 						Icon = Properties.Resources.BlueUp,
-						Location = new Point(24, 230),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(24, 230)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} DPad D",
 						Icon = Properties.Resources.BlueDown,
-						Location = new Point(24, 251),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(24, 251)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} DPad L",
 						Icon = Properties.Resources.Back,
-						Location = new Point(3, 242),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(3, 242)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} DPad R",
 						Icon = Properties.Resources.Forward,
-						Location = new Point(45, 242),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(45, 242)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} L",
 						DisplayName = "L",
-						Location = new Point(3, 185),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(3, 185)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} R",
 						DisplayName = "R",
-						Location = new Point(191, 185),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(191, 185)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} Z",
 						DisplayName = "Z",
-						Location = new Point(81, 269),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(81, 269)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} Start",
 						DisplayName = "S",
-						Location = new Point(81, 246),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(81, 246)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} B",
 						DisplayName = "B",
-						Location = new Point(127, 246),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(127, 246)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} A",
 						DisplayName = "A",
-						Location = new Point(138, 269),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(138, 269)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} C Up",
 						Icon = Properties.Resources.YellowUp,
-						Location = new Point(173, 210),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(173, 210)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} C Down",
 						Icon = Properties.Resources.YellowDown,
-						Location = new Point(173, 231),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(173, 231)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} C Left",
 						Icon = Properties.Resources.YellowLeft,
-						Location = new Point(152, 221),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(152, 221)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} C Right",
 						Icon = Properties.Resources.YellowRight,
-						Location = new Point(194, 221),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(194, 221)
 					},
 					new PadSchema.ButtonSchema
 					{

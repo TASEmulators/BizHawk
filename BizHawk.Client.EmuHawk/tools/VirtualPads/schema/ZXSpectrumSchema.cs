@@ -32,36 +32,31 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Name = $"P{controller} Up",
 						Icon = Properties.Resources.BlueUp,
-						Location = new Point(23, 15),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(23, 15)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} Down",
 						Icon = Properties.Resources.BlueDown,
-						Location = new Point(23, 36),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(23, 36)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} Left",
 						Icon = Properties.Resources.Back,
-						Location = new Point(2, 24),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(2, 24)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} Right",
 						Icon = Properties.Resources.Forward,
-						Location = new Point(44, 24),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(44, 24)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} Button",
 						DisplayName = "B",
-						Location = new Point(124, 24),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(124, 24)
 					}
 				}
 			};
@@ -141,7 +136,7 @@ namespace BizHawk.Client.EmuHawk
 				new ButtonLayout { Name = "Key Up Cursor", DisName = "↑", Row = 4, WidthFactor = 1 },
 				new ButtonLayout { Name = "Key Down Cursor", DisName = "↓", Row = 4, WidthFactor = 1 },
 				new ButtonLayout { Name = "Key Comma", DisName = ",", Row = 4, WidthFactor = 1 },
-				new ButtonLayout { Name = "Key Symbol Shift", DisName = "SS", Row = 4, WidthFactor = 1 },
+				new ButtonLayout { Name = "Key Symbol Shift", DisName = "SS", Row = 4, WidthFactor = 1 }
 			};
 
 			var ps = new PadSchema
@@ -190,8 +185,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Name = b.Name,
 						DisplayName = disp,
-						Location = new Point(xPos, yPos),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(xPos, yPos)
 					};
 					btns.Add(btn);
 				}
@@ -217,39 +211,32 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Name = "Play Tape",
 						Icon = Properties.Resources.Play,
-						Location = new Point(23, 22),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(23, 22)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = "Stop Tape",
 						Icon = Properties.Resources.Stop,
-						Location = new Point(53, 22),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(53, 22)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = "RTZ Tape",
 						Icon = Properties.Resources.BackMore,
-						Location = new Point(83, 22),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(83, 22)
 					},
 					 new PadSchema.ButtonSchema
 					{
 						Name = "Insert Next Tape",
 						DisplayName = "NEXT TAPE",
-						//Icon = Properties.Resources.MoveRight,
-						Location = new Point(23, 52),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(23, 52)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = "Insert Previous Tape",
 						DisplayName = "PREV TAPE",
-						//Icon = Properties.Resources.MoveLeft,
-						Location = new Point(100, 52),
-						Type = PadSchema.PadInputType.Boolean
-					},
+						Location = new Point(100, 52)
+					}
 				}
 			};
 		}

@@ -26,64 +26,55 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Name = "Up",
 						Icon = Properties.Resources.BlueUp,
-						Location = new Point(14, 12),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(14, 12)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = "Down",
 						Icon = Properties.Resources.BlueDown,
-						Location = new Point(14, 56),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(14, 56)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = "Left",
 						Icon = Properties.Resources.Back,
-						Location = new Point(2, 34),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(2, 34)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = "Right",
 						Icon = Properties.Resources.Forward,
-						Location = new Point(24, 34),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(24, 34)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = "B",
 						DisplayName = "B",
-						Location = new Point(130, 62),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(130, 62)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = "A",
 						DisplayName = "A",
-						Location = new Point(154, 62),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(154, 62)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = "Option 1",
 						DisplayName = "1",
-						Location = new Point(100, 12),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(100, 12)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = "Option 2",
 						DisplayName = "2",
-						Location = new Point(100, 62),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(100, 62)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = "Pause",
 						DisplayName = "Pause",
-						Location = new Point(100, 37),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(100, 37)
 					}
 				}
 			};

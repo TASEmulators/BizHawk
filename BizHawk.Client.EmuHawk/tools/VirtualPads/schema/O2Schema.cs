@@ -39,36 +39,31 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Name = $"P{controller} Up",
 						Icon = Properties.Resources.BlueUp,
-						Location = new Point(14, 12),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(14, 12)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} Down",
 						Icon = Properties.Resources.BlueDown,
-						Location = new Point(14, 56),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(14, 56)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} Left",
 						Icon = Properties.Resources.Back,
-						Location = new Point(2, 34),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(2, 34)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} Right",
 						Icon = Properties.Resources.Forward,
-						Location = new Point(24, 34),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(24, 34)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} F",
 						DisplayName = "F",
-						Location = new Point(74, 34),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(74, 34)
 					}
 				}
 			};

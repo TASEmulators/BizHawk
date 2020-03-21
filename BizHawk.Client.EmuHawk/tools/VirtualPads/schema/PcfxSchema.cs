@@ -53,29 +53,25 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Name = $"P{controller} Up",
 						Icon = Properties.Resources.BlueUp,
-						Location = new Point(34, 17),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(34, 17)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} Down",
 						Icon = Properties.Resources.BlueDown,
-						Location = new Point(34, 61),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(34, 61)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} Left",
 						Icon = Properties.Resources.Back,
-						Location = new Point(22, 39),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(22, 39)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} Right",
 						Icon = Properties.Resources.Forward,
-						Location = new Point(44, 39),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(44, 39)
 					},
 
 
@@ -83,72 +79,62 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Name = $"P{controller} Mode 1",
 						DisplayName = "Mode 1",
-						Location = new Point(74, 17),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(74, 17)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} Mode 2",
 						DisplayName = "Mode 2",
-						Location = new Point(74, 40),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(74, 40)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} Select",
 						DisplayName = "s",
-						Location = new Point(77, 63),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(77, 63)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} Run",
 						DisplayName = "R",
-						Location = new Point(101, 63),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(101, 63)
 					},
 
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} IV",
 						DisplayName = "IV",
-						Location = new Point(140, 63),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(140, 63)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} V",
 						DisplayName = "V",
-						Location = new Point(166, 53),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(166, 53)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} VI",
 						DisplayName = "VI",
-						Location = new Point(192, 43),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(192, 43)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} I",
 						DisplayName = "I",
-						Location = new Point(140, 40),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(140, 40)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} II",
 						DisplayName = "II",
-						Location = new Point(166, 30),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(166, 30)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} III",
 						DisplayName = "III",
-						Location = new Point(192, 20),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(192, 20)
 					}
 				}
 			};
@@ -175,17 +161,15 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Name = $"P{controller} Mouse Left",
 						DisplayName = "Left",
-						Location = new Point(300, 17),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(300, 17)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} Mouse Right",
 						DisplayName = "Right",
-						Location = new Point(300, 47),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(300, 47)
 					}
-				},
+				}
 			};
 		}
 	}

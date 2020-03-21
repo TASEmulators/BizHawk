@@ -42,55 +42,47 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Name = "Up",
 						Icon = Properties.Resources.BlueUp,
-						Location = new Point(14, 12),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(14, 12)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = "Down",
 						Icon = Properties.Resources.BlueDown,
-						Location = new Point(14, 56),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(14, 56)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = "Left",
 						Icon = Properties.Resources.Back,
-						Location = new Point(2, 34),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(2, 34)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = "Right",
 						Icon = Properties.Resources.Forward,
-						Location = new Point(24, 34),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(24, 34)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = "B",
-						Location = new Point(122, 34),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(122, 34)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = "A",
-						Location = new Point(146, 34),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(146, 34)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = "Select",
 						DisplayName = "s",
-						Location = new Point(52, 34),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(52, 34)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = "Start",
 						DisplayName = "S",
-						Location = new Point(74, 34),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(74, 34)
 					}
 				}
 			};
@@ -108,8 +100,7 @@ namespace BizHawk.Client.EmuHawk
 					new PadSchema.ButtonSchema
 					{
 						Name = "Power",
-						Location = new Point(10, 15),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(10, 15)
 					}
 				}
 			};
@@ -128,57 +119,49 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Name = "P1 Up",
 						Icon = Properties.Resources.BlueUp,
-						Location = new Point(14, 12),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(14, 12)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = "P1 Down",
 						Icon = Properties.Resources.BlueDown,
-						Location = new Point(14, 56),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(14, 56)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = "P1 Left",
 						Icon = Properties.Resources.Back,
-						Location = new Point(2, 34),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(2, 34)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = "P1 Right",
 						Icon = Properties.Resources.Forward,
-						Location = new Point(24, 34),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(24, 34)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = "P1 B",
 						DisplayName = "B",
-						Location = new Point(122, 34),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(122, 34)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = "P1 A",
 						DisplayName = "A",
-						Location = new Point(146, 34),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(146, 34)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = "P1 Select",
 						DisplayName = "s",
-						Location = new Point(52, 34),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(52, 34)
 					},
 					new PadSchema.ButtonSchema
 					{
 						Name = "P1 Start",
 						DisplayName = "S",
-						Location = new Point(74, 34),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(74, 34)
 					}
 				}
 			};
@@ -196,8 +179,7 @@ namespace BizHawk.Client.EmuHawk
 					new PadSchema.ButtonSchema
 					{
 						Name = "P1 Power",
-						Location = new Point(10, 15),
-						Type = PadSchema.PadInputType.Boolean
+						Location = new Point(10, 15)
 					}
 				}
 			};
@@ -221,7 +203,7 @@ namespace BizHawk.Client.EmuHawk
 						TargetSize = new Size(256, 240),
 						SecondaryNames = new[]
 						{
-							"P1 Tilt Y",
+							"P1 Tilt Y"
 						}
 					}
 				}
