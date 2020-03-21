@@ -69,6 +69,7 @@ namespace BizHawk.Client.EmuHawk.Properties {
 		internal static readonly Lazy<Bitmap> VBoyController = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.VBoyController"));
 		internal static readonly Lazy<Bitmap> WonderSwanColor = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.WonderSwanColor"));
 		internal static readonly Lazy<Bitmap> ZXSpectrumKeyboards = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.ZXSpectrumKeyboards"));
+		internal static readonly Lazy<Bitmap> DSController = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.DSController"));
 		internal static readonly Bitmap CopyFolderHS = ReadEmbeddedBitmap("CopyFolderHS");
 		internal static readonly Bitmap corphawk = ReadEmbeddedBitmapAt("images.corphawk.jpg");
 		internal static readonly Bitmap CorpHawkSmall = ReadEmbeddedBitmap("CorpHawkSmall");

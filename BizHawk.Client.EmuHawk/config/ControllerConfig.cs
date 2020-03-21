@@ -49,6 +49,7 @@ namespace BizHawk.Client.EmuHawk
 			ControllerImages.Add("VirtualBoy Controller", Properties.Resources.VBoyController);
 			ControllerImages.Add("NeoGeo Portable Controller", Properties.Resources.NGPController);
 			ControllerImages.Add("MAME Controller", Properties.Resources.ArcadeController);
+			ControllerImages.Add("NDS Controller", Properties.Resources.DSController);
 		}
 
 		protected override void OnActivated(EventArgs e)
