@@ -1,15 +1,15 @@
 ﻿using BizHawk.Common;
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class UNIF_UNL_EDU2000 : NES.NESBoardBase
+	internal sealed class UNIF_UNL_EDU2000 : NesBoardBase
 	{
 		private int _reg;
 
 		private int _prgMask32;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "UNIF_UNL-EDU2000":
 					break;
@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			_prgMask32 = Cart.prg_size / 32 - 1;
+			_prgMask32 = Cart.PrgSize / 32 - 1;
 
 			return true;
 		}
@@ -28,14 +28,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("reg", ref _reg);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			_reg = value;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[((_reg & _prgMask32) * 0x8000) + (addr & 0x7FFF)];
+			return Rom[((_reg & _prgMask32) * 0x8000) + (addr & 0x7FFF)];
 		}
 	}
 }

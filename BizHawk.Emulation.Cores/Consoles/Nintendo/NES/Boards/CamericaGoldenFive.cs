@@ -2,16 +2,15 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	// Adapted from 
-	public sealed class CamericaGoldenFive : NES.NESBoardBase
+	internal sealed class CamericaGoldenFive : NesBoardBase
 	{
 		private byte[] regs = new byte[2];
 
 		private int prg_bank_mask_16k;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER104":
 					break;
@@ -19,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_bank_mask_16k = Cart.prg_size / 16 - 1;
+			prg_bank_mask_16k = Cart.PrgSize / 16 - 1;
 
 			regs[1] = 0xF;
 			SetMirrorType(EMirrorType.Vertical);
@@ -32,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("reg", ref regs, false);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if (addr < 0x2000) // 80000
 			{
@@ -48,15 +47,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if (addr < 0x4000)
 			{
-				return ROM[((regs[0]) << 14) + (addr & 0x3FFF)];
+				return Rom[((regs[0]) << 14) + (addr & 0x3FFF)];
 			}
 			else
 			{
-				return ROM[((regs[1]) << 14) + (addr & 0x3FFF)];
+				return Rom[((regs[1]) << 14) + (addr & 0x3FFF)];
 			}
 		}
 	}

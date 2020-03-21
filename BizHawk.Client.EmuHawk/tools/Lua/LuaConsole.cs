@@ -570,7 +570,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (Global.Game != null)
 			{
-				sfd.FileName = Global.Game.Name.FilesystemSafeName();
+				sfd.FileName = Global.Game.FilesystemSafeName();
 				sfd.InitialDirectory = Config.PathEntries.LuaAbsolutePath();
 			}
 			else

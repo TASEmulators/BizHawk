@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// aka NAMCOT-3446
 	// just a mapper206 with a few lines changed;
 	// but easiest described in code with a separate, independent class
-	public sealed class Mapper076 : NES.NESBoardBase
+	internal sealed class Mapper076 : NesBoardBase
 	{
 		// config
 		int chr_bank_mask_2k;
@@ -15,9 +15,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int[] chr = new int[4];
 		int port;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "NAMCOT-3446": // Megami Tensei: Digital Devil Story
 				case "MAPPER076":
@@ -27,18 +27,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			SetMirrorType(EMirrorType.Vertical);
-			chr_bank_mask_2k = Cart.chr_size / 2 - 1;
-			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
+			chr_bank_mask_2k = Cart.ChrSize / 2 - 1;
+			prg_bank_mask_8k = Cart.PrgSize / 8 - 1;
 
 			prg[3] = prg_bank_mask_8k;
 			prg[2] = prg_bank_mask_8k - 1;
 
-			Cart.wram_size = 0;
+			Cart.WramSize = 0;
 
 			return true;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			switch (addr & 1)
 			{
@@ -60,16 +60,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[addr & 0x1fff | prg[addr >> 13] << 13];
+			return Rom[addr & 0x1fff | prg[addr >> 13] << 13];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
-				return VROM[addr & 0x7ff | chr[addr >> 11] << 11];
-			return base.ReadPPU(addr);
+				return Vrom[addr & 0x7ff | chr[addr >> 11] << 11];
+			return base.ReadPpu(addr);
 		}
 
 		public override void SyncState(Serializer ser)

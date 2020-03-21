@@ -7,14 +7,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//Mapper 069 is FME7 
 	//or, Sunsoft-5, which is FME7 with additional sound hardware
 
-	public sealed class Sunsoft_5 : Sunsoft_FME7
+	internal sealed class Sunsoft_5 : Sunsoft_FME7
 	{
 		Sunsoft5BAudio audio;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "SUNSOFT-5B": //Gimmick! (J)
 					AssertPrg(256); AssertChr(128); AssertWram(0); AssertVram(0); AssertBattery(false);
@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			int a = addr & 0xe000;
 			if (a == 0x4000)
@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			else if (a == 0x6000)
 				audio.RegWrite(value);
 			else
-				base.WritePRG(addr, value);
+				base.WritePrg(addr, value);
 		}
 
 		public override void SyncState(Serializer ser)
@@ -47,14 +47,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			audio.SyncState(ser);
 		}
 
-		public override void ClockCPU()
+		public override void ClockCpu()
 		{
 			audio.Clock();
-			base.ClockCPU();
+			base.ClockCpu();
 		}
 	}
 
-	public class Sunsoft_FME7 : NES.NESBoardBase
+	internal class Sunsoft_FME7 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_8k, chr_bank_mask_1k, wram_bank_mask_8k;
@@ -87,10 +87,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SyncIrq();
 		}
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "NES-JLROM": // Mr Gimmick
 					AssertPrg(256); AssertChr(128); AssertWram(0); AssertVram(0); AssertBattery(false);
@@ -120,9 +120,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		protected void BaseConfigure()
 		{
-			prg_bank_mask_8k = (Cart.prg_size / 8) - 1;
-			wram_bank_mask_8k = (Cart.wram_size / 8) - 1;
-			chr_bank_mask_1k = Cart.chr_size - 1;
+			prg_bank_mask_8k = (Cart.PrgSize / 8) - 1;
+			wram_bank_mask_8k = (Cart.WramSize / 8) - 1;
+			chr_bank_mask_1k = Cart.ChrSize - 1;
 			prg_banks_8k[3] = 0xFF;
 			SetMirrorType(EMirrorType.Vertical);
 		}
@@ -138,7 +138,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			addr &= 0xE000;
 			switch (addr)
@@ -196,10 +196,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		void SyncIrq()
 		{
-			IRQSignal = irq_asserted;
+			IrqSignal = irq_asserted;
 		}
 
-		public override void ClockCPU()
+		public override void ClockCpu()
 		{
 			if (!irq_countdown) return;
 			irq_counter--;
@@ -221,14 +221,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}*/
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_8k = addr >> 13;
 			int ofs = addr & ((1<<13)-1);
 			bank_8k = prg_banks_8k[bank_8k];
 			bank_8k &= prg_bank_mask_8k;
 			addr = (bank_8k << 13) | ofs;
-			return ROM[addr];
+			return Rom[addr];
 		}
 
 		int CalcWRAMAddress(int addr, int bank_mask_8k)
@@ -249,37 +249,37 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return (bank_1k<<10) | ofs;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
-				return VROM[CalcPPUAddress(addr)];
-			else return base.ReadPPU(addr);
+				return Vrom[CalcPPUAddress(addr)];
+			else return base.ReadPpu(addr);
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000)
 			{ }
-			else base.WritePPU(addr, value);
+			else base.WritePpu(addr, value);
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
 			if (!wram_ram_selected)
 			{
 				addr = CalcWRAMAddress(addr, prg_bank_mask_8k);
-				return ROM[addr];
+				return Rom[addr];
 			}
 			else if (!wram_ram_enabled)
 				return 0xFF; //empty bus
 			else
 			{
 				addr = CalcWRAMAddress(addr, wram_bank_mask_8k);
-				return WRAM[addr];
+				return Wram[addr];
 			}
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			if (!wram_ram_selected) return;
 			else if (!wram_ram_enabled)
@@ -287,7 +287,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			else
 			{
 				addr = CalcWRAMAddress(addr, wram_bank_mask_8k);
-				WRAM[addr] = value;
+				Wram[addr] = value;
 			}
 		}
 	

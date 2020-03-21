@@ -2,33 +2,33 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper188 : NES.NESBoardBase
+	internal sealed class Mapper188 : NesBoardBase
 	{
 		// config
 		int prg_16k_mask;
 		// state
 		int prg;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER188":
 					AssertVram(8);
 					AssertChr(0);
 					AssertPrg(128, 256);
-					Cart.wram_size = 0;
+					Cart.WramSize = 0;
 					break;
 				default:
 					return false;
 			}
 
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
-			prg_16k_mask = Cart.prg_size / 16 - 1;
+			SetMirrorType(Cart.PadH, Cart.PadV);
+			prg_16k_mask = Cart.PrgSize / 16 - 1;
 			return true;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			prg = value;
 		}
@@ -39,17 +39,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank = prg;
 			if (addr >= 0x4000)
 				bank = 15;
 			bank ^= 8; // bad dumps?
 			bank &= prg_16k_mask;
-			return ROM[addr & 0x3fff | bank << 14];
+			return Rom[addr & 0x3fff | bank << 14];
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
 			return 3;
 		}

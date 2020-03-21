@@ -293,7 +293,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 
 			if (Global.Game != null)
 			{
-				movie.GameName = Global.Game.Name.FilesystemSafeName();
+				movie.GameName = Global.Game.FilesystemSafeName();
 				movie.Hash = Global.Game.Hash;
 				if (Global.Game.FirmwareHash != null)
 				{

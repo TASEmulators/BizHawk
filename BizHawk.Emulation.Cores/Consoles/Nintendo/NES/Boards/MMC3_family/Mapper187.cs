@@ -3,15 +3,15 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Adapted from FCEUX src
-	public class Mapper187 : MMC3Board_Base
+	internal sealed class Mapper187 : MMC3Board_Base
 	{
 		private byte[] exRegs = new byte[2];
 
 		private readonly byte[] prot_data = { 0x83, 0x83, 0x42, 0x00 };
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER187":
 					break;
@@ -29,49 +29,49 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("expregs", ref exRegs, false);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if (addr == 0)
 			{
 				exRegs[1] = 1;
-				base.WritePRG(addr, value);
+				base.WritePrg(addr, value);
 			}
 			else if ((addr == 0x0001) && (exRegs[1] > 0))
 			{
-				base.WritePRG(addr, value);
+				base.WritePrg(addr, value);
 			}
 			else 
-				base.WritePRG(addr, value);
+				base.WritePrg(addr, value);
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			if (addr == 0x1000) // 0x5000
 			{
 				exRegs[0] = value;
 			}
 
-			base.WriteEXP(addr, value);
+			base.WriteExp(addr, value);
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			if (addr == 0x0000)
 			{
 				exRegs[0] = value;
 			}
 
-			base.WriteWRAM(addr, value);
+			base.WriteWram(addr, value);
 		}
 
-		public override byte ReadEXP(int addr)
+		public override byte ReadExp(int addr)
 		{
 			if (addr >= 0x1000)
 			{
 				return prot_data[exRegs[1] & 3];
 			}
 
-			return base.ReadEXP(addr);
+			return base.ReadExp(addr);
 		}
 
 		private byte MMc3_cmd => (byte)(mmc3.chr_mode ? 0x80 : 0);
@@ -86,7 +86,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return base.Get_CHRBank_1K(addr);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if ((exRegs[0] & 0x80) > 0)
 			{
@@ -95,16 +95,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					if ((exRegs[0] & 0x40) > 0)
 					{
-						return ROM[((bank >> 2) << 15) + addr];
+						return Rom[((bank >> 2) << 15) + addr];
 					}
 
-					return ROM[((bank >> 1) << 15) + addr]; // hacky! two mappers in one! need real hw carts to test
+					return Rom[((bank >> 1) << 15) + addr]; // hacky! two mappers in one! need real hw carts to test
 				}
 
-				return ROM[(bank << 14) + (addr & 0x3FFF)];
+				return Rom[(bank << 14) + (addr & 0x3FFF)];
 			}
 
-			return base.ReadPRG(addr);
+			return base.ReadPrg(addr);
 		}
 	}
 }

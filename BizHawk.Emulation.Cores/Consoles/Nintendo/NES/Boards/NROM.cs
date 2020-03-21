@@ -1,7 +1,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	[NES.INESBoardImplPriority]
-	public sealed class NROM : NES.NESBoardBase
+	[NesBoardImplPriority]
+	internal sealed class NROM : NesBoardBase
 	{
 		//configuration
 		int prg_byte_mask;
@@ -9,11 +9,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//state
 		//(none)
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure.
 			//contrary to expectations, some NROM games may have WRAM if theyve been identified through iNES. lame.
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER000":
 					break;
@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "AVE-NINA-03":
 					// at least one game on this board has none of the mapper chips present,
 					// and emulates as simple NROM
-					if (Cart.chips.Count != 0)
+					if (Cart.Chips.Count != 0)
 						return false;
 					AssertPrg(8, 16, 32); 
 					AssertChr(8); AssertVram(0); AssertWram(0);
@@ -79,16 +79,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_byte_mask = (Cart.prg_size*1024) - 1;
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			prg_byte_mask = (Cart.PrgSize*1024) - 1;
+			SetMirrorType(Cart.PadH, Cart.PadV);
 			
 			return true;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			addr &= prg_byte_mask;
-			return ROM[addr];
+			return Rom[addr];
 		}
 	}
 }

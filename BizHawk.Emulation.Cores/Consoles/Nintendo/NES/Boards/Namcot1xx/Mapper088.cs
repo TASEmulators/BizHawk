@@ -13,15 +13,15 @@
 	Consequently, CHR is split into two halves. $0xxx can only have CHR from the first 64K, $1xxx can only have CHR from the second 64K.
 	*/
 
-	public sealed class Mapper088 : Namcot108Board_Base
+	internal sealed class Mapper088 : Namcot108Board_Base
 	{
 		//configuration
 		int chr_bank_mask_1k;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "NAMCOT-3443":
 				case "NAMCOT-3433":
@@ -34,7 +34,7 @@
 			BaseSetup();
 			SetMirrorType(EMirrorType.Vertical);
 
-			chr_bank_mask_1k = Cart.chr_size - 1;
+			chr_bank_mask_1k = Cart.ChrSize - 1;
 
 			return true;
 		}
@@ -51,15 +51,15 @@
 			return addr;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
-			if (addr < 0x2000) return VROM[RewireCHR(addr)];
-			else return base.ReadPPU(addr);
+			if (addr < 0x2000) return Vrom[RewireCHR(addr)];
+			else return base.ReadPpu(addr);
 		}
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000) { }
-			else base.WritePPU(addr, value);
+			else base.WritePpu(addr, value);
 		}
 	}
 }

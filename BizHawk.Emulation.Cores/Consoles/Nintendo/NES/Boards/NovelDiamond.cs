@@ -2,14 +2,14 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class NovelDiamond : NES.NESBoardBase
+	internal sealed class NovelDiamond : NesBoardBase
 	{
 		int prg;
 		int chr;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER054": // ??
 				case "UNIF_BMC-NovelDiamond9999999in1": // works
@@ -19,24 +19,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			AssertPrg(128);
 			AssertChr(64);
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			SetMirrorType(Cart.PadH, Cart.PadV);
 			return true;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
-				return VROM[addr | chr << 13];
+				return Vrom[addr | chr << 13];
 			else
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[addr | prg << 15];
+			return Rom[addr | prg << 15];
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			prg = addr & 3;
 			chr = addr & 7;

@@ -198,7 +198,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RecordMovie_Load(object sender, EventArgs e)
 		{
-			RecordBox.Text = _game.Name.FilesystemSafeName();
+			RecordBox.Text = _game.FilesystemSafeName();
 			StartFromCombo.SelectedIndex = 0;
 			DefaultAuthorCheckBox.Checked = _config.UseDefaultAuthor;
 			if (_config.UseDefaultAuthor)

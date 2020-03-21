@@ -2,28 +2,28 @@
 {
 	// rewires pins to use internal CIRAM as both nametable and pattern data, so
 	// the entire cart is just a single PRGROM chip (plus CIC)
-	public sealed class Mapper218 : NES.NESBoardBase
+	internal sealed class Mapper218 : NesBoardBase
 	{
 		//configuration
 		int prg_byte_mask;
 		int chr_addr_mask;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER218":
 					// the cart actually has 0k vram, but due to massive abuse of the ines format, is labeled as 8k
 					// supposed vram is (correctly) not used in our implementation
 					AssertPrg(8, 16, 32); AssertChr(0); /*AssertVram(0);*/ AssertWram(0);
-					Cart.vram_size = 0; // force vram size 0
+					Cart.VramSize = 0; // force vram size 0
 					break;
 				default:
 					return false;
 			}
 
 			// due to massive abuse of the ines format, the mirroring and 4 screen bits have slightly different meanings
-			switch (Cart.inesmirroring)
+			switch (Cart.InesMirroring)
 			{
 				case 1: // VA10 to PA10
 					// pattern: ABABABAB
@@ -49,7 +49,7 @@
 					// we need an ines identification for correct mirroring
 					return false;
 			}
-			prg_byte_mask = (Cart.prg_size * 1024) - 1;
+			prg_byte_mask = (Cart.PrgSize * 1024) - 1;
 			return true;
 		}
 
@@ -62,20 +62,20 @@
 			return addr;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			return NES.CIRAM[TransformPPU(addr)];
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			NES.CIRAM[TransformPPU(addr)] = value;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			addr &= prg_byte_mask;
-			return ROM[addr];
+			return Rom[addr];
 		}
 	}
 }

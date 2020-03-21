@@ -3,8 +3,8 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	[NES.INESBoardImplPriority]
-	public class Namcot175_340 : NES.NESBoardBase
+	[NesBoardImplPriority]
+	internal class Namcot175_340 : NesBoardBase
 	{
 		/*
 		 * Namcot 175 and 340.  Simpler versions of the 129/163.  Differences:
@@ -36,14 +36,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int[] chr = new int[8];
 		bool wramenable;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "NAMCOT-175":
 					//wagyan land 2
 					//splatter house
-					SetMirrorType(Cart.pad_h, Cart.pad_v);
+					SetMirrorType(Cart.PadH, Cart.PadV);
 					break;
 				case "NAMCOT-340":
 					//family circuit '91
@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					// not sure what to do here because the popular public collection
 					// has nothing in mapper 210 except some mortal kombat pirate cart
 					enablemirror = true;
-					SetMirrorType(Cart.pad_h, Cart.pad_v);
+					SetMirrorType(Cart.PadH, Cart.PadV);
 					break;
 				default:
 					return false;
@@ -64,8 +64,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			AssertChr(64, 128, 256);
 			AssertVram(0);
 
-			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
-			chr_bank_mask_1k = Cart.chr_size / 1 - 1;
+			prg_bank_mask_8k = Cart.PrgSize / 8 - 1;
+			chr_bank_mask_1k = Cart.ChrSize / 1 - 1;
 			prg[3] = prg_bank_mask_8k;
 			return true;
 		}
@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(wramenable), ref wramenable);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			switch (addr & 0x7800)
 			{
@@ -115,32 +115,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
-				return VROM[addr & 0x3ff | chr[addr >> 10] << 10];
+				return Vrom[addr & 0x3ff | chr[addr >> 10] << 10];
 			}
 			else
 			{
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[addr & 0x1fff | prg[addr >> 13] << 13];
+			return Rom[addr & 0x1fff | prg[addr >> 13] << 13];
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			if (wramenable)
-				base.WriteWRAM(addr, value);
+				base.WriteWram(addr, value);
 		}
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
 			if (wramenable)
-				return base.ReadWRAM(addr);
+				return base.ReadWram(addr);
 			else
 				return NES.DB;
 		}

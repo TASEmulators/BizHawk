@@ -3,14 +3,14 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Adapted from FCEUX src
-	public sealed class Mapper238 : MMC3Board_Base
+	internal sealed class Mapper238 : MMC3Board_Base
 	{
 		private readonly int[] lut = { 0x00, 0x02, 0x02, 0x03 };
 		private byte reg;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER238":
 				case "UNIF_UNL-603-5052":
@@ -29,32 +29,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(reg), ref reg);
 		}
 
-		public override byte ReadEXP(int addr)
+		public override byte ReadExp(int addr)
 		{
 			if (addr < 0x20)
 			{
-				return base.ReadEXP(addr);
+				return base.ReadExp(addr);
 			}
 
 			return reg;
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
 			return reg;
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			if (addr < 0x20)
 			{
-				base.WriteEXP(addr, value);
+				base.WriteExp(addr, value);
 			}
 
 			reg = (byte)lut[value & 3];
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			reg = (byte)lut[value & 3];
 		}

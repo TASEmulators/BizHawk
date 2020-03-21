@@ -4,8 +4,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//generally mapper7
 
-	[NES.INESBoardImplPriority]
-	public sealed class AxROM : NES.NESBoardBase
+	[NesBoardImplPriority]
+	internal sealed class AxROM : NesBoardBase
 	{
 		//configuration
 		bool bus_conflict;
@@ -14,14 +14,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//state
 		int prg;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER007":
 					bus_conflict = false;
-					Cart.vram_size = 8;
+					Cart.VramSize = 8;
 					break;
 
 				case "NES-ANROM": //marble madness
@@ -57,31 +57,33 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_mask_32k = Cart.prg_size / 32 - 1;
-			SetMirrorType(NES.NESBoardBase.EMirrorType.OneScreenA);
+			prg_mask_32k = Cart.PrgSize / 32 - 1;
+			SetMirrorType(EMirrorType.OneScreenA);
 
 			return true;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			if (Cart.prg_size ==  16)
+			if (Cart.PrgSize ==  16)
 			{
-				return ROM[(addr & 0x3FFF) | prg << 15];
+				return Rom[(addr & 0x3FFF) | prg << 15];
 			}
 
-			return ROM[addr | prg << 15];
+			return Rom[addr | prg << 15];
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
-			if (ROM != null && bus_conflict)
+			if (Rom != null && bus_conflict)
+			{
 				value = HandleNormalPRGConflict(addr,value);
+			}
+
 			prg = value & prg_mask_32k;
-			if ((value & 0x10) == 0)
-				SetMirrorType(NES.NESBoardBase.EMirrorType.OneScreenA);
-			else
-				SetMirrorType(NES.NESBoardBase.EMirrorType.OneScreenB);
+			SetMirrorType((value & 0x10) == 0
+				? EMirrorType.OneScreenA
+				: EMirrorType.OneScreenB);
 		}
 
 		public override void SyncState(Serializer ser)
@@ -89,6 +91,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 			ser.Sync(nameof(prg), ref prg);
 		}
-
 	}
 }

@@ -970,7 +970,7 @@ namespace BizHawk.Client.EmuHawk
 				, FileName =
 					_domain.Name == "File on Disk"
 						? RomName
-						: Global.Game.Name.FilesystemSafeName()
+						: Global.Game.FilesystemSafeName()
 			};
 
 			var result = sfd.ShowHawkDialog();
@@ -983,7 +983,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				FileName = _domain.Name == "File on Disk"
 					? $"{Path.GetFileNameWithoutExtension(RomName)}.txt"
-					: Global.Game.Name.FilesystemSafeName(),
+					: Global.Game.FilesystemSafeName(),
 				Filter = new FilesystemFilterSet(FilesystemFilter.TextFiles).ToString(),
 				InitialDirectory = RomDirectory,
 				RestoreDirectory = true

@@ -2,14 +2,14 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class UNIF_DREAMTECH01 : NES.NESBoardBase
+	internal class UNIF_DREAMTECH01 : NesBoardBase
 	{
 		// Korean Igo (Unl) [U][!]
 		private int reg;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "UNIF_DREAMTECH01":
 					break;
@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			if (addr == 0x1020)
 			{
@@ -34,10 +34,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank = addr < 0x4000 ? reg : 8;
-			return ROM[(bank << 14) + (addr & 0x3FFF)];
+			return Rom[(bank << 14) + (addr & 0x3FFF)];
 		}
 	}
 }

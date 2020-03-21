@@ -3,50 +3,53 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper227 : NES.NESBoardBase
+	internal sealed class Mapper227 : NesBoardBase
 	{
-		//configuration
-		int prg_bank_mask_16k;
+		private int _prgBankMask16K;
+		private int prg;
+		private bool _vramProtected;
+		private byte[] _prgBanks16K = new byte[2];
 
-		//state
-		int prg;
-		bool vram_protected;
-		byte[] prg_banks_16k = new byte[2];
-
-		//1200-in-1
-		//[NJXXX] Xiang Shuai Chuan Qi
-
-		public override bool Configure(NES.EDetectionOrigin origin)
+		// 1200-in-1
+		// [NJXXX] Xiang Shuai Chuan Qi
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER227":
 					//AssertVram(16);
-					Cart.vram_size = 16;
+					Cart.VramSize = 16;
 					break;
 				default:
 					return false;
 			}
-			prg_bank_mask_16k = (Cart.prg_size / 16) - 1;
+			_prgBankMask16K = (Cart.PrgSize / 16) - 1;
 
 			SetMirrorType(EMirrorType.Vertical);
-			vram_protected = false;
-			prg_banks_16k[0] = prg_banks_16k[1] = 0;
+			_vramProtected = false;
+			_prgBanks16K[0] = _prgBanks16K[1] = 0;
 			return true;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync(nameof(prg), ref prg);
+			ser.Sync(nameof(_prgBanks16K), ref _prgBanks16K, false);
+		}
+
+		public override byte ReadPrg(int addr)
 		{
 			int bank_16k = addr >> 14;
 			int ofs = addr & ((1 << 14) - 1);
-			bank_16k = prg_banks_16k[bank_16k];
-			bank_16k &= prg_bank_mask_16k;
+			bank_16k = _prgBanks16K[bank_16k];
+			bank_16k &= _prgBankMask16K;
 			addr = (bank_16k << 14) | ofs;
-			return ROM[addr];
+			return Rom[addr];
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			bool S = addr.Bit(0);
 			bool M_horz = addr.Bit(1);
@@ -63,58 +66,51 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (o == true && S == false)	
 			{
-				prg_banks_16k[0] = (byte)(p);
-				prg_banks_16k[1] = (byte)(p);
+				_prgBanks16K[0] = (byte)(p);
+				_prgBanks16K[1] = (byte)(p);
 			}
 			if (o == true && S == true)
 			{
-				prg_banks_16k[0] = (byte)((p & ~1));
-				prg_banks_16k[1] = (byte)((p & ~1) + 1);
+				_prgBanks16K[0] = (byte)((p & ~1));
+				_prgBanks16K[1] = (byte)((p & ~1) + 1);
 			}
 			if (o == false && S == false && L == false)
 			{
-				prg_banks_16k[0] = (byte)p;
-				prg_banks_16k[1] = (byte)(p & 0x38);
+				_prgBanks16K[0] = (byte)p;
+				_prgBanks16K[1] = (byte)(p & 0x38);
 			}
 			if (o == false && S == true && L == false)
 			{
-				prg_banks_16k[0] = (byte)(p & 0x3E);
-				prg_banks_16k[1] = (byte)(p & 0x38);
+				_prgBanks16K[0] = (byte)(p & 0x3E);
+				_prgBanks16K[1] = (byte)(p & 0x38);
 			}
 			if (o == false && S == false && L == true)
 			{
-				prg_banks_16k[0] = (byte)p;
-				prg_banks_16k[1] = (byte)(p | 0x07);
+				_prgBanks16K[0] = (byte)p;
+				_prgBanks16K[1] = (byte)(p | 0x07);
 			}
 			if (o == false && S == true && L == true)
 			{
-				prg_banks_16k[0] = (byte)(p & 0x3E);
-				prg_banks_16k[1] = (byte)(p | 0x07);
+				_prgBanks16K[0] = (byte)(p & 0x3E);
+				_prgBanks16K[1] = (byte)(p | 0x07);
 			}
 
-			prg_banks_16k[0] = (byte)(prg_banks_16k[0]&prg_bank_mask_16k);
-			prg_banks_16k[1] = (byte)(prg_banks_16k[1]&prg_bank_mask_16k);
+			_prgBanks16K[0] = (byte)(_prgBanks16K[0]&_prgBankMask16K);
+			_prgBanks16K[1] = (byte)(_prgBanks16K[1]&_prgBankMask16K);
 
 			if (M_horz) SetMirrorType(EMirrorType.Horizontal);
 			else SetMirrorType(EMirrorType.Vertical);
 		}
 
-
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000)
 			{
-				if (vram_protected) 
+				if (_vramProtected) 
 					return;
-				else base.WritePPU(addr, value);
+				else base.WritePpu(addr, value);
 			}
-			else base.WritePPU(addr, value);
-		}
-
-		public override void SyncState(Serializer ser)
-		{
-			base.SyncState(ser);
-			ser.Sync(nameof(prg), ref prg);
+			else base.WritePpu(addr, value);
 		}
 	}
 }

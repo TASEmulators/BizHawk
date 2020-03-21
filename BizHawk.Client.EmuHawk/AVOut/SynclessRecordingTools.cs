@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 using BizHawk.Bizware.BizwareGL;
 using BizHawk.Client.Common;
-using BizHawk.Common.PathExtensions;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var ofd = new OpenFileDialog
 			{
-				FileName = $"{Global.Game.Name.FilesystemSafeName()}.syncless.txt",
+				FileName = $"{Global.Game.FilesystemSafeName()}.syncless.txt",
 				InitialDirectory = Global.Config.PathEntries.AvAbsolutePath()
 			};
 

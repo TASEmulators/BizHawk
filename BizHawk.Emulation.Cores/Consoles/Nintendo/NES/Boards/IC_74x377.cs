@@ -8,8 +8,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//Crystal Mines
 	//Metal Fighter
 
-	[NES.INESBoardImplPriority]
-	public sealed class IC_74x377 : NES.NESBoardBase
+	[NesBoardImplPriority]
+	internal sealed class IC_74x377 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_32k, chr_bank_mask_8k;
@@ -19,9 +19,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//state
 		int prg_bank_32k, chr_bank_8k;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER011":
 					break;
@@ -46,28 +46,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			AssertPrg(32, 64, 128);
 			AssertChr(8, 16, 32, 64, 128);
 
-			prg_bank_mask_32k = Cart.prg_size / 32 - 1;
-			chr_bank_mask_8k = Cart.chr_size / 8 - 1;
+			prg_bank_mask_32k = Cart.PrgSize / 32 - 1;
+			chr_bank_mask_8k = Cart.ChrSize / 8 - 1;
 
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			SetMirrorType(Cart.PadH, Cart.PadV);
 
 			return true;
 		}
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[addr + (prg_bank_32k << 15)];
+			return Rom[addr + (prg_bank_32k << 15)];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
-				return VROM[addr + (chr_bank_8k << 13)];
+				return Vrom[addr + (chr_bank_8k << 13)];
 			}
-			else return base.ReadPPU(addr);
+			else return base.ReadPpu(addr);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if (bus_conflict_50282)
 			{
@@ -75,12 +75,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				//if (addr == 0)
 				//	return;
 				// this is what nesdev wiki does. seems to give same results as above?
-				value = (byte)((value | 1) & ReadPRG(addr));
+				value = (byte)((value | 1) & ReadPrg(addr));
 			}
 			if (bus_conflict)
 			{
 				byte old_value = value;
-				value &= ReadPRG(addr);
+				value &= ReadPrg(addr);
 				//Bible Adventures (Unl) (V1.3) [o1].nes will exercise this bus conflict, but not really test it. (works without bus conflict emulation
 				Debug.Assert(old_value == value, "Found a test case of Discrete_74x377 bus conflict. please report.");
 			}

@@ -171,7 +171,6 @@
 		<Compile Include="$(SolutionDir)BizHawk.Common/OSTailoredCode.cs" Link="OSTailoredCode.cs" />
 		<Compile Include="$(SolutionDir)Version/svnrev.cs" Link="svnrev.cs" />
 		<Compile Include="$(SolutionDir)Version/VersionInfo.cs" Link="VersionInfo.cs" />
-		<Compile Remove="Properties/AssemblyInfo.cs" />
 		<Compile Remove="Properties/Settings.Designer.cs" />
 		<Content Include="images/logo.ico" />
 		<EmbeddedResource Include="**/*.resx" />

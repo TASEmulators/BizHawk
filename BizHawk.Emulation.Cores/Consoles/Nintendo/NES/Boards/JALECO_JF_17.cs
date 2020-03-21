@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//when the top 2 bits arent 0, theyre written to the latch
 	//interestingly, this works (for pinball quest) only when bus conflicts are applied, otherwise the game cant get past the title
 
-	public sealed class JALECO_JF_17 : NES.NESBoardBase
+	internal sealed class JALECO_JF_17 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_16k;
@@ -26,9 +26,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		byte[] prg_banks_16k = new byte[2];
 		byte[] chr_banks_8k = new byte[1];
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER072":
 					break;
@@ -38,10 +38,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 		
-			prg_bank_mask_16k = (Cart.prg_size / 16) - 1;
-			chr_bank_mask_8k = (Cart.chr_size / 8) - 1;
+			prg_bank_mask_16k = (Cart.PrgSize / 16) - 1;
+			chr_bank_mask_8k = (Cart.ChrSize / 8) - 1;
 
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			SetMirrorType(Cart.PadH, Cart.PadV);
 			
 			prg_banks_16k[1] = 0xFF;
 			chr_banks_8k[0] = 0;
@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(chr_banks_8k), ref chr_banks_8k, false);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			//Console.WriteLine("MAP {0:X4} = {1:X2}", addr, value);
 
@@ -86,20 +86,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			addr = ApplyMemoryMap(14, prg_banks_16k, addr);
-			return ROM[addr];
+			return Rom[addr];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				addr = ApplyMemoryMap(13, chr_banks_8k, addr);
 				return base.ReadPPUChr(addr);
 			}
-			else return base.ReadPPU(addr);
+			else return base.ReadPpu(addr);
 		}
 	}
 }

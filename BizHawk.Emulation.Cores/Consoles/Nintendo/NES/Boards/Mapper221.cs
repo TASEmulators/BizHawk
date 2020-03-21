@@ -3,13 +3,13 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class Mapper221 : NES.NESBoardBase
+	internal sealed class Mapper221 : NesBoardBase
 	{
 		int[] regs = new int[2];
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER221":
 				case "UNIF_BMC-N625092":
@@ -27,7 +27,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void NesSoftReset()
+		{
+			for (int i = 0; i < regs.Length; i++)
+			{
+				regs[i] = 0;
+			}
+		}
+
+		public override void WritePrg(int addr, byte value)
 		{
 			if (addr < 0x4000)
 			{
@@ -40,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank;
 			if (addr < 0x4000)
@@ -52,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				bank = (regs[0] >> 1 & 0x38) | ((regs[0].Bit(0) ? ((regs[0] & 0x80) > 0) ? 0x7 : (regs[1] & 0x6) | 0x1 : regs[1]));
 			}
 
-			return ROM[(bank << 14) + (addr & 0x3FFF)];
+			return Rom[(bank << 14) + (addr & 0x3FFF)];
 		}
 	}
 }

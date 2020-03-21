@@ -2,15 +2,15 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper120 : NES.NESBoardBase
+	internal sealed class Mapper120 : NesBoardBase
 	{
 		//Used by Tobidase Daisakusen (FDS Conversion).  Undocumented by Disch docs, this implementation is based on FCEUX
 		
 		byte prg_reg;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER120":
 					break;
@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			if (addr == 0x01FF)
 			{
@@ -35,14 +35,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
-			return ROM[((prg_reg & 7) * 0x2000) + (addr & 0x1FFF)];
+			return Rom[((prg_reg & 7) * 0x2000) + (addr & 0x1FFF)];
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[0x10000 + addr];
+			return Rom[0x10000 + addr];
 		}
 	}
 }

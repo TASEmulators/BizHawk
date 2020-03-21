@@ -570,7 +570,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			//see comments in $2006
 			if (ppur.status.sl >= 241 || !PPUON)
-				nes.Board.AddressPPU(ppur.get_2007access()); 
+				nes.Board.AddressPpu(ppur.get_2007access()); 
 		}
 		byte read_2007()
 		{
@@ -594,7 +594,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			//see comments in $2006
 			if (ppur.status.sl >= 241 || !PPUON)
-				nes.Board.AddressPPU(ppur.get_2007access());
+				nes.Board.AddressPpu(ppur.get_2007access());
 
 			// update open bus here
 			ppu_open_bus = ret;

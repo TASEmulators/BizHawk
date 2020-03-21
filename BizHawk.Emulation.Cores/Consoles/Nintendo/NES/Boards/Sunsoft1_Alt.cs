@@ -11,31 +11,31 @@
 	 * In any event, here is how it's actually emulated.
 	 */
 
-	public sealed class Sunsoft1_Alt : NES.NESBoardBase
+	internal sealed class Sunsoft1_Alt : NesBoardBase
 	{
 		int prg;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			if (Cart.board_type != "SUNSOFT-1" || Cart.pcb != "SUNSOFT-4")
+			if (Cart.BoardType != "SUNSOFT-1" || Cart.Pcb != "SUNSOFT-4")
 				return false;
 
 			AssertChr(0); AssertVram(8); AssertWram(0); AssertPrg(128);
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			SetMirrorType(Cart.PadH, Cart.PadV);
 			return true;
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			prg = value & 7;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if (addr >= 0x4000)
-				return ROM[addr & 0x3fff | 7 << 14];
+				return Rom[addr & 0x3fff | 7 << 14];
 			else
-				return ROM[addr & 0x3fff | prg << 14];
+				return Rom[addr & 0x3fff | prg << 14];
 		}
 
 		public override void SyncState(BizHawk.Common.Serializer ser)

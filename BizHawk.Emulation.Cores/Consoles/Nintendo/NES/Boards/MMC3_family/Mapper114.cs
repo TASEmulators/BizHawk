@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Mapper for Aladdin Super Game
-	public sealed class Mapper114 : MMC3Board_Base
+	internal sealed class Mapper114 : MMC3Board_Base
 	{
 		private byte[] EXPREGS = new byte[2];
 
@@ -11,9 +11,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private byte[] sec = { 0, 3, 1, 5, 6, 7, 2, 4 };
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER114":
 					break;
@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			BaseSetup();
 			SetMirrorType(EMirrorType.Horizontal);
 			mmc3.MMC3Type = MMC3.EMMC3Type.MMC3A;
-			prg_mask_16 = Cart.prg_size / 16 - 1;
+			prg_mask_16 = Cart.PrgSize / 16 - 1;
 			return true;
 		}
 
@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("expregs", ref EXPREGS, false);
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			if ((addr & 0x7) == 0 && addr >= 0x1000)
 			{
@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			if ((addr & 0x7) == 0)
 			{
@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			switch (addr & 0x6000)
 			{
@@ -60,39 +60,39 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x2000: //$A000
 					value = (byte)((value & 0xC0) | sec[value & 0x07]);
 					EXPREGS[1] = 1;
-					base.WritePRG(0, value);
+					base.WritePrg(0, value);
 					break;
 				case 0x4000: //$C000
 					if(EXPREGS[1] == 1)
 					{
 						EXPREGS[1] = 0;
-						base.WritePRG(1, value);
+						base.WritePrg(1, value);
 					}
 					break;
 				case 0x6000: //$E000 
 					if (value > 0)
 					{
-						base.WritePRG(0x6001, value);
-						base.WritePRG(0x4000, value);
-						base.WritePRG(0x4001, value);
+						base.WritePrg(0x6001, value);
+						base.WritePrg(0x4000, value);
+						base.WritePrg(0x4001, value);
 					}
 					else
 					{
-						base.WritePRG(0x6000, value);
+						base.WritePrg(0x6000, value);
 					}
 					break;
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if ((EXPREGS[0] & 0x80) > 0)
 			{
 				var bank = EXPREGS[0] & 0x1F & prg_mask_16;
-				return ROM[(bank << 14) + (addr & 0x3FFF)];
+				return Rom[(bank << 14) + (addr & 0x3FFF)];
 			}
 
-			return base.ReadPRG(addr);
+			return base.ReadPrg(addr);
 		}
 	}
 }

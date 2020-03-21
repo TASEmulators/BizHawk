@@ -26,7 +26,7 @@ namespace BizHawk.Client.Common
 			_firmwareUserSpecifications = firmwareUserSpecifications;
 		}
 
-		public string DllPath() => PathUtils.GetDllDirectory();
+		public string DllPath() => PathUtils.DllDirectoryPath;
 
 		// Poop
 		public string GetRetroSaveRAMDirectory(GameInfo game)

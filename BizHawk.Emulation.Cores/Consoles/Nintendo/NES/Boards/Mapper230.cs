@@ -4,7 +4,7 @@ using BizHawk.Common.NumberExtensions;
 // http://wiki.nesdev.com/w/index.php/INES_Mapper_230
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper230 : NES.NESBoardBase
+	internal sealed class Mapper230 : NesBoardBase
 	{
 		//TODO: soft reset back to contra = fails
 		public int prg_page;
@@ -14,9 +14,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int chip1_prg_bank_mask_16k = 0x1F;
 		public int chip1_offset = 0x20000;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER230":
 					break;
@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if (contra_mode)
 			{
@@ -59,34 +59,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if (contra_mode)
 			{
 				if (addr < 0x4000)
 				{
-					return ROM[((prg_page & chip0_prg_bank_mask_16k) * 0x4000) + addr];
+					return Rom[((prg_page & chip0_prg_bank_mask_16k) * 0x4000) + addr];
 				}
 				else
 				{
-					return ROM[(7 * 0x4000) + (addr & 0x3FFF)];
+					return Rom[(7 * 0x4000) + (addr & 0x3FFF)];
 				}
 			}
 			else
 			{
 				if (prg_mode == false)
 				{
-					return ROM[((prg_page >> 1) * 0x8000) + addr + chip1_offset];
+					return Rom[((prg_page >> 1) * 0x8000) + addr + chip1_offset];
 				}
 				else
 				{
 					int page = prg_page + 8;
-					return ROM[(page * 0x4000) + (addr & 0x03FFF)];
+					return Rom[(page * 0x4000) + (addr & 0x03FFF)];
 				}
 			}
 		}
 
-		public override void NESSoftReset()
+		public override void NesSoftReset()
 		{
 			contra_mode ^= true;
 			prg_page = 0;

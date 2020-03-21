@@ -2,14 +2,14 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper162 : NES.NESBoardBase
+	internal sealed class Mapper162 : NesBoardBase
 	{
 		private byte[] reg = new byte[8];
 		private int prg_bank_mask_32k;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER162":
 				case "UNIF_UNL-FS304":
@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_bank_mask_32k = Cart.prg_size / 32 - 1;
+			prg_bank_mask_32k = Cart.PrgSize / 32 - 1;
 
 			reg[0] = 3;
 			reg[3] = 7;
@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			if (addr >= 0x1000)
 			{
@@ -40,11 +40,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 			{
-				base.WriteEXP(addr, value);
+				base.WriteExp(addr, value);
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank = 0;
 			switch (reg[3] & 7)
@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 			}
 
-			return ROM[((bank & prg_bank_mask_32k) << 15) + addr];
+			return Rom[((bank & prg_bank_mask_32k) << 15) + addr];
 		}
 	}
 }

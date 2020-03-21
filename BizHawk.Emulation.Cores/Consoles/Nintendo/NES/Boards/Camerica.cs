@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//AKA mapper 071
 	//TODO - apparently this mapper contains good nes timing test cases
-	public sealed class Camerica_Mapper071 : NES.NESBoardBase
+	internal sealed class Camerica_Mapper071 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_16k;
@@ -20,10 +20,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(prg_banks_16k), ref prg_banks_16k, false);
 		}
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER071":
 					break;
@@ -45,17 +45,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_bank_mask_16k = Cart.prg_size / 16 - 1;
+			prg_bank_mask_16k = Cart.PrgSize / 16 - 1;
 
 			prg_banks_16k[0] = 0x00;
 			prg_banks_16k[1] = 0xFF & prg_bank_mask_16k;
 
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			SetMirrorType(Cart.PadH, Cart.PadV);
 
 			return true;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			addr &= 0x7000;
 			switch (addr)
@@ -76,18 +76,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_16k = addr >> 14;
 			int ofs = addr & ((1 << 14) - 1);
 			bank_16k = prg_banks_16k[bank_16k];
 			addr = (bank_16k << 14) | ofs;
-			return ROM[addr];
+			return Rom[addr];
 		}
 	}
 
 	//AKA mapper 232
-	class Camerica_Mapper232 : NES.NESBoardBase
+	class Camerica_Mapper232 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_16k;
@@ -104,10 +104,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(prg_page), ref prg_page);
 		}
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER232":
 					break;
@@ -119,16 +119,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_bank_mask_16k = Cart.prg_size / 16 - 1;
+			prg_bank_mask_16k = Cart.PrgSize / 16 - 1;
 			
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			SetMirrorType(Cart.PadH, Cart.PadV);
 			SyncPRG();
 
 
 			return true;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			addr &= 0x4000;
 			switch (addr)
@@ -152,13 +152,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_banks_16k[1] &= prg_bank_mask_16k;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_16k = addr >> 14;
 			int ofs = addr & ((1 << 14) - 1);
 			bank_16k = prg_banks_16k[bank_16k];
 			addr = (bank_16k<<14) | ofs;
-			return ROM[addr];
+			return Rom[addr];
 		}
 	}
 

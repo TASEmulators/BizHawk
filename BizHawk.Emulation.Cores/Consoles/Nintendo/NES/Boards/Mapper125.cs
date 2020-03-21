@@ -3,15 +3,15 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper125 : NES.NESBoardBase
+	internal sealed class Mapper125 : NesBoardBase
 	{
 		private byte reg;
 		private int prg_bank_mask_8k;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER125":
 				case "UNIF_UNL-LH32":
@@ -20,9 +20,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			SetMirrorType(Cart.PadH, Cart.PadV);
 
-			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
+			prg_bank_mask_8k = Cart.PrgSize / 8 - 1;
 			return true;
 		}
 
@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			if (addr == 0)
 			{
@@ -40,15 +40,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if ((addr >= 0x4000) && (addr < 0x6000))
-				WRAM[addr - 0x4000] = value;
+				Wram[addr - 0x4000] = value;
 			else
-				base.WritePRG(addr, value);
+				base.WritePrg(addr, value);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank = 0;
 			if (addr < 0x2000) { bank = prg_bank_mask_8k - 3; }
@@ -56,17 +56,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// for some reason WRAM is mapped to here.
 			else if (addr < 0x6000)
 			{
-				return WRAM[addr - 0x4000];
+				return Wram[addr - 0x4000];
 			}
 			else { bank = prg_bank_mask_8k; }
 
 			bank &= prg_bank_mask_8k;
-			return ROM[(bank << 13) + (addr & 0x1FFF)];
+			return Rom[(bank << 13) + (addr & 0x1FFF)];
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
-			return ROM[((reg & prg_bank_mask_8k) << 13) + addr];
+			return Rom[((reg & prg_bank_mask_8k) << 13) + addr];
 		}
 	}
 }

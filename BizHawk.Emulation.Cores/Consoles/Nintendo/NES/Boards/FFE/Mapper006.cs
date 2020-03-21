@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class Mapper006 : NES.NESBoardBase
+	internal sealed class Mapper006 : NesBoardBase
 	{
 		private int _reg;
 
@@ -13,19 +13,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private int _prgMask16k;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER006":
-					Cart.vram_size = 32;
+					Cart.VramSize = 32;
 					break;
 				default:
 					return false;
 			}
 
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
-			_prgMask16k = Cart.prg_size / 16 - 1;
+			SetMirrorType(Cart.PadH, Cart.PadV);
+			_prgMask16k = Cart.PrgSize / 16 - 1;
 
 			return true;
 		}
@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("irqCount", ref _irqCount);
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			// Mirroring
 			if (addr == 0x2FE || addr == 0x2FF)
@@ -87,44 +87,44 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			_reg = value;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank = addr < 0x4000
 				? (_reg >> 2) & 0x3F
 				: 7;
 			bank &= _prgMask16k;
 
-			return ROM[(bank * 0x4000) + (addr & 0x3FFF)];
+			return Rom[(bank * 0x4000) + (addr & 0x3FFF)];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
-				return VRAM[((_reg & 3) * 0x2000) + (addr & 0x1FFF)];
+				return Vram[((_reg & 3) * 0x2000) + (addr & 0x1FFF)];
 			}
 
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000)
 			{
-				VRAM[((_reg & 3) * 0x2000) + (addr & 0x1FFF)] = value;
+				Vram[((_reg & 3) * 0x2000) + (addr & 0x1FFF)] = value;
 			}
 			else
 			{
-				base.WritePPU(addr, value);
+				base.WritePpu(addr, value);
 			}
 		}
 
-		public override void ClockCPU()
+		public override void ClockCpu()
 		{
 			if (_irqEnable)
 			{

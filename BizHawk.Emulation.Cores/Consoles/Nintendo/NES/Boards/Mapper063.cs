@@ -2,14 +2,14 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper063 : NES.NESBoardBase
+	internal sealed class Mapper063 : NesBoardBase
 	{
 		int prg0, prg1, prg2, prg3;
 		bool open_bus;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER063":
 					break;
@@ -17,15 +17,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			Cart.wram_size = 0;
+			Cart.WramSize = 0;
 			// not sure on initial mirroring
 			SetMirrorType(EMirrorType.Vertical);
 
-			WritePRG(0, 0);
+			WritePrg(0, 0);
 			return true;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			open_bus = ((addr & 0x0300) == 0x0300);
 
@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SetMirrorType((addr & 0x01) > 0 ? EMirrorType.Horizontal : EMirrorType.Vertical);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if (addr < 0x2000)
 			{
@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 				else
 				{
-					return ROM[addr + prg0 * 0x2000];
+					return Rom[addr + prg0 * 0x2000];
 				}			
 			}
 			else if (addr < 0x4000)
@@ -58,16 +58,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 				else
 				{
-					return ROM[(addr - 0x2000) + prg1 * 0x2000];
+					return Rom[(addr - 0x2000) + prg1 * 0x2000];
 				}
 			}
 			else if (addr < 0x6000)
 			{
-				return ROM[(addr - 0x4000) + prg2 * 0x2000];
+				return Rom[(addr - 0x4000) + prg2 * 0x2000];
 			}
 			else
 			{
-				return ROM[(addr - 0x6000) + prg3 * 0x2000];
+				return Rom[(addr - 0x6000) + prg3 * 0x2000];
 			}
 		}
 

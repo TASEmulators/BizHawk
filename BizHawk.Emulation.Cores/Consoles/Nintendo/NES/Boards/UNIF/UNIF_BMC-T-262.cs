@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class UNIF_BMC_T_262 : NES.NESBoardBase
+	internal class UNIF_BMC_T_262 : NesBoardBase
 	{
 		private bool _mode;
 		private bool _locked;
@@ -11,9 +11,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private int _base;
 		private int _bank;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "UNIF_BMC-T-262":
 					break;
@@ -38,21 +38,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if (addr < 0x4000)
 			{
 				int bank = _base | _bank;
-				return ROM[(bank * 0x4000) + (addr & 0x3FFF)];
+				return Rom[(bank * 0x4000) + (addr & 0x3FFF)];
 			}
 			else
 			{
 				int bank = _base | (_mode ? _bank : 7);
-				return ROM[(bank * 0x4000) + (addr & 0x3FFF)];
+				return Rom[(bank * 0x4000) + (addr & 0x3FFF)];
 			}
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if (!_locked)
 			{

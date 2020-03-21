@@ -3,7 +3,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper240 : NES.NESBoardBase
+	internal sealed class Mapper240 : NesBoardBase
 	{
 		//MHROM (mapper60) -like but wider regs (4 prg, 4 chr instead of 2 prg, 2 chr) and on EXP bus
 
@@ -13,10 +13,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//state
 		int prg_bank_32k, chr_bank_8k;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER240":
 					break;
@@ -24,9 +24,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_bank_mask_32k = Cart.prg_size / 32 - 1;
-			chr_bank_mask_8k = Cart.chr_size / 8 - 1;
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			prg_bank_mask_32k = Cart.PrgSize / 32 - 1;
+			chr_bank_mask_8k = Cart.ChrSize / 8 - 1;
+			SetMirrorType(Cart.PadH, Cart.PadV);
 
 			prg_bank_32k = 0;
 			chr_bank_8k = 0;
@@ -42,21 +42,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(chr_bank_8k), ref chr_bank_8k);
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
-				return VROM[addr + (chr_bank_8k * 0x2000)];
+				return Vrom[addr + (chr_bank_8k * 0x2000)];
 			}
-			else return base.ReadPPU(addr);
+			else return base.ReadPpu(addr);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[addr + (prg_bank_32k * 0x8000)];
+			return Rom[addr + (prg_bank_32k * 0x8000)];
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			//if (ROM != null && bus_conflict) value = HandleNormalPRGConflict(addr, value);
 			Console.WriteLine("{0:x4} = {1:x2}", addr + 0x4000, value);

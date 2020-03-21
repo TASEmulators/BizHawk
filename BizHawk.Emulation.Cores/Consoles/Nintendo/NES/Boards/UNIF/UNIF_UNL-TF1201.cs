@@ -3,7 +3,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class UNIF_UNL_TF1201 : NES.NESBoardBase
+	internal class UNIF_UNL_TF1201 : NesBoardBase
 	{
 		private byte prg0;
 		private byte prg1;
@@ -16,9 +16,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private int prg_mask_8k;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "UNIF_UNL-TF1201":
 					break;
@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_mask_8k = Cart.prg_size / 8 - 1;
+			prg_mask_8k = Cart.PrgSize / 8 - 1;
 
 			return true;
 		}
@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(IRQpre), ref IRQpre);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			addr += 0x8000;
 			addr = (addr & 0xF003) | ((addr & 0xC) >> 2);
@@ -73,14 +73,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0xF001:
 				case 0xF003:
 						IRQa = value.Bit(1);
-						IRQSignal = false;
+						IrqSignal = false;
 						if (NES.ppu.ppuphase !=PPU.PPU_PHASE_VBL)
 							IRQCount -= 8;
 						break;
 			}
 		}
 
-		public override void ClockPPU()
+		public override void ClockPpu()
 		{
 			if ((NES.ppu.ppuphase != PPU.PPU_PHASE_VBL))// && IRQa)
 			{
@@ -91,7 +91,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					IRQpre = 341;
 					if (IRQCount == 237)
 					{
-						IRQSignal = IRQa;
+						IrqSignal = IRQa;
 					}
 					if (IRQCount == 256)
 						IRQCount = 0;
@@ -99,7 +99,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank;
 
@@ -135,19 +135,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 
-			return ROM[(bank << 13) + (addr & 0x1FFF)];
+			return Rom[(bank << 13) + (addr & 0x1FFF)];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				int x = (addr >> 10) & 7;
 
-				return VROM[(chr[x] << 10) + (addr & 0x3FF)];
+				return Vrom[(chr[x] << 10) + (addr & 0x3FF)];
 			}
 
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 	}
 }

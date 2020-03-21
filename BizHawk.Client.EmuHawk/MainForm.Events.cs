@@ -536,7 +536,7 @@ namespace BizHawk.Client.EmuHawk
 			var filename = MovieSession.Movie.Filename;
 			if (string.IsNullOrWhiteSpace(filename))
 			{
-				filename = Game.Name.FilesystemSafeName();
+				filename = Game.FilesystemSafeName();
 			}
 
 			var file = ToolFormBase.SaveFileDialog(

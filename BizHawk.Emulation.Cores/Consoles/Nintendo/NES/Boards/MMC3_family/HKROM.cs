@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//aka MMC6 aka StarTropics and StarTropics 2
 	//for simplicity's sake, the behaviour of mmc6 is wrapped up into this board since it isnt used anywhere else
-	public sealed class HKROM : MMC3Board_Base
+	internal sealed class HKROM : MMC3Board_Base
 	{
 		//configuration
 
@@ -14,19 +14,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		bool wram_h_enabled, wram_l_enabled;
 		bool wram_h_enabled_write, wram_l_enabled_write;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "NES-HKROM":
 					AssertPrg(256); AssertChr(256); AssertVram(0); AssertWram(0,1);
-					Cart.wram_size = 1; //1K of wram is in the mmc6
-					Cart.wram_battery = true; //and its battery backed.
+					Cart.WramSize = 1; //1K of wram is in the mmc6
+					Cart.WramBattery = true; //and its battery backed.
 					break;
 				case "MAPPER004_MMC6":
-					Cart.wram_size = 1; //1K of wram is in the mmc6
-					Cart.wram_battery = true; //and its battery backed.
+					Cart.WramSize = 1; //1K of wram is in the mmc6
+					Cart.WramBattery = true; //and its battery backed.
 					break;
 				default:
 					return false;
@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(wram_l_enabled_write), ref wram_l_enabled_write);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			switch (addr & 0x6001)
 			{
@@ -73,10 +73,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 					break;
 			}
-			base.WritePRG(addr, value);
+			base.WritePrg(addr, value);
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			if (addr < 0x1000)
 				return;
@@ -90,10 +90,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			bool write_enabled = (block == 1) ? wram_h_enabled_write : wram_l_enabled_write;
 
 			if (write_enabled && block_enabled)
-				base.WriteWRAM(addr, value);
+				base.WriteWram(addr, value);
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
 			byte open_bus = 0xFF; //open bus
 			if (addr < 0x1000)
@@ -110,7 +110,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return open_bus;
 
 			if (block_enabled)
-				return base.ReadWRAM(addr);
+				return base.ReadWram(addr);
 			return 0;
 		}
 

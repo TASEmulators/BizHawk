@@ -4,7 +4,7 @@ using BizHawk.Common.NumberExtensions;
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//AKA mapper 75
-	public sealed class VRC1 : NES.NESBoardBase
+	internal sealed class VRC1 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_8k;
@@ -37,9 +37,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER075":
 					break;
@@ -65,8 +65,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
-			chr_bank_mask_4k = Cart.chr_size / 4 - 1;
+			prg_bank_mask_8k = Cart.PrgSize / 8 - 1;
+			chr_bank_mask_4k = Cart.ChrSize / 4 - 1;
 
 			SetMirrorType(EMirrorType.Vertical);
 
@@ -74,16 +74,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			return true;
 		}
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_8k = addr >> 13;
 			int ofs = addr & ((1 << 13) - 1);
 			bank_8k = prg_banks_8k[bank_8k];
 			addr = (bank_8k << 13) | ofs;
-			return ROM[addr];
+			return Rom[addr];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
@@ -92,7 +92,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				bank_4k = chr_banks_4k[bank_4k];
 				bank_4k &= chr_bank_mask_4k;
 				addr = (bank_4k << 12) | ofs;
-				return VROM[addr];
+				return Vrom[addr];
 			}
 			else
 			{
@@ -109,12 +109,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 				}			
 				else
-					return base.ReadPPU(addr);
+					return base.ReadPpu(addr);
 			}
 			
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			// The game VS Goonies apparently scans for more CIRAM then actually exists, so we have to mask out nonsensical values 
 			addr &= 0x2FFF;
@@ -123,8 +123,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				if (addr < 0x2000)
 				{
-					if (VRAM != null)
-						VRAM[addr] = value;
+					if (Vram != null)
+						Vram[addr] = value;
 				}
 				else
 				{
@@ -140,7 +140,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 			else
-				base.WritePPU(addr, value);
+				base.WritePpu(addr, value);
 		}
 
 		void SyncCHR()
@@ -149,7 +149,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			chr_banks_4k[1] = chr_regs_4k[1] & chr_bank_mask_4k;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			switch (addr)
 			{
@@ -159,9 +159,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				case 0x1000: //[.... .BAM]   Mirroring, CHR reg high bits
 					if(value.Bit(0))
-						SetMirrorType(NES.NESBoardBase.EMirrorType.Horizontal);
+						SetMirrorType(EMirrorType.Horizontal);
 					else
-						SetMirrorType(NES.NESBoardBase.EMirrorType.Vertical);
+						SetMirrorType(EMirrorType.Vertical);
 					chr_regs_4k[0] &= 0x0F;
 					chr_regs_4k[1] &= 0x0F;
 					if (value.Bit(1)) chr_regs_4k[0] |= 0x10;

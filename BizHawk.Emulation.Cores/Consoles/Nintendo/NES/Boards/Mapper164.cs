@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper164 : NES.NESBoardBase 
+	internal sealed class Mapper164 : NesBoardBase 
 	{
 		// http://wiki.nesdev.com/w/index.php/INES_Mapper_164
 
@@ -11,9 +11,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private int prg_bank_mask_32k;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER164":
 					break;
@@ -22,12 +22,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			_prgLow = 0xFF;
-			prg_bank_mask_32k = Cart.prg_size / 32 - 1;
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			prg_bank_mask_32k = Cart.PrgSize / 32 - 1;
+			SetMirrorType(Cart.PadH, Cart.PadV);
 			return true;
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			addr = (addr + 0x4000) & 0x7300;
 			switch (addr)
@@ -41,11 +41,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank = (_prgHigh << 4) | (_prgLow & 0xF);
 			bank &= prg_bank_mask_32k;
-			return ROM[(bank * 0x8000) + (addr & 0x7FFF)];
+			return Rom[(bank * 0x8000) + (addr & 0x7FFF)];
 		}
 
 		public override void SyncState(Serializer ser)
@@ -55,10 +55,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("prgLow", ref _prgLow);
 		}
 
-		public override void NESSoftReset()
+		public override void NesSoftReset()
 		{
 			_prgHigh = 0xFF;
-			base.NESSoftReset();
+			base.NesSoftReset();
 		}
 	}
 }

@@ -3,13 +3,13 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class UNIF_BMC_NTD_03 : NES.NESBoardBase
+	internal sealed class UNIF_BMC_NTD_03 : NesBoardBase
 	{
 		private int latche;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "UNIF_BMC-NTD-03":
 					break;
@@ -27,36 +27,36 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			latche = addr & 65535;
 			SetMirrorType(addr.Bit(10) ? EMirrorType.Horizontal : EMirrorType.Vertical);
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				int bank = ((latche & 0x0300) >> 5) | (latche & 7);
-				return VROM[(bank << 13) + addr];
+				return Vrom[(bank << 13) + addr];
 			}
 
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int prg = ((latche >> 10) & 0x1E);
 
 			if (latche.Bit(7))
 			{
 				int bank = prg | ((latche >> 6) & 1);
-				return ROM[(bank << 14) + (addr & 0x3FFF)];
+				return Rom[(bank << 14) + (addr & 0x3FFF)];
 			}
 			else
 			{
 				int bank = prg >> 1;
-				return ROM[( bank << 15) + addr];
+				return Rom[( bank << 15) + addr];
 			}
 		}
 	}

@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// p-p-p-p-pirate?
 	// http://svn.opennestopia.staulkor.com/Nestopia/core/board/NstBoardRexSoftSl1632.cpp
-	public class RexSoftSL1632 : MMC3Board_Base
+	internal sealed class RexSoftSL1632 : MMC3Board_Base
 	{
 		// state
 		byte exmode;
@@ -12,9 +12,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int[] exchr = new int[8];
 		byte exnmt;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "UNIF_UNL-SL1632":
 					break;
@@ -36,18 +36,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(exnmt), ref exnmt);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if (exmode.Bit(1))
 			{
-				return base.ReadPRG(addr);
+				return base.ReadPrg(addr);
 			}
 			else
 			{
 				int b = addr >> 13;
 				b = exprg[b];
 				b &= prg_mask;
-				return ROM[addr & 0x1fff | b << 13];
+				return Rom[addr & 0x1fff | b << 13];
 			}
 		}
 
@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		static readonly byte[] modes = { 5, 5, 3, 1 };
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
@@ -76,17 +76,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					bank = exchr[addr >> 10];
 				}
 				bank &= chr_mask;
-				return VROM[addr & 0x3ff | bank << 10];
+				return Vrom[addr & 0x3ff | bank << 10];
 			}
 			else
 			{
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 			}
 		}
 
 
 		// this is stupid as hell
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			//Console.WriteLine("{0:x4}:{1:x2}", addr, value);
 
@@ -103,14 +103,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				switch (addr & 0x6001)
 				{
-					case 0x0000: base.WritePRG(0x0000, value); break;
-					case 0x0001: base.WritePRG(0x0001, value); break;
+					case 0x0000: base.WritePrg(0x0000, value); break;
+					case 0x0001: base.WritePrg(0x0001, value); break;
 					case 0x2000: SinkMirror(true); break;
-					case 0x2001: base.WritePRG(0x2001, value); break;
-					case 0x4000: base.WritePRG(0x4000, value); break;
-					case 0x4001: base.WritePRG(0x4001, value); break;
-					case 0x6000: base.WritePRG(0x6000, value); break;
-					case 0x6001: base.WritePRG(0x6001, value); break;
+					case 0x2001: base.WritePrg(0x2001, value); break;
+					case 0x4000: base.WritePrg(0x4000, value); break;
+					case 0x4001: base.WritePrg(0x4001, value); break;
+					case 0x6000: base.WritePrg(0x6000, value); break;
+					case 0x6001: base.WritePrg(0x6001, value); break;
 
 				}
 			}

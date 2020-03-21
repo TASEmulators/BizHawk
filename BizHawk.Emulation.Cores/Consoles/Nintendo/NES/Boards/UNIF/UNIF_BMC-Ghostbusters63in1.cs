@@ -5,7 +5,7 @@ using System;
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Adapted from FCEUX src
-	public sealed class UNIF_BMC_Ghostbusters63in1 : NES.NESBoardBase
+	internal sealed class UNIF_BMC_Ghostbusters63in1 : NesBoardBase
 	{
 		private byte[] reg = new byte[2];
 		private readonly int[] banks = { 0, 0, 524288, 1048576 };
@@ -16,9 +16,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		[MapperProp]
 		public int Ghostbusters63in1_chip_22_select;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "UNIF_BMC-Ghostbusters63in1":
 					break;
@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			reg[addr & 1] = value;
 
@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Console.WriteLine(reg[1]);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			//if (bank == 1)
 			//{
@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					offset = banks[Ghostbusters63in1_chip_22_select];
 
 				int b = (reg[0] & 0x1F);
-				return ROM[offset + (b << 14) + (addr & 0x3FFF)];
+				return Rom[offset + (b << 14) + (addr & 0x3FFF)];
 			}
 			else
 			{
@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					offset = banks[Ghostbusters63in1_chip_22_select];
 
 				int b = ((reg[0] >> 1) & 0x0F);
-				return ROM[offset + (b << 15) + addr];
+				return Rom[offset + (b << 15) + addr];
 			} 
 		}
 	}

@@ -3,15 +3,15 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Crime Busters (Brazil) (Unl)
-	public sealed class Mapper038 : NES.NESBoardBase
+	internal sealed class Mapper038 : NesBoardBase
 	{
 		//configuraton
 		int prg_mask, chr_mask;
 		//state
 		int prg, chr;
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER038":
 				case "UNL-PCI556":
@@ -23,24 +23,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			AssertChr(32);
 			AssertVram(0);
 			AssertWram(0);
-			prg_mask = Cart.prg_size / 32 - 1;
-			chr_mask = Cart.chr_size / 8 - 1;
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			prg_mask = Cart.PrgSize / 32 - 1;
+			chr_mask = Cart.ChrSize / 8 - 1;
+			SetMirrorType(Cart.PadH, Cart.PadV);
 			return true;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[addr + (prg << 15)];
+			return Rom[addr + (prg << 15)];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
-				return VROM[addr + (chr << 13)];
+				return Vrom[addr + (chr << 13)];
 			}
-			else return base.ReadPPU(addr);
+			else return base.ReadPpu(addr);
 		}
 
 		void writereg(byte value)
@@ -51,13 +51,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		// the standard way to access this register is at 7000:7fff, but due to
 		// hardware design, f000:ffff also works
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			//if ((addr & 0x7000) == 0x7000)
 			//	writereg(value);
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			if ((addr & 0x1000) == 0x1000)
 				writereg(value);

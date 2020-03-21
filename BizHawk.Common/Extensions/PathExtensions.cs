@@ -1,32 +1,20 @@
-﻿#nullable disable
-
-using System;
-using System.Linq;
+﻿using System;
 using System.IO;
 using System.Reflection;
+
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Common.PathExtensions
 {
 	public static class PathExtensions
 	{
-		public static string RemoveInvalidFileSystemChars(this string name)
+		/// <returns><see langword="true"/> iff <paramref name="childPath"/> indicates a child of <paramref name="parentPath"/>, with <see langword="false"/> being returned if either path is <see langword="null"/></returns>
+		/// <remarks>algorithm for Windows taken from https://stackoverflow.com/a/7710620/7467292</remarks>
+		public static bool IsSubfolderOf(this string? childPath, string? parentPath)
 		{
-			var newStr = name;
-			var chars = Path.GetInvalidFileNameChars();
-			return chars.Aggregate(newStr, (current, c) => current.Replace(c.ToString(), ""));
-		}
+			if (childPath == null || parentPath == null) return false;
+			if (childPath == parentPath || childPath.StartsWith($"{parentPath}{Path.DirectorySeparatorChar}")) return true;
 
-		/// <summary>
-		/// Decides if a path is non-empty, not . and not .\
-		/// </summary>
-		public static bool PathIsSet(this string? path)
-		{
-			return !string.IsNullOrWhiteSpace(path) && path != "." && path != ".\\";
-		}
-
-		/// <remarks>Algorithm for Windows taken from https://stackoverflow.com/a/7710620/7467292</remarks>
-		public static bool IsSubfolderOf(this string childPath, string parentPath)
-		{
 			if (OSTailoredCode.IsUnixHost)
 			{
 #if true
@@ -36,7 +24,7 @@ namespace BizHawk.Common.PathExtensions
 				var parentUriPath = new Uri(parentPath.TrimEnd('.')).AbsolutePath.TrimEnd('/');
 				try
 				{
-					for (var childUri = new DirectoryInfo(childPath).Parent; childUri != null; childUri = childUri?.Parent)
+					for (var childUri = new DirectoryInfo(childPath).Parent; childUri != null; childUri = childUri.Parent)
 					{
 						if (new Uri(childUri.FullName).AbsolutePath.TrimEnd('/') == parentUriPath) return true;
 					}
@@ -54,80 +42,69 @@ namespace BizHawk.Common.PathExtensions
 			{
 				if (new Uri(childUri.FullName) == parentUri) return true;
 			}
-
 			return false;
 		}
 
-		public static string MakeRelativeTo(this string absolutePath, string basePath)
-		{
-			if (absolutePath.IsSubfolderOf(basePath))
-			{
-				return absolutePath.Replace(basePath, ".");
-			}
+		/// <returns>the absolute path equivalent to <paramref name="path"/> which contains <c>%exe%</c> (expanded) as a prefix</returns>
+		/// <remarks>
+		/// returned string omits trailing slash<br/>
+		/// note that the returned string is an absolute path and not a relative path; but TODO it was intended to be relative
+		/// </remarks>
+		public static string MakeProgramRelativePath(this string path) => Path.Combine(PathUtils.ExeDirectoryPath, path);
 
-			return absolutePath;
+		/// <returns>the relative path which is equivalent to <paramref name="absolutePath"/> when the CWD is <paramref name="basePath"/>, or <see langword="null"/> if either path is <see langword="null"/></returns>
+		/// <remarks>returned string omits trailing slash; implementation calls <see cref="IsSubfolderOf"/> for you</remarks>
+		public static string? MakeRelativeTo(this string? absolutePath, string? basePath)
+		{
+			if (absolutePath == null || basePath == null) return null;
+			if (!absolutePath.IsSubfolderOf(basePath)) return absolutePath;
+			if (!OSTailoredCode.IsUnixHost) return absolutePath.Replace(basePath, ".").RemoveSuffix(Path.DirectorySeparatorChar);
+#if true // Unix implementation using realpath
+			var realpathOutput = OSTailoredCode.SimpleSubshell("realpath", $"--relative-to=\"{basePath}\" \"{absolutePath}\"", $"invalid path {absolutePath}, invalid path {basePath}, or missing realpath binary");
+			return !realpathOutput.StartsWith("../") && realpathOutput != "." && realpathOutput != ".." ? $"./{realpathOutput}" : realpathOutput;
+#else // for some reason there were two Unix implementations in the codebase before me? --yoshi
+			// alt. #1
+			if (!IsSubfolder(basePath, absolutePath)) return OSTailoredCode.IsUnixHost && basePath.TrimEnd('.') == $"{absolutePath}/" ? "." : absolutePath;
+			return OSTailoredCode.IsUnixHost ? absolutePath.Replace(basePath.TrimEnd('.'), "./") : absolutePath.Replace(basePath, ".");
+
+			// alt. #2; algorithm taken from https://stackoverflow.com/a/340454/7467292
+			var dirSepChar = Path.DirectorySeparatorChar;
+			var fromUri = new Uri(absolutePath.EndsWith(dirSepChar.ToString()) ? absolutePath : absolutePath + dirSepChar);
+			var toUri = new Uri(basePath.EndsWith(dirSepChar.ToString()) ? basePath : basePath + dirSepChar);
+			if (fromUri.Scheme != toUri.Scheme) return basePath;
+
+			var relativePath = Uri.UnescapeDataString(fromUri.MakeRelativeUri(toUri).ToString());
+			return (toUri.Scheme.Equals(Uri.UriSchemeFile, StringComparison.OrdinalIgnoreCase)
+				? relativePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar)
+				: relativePath
+			).TrimEnd(dirSepChar);
+#endif
 		}
 
-		public static string FilesystemSafeName(this string name)
-		{
-			name ??= "";
+		/// <returns><see langword="false"/> iff <paramref name="path"/> is blank, or is <c>"."</c> (relative path to CWD), regardless of trailing slash</returns>
+		public static bool PathIsSet(this string path) => !string.IsNullOrWhiteSpace(path) && path != "." && path != "./" && path != ".\\";
 
-			var filesystemSafeName = name
-				.Replace("|", "+")
-				.Replace(":", " -") // Path.GetFileName scraps everything to the left of a colon unfortunately, so we need this hack here
-				.Replace("\"", "")  // Ivan IronMan Stewart's Super Off-Road has quotes in game name
-				.Replace("/", "+"); // Mario Bros / Duck hunt has a slash in the name which GetDirectoryName and GetFileName treat as if it were a folder
-
-			// zero 06-nov-2015 - regarding the below, i changed my mind. for libretro i want subdirectories here.
-			var filesystemDir = Path.GetDirectoryName(filesystemSafeName);
-			filesystemSafeName = Path.GetFileName(filesystemSafeName);
-
-			filesystemSafeName = filesystemSafeName.RemoveInvalidFileSystemChars();
-
-			// zero 22-jul-2012 - i don't think this is used the same way it used to. game.Name shouldn't be a path, so this stuff is illogical.
-			// if game.Name is a path, then someone should have made it not-a-path already.
-			// return Path.Combine(Path.GetDirectoryName(filesystemSafeName), Path.GetFileNameWithoutExtension(filesystemSafeName));
-
-			// adelikat:
-			// This hack is to prevent annoying things like Super Mario Bros..bk2
-			if (filesystemSafeName.EndsWith("."))
-			{
-				filesystemSafeName = filesystemSafeName.Remove(filesystemSafeName.Length - 1, 1);
-			}
-
-			return Path.Combine(filesystemDir, filesystemSafeName);
-		}
-
-		
-		// TODO: this always makes an absolute path!
-		// Needs to be fixed, the intent was to turn an absolute path
-		// into one relative to the exe
-		// for instance: C:\BizHawk\Lua becomes .\Lua (if EmuHawk.Exe is in C:\BizHawk)
-		/// <summary>
-		/// Makes a path relative to the %exe% directory
-		/// </summary>
-		public static string MakeProgramRelativePath(this string path)
-		{
-			return Path.Combine(PathUtils.GetExeDirectoryAbsolute(), path);
-		}
+		public static string RemoveInvalidFileSystemChars(this string name) => string.Concat(name.Split(Path.GetInvalidFileNameChars()));
 	}
 
 	public static class PathUtils
 	{
-		public static string GetExeDirectoryAbsolute()
-		{
-			var path = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-			if (path.EndsWith(Path.DirectorySeparatorChar.ToString()))
-			{
-				path = path.Remove(path.Length - 1, 1);
-			}
+		/// <returns>absolute path of the dll dir (sibling of EmuHawk.exe)</returns>
+		/// <remarks>returned string omits trailing slash</remarks>
+		public static readonly string DllDirectoryPath;
 
-			return path;
-		}
+		/// <returns>absolute path of the parent dir of DiscoHawk.exe/EmuHawk.exe, commonly referred to as <c>%exe%</c> though none of our code adds it to the environment</returns>
+		/// <remarks>returned string omits trailing slash</remarks>
+		public static readonly string ExeDirectoryPath;
 
-		public static string GetDllDirectory()
+		static PathUtils()
 		{
-			return Path.Combine(GetExeDirectoryAbsolute(), "dll");
+			var dirPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
+			ExeDirectoryPath = OSTailoredCode.IsUnixHost
+				? (string.IsNullOrEmpty(dirPath) || dirPath == "/" ? string.Empty : dirPath)
+				: (string.IsNullOrEmpty(dirPath) ? throw new Exception("failed to get location of executable, very bad things must have happened") : dirPath.RemoveSuffix('\\'));
+			DllDirectoryPath = Path.Combine(OSTailoredCode.IsUnixHost && ExeDirectoryPath == string.Empty ? "/" : ExeDirectoryPath, "dll");
+			// yes, this is a lot of extra code to make sure BizHawk can run in `/` on Unix, but I've made up for it by caching these for the program lifecycle --yoshi
 		}
 	}
 }

@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//After Burner & After Burner 2
 	//Maharaja
 
-	public sealed class Sunsoft4 : NES.NESBoardBase
+	internal sealed class Sunsoft4 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask, chr_bank_mask, nt_bank_mask;
@@ -28,10 +28,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(flag_r), ref flag_r);
 		}
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER068":
 					break;
@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					AssertPrg(128); AssertChr(128,256); AssertVram(0); AssertWram(0,8); 
 					break;
 				case "UNIF_NES-NTBROM":
-					AssertPrg(128 + 16); AssertChr(128); Cart.wram_size = 8; Cart.vram_size = 0;
+					AssertPrg(128 + 16); AssertChr(128); Cart.WramSize = 8; Cart.VramSize = 0;
 					/* The actual cart had 128k prg, with a small slot on the top that can load an optional daughterboard.
 					 * The UNIF dump has this as an extra 16k prg lump.  I don't know how this lump is actually used,
 					 * though.
@@ -54,25 +54,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			SetMirrorType(EMirrorType.Vertical);
 			prg_regs_16k[1] = 0xFF;
-			prg_bank_mask = Cart.prg_size / 16 - 1;
-			if (Cart.prg_size == 128 + 16)
+			prg_bank_mask = Cart.PrgSize / 16 - 1;
+			if (Cart.PrgSize == 128 + 16)
 				prg_bank_mask = 7; // ignore extra prg lump
-			chr_bank_mask = Cart.chr_size / 2 - 1;
-			nt_bank_mask = Cart.chr_size - 1;
+			chr_bank_mask = Cart.ChrSize / 2 - 1;
+			nt_bank_mask = Cart.ChrSize - 1;
 			return true;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_16k = addr >> 14;
 			int ofs = addr & ((1 << 14) - 1);
 			bank_16k = prg_regs_16k[bank_16k];
 			bank_16k &= prg_bank_mask;
 			addr = (bank_16k << 14) | ofs;
-			return ROM[addr];
+			return Rom[addr];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				bank_2k = chr_regs_2k[bank_2k];
 				bank_2k &= chr_bank_mask;
 				addr = (bank_2k << 11) | ofs;
-				return VROM[addr];
+				return Vrom[addr];
 			}
 			else
 			{
@@ -96,13 +96,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					bank_1k = nt_regs[bank_1k] + 0x80;
 					bank_1k &= nt_bank_mask;
 					addr = (bank_1k << 10) | ofs;
-					return VROM[addr];
+					return Vrom[addr];
 				}
-				else return base.ReadPPU(addr);
+				else return base.ReadPpu(addr);
 			}
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			//Console.WriteLine("W{0:x4} {1:x2}", addr + 0x8000, value);
 			switch (addr & 0xF000)

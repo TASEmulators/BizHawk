@@ -201,5 +201,11 @@ namespace BizHawk.Common.StringExtensions
 		}
 
 #pragma warning restore CS8602
+
+		/// <returns><paramref name="str"/> with the last char removed (iff the last char is <paramref name="suffix"/>, otherwise <paramref name="str"/> unmodified)</returns>
+		public static string RemoveSuffix(this string str, char suffix) => str[str.Length - 1] == suffix ? str.Substring(0, str.Length - 1) : str;
+
+		/// <returns><paramref name="str"/> with the trailing substring <paramref name="suffix"/> removed (iff <paramref name="str"/> ends with <paramref name="suffix"/>, otherwise <paramref name="str"/> unmodified)</returns>
+		public static string RemoveSuffix(this string str, string suffix) => str.EndsWith(suffix) ? str.Substring(0, str.Length - suffix.Length) : str;
 	}
 }

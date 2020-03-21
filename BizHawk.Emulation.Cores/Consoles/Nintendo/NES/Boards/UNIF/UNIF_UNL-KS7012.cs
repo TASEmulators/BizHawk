@@ -2,13 +2,13 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class UNIF_UNL_KS7012 : NES.NESBoardBase
+	internal sealed class UNIF_UNL_KS7012 : NesBoardBase
 	{
 		private int reg;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "UNIF_UNL-KS7012":
 					break;
@@ -16,10 +16,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			WRAM = new byte[8192];
+			Wram = new byte[8192];
 			reg = 0xFF;
 
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			SetMirrorType(Cart.PadH, Cart.PadV);
 			return true;
 		}
 
@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			addr += 0x8000;
 			switch (addr)
@@ -41,9 +41,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[((reg & 1) << 15) + addr];
+			return Rom[((reg & 1) << 15) + addr];
 		}
 	}
 }

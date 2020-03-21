@@ -17,34 +17,32 @@ using BizHawk.Emulation.Cores.Components;
 //FUTURE - we may need to split this into a separate MMC5 class. but for now it is just a pain.
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	[NES.INESBoardImplPriorityAttribute]
-	public sealed class ExROM : NES.NESBoardBase
+	[NesBoardImplPriority]
+	internal sealed class ExROM : NesBoardBase
 	{
-		//configuraton
-		int prg_bank_mask_8k, chr_bank_mask_1k; //board setup (to be isolated from mmc5 code later, when we need the separate mmc5 class)
+		private int prg_bank_mask_8k, chr_bank_mask_1k; //board setup (to be isolated from mmc5 code later, when we need the separate mmc5 class)
 
-		//state
-		int irq_target, irq_counter;
-		bool irq_enabled, irq_pending, in_frame;
-		int exram_mode, chr_mode, prg_mode;
-		int chr_reg_high;
-		int ab_mode;
-		int[] regs_a = new int[8];
-		int[] regs_b = new int[4];
-		int[] regs_prg = new int[4];
-		int[] nt_modes = new int[4];
-		byte nt_fill_tile, nt_fill_attrib;
-		int wram_bank;
-		byte[] EXRAM = new byte[1024];
-		byte multiplicand, multiplier;
-		MMC5Audio audio;
-		//regeneratable state
-		int[] a_banks_1k = new int[8];
-		int[] b_banks_1k = new int[8];
-		int[] prg_banks_8k = new int[4];
-		byte product_low, product_high;
-		int last_nt_read;
-		bool irq_audio;
+		private int irq_target, irq_counter;
+		private bool irq_enabled, irq_pending, in_frame;
+		private int exram_mode, chr_mode, prg_mode;
+		private int chr_reg_high;
+		private int ab_mode;
+		private int[] regs_a = new int[8];
+		private int[] regs_b = new int[4];
+		private int[] regs_prg = new int[4];
+		private int[] nt_modes = new int[4];
+		private byte nt_fill_tile, nt_fill_attrib;
+		private int wram_bank;
+		private byte[] EXRAM = new byte[1024];
+		private byte multiplicand, multiplier;
+		private MMC5Audio audio;
+
+		private int[] _aBanks1K = new int[8];
+		private int[] _bBanks1K = new int[8];
+		private int[] _prgBanks8K = new int[4];
+		private byte product_low, product_high;
+		private int last_nt_read;
+		private bool irq_audio;
 
 		public MemoryDomain GetExRAM()
 		{
@@ -61,6 +59,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
+			ser.Sync(nameof(_aBanks1K), ref _aBanks1K, false);
+			ser.Sync(nameof(_bBanks1K), ref _bBanks1K, false);
+			ser.Sync(nameof(_prgBanks8K), ref _prgBanks8K, false);
 			ser.Sync(nameof(irq_target), ref irq_target);
 			ser.Sync(nameof(irq_counter), ref irq_counter);
 			ser.Sync(nameof(irq_enabled), ref irq_enabled);
@@ -88,13 +89,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			audio.SyncState(ser);
 		}
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER005":
-					Cart.wram_size = 64;
+					Cart.WramSize = 64;
 					break;
 				case "NES-ELROM": //Castlevania 3 - Dracula's Curse (U)
 				case "HVC-ELROM":
@@ -115,12 +116,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
+			prg_bank_mask_8k = Cart.PrgSize / 8 - 1;
 
-			if (Cart.chr_size > 0)
-				chr_bank_mask_1k = Cart.chr_size - 1;
+			if (Cart.ChrSize > 0)
+				chr_bank_mask_1k = Cart.ChrSize - 1;
 			else
-				chr_bank_mask_1k = Cart.vram_size - 1;
+				chr_bank_mask_1k = Cart.VramSize - 1;
 
 			PoweronState();
 
@@ -147,7 +148,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int PRGGetBank(int addr, out bool ram)
 		{
 			int bank_8k = addr >> 13;
-			bank_8k = prg_banks_8k[bank_8k];
+			bank_8k = _prgBanks8K[bank_8k];
 			ram = (bank_8k & 0x80) == 0;
 			if (!ram)
 				bank_8k &= prg_bank_mask_8k;
@@ -168,7 +169,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int? MaskWRAM(int bank)
 		{
 			bank &= 7;
-			switch (Cart.wram_size)
+			switch (Cart.WramSize)
 			{
 				case 0:
 					return null;
@@ -195,14 +196,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			int? bbank = MaskWRAM(bank);
 			if (bbank.HasValue)
-				WRAM[(int)bbank << 13 | offs] = value;
+				Wram[(int)bbank << 13 | offs] = value;
 		}
 
 		byte ReadWRAMActual(int bank, int offs)
 		{
 			int? bbank = MaskWRAM(bank);
 			return bbank.HasValue
-				? WRAM[(int)bbank << 13 | offs]
+				? Wram[(int)bbank << 13 | offs]
 				: NES.DB;
 		}
 
@@ -248,19 +249,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				bool isPattern = NES.ppu.PPUON;
 				if (NES.ppu.ppuphase == PPU.PPU_PHASE_OBJ && isPattern)
-					bank_1k = a_banks_1k[bank_1k];
+					bank_1k = _aBanks1K[bank_1k];
 				else if (NES.ppu.ppuphase == PPU.PPU_PHASE_BG && isPattern)
-					bank_1k = b_banks_1k[bank_1k];
+					bank_1k = _bBanks1K[bank_1k];
 				else
 				{
 					bank_1k = ab_mode == 0
-						? a_banks_1k[bank_1k]
-						: b_banks_1k[bank_1k];
+						? _aBanks1K[bank_1k]
+						: _bBanks1K[bank_1k];
 				}
 			}
 			else
 			{
-				bank_1k = a_banks_1k[bank_1k];
+				bank_1k = _aBanks1K[bank_1k];
 			}
 		
 			bank_1k &= chr_bank_mask_1k;
@@ -268,12 +269,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return addr;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				addr = MapCHR(addr);
-				return (VROM ?? VRAM)[addr];
+				return (Vrom ?? Vram)[addr];
 			}
 
 			addr -= 0x2000;
@@ -333,7 +334,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (addr < 0x2000)
 			{
 				addr = MapCHR(addr);
-				return (VROM ?? VRAM)[addr];
+				return (Vrom ?? Vram)[addr];
 			}
 
 			addr -= 0x2000;
@@ -388,12 +389,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000)
 			{
-				if (VRAM != null)
-					VRAM[MapCHR(addr)] = value;
+				if (Vram != null)
+					Vram[MapCHR(addr)] = value;
 			}
 			else
 			{
@@ -421,11 +422,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void WriteWRAM(int addr, byte value) => WriteWRAMActual(wram_bank, addr & 0x1fff, value);
+		public override void WriteWram(int addr, byte value) => WriteWRAMActual(wram_bank, addr & 0x1fff, value);
 
-		public override byte ReadWRAM(int addr) => ReadWRAMActual(wram_bank, addr & 0x1fff);
+		public override byte ReadWram(int addr) => ReadWRAMActual(wram_bank, addr & 0x1fff);
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			byte ret;
 			int offs = addr & 0x1fff;
@@ -434,7 +435,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (ram)
 				ret = ReadWRAMActual(bank, offs);
 			else
-				ret = ROM[bank << 13 | offs];
+				ret = Rom[bank << 13 | offs];
 			if (addr < 0x4000)
 				audio.ReadROMTrigger(ret);
 			return ret;
@@ -445,7 +446,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (addr >= 0x8000)
 				return PeekPRG(addr - 0x8000);
 			if (addr >= 0x6000)
-				return ReadWRAM(addr - 0x6000);
+				return ReadWram(addr - 0x6000);
 			return PeekEXP(addr - 0x4000);
 		}
 
@@ -458,20 +459,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (ram)
 				ret = ReadWRAMActual(bank, offs);
 			else
-				ret = ROM[bank << 13 | offs];
+				ret = Rom[bank << 13 | offs];
 			//if (addr < 0x4000)
 			//	audio.ReadROMTrigger(ret);
 			return ret;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			int bank = PRGGetBank(addr, out var ram);
 			if (ram)
 				WriteWRAMActual(bank, addr & 0x1fff, value);
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			//NES.LogLine("MMC5 WriteEXP: ${0:x4} = ${1:x2}", addr, value);
 			if (addr >= 0x1000 && addr <= 0x1015)
@@ -585,7 +586,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			product_high = (byte)((result>>8) & 0xFF);
 		}
 
-		public override byte ReadEXP(int addr)
+		public override byte ReadExp(int addr)
 		{
 			byte ret = 0xFF;
 			switch (addr)
@@ -663,10 +664,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		void SyncIRQ()
 		{
-			IRQSignal = (irq_pending && irq_enabled) || irq_audio;
+			IrqSignal = (irq_pending && irq_enabled) || irq_audio;
 		}
 
-		public override void ClockPPU()
+		public override void ClockPpu()
 		{
 			if (NES.ppu.ppur.status.cycle != 336)
 				return;
@@ -703,7 +704,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		}
 
-		public override void ClockCPU()
+		public override void ClockCpu()
 		{
 			audio.Clock();
 		}
@@ -724,22 +725,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (prg_mode)
 			{
 				case 0:
-					SetBank(prg_banks_8k, 0, 4, regs_prg[3]&~3);
+					SetBank(_prgBanks8K, 0, 4, regs_prg[3]&~3);
 					break;
 				case 1:
-					SetBank(prg_banks_8k, 0, 2, regs_prg[1] & ~1);
-					SetBank(prg_banks_8k, 2, 2, regs_prg[3] & ~1);
+					SetBank(_prgBanks8K, 0, 2, regs_prg[1] & ~1);
+					SetBank(_prgBanks8K, 2, 2, regs_prg[3] & ~1);
 					break;
 				case 2:
-					SetBank(prg_banks_8k, 0, 2, regs_prg[1] & ~1);
-					SetBank(prg_banks_8k, 2, 1, regs_prg[2]);
-					SetBank(prg_banks_8k, 3, 1, regs_prg[3]);
+					SetBank(_prgBanks8K, 0, 2, regs_prg[1] & ~1);
+					SetBank(_prgBanks8K, 2, 1, regs_prg[2]);
+					SetBank(_prgBanks8K, 3, 1, regs_prg[3]);
 					break;
 				case 3:
-					SetBank(prg_banks_8k, 0, 1, regs_prg[0]);
-					SetBank(prg_banks_8k, 1, 1, regs_prg[1]);
-					SetBank(prg_banks_8k, 2, 1, regs_prg[2]);
-					SetBank(prg_banks_8k, 3, 1, regs_prg[3]);
+					SetBank(_prgBanks8K, 0, 1, regs_prg[0]);
+					SetBank(_prgBanks8K, 1, 1, regs_prg[1]);
+					SetBank(_prgBanks8K, 2, 1, regs_prg[2]);
+					SetBank(_prgBanks8K, 3, 1, regs_prg[3]);
 					break;
 			}
 		}
@@ -753,42 +754,42 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (chr_mode)
 			{
 				case 0:
-					SetBank(a_banks_1k, 0, 8, regs_a[7] * 8);
-					SetBank(b_banks_1k, 0, 8, regs_b[3] * 8);
+					SetBank(_aBanks1K, 0, 8, regs_a[7] * 8);
+					SetBank(_bBanks1K, 0, 8, regs_b[3] * 8);
 					break;
 				case 1:
-					SetBank(a_banks_1k, 0, 4, regs_a[3] * 4);
-					SetBank(a_banks_1k, 4, 4, regs_a[7] * 4);
-					SetBank(b_banks_1k, 0, 4, regs_b[3] * 4);
-					SetBank(b_banks_1k, 4, 4, regs_b[3] * 4);
+					SetBank(_aBanks1K, 0, 4, regs_a[3] * 4);
+					SetBank(_aBanks1K, 4, 4, regs_a[7] * 4);
+					SetBank(_bBanks1K, 0, 4, regs_b[3] * 4);
+					SetBank(_bBanks1K, 4, 4, regs_b[3] * 4);
 					break;
 				case 2:
-					SetBank(a_banks_1k, 0, 2, regs_a[1] * 2);
-					SetBank(a_banks_1k, 2, 2, regs_a[3] * 2);
-					SetBank(a_banks_1k, 4, 2, regs_a[5] * 2);
-					SetBank(a_banks_1k, 6, 2, regs_a[7] * 2);
-					SetBank(b_banks_1k, 0, 2, regs_b[1] * 2);
-					SetBank(b_banks_1k, 2, 2, regs_b[3] * 2);
-					SetBank(b_banks_1k, 4, 2, regs_b[1] * 2);
-					SetBank(b_banks_1k, 6, 2, regs_b[3] * 2);
+					SetBank(_aBanks1K, 0, 2, regs_a[1] * 2);
+					SetBank(_aBanks1K, 2, 2, regs_a[3] * 2);
+					SetBank(_aBanks1K, 4, 2, regs_a[5] * 2);
+					SetBank(_aBanks1K, 6, 2, regs_a[7] * 2);
+					SetBank(_bBanks1K, 0, 2, regs_b[1] * 2);
+					SetBank(_bBanks1K, 2, 2, regs_b[3] * 2);
+					SetBank(_bBanks1K, 4, 2, regs_b[1] * 2);
+					SetBank(_bBanks1K, 6, 2, regs_b[3] * 2);
 					break;
 				case 3:
-					SetBank(a_banks_1k, 0, 1, regs_a[0]);
-					SetBank(a_banks_1k, 1, 1, regs_a[1]);
-					SetBank(a_banks_1k, 2, 1, regs_a[2]);
-					SetBank(a_banks_1k, 3, 1, regs_a[3]);
-					SetBank(a_banks_1k, 4, 1, regs_a[4]);
-					SetBank(a_banks_1k, 5, 1, regs_a[5]);
-					SetBank(a_banks_1k, 6, 1, regs_a[6]);
-					SetBank(a_banks_1k, 7, 1, regs_a[7]);
-					SetBank(b_banks_1k, 0, 1, regs_b[0]);
-					SetBank(b_banks_1k, 1, 1, regs_b[1]);
-					SetBank(b_banks_1k, 2, 1, regs_b[2]);
-					SetBank(b_banks_1k, 3, 1, regs_b[3]);
-					SetBank(b_banks_1k, 4, 1, regs_b[0]);
-					SetBank(b_banks_1k, 5, 1, regs_b[1]);
-					SetBank(b_banks_1k, 6, 1, regs_b[2]);
-					SetBank(b_banks_1k, 7, 1, regs_b[3]);
+					SetBank(_aBanks1K, 0, 1, regs_a[0]);
+					SetBank(_aBanks1K, 1, 1, regs_a[1]);
+					SetBank(_aBanks1K, 2, 1, regs_a[2]);
+					SetBank(_aBanks1K, 3, 1, regs_a[3]);
+					SetBank(_aBanks1K, 4, 1, regs_a[4]);
+					SetBank(_aBanks1K, 5, 1, regs_a[5]);
+					SetBank(_aBanks1K, 6, 1, regs_a[6]);
+					SetBank(_aBanks1K, 7, 1, regs_a[7]);
+					SetBank(_bBanks1K, 0, 1, regs_b[0]);
+					SetBank(_bBanks1K, 1, 1, regs_b[1]);
+					SetBank(_bBanks1K, 2, 1, regs_b[2]);
+					SetBank(_bBanks1K, 3, 1, regs_b[3]);
+					SetBank(_bBanks1K, 4, 1, regs_b[0]);
+					SetBank(_bBanks1K, 5, 1, regs_b[1]);
+					SetBank(_bBanks1K, 6, 1, regs_b[2]);
+					SetBank(_bBanks1K, 7, 1, regs_b[3]);
 					break;
 			}
 		}

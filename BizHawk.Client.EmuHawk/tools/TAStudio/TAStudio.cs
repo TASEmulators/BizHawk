@@ -867,7 +867,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return Path.Combine(
 				Global.Config.PathEntries.MovieAbsolutePath(),
-				$"{Global.Game.Name.FilesystemSafeName()}.{TasMovie.Extension}");
+				$"{Global.Game.FilesystemSafeName()}.{TasMovie.Extension}");
 		}
 
 		private void SaveTas()

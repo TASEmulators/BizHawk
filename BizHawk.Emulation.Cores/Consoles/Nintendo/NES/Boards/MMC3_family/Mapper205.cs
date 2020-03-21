@@ -2,16 +2,16 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper205 : MMC3Board_Base
+	internal sealed class Mapper205 : MMC3Board_Base
 	{
 		//Mapper 205 info: http://wiki.nesdev.com/w/index.php/INES_Mapper_205
 
 		int block;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER205":
 					break;
@@ -31,12 +31,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			block = value & 0x03;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_8k = Get_PRGBank_8K(addr);
 			bank_8k &= prg_mask;
@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			addr = (bank_8k << 13) | (addr & 0x1FFF);
-			return ROM[addr];
+			return Rom[addr];
 		}
 
 		int MapCHR2(int addr)
@@ -92,22 +92,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return addr;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				addr = MapCHR2(addr);
-				if (VROM != null)
-					return VROM[addr + extra_vrom];
-				else return VRAM[addr];
+				if (Vrom != null)
+					return Vrom[addr + extra_vrom];
+				else return Vram[addr];
 			}
-			else return base.ReadPPU(addr);
+			else return base.ReadPpu(addr);
 		}
 
-		public override void NESSoftReset()
+		public override void NesSoftReset()
 		{
 			block = 0;
-			base.NESSoftReset();
+			base.NesSoftReset();
 		}
 	}
 }

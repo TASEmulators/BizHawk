@@ -2,13 +2,13 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper134 : MMC3Board_Base
+	internal sealed class Mapper134 : MMC3Board_Base
 	{
 		private byte reg;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER134":
 					break;
@@ -26,14 +26,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(reg), ref reg);
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			if (addr == 1) // 0x6001
 			{
 				reg = value;
 			}
 
-			base.WriteWRAM(addr, value);
+			base.WriteWram(addr, value);
 		}
 
 		protected override int Get_PRGBank_8K(int addr)

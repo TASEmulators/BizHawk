@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// 32K prgrom blocks and 8k chrrom blocks
 	// behavior gleamed from FCEUX
 	// "Qi Wang - Chinese Chess (MGC-001) (Ch) [!]" and "Twin Eagle (Sachen) [!]" seem to have problems; the latter needs PAL
-	public sealed class SachenSimple : NES.NESBoardBase
+	internal sealed class SachenSimple : NesBoardBase
 	{
 		Action<byte> ExpWrite = null;
 		Action<byte> PrgWrite = null;
@@ -18,9 +18,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int chr_mask;
 		int prg_addr_mask; // some carts have 16KB prg unswappable
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER146":
 				case "UNL-SA-016-1M":
@@ -54,11 +54,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			AssertPrg(16, 32, 64, 128);
 			AssertChr(8, 16, 32, 64, 128);
 			AssertVram(0);
-			Cart.wram_size = 0;
-			prg_mask = Cart.prg_size / 32 - 1;
-			chr_mask = Cart.chr_size / 8 - 1;
-			prg_addr_mask = Cart.prg_size * 1024 - 1;
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			Cart.WramSize = 0;
+			prg_mask = Cart.PrgSize / 32 - 1;
+			chr_mask = Cart.ChrSize / 8 - 1;
+			prg_addr_mask = Cart.PrgSize * 1024 - 1;
+			SetMirrorType(Cart.PadH, Cart.PadV);
 			return true;
 		}
 
@@ -81,27 +81,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			chr = value & 3 & chr_mask;
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			if (ExpWrite != null && (addr & 0x100) != 0)
 				ExpWrite(value);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			PrgWrite?.Invoke(value);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[(addr & prg_addr_mask) + (prg << 15)];
+			return Rom[(addr & prg_addr_mask) + (prg << 15)];
 		}
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
-				return VROM[addr + (chr << 13)];
+				return Vrom[addr + (chr << 13)];
 			else
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 		}
 
 		public override void SyncState(Serializer ser)

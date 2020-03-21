@@ -49,9 +49,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			ser.BeginSection(nameof(Board));
 			Board.SyncState(ser);
-			if (Board is NESBoardBase board && !board.SyncStateFlag)
+			if (Board is NesBoardBase board && !board.SyncStateFlag)
 			{
-				throw new InvalidOperationException($"the current NES mapper didn't call base.{nameof(INESBoard.SyncState)}");
+				throw new InvalidOperationException($"the current NES mapper didn't call base.{nameof(INesBoard.SyncState)}");
 			}
 
 			ser.EndSection();

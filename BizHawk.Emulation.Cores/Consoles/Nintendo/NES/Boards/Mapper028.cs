@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// http://wiki.nesdev.com/w/index.php/User:Tepples/Multi-discrete_mapper
-	public sealed class Mapper028 : NES.NESBoardBase
+	internal sealed class Mapper028 : NesBoardBase
 	{
 		// config
 		int chr_mask_8k;
@@ -20,9 +20,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int prglo;
 		int prghi;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER028":
 					break;
@@ -31,10 +31,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			AssertPrg(32, 64, 128, 256, 512, 1024, 2048);
 			AssertChr(0);
-			chr_mask_8k = Cart.chr_size / 8 - 1;
-			prg_mask_16k = Cart.prg_size / 16 - 1;
-			Cart.wram_size = 0;
-			Cart.vram_size = 32;
+			chr_mask_8k = Cart.ChrSize / 8 - 1;
+			prg_mask_16k = Cart.PrgSize / 16 - 1;
+			Cart.WramSize = 0;
+			Cart.VramSize = 32;
 			// the only part of initial state that is important is that
 			// C000:FFFF contains the tail end of the rom
 			outer = 63;
@@ -131,13 +131,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			if (addr >= 0x1000)
 				reg = value & 0x81;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			switch (reg)
 			{
@@ -162,25 +162,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
-				return VRAM[addr | chr << 13];
+				return Vram[addr | chr << 13];
 			else
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000)
-				VRAM[addr | chr << 13] = value;
+				Vram[addr | chr << 13] = value;
 			else
-				base.WritePPU(addr, value);
+				base.WritePpu(addr, value);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[(addr & 0x3fff) | (addr < 0x4000 ? prglo : prghi) << 14];
+			return Rom[(addr & 0x3fff) | (addr < 0x4000 ? prglo : prghi) << 14];
 		}
 
 		public override void SyncState(Serializer ser)

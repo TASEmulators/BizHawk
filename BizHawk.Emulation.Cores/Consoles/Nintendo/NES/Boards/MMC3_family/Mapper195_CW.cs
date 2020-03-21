@@ -9,13 +9,13 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper195_CW : MMC3Board_Base
+	internal sealed class Mapper195_CW : MMC3Board_Base
 	{
 		private int vram_bank_mask_1k;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER195_CW":
 					break;
@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			vram_bank_mask_1k = Cart.vram_size / 1 - 1;
+			vram_bank_mask_1k = Cart.VramSize / 1 - 1;
 			
 			BaseSetup();
 
@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
@@ -39,19 +39,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				if (bank_1k<=3)
 				{
-					return VRAM[(bank_1k << 10) + (addr & 0x3FF)];
+					return Vram[(bank_1k << 10) + (addr & 0x3FF)];
 				}
 				else
 				{
 					addr = MapCHR(addr);
-					return VROM[addr + extra_vrom];
+					return Vrom[addr + extra_vrom];
 				}
 			}
 			else
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000)
 			{
@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				if (bank_1k <= vram_bank_mask_1k)
 				{
-					VRAM[(bank_1k  << 10) + (addr & 0x3FF)] = value;
+					Vram[(bank_1k  << 10) + (addr & 0x3FF)] = value;
 				}
 				else
 				{
@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 			else 
-				base.WritePPU(addr, value);
+				base.WritePpu(addr, value);
 		}
 	}
 }

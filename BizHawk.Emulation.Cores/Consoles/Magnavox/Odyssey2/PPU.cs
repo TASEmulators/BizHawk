@@ -10,6 +10,11 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 	{
 		public O2Hawk Core { get; set; }
 
+		// not stated, set on game load
+		public bool is_pal;
+		public int LINE_VBL;
+		public int LINE_MAX;
+
 		public const int HBL_CNT = 45;
 
 		public byte[] Sprites = new byte[16];
@@ -203,7 +208,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			if (cycle >= HBL_CNT)
 			{
 				// draw a pixel
-				if (LY < 240)
+				if (LY < LINE_VBL)
 				{
 					if (cycle == HBL_CNT)
 					{
@@ -700,7 +705,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 				LY++;
 
-				if (LY == 240)
+				if (LY == LINE_VBL)
 				{
 					VBL = true;
 					Core.in_vblank = true;
@@ -708,7 +713,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					Core.cpu.IRQPending = true;
 					Core.cpu.T1 = true;
 				}
-				if (LY == 262)
+				if (LY == LINE_MAX)
 				{
 					LY = 0;
 					VBL = false;
@@ -716,7 +721,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					VDC_status &= 0xF7;
 					for (int i = 0; i < 8; i++) { VDC_col_ret[i] = 0; }
 				}
-				if (LY < 240)
+				if (LY < LINE_VBL)
 				{
 					HBL = true;
 					VDC_status &= 0xFE;
@@ -724,17 +729,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					Core.cpu.T1 = true;
 				}
 			}
-		}
-
-		// might be needed, not sure yet
-		public void latch_delay()
-		{
-
-		}
-
-		public void process_sprite()
-		{
-
 		}
 
 		public void Reset()
@@ -747,6 +741,22 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			Grid_V = new byte[10];
 
 			AudioReset();
+		}
+
+		public void set_region(bool pal_flag)
+		{
+			is_pal = pal_flag;
+
+			if (is_pal)
+			{
+				LINE_MAX = 312;
+				LINE_VBL = 288;
+			}
+			else
+			{
+				LINE_MAX = 262;
+				LINE_VBL = 240;
+			}
 		}
 
 		public static readonly byte[] Internal_Graphics = { 0x7C, 0xC6, 0xC6, 0xC6, 0xC6, 0xC6, 0x7C, 00, // 0				0x00

@@ -3,7 +3,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper52 : MMC3Board_Base
+	internal sealed class Mapper52 : MMC3Board_Base
 	{
 		//http://wiki.nesdev.com/w/index.php/INES_Mapper_052
 
@@ -13,9 +13,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int prg_or = 0;
 		int chr_or = 0;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER052":
 					break;
@@ -37,21 +37,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override void NESSoftReset()
+		public override void NesSoftReset()
 		{
 			lock_regs = false;
 			prg_block_size = false;
 			chr_block_size = false;
 			prg_or = 0;
 			chr_or = 0;
-			base.NESSoftReset();
+			base.NesSoftReset();
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			if (lock_regs)
 			{
-				base.WriteWRAM(addr, value);
+				base.WriteWram(addr, value);
 			}
 			else
 			{
@@ -68,14 +68,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_8k = Get_PRGBank_8K(addr);
 			bank_8k &= PRG_AND();
 			bank_8k |= PRG_OR();
 			bank_8k &= prg_mask;
 			addr = (bank_8k << 13) | (addr & 0x1FFF);
-			return ROM[addr];
+			return Rom[addr];
 		}
 
 		private int PRG_AND()

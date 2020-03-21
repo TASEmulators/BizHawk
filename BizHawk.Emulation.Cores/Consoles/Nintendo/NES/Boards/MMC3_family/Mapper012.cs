@@ -2,12 +2,12 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper012 : MMC3Board_Base
+	internal sealed class Mapper012 : MMC3Board_Base
 	{
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER012": 
 					break;
@@ -30,9 +30,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		int block0, block1;
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
-			base.WriteEXP(addr, value);
+			base.WriteExp(addr, value);
 			block0 = value & 1;
 			block1 = (value >> 4) & 1;
 		}

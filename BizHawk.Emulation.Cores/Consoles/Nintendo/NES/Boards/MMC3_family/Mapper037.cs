@@ -3,13 +3,13 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// mmc3 multi, PAL, "Super Mario Bros. / Tetris / Nintendo World Cup"
-	public sealed class Mapper037 : MMC3Board_Base
+	internal sealed class Mapper037 : MMC3Board_Base
 	{
 		int exreg;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER037":
 				case "PAL-ZZ":
@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			if (!mmc3.wram_enable || mmc3.wram_write_protect)
 				return;

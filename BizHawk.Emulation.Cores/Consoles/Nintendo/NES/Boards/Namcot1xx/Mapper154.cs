@@ -3,15 +3,15 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// http://wiki.nesdev.com/w/index.php/INES_Mapper_154
-	public sealed class Mapper154 : Namcot108Board_Base
+	internal sealed class Mapper154 : Namcot108Board_Base
 	{
 		//configuration
 		int chr_bank_mask_1k;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "NAMCOT-3453":
 				case "MAPPER154":
@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			BaseSetup();
 			SetMirrorType(EMirrorType.OneScreenA);
 
-			chr_bank_mask_1k = Cart.chr_size - 1;
+			chr_bank_mask_1k = Cart.ChrSize - 1;
 
 			return true;
 		}
@@ -40,18 +40,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return addr;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
-			if (addr < 0x2000) return VROM[RewireCHR(addr)];
-			else return base.ReadPPU(addr);
+			if (addr < 0x2000) return Vrom[RewireCHR(addr)];
+			else return base.ReadPpu(addr);
 		}
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000) { }
-			else base.WritePPU(addr, value);
+			else base.WritePpu(addr, value);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if (value.Bit(6))
 			{
@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				SetMirrorType(EMirrorType.OneScreenA);
 			}
 
-			base.WritePRG(addr, value);
+			base.WritePrg(addr, value);
 		}
 	}
 }

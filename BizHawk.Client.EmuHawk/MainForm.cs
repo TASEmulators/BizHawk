@@ -235,10 +235,10 @@ namespace BizHawk.Client.EmuHawk
 
 			// In order to allow late construction of this database, we hook up a delegate here to dearchive the data and provide it on demand
 			// we could background thread this later instead if we wanted to be real clever
-			NES.BootGodDB.GetDatabaseBytes = () =>
+			BootGodDb.GetDatabaseBytes = () =>
 			{
-				string xmlPath = Path.Combine(PathUtils.GetExeDirectoryAbsolute(), "gamedb", "NesCarts.xml");
-				string x7zPath = Path.Combine(PathUtils.GetExeDirectoryAbsolute(), "gamedb", "NesCarts.7z");
+				string xmlPath = Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "NesCarts.xml");
+				string x7zPath = Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "NesCarts.7z");
 				bool loadXml = File.Exists(xmlPath);
 				using var nesCartFile = new HawkFile(loadXml ? xmlPath : x7zPath);
 				if (!loadXml)
@@ -259,11 +259,11 @@ namespace BizHawk.Client.EmuHawk
 				MessageBox.Show(e.Message);
 			}
 
-			Database.LoadDatabase(Path.Combine(PathUtils.GetExeDirectoryAbsolute(), "gamedb", "gamedb.txt"));
+			Database.LoadDatabase(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb.txt"));
 
 			// TODO GL - a lot of disorganized wiring-up here
 			// installed separately on Unix (via package manager or from https://developer.nvidia.com/cg-toolkit-download), look in $PATH
-			CGC.CGCBinPath = OSTailoredCode.IsUnixHost ? "cgc" : Path.Combine(PathUtils.GetDllDirectory(), "cgc.exe");
+			CGC.CGCBinPath = OSTailoredCode.IsUnixHost ? "cgc" : Path.Combine(PathUtils.DllDirectoryPath, "cgc.exe");
 			PresentationPanel = new PresentationPanel(this, Config, GlobalWin.GL)
 			{
 				GraphicsControl = { MainWindow = true }
@@ -1045,7 +1045,7 @@ namespace BizHawk.Client.EmuHawk
 		private string ScreenshotPrefix()
 		{
 			var screenPath = Config.PathEntries.ScreenshotAbsolutePathFor(Game.System);
-			var name = Game.Name.FilesystemSafeName();
+			var name = Game.FilesystemSafeName();
 			return Path.Combine(screenPath, name);
 		}
 
@@ -3246,7 +3246,7 @@ namespace BizHawk.Client.EmuHawk
 						using var sfd = new SaveFileDialog();
 						if (Game != null)
 						{
-							sfd.FileName = $"{Game.Name.FilesystemSafeName()}.{ext}"; // don't use Path.ChangeExtension, it might wreck game names with dots in them
+							sfd.FileName = $"{Game.FilesystemSafeName()}.{ext}"; // don't use Path.ChangeExtension, it might wreck game names with dots in them
 							sfd.InitialDirectory = Config.PathEntries.AvAbsolutePath();
 						}
 						else
@@ -3472,7 +3472,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public string SaveStatePrefix()
 		{
-			var name = Game.Name.FilesystemSafeName();
+			var name = Game.FilesystemSafeName();
 
 			// Neshawk and Quicknes have incompatible savestates, store the name to keep them separate
 			if (Emulator.SystemId == "NES")

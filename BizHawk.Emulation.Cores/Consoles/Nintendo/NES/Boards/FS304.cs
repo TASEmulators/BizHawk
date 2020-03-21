@@ -1,33 +1,33 @@
 ﻿namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class FS304 : NES.NESBoardBase
+	internal sealed class FS304 : NesBoardBase
 	{
 		// waixing?
 
 		int prg;
 		int prg_mask_32k;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "UNIF_UNL-FS304":
 					AssertChr(0);
 					AssertPrg(512, 1024, 2048, 4096);
-					Cart.vram_size = 8;
-					Cart.wram_size = 8;
-					Cart.wram_battery = true;
+					Cart.VramSize = 8;
+					Cart.WramSize = 8;
+					Cart.WramBattery = true;
 					break;
 				default:
 					return false;
 			}
 
-			prg_mask_32k = Cart.prg_size / 32 - 1;
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			prg_mask_32k = Cart.PrgSize / 32 - 1;
+			SetMirrorType(Cart.PadH, Cart.PadV);
 			return true;
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			switch (addr & 0x1300)
 			{
@@ -47,9 +47,9 @@
 			prg &= prg_mask_32k;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[addr | prg << 15];
+			return Rom[addr | prg << 15];
 		}
 	}
 }

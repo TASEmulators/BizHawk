@@ -3,8 +3,8 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	// Adpated from FCEUX src
-	public sealed class Mapper183 : NES.NESBoardBase
+	// Adapted from FCEUX src
+	internal sealed class Mapper183 : NesBoardBase
 	{
 		private byte[] prg = new byte[4];
 		private byte[] chr = new byte[8];
@@ -17,9 +17,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private int prg_bank_mask_8k, chr_bank_mask_1k, IRQPre=341;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER183":
 					break;
@@ -27,8 +27,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
-			chr_bank_mask_1k = Cart.chr_size - 1;
+			prg_bank_mask_8k = Cart.PrgSize / 8 - 1;
+			chr_bank_mask_1k = Cart.ChrSize - 1;
 
 			return true;
 		}
@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void ClockCPU()
+		public override void ClockCpu()
 		{
 			if (IRQa)
 			{
@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					IRQCount++;
 					if (IRQCount == 0xFF)
 					{
-						IRQSignal = true;
+						IrqSignal = true;
 						IRQCount = IRQLatch;
 					}
 				}
@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						IRQCount++;
 						if (IRQCount >= 0x100)
 						{
-							IRQSignal = IRQa;
+							IrqSignal = IRQa;
 							IRQCount = IRQLatch;
 						}
 					}
@@ -84,12 +84,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			WriteReg(addr + 0x6000, value);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			WriteReg(addr + 0x8000, value);
 		}
@@ -124,34 +124,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							IRQPre = 341;
 							IRQCount = IRQLatch;
 						}
-						IRQSignal = false;
+						IrqSignal = false;
 						break;
 					case 0xF00C:
-						IRQSignal = false;
+						IrqSignal = false;
 						IRQa = IRQr;
 						break;
 
 				}
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				int x = (addr >> 10) & 7;
 				int bank = (chr[x] & chr_bank_mask_1k) << 10;
-				return VROM[bank + (addr & 0x3FF)]; // TODO
+				return Vrom[bank + (addr & 0x3FF)]; // TODO
 			}
 
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
-			return ROM[(((prg[3] & prg_bank_mask_8k)) << 13) + (addr & 0x1FFF)];
+			return Rom[(((prg[3] & prg_bank_mask_8k)) << 13) + (addr & 0x1FFF)];
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_8k;
 			if (addr < 0x2000) // 0x8000
@@ -172,7 +172,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				bank_8k = prg_bank_mask_8k;
 			}
 
-			return ROM[(bank_8k << 13) + (addr & 0x1FFF)];
+			return Rom[(bank_8k << 13) + (addr & 0x1FFF)];
 		}
 	}
 }

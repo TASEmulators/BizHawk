@@ -168,7 +168,7 @@ namespace BizHawk.Client.EmuHawk
 			// Pull out matching names
 			for (var i = 0; i < _movieList.Count; i++)
 			{
-				if (_game.Name.FilesystemSafeName() == _movieList[i].GameName)
+				if (_game.FilesystemSafeName() == _movieList[i].GameName)
 				{
 					indices.Add(i);
 				}

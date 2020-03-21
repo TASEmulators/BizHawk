@@ -17,8 +17,8 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	[NES.INESBoardImplCancel]
-	public sealed class NSFBoard : NES.NESBoardBase
+	[NesBoardImplCancel]
+	internal sealed class NSFBoard : NesBoardBase
 	{
 		//------------------------------
 		//configuration
@@ -68,9 +68,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// </summary>
 		int ButtonState;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			Cart.wram_size = 8;
+			Cart.WramSize = 8;
 
 			return true;
 		}
@@ -130,12 +130,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Patch_Vectors = true;
 		}
 
-		public override void NESSoftReset()
+		public override void NesSoftReset()
 		{
 			ReplayInit();
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			switch (addr)
 			{
@@ -200,7 +200,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 							//important to NSF standard for ram to be cleared, otherwise replayers are confused on account of not initializing memory themselves
 							var ram = NES.ram;
-							var wram = this.WRAM;
+							var wram = this.Wram;
 							int wram_size = wram.Length;
 							for (int i = 0; i < 0x800; i++)
 								ram[i] = 0;
@@ -210,7 +210,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							//store specified initial bank state
 							if (BankSwitched)
 								for (int i = 0; i < 8; i++)
-									WriteEXP(0x5FF8 + i - 0x4000, InitBankSwitches[i]);
+									WriteExp(0x5FF8 + i - 0x4000, InitBankSwitches[i]);
 
 							return (byte)(CurrentSong - 1);
 						}
@@ -291,7 +291,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			0x90,0xFE, 
 		};
 
-		public override void AtVsyncNMI()
+		public override void AtVsyncNmi()
 		{
 			if(Patch_Vectors)
 				NES.cpu.NMI = true;
@@ -349,12 +349,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			return 0;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			//patch in vector reading
 			if (Patch_Vectors)
@@ -377,7 +377,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					//rom data began at 0x80 of the NSF file
 					addr += 0x80;
 
-					return ROM[addr];
+					return Rom[addr];
 				}
 				else
 				{

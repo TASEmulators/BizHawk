@@ -161,9 +161,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public void ppubus_write(int addr, byte value)
 		{
 			if (ppur.status.sl >= 241 || !PPUON)
-				nes.Board.AddressPPU(addr);
+				nes.Board.AddressPpu(addr);
 
-			nes.Board.WritePPU(addr, value);
+			nes.Board.WritePpu(addr, value);
 		}
 
 		//when the ppu issues a read it goes through here and into the game board
@@ -174,9 +174,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return 0xFF;
 
 			if (addr_ppu)
-				nes.Board.AddressPPU(addr);
+				nes.Board.AddressPpu(addr);
 
-			return nes.Board.ReadPPU(addr);
+			return nes.Board.ReadPpu(addr);
 		}
 
 		//debug tools peek into the ppu through this
@@ -372,7 +372,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					//apparently this shoves it on the address bus, too, or else blargg's mmc3 tests don't pass
 					//ONLY if the ppu is not rendering
 					if (ppur.status.sl >= 241 || !PPUON)
-						nes.Board.AddressPPU(ppur.get_2007access());
+						nes.Board.AddressPpu(ppur.get_2007access());
 				}
 			}
 
@@ -424,7 +424,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (HasClockPPU)
 			{
-				nes.Board.ClockPPU();
+				nes.Board.ClockPpu();
 			}
 			_totalCycles += 1;
 		}		
