@@ -1796,6 +1796,7 @@ namespace BizHawk.Client.EmuHawk
 			SMSSubMenu.Visible = false;
 			GBSubMenu.Visible = false;
 			GBASubMenu.Visible = false;
+			NDSSubMenu.Visible = false;
 			AtariSubMenu.Visible = false;
 			A7800SubMenu.Visible = false;
 			SNESSubMenu.Visible = false;
@@ -1858,6 +1859,9 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "GBA":
 					GBASubMenu.Visible = true;
+					break;
+				case "NDS":
+					NDSSubMenu.Visible = true;
 					break;
 				case "A26":
 					AtariSubMenu.Visible = true;
@@ -2208,6 +2212,7 @@ namespace BizHawk.Client.EmuHawk
 			new FilesystemFilter("Nintendo 64", new[] { "z64", "v64", "n64" }),
 			new FilesystemFilter("Gameboy", new[] { "gb", "gbc", "sgb" }, addArchiveExts: true),
 			new FilesystemFilter("Gameboy Advance", new[] { "gba" }, addArchiveExts: true),
+			new FilesystemFilter("Nintendo DS", new[] { "nds" }),
 			new FilesystemFilter("Master System", new[] { "sms", "gg", "sg" }, addArchiveExts: true),
 			new FilesystemFilter("PC Engine", new[] { "pce", "sgx", "cue", "ccd", "mds" }, addArchiveExts: true),
 			new FilesystemFilter("Atari 2600", new[] { "a26" }, devBuildExtraExts: new[] { "bin" }, addArchiveExts: true),

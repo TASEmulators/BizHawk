@@ -394,6 +394,8 @@ namespace BizHawk.Client.EmuHawk
 			// otherwise, have the filter program untransform it
 			Vector2 v = new Vector2(p.X, p.Y);
 			v = _currentFilterProgram.UntransformPoint("default", v);
+			if (Global.Emulator.SystemId == "NDS")
+				v.Y = 2 * v.Y - (Global.Emulator as IVideoProvider).BufferHeight;
 			return new Point((int)v.X, (int)v.Y);
 		}
 

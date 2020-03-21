@@ -342,7 +342,8 @@
 		<Compile Update="config/N64/N64VideoPluginconfig.cs" SubType="Form" />
 		<Compile Update="config/N64/N64VideoPluginconfig.Designer.cs" DependentUpon="N64VideoPluginconfig.cs" />
 		<EmbeddedResource Update="config/N64/N64VideoPluginconfig.resx" DependentUpon="N64VideoPluginconfig.cs" />
-		<Compile Update="config/NES/NesControllerSettings.cs" SubType="Form" />
+		<Compile Update="config/NDS/NDSSettings.cs" SubType="Form" />
+		<Compile Update="config/NDS/NDSSettings.Designer.cs" DependentUpon="NDSSettings.cs" />		<Compile Update="config/NES/NesControllerSettings.cs" SubType="Form" />
 		<Compile Update="config/NES/NesControllerSettings.Designer.cs" DependentUpon="NesControllerSettings.cs" />
 		<EmbeddedResource Update="config/NES/NesControllerSettings.resx" DependentUpon="NesControllerSettings.cs" />
 		<Compile Update="config/NES/NESGraphicsConfig.cs" SubType="Form" />

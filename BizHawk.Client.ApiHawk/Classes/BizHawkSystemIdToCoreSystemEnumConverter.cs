@@ -40,6 +40,7 @@ namespace BizHawk.Client.ApiHawk
 				"Libretro" => CoreSystem.Libretro,
 				"Lynx" => CoreSystem.Lynx,
 				"SMS" => CoreSystem.MasterSystem,
+				"NDS" => CoreSystem.NintendoDS,
 				"NES" => CoreSystem.NES,
 				"N64" => CoreSystem.Nintendo64,
 				"NULL" => CoreSystem.Null,

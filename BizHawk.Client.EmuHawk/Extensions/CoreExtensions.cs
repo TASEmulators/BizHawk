@@ -102,6 +102,8 @@ namespace BizHawk.Client.EmuHawk.CoreExtensions
 					return SystemInfo.Coleco;
 				case "GBA":
 					return SystemInfo.GBA;
+				case "NDS":
+					return SystemInfo.NDS;
 				case "N64":
 					return SystemInfo.N64;
 				case "SAT":

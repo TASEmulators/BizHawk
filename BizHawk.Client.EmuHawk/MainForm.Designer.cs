@@ -459,6 +459,8 @@
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
+			this.NDSSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.NDSSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -468,26 +470,27 @@
 			// 
 			this.MainformMenu.ClickThrough = true;
 			this.MainformMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.FileSubMenu,
-			this.EmulationSubMenu,
-			this.ViewSubMenu,
-			this.ConfigSubMenu,
-			this.ToolsSubMenu,
-			this.NESSubMenu,
-			this.PCESubMenu,
-			this.SMSSubMenu,
-			this.TI83SubMenu,
-			this.AtariSubMenu,
-			this.A7800SubMenu,
-			this.GBSubMenu,
-			this.GBASubMenu,
-			this.PSXSubMenu,
-			this.SNESSubMenu,
-			this.ColecoSubMenu,
-			this.N64SubMenu,
-			this.SaturnSubMenu,
-			this.DGBSubMenu,
-			this.DGBHawkSubMenu,
+            this.FileSubMenu,
+            this.EmulationSubMenu,
+            this.ViewSubMenu,
+            this.ConfigSubMenu,
+            this.ToolsSubMenu,
+            this.NESSubMenu,
+            this.PCESubMenu,
+            this.SMSSubMenu,
+            this.TI83SubMenu,
+            this.AtariSubMenu,
+            this.A7800SubMenu,
+            this.GBSubMenu,
+            this.GBASubMenu,
+            this.NDSSubMenu,
+            this.PSXSubMenu,
+            this.SNESSubMenu,
+            this.ColecoSubMenu,
+            this.N64SubMenu,
+            this.SaturnSubMenu,
+            this.DGBSubMenu,
+            this.DGBHawkSubMenu,
 			this.GB3xSubMenu,
 			this.GB4xSubMenu,
 			this.GGLSubMenu,
@@ -3984,6 +3987,21 @@
 			this.timerMouseIdle.Interval = 2000;
 			this.timerMouseIdle.Tick += new System.EventHandler(this.TimerMouseIdle_Tick);
 			// 
+			// NDSSubMenu
+			// 
+			this.NDSSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.NDSSettingsMenuItem});
+			this.NDSSubMenu.Name = "NDSSubMenu";
+			this.NDSSubMenu.Size = new System.Drawing.Size(42, 19);
+			this.NDSSubMenu.Text = "NDS";
+			// 
+			// NDSSettingsMenuItem
+			// 
+			this.NDSSettingsMenuItem.Name = "NDSSettingsMenuItem";
+			this.NDSSettingsMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.NDSSettingsMenuItem.Text = "Settings...";
+			this.NDSSettingsMenuItem.Click += new System.EventHandler(this.NDSSettingsMenuItem_Click);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -4453,6 +4471,8 @@
 		private System.Windows.Forms.ToolStripMenuItem SubNesHawkMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SubGBHawkMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator38;
+		private System.Windows.Forms.ToolStripMenuItem NDSSubMenu;
+		private System.Windows.Forms.ToolStripMenuItem NDSSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem arcadeToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem2;
 	}

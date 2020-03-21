@@ -41,6 +41,7 @@ namespace BizHawk.Client.EmuHawk
 			["A78"] = "Atari 7800",
 			["Coleco"] = "Colecovision",
 			["GBA"] = "GBA",
+			["NDS"] = "Nintendo DS",
 			["TI83"] = "TI-83",
 			["INTV"] = "Intellivision",
 			["C64"] = "C64",
