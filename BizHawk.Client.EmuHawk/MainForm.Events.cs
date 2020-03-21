@@ -25,6 +25,7 @@ using BizHawk.Emulation.Cores.Computers.Commodore64;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
 using BizHawk.Emulation.Cores.Computers.AmstradCPC;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 using BizHawk.Emulation.Cores.Intellivision;
 using BizHawk.Emulation.Cores.Sony.PSX;
 
@@ -2027,13 +2028,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NDSSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			DialogResult result = new NDSSettings().ShowDialog();
-			if (result == DialogResult.OK)
-				GlobalWin.OSD.AddMessage("Settings saved.");
-			else if (result == DialogResult.Yes)
-				FlagNeedsReboot();
-			else
-				GlobalWin.OSD.AddMessage("Settings aborted.");
+			if (Emulator is MelonDS ds)
+			{
+				using var form = new NdsSettings(this, ds.GetSyncSettings().Clone());
+				form.ShowDialog();
+			}
 		}
 
 		#endregion

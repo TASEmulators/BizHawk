@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Client.EmuHawk
 {
-	partial class NDSSettings
+	partial class NdsSettings
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -71,7 +71,7 @@
 			this.btnCancel.TabIndex = 1;
 			this.btnCancel.Text = "Cancel";
 			this.btnCancel.UseVisualStyleBackColor = true;
-			this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+			this.btnCancel.Click += new System.EventHandler(this.CancelBtn_Click);
 			// 
 			// btnSave
 			// 
@@ -82,7 +82,7 @@
 			this.btnSave.TabIndex = 1;
 			this.btnSave.Text = "Save";
 			this.btnSave.UseVisualStyleBackColor = true;
-			this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+			this.btnSave.Click += new System.EventHandler(this.SaveBtn_Click);
 			// 
 			// txtName
 			// 
@@ -206,7 +206,7 @@
 			this.btnDefault.TabIndex = 1;
 			this.btnDefault.Text = "Default";
 			this.btnDefault.UseVisualStyleBackColor = true;
-			this.btnDefault.Click += new System.EventHandler(this.btnDefault_Click);
+			this.btnDefault.Click += new System.EventHandler(this.DefaultBtn_Click);
 			// 
 			// dtpStartupTime
 			// 
@@ -248,7 +248,7 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(251, 249);
-			this.Name = "NDSSettings";
+			this.Name = "NdsSettings";
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "NDS Settings";

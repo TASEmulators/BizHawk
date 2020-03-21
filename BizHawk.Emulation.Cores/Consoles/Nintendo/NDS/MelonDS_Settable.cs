@@ -81,6 +81,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				userSettings = new byte[userSettingsLength];
 			}
 
+			public MelonSyncSettings Clone() => (MelonSyncSettings)MemberwiseClone();
+
 			public bool bootToFirmware = false;
 			public uint timeAtBoot = 946684800; // 2000-01-01 00:00:00 (earliest date possible on a DS)
 			public byte[] userSettings;
@@ -91,19 +93,23 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				get => userSettings[2];
 				set { userSettings[2] = value; }
 			}
+
 			[JsonIgnore]
 			public byte birthdayMonth
 			{
 				get => userSettings[3];
 				set { userSettings[3] = value; }
 			}
+
 			[JsonIgnore]
 			public byte birthdayDay
 			{
 				get => userSettings[4];
 				set { userSettings[4] = value; }
 			}
+
 			const int maxNicknameLength = 10;
+
 			[JsonIgnore]
 			public string nickname
 			{
@@ -125,6 +131,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					userSettings[0x1A] = (byte)value.Length;
 				}
 			}
+
 			[JsonIgnore]
 			public short nicknameLength => userSettings[0x1A];
 
@@ -132,7 +139,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public long rtcOffset
 			{
 				get => BitConverter.ToInt64(userSettings, 0x68);
-				set { BitConverter.GetBytes(value).CopyTo(userSettings, 0x68); }
+				set => BitConverter.GetBytes(value).CopyTo(userSettings, 0x68);
 			}
 		}
 	}

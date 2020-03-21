@@ -1,60 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class NDSSettings : Form
+	public partial class NdsSettings : Form
 	{
-		public NDSSettings()
+		private readonly MainForm _mainForm;
+		private readonly MelonDS.MelonSyncSettings _syncSettings;
+
+		public NdsSettings(
+			MainForm mainForm,
+			MelonDS.MelonSyncSettings syncSettings)
 		{
+			_mainForm = mainForm;
+			_syncSettings = syncSettings;
+
 			InitializeComponent();
 		}
 
-		MelonDS.MelonSyncSettings syncSettings;
-
 		private void NDSSettings_Load(object sender, EventArgs e)
 		{
-			syncSettings = Global.Config.GetCoreSyncSettings<MelonDS>() as MelonDS.MelonSyncSettings;
-
-			chkBootToFirmware.Checked = syncSettings.bootToFirmware;
-			txtName.Text = syncSettings.nickname;
-			cbxFavColor.SelectedIndex = syncSettings.favoriteColor;
-			numBirthDay.Value = syncSettings.birthdayDay;
-			numBirthMonth.Value = syncSettings.birthdayMonth;
-			dtpStartupTime.Value = DateTimeOffset.FromUnixTimeSeconds(syncSettings.timeAtBoot).UtcDateTime;
-		}
-
-		private void btnCancel_Click(object sender, EventArgs e)
-		{
-			DialogResult = DialogResult.Cancel;
-			Close();
-		}
-
-		private void btnSave_Click(object sender, EventArgs e)
-		{
-			syncSettings.bootToFirmware = chkBootToFirmware.Checked;
-			syncSettings.nickname = txtName.Text;
-			syncSettings.favoriteColor = (byte)cbxFavColor.SelectedIndex;
-			syncSettings.birthdayDay = (byte)numBirthDay.Value;
-			syncSettings.birthdayMonth = (byte)numBirthMonth.Value;
-			// Converting to local time is necessary, because user-set values are "unspecified" which ToUnixTimeSeconds assumes are local.
-			// But ToLocalTime assumes these are UTC. So here we are adding and then subtracting the UTC-to-local offset.
-			syncSettings.timeAtBoot = (uint)new DateTimeOffset(dtpStartupTime.Value.ToLocalTime()).ToUnixTimeSeconds();
-
-			Global.Config.PutCoreSyncSettings<MelonDS>(syncSettings);
-			bool reboot = (Global.Emulator as MelonDS).PutSyncSettings(syncSettings);
-			DialogResult = reboot ? DialogResult.Yes : DialogResult.OK;
-			Close();
+			chkBootToFirmware.Checked = _syncSettings.bootToFirmware;
+			txtName.Text = _syncSettings.nickname;
+			cbxFavColor.SelectedIndex = _syncSettings.favoriteColor;
+			numBirthDay.Value = _syncSettings.birthdayDay;
+			numBirthMonth.Value = _syncSettings.birthdayMonth;
+			dtpStartupTime.Value = DateTimeOffset.FromUnixTimeSeconds(_syncSettings.timeAtBoot).UtcDateTime;
 		}
 
 		private void numBirthMonth_ValueChanged(object sender, EventArgs e)
@@ -82,14 +54,36 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void btnDefault_Click(object sender, EventArgs e)
+		private void CancelBtn_Click(object sender, EventArgs e)
 		{
-			if (MessageBox.Show("Revert to and save default settings?", "default settings", MessageBoxButtons.OKCancel) == DialogResult.OK)
+			_mainForm.AddOnScreenMessage("Core emulator settings aborted");
+			DialogResult = DialogResult.Cancel;
+			Close();
+		}
+
+		private void SaveBtn_Click(object sender, EventArgs e)
+		{
+			_syncSettings.bootToFirmware = chkBootToFirmware.Checked;
+			_syncSettings.nickname = txtName.Text;
+			_syncSettings.favoriteColor = (byte)cbxFavColor.SelectedIndex;
+			_syncSettings.birthdayDay = (byte)numBirthDay.Value;
+			_syncSettings.birthdayMonth = (byte)numBirthMonth.Value;
+
+			// Converting to local time is necessary, because user-set values are "unspecified" which ToUnixTimeSeconds assumes are local.
+			// But ToLocalTime assumes these are UTC. So here we are adding and then subtracting the UTC-to-local offset.
+			_syncSettings.timeAtBoot = (uint)new DateTimeOffset(dtpStartupTime.Value.ToLocalTime()).ToUnixTimeSeconds();
+
+			_mainForm.PutCoreSyncSettings(_syncSettings);
+			DialogResult =  DialogResult.OK;
+			Close();
+		}
+
+		private void DefaultBtn_Click(object sender, EventArgs e)
+		{
+			if (MessageBox.Show("Revert to and save default settings?", "default settings", MessageBoxButtons.OKCancel).IsOk())
 			{
-				bool reboot = (Global.Emulator as MelonDS).PutSyncSettings(null);
-				syncSettings = (Global.Emulator as MelonDS).GetSyncSettings();
-				Global.Config.PutCoreSyncSettings<MelonDS>(syncSettings);
-				DialogResult = reboot ? DialogResult.Yes : DialogResult.OK;
+				_mainForm.PutCoreSyncSettings(new MelonDS.MelonSyncSettings());
+				DialogResult = DialogResult.OK;
 				Close();
 			}
 		}
