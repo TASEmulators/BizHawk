@@ -2026,6 +2026,11 @@ namespace BizHawk.Client.EmuHawk
 
 		#region NDS
 
+		private void NDSSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			NDSSettingsMenuItem.Enabled = MovieSession.Movie.NotActive();
+		}
+
 		private void NDSSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			if (Emulator is MelonDS ds)

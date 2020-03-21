@@ -3994,6 +3994,7 @@
 			this.NDSSubMenu.Name = "NDSSubMenu";
 			this.NDSSubMenu.Size = new System.Drawing.Size(42, 19);
 			this.NDSSubMenu.Text = "NDS";
+			this.NDSSubMenu.DropDownOpened += new System.EventHandler(this.NDSSubMenu_DropDownOpened);
 			// 
 			// NDSSettingsMenuItem
 			// 
