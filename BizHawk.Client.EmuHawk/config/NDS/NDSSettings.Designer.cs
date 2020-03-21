@@ -125,7 +125,7 @@
             0,
             0});
 			this.numBirthDay.Minimum = new decimal(new int[] {
-            1,
+            0,
             0,
             0,
             0});
@@ -147,7 +147,7 @@
             0,
             0});
 			this.numBirthMonth.Minimum = new decimal(new int[] {
-            1,
+            0,
             0,
             0,
             0});
