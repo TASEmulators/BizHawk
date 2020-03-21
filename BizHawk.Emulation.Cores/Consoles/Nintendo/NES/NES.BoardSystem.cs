@@ -125,7 +125,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 #if DEBUG
 						if (ret != null)
-							throw new Exception($"Boards {ret} and {type} both responded to {nameof(NESBoardBase.Configure)}!");
+							throw new Exception($"Boards {ret} and {type} both responded to {nameof(NesBoardBase.Configure)}!");
 						ret = type;
 #else
 							return type;
