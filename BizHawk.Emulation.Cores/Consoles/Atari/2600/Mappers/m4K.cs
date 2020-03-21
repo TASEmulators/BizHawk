@@ -1,7 +1,13 @@
 ﻿namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
-	internal class m4K : MapperBase
+	internal sealed class m4K : MapperBase
 	{
+		public m4K(Atari2600 core) : base(core)
+		{
+		}
+
+		public override void HardReset() { }
+
 		public override byte ReadMemory(ushort addr)
 		{
 			if (addr < 0x1000)

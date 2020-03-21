@@ -3,7 +3,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
-	/* From Kebtris docs
+	/* From Kevtris docs
 	4A50 (no name)
 	-----
 
@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 	One major problem is that it specifies that memory can be read and written
 	to at the same address, but this is nearly impossible to detect on a 2600
-	cartridge.  You'd almost have to try and figure out what opcodes are being
+	cartridge.  You'd almost have to try and figure out what OpCodes are being
 	run, and what cycle it's on somehow, all just by watching address and
 	data bus state.  Not very practical.
 
@@ -23,13 +23,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	There's just tons and tons of unnecessary things like attempting to detect
 	BIT instructions, handling page wraps and other silly things.
 
-	This all supposidly fit into a Xilinx XC9536XL but I am not sure how the
+	This all supposedly fit into a Xilinx XC9536XL but I am not sure how the
 	chip could handle the RAM issue above at all.  It almost needs to see R/W
 	and M2 (clock) to be able to properly do most of the things it's doing.
 	*/
 
 	/* From Stella docs
-	Bankswitching method as defined/created by John Payson (aka Supercat),
+	Bankswitching method as defined/created by John Payson (aka SuperCat),
 	documented at http://www.casperkitty.com/stella/cartfmt.htm.
 
 	In this bankswitching scheme the 2600's 4K cartridge address space 
@@ -41,9 +41,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	bytes of ROM.
 	*/
 
-	internal class m4A50 : MapperBase 
+	internal sealed class m4A50 : MapperBase 
 	{
-		private ByteBuffer _ram = new ByteBuffer(32768);
+		private byte[] _ram = new byte[32768];
 
 		private byte _lastData = 0xFF;
 		private ushort _lastAddress = 0xFFFF;
@@ -57,6 +57,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private int _sliceMiddle;
 
 		private byte[] _romImage;
+
+		public m4A50(Atari2600 core) : base(core)
+		{
+		}
+
 		private byte[] RomImage
 		{
 			get
@@ -87,19 +92,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 		}
 
-		public override bool HasCartRam => true;
-
-		public override ByteBuffer CartRam => _ram;
-
-		public override void Dispose()
-		{
-			_ram.Dispose();
-			base.Dispose();
-		}
+		public override byte[] CartRam => _ram;
 
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync("cartRam", ref _ram);
+			ser.Sync("cartRam", ref _ram, false);
 
 			ser.Sync("lastData", ref _lastData);
 			ser.Sync("lastAddress", ref _lastAddress);
@@ -117,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public override void HardReset()
 		{
-			_ram = new ByteBuffer(32768);
+			_ram = new byte[32768];
 
 			_lastData = 0xFF;
 			_lastAddress = 0xFFFF;
@@ -129,9 +126,17 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_sliceHigh = 0;
 			_sliceLow = 0;
 			_sliceMiddle = 0;
-
-			base.HardReset();
 		}
+
+		public override byte ReadMemory(ushort addr) => ReadMem(addr, false);
+
+		public override byte PeekMemory(ushort addr) => ReadMem(addr, true);
+
+		public override void WriteMemory(ushort addr, byte value)
+			=> WriteMem(addr, value, poke: false);
+
+		public override void PokeMemory(ushort addr, byte value)
+			=> WriteMem(addr, value, poke: true);
 
 		private byte ReadMem(ushort addr, bool peek)
 		{
@@ -146,27 +151,31 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 			else if (addr < 0x1800) // 2K region from 0x1000 - 0x17ff
 			{
-				val = _isRomLow ? RomImage[(addr & 0x7ff) + _sliceLow]
-									: _ram[(addr & 0x7ff) + _sliceLow];
+				val = _isRomLow
+					? RomImage[(addr & 0x7ff) + _sliceLow]
+					: _ram[(addr & 0x7ff) + _sliceLow];
 			}
 			else if (addr < 0x1E00) // 1.5K region from 0x1800 - 0x1dff
 			{
-				val = _isRomMiddle ? RomImage[(addr & 0x7ff) + _sliceMiddle + 0x10000]
-									: _ram[(addr & 0x7ff) + _sliceMiddle];
+				val = _isRomMiddle
+					? RomImage[(addr & 0x7ff) + _sliceMiddle + 0x10000]
+					: _ram[(addr & 0x7ff) + _sliceMiddle];
 			}
 			else if (addr < 0x1F00) // 256B region from 0x1e00 - 0x1eff
 			{
-				val = _isRomHigh ? RomImage[(addr & 0xff) + _sliceHigh + 0x10000]
-									: _ram[(addr & 0xff) + _sliceHigh];
+				val = _isRomHigh
+					? RomImage[(addr & 0xff) + _sliceHigh + 0x10000]
+					: _ram[(addr & 0xff) + _sliceHigh];
 			}
 			else if (addr < 0x2000)      // 256B region from 0x1f00 - 0x1fff
 			{
 				val = RomImage[(addr & 0xff) + (RomImage.Length - 256)];
-				if ((_lastData & 0xe0) == 0x60 && (_lastAddress >= 0x1000 ||
-					_lastAddress < 0x200) && !peek)
+				if ((_lastData & 0xe0) == 0x60 && (_lastAddress >= 0x1000
+					|| _lastAddress < 0x200) && !peek)
 				{
-					_sliceHigh = (_sliceHigh & 0xf0ff) | ((addr & 0x8) << 8) |
-						((addr & 0x70) << 4);
+					_sliceHigh = (_sliceHigh & 0xf0ff)
+						| ((addr & 0x8) << 8)
+						| ((addr & 0x70) << 4);
 				}
 			}
 
@@ -177,16 +186,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 
 			return val;
-		}
-
-		public override byte ReadMemory(ushort addr)
-		{
-			return ReadMem(addr, false);
-		}
-
-		public override byte PeekMemory(ushort addr)
-		{
-			return ReadMem(addr, true);
 		}
 
 		private void WriteMem(ushort addr, byte value, bool poke)
@@ -222,11 +221,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 			else if (addr < 0x2000 && !poke) // 256B region at 0x1f00 - 0x1fff
 			{
-				if (((_lastData & 0xe0) == 0x60) &&
-					(_lastAddress >= 0x1000 || (_lastAddress < 0x200)) && !poke)
+				if ((_lastData & 0xe0) == 0x60
+					&& (_lastAddress >= 0x1000 || _lastAddress < 0x200))
 				{
-					_sliceHigh = (_sliceHigh & 0xf0ff) | ((addr & 0x8) << 8) |
-									((addr & 0x70) << 4);
+					_sliceHigh = (_sliceHigh & 0xf0ff)
+						| ((addr & 0x8) << 8)
+						| ((addr & 0x70) << 4);
 				}
 			}
 
@@ -237,20 +237,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 		}
 
-		public override void WriteMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, poke: false);
-		}
-
-		public override void PokeMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, poke: true);
-		}
-
 		private void CheckBankSwitch(ushort address, byte value)
 		{
-			if (((_lastData & 0xe0) == 0x60) && // Switch lower/middle/upper bank
-				((_lastAddress >= 0x1000) || (_lastAddress < 0x200)))
+			if ((_lastData & 0xe0) == 0x60 // Switch lower/middle/upper bank
+				&& (_lastAddress >= 0x1000 || _lastAddress < 0x200))
 			{
 				if ((address & 0x0f00) == 0x0c00) // Enable 256B of ROM at 0x1e00 - 0x1eff
 				{
@@ -284,19 +274,19 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				}
 				else if ((address & 0x0f00) == 0x0400) // Toggle bit A11 of lower block address
 				{
-					_sliceLow = _sliceLow ^ 0x800;
+					_sliceLow ^= 0x800;
 				}
 				else if ((address & 0x0f00) == 0x0500) // Toggle bit A12 of lower block address
 				{
-					_sliceLow = _sliceLow ^ 0x1000;
+					_sliceLow ^= 0x1000;
 				}
 				else if ((address & 0x0f00) == 0x0800) // Toggle bit A11 of middle block address
 				{
-					_sliceMiddle = _sliceMiddle ^ 0x800;
+					_sliceMiddle ^= 0x800;
 				}
 				else if ((address & 0x0f00) == 0x0900) // Toggle bit A12 of middle block address
 				{
-					_sliceMiddle = _sliceMiddle ^ 0x1000;
+					_sliceMiddle ^= 0x1000;
 				}
 			}
 

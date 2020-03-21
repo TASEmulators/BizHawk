@@ -6,11 +6,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Mapper 83 seems to be a hacky mess that represents 3 different Cony cartridges
 	// http://problemkaputt.de/everynes.htm#mapper83cony
-	public class ConyA : NES.NESBoardBase
+	internal sealed class ConyA : NesBoardBase
 	{
-		private ByteBuffer prg_regs = new ByteBuffer(4);
-		private ByteBuffer low = new ByteBuffer(4); // some kind of security feature?
-		private ByteBuffer chr_regs = new ByteBuffer(8);
+		private byte[] prg_regs = new byte[4];
+		private byte[] _low = new byte[4]; // some kind of security feature?
+		private byte[] chr_regs = new byte[8];
 
 		private int prg_bank_mask_16k, prg_bank_mask_8k, chr_bank_mask_2k;
 		private int IRQCount;
@@ -18,15 +18,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private byte bank, mode;
 		private bool is_2k_bank, is_not_2k_bank;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER083":
-					if (Cart.prg_size == 128)
+					if (Cart.PrgSize == 128)
 					{
-						prg_bank_mask_8k = Cart.prg_size / 8 - 1;
-						prg_bank_mask_16k = Cart.prg_size / 16 - 1;
+						prg_bank_mask_8k = Cart.PrgSize / 8 - 1;
+						prg_bank_mask_16k = Cart.PrgSize / 16 - 1;
 						chr_bank_mask_2k = 127;
 						//prg_regs[0] = 0xC;
 						//prg_regs[1] = 0xB;
@@ -40,25 +40,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void Dispose()
-		{
-			prg_regs.Dispose();
-			low.Dispose();
-			chr_regs.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(prg_regs), ref prg_regs);
-			ser.Sync(nameof(chr_regs), ref chr_regs);
+			ser.Sync(nameof(prg_regs), ref prg_regs, false);
+			ser.Sync(nameof(chr_regs), ref chr_regs, false);
 			ser.Sync(nameof(IRQCount), ref IRQCount);
 			ser.Sync(nameof(IRQa), ref IRQa);
 			ser.Sync(nameof(bank), ref bank);
 			ser.Sync(nameof(mode), ref mode);
 			ser.Sync(nameof(is_2k_bank), ref is_2k_bank);
 			ser.Sync(nameof(is_not_2k_bank), ref is_not_2k_bank);
+			ser.Sync(nameof(_low), ref _low, false);
 		}
 
 		public void Mirroring()
@@ -71,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 3: SetMirrorType(EMirrorType.OneScreenB); break;
 			}
 		}
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			switch (addr)
 			{
@@ -103,7 +96,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				case 0x0200:
 					IRQCount &= 0xFF00; IRQCount |= value;
-					IRQSignal = false;
+					IrqSignal = false;
 					break;
 				case 0x0201:
 					IRQCount &= 0xFF;
@@ -115,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Mirroring();
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
@@ -131,7 +124,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						bank = chr_regs[7];
 
 					bank &= chr_bank_mask_2k;
-					return VROM[(bank << 11) + (addr & 0x7FF)];
+					return Vrom[(bank << 11) + (addr & 0x7FF)];
 				}
 				else
 				{
@@ -139,23 +132,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					int bank = chr_regs[index];
 					bank |= ((bank & 0x30) << 4);
 					bank &= 0xFF;
-					return VROM[(bank << 10) + (addr & 0x3FF)];
+					return Vrom[(bank << 10) + (addr & 0x3FF)];
 				}
 
 			}
 
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if ((mode & 0x40) > 0)
 			{
 				if (addr < 0x4000)
 				{
-					return ROM[(((bank & 0x7) & 0x3F) << 14) + (addr & 0x3FFF)];
+					return Rom[(((bank & 0x7) & 0x3F) << 14) + (addr & 0x3FFF)];
 				}
-				return ROM[((((bank & 0x7) & 0x30) | 0x7) << 14) + (addr & 0x3FFF)];
+				return Rom[((((bank & 0x7) & 0x30) | 0x7) << 14) + (addr & 0x3FFF)];
 			}
 			else
 			{
@@ -165,14 +158,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (index == 3)
 					bank = prg_bank_mask_8k;
 
-				return ROM[(bank << 13) + (addr & 0x1FFF)];
-
-
+				return Rom[(bank << 13) + (addr & 0x1FFF)];
 			}
-
 		}
 
-		public override void ClockCPU()
+		public override void ClockCpu()
 		{
 			if (IRQa)
 			{
@@ -180,37 +170,37 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (IRQCount == 0)
 				{
 					IRQCount = 0xFFFF;
-					IRQSignal = true;
+					IrqSignal = true;
 					IRQa = false;
 				}
 			}
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			if (addr >= 0x1100 && addr <= 0x1103)
-				low[addr & 0x3] = value;
+				_low[addr & 0x3] = value;
 			else
-				base.WriteEXP(addr, value);
+				base.WriteExp(addr, value);
 		}
 
-		public override byte ReadEXP(int addr)
+		public override byte ReadExp(int addr)
 		{
 			if (addr == 0x1000)
 				return (byte)((NES.DB & 0xFC) | 0);
 			else if (addr >= 0x1100 && addr <= 0x1103)
-				return low[addr & 0x3];
+				return _low[addr & 0x3];
 			else
-				return base.ReadEXP(addr);
+				return base.ReadExp(addr);
 
 		}
 	}
 
-	public class ConyB : NES.NESBoardBase
+	internal sealed class ConyB : NesBoardBase
 	{
-		private ByteBuffer prg_regs = new ByteBuffer(4);
-		private ByteBuffer low = new ByteBuffer(4); // some kind of security feature?
-		private ByteBuffer chr_regs = new ByteBuffer(8);
+		private byte[] prg_regs = new byte[4];
+		private byte[] _low = new byte[4]; // some kind of security feature?
+		private byte[] chr_regs = new byte[8];
 
 		private int prg_bank_mask_16k, prg_bank_mask_8k, chr_bank_mask_2k;
 		private int IRQCount;
@@ -218,16 +208,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private byte bank, mode;
 		private bool is_2k_bank, is_not_2k_bank;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER083":
-					if (Cart.prg_size == 256)
+					if (Cart.PrgSize == 256)
 					{
-						prg_bank_mask_16k = Cart.prg_size / 16 - 1;
-						prg_bank_mask_8k = Cart.prg_size / 8 - 1;
-						chr_bank_mask_2k = Cart.prg_size / 2 - 1;
+						prg_bank_mask_16k = Cart.PrgSize / 16 - 1;
+						prg_bank_mask_8k = Cart.PrgSize / 8 - 1;
+						chr_bank_mask_2k = Cart.PrgSize / 2 - 1;
 
 						//prg_regs[1] = (byte)prg_bank_mask_16k;
 						//is_2k_bank = true;
@@ -242,14 +232,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(prg_regs), ref prg_regs);
-			ser.Sync(nameof(chr_regs), ref chr_regs);
+			ser.Sync(nameof(prg_regs), ref prg_regs, false);
+			ser.Sync(nameof(chr_regs), ref chr_regs, false);
 			ser.Sync(nameof(IRQCount), ref IRQCount);
 			ser.Sync(nameof(IRQa), ref IRQa);
 			ser.Sync(nameof(bank), ref bank);
 			ser.Sync(nameof(mode), ref mode);
 			ser.Sync(nameof(is_2k_bank), ref is_2k_bank);
 			ser.Sync(nameof(is_not_2k_bank), ref is_not_2k_bank);
+			ser.Sync(nameof(_low), ref _low, false);
 		}
 
 		public void Mirroring()
@@ -262,7 +253,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 3: SetMirrorType(EMirrorType.OneScreenB); break;
 			}
 		}
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			switch (addr)
 			{
@@ -294,7 +285,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				case 0x0200:
 					IRQCount &= 0xFF00; IRQCount |= value; 
-					IRQSignal = false;
+					IrqSignal = false;
 					break;
 				case 0x0201:
 					IRQCount &= 0xFF;
@@ -306,7 +297,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Mirroring();
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
@@ -321,30 +312,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					if (index == 3)
 						bank = chr_regs[7];
 
-					return VROM[(bank << 11) + (addr & 0x7FF)];
+					return Vrom[(bank << 11) + (addr & 0x7FF)];
 				} else
 				{
 					int index = (addr >> 10) & 0x7;
 					int bank = chr_regs[index];
 					bank |= ((bank & 0x30) << 4);
-					return VROM[(bank << 10) + (addr & 0x3FF)];
+					return Vrom[(bank << 10) + (addr & 0x3FF)];
 				}
 				
 			}
 
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if ((mode & 0x40)>0)
 			{
 				if (addr < 0x4000)
 				{
-					return ROM[((bank&0x3F) << 14) + (addr & 0x3FFF)];
+					return Rom[((bank&0x3F) << 14) + (addr & 0x3FFF)];
 				}
 
-				return ROM[(((bank & 0x30) | 0xF) << 14) + (addr & 0x3FFF)];
+				return Rom[(((bank & 0x30) | 0xF) << 14) + (addr & 0x3FFF)];
 			} else
 			{
 				int index = (addr >> 13) & 0x3;
@@ -354,14 +345,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (index == 3)
 					bank = prg_bank_mask_8k;
 
-				return ROM[(bank << 13) + (addr & 0x1FFF)];
+				return Rom[(bank << 13) + (addr & 0x1FFF)];
 
 
 			}
 			
 		}
 
-		public override void ClockCPU()
+		public override void ClockCpu()
 		{
 			if (IRQa)
 			{
@@ -369,57 +360,55 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (IRQCount==0)
 				{
 					IRQCount = 0xFFFF;
-					IRQSignal = true;
+					IrqSignal = true;
 					IRQa = false;
 				}
 			}
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			if (addr >= 0x1100 && addr <= 0x1103)
-				low[addr & 0x3] = value;
+				_low[addr & 0x3] = value;
 			else
-				base.WriteEXP(addr, value);
+				base.WriteExp(addr, value);
 		}
 
-		public override byte ReadEXP(int addr)
+		public override byte ReadExp(int addr)
 		{
 			if (addr == 0x1000)
 				return (byte)((NES.DB & 0xFC) | 0);
 			else if (addr >= 0x1100 && addr <= 0x1103)
-				return low[addr & 0x3];
+				return _low[addr & 0x3];
 			else
-				return base.ReadEXP(addr);
+				return base.ReadExp(addr);
 
 		}
 	}
 
-	
-
-	public class ConyC : NES.NESBoardBase
+	internal sealed class ConyC : NesBoardBase
 	{
-		private ByteBuffer prg_regs = new ByteBuffer(2);
-		private ByteBuffer chr_regs = new ByteBuffer(8);
+		private byte[] prg_regs = new byte[2];
+		private byte[] chr_regs = new byte[8];
 
 		private int prg_bank_mask_16k;
-		private int IRQCount;
-		private bool IRQa, IRQ_enable;
+		private int _irqCount;
+		private bool _irqA, _irqEnable;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER083":
 					// We need one of the Cony boards to throw an error on an unexpected cart size, so we picked this one
-					if (Cart.prg_size != 128 && Cart.prg_size != 256 && Cart.prg_size != 1024)
+					if (Cart.PrgSize != 128 && Cart.PrgSize != 256 && Cart.PrgSize != 1024)
 					{
-						throw new InvalidOperationException("Unexpected prg size of " + Cart.prg_size + " for Mapper 83");
+						throw new InvalidOperationException("Unexpected prg size of " + Cart.PrgSize + " for Mapper 83");
 					}
 
-					if (Cart.prg_size == 1024)
+					if (Cart.PrgSize == 1024)
 					{
-						prg_bank_mask_16k = Cart.prg_size / 16 - 1;
+						prg_bank_mask_16k = Cart.PrgSize / 16 - 1;
 
 						prg_regs[1] = (byte)prg_bank_mask_16k;
 						return true;
@@ -433,11 +422,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(chr_regs), ref chr_regs);
-			ser.Sync(nameof(prg_regs), ref prg_regs);
+			ser.Sync(nameof(chr_regs), ref chr_regs, false);
+			ser.Sync(nameof(prg_regs), ref prg_regs, false);
+			ser.Sync(nameof(_irqCount), ref _irqCount);
+			ser.Sync(nameof(_irqA), ref _irqA);
+			ser.Sync(nameof(_irqEnable), ref _irqEnable);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if (addr == 0)
 			{
@@ -451,53 +443,53 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			else if (addr == 0x200)
 			{
-				IRQCount &= 0xFF00; IRQCount |= value;
-				IRQSignal = false;
+				_irqCount &= 0xFF00; _irqCount |= value;
+				IrqSignal = false;
 			}
 
 			else if (addr == 0x201)
 			{
-				IRQCount &= 0xFF;
-				IRQCount |= value << 8;
-				IRQa = true;
+				_irqCount &= 0xFF;
+				_irqCount |= value << 8;
+				_irqA = true;
 			}
 			else if (addr == 0x0100)
 			{
-				IRQ_enable = value.Bit(7);
+				_irqEnable = value.Bit(7);
 			}
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				int index = (addr >> 10) & 0x7;
 				int bank = chr_regs[index];
-				return VROM[(bank << 10) + (addr & 0x3FF)];
+				return Vrom[(bank << 10) + (addr & 0x3FF)];
 			}
 
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if (addr < 0x4000)
 			{
-				return ROM[(prg_regs[0] << 14) + (addr & 0x3FFF)];
+				return Rom[(prg_regs[0] << 14) + (addr & 0x3FFF)];
 			}
 
-			return ROM[(prg_regs[1] << 14) + (addr & 0x3FFF)];
+			return Rom[(prg_regs[1] << 14) + (addr & 0x3FFF)];
 		}
 
-		public override void ClockCPU()
+		public override void ClockCpu()
 		{
-			if (IRQa)
+			if (_irqA)
 			{
-				IRQCount--;
-				if (IRQCount == 0)
+				_irqCount--;
+				if (_irqCount == 0)
 				{
-					IRQCount = 0xFFFF;
-					IRQSignal = IRQ_enable;
+					_irqCount = 0xFFFF;
+					IrqSignal = _irqEnable;
 				}
 			}
 		}

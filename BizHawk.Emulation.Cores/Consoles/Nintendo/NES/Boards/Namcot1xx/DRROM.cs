@@ -1,12 +1,12 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//this board contains a Namcot 109 and some extra ram for nametables
-	public sealed class DRROM : Namcot108Board_Base
+	internal sealed class DRROM : Namcot108Board_Base
 	{
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "NES-DRROM": //gauntlet (U)
 				case "TENGEN-800004": // gauntlet (Unl)
@@ -27,21 +27,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//but it probably doesnt matter in practice.
 		//still, purists could validate it.
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				//read patterns from mapper controlled area
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 			}
 			else if (addr < 0x2800)
 			{
-				return VRAM[addr - 0x2000];
+				return Vram[addr - 0x2000];
 			}
-			else return base.ReadPPU(addr);
+			else return base.ReadPpu(addr);
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000)
 			{
@@ -49,9 +49,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else if (addr < 0x2800)
 			{
-				VRAM[addr - 0x2000] = value;
+				Vram[addr - 0x2000] = value;
 			}
-			else base.WritePPU(addr, value);
+			else base.WritePpu(addr, value);
 		}
 	}
 }

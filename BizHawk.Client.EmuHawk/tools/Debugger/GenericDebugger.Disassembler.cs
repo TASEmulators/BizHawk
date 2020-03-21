@@ -150,8 +150,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var scrollBar = sender as ScrollBar;
-			if (scrollBar != null)
+			if (sender is ScrollBar scrollBar)
 			{
 				if (scrollBar.Value > 0)
 				{

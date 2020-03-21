@@ -9,30 +9,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	//NOTE - fceux support for this mapper has some kind of -4 cpu cycle delay built into the timer. not sure yet whether we need that
 
-	public sealed class Irem_H3001 : NES.NESBoardBase
+	internal sealed class Irem_H3001 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask, chr_bank_mask;
 
 		//state
-		ByteBuffer prg_regs_8k = new ByteBuffer(4);
-		ByteBuffer chr_regs_1k = new ByteBuffer(8);
+		byte[] prg_regs_8k = new byte[4];
+		byte[] chr_regs_1k = new byte[8];
 		bool irq_counter_enabled, irq_asserted;
 		ushort irq_counter, irq_reload;
 		int clock_counter;
 
-		public override void Dispose()
-		{
-			base.Dispose();
-			prg_regs_8k.Dispose();
-			chr_regs_1k.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(prg_regs_8k), ref prg_regs_8k);
-			ser.Sync(nameof(chr_regs_1k), ref chr_regs_1k);
+			ser.Sync(nameof(prg_regs_8k), ref prg_regs_8k, false);
+			ser.Sync(nameof(chr_regs_1k), ref chr_regs_1k, false);
 			ser.Sync(nameof(irq_counter_enabled), ref irq_counter_enabled);
 			ser.Sync(nameof(irq_asserted), ref irq_asserted);
 			ser.Sync(nameof(irq_counter), ref irq_counter);
@@ -41,10 +34,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SyncIRQ();
 		}
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER065":
 					break;
@@ -55,8 +48,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_bank_mask = Cart.prg_size / 8 - 1;
-			chr_bank_mask = Cart.chr_size - 1;
+			prg_bank_mask = Cart.PrgSize / 8 - 1;
+			chr_bank_mask = Cart.ChrSize - 1;
 
 			prg_regs_8k[0] = 0x00;
 			prg_regs_8k[1] = 0x01;
@@ -76,7 +69,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}*/
 
-		public override void ClockCPU()
+		public override void ClockCpu()
 		{
 			if (irq_counter == 0) return;
 			if (!irq_counter_enabled) return;
@@ -88,20 +81,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		void SyncIRQ()
 		{
-			IRQSignal = irq_asserted;
+			IrqSignal = irq_asserted;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_8k = addr >> 13;
 			int ofs = addr & ((1 << 13) - 1);
 			bank_8k = prg_regs_8k[bank_8k];
 			bank_8k &= prg_bank_mask;
 			addr = (bank_8k << 13) | ofs;
-			return ROM[addr];
+			return Rom[addr];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
@@ -110,13 +103,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				bank_1k = chr_regs_1k[bank_1k];
 				bank_1k &= chr_bank_mask;
 				addr = (bank_1k << 10) | ofs;
-				return VROM[addr];
+				return Vrom[addr];
 			}
 			else
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			switch (addr)
 			{

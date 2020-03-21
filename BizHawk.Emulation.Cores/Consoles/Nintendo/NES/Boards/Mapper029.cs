@@ -1,15 +1,15 @@
 ﻿namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// what is this?
-	public class Mapper029 : NES.NESBoardBase
+	internal sealed class Mapper029 : NesBoardBase
 	{
 		int prg;
 		int chr;
 		int prg_bank_mask_16k;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "Mapper029":
 				case "UNIF_JERKFACE":
@@ -21,36 +21,36 @@
 			SetMirrorType(EMirrorType.Vertical);
 			AssertChr(0);
 			AssertPrg(32, 64, 128, 256, 512, 1024);
-			Cart.wram_size = 8;
-			Cart.vram_size = 32;
-			prg_bank_mask_16k = Cart.prg_size / 16 - 1;
+			Cart.WramSize = 8;
+			Cart.VramSize = 32;
+			prg_bank_mask_16k = Cart.PrgSize / 16 - 1;
 			return true;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			chr = value & 3;
 			prg = (value >> 2) & prg_bank_mask_16k;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank = addr >= 0x4000 ? prg_bank_mask_16k : prg;
-			return ROM[bank << 14 | addr & 0x3fff];
+			return Rom[bank << 14 | addr & 0x3fff];
 		}
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
-				return VRAM[addr | chr << 13];
+				return Vram[addr | chr << 13];
 			else
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 		}
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000)
-				VRAM[addr | chr << 13] = value;
+				Vram[addr | chr << 13] = value;
 			else
-				base.WritePPU(addr, value);
+				base.WritePpu(addr, value);
 		}
 	}
 }

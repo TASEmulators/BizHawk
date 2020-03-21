@@ -10,143 +10,138 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.Ok = new System.Windows.Forms.Button();
-			this.Cancel = new System.Windows.Forms.Button();
-			this.OnNumeric = new System.Windows.Forms.NumericUpDown();
-			this.OffNumeric = new System.Windows.Forms.NumericUpDown();
-			this.label1 = new BizHawk.Client.EmuHawk.CustomControls.AutosizedLabel();
-			this.label2 = new BizHawk.Client.EmuHawk.CustomControls.AutosizedLabel();
-			this.flpButtons = new BizHawk.Client.EmuHawk.CustomControls.SingleRowFLP();
-			this.flpMain = new BizHawk.Client.EmuHawk.CustomControls.SingleColumnFLP();
-			this.flpPattern = new BizHawk.Client.EmuHawk.CustomControls.SingleRowFLP();
-			this.lblPattern = new BizHawk.Client.EmuHawk.CustomControls.AutosizedLabel();
-			this.LagFrameCheck = new System.Windows.Forms.CheckBox();
-			((System.ComponentModel.ISupportInitialize)(this.OnNumeric)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.OffNumeric)).BeginInit();
-			this.flpButtons.SuspendLayout();
-			this.flpMain.SuspendLayout();
+			this.btnDialogOK = new BizHawk.WinForms.Controls.SzButtonEx();
+			this.btnDialogCancel = new BizHawk.WinForms.Controls.SzButtonEx();
+			this.nudPatternOn = new BizHawk.WinForms.Controls.SzNUDEx();
+			this.nudPatternOff = new BizHawk.WinForms.Controls.SzNUDEx();
+			this.lblPatternOn = new BizHawk.WinForms.Controls.LabelEx();
+			this.lblPatternOff = new BizHawk.WinForms.Controls.LabelEx();
+			this.flpDialogButtons = new BizHawk.WinForms.Controls.LocSzSingleRowFLP();
+			this.flpDialog = new BizHawk.WinForms.Controls.LocSzSingleColumnFLP();
+			this.flpPattern = new BizHawk.WinForms.Controls.SingleRowFLP();
+			this.lblPatternDesc = new BizHawk.WinForms.Controls.LabelEx();
+			this.cbConsiderLag = new BizHawk.WinForms.Controls.CheckBoxEx();
+			((System.ComponentModel.ISupportInitialize)(this.nudPatternOn)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudPatternOff)).BeginInit();
+			this.flpDialogButtons.SuspendLayout();
+			this.flpDialog.SuspendLayout();
 			this.flpPattern.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// Ok
+			// btnDialogOK
 			// 
-			this.Ok.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.Ok.Name = "Ok";
-			this.Ok.Text = "&OK";
-			this.Ok.UseVisualStyleBackColor = true;
-			this.Ok.Click += new System.EventHandler(this.Ok_Click);
+			this.btnDialogOK.Name = "btnDialogOK";
+			this.btnDialogOK.Size = new System.Drawing.Size(75, 23);
+			this.btnDialogOK.Text = "&OK";
+			this.btnDialogOK.Click += new System.EventHandler(this.btnDialogOK_Click);
 			// 
-			// Cancel
+			// btnDialogCancel
 			// 
-			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Name = "Cancel";
-			this.Cancel.Text = "&Cancel";
-			this.Cancel.UseVisualStyleBackColor = true;
-			this.Cancel.Click += new System.EventHandler(this.Cancel_Click);
+			this.btnDialogCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.btnDialogCancel.Name = "btnDialogCancel";
+			this.btnDialogCancel.Size = new System.Drawing.Size(75, 23);
+			this.btnDialogCancel.Text = "&Cancel";
+			this.btnDialogCancel.Click += new System.EventHandler(this.btnDialogCancel_Click);
 			// 
-			// OnNumeric
+			// nudPatternOn
 			// 
-			this.OnNumeric.Maximum = new decimal(new int[] {
+			this.nudPatternOn.Maximum = new decimal(new int[] {
             512,
             0,
             0,
             0});
-			this.OnNumeric.Minimum = new decimal(new int[] {
+			this.nudPatternOn.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
-			this.OnNumeric.Name = "OnNumeric";
-			this.OnNumeric.Size = new System.Drawing.Size(48, 19);
-			this.OnNumeric.Value = new decimal(new int[] {
+			this.nudPatternOn.Name = "nudPatternOn";
+			this.nudPatternOn.Size = new System.Drawing.Size(48, 20);
+			this.nudPatternOn.Value = new decimal(new int[] {
             1,
             0,
             0,
             0});
 			// 
-			// OffNumeric
+			// nudPatternOff
 			// 
-			this.OffNumeric.Maximum = new decimal(new int[] {
+			this.nudPatternOff.Maximum = new decimal(new int[] {
             512,
             0,
             0,
             0});
-			this.OffNumeric.Minimum = new decimal(new int[] {
+			this.nudPatternOff.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
-			this.OffNumeric.Name = "OffNumeric";
-			this.OffNumeric.Size = new System.Drawing.Size(48, 19);
-			this.OffNumeric.Value = new decimal(new int[] {
+			this.nudPatternOff.Name = "nudPatternOff";
+			this.nudPatternOff.Size = new System.Drawing.Size(48, 20);
+			this.nudPatternOff.Value = new decimal(new int[] {
             1,
             0,
             0,
             0});
 			// 
-			// label1
+			// lblPatternOn
 			// 
-			this.label1.Name = "label1";
-			this.label1.Text = "on,";
+			this.lblPatternOn.Name = "lblPatternOn";
+			this.lblPatternOn.Text = "on,";
 			// 
-			// label2
+			// lblPatternOff
 			// 
-			this.label2.Name = "label2";
-			this.label2.Text = "off";
+			this.lblPatternOff.Name = "lblPatternOff";
+			this.lblPatternOff.Text = "off";
 			// 
-			// flpButtons
+			// flpDialogButtons
 			// 
-			this.flpButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.flpButtons.Controls.Add(this.Ok);
-			this.flpButtons.Controls.Add(this.Cancel);
-			this.flpButtons.Location = new System.Drawing.Point(161, 61);
-			this.flpButtons.Name = "flpButtons";
+			this.flpDialogButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.flpDialogButtons.Controls.Add(this.btnDialogOK);
+			this.flpDialogButtons.Controls.Add(this.btnDialogCancel);
+			this.flpDialogButtons.Location = new System.Drawing.Point(161, 61);
+			this.flpDialogButtons.Name = "flpDialogButtons";
+			this.flpDialogButtons.Size = new System.Drawing.Size(162, 29);
 			// 
-			// flpMain
+			// flpDialog
 			// 
-			this.flpMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+			this.flpDialog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.flpMain.AutoSize = false;
-			this.flpMain.Controls.Add(this.flpPattern);
-			this.flpMain.Controls.Add(this.LagFrameCheck);
-			this.flpMain.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-			this.flpMain.Location = new System.Drawing.Point(0, 0);
-			this.flpMain.Name = "flpMain";
-			this.flpMain.Size = new System.Drawing.Size(323, 55);
+			this.flpDialog.Controls.Add(this.flpPattern);
+			this.flpDialog.Controls.Add(this.cbConsiderLag);
+			this.flpDialog.Location = new System.Drawing.Point(0, 0);
+			this.flpDialog.Name = "flpDialog";
+			this.flpDialog.Size = new System.Drawing.Size(323, 55);
 			// 
 			// flpPattern
 			// 
-			this.flpPattern.Controls.Add(this.lblPattern);
-			this.flpPattern.Controls.Add(this.OnNumeric);
-			this.flpPattern.Controls.Add(this.label1);
-			this.flpPattern.Controls.Add(this.OffNumeric);
-			this.flpPattern.Controls.Add(this.label2);
+			this.flpPattern.Controls.Add(this.lblPatternDesc);
+			this.flpPattern.Controls.Add(this.nudPatternOn);
+			this.flpPattern.Controls.Add(this.lblPatternOn);
+			this.flpPattern.Controls.Add(this.nudPatternOff);
+			this.flpPattern.Controls.Add(this.lblPatternOff);
 			this.flpPattern.Name = "flpPattern";
 			// 
-			// lblPattern
+			// lblPatternDesc
 			// 
-			this.lblPattern.Name = "lblPattern";
-			this.lblPattern.Text = "Pattern:";
+			this.lblPatternDesc.Name = "lblPatternDesc";
+			this.lblPatternDesc.Text = "Pattern:";
 			// 
-			// LagFrameCheck
+			// cbConsiderLag
 			// 
-			this.LagFrameCheck.AutoSize = true;
-			this.LagFrameCheck.Name = "LagFrameCheck";
-			this.LagFrameCheck.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
-			this.LagFrameCheck.Text = "Take lag frames into account";
-			this.LagFrameCheck.UseVisualStyleBackColor = true;
+			this.cbConsiderLag.Name = "cbConsiderLag";
+			this.cbConsiderLag.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
+			this.cbConsiderLag.Text = "Take lag frames into account";
 			// 
 			// AutofireConfig
 			// 
-			this.AcceptButton = this.Ok;
+			this.AcceptButton = this.btnDialogOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.CancelButton = this.Cancel;
+			this.CancelButton = this.btnDialogCancel;
 			this.ClientSize = new System.Drawing.Size(323, 90);
-			this.Controls.Add(this.flpMain);
-			this.Controls.Add(this.flpButtons);
+			this.Controls.Add(this.flpDialog);
+			this.Controls.Add(this.flpDialogButtons);
 			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.Lightning_MultiSize;
 			this.MaximizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(339, 129);
@@ -154,30 +149,29 @@
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Autofire Configuration";
 			this.Load += new System.EventHandler(this.AutofireConfig_Load);
-			((System.ComponentModel.ISupportInitialize)(this.OnNumeric)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.OffNumeric)).EndInit();
-			this.flpButtons.ResumeLayout(false);
-			this.flpMain.ResumeLayout(false);
-			this.flpMain.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudPatternOn)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudPatternOff)).EndInit();
+			this.flpDialogButtons.ResumeLayout(false);
+			this.flpDialog.ResumeLayout(false);
+			this.flpDialog.PerformLayout();
 			this.flpPattern.ResumeLayout(false);
 			this.flpPattern.PerformLayout();
 			this.ResumeLayout(false);
-			this.PerformLayout();
 
 		}
 
 		#endregion
 
-		private System.Windows.Forms.Button Ok;
-		private System.Windows.Forms.Button Cancel;
-		private System.Windows.Forms.NumericUpDown OffNumeric;
-		private CustomControls.AutosizedLabel label1;
-		private CustomControls.AutosizedLabel label2;
-		private CustomControls.SingleRowFLP flpPattern;
-		private CustomControls.SingleColumnFLP flpMain;
-		private CustomControls.SingleRowFLP flpButtons;
-		private CustomControls.AutosizedLabel lblPattern;
-		public System.Windows.Forms.NumericUpDown OnNumeric;
-		private System.Windows.Forms.CheckBox LagFrameCheck;
+		private BizHawk.WinForms.Controls.SzButtonEx btnDialogOK;
+		private BizHawk.WinForms.Controls.SzButtonEx btnDialogCancel;
+		private BizHawk.WinForms.Controls.SzNUDEx nudPatternOff;
+		private BizHawk.WinForms.Controls.LabelEx lblPatternOn;
+		private BizHawk.WinForms.Controls.LabelEx lblPatternOff;
+		private BizHawk.WinForms.Controls.SingleRowFLP flpPattern;
+		private BizHawk.WinForms.Controls.LocSzSingleColumnFLP flpDialog;
+		private BizHawk.WinForms.Controls.LocSzSingleRowFLP flpDialogButtons;
+		private BizHawk.WinForms.Controls.LabelEx lblPatternDesc;
+		public BizHawk.WinForms.Controls.SzNUDEx nudPatternOn;
+		private BizHawk.WinForms.Controls.CheckBoxEx cbConsiderLag;
 	}
 }

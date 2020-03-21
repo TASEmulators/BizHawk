@@ -2,21 +2,21 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper176 : NES.NESBoardBase
+	internal sealed class Mapper176 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_8k, chr_bank_mask_8k;
 
 		//state
 		int mirror;
-		ByteBuffer prg_banks_8k = new ByteBuffer(4);
-		ByteBuffer chr_banks_8k = new ByteBuffer(1);
+		byte[] prg_banks_8k = new byte[4];
+		byte[] chr_banks_8k = new byte[1];
 		Bit sbw;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				// http://wiki.nesdev.com/w/index.php/INES_Mapper_176
 				// Mapper 176 was originally used for some Waixing boards, but goodNES 3.23 seems to go with CaH4e3's opinion that this mapper is FK23C
@@ -27,8 +27,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				default:
 					return false;
 			}
-			prg_bank_mask_8k = (Cart.prg_size / 8) - 1;
-			chr_bank_mask_8k = (Cart.chr_size / 8) - 1;
+			prg_bank_mask_8k = (Cart.PrgSize / 8) - 1;
+			chr_bank_mask_8k = (Cart.ChrSize / 8) - 1;
 
 			mirror = 0;
 			SyncMirror();
@@ -46,26 +46,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			prg_banks_8k.Dispose();
-			chr_banks_8k.Dispose();
-			base.Dispose();
-		}
-
 		static readonly EMirrorType[] kMirrorTypes = {EMirrorType.Vertical,EMirrorType.Horizontal,EMirrorType.OneScreenA,EMirrorType.OneScreenB};
 		void SyncMirror()
 		{
 			SetMirrorType(kMirrorTypes[mirror]);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			addr = ApplyMemoryMap(13,prg_banks_8k,addr);
-			return ROM[addr];
+			return Rom[addr];
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			switch (addr)
 			{
@@ -79,14 +72,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				addr = ApplyMemoryMap(13, chr_banks_8k, addr);
 				return base.ReadPPUChr(addr);
 			}
-			else return base.ReadPPU(addr);
+			else return base.ReadPpu(addr);
 		}
 
 		void SetPrg32k(int value)
@@ -96,7 +89,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ApplyMemoryMapMask(prg_bank_mask_8k, prg_banks_8k);
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			switch (addr)
 			{
@@ -125,8 +118,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			base.SyncState(ser);
 			ser.Sync(nameof(mirror), ref mirror);
-			ser.Sync(nameof(prg_banks_8k), ref prg_banks_8k);
-			ser.Sync(nameof(chr_banks_8k), ref chr_banks_8k);
+			ser.Sync(nameof(prg_banks_8k), ref prg_banks_8k, false);
+			ser.Sync(nameof(chr_banks_8k), ref chr_banks_8k, false);
 			ser.Sync(nameof(sbw), ref sbw);
 		}
 	}

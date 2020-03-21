@@ -28,6 +28,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void KeyClick(string name)
+		{
+			Global.InputManager.ClickyVirtualPadController.Click(name);
+		}
+
 		#region Public API
 
 		public bool AskSaveChanges() => true;
@@ -145,255 +150,58 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Dialog and Controls
 
-		private void EnterButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("ENTER");
-		}
+		private void EnterButton_Click(object sender, EventArgs e) => KeyClick("ENTER");
+		private void DashButton_Click(object sender, EventArgs e) => KeyClick("DASH");
+		private void OneButton_Click(object sender, EventArgs e) => KeyClick("1");
+		private void TwoButton_Click(object sender, EventArgs e) => KeyClick("2");
+		private void ThreeButton_Click(object sender, EventArgs e) => KeyClick("3");
 
-		private void DashButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("DASH");
-		}
+		private void FourButton_Click(object sender, EventArgs e) => KeyClick("4");
 
-		private void OneButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("1");
-		}
-
-		private void TwoButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("2");
-		}
-
-		private void ThreeButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("3");
-		}
-
-		private void FourButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("4");
-		}
-
-		private void FiveButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("5");
-		}
-
-		private void SixButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("6");
-		}
-
-		private void SevenButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("7");
-		}
-
-		private void EightButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("8");
-		}
-
-		private void NineButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("9");
-		}
-
-		private void OnButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("ON");
-		}
-
-		private void StoButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("STO");
-		}
-
-		private void PlusButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("PLUS");
-		}
-
-		private void LnButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("LN");
-		}
-
-		private void MinusButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("MINUS");
-		}
-
-		private void LogButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("LOG");
-		}
-
-		private void MultiplyButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("MULTIPLY");
-		}
-
-		private void SquaredButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("SQUARED");
-		}
-
-		private void CommaButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("COMMA");
-		}
-
-		private void ParaOpenButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("PARAOPEN");
-		}
-
-		private void ParaCloseButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("PARACLOSE");
-		}
-
-		private void DivideButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("DIVIDE");
-		}
-
-		private void Neg1Button_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("NEG1");
-		}
-
-		private void SinButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("SIN");
-		}
-
-		private void CosButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("COS");
-		}
-
-		private void TanButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("TAN");
-		}
-
-		private void ExpButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("EXP");
-		}
-
-		private void MathButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("MATH");
-		}
-
-		private void MaxtrixButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("MATRIX");
-		}
-
-		private void PrgmButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("PRGM");
-		}
-
-		private void VarsButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("VARS");
-		}
-
-		private void ClearButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("CLEAR");
-		}
-
-		private void AlphaButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("ALPHA");
-		}
-
-		private void XButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("X");
-		}
-
-		private void StatButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("STAT");
-		}
-
-		private void SecondButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("2ND");
-		}
-
-		private void ModeButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("MODE");
-		}
-
-		private void DelButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("DEL");
-		}
-
-		private void LeftButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("LEFT");
-		}
-
-		private void DownButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("DOWN");
-		}
-
-		private void RightButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("RIGHT");
-		}
-
-		private void UpButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("UP");
-		}
-
-		private void YButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("Y");
-		}
-
-		private void WindowButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("WINDOW");
-		}
-
-		private void ZoomButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("ZOOM");
-		}
-
-		private void TraceButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("TRACE");
-		}
-
-		private void GraphButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("GRAPH");
-		}
-
-		private void PeriodButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("DOT");
-		}
-
-		private void ZeroButton_Click(object sender, EventArgs e)
-		{
-			Global.ClickyVirtualPadController.Click("0");
-		}
+		private void FiveButton_Click(object sender, EventArgs e) => KeyClick("5");
+		private void SixButton_Click(object sender, EventArgs e) => KeyClick("6");
+		private void SevenButton_Click(object sender, EventArgs e) => KeyClick("7");
+		private void EightButton_Click(object sender, EventArgs e) => KeyClick("8");
+		private void NineButton_Click(object sender, EventArgs e) => KeyClick("9");
+		private void OnButton_Click(object sender, EventArgs e) => KeyClick("ON");
+		private void StoButton_Click(object sender, EventArgs e) => KeyClick("STO");
+		private void PlusButton_Click(object sender, EventArgs e) => KeyClick("PLUS");
+		private void LnButton_Click(object sender, EventArgs e) => KeyClick("LN");
+		private void MinusButton_Click(object sender, EventArgs e) => KeyClick("MINUS");
+		private void LogButton_Click(object sender, EventArgs e) => KeyClick("LOG");
+		private void MultiplyButton_Click(object sender, EventArgs e) => KeyClick("MULTIPLY");
+		private void SquaredButton_Click(object sender, EventArgs e) => KeyClick("SQUARED");
+		private void CommaButton_Click(object sender, EventArgs e) => KeyClick("COMMA");
+		private void ParaOpenButton_Click(object sender, EventArgs e) => KeyClick("PARAOPEN");
+		private void ParaCloseButton_Click(object sender, EventArgs e) => KeyClick("PARACLOSE");
+		private void DivideButton_Click(object sender, EventArgs e) => KeyClick("DIVIDE");
+		private void Neg1Button_Click(object sender, EventArgs e) => KeyClick("NEG1");
+		private void SinButton_Click(object sender, EventArgs e) => KeyClick("SIN");
+		private void CosButton_Click(object sender, EventArgs e) => KeyClick("COS");
+		private void TanButton_Click(object sender, EventArgs e) => KeyClick("TAN");
+		private void ExpButton_Click(object sender, EventArgs e) => KeyClick("EXP");
+		private void MathButton_Click(object sender, EventArgs e) => KeyClick("MATH");
+		private void MatrixButton_Click(object sender, EventArgs e) => KeyClick("MATRIX");
+		private void ProgamButton_Click(object sender, EventArgs e) => KeyClick("PRGM");
+		private void VarsButton_Click(object sender, EventArgs e) => KeyClick("VARS");
+		private void ClearButton_Click(object sender, EventArgs e) => KeyClick("CLEAR");
+		private void AlphaButton_Click(object sender, EventArgs e) => KeyClick("ALPHA");
+		private void XButton_Click(object sender, EventArgs e) => KeyClick("X");
+		private void StatButton_Click(object sender, EventArgs e) => KeyClick("STAT");
+		private void SecondButton_Click(object sender, EventArgs e) => KeyClick("2ND");
+		private void ModeButton_Click(object sender, EventArgs e) => KeyClick("MODE");
+		private void DelButton_Click(object sender, EventArgs e) => KeyClick("DEL");
+		private void LeftButton_Click(object sender, EventArgs e) => KeyClick("LEFT");
+		private void DownButton_Click(object sender, EventArgs e) => KeyClick("DOWN");
+		private void RightButton_Click(object sender, EventArgs e) => KeyClick("RIGHT");
+		private void UpButton_Click(object sender, EventArgs e) => KeyClick("UP");
+		private void YButton_Click(object sender, EventArgs e) => KeyClick("Y");
+		private void WindowButton_Click(object sender, EventArgs e) => KeyClick("WINDOW");
+		private void ZoomButton_Click(object sender, EventArgs e) => KeyClick("ZOOM");
+		private void TraceButton_Click(object sender, EventArgs e) => KeyClick("TRACE");
+		private void GraphButton_Click(object sender, EventArgs e) => KeyClick("GRAPH");
+		private void PeriodButton_Click(object sender, EventArgs e) => KeyClick("DOT");
+		private void ZeroButton_Click(object sender, EventArgs e) => KeyClick("0");
 
 		#endregion
 

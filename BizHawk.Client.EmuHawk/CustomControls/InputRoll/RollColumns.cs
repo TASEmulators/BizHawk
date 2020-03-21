@@ -31,9 +31,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (this.Any(c => c.Name == column.Name))
 			{
-				// The designer sucks, doing nothing for now
-				return;
-				//throw new InvalidOperationException("A column with this name already exists.");
+				throw new InvalidOperationException("A column with this name already exists.");
 			}
 
 			base.Add(column);
@@ -47,9 +45,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (this.Any(c => c.Name == column.Name))
 				{
-					// The designer sucks, doing nothing for now
-					return;
-
 					throw new InvalidOperationException("A column with this name already exists.");
 				}
 			}
@@ -62,9 +57,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (this.Any(c => c.Name == column.Name))
 			{
-				// The designer sucks, doing nothing for now
-				return;
-
 				throw new InvalidOperationException("A column with this name already exists.");
 			}
 

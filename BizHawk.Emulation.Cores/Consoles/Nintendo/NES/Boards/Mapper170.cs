@@ -2,13 +2,13 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper170 : NES.NESBoardBase
+	internal sealed class Mapper170 : NesBoardBase
 	{
 		private byte reg;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER170":
 					break;
@@ -25,18 +25,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if (addr < 0x4000)
 			{
-				return base.ReadPRG(addr);
+				return base.ReadPrg(addr);
 			}
 
-			int last16kBank = ROM.Length - 0x4000;
-			return ROM[last16kBank + (addr & 0x3FFF)];
+			int last16kBank = Rom.Length - 0x4000;
+			return Rom[last16kBank + (addr & 0x3FFF)];
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			if (addr == 0x502 || addr == 0x1000)
 			{
@@ -44,17 +44,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 
-			base.WriteWRAM(addr, value);
+			base.WriteWram(addr, value);
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
 			if (addr == 0x1001 || addr == 0x1777)
 			{
 				return (byte)(reg | NES.DB & 0x7F);
 			}
 
-			return base.ReadWRAM(addr);
+			return base.ReadWram(addr);
 		}
 	}
 }

@@ -4,17 +4,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Logic copied from FCEUX
 	// Super Mario Bros. Pocker Mali (Unl)
-	public class UNIF_UNL_AX5705 : NES.NESBoardBase
+	internal sealed class UNIF_UNL_AX5705 : NesBoardBase
 	{
-		private IntBuffer prg_reg = new IntBuffer(2);
-		private IntBuffer chr_reg = new IntBuffer(8);
+		private int[] prg_reg = new int[2];
+		private int[] chr_reg = new int[8];
 
 		private int _prgMask8k;
 		private int _chrMask1k;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "UNIF_UNL-AX5705":
 					break;
@@ -22,8 +22,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			_prgMask8k = Cart.prg_size / 8 - 1;
-			_chrMask1k = Cart.chr_size / 1 - 1;
+			_prgMask8k = Cart.PrgSize / 8 - 1;
+			_chrMask1k = Cart.ChrSize / 1 - 1;
 
 			SetMirrorType(EMirrorType.Vertical);
 
@@ -33,11 +33,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(prg_reg), ref prg_reg);
-			ser.Sync(nameof(chr_reg), ref chr_reg);
+			ser.Sync(nameof(prg_reg), ref prg_reg, false);
+			ser.Sync(nameof(chr_reg), ref chr_reg, false);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			addr += 0x8000;
 			byte V = value;
@@ -69,36 +69,36 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SetMirrorType(mirr > 0 ? EMirrorType.Horizontal : EMirrorType.Vertical);
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				int bank = chr_reg[addr / 0x400];
 				bank &= _chrMask1k;
-				return VROM[(bank * 0x400) + (addr & 0x3FF)];
+				return Vrom[(bank * 0x400) + (addr & 0x3FF)];
 			}
 
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			addr += 0x8000;
 			if (addr < 0xA000)
 			{
-				return ROM[(prg_reg[0] * 0x2000) + (addr & 0x1FFF)];
+				return Rom[(prg_reg[0] * 0x2000) + (addr & 0x1FFF)];
 			}
 			else if (addr < 0xC000)
 			{
-				return ROM[(prg_reg[1] * 0x2000) + (addr & 0x1FFF)];
+				return Rom[(prg_reg[1] * 0x2000) + (addr & 0x1FFF)];
 			}
 			else if (addr < 0xE000)
 			{
-				return ROM[((0xFE & _prgMask8k) * 0x2000) + (addr & 0x1FFF)];
+				return Rom[((0xFE & _prgMask8k) * 0x2000) + (addr & 0x1FFF)];
 			}
 			else
 			{
-				return ROM[((0xFF & _prgMask8k) * 0x2000) + (addr & 0x1FFF)];
+				return Rom[((0xFF & _prgMask8k) * 0x2000) + (addr & 0x1FFF)];
 			}
 		}
 	}

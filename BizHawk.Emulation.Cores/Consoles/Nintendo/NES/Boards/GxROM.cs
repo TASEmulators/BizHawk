@@ -13,8 +13,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	//TODO - bus conflicts
 
-	[NES.INESBoardImplPriority]
-	public sealed class GxROM : NES.NESBoardBase
+	[NesBoardImplPriority]
+	internal sealed class GxROM : NesBoardBase
 	{
 		//configuraton
 		int prg_mask, chr_mask;
@@ -22,10 +22,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//state
 		int prg, chr;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER066":
 					AssertPrg(32, 64, 128); AssertChr(8, 16, 32, 64); AssertVram(0); AssertWram(0,8);
@@ -38,38 +38,38 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "BANDAI-GNROM":
 				case "HVC-GNROM":
 				case "NES-MHROM": //Super Mario Bros. / Duck Hunt
-					AssertPrg(Cart.board_type == "NES-MHROM" ? 64 : 128); AssertChr(8, 16, 32); AssertVram(0); AssertWram(0);
+					AssertPrg(Cart.BoardType == "NES-MHROM" ? 64 : 128); AssertChr(8, 16, 32); AssertVram(0); AssertWram(0);
 					break;
 
 				default:
 					return false;
 			}
 
-			prg_mask = (Cart.prg_size / 32) - 1;
-			chr_mask = (Cart.chr_size / 8) - 1;
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			prg_mask = (Cart.PrgSize / 32) - 1;
+			chr_mask = (Cart.ChrSize / 8) - 1;
+			SetMirrorType(Cart.PadH, Cart.PadV);
 
-			if(origin == NES.EDetectionOrigin.INES)
+			if(origin == EDetectionOrigin.INES)
 				Console.WriteLine("Caution! This board (inferred from iNES) might have wrong mirr.type");
 
 
 			return true;
 		}
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[addr + (prg<<15)];
+			return Rom[addr + (prg<<15)];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
-				return VROM[addr + (chr << 13)];
+				return Vrom[addr + (chr << 13)];
 			}
-			else return base.ReadPPU(addr);
+			else return base.ReadPpu(addr);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			chr = ((value & 7) & chr_mask);
 			prg = (((value>>4) & 3) & prg_mask);

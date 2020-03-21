@@ -21,48 +21,46 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	is the read port.  
 
 	1800-19FF also holds RAM. 1800-18FF is the write port, 1900-19FF is the read port.  
-	Only 256 bytes of RAM is accessable at time, but there are four different 256 byte
-	banks making a total of 1K accessable here.
+	Only 256 bytes of RAM is accessible at time, but there are four different 256 byte
+	banks making a total of 1K accessible here.
 
 	Accessing 1FE8 through 1FEB select which 256 byte bank shows up.
 	*/
-
-	internal class mE7 : MapperBase
+	internal sealed class mE7 : MapperBase
 	{
 		private const int RamBank1Offset = 1024;
-		private int _rombank1K;
-		private int _rambank1Toggle;
-		private ByteBuffer _ram = new ByteBuffer(2048);
+		private int _romBank1K;
+		private int _ramBank1Toggle;
+		private byte[] _ram = new byte[2048];
 
 		private bool _enableRam0;
+
+		public mE7(Atari2600 core) : base(core)
+		{
+		}
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("toggle", ref _rombank1K);
-			ser.Sync("ram", ref _ram);
+			ser.Sync("toggle", ref _romBank1K);
+			ser.Sync("ram", ref _ram, false);
 			ser.Sync("EnableRam0", ref _enableRam0);
-			ser.Sync("rambank1_toggle", ref _rambank1Toggle);
+			ser.Sync("rambank1_toggle", ref _ramBank1Toggle);
 		}
 
 		public override void HardReset()
 		{
-			_rombank1K = 0;
-			_rambank1Toggle = 0;
-			_ram = new ByteBuffer(2048);
+			_romBank1K = 0;
+			_ramBank1Toggle = 0;
+			_ram = new byte[2048];
 			_enableRam0 = false;
-			base.HardReset();
 		}
 
-		public override void Dispose()
-		{
-			base.Dispose();
-			_ram.Dispose();
-		}
+		public override byte[] CartRam => _ram;
 
-		public override bool HasCartRam => true;
+		public override byte ReadMemory(ushort addr) => ReadMem(addr, false);
 
-		public override ByteBuffer CartRam => _ram;
+		public override byte PeekMemory(ushort addr) => ReadMem(addr, true);
 
 		private byte ReadMem(ushort addr, bool peek)
 		{
@@ -88,17 +86,17 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					return _ram[addr & 0x3FF];
 				}
 				
-				return Core.Rom[(_rombank1K * 0x800) + (addr & 0x7FF)];
+				return Core.Rom[(_romBank1K * 0x800) + (addr & 0x7FF)];
 			}
 			
 			if (addr < 0x1900) // Ram 1 Write port
 			{
-				return _ram[RamBank1Offset + (_rambank1Toggle * 0x100) + (addr & 0xFF)] = 0xFF; // Reading from the 256b write port @1800 riggers an unwanted write
+				return _ram[RamBank1Offset + (_ramBank1Toggle * 0x100) + (addr & 0xFF)] = 0xFF; // Reading from the 256b write port @1800 riggers an unwanted write
 			}
 			
 			if (addr < 0x1A00) // Ram 1 Read port
 			{
-				return _ram[RamBank1Offset + (_rambank1Toggle * 0x100) + (addr & 0xFF)];
+				return _ram[RamBank1Offset + (_ramBank1Toggle * 0x100) + (addr & 0xFF)];
 			}
 			
 			if (addr < 0x2000)
@@ -112,15 +110,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			return base.ReadMemory(addr);
 		}
 
-		public override byte ReadMemory(ushort addr)
-		{
-			return ReadMem(addr, false);
-		}
+		public override void WriteMemory(ushort addr, byte value)
+			=> WriteMem(addr, value, false);
 
-		public override byte PeekMemory(ushort addr)
-		{
-			return ReadMem(addr, true);
-		}
+		public override void PokeMemory(ushort addr, byte value)
+			=> WriteMem(addr, value, true);
 
 		private void WriteMem(ushort addr, byte value, bool poke)
 		{
@@ -139,18 +133,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 			else if (addr >= 0x1800 && addr < 0x1900)
 			{
-				_ram[RamBank1Offset + (addr & 0xFF) + (_rambank1Toggle * 0x100)] = value;
+				_ram[RamBank1Offset + (addr & 0xFF) + (_ramBank1Toggle * 0x100)] = value;
 			}
-		}
-
-		public override void WriteMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, poke: false);
-		}
-
-		public override void PokeMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, poke: true);
 		}
 
 		private void Address(ushort addr)
@@ -159,41 +143,41 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			switch (addr)
 			{
 				case 0x1FE0:
-					_rombank1K = 0;
+					_romBank1K = 0;
 					break;
 				case 0x1FE1:
-					_rombank1K = 1;
+					_romBank1K = 1;
 					break;
 				case 0x1FE2:
-					_rombank1K = 2;
+					_romBank1K = 2;
 					break;
 				case 0x1FE3:
-					_rombank1K = 3;
+					_romBank1K = 3;
 					break;
 				case 0x1FE4:
-					_rombank1K = 4;
+					_romBank1K = 4;
 					break;
 				case 0x1FE5:
-					_rombank1K = 5;
+					_romBank1K = 5;
 					break;
 				case 0x1FE6:
-					_rombank1K = 6;
+					_romBank1K = 6;
 					break;
 				case 0x1FE7:
-					_rombank1K = 7;
+					_romBank1K = 7;
 					_enableRam0 = true;
 					break;
 				case 0x1FE8:
-					_rambank1Toggle = 0;
+					_ramBank1Toggle = 0;
 					break;
 				case 0x1FE9:
-					_rambank1Toggle = 1;
+					_ramBank1Toggle = 1;
 					break;
 				case 0x1FEA:
-					_rambank1Toggle = 2;
+					_ramBank1Toggle = 2;
 					break;
 				case 0x1FEB:
-					_rambank1Toggle = 3;
+					_ramBank1Toggle = 3;
 					break;
 			}
 		}

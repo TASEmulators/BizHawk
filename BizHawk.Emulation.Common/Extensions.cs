@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+
+using BizHawk.Common.PathExtensions;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.Common
 {
@@ -247,6 +251,27 @@ namespace BizHawk.Emulation.Common
 			return core.ServiceProvider.GetService<IBoardInfo>();
 		}
 
+		public static (int X, int Y) ScreenLogicalOffsets(this IEmulator core)
+		{
+			if (core != null && core.ServiceProvider.HasService<IVideoLogicalOffsets>())
+			{
+				var offsets = core.ServiceProvider.GetService<IVideoLogicalOffsets>();
+				return (offsets.ScreenX, offsets.ScreenY);
+			}
+
+			return (0, 0);
+		}
+
+		public static string RomDetails(this IEmulator core)
+		{
+			if (core != null && core.ServiceProvider.HasService<IRomInfo>())
+			{
+				return core.ServiceProvider.GetService<IRomInfo>().RomDetails;
+			}
+
+			return "";
+		}
+
 		public static int VsyncNumerator(this IEmulator core)
 		{
 			if (core != null && core.HasVideoProvider())
@@ -272,7 +297,18 @@ namespace BizHawk.Emulation.Common
 			return core.VsyncNumerator() / (double)core.VsyncDenominator();
 		}
 
-		// TODO: a better place for this
+		// TODO: a better place for these
+		public static string CoreName(this Type type)
+		{
+			if (type == null)
+			{
+				return "";
+			}
+
+			var attr = (CoreAttribute)Attribute.GetCustomAttribute(type, typeof(CoreAttribute));
+			return attr?.CoreName ?? "";
+		}
+
 		public static bool IsImplemented(this MethodInfo info)
 		{
 			return !info.GetCustomAttributes(false).Any(a => a is FeatureNotImplementedAttribute);
@@ -308,6 +344,18 @@ namespace BizHawk.Emulation.Common
 			}
 
 			return buttons;
+		}
+
+		public static string FilesystemSafeName(this GameInfo game)
+		{
+			var pass1 = game.Name
+				.Replace('/', '+') // '/' is the path dir separator, obviously (methods in Path will treat it as such, even on Windows)
+				.Replace('|', '+') // '|' is the filename-member separator for archives in HawkFile
+				.Replace(":", " -") // ':' is the path separator in lists (Path.GetFileName will drop all but the last entry in such a list)
+				.Replace("\"", ""); // '"' is just annoying as it needs escaping on the command-line
+			var filesystemDir = Path.GetDirectoryName(pass1);
+			var pass2 = Path.GetFileName(pass1).RemoveInvalidFileSystemChars();
+			return Path.Combine(filesystemDir, pass2.RemoveSuffix('.')); // trailing '.' would be duplicated when file extension is added
 		}
 	}
 }

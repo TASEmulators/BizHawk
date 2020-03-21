@@ -2,59 +2,18 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper193 : NES.NESBoardBase 
+	// http://wiki.nesdev.com/w/index.php/INES_Mapper_193
+	internal sealed class Mapper193 : NesBoardBase 
 	{
-		/*
-		* ========================
-		=  Mapper 193          =
-		========================
+		private int prg_bank_mask_8k;
+		private byte[] prg_banks_8k = new byte[4];
 
+		private int chr_bank_mask_2k;
+		private byte[] chr_banks_2k = new byte[4];
 
-		Example Game:
-		--------------------------
-		Fighting Hero (Unl)
-
-
-
-		Registers:
-		---------------------------
-		Regs at $6000-7FFF = no SRAM
-
-		Range,Mask:   $6000-7FFF, $6003
-
-
-		$6000:  CHR Reg 0
-		$6001:  CHR Reg 1
-		$6002:  CHR Reg 2
-		$6003:  PRG Reg
-
-
-		CHR Setup:
-		---------------------------
-
-		$0000   $0400   $0800   $0C00   $1000   $1400   $1800   $1C00 
-		+-------------------------------+---------------+---------------+
-		|           <<$6000>>           |    <$6001>    |    <$6002>    |
-		+-------------------------------+---------------+---------------+
-
-		PRG Setup:
-		---------------------------
-
-		$8000   $A000   $C000   $E000  
-		+-------+-------+-------+-------+
-		| $6003 | { -3} | { -2} | { -1} |
-		+-------+-------+-------+-------+
-		*/
-
-		int prg_bank_mask_8k;
-		ByteBuffer prg_banks_8k = new ByteBuffer(4);
-
-		int chr_bank_mask_2k;
-		ByteBuffer chr_banks_2k = new ByteBuffer(4);
-
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER193":
 					break;
@@ -64,39 +23,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_bank_mask_8k = (Cart.prg_size / 8) - 1;
+			prg_bank_mask_8k = (Cart.PrgSize / 8) - 1;
 			prg_banks_8k[1] = 0xFD;
 			prg_banks_8k[2] = 0xFE;
 			prg_banks_8k[3] = 0xFF;
 
-			chr_bank_mask_2k = (Cart.chr_size / 2) - 1;
+			chr_bank_mask_2k = (Cart.ChrSize / 2) - 1;
 
 			SetMirrorType(EMirrorType.Vertical);
 			SyncMap();
 			return true;
 		}
 
-		void SyncMap()
+		private void SyncMap()
 		{
 			ApplyMemoryMapMask(prg_bank_mask_8k, prg_banks_8k);
 			ApplyMemoryMapMask(chr_bank_mask_2k, chr_banks_2k);
 		}
 
-		public override void Dispose()
-		{
-			prg_banks_8k.Dispose();
-			chr_banks_2k.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(prg_banks_8k), ref prg_banks_8k);
-			ser.Sync(nameof(chr_banks_2k), ref chr_banks_2k);
+			ser.Sync(nameof(prg_banks_8k), ref prg_banks_8k, false);
+			ser.Sync(nameof(chr_banks_2k), ref chr_banks_2k, false);
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			addr &= 0x6003;
 			switch (addr)
@@ -118,23 +70,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SyncMap();
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				addr = ApplyMemoryMap(11, chr_banks_2k, addr);
 				return base.ReadPPUChr(addr);
 			}
-			else
-			{
-				return base.ReadPPU(addr);
-			}
+
+			return base.ReadPpu(addr);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			addr = ApplyMemoryMap(13, prg_banks_8k, addr);
-			return ROM[addr];
+			return Rom[addr];
 		}
 	}
 }

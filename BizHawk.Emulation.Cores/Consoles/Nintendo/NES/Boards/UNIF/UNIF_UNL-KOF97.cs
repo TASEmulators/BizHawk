@@ -1,11 +1,11 @@
 ﻿namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// adapted from Nestopia src
-	public sealed class UNIF_UNL_KOF97 : MMC3Board_Base
+	internal sealed class UNIF_UNL_KOF97 : MMC3Board_Base
 	{
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "UNIF_UNL-KOF97":
 					break;
@@ -29,25 +29,25 @@
 			);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			value = Unscramble(value);
 
 			if (addr == 0x1000) // 9000 = 8001
 			{
-				base.WritePRG(1, value);
+				base.WritePrg(1, value);
 			}
 			else if (addr == 0x5000) // D000 = C001
 			{
-				base.WritePRG(0x4001, value);
+				base.WritePrg(0x4001, value);
 			}
 			else if (addr == 0x7000) // F000 = E001
 			{
-				base.WritePRG(0x6001, value);
+				base.WritePrg(0x6001, value);
 			}
 			else
 			{
-				base.WritePRG(addr, value);
+				base.WritePrg(addr, value);
 			}
 		}
 	}

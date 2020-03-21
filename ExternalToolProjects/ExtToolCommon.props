@@ -1,6 +1,6 @@
 <Project>
-	<Import Project="$(ProjectDir)../../Common.props" />
-	<Import Project="$(ProjectDir)../../CommonNullable.props" />
+	<Import Project="../Common.props" />
+	<Import Project="../CommonNullable.props" />
 	<PropertyGroup>
 		<CodeAnalysisRuleSet>$(ProjectDir)../../Common.ruleset</CodeAnalysisRuleSet>
 		<OutputPath>$(ProjectDir)bin/$(Configuration)/</OutputPath>

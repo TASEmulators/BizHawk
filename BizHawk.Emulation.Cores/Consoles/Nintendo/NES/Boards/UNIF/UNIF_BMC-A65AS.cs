@@ -3,7 +3,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class UNIF_BMC_A65AS : NES.NESBoardBase
+	internal class UNIF_BMC_A65AS : NesBoardBase
 	{
 		private int _prgReg;
 		private bool _isPrg32kMode;
@@ -11,9 +11,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private int prgMask16k;
 		private int prgMask32k;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "UNIF_BMC-A65AS":
 					break;
@@ -21,8 +21,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prgMask16k = Cart.prg_size / 16 - 1;
-			prgMask32k = Cart.prg_size / 32 - 1;
+			prgMask16k = Cart.PrgSize / 16 - 1;
+			prgMask32k = Cart.PrgSize / 32 - 1;
 
 			return true;
 		}
@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("isPrg32kMode", ref _isPrg32kMode);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			_isPrg32kMode = value.Bit(6);
 			_prgReg = value;
@@ -54,13 +54,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if (_isPrg32kMode)
 			{
 				int bank = (_prgReg >> 1) & 0xF;
 				bank &= prgMask32k;
-				return ROM[(bank * 0x8000) + (addr & 0x7FFF)];
+				return Rom[(bank * 0x8000) + (addr & 0x7FFF)];
 			}
 			else
 			{
@@ -69,13 +69,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					int bank = (_prgReg & 0x30) >> 1 | _prgReg & 7;
 					bank &= prgMask16k;
-					return ROM[(bank * 0x4000) + (addr & 0x3FFF)];
+					return Rom[(bank * 0x4000) + (addr & 0x3FFF)];
 				}
 				else
 				{
 					int bank = (_prgReg & 0x30) >> 1 | 7;
 					bank &= prgMask16k;
-					return ROM[(bank * 0x4000) + (addr & 0x3FFF)];
+					return Rom[(bank * 0x4000) + (addr & 0x3FFF)];
 				}
 			}
 		}

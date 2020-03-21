@@ -179,13 +179,14 @@ namespace BizHawk.Client.EmuHawk
 				string disp = b.DisName;
 				if (txtLength == 1)
 					disp = $" {disp}";
-				
-				switch(b.DisName)
+
+				disp = b.DisName switch
 				{
-					case "SPACE": disp = $"            {disp}            "; break;
-					case "I": disp = $" {disp} "; break;
-					case "W": disp = b.DisName; break;
-				}
+					"SPACE" => $"            {disp}            ",
+					"I" => $" {disp} ",
+					"W" => b.DisName,
+					_ => disp
+				};
 
 				if (b.IsActive)
 				{
@@ -253,7 +254,6 @@ namespace BizHawk.Client.EmuHawk
 						Location = new Point(100, 52),
 						Type = PadSchema.PadInputType.Boolean
 					},
-								  
 				}
 			};
 		}

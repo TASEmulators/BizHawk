@@ -6,8 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
+using BizHawk.Common.PathExtensions;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -107,15 +108,12 @@ namespace BizHawk.Client.EmuHawk
 			text = "";
 			if (index < _instructions.Count)
 			{
-				switch (column.Name)
+				text = column.Name switch
 				{
-					case DisasmColumnName:
-						text = _instructions[index].Disassembly.TrimEnd();
-						break;
-					case RegistersColumnName:
-						text = _instructions[index].RegisterInfo;
-						break;
-				}
+					DisasmColumnName => _instructions[index].Disassembly.TrimEnd(),
+					RegistersColumnName => _instructions[index].RegisterInfo,
+					_ => text
+				};
 			}
 		}
 
@@ -128,7 +126,7 @@ namespace BizHawk.Client.EmuHawk
 			SetTracerBoxTitle();
 		}
 
-		class CallbackSink : ITraceSink
+		private class CallbackSink : ITraceSink
 		{
 			public void Put(TraceInfo info)
 			{
@@ -287,18 +285,18 @@ namespace BizHawk.Client.EmuHawk
 			using var sfd = new SaveFileDialog();
 			if (LogFile == null)
 			{
-				sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + _extension;
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Config.PathEntries.LogPathFragment, null);
+				sfd.FileName = Global.Game.FilesystemSafeName() + _extension;
+				sfd.InitialDirectory = Config.PathEntries.LogAbsolutePath();
 			}
 			else if (!string.IsNullOrWhiteSpace(LogFile.FullName))
 			{
-				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
+				sfd.FileName = Global.Game.FilesystemSafeName();
 				sfd.InitialDirectory = Path.GetDirectoryName(LogFile.FullName);
 			}
 			else
 			{
 				sfd.FileName = Path.GetFileNameWithoutExtension(LogFile.FullName);
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Config.PathEntries.LogPathFragment, null);
+				sfd.InitialDirectory = Config.PathEntries.LogAbsolutePath();
 			}
 
 			sfd.Filter = new FilesystemFilterSet(
@@ -460,8 +458,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				FileBox.Visible = true;
 				BrowseBox.Visible = true;
-				var name = PathManager.FilesystemSafeName(Global.Game);
-				var filename = Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null), name) + _extension;
+				var name = Global.Game.FilesystemSafeName();
+				var filename = Path.Combine(Config.PathEntries.LogAbsolutePath(), name) + _extension;
 				LogFile = new FileInfo(filename);
 				if (LogFile.Directory != null && !LogFile.Directory.Exists)
 				{

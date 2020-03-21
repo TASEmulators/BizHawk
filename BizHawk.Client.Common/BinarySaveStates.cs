@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using ICSharpCode.SharpZipLib.Zip;
 
+// ReSharper disable UnusedAutoPropertyAccessor.Local
 namespace BizHawk.Client.Common
 {
 	public class BinaryStateLump

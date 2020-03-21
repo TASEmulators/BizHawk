@@ -3,12 +3,12 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//http://wiki.nesdev.com/w/index.php/INES_Mapper_044
-	public class Mapper044 : MMC3Board_Base
+	internal class Mapper044 : MMC3Board_Base
 	{
-		public sealed override bool Configure(NES.EDetectionOrigin origin)
+		public sealed override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER044": 
 					break;
@@ -29,9 +29,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		int block_select;
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
-			base.WritePRG(addr, value);
+			base.WritePrg(addr, value);
 
 			switch (addr & 0x6001)
 			{

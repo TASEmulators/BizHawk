@@ -38,8 +38,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 			linkSyncSettings = (GBLinkSyncSettings)syncSettings ?? new GBLinkSyncSettings();
 			_controllerDeck = new GBHawkLinkControllerDeck(GBHawkLinkControllerDeck.DefaultControllerName, GBHawkLinkControllerDeck.DefaultControllerName);
 
-			CoreComm = comm;
-
 			var temp_set_L = new GBHawk.GBHawk.GBSettings();
 			var temp_set_R = new GBHawk.GBHawk.GBSettings();
 
@@ -57,11 +55,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 			temp_sync_L.RTCOffset = linkSyncSettings.RTCOffset_L;
 			temp_sync_R.RTCOffset = linkSyncSettings.RTCOffset_R;
 
-			L = new GBHawk.GBHawk(new CoreComm(comm.ShowMessage, comm.Notify) { CoreFileProvider = comm.CoreFileProvider },
-				game_L, rom_L, temp_set_L, temp_sync_L);
-
-			R = new GBHawk.GBHawk(new CoreComm(comm.ShowMessage, comm.Notify) { CoreFileProvider = comm.CoreFileProvider },
-				game_R, rom_R, temp_set_R, temp_sync_R);
+			L = new GBHawk.GBHawk(comm, game_L, rom_L, temp_set_L, temp_sync_L);
+			R = new GBHawk.GBHawk(comm, game_R, rom_R, temp_set_R, temp_sync_R);
 
 			ser.Register<IVideoProvider>(this);
 			ser.Register<ISoundProvider>(this); 

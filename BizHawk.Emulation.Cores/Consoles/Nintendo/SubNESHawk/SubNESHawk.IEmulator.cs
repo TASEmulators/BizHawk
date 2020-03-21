@@ -104,8 +104,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			_isLag = false;
 		}
 
-		public CoreComm CoreComm => _nesCore.CoreComm;
-
 		public void Dispose() => _nesCore.Dispose();
 	}
 }

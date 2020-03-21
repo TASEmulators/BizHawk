@@ -15,101 +15,106 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	/// </summary>
 	public class Unif
 	{
-		NES.CartInfo ci = new NES.CartInfo();
-		byte[] prgrom;
-		byte[] chrrom;
+		private Dictionary<string, byte[]> Chunks { get; } = new Dictionary<string, byte[]>();
 
-		Dictionary<string, byte[]> chunks = new Dictionary<string, byte[]>();
-
-		void TryAdd(Stream s, string key)
+		private void TryAdd(Stream s, string key)
 		{
-			if (!chunks.TryGetValue(key, out var data))
+			if (!Chunks.TryGetValue(key, out var data))
+			{
 				return;
+			}
+
 			s.Write(data, 0, data.Length);
 		}
 
 		public Unif(Stream s)
 		{
-			BinaryReader br = new BinaryReader(s, Encoding.ASCII);
+			var br = new BinaryReader(s, Encoding.ASCII);
 
-			if (!Encoding.ASCII.GetBytes("UNIF").SequenceEqual(br.ReadBytes(4)))
+			if (!Encoding.ASCII.GetBytes("UNIF")
+				.SequenceEqual(br.ReadBytes(4)))
+			{
 				throw new Exception("Missing \"UNIF\" header mark!");
+			}
+
 			int ver = br.ReadInt32();
-			//if (ver != 7)
-			//	throw new Exception($"Unknown UNIF version {ver}!");
+
 			Console.WriteLine("Processing Version {0} UNIF...", ver);
 			br.ReadBytes(32 - 4 - 4);
 
 			while (br.PeekChar() > 0)
 			{
-				string chunkid = Encoding.ASCII.GetString(br.ReadBytes(4));
+				string chunkId = Encoding.ASCII.GetString(br.ReadBytes(4));
 				int length = br.ReadInt32();
-				byte[] chunkdata = br.ReadBytes(length);
-				chunks.Add(chunkid, chunkdata);
+				byte[] chunkData = br.ReadBytes(length);
+				Chunks.Add(chunkId, chunkData);
 			}
 
-			MemoryStream prgs = new MemoryStream();
-			MemoryStream chrs = new MemoryStream();
+			var prgs = new MemoryStream();
+			var chrs = new MemoryStream();
 			for (int i = 0; i < 16; i++)
 			{
 				TryAdd(prgs, $"PRG{i:X1}");
 				TryAdd(chrs, $"CHR{i:X1}");
 			}
+
 			prgs.Close();
 			chrs.Close();
-			prgrom = prgs.ToArray();
-			chrrom = chrs.ToArray();
+			Prg = prgs.ToArray();
+			Chr = chrs.ToArray();
 
-			ci.prg_size = (short)(prgrom.Length / 1024);
-			ci.chr_size = (short)(chrrom.Length / 1024);
+			Cart.PrgSize = (short)(Prg.Length / 1024);
+			Cart.ChrSize = (short)(Chr.Length / 1024);
 
-			if (chunks.TryGetValue("MIRR", out var tmp))
+			if (Chunks.TryGetValue("MIRR", out var tmp))
 			{
 				switch (tmp[0])
 				{
-					case 0: // hmirror
-						ci.pad_h = 0;
-						ci.pad_v = 1;
+					case 0: // h mirror
+						Cart.PadH = 0;
+						Cart.PadV = 1;
 						break;
-					case 1: // vmirror
-						ci.pad_h = 1;
-						ci.pad_v = 0;
+					case 1: // v mirror
+						Cart.PadH = 1;
+						Cart.PadV = 0;
 						break;
 				}
 			}
 
-			if (chunks.TryGetValue("MAPR", out tmp))
+			if (Chunks.TryGetValue("MAPR", out tmp))
 			{
-				ci.board_type = new BinaryReader(new MemoryStream(tmp)).ReadStringUtf8NullTerminated();
+				Cart.BoardType = new BinaryReader(new MemoryStream(tmp)).ReadStringUtf8NullTerminated();
 			}
 
-			ci.board_type = ci.board_type.TrimEnd('\0');
-			ci.board_type = "UNIF_" + ci.board_type;
+			Cart.BoardType = Cart.BoardType.TrimEnd('\0');
+			Cart.BoardType = "UNIF_" + Cart.BoardType;
 
-			if (chunks.TryGetValue("BATR", out tmp))
+			if (Chunks.TryGetValue("BATR", out _))
 			{
 				// apparently, this chunk just existing means battery is yes
-				ci.wram_battery = true;
+				Cart.WramBattery = true;
 			}
 
 			// is there any way using System.Security.Cryptography.SHA1 to compute the hash of
-			// prg concatentated with chr?  i couldn't figure it out, so this implementation is dumb
+			// prg concatenated with chr?  i couldn't figure it out, so this implementation is dumb
 			{
-				MemoryStream ms = new MemoryStream();
-				ms.Write(prgrom, 0, prgrom.Length);
-				ms.Write(chrrom, 0, chrrom.Length);
+				var ms = new MemoryStream();
+				ms.Write(Prg, 0, Prg.Length);
+				ms.Write(Chr, 0, Chr.Length);
 				ms.Close();
-				byte[] all = ms.ToArray();
-				ci.sha1 = "sha1:" + all.HashSHA1(0, all.Length);
+				var all = ms.ToArray();
+				Cart.Sha1 = "sha1:" + all.HashSHA1(0, all.Length);
 			}
 
 			// other code will expect this
-			if (chrrom.Length == 0)
-				chrrom = null;
+			if (Chr.Length == 0)
+			{
+				Chr = null;
+			}
 		}
 
-		public NES.CartInfo CartInfo => ci;
-		public byte[] PRG => prgrom;
-		public byte[] CHR => chrrom;
+		public CartInfo Cart { get; } = new CartInfo();
+		public byte[] Prg { get; }
+		public byte[] Chr { get; }
 	}
 }

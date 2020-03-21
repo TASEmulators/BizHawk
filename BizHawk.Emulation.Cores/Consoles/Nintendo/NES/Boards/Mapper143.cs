@@ -4,11 +4,11 @@
 	// NROM plus random copy protection circuit
 
 	// dancing blocks refuses to run; see comments below	
-	public sealed class Mapper143 : NES.NESBoardBase
+	internal sealed class Mapper143 : NesBoardBase
 	{
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER143":
 				case "UNIF_UNL-SA-NROM":
@@ -18,11 +18,11 @@
 			}
 			AssertPrg(32);
 			AssertChr(8);
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			SetMirrorType(Cart.PadH, Cart.PadV);
 			return true;
 		}
 
-		public override byte ReadEXP(int addr)
+		public override byte ReadExp(int addr)
 		{
 			if ((addr & 0x100) != 0)
 				return (byte)(NES.DB & 0xc0 | ~addr & 0x3f);

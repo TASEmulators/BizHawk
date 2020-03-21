@@ -1,11 +1,10 @@
 ﻿namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class Mapper198 : MMC3Board_Base
+	internal sealed class Mapper198 : MMC3Board_Base
 	{
-
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER198":
 					break;
@@ -29,24 +28,24 @@
 			return val;
 		}
 
-		public override byte ReadEXP(int addr)
+		public override byte ReadExp(int addr)
 		{
 			if (addr >= 0x1000)
 			{
-				return WRAM[addr - 0x1000];
+				return Wram[addr - 0x1000];
 			}
 
-			return base.ReadEXP(addr);
+			return base.ReadExp(addr);
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			if (addr >= 0x1000)
 			{
-				WRAM[addr - 0x1000] = value;
+				Wram[addr - 0x1000] = value;
 			}
 
-			base.WriteEXP(addr, value);
+			base.WriteExp(addr, value);
 		}
 	}
 }

@@ -15,7 +15,7 @@ namespace BizHawk.Client.Common.Movie.Import
 		protected override void RunImport()
 		{
 			var movie = Result.Movie;
-			movie.HeaderEntries[HeaderKeys.PLATFORM] = "PSX";
+			movie.HeaderEntries[HeaderKeys.Platform] = "PSX";
 
 			using var fs = SourceFile.OpenRead();
 			using var br = new BinaryReader(fs);

@@ -3,15 +3,15 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper245 : MMC3Board_Base
+	internal sealed class Mapper245 : MMC3Board_Base
 	{
 		//http://wiki.nesdev.com/w/index.php/INES_Mapper_245
 		bool chr_mode;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER245":
 					AssertVram(8);
@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_8k = Get_PRGBank_8K(addr);
 			bank_8k &= 0x3F;
@@ -46,19 +46,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			bank_8k &= prg_mask;
 			addr = (bank_8k << 13) | (addr & 0x1FFF);
-			return ROM[addr];
+			return Rom[addr];
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if (addr == 0)
 			{
 				chr_mode = value.Bit(7);
 			}
-			base.WritePRG(addr, value);
+			base.WritePrg(addr, value);
 		}
 
-		public override byte  ReadPPU(int addr)
+		public override byte  ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
@@ -66,25 +66,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					if (addr < 0x1000)
 					{
-						return VRAM[addr + 0x1000];
+						return Vram[addr + 0x1000];
 					}
 					else
 					{
-						return VRAM[addr - 0x1000];
+						return Vram[addr - 0x1000];
 					}
 				}
 				else
 				{
-					return VRAM[addr];
+					return Vram[addr];
 				}
 			}
 			else
 			{
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 			}
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000)
 			{
@@ -92,21 +92,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					if (addr < 0x1000)
 					{
-						VRAM[addr + 0x1000] = value;
+						Vram[addr + 0x1000] = value;
 					}
 					else
 					{
-						VRAM[addr - 0x1000] = value;
+						Vram[addr - 0x1000] = value;
 					}
 				}
 				else
 				{
-					VRAM[addr] = value;
+					Vram[addr] = value;
 				}
 			}
 			else
 			{
-				base.WritePPU(addr, value);
+				base.WritePpu(addr, value);
 			}
 		}
 	}

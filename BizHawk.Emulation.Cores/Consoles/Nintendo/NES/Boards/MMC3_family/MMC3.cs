@@ -3,20 +3,19 @@
 //fceux contains a comment in mmc3.cpp:
 //Code for emulating iNES mappers 4,12,44,45,47,49,52,74,114,115,116,118,119,165,205,214,215,245,249,250,254
 
-using System;
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class MMC3 : IDisposable
+	internal class MMC3
 	{
 		//state
 		public int reg_addr;
 		public bool get_chr_mode => chr_mode; // one of the pirate mappers needs this
 		public bool chr_mode;
 		public bool prg_mode;
-		public ByteBuffer regs = new ByteBuffer(8);
+		public byte[] regs = new byte[8];
 
 		public byte mirror;
 		int a12_old;
@@ -32,8 +31,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int irq_countdown;
 
 		//volatile state
-		public ByteBuffer chr_regs_1k = new ByteBuffer(8);
-		public ByteBuffer prg_regs_8k = new ByteBuffer(4);
+		public byte[] chr_regs_1k = new byte[8];
+		public byte[] prg_regs_8k = new byte[4];
 
 		//configuration
 		public enum EMMC3Type
@@ -52,37 +51,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 		bool oldIrqType;
 
-		public virtual void Dispose()
+		public EMirrorType MirrorType => mirror switch
 		{
-			regs.Dispose();
-			chr_regs_1k.Dispose();
-			prg_regs_8k.Dispose();
-		}
+			1 => EMirrorType.Horizontal,
+			2 => EMirrorType.OneScreenA,
+			3 => EMirrorType.OneScreenB,
+			_ => EMirrorType.Vertical
+		};
 
-		public NES.NESBoardBase.EMirrorType MirrorType
-		{
-			get
-			{
-				switch (mirror)
-				{
-					default:
-					case 0: return NES.NESBoardBase.EMirrorType.Vertical;
-					case 1: return NES.NESBoardBase.EMirrorType.Horizontal;
-					case 2: return NES.NESBoardBase.EMirrorType.OneScreenA;
-					case 3: return NES.NESBoardBase.EMirrorType.OneScreenB;
-				}
-			}
-		}
-
-		protected NES.NESBoardBase board;
-		public MMC3(NES.NESBoardBase board, int num_prg_banks)
+		protected NesBoardBase board;
+		public MMC3(NesBoardBase board, int num_prg_banks)
 		{
 			MirrorMask = 1;
 			this.board = board;
-			if (board.Cart.chips.Contains("MMC3A")) MMC3Type = EMMC3Type.MMC3A;
-			else if (board.Cart.chips.Contains("MMC3B")) MMC3Type = EMMC3Type.MMC3BSharp;
-			else if (board.Cart.chips.Contains("MMC3BNONSHARP")) MMC3Type = EMMC3Type.MMC3BNonSharp;
-			else if (board.Cart.chips.Contains("MMC3C")) MMC3Type = EMMC3Type.MMC3C;
+			if (board.Cart.Chips.Contains("MMC3A")) MMC3Type = EMMC3Type.MMC3A;
+			else if (board.Cart.Chips.Contains("MMC3B")) MMC3Type = EMMC3Type.MMC3BSharp;
+			else if (board.Cart.Chips.Contains("MMC3BNONSHARP")) MMC3Type = EMMC3Type.MMC3BNonSharp;
+			else if (board.Cart.Chips.Contains("MMC3C")) MMC3Type = EMMC3Type.MMC3C;
 			else MMC3Type = EMMC3Type.MMC3C; //arbitrary choice. is it the best choice?
 
 			//initial values seem necessary
@@ -150,7 +135,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(reg_addr), ref reg_addr);
 			ser.Sync(nameof(chr_mode), ref chr_mode);
 			ser.Sync(nameof(prg_mode), ref prg_mode);
-			ser.Sync(nameof(regs), ref regs);
+			ser.Sync(nameof(regs), ref regs, false);
 			ser.Sync(nameof(mirror), ref mirror);
 			ser.Sync(nameof(a12_old), ref a12_old);
 			ser.Sync(nameof(irq_reload), ref irq_reload);
@@ -317,30 +302,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 	}
 
-	public abstract class MMC3Board_Base : NES.NESBoardBase
+	internal abstract class MMC3Board_Base : NesBoardBase
 	{
 		//state
 		public MMC3 mmc3;
 		public int extra_vrom;
 
 
-		public override void AddressPPU(int addr)
+		public override void AddressPpu(int addr)
 		{
 			mmc3.AddressPPU(addr);
 		}
 
-		public override void ClockPPU()
+		public override void ClockPpu()
 		{
 			mmc3.ClockPPU();
 		}
 
 		//configuration
 		protected int prg_mask, chr_mask;
-
-		public override void Dispose()
-		{
-			mmc3?.Dispose();
-		}
 
 		public override void SyncState(Serializer ser)
 		{
@@ -368,50 +348,50 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return addr;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				addr = MapCHR(addr);
-				if (VROM != null)
-					return VROM[addr + extra_vrom];
-				else return VRAM[addr];
+				if (Vrom != null)
+					return Vrom[addr + extra_vrom];
+				else return Vram[addr];
 			}
 
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000)
 			{
-				if (VRAM == null) return;
+				if (Vram == null) return;
 				addr = MapCHR(addr);
-				VRAM[addr] = value;
+				Vram[addr] = value;
 			}
-			base.WritePPU(addr, value);
+			base.WritePpu(addr, value);
 		}
 
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			mmc3.WritePRG(addr, value);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_8k = Get_PRGBank_8K(addr);
 			bank_8k &= prg_mask;
 			addr = (bank_8k << 13) | (addr & 0x1FFF);
-			return ROM[addr];
+			return Rom[addr];
 		}
 
 		protected virtual void BaseSetup()
 		{
-			int num_prg_banks = Cart.prg_size / 8;
+			int num_prg_banks = Cart.PrgSize / 8;
 			prg_mask = num_prg_banks - 1;
 
-			int num_chr_banks = (Cart.chr_size);
+			int num_chr_banks = (Cart.ChrSize);
 			if (num_chr_banks == 0) // vram only board
 				num_chr_banks = 8;
 			chr_mask = num_chr_banks - 1;

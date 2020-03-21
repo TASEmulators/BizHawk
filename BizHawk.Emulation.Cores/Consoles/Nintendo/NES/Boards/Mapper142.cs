@@ -2,19 +2,19 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper142 : NES.NESBoardBase
+	internal sealed class Mapper142 : NesBoardBase
 	{
-		private ByteBuffer reg = new ByteBuffer(8);
-		private byte cmd;
-		private int lastBank;
+		private byte[] _reg = new byte[8];
+		private byte _cmd;
+		private int _lastBank;
 
-		private bool isirqused = false;
-		private byte IRQa = 0;
-		private int IRQCount = 0;
+		private bool _isIrqUsed;
+		private byte _irqA;
+		private int _irqCount;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER142":
 				case "UNIF_UNL-KS7032":
@@ -22,64 +22,70 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				default:
 					return false;
 			}
+
 			SetMirrorType(EMirrorType.Horizontal);
-			lastBank = Cart.prg_size / 8 - 1;
+			_lastBank = Cart.PrgSize / 8 - 1;
 
 			return true;
 		}
 
-		public override void Dispose()
+		public override void SyncState(Serializer ser)
 		{
-			reg.Dispose();
-			base.Dispose();
+			base.SyncState(ser);
+			ser.Sync(nameof(_reg), ref _reg, false);
+			ser.Sync(nameof(_cmd), ref _cmd);
+			ser.Sync(nameof(_lastBank), ref _lastBank);
+			ser.Sync(nameof(_isIrqUsed), ref _isIrqUsed);
+			ser.Sync(nameof(_irqA), ref _irqA);
+			ser.Sync(nameof(_irqCount), ref _irqCount);
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
-			return ROM[(reg[4] << 13) + (addr & 0x1FFF)];		
+			return Rom[(_reg[4] << 13) + (addr & 0x1FFF)];
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 
-			if (addr < 0x2000) { return ROM[(reg[1] << 13) + (addr & 0x1FFF)]; }
-			if (addr < 0x4000) { return ROM[(reg[2] << 13) + (addr & 0x1FFF)]; }
-			if (addr < 0x6000) { return ROM[(reg[3] << 13) + (addr & 0x1FFF)]; }
+			if (addr < 0x2000) { return Rom[(_reg[1] << 13) + (addr & 0x1FFF)]; }
+			if (addr < 0x4000) { return Rom[(_reg[2] << 13) + (addr & 0x1FFF)]; }
+			if (addr < 0x6000) { return Rom[(_reg[3] << 13) + (addr & 0x1FFF)]; }
 
-			return ROM[(lastBank << 13) + (addr & 0x1FFF)];		
+			return Rom[(_lastBank << 13) + (addr & 0x1FFF)];
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			Write(addr + 0x4000, value);
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			Write(addr + 0x6000, value);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			Write(addr + 0x8000, value);
 		}
 
 		private void IRQHook(int a)
 		{
-			if (IRQa > 0)
+			if (_irqA > 0)
 			{
-				IRQCount += a;
-				if (IRQCount >= 0xFFFF)
+				_irqCount += a;
+				if (_irqCount >= 0xFFFF)
 				{
-					IRQa = 0;
-					IRQCount = 0;
+					_irqA = 0;
+					_irqCount = 0;
 
-					IRQSignal = true;
+					IrqSignal = true;
 				}
 			}
 		}
 
-		public override void ClockPPU()
+		public override void ClockPpu()
 		{
 			IRQHook(1);
 		}
@@ -89,38 +95,38 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (addr & 0xF000)
 			{
 				case 0x8000:
-					IRQSignal = false;
-					IRQCount = (IRQCount & 0x000F) | (value & 0x0F);
-					isirqused = true;
+					IrqSignal = false;
+					_irqCount = (_irqCount & 0x000F) | (value & 0x0F);
+					_isIrqUsed = true;
 					break;
 				case 0x9000:
-					IRQSignal = false;
-					IRQCount = (IRQCount & 0x00F0) | ((value & 0x0F) << 4);
-					isirqused = true;
+					IrqSignal = false;
+					_irqCount = (_irqCount & 0x00F0) | ((value & 0x0F) << 4);
+					_isIrqUsed = true;
 					break;
 				case 0xA000:
-					IRQSignal = false;
-					IRQCount = (IRQCount & 0x0F00) | ((value & 0x0F) << 8);
-					isirqused = true;
+					IrqSignal = false;
+					_irqCount = (_irqCount & 0x0F00) | ((value & 0x0F) << 8);
+					_isIrqUsed = true;
 					break;
 				case 0xB000:
-					IRQSignal = false;
-					IRQCount = (IRQCount & 0xF000) | (value << 12);
-					isirqused = true;
+					IrqSignal = false;
+					_irqCount = (_irqCount & 0xF000) | (value << 12);
+					_isIrqUsed = true;
 					break;
 				case 0xC000:
-					if (isirqused)
+					if (_isIrqUsed)
 					{
-						IRQSignal = false;
-						IRQa = 1;
+						IrqSignal = false;
+						_irqA = 1;
 					}
 					break;
 
 				case 0xE000:
-					cmd = (byte)(value & 7);
+					_cmd = (byte)(value & 7);
 					break;
 				case 0xF000:
-					reg[cmd] = value;
+					_reg[_cmd] = value;
 					break;
 			}
 		}

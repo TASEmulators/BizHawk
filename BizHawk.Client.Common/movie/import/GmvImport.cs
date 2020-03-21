@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common.movie.import
 				return;
 			}
 
-			Result.Movie.HeaderEntries[HeaderKeys.PLATFORM] = "GEN";
+			Result.Movie.HeaderEntries[HeaderKeys.Platform] = "GEN";
 
 			// 00F ASCII-encoded GMV file format version. The most recent is 'A'. (?)
 			string version = new string(r.ReadChars(1));
@@ -48,7 +48,7 @@ namespace BizHawk.Client.Common.movie.import
 			 header.
 			*/
 			bool pal = ((flags >> 7) & 0x1) != 0;
-			Result.Movie.HeaderEntries[HeaderKeys.PAL] = pal.ToString();
+			Result.Movie.HeaderEntries[HeaderKeys.Pal] = pal.ToString();
 
 			// bit 6: if "1", movie requires a savestate.
 			if (((flags >> 6) & 0x1) != 0)

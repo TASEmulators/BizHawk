@@ -45,34 +45,23 @@ namespace BizHawk.Client.EmuHawk
 			{
 				default:
 				case Mode.New:
-					switch (MemoryDomains.First().WordSize)
+					SizeDropDown.SelectedItem = MemoryDomains.First().WordSize switch
 					{
-						default:
-						case 1:
-							SizeDropDown.SelectedItem = SizeDropDown.Items[0];
-							break;
-						case 2:
-							SizeDropDown.SelectedItem = SizeDropDown.Items[1];
-							break;
-						case 4:
-							SizeDropDown.SelectedItem = SizeDropDown.Items[2];
-							break;
-					}
+						1 => SizeDropDown.Items[0],
+						2 => SizeDropDown.Items[1],
+						4 => SizeDropDown.Items[2],
+						_ => SizeDropDown.Items[0]
+					};
 					break;
 				case Mode.Duplicate:
 				case Mode.Edit:
-					switch (Watches[0].Size)
+					SizeDropDown.SelectedItem = Watches[0].Size switch
 					{
-						case WatchSize.Byte:
-							SizeDropDown.SelectedItem = SizeDropDown.Items[0];
-							break;
-						case WatchSize.Word:
-							SizeDropDown.SelectedItem = SizeDropDown.Items[1];
-							break;
-						case WatchSize.DWord:
-							SizeDropDown.SelectedItem = SizeDropDown.Items[2];
-							break;
-					}
+						WatchSize.Byte => SizeDropDown.Items[0],
+						WatchSize.Word => SizeDropDown.Items[1],
+						WatchSize.DWord => SizeDropDown.Items[2],
+						_ => SizeDropDown.SelectedItem
+					};
 
 					var index = DisplayTypeDropDown.Items.IndexOf(Watch.DisplayTypeToString(Watches[0].Type));
 					DisplayTypeDropDown.SelectedItem = DisplayTypeDropDown.Items[index];
@@ -125,19 +114,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetTitle()
 		{
-			switch (_mode)
+			Text = _mode switch
 			{
-				default:
-				case Mode.New:
-					Text = "New Watch";
-					break;
-				case Mode.Edit:
-					Text = $"Edit {(Watches.Count == 1 ? "Watch" : "Watches")}";
-					break;
-				case Mode.Duplicate:
-					Text = "Duplicate Watch";
-					break;
-			}
+				Mode.New => "New Watch",
+				Mode.Edit => $"Edit {(Watches.Count == 1 ? "Watch" : "Watches")}",
+				Mode.Duplicate => "Duplicate Watch",
+				_ => "New Watch"
+			};
 		}
 
 		private void SetAddressBoxProperties()
@@ -288,19 +271,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				for (var i = 0; i < Watches.Count; i++)
 				{
-					var size = WatchSize.Byte;
-					switch (SizeDropDown.SelectedIndex)
+					var size = SizeDropDown.SelectedIndex switch
 					{
-						case 0:
-							size = WatchSize.Byte;
-							break;
-						case 1:
-							size = WatchSize.Word;
-							break;
-						case 2:
-							size = WatchSize.DWord;
-							break;
-					}
+						1 => WatchSize.Word,
+						2 => WatchSize.DWord,
+						_ => WatchSize.Byte
+					};
 
 					Watches[i] = Watch.GenerateWatch(
 						Watches[i].Domain,

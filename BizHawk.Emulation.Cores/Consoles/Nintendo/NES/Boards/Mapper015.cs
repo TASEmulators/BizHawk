@@ -3,29 +3,29 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper015 : NES.NESBoardBase
+	internal sealed class Mapper015 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_8k;
 
 		//state
-		ByteBuffer prg_banks_8k = new ByteBuffer(4);
+		byte[] prg_banks_8k = new byte[4];
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER015":
 					break;
 				default:
 					return false;
 			}
-			prg_bank_mask_8k = (Cart.prg_size / 8) - 1;
+			prg_bank_mask_8k = (Cart.PrgSize / 8) - 1;
 
 			// not a maskable size (BF=10111111)
 			// so just set mask to FF and hope for the best
-			if (Cart.prg_size==192)
+			if (Cart.PrgSize==192)
 			{
 				prg_bank_mask_8k = 0xFF;
 			}
@@ -41,19 +41,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			prg_banks_8k.Dispose();
-			base.Dispose();
-		}
-
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			addr = ApplyMemoryMap(13, prg_banks_8k, addr);
-			return ROM[addr];
+			return Rom[addr];
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			int mode = addr & 3;
 			int prg_high = value & 0x3F;
@@ -100,7 +94,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(prg_banks_8k), ref prg_banks_8k);
+			ser.Sync(nameof(prg_banks_8k), ref prg_banks_8k, false);
 		}
 	}
 }

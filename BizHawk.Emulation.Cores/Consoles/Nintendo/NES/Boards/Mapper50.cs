@@ -3,7 +3,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper50 : NES.NESBoardBase
+	internal sealed class Mapper50 : NesBoardBase
 	{
 		//http://wiki.nesdev.com/w/index.php/INES_Mapper_050
 
@@ -13,10 +13,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		ushort irq_counter = 0;
 		bool irq_ready = false;
 		int ppu_cyclecount = 0;
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER050":
 					break;
@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 			prg_bank = 0;
-			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
+			prg_bank_mask_8k = Cart.PrgSize / 8 - 1;
 			SetMirrorType(EMirrorType.Vertical);
 			return true;
 		}
@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			addr &= 0x0120;
 			if (addr == 0x0020)
@@ -57,30 +57,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if (addr < 0x2000)
 			{
-				return ROM[(0x08 * 0x2000) + (addr & 0x1FFF)];
+				return Rom[(0x08 * 0x2000) + (addr & 0x1FFF)];
 			}
 			else if (addr < 0x4000)
 			{
-				return ROM[(0x09 * 0x2000) + (addr & 0x1FFF)];
+				return Rom[(0x09 * 0x2000) + (addr & 0x1FFF)];
 			}
 			else if (addr < 0x6000)
 			{
 				int bank = (prg_bank & prg_bank_mask_8k);
-				return ROM[(bank * 0x2000) + (addr & 0x1FFF)];
+				return Rom[(bank * 0x2000) + (addr & 0x1FFF)];
 			}
 			else
 			{
-				return ROM[(0x0B * 0x2000) + (addr & 0x1FFF)];
+				return Rom[(0x0B * 0x2000) + (addr & 0x1FFF)];
 			}
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
-			return ROM[(0x0F * 0x2000) + (addr & 0x1FFF)];
+			return Rom[(0x0F * 0x2000) + (addr & 0x1FFF)];
 		}
 
 		private void IRQ_Ready()
@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncIRQ(irq_ready);
 		}
 
-		public override void  ClockCPU()
+		public override void  ClockCpu()
 		{
 			if (irq_enable)
 			{

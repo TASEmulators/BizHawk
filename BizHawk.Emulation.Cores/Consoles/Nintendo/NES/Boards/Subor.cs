@@ -2,14 +2,14 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Subor : NES.NESBoardBase
+	internal sealed class Subor : NesBoardBase
 	{
-		private ByteBuffer regs = new ByteBuffer(4);
+		private byte[] regs = new byte[4];
 		private bool is167;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER166":
 					break;
@@ -23,25 +23,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			regs.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(regs), ref regs);
+			ser.Sync(nameof(regs), ref regs, false);
 			ser.Sync(nameof(is167), ref is167);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			regs[(addr >> 13) & 0x03] = value;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int basea, bank;
 			basea = ((regs[0] ^ regs[1]) & 0x10) << 1;
@@ -54,22 +48,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					if (addr < 0x4000)
 					{
-						return ROM[((basea + bank + 1) * 0x4000) + (addr & 0x3FFF)];
+						return Rom[((basea + bank + 1) * 0x4000) + (addr & 0x3FFF)];
 					}
 					else
 					{
-						return ROM[((basea + bank + 0) * 0x4000) + (addr & 0x3FFF)];
+						return Rom[((basea + bank + 0) * 0x4000) + (addr & 0x3FFF)];
 					}
 				}
 				else
 				{
 					if (addr < 0x4000)
 					{
-						return ROM[((basea + bank + 0) * 0x4000) + (addr & 0x3FFF)];
+						return Rom[((basea + bank + 0) * 0x4000) + (addr & 0x3FFF)];
 					}
 					else
 					{
-						return ROM[((basea + bank + 1) * 0x4000) + (addr & 0x3FFF)];
+						return Rom[((basea + bank + 1) * 0x4000) + (addr & 0x3FFF)];
 					}
 				}
 			}
@@ -79,28 +73,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					if (addr < 0x4000)
 					{
-						return ROM[(0x1F * 0x4000) + (addr & 0x3FFF)];
+						return Rom[(0x1F * 0x4000) + (addr & 0x3FFF)];
 					}
 					else
 					{
-						return ROM[((basea + bank) * 0x4000) + (addr & 0x3FFF)];
+						return Rom[((basea + bank) * 0x4000) + (addr & 0x3FFF)];
 					}
 				}
 				else
 				{
 					if (addr < 0x4000)
 					{
-						return ROM[((basea + bank) * 0x4000) + (addr & 0x3FFF)];
+						return Rom[((basea + bank) * 0x4000) + (addr & 0x3FFF)];
 					}
 					else
 					{
 						if (is167)
 						{
-							return ROM[(0x20 * 0x4000) + (addr & 0x3FFF)];
+							return Rom[(0x20 * 0x4000) + (addr & 0x3FFF)];
 						}
 						else
 						{
-							return ROM[(0x07 * 0x4000) + (addr & 0x3FFF)];
+							return Rom[(0x07 * 0x4000) + (addr & 0x3FFF)];
 						}
 					}
 				}

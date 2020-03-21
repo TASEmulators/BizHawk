@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 						return SMSPaddleController;
 					case SmsSyncSettings.ControllerTypes.LightPhaser:
 						// scale the vertical to the display mode
-						SMSLightPhaserController.FloatRanges[1] = new ControllerDefinition.FloatRange(0, Vdp.FrameHeight / 2, Vdp.FrameHeight - 1);
+						SMSLightPhaserController.FloatRanges[1] = new ControllerDefinition.AxisRange(0, Vdp.FrameHeight / 2, Vdp.FrameHeight - 1);
 
 						return SMSLightPhaserController;
 					case SmsSyncSettings.ControllerTypes.SportsPad:
@@ -169,8 +169,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			_lagCount = 0;
 			_isLag = false;
 		}
-
-		public CoreComm CoreComm { get; }
 
 		public void Dispose()
 		{

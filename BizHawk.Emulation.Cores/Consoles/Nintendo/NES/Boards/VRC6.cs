@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//mapper 24 + 26
 	//If you change any of the IRQ logic here, be sure to change it in VRC 4/7 as well.
-	public sealed class VRC6 : NES.NESBoardBase
+	internal sealed class VRC6 : NesBoardBase
 	{
 		#region CHRLUT
 		// what did i do in a previous life to deserve this?
@@ -115,8 +115,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		//state
 		int prg_bank_16k, prg_bank_8k;
-		ByteBuffer prg_banks_8k = new ByteBuffer(4);
-		ByteBuffer chr_banks_1k = new ByteBuffer(8);
+		byte[] prg_banks_8k = new byte[4];
+		byte[] chr_banks_1k = new byte[8];
 		bool irq_mode;
 		bool irq_enabled, irq_pending, irq_autoen;
 		byte irq_reload;
@@ -127,20 +127,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		bool NTROM;
 		int PPUBankingMode;
 
-		public override void Dispose()
-		{
-			base.Dispose();
-			prg_banks_8k.Dispose();
-			chr_banks_1k.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
 			VRC6Sound.SyncState(ser);
 			ser.Sync(nameof(prg_bank_16k), ref prg_bank_16k);
 			ser.Sync(nameof(prg_bank_8k), ref prg_bank_8k);
-			ser.Sync(nameof(chr_banks_1k), ref chr_banks_1k);
+			ser.Sync(nameof(chr_banks_1k), ref chr_banks_1k, false);
 			ser.Sync(nameof(irq_mode), ref irq_mode);
 			ser.Sync(nameof(irq_enabled), ref irq_enabled);
 			ser.Sync(nameof(irq_pending), ref irq_pending);
@@ -167,12 +160,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		void SyncIRQ()
 		{
-			IRQSignal = (irq_pending && irq_enabled);
+			IrqSignal = (irq_pending && irq_enabled);
 		}
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER024":
 					newer_variant = false;
@@ -181,9 +174,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					newer_variant = true;
 					break;
 				case "KONAMI-VRC-6":
-					if (Cart.pcb == "351951")
+					if (Cart.Pcb == "351951")
 						newer_variant = false;
-					else if (Cart.pcb == "351949A")
+					else if (Cart.Pcb == "351949A")
 						newer_variant = true;
 					else throw new Exception("Unknown PCB type for VRC6");
 					AssertPrg(256); AssertChr(128, 256);
@@ -193,9 +186,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			AssertVram(0); AssertWram(0, 8);
 
-			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
-			chr_bank_mask_1k = Cart.chr_size - 1;
-			chr_byte_mask = Cart.chr_size * 1024 - 1;
+			prg_bank_mask_8k = Cart.PrgSize / 8 - 1;
+			chr_bank_mask_1k = Cart.ChrSize - 1;
+			chr_byte_mask = Cart.ChrSize * 1024 - 1;
 
 			prg_bank_16k = 0;
 			prg_bank_8k = 0;
@@ -206,14 +199,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			return true;
 		}
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_8k = addr >> 13;
 			int ofs = addr & ((1 << 13) - 1);
 			bank_8k = prg_banks_8k[bank_8k];
 			bank_8k &= prg_bank_mask_8k;
 			addr = (bank_8k << 13) | ofs;
-			return ROM[addr];
+			return Rom[addr];
 		}
 
 		int MapPPU(int addr)
@@ -228,21 +221,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return addr & 0x3ff | bank << 10;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr >= 0x2000 && !NTROM)
 				return NES.CIRAM[MapPPU(addr) & 0x7ff];
 			else
-				return VROM[MapPPU(addr) & chr_byte_mask];
+				return Vrom[MapPPU(addr) & chr_byte_mask];
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr >= 0x2000 && !NTROM)
 				NES.CIRAM[MapPPU(addr) & 0x7ff] = value;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if (newer_variant)
 			{
@@ -366,7 +359,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				irq_counter++;
 		}
 
-		public override void ClockCPU()
+		public override void ClockCpu()
 		{
 			VRC6Sound.Clock();
 

@@ -80,8 +80,6 @@ namespace BizHawk.Emulation.Cores.Calculators
 			_isLag = false;
 		}
 
-		public CoreComm CoreComm { get; }
-
 		public void Dispose()
 		{
 		}

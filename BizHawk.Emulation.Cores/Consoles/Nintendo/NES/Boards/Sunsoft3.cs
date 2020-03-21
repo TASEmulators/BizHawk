@@ -5,15 +5,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//AKA mapper 67
 	//this may be confusing due to general chaos with the early sunsoft mappers. see docs/sunsoft.txt
-	public sealed class Sunsoft3 : NES.NESBoardBase
+	internal sealed class Sunsoft3 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_16k, chr_bank_mask_2k;
 
 		//state
 		bool toggle;
-		ByteBuffer prg_banks_16k = new ByteBuffer(2);
-		ByteBuffer chr_banks_2k = new ByteBuffer(4);
+		byte[] prg_banks_16k = new byte[2];
+		byte[] chr_banks_2k = new byte[4];
 		int irq_counter;
 		bool irq_enable;
 		bool irq_asserted;
@@ -28,8 +28,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			base.SyncState(ser);
 			ser.Sync(nameof(toggle), ref toggle);
-			ser.Sync(nameof(prg_banks_16k), ref prg_banks_16k);
-			ser.Sync(nameof(chr_banks_2k), ref chr_banks_2k);
+			ser.Sync(nameof(prg_banks_16k), ref prg_banks_16k, false);
+			ser.Sync(nameof(chr_banks_2k), ref chr_banks_2k, false);
 			ser.Sync(nameof(irq_counter), ref irq_counter);
 			ser.Sync(nameof(irq_enable), ref irq_enable);
 			ser.Sync(nameof(irq_asserted), ref irq_asserted);
@@ -43,9 +43,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SyncIRQ();
 		}
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER067VS":
 					NES._isVS = true;
@@ -69,8 +69,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_bank_mask_16k = (Cart.prg_size / 16) - 1;
-			chr_bank_mask_2k = (Cart.chr_size / 2) - 1;
+			prg_bank_mask_16k = (Cart.PrgSize / 16) - 1;
+			chr_bank_mask_2k = (Cart.ChrSize / 2) - 1;
 
 			prg_banks_16k[0] = 0;
 			prg_banks_16k[1] = 0xFF;
@@ -87,10 +87,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		void SyncIRQ()
 		{
-			IRQSignal = irq_asserted;
+			IrqSignal = irq_asserted;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			//Console.WriteLine("{0:X4} = {1:X2}", addr, value);
 			switch (addr & 0xF800)
@@ -122,10 +122,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x6800: //0xE800:
 					switch (value & 3)
 					{
-						case 0: SetMirrorType(NES.NESBoardBase.EMirrorType.Vertical); break;
-						case 1: SetMirrorType(NES.NESBoardBase.EMirrorType.Horizontal); break;
-						case 2: SetMirrorType(NES.NESBoardBase.EMirrorType.OneScreenA); break;
-						case 3: SetMirrorType(NES.NESBoardBase.EMirrorType.OneScreenB); break;
+						case 0: SetMirrorType(EMirrorType.Vertical); break;
+						case 1: SetMirrorType(EMirrorType.Horizontal); break;
+						case 2: SetMirrorType(EMirrorType.OneScreenA); break;
+						case 3: SetMirrorType(EMirrorType.OneScreenB); break;
 					}
 					break;
 				case 0x7800: //0xF800:
@@ -136,7 +136,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 
-		public override void ClockCPU()
+		public override void ClockCpu()
 		{
 			if (!irq_enable) return;
 			if (irq_counter == 0)
@@ -150,13 +150,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			else irq_counter--;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			addr = ApplyMemoryMap(14, prg_banks_16k, addr);
-			return ROM[addr]; 
+			return Rom[addr]; 
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
@@ -178,19 +178,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 				}
 				else
-					return base.ReadPPU(addr);
+					return base.ReadPpu(addr);
 			}
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (NES._isVS)
 			{
 				if (addr < 0x2000)
 				{
 					addr = ApplyMemoryMap(11, chr_banks_2k, addr);
-					if (VRAM != null)
-						VRAM[addr] = value;
+					if (Vram != null)
+						Vram[addr] = value;
 				}
 				else
 				{
@@ -206,7 +206,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 			else
-				base.WritePPU(addr, value);
+				base.WritePpu(addr, value);
 		}
 
 		/*

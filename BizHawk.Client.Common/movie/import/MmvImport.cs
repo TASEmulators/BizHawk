@@ -54,7 +54,7 @@ namespace BizHawk.Client.Common.movie.import
 
 			// 0020-005f: string: author info (UTF-8)
 			string author = NullTerminated(new string(r.ReadChars(64)));
-			Result.Movie.HeaderEntries[HeaderKeys.AUTHOR] = author;
+			Result.Movie.HeaderEntries[HeaderKeys.Author] = author;
 
 			// 0060: 4-byte little endian flags
 			byte flags = r.ReadByte();
@@ -62,7 +62,7 @@ namespace BizHawk.Client.Common.movie.import
 			// bit 0: unused
 			// bit 1: "PAL"
 			bool pal = ((flags >> 1) & 0x1) != 0;
-			Result.Movie.HeaderEntries[HeaderKeys.PAL] = pal.ToString();
+			Result.Movie.HeaderEntries[HeaderKeys.Pal] = pal.ToString();
 
 			// bit 2: Japan
 			bool japan = ((flags >> 2) & 0x1) != 0;
@@ -80,14 +80,14 @@ namespace BizHawk.Client.Common.movie.import
 				isGameGear = false;
 			}
 
-			Result.Movie.HeaderEntries[HeaderKeys.PLATFORM] = "SMS"; // System Id is still SMS even if game gear
+			Result.Movie.HeaderEntries[HeaderKeys.Platform] = "SMS"; // System Id is still SMS even if game gear
 
 			// bits 4-31: unused
 			r.ReadBytes(3);
 
 			// 0064-00e3: string: rom name (ASCII)
 			string gameName = NullTerminated(new string(r.ReadChars(128)));
-			Result.Movie.HeaderEntries[HeaderKeys.GAMENAME] = gameName;
+			Result.Movie.HeaderEntries[HeaderKeys.GameName] = gameName;
 
 			// 00e4-00f3: binary: rom MD5 digest
 			byte[] md5 = r.ReadBytes(16);
@@ -135,7 +135,7 @@ namespace BizHawk.Client.Common.movie.import
 					if (player == 1)
 					{
 						controllers["Pause"] = 
-							(((controllerState >> 6) & 0x1) != 0 && (!isGameGear))
+							(((controllerState >> 6) & 0x1) != 0 && !isGameGear)
 							|| (((controllerState >> 7) & 0x1) != 0 && isGameGear);
 					}
 				}

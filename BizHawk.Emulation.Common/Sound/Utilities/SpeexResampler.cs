@@ -388,11 +388,6 @@ namespace BizHawk.Emulation.Common
 			}
 
 			_inbufpos = 0;
-
-			////Buffer.BlockCopy(inbuf, (int)inal * 2 * sizeof(short), inbuf, 0, inbufpos - (int)inal * 2);
-			////inbufpos -= (int)inal * 2;
-
-			// dispatch outbuf
 			_drainer(_outbuf, (int)outal);
 		}
 

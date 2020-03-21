@@ -10,7 +10,7 @@ using Community.CsharpSqlite.SQLiteClient;
 
 namespace BizHawk.DBManTool
 {
-	[ExternalTool("DBMan", "DB Manager")]
+	[ExternalTool("DBMan", Description = "DB Manager")]
 	public class CustomMainForm : Form, IExternalToolForm
 	{
 		public CustomMainForm()

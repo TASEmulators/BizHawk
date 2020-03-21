@@ -14,8 +14,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	 * http://wiki.nesdev.com/w/index.php/Family_Computer_Disk_System - these two documents
 	 * http://nesdev.com/diskspec.txt - not useless
 	 */
-	[NES.INESBoardImplCancel]
-	public class FDS : NES.NESBoardBase
+	[NesBoardImplCancel]
+	internal sealed class FDS : NesBoardBase
 	{
 		#region configuration
 		/// <summary>FDS bios image; should be 8192 bytes</summary>
@@ -118,16 +118,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public byte[] GetDiskImage() => diskimage;
 
 		// as we have [INESBoardImplCancel], this will only be called with an fds disk image
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			if (biosrom == null || biosrom.Length != 8192)
 				throw new MissingFirmwareException("FDS bios image needed!");
 
-			Cart.vram_size = 8;
-			Cart.wram_size = 32;
-			Cart.wram_battery = false;
-			Cart.system = "Famicom";
-			Cart.board_type = "FAMICOM_DISK_SYSTEM";
+			Cart.VramSize = 8;
+			Cart.WramSize = 32;
+			Cart.WramBattery = false;
+			Cart.System = "Famicom";
+			Cart.BoardType = "FAMICOM_DISK_SYSTEM";
 
 			diskdrive = new RamAdapter();
 			if (NES.apu != null)
@@ -229,7 +229,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		void SetIRQ()
 		{
-			IRQSignal = _diskirq || _timerirq;
+			IrqSignal = _diskirq || _timerirq;
 		}
 		bool diskirq
 		{
@@ -244,7 +244,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int timerirq_cd;
 		bool timer_irq_active;
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			//if (addr == 0x0025)
 			//	Console.WriteLine("W{0:x4}:{1:x2} {2:x4}", addr + 0x4000, value, NES.cpu.PC);
@@ -307,7 +307,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			diskirq = diskdrive.irq;
 		}
 
-		public override byte ReadEXP(int addr)
+		public override byte ReadExp(int addr)
 		{
 			byte ret = NES.DB;
 
@@ -363,7 +363,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return 0; // lazy
 		}
 
-		public override void ClockCPU()
+		public override void ClockCpu()
 		{
 			if ((timerreg & 2) != 0 && diskenable)
 			{
@@ -402,34 +402,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			audio.Clock();
 		}
 
-		public override void ClockPPU()
+		public override void ClockPpu()
 		{
 			diskdrive.Clock();
 			diskirq = diskdrive.irq;
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
-			return WRAM[addr & 0x1fff];
+			return Wram[addr & 0x1fff];
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
-			WRAM[addr & 0x1fff] = value;
+			Wram[addr & 0x1fff] = value;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if (addr >= 0x6000)
 				return biosrom[addr & 0x1fff];
 			else
-				return WRAM[addr + 0x2000];
+				return Wram[addr + 0x2000];
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if (addr < 0x6000)
-				WRAM[addr + 0x2000] = value;
+				Wram[addr + 0x2000] = value;
 		}
 	}
 }

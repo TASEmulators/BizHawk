@@ -10,6 +10,7 @@ using System.Xml.Linq;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Client.EmuHawk
@@ -232,14 +233,14 @@ namespace BizHawk.Client.EmuHawk
 		private void BrowseBtn_Click(object sender, EventArgs e)
 		{
 			string filename = "";
-			string initialDirectory = PathManager.MakeAbsolutePath(Config.PathEntries.MultiDiskBundlesFragment, "Global_NULL");
+			string initialDirectory = Config.PathEntries.MultiDiskAbsolutePath();
 
 			if (!Global.Game.IsNullInstance())
 			{
 				filename = NameBox.Text;
 				if (string.IsNullOrWhiteSpace(filename))
 				{
-					filename = Path.ChangeExtension(PathManager.FilesystemSafeName(Global.Game), ".xml");
+					filename = Path.ChangeExtension(Global.Game.FilesystemSafeName(), ".xml");
 				}
 
 				initialDirectory = Path.GetDirectoryName(filename);
@@ -264,27 +265,9 @@ namespace BizHawk.Client.EmuHawk
 		/// <remarks>Algorithm for Windows taken from https://stackoverflow.com/a/485516/7467292</remarks>
 		public static string GetRelativePath(string fromPath, string toPath)
 		{
-			if (OSTailoredCode.IsUnixHost)
-			{
-#if true
-				return PathManager.IsSubfolder(toPath, fromPath)
-					? "./" + OSTailoredCode.SimpleSubshell("realpath", $"--relative-to=\"{toPath}\" \"{fromPath}\"", $"invalid path {fromPath} or missing realpath binary")
-					: fromPath;
-#else // written for Unix port but may be useful for .NET Core
-				// algorithm taken from https://stackoverflow.com/a/340454/7467292
-				var dirSepChar = Path.DirectorySeparatorChar;
-				var fromUri = new Uri(fromPath.EndsWith(dirSepChar.ToString()) ? fromPath : fromPath + dirSepChar);
-				var toUri = new Uri(toPath.EndsWith(dirSepChar.ToString()) ? toPath : toPath + dirSepChar);
-				if (fromUri.Scheme != toUri.Scheme) return toPath;
+			if (OSTailoredCode.IsUnixHost) return fromPath.MakeRelativeTo(toPath);
 
-				var relativePath = Uri.UnescapeDataString(fromUri.MakeRelativeUri(toUri).ToString());
-				return (toUri.Scheme.Equals(Uri.UriSchemeFile, StringComparison.OrdinalIgnoreCase)
-					? relativePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar)
-					: relativePath
-				).TrimEnd(dirSepChar);
-#endif
-			}
-
+			//TODO merge this with the Windows implementation in PathExtensions.MakeRelativeTo
 			static FileAttributes GetPathAttribute(string path1)
 			{
 				var di = new DirectoryInfo(path1.Split('|').First());

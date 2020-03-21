@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// TODO -- different MMC1 revisions handle wram_disable differently; on some it doesn't work at all; on others,
 	//         it works, but with different initial states possible.  we only emulate the first case
 
-	public sealed class MMC1
+	internal sealed class MMC1
 	{
 		public MMC1_SerialController scnt = new MMC1_SerialController();
 
@@ -43,12 +43,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//well, lets leave it.
 
 			SyncCHR();
-		}
-
-		public void Dispose()
-		{
-			chr_banks_4k.Dispose();
-			prg_banks_16k.Dispose();
 		}
 
 		public void SyncState(Serializer ser)
@@ -76,13 +70,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int chr_mode;
 		public int prg_mode;
 		public int prg_slot; // complicated
-		public NES.NESBoardBase.EMirrorType mirror;
-		static readonly NES.NESBoardBase.EMirrorType[] _mirrorTypes =
+		public EMirrorType mirror;
+		static readonly EMirrorType[] _mirrorTypes =
 		{
-			NES.NESBoardBase.EMirrorType.OneScreenA,
-			NES.NESBoardBase.EMirrorType.OneScreenB,
-			NES.NESBoardBase.EMirrorType.Vertical,
-			NES.NESBoardBase.EMirrorType.Horizontal
+			EMirrorType.OneScreenA,
+			EMirrorType.OneScreenB,
+			EMirrorType.Vertical,
+			EMirrorType.Horizontal
 		};
 
 		//register 1,2:
@@ -93,8 +87,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int prg;
 
 		//regenerable state
-		readonly IntBuffer chr_banks_4k = new IntBuffer(2);
-		readonly IntBuffer prg_banks_16k = new IntBuffer(2);
+		readonly int[] chr_banks_4k = new int[2];
+		readonly int[] prg_banks_16k = new int[2];
 
 		public class MMC1_SerialController
 		{
@@ -152,7 +146,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_slot = 1;
 			chr_mode = 1;
 			scnt.Reset();
-			mirror = NES.NESBoardBase.EMirrorType.Horizontal;
+			mirror = EMirrorType.Horizontal;
 			SyncCHR();
 			SyncPRG();
 		}
@@ -241,8 +235,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 	}
 
-	[NES.INESBoardImplPriority]
-	public class SxROM : NES.NESBoardBase
+	[NesBoardImplPriority]
+	internal class SxROM : NesBoardBase
 	{
 		//configuration
 		protected int prg_mask, chr_mask;
@@ -264,13 +258,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>number of cycles since last WritePRG()</summary>
 		uint ppuclock;
 
-		public override void ClockPPU()
+		public override void ClockPpu()
 		{
 			if (ppuclock < pputimeout)
 				ppuclock++;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			// mmc1 ignores subsequent writes that are very close together
 			if (ppuclock >= pputimeout)
@@ -282,26 +276,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
 			if (_is_snrom)
 			{
 				if (!mmc1.wram_disable && chr_wram_enable)
-					return base.ReadWRAM(addr);	
+					return base.ReadWram(addr);	
 				else
 					return NES.DB;	
 			}
 			else
 			{
-				return base.ReadWRAM(addr);
+				return base.ReadWram(addr);
 			}	
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank = mmc1.Get_PRGBank(addr) & prg_mask;
 			addr = (bank << 14) | (addr & 0x3FFF);
-			return ROM[addr];
+			return Rom[addr];
 		}
 
 		int Gen_CHR_Address(int addr)
@@ -311,7 +305,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return addr;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
@@ -326,9 +320,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				addr = Gen_CHR_Address(addr);
 
-				if (Cart.vram_size != 0)
-					return VRAM[addr & vram_mask];
-				else return VROM[addr];
+				if (Cart.VramSize != 0)
+					return Vram[addr & vram_mask];
+				else return Vrom[addr];
 			}
 			else
 			{
@@ -345,19 +339,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 				}
 				else
-					return base.ReadPPU(addr);
+					return base.ReadPpu(addr);
 					
 			}
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (NES._isVS)
 			{
 				if (addr < 0x2000)
 				{
-					if (VRAM != null)
-						VRAM[Gen_CHR_Address(addr) & vram_mask] = value;
+					if (Vram != null)
+						Vram[Gen_CHR_Address(addr) & vram_mask] = value;
 				}
 				else
 				{
@@ -383,10 +377,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						chr_wram_enable = true;
 				}
 
-				if (Cart.vram_size != 0)
-					VRAM[Gen_CHR_Address(addr) & vram_mask] = value;
+				if (Cart.VramSize != 0)
+					Vram[Gen_CHR_Address(addr) & vram_mask] = value;
 			}
-			else base.WritePPU(addr, value);
+			else base.WritePpu(addr, value);
 		}
 
 		public override void SyncState(Serializer ser)
@@ -399,9 +393,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ser.Sync("VS_CIRAM", ref CIRAM_VS, false);
 		}
 	
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER116_HACKY":
 					break;
@@ -423,13 +417,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "NES-SIEPROM":
 					// there's no way to define PRG oversize for mapper001 due to how the MMC1 regs work
 					// so 512KB must mean SUROM or SXROM.  SUROM is more common, so we try that
-					if (Cart.prg_size > 256)
+					if (Cart.PrgSize > 256)
 						return false;
 					break;
 				case "MAPPER171": // Tui Do Woo Ma Jeung
-					AssertPrg(32); AssertChr(32); Cart.wram_size = 0;
+					AssertPrg(32); AssertChr(32); Cart.WramSize = 0;
 					disablemirror = true;
-					SetMirrorType(Cart.pad_h, Cart.pad_v);
+					SetMirrorType(Cart.PadH, Cart.PadV);
 					break;
 				case "NES-SAROM": //dragon warrior
 					AssertPrg(64); AssertChr(16, 32, 64); AssertVram(0); AssertWram(8); 
@@ -527,12 +521,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		protected void BaseConfigure()
 		{
 			mmc1 = new MMC1();
-			prg_mask = (Cart.prg_size / 16) - 1;
-			vram_mask = (Cart.vram_size*1024) - 1;
-			chr_mask = (Cart.chr_size / 8 * 2) - 1;
+			prg_mask = (Cart.PrgSize / 16) - 1;
+			vram_mask = (Cart.VramSize*1024) - 1;
+			chr_mask = (Cart.ChrSize / 8 * 2) - 1;
 			//Chip n Dale (PC10) has a nonstandard chr size, which makes the mask nonsense
 			// let's put in a special case to deal with it
-			if (Cart.chr_size==136)
+			if (Cart.ChrSize==136)
 			{
 				chr_mask = (128 / 8 * 2) - 1;
 			}
@@ -542,21 +536,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				SetMirrorType(mmc1.mirror);
 			ppuclock = pputimeout;
 		}
-
-		public override void Dispose()
-		{
-			base.Dispose();
-			mmc1?.Dispose();
-		}
 	} //class SxROM
 
-	class SoROM : SuROM
+	internal sealed class SoROM : SuROM
 	{
 		//this uses a CHR bit to select WRAM banks
 		//TODO - only the latter 8KB is supposed to be battery backed
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "NES-SOROM": //Nobunaga's Ambition
 				case "HVC-SOROM": // KHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN
@@ -581,14 +569,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return (wram_bank_8k << 13) | ofs;
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
-			base.WriteWRAM(Map_WRAM(addr), value);
+			base.WriteWram(Map_WRAM(addr), value);
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
-			return base.ReadWRAM(Map_WRAM(addr));
+			return base.ReadWram(Map_WRAM(addr));
 		}
 	}
 
@@ -596,9 +584,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 		//SXROM's PRG behaves similar to SuROM (and so inherits from it)
 		//it also has some WRAM select bits like SoROM
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "HVC-SXROM": //final fantasy 1& 2
 					AssertPrg(128, 256, 512); AssertChr(0); AssertVram(8); AssertWram(32);
@@ -621,33 +609,33 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return (wram_bank_8k << 13) | ofs;
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
-			base.WriteWRAM(Map_WRAM(addr), value);
+			base.WriteWram(Map_WRAM(addr), value);
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
-			return base.ReadWRAM(Map_WRAM(addr));
+			return base.ReadWram(Map_WRAM(addr));
 		}
 	}
 
-	class SuROM : SxROM
+	internal class SuROM : SxROM
 	{
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//SUROM uses CHR A16 to control the upper address line (PRG A18) of its 512KB PRG ROM.
 
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER001":
 					// we try to heuristic match to iNES 001 roms with big PRG only
-					if (Cart.prg_size <= 256)
+					if (Cart.PrgSize <= 256)
 						return false;
 					AssertPrg(512); AssertChr(0);
-					Cart.vram_size = 8;
-					Cart.wram_size = 8;
-					Cart.wram_battery = true; // all SUROM boards had batteries
+					Cart.VramSize = 8;
+					Cart.WramSize = 8;
+					Cart.WramBattery = true; // all SUROM boards had batteries
 					Console.WriteLine("Guessing SUROM for 512KiB PRG ROM");
 					break;
 				case "NES-SUROM": //dragon warrior 4
@@ -662,7 +650,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank = mmc1.Get_PRGBank(addr);
 			int chr_bank = mmc1.Get_CHRBank_4K(0);
@@ -670,7 +658,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			bank |= (bank_bit18 << 4);
 			bank &= prg_mask;
 			addr = (bank << 14) | (addr & 0x3FFF);
-			return ROM[addr];
+			return Rom[addr];
 		}
 	}
 }

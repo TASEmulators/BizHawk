@@ -65,8 +65,6 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		public int Frame => _frame;
 
-		public CoreComm CoreComm { get; }
-
 		public void Dispose()
 		{
 		}

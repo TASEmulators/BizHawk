@@ -6,34 +6,39 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	Cartridge class used for Atari's 16K bankswitched games with
 	128 bytes of RAM.  There are four 4K banks.
 	*/
-	internal class mF4SC : MapperBase
+	internal sealed class mF4SC : MapperBase
 	{
-		private int _bank4k;
-		private ByteBuffer _ram = new ByteBuffer(128);
+		private int _bank4K;
+		private byte[] _ram = new byte[128];
 
-		public override bool HasCartRam => true;
+		public mF4SC(Atari2600 core) : base(core)
+		{
+		}
 
-		public override ByteBuffer CartRam => _ram;
+		public override byte[] CartRam => _ram;
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("toggle", ref _bank4k);
-			ser.Sync("auxRam", ref _ram);
-		}
-
-		public override void Dispose()
-		{
-			base.Dispose();
-			_ram.Dispose();
+			ser.Sync("toggle", ref _bank4K);
+			ser.Sync("auxRam", ref _ram, false);
 		}
 
 		public override void HardReset()
 		{
-			_bank4k = 0;
-			_ram = new ByteBuffer(128);
-			base.HardReset();
+			_bank4K = 0;
+			_ram = new byte[128];
 		}
+
+		public override byte ReadMemory(ushort addr) => ReadMem(addr, false);
+
+		public override byte PeekMemory(ushort addr) => ReadMem(addr, true);
+
+		public override void WriteMemory(ushort addr, byte value)
+			=> WriteMem(addr, value, false);
+
+		public override void PokeMemory(ushort addr, byte value)
+			=> WriteMem(addr, value, true);
 
 		private byte ReadMem(ushort addr, bool peek)
 		{
@@ -49,26 +54,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			if (addr < 0x1080)
 			{
-				_ram[(addr & 0x7F)] = 0xFF; // Reading from the write port triggers an unwanted write of open bus
+				_ram[addr & 0x7F] = 0xFF; // Reading from the write port triggers an unwanted write of open bus
 				return 0xFF; // 0xFF is used for deterministic emulation, in reality it would be a random value based on pins being high or low
 			}
 
 			if (addr < 0x1100)
 			{
-				return _ram[(addr & 0x7F)];
+				return _ram[addr & 0x7F];
 			}
 
-			return Core.Rom[(_bank4k << 12) + (addr & 0xFFF)];
-		}
-
-		public override byte ReadMemory(ushort addr)
-		{
-			return ReadMem(addr, false);
-		}
-
-		public override byte PeekMemory(ushort addr)
-		{
-			return ReadMem(addr, true);
+			return Core.Rom[(_bank4K << 12) + (addr & 0xFFF)];
 		}
 
 		private void WriteMem(ushort addr, byte value, bool poke)
@@ -88,27 +83,20 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 		}
 
-		public override void WriteMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, poke: false);
-		}
-
-		public override void PokeMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, poke: true);
-		}
-
 		private void Address(ushort addr)
 		{
-			if (addr == 0x1FF4) _bank4k = 0;
-			if (addr == 0x1FF5) _bank4k = 1;
-			if (addr == 0x1FF6) _bank4k = 2;
-			if (addr == 0x1FF7) _bank4k = 3;
-			if (addr == 0x1FF8) _bank4k = 4;
-			if (addr == 0x1FF9) _bank4k = 5;
-			if (addr == 0x1FF9) _bank4k = 5;
-			if (addr == 0x1FFA) _bank4k = 6;
-			if (addr == 0x1FFB) _bank4k = 7;
+			_bank4K = addr switch
+			{
+				0x1FF4 => 0,
+				0x1FF5 => 1,
+				0x1FF6 => 2,
+				0x1FF7 => 3,
+				0x1FF8 => 4,
+				0x1FF9 => 5,
+				0x1FFA => 6,
+				0x1FFB => 7,
+				_ => _bank4K
+			};
 		}
 	}
 }

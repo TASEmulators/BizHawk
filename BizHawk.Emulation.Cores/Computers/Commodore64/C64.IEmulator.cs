@@ -91,8 +91,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			_frameCycles = 0;
 		}
 
-		public CoreComm CoreComm { get; }
-
 		public void Dispose()
 		{
 			if (_board != null)

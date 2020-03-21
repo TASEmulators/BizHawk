@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// good dumps of this rom are on Mapper087; only bad dumps with CHR banks out of order go here
 	// nothing else uses this, other than hypothetical homebrews which might prefer it to CxROM
 	// because of no bus conflicts
-	public sealed class Mapper101 : NES.NESBoardBase
+	internal sealed class Mapper101 : NesBoardBase
 	{
 		//configuration
 		int chr_bank_mask_8k;
@@ -21,40 +21,40 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(chr_bank_8k), ref chr_bank_8k);
 		}
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER101":
 					AssertPrg(16, 32); AssertVram(0);
-					Cart.wram_size = 0;
-					Cart.wram_battery = false;
+					Cart.WramSize = 0;
+					Cart.WramBattery = false;
 					AssertChr(8, 16, 32, 64, 128, 256, 512, 1024, 2048);
 					break;
 				default:
 					return false;
 			}
 
-			chr_bank_mask_8k = (Cart.chr_size / 8) - 1;
+			chr_bank_mask_8k = (Cart.ChrSize / 8) - 1;
 
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			SetMirrorType(Cart.PadH, Cart.PadV);
 
 			return true;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				int ofs = addr & ((1 << 13) - 1);
 				addr = (chr_bank_8k << 13) | ofs;
-				return VROM[addr];
+				return Vrom[addr];
 			}
-			else return base.ReadPPU(addr);
+			else return base.ReadPpu(addr);
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			chr_bank_8k = value & chr_bank_mask_8k;
 		}

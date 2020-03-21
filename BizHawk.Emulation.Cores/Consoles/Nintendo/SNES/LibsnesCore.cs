@@ -14,7 +14,7 @@ using BizHawk.Emulation.Cores.Components.W65816;
 // TODO 
 // libsnes needs to be modified to support multiple instances - THIS IS NECESSARY - or else loading one game and then another breaks things
 // edit - this is a lot of work
-// wrap dll code around some kind of library-accessing interface so that it doesnt malfunction if the dll is unavailablecd
+// wrap dll code around some kind of library-accessing interface so that it doesn't malfunction if the dll is unavailable
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
 	[Core(
@@ -29,8 +29,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	public unsafe partial class LibsnesCore : IEmulator, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ICodeDataLogger,
 		IDebuggable, ISettable<LibsnesCore.SnesSettings, LibsnesCore.SnesSyncSettings>
 	{
-		public LibsnesCore(GameInfo game, byte[] romData, byte[] xmlData, CoreComm comm, object settings, object syncSettings)
+		public LibsnesCore(GameInfo game, byte[] romData, byte[] xmlData, string baseRomPath, CoreComm comm, object settings, object syncSettings)
 		{
+			_baseRomPath = baseRomPath;
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 
@@ -79,10 +80,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			Api.QUERY_set_path_request(snes_path_request);
 
-			_scanlineStartCb = new LibsnesApi.snes_scanlineStart_t(snes_scanlineStart);
-			_tracecb = new LibsnesApi.snes_trace_t(snes_trace);
+			_scanlineStartCb = snes_scanlineStart;
+			_tracecb = snes_trace;
 
-			_soundcb = new LibsnesApi.snes_audio_sample_t(snes_audio_sample);
+			_soundcb = snes_audio_sample;
 
 			// start up audio resampler
 			InitAudio();
@@ -102,7 +103,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				SystemId = "SNES";
 				ser.Register<IBoardInfo>(new SGBBoardInfo());
 
-				_currLoadParams = new LoadParams()
+				_currLoadParams = new LoadParams
 				{
 					type = LoadParamType.SuperGameBoy,
 					rom_xml = null,
@@ -128,7 +129,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					// so, we have to do that here and pass it in as the romData :/
 					if (_romxml["cartridge"]?["rom"] != null)
 					{
-						romData = File.ReadAllBytes(CoreComm.CoreFileProvider.PathSubfile(_romxml["cartridge"]["rom"].Attributes["name"].Value));
+						romData = File.ReadAllBytes(PathSubfile(_romxml["cartridge"]["rom"].Attributes["name"].Value));
 					}
 					else
 					{
@@ -181,6 +182,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			Api.Seal();
 			RefreshPalette();
 		}
+
+		internal CoreComm CoreComm { get; }
+
+		private readonly string _baseRomPath = "";
+
+		private string PathSubfile(string fname) => Path.Combine(_baseRomPath, fname);
 
 		private readonly GameInfo _game;
 		private readonly LibsnesControllerDeck _controllerDeck;
@@ -255,7 +262,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					var msu1 = _romxml["cartridge"]["msu1"];
 					if (isMsu1Rom && msu1["rom"]?.Attributes["name"] != null)
 					{
-						return CoreComm.CoreFileProvider.PathSubfile(msu1["rom"].Attributes["name"].Value);
+						return PathSubfile(msu1["rom"].Attributes["name"].Value);
 					}
 
 					if (isMsu1Pcm)
@@ -269,7 +276,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 						{
 							if (child.Name == "track" && child.Attributes["number"].Value == wantsTrackString)
 							{
-								return CoreComm.CoreFileProvider.PathSubfile(child.Attributes["name"].Value);
+								return PathSubfile(child.Attributes["name"].Value);
 							}
 						}
 					}

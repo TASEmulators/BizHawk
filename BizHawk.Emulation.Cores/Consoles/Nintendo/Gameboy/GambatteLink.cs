@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		isReleased: true)]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class GambatteLink : IEmulator, IVideoProvider, ISoundProvider, IInputPollable, ISaveRam, IStatable, ILinkable,
-		IBoardInfo, IDebuggable, ISettable<GambatteLink.GambatteLinkSettings, GambatteLink.GambatteLinkSyncSettings>, ICodeDataLogger
+		IBoardInfo, IRomInfo, IDebuggable, ISettable<GambatteLink.GambatteLinkSettings, GambatteLink.GambatteLinkSyncSettings>, ICodeDataLogger
 	{
 		public GambatteLink(CoreComm comm, GameInfo leftinfo, byte[] leftrom, GameInfo rightinfo, byte[] rightrom, object settings, object syncSettings, bool deterministic)
 		{
@@ -17,11 +17,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			GambatteLinkSettings linkSettings = (GambatteLinkSettings)settings ?? new GambatteLinkSettings();
 			GambatteLinkSyncSettings linkSyncSettings = (GambatteLinkSyncSettings)syncSettings ?? new GambatteLinkSyncSettings();
 
-			CoreComm = comm;
-			L = new Gameboy(new CoreComm(comm.ShowMessage, comm.Notify) { CoreFileProvider = comm.CoreFileProvider },
-				leftinfo, leftrom, linkSettings.L, linkSyncSettings.L, deterministic);
-			R = new Gameboy(new CoreComm(comm.ShowMessage, comm.Notify) { CoreFileProvider = comm.CoreFileProvider },
-				rightinfo, rightrom, linkSettings.R, linkSyncSettings.R, deterministic);
+			L = new Gameboy(comm, leftinfo, leftrom, linkSettings.L, linkSyncSettings.L, deterministic);
+			R = new Gameboy(comm, rightinfo, rightrom, linkSettings.R, linkSyncSettings.R, deterministic);
 
 			// connect link cable
 			LibGambatte.gambatte_linkstatus(L.GambatteState, 259);
@@ -32,10 +29,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			L.ConnectMemoryCallbackSystem(_memorycallbacks);
 			R.ConnectMemoryCallbackSystem(_memorycallbacks);
 
-			comm.RomStatusAnnotation = null;
-			comm.RomStatusDetails = "LEFT:\r\n" + L.CoreComm.RomStatusDetails + "RIGHT:\r\n" + R.CoreComm.RomStatusDetails;
-			comm.NominalWidth = L.CoreComm.NominalWidth + R.CoreComm.NominalWidth;
-			comm.NominalHeight = L.CoreComm.NominalHeight;
+			RomDetails = "LEFT:\r\n" + L.RomDetails + "RIGHT:\r\n" + R.RomDetails;
 
 			LinkConnected = true;
 
@@ -50,6 +44,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			SetMemoryDomains();
 		}
+
+		public string RomDetails { get; }
 
 		public bool LinkConnected
 		{

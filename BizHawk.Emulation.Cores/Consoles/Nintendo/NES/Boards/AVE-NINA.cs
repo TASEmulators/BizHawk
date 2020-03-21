@@ -4,30 +4,25 @@ using BizHawk.Common.NumberExtensions;
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//AKA half of mapper 034 (the other half is BxROM which is entirely different..)
-	public sealed class AVE_NINA_001 : NES.NESBoardBase
+	internal sealed class AVE_NINA_001 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_32k, chr_bank_mask_4k;
 
 		//state
-		IntBuffer chr_banks_4k = new IntBuffer(2);
+		int[] chr_banks_4k = new int[2];
 		int prg_bank_32k;
-		public override void Dispose()
-		{
-			base.Dispose();
-			chr_banks_4k.Dispose();
-		}
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(chr_banks_4k), ref chr_banks_4k);
+			ser.Sync(nameof(chr_banks_4k), ref chr_banks_4k, false);
 			ser.Sync(nameof(prg_bank_32k), ref prg_bank_32k);
 		}
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "AVE-NINA-02": // untested
 				case "AVE-NINA-01": //Impossible Mission 2 (U)
@@ -38,15 +33,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_bank_mask_32k = Cart.prg_size / 32 - 1;
-			chr_bank_mask_4k = Cart.chr_size / 4 - 1;
+			prg_bank_mask_32k = Cart.PrgSize / 32 - 1;
+			chr_bank_mask_4k = Cart.ChrSize / 4 - 1;
 
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			SetMirrorType(Cart.PadH, Cart.PadV);
 
 			return true;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
@@ -54,18 +49,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				int ofs = addr & ((1 << 12) - 1);
 				bank_4k = chr_banks_4k[bank_4k];
 				addr = (bank_4k << 12) | ofs;
-				return VROM[addr];
+				return Vrom[addr];
 			}
-			else return base.ReadPPU(addr);
+			else return base.ReadPpu(addr);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			addr |= (prg_bank_32k << 15);
-			return ROM[addr];
+			return Rom[addr];
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			switch (addr)
 			{
@@ -83,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				default:
 					//apparently these regs are patched in over the WRAM..
-					base.WriteWRAM(addr, value);
+					base.WriteWram(addr, value);
 					break;
 			}
 		}
@@ -93,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// according to the latest on nesdev:
 	// mapper 079: [.... PCCC] @ 4100
 	// mapper 113: [MCPP PCCC] @ 4100  (no games for this are in bootgod)
-	class AVE_NINA_006 : NES.NESBoardBase
+	class AVE_NINA_006 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_32k, chr_bank_mask_8k;
@@ -110,10 +105,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(isMapper79), ref isMapper79);
 		}
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER079": // Puzzle (Unl)
 					isMapper79 = true;
@@ -127,7 +122,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "AVE-NINA-06": //Blackjack (U)
 				case "AVE-NINA-03": //F-15 City War (U)
 				case "AVE-MB-91": //Deathbots (U)
-					if (Cart.chips.Count == 0) // some boards had no mapper chips on them
+					if (Cart.Chips.Count == 0) // some boards had no mapper chips on them
 						return false;
 					AssertPrg(32, 64); AssertChr(32, 64); AssertWram(0); AssertVram(0);
 					break;
@@ -136,17 +131,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_bank_mask_32k = Cart.prg_size / 32 - 1;
-			chr_bank_mask_8k = Cart.chr_size / 8 - 1;
+			prg_bank_mask_32k = Cart.PrgSize / 32 - 1;
+			chr_bank_mask_8k = Cart.ChrSize / 8 - 1;
 
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			SetMirrorType(Cart.PadH, Cart.PadV);
 			prg_bank_32k = 0;
 
 			return true;
 		}
 
 		//FCEUX responds to this for PRG writes as well.. ?
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			addr &= 0x4100;
 			switch (addr)
@@ -163,7 +158,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if (isMapper79)
 			{
@@ -171,33 +166,33 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 			{
-				base.WritePRG(addr, value);
+				base.WritePrg(addr, value);
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			addr |= (prg_bank_32k << 15);
 
 			// Some HES games are coming in with only 16 kb of PRG
 			// Othello, and Sidewinder for instance
-			if (ROM.Length < 0x8000)
+			if (Rom.Length < 0x8000)
 			{
 				addr &= 0x3FFF;
 			}
 
-			return ROM[addr];
+			return Rom[addr];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				addr |= ((chr_bank_8k & chr_bank_mask_8k) << 13);
-				return VROM[addr];
+				return Vrom[addr];
 			}
 			else
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 		}
 	}
 

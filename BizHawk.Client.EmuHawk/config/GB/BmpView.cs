@@ -8,6 +8,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -91,9 +92,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SaveFile()
 		{
-			string path = PathManager.MakeAbsolutePath(
-				Global.Config.PathEntries[Global.Emulator.SystemId, "Screenshots"].Path,
-				Global.Emulator.SystemId);
+			string path = Global.Config.PathEntries.ScreenshotAbsolutePathFor(Global.Emulator.SystemId);
 
 			var di = new DirectoryInfo(path);
 
@@ -104,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 
 			using var sfd = new SaveFileDialog
 			{
-				FileName = $"{PathManager.FilesystemSafeName(Global.Game)}-Palettes",
+				FileName = $"{Global.Game.FilesystemSafeName()}-Palettes",
 				InitialDirectory = path,
 				Filter = FilesystemFilterSet.Screenshots.ToString(),
 				RestoreDirectory = true

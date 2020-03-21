@@ -10,11 +10,11 @@ namespace BizHawk.Client.Common
 			Comments = new List<string>();
 			Subtitles = new SubtitleList();
 
-			this[HeaderKeys.EMULATIONVERSION] = VersionInfo.GetEmuVersion();
-			this[HeaderKeys.PLATFORM] = Global.Emulator != null ? Global.Emulator.SystemId : "";
-			this[HeaderKeys.GAMENAME] = "";
-			this[HeaderKeys.AUTHOR] = "";
-			this[HeaderKeys.RERECORDS] = "0";
+			this[HeaderKeys.EmulationVersion] = VersionInfo.GetEmuVersion();
+			this[HeaderKeys.Platform] = Global.Emulator != null ? Global.Emulator.SystemId : "";
+			this[HeaderKeys.GameName] = "";
+			this[HeaderKeys.Author] = "";
+			this[HeaderKeys.Rerecords] = "0";
 		}
 
 		public List<string> Comments { get; }
@@ -22,25 +22,18 @@ namespace BizHawk.Client.Common
 
 		public string SavestateBinaryBase64Blob
 		{
-			get
-			{
-				if (ContainsKey(HeaderKeys.SAVESTATEBINARYBASE64BLOB))
-				{
-					return this[HeaderKeys.SAVESTATEBINARYBASE64BLOB];
-				}
-
-				return null;
-			}
-
+			get => ContainsKey(HeaderKeys.SavestateBinaryBase64Blob)
+				? this[HeaderKeys.SavestateBinaryBase64Blob]
+				: null;
 			set
 			{
 				if (value == null)
 				{
-					Remove(HeaderKeys.SAVESTATEBINARYBASE64BLOB);
+					Remove(HeaderKeys.SavestateBinaryBase64Blob);
 				}
 				else
 				{
-					Add(HeaderKeys.SAVESTATEBINARYBASE64BLOB, value);
+					Add(HeaderKeys.SavestateBinaryBase64Blob, value);
 				}
 			}
 		}
@@ -48,7 +41,6 @@ namespace BizHawk.Client.Common
 		public new string this[string key]
 		{
 			get => ContainsKey(key) ? base[key] : "";
-
 			set
 			{
 				if (ContainsKey(key))

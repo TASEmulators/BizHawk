@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common
 	{
 		protected override void RunImport()
 		{
-			Result.Movie.HeaderEntries[HeaderKeys.PLATFORM] = "PSX";
+			Result.Movie.HeaderEntries[HeaderKeys.Platform] = "PSX";
 
 			using var fs = SourceFile.OpenRead();
 			using var br = new BinaryReader(fs);
@@ -56,7 +56,7 @@ namespace BizHawk.Client.Common
 
 			if ((flags & 0x04) != 0)
 			{
-				movie.HeaderEntries[HeaderKeys.PAL] = "1";
+				movie.HeaderEntries[HeaderKeys.Pal] = "1";
 			}
 
 			if ((flags & 0x08) != 0)
@@ -145,7 +145,7 @@ namespace BizHawk.Client.Common
 
 			info.FrameCount = br.ReadUInt32();
 			uint rerecordCount = br.ReadUInt32();
-			movie.HeaderEntries[HeaderKeys.RERECORDS] = rerecordCount.ToString();
+			movie.HeaderEntries[HeaderKeys.Rerecords] = rerecordCount.ToString();
 
 			// 018: UInt32 savestateOffset
 			// 01C: UInt32 memoryCard1Offset
@@ -162,7 +162,7 @@ namespace BizHawk.Client.Common
 			uint authorNameLength = br.ReadUInt32();
 			char[] authorName = br.ReadChars((int)authorNameLength);
 
-			movie.HeaderEntries[HeaderKeys.AUTHOR] = new string(authorName);
+			movie.HeaderEntries[HeaderKeys.Author] = new string(authorName);
 
 			info.ParseSuccessful = true;
 			return info;

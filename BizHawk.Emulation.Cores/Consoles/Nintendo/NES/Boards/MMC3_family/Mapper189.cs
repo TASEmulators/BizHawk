@@ -2,12 +2,12 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper189 : MMC3Board_Base
+	internal sealed class Mapper189 : MMC3Board_Base
 	{
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER189":
 					break;
@@ -30,9 +30,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return (prg * 4) + block_8k;
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
-			base.WriteWRAM(addr, value);
+			base.WriteWram(addr, value);
 			int prg_a = value & 0xF;
 			int prg_b = (value>>4)&0xF;
 			prg = prg_a | prg_b;
@@ -44,9 +44,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(prg), ref prg);
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
-			WriteWRAM(addr, value);
+			WriteWram(addr, value);
 		}
 
 	}

@@ -2,21 +2,21 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper91 : NES.NESBoardBase
+	internal sealed class Mapper91 : NesBoardBase
 	{
 		/*
 		*Note: Street Fighter III (Unl) is actually mapper 197.  However variations such as Street Fighter III (9 Fighter) and Mari Street Fighter III use this mapper
 		//http://wiki.nesdev.com/w/index.php/INES_Mapper_091
 		*/
 
-		ByteBuffer chr_regs_2k = new ByteBuffer(4);
-		ByteBuffer prg_regs_8k = new ByteBuffer(4);
+		byte[] chr_regs_2k = new byte[4];
+		byte[] prg_regs_8k = new byte[4];
 		int chr_bank_mask_2k, prg_bank_mask_8k;
 		MMC3 mmc3;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER091":
 					break;
@@ -24,42 +24,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			int chrSize = Cart.chr_size;
+			int chrSize = Cart.ChrSize;
 			if (chrSize > 256) // Hack to support some bad dumps
 			{
 				chrSize = 512;
 			}
 
 			chr_bank_mask_2k = chrSize / 2 - 1;
-			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
+			prg_bank_mask_8k = Cart.PrgSize / 8 - 1;
 
 			prg_regs_8k[3] = 0xFF;
 			prg_regs_8k[2] = 0xFE;
 			
 			mmc3 = new MMC3(this, 0x7FFFFFFF);
 
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			SetMirrorType(Cart.PadH, Cart.PadV);
 
 			return true;
-		}
-
-		public override void Dispose()
-		{
-			prg_regs_8k.Dispose();
-			chr_regs_2k.Dispose();
-			mmc3?.Dispose();
-			base.Dispose();
 		}
 
 		public override void SyncState(Serializer ser)
 		{
 			mmc3.SyncState(ser);
-			ser.Sync("prg_regs", ref prg_regs_8k);
-			ser.Sync("chr_regs", ref chr_regs_2k);
+			ser.Sync("prg_regs", ref prg_regs_8k, false);
+			ser.Sync("chr_regs", ref chr_regs_2k, false);
 			base.SyncState(ser);
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			switch (addr & 0x7003)
 			{
@@ -92,34 +84,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void ClockPPU()
+		public override void ClockPpu()
 		{
 			mmc3.ClockPPU();
 		}
 
-		public override void AddressPPU(int addr)
+		public override void AddressPpu(int addr)
 		{
 			mmc3.AddressPPU(addr);
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				int bank_2k = (addr >> 11);
 				bank_2k = chr_regs_2k[bank_2k];
 				bank_2k &= chr_bank_mask_2k;
-				return VROM[(bank_2k * 0x800) + (addr & 0x7ff)];
+				return Vrom[(bank_2k * 0x800) + (addr & 0x7ff)];
 			}
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_8k = addr >> 13;
 			bank_8k = prg_regs_8k[bank_8k];
 			bank_8k &= prg_bank_mask_8k;
-			return ROM[(bank_8k * 0x2000) + (addr & 0x1FFF)];
+			return Rom[(bank_8k * 0x2000) + (addr & 0x1FFF)];
 		}
 	}
 }

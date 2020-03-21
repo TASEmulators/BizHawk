@@ -35,7 +35,7 @@ namespace BizHawk.Client.Common
 		/// <exception cref="ArgumentException">Occurs when a <see cref="DisplayType"/> is incompatible with the <see cref="WatchSize"/></exception>
 		protected Watch(MemoryDomain domain, long address, WatchSize size, DisplayType type, bool bigEndian, string note)
 		{
-			if (IsDiplayTypeAvailable(type))
+			if (IsDisplayTypeAvailable(type))
 			{
 				_domain = domain;
 				Address = address;
@@ -136,18 +136,14 @@ namespace BizHawk.Client.Common
 		/// <returns>New <see cref="Watch"/> instance. True type is depending of size parameter</returns>
 		public static Watch GenerateWatch(MemoryDomain domain, long address, WatchSize size, DisplayType type, bool bigEndian, string note = "", long value = 0, long prev = 0, int changeCount = 0)
 		{
-			switch (size)
+			return size switch
 			{
-				default:
-				case WatchSize.Separator:
-					return SeparatorWatch.NewSeparatorWatch(note);
-				case WatchSize.Byte:
-					return new ByteWatch(domain, address, type, bigEndian, note, (byte)value, (byte)prev, changeCount);
-				case WatchSize.Word:
-					return new WordWatch(domain, address, type, bigEndian, note, (ushort)value, (ushort)prev, changeCount);
-				case WatchSize.DWord:
-					return new DWordWatch(domain, address, type, bigEndian, note, (uint)value, (uint)prev, changeCount);
-			}
+				WatchSize.Separator => SeparatorWatch.NewSeparatorWatch(note),
+				WatchSize.Byte => new ByteWatch(domain, address, type, bigEndian, note, (byte) value, (byte) prev, changeCount),
+				WatchSize.Word => new WordWatch(domain, address, type, bigEndian, note, (ushort) value, (ushort) prev, changeCount),
+				WatchSize.DWord => new DWordWatch(domain, address, type, bigEndian, note, (uint) value, (uint) prev, changeCount),
+				_ => SeparatorWatch.NewSeparatorWatch(note)
+			};
 		}
 
 		#region Operators
@@ -314,7 +310,7 @@ namespace BizHawk.Client.Common
 				return _domain.PeekUshort(Address, BigEndian);
 			}
 
-			return _domain.PeekUshort(Address % _domain.Size, BigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
+			return _domain.PeekUshort(Address % _domain.Size, BigEndian); // TODO: % size still isn't correct since it could be the last byte of the domain
 		}
 
 		protected uint GetDWord(bool bypassFreeze = false)
@@ -455,14 +451,14 @@ namespace BizHawk.Client.Common
 		/// <returns>True if both object are equals; otherwise, false</returns>
 		public override bool Equals(object obj)
 		{
-			if (obj is Watch)
+			if (obj is Watch watch)
 			{
-				return Equals((Watch)obj);
+				return Equals(watch);
 			}
 
-			if (obj is Cheat)
+			if (obj is Cheat cheat)
 			{
-				return Equals((Cheat)obj);
+				return Equals(cheat);
 			}
 
 			return base.Equals(obj);
@@ -482,7 +478,7 @@ namespace BizHawk.Client.Common
 		/// used for the current <see cref="Watch"/>
 		/// </summary>
 		/// <param name="type"><see cref="DisplayType"/> you want to check</param>
-		public bool IsDiplayTypeAvailable(DisplayType type)
+		public bool IsDisplayTypeAvailable(DisplayType type)
 		{
 			return AvailableTypes().Any(d => d == type);
 		}
@@ -501,10 +497,7 @@ namespace BizHawk.Client.Common
 		/// It's used by the "Display on screen" option in the RamWatch window
 		/// </summary>
 		/// <returns>A well formatted string representation</returns>
-		public virtual string ToDisplayString()
-		{
-			return $"{Notes}: {ValueString}";
-		}
+		public virtual string ToDisplayString() => $"{Notes}: {ValueString}";
 
 		#endregion
 
@@ -565,18 +558,9 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public long Address { get; }
 
-		private string AddressFormatStr
-		{
-			get
-			{
-				if (_domain != null)
-				{
-					return $"X{(_domain.Size - 1).NumHexDigits()}";
-				}
-
-				return "";
-			}
-		}
+		private string AddressFormatStr => _domain != null
+			? $"X{(_domain.Size - 1).NumHexDigits()}"
+			: "";
 
 		/// <summary>
 		/// Gets the address in the <see cref="MemoryDomain"/> formatted as string
@@ -603,7 +587,7 @@ namespace BizHawk.Client.Common
 			get => _type;
 			set
 			{
-				if (IsDiplayTypeAvailable(value))
+				if (IsDisplayTypeAvailable(value))
 				{
 					_type = value;
 				}
@@ -633,12 +617,6 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Gets a value indicating whether the current address is
-		/// within in the range of current <see cref="MemoryDomain"/>
-		/// </summary>
-		public bool IsOutOfRange => !IsSeparator && _domain.Size != 0 && Address >= _domain.Size;
-
-		/// <summary>
 		/// Gets a value that defined if the current <see cref="Watch"/> is actually a <see cref="SeparatorWatch"/>
 		/// </summary>
 		public bool IsSeparator => this is SeparatorWatch;
@@ -658,122 +636,88 @@ namespace BizHawk.Client.Common
 		// TODO: Replace all the following stuff by implementing ISerializable
 		public static string DisplayTypeToString(DisplayType type)
 		{
-			switch (type)
+			return type switch
 			{
-				default:
-					return type.ToString();
-				case DisplayType.FixedPoint_12_4:
-					return "Fixed Point 12.4";
-				case DisplayType.FixedPoint_20_12:
-					return "Fixed Point 20.12";
-				case DisplayType.FixedPoint_16_16:
-					return "Fixed Point 16.16";
-			}
+				DisplayType.FixedPoint_12_4 => "Fixed Point 12.4",
+				DisplayType.FixedPoint_20_12 => "Fixed Point 20.12",
+				DisplayType.FixedPoint_16_16 => "Fixed Point 16.16",
+				_ => type.ToString()
+			};
 		}
 
 		public static DisplayType StringToDisplayType(string name)
 		{
-			switch (name)
+			return name switch
 			{
-				default:
-					return (DisplayType)Enum.Parse(typeof(DisplayType), name);
-				case "Fixed Point 12.4":
-					return DisplayType.FixedPoint_12_4;
-				case "Fixed Point 20.12":
-					return DisplayType.FixedPoint_20_12;
-				case "Fixed Point 16.16":
-					return DisplayType.FixedPoint_16_16;
-			}
+				"Fixed Point 12.4" => DisplayType.FixedPoint_12_4,
+				"Fixed Point 20.12" => DisplayType.FixedPoint_20_12,
+				"Fixed Point 16.16" => DisplayType.FixedPoint_16_16,
+				_ => (DisplayType) Enum.Parse(typeof(DisplayType), name)
+			};
 		}
 
 		public char SizeAsChar
 		{
 			get
 			{
-				switch (Size)
+				return Size switch
 				{
-					default:
-					case WatchSize.Separator:
-						return 'S';
-					case WatchSize.Byte:
-						return 'b';
-					case WatchSize.Word:
-						return 'w';
-					case WatchSize.DWord:
-						return 'd';
-				}
+					WatchSize.Separator => 'S',
+					WatchSize.Byte => 'b',
+					WatchSize.Word => 'w',
+					WatchSize.DWord => 'd',
+					_ => 'S'
+				};
 			}
 		}
 
 		public static WatchSize SizeFromChar(char c)
 		{
-			switch (c)
+			return c switch
 			{
-				default:
-				case 'S':
-					return WatchSize.Separator;
-				case 'b':
-					return WatchSize.Byte;
-				case 'w':
-					return WatchSize.Word;
-				case 'd':
-					return WatchSize.DWord;
-			}
+				'S' => WatchSize.Separator,
+				'b' => WatchSize.Byte,
+				'w' => WatchSize.Word,
+				'd' => WatchSize.DWord,
+				_ => WatchSize.Separator
+			};
 		}
 
 		public char TypeAsChar
 		{
 			get
 			{
-				switch (Type)
+				return Type switch
 				{
-					default:
-					case DisplayType.Separator:
-						return '_';
-					case DisplayType.Unsigned:
-						return 'u';
-					case DisplayType.Signed:
-						return 's';
-					case DisplayType.Hex:
-						return 'h';
-					case DisplayType.Binary:
-						return 'b';
-					case DisplayType.FixedPoint_12_4:
-						return '1';
-					case DisplayType.FixedPoint_20_12:
-						return '2';
-					case DisplayType.FixedPoint_16_16:
-						return '3';
-					case DisplayType.Float:
-						return 'f';
-				}
+					DisplayType.Separator => '_',
+					DisplayType.Unsigned => 'u',
+					DisplayType.Signed => 's',
+					DisplayType.Hex => 'h',
+					DisplayType.Binary => 'b',
+					DisplayType.FixedPoint_12_4 => '1',
+					DisplayType.FixedPoint_20_12 => '2',
+					DisplayType.FixedPoint_16_16 => '3',
+					DisplayType.Float => 'f',
+					_ => '_'
+				};
 			}
 		}
 
 		public static DisplayType DisplayTypeFromChar(char c)
 		{
-			switch (c)
+			return c switch
 			{
-				default:
-				case '_':
-					return DisplayType.Separator;
-				case 'u':
-					return DisplayType.Unsigned;
-				case 's':
-					return DisplayType.Signed;
-				case 'h':
-					return DisplayType.Hex;
-				case 'b':
-					return DisplayType.Binary;
-				case '1':
-					return DisplayType.FixedPoint_12_4;
-				case '2':
-					return DisplayType.FixedPoint_20_12;
-				case '3':
-					return DisplayType.FixedPoint_16_16;
-				case 'f':
-					return DisplayType.Float;
-			}
+				'_' => DisplayType.Separator,
+				'u' => DisplayType.Unsigned,
+				's' => DisplayType.Signed,
+				'h' => DisplayType.Hex,
+				'b' => DisplayType.Binary,
+				'1' => DisplayType.FixedPoint_12_4,
+				'2' => DisplayType.FixedPoint_20_12,
+				'3' => DisplayType.FixedPoint_16_16,
+				'f' => DisplayType.Float,
+				_ => DisplayType.Separator
+			};
 		}
 	}
 }

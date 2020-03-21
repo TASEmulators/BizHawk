@@ -3,7 +3,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class Mapper196 : MMC3Board_Base
+	internal sealed class Mapper196 : MMC3Board_Base
 	{
 		// pirate crap
 		// behavior from fceumm
@@ -17,9 +17,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		bool prgmode;
 		int prgreg;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER196":
 					break;
@@ -27,8 +27,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			Cart.wram_size = 0;
-			prg_bank_mask_32k = Cart.prg_size / 32 - 1;
+			Cart.WramSize = 0;
+			prg_bank_mask_32k = Cart.PrgSize / 32 - 1;
 			BaseSetup();
 			return true;
 		}
@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.EndSection();
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			if (addr < 0x1000)
 			{
@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			// addresses are scrambled
 			if (addr >= 0x4000)
@@ -65,18 +65,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				addr = (addr & 0xFFFE) | ((addr >> 2) & 1) | ((addr >> 3) & 1) | ((addr >> 1) & 1);
 			}
-			base.WritePRG(addr, value);
+			base.WritePrg(addr, value);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if (prgmode)
 			{
-				return ROM[addr | prgreg << 15];
+				return Rom[addr | prgreg << 15];
 			}
 			else
 			{
-				return base.ReadPRG(addr);
+				return base.ReadPrg(addr);
 			}
 		}
 

@@ -2,12 +2,12 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper191 : MMC3Board_Base
+	internal sealed class Mapper191 : MMC3Board_Base
 	{
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER191":
 					break;
@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			//this board has 2k of chr ram
-			Cart.vram_size = 2;
+			Cart.VramSize = 2;
 			BaseSetup();
 
 			//theres a possibly bogus Q Boy rom using this mapper but I have no idea what emulator its supposed to boot in, for proof
@@ -25,27 +25,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr >= 0x2000)
 			{
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 			}
 
 			int bank_1k = Get_CHRBank_1K(addr);
 			if (bank_1k.Bit(7))
 			{
 				//this is referencing chr ram
-				return VRAM[addr & 0x7FF];
+				return Vram[addr & 0x7FF];
 			}
-			else return base.ReadPPU(addr);
+			else return base.ReadPpu(addr);
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr >= 0x2000)
 			{
-				base.WritePPU(addr, value);
+				base.WritePpu(addr, value);
 				return;
 			}
 
@@ -53,9 +53,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (bank_1k.Bit(7))
 			{
 				//this is referencing chr ram
-				VRAM[addr & 0x7FF] = value;
+				Vram[addr & 0x7FF] = value;
 			}
-			else base.WritePPU(addr, value);
+			else base.WritePpu(addr, value);
 		}
 
 	}

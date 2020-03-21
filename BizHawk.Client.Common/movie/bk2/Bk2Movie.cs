@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common
 			Mode = MovieMode.Inactive;
 			MakeBackup = true;
 
-			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0.0";
+			Header[HeaderKeys.MovieVersion] = "BizHawk v2.0.0";
 
 			Log = StringLogUtil.MakeStringLog();
 		}
@@ -74,16 +74,16 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				if (Header.ContainsKey(HeaderKeys.VBLANKCOUNT))
+				if (Header.ContainsKey(HeaderKeys.VBlankCount))
 				{
-					return Convert.ToUInt64(Header[HeaderKeys.VBLANKCOUNT]);
+					return Convert.ToUInt64(Header[HeaderKeys.VBlankCount]);
 				}
-				else if (Header.ContainsKey(HeaderKeys.CYCLECOUNT))
+				else if (Header.ContainsKey(HeaderKeys.CycleCount))
 				{
 					var gambatteName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(Gameboy), typeof(CoreAttribute))).CoreName;
-					if (Header[HeaderKeys.CORE] == gambatteName)
+					if (Header[HeaderKeys.Core] == gambatteName)
 					{
-						return Convert.ToUInt64(Header[HeaderKeys.CYCLECOUNT]);
+						return Convert.ToUInt64(Header[HeaderKeys.CycleCount]);
 					}
 				}
 				return (ulong)Log.Count;

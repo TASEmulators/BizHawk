@@ -4,17 +4,17 @@ using BizHawk.Common.NumberExtensions;
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//AKA mapper 64
-	public sealed class TENGEN_800032 : NES.NESBoardBase
+	internal sealed class TENGEN_800032 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_8k;
 		int chr_bank_mask_1k;
 
 		//regenerable state
-		IntBuffer prg_banks_8k = new IntBuffer(4);
-		IntBuffer chr_banks_1k = new IntBuffer(8);
+		int[] prg_banks_8k = new int[4];
+		int[] chr_banks_1k = new int[8];
 		//state
-		IntBuffer regs = new IntBuffer(16);
+		int[] regs = new int[16];
 		int address;
 		bool chr_1k, chr_mode, prg_mode;
 		//irq
@@ -28,19 +28,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int irq_countdown_2 = 0;
 		bool clock_scanline_irq;
 
-
-		public override void Dispose()
-		{
-			base.Dispose();
-			prg_banks_8k.Dispose();
-			chr_banks_1k.Dispose();
-			regs.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(regs), ref regs);
+			ser.Sync(nameof(regs), ref regs, false);
 			ser.Sync(nameof(address), ref address);
 			ser.Sync(nameof(chr_1k), ref chr_1k);
 			ser.Sync(nameof(chr_mode), ref chr_mode);
@@ -58,9 +49,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Sync();
 		}
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER064":
 					break;
@@ -71,8 +62,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
-			chr_bank_mask_1k = Cart.chr_size / 1 - 1;
+			prg_bank_mask_8k = Cart.PrgSize / 8 - 1;
+			chr_bank_mask_1k = Cart.ChrSize / 1 - 1;
 
 			SetMirrorType(EMirrorType.Vertical);
 
@@ -144,7 +135,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			//Console.WriteLine("mapping {0:X4} = {1:X2}", addr, value);
 			addr &= 0xE001;
@@ -191,17 +182,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_8k = addr >> 13;
 			int ofs = addr & ((1 << 13) - 1);
 			bank_8k = prg_banks_8k[bank_8k];
 			addr = (bank_8k << 13) | ofs;
-			return ROM[addr];
+			return Rom[addr];
 		}
 
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
@@ -209,15 +200,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				int ofs = addr & ((1 << 10) - 1);
 				bank_1k = chr_banks_1k[bank_1k];
 				addr = (bank_1k << 10) | ofs;
-				return VROM[addr];
+				return Vrom[addr];
 			}
 			else
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 		}
 
 		void SyncIRQ()
 		{
-			IRQSignal = irq_pending;
+			IrqSignal = irq_pending;
 		}
 
 		void ClockIRQ()
@@ -278,7 +269,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			*/
 		}
 
-		public override void ClockCPU()
+		public override void ClockCpu()
 		{
 
 			if (irq_mode == true)
@@ -301,7 +292,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		}
 
-		public override void ClockPPU()
+		public override void ClockPpu()
 		{
 			if (separator_counter > 0)
 				separator_counter--;
@@ -317,7 +308,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void AddressPPU(int addr)
+		public override void AddressPpu(int addr)
 		{
 			int a12 = (addr >> 12) & 1;
 			bool rising_edge = (a12 == 1 && a12_old == 0);

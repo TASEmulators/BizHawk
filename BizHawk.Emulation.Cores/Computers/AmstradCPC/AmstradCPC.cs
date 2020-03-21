@@ -95,6 +95,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			SetupMemoryDomains();
 		}
 
+		internal CoreComm CoreComm { get; }
+
 		public Action HardReset;
 		public Action SoftReset;
 
@@ -120,21 +122,21 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			{
 				// CPC 464 ROMS
 				case "OS464ROM":
-					embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.OS_464_ROM));
+					embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.OS_464_ROM.Value));
 					break;
 				case "BASIC1-0ROM":
-					embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.CPC_BASIC_1_0_ROM));
+					embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.CPC_BASIC_1_0_ROM.Value));
 					break;
 
 				// CPC 6128 ROMS
 				case "OS6128ROM":
-					embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.CPC_OS_6128_ROM));
+					embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.CPC_OS_6128_ROM.Value));
 					break;
 				case "BASIC1-1ROM":
-					embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.CPC_BASIC_1_1_ROM));
+					embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.CPC_BASIC_1_1_ROM.Value));
 					break;
 				case "AMSDOS0-5ROM":
-					embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.CPC_AMSDOS_0_5_ROM));
+					embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.CPC_AMSDOS_0_5_ROM.Value));
 					break;
 				default:
 					embeddedFound = false;

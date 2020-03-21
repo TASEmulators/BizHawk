@@ -274,8 +274,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			_islag = false;
 		}
 
-		public CoreComm CoreComm { get; }
-
 		public void Dispose()
 		{
 			Marshal.FreeHGlobal(iptr0);

@@ -220,7 +220,7 @@ __Types and notation__
 			}
 		}
 
-		private string TypeCleanup(string str)
+		private static string TypeCleanup(string str)
 		{
 			return str
 				.Replace("System", "")

@@ -2,18 +2,18 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper243 : NES.NESBoardBase
+	internal sealed class Mapper243 : NesBoardBase
 	{
 		// http://wiki.nesdev.com/w/index.php/INES_Mapper_243
 
 		int reg_addr;
 		bool var_a;
-		ByteBuffer regs = new ByteBuffer(8);
+		byte[] regs = new byte[8];
 		int chr_bank_mask_8k, prg_bank_mask_32k;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER243":
 					break;
@@ -23,25 +23,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				default:
 					return false;
 			}
-			chr_bank_mask_8k = Cart.chr_size / 8 - 1;
-			prg_bank_mask_32k = Cart.prg_size / 32 - 1;
+			chr_bank_mask_8k = Cart.ChrSize / 8 - 1;
+			prg_bank_mask_32k = Cart.PrgSize / 32 - 1;
 			return true;
-		}
-
-		public override void Dispose()
-		{
-			regs.Dispose();
-			base.Dispose();
 		}
 
 		public override void SyncState(Serializer ser)
 		{
 			ser.Sync(nameof(reg_addr), ref reg_addr);
-			ser.Sync(nameof(regs), ref regs);
+			ser.Sync(nameof(regs), ref regs, false);
 			base.SyncState(ser);
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			switch (addr & 0x01)
 			{
@@ -129,7 +123,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (var_a)
 			{
@@ -137,11 +131,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					int chr_bank = regs[4] | (regs[6] << 1) | (regs[2] << 3);
 
-					return VROM[((chr_bank & chr_bank_mask_8k) * 0x2000) + addr];
+					return Vrom[((chr_bank & chr_bank_mask_8k) * 0x2000) + addr];
 				}
 				else
 				{
-					return base.ReadPPU(addr);
+					return base.ReadPpu(addr);
 				}
 			}
 			else
@@ -150,18 +144,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					int chr_bank = (regs[4] << 2) | (regs[6]) | (regs[2] << 3);
 
-					return VROM[((chr_bank & chr_bank_mask_8k) * 0x2000) + addr];
+					return Vrom[((chr_bank & chr_bank_mask_8k) * 0x2000) + addr];
 				}
 				else
 				{
-					return base.ReadPPU(addr);
+					return base.ReadPpu(addr);
 				}
 			}		
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[((regs[5] & prg_bank_mask_32k) * 0x8000) + addr];
+			return Rom[((regs[5] & prg_bank_mask_32k) * 0x8000) + addr];
 		}
 	}
 }

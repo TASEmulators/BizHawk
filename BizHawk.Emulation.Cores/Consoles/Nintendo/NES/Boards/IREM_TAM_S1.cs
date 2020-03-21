@@ -5,15 +5,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//iNES Mapper 97
 	//Kaiketsu Yanchamaru (Kid Niki 1)
 
-	public sealed class IREM_TAM_S1 : NES.NESBoardBase
+	internal sealed class IREM_TAM_S1 : NesBoardBase
 	{
 		int prg_bank_mask_16k;
 		byte prg_bank_16k;
-		ByteBuffer prg_banks_16k = new ByteBuffer(2);
+		byte[] prg_banks_16k = new byte[2];
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER097":
 					break;
@@ -22,16 +22,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				default:
 					return false;
 			}
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
-			prg_bank_mask_16k = (Cart.prg_size / 16) - 1;
+			SetMirrorType(Cart.PadH, Cart.PadV);
+			prg_bank_mask_16k = (Cart.PrgSize / 16) - 1;
 			prg_banks_16k[0] = 0xFF;
 			return true;
-		}
-
-		public override void Dispose()
-		{
-			prg_banks_16k.Dispose();
-			base.Dispose();
 		}
 
 		public override void SyncState(Serializer ser)
@@ -39,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 			ser.Sync(nameof(prg_bank_mask_16k), ref prg_bank_mask_16k);
 			ser.Sync(nameof(prg_bank_16k), ref prg_bank_16k);
-			ser.Sync(nameof(prg_banks_16k), ref prg_banks_16k);
+			ser.Sync(nameof(prg_banks_16k), ref prg_banks_16k, false);
 		}
 
 		void SyncPRG()
@@ -47,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_banks_16k[1] = prg_bank_16k;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			prg_bank_16k = (byte)(value & 15);
 			SyncPRG();
@@ -70,14 +64,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_16k = addr >> 14;
 			int ofs = addr & ((1 << 14) - 1);
 			bank_16k = prg_banks_16k[bank_16k];
 			bank_16k &= prg_bank_mask_16k;
 			addr = (bank_16k << 14) | ofs;
-			return ROM[addr];
+			return Rom[addr];
 		}
 	}
 }

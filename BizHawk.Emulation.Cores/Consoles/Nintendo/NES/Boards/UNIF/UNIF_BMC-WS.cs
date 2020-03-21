@@ -3,14 +3,14 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Based on Nitnendulator src
-	public sealed class UNIF_BMC_WS : NES.NESBoardBase
+	internal sealed class UNIF_BMC_WS : NesBoardBase
 	{
 		private byte _reg0;
 		private byte _reg1;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "UNIF_BMC-WS":
 					break;
@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("reg1", ref _reg1);
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			if ((_reg0 & 0x20) > 0)
 			{
@@ -55,27 +55,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if ((_reg0 & 0x08) > 0)
 			{
-				return ROM[((_reg0 & 0x07) * 0x4000) + (addr & 0x3FFF)];
+				return Rom[((_reg0 & 0x07) * 0x4000) + (addr & 0x3FFF)];
 			}
 			else
 			{
-				return ROM[(((_reg0 & 0x6) >> 1) * 0x8000) + (addr & 0x7FFF)];
+				return Rom[(((_reg0 & 0x6) >> 1) * 0x8000) + (addr & 0x7FFF)];
 			}
 
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
-				return VROM[((_reg1 & 0x07) * 0x2000) + (addr & 0x1FFF)];
+				return Vrom[((_reg1 & 0x07) * 0x2000) + (addr & 0x1FFF)];
 			}
 
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 	}
 }

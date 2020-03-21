@@ -2,14 +2,14 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class Mapper186 : NES.NESBoardBase
+	internal class Mapper186 : NesBoardBase
 	{
-		private ByteBuffer _SRAM = new ByteBuffer(3072);
-		private ByteBuffer regs = new ByteBuffer(4);
+		private byte[] _SRAM = new byte[3072];
+		private byte[] regs = new byte[4];
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER186":
 					break;
@@ -20,37 +20,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			_SRAM.Dispose();
-			regs.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync("SRAM", ref _SRAM);
-			ser.Sync(nameof(regs), ref regs);
+			ser.Sync("SRAM", ref _SRAM, false);
+			ser.Sync(nameof(regs), ref regs, false);
 			base.SyncState(ser);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if (addr < 0x4000)
 			{
-				return ROM[(regs[1] << 14) + (addr & 0x3FFF)];
+				return Rom[(regs[1] << 14) + (addr & 0x3FFF)];
 			}
 
 			// C000-FFFF is always bank 0
-			return ROM[addr & 0x3FFF];
+			return Rom[addr & 0x3FFF];
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
-			return ROM[(regs[0] >> 6) + addr];
+			return Rom[(regs[0] >> 6) + addr];
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			if (addr >= 0x200 && addr < 0x400)
 			{
@@ -65,11 +58,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 			{
-				base.WriteEXP(addr, value);
+				base.WriteExp(addr, value);
 			}
 		}
 
-		public override byte ReadEXP(int addr)
+		public override byte ReadExp(int addr)
 		{
 			if (addr >= 0x200 && addr < 0x400)
 			{
@@ -86,7 +79,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return _SRAM[addr - 0x400];
 			}
 
-			return base.ReadEXP(addr);
+			return base.ReadExp(addr);
 		}
 	}
 }

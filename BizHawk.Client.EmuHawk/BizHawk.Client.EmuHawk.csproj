@@ -96,17 +96,14 @@
 		<Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed"
 			HintPath="$(SolutionDir)packages/Newtonsoft.Json.12.0.3/lib/net45/Newtonsoft.Json.dll"
 			Private="true" />
-		<!--<Reference Include="OpenTK, Version=3.0.1.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4"
-			HintPath="../packages/OpenTK.3.0.1/lib/net20/OpenTK.dll"
-			Private="true" />-->
 		<Reference Include="OpenTK.GLControl, Version=3.0.1.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4"
-			HintPath="../packages/OpenTK.GLControl.3.0.1/lib/net20/OpenTK.GLControl.dll"
+			HintPath="$(SolutionDir)packages/OpenTK.GLControl.3.0.1/lib/net20/OpenTK.GLControl.dll"
 			Private="true" />
 		<Reference Include="ICSharpCode.SharpZipLib, Version=1.1.0.145, Culture=neutral, PublicKeyToken=1b03e6acf1164f73"
 			HintPath="$(SolutionDir)packages/SharpZipLib.1.1.0/lib/net45/ICSharpCode.SharpZipLib.dll"
 			Private="true" />
 		<Reference Include="System.Drawing.Common, Version=4.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51"
-			HintPath="../packages/System.Drawing.Common.4.7.0/lib/net461/System.Drawing.Common.dll"
+			HintPath="$(SolutionDir)packages/System.Drawing.Common.4.7.0/lib/net461/System.Drawing.Common.dll"
 			Private="true" />
 	</ItemGroup>
 	<ItemGroup>
@@ -162,6 +159,9 @@
 		<ProjectReference Include="$(SolutionDir)BizHawk.Emulation.Cores/BizHawk.Emulation.Cores.csproj"
 			Name="BizHawk.Emulation.Cores"
 			Project="{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}" />
+		<ProjectReference Include="$(SolutionDir)BizHawk.WinForms.Controls/BizHawk.WinForms.Controls.csproj"
+			Name="BizHawk.WinForms.Controls"
+			Project="{B5A2214B-3CB0-48C4-8DB1-98B38D48AC4A}" />
 		<ProjectReference Include="$(SolutionDir)Bizware/BizHawk.Bizware.BizwareGL/BizHawk.Bizware.BizwareGL.csproj"
 			Name="BizHawk.Bizware.BizwareGL"
 			Project="{9F84A0B2-861E-4EF4-B89B-5E2A3F38A465}" />
@@ -171,7 +171,6 @@
 		<Compile Include="$(SolutionDir)BizHawk.Common/OSTailoredCode.cs" Link="OSTailoredCode.cs" />
 		<Compile Include="$(SolutionDir)Version/svnrev.cs" Link="svnrev.cs" />
 		<Compile Include="$(SolutionDir)Version/VersionInfo.cs" Link="VersionInfo.cs" />
-		<Compile Remove="Properties/AssemblyInfo.cs" />
 		<Compile Remove="Properties/Settings.Designer.cs" />
 		<Content Include="images/logo.ico" />
 		<EmbeddedResource Include="**/*.resx" />
@@ -343,6 +342,9 @@
 		<Compile Update="config/N64/N64VideoPluginconfig.cs" SubType="Form" />
 		<Compile Update="config/N64/N64VideoPluginconfig.Designer.cs" DependentUpon="N64VideoPluginconfig.cs" />
 		<EmbeddedResource Update="config/N64/N64VideoPluginconfig.resx" DependentUpon="N64VideoPluginconfig.cs" />
+		<Compile Update="config/NDS/NDSSettings.cs" SubType="Form" />
+		<Compile Update="config/NDS/NDSSettings.Designer.cs" DependentUpon="NDSSettings.cs" />
+		<EmbeddedResource Update="config/NDS/NDSSettings.resx" DependentUpon="NDSSettings.cs" />
 		<Compile Update="config/NES/NesControllerSettings.cs" SubType="Form" />
 		<Compile Update="config/NES/NesControllerSettings.Designer.cs" DependentUpon="NesControllerSettings.cs" />
 		<EmbeddedResource Update="config/NES/NesControllerSettings.resx" DependentUpon="NesControllerSettings.cs" />
@@ -418,11 +420,9 @@
 		<Compile Update="CoreFeatureAnalysis.cs" SubType="Form" />
 		<Compile Update="CoreFeatureAnalysis.Designer.cs" DependentUpon="CoreFeatureAnalysis.cs" />
 		<EmbeddedResource Update="CoreFeatureAnalysis.resx" DependentUpon="CoreFeatureAnalysis.cs" />
-		<Compile Update="CustomControls/AutosizedLabel.cs" SubType="Component" />
 		<Compile Update="CustomControls/ExceptionBox.cs" SubType="Form" />
 		<Compile Update="CustomControls/ExceptionBox.designer.cs" DependentUpon="ExceptionBox.cs" />
 		<EmbeddedResource Update="CustomControls/ExceptionBox.resx" DependentUpon="ExceptionBox.cs" />
-		<Compile Update="CustomControls/FLPInGroupBox.cs" SubType="Component" />
 		<Compile Update="CustomControls/FolderBrowserDialogEx.cs" SubType="Component" />
 		<Compile Update="CustomControls/HexTextBox.cs" SubType="Component" />
 		<Compile Update="CustomControls/InputRoll/InputRoll.cs" SubType="Component" />
@@ -434,9 +434,6 @@
 		<Compile Update="CustomControls/MsgBox.designer.cs" DependentUpon="MsgBox.cs" />
 		<EmbeddedResource Update="CustomControls/MsgBox.resx" DependentUpon="MsgBox.cs" />
 		<Compile Update="CustomControls/RepeatButton.cs" SubType="Component" />
-		<Compile Update="CustomControls/SingleColumnFLP.cs" SubType="Component" />
-		<Compile Update="CustomControls/SingleRowFLP.cs" SubType="Component" />
-		<Compile Update="CustomControls/TLPInGroupBox.cs" SubType="Component" />
 		<Compile Update="CustomControls/ToolStripEx.cs" SubType="Component" />
 		<Compile Update="CustomControls/TransparentTrackbar.cs" SubType="Component" />
 		<Compile Update="CustomControls/ViewportPanel.cs" SubType="Component" />

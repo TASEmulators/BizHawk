@@ -109,8 +109,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			_islag = false;
 		}
 
-		public CoreComm CoreComm { get; }
-
 		public void Dispose()
 		{
 			audio.DisposeSound();

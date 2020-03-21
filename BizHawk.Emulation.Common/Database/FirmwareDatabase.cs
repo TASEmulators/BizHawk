@@ -45,6 +45,10 @@ namespace BizHawk.Emulation.Common
 			Option("GBA", "Bios", gbaNormal);
 			Option("GBA", "Bios", gbaJDebug);
 
+			FirmwareAndOption("24F67BDEA115A2C847C8813A262502EE1607B7DF", 16384, "NDS", "bios7", "bios7.bin", "ARM7 BIOS");
+			FirmwareAndOption("BFAAC75F101C135E32E2AAF541DE6B1BE4C8C62D", 4096, "NDS", "bios9", "bios9.bin", "ARM9 BIOS");
+			FirmwareAndOption("22A7547DBC302BCBFB4005CFB5A2D426D3F85AC6", 262144, "NDS", "firmware", "firmware.bin", "NDS Firmware (note: given hash is with blank user data)");
+
 			FirmwareAndOption("E4ED47FAE31693E016B081C6BDA48DA5B70D7CCB", 512, "Lynx", "Boot", "lynxboot.img", "Boot Rom");
 
 			////FirmwareAndOption("24F67BDEA115A2C847C8813A262502EE1607B7DF", "NDS", "Bios_Arm7", "biosnds7.rom", "ARM7 Bios");

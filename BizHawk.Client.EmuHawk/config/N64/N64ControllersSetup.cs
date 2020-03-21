@@ -28,6 +28,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void N64ControllersSetup_Load(object sender, EventArgs e)
 		{
+			if (DesignMode)
+			{
+				return;
+			}
+
 			ControllerSettingControls
 				.ForEach(c =>
 				{

@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// Tetris Family 12-in-1 (GS-2013) [U][!]
 	// This cart is 2 ROMs in 1
 	// Pretty much the UNIF_BMC-GS_2004 board, with more Rom tacked on
-	public class UNIF_BMC_GS_2013 : NES.NESBoardBase
+	internal sealed class UNIF_BMC_GS_2013 : NesBoardBase
 	{
 		private int _reg = 0xFF;
 		private bool _isRom2 = true;
@@ -17,9 +17,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private int _wramPage = 0x3E000;
 		private int _rom2Offset = 0x40000;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "UNIF_BMC-GS-2013":
 					break;
@@ -32,11 +32,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void NESSoftReset()
+		public override void NesSoftReset()
 		{
 			_reg = 0xFF;
 			_isRom2 = true;
-			base.NESSoftReset();
+			base.NesSoftReset();
 		}
 
 		public override void SyncState(Serializer ser)
@@ -47,21 +47,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			_isRom2 = value.Bit(3);
 			_reg = value;
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
-			return ROM[_wramPage + (addr & 0x1FFF)];
+			return Rom[_wramPage + (addr & 0x1FFF)];
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank = _reg & (_isRom2 ? _prgMaskRom2 : _prgMaskRom1);
-			return ROM[(bank * 0x8000) + (addr & 0x7FFF) + (_isRom2 ? _rom2Offset : 0)];
+			return Rom[(bank * 0x8000) + (addr & 0x7FFF) + (_isRom2 ? _rom2Offset : 0)];
 		}
 	}
 }

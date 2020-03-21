@@ -31,27 +31,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				domains.Add(BatteryRam);
 			}
 
-			if (Board.ROM != null)
+			if (Board.Rom != null)
 			{
-				var PRGROM = new MemoryDomainByteArray("PRG ROM", MemoryDomain.Endian.Little, Board.ROM, true, 1);
+				var PRGROM = new MemoryDomainByteArray("PRG ROM", MemoryDomain.Endian.Little, Board.Rom, true, 1);
 				domains.Add(PRGROM);
 			}
 
-			if (Board.VROM != null)
+			if (Board.Vrom != null)
 			{
-				var CHRROM = new MemoryDomainByteArray("CHR VROM", MemoryDomain.Endian.Little, Board.VROM, true, 1);
+				var CHRROM = new MemoryDomainByteArray("CHR VROM", MemoryDomain.Endian.Little, Board.Vrom, true, 1);
 				domains.Add(CHRROM);
 			}
 
-			if (Board.VRAM != null)
+			if (Board.Vram != null)
 			{
-				var VRAM = new MemoryDomainByteArray("VRAM", MemoryDomain.Endian.Little, Board.VRAM, true, 1);
+				var VRAM = new MemoryDomainByteArray("VRAM", MemoryDomain.Endian.Little, Board.Vram, true, 1);
 				domains.Add(VRAM);
 			}
 
-			if (Board.WRAM != null)
+			if (Board.Wram != null)
 			{
-				var WRAM = new MemoryDomainByteArray("WRAM", MemoryDomain.Endian.Little, Board.WRAM, true, 1);
+				var WRAM = new MemoryDomainByteArray("WRAM", MemoryDomain.Endian.Little, Board.Wram, true, 1);
 				domains.Add(WRAM);
 			}
 

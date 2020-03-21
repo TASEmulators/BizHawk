@@ -61,6 +61,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			return _data;
 		}
 
+		/// <remarks>TODO verify direction against hardware</remarks>
+		private static readonly List<AxisRange> AnalogStickRanges = CreateAxisRangePair(0, 128, 255, AxisPairOrientation.RightAndDown);
+
+		private static readonly AxisRange MiscAxisRange = new AxisRange(0, 128, 255);
+
+		public static readonly List<AxisRange> MissionAxisRanges = AnalogStickRanges.Concat(new List<AxisRange> { MiscAxisRange }).ToList();
+
+		public static readonly List<AxisRange> DualMissionAxisRanges = MissionAxisRanges.Concat(MissionAxisRanges).ToList();
+
+		public static readonly List<AxisRange> ThreeDeeAxisRanges = AnalogStickRanges.Concat(new List<AxisRange> { new AxisRange(0, 0, 255), new AxisRange(0, 0, 255) }).ToList();
+
 		public enum Device
 		{
 			None,
@@ -95,8 +106,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 
 		private abstract class ButtonedDevice : IDevice
 		{
-			private static readonly FloatRange AnalogFloatRange = new FloatRange(0, 128, 255);
-
 			protected ButtonedDevice()
 			{
 				_bakedButtonNames = ButtonNames.Select(s => s != null ? "0" + s : null).ToArray();
@@ -115,7 +124,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 					.Select((s, i) => new { s, i })
 					.OrderBy(a => AnalogOrdinal(AnalogNames[a.i]))
 					.Select(a => a.s));
-				Definition.FloatRanges.AddRange(_bakedAnalogNames.Select(s => AnalogFloatRange));
+				Definition.FloatRanges.AddRange(_bakedAnalogNames.Select(s => MiscAxisRange));
 			}
 
 			private readonly string[] _bakedButtonNames;
@@ -233,8 +242,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 
 			public ThreeDeeGamepad()
 			{
-				Definition.FloatRanges[2] = new FloatRange(0, 0, 255);
-				Definition.FloatRanges[3] = new FloatRange(0, 0, 255);
+				Definition.FloatRanges = ThreeDeeAxisRanges;
 			}
 
 			public override void Update(IController controller, byte[] dest, int offset)
@@ -358,6 +366,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			protected override string[] AnalogNames => _analogNames;
 			protected override int AnalogByteOffset => 4;
 
+			public Mission()
+			{
+				Definition.FloatRanges = MissionAxisRanges;
+			}
+
 			protected override int ButtonOrdinal(string name)
 			{
 				switch (name)
@@ -397,6 +410,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			};
 
 			protected override string[] AnalogNames => _analogNames;
+
+			public DualMission()
+			{
+				Definition.FloatRanges = DualMissionAxisRanges;
+			}
 		}
 
 		private class Keyboard : ButtonedDevice

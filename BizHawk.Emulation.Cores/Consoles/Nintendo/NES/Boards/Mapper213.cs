@@ -5,13 +5,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// 9999999-in-1 [p2]
 	// http://wiki.nesdev.com/w/index.php/INES_Mapper_213
-	public class Mapper213 : NES.NESBoardBase
+	internal sealed class Mapper213 : NesBoardBase
 	{
 		private int _reg;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER213":
 					break;
@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			SetMirrorType(Cart.PadH, Cart.PadV);
 
 			_reg = 65535;
 
@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(_reg), ref _reg);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			addr += 0x8000;
 
@@ -40,21 +40,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SetMirrorType(addr.Bit(3) ? EMirrorType.Vertical : EMirrorType.Horizontal);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank = (_reg >> 1) & 3;
-			return ROM[(bank * 0x8000) + (addr & 0x7FFF)];
+			return Rom[(bank * 0x8000) + (addr & 0x7FFF)];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				int bank = (_reg >> 3) & 7;
-				return VROM[(bank * 0x2000) + (addr & 0x1FFF)];
+				return Vrom[(bank * 0x2000) + (addr & 0x1FFF)];
 			}
 
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 	}
 }

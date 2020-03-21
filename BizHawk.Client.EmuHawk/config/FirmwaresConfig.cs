@@ -28,6 +28,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class FirmwaresConfig : Form
 	{
 		private readonly MainForm _mainForm;
+		private readonly Config _config;
 
 		// friendlier names than the system Ids
 		// Redundant with SystemLookup? Not so fast. That data drives things. This is one step abstracted. Don't be such a smart guy. Keep this redundant list up to date.
@@ -40,6 +41,7 @@ namespace BizHawk.Client.EmuHawk
 			["A78"] = "Atari 7800",
 			["Coleco"] = "Colecovision",
 			["GBA"] = "GBA",
+			["NDS"] = "Nintendo DS",
 			["TI83"] = "TI-83",
 			["INTV"] = "Intellivision",
 			["C64"] = "C64",
@@ -91,9 +93,10 @@ namespace BizHawk.Client.EmuHawk
 		private string _currSelectorDir;
 		private readonly ListViewSorter _listViewSorter;
 
-		public FirmwaresConfig(MainForm mainForm, bool retryLoadRom = false, string reloadRomPath = null)
+		public FirmwaresConfig(MainForm mainForm, Config config, bool retryLoadRom = false, string reloadRomPath = null)
 		{
 			_mainForm = mainForm;
+			_config = config;
 			InitializeComponent();
 
 			// prep ImageList for ListView with 3 item states for {idUnsure, idMissing, idOk}
@@ -245,15 +248,24 @@ namespace BizHawk.Client.EmuHawk
 		private void DoScan()
 		{
 			lvFirmwares.BeginUpdate();
-			Manager.DoScanAndResolve();
+			Manager.DoScanAndResolve(
+				_config.PathEntries,
+				_config.FirmwareUserSpecifications);
 
 			// for each type of firmware, try resolving and record the result
 			foreach (ListViewItem lvi in lvFirmwares.Items)
 			{
 				var fr = lvi.Tag as FirmwareDatabase.FirmwareRecord;
-				var ri = Manager.Resolve(fr, true);
-				for(int i=4;i<=7;i++)
+				var ri = Manager.Resolve(
+					_config.PathEntries,
+					_config.FirmwareUserSpecifications,
+					fr,
+					true);
+
+				for (int i = 4; i <= 7; i++)
+				{
 					lvi.SubItems[i].Text = "";
+				}
 
 				if (ri == null)
 				{
@@ -263,7 +275,7 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					// lazy substring extraction. really should do a better job
-					var basePath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null) + Path.DirectorySeparatorChar;
+					var basePath = _config.PathEntries.FirmwareAbsolutePath() + Path.DirectorySeparatorChar;
 					
 					var path = ri.FilePath.Replace(basePath, "");
 
@@ -315,8 +327,9 @@ namespace BizHawk.Client.EmuHawk
 
 					lvi.SubItems[6].Text = ri.Size.ToString();
 
-					if (ri.Hash != null) lvi.SubItems[7].Text = $"sha1:{ri.Hash}";
-					else lvi.SubItems[7].Text = "";
+					lvi.SubItems[7].Text = ri.Hash != null
+						? $"sha1:{ri.Hash}"
+						: "";
 				}
 			}
 
@@ -330,15 +343,17 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			Manager.DoScanAndResolve();
+			Manager.DoScanAndResolve(_config.PathEntries, _config.FirmwareUserSpecifications);
 
 			foreach (var fr in FirmwareDatabase.FirmwareRecords)
 			{
-				var ri = Manager.Resolve(fr);
+				var ri = Manager.Resolve(_config.PathEntries, _config.FirmwareUserSpecifications, fr);
 				if (ri?.KnownFirmwareFile == null) continue;
 				if (ri.UserSpecified) continue;
 
-				string fpTarget = PathManager.StandardFirmwareName(ri.KnownFirmwareFile.RecommendedName);
+				var fpTarget = Path.Combine(
+					_config.PathEntries.FirmwareAbsolutePath(),
+					ri.KnownFirmwareFile.RecommendedName);
 				string fpSource = ri.FilePath;
 
 				try
@@ -357,7 +372,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void tbbOpenFolder_Click(object sender, EventArgs e)
 		{
-			var frmWares = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null);
+			var frmWares =  _config.PathEntries.FirmwareAbsolutePath();
 			if (!Directory.Exists(frmWares))
 			{
 				Directory.CreateDirectory(frmWares);
@@ -393,7 +408,7 @@ namespace BizHawk.Client.EmuHawk
 				InitialDirectory = _currSelectorDir,
 				RestoreDirectory = true
 			};
-			string firmwarePath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null);
+			string firmwarePath =  _config.PathEntries.FirmwareAbsolutePath();
 
 			if (ofd.ShowDialog() == DialogResult.OK)
 			{
@@ -577,7 +592,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RefreshBasePath()
 		{
 			string oldBasePath = _currSelectorDir;
-			linkBasePath.Text = _currSelectorDir = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null);
+			linkBasePath.Text = _currSelectorDir =  _config.PathEntries.FirmwareAbsolutePath();
 			if (oldBasePath != _currSelectorDir)
 			{
 				DoScan();
@@ -641,7 +656,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RunImportJob(IEnumerable<string> files)
 		{
 			bool didSomething = false;
-			var basePath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null);
+			var basePath =  _config.PathEntries.FirmwareAbsolutePath();
 			string errors = "";
 			foreach(var f in files)
 			{
@@ -650,7 +665,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					// blech. the worst extraction code in the universe.
 					string extractPath = $"{Path.GetTempFileName()}.dir";
-					DirectoryInfo di = Directory.CreateDirectory(extractPath);
+					var di = Directory.CreateDirectory(extractPath);
 
 					try
 					{

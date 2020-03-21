@@ -153,8 +153,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void ExecutePhase()
 		{
-			var _shiftIn = false;
-			var _shiftOut = false;
+			var shiftIn = false;
+
+			// TODO: use this or delete
+			////var shiftOut = false;
 
 			// Process delayed interrupts
 			_ifr |= _interruptNextClock;
@@ -371,11 +373,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				if (_acrPbLatchEnable && (_ifr & 0x10) == 0)
 					_pbLatch = _port.ReadPrb(_prb, _ddrb);
 				if (_acrSrControl == ACR_SR_CONTROL_DISABLED)
-					_shiftIn = true;
+					shiftIn = true;
 				_ifr |= 0x10;
 			}
 
-			if (_shiftIn)
+			if (shiftIn)
 			{
 				_sr <<= 1;
 				_sr |= Cb2 ? 1 : 0;

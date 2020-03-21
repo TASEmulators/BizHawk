@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// http://wiki.nesdev.com/w/index.php/INES_Mapper_163
-	public sealed class NanJing : NES.NESBoardBase
+	internal sealed class NanJing : NesBoardBase
 	{
 		/* 
 		 * China Pirate Stuff.  Not very tested.
@@ -28,9 +28,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		bool strobe = true;
 
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER163":
 					AssertChr(0); AssertVram(8); AssertWram(8);
@@ -39,14 +39,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				default:
 					return false;
 			}
-			prg_mask = (Cart.prg_size / 32) - 1;
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			prg_mask = (Cart.PrgSize / 32) - 1;
+			SetMirrorType(Cart.PadH, Cart.PadV);
 			return true;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[(prg << 15) | addr];
+			return Rom[(prg << 15) | addr];
 		}
 		
 		/*
@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 		}*/
 
-		public override byte ReadEXP(int addr)
+		public override byte ReadExp(int addr)
 		{
 			if (addr >= 0x1000)
 			{
@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return 0;
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			if (addr == 0x1101)
 			{
@@ -118,40 +118,40 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.WriteWRAM(addr, value);
 		}*/
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				if ((reg1 & 0x80) != 0)
 				{
 					if (NES.ppu.ppur.status.sl <= 128)
-						return VRAM[addr & 0xfff];
+						return Vram[addr & 0xfff];
 					else
-						return VRAM[(addr & 0xfff) + 0x1000];
+						return Vram[(addr & 0xfff) + 0x1000];
 				}
 				else
-					return VRAM[addr];
+					return Vram[addr];
 			}
 			else
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000)
 			{
 				if ((reg1 & 0x80) != 0 && NES.ppu.ppur.status.rendering)
 				{
 					if (NES.ppu.ppur.status.sl <= 128)
-						VRAM[addr & 0xfff] = value;
+						Vram[addr & 0xfff] = value;
 					else
-						VRAM[(addr & 0xfff) + 0x1000] = value;
+						Vram[(addr & 0xfff) + 0x1000] = value;
 				}
 				else
-					VRAM[addr] = value;
+					Vram[addr] = value;
 			}
 			else
-				base.WritePPU(addr, value);
+				base.WritePpu(addr, value);
 		}
 
 		public override void SyncState(Serializer ser)

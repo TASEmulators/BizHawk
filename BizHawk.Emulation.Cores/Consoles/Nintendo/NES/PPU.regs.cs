@@ -65,10 +65,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//TODO - this should be turned into a state machine
 		public sealed class PPUREGS
 		{
-			PPU ppu;
-			public PPUREGS(PPU ppu)
+			public PPUREGS()
 			{
-				this.ppu = ppu;
 				reset();
 			}
 
@@ -207,13 +205,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return 0x2000 | (v << 0xB) | (h << 0xA) | 0x3C0 | ((vt & 0x1C) << 1) | ((ht & 0x1C) >> 2);
 			}
 
-			//address line 3 relates to the pattern table fetch occuring (the PPU always makes them in pairs).
-			public int get_ptread(int par)
-			{
-				int s = ppu.reg_2000.bg_pattern_hi;
-				return (s << 0xC) | (par << 0x4) | fv;
-			}
-
 			public void increment2007(bool rendering, bool by32)
 			{
 				if (rendering)
@@ -257,10 +248,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public sealed class Reg_2000
 		{
-			PPU ppu;
-			public Reg_2000(PPU ppu)
+			private readonly PPUREGS _regs;
+			public Reg_2000(PPUREGS regs)
 			{
-				this.ppu = ppu;
+				_regs = regs;
 			}
 			//these bits go straight into PPUR
 			//(00 = $2000; 01 = $2400; 02 = $2800; 03 = $2c00)
@@ -275,11 +266,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public byte Value
 			{
-				get => (byte)(ppu.ppur._h | (ppu.ppur._v << 1) | (vram_incr32 << 2) | (obj_pattern_hi << 3) | (bg_pattern_hi << 4) | (obj_size_16 << 5) | (ppu_layer << 6) | (vblank_nmi_gen << 7));
+				get => (byte)(_regs._h | (_regs._v << 1) | (vram_incr32 << 2) | (obj_pattern_hi << 3) | (bg_pattern_hi << 4) | (obj_size_16 << 5) | (ppu_layer << 6) | (vblank_nmi_gen << 7));
 				set
 				{
-					ppu.ppur._h = value & 1;
-					ppu.ppur._v = (value >> 1) & 1;
+					_regs._h = value & 1;
+					_regs._v = (value >> 1) & 1;
 					vram_incr32 = (value >> 2) & 1;
 					obj_pattern_hi = (value >> 3) & 1;
 					bg_pattern_hi = (value >> 4) & 1;
@@ -305,9 +296,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		void regs_reset()
 		{
 			//TODO - would like to reconstitute the entire PPU instead of all this..
-			reg_2000 = new Reg_2000(this);
+			ppur = new PPUREGS();
+			reg_2000 = new Reg_2000(ppur);
 			reg_2001 = new Reg_2001();
-			ppur = new PPUREGS(this);
 			Reg2002_objoverflow = false;
 			Reg2002_objhit = false;
 			Reg2002_vblank_active = false;
@@ -328,9 +319,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			//if (ppudead != 1)
 				reg_2000.Value = value;
-
-
 		}
+
 		byte read_2000() { return ppu_open_bus; }
 		byte peek_2000() { return ppu_open_bus; }
 
@@ -580,7 +570,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			//see comments in $2006
 			if (ppur.status.sl >= 241 || !PPUON)
-				nes.Board.AddressPPU(ppur.get_2007access()); 
+				nes.Board.AddressPpu(ppur.get_2007access()); 
 		}
 		byte read_2007()
 		{
@@ -604,7 +594,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			//see comments in $2006
 			if (ppur.status.sl >= 241 || !PPUON)
-				nes.Board.AddressPPU(ppur.get_2007access());
+				nes.Board.AddressPpu(ppur.get_2007access());
 
 			// update open bus here
 			ppu_open_bus = ret;

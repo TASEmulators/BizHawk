@@ -2,14 +2,14 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper051 : NES.NESBoardBase
+	internal sealed class Mapper051 : NesBoardBase
 	{
 		private int _bank;
 		private int _mode = 2;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER051":
 					break;
@@ -17,15 +17,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			SetMirrorType(Cart.PadH, Cart.PadV);
 			return true;
 		}
 
-		public override void NESSoftReset()
+		public override void NesSoftReset()
 		{
 			_bank = 0;
 			_mode = 2;
-			base.NESSoftReset();
+			base.NesSoftReset();
 		}
 
 		public override void SyncState(Serializer ser)
@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("mode", ref _mode);
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
 			int prgBank8k;
 			if ((_mode & 0x02) > 0)
@@ -47,10 +47,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				prgBank8k = ((_bank & 4) << 2) | 0x2F;
 			}
 
-			return ROM[(prgBank8k * 0x2000) + addr];
+			return Rom[(prgBank8k * 0x2000) + addr];
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int prgBank16k_8;
 			int prgBank16k_C;
@@ -72,15 +72,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (addr < 0x4000)
 			{
-				return ROM[(prgBank16k_8 * 0x4000) + (addr & 0x3FFF)];
+				return Rom[(prgBank16k_8 * 0x4000) + (addr & 0x3FFF)];
 			}
 			else
 			{
-				return ROM[(prgBank16k_C * 0x4000) + (addr & 0x3FFF)];
+				return Rom[(prgBank16k_C * 0x4000) + (addr & 0x3FFF)];
 			}
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			if (addr < 0x2000)
 			{
@@ -89,11 +89,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 			{
-				base.WriteWRAM(addr, value);
+				base.WriteWram(addr, value);
 			}
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			_bank = value & 0x0F;
 			if ((addr & 0x4000) > 0)

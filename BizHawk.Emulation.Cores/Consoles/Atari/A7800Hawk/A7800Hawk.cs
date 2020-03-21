@@ -87,8 +87,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				ReadMemory = ReadMemory
 			};
 
-			CoreComm = comm;
-
 			_blip.SetRates(1789773, 44100);
 
 			_settings = (A7800Settings)settings ?? new A7800Settings();

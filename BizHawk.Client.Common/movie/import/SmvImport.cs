@@ -17,7 +17,7 @@ namespace BizHawk.Client.Common.movie.import
 		protected override void RunImport()
 		{
 			var bsnesName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(LibsnesCore), typeof(CoreAttribute))).CoreName;
-			Result.Movie.HeaderEntries[HeaderKeys.CORE] = bsnesName;
+			Result.Movie.HeaderEntries[HeaderKeys.Core] = bsnesName;
 
 			using var fs = SourceFile.Open(FileMode.Open, FileAccess.Read);
 			using var r = new BinaryReader(fs);
@@ -30,26 +30,17 @@ namespace BizHawk.Client.Common.movie.import
 				return;
 			}
 
-			Result.Movie.HeaderEntries[HeaderKeys.PLATFORM] = "SNES";
+			Result.Movie.HeaderEntries[HeaderKeys.Platform] = "SNES";
 
 			// 004 4-byte little-endian unsigned int: version number
 			uint versionNumber = r.ReadUInt32();
-			string version;
-			switch (versionNumber)
+			var version = versionNumber switch
 			{
-				case 1:
-					version = "1.43";
-					break;
-				case 4:
-					version = "1.51";
-					break;
-				case 5:
-					version = "1.52";
-					break;
-				default:
-					version = "Unknown";
-					break;
-			}
+				1 => "1.43",
+				4 => "1.51",
+				5 => "1.52",
+				_ => "Unknown"
+			};
 
 			Result.Movie.Comments.Add($"{EmulationOrigin} Snes9x version {version}");
 			Result.Movie.Comments.Add($"{MovieOrigin} .SMV");
@@ -125,7 +116,7 @@ namespace BizHawk.Client.Common.movie.import
 
 			// bit 1: if "0", movie is NTSC (60 fps); if "1", movie is PAL (50 fps)
 			bool pal = ((movieFlags >> 1) & 0x1) != 0;
-			Result.Movie.HeaderEntries[HeaderKeys.PAL] = pal.ToString();
+			Result.Movie.HeaderEntries[HeaderKeys.Pal] = pal.ToString();
 
 			// other: reserved, set to 0
 			/*
@@ -154,7 +145,7 @@ namespace BizHawk.Client.Common.movie.import
 			 Extra ROM info is always positioned right before the savestate. Its size is 30 bytes if MOVIE_SYNC_HASROMINFO
 			 is used (and MOVIE_SYNC_DATA_EXISTS is set), 0 bytes otherwise.
 			*/
-			int extraRomInfo = (((syncFlags >> 6) & 0x1) != 0 && (syncFlags & 0x1) != 0) ? 30 : 0;
+			int extraRomInfo = ((syncFlags >> 6) & 0x1) != 0 && (syncFlags & 0x1) != 0 ? 30 : 0;
 
 			// 018 4-byte little-endian unsigned int: offset to the savestate inside file
 			uint savestateOffset = r.ReadUInt32();
@@ -190,11 +181,11 @@ namespace BizHawk.Client.Common.movie.import
 			 from position 32 (0x20 (0x40 for 1.51 and up)) and ends at <savestate_offset -
 			 length_of_extra_rom_info_in_bytes>.
 			*/
-			byte[] metadata = r.ReadBytes((int)(savestateOffset - extraRomInfo - ((version != "1.43") ? 0x40 : 0x20)));
+			byte[] metadata = r.ReadBytes((int)(savestateOffset - extraRomInfo - (version != "1.43" ? 0x40 : 0x20)));
 			string author = NullTerminated(Encoding.Unicode.GetString(metadata).Trim());
 			if (!string.IsNullOrWhiteSpace(author))
 			{
-				Result.Movie.HeaderEntries[HeaderKeys.AUTHOR] = author;
+				Result.Movie.HeaderEntries[HeaderKeys.Author] = author;
 			}
 
 			if (extraRomInfo == 30)
@@ -206,7 +197,7 @@ namespace BizHawk.Client.Common.movie.import
 
 				// the game name copied from the ROM, truncated to 23 bytes (the game name in the ROM is 21 bytes)
 				string gameName = NullTerminated(Encoding.UTF8.GetString(r.ReadBytes(23)));
-				Result.Movie.HeaderEntries[HeaderKeys.GAMENAME] = gameName;
+				Result.Movie.HeaderEntries[HeaderKeys.GameName] = gameName;
 			}
 
 			SimpleController controllers = new SimpleController

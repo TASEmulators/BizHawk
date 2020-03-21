@@ -77,7 +77,7 @@ namespace BizHawk.Client.Common
 		{
 			int index = 1;
 			var sb = new StringBuilder();
-			List<Subtitle> subs = new List<Subtitle>();
+			var subs = new List<Subtitle>();
 			foreach (var subtitle in this)
 			{
 				subs.Add(new Subtitle(subtitle));

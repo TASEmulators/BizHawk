@@ -11,9 +11,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	select one of the 4 banks.  i.e. 1FF6 selects bank 0, 1FF7 selects bank 1, etc.
 	*/
 
-	internal class mF6 : MapperBase 
+	internal sealed class mF6 : MapperBase 
 	{
 		private int _toggle;
+
+		public mF6(Atari2600 core) : base(core)
+		{
+		}
 
 		public override void SyncState(Serializer ser)
 		{
@@ -24,7 +28,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public override void HardReset()
 		{
 			_toggle = 0;
-			base.HardReset();
 		}
 
 		private byte ReadMem(ushort addr, bool peek)
@@ -42,15 +45,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			return Core.Rom[(_toggle << 12) + (addr & 0xFFF)];
 		}
 
-		public override byte ReadMemory(ushort addr)
-		{
-			return ReadMem(addr, false);
-		}
+		public override byte ReadMemory(ushort addr) => ReadMem(addr, false);
 
-		public override byte PeekMemory(ushort addr)
-		{
-			return ReadMem(addr, true);
-		}
+		public override byte PeekMemory(ushort addr) => ReadMem(addr, true);
 
 		private void WriteMem(ushort addr, byte value, bool poke)
 		{
@@ -66,21 +63,21 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		}
 
 		public override void WriteMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, poke: false);
-		}
+			=> WriteMem(addr, value, false);
 
 		public override void PokeMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, poke: true);
-		}
+			=> WriteMem(addr, value, true);
 
 		private void Address(ushort addr)
 		{
-			if (addr == 0x1FF6) _toggle = 0;
-			if (addr == 0x1FF7) _toggle = 1;
-			if (addr == 0x1FF8) _toggle = 2;
-			if (addr == 0x1FF9) _toggle = 3;
+			_toggle = addr switch
+			{
+				0x1FF6 => 0,
+				0x1FF7 => 1,
+				0x1FF8 => 2,
+				0x1FF9 => 3,
+				_ => _toggle
+			};
 		}
 	}
 }

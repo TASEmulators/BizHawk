@@ -56,7 +56,7 @@ namespace BizHawk.Client.Common
 			ChangeLog = new TasMovieChangeLog(this);
 			TasStateManager = new TasStateManager(this, Global.Config.DefaultTasStateManagerSettings);
 			Session = new TasSession();
-			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0 Tasproj v1.0";
+			Header[HeaderKeys.MovieVersion] = "BizHawk v2.0 Tasproj v1.0";
 			Markers = new TasMovieMarkerList(this);
 			Markers.CollectionChanged += Markers_CollectionChanged;
 			Markers.Add(0, startsFromSavestate ? "Savestate" : "Power on");
@@ -395,12 +395,9 @@ namespace BizHawk.Client.Common
 
 		public Guid BranchGuidByIndex(int index)
 		{
-			if (index >= Branches.Count)
-			{
-				return Guid.Empty;
-			}
-
-			return Branches[index].UniqueIdentifier;
+			return index >= Branches.Count
+				? Guid.Empty
+				: Branches[index].UniqueIdentifier;
 		}
 
 		public int BranchIndexByHash(Guid uuid)

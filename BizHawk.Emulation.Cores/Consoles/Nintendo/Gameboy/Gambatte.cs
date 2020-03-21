@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		singleInstance: false)]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class Gameboy : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IInputPollable, ICodeDataLogger,
-		IBoardInfo, IDebuggable, ISettable<Gameboy.GambatteSettings, Gameboy.GambatteSyncSettings>,
+		IBoardInfo, IRomInfo, IDebuggable, ISettable<Gameboy.GambatteSettings, Gameboy.GambatteSyncSettings>,
 		IGameboyCommon, ICycleTiming, ILinkable
 	{
 		[CoreConstructor(new[] { "GB", "GBC" })]
@@ -34,12 +34,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			};
 			ser.Register<ITraceable>(Tracer);
 			InitMemoryCallbacks();
-			CoreComm = comm;
-
-			comm.RomStatusAnnotation = null;
-			comm.RomStatusDetails = null;
-			comm.NominalWidth = 160;
-			comm.NominalHeight = 144;
 
 			ThrowExceptionForBadRom(file);
 			BoardName = MapperName(file);
@@ -99,7 +93,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				{
 					Bios = comm.CoreFileProvider.GetFirmware("GBC", "World", true, "BIOS Not Found, Cannot Load");
 					IsCgb = true;
-				}				
+				}
+
 				if (LibGambatte.gambatte_loadbios(GambatteState, Bios, (uint)Bios.Length) != 0)
 				{
 					throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_loadbios)}() returned non-zero (bios error)");
@@ -120,7 +115,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				InitMemoryDomains();
 
-				CoreComm.RomStatusDetails = $"{game.Name}\r\nSHA1:{file.HashSHA1()}\r\nMD5:{file.HashMD5()}\r\n";
+				RomDetails = $"{game.Name}\r\nSHA1:{file.HashSHA1()}\r\nMD5:{file.HashMD5()}\r\n";
 
 				byte[] buff = new byte[32];
 				LibGambatte.gambatte_romtitle(GambatteState, buff);
@@ -143,6 +138,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				throw;
 			}
 		}
+
+		public string RomDetails { get; }
 
 		/// <summary>
 		/// the nominal length of one frame

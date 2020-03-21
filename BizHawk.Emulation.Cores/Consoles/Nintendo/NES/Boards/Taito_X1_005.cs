@@ -39,35 +39,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	 * 
 	 */
 
-	public sealed class TAITO_X1_005 : NES.NESBoardBase
+	internal sealed class TAITO_X1_005 : NesBoardBase
 	{
 		// config
 		int prg_bank_mask, chr_bank_mask;
 		bool tlsrewire = false;
 		// state
-		ByteBuffer chr_regs_1k = new ByteBuffer(8);
-		ByteBuffer prg_regs_8k = new ByteBuffer(4);
+		byte[] chr_regs_1k = new byte[8];
+		byte[] prg_regs_8k = new byte[4];
 		bool wramenable = false;
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(chr_regs_1k), ref chr_regs_1k);
-			ser.Sync(nameof(prg_regs_8k), ref prg_regs_8k);
+			ser.Sync(nameof(chr_regs_1k), ref chr_regs_1k, false);
+			ser.Sync(nameof(prg_regs_8k), ref prg_regs_8k, false);
 			ser.Sync(nameof(wramenable), ref wramenable);
 		}
 
-		public override void Dispose()
-		{
-			base.Dispose();
-			chr_regs_1k.Dispose();
-			prg_regs_8k.Dispose();
-		}
-
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER080":
 					break;
@@ -75,7 +68,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					tlsrewire = true;
 					break;
 				case "TAITO-X1-005":
-					if (Cart.pcb == "アシユラー")
+					if (Cart.Pcb == "アシユラー")
 						tlsrewire = true;
 					break;
 				default:
@@ -83,11 +76,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			SetMirrorType(EMirrorType.Vertical);
-			chr_bank_mask = Cart.chr_size / 1 - 1;
-			prg_bank_mask = Cart.prg_size / 8 - 1;
+			chr_bank_mask = Cart.ChrSize / 1 - 1;
+			prg_bank_mask = Cart.PrgSize / 8 - 1;
 			
 			// the chip has 128 bytes of WRAM built into it, which we have to instantiate ourselves
-			Cart.wram_size = 0;
+			Cart.WramSize = 0;
 
 			prg_regs_8k[3] = 0xFF;
 			return true;
@@ -95,18 +88,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void PostConfigure()
 		{
-			WRAM = new byte[128];
+			Wram = new byte[128];
 			base.PostConfigure();
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			addr &= 0x1f7f;
 
 			if (addr >= 0x1f00)
 			{
 				if (wramenable)
-					WRAM[addr & 0x7f] = value;
+					Wram[addr & 0x7f] = value;
 				return;
 			}
 
@@ -162,25 +155,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
 			if (addr >= 0x1f00 && wramenable)
-				return WRAM[addr & 0x7f];
+				return Wram[addr & 0x7f];
 			else
 				return NES.DB;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_8k = addr >> 13;
 			int ofs = addr & ((1 << 13) - 1);
 			bank_8k = prg_regs_8k[bank_8k];
 			bank_8k &= prg_bank_mask;
 			addr = (bank_8k << 13) | ofs;
-			return ROM[addr];
+			return Rom[addr];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
@@ -189,7 +182,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				bank_1k = chr_regs_1k[bank_1k];
 				bank_1k &= chr_bank_mask;
 				addr = (bank_1k << 10) | ofs;
-				return VROM[addr];
+				return Vrom[addr];
 			}
 			else if (tlsrewire)
 			{
@@ -202,11 +195,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 			{
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 			}
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr >= 0x2000)
 			{
@@ -221,7 +214,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 				else
 				{
-					base.WritePPU(addr, value);
+					base.WritePpu(addr, value);
 				}
 			}
 		}

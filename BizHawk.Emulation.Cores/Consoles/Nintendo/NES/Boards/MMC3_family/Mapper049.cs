@@ -4,12 +4,12 @@ using BizHawk.Common.NumberExtensions;
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//http://wiki.nesdev.com/w/index.php/INES_Mapper_044
-	public sealed class Mapper049 : MMC3Board_Base
+	internal sealed class Mapper049 : MMC3Board_Base
 	{
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER049":
 					break;
@@ -35,13 +35,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int block, prg;
 		bool mode;
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			if (!mmc3.wram_enable || mmc3.wram_write_protect) return;
 			mode = value.Bit(0);
 			prg = (value >> 4) & 3;
 			block = (value >> 6) & 3;
-			base.WriteWRAM(addr, value);
+			base.WriteWram(addr, value);
 		}
 
 

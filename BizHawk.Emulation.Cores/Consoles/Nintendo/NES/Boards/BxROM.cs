@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//AKA half of mapper 034 (the other half is AVE_NINA_001 which is entirely different..)
-	public sealed class BxROM : NES.NESBoardBase
+	internal sealed class BxROM : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_32k;
@@ -20,9 +20,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(chr_bank_8k), ref chr_bank_8k);
 		}
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "AVE-NINA-07": // wally bear and the gang
 					// it's not the NINA_001 but something entirely different; actually a colordreams with VRAM
@@ -39,43 +39,43 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_bank_mask_32k = Cart.prg_size / 32 - 1;
-			chr_bank_mask_8k = Cart.chr_size / 8 - 1;
+			prg_bank_mask_32k = Cart.PrgSize / 32 - 1;
+			chr_bank_mask_8k = Cart.ChrSize / 8 - 1;
 
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			SetMirrorType(Cart.PadH, Cart.PadV);
 
 			return true;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			addr |= (prg_bank_32k << 15);
-			return ROM[addr];
+			return Rom[addr];
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			value = HandleNormalPRGConflict(addr, value);
 			prg_bank_32k = value & prg_bank_mask_32k;
 			chr_bank_8k = ((value >> 4) & 0xF) & chr_bank_mask_8k;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr<0x2000)
 			{
-				if (VRAM != null)
+				if (Vram != null)
 				{
-					return VRAM[addr];
+					return Vram[addr];
 				}
 				else
 				{
-					return VROM[addr | (chr_bank_8k << 13)];
+					return Vrom[addr | (chr_bank_8k << 13)];
 				}
 			}
 			else
 			{
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 			}
 		}
 

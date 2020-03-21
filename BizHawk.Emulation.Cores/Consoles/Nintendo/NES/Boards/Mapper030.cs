@@ -4,9 +4,8 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class Mapper030 : NES.NESBoardBase
+	internal sealed class Mapper030 : NesBoardBase
 	{
-
 		enum flashmode { fm_default, fm_erase, fm_write, fm_id }
 
 		// config
@@ -62,45 +61,45 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(flash_rom), ref flash_rom, true);
 		}
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER030":
-					Cart.vram_size = 32;
+					Cart.VramSize = 32;
 					break;
 				case "MAPPER0030-00":
 					AssertVram(8, 16, 32);
 					break;
 				case "UNIF_UNROM-512-8":
-					Cart.vram_size = 8;
+					Cart.VramSize = 8;
 					break;
 				case "UNIF_UNROM-512-16":
-					Cart.vram_size = 16;
+					Cart.VramSize = 16;
 					break;
 				case "UNIF_UNROM-512-32":
-					Cart.vram_size = 32;
+					Cart.VramSize = 32;
 					break;
 				default:
 					return false;
 			}
 
-			if (Cart.wram_battery)
+			if (Cart.WramBattery)
 			{
 				flash_state = 0;
 				flash_mode = flashmode.fm_default;
 				if (flash_rom == null)
 				{
 					// extra space is used to hold information about what sectors have been flashed
-					flash_rom = new byte[Cart.prg_size * 1024 + Cart.prg_size];
+					flash_rom = new byte[Cart.PrgSize * 1024 + Cart.PrgSize];
 				}
 			}
-			SetMirrorType(CalculateMirrorType(Cart.pad_h, Cart.pad_v));
+			SetMirrorType(CalculateMirrorType(Cart.PadH, Cart.PadV));
 			AssertChr(0);
 			AssertPrg(128, 256, 512);   //Flash chip sizes that fits sealie unrom-512 are 39SF010, 39SF020, 39SF040.
-			Cart.wram_size = 0;
-			prg_bank_mask_16k = Cart.prg_size / 16 - 1;
-			vram_bank_mask_8k = Cart.vram_size / 8 - 1;
+			Cart.WramSize = 0;
+			prg_bank_mask_16k = Cart.PrgSize / 16 - 1;
+			vram_bank_mask_8k = Cart.VramSize / 8 - 1;
 			return true;
 		}
 
@@ -108,17 +107,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		static readonly int[] addr_bank = new int[5] { 1, 0, 1, 1, 0 };
 		static readonly byte[] addr_data = new byte[5] { 0xAA, 0x55, 0x80, 0xAA, 0x55 };
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
-			if ((!Cart.wram_battery) || (addr >= 0x4000))
+			if ((!Cart.WramBattery) || (addr >= 0x4000))
 			{
 				byte value2 = value;
 
-				if (!Cart.wram_battery)
+				if (!Cart.WramBattery)
 					value2 = HandleNormalPRGConflict(addr, value);
 				chr = value2 >> 5 & 3 & vram_bank_mask_8k;
 				prg = value2 & prg_bank_mask_16k;
-				if ((Cart.pad_h == 0) && (Cart.pad_v == 0))
+				if ((Cart.PadH == 0) && (Cart.PadV == 0))
 				{
 					int mirror = (value2 & 0x80) >> 7;
 					SetMirrorType(CalculateMirrorType(mirror, mirror));
@@ -153,16 +152,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					if (value == 0x10)  //You probably don't want to do this, as this is erase entire flash chip. :)
 					{                   //Of course, we gotta emulate the behaviour.
-						for (int i = 0; i < (Cart.prg_size / 4); i++)
+						for (int i = 0; i < (Cart.PrgSize / 4); i++)
 							increment_flash_write_count(i, true);
 						for (int i = 0; i < flash_rom.Count(); i++)
-							flash_rom[Cart.prg_size + i] = 0xFF;
+							flash_rom[Cart.PrgSize + i] = 0xFF;
 					}
 					else if (value == 0x30)
 					{
 						increment_flash_write_count(addr);
 						for (int i = 0; i < 0x1000; i++)
-							flash_rom[(prg << 14 | addr & 0x3000) + i + Cart.prg_size] = 0xFF;
+							flash_rom[(prg << 14 | addr & 0x3000) + i + Cart.PrgSize] = 0xFF;
 					}
 					flash_mode = 0;
 					flash_state = 0;
@@ -173,9 +172,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						increment_flash_write_count(addr);
 						for (int i = 0; i < 0x1000; i++)
-							flash_rom[(prg << 14 | addr & 0x3000) + i + Cart.prg_size] = ROM[(prg << 14 | addr & 0x3000) + i];
+							flash_rom[(prg << 14 | addr & 0x3000) + i + Cart.PrgSize] = Rom[(prg << 14 | addr & 0x3000) + i];
 					}
-					flash_rom[Cart.prg_size + (prg << 14 | addr & 0x3fff)] &= value;
+					flash_rom[Cart.PrgSize + (prg << 14 | addr & 0x3fff)] &= value;
 					flash_state = 0;
 					flash_mode = 0;
 				}
@@ -187,10 +186,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank = addr >= 0x4000 ? prg_bank_mask_16k : prg;
-			if (Cart.wram_battery)
+			if (Cart.WramBattery)
 			{
 				if (flash_mode == flashmode.fm_id)
 				{
@@ -199,7 +198,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						case 0:
 							return 0xBF;
 						case 1:
-							switch (Cart.prg_size)
+							switch (Cart.PrgSize)
 							{
 								case 128:
 									return 0xB5;
@@ -214,25 +213,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 				}
 				if (get_flash_write_count(addr) > 0)
-					return flash_rom[Cart.prg_size + (bank << 14 | addr & 0x3fff)];
+					return flash_rom[Cart.PrgSize + (bank << 14 | addr & 0x3fff)];
 			}
-			return ROM[bank << 14 | addr & 0x3fff];
+			return Rom[bank << 14 | addr & 0x3fff];
 		}
 
 		public override byte[] SaveRam => flash_rom;
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
-				return VRAM[addr | chr << 13];
-			return base.ReadPPU(addr);
+				return Vram[addr | chr << 13];
+			return base.ReadPpu(addr);
 		}
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000)
-				VRAM[addr | chr << 13] = value;
+				Vram[addr | chr << 13] = value;
 			else
-				base.WritePPU(addr, value);
+				base.WritePpu(addr, value);
 		}
 	}
 }

@@ -135,11 +135,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static bool SaveAs()
+		private bool SaveAs()
 		{
 			var file = SaveFileDialog(
 				Global.CheatList.CurrentFileName,
-				PathManager.GetCheatsPath(Global.Game),
+				Config.PathEntries.CheatsAbsolutePath(Global.Game.System),
 				"Cheat Files",
 				"cht");
 
@@ -278,34 +278,18 @@ namespace BizHawk.Client.EmuHawk
 					text = Watch.DisplayTypeToString(Global.CheatList[index].Type);
 					break;
 				case ComparisonTypeColumn:
-					switch (Global.CheatList[index].ComparisonType)
-					{
-						case Cheat.CompareType.None:
-							text = "";
-							break;
-						case Cheat.CompareType.Equal:
-							text = "=";
-							break;
-						case Cheat.CompareType.GreaterThan:
-							text = ">";
-							break;
-						case Cheat.CompareType.GreaterThanOrEqual:
-							text = ">=";
-							break;
-						case Cheat.CompareType.LessThan:
-							text = "<";
-							break;
-						case Cheat.CompareType.LessThanOrEqual:
-							text = "<=";
-							break;
-						case Cheat.CompareType.NotEqual:
-							text = "!=";
-							break;
-						default:
-							text = "";
-							break;
-					}
-					
+					text = Global.CheatList[index].ComparisonType switch
+						{
+							Cheat.CompareType.None => "",
+							Cheat.CompareType.Equal => "=",
+							Cheat.CompareType.GreaterThan => ">",
+							Cheat.CompareType.GreaterThanOrEqual => ">=",
+							Cheat.CompareType.LessThan => "<",
+							Cheat.CompareType.LessThanOrEqual => "<=",
+							Cheat.CompareType.NotEqual => "!=",
+							_ => ""
+						};
+
 					break;
 			}
 		}
@@ -391,7 +375,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var file = OpenFileDialog(
 				Global.CheatList.CurrentFileName,
-				PathManager.GetCheatsPath(Global.Game),
+				Config.PathEntries.CheatsAbsolutePath(Global.Game.System),
 				"Cheat Files",
 				"cht");
 

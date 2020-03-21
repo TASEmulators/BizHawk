@@ -33,21 +33,34 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	TIA registers at 00-3F or 40-7F without incurring any overhead.
 	*/
 
-	internal class mX07 : MapperBase
+	internal sealed class mX07 : MapperBase
 	{
-		private int _rombank2K;
+		private int _romBank2K;
+
+		public mX07(Atari2600 core) : base(core)
+		{
+		}
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("rombank_2k", ref _rombank2K);
+			ser.Sync("rombank_2k", ref _romBank2K);
 		}
 
 		public override void HardReset()
 		{
-			_rombank2K = 0;
-			base.HardReset();
+			_romBank2K = 0;
 		}
+
+		public override byte ReadMemory(ushort addr) => ReadMem(addr, false);
+
+		public override byte PeekMemory(ushort addr) => ReadMem(addr, true);
+
+		public override void WriteMemory(ushort addr, byte value)
+			=> WriteMem(addr, value, false);
+
+		public override void PokeMemory(ushort addr, byte value)
+			=> WriteMem(addr, value, true);
 
 		private byte ReadMem(ushort addr, bool peek)
 		{
@@ -61,17 +74,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				return base.ReadMemory(addr);
 			}
 			
-			return Core.Rom[(_rombank2K << 12) + (addr & 0xFFF)];
-		}
-
-		public override byte ReadMemory(ushort addr)
-		{
-			return ReadMem(addr, false);
-		}
-
-		public override byte PeekMemory(ushort addr)
-		{
-			return ReadMem(addr, true);
+			return Core.Rom[(_romBank2K << 12) + (addr & 0xFFF)];
 		}
 
 		private void WriteMem(ushort addr, byte value, bool poke)
@@ -87,16 +90,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 		}
 
-		public override void WriteMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, poke: false);
-		}
-
-		public override void PokeMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, poke: true);
-		}
-
 		private void Address(ushort addr)
 		{
 			if ((addr & 0x180F) == 0x080D)
@@ -105,16 +98,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 			else if ((addr & 0x1880) == 0)
 			{
-				if ((_rombank2K & 0xE) == 0xE)
+				if ((_romBank2K & 0xE) == 0xE)
 				{
-					Bank(((addr & 0x40) >> 6) | (_rombank2K & 0xE));
+					Bank(((addr & 0x40) >> 6) | (_romBank2K & 0xE));
 				}
 			}
 		}
 
 		private void Bank(int bank)
 		{
-			_rombank2K = bank & 0x0F;
+			_romBank2K = bank & 0x0F;
 		}
 	}
 }

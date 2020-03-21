@@ -4,7 +4,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class CoolBoy : MMC3Board_Base
+	internal sealed class CoolBoy : MMC3Board_Base
 	{
 		// eldritch horror pirate multicart
 		// 32MB prg rom, no prg ram, no chr rom, 128KB chr ram
@@ -14,9 +14,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// this could be broken down into more sensibly named variables
 		byte[] exp = new byte[4];
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "UNIF_COOLBOY":
 					AssertChr(0);
@@ -25,8 +25,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			Cart.vram_size = 128;
-			Cart.wram_size = 0;
+			Cart.VramSize = 128;
+			Cart.WramSize = 0;
 
 			BaseSetup();
 
@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			if (addr < 0x1000)
 			{
@@ -120,7 +120,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(exp), ref exp, false);
 		}
 
-		public override void NESSoftReset()
+		public override void NesSoftReset()
 		{
 			Array.Clear(exp, 0, 4);
 		}

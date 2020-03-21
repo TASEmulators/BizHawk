@@ -3,7 +3,6 @@
 using System;
 using System.Linq;
 
-using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.M6502;
 
@@ -20,8 +19,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public byte[] ram;
 		public byte[] CIRAM; //AKA nametables
 		string game_name = ""; //friendly name exposed to user and used as filename base
-		CartInfo cart; //the current cart prototype. should be moved into the board, perhaps
-		internal INESBoard Board; //the board hardware that is currently driving things
+		internal CartInfo cart; //the current cart prototype. should be moved into the board, perhaps
+		internal INesBoard Board; //the board hardware that is currently driving things
 		EDetectionOrigin origin = EDetectionOrigin.None;
 		int sprdma_countdown;
 
@@ -62,11 +61,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		//Sound config
 		public void SetVol1(int v) { apu.m_vol = v; }
-
-		/// <summary>
-		/// for debugging only!
-		/// </summary>
-		public INESBoard GetBoard() => Board;
 
 		#region Audio
 
@@ -171,7 +165,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (using_reset_timing && ControllerDefinition.FloatControls.Count == 0)
 			{
 				ControllerDefinition.FloatControls.Add("Reset Cycle");
-				ControllerDefinition.FloatRanges.Add(new ControllerDefinition.FloatRange(0, 0, 500000));
+				ControllerDefinition.FloatRanges.Add(new ControllerDefinition.AxisRange(0, 0, 500000));
 			}
 
 			// don't replace the magicSoundProvider on reset, as it's not needed
@@ -251,30 +245,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// Let's hard code those cases here
 			// these will be defined through the gameDB exclusively for now.
 
-			if (cart.DB_GameInfo!=null)
+			if (cart.GameInfo!=null)
 			{
 				
-				if (cart.DB_GameInfo.Hash == "60FC5FA5B5ACCAF3AEFEBA73FC8BFFD3C4DAE558" // Camerica Golden 5
-					|| cart.DB_GameInfo.Hash == "BAD382331C30B22A908DA4BFF2759C25113CC26A" // Camerica Golden 5
-					|| cart.DB_GameInfo.Hash == "40409FEC8249EFDB772E6FFB2DCD41860C6CCA23" // Camerica Pegasus 4-in-1
+				if (cart.GameInfo.Hash == "60FC5FA5B5ACCAF3AEFEBA73FC8BFFD3C4DAE558" // Camerica Golden 5
+					|| cart.GameInfo.Hash == "BAD382331C30B22A908DA4BFF2759C25113CC26A" // Camerica Golden 5
+					|| cart.GameInfo.Hash == "40409FEC8249EFDB772E6FFB2DCD41860C6CCA23" // Camerica Pegasus 4-in-1
 					)
 				{
 					ram[0x701] = 0xFF;
 				}
 				
-				if (cart.DB_GameInfo.Hash == "68ABE1E49C9E9CCEA978A48232432C252E5912C0") // Dancing Blocks
+				if (cart.GameInfo.Hash == "68ABE1E49C9E9CCEA978A48232432C252E5912C0") // Dancing Blocks
 				{
 					ram[0xEC] = 0;
 					ram[0xED] = 0;
 				}
 
-				if (cart.DB_GameInfo.Hash == "00C50062A2DECE99580063777590F26A253AAB6B") // Silva Saga
+				if (cart.GameInfo.Hash == "00C50062A2DECE99580063777590F26A253AAB6B") // Silva Saga
 				{
-					for (int i = 0; i < Board.WRAM.Length; i++)
+					for (int i = 0; i < Board.Wram.Length; i++)
 					{
-						Board.WRAM[i] = 0xFF;
+						Board.Wram[i] = 0xFF;
 					}
-				}			
+				}
 			}
 		}
 
@@ -300,7 +294,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			lagged = true;
 			if (resetSignal)
 			{
-				Board.NESSoftReset();
+				Board.NesSoftReset();
 				cpu.NESSoftReset();
 				apu.NESSoftReset();
 				ppu.NESSoftReset();
@@ -434,9 +428,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//at least it should be, but something is off with that (start up time?) so it is 3,3,3,4,3 for now
 		//NTSC:
 		//sequence of ppu clocks per cpu clock: 3
-		public ByteBuffer cpu_sequence;
-		static ByteBuffer cpu_sequence_NTSC = new ByteBuffer(new byte[] { 3, 3, 3, 3, 3 });
-		static ByteBuffer cpu_sequence_PAL = new ByteBuffer(new byte[] { 3, 3, 3, 4, 3 });
+		public byte[] cpu_sequence;
+		static byte[] cpu_sequence_NTSC = { 3, 3, 3, 3, 3 };
+		static byte[] cpu_sequence_PAL = { 3, 3, 3, 4, 3 };
 		public int cpu_deadcounter;
 
 		public int oam_dma_index;
@@ -537,16 +531,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (cpu.RDY && !IRQ_delay)
 			{
-				cpu.IRQ = _irq_apu || Board.IRQSignal;
+				cpu.IRQ = _irq_apu || Board.IrqSignal;
 			}
 			else if (special_case_delay || apu.dmc_dma_countdown == 3)
 			{
-				cpu.IRQ = _irq_apu || Board.IRQSignal;
+				cpu.IRQ = _irq_apu || Board.IrqSignal;
 				special_case_delay = false;
 			}
 
 			cpu.ExecuteOne();
-			Board.ClockCPU();
+			Board.ClockCpu();
 
 			int s = apu.EmitSample();
 
@@ -905,8 +899,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (addr >= 0x8000)
 			{
-				//easy optimization, since rom reads are so common, move this up (reordering the rest of these elseifs is not easy)
-				ret = Board.ReadPRG(addr - 0x8000);
+				// easy optimization, since rom reads are so common, move this up (reordering the rest of these else ifs is not easy)
+				ret = Board.ReadPrg(addr - 0x8000);
 			}
 			else if (addr < 0x0800)
 			{
@@ -922,15 +916,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else if (addr < 0x4020)
 			{
-				ret = ReadReg(addr); //we're not rebasing the register just to keep register names canonical			
+				ret = ReadReg(addr); // we're not rebasing the register just to keep register names canonical
 			}
 			else if (addr < 0x6000)
 			{
-				ret = Board.ReadEXP(addr - 0x4000);
+				ret = Board.ReadExp(addr - 0x4000);
 			}
 			else
 			{
-				ret = Board.ReadWRAM(addr - 0x6000);
+				ret = Board.ReadWram(addr - 0x6000);
 			}
 
 			// handle cheats (currently cheats can only freeze read only areas)
@@ -983,15 +977,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else if (addr < 0x6000)
 			{
-				Board.WriteEXP(addr - 0x4000, value);
+				Board.WriteExp(addr - 0x4000, value);
 			}
 			else if (addr < 0x8000)
 			{
-				Board.WriteWRAM(addr - 0x6000, value);
+				Board.WriteWram(addr - 0x6000, value);
 			}
 			else
 			{
-				Board.WritePRG(addr - 0x8000, value);
+				Board.WritePrg(addr - 0x8000, value);
 			}
 
 			uint flags = (uint)(MemoryCallbackFlags.CPUZero | MemoryCallbackFlags.AccessWrite | MemoryCallbackFlags.SizeByte);
@@ -1001,7 +995,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// the palette for each VS game needs to be chosen explicitly since there are 6 different ones.
 		public void PickVSPalette(CartInfo cart)
 		{
-			switch (cart.palette)
+			switch (cart.Palette)
 			{
 				case "2C05": SetPalette(Palettes.palette_2c03_2c05); ppu.CurrentLuma = PPU.PaletteLuma2C03; break;
 				case "2C04-1": SetPalette(Palettes.palette_2c04_001); ppu.CurrentLuma = PPU.PaletteLuma2C04_1; break;
@@ -1013,7 +1007,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//since this will run for every VS game, let's get security setting too
 			//values below 16 are for the 2c05 PPU
 			//values 16,32,48 are for Namco games and dealt with in mapper 206
-			_isVS2c05 = (byte)(cart.vs_security & 15);
+			_isVS2c05 = (byte)(cart.VsSecurity & 15);
 		}
 
 	}

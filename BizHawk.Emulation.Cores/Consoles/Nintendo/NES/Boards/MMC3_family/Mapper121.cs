@@ -3,15 +3,15 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Adapted from Nestopia src
-	public sealed class Mapper121 : MMC3Board_Base
+	internal sealed class Mapper121 : MMC3Board_Base
 	{
-		private ByteBuffer exRegs = new ByteBuffer(3);
+		private byte[] exRegs = new byte[3];
 
 		private readonly byte[] lut = { 0x00, 0x83, 0x42, 0x00 };
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER121":
 					break;
@@ -23,19 +23,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			exRegs.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(exRegs), ref exRegs);
+			ser.Sync(nameof(exRegs), ref exRegs, false);
 		}
 
-		public override byte ReadEXP(int addr)
+		public override byte ReadExp(int addr)
 		{
 			if (addr >= 0x1000)
 			{
@@ -43,11 +37,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 			{
-				return base.ReadEXP(addr);
+				return base.ReadExp(addr);
 			}
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			if (addr >= 0x1000) // 0x5000-0x5FFF
 			{
@@ -55,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_8k = addr >> 13;
 
@@ -72,10 +66,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			bank_8k &= prg_mask;
 			addr = (bank_8k << 13) | (addr & 0x1FFF);
-			return ROM[addr];
+			return Rom[addr];
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if (addr < 0x2000)
 			{
@@ -97,13 +91,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 				}
 				else if ((addr & 1)>0)
-					base.WritePRG(addr, value);
+					base.WritePrg(addr, value);
 				else //if (addr==0)
-					base.WritePRG(0, value);
+					base.WritePrg(0, value);
 			}
 			else
 			{
-				base.WritePRG(addr, value);
+				base.WritePrg(addr, value);
 			}
 		}
 	}

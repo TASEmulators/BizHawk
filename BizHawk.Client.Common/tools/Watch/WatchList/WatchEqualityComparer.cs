@@ -20,12 +20,7 @@ namespace BizHawk.Client.Common
 			{
 				if (ReferenceEquals(x, null))
 				{
-					if (ReferenceEquals(y, null))
-					{
-						return true;
-					}
-
-					return false;
+					return ReferenceEquals(y, null);
 				}
 
 				if (ReferenceEquals(y, null))
@@ -33,12 +28,7 @@ namespace BizHawk.Client.Common
 					return false;
 				}
 
-				if (ReferenceEquals(x, y))
-				{
-					return true;
-				}
-
-				return false;
+				return ReferenceEquals(x, y);
 			}
 
 			/// <summary>
@@ -46,10 +36,7 @@ namespace BizHawk.Client.Common
 			/// </summary>
 			/// <param name="obj">Watch to get hash</param>
 			/// <returns>int that can serves as a unique representation of current Watch</returns>
-			public int GetHashCode(Watch obj)
-			{
-				return obj.GetHashCode();
-			}
+			public int GetHashCode(Watch obj) => obj.GetHashCode();
 		}
 	}
 }

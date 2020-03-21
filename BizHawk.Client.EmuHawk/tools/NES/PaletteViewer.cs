@@ -4,6 +4,7 @@ using System.IO;
 using System.Drawing.Imaging;
 
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -73,12 +74,12 @@ namespace BizHawk.Client.EmuHawk
 		public void Screenshot()
 		{
 			var sfd = new SaveFileDialog
-				{
-					FileName = $"{PathManager.FilesystemSafeName(Global.Game)}-Palettes",
-					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries["NES", "Screenshots"].Path, "NES"),
-					Filter = FilesystemFilterSet.Screenshots.ToString(),
-					RestoreDirectory = true
-				};
+			{
+				FileName = $"{Global.Game.FilesystemSafeName()}-Palettes",
+				InitialDirectory = Global.Config.PathEntries.ScreenshotAbsolutePathFor("NES"),
+				Filter = FilesystemFilterSet.Screenshots.ToString(),
+				RestoreDirectory = true
+			};
 
 			var result = sfd.ShowHawkDialog();
 			if (result != DialogResult.OK)

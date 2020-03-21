@@ -239,7 +239,7 @@ namespace BizHawk.Client.EmuHawk
 			float derivative = (error - lastError) / diff;
 			lastError = error;
 
-			integral = integral + (error * diff);
+			integral += error * diff;
 			integral *= 0.99f; // since our integral isn't reliable, reduce it to 0 over time.
 
 			// "PID controller" constants

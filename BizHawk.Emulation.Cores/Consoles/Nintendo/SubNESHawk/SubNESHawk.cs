@@ -15,12 +15,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 		[CoreConstructor("NES")]
 		public SubNESHawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ object settings, object syncSettings)
 		{
-			
 			var subNesSettings = (NES.NES.NESSettings)settings ?? new NES.NES.NESSettings();
 			var subNesSyncSettings = (NES.NES.NESSyncSettings)syncSettings ?? new NES.NES.NESSyncSettings();
 
-			_nesCore = new NES.NES(new CoreComm(comm.ShowMessage, comm.Notify) {CoreFileProvider = comm.CoreFileProvider},
-				game, rom, subNesSettings, subNesSyncSettings)
+			_nesCore = new NES.NES(comm, game, rom, subNesSettings, subNesSyncSettings)
 			{
 				using_reset_timing = true
 			};
@@ -67,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 
 		private void SoftReset()
 		{
-			_nesCore.Board.NESSoftReset();
+			_nesCore.Board.NesSoftReset();
 			_nesCore.cpu.NESSoftReset();
 			_nesCore.apu.NESSoftReset();
 			_nesCore.ppu.NESSoftReset();

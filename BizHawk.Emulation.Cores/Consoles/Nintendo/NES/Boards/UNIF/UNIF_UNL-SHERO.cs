@@ -2,16 +2,16 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class UNIF_UNL_SHERO : MMC3Board_Base
+	internal class UNIF_UNL_SHERO : MMC3Board_Base
 	{
 		[MapperProp]
 		public bool RegionAsia = false;
 
 		private byte reg;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "UNIF_UNL-SHERO":
 					break;
@@ -31,55 +31,55 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(RegionAsia), ref RegionAsia);
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			if (addr == 0x100)
 			{
 				reg = value;
 			}
 
-			base.WriteEXP(addr, value);
+			base.WriteExp(addr, value);
 		}
 
-		public override byte ReadEXP(int addr)
+		public override byte ReadExp(int addr)
 		{
 			if (addr == 0x100)
 			{
 				return (byte)(RegionAsia ? 0xFF : 00);
 			}
 
-			return base.ReadEXP(addr);
+			return base.ReadExp(addr);
 		}
 
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				if ((reg & 0x40) > 0)
 				{
-					return VRAM[addr];
+					return Vram[addr];
 				}
 				else
 				{
 					int bank_1k = Get_CHRBank_1K(addr);
 					addr = (bank_1k << 10) | (addr & 0x3FF);
 
-					return VROM[addr];
+					return Vrom[addr];
 				}
 
 			}
 			else
-				return VRAM[addr];
+				return Vram[addr];
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000)
 			{
 				if ((reg & 0x40) > 0)
 				{
-					VRAM[addr] = value;
+					Vram[addr] = value;
 				}
 				else
 				{
@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			}
 			else
-				VRAM[addr] = value;	
+				Vram[addr] = value;	
 		}
 
 		protected override int Get_CHRBank_1K(int addr)

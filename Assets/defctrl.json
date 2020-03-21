@@ -340,6 +340,22 @@
 			"R": "E, J1 B6, X1 RightShoulder",
 			"Power": ""
 		},
+		"NDS Controller": {
+			"A": "X, J1 B3, X1 B",
+			"B": "Z, J1 B2, X1 A",
+			"X": "S, J1 B4, X1 Y",
+			"Y": "A, J1 B1, X1 X",
+			"Up": "Up, J1 POV1U, X1 DpadUp, X1 LStickUp",
+			"Down": "Down, J1 POV1D, X1 DpadDown, X1 LStickDown",
+			"Left": "Left, J1 POV1L, X1 DpadLeft, X1 LStickLeft",
+			"Right": "Right, J1 POV1R, X1 DpadRight, X1 LStickRight",
+			"L": "W, J1 B5, X1 LeftShoulder",
+			"R": "E, J1 B6, X1 RightShoulder",
+			"Select": "Space, J1 B9, X1 Back",
+			"Start": "Return, J1 B10, X1 Start",
+			"Lid": "",
+			"Touch": "WMouse L"
+		},
 		"Atari 2600 Basic Controller": {
 			"Reset": "D, J1 B9, X1 Back",
 			"Select": "S, J1 B10, X1 Start",
@@ -1616,7 +1632,19 @@
         "Deadzone": 0.0
       }
     },
-    "Nintendo 64 Controller": {
+	"NDS Controller": {
+      "TouchX": {
+        "Value": "WMouse X",
+        "Mult": 1.0,
+        "Deadzone": 0.0
+      },
+      "TouchY": {
+        "Value": "WMouse Y",
+        "Mult": 1.0,
+        "Deadzone": 0.0
+      }
+    },
+    "Nintento 64 Controller": {
       "P1 X Axis": {
         "Value": "X1 LeftThumbX Axis",
         "Mult": 1.0,

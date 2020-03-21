@@ -4,10 +4,9 @@ using System;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	// mapper036
 	// Strike Wolf (MGC-014) [!].nes
 	// Using https://wiki.nesdev.com/w/index.php/INES_Mapper_036
-	public sealed class Mapper036 : NES.NESBoardBase
+	internal sealed class Mapper036 : NesBoardBase
 	{
 		int chr;
 		int prg;
@@ -17,48 +16,48 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		bool M;
 		byte P;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER036":
 					AssertVram(0);
-					Cart.wram_size = 0; // AssertWram(0); // GoodNES good dump of Strike Wolf specifies 8kb of wram
+					Cart.WramSize = 0; // AssertWram(0); // GoodNES good dump of Strike Wolf specifies 8kb of wram
 					break;
 				default:
 					return false;
 			}
-			chr_mask = Cart.chr_size / 8 - 1;
-			prg_mask = Cart.prg_size / 32 - 1;
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			chr_mask = Cart.ChrSize / 8 - 1;
+			prg_mask = Cart.PrgSize / 32 - 1;
+			SetMirrorType(Cart.PadH, Cart.PadV);
 			return true;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
-				return VROM[addr | chr << 13];
+				return Vrom[addr | chr << 13];
 			else
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[addr | prg << 15];
+			return Rom[addr | prg << 15];
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			// either hack emulation of a weird bus conflict, or crappy pirate safeguard
 			prg = (R >> 4) & prg_mask;
 		}
 
-		public override byte ReadEXP(int addr)
+		public override byte ReadExp(int addr)
 		{
 			return (byte)(R | (NES.DB & 0xCF));
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			Console.WriteLine(addr);
 			Console.WriteLine(value);

@@ -9,29 +9,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	* Buzz and Waldog (K)
 	* General's Son (K) 
 	*/
-	public sealed class Mapper156 : NES.NESBoardBase
+	internal sealed class Mapper156 : NesBoardBase
 	{
 		int prg_mask;
 		int chr_mask;
 		int prg;
 		int[] chr = new int[8];
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER156":
 					break;
 				default:
 					return false;
 			}
-			prg_mask = Cart.prg_size / 16 - 1;
-			chr_mask = Cart.chr_size / 1 - 1;
+			prg_mask = Cart.PrgSize / 16 - 1;
+			chr_mask = Cart.ChrSize / 1 - 1;
 			SetMirrorType(EMirrorType.OneScreenA);
 			return true;
 		}
 
-		public override void NESSoftReset()
+		public override void NesSoftReset()
 		{
 			for (int i = 0; i < chr.Length; i++)
 				chr[i] = 0;
@@ -39,23 +39,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SetMirrorType(EMirrorType.OneScreenA);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if (addr < 0x4000)
-				return ROM[addr + (prg << 14)];
+				return Rom[addr + (prg << 14)];
 			else
-				return ROM[(addr & 0x3fff) + (prg_mask << 14)];
+				return Rom[(addr & 0x3fff) + (prg_mask << 14)];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
-				return VROM[(addr & 0x3ff) + (chr[addr >> 10] << 10)];
+				return Vrom[(addr & 0x3ff) + (chr[addr >> 10] << 10)];
 			else
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			switch (addr)
 			{

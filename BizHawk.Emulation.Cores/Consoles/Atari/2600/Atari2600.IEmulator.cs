@@ -85,8 +85,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public bool DeterministicEmulation => true;
 
-		public CoreComm CoreComm { get; }
-
 		public void ResetCounters()
 		{
 			_frame = 0;

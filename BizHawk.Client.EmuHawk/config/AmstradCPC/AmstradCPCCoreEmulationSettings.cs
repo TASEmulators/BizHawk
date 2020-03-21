@@ -97,19 +97,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateBorderNotes(AmstradCPC.BorderType type)
 		{
-			switch (type)
+			lblBorderInfo.Text = type switch
 			{
-				case AmstradCPC.BorderType.Uniform:
-					lblBorderInfo.Text = "Attempts to equalize the border areas";
-					break;
-				case AmstradCPC.BorderType.Uncropped:
-					lblBorderInfo.Text = "Pretty much the signal the gate array is generating (looks pants)";
-					break;
-
-				case AmstradCPC.BorderType.Widescreen:
-					lblBorderInfo.Text = "Top and bottom border removed so that the result is *almost* 16:9";
-					break;
-			}
+				AmstradCPC.BorderType.Uniform => "Attempts to equalize the border areas",
+				AmstradCPC.BorderType.Uncropped => "Pretty much the signal the gate array is generating (looks pants)",
+				AmstradCPC.BorderType.Widescreen => "Top and bottom border removed so that the result is *almost* 16:9",
+				_ => lblBorderInfo.Text
+			};
 		}
 	}
 }

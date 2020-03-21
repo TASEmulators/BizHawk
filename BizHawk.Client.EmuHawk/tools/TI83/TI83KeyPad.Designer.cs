@@ -510,7 +510,7 @@
 			this.MatrixButton.TabIndex = 17;
 			this.MatrixButton.Text = "Matrix";
 			this.MatrixButton.UseVisualStyleBackColor = false;
-			this.MatrixButton.Click += new System.EventHandler(this.MaxtrixButton_Click);
+			this.MatrixButton.Click += new System.EventHandler(this.MatrixButton_Click);
 			// 
 			// PRGM
 			// 
@@ -523,7 +523,7 @@
 			this.PrgmButton.TabIndex = 18;
 			this.PrgmButton.Text = "PRGM";
 			this.PrgmButton.UseVisualStyleBackColor = false;
-			this.PrgmButton.Click += new System.EventHandler(this.PrgmButton_Click);
+			this.PrgmButton.Click += new System.EventHandler(this.ProgamButton_Click);
 			// 
 			// VARS
 			// 

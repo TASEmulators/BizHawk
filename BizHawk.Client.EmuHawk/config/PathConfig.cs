@@ -50,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadSettings()
 		{
-			RecentForROMs.Checked = _config.UseRecentForRoms;
+			RecentForROMs.Checked = _config.PathEntries.UseRecentForRoms;
 
 			DoTabs(_config.PathEntries.ToList());
 			SetDefaultFocusedTab();
@@ -178,7 +178,7 @@ namespace BizHawk.Client.EmuHawk
 								return;
 							}
 
-							using var f = new FirmwaresConfig(_mainForm) { TargetSystem = "Global" };
+							using var f = new FirmwaresConfig(_mainForm, _config) { TargetSystem = "Global" };
 							f.ShowDialog(this);
 						};
 
@@ -208,7 +208,7 @@ namespace BizHawk.Client.EmuHawk
 			PathTabControl.Visible = true;
 		}
 
-		private static void BrowseFolder(TextBox box, string name, string system)
+		private void BrowseFolder(TextBox box, string name, string system)
 		{
 			// Ugly hack, we don't want to pass in the system in for system base and global paths
 			if (name == "Base" || system == "Global" || system == "Global_NULL")
@@ -224,7 +224,7 @@ namespace BizHawk.Client.EmuHawk
 				using var f = new FolderBrowserDialog
 				{
 					Description = $"Set the directory for {name}",
-					SelectedPath = PathManager.MakeAbsolutePath(box.Text, system)
+					SelectedPath = _config.PathEntries.AbsolutePathFor(box.Text, system)
 				};
 				result = f.ShowDialog();
 				selectedPath = f.SelectedPath;
@@ -234,20 +234,20 @@ namespace BizHawk.Client.EmuHawk
 				using var f = new FolderBrowserEx
 				{
 					Description = $"Set the directory for {name}",
-					SelectedPath = PathManager.MakeAbsolutePath(box.Text, system)
+					SelectedPath = _config.PathEntries.AbsolutePathFor(box.Text, system)
 				};
 				result = f.ShowDialog();
 				selectedPath = f.SelectedPath;
 			}
-			if (result == DialogResult.OK)
+			if (result.IsOk())
 			{
-				box.Text = PathManager.TryMakeRelative(selectedPath, system);
+				box.Text = _config.PathEntries.TryMakeRelative(selectedPath, system);
 			}
 		}
 
 		private void SaveSettings()
 		{
-			_config.UseRecentForRoms = RecentForROMs.Checked;
+			_config.PathEntries.UseRecentForRoms = RecentForROMs.Checked;
 
 			foreach (var t in AllPathBoxes)
 			{
@@ -325,7 +325,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			SaveSettings();
 
-			PathManager.RefreshTempPath();
+			_config.PathEntries.RefreshTempPath();
 			_mainForm.AddOnScreenMessage("Path settings saved");
 			Close();
 		}

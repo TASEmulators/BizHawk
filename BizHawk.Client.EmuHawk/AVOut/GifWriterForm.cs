@@ -34,18 +34,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NumericUpDown2_ValueChanged(object sender, EventArgs e)
 		{
-			if (numericUpDown2.Value == -1)
+			label3.Text = numericUpDown2.Value switch
 			{
-				label3.Text = "Auto";
-			}
-			else if (numericUpDown2.Value == 0)
-			{
-				label3.Text = "Fastest";
-			}
-			else
-			{
-				label3.Text = $"{(int)((100 + numericUpDown2.Value / 2) / numericUpDown2.Value)} FPS";
-			}
+				-1 => "Auto",
+				0 => "Fastest",
+				_ => $"{(int) ((100 + numericUpDown2.Value / 2) / numericUpDown2.Value)} FPS"
+			};
 		}
 	}
 }

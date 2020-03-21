@@ -7,6 +7,8 @@ using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
+using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 using Cores = BizHawk.Emulation.Cores;
 
 namespace BizHawk.Client.EmuHawk
@@ -41,16 +43,12 @@ namespace BizHawk.Client.EmuHawk
 				return true;
 			}
 
-			if (emulator is Cores.Nintendo.SNES9X.Snes9x)
+			return emulator switch
 			{
-				return PromptToSwitchCore("Snes9x", "bsnes", () => Global.Config.SnesInSnes9x = false);
-			}
-			if (emulator is Cores.Consoles.Nintendo.QuickNES.QuickNES)
-			{
-				return PromptToSwitchCore("QuickNes", "NesHawk", () => Global.Config.NesInQuickNes = false);
-			}
-
-			return true;
+				Snes9x _ => PromptToSwitchCore("Snes9x", "bsnes", () => Global.Config.SnesInSnes9x = false),
+				QuickNES _ => PromptToSwitchCore("QuickNes", "NesHawk", () => Global.Config.NesInQuickNes = false),
+				_ => true
+			};
 		}
 
 		/// <remarks>http://stackoverflow.com/questions/139010/how-to-resolve-a-lnk-in-c-sharp</remarks>

@@ -1,48 +1,40 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
-
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
 	public class CoreFileProvider : ICoreFileProvider
 	{
-		public string SubfileDirectory { get; set; }
-		public FirmwareManager FirmwareManager { get; set; }
-
+		private readonly FirmwareManager _firmwareManager;
 		private readonly Action<string> _showWarning;
+		private readonly PathEntryCollection _pathEntries;
+		private readonly IDictionary<string, string> _firmwareUserSpecifications;
 
-		public CoreFileProvider(Action<string> showWarning)
+		public CoreFileProvider(
+			Action<string> showWarning,
+			FirmwareManager firmwareManager,
+			PathEntryCollection pathEntries,
+			IDictionary<string, string> firmwareUserSpecifications)
 		{
 			_showWarning = showWarning;
+			_firmwareManager = firmwareManager;
+			_pathEntries = pathEntries;
+			_firmwareManager = firmwareManager;
+			_firmwareUserSpecifications = firmwareUserSpecifications;
 		}
 
-		public string PathSubfile(string fname)
-		{
-			return Path.Combine(SubfileDirectory ?? "", fname);
-		}
+		public string DllPath() => PathUtils.DllDirectoryPath;
 
-		public string DllPath()
-		{
-			return Path.Combine(PathManager.GetExeDirectoryAbsolute(), "dll");
-		}
+		// Poop
+		public string GetRetroSaveRAMDirectory(GameInfo game)
+			=> _pathEntries.RetroSaveRamAbsolutePath(game, Global.MovieSession.Movie.IsActive(), Global.MovieSession.Movie.Filename);
 
-		public string GetRetroSaveRAMDirectory()
-		{
-			return PathManager.RetroSaveRAMDirectory(Global.Game);
-		}
-
-		public string GetRetroSystemPath()
-		{
-			return PathManager.RetroSystemPath(Global.Game);
-		}
-
-		public string GetGameBasePath()
-		{
-			return PathManager.GetGameBasePath(Global.Game);
-		}
-
-		#region EmuLoadHelper api
+		// Poop
+		public string GetRetroSystemPath(GameInfo game)
+			=> _pathEntries.RetroSystemAbsolutePath(game);
 
 		private void FirmwareWarn(string sysID, string firmwareID, bool required, string msg = null)
 		{
@@ -59,84 +51,48 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		/// <exception cref="MissingFirmwareException">not found and <paramref name="required"/> is true</exception>
-		public string GetFirmwarePath(string sysId, string firmwareId, bool required, string msg = null)
-		{
-			var path = FirmwareManager.Request(sysId, firmwareId);
-			if (path != null && !File.Exists(path))
-			{
-				path = null;
-			}
-
-			if (path == null)
-			{
-				FirmwareWarn(sysId, firmwareId, required, msg);
-			}
-
-			return path;
-		}
-
 		private byte[] GetFirmwareWithPath(string sysId, string firmwareId, bool required, string msg, out string path)
 		{
-			byte[] ret = null;
-			var path_ = GetFirmwarePath(sysId, firmwareId, required, msg);
-			if (path_ != null && File.Exists(path_))
-			{
-				try
-				{
-					ret = File.ReadAllBytes(path_);
-				}
-				catch (IOException)
-				{
-				}
-			}
+			var firmwarePath = _firmwareManager.Request(
+				_pathEntries,
+				_firmwareUserSpecifications,
+				sysId,
+				firmwareId);
 
-			if (ret == null && path_ != null)
+			if (firmwarePath == null || !File.Exists(firmwarePath))
 			{
+				path = null;
 				FirmwareWarn(sysId, firmwareId, required, msg);
+				return null;
 			}
 
-			path = path_;
-			return ret;
+			try
+			{
+				var ret = File.ReadAllBytes(firmwarePath);
+				path = firmwarePath;
+				return ret;
+			}
+			catch (IOException)
+			{
+				path = null;
+				FirmwareWarn(sysId, firmwareId, required, msg);
+				return null;
+			}
 		}
 
 		/// <exception cref="MissingFirmwareException">not found and <paramref name="required"/> is true</exception>
 		public byte[] GetFirmware(string sysId, string firmwareId, bool required, string msg = null)
-		{
-			string unused;
-			return GetFirmwareWithPath(sysId, firmwareId, required, msg, out unused);
-		}
+			=> GetFirmwareWithPath(sysId, firmwareId, required, msg, out _);
 
 		/// <exception cref="MissingFirmwareException">not found and <paramref name="required"/> is true</exception>
 		public byte[] GetFirmwareWithGameInfo(string sysId, string firmwareId, bool required, out GameInfo gi, string msg = null)
 		{
 			byte[] ret = GetFirmwareWithPath(sysId, firmwareId, required, msg, out var path);
-			if (ret != null && path != null)
-			{
-				gi = Database.GetGameInfo(ret, path);
-			}
-			else
-			{
-				gi = null;
-			}
+			gi = ret != null && path != null
+				? Database.GetGameInfo(ret, path)
+				: null;
 
 			return ret;
-		}
-
-		#endregion
-
-		// this should go away now
-		public static void SyncCoreCommInputSignals(CoreComm target)
-		{
-			string superhack = null;
-			if (target.CoreFileProvider is CoreFileProvider)
-			{
-				superhack = ((CoreFileProvider)target.CoreFileProvider).SubfileDirectory;
-			}
-
-			var cfp = new CoreFileProvider(target.ShowMessage) { SubfileDirectory = superhack };
-			target.CoreFileProvider = cfp;
-			cfp.FirmwareManager = Global.FirmwareManager;
 		}
 	}
 }

@@ -15,6 +15,7 @@ using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 using Newtonsoft.Json;
@@ -32,26 +33,27 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		"Mednafen Team",
 		isPorted: true,
 		isReleased: true)]
-	public unsafe partial class Octoshock : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IDriveLight, ISettable<Octoshock.Settings, Octoshock.SyncSettings>, IRegionable, IInputPollable
+	public unsafe partial class Octoshock : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IDriveLight, ISettable<Octoshock.Settings, Octoshock.SyncSettings>, IRegionable, IInputPollable, IRomInfo
 	{
 		public Octoshock(CoreComm comm, PSF psf, object settings, object syncSettings)
 		{
-			Load(comm, null, null, null, settings, syncSettings, psf);
+			string romDetails = "It's a PSF, what do you want. Oh, tags maybe?";
+			Load(comm, null, null, null, settings, syncSettings, psf, romDetails);
 			OctoshockDll.shock_PowerOn(psx);
 		}
 
 		//note: its annoying that we have to have a disc before constructing this.
 		//might want to change that later. HOWEVER - we need to definitely have a region, at least
-		public Octoshock(CoreComm comm, List<DiscSystem.Disc> discs, List<string> discNames, byte[] exe, object settings, object syncSettings)
+		public Octoshock(CoreComm comm, List<Disc> discs, List<string> discNames, byte[] exe, object settings, object syncSettings, string romDetails)
 		{
-			Load(comm, discs, discNames, exe, settings, syncSettings, null);
+			Load(comm, discs, discNames, exe, settings, syncSettings, null, romDetails);
 			OctoshockDll.shock_PowerOn(psx);
 		}
 
-		void Load(CoreComm comm, List<DiscSystem.Disc> discs, List<string> discNames, byte[] exe, object settings, object syncSettings, PSF psf)
+		void Load(CoreComm comm, List<Disc> discs, List<string> discNames, byte[] exe, object settings, object syncSettings, PSF psf, string romDetails)
 		{
+			RomDetails = romDetails;
 			ConnectTracer();
-			CoreComm = comm;
 			DriveLightEnabled = true;
 
 			_Settings = (Settings)settings ?? new Settings();
@@ -72,7 +74,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				foreach (var disc in discs)
 				{
 					var discInterface = new DiscInterface(disc,
-						(di) =>
+						di =>
 						{
 							//if current disc this delegate disc, activity is happening
 							if (di == currentDiscInterface)
@@ -137,7 +139,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 					BufferHeight = 288;
 				}
 				CurrentVideoSize = new System.Drawing.Size(BufferWidth, BufferHeight);
-				var ri = Octoshock.CalculateResolution(SystemVidStandard, _Settings, BufferWidth, BufferHeight);
+				var ri = CalculateResolution(SystemVidStandard, _Settings, BufferWidth, BufferHeight);
 				BufferWidth = VirtualWidth = ri.Resolution.Width;
 				BufferHeight = VirtualHeight = ri.Resolution.Height;
 				//VideoProvider_Padding = new System.Drawing.Size(50,50);
@@ -214,7 +216,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			StudySaveBufferSize();
 		}
 
+		public string RomDetails { get; private set; }
+
 		public string SystemId => "PSX";
+
+		public static readonly IReadOnlyList<ControllerDefinition.AxisRange> DualShockStickRanges = ControllerDefinition.CreateAxisRangePair(0, 128, 255, ControllerDefinition.AxisPairOrientation.RightAndDown);
 
 		public static ControllerDefinition CreateControllerDefinition(SyncSettings syncSettings)
 		{
@@ -249,10 +255,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 								"P" + pnum + " L"
 							});
 
-					definition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
-					definition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
-					definition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
-					definition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
+					var axisRange = new ControllerDefinition.AxisRange(0, 128, 255);
+					definition.FloatRanges.Add(axisRange);
+					definition.FloatRanges.Add(axisRange);
+					definition.FloatRanges.Add(axisRange);
+					definition.FloatRanges.Add(axisRange);
 				}
 				else
 				{
@@ -289,10 +296,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 								"P" + pnum + " RStick Y"
 							});
 
-						definition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
-						definition.FloatRanges.Add(new[] { 255.0f, 128.0f, 0.0f });
-						definition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
-						definition.FloatRanges.Add(new[] { 255.0f, 128.0f, 0.0f });
+						definition.FloatRanges.AddRange(DualShockStickRanges.Concat(DualShockStickRanges).ToList());
 					}
 				}
 			}
@@ -307,9 +311,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			definition.FloatControls.Add("Disc Select");
 
 			definition.FloatRanges.Add(
-				//new[] {-1f,-1f,-1f} //this is carefully chosen so that we end up with a -1 disc by default (indicating that it's never been set)
+				//new ControllerDefinition.AxisRange(-1, -1, -1) //this is carefully chosen so that we end up with a -1 disc by default (indicating that it's never been set)
 				//hmm.. I don't see why this wouldn't work
-				new[] { 0f, 1f, 1f }
+				new ControllerDefinition.AxisRange(0, 1, 1)
 			);
 
 			return definition;
@@ -322,7 +326,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		private int[] frameBuffer = new int[0];
 		private Random rand = new Random();
-		public CoreComm CoreComm { get; private set; }
 
 		//we can only have one active core at a time, due to the lib being so static.
 		//so we'll track the current one here and detach the previous one whenever a new one is booted up.

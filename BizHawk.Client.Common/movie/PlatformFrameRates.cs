@@ -80,12 +80,7 @@ namespace BizHawk.Client.Common
 			get
 			{
 				var key = systemId + (pal ? "_PAL" : "");
-				if (Rates.ContainsKey(key))
-				{
-					return Rates[key];
-				}
-
-				return 60.0;
+				return Rates.ContainsKey(key) ? Rates[key] : 60.0;
 			}
 		}
 
@@ -102,12 +97,12 @@ namespace BizHawk.Client.Common
 
 		private double Fps(IMovie movie)
 		{
-			var system = movie.HeaderEntries[HeaderKeys.PLATFORM];
-			var core = movie.HeaderEntries[HeaderKeys.CORE];
-			var pal = movie.HeaderEntries.ContainsKey(HeaderKeys.PAL)
-				&& movie.HeaderEntries[HeaderKeys.PAL] == "1";
+			var system = movie.HeaderEntries[HeaderKeys.Platform];
+			var core = movie.HeaderEntries[HeaderKeys.Core];
+			var pal = movie.HeaderEntries.ContainsKey(HeaderKeys.Pal)
+				&& movie.HeaderEntries[HeaderKeys.Pal] == "1";
 
-			if (movie.HeaderEntries.ContainsKey(HeaderKeys.CYCLECOUNT) && core == "Gambatte")
+			if (movie.HeaderEntries.ContainsKey(HeaderKeys.CycleCount) && core == "Gambatte")
 			{
 				system = "GB_Clock";
 			}

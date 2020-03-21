@@ -18,7 +18,7 @@ namespace BizHawk.Client.Common.movie.import
 		protected override void RunImport()
 		{
 			var bsnesName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(LibsnesCore), typeof(CoreAttribute))).CoreName;
-			Result.Movie.HeaderEntries[HeaderKeys.CORE] = bsnesName;
+			Result.Movie.HeaderEntries[HeaderKeys.Core] = bsnesName;
 
 			var hf = new HawkFile(SourceFile.FullName);
 
@@ -77,7 +77,7 @@ namespace BizHawk.Client.Common.movie.import
 						authorList += authorLast;
 					}
 
-					Result.Movie.HeaderEntries[HeaderKeys.AUTHOR] = authorList;
+					Result.Movie.HeaderEntries[HeaderKeys.Author] = authorList;
 					hf.Unbind();
 				}
 				else if (item.Name == "coreversion")
@@ -93,7 +93,7 @@ namespace BizHawk.Client.Common.movie.import
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
 					string gameName = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
-					Result.Movie.HeaderEntries[HeaderKeys.GAMENAME] = gameName;
+					Result.Movie.HeaderEntries[HeaderKeys.GameName] = gameName;
 					hf.Unbind();
 				}
 				else if (item.Name == "gametype")
@@ -120,7 +120,7 @@ namespace BizHawk.Client.Common.movie.import
 					}
 
 					bool pal = gametype == "snes_pal" || gametype == "sgb_pal";
-					Result.Movie.HeaderEntries[HeaderKeys.PAL] = pal.ToString();
+					Result.Movie.HeaderEntries[HeaderKeys.Pal] = pal.ToString();
 					hf.Unbind();
 				}
 				else if (item.Name == "input")
@@ -281,7 +281,7 @@ namespace BizHawk.Client.Common.movie.import
 				}
 			}
 
-			Result.Movie.HeaderEntries[HeaderKeys.PLATFORM] = platform;
+			Result.Movie.HeaderEntries[HeaderKeys.Platform] = platform;
 			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(ss);
 			Global.Config.SnesInSnes9x = false; // This could be annoying to a user if they don't notice we set this preference, but the alternative is for the movie import to fail to load the movie
 		}
@@ -342,14 +342,10 @@ namespace BizHawk.Client.Common.movie.import
 			}
 
 			// LSNES frames don't start or end with a |.
-			int start = 1;
 			int end = sections.Length;
-			int playerOffset = 0;
 
-			for (int section = start; section < end; section++)
+			for (int player = 1; player < end; player++)
 			{
-				// The player number is one less than the section number for the reasons explained above.
-				int player = section + playerOffset;
 				string prefix = $"P{player} ";
 				
 				// Gameboy doesn't currently have a prefix saying which player the input is for.
@@ -360,12 +356,12 @@ namespace BizHawk.Client.Common.movie.import
 
 				// Only count lines with that have the right number of buttons and are for valid players.
 				if (
-					sections[section].Length == buttons.Length)
+					sections[player].Length == buttons.Length)
 				{
 					for (int button = 0; button < buttons.Length; button++)
 					{
 						// Consider the button pressed so long as its spot is not occupied by a ".".
-						controllers[prefix + buttons[button]] = sections[section][button] != '.';
+						controllers[prefix + buttons[button]] = sections[player][button] != '.';
 					}
 				}
 			}

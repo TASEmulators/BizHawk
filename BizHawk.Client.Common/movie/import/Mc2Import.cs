@@ -27,7 +27,7 @@ namespace BizHawk.Client.Common.movie.import
 				ss.Port4,
 				ss.Port5);
 
-			Result.Movie.HeaderEntries[HeaderKeys.PLATFORM] = "PCE";
+			Result.Movie.HeaderEntries[HeaderKeys.Platform] = "PCE";
 			using var sr = SourceFile.OpenText();
 			string line;
 
@@ -84,7 +84,7 @@ namespace BizHawk.Client.Common.movie.import
 				}
 				else if (line.ToLower().StartsWith("pcecd"))
 				{
-					Result.Movie.HeaderEntries[HeaderKeys.PLATFORM] = "PCECD";
+					Result.Movie.HeaderEntries[HeaderKeys.Platform] = "PCECD";
 				}
 				else if (line.ToLower().StartsWith("emuversion"))
 				{
@@ -97,15 +97,15 @@ namespace BizHawk.Client.Common.movie.import
 				}
 				else if (line.ToLower().StartsWith("romfilename"))
 				{
-					Result.Movie.HeaderEntries[HeaderKeys.GAMENAME] = ParseHeader(line, "romFilename");
+					Result.Movie.HeaderEntries[HeaderKeys.GameName] = ParseHeader(line, "romFilename");
 				}
 				else if (line.ToLower().StartsWith("cdgamename"))
 				{
-					Result.Movie.HeaderEntries[HeaderKeys.GAMENAME] = ParseHeader(line, "cdGameName");
+					Result.Movie.HeaderEntries[HeaderKeys.GameName] = ParseHeader(line, "cdGameName");
 				}
 				else if (line.ToLower().StartsWith("comment author"))
 				{
-					Result.Movie.HeaderEntries[HeaderKeys.AUTHOR] = ParseHeader(line, "comment author");
+					Result.Movie.HeaderEntries[HeaderKeys.Author] = ParseHeader(line, "comment author");
 				}
 				else if (line.ToLower().StartsWith("rerecordcount"))
 				{
@@ -155,14 +155,12 @@ namespace BizHawk.Client.Common.movie.import
 			 Skip the first two sections of the split, which consist of everything before the starting | and the command.
 			 Do not use the section after the last |. In other words, get the sections for the players.
 			*/
-			int start = 2;
 			int end = sections.Length - 1;
-			int playerOffset = -1;
 
-			for (int section = start; section < end; section++)
+			for (int section = 2; section < end; section++)
 			{
 				// The player number is one less than the section number for the reasons explained above.
-				int player = section + playerOffset;
+				int player = section - 1;
 				string prefix = $"P{player} ";
 
 				// Only count lines with that have the right number of buttons and are for valid players.

@@ -11,21 +11,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class VirtualPadAnalogStick : UserControl, IVirtualPadControl
 	{
-		/// <summary>for coordinate transformation when non orthogonal (like PSX for example)</summary>
-		private int rangeAverageX;
-
-		/// <inheritdoc cref="rangeAverageX"/>
-		private int rangeAverageY;
-
-		private Range<int> _rangeX = AnalogStickPanel.DefaultRange;
-
-		private Range<int> _rangeY = AnalogStickPanel.DefaultRange;
-
 		private bool _readonly;
-
-		private bool _reverseX;
-
-		private bool _reverseY;
 
 		private bool _updatingFromAnalog;
 
@@ -44,45 +30,25 @@ namespace BizHawk.Client.EmuHawk
 			manualTheta.ValueChanged += PolarNumeric_Changed;
 		}
 
-		public float[] RangeX
-		{
-			set
-			{
-				if (value.Length != 3) throw new ArgumentException("must be float[3]", nameof(value));
-#if false
-				_midX = (int) value[1];
-#endif
-				_reverseX = value[2] < value[0];
-				_rangeX = _reverseX ? ((int) value[2]).RangeTo((int) value[0]) : ((int) value[0]).RangeTo((int) value[2]);
-			}
-		}
+		public ControllerDefinition.AxisRange RangeX { get; set; }
 
-		public float[] RangeY
-		{
-			set
-			{
-				if (value.Length != 3) throw new ArgumentException("must be float[3]", nameof(value));
-#if false
-				_midY = (int) value[1];
-#endif
-				_reverseY = value[2] < value[0];
-				_rangeY = _reverseY ? ((int) value[2]).RangeTo((int) value[0]) : ((int) value[0]).RangeTo((int) value[2]);
-			}
-		}
+		public ControllerDefinition.AxisRange RangeY { get; set; }
 
 		public string? SecondaryName { get; set; }
 
 		private void VirtualPadAnalogStick_Load(object sender, EventArgs e)
 		{
-			AnalogStick.XName = AnalogStick.Name = Name;
-			AnalogStick.SetRangeX(_rangeX);
-			AnalogStick.YName = !string.IsNullOrEmpty(SecondaryName) ? SecondaryName : Name.Replace("X", "Y");
-			AnalogStick.SetRangeY(_rangeY);
+			AnalogStick.Init(
+				Name,
+				RangeX,
+				!string.IsNullOrEmpty(SecondaryName) ? SecondaryName : Name.Replace("X", "Y"),
+				RangeY
+			);
 
-			ManualX.Minimum = _rangeX.Start;
-			ManualX.Maximum = _rangeX.EndInclusive;
-			ManualY.Minimum = _rangeY.Start;
-			ManualY.Maximum = _rangeY.EndInclusive;
+			ManualX.Minimum = RangeX.Min;
+			ManualX.Maximum = RangeX.Max;
+			ManualY.Minimum = RangeY.Min;
+			ManualY.Maximum = RangeY.Max;
 			MaxXNumeric.Minimum = 1;
 			MaxXNumeric.Maximum = 100;
 			MaxYNumeric.Minimum = 1;
@@ -91,9 +57,6 @@ namespace BizHawk.Client.EmuHawk
 			// these trigger Change events that set the analog stick's values too
 			MaxXNumeric.Value = 100;
 			MaxYNumeric.Value = 100;
-
-			rangeAverageX = (_rangeX.Start + _rangeX.EndInclusive) / 2;
-			rangeAverageY = (_rangeY.Start + _rangeY.EndInclusive) / 2;
 		}
 
 		public void UpdateValues()
@@ -115,10 +78,10 @@ namespace BizHawk.Client.EmuHawk
 			manualR.Value = 0;
 			manualTheta.Value = 0;
 			//see HOOMOO
-			Global.AutofireStickyXORAdapter.SetSticky(AnalogStick.XName, false);
-			Global.StickyXORAdapter.Unset(AnalogStick.XName);
-			Global.AutofireStickyXORAdapter.SetSticky(AnalogStick.YName, false);
-			Global.StickyXORAdapter.Unset(AnalogStick.YName);
+			Global.InputManager.AutofireStickyXorAdapter.SetSticky(AnalogStick.XName, false);
+			Global.InputManager.StickyXorAdapter.Unset(AnalogStick.XName);
+			Global.InputManager.AutofireStickyXorAdapter.SetSticky(AnalogStick.YName, false);
+			Global.InputManager.StickyXorAdapter.Unset(AnalogStick.YName);
 			AnalogStick.HasValue = false;
 		}
 
@@ -168,14 +131,19 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SetPrevious(IController previous) => AnalogStick.SetPrevious(previous);
 
+		private (ushort R, ushort Θ) RectToPolarHelper(int x, int y) => PolarRectConversion.RectToPolarLookup(
+			(sbyte) (RangeX.IsReversed ? RangeX.Mid - x : x - RangeX.Mid),
+			(sbyte) (RangeY.IsReversed ? RangeY.Mid - y : y - RangeY.Mid)
+		);
+
 		private void ManualXY_ValueChanged(object sender, EventArgs e)
 		{
 			if (_updatingFromAnalog || _updatingFromPolar) return;
 			_updatingFromXY = true;
 
-			var x = (sbyte) ManualX.Value;
-			var y = (sbyte) ManualY.Value;
-			var (r, θ) = PolarRectConversion.RectToPolarLookup(x, y);
+			var x = (int) ManualX.Value;
+			var y = (int) ManualY.Value;
+			var (r, θ) = RectToPolarHelper(x, y);
 			SetAnalog(x, y);
 			SetPolar(r, θ);
 
@@ -183,7 +151,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void MaxManualXY_ValueChanged(object sender, EventArgs e)
-			=> AnalogStick.SetUserRange(_reverseX ? -MaxXNumeric.Value : MaxXNumeric.Value, _reverseY ? -MaxYNumeric.Value : MaxYNumeric.Value);
+			=> AnalogStick.SetUserRange((int) MaxXNumeric.Value, (int) MaxYNumeric.Value);
 
 		private void PolarNumeric_Changed(object sender, EventArgs e)
 		{
@@ -191,8 +159,8 @@ namespace BizHawk.Client.EmuHawk
 			_updatingFromPolar = true;
 
 			var (x, y) = PolarRectConversion.PolarToRectLookup((ushort) manualR.Value, (ushort) manualTheta.Value);
-			var x1 = (rangeAverageX + x).ConstrainWithin(_rangeX);
-			var y1 = (rangeAverageY + y).ConstrainWithin(_rangeY);
+			var x1 = (RangeX.IsReversed ? RangeX.Mid - x : RangeX.Mid + x).ConstrainWithin(RangeX.Range);
+			var y1 = (RangeY.IsReversed ? RangeY.Mid - y : RangeY.Mid + y).ConstrainWithin(RangeY.Range);
 			SetAnalog(x1, y1);
 			SetXY(x1, y1);
 
@@ -227,9 +195,9 @@ namespace BizHawk.Client.EmuHawk
 
 			if (AnalogStick.HasValue)
 			{
-				var x = AnalogStick.X - rangeAverageX;
-				var y = AnalogStick.Y - rangeAverageY;
-				var (r, θ) = PolarRectConversion.RectToPolarLookup((sbyte) x, (sbyte) y);
+				var x = AnalogStick.X;
+				var y = AnalogStick.Y;
+				var (r, θ) = RectToPolarHelper(x, y);
 				SetPolar(r, θ);
 				SetXY(x, y);
 			}

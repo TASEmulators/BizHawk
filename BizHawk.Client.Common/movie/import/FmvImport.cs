@@ -32,7 +32,7 @@ namespace BizHawk.Client.Common.movie.import
 				return;
 			}
 
-			Result.Movie.HeaderEntries[HeaderKeys.PLATFORM] = "NES";
+			Result.Movie.HeaderEntries[HeaderKeys.Platform] = "NES";
 			var syncSettings = new NES.NESSyncSettings();
 
 			// other bits: unknown, set to 0
@@ -44,7 +44,7 @@ namespace BizHawk.Client.Common.movie.import
 			if (((flags >> 5) & 0x1) != 0)
 			{
 				fds = true;
-				Result.Movie.HeaderEntries[HeaderKeys.BOARDNAME] = "FDS";
+				Result.Movie.HeaderEntries[HeaderKeys.BoardName] = "FDS";
 			}
 			else
 			{

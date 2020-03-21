@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (Board is ExROM)
 			{
-				return Board.VROM ?? Board.VRAM;
+				return Board.Vrom ?? Board.Vram;
 			}
 			else
 			{

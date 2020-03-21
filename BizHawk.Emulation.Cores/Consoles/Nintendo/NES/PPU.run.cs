@@ -77,6 +77,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			pixelcolor_latch_1 = pixelcolor;
 		}
 
+		//address line 3 relates to the pattern table fetch occuring (the PPU always makes them in pairs).
+		private int get_ptread(int par)
+		{
+			int hi = reg_2000.bg_pattern_hi;
+			return (hi << 0xC) | (par << 0x4) | ppur.fv;
+		}
+
 		void Read_bgdata(int cycle, int i)
 		{
 			switch (cycle)
@@ -103,7 +110,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 3:
 					break;
 				case 4:
-					ppu_addr_temp = ppur.get_ptread(bgdata[i].nt);
+					ppu_addr_temp = get_ptread(bgdata[i].nt);
 					bgdata[i].pt_0 = ppubus_read(ppu_addr_temp, true, true);
 					break;
 				case 5:
@@ -167,7 +174,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			else if (ppur.status.cycle == (3 + NMI_offset) && ppur.status.sl == 241 + preNMIlines)
 			{
 				if (nmi_destiny) { nes.cpu.NMI = true; }
-				nes.Board.AtVsyncNMI();
+				nes.Board.AtVsyncNmi();
 			}
 
 			if (ppur.status.cycle == 340)

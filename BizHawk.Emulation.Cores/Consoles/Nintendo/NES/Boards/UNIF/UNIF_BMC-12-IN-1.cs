@@ -3,14 +3,14 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class UNIF_BMC_12_IN_1 : NES.NESBoardBase
+	internal sealed class UNIF_BMC_12_IN_1 : NesBoardBase
 	{
-		private ByteBuffer regs = new ByteBuffer(2);
+		private byte[] regs = new byte[2];
 		private byte ctrl;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "UNIF_BMC-12-IN-1":
 					break;
@@ -23,18 +23,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync(nameof(regs), ref regs);
+			ser.Sync(nameof(regs), ref regs, false);
 			ser.Sync(nameof(ctrl), ref ctrl);
 			base.SyncState(ser);
 		}
 
-		public override void Dispose()
-		{
-			regs.Dispose();
-			base.Dispose();
-		}
-
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			addr += 0x8000;
 			switch (addr & 0xE000)
@@ -59,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SetMirrorType(horizontal ? EMirrorType.Horizontal : EMirrorType.Vertical);
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
@@ -74,13 +68,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					bank = regs[1] >> 3 | (basebank << 2);
 				}
 
-				return VROM[(bank << 12) + (addr & 0xFFF)];
+				return Vrom[(bank << 12) + (addr & 0xFFF)];
 			}
 
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			var basebank = (ctrl & 3) << 3;
 			int bank = 0;
@@ -109,7 +103,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
-			return ROM[(bank << 14) + (addr & 0x3FFF)];
+			return Rom[(bank << 14) + (addr & 0x3FFF)];
 		}
 	}
 }

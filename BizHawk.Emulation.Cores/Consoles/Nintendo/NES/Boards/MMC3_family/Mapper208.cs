@@ -2,9 +2,9 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper208 : MMC3Board_Base
+	internal sealed class Mapper208 : MMC3Board_Base
 	{
-		private ByteBuffer exRegs = new ByteBuffer(6);
+		private byte[] exRegs = new byte[6];
 
 		private readonly byte[] lut = {
 			0x59, 0x59, 0x59, 0x59, 0x59, 0x59, 0x59, 0x59, 0x59, 0x49, 0x19, 0x09, 0x59, 0x49, 0x19, 0x09,
@@ -25,9 +25,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			0x09, 0x19, 0x49, 0x59, 0x09, 0x19, 0x49, 0x59, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 		};
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER208":
 					break;
@@ -39,34 +39,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			exRegs.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("expregs", ref exRegs);
+			ser.Sync("expregs", ref exRegs, false);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[(exRegs[5] << 15) + addr];
+			return Rom[(exRegs[5] << 15) + addr];
 		}
 
-		public override byte ReadEXP(int addr)
+		public override byte ReadExp(int addr)
 		{
 			if (addr >= 0x1800) // 0x5800-0x5FFF
 			{
 				return exRegs[addr & 3];
 			}
 
-			return base.ReadEXP(addr);
+			return base.ReadExp(addr);
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			if (addr >= 0x800 && addr < 0x1000) // 0x4800-0x4FFF
 			{
@@ -88,11 +82,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			else
 			{
-				base.WriteEXP(addr, value);
+				base.WriteExp(addr, value);
 			}
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			if (addr >= 0x800 && addr < 0x1000) // 0x6800 - 0x6FFF
 			{
@@ -100,7 +94,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 			{
-				base.WriteWRAM(addr, value);
+				base.WriteWram(addr, value);
 			}
 		}
 

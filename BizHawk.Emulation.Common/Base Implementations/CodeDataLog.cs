@@ -192,18 +192,12 @@ namespace BizHawk.Emulation.Common
 		{
 			var br = new BinaryReader(s);
 			string id = br.ReadString();
-			switch (id)
+			SubType = id switch
 			{
-				case "BIZHAWK-CDL-1":
-					SubType = "PCE";
-					break;
-				case "BIZHAWK-CDL-2":
-					SubType = br.ReadString().TrimEnd(' ');
-					break;
-				default:
-					throw new InvalidDataException("File is not a BizHawk CDL file!");
-			}
-
+				"BIZHAWK-CDL-1" => "PCE",
+				"BIZHAWK-CDL-2" => br.ReadString().TrimEnd(' '),
+				_ => throw new InvalidDataException("File is not a BizHawk CDL file!"),
+			};
 			int count = br.ReadInt32();
 			for (int i = 0; i < count; i++)
 			{

@@ -352,7 +352,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var file = OpenFileDialog(
 					CurrentFileName,
-					PathManager.MakeAbsolutePath(Config.PathEntries.ToolsPathFragment, null),
+					Config.PathEntries.ToolsAbsolutePath(),
 					"Bot files",
 					"bot");
 
@@ -374,7 +374,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var file = SaveFileDialog(
 					CurrentFileName,
-					PathManager.MakeAbsolutePath(Config.PathEntries.ToolsPathFragment, null),
+					Config.PathEntries.ToolsAbsolutePath(),
 					"Bot files",
 					"bot");
 
@@ -749,20 +749,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private int GetRamValue(int addr)
 		{
-			int val;
-			switch (_dataSize)
+			var val = _dataSize switch
 			{
-				default:
-				case 1:
-					val = _currentDomain.PeekByte(addr);
-					break;
-				case 2:
-					val = _currentDomain.PeekUshort(addr, _bigEndian);
-					break;
-				case 4:
-					val = (int)_currentDomain.PeekUint(addr, _bigEndian);
-					break;
-			}
+				1 => _currentDomain.PeekByte(addr),
+				2 => _currentDomain.PeekUshort(addr, _bigEndian),
+				4 => (int) _currentDomain.PeekUint(addr, _bigEndian),
+				_ => _currentDomain.PeekByte(addr)
+			};
 
 			return val;
 		}
@@ -792,7 +785,7 @@ namespace BizHawk.Client.EmuHawk
 					foreach (var button in lg.Definition.BoolButtons)
 					{
 						// TODO: make an input adapter specifically for the bot?
-						Global.ButtonOverrideAdaptor.SetButton(button, lg.IsPressed(button));
+						Global.InputManager.ButtonOverrideAdapter.SetButton(button, lg.IsPressed(button));
 					}
 				}
 				else
@@ -878,20 +871,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool TestValue(byte operation, int currentValue, int bestValue)
 		{
-			switch (operation)
+			return operation switch
 			{
-				case 0:
-					return currentValue > bestValue;
-				case 1:
-					return currentValue >= bestValue;
-				case 2:
-					return currentValue == bestValue;
-				case 3:
-					return currentValue <= bestValue;
-				case 4:
-					return currentValue < bestValue;
-			}
-			return false;
+				0 => (currentValue > bestValue),
+				1 => (currentValue >= bestValue),
+				2 => (currentValue == bestValue),
+				3 => (currentValue <= bestValue),
+				4 => (currentValue < bestValue),
+				_ => false
+			};
 		}
 
 		private void UpdateBestAttempt()
@@ -935,7 +923,7 @@ namespace BizHawk.Client.EmuHawk
 				double probability = _cachedControlProbabilities[button];
 				bool pressed = !(rand.Next(100) < probability);
 
-				Global.ClickyVirtualPadController.SetBool(button, pressed);
+				Global.InputManager.ClickyVirtualPadController.SetBool(button, pressed);
 			}
 
 			_currentBotAttempt.Log.Add(_logGenerator.GenerateLogEntry());
@@ -989,7 +977,7 @@ namespace BizHawk.Client.EmuHawk
 			MessageLabel.Text = "Running...";
 			_cachedControlProbabilities = ControlProbabilities;
 			_logGenerator = Global.MovieSession.LogGeneratorInstance();
-			_logGenerator.SetSource(Global.ClickyVirtualPadController);
+			_logGenerator.SetSource(Global.InputManager.ClickyVirtualPadController);
 		}
 
 		private string CanStart()

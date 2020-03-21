@@ -2,17 +2,17 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class UNIF_UNL_LH10 : NES.NESBoardBase
+	internal sealed class UNIF_UNL_LH10 : NesBoardBase
 	{
-		private ByteBuffer reg = new ByteBuffer(8);
+		private byte[] reg = new byte[8];
 		private int cmd;
 
 		private int prg_bank_mask_8;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "UNIF_UNL-LH10":
 					//NES._isVS = true;
@@ -21,31 +21,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_bank_mask_8 = Cart.prg_size / 8 - 1;
+			prg_bank_mask_8 = Cart.PrgSize / 8 - 1;
 
 			//SetMirrorType(Cart.pad_h, Cart.pad_v);
 			SetMirrorType(EMirrorType.Vertical);
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			reg.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync(nameof(reg), ref reg);
+			ser.Sync(nameof(reg), ref reg, false);
 			ser.Sync(nameof(cmd), ref cmd);
 			base.SyncState(ser);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if (addr>=0x4000 && addr<0x6000)
 			{
-				WRAM[addr - 0x4000] = value;
+				Wram[addr - 0x4000] = value;
 				return;
 			}
 
@@ -60,12 +54,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
-			return ROM[ROM.Length - 0x4000 + addr];
+			return Rom[Rom.Length - 0x4000 + addr];
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank = 0;
 			if (addr < 0x2000)
@@ -78,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else if (addr < 0x6000)
 			{
-				return WRAM[addr - 0x4000];
+				return Wram[addr - 0x4000];
 			}
 			else
 			{
@@ -86,7 +80,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			bank &= prg_bank_mask_8;
-			return ROM[(bank << 13) + (addr & 0x1FFF)];
+			return Rom[(bank << 13) + (addr & 0x1FFF)];
 		}
 	}
 }

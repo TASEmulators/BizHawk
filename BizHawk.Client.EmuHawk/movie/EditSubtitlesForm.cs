@@ -214,9 +214,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Fetch fps
-			var system = _selectedMovie.HeaderEntries[HeaderKeys.PLATFORM];
-			var pal = _selectedMovie.HeaderEntries.ContainsKey(HeaderKeys.PAL)
-				&& _selectedMovie.HeaderEntries[HeaderKeys.PAL] == "1";
+			var system = _selectedMovie.HeaderEntries[HeaderKeys.Platform];
+			var pal = _selectedMovie.HeaderEntries.ContainsKey(HeaderKeys.Pal)
+				&& _selectedMovie.HeaderEntries[HeaderKeys.Pal] == "1";
 			var pfr = new PlatformFrameRates();
 			double fps;
 

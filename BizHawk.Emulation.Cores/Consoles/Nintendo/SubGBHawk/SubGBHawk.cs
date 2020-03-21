@@ -19,8 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 			var subGBSettings = (GBHawk.GBHawk.GBSettings)settings ?? new GBHawk.GBHawk.GBSettings();
 			var subGBSyncSettings = (GBHawk.GBHawk.GBSyncSettings)syncSettings ?? new GBHawk.GBHawk.GBSyncSettings();
 
-			_GBCore = new GBHawk.GBHawk(new CoreComm(comm.ShowMessage, comm.Notify) { CoreFileProvider = comm.CoreFileProvider },
-				game, rom, subGBSettings, subGBSyncSettings);
+			_GBCore = new GBHawk.GBHawk(comm, game, rom, subGBSettings, subGBSyncSettings);
 
 			HardReset();
 			current_cycle = 0;
@@ -44,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 			ser.Register(_tracer);
 
 			_GBCore.ControllerDefinition.FloatControls.Add("Input Cycle");
-			_GBCore.ControllerDefinition.FloatRanges.Add(new ControllerDefinition.FloatRange(0, 70224, 70224));
+			_GBCore.ControllerDefinition.FloatRanges.Add(new ControllerDefinition.AxisRange(0, 70224, 70224));
 		}
 
 		public GBHawk.GBHawk _GBCore;

@@ -56,12 +56,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod("trim", "returns a string that trims whitespace on the left and right ends of the string")]
 		public static string Trim(string str)
 		{
-			if (string.IsNullOrEmpty(str))
-			{
-				return null;
-			}
-
-			return str.Trim();
+			return string.IsNullOrEmpty(str) ? null : str.Trim();
 		}
 
 		[LuaMethodExample("local stbizrep = bizstring.replace( \"Some string\", \"Some\", \"Replaced\" );")]

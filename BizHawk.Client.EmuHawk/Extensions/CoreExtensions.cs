@@ -7,8 +7,8 @@ using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
-using BizHawk.Emulation.Cores.Sony.PSP;
 using BizHawk.Emulation.Cores.Arcades.MAME;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
@@ -25,47 +25,18 @@ namespace BizHawk.Client.EmuHawk.CoreExtensions
 				return Properties.Resources.CorpHawkSmall;
 			}
 
-			if (core is QuickNES)
+			return core switch
 			{
-				return Properties.Resources.QuickNes;
-			}
-			
-			if (core is LibsnesCore)
-			{
-				return Properties.Resources.bsnes;
-			}
-			
-			if (core is GPGX)
-			{
-				return Properties.Resources.genplus;
-			}
-			
-			if (core is PSP)
-			{
-				return Properties.Resources.ppsspp;
-			}
-			
-			if (core is Gameboy)
-			{
-				return Properties.Resources.gambatte;
-			}
-			
-			if (core is Snes9x)
-			{
-				return Properties.Resources.snes9x;
-			}
-			
-			if (core is MAME)
-			{
-				return Properties.Resources.mame;
-			}
-
-			if (core is MGBAHawk)
-			{
-				return Properties.Resources.mGba;
-			}
-
-			return null;
+				QuickNES _ => Properties.Resources.QuickNes,
+				LibsnesCore _ => Properties.Resources.bsnes,
+				GPGX _ => Properties.Resources.genplus,
+				Gameboy _ => Properties.Resources.gambatte,
+				Snes9x _ => Properties.Resources.snes9x,
+				MAME _ => Properties.Resources.mame,
+				MGBAHawk _ => Properties.Resources.mGba,
+				MelonDS _ => Properties.Resources.melonDS,
+				_ => null
+			};
 		}
 
 		public static string DisplayName(this IEmulator core)
@@ -133,6 +104,8 @@ namespace BizHawk.Client.EmuHawk.CoreExtensions
 					return SystemInfo.Coleco;
 				case "GBA":
 					return SystemInfo.GBA;
+				case "NDS":
+					return SystemInfo.NDS;
 				case "N64":
 					return SystemInfo.N64;
 				case "SAT":

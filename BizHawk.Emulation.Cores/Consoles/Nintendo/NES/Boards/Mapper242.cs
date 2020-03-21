@@ -17,14 +17,14 @@ mirroring - both
 	 * Wai Xing Zhan Shi (Ch)
 	 */
 
-	public sealed class Mapper242 : NES.NESBoardBase
+	internal sealed class Mapper242 : NesBoardBase
 	{
 		int prg;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER242":
 					break;
@@ -35,12 +35,12 @@ mirroring - both
 			return true;
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[addr + (prg * 0x8000)];
+			return Rom[addr + (prg * 0x8000)];
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			prg = (addr >> 3) & 15;
 			//fceux had different logic here for the mirroring, but that didnt match with experiments on dragon quest 8 nor disch's docs

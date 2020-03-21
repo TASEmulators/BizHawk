@@ -147,7 +147,7 @@ namespace BizHawk.Client.Common
 			MovieControllerAdapter.LatchFromSource(input);
 			if (MultiTrack.IsActive)
 			{
-				Global.MultitrackRewiringAdapter.Source = MovieControllerAdapter;
+				Global.InputManager.MultitrackRewiringAdapter.Source = MovieControllerAdapter;
 			}
 		}
 
@@ -156,7 +156,7 @@ namespace BizHawk.Client.Common
 			var gambatteName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(Gameboy), typeof(CoreAttribute))).CoreName;
 			if (Movie.Core == gambatteName)
 			{
-				var movieCycles = Convert.ToUInt64(Movie.HeaderEntries[HeaderKeys.CYCLECOUNT]);
+				var movieCycles = Convert.ToUInt64(Movie.HeaderEntries[HeaderKeys.CycleCount]);
 				var coreCycles = (Global.Emulator as Gameboy).CycleCount;
 				if (movieCycles != (ulong)coreCycles)
 				{
@@ -237,7 +237,7 @@ namespace BizHawk.Client.Common
 		{
 			if (!Movie.IsActive())
 			{
-				LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+				LatchInputFromPlayer(Global.InputManager.MovieInputSourceAdapter);
 			}
 			else if (Movie.IsFinished())
 			{
@@ -248,7 +248,7 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+					LatchInputFromPlayer(Global.InputManager.MovieInputSourceAdapter);
 				}
 			}
 			else if (Movie.IsPlaying())
@@ -264,20 +264,20 @@ namespace BizHawk.Client.Common
 					// Movie may go into finished mode as a result from latching
 					if (!Movie.IsFinished())
 					{
-						if (Global.ClientControls.IsPressed("Scrub Input"))
+						if (Global.InputManager.ClientControls.IsPressed("Scrub Input"))
 						{
-							LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+							LatchInputFromPlayer(Global.InputManager.MovieInputSourceAdapter);
 							ClearFrame();
 						}
 						else if (Global.Config.MoviePlaybackPokeMode)
 						{
-							LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+							LatchInputFromPlayer(Global.InputManager.MovieInputSourceAdapter);
 							var lg = Movie.LogGeneratorInstance();
-							lg.SetSource(Global.MovieOutputHardpoint);
+							lg.SetSource(Global.InputManager.MovieOutputHardpoint);
 							if (!lg.IsEmpty)
 							{
-								LatchInputFromPlayer(Global.MovieInputSourceAdapter);
-								Movie.PokeFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
+								LatchInputFromPlayer(Global.InputManager.MovieInputSourceAdapter);
+								Movie.PokeFrame(Global.Emulator.Frame, Global.InputManager.MovieOutputHardpoint);
 							}
 							else
 							{
@@ -305,17 +305,17 @@ namespace BizHawk.Client.Common
 			{
 				if (MultiTrack.IsActive)
 				{
-					LatchMultitrackPlayerInput(Global.MultitrackRewiringAdapter);
+					LatchMultitrackPlayerInput(Global.InputManager.MultitrackRewiringAdapter);
 				}
 				else
 				{
-					LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+					LatchInputFromPlayer(Global.InputManager.MovieInputSourceAdapter);
 				}
 			}
 
 			// the movie session makes sure that the correct input has been read and merged to its MovieControllerAdapter;
 			// this has been wired to Global.MovieOutputHardpoint in RewireInputChain
-			Movie.RecordFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
+			Movie.RecordFrame(Global.Emulator.Frame, Global.InputManager.MovieOutputHardpoint);
 		}
 
 		public void HandleMovieAfterFrameLoop()
@@ -368,7 +368,7 @@ namespace BizHawk.Client.Common
 				}
 				else if (Movie.IsFinished())
 				{
-					LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+					LatchInputFromPlayer(Global.InputManager.MovieInputSourceAdapter);
 				}
 			}
 			else
@@ -457,12 +457,12 @@ namespace BizHawk.Client.Common
 
 			// Note: this populates MovieControllerAdapter's Type with the appropriate controller
 			// Don't set it to a movie instance of the adapter or you will lose the definition!
-			InputManager.RewireInputChain();
+			Global.InputManager.RewireInputChain();
 
 			if (!record && emulator.SystemId == "NES") // For NES we need special logic since the movie will drive which core to load
 			{
-				var quicknesName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(QuickNES), typeof(CoreAttribute))).CoreName;
-				var neshawkName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(NES), typeof(CoreAttribute))).CoreName;
+				var quicknesName =  typeof(QuickNES).CoreName();
+				var neshawkName = typeof(NES).CoreName();
 
 				// If either is specified use that, else use whatever is currently set
 				if (movie.Core == quicknesName)
@@ -478,10 +478,10 @@ namespace BizHawk.Client.Common
 			}
 			else if (!record && emulator.SystemId == "SNES") // ditto with snes9x vs bsnes
 			{
-				var snes9xName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(Snes9x), typeof(CoreAttribute))).CoreName;
-				var bsnesName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(LibsnesCore), typeof(CoreAttribute))).CoreName;
+				var snes9XName = typeof(Snes9x).CoreName();
+				var bsnesName = typeof(LibsnesCore).CoreName();
 
-				if (movie.Core == snes9xName)
+				if (movie.Core == snes9XName)
 				{
 					PreviousSnesInSnes9x = Global.Config.SnesInSnes9x;
 					Global.Config.SnesInSnes9x = true;
@@ -494,8 +494,8 @@ namespace BizHawk.Client.Common
 			}
 			else if (!record && emulator.SystemId == "GBA") // ditto with GBA, we should probably architect this at some point, this isn't sustainable
 			{
-				var mGBAName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(MGBAHawk), typeof(CoreAttribute))).CoreName;
-				var vbaNextName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(VBANext), typeof(CoreAttribute))).CoreName;
+				var mGBAName = typeof(MGBAHawk).CoreName();
+				var vbaNextName = typeof(VBANext).CoreName();
 
 				if (movie.Core == mGBAName)
 				{
@@ -510,8 +510,8 @@ namespace BizHawk.Client.Common
 			}
 			else if (!record && (emulator.SystemId == "GB" || emulator.SystemId == "GBC"))
 			{
-				var gbHawkName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(GBHawk), typeof(CoreAttribute))).CoreName;
-				var gambatteName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(Gameboy), typeof(CoreAttribute))).CoreName;
+				var gbHawkName = typeof(GBHawk).CoreName();
+				var gambatteName = typeof(Gameboy).CoreName();
 
 				if (movie.Core == gbHawkName)
 				{

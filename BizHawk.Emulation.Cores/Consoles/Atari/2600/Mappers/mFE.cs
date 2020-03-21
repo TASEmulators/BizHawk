@@ -54,8 +54,14 @@
 	Using emulators or similar there is a large cheat that can be used.  A13 can be used
 	to simply select which 8K bank to be in.
 	*/
-	internal class mFE : MapperBase 
+	internal sealed class mFE : MapperBase 
 	{
+		public mFE(Atari2600 core) : base(core)
+		{
+		}
+
+		public override void HardReset() { }
+
 		public override byte ReadMemory(ushort addr)
 		{
 			if (addr < 0x1000)

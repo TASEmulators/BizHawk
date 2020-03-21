@@ -18,12 +18,12 @@ namespace BizHawk.Client.Common
 
 		public IDictionary<string, dynamic> Get(int? controller = null)
 		{
-			return Global.AutofireStickyXORAdapter.ToDictionary(controller);
+			return Global.InputManager.AutofireStickyXorAdapter.ToDictionary(controller);
 		}
 
 		public IDictionary<string, dynamic> GetImmediate(int? controller = null)
 		{
-			return Global.ActiveController.ToDictionary(controller);
+			return Global.InputManager.ActiveController.ToDictionary(controller);
 		}
 
 		public void SetFromMnemonicStr(string inputLogEntry)
@@ -38,13 +38,13 @@ namespace BizHawk.Client.Common
 				LogCallback($"invalid mnemonic string: {inputLogEntry}");
 				return;
 			}
-			foreach (var button in lg.Definition.BoolButtons) Global.ButtonOverrideAdaptor.SetButton(button, lg.IsPressed(button));
-			foreach (var floatButton in lg.Definition.FloatControls) Global.ButtonOverrideAdaptor.SetFloat(floatButton, lg.GetFloat(floatButton));
+			foreach (var button in lg.Definition.BoolButtons) Global.InputManager.ButtonOverrideAdapter.SetButton(button, lg.IsPressed(button));
+			foreach (var floatButton in lg.Definition.FloatControls) Global.InputManager.ButtonOverrideAdapter.SetFloat(floatButton, lg.GetFloat(floatButton));
 		}
 
 		public void Set(Dictionary<string, bool> buttons, int? controller = null)
 		{
-			foreach (var button in Global.ActiveController.Definition.BoolButtons)
+			foreach (var button in Global.InputManager.ActiveController.Definition.BoolButtons)
 			{
 				Set(button, buttons.TryGetValue(button, out var state) ? state : (bool?) null, controller);
 			}
@@ -55,9 +55,9 @@ namespace BizHawk.Client.Common
 			try
 			{
 				var buttonToSet = controller == null ? button : $"P{controller} {button}";
-				if (state == null) Global.ButtonOverrideAdaptor.UnSet(buttonToSet);
-				else Global.ButtonOverrideAdaptor.SetButton(buttonToSet, state.Value);
-				Global.ActiveController.Overrides(Global.ButtonOverrideAdaptor);
+				if (state == null) Global.InputManager.ButtonOverrideAdapter.UnSet(buttonToSet);
+				else Global.InputManager.ButtonOverrideAdapter.SetButton(buttonToSet, state.Value);
+				Global.InputManager.ActiveController.Overrides(Global.InputManager.ButtonOverrideAdapter);
 			}
 			catch
 			{
@@ -74,7 +74,7 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				Global.StickyXORAdapter.SetFloat(controller == null ? control : $"P{controller} {control}", value);
+				Global.InputManager.StickyXorAdapter.SetFloat(controller == null ? control : $"P{controller} {control}", value);
 			}
 			catch
 			{

@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	//Near Identical to Jaleco JF 17, except for a slight PRG setup
 
-	public sealed class JALECO_JF_19 : NES.NESBoardBase
+	internal sealed class JALECO_JF_19 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_16k;
@@ -20,12 +20,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		//state
 		int latch;
-		ByteBuffer prg_banks_16k = new ByteBuffer(2);
-		ByteBuffer chr_banks_8k = new ByteBuffer(1);
+		byte[] prg_banks_16k = new byte[2];
+		byte[] chr_banks_8k = new byte[1];
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER092":
 					break;
@@ -35,10 +35,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_bank_mask_16k = (Cart.prg_size / 16) - 1;
-			chr_bank_mask_8k = (Cart.chr_size / 8) - 1;
+			prg_bank_mask_16k = (Cart.PrgSize / 16) - 1;
+			chr_bank_mask_8k = (Cart.ChrSize / 8) - 1;
 
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			SetMirrorType(Cart.PadH, Cart.PadV);
 
 			prg_banks_16k[0] = 0;
 			chr_banks_8k[0] = 0;
@@ -53,22 +53,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ApplyMemoryMapMask(chr_bank_mask_8k, chr_banks_8k);
 		}
 
-		public override void Dispose()
-		{
-			prg_banks_16k.Dispose();
-			chr_banks_8k.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
 			ser.Sync(nameof(latch), ref latch);
-			ser.Sync(nameof(prg_banks_16k), ref prg_banks_16k);
-			ser.Sync(nameof(chr_banks_8k), ref chr_banks_8k);
+			ser.Sync(nameof(prg_banks_16k), ref prg_banks_16k, false);
+			ser.Sync(nameof(chr_banks_8k), ref chr_banks_8k, false);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			//Console.WriteLine("MAP {0:X4} = {1:X2}", addr, value);
 
@@ -99,20 +92,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SyncMap();
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			addr = ApplyMemoryMap(14, prg_banks_16k, addr);
-			return ROM[addr];
+			return Rom[addr];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				addr = ApplyMemoryMap(13, chr_banks_8k, addr);
 				return base.ReadPPUChr(addr);
 			}
-			else return base.ReadPPU(addr);
+			else return base.ReadPpu(addr);
 		}
 	}
 }

@@ -11,10 +11,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	1FE0-1FEF.  Accessing one of these will select the desired bank. 1FE0 = bank 0,
 	1FE1 = bank 1, etc.
 	*/
-
-	internal class mEF : MapperBase 
+	internal sealed class mEF : MapperBase 
 	{
 		private int _toggle;
+
+		public mEF(Atari2600 core) : base(core)
+		{
+		}
 
 		public override void SyncState(Serializer ser)
 		{
@@ -25,8 +28,17 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public override void HardReset()
 		{
 			_toggle = 0;
-			base.HardReset();
 		}
+
+		public override byte ReadMemory(ushort addr) => ReadMem(addr, false);
+
+		public override byte PeekMemory(ushort addr) => ReadMem(addr, true);
+
+		public override void WriteMemory(ushort addr, byte value)
+			=> WriteMem(addr, value, false);
+
+		public override void PokeMemory(ushort addr, byte value)
+			=> WriteMem(addr, value, true);
 
 		private byte ReadMem(ushort addr, bool peek)
 		{
@@ -43,16 +55,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			return Core.Rom[(_toggle << 12) + (addr & 0xFFF)];
 		}
 
-		public override byte ReadMemory(ushort addr)
-		{
-			return ReadMem(addr, false);
-		}
-
-		public override byte PeekMemory(ushort addr)
-		{
-			return ReadMem(addr, true);
-		}
-
 		private void WriteMem(ushort addr, byte value, bool poke)
 		{
 			if (!poke)
@@ -66,34 +68,28 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 		}
 
-		public override void WriteMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, poke: false);
-		}
-
-		public override void PokeMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, poke: true);
-		}
-
 		private void Address(ushort addr)
 		{
-			if (addr == 0x1FE0) _toggle = 0;
-			if (addr == 0x1FE1) _toggle = 1;
-			if (addr == 0x1FE2) _toggle = 2;
-			if (addr == 0x1FE3) _toggle = 3;
-			if (addr == 0x1FE4) _toggle = 4;
-			if (addr == 0x1FE5) _toggle = 5;
-			if (addr == 0x1FE6) _toggle = 6;
-			if (addr == 0x1FE7) _toggle = 7;
-			if (addr == 0x1FE8) _toggle = 8;
-			if (addr == 0x1FE9) _toggle = 9;
-			if (addr == 0x1FEA) _toggle = 10;
-			if (addr == 0x1FEB) _toggle = 11;
-			if (addr == 0x1FEC) _toggle = 12;
-			if (addr == 0x1FED) _toggle = 13;
-			if (addr == 0x1FEE) _toggle = 14;
-			if (addr == 0x1FEF) _toggle = 15;
+			_toggle = addr switch
+			{
+				0x1FE0 => 0,
+				0x1FE1 => 1,
+				0x1FE2 => 2,
+				0x1FE3 => 3,
+				0x1FE4 => 4,
+				0x1FE5 => 5,
+				0x1FE6 => 6,
+				0x1FE7 => 7,
+				0x1FE8 => 8,
+				0x1FE9 => 9,
+				0x1FEA => 10,
+				0x1FEB => 11,
+				0x1FEC => 12,
+				0x1FED => 13,
+				0x1FEE => 14,
+				0x1FEF => 15,
+				_ => _toggle
+			};
 		}
 	}
 }

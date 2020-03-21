@@ -79,14 +79,14 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Columns = new List<RollColumn>
 				{
-					new RollColumn { Text = "Address", Name = WatchList.ADDRESS, Visible = true, UnscaledWidth = 60, Type = ColumnType.Text },
-					new RollColumn { Text = "Value", Name = WatchList.VALUE, Visible = true, UnscaledWidth = 59, Type = ColumnType.Text },
-					new RollColumn { Text = "Prev", Name = WatchList.PREV, Visible = false, UnscaledWidth = 59, Type = ColumnType.Text },
-					new RollColumn { Text = "Changes", Name = WatchList.CHANGES, Visible = true, UnscaledWidth = 60, Type = ColumnType.Text },
-					new RollColumn { Text = "Diff", Name = WatchList.DIFF, Visible = false, UnscaledWidth = 59, Type = ColumnType.Text },
-					new RollColumn { Text = "Type", Name = WatchList.TYPE, Visible = false, UnscaledWidth = 55, Type = ColumnType.Text },
-					new RollColumn { Text = "Domain", Name = WatchList.DOMAIN, Visible = true, UnscaledWidth = 55, Type = ColumnType.Text },
-					new RollColumn { Text = "Notes", Name = WatchList.NOTES, Visible = true, UnscaledWidth = 128, Type = ColumnType.Text }
+					new RollColumn { Text = "Address", Name = WatchList.Address, Visible = true, UnscaledWidth = 60, Type = ColumnType.Text },
+					new RollColumn { Text = "Value", Name = WatchList.Value, Visible = true, UnscaledWidth = 59, Type = ColumnType.Text },
+					new RollColumn { Text = "Prev", Name = WatchList.Prev, Visible = false, UnscaledWidth = 59, Type = ColumnType.Text },
+					new RollColumn { Text = "Changes", Name = WatchList.ChangesCol, Visible = true, UnscaledWidth = 60, Type = ColumnType.Text },
+					new RollColumn { Text = "Diff", Name = WatchList.Diff, Visible = false, UnscaledWidth = 59, Type = ColumnType.Text },
+					new RollColumn { Text = "Type", Name = WatchList.Type, Visible = false, UnscaledWidth = 55, Type = ColumnType.Text },
+					new RollColumn { Text = "Domain", Name = WatchList.Domain, Visible = true, UnscaledWidth = 55, Type = ColumnType.Text },
+					new RollColumn { Text = "Notes", Name = WatchList.Notes, Visible = true, UnscaledWidth = 128, Type = ColumnType.Text }
 				};
 			}
 
@@ -599,7 +599,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_watches[index].IsSeparator)
 			{
-				if (column.Name == WatchList.ADDRESS)
+				if (column.Name == WatchList.Address)
 				{
 					text = _watches[index].Notes;
 				}
@@ -609,32 +609,32 @@ namespace BizHawk.Client.EmuHawk
 
 			switch (column.Name)
 			{
-				case WatchList.ADDRESS:
+				case WatchList.Address:
 					text = _watches[index].AddressString;
 					break;
-				case WatchList.VALUE:
+				case WatchList.Value:
 					text = _watches[index].ValueString;
 					break;
-				case WatchList.PREV:
+				case WatchList.Prev:
 					text = _watches[index].PreviousStr;
 					break;
-				case WatchList.CHANGES:
+				case WatchList.ChangesCol:
 					if (!_watches[index].IsSeparator)
 					{
 						text = _watches[index].ChangeCount.ToString();
 					}
 
 					break;
-				case WatchList.DIFF:
+				case WatchList.Diff:
 					text = _watches[index].Diff;
 					break;
-				case WatchList.TYPE:
+				case WatchList.Type:
 					text = ComputeDisplayType(_watches[index]);
 					break;
-				case WatchList.DOMAIN:
+				case WatchList.Domain:
 					text = _watches[index].Domain.Name;
 					break;
-				case WatchList.NOTES:
+				case WatchList.Notes:
 					text = _watches[index].Notes;
 					break;
 			}

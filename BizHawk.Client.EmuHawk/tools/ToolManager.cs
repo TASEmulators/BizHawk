@@ -12,6 +12,7 @@ using BizHawk.Client.ApiHawk;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.CoreExtensions;
 using BizHawk.Common;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
 
@@ -862,10 +863,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public string GenerateDefaultCheatFilename()
 		{
-			var pathEntry = _config.PathEntries[Global.Game.System, "Cheats"]
-							?? _config.PathEntries[Global.Game.System, "Base"];
-
-			var path = PathManager.MakeAbsolutePath(pathEntry.Path, Global.Game.System);
+			var path = _config.PathEntries.CheatsAbsolutePath(Global.Game.System);
 
 			var f = new FileInfo(path);
 			if (f.Directory != null && f.Directory.Exists == false)
@@ -873,7 +871,7 @@ namespace BizHawk.Client.EmuHawk
 				f.Directory.Create();
 			}
 
-			return Path.Combine(path, $"{PathManager.FilesystemSafeName(Global.Game)}.cht");
+			return Path.Combine(path, $"{Global.Game.FilesystemSafeName()}.cht");
 		}
 
 		public void UpdateCheatRelatedTools(object sender, CheatCollection.CheatListEventArgs e)

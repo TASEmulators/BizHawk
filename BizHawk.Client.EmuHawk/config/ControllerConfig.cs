@@ -49,6 +49,7 @@ namespace BizHawk.Client.EmuHawk
 			ControllerImages.Add("VirtualBoy Controller", Properties.Resources.VBoyController);
 			ControllerImages.Add("NeoGeo Portable Controller", Properties.Resources.NGPController);
 			ControllerImages.Add("MAME Controller", Properties.Resources.ArcadeController);
+			ControllerImages.Add("NDS Controller", Properties.Resources.DSController);
 		}
 
 		protected override void OnActivated(EventArgs e)
@@ -248,10 +249,17 @@ namespace BizHawk.Client.EmuHawk
 		private void SetControllerPicture(string controlName)
 		{
 			ControllerImages.TryGetValue(controlName, out var lazyBmp);
-			var bmp = lazyBmp?.Value ?? Properties.Resources.Help;
-			pictureBox1.Image = bmp;
-			pictureBox1.Size = bmp.Size;
-			tableLayoutPanel1.ColumnStyles[1].Width = bmp.Width;
+			if (lazyBmp != null)
+			{
+				var bmp = lazyBmp.Value;
+				pictureBox1.Image = bmp;
+				pictureBox1.Size = bmp.Size;
+				tableLayoutPanel1.ColumnStyles[1].Width = bmp.Width;
+			}
+			else
+			{
+				tableLayoutPanel1.ColumnStyles[1].Width = 0;
+			}
 
 			// Uberhack
 			if (controlName == "Commodore 64 Controller")

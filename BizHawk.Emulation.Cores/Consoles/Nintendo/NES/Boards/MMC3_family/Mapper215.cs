@@ -2,11 +2,11 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class Mapper215 : MMC3Board_Base
+	internal sealed class Mapper215 : MMC3Board_Base
 	{
-		private ByteBuffer exRegs = new ByteBuffer(4);
+		private byte[] exRegs = new byte[4];
 
-		public ByteBuffer prg_regs_8k = new ByteBuffer(4);
+		public byte[] prg_regs_8k = new byte[4];
 
 		private bool is_mk3;
 
@@ -42,9 +42,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		};
 		*/
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER215":
 					break;
@@ -61,8 +61,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			exRegs[2] = 4;
 			exRegs[3] = 0;
 
-			prg_mask_8k = Cart.prg_size / 8 - 1;
-			chr_mask_1k = Cart.chr_size - 1;
+			prg_mask_8k = Cart.PrgSize / 8 - 1;
+			chr_mask_1k = Cart.ChrSize - 1;
 
 			prg_regs_8k[0] = 0;
 			prg_regs_8k[1] = 1;
@@ -73,19 +73,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			exRegs.Dispose();
-			prg_regs_8k.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(exRegs), ref exRegs);
+			ser.Sync(nameof(exRegs), ref exRegs, false);
 			ser.Sync(nameof(is_mk3), ref is_mk3);
-			ser.Sync(nameof(prg_regs_8k), ref prg_regs_8k);
+			ser.Sync(nameof(prg_regs_8k), ref prg_regs_8k, false);
 			ser.Sync(nameof(prg_mask), ref prg_mask_8k);
 			ser.Sync(nameof(chr_mask), ref chr_mask_1k);
 		}
@@ -131,16 +124,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			if (addr == 0x1000) { exRegs[0] = value; sync_prg_2(); }
 			if (addr == 0x1001) { exRegs[1] = value; }
 			if (addr == 0x1007) { exRegs[2] = value; mmc3.reg_addr = 0; sync_prg_2(); }
 
-			base.WriteEXP(addr, value);
+			base.WriteExp(addr, value);
 		}
 
-		public override void WriteWRAM(int addr, byte value)
+		public override void WriteWram(int addr, byte value)
 		{
 			if (!is_mk3)
 			{
@@ -149,10 +142,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (addr == 0x0007) { exRegs[2] = value; mmc3.reg_addr = 0; sync_prg_2(); }
 			}
 			
-			base.WriteWRAM(addr, value);
+			base.WriteWram(addr, value);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			addr += 0x8000;
 			switch (addr &= 0xE001)
@@ -160,7 +153,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x8000:
 					if (exRegs[2]==0)
 					{
-						base.WritePRG(0x0000, value);
+						base.WritePrg(0x0000, value);
 						sync_prg(0);
 						sync_prg(2);
 					}
@@ -171,7 +164,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						if ((exRegs[3]>0) && ((exRegs[0] & 0x80) == 0 || (mmc3.reg_addr & 0x7) < 6))
 						{
 							exRegs[3] = 0;
-							base.WritePRG(0x0001, value);
+							base.WritePrg(0x0001, value);
 							if (mmc3.reg_addr==7)
 								sync_prg(1);
 							else if ((mmc3.reg_addr==6) && mmc3.prg_mode)
@@ -182,7 +175,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 					else
 					{
-						base.WritePRG(0x0001, value);
+						base.WritePrg(0x0001, value);
 						if (mmc3.reg_addr == 7)
 							sync_prg(1);
 						else if ((mmc3.reg_addr == 6) && mmc3.prg_mode)
@@ -197,7 +190,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						value = (byte)((value & 0xC0) | regs_sec[value & 0x07]);
 						exRegs[3] = 1;
 
-						base.WritePRG(0x0000, value);
+						base.WritePrg(0x0000, value);
 						sync_prg(0);
 						sync_prg(2);
 					}
@@ -214,7 +207,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 					break;
 				case 0xA001:
-					base.WritePRG(0x4001, value);
+					base.WritePrg(0x4001, value);
 					break;
 				case 0xC000:
 					if (exRegs[2]>0)
@@ -227,32 +220,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							SetMirrorType(EMirrorType.Horizontal);
 						}
 					else
-						base.WritePRG(0x4000, value);
+						base.WritePrg(0x4000, value);
 					break;
 				case 0xC001:
 					if (exRegs[2]>0)
-						base.WritePRG(0x6001, value);
+						base.WritePrg(0x6001, value);
 					else
-						base.WritePRG(0x4001, value);
+						base.WritePrg(0x4001, value);
 					break;
 				case 0xE000:
-					base.WritePRG(0x6000, value);
+					base.WritePrg(0x6000, value);
 					break;
 				case 0xE001:
 					if (exRegs[2]>0)
 					{
-						base.WritePRG(0x4000, value);
-						base.WritePRG(0x4001, value);
+						base.WritePrg(0x4000, value);
+						base.WritePrg(0x4001, value);
 					}
 					else
 					{
-						base.WritePRG(0x6001, value);
+						base.WritePrg(0x6001, value);
 					}
 					break;
 			}
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
@@ -265,16 +258,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				bank_1k &= chr_mask_1k;
 				addr = (bank_1k << 10) | (addr & 0x3FF);
-				return VROM[addr];
+				return Vrom[addr];
 			}
-			else return base.ReadPPU(addr);
+			else return base.ReadPpu(addr);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank = addr >> 13;
 			bank = prg_regs_8k[bank];
-			return ROM[(bank << 13) + (addr & 0x1FFF)];
+			return Rom[(bank << 13) + (addr & 0x1FFF)];
 		}
 	}
 }

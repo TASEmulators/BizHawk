@@ -2,15 +2,13 @@
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
-	/*
-		Mapper used for multi-cart 2K games
-	*/
-	internal class Multicart2K : MapperBase
+	internal sealed class Multicart2K : MapperBase
 	{
 		private int _gameTotal;
 		private int _currentGame;
 
-		public Multicart2K(int gameTotal)
+		public Multicart2K(Atari2600 core, int gameTotal)
+			: base(core)
 		{
 			_gameTotal = gameTotal;
 			_currentGame = 0;
@@ -27,15 +25,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			IncrementGame();
 		}
-		 
-		private void IncrementGame()
-		{
-			_currentGame++;
-			if (_currentGame >= _gameTotal)
-			{
-				_currentGame = 0;
-			}
-		}
 
 		public override byte ReadMemory(ushort addr)
 		{
@@ -48,5 +37,14 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		}
 
 		public override byte PeekMemory(ushort addr) => ReadMemory(addr);
+
+		private void IncrementGame()
+		{
+			_currentGame++;
+			if (_currentGame >= _gameTotal)
+			{
+				_currentGame = 0;
+			}
+		}
 	}
 }

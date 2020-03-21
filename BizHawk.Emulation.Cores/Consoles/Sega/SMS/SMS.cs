@@ -29,7 +29,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			ServiceProvider = new BasicServiceProvider(this);
 			Settings = (SmsSettings)settings ?? new SmsSettings();
 			SyncSettings = (SmsSyncSettings)syncSettings ?? new SmsSyncSettings();
-			CoreComm = comm;
 
 			IsGameGear = game.System == "GG";
 			IsGameGear_C = game.System == "GG";
@@ -47,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			if (game["PAL"] && Region != DisplayType.PAL)
 			{
 				Region = DisplayType.PAL;
-				CoreComm.Notify("Display was forced to PAL mode for game compatibility.");
+				comm.Notify("Display was forced to PAL mode for game compatibility.");
 			}
 
 			if (IsGameGear)
@@ -64,13 +63,13 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			if (game["Japan"] && _region != SmsSyncSettings.Regions.Japan)
 			{
 				_region = SmsSyncSettings.Regions.Japan;
-				CoreComm.Notify("Region was forced to Japan for game compatibility.");
+				comm.Notify("Region was forced to Japan for game compatibility.");
 			}
 
 			if (game["Korea"] && _region != SmsSyncSettings.Regions.Korea)
 			{
 				_region = SmsSyncSettings.Regions.Korea;
-				CoreComm.Notify("Region was forced to Korea for game compatibility.");
+				comm.Notify("Region was forced to Korea for game compatibility.");
 			}
 
 			if ((game.NotInDatabase || game["FM"]) && SyncSettings.EnableFm && !IsGameGear)
@@ -183,9 +182,11 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			{
 				SaveRAM = new byte[int.Parse(game.OptionValue("SRAM"))];
 				Console.WriteLine(SaveRAM.Length);
-			}			
+			}
 			else if (game.NotInDatabase)
+			{
 				SaveRAM = new byte[0x8000];
+			}
 
 			SetupMemoryDomains();
 

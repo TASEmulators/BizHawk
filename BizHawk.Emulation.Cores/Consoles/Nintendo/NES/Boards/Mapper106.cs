@@ -3,9 +3,9 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper106 : NES.NESBoardBase
+	internal sealed class Mapper106 : NesBoardBase
 	{
-		private ByteBuffer regs = new ByteBuffer(16);
+		private byte[] regs = new byte[16];
 
 		private int prg_bank_mask_8k;
 		private int chr_bank_mask_1k;
@@ -13,9 +13,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private bool IRQa;
 		private int IRQCount;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER106":
 					break;
@@ -28,27 +28,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			regs[0xA] = 0xFF;
 			regs[0xB] = 0xFF;
 
-			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
-			chr_bank_mask_1k = Cart.chr_size / 1 - 1;
+			prg_bank_mask_8k = Cart.PrgSize / 8 - 1;
+			chr_bank_mask_1k = Cart.ChrSize / 1 - 1;
 
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			regs.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync(nameof(regs), ref regs);
+			ser.Sync(nameof(regs), ref regs, false);
 			ser.Sync(nameof(IRQa), ref IRQa);
 			ser.Sync(nameof(IRQCount), ref IRQCount);
 			base.SyncState(ser);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			int a = addr & 0xF;
 			switch(a)
@@ -62,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0xD:
 					IRQa = false;
 					IRQCount = 0;
-					IRQSignal = false;
+					IrqSignal = false;
 					break;
 				case 0xE:
 					IRQCount = (IRQCount & 0xFF00) | value;
@@ -79,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SetMirrorType(regs[0xC].Bit(0) ? EMirrorType.Horizontal : EMirrorType.Vertical);
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
@@ -119,20 +113,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 
 				bank &= chr_bank_mask_1k;
-				return VROM[(bank << 10) + (addr & 0x3FF)];
+				return Vrom[(bank << 10) + (addr & 0x3FF)];
 			}
 
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int index = ((addr >> 13) & 3) + 8;
 			int bank = regs[index] & prg_bank_mask_8k;
-			return ROM[(bank << 13) + (addr & 0x1FFF)];
+			return Rom[(bank << 13) + (addr & 0x1FFF)];
 		}
 
-		public override void ClockCPU()
+		public override void ClockCpu()
 		{
 			IrqHook(1);
 		}
@@ -144,7 +138,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				IRQCount += a;
 				if (IRQCount > 0x10000)
 				{
-					IRQSignal = true;
+					IrqSignal = true;
 					IRQa = false;
 				}
 			}

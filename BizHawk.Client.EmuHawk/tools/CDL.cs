@@ -6,6 +6,7 @@ using BizHawk.Emulation.Common;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Common.PathExtensions;
 
 // TODO - select which memorydomains go out to the CDL file. will this cause a problem when re-importing it? 
 // perhaps missing domains shouldn't fail a check
@@ -37,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 		[ConfigPersist]
 		private bool CDLAutoResume { get; set; } = true;
 
-		void SetCurrentFilename(string fname)
+		private void SetCurrentFilename(string fname)
 		{
 			_currentFilename = fname;
 			Text = _currentFilename == null
@@ -322,7 +323,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var file = OpenFileDialog(
 				_currentFilename,
-				PathManager.MakeAbsolutePath(Config.PathEntries.LogPathFragment, null),
+				Config.PathEntries.LogAbsolutePath(),
 				"Code Data Logger Files",
 				"cdl");
 
@@ -371,7 +372,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var file = SaveFileDialog(
 				_currentFilename,
-				PathManager.MakeAbsolutePath(Config.PathEntries.LogPathFragment, null),
+				Config.PathEntries.LogAbsolutePath(),
 				"Code Data Logger Files",
 				"cdl");
 
@@ -396,9 +397,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				var file = ToolFormBase.OpenFileDialog(
+				var file = OpenFileDialog(
 					_currentFilename,
-					PathManager.MakeAbsolutePath(Config.PathEntries.LogPathFragment, null),
+					Config.PathEntries.LogAbsolutePath(),
 					"Code Data Logger Files",
 					"cdl");
 
@@ -493,8 +494,8 @@ namespace BizHawk.Client.EmuHawk
 				try
 				{
 					_autoloading = true;
-					var autoResumeFile = $"{PathManager.FilesystemSafeName(Global.Game)}.cdl";
-					var autoResumeDir = PathManager.MakeAbsolutePath(Config.PathEntries.LogPathFragment, null);
+					var autoResumeFile = $"{Global.Game.FilesystemSafeName()}.cdl";
+					var autoResumeDir = Config.PathEntries.LogAbsolutePath();
 					var autoResumePath = Path.Combine(autoResumeDir, autoResumeFile);
 					if (File.Exists(autoResumePath))
 					{

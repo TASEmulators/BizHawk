@@ -256,7 +256,7 @@ Virtual Boy | Virtual Boyee |
 WonderSwan / Color | Cygne |
 ZX Spectrum | ZXHawk |
 
-Amstrad CPC, Fairchild Channel F, Magnavox Odyssey², Sony PSP, and MB Vectrex emulation, and a MAME frontend, are works-in-progress and there is **no ETA**. Cores for other systems are only conceptual. If you want to help speed up development, ask on IRC (see below).
+Amstrad CPC, Fairchild Channel F, Magnavox Odyssey², and MB Vectrex emulation are works-in-progress, as well as a front-end for MAME, and there is **no ETA** for any of them so don't ask. Cores for other systems are only conceptual. If you're willing and able to work on one of these, ask on IRC (see below).
 
 [to top](#bizhawk)
 

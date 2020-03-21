@@ -136,8 +136,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 			_isLag = false;
 		}
 
-		public CoreComm CoreComm => _GBCore.CoreComm;
-
 		public void Dispose() => _GBCore.Dispose();
 	}
 }

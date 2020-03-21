@@ -2,39 +2,30 @@
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
-	public class MapperBase
+	internal abstract class MapperBase
 	{
-		public Atari2600 Core { get; set; }
+		protected MapperBase(Atari2600 core)
+		{
+			Core = core;
+		}
 
-		public virtual bool HasCartRam => false;
+		protected readonly Atari2600 Core;
 
-		public virtual ByteBuffer CartRam => new ByteBuffer(0);
+		public virtual byte[] CartRam => new byte[0];
 
 		public virtual byte ReadMemory(ushort addr)
-		{
-			return Core.BaseReadMemory(addr);
-		}
+			=> Core.BaseReadMemory(addr);
 
 		public virtual byte PeekMemory(ushort addr)
-		{
-			return Core.BasePeekMemory(addr);
-		}
+			=> Core.BasePeekMemory(addr);
 
 		public virtual void WriteMemory(ushort addr, byte value)
-		{
-			Core.BaseWriteMemory(addr, value);
-		}
+			=> Core.BaseWriteMemory(addr, value);
 
 		public virtual void PokeMemory(ushort addr, byte value)
-		{
-			Core.BasePokeMemory(addr, value);
-		}
+			=> Core.BasePokeMemory(addr, value);
 
 		public virtual void SyncState(Serializer ser)
-		{
-		}
-
-		public virtual void Dispose()
 		{
 		}
 
@@ -42,11 +33,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 		}
 
-		public virtual void HardReset()
-		{
-		}
+		public abstract void HardReset();
 
 		// This is here purely for mapper 3E because it needs the 13th bit to determine bankswitching (but only receives the first 12 on read memory)
-		public bool Bit13 { get; set; }
+		public bool Bit13 { protected get; set; }
 	}
 }

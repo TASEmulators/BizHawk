@@ -1,4 +1,7 @@
-﻿namespace BizHawk.Emulation.Common
+﻿using System;
+using BizHawk.Common;
+
+namespace BizHawk.Emulation.Common
 {
 	/// <summary>
 	/// A memory region and the functionality to read/write from it
@@ -98,6 +101,60 @@
 					PokeByte(addr + 2, (byte)(val >> 16));
 					PokeByte(addr + 3, (byte)(val >> 24));
 					break;
+			}
+		}
+
+		public virtual void BulkPeekByte(Range<long> addresses, byte[] values)
+		{
+			if (addresses == null || values == null)
+			{
+				throw new ArgumentException();
+			}
+
+			if (addresses.EndInclusive - addresses.Start != values.Length)
+			{
+				throw new InvalidOperationException("Invalid length of values array");
+			}
+
+			for (var i = addresses.Start; i < addresses.EndInclusive; i++)
+			{
+				values[i - addresses.Start] = PeekByte(i);
+			}
+		}
+
+		public virtual void BulkPeekUshort(Range<long> addresses,  bool bigEndian, ushort[] values)
+		{
+			if (addresses == null || values == null)
+			{
+				throw new ArgumentException();
+			}
+
+			if (addresses.EndInclusive - addresses.Start != values.Length)
+			{
+				throw new InvalidOperationException("Invalid length of values array");
+			}
+
+			for (var i = addresses.Start; i < addresses.EndInclusive; i++)
+			{
+				values[i] = PeekUshort(i, bigEndian);
+			}
+		}
+
+		public virtual void BulkPeekUint(Range<long> addresses, bool bigEndian, uint[] values)
+		{
+			if (addresses == null || values == null)
+			{
+				throw new ArgumentException();
+			}
+
+			if (addresses.EndInclusive - addresses.Start != values.Length)
+			{
+				throw new InvalidOperationException("Invalid length of values array");
+			}
+
+			for (var i = addresses.Start; i < addresses.EndInclusive; i++)
+			{
+				values[i] = PeekUint(i, bigEndian);
 			}
 		}
 	}

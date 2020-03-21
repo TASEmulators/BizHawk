@@ -20,8 +20,10 @@ namespace BizHawk.Client.EmuHawk
 			UpdateCoreAssociation();
 		}
 
-		string _discSelectName;
-		object _ownerEmulator;
+		private readonly string _discSelectName;
+		private object _lastCoreOwner;
+		private object _ownerEmulator;
+
 		public object OwnerEmulator
 		{
 			get => _ownerEmulator;
@@ -32,19 +34,20 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		object lastCoreOwner;
-
-		void UpdateCoreAssociation()
+		private void UpdateCoreAssociation()
 		{
-			if (lastCoreOwner == OwnerEmulator)
+			if (_lastCoreOwner == OwnerEmulator)
+			{
 				return;
+			}
 
-			lastCoreOwner = OwnerEmulator;
+			_lastCoreOwner = OwnerEmulator;
 
-			if (!(OwnerEmulator is Octoshock))
+			if (!(OwnerEmulator is Octoshock psx))
+			{
 				return;
+			}
 
-			var psx = OwnerEmulator as Octoshock;
 			var buttons = new List<string> { "- NONE -" };
 			buttons.AddRange(psx.HackyDiscButtons);
 
@@ -70,9 +73,8 @@ namespace BizHawk.Client.EmuHawk
 		public void UpdateValues()
 		{
 			UpdateCoreAssociation();
-			if (OwnerEmulator is Octoshock)
+			if (OwnerEmulator is Octoshock psx)
 			{
-				var psx = OwnerEmulator as Octoshock;
 				bool eject = psx.CurrentTrayOpen;
 				bool enableDiscs = eject;
 				bool refreshDiscs = true;
@@ -84,23 +86,19 @@ namespace BizHawk.Client.EmuHawk
 					btnOpen.Enabled = true;
 					btnClose.Enabled = true;
 
-					//if neither button is picked, start with 'closed' selected
-					//(kind of a hack for the initial update)
+					// if neither button is picked, start with 'closed' selected
+					// (kind of a hack for the initial update)
 					if (!btnClose.Checked && !btnOpen.Checked)
 					{
 						btnClose.Checked = true;
 					}
 					else
 					{
-						//while we're here, make sure this only happens the first time
+						// while we're here, make sure this only happens the first time
 						refreshDiscs = false;
 					}
 
 					enableDiscs = btnOpen.Checked;
-
-					// since user hasn't ever needed to set the disc, make sure it's set here
-					// UPDATE: do it below
-					//Global.StickyXORAdapter.SetFloat(_discSelectName, psx.CurrentDiscIndexMounted);
 				}
 				else
 				{
@@ -134,19 +132,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool ReadOnly { get; set; }
 
-		#endregion //IVirtualPadControl
+		#endregion
 
 		private void lvDiscs_SelectedIndexChanged(object sender, EventArgs e)
 		{
-#if false // not a valid way to fight unselection, it results in craptons of ping-ponging logic and eventual malfunction
-			if (lvDiscs.SelectedIndices.Count == 0) lvDiscs.SelectedIndices.Add(0);
-			Global.StickyXORAdapter.SetFloat(_discSelectName, lvDiscs.SelectedIndices[0]);
-#endif
-
-			//emergency measure: if no selection, set no disc
-			if (lvDiscs.SelectedIndices.Count == 0)
-			  Global.StickyXORAdapter.SetFloat(_discSelectName, 0);	
-			else Global.StickyXORAdapter.SetFloat(_discSelectName, lvDiscs.SelectedIndices[0]);
+			// emergency measure: if no selection, set no disc
+			Global.InputManager.StickyXorAdapter.SetFloat(_discSelectName, lvDiscs.SelectedIndices.Count == 0 ? 0 : lvDiscs.SelectedIndices[0]);
 		}
 
 		private void btnClose_Click(object sender, EventArgs e)

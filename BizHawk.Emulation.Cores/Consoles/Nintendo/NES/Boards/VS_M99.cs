@@ -4,8 +4,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//VS System Mapper 99
 
-	[NES.INESBoardImplPriority]
-	public sealed class MAPPER99 : NES.NESBoardBase
+	[NesBoardImplPriority]
+	internal sealed class MAPPER99 : NesBoardBase
 	{
 		//configuration
 		int prg_byte_mask, chr_mask;
@@ -17,10 +17,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//let's make the extra space here, instead of in the main NES to avoid confusion
 		byte[] CIRAM_VS = new byte[0x800];
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER099":
 					NES._isVS = true;
@@ -29,8 +29,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_byte_mask = Cart.prg_size * 1024 - 1;
-			chr_mask = (Cart.chr_size / 8) - 1;
+			prg_byte_mask = Cart.PrgSize * 1024 - 1;
+			chr_mask = (Cart.ChrSize / 8) - 1;
 
 			//update the state of the dip switches
 			//this is only done at power on
@@ -47,22 +47,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		// this now tracks coins
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			//but we don't actually need to do anything yet
 		}
 
-		public override byte ReadEXP(int addr)
+		public override byte ReadExp(int addr)
 		{
 			//what are we reading?
 			return 0;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
-				return VROM[(addr & 0x1FFF) + ((NES.VS_chr_reg & chr_mask) << 13)];
+				return Vrom[(addr & 0x1FFF) + ((NES.VS_chr_reg & chr_mask) << 13)];
 			}
 			else
 			{
@@ -79,12 +79,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000)
 			{
-				if (VRAM != null)
-					VRAM[addr] = value;
+				if (Vram != null)
+					Vram[addr] = value;
 			}
 			else
 			{
@@ -107,19 +107,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("VS_CIRAM", ref CIRAM_VS, false);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			if (Cart.prg_size==48)
+			if (Cart.PrgSize==48)
 			{
 				if (addr<0x2000)
 				{
-					return ROM[(addr & 0x1FFF) + ((NES.VS_prg_reg*4) << 13)];
+					return Rom[(addr & 0x1FFF) + ((NES.VS_prg_reg*4) << 13)];
 				} else
-					return ROM[addr];	
+					return Rom[addr];	
 			}
 			else
 			{
-				return ROM[addr];
+				return Rom[addr];
 			}
 			
 		}

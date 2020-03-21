@@ -5,24 +5,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// Fire Emblem (Ch)
 	// mmc3 with mmc2-style chr swapping
 	// seem to be some graphical glitches...
-	public sealed class Mapper165 : MMC3Board_Base
+	internal sealed class Mapper165 : MMC3Board_Base
 	{
 		bool latch0 = false;
 		bool latch1 = false;
 		int real_chr_mask;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER165":
 					break;
 				default:
 					return false;
 			}
-			Cart.vram_size = 4;
+			Cart.VramSize = 4;
 
-			real_chr_mask = Cart.chr_size / 4 - 1;
+			real_chr_mask = Cart.ChrSize / 4 - 1;
 
 			BaseSetup();
 
@@ -45,16 +45,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				int bank = mmc3.regs[addr < 0x1000 ? latch0 ? 1 : 0 : latch1 ? 4 : 2];
 				if (bank == 0)
-					ret = VRAM[addr & 0xfff];
+					ret = Vram[addr & 0xfff];
 				else
-					ret = VROM[(addr & 0xfff) + (((bank >> 2) & real_chr_mask) << 12)];
+					ret = Vrom[(addr & 0xfff) + (((bank >> 2) & real_chr_mask) << 12)];
 			}
 			else
-				ret = base.ReadPPU(addr);
+				ret = base.ReadPpu(addr);
 			return ret;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			byte ret;
 			if (addr < 0x2000)
@@ -62,12 +62,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				int bank = mmc3.regs[addr < 0x1000 ? latch0 ? 1 : 0 : latch1 ? 4 : 2];
 				if (bank == 0)
-					ret = VRAM[addr & 0xfff];
+					ret = Vram[addr & 0xfff];
 				else
-					ret = VROM[(addr & 0xfff) + (((bank >> 2) & real_chr_mask) << 12)];
+					ret = Vrom[(addr & 0xfff) + (((bank >> 2) & real_chr_mask) << 12)];
 			}
 			else
-				ret = base.ReadPPU(addr);
+				ret = base.ReadPpu(addr);
 
 			// latch processes for the next read
 			switch (addr & 0x3ff8)
@@ -80,16 +80,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return ret;
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000)
 			{
 				int bank = mmc3.regs[addr < 0x1000 ? latch0 ? 1 : 0 : latch1 ? 4 : 2];
 				if (bank == 0)
-					VRAM[addr & 0xfff] = value;
+					Vram[addr & 0xfff] = value;
 			}
 			else
-				base.WritePPU(addr, value);
+				base.WritePpu(addr, value);
 		}
 	}
 }

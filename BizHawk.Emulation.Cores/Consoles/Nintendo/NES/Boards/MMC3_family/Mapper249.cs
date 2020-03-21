@@ -3,14 +3,14 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper249 : MMC3Board_Base
+	internal sealed class Mapper249 : MMC3Board_Base
 	{
 		bool piratecrap = false;
 
 		// mmc3 with pirate crap bolt on
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER249":
 					break;
@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			AssertPrg(256, 512);
 			AssertChr(256);
-			Cart.wram_size = 8;
+			Cart.WramSize = 8;
 			BaseSetup();
 			return true;
 		}
@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(piratecrap), ref piratecrap);
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			piratecrap = value.Bit(1);
 		}

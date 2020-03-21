@@ -21,14 +21,14 @@ namespace BizHawk.Client.Common
 	{
 		#region Fields
 
-		public const string ADDRESS = "AddressColumn";
-		public const string VALUE = "ValueColumn";
-		public const string PREV = "PrevColumn";
-		public const string CHANGES = "ChangesColumn";
-		public const string DIFF = "DiffColumn";
-		public const string TYPE = "TypeColumn";
-		public const string DOMAIN = "DomainColumn";
-		public const string NOTES = "NotesColumn";
+		public const string Address = "AddressColumn";
+		public const string Value = "ValueColumn";
+		public const string Prev = "PrevColumn";
+		public const string ChangesCol = "ChangesColumn";
+		public const string Diff = "DiffColumn";
+		public const string Type = "TypeColumn";
+		public const string Domain = "DomainColumn";
+		public const string Notes = "NotesColumn";
 
 		private static readonly Dictionary<string, IComparer<Watch>> WatchComparers;
 
@@ -48,14 +48,14 @@ namespace BizHawk.Client.Common
 			// Initialize mapping of columns to comparers for sorting.
 			WatchComparers = new Dictionary<string, IComparer<Watch>>
 			{
-				{ ADDRESS, new WatchAddressComparer() },
-				{ VALUE, new WatchValueComparer() },
-				{ PREV, new WatchPreviousValueComparer() },
-				{ CHANGES, new WatchChangeCountComparer() },
-				{ DIFF, new WatchValueDifferenceComparer() },
-				{ TYPE, new WatchFullDisplayTypeComparer() },
-				{ DOMAIN, new WatchDomainComparer() },
-				{ NOTES, new WatchNoteComparer() }
+				{ Address, new WatchAddressComparer() },
+				{ Value, new WatchValueComparer() },
+				{ Prev, new WatchPreviousValueComparer() },
+				{ ChangesCol, new WatchChangeCountComparer() },
+				{ Diff, new WatchValueDifferenceComparer() },
+				{ Type, new WatchFullDisplayTypeComparer() },
+				{ Domain, new WatchDomainComparer() },
+				{ Notes, new WatchNoteComparer() }
 			};
 		}
 

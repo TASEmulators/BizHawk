@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 				.Select(b => "P" + PortNum + " " + b)
 				.ToList(),
 				FloatControls = { "P" + PortNum + " Stick X", "P" + PortNum + " Stick Y" },
-				FloatRanges = { new[] { -128.0f, 0, 127.0f }, new[] { -128.0f, 0, 127.0f } }
+				FloatRanges = ControllerDefinition.CreateAxisRangePair(-128, 0, 127, ControllerDefinition.AxisPairOrientation.RightAndUp)
 			};
 		}
 

@@ -1,13 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.IO;
 using BizHawk.Common;
+using BizHawk.Common.PathExtensions;
 
 namespace BizHawk.Client.Common
 {
 	public class Config
 	{
-		public static string ControlDefaultPath => PathManager.MakeProgramRelativePath("defctrl.json");
+		public static string ControlDefaultPath => Path.Combine(PathUtils.ExeDirectoryPath, "defctrl.json");
+		
+		public static string DefaultIniPath { get; private set; } = Path.Combine(PathUtils.ExeDirectoryPath, "config.ini");
+
+		// Shenanigans
+		public static void SetDefaultIniPath(string newDefaultIniPath)
+		{
+			DefaultIniPath = newDefaultIniPath;
+		}
 
 		public Config()
 		{
@@ -24,7 +33,7 @@ namespace BizHawk.Client.Common
 		{
 			PathEntries.ResolveWithDefaults();
 			HotkeyBindings.ResolveWithDefaults();
-			PathManager.RefreshTempPath();
+			PathEntries.RefreshTempPath();
 		}
 
 		// Core preference for generic file extension, key: file extension, value: a systemID or empty if no preference
@@ -37,9 +46,6 @@ namespace BizHawk.Client.Common
 			[".cue"] =  ""
 		};
 
-		// Path Settings ************************************/
-		public bool UseRecentForRoms { get; set; }
-		public string LastRomPath { get; set; } = ".";
 		public PathEntryCollection PathEntries { get; set; } = new PathEntryCollection();
 
 		// BIOS Paths

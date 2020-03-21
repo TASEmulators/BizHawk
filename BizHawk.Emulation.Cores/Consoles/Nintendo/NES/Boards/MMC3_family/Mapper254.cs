@@ -2,13 +2,13 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper254 : MMC3Board_Base
+	internal sealed class Mapper254 : MMC3Board_Base
 	{
-		private ByteBuffer regs = new ByteBuffer(2);
+		private byte[] regs = new byte[2];
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER254":
 					break;
@@ -21,31 +21,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			regs.Dispose();
-			base.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(regs), ref regs);
+			ser.Sync(nameof(regs), ref regs, false);
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
 			if (regs[0] > 0)
 			{
-				return WRAM[addr];
+				return Wram[addr];
 			}
 			else
 			{
-				return (byte)(WRAM[addr] ^ regs[1]);
+				return (byte)(Wram[addr] ^ regs[1]);
 			}
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			switch (addr)
 			{
@@ -57,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 			}
 
-			base.WritePRG(addr, value);
+			base.WritePrg(addr, value);
 		}
 	}
 }

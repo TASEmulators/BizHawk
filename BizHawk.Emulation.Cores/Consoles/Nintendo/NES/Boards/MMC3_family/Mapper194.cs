@@ -1,33 +1,33 @@
 ﻿namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper194 : MMC3Board_Base
+	internal sealed class Mapper194 : MMC3Board_Base
 	{
 		//http://wiki.nesdev.com/w/index.php/INES_Mapper_194
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER194":
 					break;
 				default:
 					return false;
 			}
-			VRAM = new byte[2048];
+			Vram = new byte[2048];
 			BaseSetup();
 			return true;
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000)
 			{
-				VRAM[addr & 0x7FF] = value;
+				Vram[addr & 0x7FF] = value;
 			}
 			else
 			{
-				base.WritePPU(addr, value);
+				base.WritePpu(addr, value);
 			}
 		}
 
@@ -38,27 +38,27 @@
 			return bank_1k;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				int bank = GetBankNum(addr);
 				if (bank == 0x00)
 				{
-					return VRAM[addr & 0x03FF];
+					return Vram[addr & 0x03FF];
 				}
 				else if (bank == 0x01)
 				{
-					return VRAM[(addr & 0x03FF) + 0x400];
+					return Vram[(addr & 0x03FF) + 0x400];
 				}
 				else
 				{
 					addr = MapCHR(addr);
-					return VROM[addr + extra_vrom];
+					return Vrom[addr + extra_vrom];
 				}
 
 			}
-			else return base.ReadPPU(addr);
+			else return base.ReadPpu(addr);
 		}
 	}
 }

@@ -8,11 +8,6 @@ namespace BizHawk.Emulation.Common
 {
 	public class GameInfo
 	{
-		public bool IsRomStatusBad()
-		{
-			return Status == RomStatus.BadDump || Status == RomStatus.Overdump;
-		}
-
 		public string Name { get; set; }
 		public string System { get; set; }
 		public string Hash { get; set; }
@@ -178,6 +173,11 @@ namespace BizHawk.Emulation.Common
 		public static bool IsNullInstance(this GameInfo game)
 		{
 			return game == null || game.System == "NULL";
+		}
+
+		public static bool IsRomStatusBad(this GameInfo game)
+		{
+			return game.Status == RomStatus.BadDump || game.Status == RomStatus.Overdump;
 		}
 	}
 }

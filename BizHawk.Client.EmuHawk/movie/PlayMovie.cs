@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -167,7 +168,7 @@ namespace BizHawk.Client.EmuHawk
 			// Pull out matching names
 			for (var i = 0; i < _movieList.Count; i++)
 			{
-				if (PathManager.FilesystemSafeName(_game) == _movieList[i].GameName)
+				if (_game.FilesystemSafeName() == _movieList[i].GameName)
 				{
 					indices.Add(i);
 				}
@@ -237,7 +238,7 @@ namespace BizHawk.Client.EmuHawk
 			MovieView.VirtualListSize = 0;
 			MovieView.Update();
 
-			var directory = PathManager.MakeAbsolutePath(_config.PathEntries.MoviesPathFragment, null);
+			var directory = _config.PathEntries.MovieAbsolutePath();
 			if (!Directory.Exists(directory))
 			{
 				Directory.CreateDirectory(directory);
@@ -410,20 +411,20 @@ namespace BizHawk.Client.EmuHawk
 
 				switch (kvp.Key)
 				{
-					case HeaderKeys.SHA1:
+					case HeaderKeys.Sha1:
 						if (kvp.Value != _game.Hash)
 						{
 							item.BackColor = Color.Pink;
 							toolTip1.SetToolTip(DetailsView, $"Current SHA1: {_game.Hash}");
 						}
 						break;
-					case HeaderKeys.EMULATIONVERSION:
+					case HeaderKeys.EmulationVersion:
 						if (kvp.Value != VersionInfo.GetEmuVersion())
 						{
 							item.BackColor = Color.Yellow;
 						}
 						break;
-					case HeaderKeys.PLATFORM:
+					case HeaderKeys.Platform:
 						// feos: previously it was compared against _game.System, but when the movie is created
 						// its platform is copied from _emulator.SystemId, see PopulateWithDefaultHeaderValues()
 						// the problem is that for GameGear and SG100, those mismatch, resulting in false positive here
@@ -453,9 +454,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public double Fps(IMovie movie)
 		{
-			var system = movie.HeaderEntries[HeaderKeys.PLATFORM];
-			var pal = movie.HeaderEntries.ContainsKey(HeaderKeys.PAL)
-				&& movie.HeaderEntries[HeaderKeys.PAL] == "1";
+			var system = movie.HeaderEntries[HeaderKeys.Platform];
+			var pal = movie.HeaderEntries.ContainsKey(HeaderKeys.Pal)
+				&& movie.HeaderEntries[HeaderKeys.Pal] == "1";
 
 			return new PlatformFrameRates()[system, pal];
 			
@@ -571,7 +572,7 @@ namespace BizHawk.Client.EmuHawk
 			using var ofd = new OpenFileDialog
 			{
 				Filter = new FilesystemFilterSet(FilesystemFilter.BizHawkMovies, FilesystemFilter.TAStudioProjects).ToString(),
-				InitialDirectory = PathManager.MakeAbsolutePath(_config.PathEntries.MoviesPathFragment, null)
+				InitialDirectory = _config.PathEntries.MovieAbsolutePath()
 			};
 
 			var result = ofd.ShowHawkDialog();

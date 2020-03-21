@@ -2,12 +2,12 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class JALECO_SS8806 : NES.NESBoardBase
+	internal sealed class JALECO_SS8806 : NesBoardBase
 	{
 		//http://wiki.nesdev.com/w/index.php/INES_Mapper_018
 
-		ByteBuffer prg_banks_8k = new ByteBuffer(4);
-		ByteBuffer chr_banks_1k = new ByteBuffer(8);
+		byte[] prg_banks_8k = new byte[4];
+		byte[] chr_banks_1k = new byte[8];
 		int chr_bank_mask_1k, prg_bank_mask_8k;
 		int ppuclock;
 		int irqclock;
@@ -16,10 +16,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		bool irqcountpaused;
 
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER018":
 				case "JALECO-JF-23":
@@ -34,8 +34,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			chr_bank_mask_1k = Cart.chr_size / 1 - 1;
-			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
+			chr_bank_mask_1k = Cart.ChrSize / 1 - 1;
+			prg_bank_mask_8k = Cart.PrgSize / 8 - 1;
 			prg_banks_8k[3] = 0xFF;
 
 			// i have no idea what power-on defaults are supposed to be used
@@ -51,8 +51,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync(nameof(prg_banks_8k), ref prg_banks_8k);
-			ser.Sync(nameof(chr_banks_1k), ref chr_banks_1k);
+			ser.Sync(nameof(prg_banks_8k), ref prg_banks_8k, false);
+			ser.Sync(nameof(chr_banks_1k), ref chr_banks_1k, false);
 			ser.Sync(nameof(ppuclock), ref ppuclock);
 			ser.Sync(nameof(irqclock), ref irqclock);
 			ser.Sync(nameof(irqreload), ref irqreload);
@@ -61,14 +61,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override void Dispose()
-		{
-			prg_banks_8k.Dispose();
-			chr_banks_1k.Dispose();
-			base.Dispose();
-		}
-
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			addr += 0x8000; //temporary
 
@@ -198,12 +191,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				case 0xF000:
 					// ack irq and reset
-					IRQSignal = false;
+					IrqSignal = false;
 					irqclock = irqreload;
 					break;
 				case 0xF001:
 					// ack irq and set values
-					IRQSignal = false;
+					IrqSignal = false;
 					irqcountpaused = (value & 1) == 0;
 					if ((value & 8) == 8)
 						irqcountwidth = 4;
@@ -223,14 +216,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			
 		}
 
-		public override void ClockCPU()
+		public override void ClockCpu()
 		{
 			if (!irqcountpaused)
 			{
 				int newclock = irqclock - 1;
 				if (squeeze(newclock) > squeeze(irqclock))
 				{
-					IRQSignal = true;
+					IrqSignal = true;
 					irqclock = irqreload;
 				}
 				else
@@ -252,12 +245,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_8k = addr >> 13;
 			bank_8k = prg_banks_8k[bank_8k];
 			bank_8k &= prg_bank_mask_8k;
-			return ROM[(bank_8k * 0x2000) + (addr & 0x1FFF)];
+			return Rom[(bank_8k * 0x2000) + (addr & 0x1FFF)];
 		}
 
 		private int MapCHR(int addr)
@@ -269,16 +262,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return addr;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				addr = MapCHR(addr);
-				if (VROM != null)
-					return VROM[addr];
-				else return VRAM[addr];
+				if (Vrom != null)
+					return Vrom[addr];
+				else return Vram[addr];
 			}
-			else return base.ReadPPU(addr);
+			else return base.ReadPpu(addr);
 		}
 	}
 }

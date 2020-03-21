@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper219 : MMC3Board_Base
+	internal sealed class Mapper219 : MMC3Board_Base
 	{
 		public byte[] exregs = new byte[3];
 		public byte[] prgregs = new byte[4];
@@ -10,14 +10,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public byte bits_rev, reg_value;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER219":
 					break;
 				default:
-					return false;			
+					return false;
 			}
 
 			BaseSetup();
@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			if (addr<0x2000)
 			{
@@ -105,43 +105,43 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}		
 			else 
-				base.WritePRG(addr, value);
+				base.WritePrg(addr, value);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_prg = addr >> 13;
 			bank_prg = prgregs[bank_prg] & prg_mask;
-			return ROM[((bank_prg << 13) + (addr & 0x1FFF))];
+			return Rom[((bank_prg << 13) + (addr & 0x1FFF))];
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 
 			if (addr<0x2000)
 			{
 				int bank_chr = addr >> 10;
 				bank_chr = chrregs[bank_chr] & chr_mask;
-				if (VROM != null)
+				if (Vrom != null)
 				{
-					return VROM[((bank_chr << 10) + (addr & 0x3FF))];
+					return Vrom[((bank_chr << 10) + (addr & 0x3FF))];
 				}
-				return VRAM[((bank_chr << 10) + (addr & 0x3FF))];
+				return Vram[((bank_chr << 10) + (addr & 0x3FF))];
 			}
 			else
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000)
 			{
 				int bank_chr = addr >> 10;
 				bank_chr = chrregs[bank_chr];
-				VRAM[((bank_chr << 10) + (addr & 0x3FF))]=value;
+				Vram[((bank_chr << 10) + (addr & 0x3FF))]=value;
 			}
 			else
-				base.WritePPU(addr, value);
+				base.WritePpu(addr, value);
 		}
 
 		public override void SyncState(Serializer ser)

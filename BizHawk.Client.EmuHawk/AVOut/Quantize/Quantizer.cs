@@ -28,8 +28,6 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private readonly bool _singlePass;
 
-		protected int DitherLevel;
-
 		/// <summary>
 		/// Construct the quantizer
 		/// </summary>
@@ -149,21 +147,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private int ClampToByte(int val)
-		{
-			if (val < 0)
-			{
-				return 0;
-			}
-
-			if (val > 255)
-			{
-				return 255;
-			}
-
-			return val;
-		}
-
 		/// <summary>
 		/// Execute a second pass through the bitmap
 		/// </summary>
@@ -176,7 +159,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			BitmapData outputData = null;
 			Color[] palettes = output.Palette.Entries;
-			int weight = DitherLevel;
 
 			try
 			{
@@ -186,11 +168,9 @@ namespace BizHawk.Client.EmuHawk
 				// Define the source data pointers. The source row is a byte to
 				// keep addition of the stride value easier (as this is in bytes)
 				byte* pSourceRow = (byte*)sourceData.Scan0.ToPointer();
-				int* pSourcePixel = (int*)pSourceRow;
 
 				// Now define the destination data pointers
 				byte* pDestinationRow = (byte*)outputData.Scan0.ToPointer();
-				byte* pDestinationPixel = pDestinationRow;
 
 				int[] errorThisRowR = new int[width + 1];
 				int[] errorThisRowG = new int[width + 1];
@@ -204,6 +184,8 @@ namespace BizHawk.Client.EmuHawk
 
 					int ptrInc;
 
+					int* pSourcePixel;
+					byte* pDestinationPixel;
 					if ((row & 1) == 0)
 					{
 						pSourcePixel = (int*)pSourceRow;
@@ -223,14 +205,11 @@ namespace BizHawk.Client.EmuHawk
 						// Quantize the pixel
 						int srcPixel = *pSourcePixel;
 
-						int srcR = srcPixel & 0xFF; //not
-						int srcG = (srcPixel >> 8) & 0xFF; //a
-						int srcB = (srcPixel >> 16) & 0xFF; //mistake
 						int srcA = (srcPixel >> 24) & 0xFF;
 
-						int targetB = ClampToByte(srcB - ((errorThisRowB[col] * weight) / 8));
-						int targetG = ClampToByte(srcG - ((errorThisRowG[col] * weight) / 8));
-						int targetR = ClampToByte(srcR - ((errorThisRowR[col] * weight) / 8));
+						int targetB = 0;
+						int targetG = 0;
+						int targetR = 0;
 						int targetA = srcA;
 
 						int target = (targetA << 24) | (targetB << 16) | (targetG << 8) | targetR;

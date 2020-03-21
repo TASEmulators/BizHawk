@@ -136,7 +136,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				.Select(b => "P" + PortNum + " " + b)
 				.ToList(),
 				FloatControls = { "P" + PortNum + " Disc X", "P" + PortNum + " Disc Y" },
-				FloatRanges = { new[] { -127.0f, 0, 127.0f }, new[] { -127.0f, 0, 127.0f } }
+				FloatRanges = ControllerDefinition.CreateAxisRangePair(-127, 0, 127, ControllerDefinition.AxisPairOrientation.RightAndUp) //TODO verify direction against hardware
 			};
 		}
 
@@ -241,7 +241,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				.Select(b => "P" + PortNum + " " + b)
 				.ToList(),
 				FloatControls = { "P" + PortNum + " Disc X", "P" + PortNum + " Disc Y" },
-				FloatRanges = { new[] { -127.0f, 0, 127.0f }, new[] { -127.0f, 0, 127.0f } }
+				FloatRanges = ControllerDefinition.CreateAxisRangePair(-127, 0, 127, ControllerDefinition.AxisPairOrientation.RightAndUp) //TODO verify direction against hardware
 			};
 		}
 

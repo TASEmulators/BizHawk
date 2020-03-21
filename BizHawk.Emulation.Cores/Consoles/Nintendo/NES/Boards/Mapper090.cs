@@ -3,17 +3,17 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper090 : NES.NESBoardBase
+	internal sealed class Mapper090 : NesBoardBase
 	{
-		ByteBuffer prg_regs = new ByteBuffer(4);
-		IntBuffer chr_regs = new IntBuffer(8);
-		IntBuffer nt_regs = new IntBuffer(4);
+		byte[] prg_regs = new byte[4];
+		int[] chr_regs = new int[8];
+		int[] nt_regs = new int[4];
 
-		IntBuffer prg_banks = new IntBuffer(4);
-		IntBuffer chr_banks = new IntBuffer(8);
-		IntBuffer chr_latches = new IntBuffer(2);
+		int[] prg_banks = new int[4];
+		int[] chr_banks = new int[8];
+		int[] chr_latches = new int[2];
 
-		ByteBuffer ram_bytes = new ByteBuffer(5);
+		byte[] ram_bytes = new byte[5];
 
 		[MapperProp]
 		public bool dipswitch_0;
@@ -63,9 +63,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		int a12_old;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER035":
 					mapper_035 = true;
@@ -86,11 +86,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
-			chr_bank_mask_1k = Cart.chr_size - 1;
+			prg_bank_mask_8k = Cart.PrgSize / 8 - 1;
+			chr_bank_mask_1k = Cart.ChrSize - 1;
 
 			// Junk support
-			if (Cart.chr_size == 2040)
+			if (Cart.ChrSize == 2040)
 			{
 				chr_bank_mask_1k = 2047;
 			}
@@ -100,11 +100,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void NESSoftReset()
+		public override void NesSoftReset()
 		{
 			InitValues();
 
-			base.NESSoftReset();
+			base.NesSoftReset();
 		}
 
 		private void InitValues()
@@ -131,14 +131,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			base.SyncState(ser);
 
-			ser.Sync(nameof(prg_regs), ref prg_regs);
-			ser.Sync(nameof(chr_regs), ref chr_regs);
-			ser.Sync(nameof(chr_latches), ref chr_latches);
-			ser.Sync(nameof(nt_regs), ref nt_regs);
+			ser.Sync(nameof(prg_regs), ref prg_regs, false);
+			ser.Sync(nameof(chr_regs), ref chr_regs, false);
+			ser.Sync(nameof(chr_latches), ref chr_latches, false);
+			ser.Sync(nameof(nt_regs), ref nt_regs, false);
 
-			ser.Sync(nameof(prg_banks), ref prg_banks);
-			ser.Sync(nameof(chr_banks), ref chr_banks);
-			ser.Sync(nameof(ram_bytes), ref ram_bytes);
+			ser.Sync(nameof(prg_banks), ref prg_banks, false);
+			ser.Sync(nameof(chr_banks), ref chr_banks, false);
+			ser.Sync(nameof(ram_bytes), ref ram_bytes, false);
 
 			ser.Sync(nameof(dipswitch_0), ref dipswitch_0);
 			ser.Sync(nameof(dipswitch_1), ref dipswitch_1);
@@ -183,18 +183,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Sync();
 		}
 
-		public override void Dispose()
-		{
-			prg_regs.Dispose();
-			chr_regs.Dispose();
-			chr_latches.Dispose();
-			nt_regs.Dispose();
-			prg_banks.Dispose();
-			chr_banks.Dispose();
-			ram_bytes.Dispose();
-			base.Dispose();
-		}
-
 		private void Sync()
 		{
 			SyncIRQ();
@@ -203,7 +191,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SyncNametables();
 		}
 
-		private void SetBank(IntBuffer target, byte offset, byte size, int value)
+		private void SetBank(int[] target, byte offset, byte size, int value)
 		{
 			value &= ~(size - 1);
 			for (int i = 0; i < size; i++)
@@ -341,7 +329,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			switch (addr & 0x7007)	
 			{
@@ -507,20 +495,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int offset = addr & 0x1FFF;
 			int bank = prg_banks[addr >> 13];
 			bank &= prg_bank_mask_8k;
-			return ROM[bank << 13 | offset];
+			return Rom[bank << 13 | offset];
 		}
 
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
-			return sram_prg ? ROM[ram_bank << 13 | addr & 0x1FFF] : base.ReadWRAM(addr);
+			return sram_prg ? Rom[ram_bank << 13 | addr & 0x1FFF] : base.ReadWram(addr);
 		}
 
-		public override byte ReadEXP(int addr)
+		public override byte ReadExp(int addr)
 		{
 			switch (addr & 0x1807)
 			{
@@ -539,11 +527,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x1807:
 					return ram_bytes[addr - 0x1803];
 				default:
-					return base.ReadEXP(addr);
+					return base.ReadExp(addr);
 			}
 		}
 
-		public override void WriteEXP(int addr, byte value)
+		public override void WriteExp(int addr, byte value)
 		{
 			switch (addr)
 			{
@@ -565,7 +553,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void ClockCPU()
+		public override void ClockCpu()
 		{
 			if (irq_source == 0)
 			{
@@ -611,7 +599,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SyncIRQ(irq_pending);
 		}
 
-		public override void AddressPPU(int addr)
+		public override void AddressPpu(int addr)
 		{
 			int a12 = (addr >> 12) & 1;
 			bool rising_edge = (a12 == 1 && a12_old == 0);
@@ -632,7 +620,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				bank &= chr_bank_mask_1k;
 				int offset = addr & 0x3FF;
 
-				return VROM[bank << 10 | offset];
+				return Vrom[bank << 10 | offset];
 			}
 
 			if (nt_advanced_control) //Read from Nametables
@@ -649,7 +637,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 				}
 
-				return VROM[nt << 10 | offset];
+				return Vrom[nt << 10 | offset];
 			}
 			else
 			{
@@ -657,7 +645,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (irq_source == 2)
 			{
@@ -683,7 +671,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						break;
 				}
 
-				return VROM[bank << 10 | offset];
+				return Vrom[bank << 10 | offset];
 			}
 
 			if (nt_advanced_control) //Read from Nametables
@@ -700,11 +688,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 				}
 
-				return VROM[nt << 10 | offset];
+				return Vrom[nt << 10 | offset];
 			}
 			else
 			{
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 			}
 		}
 	}

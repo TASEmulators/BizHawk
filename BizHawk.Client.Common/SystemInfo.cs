@@ -103,6 +103,11 @@ namespace BizHawk.Client.Common
 		public static SystemInfo GBC { get; } = new SystemInfo("Gameboy Color", CoreSystem.GameBoy, 1, StandardButtons);
 
 		/// <summary>
+		/// Gets the <see cref="SystemInfo"/> instance for Nintendo DS
+		/// </summary>
+		public static SystemInfo NDS { get; } = new SystemInfo("NDS", CoreSystem.NintendoDS, 1, StandardButtons | JoypadButton.L | JoypadButton.R | JoypadButton.X | JoypadButton.Y);
+
+		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for Genesis
 		/// </summary>
 		public static SystemInfo Genesis { get; } = new SystemInfo("Genesis", CoreSystem.Genesis, 2, UpDownLeftRight | JoypadButton.A | JoypadButton.B | JoypadButton.C | JoypadButton.X | JoypadButton.Y | JoypadButton.Z);

@@ -10,6 +10,7 @@ using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Client.Common.RamSearchEngine;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
@@ -28,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 		private string _currentFileName = "";
 
 		private RamSearchEngine _searches;
-		private RamSearchEngine.Settings _settings;
+		private SearchEngineSettings _settings;
 
 		private int _defaultWidth;
 		private int _defaultHeight;
@@ -70,10 +71,7 @@ namespace BizHawk.Client.EmuHawk
 		[ConfigPersist]
 		public RamSearchSettings Settings { get; set; }
 
-		public bool AskSaveChanges()
-		{
-			return true;
-		}
+		public bool AskSaveChanges() => true;
 
 		public bool UpdateBefore => false;
 
@@ -90,18 +88,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HardSetSizeDropDown(WatchSize size)
 		{
-			switch (size)
+			SizeDropdown.SelectedIndex = size switch
 			{
-				case WatchSize.Byte:
-					SizeDropdown.SelectedIndex = 0;
-					break;
-				case WatchSize.Word:
-					SizeDropdown.SelectedIndex = 1;
-					break;
-				case WatchSize.DWord:
-					SizeDropdown.SelectedIndex = 2;
-					break;
-			}
+				WatchSize.Byte => 0,
+				WatchSize.Word => 1,
+				WatchSize.DWord => 2,
+				_ => SizeDropdown.SelectedIndex
+			};
 		}
 
 		private void ColumnToggleCallback()
@@ -121,7 +114,7 @@ namespace BizHawk.Client.EmuHawk
 
 			RamSearchMenu.Items.Add(WatchListView.ToColumnsMenu(ColumnToggleCallback));
 
-			_settings = new RamSearchEngine.Settings(MemoryDomains);
+			_settings = new SearchEngineSettings(MemoryDomains);
 			_searches = new RamSearchEngine(_settings, MemoryDomains);
 
 			ErrorIconButton.Visible = false;
@@ -149,7 +142,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_dropdownDontfire = false;
 
-			if (_settings.Mode == RamSearchEngine.Settings.SearchMode.Fast)
+			if (_settings.IsFastMode())
 			{
 				SetToFastMode();
 			}
@@ -201,24 +194,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var columnName = column.Name;
-			switch (columnName)
+			text = columnName switch
 			{
-				case WatchList.ADDRESS:
-					text = _searches[index].AddressString;
-					break;
-				case WatchList.VALUE:
-					text = _searches[index].ValueString;
-					break;
-				case WatchList.PREV:
-					text = _searches[index].PreviousStr;
-					break;
-				case WatchList.CHANGES:
-					text = _searches[index].ChangeCount.ToString();
-					break;
-				case WatchList.DIFF:
-					text = _searches[index].Diff;
-					break;
-			}
+				WatchList.Address => _searches[index].AddressString,
+				WatchList.Value => _searches[index].ValueString,
+				WatchList.Prev => _searches[index].PreviousStr,
+				WatchList.ChangesCol => _searches[index].ChangeCount.ToString(),
+				WatchList.Diff => _searches[index].Diff,
+				_ => text
+			};
 		}
 
 		private void LoadConfigSettings()
@@ -311,7 +295,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			_settings = new RamSearchEngine.Settings(MemoryDomains);
+			_settings = new SearchEngineSettings(MemoryDomains);
 			_searches = new RamSearchEngine(_settings, MemoryDomains);
 			MessageLabel.Text = "Search restarted";
 			DoDomainSizeCheck();
@@ -479,69 +463,69 @@ namespace BizHawk.Client.EmuHawk
 
 		private int? DifferentByValue => DifferentByRadio.Checked ? DifferentByBox.ToRawInt() : null;
 
-		private RamSearchEngine.ComparisonOperator Operator
+		private ComparisonOperator Operator
 		{
 			get
 			{
 				if (NotEqualToRadio.Checked)
 				{
-					return RamSearchEngine.ComparisonOperator.NotEqual;
+					return ComparisonOperator.NotEqual;
 				}
 
 				if (LessThanRadio.Checked)
 				{
-					return RamSearchEngine.ComparisonOperator.LessThan;
+					return ComparisonOperator.LessThan;
 				}
 
 				if (GreaterThanRadio.Checked)
 				{
-					return RamSearchEngine.ComparisonOperator.GreaterThan;
+					return ComparisonOperator.GreaterThan;
 				}
 
 				if (LessThanOrEqualToRadio.Checked)
 				{
-					return RamSearchEngine.ComparisonOperator.LessThanEqual;
+					return ComparisonOperator.LessThanEqual;
 				}
 
 				if (GreaterThanOrEqualToRadio.Checked)
 				{
-					return RamSearchEngine.ComparisonOperator.GreaterThanEqual;
+					return ComparisonOperator.GreaterThanEqual;
 				}
 
 				if (DifferentByRadio.Checked)
 				{
-					return RamSearchEngine.ComparisonOperator.DifferentBy;
+					return ComparisonOperator.DifferentBy;
 				}
 
-				return RamSearchEngine.ComparisonOperator.Equal;
+				return ComparisonOperator.Equal;
 			}
 		}
 
-		private RamSearchEngine.Compare Compare
+		private Compare Compare
 		{
 			get
 			{
 				if (SpecificValueRadio.Checked)
 				{
-					return RamSearchEngine.Compare.SpecificValue;
+					return Compare.SpecificValue;
 				}
 
 				if (SpecificAddressRadio.Checked)
 				{
-					return RamSearchEngine.Compare.SpecificAddress;
+					return Compare.SpecificAddress;
 				}
 
 				if (NumberOfChangesRadio.Checked)
 				{
-					return RamSearchEngine.Compare.Changes;
+					return Compare.Changes;
 				}
 
 				if (DifferenceRadio.Checked)
 				{
-					return RamSearchEngine.Compare.Difference;
+					return Compare.Difference;
 				}
 
-				return RamSearchEngine.Compare.Previous;
+				return Compare.Previous;
 			}
 		}
 
@@ -605,9 +589,9 @@ namespace BizHawk.Client.EmuHawk
 		private void DoDomainSizeCheck()
 		{
 			if (_settings.Domain.Size >= MaxDetailedSize
-				&& _settings.Mode == RamSearchEngine.Settings.SearchMode.Detailed)
+				&& _settings.IsDetailed())
 			{
-				_settings.Mode = RamSearchEngine.Settings.SearchMode.Fast;
+				_settings.Mode = SearchMode.Fast;
 				SetReboot(true);
 				MessageLabel.Text = "Large domain, switching to fast mode";
 			}
@@ -704,22 +688,14 @@ namespace BizHawk.Client.EmuHawk
 
 			DisplayTypeDropdown.Items.Clear();
 
-			IEnumerable<Common.DisplayType> types = new List<Common.DisplayType>();
-			switch (_settings.Size)
+			var types = _settings.Size switch
 			{
-				case WatchSize.Byte:
-					types = ByteWatch.ValidTypes;
-					break;
+				WatchSize.Byte => ByteWatch.ValidTypes,
+				WatchSize.Word => WordWatch.ValidTypes,
+				WatchSize.DWord => DWordWatch.ValidTypes,
+				_ => new List<Common.DisplayType>()
+			};
 
-				case WatchSize.Word:
-					types = WordWatch.ValidTypes;
-					break;
-
-				case WatchSize.DWord:
-					types = DWordWatch.ValidTypes;
-					break;
-			}
-			
 			foreach (var type in types)
 			{
 				var typeStr = Watch.DisplayTypeToString(type);
@@ -740,13 +716,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SetComparisonOperator(RamSearchEngine.ComparisonOperator op)
+		private void SetComparisonOperator(ComparisonOperator op)
 		{
 			_searches.Operator = op;
 			WatchListView.Refresh();
 		}
 
-		private void SetCompareTo(RamSearchEngine.Compare comp)
+		private void SetCompareTo(Compare comp)
 		{
 			_searches.CompareTo = comp;
 			WatchListView.Refresh();
@@ -767,14 +743,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetToDetailedMode()
 		{
-			_settings.Mode = RamSearchEngine.Settings.SearchMode.Detailed;
+			_settings.Mode = SearchMode.Detailed;
 			NumberOfChangesRadio.Enabled = true;
 			NumberOfChangesBox.Enabled = true;
 			DifferenceRadio.Enabled = true;
 			DifferentByBox.Enabled = true;
 			ClearChangeCountsToolBarItem.Enabled = true;
 
-			WatchListView.AllColumns[WatchList.CHANGES].Visible = true;
+			WatchListView.AllColumns[WatchList.ChangesCol].Visible = true;
 			ChangesMenuItem.Checked = true;
 
 			ColumnToggleCallback();
@@ -790,13 +766,13 @@ namespace BizHawk.Client.EmuHawk
 					.Single(t => t.Name == "GeneratedColumnsSubMenu"); // TODO - make name a constant
 				return subMenu.DropDownItems
 					.Cast<ToolStripMenuItem>()
-					.Single(t => t.Name == WatchList.CHANGES);
+					.Single(t => t.Name == WatchList.ChangesCol);
 			}
 		}
 
 		private void SetToFastMode()
 		{
-			_settings.Mode = RamSearchEngine.Settings.SearchMode.Fast;
+			_settings.Mode = SearchMode.Fast;
 
 			if (_settings.PreviousType == PreviousType.LastFrame || _settings.PreviousType == PreviousType.LastChange)
 			{
@@ -813,7 +789,7 @@ namespace BizHawk.Client.EmuHawk
 				PreviousValueRadio.Checked = true;
 			}
 
-			WatchListView.AllColumns[WatchList.CHANGES].Visible = false;
+			WatchListView.AllColumns[WatchList.ChangesCol].Visible = false;
 			ChangesMenuItem.Checked = false;
 
 			ColumnToggleCallback();
@@ -928,7 +904,7 @@ namespace BizHawk.Client.EmuHawk
 				Message = "Enter a hexadecimal value"
 			};
 
-			while (prompt.ShowHawkDialog() == DialogResult.OK)
+			while (prompt.ShowHawkDialog().IsOk())
 			{
 				try
 				{
@@ -966,11 +942,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Columns = new List<RollColumn>
 				{
-					new RollColumn { Text = "Address", Name = WatchList.ADDRESS, Visible = true, UnscaledWidth = 60, Type = ColumnType.Text },
-					new RollColumn { Text = "Value", Name = WatchList.VALUE, Visible = true, UnscaledWidth = 59, Type = ColumnType.Text },
-					new RollColumn { Text = "Prev", Name = WatchList.PREV, Visible = true, UnscaledWidth = 59, Type = ColumnType.Text },
-					new RollColumn { Text = "Changes", Name = WatchList.CHANGES, Visible = true, UnscaledWidth = 60, Type = ColumnType.Text },
-					new RollColumn { Text = "Diff", Name = WatchList.DIFF, Visible = false, UnscaledWidth = 59, Type = ColumnType.Text },
+					new RollColumn { Text = "Address", Name = WatchList.Address, Visible = true, UnscaledWidth = 60, Type = ColumnType.Text },
+					new RollColumn { Text = "Value", Name = WatchList.Value, Visible = true, UnscaledWidth = 59, Type = ColumnType.Text },
+					new RollColumn { Text = "Prev", Name = WatchList.Prev, Visible = true, UnscaledWidth = 59, Type = ColumnType.Text },
+					new RollColumn { Text = "Changes", Name = WatchList.ChangesCol, Visible = true, UnscaledWidth = 60, Type = ColumnType.Text },
+					new RollColumn { Text = "Diff", Name = WatchList.Diff, Visible = false, UnscaledWidth = 59, Type = ColumnType.Text },
 				};
 
 				PreviewMode = true;
@@ -1073,8 +1049,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ModeSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			DetailedMenuItem.Checked = _settings.Mode == RamSearchEngine.Settings.SearchMode.Detailed;
-			FastMenuItem.Checked = _settings.Mode == RamSearchEngine.Settings.SearchMode.Fast;
+			DetailedMenuItem.Checked = _settings.IsDetailed();
+			FastMenuItem.Checked = _settings.IsFastMode();
 		}
 
 		private void MemoryDomainsSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -1096,21 +1072,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			DisplayTypeSubMenu.DropDownItems.Clear();
 
-			IEnumerable<Common.DisplayType> types = new List<Common.DisplayType>();
-			switch (_settings.Size)
+			var types = _settings.Size switch
 			{
-				case WatchSize.Byte:
-					types = ByteWatch.ValidTypes;
-					break;
-
-				case WatchSize.Word:
-					types = WordWatch.ValidTypes;
-					break;
-
-				case WatchSize.DWord:
-					types = DWordWatch.ValidTypes;
-					break;
-			}
+				WatchSize.Byte => ByteWatch.ValidTypes,
+				WatchSize.Word => WordWatch.ValidTypes,
+				WatchSize.DWord => DWordWatch.ValidTypes,
+				_ => new List<Common.DisplayType>()
+			};
 
 			foreach (var type in types)
 			{
@@ -1151,8 +1119,8 @@ namespace BizHawk.Client.EmuHawk
 					break;
 			}
 
-			PreviousFrameMenuItem.Enabled = _settings.Mode != RamSearchEngine.Settings.SearchMode.Fast;
-			Previous_LastChangeMenuItem.Enabled = _settings.Mode != RamSearchEngine.Settings.SearchMode.Fast;
+			PreviousFrameMenuItem.Enabled = _settings.IsDetailed();
+			Previous_LastChangeMenuItem.Enabled = _settings.IsDetailed();
 		}
 
 		private void DetailedMenuItem_Click(object sender, EventArgs e)
@@ -1218,7 +1186,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SearchSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			ClearChangeCountsMenuItem.Enabled = _settings.Mode == RamSearchEngine.Settings.SearchMode.Detailed;
+			ClearChangeCountsMenuItem.Enabled = _settings.IsDetailed();
 
 			RemoveMenuItem.Enabled =
 				AddToRamWatchMenuItem.Enabled =
@@ -1409,8 +1377,8 @@ namespace BizHawk.Client.EmuHawk
 
 			RamSearchMenu.Items.Add(WatchListView.ToColumnsMenu(ColumnToggleCallback));
 
-			_settings = new RamSearchEngine.Settings(MemoryDomains);
-			if (_settings.Mode == RamSearchEngine.Settings.SearchMode.Fast)
+			_settings = new SearchEngineSettings(MemoryDomains);
+			if (_settings.IsFastMode())
 			{
 				SetToFastMode();
 			}
@@ -1485,22 +1453,13 @@ namespace BizHawk.Client.EmuHawk
 			WatchListView.Refresh();
 		}
 
-		private WatchSize SelectedSize
-		{
-			get
+		private WatchSize SelectedSize =>
+			SizeDropdown.SelectedIndex switch
 			{
-				switch (SizeDropdown.SelectedIndex)
-				{
-					default:
-					case 0:
-						return WatchSize.Byte;
-					case 1:
-						return WatchSize.Word;
-					case 2:
-						return WatchSize.DWord;
-				}
-			}
-		}
+				1 => WatchSize.Word,
+				2 => WatchSize.DWord,
+				_ => WatchSize.Byte
+			};
 
 		private void SizeDropdown_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -1557,7 +1516,7 @@ namespace BizHawk.Client.EmuHawk
 			SpecificAddressBox.Enabled = false;
 			NumberOfChangesBox.Enabled = false;
 			DifferenceBox.Enabled = false;
-			SetCompareTo(RamSearchEngine.Compare.Previous);
+			SetCompareTo(Compare.Previous);
 		}
 
 		private void SpecificValueRadio_Click(object sender, EventArgs e)
@@ -1578,7 +1537,7 @@ namespace BizHawk.Client.EmuHawk
 			SpecificAddressBox.Enabled = false;
 			NumberOfChangesBox.Enabled = false;
 			DifferenceBox.Enabled = false;
-			SetCompareTo(RamSearchEngine.Compare.SpecificValue);
+			SetCompareTo(Compare.SpecificValue);
 		}
 
 		private void SpecificAddressRadio_Click(object sender, EventArgs e)
@@ -1599,7 +1558,7 @@ namespace BizHawk.Client.EmuHawk
 
 			NumberOfChangesBox.Enabled = false;
 			DifferenceBox.Enabled = false;
-			SetCompareTo(RamSearchEngine.Compare.SpecificAddress);
+			SetCompareTo(Compare.SpecificAddress);
 		}
 
 		private void NumberOfChangesRadio_Click(object sender, EventArgs e)
@@ -1620,7 +1579,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			DifferenceBox.Enabled = false;
-			SetCompareTo(RamSearchEngine.Compare.Changes);
+			SetCompareTo(Compare.Changes);
 		}
 
 		private void DifferenceRadio_Click(object sender, EventArgs e)
@@ -1641,7 +1600,7 @@ namespace BizHawk.Client.EmuHawk
 				DifferenceBox.Focus();
 			}
 
-			SetCompareTo(RamSearchEngine.Compare.Difference);
+			SetCompareTo(Compare.Difference);
 		}
 
 		private void CompareToValue_TextChanged(object sender, EventArgs e)
@@ -1656,37 +1615,37 @@ namespace BizHawk.Client.EmuHawk
 		private void EqualToRadio_Click(object sender, EventArgs e)
 		{
 			DifferentByBox.Enabled = false;
-			SetComparisonOperator(RamSearchEngine.ComparisonOperator.Equal);
+			SetComparisonOperator(ComparisonOperator.Equal);
 		}
 
 		private void NotEqualToRadio_Click(object sender, EventArgs e)
 		{
 			DifferentByBox.Enabled = false;
-			SetComparisonOperator(RamSearchEngine.ComparisonOperator.NotEqual);
+			SetComparisonOperator(ComparisonOperator.NotEqual);
 		}
 
 		private void LessThanRadio_Click(object sender, EventArgs e)
 		{
 			DifferentByBox.Enabled = false;
-			SetComparisonOperator(RamSearchEngine.ComparisonOperator.LessThan);
+			SetComparisonOperator(ComparisonOperator.LessThan);
 		}
 
 		private void GreaterThanRadio_Click(object sender, EventArgs e)
 		{
 			DifferentByBox.Enabled = false;
-			SetComparisonOperator(RamSearchEngine.ComparisonOperator.GreaterThan);
+			SetComparisonOperator(ComparisonOperator.GreaterThan);
 		}
 
 		private void LessThanOrEqualToRadio_Click(object sender, EventArgs e)
 		{
 			DifferentByBox.Enabled = false;
-			SetComparisonOperator(RamSearchEngine.ComparisonOperator.LessThanEqual);
+			SetComparisonOperator(ComparisonOperator.LessThanEqual);
 		}
 
 		private void GreaterThanOrEqualToRadio_Click(object sender, EventArgs e)
 		{
 			DifferentByBox.Enabled = false;
-			SetComparisonOperator(RamSearchEngine.ComparisonOperator.GreaterThanEqual);
+			SetComparisonOperator(ComparisonOperator.GreaterThanEqual);
 		}
 
 		private void DifferentByRadio_Click(object sender, EventArgs e)
@@ -1705,7 +1664,7 @@ namespace BizHawk.Client.EmuHawk
 				DifferentByBox.Focus();
 			}
 
-			SetComparisonOperator(RamSearchEngine.ComparisonOperator.DifferentBy);
+			SetComparisonOperator(ComparisonOperator.DifferentBy);
 		}
 
 		private void DifferentByBox_TextChanged(object sender, EventArgs e)
@@ -1720,17 +1679,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WatchListView_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.KeyCode == Keys.Delete && !e.Control && !e.Alt && !e.Shift)
+			switch (e.KeyCode)
 			{
-				RemoveAddresses();
-			}
-			else if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift) // Copy
-			{
-				CopyWatchesToClipBoard();
-			}
-			else if (e.KeyCode == Keys.Escape && !e.Control && !e.Alt && !e.Shift)
-			{
-				WatchListView.DeselectAll();
+				case Keys.Delete when !e.Control && !e.Alt && !e.Shift:
+					RemoveAddresses();
+					break;
+				case Keys.C when e.Control && !e.Alt && !e.Shift:
+					CopyWatchesToClipBoard();
+					break;
+				case Keys.Escape when !e.Control && !e.Alt && !e.Shift:
+					WatchListView.DeselectAll();
+					break;
 			}
 		}
 

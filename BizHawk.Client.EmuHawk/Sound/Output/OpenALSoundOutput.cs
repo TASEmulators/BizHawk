@@ -38,8 +38,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public static IEnumerable<string> GetDeviceNames()
 		{
-			if (!Alc.IsExtensionPresent(IntPtr.Zero, "ALC_ENUMERATION_EXT")) return Enumerable.Empty<string>();
-			return Alc.GetString(IntPtr.Zero, AlcGetStringList.AllDevicesSpecifier);
+			return !Alc.IsExtensionPresent(IntPtr.Zero, "ALC_ENUMERATION_EXT")
+				? Enumerable.Empty<string>()
+				: Alc.GetString(IntPtr.Zero, AlcGetStringList.AllDevicesSpecifier);
 		}
 
 		private int BufferSizeSamples { get; set; }

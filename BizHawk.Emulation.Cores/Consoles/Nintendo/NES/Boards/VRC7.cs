@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//mapper 85
 	//If you change any of the IRQ logic here, be sure to change it in VRC 2/3/4/6 as well.
-	public sealed class VRC7 : NES.NESBoardBase
+	internal sealed class VRC7 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_8k, chr_bank_mask_1k;
@@ -16,27 +16,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//state
 		YM2413 fm; //= new Sound.YM2413(Sound.YM2413.ChipType.VRC7);
 
-		ByteBuffer prg_banks_8k = new ByteBuffer(4);
-		ByteBuffer chr_banks_1k = new ByteBuffer(8);
+		byte[] prg_banks_8k = new byte[4];
+		byte[] chr_banks_1k = new byte[8];
 		bool irq_mode;
 		bool irq_enabled, irq_pending, irq_autoen;
 		byte irq_reload;
 		byte irq_counter;
 		int irq_prescaler;
 
-		public override void Dispose()
-		{
-			base.Dispose();
-			prg_banks_8k.Dispose();
-			chr_banks_1k.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
 			fm?.SyncState(ser);
-			ser.Sync(nameof(prg_banks_8k), ref prg_banks_8k);
-			ser.Sync(nameof(chr_banks_1k), ref chr_banks_1k);
+			ser.Sync(nameof(prg_banks_8k), ref prg_banks_8k, false);
+			ser.Sync(nameof(chr_banks_1k), ref chr_banks_1k, false);
 			ser.Sync(nameof(irq_mode), ref irq_mode);
 			ser.Sync(nameof(irq_enabled), ref irq_enabled);
 			ser.Sync(nameof(irq_pending), ref irq_pending);
@@ -49,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		void SyncIRQ()
 		{
-			IRQSignal = (irq_pending && irq_enabled);
+			IrqSignal = (irq_pending && irq_enabled);
 		}
 
 
@@ -85,9 +78,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER085":
 					// as in some VRC2/VRC4 cases, this is actually a "composite" mapping that catches
@@ -97,7 +90,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				case "KONAMI-VRC-7":
 					AssertPrg(128, 512); AssertChr(0, 128); AssertVram(0, 8); AssertWram(0, 8);
-					if (Cart.pcb == "353429")
+					if (Cart.Pcb == "353429")
 					{
 						//tiny toons 2
 						// for consistency, we map the addr line used for the FM chip even though
@@ -105,7 +98,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						remap = (addr) => (addr & 0xF000) | ((addr & 0x8) >> 3) | (addr & 0x20) >> 4;
 						fm = null;
 					}
-					else if (Cart.pcb == "352402")
+					else if (Cart.Pcb == "352402")
 					{
 						//lagrange point
 						remap = addr => ((addr & 0xF000) | ((addr & 0x30) >> 4));
@@ -117,8 +110,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "MAPPER117":
 					// not sure quite what this is
 					// different address mapping, and somewhat different irq logic
-					Cart.vram_size = 0;
-					Cart.wram_size = 0;
+					Cart.VramSize = 0;
+					Cart.WramSize = 0;
 					remap = RemapM117;
 					fm = null;
 					break;
@@ -126,7 +119,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
+			prg_bank_mask_8k = Cart.PrgSize / 8 - 1;
 			chr_bank_mask_1k = 0xff; // Cart.chr_size - 1;
 
 			SetMirrorType(EMirrorType.Vertical);
@@ -135,13 +128,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			return true;
 		}
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_8k = addr >> 13;
 			int ofs = addr & ((1 << 13) - 1);
 			bank_8k = prg_banks_8k[bank_8k];
 			addr = (bank_8k << 13) | ofs;
-			return ROM[addr];
+			return Rom[addr];
 		}
 
 		int Map_PPU(int addr)
@@ -153,27 +146,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return addr;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
 				addr = Map_PPU(addr);
-				if (Cart.vram_size != 0)
-					return base.ReadPPU(addr);
+				if (Cart.VramSize != 0)
+					return base.ReadPpu(addr);
 
-				return VROM[addr];
+				return Vrom[addr];
 			}
 
-			return base.ReadPPU(addr);
+			return base.ReadPpu(addr);
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x2000)
 			{
-				base.WritePPU(Map_PPU(addr),value);
+				base.WritePpu(Map_PPU(addr),value);
 			}
-			else base.WritePPU(addr, value);
+			else base.WritePpu(addr, value);
 		}
 
 		public override void ApplyCustomAudio(short[] samples)
@@ -192,7 +185,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			//Console.WriteLine("    mapping {0:X4} = {1:X2}", addr, value);
 			addr = remap(addr);
@@ -298,7 +291,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				irq_counter++;
 		}
 
-		public override void ClockCPU()
+		public override void ClockCpu()
 		{
 			if (irq_pending)
 			{

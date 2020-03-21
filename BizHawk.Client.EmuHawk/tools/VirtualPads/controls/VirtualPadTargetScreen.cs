@@ -41,8 +41,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Clear()
 		{
-			Global.StickyXORAdapter.Unset(XName);
-			Global.StickyXORAdapter.Unset(YName);
+			Global.InputManager.StickyXorAdapter.Unset(XName);
+			Global.InputManager.StickyXorAdapter.Unset(YName);
 			_overrideX = null;
 			_overrideY = null;
 			_isSet = false;
@@ -148,12 +148,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (x.HasValue)
 			{
-				X = X + x.Value;
+				X += x.Value;
 			}
 
 			if (y.HasValue)
 			{
-				Y = Y + y.Value;
+				Y += y.Value;
 			}
 
 			Refresh();
@@ -164,7 +164,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public int X
 		{
-			get => _overrideX ?? (int)(Global.StickyXORAdapter.GetFloat(XName) / MultiplierX);
+			get => _overrideX ?? (int)(Global.InputManager.StickyXorAdapter.GetFloat(XName) / MultiplierX);
 			set
 			{
 				if (value < 0)
@@ -181,13 +181,13 @@ namespace BizHawk.Client.EmuHawk
 					XNumeric.Value = XNumeric.Maximum;
 				}
 
-				Global.StickyXORAdapter.SetFloat(XName, (int)((float)XNumeric.Value * MultiplierX));
+				Global.InputManager.StickyXorAdapter.SetFloat(XName, (int)((float)XNumeric.Value * MultiplierX));
 				_isSet = true;
 			}
 		}
 		public int Y
 		{
-			get => _overrideY ?? (int)(Global.StickyXORAdapter.GetFloat(YName) / MultiplierY);
+			get => _overrideY ?? (int)(Global.InputManager.StickyXorAdapter.GetFloat(YName) / MultiplierY);
 			set
 			{
 				if (value < 0)
@@ -203,7 +203,7 @@ namespace BizHawk.Client.EmuHawk
 					YNumeric.Value = YNumeric.Maximum;
 				}
 
-				Global.StickyXORAdapter.SetFloat(YName, (int)((float)YNumeric.Value * MultiplierY));
+				Global.InputManager.StickyXorAdapter.SetFloat(YName, (int)((float)YNumeric.Value * MultiplierY));
 				_isSet = true;
 			}
 		}

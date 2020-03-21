@@ -7,16 +7,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	//the 4screen implementation is a bit of a guess, but it seems to work
 
-	public sealed class IREM_74_161_161_21_138 : NES.NESBoardBase
+	internal sealed class IREM_74_161_161_21_138 : NesBoardBase
 	{
 		int chr, prg;
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER077":
-					Cart.vram_size = 8;
+					Cart.VramSize = 8;
 					break;
 				case "IREM-74*161/161/21/138":
 					AssertVram(8);
@@ -36,40 +36,40 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(prg), ref prg);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			chr = (value >> 4) & 0x0F;
 			prg = value & 0x0F;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x0800)
-				return VROM[addr + (chr * 0x0800)];
+				return Vrom[addr + (chr * 0x0800)];
 			else if (addr < 0x2000)
-				return VRAM[addr];
+				return Vram[addr];
 			else if (addr < 0x2800)
-				return VRAM[addr & 0x7ff];
-			else return base.ReadPPU(addr);
+				return Vram[addr & 0x7ff];
+			else return base.ReadPpu(addr);
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x0800)
 				return;
 			else if (addr < 0x2000)
-				VRAM[addr] = value;
+				Vram[addr] = value;
 			else if (addr < 0x2800)
-				VRAM[addr & 0x7ff] = value;
-			else base.WritePPU(addr, value);
+				Vram[addr & 0x7ff] = value;
+			else base.WritePpu(addr, value);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if (addr < 0x8000)
-				return ROM[addr + (prg * 0x8000)];
+				return Rom[addr + (prg * 0x8000)];
 			else
-				return base.ReadPRG(addr); 
+				return base.ReadPrg(addr); 
 		}
 	}
 }

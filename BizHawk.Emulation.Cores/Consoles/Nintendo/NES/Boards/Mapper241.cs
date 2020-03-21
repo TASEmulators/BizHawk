@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper241 : NES.NESBoardBase
+	internal sealed class Mapper241 : NesBoardBase
 	{
 		//163 is for nanjing games
 
@@ -10,55 +10,49 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int prg_bank_mask_32k;
 
 		//state
-		ByteBuffer prg_banks_32k = new ByteBuffer(1);
+		byte[] prg_banks_32k = new byte[1];
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER241":
 					break;
 				default:
 					return false;
 			}
-			prg_bank_mask_32k = (Cart.prg_size / 32) - 1;
+			prg_bank_mask_32k = (Cart.PrgSize / 32) - 1;
 
 			prg_banks_32k[0] = 0;
 
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			SetMirrorType(Cart.PadH, Cart.PadV);
 
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			prg_banks_32k.Dispose();
-			base.Dispose();
-		}
-
-		public override byte ReadEXP(int addr)
+		public override byte ReadExp(int addr)
 		{
 			//some kind of magic number..
 			return 0x50;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			prg_banks_32k[0] = value;
 			ApplyMemoryMapMask(prg_bank_mask_32k, prg_banks_32k);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			addr = ApplyMemoryMap(15, prg_banks_32k, addr);
-			return ROM[addr];
+			return Rom[addr];
 		}
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(prg_banks_32k), ref prg_banks_32k);
+			ser.Sync(nameof(prg_banks_32k), ref prg_banks_32k, false);
 		}
 	}
 }

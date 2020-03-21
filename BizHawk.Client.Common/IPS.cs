@@ -10,7 +10,7 @@ namespace BizHawk.Client.Common
 			var ipsHeader = new byte[5];
 			patch.Read(ipsHeader, 0, 5);
 
-			string header = "PATCH";
+			const string header = "PATCH";
 			for (int i = 0; i < 5; i++)
 			{
 				if (ipsHeader[i] != header[i])
@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common
 			}
 
 			// header verified, loop over patch entries
-			uint eof = ('E' * 0x10000) + ('O' * 0x100) + 'F';
+			const uint eof = ('E' * 0x10000) + ('O' * 0x100) + 'F';
 
 			var ret = new MemoryStream(rom.Length);
 			ret.Write(rom, 0, rom.Length);

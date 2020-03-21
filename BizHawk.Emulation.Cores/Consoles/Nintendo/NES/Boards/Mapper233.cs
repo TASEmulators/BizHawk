@@ -4,14 +4,14 @@ using BizHawk.Common.NumberExtensions;
 // http://wiki.nesdev.com/w/index.php/INES_Mapper_233
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper233 : NES.NESBoardBase
+	internal sealed class Mapper233 : NesBoardBase
 	{
 		public int prg_page;
 		public bool prg_mode;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER233":
 					break;
@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			prg_page = value & 0x1F;
 			prg_mode = value.Bit(5);
@@ -53,14 +53,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			if (prg_mode == false)
 			{
-				return ROM[((prg_page >> 1) * 0x8000) + addr];
+				return Rom[((prg_page >> 1) * 0x8000) + addr];
 			}
 
-			return ROM[(prg_page * 0x4000) + (addr & 0x3FFF)];
+			return Rom[(prg_page * 0x4000) + (addr & 0x3FFF)];
 		}
 	}
 }

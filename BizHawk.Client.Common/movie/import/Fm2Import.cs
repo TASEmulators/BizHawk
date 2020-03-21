@@ -15,8 +15,8 @@ namespace BizHawk.Client.Common
 		protected override void RunImport()
 		{
 			var neshawkName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(NES), typeof(CoreAttribute))).CoreName;
-			Result.Movie.HeaderEntries[HeaderKeys.CORE] = neshawkName;
-			var emulator = "FCEUX";
+			Result.Movie.HeaderEntries[HeaderKeys.Core] = neshawkName;
+			const string emulator = "FCEUX";
 			var platform = "NES"; // TODO: FDS?
 
 			var syncSettings = new NES.NESSyncSettings();
@@ -30,7 +30,7 @@ namespace BizHawk.Client.Common
 			_deck = controllerSettings.Instantiate((x, y) => true);
 			AddDeckControlButtons();
 
-			Result.Movie.HeaderEntries[HeaderKeys.PLATFORM] = platform;
+			Result.Movie.HeaderEntries[HeaderKeys.Platform] = platform;
 
 			using var sr = SourceFile.OpenText();
 			string line;
@@ -73,11 +73,11 @@ namespace BizHawk.Client.Common
 				}
 				else if (line.ToLower().StartsWith("romfilename"))
 				{
-					Result.Movie.HeaderEntries[HeaderKeys.GAMENAME] = ParseHeader(line, "romFilename");
+					Result.Movie.HeaderEntries[HeaderKeys.GameName] = ParseHeader(line, "romFilename");
 				}
 				else if (line.ToLower().StartsWith("cdgamename"))
 				{
-					Result.Movie.HeaderEntries[HeaderKeys.GAMENAME] = ParseHeader(line, "cdGameName");
+					Result.Movie.HeaderEntries[HeaderKeys.GameName] = ParseHeader(line, "cdGameName");
 				}
 				else if (line.ToLower().StartsWith("romchecksum"))
 				{
@@ -94,7 +94,7 @@ namespace BizHawk.Client.Common
 				}
 				else if (line.ToLower().StartsWith("comment author"))
 				{
-					Result.Movie.HeaderEntries[HeaderKeys.AUTHOR] = ParseHeader(line, "comment author");
+					Result.Movie.HeaderEntries[HeaderKeys.Author] = ParseHeader(line, "comment author");
 				}
 				else if (line.ToLower().StartsWith("rerecordcount"))
 				{
@@ -116,7 +116,7 @@ namespace BizHawk.Client.Common
 				}
 				else if (line.ToLower().StartsWith("palflag"))
 				{
-					Result.Movie.HeaderEntries[HeaderKeys.PAL] = ParseHeader(line, "palFlag");
+					Result.Movie.HeaderEntries[HeaderKeys.Pal] = ParseHeader(line, "palFlag");
 				}
 				else if (line.ToLower().StartsWith("port0"))
 				{

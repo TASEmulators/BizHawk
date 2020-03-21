@@ -2,22 +2,22 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper197 : MMC3Board_Base
+	internal sealed class Mapper197 : MMC3Board_Base
 	{
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER197":
 					break;
 				default:
 					return false;
 			}
-			int num_prg_banks = Cart.prg_size / 8;
+			int num_prg_banks = Cart.PrgSize / 8;
 			prg_mask = num_prg_banks - 1;
 
-			int num_chr_banks = (Cart.chr_size);
+			int num_chr_banks = (Cart.ChrSize);
 			chr_mask = num_chr_banks - 1;
 
 			mmc3 = new Mapper197_MMC3(this, num_prg_banks);
@@ -26,12 +26,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 	}
 
-	public class Mapper197_MMC3 : MMC3
+	internal sealed class Mapper197_MMC3 : MMC3
 	{
 		//This board has 512k CHR ROM, so the ByteBuffer in the base class deosn't suffice.
-		public IntBuffer chr_regs_1k_512 = new IntBuffer(8);
+		public int[] chr_regs_1k_512 = new int[8];
 
-		public Mapper197_MMC3(NES.NESBoardBase board, int num_prg_banks) : base(board, num_prg_banks)
+		public Mapper197_MMC3(NesBoardBase board, int num_prg_banks) : base(board, num_prg_banks)
 		{
 			
 		}
@@ -59,13 +59,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(chr_regs_1k_512), ref chr_regs_1k_512);
-		}
-
-		public override void Dispose()
-		{
-			base.Dispose();
-			chr_regs_1k_512.Dispose();
+			ser.Sync(nameof(chr_regs_1k_512), ref chr_regs_1k_512, false);
 		}
 
 		public override int Get_CHRBank_1K(int addr)
@@ -74,6 +68,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			bank_1k = chr_regs_1k_512[bank_1k];
 			return bank_1k;
 		}
-
 	}
 }

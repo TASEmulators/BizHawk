@@ -190,8 +190,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			_isLag = false;
 		}
 
-		public CoreComm CoreComm { get; }
-
 		public void Dispose()
 		{
 		}

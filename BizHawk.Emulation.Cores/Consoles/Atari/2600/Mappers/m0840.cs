@@ -15,15 +15,19 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	0 1xxx xBxx xxxx
 
 	Each bit corresponds to one of the 13 address lines.  a 0 or 1 means that bit must be
-	0 or 1 to trigger the bankswitch. x is a bit that is not concidered (it can be either
+	0 or 1 to trigger the bankswitch. x is a bit that is not considered (it can be either
 	0 or 1 and is thus a "don't care" bit).
 
-	B is the bank we will select.  sooo, accessing 0800 will select bank 0, and 0840
+	B is the bank we will select. So, accessing 0800 will select bank 0, and 0840
 	will select bank 1.
 	*/
-	internal class m0840 : MapperBase 
+	internal sealed class m0840 : MapperBase
 	{
 		private int _bank4K;
+
+		public m0840(Atari2600 core) : base(core)
+		{
+		}
 
 		public override void SyncState(Serializer ser)
 		{
@@ -34,8 +38,17 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public override void HardReset()
 		{
 			_bank4K = 0;
-			base.HardReset();
 		}
+
+		public override byte ReadMemory(ushort addr) => ReadMem(addr, false);
+
+		public override byte PeekMemory(ushort addr) => ReadMem(addr, true);
+
+		public override void WriteMemory(ushort addr, byte value)
+			=> WriteMem(addr, value, false);
+
+		public override void PokeMemory(ushort addr, byte value)
+			=> WriteMem(addr, value, true);
 
 		private byte ReadMem(ushort addr, bool peek)
 		{
@@ -52,16 +65,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			return Core.Rom[(_bank4K << 12) + (addr & 0xFFF)];
 		}
 
-		public override byte ReadMemory(ushort addr)
-		{
-			return ReadMem(addr, false);
-		}
-
-		public override byte PeekMemory(ushort addr)
-		{
-			return ReadMem(addr, true);
-		}
-
 		private void WriteMem(ushort addr, byte value, bool poke)
 		{
 			if (!poke)
@@ -75,27 +78,14 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 		}
 
-		public override void WriteMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, poke: false);
-		}
-
-		public override void PokeMemory(ushort addr, byte value)
-		{
-			WriteMem(addr, value, poke: true);
-		}
-
 		private void Address(ushort addr)
 		{
-			switch (addr & 0x1840)
+			_bank4K = (addr & 0x1840) switch
 			{
-				case 0x0800:
-					_bank4K = 0;
-					break;
-				case 0x0840:
-					_bank4K = 1;
-					break;
-			}
+				0x0800 => 0,
+				0x0840 => 1,
+				_ => _bank4K
+			};
 		}
 	}
 }

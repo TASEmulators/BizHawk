@@ -2,23 +2,23 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class CPROM : NES.NESBoardBase
+	internal sealed class CPROM : NesBoardBase
 	{
 		//generally mapper 13
 
 		//state
 		int chr;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//configure
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER013":
 					AssertPrg(32);
 					AssertChr(0);
-					Cart.vram_size = 16;
-					Cart.wram_size = 0;
+					Cart.VramSize = 16;
+					Cart.WramSize = 0;
 					break;
 
 				case "NES-CPROM": //videomation
@@ -32,33 +32,33 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//TODO - assert that mirror type is vertical?
 			//set it in the cart?
 
-			SetMirrorType(NES.NESBoardBase.EMirrorType.Vertical);
+			SetMirrorType(EMirrorType.Vertical);
 
 			return true;
 		}
 		
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			value = HandleNormalPRGConflict(addr,value);
 			chr = value&3;
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x1000)
-				return VRAM[addr];
+				return Vram[addr];
 			else if(addr<0x2000)
-				return VRAM[addr - 0x1000 + (chr << 12)];
-			else return base.ReadPPU(addr);
+				return Vram[addr - 0x1000 + (chr << 12)];
+			else return base.ReadPpu(addr);
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WritePpu(int addr, byte value)
 		{
 			if (addr < 0x1000)
-				VRAM[addr] = value;
+				Vram[addr] = value;
 			else if (addr < 0x2000)
-				VRAM[addr - 0x1000 + (chr << 12)] = value;
-			else base.WritePPU(addr,value);
+				Vram[addr - 0x1000 + (chr << 12)] = value;
+			else base.WritePpu(addr,value);
 		}
 
 		public override void SyncState(Serializer ser)

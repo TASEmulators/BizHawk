@@ -17,6 +17,7 @@
 		GameBoy,
 		DualGameBoy,
 		GameBoyAdvance,
+		NintendoDS,
 		Nintendo64,
 		NES,
 		SNES,
@@ -24,7 +25,6 @@
 		Genesis,
 		Saturn,
 		MasterSystem,
-		PSP,
 		Playstation,
 		WonderSwan,
 		Libretro,
@@ -39,6 +39,9 @@
 		ChannelF,
 		Odyssey2,
 		MAME,
-		MSX
+		MSX,
+		SuperGameBoy,
+		UzeBox,
+		PcFx
 	}
 }

@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//AKA MMC2 Mike Tyson's Punch-Out!!
 	//AKA MMC4 (similar enough to combine in one fle)
-	public sealed class PxROM_FxROM : NES.NESBoardBase
+	internal sealed class PxROM_FxROM : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_8k, chr_bank_mask_4k;
@@ -13,32 +13,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		//state
 		byte prg_reg;
-		IntBuffer prg_banks_8k = new IntBuffer(4);
-		IntBuffer chr_banks_4k = new IntBuffer(4);
-		IntBuffer chr_latches = new IntBuffer(2);
+		int[] prg_banks_8k = new int[4];
+		int[] chr_banks_4k = new int[4];
+		int[] chr_latches = new int[2];
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
 			ser.Sync(nameof(prg_reg), ref prg_reg);
-			ser.Sync(nameof(chr_banks_4k), ref chr_banks_4k);
-			ser.Sync(nameof(chr_latches), ref chr_latches);
+			ser.Sync(nameof(chr_banks_4k), ref chr_banks_4k, false);
+			ser.Sync(nameof(chr_latches), ref chr_latches, false);
 
 			if (ser.IsReader)
 				SyncPRG();
 		}
 
-		public override void Dispose()
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			base.Dispose();
-			prg_banks_8k.Dispose();
-			chr_banks_4k.Dispose();
-			chr_latches.Dispose();
-		}
-
-		public override bool Configure(NES.EDetectionOrigin origin)
-		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER009":
 					break;
@@ -66,8 +58,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			
-			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
-			chr_bank_mask_4k = Cart.chr_size / 4 - 1;
+			prg_bank_mask_8k = Cart.PrgSize / 8 - 1;
+			chr_bank_mask_4k = Cart.ChrSize / 4 - 1;
 
 			SyncPRG();
 
@@ -92,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			switch (addr & 0xF000)
 			{
@@ -129,13 +121,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				int ofs = addr & ((1 << 12) - 1);
 				int bank_4k = chr_banks_4k[reg];
 				addr = (bank_4k << 12) | ofs;
-				return VROM[addr];
+				return Vrom[addr];
 			}
 			else
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			int side = addr>>12;
 			int tile = (addr>>4)&0xFF;
@@ -154,20 +146,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						case 0xFD: chr_latches[side] = 0; break;
 						case 0xFE: chr_latches[side] = 1; break;
 					}
-				return VROM[addr];
+				return Vrom[addr];
 			}
-			else return base.ReadPPU(addr);
+			else return base.ReadPpu(addr);
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_8k = addr >> 13;
 			int ofs = addr & ((1 << 13) - 1);
 			bank_8k = prg_banks_8k[bank_8k];
 			addr = (bank_8k << 13) | ofs;
-			return ROM[addr];
+			return Rom[addr];
 		}
-
-
 	}
 }

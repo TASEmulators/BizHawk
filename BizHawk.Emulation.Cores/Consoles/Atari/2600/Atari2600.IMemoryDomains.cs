@@ -35,11 +35,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					(addr, value) => _mapper.PokeMemory((ushort) addr, value), 1) 
 			};
 
-			if (_mapper.HasCartRam)
+			if (_mapper.CartRam.Length > 0)
 			{
 				domains.Add(new MemoryDomainDelegate(
 					"Cart Ram",
-					_mapper.CartRam.Len,
+					_mapper.CartRam.Length,
 					MemoryDomain.Endian.Little,
 					addr => _mapper.CartRam[(int)addr],
 					(addr, value) => _mapper.CartRam[(int)addr] = value, 1));

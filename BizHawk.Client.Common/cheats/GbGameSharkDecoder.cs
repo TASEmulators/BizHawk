@@ -36,7 +36,7 @@ namespace BizHawk.Client.Common.cheats
 			code = code.Remove(0, 2);
 
 			var addrStr = code.Remove(0, 2);
-			addrStr = addrStr + code.Remove(2, 2);
+			addrStr += code.Remove(2, 2);
 
 			result.Value = int.Parse(valueStr, NumberStyles.HexNumber);
 			result.Address = int.Parse(addrStr, NumberStyles.HexNumber);

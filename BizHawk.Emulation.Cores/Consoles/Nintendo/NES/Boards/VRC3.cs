@@ -5,29 +5,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//mapper 73 AKA salamander
 	//different IRQ logic than other VRC
-	public sealed class VRC3 : NES.NESBoardBase
+	internal sealed class VRC3 : NesBoardBase
 	{
 		//configuration
 		int prg_bank_mask_16k;
 
 		//state
-		IntBuffer prg_banks_16k = new IntBuffer(2);
+		int[] prg_banks_16k = new int[2];
 		bool irq_mode;
 		bool irq_enabled, irq_pending, irq_autoen;
 		ushort irq_reload;
 		ushort irq_counter;
 		int irq_cycles;
 
-		public override void Dispose()
-		{
-			base.Dispose();
-			prg_banks_16k.Dispose();
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync(nameof(prg_banks_16k), ref prg_banks_16k);
+			ser.Sync(nameof(prg_banks_16k), ref prg_banks_16k, false);
 			ser.Sync(nameof(irq_mode), ref irq_mode);
 			ser.Sync(nameof(irq_enabled), ref irq_enabled);
 			ser.Sync(nameof(irq_pending), ref irq_pending);
@@ -40,12 +34,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		void SyncIRQ()
 		{
-			IRQSignal = (irq_pending && irq_enabled);
+			IrqSignal = (irq_pending && irq_enabled);
 		}
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER073":
 					break;
@@ -56,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			prg_bank_mask_16k = Cart.prg_size / 16 - 1;
+			prg_bank_mask_16k = Cart.PrgSize / 16 - 1;
 
 			SetMirrorType(EMirrorType.Vertical);
 
@@ -64,13 +58,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			return true;
 		}
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
 			int bank_16k = addr >> 14;
 			int ofs = addr & ((1 << 14) - 1);
 			bank_16k = prg_banks_16k[bank_16k];
 			addr = (bank_16k << 14) | ofs;
-			return ROM[addr];
+			return Rom[addr];
 		}
 
 		void WriteIrqReload(int bit, byte value)
@@ -78,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			int mask = 0xF << bit;
 			irq_reload = (ushort)((irq_reload & ~mask) | (value << bit));
 		}
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			switch (addr)
 			{
@@ -134,7 +128,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void ClockCPU()
+		public override void ClockCpu()
 		{
 			if (!irq_enabled) return;
 			if (irq_mode)

@@ -1,13 +1,13 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//various japanese Namcot108 boards plus DEROM
-	[NES.INESBoardImplPriority]
-	public sealed class Mapper206 : Namcot108Board_Base
+	[NesBoardImplPriority]
+	internal sealed class Mapper206 : Namcot108Board_Base
 	{
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER206VS":
 					NES.VS_dips[0] = (byte)(NES.SyncSettings.VSDipswitches.Dip_Switch_1 ? 1 : 0);
@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			BaseSetup();
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			SetMirrorType(Cart.PadH, Cart.PadV);
 
 			return true;
 		}

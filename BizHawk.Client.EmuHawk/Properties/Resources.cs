@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Windows.Forms;
 
 namespace BizHawk.Client.EmuHawk.Properties {
-	internal class Resources {
+	internal static class Resources {
 		private static readonly Assembly Asm = Assembly.GetExecutingAssembly();
 
 		/// <param name="embedPath">Dir separator is '<c>.</c>'. Path is relative to <c>&lt;NS></c>.</param>
@@ -35,6 +35,7 @@ namespace BizHawk.Client.EmuHawk.Properties {
 		internal static readonly Bitmap BlueUp = ReadEmbeddedBitmap("BlueUp");
 		internal static readonly Bitmap Both = ReadEmbeddedBitmap("Both");
 		internal static readonly Bitmap bsnes = ReadEmbeddedBitmap("bsnes");
+		internal static readonly Bitmap melonDS = ReadEmbeddedBitmap("melonDS");
 		internal static readonly Icon Bug_MultiSize = ReadEmbeddedIcon("Bug");
 		internal static readonly Bitmap Bug = ReadEmbeddedBitmap("Bug");
 		internal static readonly Icon calculator_MultiSize = ReadEmbeddedIcon("calculator");
@@ -69,6 +70,7 @@ namespace BizHawk.Client.EmuHawk.Properties {
 		internal static readonly Lazy<Bitmap> VBoyController = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.VBoyController"));
 		internal static readonly Lazy<Bitmap> WonderSwanColor = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.WonderSwanColor"));
 		internal static readonly Lazy<Bitmap> ZXSpectrumKeyboards = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.ZXSpectrumKeyboards"));
+		internal static readonly Lazy<Bitmap> DSController = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.DSController"));
 		internal static readonly Bitmap CopyFolderHS = ReadEmbeddedBitmap("CopyFolderHS");
 		internal static readonly Bitmap corphawk = ReadEmbeddedBitmapAt("images.corphawk.jpg");
 		internal static readonly Bitmap CorpHawkSmall = ReadEmbeddedBitmap("CorpHawkSmall");
@@ -130,7 +132,6 @@ namespace BizHawk.Client.EmuHawk.Properties {
 		internal static readonly Bitmap NNE = ReadEmbeddedBitmap("NNE");
 		internal static readonly Bitmap NNW = ReadEmbeddedBitmap("NNW");
 		internal static readonly Bitmap noconnect_16x16 = ReadEmbeddedBitmap("noconnect_16x16");
-		internal static readonly Stream nothawk = Asm.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.nothawk.bin");
 		internal static readonly Bitmap NW = ReadEmbeddedBitmap("NW");
 		internal static readonly Bitmap OpenFile = ReadEmbeddedBitmap("OpenFile");
 		internal static readonly Bitmap Paste = ReadEmbeddedBitmap("Paste");
@@ -143,7 +144,6 @@ namespace BizHawk.Client.EmuHawk.Properties {
 		internal static readonly Bitmap placeholder_bitmap = ReadEmbeddedBitmap("placeholder_bitmap");
 		internal static readonly Icon poke_MultiSize = ReadEmbeddedIcon("poke");
 		internal static readonly Bitmap poke = ReadEmbeddedBitmap("poke");
-		internal static readonly Bitmap ppsspp = ReadEmbeddedBitmap("ppsspp");
 		internal static readonly Icon Previous_MultiSize = ReadEmbeddedIcon("Previous");
 		internal static readonly Bitmap Previous = ReadEmbeddedBitmap("Previous");
 		internal static readonly Icon QuickNes_MultiSize = ReadEmbeddedIcon("QuickNes");

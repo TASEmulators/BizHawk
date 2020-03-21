@@ -282,21 +282,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private BlendOperation ConvertBlendOp(gl.BlendEquationMode glMode)
 		{
-			switch (glMode)
+			return glMode switch
 			{
-				case gl.BlendEquationMode.FuncAdd:
-					return BlendOperation.Add;
-				case gl.BlendEquationMode.FuncSubtract:
-					return BlendOperation.Subtract;
-				case gl.BlendEquationMode.Max:
-					return BlendOperation.Maximum;
-				case gl.BlendEquationMode.Min:
-					return BlendOperation.Minimum;
-				case gl.BlendEquationMode.FuncReverseSubtract:
-					return BlendOperation.ReverseSubtract;
-				default:
-					throw new ArgumentOutOfRangeException();
-			}
+				gl.BlendEquationMode.FuncAdd => BlendOperation.Add,
+				gl.BlendEquationMode.FuncSubtract => BlendOperation.Subtract,
+				gl.BlendEquationMode.Max => BlendOperation.Maximum,
+				gl.BlendEquationMode.Min => BlendOperation.Minimum,
+				gl.BlendEquationMode.FuncReverseSubtract => BlendOperation.ReverseSubtract,
+				_ => throw new ArgumentOutOfRangeException()
+			};
 		}
 
 		private Blend ConvertBlendArg(gl.BlendingFactorDest glMode) => ConvertBlendArg((gl.BlendingFactorSrc)glMode);

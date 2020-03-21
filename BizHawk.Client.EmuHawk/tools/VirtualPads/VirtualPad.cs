@@ -78,8 +78,8 @@ namespace BizHawk.Client.EmuHawk
 							SecondaryName = (button.SecondaryNames != null && button.SecondaryNames.Any()) ? button.SecondaryNames[0] : "",
 							Location = UIHelper.Scale(button.Location),
 							Size = UIHelper.Scale(new Size(180 + 79, 200 + 9)),
-							RangeX = new float[] { button.MinValue, button.MidValue, button.MaxValue },
-							RangeY = new float[] { button.MinValueSec, button.MidValueSec, button.MaxValueSec }, 
+							RangeX = button.AxisRange ?? throw new Exception(),
+							RangeY = button.SecondaryAxisRange ?? throw new Exception()
 						});
 						break;
 					case PadSchema.PadInputType.TargetedPair:

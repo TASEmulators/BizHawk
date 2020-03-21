@@ -5,16 +5,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// pirate FDS conversion
 	// this is probably two different boards, but they seem to work well enough the same
-	public sealed class Mapper042 : NES.NESBoardBase
+	internal sealed class Mapper042 : NesBoardBase
 	{
 		int prg = 0;
 		int chr = 0;
 		int irqcnt = 0;
 		bool irqenable = false;
 
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public override bool Configure(EDetectionOrigin origin)
 		{
-			switch (Cart.board_type)
+			switch (Cart.BoardType)
 			{
 				case "MAPPER042":
 					break;
@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			AssertPrg(128);
 
-			if (Cart.vram_size == 0)
+			if (Cart.VramSize == 0)
 				AssertChr(128);
 			else
 			{
@@ -31,13 +31,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				AssertChr(0);
 			}
 
-			Cart.wram_size = 0;
+			Cart.WramSize = 0;
 			// not sure on initial mirroring
 			SetMirrorType(EMirrorType.Vertical);
 			return true;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePrg(int addr, byte value)
 		{
 			addr &= 0x6003;
 			switch (addr)
@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						irqcnt = 0;
 						irqenable = false;
-						IRQSignal = false;
+						IrqSignal = false;
 					}
 					else
 						irqenable = true;
@@ -68,16 +68,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadPRG(int addr)
+		public override byte ReadPrg(int addr)
 		{
-			return ROM[addr | 0x18000];
+			return Rom[addr | 0x18000];
 		}
-		public override byte ReadWRAM(int addr)
+		public override byte ReadWram(int addr)
 		{
-			return ROM[addr | prg << 13];
+			return Rom[addr | prg << 13];
 		}
 
-		public override void ClockCPU()
+		public override void ClockCpu()
 		{
 			if (irqenable)
 			{
@@ -86,7 +86,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (irqcnt >= 32768)
 					irqcnt -= 32768;
 
-				IRQSignal = irqcnt >= 24576;
+				IrqSignal = irqcnt >= 24576;
 			}
 		}
 
@@ -99,17 +99,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(irqcnt), ref irqcnt);
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
 			{
-				if (VRAM != null)
-					return VRAM[addr];
+				if (Vram != null)
+					return Vram[addr];
 				else
-					return VROM[addr | chr << 13];
+					return Vrom[addr | chr << 13];
 			}
 			else
-				return base.ReadPPU(addr);
+				return base.ReadPpu(addr);
 		}
 	}
 }

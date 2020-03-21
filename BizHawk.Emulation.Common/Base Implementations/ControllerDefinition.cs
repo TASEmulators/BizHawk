@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>
@@ -45,7 +47,7 @@ namespace BizHawk.Emulation.Common
 		/// Gets a list of all float ranges for each float control (must be one to one with FloatControls)
 		/// FloatRanges include the min/max/default values
 		/// </summary>
-		public List<FloatRange> FloatRanges { get; } = new List<FloatRange>();
+		public List<AxisRange> FloatRanges { get; set; } = new List<AxisRange>();
 
 		/// <summary>
 		/// Gets the axis constraints that apply artificial constraints to float values
@@ -100,44 +102,50 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public struct FloatRange
+		public readonly struct AxisRange
 		{
-			public readonly float Min;
-			public readonly float Max;
+			public readonly bool IsReversed;
 
-			/// <summary>
-			/// default position
-			/// </summary>
-			public readonly float Mid;
+			public readonly int Max;
 
-			public FloatRange(float min, float mid, float max)
+			/// <remarks>used as default/neutral/unset</remarks>
+			public readonly int Mid;
+
+			public readonly int Min;
+
+			public Range<float> FloatRange => ((float) Min).RangeTo(Max);
+
+			/// <value>maximum decimal digits analog input can occupy with no-args ToString</value>
+			/// <remarks>does not include the extra char needed for a minus sign</remarks>
+			public int MaxDigits => Math.Max(Math.Abs(Min).ToString().Length, Math.Abs(Max).ToString().Length);
+
+			public Range<int> Range => Min.RangeTo(Max);
+
+			public AxisRange(int min, int mid, int max, bool isReversed = false)
 			{
-				Min = min;
-				Mid = mid;
+				const string ReversedBoundsExceptionMessage = nameof(AxisRange) + " must not have " + nameof(max) + " < " + nameof(min) + ". pass " + nameof(isReversed) + ": true to ctor instead, or use " + nameof(CreateAxisRangePair);
+				if (max < min) throw new ArgumentOutOfRangeException(nameof(max), max, ReversedBoundsExceptionMessage);
+				IsReversed = isReversed;
 				Max = max;
+				Mid = mid;
+				Min = min;
 			}
+		}
 
-			/// <summary>for terse construction</summary>
-			/// <exception cref="ArgumentException">length <paramref name="f"/> is not <c>3</c></exception>
-			public static implicit operator FloatRange(float[] f)
-			{
-				if (f.Length != 3)
-				{
-					throw new ArgumentException();
-				}
+		public static List<AxisRange> CreateAxisRangePair(int min, int mid, int max, AxisPairOrientation pDir) => new List<AxisRange>
+		{
+			new AxisRange(min, mid, max, ((byte) pDir & 2) != 0),
+			new AxisRange(min, mid, max, ((byte) pDir & 1) != 0)
+		};
 
-				return new FloatRange(f[0], f[1], f[2]);
-			}
-
-			/// <summary>
-			/// Gets maximum decimal digits analog input can occupy. Discards negative sign and possible fractional part (analog devices don't use floats anyway).
-			/// </summary>
-			public int MaxDigits()
-			{
-				return Math.Max(
-					Math.Abs((int)Min).ToString().Length,
-					Math.Abs((int)Max).ToString().Length);
-			}
+		/// <summary>represents the direction of <c>(+, +)</c></summary>
+		/// <remarks>docs of individual controllers are being collected in comments of https://github.com/TASVideos/BizHawk/issues/1200</remarks>
+		public enum AxisPairOrientation : byte
+		{
+			RightAndUp = 0,
+			RightAndDown = 1,
+			LeftAndUp = 2,
+			LeftAndDown = 3
 		}
 
 		public enum AxisConstraintType

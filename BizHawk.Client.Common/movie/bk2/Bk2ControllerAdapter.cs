@@ -153,7 +153,7 @@ namespace BizHawk.Client.Common
 		{
 			foreach (var button in Definition.BoolButtons)
 			{
-				_myBoolButtons[button] = Global.AutofireStickyXORAdapter.IsSticky(button);
+				_myBoolButtons[button] = Global.InputManager.AutofireStickyXorAdapter.IsSticky(button);
 			}
 
 			// float controls don't have sticky logic, so latch default value

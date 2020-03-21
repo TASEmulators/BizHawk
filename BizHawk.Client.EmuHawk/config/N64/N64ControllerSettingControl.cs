@@ -34,29 +34,16 @@ namespace BizHawk.Client.EmuHawk
 			set
 			{
 				EnabledCheckbox.Checked = value;
-				if (PakTypeDropdown != null) // Null check for designer
-				{
-					PakTypeDropdown.Enabled = value;
-				}
-
+				PakTypeDropdown.Enabled = value;
 				Refresh();
 			}
 		}
 
 		public N64SyncSettings.N64ControllerSettings.N64ControllerPakType PakType
 		{
-			get
-			{
-				if (PakTypeDropdown.SelectedItem != null) // Null check for designer
-				{
-					return PakTypeDropdown.SelectedItem
-						.ToString()
-						.GetEnumFromDescription<N64SyncSettings.N64ControllerSettings.N64ControllerPakType>();
-				}
-
-				return N64SyncSettings.N64ControllerSettings.N64ControllerPakType.NO_PAK;
-			}
-
+			get => PakTypeDropdown.SelectedItem
+				.ToString()
+				.GetEnumFromDescription<N64SyncSettings.N64ControllerSettings.N64ControllerPakType>();
 			set
 			{
 				if (PakTypeDropdown.Items.Count > 0) // Null check for designer

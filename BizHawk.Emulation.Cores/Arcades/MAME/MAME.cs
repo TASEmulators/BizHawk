@@ -24,11 +24,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		singleInstance: false)]
 	public partial class MAME : IEmulator, IVideoProvider, ISoundProvider, ISettable<object, MAME.SyncSettings>, IStatable
 	{
-		public MAME(CoreComm comm, string dir, string file, object syncSettings, out string gamename)
+		public MAME(string dir, string file, object syncSettings, out string gamename)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 
-			CoreComm = comm;
 			_gameDirectory = dir;
 			_gameFilename = file;
 			_mameThread = new Thread(ExecuteMAMEThread);
@@ -89,7 +88,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		#region Properties
 
-		public CoreComm CoreComm { get; }
 		public IEmulatorServiceProvider ServiceProvider { get; }
 		public ControllerDefinition ControllerDefinition => MAMEController;
 		public string SystemId => "MAME";

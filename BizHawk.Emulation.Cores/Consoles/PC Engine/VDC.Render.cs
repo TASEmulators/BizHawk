@@ -428,8 +428,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		private int FramePitch = 320;
 		private int FrameWidth = 320;
-		private int FrameHeight = 262;
-		private int[] FrameBuffer = new int[320 * 262];
+		private readonly int[] FrameBuffer = new int[320 * 262];
 
 		// IVideoProvider implementation
 		public int[] GetVideoBuffer() => FrameBuffer;

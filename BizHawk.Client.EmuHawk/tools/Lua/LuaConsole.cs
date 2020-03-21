@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Common;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -243,7 +244,7 @@ namespace BizHawk.Client.EmuHawk
 				_watches.Clear();
 				foreach (var item in LuaImp.ScriptList.Where(s => !s.IsSeparator))
 				{
-					var processedPath = PathManager.TryMakeRelative(item.Path);
+					var processedPath = Config.PathEntries.TryMakeRelative(item.Path);
 					string pathToLoad = ProcessPath(processedPath);
 
 					CreateFileWatcher(pathToLoad);
@@ -281,7 +282,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadLuaFile(string path)
 		{
-			var processedPath = PathManager.TryMakeRelative(path);
+			var processedPath = Config.PathEntries.TryMakeRelative(path);
 
 			var alreadyInSession = LuaImp.ScriptList.Any(t => processedPath == t.Path);
 			if (alreadyInSession)
@@ -435,12 +436,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private string DressUpRelative(string path)
 		{
-			if (path.StartsWith(".\\"))
-			{
-				return path.Replace(".\\", "");
-			}
-
-			return path;
+			return path.StartsWith(".\\") ? path.Replace(".\\", "") : path;
 		}
 
 		private void UpdateNumberOfScripts()
@@ -574,13 +570,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (Global.Game != null)
 			{
-				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-				sfd.InitialDirectory = PathManager.GetLuaPath();
+				sfd.FileName = Global.Game.FilesystemSafeName();
+				sfd.InitialDirectory = Config.PathEntries.LuaAbsolutePath();
 			}
 			else
 			{
 				sfd.FileName = "NULL";
-				sfd.InitialDirectory = PathManager.GetLuaPath();
+				sfd.InitialDirectory = Config.PathEntries.LuaAbsolutePath();
 			}
 
 			sfd.Filter = SessionsFSFilterSet.ToString();
@@ -710,7 +706,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var ofd = new OpenFileDialog
 			{
-				InitialDirectory = PathManager.GetLuaPath(),
+				InitialDirectory = Config.PathEntries.LuaAbsolutePath(),
 				Filter = SessionsFSFilterSet.ToString(),
 				RestoreDirectory = true,
 				Multiselect = false
@@ -786,7 +782,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				InitialDirectory = !string.IsNullOrWhiteSpace(LuaImp.ScriptList.Filename) ?
 					Path.GetDirectoryName(LuaImp.ScriptList.Filename) :
-					PathManager.MakeAbsolutePath(Config.PathEntries.LuaPathFragment, null),
+					Config.PathEntries.LuaAbsolutePath(),
 				DefaultExt = ".lua",
 				FileName = !string.IsNullOrWhiteSpace(LuaImp.ScriptList.Filename) ?
 					Path.GetFileNameWithoutExtension(LuaImp.ScriptList.Filename) :
@@ -816,7 +812,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var ofd = new OpenFileDialog
 			{
-				InitialDirectory = PathManager.GetLuaPath(),
+				InitialDirectory = Config.PathEntries.LuaAbsolutePath(),
 				Filter = new FilesystemFilterSet(FilesystemFilter.LuaScripts, FilesystemFilter.TextFiles).ToString(),
 				RestoreDirectory = true,
 				Multiselect = true
@@ -860,7 +856,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					string pathToLoad = Path.IsPathRooted(item.Path)
 					? item.Path
-					: PathManager.MakeProgramRelativePath(item.Path);
+					: item.Path.MakeProgramRelativePath();
 
 					LuaImp.SpawnAndSetFileThread(pathToLoad, item);
 					LuaSandbox.CreateSandbox(item.Thread, Path.GetDirectoryName(pathToLoad));
@@ -904,7 +900,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return Path.IsPathRooted(path)
 				? path
-				: PathManager.MakeProgramRelativePath(path);
+				: path.MakeProgramRelativePath();
 		}
 
 		private void EditScriptMenuItem_Click(object sender, EventArgs e)

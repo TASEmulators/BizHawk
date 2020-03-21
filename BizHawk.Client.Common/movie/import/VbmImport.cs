@@ -3,6 +3,7 @@ using System.IO;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Nintendo.GBHawk;
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.Common.movie.import
 {
@@ -15,6 +16,7 @@ namespace BizHawk.Client.Common.movie.import
 		{
 			using var fs = SourceFile.Open(FileMode.Open, FileAccess.Read);
 			using var r = new BinaryReader(fs);
+			bool is_GBC = false;
 
 			// 000 4-byte signature: 56 42 4D 1A "VBM\x1A"
 			string signature = new string(r.ReadChars(4));
@@ -113,12 +115,14 @@ namespace BizHawk.Client.Common.movie.import
 			{
 				platform = "GBA";
 				var mGBAName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(MGBAHawk), typeof(CoreAttribute))).CoreName;
-				Result.Movie.HeaderEntries[HeaderKeys.CORE] = mGBAName;
+				Result.Movie.HeaderEntries[HeaderKeys.Core] = mGBAName;
 			}
 
 			if (isGBC)
 			{
-				platform = "GBC";
+				is_GBC = true;
+				platform = "GB";
+				Result.Movie.HeaderEntries.Add("IsCGBMode", "1");
 			}
 
 			if (isSGB)
@@ -126,7 +130,7 @@ namespace BizHawk.Client.Common.movie.import
 				Result.Errors.Add("SGB imports are not currently supported");
 			}
 
-			Result.Movie.HeaderEntries[HeaderKeys.PLATFORM] = platform;
+			Result.Movie.HeaderEntries[HeaderKeys.Platform] = platform;
 
 			// 017 1-byte flags: (values of some boolean emulator options)
 			flags = r.ReadByte();
@@ -154,7 +158,7 @@ namespace BizHawk.Client.Common.movie.import
 			 null-terminated (ASCII?)
 			*/
 			string gameName = NullTerminated(new string(r.ReadChars(12)));
-			Result.Movie.HeaderEntries[HeaderKeys.GAMENAME] = gameName;
+			Result.Movie.HeaderEntries[HeaderKeys.GameName] = gameName;
 
 			// 030 1-byte unsigned char: minor version/revision number of current VBM version, the latest is "1"
 			byte minorVersion = r.ReadByte();
@@ -192,7 +196,7 @@ namespace BizHawk.Client.Common.movie.import
 
 			// After the header is 192 bytes of text. The first 64 of these 192 bytes are for the author's name (or names).
 			string author = NullTerminated(new string(r.ReadChars(64)));
-			Result.Movie.HeaderEntries[HeaderKeys.AUTHOR] = author;
+			Result.Movie.HeaderEntries[HeaderKeys.Author] = author;
 
 			// The following 128 bytes are for a description of the movie. Both parts must be null-terminated.
 			string movieDescription = NullTerminated(new string(r.ReadChars(128)));
@@ -276,13 +280,24 @@ namespace BizHawk.Client.Common.movie.import
 			}
 			else
 			{
-				Global.Config.GbUseGbHawk = true;
-				Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(new GBHawk.GBSyncSettings());
-			}
-			
+				if (Global.Config.GbUseGbHawk || Global.Config.UseSubGBHawk)
+				{
+					var temp_sync = new GBHawk.GBSyncSettings();
+					if (is_GBC) { temp_sync.ConsoleMode = GBHawk.GBSyncSettings.ConsoleModeType.GBC; }
+					else { temp_sync.ConsoleMode = GBHawk.GBSyncSettings.ConsoleModeType.GB; }
+					Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(temp_sync);
+				}
+				else
+				{
+					var temp_sync = new Gameboy.GambatteSyncSettings();
+					if (is_GBC) { temp_sync.ConsoleMode = Gameboy.GambatteSyncSettings.ConsoleModeType.GBC; }
+					else { temp_sync.ConsoleMode = Gameboy.GambatteSyncSettings.ConsoleModeType.GB; }
+					Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(temp_sync);
+				}							
+			}			
 		}
 
-		private SimpleController GbController()
+		private static SimpleController GbController()
 		{
 			return new SimpleController
 			{
@@ -293,9 +308,7 @@ namespace BizHawk.Client.Common.movie.import
 			};
 		}
 
-		private SimpleController GbaController()
-		{
-			return new SimpleController { Definition = GBA.GBAController };
-		}
+		private static SimpleController GbaController()
+			=> new SimpleController { Definition = GBA.GBAController };
 	}
 }

@@ -396,7 +396,7 @@ namespace BizHawk.Client.Common
 			Global.MovieSession.MovieControllerAdapter.LatchSticky();
 
 			var lg = LogGeneratorInstance();
-			lg.SetSource(Global.MovieOutputHardpoint); // account for autohold. needs autohold pattern to be already recorded in the current frame
+			lg.SetSource(Global.InputManager.MovieOutputHardpoint); // account for autohold. needs autohold pattern to be already recorded in the current frame
 
 			for (int i = 0; i < numFrames; i++)
 			{
@@ -461,7 +461,7 @@ namespace BizHawk.Client.Common
 				ExtendMovieForEdit(frame + count - Log.Count);
 			}
 
-			ChangeLog.AddGeneralUndo(frame, frame + count - 1, $"Set {buttonName}({(val ? "On" : "Off")}): {frame}-{(frame + count - 1)}");
+			ChangeLog.AddGeneralUndo(frame, frame + count - 1, $"Set {buttonName}({(val ? "On" : "Off")}): {frame}-{frame + count - 1}");
 
 			int changed = -1;
 			for (int i = 0; i < count; i++)
@@ -519,7 +519,7 @@ namespace BizHawk.Client.Common
 				ExtendMovieForEdit(frame - Log.Count + 1);
 			}
 
-			ChangeLog.AddGeneralUndo(frame, frame + count - 1, $"Set {buttonName}({val}): {frame}-{(frame + count - 1)}");
+			ChangeLog.AddGeneralUndo(frame, frame + count - 1, $"Set {buttonName}({val}): {frame}-{frame + count - 1}");
 
 			int changed = -1;
 			for (int i = 0; i < count; i++)

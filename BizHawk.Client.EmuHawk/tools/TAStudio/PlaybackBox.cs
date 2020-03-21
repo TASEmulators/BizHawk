@@ -66,14 +66,15 @@ namespace BizHawk.Client.EmuHawk
 		protected override void OnLoad(EventArgs e)
 		{
 			base.OnLoad(e);
-
-			if (Tastudio != null) // For the designer
+			if (DesignMode)
 			{
-				TurboSeekCheckbox.Checked = Tastudio.Config?.TurboSeek ?? false;
-				AutoRestoreCheckbox.Checked = Tastudio.Settings.AutoRestoreLastPosition;
-				FollowCursorCheckbox.Checked = Tastudio.Settings.FollowCursor;
-				RecordingModeCheckbox.Checked = RecordingMode;
+				return;
 			}
+
+			TurboSeekCheckbox.Checked = Tastudio.Config?.TurboSeek ?? false;
+			AutoRestoreCheckbox.Checked = Tastudio.Settings.AutoRestoreLastPosition;
+			FollowCursorCheckbox.Checked = Tastudio.Settings.FollowCursor;
+			RecordingModeCheckbox.Checked = RecordingMode;
 
 			_loading = false;
 		}
