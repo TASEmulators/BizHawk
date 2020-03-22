@@ -57,75 +57,61 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(32, 71, $"P{controller} Down"),
 					ButtonSchema.Left(11, 62, $"P{controller} Left"),
 					ButtonSchema.Right(53, 62, $"P{controller} Right"),
-					new ButtonSchema(3, 32)
+					new ButtonSchema(3, 32, controller, "L1")
 					{
-						Name = $"P{controller} L1",
 						DisplayName = "L1"
 					},
-					new ButtonSchema(191, 32)
+					new ButtonSchema(191, 32, controller, "R1")
 					{
-						Name = $"P{controller} R1",
 						DisplayName = "R1"
 					},
-					new ButtonSchema(3, 10)
+					new ButtonSchema(3, 10, controller, "L2")
 					{
-						Name = $"P{controller} L2",
 						DisplayName = "L2"
 					},
-					new ButtonSchema(191, 10)
+					new ButtonSchema(191, 10, controller, "R2")
 					{
-						Name = $"P{controller} R2",
 						DisplayName = "R2"
 					},
-					new ButtonSchema(72, 90)
+					new ButtonSchema(72, 90, controller, "L3")
 					{
-						Name = $"P{controller} L3",
 						DisplayName = "L3"
 					},
-					new ButtonSchema(130, 90)
+					new ButtonSchema(130, 90, controller, "R3")
 					{
-						Name = $"P{controller} R3",
 						DisplayName = "R3"
 					},
-					new ButtonSchema(148, 62)
+					new ButtonSchema(148, 62, controller, "Square")
 					{
-						Name = $"P{controller} Square",
 						Icon = Properties.Resources.Square
 					},
-					new ButtonSchema(169, 50)
+					new ButtonSchema(169, 50, controller, "Triangle")
 					{
-						Name = $"P{controller} Triangle",
 						Icon = Properties.Resources.Triangle
 					},
-					new ButtonSchema(190, 62)
+					new ButtonSchema(190, 62, controller, "Circle")
 					{
-						Name = $"P{controller} Circle",
 						Icon = Properties.Resources.Circle
 					},
-					new ButtonSchema(169, 71)
+					new ButtonSchema(169, 71, controller, "Cross")
 					{
-						Name = $"P{controller} Cross",
 						Icon = Properties.Resources.Cross
 					},
-					new ButtonSchema(112, 62)
+					new ButtonSchema(112, 62, controller, "Start")
 					{
-						Name = $"P{controller} Start",
 						DisplayName = "S"
 					},
-					new ButtonSchema(90, 62)
+					new ButtonSchema(90, 62, controller, "Select")
 					{
-						Name = $"P{controller} Select",
 						DisplayName = "s"
 					},
 					new AnalogSchema(3, 120, $"P{controller} LStick X")
 					{
-						Name = $"P{controller} LStick X",
 						AxisRange = stickRanges[0],
 						SecondaryAxisRange = stickRanges[1]
 					},
-					new ButtonSchema(260, 120)
+					new AnalogSchema(260, 120, $"P{controller} RStick X")
 					{
-						Name = $"P{controller} RStick X",
 						AxisRange = stickRanges[0],
 						SecondaryAxisRange = stickRanges[1]
 					}
@@ -145,54 +131,44 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(37, 76, $"P{controller} Down"),
 					ButtonSchema.Left(16, 67, $"P{controller} Left"),
 					ButtonSchema.Right(58, 67, $"P{controller} Right"),
-					new ButtonSchema(8, 37)
+					new ButtonSchema(8, 37, controller, "L1")
 					{
-						Name = $"P{controller} L1",
 						DisplayName = "L1"
 					},
-					new ButtonSchema(196, 37)
+					new ButtonSchema(196, 37, controller, "R1")
 					{
-						Name = $"P{controller} R1",
 						DisplayName = "R1"
 					},
-					new ButtonSchema(8, 15)
+					new ButtonSchema(8, 15, controller, "L2")
 					{
-						Name = $"P{controller} L2",
 						DisplayName = "L2"
 					},
-					new ButtonSchema(196, 15)
+					new ButtonSchema(196, 15, controller, "R2")
 					{
-						Name = $"P{controller} R2",
 						DisplayName = "R2"
 					},
-					new ButtonSchema(153, 67)
+					new ButtonSchema(153, 67, controller, "Square")
 					{
-						Name = $"P{controller} Square",
 						Icon = Properties.Resources.Square
 					},
-					new ButtonSchema(174, 55)
+					new ButtonSchema(174, 55, controller, "Triangle")
 					{
-						Name = $"P{controller} Triangle",
 						Icon = Properties.Resources.Triangle
 					},
-					new ButtonSchema(195, 67)
+					new ButtonSchema(195, 67, controller, "Circle")
 					{
-						Name = $"P{controller} Circle",
 						Icon = Properties.Resources.Circle
 					},
-					new ButtonSchema(174, 76)
+					new ButtonSchema(174, 76, controller, "Cross")
 					{
-						Name = $"P{controller} Cross",
 						Icon = Properties.Resources.Cross
 					},
-					new ButtonSchema(112, 67)
+					new ButtonSchema(112, 67, controller, "Start")
 					{
-						Name = $"P{controller} Start",
 						DisplayName = "S"
 					},
-					new ButtonSchema(90, 67)
+					new ButtonSchema(90, 67, controller, "Select")
 					{
-						Name = $"P{controller} Select",
 						DisplayName = "s"
 					}
 				}
@@ -211,30 +187,24 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(36, 104, $"P{controller} Down"),
 					ButtonSchema.Left(15, 95, $"P{controller} Left"),
 					ButtonSchema.Right(57, 95, $"P{controller} Right"),
-					new ButtonSchema(78, 118)
+					new ButtonSchema(78, 118, controller, "Start")
 					{
-						Name = $"P{controller} Start",
 						DisplayName = "S"
 					},
-					new ButtonSchema(278, 38)
+					new ButtonSchema(278, 38, controller, "B")
 					{
-						Name = $"P{controller} B",
 						DisplayName = "B"
 					},
-					new ButtonSchema(308, 55)
+					new ButtonSchema(308, 55, controller, "A")
 					{
-						Name = $"P{controller} A",
 						DisplayName = "A"
 					},
-
-					new ButtonSchema(308, 15)
+					new ButtonSchema(308, 15, controller, "R")
 					{
-						Name = $"P{controller} R",
 						DisplayName = "R"
 					},
 					new SingleFloatSchema(5, 15, $"P{controller} L")
 					{
-						Name = $"P{controller} L",
 						DisplayName = "L",
 						TargetSize = new Size(128, 55),
 						MinValue = 0,

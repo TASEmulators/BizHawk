@@ -24,6 +24,11 @@ namespace BizHawk.Client.EmuHawk
 			Name = name;
 		}
 
+		public ButtonSchema(int x, int y, int controller, string name)
+			: this(x, y, $"P{controller} {name}")
+		{
+		}
+
 		public string Name { get; set; }
 		public string DisplayName { get; set; }
 		public PadInputType Type { get; protected set; } = PadInputType.Boolean;

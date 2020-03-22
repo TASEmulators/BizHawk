@@ -119,44 +119,36 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(34, 61, $"P{controller} Down"),
 					ButtonSchema.Left(22, 39, $"P{controller} Left"),
 					ButtonSchema.Right(44, 39, $"P{controller} Right"),
-					new ButtonSchema(2, 10)
+					new ButtonSchema(2, 10, controller, "L")
 					{
-						Name = $"P{controller} L",
 						DisplayName = "L"
 					},
-					new ButtonSchema(174, 10)
+					new ButtonSchema(174, 10, controller, "R")
 					{
-						Name = $"P{controller} R",
 						DisplayName = "R"
 					},
-					new ButtonSchema(70, 39)
+					new ButtonSchema(70, 39, controller, "Select")
 					{
-						Name = $"P{controller} Select",
 						DisplayName = "s"
 					},
-					new ButtonSchema(92, 39)
+					new ButtonSchema(92, 39, controller, "Start")
 					{
-						Name = $"P{controller} Start",
 						DisplayName = "S"
 					},
-					new ButtonSchema(121, 39)
+					new ButtonSchema(121, 39, controller, "Y")
 					{
-						Name = $"P{controller} Y",
 						DisplayName = "Y"
 					},
-					new ButtonSchema(145, 52)
+					new ButtonSchema(145, 52, controller, "B")
 					{
-						Name = $"P{controller} B",
 						DisplayName = "B"
 					},
-					new ButtonSchema(122, 15)
+					new ButtonSchema(122, 15, controller, "X")
 					{
-						Name = $"P{controller} X",
 						DisplayName = "X"
 					},
-					new ButtonSchema(146, 25)
+					new ButtonSchema(146, 25, controller, "A")
 					{
-						Name = $"P{controller} A",
 						DisplayName = "A"
 					}
 				}
@@ -176,14 +168,12 @@ namespace BizHawk.Client.EmuHawk
 						AxisRange = controllerDefRanges[0],
 						SecondaryAxisRange = controllerDefRanges[1]
 					},
-					new ButtonSchema(275, 15)
+					new ButtonSchema(275, 15, controller, "Mouse Left")
 					{
-						Name = $"P{controller} Mouse Left",
 						DisplayName = "Left"
 					},
-					new ButtonSchema(275, 45)
+					new ButtonSchema(275, 45, controller, "Mouse Right")
 					{
-						Name = $"P{controller} Mouse Right",
 						DisplayName = "Right"
 					}
 				}
@@ -203,24 +193,20 @@ namespace BizHawk.Client.EmuHawk
 					{
 						TargetSize = new Size(256, 240)
 					},
-					new ButtonSchema(284, 17)
+					new ButtonSchema(284, 17, controller, "Trigger")
 					{
-						Name = $"P{controller} Trigger",
 						DisplayName = "Trigger"
 					},
-					new ButtonSchema(284, 47)
+					new ButtonSchema(284, 47, controller, "Cursor")
 					{
-						Name = $"P{controller} Cursor",
 						DisplayName = "Cursor"
 					},
-					new ButtonSchema(284, 77)
+					new ButtonSchema(284, 77, controller, "Turbo")
 					{
-						Name = $"P{controller} Turbo",
 						DisplayName = "Turbo"
 					},
-					new ButtonSchema(284, 107)
+					new ButtonSchema(284, 107, controller, "Pause")
 					{
-						Name = $"P{controller} Pause",
 						DisplayName = "Pause"
 					}
 				}
@@ -240,14 +226,12 @@ namespace BizHawk.Client.EmuHawk
 					{
 						TargetSize = new Size(256, 240)
 					},
-					new ButtonSchema(284, 17)
+					new ButtonSchema(284, 17, controller, "Trigger")
 					{
-						Name = $"P{controller} Trigger",
 						DisplayName = "Trigger"
 					},
-					new ButtonSchema(284, 47)
+					new ButtonSchema(284, 47, controller, "Start")
 					{
-						Name = $"P{controller} Start",
 						DisplayName = "Start"
 					}
 				}
@@ -273,18 +257,24 @@ namespace BizHawk.Client.EmuHawk
 
 			for (int i = 0; i < 16; i++)
 			{
-				yield return new ButtonSchema(startX + (i * buttonSpacingX), startY)
+				yield return new ButtonSchema(
+					startX + (i * buttonSpacingX),
+					startY,
+					controller,
+					$"B{i}")
 				{
-					Name = $"P{controller} B{i}",
 					DisplayName = i.ToString()
 				};
 			}
 
 			for (int i = 0; i < 16; i++)
 			{
-				yield return new ButtonSchema(startX + (i * buttonSpacingX), startY + buttonSpacingY)
+				yield return new ButtonSchema(
+					startX + (i * buttonSpacingX),
+					startY + buttonSpacingY,
+					controller,
+					$"B{i + 16}")
 				{
-					Name = $"P{controller} B{i + 16}",
 					DisplayName = (i + 16).ToString()
 				};
 			}

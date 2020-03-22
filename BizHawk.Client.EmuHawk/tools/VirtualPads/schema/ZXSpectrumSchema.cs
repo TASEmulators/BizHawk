@@ -31,9 +31,8 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(23, 36, $"P{controller} Down"),
 					ButtonSchema.Left(2, 24, $"P{controller} Left"),
 					ButtonSchema.Right(44, 24, $"P{controller} Right"),
-					new ButtonSchema(124, 24)
+					new ButtonSchema(124, 24, controller, "Button")
 					{
-						Name = $"P{controller} Button",
 						DisplayName = "B"
 					}
 				}
@@ -197,14 +196,12 @@ namespace BizHawk.Client.EmuHawk
 						Name = "RTZ Tape",
 						Icon = Properties.Resources.BackMore
 					},
-					 new ButtonSchema(23, 52)
+					new ButtonSchema(23, 52, "Insert Next Tape")
 					{
-						Name = "Insert Next Tape",
 						DisplayName = "NEXT TAPE"
 					},
-					new ButtonSchema(100, 52)
+					new ButtonSchema(100, 52, "Insert Previous Tape")
 					{
-						Name = "Insert Previous Tape",
 						DisplayName = "PREV TAPE"
 					}
 				}

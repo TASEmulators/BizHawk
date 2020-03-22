@@ -55,11 +55,7 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(23, 36, $"P{controller} Down"),
 					ButtonSchema.Left(2, 24, $"P{controller} Left"),
 					ButtonSchema.Right(44, 24, $"P{controller} Right"), 
-					new ButtonSchema(124, 24)
-					{
-						Name = $"P{controller} Button",
-						DisplayName = "B"
-					}
+					new ButtonSchema(124, 24, controller, "Button") { DisplayName = "B" }
 				}
 			};
 		}
@@ -73,14 +69,12 @@ namespace BizHawk.Client.EmuHawk
 				MaxSize = new Size(334, 94),
 				Buttons = new[]
 				{
-					new ButtonSchema(5, 24)
+					new ButtonSchema(5, 24, controller, "Button 1")
 					{
-						Name = $"P{controller} Button 1",
 						DisplayName = "B1"
 					},
-					new ButtonSchema(5, 48)
+					new ButtonSchema(5, 48, controller, "Button 2")
 					{
-						Name = $"P{controller} Button 2",
 						DisplayName = "B2"
 					},
 					new SingleFloatSchema(55, 17, $"P{controller} Paddle X 1")
@@ -142,9 +136,8 @@ namespace BizHawk.Client.EmuHawk
 				MaxSize = new Size(334, 94),
 				Buttons = new[]
 				{
-					new ButtonSchema(5, 24)
+					new ButtonSchema(5, 24, controller, "Button")
 					{
-						Name = $"P{controller} Button",
 						DisplayName = "B1"
 					},
 					new SingleFloatSchema(55, 17, $"P{controller} Wheel X 1")

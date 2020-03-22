@@ -48,24 +48,20 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(14, 56, $"P{controller} Down"),
 					ButtonSchema.Left(2, 34, $"P{controller} Left"),
 					ButtonSchema.Right(24, 34, $"P{controller} Right"),
-					new ButtonSchema(74, 34)
+					new ButtonSchema(74, 34, controller, "Button 1")
 					{
-						Name = $"P{controller} Button 1",
 						DisplayName = "1"
 					},
-					new ButtonSchema(98, 34)
+					new ButtonSchema(98, 34, controller, "Button 2")
 					{
-						Name = $"P{controller} Button 2",
 						DisplayName = "2"
 					},
-					new ButtonSchema(122, 34)
+					new ButtonSchema(122, 34, controller, "Button 3")
 					{
-						Name = $"P{controller} Button 3",
 						DisplayName = "3"
 					},
-					new ButtonSchema(146, 34)
+					new ButtonSchema(146, 34, controller, "Button 4")
 					{
-						Name = $"P{controller} Button 4",
 						DisplayName = "4"
 					}
 				}
@@ -80,24 +76,20 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(280, 380),
 				Buttons = new[]
 				{
-					new ButtonSchema(74, 34)
+					new ButtonSchema(74, 34, controller, "Button 1")
 					{
-						Name = $"P{controller} Button 1",
 						DisplayName = "1"
 					},
-					new ButtonSchema(98, 34)
+					new ButtonSchema(98, 34, controller, "Button 2")
 					{
-						Name = $"P{controller} Button 2",
 						DisplayName = "2"
 					},
-					new ButtonSchema(122, 34)
+					new ButtonSchema(122, 34, controller, "Button 3")
 					{
-						Name = $"P{controller} Button 3",
 						DisplayName = "3"
 					},
-					new ButtonSchema(146, 34)
+					new ButtonSchema(146, 34, controller, "Button 4")
 					{
-						Name = $"P{controller} Button 4",
 						DisplayName = "4"
 					},
 					new AnalogSchema(2, 80, $"P{controller} Stick X")

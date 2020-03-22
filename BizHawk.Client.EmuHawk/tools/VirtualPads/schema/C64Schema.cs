@@ -29,9 +29,8 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(23, 36, $"P{controller} Down"),
 					ButtonSchema.Left(2, 24, $"P{controller} Left"),
 					ButtonSchema.Right(44, 24, $"P{controller} Right"), 
-					new ButtonSchema(124, 24)
+					new ButtonSchema(124, 24, controller, "Button")
 					{
-						Name = $"P{controller} Button",
 						DisplayName = "B"
 					}
 				}

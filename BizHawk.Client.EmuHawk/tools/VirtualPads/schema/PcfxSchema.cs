@@ -52,54 +52,44 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(34, 61, $"P{controller} Down"),
 					ButtonSchema.Left(22, 39, $"P{controller} Left"),
 					ButtonSchema.Right(44, 39, $"P{controller} Right"),
-					new ButtonSchema(74, 17)
+					new ButtonSchema(74, 17, controller, "Mode 1")
 					{
-						Name = $"P{controller} Mode 1",
 						DisplayName = "Mode 1"
 					},
-					new ButtonSchema(74, 40)
+					new ButtonSchema(74, 40, controller, "Mode 2")
 					{
-						Name = $"P{controller} Mode 2",
 						DisplayName = "Mode 2"
 					},
-					new ButtonSchema(77, 63)
+					new ButtonSchema(77, 63, controller, "Select")
 					{
-						Name = $"P{controller} Select",
 						DisplayName = "s"
 					},
-					new ButtonSchema(101, 63)
+					new ButtonSchema(101, 63, controller, "Run")
 					{
-						Name = $"P{controller} Run",
 						DisplayName = "R"
 					},
-					new ButtonSchema(140, 63)
+					new ButtonSchema(140, 63, controller, "IV")
 					{
-						Name = $"P{controller} IV",
 						DisplayName = "IV"
 					},
-					new ButtonSchema(166, 53)
+					new ButtonSchema(166, 53, controller, "V")
 					{
-						Name = $"P{controller} V",
 						DisplayName = "V"
 					},
-					new ButtonSchema(192, 43)
+					new ButtonSchema(192, 43, controller, "VI")
 					{
-						Name = $"P{controller} VI",
 						DisplayName = "VI"
 					},
-					new ButtonSchema(140, 40)
+					new ButtonSchema(140, 40, controller, "I")
 					{
-						Name = $"P{controller} I",
 						DisplayName = "I"
 					},
-					new ButtonSchema(166, 30)
+					new ButtonSchema(166, 30, controller, "II")
 					{
-						Name = $"P{controller} II",
 						DisplayName = "II"
 					},
-					new ButtonSchema(192, 20)
+					new ButtonSchema(192, 20, controller, "III")
 					{
-						Name = $"P{controller} III",
 						DisplayName = "III"
 					}
 				}
@@ -118,14 +108,12 @@ namespace BizHawk.Client.EmuHawk
 					{
 						TargetSize = new Size(256, 256)
 					},
-					new ButtonSchema(300, 17)
+					new ButtonSchema(300, 17, controller, "Mouse Left")
 					{
-						Name = $"P{controller} Mouse Left",
 						DisplayName = "Left"
 					},
-					new ButtonSchema(300, 47)
+					new ButtonSchema(300, 47, "Mouse Right")
 					{
-						Name = $"P{controller} Mouse Right",
 						DisplayName = "Right"
 					}
 				}

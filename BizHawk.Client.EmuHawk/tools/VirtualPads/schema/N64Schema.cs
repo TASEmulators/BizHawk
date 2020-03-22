@@ -34,34 +34,28 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(24, 251, $"P{controller} DPad D"),
 					ButtonSchema.Left(3, 242, $"P{controller} DPad L"),
 					ButtonSchema.Right(45, 242, $"P{controller} DPad R"),
-					new ButtonSchema(3, 185)
+					new ButtonSchema(3, 185, controller, "L")
 					{
-						Name = $"P{controller} L",
 						DisplayName = "L"
 					},
-					new ButtonSchema(191, 185)
+					new ButtonSchema(191, 185, controller, "R")
 					{
-						Name = $"P{controller} R",
 						DisplayName = "R"
 					},
-					new ButtonSchema(81, 269)
+					new ButtonSchema(81, 269, controller, "Z")
 					{
-						Name = $"P{controller} Z",
 						DisplayName = "Z"
 					},
-					new ButtonSchema(81, 246)
+					new ButtonSchema(81, 246, controller, "Start")
 					{
-						Name = $"P{controller} Start",
 						DisplayName = "S"
 					},
-					new ButtonSchema(127, 246)
+					new ButtonSchema(127, 246, controller, "B")
 					{
-						Name = $"P{controller} B",
 						DisplayName = "B"
 					},
-					new ButtonSchema(138, 269)
+					new ButtonSchema(138, 269, controller, "A")
 					{
-						Name = $"P{controller} A",
 						DisplayName = "A"
 					},
 					new ButtonSchema(173, 210)

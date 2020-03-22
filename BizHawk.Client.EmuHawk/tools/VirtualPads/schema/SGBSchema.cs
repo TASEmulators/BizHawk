@@ -17,35 +17,31 @@ namespace BizHawk.Client.EmuHawk
 			yield return StandardController(4);
 		}
 
-		private static PadSchema StandardController(int controllerNum)
+		private static PadSchema StandardController(int controller)
 		{
 			return new PadSchema
 			{
 				DefaultSize = new Size(174, 79),
 				Buttons = new[]
 				{
-					ButtonSchema.Up(14, 12, $"P{controllerNum} Up"),
-					ButtonSchema.Down(14, 56, $"P{controllerNum} Down"),
-					ButtonSchema.Left(2, 34, $"P{controllerNum} Left"),
-					ButtonSchema.Right(24, 34, $"P{controllerNum} Right"),
-					new ButtonSchema(122, 34)
+					ButtonSchema.Up(14, 12, $"P{controller} Up"),
+					ButtonSchema.Down(14, 56, $"P{controller} Down"),
+					ButtonSchema.Left(2, 34, $"P{controller} Left"),
+					ButtonSchema.Right(24, 34, $"P{controller} Right"),
+					new ButtonSchema(122, 34, controller, "B")
 					{
-						Name = $"P{controllerNum} B",
 						DisplayName = "B"
 					},
-					new ButtonSchema(146, 34)
+					new ButtonSchema(146, 34, controller, "A")
 					{
-						Name = $"P{controllerNum} A",
 						DisplayName = "A"
 					},
-					new ButtonSchema(52, 34)
+					new ButtonSchema(52, 34, controller, "Select")
 					{
-						Name = $"P{controllerNum} Select",
 						DisplayName = "s"
 					},
-					new ButtonSchema(74, 34)
+					new ButtonSchema(74, 34, controller, "Start")
 					{
-						Name = $"P{controllerNum} Start",
 						DisplayName = "S"
 					}
 				}

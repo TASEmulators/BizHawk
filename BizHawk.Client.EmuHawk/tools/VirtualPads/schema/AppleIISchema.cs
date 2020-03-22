@@ -24,8 +24,7 @@ namespace BizHawk.Client.EmuHawk
 				Buttons = new[]
 				{
 					/************************** Row 1 **************************/
-					new ButtonSchema(10, 18) { Name = "Escape",  DisplayName = "Esc"
-					},
+					new ButtonSchema(10, 18, "Escape") { DisplayName = "Esc" },
 					new ButtonSchema(46, 18, "1"),
 					new ButtonSchema(70, 18, "2"),
 					new ButtonSchema(94, 18, "3"),

@@ -220,24 +220,20 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(23, 36, $"P{controller} Down"),
 					ButtonSchema.Left(2, 24, $"P{controller} Left"),
 					ButtonSchema.Right(44, 24, $"P{controller} Right"),
-					new ButtonSchema(124, 24)
+					new ButtonSchema(124, 24, controller, "B")
 					{
-						Name = $"P{controller} B",
 						DisplayName = "B"
 					},
-					new ButtonSchema(147, 24)
+					new ButtonSchema(147, 24, controller, "A")
 					{
-						Name = $"P{controller} A",
 						DisplayName = "A"
 					},
-					new ButtonSchema(72, 24)
+					new ButtonSchema(72, 24, controller, "Select")
 					{
-						Name = $"P{controller} Select",
 						DisplayName = "s"
 					},
-					new ButtonSchema(93, 24)
+					new ButtonSchema(93, 24, controller, "Start")
 					{
-						Name = $"P{controller} Start",
 						DisplayName = "S"
 					}
 				}
@@ -258,19 +254,16 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(23, 36, $"P{controller} Down"),
 					ButtonSchema.Left(2, 24, $"P{controller} Left"),
 					ButtonSchema.Right(44, 24, $"P{controller} Right"),
-					new ButtonSchema(124, 24)
+					new ButtonSchema(124, 24, controller, "B")
 					{
-						Name = $"P{controller} B",
 						DisplayName = "B"
 					},
-					new ButtonSchema(147, 24)
+					new ButtonSchema(147, 24, controller, "A")
 					{
-						Name = $"P{controller} A",
 						DisplayName = "A"
 					},
-					new ButtonSchema(72, 24)
+					new ButtonSchema(72, 24, controller, "Microphone")
 					{
-						Name = $"P{controller} Microphone",
 						DisplayName = "Mic"
 					}
 				}
@@ -290,9 +283,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						TargetSize = new Size(256, 240)
 					},
-					new ButtonSchema(284, 17)
+					new ButtonSchema(284, 17, controller, "Fire")
 					{
-						Name = $"P{controller} Fire",
 						DisplayName = "Fire"
 					}
 				}
@@ -314,9 +306,8 @@ namespace BizHawk.Client.EmuHawk
 						TargetSize = new Size(380, 69),
 						MaxValue = 160
 					},
-					new ButtonSchema(14, 85)
+					new ButtonSchema(14, 85, controller, "Fire")
 					{
-						Name = $"P{controller} Fire",
 						DisplayName = "Fire"
 					}
 				}
@@ -331,65 +322,52 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(154, 114),
 				Buttons = new[]
 				{
-					new ButtonSchema(14, 17)
+					new ButtonSchema(14, 17, controller, "PP1")
 					{
-						Name = $"P{controller} PP1",
 						DisplayName = "1  "
 					},
-					new ButtonSchema(45, 17)
+					new ButtonSchema(45, 17, controller, "PP2")
 					{
-						Name = $"P{controller} PP2",
 						DisplayName = "2  "
 					},
-					new ButtonSchema(76, 17)
+					new ButtonSchema(76, 17, controller, "PP3")
 					{
-						Name = $"P{controller} PP3",
 						DisplayName = "3  "
 					},
-					new ButtonSchema(107, 17)
+					new ButtonSchema(107, 17, controller, "PP4")
 					{
-						Name = $"P{controller} PP4",
 						DisplayName = "4  "
 					},
-					new ButtonSchema(14, 48)
+					new ButtonSchema(14, 48, controller, "PP5")
 					{
-						Name = $"P{controller} PP5",
 						DisplayName = "5  "
 					},
-					new ButtonSchema(45, 48)
+					new ButtonSchema(45, 48, controller, "PP6")
 					{
-						Name = $"P{controller} PP6",
 						DisplayName = "6  "
 					},
-					new ButtonSchema(76, 48)
+					new ButtonSchema(76, 48, controller, "PP7")
 					{
-						Name = $"P{controller} PP7",
 						DisplayName = "7  "
 					},
-					new ButtonSchema(107, 48)
+					new ButtonSchema(107, 48, controller, "PP8")
 					{
-						Name = $"P{controller} PP8",
 						DisplayName = "8  "
 					},
-
-					new ButtonSchema(14, 79)
+					new ButtonSchema(14, 79, controller, "PP9")
 					{
-						Name = $"P{controller} PP9",
 						DisplayName = "9  "
 					},
-					new ButtonSchema(45, 79)
+					new ButtonSchema(45, 79, controller, "PP10")
 					{
-						Name = $"P{controller} PP10",
 						DisplayName = "10"
 					},
-					new ButtonSchema(76, 79)
+					new ButtonSchema(76, 79, controller, "PP11")
 					{
-						Name = $"P{controller} PP11",
 						DisplayName = "11"
 					},
-					new ButtonSchema(107, 79)
+					new ButtonSchema(107, 79, controller, "PP12")
 					{
-						Name = $"P{controller} PP12",
 						DisplayName = "12"
 					}
 				}
@@ -409,14 +387,12 @@ namespace BizHawk.Client.EmuHawk
 					{
 						TargetSize = new Size(256, 240)
 					},
-					new ButtonSchema(284, 17)
+					new ButtonSchema(284, 17, controller, "Click")
 					{
-						Name = $"P{controller} Click",
 						DisplayName = "Click"
 					},
-					new ButtonSchema(284, 48)
+					new ButtonSchema(284, 48, controller, "Touch")
 					{
-						Name = $"P{controller} Touch",
 						DisplayName = "Touch"
 					}
 				}
@@ -431,364 +407,292 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(560, 180),
 				Buttons = new[]
 				{
-					new ButtonSchema(23, 15)
+					new ButtonSchema(23, 15, controller, "F1")
 					{
-						Name = $"P{controller} F1",
 						DisplayName = "    F1    "
 					},
-					new ButtonSchema(76, 15)
+					new ButtonSchema(76, 15, controller, "F2")
 					{
-						Name = $"P{controller} F2",
 						DisplayName = "    F2    "
 					},
-					new ButtonSchema(129, 15)
+					new ButtonSchema(129, 15, controller, "F3")
 					{
-						Name = $"P{controller} F3",
 						DisplayName = "    F3    "
 					},
-					new ButtonSchema(182, 15)
+					new ButtonSchema(182, 15, controller, "F4")
 					{
-						Name = $"P{controller} F4",
 						DisplayName = "    F4    "
 					},
-					new ButtonSchema(235, 15)
+					new ButtonSchema(235, 15, controller, "F5")
 					{
-						Name = $"P{controller} F5",
 						DisplayName = "    F5    "
 					},
-					new ButtonSchema(288, 15)
+					new ButtonSchema(288, 15, controller, "F6")
 					{
-						Name = $"P{controller} F6",
 						DisplayName = "    F6    "
 					},
-					new ButtonSchema(341, 15)
+					new ButtonSchema(341, 15, controller, "F7")
 					{
-						Name = $"P{controller} F7",
 						DisplayName = "    F7    "
 					},
-					new ButtonSchema(394, 15)
+					new ButtonSchema(394, 15, controller, "F8")
 					{
-						Name = $"P{controller} F8",
 						DisplayName = "    F8    "
 					},
-					new ButtonSchema(36, 38)
+					new ButtonSchema(36, 38, controller, "1")
 					{
-						Name = $"P{controller} 1",
 						DisplayName = "1"
 					},
-					new ButtonSchema(60, 38)
+					new ButtonSchema(60, 38, controller, "2")
 					{
-						Name = $"P{controller} 2",
 						DisplayName = "2"
 					},
-					new ButtonSchema(84, 38)
+					new ButtonSchema(84, 38, controller, "3")
 					{
-						Name = $"P{controller} 3",
 						DisplayName = "3"
 					},
-					new ButtonSchema(108, 38)
+					new ButtonSchema(108, 38, controller, "4")
 					{
-						Name = $"P{controller} 4",
 						DisplayName = "4"
 					},
-					new ButtonSchema(132, 38)
+					new ButtonSchema(132, 38, controller, "5")
 					{
-						Name = $"P{controller} 5",
 						DisplayName = "5"
 					},
-					new ButtonSchema(156, 38)
+					new ButtonSchema(156, 38, controller, "6")
 					{
-						Name = $"P{controller} 6",
 						DisplayName = "6"
 					},
-					new ButtonSchema(180, 38)
+					new ButtonSchema(180, 38, controller, "7")
 					{
-						Name = $"P{controller} 7",
 						DisplayName = "7"
 					},
-					new ButtonSchema(204, 38)
+					new ButtonSchema(204, 38, controller, "8")
 					{
-						Name = $"P{controller} 8",
 						DisplayName = "8"
 					},
-					new ButtonSchema(228, 38)
+					new ButtonSchema(228, 38, controller, "9")
 					{
-						Name = $"P{controller} 9",
 						DisplayName = "9"
 					},
-					new ButtonSchema(252, 38)
+					new ButtonSchema(252, 38, controller, "0")
 					{
-						Name = $"P{controller} 0",
 						DisplayName = "0"
 					},
-					new ButtonSchema(276, 38)
+					new ButtonSchema(276, 38, controller, "Minus")
 					{
-						Name = $"P{controller} Minus",
 						DisplayName = "-"
 					},
-					new ButtonSchema(296, 38)
+					new ButtonSchema(296, 38, controller, "Caret")
 					{
-						Name = $"P{controller} Caret",
 						DisplayName = "^"
 					},
-					new ButtonSchema(320, 38)
+					new ButtonSchema(320, 38, controller, "Yen")
 					{
-						Name = $"P{controller} Yen",
 						DisplayName = "¥"
 					},
-					new ButtonSchema(344, 38)
+					new ButtonSchema(344, 38, controller, "Stop")
 					{
-						Name = $"P{controller} Stop",
 						DisplayName = "STOP"
 					},
-					new ButtonSchema(15, 61)
+					new ButtonSchema(15, 61, controller, "Escape")
 					{
-						Name = $"P{controller} Escape",
 						DisplayName = "ESC"
 					},
-					new ButtonSchema(54, 61)
+					new ButtonSchema(54, 61, controller, "Q")
 					{
-						Name = $"P{controller} Q",
 						DisplayName = "Q"
 					},
-					new ButtonSchema(80, 61)
+					new ButtonSchema(80, 61, controller, "W")
 					{
-						Name = $"P{controller} W",
 						DisplayName = "W"
 					},
-					new ButtonSchema(108, 61)
+					new ButtonSchema(108, 61, controller, "E")
 					{
-						Name = $"P{controller} E",
 						DisplayName = "E"
 					},
-					new ButtonSchema(132, 61)
+					new ButtonSchema(132, 61, controller, "R")
 					{
-						Name = $"P{controller} R",
 						DisplayName = "R"
 					},
-					new ButtonSchema(158, 61)
+					new ButtonSchema(158, 61, controller, "T")
 					{
-						Name = $"P{controller} T",
 						DisplayName = "T"
 					},
-					new ButtonSchema(182, 61)
+					new ButtonSchema(182, 61, controller, "Y")
 					{
-						Name = $"P{controller} Y",
 						DisplayName = "Y"
 					},
-					new ButtonSchema(206, 61)
+					new ButtonSchema(206, 61, controller, "U")
 					{
-						Name = $"P{controller} U",
 						DisplayName = "U"
 					},
-					new ButtonSchema(232, 61)
+					new ButtonSchema(232, 61, controller, "I")
 					{
-						Name = $"P{controller} I",
 						DisplayName = "I"
 					},
-					new ButtonSchema(252, 61)
+					new ButtonSchema(252, 61, controller, "O")
 					{
-						Name = $"P{controller} O",
 						DisplayName = "O"
 					},
-					new ButtonSchema(278, 61)
+					new ButtonSchema(278, 61, controller, "P")
 					{
-						Name = $"P{controller} P",
 						DisplayName = "P"
 					},
-					new ButtonSchema(302, 61)
+					new ButtonSchema(302, 61, controller, "At")
 					{
-						Name = $"P{controller} At",
 						DisplayName = "@"
 					},
-					new ButtonSchema(330, 61)
+					new ButtonSchema(330, 61, controller, "Left Bracket")
 					{
-						Name = $"P{controller} Left Bracket",
 						DisplayName = "["
 					},
-					new ButtonSchema(350, 61)
+					new ButtonSchema(350, 61, controller, "Return")
 					{
-						Name = $"P{controller} Return",
 						DisplayName = "RETURN"
 					},
-					new ButtonSchema(30, 84)
+					new ButtonSchema(30, 84, controller, "Contro")
 					{
-						Name = $"P{controller} Control",
 						DisplayName = "CTR"
 					},
-					new ButtonSchema(70, 84)
+					new ButtonSchema(70, 84, controller, "A")
 					{
-						Name = $"P{controller} A",
 						DisplayName = "A"
 					},
-					new ButtonSchema(94, 84)
+					new ButtonSchema(94, 84, controller, "S")
 					{
-						Name = $"P{controller} S",
 						DisplayName = "S"
 					},
-					new ButtonSchema(118, 84)
+					new ButtonSchema(118, 84, controller, "D")
 					{
-						Name = $"P{controller} D",
 						DisplayName = "D"
 					},
-					new ButtonSchema(144, 84)
+					new ButtonSchema(144, 84, controller, "F")
 					{
-						Name = $"P{controller} F",
 						DisplayName = "F"
 					},
-					new ButtonSchema(168, 84)
+					new ButtonSchema(168, 84, controller, "G")
 					{
-						Name = $"P{controller} G",
 						DisplayName = "G"
 					},
-					new ButtonSchema(194, 84)
+					new ButtonSchema(194, 84, controller, "H")
 					{
-						Name = $"P{controller} H",
 						DisplayName = "H"
 					},
-					new ButtonSchema(220, 84)
+					new ButtonSchema(220, 84, controller, "J")
 					{
-						Name = $"P{controller} J",
 						DisplayName = "J"
 					},
-					new ButtonSchema(242, 84)
+					new ButtonSchema(242, 84, controller, "K")
 					{
-						Name = $"P{controller} K",
 						DisplayName = "K"
 					},
-					new ButtonSchema(266, 84)
+					new ButtonSchema(266, 84, controller, "L")
 					{
-						Name = $"P{controller} L",
 						DisplayName = "L"
 					},
-					new ButtonSchema(290, 84)
+					new ButtonSchema(290, 84, controller, "Semicolon")
 					{
-						Name = $"P{controller} Semicolon",
 						DisplayName = ";"
 					},
-					new ButtonSchema(311, 84)
+					new ButtonSchema(311, 84, controller, "Colon")
 					{
-						Name = $"P{controller} Colon",
 						DisplayName = ":"
 					},
-					new ButtonSchema(332, 84)
+					new ButtonSchema(332, 84, controller, "Right Bracket")
 					{
-						Name = $"P{controller} Right Bracket",
 						DisplayName = "]"
 					},
-					new ButtonSchema(352, 84)
+					new ButtonSchema(352, 84, controller, "カナ")
 					{
-						Name = $"P{controller} カナ",
 						DisplayName = "カナ"
 					},
-					new ButtonSchema(10, 107)
+					new ButtonSchema(10, 107, controller, "Left Shift")
 					{
-						Name = $"P{controller} Left Shift",
 						DisplayName = "SHIFT"
 					},
-					new ButtonSchema(58, 107)
+					new ButtonSchema(58, 107, controller, "Z")
 					{
-						Name = $"P{controller} Z",
 						DisplayName = "Z"
 					},
-					new ButtonSchema(82, 107)
+					new ButtonSchema(82, 107, controller, "X")
 					{
-						Name = $"P{controller} X",
 						DisplayName = "X"
 					},
-					new ButtonSchema(106, 107)
+					new ButtonSchema(106, 107, controller, "C")
 					{
-						Name = $"P{controller} C",
 						DisplayName = "C"
 					},
-					new ButtonSchema(130, 107)
+					new ButtonSchema(130, 107, controller, "V")
 					{
-						Name = $"P{controller} V",
 						DisplayName = "V"
 					},
-					new ButtonSchema(154, 107)
+					new ButtonSchema(154, 107, controller, "B")
 					{
-						Name = $"P{controller} B",
 						DisplayName = "B"
 					},
-					new ButtonSchema(178, 107)
+					new ButtonSchema(178, 107, controller, "N")
 					{
-						Name = $"P{controller} N",
 						DisplayName = "N"
 					},
-					new ButtonSchema(203, 107)
+					new ButtonSchema(203, 107, controller, "M")
 					{
-						Name = $"P{controller} M",
 						DisplayName = "M"
 					},
-					new ButtonSchema(229, 107)
+					new ButtonSchema(229, 107, controller, "Comma")
 					{
-						Name = $"P{controller} Comma",
 						DisplayName = ","
 					},
-					new ButtonSchema(249, 107)
+					new ButtonSchema(249, 107, controller, "Period")
 					{
-						Name = $"P{controller} Period",
 						DisplayName = "."
 					},
-					new ButtonSchema(270, 107)
+					new ButtonSchema(270, 107, controller, "Slash")
 					{
-						Name = $"P{controller} Slash",
 						DisplayName = "/"
 					},
-					new ButtonSchema(292, 107)
+					new ButtonSchema(292, 107, controller, "Underscore")
 					{
-						Name = $"P{controller} Underscore",
 						DisplayName = "_"
 					},
-					new ButtonSchema(316, 107)
+					new ButtonSchema(316, 107, controller, "Right Shift")
 					{
-						Name = $"P{controller} Right Shift",
 						DisplayName = "SHIFT"
 					},
-					new ButtonSchema(82, 130)
+					new ButtonSchema(82, 130, controller, "Graph")
 					{
-						Name = $"P{controller} Graph",
 						DisplayName = "GRPH"
 					},
-					new ButtonSchema(130, 130)
+					new ButtonSchema(130, 130, controller, "Space")
 					{
-						Name = $"P{controller} Space",
 						DisplayName = "                  SPACE                  "
 					},
-					new ButtonSchema(420, 46)
+					new ButtonSchema(420, 46, controller, "Clear/Home")
 					{
-						Name = $"P{controller} Clear/Home",
 						DisplayName = " CLR\nHOME"
 					},
-					new ButtonSchema(470, 46)
+					new ButtonSchema(470, 46, controller, "Insert")
 					{
-						Name = $"P{controller} Insert",
 						DisplayName = "\nINS"
 					},
-					new ButtonSchema(506, 46)
+					new ButtonSchema(506, 46, controller, "Delete")
 					{
-						Name = $"P{controller} Delete",
 						DisplayName = "\nDEL"
 					},
-					new ButtonSchema(468, 86)
+					new ButtonSchema(468, 86, controller, "Up")
 					{
-						Name = $"P{controller} Up",
 						DisplayName = "  ↑  "
 					},
-					new ButtonSchema(468, 134)
+					new ButtonSchema(468, 134, controller, "Down")
 					{
-						Name = $"P{controller} Down",
 						DisplayName = "  ↓  "
 					},
-					new ButtonSchema(446, 110)
+					new ButtonSchema(446, 110, controller, "Left")
 					{
-						Name = $"P{controller} Left",
 						DisplayName = "  ←  "
 					},
-					new ButtonSchema(488, 110)
+					new ButtonSchema(488, 110, controller, "Right")
 					{
-						Name = $"P{controller} Right",
 						DisplayName = "  ➝  "
 					}
 				}

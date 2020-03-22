@@ -26,16 +26,16 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(14, 80, "L_Down"),
 					ButtonSchema.Left(2, 58, "L_Left"),
 					ButtonSchema.Right(24, 58, "L_Right"),
-					new ButtonSchema(122, 58) { Name = "B" },
-					new ButtonSchema(146, 58) { Name = "A" },
-					new ButtonSchema(52, 58) { Name = "Select",  DisplayName = "s"},
-					new ButtonSchema(74, 58) { Name = "Start",  DisplayName = "S" },
+					new ButtonSchema(122, 58, "B"),
+					new ButtonSchema(146, 58, "A"),
+					new ButtonSchema(52, 58, "Select") { DisplayName = "s"},
+					new ButtonSchema(74, 58, "Start") { DisplayName = "S" },
 					ButtonSchema.Up(188, 36, "R_Up"),
 					ButtonSchema.Down(188, 80, "R_Down"),
 					ButtonSchema.Left(176, 58, "R_Left"),
 					ButtonSchema.Right(198, 58, "R_Right"),
-					new ButtonSchema(24, 8) { Name = "L" },
-					new ButtonSchema(176, 8) { Name = "R" }
+					new ButtonSchema(24, 8, "L"),
+					new ButtonSchema(176, 8, "R")
 				}
 			};
 		}
