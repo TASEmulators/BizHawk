@@ -309,9 +309,8 @@ namespace BizHawk.Client.EmuHawk
 				MaxSize = new Size(380, 110),
 				Buttons = new[]
 				{
-					new SingleFloatSchema(14, 17)
+					new SingleFloatSchema(14, 17, $"P{controller} Paddle")
 					{
-						Name = $"P{controller} Paddle",
 						DisplayName = "Arkanoid Paddle",
 						TargetSize = new Size(380, 69),
 						MaxValue = 160

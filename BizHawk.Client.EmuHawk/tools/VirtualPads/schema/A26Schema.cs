@@ -83,17 +83,15 @@ namespace BizHawk.Client.EmuHawk
 						Name = $"P{controller} Button 2",
 						DisplayName = "B2"
 					},
-					new SingleFloatSchema(55, 17)
+					new SingleFloatSchema(55, 17, $"P{controller} Paddle X 1")
 					{
-						Name = $"P{controller} Paddle X 1",
 						DisplayName = "Paddle X 1",
 						TargetSize = new Size(128, 69),
 						MaxValue = 127,
 						MinValue = -127
 					},
-					new SingleFloatSchema(193, 17)
+					new SingleFloatSchema(193, 17, $"P{controller} Paddle X 2")
 					{
-						Name = $"P{controller} Paddle X 2",
 						DisplayName = "Paddle X 2",
 						TargetSize = new Size(128, 69),
 						MaxValue = 127,
@@ -149,17 +147,15 @@ namespace BizHawk.Client.EmuHawk
 						Name = $"P{controller} Button",
 						DisplayName = "B1"
 					},
-					new SingleFloatSchema(55, 17)
+					new SingleFloatSchema(55, 17, $"P{controller} Wheel X 1")
 					{
-						Name = $"P{controller} Wheel X 1",
 						DisplayName = "Wheel X 1",
 						TargetSize = new Size(128, 69),
 						MaxValue = 127,
 						MinValue = -127
 					},
-					new SingleFloatSchema(193, 17)
+					new SingleFloatSchema(193, 17, $"P{controller} Wheel X 2")
 					{
-						Name = $"P{controller} Wheel X 2",
 						DisplayName = "Wheel X 2",
 						TargetSize = new Size(128, 69),
 						MaxValue = 127,

@@ -18,6 +18,12 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public ButtonSchema(int x, int y) => Location = new Point(x, y);
 
+		public ButtonSchema(int x, int y, string name)
+		{
+			Location = new Point(x, y);
+			Name = name;
+		}
+
 		public string Name { get; set; }
 		public string DisplayName { get; set; }
 		public PadInputType Type { get; protected set; } = PadInputType.Boolean;
@@ -66,8 +72,8 @@ namespace BizHawk.Client.EmuHawk
 
 	public class SingleFloatSchema : ButtonSchema
 	{
-		public SingleFloatSchema(int x, int y)
-			: base(x, y)
+		public SingleFloatSchema(int x, int y, string name)
+			: base(x, y, name)
 		{
 			Type = PadInputType.SingleFloat;
 		}
@@ -114,10 +120,9 @@ namespace BizHawk.Client.EmuHawk
 	public class DiscManagerSchema : ButtonSchema
 	{
 		public DiscManagerSchema(int x, int y)
-			: base(x, y)
+			: base(x, y, "Disc Select")
 		{
 			Type = PadInputType.DiscManager;
-			Name = "Disc Select"; // not really, but shuts up a warning
 		}
 	}
 }

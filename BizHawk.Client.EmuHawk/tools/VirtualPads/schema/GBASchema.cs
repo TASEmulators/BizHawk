@@ -30,30 +30,26 @@ namespace BizHawk.Client.EmuHawk
 				MaxSize = new Size(256, 326),
 				Buttons = new[]
 				{
-					new SingleFloatSchema(10, 15)
+					new SingleFloatSchema(10, 15, "Tilt X")
 					{
-						Name = "Tilt X",
 						TargetSize = new Size(226, 69),
 						MinValue = short.MinValue,
 						MaxValue = short.MaxValue
 					},
-					new SingleFloatSchema(10, 94)
+					new SingleFloatSchema(10, 94, "Tilt Y")
 					{
-						Name = "Tilt Y",
 						TargetSize = new Size(226, 69),
 						MinValue = short.MinValue,
 						MaxValue = short.MaxValue
 					},
-					new SingleFloatSchema(10, 173)
+					new SingleFloatSchema(10, 173, "Tilt Z")
 					{
-						Name = "Tilt Z",
 						TargetSize = new Size(226, 69),
 						MinValue = short.MinValue,
 						MaxValue = short.MaxValue
 					},
-					new SingleFloatSchema(10, 252)
+					new SingleFloatSchema(10, 252, "Light Sensor")
 					{
-						Name = "Light Sensor",
 						TargetSize = new Size(226, 69),
 						MaxValue = byte.MaxValue
 					}
@@ -72,12 +68,12 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(29, 61, "Down"),
 					ButtonSchema.Left(17, 39, "Left"),
 					ButtonSchema.Right(39, 39, "Right"),
-					new ButtonSchema(130, 39) { Name = "B" },
-					new ButtonSchema(154, 39) { Name = "A" },
-					new ButtonSchema(64, 39) { Name = "Select", DisplayName = "s" },
-					new ButtonSchema(86, 39) { Name = "Start",  DisplayName = "S" },
-					new ButtonSchema(2, 12) { Name = "L" },
-					new ButtonSchema(166, 12) { Name = "R" }
+					new ButtonSchema(130, 39, "B"),
+					new ButtonSchema(154, 39, "A"),
+					new ButtonSchema(64, 39, "Select") { DisplayName = "s" },
+					new ButtonSchema(86, 39, "Start") {  DisplayName = "S" },
+					new ButtonSchema(2, 12, "L"),
+					new ButtonSchema(166, 12, "R")
 				}
 			};
 		}
@@ -89,7 +85,7 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(75, 50),
 				Buttons = new[]
 				{
-					new ButtonSchema(10, 15) { Name = "Power" }
+					new ButtonSchema(10, 15, "Power")
 				}
 			};
 		}

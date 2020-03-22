@@ -221,9 +221,8 @@ namespace BizHawk.Client.EmuHawk
 						DisplayName = "#"
 					},
 
-					new SingleFloatSchema(6, 200)
+					new SingleFloatSchema(6, 200, $"P{controller} Disc X")
 					{
-						Name = $"P{controller} Disc X",
 						DisplayName = "Disc",
 						TargetSize = new Size(180, 55),
 						MinValue = -360,

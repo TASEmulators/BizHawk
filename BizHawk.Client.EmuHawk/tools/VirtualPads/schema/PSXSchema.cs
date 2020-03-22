@@ -232,7 +232,7 @@ namespace BizHawk.Client.EmuHawk
 						Name = $"P{controller} R",
 						DisplayName = "R"
 					},
-					new SingleFloatSchema(5, 15)
+					new SingleFloatSchema(5, 15, $"P{controller} L")
 					{
 						Name = $"P{controller} L",
 						DisplayName = "L",
@@ -240,26 +240,23 @@ namespace BizHawk.Client.EmuHawk
 						MinValue = 0,
 						MaxValue = 255
 					},
-					new SingleFloatSchema(125, 15)
+					new SingleFloatSchema(125, 15, $"P{controller} Twist")
 					{
-						Name = $"P{controller} Twist",
 						DisplayName = "Twist",
 						TargetSize = new Size(64, 178),
 						MinValue = 0,
 						MaxValue = 255,
 						Orientation = Orientation.Vertical
 					},
-					new SingleFloatSchema(180, 60)
+					new SingleFloatSchema(180, 60, $"P{controller} 2")
 					{
-						Name = $"P{controller} 2",
 						DisplayName = "II",
 						TargetSize = new Size(128, 55),
 						MinValue = 0,
 						MaxValue = 255
 					},
-					new SingleFloatSchema(220, 120)
+					new SingleFloatSchema(220, 120, $"P{controller} 1")
 					{
-						Name = $"P{controller} 1",
 						DisplayName = "I",
 						TargetSize = new Size(128, 55),
 						MinValue = 0,
@@ -276,7 +273,7 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(310, 400),
 				Buttons = new[]
 				{
-					new ButtonSchema(10, 15) { Name = "Reset" },
+					new ButtonSchema(10, 15, "Reset"),
 					new DiscManagerSchema(10, 54)
 					{
 						TargetSize = new Size(300, 300),
