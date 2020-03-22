@@ -22,11 +22,7 @@ namespace BizHawk.Client.EmuHawk.tools.VirtualPads.schema
 				DefaultSize = new Size(50, 35),
 				Buttons = new []
 				{
-					new ButtonSchema
-					{
-						Name = "Lid",
-						Location = new Point(8, 8)
-					}
+					new ButtonSchema(8, 8) { Name = "Lid" }
 				}
 			};
 		}
@@ -39,68 +35,28 @@ namespace BizHawk.Client.EmuHawk.tools.VirtualPads.schema
 				DefaultSize = new Size(440, 260),
 				Buttons = new []
 				{
-					ButtonSchema.Up("Up", 14, 79),
-					ButtonSchema.Down("Down", 14, 122),
-					ButtonSchema.Left("Left", 2, 100),
-					ButtonSchema.Right("Right", 24, 100),
-					new ButtonSchema
-					{
-						Name = "L",
-						Location = new Point(2, 10)
-					},
-					new ButtonSchema
-					{
-						Name = "R",
-						Location = new Point(366, 10)
-					},
-					new ButtonSchema
-					{
-						Name = "Start",
-						Location = new Point(341, 179)
-					},
-					new ButtonSchema
-					{
-						Name = "Select",
-						Location = new Point(341, 201)
-					},
-					new ButtonSchema
-					{
-						Name = "Y",
-						Location = new Point(341, 100)
-					},
-					new ButtonSchema
-					{
-						Name = "B",
-						Location = new Point(365, 113)
-					},
-					new ButtonSchema
-					{
-						Name = "X",
-						Location = new Point(341, 76)
-					},
-					new ButtonSchema
-					{
-						Name = "A",
-						Location = new Point(366, 86)
-					},
+					ButtonSchema.Up(14, 79, "Up"),
+					ButtonSchema.Down(14, 122, "Down"),
+					ButtonSchema.Left(2, 100, "Left"),
+					ButtonSchema.Right(24, 100, "Right"),
+					new ButtonSchema(2, 10) { Name = "L" },
+					new ButtonSchema(366, 10) { Name = "R" },
+					new ButtonSchema(341, 179) { Name = "Start" },
+					new ButtonSchema(341, 201) { Name = "Select" },
+					new ButtonSchema(341, 100) { Name = "Y" },
+					new ButtonSchema(365, 113) { Name = "B" },
+					new ButtonSchema(341, 76) { Name = "X" },
+					new ButtonSchema(366, 86) { Name = "A" },
 
 					// Screen
-					new ButtonSchema
+					new ButtonSchema(72, 35)
 					{
 						Name = "TouchX",
-						Location = new Point(72, 35),
 						Type = PadInputType.TargetedPair,
 						TargetSize = new Size(256, 192),
-						SecondaryNames = new[]
-						{
-							"TouchY"
-						}
+						SecondaryNames = new[] { "TouchY" }
 					},
-					new ButtonSchema
-					{
-						Name = "Touch",
-						Location = new Point(72, 10)
-					}
+					new ButtonSchema(72, 10) { Name = "Touch" }
 				}
 			};
 		}

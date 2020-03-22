@@ -23,46 +23,20 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(222, 103),
 				Buttons = new[]
 				{
-					ButtonSchema.Up("L_Up", 14, 36),
-					ButtonSchema.Down("L_Down", 14, 80),
-					ButtonSchema.Left("L_Left", 2, 58),
-					ButtonSchema.Right("L_Right", 24, 58),
-					new ButtonSchema
-					{
-						Name = "B",
-						Location = new Point(122, 58)
-					},
-					new ButtonSchema
-					{
-						Name = "A",
-						Location = new Point(146, 58)
-					},
-					new ButtonSchema
-					{
-						Name = "Select",
-						DisplayName = "s",
-						Location = new Point(52, 58)
-					},
-					new ButtonSchema
-					{
-						Name = "Start",
-						DisplayName = "S",
-						Location = new Point(74, 58)
-					},
-					ButtonSchema.Up("R_Up", 188, 36),
-					ButtonSchema.Down("R_Down", 188, 80),
-					ButtonSchema.Left("R_Left", 176, 58),
-					ButtonSchema.Right("R_Right", 198, 58),
-					new ButtonSchema
-					{
-						Name = "L",
-						Location = new Point(24, 8)
-					},
-					new ButtonSchema
-					{
-						Name = "R",
-						Location = new Point(176, 8)
-					}
+					ButtonSchema.Up(14, 36, "L_Up"),
+					ButtonSchema.Down(14, 80, "L_Down"),
+					ButtonSchema.Left(2, 58, "L_Left"),
+					ButtonSchema.Right(24, 58, "L_Right"),
+					new ButtonSchema(122, 58) { Name = "B" },
+					new ButtonSchema(146, 58) { Name = "A" },
+					new ButtonSchema(52, 58) { Name = "Select",  DisplayName = "s"},
+					new ButtonSchema(74, 58) { Name = "Start",  DisplayName = "S" },
+					ButtonSchema.Up(188, 36, "R_Up"),
+					ButtonSchema.Down(188, 80, "R_Down"),
+					ButtonSchema.Left(176, 58, "R_Left"),
+					ButtonSchema.Right(198, 58, "R_Right"),
+					new ButtonSchema(24, 8) { Name = "L" },
+					new ButtonSchema(176, 8) { Name = "R" }
 				}
 			};
 		}
@@ -76,11 +50,7 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(75, 50),
 				Buttons = new[]
 				{
-					new ButtonSchema
-					{
-						Name = "Power",
-						Location = new Point(10, 15)
-					}
+					new ButtonSchema(10, 15) { Name = "Power" }
 				}
 			};
 		}

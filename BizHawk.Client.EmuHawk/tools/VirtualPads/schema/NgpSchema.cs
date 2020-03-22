@@ -23,27 +23,24 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(174, 79),
 				Buttons = new[]
 				{
-					ButtonSchema.Up("Up", 14, 12),
-					ButtonSchema.Down("Down", 14, 56),
-					ButtonSchema.Left("Left", 2, 34),
-					ButtonSchema.Right("Right", 24, 34),
-					new ButtonSchema
+					ButtonSchema.Up(14, 12, "Up"),
+					ButtonSchema.Down(14, 56, "Down"),
+					ButtonSchema.Left(2, 34, "Left"),
+					ButtonSchema.Right(24, 34, "Right"),
+					new ButtonSchema(74, 34)
 					{
 						Name = "B",
-						DisplayName = "B",
-						Location = new Point(74, 34)
+						DisplayName = "B"
 					},
-					new ButtonSchema
+					new ButtonSchema(98, 34)
 					{
 						Name = "A",
-						DisplayName = "A",
-						Location = new Point(98, 34)
+						DisplayName = "A"
 					},
-					new ButtonSchema
+					new ButtonSchema(146, 12)
 					{
 						Name = "Option",
-						DisplayName = "O",
-						Location = new Point(146, 12)
+						DisplayName = "O"
 					}
 				}
 			};
@@ -58,11 +55,7 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(75, 50),
 				Buttons = new[]
 				{
-					new ButtonSchema
-					{
-						Name = "Power",
-						Location = new Point(10, 15)
-					}
+					new ButtonSchema(10, 15) { Name = "Power" }
 				}
 			};
 		}

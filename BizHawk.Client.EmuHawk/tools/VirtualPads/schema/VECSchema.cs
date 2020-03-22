@@ -45,33 +45,29 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(200, 100),
 				Buttons = new[]
 				{
-					ButtonSchema.Up($"P{controller} Up", 14, 12),
-					ButtonSchema.Down($"P{controller} Down", 14, 56),
-					ButtonSchema.Left($"P{controller} Left", 2, 34),
-					ButtonSchema.Right($"P{controller} Right", 24, 34),
-					new ButtonSchema
+					ButtonSchema.Up(14, 12, $"P{controller} Up"),
+					ButtonSchema.Down(14, 56, $"P{controller} Down"),
+					ButtonSchema.Left(2, 34, $"P{controller} Left"),
+					ButtonSchema.Right(24, 34, $"P{controller} Right"),
+					new ButtonSchema(74, 34)
 					{
 						Name = $"P{controller} Button 1",
-						DisplayName = "1",
-						Location = new Point(74, 34)
+						DisplayName = "1"
 					},
-					new ButtonSchema
+					new ButtonSchema(98, 34)
 					{
 						Name = $"P{controller} Button 2",
-						DisplayName = "2",
-						Location = new Point(98, 34)
+						DisplayName = "2"
 					},
-					new ButtonSchema
+					new ButtonSchema(122, 34)
 					{
 						Name = $"P{controller} Button 3",
-						DisplayName = "3",
-						Location = new Point(122, 34)
+						DisplayName = "3"
 					},
-					new ButtonSchema
+					new ButtonSchema(146, 34)
 					{
 						Name = $"P{controller} Button 4",
-						DisplayName = "4",
-						Location = new Point(146, 34)
+						DisplayName = "4"
 					}
 				}
 			};
@@ -86,34 +82,29 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(280, 380),
 				Buttons = new[]
 				{
-					new ButtonSchema
+					new ButtonSchema(74, 34)
 					{
 						Name = $"P{controller} Button 1",
-						DisplayName = "1",
-						Location = new Point(74, 34)
+						DisplayName = "1"
 					},
-					new ButtonSchema
+					new ButtonSchema(98, 34)
 					{
 						Name = $"P{controller} Button 2",
-						DisplayName = "2",
-						Location = new Point(98, 34)
+						DisplayName = "2"
 					},
-					new ButtonSchema
+					new ButtonSchema(122, 34)
 					{
 						Name = $"P{controller} Button 3",
-						DisplayName = "3",
-						Location = new Point(122, 34)
+						DisplayName = "3"
 					},
-					new ButtonSchema
+					new ButtonSchema(146, 34)
 					{
 						Name = $"P{controller} Button 4",
-						DisplayName = "4",
-						Location = new Point(146, 34)
+						DisplayName = "4"
 					},
-					new ButtonSchema
+					new ButtonSchema(2, 80)
 					{
 						Name = $"P{controller} Stick X",
-						Location = new Point(2, 80),
 						AxisRange = controllerDefRanges[0],
 						SecondaryAxisRange = controllerDefRanges[1],
 						Type = PadInputType.AnalogStick,

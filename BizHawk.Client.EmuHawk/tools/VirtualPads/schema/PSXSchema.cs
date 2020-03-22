@@ -54,96 +54,82 @@ namespace BizHawk.Client.EmuHawk
 				DisplayName = $"DualShock Player{controller}",
 				Buttons = new[]
 				{
-					ButtonSchema.Up($"P{controller} Up", 32, 50),
-					ButtonSchema.Down($"P{controller} Down", 32, 71),
-					ButtonSchema.Left($"P{controller} Left", 11, 62),
-					ButtonSchema.Right($"P{controller} Right", 53, 62),
-					new ButtonSchema
+					ButtonSchema.Up(32, 50, $"P{controller} Up"),
+					ButtonSchema.Down(32, 71, $"P{controller} Down"),
+					ButtonSchema.Left(11, 62, $"P{controller} Left"),
+					ButtonSchema.Right(53, 62, $"P{controller} Right"),
+					new ButtonSchema(3, 32)
 					{
 						Name = $"P{controller} L1",
-						DisplayName = "L1",
-						Location = new Point(3, 32)
+						DisplayName = "L1"
 					},
-					new ButtonSchema
+					new ButtonSchema(191, 32)
 					{
 						Name = $"P{controller} R1",
-						DisplayName = "R1",
-						Location = new Point(191, 32)
+						DisplayName = "R1"
 					},
-					new ButtonSchema
+					new ButtonSchema(3, 10)
 					{
 						Name = $"P{controller} L2",
-						DisplayName = "L2",
-						Location = new Point(3, 10)
+						DisplayName = "L2"
 					},
-					new ButtonSchema
+					new ButtonSchema(191, 10)
 					{
 						Name = $"P{controller} R2",
-						DisplayName = "R2",
-						Location = new Point(191, 10)
+						DisplayName = "R2"
 					},
-					new ButtonSchema
+					new ButtonSchema(72, 90)
 					{
 						Name = $"P{controller} L3",
-						DisplayName = "L3",
-						Location = new Point(72, 90)
+						DisplayName = "L3"
 					},
-					new ButtonSchema
+					new ButtonSchema(130, 90)
 					{
 						Name = $"P{controller} R3",
-						DisplayName = "R3",
-						Location = new Point(130, 90)
+						DisplayName = "R3"
 					},
-					new ButtonSchema
+					new ButtonSchema(148, 62)
 					{
 						Name = $"P{controller} Square",
-						Icon = Properties.Resources.Square,
-						Location = new Point(148, 62)
+						Icon = Properties.Resources.Square
 					},
-					new ButtonSchema
+					new ButtonSchema(169, 50)
 					{
 						Name = $"P{controller} Triangle",
-						Icon = Properties.Resources.Triangle,
-						Location = new Point(169, 50)
+						Icon = Properties.Resources.Triangle
 					},
-					new ButtonSchema
+					new ButtonSchema(190, 62)
 					{
 						Name = $"P{controller} Circle",
-						Icon = Properties.Resources.Circle,
-						Location = new Point(190, 62)
+						Icon = Properties.Resources.Circle
 					},
-					new ButtonSchema
+					new ButtonSchema(169, 71)
 					{
 						Name = $"P{controller} Cross",
-						Icon = Properties.Resources.Cross,
-						Location = new Point(169, 71)
+						Icon = Properties.Resources.Cross
 					},
-					new ButtonSchema
+					new ButtonSchema(112, 62)
 					{
 						Name = $"P{controller} Start",
-						DisplayName = "S",
-						Location = new Point(112, 62)
+						DisplayName = "S"
 					},
-					new ButtonSchema
+					new ButtonSchema(90, 62)
 					{
 						Name = $"P{controller} Select",
-						DisplayName = "s",
-						Location = new Point(90, 62)
+						DisplayName = "s"
 					},
-					new ButtonSchema
+					new ButtonSchema(3, 120)
 					{
 						Name = $"P{controller} LStick X",
 						AxisRange = stickRanges[0],
 						SecondaryAxisRange = stickRanges[1],
-						Location = new Point(3, 120),
 						Type = PadInputType.AnalogStick
 					},
-					new ButtonSchema
+					new ButtonSchema(260, 120)
 					{
 						Name = $"P{controller} RStick X",
 						AxisRange = stickRanges[0],
 						SecondaryAxisRange = stickRanges[1],
-						Location = new Point(260, 120),
 						Type = PadInputType.AnalogStick
 					}
 				}
@@ -159,69 +145,59 @@ namespace BizHawk.Client.EmuHawk
 				DisplayName = $"Gamepad Player{controller}",
 				Buttons = new[]
 				{
-					ButtonSchema.Up($"P{controller} Up", 37, 55),
-					ButtonSchema.Down($"P{controller} Down", 37, 76),
-					ButtonSchema.Left($"P{controller} Left", 16, 67),
-					ButtonSchema.Right($"P{controller} Right", 58, 67),
-					new ButtonSchema
+					ButtonSchema.Up(37, 55, $"P{controller} Up"),
+					ButtonSchema.Down(37, 76, $"P{controller} Down"),
+					ButtonSchema.Left(16, 67, $"P{controller} Left"),
+					ButtonSchema.Right(58, 67, $"P{controller} Right"),
+					new ButtonSchema(8, 37)
 					{
 						Name = $"P{controller} L1",
-						DisplayName = "L1",
-						Location = new Point(8, 37)
+						DisplayName = "L1"
 					},
-					new ButtonSchema
+					new ButtonSchema(196, 37)
 					{
 						Name = $"P{controller} R1",
-						DisplayName = "R1",
-						Location = new Point(196, 37)
+						DisplayName = "R1"
 					},
-					new ButtonSchema
+					new ButtonSchema(8, 15)
 					{
 						Name = $"P{controller} L2",
-						DisplayName = "L2",
-						Location = new Point(8, 15)
+						DisplayName = "L2"
 					},
-					new ButtonSchema
+					new ButtonSchema(196, 15)
 					{
 						Name = $"P{controller} R2",
-						DisplayName = "R2",
-						Location = new Point(196, 15)
+						DisplayName = "R2"
 					},
-					new ButtonSchema
+					new ButtonSchema(153, 67)
 					{
 						Name = $"P{controller} Square",
-						Icon = Properties.Resources.Square,
-						Location = new Point(153, 67)
+						Icon = Properties.Resources.Square
 					},
-					new ButtonSchema
+					new ButtonSchema(174, 55)
 					{
 						Name = $"P{controller} Triangle",
-						Icon = Properties.Resources.Triangle,
-						Location = new Point(174, 55)
+						Icon = Properties.Resources.Triangle
 					},
-					new ButtonSchema
+					new ButtonSchema(195, 67)
 					{
 						Name = $"P{controller} Circle",
-						Icon = Properties.Resources.Circle,
-						Location = new Point(195, 67)
+						Icon = Properties.Resources.Circle
 					},
-					new ButtonSchema
+					new ButtonSchema(174, 76)
 					{
 						Name = $"P{controller} Cross",
-						Icon = Properties.Resources.Cross,
-						Location = new Point(174, 76)
+						Icon = Properties.Resources.Cross
 					},
-					new ButtonSchema
+					new ButtonSchema(112, 67)
 					{
 						Name = $"P{controller} Start",
-						DisplayName = "S",
-						Location = new Point(112, 67)
+						DisplayName = "S"
 					},
-					new ButtonSchema
+					new ButtonSchema(90, 67)
 					{
 						Name = $"P{controller} Select",
-						DisplayName = "s",
-						Location = new Point(90, 67)
+						DisplayName = "s"
 					}
 				}
 			};
@@ -236,73 +212,63 @@ namespace BizHawk.Client.EmuHawk
 				DisplayName = $"NeGcon Player{controller}",
 				Buttons = new[]
 				{
-					ButtonSchema.Up($"P{controller} Up", 36, 83),
-					ButtonSchema.Down($"P{controller} Down", 36, 104),
-					ButtonSchema.Left($"P{controller} Left", 15, 95),
-					ButtonSchema.Right($"P{controller} Right", 57, 95),
-					new ButtonSchema
+					ButtonSchema.Up(36, 83, $"P{controller} Up"),
+					ButtonSchema.Down(36, 104, $"P{controller} Down"),
+					ButtonSchema.Left(15, 95, $"P{controller} Left"),
+					ButtonSchema.Right(57, 95, $"P{controller} Right"),
+					new ButtonSchema(78, 118)
 					{
 						Name = $"P{controller} Start",
-						DisplayName = "S",
-						Location = new Point(78, 118)
+						DisplayName = "S"
 					},
-
-					new ButtonSchema
+					new ButtonSchema(278, 38)
 					{
 						Name = $"P{controller} B",
-						DisplayName = "B",
-						Location = new Point(278, 38)
+						DisplayName = "B"
 					},
-					new ButtonSchema
+					new ButtonSchema(308, 55)
 					{
 						Name = $"P{controller} A",
-						DisplayName = "A",
-						Location = new Point(308, 55)
+						DisplayName = "A"
 					},
 
-					new ButtonSchema
+					new ButtonSchema(308, 15)
 					{
 						Name = $"P{controller} R",
-						DisplayName = "R",
-						Location = new Point(308, 15)
+						DisplayName = "R"
 					},
-
-					new ButtonSchema
+					new ButtonSchema(5, 15)
 					{
 						Name = $"P{controller} L",
 						DisplayName = "L",
-						Location = new Point(5, 15),
 						Type = PadInputType.FloatSingle,
 						TargetSize = new Size(128, 55),
 						MinValue = 0,
 						MaxValue = 255
 					},
-					new ButtonSchema
+					new ButtonSchema(125, 15)
 					{
 						Name = $"P{controller} Twist",
 						DisplayName = "Twist",
-						Location = new Point(125, 15),
 						Type = PadInputType.FloatSingle,
 						TargetSize = new Size(64, 178),
 						MinValue = 0,
 						MaxValue = 255,
 						Orientation = Orientation.Vertical
 					},
-					new ButtonSchema
+					new ButtonSchema(180, 60)
 					{
 						Name = $"P{controller} 2",
 						DisplayName = "II",
-						Location = new Point(180, 60),
 						Type = PadInputType.FloatSingle,
 						TargetSize = new Size(128, 55),
 						MinValue = 0,
 						MaxValue = 255
 					},
-					new ButtonSchema
+					new ButtonSchema(220, 120)
 					{
 						Name = $"P{controller} 1",
 						DisplayName = "I",
-						Location = new Point(220, 120),
 						Type = PadInputType.FloatSingle,
 						TargetSize = new Size(128, 55),
 						MinValue = 0,
@@ -321,16 +287,11 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(310, 400),
 				Buttons = new[]
 				{
-					new ButtonSchema
-					{
-						Name = "Reset",
-						Location = new Point(10, 15)
-					},
-					new ButtonSchema
+					new ButtonSchema(10, 15) { Name = "Reset" },
+					new ButtonSchema(10, 54)
 					{
 						Name = "Disc Select", // not really, but shuts up a warning
 						Type = PadInputType.DiscManager,
-						Location = new Point(10, 54),
 						TargetSize = new Size(300, 300),
 						OwnerEmulator = psx,
 						SecondaryNames = new[] { "Open", "Close", "Disc Select" }

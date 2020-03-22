@@ -16,10 +16,6 @@ namespace BizHawk.Client.EmuHawk
 
 	public class ButtonSchema
 	{
-		public ButtonSchema()
-		{
-		}
-
 		public ButtonSchema(int x, int y) => Location = new Point(x, y);
 
 		public string Name { get; set; }
@@ -43,32 +39,28 @@ namespace BizHawk.Client.EmuHawk
 		public ControllerDefinition.AxisRange? AxisRange { get; set; }
 		public ControllerDefinition.AxisRange? SecondaryAxisRange { get; set; }
 
-		public static ButtonSchema Up(string name, int x, int y) => new ButtonSchema
+		public static ButtonSchema Up(int x, int y, string name) => new ButtonSchema(x, y)
 		{
 			Name = name,
-			Icon = Properties.Resources.BlueUp,
-			Location = new Point(x, y)
+			Icon = Properties.Resources.BlueUp
 		};
 
-		public static ButtonSchema Down(string name, int x, int y) => new ButtonSchema
+		public static ButtonSchema Down(int x, int y, string name) => new ButtonSchema(x, y)
 		{
 			Name = name,
-			Icon = Properties.Resources.BlueDown,
-			Location = new Point(x, y)
+			Icon = Properties.Resources.BlueDown
 		};
 
-		public static ButtonSchema Left(string name, int x, int y) => new ButtonSchema
+		public static ButtonSchema Left(int x, int y, string name) => new ButtonSchema(x, y)
 		{
 			Name = name,
-			Icon = Properties.Resources.Back,
-			Location = new Point(x, y)
+			Icon = Properties.Resources.Back
 		};
 
-		public static ButtonSchema Right(string name, int x, int y) => new ButtonSchema
+		public static ButtonSchema Right(int x, int y, string name) => new ButtonSchema(x, y)
 		{
 			Name = name,
-			Icon = Properties.Resources.Forward,
-			Location = new Point(x, y)
+			Icon = Properties.Resources.Forward
 		};
 	}
 }

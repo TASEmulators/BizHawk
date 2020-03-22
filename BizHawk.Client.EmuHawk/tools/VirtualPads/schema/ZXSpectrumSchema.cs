@@ -28,15 +28,14 @@ namespace BizHawk.Client.EmuHawk
 				MaxSize = new Size(174, 74),
 				Buttons = new[]
 				{
-					ButtonSchema.Up($"P{controller} Up", 23, 15),
-					ButtonSchema.Down($"P{controller} Down", 23, 36),
-					ButtonSchema.Left($"P{controller} Left", 2, 24),
-					ButtonSchema.Right($"P{controller} Right", 44, 24),
-					new ButtonSchema
+					ButtonSchema.Up(23, 15, $"P{controller} Up"),
+					ButtonSchema.Down(23, 36, $"P{controller} Down"),
+					ButtonSchema.Left(2, 24, $"P{controller} Left"),
+					ButtonSchema.Right(44, 24, $"P{controller} Right"),
+					new ButtonSchema(124, 24)
 					{
 						Name = $"P{controller} Button",
-						DisplayName = "B",
-						Location = new Point(124, 24)
+						DisplayName = "B"
 					}
 				}
 			};
@@ -161,11 +160,10 @@ namespace BizHawk.Client.EmuHawk
 
 				if (b.IsActive)
 				{
-					var btn = new ButtonSchema
+					var btn = new ButtonSchema(xPos, yPos)
 					{
 						Name = b.Name,
-						DisplayName = disp,
-						Location = new Point(xPos, yPos)
+						DisplayName = disp
 					};
 					btns.Add(btn);
 				}
@@ -187,35 +185,30 @@ namespace BizHawk.Client.EmuHawk
 				MaxSize = new Size(174, 74),
 				Buttons = new[]
 				{
-					new ButtonSchema
+					new ButtonSchema(23, 22)
 					{
 						Name = "Play Tape",
-						Icon = Properties.Resources.Play,
-						Location = new Point(23, 22)
+						Icon = Properties.Resources.Play
 					},
-					new ButtonSchema
+					new ButtonSchema(53, 22)
 					{
 						Name = "Stop Tape",
-						Icon = Properties.Resources.Stop,
-						Location = new Point(53, 22)
+						Icon = Properties.Resources.Stop
 					},
-					new ButtonSchema
+					new ButtonSchema(83, 22)
 					{
 						Name = "RTZ Tape",
-						Icon = Properties.Resources.BackMore,
-						Location = new Point(83, 22)
+						Icon = Properties.Resources.BackMore
 					},
-					 new ButtonSchema
+					 new ButtonSchema(23, 52)
 					{
 						Name = "Insert Next Tape",
-						DisplayName = "NEXT TAPE",
-						Location = new Point(23, 52)
+						DisplayName = "NEXT TAPE"
 					},
-					new ButtonSchema
+					new ButtonSchema(100, 52)
 					{
 						Name = "Insert Previous Tape",
-						DisplayName = "PREV TAPE",
-						Location = new Point(100, 52)
+						DisplayName = "PREV TAPE"
 					}
 				}
 			};

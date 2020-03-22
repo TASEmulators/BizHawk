@@ -113,10 +113,10 @@ namespace BizHawk.Client.EmuHawk
 						Name = "Black Apple",
 						DisplayName = ">"
 					},
-					ButtonSchema.Left("Left", 289, 114),
-					ButtonSchema.Right("Right", 311, 114),
-					ButtonSchema.Down("Down", 333, 114),
-					ButtonSchema.Up("Up", 355, 114), 
+					ButtonSchema.Left(289, 114, "Left"),
+					ButtonSchema.Right(311, 114, "Right"),
+					ButtonSchema.Down(333, 114, "Down"),
+					ButtonSchema.Up(355, 114, "Up")
 				}
 			};
 		}

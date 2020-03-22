@@ -31,76 +31,65 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(275, 316),
 				Buttons = new[]
 				{
-					ButtonSchema.Up($"P{controller}  DPad U", 24, 230),
-					ButtonSchema.Down($"P{controller} DPad D", 24, 251),
-					ButtonSchema.Left($"P{controller} DPad L", 3, 242),
-					ButtonSchema.Right($"P{controller} DPad R", 45, 242),
-					new ButtonSchema
+					ButtonSchema.Up(24, 230, $"P{controller}  DPad U"),
+					ButtonSchema.Down(24, 251, $"P{controller} DPad D"),
+					ButtonSchema.Left(3, 242, $"P{controller} DPad L"),
+					ButtonSchema.Right(45, 242, $"P{controller} DPad R"),
+					new ButtonSchema(3, 185)
 					{
 						Name = $"P{controller} L",
-						DisplayName = "L",
-						Location = new Point(3, 185)
+						DisplayName = "L"
 					},
-					new ButtonSchema
+					new ButtonSchema(191, 185)
 					{
 						Name = $"P{controller} R",
-						DisplayName = "R",
-						Location = new Point(191, 185)
+						DisplayName = "R"
 					},
-					new ButtonSchema
+					new ButtonSchema(81, 269)
 					{
 						Name = $"P{controller} Z",
-						DisplayName = "Z",
-						Location = new Point(81, 269)
+						DisplayName = "Z"
 					},
-					new ButtonSchema
+					new ButtonSchema(81, 246)
 					{
 						Name = $"P{controller} Start",
-						DisplayName = "S",
-						Location = new Point(81, 246)
+						DisplayName = "S"
 					},
-					new ButtonSchema
+					new ButtonSchema(127, 246)
 					{
 						Name = $"P{controller} B",
-						DisplayName = "B",
-						Location = new Point(127, 246)
+						DisplayName = "B"
 					},
-					new ButtonSchema
+					new ButtonSchema(138, 269)
 					{
 						Name = $"P{controller} A",
-						DisplayName = "A",
-						Location = new Point(138, 269)
+						DisplayName = "A"
 					},
-					new ButtonSchema
+					new ButtonSchema(173, 210)
 					{
 						Name = $"P{controller} C Up",
-						Icon = Properties.Resources.YellowUp,
-						Location = new Point(173, 210)
+						Icon = Properties.Resources.YellowUp
 					},
-					new ButtonSchema
+					new ButtonSchema(173, 231)
 					{
 						Name = $"P{controller} C Down",
-						Icon = Properties.Resources.YellowDown,
-						Location = new Point(173, 231)
+						Icon = Properties.Resources.YellowDown
 					},
-					new ButtonSchema
+					new ButtonSchema(152, 221)
 					{
 						Name = $"P{controller} C Left",
-						Icon = Properties.Resources.YellowLeft,
-						Location = new Point(152, 221)
+						Icon = Properties.Resources.YellowLeft
 					},
-					new ButtonSchema
+					new ButtonSchema(194, 221)
 					{
 						Name = $"P{controller} C Right",
-						Icon = Properties.Resources.YellowRight,
-						Location = new Point(194, 221)
+						Icon = Properties.Resources.YellowRight
 					},
-					new ButtonSchema
+					new ButtonSchema(6, 14)
 					{
 						Name = $"P{controller} X Axis",
 						AxisRange = controllerDefRanges[0],
 						SecondaryAxisRange = controllerDefRanges[1],
-						Location = new Point(6, 14),
 						Type = PadInputType.AnalogStick
 					}
 				}
