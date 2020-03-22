@@ -29,7 +29,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new PadSchema
 			{
-				IsConsole = false,
 				DefaultSize = new Size(174, 90),
 				Buttons = new[]
 				{
@@ -55,7 +54,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new PadSchema
 			{
-				IsConsole = false,
 				DefaultSize = new Size(174, 90),
 				Buttons = new[]
 				{
@@ -84,10 +82,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema SmsConsoleButtons()
 		{
-			return new PadSchema
+			return new ConsoleSchema
 			{
-				DisplayName = "Console",
-				IsConsole = true,
 				DefaultSize = new Size(150, 50),
 				Buttons = new[]
 				{
@@ -99,10 +95,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema GGConsoleButtons()
 		{
-			return new PadSchema
+			return new ConsoleSchema
 			{
-				DisplayName = "Console",
-				IsConsole = true,
 				DefaultSize = new Size(150, 50),
 				Buttons = new[]
 				{

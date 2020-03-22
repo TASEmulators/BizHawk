@@ -31,7 +31,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new PadSchema
 			{
-				IsConsole = false,
 				DefaultSize = new Size(100, 100),
 				Buttons = new[]
 				{

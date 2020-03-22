@@ -162,10 +162,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema NesConsoleButtons()
 		{
-			return new PadSchema
+			return new ConsoleSchema
 			{
-				DisplayName = "Console",
-				IsConsole = true,
 				DefaultSize = new Size(150, 50),
 				Buttons = new[]
 				{
@@ -203,10 +201,8 @@ namespace BizHawk.Client.EmuHawk
 				width = 160;
 			}
 
-			return new PadSchema
+			return new ConsoleSchema
 			{
-				DisplayName = "Console",
-				IsConsole = true,
 				DefaultSize = new Size(width, 100),
 				Buttons = buttons
 			};
@@ -217,7 +213,6 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = $"Player {controller}",
-				IsConsole = false,
 				DefaultSize = new Size(174, 74),
 				MaxSize = new Size(174, 74),
 				Buttons = new[]
@@ -256,7 +251,6 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Player 2",
-				IsConsole = false,
 				DefaultSize = new Size(174, 74),
 				MaxSize = new Size(174, 74),
 				Buttons = new[]
@@ -289,7 +283,6 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Zapper",
-				IsConsole = false,
 				DefaultSize = new Size(356, 290),
 				MaxSize = new Size(356, 290),
 				Buttons = new[]
@@ -312,7 +305,6 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Arkanoid Paddle",
-				IsConsole = false,
 				DefaultSize = new Size(380, 110),
 				MaxSize = new Size(380, 110),
 				Buttons = new[]
@@ -338,7 +330,6 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Power Pad",
-				IsConsole = false,
 				DefaultSize = new Size(154, 114),
 				Buttons = new[]
 				{
@@ -412,7 +403,6 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Tablet",
-				IsConsole = false,
 				DefaultSize = new Size(356, 290),
 				MaxSize = new Size(356, 290),
 				Buttons = new[]
@@ -440,7 +430,6 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Family Basic Keyboard",
-				IsConsole = false,
 				DefaultSize = new Size(560, 180),
 				Buttons = new[]
 				{

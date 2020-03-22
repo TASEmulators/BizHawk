@@ -41,7 +41,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new PadSchema
 			{
-				IsConsole = false,
 				DefaultSize = new Size(128, 200),
 				Buttons = new[]
 				{
@@ -130,7 +129,6 @@ namespace BizHawk.Client.EmuHawk
 			var controllerDefRanges = new ColecoTurboController(controller).Definition.FloatRanges;
 			return new PadSchema
 			{
-				IsConsole = false,
 				DefaultSize = new Size(275, 260),
 				Buttons = new[]
 				{
@@ -152,7 +150,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new PadSchema
 			{
-				IsConsole = false,
 				DefaultSize = new Size(195, 260),
 				Buttons = new[]
 				{

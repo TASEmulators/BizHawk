@@ -70,7 +70,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new PadSchema
 			{
-				IsConsole = false,
 				DefaultSize = new Size(174, 90),
 				Buttons = new[]
 				{
@@ -106,7 +105,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new PadSchema
 			{
-				IsConsole = false,
 				DefaultSize = new Size(174, 90),
 				Buttons = new[]
 				{
@@ -158,7 +156,6 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Light Gun",
-				IsConsole = false,
 				DefaultSize = new Size(356, 300),
 				Buttons = new[]
 				{
@@ -186,7 +183,6 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Mouse",
-				IsConsole = false,
 				DefaultSize = new Size(418, 290),
 				Buttons = new[]
 				{
@@ -221,10 +217,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema ConsoleButtons()
 		{
-			return new PadSchema
+			return new ConsoleSchema
 			{
-				DisplayName = "Console",
-				IsConsole = true,
 				DefaultSize = new Size(150, 50),
 				Buttons = new[]
 				{
@@ -238,7 +232,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new PadSchema
 			{
-				IsConsole = false,
 				DefaultSize = new Size(110, 110),
 				Buttons = new[]
 				{
@@ -279,7 +272,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new PadSchema
 			{
-				IsConsole = false,
 				DefaultSize = new Size(174, 90),
 				Buttons = new[]
 				{

@@ -49,7 +49,6 @@ namespace BizHawk.Client.EmuHawk
 			var stickRanges = Octoshock.DualShockStickRanges;
 			return new PadSchema
 			{
-				IsConsole = false,
 				DefaultSize = new Size(500, 290),
 				DisplayName = $"DualShock Player{controller}",
 				Buttons = new[]
@@ -138,7 +137,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new PadSchema
 			{
-				IsConsole = false,
 				DefaultSize = new Size(240, 115),
 				DisplayName = $"Gamepad Player{controller}",
 				Buttons = new[]
@@ -205,7 +203,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new PadSchema
 			{
-				IsConsole = false,
 				DefaultSize = new Size(343, 195),
 				DisplayName = $"NeGcon Player{controller}",
 				Buttons = new[]
@@ -274,10 +271,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema ConsoleButtons(Octoshock psx)
 		{
-			return new PadSchema
+			return new ConsoleSchema
 			{
-				DisplayName = "Console",
-				IsConsole = true,
 				DefaultSize = new Size(310, 400),
 				Buttons = new[]
 				{

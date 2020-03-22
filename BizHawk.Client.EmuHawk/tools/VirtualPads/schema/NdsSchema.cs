@@ -16,13 +16,12 @@ namespace BizHawk.Client.EmuHawk.tools.VirtualPads.schema
 
 		private static PadSchema Console()
 		{
-			return new PadSchema
+			return new ConsoleSchema
 			{
-				IsConsole = true,
-				DefaultSize = new Size(50, 35),
+				DefaultSize = new Size(60, 45),
 				Buttons = new []
 				{
-					new ButtonSchema(8, 8) { Name = "Lid" }
+					new ButtonSchema(8, 18) { Name = "Lid" }
 				}
 			};
 		}
@@ -31,7 +30,6 @@ namespace BizHawk.Client.EmuHawk.tools.VirtualPads.schema
 		{
 			return new PadSchema
 			{
-				IsConsole = false,
 				DefaultSize = new Size(440, 260),
 				Buttons = new []
 				{

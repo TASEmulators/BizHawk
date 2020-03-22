@@ -41,7 +41,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new PadSchema
 			{
-				IsConsole = false,
 				DefaultSize = new Size(200, 100),
 				Buttons = new[]
 				{
@@ -78,7 +77,6 @@ namespace BizHawk.Client.EmuHawk
 			var controllerDefRanges = new AnalogControls(controller).Definition.FloatRanges;
 			return new PadSchema
 			{
-				IsConsole = false,
 				DefaultSize = new Size(280, 380),
 				Buttons = new[]
 				{

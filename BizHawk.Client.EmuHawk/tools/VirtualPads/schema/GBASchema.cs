@@ -26,7 +26,6 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Tilt Controls",
-				IsConsole = false,
 				DefaultSize = new Size(256, 240),
 				MaxSize = new Size(256, 326),
 				Buttons = new[]
@@ -66,7 +65,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new PadSchema
 			{
-				IsConsole = false,
 				DefaultSize = new Size(194, 90),
 				Buttons = new[]
 				{
@@ -86,10 +84,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema ConsoleButtons()
 		{
-			return new PadSchema
+			return new ConsoleSchema
 			{
-				DisplayName = "Console",
-				IsConsole = true,
 				DefaultSize = new Size(75, 50),
 				Buttons = new[]
 				{

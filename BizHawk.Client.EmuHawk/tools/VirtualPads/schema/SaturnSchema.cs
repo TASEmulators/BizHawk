@@ -70,7 +70,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new PadSchema
 			{
-				IsConsole = false,
 				DefaultSize = new Size(250, 100),
 				Buttons = new[]
 				{
@@ -132,7 +131,6 @@ namespace BizHawk.Client.EmuHawk
 			var axisRanges = SaturnusControllerDeck.ThreeDeeAxisRanges;
 			return new PadSchema
 			{
-				IsConsole = false,
 				DefaultSize = new Size(458, 285),
 				Buttons = new[]
 				{
@@ -207,7 +205,6 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Mouse",
-				IsConsole = false,
 				DefaultSize = new Size(375, 320),
 				Buttons = new[]
 				{
@@ -246,7 +243,6 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Wheel",
-				IsConsole = false,
 				DefaultSize = new Size(325, 100),
 				Buttons = new[]
 				{
@@ -305,7 +301,6 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Mission",
-				IsConsole = false,
 				DefaultSize = new Size(445, 230),
 				Buttons = new[]
 				{
@@ -380,7 +375,6 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Dual Mission",
-				IsConsole = false,
 				DefaultSize = new Size(680, 230),
 				Buttons = new ButtonSchema[]
 				{
@@ -422,10 +416,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema ConsoleButtons()
 		{
-			return new PadSchema
+			return new ConsoleSchema
 			{
-				DisplayName = "Console",
-				IsConsole = true,
 				DefaultSize = new Size(250, 50),
 				Buttons = new[]
 				{

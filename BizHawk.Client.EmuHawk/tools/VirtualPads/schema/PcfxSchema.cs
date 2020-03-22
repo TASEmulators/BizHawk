@@ -45,7 +45,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new PadSchema
 			{
-				IsConsole = false,
 				DefaultSize = new Size(230, 100),
 				Buttons = new[]
 				{
@@ -112,7 +111,6 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Mouse",
-				IsConsole = false,
 				DefaultSize = new Size(375, 320),
 				Buttons = new[]
 				{
