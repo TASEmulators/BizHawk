@@ -119,38 +119,14 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(34, 61, $"P{controller} Down"),
 					ButtonSchema.Left(22, 39, $"P{controller} Left"),
 					ButtonSchema.Right(44, 39, $"P{controller} Right"),
-					new ButtonSchema(2, 10, controller, "L")
-					{
-						DisplayName = "L"
-					},
-					new ButtonSchema(174, 10, controller, "R")
-					{
-						DisplayName = "R"
-					},
-					new ButtonSchema(70, 39, controller, "Select")
-					{
-						DisplayName = "s"
-					},
-					new ButtonSchema(92, 39, controller, "Start")
-					{
-						DisplayName = "S"
-					},
-					new ButtonSchema(121, 39, controller, "Y")
-					{
-						DisplayName = "Y"
-					},
-					new ButtonSchema(145, 52, controller, "B")
-					{
-						DisplayName = "B"
-					},
-					new ButtonSchema(122, 15, controller, "X")
-					{
-						DisplayName = "X"
-					},
+					new ButtonSchema(2, 10, controller, "L"),
+					new ButtonSchema(174, 10, controller, "R"),
+					new ButtonSchema(70, 39, controller, "Select") { DisplayName = "s" },
+					new ButtonSchema(92, 39, controller, "Start") { DisplayName = "S" },
+					new ButtonSchema(121, 39, controller, "Y"),
+					new ButtonSchema(145, 52, controller, "B"),
+					new ButtonSchema(122, 15, controller, "X"),
 					new ButtonSchema(146, 25, controller, "A")
-					{
-						DisplayName = "A"
-					}
 				}
 			};
 		}
@@ -193,22 +169,10 @@ namespace BizHawk.Client.EmuHawk
 					{
 						TargetSize = new Size(256, 240)
 					},
-					new ButtonSchema(284, 17, controller, "Trigger")
-					{
-						DisplayName = "Trigger"
-					},
-					new ButtonSchema(284, 47, controller, "Cursor")
-					{
-						DisplayName = "Cursor"
-					},
-					new ButtonSchema(284, 77, controller, "Turbo")
-					{
-						DisplayName = "Turbo"
-					},
+					new ButtonSchema(284, 17, controller, "Trigger"),
+					new ButtonSchema(284, 47, controller, "Cursor"),
+					new ButtonSchema(284, 77, controller, "Turbo"),
 					new ButtonSchema(284, 107, controller, "Pause")
-					{
-						DisplayName = "Pause"
-					}
 				}
 			};
 		}
@@ -226,14 +190,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						TargetSize = new Size(256, 240)
 					},
-					new ButtonSchema(284, 17, controller, "Trigger")
-					{
-						DisplayName = "Trigger"
-					},
+					new ButtonSchema(284, 17, controller, "Trigger"),
 					new ButtonSchema(284, 47, controller, "Start")
-					{
-						DisplayName = "Start"
-					}
 				}
 			};
 		}

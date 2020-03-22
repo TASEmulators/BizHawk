@@ -48,62 +48,20 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(50, 32, $"P{controller} Down"),
 					ButtonSchema.Left(29, 22, $"P{controller} Left"),
 					ButtonSchema.Right(71, 22, $"P{controller} Right"),
-					new ButtonSchema(3, 42, controller, "L")
-					{
-						DisplayName = "L"
-					},
-					new ButtonSchema(100, 42, controller, "R")
-					{
-						DisplayName = "R"
-					},
-					new ButtonSchema(27, 85, controller, "1")
-					{
-						DisplayName = "1"
-					},
-					new ButtonSchema(50, 85, controller, "2")
-					{
-						DisplayName = "2"
-					},
-					new ButtonSchema(73, 85, controller, "3")
-					{
-						DisplayName = "3"
-					},
-					new ButtonSchema(27, 108, controller, "4")
-					{
-						DisplayName = "4"
-					},
-					new ButtonSchema(50, 108, controller, "5")
-					{
-						DisplayName = "5"
-					},
-					new ButtonSchema(73, 108, controller, "6")
-					{
-						DisplayName = "6"
-					},
-					new ButtonSchema(27, 131, controller, "7")
-					{
-						DisplayName = "7"
-					},
-					new ButtonSchema(50, 131, controller, "8")
-					{
-						DisplayName = "8"
-					},
-					new ButtonSchema(73, 131, controller, "9")
-					{
-						DisplayName = "9"
-					},
-					new ButtonSchema(27, 154, controller, "Star")
-					{
-						DisplayName = "*"
-					},
-					new ButtonSchema(50, 154, controller, "0")
-					{
-						DisplayName = "0"
-					},
-					new ButtonSchema(73, 154, controller, "Pound")
-					{
-						DisplayName = "#"
-					}
+					new ButtonSchema(3, 42, controller, "L"),
+					new ButtonSchema(100, 42, controller, "R"),
+					new ButtonSchema(27, 85, controller, "1"),
+					new ButtonSchema(50, 85, controller, "2"),
+					new ButtonSchema(73, 85, controller, "3"),
+					new ButtonSchema(27, 108, controller, "4"),
+					new ButtonSchema(50, 108, controller, "5"),
+					new ButtonSchema(73, 108, controller, "6"),
+					new ButtonSchema(27, 131, controller, "7"),
+					new ButtonSchema(50, 131, controller, "8"),
+					new ButtonSchema(73, 131, controller, "9"),
+					new ButtonSchema(27, 154, controller, "Star") { DisplayName = "*" },
+					new ButtonSchema(50, 154, controller, "0"),
+					new ButtonSchema(73, 154, controller, "Pound") { DisplayName = "#" }
 				}
 			};
 		}
@@ -140,55 +98,18 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(50, 32, $"P{controller} Down"),
 					ButtonSchema.Left(29, 22, $"P{controller} Left"),
 					ButtonSchema.Right(71, 22, $"P{controller} Right"),
-					new ButtonSchema(27, 85, controller, "1")
-					{
-						DisplayName = "1"
-					},
-					new ButtonSchema(50, 85, controller, "2")
-					{
-						DisplayName = "2"
-					},
-					new ButtonSchema(73, 85, controller, "3")
-					{
-						DisplayName = "3"
-					},
-					new ButtonSchema(27, 108, controller, "4")
-					{
-						DisplayName = "4"
-					},
-					new ButtonSchema(50, 108, controller, "5")
-					{
-						DisplayName = "5"
-					},
-					new ButtonSchema(73, 108, controller, "6")
-					{
-						DisplayName = "6"
-					},
-					new ButtonSchema(27, 131, controller, "7")
-					{
-						DisplayName = "7"
-					},
-					new ButtonSchema(50, 131, controller, "8")
-					{
-						DisplayName = "8"
-					},
-					new ButtonSchema(73, 131, controller, "9")
-					{
-						DisplayName = "9"
-					},
-					new ButtonSchema(27, 154, controller, "Star")
-					{
-						DisplayName = "*"
-					},
-					new ButtonSchema(50, 154, controller, "0")
-					{
-						DisplayName = "0"
-					},
-					new ButtonSchema(73, 154, controller, "Pound")
-					{
-						DisplayName = "#"
-					},
-
+					new ButtonSchema(27, 85, controller, "1"),
+					new ButtonSchema(50, 85, controller, "2"),
+					new ButtonSchema(73, 85, controller, "3"),
+					new ButtonSchema(27, 108, controller, "4"),
+					new ButtonSchema(50, 108, controller, "5"),
+					new ButtonSchema(73, 108, controller, "6"),
+					new ButtonSchema(27, 131, controller, "7"),
+					new ButtonSchema(50, 131, controller, "8"),
+					new ButtonSchema(73, 131, controller, "9"),
+					new ButtonSchema(27, 154, controller, "Star") { DisplayName = "*" },
+					new ButtonSchema(50, 154, controller, "0"),
+					new ButtonSchema(73, 154, controller, "Pound") { DisplayName = "#" },
 					new SingleFloatSchema(6, 200, $"P{controller} Disc X")
 					{
 						DisplayName = "Disc",
@@ -196,23 +117,10 @@ namespace BizHawk.Client.EmuHawk
 						MinValue = -360,
 						MaxValue = 360
 					},
-
-					new ButtonSchema(126, 15, controller, "Yellow")
-					{
-						DisplayName = "Yellow"
-					},
-					new ButtonSchema(126, 40, controller, "Red")
-					{
-						DisplayName = "Red"
-					},
-					new ButtonSchema(126, 65, controller, "Purple")
-					{
-						DisplayName = "Purple"
-					},
+					new ButtonSchema(126, 15, controller, "Yellow"),
+					new ButtonSchema(126, 40, controller, "Red"),
+					new ButtonSchema(126, 65, controller, "Purple"),
 					new ButtonSchema(126, 90, controller, "Blue")
-					{
-						DisplayName = "Blue"
-					}
 				}
 			};
 		}

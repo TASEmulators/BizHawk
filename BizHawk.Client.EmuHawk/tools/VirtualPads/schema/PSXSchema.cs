@@ -57,30 +57,12 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(32, 71, $"P{controller} Down"),
 					ButtonSchema.Left(11, 62, $"P{controller} Left"),
 					ButtonSchema.Right(53, 62, $"P{controller} Right"),
-					new ButtonSchema(3, 32, controller, "L1")
-					{
-						DisplayName = "L1"
-					},
-					new ButtonSchema(191, 32, controller, "R1")
-					{
-						DisplayName = "R1"
-					},
-					new ButtonSchema(3, 10, controller, "L2")
-					{
-						DisplayName = "L2"
-					},
-					new ButtonSchema(191, 10, controller, "R2")
-					{
-						DisplayName = "R2"
-					},
-					new ButtonSchema(72, 90, controller, "L3")
-					{
-						DisplayName = "L3"
-					},
-					new ButtonSchema(130, 90, controller, "R3")
-					{
-						DisplayName = "R3"
-					},
+					new ButtonSchema(3, 32, controller, "L1"),
+					new ButtonSchema(191, 32, controller, "R1"),
+					new ButtonSchema(3, 10, controller, "L2"),
+					new ButtonSchema(191, 10, controller, "R2"),
+					new ButtonSchema(72, 90, controller, "L3"),
+					new ButtonSchema(130, 90, controller, "R3"),
 					new ButtonSchema(148, 62, controller, "Square")
 					{
 						Icon = Properties.Resources.Square
@@ -131,22 +113,10 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(37, 76, $"P{controller} Down"),
 					ButtonSchema.Left(16, 67, $"P{controller} Left"),
 					ButtonSchema.Right(58, 67, $"P{controller} Right"),
-					new ButtonSchema(8, 37, controller, "L1")
-					{
-						DisplayName = "L1"
-					},
-					new ButtonSchema(196, 37, controller, "R1")
-					{
-						DisplayName = "R1"
-					},
-					new ButtonSchema(8, 15, controller, "L2")
-					{
-						DisplayName = "L2"
-					},
-					new ButtonSchema(196, 15, controller, "R2")
-					{
-						DisplayName = "R2"
-					},
+					new ButtonSchema(8, 37, controller, "L1"),
+					new ButtonSchema(196, 37, controller, "R1"),
+					new ButtonSchema(8, 15, controller, "L2"),
+					new ButtonSchema(196, 15, controller, "R2"),
 					new ButtonSchema(153, 67, controller, "Square")
 					{
 						Icon = Properties.Resources.Square
@@ -191,18 +161,9 @@ namespace BizHawk.Client.EmuHawk
 					{
 						DisplayName = "S"
 					},
-					new ButtonSchema(278, 38, controller, "B")
-					{
-						DisplayName = "B"
-					},
-					new ButtonSchema(308, 55, controller, "A")
-					{
-						DisplayName = "A"
-					},
-					new ButtonSchema(308, 15, controller, "R")
-					{
-						DisplayName = "R"
-					},
+					new ButtonSchema(278, 38, controller, "B"),
+					new ButtonSchema(308, 55, controller, "A"),
+					new ButtonSchema(308, 15, controller, "R"),
 					new SingleFloatSchema(5, 15, $"P{controller} L")
 					{
 						DisplayName = "L",

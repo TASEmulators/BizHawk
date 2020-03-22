@@ -77,22 +77,10 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(14, 56, $"P{controller} Down"),
 					ButtonSchema.Left(2, 34, $"P{controller} Left"),
 					ButtonSchema.Right(24, 34, $"P{controller} Right"),
-					new ButtonSchema(98, 40, controller, "A")
-					{
-						DisplayName = "A"
-					},
-					new ButtonSchema(122, 40, controller, "B")
-					{
-						DisplayName = "B"
-					},
-					new ButtonSchema(146, 40, controller, "C")
-					{
-						DisplayName = "C"
-					},
-					new ButtonSchema(122, 12, controller, "Start")
-					{
-						DisplayName = "S"
-					}
+					new ButtonSchema(98, 40, controller, "A"),
+					new ButtonSchema(122, 40, controller, "B"),
+					new ButtonSchema(146, 40, controller, "C"),
+					new ButtonSchema(122, 12, controller, "Start") { DisplayName = "S" }
 				}
 			};
 		}
@@ -108,34 +96,13 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(14, 56, $"P{controller} Down"),
 					ButtonSchema.Left(2, 34, $"P{controller} Left"),
 					ButtonSchema.Right(24, 34, $"P{controller} Right"),
-					new ButtonSchema(98, 40, controller, "A")
-					{
-						DisplayName = "A"
-					},
-					new ButtonSchema(122, 40, controller, "B")
-					{
-						DisplayName = "B"
-					},
-					new ButtonSchema(146, 40, controller, "C")
-					{
-						DisplayName = "C"
-					},
-					new ButtonSchema(98, 65, controller, "X")
-					{
-						DisplayName = "X"
-					},
-					new ButtonSchema(122, 65, controller, "Y")
-					{
-						DisplayName = "Y"
-					},
-					new ButtonSchema(146, 65, controller, "Z")
-					{
-						DisplayName = "Z"
-					},
-					new ButtonSchema(122, 12, controller, "Start")
-					{
-						DisplayName = "S"
-					}
+					new ButtonSchema(98, 40, controller, "A"),
+					new ButtonSchema(122, 40, controller, "B"),
+					new ButtonSchema(146, 40, controller, "C"),
+					new ButtonSchema(98, 65, controller, "X"),
+					new ButtonSchema(122, 65, controller, "Y"),
+					new ButtonSchema(146, 65, controller, "Z"),
+					new ButtonSchema(122, 12, controller, "Start") { DisplayName = "S" }
 				}
 			};
 		}
@@ -222,26 +189,11 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(47, 73, $"P{controller} Down"),
 					ButtonSchema.Left(15, 43, $"P{controller} Left"),
 					ButtonSchema.Right(80, 43, $"P{controller} Right"),
-					new ButtonSchema(70, 65, controller, "A")
-					{
-						DisplayName = "A"
-					},
-					new ButtonSchema(70, 20, controller, "B")
-					{
-						DisplayName = "B"
-					},
-					new ButtonSchema(22, 20, controller, "C")
-					{
-						DisplayName = "C"
-					},
-					new ButtonSchema(22, 65, controller, "A")
-					{
-						DisplayName = "A"
-					},
-					new ButtonSchema(47, 43, controller, "Start")
-					{
-						DisplayName = "S"
-					}
+					new ButtonSchema(70, 65, controller, "A"),
+					new ButtonSchema(70, 20, controller, "B"),
+					new ButtonSchema(22, 20, controller, "C"),
+					new ButtonSchema(22, 65, controller, "A"),
+					new ButtonSchema(47, 43, controller, "Start") { DisplayName = "S" }
 				}
 			};
 		}
@@ -253,38 +205,14 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(174, 90),
 				Buttons = new[]
 				{
-					new ButtonSchema(98, 40, controller, "A")
-					{
-						DisplayName = "A"
-					},
-					new ButtonSchema(122, 40, controller, "B")
-					{
-						DisplayName = "B"
-					},
-					new ButtonSchema(146, 40, controller, "C")
-					{
-						DisplayName = "C"
-					},
-					new ButtonSchema(98, 65, controller, "D")
-					{
-						DisplayName = "D"
-					},
-					new ButtonSchema(122, 65, controller, "E1")
-					{
-						DisplayName = "E¹"
-					},
-					new ButtonSchema(152, 65, controller, "E2")
-					{
-						DisplayName = "E²"
-					},
-					new ButtonSchema(122, 12, controller, "Start")
-					{
-						DisplayName = "Start"
-					},
+					new ButtonSchema(98, 40, controller, "A"),
+					new ButtonSchema(122, 40, controller, "B"),
+					new ButtonSchema(146, 40, controller, "C"),
+					new ButtonSchema(98, 65, controller, "D"),
+					new ButtonSchema(122, 65, controller, "E1") { DisplayName = "E¹" },
+					new ButtonSchema(152, 65, controller, "E2") { DisplayName = "E²" },
+					new ButtonSchema(122, 12, controller, "Start"),
 					new ButtonSchema(162, 12, controller, "Select")
-					{
-						DisplayName = "Select"
-					}
 				}
 			};
 		}

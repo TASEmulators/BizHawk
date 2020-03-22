@@ -25,6 +25,7 @@ namespace BizHawk.Client.EmuHawk
 		public ButtonSchema(int x, int y, int controller, string name)
 			: this(x, y, $"P{controller} {name}")
 		{
+			DisplayName = name;
 		}
 
 		public string Name { get; protected set; }
