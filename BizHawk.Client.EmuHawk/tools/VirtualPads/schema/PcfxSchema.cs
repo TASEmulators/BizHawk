@@ -48,10 +48,10 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(230, 100),
 				Buttons = new[]
 				{
-					ButtonSchema.Up(34, 17, $"P{controller} Up"),
-					ButtonSchema.Down(34, 61, $"P{controller} Down"),
-					ButtonSchema.Left(22, 39, $"P{controller} Left"),
-					ButtonSchema.Right(44, 39, $"P{controller} Right"),
+					ButtonSchema.Up(34, 17, controller),
+					ButtonSchema.Down(34, 61, controller),
+					ButtonSchema.Left(22, 39, controller),
+					ButtonSchema.Right(44, 39, controller),
 					new ButtonSchema(74, 17, controller, "Mode 1"),
 					new ButtonSchema(74, 40, controller, "Mode 2"),
 					new ButtonSchema(77, 63, controller, "Select")

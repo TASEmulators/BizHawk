@@ -33,10 +33,10 @@ namespace BizHawk.Client.EmuHawk.tools.VirtualPads.schema
 				DefaultSize = new Size(440, 260),
 				Buttons = new []
 				{
-					ButtonSchema.Up(14, 79, "Up"),
-					ButtonSchema.Down(14, 122, "Down"),
-					ButtonSchema.Left(2, 100, "Left"),
-					ButtonSchema.Right(24, 100, "Right"),
+					ButtonSchema.Up(14, 79),
+					ButtonSchema.Down(14, 122),
+					ButtonSchema.Left(2, 100),
+					ButtonSchema.Right(24, 100),
 					new ButtonSchema(2, 10, "L"),
 					new ButtonSchema(366, 10, "R"),
 					new ButtonSchema(341, 179, "Start"),

@@ -94,10 +94,10 @@ namespace BizHawk.Client.EmuHawk
 						DisplayName = "                Space                "
 					},
 					new ButtonSchema(265, 114, "Black Apple") { DisplayName = ">" },
-					ButtonSchema.Left(289, 114, "Left"),
-					ButtonSchema.Right(311, 114, "Right"),
-					ButtonSchema.Down(333, 114, "Down"),
-					ButtonSchema.Up(355, 114, "Up")
+					ButtonSchema.Left(289, 114),
+					ButtonSchema.Right(311, 114),
+					ButtonSchema.Down(333, 114),
+					ButtonSchema.Up(355, 114)
 				}
 			};
 		}

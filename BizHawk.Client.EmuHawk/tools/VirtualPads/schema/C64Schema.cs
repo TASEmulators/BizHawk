@@ -25,14 +25,11 @@ namespace BizHawk.Client.EmuHawk
 				MaxSize = new Size(174, 74),
 				Buttons = new[]
 				{
-					ButtonSchema.Up( 23, 15, $"P{controller} Up"),
-					ButtonSchema.Down(23, 36, $"P{controller} Down"),
-					ButtonSchema.Left(2, 24, $"P{controller} Left"),
-					ButtonSchema.Right(44, 24, $"P{controller} Right"), 
-					new ButtonSchema(124, 24, controller, "Button")
-					{
-						DisplayName = "B"
-					}
+					ButtonSchema.Up(23, 15, controller),
+					ButtonSchema.Down(23, 36, controller),
+					ButtonSchema.Left(2, 24, controller),
+					ButtonSchema.Right(44, 24, controller),
+					new ButtonSchema(124, 24, controller, "Button") { DisplayName = "B" }
 				}
 			};
 		}

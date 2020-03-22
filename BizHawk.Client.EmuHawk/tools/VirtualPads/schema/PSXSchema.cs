@@ -53,10 +53,10 @@ namespace BizHawk.Client.EmuHawk
 				DisplayName = $"DualShock Player{controller}",
 				Buttons = new[]
 				{
-					ButtonSchema.Up(32, 50, $"P{controller} Up"),
-					ButtonSchema.Down(32, 71, $"P{controller} Down"),
-					ButtonSchema.Left(11, 62, $"P{controller} Left"),
-					ButtonSchema.Right(53, 62, $"P{controller} Right"),
+					ButtonSchema.Up(32, 50, controller),
+					ButtonSchema.Down(32, 71, controller),
+					ButtonSchema.Left(11, 62, controller),
+					ButtonSchema.Right(53, 62, controller),
 					new ButtonSchema(3, 32, controller, "L1"),
 					new ButtonSchema(191, 32, controller, "R1"),
 					new ButtonSchema(3, 10, controller, "L2"),
@@ -109,10 +109,10 @@ namespace BizHawk.Client.EmuHawk
 				DisplayName = $"Gamepad Player{controller}",
 				Buttons = new[]
 				{
-					ButtonSchema.Up(37, 55, $"P{controller} Up"),
-					ButtonSchema.Down(37, 76, $"P{controller} Down"),
-					ButtonSchema.Left(16, 67, $"P{controller} Left"),
-					ButtonSchema.Right(58, 67, $"P{controller} Right"),
+					ButtonSchema.Up(37, 55, controller),
+					ButtonSchema.Down(37, 76, controller),
+					ButtonSchema.Left(16, 67, controller),
+					ButtonSchema.Right(58, 67, controller),
 					new ButtonSchema(8, 37, controller, "L1"),
 					new ButtonSchema(196, 37, controller, "R1"),
 					new ButtonSchema(8, 15, controller, "L2"),
@@ -153,14 +153,11 @@ namespace BizHawk.Client.EmuHawk
 				DisplayName = $"NeGcon Player{controller}",
 				Buttons = new[]
 				{
-					ButtonSchema.Up(36, 83, $"P{controller} Up"),
-					ButtonSchema.Down(36, 104, $"P{controller} Down"),
-					ButtonSchema.Left(15, 95, $"P{controller} Left"),
-					ButtonSchema.Right(57, 95, $"P{controller} Right"),
-					new ButtonSchema(78, 118, controller, "Start")
-					{
-						DisplayName = "S"
-					},
+					ButtonSchema.Up(36, 83, controller),
+					ButtonSchema.Down(36, 104, controller),
+					ButtonSchema.Left(15, 95, controller),
+					ButtonSchema.Right(57, 95, controller),
+					new ButtonSchema(78, 118, controller, "Start") { DisplayName = "S" },
 					new ButtonSchema(278, 38, controller, "B"),
 					new ButtonSchema(308, 55, controller, "A"),
 					new ButtonSchema(308, 15, controller, "R"),

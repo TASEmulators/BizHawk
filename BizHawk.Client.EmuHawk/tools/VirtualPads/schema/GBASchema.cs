@@ -57,10 +57,10 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(194, 90),
 				Buttons = new[]
 				{
-					ButtonSchema.Up(29, 17, "Up"),
-					ButtonSchema.Down(29, 61, "Down"),
-					ButtonSchema.Left(17, 39, "Left"),
-					ButtonSchema.Right(39, 39, "Right"),
+					ButtonSchema.Up(29, 17),
+					ButtonSchema.Down(29, 61),
+					ButtonSchema.Left(17, 39),
+					ButtonSchema.Right(39, 39),
 					new ButtonSchema(130, 39, "B"),
 					new ButtonSchema(154, 39, "A"),
 					new ButtonSchema(64, 39, "Select") { DisplayName = "s" },

@@ -73,10 +73,10 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(174, 90),
 				Buttons = new[]
 				{
-					ButtonSchema.Up(14, 12, $"P{controller} Up"),
-					ButtonSchema.Down(14, 56, $"P{controller} Down"),
-					ButtonSchema.Left(2, 34, $"P{controller} Left"),
-					ButtonSchema.Right(24, 34, $"P{controller} Right"),
+					ButtonSchema.Up(14, 12, controller),
+					ButtonSchema.Down(14, 56, controller),
+					ButtonSchema.Left(2, 34, controller),
+					ButtonSchema.Right(24, 34, controller),
 					new ButtonSchema(98, 40, controller, "A"),
 					new ButtonSchema(122, 40, controller, "B"),
 					new ButtonSchema(146, 40, controller, "C"),
@@ -92,10 +92,10 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(174, 90),
 				Buttons = new[]
 				{
-					ButtonSchema.Up(14, 12, $"P{controller} Up"),
-					ButtonSchema.Down(14, 56, $"P{controller} Down"),
-					ButtonSchema.Left(2, 34, $"P{controller} Left"),
-					ButtonSchema.Right(24, 34, $"P{controller} Right"),
+					ButtonSchema.Up(14, 12, controller),
+					ButtonSchema.Down(14, 56, controller),
+					ButtonSchema.Left(2, 34, controller),
+					ButtonSchema.Right(24, 34, controller),
 					new ButtonSchema(98, 40, controller, "A"),
 					new ButtonSchema(122, 40, controller, "B"),
 					new ButtonSchema(146, 40, controller, "C"),
@@ -185,10 +185,10 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(110, 110),
 				Buttons = new[]
 				{
-					ButtonSchema.Up(47, 10, $"P{controller} Up"),
-					ButtonSchema.Down(47, 73, $"P{controller} Down"),
-					ButtonSchema.Left(15, 43, $"P{controller} Left"),
-					ButtonSchema.Right(80, 43, $"P{controller} Right"),
+					ButtonSchema.Up(47, 10, controller),
+					ButtonSchema.Down(47, 73, controller),
+					ButtonSchema.Left(15, 43, controller),
+					ButtonSchema.Right(80, 43, controller),
 					new ButtonSchema(70, 65, controller, "A"),
 					new ButtonSchema(70, 20, controller, "B"),
 					new ButtonSchema(22, 20, controller, "C"),
