@@ -16,6 +16,12 @@ namespace BizHawk.Client.EmuHawk
 
 	public class ButtonSchema
 	{
+		public ButtonSchema()
+		{
+		}
+
+		public ButtonSchema(int x, int y) => Location = new Point(x, y);
+
 		public string Name { get; set; }
 		public string DisplayName { get; set; }
 		public PadInputType Type { get; set; } = PadInputType.Boolean;

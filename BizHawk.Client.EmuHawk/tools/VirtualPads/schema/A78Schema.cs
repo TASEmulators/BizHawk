@@ -65,17 +65,15 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down($"P{controller} Down", 23, 36),
 					ButtonSchema.Left($"P{controller} Left", 2, 24),
 					ButtonSchema.Right($"P{controller} Right", 44, 24), 
-					new ButtonSchema
+					new ButtonSchema(120, 24)
 					{
 						Name = $"P{controller} Trigger",
-						DisplayName = "1",
-						Location = new Point(120, 24)
+						DisplayName = "1"
 					},
-					new ButtonSchema
+					new ButtonSchema(145, 24)
 					{
 						Name = $"P{controller} Trigger 2",
-						DisplayName = "2",
-						Location = new Point(145, 24)
+						DisplayName = "2"
 					}
 				}
 			};
@@ -91,35 +89,14 @@ namespace BizHawk.Client.EmuHawk
 				MaxSize = new Size(174, 74),
 				Buttons = new[]
 				{
-					new ButtonSchema
-					{
-						Name = $"P{controller} Up",
-						Icon = Properties.Resources.BlueUp,
-						Location = new Point(23, 15)
-					},
-					new ButtonSchema
-					{
-						Name = $"P{controller} Down",
-						Icon = Properties.Resources.BlueDown,
-						Location = new Point(23, 36)
-					},
-					new ButtonSchema
-					{
-						Name = $"P{controller} Left",
-						Icon = Properties.Resources.Back,
-						Location = new Point(2, 24)
-					},
-					new ButtonSchema
-					{
-						Name = $"P{controller} Right",
-						Icon = Properties.Resources.Forward,
-						Location = new Point(44, 24)
-					},
-					new ButtonSchema
+					ButtonSchema.Up($"P{controller} Up", 23, 15),
+					ButtonSchema.Down($"P{controller} Down", 23, 36),
+					ButtonSchema.Left($"P{controller} Left", 2, 24),
+					ButtonSchema.Right($"P{controller} Right", 54, 24),
+					new ButtonSchema(120, 24)
 					{
 						Name = $"P{controller} Button",
-						DisplayName = "1",
-						Location = new Point(120, 24)
+						DisplayName = "1"
 					}
 				}
 			};
@@ -134,18 +111,16 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(250, 74),
 				Buttons = new[]
 				{
-					new ButtonSchema
+					new ButtonSchema(23, 15)
 					{
 						Name = $"P{controller} Paddle",
 						DisplayName = "Paddle",
-						Location = new Point(23, 15),
 						Type = PadInputType.FloatSingle
 					},
-					new ButtonSchema
+					new ButtonSchema(12, 90)
 					{
 						Name = $"P{controller} Trigger",
-						DisplayName = "1",
-						Location = new Point(12, 90)
+						DisplayName = "1"
 					}
 				}
 			};
@@ -161,10 +136,9 @@ namespace BizHawk.Client.EmuHawk
 				MaxSize = new Size(356, 290),
 				Buttons = new[]
 				{
-					new ButtonSchema
+					new ButtonSchema(14, 17)
 					{
 						Name = $"P{controller} VPos",
-						Location = new Point(14, 17),
 						Type = PadInputType.TargetedPair,
 						TargetSize = new Size(256, 240),
 						SecondaryNames = new[]
@@ -172,11 +146,10 @@ namespace BizHawk.Client.EmuHawk
 							$"P{controller} HPos"
 						}
 					},
-					new ButtonSchema
+					new ButtonSchema(284, 17)
 					{
 						Name = $"P{controller} Trigger",
-						DisplayName = "Trigger",
-						Location = new Point(284, 17)
+						DisplayName = "Trigger"
 					}
 				}
 			};
@@ -191,31 +164,11 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(215, 50),
 				Buttons = new[]
 				{
-					new ButtonSchema
-					{
-						Name = "Select",
-						Location = new Point(10, 15)
-					},
-					new ButtonSchema
-					{
-						Name = "Reset",
-						Location = new Point(60, 15)
-					},
-					new ButtonSchema
-					{
-						Name = "Power",
-						Location = new Point(108, 15)
-					},
-					new ButtonSchema
-					{
-						Name = "Pause",
-						Location = new Point(158, 15)
-					},
-					new ButtonSchema
-					{
-						Name = "BW",
-						Location = new Point(158, 15)
-					}
+					new ButtonSchema(10, 15) { Name = "Select" },
+					new ButtonSchema(60, 15) { Name = "Reset" },
+					new ButtonSchema(108, 15) { Name = "Power" },
+					new ButtonSchema(158, 15) { Name = "Pause" },
+					new ButtonSchema(158, 15) { Name = "BW" }
 				}
 			};
 		}

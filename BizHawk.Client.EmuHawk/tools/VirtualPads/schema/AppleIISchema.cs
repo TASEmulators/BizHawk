@@ -25,346 +25,98 @@ namespace BizHawk.Client.EmuHawk
 				Buttons = new[]
 				{
 					/************************** Row 1 **************************/
-					new ButtonSchema
-					{
-						Name = "Escape",
-						DisplayName = "Esc",
-						Location = new Point(10, 18)
+					new ButtonSchema(10, 18) { Name = "Escape",  DisplayName = "Esc"
 					},
-					new ButtonSchema
-					{
-						Name = "1",
-						Location = new Point(46, 18)
-					},
-					new ButtonSchema
-					{
-						Name = "2",
-						Location = new Point(70, 18)
-					},
-					new ButtonSchema
-					{
-						Name = "3",
-						Location = new Point(94, 18)
-					},
-					new ButtonSchema
-					{
-						Name = "4",
-						Location = new Point(118, 18)
-					},
-					new ButtonSchema
-					{
-						Name = "5",
-						Location = new Point(142, 18)
-					},
-					new ButtonSchema
-					{
-						Name = "6",
-						Location = new Point(166, 18)
-					},
-					new ButtonSchema
-					{
-						Name = "7",
-						Location = new Point(190, 18)
-					},
-					new ButtonSchema
-					{
-						Name = "8",
-						Location = new Point(214, 18)
-					},
-					new ButtonSchema
-					{
-						Name = "9",
-						Location = new Point(238, 18)
-					},
-					new ButtonSchema
-					{
-						Name = "0",
-						Location = new Point(262, 18)
-					},
-					new ButtonSchema
-					{
-						Name = "-",
-						Location = new Point(286, 18)
-					},
-					new ButtonSchema
-					{
-						Name = "=",
-						Location = new Point(307, 18)
-					},
-					new ButtonSchema
-					{
-						Name = "Delete",
-						Location = new Point(331, 18)
-					},
+					new ButtonSchema(46, 18) { Name = "1" },
+					new ButtonSchema(70, 18) { Name = "2" },
+					new ButtonSchema(94, 18) { Name = "3" },
+					new ButtonSchema(118, 18) { Name = "4" },
+					new ButtonSchema(142, 18) { Name = "5" },
+					new ButtonSchema(166, 18) { Name = "6" },
+					new ButtonSchema(190, 18) { Name = "7" },
+					new ButtonSchema(214, 18) { Name = "8" },
+					new ButtonSchema(238, 18) { Name = "9" },
+					new ButtonSchema(262, 18) { Name = "0" },
+					new ButtonSchema(286, 18) { Name = "-" },
+					new ButtonSchema(307, 18) { Name = "=" },
+					new ButtonSchema(331, 18) { Name = "Delete" },
 					
 					/************************** Row 2 **************************/
-					new ButtonSchema
-					{
-						Name = "Tab",
-						DisplayName = " Tab ",
-						Location = new Point(10, 42)
-					},
-					new ButtonSchema
-					{
-						Name = "Q",
-						Location = new Point(52, 42)
-					},
-
-					new ButtonSchema
-					{
-						Name = "W",
-						Location = new Point(78, 42)
-					},
-					new ButtonSchema
-					{
-						Name = "E",
-						Location = new Point(106, 42)
-					},
-					new ButtonSchema
-					{
-						Name = "R",
-						Location = new Point(130, 42)
-					},
-					new ButtonSchema
-					{
-						Name = "T",
-						Location = new Point(156, 42)
-					},
-					new ButtonSchema
-					{
-						Name = "Y",
-						Location = new Point(180, 42)
-					},
-					new ButtonSchema
-					{
-						Name = "U",
-						Location = new Point(204, 42)
-					},
-					new ButtonSchema
-					{
-						Name = "I",
-						Location = new Point(230, 42)
-					},
-					new ButtonSchema
-					{
-						Name = "O",
-						Location = new Point(250, 42)
-					},
-					new ButtonSchema
-					{
-						Name = "P",
-						Location = new Point(276, 42)
-					},
-					new ButtonSchema
-					{
-						Name = "[",
-						Location = new Point(302, 42)
-					},
-					new ButtonSchema
-					{
-						Name = "]",
-						Location = new Point(325, 42)
-					},
-					new ButtonSchema
-					{
-						Name = "\\",
-						DisplayName = " \\ ",
-						Location = new Point(349, 42)
-					},
+					new ButtonSchema(10, 42) { Name = "Tab",  DisplayName = " Tab " },
+					new ButtonSchema(52, 42) { Name = "Q" },
+					new ButtonSchema(78, 42) { Name = "W" },
+					new ButtonSchema(106, 42) { Name = "E" },
+					new ButtonSchema(130, 42) { Name = "R" },
+					new ButtonSchema(156, 42) { Name = "T" },
+					new ButtonSchema(180, 42) { Name = "Y" },
+					new ButtonSchema(204, 42) { Name = "U" },
+					new ButtonSchema(230, 42) { Name = "I" },
+					new ButtonSchema(250, 42) { Name = "O" },
+					new ButtonSchema(276, 42) { Name = "P" },
+					new ButtonSchema(302, 42) { Name = "[" },
+					new ButtonSchema(325, 42) { Name = "]" },
+					new ButtonSchema(349, 42) { Name = "\\",  DisplayName = " \\ " },
 
 					/************************** Row 3 **************************/
-					new ButtonSchema
-					{
-						Name = "Control",
-						DisplayName = " Control ",
-						Location = new Point(10, 66)
-					},
-					new ButtonSchema
-					{
-						Name = "A",
-						Location = new Point(66, 66)
-					},
-					new ButtonSchema
-					{
-						Name = "S",
-						Location = new Point(90, 66)
-					},
-					new ButtonSchema
-					{
-						Name = "D",
-						Location = new Point(114, 66)
-					},
-					new ButtonSchema
-					{
-						Name = "F",
-						Location = new Point(140, 66)
-					},
-					new ButtonSchema
-					{
-						Name = "G",
-						Location = new Point(164, 66)
-					},
-					new ButtonSchema
-					{
-						Name = "H",
-						Location = new Point(190, 66)
-					},
-					new ButtonSchema
-					{
-						Name = "J",
-						Location = new Point(216, 66)
-					},
-					new ButtonSchema
-					{
-						Name = "K",
-						Location = new Point(238, 66)
-					},
-					new ButtonSchema
-					{
-						Name = "L"
-					},
-					new ButtonSchema
-					{
-						Name = ";",
-						Location = new Point(286, 66)
-					},
-					new ButtonSchema
-					{
-						Name = "'",
-						Location = new Point(307, 66)
-					},
-					new ButtonSchema
-					{
-						Name = "Return",
-						Location = new Point(328, 66)
-					},
+					new ButtonSchema(10, 66) { Name = "Control",  DisplayName = " Control " },
+					new ButtonSchema(66, 66) { Name = "A" },
+					new ButtonSchema(90, 66) { Name = "S" },
+					new ButtonSchema(114, 66) { Name = "D" },
+					new ButtonSchema(140, 66) { Name = "F" },
+					new ButtonSchema(164, 66) { Name = "G" },
+					new ButtonSchema(190, 66) { Name = "H" },
+					new ButtonSchema(216, 66) { Name = "J" },
+					new ButtonSchema(238, 66) { Name = "K" },
+					new ButtonSchema(262, 66) { Name = "L" },
+					new ButtonSchema(286, 66) { Name = ";" },
+					new ButtonSchema(307, 66) { Name = "'" },
+					new ButtonSchema(328, 66) { Name = "Return" },
 
 					/************************** Row 4 **************************/
-					new ButtonSchema
-					{
-						Name = "Shift",
-						DisplayName = "     Shift     ",
-						Location = new Point(10, 90)
-					},
-					new ButtonSchema
-					{
-						Name = "Z",
-						Location = new Point(80, 90)
-					},
-					new ButtonSchema
-					{
-						Name = "X",
-						Location = new Point(106, 90)
-					},
-					new ButtonSchema
-					{
-						Name = "C",
-						Location = new Point(130, 90)
-					},
-					new ButtonSchema
-					{
-						Name = "V",
-						Location = new Point(154, 90)
-					},
-					new ButtonSchema
-					{
-						Name = "B",
-						Location = new Point(178, 90)
-					},
-					new ButtonSchema
-					{
-						Name = "N",
-						Location = new Point(202, 90)
-					},
-					new ButtonSchema
-					{
-						Name = "M",
-						Location = new Point(226, 90)
-					},
-					new ButtonSchema
-					{
-						Name = ",",
-						Location = new Point(252, 90)
-					},
-					new ButtonSchema
-					{
-						Name = ".",
-						Location = new Point(272, 90)
-					},
-					new ButtonSchema
-					{
-						Name = "/",
-						Location = new Point(292, 90)
-					},
-					new ButtonSchema
-					{
-						Name = "Shift",
-						DisplayName = "    Shift    ",
-						Location = new Point(315, 90)
-					},
+					new ButtonSchema(10, 90) { Name = "Shift", DisplayName = "     Shift     " },
+					new ButtonSchema(80, 90) { Name = "Z" },
+					new ButtonSchema(106, 90) { Name = "X" },
+					new ButtonSchema(130, 90) { Name = "C" },
+					new ButtonSchema(154, 90) { Name = "V" },
+					new ButtonSchema(178, 90) { Name = "B" },
+					new ButtonSchema(202, 90) { Name = "N" },
+					new ButtonSchema(226, 90) { Name = "M" },
+					new ButtonSchema(252, 90) { Name = "," },
+					new ButtonSchema(272, 90) { Name = "." },
+					new ButtonSchema(292, 90) { Name = "/" },
+					new ButtonSchema(315, 90) { Name = "Shift", DisplayName = "    Shift    " },
 
 					/************************** Row 5 **************************/
 
-					new ButtonSchema
+					new ButtonSchema(10, 114)
 					{
 						Name = "Caps Lock",
-						DisplayName = "Caps",
-						Location = new Point(10, 114)
+						DisplayName = "Caps"
 					},
-					new ButtonSchema
+					new ButtonSchema(52, 114)
 					{
 						Name = "`",
-						DisplayName = "~",
-						Location = new Point(52, 114)
+						DisplayName = "~"
 					},
-					new ButtonSchema
+					new ButtonSchema(96, 114)
 					{
 						Name = "White Apple",
-						DisplayName = "<",
-						Location = new Point(96, 114)
+						DisplayName = "<"
 					},
-
-					new ButtonSchema
+					new ButtonSchema(120, 114)
 					{
 						Name = "Space",
-						DisplayName = "                Space                ",
-						Location = new Point(120, 114)
+						DisplayName = "                Space                "
 					},
-
-					new ButtonSchema
+					new ButtonSchema(265, 114)
 					{
 						Name = "Black Apple",
-						DisplayName = ">",
-						Location = new Point(265, 114)
+						DisplayName = ">"
 					},
-
-					new ButtonSchema
-					{
-						Name = "Left",
-						Icon = Properties.Resources.Back,
-						Location = new Point(289, 114)
-					},
-
-					new ButtonSchema
-					{
-						Name = "Right",
-						Icon = Properties.Resources.Forward,
-						Location = new Point(311, 114)
-					},
-
-					new ButtonSchema
-					{
-						Name = "Down",
-						Icon = Properties.Resources.BlueDown,
-						Location = new Point(333, 114)
-					},
-
-					new ButtonSchema
-					{
-						Name = "Up",
-						Icon = Properties.Resources.BlueUp,
-						Location = new Point(355, 114)
-					}
+					ButtonSchema.Left("Left", 289, 114),
+					ButtonSchema.Right("Right", 311, 114),
+					ButtonSchema.Down("Down", 333, 114),
+					ButtonSchema.Up("Up", 355, 114), 
 				}
 			};
 		}
@@ -378,17 +130,15 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(120, 50),
 				Buttons = new[]
 				{
-					new ButtonSchema
+					new ButtonSchema(10, 18)
 					{
 						Name = "Next Disk",
-						DisplayName = "Next",
-						Location = new Point(10, 18)
+						DisplayName = "Next"
 					},
-					new ButtonSchema
+					new ButtonSchema(50, 18)
 					{
 						Name = "Previous Disk",
-						DisplayName = "Previous",
-						Location = new Point(50, 18)
+						DisplayName = "Previous"
 					}
 				}
 			};

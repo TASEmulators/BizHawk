@@ -30,11 +30,10 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down($"P{controller} Down", 23, 36),
 					ButtonSchema.Left($"P{controller} Left", 2, 24),
 					ButtonSchema.Right($"P{controller} Right", 44, 24), 
-					new ButtonSchema
+					new ButtonSchema(124, 24)
 					{
 						Name = $"P{controller} Button",
-						DisplayName = "B",
-						Location = new Point(124, 24)
+						DisplayName = "B"
 					}
 				}
 			};
@@ -49,401 +48,335 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(500, 150),
 				Buttons = new[]
 				{
-					new ButtonSchema
+					new ButtonSchema(16, 18)
 					{
 						Name = "Key Left Arrow",
-						DisplayName = "←",
-						Location = new Point(16, 18)
+						DisplayName = "←"
 					},
-					new ButtonSchema
+					new ButtonSchema(46, 18)
 					{
 						Name = "Key 1",
-						DisplayName = "1",
-						Location = new Point(46, 18)
+						DisplayName = "1"
 					},
-					new ButtonSchema
+					new ButtonSchema(70, 18)
 					{
 						Name = "Key 2",
-						DisplayName = "2",
-						Location = new Point(70, 18)
+						DisplayName = "2"
 					},
-					new ButtonSchema
+					new ButtonSchema(94, 18)
 					{
 						Name = "Key 3",
-						DisplayName = "3",
-						Location = new Point(94, 18)
+						DisplayName = "3"
 					},
-					new ButtonSchema
+					new ButtonSchema(118, 18)
 					{
 						Name = "Key 4",
-						DisplayName = "4",
-						Location = new Point(118, 18)
+						DisplayName = "4"
 					},
-					new ButtonSchema
+					new ButtonSchema(142, 18)
 					{
 						Name = "Key 5",
-						DisplayName = "5",
-						Location = new Point(142, 18)
+						DisplayName = "5"
 					},
-					new ButtonSchema
+					new ButtonSchema(166, 18)
 					{
 						Name = "Key 6",
-						DisplayName = "6",
-						Location = new Point(166, 18)
+						DisplayName = "6"
 					},
-					new ButtonSchema
+					new ButtonSchema(190, 18)
 					{
 						Name = "Key 7",
-						DisplayName = "7",
-						Location = new Point(190, 18)
+						DisplayName = "7"
 					},
-					new ButtonSchema
+					new ButtonSchema(214, 18)
 					{
 						Name = "Key 8",
-						DisplayName = "8",
-						Location = new Point(214, 18)
+						DisplayName = "8"
 					},
-					new ButtonSchema
+					new ButtonSchema(238, 18)
 					{
 						Name = "Key 9",
-						DisplayName = "9",
-						Location = new Point(238, 18)
+						DisplayName = "9"
 					},
-					new ButtonSchema
+					new ButtonSchema(262, 18)
 					{
 						Name = "Key 0",
-						DisplayName = "0",
-						Location = new Point(262, 18)
+						DisplayName = "0"
 					},
-					new ButtonSchema
+					new ButtonSchema(286, 18)
 					{
 						Name = "Key Plus",
-						DisplayName = "+",
-						Location = new Point(286, 18)
+						DisplayName = "+"
 					},
-					new ButtonSchema
+					new ButtonSchema(310, 18)
 					{
 						Name = "Key Minus",
-						DisplayName = "-",
-						Location = new Point(310, 18)
+						DisplayName = "-"
 					},
-					new ButtonSchema
+					new ButtonSchema(330, 18)
 					{
 						Name = "Key Pound",
-						DisplayName = "£",
-						Location = new Point(330, 18)
+						DisplayName = "£"
 					},
-					new ButtonSchema
+					new ButtonSchema(354, 18)
 					{
 						Name = "Key Clear/Home",
-						DisplayName = "C/H",
-						Location = new Point(354, 18)
+						DisplayName = "C/H"
 					},
-					new ButtonSchema
+					new ButtonSchema(392, 18)
 					{
 						Name = "Key Insert/Delete",
-						DisplayName = "I/D",
-						Location = new Point(392, 18)
+						DisplayName = "I/D"
 					},
-					new ButtonSchema
+					new ButtonSchema(450, 18)
 					{
 						Name = "Key F1",
-						DisplayName = "F 1",
-						Location = new Point(450, 18)
+						DisplayName = "F 1"
 					},
-					new ButtonSchema
+					new ButtonSchema(450, 42)
 					{
 						Name = "Key F3",
-						DisplayName = "F 3",
-						Location = new Point(450, 42)
+						DisplayName = "F 3"
 					},
-					new ButtonSchema
+					new ButtonSchema(450, 66)
 					{
 						Name = "Key F5",
-						DisplayName = "F 5",
-						Location = new Point(450, 66)
+						DisplayName = "F 5"
 					},
-					new ButtonSchema
+					new ButtonSchema(450, 90)
 					{
 						Name = "Key F7",
-						DisplayName = "F 7",
-						Location = new Point(450, 90)
+						DisplayName = "F 7"
 					},
-					new ButtonSchema
+					new ButtonSchema(16, 42)
 					{
 						Name = "Key Control",
-						DisplayName = "CTRL",
-						Location = new Point(16, 42)
+						DisplayName = "CTRL"
 					},
-					new ButtonSchema
+					new ButtonSchema(62, 42)
 					{
 						Name = "Key Q",
-						DisplayName = "Q",
-						Location = new Point(62, 42)
+						DisplayName = "Q"
 					},
-					new ButtonSchema
+					new ButtonSchema(88, 42)
 					{
 						Name = "Key W",
-						DisplayName = "W",
-						Location = new Point(88, 42)
+						DisplayName = "W"
 					},
-					new ButtonSchema
+					new ButtonSchema(116, 42)
 					{
 						Name = "Key E",
-						DisplayName = "E",
-						Location = new Point(116, 42)
+						DisplayName = "E"
 					},
-					new ButtonSchema
+					new ButtonSchema(140, 42)
 					{
 						Name = "Key R",
-						DisplayName = "R",
-						Location = new Point(140, 42)
+						DisplayName = "R"
 					},
-					new ButtonSchema
+					new ButtonSchema(166, 42)
 					{
 						Name = "Key T",
-						DisplayName = "T",
-						Location = new Point(166, 42)
+						DisplayName = "T"
 					},
-					new ButtonSchema
+					new ButtonSchema(190, 42)
 					{
 						Name = "Key Y",
-						DisplayName = "Y",
-						Location = new Point(190, 42)
+						DisplayName = "Y"
 					},
-					new ButtonSchema
+					new ButtonSchema(214, 42)
 					{
 						Name = "Key U",
-						DisplayName = "U",
-						Location = new Point(214, 42)
+						DisplayName = "U"
 					},
-					new ButtonSchema
+					new ButtonSchema(240, 42)
 					{
 						Name = "Key I",
-						DisplayName = "I",
-						Location = new Point(240, 42)
+						DisplayName = "I"
 					},
-					new ButtonSchema
+					new ButtonSchema(260, 42)
 					{
 						Name = "Key O",
-						DisplayName = "O",
-						Location = new Point(260, 42)
+						DisplayName = "O"
 					},
-					new ButtonSchema
+					new ButtonSchema(286, 42)
 					{
 						Name = "Key P",
-						DisplayName = "P",
-						Location = new Point(286, 42)
+						DisplayName = "P"
 					},
-					new ButtonSchema
+					new ButtonSchema(310, 42)
 					{
 						Name = "Key At",
-						DisplayName = "@",
-						Location = new Point(310, 42)
+						DisplayName = "@"
 					},
-					new ButtonSchema
+					new ButtonSchema(338, 42)
 					{
 						Name = "Key Asterisk",
-						DisplayName = "*",
-						Location = new Point(338, 42)
+						DisplayName = "*"
 					},
-					new ButtonSchema
+					new ButtonSchema(360, 42)
 					{
 						Name = "Key Up Arrow",
-						DisplayName = "↑",
-						Location = new Point(360, 42)
+						DisplayName = "↑"
 					},
-					new ButtonSchema
+					new ButtonSchema(390, 42)
 					{
 						Name = "Key Restore",
-						DisplayName = "RST",
-						Location = new Point(390, 42)
+						DisplayName = "RST"
 					},
-					new ButtonSchema
+					new ButtonSchema(12, 66)
 					{
 						Name = "Key Run/Stop",
-						DisplayName = "R/S",
-						Location = new Point(12, 66)
+						DisplayName = "R/S"
 					},
-					new ButtonSchema
+					new ButtonSchema(50, 66)
 					{
 						Name = "Key Lck",
-						DisplayName = "Lck",
-						Location = new Point(50, 66)
+						DisplayName = "Lck"
 					},
-					new ButtonSchema
+					new ButtonSchema(86, 66)
 					{
 						Name = "Key A",
-						DisplayName = "A",
-						Location = new Point(86, 66)
+						DisplayName = "A"
 					},
-					new ButtonSchema
+					new ButtonSchema(110, 66)
 					{
 						Name = "Key S",
-						DisplayName = "S",
-						Location = new Point(110, 66)
+						DisplayName = "S"
 					},
-					new ButtonSchema
+					new ButtonSchema(134, 66)
 					{
 						Name = "Key D",
-						DisplayName = "D",
-						Location = new Point(134, 66)
+						DisplayName = "D"
 					},
-					new ButtonSchema
+					new ButtonSchema(160, 66)
 					{
 						Name = "Key F",
-						DisplayName = "F",
-						Location = new Point(160, 66)
+						DisplayName = "F"
 					},
-					new ButtonSchema
+					new ButtonSchema(184, 66)
 					{
 						Name = "Key G",
-						DisplayName = "G",
-						Location = new Point(184, 66)
+						DisplayName = "G"
 					},
-					new ButtonSchema
+					new ButtonSchema(210, 66)
 					{
 						Name = "Key H",
-						DisplayName = "H",
-						Location = new Point(210, 66)
+						DisplayName = "H"
 					},
-					new ButtonSchema
+					new ButtonSchema(236, 66)
 					{
 						Name = "Key J",
-						DisplayName = "J",
-						Location = new Point(236, 66)
+						DisplayName = "J"
 					},
-					new ButtonSchema
+					new ButtonSchema(258, 66)
 					{
 						Name = "Key K",
-						DisplayName = "K",
-						Location = new Point(258, 66)
+						DisplayName = "K"
 					},
-					new ButtonSchema
+					new ButtonSchema(282, 66)
 					{
 						Name = "Key L",
-						DisplayName = "L",
-						Location = new Point(282, 66)
+						DisplayName = "L"
 					},
-					new ButtonSchema
+					new ButtonSchema(306, 66)
 					{
 						Name = "Key Colon",
-						DisplayName = ":",
-						Location = new Point(306, 66)
+						DisplayName = ":"
 					},
-					new ButtonSchema
+					new ButtonSchema(326, 66)
 					{
 						Name = "Key Semicolon",
-						DisplayName = ";",
-						Location = new Point(326, 66)
+						DisplayName = ";"
 					},
-					new ButtonSchema
+					new ButtonSchema(346, 66)
 					{
 						Name = "Key Equal",
-						DisplayName = "=",
-						Location = new Point(346, 66)
+						DisplayName = "="
 					},
-					new ButtonSchema
+					new ButtonSchema(370, 66)
 					{
 						Name = "Key Return",
-						DisplayName = "Return",
-						Location = new Point(370, 66)
+						DisplayName = "Return"
 					},
-					new ButtonSchema
+					new ButtonSchema(8, 90)
 					{
 						Name = "Key Commodore",
-						DisplayName = "C64",
-						Location = new Point(8, 90)
+						DisplayName = "C64"
 					},
-					new ButtonSchema
+					new ButtonSchema(44, 90)
 					{
 						Name = "Key Left Shift",
-						DisplayName = "Shift",
-						Location = new Point(44, 90)
+						DisplayName = "Shift"
 					},
-					new ButtonSchema
+					new ButtonSchema(82, 90)
 					{
 						Name = "Key Z",
-						DisplayName = "Z",
-						Location = new Point(82, 90)
+						DisplayName = "Z"
 					},
-					new ButtonSchema
+					new ButtonSchema(106, 90)
 					{
 						Name = "Key X",
-						DisplayName = "X",
-						Location = new Point(106, 90)
+						DisplayName = "X"
 					},
-					new ButtonSchema
+					new ButtonSchema(130, 90)
 					{
 						Name = "Key C",
-						DisplayName = "C",
-						Location = new Point(130, 90)
+						DisplayName = "C"
 					},
-					new ButtonSchema
+					new ButtonSchema(154, 90)
 					{
 						Name = "Key V",
-						DisplayName = "V",
-						Location = new Point(154, 90)
+						DisplayName = "V"
 					},
-					new ButtonSchema
+					new ButtonSchema(178, 90)
 					{
 						Name = "Key B",
-						DisplayName = "B",
-						Location = new Point(178, 90)
+						DisplayName = "B"
 					},
-					new ButtonSchema
+					new ButtonSchema(202, 90)
 					{
 						Name = "Key N",
-						DisplayName = "N",
-						Location = new Point(202, 90)
+						DisplayName = "N"
 					},
-					new ButtonSchema
+					new ButtonSchema(226, 90)
 					{
 						Name = "Key M",
-						DisplayName = "M",
-						Location = new Point(226, 90)
+						DisplayName = "M"
 					},
-					new ButtonSchema
+					new ButtonSchema(252, 90)
 					{
 						Name = "Key Comma",
-						DisplayName = ",",
-						Location = new Point(252, 90)
+						DisplayName = ","
 					},
-					new ButtonSchema
+					new ButtonSchema(272, 90)
 					{
 						Name = "Key Period",
-						DisplayName = ".",
-						Location = new Point(272, 90)
+						DisplayName = "."
 					},
-					new ButtonSchema
+					new ButtonSchema(292, 90)
 					{
 						Name = "Key Slash",
-						DisplayName = "/",
-						Location = new Point(292, 90)
+						DisplayName = "/"
 					},
-					new ButtonSchema
+					new ButtonSchema(314, 90)
 					{
 						Name = "Key Right Shift",
-						DisplayName = "Shift",
-						Location = new Point(314, 90)
+						DisplayName = "Shift"
 					},
-					new ButtonSchema
+					new ButtonSchema(352, 90)
 					{
 						Name = "Key Cursor Up/Down",
-						DisplayName = "Csr U",
-						Location = new Point(352, 90)
+						DisplayName = "Csr U"
 					},
-					new ButtonSchema
+					new ButtonSchema(396, 90)
 					{
 						Name = "Key Cursor Left/Right",
-						DisplayName = "Csr L",
-						Location = new Point(396, 90)
+						DisplayName = "Csr L"
 					},
-					new ButtonSchema
+					new ButtonSchema(120, 114)
 					{
 						Name = "Key Space",
-						DisplayName = "                          Space                          ",
-						Location = new Point(120, 114)
+						DisplayName = "                          Space                          "
 					}
 				}
 			};
