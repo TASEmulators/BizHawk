@@ -111,11 +111,10 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(250, 74),
 				Buttons = new[]
 				{
-					new ButtonSchema(23, 15)
+					new SingleFloatSchema(23, 15)
 					{
 						Name = $"P{controller} Paddle",
-						DisplayName = "Paddle",
-						Type = PadInputType.FloatSingle
+						DisplayName = "Paddle"
 					},
 					new ButtonSchema(12, 90)
 					{
@@ -136,10 +135,9 @@ namespace BizHawk.Client.EmuHawk
 				MaxSize = new Size(356, 290),
 				Buttons = new[]
 				{
-					new ButtonSchema(14, 17)
+					new TargetedPairSchema(14, 17)
 					{
 						Name = $"P{controller} VPos",
-						Type = PadInputType.TargetedPair,
 						TargetSize = new Size(256, 240),
 						SecondaryNames = new[]
 						{

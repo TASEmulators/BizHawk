@@ -31,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(275, 316),
 				Buttons = new[]
 				{
-					ButtonSchema.Up(24, 230, $"P{controller}  DPad U"),
+					ButtonSchema.Up(24, 230, $"P{controller} DPad U"),
 					ButtonSchema.Down(24, 251, $"P{controller} DPad D"),
 					ButtonSchema.Left(3, 242, $"P{controller} DPad L"),
 					ButtonSchema.Right(45, 242, $"P{controller} DPad R"),
@@ -85,12 +85,10 @@ namespace BizHawk.Client.EmuHawk
 						Name = $"P{controller} C Right",
 						Icon = Properties.Resources.YellowRight
 					},
-					new ButtonSchema(6, 14)
+					new AnalogSchema(6, 14, $"P{controller} X Axis")
 					{
-						Name = $"P{controller} X Axis",
 						AxisRange = controllerDefRanges[0],
-						SecondaryAxisRange = controllerDefRanges[1],
-						Type = PadInputType.AnalogStick
+						SecondaryAxisRange = controllerDefRanges[1]
 					}
 				}
 			};

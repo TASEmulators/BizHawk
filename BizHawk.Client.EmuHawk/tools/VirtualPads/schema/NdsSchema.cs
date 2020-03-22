@@ -49,12 +49,9 @@ namespace BizHawk.Client.EmuHawk.tools.VirtualPads.schema
 					new ButtonSchema(366, 86) { Name = "A" },
 
 					// Screen
-					new ButtonSchema(72, 35)
+					new TargetedPairSchema(72, 35, "TouchX")
 					{
-						Name = "TouchX",
-						Type = PadInputType.TargetedPair,
-						TargetSize = new Size(256, 192),
-						SecondaryNames = new[] { "TouchY" }
+						TargetSize = new Size(256, 192)
 					},
 					new ButtonSchema(72, 10) { Name = "Touch" }
 				}

@@ -162,16 +162,10 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(356, 300),
 				Buttons = new[]
 				{
-					new ButtonSchema(14, 17)
+					new TargetedPairSchema(14, 17, $"P{controller} Lightgun X")
 					{
-						Name = $"P{controller} Lightgun X",
-						Type = PadInputType.TargetedPair,
 						MaxValue = 10000,
-						TargetSize = new Size(320, 240),
-						SecondaryNames = new[]
-						{
-							$"P{controller} Lightgun Y"
-						}
+						TargetSize = new Size(320, 240)
 					},
 					new ButtonSchema(284, 17)
 					{
@@ -196,16 +190,10 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(418, 290),
 				Buttons = new[]
 				{
-					new ButtonSchema(14, 17)
+					new AnalogSchema(14, 17, $"P{controller} Mouse X")
 					{
-						Name = $"P{controller} Mouse X",
-						Type = PadInputType.AnalogStick,
 						MaxValue = 255,
-						TargetSize = new Size(520, 570),
-						SecondaryNames = new[]
-						{
-							$"P{controller} Mouse Y"
-						}
+						TargetSize = new Size(520, 570)
 					},
 					new ButtonSchema(365, 17)
 					{

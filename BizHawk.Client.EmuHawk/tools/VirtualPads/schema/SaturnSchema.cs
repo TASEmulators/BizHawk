@@ -175,28 +175,25 @@ namespace BizHawk.Client.EmuHawk
 						Name = $"P{controller} Z",
 						DisplayName = "Z"
 					},
-					new ButtonSchema(6, 74)
+					new AnalogSchema(6, 74)
 					{
 						Name = $"P{controller} Stick Horizontal",
 						SecondaryNames = new[] { $"P{controller} Stick Vertical" },
 						AxisRange = axisRanges[0],
 						SecondaryAxisRange = axisRanges[1],
-						Type = PadInputType.AnalogStick
 					},
-					new ButtonSchema(8, 12)
+					new SingleFloatSchema(8, 12)
 					{
 						Name = $"P{controller} Left Shoulder",
 						DisplayName = "L",
-						Type = PadInputType.FloatSingle,
 						TargetSize = new Size(128, 55),
 						MinValue = 0,
 						MaxValue = 255
 					},
-					new ButtonSchema(328, 12)
+					new SingleFloatSchema(328, 12)
 					{
 						Name = $"P{controller} Right Shoulder",
 						DisplayName = "L",
-						Type = PadInputType.FloatSingle,
 						TargetSize = new Size(128, 55),
 						MinValue = 0,
 						MaxValue = 255
@@ -214,11 +211,10 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(375, 320),
 				Buttons = new[]
 				{
-					new ButtonSchema(14, 17)
+					new SingleFloatSchema(14, 17)
 					{
 						Name = $"P{controller} X",
 						SecondaryNames = new[] { $"P{controller} Y" },
-						Type = PadInputType.TargetedPair,
 						TargetSize = new Size(256, 256)
 					},
 					new ButtonSchema(300, 17)
@@ -254,11 +250,10 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(325, 100),
 				Buttons = new[]
 				{
-					new ButtonSchema(8, 12)
+					new SingleFloatSchema(8, 12)
 					{
 						Name = $"P{controller} Wheel",
 						DisplayName = "Wheel",
-						Type = PadInputType.FloatSingle,
 						TargetSize = new Size(128, 55),
 						MinValue = 0,
 						MaxValue = 255
@@ -359,19 +354,17 @@ namespace BizHawk.Client.EmuHawk
 						Name = $"P{controller} C",
 						DisplayName = "C"
 					},
-					new ButtonSchema(185, 13)
+					new AnalogSchema(185, 13)
 					{
 						Name = $"P{controller} Stick Horizontal",
 						SecondaryNames = new[] { $"P{controller} Stick Vertical" },
 						AxisRange = axisRanges[0],
-						SecondaryAxisRange = axisRanges[1],
-						Type = PadInputType.AnalogStick
+						SecondaryAxisRange = axisRanges[1]
 					},
-					new ButtonSchema(135, 13)
+					new SingleFloatSchema(135, 13)
 					{
 						Name = $"P{controller} Throttle",
 						DisplayName = "Throttle",
-						Type = PadInputType.FloatSingle,
 						TargetSize = new Size(64, 178),
 						MinValue = 0,
 						MaxValue = 255,
@@ -389,39 +382,35 @@ namespace BizHawk.Client.EmuHawk
 				DisplayName = "Dual Mission",
 				IsConsole = false,
 				DefaultSize = new Size(680, 230),
-				Buttons = new[]
+				Buttons = new ButtonSchema[]
 				{
-					new ButtonSchema(58, 13)
+					new AnalogSchema(58, 13)
 					{
 						Name = $"P{controller} Left Stick Horizontal",
 						SecondaryNames = new[] { $"P{controller} Left Stick Vertical" },
 						AxisRange = axisRanges[3],
-						SecondaryAxisRange = axisRanges[4],
-						Type = PadInputType.AnalogStick
+						SecondaryAxisRange = axisRanges[4]
 					},
-					new ButtonSchema(8, 13)
+					new SingleFloatSchema(8, 13)
 					{
 						Name = $"P{controller} Left Throttle",
 						DisplayName = "Throttle",
-						Type = PadInputType.FloatSingle,
 						TargetSize = new Size(64, 178),
 						MinValue = 0,
 						MaxValue = 255,
 						Orientation = Orientation.Vertical
 					},
-					new ButtonSchema(400, 13)
+					new AnalogSchema(400, 13)
 					{
 						Name = $"P{controller} Right Stick Horizontal",
 						SecondaryNames = new[] { $"P{controller} Right Stick Vertical" },
 						AxisRange = axisRanges[0],
-						SecondaryAxisRange = axisRanges[1],
-						Type = PadInputType.AnalogStick
+						SecondaryAxisRange = axisRanges[1]
 					},
-					new ButtonSchema(350, 13)
+					new SingleFloatSchema(350, 13)
 					{
 						Name = $"P{controller} Right Throttle",
 						DisplayName = "Throttle",
-						Type = PadInputType.FloatSingle,
 						TargetSize = new Size(64, 178),
 						MinValue = 0,
 						MaxValue = 255,

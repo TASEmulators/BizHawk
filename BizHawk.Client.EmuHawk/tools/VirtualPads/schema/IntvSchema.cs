@@ -309,12 +309,10 @@ namespace BizHawk.Client.EmuHawk
 						Name = $"P{controller} R",
 						DisplayName = "R"
 					},
-					new ButtonSchema(1, 121)
+					new AnalogSchema(1, 121, $"P{controller} Disc X")
 					{
-						Name = $"P{controller} Disc X",
 						AxisRange = controllerDefRanges[0],
-						SecondaryAxisRange = controllerDefRanges[1],
-						Type = PadInputType.AnalogStick
+						SecondaryAxisRange = controllerDefRanges[1]
 					}
 				}
 			};

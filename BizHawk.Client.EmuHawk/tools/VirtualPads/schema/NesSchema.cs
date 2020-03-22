@@ -294,15 +294,9 @@ namespace BizHawk.Client.EmuHawk
 				MaxSize = new Size(356, 290),
 				Buttons = new[]
 				{
-					new ButtonSchema(14, 17)
+					new TargetedPairSchema(14, 17, $"P{controller} Zapper X")
 					{
-						Name = $"P{controller} Zapper X",
-						Type = PadInputType.TargetedPair,
-						TargetSize = new Size(256, 240),
-						SecondaryNames = new[]
-						{
-							$"P{controller} Zapper Y"
-						}
+						TargetSize = new Size(256, 240)
 					},
 					new ButtonSchema(284, 17)
 					{
@@ -323,11 +317,10 @@ namespace BizHawk.Client.EmuHawk
 				MaxSize = new Size(380, 110),
 				Buttons = new[]
 				{
-					new ButtonSchema(14, 17)
+					new SingleFloatSchema(14, 17)
 					{
 						Name = $"P{controller} Paddle",
 						DisplayName = "Arkanoid Paddle",
-						Type = PadInputType.FloatSingle,
 						TargetSize = new Size(380, 69),
 						MaxValue = 160
 					},
@@ -424,15 +417,9 @@ namespace BizHawk.Client.EmuHawk
 				MaxSize = new Size(356, 290),
 				Buttons = new[]
 				{
-					new ButtonSchema(14, 17)
+					new TargetedPairSchema(14, 17, $"P{controller} Pen X")
 					{
-						Name = $"P{controller} Pen X",
-						Type = PadInputType.TargetedPair,
-						TargetSize = new Size(256, 240),
-						SecondaryNames = new[]
-						{
-							$"P{controller} Pen Y"
-						}
+						TargetSize = new Size(256, 240)
 					},
 					new ButtonSchema(284, 17)
 					{

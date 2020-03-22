@@ -125,15 +125,9 @@ namespace BizHawk.Client.EmuHawk
 				MaxSize = new Size(356, 290),
 				Buttons = new[]
 				{
-					new ButtonSchema(14, 17)
+					new TargetedPairSchema(14, 17, "P1 Tilt X")
 					{
-						Name = "P1 Tilt X",
-						Type = PadInputType.TargetedPair,
-						TargetSize = new Size(256, 240),
-						SecondaryNames = new[]
-						{
-							"P1 Tilt Y"
-						}
+						TargetSize = new Size(256, 240)
 					}
 				}
 			};

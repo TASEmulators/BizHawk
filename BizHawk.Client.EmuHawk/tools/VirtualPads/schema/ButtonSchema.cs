@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public string Name { get; set; }
 		public string DisplayName { get; set; }
-		public PadInputType Type { get; set; } = PadInputType.Boolean;
+		public PadInputType Type { get; protected set; } = PadInputType.Boolean;
 		public Point Location { get; set; }
 		public Bitmap Icon { get; set; }
 		public Size TargetSize { get; set; } // Specifically for TargetedPair, specifies the screen size
@@ -62,5 +62,62 @@ namespace BizHawk.Client.EmuHawk
 			Name = name,
 			Icon = Properties.Resources.Forward
 		};
+	}
+
+	public class SingleFloatSchema : ButtonSchema
+	{
+		public SingleFloatSchema(int x, int y)
+			: base(x, y)
+		{
+			Type = PadInputType.FloatSingle;
+		}
+	}
+
+	public class TargetedPairSchema : ButtonSchema
+	{
+		public TargetedPairSchema(int x, int y)
+			: base(x, y)
+		{
+			Type = PadInputType.TargetedPair;
+		}
+
+		public TargetedPairSchema(int x, int y, string nameX)
+			: this(x, y)
+		{
+			Name = nameX;
+			SecondaryNames = new[]
+			{
+				nameX.Replace("X", "Y")
+			};
+		}
+	}
+
+	public class AnalogSchema : ButtonSchema
+	{
+		public AnalogSchema(int x, int y)
+			: base(x, y)
+		{
+			Type = PadInputType.AnalogStick;
+		}
+
+		public AnalogSchema(int x, int y, string nameX)
+			: this(x, y)
+		{
+			Name = nameX;
+			SecondaryNames = new[]
+			{
+				nameX.Replace("X", "Y")
+			};
+		}
+	}
+
+	public class DiscManagerSchema : ButtonSchema
+	{
+		public DiscManagerSchema(int x, int y)
+			: base(x, y)
+		{
+			Type = PadInputType.DiscManager;
+			Name = "Disc Select"; // not really, but shuts up a warning
+		}
 	}
 }

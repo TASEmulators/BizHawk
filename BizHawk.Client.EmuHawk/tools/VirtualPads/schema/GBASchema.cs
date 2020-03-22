@@ -31,34 +31,30 @@ namespace BizHawk.Client.EmuHawk
 				MaxSize = new Size(256, 326),
 				Buttons = new[]
 				{
-					new ButtonSchema(10, 15)
+					new SingleFloatSchema(10, 15)
 					{
 						Name = "Tilt X",
-						Type = PadInputType.FloatSingle,
 						TargetSize = new Size(226, 69),
 						MinValue = short.MinValue,
 						MaxValue = short.MaxValue
 					},
-					new ButtonSchema(10, 94)
+					new SingleFloatSchema(10, 94)
 					{
 						Name = "Tilt Y",
-						Type = PadInputType.FloatSingle,
 						TargetSize = new Size(226, 69),
 						MinValue = short.MinValue,
 						MaxValue = short.MaxValue
 					},
-					new ButtonSchema(10, 173)
+					new SingleFloatSchema(10, 173)
 					{
 						Name = "Tilt Z",
-						Type = PadInputType.FloatSingle,
 						TargetSize = new Size(226, 69),
 						MinValue = short.MinValue,
 						MaxValue = short.MaxValue
 					},
-					new ButtonSchema(10, 252)
+					new SingleFloatSchema(10, 252)
 					{
 						Name = "Light Sensor",
-						Type = PadInputType.FloatSingle,
 						TargetSize = new Size(226, 69),
 						MaxValue = byte.MaxValue
 					}

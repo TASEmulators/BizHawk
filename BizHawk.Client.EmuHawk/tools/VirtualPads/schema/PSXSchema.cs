@@ -118,19 +118,17 @@ namespace BizHawk.Client.EmuHawk
 						Name = $"P{controller} Select",
 						DisplayName = "s"
 					},
-					new ButtonSchema(3, 120)
+					new AnalogSchema(3, 120, $"P{controller} LStick X")
 					{
 						Name = $"P{controller} LStick X",
 						AxisRange = stickRanges[0],
-						SecondaryAxisRange = stickRanges[1],
-						Type = PadInputType.AnalogStick
+						SecondaryAxisRange = stickRanges[1]
 					},
 					new ButtonSchema(260, 120)
 					{
 						Name = $"P{controller} RStick X",
 						AxisRange = stickRanges[0],
-						SecondaryAxisRange = stickRanges[1],
-						Type = PadInputType.AnalogStick
+						SecondaryAxisRange = stickRanges[1]
 					}
 				}
 			};
@@ -237,39 +235,35 @@ namespace BizHawk.Client.EmuHawk
 						Name = $"P{controller} R",
 						DisplayName = "R"
 					},
-					new ButtonSchema(5, 15)
+					new SingleFloatSchema(5, 15)
 					{
 						Name = $"P{controller} L",
 						DisplayName = "L",
-						Type = PadInputType.FloatSingle,
 						TargetSize = new Size(128, 55),
 						MinValue = 0,
 						MaxValue = 255
 					},
-					new ButtonSchema(125, 15)
+					new SingleFloatSchema(125, 15)
 					{
 						Name = $"P{controller} Twist",
 						DisplayName = "Twist",
-						Type = PadInputType.FloatSingle,
 						TargetSize = new Size(64, 178),
 						MinValue = 0,
 						MaxValue = 255,
 						Orientation = Orientation.Vertical
 					},
-					new ButtonSchema(180, 60)
+					new SingleFloatSchema(180, 60)
 					{
 						Name = $"P{controller} 2",
 						DisplayName = "II",
-						Type = PadInputType.FloatSingle,
 						TargetSize = new Size(128, 55),
 						MinValue = 0,
 						MaxValue = 255
 					},
-					new ButtonSchema(220, 120)
+					new SingleFloatSchema(220, 120)
 					{
 						Name = $"P{controller} 1",
 						DisplayName = "I",
-						Type = PadInputType.FloatSingle,
 						TargetSize = new Size(128, 55),
 						MinValue = 0,
 						MaxValue = 255
@@ -288,10 +282,8 @@ namespace BizHawk.Client.EmuHawk
 				Buttons = new[]
 				{
 					new ButtonSchema(10, 15) { Name = "Reset" },
-					new ButtonSchema(10, 54)
+					new DiscManagerSchema(10, 54)
 					{
-						Name = "Disc Select", // not really, but shuts up a warning
-						Type = PadInputType.DiscManager,
 						TargetSize = new Size(300, 300),
 						OwnerEmulator = psx,
 						SecondaryNames = new[] { "Open", "Close", "Disc Select" }

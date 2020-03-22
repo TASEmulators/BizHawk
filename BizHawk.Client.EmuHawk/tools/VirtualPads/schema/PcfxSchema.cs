@@ -116,11 +116,8 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(375, 320),
 				Buttons = new[]
 				{
-					new ButtonSchema(14, 17)
+					new TargetedPairSchema(14, 17, $"P{controller} X")
 					{
-						Name = $"P{controller} X",
-						SecondaryNames = new[] { $"P{controller} Y" },
-						Type = PadInputType.TargetedPair,
 						TargetSize = new Size(256, 256)
 					},
 					new ButtonSchema(300, 17)

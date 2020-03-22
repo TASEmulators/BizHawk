@@ -173,12 +173,10 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(345, 225),
 				Buttons = new[]
 				{
-					new ButtonSchema(6, 14)
+					new AnalogSchema(6, 14, $"P{controller} Mouse X")
 					{
-						Name = $"P{controller} Mouse X",
 						AxisRange = controllerDefRanges[0],
-						SecondaryAxisRange = controllerDefRanges[1],
-						Type = PadInputType.AnalogStick
+						SecondaryAxisRange = controllerDefRanges[1]
 					},
 					new ButtonSchema(275, 15)
 					{
@@ -204,15 +202,9 @@ namespace BizHawk.Client.EmuHawk
 				MaxSize = new Size(356, 290),
 				Buttons = new[]
 				{
-					new ButtonSchema(14, 17)
+					new TargetedPairSchema(14, 17, $"P{controller} Scope X")
 					{
-						Name = $"P{controller} Scope X",
-						Type = PadInputType.TargetedPair,
-						TargetSize = new Size(256, 240),
-						SecondaryNames = new[]
-						{
-							$"P{controller} Scope Y"
-						}
+						TargetSize = new Size(256, 240)
 					},
 					new ButtonSchema(284, 17)
 					{
@@ -248,15 +240,9 @@ namespace BizHawk.Client.EmuHawk
 				MaxSize = new Size(356, 290),
 				Buttons = new[]
 				{
-					new ButtonSchema(14, 17)
+					new TargetedPairSchema(14, 17, $"P{controller} Justifier X")
 					{
-						Name = $"P{controller} Justifier X",
-						Type = PadInputType.TargetedPair,
-						TargetSize = new Size(256, 240),
-						SecondaryNames = new[]
-						{
-							$"P{controller} Justifier Y"
-						}
+						TargetSize = new Size(256, 240)
 					},
 					new ButtonSchema(284, 17)
 					{

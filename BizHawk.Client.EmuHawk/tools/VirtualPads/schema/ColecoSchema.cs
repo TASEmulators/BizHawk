@@ -134,12 +134,10 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(275, 260),
 				Buttons = new[]
 				{
-					new ButtonSchema(6, 14)
+					new AnalogSchema(6, 14, $"P{controller} Disc X")
 					{
-						Name = $"P{controller} Disc X",
 						AxisRange = controllerDefRanges[0],
-						SecondaryAxisRange = controllerDefRanges[1],
-						Type = PadInputType.AnalogStick
+						SecondaryAxisRange = controllerDefRanges[1]
 					},
 					new ButtonSchema(6, 224)
 					{
@@ -226,14 +224,13 @@ namespace BizHawk.Client.EmuHawk
 						DisplayName = "#"
 					},
 
-					new ButtonSchema(6, 200)
+					new SingleFloatSchema(6, 200)
 					{
 						Name = $"P{controller} Disc X",
 						DisplayName = "Disc",
 						TargetSize = new Size(180, 55),
 						MinValue = -360,
-						MaxValue = 360,
-						Type = PadInputType.FloatSingle
+						MaxValue = 360
 					},
 
 					new ButtonSchema(126, 15)
