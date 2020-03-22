@@ -30,24 +30,9 @@ namespace BizHawk.Client.EmuHawk
 				MaxSize = new Size(256, 326),
 				Buttons = new[]
 				{
-					new SingleFloatSchema(10, 15, "Tilt X")
-					{
-						TargetSize = new Size(226, 69),
-						MinValue = short.MinValue,
-						MaxValue = short.MaxValue
-					},
-					new SingleFloatSchema(10, 94, "Tilt Y")
-					{
-						TargetSize = new Size(226, 69),
-						MinValue = short.MinValue,
-						MaxValue = short.MaxValue
-					},
-					new SingleFloatSchema(10, 173, "Tilt Z")
-					{
-						TargetSize = new Size(226, 69),
-						MinValue = short.MinValue,
-						MaxValue = short.MaxValue
-					},
+					Tilt(10, 15, "X"),
+					Tilt(10, 94, "Y"),
+					Tilt(10, 173, "Z"),
 					new SingleFloatSchema(10, 252, "Light Sensor")
 					{
 						TargetSize = new Size(226, 69),
@@ -56,6 +41,14 @@ namespace BizHawk.Client.EmuHawk
 				}
 			};
 		}
+
+		private static ButtonSchema Tilt(int x, int y, string direction)
+			=> new SingleFloatSchema(x, y, "Tilt " + direction)
+			{
+				TargetSize = new Size(226, 69),
+				MinValue = short.MinValue,
+				MaxValue = short.MaxValue
+			};
 
 		private static PadSchema StandardController()
 		{

@@ -117,9 +117,8 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private static ButtonSchema Key(int x, int y, string name, string displayName = null)
-			=> new ButtonSchema(x, y)
+			=> new ButtonSchema(x, y, "Key " + name)
 			{
-				Name = "Key " + name,
 				DisplayName = displayName ?? name
 			};
 	}

@@ -26,21 +26,9 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(14, 56, "Down"),
 					ButtonSchema.Left(2, 34, "Left"),
 					ButtonSchema.Right(24, 34, "Right"),
-					new ButtonSchema(74, 34)
-					{
-						Name = "B",
-						DisplayName = "B"
-					},
-					new ButtonSchema(98, 34)
-					{
-						Name = "A",
-						DisplayName = "A"
-					},
-					new ButtonSchema(146, 12)
-					{
-						Name = "Option",
-						DisplayName = "O"
-					}
+					new ButtonSchema(74, 34, "B"),
+					new ButtonSchema(98, 34, "A"),
+					new ButtonSchema(146, 12, "Option") { DisplayName = "O" }
 				}
 			};
 		}
@@ -52,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(75, 50),
 				Buttons = new[]
 				{
-					new ButtonSchema(10, 15) { Name = "Power" }
+					new ButtonSchema(10, 15, "Power")
 				}
 			};
 		}

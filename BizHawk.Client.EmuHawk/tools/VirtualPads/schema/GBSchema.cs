@@ -41,10 +41,10 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(14, 56, "Down"),
 					ButtonSchema.Left(2, 34, "Left"),
 					ButtonSchema.Right(24, 34, "Right"),
-					new ButtonSchema(122, 34) { Name = "B" },
-					new ButtonSchema(146, 34) { Name = "A" },
-					new ButtonSchema(52, 34)  { Name = "Select",  DisplayName = "s" },
-					new ButtonSchema(74, 34) { Name = "Start",  DisplayName = "S"  }
+					new ButtonSchema(122, 34, "B"),
+					new ButtonSchema(146, 34, "A"),
+					new ButtonSchema(52, 34, "Select") { DisplayName = "s" },
+					new ButtonSchema(74, 34, "Start") { DisplayName = "S"  }
 				}
 			};
 		}
@@ -56,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(75, 50),
 				Buttons = new[]
 				{
-					new ButtonSchema(10, 15) { Name = "Power" }
+					new ButtonSchema(10, 15, "Power")
 				}
 			};
 		}
@@ -73,26 +73,10 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(14, 56, "P1 Down"), 
 					ButtonSchema.Left(2, 34, "P1 Left"), 
 					ButtonSchema.Right(24, 34, "P1 Right"), 
-					new ButtonSchema(122, 34)
-					{
-						Name = "P1 B",
-						DisplayName = "B"
-					},
-					new ButtonSchema(146, 34)
-					{
-						Name = "P1 A",
-						DisplayName = "A"
-					},
-					new ButtonSchema(52, 34)
-					{
-						Name = "P1 Select",
-						DisplayName = "s"
-					},
-					new ButtonSchema(74, 34)
-					{
-						Name = "P1 Start",
-						DisplayName = "S"
-					}
+					new ButtonSchema(122, 34, "P1 B") { DisplayName = "B" },
+					new ButtonSchema(146, 34, "P1 A") { DisplayName = "A" },
+					new ButtonSchema(52, 34, "P1 Select") { DisplayName = "s" },
+					new ButtonSchema(74, 34, "P1 Start") { DisplayName = "S" }
 				}
 			};
 		}
@@ -104,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(75, 50),
 				Buttons = new[]
 				{
-					new ButtonSchema(10, 15) { Name = "P1 Power" }
+					new ButtonSchema(10, 15, "P1 Power") { DisplayName = "Power" }
 				}
 			};
 		}

@@ -157,7 +157,7 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(75, 50),
 				Buttons = new[]
 				{
-					new ButtonSchema(7, 15) { Name = "Power" }
+					new ButtonSchema(7, 15, "Power")
 				}
 			};
 		}

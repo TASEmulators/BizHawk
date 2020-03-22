@@ -37,14 +37,14 @@ namespace BizHawk.Client.EmuHawk.tools.VirtualPads.schema
 					ButtonSchema.Down(14, 122, "Down"),
 					ButtonSchema.Left(2, 100, "Left"),
 					ButtonSchema.Right(24, 100, "Right"),
-					new ButtonSchema(2, 10) { Name = "L" },
-					new ButtonSchema(366, 10) { Name = "R" },
-					new ButtonSchema(341, 179) { Name = "Start" },
-					new ButtonSchema(341, 201) { Name = "Select" },
-					new ButtonSchema(341, 100) { Name = "Y" },
-					new ButtonSchema(365, 113) { Name = "B" },
-					new ButtonSchema(341, 76) { Name = "X" },
-					new ButtonSchema(366, 86) { Name = "A" },
+					new ButtonSchema(2, 10, "L"),
+					new ButtonSchema(366, 10, "R"),
+					new ButtonSchema(341, 179, "Start"),
+					new ButtonSchema(341, 201, "Select"),
+					new ButtonSchema(341, 100, "Y"),
+					new ButtonSchema(365, 113, "B"),
+					new ButtonSchema(341, 76, "X"),
+					new ButtonSchema(366, 86, "A"),
 
 					// Screen
 					new TargetedPairSchema(72, 35, "TouchX")

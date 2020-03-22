@@ -172,9 +172,9 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(185, 75),
 				Buttons = new[]
 				{
-					new ButtonSchema(10, 15) { Name = "Select" },
-					new ButtonSchema(60, 15) { Name = "Reset" },
-					new ButtonSchema(108, 15) { Name = "Power" },
+					new ButtonSchema(10, 15, "Select"),
+					new ButtonSchema(60, 15, "Reset"),
+					new ButtonSchema(108, 15, "Power"),
 					new ButtonSchema(10, 40)
 					{
 						Name = "Toggle Left Difficulty",

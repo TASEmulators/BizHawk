@@ -87,8 +87,8 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(150, 50),
 				Buttons = new[]
 				{
-					new ButtonSchema(10, 15) { Name = "Reset" },
-					new ButtonSchema(58, 15) { Name = "Pause" }
+					new ButtonSchema(10, 15, "Reset"),
+					new ButtonSchema(58, 15, "Pause")
 				}
 			};
 		}
@@ -100,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(150, 50),
 				Buttons = new[]
 				{
-					new ButtonSchema(10, 15) { Name = "Reset" }
+					new ButtonSchema(10, 15, "Reset")
 				}
 			};
 		}
