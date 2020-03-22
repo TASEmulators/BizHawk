@@ -1,15 +1,21 @@
 ﻿using System;
 using System.Text;
 using System.Runtime.InteropServices;
+using System.Drawing;
 
 using BizHawk.Emulation.Common;
 using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
-	unsafe partial class MelonDS : ISettable<object, MelonDS.MelonSyncSettings>
+	unsafe partial class MelonDS : ISettable<MelonDS.MelonSettings, MelonDS.MelonSyncSettings>
 	{
-		public object GetSettings() => new object();
+		private MelonSettings _settings;
+
+		public MelonSettings GetSettings()
+		{
+			return _settings;
+		}
 
 		public MelonSyncSettings GetSyncSettings()
 		{
@@ -24,7 +30,22 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			return ret;
 		}
 
-		public bool PutSettings(object o) => false;
+		public bool PutSettings(MelonSettings o)
+		{
+			if (o == null)
+			{
+				o = new MelonSettings();
+				o.screenOptions = new ScreenLayoutSettings();
+				o.screenOptions.locations = new Point[] { new Point(0, 0), new Point(0, NATIVE_HEIGHT) };
+				o.screenOptions.order = new int[] { 0, 1 };
+				o.screenOptions.finalSize = new Size(NATIVE_WIDTH, NATIVE_HEIGHT * 2);
+			}
+
+			_settings = o;
+			screenArranger.layoutSettings = _settings.screenOptions;
+
+			return false;
+		}
 
 		public bool PutSyncSettings(MelonSyncSettings o)
 		{
@@ -49,9 +70,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		[DllImport(dllPath)]
 		private static extern bool GetUserSettings(byte* dst);
 		[DllImport(dllPath)]
-		private static extern int getUserSettingsLength();
+		private static extern int GetUserSettingsLength();
 
-		private static readonly int UserSettingsLength = getUserSettingsLength();
+		private static readonly int UserSettingsLength = GetUserSettingsLength();
 
 		[DllImport(dllPath)]
 		private static extern void SetUserSettings(byte* src);
@@ -65,6 +86,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private static extern void SetTimeAtBoot(uint value);
 		[DllImport(dllPath)]
 		private static extern uint GetTimeAtBoot();
+
+		public class MelonSettings
+		{
+			public ScreenLayoutSettings screenOptions;
+		}
 
 		public class MelonSyncSettings
 		{

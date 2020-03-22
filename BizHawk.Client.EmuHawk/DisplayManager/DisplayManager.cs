@@ -14,6 +14,7 @@ using BizHawk.Client.EmuHawk.FilterManager;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Sony.PSX;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 
 using OpenTK;
 
@@ -395,7 +396,12 @@ namespace BizHawk.Client.EmuHawk
 			Vector2 v = new Vector2(p.X, p.Y);
 			v = _currentFilterProgram.UntransformPoint("default", v);
 			if (Global.Emulator.SystemId == "NDS")
-				v.Y = 2 * v.Y - (Global.Emulator as IVideoProvider).BufferHeight;
+			{
+				MelonDS core = Global.Emulator as MelonDS;
+				Point touchLocation = core.GetSettings().screenOptions.locations[1];
+				v.Y = (int)((double)core.BufferHeight / MelonDS.NATIVE_HEIGHT * (v.Y - touchLocation.Y));
+				v.X = (int)((double)core.BufferWidth / MelonDS.NATIVE_WIDTH * (v.X - touchLocation.X));
+			}
 			return new Point((int)v.X, (int)v.Y);
 		}
 
