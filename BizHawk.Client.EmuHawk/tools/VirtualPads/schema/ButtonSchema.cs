@@ -16,8 +16,6 @@ namespace BizHawk.Client.EmuHawk
 
 	public class ButtonSchema
 	{
-		public ButtonSchema(int x, int y) => Location = new Point(x, y);
-
 		public ButtonSchema(int x, int y, string name)
 		{
 			Location = new Point(x, y);
@@ -50,27 +48,23 @@ namespace BizHawk.Client.EmuHawk
 		public ControllerDefinition.AxisRange? AxisRange { get; set; }
 		public ControllerDefinition.AxisRange? SecondaryAxisRange { get; set; }
 
-		public static ButtonSchema Up(int x, int y, string name) => new ButtonSchema(x, y)
+		public static ButtonSchema Up(int x, int y, string name) => new ButtonSchema(x, y, name)
 		{
-			Name = name,
 			Icon = Properties.Resources.BlueUp
 		};
 
-		public static ButtonSchema Down(int x, int y, string name) => new ButtonSchema(x, y)
+		public static ButtonSchema Down(int x, int y, string name) => new ButtonSchema(x, y, name)
 		{
-			Name = name,
 			Icon = Properties.Resources.BlueDown
 		};
 
-		public static ButtonSchema Left(int x, int y, string name) => new ButtonSchema(x, y)
+		public static ButtonSchema Left(int x, int y, string name) => new ButtonSchema(x, y, name)
 		{
-			Name = name,
 			Icon = Properties.Resources.Back
 		};
 
-		public static ButtonSchema Right(int x, int y, string name) => new ButtonSchema(x, y)
+		public static ButtonSchema Right(int x, int y, string name) => new ButtonSchema(x, y, name)
 		{
-			Name = name,
 			Icon = Properties.Resources.Forward
 		};
 	}
@@ -86,16 +80,10 @@ namespace BizHawk.Client.EmuHawk
 
 	public class TargetedPairSchema : ButtonSchema
 	{
-		public TargetedPairSchema(int x, int y)
-			: base(x, y)
+		public TargetedPairSchema(int x, int y, string nameX)
+			: base(x, y, nameX)
 		{
 			Type = PadInputType.TargetedPair;
-		}
-
-		public TargetedPairSchema(int x, int y, string nameX)
-			: this(x, y)
-		{
-			Name = nameX;
 			SecondaryNames = new[]
 			{
 				nameX.Replace("X", "Y")
@@ -105,16 +93,10 @@ namespace BizHawk.Client.EmuHawk
 
 	public class AnalogSchema : ButtonSchema
 	{
-		public AnalogSchema(int x, int y)
-			: base(x, y)
+		public AnalogSchema(int x, int y, string nameX)
+			: base(x, y, nameX)
 		{
 			Type = PadInputType.AnalogStick;
-		}
-
-		public AnalogSchema(int x, int y, string nameX)
-			: this(x, y)
-		{
-			Name = nameX;
 			SecondaryNames = new[]
 			{
 				nameX.Replace("X", "Y")
