@@ -29,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 		}
 
-		public string Name { get; set; }
+		public string Name { get; protected set; }
 		public string DisplayName { get; set; }
 		public PadInputType Type { get; protected set; } = PadInputType.Boolean;
 		public Point Location { get; protected set; }

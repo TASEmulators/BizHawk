@@ -126,9 +126,8 @@ namespace BizHawk.Client.EmuHawk
 				MaxSize = new Size(356, 290),
 				Buttons = new[]
 				{
-					new TargetedPairSchema(14, 17)
+					new TargetedPairSchema(14, 17, $"P{controller} VPos")
 					{
-						Name = $"P{controller} VPos",
 						TargetSize = new Size(256, 240),
 						SecondaryNames = new[]
 						{

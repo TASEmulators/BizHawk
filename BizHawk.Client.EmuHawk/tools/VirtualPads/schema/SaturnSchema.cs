@@ -157,9 +157,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						DisplayName = "Z"
 					},
-					new AnalogSchema(6, 74)
+					new AnalogSchema(6, 74, $"P{controller} Stick Horizontal")
 					{
-						Name = $"P{controller} Stick Horizontal",
 						SecondaryNames = new[] { $"P{controller} Stick Vertical" },
 						AxisRange = axisRanges[0],
 						SecondaryAxisRange = axisRanges[1],
@@ -308,9 +307,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						DisplayName = "C"
 					},
-					new AnalogSchema(185, 13)
+					new AnalogSchema(185, 13, $"P{controller} Stick Horizontal")
 					{
-						Name = $"P{controller} Stick Horizontal",
 						SecondaryNames = new[] { $"P{controller} Stick Vertical" },
 						AxisRange = axisRanges[0],
 						SecondaryAxisRange = axisRanges[1]
@@ -336,9 +334,8 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(680, 230),
 				Buttons = new ButtonSchema[]
 				{
-					new AnalogSchema(58, 13)
+					new AnalogSchema(58, 13, $"P{controller} Left Stick Horizontal")
 					{
-						Name = $"P{controller} Left Stick Horizontal",
 						SecondaryNames = new[] { $"P{controller} Left Stick Vertical" },
 						AxisRange = axisRanges[3],
 						SecondaryAxisRange = axisRanges[4]
@@ -351,9 +348,8 @@ namespace BizHawk.Client.EmuHawk
 						MaxValue = 255,
 						Orientation = Orientation.Vertical
 					},
-					new AnalogSchema(400, 13)
+					new AnalogSchema(400, 13, $"P{controller} Right Stick Horizontal")
 					{
-						Name = $"P{controller} Right Stick Horizontal",
 						SecondaryNames = new[] { $"P{controller} Right Stick Vertical" },
 						AxisRange = axisRanges[0],
 						SecondaryAxisRange = axisRanges[1]
