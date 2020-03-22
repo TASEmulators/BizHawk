@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-
 using BizHawk.Emulation.Common;
 
 using BizHawk.Common.ReflectionExtensions;
@@ -12,43 +11,64 @@ namespace BizHawk.Client.EmuHawk
 	// ReSharper disable once UnusedMember.Global
 	public class A78Schema : IVirtualPadSchema
 	{
-		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
-		{
-			return Atari7800HawkSchema.GetPadSchemas((A7800Hawk)core);
-		}
-	}
-
-	internal static class Atari7800HawkSchema
-	{
 		private static string StandardControllerName => typeof(StandardController).DisplayName();
 		private static string ProLineControllerName => typeof(ProLineController).DisplayName();
+		private static string LightGunControllerName => typeof(LightGunController).DisplayName();
 
-		public static IEnumerable<PadSchema> GetPadSchemas(A7800Hawk core)
+		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
-			var a78SyncSettings = core.GetSyncSettings().Clone();
-			var port1 = a78SyncSettings.Port1;
-			var port2 = a78SyncSettings.Port2;
+			var ss = ((A7800Hawk)core).GetSyncSettings().Clone();
 
-			if (port1 == StandardControllerName)
+			var port1 = SchemaFor(ss.Port1, 1);
+			if (port1 != null)
 			{
-				yield return JoystickController(1);
+				yield return port1;
 			}
 
-			if (port2 == StandardControllerName)
+			var port2 = SchemaFor(ss.Port2, 2);
+			if (port2 != null)
 			{
-				yield return JoystickController(2);
+				yield return port2;
 			}
 
-			if (port1 == ProLineControllerName)
+			yield return ConsoleButtons();
+		}
+
+		private static PadSchema SchemaFor(string controllerName, int portNum)
+		{
+			if (controllerName == StandardControllerName)
 			{
-				yield return ProLineController(1);
+				return JoystickController(portNum);
 			}
 
-			if (port2 == ProLineControllerName)
+			if (controllerName == ProLineControllerName)
 			{
-				yield return ProLineController(2);
+				return ProLineController(portNum);
 			}
 
+			if (controllerName == LightGunControllerName)
+			{
+				return LightGunController(portNum);
+			}
+
+			return null;
+		}
+
+		private static PadSchema JoystickController(int controller)
+		{
+			return new PadSchema
+			{
+				DisplayName = $"Player {controller}",
+				Size = new Size(174, 74),
+				Buttons = new []
+				{
+					ButtonSchema.Up(23, 15, controller),
+					ButtonSchema.Down(23, 36, controller),
+					ButtonSchema.Left(2, 24, controller),
+					ButtonSchema.Right(44, 24, controller),
+					new ButtonSchema(120, 24, controller, "Button") { DisplayName = "1" }
+				}
+			};
 		}
 
 		private static PadSchema ProLineController(int controller)
@@ -69,40 +89,6 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
-		private static PadSchema JoystickController(int controller)
-		{
-			return new PadSchema
-			{
-				DisplayName = $"Player {controller}",
-				Size = new Size(174, 74),
-				Buttons = new[]
-				{
-					ButtonSchema.Up(23, 15, controller),
-					ButtonSchema.Down(23, 36, controller),
-					ButtonSchema.Left(2, 24, controller),
-					ButtonSchema.Right(54, 24, controller),
-					new ButtonSchema(120, 24, controller, "Button")
-					{
-						DisplayName = "1"
-					}
-				}
-			};
-		}
-
-		private static PadSchema PaddleController(int controller)
-		{
-			return new PadSchema
-			{
-				DisplayName = $"Player {controller}",
-				Size = new Size(250, 74),
-				Buttons = new[]
-				{
-					new SingleFloatSchema(23, 15, controller, "Paddle"),
-					new ButtonSchema(12, 90, controller, "Trigger") { DisplayName = "1" }
-				}
-			};
-		}
-
 		private static PadSchema LightGunController(int controller)
 		{
 			return new PadSchema
@@ -111,13 +97,9 @@ namespace BizHawk.Client.EmuHawk
 				Size = new Size(356, 290),
 				Buttons = new[]
 				{
-					new TargetedPairSchema(14, 17, $"P{controller} VPos")
+					new TargetedPairSchema(14, 17, $"P{controller} X")
 					{
-						TargetSize = new Size(256, 240),
-						SecondaryNames = new[]
-						{
-							$"P{controller} HPos"
-						}
+						TargetSize = new Size(256, 240)
 					},
 					new ButtonSchema(284, 17, controller, "Trigger")
 				}
