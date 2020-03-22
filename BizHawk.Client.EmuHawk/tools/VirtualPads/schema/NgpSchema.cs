@@ -11,11 +11,11 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
-			yield return StandardController();
+			yield return Controller();
 			yield return ConsoleButtons();
 		}
 
-		private static PadSchema StandardController()
+		private static PadSchema Controller()
 		{
 			return new PadSchema
 			{

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-
+using System.Linq;
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Intellivision;
@@ -45,74 +45,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisplayName = $"Player {controller}",
 				Size = new Size(148, 332),
-				Buttons = new[]
+				Buttons = StandardButtons(controller).Concat(new[]
 				{
-					new ButtonSchema(25, 15, controller , "Key 1")
-					{
-						DisplayName = "1"
-					},
-					new ButtonSchema(51, 15, controller , "Key 2")
-					{
-						DisplayName = "2"
-					},
-					new ButtonSchema(77, 15, controller , "Key 3")
-					{
-						DisplayName = "3"
-					},
-					new ButtonSchema(25, 41, controller , "Key 4")
-					{
-						DisplayName = "4"
-					},
-					new ButtonSchema(51, 41, controller , "Key 5")
-					{
-						DisplayName = "5"
-					},
-					new ButtonSchema(77, 41, controller , "Key 6")
-					{
-						DisplayName = "6"
-					},
-					new ButtonSchema(25, 67, controller , "Key 7")
-					{
-						DisplayName = "7"
-					},
-					new ButtonSchema(51, 67, controller , "Key 8")
-					{
-						DisplayName = "8"
-					},
-					new ButtonSchema(77, 67, controller , "Key 9")
-					{
-						DisplayName = "9"
-					},
-					new ButtonSchema(25, 93, controller, "Clear")
-					{
-						DisplayName = "C"
-					},
-					new ButtonSchema(51, 93, controller , "Key 0")
-					{
-						DisplayName = "0"
-					},
-					new ButtonSchema(77, 93, controller, "Enter")
-					{
-						DisplayName = "E"
-					},
-					new ButtonSchema(2, 41, controller, "Top")
-					{
-						DisplayName = "T"
-					},
-					new ButtonSchema(100, 41, controller, "Top")
-					{
-						DisplayName = "T"
-					},
-					new ButtonSchema(2, 67, controller, "L")
-					{
-						DisplayName = "L"
-					},
-					new ButtonSchema(100, 67, controller, "R")
-					{
-						DisplayName = "R"
-					},
-
-					/************** Directional Pad *******************/
 					new ButtonSchema(51, 124, controller, "N")
 					{
 						Icon = Properties.Resources.BlueUp
@@ -177,7 +111,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Icon = Properties.Resources.BlueDown
 					}
-				}
+				})
 			};
 		}
 
@@ -188,78 +122,45 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisplayName = $"Player {controller}",
 				Size = new Size(280, 332),
-				Buttons = new[]
+				Buttons = StandardButtons(controller).Concat(new[]
 				{
-					new ButtonSchema(91, 15, controller, "Key 1")
-					{
-						DisplayName = "1"
-					},
-					new ButtonSchema(117, 15, controller, "Key 2")
-					{
-						DisplayName = "2"
-					},
-					new ButtonSchema(143, 15, controller, "Key 3")
-					{
-						DisplayName = "3"
-					},
-					new ButtonSchema(91, 41, controller, "Key 4")
-					{
-						DisplayName = "4"
-					},
-					new ButtonSchema(117, 41, controller, "Key 5")
-					{
-						DisplayName = "5"
-					},
-					new ButtonSchema(143, 41, controller, "Key 6")
-					{
-						DisplayName = "6"
-					},
-					new ButtonSchema(91, 67, controller, "Key 7")
-					{
-						DisplayName = "7"
-					},
-					new ButtonSchema(117, 67, controller, "Key 8")
-					{
-						DisplayName = "8"
-					},
-					new ButtonSchema(143, 67, controller, "Key 9")
-					{
-						DisplayName = "9"
-					},
-					new ButtonSchema(91, 93, controller, "Clear")
-					{
-						DisplayName = "C"
-					},
-					new ButtonSchema(117, 93, controller, "Key 0")
-					{
-						DisplayName = "0"
-					},
-					new ButtonSchema(143, 93, controller, "Enter")
-					{
-						DisplayName = "E"
-					},
-					new ButtonSchema(68, 41, controller, "Top")
-					{
-						DisplayName = "T"
-					},
-					new ButtonSchema(166, 41, controller, "Top")
-					{
-						DisplayName = "T"
-					},
-					new ButtonSchema(68, 67, controller, "L")
-					{
-						DisplayName = "L"
-					},
-					new ButtonSchema(166, 67, controller, "R")
-					{
-						DisplayName = "R"
-					},
 					new AnalogSchema(1, 121, $"P{controller} Disc X")
 					{
 						AxisRange = controllerDefRanges[0],
 						SecondaryAxisRange = controllerDefRanges[1]
 					}
-				}
+				})
+			};
+		}
+
+		private static IEnumerable<ButtonSchema> StandardButtons(int controller)
+		{
+			return new[]
+			{
+				Key(25, 15, controller , 1),
+				Key(51, 15, controller, 2),
+				Key(77, 15, controller, 3),
+				Key(25, 41, controller, 4),
+				Key(51, 41, controller, 5),
+				Key(77, 41, controller, 6),
+				Key(25, 67, controller, 7),
+				Key(51, 67, controller, 8),
+				Key(77, 67, controller, 9),
+				new ButtonSchema(25, 93, controller, "Clear") { DisplayName = "C" },
+				Key(51, 93, controller, 0),
+				new ButtonSchema(77, 93, controller, "Enter") { DisplayName = "E" },
+				new ButtonSchema(2, 41, controller, "Top") { DisplayName = "T" },
+				new ButtonSchema(100, 41, controller, "Top") { DisplayName = "T" },
+				new ButtonSchema(2, 67, controller, "L") { DisplayName = "L" },
+				new ButtonSchema(100, 67, controller, "R") { DisplayName = "R" }
+			};
+		}
+
+		private static ButtonSchema Key(int x, int y, int controller, int button)
+		{
+			return new ButtonSchema(x, y, controller, $"Key {button}")
+			{
+				DisplayName = button.ToString()
 			};
 		}
 	}

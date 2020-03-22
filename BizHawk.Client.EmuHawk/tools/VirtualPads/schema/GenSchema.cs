@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-
+using System.Linq;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 
@@ -71,17 +71,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				Size = new Size(174, 90),
-				Buttons = new[]
-				{
-					ButtonSchema.Up(14, 12, controller),
-					ButtonSchema.Down(14, 56, controller),
-					ButtonSchema.Left(2, 34, controller),
-					ButtonSchema.Right(24, 34, controller),
-					new ButtonSchema(98, 40, controller, "A"),
-					new ButtonSchema(122, 40, controller, "B"),
-					new ButtonSchema(146, 40, controller, "C"),
-					new ButtonSchema(122, 12, controller, "Start") { DisplayName = "S" }
-				}
+				Buttons = ThreeButtons(controller)
 			};
 		}
 
@@ -90,20 +80,27 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				Size = new Size(174, 90),
-				Buttons = new[]
+				Buttons = ThreeButtons(controller).Concat(new[]
 				{
-					ButtonSchema.Up(14, 12, controller),
-					ButtonSchema.Down(14, 56, controller),
-					ButtonSchema.Left(2, 34, controller),
-					ButtonSchema.Right(24, 34, controller),
-					new ButtonSchema(98, 40, controller, "A"),
-					new ButtonSchema(122, 40, controller, "B"),
-					new ButtonSchema(146, 40, controller, "C"),
 					new ButtonSchema(98, 65, controller, "X"),
 					new ButtonSchema(122, 65, controller, "Y"),
-					new ButtonSchema(146, 65, controller, "Z"),
-					new ButtonSchema(122, 12, controller, "Start") { DisplayName = "S" }
-				}
+					new ButtonSchema(146, 65, controller, "Z")
+				})
+			};
+		}
+
+		private static IEnumerable<ButtonSchema> ThreeButtons(int controller)
+		{
+			return new[]
+			{
+				ButtonSchema.Up(14, 12, controller),
+				ButtonSchema.Down(14, 56, controller),
+				ButtonSchema.Left(2, 34, controller),
+				ButtonSchema.Right(24, 34, controller),
+				new ButtonSchema(98, 40, controller, "A"),
+				new ButtonSchema(122, 40, controller, "B"),
+				new ButtonSchema(146, 40, controller, "C"),
+				new ButtonSchema(122, 12, controller, "Start") { DisplayName = "S" }
 			};
 		}
 

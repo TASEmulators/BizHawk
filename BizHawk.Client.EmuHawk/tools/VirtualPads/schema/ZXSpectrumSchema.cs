@@ -24,7 +24,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisplayName = $"Joystick {controller}",
 				Size = new Size(174, 74),
-				MaxSize = new Size(174, 74),
 				Buttons = new[]
 				{
 					ButtonSchema.Up(23, 15, controller),
@@ -177,7 +176,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisplayName = "DATACORDER",
 				Size = new Size(174, 74),
-				MaxSize = new Size(174, 74),
 				Buttons = new[]
 				{
 					new ButtonSchema(23, 22, "Play Tape")

@@ -162,7 +162,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisplayName = "Super Scope",
 				Size = new Size(356, 290),
-				MaxSize = new Size(356, 290),
 				Buttons = new[]
 				{
 					new TargetedPairSchema(14, 17, $"P{controller} Scope X")
@@ -183,7 +182,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisplayName = "Justifier",
 				Size = new Size(356, 290),
-				MaxSize = new Size(356, 290),
 				Buttons = new[]
 				{
 					new TargetedPairSchema(14, 17, $"P{controller} Justifier X")

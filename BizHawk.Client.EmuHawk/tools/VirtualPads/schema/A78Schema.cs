@@ -63,14 +63,8 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Down(23, 36, controller),
 					ButtonSchema.Left(2, 24, controller),
 					ButtonSchema.Right(44, 24, controller),
-					new ButtonSchema(120, 24, controller, "Trigger")
-					{
-						DisplayName = "1"
-					},
-					new ButtonSchema(145, 24, controller, "Trigger 2")
-					{
-						DisplayName = "2"
-					}
+					new ButtonSchema(120, 24, controller, "Trigger") { DisplayName = "1" },
+					new ButtonSchema(145, 24, controller, "Trigger 2") { DisplayName = "2" }
 				}
 			};
 		}
@@ -104,10 +98,7 @@ namespace BizHawk.Client.EmuHawk
 				Buttons = new[]
 				{
 					new SingleFloatSchema(23, 15, controller, "Paddle"),
-					new ButtonSchema(12, 90, $"P{controller} Trigger")
-					{
-						DisplayName = "1"
-					}
+					new ButtonSchema(12, 90, controller, "Trigger") { DisplayName = "1" }
 				}
 			};
 		}
@@ -129,9 +120,6 @@ namespace BizHawk.Client.EmuHawk
 						}
 					},
 					new ButtonSchema(284, 17, controller, "Trigger")
-					{
-						DisplayName = "Trigger"
-					}
 				}
 			};
 		}

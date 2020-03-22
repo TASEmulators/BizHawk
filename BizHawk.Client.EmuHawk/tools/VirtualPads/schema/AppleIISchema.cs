@@ -110,14 +110,8 @@ namespace BizHawk.Client.EmuHawk
 				Size = new Size(120, 50),
 				Buttons = new[]
 				{
-					new ButtonSchema(10, 18, "Next Disk")
-					{
-						DisplayName = "Next"
-					},
-					new ButtonSchema(50, 18, "Previous Disk")
-					{
-						DisplayName = "Previous"
-					}
+					new ButtonSchema(10, 18, "Next Disk") { DisplayName = "Next" },
+					new ButtonSchema(50, 18, "Previous Disk") { DisplayName = "Previous" }
 				}
 			};
 		}

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-
+using System.Linq;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.ColecoVision;
 
@@ -42,27 +42,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				Size = new Size(128, 200),
-				Buttons = new[]
-				{
-					ButtonSchema.Up(50, 11, controller),
-					ButtonSchema.Down(50, 32, controller),
-					ButtonSchema.Left(29, 22, controller),
-					ButtonSchema.Right(71, 22, controller),
-					new ButtonSchema(3, 42, controller, "L"),
-					new ButtonSchema(100, 42, controller, "R"),
-					new ButtonSchema(27, 85, controller, "1"),
-					new ButtonSchema(50, 85, controller, "2"),
-					new ButtonSchema(73, 85, controller, "3"),
-					new ButtonSchema(27, 108, controller, "4"),
-					new ButtonSchema(50, 108, controller, "5"),
-					new ButtonSchema(73, 108, controller, "6"),
-					new ButtonSchema(27, 131, controller, "7"),
-					new ButtonSchema(50, 131, controller, "8"),
-					new ButtonSchema(73, 131, controller, "9"),
-					new ButtonSchema(27, 154, controller, "Star") { DisplayName = "*" },
-					new ButtonSchema(50, 154, controller, "0"),
-					new ButtonSchema(73, 154, controller, "Pound") { DisplayName = "#" }
-				}
+				Buttons = StandardButtons(controller)
 			};
 		}
 
@@ -80,9 +60,6 @@ namespace BizHawk.Client.EmuHawk
 						SecondaryAxisRange = controllerDefRanges[1]
 					},
 					new ButtonSchema(6, 224, controller, "Pedal")
-					{
-						DisplayName = "Pedal"
-					}
 				}
 			};
 		}
@@ -92,24 +69,8 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				Size = new Size(195, 260),
-				Buttons = new[]
+				Buttons = StandardButtons(controller).Concat(new[]
 				{
-					ButtonSchema.Up(50, 11, controller),
-					ButtonSchema.Down(50, 32, controller),
-					ButtonSchema.Left(29, 22, controller),
-					ButtonSchema.Right(71, 22, controller),
-					new ButtonSchema(27, 85, controller, "1"),
-					new ButtonSchema(50, 85, controller, "2"),
-					new ButtonSchema(73, 85, controller, "3"),
-					new ButtonSchema(27, 108, controller, "4"),
-					new ButtonSchema(50, 108, controller, "5"),
-					new ButtonSchema(73, 108, controller, "6"),
-					new ButtonSchema(27, 131, controller, "7"),
-					new ButtonSchema(50, 131, controller, "8"),
-					new ButtonSchema(73, 131, controller, "9"),
-					new ButtonSchema(27, 154, controller, "Star") { DisplayName = "*" },
-					new ButtonSchema(50, 154, controller, "0"),
-					new ButtonSchema(73, 154, controller, "Pound") { DisplayName = "#" },
 					new SingleFloatSchema(6, 200, controller, "Disc X")
 					{
 						DisplayName = "Disc",
@@ -121,7 +82,30 @@ namespace BizHawk.Client.EmuHawk
 					new ButtonSchema(126, 40, controller, "Red"),
 					new ButtonSchema(126, 65, controller, "Purple"),
 					new ButtonSchema(126, 90, controller, "Blue")
-				}
+				})
+			};
+		}
+
+		private static IEnumerable<ButtonSchema> StandardButtons(int controller)
+		{
+			return new[]
+			{
+				ButtonSchema.Up(50, 11, controller),
+				ButtonSchema.Down(50, 32, controller),
+				ButtonSchema.Left(29, 22, controller),
+				ButtonSchema.Right(71, 22, controller),
+				new ButtonSchema(27, 85, controller, "1"),
+				new ButtonSchema(50, 85, controller, "2"),
+				new ButtonSchema(73, 85, controller, "3"),
+				new ButtonSchema(27, 108, controller, "4"),
+				new ButtonSchema(50, 108, controller, "5"),
+				new ButtonSchema(73, 108, controller, "6"),
+				new ButtonSchema(27, 131, controller, "7"),
+				new ButtonSchema(50, 131, controller, "8"),
+				new ButtonSchema(73, 131, controller, "9"),
+				new ButtonSchema(27, 154, controller, "Star") { DisplayName = "*" },
+				new ButtonSchema(50, 154, controller, "0"),
+				new ButtonSchema(73, 154, controller, "Pound") { DisplayName = "#" }
 			};
 		}
 	}
