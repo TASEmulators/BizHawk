@@ -48,8 +48,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void VirtualPadControl_Load(object sender, EventArgs e)
 		{
-			Size = UIHelper.Scale(_schema.DefaultSize);
-			MaximumSize = UIHelper.Scale(_schema.MaxSize ?? _schema.DefaultSize);
+			Size = UIHelper.Scale(_schema.Size);
+			MaximumSize = UIHelper.Scale(_schema.Size);
 			PadBox.Text = _schema.DisplayName;
 			foreach (var button in _schema.Buttons)
 			{

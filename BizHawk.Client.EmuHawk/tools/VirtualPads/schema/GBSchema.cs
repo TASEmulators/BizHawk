@@ -34,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new PadSchema
 			{
-				DefaultSize = new Size(174, 79),
+				Size = new Size(174, 79),
 				Buttons = new[]
 				{
 					ButtonSchema.Up(14, 12),
@@ -53,7 +53,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new ConsoleSchema
 			{
-				DefaultSize = new Size(75, 50),
+				Size = new Size(75, 50),
 				Buttons = new[]
 				{
 					new ButtonSchema(10, 15, "Power")
@@ -66,7 +66,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new PadSchema
 			{
-				DefaultSize = new Size(174, 79),
+				Size = new Size(174, 79),
 				Buttons = new[]
 				{
 					ButtonSchema.Up(14, 12, 1),
@@ -85,7 +85,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new ConsoleSchema
 			{
-				DefaultSize = new Size(75, 50),
+				Size = new Size(75, 50),
 				Buttons = new[]
 				{
 					new ButtonSchema(10, 15, "P1 Power") { DisplayName = "Power" }
@@ -98,8 +98,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Tilt",
-				DefaultSize = new Size(356, 290),
-				MaxSize = new Size(356, 290),
+				Size = new Size(356, 290),
 				Buttons = new[]
 				{
 					new TargetedPairSchema(14, 17, "P1 Tilt X")

@@ -70,7 +70,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new PadSchema
 			{
-				DefaultSize = new Size(250, 100),
+				Size = new Size(250, 100),
 				Buttons = new[]
 				{
 					ButtonSchema.Up(34, 17, controller),
@@ -95,7 +95,7 @@ namespace BizHawk.Client.EmuHawk
 			var axisRanges = SaturnusControllerDeck.ThreeDeeAxisRanges;
 			return new PadSchema
 			{
-				DefaultSize = new Size(458, 285),
+				Size = new Size(458, 285),
 				Buttons = new[]
 				{
 					ButtonSchema.Up(290, 77, controller),
@@ -138,7 +138,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Mouse",
-				DefaultSize = new Size(375, 320),
+				Size = new Size(375, 320),
 				Buttons = new[]
 				{
 					new TargetedPairSchema(14, 17, $"P{controller} X")
@@ -167,7 +167,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Wheel",
-				DefaultSize = new Size(325, 100),
+				Size = new Size(325, 100),
 				Buttons = new[]
 				{
 					new SingleFloatSchema(8, 12, controller, "Wheel")
@@ -195,7 +195,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Mission",
-				DefaultSize = new Size(445, 230),
+				Size = new Size(445, 230),
 				Buttons = new[]
 				{
 					new ButtonSchema(45, 15, controller, "Start"),
@@ -230,7 +230,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Dual Mission",
-				DefaultSize = new Size(680, 230),
+				Size = new Size(680, 230),
 				Buttons = new ButtonSchema[]
 				{
 					new AnalogSchema(58, 13, $"P{controller} Left Stick Horizontal")
@@ -269,7 +269,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new ConsoleSchema
 			{
-				DefaultSize = new Size(250, 50),
+				Size = new Size(250, 50),
 				Buttons = new[]
 				{
 					new ButtonSchema(10, 15, "Reset"),

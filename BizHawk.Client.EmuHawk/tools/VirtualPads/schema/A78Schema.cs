@@ -56,8 +56,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = $"Player {controller}",
-				DefaultSize = new Size(174, 74),
-				MaxSize = new Size(174, 74),
+				Size = new Size(174, 74),
 				Buttons = new[]
 				{
 					ButtonSchema.Up(23, 15, controller),
@@ -81,8 +80,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = $"Player {controller}",
-				DefaultSize = new Size(174, 74),
-				MaxSize = new Size(174, 74),
+				Size = new Size(174, 74),
 				Buttons = new[]
 				{
 					ButtonSchema.Up(23, 15, controller),
@@ -102,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = $"Player {controller}",
-				DefaultSize = new Size(250, 74),
+				Size = new Size(250, 74),
 				Buttons = new[]
 				{
 					new SingleFloatSchema(23, 15, controller, "Paddle"),
@@ -119,8 +117,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Light Gun",
-				DefaultSize = new Size(356, 290),
-				MaxSize = new Size(356, 290),
+				Size = new Size(356, 290),
 				Buttons = new[]
 				{
 					new TargetedPairSchema(14, 17, $"P{controller} VPos")
@@ -143,7 +140,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new ConsoleSchema
 			{
-				DefaultSize = new Size(215, 50),
+				Size = new Size(215, 50),
 				Buttons = new[]
 				{
 					new ButtonSchema(10, 15, "Select"),

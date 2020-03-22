@@ -41,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new PadSchema
 			{
-				DefaultSize = new Size(128, 200),
+				Size = new Size(128, 200),
 				Buttons = new[]
 				{
 					ButtonSchema.Up(50, 11, controller),
@@ -71,7 +71,7 @@ namespace BizHawk.Client.EmuHawk
 			var controllerDefRanges = new ColecoTurboController(controller).Definition.FloatRanges;
 			return new PadSchema
 			{
-				DefaultSize = new Size(275, 260),
+				Size = new Size(275, 260),
 				Buttons = new[]
 				{
 					new AnalogSchema(6, 14, $"P{controller} Disc X")
@@ -91,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new PadSchema
 			{
-				DefaultSize = new Size(195, 260),
+				Size = new Size(195, 260),
 				Buttons = new[]
 				{
 					ButtonSchema.Up(50, 11, controller),

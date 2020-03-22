@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			yield return new PadSchema
 			{
-				DefaultSize = new Size(194, 90),
+				Size = new Size(194, 90),
 				Buttons = new[]
 				{
 					ButtonSchema.Up(14, 12),

@@ -31,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new PadSchema
 			{
-				DefaultSize = new Size(100, 100),
+				Size = new Size(100, 100),
 				Buttons = new[]
 				{
 					ButtonSchema.Up(14, 12, controller),

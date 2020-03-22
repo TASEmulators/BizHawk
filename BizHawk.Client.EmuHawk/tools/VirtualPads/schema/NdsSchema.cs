@@ -18,7 +18,7 @@ namespace BizHawk.Client.EmuHawk.tools.VirtualPads.schema
 		{
 			return new ConsoleSchema
 			{
-				DefaultSize = new Size(60, 45),
+				Size = new Size(60, 45),
 				Buttons = new []
 				{
 					new ButtonSchema(8, 18, "Lid")
@@ -30,7 +30,7 @@ namespace BizHawk.Client.EmuHawk.tools.VirtualPads.schema
 		{
 			return new PadSchema
 			{
-				DefaultSize = new Size(440, 260),
+				Size = new Size(440, 260),
 				Buttons = new []
 				{
 					ButtonSchema.Up(14, 79),

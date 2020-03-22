@@ -44,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = $"Player {controller}",
-				DefaultSize = new Size(148, 332),
+				Size = new Size(148, 332),
 				Buttons = new[]
 				{
 					new ButtonSchema(25, 15, controller , "Key 1")
@@ -187,7 +187,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = $"Player {controller}",
-				DefaultSize = new Size(280, 332),
+				Size = new Size(280, 332),
 				Buttons = new[]
 				{
 					new ButtonSchema(91, 15, controller, "Key 1")

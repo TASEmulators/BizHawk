@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = $"Joystick {controller}",
-				DefaultSize = new Size(174, 74),
+				Size = new Size(174, 74),
 				MaxSize = new Size(174, 74),
 				Buttons = new[]
 				{
@@ -119,7 +119,7 @@ namespace BizHawk.Client.EmuHawk
 			var ps = new PadSchema
 			{
 				DisplayName = "Keyboard",
-				DefaultSize = new Size(500, 170)
+				Size = new Size(500, 170)
 			};
 
 			var btns = new List<ButtonSchema>();
@@ -176,7 +176,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "DATACORDER",
-				DefaultSize = new Size(174, 74),
+				Size = new Size(174, 74),
 				MaxSize = new Size(174, 74),
 				Buttons = new[]
 				{

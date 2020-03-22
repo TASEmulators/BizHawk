@@ -27,7 +27,7 @@ namespace BizHawk.Client.EmuHawk
 			var controllerDefRanges = N64Input.N64ControllerDefinition.FloatRanges;
 			return new PadSchema
 			{
-				DefaultSize = new Size(275, 316),
+				Size = new Size(275, 316),
 				Buttons = new[]
 				{
 					ButtonSchema.Up(24, 230, $"P{controller} DPad U"),

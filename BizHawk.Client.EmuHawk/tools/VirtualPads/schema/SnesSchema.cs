@@ -112,7 +112,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new PadSchema
 			{
-				DefaultSize = new Size(200, 90),
+				Size = new Size(200, 90),
 				Buttons = new[]
 				{
 					ButtonSchema.Up(34, 17, controller),
@@ -136,7 +136,7 @@ namespace BizHawk.Client.EmuHawk
 			var controllerDefRanges = new SnesMouseController().Definition.FloatRanges;
 			return new PadSchema
 			{
-				DefaultSize = new Size(345, 225),
+				Size = new Size(345, 225),
 				Buttons = new[]
 				{
 					new AnalogSchema(6, 14, $"P{controller} Mouse X")
@@ -161,7 +161,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Super Scope",
-				DefaultSize = new Size(356, 290),
+				Size = new Size(356, 290),
 				MaxSize = new Size(356, 290),
 				Buttons = new[]
 				{
@@ -182,7 +182,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Justifier",
-				DefaultSize = new Size(356, 290),
+				Size = new Size(356, 290),
 				MaxSize = new Size(356, 290),
 				Buttons = new[]
 				{
@@ -201,7 +201,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Payload",
-				DefaultSize = new Size(460, 85),
+				Size = new Size(460, 85),
 				Buttons = PayLoadButtons(controller)
 			};
 		}
@@ -242,7 +242,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new ConsoleSchema
 			{
-				DefaultSize = new Size(150, 50),
+				Size = new Size(150, 50),
 				Buttons = new[]
 				{
 					new ButtonSchema(10, 15, "Reset"),

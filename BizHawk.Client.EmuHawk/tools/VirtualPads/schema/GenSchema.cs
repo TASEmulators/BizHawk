@@ -70,7 +70,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new PadSchema
 			{
-				DefaultSize = new Size(174, 90),
+				Size = new Size(174, 90),
 				Buttons = new[]
 				{
 					ButtonSchema.Up(14, 12, controller),
@@ -89,7 +89,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new PadSchema
 			{
-				DefaultSize = new Size(174, 90),
+				Size = new Size(174, 90),
 				Buttons = new[]
 				{
 					ButtonSchema.Up(14, 12, controller),
@@ -112,7 +112,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Light Gun",
-				DefaultSize = new Size(356, 300),
+				Size = new Size(356, 300),
 				Buttons = new[]
 				{
 					new TargetedPairSchema(14, 17, $"P{controller} Lightgun X")
@@ -137,7 +137,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Mouse",
-				DefaultSize = new Size(418, 290),
+				Size = new Size(418, 290),
 				Buttons = new[]
 				{
 					new AnalogSchema(14, 17, $"P{controller} Mouse X")
@@ -169,7 +169,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new ConsoleSchema
 			{
-				DefaultSize = new Size(150, 50),
+				Size = new Size(150, 50),
 				Buttons = new[]
 				{
 					new ButtonSchema(10, 15, "Reset"),
@@ -182,7 +182,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new PadSchema
 			{
-				DefaultSize = new Size(110, 110),
+				Size = new Size(110, 110),
 				Buttons = new[]
 				{
 					ButtonSchema.Up(47, 10, controller),
@@ -202,7 +202,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new PadSchema
 			{
-				DefaultSize = new Size(174, 90),
+				Size = new Size(174, 90),
 				Buttons = new[]
 				{
 					new ButtonSchema(98, 40, controller, "A"),

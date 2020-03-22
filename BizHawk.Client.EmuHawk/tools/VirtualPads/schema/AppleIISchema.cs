@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Keyboard",
-				DefaultSize = new Size(390, 150),
+				Size = new Size(390, 150),
 				Buttons = new[]
 				{
 					/************************** Row 1 **************************/
@@ -107,7 +107,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Disk Selection",
-				DefaultSize = new Size(120, 50),
+				Size = new Size(120, 50),
 				Buttons = new[]
 				{
 					new ButtonSchema(10, 18, "Next Disk")

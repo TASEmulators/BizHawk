@@ -164,7 +164,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new ConsoleSchema
 			{
-				DefaultSize = new Size(150, 50),
+				Size = new Size(150, 50),
 				Buttons = new[]
 				{
 					new ButtonSchema(10, 15, "Reset"),
@@ -201,7 +201,7 @@ namespace BizHawk.Client.EmuHawk
 
 			return new ConsoleSchema
 			{
-				DefaultSize = new Size(width, 100),
+				Size = new Size(width, 100),
 				Buttons = buttons
 			};
 		}
@@ -211,8 +211,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = $"Player {controller}",
-				DefaultSize = new Size(174, 74),
-				MaxSize = new Size(174, 74),
+				Size = new Size(174, 74),
 				Buttons = new[]
 				{
 					ButtonSchema.Up(23, 15, controller),
@@ -233,8 +232,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Player 2",
-				DefaultSize = new Size(174, 74),
-				MaxSize = new Size(174, 74),
+				Size = new Size(174, 74),
 				Buttons = new[]
 				{
 					ButtonSchema.Up(23, 15, controller),
@@ -253,8 +251,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Zapper",
-				DefaultSize = new Size(356, 290),
-				MaxSize = new Size(356, 290),
+				Size = new Size(356, 290),
 				Buttons = new[]
 				{
 					new TargetedPairSchema(14, 17, $"P{controller} Zapper X")
@@ -271,8 +268,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Arkanoid Paddle",
-				DefaultSize = new Size(380, 110),
-				MaxSize = new Size(380, 110),
+				Size = new Size(380, 110),
 				Buttons = new[]
 				{
 					new SingleFloatSchema(14, 17, controller, "Paddle")
@@ -291,7 +287,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Power Pad",
-				DefaultSize = new Size(154, 114),
+				Size = new Size(154, 114),
 				Buttons = new[]
 				{
 					PowerButton(14, 17, controller, 1),
@@ -323,8 +319,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Tablet",
-				DefaultSize = new Size(356, 290),
-				MaxSize = new Size(356, 290),
+				Size = new Size(356, 290),
 				Buttons = new[]
 				{
 					new TargetedPairSchema(14, 17, $"P{controller} Pen X")
@@ -342,7 +337,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Family Basic Keyboard",
-				DefaultSize = new Size(560, 180),
+				Size = new Size(560, 180),
 				Buttons = new[]
 				{
 					new ButtonSchema(23, 15, controller, "F1")

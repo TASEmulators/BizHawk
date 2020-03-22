@@ -28,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new PadSchema
 			{
-				DefaultSize = new Size(174, 90),
+				Size = new Size(174, 90),
 				Buttons = StandardButtons(controller, isSms)
 			};
 		}
@@ -52,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new ConsoleSchema
 			{
-				DefaultSize = new Size(150, 50),
+				Size = new Size(150, 50),
 				Buttons = ConsoleButtons(isSms)
 			};
 		}

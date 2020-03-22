@@ -26,8 +26,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				DisplayName = "Tilt Controls",
-				DefaultSize = new Size(256, 240),
-				MaxSize = new Size(256, 326),
+				Size = new Size(256, 240),
 				Buttons = new[]
 				{
 					Tilt(10, 15, "X"),
@@ -54,7 +53,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new PadSchema
 			{
-				DefaultSize = new Size(194, 90),
+				Size = new Size(194, 90),
 				Buttons = new[]
 				{
 					ButtonSchema.Up(29, 17),
@@ -75,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new ConsoleSchema
 			{
-				DefaultSize = new Size(75, 50),
+				Size = new Size(75, 50),
 				Buttons = new[]
 				{
 					new ButtonSchema(10, 15, "Power")
