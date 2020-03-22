@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
@@ -14,75 +13,57 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (((SMS)core).IsGameGear)
 			{
-				yield return GGController(1);
-				yield return GGConsoleButtons();
+				yield return StandardController(1, false);
+				yield return Console(false);
 			}
 			else
 			{
-				yield return StandardController(1);
-				yield return StandardController(2);
-				yield return SmsConsoleButtons();
+				yield return StandardController(1, true);
+				yield return StandardController(2, true);
+				yield return Console(true);
 			}
 		}
 
-		private static PadSchema StandardController(int controller)
+		private static PadSchema StandardController(int controller, bool isSms)
 		{
 			return new PadSchema
 			{
 				DefaultSize = new Size(174, 90),
-				Buttons = new[]
-				{
-					ButtonSchema.Up(14, 12, controller),
-					ButtonSchema.Down(14, 56, controller),
-					ButtonSchema.Left(2, 34, controller),
-					ButtonSchema.Right(24, 34, controller),
-					new ButtonSchema(122, 34, controller, "B1") { DisplayName = "1" },
-					new ButtonSchema(146, 34, controller, "B2") { DisplayName = "2" }
-				}
+				Buttons = StandardButtons(controller, isSms)
 			};
 		}
 
-		private static PadSchema GGController(int controller)
+		private static IEnumerable<ButtonSchema> StandardButtons(int controller, bool isSms)
 		{
-			return new PadSchema
+
+			yield return ButtonSchema.Up(14, 12, controller);
+			yield return ButtonSchema.Down(14, 56, controller);
+			yield return ButtonSchema.Left(2, 34, controller);
+			yield return ButtonSchema.Right(24, 34, controller);
+			yield return new ButtonSchema(122, 34, controller, "B1") { DisplayName = "1" };
+			yield return new ButtonSchema(146, 34, controller, "B2") { DisplayName = "2" };
+			if (!isSms)
 			{
-				DefaultSize = new Size(174, 90),
-				Buttons = new[]
-				{
-					ButtonSchema.Up(14, 12, controller),
-					ButtonSchema.Down(14, 56, controller),
-					ButtonSchema.Left(2, 34, controller),
-					ButtonSchema.Right(24, 34, controller),
-					new ButtonSchema(134, 12, controller, "Start") { DisplayName = "S" },
-					new ButtonSchema(122, 34, controller, "B1") { DisplayName = "1" },
-					new ButtonSchema(146, 34, controller, "B2") { DisplayName = "2" }
-				}
-			};
+				yield return new ButtonSchema(134, 12, controller, "Start") { DisplayName = "S" };
+			}
 		}
 
-		private static PadSchema SmsConsoleButtons()
+		private static PadSchema Console(bool isSms)
 		{
 			return new ConsoleSchema
 			{
 				DefaultSize = new Size(150, 50),
-				Buttons = new[]
-				{
-					new ButtonSchema(10, 15, "Reset"),
-					new ButtonSchema(58, 15, "Pause")
-				}
+				Buttons = ConsoleButtons(isSms)
 			};
 		}
 
-		private static PadSchema GGConsoleButtons()
+		private static IEnumerable<ButtonSchema> ConsoleButtons(bool isSms)
 		{
-			return new ConsoleSchema
+			yield return new ButtonSchema(10, 15, "Reset");
+			if (isSms)
 			{
-				DefaultSize = new Size(150, 50),
-				Buttons = new[]
-				{
-					new ButtonSchema(10, 15, "Reset")
-				}
-			};
+				yield return new ButtonSchema(58, 15, "Pause");
+			}
 		}
 	}
 }
