@@ -130,7 +130,7 @@ namespace BizHawk.Client.EmuHawk
 					switch (button.Type)
 					{
 						case PadInputType.AnalogStick:
-						case PadInputType.FloatSingle:
+						case PadInputType.SingleFloat:
 						case PadInputType.TargetedPair:
 							// analog
 							searchSet = analogs;

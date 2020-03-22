@@ -9,7 +9,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		Boolean,		// A single on/off button
 		AnalogStick,	// An analog stick X,Y Pair
-		FloatSingle,	// A single analog button (pressure sensitive button for instance)
+		SingleFloat,	// A single analog button (pressure sensitive button for instance)
 		TargetedPair,	// A X,Y pair intended to be a screen coordinate (for zappers, mouse, stylus, etc)
 		DiscManager
 	}
@@ -69,7 +69,7 @@ namespace BizHawk.Client.EmuHawk
 		public SingleFloatSchema(int x, int y)
 			: base(x, y)
 		{
-			Type = PadInputType.FloatSingle;
+			Type = PadInputType.SingleFloat;
 		}
 	}
 
