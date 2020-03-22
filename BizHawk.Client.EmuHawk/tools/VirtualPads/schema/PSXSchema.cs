@@ -164,29 +164,27 @@ namespace BizHawk.Client.EmuHawk
 					new ButtonSchema(278, 38, controller, "B"),
 					new ButtonSchema(308, 55, controller, "A"),
 					new ButtonSchema(308, 15, controller, "R"),
-					new SingleFloatSchema(5, 15, $"P{controller} L")
+					new SingleFloatSchema(5, 15, controller, "L")
 					{
-						DisplayName = "L",
 						TargetSize = new Size(128, 55),
 						MinValue = 0,
 						MaxValue = 255
 					},
-					new SingleFloatSchema(125, 15, $"P{controller} Twist")
+					new SingleFloatSchema(125, 15, controller, "Twist")
 					{
-						DisplayName = "Twist",
 						TargetSize = new Size(64, 178),
 						MinValue = 0,
 						MaxValue = 255,
 						Orientation = Orientation.Vertical
 					},
-					new SingleFloatSchema(180, 60, $"P{controller} 2")
+					new SingleFloatSchema(180, 60, controller, "2")
 					{
 						DisplayName = "II",
 						TargetSize = new Size(128, 55),
 						MinValue = 0,
 						MaxValue = 255
 					},
-					new SingleFloatSchema(220, 120, $"P{controller} 1")
+					new SingleFloatSchema(220, 120, controller, "1")
 					{
 						DisplayName = "I",
 						TargetSize = new Size(128, 55),

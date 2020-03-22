@@ -105,10 +105,7 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(250, 74),
 				Buttons = new[]
 				{
-					new SingleFloatSchema(23, 15, $"P{controller} Paddle")
-					{
-						DisplayName = "Paddle"
-					},
+					new SingleFloatSchema(23, 15, controller, "Paddle"),
 					new ButtonSchema(12, 90, $"P{controller} Trigger")
 					{
 						DisplayName = "1"

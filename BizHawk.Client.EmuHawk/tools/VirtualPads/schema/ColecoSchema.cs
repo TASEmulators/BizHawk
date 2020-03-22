@@ -110,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 					new ButtonSchema(27, 154, controller, "Star") { DisplayName = "*" },
 					new ButtonSchema(50, 154, controller, "0"),
 					new ButtonSchema(73, 154, controller, "Pound") { DisplayName = "#" },
-					new SingleFloatSchema(6, 200, $"P{controller} Disc X")
+					new SingleFloatSchema(6, 200, controller, "Disc X")
 					{
 						DisplayName = "Disc",
 						TargetSize = new Size(180, 55),

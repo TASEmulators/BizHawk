@@ -115,16 +115,16 @@ namespace BizHawk.Client.EmuHawk
 						AxisRange = axisRanges[0],
 						SecondaryAxisRange = axisRanges[1],
 					},
-					new SingleFloatSchema(8, 12, $"P{controller} Left Shoulder")
+					new SingleFloatSchema(8, 12, controller, "Left Shoulder")
 					{
 						DisplayName = "L",
 						TargetSize = new Size(128, 55),
 						MinValue = 0,
 						MaxValue = 255
 					},
-					new SingleFloatSchema(328, 12, $"P{controller} Right Shoulder")
+					new SingleFloatSchema(328, 12, controller, "Right Shoulder")
 					{
-						DisplayName = "L",
+						DisplayName = "R",
 						TargetSize = new Size(128, 55),
 						MinValue = 0,
 						MaxValue = 255
@@ -170,9 +170,8 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(325, 100),
 				Buttons = new[]
 				{
-					new SingleFloatSchema(8, 12, $"P{controller} Wheel")
+					new SingleFloatSchema(8, 12, controller, "Wheel")
 					{
-						DisplayName = "Wheel",
 						TargetSize = new Size(128, 55),
 						MinValue = 0,
 						MaxValue = 255
@@ -214,9 +213,8 @@ namespace BizHawk.Client.EmuHawk
 						AxisRange = axisRanges[0],
 						SecondaryAxisRange = axisRanges[1]
 					},
-					new SingleFloatSchema(135, 13, $"P{controller} Throttle")
+					new SingleFloatSchema(135, 13, controller, "Throttle")
 					{
-						DisplayName = "Throttle",
 						TargetSize = new Size(64, 178),
 						MinValue = 0,
 						MaxValue = 255,
@@ -241,7 +239,7 @@ namespace BizHawk.Client.EmuHawk
 						AxisRange = axisRanges[3],
 						SecondaryAxisRange = axisRanges[4]
 					},
-					new SingleFloatSchema(8, 13, $"P{controller} Left Throttle")
+					new SingleFloatSchema(8, 13, controller, "Left Throttle")
 					{
 						DisplayName = "Throttle",
 						TargetSize = new Size(64, 178),
@@ -255,7 +253,7 @@ namespace BizHawk.Client.EmuHawk
 						AxisRange = axisRanges[0],
 						SecondaryAxisRange = axisRanges[1]
 					},
-					new SingleFloatSchema(350, 13, $"P{controller} Right Throttle")
+					new SingleFloatSchema(350, 13, controller, "Right Throttle")
 					{
 						DisplayName = "Throttle",
 						TargetSize = new Size(64, 178),

@@ -77,6 +77,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Type = PadInputType.SingleFloat;
 		}
+
+		public SingleFloatSchema(int x, int y, int controller, string name)
+			: base(x, y, controller, name)
+		{
+			Type = PadInputType.SingleFloat;
+		}
 	}
 
 	public class TargetedPairSchema : ButtonSchema
