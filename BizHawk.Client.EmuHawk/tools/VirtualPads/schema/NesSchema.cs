@@ -221,14 +221,8 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Right(44, 24, controller),
 					new ButtonSchema(124, 24, controller, "B"),
 					new ButtonSchema(147, 24, controller, "A"),
-					new ButtonSchema(72, 24, controller, "Select")
-					{
-						DisplayName = "s"
-					},
-					new ButtonSchema(93, 24, controller, "Start")
-					{
-						DisplayName = "S"
-					}
+					new ButtonSchema(72, 24, controller, "Select") { DisplayName = "s" },
+					new ButtonSchema(93, 24, controller, "Start") { DisplayName = "S" }
 				}
 			};
 		}
@@ -249,10 +243,7 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Right(44, 24, controller),
 					new ButtonSchema(124, 24, controller, "B"),
 					new ButtonSchema(147, 24, controller, "A"),
-					new ButtonSchema(72, 24, controller, "Microphone")
-					{
-						DisplayName = "Mic"
-					}
+					new ButtonSchema(72, 24, controller, "Microphone") { DisplayName = "Mic" }
 				}
 			};
 		}
@@ -303,55 +294,27 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(154, 114),
 				Buttons = new[]
 				{
-					new ButtonSchema(14, 17, controller, "PP1")
-					{
-						DisplayName = "1  "
-					},
-					new ButtonSchema(45, 17, controller, "PP2")
-					{
-						DisplayName = "2  "
-					},
-					new ButtonSchema(76, 17, controller, "PP3")
-					{
-						DisplayName = "3  "
-					},
-					new ButtonSchema(107, 17, controller, "PP4")
-					{
-						DisplayName = "4  "
-					},
-					new ButtonSchema(14, 48, controller, "PP5")
-					{
-						DisplayName = "5  "
-					},
-					new ButtonSchema(45, 48, controller, "PP6")
-					{
-						DisplayName = "6  "
-					},
-					new ButtonSchema(76, 48, controller, "PP7")
-					{
-						DisplayName = "7  "
-					},
-					new ButtonSchema(107, 48, controller, "PP8")
-					{
-						DisplayName = "8  "
-					},
-					new ButtonSchema(14, 79, controller, "PP9")
-					{
-						DisplayName = "9  "
-					},
-					new ButtonSchema(45, 79, controller, "PP10")
-					{
-						DisplayName = "10"
-					},
-					new ButtonSchema(76, 79, controller, "PP11")
-					{
-						DisplayName = "11"
-					},
-					new ButtonSchema(107, 79, controller, "PP12")
-					{
-						DisplayName = "12"
-					}
+					PowerButton(14, 17, controller, 1),
+					PowerButton(45, 17, controller, 2),
+					PowerButton(76, 17, controller, 3),
+					PowerButton(107, 17, controller, 4),
+					PowerButton(14, 48, controller, 5),
+					PowerButton(45, 48, controller, 6),
+					PowerButton(76, 48, controller, 7),
+					PowerButton(107, 48, controller, 8),
+					PowerButton(14, 79, controller, 9),
+					PowerButton(45, 79, controller, 10),
+					PowerButton(76, 79, controller, 11),
+					PowerButton(107, 79, controller, 12)
 				}
+			};
+		}
+
+		private static ButtonSchema PowerButton(int x, int y, int controller, int button)
+		{
+			return new ButtonSchema(x, y, controller, $"PP{button}")
+			{
+				DisplayName = button < 10 ? $"{button}  " : button.ToString()
 			};
 		}
 
