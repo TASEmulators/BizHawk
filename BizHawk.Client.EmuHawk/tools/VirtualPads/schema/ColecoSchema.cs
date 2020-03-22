@@ -121,9 +121,8 @@ namespace BizHawk.Client.EmuHawk
 						AxisRange = controllerDefRanges[0],
 						SecondaryAxisRange = controllerDefRanges[1]
 					},
-					new ButtonSchema(6, 224)
+					new ButtonSchema(6, 224, controller, "Pedal")
 					{
-						Name = $"P{controller} Pedal",
 						DisplayName = "Pedal"
 					}
 				}

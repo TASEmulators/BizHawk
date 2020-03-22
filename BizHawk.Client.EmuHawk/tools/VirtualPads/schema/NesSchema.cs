@@ -187,9 +187,8 @@ namespace BizHawk.Client.EmuHawk
 
 			for (var i = 0; i < diskSize; i++)
 			{
-				buttons.Add(new ButtonSchema(10 + (i * 58), 50)
+				buttons.Add(new ButtonSchema(10 + (i * 58), 50, $"FDS Insert {i}")
 				{
-					Name = $"FDS Insert {i}",
 					DisplayName = $"Insert {i}"
 				});
 			}

@@ -21,7 +21,7 @@ namespace BizHawk.Client.EmuHawk.tools.VirtualPads.schema
 				DefaultSize = new Size(60, 45),
 				Buttons = new []
 				{
-					new ButtonSchema(8, 18) { Name = "Lid" }
+					new ButtonSchema(8, 18, "Lid")
 				}
 			};
 		}
@@ -51,7 +51,7 @@ namespace BizHawk.Client.EmuHawk.tools.VirtualPads.schema
 					{
 						TargetSize = new Size(256, 192)
 					},
-					new ButtonSchema(72, 10) { Name = "Touch" }
+					new ButtonSchema(72, 10, "Touch")
 				}
 			};
 		}

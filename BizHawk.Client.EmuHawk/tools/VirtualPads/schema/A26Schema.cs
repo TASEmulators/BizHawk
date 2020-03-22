@@ -165,14 +165,12 @@ namespace BizHawk.Client.EmuHawk
 					new ButtonSchema(10, 15, "Select"),
 					new ButtonSchema(60, 15, "Reset"),
 					new ButtonSchema(108, 15, "Power"),
-					new ButtonSchema(10, 40)
+					new ButtonSchema(10, 40, "Toggle Left Difficulty")
 					{
-						Name = "Toggle Left Difficulty",
 						DisplayName = "Left Difficulty"
 					},
-					new ButtonSchema(92, 40)
+					new ButtonSchema(92, 40, "Toggle Right Difficulty")
 					{
-						Name = "Toggle Right Difficulty",
 						DisplayName = "Right Difficulty"
 					}
 				}

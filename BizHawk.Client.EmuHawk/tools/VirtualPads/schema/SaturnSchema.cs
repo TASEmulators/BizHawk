@@ -173,7 +173,6 @@ namespace BizHawk.Client.EmuHawk
 					},
 					new SingleFloatSchema(328, 12, $"P{controller} Right Shoulder")
 					{
-						Name = $"P{controller} Right Shoulder",
 						DisplayName = "L",
 						TargetSize = new Size(128, 55),
 						MinValue = 0,
