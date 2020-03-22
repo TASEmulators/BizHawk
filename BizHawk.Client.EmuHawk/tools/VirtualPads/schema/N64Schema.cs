@@ -58,24 +58,20 @@ namespace BizHawk.Client.EmuHawk
 					{
 						DisplayName = "A"
 					},
-					new ButtonSchema(173, 210)
+					new ButtonSchema(173, 210, controller, "C Up")
 					{
-						Name = $"P{controller} C Up",
 						Icon = Properties.Resources.YellowUp
 					},
-					new ButtonSchema(173, 231)
+					new ButtonSchema(173, 231, controller, "C Down")
 					{
-						Name = $"P{controller} C Down",
 						Icon = Properties.Resources.YellowDown
 					},
-					new ButtonSchema(152, 221)
+					new ButtonSchema(152, 221, controller, "C Left")
 					{
-						Name = $"P{controller} C Left",
 						Icon = Properties.Resources.YellowLeft
 					},
-					new ButtonSchema(194, 221)
+					new ButtonSchema(194, 221, controller, "C Right")
 					{
-						Name = $"P{controller} C Right",
 						Icon = Properties.Resources.YellowRight
 					},
 					new AnalogSchema(6, 14, $"P{controller} X Axis")

@@ -157,9 +157,8 @@ namespace BizHawk.Client.EmuHawk
 
 				if (b.IsActive)
 				{
-					var btn = new ButtonSchema(xPos, yPos)
+					var btn = new ButtonSchema(xPos, yPos, b.Name)
 					{
-						Name = b.Name,
 						DisplayName = disp
 					};
 					btns.Add(btn);
@@ -181,19 +180,16 @@ namespace BizHawk.Client.EmuHawk
 				MaxSize = new Size(174, 74),
 				Buttons = new[]
 				{
-					new ButtonSchema(23, 22)
+					new ButtonSchema(23, 22, "Play Tape")
 					{
-						Name = "Play Tape",
 						Icon = Properties.Resources.Play
 					},
-					new ButtonSchema(53, 22)
+					new ButtonSchema(53, 22, "Stop Tape")
 					{
-						Name = "Stop Tape",
 						Icon = Properties.Resources.Stop
 					},
-					new ButtonSchema(83, 22)
+					new ButtonSchema(83, 22, "RTZ Tape")
 					{
-						Name = "RTZ Tape",
 						Icon = Properties.Resources.BackMore
 					},
 					new ButtonSchema(23, 52, "Insert Next Tape")
