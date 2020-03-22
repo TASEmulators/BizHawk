@@ -669,8 +669,7 @@ namespace BizHawk.Client.EmuHawk
 					new ButtonSchema(311, 84)
 					{
 						Name = $"P{controller} Colon",
-						DisplayName = ":",
-						Location = new Point(311, 84)
+						DisplayName = ":"
 					},
 					new ButtonSchema(332, 84)
 					{
