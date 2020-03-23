@@ -424,6 +424,15 @@ namespace BizHawk.Client.Common
 			{
 				["Lid"] = 'P',
 				["Touch"] = 'T'
+			},
+			["O2"] = new Dictionary<string, char>
+			{
+				["PERIOD"] = '.',
+				["SPC"] = 's',
+				["YES"] = 'y',
+				["NO"] = 'n',
+				["CLR"] = 'c',
+				["ENT"] = 'e'
 			}
 		};
 	}
