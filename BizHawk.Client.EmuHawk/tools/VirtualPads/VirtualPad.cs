@@ -51,6 +51,12 @@ namespace BizHawk.Client.EmuHawk
 			Size = UIHelper.Scale(_schema.Size);
 			MaximumSize = UIHelper.Scale(_schema.Size);
 			PadBox.Text = _schema.DisplayName;
+
+			if (_schema.IsConsole)
+			{
+				this.PadBox.ForeColor = SystemColors.HotTrack;
+			}
+
 			foreach (var button in _schema.Buttons)
 			{
 				switch (button.Type)
