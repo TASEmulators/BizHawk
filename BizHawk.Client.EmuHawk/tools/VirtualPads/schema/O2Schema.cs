@@ -12,19 +12,9 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
-			var O2SyncSettings = ((O2Hawk)core).GetSyncSettings().Clone();
-			// var port1 = O2SyncSettings.Port1;
-			// var port2 = O2SyncSettings.Port2;
-
-			// if (port1 == "O2 Controller")
-			// {
-				yield return StandardController(1);
-			// }
-
-			// if (port2 == "O2 Controller")
-			// {
-				yield return StandardController(2);
-			// }
+			yield return StandardController(1);
+			yield return StandardController(2);
+			yield return ConsoleButtons();
 		}
 
 		private static PadSchema StandardController(int controller)
@@ -39,6 +29,18 @@ namespace BizHawk.Client.EmuHawk
 					ButtonSchema.Left(2, 34, controller),
 					ButtonSchema.Right(24, 34, controller),
 					new ButtonSchema(74, 34, controller, "F")
+				}
+			};
+		}
+
+		private static PadSchema ConsoleButtons()
+		{
+			return new ConsoleSchema
+			{
+				Size = new Size(75, 50),
+				Buttons = new[]
+				{
+					new ButtonSchema(10, 15, "Power")
 				}
 			};
 		}
