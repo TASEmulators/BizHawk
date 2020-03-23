@@ -175,6 +175,8 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
+		// TODO: don't know what L/U is, couldn't find documentation, went with U
+		// Also, which number corresponds to which direction?
 		private static PadSchema Activator(int controller)
 		{
 			return new PadSchema
@@ -182,15 +184,14 @@ namespace BizHawk.Client.EmuHawk
 				Size = new Size(110, 110),
 				Buttons = new[]
 				{
-					ButtonSchema.Up(47, 10, controller),
-					ButtonSchema.Down(47, 73, controller),
-					ButtonSchema.Left(15, 43, controller),
-					ButtonSchema.Right(80, 43, controller),
-					new ButtonSchema(70, 65, controller, "A"),
-					new ButtonSchema(70, 20, controller, "B"),
-					new ButtonSchema(22, 20, controller, "C"),
-					new ButtonSchema(22, 65, controller, "A"),
-					new ButtonSchema(47, 43, controller, "Start") { DisplayName = "S" }
+					new ButtonSchema(15, 43, controller, "1U") { Icon = Properties.Resources.Back },
+					new ButtonSchema(22, 20, controller, "2U") { Icon = Properties.Resources.NW },
+					new ButtonSchema(47, 10, controller, "3U") { Icon = Properties.Resources.BlueUp },
+					new ButtonSchema(70, 20, controller, "4U") { Icon = Properties.Resources.NE },
+					new ButtonSchema(80, 43, controller, "5U") { Icon = Properties.Resources.Forward },
+					new ButtonSchema(70, 65, controller, "6U") { Icon = Properties.Resources.SE },
+					new ButtonSchema(47, 73, controller, "7U") { Icon = Properties.Resources.BlueDown },
+					new ButtonSchema(22, 65, controller, "8U") { Icon = Properties.Resources.SW }
 				}
 			};
 		}
