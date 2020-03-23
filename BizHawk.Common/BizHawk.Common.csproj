@@ -8,7 +8,9 @@
 	<ItemGroup>
 		<PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
 		<PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" PrivateAssets="All" />
-		<PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.113"
+		<PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8"
+			Condition=" '$(MachineRunAnalyzersDuringBuild)' != '' " />
+		<PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.164"
 			Condition=" '$(MachineRunAnalyzersDuringBuild)' != '' " />
 		<Compile Include="$(SolutionDir)Version/svnrev.cs" />
 		<Compile Include="$(SolutionDir)Version/VersionInfo.cs" />

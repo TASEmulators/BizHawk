@@ -1,5 +1,223 @@
 <?xml version="1.0"?>
 <RuleSet Name="BizHawk Rules" Description="Applies to all projects in the solution -- or, it will eventually." ToolsVersion="14.0">
+	<Rules AnalyzerId="Microsoft.CodeAnalysis.FxCopAnalyzers" RuleNamespace="Microsoft.CodeAnalysis.FxCopAnalyzers">
+		<!-- Types that own disposable fields should be disposable -->
+		<Rule Id="CA1001" Action="Hidden" />
+
+		<!-- Collections should implement generic interface -->
+		<Rule Id="CA1010" Action="Hidden" />
+
+		<!-- Mark assemblies with assembly version -->
+		<Rule Id="CA1016" Action="Hidden" />
+
+		<!-- Mark attributes with AttributeUsageAttribute -->
+		<Rule Id="CA1018" Action="Hidden" />
+
+		<!-- Enum Storage should be Int32 -->
+		<Rule Id="CA1028" Action="Hidden" />
+
+		<!-- Do not catch general exception types -->
+		<Rule Id="CA1031" Action="Hidden" />
+
+		<!-- Implement standard exception constructors -->
+		<Rule Id="CA1032" Action="Hidden" />
+
+		<!-- Nested types should not be visible -->
+		<Rule Id="CA1034" Action="Hidden" />
+
+		<!-- Override methods on comparable types -->
+		<Rule Id="CA1036" Action="Hidden" />
+
+		<!-- Avoid empty interfaces -->
+		<Rule Id="CA1040" Action="Hidden" />
+
+		<!-- Provide ObsoleteAttribute message -->
+		<Rule Id="CA1041" Action="Hidden" />
+
+		<!-- Use Integral Or String Argument For Indexers -->
+		<Rule Id="CA1043" Action="Hidden" />
+
+		<!-- Properties should not be write only -->
+		<Rule Id="CA1044" Action="Hidden" />
+
+		<!-- Do not declare visible instance fields -->
+		<Rule Id="CA1051" Action="Hidden" />
+
+		<!-- Static holder types should be Static or NotInheritable -->
+		<Rule Id="CA1052" Action="Hidden" />
+
+		<!-- Uri parameters should not be strings -->
+		<Rule Id="CA1054" Action="Hidden" />
+
+		<!-- Uri return values should not be strings -->
+		<Rule Id="CA1055" Action="Hidden" />
+
+		<!-- Validate arguments of public methods -->
+		<Rule Id="CA1062" Action="Hidden" />
+
+		<!-- Implement IDisposable Correctly -->
+		<Rule Id="CA1063" Action="Hidden" />
+
+		<!-- Exceptions should be public -->
+		<Rule Id="CA1064" Action="Hidden" />
+
+		<!-- Do not raise exceptions in unexpected locations -->
+		<Rule Id="CA1065" Action="Hidden" />
+
+		<!-- Type {0} should implement IEquatable<T> because it overrides Equals -->
+		<Rule Id="CA1066" Action="Hidden" />
+
+		<!-- Do not pass literals as localized parameters -->
+		<Rule Id="CA1303" Action="Hidden" />
+
+		<!-- Specify CultureInfo -->
+		<Rule Id="CA1304" Action="Hidden" />
+
+		<!-- Specify IFormatProvider -->
+		<Rule Id="CA1305" Action="Hidden" />
+
+		<!-- Specify StringComparison -->
+		<Rule Id="CA1307" Action="Hidden" />
+
+		<!-- Normalize strings to uppercase -->
+		<Rule Id="CA1308" Action="Hidden" />
+
+		<!-- P/Invokes should not be visible -->
+		<Rule Id="CA1401" Action="Hidden" />
+
+		<!-- Use nameof to express symbol names -->
+		<Rule Id="CA1507" Action="Hidden" />
+
+		<!-- Identifiers should not contain underscores -->
+		<Rule Id="CA1707" Action="Hidden" />
+
+		<!-- Identifiers should have correct suffix -->
+		<Rule Id="CA1710" Action="Hidden" />
+
+		<!-- Do not prefix enum values with type name -->
+		<Rule Id="CA1712" Action="Hidden" />
+
+		<!-- Flags enums should have plural names -->
+		<Rule Id="CA1714" Action="Hidden" />
+
+		<!-- Identifiers should have correct prefix -->
+		<Rule Id="CA1715" Action="Hidden" />
+
+		<!-- Identifiers should not match keywords -->
+		<Rule Id="CA1716" Action="Hidden" />
+
+		<!-- Only FlagsAttribute enums should have plural names -->
+		<Rule Id="CA1717" Action="Hidden" />
+
+		<!-- Identifier contains type name -->
+		<Rule Id="CA1720" Action="Hidden" />
+
+		<!-- Property names should not match get methods -->
+		<Rule Id="CA1721" Action="Hidden" />
+
+		<!-- Type names should not match namespaces -->
+		<Rule Id="CA1724" Action="Hidden" />
+
+		<!-- Review unused parameters -->
+		<Rule Id="CA1801" Action="Hidden" />
+
+		<!-- Use literals where appropriate -->
+		<Rule Id="CA1802" Action="Hidden" />
+
+		<!-- Do not ignore method results -->
+		<Rule Id="CA1806" Action="Hidden" />
+
+		<!-- Initialize reference type static fields inline -->
+		<Rule Id="CA1810" Action="Hidden" />
+
+		<!-- Avoid uninstantiated internal classes -->
+		<Rule Id="CA1812" Action="Hidden" />
+
+		<!-- Prefer jagged arrays over multidimensional -->
+		<Rule Id="CA1814" Action="Hidden" />
+
+		<!-- Override equals and operator equals on value types -->
+		<Rule Id="CA1815" Action="Hidden" />
+
+		<!-- Dispose methods should call SuppressFinalize -->
+		<Rule Id="CA1816" Action="Hidden" />
+
+		<!-- Properties should not return arrays -->
+		<Rule Id="CA1819" Action="Hidden" />
+
+		<!-- Test for empty strings using string length -->
+		<Rule Id="CA1820" Action="Hidden" />
+
+		<!-- Mark members as static -->
+		<Rule Id="CA1822" Action="Hidden" />
+
+		<!-- Avoid unused private fields -->
+		<Rule Id="CA1823" Action="Hidden" />
+
+		<!-- Avoid zero-length array allocations. -->
+		<Rule Id="CA1825" Action="Hidden" />
+
+		<!-- Do not use Count() or LongCount() when Any() can be used -->
+		<Rule Id="CA1827" Action="Hidden" />
+
+		<!-- Use Length/Count property instead of Count() when available -->
+		<Rule Id="CA1829" Action="Hidden" />
+
+		<!-- Dispose objects before losing scope -->
+		<Rule Id="CA2000" Action="Hidden" />
+
+		<!-- Do not lock on objects with weak identity -->
+		<Rule Id="CA2002" Action="Hidden" />
+
+		<!-- Review SQL queries for security vulnerabilities -->
+		<Rule Id="CA2100" Action="Hidden" />
+
+		<!-- Specify marshaling for P/Invoke string arguments -->
+		<Rule Id="CA2101" Action="Hidden" />
+
+		<!-- Instantiate argument exceptions correctly -->
+		<Rule Id="CA2208" Action="Hidden" />
+
+		<!-- Non-constant fields should not be visible -->
+		<Rule Id="CA2211" Action="Hidden" />
+
+		<!-- Disposable fields should be disposed -->
+		<Rule Id="CA2213" Action="Hidden" />
+
+		<!-- Do not call overridable methods in constructors -->
+		<Rule Id="CA2214" Action="Hidden" />
+
+		<!-- Disposable types should declare finalizer -->
+		<Rule Id="CA2216" Action="Hidden" />
+
+		<!-- Operator overloads have named alternates -->
+		<Rule Id="CA2225" Action="Hidden" />
+
+		<!-- Collection properties should be read only -->
+		<Rule Id="CA2227" Action="Hidden" />
+
+		<!-- Implement serialization constructors -->
+		<Rule Id="CA2229" Action="Hidden" />
+
+		<!-- Mark ISerializable types with serializable -->
+		<Rule Id="CA2237" Action="Hidden" />
+
+		<!-- Provide correct arguments to formatting methods -->
+		<Rule Id="CA2241" Action="Hidden" />
+
+		<!-- Attribute string literals should parse correctly -->
+		<Rule Id="CA2243" Action="Hidden" />
+
+		<!-- Insecure DTD processing in XML -->
+		<Rule Id="CA3075" Action="Hidden" />
+
+		<!-- Do Not Use Weak Cryptographic Algorithms -->
+		<Rule Id="CA5350" Action="Hidden" />
+
+		<!-- Do Not Use Broken Cryptographic Algorithms -->
+		<Rule Id="CA5351" Action="Hidden" />
+	</Rules>
+
 	<Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers.SpecialRules">
 		<!-- XML comment analysis disabled -->
 		<Rule Id="SA0001" Action="Hidden" />
