@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 
@@ -184,14 +185,14 @@ namespace BizHawk.Client.EmuHawk
 				Size = new Size(110, 110),
 				Buttons = new[]
 				{
-					new ButtonSchema(15, 43, controller, "1U") { Icon = Properties.Resources.Back },
-					new ButtonSchema(22, 20, controller, "2U") { Icon = Properties.Resources.NW },
-					new ButtonSchema(47, 10, controller, "3U") { Icon = Properties.Resources.BlueUp },
-					new ButtonSchema(70, 20, controller, "4U") { Icon = Properties.Resources.NE },
-					new ButtonSchema(80, 43, controller, "5U") { Icon = Properties.Resources.Forward },
-					new ButtonSchema(70, 65, controller, "6U") { Icon = Properties.Resources.SE },
-					new ButtonSchema(47, 73, controller, "7U") { Icon = Properties.Resources.BlueDown },
-					new ButtonSchema(22, 65, controller, "8U") { Icon = Properties.Resources.SW }
+					new ButtonSchema(15, 43, controller, "1U") { Icon = Resources.Back },
+					new ButtonSchema(22, 20, controller, "2U") { Icon = Resources.NW },
+					new ButtonSchema(47, 10, controller, "3U") { Icon = Resources.BlueUp },
+					new ButtonSchema(70, 20, controller, "4U") { Icon = Resources.NE },
+					new ButtonSchema(80, 43, controller, "5U") { Icon = Resources.Forward },
+					new ButtonSchema(70, 65, controller, "6U") { Icon = Resources.SE },
+					new ButtonSchema(47, 73, controller, "7U") { Icon = Resources.BlueDown },
+					new ButtonSchema(22, 65, controller, "8U") { Icon = Resources.SW }
 				}
 			};
 		}

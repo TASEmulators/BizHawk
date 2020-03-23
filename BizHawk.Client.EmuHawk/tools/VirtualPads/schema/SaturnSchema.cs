@@ -113,7 +113,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						SecondaryNames = new[] { $"P{controller} Stick Vertical" },
 						AxisRange = axisRanges[0],
-						SecondaryAxisRange = axisRanges[1],
+						SecondaryAxisRange = axisRanges[1]
 					},
 					new SingleFloatSchema(8, 12, controller, "Left Shoulder")
 					{

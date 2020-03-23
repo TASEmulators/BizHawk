@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Intellivision;
@@ -47,70 +48,22 @@ namespace BizHawk.Client.EmuHawk
 				Size = new Size(148, 332),
 				Buttons = StandardButtons(controller).Concat(new[]
 				{
-					new ButtonSchema(51, 124, controller, "N")
-					{
-						Icon = Properties.Resources.BlueUp
-					},
-					new ButtonSchema(63, 145, controller, "NNE")
-					{
-						Icon = Properties.Resources.NNE
-					},
-					new ButtonSchema(39, 145, controller, "NNW")
-					{
-						Icon = Properties.Resources.NNW
-					},
-					new ButtonSchema(75, 166, controller, "NE")
-					{
-						Icon = Properties.Resources.NE
-					},
-					new ButtonSchema(27, 166, controller, "NW")
-					{
-						Icon = Properties.Resources.NW
-					},
-					new ButtonSchema(87, 187, controller, "ENE")
-					{
-						Icon = Properties.Resources.ENE
-					},
-					new ButtonSchema(15, 187, controller, "WNW")
-					{
-						Icon = Properties.Resources.WNW
-					},
-					new ButtonSchema(99, 208, controller, "E")
-					{
-						Icon = Properties.Resources.Forward
-					},
-					new ButtonSchema(3, 208, controller, "W")
-					{
-						Icon = Properties.Resources.Back
-					},
-					new ButtonSchema(87, 229, controller, "ESE")
-					{
-						Icon = Properties.Resources.ESE
-					},
-					new ButtonSchema(15, 229, controller, "WSW")
-					{
-						Icon = Properties.Resources.WSW
-					},
-					new ButtonSchema(75, 250, controller, "SE")
-					{
-						Icon = Properties.Resources.SE
-					},
-					new ButtonSchema(27, 250, controller, "SW")
-					{
-						Icon = Properties.Resources.SW
-					},
-					new ButtonSchema(63, 271, controller, "SSE")
-					{
-						Icon = Properties.Resources.SSE
-					},
-					new ButtonSchema(39, 271, controller, "SSW")
-					{
-						Icon = Properties.Resources.SSW
-					},
-					new ButtonSchema(51, 292, controller, "S")
-					{
-						Icon = Properties.Resources.BlueDown
-					}
+					new ButtonSchema(51, 124, controller, "N") { Icon = Resources.BlueUp },
+					new ButtonSchema(63, 145, controller, "NNE") { Icon = Resources.NNE },
+					new ButtonSchema(39, 145, controller, "NNW") { Icon = Resources.NNW },
+					new ButtonSchema(75, 166, controller, "NE") { Icon = Resources.NE },
+					new ButtonSchema(27, 166, controller, "NW") { Icon = Resources.NW },
+					new ButtonSchema(87, 187, controller, "ENE") { Icon = Resources.ENE },
+					new ButtonSchema(15, 187, controller, "WNW") { Icon = Resources.WNW },
+					new ButtonSchema(99, 208, controller, "E") { Icon = Resources.Forward },
+					new ButtonSchema(3, 208, controller, "W") { Icon = Resources.Back },
+					new ButtonSchema(87, 229, controller, "ESE") { Icon = Resources.ESE },
+					new ButtonSchema(15, 229, controller, "WSW") { Icon = Resources.WSW },
+					new ButtonSchema(75, 250, controller, "SE") { Icon = Resources.SE },
+					new ButtonSchema(27, 250, controller, "SW") { Icon = Resources.SW },
+					new ButtonSchema(63, 271, controller, "SSE") { Icon = Resources.SSE },
+					new ButtonSchema(39, 271, controller, "SSW") { Icon = Resources.SSW },
+					new ButtonSchema(51, 292, controller, "S") { Icon = Resources.BlueDown }
 				})
 			};
 		}
