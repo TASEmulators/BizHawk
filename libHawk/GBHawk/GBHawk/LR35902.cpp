@@ -11,13 +11,15 @@ namespace GBHawk
 {
 	void LR35902::WriteMemory(uint32_t addr, uint8_t value)
 	{
-		if ((addr & 0xFFFF) >= 0xFFFC) 
-		{
-			mem_ctrl->MemoryWrite(addr, value);
-		}
+		mem_ctrl->MemoryWrite(addr, value);
 	}
 
 	uint8_t LR35902::ReadMemory(uint32_t addr)
+	{
+		return mem_ctrl->HardwareRead(addr);
+	}
+
+	uint8_t LR35902::PeekMemory(uint32_t addr)
 	{
 		return mem_ctrl->HardwareRead(addr);
 	}

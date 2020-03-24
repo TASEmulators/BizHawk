@@ -4,7 +4,7 @@
 #include <string>
 
 #include "LR35902.h"
-#include "AY_3_8910.h"
+#include "GBAudio.h"
 #include "TMS9918A.h"
 #include "Memory.h"
 
@@ -21,13 +21,12 @@ namespace GBHawk
 			cpu.mem_ctrl = &MemMap;
 			vdp.IRQ_PTR = &cpu.FlagI;
 			vdp.SHOW_BG = vdp.SHOW_SPRITES = true;
-			psg.Clock_Divider = 16;
 			sl_case = 0;
 		};
 
 		TMS9918A vdp;
-		Z80A cpu;
-		AY_3_8910 psg;
+		LR35902 cpu;
+		GBAudio psg;
 		MemoryManager MemMap;
 
 		uint8_t sl_case = 0;
@@ -44,14 +43,6 @@ namespace GBHawk
 
 		bool FrameAdvance(uint8_t controller_1, uint8_t controller_2, uint8_t* kb_rows_ptr, bool render, bool rendersound)
 		{
-			if ((MemMap.psg_pntr->Register[0xF] & 0x40) > 0)
-			{
-				MemMap.psg_pntr->Register[0xE] = controller_2;
-			}
-			else 
-			{
-				MemMap.psg_pntr->Register[0xE] = controller_1;
-			}
 			
 			MemMap.controller_byte_1 = controller_1;
 			MemMap.controller_byte_2 = controller_2;
@@ -61,83 +52,6 @@ namespace GBHawk
 
 			uint32_t scanlinesPerFrame = 262;
 			vdp.SpriteLimit = true;
-
-			psg.num_samples = 0;
-			psg.sampleclock = 0;
-
-			for (uint32_t i = 0; i < scanlinesPerFrame; i++)
-			{
-				vdp.ScanLine = i;
-
-				vdp.RenderScanline(i);
-
-				if (vdp.ScanLine == 192)
-				{
-					vdp.InterruptPendingSet(true);
-
-					if (vdp.EnableInterrupts()) { cpu.FlagI = true; }						
-				}
-
-				switch (sl_case) 
-				{
-				case 0:
-					for (int i = 0; i < 14; i++) 
-					{
-						cpu.ExecuteOne(16);
-						psg.sampleclock+=16;
-						psg.generate_sound();
-					}
-					cpu.ExecuteOne(4);
-					psg.sampleclock += 4;
-					sl_case = 1;
-					break;
-
-				case 1:
-					cpu.ExecuteOne(12);
-					psg.sampleclock += 12;
-					psg.generate_sound();
-					
-					for (int i = 0; i < 13; i++)
-					{
-						cpu.ExecuteOne(16);
-						psg.sampleclock += 16;
-						psg.generate_sound();
-					}
-					cpu.ExecuteOne(8);
-					psg.sampleclock += 8;
-					sl_case = 2;
-					break;
-
-				case 2:
-					cpu.ExecuteOne(8);
-					psg.sampleclock += 8;
-					psg.generate_sound();
-
-					for (int i = 0; i < 13; i++)
-					{
-						cpu.ExecuteOne(16);
-						psg.sampleclock += 16;
-						psg.generate_sound();
-					}
-					cpu.ExecuteOne(12);
-					psg.sampleclock += 12;
-					sl_case = 3;
-					break;
-				case 3:
-					cpu.ExecuteOne(4);
-					psg.sampleclock += 4;
-					psg.generate_sound();
-
-					for (int i = 0; i < 14; i++)
-					{
-						cpu.ExecuteOne(16);
-						psg.sampleclock += 16;
-						psg.generate_sound();
-					}
-					sl_case = 0;
-					break;
-				}
-			}
 
 			return MemMap.lagged;
 		}
@@ -150,15 +64,21 @@ namespace GBHawk
 			std::memcpy(dst, src, sizeof uint32_t * 256 * 192);
 		}
 
-		uint32_t GetAudio(int32_t* dest, int32_t* n_samp) 
+		uint32_t GetAudio(int32_t* dest_L, int32_t* n_samp_L, int32_t* dest_R, int32_t* n_samp_R)
 		{
-			int32_t* src = psg.samples;
-			int32_t* dst = dest;
+			int32_t* src = psg.samples_L;
+			int32_t* dst = dest_L;
 
-			std::memcpy(dst, src, sizeof int32_t * psg.num_samples * 2);
-			n_samp[0] = psg.num_samples;
+			std::memcpy(dst, src, sizeof int32_t * psg.num_samples_L * 2);
+			n_samp_L[0] = psg.num_samples_L;
 
-			return psg.sampleclock;
+			src = psg.samples_R;
+			dst = dest_R;
+
+			std::memcpy(dst, src, sizeof int32_t * psg.num_samples_R * 2);
+			n_samp_R[0] = psg.num_samples_R;
+
+			return psg.master_audio_clock;
 		}
 
 		#pragma region State Save / Load
@@ -189,11 +109,7 @@ namespace GBHawk
 
 		uint8_t GetSysBus(uint32_t addr)
 		{
-			cpu.bank_num = cpu.bank_offset = addr & 0xFFFF;
-			cpu.bank_offset &= cpu.low_mask;
-			cpu.bank_num = (cpu.bank_num >> cpu.bank_shift)& cpu.high_mask;
-
-			return cpu.MemoryMap[cpu.bank_num][cpu.bank_offset];
+			return cpu.PeekMemory(addr);
 		}
 
 		uint8_t GetVRAM(uint32_t addr) 
@@ -257,11 +173,15 @@ namespace GBHawk
 			}
 			else if (t == 1)
 			{
-				memcpy(d, cpu.NMI_event, l);
+				memcpy(d, cpu.Un_halt_event, l);
+			}
+			else if (t == 2)
+			{
+				memcpy(d, cpu.IRQ_event, l);
 			}
 			else
 			{
-				memcpy(d, cpu.IRQ_event, l);
+				memcpy(d, cpu.Un_halt_event, l);
 			}
 		}
 

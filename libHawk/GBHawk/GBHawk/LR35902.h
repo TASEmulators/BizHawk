@@ -18,73 +18,41 @@ namespace GBHawk
 		// pointer to controlling memory manager goes here
 		// this will be iplementation dependent
 		MemoryManager* mem_ctrl;
-		
-		// Memory is usually mostly static, so it is efficient to access it with a pointer and write mask
-		// the size of the pointer matrix and masks is system dependent.
-		// This also assumes a simple relationship between bank and write mask
-		// some systems might require more detailed mask, maybe even the same size as read
-		const uint32_t low_mask = 0x3FF;
-		const uint32_t high_mask = 0x3F;
-		const uint32_t bank_shift = 10;
-		
-		// these are not savestated as they are automatically adjusted from the memory map upon load
-		uint32_t bank_num;
-		uint32_t bank_offset;
-		uint8_t* MemoryMap[64];
-		uint8_t MemoryMapMask[64];
 
 		void WriteMemory(uint32_t, uint8_t);
 		uint8_t ReadMemory(uint32_t);
+		uint8_t PeekMemory(uint32_t);
 		uint8_t SpeedFunc(uint32_t);
 
 		// State variables
-		uint64_t TotalExecutedCycles;
-
-		uint32_t EI_pending;
 		bool interrupts_enabled;
-
-		// variables for executing instructions
-		int instr_pntr = 0;
-		int opcode;
 		bool CB_prefix;
 		bool halted;
 		bool stopped;
 		bool jammed;
-		int LY;
-
-		// unsaved variables
-		bool checker;
-		uint8_t Regs[14] = {};
-
 		bool was_FlagI, FlagI;
 
+		uint8_t Regs[14] = {};
+		uint8_t EI_pending;
+		uint8_t LY;
+		uint8_t opcode;
 
-		uint32_t PRE_SRC;		
-		// variables for executing instructions
-		uint32_t stepper = 0;
 		uint32_t instr_pntr = 0;
-		uint32_t bus_pntr = 0;
-		uint32_t mem_pntr = 0;
-		uint32_t irq_pntr = 0;
-		uint32_t IRQS;
-		uint32_t Ztemp2_saver = 0;
-		uint32_t IRQS_cond_offset;
 
 		uint64_t TotalExecutedCycles;
-		
-		uint32_t* cur_instr_ofst = nullptr;
-		uint32_t* cur_bus_ofst = nullptr;
-		uint32_t* cur_mem_ofst = nullptr;
-		uint32_t* cur_irqs_ofst = nullptr;
-		
+
 		// non-state variables
 		bool checker;
-
-
-		uint32_t Ztemp1, Ztemp2, Ztemp3, Ztemp4;
-		uint32_t Reg16_d, Reg16_s, ans, temp, carry;
+		bool temp2;
 		uint32_t cur_instr[60] = {};	 // only used for building
 		uint32_t instr_table[256 * 2 * 60 + 60 * 8] = {}; // compiled instruction table
+
+		// local variables for operations, not stated
+		bool imm;
+		uint8_t a_d;
+		uint32_t Reg16_d, Reg16_s, c;
+		uint32_t ans, ans_l, ans_h, temp;
+		uint32_t bit_check;
 
 		#pragma endregion
 
@@ -171,19 +139,19 @@ namespace GBHawk
 		#pragma region LR35902 functions
 		
 		inline bool FlagCget() { return (Regs[5] & 0x10) != 0; };
-		inline void FlagCset(bool value) { Regs[5] = (uint32_t)((Regs[5] & ~0x10) | (value ? 0x10 : 0x00)); }
+		inline void FlagCset(bool value) { Regs[5] = (uint8_t)((Regs[5] & ~0x10) | (value ? 0x10 : 0x00)); }
 
 		inline bool FlagHget() { return (Regs[5] & 0x20) != 0; };
-		inline void FlagHset(bool value) { Regs[5] = (uint32_t)((Regs[5] & ~0x20) | (value ? 0x20 : 0x00)); }
+		inline void FlagHset(bool value) { Regs[5] = (uint8_t)((Regs[5] & ~0x20) | (value ? 0x20 : 0x00)); }
 
 		inline bool FlagNget() { return (Regs[5] & 0x40) != 0; };
-		inline void FlagNset(bool value) { Regs[5] = (uint32_t)((Regs[5] & ~0x40) | (value ? 0x40 : 0x00)); }
+		inline void FlagNset(bool value) { Regs[5] = (uint8_t)((Regs[5] & ~0x40) | (value ? 0x40 : 0x00)); }
 
 		inline bool FlagZget() { return (Regs[5] & 0x80) != 0; };
-		inline void FlagZset(bool value) { Regs[5] = (uint32_t)((Regs[5] & ~0x80) | (value ? 0x80 : 0x00)); }
+		inline void FlagZset(bool value) { Regs[5] = (uint8_t)((Regs[5] & ~0x80) | (value ? 0x80 : 0x00)); }
 
 		inline uint32_t RegPCget() { return (uint32_t)(Regs[0] | (Regs[1] << 8)); }
-		inline void RegPCset(uint32_t value) { Regs[0] = (uint32_t)(value & 0xFF); Regs[1] = (uint32_t)((value >> 8) & 0xFF); }
+		inline void RegPCset(uint32_t value) { Regs[0] = (uint8_t)(value & 0xFF); Regs[1] = (uint8_t)((value >> 8) & 0xFF); }
 
 		LR35902()
 		{
@@ -211,7 +179,7 @@ namespace GBHawk
 			CB_prefix = false;
 		}
 
-		inline void FetchInstruction(uint32_t op) 
+		inline void FetchInstruction(uint8_t op) 
 		{
 			opcode = op;
 
@@ -368,15 +336,15 @@ namespace GBHawk
 			case HALT:
 				halted = true;
 
-				bool temp = false;
+				temp2 = false;
 
 				if (instr_table[instr_pntr++] == 1)
 				{
-					temp = FlagI;
+					temp2 = FlagI;
 				}
 				else
 				{
-					temp = I_use;
+					temp2 = I_use;
 				}
 
 				if (EI_pending > 0 && !CB_prefix)
@@ -389,7 +357,7 @@ namespace GBHawk
 				}
 
 				// if the I flag is asserted at the time of halt, don't halt
-				if (temp && interrupts_enabled && !CB_prefix && !jammed)
+				if (temp2 && interrupts_enabled && !CB_prefix && !jammed)
 				{
 					interrupts_enabled = false;
 
@@ -418,7 +386,7 @@ namespace GBHawk
 						Halt_bug_3 = false;
 					}
 				}
-				else if (temp)
+				else if (temp2)
 				{
 					// even if interrupt servicing is disabled, any interrupt flag raised still resumes execution
 					if (TraceCallback) { TraceCallback(1); }
@@ -560,7 +528,8 @@ namespace GBHawk
 				// check if any interrupts got cancelled along the way
 				// interrupt src = 5 sets the PC to zero as observed
 				// also the triggering interrupt seems like it is held low (i.e. cannot trigger I flag) until the interrupt is serviced
-				uint32_t bit_check = instr_table[instr_pntr++];
+				bit_check = instr_table[instr_pntr];
+				instr_pntr++;
 				//Console.WriteLine(interrupt_src + " " + interrupt_enable + " " + TotalExecutedCycles);
 
 				if (((interrupt_src[0] & (1 << bit_check)) > 0) && ((interrupt_enable & (1 << bit_check)) > 0)) { int_src = bit_check; int_clear = (uint8_t)(1 << bit_check); }
@@ -572,7 +541,8 @@ namespace GBHawk
 				else if (interrupt_src.Bit(4) && interrupt_enable.Bit(4)) { int_src = 4; int_clear = 16; }
 				else { int_src = 5; int_clear = 0; }
 				*/
-				Regs[instr_table[instr_pntr++]] = INT_vectors[int_src];
+				Regs[instr_table[instr_pntr]] = INT_vectors[int_src];
+				instr_pntr++;
 				break;
 			case HALT_CHK:
 				I_use = FlagI;
@@ -587,7 +557,7 @@ namespace GBHawk
 				Halt_bug_2 = false;
 				break;
 			case IRQ_CLEAR:
-				if ((interrupt_src[0] & (1 << int_src)) > 0) { interrupt_src -= int_clear; }
+				if ((interrupt_src[0] & (1 << int_src)) > 0) { interrupt_src[0] -= int_clear; }
 
 				if ((interrupt_src[0] & interrupt_enable) == 0) { FlagI = false; }
 
@@ -2164,13 +2134,6 @@ namespace GBHawk
 
 		#pragma region Operations
 
-		// local variables for operations, not stated
-		uint32_t Reg16_d, Reg16_s, c;
-		uint32_t ans, ans_l, ans_h, temp;
-		uint8_t a_d;
-		bool imm;
-
-
 		void Read_Func(uint32_t dest, uint32_t src_l, uint32_t src_h)
 		{
 			uint32_t addr = (uint32_t)(Regs[src_l] | (Regs[src_h]) << 8);
@@ -2185,14 +2148,14 @@ namespace GBHawk
 		// special read for POP AF that always clears the lower 4 bits of F 
 		void Read_Func_F(uint32_t dest, uint32_t src_l, uint32_t src_h)
 		{
-			Regs[dest] = (uint32_t)(ReadMemory((uint32_t)(Regs[src_l] | (Regs[src_h]) << 8)) & 0xF0);
+			Regs[dest] = (ReadMemory((uint32_t)(Regs[src_l] | (Regs[src_h]) << 8)) & 0xF0);
 		}
 
 		void Write_Func(uint32_t dest_l, uint32_t dest_h, uint32_t src)
 		{
 			uint32_t addr = (uint32_t)(Regs[dest_l] | (Regs[dest_h]) << 8);
 			//CDLCallback ? .Invoke(addr, eCDLogMemFlags.Write | eCDLogMemFlags.Data);
-			WriteMemory(addr, (uint8_t)Regs[src]);
+			WriteMemory(addr, Regs[src]);
 		}
 
 		void TR_Func(uint32_t dest, uint32_t src)
@@ -2221,8 +2184,8 @@ namespace GBHawk
 			FlagHset((Reg16_d & 0x1000) > 0);
 			FlagNset(false);
 
-			Regs[dest_l] = ans_l;
-			Regs[dest_h] = ans_h;
+			Regs[dest_l] = (uint8_t)ans_l;
+			Regs[dest_h] = (uint8_t)ans_h;
 		}
 
 		void ADD8_Func(uint32_t dest, uint32_t src)
@@ -2243,7 +2206,7 @@ namespace GBHawk
 
 			FlagNset(false);
 
-			Regs[dest] = ans;
+			Regs[dest] = (uint8_t)ans;
 		}
 
 		void SUB8_Func(uint32_t dest, uint32_t src)
@@ -2263,35 +2226,35 @@ namespace GBHawk
 			FlagHset((Reg16_d & 0x10) > 0);
 			FlagNset(true);
 
-			Regs[dest] = ans;
+			Regs[dest] = (uint8_t)ans;
 		}
 
 		void BIT_Func(uint32_t bit, uint32_t src)
 		{
-			FlagZset(!Regs[src].Bit(bit));
+			FlagZset(!((Regs[src] & (1 << bit)) > 0));
 			FlagHset(true);
 			FlagNset(false);
 		}
 
 		void SET_Func(uint32_t bit, uint32_t src)
 		{
-			Regs[src] |= (uint32_t)(1 << bit);
+			Regs[src] |= (uint8_t)(1 << bit);
 		}
 
 		void RES_Func(uint32_t bit, uint32_t src)
 		{
-			Regs[src] &= (uint32_t)(0xFF - (1 << bit));
+			Regs[src] &= (uint8_t)(0xFF - (1 << bit));
 		}
 
 		void ASGN_Func(uint32_t src, uint32_t val)
 		{
-			Regs[src] = val;
+			Regs[src] = (uint8_t)val;
 		}
 
 		void SWAP_Func(uint32_t src)
 		{
 			temp = (uint32_t)((Regs[src] << 4) & 0xF0);
-			Regs[src] = (uint32_t)(temp | (Regs[src] >> 4));
+			Regs[src] = (uint8_t)(temp | (Regs[src] >> 4));
 
 			FlagZset(Regs[src] == 0);
 			FlagHset(false);
@@ -2301,9 +2264,9 @@ namespace GBHawk
 
 		void SLA_Func(uint32_t src)
 		{
-			FlagCset(Regs[src].Bit(7));
+			FlagCset((Regs[src] & 0x80) > 0);
 
-			Regs[src] = (uint32_t)((Regs[src] << 1) & 0xFF);
+			Regs[src] = (uint8_t)((Regs[src] << 1) & 0xFF);
 
 			FlagZset(Regs[src] == 0);
 			FlagHset(false);
@@ -2312,11 +2275,11 @@ namespace GBHawk
 
 		void SRA_Func(uint32_t src)
 		{
-			FlagCset(Regs[src].Bit(0));
+			FlagCset((Regs[src] & 1) > 0);
 
 			temp = (uint32_t)(Regs[src] & 0x80); // MSB doesn't change in this operation
 
-			Regs[src] = (uint32_t)((Regs[src] >> 1) | temp);
+			Regs[src] = (uint8_t)((Regs[src] >> 1) | temp);
 
 			FlagZset(Regs[src] == 0);
 			FlagHset(false);
@@ -2325,9 +2288,9 @@ namespace GBHawk
 
 		void SRL_Func(uint32_t src)
 		{
-			FlagCset(Regs[src].Bit(0));
+			FlagCset((Regs[src] & 1) > 0);
 
-			Regs[src] = (uint32_t)(Regs[src] >> 1);
+			Regs[src] = (uint8_t)(Regs[src] >> 1);
 
 			FlagZset(Regs[src] == 0);
 			FlagHset(false);
@@ -2336,7 +2299,7 @@ namespace GBHawk
 
 		void CPL_Func(uint32_t src)
 		{
-			Regs[src] = (uint32_t)((~Regs[src]) & 0xFF);
+			Regs[src] = (uint8_t)((~Regs[src]) & 0xFF);
 
 			FlagHset(true);
 			FlagNset(true);
@@ -2358,7 +2321,7 @@ namespace GBHawk
 
 		void AND8_Func(uint32_t dest, uint32_t src)
 		{
-			Regs[dest] = (uint32_t)(Regs[dest] & Regs[src]);
+			Regs[dest] = (uint8_t)(Regs[dest] & Regs[src]);
 
 			FlagZset(Regs[dest] == 0);
 			FlagCset(false);
@@ -2368,7 +2331,7 @@ namespace GBHawk
 
 		void OR8_Func(uint32_t dest, uint32_t src)
 		{
-			Regs[dest] = (uint32_t)(Regs[dest] | Regs[src]);
+			Regs[dest] = (uint8_t)(Regs[dest] | Regs[src]);
 
 			FlagZset(Regs[dest] == 0);
 			FlagCset(false);
@@ -2378,7 +2341,7 @@ namespace GBHawk
 
 		void XOR8_Func(uint32_t dest, uint32_t src)
 		{
-			Regs[dest] = (uint32_t)(Regs[dest] ^ Regs[src]);
+			Regs[dest] = (uint8_t)(Regs[dest] ^ Regs[src]);
 
 			FlagZset(Regs[dest] == 0);
 			FlagCset(false);
@@ -2408,9 +2371,9 @@ namespace GBHawk
 			imm = src == Aim;
 			if (imm) { src = A; }
 
-			FlagCset(Regs[src].Bit(0));
+			FlagCset((Regs[src] & 1) > 0);
 
-			Regs[src] = (uint32_t)((FlagCget() ? 0x80 : 0) | (Regs[src] >> 1));
+			Regs[src] = (uint8_t)((FlagCget() ? 0x80 : 0) | (Regs[src] >> 1));
 
 			FlagZset(imm ? false : (Regs[src] == 0));
 			FlagHset(false);
@@ -2424,9 +2387,9 @@ namespace GBHawk
 
 			c = FlagCget() ? 0x80 : 0;
 
-			FlagCset(Regs[src].Bit(0));
+			FlagCset((Regs[src] & 1) > 0);
 
-			Regs[src] = (uint32_t)(c | (Regs[src] >> 1));
+			Regs[src] = (uint8_t)(c | (Regs[src] >> 1));
 
 			FlagZset(imm ? false : (Regs[src] == 0));
 			FlagHset(false);
@@ -2438,10 +2401,10 @@ namespace GBHawk
 			imm = src == Aim;
 			if (imm) { src = A; }
 
-			c = Regs[src].Bit(7) ? 1 : 0;
-			FlagCset(Regs[src].Bit(7));
+			c = (Regs[src] & 0x80) > 0 ? 1 : 0;
+			FlagCset((Regs[src] & 0x80) > 0);
 
-			Regs[src] = (uint32_t)(((Regs[src] << 1) & 0xFF) | c);
+			Regs[src] = (uint8_t)(((Regs[src] << 1) & 0xFF) | c);
 
 			FlagZset(imm ? false : (Regs[src] == 0));
 			FlagHset(false);
@@ -2454,9 +2417,9 @@ namespace GBHawk
 			if (imm) { src = A; }
 
 			c = FlagCget() ? 1 : 0;
-			FlagCset(Regs[src].Bit(7));
+			FlagCset((Regs[src] & 0x80) > 0);
 
-			Regs[src] = (uint32_t)(((Regs[src] << 1) & 0xFF) | c);
+			Regs[src] = (uint8_t)(((Regs[src] << 1) & 0xFF) | c);
 
 			FlagZset(imm ? false : (Regs[src] == 0));
 			FlagHset(false);
@@ -2479,7 +2442,7 @@ namespace GBHawk
 			FlagHset((Reg16_d & 0x10) > 0);
 			FlagNset(false);
 
-			Regs[src] = ans;
+			Regs[src] = (uint8_t)ans;
 		}
 
 		void DEC8_Func(uint32_t src)
@@ -2498,7 +2461,7 @@ namespace GBHawk
 			FlagHset((Reg16_d & 0x10) > 0);
 			FlagNset(true);
 
-			Regs[src] = ans;
+			Regs[src] = (uint8_t)ans;
 		}
 
 		void INC16_Func(uint32_t src_l, uint32_t src_h)
@@ -2507,8 +2470,8 @@ namespace GBHawk
 
 			Reg16_d += 1;
 
-			Regs[src_l] = (uint32_t)(Reg16_d & 0xFF);
-			Regs[src_h] = (uint32_t)((Reg16_d & 0xFF00) >> 8);
+			Regs[src_l] = (uint8_t)(Reg16_d & 0xFF);
+			Regs[src_h] = (uint8_t)((Reg16_d & 0xFF00) >> 8);
 		}
 
 		void DEC16_Func(uint32_t src_l, uint32_t src_h)
@@ -2517,8 +2480,8 @@ namespace GBHawk
 
 			Reg16_d -= 1;
 
-			Regs[src_l] = (uint32_t)(Reg16_d & 0xFF);
-			Regs[src_h] = (uint32_t)((Reg16_d & 0xFF00) >> 8);
+			Regs[src_l] = (uint8_t)(Reg16_d & 0xFF);
+			Regs[src_h] = (uint8_t)((Reg16_d & 0xFF00) >> 8);
 		}
 
 		void ADC8_Func(uint32_t dest, uint32_t src)
@@ -2540,7 +2503,7 @@ namespace GBHawk
 			FlagHset((Reg16_d & 0x10) > 0);
 			FlagNset(false);
 
-			Regs[dest] = ans;
+			Regs[dest] = (uint8_t)ans;
 		}
 
 		void SBC8_Func(uint32_t dest, uint32_t src)
@@ -2562,7 +2525,7 @@ namespace GBHawk
 			FlagHset((Reg16_d & 0x10) > 0);
 			FlagNset(true);
 
-			Regs[dest] = ans;
+			Regs[dest] = (uint8_t)ans;
 		}
 
 		// DA code courtesy of AWJ: http://forums.nesdev.com/viewtopic.php?f=20&t=15944
@@ -2583,7 +2546,7 @@ namespace GBHawk
 
 			a_d &= 0xFF;
 
-			Regs[src] = a_d;
+			Regs[src] = (uint8_t)a_d;
 
 			FlagZset(a_d == 0);
 			FlagHset(false);
@@ -2632,9 +2595,9 @@ namespace GBHawk
 				FlagZset(false);
 			}
 
-			Regs[dest_l] = ans_l;
-			Regs[dest_h] += temp;
-			Regs[dest_h] &= 0xFF;
+			Regs[dest_l] = (uint8_t)ans_l;
+			Regs[dest_h] += (uint8_t)temp;
+			Regs[dest_h] &= (uint8_t)0xFF;
 
 		}
 
@@ -2646,7 +2609,7 @@ namespace GBHawk
 		const char* TraceHeader = "Z80A: PC, machine code, mnemonic, operands, registers (AF, BC, DE, HL, IX, IY, SP, Cy), flags (CNP3H5ZS)";
 		const char* Un_halt_event = "                 ==Un-halted==                 ";
 		const char* IRQ_event     = "                  ====IRQ====                  ";
-		const char* Un_halt_event = "                ==Un-stopped==                 ";
+		const char* Un_stop_event = "                ==Un-stopped==                 ";
 		const char* No_Reg = "                                                                                     ";
 		const char* Reg_template = "AF:AAFF BC:BBCC DE:DDEE HL:HHLL Ix:IxIx Iy:IyIy SP:SPSP Cy:FEDCBA9876543210 CNP3H5ZSE";
 		const char* Disasm_template = "PCPC: AA BB CC DD   Di Di, XXXXX               ";
@@ -2689,7 +2652,7 @@ namespace GBHawk
 			reg_state.append(val_char_1, 4);
 
 			reg_state.append(" Cy:");			
-			reg_state.append(val_char_1, sprintf_s(val_char_1, 32, "%16u", (uint64_t)TotalExecutedCycles));
+			reg_state.append(val_char_1, sprintf_s(val_char_1, 32, "%16u", (unsigned long)TotalExecutedCycles));
 			reg_state.append(" ");
 			
 			reg_state.append(FlagCget() ? "C" : "c");
@@ -2719,12 +2682,8 @@ namespace GBHawk
 
 			for (i = 0; i < bytes_read; i++)
 			{
-				bank_num = bank_offset = (RegPCget() + i) & 0xFFFF;
-				bank_offset &= low_mask;
-				bank_num = (bank_num >> bank_shift)& high_mask;
-
 				char* val_char_1 = replacer;
-				sprintf_s(val_char_1, 5, "%02X", MemoryMap[bank_num][bank_offset]);
+				sprintf_s(val_char_1, 5, "%02X", PeekMemory((RegPCget() + i) & 0xFFFF));
 				string val1(val_char_1, 2);
 				
 				byte_code.append(val1);
@@ -2759,23 +2718,15 @@ namespace GBHawk
 			{
 				size_t str_loc = format.find("nn");
 
-				bank_num = bank_offset = addr[0] & 0xFFFF;
-				bank_offset &= low_mask;
-				bank_num = (bank_num >> bank_shift) & high_mask;
-				addr[0]++;
-				
 				val_char_1 = replacer;
-				sprintf_s(val_char_1, 5, "%02X", MemoryMap[bank_num][bank_offset]);
+				sprintf_s(val_char_1, 5, "%02X", PeekMemory(addr[0] & 0xFFFF));
 				string val1(val_char_1, 2);
-
-				bank_num = bank_offset = addr[0] & 0xFFFF;
-				bank_offset &= low_mask;
-				bank_num = (bank_num >> bank_shift)& high_mask;
 				addr[0]++;
 
 				val_char_2 = replacer;
-				sprintf_s(val_char_2, 5, "%02X", MemoryMap[bank_num][bank_offset]);
+				sprintf_s(val_char_2, 5, "%02X", PeekMemory(addr[0] & 0xFFFF));
 				string val2(val_char_2, 2);
+				addr[0]++;
 
 				format.erase(str_loc, 2);
 				format.insert(str_loc, val1);
@@ -2786,14 +2737,10 @@ namespace GBHawk
 			{
 				size_t str_loc = format.find("n");
 
-				bank_num = bank_offset = addr[0] & 0xFFFF;
-				bank_offset &= low_mask;
-				bank_num = (bank_num >> bank_shift)& high_mask;
-				addr[0]++;
-
 				val_char_1 = replacer;
-				sprintf_s(val_char_1, 5, "%02X", MemoryMap[bank_num][bank_offset]);
+				sprintf_s(val_char_1, 5, "%02X", PeekMemory(addr[0] & 0xFFFF));
 				string val1(val_char_1, 2);
+				addr[0]++;
 
 				format.erase(str_loc, 1);
 				format.insert(str_loc, val1);
@@ -2803,14 +2750,10 @@ namespace GBHawk
 			{
 				size_t str_loc = format.find("+d");
 
-				bank_num = bank_offset = addr[0] & 0xFFFF;
-				bank_offset &= low_mask;
-				bank_num = (bank_num >> bank_shift)& high_mask;
-				addr[0]++;
-
 				val_char_1 = replacer;
-				sprintf_s(val_char_1, 5, "%+04d", (int8_t)MemoryMap[bank_num][bank_offset]);
+				sprintf_s(val_char_1, 5, "%+04d", (int8_t)PeekMemory(addr[0] & 0xFFFF));
 				string val1(val_char_1, 4);
+				addr[0]++;
 
 				format.erase(str_loc, 2);
 				format.insert(str_loc, val1);
@@ -2819,14 +2762,10 @@ namespace GBHawk
 			{
 				size_t str_loc = format.find("d");
 
-				bank_num = bank_offset = addr[0] & 0xFFFF;
-				bank_offset &= low_mask;
-				bank_num = (bank_num >> bank_shift)& high_mask;
-				addr[0]++;
-
 				val_char_1 = replacer;
-				sprintf_s(val_char_1, 5, "%+04d", (int8_t)MemoryMap[bank_num][bank_offset]);
+				sprintf_s(val_char_1, 5, "%+04d", (int8_t)PeekMemory(addr[0] & 0xFFFF));
 				string val1(val_char_1, 4);
+				addr[0]++;
 
 				format.erase(str_loc, 1);
 				format.insert(str_loc, val1);
@@ -2840,22 +2779,14 @@ namespace GBHawk
 			uint32_t start_addr = addr;
 			uint32_t extra_inc = 0;
 
-			bank_num = bank_offset = addr & 0xFFFF;
-			bank_offset &= low_mask;
-			bank_num = (bank_num >> bank_shift) & high_mask;
+			uint32_t A = PeekMemory(addr & 0xFFFF);
 			addr++;
-
-			uint32_t A = MemoryMap[bank_num][bank_offset];
 			string format;
 			switch (A)
 			{
 			case 0xCB:
-				bank_num = bank_offset = addr & 0xFFFF;
-				bank_offset &= low_mask;
-				bank_num = (bank_num >> bank_shift) & high_mask;
+				A = PeekMemory(addr & 0xFFFF);
 				addr++;
-
-				A = MemoryMap[bank_num][bank_offset];
 				format = mnemonics[A + 256];
 				break;
 
@@ -2920,262 +2851,38 @@ namespace GBHawk
 			"LDH  A,(a8)", "POP  AF", "LD   A,(C)", "DI", "???", "PUSH AF", "OR   d8", "RST  30H", // F0
 			"LD   HL,SP+r8", "LD   SP,HL", "LD   A,(a16)", "EI   ", "???", "???", "CP   d8", "RST  38H", // F8
 
-			"RLC  B", // 00
-			"RLC  C", // 01
-			"RLC  D", // 02
-			"RLC  E", // 03
-			"RLC  H", // 04
-			"RLC  L", // 05
-			"RLC  (HL)", // 06
-			"RLC  A", // 07
-			"RRC  B", // 08
-			"RRC  C", // 09
-			"RRC  D", // 0a
-			"RRC  E", // 0b
-			"RRC  H", // 0c
-			"RRC  L", // 0d
-			"RRC  (HL)", // 0e
-			"RRC  A", // 0f
-			"RL   B", // 10
-			"RL   C", // 11
-			"RL   D", // 12
-			"RL   E", // 13
-			"RL   H", // 14
-			"RL   L", // 15
-			"RL   (HL)", // 16
-			"RL   A", // 17
-			"RR   B", // 18
-			"RR   C", // 19
-			"RR   D", // 1a
-			"RR   E", // 1b
-			"RR   H", // 1c
-			"RR   L", // 1d
-			"RR   (HL)", // 1e
-			"RR   A", // 1f
-			"SLA  B", // 20
-			"SLA  C", // 21
-			"SLA  D", // 22
-			"SLA  E", // 23
-			"SLA  H", // 24
-			"SLA  L", // 25
-			"SLA  (HL)", // 26
-			"SLA  A", // 27
-			"SRA  B", // 28
-			"SRA  C", // 29
-			"SRA  D", // 2a
-			"SRA  E", // 2b
-			"SRA  H", // 2c
-			"SRA  L", // 2d
-			"SRA  (HL)", // 2e
-			"SRA  A", // 2f
-			"SWAP B", // 30
-			"SWAP C", // 31
-			"SWAP D", // 32
-			"SWAP E", // 33
-			"SWAP H", // 34
-			"SWAP L", // 35
-			"SWAP (HL)", // 36
-			"SWAP A", // 37
-			"SRL  B", // 38
-			"SRL  C", // 39
-			"SRL  D", // 3a
-			"SRL  E", // 3b
-			"SRL  H", // 3c
-			"SRL  L", // 3d
-			"SRL  (HL)", // 3e
-			"SRL  A", // 3f
-			"BIT  0,B", // 40
-			"BIT  0,C", // 41
-			"BIT  0,D", // 42
-			"BIT  0,E", // 43
-			"BIT  0,H", // 44
-			"BIT  0,L", // 45
-			"BIT  0,(HL)", // 46
-			"BIT  0,A", // 47
-			"BIT  1,B", // 48
-			"BIT  1,C", // 49
-			"BIT  1,D", // 4a
-			"BIT  1,E", // 4b
-			"BIT  1,H", // 4c
-			"BIT  1,L", // 4d
-			"BIT  1,(HL)", // 4e
-			"BIT  1,A", // 4f
-			"BIT  2,B", // 50
-			"BIT  2,C", // 51
-			"BIT  2,D", // 52
-			"BIT  2,E", // 53
-			"BIT  2,H", // 54
-			"BIT  2,L", // 55
-			"BIT  2,(HL)", // 56
-			"BIT  2,A", // 57
-			"BIT  3,B", // 58
-			"BIT  3,C", // 59
-			"BIT  3,D", // 5a
-			"BIT  3,E", // 5b
-			"BIT  3,H", // 5c
-			"BIT  3,L", // 5d
-			"BIT  3,(HL)", // 5e
-			"BIT  3,A", // 5f
-			"BIT  4,B", // 60
-			"BIT  4,C", // 61
-			"BIT  4,D", // 62
-			"BIT  4,E", // 63
-			"BIT  4,H", // 64
-			"BIT  4,L", // 65
-			"BIT  4,(HL)", // 66
-			"BIT  4,A", // 67
-			"BIT  5,B", // 68
-			"BIT  5,C", // 69
-			"BIT  5,D", // 6a
-			"BIT  5,E", // 6b
-			"BIT  5,H", // 6c
-			"BIT  5,L", // 6d
-			"BIT  5,(HL)", // 6e
-			"BIT  5,A", // 6f
-			"BIT  6,B", // 70
-			"BIT  6,C", // 71
-			"BIT  6,D", // 72
-			"BIT  6,E", // 73
-			"BIT  6,H", // 74
-			"BIT  6,L", // 75
-			"BIT  6,(HL)", // 76
-			"BIT  6,A", // 77
-			"BIT  7,B", // 78
-			"BIT  7,C", // 79
-			"BIT  7,D", // 7a
-			"BIT  7,E", // 7b
-			"BIT  7,H", // 7c
-			"BIT  7,L", // 7d
-			"BIT  7,(HL)", // 7e
-			"BIT  7,A", // 7f
-			"RES  0,B", // 80
-			"RES  0,C", // 81
-			"RES  0,D", // 82
-			"RES  0,E", // 83
-			"RES  0,H", // 84
-			"RES  0,L", // 85
-			"RES  0,(HL)", // 86
-			"RES  0,A", // 87
-			"RES  1,B", // 88
-			"RES  1,C", // 89
-			"RES  1,D", // 8a
-			"RES  1,E", // 8b
-			"RES  1,H", // 8c
-			"RES  1,L", // 8d
-			"RES  1,(HL)", // 8e
-			"RES  1,A", // 8f
-			"RES  2,B", // 90
-			"RES  2,C", // 91
-			"RES  2,D", // 92
-			"RES  2,E", // 93
-			"RES  2,H", // 94
-			"RES  2,L", // 95
-			"RES  2,(HL)", // 96
-			"RES  2,A", // 97
-			"RES  3,B", // 98
-			"RES  3,C", // 99
-			"RES  3,D", // 9a
-			"RES  3,E", // 9b
-			"RES  3,H", // 9c
-			"RES  3,L", // 9d
-			"RES  3,(HL)", // 9e
-			"RES  3,A", // 9f
-			"RES  4,B", // a0
-			"RES  4,C", // a1
-			"RES  4,D", // a2
-			"RES  4,E", // a3
-			"RES  4,H", // a4
-			"RES  4,L", // a5
-			"RES  4,(HL)", // a6
-			"RES  4,A", // a7
-			"RES  5,B", // a8
-			"RES  5,C", // a9
-			"RES  5,D", // aa
-			"RES  5,E", // ab
-			"RES  5,H", // ac
-			"RES  5,L", // ad
-			"RES  5,(HL)", // ae
-			"RES  5,A", // af
-			"RES  6,B", // b0
-			"RES  6,C", // b1
-			"RES  6,D", // b2
-			"RES  6,E", // b3
-			"RES  6,H", // b4
-			"RES  6,L", // b5
-			"RES  6,(HL)", // b6
-			"RES  6,A", // b7
-			"RES  7,B", // b8
-			"RES  7,C", // b9
-			"RES  7,D", // ba
-			"RES  7,E", // bb
-			"RES  7,H", // bc
-			"RES  7,L", // bd
-			"RES  7,(HL)", // be
-			"RES  7,A", // bf
-			"SET  0,B", // c0
-			"SET  0,C", // c1
-			"SET  0,D", // c2
-			"SET  0,E", // c3
-			"SET  0,H", // c4
-			"SET  0,L", // c5
-			"SET  0,(HL)", // c6
-			"SET  0,A", // c7
-			"SET  1,B", // c8
-			"SET  1,C", // c9
-			"SET  1,D", // ca
-			"SET  1,E", // cb
-			"SET  1,H", // cc
-			"SET  1,L", // cd
-			"SET  1,(HL)", // ce
-			"SET  1,A", // cf
-			"SET  2,B", // d0
-			"SET  2,C", // d1
-			"SET  2,D", // d2
-			"SET  2,E", // d3
-			"SET  2,H", // d4
-			"SET  2,L", // d5
-			"SET  2,(HL)", // d6
-			"SET  2,A", // d7
-			"SET  3,B", // d8
-			"SET  3,C", // d9
-			"SET  3,D", // da
-			"SET  3,E", // db
-			"SET  3,H", // dc
-			"SET  3,L", // dd
-			"SET  3,(HL)", // de
-			"SET  3,A", // df
-			"SET  4,B", // e0
-			"SET  4,C", // e1
-			"SET  4,D", // e2
-			"SET  4,E", // e3
-			"SET  4,H", // e4
-			"SET  4,L", // e5
-			"SET  4,(HL)", // e6
-			"SET  4,A", // e7
-			"SET  5,B", // e8
-			"SET  5,C", // e9
-			"SET  5,D", // ea
-			"SET  5,E", // eb
-			"SET  5,H", // ec
-			"SET  5,L", // ed
-			"SET  5,(HL)", // ee
-			"SET  5,A", // ef
-			"SET  6,B", // f0
-			"SET  6,C", // f1
-			"SET  6,D", // f2
-			"SET  6,E", // f3
-			"SET  6,H", // f4
-			"SET  6,L", // f5
-			"SET  6,(HL)", // f6
-			"SET  6,A", // f7
-			"SET  7,B", // f8
-			"SET  7,C", // f9
-			"SET  7,D", // fa
-			"SET  7,E", // fb
-			"SET  7,H", // fc
-			"SET  7,L", // fd
-			"SET  7,(HL)", // fe
-			"SET  7,A", // ff
+			"RLC  B", "RLC  C", "RLC  D", "RLC  E", "RLC  H", "RLC  L", "RLC  (HL)", "RLC  A", // 00
+			"RRC  B", "RRC  C", "RRC  D", "RRC  E", "RRC  H", "RRC  L", "RRC  (HL)", "RRC  A", // 08
+			"RL   B", "RL   C", "RL   D", "RL   E", "RL   H", "RL   L", "RL   (HL)", "RL   A", // 10
+			"RR   B", "RR   C", "RR   D", "RR   E", "RR   H", "RR   L", "RR   (HL)", "RR   A", // 18
+			"SLA  B", "SLA  C", "SLA  D", "SLA  E", "SLA  H", "SLA  L", "SLA  (HL)", "SLA  A", // 20
+			"SRA  B", "SRA  C", "SRA  D", "SRA  E", "SRA  H", "SRA  L", "SRA  (HL)", "SRA  A", // 28
+			"SWAP B", "SWAP C", "SWAP D", "SWAP E", "SWAP H", "SWAP L", "SWAP (HL)", "SWAP A", // 30
+			"SRL  B", "SRL  C", "SRL  D", "SRL  E", "SRL  H", "SRL  L", "SRL  (HL)", "SRL  A", // 38
+			"BIT  0,B", "BIT  0,C", "BIT  0,D", "BIT  0,E", "BIT  0,H", "BIT  0,L", "BIT  0,(HL)", "BIT  0,A", // 40
+			"BIT  1,B", "BIT  1,C", "BIT  1,D", "BIT  1,E", "BIT  1,H", "BIT  1,L", "BIT  1,(HL)", "BIT  1,A", // 48
+			"BIT  2,B", "BIT  2,C", "BIT  2,D", "BIT  2,E", "BIT  2,H", "BIT  2,L", "BIT  2,(HL)", "BIT  2,A", // 50
+			"BIT  3,B", "BIT  3,C", "BIT  3,D", "BIT  3,E", "BIT  3,H", "BIT  3,L", "BIT  3,(HL)", "BIT  3,A", // 58
+			"BIT  4,B", "BIT  4,C", "BIT  4,D", "BIT  4,E", "BIT  4,H", "BIT  4,L", "BIT  4,(HL)", "BIT  4,A", // 60
+			"BIT  5,B", "BIT  5,C", "BIT  5,D", "BIT  5,E", "BIT  5,H", "BIT  5,L", "BIT  5,(HL)", "BIT  5,A", // 68
+			"BIT  6,B", "BIT  6,C", "BIT  6,D", "BIT  6,E", "BIT  6,H", "BIT  6,L", "BIT  6,(HL)", "BIT  6,A", // 70
+			"BIT  7,B", "BIT  7,C", "BIT  7,D", "BIT  7,E", "BIT  7,H", "BIT  7,L", "BIT  7,(HL)", "BIT  7,A", // 78
+			"RES  0,B", "RES  0,C", "RES  0,D", "RES  0,E", "RES  0,H", "RES  0,L", "RES  0,(HL)", "RES  0,A", // 80
+			"RES  1,B", "RES  1,C", "RES  1,D", "RES  1,E", "RES  1,H", "RES  1,L", "RES  1,(HL)", "RES  1,A", // 88
+			"RES  2,B", "RES  2,C", "RES  2,D", "RES  2,E", "RES  2,H", "RES  2,L", "RES  2,(HL)", "RES  2,A", // 90
+			"RES  3,B", "RES  3,C", "RES  3,D", "RES  3,E", "RES  3,H", "RES  3,L", "RES  3,(HL)", "RES  3,A", // 98
+			"RES  4,B", "RES  4,C", "RES  4,D", "RES  4,E", "RES  4,H", "RES  4,L", "RES  4,(HL)", "RES  4,A", // A0
+			"RES  5,B", "RES  5,C", "RES  5,D", "RES  5,E", "RES  5,H", "RES  5,L", "RES  5,(HL)", "RES  5,A", // A8
+			"RES  6,B", "RES  6,C", "RES  6,D", "RES  6,E", "RES  6,H", "RES  6,L", "RES  6,(HL)", "RES  6,A", // B0
+			"RES  7,B", "RES  7,C", "RES  7,D", "RES  7,E", "RES  7,H", "RES  7,L", "RES  7,(HL)", "RES  7,A", // B8
+			"SET  0,B", "SET  0,C", "SET  0,D", "SET  0,E", "SET  0,H", "SET  0,L", "SET  0,(HL)", "SET  0,A", // C0
+			"SET  1,B", "SET  1,C", "SET  1,D", "SET  1,E", "SET  1,H", "SET  1,L", "SET  1,(HL)", "SET  1,A", // C8
+			"SET  2,B", "SET  2,C", "SET  2,D", "SET  2,E", "SET  2,H", "SET  2,L", "SET  2,(HL)", "SET  2,A", // D0
+			"SET  3,B", "SET  3,C", "SET  3,D", "SET  3,E", "SET  3,H", "SET  3,L", "SET  3,(HL)", "SET  3,A", // d8
+			"SET  4,B", "SET  4,C", "SET  4,D", "SET  4,E", "SET  4,H", "SET  4,L", "SET  4,(HL)", "SET  4,A", // e0
+			"SET  5,B", "SET  5,C", "SET  5,D", "SET  5,E", "SET  5,H", "SET  5,L", "SET  5,(HL)", "SET  5,A", // E8
+			"SET  6,B", "SET  6,C", "SET  6,D", "SET  6,E", "SET  6,H", "SET  6,L", "SET  6,(HL)", "SET  6,A", // F0
+			"SET  7,B", "SET  7,C", "SET  7,D", "SET  7,E", "SET  7,H", "SET  7,L", "SET  7,(HL)", "SET  7,A", // F8
 		};
 
 		#pragma endregion
@@ -3184,56 +2891,24 @@ namespace GBHawk
 
 		uint8_t* SaveState(uint8_t* saver)
 		{
-			*saver = (uint8_t)(NO_prefix ? 1 : 0); saver++;
+
+			*saver = (uint8_t)(interrupts_enabled ? 1 : 0); saver++;
 			*saver = (uint8_t)(CB_prefix ? 1 : 0); saver++;
-			*saver = (uint8_t)(IX_prefix ? 1 : 0); saver++;
-			*saver = (uint8_t)(EXTD_prefix ? 1 : 0); saver++;
-			*saver = (uint8_t)(IY_prefix ? 1 : 0); saver++;
-			*saver = (uint8_t)(IXCB_prefix ? 1 : 0); saver++;
-			*saver = (uint8_t)(IYCB_prefix ? 1 : 0); saver++;
 			*saver = (uint8_t)(halted ? 1 : 0); saver++;
-			*saver = (uint8_t)(I_skip ? 1 : 0); saver++;
+			*saver = (uint8_t)(stopped ? 1 : 0); saver++;
+			*saver = (uint8_t)(jammed ? 1 : 0); saver++;
+			*saver = (uint8_t)(was_FlagI ? 1 : 0); saver++;
 			*saver = (uint8_t)(FlagI ? 1 : 0); saver++;
-			*saver = (uint8_t)(FlagW ? 1 : 0); saver++;
-			*saver = (uint8_t)(IFF1 ? 1 : 0); saver++;
-			*saver = (uint8_t)(IFF2 ? 1 : 0); saver++;
-			*saver = (uint8_t)(nonMaskableInterrupt ? 1 : 0); saver++;
-			*saver = (uint8_t)(nonMaskableInterruptPending ? 1 : 0); saver++;
-			*saver = (uint8_t)(jp_cond_chk ? 1 : 0); saver++;
-			*saver = (uint8_t)(cond_chk_fail ? 1 : 0); saver++;
+			*saver = (uint8_t)(halted ? 1 : 0); saver++;
 
 			*saver = opcode; saver++;
-			*saver = temp_R; saver++;
+			*saver = LY; saver++;
 			*saver = EI_pending; saver++;
-			*saver = interruptMode; saver++;
-			*saver = ExternalDB; saver++;
-			*saver = instr_bank; saver++;
 
-			for (int i = 0; i < 36; i++) { *saver = Regs[i]; saver++; }
-
-			*saver = (uint8_t)(PRE_SRC & 0xFF); saver++; *saver = (uint8_t)((PRE_SRC >> 8) & 0xFF); saver++;
-			*saver = (uint8_t)((PRE_SRC >> 16) & 0xFF); saver++; *saver = (uint8_t)((PRE_SRC >> 24) & 0xFF); saver++;
+			for (int i = 0; i < 14; i++) { *saver = Regs[i]; saver++; }
 
 			*saver = (uint8_t)(instr_pntr & 0xFF); saver++; *saver = (uint8_t)((instr_pntr >> 8) & 0xFF); saver++;
 			*saver = (uint8_t)((instr_pntr >> 16) & 0xFF); saver++; *saver = (uint8_t)((instr_pntr >> 24) & 0xFF); saver++;
-
-			*saver = (uint8_t)(bus_pntr & 0xFF); saver++; *saver = (uint8_t)((bus_pntr >> 8) & 0xFF); saver++;
-			*saver = (uint8_t)((bus_pntr >> 16) & 0xFF); saver++; *saver = (uint8_t)((bus_pntr >> 24) & 0xFF); saver++;
-
-			*saver = (uint8_t)(mem_pntr & 0xFF); saver++; *saver = (uint8_t)((mem_pntr >> 8) & 0xFF); saver++;
-			*saver = (uint8_t)((mem_pntr >> 16) & 0xFF); saver++; *saver = (uint8_t)((mem_pntr >> 24) & 0xFF); saver++;
-
-			*saver = (uint8_t)(irq_pntr & 0xFF); saver++; *saver = (uint8_t)((irq_pntr >> 8) & 0xFF); saver++;
-			*saver = (uint8_t)((irq_pntr >> 16) & 0xFF); saver++; *saver = (uint8_t)((irq_pntr >> 24) & 0xFF); saver++;
-
-			*saver = (uint8_t)(IRQS & 0xFF); saver++; *saver = (uint8_t)((IRQS >> 8) & 0xFF); saver++;
-			*saver = (uint8_t)((IRQS >> 16) & 0xFF); saver++; *saver = (uint8_t)((IRQS >> 24) & 0xFF); saver++;
-
-			*saver = (uint8_t)(Ztemp2_saver & 0xFF); saver++; *saver = (uint8_t)((Ztemp2_saver >> 8) & 0xFF); saver++;
-			*saver = (uint8_t)((Ztemp2_saver >> 16) & 0xFF); saver++; *saver = (uint8_t)((Ztemp2_saver >> 24) & 0xFF); saver++;
-
-			*saver = (uint8_t)(IRQS_cond_offset & 0xFF); saver++; *saver = (uint8_t)((IRQS_cond_offset >> 8) & 0xFF); saver++;
-			*saver = (uint8_t)((IRQS_cond_offset >> 16) & 0xFF); saver++; *saver = (uint8_t)((IRQS_cond_offset >> 24) & 0xFF); saver++;
 
 			*saver = (uint8_t)(TotalExecutedCycles & 0xFF); saver++; *saver = (uint8_t)((TotalExecutedCycles >> 8) & 0xFF); saver++;
 			*saver = (uint8_t)((TotalExecutedCycles >> 16) & 0xFF); saver++; *saver = (uint8_t)((TotalExecutedCycles >> 24) & 0xFF); saver++;
@@ -3245,178 +2920,22 @@ namespace GBHawk
 
 		uint8_t* LoadState(uint8_t* loader)
 		{
-			NO_prefix = *loader == 1; loader++;
+			interrupts_enabled = *loader == 1; loader++;
 			CB_prefix = *loader == 1; loader++;
-			IX_prefix = *loader == 1; loader++;
-			EXTD_prefix = *loader == 1; loader++;
-			IY_prefix = *loader == 1; loader++;
-			IXCB_prefix = *loader == 1; loader++;
-			IYCB_prefix = *loader == 1; loader++;
 			halted = *loader == 1; loader++;
-			I_skip = *loader == 1; loader++;
+			stopped = *loader == 1; loader++;
+			jammed = *loader == 1; loader++;
+			was_FlagI = *loader == 1; loader++;
 			FlagI = *loader == 1; loader++;
-			FlagW = *loader == 1; loader++;
-			IFF1 = *loader == 1; loader++;
-			IFF2 = *loader == 1; loader++;
-			nonMaskableInterrupt = *loader == 1; loader++;
-			nonMaskableInterruptPending = *loader == 1; loader++;
-			jp_cond_chk = *loader == 1; loader++;
-			cond_chk_fail = *loader == 1; loader++;
 
 			opcode = *loader; loader++;
-			temp_R = *loader; loader++;
+			LY = *loader; loader++;
 			EI_pending = *loader; loader++;
-			interruptMode = *loader; loader++;
-			ExternalDB = *loader; loader++;
-			instr_bank = *loader; loader++;
 
-			for (int i = 0; i < 36; i++) { Regs[i] = *loader; loader++; }
-
-			PRE_SRC = *loader; loader++; PRE_SRC |= (*loader << 8); loader++;
-			PRE_SRC |= (*loader << 16); loader++; PRE_SRC |= (*loader << 24); loader++;
+			for (int i = 0; i < 14; i++) { Regs[i] = *loader; loader++; }
 
 			instr_pntr = *loader; loader++; instr_pntr |= (*loader << 8); loader++;
 			instr_pntr |= (*loader << 16); loader++; instr_pntr |= (*loader << 24); loader++;
-
-			bus_pntr = *loader; loader++; bus_pntr |= (*loader << 8); loader++;
-			bus_pntr |= (*loader << 16); loader++; bus_pntr |= (*loader << 24); loader++;
-
-			mem_pntr = *loader; loader++; mem_pntr |= (*loader << 8); loader++;
-			mem_pntr |= (*loader << 16); loader++; mem_pntr |= (*loader << 24); loader++;
-
-			irq_pntr = *loader; loader++; irq_pntr |= (*loader << 8); loader++;
-			irq_pntr |= (*loader << 16); loader++; irq_pntr |= (*loader << 24); loader++;
-
-			IRQS = *loader; loader++; IRQS |= (*loader << 8); loader++;
-			IRQS |= (*loader << 16); loader++; IRQS |= (*loader << 24); loader++;
-
-			Ztemp2_saver = *loader; loader++; Ztemp2_saver |= (*loader << 8); loader++;
-			Ztemp2_saver |= (*loader << 16); loader++; Ztemp2_saver |= (*loader << 24); loader++;
-
-			IRQS_cond_offset = *loader; loader++; IRQS_cond_offset |= (*loader << 8); loader++;
-			IRQS_cond_offset |= (*loader << 16); loader++; IRQS_cond_offset |= (*loader << 24); loader++;
-
-			// load instruction pointers based on state
-			if (instr_bank == 0) 
-			{
-				cur_instr_ofst = &NoIndex[opcode * 38];
-				cur_bus_ofst = &NoIndexBUSRQ[opcode * 19];
-				cur_mem_ofst = &NoIndexMEMRQ[opcode * 19];
-				cur_irqs_ofst = &NoIndexIRQS[opcode];
-			}
-			else if (instr_bank == 1) 
-			{
-				cur_instr_ofst = &CBIndex[opcode * 38];
-				cur_bus_ofst = &CBIndexBUSRQ[opcode * 19];
-				cur_mem_ofst = &CBIndexMEMRQ[opcode * 19];
-				cur_irqs_ofst = &CBIndexIRQS[opcode];
-			}
-			else if (instr_bank == 2)
-			{
-				cur_instr_ofst = &EXTIndex[opcode * 38];
-				cur_bus_ofst = &EXTIndexBUSRQ[opcode * 19];
-				cur_mem_ofst = &EXTIndexMEMRQ[opcode * 19];
-				cur_irqs_ofst = &EXTIndexIRQS[opcode];
-			}
-			else if (instr_bank == 3)
-			{
-				cur_instr_ofst = &IXIndex[opcode * 38];
-				cur_bus_ofst = &IXIndexBUSRQ[opcode * 19];
-				cur_mem_ofst = &IXIndexMEMRQ[opcode * 19];
-				cur_irqs_ofst = &IXIndexIRQS[opcode];
-			}
-			else if (instr_bank == 4)
-			{
-				cur_instr_ofst = &IYIndex[opcode * 38];
-				cur_bus_ofst = &IYIndexBUSRQ[opcode * 19];
-				cur_mem_ofst = &IYIndexMEMRQ[opcode * 19];
-				cur_irqs_ofst = &IYIndexIRQS[opcode];
-			}
-			else if (instr_bank == 5)
-			{
-				cur_instr_ofst = &IXYCBIndex[opcode * 38];
-				cur_bus_ofst = &IXYCBIndexBUSRQ[opcode * 19];
-				cur_mem_ofst = &IXYCBIndexMEMRQ[opcode * 19];
-				cur_irqs_ofst = &IXYCBIndexIRQS[opcode];
-			}
-			else if (instr_bank == 6)
-			{
-				cur_instr_ofst = &Reset_CPU[0];
-				cur_bus_ofst = &Reset_BUSRQ[0];
-				cur_mem_ofst = &Reset_MEMRQ[0];
-				cur_irqs_ofst = &Reset_IRQS;
-			}
-			else if (instr_bank == 7)
-			{
-				cur_instr_ofst = &LD_OP_R_INST[0];
-				cur_instr_ofst[14] = Ztemp2_saver;
-				cur_bus_ofst = &LD_OP_R_BUSRQ[0];
-				cur_mem_ofst = &LD_OP_R_MEMRQ[0];
-				cur_irqs_ofst = &LD_OP_R_IRQS;
-			}
-			else if (instr_bank == 8)
-			{
-				cur_instr_ofst = &LD_CP_R_INST[0];
-				cur_instr_ofst[14] = Ztemp2_saver;
-				cur_bus_ofst = &LD_CP_R_BUSRQ[0];
-				cur_mem_ofst = &LD_CP_R_MEMRQ[0];
-				cur_irqs_ofst = &LD_CP_R_IRQS;
-			}
-			else if (instr_bank == 9)
-			{
-				cur_instr_ofst = &REP_OP_I_INST[0];
-				cur_instr_ofst[8] = Ztemp2_saver;
-				cur_bus_ofst = &REP_OP_I_BUSRQ[0];
-				cur_mem_ofst = &REP_OP_I_MEMRQ[0];
-				cur_irqs_ofst = &REP_OP_I_IRQS;
-			}
-			else if (instr_bank == 10)
-			{
-				cur_instr_ofst = &REP_OP_O_INST[0];
-				cur_bus_ofst = &REP_OP_O_BUSRQ[0];
-				cur_mem_ofst = &REP_OP_O_MEMRQ[0];
-				cur_irqs_ofst = &REP_OP_O_IRQS;
-			}
-			else if (instr_bank == 11)
-			{
-				cur_instr_ofst = &NO_HALT_INST[0];
-				cur_bus_ofst = &NO_HALT_BUSRQ[0];
-				cur_mem_ofst = &NO_HALT_MEMRQ[0];
-				cur_irqs_ofst = &NO_HALT_IRQS;
-			}
-			else if (instr_bank == 12)
-			{
-				cur_instr_ofst = &NMI_INST[0];
-				cur_bus_ofst = &NMI_BUSRQ[0];
-				cur_mem_ofst = &NMI_MEMRQ[0];
-				cur_irqs_ofst = &NMI_IRQS;
-			}
-			else if (instr_bank == 13)
-			{
-				cur_instr_ofst = &IRQ0_INST[0];
-				cur_bus_ofst = &IRQ0_BUSRQ[0];
-				cur_mem_ofst = &IRQ0_MEMRQ[0];
-				cur_irqs_ofst = &IRQ0_IRQS;
-			}
-			else if (instr_bank == 14)
-			{
-				cur_instr_ofst = &IRQ1_INST[0];
-				cur_bus_ofst = &IRQ1_BUSRQ[0];
-				cur_mem_ofst = &IRQ1_MEMRQ[0];
-				cur_irqs_ofst = &IRQ1_IRQS;
-			}
-			else if (instr_bank == 15)
-			{
-				cur_instr_ofst = &IRQ2_INST[0];
-				cur_bus_ofst = &IRQ2_BUSRQ[0];
-				cur_mem_ofst = &IRQ2_MEMRQ[0];
-				cur_irqs_ofst = &IRQ2_IRQS;
-			}
-
-			if (cond_chk_fail) 
-			{
-				cur_irqs_ofst = &False_IRQS[IRQS_cond_offset];
-			}
 
 			TotalExecutedCycles = *loader; loader++; TotalExecutedCycles |= ((uint64_t)*loader << 8); loader++;
 			TotalExecutedCycles |= ((uint64_t)*loader << 16); loader++; TotalExecutedCycles |= ((uint64_t)*loader << 24); loader++;

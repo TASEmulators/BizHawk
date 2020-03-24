@@ -7,17 +7,17 @@ using namespace std;
 
 namespace GBHawk
 {
-	class Z80A;
+	class LR35902;
 	class TMS9918A;
-	class AY_3_8910;
+	class GBAudio;
 	
 	class MemoryManager
 	{
 	public:
 				
 		TMS9918A* vdp_pntr = nullptr;
-		AY_3_8910* psg_pntr = nullptr;
-		Z80A* cpu_pntr = nullptr;
+		GBAudio* psg_pntr = nullptr;
+		LR35902* cpu_pntr = nullptr;
 		uint8_t* rom_1 = nullptr;
 		uint8_t* rom_2 = nullptr;
 		uint8_t* bios_rom = nullptr;
@@ -54,8 +54,6 @@ namespace GBHawk
 
 		void HardwareWrite(uint32_t addr, uint8_t value);
 
-		void remap();
-
 		// NOTE: only called from source when both are available and of correct size (0x4000)
 		void Load_BIOS(uint8_t* bios, uint8_t* basic) 
 		{
@@ -82,8 +80,6 @@ namespace GBHawk
 
 			// default memory map setup
 			PortA8 = 0;
-
-			remap();
 		}
 
 		void MemoryWrite(uint32_t addr, uint8_t value)
@@ -127,8 +123,6 @@ namespace GBHawk
 
 			std::memcpy(&ram, loader, 0x10000); loader += 0x10000;
 			std::memcpy(&cart_ram, loader, 0x8000); loader += 0x8000;
-
-			remap();
 
 			return loader;
 		}

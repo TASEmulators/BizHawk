@@ -53,9 +53,9 @@ GBHawk_EXPORT void GB_get_video(GBCore* p, uint32_t* dest)
 }
 
 // send audio data to external audio provider
-GBHawk_EXPORT uint32_t GB_get_audio(GBCore* p, int32_t* dest, int32_t* n_samp)
+GBHawk_EXPORT uint32_t GB_get_audio(GBCore* p, int32_t* dest_L, int32_t* n_samp_L, int32_t* dest_R, int32_t* n_samp_R)
 {
-	return p->GetAudio(dest, n_samp);
+	return p->GetAudio(dest_L, n_samp_L, dest_R, n_samp_R);
 }
 
 #pragma region State Save / Load

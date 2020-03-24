@@ -151,7 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="AY_3_8910.h" />
+    <ClInclude Include="GBAudio.h" />
     <ClInclude Include="Core.h" />
     <ClInclude Include="GBHawk.h" />
     <ClInclude Include="Memory.h" />
