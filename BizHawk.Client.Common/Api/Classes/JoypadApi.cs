@@ -44,7 +44,7 @@ namespace BizHawk.Client.Common
 
 		public void Set(Dictionary<string, bool> buttons, int? controller = null)
 		{
-			foreach (var button in Global.InputManager.ActiveController.Definition.BoolButtons)
+			foreach (var button in Global.InputManager.ActiveController.ToBoolButtonNameList(controller))
 			{
 				Set(button, buttons.TryGetValue(button, out var state) ? state : (bool?) null, controller);
 			}
