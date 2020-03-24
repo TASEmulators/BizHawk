@@ -12,6 +12,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public bool in_vblank_old;
 		public bool in_vblank;
 		public bool vblank_rise;
+		public uint ticker;
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
@@ -59,8 +60,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			{
 				// PAL timing is: 17.7 / 5 ppu
 				// and 17.7 / 9 for cpu (divide by 3 externally then by 3 again internally)
-				int ticker = 0;
-				
 				while (frame_chk)
 				{
 					ticker++;
@@ -68,7 +67,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					if ((ticker % 5) == 0)
 					{
 						ppu.tick();
-
 						if ((ticker % 10) == 0)
 						{
 							ppu.Audio_tick();
