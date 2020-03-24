@@ -45,7 +45,7 @@ namespace BizHawk.Client.Common
 		public void Set(LuaTable buttons, int? controller = null)
 		{
 			var dict = new Dictionary<string, bool>();
-			foreach (var k in buttons.Keys) dict[k.ToString()] = (bool) buttons[k];
+			foreach (var k in buttons.Keys) dict[k.ToString()] = Convert.ToBoolean(buttons[k]); // Accepts 1/0 or true/false
 			APIs.Joypad.Set(dict, controller);
 		}
 
