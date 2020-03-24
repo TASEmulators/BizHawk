@@ -44,6 +44,8 @@ namespace BizHawk.Client.Common
 
 		public void Set(Dictionary<string, bool> buttons, int? controller = null)
 		{
+			// If a controller is specified, we need to iterate over unique button names. If not, we iterate over
+			// ALL button names with P{controller} prefixes
 			foreach (var button in Global.InputManager.ActiveController.ToBoolButtonNameList(controller))
 			{
 				Set(button, buttons.TryGetValue(button, out var state) ? state : (bool?) null, controller);
