@@ -75,7 +75,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 					if ((ticker % 9) == 0)
 					{
-						serialport.serial_transfer_tick();
 						cpu.ExecuteOne();
 					}
 
@@ -94,7 +93,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				{
 					ppu.tick();
 					ppu.tick();
-					serialport.serial_transfer_tick();
 					ppu.Audio_tick();
 					cpu.ExecuteOne();
 
@@ -112,7 +110,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		{
 			ppu.tick();
 			ppu.tick();
-			serialport.serial_transfer_tick();
 			ppu.Audio_tick();
 			cpu.ExecuteOne();
 			

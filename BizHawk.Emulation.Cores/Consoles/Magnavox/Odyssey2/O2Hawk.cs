@@ -37,7 +37,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public I8048 cpu;
 		public PPU ppu;
-		public SerialPort serialport;
 
 		public bool is_pal;
 
@@ -56,8 +55,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				WritePort = WritePort,
 				OnExecFetch = ExecFetch,
 			};
-			
-			serialport = new SerialPort();
 
 			_settings = (O2Settings)settings ?? new O2Settings();
 			_syncSettings = (O2SyncSettings)syncSettings ?? new O2SyncSettings();
@@ -86,7 +83,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 			ppu.Core = this;
 			cpu.Core = this;
-			serialport.Core = this;
 
 			ser.Register<IVideoProvider>(this);
 			ser.Register<ISoundProvider>(ppu);
@@ -134,7 +130,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			WritePort(2, 0xFF);
 
 			ppu.Reset();
-			serialport.Reset();
 
 			cpu.SetCallbacks(ReadMemory, PeekMemory, PeekMemory, WriteMemory);
 		}
