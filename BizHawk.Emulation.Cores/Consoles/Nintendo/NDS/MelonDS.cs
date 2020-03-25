@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				| (controller.IsPressed("R") ? 0x100 : 0) | (controller.IsPressed("L") ? 0x200 : 0)
 				| (controller.IsPressed("X") ? 0x400 : 0) | (controller.IsPressed("Y") ? 0x800 : 0)
 				| (controller.IsPressed("Touch") ? 0x2000 : 0)
-				| (controller.IsPressed("Lid") ? 0x4000 : 0);
+				| (controller.IsPressed("LidOpen") ? 0x4000 : 0) | (controller.IsPressed("LidClose") ? 0x8000 : 0);
 			FrameAdvance((short)buttons, (byte)controller.GetFloat("TouchX"), (byte)controller.GetFloat("TouchY"));
 			getNewBuffer = true;
 			return true;
@@ -91,7 +91,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			ControllerDefinition.BoolButtons.Add("Start");
 			ControllerDefinition.BoolButtons.Add("Select");
 
-			ControllerDefinition.BoolButtons.Add("Lid");
+			ControllerDefinition.BoolButtons.Add("LidOpen");
+			ControllerDefinition.BoolButtons.Add("LidClose");
 
 			ControllerDefinition.BoolButtons.Add("Touch");
 			ControllerDefinition.FloatControls.Add("TouchX");
