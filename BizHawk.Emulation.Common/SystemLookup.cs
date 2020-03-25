@@ -33,7 +33,8 @@ namespace BizHawk.Emulation.Common
 			new SystemInfo("ChannelF",  "Fairchild Channel F"),
 			new SystemInfo("O2", "Odyssey2"),
 			new SystemInfo("VEC", "Vectrex"),
-			new SystemInfo("MSX", "MSX")
+			new SystemInfo("MSX", "MSX"),
+			new SystemInfo("NDS", "Nintendo DS")
 		};
 
 		public SystemInfo this[string systemId]
