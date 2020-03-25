@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public bool PutSettings(MelonSettings o)
 		{
-			if (o == null)
+			if (o == null || o.screenOptions == null)
 			{
 				o = new MelonSettings();
 				o.screenOptions = new ScreenLayoutSettings();
