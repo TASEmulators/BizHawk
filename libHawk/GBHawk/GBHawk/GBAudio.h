@@ -1347,8 +1347,6 @@ namespace GBHawk
 			return loader;
 		}
 
-		#pragma endregion
-
 		uint8_t* bool_saver(bool to_save, uint8_t* saver)
 		{
 			*saver = (uint8_t)(to_save ? 1 : 0); saver++;
@@ -1363,7 +1361,7 @@ namespace GBHawk
 			return saver;
 		}
 
-		uint8_t* int_saver(uint32_t to_save, uint8_t* saver) 
+		uint8_t* int_saver(uint32_t to_save, uint8_t* saver)
 		{
 			*saver = (uint8_t)(to_save & 0xFF); saver++; *saver = (uint8_t)((to_save >> 8) & 0xFF); saver++;
 			*saver = (uint8_t)((to_save >> 16) & 0xFF); saver++; *saver = (uint8_t)((to_save >> 24) & 0xFF); saver++;
@@ -1392,5 +1390,7 @@ namespace GBHawk
 
 			return loader;
 		}
+
+		#pragma endregion
 	};
 }

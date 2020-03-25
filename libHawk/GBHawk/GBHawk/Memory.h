@@ -8,20 +8,19 @@ using namespace std;
 namespace GBHawk
 {
 	class LR35902;
-	class TMS9918A;
+	class PPU;
 	class GBAudio;
 	
 	class MemoryManager
 	{
 	public:
 				
-		TMS9918A* vdp_pntr = nullptr;
+		PPU* ppu_pntr = nullptr;
 		GBAudio* psg_pntr = nullptr;
 		LR35902* cpu_pntr = nullptr;
 		uint8_t* rom_1 = nullptr;
 		uint8_t* rom_2 = nullptr;
 		uint8_t* bios_rom = nullptr;
-		uint8_t* basic_rom = nullptr;
 
 		// initialized by core loading, not savestated
 		uint32_t rom_size_1;
@@ -41,9 +40,21 @@ namespace GBHawk
 		uint8_t kb_rows_sel;
 		uint8_t PortA8 = 0x00;
 		uint8_t reg_FFFC, reg_FFFD, reg_FFFE, reg_FFFF;
-		uint8_t ram[0x10000] = {};
+		uint8_t RAM[0x10000] = {};
+		uint8_t VRAM[0x10000] = {};
+		uint8_t OAM[0x10000] = {};
 		uint8_t cart_ram[0x8000] = {};
 		uint8_t unmapped[0x400] = {};
+		uint32_t _vidbuffer[160 * 144] = {};
+		uint32_t color_palette[4] = { 0xFFFFFFFF , 0xFFAAAAAA, 0xFF555555, 0xFF000000 };
+
+		uint32_t FrameBuffer[0x400] = {};
+
+		// state shared amongst different components
+		bool in_vblank;
+		uint8_t REG_FFFF, REG_FF0F;
+		uint8_t _scanlineCallbackLine;
+
 
 		MemoryManager()
 		{
@@ -55,13 +66,21 @@ namespace GBHawk
 		void HardwareWrite(uint32_t addr, uint8_t value);
 
 		// NOTE: only called from source when both are available and of correct size (0x4000)
-		void Load_BIOS(uint8_t* bios, uint8_t* basic) 
+		void Load_BIOS(uint8_t* bios, bool GBC_console) 
 		{
-			bios_rom = new uint8_t[0x4000];
-			basic_rom = new uint8_t[0x4000];
+			if (GBC_console) 
+			{
+				bios_rom = new uint8_t[2304];
+				memcpy(bios_rom, bios, 2304);
+			}
+			else 
+			{
+				bios_rom = new uint8_t[256];
+				memcpy(bios_rom, bios, 256);
+			}
 			
-			memcpy(bios_rom, bios, 0x4000);
-			memcpy(basic_rom, basic, 0x4000);
+			
+			
 		}
 
 		void Load_ROM(uint8_t* ext_rom_1, uint32_t ext_rom_size_1, uint32_t ext_rom_mapper_1, uint8_t* ext_rom_2, uint32_t ext_rom_size_2, uint32_t ext_rom_mapper_2)
@@ -102,7 +121,7 @@ namespace GBHawk
 			*saver = reg_FFFE; saver++;
 			*saver = reg_FFFF; saver++;
 
-			std::memcpy(saver, &ram, 0x10000); saver += 0x10000;
+			std::memcpy(saver, &RAM, 0x10000); saver += 0x10000;
 			std::memcpy(saver, &cart_ram, 0x8000); saver += 0x8000;
 
 			return saver;
@@ -121,7 +140,7 @@ namespace GBHawk
 			reg_FFFE = *loader; loader++;
 			reg_FFFF = *loader; loader++;
 
-			std::memcpy(&ram, loader, 0x10000); loader += 0x10000;
+			std::memcpy(&RAM, loader, 0x10000); loader += 0x10000;
 			std::memcpy(&cart_ram, loader, 0x8000); loader += 0x8000;
 
 			return loader;

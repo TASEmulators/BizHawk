@@ -22,16 +22,15 @@ GBHawk_EXPORT GBCore* GB_create()
 GBHawk_EXPORT void GB_destroy(GBCore* p)
 {
 	delete p->MemMap.bios_rom;
-	delete p->MemMap.basic_rom;
 	delete p->MemMap.rom_1;
 	delete p->MemMap.rom_2;
 	std::free(p);
 }
 
 // load bios and basic into the core
-GBHawk_EXPORT void GB_load_bios(GBCore* p, uint8_t* bios, uint8_t* basic)
+GBHawk_EXPORT void GB_load_bios(GBCore* p, uint8_t* bios, bool GBC_console)
 {
-	p->Load_BIOS(bios, basic);
+	p->Load_BIOS(bios, GBC_console);
 }
 
 // load a rom into the core

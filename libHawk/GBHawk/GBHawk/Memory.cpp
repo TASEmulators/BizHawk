@@ -5,7 +5,7 @@
 
 #include "Memory.h"
 #include "LR35902.h"
-#include "TMS9918A.h"
+#include "PPU_Base.h"
 #include "GBAudio.h"
 
 using namespace std;

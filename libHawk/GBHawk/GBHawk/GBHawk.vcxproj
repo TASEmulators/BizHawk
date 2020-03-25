@@ -154,14 +154,16 @@
     <ClInclude Include="GBAudio.h" />
     <ClInclude Include="Core.h" />
     <ClInclude Include="GBHawk.h" />
+    <ClInclude Include="GB_PPU.h" />
     <ClInclude Include="Memory.h" />
-    <ClInclude Include="TMS9918A.h" />
+    <ClInclude Include="PPU_Base.h" />
     <ClInclude Include="LR35902.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GBHawk.cpp" />
     <ClCompile Include="Memory.cpp" />
     <ClCompile Include="LR35902.cpp" />
+    <ClCompile Include="PPU_Base.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

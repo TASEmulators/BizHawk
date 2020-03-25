@@ -5,7 +5,7 @@
 
 #include "LR35902.h"
 #include "GBAudio.h"
-#include "TMS9918A.h"
+#include "PPU_Base.h"
 #include "Memory.h"
 
 namespace GBHawk
@@ -16,24 +16,35 @@ namespace GBHawk
 		GBCore() 
 		{
 			MemMap.cpu_pntr = &cpu;
-			MemMap.vdp_pntr = &vdp;
+			MemMap.ppu_pntr = &ppu;
 			MemMap.psg_pntr = &psg;
 			cpu.mem_ctrl = &MemMap;
-			vdp.IRQ_PTR = &cpu.FlagI;
-			vdp.SHOW_BG = vdp.SHOW_SPRITES = true;
+
+			ppu.FlagI = &cpu.FlagI;
+			ppu.in_vblank = &MemMap.in_vblank;
+			ppu.cpu_LY = &cpu.LY;
+			ppu.REG_FFFF = &MemMap.REG_FFFF;
+			ppu.REG_FF0F = &MemMap.REG_FF0F;
+			ppu._scanlineCallbackLine = &MemMap._scanlineCallbackLine;
+			ppu.OAM = &MemMap.OAM[0];
+			ppu.VRAM = &MemMap.VRAM[0];
+			ppu.cpu_halted = &cpu.halted;
+			ppu._vidbuffer = &MemMap._vidbuffer[0];
+			ppu.color_palette = &MemMap.color_palette[0];
+
 			sl_case = 0;
 		};
 
-		TMS9918A vdp;
+		PPU ppu;
 		LR35902 cpu;
 		GBAudio psg;
 		MemoryManager MemMap;
 
 		uint8_t sl_case = 0;
 
-		void Load_BIOS(uint8_t* bios, uint8_t* basic)
+		void Load_BIOS(uint8_t* bios, bool GBC_console)
 		{
-			MemMap.Load_BIOS(bios, basic);
+			MemMap.Load_BIOS(bios, GBC_console);
 		}
 
 		void Load_ROM(uint8_t* ext_rom_1, uint32_t ext_rom_size_1, uint32_t ext_rom_mapper_1, uint8_t* ext_rom_2, uint32_t ext_rom_size_2, uint32_t ext_rom_mapper_2)
@@ -51,14 +62,13 @@ namespace GBHawk
 			MemMap.lagged = true;
 
 			uint32_t scanlinesPerFrame = 262;
-			vdp.SpriteLimit = true;
 
 			return MemMap.lagged;
 		}
 
 		void GetVideo(uint32_t* dest) 
 		{
-			uint32_t* src = vdp.FrameBuffer;
+			uint32_t* src = MemMap.FrameBuffer;
 			uint32_t* dst = dest;
 
 			std::memcpy(dst, src, sizeof uint32_t * 256 * 192);
@@ -85,7 +95,7 @@ namespace GBHawk
 
 		void SaveState(uint8_t* saver)
 		{
-			saver = vdp.SaveState(saver);
+			saver = ppu.SaveState(saver);
 			saver = cpu.SaveState(saver);
 			saver = psg.SaveState(saver);
 			saver = MemMap.SaveState(saver);
@@ -95,7 +105,7 @@ namespace GBHawk
 
 		void LoadState(uint8_t* loader)
 		{
-			loader = vdp.LoadState(loader);
+			loader = ppu.LoadState(loader);
 			loader = cpu.LoadState(loader);
 			loader = psg.LoadState(loader);
 			loader = MemMap.LoadState(loader);
@@ -114,12 +124,12 @@ namespace GBHawk
 
 		uint8_t GetVRAM(uint32_t addr) 
 		{
-			return vdp.VRAM[addr & 0x3FFF];
+			return MemMap.VRAM[addr & 0x3FFF];
 		}
 
 		uint8_t GetRAM(uint32_t addr)
 		{
-			return MemMap.ram[addr & 0xFFFF];
+			return MemMap.RAM[addr & 0xFFFF];
 		}
 
 		#pragma endregion
