@@ -101,6 +101,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			ControllerDefinition.FloatRanges.Add(new ControllerDefinition.AxisRange(0, 96, 191));
 
 			CoreComm = comm;
+			resampler = new SpeexResampler(SpeexResampler.Quality.QUALITY_DEFAULT, 32768, 44100, 32768, 44100);
 
 			SetUpFiles();
 			if (!Init())
