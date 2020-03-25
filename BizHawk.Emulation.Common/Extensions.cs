@@ -314,6 +314,47 @@ namespace BizHawk.Emulation.Common
 			return !info.GetCustomAttributes(false).Any(a => a is FeatureNotImplementedAttribute);
 		}
 
+		/// <summary>
+		/// Gets a list of boolean button names. If a controller number is specified, only returns button names
+		/// (without the "P" prefix) that match that controller number. If a controller number is NOT specified,
+		/// then all button names are returned.
+		/// 
+		/// For example, consider example "P1 A", "P1 B", "P2 A", "P2 B". See below for sample outputs:
+		///   - ToBoolButtonNameList(controller, 1) -> [A, B]
+		///   - ToBoolButtonNameList(controller, 2) -> [A, B]
+		///   - ToBoolButtonNameList(controller, null) -> [P1 A, P1 B, P2 A, P2 B]
+		/// </summary>
+		public static List<string> ToBoolButtonNameList(this IController controller, int? controllerNum = null)
+		{
+			return ToControlNameList(controller.Definition.BoolButtons, controllerNum);
+		}
+
+		/// <summary>
+		/// See ToBoolButtonNameList(). Works the same except with float controls
+		/// </summary>
+		public static List<string> ToFloatControlNameList(this IController controller, int? controllerNum = null)
+		{
+			return ToControlNameList(controller.Definition.FloatControls, controllerNum);
+		}
+
+		private static List<string> ToControlNameList(List<string> buttonList, int? controllerNum = null)
+		{
+			var buttons = new List<string>();
+			foreach (var button in buttonList)
+			{
+				if (controllerNum != null && button.Length > 2 && button.Substring(0, 2) == $"P{controllerNum}")
+				{
+					var sub = button.Substring(3);
+					buttons.Add(sub);
+				}
+				else if (controllerNum == null)
+				{
+					buttons.Add(button);
+				}
+			}
+			return buttons;
+		}
+
 		public static IDictionary<string, dynamic> ToDictionary(this IController controller, int? controllerNum = null)
 		{
 			var buttons = new Dictionary<string, dynamic>();

@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 						"8", "9",         "SPC", "?", "L", "P",
 						"+", "W", "E", "R", "T", "U", "I", "O",
 						"Q", "S", "D", "F", "G", "H", "J", "K",
-						"A", "Z", "X", "C", "V", "B", "M", ".",
+						"A", "Z", "X", "C", "V", "B", "M", "PERIOD",
 						"-", "*", "/", "=", "YES", "NO", "CLR", "ENT",
 						"Power"
 					})

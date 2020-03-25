@@ -1,0 +1,2 @@
+#define GBHawk_API __declspec(dllexport)
+#define GBHawk_API __declspec(dllimport)

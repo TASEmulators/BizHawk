@@ -1,0 +1,191 @@
+#include <iostream>
+#include <cstdint>
+#include <iomanip>
+#include <string>
+
+#include "LR35902.h"
+#include "GBAudio.h"
+#include "TMS9918A.h"
+#include "Memory.h"
+
+namespace GBHawk
+{
+	class GBCore
+	{
+	public:
+		GBCore() 
+		{
+			MemMap.cpu_pntr = &cpu;
+			MemMap.vdp_pntr = &vdp;
+			MemMap.psg_pntr = &psg;
+			cpu.mem_ctrl = &MemMap;
+			vdp.IRQ_PTR = &cpu.FlagI;
+			vdp.SHOW_BG = vdp.SHOW_SPRITES = true;
+			sl_case = 0;
+		};
+
+		TMS9918A vdp;
+		LR35902 cpu;
+		GBAudio psg;
+		MemoryManager MemMap;
+
+		uint8_t sl_case = 0;
+
+		void Load_BIOS(uint8_t* bios, uint8_t* basic)
+		{
+			MemMap.Load_BIOS(bios, basic);
+		}
+
+		void Load_ROM(uint8_t* ext_rom_1, uint32_t ext_rom_size_1, uint32_t ext_rom_mapper_1, uint8_t* ext_rom_2, uint32_t ext_rom_size_2, uint32_t ext_rom_mapper_2)
+		{
+			MemMap.Load_ROM(ext_rom_1, ext_rom_size_1, ext_rom_mapper_1, ext_rom_2, ext_rom_size_2, ext_rom_mapper_2);
+		}
+
+		bool FrameAdvance(uint8_t controller_1, uint8_t controller_2, uint8_t* kb_rows_ptr, bool render, bool rendersound)
+		{
+			
+			MemMap.controller_byte_1 = controller_1;
+			MemMap.controller_byte_2 = controller_2;
+			MemMap.kb_rows = kb_rows_ptr;
+			MemMap.start_pressed = (controller_1 & 0x80) > 0;
+			MemMap.lagged = true;
+
+			uint32_t scanlinesPerFrame = 262;
+			vdp.SpriteLimit = true;
+
+			return MemMap.lagged;
+		}
+
+		void GetVideo(uint32_t* dest) 
+		{
+			uint32_t* src = vdp.FrameBuffer;
+			uint32_t* dst = dest;
+
+			std::memcpy(dst, src, sizeof uint32_t * 256 * 192);
+		}
+
+		uint32_t GetAudio(int32_t* dest_L, int32_t* n_samp_L, int32_t* dest_R, int32_t* n_samp_R)
+		{
+			int32_t* src = psg.samples_L;
+			int32_t* dst = dest_L;
+
+			std::memcpy(dst, src, sizeof int32_t * psg.num_samples_L * 2);
+			n_samp_L[0] = psg.num_samples_L;
+
+			src = psg.samples_R;
+			dst = dest_R;
+
+			std::memcpy(dst, src, sizeof int32_t * psg.num_samples_R * 2);
+			n_samp_R[0] = psg.num_samples_R;
+
+			return psg.master_audio_clock;
+		}
+
+		#pragma region State Save / Load
+
+		void SaveState(uint8_t* saver)
+		{
+			saver = vdp.SaveState(saver);
+			saver = cpu.SaveState(saver);
+			saver = psg.SaveState(saver);
+			saver = MemMap.SaveState(saver);
+
+			*saver = sl_case; saver++;
+		}
+
+		void LoadState(uint8_t* loader)
+		{
+			loader = vdp.LoadState(loader);
+			loader = cpu.LoadState(loader);
+			loader = psg.LoadState(loader);
+			loader = MemMap.LoadState(loader);
+
+			sl_case = *loader; loader++;
+		}
+
+		#pragma endregion
+
+		#pragma region Memory Domain Functions
+
+		uint8_t GetSysBus(uint32_t addr)
+		{
+			return cpu.PeekMemory(addr);
+		}
+
+		uint8_t GetVRAM(uint32_t addr) 
+		{
+			return vdp.VRAM[addr & 0x3FFF];
+		}
+
+		uint8_t GetRAM(uint32_t addr)
+		{
+			return MemMap.ram[addr & 0xFFFF];
+		}
+
+		#pragma endregion
+
+		#pragma region Tracer
+
+		void SetTraceCallback(void (*callback)(int))
+		{
+			cpu.TraceCallback = callback;
+		}
+
+		int GetHeaderLength()
+		{
+			return 105 + 1;
+		}
+
+		int GetDisasmLength()
+		{
+			return 48 + 1;
+		}
+
+		int GetRegStringLength()
+		{
+			return 86 + 1;
+		}
+
+		void GetHeader(char* h, int l)
+		{
+			memcpy(h, cpu.TraceHeader, l);
+		}
+
+		// the copy length l must be supplied ahead of time from GetRegStrngLength
+		void GetRegisterState(char* r, int t, int l)
+		{
+			if (t == 0)
+			{
+				memcpy(r, cpu.CPURegisterState().c_str(), l);
+			}
+			else
+			{
+				memcpy(r, cpu.No_Reg, l);
+			}
+		}
+
+		// the copy length l must be supplied ahead of time from GetDisasmLength
+		void GetDisassembly(char* d, int t, int l)
+		{
+			if (t == 0)
+			{
+				memcpy(d, cpu.CPUDisassembly().c_str(), l);
+			}
+			else if (t == 1)
+			{
+				memcpy(d, cpu.Un_halt_event, l);
+			}
+			else if (t == 2)
+			{
+				memcpy(d, cpu.IRQ_event, l);
+			}
+			else
+			{
+				memcpy(d, cpu.Un_halt_event, l);
+			}
+		}
+
+		#pragma endregion		
+	};
+}
+

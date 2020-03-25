@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
-
+using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -52,50 +52,50 @@ namespace BizHawk.Client.EmuHawk
 		public static ButtonSchema Up(int x, int y, string name = null)
 			=> new ButtonSchema(x, y, name ?? "Up")
 			{
-				Icon = Properties.Resources.BlueUp
+				Icon = Resources.BlueUp
 			};
 
 		public static ButtonSchema Up(int x, int y, int controller)
 			=> new ButtonSchema(x, y, controller, "Up")
 			{
-				Icon = Properties.Resources.BlueUp
+				Icon = Resources.BlueUp
 			};
 
 
 		public static ButtonSchema Down(int x, int y, string name = null)
 			=> new ButtonSchema(x, y, name ?? "Down")
 			{
-				Icon = Properties.Resources.BlueDown
+				Icon = Resources.BlueDown
 			};
 
 		public static ButtonSchema Down(int x, int y, int controller)
 			=> new ButtonSchema(x, y, controller, "Down")
 			{
-				Icon = Properties.Resources.BlueDown
+				Icon = Resources.BlueDown
 			};
 
 		public static ButtonSchema Left(int x, int y, string name = null)
 			=> new ButtonSchema(x, y, name ?? "Left")
 			{
-				Icon = Properties.Resources.Back
+				Icon = Resources.Back
 			};
 
 		public static ButtonSchema Left(int x, int y, int controller)
 			=> new ButtonSchema(x, y, controller, "Left")
 			{
-				Icon = Properties.Resources.Back
+				Icon = Resources.Back
 			};
 
 		public static ButtonSchema Right(int x, int y, string name = null)
 			=> new ButtonSchema(x, y, name ?? "Right")
 			{
-				Icon = Properties.Resources.Forward
+				Icon = Resources.Forward
 			};
 
 		public static ButtonSchema Right(int x, int y, int controller)
 			=> new ButtonSchema(x, y, controller, "Right")
 			{
-				Icon = Properties.Resources.Forward
+				Icon = Resources.Forward
 			};
 	}
 
