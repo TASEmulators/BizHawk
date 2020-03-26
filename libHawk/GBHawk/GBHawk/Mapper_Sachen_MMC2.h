@@ -14,9 +14,7 @@ namespace GBHawk
 	{
 	public:
 
-		uint32_t ROM_bank;
 		bool locked, locked_GBC, finished;
-		uint32_t ROM_mask;
 		uint32_t ROM_bank_mask;
 		uint32_t BASE_ROM_Bank;
 		bool reg_access;
@@ -26,7 +24,7 @@ namespace GBHawk
 		void Reset()
 		{
 			ROM_bank = 1;
-			ROM_mask = Core._rom.Length / 0x4000 - 1;
+			ROM_mask = ROM_Length[0] / 0x4000 - 1;
 			BASE_ROM_Bank = 0;
 			ROM_bank_mask = 0;
 			locked = true;
@@ -60,14 +58,14 @@ namespace GBHawk
 
 				if (locked_GBC) { addr |= 0x80; }
 
-				return Core._rom[addr + BASE_ROM_Bank * 0x4000];
+				return ROM[addr + BASE_ROM_Bank * 0x4000];
 			}
 			else if (addr < 0x8000)
 			{
 				uint32_t temp_bank = (ROM_bank & ~ROM_bank_mask) | (ROM_bank_mask & BASE_ROM_Bank);
 				temp_bank &= ROM_mask;
 
-				return Core._rom[(addr - 0x4000) + temp_bank * 0x4000];
+				return ROM[(addr - 0x4000) + temp_bank * 0x4000];
 			}
 			else
 			{
@@ -193,8 +191,6 @@ namespace GBHawk
 				{
 					locked_GBC = false;
 					finished = true;
-					Console.WriteLine("Finished");
-					Console.WriteLine(Core.cpu.TotalExecutedCycles);
 				}
 
 				// The above condition seems to never be reached as described in the mapper notes
@@ -204,23 +200,8 @@ namespace GBHawk
 				{
 					locked_GBC = false;
 					finished = true;
-					Console.WriteLine("Unlocked");
 				}
 			}
-		}
-
-		void SyncState(Serializer ser)
-		{
-			ser.Sync(nameof(ROM_bank), ref ROM_bank);
-			ser.Sync(nameof(ROM_mask), ref ROM_mask);
-			ser.Sync(nameof(locked), ref locked);
-			ser.Sync(nameof(locked_GBC), ref locked_GBC);
-			ser.Sync(nameof(finished), ref finished);
-			ser.Sync(nameof(ROM_bank_mask), ref ROM_bank_mask);
-			ser.Sync(nameof(BASE_ROM_Bank), ref BASE_ROM_Bank);
-			ser.Sync(nameof(reg_access), ref reg_access);
-			ser.Sync(nameof(addr_last), ref addr_last);
-			ser.Sync(nameof(counter), ref counter);
 		}
 	};
 }

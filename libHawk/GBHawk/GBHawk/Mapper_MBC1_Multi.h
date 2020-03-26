@@ -14,25 +14,18 @@ namespace GBHawk
 	{
 	public:
 
-		uint32_t ROM_bank;
-		uint32_t RAM_bank;
-		bool RAM_enable;
-		bool sel_mode;
-		uint32_t ROM_mask;
-		uint32_t RAM_mask;
-
 		void Reset()
 		{
 			ROM_bank = 1;
 			RAM_bank = 0;
 			RAM_enable = false;
 			sel_mode = false;
-			ROM_mask = (Core._rom.Length / 0x4000 * 2) - 1; // due to how mapping works, we want a 1 bit higher mask
+			ROM_mask = (ROM_Length[0] / 0x4000 * 2) - 1; // due to how mapping works, we want a 1 bit higher mask
 			RAM_mask = 0;
-			if (Core.cart_RAM != null)
+			if (Cart_RAM_Length[0] > 0)
 			{
-				RAM_mask = Core.cart_RAM.Length / 0x2000 - 1;
-				if (Core.cart_RAM.Length == 0x800) { RAM_mask = 0; }
+				RAM_mask = Cart_RAM_Length[0] / 0x2000 - 1;
+				if (Cart_RAM_Length[0] == 0x800) { RAM_mask = 0; }
 			}
 		}
 
@@ -43,24 +36,24 @@ namespace GBHawk
 				// lowest bank is fixed, but is still effected by mode
 				if (sel_mode)
 				{
-					return Core._rom[((ROM_bank & 0x60) >> 1) * 0x4000 + addr];
+					return ROM[((ROM_bank & 0x60) >> 1) * 0x4000 + addr];
 				}
 				else
 				{
-					return Core._rom[addr];
+					return ROM[addr];
 				}
 			}
 			else if (addr < 0x8000)
 			{
-				return Core._rom[(addr - 0x4000) + (((ROM_bank & 0x60) >> 1) | (ROM_bank & 0xF)) * 0x4000];			
+				return ROM[(addr - 0x4000) + (((ROM_bank & 0x60) >> 1) | (ROM_bank & 0xF)) * 0x4000];			
 			}
 			else
 			{
-				if (Core.cart_RAM != null)
+				if (Cart_RAM_Length[0] > 0)
 				{
-					if (RAM_enable && (((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length))
+					if (RAM_enable && (((addr - 0xA000) + RAM_bank * 0x2000) < Cart_RAM_Length[0]))
 					{
-						return Core.cart_RAM[(addr - 0xA000) + RAM_bank * 0x2000];
+						return Cart_RAM[(addr - 0xA000) + RAM_bank * 0x2000];
 					}
 					else
 					{
@@ -96,9 +89,9 @@ namespace GBHawk
 			}
 			else
 			{
-				if (Core.cart_RAM != null)
+				if (Cart_RAM != null)
 				{
-					if (RAM_enable && (((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length))
+					if (RAM_enable && (((addr - 0xA000) + RAM_bank * 0x2000) < Cart_RAM_Length[0]))
 					{
 						SetCDLRAM(flags, (addr - 0xA000) + RAM_bank * 0x2000);
 					}
@@ -142,7 +135,7 @@ namespace GBHawk
 				}
 				else if (addr < 0x6000)
 				{
-					if (sel_mode && Core.cart_RAM != null)
+					if (sel_mode && (Cart_RAM_Length[0] > 0))
 					{
 						RAM_bank = value & 3;
 						RAM_bank &= RAM_mask;
@@ -158,7 +151,7 @@ namespace GBHawk
 				{
 					sel_mode = (value & 1) > 0;
 
-					if (sel_mode && Core.cart_RAM != null)
+					if (sel_mode && (Cart_RAM_Length[0] > 0))
 					{
 						ROM_bank &= 0x1F;
 						ROM_bank &= ROM_mask;
@@ -171,11 +164,11 @@ namespace GBHawk
 			}
 			else
 			{
-				if (Core.cart_RAM != null)
+				if (Cart_RAM_Length[0] > 0)
 				{
-					if (RAM_enable && (((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length))
+					if (RAM_enable && (((addr - 0xA000) + RAM_bank * 0x2000) < Cart_RAM_Length[0]))
 					{
-						Core.cart_RAM[(addr - 0xA000) + RAM_bank * 0x2000] = value;
+						Cart_RAM[(addr - 0xA000) + RAM_bank * 0x2000] = value;
 					}
 				}
 			}
@@ -184,16 +177,6 @@ namespace GBHawk
 		void PokeMemory(uint32_t addr, uint8_t value)
 		{
 			WriteMemory(addr, value);
-		}
-
-		void SyncState(Serializer ser)
-		{
-			ser.Sync(nameof(ROM_bank), ref ROM_bank);
-			ser.Sync(nameof(ROM_mask), ref ROM_mask);
-			ser.Sync(nameof(RAM_bank), ref RAM_bank);
-			ser.Sync(nameof(RAM_mask), ref RAM_mask);
-			ser.Sync(nameof(RAM_enable), ref RAM_enable);
-			ser.Sync(nameof(sel_mode), ref sel_mode);
 		}
 	};
 }

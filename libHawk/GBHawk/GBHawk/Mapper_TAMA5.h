@@ -14,37 +14,20 @@ namespace GBHawk
 	{
 	public:
 
-		uint32_t ROM_bank;
-		uint32_t RAM_bank;
-		uint32_t ROM_mask;
-		uint32_t RAM_mask;
-		uint8_t[] RTC_regs = new uint8_t[10];
-		uint32_t RTC_timer;
-		uint32_t RTC_low_clock;
-		bool halt;
-		uint32_t RTC_offset;
-		uint32_t ctrl;
-		uint32_t RAM_addr_low;
-		uint32_t RAM_addr_high;
-		uint32_t RAM_val_low;
-		uint32_t RAM_val_high;
-		uint8_t Chip_return_low;
-		uint8_t Chip_return_high;
-
 		void Reset()
 		{
 			ROM_bank = 0;
 			RAM_bank = 0;
-			ROM_mask = Core._rom.Length / 0x4000 - 1;
+			ROM_mask = ROM_Length[0] / 0x4000 - 1;
 
 			// some games have sizes that result in a degenerate ROM, account for it here
 			if (ROM_mask > 4) { ROM_mask |= 3; }
 
 			RAM_mask = 0;
-			if (Core.cart_RAM != null)
+			if (Cart_RAM_Length[0] > 0)
 			{
-				RAM_mask = Core.cart_RAM.Length / 0x2000 - 1;
-				if (Core.cart_RAM.Length == 0x800) { RAM_mask = 0; }
+				RAM_mask = Cart_RAM_Length[0] / 0x2000 - 1;
+				if (Cart_RAM_Length[0] == 0x800) { RAM_mask = 0; }
 			}
 
 			RAM_addr_low = RAM_addr_high = RAM_val_low = RAM_val_high = 0;
@@ -58,11 +41,11 @@ namespace GBHawk
 		{
 			if (addr < 0x4000)
 			{
-				return Core._rom[addr];
+				return ROM[addr];
 			}
 			else if (addr < 0x8000)
 			{
-				return Core._rom[(addr - 0x4000) + ROM_bank * 0x4000];
+				return ROM[(addr - 0x4000) + ROM_bank * 0x4000];
 			}
 			else
 			{
@@ -127,7 +110,7 @@ namespace GBHawk
 						break;
 					case 5:
 						RAM_val_high = (value & 0xF);
-						//Core.cart_RAM[(RAM_addr_high << 4) | RAM_addr_low] = (uint8_t)((RAM_val_high << 4) | RAM_val_low);
+						//Cart_RAM[(RAM_addr_high << 4) | RAM_addr_low] = (uint8_t)((RAM_val_high << 4) | RAM_val_low);
 						break;
 					case 6:
 						RAM_addr_high = (value & 1);
@@ -136,24 +119,24 @@ namespace GBHawk
 						{
 							case 0:
 								// write to RAM
-								Core.cart_RAM[(RAM_addr_high << 4) | RAM_addr_low] = (uint8_t)((RAM_val_high << 4) | RAM_val_low);
+								Cart_RAM[(RAM_addr_high << 4) | RAM_addr_low] = (uint8_t)((RAM_val_high << 4) | RAM_val_low);
 								break;
 							case 1:
 								// read from RAM
-								Chip_return_high = (uint8_t)(Core.cart_RAM[(RAM_addr_high << 4) | RAM_addr_low] >> 4);
-								Chip_return_low = (uint8_t)(Core.cart_RAM[(RAM_addr_high << 4) | RAM_addr_low] & 0xF);
+								Chip_return_high = (uint8_t)(Cart_RAM[(RAM_addr_high << 4) | RAM_addr_low] >> 4);
+								Chip_return_low = (uint8_t)(Cart_RAM[(RAM_addr_high << 4) | RAM_addr_low] & 0xF);
 								break;
 							case 2:
 								// read from RTC registers
 								if (RAM_addr_low == 3)
 								{
-									Chip_return_high = RTC_regs[2];  
-									Chip_return_low = RTC_regs[1];
+									Chip_return_high = RTC_regs_TAMA[2];  
+									Chip_return_low = RTC_regs_TAMA[1];
 								}
 								else if (RAM_addr_low == 6)
 								{
-									Chip_return_high = RTC_regs[4];
-									Chip_return_low = RTC_regs[3];
+									Chip_return_high = RTC_regs_TAMA[4];
+									Chip_return_low = RTC_regs_TAMA[3];
 								}
 								else
 								{
@@ -165,13 +148,13 @@ namespace GBHawk
 								// write to RTC registers (probably wrong, not well tested)
 								if (RAM_addr_low == 3)
 								{
-									RTC_regs[2] = (uint8_t)(RAM_val_high & 0xF);
-									RTC_regs[1] = (uint8_t)(RAM_val_low & 0xF);
+									RTC_regs_TAMA[2] = (uint8_t)(RAM_val_high & 0xF);
+									RTC_regs_TAMA[1] = (uint8_t)(RAM_val_low & 0xF);
 								}
 								else if (RAM_addr_low == 6)
 								{
-									RTC_regs[4] = (uint8_t)(RAM_val_high & 0xF);
-									RTC_regs[3] = (uint8_t)(RAM_val_low & 0xF);
+									RTC_regs_TAMA[4] = (uint8_t)(RAM_val_high & 0xF);
+									RTC_regs_TAMA[3] = (uint8_t)(RAM_val_low & 0xF);
 								}
 								else
 								{
@@ -180,7 +163,7 @@ namespace GBHawk
 								break;
 							case 4:
 								// read from seconds register (time changes are checked when it rolls over)
-								Chip_return_low = (uint8_t)(RTC_regs[0] & 0xF);
+								Chip_return_low = (uint8_t)(RTC_regs_TAMA[0] & 0xF);
 								break;
 						}
 
@@ -208,7 +191,7 @@ namespace GBHawk
 		{
 			if (index < 10)
 			{
-				RTC_regs[index] = (uint8_t)value;
+				RTC_regs_TAMA[index] = (uint8_t)value;
 			}
 			else
 			{
@@ -233,32 +216,32 @@ namespace GBHawk
 						RTC_low_clock = 0;
 						RTC_timer = RTC_offset;
 
-						RTC_regs[0]++;
+						RTC_regs_TAMA[0]++;
 
-						if (RTC_regs[0] > 59)
+						if (RTC_regs_TAMA[0] > 59)
 						{
-							RTC_regs[0] = 0;
-							RTC_regs[1]++;
+							RTC_regs_TAMA[0] = 0;
+							RTC_regs_TAMA[1]++;
 							// 1's digit of minutes
-							if (RTC_regs[1] > 9)
+							if (RTC_regs_TAMA[1] > 9)
 							{
-								RTC_regs[1] = 0;
-								RTC_regs[2]++;
+								RTC_regs_TAMA[1] = 0;
+								RTC_regs_TAMA[2]++;
 								// 10's digit of minutes
-								if (RTC_regs[2] > 5)
+								if (RTC_regs_TAMA[2] > 5)
 								{
-									RTC_regs[2] = 0;
-									RTC_regs[3]++;
+									RTC_regs_TAMA[2] = 0;
+									RTC_regs_TAMA[3]++;
 									// 1's digit of hours
-									if (RTC_regs[3] > 9)
+									if (RTC_regs_TAMA[3] > 9)
 									{
-										RTC_regs[3] = 0;
-										RTC_regs[4]++;
+										RTC_regs_TAMA[3] = 0;
+										RTC_regs_TAMA[4]++;
 										// 10's digit of hours
-										if (RTC_regs[4] > 2)
+										if (RTC_regs_TAMA[4] > 2)
 										{
-											RTC_regs[4] = 0;
-											RTC_regs[5]++;
+											RTC_regs_TAMA[4] = 0;
+											RTC_regs_TAMA[5]++;
 										}
 									}
 								}
@@ -267,26 +250,6 @@ namespace GBHawk
 					}
 				}
 			}
-		}
-
-		void SyncState(Serializer ser)
-		{
-			ser.Sync(nameof(ROM_bank), ref ROM_bank);
-			ser.Sync(nameof(ROM_mask), ref ROM_mask);
-			ser.Sync(nameof(RAM_bank), ref RAM_bank);
-			ser.Sync(nameof(RAM_mask), ref RAM_mask);
-			ser.Sync(nameof(halt), ref halt);
-			ser.Sync(nameof(RTC_regs), ref RTC_regs, false);
-			ser.Sync(nameof(RTC_timer), ref RTC_timer);
-			ser.Sync(nameof(RTC_low_clock), ref RTC_low_clock);
-			ser.Sync(nameof(RTC_offset), ref RTC_offset);
-			ser.Sync(nameof(ctrl), ref ctrl);
-			ser.Sync(nameof(RAM_addr_low), ref RAM_addr_low);
-			ser.Sync(nameof(RAM_addr_high), ref RAM_addr_high);
-			ser.Sync(nameof(RAM_val_low), ref RAM_val_low);
-			ser.Sync(nameof(RAM_val_high), ref RAM_val_high);
-			ser.Sync(nameof(Chip_return_low), ref Chip_return_low);
-			ser.Sync(nameof(Chip_return_high), ref Chip_return_high);
 		}
 	};
 }

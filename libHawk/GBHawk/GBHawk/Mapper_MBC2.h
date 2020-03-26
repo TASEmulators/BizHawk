@@ -14,34 +14,29 @@ namespace GBHawk
 	{
 	public:
 
-		uint32_t ROM_bank;
-		uint32_t RAM_bank;
-		bool RAM_enable;
-		uint32_t ROM_mask;
-
 		void Reset()
 		{
 			ROM_bank = 1;
 			RAM_bank = 0;
 			RAM_enable = false;
-			ROM_mask = Core._rom.Length / 0x4000 - 1;
+			ROM_mask = ROM_Length[0] / 0x4000 - 1;
 		}
 
 		uint8_t ReadMemory(uint32_t addr)
 		{
 			if (addr < 0x4000)
 			{
-				return Core._rom[addr];
+				return ROM[addr];
 			}
 			else if (addr < 0x8000)
 			{
-				return Core._rom[(addr - 0x4000) + ROM_bank * 0x4000];
+				return ROM[(addr - 0x4000) + ROM_bank * 0x4000];
 			}
 			else if ((addr >= 0xA000) && (addr < 0xA200))
 			{
 				if (RAM_enable)
 				{
-					return Core.cart_RAM[addr - 0xA000];
+					return Cart_RAM[addr - 0xA000];
 				}
 				return 0xFF;
 			}
@@ -103,7 +98,7 @@ namespace GBHawk
 			{
 				if (RAM_enable)
 				{
-					Core.cart_RAM[addr - 0xA000] = (uint8_t)(value & 0xF);
+					Cart_RAM[addr - 0xA000] = (uint8_t)(value & 0xF);
 				}				
 			}
 		}
@@ -111,14 +106,6 @@ namespace GBHawk
 		void PokeMemory(uint32_t addr, uint8_t value)
 		{
 			WriteMemory(addr, value);
-		}
-
-		void SyncState(Serializer ser)
-		{
-			ser.Sync(nameof(ROM_bank), ref ROM_bank);
-			ser.Sync(nameof(ROM_mask), ref ROM_mask);
-			ser.Sync(nameof(RAM_bank), ref RAM_bank);
-			ser.Sync(nameof(RAM_enable), ref RAM_enable);
 		}
 	};
 }

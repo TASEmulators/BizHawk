@@ -14,11 +14,7 @@ namespace GBHawk
 	{
 	public:
 
-		uint32_t ROM_bank;
-		uint32_t RAM_bank;
-		bool RAM_enable;
-		uint32_t ROM_mask;
-		uint32_t RAM_mask;
+
 		bool regs_enable;
 		uint8_t regs[0x80] = {};
 
@@ -27,9 +23,9 @@ namespace GBHawk
 			ROM_bank = 1;
 			RAM_bank = 0;
 			RAM_enable = false;
-			ROM_mask = Core._rom.Length / 0x4000 - 1;
+			ROM_mask = ROM_Length[0] / 0x4000 - 1;
 
-			RAM_mask = Core.cart_RAM.Length / 0x2000 - 1;
+			RAM_mask = Cart_RAM_Length[0] / 0x2000 - 1;
 
 			regs_enable = false;
 		}
@@ -38,11 +34,11 @@ namespace GBHawk
 		{
 			if (addr < 0x4000)
 			{
-				return Core._rom[addr];
+				return ROM[addr];
 			}
 			else if (addr < 0x8000)
 			{
-				return Core._rom[(addr - 0x4000) + ROM_bank * 0x4000];
+				return ROM[(addr - 0x4000) + ROM_bank * 0x4000];
 			}
 			else
 			{
@@ -59,9 +55,9 @@ namespace GBHawk
 				}
 				else 
 				{
-					if (/*RAM_enable && */(((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length))
+					if (/*RAM_enable && */(((addr - 0xA000) + RAM_bank * 0x2000) < Cart_RAM_Length[0]))
 					{
-						return Core.cart_RAM[(addr - 0xA000) + RAM_bank * 0x2000];
+						return Cart_RAM[(addr - 0xA000) + RAM_bank * 0x2000];
 					}
 					else
 					{
@@ -87,7 +83,7 @@ namespace GBHawk
 			{
 				if (!regs_enable)
 				{
-					if ((((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length))
+					if ((((addr - 0xA000) + RAM_bank * 0x2000) < Cart_RAM_Length[0]))
 					{
 						SetCDLRAM(flags, (addr - 0xA000) + RAM_bank * 0x2000);
 					}
@@ -140,9 +136,9 @@ namespace GBHawk
 				}
 				else
 				{
-					if (RAM_enable && (((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length))
+					if (RAM_enable && (((addr - 0xA000) + RAM_bank * 0x2000) < Cart_RAM_Length[0]))
 					{
-						Core.cart_RAM[(addr - 0xA000) + RAM_bank * 0x2000] = value;
+						Cart_RAM[(addr - 0xA000) + RAM_bank * 0x2000] = value;
 					}
 				}				
 			}
@@ -151,17 +147,6 @@ namespace GBHawk
 		void PokeMemory(uint32_t addr, uint8_t value)
 		{
 			WriteMemory(addr, value);
-		}
-
-		void SyncState(Serializer ser)
-		{
-			ser.Sync(nameof(ROM_bank), ref ROM_bank);
-			ser.Sync(nameof(ROM_mask), ref ROM_mask);
-			ser.Sync(nameof(RAM_bank), ref RAM_bank);
-			ser.Sync(nameof(RAM_mask), ref RAM_mask);
-			ser.Sync(nameof(RAM_enable), ref RAM_enable);
-			ser.Sync(nameof(regs_enable), ref regs_enable);
-			ser.Sync(nameof(regs), ref regs, false);
 		}
 	};
 }

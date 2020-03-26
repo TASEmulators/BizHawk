@@ -23,13 +23,13 @@ namespace GBHawk
 		{
 			if (addr < 0x8000)
 			{
-				return Core._rom[addr];
+				return ROM[addr];
 			}
 			else
 			{
-				if (Core.cart_RAM != null)
+				if (Cart_RAM_Length > 0)
 				{
-					return Core.cart_RAM[addr - 0xA000];
+					return Cart_RAM[addr - 0xA000];
 				}
 				else
 				{
@@ -47,7 +47,7 @@ namespace GBHawk
 			}
 			else
 			{
-				if (Core.cart_RAM != null)
+				if (Cart_RAM != null)
 				{
 					SetCDLRAM(flags, addr - 0xA000);
 				}
@@ -72,9 +72,9 @@ namespace GBHawk
 			}
 			else
 			{
-				if (Core.cart_RAM != null)
+				if (Cart_RAM_Length > 0)
 				{
-					Core.cart_RAM[addr - 0xA000] = value;
+					Cart_RAM[addr - 0xA000] = value;
 				}
 			}
 		}

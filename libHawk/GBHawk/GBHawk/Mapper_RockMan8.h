@@ -14,13 +14,10 @@ namespace GBHawk
 	{
 	public:
 
-		uint32_t ROM_bank;
-		uint32_t ROM_mask;
-
 		void Reset()
 		{
 			ROM_bank = 1;
-			ROM_mask = Core._rom.Length / 0x4000 - 1;
+			ROM_mask = ROM_Length[0] / 0x4000 - 1;
 
 			// some games have sizes that result in a degenerate ROM, account for it here
 			if (ROM_mask > 4) { ROM_mask |= 3; }
@@ -31,12 +28,12 @@ namespace GBHawk
 			if (addr < 0x4000)
 			{
 				// lowest bank is fixed
-				return Core._rom[addr];
+				return ROM[addr];
 
 			}
 			else if (addr < 0x8000)
 			{
-				return Core._rom[(addr - 0x4000) + ROM_bank * 0x4000];
+				return ROM[(addr - 0x4000) + ROM_bank * 0x4000];
 			}
 			else
 			{
@@ -85,12 +82,6 @@ namespace GBHawk
 		void PokeMemory(uint32_t addr, uint8_t value)
 		{
 			WriteMemory(addr, value);
-		}
-
-		void SyncState(Serializer ser)
-		{
-			ser.Sync(nameof(ROM_bank), ref ROM_bank);
-			ser.Sync(nameof(ROM_mask), ref ROM_mask);
 		}
 	};
 }

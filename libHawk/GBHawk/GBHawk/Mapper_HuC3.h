@@ -14,27 +14,12 @@ namespace GBHawk
 	{
 	public:
 
-		uint32_t ROM_bank;
-		uint32_t RAM_bank;
-		bool RAM_enable;
-		uint32_t ROM_mask;
-		uint32_t RAM_mask;
-		bool IR_signal;
-		uint8_t control;
-		uint8_t chip_read;
-		bool timer_read;
-		uint32_t time_val_shift;
-		uint32_t time;
-		uint32_t RTC_timer;
-		uint32_t RTC_low_clock;
-		uint32_t RTC_seconds;
-
 		void Reset()
 		{
 			ROM_bank = 0;
 			RAM_bank = 0;
 			RAM_enable = false;
-			ROM_mask = Core._rom.Length / 0x4000 - 1;
+			ROM_mask = ROM_Length[0] / 0x4000 - 1;
 			control = 0;
 			chip_read = 1;
 			timer_read = false;
@@ -44,10 +29,10 @@ namespace GBHawk
 			if (ROM_mask > 4) { ROM_mask |= 3; }
 
 			RAM_mask = 0;
-			if (Core.cart_RAM != null)
+			if (Cart_RAM_Length[0] > 0)
 			{
-				RAM_mask = Core.cart_RAM.Length / 0x2000 - 1;
-				if (Core.cart_RAM.Length == 0x800) { RAM_mask = 0; }
+				RAM_mask = Cart_RAM_Length[0] / 0x2000 - 1;
+				if (Cart_RAM_Length[0] == 0x800) { RAM_mask = 0; }
 			}
 		}
 
@@ -55,11 +40,11 @@ namespace GBHawk
 		{
 			if (addr < 0x4000)
 			{
-				return Core._rom[addr];
+				return ROM[addr];
 			}
 			else if (addr < 0x8000)
 			{
-				return Core._rom[(addr - 0x4000) + ROM_bank * 0x4000];
+				return ROM[(addr - 0x4000) + ROM_bank * 0x4000];
 			}
 			else if ((addr >= 0xA000) && (addr < 0xC000))
 			{
@@ -74,11 +59,11 @@ namespace GBHawk
 				
 				if (RAM_enable)
 				{
-					if (Core.cart_RAM != null)
+					if (Cart_RAM_Length[0] > 0)
 					{
-						if (((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length)
+						if (((addr - 0xA000) + RAM_bank * 0x2000) < Cart_RAM_Length[0])
 						{
-							return Core.cart_RAM[(addr - 0xA000) + RAM_bank * 0x2000];
+							return Cart_RAM[(addr - 0xA000) + RAM_bank * 0x2000];
 						}
 						else
 						{
@@ -117,9 +102,9 @@ namespace GBHawk
 			{
 				if (RAM_enable)
 				{
-					if (Core.cart_RAM != null)
+					if (Cart_RAM != null)
 					{
-						if (((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length)
+						if (((addr - 0xA000) + RAM_bank * 0x2000) < Cart_RAM_Length[0])
 						{
 							SetCDLRAM(flags, (addr - 0xA000) + RAM_bank * 0x2000);
 						}
@@ -177,11 +162,11 @@ namespace GBHawk
 			{
 				if (RAM_enable && ((control < 0xB) || (control > 0xE)))
 				{
-					if (Core.cart_RAM != null)
+					if (Cart_RAM_Length[0] > 0)
 					{
-						if (((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length)
+						if (((addr - 0xA000) + RAM_bank * 0x2000) < Cart_RAM_Length[0])
 						{
-							Core.cart_RAM[(addr - 0xA000) + RAM_bank * 0x2000] = value;
+							Cart_RAM[(addr - 0xA000) + RAM_bank * 0x2000] = value;
 						}
 					}
 				}
@@ -208,7 +193,7 @@ namespace GBHawk
 								if (time_val_shift == 0) { time = 0; }							
 								if (time_val_shift < 28)
 								{
-									time |= (uint)((value & 0x0F) << time_val_shift);
+									time |= (uint32_t)((value & 0x0F) << time_val_shift);
 									time_val_shift += 4;
 									if (time_val_shift == 28) { timer_read = true; }
 								}
@@ -253,7 +238,7 @@ namespace GBHawk
 
 		void RTC_Get(uint32_t value, uint32_t index)
 		{
-			time |= (uint)((value & 0xFF) << index);
+			time |= (uint32_t)((value & 0xFF) << index);
 		}
 
 		void Mapper_Tick()
@@ -288,24 +273,6 @@ namespace GBHawk
 					}
 				}
 			}
-		}
-
-		void SyncState(Serializer ser)
-		{
-			ser.Sync(nameof(ROM_bank), ref ROM_bank);
-			ser.Sync(nameof(ROM_mask), ref ROM_mask);
-			ser.Sync(nameof(RAM_bank), ref RAM_bank);
-			ser.Sync(nameof(RAM_mask), ref RAM_mask);
-			ser.Sync(nameof(RAM_enable), ref RAM_enable);
-			ser.Sync(nameof(IR_signal), ref IR_signal);
-			ser.Sync(nameof(control), ref control);
-			ser.Sync(nameof(chip_read), ref chip_read);
-			ser.Sync(nameof(timer_read), ref timer_read);
-			ser.Sync(nameof(time_val_shift), ref time_val_shift);
-			ser.Sync(nameof(time), ref time);
-			ser.Sync(nameof(RTC_timer), ref RTC_timer);
-			ser.Sync(nameof(RTC_low_clock), ref RTC_low_clock);
-			ser.Sync(nameof(RTC_seconds), ref RTC_seconds);
 		}
 	};
 }

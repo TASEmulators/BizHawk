@@ -14,9 +14,7 @@ namespace GBHawk
 	{
 	public:
 
-		uint32_t ROM_bank;
 		bool RAM_enable_1, RAM_enable_2;
-		uint32_t ROM_mask;
 		uint8_t acc_x_low;
 		uint8_t acc_x_high;
 		uint8_t acc_y_low;
@@ -45,7 +43,7 @@ namespace GBHawk
 		{
 			ROM_bank = 1;
 			RAM_enable_1 = RAM_enable_2 = false;
-			ROM_mask = Core._rom.Length / 0x4000 - 1;
+			ROM_mask = ROM_Length[0] / 0x4000 - 1;
 
 			// some games have sizes that result in a degenerate ROM, account for it here
 			if (ROM_mask > 4) { ROM_mask |= 3; }
@@ -67,11 +65,11 @@ namespace GBHawk
 		{
 			if (addr < 0x4000)
 			{
-				return Core._rom[addr];
+				return ROM[addr];
 			}
 			else if (addr < 0x8000)
 			{
-				return Core._rom[(addr - 0x4000) + ROM_bank * 0x4000];
+				return ROM[(addr - 0x4000) + ROM_bank * 0x4000];
 			}
 			else if (addr < 0xA000)
 			{
@@ -170,35 +168,6 @@ namespace GBHawk
 			WriteMemory(addr, value);
 		}
 
-		void SyncState(Serializer ser)
-		{
-			ser.Sync(nameof(ROM_bank), ref ROM_bank);
-			ser.Sync(nameof(ROM_mask), ref ROM_mask);
-			ser.Sync(nameof(RAM_enable_1), ref RAM_enable_1);
-			ser.Sync(nameof(RAM_enable_2), ref RAM_enable_2);
-			ser.Sync(nameof(acc_x_low), ref acc_x_low);
-			ser.Sync(nameof(acc_x_high), ref acc_x_high);
-			ser.Sync(nameof(acc_y_low), ref acc_y_low);
-			ser.Sync(nameof(acc_y_high), ref acc_y_high);
-			ser.Sync(nameof(is_erased), ref is_erased);
-
-			ser.Sync(nameof(CS_prev), ref CS_prev);
-			ser.Sync(nameof(CLK_prev), ref CLK_prev);
-			ser.Sync(nameof(DI_prev), ref DI_prev);
-			ser.Sync(nameof(DO), ref DO);
-			ser.Sync(nameof(instr_read), ref instr_read);
-			ser.Sync(nameof(perf_instr), ref perf_instr);
-			ser.Sync(nameof(instr_bit_counter), ref instr_bit_counter);
-			ser.Sync(nameof(instr), ref instr);
-			ser.Sync(nameof(WR_EN), ref WR_EN);
-			ser.Sync(nameof(EE_addr), ref EE_addr);
-			ser.Sync(nameof(instr_case), ref instr_case);
-			ser.Sync(nameof(instr_clocks), ref instr_clocks);
-			ser.Sync(nameof(EE_value), ref EE_value);
-			ser.Sync(nameof(countdown), ref countdown);
-			ser.Sync(nameof(countdown_start), ref countdown_start);
-		}
-
 		uint8_t Register_Access_Read(uint32_t addr)
 		{
 			if ((addr & 0xA0F0) == 0xA000)
@@ -280,7 +249,7 @@ namespace GBHawk
 			}
 		}
 
-		private void EEPROM_write(uint8_t value)
+		void EEPROM_write(uint8_t value)
 		{
 			bool CS = value.Bit(7);
 			bool CLK = value.Bit(6);
@@ -349,7 +318,7 @@ namespace GBHawk
 									{
 										for (uint32_t i = 0; i < 256; i++)
 										{
-											Core.cart_RAM[i] = 0xFF;
+											Cart_RAM[i] = 0xFF;
 										}
 									}
 									DO = true;
@@ -373,8 +342,8 @@ namespace GBHawk
 							instr_case = 6;
 							if (WR_EN)
 							{
-								Core.cart_RAM[EE_addr * 2] = 0xFF;
-								Core.cart_RAM[EE_addr * 2 + 1] = 0xFF;
+								Cart_RAM[EE_addr * 2] = 0xFF;
+								Cart_RAM[EE_addr * 2 + 1] = 0xFF;
 							}
 							DO = true;
 							break;
@@ -405,8 +374,8 @@ namespace GBHawk
 							{
 								for (uint32_t i = 0; i < 128; i++)
 								{
-									Core.cart_RAM[i * 2] = (uint8_t)(EE_value & 0xFF);
-									Core.cart_RAM[i * 2 + 1] = (uint8_t)((EE_value & 0xFF00) >> 8);
+									Cart_RAM[i * 2] = (uint8_t)(EE_value & 0xFF);
+									Cart_RAM[i * 2 + 1] = (uint8_t)((EE_value & 0xFF00) >> 8);
 								}
 							}
 							instr_case = 7;
@@ -421,8 +390,8 @@ namespace GBHawk
 						{
 							if (WR_EN)
 							{
-								Core.cart_RAM[EE_addr * 2] = (uint8_t)(EE_value & 0xFF);
-								Core.cart_RAM[EE_addr * 2 + 1] = (uint8_t)((EE_value & 0xFF00) >> 8);
+								Cart_RAM[EE_addr * 2] = (uint8_t)(EE_value & 0xFF);
+								Cart_RAM[EE_addr * 2 + 1] = (uint8_t)((EE_value & 0xFF00) >> 8);
 							}
 							instr_case = 7;
 							countdown = 8;
@@ -432,11 +401,11 @@ namespace GBHawk
 					case 5:
 						if ((instr_clocks >= 0) && (instr_clocks <= 7))
 						{
-							DO = ((Core.cart_RAM[EE_addr * 2 + 1] >> (7 - instr_clocks)) & 1) == 1;
+							DO = ((Cart_RAM[EE_addr * 2 + 1] >> (7 - instr_clocks)) & 1) == 1;
 						}
 						else if ((instr_clocks >= 8) && (instr_clocks <= 15))
 						{
-							DO = ((Core.cart_RAM[EE_addr * 2] >> (15 - instr_clocks)) & 1) == 1;
+							DO = ((Cart_RAM[EE_addr * 2] >> (15 - instr_clocks)) & 1) == 1;
 						}
 
 						if (instr_clocks == 15)
