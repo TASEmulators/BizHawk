@@ -10,35 +10,57 @@ using namespace std;
 
 namespace GBHawk
 {
-	class GB_PPU : public PPU
+	class GBC_GB_PPU : public PPU
 	{
 	public:
 		uint8_t ReadReg(uint32_t addr)
 		{
 			uint8_t ret = 0;
-
+			//Console.WriteLine(Core.cpu.TotalExecutedCycles);
 			switch (addr)
 			{
-			case 0xFF40: ret = LCDC;					break; // LCDC
-			case 0xFF41: ret = STAT;					break; // STAT
-			case 0xFF42: ret = scroll_y;				break; // SCY
-			case 0xFF43: ret = scroll_x;				break; // SCX
-			case 0xFF44: ret = LY;						break; // LY
-			case 0xFF45: ret = LYC;						break; // LYC
-			case 0xFF46: ret = DMA_addr;				break; // DMA 
-			case 0xFF47: ret = BGP;						break; // BGP
-			case 0xFF48: ret = obj_pal_0;				break; // OBP0
-			case 0xFF49: ret = obj_pal_1;				break; // OBP1
-			case 0xFF4A: ret = window_y;				break; // WY
-			case 0xFF4B: ret = window_x;				break; // WX
+			case 0xFF40: ret = LCDC;							break; // LCDC
+			case 0xFF41: ret = STAT;							break; // STAT
+			case 0xFF42: ret = scroll_y;						break; // SCY
+			case 0xFF43: ret = scroll_x;						break; // SCX
+			case 0xFF44: ret = LY;								break; // LY
+			case 0xFF45: ret = LYC;								break; // LYC
+			case 0xFF46: ret = DMA_addr;						break; // DMA 
+			case 0xFF47: ret = BGP;								break; // BGP
+			case 0xFF48: ret = obj_pal_0;						break; // OBP0
+			case 0xFF49: ret = obj_pal_1;						break; // OBP1
+			case 0xFF4A: ret = window_y;						break; // WY
+			case 0xFF4B: ret = window_x;						break; // WX
+
+			// These are GBC specific Regs
+			case 0xFF51: ret = HDMA_src_hi;						break; // HDMA1
+			case 0xFF52: ret = HDMA_src_lo;						break; // HDMA2
+			case 0xFF53: ret = HDMA_dest_hi;					break; // HDMA3
+			case 0xFF54: ret = HDMA_dest_lo;					break; // HDMA4
+			case 0xFF55: ret = HDMA_ctrl();						break; // HDMA5
+			case 0xFF68: ret = BG_pal_ret();					break; // BGPI
+			case 0xFF69: ret = BG_PAL_read();					break; // BGPD
+			case 0xFF6A: ret = OBJ_pal_ret();					break; // OBPI
+			case 0xFF6B: ret = OBJ_bytes[OBJ_bytes_index];		break; // OBPD
 			}
 
 			return ret;
 		}
 
+		uint8_t BG_PAL_read()
+		{
+			if (VRAM_access_read)
+			{
+				return BG_bytes[BG_bytes_index];
+			}
+			else
+			{
+				return 0xFF;
+			}
+		}
+
 		void WriteReg(uint32_t addr, uint8_t value)
 		{
-			//Console.WriteLine((addr - 0xFF40) + " " + value + " " + LY + " " + cycle + " " + LCDC.Bit(7));			
 			switch (addr)
 			{
 			case 0xFF40: // LCDC
@@ -48,8 +70,6 @@ namespace GBHawk
 					VRAM_access_write = true;
 					OAM_access_read = true;
 					OAM_access_write = true;
-
-					clear_screen = true;
 				}
 
 				if (!((LCDC & 0x80) > 0) && ((value & 0x80) > 0))
@@ -61,29 +81,22 @@ namespace GBHawk
 				LCDC = value;
 				break;
 			case 0xFF41: // STAT
-				// writing to STAT during mode 0 or 1 causes a STAT IRQ
-				// this appears to be a glitchy LYC compare
-				if (((LCDC & 0x80) > 0))
-				{
-					if (((STAT & 3) == 0) || ((STAT & 3) == 1))
-					{
-						LYC_INT = true;
-						//if (Core.REG_FFFF.Bit(1)) { Core.cpu.FlagI = true; }
-						//Core.REG_FF0F |= 0x02;
-					}
-					else
-					{
-						if (((value & 0x40) > 0))
-						{
-							if (LY == LYC) { LYC_INT = true; }
-							else { LYC_INT = false; }
-						}
-					}
-				}
+				// note that their is no stat interrupt bug in GBC
 				STAT = (uint8_t)((value & 0xF8) | (STAT & 7) | 0x80);
 
-				//if (!STAT.Bit(6)) { LYC_INT = false; }
-				if (!((STAT & 0x10) > 0)) { VBL_INT = false; }
+				if (((STAT & 3) == 0) && ((STAT & 0x8) > 0)) { HBL_INT = true; }
+				else { HBL_INT = false; }
+				if (((STAT & 3) == 1) && ((STAT & 0x10) > 0)) { VBL_INT = true; }
+				else { VBL_INT = false; }
+				// OAM not triggered?
+				// if (((STAT & 3) == 2) && STAT.Bit(5)) { OAM_INT = true; } else { OAM_INT = false; }
+
+				if (((value & 0x40) > 0) && ((LCDC & 0x80) > 0))
+				{
+					if (LY == LYC) { LYC_INT = true; }
+					else { LYC_INT = false; }
+				}
+				if (!((STAT & 0x40) > 0)) { LYC_INT = false; }
 				break;
 			case 0xFF42: // SCY
 				scroll_y = value;
@@ -95,21 +108,10 @@ namespace GBHawk
 				LY = 0; /*reset*/
 				break;
 			case 0xFF45:  // LYC
-				LYC = value;
-				if (((LCDC & 0x80) > 0))
-				{
-					if (LY != LYC) { STAT &= 0xFB; LYC_INT = false; }
-					else { STAT |= 0x4; LYC_INT = true; }
-
-					// special case: the transition from 153 -> 0 acts strange
-					// the comparison to 153 expects to be true for longer then the value of LY expects to be 153
-					// this appears to be fixed in CGB
-					if ((LY_inc == 0) && cycle == 8)
-					{
-						if (153 != LYC) { STAT &= 0xFB; LYC_INT = false; }
-						else { STAT |= 0x4; LYC_INT = true; }
-					}
-				}
+				// tests indicate that latching writes to LYC should take place 4 cycles after the write
+				// otherwise tests around LY boundaries will fail
+				LYC_t = value;
+				LYC_cd = 4;
 				break;
 			case 0xFF46: // DMA 
 				DMA_addr = value;
@@ -133,11 +135,192 @@ namespace GBHawk
 			case 0xFF4B: // WX
 				window_x = value;
 				break;
+
+				// These are GBC specific Regs
+			case 0xFF51: // HDMA1
+				HDMA_src_hi = value;
+				cur_DMA_src = (uint32_t)(((HDMA_src_hi & 0xFF) << 8) | (cur_DMA_src & 0xF0));
+				break;
+			case 0xFF52: // HDMA2
+				HDMA_src_lo = value;
+				cur_DMA_src = (uint32_t)((cur_DMA_src & 0xFF00) | (HDMA_src_lo & 0xF0));
+				break;
+			case 0xFF53: // HDMA3
+				HDMA_dest_hi = value;
+				cur_DMA_dest = (uint32_t)(((HDMA_dest_hi & 0x1F) << 8) | (cur_DMA_dest & 0xF0));
+				break;
+			case 0xFF54: // HDMA4
+				HDMA_dest_lo = value;
+				cur_DMA_dest = (uint32_t)((cur_DMA_dest & 0xFF00) | (HDMA_dest_lo & 0xF0));
+				break;
+			case 0xFF55: // HDMA5
+				if (!HDMA_active)
+				{
+					HDMA_mode = ((value & 0x80) > 0);
+					HDMA_countdown = 4;
+					HDMA_tick = 0;
+					if (((value & 0x80) > 0))
+					{
+						// HDMA during HBlank only, but only if screen is on, otherwise DMA immediately one block of data
+						// worms armaggedon requires HDMA to fire in hblank mode even if the screen is off.
+						HDMA_active = true;
+						HBL_HDMA_count = 0x10;
+
+						last_HBL = LY - 1;
+
+						HBL_test = true;
+						HBL_HDMA_go = false;
+
+						if (!((LCDC & 0x80) > 0))
+						{
+							HDMA_run_once = true;
+						}
+					}
+					else
+					{
+						// HDMA immediately
+						HDMA_active = true;
+						HDMA_transfer[0] = true;
+					}
+
+					HDMA_length = ((value & 0x7F) + 1) * 16;
+				}
+				else
+				{
+					//terminate the transfer
+					if (!((value & 0x80) > 0))
+					{
+						HDMA_active = false;
+					}
+				}
+
+				break;
+			case 0xFF68: // BGPI
+				BG_bytes_index = (uint8_t)(value & 0x3F);
+				BG_bytes_inc = ((value & 0x80) == 0x80);
+				break;
+			case 0xFF69: // BGPD
+				if (VRAM_access_write)
+				{
+					BG_transfer_byte = value;
+					BG_bytes[BG_bytes_index] = value;
+				}
+
+				// change the appropriate palette color
+				color_compute_BG();
+				if (BG_bytes_inc) { BG_bytes_index++; BG_bytes_index &= 0x3F; }
+				break;
+			case 0xFF6A: // OBPI
+				OBJ_bytes_index = (uint8_t)(value & 0x3F);
+				OBJ_bytes_inc = ((value & 0x80) == 0x80);
+				break;
+			case 0xFF6B: // OBPD
+				OBJ_transfer_byte = value;
+				OBJ_bytes[OBJ_bytes_index] = value;
+
+				// change the appropriate palette color
+				color_compute_OBJ();
+
+				if (OBJ_bytes_inc) { OBJ_bytes_index++; OBJ_bytes_index &= 0x3F; }
+				break;
 			}
 		}
 
 		void tick()
 		{
+			// Do HDMA ticks
+			if (HDMA_active)
+			{
+				if (HDMA_length > 0)
+				{
+					if (!HDMA_mode)
+					{
+						if (HDMA_countdown > 0)
+						{
+							HDMA_countdown--;
+						}
+						else
+						{
+							// immediately transfer bytes, 2 bytes per cycles
+							if ((HDMA_tick % 2) == 0)
+							{
+								HDMA_byte = ReadMemory(cur_DMA_src);
+							}
+							else
+							{
+								VRAM[(VRAM_Bank[0] * 0x2000) + cur_DMA_dest] = HDMA_byte;
+								cur_DMA_dest = (uint8_t)((cur_DMA_dest + 1) & 0x1FFF);
+								cur_DMA_src = (uint8_t)((cur_DMA_src + 1) & 0xFFFF);
+								HDMA_length--;
+							}
+
+							HDMA_tick++;
+						}
+					}
+					else
+					{
+						// only transfer during mode 0, and only 16 bytes at a time
+						if (((STAT & 3) == 0) && (LY != last_HBL) && HBL_test && (LY_inc == 1) && (cycle > 4))
+						{
+							HBL_HDMA_go = true;
+							HBL_test = false;
+						}
+						else if (HDMA_run_once)
+						{
+							HBL_HDMA_go = true;
+							HBL_test = false;
+							HDMA_run_once = false;
+						}
+
+						if (HBL_HDMA_go && (HBL_HDMA_count > 0))
+						{
+							HDMA_transfer[0] = true;
+
+							if (HDMA_countdown > 0)
+							{
+								HDMA_countdown--;
+							}
+							else
+							{
+								if ((HDMA_tick % 2) == 0)
+								{
+									HDMA_byte = ReadMemory(cur_DMA_src);
+								}
+								else
+								{
+									VRAM[(VRAM_Bank[0] * 0x2000) + cur_DMA_dest] = HDMA_byte;
+									cur_DMA_dest = (uint32_t)((cur_DMA_dest + 1) & 0x1FFF);
+									cur_DMA_src = (uint32_t)((cur_DMA_src + 1) & 0xFFFF);
+									HDMA_length--;
+									HBL_HDMA_count--;
+								}
+
+								if ((HBL_HDMA_count == 0) && (HDMA_length != 0))
+								{
+
+									HBL_test = true;
+									last_HBL = LY;
+									HBL_HDMA_count = 0x10;
+									HBL_HDMA_go = false;
+									HDMA_countdown = 4;
+								}
+
+								HDMA_tick++;
+							}
+						}
+						else
+						{
+							HDMA_transfer = false;
+						}
+					}
+				}
+				else
+				{
+					HDMA_active = false;
+					HDMA_transfer = false;
+				}
+			}
+
 			// the ppu only does anything if it is turned on via bit 7 of LCDC
 			if (((LCDC & 0x80) > 0))
 			{
@@ -149,8 +332,8 @@ namespace GBHawk
 					{
 						//if (Core._scanlineCallback != null)
 						//{
-							//Core.GetGPU();
-							//Core._scanlineCallback(LCDC);
+						//	Core.GetGPU();
+						//	Core._scanlineCallback(LCDC);
 						//}
 					}
 
@@ -165,7 +348,7 @@ namespace GBHawk
 						LY_inc = 1;
 						in_vblank[0] = false;
 
-						STAT &= 0xFC;
+						//STAT &= 0xFC;
 
 						// special note here, the y coordiate of the window is kept if the window is deactivated
 						// meaning it will pick up where it left off if re-enabled later
@@ -200,7 +383,6 @@ namespace GBHawk
 					STAT &= 0xFC;
 
 					// also the LCD doesn't turn on right away
-
 					// also, the LCD does not enter mode 2 on scanline 0 when first turned on
 					no_scan = true;
 					cycle = 8;
@@ -235,7 +417,7 @@ namespace GBHawk
 						STAT &= 0xFC;
 						STAT |= 0x01;
 
-						if (((REG_FFFF[0] & 0x1) > 0)) { FlagI[0] = true; }
+						if ((REG_FFFF[0] & 1) > 0) { FlagI[0] = true; }
 						REG_FF0F[0] |= 0x01;
 					}
 
@@ -244,7 +426,7 @@ namespace GBHawk
 						if (((STAT & 0x20) > 0)) { VBL_INT = false; }
 					}
 
-					if ((cycle == 6) && (LY == 153))
+					if ((cycle == 8) && (LY == 153))
 					{
 						LY = 0;
 						LY_inc = 0;
@@ -309,7 +491,7 @@ namespace GBHawk
 									x_tile = (uint32_t)floor((float)(scroll_x) / 8.0);
 									render_offset = scroll_x % 8;
 								}
-								
+
 								// render the screen and handle hblank
 								render(cycle - 85);
 							}
@@ -324,14 +506,12 @@ namespace GBHawk
 								if (LY != 0)
 								{
 									HBL_INT = false;
+
 									if (((STAT & 0x20) > 0)) { OAM_INT = true; }
 								}
 							}
 							else if (cycle == 4)
 							{
-								// apparently, writes can make it to OAM one cycle longer then reads
-								OAM_access_write = false;
-
 								// here mode 2 will be set to true and interrupts fired if enabled
 								STAT &= 0xFC;
 								STAT |= 0x2;
@@ -380,12 +560,12 @@ namespace GBHawk
 
 				if (LY_inc == 0)
 				{
-					if (cycle == 10)
+					if (cycle == 12)
 					{
 						LYC_INT = false;
 						STAT &= 0xFB;
 					}
-					else if (cycle == 12)
+					else if (cycle == 14)
 					{
 						// Special case of LY = LYC
 						if ((LY == LYC) && !((STAT & 0x4) > 0))
@@ -398,7 +578,7 @@ namespace GBHawk
 				}
 
 				// here LY=LYC will be asserted or cleared (but only if LY isnt 0 as that's a special case)
-				if ((cycle == 2) && (LY != 0))
+				if ((cycle == 4) && (LY != 0))
 				{
 					if (LY_inc == 1)
 					{
@@ -406,7 +586,7 @@ namespace GBHawk
 						STAT &= 0xFB;
 					}
 				}
-				else if ((cycle == 4) && (LY != 0))
+				else if ((cycle == 6) && (LY != 0))
 				{
 					if ((LY == LYC) && !((STAT & 0x4) > 0))
 					{
@@ -439,20 +619,35 @@ namespace GBHawk
 
 			if (stat_line && !stat_line_old)
 			{
-				if (((REG_FFFF[0] & 0x2) > 0)) { FlagI[0] = true; }
-				REG_FF0F[0] |= 0x02;
+				if ((REG_FFFF[0] & 0x2) > 0) { FlagI[0] = true; }
+				REG_FF0F[0] |= 0x02;		
 			}
 
 			stat_line_old = stat_line;
 
 			// process latch delays
 			//latch_delay();
+
+			if (LYC_cd > 0)
+			{
+				LYC_cd--;
+				if (LYC_cd == 0)
+				{
+					LYC = LYC_t;
+
+					if (((LCDC & 0x80) > 0))
+					{
+						if (LY != LYC) { STAT &= 0xFB; LYC_INT = false; }
+						else { STAT |= 0x4; LYC_INT = true; }
+					}
+				}
+			}
 		}
 
 		// might be needed, not sure yet
 		void latch_delay()
 		{
-
+			//BGP_l = BGP;
 		}
 
 		void render(uint32_t render_cycle)
@@ -511,16 +706,19 @@ namespace GBHawk
 			if (window_latch && !window_started && (LY >= window_y_latch) && (pixel_counter >= (window_x_latch - 7)) && (window_x_latch < 167))
 			{
 				/*
-				Console.Write(LY);
-				Console.Write(" ");
-				Console.Write(cycle);
-				Console.Write(" ");
-				Console.Write(window_y_tile_inc);
-				Console.Write(" ");
-				Console.Write(window_x_latch);
-				Console.Write(" ");
-				Console.WriteLine(pixel_counter);
+					Console.Write(LY);
+					Console.Write(" ");
+					Console.Write(cycle);
+					Console.Write(" ");
+					Console.Write(window_y_tile);
+					Console.Write(" ");
+					Console.Write(render_offset);
+					Console.Write(" ");
+					Console.Write(window_x_latch);
+					Console.Write(" ");
+					Console.WriteLine(pixel_counter);
 				*/
+
 				if (window_x_latch == 0)
 				{
 					// if the window starts at zero, we still do the first access to the BG
@@ -556,25 +754,41 @@ namespace GBHawk
 				// start shifting data into the LCD
 				if (render_counter >= (render_offset + 8))
 				{
-					
-					pixel = (tile_data_latch[0] & (1 << (7 - (render_counter % 8))) > 0) ? 1 : 0;
-					pixel |= (tile_data_latch[1] & (1 << (7 - (render_counter % 8))) > 0) ? 2 : 0;
-
-					uint32_t ref_pixel = pixel;
-					if (((LCDC & 0x1) > 0))
+					if (((tile_data_latch[2] & 0x20) > 0) && GBC_compat[0])
 					{
-						pixel = (BGP >> (pixel * 2)) & 3;
+						pixel = (tile_data_latch[0] & (1 << (render_counter % 8)) > 0) ? 1 : 0;
+						pixel |= (tile_data_latch[1] & (1 << (render_counter % 8)) > 0) ? 2 : 0;
 					}
 					else
 					{
-						pixel = 0;
+						pixel = (tile_data_latch[0] & (1 << (7 - (render_counter % 8))) > 0) ? 1 : 0;
+						pixel |= (tile_data_latch[1] & (1 << (7 - (render_counter % 8))) > 0) ? 2 : 0;
 					}
+
+					uint32_t ref_pixel = pixel;
+
+					if (!GBC_compat[0])
+					{
+						if (((LCDC & 0x1) > 0))
+						{
+							pixel = (BGP >> (pixel * 2)) & 3;
+						}
+						else
+						{
+							pixel = 0;
+						}
+					}
+
+					uint32_t pal_num = tile_data_latch[2] & 0x7;
+
+					bool use_sprite = false;
+
+					uint32_t s_pixel = 0;
 
 					// now we have the BG pixel, we next need the sprite pixel
 					if (!no_sprites)
 					{
 						bool have_sprite = false;
-						uint32_t s_pixel = 0;
 						uint32_t sprite_attr = 0;
 
 						if (sprite_present_list[pixel_counter] == 1)
@@ -586,7 +800,6 @@ namespace GBHawk
 
 						if (have_sprite)
 						{
-							bool use_sprite = false;
 							if (((LCDC & 0x2) > 0))
 							{
 								if (!((sprite_attr & 0x80) > 0))
@@ -602,29 +815,65 @@ namespace GBHawk
 								{
 									use_sprite = true;
 								}
+
+								// There is another priority bit in GBC, that can still override sprite priority
+								if (((LCDC & 0x1) > 0) && ((tile_data_latch[2] & 0x80) > 0) && (ref_pixel != 0) && GBC_compat[0])
+								{
+									use_sprite = false;
+								}
 							}
 
 							if (use_sprite)
 							{
-								if (((sprite_attr & 0x10) > 0))
+								pal_num = sprite_attr & 7;
+
+								if (!GBC_compat[0])
 								{
-									pixel = (obj_pal_1 >> (s_pixel * 2)) & 3;
-								}
-								else
-								{
-									pixel = (obj_pal_0 >> (s_pixel * 2)) & 3;
+									pal_num = ((sprite_attr & 0x10) > 0) ? 1 : 0;
+
+									if (((sprite_attr & 0x10) > 0))
+									{
+										pixel = (obj_pal_1 >> (s_pixel * 2)) & 3;
+									}
+									else
+									{
+										pixel = (obj_pal_0 >> (s_pixel * 2)) & 3;
+									}
 								}
 							}
 						}
 					}
 
 					// based on sprite priority and pixel values, pick a final pixel color
-					_vidbuffer[LY * 160 + pixel_counter] = (uint32_t)color_palette[pixel];
+					if (GBC_compat[0])
+					{
+						if (use_sprite)
+						{
+							_vidbuffer[LY * 160 + pixel_counter] = (uint32_t)OBJ_palette[pal_num * 4 + s_pixel];
+						}
+						else
+						{
+							_vidbuffer[LY * 160 + pixel_counter] = (uint32_t)BG_palette[pal_num * 4 + pixel];
+						}
+					}
+					else
+					{
+						if (use_sprite)
+						{
+							_vidbuffer[LY * 160 + pixel_counter] = (uint32_t)OBJ_palette[pal_num * 4 + pixel];
+						}
+						else
+						{
+							_vidbuffer[LY * 160 + pixel_counter] = (uint32_t)BG_palette[pixel];
+						}
+					}
+
 					pixel_counter++;
 
 					if (pixel_counter == 160)
 					{
 						read_case = 8;
+						hbl_countdown = 2;
 					}
 				}
 				else if (pixel_counter < 0)
@@ -641,8 +890,8 @@ namespace GBHawk
 					// before we go on to read case 3, we need to know if we stall there or not
 					// Gekkio's tests show that if sprites are at position 0 or 1 (mod 8) 
 					// then it takes an extra cycle (1 or 2 more t-states) to process them
-					// Also, on DMG only, this process only runs if sprites are on in the LCDC (on GBC it always runs)
-					if (!no_sprites && (pixel_counter < 160) && ((LCDC & 0x2) > 0))
+
+					if (!no_sprites && (pixel_counter < 160))
 					{
 						for (uint32_t i = 0; i < SL_sprites_index; i++)
 						{
@@ -666,7 +915,11 @@ namespace GBHawk
 						y_tile = ((uint32_t)floor((float)((uint32_t)scroll_y + LY) / 8.0)) % 32;
 
 						temp_fetch = y_tile * 32 + (x_tile + tile_inc) % 32;
-						tile_byte = VRAM[0x1800 + (((LCDC & 0x8) > 0) ? 1 : 0) * 0x400 + temp_fetch];
+						tile_byte = VRAM[0x1800 + (((LCDC & 0x4) > 0) ? 1 : 0) * 0x400 + temp_fetch];
+						tile_data[2] = VRAM[0x3800 + (((LCDC & 0x4) > 0) ? 1 : 0) * 0x400 + temp_fetch];
+						VRAM_sel = ((tile_data[2] & 0x8) > 0) ? 1 : 0;
+
+						BG_V_flip = ((tile_data[2] & 0x40) > 0) & GBC_compat[0];
 
 						read_case = 1;
 						if (!pre_render)
@@ -681,18 +934,23 @@ namespace GBHawk
 					{
 						y_scroll_offset = (scroll_y + LY) % 8;
 
+						if (BG_V_flip)
+						{
+							y_scroll_offset = 7 - y_scroll_offset;
+						}
+
 						if (((LCDC & 0x10) > 0))
 						{
-							tile_data[0] = VRAM[tile_byte * 16 + y_scroll_offset * 2];
+							tile_data[0] = VRAM[(VRAM_sel * 0x2000) + tile_byte * 16 + y_scroll_offset * 2];
 						}
 						else
 						{
-							// same as before except now tile uint8_t represents a signed uint8_t
+							// same as before except now tile uint8_t represents a signed byte
 							if (((tile_byte & 0x80) > 0))
 							{
 								tile_byte -= 256;
 							}
-							tile_data[0] = VRAM[0x1000 + tile_byte * 16 + y_scroll_offset * 2];
+							tile_data[0] = VRAM[(VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2];
 						}
 
 						read_case = 2;
@@ -708,6 +966,11 @@ namespace GBHawk
 					{
 						y_scroll_offset = (scroll_y + LY) % 8;
 
+						if (BG_V_flip)
+						{
+							y_scroll_offset = 7 - y_scroll_offset;
+						}
+
 						if (((LCDC & 0x10) > 0))
 						{
 							// if LCDC somehow changed between the two reads, make sure we have a positive number
@@ -715,18 +978,16 @@ namespace GBHawk
 							{
 								tile_byte += 256;
 							}
-
-							tile_data[1] = VRAM[tile_byte * 16 + y_scroll_offset * 2 + 1];
+							tile_data[1] = VRAM[(VRAM_sel * 0x2000) + tile_byte * 16 + y_scroll_offset * 2 + 1];
 						}
 						else
 						{
-							// same as before except now tile uint8_t represents a signed uint8_t
+							// same as before except now tile uint8_t represents a signed byte
 							if (((tile_byte & 0x80) > 0) && tile_byte > 0)
 							{
 								tile_byte -= 256;
 							}
-
-							tile_data[1] = VRAM[0x1000 + tile_byte * 16 + y_scroll_offset * 2 + 1];
+							tile_data[1] = VRAM[(VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2 + 1];
 						}
 
 						if (pre_render)
@@ -758,6 +1019,9 @@ namespace GBHawk
 					{
 						temp_fetch = window_y_tile * 32 + (window_x_tile + window_tile_inc) % 32;
 						tile_byte = VRAM[0x1800 + (((LCDC & 0x40) > 0) ? 1 : 0) * 0x400 + temp_fetch];
+						tile_data[2] = VRAM[0x3800 + (((LCDC & 0x40) > 0) ? 1 : 0) * 0x400 + temp_fetch];
+						VRAM_sel = ((tile_data[2] & 0x8) > 0) ? 1 : 0;
+						BG_V_flip = ((tile_data[2] & 0x40) > 0) & GBC_compat[0];
 
 						window_tile_inc++;
 						read_case = 5;
@@ -770,21 +1034,23 @@ namespace GBHawk
 					{
 						y_scroll_offset = (window_y_tile_inc) % 8;
 
+						if (BG_V_flip)
+						{
+							y_scroll_offset = 7 - y_scroll_offset;
+						}
+
 						if (((LCDC & 0x10) > 0))
 						{
-
-							tile_data[0] = VRAM[tile_byte * 16 + y_scroll_offset * 2];
-
+							tile_data[0] = VRAM[(VRAM_sel * 0x2000) + tile_byte * 16 + y_scroll_offset * 2];
 						}
 						else
 						{
-							// same as before except now tile uint8_t represents a signed uint8_t
+							// same as before except now tile uint8_t represents a signed byte
 							if (((tile_byte & 0x80) > 0))
 							{
 								tile_byte -= 256;
 							}
-
-							tile_data[0] = VRAM[0x1000 + tile_byte * 16 + y_scroll_offset * 2];
+							tile_data[0] = VRAM[(VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2];
 						}
 
 						read_case = 6;
@@ -796,6 +1062,12 @@ namespace GBHawk
 					if ((window_counter % 2) == 1)
 					{
 						y_scroll_offset = (window_y_tile_inc) % 8;
+
+						if (BG_V_flip)
+						{
+							y_scroll_offset = 7 - y_scroll_offset;
+						}
+
 						if (((LCDC & 0x10) > 0))
 						{
 							// if LCDC somehow changed between the two reads, make sure we have a positive number
@@ -803,18 +1075,16 @@ namespace GBHawk
 							{
 								tile_byte += 256;
 							}
-
-							tile_data[1] = VRAM[tile_byte * 16 + y_scroll_offset * 2 + 1];
+							tile_data[1] = VRAM[(VRAM_sel * 0x2000) + tile_byte * 16 + y_scroll_offset * 2 + 1];
 						}
 						else
 						{
-							// same as before except now tile uint8_t represents a signed uint8_t
+							// same as before except now tile uint8_t represents a signed byte
 							if (((tile_byte & 0x80) > 0) && tile_byte > 0)
 							{
 								tile_byte -= 256;
 							}
-
-							tile_data[1] = VRAM[0x1000 + tile_byte * 16 + y_scroll_offset * 2 + 1];
+							tile_data[1] = VRAM[(VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2 + 1];
 						}
 
 						if (window_pre_render)
@@ -867,15 +1137,26 @@ namespace GBHawk
 				case 8: // done reading, we are now in phase 0
 					pre_render = true;
 
-					STAT &= 0xFC;
-					STAT |= 0x00;
+					// the other interrupts appear to be delayed by 1 CPU cycle, so do the same here
+					if (hbl_countdown > 0)
+					{
+						hbl_countdown--;
 
-					if (((STAT & 0x8) > 0)) { HBL_INT = true; }
+						if (hbl_countdown == 0)
+						{
+							OAM_access_read = true;
+							OAM_access_write = true;
+							VRAM_access_read = true;
+							VRAM_access_write = true;
+						}
+						else
+						{
+							STAT &= 0xFC;
+							STAT |= 0x00;
 
-					OAM_access_read = true;
-					OAM_access_write = true;
-					VRAM_access_read = true;
-					VRAM_access_write = true;
+							if (((STAT & 0x8) > 0)) { HBL_INT = true; }
+						}
+					}
 					break;
 
 				case 9:
@@ -903,6 +1184,7 @@ namespace GBHawk
 					latch_new_data = false;
 					tile_data_latch[0] = tile_data[0];
 					tile_data_latch[1] = tile_data[1];
+					tile_data_latch[2] = tile_data[2];
 				}
 			}
 
@@ -943,7 +1225,7 @@ namespace GBHawk
 						else if (((last_eval + render_offset) % 8) == 6) { sprite_fetch_counter += 0; }
 						else if (((last_eval + render_offset) % 8) == 7) { sprite_fetch_counter += 0; }
 
-						consecutive_sprite = (uint32_t)floor((double)((uint32_t)last_eval + render_offset) / 8.0) * 8 + 8 - render_offset;
+						consecutive_sprite = (uint32_t)floor((double)(last_eval + render_offset) / 8.0) * 8 + 8 - render_offset;
 
 						// special case exists here for sprites at zero with non-zero x-scroll. Not sure exactly the reason for it.
 						if (last_eval == 0 && render_offset != 0)
@@ -965,11 +1247,13 @@ namespace GBHawk
 					}
 				}
 			}
+
 		}
 
 		void process_sprite()
 		{
 			uint32_t y;
+			uint32_t VRAM_temp = (((SL_sprites[sl_use_index * 4 + 3] & 0x8) > 0) && GBC_compat[0]) ? 1 : 0;
 
 			if ((SL_sprites[sl_use_index * 4 + 3] & 0x40) > 0)
 			{
@@ -977,15 +1261,15 @@ namespace GBHawk
 				{
 					y = LY - (SL_sprites[sl_use_index * 4] - 16);
 					y = 15 - y;
-					sprite_sel[0] = VRAM[(SL_sprites[sl_use_index * 4 + 2] & 0xFE) * 16 + y * 2];
-					sprite_sel[1] = VRAM[(SL_sprites[sl_use_index * 4 + 2] & 0xFE) * 16 + y * 2 + 1];
+					sprite_sel[0] = VRAM[(VRAM_temp * 0x2000) + (SL_sprites[sl_use_index * 4 + 2] & 0xFE) * 16 + y * 2];
+					sprite_sel[1] = VRAM[(VRAM_temp * 0x2000) + (SL_sprites[sl_use_index * 4 + 2] & 0xFE) * 16 + y * 2 + 1];
 				}
 				else
 				{
 					y = LY - (SL_sprites[sl_use_index * 4] - 16);
 					y = 7 - y;
-					sprite_sel[0] = VRAM[SL_sprites[sl_use_index * 4 + 2] * 16 + y * 2];
-					sprite_sel[1] = VRAM[SL_sprites[sl_use_index * 4 + 2] * 16 + y * 2 + 1];
+					sprite_sel[0] = VRAM[(VRAM_temp * 0x2000) + SL_sprites[sl_use_index * 4 + 2] * 16 + y * 2];
+					sprite_sel[1] = VRAM[(VRAM_temp * 0x2000) + SL_sprites[sl_use_index * 4 + 2] * 16 + y * 2 + 1];
 				}
 			}
 			else
@@ -993,14 +1277,14 @@ namespace GBHawk
 				if (((LCDC & 0x4) > 0))
 				{
 					y = LY - (SL_sprites[sl_use_index * 4] - 16);
-					sprite_sel[0] = VRAM[(SL_sprites[sl_use_index * 4 + 2] & 0xFE) * 16 + y * 2];
-					sprite_sel[1] = VRAM[(SL_sprites[sl_use_index * 4 + 2] & 0xFE) * 16 + y * 2 + 1];
+					sprite_sel[0] = VRAM[(VRAM_temp * 0x2000) + (SL_sprites[sl_use_index * 4 + 2] & 0xFE) * 16 + y * 2];
+					sprite_sel[1] = VRAM[(VRAM_temp * 0x2000) + (SL_sprites[sl_use_index * 4 + 2] & 0xFE) * 16 + y * 2 + 1];
 				}
 				else
 				{
 					y = LY - (SL_sprites[sl_use_index * 4] - 16);
-					sprite_sel[0] = VRAM[SL_sprites[sl_use_index * 4 + 2] * 16 + y * 2];
-					sprite_sel[1] = VRAM[SL_sprites[sl_use_index * 4 + 2] * 16 + y * 2 + 1];
+					sprite_sel[0] = VRAM[(VRAM_temp * 0x2000) + SL_sprites[sl_use_index * 4 + 2] * 16 + y * 2];
+					sprite_sel[1] = VRAM[(VRAM_temp * 0x2000) + SL_sprites[sl_use_index * 4 + 2] * 16 + y * 2 + 1];
 				}
 			}
 
@@ -1028,7 +1312,7 @@ namespace GBHawk
 		void DMA_tick()
 		{
 			// Note that DMA is halted when the CPU is halted
-			if (DMA_start && !cpu_halted[0])
+			if (DMA_start && !cpu_halted)
 			{
 				if (DMA_clock >= 4)
 				{
@@ -1068,19 +1352,37 @@ namespace GBHawk
 		{
 			sprite_ordered_index = 0;
 
-			for (uint32_t i = 0; i < 256; i++)
+			// In CGB mode, sprites are ordered solely based on their position in OAM, so they are already ordered
+			
+			if (GBC_compat[0]) 
 			{
 				for (uint32_t j = 0; j < SL_sprites_index; j++)
 				{
-					if (SL_sprites[j * 4 + 1] == i)
+					sl_use_index = j;
+					process_sprite();
+					SL_sprites_ordered[sprite_ordered_index * 4] = SL_sprites[j * 4 + 1];
+					SL_sprites_ordered[sprite_ordered_index * 4 + 1] = sprite_sel[0];
+					SL_sprites_ordered[sprite_ordered_index * 4 + 2] = sprite_sel[1];
+					SL_sprites_ordered[sprite_ordered_index * 4 + 3] = SL_sprites[j * 4 + 3];
+					sprite_ordered_index++;
+				}
+			}
+			else
+			{
+				for (int i = 0; i < 256; i++)
+				{
+					for (int j = 0; j < SL_sprites_index; j++)
 					{
-						sl_use_index = j;
-						process_sprite();
-						SL_sprites_ordered[sprite_ordered_index * 4] = SL_sprites[j * 4 + 1];
-						SL_sprites_ordered[sprite_ordered_index * 4 + 1] = sprite_sel[0];
-						SL_sprites_ordered[sprite_ordered_index * 4 + 2] = sprite_sel[1];
-						SL_sprites_ordered[sprite_ordered_index * 4 + 3] = SL_sprites[j * 4 + 3];
-						sprite_ordered_index++;
+						if (SL_sprites[j * 4 + 1] == i)
+						{
+							sl_use_index = j;
+							process_sprite();
+							SL_sprites_ordered[sprite_ordered_index * 4] = SL_sprites[j * 4 + 1];
+							SL_sprites_ordered[sprite_ordered_index * 4 + 1] = sprite_sel[0];
+							SL_sprites_ordered[sprite_ordered_index * 4 + 2] = sprite_sel[1];
+							SL_sprites_ordered[sprite_ordered_index * 4 + 3] = SL_sprites[j * 4 + 3];
+							sprite_ordered_index++;
+						}
 					}
 				}
 			}
@@ -1137,6 +1439,7 @@ namespace GBHawk
 			if (OAM_cycle == 0)
 			{
 				OAM_access_read = false;
+				OAM_access_write = false;
 
 				OAM_scan_index = 0;
 				SL_sprites_index = 0;
@@ -1199,6 +1502,58 @@ namespace GBHawk
 			}
 		}
 
+		void color_compute_BG()
+		{
+			uint32_t R;
+			uint32_t G;
+			uint32_t B;
+
+			if ((BG_bytes_index % 2) == 0)
+			{
+				R = (uint32_t)(BG_bytes[BG_bytes_index] & 0x1F);
+				G = (uint32_t)(((BG_bytes[BG_bytes_index] & 0xE0) | ((BG_bytes[BG_bytes_index + 1] & 0x03) << 8)) >> 5);
+				B = (uint32_t)((BG_bytes[BG_bytes_index + 1] & 0x7C) >> 2);
+			}
+			else
+			{
+				R = (uint32_t)(BG_bytes[BG_bytes_index - 1] & 0x1F);
+				G = (uint32_t)(((BG_bytes[BG_bytes_index - 1] & 0xE0) | ((BG_bytes[BG_bytes_index] & 0x03) << 8)) >> 5);
+				B = (uint32_t)((BG_bytes[BG_bytes_index] & 0x7C) >> 2);
+			}
+
+			uint32_t retR = ((R * 13 + G * 2 + B) >> 1) & 0xFF;
+			uint32_t retG = ((G * 3 + B) << 1) & 0xFF;
+			uint32_t retB = ((R * 3 + G * 2 + B * 11) >> 1) & 0xFF;
+
+			BG_palette[BG_bytes_index >> 1] = (uint32_t)(0xFF000000 | (retR << 16) | (retG << 8) | retB);
+		}
+
+		void color_compute_OBJ()
+		{
+			uint32_t R;
+			uint32_t G;
+			uint32_t B;
+
+			if ((OBJ_bytes_index % 2) == 0)
+			{
+				R = (uint32_t)(OBJ_bytes[OBJ_bytes_index] & 0x1F);
+				G = (uint32_t)(((OBJ_bytes[OBJ_bytes_index] & 0xE0) | ((OBJ_bytes[OBJ_bytes_index + 1] & 0x03) << 8)) >> 5);
+				B = (uint32_t)((OBJ_bytes[OBJ_bytes_index + 1] & 0x7C) >> 2);
+			}
+			else
+			{
+				R = (uint32_t)(OBJ_bytes[OBJ_bytes_index - 1] & 0x1F);
+				G = (uint32_t)(((OBJ_bytes[OBJ_bytes_index - 1] & 0xE0) | ((OBJ_bytes[OBJ_bytes_index] & 0x03) << 8)) >> 5);
+				B = (uint32_t)((OBJ_bytes[OBJ_bytes_index] & 0x7C) >> 2);
+			}
+
+			uint32_t retR = ((R * 13 + G * 2 + B) >> 1) & 0xFF;
+			uint32_t retG = ((G * 3 + B) << 1) & 0xFF;
+			uint32_t retB = ((R * 3 + G * 2 + B * 11) >> 1) & 0xFF;
+
+			OBJ_palette[OBJ_bytes_index >> 1] = (uint32_t)(0xFF000000 | (retR << 16) | (retG << 8) | retB);
+		}
+
 		void Reset()
 		{
 			LCDC = 0;
@@ -1207,10 +1562,10 @@ namespace GBHawk
 			scroll_x = 0;
 			LY = 0;
 			LYC = 0;
-			DMA_addr = 0xFF;
+			DMA_addr = 0;
 			BGP = 0xFF;
-			obj_pal_0 = 0xFF;
-			obj_pal_1 = 0xFF;
+			obj_pal_0 = 0;
+			obj_pal_1 = 0;
 			window_y = 0x0;
 			window_x = 0x0;
 			window_x_latch = 0xFF;
@@ -1235,11 +1590,35 @@ namespace GBHawk
 			window_counter = 0;
 			window_pre_render = false;
 			window_started = false;
-			window_is_reset = true;
 			window_tile_inc = 0;
 			window_y_tile = 0;
 			window_x_tile = 0;
 			window_y_tile_inc = 0;
+
+			BG_bytes_inc = false;
+			OBJ_bytes_inc = false;
+			BG_bytes_index = 0;
+			OBJ_bytes_index = 0;
+			BG_transfer_byte = 0;
+			OBJ_transfer_byte = 0;
+
+			HDMA_src_hi = 0;
+			HDMA_src_lo = 0;
+			HDMA_dest_hi = 0;
+			HDMA_dest_lo = 0;
+
+			VRAM_sel = 0;
+			BG_V_flip = false;
+			HDMA_active = false;
+			HDMA_mode = false;
+			cur_DMA_src = 0;
+			cur_DMA_dest = 0;
+			HDMA_length = 0;
+			HDMA_countdown = 0;
+			HBL_HDMA_count = 0;
+			last_HBL = 0;
+			HBL_HDMA_go = false;
+			HBL_test = false;
 		}
 	};
 }

@@ -28,9 +28,12 @@ namespace GBHawk
 			ppu._scanlineCallbackLine = &MemMap._scanlineCallbackLine;
 			ppu.OAM = &MemMap.OAM[0];
 			ppu.VRAM = &MemMap.VRAM[0];
+			ppu.VRAM_Bank = &MemMap.VRAM_Bank;
 			ppu.cpu_halted = &cpu.halted;
 			ppu._vidbuffer = &MemMap._vidbuffer[0];
 			ppu.color_palette = &MemMap.color_palette[0];
+			ppu.HDMA_transfer = &MemMap.HDMA_transfer;
+			ppu.GBC_compat = &MemMap.GBC_compat;
 
 			sl_case = 0;
 		};

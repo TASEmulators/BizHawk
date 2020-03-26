@@ -11,6 +11,6 @@ namespace GBHawk
 {
 	uint8_t PPU::ReadMemory(uint32_t addr)
 	{
-		return mem_ctrl->HardwareRead(addr);
+		return mem_ctrl->ReadMemory(addr);
 	}
 }

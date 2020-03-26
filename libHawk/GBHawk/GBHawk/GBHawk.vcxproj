@@ -153,6 +153,8 @@
   <ItemGroup>
     <ClInclude Include="GBAudio.h" />
     <ClInclude Include="Core.h" />
+    <ClInclude Include="GBC_GB_PPU.h" />
+    <ClInclude Include="GBC_PPU.h" />
     <ClInclude Include="GBHawk.h" />
     <ClInclude Include="GB_PPU.h" />
     <ClInclude Include="Memory.h" />

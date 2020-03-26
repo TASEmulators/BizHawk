@@ -19,21 +19,26 @@ namespace GBHawk
 
 		}
 
+		uint8_t ReadMemory(uint32_t);
+
 		MemoryManager* mem_ctrl;
 
 		// pointers not stated
 		bool* FlagI = nullptr;
 		bool* in_vblank = nullptr;
 		bool* cpu_halted = nullptr;
+		bool* HDMA_transfer = nullptr;
+		bool* GBC_compat = nullptr;
+
 		uint8_t* cpu_LY = nullptr;
 		uint8_t* REG_FFFF = nullptr;
 		uint8_t* REG_FF0F = nullptr;
 		uint8_t* _scanlineCallbackLine = nullptr;
 		uint8_t* OAM = nullptr;
 		uint8_t* VRAM = nullptr;
+		uint32_t* VRAM_Bank = nullptr;
 		uint32_t* _vidbuffer = nullptr;
 		uint32_t* color_palette = nullptr;
-		
 
 		uint32_t BG_palette[32] = {};
 		uint32_t OBJ_palette[32] = {};
@@ -59,7 +64,7 @@ namespace GBHawk
 		bool DMA_start;
 		uint32_t DMA_clock;
 		uint32_t DMA_inc;
-		uint8_t DMA_uint8_t;
+		uint8_t DMA_byte;
 
 		// state variables
 		uint32_t cycle;
@@ -136,14 +141,54 @@ namespace GBHawk
 
 		uint32_t hbl_countdown;
 
-		uint8_t ReadMemory(uint32_t);
+		// The following are GBC specific variables
+		// individual uint8_t used in palette colors
+		uint8_t BG_bytes[64] = {};
+		uint8_t OBJ_bytes[64] = {};
+		bool BG_bytes_inc;
+		bool OBJ_bytes_inc;
+		uint8_t BG_bytes_index;
+		uint8_t OBJ_bytes_index;
+		uint8_t BG_transfer_byte;
+		uint8_t OBJ_transfer_byte;
 
-		virtual uint8_t ReadReg(int addr)
+		// HDMA is unique to GBC, do it as part of the PPU tick
+		uint8_t HDMA_src_hi;
+		uint8_t HDMA_src_lo;
+		uint8_t HDMA_dest_hi;
+		uint8_t HDMA_dest_lo;
+		uint32_t HDMA_tick;
+		uint8_t HDMA_byte;
+
+		// controls for tile attributes
+		uint32_t VRAM_sel;
+		bool BG_V_flip;
+		bool HDMA_mode;
+		bool HDMA_run_once;
+		uint32_t cur_DMA_src;
+		uint32_t cur_DMA_dest;
+		uint32_t HDMA_length;
+		uint32_t HDMA_countdown;
+		uint32_t HBL_HDMA_count;
+		uint32_t last_HBL;
+		bool HBL_HDMA_go;
+		bool HBL_test;
+		uint8_t LYC_t;
+		uint32_t LYC_cd;
+
+		// accessors for derived values (GBC only)
+		uint8_t BG_pal_ret() { return (uint8_t)(((BG_bytes_inc ? 1 : 0) << 7) | (BG_bytes_index & 0x3F)); }
+
+		uint8_t OBJ_pal_ret() { return (uint8_t)(((OBJ_bytes_inc ? 1 : 0) << 7) | (OBJ_bytes_index & 0x3F)); }
+
+		uint8_t HDMA_ctrl() { return (uint8_t)(((HDMA_active ? 0 : 1) << 7) | ((HDMA_length >> 4) - 1)); }
+
+		virtual uint8_t ReadReg(uint32_t addr)
 		{
 			return 0;
 		}
 
-		virtual void WriteReg(int addr, uint8_t value)
+		virtual void WriteReg(uint32_t addr, uint8_t value)
 		{
 
 		}
@@ -159,7 +204,7 @@ namespace GBHawk
 
 		}
 
-		virtual void render(int render_cycle)
+		virtual void render(uint32_t render_cycle)
 		{
 
 		}
@@ -176,7 +221,7 @@ namespace GBHawk
 
 		}
 
-		virtual void OAM_scan(int OAM_cycle)
+		virtual void OAM_scan(uint32_t OAM_cycle)
 		{
 
 		}
@@ -189,6 +234,16 @@ namespace GBHawk
 		// order sprites according to x coordinate
 		// note that for sprites of equal x coordinate, priority goes to first on the list
 		virtual void reorder_and_assemble_sprites()
+		{
+
+		}
+
+		virtual void color_compute_BG()
+		{
+
+		}
+
+		void color_compute_OBJ()
 		{
 
 		}
@@ -232,7 +287,7 @@ namespace GBHawk
 			saver = bool_saver(DMA_start, saver);
 			saver = int_saver(DMA_clock, saver);
 			saver = int_saver(DMA_inc, saver);
-			saver = byte_saver(DMA_uint8_t, saver);
+			saver = byte_saver(DMA_byte, saver);
 
 			saver = int_saver(cycle, saver);
 			saver = bool_saver(LYC_INT, saver);
@@ -298,6 +353,40 @@ namespace GBHawk
 
 			saver = int_saver(hbl_countdown, saver);
 
+			// The following are GBC specific variables
+			for (int i = 0; i < 64; i++) { saver = byte_saver(BG_bytes[i], saver); }
+			for (int i = 0; i < 64; i++) { saver = byte_saver(OBJ_bytes[i], saver); }
+
+			saver = byte_saver(BG_transfer_byte, saver);
+			saver = byte_saver(OBJ_transfer_byte, saver);
+			saver = byte_saver(HDMA_src_hi, saver);
+			saver = byte_saver(HDMA_src_lo, saver);
+			saver = byte_saver(HDMA_dest_hi, saver);
+			saver = byte_saver(HDMA_dest_lo, saver);
+			saver = int_saver(HDMA_tick, saver);
+			saver = byte_saver(HDMA_byte, saver);
+
+			saver = int_saver(VRAM_sel, saver);
+			saver = bool_saver(BG_V_flip, saver);
+			saver = bool_saver(HDMA_mode, saver);
+			saver = bool_saver(HDMA_run_once, saver);
+			saver = int_saver(cur_DMA_src, saver);
+			saver = int_saver(cur_DMA_dest, saver);
+			saver = int_saver(HDMA_length, saver);
+			saver = int_saver(HDMA_countdown, saver);
+			saver = int_saver(HBL_HDMA_count, saver);
+			saver = int_saver(last_HBL, saver);
+			saver = bool_saver(HBL_HDMA_go, saver);
+			saver = bool_saver(HBL_test, saver);
+
+			saver = bool_saver(BG_bytes_inc, saver);
+			saver = bool_saver(OBJ_bytes_inc, saver);
+			saver = byte_saver(BG_bytes_index, saver);
+			saver = byte_saver(OBJ_bytes_index, saver);
+
+			saver = byte_saver(LYC_t, saver);
+			saver = int_saver(LYC_cd, saver);
+
 			return saver;
 		}
 
@@ -336,7 +425,7 @@ namespace GBHawk
 			loader = bool_loader(&DMA_start, loader);
 			loader = int_loader(&DMA_clock, loader);
 			loader = int_loader(&DMA_inc, loader);
-			loader = byte_loader(&DMA_uint8_t, loader);
+			loader = byte_loader(&DMA_byte, loader);
 
 			loader = int_loader(&cycle, loader);
 			loader = bool_loader(&LYC_INT, loader);
@@ -401,6 +490,40 @@ namespace GBHawk
 			loader = int_loader(&window_y_latch, loader);
 
 			loader = int_loader(&hbl_countdown, loader);
+
+			// The following are GBC specific variables
+			for (int i = 0; i < 64; i++) { loader = byte_loader(&BG_bytes[i], loader); }
+			for (int i = 0; i < 64; i++) { loader = byte_loader(&OBJ_bytes[i], loader); }
+
+			loader = byte_loader(&BG_transfer_byte, loader);
+			loader = byte_loader(&OBJ_transfer_byte, loader);
+			loader = byte_loader(&HDMA_src_hi, loader);
+			loader = byte_loader(&HDMA_src_lo, loader);
+			loader = byte_loader(&HDMA_dest_hi, loader);
+			loader = byte_loader(&HDMA_dest_lo, loader);
+			loader = int_loader(&HDMA_tick, loader);
+			loader = byte_loader(&HDMA_byte, loader);
+
+			loader = int_loader(&VRAM_sel, loader);
+			loader = bool_loader(&BG_V_flip, loader);
+			loader = bool_loader(&HDMA_mode, loader);
+			loader = bool_loader(&HDMA_run_once, loader);
+			loader = int_loader(&cur_DMA_src, loader);
+			loader = int_loader(&cur_DMA_dest, loader);
+			loader = int_loader(&HDMA_length, loader);
+			loader = int_loader(&HDMA_countdown, loader);
+			loader = int_loader(&HBL_HDMA_count, loader);
+			loader = int_loader(&last_HBL, loader);
+			loader = bool_loader(&HBL_HDMA_go, loader);
+			loader = bool_loader(&HBL_test, loader);
+
+			loader = bool_loader(&BG_bytes_inc, loader);
+			loader = bool_loader(&OBJ_bytes_inc, loader);
+			loader = byte_loader(&BG_bytes_index, loader);
+			loader = byte_loader(&OBJ_bytes_index, loader);
+
+			loader = byte_loader(&LYC_t, loader);
+			loader = int_loader(&LYC_cd, loader);
 			
 			return loader;
 		}
