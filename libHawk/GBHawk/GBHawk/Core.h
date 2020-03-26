@@ -9,6 +9,7 @@
 #include "Memory.h"
 #include "Timer.h"
 #include "SerialPort.h"
+#include "Mapper_Base.h"
 
 namespace GBHawk
 {
@@ -51,8 +52,6 @@ namespace GBHawk
 			psg.is_GBC = &MemMap.is_GBC;
 			psg.double_speed = &MemMap.double_speed;
 			psg.timer_div_reg = &timer.divider_reg;
-			
-			sl_case = 0;
 		};
 
 		PPU ppu;
@@ -61,8 +60,7 @@ namespace GBHawk
 		MemoryManager MemMap;
 		Timer timer;
 		SerialPort serialport;
-
-		uint8_t sl_case = 0;
+		Mapper mapper;
 
 		void Load_BIOS(uint8_t* bios, bool GBC_console)
 		{
@@ -121,8 +119,6 @@ namespace GBHawk
 			saver = cpu.SaveState(saver);
 			saver = psg.SaveState(saver);
 			saver = MemMap.SaveState(saver);
-
-			*saver = sl_case; saver++;
 		}
 
 		void LoadState(uint8_t* loader)
@@ -131,8 +127,6 @@ namespace GBHawk
 			loader = cpu.LoadState(loader);
 			loader = psg.LoadState(loader);
 			loader = MemMap.LoadState(loader);
-
-			sl_case = *loader; loader++;
 		}
 
 		#pragma endregion

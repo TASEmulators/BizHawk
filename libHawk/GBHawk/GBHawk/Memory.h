@@ -12,6 +12,7 @@ namespace GBHawk
 	class PPU;
 	class GBAudio;
 	class SerialPort;
+	class Mapper;
 	
 	class MemoryManager
 	{
@@ -33,6 +34,7 @@ namespace GBHawk
 		LR35902* cpu_pntr = nullptr;
 		Timer* timer_pntr = nullptr;
 		SerialPort* serialport_pntr = nullptr;
+		Mapper* mapper_pntr = nullptr;
 		uint8_t* rom_1 = nullptr;
 		uint8_t* rom_2 = nullptr;
 		uint8_t* bios_rom = nullptr;
