@@ -157,6 +157,8 @@
     <ClInclude Include="GBC_PPU.h" />
     <ClInclude Include="GBHawk.h" />
     <ClInclude Include="GB_PPU.h" />
+    <ClInclude Include="SerialPort.h" />
+    <ClInclude Include="Timer.h" />
     <ClInclude Include="Memory.h" />
     <ClInclude Include="PPU_Base.h" />
     <ClInclude Include="LR35902.h" />

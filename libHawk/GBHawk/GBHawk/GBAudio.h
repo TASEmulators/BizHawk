@@ -13,14 +13,14 @@ namespace GBHawk
 		
 		#pragma region GBAudio
 
+		// Core variables
+		bool* is_GBC = nullptr;
+		bool* double_speed = nullptr;
+		uint32_t* timer_div_reg = nullptr;
+
 		uint32_t num_samples_L, num_samples_R;
 		int32_t samples_L[9000] = {};
 		int32_t samples_R[9000] = {};
-
-		//GBHawk Core{ get; set; }
-		// Core variables
-		bool is_GBC, double_speed;
-		uint32_t timer_div_reg;
 
 		bool DUTY_CYCLES[32] = {false, false, false, false, false, false, false, true,
 								true, false, false, false, false, false, false, true,
@@ -172,7 +172,7 @@ namespace GBHawk
 			case 0xFF3F:
 				if (WAVE_enable)
 				{
-					if (WAVE_can_get || is_GBC) { ret = Wave_RAM[WAVE_wave_cntr >> 1]; }
+					if (WAVE_can_get || is_GBC[0]) { ret = Wave_RAM[WAVE_wave_cntr >> 1]; }
 					else { ret = 0xFF; }
 				}
 				else { ret = Wave_RAM[addr & 0x0F]; }
@@ -391,7 +391,7 @@ namespace GBHawk
 					if (WAVE_trigger)
 					{
 						// some corruption occurs if triggering while reading
-						if (WAVE_enable && (WAVE_intl_cntr == 2) && !is_GBC)
+						if (WAVE_enable && (WAVE_intl_cntr == 2) && !is_GBC[0])
 						{
 							// we want to use the previous wave cntr value since it was just incremented
 							int t_wave_cntr = (WAVE_wave_cntr + 1) & 31;
@@ -531,7 +531,7 @@ namespace GBHawk
 				case 0xFF3F:
 					if (WAVE_enable)
 					{
-						if (WAVE_can_get || is_GBC) { Wave_RAM[WAVE_wave_cntr >> 1] = value; }
+						if (WAVE_can_get || is_GBC[0]) { Wave_RAM[WAVE_wave_cntr >> 1] = value; }
 					}
 					else
 					{
@@ -548,28 +548,28 @@ namespace GBHawk
 				switch (addr)
 				{
 				case 0xFF11:                                        // NR11 (sound length / wave pattern duty %)
-					if (!is_GBC)
+					if (!is_GBC[0])
 					{
 						SQ1_length = (uint32_t)(64 - (value & 0x3F));
 						SQ1_len_cntr = SQ1_length;
 					}
 					break;
 				case 0xFF16:                                        // NR21 (sound length / wave pattern duty %)		
-					if (!is_GBC)
+					if (!is_GBC[0])
 					{
 						SQ2_length = (uint32_t)(64 - (value & 0x3F));
 						SQ2_len_cntr = SQ2_length;
 					}
 					break;
 				case 0xFF1B:                                        // NR31 (length)
-					if (!is_GBC)
+					if (!is_GBC[0])
 					{
 						WAVE_length = (uint32_t)(256 - value);
 						WAVE_len_cntr = WAVE_length;
 					}
 					break;
 				case 0xFF20:                                        // NR41 (length)
-					if (!is_GBC)
+					if (!is_GBC[0])
 					{
 						NOISE_length = (uint32_t)(64 - (value & 0x3F));
 						NOISE_len_cntr = NOISE_length;
@@ -751,7 +751,7 @@ namespace GBHawk
 			// frame sequencer ticks at a rate of 512 hz (or every time a 13 bit counter rolls over)
 			// the sequencer is actually the timer DIV register
 			// so if it's constantly written to, these values won't update
-			bool check = double_speed ? ((timer_div_reg & 0x2000) > 0) : ((timer_div_reg & 0x1000) > 0);
+			bool check = double_speed[0] ? ((timer_div_reg[0] & 0x2000) > 0) : ((timer_div_reg[0] & 0x1000) > 0);
 
 			if (check && !timer_bit_old)
 			{
@@ -906,7 +906,7 @@ namespace GBHawk
 					}
 				}
 			}
-			timer_bit_old = double_speed ? ((timer_div_reg & 0x2000) > 0) : ((timer_div_reg & 0x1000) > 0);
+			timer_bit_old = double_speed[0] ? ((timer_div_reg[0] & 0x2000) > 0) : ((timer_div_reg[0] & 0x1000) > 0);
 		}
 
 		void power_off()
@@ -929,7 +929,7 @@ namespace GBHawk
 			SQ1_output = SQ2_output = WAVE_output = NOISE_output = 0;
 
 			// on GBC, lengths are also reset
-			if (is_GBC)
+			if (is_GBC[0])
 			{
 				SQ1_length = SQ2_length = WAVE_length = NOISE_length = 0;
 				SQ1_len_cntr = SQ2_len_cntr = WAVE_len_cntr = NOISE_len_cntr = 0;
@@ -942,7 +942,7 @@ namespace GBHawk
 
 		void Reset()
 		{
-			if (is_GBC)
+			if (is_GBC[0])
 			{
 				Wave_RAM[0] = 0; Wave_RAM[2] = 0; Wave_RAM[4] = 0; Wave_RAM[6] = 0;
 				Wave_RAM[8] = 0; Wave_RAM[10] = 0; Wave_RAM[12] = 0; Wave_RAM[14] = 0;
@@ -1200,10 +1200,6 @@ namespace GBHawk
 			saver = int_saver(num_samples_L, saver);
 			saver = int_saver(num_samples_R, saver);
 
-			saver = bool_saver(is_GBC, saver);
-			saver = bool_saver(double_speed, saver);
-			saver = int_saver(timer_div_reg, saver);
-
 			saver = bool_saver(AUD_CTRL_vin_L_en, saver);
 			saver = bool_saver(AUD_CTRL_vin_R_en, saver);
 			saver = bool_saver(AUD_CTRL_sq1_L_en, saver);
@@ -1321,10 +1317,6 @@ namespace GBHawk
 			loader = int_loader(&latched_sample_R, loader);
 			loader = int_loader(&num_samples_L, loader);
 			loader = int_loader(&num_samples_R, loader);
-
-			loader = bool_loader(&is_GBC, loader);
-			loader = bool_loader(&double_speed, loader);
-			loader = int_loader(&timer_div_reg, loader);
 
 			loader = bool_loader(&AUD_CTRL_vin_L_en, loader);
 			loader = bool_loader(&AUD_CTRL_vin_R_en, loader);

@@ -7,6 +7,8 @@
 #include "GBAudio.h"
 #include "PPU_Base.h"
 #include "Memory.h"
+#include "Timer.h"
+#include "SerialPort.h"
 
 namespace GBHawk
 {
@@ -18,6 +20,8 @@ namespace GBHawk
 			MemMap.cpu_pntr = &cpu;
 			MemMap.ppu_pntr = &ppu;
 			MemMap.psg_pntr = &psg;
+			MemMap.timer_pntr = &timer;
+			MemMap.serialport_pntr = &serialport;
 			cpu.mem_ctrl = &MemMap;
 
 			ppu.FlagI = &cpu.FlagI;
@@ -35,6 +39,19 @@ namespace GBHawk
 			ppu.HDMA_transfer = &MemMap.HDMA_transfer;
 			ppu.GBC_compat = &MemMap.GBC_compat;
 
+			timer.FlagI = &cpu.FlagI;
+			timer.REG_FFFF = &MemMap.REG_FFFF;
+			timer.REG_FF0F = &MemMap.REG_FF0F;
+
+			serialport.GBC_compat = &MemMap.GBC_compat;
+			serialport.FlagI = &cpu.FlagI;
+			serialport.REG_FFFF = &MemMap.REG_FFFF;
+			serialport.REG_FF0F = &MemMap.REG_FF0F;
+
+			psg.is_GBC = &MemMap.is_GBC;
+			psg.double_speed = &MemMap.double_speed;
+			psg.timer_div_reg = &timer.divider_reg;
+			
 			sl_case = 0;
 		};
 
@@ -42,6 +59,8 @@ namespace GBHawk
 		LR35902 cpu;
 		GBAudio psg;
 		MemoryManager MemMap;
+		Timer timer;
+		SerialPort serialport;
 
 		uint8_t sl_case = 0;
 

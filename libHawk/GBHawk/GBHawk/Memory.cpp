@@ -289,7 +289,7 @@ namespace GBHawk
 			// some of gekkio's tests require these to be accessible during DMA
 			if (addr < 0x8000)
 			{
-				if (ppu.DMA_addr < 0x80)
+				if (ppu_pntr->DMA_addr < 0x80)
 				{
 					return 0xFF;
 				}
