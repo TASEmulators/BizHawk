@@ -22,8 +22,7 @@ GBHawk_EXPORT GBCore* GB_create()
 GBHawk_EXPORT void GB_destroy(GBCore* p)
 {
 	delete p->MemMap.bios_rom;
-	delete p->MemMap.rom_1;
-	delete p->MemMap.rom_2;
+	delete p->MemMap.ROM;
 	std::free(p);
 }
 

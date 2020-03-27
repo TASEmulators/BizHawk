@@ -52,6 +52,14 @@ namespace GBHawk
 			psg.is_GBC = &MemMap.is_GBC;
 			psg.double_speed = &MemMap.double_speed;
 			psg.timer_div_reg = &timer.divider_reg;
+
+			mapper.addr_access = &MemMap.addr_access;
+			mapper.Acc_X_state = &MemMap.Acc_X_state;
+			mapper.Acc_Y_state = &MemMap.Acc_Y_state;
+			mapper.ROM_Length = &MemMap.ROM_Length;
+			mapper.Cart_RAM_Length = &MemMap.Cart_RAM_Length;
+			mapper.ROM = &MemMap.ROM[0];
+			mapper.Cart_RAM = &MemMap.Cart_RAM[0];
 		};
 
 		PPU ppu;

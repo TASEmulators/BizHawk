@@ -14,13 +14,6 @@ namespace GBHawk
 	{
 	public:
 
-		bool locked;
-		uint32_t ROM_bank_mask;
-		uint32_t BASE_ROM_Bank;
-		bool reg_access;
-		uint32_t addr_last;
-		uint32_t counter;
-
 		void Reset()
 		{
 			ROM_bank = 1;
@@ -154,21 +147,19 @@ namespace GBHawk
 		{
 			if (locked)
 			{
-				if (((Core.addr_access & 0x8000) == 0) && ((addr_last & 0x8000) > 0) && (Core.addr_access >= 0x100))
+				if (((addr_access[0] & 0x8000) == 0) && ((addr_last & 0x8000) > 0) && (addr_access[0] >= 0x100))
 				{
 					counter++;
-					Console.WriteLine(Core.cpu.TotalExecutedCycles);
 				}
 
-				if (Core.addr_access >= 0x100)
+				if (addr_access[0] >= 0x100)
 				{
-					addr_last = Core.addr_access;
+					addr_last = addr_access[0];
 				}
 
 				if (counter == 0x30)
 				{
 					locked = false;
-					Console.WriteLine("Unlocked");
 				}
 			}
 		}

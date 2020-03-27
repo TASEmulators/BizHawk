@@ -14,10 +14,6 @@ namespace GBHawk
 	{
 	public:
 
-
-		bool regs_enable;
-		uint8_t regs[0x80] = {};
-
 		void Reset()
 		{
 			ROM_bank = 1;
@@ -132,7 +128,7 @@ namespace GBHawk
 			{
 				if (regs_enable)
 				{
-					regs[(addr & 0x7F)] = (uint8_t)(value & 0x7);
+					regs_cam[(addr & 0x7F)] = (uint8_t)(value & 0x7);
 				}
 				else
 				{

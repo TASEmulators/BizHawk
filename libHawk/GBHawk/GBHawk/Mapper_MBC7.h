@@ -14,31 +14,6 @@ namespace GBHawk
 	{
 	public:
 
-		bool RAM_enable_1, RAM_enable_2;
-		uint8_t acc_x_low;
-		uint8_t acc_x_high;
-		uint8_t acc_y_low;
-		uint8_t acc_y_high;
-		bool is_erased;
-
-		// EEPROM related
-		bool CS_prev;
-		bool CLK_prev;
-		bool DI_prev;
-		bool DO;
-		bool instr_read;
-		bool perf_instr;
-		uint32_t instr_bit_counter;
-		uint32_t instr;
-		bool WR_EN;
-		uint32_t EE_addr;
-		uint32_t instr_case;
-		uint32_t instr_clocks;
-		uint32_t EE_value;
-		uint32_t countdown;
-		bool countdown_start;
-
-
 		void Reset()
 		{
 			ROM_bank = 1;
@@ -236,10 +211,10 @@ namespace GBHawk
 				{
 					// latch new accelerometer values
 					//Console.WriteLine("Latching ACC");
-					acc_x_low = (uint8_t)(Core.Acc_X_state & 0xFF);
-					acc_x_high = (uint8_t)((Core.Acc_X_state & 0xFF00) >> 8);
-					acc_y_low = (uint8_t)(Core.Acc_Y_state & 0xFF);
-					acc_y_high = (uint8_t)((Core.Acc_Y_state & 0xFF00) >> 8);
+					acc_x_low = (uint8_t)(Acc_X_state[0] & 0xFF);
+					acc_x_high = (uint8_t)((Acc_X_state[0] & 0xFF00) >> 8);
+					acc_y_low = (uint8_t)(Acc_Y_state[0] & 0xFF);
+					acc_y_high = (uint8_t)((Acc_Y_state[0] & 0xFF00) >> 8);
 				}
 			}
 			else if ((addr & 0xA0F0) == 0xA080)
@@ -251,9 +226,9 @@ namespace GBHawk
 
 		void EEPROM_write(uint8_t value)
 		{
-			bool CS = value.Bit(7);
-			bool CLK = value.Bit(6);
-			bool DI = value.Bit(1);
+			bool CS = (value & 0x80) > 0;
+			bool CLK = (value & 0x40) > 0;
+			bool DI = (value & 0x2) > 0;
 
 			// if we deselect the chip, complete instructions or countdown and stop
 			if (!CS)
