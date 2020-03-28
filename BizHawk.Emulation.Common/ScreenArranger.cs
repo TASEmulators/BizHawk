@@ -20,7 +20,9 @@ namespace BizHawk.Emulation.Common
 		public unsafe int[] GenerateFramebuffer(int*[] src, int[] srcLength)
 		{
 			if (src.Length != LayoutSettings.Locations.Length)
-				return null;
+			{
+				throw new InvalidCastException("Buffer length mismatch");
+			}
 
 			var ret = new int[LayoutSettings.FinalSize.Width * LayoutSettings.FinalSize.Height];
 			for (int iBuf = 0; iBuf < src.Length; iBuf++)

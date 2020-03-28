@@ -5,18 +5,22 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
 	public enum VideoScreenOptions
 	{
-		Default, TopOnly, BottomOnly, SideBySideLR, SideBySideRL /*, Reverse */
+		Default, TopOnly, SideBySideLR, SideBySideRL /*, Reverse */
 	}
 
 	public static class VideoScreenOptionExtensions
 	{
+		public static bool NeedsBottomScreen(this VideoScreenOptions option)
+		{
+			return option != VideoScreenOptions.TopOnly;
+		}
+
 		public static ScreenLayoutSettings ToLayout(this VideoScreenOptions option)
 		{
 			return option switch
 			{
 				VideoScreenOptions.Default => Default,
 				VideoScreenOptions.TopOnly => TopOnly,
-				VideoScreenOptions.BottomOnly => BottomOnly,
 				VideoScreenOptions.SideBySideLR => SideBySideLR,
 				VideoScreenOptions.SideBySideRL => SideBySideRL,
 				_ => Default
@@ -32,37 +36,23 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		private static ScreenLayoutSettings TopOnly => new ScreenLayoutSettings
 		{
-			Locations = new[] { new Point(0, 0), new Point(0, MelonDS.NativeHeight) },
-			Order = new[] { 0, 1 },
-			FinalSize = new Size(MelonDS.NativeWidth, MelonDS.NativeHeight * 2)
-		};
-
-		private static ScreenLayoutSettings BottomOnly => new ScreenLayoutSettings
-		{
-			Locations = new[] { new Point(0, 0), new Point(0, MelonDS.NativeHeight) },
-			Order = new[] { 0, 1 },
-			FinalSize = new Size(MelonDS.NativeWidth, MelonDS.NativeHeight * 2)
+			Locations = new[] { new Point(0, 0) },
+			Order = new[] { 0 },
+			FinalSize = new Size(MelonDS.NativeWidth, MelonDS.NativeHeight)
 		};
 
 		private static ScreenLayoutSettings SideBySideLR => new ScreenLayoutSettings
 		{
-			Locations = new[] { new Point(0, 0), new Point(0, MelonDS.NativeHeight) },
+			Locations = new[] { new Point(0, 0), new Point(MelonDS.NativeWidth, MelonDS.NativeHeight) },
 			Order = new[] { 0, 1 },
-			FinalSize = new Size(MelonDS.NativeWidth, MelonDS.NativeHeight * 2)
+			FinalSize = new Size(MelonDS.NativeWidth * 2, MelonDS.NativeHeight)
 		};
 
 		private static ScreenLayoutSettings SideBySideRL => new ScreenLayoutSettings
 		{
-			Locations = new[] { new Point(0, 0), new Point(0, MelonDS.NativeHeight) },
+			Locations = new[] {new Point(MelonDS.NativeWidth, MelonDS.NativeHeight), new Point(0, 0) },
 			Order = new[] { 0, 1 },
-			FinalSize = new Size(MelonDS.NativeWidth, MelonDS.NativeHeight * 2)
-		};
-
-		private static ScreenLayoutSettings Reverse => new ScreenLayoutSettings
-		{
-			Locations = new[] { new Point(0, 0), new Point(0, MelonDS.NativeHeight) },
-			Order = new[] { 0, 1 },
-			FinalSize = new Size(MelonDS.NativeWidth, MelonDS.NativeHeight * 2)
+			FinalSize = new Size(MelonDS.NativeWidth * 2, MelonDS.NativeHeight)
 		};
 	}
 }

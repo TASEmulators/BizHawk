@@ -400,9 +400,9 @@ namespace BizHawk.Client.EmuHawk
 			v = _currentFilterProgram.UntransformPoint("default", v);
 
 			// Poop
-			if (Global.Emulator is MelonDS ds)
+			if (Global.Emulator is MelonDS ds && ds.TouchScreenStart.HasValue)
 			{
-				Point touchLocation = ds.TouchScreenStart;
+				Point touchLocation = ds.TouchScreenStart.Value;
 				v.Y = (int)((double)ds.BufferHeight / MelonDS.NativeHeight * (v.Y - touchLocation.Y));
 				v.X = (int)((double)ds.BufferWidth / MelonDS.NativeWidth * (v.X - touchLocation.X));
 			}

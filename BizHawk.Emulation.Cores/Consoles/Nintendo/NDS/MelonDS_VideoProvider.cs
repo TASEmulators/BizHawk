@@ -42,9 +42,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		{
 			if (_getNewBuffer)
 			{
+				// Shenanigans
+				var buffers = _settings.ScreenOptions.NeedsBottomScreen()
+					? new[] {GetTopScreenBuffer(), GetBottomScreenBuffer()}
+					: new[] {GetTopScreenBuffer()};
+
 				_getNewBuffer = false;
 
-				int*[] buffers = { GetTopScreenBuffer(), GetBottomScreenBuffer() };
+				
 				int bufferSize = GetScreenBufferSize();
 				_buffer = _screenArranger.GenerateFramebuffer(buffers, new[] { bufferSize, bufferSize });
 			}

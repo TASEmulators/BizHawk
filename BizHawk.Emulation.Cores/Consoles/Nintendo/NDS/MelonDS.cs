@@ -119,7 +119,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 		}
 
-		public Point TouchScreenStart => _screenArranger.LayoutSettings.Locations[1];
+		public Point? TouchScreenStart => _screenArranger.LayoutSettings.Locations.Length > 1
+			? _screenArranger.LayoutSettings.Locations[1]
+			: (Point?)null;
 
 		/// <summary>
 		/// MelonDS expects bios and firmware files at a specific location.
