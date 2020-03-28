@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Drawing;
@@ -14,10 +10,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 	[Core("MelonDS", "Arisotura", false, false, null, null, true)]
 	public unsafe partial class MelonDS : IEmulator
 	{
-		private BasicServiceProvider _serviceProvider;
+		private readonly BasicServiceProvider _serviceProvider;
 		public IEmulatorServiceProvider ServiceProvider => _serviceProvider;
 
-		public ControllerDefinition ControllerDefinition { get; private set; }
+		public ControllerDefinition ControllerDefinition { get; }
 
 		public int Frame => GetFrameCount();
 
@@ -25,14 +21,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public bool DeterministicEmulation => true;
 
-		public CoreComm CoreComm { get; private set; }
+		internal CoreComm CoreComm { get; }
 
 		public void Dispose()
 		{
 			Deinit();
 		}
 
-		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
+		public bool FrameAdvance(IController controller, bool render, bool renderSound = true)
 		{
 			int buttons = (controller.IsPressed("A") ? 1 : 0) | (controller.IsPressed("B") ? 2 : 0)
 				| (controller.IsPressed("Select") ? 4 : 0) | (controller.IsPressed("Start") ? 8 : 0)
@@ -73,11 +69,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private static extern void FrameAdvance(short buttons, byte touchX, byte touchY);
 
 		[CoreConstructor("NDS")]
-		public MelonDS(byte[] file, CoreComm comm, object settings, object syncsettings)
+		public MelonDS(byte[] file, CoreComm comm, object settings, object syncSettings)
 		{
 			_serviceProvider = new BasicServiceProvider(this);
-			ControllerDefinition = new ControllerDefinition();
-			ControllerDefinition.Name = "NDS Controller";
+			ControllerDefinition = new ControllerDefinition { Name = "NDS Controller" };
 			ControllerDefinition.BoolButtons.Add("Left");
 			ControllerDefinition.BoolButtons.Add("Right");
 			ControllerDefinition.BoolButtons.Add("Up");
@@ -109,8 +104,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			InitMemoryDomains();
 
 			PutSettings(settings as MelonSettings);
-			PutSyncSettings(syncsettings as MelonSyncSettings);
-
+			PutSyncSettings(syncSettings as MelonSyncSettings);
 
 			fixed (byte* f = file)
 			{
