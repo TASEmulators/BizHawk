@@ -460,7 +460,8 @@
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
 			this.NDSSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.NDSSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.NdsSyncSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.NdsSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -3990,18 +3991,27 @@
 			// NDSSubMenu
 			// 
 			this.NDSSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.NDSSettingsMenuItem});
+				this.NdsSettingsMenuItem,
+				this.NdsSyncSettingsMenuItem
+			});
 			this.NDSSubMenu.Name = "NDSSubMenu";
 			this.NDSSubMenu.Size = new System.Drawing.Size(42, 19);
 			this.NDSSubMenu.Text = "NDS";
 			this.NDSSubMenu.DropDownOpened += new System.EventHandler(this.NDSSubMenu_DropDownOpened);
 			// 
+			// NDSSyncSettingsMenuItem
+			// 
+			this.NdsSyncSettingsMenuItem.Name = "NdsSyncSettingsMenuItem";
+			this.NdsSyncSettingsMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.NdsSyncSettingsMenuItem.Text = "Sync Settings...";
+			this.NdsSyncSettingsMenuItem.Click += new System.EventHandler(this.NDSSyncSettingsMenuItem_Click);
+			// 
 			// NDSSettingsMenuItem
 			// 
-			this.NDSSettingsMenuItem.Name = "NDSSettingsMenuItem";
-			this.NDSSettingsMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.NDSSettingsMenuItem.Text = "Settings...";
-			this.NDSSettingsMenuItem.Click += new System.EventHandler(this.NDSSettingsMenuItem_Click);
+			this.NdsSettingsMenuItem.Name = "NdsSettingsMenuItem";
+			this.NdsSettingsMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.NdsSettingsMenuItem.Text = "Settings...";
+			this.NdsSettingsMenuItem.Click += new System.EventHandler(this.NDSSettingsMenuItem_Click);
 			// 
 			// MainForm
 			// 
@@ -4473,7 +4483,8 @@
 		private System.Windows.Forms.ToolStripMenuItem SubGBHawkMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator38;
 		private System.Windows.Forms.ToolStripMenuItem NDSSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem NDSSettingsMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem NdsSyncSettingsMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem NdsSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem arcadeToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem2;
 	}

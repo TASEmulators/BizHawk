@@ -2028,10 +2028,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NDSSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			NDSSettingsMenuItem.Enabled = MovieSession.Movie.NotActive();
+			NdsSyncSettingsMenuItem.Enabled = MovieSession.Movie.NotActive();
 		}
 
 		private void NDSSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "NDS Settings", false, true);
+		}
+
+		private void NDSSyncSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			if (Emulator is MelonDS ds)
 			{
