@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Linq;
+using System.Runtime.InteropServices;
 
 using BizHawk.Emulation.Common;
 
@@ -16,8 +17,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		public int VirtualWidth => BufferWidth;
 		public int VirtualHeight => BufferHeight;
 
-		public int BufferWidth => _settings.ScreenOptions.FinalSize.Width;
-		public int BufferHeight => _settings.ScreenOptions.FinalSize.Height;
+		public int BufferWidth => _screenArranger.LayoutSettings.FinalSize.Width;
+		public int BufferHeight => _screenArranger.LayoutSettings.FinalSize.Height;
 
 		public int VsyncNumerator => 60;
 

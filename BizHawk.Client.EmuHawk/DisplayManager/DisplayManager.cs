@@ -402,7 +402,7 @@ namespace BizHawk.Client.EmuHawk
 			// Poop
 			if (Global.Emulator is MelonDS ds)
 			{
-				Point touchLocation = ds.GetSettings().ScreenOptions.Locations[1];
+				Point touchLocation = ds.TouchScreenStart;
 				v.Y = (int)((double)ds.BufferHeight / MelonDS.NativeHeight * (v.Y - touchLocation.Y));
 				v.X = (int)((double)ds.BufferWidth / MelonDS.NativeWidth * (v.X - touchLocation.X));
 			}

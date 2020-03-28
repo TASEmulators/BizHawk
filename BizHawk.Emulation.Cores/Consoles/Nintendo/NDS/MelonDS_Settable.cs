@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Text;
 using System.Runtime.InteropServices;
-using System.Drawing;
 
 using BizHawk.Emulation.Common;
 using Newtonsoft.Json;
@@ -10,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
 	unsafe partial class MelonDS : ISettable<MelonDS.MelonSettings, MelonDS.MelonSyncSettings>
 	{
-		private MelonSettings _settings;
+		private MelonSettings _settings = new MelonSettings();
 
 		public MelonSettings GetSettings()
 		{
@@ -32,21 +31,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public bool PutSettings(MelonSettings o)
 		{
-			if (o?.ScreenOptions == null)
-			{
-				o = new MelonSettings
-				{
-					ScreenOptions = new ScreenLayoutSettings
-					{
-						Locations = new[] { new Point(0, 0), new Point(0, NativeHeight) },
-						Order = new[] { 0, 1 },
-						FinalSize = new Size(NativeWidth, NativeHeight * 2)
-					}
-				};
-			}
-
-			_settings = o;
-			_screenArranger.LayoutSettings = _settings.ScreenOptions;
+			_settings = o ?? new MelonSettings();
+			_screenArranger.LayoutSettings = _settings.ScreenOptions.ToLayout();
 
 			return false;
 		}
@@ -93,7 +79,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public class MelonSettings
 		{
-			public ScreenLayoutSettings ScreenOptions { get; set; }
+			public VideoScreenOptions ScreenOptions { get; set; } = VideoScreenOptions.Default;
 		}
 
 		public class MelonSyncSettings
