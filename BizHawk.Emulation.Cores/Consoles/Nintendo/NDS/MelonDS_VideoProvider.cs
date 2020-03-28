@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 using BizHawk.Emulation.Common;
 
@@ -17,16 +16,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		public int VirtualWidth => BufferWidth;
 		public int VirtualHeight => BufferHeight;
 
-		public int BufferWidth => _screenArranger.LayoutSettings.FinalSize.Width;
-		public int BufferHeight => _screenArranger.LayoutSettings.FinalSize.Height;
+		public int BufferWidth => _settings.ScreenOptions.Width();
+		public int BufferHeight => _settings.ScreenOptions.Height();
 
 		public int VsyncNumerator => 60;
 
 		public int VsyncDenominator => 1;
 
 		public int BackgroundColor => 0;
-
-		private readonly ScreenArranger _screenArranger;
 
 		[DllImport(dllPath)]
 		private static extern int* GetTopScreenBuffer();
@@ -42,18 +39,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		{
 			if (_getNewBuffer)
 			{
-				// Shenanigans
-				var buffers = _settings.ScreenOptions.NeedsBottomScreen()
-					? new[] {GetTopScreenBuffer(), GetBottomScreenBuffer()}
-					: new[] {GetTopScreenBuffer()};
-
 				_getNewBuffer = false;
 
-				
-				int bufferSize = GetScreenBufferSize();
-				_buffer = _screenArranger.GenerateFramebuffer(buffers, new[] { bufferSize, bufferSize });
+				_buffer = _settings.ScreenOptions switch
+				{
+					VideoScreenOptions.TopOnly => ScreenArranger.Copy(TopScreen),
+					VideoScreenOptions.SideBySideLR => ScreenArranger.SideBySide(TopScreen, BottomScreen),
+					VideoScreenOptions.SideBySideRL => ScreenArranger.SideBySide(BottomScreen, TopScreen),
+				_ => ScreenArranger.Stack(TopScreen, BottomScreen, 0)
+				};
 			}
+
 			return _buffer;
 		}
+
+		private VideoScreen TopScreen => new VideoScreen(GetTopScreenBuffer(), NativeWidth, NativeHeight);
+		private VideoScreen BottomScreen => new VideoScreen(GetBottomScreenBuffer(), NativeWidth, NativeHeight);
 	}
 }

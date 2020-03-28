@@ -1,64 +1,82 @@
-﻿using System;
-using System.Drawing;
-
-namespace BizHawk.Emulation.Common
+﻿namespace BizHawk.Emulation.Common
 {
+	public unsafe class VideoScreen
+	{
+		public VideoScreen(int* buffer, int width, int height)
+		{
+			Buffer = buffer;
+			Width = width;
+			Height = height;
+		}
+
+		public int* Buffer { get; }
+		public int Width { get; } 
+		public int Height { get; }
+
+		public int Length => Width * Height;
+	}
+
 	/// <summary>
 	/// Provides a way to arrange displays inside a frame buffer.
 	/// </summary>
-	public class ScreenArranger
+	public static class ScreenArranger
 	{
-		private readonly Size[] _sizes;
-
-		public ScreenArranger(Size[] sizes)
+		// TODO: pad lines
+		// TOOD: pass in int[] to reuse buffer
+		public static unsafe int[] Stack(VideoScreen screen1, VideoScreen screen2, int padLines)
 		{
-			_sizes = sizes;
-		}
-
-		public ScreenLayoutSettings LayoutSettings { get; set; }
-
-		public unsafe int[] GenerateFramebuffer(int*[] src, int[] srcLength)
-		{
-			if (src.Length != LayoutSettings.Locations.Length)
+			var ret = new int[screen1.Width * (screen1.Height + screen2.Height)];
+			for (int i = 0; i < screen1.Length; i++)
 			{
-				throw new InvalidCastException("Buffer length mismatch");
+				ret[i] = screen1.Buffer[i];
 			}
 
-			var ret = new int[LayoutSettings.FinalSize.Width * LayoutSettings.FinalSize.Height];
-			for (int iBuf = 0; iBuf < src.Length; iBuf++)
+			for (int i = 0; i < screen2.Length; i++)
 			{
-				int screen = LayoutSettings.Order[iBuf];
-				Size size = _sizes[screen];
-				Point position = LayoutSettings.Locations[screen];
-
-				int minSrcX = Math.Max(-position.X, 0);
-				int maxSrcX = Math.Min(LayoutSettings.FinalSize.Width - position.X, size.Width);
-				int minDstX = Math.Max(position.X, 0);
-
-				int minSrcY = Math.Max(-position.Y, 0);
-				int maxSrcY = Math.Min(LayoutSettings.FinalSize.Height - position.Y, size.Height);
-				int minDstY = Math.Max(position.Y, 0);
-
-				if ((maxSrcX - 1) + (maxSrcY - 1) * size.Width > srcLength[iBuf])
-					throw new ArgumentException("The given source buffer is smaller than expected.");
-
-				for (int iY = minSrcY; iY < maxSrcY; iY++)
-				{
-					int dstIndex = minDstX + (minDstY + iY - minSrcY) * LayoutSettings.FinalSize.Width;
-					int srcIndex = minSrcX + iY * size.Width;
-					for (int iX = minSrcX; iX < maxSrcX; iX++)
-						ret[dstIndex++] = src[screen][srcIndex++];
-				}
+				ret[screen1.Length + i] = screen2.Buffer[i];
 			}
 
 			return ret;
 		}
-	}
 
-	public class ScreenLayoutSettings
-	{
-		public Point[] Locations { get; set; }
-		public int[] Order { get; set; }
-		public Size FinalSize { get; set; }
+		// Simply populates a buffer with a single screen
+		public static unsafe int[] Copy(VideoScreen screen1)
+		{
+			var ret = new int[screen1.Length];
+
+			for (int i = 0; i < ret.Length; i++)
+			{
+				ret[i] = screen1.Buffer[i];
+			}
+
+			return ret;
+		}
+
+		// TODO: pass in int[] to reuse buffer
+		// TODO: there is a simpler algorithm for sure
+		public static unsafe int[] SideBySide(VideoScreen screen1, VideoScreen screen2)
+		{
+			int width = screen1.Width + screen2.Width;
+			int height = screen2.Height;
+			var ret = new int[width * height];
+
+			for (int y = 0; y < height; y++)
+			{
+				for (int x = 0; x < width; x++)
+				{
+					if (x < screen1.Width)
+					{
+						ret[(y * width) + x] = screen1.Buffer[(y * width / 2) + x];
+					}
+					else
+					{
+						ret[(y * width) + x] = screen2.Buffer[(y * width / 2) + x];
+					}
+				}
+				
+			}
+
+			return ret;
+		}
 	}
 }

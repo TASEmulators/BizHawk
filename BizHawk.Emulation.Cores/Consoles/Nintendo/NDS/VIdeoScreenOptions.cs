@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
@@ -10,49 +9,45 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 	public static class VideoScreenOptionExtensions
 	{
-		public static bool NeedsBottomScreen(this VideoScreenOptions option)
+		public static Point? TouchScreenStart(this VideoScreenOptions option)
 		{
-			return option != VideoScreenOptions.TopOnly;
-		}
-
-		public static ScreenLayoutSettings ToLayout(this VideoScreenOptions option)
-		{
-			return option switch
+			switch (option)
 			{
-				VideoScreenOptions.Default => Default,
-				VideoScreenOptions.TopOnly => TopOnly,
-				VideoScreenOptions.SideBySideLR => SideBySideLR,
-				VideoScreenOptions.SideBySideRL => SideBySideRL,
-				_ => Default
-			};
+				default:
+					return new Point(0, MelonDS.NativeHeight);
+				case VideoScreenOptions.TopOnly:
+					return null;
+				case VideoScreenOptions.SideBySideLR:
+					return new Point(MelonDS.NativeWidth, 0);
+				case VideoScreenOptions.SideBySideRL:
+					return new Point(0, 0);
+			}
 		}
 
-		private static ScreenLayoutSettings Default => new ScreenLayoutSettings
+		public static int Width(this VideoScreenOptions option)
 		{
-			Locations = new[] { new Point(0, 0), new Point(0, MelonDS.NativeHeight) },
-			Order = new[] { 0, 1 },
-			FinalSize = new Size(MelonDS.NativeWidth, MelonDS.NativeHeight * 2)
-		};
+			switch (option)
+			{
+				default:
+					return MelonDS.NativeWidth;
+				case VideoScreenOptions.SideBySideLR:
+				case VideoScreenOptions.SideBySideRL:
+					return MelonDS.NativeWidth * 2;
+			}
+		}
 
-		private static ScreenLayoutSettings TopOnly => new ScreenLayoutSettings
+		// TODO: padding
+		public static int Height(this VideoScreenOptions option)
 		{
-			Locations = new[] { new Point(0, 0) },
-			Order = new[] { 0 },
-			FinalSize = new Size(MelonDS.NativeWidth, MelonDS.NativeHeight)
-		};
-
-		private static ScreenLayoutSettings SideBySideLR => new ScreenLayoutSettings
-		{
-			Locations = new[] { new Point(0, 0), new Point(MelonDS.NativeWidth, MelonDS.NativeHeight) },
-			Order = new[] { 0, 1 },
-			FinalSize = new Size(MelonDS.NativeWidth * 2, MelonDS.NativeHeight)
-		};
-
-		private static ScreenLayoutSettings SideBySideRL => new ScreenLayoutSettings
-		{
-			Locations = new[] {new Point(MelonDS.NativeWidth, MelonDS.NativeHeight), new Point(0, 0) },
-			Order = new[] { 0, 1 },
-			FinalSize = new Size(MelonDS.NativeWidth * 2, MelonDS.NativeHeight)
-		};
+			switch (option)
+			{
+				default:
+					return MelonDS.NativeHeight * 2;
+				case VideoScreenOptions.TopOnly:
+				case VideoScreenOptions.SideBySideLR:
+				case VideoScreenOptions.SideBySideRL:
+					return MelonDS.NativeHeight;
+			}
+		}
 	}
 }

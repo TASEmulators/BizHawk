@@ -32,8 +32,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		public bool PutSettings(MelonSettings o)
 		{
 			_settings = o ?? new MelonSettings();
-			_screenArranger.LayoutSettings = _settings.ScreenOptions.ToLayout();
-
 			return false;
 		}
 

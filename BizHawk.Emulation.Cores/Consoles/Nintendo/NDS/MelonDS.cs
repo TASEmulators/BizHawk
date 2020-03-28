@@ -108,7 +108,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				throw new Exception("Failed to init NDS.");
 			InitMemoryDomains();
 
-			_screenArranger = new ScreenArranger(new[] { new Size(NativeWidth, NativeHeight), new Size(NativeWidth, NativeHeight) });
 			PutSettings(settings as MelonSettings);
 			PutSyncSettings(syncsettings as MelonSyncSettings);
 
@@ -119,9 +118,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 		}
 
-		public Point? TouchScreenStart => _screenArranger.LayoutSettings.Locations.Length > 1
-			? _screenArranger.LayoutSettings.Locations[1]
-			: (Point?)null;
+		public Point? TouchScreenStart => _settings.ScreenOptions.TouchScreenStart();
 
 		/// <summary>
 		/// MelonDS expects bios and firmware files at a specific location.
