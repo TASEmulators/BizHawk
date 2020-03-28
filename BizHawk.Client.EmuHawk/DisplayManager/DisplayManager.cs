@@ -222,7 +222,7 @@ namespace BizHawk.Client.EmuHawk
 			return padding;
 		}
 
-		FilterProgram BuildDefaultChain(Size chainInSize, Size chainOutSize, bool includeOSD)
+		FilterProgram BuildDefaultChain(Size chainInSize, Size chainOutSize, bool includeOSD, bool includeUserFilters)
 		{
 			// select user special FX shader chain
 			var selectedChainProperties = new Dictionary<string, object>();
@@ -231,6 +231,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				selectedChain = ShaderChain_hq2x;
 			}
+
+			//ZOOM
 
 			if (Global.Config.TargetDisplayFilter == 2 && ShaderChain_scanlines != null && ShaderChain_scanlines.Available)
 			{
@@ -242,6 +244,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				selectedChain = ShaderChain_user;
 			}
+
+			if (!includeUserFilters)
+				selectedChain = null;
 
 			var fPresent = new Filters.FinalPresentation(chainOutSize);
 			var fInput = new Filters.SourceImage(chainInSize);
@@ -437,7 +442,8 @@ namespace BizHawk.Client.EmuHawk
 				VideoProvider = videoProvider,
 				Simulate = displayNothing,
 				ChainOutsize = GraphicsControl.Size,
-				IncludeOSD = true
+				IncludeOSD = true,
+				IncludeUserFilters = true
 			};
 			UpdateSourceInternal(job);
 		}
@@ -456,7 +462,8 @@ namespace BizHawk.Client.EmuHawk
 				Simulate = false,
 				ChainOutsize = targetSize,
 				Offscreen = true,
-				IncludeOSD = false
+				IncludeOSD = false,
+				IncludeUserFilters = false
 			};
 			UpdateSourceInternal(job);
 			return job.OffscreenBb;
@@ -473,7 +480,8 @@ namespace BizHawk.Client.EmuHawk
 				Simulate = false,
 				ChainOutsize = GraphicsControl.Size,
 				Offscreen = true,
-				IncludeOSD = includeOSD
+				IncludeOSD = includeOSD,
+				IncludeUserFilters = true,
 			};
 			UpdateSourceInternal(job);
 			return job.OffscreenBb;
@@ -657,7 +665,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				VideoProvider = fvp,
 				Simulate = true,
-				ChainOutsize = chainOutsize
+				ChainOutsize = chainOutsize,
+				IncludeUserFilters = true
 			};
 			var filterProgram = UpdateSourceInternal(job);
 
@@ -681,6 +690,7 @@ namespace BizHawk.Client.EmuHawk
 			public bool Offscreen;
 			public BitmapBuffer OffscreenBb;
 			public bool IncludeOSD;
+			public bool IncludeUserFilters;
 		}
 
 		private FilterProgram UpdateSourceInternal(JobInfo job)
@@ -770,7 +780,7 @@ namespace BizHawk.Client.EmuHawk
 			//build the default filter chain and set it up with services filters will need
 			Size chainInsize = new Size(bufferWidth, bufferHeight);
 
-			var filterProgram = BuildDefaultChain(chainInsize, chainOutsize, job.IncludeOSD);
+			var filterProgram = BuildDefaultChain(chainInsize, chainOutsize, job.IncludeOSD, job.IncludeUserFilters);
 			filterProgram.GuiRenderer = Renderer;
 			filterProgram.GL = GL;
 
