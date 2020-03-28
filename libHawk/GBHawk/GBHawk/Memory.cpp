@@ -5,9 +5,9 @@
 
 #include "Memory.h"
 #include "LR35902.h"
-#include "PPU_Base.h"
+#include "PPU.h"
 #include "GBAudio.h"
-#include "Mapper_Base.h"
+#include "Mappers.h"
 #include "SerialPort.h"
 #include "Timer.h"
 

@@ -28,7 +28,7 @@ namespace GBHawk
 		void WriteMemory(uint32_t addr, uint8_t value);
 		uint8_t Read_Registers(uint32_t addr);
 		void Write_Registers(uint32_t addr, uint8_t value);
-		
+
 		#pragma region Declarations
 
 		PPU* ppu_pntr = nullptr;
@@ -51,9 +51,7 @@ namespace GBHawk
 		uint8_t* kb_rows;
 
 		// State
-		bool PortDEEnabled = false;
 		bool lagged;
-		bool start_pressed;
 		bool is_GBC;
 		bool GBC_compat;
 		bool speed_switch, double_speed;
@@ -61,6 +59,8 @@ namespace GBHawk
 		bool GB_bios_register;
 		bool HDMA_transfer;
 		bool _islag;
+		bool Use_MT;
+		bool has_bat;
 		
 		uint8_t REG_FFFF, REG_FF0F, REG_FF0F_OLD;
 		uint8_t _scanlineCallbackLine;
@@ -80,12 +80,13 @@ namespace GBHawk
 
 		uint8_t ZP_RAM[0x80] = {};
 		uint8_t RAM[0x8000] = {};
-		uint8_t VRAM[0x10000] = {};
-		uint8_t OAM[0x10000] = {};
-		uint8_t cart_ram[0x8000] = {};
-		uint8_t unmapped[0x400] = {};
+		uint8_t VRAM[0x4000] = {};
+		uint8_t OAM[0xA0] = {};
+		uint8_t header[0x50] = {};
 		uint32_t _vidbuffer[160 * 144] = {};
 		uint32_t color_palette[4] = { 0xFFFFFFFF , 0xFFAAAAAA, 0xFF555555, 0xFF000000 };
+
+		const uint8_t GBA_override[13] = { 0xFF, 0x00, 0xCD, 0x03, 0x35, 0xAA, 0x31, 0x90, 0x94, 0x00, 0x00, 0x00, 0x00 };
 
 		uint32_t FrameBuffer[160 * 144] = {};
 
@@ -94,12 +95,25 @@ namespace GBHawk
 		#pragma region Functions
 
 		// NOTE: only called when checks pass that the files are correct
-		void Load_BIOS(uint8_t* bios, bool GBC_console)
+		void Load_BIOS(uint8_t* bios, bool GBC_console, bool GBC_as_GBA)
 		{
 			if (GBC_console)
 			{
 				bios_rom = new uint8_t[2304];
 				memcpy(bios_rom, bios, 2304);
+				is_GBC = true;
+
+				// set up IR variables if it's GBC
+				IR_mask = 0; IR_reg = 0x3E; IR_receive = 2; IR_self = 2; IR_signal = 2;
+
+				if (GBC_as_GBA) 
+				{
+					for (int i = 0; i < 13; i++)
+					{
+						bios_rom[i + 0xF3] = (uint8_t)((GBA_override[i] + bios_rom[i + 0xF3]) & 0xFF);
+					}
+					IR_mask = 2;
+				}
 			}
 			else
 			{
@@ -108,14 +122,15 @@ namespace GBHawk
 			}
 		}
 
-		void Load_ROM(uint8_t* ext_rom_1, uint32_t ext_rom_size_1, uint32_t ext_rom_mapper_1, uint8_t* ext_rom_2, uint32_t ext_rom_size_2, uint32_t ext_rom_mapper_2)
+		void Load_ROM(uint8_t* ext_rom_1, uint32_t ext_rom_size_1)
 		{
 			ROM = new uint8_t[ext_rom_size_1];
 
 			memcpy(ROM, ext_rom_1, ext_rom_size_1);
 
 			ROM_Length = ext_rom_size_1;
-			ROM_Mapper = ext_rom_mapper_1;
+
+			std::memcpy(header, ext_rom_1 + 0x100, 0x50);
 		}
 
 		// Switch Speed (GBC only)
@@ -163,24 +178,20 @@ namespace GBHawk
 
 		uint8_t* SaveState(uint8_t* saver)
 		{
-			*saver = (uint8_t)(PortDEEnabled ? 1 : 0); saver++;
 			*saver = (uint8_t)(lagged ? 1 : 0); saver++;
-			*saver = (uint8_t)(start_pressed ? 1 : 0); saver++;
 
 			std::memcpy(saver, &RAM, 0x10000); saver += 0x10000;
-			std::memcpy(saver, &cart_ram, 0x8000); saver += 0x8000;
+			//std::memcpy(saver, &cart_ram, 0x8000); saver += 0x8000;
 
 			return saver;
 		}
 
 		uint8_t* LoadState(uint8_t* loader)
 		{
-			PortDEEnabled = *loader == 1; loader++;
 			lagged = *loader == 1; loader++;
-			start_pressed = *loader == 1; loader++;
 
 			std::memcpy(&RAM, loader, 0x10000); loader += 0x10000;
-			std::memcpy(&cart_ram, loader, 0x8000); loader += 0x8000;
+			//std::memcpy(&cart_ram, loader, 0x8000); loader += 0x8000;
 
 			return loader;
 		}

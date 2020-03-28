@@ -26,16 +26,18 @@ GBHawk_EXPORT void GB_destroy(GBCore* p)
 	std::free(p);
 }
 
-// load bios and basic into the core
-GBHawk_EXPORT void GB_load_bios(GBCore* p, uint8_t* bios, bool GBC_console)
+// load bios into the core
+GBHawk_EXPORT void GB_load_bios(GBCore* p, uint8_t* bios, bool GBC_console, bool GBC_as_GBA)
 {
-	p->Load_BIOS(bios, GBC_console);
+	p->Load_BIOS(bios, GBC_console, GBC_as_GBA);
 }
 
 // load a rom into the core
-GBHawk_EXPORT void GB_load(GBCore* p, uint8_t* rom_1, uint32_t size_1, uint32_t mapper_1, uint8_t* rom_2, uint32_t size_2, uint8_t mapper_2)
+GBHawk_EXPORT void GB_load(GBCore* p, uint8_t* rom_1, uint32_t size_1, uint32_t RTC_initial, uint32_t RTC_offset)
 {
-	p->Load_ROM(rom_1, size_1, mapper_1, rom_2, size_2, mapper_2);
+	string MD5;
+	
+	p->Load_ROM(rom_1, size_1, MD5, RTC_initial, RTC_offset);
 }
 
 // advance a frame
