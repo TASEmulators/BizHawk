@@ -422,7 +422,8 @@ namespace BizHawk.Client.Common
 			},
 			["NDS"] = new Dictionary<string, char>
 			{
-				["Lid"] = 'P',
+				["LidOpen"] = 'o',
+				["LidClose"] = 'c',
 				["Touch"] = 'T'
 			},
 			["O2"] = new Dictionary<string, char>

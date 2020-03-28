@@ -88,7 +88,7 @@ namespace BizHawk.Client.Common
 					BoolButtons =
 					{
 						"Right", "Left", "Down", "Up", "Start", "Select",
-						"B", "A", "X", "Y", "L", "R", "Touch", "LidOpen", "LidClose"
+						"B", "A", "X", "Y", "L", "R", "LidOpen", "LidClose", "Touch"
 					}
 				}
 			};
@@ -97,6 +97,9 @@ namespace BizHawk.Client.Common
 			controller.Definition.FloatRanges.Add(new ControllerDefinition.AxisRange(0, 128, 255));
 			controller.Definition.FloatControls.Add("TouchY");
 			controller.Definition.FloatRanges.Add(new ControllerDefinition.AxisRange(0, 96, 191));
+
+			controller["LidOpen"] = false;
+			controller["LidOpen"] = false;
 
 			string[] sections = line.Split(new[] {'|'}, StringSplitOptions.RemoveEmptyEntries);
 			if (sections.Length > 0)
