@@ -32,17 +32,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public bool PutSettings(MelonSettings o)
 		{
-			if (o == null || o.screenOptions == null)
+			if (o?.ScreenOptions == null)
 			{
-				o = new MelonSettings();
-				o.screenOptions = new ScreenLayoutSettings();
-				o.screenOptions.locations = new Point[] { new Point(0, 0), new Point(0, NATIVE_HEIGHT) };
-				o.screenOptions.order = new int[] { 0, 1 };
-				o.screenOptions.finalSize = new Size(NATIVE_WIDTH, NATIVE_HEIGHT * 2);
+				o = new MelonSettings
+				{
+					ScreenOptions = new ScreenLayoutSettings
+					{
+						Locations = new[] { new Point(0, 0), new Point(0, NativeHeight) },
+						Order = new[] { 0, 1 },
+						FinalSize = new Size(NativeWidth, NativeHeight * 2)
+					}
+				};
 			}
 
 			_settings = o;
-			screenArranger.layoutSettings = _settings.screenOptions;
+			_screenArranger.LayoutSettings = _settings.ScreenOptions;
 
 			return false;
 		}
@@ -89,7 +93,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public class MelonSettings
 		{
-			public ScreenLayoutSettings screenOptions;
+			public ScreenLayoutSettings ScreenOptions { get; set; }
 		}
 
 		public class MelonSyncSettings

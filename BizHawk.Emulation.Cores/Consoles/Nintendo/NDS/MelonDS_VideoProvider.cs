@@ -6,17 +6,18 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
 	unsafe partial class MelonDS : IVideoProvider
 	{
-		public const int NATIVE_WIDTH = 256;
+		public const int NativeWidth = 256;
+
 		/// <summary>
 		/// for a single screen
 		/// </summary>
-		public const int NATIVE_HEIGHT = 192;
+		public const int NativeHeight = 192;
 
 		public int VirtualWidth => BufferWidth;
 		public int VirtualHeight => BufferHeight;
 
-		public int BufferWidth => _settings.screenOptions.finalSize.Width;
-		public int BufferHeight => _settings.screenOptions.finalSize.Height;
+		public int BufferWidth => _settings.ScreenOptions.FinalSize.Width;
+		public int BufferHeight => _settings.ScreenOptions.FinalSize.Height;
 
 		public int VsyncNumerator => 60;
 
@@ -24,8 +25,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public int BackgroundColor => 0;
 
-		ScreenArranger screenArranger;
-
+		private readonly ScreenArranger _screenArranger;
 
 		[DllImport(dllPath)]
 		private static extern int* GetTopScreenBuffer();
@@ -35,19 +35,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private static extern int GetScreenBufferSize();
 
 		// BizHawk needs to be able to modify the buffer when loading savestates.
-		private int[] buffer = null;
-		private bool getNewBuffer = true;
+		private int[] _buffer;
+		private bool _getNewBuffer = true;
 		public int[] GetVideoBuffer()
 		{
-			if (getNewBuffer)
+			if (_getNewBuffer)
 			{
-				getNewBuffer = false;
+				_getNewBuffer = false;
 
-				int*[] buffers = new int*[] { GetTopScreenBuffer(), GetBottomScreenBuffer() };
+				int*[] buffers = { GetTopScreenBuffer(), GetBottomScreenBuffer() };
 				int bufferSize = GetScreenBufferSize();
-				buffer = screenArranger.GenerateFramebuffer(buffers, new int[] { bufferSize, bufferSize});
+				_buffer = _screenArranger.GenerateFramebuffer(buffers, new[] { bufferSize, bufferSize });
 			}
-			return buffer;
+			return _buffer;
 		}
 	}
 }

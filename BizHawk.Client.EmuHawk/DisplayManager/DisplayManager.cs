@@ -398,13 +398,15 @@ namespace BizHawk.Client.EmuHawk
 			// otherwise, have the filter program untransform it
 			Vector2 v = new Vector2(p.X, p.Y);
 			v = _currentFilterProgram.UntransformPoint("default", v);
-			if (Global.Emulator.SystemId == "NDS")
+
+			// Poop
+			if (Global.Emulator is MelonDS ds)
 			{
-				MelonDS core = Global.Emulator as MelonDS;
-				Point touchLocation = core.GetSettings().screenOptions.locations[1];
-				v.Y = (int)((double)core.BufferHeight / MelonDS.NATIVE_HEIGHT * (v.Y - touchLocation.Y));
-				v.X = (int)((double)core.BufferWidth / MelonDS.NATIVE_WIDTH * (v.X - touchLocation.X));
+				Point touchLocation = ds.GetSettings().ScreenOptions.Locations[1];
+				v.Y = (int)((double)ds.BufferHeight / MelonDS.NativeHeight * (v.Y - touchLocation.Y));
+				v.X = (int)((double)ds.BufferWidth / MelonDS.NativeWidth * (v.X - touchLocation.X));
 			}
+
 			return new Point((int)v.X, (int)v.Y);
 		}
 

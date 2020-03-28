@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				| (controller.IsPressed("Touch") ? 0x2000 : 0)
 				| (controller.IsPressed("LidOpen") ? 0x4000 : 0) | (controller.IsPressed("LidClose") ? 0x8000 : 0);
 			FrameAdvance((short)buttons, (byte)controller.GetFloat("TouchX"), (byte)controller.GetFloat("TouchY"));
-			getNewBuffer = true;
+			_getNewBuffer = true;
 			return true;
 		}
 
@@ -108,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				throw new Exception("Failed to init NDS.");
 			InitMemoryDomains();
 
-			screenArranger = new ScreenArranger(new Size[] { new Size(NATIVE_WIDTH, NATIVE_HEIGHT), new Size(NATIVE_WIDTH, NATIVE_HEIGHT) });
+			_screenArranger = new ScreenArranger(new[] { new Size(NativeWidth, NativeHeight), new Size(NativeWidth, NativeHeight) });
 			PutSettings(settings as MelonSettings);
 			PutSyncSettings(syncsettings as MelonSyncSettings);
 
