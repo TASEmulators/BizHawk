@@ -232,8 +232,6 @@ namespace BizHawk.Client.EmuHawk
 				selectedChain = ShaderChain_hq2x;
 			}
 
-			//ZOOM
-
 			if (Global.Config.TargetDisplayFilter == 2 && ShaderChain_scanlines != null && ShaderChain_scanlines.Available)
 			{
 				selectedChain = ShaderChain_scanlines;
