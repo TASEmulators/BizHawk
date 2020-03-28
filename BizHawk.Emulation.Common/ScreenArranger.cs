@@ -21,11 +21,10 @@
 	/// </summary>
 	public static class ScreenArranger
 	{
-		// TODO: pad lines
-		// TOOD: pass in int[] to reuse buffer
-		public static unsafe int[] Stack(VideoScreen screen1, VideoScreen screen2, int padLines)
+		// TODO: pass in int[] to reuse buffer
+		public static unsafe int[] Stack(VideoScreen screen1, VideoScreen screen2, int screenGap)
 		{
-			var ret = new int[screen1.Width * (screen1.Height + screen2.Height)];
+			var ret = new int[screen1.Width * (screen1.Height + screen2.Height + screenGap)];
 			for (int i = 0; i < screen1.Length; i++)
 			{
 				ret[i] = screen1.Buffer[i];
@@ -33,13 +32,15 @@
 
 			for (int i = 0; i < screen2.Length; i++)
 			{
-				ret[screen1.Length + i] = screen2.Buffer[i];
+				ret[screen1.Length + i + (screen1.Width * screenGap)] = screen2.Buffer[i];
 			}
 
 			return ret;
 		}
 
-		// Simply populates a buffer with a single screen
+		/// <summary>
+		/// Simply populates a buffer with a single screen
+		/// </summary>
 		public static unsafe int[] Copy(VideoScreen screen1)
 		{
 			var ret = new int[screen1.Length];

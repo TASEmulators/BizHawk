@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 using System.Text;
 using System.Runtime.InteropServices;
@@ -87,7 +89,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public class MelonSettings
 		{
+			[DisplayName("Screen Configuration")]
+			[Description("Adjusts the orientation of the 2 displays")]
 			public VideoScreenOptions ScreenOptions { get; set; } = VideoScreenOptions.Default;
+
+			[DisplayName("Screen Gap")]
+			public int ScreenGap { get; set; }
 
 			public Point? TouchScreenStart() =>
 				ScreenOptions switch
@@ -95,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					VideoScreenOptions.TopOnly => null,
 					VideoScreenOptions.SideBySideLR => new Point(NativeWidth, 0),
 					VideoScreenOptions.SideBySideRL => new Point(0, 0),
-					_ => new Point(0, NativeHeight)
+					_ => new Point(0, NativeHeight + ScreenGap)
 				};
 			
 
@@ -115,7 +122,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					VideoScreenOptions.TopOnly => NativeHeight,
 					VideoScreenOptions.SideBySideLR => NativeHeight,
 					VideoScreenOptions.SideBySideRL => NativeHeight,
-					_ => NativeHeight * 2
+					_ => (NativeHeight * 2) + ScreenGap
 				};
 		}
 
