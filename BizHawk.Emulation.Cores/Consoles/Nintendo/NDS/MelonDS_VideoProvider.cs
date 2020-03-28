@@ -16,8 +16,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		public int VirtualWidth => BufferWidth;
 		public int VirtualHeight => BufferHeight;
 
-		public int BufferWidth => _settings.ScreenOptions.Width();
-		public int BufferHeight => _settings.ScreenOptions.Height();
+		public int BufferWidth => _settings.Width();
+		public int BufferHeight => _settings.Height();
 
 		public int VsyncNumerator => 60;
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Text;
 using System.Runtime.InteropServices;
 
@@ -75,9 +76,47 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		[DllImport(dllPath)]
 		private static extern uint GetTimeAtBoot();
 
+		public enum VideoScreenOptions
+		{
+			Default,
+			TopOnly,
+			SideBySideLR,
+			SideBySideRL
+			/* TODO Reverse */
+		}
+
 		public class MelonSettings
 		{
 			public VideoScreenOptions ScreenOptions { get; set; } = VideoScreenOptions.Default;
+
+			public Point? TouchScreenStart() =>
+				ScreenOptions switch
+				{
+					VideoScreenOptions.TopOnly => null,
+					VideoScreenOptions.SideBySideLR => new Point(NativeWidth, 0),
+					VideoScreenOptions.SideBySideRL => new Point(0, 0),
+					_ => new Point(0, NativeHeight)
+				};
+			
+
+			public int Width() =>
+				ScreenOptions switch
+				{
+					VideoScreenOptions.SideBySideLR => NativeWidth * 2,
+					VideoScreenOptions.SideBySideRL => NativeWidth * 2,
+					_ => NativeWidth
+				};
+			
+
+			// TODO: padding
+			public int Height() =>
+				ScreenOptions switch
+				{
+					VideoScreenOptions.TopOnly => NativeHeight,
+					VideoScreenOptions.SideBySideLR => NativeHeight,
+					VideoScreenOptions.SideBySideRL => NativeHeight,
+					_ => NativeHeight * 2
+				};
 		}
 
 		public class MelonSyncSettings
