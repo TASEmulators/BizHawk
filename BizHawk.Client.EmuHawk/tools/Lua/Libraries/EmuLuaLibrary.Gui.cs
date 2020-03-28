@@ -1,18 +1,12 @@
 ﻿using System;
 using System.Drawing;
-
 using NLua;
-
-using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public sealed class GuiLuaLibrary : DelegatingLuaLibraryEmu, IDisposable
 	{
-		[RequiredService]
-		private IEmulator Emulator { get; set; }
-
 		public GuiLuaLibrary(Lua lua)
 			: base(lua) { }
 

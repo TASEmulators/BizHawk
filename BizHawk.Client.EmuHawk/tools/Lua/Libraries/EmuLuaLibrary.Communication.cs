@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using NLua;
-using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using System.Text;
 
@@ -10,12 +9,6 @@ namespace BizHawk.Client.EmuHawk
 	[Description("A library for communicating with other programs")]
 	public sealed class CommunicationLuaLibrary : LuaLibraryBase
 	{
-		[RequiredService]
-		private IEmulator Emulator { get; set; }
-
-		[RequiredService]
-		private IVideoProvider VideoProvider { get; set; }
-
 		public CommunicationLuaLibrary(Lua lua)
 			: base(lua) { }
 
