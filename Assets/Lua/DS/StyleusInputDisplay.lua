@@ -30,6 +30,11 @@ while true do
 		local bufferY = client.bufferheight()
 
 		local btns = joypad.get()
+		
+		if movie.mode() == "PLAY" and emu.framecount() > 0 then
+			btns = movie.getinput(emu.framecount() - 1)
+		end
+
 		local x = btns['TouchX']
 		local y = btns['TouchY']
 		local isDown = btns['Touch']
