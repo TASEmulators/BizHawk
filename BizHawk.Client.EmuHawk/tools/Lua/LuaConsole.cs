@@ -583,12 +583,7 @@ namespace BizHawk.Client.EmuHawk
 			sfd.Filter = SessionsFSFilterSet.ToString();
 			sfd.RestoreDirectory = true;
 			var result = sfd.ShowHawkDialog();
-			if (result != DialogResult.OK)
-			{
-				return null;
-			}
-
-			return new FileInfo(sfd.FileName);
+			return result.IsOk() ? new FileInfo(sfd.FileName) : null;
 		}
 
 		private void SaveSessionAs()
