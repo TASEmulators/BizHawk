@@ -28,6 +28,8 @@ namespace BizHawk.Client.EmuHawk
 		private readonly LuaAutocompleteInstaller _luaAutoInstaller = new LuaAutocompleteInstaller();
 		private readonly List<FileSystemWatcher> _watches = new List<FileSystemWatcher>();
 
+		private readonly int _defaultSplitDistance;
+
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
 
@@ -55,6 +57,8 @@ namespace BizHawk.Client.EmuHawk
 
 			public bool ReloadOnScriptFileChange { get; set; }
 			public bool ToggleAllIfNoneSelected { get; set; } = true;
+
+			public int SplitDistance { get; set; }
 		}
 
 		[ConfigPersist]
@@ -104,6 +108,7 @@ namespace BizHawk.Client.EmuHawk
 
 			// this is bad, in case we ever have more than one gui part running lua.. not sure how much other badness there is like that
 			LuaSandbox.DefaultLogger = WriteToOutputWindow;
+			_defaultSplitDistance = splitContainer1.SplitterDistance;
 		}
 
 		public PlatformEmuLuaLibrary LuaImp { get; private set; }
@@ -163,6 +168,23 @@ namespace BizHawk.Client.EmuHawk
 
 			LuaListView.AllColumns.Clear();
 			SetColumns();
+
+			if (Settings.SplitDistance > 0)
+			{
+				try
+				{
+					splitContainer1.SplitterDistance = Settings.SplitDistance;
+				}
+				catch (Exception)
+				{
+					splitContainer1.SplitterDistance = _defaultSplitDistance;
+				}
+			}
+		}
+
+		private void BranchesMarkersSplit_SplitterMoved(object sender, SplitterEventArgs e)
+		{
+			Settings.SplitDistance = splitContainer1.SplitterDistance;
 		}
 
 		public void Restart()
@@ -1505,6 +1527,7 @@ namespace BizHawk.Client.EmuHawk
 			Settings = new LuaConsoleSettings();
 			LuaListView.AllColumns.Clear();
 			SetColumns();
+			splitContainer1.SplitterDistance = _defaultSplitDistance;
 			UpdateDialog();
 		}
 	}
