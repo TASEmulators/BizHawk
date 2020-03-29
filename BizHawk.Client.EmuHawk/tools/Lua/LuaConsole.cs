@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 
@@ -1325,14 +1326,16 @@ namespace BizHawk.Client.EmuHawk
 			switch (columnToSort)
 			{
 				case "Script":
-					luaListTemp = _sortReverse
-						? luaListTemp.OrderByDescending(lf => lf.Name).ThenBy(lf => lf.Path).ToList()
-						: luaListTemp.OrderBy(lf => lf.Name).ThenBy(lf => lf.Path).ToList();
+					luaListTemp = luaListTemp
+						.OrderBy(lf => lf.Name, _sortReverse)
+						.ThenBy(lf => lf.Path)
+						.ToList();
 					break;
-				case "Path":
-					luaListTemp = _sortReverse
-						? luaListTemp.OrderByDescending(lf => lf.Path).ThenBy(lf => lf.Name).ToList()
-						: luaListTemp.OrderBy(lf => lf.Path).ThenBy(lf => lf.Name).ToList();
+				case "PathName":
+					luaListTemp = luaListTemp
+						.OrderBy(lf => lf.Path, _sortReverse)
+						.ThenBy(lf => lf.Name)
+						.ToList();
 					break;
 			}
 
