@@ -43,6 +43,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public static extern int GB_load(IntPtr core, byte[] romdata_1, uint length_1, char[] MD5, uint RTC_init, uint RTC_offset);
 
 		/// <summary>
+		/// Reset.
+		/// </summary>
+		[DllImport("GBHawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void GB_Reset(IntPtr core);
+
+		/// <summary>
 		/// Advance a frame and send controller data.
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
@@ -52,7 +58,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		/// <param name="sound">Mapper number to load core with</param>
 		/// <returns>0 on success, negative value on failure.</returns>
 		[DllImport("GBHawk.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern bool GB_frame_advance(IntPtr core, byte ctrl1, byte ctrl2, byte[] kbrows, bool render, bool sound);
+		public static extern bool GB_frame_advance(IntPtr core, byte ctrl1, uint accx, uint accy, bool render, bool sound);
+
+		/// <summary>
+		/// do a singlt step in the core
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+
+		[DllImport("GBHawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void GB_do_single_step(IntPtr core);
 
 		/// <summary>
 		/// Get Video data

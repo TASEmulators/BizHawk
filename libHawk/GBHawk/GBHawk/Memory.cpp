@@ -417,7 +417,7 @@ namespace GBHawk
 		{
 			// Read Input
 		case 0xFF00:
-			_islag = false;
+			lagged = false;
 			ret = input_register;
 			break;
 

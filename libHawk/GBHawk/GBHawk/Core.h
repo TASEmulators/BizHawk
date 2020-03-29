@@ -65,6 +65,8 @@ namespace GBHawk
 			// initialize the proper mapper
 			Setup_Mapper(MD5, RTC_initial, RTC_offset);
 
+			MemMap.mapper_pntr = &mapper[0];
+
 			// set up pointers
 			MemMap.cpu_pntr = &cpu;
 			MemMap.psg_pntr = &psg;
@@ -82,7 +84,7 @@ namespace GBHawk
 			MemMap.ppu_pntr->VRAM = &MemMap.VRAM[0];
 			MemMap.ppu_pntr->VRAM_Bank = &MemMap.VRAM_Bank;
 			MemMap.ppu_pntr->cpu_halted = &cpu.halted;
-			MemMap.ppu_pntr->_vidbuffer = &MemMap._vidbuffer[0];
+			MemMap.ppu_pntr->_vidbuffer = &MemMap.vidbuffer[0];
 			MemMap.ppu_pntr->color_palette = &MemMap.color_palette[0];
 			MemMap.ppu_pntr->HDMA_transfer = &MemMap.HDMA_transfer;
 			MemMap.ppu_pntr->GBC_compat = &MemMap.GBC_compat;
@@ -128,22 +130,193 @@ namespace GBHawk
 			cpu.Reset();
 		}
 
-		bool FrameAdvance(uint8_t controller_1, uint8_t controller_2, uint8_t* kb_rows_ptr, bool render, bool rendersound)
+		bool FrameAdvance(uint8_t new_controller_1, uint32_t new_accx, uint32_t new_accy, bool render, bool rendersound)
 		{
-			
-			MemMap.controller_byte_1 = controller_1;
-			MemMap.controller_byte_2 = controller_2;
-			MemMap.kb_rows = kb_rows_ptr;
-			MemMap.lagged = true;
+			for (int i = 0; i < 70224; i++)
+			{
+				// These things do not change speed in GBC double spped mode
+				psg.tick();
+				ppu->tick();
+				if (MemMap.Use_MT) { mapper->Mapper_Tick(); }
 
-			uint32_t scanlinesPerFrame = 262;
+				if (!MemMap.HDMA_transfer)
+				{
+					// These things all tick twice as fast in GBC double speed mode
+					ppu->DMA_tick();
+					timer.tick_1();
+					serialport.serial_transfer_tick();
+					cpu.ExecuteOne(&MemMap.REG_FF0F, MemMap.REG_FFFF);
+					timer.tick_2();
+
+					if (MemMap.double_speed)
+					{
+						ppu->DMA_tick();
+						timer.tick_1();
+						serialport.serial_transfer_tick();
+						cpu.ExecuteOne(&MemMap.REG_FF0F, MemMap.REG_FFFF);
+						timer.tick_2();
+					}
+				}
+				else
+				{
+					timer.tick_1();
+					timer.tick_2();
+					cpu.TotalExecutedCycles++;
+					if (MemMap.double_speed)
+					{
+						timer.tick_1();
+						timer.tick_2();
+						cpu.TotalExecutedCycles++;
+					}
+				}
+
+				if (MemMap.in_vblank && !MemMap.in_vblank_old)
+				{
+					MemMap.lagged = false;
+
+					// update the controller state on VBlank
+					MemMap.controller_state = new_controller_1;
+					MemMap.Acc_X_state = new_accx;
+					MemMap.Acc_Y_state = new_accy;
+
+					// check if controller state caused interrupt
+					do_controller_check();
+
+					// send the image on VBlank
+					SendVideoBuffer();
+				}
+
+				MemMap.REG_FF0F_OLD = MemMap.REG_FF0F;
+
+				MemMap.in_vblank_old = MemMap.in_vblank;
+			}
+
+			// turn off the screen so the image doesnt persist
+			// but don't turn off blank_frame yet, it still needs to be true until the next VBL
+			// this doesn't run for GBC, some games, ex MIB the series 2, rely on the screens persistence while off to make video look smooth.
+			// But some GB gams, ex Battletoads, turn off the screen for a long time from the middle of the frame, so need to be cleared.
+			if (ppu->clear_screen)
+			{
+				for (int j = 0; j < (160 * 144); j++) { MemMap.frame_buffer[j] = (int)MemMap.color_palette[0]; }
+				ppu->clear_screen = false;
+			}
 
 			return MemMap.lagged;
 		}
 
+		void do_single_step()
+		{
+			// These things do not change speed in GBC double spped mode
+			psg.tick();
+			ppu->tick();
+			if (MemMap.Use_MT) { mapper->Mapper_Tick(); }
+
+			if (!MemMap.HDMA_transfer)
+			{
+				// These things all tick twice as fast in GBC double speed mode
+				ppu->DMA_tick();
+				timer.tick_1();
+				serialport.serial_transfer_tick();
+				cpu.ExecuteOne(&MemMap.REG_FF0F, MemMap.REG_FFFF);
+				timer.tick_2();
+
+				if (MemMap.double_speed)
+				{
+					ppu->DMA_tick();
+					timer.tick_1();
+					serialport.serial_transfer_tick();
+					cpu.ExecuteOne(&MemMap.REG_FF0F, MemMap.REG_FFFF);
+					timer.tick_2();
+				}
+			}
+			else
+			{
+				timer.tick_1();
+				timer.tick_2();
+				cpu.TotalExecutedCycles++;
+				if (MemMap.double_speed)
+				{
+					timer.tick_1();
+					timer.tick_2();
+					cpu.TotalExecutedCycles++;
+				}
+			}
+
+			if (MemMap.in_vblank && !MemMap.in_vblank_old)
+			{
+				MemMap.vblank_rise = true;
+			}
+
+			MemMap.in_vblank_old = MemMap.in_vblank;
+			MemMap.REG_FF0F_OLD = MemMap.REG_FF0F;		
+		}
+
+		void do_controller_check()
+		{
+			// check if new input changed the input register and triggered IRQ
+			uint8_t contr_prev = MemMap.input_register;
+
+			MemMap.input_register &= 0xF0;
+			if ((MemMap.input_register & 0x30) == 0x20)
+			{
+				MemMap.input_register |= (uint8_t)(MemMap.controller_state & 0xF);
+			}
+			else if ((MemMap.input_register & 0x30) == 0x10)
+			{
+				MemMap.input_register |= (uint8_t)((MemMap.controller_state & 0xF0) >> 4);
+			}
+			else if ((MemMap.input_register & 0x30) == 0x00)
+			{
+				// if both polls are set, then a bit is zero if either or both pins are zero
+				uint8_t temp = (uint8_t)((MemMap.controller_state & 0xF) & ((MemMap.controller_state & 0xF0) >> 4));
+				MemMap.input_register |= temp;
+			}
+			else
+			{
+				MemMap.input_register |= 0xF;
+			}
+
+			// check for interrupts			
+			if (((contr_prev & 8) > 0) && ((MemMap.input_register & 8) == 0) ||
+				((contr_prev & 4) > 0) && ((MemMap.input_register & 4) == 0) ||
+				((contr_prev & 2) > 0) && ((MemMap.input_register & 2) == 0) ||
+				((contr_prev & 1) > 0) && ((MemMap.input_register & 1) == 0))
+			{
+				if ((MemMap.REG_FFFF & 0x10) > 0) { cpu.FlagI = true; }
+				MemMap.REG_FF0F |= 0x10;
+			}
+		}
+
+		void SendVideoBuffer()
+		{
+			if (MemMap.GBC_compat)
+			{
+				if (!ppu->blank_frame)
+				{
+					for (int j = 0; j < (160 * 144); j++) { MemMap.frame_buffer[j] = MemMap.vidbuffer[j]; }
+				}
+
+				ppu->blank_frame = false;
+			}
+			else
+			{
+				if (ppu->blank_frame)
+				{
+					for (int i = 0; i < (160 * 144); i++)
+					{
+						MemMap.vidbuffer[i] = (int)MemMap.color_palette[0];
+					}
+				}
+
+				for (int j = 0; j < (160 * 144); j++) { MemMap.frame_buffer[j] = MemMap.vidbuffer[j]; }
+
+				ppu->blank_frame = false;
+			}
+		}
+
 		void GetVideo(uint32_t* dest) 
 		{
-			uint32_t* src = MemMap.FrameBuffer;
+			uint32_t* src = MemMap.frame_buffer;
 			uint32_t* dst = dest;
 
 			std::memcpy(dst, src, sizeof uint32_t * 256 * 192);

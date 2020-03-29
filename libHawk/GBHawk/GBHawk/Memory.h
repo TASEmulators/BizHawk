@@ -46,10 +46,6 @@ namespace GBHawk
 		uint32_t ROM_Mapper;
 		uint32_t Cart_RAM_Length;
 
-		// controls are not stated
-		uint8_t controller_byte_1, controller_byte_2;
-		uint8_t* kb_rows;
-
 		// State
 		bool lagged;
 		bool is_GBC;
@@ -57,9 +53,9 @@ namespace GBHawk
 		bool speed_switch, double_speed;
 		bool in_vblank;
 		bool in_vblank_old;
+		bool vblank_rise;
 		bool GB_bios_register;
 		bool HDMA_transfer;
-		bool _islag;
 		bool Use_MT;
 		bool has_bat;
 		
@@ -84,12 +80,11 @@ namespace GBHawk
 		uint8_t VRAM[0x4000] = {};
 		uint8_t OAM[0xA0] = {};
 		uint8_t header[0x50] = {};
-		uint32_t _vidbuffer[160 * 144] = {};
+		uint32_t vidbuffer[160 * 144] = {};
+		uint32_t frame_buffer[160 * 144] = {};
 		uint32_t color_palette[4] = { 0xFFFFFFFF , 0xFFAAAAAA, 0xFF555555, 0xFF000000 };
 
 		const uint8_t GBA_override[13] = { 0xFF, 0x00, 0xCD, 0x03, 0x35, 0xAA, 0x31, 0x90, 0x94, 0x00, 0x00, 0x00, 0x00 };
-
-		uint32_t FrameBuffer[160 * 144] = {};
 
 		#pragma endregion
 

@@ -45,10 +45,17 @@ GBHawk_EXPORT void GB_Reset(GBCore* p)
 {
 	p->Reset();
 }
+
 // advance a frame
-GBHawk_EXPORT bool GB_frame_advance(GBCore* p, uint8_t ctrl1, uint8_t ctrl2, uint8_t* kbrows, bool render, bool sound)
+GBHawk_EXPORT bool GB_frame_advance(GBCore* p, uint8_t new_ctrl1, uint32_t new_accx, uint32_t new_accy, bool render, bool sound)
 {
-	return p->FrameAdvance(ctrl1, ctrl2, kbrows, render, sound);
+	return p->FrameAdvance(new_ctrl1, new_accx, new_accy, render, sound);
+}
+
+// advance a single step
+GBHawk_EXPORT void GB_do_single_step(GBCore* p)
+{
+	p->do_single_step();
 }
 
 // send video data to external video provider
