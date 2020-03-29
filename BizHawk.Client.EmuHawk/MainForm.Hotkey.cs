@@ -756,26 +756,40 @@ namespace BizHawk.Client.EmuHawk
 					break;
 
 				// DS
-				case "Toggle View":
-					if (Emulator is MelonDS ds)
-					{
-						var settings = ds.GetSettings();
-						var num = (int)settings.ScreenOptions;
-						num++;
-						var next = (MelonDS.VideoScreenOptions)Enum.Parse(typeof(MelonDS.VideoScreenOptions), num.ToString());
-						if (!typeof(MelonDS.VideoScreenOptions).IsEnumDefined(next))
-						{
-							next = default;
-						}
-
-						settings.ScreenOptions = next;
-						ds.PutSettings(settings);
-					}
-
+				case "Increment View":
+					ToggleDSView();
+					break;
+				case "Decrement View":
+					ToggleDSView(true);
 					break;
 			}
 
 			return true;
+		}
+
+		private void ToggleDSView(bool decrement = false)
+		{
+			if (Emulator is MelonDS ds)
+			{
+				var settings = ds.GetSettings();
+				var num = (int)settings.ScreenOptions;
+				if (decrement)
+				{
+					num--;
+				}
+				else
+				{
+					num++;
+				}
+				var next = (MelonDS.VideoScreenOptions)Enum.Parse(typeof(MelonDS.VideoScreenOptions), num.ToString());
+				if (!typeof(MelonDS.VideoScreenOptions).IsEnumDefined(next))
+				{
+					next = default;
+				}
+
+				settings.ScreenOptions = next;
+				ds.PutSettings(settings);
+			}
 		}
 
 		// Determines if the value is a hotkey  that would be handled outside of the CheckHotkey method
