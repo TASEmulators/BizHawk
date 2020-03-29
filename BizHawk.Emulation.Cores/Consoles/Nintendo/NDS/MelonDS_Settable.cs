@@ -82,6 +82,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		{
 			Default,
 			TopOnly,
+			BottomOnly,
 			SideBySideLR,
 			SideBySideRL,
 			Rotate90,
@@ -101,6 +102,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				ScreenOptions switch
 				{
 					VideoScreenOptions.TopOnly => null,
+					VideoScreenOptions.BottomOnly => null,
 					VideoScreenOptions.SideBySideLR => new Point(NativeWidth, 0),
 					VideoScreenOptions.SideBySideRL => new Point(0, 0),
 					VideoScreenOptions.Rotate90 => new Point(0, 0),
@@ -125,6 +127,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				ScreenOptions switch
 				{
 					VideoScreenOptions.TopOnly => NativeHeight,
+					VideoScreenOptions.BottomOnly => NativeHeight,
 					VideoScreenOptions.SideBySideLR => NativeHeight,
 					VideoScreenOptions.SideBySideRL => NativeHeight,
 					VideoScreenOptions.Rotate90 => NativeWidth,

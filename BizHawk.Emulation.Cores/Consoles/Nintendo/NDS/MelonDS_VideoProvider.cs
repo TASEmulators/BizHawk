@@ -44,6 +44,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			{
 				VideoScreenOptions.Default => ScreenArranger.UprightStack(TopScreen, BottomScreen, _settings.ScreenGap),
 				VideoScreenOptions.TopOnly => ScreenArranger.Copy(TopScreen),
+				VideoScreenOptions.BottomOnly => ScreenArranger.Copy(BottomScreen),
 				VideoScreenOptions.SideBySideLR => ScreenArranger.UprightSideBySide(TopScreen, BottomScreen, _settings.ScreenGap),
 				VideoScreenOptions.SideBySideRL => ScreenArranger.UprightSideBySide(BottomScreen, TopScreen, _settings.ScreenGap),
 				VideoScreenOptions.Rotate90 => ScreenArranger.Rotate90Stack(TopScreen, BottomScreen, _settings.ScreenGap),
