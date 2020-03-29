@@ -22,24 +22,6 @@ namespace BizHawk.Common.StringExtensions
 		/// <returns>how many times <paramref name="c"/> appears in <paramref name="str"/>, or <c>0</c> if <paramref name="str"/> is null</returns>
 		public static int HowMany(this string? str, char c) => string.IsNullOrEmpty(str) ? 0 : str.Count(t => t == c);
 
-		/// <returns>how many times <paramref name="sub"/> appears in <paramref name="str"/>, or <c>0</c> if <paramref name="str"/> is null</returns>
-		/// <remarks>
-		/// occurrences may overlap, for example <c>"AAA".HowMany("AA")</c> returns <c>2</c><br/>
-		/// TODO except it doesn't, but <c>"AAAB".HowMany("AA")</c> does. I left this bug in so as to not break anything. --yoshi
-		/// </remarks>
-		public static int HowMany(this string? str, string sub)
-		{
-			if (string.IsNullOrEmpty(str)) return 0;
-
-			var count = 0;
-			var substrLength = sub.Length;
-			for (int i = 0, l = str.Length - substrLength; i < l; i++)
-			{
-				if (string.Equals(str.Substring(i, substrLength), sub, StringComparison.InvariantCulture)) count++;
-			}
-			return count;
-		}
-
 		/// <returns><see langword="true"/> iff <paramref name="str"/> is not <see langword="null"/> and all chars of <paramref name="str"/> are digits</returns>
 		public static bool IsUnsigned(this string? str) => !string.IsNullOrWhiteSpace(str) && str.All(IsUnsigned);
 
