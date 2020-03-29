@@ -38,6 +38,7 @@ namespace BizHawk.Client.EmuHawk
 				Atari2600ControllerTypes.Paddle => PaddleController(controller),
 				Atari2600ControllerTypes.BoostGrip => BoostGripController(controller),
 				Atari2600ControllerTypes.Driving => DrivingController(controller),
+				Atari2600ControllerTypes.Keyboard => KeyboardController(controller),
 				_ => null
 			};
 		}
@@ -134,6 +135,30 @@ namespace BizHawk.Client.EmuHawk
 						MaxValue = 127,
 						MinValue = -127
 					}
+				}
+			};
+		}
+
+		private static PadSchema KeyboardController(int controller)
+		{
+			return new PadSchema
+			{
+				DisplayName = $"Player {controller}",
+				Size = new Size(105, 155),
+				Buttons = new[]
+				{
+					new ButtonSchema(10, 15, controller, "1"),
+					new ButtonSchema(40, 15, controller, "2"),
+					new ButtonSchema(70, 15, controller, "3"),
+					new ButtonSchema(10, 45, controller, "4"),
+					new ButtonSchema(40, 45, controller, "5"),
+					new ButtonSchema(70, 45, controller, "6"),
+					new ButtonSchema(10, 75, controller, "7"),
+					new ButtonSchema(40, 75, controller, "8"),
+					new ButtonSchema(70, 75, controller, "9"),
+					new ButtonSchema(10, 105, controller, "*"),
+					new ButtonSchema(40, 105, controller, "0"),
+					new ButtonSchema(70, 105, controller, "#")
 				}
 			};
 		}
