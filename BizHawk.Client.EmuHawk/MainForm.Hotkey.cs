@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.EmuHawk
@@ -751,6 +753,25 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "X Down Large":
 					Tools.VirtualPad.BumpAnalogValue(-Config.AnalogLargeChange, null);
+					break;
+
+				// DS
+				case "Toggle View":
+					if (Emulator is MelonDS ds)
+					{
+						var settings = ds.GetSettings();
+						var num = (int)settings.ScreenOptions;
+						num++;
+						var next = (MelonDS.VideoScreenOptions)Enum.Parse(typeof(MelonDS.VideoScreenOptions), num.ToString());
+						if (!typeof(MelonDS.VideoScreenOptions).IsEnumDefined(next))
+						{
+							next = default;
+						}
+
+						settings.ScreenOptions = next;
+						ds.PutSettings(settings);
+					}
+
 					break;
 			}
 
