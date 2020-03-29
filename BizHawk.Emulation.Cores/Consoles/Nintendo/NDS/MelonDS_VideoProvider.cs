@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 
 using BizHawk.Emulation.Common;
 
@@ -37,22 +38,18 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private bool _getNewBuffer = true;
 		public int[] GetVideoBuffer()
 		{
-			if (_getNewBuffer)
+			if (!_getNewBuffer) return _buffer;
+			_getNewBuffer = false;
+			return _buffer = _settings.ScreenOptions switch
 			{
-				_getNewBuffer = false;
-
-				_buffer = _settings.ScreenOptions switch
-				{
-					VideoScreenOptions.TopOnly => ScreenArranger.Copy(TopScreen),
-					VideoScreenOptions.SideBySideLR => ScreenArranger.SideBySide(TopScreen, BottomScreen),
-					VideoScreenOptions.SideBySideRL => ScreenArranger.SideBySide(BottomScreen, TopScreen),
-					VideoScreenOptions.Rotate90 => ScreenArranger.Rotate90(ScreenArranger.Stack(TopScreen, BottomScreen, 0)),
-					VideoScreenOptions.Rotate270 => ScreenArranger.Rotate270(ScreenArranger.Stack(TopScreen, BottomScreen, 0)),
-				_ => ScreenArranger.Stack(TopScreen, BottomScreen, _settings.ScreenGap)
-				};
-			}
-
-			return _buffer;
+				VideoScreenOptions.Default => ScreenArranger.UprightStack(TopScreen, BottomScreen, _settings.ScreenGap),
+				VideoScreenOptions.TopOnly => ScreenArranger.Copy(TopScreen),
+				VideoScreenOptions.SideBySideLR => ScreenArranger.UprightSideBySide(TopScreen, BottomScreen, _settings.ScreenGap),
+				VideoScreenOptions.SideBySideRL => ScreenArranger.UprightSideBySide(BottomScreen, TopScreen, _settings.ScreenGap),
+				VideoScreenOptions.Rotate90 => ScreenArranger.Rotate90Stack(TopScreen, BottomScreen, _settings.ScreenGap),
+				VideoScreenOptions.Rotate270 => ScreenArranger.Rotate270Stack(BottomScreen, TopScreen, _settings.ScreenGap),
+				_ => throw new InvalidOperationException()
+			};
 		}
 
 		private VideoScreen TopScreen => new VideoScreen(GetTopScreenBuffer(), NativeWidth, NativeHeight);

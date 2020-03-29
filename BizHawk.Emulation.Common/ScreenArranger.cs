@@ -1,4 +1,7 @@
-﻿namespace BizHawk.Emulation.Common
+﻿using System;
+using System.Diagnostics;
+
+namespace BizHawk.Emulation.Common
 {
 	public unsafe class VideoScreen
 	{
@@ -16,79 +19,108 @@
 		public int Length => Width * Height;
 	}
 
-	/// <summary>
-	/// Provides a way to arrange displays inside a frame buffer.
-	/// </summary>
+	/// <summary>Provides a way to arrange displays inside a frame buffer.</summary>
 	public static class ScreenArranger
 	{
-		// TODO: pass in int[] to reuse buffer
-		public static unsafe int[] Stack(VideoScreen screen1, VideoScreen screen2, int screenGap)
+		/// <remarks>this is taken as an assumption to allow for simpler algorithms; in the future this may need to be rethought (e.g. for 3DS)</remarks>
+		[Conditional("DEBUG")]
+		private static void DebugAssertScreenDimensionsMatch(int lengthA, int lengthB)
 		{
-			var ret = new int[screen1.Width * (screen1.Height + screen2.Height + screenGap)];
-			for (int i = 0; i < screen1.Length; i++)
-			{
-				ret[i] = screen1.Buffer[i];
-			}
-
-			for (int i = 0; i < screen2.Length; i++)
-			{
-				ret[screen1.Length + i + (screen1.Width * screenGap)] = screen2.Buffer[i];
-			}
-
-			return ret;
+			if (lengthA != lengthB) throw new ArgumentException();
 		}
 
-		/// <summary>
-		/// Simply populates a buffer with a single screen
-		/// </summary>
-		public static unsafe int[] Copy(VideoScreen screen1)
+		[Conditional("DEBUG")]
+		private static void DebugAssertPreallocatedBufferSize(int expected, int preallocLength)
 		{
-			var ret = new int[screen1.Length];
+			if (preallocLength != expected) throw new Exception();
+		}
 
-			for (int i = 0; i < ret.Length; i++)
+		public static unsafe int[] UprightStack(VideoScreen forTop, VideoScreen forBottom, int gapLineCount = 0)
+		{
+			DebugAssertScreenDimensionsMatch(forTop.Width, forBottom.Width);
+			var outputWidth = forTop.Width;
+
+			var gapStartOffset = forTop.Length;
+			var screen2StartOffset = gapStartOffset + gapLineCount * outputWidth;
+			var bufferLength = screen2StartOffset + forBottom.Height * outputWidth;
+			var prealloc = new int[bufferLength]; //TODO actually take a `ref int[] prealloc` (or an int* maybe?)
+			DebugAssertPreallocatedBufferSize(bufferLength, prealloc.Length);
+
+			for (var i = 0; i < gapStartOffset; i++) prealloc[i] = forTop.Buffer[i]; // copy top screen
+			// don't bother writing into the gap
+			for (int i = 0, l = forBottom.Length; i < l; i++) prealloc[screen2StartOffset + i] = forBottom.Buffer[i]; // copy bottom screen
+			return prealloc;
+		}
+
+		/// <summary>Simply populates a buffer with a single screen</summary>
+		public static unsafe int[] Copy(VideoScreen screen)
+		{
+			var bufferLength = screen.Length;
+			var prealloc = new int[bufferLength]; //TODO actually take a `ref int[] prealloc` (or an int* maybe?)
+			DebugAssertPreallocatedBufferSize(bufferLength, prealloc.Length);
+
+			for (var i = 0; i < bufferLength; i++) prealloc[i] = screen.Buffer[i];
+			return prealloc;
+		}
+
+		public static unsafe int[] UprightSideBySide(VideoScreen forLeft, VideoScreen forRight, int gapLineCount = 0)
+		{
+			DebugAssertScreenDimensionsMatch(forLeft.Height, forRight.Height);
+			var outputHeight = forLeft.Height;
+
+			var rightOffsetHztl = forLeft.Width + gapLineCount;
+			var outputWidth = rightOffsetHztl + forRight.Width;
+			var bufferLength = outputHeight * outputWidth; // which = `forLeft.Length + outputHeight * gapLineCount + forRight.Length`
+			var prealloc = new int[bufferLength]; //TODO actually take a `ref int[] prealloc` (or an int* maybe?)
+			DebugAssertPreallocatedBufferSize(bufferLength, prealloc.Length);
+
+			for (var y = 0; y < outputHeight; y++)
 			{
-				ret[i] = screen1.Buffer[i];
+				for (int x = 0, w = forLeft.Width; x < w; x++) prealloc[y * outputWidth + x] = forLeft.Buffer[y * w + x]; // copy this row of the left screen
+				// don't bother writing into the gap
+				for (int x = 0, w = forRight.Width; x < w; x++) prealloc[y * outputWidth + rightOffsetHztl + x] = forRight.Buffer[y * w + x]; // copy this row of the right screen
 			}
-
-			return ret;
+			return prealloc;
 		}
 
-		// TODO: pass in int[] to reuse buffer
-		// TODO: there is a simpler algorithm for sure
-		public static unsafe int[] SideBySide(VideoScreen screen1, VideoScreen screen2)
+		public static unsafe int[] Rotate90Stack(VideoScreen forLeft, VideoScreen forRight, int gapLineCount = 0)
 		{
-			int width = screen1.Width + screen2.Width;
-			int height = screen2.Height;
-			var ret = new int[width * height];
+			DebugAssertScreenDimensionsMatch(forLeft.Width, forRight.Width);
+			var outputHeight = forLeft.Width;
 
-			for (int y = 0; y < height; y++)
+			var rightOffsetHztl = forLeft.Height + gapLineCount;
+			var outputWidth = rightOffsetHztl + forRight.Height;
+			var bufferLength = outputHeight * outputWidth; // which = `forLeft.Length + outputHeight * gapLineCount + forRight.Length`
+			var prealloc = new int[bufferLength]; //TODO actually take a `ref int[] prealloc` (or an int* maybe?)
+			DebugAssertPreallocatedBufferSize(bufferLength, prealloc.Length);
+
+			for (var y = 0; y < outputHeight; y++)
 			{
-				for (int x = 0; x < width; x++)
-				{
-					if (x < screen1.Width)
-					{
-						ret[(y * width) + x] = screen1.Buffer[(y * width / 2) + x];
-					}
-					else
-					{
-						ret[(y * width) + x] = screen2.Buffer[(y * width / 2) + x];
-					}
-				}
-				
+				for (int x = 0, w = forLeft.Height; x < w; x++) prealloc[y * outputWidth + x] = forLeft.Buffer[(x + 1) * outputHeight - y]; // copy and rotate this column of the top screen to the left of the output
+				// don't bother writing into the gap
+				for (int x = 0, w = forRight.Height; x < w; x++) prealloc[y * outputWidth + rightOffsetHztl + x] = forRight.Buffer[(x + 1) * outputHeight - y]; // copy and rotate this column of the bottom screen to the right of the output
 			}
-
-			return ret;
+			return prealloc;
 		}
 
-		// Yeah...
-		public static int[] Rotate90(int[] buffer)
+		public static unsafe int[] Rotate270Stack(VideoScreen forLeft, VideoScreen forRight, int gapLineCount = 0)
 		{
-			return buffer;
-		}
+			DebugAssertScreenDimensionsMatch(forLeft.Width, forRight.Width);
+			var outputHeight = forLeft.Width;
 
-		public static int[] Rotate270(int[] buffer)
-		{
-			return buffer;
+			var rightOffsetHztl = forLeft.Height + gapLineCount;
+			var outputWidth = rightOffsetHztl + forRight.Height;
+			var bufferLength = outputHeight * outputWidth; // which = `forLeft.Length + outputHeight * gapLineCount + forRight.Length`
+			var prealloc = new int[bufferLength]; //TODO actually take a `ref int[] prealloc` (or an int* maybe?)
+			DebugAssertPreallocatedBufferSize(bufferLength, prealloc.Length);
+
+			for (var y = 0; y < outputHeight; y++)
+			{
+				for (int x = 0, w = forLeft.Height; x < w; x++) prealloc[y * outputWidth + x] = forLeft.Buffer[(w - x) * outputHeight + y]; // copy and rotate this column of the bottom screen to the left of the output
+				// don't bother writing into the gap
+				for (int x = 0, w = forRight.Height; x < w; x++) prealloc[y * outputWidth + rightOffsetHztl + x] = forRight.Buffer[(w - x) * outputHeight + y]; // copy and rotate this column of the top screen to the right of the output
+			}
+			return prealloc;
 		}
 	}
 }
