@@ -79,5 +79,16 @@
 
 			return ret;
 		}
+
+		// Yeah...
+		public static int[] Rotate90(int[] buffer)
+		{
+			return buffer;
+		}
+
+		public static int[] Rotate270(int[] buffer)
+		{
+			return buffer;
+		}
 	}
 }

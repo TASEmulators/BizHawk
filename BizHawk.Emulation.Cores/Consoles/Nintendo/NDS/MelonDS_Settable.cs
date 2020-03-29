@@ -83,8 +83,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			Default,
 			TopOnly,
 			SideBySideLR,
-			SideBySideRL
-			/* TODO Reverse */
+			SideBySideRL,
+			Rotate90,
+			Rotate270
 		}
 
 		public class MelonSettings
@@ -102,6 +103,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					VideoScreenOptions.TopOnly => null,
 					VideoScreenOptions.SideBySideLR => new Point(NativeWidth, 0),
 					VideoScreenOptions.SideBySideRL => new Point(0, 0),
+					VideoScreenOptions.Rotate90 => new Point(0, 0),
+					VideoScreenOptions.Rotate270 => new Point(256, 0),
 					_ => new Point(0, NativeHeight + ScreenGap)
 				};
 			
@@ -111,6 +114,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				{
 					VideoScreenOptions.SideBySideLR => NativeWidth * 2,
 					VideoScreenOptions.SideBySideRL => NativeWidth * 2,
+					VideoScreenOptions.Rotate90 => NativeHeight * 2,
+					VideoScreenOptions.Rotate270 => NativeHeight * 2,
 					_ => NativeWidth
 				};
 			
@@ -122,6 +127,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					VideoScreenOptions.TopOnly => NativeHeight,
 					VideoScreenOptions.SideBySideLR => NativeHeight,
 					VideoScreenOptions.SideBySideRL => NativeHeight,
+					VideoScreenOptions.Rotate90 => NativeWidth,
+					VideoScreenOptions.Rotate270 => NativeWidth,
 					_ => (NativeHeight * 2) + ScreenGap
 				};
 		}

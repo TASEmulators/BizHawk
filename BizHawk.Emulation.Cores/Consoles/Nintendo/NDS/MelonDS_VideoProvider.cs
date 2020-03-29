@@ -46,6 +46,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					VideoScreenOptions.TopOnly => ScreenArranger.Copy(TopScreen),
 					VideoScreenOptions.SideBySideLR => ScreenArranger.SideBySide(TopScreen, BottomScreen),
 					VideoScreenOptions.SideBySideRL => ScreenArranger.SideBySide(BottomScreen, TopScreen),
+					VideoScreenOptions.Rotate90 => ScreenArranger.Rotate90(ScreenArranger.Stack(TopScreen, BottomScreen, 0)),
+					VideoScreenOptions.Rotate270 => ScreenArranger.Rotate270(ScreenArranger.Stack(TopScreen, BottomScreen, 0)),
 				_ => ScreenArranger.Stack(TopScreen, BottomScreen, _settings.ScreenGap)
 				};
 			}
