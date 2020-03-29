@@ -56,6 +56,7 @@ namespace GBHawk
 		bool GBC_compat;
 		bool speed_switch, double_speed;
 		bool in_vblank;
+		bool in_vblank_old;
 		bool GB_bios_register;
 		bool HDMA_transfer;
 		bool _islag;

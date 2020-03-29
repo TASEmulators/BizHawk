@@ -35,9 +35,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		/// <param name="core">opaque state pointer</param>
 		/// <param name="romdata_1">the rom data, can be disposed of once this function returns</param>
 		/// <param name="length_1">length of romdata in bytes</param>
+		/// <param name="MD5">Hash used for mapper loading</param>
+		/// <param name="RTC_init">Initial RTC time</param>
+		/// <param name="RTC_offset">Clck offset for RTC</param>
 		/// <returns>0 on success, negative value on failure.</returns>
 		[DllImport("GBHawk.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern int GB_load(IntPtr core, byte[] romdata_1, uint length_1, uint RTC_init, uint RTC_offset);
+		public static extern int GB_load(IntPtr core, byte[] romdata_1, uint length_1, char[] MD5, uint RTC_init, uint RTC_offset);
 
 		/// <summary>
 		/// Advance a frame and send controller data.
@@ -93,12 +96,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		#region Memory Domain Functions
 
 		/// <summary>
-		/// Read the system bus
+		/// Read the RAM
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
-		/// <param name="addr">system bus address</param>
+		/// <param name="addr">ram address</param>
 		[DllImport("GBHawk.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern byte GB_getsysbus(IntPtr core, int addr);
+		public static extern byte GB_getram(IntPtr core, int addr);
 
 		/// <summary>
 		/// Read the VRAM
@@ -109,12 +112,73 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public static extern byte GB_getvram(IntPtr core, int addr);
 
 		/// <summary>
+		/// Read the VRAM
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="addr">vram address</param>
+		[DllImport("GBHawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern byte GB_getoam(IntPtr core, int addr);
+
+		/// <summary>
+		/// Read the VRAM
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="addr">vram address</param>
+		[DllImport("GBHawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern byte GB_gethram(IntPtr core, int addr);
+
+		/// <summary>
+		/// Read the system bus
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="addr">system bus address</param>
+		[DllImport("GBHawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern byte GB_getsysbus(IntPtr core, int addr);
+
+		/// <summary>
 		/// Read the RAM
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
 		/// <param name="addr">ram address</param>
+		/// <param name="value">write value</param>
 		[DllImport("GBHawk.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern byte GB_getram(IntPtr core, int addr);
+		public static extern void GB_setram(IntPtr core, int addr, byte value);
+
+		/// <summary>
+		/// Read the VRAM
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="addr">vram address</param>
+		/// <param name="value">write value</param>
+		[DllImport("GBHawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void GB_setvram(IntPtr core, int addr, byte value);
+
+		/// <summary>
+		/// Read the VRAM
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="addr">vram address</param>
+		/// <param name="value">write value</param>
+		[DllImport("GBHawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void GB_setoam(IntPtr core, int addr, byte value);
+
+		/// <summary>
+		/// Read the VRAM
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="addr">vram address</param>
+		/// <param name="value">write value</param>
+		[DllImport("GBHawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void GB_sethram(IntPtr core, int addr, byte value);
+
+		/// <summary>
+		/// Read the system bus
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="addr">system bus address</param>
+		/// <param name="value">write value</param>
+		[DllImport("GBHawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void GB_setsysbus(IntPtr core, int addr, byte value);
 
 		#endregion
 
@@ -175,7 +239,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public static extern void GB_getregisterstate(IntPtr core, StringBuilder h, int t, int l);
 
 		/// <summary>
-		/// get the register state from the cpu
+		/// get the opcode disassembly
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
 		/// <param name="d">pointer to const char *</param>
@@ -184,5 +248,88 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		[DllImport("GBHawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void GB_getdisassembly(IntPtr core, StringBuilder h, int t, int l);
 		#endregion
+
+		#region PPU_Viewer
+
+		/// <summary>
+		/// type of the cpu trace callback
+		/// </summary>
+		/// <param name="lcdc">type of event</param>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void ScanlineCallback(byte lcdc);
+
+		/// <summary>
+		/// Get PPU Pointers
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="sel">region to get</param>
+		[DllImport("GBHawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern IntPtr GB_get_ppu_pntrs(IntPtr core, int sel);
+
+		/// <summary>
+		/// Get PPU Pointers
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		[DllImport("GBHawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern byte GB_get_LCDC(IntPtr core);
+
+		/// <summary>
+		/// set a callback to occur when ly reaches a particular scanline (so at the beginning of the scanline).
+		/// when the LCD is active, typically 145 will be the first callback after the beginning of frame advance,
+		/// and 144 will be the last callback right before frame advance returns
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="callback">null to clear</param>
+		/// <param name="sl">0-153 inclusive</param>
+		[DllImport("GBHawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void GB_setscanlinecallback(IntPtr core, ScanlineCallback callback, int sl);
+
+		#endregion
+
+		#region debuggable funcitons
+
+		/// <summary>
+		/// get the current cpu cycle count
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		[DllImport("GBHawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern int GB_cpu_cycles(IntPtr core);
+
+		/// <summary>
+		/// get the registers
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="reg">reg number (see the DLL)</param>
+		[DllImport("GBHawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern byte GB_cpu_get_regs(IntPtr core, int reg);
+
+		/// <summary>
+		/// get the flags
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="flag">flag number (see the DLL)</param>
+		[DllImport("GBHawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern bool GB_cpu_get_flags(IntPtr core, int flag);
+
+		/// <summary>
+		/// get the registers
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="reg">reg number (see the DLL)</param>
+		/// <param name="value">value to set</param>
+		[DllImport("GBHawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void GB_cpu_set_regs(IntPtr core, int reg, byte value);
+
+		/// <summary>
+		/// get the flags
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="flag">flag number (see the DLL)</param>
+		/// <param name="value">value to set</param>
+		[DllImport("GBHawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void GB_cpu_set_flags(IntPtr core, int flag, bool value);
+
+		#endregion
+
 	}
 }

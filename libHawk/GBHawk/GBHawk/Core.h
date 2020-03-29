@@ -109,6 +109,25 @@ namespace GBHawk
 			MemMap.mapper_pntr->Cart_RAM = &MemMap.Cart_RAM[0];
 		}
 
+		void Reset() 
+		{
+			MemMap.GB_bios_register = 0; // bios enable
+			MemMap.GBC_compat = MemMap.is_GBC;
+			MemMap.in_vblank = true; // we start off in vblank since the LCD is off
+			MemMap.in_vblank_old = true;
+			MemMap.double_speed = false;
+			MemMap.VRAM_Bank = 0;
+			MemMap.RAM_Bank = 1; // RAM bank always starts as 1 (even writing zero still sets 1)
+
+			MemMap.Register_Reset();
+			timer.Reset();
+			ppu->Reset();
+			psg.Reset();
+			serialport.Reset();
+			mapper->Reset();
+			cpu.Reset();
+		}
+
 		bool FrameAdvance(uint8_t controller_1, uint8_t controller_2, uint8_t* kb_rows_ptr, bool render, bool rendersound)
 		{
 			
@@ -384,19 +403,56 @@ namespace GBHawk
 
 		#pragma region Memory Domain Functions
 
-		uint8_t GetSysBus(uint32_t addr)
+
+		uint8_t GetRAM(uint32_t addr)
 		{
-			return cpu.PeekMemory(addr);
+			return MemMap.RAM[addr & 0x7FFF];
 		}
 
-		uint8_t GetVRAM(uint32_t addr) 
+		uint8_t GetVRAM(uint32_t addr)
 		{
 			return MemMap.VRAM[addr & 0x3FFF];
 		}
 
-		uint8_t GetRAM(uint32_t addr)
+		uint8_t GetOAM(uint32_t addr)
 		{
-			return MemMap.RAM[addr & 0xFFFF];
+			return MemMap.OAM[addr];
+		}
+
+		uint8_t GetHRAM(uint32_t addr)
+		{
+			return MemMap.ZP_RAM[addr & 0x7F];
+		}
+
+		uint8_t GetSysBus(uint32_t addr)
+		{
+			return MemMap.PeekMemory(addr);
+		}
+
+		void SetRAM(uint32_t addr, uint8_t value)
+		{
+			MemMap.RAM[addr & 0x7FFF] = value;
+		}
+
+		void SetVRAM(uint32_t addr, uint8_t value)
+		{
+			MemMap.VRAM[addr & 0x3FFF] = value;
+		}
+
+		void SetOAM(uint32_t addr, uint8_t value)
+		{
+			MemMap.OAM[addr] = value;
+		}
+
+		void SetHRAM(uint32_t addr, uint8_t value)
+		{
+			MemMap.ZP_RAM[addr & 0x7F] = value;
+		}
+
+		void SetSysBus(uint32_t addr, uint8_t value)
+		{
+			// make poke?
+			MemMap.WriteMemory(addr, value);
 		}
 
 		#pragma endregion
@@ -406,6 +462,12 @@ namespace GBHawk
 		void SetTraceCallback(void (*callback)(int))
 		{
 			cpu.TraceCallback = callback;
+		}
+
+		void SetScanlineCallback(void (*callback)(void), int sl)
+		{
+			ppu->scanlineCallback = callback;
+			MemMap._scanlineCallbackLine = sl;
 		}
 
 		int GetHeaderLength()
@@ -420,7 +482,7 @@ namespace GBHawk
 
 		int GetRegStringLength()
 		{
-			return 86 + 1;
+			return 74 + 1;
 		}
 
 		void GetHeader(char* h, int l)

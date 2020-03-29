@@ -19,6 +19,8 @@ namespace GBHawk
 
 		}
 
+		void (*scanlineCallback)(void);
+
 		uint8_t ReadMemory(uint32_t);
 
 		MemoryManager* mem_ctrl;
@@ -725,11 +727,10 @@ namespace GBHawk
 					// scanline callback
 					if ((LY + LY_inc) == _scanlineCallbackLine[0])
 					{
-						//if (Core._scanlineCallback != null)
-						//{
-							//Core.GetGPU();
-							//Core._scanlineCallback(LCDC);
-						//}
+						if (scanlineCallback)
+						{
+							scanlineCallback();
+						}
 					}
 
 					cycle = 0;
@@ -2146,11 +2147,10 @@ namespace GBHawk
 					// scanline callback
 					if ((LY + LY_inc) == _scanlineCallbackLine[0])
 					{
-						//if (Core._scanlineCallback != null)
-						//{
-						//	Core.GetGPU();
-						//	Core._scanlineCallback(LCDC);
-						//}
+						if (scanlineCallback)
+						{
+							scanlineCallback();
+						}
 					}
 
 					cycle = 0;
@@ -3707,11 +3707,10 @@ namespace GBHawk
 					// scanline callback
 					if ((LY + LY_inc) == _scanlineCallbackLine[0])
 					{
-						//if (Core._scanlineCallback != null)
-						//{
-						//	Core.GetGPU();
-						//	Core._scanlineCallback(LCDC);
-						//}
+						if (scanlineCallback)
+						{
+							scanlineCallback();
+						}
 					}
 
 					cycle = 0;

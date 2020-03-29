@@ -166,6 +166,8 @@ namespace GBHawk
 			CB_prefix = false;
 		}
 
+
+
 		void Reset()
 		{
 			ResetRegisters();
@@ -2626,12 +2628,12 @@ namespace GBHawk
 		#pragma region Disassemble
 
 		// disassemblies will also return strings of the same length
-		const char* TraceHeader = "Z80A: PC, machine code, mnemonic, operands, registers (AF, BC, DE, HL, IX, IY, SP, Cy), flags (CNP3H5ZS)";
+		const char* TraceHeader = "LR35902: PC, machine code, mnemonic, operands, registers (A, F, B, C, D, E, H, L, SP), Cy, flags(ZNHCIE)";							  
 		const char* Un_halt_event = "                 ==Un-halted==                 ";
 		const char* IRQ_event     = "                  ====IRQ====                  ";
 		const char* Un_stop_event = "                ==Un-stopped==                 ";
 		const char* No_Reg = "                                                                                     ";
-		const char* Reg_template = "AF:AAFF BC:BBCC DE:DDEE HL:HHLL Ix:IxIx Iy:IyIy SP:SPSP Cy:FEDCBA9876543210 CNP3H5ZSE";
+		const char* Reg_template = "A:AA F:FF B:BB C:CC D:DD E:EE H:HH L:LL SP:SPSP Cy:FEDCBA9876543210 ZNHCIE";
 		const char* Disasm_template = "PCPC: AA BB CC DD   Di Di, XXXXX               ";
 
 		char replacer[32] = {};
@@ -2646,25 +2648,37 @@ namespace GBHawk
 		{		
 			val_char_1 = replacer;
 
-			string reg_state = "AF:";
-			temp_reg = (Regs[A] << 8) + Regs[F];
-			sprintf_s(val_char_1, 5, "%04X", temp_reg);
-			reg_state.append(val_char_1, 4);
+			string reg_state = "A:";
+			sprintf_s(val_char_1, 5, "%02X", Regs[A]);
+			reg_state.append(val_char_1, 2);
 
-			reg_state.append(" BC:");			
-			temp_reg = (Regs[B] << 8) + Regs[C];
-			sprintf_s(val_char_1, 5, "%04X", temp_reg);
-			reg_state.append(val_char_1, 4);
+			reg_state = "F:";
+			sprintf_s(val_char_1, 5, "%02X", Regs[F]);
+			reg_state.append(val_char_1, 2);
 
-			reg_state.append(" DE:");			
-			temp_reg = (Regs[D] << 8) + Regs[E];
-			sprintf_s(val_char_1, 5, "%04X", temp_reg);
-			reg_state.append(val_char_1, 4);
+			reg_state = "B:";
+			sprintf_s(val_char_1, 5, "%02X", Regs[B]);
+			reg_state.append(val_char_1, 2);
 
-			reg_state.append(" HL:");
-			temp_reg = (Regs[H] << 8) + Regs[L];
-			sprintf_s(val_char_1, 5, "%04X", temp_reg);
-			reg_state.append(val_char_1, 4);
+			reg_state = "C:";
+			sprintf_s(val_char_1, 5, "%02X", Regs[C]);
+			reg_state.append(val_char_1, 2);
+
+			reg_state = "D:";
+			sprintf_s(val_char_1, 5, "%02X", Regs[D]);
+			reg_state.append(val_char_1, 2);
+
+			reg_state = "E:";
+			sprintf_s(val_char_1, 5, "%02X", Regs[E]);
+			reg_state.append(val_char_1, 2);
+
+			reg_state = "H:";
+			sprintf_s(val_char_1, 5, "%02X", Regs[H]);
+			reg_state.append(val_char_1, 2);
+
+			reg_state = "L:";
+			sprintf_s(val_char_1, 5, "%02X", Regs[L]);
+			reg_state.append(val_char_1, 2);
 
 			reg_state.append(" SP:");
 			temp_reg = (Regs[SPh] << 8) + Regs[SPl];
@@ -2679,7 +2693,8 @@ namespace GBHawk
 			reg_state.append(FlagNget() ? "N" : "n");
 			reg_state.append(FlagHget() ? "H" : "h");
 			reg_state.append(FlagZget() ? "Z" : "z");
-			reg_state.append(FlagI ? "E" : "e");
+			reg_state.append(FlagI ? "I" : "i");
+			reg_state.append(interrupts_enabled ? "E" : "e");
 
 			return reg_state;
 		}
@@ -2734,9 +2749,9 @@ namespace GBHawk
 			//n immediate succeeds the opcode and the displacement (if present)
 			//nn immediately succeeds the opcode and the displacement (if present)
 
-			if (format.find("nn") != string::npos)
+			if (format.find("a16") != string::npos)
 			{
-				size_t str_loc = format.find("nn");
+				size_t str_loc = format.find("a16");
 
 				val_char_1 = replacer;
 				sprintf_s(val_char_1, 5, "%02X", PeekMemory(addr[0] & 0xFFFF));
@@ -2748,25 +2763,60 @@ namespace GBHawk
 				string val2(val_char_2, 2);
 				addr[0]++;
 
-				format.erase(str_loc, 2);
+				format.erase(str_loc, 3);
 				format.insert(str_loc, val1);
 				format.insert(str_loc, val2);
 			}
-			
-			if (format.find("n") != string::npos)
+
+			if (format.find("d16") != string::npos)
 			{
-				size_t str_loc = format.find("n");
+				size_t str_loc = format.find("d16");
 
 				val_char_1 = replacer;
 				sprintf_s(val_char_1, 5, "%02X", PeekMemory(addr[0] & 0xFFFF));
 				string val1(val_char_1, 2);
 				addr[0]++;
 
-				format.erase(str_loc, 1);
+				val_char_2 = replacer;
+				sprintf_s(val_char_2, 5, "%02X", PeekMemory(addr[0] & 0xFFFF));
+				string val2(val_char_2, 2);
+				addr[0]++;
+
+				format.erase(str_loc, 3);
+				format.insert(str_loc, val1);
+				format.insert(str_loc, val2);
+			}
+			
+			if (format.find("d8") != string::npos)
+			{
+				size_t str_loc = format.find("d8");
+
+				val_char_1 = replacer;
+				sprintf_s(val_char_1, 5, "%02X", PeekMemory(addr[0] & 0xFFFF));
+				string val1(val_char_1, 2);
+				addr[0]++;
+
+				format.erase(str_loc, 2);
 				format.insert(str_loc, val1);
 			}
 
-			if (format.find("+d") != string::npos)
+			if (format.find("a8") != string::npos)
+			{
+				size_t str_loc = format.find("a8");
+
+				val_char_2 = replacer;
+				sprintf_s(val_char_1, 5, "%02X", PeekMemory(addr[0] & 0xFFFF));
+				string val1(val_char_1, 2);
+				addr[0]++;
+
+				string val2 = "FF";
+
+				format.erase(str_loc, 2);
+				format.insert(str_loc, val1);
+				format.insert(str_loc, val2);
+			}
+
+			if (format.find("r8") != string::npos)
 			{
 				size_t str_loc = format.find("+d");
 
@@ -2776,18 +2826,6 @@ namespace GBHawk
 				addr[0]++;
 
 				format.erase(str_loc, 2);
-				format.insert(str_loc, val1);
-			}
-			if (format.find("d") != string::npos)
-			{
-				size_t str_loc = format.find("d");
-
-				val_char_1 = replacer;
-				sprintf_s(val_char_1, 5, "%+04d", (int8_t)PeekMemory(addr[0] & 0xFFFF));
-				string val1(val_char_1, 4);
-				addr[0]++;
-
-				format.erase(str_loc, 1);
 				format.insert(str_loc, val1);
 			}
 						
