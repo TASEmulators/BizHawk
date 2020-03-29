@@ -549,6 +549,7 @@ namespace BizHawk.Client.EmuHawk
 					}, () =>
 					{
 						lf.Stop();
+						LuaListView.Refresh();
 					});
 				}
 				catch (Exception ex)
