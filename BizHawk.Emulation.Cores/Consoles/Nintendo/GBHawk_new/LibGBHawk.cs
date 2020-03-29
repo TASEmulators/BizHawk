@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
+namespace BizHawk.Emulation.Cores.Nintendo.GBHawkNew
 {
 	/// <summary>
 	/// static bindings into GBHawk.dll
