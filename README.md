@@ -102,7 +102,7 @@ A "backport" release, [1.13.2](https://github.com/TASVideos/BizHawk/releases/tag
 
 You'll need to either build BizHawk yourself (see [*Building*](#unix-1) below), or download a dev build (see [*Testing*](#testing) below; please note some features are broken in dev builds for unknown reasons).
 
-The runtime dependencies are: Mono "complete", Mono VB.NET, WINE (just `libwine` if available), glibc, OpenAL, NVIDIA's `cgc` utility, and your distro's LSB implementation. Run `EmuHawkMono.sh` to start Mono with the right library and executable paths—you can run it from anywhere, so putting it in a .desktop file is fine.
+The runtime dependencies are: Mono "complete", Mono VB.NET, ~~`libwine`~~, glibc, OpenAL, NVIDIA's `cgc` utility, and your distro's LSB implementation (You do *not* need .NET at runtime). Run `EmuHawkMono.sh` to start Mono with the right library and executable paths—you can run it from anywhere, so putting it in a .desktop file is fine.
 
 The systems that currently work are: GB + GBC (GBHawk), NES (NesHawk), SMS, Atari 7800, and some classic home computers. Nothing other than EmuHawk has been ported. See [#1430](https://github.com/TASVideos/BizHawk/issues/1430) for progress.
 
@@ -126,14 +126,14 @@ For anything more complicated than just building, you'll need an IDE like [VS Co
 
 ### Unix
 
-Before you can build, you need `msbuild` (which should include `nuget`) You may need to [add a repo](https://www.mono-project.com/download/stable/), if so, if may conflict with the distro's Mono package. Once it's installed, run:
+Before you can build, you'll need the .NET Core SDK 3.1 (package name is usually `dotnet-sdk-3.1`, see [full instructions](https://docs.microsoft.com/en-gb/dotnet/core/install/sdk?pivots=os-linux)). You may need to uninstall MSBuild first. Once it's installed, run:
 ```sh
-git clone https://github.com/TASVideos/BizHawk.git BizHawk_master && cd BizHawk_master
-# or ssh: git clone git@github.com:TASVideos/BizHawk.git BizHawk_master && cd BizHawk_master
-Dist/BuildRelease.sh
+git clone https://github.com/TASVideos/BizHawk.git BizHawk_master
+# or ssh: git clone git@github.com:TASVideos/BizHawk.git BizHawk_master
+BizHawk_master/Dist/BuildRelease.sh
 ```
 
-The assemblies are put in `output`, so if you have the runtime dependencies (see [*Installing*](#unix)) you can call `output/EmuHawkMono.sh`. You may need to add the WINE library path to the script—find `d3dx9_43.dll.so` and update the case statement accordingly (and then please post it to [#1430](https://github.com/TASVideos/BizHawk/issues/1430) or in IRC).
+The assemblies are put in `BizHawk_master/output`, so if you have the runtime dependencies (see [*Installing*](#unix)) you can call `BizHawk_master/output/EmuHawkMono.sh`. The shell script may yell at you, it should be safe to ignore. stdout is redirected to `BizHawk_master/output/EmuHawkMono_laststdout.txt` by default, pass `--mono-no-redirect` **as the first flag** to disable this.
 
 [to top](#bizhawk)
 
@@ -256,7 +256,7 @@ Virtual Boy | Virtual Boyee |
 WonderSwan / Color | Cygne |
 ZX Spectrum | ZXHawk |
 
-Amstrad CPC, Fairchild Channel F, Magnavox Odyssey², and MB Vectrex emulation are works-in-progress, as well as a front-end for MAME, and there is **no ETA** for any of them so don't ask. Cores for other systems are only conceptual. If you're willing and able to work on one of these, ask on IRC (see below).
+Amstrad CPC, Fairchild Channel F, Magnavox Odyssey², Nintendo DS via [melonDS](https://github.com/Arisotura/melonDS), and MB Vectrex emulation are works-in-progress, as well as a front-end for MAME, and there is **no ETA** for any of them so don't ask. Cores for other systems are only conceptual. If you're willing and able to work on one of these, ask on IRC (see below).
 
 [to top](#bizhawk)
 
