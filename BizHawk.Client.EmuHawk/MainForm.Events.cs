@@ -239,7 +239,6 @@ namespace BizHawk.Client.EmuHawk
 			FullMovieLoadstatesMenuItem.Enabled = !MovieSession.MultiTrack.IsActive;
 			StopMovieWithoutSavingMenuItem.Enabled = MovieSession.Movie.IsActive() && MovieSession.Movie.Changes;
 			StopMovieMenuItem.Enabled
-				= PlayFromBeginningMenuItem.Enabled
 				= SaveMovieMenuItem.Enabled
 				= SaveMovieAsMenuItem.Enabled
 				= MovieSession.Movie.IsActive();
@@ -254,6 +253,13 @@ namespace BizHawk.Client.EmuHawk
 			StopMovieMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Stop Movie"].Bindings;
 			PlayFromBeginningMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Play from beginning"].Bindings;
 			SaveMovieMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save Movie"].Bindings;
+
+			RecordMovieMenuItem.Enabled
+				= PlayMovieMenuItem.Enabled
+				= ImportMoviesMenuItem.Enabled
+				= !Tools.IsLoaded<TAStudio>();
+
+			PlayFromBeginningMenuItem.Enabled = MovieSession.Movie.IsActive() && !Tools.IsLoaded<TAStudio>();
 		}
 
 		private void RecentMovieSubMenu_DropDownOpened(object sender, EventArgs e)
