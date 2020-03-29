@@ -6,6 +6,8 @@ using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Text;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 using BizHawk.Bizware.BizwareGL;
@@ -174,7 +176,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// custom fonts that don't need to be installed on the user side
 		/// </summary>
-		public System.Drawing.Text.PrivateFontCollection CustomFonts = new System.Drawing.Text.PrivateFontCollection();
+		public PrivateFontCollection CustomFonts = new PrivateFontCollection();
 
 		private readonly TextureFrugalizer VideoTextureFrugalizer;
 		private readonly Dictionary<string, TextureFrugalizer> LuaSurfaceFrugalizers = new Dictionary<string, TextureFrugalizer>();
@@ -193,9 +195,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		System.Windows.Forms.Padding CalculateCompleteContentPadding(bool user, bool source)
+		private Padding CalculateCompleteContentPadding(bool user, bool source)
 		{
-			var padding = new System.Windows.Forms.Padding();
+			var padding = new Padding();
 
 			if (user)
 			{
@@ -222,7 +224,7 @@ namespace BizHawk.Client.EmuHawk
 			return padding;
 		}
 
-		FilterProgram BuildDefaultChain(Size chainInSize, Size chainOutSize, bool includeOSD, bool includeUserFilters)
+		private FilterProgram BuildDefaultChain(Size chainInSize, Size chainOutSize, bool includeOSD, bool includeUserFilters)
 		{
 			// select user special FX shader chain
 			var selectedChainProperties = new Dictionary<string, object>();
@@ -358,7 +360,7 @@ namespace BizHawk.Client.EmuHawk
 			return chain;
 		}
 
-		void AppendRetroShaderChain(FilterProgram program, string name, Filters.RetroShaderChain retroChain, Dictionary<string, object> properties)
+		private void AppendRetroShaderChain(FilterProgram program, string name, Filters.RetroShaderChain retroChain, Dictionary<string, object> properties)
 		{
 			for (int i = 0; i < retroChain.Passes.Length; i++)
 			{
@@ -370,7 +372,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		void AppendLuaLayer(FilterProgram chain, string name)
+		private void AppendLuaLayer(FilterProgram chain, string name)
 		{
 			var luaNativeSurface = LuaSurfaceSets[name].GetCurrent();
 			if (luaNativeSurface == null)
@@ -830,7 +832,7 @@ namespace BizHawk.Client.EmuHawk
 			presentationPanel.GraphicsControl.SwapBuffers();
 		}
 
-		void UpdateSourceDrawingWork(JobInfo job)
+		private void UpdateSourceDrawingWork(JobInfo job)
 		{
 			bool alternateVsync = false;
 
@@ -961,13 +963,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadCustomFont(Stream fontStream)
 		{
-			IntPtr data = System.Runtime.InteropServices.Marshal.AllocCoTaskMem((int)fontStream.Length);
+			IntPtr data = Marshal.AllocCoTaskMem((int)fontStream.Length);
 			byte[] fontData = new byte[fontStream.Length];
 			fontStream.Read(fontData, 0, (int)fontStream.Length);
-			System.Runtime.InteropServices.Marshal.Copy(fontData, 0, data, (int)fontStream.Length);
+			Marshal.Copy(fontData, 0, data, (int)fontStream.Length);
 			CustomFonts.AddMemoryFont(data, fontData.Length);
 			fontStream.Close();
-			System.Runtime.InteropServices.Marshal.FreeCoTaskMem(data);
+			Marshal.FreeCoTaskMem(data);
 		}
 
 		private bool? LastVsyncSetting;
