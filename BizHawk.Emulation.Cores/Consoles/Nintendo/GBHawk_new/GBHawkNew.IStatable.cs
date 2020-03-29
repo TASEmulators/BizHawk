@@ -7,13 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkNew
 	{
 		private void SyncState(Serializer ser)
 		{
-			byte[] core = null;
-			if (ser.IsWriter)
-			{
-				using var ms = new MemoryStream();
-				ms.Close();
-				core = ms.ToArray();
-			}
+			ser.BeginSection("GB");
 
 			ser.Sync("Frame", ref _frame);
 			ser.Sync("LagCount", ref _lagCount);

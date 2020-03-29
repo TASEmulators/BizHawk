@@ -31,8 +31,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkNew
 		[CoreConstructor(new[] { "GB", "GBC" })]
 		public GBHawkNew(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ object settings, object syncSettings)
 		{
-			var ser = new BasicServiceProvider(this);
-
+			ServiceProvider = new BasicServiceProvider(this);
 			_settings = (GBSettings)settings ?? new GBSettings();
 			_syncSettings = (GBSyncSettings)syncSettings ?? new GBSyncSettings();
 			_controllerDeck = new GBHawkNewControllerDeck(_syncSettings.Port1);
@@ -69,6 +68,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkNew
 			}
 
 			_bios = Bios;
+			_rom = rom;
 
 			GB_Pntr = LibGBHawk.GB_create();
 
@@ -100,10 +100,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkNew
 
 			Console.WriteLine("MD5: " + rom.HashMD5(0, rom.Length));
 			Console.WriteLine("SHA1: " + rom.HashSHA1(0, rom.Length));
-
-			ser.Register<IVideoProvider>(this);
-
-			ServiceProvider = ser;
 
 			HardReset();
 
@@ -176,7 +172,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkNew
 		{
 			LibGBHawk.GB_Reset(GB_Pntr);
 
-			_vidbuffer = new int[VirtualWidth * VirtualHeight];
 			frame_buffer = new int[VirtualWidth * VirtualHeight];
 		}
 

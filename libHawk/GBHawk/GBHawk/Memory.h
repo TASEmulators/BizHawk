@@ -58,22 +58,23 @@ namespace GBHawk
 		bool HDMA_transfer;
 		bool Use_MT;
 		bool has_bat;
-		
-		uint8_t REG_FFFF, REG_FF0F, REG_FF0F_OLD;
-		uint8_t _scanlineCallbackLine;
-		uint8_t input_register;
-		uint32_t RAM_Bank;
-		uint32_t VRAM_Bank;
 
 		uint8_t IR_reg, IR_mask, IR_signal, IR_receive, IR_self;
-		uint32_t IR_write;
-		uint32_t addr_access;
-		uint32_t Acc_X_state;
-		uint32_t Acc_Y_state;
 
 		// several undocumented GBC Registers
 		uint8_t undoc_6C, undoc_72, undoc_73, undoc_74, undoc_75, undoc_76, undoc_77;
 		uint8_t controller_state;
+
+		uint8_t REG_FFFF, REG_FF0F, REG_FF0F_OLD;
+
+		uint8_t _scanlineCallbackLine;
+		uint8_t input_register;
+		uint32_t RAM_Bank;
+		uint32_t VRAM_Bank;
+		uint32_t IR_write;
+		uint32_t addr_access;
+		uint32_t Acc_X_state;
+		uint32_t Acc_Y_state;
 
 		uint8_t ZP_RAM[0x80] = {};
 		uint8_t RAM[0x8000] = {};
@@ -174,20 +175,162 @@ namespace GBHawk
 
 		uint8_t* SaveState(uint8_t* saver)
 		{
-			*saver = (uint8_t)(lagged ? 1 : 0); saver++;
+			saver = bool_saver(lagged, saver);
+			saver = bool_saver(is_GBC, saver);
+			saver = bool_saver(GBC_compat, saver);
+			saver = bool_saver(speed_switch, saver);
+			saver = bool_saver(double_speed, saver);
+			saver = bool_saver(in_vblank, saver);
+			saver = bool_saver(in_vblank_old, saver);
+			saver = bool_saver(vblank_rise, saver);
+			saver = bool_saver(GB_bios_register, saver);
+			saver = bool_saver(HDMA_transfer, saver);
+			saver = bool_saver(Use_MT, saver);
+			saver = bool_saver(has_bat, saver);
 
-			std::memcpy(saver, &RAM, 0x10000); saver += 0x10000;
-			//std::memcpy(saver, &cart_ram, 0x8000); saver += 0x8000;
+			saver = byte_saver(IR_reg, saver);
+			saver = byte_saver(IR_mask, saver);
+			saver = byte_saver(IR_signal, saver);
+			saver = byte_saver(IR_receive, saver);
+			saver = byte_saver(IR_self, saver);
+			saver = byte_saver(undoc_6C, saver);
+			saver = byte_saver(undoc_72, saver);
+			saver = byte_saver(undoc_73, saver);
+			saver = byte_saver(undoc_74, saver);
+			saver = byte_saver(undoc_75, saver);
+			saver = byte_saver(undoc_76, saver);
+			saver = byte_saver(undoc_77, saver);
+
+			saver = byte_saver(controller_state, saver);
+
+			saver = byte_saver(REG_FFFF, saver);
+			saver = byte_saver(REG_FF0F, saver);
+			saver = byte_saver(REG_FF0F_OLD, saver);
+			saver = byte_saver(_scanlineCallbackLine, saver);
+			saver = byte_saver(input_register, saver);
+
+			saver = int_saver(RAM_Bank, saver);
+			saver = int_saver(VRAM_Bank, saver);
+			saver = int_saver(IR_write, saver);
+			saver = int_saver(addr_access, saver);
+			saver = int_saver(Acc_X_state, saver);
+			saver = int_saver(Acc_Y_state, saver);
+
+			for (int i = 0; i < 0x80; i++) { saver = byte_saver(ZP_RAM[i], saver); }
+			for (int i = 0; i < 0x8000; i++) { saver = byte_saver(RAM[i], saver); }
+			for (int i = 0; i < 0x4000; i++) { saver = byte_saver(VRAM[i], saver); }
+			for (int i = 0; i < 0xA0; i++) { saver = byte_saver(OAM[i], saver); }
+			for (int i = 0; i < 0x50; i++) { saver = byte_saver(header[i], saver); }
+
+			for (int i = 0; i < (160 * 144); i++) { saver = int_saver(vidbuffer[i], saver); }
+			for (int i = 0; i < (160 * 144); i++) { saver = int_saver(frame_buffer[i], saver); }
 
 			return saver;
 		}
 
 		uint8_t* LoadState(uint8_t* loader)
 		{
-			lagged = *loader == 1; loader++;
+			loader = bool_loader(&lagged, loader);
+			loader = bool_loader(&is_GBC, loader);
+			loader = bool_loader(&GBC_compat, loader);
+			loader = bool_loader(&speed_switch, loader);
+			loader = bool_loader(&double_speed, loader);
+			loader = bool_loader(&in_vblank, loader);
+			loader = bool_loader(&in_vblank_old, loader);
+			loader = bool_loader(&vblank_rise, loader);
+			loader = bool_loader(&GB_bios_register, loader);
+			loader = bool_loader(&HDMA_transfer, loader);
+			loader = bool_loader(&Use_MT, loader);
+			loader = bool_loader(&has_bat, loader);
 
-			std::memcpy(&RAM, loader, 0x10000); loader += 0x10000;
-			//std::memcpy(&cart_ram, loader, 0x8000); loader += 0x8000;
+			loader = byte_loader(&IR_reg, loader);
+			loader = byte_loader(&IR_mask, loader);
+			loader = byte_loader(&IR_signal, loader);
+			loader = byte_loader(&IR_receive, loader);
+			loader = byte_loader(&IR_self, loader);
+			loader = byte_loader(&undoc_6C, loader);
+			loader = byte_loader(&undoc_72, loader);
+			loader = byte_loader(&undoc_73, loader);
+			loader = byte_loader(&undoc_74, loader);
+			loader = byte_loader(&undoc_75, loader);
+			loader = byte_loader(&undoc_76, loader);
+			loader = byte_loader(&undoc_77, loader);
+
+			loader = byte_loader(&controller_state, loader);
+
+			loader = byte_loader(&REG_FFFF, loader);
+			loader = byte_loader(&REG_FF0F, loader);
+			loader = byte_loader(&REG_FF0F_OLD, loader);
+			loader = byte_loader(&_scanlineCallbackLine, loader);
+			loader = byte_loader(&input_register, loader);
+
+			loader = int_loader(&RAM_Bank, loader);
+			loader = int_loader(&VRAM_Bank, loader);
+			loader = int_loader(&IR_write, loader);
+			loader = int_loader(&addr_access, loader);
+			loader = int_loader(&Acc_X_state, loader);
+			loader = int_loader(&Acc_Y_state, loader);
+
+			for (int i = 0; i < 0x80; i++) { loader = byte_loader(&ZP_RAM[i], loader); }
+			for (int i = 0; i < 0x8000; i++) { loader = byte_loader(&RAM[i], loader); }
+			for (int i = 0; i < 0x4000; i++) { loader = byte_loader(&VRAM[i], loader); }
+			for (int i = 0; i < 0xA0; i++) { loader = byte_loader(&OAM[i], loader); }
+			for (int i = 0; i < 0x50; i++) { loader = byte_loader(&header[i], loader); }
+
+			for (int i = 0; i < (160 * 144); i++) { loader = int_loader(&vidbuffer[i], loader); }
+			for (int i = 0; i < (160 * 144); i++) { loader = int_loader(&frame_buffer[i], loader); }
+
+			return loader;
+		}
+
+		uint8_t* bool_saver(bool to_save, uint8_t* saver)
+		{
+			*saver = (uint8_t)(to_save ? 1 : 0); saver++;
+
+			return saver;
+		}
+
+		uint8_t* byte_saver(uint8_t to_save, uint8_t* saver)
+		{
+			*saver = to_save; saver++;
+
+			return saver;
+		}
+
+		uint8_t* int_saver(uint32_t to_save, uint8_t* saver)
+		{
+			*saver = (uint8_t)(to_save & 0xFF); saver++; *saver = (uint8_t)((to_save >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((to_save >> 16) & 0xFF); saver++; *saver = (uint8_t)((to_save >> 24) & 0xFF); saver++;
+
+			return saver;
+		}
+
+		uint8_t* bool_loader(bool* to_load, uint8_t* loader)
+		{
+			to_load[0] = *to_load == 1; loader++;
+
+			return loader;
+		}
+
+		uint8_t* byte_loader(uint8_t* to_load, uint8_t* loader)
+		{
+			to_load[0] = *loader; loader++;
+
+			return loader;
+		}
+
+		uint8_t* int_loader(uint32_t* to_load, uint8_t* loader)
+		{
+			to_load[0] = *loader; loader++; to_load[0] |= (*loader << 8); loader++;
+			to_load[0] |= (*loader << 16); loader++; to_load[0] |= (*loader << 24); loader++;
+
+			return loader;
+		}
+
+		uint8_t* sint_loader(int32_t* to_load, uint8_t* loader)
+		{
+			to_load[0] = *loader; loader++; to_load[0] |= (*loader << 8); loader++;
+			to_load[0] |= (*loader << 16); loader++; to_load[0] |= (*loader << 24); loader++;
 
 			return loader;
 		}

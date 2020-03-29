@@ -18,7 +18,8 @@ namespace GBHawk
 	public:
 		GBCore() 
 		{
-
+			ppu = nullptr;
+			mapper = nullptr;
 		};
 
 		PPU* ppu;
@@ -319,7 +320,7 @@ namespace GBHawk
 			uint32_t* src = MemMap.frame_buffer;
 			uint32_t* dst = dest;
 
-			std::memcpy(dst, src, sizeof uint32_t * 256 * 192);
+			std::memcpy(dst, src, sizeof uint32_t * 160 * 144);
 		}
 
 		uint32_t GetAudio(int32_t* dest_L, int32_t* n_samp_L, int32_t* dest_R, int32_t* n_samp_R)
@@ -562,6 +563,9 @@ namespace GBHawk
 			saver = cpu.SaveState(saver);
 			saver = psg.SaveState(saver);
 			saver = MemMap.SaveState(saver);
+			saver = timer.SaveState(saver);
+			saver = serialport.SaveState(saver);
+			saver = mapper->SaveState(saver);
 		}
 
 		void LoadState(uint8_t* loader)
@@ -570,6 +574,9 @@ namespace GBHawk
 			loader = cpu.LoadState(loader);
 			loader = psg.LoadState(loader);
 			loader = MemMap.LoadState(loader);
+			loader = timer.SaveState(loader);
+			loader = serialport.SaveState(loader);
+			loader = mapper->SaveState(loader);
 		}
 
 		#pragma endregion
@@ -655,7 +662,7 @@ namespace GBHawk
 
 		int GetRegStringLength()
 		{
-			return 74 + 1;
+			return 81 + 1;
 		}
 
 		void GetHeader(char* h, int l)

@@ -114,18 +114,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkNew
 
 		#region Video provider
 
-		public int[] _vidbuffer;
-
 		public int[] frame_buffer;
 
 		public int[] GetVideoBuffer()
 		{
+			LibGBHawk.GB_get_video(GB_Pntr, frame_buffer);
 			return frame_buffer;
-		}
-
-		public void SendVideoBuffer()
-		{
-
 		}
 
 		public int VirtualWidth => 160;

@@ -228,7 +228,7 @@ namespace GBHawk
 				else
 				{
 					//OnExecFetch ? .Invoke(RegPC);
-					if (TraceCallback) { TraceCallback(0); }
+					if (TraceCallback && !CB_prefix) { TraceCallback(0); }
 					//CDLCallback ? .Invoke(RegPC, eCDLogMemFlags.FetchFirst);
 					FetchInstruction(ReadMemory(RegPCget()));
 					RegPCset(RegPCget() + 1);
@@ -244,7 +244,7 @@ namespace GBHawk
 				instr_pntr += 3;
 				break;
 			case TR:
-				TR_Func(instr_table[instr_pntr++], instr_table[instr_pntr + 1]);
+				TR_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1]);
 				instr_pntr += 2;
 				break;
 			case ADD16:
@@ -252,30 +252,30 @@ namespace GBHawk
 				instr_pntr += 4;
 				break;
 			case ADD8:
-				ADD8_Func(instr_table[instr_pntr++], instr_table[instr_pntr + 1]);
+				ADD8_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1]);
 				instr_pntr += 2;
 				break;
 			case SUB8:
-				SUB8_Func(instr_table[instr_pntr++], instr_table[instr_pntr + 1]);
+				SUB8_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1]);
 				instr_pntr += 2;
 				break;
 			case ADC8:
-				ADC8_Func(instr_table[instr_pntr++], instr_table[instr_pntr + 1]);
+				ADC8_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1]);
 				instr_pntr += 2;
 				break;
 			case SBC8:
-				SBC8_Func(instr_table[instr_pntr++], instr_table[instr_pntr + 1]);
+				SBC8_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1]);
 				instr_pntr += 2;
 				break;
 			case INC16:
-				INC16_Func(instr_table[instr_pntr++], instr_table[instr_pntr + 1]);
+				INC16_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1]);
 				instr_pntr += 2;
 				break;
 			case INC8:
 				INC8_Func(instr_table[instr_pntr++]);
 				break;
 			case DEC16:
-				DEC16_Func(instr_table[instr_pntr++], instr_table[instr_pntr + 1]);
+				DEC16_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1]);
 				instr_pntr += 2;
 				break;
 			case DEC8:
@@ -306,19 +306,19 @@ namespace GBHawk
 				CCF_Func(instr_table[instr_pntr++]);
 				break;
 			case AND8:
-				AND8_Func(instr_table[instr_pntr++], instr_table[instr_pntr + 1]);
+				AND8_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1]);
 				instr_pntr += 2;
 				break;
 			case XOR8:
-				XOR8_Func(instr_table[instr_pntr++], instr_table[instr_pntr + 1]);
+				XOR8_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1]);
 				instr_pntr += 2;
 				break;
 			case OR8:
-				OR8_Func(instr_table[instr_pntr++], instr_table[instr_pntr + 1]);
+				OR8_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1]);
 				instr_pntr += 2;
 				break;
 			case CP8:
-				CP8_Func(instr_table[instr_pntr++], instr_table[instr_pntr + 1]);
+				CP8_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1]);
 				instr_pntr += 2;
 				break;
 			case SLA:
@@ -334,15 +334,15 @@ namespace GBHawk
 				SWAP_Func(instr_table[instr_pntr++]);
 				break;
 			case BIT:
-				BIT_Func(instr_table[instr_pntr++], instr_table[instr_pntr + 1]);
+				BIT_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1]);
 				instr_pntr += 2;
 				break;
 			case RES:
-				RES_Func(instr_table[instr_pntr++], instr_table[instr_pntr + 1]);
+				RES_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1]);
 				instr_pntr += 2;
 				break;
 			case SET:
-				SET_Func(instr_table[instr_pntr++], instr_table[instr_pntr + 1]);
+				SET_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1]);
 				instr_pntr += 2;
 				break;
 			case EI:
@@ -521,12 +521,12 @@ namespace GBHawk
 				CB_prefix = true;
 				break;
 			case ASGN:
-				ASGN_Func(instr_table[instr_pntr++], instr_table[instr_pntr + 1]);
+				ASGN_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1]);
 				instr_pntr += 2;
 				break;
 			case ADDS:
 				ADDS_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1], instr_table[instr_pntr + 2], instr_table[instr_pntr + 3]);
-				instr_pntr += 2;
+				instr_pntr += 4;
 				break;
 			case OP_G:
 				//OnExecFetch ? .Invoke(RegPC);
@@ -541,7 +541,7 @@ namespace GBHawk
 				break;
 			case RD_F:
 				Read_Func_F(instr_table[instr_pntr], instr_table[instr_pntr + 1], instr_table[instr_pntr + 2]);
-				instr_pntr += 2;
+				instr_pntr += 3;
 				break;
 			case EI_RETI:
 				EI_pending = 1;
@@ -2633,7 +2633,7 @@ namespace GBHawk
 		const char* IRQ_event     = "                  ====IRQ====                  ";
 		const char* Un_stop_event = "                ==Un-stopped==                 ";
 		const char* No_Reg = "                                                                                     ";
-		const char* Reg_template = "A:AA F:FF B:BB C:CC D:DD E:EE H:HH L:LL SP:SPSP Cy:FEDCBA9876543210 ZNHCIE";
+		const char* Reg_template = "A:AA F:FF B:BB C:CC D:DD E:EE H:HH L:LL SP:SPSP Cy:FEDCBA9876543210 LY:LLY ZNHCIE";
 		const char* Disasm_template = "PCPC: AA BB CC DD   Di Di, XXXXX               ";
 
 		char replacer[32] = {};
@@ -2652,31 +2652,31 @@ namespace GBHawk
 			sprintf_s(val_char_1, 5, "%02X", Regs[A]);
 			reg_state.append(val_char_1, 2);
 
-			reg_state = "F:";
+			reg_state.append(" F:");
 			sprintf_s(val_char_1, 5, "%02X", Regs[F]);
 			reg_state.append(val_char_1, 2);
 
-			reg_state = "B:";
+			reg_state.append(" B:");
 			sprintf_s(val_char_1, 5, "%02X", Regs[B]);
 			reg_state.append(val_char_1, 2);
 
-			reg_state = "C:";
+			reg_state.append(" C:");
 			sprintf_s(val_char_1, 5, "%02X", Regs[C]);
 			reg_state.append(val_char_1, 2);
 
-			reg_state = "D:";
+			reg_state.append(" D:");
 			sprintf_s(val_char_1, 5, "%02X", Regs[D]);
 			reg_state.append(val_char_1, 2);
 
-			reg_state = "E:";
+			reg_state.append(" E:");
 			sprintf_s(val_char_1, 5, "%02X", Regs[E]);
 			reg_state.append(val_char_1, 2);
 
-			reg_state = "H:";
+			reg_state.append(" H:");
 			sprintf_s(val_char_1, 5, "%02X", Regs[H]);
 			reg_state.append(val_char_1, 2);
 
-			reg_state = "L:";
+			reg_state.append(" L:");
 			sprintf_s(val_char_1, 5, "%02X", Regs[L]);
 			reg_state.append(val_char_1, 2);
 
@@ -2687,6 +2687,10 @@ namespace GBHawk
 
 			reg_state.append(" Cy:");			
 			reg_state.append(val_char_1, sprintf_s(val_char_1, 32, "%16u", (unsigned long)TotalExecutedCycles));
+			reg_state.append(" ");
+
+			reg_state.append(" LY:");
+			reg_state.append(val_char_1, sprintf_s(val_char_1, 32, "%3u", LY));
 			reg_state.append(" ");
 			
 			reg_state.append(FlagCget() ? "C" : "c");
@@ -2818,10 +2822,10 @@ namespace GBHawk
 
 			if (format.find("r8") != string::npos)
 			{
-				size_t str_loc = format.find("+d");
+				size_t str_loc = format.find("r8");
 
 				val_char_1 = replacer;
-				sprintf_s(val_char_1, 5, "%+04d", (int8_t)PeekMemory(addr[0] & 0xFFFF));
+				sprintf_s(val_char_1, 5, "%04X", ((addr[0] + 1) + (int8_t)PeekMemory(addr[0] & 0xFFFF)) & 0xFFFF);
 				string val1(val_char_1, 4);
 				addr[0]++;
 
