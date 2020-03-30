@@ -15,6 +15,8 @@ namespace BizHawk.WinForms.Controls
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public new Size Size => base.Size;
 
-		public RadioButtonEx() => base.AutoSize = true;
+		public RadioButtonEx() {}
+
+		public RadioButtonEx(IRadioButtonReadOnlyTracker tracker) : base(tracker) => base.AutoSize = true;
 	}
 }

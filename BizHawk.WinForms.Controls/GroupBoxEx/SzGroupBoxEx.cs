@@ -1,11 +1,10 @@
 using System.ComponentModel;
 using System.Drawing;
-using System.Windows.Forms;
 
 namespace BizHawk.WinForms.Controls
 {
 	/// <inheritdoc cref="Docs.GroupBox"/>
-	public class SzGroupBoxEx : GroupBox
+	public class SzGroupBoxEx : GroupBoxExBase
 	{
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public new bool AutoSize => base.AutoSize;
@@ -13,12 +12,8 @@ namespace BizHawk.WinForms.Controls
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public new Point Location => base.Location;
 
-		[Browsable(false)]
-		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public new int TabIndex => base.TabIndex;
+		public SzGroupBoxEx() : base(out _) {}
 
-		[Browsable(false)]
-		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public new bool TabStop => base.TabStop;
+		public SzGroupBoxEx(out IRadioButtonReadOnlyTracker tracker) : base(out tracker) {}
 	}
 }
