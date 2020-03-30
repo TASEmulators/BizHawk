@@ -72,7 +72,10 @@ namespace BizHawk.Client.EmuHawk.Filters
 		protected Texture2d InputTexture;
 		private Texture2d _outputTexture;
 
-		// setup utilities
+		/// <summary>
+		/// Indicate a 'RenderTarget' disposition if you want to draw directly to the input
+		/// Indicate a 'Texture' disposition if you want to use it to draw to a newly allocated render target
+		/// </summary>
 		protected IOSurfaceInfo DeclareInput(SurfaceDisposition disposition = SurfaceDisposition.Unspecified, string channel = "default")
 		{
 			return DeclareIO(SurfaceDirection.Input, channel, disposition);

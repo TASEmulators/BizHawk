@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using BizHawk.Client.EmuHawk.FilterManager;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 
 using BizHawk.Bizware.BizwareGL;
 using OpenTK;
@@ -165,6 +166,237 @@ namespace BizHawk.Client.EmuHawk.Filters
 			// HeightScale = heightScale;
 			WidthScale = (float)vw / oldSourceWidth;
 			HeightScale = (float)vh / oldSourceHeight;
+		}
+	}
+
+	/// <summary>
+	/// special screen control features for NDS
+	/// </summary>
+	public class ScreenControlNDS : BaseFilter
+	{
+		public IGL GL;
+		public IGuiRenderer GuiRenderer;
+
+		MelonDS nds;
+
+		//TODO: actually use this
+		bool nop = false;
+
+		//SCREEN CONTROL VALUES
+		//-------------------
+		public int Gap = 0;
+		public int ScreenRotationDegreesCW = 0;
+		public enum ScreenLayout
+		{
+			Vertical, Horizontal, Top, Bottom
+		}
+		ScreenLayout Layout = ScreenLayout.Vertical;
+		//-------------------
+
+		//matrices used for transforming screens
+		Matrix4 matTop, matBot;
+		Matrix4 matTopInvert, matBotInvert;
+		
+		//final output area size
+		Size outputSize;
+
+		static float Round(float f) { return (float)Math.Round(f); }
+
+		//TODO: put somewhere in extension methods useful for fixing deficiencies in opentk matrix types
+		static Vector2 Transform(Matrix4 m, Vector2 v)
+		{
+			var r = new Vector4(v.X,v.Y,0,1) * m;
+			return new Vector2(r.X, r.Y);
+		}
+
+		public ScreenControlNDS(MelonDS nds)
+		{
+			//not sure if we actually need this nds instance yet
+			this.nds = nds;
+		}
+
+		public override void Initialize()
+		{
+			//we're going to be blitting the source as pieces to a new render target, so we need our input to be a texture
+			DeclareInput(SurfaceDisposition.Texture);
+		}
+
+		void CrunchNumbers()
+		{
+			MatrixStack top = new MatrixStack(), bot = new MatrixStack();
+
+			//-----------------------------------
+			//set up transforms for each screen based on screen control values
+			//this will be TRICKY depending on how many features we have, but once it's done, everything should be easy
+
+			//gap only applies to vertical, I guess
+			if (Layout == ScreenLayout.Vertical)
+			{
+				bot.Translate(0, 192);
+				bot.Translate(0, Gap);
+			}
+			else if (Layout == ScreenLayout.Horizontal)
+			{
+				bot.Translate(256, 0);
+			}
+			else if (Layout == ScreenLayout.Top)
+			{
+				//do nothing here, we'll discard bottom screen
+			}
+
+			top.RotateZ(ScreenRotationDegreesCW);
+			bot.RotateZ(ScreenRotationDegreesCW);
+
+			//-----------------------------------
+
+			//TODO: refactor some of the below into a class that doesn't require having top and bottom replica code
+
+			matTop = top.Top;
+			matBot = bot.Top;
+			matTopInvert = matTop.Inverted();
+			matBotInvert = matBot.Inverted();
+
+			//apply transforms from standard input screen positions to output screen positions
+			Vector2 top_TL = Transform(matTop, new Vector2(0, 0));
+			Vector2 top_TR = Transform(matTop, new Vector2(256, 0));
+			Vector2 top_BL = Transform(matTop, new Vector2(0, 192));
+			Vector2 top_BR = Transform(matTop, new Vector2(256, 192));
+			Vector2 bot_TL = Transform(matBot, new Vector2(0, 0));
+			Vector2 bot_TR = Transform(matBot, new Vector2(256, 0));
+			Vector2 bot_BL = Transform(matBot, new Vector2(0, 192));
+			Vector2 bot_BR = Transform(matBot, new Vector2(256, 192));
+
+			//in case of math errors in the transforms, we'll round this stuff.. although...
+			//we're gonna use matrix transforms for drawing later, so it isn't extremely helpful
+
+			//TODO - need more consideration of numerical precision here, because the typical case should be rock solid
+			top_TL.X = Round(top_TL.X); top_TL.Y = Round(top_TL.Y);
+			top_TR.X = Round(top_TR.X); top_TR.Y = Round(top_TR.Y);
+			top_BL.X = Round(top_BL.X); top_BL.Y = Round(top_BL.Y);
+			top_BR.X = Round(top_BR.X); top_BR.Y = Round(top_BR.Y);
+			bot_TL.X = Round(bot_TL.X); bot_TL.Y = Round(bot_TL.Y);
+			bot_TR.X = Round(bot_TR.X); bot_TR.Y = Round(bot_TR.Y);
+			bot_BL.X = Round(bot_BL.X); bot_BL.Y = Round(bot_BL.Y);
+			bot_BR.X = Round(bot_BR.X); bot_BR.Y = Round(bot_BR.Y);
+
+			////precalculate some useful metrics
+			//top_width = (int)(top_TR.X - top_TL.X);
+			//top_height = (int)(top_BR.Y - top_TR.Y);
+			//bot_width = (int)(bot_TR.X - bot_TL.X);
+			//bot_height = (int)(bot_BR.Y - bot_TR.Y);
+
+			//the size can now be determined in a kind of fluffily magical way by transforming edges and checking the bounds
+			float fxmin = 100000, fymin = 100000, fxmax = -100000, fymax = -100000;
+			if (Layout != ScreenLayout.Bottom)
+			{
+				fxmin = Math.Min(Math.Min(Math.Min(Math.Min(top_TL.X, top_TR.X), top_BL.X), top_BR.X), fxmin);
+				fymin = Math.Min(Math.Min(Math.Min(Math.Min(top_TL.Y, top_TR.Y), top_BL.Y), top_BR.Y), fymin);
+				fxmax = Math.Max(Math.Max(Math.Max(Math.Max(top_TL.X, top_TR.X), top_BL.X), top_BR.X), fxmax);
+				fymax = Math.Max(Math.Max(Math.Max(Math.Max(top_TL.Y, top_TR.Y), top_BL.Y), top_BR.Y), fymax);
+			}
+			if (Layout != ScreenLayout.Top)
+			{
+				fxmin = Math.Min(Math.Min(Math.Min(Math.Min(bot_TL.X, bot_TR.X), bot_BL.X), bot_BR.X), fxmin);
+				fymin = Math.Min(Math.Min(Math.Min(Math.Min(bot_TL.Y, bot_TR.Y), bot_BL.Y), bot_BR.Y), fymin);
+				fxmax = Math.Max(Math.Max(Math.Max(Math.Max(bot_TL.X, bot_TR.X), bot_BL.X), bot_BR.X), fxmax);
+				fymax = Math.Max(Math.Max(Math.Max(Math.Max(bot_TL.Y, bot_TR.Y), bot_BL.Y), bot_BR.Y), fymax);
+			}
+
+			//relocate whatever we got back into the viewable area
+			top.Translate(-fxmin, -fymin);
+			bot.Translate(-fxmin, -fymin);
+			matTop = top.Top;
+			matBot = bot.Top;
+			matTopInvert = matTop.Inverted();
+			matBotInvert = matBot.Inverted();
+
+			outputSize = new Size((int)(fxmax-fxmin), (int)(fymax-fymin));
+		}
+
+		public override Size PresizeInput(string channel, Size size)
+		{
+			CrunchNumbers();
+			return outputSize;
+		}
+
+		public override Size PresizeOutput(string channel, Size size)
+		{
+			CrunchNumbers();
+			return base.PresizeOutput(channel, outputSize);
+		}
+
+		public override void SetInputFormat(string channel, SurfaceState state)
+		{
+			CrunchNumbers();
+			var ss = new SurfaceState(new SurfaceFormat(outputSize), SurfaceDisposition.RenderTarget);
+			DeclareOutput(ss, channel);
+		}
+
+		public override Vector2 UntransformPoint(string channel, Vector2 point)
+		{
+			point = Transform(matBotInvert, point);
+			//hack to accomodate input tracking system's float-point sense (based on the core's videobuffer height)
+			point.Y *= 2;
+
+			//in case we're in this layout, we get confused, so fix it
+			if (Layout == ScreenLayout.Top)
+				point = Vector2.Zero;
+
+			//TODO: we probably need more subtle logic here.
+			//some capability to return -1,-1 perhaps in case the cursor is nowhere.
+			//not sure about that
+
+			return point;
+		}
+
+		public override Vector2 TransformPoint(string channel, Vector2 point)
+		{
+			//NOT TESTED, probably needs adjustment
+			return Transform(matBot, point);
+		}
+
+		public override void Run()
+		{
+			if (nop)
+				return;
+
+			//TODO: this could be more efficient (draw only in gap)
+			GL.SetClearColor(Color.Black);
+			GL.Clear(OpenTK.Graphics.OpenGL.ClearBufferMask.ColorBufferBit);
+
+			FilterProgram.GuiRenderer.Begin(outputSize);
+			GuiRenderer.SetBlendState(GL.BlendNoneCopy);
+
+			//TODO: may depend on input, or other factors, not sure yet
+			//watch out though... if we filter linear, then screens will bleed into each other.
+			//so we will have to break them into render targets first.
+			InputTexture.SetFilterNearest();
+
+			//draw screens
+			bool renderTop = false;
+			bool renderBottom = false;
+			if (Layout == ScreenLayout.Bottom) renderBottom = true;
+			if (Layout == ScreenLayout.Top) renderTop = true;
+			if (Layout == ScreenLayout.Vertical) renderTop = renderBottom = true;
+			if (Layout == ScreenLayout.Horizontal) renderTop = renderBottom = true;
+
+			if (renderTop)
+			{
+				GuiRenderer.Modelview.Push();
+				GuiRenderer.Modelview.PostMultiplyMatrix(matTop);
+				GuiRenderer.DrawSubrect(InputTexture, 0, 0, 256, 192, 0.0f, 0.0f, 1.0f, 0.5f);
+				GuiRenderer.Modelview.Pop();
+			}
+
+			if (renderBottom)
+			{
+				GuiRenderer.Modelview.Push();
+				GuiRenderer.Modelview.PostMultiplyMatrix(matBot);
+				GuiRenderer.DrawSubrect(InputTexture, 0, 0, 256, 192, 0.0f, 0.5f, 1.0f, 1.0f);
+				GuiRenderer.Modelview.Pop();
+			}
+
+			GuiRenderer.End();
 		}
 	}
 

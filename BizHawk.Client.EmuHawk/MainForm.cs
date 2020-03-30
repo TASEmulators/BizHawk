@@ -968,26 +968,30 @@ namespace BizHawk.Client.EmuHawk
 				}
 			} // foreach event
 
-			// also handle floats
-			conInput.AcceptNewFloats(Input.Instance.GetFloats().Select(o =>
+			//also handle floats
+			//we'll need to isolate the mouse coordinates so we can translate them
+			Tuple<string, float> mouseX = null, mouseY = null;
+			var floats = Input.Instance.GetFloats();
+			foreach (var f in Input.Instance.GetFloats())
 			{
-				// hackish
-				if (o.Item1 == "WMouse X")
-				{
-					var p = DisplayManager.UntransformPoint(new Point((int)o.Item2, 0));
-					float x = p.X / (float)_currentVideoProvider.BufferWidth;
-					return new Tuple<string, float>("WMouse X", (x * 20000) - 10000);
-				}
+				if (f.Item1 == "WMouse X")
+					mouseX = f;
+				else if (f.Item1 == "WMouse Y")
+					mouseY = f;
+				else conInput.AcceptNewFloat(f);
+			}
 
-				if (o.Item1 == "WMouse Y")
-				{
-					var p = DisplayManager.UntransformPoint(new Point(0, (int)o.Item2));
-					float y = p.Y / (float)_currentVideoProvider.BufferHeight;
-					return new Tuple<string, float>("WMouse Y", (y * 20000) - 10000);
-				}
+			//if we found mouse coordinates (and why wouldn't we?) then translate them now
+			//NOTE: these must go together, because in the case of screen rotation, X and Y are transformed together
+			if(mouseX != null && mouseY != null)
+			{
+				var p = DisplayManager.UntransformPoint(new Point((int)mouseX.Item2, (int)mouseY.Item2));
+				float x = p.X / (float)_currentVideoProvider.BufferWidth;
+				float y = p.Y / (float)_currentVideoProvider.BufferHeight;
+				conInput.AcceptNewFloat(new Tuple<string, float>("WMouse X", (x * 20000) - 10000));
+				conInput.AcceptNewFloat(new Tuple<string, float>("WMouse Y", (y * 20000) - 10000));
+			}
 
-				return o;
-			}));
 		}
 
 		public void RebootCore()

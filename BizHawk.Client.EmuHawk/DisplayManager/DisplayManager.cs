@@ -3,6 +3,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -248,6 +249,8 @@ namespace BizHawk.Client.EmuHawk
 			if (!includeUserFilters)
 				selectedChain = null;
 
+			Filters.BaseFilter fCoreScreenControl = CreateCoreScreenControl();
+
 			var fPresent = new Filters.FinalPresentation(chainOutSize);
 			var fInput = new Filters.SourceImage(chainInSize);
 			var fOSD = new Filters.OSD();
@@ -275,6 +278,9 @@ namespace BizHawk.Client.EmuHawk
 
 			//add the first filter, encompassing output from the emulator core
 			chain.AddFilter(fInput, "input");
+
+			if (fCoreScreenControl != null)
+				chain.AddFilter(fCoreScreenControl, "CoreScreenControl");
 
 			// if a non-zero padding is required, add a filter to allow for that
 			// note, we have two sources of padding right now.. one can come from the VideoProvider and one from the user.
@@ -402,12 +408,12 @@ namespace BizHawk.Client.EmuHawk
 			v = _currentFilterProgram.UntransformPoint("default", v);
 
 			// Poop
-			if (Global.Emulator is MelonDS ds && ds.TouchScreenStart.HasValue)
-			{
-				Point touchLocation = ds.TouchScreenStart.Value;
-				v.Y = (int)((double)ds.BufferHeight / MelonDS.NativeHeight * (v.Y - touchLocation.Y));
-				v.X = (int)((double)ds.BufferWidth / MelonDS.NativeWidth * (v.X - touchLocation.X));
-			}
+			//if (Global.Emulator is MelonDS ds && ds.TouchScreenStart.HasValue)
+			//{
+			//	Point touchLocation = ds.TouchScreenStart.Value;
+			//	v.Y = (int)((double)ds.BufferHeight / MelonDS.NativeHeight * (v.Y - touchLocation.Y));
+			//	v.X = (int)((double)ds.BufferWidth / MelonDS.NativeWidth * (v.X - touchLocation.X));
+			//}
 
 			return new Point((int)v.X, (int)v.Y);
 		}
@@ -448,6 +454,18 @@ namespace BizHawk.Client.EmuHawk
 				IncludeUserFilters = true
 			};
 			UpdateSourceInternal(job);
+		}
+
+		Filters.BaseFilter CreateCoreScreenControl()
+		{
+			if (Global.Emulator is MelonDS nds)
+			{
+				//TODO: need to pipe layout settings into here now
+				var filter = new Filters.ScreenControlNDS(nds);
+				return filter;
+			}
+
+			return null;
 		}
 
 		public BitmapBuffer RenderVideoProvider(IVideoProvider videoProvider)
@@ -554,6 +572,18 @@ namespace BizHawk.Client.EmuHawk
 				FixRatio(Global.Config.DispCustomUserArx, Global.Config.DispCustomUserAry, videoProvider.BufferWidth, videoProvider.BufferHeight, out virtualWidth, out virtualHeight);
 			}
 
+			//TODO: it is bad that this is happening outside the filter chain
+			//the filter chain has the ability to add padding...
+			//for now, we have to have some hacks. this could be improved by refactoring the filter setup hacks to be in one place only though
+			//could the PADDING be done as filters too? that would be nice.
+			var fCoreScreenControl = CreateCoreScreenControl();
+			if(fCoreScreenControl != null)
+			{
+				var sz = fCoreScreenControl.PresizeInput("default", new Size(bufferWidth, bufferHeight));
+				virtualWidth = bufferWidth = sz.Width;
+				virtualHeight = bufferHeight = sz.Height;
+			}
+
 			var padding = CalculateCompleteContentPadding(true, false);
 			virtualWidth += padding.Horizontal;
 			virtualHeight += padding.Vertical;
@@ -561,6 +591,7 @@ namespace BizHawk.Client.EmuHawk
 			padding = CalculateCompleteContentPadding(true, true);
 			bufferWidth += padding.Horizontal;
 			bufferHeight += padding.Vertical;
+
 
 			// old stuff
 			var fvp = new FakeVideoProvider
@@ -679,7 +710,7 @@ namespace BizHawk.Client.EmuHawk
 				return new Size(256, 192);
 			}
 
-			var size = filterProgram.Filters[filterProgram.Filters.Count - 1].FindOutput().SurfaceFormat.Size;
+			var size = filterProgram.Filters.Last().FindOutput().SurfaceFormat.Size;
 
 			return size;
 		}
@@ -720,23 +751,41 @@ namespace BizHawk.Client.EmuHawk
 
 			//simulate = true;
 
+			int[] videoBuffer = videoProvider.GetVideoBuffer();
+			int bufferWidth = videoProvider.BufferWidth;
+			int bufferHeight = videoProvider.BufferHeight;
+			bool isGlTextureId = videoBuffer.Length == 1;
+
 			int vw = videoProvider.BufferWidth;
 			int vh = videoProvider.BufferHeight;
+
+			//TODO: it is bad that this is happening outside the filter chain
+			//the filter chain has the ability to add padding...
+			//for now, we have to have some hacks. this could be improved by refactoring the filter setup hacks to be in one place only though
+			//could the PADDING be done as filters too? that would be nice.
+			var fCoreScreenControl = CreateCoreScreenControl();
+			if(fCoreScreenControl != null)
+			{
+				var sz = fCoreScreenControl.PresizeInput("default", new Size(bufferWidth, bufferHeight));
+				vw = sz.Width;
+				vh = sz.Height;
+			}
 
 			if (Global.Config.DispFixAspectRatio)
 			{
 				if (Global.Config.DispManagerAR == EDispManagerAR.System)
 				{
-					vw = videoProvider.VirtualWidth;
-					vh = videoProvider.VirtualHeight;
+					//already set
 				}
 				if (Global.Config.DispManagerAR == EDispManagerAR.Custom)
 				{
+					//not clear what any of these other options mean for "screen controlled" systems
 					vw = Global.Config.DispCustomUserARWidth;
 					vh = Global.Config.DispCustomUserARHeight;
 				}
 				if (Global.Config.DispManagerAR == EDispManagerAR.CustomRatio)
 				{
+					//not clear what any of these other options mean for "screen controlled" systems
 					FixRatio(Global.Config.DispCustomUserArx, Global.Config.DispCustomUserAry, videoProvider.BufferWidth, videoProvider.BufferHeight, out vw, out vh);
 				}
 			}
@@ -744,12 +793,6 @@ namespace BizHawk.Client.EmuHawk
 			var padding = CalculateCompleteContentPadding(true,false);
 			vw += padding.Horizontal;
 			vh += padding.Vertical;
-
-			int[] videoBuffer = videoProvider.GetVideoBuffer();
-
-			int bufferWidth = videoProvider.BufferWidth;
-			int bufferHeight = videoProvider.BufferHeight;
-			bool isGlTextureId = videoBuffer.Length == 1;
 
 			BitmapBuffer bb = null;
 			Texture2d videoTexture = null;
@@ -790,10 +833,17 @@ namespace BizHawk.Client.EmuHawk
 			Filters.SourceImage fInput = filterProgram["input"] as Filters.SourceImage;
 			fInput.Texture = videoTexture;
 
+			int presenterTextureWidth = bufferWidth;
+			int presenterTextureHeight = bufferHeight;
+			
+			//ZERO 29-MAR-2020 - not sure about this
+			presenterTextureWidth = chainOutsize.Width;
+			presenterTextureHeight = chainOutsize.Height;
+
 			//setup the final presentation filter
 			Filters.FinalPresentation fPresent = filterProgram["presentation"] as Filters.FinalPresentation;
 			fPresent.VirtualTextureSize = new Size(vw, vh);
-			fPresent.TextureSize = new Size(bufferWidth, bufferHeight);
+			fPresent.TextureSize = new Size(presenterTextureWidth, presenterTextureHeight);
 			fPresent.BackgroundColor = videoProvider.BackgroundColor;
 			fPresent.GuiRenderer = Renderer;
 			fPresent.Flip = isGlTextureId;
@@ -803,6 +853,14 @@ namespace BizHawk.Client.EmuHawk
 			fPresent.AutoPrescale = Global.Config.DispAutoPrescale;
 
 			fPresent.GL = GL;
+
+			//POOPY. why are we delivering the GL context this way? such bad
+			Filters.ScreenControlNDS fNDS = filterProgram["CoreScreenControl"] as Filters.ScreenControlNDS;
+			if (fNDS != null)
+			{
+				fNDS.GuiRenderer = Renderer;
+				fNDS.GL = GL;
+			}
 
 			filterProgram.Compile("default", chainInsize, chainOutsize, !job.Offscreen);
 

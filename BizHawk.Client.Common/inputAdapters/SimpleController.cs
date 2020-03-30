@@ -43,6 +43,11 @@ namespace BizHawk.Client.Common
 			return Buttons;
 		}
 
+		public void AcceptNewFloat(Tuple<string, float> newValue)
+		{
+			Floats[newValue.Item1] = newValue.Item2;
+		}
+
 		public void AcceptNewFloats(IEnumerable<Tuple<string, float>> newValues)
 		{
 			foreach (var sv in newValues)
