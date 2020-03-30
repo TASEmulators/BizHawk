@@ -116,9 +116,9 @@ namespace BizHawk.Emulation.Common
 
 			for (var y = 0; y < outputHeight; y++)
 			{
-				for (int x = 0, w = forLeft.Height; x < w; x++) prealloc[y * outputWidth + x] = forLeft.Buffer[(w - x) * outputHeight + y]; // copy and rotate this column of the bottom screen to the left of the output
+				for (int x = 0, w = forLeft.Height; x < w; x++) prealloc[y * outputWidth + x] = forLeft.Buffer[(w - x - 1) * outputHeight + y]; // copy and rotate this column of the bottom screen to the left of the output
 				// don't bother writing into the gap
-				for (int x = 0, w = forRight.Height; x < w; x++) prealloc[y * outputWidth + rightOffsetHztl + x] = forRight.Buffer[(w - x) * outputHeight + y]; // copy and rotate this column of the top screen to the right of the output
+				for (int x = 0, w = forRight.Height; x < w; x++) prealloc[y * outputWidth + rightOffsetHztl + x] = forRight.Buffer[(w - x - 1) * outputHeight + y]; // copy and rotate this column of the top screen to the right of the output
 			}
 			return prealloc;
 		}
