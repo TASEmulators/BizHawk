@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkNew
 	ISettable<GBHawkNew.GBSettings, GBHawkNew.GBSyncSettings>
 	{
 		public IntPtr GB_Pntr { get; set; } = IntPtr.Zero;
-		byte[] GB_core = new byte[0x200000];
+		byte[] GB_core = new byte[0x80000];
 
 		private int _frame = 0;
 		public int _lagCount = 0;

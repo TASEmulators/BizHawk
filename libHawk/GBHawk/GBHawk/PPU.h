@@ -25,6 +25,9 @@ namespace GBHawk
 
 		MemoryManager* mem_ctrl;
 
+		// not stated
+		int temp_tile;
+
 		// pointers not stated
 		bool* FlagI = nullptr;
 		bool* in_vblank = nullptr;
@@ -95,7 +98,7 @@ namespace GBHawk
 		uint32_t y_scroll_offset;
 		uint32_t x_tile;
 		uint32_t x_scroll_offset;
-		uint32_t tile_byte;
+		int32_t tile_byte;
 		uint32_t sprite_fetch_cycles;
 		bool fetch_sprite;
 		bool going_to_fetch;
@@ -256,18 +259,18 @@ namespace GBHawk
 
 		uint8_t* SaveState(uint8_t* saver)
 		{
-			for (int i = 0; i < 32; i++) { saver = int_saver(BG_palette[i], saver); }
-			for (int i = 0; i < 32; i++) { saver = int_saver(OBJ_palette[i], saver); }
-			for (int i = 0; i < 40; i++) { saver = int_saver(SL_sprites[i], saver); }
+			saver = int_array_saver(BG_palette, saver, 32);
+			saver = int_array_saver(OBJ_palette, saver, 32);
+			saver = int_array_saver(SL_sprites, saver, 40);
 
-			for (int i = 0; i < 160; i++) { saver = byte_saver(sprite_attr_list[i], saver); }
-			for (int i = 0; i < 160; i++) { saver = byte_saver(sprite_pixel_list[i], saver); }
-			for (int i = 0; i < 160; i++) { saver = byte_saver(sprite_present_list[i], saver); }
-			for (int i = 0; i < 3; i++) { saver = byte_saver(tile_data[i], saver); }
-			for (int i = 0; i < 3; i++) { saver = byte_saver(tile_data_latch[i], saver); }
-			for (int i = 0; i < 2; i++) { saver = byte_saver(sprite_data[i], saver); }
-			for (int i = 0; i < 2; i++) { saver = byte_saver(sprite_sel[i], saver); }
-			for (int i = 0; i < 40; i++) { saver = int_saver(SL_sprites_ordered[i], saver); }
+			saver = byte_array_saver(sprite_attr_list, saver, 160);
+			saver = byte_array_saver(sprite_pixel_list, saver, 160);
+			saver = byte_array_saver(sprite_present_list, saver, 160);
+			saver = byte_array_saver(tile_data, saver, 3);
+			saver = byte_array_saver(tile_data_latch, saver, 3);
+			saver = byte_array_saver(sprite_data, saver, 2);
+			saver = byte_array_saver(sprite_sel, saver, 2);
+			saver = int_array_saver(SL_sprites_ordered, saver, 40);
 
 			saver = bool_saver(HDMA_active, saver);
 			saver = bool_saver(clear_screen, saver);
@@ -356,8 +359,8 @@ namespace GBHawk
 			saver = int_saver(hbl_countdown, saver);
 
 			// The following are GBC specific variables
-			for (int i = 0; i < 64; i++) { saver = byte_saver(BG_bytes[i], saver); }
-			for (int i = 0; i < 64; i++) { saver = byte_saver(OBJ_bytes[i], saver); }
+			saver = byte_array_saver(BG_bytes, saver, 64);
+			saver = byte_array_saver(OBJ_bytes, saver, 64);
 
 			saver = byte_saver(BG_transfer_byte, saver);
 			saver = byte_saver(OBJ_transfer_byte, saver);
@@ -394,18 +397,18 @@ namespace GBHawk
 
 		uint8_t* LoadState(uint8_t* loader)
 		{
-			for (int i = 0; i < 32; i++) { loader = int_loader(&BG_palette[i], loader); }
-			for (int i = 0; i < 32; i++) { loader = int_loader(&OBJ_palette[i], loader); }
-			for (int i = 0; i < 40; i++) { loader = int_loader(&SL_sprites[i], loader); }
+			loader = int_array_loader(BG_palette, loader, 32);
+			loader = int_array_loader(OBJ_palette, loader, 32);
+			loader = int_array_loader(SL_sprites, loader, 40);
 
-			for (int i = 0; i < 160; i++) { loader = byte_loader(&sprite_attr_list[i], loader); }
-			for (int i = 0; i < 160; i++) { loader = byte_loader(&sprite_pixel_list[i], loader); }
-			for (int i = 0; i < 160; i++) { loader = byte_loader(&sprite_present_list[i], loader); }
-			for (int i = 0; i < 3; i++) { loader = byte_loader(&tile_data[i], loader); }
-			for (int i = 0; i < 3; i++) { loader = byte_loader(&tile_data_latch[i], loader); }
-			for (int i = 0; i < 2; i++) { loader = byte_loader(&sprite_data[i], loader); }
-			for (int i = 0; i < 2; i++) { loader = byte_loader(&sprite_sel[i], loader); }
-			for (int i = 0; i < 40; i++) { loader = int_loader(&SL_sprites_ordered[i], loader); }
+			loader = byte_array_loader(sprite_attr_list, loader, 160);
+			loader = byte_array_loader(sprite_pixel_list, loader, 160);
+			loader = byte_array_loader(sprite_present_list, loader, 160);
+			loader = byte_array_loader(tile_data, loader, 3);
+			loader = byte_array_loader(tile_data_latch, loader, 3);
+			loader = byte_array_loader(sprite_data, loader, 2);
+			loader = byte_array_loader(sprite_sel, loader, 2);
+			loader = int_array_loader(SL_sprites_ordered, loader, 40);
 
 			loader = bool_loader(&HDMA_active, loader);
 			loader = bool_loader(&clear_screen, loader);
@@ -454,7 +457,7 @@ namespace GBHawk
 			loader = int_loader(&y_scroll_offset, loader);
 			loader = int_loader(&x_tile, loader);
 			loader = int_loader(&x_scroll_offset, loader);
-			loader = int_loader(&tile_byte, loader);
+			loader = sint_loader(&tile_byte, loader);
 			loader = int_loader(&sprite_fetch_cycles, loader);
 			loader = bool_loader(&fetch_sprite, loader);
 			loader = bool_loader(&going_to_fetch, loader);
@@ -494,8 +497,8 @@ namespace GBHawk
 			loader = int_loader(&hbl_countdown, loader);
 
 			// The following are GBC specific variables
-			for (int i = 0; i < 64; i++) { loader = byte_loader(&BG_bytes[i], loader); }
-			for (int i = 0; i < 64; i++) { loader = byte_loader(&OBJ_bytes[i], loader); }
+			loader = byte_array_loader(BG_bytes, loader, 64);
+			loader = byte_array_loader(OBJ_bytes, loader, 64);
 
 			loader = byte_loader(&BG_transfer_byte, loader);
 			loader = byte_loader(&OBJ_transfer_byte, loader);
@@ -552,6 +555,24 @@ namespace GBHawk
 			return saver;
 		}
 
+		uint8_t* byte_array_saver(uint8_t* to_save, uint8_t* saver, int length)
+		{
+			for (int i = 0; i < length; i++) { *saver = to_save[i]; saver++; }
+
+			return saver;
+		}
+
+		uint8_t* int_array_saver(uint32_t* to_save, uint8_t* saver, int length)
+		{
+			for (int i = 0; i < length; i++) 
+			{ 
+				*saver = (uint8_t)(to_save[i] & 0xFF); saver++; *saver = (uint8_t)((to_save[i] >> 8) & 0xFF); saver++;
+				*saver = (uint8_t)((to_save[i] >> 16) & 0xFF); saver++; *saver = (uint8_t)((to_save[i] >> 24) & 0xFF); saver++;
+			}
+
+			return saver;
+		}
+
 		uint8_t* bool_loader(bool* to_load, uint8_t* loader)
 		{
 			to_load[0] = *to_load == 1; loader++;
@@ -578,6 +599,24 @@ namespace GBHawk
 		{
 			to_load[0] = *loader; loader++; to_load[0] |= (*loader << 8); loader++;
 			to_load[0] |= (*loader << 16); loader++; to_load[0] |= (*loader << 24); loader++;
+
+			return loader;
+		}
+
+		uint8_t* byte_array_loader(uint8_t* to_load, uint8_t* loader, int length)
+		{
+			for (int i = 0; i < length; i++) { to_load[i] = *loader; loader++; }
+
+			return loader;
+		}
+
+		uint8_t* int_array_loader(uint32_t* to_load, uint8_t* loader, int length)
+		{
+			for (int i = 0; i < length; i++) 
+			{
+				to_load[i] = *loader; loader++; to_load[i] |= (*loader << 8); loader++;
+				to_load[i] |= (*loader << 16); loader++; to_load[i] |= (*loader << 24); loader++;
+			}
 
 			return loader;
 		}
@@ -1135,7 +1174,6 @@ namespace GBHawk
 				// start shifting data into the LCD
 				if (render_counter >= (render_offset + 8))
 				{
-
 					pixel = (tile_data_latch[0] & (1 << (7 - (render_counter % 8)))) > 0 ? 1 : 0;
 					pixel |= (tile_data_latch[1] & (1 << (7 - (render_counter % 8)))) > 0 ? 2 : 0;
 
@@ -1199,6 +1237,7 @@ namespace GBHawk
 
 					// based on sprite priority and pixel values, pick a final pixel color
 					_vidbuffer[LY * 160 + pixel_counter] = (uint32_t)color_palette[pixel];
+
 					pixel_counter++;
 
 					if (pixel_counter == 160)
@@ -1242,7 +1281,7 @@ namespace GBHawk
 					if ((internal_cycle % 2) == 1)
 					{
 						// calculate the row number of the tiles to be fetched
-						y_tile = ((uint32_t)floor((float)((uint32_t)scroll_y + LY) / 8.0)) % 32;
+						y_tile = ((uint32_t)floor(((float)((float)scroll_y + (float)LY)) / (float)8.0)) % 32;
 
 						temp_fetch = y_tile * 32 + (x_tile + tile_inc) % 32;
 						tile_byte = VRAM[0x1800 + (((LCDC & 0x8) > 0) ? 1 : 0) * 0x400 + temp_fetch];
@@ -1488,6 +1527,7 @@ namespace GBHawk
 			// every in range sprite takes 6 cycles to process
 			// sprites located at x=0 still take 6 cycles to process even though they don't appear on screen
 			// sprites above x=168 do not take any cycles to process however
+
 			if (fetch_sprite)
 			{
 				if (going_to_fetch)
@@ -1522,7 +1562,7 @@ namespace GBHawk
 						else if (((last_eval + render_offset) % 8) == 6) { sprite_fetch_counter += 0; }
 						else if (((last_eval + render_offset) % 8) == 7) { sprite_fetch_counter += 0; }
 
-						consecutive_sprite = (uint32_t)floor((double)((uint32_t)last_eval + render_offset) / 8.0) * 8 + 8 - render_offset;
+						consecutive_sprite = (uint32_t)floor((double)(last_eval + render_offset) / 8.0) * 8 + 8 - render_offset;
 
 						// special case exists here for sprites at zero with non-zero x-scroll. Not sure exactly the reason for it.
 						if (last_eval == 0 && render_offset != 0)
@@ -1607,7 +1647,7 @@ namespace GBHawk
 		void DMA_tick()
 		{
 			// Note that DMA is halted when the CPU is halted
-			if (DMA_start && !cpu_halted[0])
+			if (DMA_start && !cpu_halted[0]) 
 			{
 				if (DMA_clock >= 4)
 				{
@@ -3008,7 +3048,7 @@ namespace GBHawk
 						else if (((last_eval + render_offset) % 8) == 6) { sprite_fetch_counter += 0; }
 						else if (((last_eval + render_offset) % 8) == 7) { sprite_fetch_counter += 0; }
 
-						consecutive_sprite = (uint32_t)floor((double)(last_eval + render_offset) / 8.0) * 8 + 8 - render_offset;
+						consecutive_sprite = (uint32_t)floor(((double)last_eval + render_offset) / 8.0) * 8 + 8 - render_offset;
 
 						// special case exists here for sprites at zero with non-zero x-scroll. Not sure exactly the reason for it.
 						if (last_eval == 0 && render_offset != 0)
@@ -4295,7 +4335,7 @@ namespace GBHawk
 						tile_data[2] = VRAM[0x3800 + (((LCDC & 0x4) > 0) ? 1 : 0) * 0x400 + temp_fetch];
 						VRAM_sel = ((tile_data[2] & 0x8) > 0) ? 1 : 0;
 
-						BG_V_flip = ((tile_data[2] & 0x40) > 0)& GBC_compat[0];
+						BG_V_flip = ((tile_data[2] & 0x40) > 0) & GBC_compat[0];
 
 						read_case = 1;
 						if (!pre_render)
@@ -4397,7 +4437,7 @@ namespace GBHawk
 						tile_byte = VRAM[0x1800 + (((LCDC & 0x40) > 0) ? 1 : 0) * 0x400 + temp_fetch];
 						tile_data[2] = VRAM[0x3800 + (((LCDC & 0x40) > 0) ? 1 : 0) * 0x400 + temp_fetch];
 						VRAM_sel = ((tile_data[2] & 0x8) > 0) ? 1 : 0;
-						BG_V_flip = ((tile_data[2] & 0x40) > 0)& GBC_compat[0];
+						BG_V_flip = ((tile_data[2] & 0x40) > 0) & GBC_compat[0];
 
 						window_tile_inc++;
 						read_case = 5;
@@ -4601,7 +4641,8 @@ namespace GBHawk
 						else if (((last_eval + render_offset) % 8) == 6) { sprite_fetch_counter += 0; }
 						else if (((last_eval + render_offset) % 8) == 7) { sprite_fetch_counter += 0; }
 
-						consecutive_sprite = (uint32_t)floor((double)(last_eval + render_offset) / 8.0) * 8 + 8 - render_offset;
+
+						consecutive_sprite = (uint32_t)floor((((float)last_eval + (float)render_offset) / (float)8.0)) * 8 + 8 - render_offset;
 
 						// special case exists here for sprites at zero with non-zero x-scroll. Not sure exactly the reason for it.
 						if (last_eval == 0 && render_offset != 0)
@@ -4747,7 +4788,7 @@ namespace GBHawk
 			{
 				for (int i = 0; i < 256; i++)
 				{
-					for (int j = 0; j < SL_sprites_index; j++)
+					for (uint32_t j = 0; j < SL_sprites_index; j++)
 					{
 						if (SL_sprites[j * 4 + 1] == i)
 						{

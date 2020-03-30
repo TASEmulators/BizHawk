@@ -100,22 +100,22 @@ namespace GBHawk
 		uint32_t SQ1_output,			SQ2_output,			WAVE_output,				NOISE_output;
 
 		// Contol Variables
-		bool AUD_CTRL_vin_L_en;
-		bool AUD_CTRL_vin_R_en;
-		bool AUD_CTRL_sq1_L_en;
-		bool AUD_CTRL_sq2_L_en;
-		bool AUD_CTRL_wave_L_en;
-		bool AUD_CTRL_noise_L_en;
-		bool AUD_CTRL_sq1_R_en;
-		bool AUD_CTRL_sq2_R_en;
-		bool AUD_CTRL_wave_R_en;
-		bool AUD_CTRL_noise_R_en;
-		bool AUD_CTRL_power;
+		bool AUD_CTRL_vin_L_en = false;
+		bool AUD_CTRL_vin_R_en = false;
+		bool AUD_CTRL_sq1_L_en = false;
+		bool AUD_CTRL_sq2_L_en = false;
+		bool AUD_CTRL_wave_L_en = false;
+		bool AUD_CTRL_noise_L_en = false;
+		bool AUD_CTRL_sq1_R_en = false;
+		bool AUD_CTRL_sq2_R_en = false;
+		bool AUD_CTRL_wave_R_en = false;
+		bool AUD_CTRL_noise_R_en = false;
+		bool AUD_CTRL_power = false;
 		uint8_t AUD_CTRL_vol_L;
 		uint8_t AUD_CTRL_vol_R;
 
 		uint32_t sequencer_len, sequencer_vol, sequencer_swp;
-		bool timer_bit_old;
+		bool timer_bit_old = false;
 
 		uint8_t sample;
 
@@ -728,20 +728,20 @@ namespace GBHawk
 
 			if (L_final != latched_sample_L)
 			{
-				//samples_L[num_samples_L * 2] = master_audio_clock;
-				//samples_L[num_samples_L * 2 + 1] = L_final - latched_sample_L;
+				samples_L[num_samples_L * 2] = master_audio_clock;
+				samples_L[num_samples_L * 2 + 1] = L_final - latched_sample_L;
 
-				//num_samples_L++;
+				num_samples_L++;
 				
 				latched_sample_L = L_final;
 			}
 
 			if (R_final != latched_sample_R)
 			{
-				//samples_R[num_samples_R * 2] = master_audio_clock;
-				//samples_R[num_samples_R * 2 + 1] = R_final - latched_sample_R;
+				samples_R[num_samples_R * 2] = master_audio_clock;
+				samples_R[num_samples_R * 2 + 1] = R_final - latched_sample_R;
 
-				//num_samples_R++;
+				num_samples_R++;
 				
 				latched_sample_R = R_final;
 			}

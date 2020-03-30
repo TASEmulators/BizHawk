@@ -2961,7 +2961,6 @@ namespace GBHawk
 			*saver = (uint8_t)(jammed ? 1 : 0); saver++;
 			*saver = (uint8_t)(was_FlagI ? 1 : 0); saver++;
 			*saver = (uint8_t)(FlagI ? 1 : 0); saver++;
-			*saver = (uint8_t)(halted ? 1 : 0); saver++;
 
 			*saver = opcode; saver++;
 			*saver = LY; saver++;
@@ -2989,7 +2988,6 @@ namespace GBHawk
 			jammed = *loader == 1; loader++;
 			was_FlagI = *loader == 1; loader++;
 			FlagI = *loader == 1; loader++;
-			halted = *loader == 1; loader++;
 
 			opcode = *loader; loader++;
 			LY = *loader; loader++;

@@ -136,16 +136,17 @@ namespace GBHawk
 		{
 			int temp_check = 0;
 			/*
-			if (cpu.TotalExecutedCycles < 23805935) {
+			if (cpu.TotalExecutedCycles < 25280600) {
 				temp_check = 70224;
 			}
-			else if (cpu.TotalExecutedCycles < 23853139) {
-				temp_check = 200;
+			else if (cpu.TotalExecutedCycles < 25347500) {
+				temp_check = 1000;
 			}
 			else {
 				temp_check = 5;
 			}
 			*/
+
 			temp_check = 70224;
 			
 			for (int i = 0; i < temp_check; i++)
@@ -580,9 +581,10 @@ namespace GBHawk
 
 		void SaveState(uint8_t* saver)
 		{
+			saver = MemMap.SaveState(saver);
 			saver = ppu->SaveState(saver);
 			saver = cpu.SaveState(saver);
-			saver = MemMap.SaveState(saver);			
+						
 			saver = psg.SaveState(saver);		
 			saver = timer.SaveState(saver);
 			saver = serialport.SaveState(saver);
@@ -591,9 +593,10 @@ namespace GBHawk
 
 		void LoadState(uint8_t* loader)
 		{
+			loader = MemMap.LoadState(loader);
 			loader = ppu->LoadState(loader);
 			loader = cpu.LoadState(loader);
-			loader = MemMap.LoadState(loader);		
+					
 			loader = psg.LoadState(loader);
 			loader = timer.LoadState(loader);
 			loader = serialport.LoadState(loader);

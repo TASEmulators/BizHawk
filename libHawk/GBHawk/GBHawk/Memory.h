@@ -54,11 +54,11 @@ namespace GBHawk
 		bool in_vblank;
 		bool in_vblank_old;
 		bool vblank_rise;
-		bool GB_bios_register;
 		bool HDMA_transfer;
 		bool Use_MT;
 		bool has_bat;
 
+		uint8_t GB_bios_register;
 		uint8_t IR_reg, IR_mask, IR_signal, IR_receive, IR_self;
 
 		// several undocumented GBC Registers
@@ -183,11 +183,11 @@ namespace GBHawk
 			saver = bool_saver(in_vblank, saver);
 			saver = bool_saver(in_vblank_old, saver);
 			saver = bool_saver(vblank_rise, saver);
-			saver = bool_saver(GB_bios_register, saver);
 			saver = bool_saver(HDMA_transfer, saver);
 			saver = bool_saver(Use_MT, saver);
 			saver = bool_saver(has_bat, saver);
 
+			saver = byte_saver(GB_bios_register, saver);
 			saver = byte_saver(IR_reg, saver);
 			saver = byte_saver(IR_mask, saver);
 			saver = byte_saver(IR_signal, saver);
@@ -216,14 +216,14 @@ namespace GBHawk
 			saver = int_saver(Acc_X_state, saver);
 			saver = int_saver(Acc_Y_state, saver);
 
-			for (int i = 0; i < 0x80; i++) { saver = byte_saver(ZP_RAM[i], saver); }
-			for (int i = 0; i < 0x8000; i++) { saver = byte_saver(RAM[i], saver); }
-			for (int i = 0; i < 0x4000; i++) { saver = byte_saver(VRAM[i], saver); }
-			for (int i = 0; i < 0xA0; i++) { saver = byte_saver(OAM[i], saver); }
-			for (int i = 0; i < 0x50; i++) { saver = byte_saver(header[i], saver); }
+			saver = byte_array_saver(ZP_RAM, saver, 0x80);
+			saver = byte_array_saver(RAM, saver, 0x8000);
+			saver = byte_array_saver(VRAM, saver, 0x4000);
+			saver = byte_array_saver(OAM, saver, 0xA0);
+			saver = byte_array_saver(header, saver, 0x50);
 
-			for (int i = 0; i < (160 * 144); i++) { saver = int_saver(vidbuffer[i], saver); }
-			for (int i = 0; i < (160 * 144); i++) { saver = int_saver(frame_buffer[i], saver); }
+			saver = int_array_saver(vidbuffer, saver, 160 * 144);
+			saver = int_array_saver(frame_buffer, saver, 160 * 144);
 
 			return saver;
 		}
@@ -238,11 +238,11 @@ namespace GBHawk
 			loader = bool_loader(&in_vblank, loader);
 			loader = bool_loader(&in_vblank_old, loader);
 			loader = bool_loader(&vblank_rise, loader);
-			loader = bool_loader(&GB_bios_register, loader);
 			loader = bool_loader(&HDMA_transfer, loader);
 			loader = bool_loader(&Use_MT, loader);
 			loader = bool_loader(&has_bat, loader);
 
+			loader = byte_loader(&GB_bios_register, loader);
 			loader = byte_loader(&IR_reg, loader);
 			loader = byte_loader(&IR_mask, loader);
 			loader = byte_loader(&IR_signal, loader);
@@ -271,14 +271,14 @@ namespace GBHawk
 			loader = int_loader(&Acc_X_state, loader);
 			loader = int_loader(&Acc_Y_state, loader);
 
-			for (int i = 0; i < 0x80; i++) { loader = byte_loader(&ZP_RAM[i], loader); }
-			for (int i = 0; i < 0x8000; i++) { loader = byte_loader(&RAM[i], loader); }
-			for (int i = 0; i < 0x4000; i++) { loader = byte_loader(&VRAM[i], loader); }
-			for (int i = 0; i < 0xA0; i++) { loader = byte_loader(&OAM[i], loader); }
-			for (int i = 0; i < 0x50; i++) { loader = byte_loader(&header[i], loader); }
+			loader = byte_array_loader(ZP_RAM, loader, 0x80);
+			loader = byte_array_loader(RAM, loader, 0x8000);
+			loader = byte_array_loader(VRAM, loader, 0x4000);
+			loader = byte_array_loader(OAM, loader, 0xA0);
+			loader = byte_array_loader(header, loader, 0x50);
 
-			for (int i = 0; i < (160 * 144); i++) { loader = int_loader(&vidbuffer[i], loader); }
-			for (int i = 0; i < (160 * 144); i++) { loader = int_loader(&frame_buffer[i], loader); }
+			loader = int_array_loader(vidbuffer, loader, 160 * 144);
+			loader = int_array_loader(frame_buffer, loader, 160 * 144);
 
 			return loader;
 		}
@@ -301,6 +301,24 @@ namespace GBHawk
 		{
 			*saver = (uint8_t)(to_save & 0xFF); saver++; *saver = (uint8_t)((to_save >> 8) & 0xFF); saver++;
 			*saver = (uint8_t)((to_save >> 16) & 0xFF); saver++; *saver = (uint8_t)((to_save >> 24) & 0xFF); saver++;
+
+			return saver;
+		}
+
+		uint8_t* byte_array_saver(uint8_t* to_save, uint8_t* saver, int length)
+		{
+			for (int i = 0; i < length; i++) { *saver = to_save[i]; saver++; }
+
+			return saver;
+		}
+
+		uint8_t* int_array_saver(uint32_t* to_save, uint8_t* saver, int length)
+		{
+			for (int i = 0; i < length; i++)
+			{
+				*saver = (uint8_t)(to_save[i] & 0xFF); saver++; *saver = (uint8_t)((to_save[i] >> 8) & 0xFF); saver++;
+				*saver = (uint8_t)((to_save[i] >> 16) & 0xFF); saver++; *saver = (uint8_t)((to_save[i] >> 24) & 0xFF); saver++;
+			}
 
 			return saver;
 		}
@@ -331,6 +349,24 @@ namespace GBHawk
 		{
 			to_load[0] = *loader; loader++; to_load[0] |= (*loader << 8); loader++;
 			to_load[0] |= (*loader << 16); loader++; to_load[0] |= (*loader << 24); loader++;
+
+			return loader;
+		}
+
+		uint8_t* byte_array_loader(uint8_t* to_load, uint8_t* loader, int length)
+		{
+			for (int i = 0; i < length; i++) { to_load[i] = *loader; loader++; }
+
+			return loader;
+		}
+
+		uint8_t* int_array_loader(uint32_t* to_load, uint8_t* loader, int length)
+		{
+			for (int i = 0; i < length; i++)
+			{
+				to_load[i] = *loader; loader++; to_load[i] |= (*loader << 8); loader++;
+				to_load[i] |= (*loader << 16); loader++; to_load[i] |= (*loader << 24); loader++;
+			}
 
 			return loader;
 		}
