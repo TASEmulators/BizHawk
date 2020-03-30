@@ -118,14 +118,7 @@ namespace BizHawk.Client.EmuHawk
 			_config.MoviesInAwe = cbMoviesInAWE.Checked;
 
 			var prevLuaEngine = _config.LuaEngine;
-			if (rbLuaInterface.Checked)
-			{
-				_config.LuaEngine = ELuaEngine.LuaPlusLuaInterface;
-			}
-			else if (rbKopiLua.Checked)
-			{
-				_config.LuaEngine = ELuaEngine.NLuaPlusKopiLua;
-			}
+			_config.LuaEngine = grpLuaEngine.Tracker.GetSelectionTagAs<ELuaEngine>() ?? throw new InvalidOperationException();
 
 			_mainForm.AddOnScreenMessage("Custom configurations saved.");
 			if (prevLuaEngine != _config.LuaEngine)

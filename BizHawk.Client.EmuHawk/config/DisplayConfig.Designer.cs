@@ -190,6 +190,7 @@
 			// 
 			this.rbDispMethodOpenGL.Checked = true;
 			this.rbDispMethodOpenGL.Name = "rbDispMethodOpenGL";
+			this.rbDispMethodOpenGL.Tag = BizHawk.Client.Common.EDispMethod.OpenGL;
 			this.rbDispMethodOpenGL.Text = "OpenGL";
 			// 
 			// lblDispMethodOpenGL
@@ -427,6 +428,7 @@
 			// rbARSquare
 			// 
 			this.rbARSquare.Name = "rbARSquare";
+			this.rbARSquare.Tag = BizHawk.Client.Common.EDispManagerAR.None;
 			this.rbARSquare.Text = "Use 1:1 pixel size (for crispness or debugging)";
 			this.rbARSquare.CheckedChanged += new System.EventHandler(this.rbARSquare_CheckedChanged);
 			// 
@@ -438,6 +440,7 @@
 			// rbARBySystem
 			// 
 			this.rbARBySystem.Name = "rbARBySystem";
+			this.rbARBySystem.Tag = BizHawk.Client.Common.EDispManagerAR.System;
 			this.rbARBySystem.Text = "Use system\'s recommendation";
 			this.rbARBySystem.CheckedChanged += new System.EventHandler(this.rbARBySystem_CheckedChanged);
 			// 
@@ -452,6 +455,7 @@
 			// rbARCustomSize
 			// 
 			this.rbARCustomSize.Name = "rbARCustomSize";
+			this.rbARCustomSize.Tag = BizHawk.Client.Common.EDispManagerAR.Custom;
 			this.rbARCustomSize.Text = "Use custom size:";
 			// 
 			// txtARCustomWidth
@@ -480,6 +484,7 @@
 			// rbARCustomRatio
 			// 
 			this.rbARCustomRatio.Name = "rbARCustomRatio";
+			this.rbARCustomRatio.Tag = BizHawk.Client.Common.EDispManagerAR.CustomRatio;
 			this.rbARCustomRatio.Text = "Use custom AR:";
 			// 
 			// txtARCustomRatioH
@@ -616,6 +621,7 @@
 			// 
 			this.rbDispMethodD3D.Checked = true;
 			this.rbDispMethodD3D.Name = "rbDispMethodD3D";
+			this.rbDispMethodD3D.Tag = BizHawk.Client.Common.EDispMethod.SlimDX9;
 			this.rbDispMethodD3D.Text = "Direct3D9";
 			// 
 			// lblDispMethodD3D
@@ -649,6 +655,7 @@
 			// 
 			this.rbDispMethodGDIPlus.Checked = true;
 			this.rbDispMethodGDIPlus.Name = "rbDispMethodGDIPlus";
+			this.rbDispMethodGDIPlus.Tag = BizHawk.Client.Common.EDispMethod.GdiPlus;
 			this.rbDispMethodGDIPlus.Text = "GDI+";
 			// 
 			// lblDispMethodGDIPlus

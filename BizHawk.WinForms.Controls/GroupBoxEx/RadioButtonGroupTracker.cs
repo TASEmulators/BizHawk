@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
@@ -12,6 +13,20 @@ namespace BizHawk.WinForms.Controls
 	/// <inheritdoc cref="IRadioButtonReadOnlyTracker"/>
 	public sealed class RadioButtonGroupTracker : List<ITrackedRadioButton>, IRadioButtonReadOnlyTracker
 	{
+		/// <value>The selected radio button, or <see langword="null"/> if no button is selected or if the collection is empty.</value>
+		public ITrackedRadioButton? Selection
+		{
+			get
+			{
+				if (Count == 0) return null;
+				foreach (var rb in this) if (rb.Checked) return rb;
+				return null;
+			}
+		}
+
+		/// <returns>The <see cref="Control.Tag"/> of the selected radio button, cast to <typeparamref name="T"/><c>?</c>, or <see langword="null"/> if no button is selected or if the collection is empty.</returns>
+		public T? GetSelectionTagAs<T>() where T : struct, Enum => (T?) Selection?.Tag;
+
 		public void UpdateDeselected(string name)
 		{
 			foreach (var rb in this) if (rb.Name != name) rb.UncheckFromTracker();

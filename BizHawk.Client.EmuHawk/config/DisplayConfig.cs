@@ -130,14 +130,7 @@ namespace BizHawk.Client.EmuHawk
 			if (rbDispFeaturesMinimal.Checked) _config.DispSpeedupFeatures = 1;
 			if (rbDispFeaturesNothing.Checked) _config.DispSpeedupFeatures = 0;
 
-			if (rbARSquare.Checked)
-				_config.DispManagerAR = EDispManagerAR.None;
-			else if (rbARBySystem.Checked)
-				_config.DispManagerAR = EDispManagerAR.System;
-			else if (rbARCustomSize.Checked)
-				_config.DispManagerAR = EDispManagerAR.Custom;
-			else if (rbARCustomRatio.Checked)
-				_config.DispManagerAR = EDispManagerAR.CustomRatio;
+			_config.DispManagerAR = grpAspectRatio.Tracker.GetSelectionTagAs<EDispManagerAR>() ?? throw new InvalidOperationException();
 
 			if (string.IsNullOrWhiteSpace(txtARCustomWidth.Text))
 			{
@@ -188,12 +181,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var oldDisplayMethod = _config.DispMethod;
-			if(rbDispMethodOpenGL.Checked)
-				_config.DispMethod = EDispMethod.OpenGL;
-			if(rbDispMethodGDIPlus.Checked)
-				_config.DispMethod = EDispMethod.GdiPlus;
-			if(rbDispMethodD3D.Checked)
-				_config.DispMethod = EDispMethod.SlimDX9;
+			_config.DispMethod = grpDispMethod.Tracker.GetSelectionTagAs<EDispMethod>() ?? throw new InvalidOperationException();
 
 			if (int.TryParse(txtCropLeft.Text, out int dispCropLeft))
 			{

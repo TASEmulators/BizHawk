@@ -62,9 +62,7 @@ namespace BizHawk.Client.EmuHawk
 			_config.SoundEnabledNormal = cbFullSpeedEnable.Checked;
 			_config.SoundEnabledRWFF = cbRewindFFWEnable.Checked;
 			_config.MuteFrameAdvance = cbMuteFrameAdvance.Checked;
-			if (rbSoundMethodDirectSound.Checked) _config.SoundOutputMethod = ESoundOutputMethod.DirectSound;
-			if (rbSoundMethodXAudio2.Checked) _config.SoundOutputMethod = ESoundOutputMethod.XAudio2;
-			if (rbSoundMethodOpenAL.Checked) _config.SoundOutputMethod = ESoundOutputMethod.OpenAL;
+			_config.SoundOutputMethod = grpSoundMethod.Tracker.GetSelectionTagAs<ESoundOutputMethod>() ?? ESoundOutputMethod.Dummy;
 			_config.SoundBufferSizeMs = (int)nudBufferSize.Value;
 			_config.SoundVolume = tbFullSpeedVolume.Value;
 			_config.SoundVolumeRWFF = tbRewindFFWVolume.Value;

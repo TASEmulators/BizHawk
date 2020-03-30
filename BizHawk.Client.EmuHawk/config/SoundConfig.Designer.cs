@@ -288,18 +288,21 @@
 			// rbSoundMethodDirectSound
 			// 
 			this.rbSoundMethodDirectSound.Name = "rbSoundMethodDirectSound";
+			this.rbSoundMethodDirectSound.Tag = BizHawk.Client.Common.ESoundOutputMethod.DirectSound;
 			this.rbSoundMethodDirectSound.Text = "DirectSound";
 			this.rbSoundMethodDirectSound.CheckedChanged += new System.EventHandler(this.rbSoundMethodAllRadios_CheckedChanged);
 			// 
 			// rbSoundMethodXAudio2
 			// 
 			this.rbSoundMethodXAudio2.Name = "rbSoundMethodXAudio2";
+			this.rbSoundMethodXAudio2.Tag = BizHawk.Client.Common.ESoundOutputMethod.XAudio2;
 			this.rbSoundMethodXAudio2.Text = "XAudio2";
 			this.rbSoundMethodXAudio2.CheckedChanged += new System.EventHandler(this.rbSoundMethodAllRadios_CheckedChanged);
 			// 
 			// rbSoundMethodOpenAL
 			// 
 			this.rbSoundMethodOpenAL.Name = "rbSoundMethodOpenAL";
+			this.rbSoundMethodOpenAL.Tag = BizHawk.Client.Common.ESoundOutputMethod.OpenAL;
 			this.rbSoundMethodOpenAL.Text = "OpenAL";
 			this.rbSoundMethodOpenAL.CheckedChanged += new System.EventHandler(this.rbSoundMethodAllRadios_CheckedChanged);
 			// 

@@ -7,6 +7,8 @@ namespace BizHawk.WinForms.Controls
 
 		string Name { get; }
 
+		object Tag { get; }
+
 		void UncheckFromTracker();
 	}
 }

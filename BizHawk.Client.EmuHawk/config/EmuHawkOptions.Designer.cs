@@ -478,11 +478,13 @@
 			// rbKopiLua
 			// 
 			this.rbKopiLua.Name = "rbKopiLua";
+			this.rbKopiLua.Tag = BizHawk.Client.Common.ELuaEngine.NLuaPlusKopiLua;
 			this.rbKopiLua.Text = "NLua+KopiLua - Reliable but slower";
 			// 
 			// rbLuaInterface
 			// 
 			this.rbLuaInterface.Name = "rbLuaInterface";
+			this.rbLuaInterface.Tag = BizHawk.Client.Common.ELuaEngine.LuaPlusLuaInterface;
 			this.rbLuaInterface.Text = "Lua+LuaInterface - Faster but memory leaks,  use at your own risk!";
 			// 
 			// flpDialogButtons
