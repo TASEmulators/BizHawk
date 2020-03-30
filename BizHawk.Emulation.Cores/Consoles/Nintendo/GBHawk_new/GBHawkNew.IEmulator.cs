@@ -109,7 +109,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkNew
 
 		public void Dispose()
 		{
+			DisposeSound();
 
+			if (GB_Pntr != IntPtr.Zero)
+			{
+				LibGBHawk.GB_destroy(GB_Pntr);
+				GB_Pntr = IntPtr.Zero;
+			}
 		}
 
 		#region Video provider
@@ -139,12 +145,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkNew
 
 		#region Audio
 
-		public BlipBuffer blip = new BlipBuffer(4500);
+		public BlipBuffer blip_L = new BlipBuffer(9000);
+		public BlipBuffer blip_R = new BlipBuffer(9000);
 
-		public int[] Aud = new int[9000];
-		public uint num_samp;
+		public int[] Aud_L = new int[9000];
+		public int[] Aud_R = new int[9000];
+		public uint num_samp_L;
+		public uint num_samp_R;
 
-		const int blipbuffsize = 4500;
+		const int blipbuffsize = 9000;
 
 		public bool CanProvideAsync => false;
 
@@ -165,24 +174,45 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkNew
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			uint f_clock = LibGBHawk.GB_get_audio(GB_Pntr, Aud, ref num_samp);
+			uint f_clock = LibGBHawk.GB_get_audio(GB_Pntr, Aud_L, ref num_samp_L, Aud_R, ref num_samp_R);
 
-			for (int i = 0; i < num_samp; i++)
+			for (int i = 0; i < num_samp_L; i++)
 			{
-				blip.AddDelta((uint)Aud[i * 2], Aud[i * 2 + 1]);
+				blip_L.AddDelta((uint)Aud_L[i * 2], Aud_L[i * 2 + 1]);
 			}
 
-			blip.EndFrame(f_clock);
+			for (int i = 0; i < num_samp_R; i++)
+			{
+				blip_R.AddDelta((uint)Aud_R[i * 2], Aud_R[i * 2 + 1]);
+			}
 
-			nsamp = blip.SamplesAvailable();
+			blip_L.EndFrame(f_clock);
+			blip_R.EndFrame(f_clock);
+
+			nsamp = blip_L.SamplesAvailable();
 			samples = new short[nsamp * 2];
 
-			blip.ReadSamples(samples, nsamp, true);
+			if (nsamp != 0)
+			{
+				blip_L.ReadSamplesLeft(samples, nsamp);
+				blip_R.ReadSamplesRight(samples, nsamp);
+			}
 		}
 
 		public void DiscardSamples()
 		{
-			blip.Clear();
+			blip_L.Clear();
+			blip_R.Clear();
+		}
+
+		public void DisposeSound()
+		{
+			blip_L.Clear();
+			blip_R.Clear();
+			blip_L.Dispose();
+			blip_R.Dispose();
+			blip_L = null;
+			blip_R = null;
 		}
 
 		#endregion

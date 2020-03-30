@@ -2974,8 +2974,8 @@ namespace GBHawk
 
 			*saver = (uint8_t)(TotalExecutedCycles & 0xFF); saver++; *saver = (uint8_t)((TotalExecutedCycles >> 8) & 0xFF); saver++;
 			*saver = (uint8_t)((TotalExecutedCycles >> 16) & 0xFF); saver++; *saver = (uint8_t)((TotalExecutedCycles >> 24) & 0xFF); saver++;
-			*saver = (uint8_t)((TotalExecutedCycles >> 16) & 0x32); saver++; *saver = (uint8_t)((TotalExecutedCycles >> 40) & 0xFF); saver++;
-			*saver = (uint8_t)((TotalExecutedCycles >> 16) & 0x48); saver++; *saver = (uint8_t)((TotalExecutedCycles >> 56) & 0xFF); saver++;
+			*saver = (uint8_t)((TotalExecutedCycles >> 32) & 0xFF); saver++; *saver = (uint8_t)((TotalExecutedCycles >> 40) & 0xFF); saver++;
+			*saver = (uint8_t)((TotalExecutedCycles >> 48) & 0xFF); saver++; *saver = (uint8_t)((TotalExecutedCycles >> 56) & 0xFF); saver++;
 
 			return saver;
 		}
@@ -2989,6 +2989,7 @@ namespace GBHawk
 			jammed = *loader == 1; loader++;
 			was_FlagI = *loader == 1; loader++;
 			FlagI = *loader == 1; loader++;
+			halted = *loader == 1; loader++;
 
 			opcode = *loader; loader++;
 			LY = *loader; loader++;

@@ -77,7 +77,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkNew
 			LibGBHawk.GB_load_bios(GB_Pntr, _bios, is_GBC, _syncSettings.GBACGB);
 			LibGBHawk.GB_load(GB_Pntr, rom, (uint)rom.Length, MD5_temp, (uint)_syncSettings.RTCInitialTime, (uint)_syncSettings.RTCOffset);
 
-			blip.SetRates(3579545, 44100);
+			blip_L.SetRates(4194304, 44100);
+			blip_R.SetRates(4194304, 44100);
 
 			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(this);
 

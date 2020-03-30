@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkNew
 		/// <param name="aud_buf">where to send left audio to</param>
 		/// <param name="n_samp">number of left samples</param>
 		[DllImport("GBHawk.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern uint GB_get_audio(IntPtr core, int[] aud_buf,  ref uint n_samp);
+		public static extern uint GB_get_audio(IntPtr core, int[] aud_buf_L,  ref uint n_samp_L, int[] aud_buf_R, ref uint n_samp_R);
 
 		#endregion
 
@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkNew
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
 		/// <param name="loader">load buffer</param>
-		[DllImport("MSXHAWK.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport("GBHAWK.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void GB_load_state(IntPtr core, byte[] loader);
 
 		#endregion

@@ -62,6 +62,7 @@ namespace GBHawk
 			}
 
 			MemMap.ppu_pntr = &ppu[0];
+			ppu->mem_ctrl = &MemMap;
 
 			// initialize the proper mapper
 			Setup_Mapper(MD5, RTC_initial, RTC_offset);
@@ -133,7 +134,21 @@ namespace GBHawk
 
 		bool FrameAdvance(uint8_t new_controller_1, uint32_t new_accx, uint32_t new_accy, bool render, bool rendersound)
 		{
-			for (int i = 0; i < 70224; i++)
+			int temp_check = 0;
+			/*
+			if (cpu.TotalExecutedCycles < 23805935) {
+				temp_check = 70224;
+			}
+			else if (cpu.TotalExecutedCycles < 23853139) {
+				temp_check = 200;
+			}
+			else {
+				temp_check = 5;
+			}
+			*/
+			temp_check = 70224;
+			
+			for (int i = 0; i < temp_check; i++)
 			{
 				// These things do not change speed in GBC double spped mode
 				psg.tick();
@@ -337,7 +352,13 @@ namespace GBHawk
 			std::memcpy(dst, src, sizeof int32_t * psg.num_samples_R * 2);
 			n_samp_R[0] = psg.num_samples_R;
 
-			return psg.master_audio_clock;
+			uint32_t temp_int = psg.master_audio_clock;
+			psg.master_audio_clock = 0;
+
+			psg.num_samples_L = 0;
+			psg.num_samples_R = 0;
+
+			return temp_int;
 		}
 
 		void Setup_Mapper(string MD5, uint32_t RTC_initial, uint32_t RTC_offset)
@@ -561,8 +582,8 @@ namespace GBHawk
 		{
 			saver = ppu->SaveState(saver);
 			saver = cpu.SaveState(saver);
-			saver = psg.SaveState(saver);
-			saver = MemMap.SaveState(saver);
+			saver = MemMap.SaveState(saver);			
+			saver = psg.SaveState(saver);		
 			saver = timer.SaveState(saver);
 			saver = serialport.SaveState(saver);
 			saver = mapper->SaveState(saver);
@@ -572,11 +593,11 @@ namespace GBHawk
 		{
 			loader = ppu->LoadState(loader);
 			loader = cpu.LoadState(loader);
+			loader = MemMap.LoadState(loader);		
 			loader = psg.LoadState(loader);
-			loader = MemMap.LoadState(loader);
-			loader = timer.SaveState(loader);
-			loader = serialport.SaveState(loader);
-			loader = mapper->SaveState(loader);
+			loader = timer.LoadState(loader);
+			loader = serialport.LoadState(loader);
+			loader = mapper->LoadState(loader);
 		}
 
 		#pragma endregion

@@ -1620,7 +1620,7 @@ namespace GBHawk
 						// So transfers nominally from higher memory areas are actually still from there (i.e. FF -> DF)
 						uint8_t DMA_actual = DMA_addr;
 						if (DMA_addr > 0xDF) { DMA_actual &= 0xDF; }
-						DMA_byte = ReadMemory((uint32_t)((DMA_actual << 8) + DMA_inc));
+						DMA_byte = ReadMemory(((uint32_t)(DMA_actual << 8) + DMA_inc));
 						DMA_start = true;
 					}
 					else if ((DMA_clock % 4) == 3)
@@ -3095,7 +3095,7 @@ namespace GBHawk
 		void DMA_tick()
 		{
 			// Note that DMA is halted when the CPU is halted
-			if (DMA_start && !cpu_halted)
+			if (DMA_start && !cpu_halted[0])
 			{
 				if (DMA_clock >= 4)
 				{
@@ -4688,7 +4688,7 @@ namespace GBHawk
 		void DMA_tick()
 		{
 			// Note that DMA is halted when the CPU is halted
-			if (DMA_start && !cpu_halted)
+			if (DMA_start && !cpu_halted[0])
 			{
 				if (DMA_clock >= 4)
 				{

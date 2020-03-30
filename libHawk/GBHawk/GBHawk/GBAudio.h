@@ -728,20 +728,20 @@ namespace GBHawk
 
 			if (L_final != latched_sample_L)
 			{
-				samples_L[num_samples_L * 2] = master_audio_clock;
-				samples_L[num_samples_L * 2 + 1] = L_final - latched_sample_L;
+				//samples_L[num_samples_L * 2] = master_audio_clock;
+				//samples_L[num_samples_L * 2 + 1] = L_final - latched_sample_L;
 
-				num_samples_L++;
+				//num_samples_L++;
 				
 				latched_sample_L = L_final;
 			}
 
 			if (R_final != latched_sample_R)
 			{
-				samples_R[num_samples_R * 2] = master_audio_clock;
-				samples_R[num_samples_R * 2 + 1] = R_final - latched_sample_R;
+				//samples_R[num_samples_R * 2] = master_audio_clock;
+				//samples_R[num_samples_R * 2 + 1] = R_final - latched_sample_R;
 
-				num_samples_R++;
+				//num_samples_R++;
 				
 				latched_sample_R = R_final;
 			}
