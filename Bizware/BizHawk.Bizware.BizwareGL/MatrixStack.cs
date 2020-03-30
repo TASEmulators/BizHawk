@@ -5,6 +5,15 @@ using OpenTK;
 
 namespace BizHawk.Bizware.BizwareGL
 {
+	//note: the sense of these matrices, as well as pre- and post- multiplying may be all mixed up.
+	//conceptually here is how we should be working, in the example of spinning a sprite in place
+	//1. sprite starts with top left at origin
+	//2. translate half size, to center sprite at origin
+	//3. rotate around Z
+	//4. translate to position in world
+	//this class is designed to make that work, that way. the takeaways:
+	//* Use the scale, translate, rotate methods in the order given above
+	//* Use PostMultiplyMatrix to apply more work to a prior matrix (in the manner described above) since I am calling this all post-work
 	public class MatrixStack
 	{
 		public MatrixStack()
@@ -54,32 +63,27 @@ namespace BizHawk.Bizware.BizwareGL
 		public void Pop() { Top = stack.Pop(); IsDirty = true; }
 		public void Push() { stack.Push(Top); IsDirty = true; }
 
-		public void RotateAxis(Vector3 axisRotation, float angle) { Top = Matrix4.CreateFromAxisAngle(axisRotation, angle) * Top; IsDirty = true; }
+		public void RotateAxis(Vector3 axisRotation, float angle) { Top = Top * Matrix4.CreateFromAxisAngle(axisRotation, angle); IsDirty = true; }
 
-		public void Scale(Vector3 scale) { Top = Matrix4.CreateScale(scale) * Top; IsDirty = true; }
-		public void Scale(Vector2 scale) { Top = Matrix4.CreateScale(scale.X, scale.Y, 1) * Top; IsDirty = true; }
-		public void Scale(float x, float y, float z) { Top = Matrix4.CreateScale(x, y, z) * Top; IsDirty = true; }
+		public void Scale(Vector3 scale) { PreMultiplyMatrix(Matrix4.CreateScale(scale)); IsDirty = true; }
+		public void Scale(Vector2 scale) { PreMultiplyMatrix(Matrix4.CreateScale(scale.X, scale.Y, 1)); IsDirty = true; }
+		public void Scale(float x, float y, float z) { PreMultiplyMatrix(Matrix4.CreateScale(x, y, z)); IsDirty = true; }
 		public void Scale(float ratio) { Scale(ratio, ratio, ratio); IsDirty = true; }
 		public void Scale(float x, float y) { Scale(x, y, 1); IsDirty = true; }
 
-		public void RotateAxis(float x, float y, float z, float degrees) { MultiplyMatrix(Matrix4.CreateFromAxisAngle(new Vector3(x, y, z), MathHelper.DegreesToRadians(degrees))); IsDirty = true; }
-		public void RotateY(float degrees) { MultiplyMatrix(Matrix4.CreateRotationY(MathHelper.DegreesToRadians(degrees))); IsDirty = true; }
-		public void RotateX(float degrees) { MultiplyMatrix(Matrix4.CreateRotationX(MathHelper.DegreesToRadians(degrees))); IsDirty = true; }
-		public void RotateZ(float degrees) { MultiplyMatrix(Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(degrees))); IsDirty = true; }
+		public void RotateAxis(float x, float y, float z, float degrees) { PreMultiplyMatrix(Matrix4.CreateFromAxisAngle(new Vector3(x, y, z), MathHelper.DegreesToRadians(degrees))); IsDirty = true; }
+		public void RotateY(float degrees) { PreMultiplyMatrix(Matrix4.CreateRotationY(MathHelper.DegreesToRadians(degrees))); IsDirty = true; }
+		public void RotateX(float degrees) { PreMultiplyMatrix(Matrix4.CreateRotationX(MathHelper.DegreesToRadians(degrees))); IsDirty = true; }
+		public void RotateZ(float degrees) { PreMultiplyMatrix(Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(degrees))); IsDirty = true; }
 
 		public void Translate(Vector2 v) { Translate(v.X, v.Y, 0); IsDirty = true; }
-		public void Translate(Vector3 trans) { Top = Matrix4.CreateTranslation(trans) * Top; IsDirty = true; }
-		public void Translate(float x, float y, float z) { Top = Matrix4.CreateTranslation(x, y, z) * Top; IsDirty = true; }
+		public void Translate(Vector3 trans) { PreMultiplyMatrix(Matrix4.CreateTranslation(trans)); IsDirty = true; }
+		public void Translate(float x, float y, float z) { PreMultiplyMatrix(Matrix4.CreateTranslation(x, y, z)); IsDirty = true; }
 		public void Translate(float x, float y) { Translate(x, y, 0); IsDirty = true; }
 		public void Translate(Point pt) { Translate(pt.X, pt.Y, 0); IsDirty = true; }
 
-		public void MultiplyMatrix(MatrixStack ms) { MultiplyMatrix(ms.Top); IsDirty = true; }
-		public void MultiplyMatrix(Matrix4 value) { Top = value * Top; IsDirty = true; }
-
-		public Vector2 Transform(Vector2 v)
-		{
-			var r = new Vector4(v.X,v.Y,0,1) * Top;
-			return new Vector2(r.X, r.Y);
-		}
+		public void PostMultiplyMatrix(MatrixStack ms) { PostMultiplyMatrix(ms.Top); IsDirty = true; }
+		public void PostMultiplyMatrix(Matrix4 value) { Top = value * Top; IsDirty = true; }
+		public void PreMultiplyMatrix(Matrix4 value) { Top = Top * value; IsDirty = true; }
 	}
 }
