@@ -62,10 +62,10 @@ namespace BizHawk.Bizware.BizwareGL
 		public void Scale(float ratio) { Scale(ratio, ratio, ratio); IsDirty = true; }
 		public void Scale(float x, float y) { Scale(x, y, 1); IsDirty = true; }
 
-		public void RotateAxis(float x, float y, float z, float degrees) { MultiplyMatrix(Matrix4.CreateFromAxisAngle(new Vector3(x, y, z), degrees)); IsDirty = true; }
-		public void RotateY(float degrees) { MultiplyMatrix(Matrix4.CreateRotationY(degrees)); IsDirty = true; }
-		public void RotateX(float degrees) { MultiplyMatrix(Matrix4.CreateRotationX(degrees)); IsDirty = true; }
-		public void RotateZ(float degrees) { MultiplyMatrix(Matrix4.CreateRotationZ(degrees)); IsDirty = true; }
+		public void RotateAxis(float x, float y, float z, float degrees) { MultiplyMatrix(Matrix4.CreateFromAxisAngle(new Vector3(x, y, z), MathHelper.DegreesToRadians(degrees))); IsDirty = true; }
+		public void RotateY(float degrees) { MultiplyMatrix(Matrix4.CreateRotationY(MathHelper.DegreesToRadians(degrees))); IsDirty = true; }
+		public void RotateX(float degrees) { MultiplyMatrix(Matrix4.CreateRotationX(MathHelper.DegreesToRadians(degrees))); IsDirty = true; }
+		public void RotateZ(float degrees) { MultiplyMatrix(Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(degrees))); IsDirty = true; }
 
 		public void Translate(Vector2 v) { Translate(v.X, v.Y, 0); IsDirty = true; }
 		public void Translate(Vector3 trans) { Top = Matrix4.CreateTranslation(trans) * Top; IsDirty = true; }
@@ -75,5 +75,11 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public void MultiplyMatrix(MatrixStack ms) { MultiplyMatrix(ms.Top); IsDirty = true; }
 		public void MultiplyMatrix(Matrix4 value) { Top = value * Top; IsDirty = true; }
+
+		public Vector2 Transform(Vector2 v)
+		{
+			var r = new Vector4(v.X,v.Y,0,1) * Top;
+			return new Vector2(r.X, r.Y);
+		}
 	}
 }
