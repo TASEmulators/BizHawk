@@ -19,8 +19,8 @@ namespace GBHawk
 		uint32_t* timer_div_reg = nullptr;
 
 		uint32_t num_samples_L, num_samples_R;
-		int32_t samples_L[9000] = {};
-		int32_t samples_R[9000] = {};
+		int32_t samples_L[25000] = {};
+		int32_t samples_R[25000] = {};
 
 		bool DUTY_CYCLES[32] = {false, false, false, false, false, false, false, true,
 								true, false, false, false, false, false, false, true,

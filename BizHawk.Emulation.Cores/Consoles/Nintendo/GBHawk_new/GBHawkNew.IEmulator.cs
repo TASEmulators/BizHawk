@@ -145,11 +145,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkNew
 
 		#region Audio
 
-		public BlipBuffer blip_L = new BlipBuffer(9000);
-		public BlipBuffer blip_R = new BlipBuffer(9000);
+		public BlipBuffer blip_L = new BlipBuffer(25000);
+		public BlipBuffer blip_R = new BlipBuffer(25000);
 
-		public int[] Aud_L = new int[9000];
-		public int[] Aud_R = new int[9000];
+		public int[] Aud_L = new int[25000];
+		public int[] Aud_R = new int[25000];
 		public uint num_samp_L;
 		public uint num_samp_R;
 

@@ -197,7 +197,7 @@ namespace GBHawk
 		}
 
 		// Execute instructions
-		void ExecuteOne(uint8_t* interrupt_src, uint8_t interrupt_enable)
+		void ExecuteOne(uint8_t* interrupt_src, uint8_t* interrupt_enable)
 		{
 			switch (instr_table[instr_pntr++])
 			{
@@ -554,7 +554,7 @@ namespace GBHawk
 				instr_pntr++;
 				//Console.WriteLine(interrupt_src + " " + interrupt_enable + " " + TotalExecutedCycles);
 
-				if (((interrupt_src[0] & (1 << bit_check)) > 0) && ((interrupt_enable & (1 << bit_check)) > 0)) { int_src = bit_check; int_clear = (uint8_t)(1 << bit_check); }
+				if (((interrupt_src[0] & (1 << bit_check)) > 0) && ((interrupt_enable[0] & (1 << bit_check)) > 0)) { int_src = bit_check; int_clear = (uint8_t)(1 << bit_check); }
 				/*
 				if (interrupt_src.Bit(0) && interrupt_enable.Bit(0)) { int_src = 0; int_clear = 1; }
 				else if (interrupt_src.Bit(1) && interrupt_enable.Bit(1)) { int_src = 1; int_clear = 2; }
@@ -581,7 +581,7 @@ namespace GBHawk
 			case IRQ_CLEAR:
 				if ((interrupt_src[0] & (1 << int_src)) > 0) { interrupt_src[0] -= int_clear; }
 
-				if ((interrupt_src[0] & interrupt_enable) == 0) { FlagI = false; }
+				if ((interrupt_src[0] & interrupt_enable[0]) == 0) { FlagI = false; }
 
 				// reset back to default state
 				int_src = 5;

@@ -159,18 +159,18 @@ namespace GBHawk
 				if (!MemMap.HDMA_transfer)
 				{
 					// These things all tick twice as fast in GBC double speed mode
-					ppu->DMA_tick();
+					if (ppu->DMA_start && !cpu.halted) { ppu->DMA_tick(); }
 					timer.tick_1();
 					serialport.serial_transfer_tick();
-					cpu.ExecuteOne(&MemMap.REG_FF0F, MemMap.REG_FFFF);
+					cpu.ExecuteOne(&MemMap.REG_FF0F, &MemMap.REG_FFFF);
 					timer.tick_2();
 
 					if (MemMap.double_speed)
 					{
-						ppu->DMA_tick();
+						if (ppu->DMA_start && !cpu.halted) { ppu->DMA_tick(); }
 						timer.tick_1();
 						serialport.serial_transfer_tick();
-						cpu.ExecuteOne(&MemMap.REG_FF0F, MemMap.REG_FFFF);
+						cpu.ExecuteOne(&MemMap.REG_FF0F, &MemMap.REG_FFFF);
 						timer.tick_2();
 					}
 				}
@@ -236,18 +236,19 @@ namespace GBHawk
 			if (!MemMap.HDMA_transfer)
 			{
 				// These things all tick twice as fast in GBC double speed mode
-				ppu->DMA_tick();
+							// Note that DMA is halted when the CPU is halted
+				if (ppu->DMA_start && !cpu.halted) { ppu->DMA_tick(); }
 				timer.tick_1();
 				serialport.serial_transfer_tick();
-				cpu.ExecuteOne(&MemMap.REG_FF0F, MemMap.REG_FFFF);
+				cpu.ExecuteOne(&MemMap.REG_FF0F, &MemMap.REG_FFFF);
 				timer.tick_2();
 
 				if (MemMap.double_speed)
 				{
-					ppu->DMA_tick();
+					if (ppu->DMA_start && !cpu.halted) { ppu->DMA_tick(); }
 					timer.tick_1();
 					serialport.serial_transfer_tick();
-					cpu.ExecuteOne(&MemMap.REG_FF0F, MemMap.REG_FFFF);
+					cpu.ExecuteOne(&MemMap.REG_FF0F, &MemMap.REG_FFFF);
 					timer.tick_2();
 				}
 			}
