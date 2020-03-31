@@ -334,7 +334,11 @@ namespace BizHawk.Client.EmuHawk.Filters
 		public override Vector2 UntransformPoint(string channel, Vector2 point)
 		{
 			point = Transform(matBotInvert, point);
+
 			//hack to accomodate input tracking system's float-point sense (based on the core's videobuffer height)
+			//actually, this is needed for a reason similar to the "TouchScreenStart" that I removed.
+			//So, something like that needs readding if we're to get rid of this hack.
+			//(should redo it as a mouse coordinate offset or something.. but the key is to pipe it to the point where this is needed.. that is where MainForm does DisplayManager.UntransformPoint()
 			point.Y *= 2;
 
 			//in case we're in this layout, we get confused, so fix it
@@ -351,8 +355,8 @@ namespace BizHawk.Client.EmuHawk.Filters
 
 		public override Vector2 TransformPoint(string channel, Vector2 point)
 		{
-			//NOT TESTED, probably needs adjustment
-			return Transform(matBot, point);
+			point = Transform(matBot, point);
+			return point;
 		}
 
 		public override void Run()

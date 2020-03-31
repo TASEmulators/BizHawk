@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -663,26 +664,14 @@ namespace BizHawk.Client.ApiHawk
 			InvokeMainFormMethod("TogglePause");
 		}
 
-		public static int TransformPointX(int x)
+		public static Point TransformPoint(Point point)
 		{
-			var point = new System.Drawing.Point(x, 0);
 			Type t = ClientAssembly.GetType("BizHawk.Client.EmuHawk.GlobalWin");
 			FieldInfo f = t.GetField("DisplayManager");
 			object displayManager = f.GetValue(null);
 			MethodInfo m = t.GetMethod("TransFormPoint");
 			point = (System.Drawing.Point)m.Invoke(displayManager, new object[] { point });
-			return point.X;
-		}
-
-		public static int TransformPointY(int y)
-		{
-			var point = new System.Drawing.Point(0, y);
-			Type t = ClientAssembly.GetType("BizHawk.Client.EmuHawk.GlobalWin");
-			FieldInfo f = t.GetField("DisplayManager");
-			object displayManager = f.GetValue(null);
-			MethodInfo m = t.GetMethod("TransFormPoint");
-			point = (System.Drawing.Point)m.Invoke(displayManager, new object[] { point });
-			return point.Y;
+			return point;
 		}
 
 		public static void Unpause()

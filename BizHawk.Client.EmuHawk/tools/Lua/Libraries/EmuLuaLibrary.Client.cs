@@ -361,19 +361,28 @@ namespace BizHawk.Client.EmuHawk
 			MainForm.TogglePause();
 		}
 
-		[LuaMethodExample("local inclitra = client.transformPointX( 16 );")]
-		[LuaMethod("transformPointX", "Transforms an x-coordinate in emulator space to an x-coordinate in client space")]
-		public static int TransformPointX(int x)
+		//couldn't make this work..
+		//[LuaMethodExample("local inclitra = client.transformPoint( 32, 100 );")]
+		//[LuaMethod("transformPoint", "Transforms a point in emulator space to a point in client space")]
+		//public static object TransformPoint(int x, int y)
+		//{
+		//	var point = new System.Drawing.Point(x, y);
+		//	return GlobalWin.DisplayManager.TransformPoint(point);
+		//}
+
+		[LuaMethodExample("local inclitra = client.transformPointX( 16, 100 );")]
+		[LuaMethod("transformPointX", "Transforms a point in emulator space to an x-coordinate in client space")]
+		public static int TransformPointX(int x, int y)
 		{
-			var point = new System.Drawing.Point(x, 0);
+			var point = new System.Drawing.Point(x, y);
 			return GlobalWin.DisplayManager.TransformPoint(point).X;
 		}
 
-		[LuaMethodExample("local inclitra = client.transformPointY( 32 );")]
-		[LuaMethod("transformPointY", "Transforms an y-coordinate in emulator space to an y-coordinate in client space")]
-		public static int TransformPointY(int y)
+		[LuaMethodExample("local inclitra = client.transformPointY( 16, 100 );")]
+		[LuaMethod("transformPointY", "Transforms a point in emulator space to a y-coordinate in client space")]
+		public static int TransformPointY(int x, int y)
 		{
-			var point = new System.Drawing.Point(0, y);
+			var point = new System.Drawing.Point(x, y);
 			return GlobalWin.DisplayManager.TransformPoint(point).Y;
 		}
 
