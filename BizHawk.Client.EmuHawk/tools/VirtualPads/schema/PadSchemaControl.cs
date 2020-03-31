@@ -34,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 			=> DisplayName = name;
 
 		public ButtonSchema(int x, int y, int controller, string name)
-			: this(x, y, $"P{controller} {name}") {}
+			: base(new Point(x, y), $"P{controller} {name}") {}
 
 		public static ButtonSchema Up(int x, int y, string? name = null)
 			=> new ButtonSchema(x, y, name ?? "Up") { Icon = Resources.BlueUp };
