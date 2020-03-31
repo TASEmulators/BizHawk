@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 				reset_frame = true;
 			}
 
-			reset_cycle = controller.GetFloat("Reset Cycle");
+			reset_cycle = controller.AxisValue("Reset Cycle");
 			reset_cycle_int = (int)Math.Floor(reset_cycle);
 
 			_isLag = true;

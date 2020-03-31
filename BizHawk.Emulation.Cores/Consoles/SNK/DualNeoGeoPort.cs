@@ -293,9 +293,9 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 
 			public ControllerDefinition Definition => null;
 
-			public float GetFloat(string name)
+			public float AxisValue(string name)
 			{
-				return _controller.GetFloat(_prefix + name);
+				return _controller.AxisValue(_prefix + name);
 			}
 
 			public bool IsPressed(string button)

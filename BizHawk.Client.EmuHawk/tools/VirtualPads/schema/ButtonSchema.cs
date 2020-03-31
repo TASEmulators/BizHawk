@@ -9,7 +9,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		Boolean,		// A single on/off button
 		AnalogStick,	// An analog stick X,Y Pair
-		SingleFloat,	// A single analog button (pressure sensitive button for instance)
+		SingleAxis,	    // A single analog control (pressure sensitive button for instance)
 		TargetedPair,	// A X,Y pair intended to be a screen coordinate (for zappers, mouse, stylus, etc)
 		DiscManager
 	}
@@ -43,7 +43,7 @@ namespace BizHawk.Client.EmuHawk
 		public int MinValueSec { get; set; }
 		public object OwnerEmulator { get; set; }
 
-		public Orientation Orientation { get; set; } // For Single Float controls
+		public Orientation Orientation { get; set; } // For SingleAxis controls
 
 		// for Analog Stick controls
 		public ControllerDefinition.AxisRange? AxisRange { get; set; }
@@ -99,18 +99,18 @@ namespace BizHawk.Client.EmuHawk
 			};
 	}
 
-	public class SingleFloatSchema : ButtonSchema
+	public class SingleAxisSchema : ButtonSchema
 	{
-		public SingleFloatSchema(int x, int y, string name)
+		public SingleAxisSchema(int x, int y, string name)
 			: base(x, y, name)
 		{
-			Type = PadInputType.SingleFloat;
+			Type = PadInputType.SingleAxis;
 		}
 
-		public SingleFloatSchema(int x, int y, int controller, string name)
+		public SingleAxisSchema(int x, int y, int controller, string name)
 			: base(x, y, controller, name)
 		{
-			Type = PadInputType.SingleFloat;
+			Type = PadInputType.SingleAxis;
 		}
 	}
 

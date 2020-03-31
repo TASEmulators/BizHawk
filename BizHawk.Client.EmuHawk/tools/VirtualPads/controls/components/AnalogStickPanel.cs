@@ -164,8 +164,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetAnalog()
 		{
-			Global.InputManager.StickyXorAdapter.SetFloat(XName, HasValue ? X : (int?)null);
-			Global.InputManager.StickyXorAdapter.SetFloat(YName, HasValue ? Y : (int?)null);
+			Global.InputManager.StickyXorAdapter.SetAxis(XName, HasValue ? X : (int?)null);
+			Global.InputManager.StickyXorAdapter.SetAxis(YName, HasValue ? Y : (int?)null);
 			Refresh();
 		}
 
@@ -185,8 +185,8 @@ namespace BizHawk.Client.EmuHawk
 				// Previous frame
 				if (_previous != null)
 				{
-					var pX = (int)_previous.GetFloat(XName);
-					var pY = (int)_previous.GetFloat(YName);
+					var pX = (int)_previous.AxisValue(XName);
+					var pY = (int)_previous.AxisValue(YName);
 					e.Graphics.DrawLine(_grayPen, PixelMidX, PixelMidY, RealToGfxX(pX), RealToGfxY(pY));
 					e.Graphics.DrawImage(_grayDot, RealToGfxX(pX) - 3, RealToGfxY(_rangeY.EndInclusive) - RealToGfxY(pY) - 3);
 				}
@@ -262,8 +262,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Set(IController controller)
 		{
-			var newX = (int) controller.GetFloat(XName);
-			var newY = (int) controller.GetFloat(YName);
+			var newX = (int) controller.AxisValue(XName);
+			var newY = (int) controller.AxisValue(YName);
 			if (newX != X || newY != Y) SetPosition(newX, newY);
 		}
 

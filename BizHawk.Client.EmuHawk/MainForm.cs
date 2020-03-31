@@ -971,14 +971,14 @@ namespace BizHawk.Client.EmuHawk
 			//also handle floats
 			//we'll need to isolate the mouse coordinates so we can translate them
 			Tuple<string, float> mouseX = null, mouseY = null;
-			var floats = Input.Instance.GetFloats();
-			foreach (var f in Input.Instance.GetFloats())
+			var floats = Input.Instance.GetAxisValues();
+			foreach (var f in Input.Instance.GetAxisValues())
 			{
 				if (f.Item1 == "WMouse X")
 					mouseX = f;
 				else if (f.Item1 == "WMouse Y")
 					mouseY = f;
-				else conInput.AcceptNewFloat(f);
+				else conInput.AcceptNewAxes(f);
 			}
 
 			//if we found mouse coordinates (and why wouldn't we?) then translate them now
@@ -988,8 +988,8 @@ namespace BizHawk.Client.EmuHawk
 				var p = DisplayManager.UntransformPoint(new Point((int)mouseX.Item2, (int)mouseY.Item2));
 				float x = p.X / (float)_currentVideoProvider.BufferWidth;
 				float y = p.Y / (float)_currentVideoProvider.BufferHeight;
-				conInput.AcceptNewFloat(new Tuple<string, float>("WMouse X", (x * 20000) - 10000));
-				conInput.AcceptNewFloat(new Tuple<string, float>("WMouse Y", (y * 20000) - 10000));
+				conInput.AcceptNewAxes(new Tuple<string, float>("WMouse X", (x * 20000) - 10000));
+				conInput.AcceptNewAxes(new Tuple<string, float>("WMouse Y", (y * 20000) - 10000));
 			}
 
 		}
@@ -3822,7 +3822,7 @@ namespace BizHawk.Client.EmuHawk
 					Rewinder.Initialize();
 
 					Global.InputManager.StickyXorAdapter.ClearStickies();
-					Global.InputManager.StickyXorAdapter.ClearStickyFloats();
+					Global.InputManager.StickyXorAdapter.ClearStickyAxes();
 					Global.InputManager.AutofireStickyXorAdapter.ClearStickies();
 
 					RewireSound();

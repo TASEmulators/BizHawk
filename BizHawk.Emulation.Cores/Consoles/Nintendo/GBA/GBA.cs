@@ -13,12 +13,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			{
 				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "L", "R", "Power"
 			},
-			FloatControls =
+			AxisControls =
 			{
 				"Tilt X", "Tilt Y", "Tilt Z",
 				"Light Sensor"
 			},
-			FloatRanges =
+			AxisRanges =
 			{
 				TiltRange, TiltRange, TiltRange,
 				new ControllerDefinition.AxisRange(0, 100, 200),

@@ -144,8 +144,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				BoolButtons = BaseBoolDefinition
 				.Select(b => "P" + PortNum + " " + b)
 				.ToList(),
-				FloatControls = { "P" + PortNum + " Disc X", "P" + PortNum + " Disc Y" },
-				FloatRanges = ControllerDefinition.CreateAxisRangePair(-127, 0, 127, ControllerDefinition.AxisPairOrientation.RightAndUp) //TODO verify direction against hardware
+				AxisControls = { "P" + PortNum + " Disc X", "P" + PortNum + " Disc Y" },
+				AxisRanges = ControllerDefinition.CreateAxisRangePair(-127, 0, 127, ControllerDefinition.AxisPairOrientation.RightAndUp) //TODO verify direction against hardware
 			};
 		}
 
@@ -164,8 +164,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				}
 			}
 
-			int x = (int)c.GetFloat(Definition.FloatControls[0]);
-			int y = (int)c.GetFloat(Definition.FloatControls[1]);
+			int x = (int)c.AxisValue(Definition.AxisControls[0]);
+			int y = (int)c.AxisValue(Definition.AxisControls[1]);
 			result |= CalcDirection(x, y);
 
 			return result;

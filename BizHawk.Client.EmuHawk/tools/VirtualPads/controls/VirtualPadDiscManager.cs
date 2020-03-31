@@ -127,7 +127,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Set(IController controller)
 		{
-			//controller.GetFloat("Disc Select")
+			//controller.AxisValue("Disc Select")
 		}
 
 		public bool ReadOnly { get; set; }
@@ -137,7 +137,7 @@ namespace BizHawk.Client.EmuHawk
 		private void lvDiscs_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			// emergency measure: if no selection, set no disc
-			Global.InputManager.StickyXorAdapter.SetFloat(_discSelectName, lvDiscs.SelectedIndices.Count == 0 ? 0 : lvDiscs.SelectedIndices[0]);
+			Global.InputManager.StickyXorAdapter.SetAxis(_discSelectName, lvDiscs.SelectedIndices.Count == 0 ? 0 : lvDiscs.SelectedIndices[0]);
 		}
 
 		private void btnClose_Click(object sender, EventArgs e)

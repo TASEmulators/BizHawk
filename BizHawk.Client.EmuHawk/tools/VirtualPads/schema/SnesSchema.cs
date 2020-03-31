@@ -133,7 +133,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema Mouse(int controller)
 		{
-			var controllerDefRanges = new SnesMouseController().Definition.FloatRanges;
+			var controllerDefRanges = new SnesMouseController().Definition.AxisRanges;
 			return new PadSchema
 			{
 				Size = new Size(345, 225),

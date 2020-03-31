@@ -37,12 +37,12 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				"P1 Left", "P1 Right", "P1 B1",
 				"P2 Left", "P2 Right", "P2 B1",
 			},
-			FloatControls =
+			AxisControls =
 			{
 				"P1 Paddle",
 				"P2 Paddle"
 			},
-			FloatRanges =
+			AxisRanges =
 			{
 				new ControllerDefinition.AxisRange(0, 128, 255),
 				new ControllerDefinition.AxisRange(0, 128, 255)
@@ -57,11 +57,11 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				"Reset", "Pause",
 				"P1 Trigger",
 			},
-			FloatControls =
+			AxisControls =
 			{
 				"P1 X", "P1 Y",
 			},
-			FloatRanges =
+			AxisRanges =
 			{
 				new ControllerDefinition.AxisRange(0, 64, 127),
 				new ControllerDefinition.AxisRange(0, 500, 1000)
@@ -80,12 +80,12 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				"P1 Left", "P1 Right", "P1 Up", "P1 Down", "P1 B1", "P1 B2",
 				"P2 Left", "P2 Right", "P2 Up", "P2 Down", "P2 B1", "P2 B2"
 			},
-			FloatControls =
+			AxisControls =
 			{
 				"P1 X", "P1 Y",
 				"P2 X", "P2 Y"
 			},
-			FloatRanges = SportsPadTrackballRanges.Concat(SportsPadTrackballRanges).ToList()
+			AxisRanges = SportsPadTrackballRanges.Concat(SportsPadTrackballRanges).ToList()
 		};
 
 		public static readonly ControllerDefinition SMSKeyboardController = new ControllerDefinition
@@ -151,7 +151,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 						else if (_controller.IsPressed("P1 Right"))
 							paddle1Pos = PaddleMax;
 						else
-							paddle1Pos = (int)_controller.GetFloat("P1 Paddle");
+							paddle1Pos = (int)_controller.AxisValue("P1 Paddle");
 
 						int paddle2Pos;
 						if (_controller.IsPressed("P2 Left"))
@@ -159,7 +159,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 						else if (_controller.IsPressed("P2 Right"))
 							paddle2Pos = PaddleMax;
 						else
-							paddle2Pos = (int)_controller.GetFloat("P2 Paddle");
+							paddle2Pos = (int)_controller.AxisValue("P2 Paddle");
 
 						PresetControllerState(1);
 						// Hard-wired together?
@@ -210,7 +210,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 						else if (_controller.IsPressed("P1 Right"))
 							p1X = SportsPadMax;
 						else
-							p1X = (int)_controller.GetFloat("P1 X");
+							p1X = (int)_controller.AxisValue("P1 X");
 
 						int p1Y;
 						if (_controller.IsPressed("P1 Up"))
@@ -218,7 +218,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 						else if (_controller.IsPressed("P1 Down"))
 							p1Y = SportsPadMax;
 						else
-							p1Y = (int)_controller.GetFloat("P1 Y");
+							p1Y = (int)_controller.AxisValue("P1 Y");
 
 						int p2X;
 						if (_controller.IsPressed("P2 Left"))
@@ -226,7 +226,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 						else if (_controller.IsPressed("P2 Right"))
 							p2X = SportsPadMax;
 						else
-							p2X = (int)_controller.GetFloat("P2 X");
+							p2X = (int)_controller.AxisValue("P2 X");
 
 						int p2Y;
 						if (_controller.IsPressed("P2 Up"))
@@ -234,7 +234,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 						else if (_controller.IsPressed("P2 Down"))
 							p2Y = SportsPadMax;
 						else
-							p2Y = (int)_controller.GetFloat("P2 Y");
+							p2Y = (int)_controller.AxisValue("P2 Y");
 
 						if (_region == SmsSyncSettings.Regions.Japan)
 						{
@@ -403,7 +403,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 						else if (_controller.IsPressed("P2 Right"))
 							paddle2Pos = PaddleMax;
 						else
-							paddle2Pos = (int)_controller.GetFloat("P2 Paddle");
+							paddle2Pos = (int)_controller.AxisValue("P2 Paddle");
 
 						PresetControllerState(2);
 
@@ -441,7 +441,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 						else if (_controller.IsPressed("P2 Right"))
 							p2X = SportsPadMax;
 						else
-							p2X = (int)_controller.GetFloat("P2 X");
+							p2X = (int)_controller.AxisValue("P2 X");
 
 						int p2Y;
 						if (_controller.IsPressed("P2 Down"))
@@ -449,7 +449,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 						else if (_controller.IsPressed("P2 Up"))
 							p2Y = SportsPadMax;
 						else
-							p2Y = (int)_controller.GetFloat("P2 Y");
+							p2Y = (int)_controller.AxisValue("P2 Y");
 
 						if (_region == SmsSyncSettings.Regions.Japan)
 						{
@@ -563,8 +563,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			// specifically lightgun needs to do things on a per-line basis
 			if (SyncSettings.ControllerType == SmsSyncSettings.ControllerTypes.LightPhaser)
 			{
-				byte phaserX = (byte)(_controller.GetFloat("P1 X") + 20);
-				int phaserY = (int)_controller.GetFloat("P1 Y");
+				byte phaserX = (byte)(_controller.AxisValue("P1 X") + 20);
+				int phaserY = (int)_controller.AxisValue("P1 Y");
 				int scanline = Vdp.ScanLine;
 
 				if (!LatchLightPhaser && phaserY >= scanline - phaserRadius && phaserY <= scanline + phaserRadius)

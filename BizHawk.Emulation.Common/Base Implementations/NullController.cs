@@ -17,7 +17,7 @@
 			return false;
 		}
 
-		public float GetFloat(string name)
+		public float AxisValue(string name)
 		{
 			return 0f;
 		}

@@ -120,8 +120,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				BoolButtons = BaseDefinition
 				.Select(b => $"P{PortNum} " + b)
 				.ToList(),
-				FloatControls = { "P" + PortNum + " Paddle X 1" , "P" + PortNum + " Paddle X 2" },
-				FloatRanges = { new ControllerDefinition.AxisRange(-127, 0, 127), new ControllerDefinition.AxisRange(-127, 0, 127) }
+				AxisControls = { "P" + PortNum + " Paddle X 1" , "P" + PortNum + " Paddle X 2" },
+				AxisRanges = { new ControllerDefinition.AxisRange(-127, 0, 127), new ControllerDefinition.AxisRange(-127, 0, 127) }
 			};
 		}
 
@@ -152,7 +152,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public int Read_Pot(IController c, int pot)
 		{
-			int x = (int)c.GetFloat(Definition.FloatControls[pot]);			
+			int x = (int)c.AxisValue(Definition.AxisControls[pot]);			
 			
 			x = -x;
 			x += 127;
@@ -237,8 +237,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				BoolButtons = BaseDefinition
 				.Select(b => $"P{PortNum} " + b)
 				.ToList(),
-				FloatControls = { "P" + PortNum + " Wheel X 1", "P" + PortNum + " Wheel X 2" },
-				FloatRanges = { new ControllerDefinition.AxisRange(-127, 0, 127), new ControllerDefinition.AxisRange(-127, 0, 127) }
+				AxisControls = { "P" + PortNum + " Wheel X 1", "P" + PortNum + " Wheel X 2" },
+				AxisRanges = { new ControllerDefinition.AxisRange(-127, 0, 127), new ControllerDefinition.AxisRange(-127, 0, 127) }
 			};
 		}
 
@@ -262,8 +262,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			if (c.IsPressed($"P{PortNum} Button")) { result &= 0xF7; }
 
-			float x = c.GetFloat(Definition.FloatControls[0]);
-			float y = c.GetFloat(Definition.FloatControls[1]);
+			float x = c.AxisValue(Definition.AxisControls[0]);
+			float y = c.AxisValue(Definition.AxisControls[1]);
 
 			float angle = CalcDirection(x, y);
 

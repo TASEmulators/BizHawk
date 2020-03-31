@@ -334,7 +334,7 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		public static List<string> ToFloatControlNameList(this IController controller, int? controllerNum = null)
 		{
-			return ToControlNameList(controller.Definition.FloatControls, controllerNum);
+			return ToControlNameList(controller.Definition.AxisControls, controllerNum);
 		}
 
 		private static List<string> ToControlNameList(List<string> buttonList, int? controllerNum = null)
@@ -371,16 +371,16 @@ namespace BizHawk.Emulation.Common
 					buttons[sub] = controller.IsPressed($"P{controllerNum} {sub}");
 				}
 			}
-			foreach (var button in controller.Definition.FloatControls)
+			foreach (var button in controller.Definition.AxisControls)
 			{
 				if (controllerNum == null)
 				{
-					buttons[button] = controller.GetFloat(button);
+					buttons[button] = controller.AxisValue(button);
 				}
 				else if (button.Length > 2 && button.Substring(0, 2) == $"P{controllerNum}")
 				{
 					var sub = button.Substring(3);
-					buttons[sub] = controller.GetFloat($"P{controllerNum} {sub}");
+					buttons[sub] = controller.AxisValue($"P{controllerNum} {sub}");
 				}
 			}
 

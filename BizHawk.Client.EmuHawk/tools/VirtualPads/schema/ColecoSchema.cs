@@ -48,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema TurboController(int controller)
 		{
-			var controllerDefRanges = new ColecoTurboController(controller).Definition.FloatRanges;
+			var controllerDefRanges = new ColecoTurboController(controller).Definition.AxisRanges;
 			return new PadSchema
 			{
 				Size = new Size(275, 260),
@@ -71,7 +71,7 @@ namespace BizHawk.Client.EmuHawk
 				Size = new Size(195, 260),
 				Buttons = StandardButtons(controller).Concat(new[]
 				{
-					new SingleFloatSchema(6, 200, controller, "Disc X")
+					new SingleAxisSchema(6, 200, controller, "Disc X")
 					{
 						DisplayName = "Disc",
 						TargetSize = new Size(180, 55),

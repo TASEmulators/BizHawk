@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		private void SetControllerButtons()
 		{
 			ControllerDefinition.BoolButtons.Clear();
-			ControllerDefinition.FloatControls.Clear();
+			ControllerDefinition.AxisControls.Clear();
 
 			ControllerDefinition.BoolButtons.AddRange(new[]
 			{
@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 						"P" + (i + 1) + " R", 
 					});
 
-					ControllerDefinition.FloatControls.AddRange(new[]
+					ControllerDefinition.AxisControls.AddRange(new[]
 					{
 						"P" + (i + 1) + " X Axis",
 						"P" + (i + 1) + " Y Axis",

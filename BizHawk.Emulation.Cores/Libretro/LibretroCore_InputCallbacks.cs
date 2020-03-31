@@ -18,8 +18,8 @@
 					{
 						switch ((LibretroApi.RETRO_DEVICE_ID_POINTER)id)
 						{
-							case LibretroApi.RETRO_DEVICE_ID_POINTER.X: return (short)_controller.GetFloat("Pointer X");
-							case LibretroApi.RETRO_DEVICE_ID_POINTER.Y: return (short)_controller.GetFloat("Pointer Y");
+							case LibretroApi.RETRO_DEVICE_ID_POINTER.X: return (short)_controller.AxisValue("Pointer X");
+							case LibretroApi.RETRO_DEVICE_ID_POINTER.Y: return (short)_controller.AxisValue("Pointer Y");
 							case LibretroApi.RETRO_DEVICE_ID_POINTER.PRESSED: return (short)(_controller.IsPressed("Pointer Pressed") ? 1 : 0);
 						}
 						return 0;

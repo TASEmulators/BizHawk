@@ -11,18 +11,18 @@ namespace BizHawk.Client.EmuHawk
 		private void SetUpButtonBoxes()
 		{
 			var def = Emulator.ControllerDefinition;
-			int count = def.BoolButtons.Count + def.FloatControls.Count;
+			int count = def.BoolButtons.Count + def.AxisControls.Count;
 			_buttonBoxes = new CheckBox[count];
 
-			for (int i = 0; i < def.FloatControls.Count; i++)
+			for (int i = 0; i < def.AxisControls.Count; i++)
 			{
-				var box = new CheckBox { Text = def.FloatControls[i] };
+				var box = new CheckBox { Text = def.AxisControls[i] };
 				_buttonBoxes[i] = box;
 			}
 			for (int i = 0; i < def.BoolButtons.Count; i++)
 			{
 				var box = new CheckBox { Text = def.BoolButtons[i] };
-				_buttonBoxes[i + def.FloatControls.Count] = box;
+				_buttonBoxes[i + def.AxisControls.Count] = box;
 			}
 
 			foreach (var box in _buttonBoxes)

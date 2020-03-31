@@ -193,8 +193,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 
 			public void ApplyState(IController controller, short[] input, int offset)
 			{
-				foreach (var s in Definition.FloatControls)
-					input[offset++] = (short)(controller.GetFloat(s));
+				foreach (var s in Definition.AxisControls)
+					input[offset++] = (short)(controller.AxisValue(s));
 				foreach (var s in Definition.BoolButtons)
 					input[offset++] = (short)(controller.IsPressed(s) ? 1 : 0);
 			}
@@ -209,12 +209,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 					"0Mouse Left",
 					"0Mouse Right"
 				},
-				FloatControls =
+				AxisControls =
 				{
 					"0Mouse X",
 					"0Mouse Y"
 				},
-				FloatRanges = ControllerDefinition.CreateAxisRangePair(-127, 0, 127, ControllerDefinition.AxisPairOrientation.RightAndUp) //TODO verify direction against hardware
+				AxisRanges = ControllerDefinition.CreateAxisRangePair(-127, 0, 127, ControllerDefinition.AxisPairOrientation.RightAndUp) //TODO verify direction against hardware
 			};
 
 			public override ControllerDefinition Definition => _definition;
@@ -231,12 +231,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 					"0Turbo",
 					"0Pause"
 				},
-				FloatControls =
+				AxisControls =
 				{
 					"0Scope X",
 					"0Scope Y"
 				},
-				FloatRanges = SNES.LibsnesControllerDeck.LightGunRanges
+				AxisRanges = SNES.LibsnesControllerDeck.LightGunRanges
 			};
 
 			public override ControllerDefinition Definition => _definition;
@@ -251,12 +251,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 					"0Trigger",
 					"0Start",
 				},
-				FloatControls =
+				AxisControls =
 				{
 					"0Justifier X",
 					"0Justifier Y",
 				},
-				FloatRanges = SNES.LibsnesControllerDeck.LightGunRanges
+				AxisRanges = SNES.LibsnesControllerDeck.LightGunRanges
 			};
 
 			public override ControllerDefinition Definition => _definition;

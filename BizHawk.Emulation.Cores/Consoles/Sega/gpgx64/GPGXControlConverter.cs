@@ -128,14 +128,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			string nx = $"P{player} Mouse X";
 			string ny = $"P{player} Mouse Y";
-			ControllerDef.FloatControls.Add(nx);
-			ControllerDef.FloatControls.Add(ny);
-			ControllerDef.FloatRanges.Add(MouseRange);
-			ControllerDef.FloatRanges.Add(MouseRange);
+			ControllerDef.AxisControls.Add(nx);
+			ControllerDef.AxisControls.Add(ny);
+			ControllerDef.AxisRanges.Add(MouseRange);
+			ControllerDef.AxisRanges.Add(MouseRange);
 			_converts.Add(delegate
 			{
-				_target.analog[(2 * idx) + 0] = (short)_source.GetFloat(nx);
-				_target.analog[(2 * idx) + 1] = (short)_source.GetFloat(ny);
+				_target.analog[(2 * idx) + 0] = (short)_source.AxisValue(nx);
+				_target.analog[(2 * idx) + 1] = (short)_source.AxisValue(ny);
 			});
 		}
 
@@ -143,14 +143,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			string nx = $"P{player} Lightgun X";
 			string ny = $"P{player} Lightgun Y";
-			ControllerDef.FloatControls.Add(nx);
-			ControllerDef.FloatControls.Add(ny);
-			ControllerDef.FloatRanges.Add(LightgunRange);
-			ControllerDef.FloatRanges.Add(LightgunRange);
+			ControllerDef.AxisControls.Add(nx);
+			ControllerDef.AxisControls.Add(ny);
+			ControllerDef.AxisRanges.Add(LightgunRange);
+			ControllerDef.AxisRanges.Add(LightgunRange);
 			_converts.Add(delegate
 			{
-				_target.analog[(2 * idx) + 0] = (short)(_source.GetFloat(nx) / 10000.0f * (ScreenWidth - 1));
-				_target.analog[(2 * idx) + 1] = (short)(_source.GetFloat(ny) / 10000.0f * (ScreenHeight - 1));
+				_target.analog[(2 * idx) + 0] = (short)(_source.AxisValue(nx) / 10000.0f * (ScreenWidth - 1));
+				_target.analog[(2 * idx) + 1] = (short)(_source.AxisValue(ny) / 10000.0f * (ScreenHeight - 1));
 			});
 		}
 
@@ -159,19 +159,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			string nx = $"P{player} Stick X";
 			string ny = $"P{player} Stick Y";
 			string nz = $"P{player} Stick Z";
-			ControllerDef.FloatControls.Add(nx);
-			ControllerDef.FloatControls.Add(ny);
-			ControllerDef.FloatControls.Add(nz);
-			ControllerDef.FloatRanges.Add(Xea1PRange);
-			ControllerDef.FloatRanges.Add(Xea1PRange);
-			ControllerDef.FloatRanges.Add(Xea1PRange);
+			ControllerDef.AxisControls.Add(nx);
+			ControllerDef.AxisControls.Add(ny);
+			ControllerDef.AxisControls.Add(nz);
+			ControllerDef.AxisRanges.Add(Xea1PRange);
+			ControllerDef.AxisRanges.Add(Xea1PRange);
+			ControllerDef.AxisRanges.Add(Xea1PRange);
 			_converts.Add(delegate
 			{
-				_target.analog[(2 * idx) + 0] = (short)_source.GetFloat(nx);
-				_target.analog[(2 * idx) + 1] = (short)_source.GetFloat(ny);
+				_target.analog[(2 * idx) + 0] = (short)_source.AxisValue(nx);
+				_target.analog[(2 * idx) + 1] = (short)_source.AxisValue(ny);
 
 				// +2 is correct in how gpgx internally does this
-				_target.analog[(2 * idx) + 2] = (short)(_source.GetFloat(nz));
+				_target.analog[(2 * idx) + 2] = (short)(_source.AxisValue(nz));
 			});
 		}
 

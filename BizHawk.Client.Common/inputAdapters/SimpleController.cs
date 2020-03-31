@@ -14,12 +14,12 @@ namespace BizHawk.Client.Common
 		public ControllerDefinition Definition { get; set; }
 
 		protected WorkingDictionary<string, bool> Buttons { get; private set; } = new WorkingDictionary<string, bool>();
-		protected WorkingDictionary<string, float> Floats { get; private set; } = new WorkingDictionary<string, float>();
+		protected WorkingDictionary<string, float> Axes { get; private set; } = new WorkingDictionary<string, float>();
 
 		public void Clear()
 		{
 			Buttons = new WorkingDictionary<string, bool>();
-			Floats = new WorkingDictionary<string, float>();
+			Axes = new WorkingDictionary<string, float>();
 		}
 
 		public bool this[string button]
@@ -33,9 +33,9 @@ namespace BizHawk.Client.Common
 			return this[button];
 		}
 
-		public float GetFloat(string name)
+		public float AxisValue(string name)
 		{
-			return Floats[name];
+			return Axes[name];
 		}
 
 		public IEnumerable<KeyValuePair<string, bool>> BoolButtons()
@@ -43,16 +43,16 @@ namespace BizHawk.Client.Common
 			return Buttons;
 		}
 
-		public void AcceptNewFloat(Tuple<string, float> newValue)
+		public void AcceptNewAxes(Tuple<string, float> newValue)
 		{
-			Floats[newValue.Item1] = newValue.Item2;
+			Axes[newValue.Item1] = newValue.Item2;
 		}
 
-		public void AcceptNewFloats(IEnumerable<Tuple<string, float>> newValues)
+		public void AcceptNewAxes(IEnumerable<Tuple<string, float>> newValues)
 		{
 			foreach (var sv in newValues)
 			{
-				Floats[sv.Item1] = sv.Item2;
+				Axes[sv.Item1] = sv.Item2;
 			}
 		}
 	}

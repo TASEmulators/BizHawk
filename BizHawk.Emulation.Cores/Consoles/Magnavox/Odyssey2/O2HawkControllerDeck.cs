@@ -43,9 +43,9 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					.ToList()
 			};
 
-			Definition.FloatControls.AddRange(Port1.Definition.FloatControls);
+			Definition.AxisControls.AddRange(Port1.Definition.AxisControls);
 
-			Definition.FloatRanges.AddRange(Port1.Definition.FloatRanges);
+			Definition.AxisRanges.AddRange(Port1.Definition.AxisRanges);
 		}
 
 		public byte ReadPort1(IController c)

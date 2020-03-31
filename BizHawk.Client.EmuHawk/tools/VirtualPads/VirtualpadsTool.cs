@@ -119,7 +119,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CheckPads(IEnumerable<PadSchema> schemas, ControllerDefinition def)
 		{
-			var analogs = new HashSet<string>(def.FloatControls);
+			var analogs = new HashSet<string>(def.AxisControls);
 			var bools = new HashSet<string>(def.BoolButtons);
 
 			foreach (var schema in schemas)
@@ -130,7 +130,7 @@ namespace BizHawk.Client.EmuHawk
 					switch (button.Type)
 					{
 						case PadInputType.AnalogStick:
-						case PadInputType.SingleFloat:
+						case PadInputType.SingleAxis:
 						case PadInputType.TargetedPair:
 							// analog
 							searchSet = analogs;

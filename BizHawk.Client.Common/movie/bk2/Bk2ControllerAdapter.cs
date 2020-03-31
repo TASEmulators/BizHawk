@@ -13,14 +13,14 @@ namespace BizHawk.Client.Common
 		{
 			public string Name { get; set; }
 			public bool IsBool { get; set; }
-			public bool IsFloat { get; set; }
+			public bool IsAxis { get; set; }
 		}
 
 		private List<ControlMap> _controlsOrdered = new List<ControlMap>();
 
 		private readonly string _logKey = "";
 		private readonly WorkingDictionary<string, bool> _myBoolButtons = new WorkingDictionary<string, bool>();
-		private readonly WorkingDictionary<string, float> _myFloatControls = new WorkingDictionary<string, float>();
+		private readonly WorkingDictionary<string, float> _myAxisControls = new WorkingDictionary<string, float>();
 
 		public Bk2ControllerAdapter()
 		{
@@ -65,9 +65,9 @@ namespace BizHawk.Client.Common
 			return _myBoolButtons[button];
 		}
 
-		public float GetFloat(string name)
+		public float AxisValue(string name)
 		{
-			return _myFloatControls[name];
+			return _myAxisControls[name];
 		}
 
 		#endregion
@@ -91,7 +91,7 @@ namespace BizHawk.Client.Common
 					{
 						Name = c,
 						IsBool = def.BoolButtons.Contains(c),
-						IsFloat = def.FloatControls.Contains(c)
+						IsAxis = def.AxisControls.Contains(c)
 					})
 					.ToList();
 			}
@@ -115,7 +115,7 @@ namespace BizHawk.Client.Common
 				_myBoolButtons[button] = val;
 			}
 
-			foreach (var button in Definition.FloatControls)
+			foreach (var button in Definition.AxisControls)
 			{
 				var bnp = ButtonNameParser.Parse(button);
 
@@ -124,9 +124,9 @@ namespace BizHawk.Client.Common
 					continue;
 				}
 
-				var val = playerSource.GetFloat(button);
+				var val = playerSource.AxisValue(button);
 
-				_myFloatControls[button] = val;
+				_myAxisControls[button] = val;
 			}
 		}
 
@@ -140,9 +140,9 @@ namespace BizHawk.Client.Common
 				_myBoolButtons[button] = source.IsPressed(button);
 			}
 
-			foreach (var name in Definition.FloatControls)
+			foreach (var name in Definition.AxisControls)
 			{
-				_myFloatControls[name] = source.GetFloat(name);
+				_myAxisControls[name] = source.AxisValue(name);
 			}
 		}
 
@@ -157,9 +157,9 @@ namespace BizHawk.Client.Common
 			}
 
 			// float controls don't have sticky logic, so latch default value
-			for (int i = 0; i < Definition.FloatControls.Count; i++)
+			for (int i = 0; i < Definition.AxisControls.Count; i++)
 			{
-				_myFloatControls[Definition.FloatControls[i]] = Definition.FloatRanges[i].Mid;
+				_myAxisControls[Definition.AxisControls[i]] = Definition.AxisRanges[i].Mid;
 			}
 		}
 
@@ -180,12 +180,12 @@ namespace BizHawk.Client.Common
 						_myBoolButtons[key.Name] = trimmed[iterator] != '.';
 						iterator++;
 					}
-					else if (key.IsFloat)
+					else if (key.IsAxis)
 					{
 						var commaIndex = trimmed.Substring(iterator).IndexOf(',');
 						var temp = trimmed.Substring(iterator, commaIndex);
 						var val = int.Parse(temp.Trim());
-						_myFloatControls[key.Name] = val;
+						_myAxisControls[key.Name] = val;
 
 						iterator += commaIndex + 1;
 					}
@@ -195,9 +195,9 @@ namespace BizHawk.Client.Common
 
 		#endregion
 
-		public void SetFloat(string buttonName, float value)
+		public void SetAxis(string buttonName, float value)
 		{
-			_myFloatControls[buttonName] = value;
+			_myAxisControls[buttonName] = value;
 		}
 
 		public class Bk2ControllerDefinition : ControllerDefinition

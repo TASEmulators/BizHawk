@@ -102,9 +102,9 @@ namespace BizHawk.Client.Common
 			return Source.IsPressed(RemapButtonName(button));
 		}
 
-		public float GetFloat(string button)
+		public float AxisValue(string button)
 		{
-			return Source.GetFloat(RemapButtonName(button));
+			return Source.AxisValue(RemapButtonName(button));
 		}
 
 		private string RemapButtonName(string button)

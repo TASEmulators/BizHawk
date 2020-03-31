@@ -247,7 +247,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 							"P" + pnum + " A",
 					});
 
-					definition.FloatControls.AddRange(new[]
+					definition.AxisControls.AddRange(new[]
 						{
 								"P" + pnum + " Twist",
 								"P" + pnum + " 1",
@@ -256,10 +256,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 							});
 
 					var axisRange = new ControllerDefinition.AxisRange(0, 128, 255);
-					definition.FloatRanges.Add(axisRange);
-					definition.FloatRanges.Add(axisRange);
-					definition.FloatRanges.Add(axisRange);
-					definition.FloatRanges.Add(axisRange);
+					definition.AxisRanges.Add(axisRange);
+					definition.AxisRanges.Add(axisRange);
+					definition.AxisRanges.Add(axisRange);
+					definition.AxisRanges.Add(axisRange);
 				}
 				else
 				{
@@ -288,7 +288,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 						definition.BoolButtons.Add("P" + pnum + " R3");
 						definition.BoolButtons.Add("P" + pnum + " MODE");
 
-						definition.FloatControls.AddRange(new[]
+						definition.AxisControls.AddRange(new[]
 						{
 								"P" + pnum + " LStick X",
 								"P" + pnum + " LStick Y",
@@ -296,7 +296,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 								"P" + pnum + " RStick Y"
 							});
 
-						definition.FloatRanges.AddRange(DualShockStickRanges.Concat(DualShockStickRanges).ToList());
+						definition.AxisRanges.AddRange(DualShockStickRanges.Concat(DualShockStickRanges).ToList());
 					}
 				}
 			}
@@ -308,9 +308,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				"Reset"
 			});
 
-			definition.FloatControls.Add("Disc Select");
+			definition.AxisControls.Add("Disc Select");
 
-			definition.FloatRanges.Add(
+			definition.AxisRanges.Add(
 				//new ControllerDefinition.AxisRange(-1, -1, -1) //this is carefully chosen so that we end up with a -1 disc by default (indicating that it's never been set)
 				//hmm.. I don't see why this wouldn't work
 				new ControllerDefinition.AxisRange(0, 1, 1)
@@ -521,10 +521,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 						if (_controller.IsPressed(pstring + "B")) buttons |= 4096;
 						if (_controller.IsPressed(pstring + "A")) buttons |= 8192;
 
-						byte twist = (byte)_controller.GetFloat(pstring + "Twist");
-						byte analog1 = (byte)_controller.GetFloat(pstring + "1");
-						byte analog2 = (byte)_controller.GetFloat(pstring + "2");
-						byte analogL = (byte)_controller.GetFloat(pstring + "L");
+						byte twist = (byte)_controller.AxisValue(pstring + "Twist");
+						byte analog1 = (byte)_controller.AxisValue(pstring + "1");
+						byte analog2 = (byte)_controller.AxisValue(pstring + "2");
+						byte analogL = (byte)_controller.AxisValue(pstring + "L");
 
 						OctoshockDll.shock_Peripheral_SetPadInput(psx, portNum, buttons, twist, analog1, analog2, analogL);
 					}
@@ -552,10 +552,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 							if (_controller.IsPressed(pstring + "R3")) buttons |= 4;
 							if (_controller.IsPressed(pstring + "MODE")) buttons |= 65536;
 
-							left_x = (byte)_controller.GetFloat(pstring + "LStick X");
-							left_y = (byte)_controller.GetFloat(pstring + "LStick Y");
-							right_x = (byte)_controller.GetFloat(pstring + "RStick X");
-							right_y = (byte)_controller.GetFloat(pstring + "RStick Y");
+							left_x = (byte)_controller.AxisValue(pstring + "LStick X");
+							left_y = (byte)_controller.AxisValue(pstring + "LStick Y");
+							right_x = (byte)_controller.AxisValue(pstring + "RStick X");
+							right_y = (byte)_controller.AxisValue(pstring + "RStick Y");
 						}
 
 						OctoshockDll.shock_Peripheral_SetPadInput(psx, portNum, buttons, left_x, left_y, right_x, right_y);
@@ -716,7 +716,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			//change the disc if needed, and valid
 			//also if frame is 0, we need to set a disc no matter what
-			int requestedDisc = (int)_controller.GetFloat("Disc Select");
+			int requestedDisc = (int)_controller.AxisValue("Disc Select");
 			if (requestedDisc != CurrentDiscIndexMounted && CurrentTrayOpen
 				|| Frame == 0
 				)

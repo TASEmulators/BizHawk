@@ -223,8 +223,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly Dictionary<string, LogicalButton> _modifierState = new Dictionary<string, LogicalButton>();
 		private readonly WorkingDictionary<string, bool> _lastState = new WorkingDictionary<string, bool>();
-		private readonly WorkingDictionary<string, float> _floatValues = new WorkingDictionary<string, float>();
-		private readonly WorkingDictionary<string, float> _floatDeltas = new WorkingDictionary<string, float>();
+		private readonly WorkingDictionary<string, float> _axisValues = new WorkingDictionary<string, float>();
+		private readonly WorkingDictionary<string, float> _axisDeltas = new WorkingDictionary<string, float>();
 		private bool _trackDeltas;
 		private bool _ignoreEventsNextPoll;
 
@@ -338,18 +338,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public List<Tuple<string, float>> GetFloats()
+		public List<Tuple<string, float>> GetAxisValues()
 		{
-			var floatValuesCopy = new List<Tuple<string,float>>();
-			lock (_floatValues)
+			var axisValuesCopy = new List<Tuple<string,float>>();
+			lock (_axisValues)
 			{
-				foreach (var kvp in _floatValues)
+				foreach (var kvp in _axisValues)
 				{
-					floatValuesCopy.Add(new Tuple<string, float>(kvp.Key, kvp.Value));
+					axisValuesCopy.Add(new Tuple<string, float>(kvp.Key, kvp.Value));
 				}
 			}
 
-			return floatValuesCopy;
+			return axisValuesCopy;
 		}
 
 		private void UpdateThreadProc()
@@ -383,9 +383,9 @@ namespace BizHawk.Client.EmuHawk
 					foreach (var ke in keyEvents)
 						HandleButton(ke.Key.ToString(), ke.Pressed, InputFocus.Keyboard);
 
-					lock (_floatValues)
+					lock (_axisValues)
 					{
-						//FloatValues.Clear();
+						//_axisValues.Clear();
 
 						// analyze OpenTK xinput (or is it libinput?)
 						foreach (var pad in OTK_GamePad.EnumerateDevices())
@@ -394,12 +394,12 @@ namespace BizHawk.Client.EmuHawk
 							{
 								HandleButton(pad.InputNamePrefix + but.ButtonName, but.ButtonAction(), InputFocus.Pad);
 							}
-							foreach (var sv in pad.GetFloats())
+							foreach (var sv in pad.GetAxes())
 							{
 								var n = $"{pad.InputNamePrefix}{sv.Item1} Axis";
 								var f = sv.Item2;
-								if (_trackDeltas) _floatDeltas[n] += Math.Abs(f - _floatValues[n]);
-								_floatValues[n] = f;
+								if (_trackDeltas) _axisDeltas[n] += Math.Abs(f - _axisValues[n]);
+								_axisValues[n] = f;
 							}
 						}
 
@@ -410,13 +410,13 @@ namespace BizHawk.Client.EmuHawk
 							string xName = $"X{pad.PlayerNumber} ";
 							for (int b = 0; b < pad.NumButtons; b++)
 								HandleButton(xName + pad.ButtonName(b), pad.Pressed(b), InputFocus.Pad);
-							foreach (var sv in pad.GetFloats())
+							foreach (var sv in pad.GetAxes())
 							{
 								string n = xName + sv.Item1;
 								float f = sv.Item2;
 								if (_trackDeltas)
-									_floatDeltas[n] += Math.Abs(f - _floatValues[n]);
-								_floatValues[n] = f;
+									_axisDeltas[n] += Math.Abs(f - _axisValues[n]);
+								_axisValues[n] = f;
 							}
 						}
 
@@ -426,15 +426,15 @@ namespace BizHawk.Client.EmuHawk
 							string jName = $"J{pad.PlayerNumber} ";
 							for (int b = 0; b < pad.NumButtons; b++)
 								HandleButton(jName + pad.ButtonName(b), pad.Pressed(b), InputFocus.Pad);
-							foreach (var sv in pad.GetFloats())
+							foreach (var sv in pad.GetAxes())
 							{
 								string n = jName + sv.Item1;
 								float f = sv.Item2;
 								//if (n == "J5 RotationZ")
 								//	System.Diagnostics.Debugger.Break();
 								if (_trackDeltas)
-									_floatDeltas[n] += Math.Abs(f - _floatValues[n]);
-								_floatValues[n] = f;
+									_axisDeltas[n] += Math.Abs(f - _axisValues[n]);
+								_axisValues[n] = f;
 							}
 						}
 #endif
@@ -447,12 +447,12 @@ namespace BizHawk.Client.EmuHawk
 							if (_trackDeltas)
 							{
 								// these are relative to screen coordinates, but that's not terribly important
-								_floatDeltas["WMouse X"] += Math.Abs(mousePos.X - _floatValues["WMouse X"]) * 50;
-								_floatDeltas["WMouse Y"] += Math.Abs(mousePos.Y - _floatValues["WMouse Y"]) * 50;
+								_axisDeltas["WMouse X"] += Math.Abs(mousePos.X - _axisValues["WMouse X"]) * 50;
+								_axisDeltas["WMouse Y"] += Math.Abs(mousePos.Y - _axisValues["WMouse Y"]) * 50;
 							}
 							// coordinate translation happens later
-							_floatValues["WMouse X"] = mousePos.X;
-							_floatValues["WMouse Y"] = mousePos.Y;
+							_axisValues["WMouse X"] = mousePos.X;
+							_axisValues["WMouse Y"] = mousePos.Y;
 
 							var mouseBtns = Control.MouseButtons;
 							HandleButton("WMouse L", (mouseBtns & MouseButtons.Left) != 0, InputFocus.Mouse);
@@ -504,20 +504,20 @@ namespace BizHawk.Client.EmuHawk
 			return allowInput == AllowInput.None || (allowInput == AllowInput.OnlyController && inputEvent.Source != InputFocus.Pad);
 		}
 
-		public void StartListeningForFloatEvents()
+		public void StartListeningForAxisEvents()
 		{
-			lock (_floatValues)
+			lock (_axisValues)
 			{
-				_floatDeltas.Clear();
+				_axisDeltas.Clear();
 				_trackDeltas = true;
 			}
 		}
 
-		public string GetNextFloatEvent()
+		public string GetNextAxisEvent()
 		{
-			lock (_floatValues)
+			lock (_axisValues)
 			{
-				foreach (var kvp in _floatDeltas)
+				foreach (var kvp in _axisDeltas)
 				{
 					// need to wiggle the stick a bit
 					if (kvp.Value >= 20000.0f)
@@ -527,9 +527,9 @@ namespace BizHawk.Client.EmuHawk
 			return null;
 		}
 
-		public void StopListeningForFloatEvents()
+		public void StopListeningForAxisEvents()
 		{
-			lock (_floatValues)
+			lock (_axisValues)
 			{
 				_trackDeltas = false;
 			}

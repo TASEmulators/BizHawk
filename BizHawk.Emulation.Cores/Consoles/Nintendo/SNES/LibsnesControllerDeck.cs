@@ -286,12 +286,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				"0Mouse Left",
 				"0Mouse Right"
 			},
-			FloatControls =
+			AxisControls =
 			{
 				"0Mouse X",
 				"0Mouse Y"
 			},
-			FloatRanges = ControllerDefinition.CreateAxisRangePair(-127, 0, 127, ControllerDefinition.AxisPairOrientation.RightAndUp) //TODO verify direction against hardware
+			AxisRanges = ControllerDefinition.CreateAxisRangePair(-127, 0, 127, ControllerDefinition.AxisPairOrientation.RightAndUp) //TODO verify direction against hardware
 		};
 
 		public ControllerDefinition Definition => _definition;
@@ -305,7 +305,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				default:
 					return 0;
 				case 0:
-					var x = (int)controller.GetFloat("0Mouse X");
+					var x = (int)controller.AxisValue("0Mouse X");
 					if (LimitAnalogChangeSensitivity)
 					{
 						x = x.Clamp(-10, 10);
@@ -313,7 +313,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 					return (short)x;
 				case 1:
-					var y = (int)controller.GetFloat("0Mouse Y");
+					var y = (int)controller.AxisValue("0Mouse Y");
 					if (LimitAnalogChangeSensitivity)
 					{
 						y = y.Clamp(-10, 10);
@@ -341,12 +341,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				"0Turbo",
 				"0Pause"
 			},
-			FloatControls =
+			AxisControls =
 			{
 				"0Scope X",
 				"0Scope Y"
 			},
-			FloatRanges = LibsnesControllerDeck.LightGunRanges
+			AxisRanges = LibsnesControllerDeck.LightGunRanges
 		};
 
 		public ControllerDefinition Definition => _definition;
@@ -358,10 +358,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				default:
 					return 0;
 				case 0:
-					var x = (int)controller.GetFloat("0Scope X");
+					var x = (int)controller.AxisValue("0Scope X");
 					return (short)x;
 				case 1:
-					var y = (int)controller.GetFloat("0Scope Y");
+					var y = (int)controller.AxisValue("0Scope Y");
 					return (short)y;
 				case 2:
 					return (short)(controller.IsPressed("0Trigger") ? 1 : 0);
@@ -388,14 +388,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				"1Trigger",
 				"1Start"
 			},
-			FloatControls =
+			AxisControls =
 			{
 				"0Justifier X",
 				"0Justifier Y",
 				"1Justifier X",
 				"1Justifier Y",
 			},
-			FloatRanges = LibsnesControllerDeck.LightGunRanges.Concat(LibsnesControllerDeck.LightGunRanges).ToList()
+			AxisRanges = LibsnesControllerDeck.LightGunRanges.Concat(LibsnesControllerDeck.LightGunRanges).ToList()
 		};
 
 		public ControllerDefinition Definition => _definition;
@@ -407,10 +407,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				default:
 					return 0;
 				case 0:
-					var x = (int)controller.GetFloat(index + "Justifier X");
+					var x = (int)controller.AxisValue(index + "Justifier X");
 					return (short)x;
 				case 1:
-					var y = (int)controller.GetFloat(index + "Justifier Y");
+					var y = (int)controller.AxisValue(index + "Justifier Y");
 					return (short)y;
 				case 2:
 					return (short)(controller.IsPressed(index + "Trigger") ? 1 : 0);

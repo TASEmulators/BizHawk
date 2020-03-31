@@ -119,10 +119,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				ref _nsamp,
 				rendersound ? _soundbuff : _dummysoundbuff,
 				RTCTime(),
-				(short)controller.GetFloat("Tilt X"),
-				(short)controller.GetFloat("Tilt Y"),
-				(short)controller.GetFloat("Tilt Z"),
-				(byte)(255 - controller.GetFloat("Light Sensor")));
+				(short)controller.AxisValue("Tilt X"),
+				(short)controller.AxisValue("Tilt Y"),
+				(short)controller.AxisValue("Tilt Z"),
+				(byte)(255 - controller.AxisValue("Light Sensor")));
 
 			if (IsLagFrame)
 			{

@@ -120,11 +120,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 						.Select(a => a.s)
 						.ToList(),
 				};
-				Definition.FloatControls.AddRange(_bakedAnalogNames
+				Definition.AxisControls.AddRange(_bakedAnalogNames
 					.Select((s, i) => new { s, i })
 					.OrderBy(a => AnalogOrdinal(AnalogNames[a.i]))
 					.Select(a => a.s));
-				Definition.FloatRanges.AddRange(_bakedAnalogNames.Select(s => MiscAxisRange));
+				Definition.AxisRanges.AddRange(_bakedAnalogNames.Select(s => MiscAxisRange));
 			}
 
 			private readonly string[] _bakedButtonNames;
@@ -170,7 +170,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 				int pos = offset + AnalogByteOffset;
 				for (int i = 0; i < _bakedAnalogNames.Length; i++)
 				{
-					var data = (byte)(int)controller.GetFloat(_bakedAnalogNames[i]);
+					var data = (byte)(int)controller.AxisValue(_bakedAnalogNames[i]);
 					dest[pos++] = data;
 				}
 			}
@@ -242,7 +242,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 
 			public ThreeDeeGamepad()
 			{
-				Definition.FloatRanges = ThreeDeeAxisRanges;
+				Definition.AxisRanges = ThreeDeeAxisRanges;
 			}
 
 			public override void Update(IController controller, byte[] dest, int offset)
@@ -368,7 +368,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 
 			public Mission()
 			{
-				Definition.FloatRanges = MissionAxisRanges;
+				Definition.AxisRanges = MissionAxisRanges;
 			}
 
 			protected override int ButtonOrdinal(string name)
@@ -413,7 +413,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 
 			public DualMission()
 			{
-				Definition.FloatRanges = DualMissionAxisRanges;
+				Definition.AxisRanges = DualMissionAxisRanges;
 			}
 		}
 

@@ -115,14 +115,14 @@ namespace BizHawk.Client.EmuHawk
 						AxisRange = axisRanges[0],
 						SecondaryAxisRange = axisRanges[1]
 					},
-					new SingleFloatSchema(8, 12, controller, "Left Shoulder")
+					new SingleAxisSchema(8, 12, controller, "Left Shoulder")
 					{
 						DisplayName = "L",
 						TargetSize = new Size(128, 55),
 						MinValue = 0,
 						MaxValue = 255
 					},
-					new SingleFloatSchema(328, 12, controller, "Right Shoulder")
+					new SingleAxisSchema(328, 12, controller, "Right Shoulder")
 					{
 						DisplayName = "R",
 						TargetSize = new Size(128, 55),
@@ -170,7 +170,7 @@ namespace BizHawk.Client.EmuHawk
 				Size = new Size(325, 100),
 				Buttons = new[]
 				{
-					new SingleFloatSchema(8, 12, controller, "Wheel")
+					new SingleAxisSchema(8, 12, controller, "Wheel")
 					{
 						TargetSize = new Size(128, 55),
 						MinValue = 0,
@@ -213,7 +213,7 @@ namespace BizHawk.Client.EmuHawk
 						AxisRange = axisRanges[0],
 						SecondaryAxisRange = axisRanges[1]
 					},
-					new SingleFloatSchema(135, 13, controller, "Throttle")
+					new SingleAxisSchema(135, 13, controller, "Throttle")
 					{
 						TargetSize = new Size(64, 178),
 						MinValue = 0,
@@ -239,7 +239,7 @@ namespace BizHawk.Client.EmuHawk
 						AxisRange = axisRanges[3],
 						SecondaryAxisRange = axisRanges[4]
 					},
-					new SingleFloatSchema(8, 13, controller, "Left Throttle")
+					new SingleAxisSchema(8, 13, controller, "Left Throttle")
 					{
 						DisplayName = "Throttle",
 						TargetSize = new Size(64, 178),
@@ -253,7 +253,7 @@ namespace BizHawk.Client.EmuHawk
 						AxisRange = axisRanges[0],
 						SecondaryAxisRange = axisRanges[1]
 					},
-					new SingleFloatSchema(350, 13, controller, "Right Throttle")
+					new SingleAxisSchema(350, 13, controller, "Right Throttle")
 					{
 						DisplayName = "Throttle",
 						TargetSize = new Size(64, 178),

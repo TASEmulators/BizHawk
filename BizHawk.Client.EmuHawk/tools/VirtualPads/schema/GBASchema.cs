@@ -32,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 					Tilt(10, 15, "X"),
 					Tilt(10, 94, "Y"),
 					Tilt(10, 173, "Z"),
-					new SingleFloatSchema(10, 252, "Light Sensor")
+					new SingleAxisSchema(10, 252, "Light Sensor")
 					{
 						TargetSize = new Size(226, 69),
 						MaxValue = byte.MaxValue
@@ -42,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private static ButtonSchema Tilt(int x, int y, string direction)
-			=> new SingleFloatSchema(x, y, "Tilt " + direction)
+			=> new SingleAxisSchema(x, y, "Tilt " + direction)
 			{
 				TargetSize = new Size(226, 69),
 				MinValue = short.MinValue,

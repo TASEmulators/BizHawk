@@ -14,9 +14,9 @@ namespace BizHawk.Client.Common
 			return Curr.IsPressed(button);
 		}
 
-		public float GetFloat(string name)
+		public float AxisValue(string name)
 		{
-			return Curr.GetFloat(name);
+			return Curr.AxisValue(name);
 		}
 
 		public IController Source { get; set; }

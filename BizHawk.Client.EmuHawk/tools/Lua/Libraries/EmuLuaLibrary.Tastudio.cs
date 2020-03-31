@@ -387,9 +387,9 @@ namespace BizHawk.Client.EmuHawk
 						table[button] = adapter.IsPressed(button);
 					}
 
-					foreach (var button in adapter.Definition.FloatControls)
+					foreach (var button in adapter.Definition.AxisControls)
 					{
-						table[button] = adapter.GetFloat(button);
+						table[button] = adapter.AxisValue(button);
 					}
 				}
 			}

@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				| (controller.IsPressed("X") ? 0x400 : 0) | (controller.IsPressed("Y") ? 0x800 : 0)
 				| (controller.IsPressed("Touch") ? 0x2000 : 0)
 				| (controller.IsPressed("LidOpen") ? 0x4000 : 0) | (controller.IsPressed("LidClose") ? 0x8000 : 0);
-			FrameAdvance((short)buttons, (byte)controller.GetFloat("TouchX"), (byte)controller.GetFloat("TouchY"));
+			FrameAdvance((short)buttons, (byte)controller.AxisValue("TouchX"), (byte)controller.AxisValue("TouchY"));
 			_getNewBuffer = true;
 			return true;
 		}
@@ -90,10 +90,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			ControllerDefinition.BoolButtons.Add("LidClose");
 
 			ControllerDefinition.BoolButtons.Add("Touch");
-			ControllerDefinition.FloatControls.Add("TouchX");
-			ControllerDefinition.FloatRanges.Add(new ControllerDefinition.AxisRange(0, 128, 255));
-			ControllerDefinition.FloatControls.Add("TouchY");
-			ControllerDefinition.FloatRanges.Add(new ControllerDefinition.AxisRange(0, 96, 191));
+			ControllerDefinition.AxisControls.Add("TouchX");
+			ControllerDefinition.AxisRanges.Add(new ControllerDefinition.AxisRange(0, 128, 255));
+			ControllerDefinition.AxisControls.Add("TouchY");
+			ControllerDefinition.AxisRanges.Add(new ControllerDefinition.AxisRange(0, 96, 191));
 
 			CoreComm = comm;
 			resampler = new SpeexResampler(SpeexResampler.Quality.QUALITY_DEFAULT, 32768, 44100, 32768, 44100);

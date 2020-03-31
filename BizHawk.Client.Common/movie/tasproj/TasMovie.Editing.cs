@@ -497,8 +497,8 @@ namespace BizHawk.Client.Common
 			}
 
 			var adapter = GetInputState(frame) as Bk2ControllerAdapter;
-			var old = adapter.GetFloat(buttonName);
-			adapter.SetFloat(buttonName, val);
+			var old = adapter.AxisValue(buttonName);
+			adapter.SetAxis(buttonName, val);
 
 			var lg = LogGeneratorInstance();
 			lg.SetSource(adapter);
@@ -525,8 +525,8 @@ namespace BizHawk.Client.Common
 			for (int i = 0; i < count; i++)
 			{
 				var adapter = GetInputState(frame + i) as Bk2ControllerAdapter;
-				float old = adapter.GetFloat(buttonName);
-				adapter.SetFloat(buttonName, val);
+				float old = adapter.AxisValue(buttonName);
+				adapter.SetAxis(buttonName, val);
 
 				var lg = LogGeneratorInstance();
 				lg.SetSource(adapter);

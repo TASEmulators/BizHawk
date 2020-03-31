@@ -35,9 +35,9 @@ namespace BizHawk.Client.EmuHawk
 					Global.InputManager.ButtonOverrideAdapter.SetButton(button, lg.IsPressed(button));
 				}
 
-				foreach (var floatButton in lg.Definition.FloatControls)
+				foreach (var floatButton in lg.Definition.AxisControls)
 				{
-					Global.InputManager.ButtonOverrideAdapter.SetFloat(floatButton, lg.GetFloat(floatButton));
+					Global.InputManager.ButtonOverrideAdapter.SetAxis(floatButton, lg.AxisValue(floatButton));
 				}
 
 				return lg;

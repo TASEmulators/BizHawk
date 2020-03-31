@@ -275,8 +275,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				BoolButtons = BaseDefinition
 				.Select(b => "P" + PortNum + " " + b)
 				.ToList(),
-				FloatControls = { "P" + PortNum + " X", "P" + PortNum + " Y" },
-				FloatRanges = { new ControllerDefinition.AxisRange(1, 160, 320), new ControllerDefinition.AxisRange(1, 121, 242) }
+				AxisControls = { "P" + PortNum + " X", "P" + PortNum + " Y" },
+				AxisRanges = { new ControllerDefinition.AxisRange(1, 160, 320), new ControllerDefinition.AxisRange(1, 121, 242) }
 			};
 		}
 		
@@ -315,8 +315,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public bool Is_LightGun(IController c, out float x, out float y)
 		{
-			x = c.GetFloat(Definition.FloatControls[0]);
-			y = c.GetFloat(Definition.FloatControls[1]);
+			x = c.AxisValue(Definition.AxisControls[0]);
+			y = c.AxisValue(Definition.AxisControls[1]);
 			return true;
 		}
 

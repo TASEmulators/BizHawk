@@ -93,10 +93,10 @@ namespace BizHawk.Client.Common
 				}
 			};
 
-			controller.Definition.FloatControls.Add("TouchX");
-			controller.Definition.FloatRanges.Add(new ControllerDefinition.AxisRange(0, 128, 255));
-			controller.Definition.FloatControls.Add("TouchY");
-			controller.Definition.FloatRanges.Add(new ControllerDefinition.AxisRange(0, 96, 191));
+			controller.Definition.AxisControls.Add("TouchX");
+			controller.Definition.AxisRanges.Add(new ControllerDefinition.AxisRange(0, 128, 255));
+			controller.Definition.AxisControls.Add("TouchY");
+			controller.Definition.AxisRanges.Add(new ControllerDefinition.AxisRange(0, 96, 191));
 
 			controller["LidOpen"] = false;
 			controller["LidOpen"] = false;
@@ -120,7 +120,7 @@ namespace BizHawk.Client.Common
 				var touchX = int.Parse(sections[1].Substring(13, 3));
 				var touchY = int.Parse(sections[1].Substring(17, 3));
 
-				controller.AcceptNewFloats(new[]
+				controller.AcceptNewAxes(new[]
 				{
 					new Tuple<string, float>("TouchX", touchX),
 					new Tuple<string, float>("TouchY", touchY)

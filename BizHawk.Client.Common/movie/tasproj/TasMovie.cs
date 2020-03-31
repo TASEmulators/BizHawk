@@ -139,9 +139,9 @@ namespace BizHawk.Client.Common
 					: "";
 			}
 
-			if (adapter.Definition.FloatControls.Contains(buttonName))
+			if (adapter.Definition.AxisControls.Contains(buttonName))
 			{
-				return adapter.GetFloat(buttonName).ToString();
+				return adapter.AxisValue(buttonName).ToString();
 			}
 
 			return "!";
@@ -156,7 +156,7 @@ namespace BizHawk.Client.Common
 		public float GetFloatState(int frame, string buttonName)
 		{
 			return ((Bk2ControllerAdapter)GetInputState(frame))
-				.GetFloat(buttonName);
+				.AxisValue(buttonName);
 		}
 
 		public void ClearGreenzone()

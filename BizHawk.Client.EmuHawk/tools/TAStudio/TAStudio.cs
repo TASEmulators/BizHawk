@@ -426,10 +426,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				ColumnType type;
 				int digits;
-				if (ControllerType.FloatControls.Contains(kvp.Key))
+				if (ControllerType.AxisControls.Contains(kvp.Key))
 				{
-					ControllerDefinition.AxisRange range = ControllerType.FloatRanges
-						[ControllerType.FloatControls.IndexOf(kvp.Key)];
+					ControllerDefinition.AxisRange range = ControllerType.AxisRanges
+						[ControllerType.AxisControls.IndexOf(kvp.Key)];
 					type = ColumnType.Float;
 					digits = Math.Max(kvp.Value.Length, range.MaxDigits);
 				}
@@ -488,14 +488,14 @@ namespace BizHawk.Client.EmuHawk
 			if (BoolPatterns == null)
 			{
 				BoolPatterns = new AutoPatternBool[ControllerType.BoolButtons.Count + 2];
-				FloatPatterns = new AutoPatternFloat[ControllerType.FloatControls.Count + 2];
+				FloatPatterns = new AutoPatternFloat[ControllerType.AxisControls.Count + 2];
 			}
 			else
 			{
 				bStart = BoolPatterns.Length - 2;
 				fStart = FloatPatterns.Length - 2;
 				Array.Resize(ref BoolPatterns, ControllerType.BoolButtons.Count + 2);
-				Array.Resize(ref FloatPatterns, ControllerType.FloatControls.Count + 2);
+				Array.Resize(ref FloatPatterns, ControllerType.AxisControls.Count + 2);
 			}
 
 			for (int i = bStart; i < BoolPatterns.Length - 2; i++)

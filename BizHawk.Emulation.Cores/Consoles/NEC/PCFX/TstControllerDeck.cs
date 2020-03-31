@@ -139,16 +139,16 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 			private static readonly ControllerDefinition _definition = new ControllerDefinition
 			{
 				BoolButtons = { "0Mouse Left", "0Mouse Right" },
-				FloatControls = { "0X", "0Y" },
-				FloatRanges = ControllerDefinition.CreateAxisRangePair(-127, 0, 127, ControllerDefinition.AxisPairOrientation.RightAndUp) //TODO verify direction against hardware
+				AxisControls = { "0X", "0Y" },
+				AxisRanges = ControllerDefinition.CreateAxisRangePair(-127, 0, 127, ControllerDefinition.AxisPairOrientation.RightAndUp) //TODO verify direction against hardware
 			};
 
 			public ControllerDefinition Definition => _definition;
 
 			public uint GetData(IController c)
 			{
-				var dx = (byte)(int)c.GetFloat("0X");
-				var dy = (byte)(int)c.GetFloat("0Y");
+				var dx = (byte)(int)c.AxisValue("0X");
+				var dy = (byte)(int)c.AxisValue("0Y");
 				uint ret = 0;
 				if (c.IsPressed("0Mouse Left"))
 					ret |= 0x10000;

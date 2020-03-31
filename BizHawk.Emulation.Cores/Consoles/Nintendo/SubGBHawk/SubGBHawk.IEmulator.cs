@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 				reset_frame = true;
 			}
 
-			input_frame_length = controller.GetFloat("Input Cycle");
+			input_frame_length = controller.AxisValue("Input Cycle");
 			input_frame_length_int = (int)Math.Floor(input_frame_length);
 
 			if (input_frame_length_int == 0)

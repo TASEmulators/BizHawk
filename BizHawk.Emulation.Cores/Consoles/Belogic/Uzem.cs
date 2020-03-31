@@ -61,11 +61,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Belogic
 			{
 				"P1 Mouse Left", "P1 Mouse Right", "Power"
 			},
-			FloatControls =
+			AxisControls =
 			{
 				"P1 Mouse X", "P1 Mouse Y"
 			},
-			FloatRanges = ControllerDefinition.CreateAxisRangePair(-127, 0, 127, ControllerDefinition.AxisPairOrientation.RightAndUp) //TODO verify direction against hardware
+			AxisRanges = ControllerDefinition.CreateAxisRangePair(-127, 0, 127, ControllerDefinition.AxisPairOrientation.RightAndUp) //TODO verify direction against hardware
 		};
 
 		private static readonly string[] PadBits =
@@ -121,8 +121,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Belogic
 			var ret = new LibUzem.FrameInfo();
 			if (_mouseEnabled)
 			{
-				ret.ButtonsP1 = EncodeDelta(controller.GetFloat("P1 Mouse X")) << 24
-					| EncodeDelta(controller.GetFloat("P1 Mouse Y")) << 16
+				ret.ButtonsP1 = EncodeDelta(controller.AxisValue("P1 Mouse X")) << 24
+					| EncodeDelta(controller.AxisValue("P1 Mouse Y")) << 16
 					| 0x8000;
 				if (controller.IsPressed("P1 Mouse Left"))
 					ret.ButtonsP1 |= 0x200;

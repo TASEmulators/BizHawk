@@ -34,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			if (AnalogTrackBar.Value != (int)Global.InputManager.StickyXorAdapter.GetFloat(Name))
+			if (AnalogTrackBar.Value != (int)Global.InputManager.StickyXorAdapter.AxisValue(Name))
 			{
 				RefreshWidgets();
 			}
@@ -48,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Set(IController controller)
 		{
-			var newVal = (int)controller.GetFloat(Name);
+			var newVal = (int)controller.AxisValue(Name);
 			var changed = AnalogTrackBar.Value != newVal;
 			if (changed)
 			{
@@ -217,7 +217,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!_programmaticallyChangingValue)
 			{
 				CurrentValue = AnalogTrackBar.Value;
-				Global.InputManager.StickyXorAdapter.SetFloat(Name, AnalogTrackBar.Value);
+				Global.InputManager.StickyXorAdapter.SetAxis(Name, AnalogTrackBar.Value);
 			}
 		}
 
@@ -226,7 +226,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!_isSet)
 			{
 				_programmaticallyChangingValue = true;
-				AnalogTrackBar.Value = (int)Global.InputManager.StickyXorAdapter.GetFloat(Name);
+				AnalogTrackBar.Value = (int)Global.InputManager.StickyXorAdapter.AxisValue(Name);
 				ValueLabel.Text = AnalogTrackBar.Value.ToString();
 				_programmaticallyChangingValue = false;
 			}

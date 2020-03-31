@@ -81,8 +81,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 				BoolButtons = BaseDefinition
 				.Select(b => "P" + PortNum + " " + b)
 				.ToList(),
-				FloatControls = { "P" + PortNum + " Stick X", "P" + PortNum + " Stick Y" },
-				FloatRanges = ControllerDefinition.CreateAxisRangePair(-128, 0, 127, ControllerDefinition.AxisPairOrientation.RightAndUp)
+				AxisControls = { "P" + PortNum + " Stick X", "P" + PortNum + " Stick Y" },
+				AxisRanges = ControllerDefinition.CreateAxisRangePair(-128, 0, 127, ControllerDefinition.AxisPairOrientation.RightAndUp)
 			};
 		}
 

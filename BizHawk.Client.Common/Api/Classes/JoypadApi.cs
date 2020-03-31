@@ -39,7 +39,7 @@ namespace BizHawk.Client.Common
 				return;
 			}
 			foreach (var button in lg.Definition.BoolButtons) Global.InputManager.ButtonOverrideAdapter.SetButton(button, lg.IsPressed(button));
-			foreach (var floatButton in lg.Definition.FloatControls) Global.InputManager.ButtonOverrideAdapter.SetFloat(floatButton, lg.GetFloat(floatButton));
+			foreach (var floatButton in lg.Definition.AxisControls) Global.InputManager.ButtonOverrideAdapter.SetAxis(floatButton, lg.AxisValue(floatButton));
 		}
 
 		public void Set(Dictionary<string, bool> buttons, int? controller = null)
@@ -76,7 +76,7 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				Global.InputManager.StickyXorAdapter.SetFloat(controller == null ? control : $"P{controller} {control}", value);
+				Global.InputManager.StickyXorAdapter.SetAxis(controller == null ? control : $"P{controller} {control}", value);
 			}
 			catch
 			{

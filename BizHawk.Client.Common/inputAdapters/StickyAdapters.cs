@@ -17,9 +17,9 @@ namespace BizHawk.Client.Common
 			return source;
 		}
 
-		public float GetFloat(string name)
+		public float AxisValue(string name)
 		{
-			var val = _floatSet[name];
+			var val = _axisSet[name];
 
 			if (val.HasValue)
 			{
@@ -31,30 +31,30 @@ namespace BizHawk.Client.Common
 				return 0;
 			}
 
-			return Source.GetFloat(name);
+			return Source.AxisValue(name);
 		}
 
 		public IController Source { get; set; }
 
 		private List<string> _justPressed = new List<string>();
 
-		// if SetFloat() is called (typically virtual pads), then that float will entirely override the Source input
+		// if SetAxis() is called (typically virtual pads), then that axis will entirely override the Source input
 		// otherwise, the source is passed thru.
-		private readonly WorkingDictionary<string, float?> _floatSet = new WorkingDictionary<string, float?>();
+		private readonly WorkingDictionary<string, float?> _axisSet = new WorkingDictionary<string, float?>();
 
-		public void SetFloat(string name, float? value)
+		public void SetAxis(string name, float? value)
 		{
 			if (value.HasValue)
 			{
-				_floatSet[name] = value;
+				_axisSet[name] = value;
 			}
 			else
 			{
-				_floatSet.Remove(name);
+				_axisSet.Remove(name);
 			}
 		}
 
-		public void ClearStickyFloats() => _floatSet.Clear();
+		public void ClearStickyAxes() => _axisSet.Clear();
 
 		public void SetSticky(string button, bool isSticky)
 		{
@@ -71,7 +71,7 @@ namespace BizHawk.Client.Common
 		public void Unset(string button)
 		{
 			CurrentStickies.Remove(button);
-			_floatSet.Remove(button);
+			_axisSet.Remove(button);
 		}
 
 		public bool IsSticky(string button) => CurrentStickies.Contains(button);
@@ -81,7 +81,7 @@ namespace BizHawk.Client.Common
 		public void ClearStickies()
 		{
 			CurrentStickies.Clear();
-			_floatSet.Clear();
+			_axisSet.Clear();
 		}
 
 		public void MassToggleStickyState(List<string> buttons)
@@ -121,11 +121,11 @@ namespace BizHawk.Client.Common
 			return source;
 		}
 
-		public float GetFloat(string name)
+		public float AxisValue(string name)
 		{
-			if (_floatPatterns.ContainsKey(name))
+			if (_axisPatterns.ContainsKey(name))
 			{
-				return _floatPatterns[name].PeekNextValue();
+				return _axisPatterns[name].PeekNextValue();
 			}
 
 			if (Source == null)
@@ -133,7 +133,7 @@ namespace BizHawk.Client.Common
 				return 0;
 			}
 
-			return Source.GetFloat(name);
+			return Source.AxisValue(name);
 		}
 
 		// TODO: Change the AutoHold adapter to be one of these, with an 'Off' value of 0?
@@ -148,7 +148,7 @@ namespace BizHawk.Client.Common
 		}
 
 		private readonly WorkingDictionary<string, AutoPatternBool> _boolPatterns = new WorkingDictionary<string, AutoPatternBool>();
-		private readonly WorkingDictionary<string, AutoPatternFloat> _floatPatterns = new WorkingDictionary<string, AutoPatternFloat>();
+		private readonly WorkingDictionary<string, AutoPatternFloat> _axisPatterns = new WorkingDictionary<string, AutoPatternFloat>();
 
 		public AutoFireStickyXorAdapter()
 		{
@@ -158,7 +158,7 @@ namespace BizHawk.Client.Common
 
 		public IController Source { get; set; }
 
-		public void SetFloat(string name, float? value, AutoPatternFloat pattern = null)
+		public void SetAxis(string name, float? value, AutoPatternFloat pattern = null)
 		{
 			if (value.HasValue)
 			{
@@ -167,11 +167,11 @@ namespace BizHawk.Client.Common
 					pattern = new AutoPatternFloat(value.Value, _on, 0, _off);
 				}
 
-				_floatPatterns[name] = pattern;
+				_axisPatterns[name] = pattern;
 			}
 			else
 			{
-				_floatPatterns.Remove(name);
+				_axisPatterns.Remove(name);
 			}
 		}
 
@@ -194,7 +194,7 @@ namespace BizHawk.Client.Common
 
 		public bool IsSticky(string button)
 		{
-			return _boolPatterns.ContainsKey(button) || _floatPatterns.ContainsKey(button);
+			return _boolPatterns.ContainsKey(button) || _axisPatterns.ContainsKey(button);
 		}
 
 		public HashSet<string> CurrentStickies => new HashSet<string>(_boolPatterns.Keys);
@@ -202,7 +202,7 @@ namespace BizHawk.Client.Common
 		public void ClearStickies()
 		{
 			_boolPatterns.Clear();
-			_floatPatterns.Clear();
+			_axisPatterns.Clear();
 		}
 
 		public void IncrementLoops(bool lagged)
@@ -212,9 +212,9 @@ namespace BizHawk.Client.Common
 				_boolPatterns.ElementAt(i).Value.GetNextValue(lagged);
 			}
 
-			for (int i = 0; i < _floatPatterns.Count; i++)
+			for (int i = 0; i < _axisPatterns.Count; i++)
 			{
-				_floatPatterns.ElementAt(i).Value.GetNextValue(lagged);
+				_axisPatterns.ElementAt(i).Value.GetNextValue(lagged);
 			}
 		}
 

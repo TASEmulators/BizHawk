@@ -218,7 +218,7 @@ namespace BizHawk.Client.Common
 						var rightX = new Tuple<string, float>("P1 RStick X", br.ReadByte());
 						var rightY = new Tuple<string, float>("P1 RStick Y", br.ReadByte());
 
-						controllers.AcceptNewFloats(new[] { leftX, leftY, rightX, rightY });
+						controllers.AcceptNewAxes(new[] { leftX, leftY, rightX, rightY });
 					}
 				}
 
@@ -241,7 +241,7 @@ namespace BizHawk.Client.Common
 						var rightX = new Tuple<string, float>("P2 RStick X", br.ReadByte());
 						var rightY = new Tuple<string, float>("P2 RStick Y", br.ReadByte());
 
-						controllers.AcceptNewFloats(new[] { leftX, leftY, rightX, rightY });
+						controllers.AcceptNewAxes(new[] { leftX, leftY, rightX, rightY });
 					}
 				}
 
@@ -268,7 +268,7 @@ namespace BizHawk.Client.Common
 				}
 
 				Tuple<string, float> discSelect = new Tuple<string, float>("Disc Select", cdNumber);
-				controllers.AcceptNewFloats(new[] { discSelect });
+				controllers.AcceptNewAxes(new[] { discSelect });
 
 				if ((controlState & 0xFC) != 0)
 				{
@@ -356,7 +356,7 @@ namespace BizHawk.Client.Common
 						Tuple<string, float> rightX = new Tuple<string, float>("P1 RStick X", float.Parse(rightXRaw));
 						Tuple<string, float> rightY = new Tuple<string, float>("P1 RStick Y", float.Parse(rightYRaw));
 
-						controllers.AcceptNewFloats(new[] { leftX, leftY, rightX, rightY });
+						controllers.AcceptNewAxes(new[] { leftX, leftY, rightX, rightY });
 					}
 				}
 
@@ -391,7 +391,7 @@ namespace BizHawk.Client.Common
 						Tuple<string, float> rightX = new Tuple<string, float>("P2 RStick X", float.Parse(rightXRaw));
 						Tuple<string, float> rightY = new Tuple<string, float>("P2 RStick Y", float.Parse(rightYRaw));
 
-						controllers.AcceptNewFloats(new[] { leftX, leftY, rightX, rightY });
+						controllers.AcceptNewAxes(new[] { leftX, leftY, rightX, rightY });
 					}
 				}
 
@@ -418,7 +418,7 @@ namespace BizHawk.Client.Common
 				}
 
 				Tuple<string, float> discSelect = new Tuple<string, float>("Disc Select", cdNumber);
-				controllers.AcceptNewFloats(new[] { discSelect });
+				controllers.AcceptNewAxes(new[] { discSelect });
 
 				if ((controlState & 0xFC) != 0)
 				{

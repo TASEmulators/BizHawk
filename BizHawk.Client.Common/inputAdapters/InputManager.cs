@@ -109,11 +109,11 @@ namespace BizHawk.Client.Common
 
 			if (analogBinds.TryGetValue(def.Name, out var aBinds))
 			{
-				foreach (var btn in def.FloatControls)
+				foreach (var btn in def.AxisControls)
 				{
 					if (aBinds.TryGetValue(btn, out var bind))
 					{
-						ret.BindFloat(btn, bind);
+						ret.BindAxis(btn, bind);
 					}
 				}
 			}

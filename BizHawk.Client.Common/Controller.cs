@@ -12,10 +12,10 @@ namespace BizHawk.Client.Common
 		public Controller(ControllerDefinition definition)
 		{
 			Definition = definition;
-			for (int i = 0; i < Definition.FloatControls.Count; i++)
+			for (int i = 0; i < Definition.AxisControls.Count; i++)
 			{
-				_floatButtons[Definition.FloatControls[i]] = Definition.FloatRanges[i].Mid;
-				_floatRanges[Definition.FloatControls[i]] = Definition.FloatRanges[i];
+				_axes[Definition.AxisControls[i]] = Definition.AxisRanges[i].Mid;
+				_axisRanges[Definition.AxisControls[i]] = Definition.AxisRanges[i];
 			}
 		}
 
@@ -23,13 +23,13 @@ namespace BizHawk.Client.Common
 
 		public bool IsPressed(string button) => _buttons[button];
 
-		public float GetFloat(string name) => _floatButtons[name];
+		public float AxisValue(string name) => _axes[name];
 
 		private readonly WorkingDictionary<string, List<string>> _bindings = new WorkingDictionary<string, List<string>>();
 		private readonly WorkingDictionary<string, bool> _buttons = new WorkingDictionary<string, bool>();
-		private readonly WorkingDictionary<string, float> _floatButtons = new WorkingDictionary<string, float>();
-		private readonly Dictionary<string, ControllerDefinition.AxisRange> _floatRanges = new WorkingDictionary<string, ControllerDefinition.AxisRange>();
-		private readonly Dictionary<string, AnalogBind> _floatBinds = new Dictionary<string, AnalogBind>();
+		private readonly WorkingDictionary<string, float> _axes = new WorkingDictionary<string, float>();
+		private readonly Dictionary<string, ControllerDefinition.AxisRange> _axisRanges = new WorkingDictionary<string, ControllerDefinition.AxisRange>();
+		private readonly Dictionary<string, AnalogBind> _axisBindings = new Dictionary<string, AnalogBind>();
 
 		/// <summary>don't do this</summary>
 		public void ForceType(ControllerDefinition newType) => Definition = newType;
@@ -49,15 +49,15 @@ namespace BizHawk.Client.Common
 				.SelectMany(kvp => kvp.Value)
 				.Any(boundButton => boundButton == button);
 
-		public void NormalizeFloats(IController controller)
+		public void NormalizeAxes(IController controller)
 		{
-			foreach (var kvp in _floatBinds)
+			foreach (var kvp in _axisBindings)
 			{
-				var input = _floatButtons[kvp.Key];
+				var input = _axes[kvp.Key];
 				string outKey = kvp.Key;
 				float multiplier = kvp.Value.Mult;
 				float deadZone = kvp.Value.Deadzone;
-				if (_floatRanges.TryGetValue(outKey, out var range))
+				if (_axisRanges.TryGetValue(outKey, out var range))
 				{
 					// input range is assumed to be -10000,0,10000
 
@@ -91,7 +91,7 @@ namespace BizHawk.Client.Common
 					// zero 09-mar-2015 - at this point, we should only have integers, since that's all 100% of consoles ever see
 					// if this becomes a problem we can add flags to the range and update GUIs to be able to display floats
 
-					_floatButtons[outKey] = output.ConstrainWithin(range.FloatRange);
+					_axes[outKey] = output.ConstrainWithin(range.FloatRange);
 				}
 			}
 		}
@@ -116,22 +116,22 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			foreach (var kvp in _floatBinds)
+			foreach (var kvp in _axisBindings)
 			{
-				var input = controller.GetFloat(kvp.Value.Value);
+				var input = controller.AxisValue(kvp.Value.Value);
 				string outKey = kvp.Key;
-				if (_floatRanges.ContainsKey(outKey))
+				if (_axisRanges.ContainsKey(outKey))
 				{
-					_floatButtons[outKey] = input;
+					_axes[outKey] = input;
 				}
 			}
 
 			// it's not sure where this should happen, so for backwards compatibility.. do it every time
-			NormalizeFloats(controller);
+			NormalizeAxes(controller);
 		}
 
 		public void ApplyAxisConstraints(string constraintClass)
-			=> Definition.ApplyAxisConstraints(constraintClass, _floatButtons);
+			=> Definition.ApplyAxisConstraints(constraintClass, _axes);
 
 		/// <summary>
 		/// merges pressed logical buttons from the supplied controller, effectively ORing it with the current state
@@ -159,9 +159,9 @@ namespace BizHawk.Client.Common
 				_buttons[button] = controller.IsPressed(button);
 			}
 
-			foreach (var button in controller.FloatOverrides)
+			foreach (var button in controller.AxisOverrides)
 			{
-				_floatButtons[button] = controller.GetFloat(button);
+				_axes[button] = controller.AxisValue(button);
 			}
 
 			foreach (var button in controller.InversedButtons)
@@ -184,9 +184,9 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void BindFloat(string button, AnalogBind bind)
+		public void BindAxis(string button, AnalogBind bind)
 		{
-			_floatBinds[button] = bind;
+			_axisBindings[button] = bind;
 		}
 
 		public List<string> PressedButtons => _buttons

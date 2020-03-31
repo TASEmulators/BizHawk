@@ -76,13 +76,13 @@ namespace BizHawk.Client.EmuHawk
 					{
 						DisplayName = "B2"
 					},
-					new SingleFloatSchema(55, 17, controller, "Paddle X 1")
+					new SingleAxisSchema(55, 17, controller, "Paddle X 1")
 					{
 						TargetSize = new Size(128, 69),
 						MaxValue = 127,
 						MinValue = -127
 					},
-					new SingleFloatSchema(193, 17, controller, "Paddle X 2")
+					new SingleAxisSchema(193, 17, controller, "Paddle X 2")
 					{
 						TargetSize = new Size(128, 69),
 						MaxValue = 127,
@@ -123,13 +123,13 @@ namespace BizHawk.Client.EmuHawk
 					{
 						DisplayName = "B1"
 					},
-					new SingleFloatSchema(55, 17, controller, "Wheel X 1")
+					new SingleAxisSchema(55, 17, controller, "Wheel X 1")
 					{
 						TargetSize = new Size(128, 69),
 						MaxValue = 127,
 						MinValue = -127
 					},
-					new SingleFloatSchema(193, 17, controller, "Wheel X 2")
+					new SingleAxisSchema(193, 17, controller, "Wheel X 2")
 					{
 						TargetSize = new Size(128, 69),
 						MaxValue = 127,

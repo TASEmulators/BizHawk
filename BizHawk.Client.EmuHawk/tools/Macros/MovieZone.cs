@@ -48,9 +48,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					d.FloatControls.Add(k);
-					int rangeIndex = _emulator.ControllerDefinition.FloatControls.IndexOf(k);
-					d.FloatRanges.Add(_emulator.ControllerDefinition.FloatRanges[rangeIndex]);
+					d.AxisControls.Add(k);
+					int rangeIndex = _emulator.ControllerDefinition.AxisControls.IndexOf(k);
+					d.AxisRanges.Add(_emulator.ControllerDefinition.AxisRanges[rangeIndex]);
 				}
 			}
 
@@ -104,7 +104,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					d.FloatControls.Add(key);
+					d.AxisControls.Add(key);
 				}
 			}
 
@@ -270,7 +270,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					d.FloatControls.Add(k);
+					d.AxisControls.Add(k);
 				}
 			}
 
@@ -286,9 +286,9 @@ namespace BizHawk.Client.EmuHawk
 				latching[button] = source.IsPressed(button);
 			}
 
-			foreach (string name in source.Definition.FloatControls)
+			foreach (string name in source.Definition.AxisControls)
 			{
-				latching.SetFloat(name, source.GetFloat(name));
+				latching.SetAxis(name, source.AxisValue(name));
 			}
 		}
 
@@ -299,13 +299,13 @@ namespace BizHawk.Client.EmuHawk
 				latching[button] |= source.IsPressed(button);
 			}
 
-			foreach (string name in latching.Definition.FloatControls)
+			foreach (string name in latching.Definition.AxisControls)
 			{
-				float sFloat = source.GetFloat(name);
-				int indexRange = source.Definition.FloatControls.IndexOf(name);
-				if (sFloat == source.Definition.FloatRanges[indexRange].Mid)
+				float sFloat = source.AxisValue(name);
+				int indexRange = source.Definition.AxisControls.IndexOf(name);
+				if (sFloat == source.Definition.AxisRanges[indexRange].Mid)
 				{
-					latching.SetFloat(name, sFloat);
+					latching.SetAxis(name, sFloat);
 				}
 			}
 		}

@@ -44,17 +44,17 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					.ToList()
 			};
 
-			Definition.FloatControls.AddRange(_port1.Definition.FloatControls);
-			Definition.FloatControls.AddRange(_port2.Definition.FloatControls);
-			Definition.FloatControls.AddRange(_port3.Definition.FloatControls);
-			Definition.FloatControls.AddRange(_port4.Definition.FloatControls);
-			Definition.FloatControls.AddRange(_port5.Definition.FloatControls);
+			Definition.AxisControls.AddRange(_port1.Definition.AxisControls);
+			Definition.AxisControls.AddRange(_port2.Definition.AxisControls);
+			Definition.AxisControls.AddRange(_port3.Definition.AxisControls);
+			Definition.AxisControls.AddRange(_port4.Definition.AxisControls);
+			Definition.AxisControls.AddRange(_port5.Definition.AxisControls);
 
-			Definition.FloatRanges.AddRange(_port1.Definition.FloatRanges);
-			Definition.FloatRanges.AddRange(_port2.Definition.FloatRanges);
-			Definition.FloatRanges.AddRange(_port3.Definition.FloatRanges);
-			Definition.FloatRanges.AddRange(_port4.Definition.FloatRanges);
-			Definition.FloatRanges.AddRange(_port5.Definition.FloatRanges);
+			Definition.AxisRanges.AddRange(_port1.Definition.AxisRanges);
+			Definition.AxisRanges.AddRange(_port2.Definition.AxisRanges);
+			Definition.AxisRanges.AddRange(_port3.Definition.AxisRanges);
+			Definition.AxisRanges.AddRange(_port4.Definition.AxisRanges);
+			Definition.AxisRanges.AddRange(_port5.Definition.AxisRanges);
 		}
 
 		private readonly IPort _port1;

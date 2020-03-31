@@ -14,7 +14,7 @@ namespace BizHawk.Client.Common
 		public ControllerDefinition Definition { get; private set; }
 
 		private readonly Dictionary<string, bool> _overrides = new Dictionary<string, bool>();
-		private readonly Dictionary<string, float> _floatOverrides = new Dictionary<string, float>();
+		private readonly Dictionary<string, float> _axisOverrides = new Dictionary<string, float>();
 		private readonly List<string> _inverses = new List<string>();
 
 		/// <exception cref="InvalidOperationException"><paramref name="button"/> not overridden</exception>
@@ -28,27 +28,27 @@ namespace BizHawk.Client.Common
 			throw new InvalidOperationException();
 		}
 
-		public float GetFloat(string name)
-			=> _floatOverrides.ContainsKey(name)
-				? _floatOverrides[name]
+		public float AxisValue(string name)
+			=> _axisOverrides.ContainsKey(name)
+				? _axisOverrides[name]
 				: 0.0F;
 		
 
 		public IEnumerable<string> Overrides => _overrides.Select(kvp => kvp.Key);
 
-		public IEnumerable<string> FloatOverrides => _floatOverrides.Select(kvp => kvp.Key);
+		public IEnumerable<string> AxisOverrides => _axisOverrides.Select(kvp => kvp.Key);
 
 		public IEnumerable<string> InversedButtons => _inverses;
 
-		public void SetFloat(string name, float value)
+		public void SetAxis(string name, float value)
 		{
-			if (_floatOverrides.ContainsKey(name))
+			if (_axisOverrides.ContainsKey(name))
 			{
-				_floatOverrides[name] = value;
+				_axisOverrides[name] = value;
 			}
 			else
 			{
-				_floatOverrides.Add(name, value);
+				_axisOverrides.Add(name, value);
 			}
 		}
 
@@ -80,7 +80,7 @@ namespace BizHawk.Client.Common
 		public void FrameTick()
 		{
 			_overrides.Clear();
-			_floatOverrides.Clear();
+			_axisOverrides.Clear();
 			_inverses.Clear();
 		}
 	}

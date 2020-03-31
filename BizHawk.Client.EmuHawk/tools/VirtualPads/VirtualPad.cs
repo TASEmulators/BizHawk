@@ -104,7 +104,7 @@ namespace BizHawk.Client.EmuHawk
 							RangeY = button.MaxValue // TODO: ability to have a different Y than X
 						});
 						break;
-					case PadInputType.SingleFloat:
+					case PadInputType.SingleAxis:
 						PadBox.Controls.Add(new VirtualPadAnalogButton
 						{
 							Name = button.Name,

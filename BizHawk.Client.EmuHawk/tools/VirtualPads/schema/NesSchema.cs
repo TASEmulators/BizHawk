@@ -271,7 +271,7 @@ namespace BizHawk.Client.EmuHawk
 				Size = new Size(380, 110),
 				Buttons = new[]
 				{
-					new SingleFloatSchema(14, 17, controller, "Paddle")
+					new SingleAxisSchema(14, 17, controller, "Paddle")
 					{
 						DisplayName = "Arkanoid Paddle",
 						TargetSize = new Size(380, 69),

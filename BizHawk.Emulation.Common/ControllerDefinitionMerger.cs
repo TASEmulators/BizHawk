@@ -40,14 +40,14 @@ namespace BizHawk.Emulation.Common
 					remaps[s] = r;
 				}
 
-				foreach (string s in def.FloatControls)
+				foreach (string s in def.AxisControls)
 				{
 					string r = Allocate(s, ref plr, ref playerNext);
-					ret.FloatControls.Add(r);
+					ret.AxisControls.Add(r);
 					remaps[s] = r;
 				}
 
-				ret.FloatRanges.AddRange(def.FloatRanges);
+				ret.AxisRanges.AddRange(def.AxisRanges);
 				plr = playerNext;
 				unmergers.Add(new ControlDefUnMerger(remaps));
 			}
@@ -84,9 +84,9 @@ namespace BizHawk.Emulation.Common
 				return _src.IsPressed(_remaps[button]);
 			}
 
-			public float GetFloat(string name)
+			public float AxisValue(string name)
 			{
-				return _src.GetFloat(_remaps[name]);
+				return _src.AxisValue(_remaps[name]);
 			}
 		}
 

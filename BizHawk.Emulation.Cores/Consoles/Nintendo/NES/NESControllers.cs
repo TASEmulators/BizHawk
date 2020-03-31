@@ -395,8 +395,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		static ControllerDefinition Definition = new ControllerDefinition
 		{
 			BoolButtons = { "0Fire" },
-			FloatControls = { "0Paddle" },
-			FloatRanges = { NesDeck.ArkanoidPaddleRange }
+			AxisControls = { "0Paddle" },
+			AxisRanges = { NesDeck.ArkanoidPaddleRange }
 		};
 
 		public void Strobe(StrobeInfo s, IController c)
@@ -406,7 +406,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				shiftidx = 0;
 			if (s.OUT0 > s.OUT0old)
 			{
-				latchedvalue = (byte)(0x54 + (int)c.GetFloat("0Paddle"));
+				latchedvalue = (byte)(0x54 + (int)c.AxisValue("0Paddle"));
 				latchedvalue ^= 0xff;
 			}
 		}
@@ -560,8 +560,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		static ControllerDefinition Definition = new ControllerDefinition
 		{
 			BoolButtons = { "0Fire" },
-			FloatControls = { "0Zapper X", "0Zapper Y" },
-			FloatRanges = NesDeck.ZapperRanges
+			AxisControls = { "0Zapper X", "0Zapper Y" },
+			AxisRanges = NesDeck.ZapperRanges
 		};
 
 		public void Strobe(StrobeInfo s, IController c)
@@ -574,7 +574,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			byte ret = 0;
 			if (c.IsPressed("0Fire"))
 				ret |= 0x10;
-			if (!PPUCallback((int)c.GetFloat("0Zapper X"), (int)c.GetFloat("0Zapper Y")))
+			if (!PPUCallback((int)c.AxisValue("0Zapper X"), (int)c.AxisValue("0Zapper Y")))
 				ret |= 0x08;
 			return ret;
 		}
@@ -613,8 +613,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		static ControllerDefinition Definition = new ControllerDefinition
 		{
 			BoolButtons = { "0Fire" },
-			FloatControls = { "0Zapper X", "0Zapper Y" },
-			FloatRanges = NesDeck.ZapperRanges
+			AxisControls = { "0Zapper X", "0Zapper Y" },
+			AxisRanges = NesDeck.ZapperRanges
 		};
 
 		void Latch(IController c)
@@ -622,7 +622,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			byte ret = 0;
 			if (c.IsPressed("0Fire"))
 				ret |= 0x80;
-			if (PPUCallback((int)c.GetFloat("0Zapper X"), (int)c.GetFloat("0Zapper Y")))
+			if (PPUCallback((int)c.AxisValue("0Zapper X"), (int)c.AxisValue("0Zapper Y")))
 				ret |= 0x40;
 
 			ret |= 0x10; // always 1
@@ -755,8 +755,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		static ControllerDefinition Definition = new ControllerDefinition
 		{
 			BoolButtons = { "0Fire" },
-			FloatControls = { "0Paddle" },
-			FloatRanges = { NesDeck.ArkanoidPaddleRange }
+			AxisControls = { "0Paddle" },
+			AxisRanges = { NesDeck.ArkanoidPaddleRange }
 		};
 
 		public void Strobe(StrobeInfo s, IController c)
@@ -766,7 +766,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				shiftidx = 0;
 			if (s.OUT0 > s.OUT0old)
 			{
-				latchedvalue = (byte)(0x54 + (int)c.GetFloat("0Paddle"));
+				latchedvalue = (byte)(0x54 + (int)c.AxisValue("0Paddle"));
 				latchedvalue ^= 0xff;
 			}
 		}
@@ -1015,8 +1015,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		static ControllerDefinition Definition = new ControllerDefinition
 		{
 			BoolButtons = { "0Click", "0Touch" },
-			FloatControls = { "0Pen X", "0Pen Y" },
-			FloatRanges = NesDeck.ZapperRanges // why would a tablet have the same resolution as a CRT monitor? --yoshi
+			AxisControls = { "0Pen X", "0Pen Y" },
+			AxisRanges = NesDeck.ZapperRanges // why would a tablet have the same resolution as a CRT monitor? --yoshi
 		};
 
 		bool resetting;
@@ -1028,8 +1028,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			resetting = s.OUT0 == 0;
 			if (s.OUT0 < s.OUT0old) // H->L: latch
 			{
-				int x = (int)c.GetFloat("0Pen X");
-				int y = (int)c.GetFloat("0Pen Y");
+				int x = (int)c.AxisValue("0Pen X");
+				int y = (int)c.AxisValue("0Pen Y");
 				// http://forums.nesdev.com/viewtopic.php?p=19454#19454
 				// it almost feels like the hardware guys got the request for 
 				// a tablet that returned x in [0, 255] and y in [0, 239] and then

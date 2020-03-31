@@ -63,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		/// <summary>The things that use <see cref="GetFloats"/> (analog controls) appear to require values -10000.0..10000.0 rather than the -1.0..1.0 that OpenTK returns (although even then the results may be slightly outside of these bounds)</summary>
+		/// <summary>The things that use <see cref="GetAxes"/> (analog controls) appear to require values -10000.0..10000.0 rather than the -1.0..1.0 that OpenTK returns (although even then the results may be slightly outside of these bounds)</summary>
 		private static float ConstrainFloatInput(float num)
 		{
 			if (num > 1) return 10000.0f;
@@ -168,7 +168,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!tmpJstate.Equals(jState)) Debug.WriteLine($"Joystick State:\t{tmpJstate}");
 		}
 
-		public IEnumerable<Tuple<string, float>> GetFloats()
+		public IEnumerable<Tuple<string, float>> GetAxes()
 		{
 			if (MappedGamePad)
 			{

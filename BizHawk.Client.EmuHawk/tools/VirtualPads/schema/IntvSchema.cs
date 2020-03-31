@@ -70,7 +70,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema AnalogController(int controller)
 		{
-			var controllerDefRanges = new FakeAnalogController(controller).Definition.FloatRanges;
+			var controllerDefRanges = new FakeAnalogController(controller).Definition.AxisRanges;
 			return new PadSchema
 			{
 				DisplayName = $"Player {controller}",

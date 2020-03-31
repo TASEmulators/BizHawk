@@ -25,11 +25,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				"P1 A Up", "P1 A Down", "P1 A Left", "P1 A Right", "P1 DPad U", "P1 DPad D", "P1 DPad L", "P1 DPad R", "P1 Start", "P1 Z", "P1 B", "P1 A", "P1 C Up", "P1 C Down", "P1 C Right", "P1 C Left", "P1 L", "P1 R", 
 				"Reset", "Power"
 			},
-			FloatControls =
+			AxisControls =
 			{
 				"P1 X Axis", "P1 Y Axis",
 			},
-			FloatRanges = AnalogStickRanges.Concat(AnalogStickRanges).Concat(AnalogStickRanges).Concat(AnalogStickRanges).ToList(), //TODO is this supposed to be duplicated? docs say FloatRanges.Count should equal FloatControls.Count --yoshi
+			AxisRanges = AnalogStickRanges.Concat(AnalogStickRanges).Concat(AnalogStickRanges).Concat(AnalogStickRanges).ToList(), //TODO is this supposed to be duplicated? docs say AxisRanges.Count should equal AxisControls.Count --yoshi
 			AxisConstraints =
 			{
 				new ControllerDefinition.AxisConstraint { Class = "Natural Circle", Type = ControllerDefinition.AxisConstraintType.Circular, Params = new object[] {"P1 X Axis", "P1 Y Axis", 127.0f} }
@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			}
 			else
 			{
-				x = (sbyte)Controller.GetFloat(p + " X Axis");
+				x = (sbyte)Controller.AxisValue(p + " X Axis");
 			}
 
 			sbyte y;
@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			}
 			else
 			{
-				y = (sbyte)Controller.GetFloat(p + " Y Axis");
+				y = (sbyte)Controller.AxisValue(p + " Y Axis");
 			}
 
 			int value = ReadController(i + 1);

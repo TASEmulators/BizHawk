@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Timer1_Tick(object sender, EventArgs e)
 		{
-			string bindValue = Input.Instance.GetNextFloatEvent();
+			string bindValue = Input.Instance.GetNextAxisEvent();
 			if (bindValue != null)
 			{
 				timer1.Stop();
@@ -41,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 				_bind.Value = bindValue;
 				textBox1.Text = Bind.Value;
 				buttonBind.Text = "Bind!";
-				Input.Instance.StopListeningForFloatEvents();
+				Input.Instance.StopListeningForAxisEvents();
 			}
 		}
 
@@ -52,11 +52,11 @@ namespace BizHawk.Client.EmuHawk
 				timer1.Stop();
 				_listening = false;
 				buttonBind.Text = "Bind!";
-				Input.Instance.StopListeningForFloatEvents();
+				Input.Instance.StopListeningForAxisEvents();
 			}
 			else
 			{
-				Input.Instance.StartListeningForFloatEvents();
+				Input.Instance.StartListeningForAxisEvents();
 				_listening = true;
 				buttonBind.Text = "Cancel!";
 				timer1.Start();

@@ -22,8 +22,8 @@ namespace BizHawk.Emulation.Common
 		{
 			Name = source.Name;
 			BoolButtons.AddRange(source.BoolButtons);
-			FloatControls.AddRange(source.FloatControls);
-			FloatRanges.AddRange(source.FloatRanges);
+			AxisControls.AddRange(source.AxisControls);
+			AxisRanges.AddRange(source.AxisRanges);
 			AxisConstraints.AddRange(source.AxisConstraints);
 			CategoryLabels = source.CategoryLabels;
 		}
@@ -41,13 +41,13 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// Gets a list of all non-boolean types, that can be represented by a numerical value (such as analog controls, stylus coordinates, etc
 		/// </summary>
-		public List<string> FloatControls { get; } = new List<string>();
+		public List<string> AxisControls { get; } = new List<string>();
 
 		/// <summary>
-		/// Gets a list of all float ranges for each float control (must be one to one with FloatControls)
-		/// FloatRanges include the min/max/default values
+		/// Gets a list of all axis ranges for each axis control (must be one to one with AxisControls)
+		/// AxisRanges include the min/max/default values
 		/// </summary>
-		public List<AxisRange> FloatRanges { get; set; } = new List<AxisRange>();
+		public List<AxisRange> AxisRanges { get; set; } = new List<AxisRange>();
 
 		/// <summary>
 		/// Gets the axis constraints that apply artificial constraints to float values
@@ -168,7 +168,7 @@ namespace BizHawk.Emulation.Common
 		{
 			get
 			{
-				List<string> list = new List<string>(FloatControls);
+				List<string> list = new List<string>(AxisControls);
 				list.AddRange(BoolButtons);
 
 				// starts with console buttons, then each player's buttons individually
@@ -201,7 +201,7 @@ namespace BizHawk.Emulation.Common
 		{
 			get
 			{
-				var allNames = FloatControls.Concat(BoolButtons).ToList();
+				var allNames = AxisControls.Concat(BoolButtons).ToList();
 				var player = allNames
 					.Select(PlayerNumber)
 					.DefaultIfEmpty(0)
@@ -219,7 +219,7 @@ namespace BizHawk.Emulation.Common
 
 		public bool Any()
 		{
-			return BoolButtons.Any() || FloatControls.Any();
+			return BoolButtons.Any() || AxisControls.Any();
 		}
 	}
 }

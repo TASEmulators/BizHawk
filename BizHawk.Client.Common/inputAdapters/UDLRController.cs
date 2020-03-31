@@ -144,9 +144,9 @@ namespace BizHawk.Client.Common
 		}
 
 		// The float format implies no U+D and no L+R no matter what, so just passthru
-		public float GetFloat(string name)
+		public float AxisValue(string name)
 		{
-			return Source.GetFloat(name);
+			return Source.AxisValue(name);
 		}
 
 		private readonly HashSet<string> _unpresses = new HashSet<string>();

@@ -15,6 +15,6 @@
 		/// <summary>
 		/// Returns the state of a float control
 		/// </summary>
-		float GetFloat(string name);
+		float AxisValue(string name);
 	}
 }

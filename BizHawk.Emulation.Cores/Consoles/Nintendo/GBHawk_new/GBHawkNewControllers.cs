@@ -117,8 +117,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkNew
 				BoolButtons = BaseDefinition
 				.Select(b => "P" + PortNum + " " + b)
 				.ToList(),
-				FloatControls = { "P" + PortNum + " Tilt X", "P" + PortNum + " Tilt Y" },
-				FloatRanges = ControllerDefinition.CreateAxisRangePair(-45, 0, 45, ControllerDefinition.AxisPairOrientation.RightAndUp) //TODO verify direction against hardware
+				AxisControls = { "P" + PortNum + " Tilt X", "P" + PortNum + " Tilt Y" },
+				AxisRanges = ControllerDefinition.CreateAxisRangePair(-45, 0, 45, ControllerDefinition.AxisPairOrientation.RightAndUp) //TODO verify direction against hardware
 			};
 		}
 
@@ -175,8 +175,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkNew
 			theta_prev = theta;
 			phi_prev = phi;
 
-			theta = (float)(c.GetFloat(Definition.FloatControls[1]) * Math.PI / 180.0);
-			phi = (float)(c.GetFloat(Definition.FloatControls[0]) * Math.PI / 180.0);
+			theta = (float)(c.AxisValue(Definition.AxisControls[1]) * Math.PI / 180.0);
+			phi = (float)(c.AxisValue(Definition.AxisControls[0]) * Math.PI / 180.0);
 
 			float temp = (float)(Math.Cos(theta) * Math.Sin(phi));
 

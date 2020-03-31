@@ -16,7 +16,7 @@ namespace BizHawk.Client.Common
 			return _myBoolButtons[button];
 		}
 
-		public float GetFloat(string name)
+		public float AxisValue(string name)
 		{
 			return _myFloatControls[name];
 		}

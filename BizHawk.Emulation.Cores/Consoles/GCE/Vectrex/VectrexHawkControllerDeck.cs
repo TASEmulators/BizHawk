@@ -38,11 +38,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 							.ToList()
 			};
 
-			Definition.FloatControls.AddRange(Port1.Definition.FloatControls);
-			Definition.FloatControls.AddRange(Port2.Definition.FloatControls);
+			Definition.AxisControls.AddRange(Port1.Definition.AxisControls);
+			Definition.AxisControls.AddRange(Port2.Definition.AxisControls);
 
-			Definition.FloatRanges.AddRange(Port1.Definition.FloatRanges);
-			Definition.FloatRanges.AddRange(Port2.Definition.FloatRanges);
+			Definition.AxisRanges.AddRange(Port1.Definition.AxisRanges);
+			Definition.AxisRanges.AddRange(Port2.Definition.AxisRanges);
 		}
 
 		public byte ReadPort1(IController c)

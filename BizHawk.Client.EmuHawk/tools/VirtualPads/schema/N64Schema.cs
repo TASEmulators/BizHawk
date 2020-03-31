@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static PadSchema StandardController(int controller)
 		{
-			var controllerDefRanges = N64Input.N64ControllerDefinition.FloatRanges;
+			var controllerDefRanges = N64Input.N64ControllerDefinition.AxisRanges;
 			return new PadSchema
 			{
 				Size = new Size(275, 316),

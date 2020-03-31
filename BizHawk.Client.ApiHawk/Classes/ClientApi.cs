@@ -384,8 +384,8 @@ namespace BizHawk.Client.ApiHawk
 					var joypadAdaptor = Global.AutofireStickyXORAdapter;
 					for (var i = 1; i <= RunningSystem.MaxControllers; i++)
 					{
-						joypadAdaptor.SetFloat($"P{i} X Axis", _allJoyPads[i - 1].AnalogX);
-						joypadAdaptor.SetFloat($"P{i} Y Axis", _allJoyPads[i - 1].AnalogY);
+						joypadAdaptor.SetAxis($"P{i} X Axis", _allJoyPads[i - 1].AnalogX);
+						joypadAdaptor.SetAxis($"P{i} Y Axis", _allJoyPads[i - 1].AnalogY);
 					}
 				}
 #endif
@@ -437,8 +437,8 @@ namespace BizHawk.Client.ApiHawk
 			{
 				for (int i = 1; i <= RunningSystem.MaxControllers; i++)
 				{
-					_allJoyPads[i - 1].AnalogX = joypadAdapter.GetFloat($"P{i} X Axis");
-					_allJoyPads[i - 1].AnalogY = joypadAdapter.GetFloat($"P{i} Y Axis");
+					_allJoyPads[i - 1].AnalogX = joypadAdapter.AxisValue($"P{i} X Axis");
+					_allJoyPads[i - 1].AnalogY = joypadAdapter.AxisValue($"P{i} Y Axis");
 				}
 			}
 		}

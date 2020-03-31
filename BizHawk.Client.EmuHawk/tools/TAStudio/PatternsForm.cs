@@ -29,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 				ButtonBox.Items.Add(button);
 			}
 
-			foreach (var button in Global.MovieSession.MovieControllerAdapter.Definition.FloatControls)
+			foreach (var button in Global.MovieSession.MovieControllerAdapter.Definition.AxisControls)
 			{
 				ButtonBox.Items.Add(button);
 			}
@@ -202,7 +202,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						index = Global.MovieSession.MovieControllerAdapter.Definition.FloatControls.IndexOf(SelectedButton);
+						index = Global.MovieSession.MovieControllerAdapter.Definition.AxisControls.IndexOf(SelectedButton);
 					}
 
 					LagBox.Checked = _tastudio.FloatPatterns[index].SkipsLag;
@@ -248,7 +248,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					index = Global.MovieSession.MovieControllerAdapter.Definition.FloatControls.IndexOf(SelectedButton);
+					index = Global.MovieSession.MovieControllerAdapter.Definition.AxisControls.IndexOf(SelectedButton);
 				}
 
 				List<float> p = new List<float>();
@@ -310,7 +310,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					index = Global.MovieSession.MovieControllerAdapter.Definition.FloatControls.IndexOf(SelectedButton);
+					index = Global.MovieSession.MovieControllerAdapter.Definition.AxisControls.IndexOf(SelectedButton);
 				}
 
 				float[] p = _tastudio.FloatPatterns[index].Pattern;

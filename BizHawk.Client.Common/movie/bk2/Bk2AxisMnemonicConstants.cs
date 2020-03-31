@@ -2,7 +2,7 @@
 
 namespace BizHawk.Client.Common
 {
-	public class Bk2FloatConstants
+	public class Bk2AxisMnemonicConstants
 	{
 		public string this[string button]
 		{

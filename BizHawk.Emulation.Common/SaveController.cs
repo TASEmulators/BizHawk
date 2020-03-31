@@ -65,14 +65,14 @@ namespace BizHawk.Emulation.Common
 				_buttons.Add(k, source.IsPressed(k) ? 1.0f : 0);
 			}
 
-			foreach (var k in Definition.FloatControls)
+			foreach (var k in Definition.AxisControls)
 			{
 				if (_buttons.Keys.Contains(k))
 				{
 					throw new Exception("name collision between bool and float lists!");
 				}
 
-				_buttons.Add(k, source.GetFloat(k));
+				_buttons.Add(k, source.AxisValue(k));
 			}
 		}
 
@@ -91,7 +91,7 @@ namespace BizHawk.Emulation.Common
 			return _buttons[button] != 0;
 		}
 
-		public float GetFloat(string name)
+		public float AxisValue(string name)
 		{
 			return _buttons[name];
 		}

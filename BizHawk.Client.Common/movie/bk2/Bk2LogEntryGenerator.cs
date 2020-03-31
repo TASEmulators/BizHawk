@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common
 	public class Bk2LogEntryGenerator : ILogEntryGenerator
 	{
 		private readonly Bk2MnemonicConstants _mnemonics = new Bk2MnemonicConstants();
-		private readonly Bk2FloatConstants _floatLookup = new Bk2FloatConstants();
+		private readonly Bk2AxisMnemonicConstants _axisMnemonics = new Bk2AxisMnemonicConstants();
 
 		private readonly string _logKey;
 		private IController _source;
@@ -61,9 +61,9 @@ namespace BizHawk.Client.Common
 					{
 						dict.Add(button, _mnemonics[button].ToString());
 					}
-					else if (_source.Definition.FloatControls.Contains(button))
+					else if (_source.Definition.AxisControls.Contains(button))
 					{
-						dict.Add(button, _floatLookup[button]);
+						dict.Add(button, _axisMnemonics[button]);
 					}
 				}
 			}
@@ -86,11 +86,11 @@ namespace BizHawk.Client.Common
 				{
 					foreach (var button in group)
 					{
-						if (_source.Definition.FloatControls.Contains(button))
+						if (_source.Definition.AxisControls.Contains(button))
 						{
 							int val;
-							int i = _source.Definition.FloatControls.IndexOf(button);
-							var mid = _source.Definition.FloatRanges[i].Mid;
+							int i = _source.Definition.AxisControls.IndexOf(button);
+							var mid = _source.Definition.AxisRanges[i].Mid;
 
 							if (createEmpty)
 							{
@@ -98,7 +98,7 @@ namespace BizHawk.Client.Common
 							}
 							else
 							{
-								val = (int)_source.GetFloat(button);
+								val = (int)_source.AxisValue(button);
 							}
 
 							if (forInputDisplay && val == mid)

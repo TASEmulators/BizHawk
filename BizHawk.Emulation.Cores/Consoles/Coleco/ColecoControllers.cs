@@ -135,8 +135,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				BoolButtons = BaseBoolDefinition
 				.Select(b => "P" + PortNum + " " + b)
 				.ToList(),
-				FloatControls = { "P" + PortNum + " Disc X", "P" + PortNum + " Disc Y" },
-				FloatRanges = ControllerDefinition.CreateAxisRangePair(-127, 0, 127, ControllerDefinition.AxisPairOrientation.RightAndUp) //TODO verify direction against hardware
+				AxisControls = { "P" + PortNum + " Disc X", "P" + PortNum + " Disc Y" },
+				AxisRanges = ControllerDefinition.CreateAxisRangePair(-127, 0, 127, ControllerDefinition.AxisPairOrientation.RightAndUp) //TODO verify direction against hardware
 			};
 		}
 
@@ -152,8 +152,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				
 				if (c.IsPressed(Definition.BoolButtons[0])) retVal &= 0x3F;
 				
-				float x = c.GetFloat(Definition.FloatControls[0]);
-				float y = c.GetFloat(Definition.FloatControls[1]);
+				float x = c.AxisValue(Definition.AxisControls[0]);
+				float y = c.AxisValue(Definition.AxisControls[1]);
 
 				var angle = updateWheel ? wheelAngle : CalcDirection(x, y);
 				
@@ -223,8 +223,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		public float UpdateWheel(IController c)
 		{
-			float x = c.GetFloat(Definition.FloatControls[0]);
-			float y = c.GetFloat(Definition.FloatControls[1]);
+			float x = c.AxisValue(Definition.AxisControls[0]);
+			float y = c.AxisValue(Definition.AxisControls[1]);
 			return CalcDirection(x, y);
 		}
 	}
@@ -240,8 +240,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				BoolButtons = BaseBoolDefinition
 				.Select(b => "P" + PortNum + " " + b)
 				.ToList(),
-				FloatControls = { "P" + PortNum + " Disc X", "P" + PortNum + " Disc Y" },
-				FloatRanges = ControllerDefinition.CreateAxisRangePair(-127, 0, 127, ControllerDefinition.AxisPairOrientation.RightAndUp) //TODO verify direction against hardware
+				AxisControls = { "P" + PortNum + " Disc X", "P" + PortNum + " Disc Y" },
+				AxisRanges = ControllerDefinition.CreateAxisRangePair(-127, 0, 127, ControllerDefinition.AxisPairOrientation.RightAndUp) //TODO verify direction against hardware
 			};
 		}
 
@@ -260,8 +260,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				if (c.IsPressed(Definition.BoolButtons[3])) retVal &= 0xF7;
 				if (c.IsPressed(Definition.BoolButtons[4])) retVal &= 0x3F;
 
-				float x = c.GetFloat(Definition.FloatControls[0]);
-				float y = c.GetFloat(Definition.FloatControls[1]);
+				float x = c.AxisValue(Definition.AxisControls[0]);
+				float y = c.AxisValue(Definition.AxisControls[1]);
 
 				var angle = updateWheel ? wheelAngle : CalcDirection(x, y);
 
@@ -358,8 +358,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		public float UpdateWheel(IController c)
 		{
-			float x = c.GetFloat(Definition.FloatControls[0]);
-			float y = c.GetFloat(Definition.FloatControls[1]);
+			float x = c.AxisValue(Definition.AxisControls[0]);
+			float y = c.AxisValue(Definition.AxisControls[1]);
 			return CalcDirection(x, y);
 		}
 	}
