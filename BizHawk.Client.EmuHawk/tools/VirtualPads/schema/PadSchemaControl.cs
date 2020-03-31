@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 	}
 
 	/// <summary>A single on/off button</summary>
-	public class ButtonSchema : PadSchemaControl
+	public sealed class ButtonSchema : PadSchemaControl
 	{
 		public string? DisplayName { get; set; }
 
@@ -62,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 	}
 
 	/// <summary>A single analog control (e.g. pressure sensitive button)</summary>
-	public class SingleAxisSchema : PadSchemaControl
+	public sealed class SingleAxisSchema : PadSchemaControl
 	{
 		public string DisplayName { get; set; }
 
@@ -86,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 	}
 
 	/// <summary>An analog stick (X, Y) pair</summary>
-	public class AnalogSchema : PadSchemaControl
+	public sealed class AnalogSchema : PadSchemaControl
 	{
 		public ControllerDefinition.AxisRange AxisRange { get; set; }
 
@@ -100,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 	}
 
 	/// <summary>An (X, Y) pair intended to be a screen coordinate (for zappers, mouse, stylus, etc.)</summary>
-	public class TargetedPairSchema : PadSchemaControl
+	public sealed class TargetedPairSchema : PadSchemaControl
 	{
 		public readonly int MaxValue;
 
@@ -116,7 +116,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 	}
 
-	public class DiscManagerSchema : PadSchemaControl
+	public sealed class DiscManagerSchema : PadSchemaControl
 	{
 		public readonly IEmulator OwnerEmulator;
 
