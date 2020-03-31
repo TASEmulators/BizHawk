@@ -257,8 +257,9 @@ namespace BizHawk.Client.Common
 
 						Bind("Tools", "Toggle All Cheats"),
 
-						Bind("DS", "Increment View"),
-						Bind("DS", "Decrement View"),
+						Bind("NDS", "Next Screen Layout"),
+						Bind("NDS", "Previous Screen Layout"),
+						Bind("NDS", "Screen Rotate"),
 					};
 
 					// set ordinals based on order in list

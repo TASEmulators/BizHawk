@@ -7,18 +7,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
 	unsafe partial class MelonDS : IVideoProvider
 	{
-		public const int NativeWidth = 256;
+		public int VirtualWidth => 256;
+		public int VirtualHeight => 384;
 
-		/// <summary>
-		/// for a single screen
-		/// </summary>
-		public const int NativeHeight = 192;
-
-		public int VirtualWidth => BufferWidth;
-		public int VirtualHeight => BufferHeight;
-
-		public int BufferWidth => _settings.Width();
-		public int BufferHeight => _settings.Height();
+		public int BufferWidth => 256;
+		public int BufferHeight => 384;
 
 		public int VsyncNumerator => 60;
 
@@ -40,20 +33,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		{
 			if (!_getNewBuffer) return _buffer;
 			_getNewBuffer = false;
-			return _buffer = _settings.ScreenOptions switch
-			{
-				VideoScreenOptions.Default => ScreenArranger.UprightStack(TopScreen, BottomScreen, _settings.ScreenGap),
-				VideoScreenOptions.TopOnly => ScreenArranger.Copy(TopScreen),
-				VideoScreenOptions.BottomOnly => ScreenArranger.Copy(BottomScreen),
-				VideoScreenOptions.SideBySideLR => ScreenArranger.UprightSideBySide(TopScreen, BottomScreen, _settings.ScreenGap),
-				VideoScreenOptions.SideBySideRL => ScreenArranger.UprightSideBySide(BottomScreen, TopScreen, _settings.ScreenGap),
-				VideoScreenOptions.Rotate90 => ScreenArranger.Rotate90Stack(TopScreen, BottomScreen, _settings.ScreenGap),
-				VideoScreenOptions.Rotate270 => ScreenArranger.Rotate270Stack(BottomScreen, TopScreen, _settings.ScreenGap),
-				_ => throw new InvalidOperationException()
-			};
+			return _buffer = ScreenArranger.UprightStack(TopScreen, BottomScreen, 0);
 		}
-
-		private VideoScreen TopScreen => new VideoScreen(GetTopScreenBuffer(), NativeWidth, NativeHeight);
-		private VideoScreen BottomScreen => new VideoScreen(GetBottomScreenBuffer(), NativeWidth, NativeHeight);
+		private VideoScreen TopScreen => new VideoScreen(GetTopScreenBuffer(), 256, 192);
+		private VideoScreen BottomScreen => new VideoScreen(GetBottomScreenBuffer(), 256, 192);
 	}
 }

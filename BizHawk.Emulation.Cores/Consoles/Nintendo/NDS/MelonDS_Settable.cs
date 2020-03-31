@@ -78,62 +78,28 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		[DllImport(dllPath)]
 		private static extern uint GetTimeAtBoot();
 
-		public enum VideoScreenOptions
+		public enum ScreenLayoutKind
 		{
-			Default,
-			TopOnly,
-			BottomOnly,
-			SideBySideLR,
-			SideBySideRL,
-			Rotate90,
-			Rotate270
+			Vertical, Horizontal, Top, Bottom
+		}
+
+		public enum ScreenRotationKind
+		{
+			Rotate0, Rotate90, Rotate180, Rotate270
 		}
 
 		public class MelonSettings
 		{
-			[DisplayName("Screen Configuration")]
-			[Description("Adjusts the orientation of the 2 displays")]
-			public VideoScreenOptions ScreenOptions { get; set; } = VideoScreenOptions.Default;
+			[DisplayName("Screen Layout")]
+			[Description("Adjusts the layout of the screens")]
+			public ScreenLayoutKind ScreenLayout { get; set; } = ScreenLayoutKind.Vertical;
+
+			[DisplayName("Rotation")]
+			[Description("Adjusts the orientation of the screens")]
+			public ScreenRotationKind ScreenRotation { get; set; } = ScreenRotationKind.Rotate0;
 
 			[DisplayName("Screen Gap")]
 			public int ScreenGap { get; set; }
-
-			public Point? TouchScreenStart() =>
-				ScreenOptions switch
-				{
-					VideoScreenOptions.TopOnly => null,
-					VideoScreenOptions.BottomOnly => null,
-					VideoScreenOptions.SideBySideLR => new Point(NativeWidth, 0),
-					VideoScreenOptions.SideBySideRL => new Point(0, 0),
-					VideoScreenOptions.Rotate90 => new Point(0, 0),
-					VideoScreenOptions.Rotate270 => new Point(256, 0),
-					_ => new Point(0, NativeHeight + ScreenGap)
-				};
-			
-
-			public int Width() =>
-				ScreenOptions switch
-				{
-					VideoScreenOptions.SideBySideLR => NativeWidth * 2,
-					VideoScreenOptions.SideBySideRL => NativeWidth * 2,
-					VideoScreenOptions.Rotate90 => NativeHeight * 2,
-					VideoScreenOptions.Rotate270 => NativeHeight * 2,
-					_ => NativeWidth
-				};
-			
-
-			// TODO: padding
-			public int Height() =>
-				ScreenOptions switch
-				{
-					VideoScreenOptions.TopOnly => NativeHeight,
-					VideoScreenOptions.BottomOnly => NativeHeight,
-					VideoScreenOptions.SideBySideLR => NativeHeight,
-					VideoScreenOptions.SideBySideRL => NativeHeight,
-					VideoScreenOptions.Rotate90 => NativeWidth,
-					VideoScreenOptions.Rotate270 => NativeWidth,
-					_ => (NativeHeight * 2) + ScreenGap
-				};
 		}
 
 		public class MelonSyncSettings

@@ -182,17 +182,6 @@ namespace BizHawk.Client.EmuHawk.Filters
 		//TODO: actually use this
 		bool nop = false;
 
-		//SCREEN CONTROL VALUES
-		//-------------------
-		public int Gap = 0;
-		public int ScreenRotationDegreesCW = 0;
-		public enum ScreenLayout
-		{
-			Vertical, Horizontal, Top, Bottom
-		}
-		ScreenLayout Layout = ScreenLayout.Vertical;
-		//-------------------
-
 		//matrices used for transforming screens
 		Matrix4 matTop, matBot;
 		Matrix4 matTopInvert, matBotInvert;
@@ -229,23 +218,33 @@ namespace BizHawk.Client.EmuHawk.Filters
 			//set up transforms for each screen based on screen control values
 			//this will be TRICKY depending on how many features we have, but once it's done, everything should be easy
 
+			var settings = nds.GetSettings();
+
 			//gap only applies to vertical, I guess
-			if (Layout == ScreenLayout.Vertical)
+			if (settings.ScreenLayout == MelonDS.ScreenLayoutKind.Vertical)
 			{
 				bot.Translate(0, 192);
-				bot.Translate(0, Gap);
+				bot.Translate(0, settings.ScreenGap);
 			}
-			else if (Layout == ScreenLayout.Horizontal)
+			else if (settings.ScreenLayout == MelonDS.ScreenLayoutKind.Horizontal)
 			{
 				bot.Translate(256, 0);
 			}
-			else if (Layout == ScreenLayout.Top)
+			else if (settings.ScreenLayout == MelonDS.ScreenLayoutKind.Top)
 			{
 				//do nothing here, we'll discard bottom screen
 			}
 
-			top.RotateZ(ScreenRotationDegreesCW);
-			bot.RotateZ(ScreenRotationDegreesCW);
+			//this doesn't make any sense, it's likely to be too much for a monitor to gracefully handle too
+			if (settings.ScreenLayout != MelonDS.ScreenLayoutKind.Horizontal)
+			{
+				int rot = 0;
+				if (settings.ScreenRotation == MelonDS.ScreenRotationKind.Rotate90) rot = 90;
+				if (settings.ScreenRotation == MelonDS.ScreenRotationKind.Rotate180) rot = 180;
+				if (settings.ScreenRotation == MelonDS.ScreenRotationKind.Rotate270) rot = 270;
+				top.RotateZ(rot);
+				bot.RotateZ(rot);
+			}
 
 			//-----------------------------------
 
@@ -287,14 +286,14 @@ namespace BizHawk.Client.EmuHawk.Filters
 
 			//the size can now be determined in a kind of fluffily magical way by transforming edges and checking the bounds
 			float fxmin = 100000, fymin = 100000, fxmax = -100000, fymax = -100000;
-			if (Layout != ScreenLayout.Bottom)
+			if (settings.ScreenLayout != MelonDS.ScreenLayoutKind.Bottom)
 			{
 				fxmin = Math.Min(Math.Min(Math.Min(Math.Min(top_TL.X, top_TR.X), top_BL.X), top_BR.X), fxmin);
 				fymin = Math.Min(Math.Min(Math.Min(Math.Min(top_TL.Y, top_TR.Y), top_BL.Y), top_BR.Y), fymin);
 				fxmax = Math.Max(Math.Max(Math.Max(Math.Max(top_TL.X, top_TR.X), top_BL.X), top_BR.X), fxmax);
 				fymax = Math.Max(Math.Max(Math.Max(Math.Max(top_TL.Y, top_TR.Y), top_BL.Y), top_BR.Y), fymax);
 			}
-			if (Layout != ScreenLayout.Top)
+			if (settings.ScreenLayout != MelonDS.ScreenLayoutKind.Top)
 			{
 				fxmin = Math.Min(Math.Min(Math.Min(Math.Min(bot_TL.X, bot_TR.X), bot_BL.X), bot_BR.X), fxmin);
 				fymin = Math.Min(Math.Min(Math.Min(Math.Min(bot_TL.Y, bot_TR.Y), bot_BL.Y), bot_BR.Y), fymin);
@@ -339,7 +338,8 @@ namespace BizHawk.Client.EmuHawk.Filters
 			point.Y *= 2;
 
 			//in case we're in this layout, we get confused, so fix it
-			if (Layout == ScreenLayout.Top)
+			var settings = nds.GetSettings();
+			if (settings.ScreenLayout == MelonDS.ScreenLayoutKind.Top)
 				point = Vector2.Zero;
 
 			//TODO: we probably need more subtle logic here.
@@ -375,10 +375,11 @@ namespace BizHawk.Client.EmuHawk.Filters
 			//draw screens
 			bool renderTop = false;
 			bool renderBottom = false;
-			if (Layout == ScreenLayout.Bottom) renderBottom = true;
-			if (Layout == ScreenLayout.Top) renderTop = true;
-			if (Layout == ScreenLayout.Vertical) renderTop = renderBottom = true;
-			if (Layout == ScreenLayout.Horizontal) renderTop = renderBottom = true;
+			var settings = nds.GetSettings();
+			if (settings.ScreenLayout == MelonDS.ScreenLayoutKind.Bottom) renderBottom = true;
+			if (settings.ScreenLayout == MelonDS.ScreenLayoutKind.Top) renderTop = true;
+			if (settings.ScreenLayout == MelonDS.ScreenLayoutKind.Vertical) renderTop = renderBottom = true;
+			if (settings.ScreenLayout == MelonDS.ScreenLayoutKind.Horizontal) renderTop = renderBottom = true;
 
 			if (renderTop)
 			{

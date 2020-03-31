@@ -112,8 +112,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 		}
 
-		public Point? TouchScreenStart => _settings.TouchScreenStart();
-
 		/// <summary>
 		/// MelonDS expects bios and firmware files at a specific location.
 		/// This should never be called without an accompanying call to PutSyncSettings.

@@ -756,23 +756,42 @@ namespace BizHawk.Client.EmuHawk
 					break;
 
 				// DS
-				case "Increment View":
-					ToggleDSView();
+				case "Next Screen Layout":
+					IncrementDSLayout(1);
 					break;
-				case "Decrement View":
-					ToggleDSView(true);
+				case "Previous Screen Layout":
+					IncrementDSLayout(-1);
+					break;
+				case "Screen Rotate":
+					IncrementDSScreenRotate();
 					break;
 			}
 
 			return true;
 		}
 
-		private void ToggleDSView(bool decrement = false)
+		private void IncrementDSScreenRotate()
 		{
 			if (Emulator is MelonDS ds)
 			{
 				var settings = ds.GetSettings();
-				var num = (int)settings.ScreenOptions;
+				if (settings.ScreenRotation == MelonDS.ScreenRotationKind.Rotate0) settings.ScreenRotation = settings.ScreenRotation = MelonDS.ScreenRotationKind.Rotate90;
+				else if (settings.ScreenRotation == MelonDS.ScreenRotationKind.Rotate90) settings.ScreenRotation = settings.ScreenRotation = MelonDS.ScreenRotationKind.Rotate180;
+				else if (settings.ScreenRotation == MelonDS.ScreenRotationKind.Rotate180) settings.ScreenRotation = settings.ScreenRotation = MelonDS.ScreenRotationKind.Rotate270;
+				else if (settings.ScreenRotation == MelonDS.ScreenRotationKind.Rotate270) settings.ScreenRotation = settings.ScreenRotation = MelonDS.ScreenRotationKind.Rotate0;
+				ds.PutSettings(settings);
+				AddOnScreenMessage($"Screen rotation to {settings.ScreenRotation}");
+				FrameBufferResized();
+			}
+		}
+
+		private void IncrementDSLayout(int delta)
+		{
+			bool decrement = delta == -1;
+			if (Emulator is MelonDS ds)
+			{
+				var settings = ds.GetSettings();
+				var num = (int)settings.ScreenLayout;
 				if (decrement)
 				{
 					num--;
@@ -781,14 +800,17 @@ namespace BizHawk.Client.EmuHawk
 				{
 					num++;
 				}
-				var next = (MelonDS.VideoScreenOptions)Enum.Parse(typeof(MelonDS.VideoScreenOptions), num.ToString());
-				if (!typeof(MelonDS.VideoScreenOptions).IsEnumDefined(next))
+				var next = (MelonDS.ScreenLayoutKind)Enum.Parse(typeof(MelonDS.ScreenLayoutKind), num.ToString());
+				if (!typeof(MelonDS.ScreenLayoutKind).IsEnumDefined(next))
 				{
 					next = default;
 				}
 
-				settings.ScreenOptions = next;
+				settings.ScreenLayout = next;
+
 				ds.PutSettings(settings);
+				AddOnScreenMessage($"Screen layout to {next}");
+				FrameBufferResized();
 			}
 		}
 
