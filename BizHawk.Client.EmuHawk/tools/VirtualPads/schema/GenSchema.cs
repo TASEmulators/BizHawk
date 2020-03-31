@@ -111,11 +111,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisplayName = "Light Gun",
 				Size = new Size(356, 300),
-				Buttons = new[]
+				Buttons = new PadSchemaControl[]
 				{
-					new TargetedPairSchema(14, 17, $"P{controller} Lightgun X")
+					new TargetedPairSchema(14, 17, $"P{controller} Lightgun X", 10000)
 					{
-						MaxValue = 10000,
 						TargetSize = new Size(320, 240)
 					},
 					new ButtonSchema(284, 17, controller, "Lightgun Trigger")
@@ -136,12 +135,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisplayName = "Mouse",
 				Size = new Size(418, 290),
-				Buttons = new[]
+				Buttons = new PadSchemaControl[]
 				{
 					new AnalogSchema(14, 17, $"P{controller} Mouse X")
 					{
-						MaxValue = 255,
-						TargetSize = new Size(520, 570)
+//						MaxValue = 255,
+//						TargetSize = new Size(520, 570)
 					},
 					new ButtonSchema(365, 17, controller, "Mouse Left")
 					{

@@ -252,7 +252,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisplayName = "Zapper",
 				Size = new Size(356, 290),
-				Buttons = new[]
+				Buttons = new PadSchemaControl[]
 				{
 					new TargetedPairSchema(14, 17, $"P{controller} Zapper X")
 					{
@@ -269,7 +269,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisplayName = "Arkanoid Paddle",
 				Size = new Size(380, 110),
-				Buttons = new[]
+				Buttons = new PadSchemaControl[]
 				{
 					new SingleAxisSchema(14, 17, controller, "Paddle")
 					{
@@ -320,7 +320,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisplayName = "Tablet",
 				Size = new Size(356, 290),
-				Buttons = new[]
+				Buttons = new PadSchemaControl[]
 				{
 					new TargetedPairSchema(14, 17, $"P{controller} Pen X")
 					{

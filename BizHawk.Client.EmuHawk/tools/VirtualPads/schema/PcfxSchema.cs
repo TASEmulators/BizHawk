@@ -72,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisplayName = "Mouse",
 				Size = new Size(375, 320),
-				Buttons = new[]
+				Buttons = new PadSchemaControl[]
 				{
 					new TargetedPairSchema(14, 17, $"P{controller} X")
 					{

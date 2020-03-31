@@ -64,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				Size = new Size(280, 300),
-				Buttons = new[]
+				Buttons = new PadSchemaControl[]
 				{
 					Button(74, 34, controller, 1),
 					Button(98, 34, controller, 2),

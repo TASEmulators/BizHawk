@@ -52,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				Size = new Size(275, 260),
-				Buttons = new[]
+				Buttons = new PadSchemaControl[]
 				{
 					new AnalogSchema(6, 14, $"P{controller} Disc X")
 					{
@@ -69,7 +69,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				Size = new Size(195, 260),
-				Buttons = StandardButtons(controller).Concat(new[]
+				Buttons = StandardButtons(controller).Concat(new PadSchemaControl[]
 				{
 					new SingleAxisSchema(6, 200, controller, "Disc X")
 					{

@@ -51,7 +51,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Size = new Size(500, 290),
 				DisplayName = $"DualShock Player{controller}",
-				Buttons = new[]
+				Buttons = new PadSchemaControl[]
 				{
 					ButtonSchema.Up(32, 50, controller),
 					ButtonSchema.Down(32, 71, controller),
@@ -151,7 +151,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Size = new Size(343, 195),
 				DisplayName = $"NeGcon Player{controller}",
-				Buttons = new[]
+				Buttons = new PadSchemaControl[]
 				{
 					ButtonSchema.Up(36, 83, controller),
 					ButtonSchema.Down(36, 104, controller),
@@ -167,12 +167,11 @@ namespace BizHawk.Client.EmuHawk
 						MinValue = 0,
 						MaxValue = 255
 					},
-					new SingleAxisSchema(125, 15, controller, "Twist")
+					new SingleAxisSchema(125, 15, controller, "Twist", isVertical: true)
 					{
 						TargetSize = new Size(64, 178),
 						MinValue = 0,
-						MaxValue = 255,
-						Orientation = Orientation.Vertical
+						MaxValue = 255
 					},
 					new SingleAxisSchema(180, 60, controller, "2")
 					{
@@ -197,15 +196,10 @@ namespace BizHawk.Client.EmuHawk
 			return new ConsoleSchema
 			{
 				Size = new Size(310, 400),
-				Buttons = new[]
+				Buttons = new PadSchemaControl[]
 				{
 					new ButtonSchema(10, 15, "Reset"),
-					new DiscManagerSchema(10, 54)
-					{
-						TargetSize = new Size(300, 300),
-						OwnerEmulator = psx,
-						SecondaryNames = new[] { "Open", "Close", "Disc Select" }
-					}
+					new DiscManagerSchema(10, 54, new Size(300, 300), psx, new[] { "Open", "Close", "Disc Select" })
 				}
 			};
 		}

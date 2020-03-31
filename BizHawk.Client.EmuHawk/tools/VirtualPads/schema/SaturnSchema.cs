@@ -96,7 +96,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				Size = new Size(458, 285),
-				Buttons = new[]
+				Buttons = new PadSchemaControl[]
 				{
 					ButtonSchema.Up(290, 77, controller),
 					ButtonSchema.Down(290, 121, controller),
@@ -111,7 +111,7 @@ namespace BizHawk.Client.EmuHawk
 					new ButtonSchema(414, 80, controller, "Z"),
 					new AnalogSchema(6, 74, $"P{controller} Stick Horizontal")
 					{
-						SecondaryNames = new[] { $"P{controller} Stick Vertical" },
+						SecondaryName = $"P{controller} Stick Vertical",
 						AxisRange = axisRanges[0],
 						SecondaryAxisRange = axisRanges[1]
 					},
@@ -139,7 +139,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisplayName = "Mouse",
 				Size = new Size(375, 320),
-				Buttons = new[]
+				Buttons = new PadSchemaControl[]
 				{
 					new TargetedPairSchema(14, 17, $"P{controller} X")
 					{
@@ -168,7 +168,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisplayName = "Wheel",
 				Size = new Size(325, 100),
-				Buttons = new[]
+				Buttons = new PadSchemaControl[]
 				{
 					new SingleAxisSchema(8, 12, controller, "Wheel")
 					{
@@ -196,7 +196,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisplayName = "Mission",
 				Size = new Size(445, 230),
-				Buttons = new[]
+				Buttons = new PadSchemaControl[]
 				{
 					new ButtonSchema(45, 15, controller, "Start"),
 					new ButtonSchema(5, 58, controller, "L"),
@@ -209,16 +209,15 @@ namespace BizHawk.Client.EmuHawk
 					new ButtonSchema(80, 70, controller, "C"),
 					new AnalogSchema(185, 13, $"P{controller} Stick Horizontal")
 					{
-						SecondaryNames = new[] { $"P{controller} Stick Vertical" },
+						SecondaryName = $"P{controller} Stick Vertical",
 						AxisRange = axisRanges[0],
 						SecondaryAxisRange = axisRanges[1]
 					},
-					new SingleAxisSchema(135, 13, controller, "Throttle")
+					new SingleAxisSchema(135, 13, controller, "Throttle", isVertical: true)
 					{
 						TargetSize = new Size(64, 178),
 						MinValue = 0,
-						MaxValue = 255,
-						Orientation = Orientation.Vertical
+						MaxValue = 255
 					}
 				}
 			};
@@ -231,35 +230,33 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisplayName = "Dual Mission",
 				Size = new Size(680, 230),
-				Buttons = new ButtonSchema[]
+				Buttons = new PadSchemaControl[]
 				{
 					new AnalogSchema(58, 13, $"P{controller} Left Stick Horizontal")
 					{
-						SecondaryNames = new[] { $"P{controller} Left Stick Vertical" },
+						SecondaryName = $"P{controller} Left Stick Vertical",
 						AxisRange = axisRanges[3],
 						SecondaryAxisRange = axisRanges[4]
 					},
-					new SingleAxisSchema(8, 13, controller, "Left Throttle")
+					new SingleAxisSchema(8, 13, controller, "Left Throttle", isVertical: true)
 					{
 						DisplayName = "Throttle",
 						TargetSize = new Size(64, 178),
 						MinValue = 0,
-						MaxValue = 255,
-						Orientation = Orientation.Vertical
+						MaxValue = 255
 					},
 					new AnalogSchema(400, 13, $"P{controller} Right Stick Horizontal")
 					{
-						SecondaryNames = new[] { $"P{controller} Right Stick Vertical" },
+						SecondaryName = $"P{controller} Right Stick Vertical",
 						AxisRange = axisRanges[0],
 						SecondaryAxisRange = axisRanges[1]
 					},
-					new SingleAxisSchema(350, 13, controller, "Right Throttle")
+					new SingleAxisSchema(350, 13, controller, "Right Throttle", isVertical: true)
 					{
 						DisplayName = "Throttle",
 						TargetSize = new Size(64, 178),
 						MinValue = 0,
-						MaxValue = 255,
-						Orientation = Orientation.Vertical
+						MaxValue = 255
 					}
 				}
 			};

@@ -7,7 +7,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public Size Size { get; set; }
 		public bool IsConsole { get; protected set; }
-		public IEnumerable<ButtonSchema> Buttons { get; set; } = new List<ButtonSchema>();
+		public IEnumerable<PadSchemaControl> Buttons { get; set; } = new List<PadSchemaControl>();
 		public string DisplayName { get; set; } // The name of the pad itself, presumably will be displayed by the given pad time if supplied
 	}
 

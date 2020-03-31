@@ -48,6 +48,28 @@ namespace BizHawk.Client.EmuHawk
 
 		private void VirtualPadControl_Load(object sender, EventArgs e)
 		{
+			static VirtualPadButton GenVirtualPadButton(ButtonSchema button)
+			{
+				var buttonControl = new VirtualPadButton
+				{
+					Name = button.Name,
+					Text = button.Icon != null
+						? null
+						: string.IsNullOrWhiteSpace(button.DisplayName)
+							? button.Name
+							: button.DisplayName,
+					Location = UIHelper.Scale(button.Location),
+					Image = button.Icon
+				};
+				if (button.Icon != null && UIHelper.AutoScaleFactorX > 1F && UIHelper.AutoScaleFactorY > 1F)
+				{
+					// When scaling up, unfortunately the icon will look too small, but at least we can make the rest of the button bigger
+					buttonControl.AutoSize = false;
+					buttonControl.Size = UIHelper.Scale(button.Icon.Size) + new Size(6, 6);
+				}
+				return buttonControl;
+			}
+
 			Size = UIHelper.Scale(_schema.Size);
 			MaximumSize = UIHelper.Scale(_schema.Size);
 			PadBox.Text = _schema.DisplayName;
@@ -57,75 +79,48 @@ namespace BizHawk.Client.EmuHawk
 				this.PadBox.ForeColor = SystemColors.HotTrack;
 			}
 
-			foreach (var button in _schema.Buttons)
+			foreach (var controlSchema in _schema.Buttons)
 			{
-				switch (button.Type)
+				PadBox.Controls.Add(controlSchema switch
 				{
-					case PadInputType.Boolean:
-						var buttonControl = new VirtualPadButton
-						{
-							Name = button.Name,
-							Text = button.Icon != null
-								? null
-								: string.IsNullOrWhiteSpace(button.DisplayName)
-									? button.Name
-									: button.DisplayName,
-							Location = UIHelper.Scale(button.Location),
-							Image = button.Icon
-						};
-						if (button.Icon != null && UIHelper.AutoScaleFactorX > 1F && UIHelper.AutoScaleFactorY > 1F)
-						{
-							// When scaling up, unfortunately the icon will look too small, but at least we can make the rest of the button bigger
-							buttonControl.AutoSize = false;
-							buttonControl.Size = UIHelper.Scale(button.Icon.Size) + new Size(6, 6);
-						}
-						PadBox.Controls.Add(buttonControl);
-						break;
-					case PadInputType.AnalogStick:
-						PadBox.Controls.Add(new VirtualPadAnalogStick
-						{
-							Name = button.Name,
-							SecondaryName = (button.SecondaryNames != null && button.SecondaryNames.Any()) ? button.SecondaryNames[0] : "",
-							Location = UIHelper.Scale(button.Location),
-							Size = UIHelper.Scale(new Size(180 + 79, 200 + 9)),
-							RangeX = button.AxisRange ?? throw new Exception(),
-							RangeY = button.SecondaryAxisRange ?? throw new Exception()
-						});
-						break;
-					case PadInputType.TargetedPair:
-						PadBox.Controls.Add(new VirtualPadTargetScreen
-						{
-							Name = button.Name,
-							Location = UIHelper.Scale(button.Location),
-							TargetSize = button.TargetSize,
-							XName = button.Name,
-							YName = button.SecondaryNames[0],
-							RangeX = button.MaxValue,
-							RangeY = button.MaxValue // TODO: ability to have a different Y than X
-						});
-						break;
-					case PadInputType.SingleAxis:
-						PadBox.Controls.Add(new VirtualPadAnalogButton
-						{
-							Name = button.Name,
-							DisplayName = button.DisplayName,
-							Location = UIHelper.Scale(button.Location),
-							Size = UIHelper.Scale(button.TargetSize),
-							MinValue = button.MinValue,
-							MaxValue = button.MaxValue,
-							Orientation = button.Orientation
-						});
-						break;
-					case PadInputType.DiscManager:
-						PadBox.Controls.Add(new VirtualPadDiscManager(button.SecondaryNames)
-						{
-							Name = button.Name,
-							Location = UIHelper.Scale(button.Location),
-							Size = UIHelper.Scale(button.TargetSize),
-							OwnerEmulator = button.OwnerEmulator
-						});
-						break;
-				}
+					ButtonSchema button => GenVirtualPadButton(button),
+					SingleAxisSchema singleAxis => new VirtualPadAnalogButton
+					{
+						Name = singleAxis.Name,
+						DisplayName = singleAxis.DisplayName,
+						Location = UIHelper.Scale(singleAxis.Location),
+						Size = UIHelper.Scale(singleAxis.TargetSize),
+						MinValue = singleAxis.MinValue,
+						MaxValue = singleAxis.MaxValue,
+						Orientation = singleAxis.Orientation
+					},
+					AnalogSchema analog => new VirtualPadAnalogStick
+					{
+						Name = analog.Name,
+						SecondaryName = analog.SecondaryName,
+						Location = UIHelper.Scale(analog.Location),
+						Size = UIHelper.Scale(new Size(180 + 79, 200 + 9)),
+						RangeX = analog.AxisRange,
+						RangeY = analog.SecondaryAxisRange
+					},
+					TargetedPairSchema targetedPair => new VirtualPadTargetScreen
+					{
+						Name = targetedPair.Name,
+						Location = UIHelper.Scale(targetedPair.Location),
+						TargetSize = targetedPair.TargetSize,
+						XName = targetedPair.Name,
+						YName = targetedPair.SecondaryName,
+						RangeX = targetedPair.MaxValue,
+						RangeY = targetedPair.MaxValue //TODO split into MaxX and MaxY, and rename VirtualPadTargetScreen.RangeX/RangeY
+					},
+					DiscManagerSchema discManager => new VirtualPadDiscManager(discManager.SecondaryNames) {
+						Name = discManager.Name,
+						Location = UIHelper.Scale(discManager.Location),
+						Size = UIHelper.Scale(discManager.TargetSize),
+						OwnerEmulator = discManager.OwnerEmulator
+					},
+					_ => throw new InvalidOperationException()
+				});
 			}
 		}
 

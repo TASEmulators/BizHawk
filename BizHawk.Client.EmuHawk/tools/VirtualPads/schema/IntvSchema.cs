@@ -75,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisplayName = $"Player {controller}",
 				Size = new Size(280, 332),
-				Buttons = StandardButtons(controller).Concat(new[]
+				Buttons = StandardButtons(controller).Concat(new PadSchemaControl[]
 				{
 					new AnalogSchema(1, 121, $"P{controller} Disc X")
 					{

@@ -41,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
-		private static ButtonSchema Tilt(int x, int y, string direction)
+		private static SingleAxisSchema Tilt(int x, int y, string direction)
 			=> new SingleAxisSchema(x, y, "Tilt " + direction)
 			{
 				TargetSize = new Size(226, 69),

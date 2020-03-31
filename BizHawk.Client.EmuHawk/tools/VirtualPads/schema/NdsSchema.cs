@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk.tools.VirtualPads.schema
 			return new PadSchema
 			{
 				Size = new Size(440, 260),
-				Buttons = new []
+				Buttons = new PadSchemaControl[]
 				{
 					ButtonSchema.Up(14, 79),
 					ButtonSchema.Down(14, 122),

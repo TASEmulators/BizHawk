@@ -28,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				Size = new Size(275, 316),
-				Buttons = new[]
+				Buttons = new PadSchemaControl[]
 				{
 					ButtonSchema.Up(24, 230, $"P{controller} DPad U"),
 					ButtonSchema.Down(24, 251, $"P{controller} DPad D"),

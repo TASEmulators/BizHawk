@@ -10,7 +10,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class VirtualPadDiscManager : UserControl, IVirtualPadControl
 	{
-		public VirtualPadDiscManager(string[] buttonNames)
+		public VirtualPadDiscManager(IReadOnlyList<string> buttonNames)
 		{
 			InitializeComponent();
 			btnOpen.Name = buttonNames[0];

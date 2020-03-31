@@ -79,25 +79,35 @@ namespace BizHawk.Client.EmuHawk
 				.FirstOrDefault(t => t.GetCustomAttributes(false)
 					.OfType<SchemaAttribute>()
 					.First().SystemId == Emulator.SystemId);
-			
-			if (schemaType != null)
+
+			if (schemaType == null) return;
+
+			var padSchemata = ((IVirtualPadSchema) Activator.CreateInstance(schemaType))
+				.GetPadSchemas(Emulator)
+				.ToList();
+
+			if (VersionInfo.DeveloperBuild)
 			{
-				var padSchemas = ((IVirtualPadSchema)Activator.CreateInstance(schemaType))
-					.GetPadSchemas(Emulator)
-					.ToList();
-
-				if (VersionInfo.DeveloperBuild)
+				var buttonControls = Emulator.ControllerDefinition.BoolButtons;
+				var axisControls = Emulator.ControllerDefinition.AxisControls;
+				foreach (var schema in padSchemata) foreach (var controlSchema in schema.Buttons)
 				{
-					CheckPads(padSchemas, Emulator.ControllerDefinition);
-				}
-
-				var pads = padSchemas.Select(s => new VirtualPad(s));
-
-				if (pads.Any())
-				{
-					ControllerPanel.Controls.AddRange(pads.Reverse().ToArray());
+					Predicate<string> searchSetContains = controlSchema switch
+					{
+						ButtonSchema _ => buttonControls.Contains,
+						DiscManagerSchema _ => s => buttonControls.Contains(s) || axisControls.Contains(s),
+						_ => axisControls.Contains
+					};
+					if (!searchSetContains(controlSchema.Name))
+					{
+						MessageBox.Show(this,
+							$"Schema warning: Schema entry '{schema.DisplayName}':'{controlSchema.Name}' will not correspond to any control in definition '{Emulator.ControllerDefinition.Name}'",
+							"Dev Warning");
+					}
 				}
 			}
+
+			ControllerPanel.Controls.AddRange(padSchemata.Select(s => (Control) new VirtualPad(s)).Reverse().ToArray());
 		}
 
 		public void ScrollToPadSchema(string padSchemaName)
@@ -113,42 +123,6 @@ namespace BizHawk.Client.EmuHawk
 				if (vp.PadSchemaDisplayName == padSchemaName)
 				{
 					ControllerPanel.ScrollControlIntoView(vp);
-				}
-			}
-		}
-
-		private void CheckPads(IEnumerable<PadSchema> schemas, ControllerDefinition def)
-		{
-			var analogs = new HashSet<string>(def.AxisControls);
-			var bools = new HashSet<string>(def.BoolButtons);
-
-			foreach (var schema in schemas)
-			{
-				foreach (var button in schema.Buttons)
-				{
-					var searchSet = new HashSet<string>();
-					switch (button.Type)
-					{
-						case PadInputType.AnalogStick:
-						case PadInputType.SingleAxis:
-						case PadInputType.TargetedPair:
-							// analog
-							searchSet = analogs;
-							break;
-						case PadInputType.Boolean:
-							searchSet = bools;
-							break;
-						case PadInputType.DiscManager:
-							searchSet = bools;
-							searchSet.UnionWith(analogs);
-							break;
-					}
-					if (!searchSet.Contains(button.Name))
-					{
-						MessageBox.Show(this,
-							$"Schema warning: Schema entry '{schema.DisplayName}':'{button.Name}' will not correspond to any control in definition '{def.Name}'",
-							"Dev Warning");
-					}
 				}
 			}
 		}

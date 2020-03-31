@@ -66,7 +66,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisplayName = $"Player {controller}",
 				Size = new Size(334, 94),
-				Buttons = new[]
+				Buttons = new PadSchemaControl[]
 				{
 					new ButtonSchema(5, 24, controller, "Button 1")
 					{
@@ -117,7 +117,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisplayName = $"Player {controller}",
 				Size = new Size(334, 94),
-				Buttons = new[]
+				Buttons = new PadSchemaControl[]
 				{
 					new ButtonSchema(5, 24, controller, "Button")
 					{

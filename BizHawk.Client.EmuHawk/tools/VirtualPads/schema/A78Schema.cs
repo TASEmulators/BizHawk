@@ -95,7 +95,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisplayName = "Light Gun",
 				Size = new Size(356, 290),
-				Buttons = new[]
+				Buttons = new PadSchemaControl[]
 				{
 					new TargetedPairSchema(14, 17, $"P{controller} X")
 					{

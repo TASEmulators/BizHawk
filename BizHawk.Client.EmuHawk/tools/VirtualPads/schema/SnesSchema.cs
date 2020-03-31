@@ -137,7 +137,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				Size = new Size(345, 225),
-				Buttons = new[]
+				Buttons = new PadSchemaControl[]
 				{
 					new AnalogSchema(6, 14, $"P{controller} Mouse X")
 					{
@@ -162,7 +162,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisplayName = "Super Scope",
 				Size = new Size(356, 290),
-				Buttons = new[]
+				Buttons = new PadSchemaControl[]
 				{
 					new TargetedPairSchema(14, 17, $"P{controller} Scope X")
 					{
@@ -182,7 +182,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisplayName = "Justifier",
 				Size = new Size(356, 290),
-				Buttons = new[]
+				Buttons = new PadSchemaControl[]
 				{
 					new TargetedPairSchema(14, 17, $"P{controller} Justifier X")
 					{
