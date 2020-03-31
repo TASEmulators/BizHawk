@@ -38,7 +38,7 @@ namespace GBHawk
 		uint8_t* cpu_LY = nullptr;
 		uint8_t* REG_FFFF = nullptr;
 		uint8_t* REG_FF0F = nullptr;
-		uint8_t* _scanlineCallbackLine = nullptr;
+		int32_t* _scanlineCallbackLine = nullptr;
 		uint8_t* OAM = nullptr;
 		uint8_t* VRAM = nullptr;
 		uint32_t* VRAM_Bank = nullptr;
@@ -3487,6 +3487,8 @@ namespace GBHawk
 					VRAM_access_write = true;
 					OAM_access_read = true;
 					OAM_access_write = true;
+
+					clear_screen = true;
 				}
 
 				if (!((LCDC & 0x80) > 0) && ((value & 0x80) > 0))
@@ -4328,7 +4330,7 @@ namespace GBHawk
 					if ((internal_cycle % 2) == 1)
 					{
 						// calculate the row number of the tiles to be fetched
-						y_tile = ((uint32_t)floor((float)((uint32_t)scroll_y + LY) / 8.0)) % 32;
+						y_tile = ((uint32_t)floor(((float)scroll_y + (float)LY) / (float)8.0)) % 32;
 
 						temp_fetch = y_tile * 32 + (x_tile + tile_inc) % 32;
 						tile_byte = VRAM[0x1800 + (((LCDC & 0x4) > 0) ? 1 : 0) * 0x400 + temp_fetch];

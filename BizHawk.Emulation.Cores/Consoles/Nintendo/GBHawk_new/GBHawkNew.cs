@@ -124,7 +124,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkNew
 		private GPUMemoryAreas _gpuMemory
 		{
 			get
-			{
+			{				
 				return new GPUMemoryAreas(iptr0, iptr1, iptr2, iptr3);
 			}
 		}
@@ -135,7 +135,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkNew
 
 		public void SetScanlineCallback(ScanlineCallback callback, int line)
 		{
-			if ((callback == null) || (line == -1) || (line == -2))
+			if ((callback == null) || (line == -2))
 			{
 				_scanlineCallback = null;
 				LibGBHawk.GB_setscanlinecallback(GB_Pntr, null, 0);
@@ -151,7 +151,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkNew
 
 			if (line == -2)
 			{
-				GetGPU();
 				callback(LibGBHawk.GB_get_LCDC(GB_Pntr));
 			}
 		}

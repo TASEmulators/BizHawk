@@ -28,6 +28,7 @@ namespace GBHawk
 		void WriteMemory(uint32_t addr, uint8_t value);
 		uint8_t Read_Registers(uint32_t addr);
 		void Write_Registers(uint32_t addr, uint8_t value);
+		void compute_palettes();
 
 		#pragma region Declarations
 
@@ -67,10 +68,10 @@ namespace GBHawk
 
 		uint8_t REG_FFFF, REG_FF0F, REG_FF0F_OLD;
 
-		uint8_t _scanlineCallbackLine;
+		int32_t _scanlineCallbackLine;
 		uint8_t input_register;
-		uint32_t RAM_Bank;
-		uint32_t VRAM_Bank;
+		uint32_t RAM_Bank = 0;
+		uint32_t VRAM_Bank = 0;
 		uint32_t IR_write;
 		uint32_t addr_access;
 		uint32_t Acc_X_state;
@@ -86,6 +87,10 @@ namespace GBHawk
 		uint32_t color_palette[4] = { 0xFFFFFFFF , 0xFFAAAAAA, 0xFF555555, 0xFF000000 };
 
 		const uint8_t GBA_override[13] = { 0xFF, 0x00, 0xCD, 0x03, 0x35, 0xAA, 0x31, 0x90, 0x94, 0x00, 0x00, 0x00, 0x00 };
+
+		// these two arrays are computed on calls from the GPU Viewer to get the GB palettes
+		uint32_t color_palette_BG[4] = {};
+		uint32_t color_palette_OBJ[8] = {};
 
 		#pragma endregion
 
@@ -206,8 +211,9 @@ namespace GBHawk
 			saver = byte_saver(REG_FFFF, saver);
 			saver = byte_saver(REG_FF0F, saver);
 			saver = byte_saver(REG_FF0F_OLD, saver);
-			saver = byte_saver(_scanlineCallbackLine, saver);
 			saver = byte_saver(input_register, saver);
+
+			saver = int_saver(_scanlineCallbackLine, saver);
 
 			saver = int_saver(RAM_Bank, saver);
 			saver = int_saver(VRAM_Bank, saver);
@@ -261,8 +267,9 @@ namespace GBHawk
 			loader = byte_loader(&REG_FFFF, loader);
 			loader = byte_loader(&REG_FF0F, loader);
 			loader = byte_loader(&REG_FF0F_OLD, loader);
-			loader = byte_loader(&_scanlineCallbackLine, loader);
 			loader = byte_loader(&input_register, loader);
+
+			loader = sint_loader(&_scanlineCallbackLine, loader);
 
 			loader = int_loader(&RAM_Bank, loader);
 			loader = int_loader(&VRAM_Bank, loader);

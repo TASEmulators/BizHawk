@@ -187,13 +187,12 @@ GBHawk_EXPORT uint8_t* GB_get_ppu_pntrs(GBCore* p, int sel) {
 	}
 	else 
 	{
-		// need to fix this for GB
 		switch (sel)
 		{
 		case 0: return p->MemMap.VRAM; break;
 		case 1: return p->MemMap.OAM; break;
-		case 2: return (uint8_t*)p->ppu->OBJ_palette; break;
-		case 3: return (uint8_t*)p->ppu->BG_palette; break;
+		case 2: return (uint8_t*)p->MemMap.color_palette_OBJ; break;
+		case 3: return (uint8_t*)p->MemMap.color_palette_BG; break;
 		}
 	}
 

@@ -766,9 +766,14 @@ namespace GBHawk
 		case 0xFF44:
 		case 0xFF45:
 		case 0xFF46:
+			ppu_pntr->WriteReg(addr, value);
+			break;
 		case 0xFF47:
 		case 0xFF48:
 		case 0xFF49:
+			ppu_pntr->WriteReg(addr, value);
+			compute_palettes();
+			break;
 		case 0xFF4A:
 		case 0xFF4B:
 			ppu_pntr->WriteReg(addr, value);
@@ -909,6 +914,16 @@ namespace GBHawk
 			//Console.Write(" ");
 			//Console.WriteLine(value);
 			break;
+		}
+	}
+
+	void MemoryManager::compute_palettes()
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			color_palette_OBJ[i] = color_palette[(ppu_pntr->obj_pal_0 >> (i * 2)) & 3];
+			color_palette_OBJ[i + 4] = color_palette[(ppu_pntr->obj_pal_1 >> (i * 2)) & 3];
+			color_palette_BG[i] = color_palette[(ppu_pntr->BGP >> (i * 2)) & 3];
 		}
 	}
 }

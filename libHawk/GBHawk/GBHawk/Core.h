@@ -201,6 +201,11 @@ namespace GBHawk
 
 					// send the image on VBlank
 					SendVideoBuffer();
+
+					if ((ppu->scanlineCallback) && (MemMap._scanlineCallbackLine == -1))
+					{
+						ppu->scanlineCallback();
+					}
 				}
 
 				MemMap.REG_FF0F_OLD = MemMap.REG_FF0F;
@@ -457,18 +462,23 @@ namespace GBHawk
 			{
 			case 1:
 				MemMap.Cart_RAM = new uint8_t[0x800];
+				MemMap.Cart_RAM_Length = 0x800;
 				break;
 			case 2:
 				MemMap.Cart_RAM = new uint8_t[0x2000];
+				MemMap.Cart_RAM_Length = 0x2000;
 				break;
 			case 3:
 				MemMap.Cart_RAM = new uint8_t[0x8000];
+				MemMap.Cart_RAM_Length = 0x8000;
 				break;
 			case 4:
 				MemMap.Cart_RAM = new uint8_t[0x20000];
+				MemMap.Cart_RAM_Length = 0x20000;
 				break;
 			case 5:
 				MemMap.Cart_RAM = new uint8_t[0x10000];
+				MemMap.Cart_RAM_Length = 0x10000;
 				break;
 			case 0:
 				MemMap.has_bat = false;
@@ -486,12 +496,14 @@ namespace GBHawk
 			if (mppr == "MBC2")
 			{
 				MemMap.Cart_RAM = new uint8_t[0x200];
+				MemMap.Cart_RAM_Length = 0x200;
 			}
 
 			// mbc7 has 256 bytes of RAM, regardless of any header info
 			if (mppr == "MBC7")
 			{
 				MemMap.Cart_RAM = new uint8_t[0x100];
+				MemMap.Cart_RAM_Length = 0x100;
 				MemMap.has_bat = true;
 			}
 
@@ -499,10 +511,9 @@ namespace GBHawk
 			if (mppr == "TAMA5")
 			{
 				MemMap.Cart_RAM = new uint8_t[0x20];
+				MemMap.Cart_RAM_Length = 0x20;
 				MemMap.has_bat = true;
 			}
-
-			MemMap.Cart_RAM_Length = sizeof(MemMap.Cart_RAM);
 
 			if (MemMap.Cart_RAM != nullptr && (mppr != "MBC7"))
 			{
