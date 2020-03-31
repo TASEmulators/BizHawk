@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 	/// <summary>A single on/off button</summary>
 	public sealed class ButtonSchema : PadSchemaControl
 	{
-		public string? DisplayName { get; set; }
+		public string DisplayName { get; set; }
 
 		public Bitmap? Icon { get; set; }
 
@@ -34,7 +34,8 @@ namespace BizHawk.Client.EmuHawk
 			=> DisplayName = name;
 
 		public ButtonSchema(int x, int y, int controller, string name)
-			: base(new Point(x, y), $"P{controller} {name}") {}
+			: base(new Point(x, y), $"P{controller} {name}")
+			=> DisplayName = name;
 
 		public static ButtonSchema Up(int x, int y, string? name = null)
 			=> new ButtonSchema(x, y, name ?? "Up") { Icon = Resources.BlueUp };

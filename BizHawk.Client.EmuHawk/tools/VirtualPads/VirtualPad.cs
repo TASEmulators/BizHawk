@@ -53,11 +53,7 @@ namespace BizHawk.Client.EmuHawk
 				var buttonControl = new VirtualPadButton
 				{
 					Name = button.Name,
-					Text = button.Icon != null
-						? null
-						: string.IsNullOrWhiteSpace(button.DisplayName)
-							? button.Name
-							: button.DisplayName,
+					Text = button.Icon != null ? null : button.DisplayName,
 					Location = UIHelper.Scale(button.Location),
 					Image = button.Icon
 				};
