@@ -40,7 +40,7 @@ __Types and notation__
 ** A standard Lua table
 ");
 
-			foreach (var library in this.Select(lf => new { Name = lf.Library, Description = lf.LibraryDescription }).Distinct())
+			foreach (var library in this.Where(lf => !lf.IsDeprecated).Select(lf => new { Name = lf.Library, Description = lf.LibraryDescription }).Distinct())
 			{
 				sb
 					.AppendFormat("%%TAB {0}%%", library.Name)
@@ -166,12 +166,15 @@ __Types and notation__
 			_luaExampleAttribute = method.GetCustomAttribute<LuaMethodExampleAttribute>(false);
 			_method = method;
 
+			IsDeprecated = method.GetCustomAttribute<LuaDeprecatedMethodAttribute>(false) != null;
 			Library = library;
 			LibraryDescription = libraryDescription;
 		}
 
 		public string Library { get; }
 		public string LibraryDescription { get; }
+
+		public readonly bool IsDeprecated;
 
 		public MethodInfo Method => _method;
 

@@ -373,10 +373,12 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 #pragma warning disable CS0612
+		[LuaDeprecatedMethod]
 		[LuaMethodExample("local inclitra = client.transformPointX( 16 );")]
 		[LuaMethod("transformPointX", "Transforms an x-coordinate in emulator space to an x-coordinate in client space")]
 		public static int TransformPointX(int x) => ClientApi.TransformPointX(x);
 
+		[LuaDeprecatedMethod]
 		[LuaMethodExample("local inclitra = client.transformPointY( 32 );")]
 		[LuaMethod("transformPointY", "Transforms an y-coordinate in emulator space to an y-coordinate in client space")]
 		public static int TransformPointY(int y) => ClientApi.TransformPointY(y);

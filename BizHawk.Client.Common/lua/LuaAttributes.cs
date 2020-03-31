@@ -2,6 +2,9 @@
 
 namespace BizHawk.Client.Common
 {
+	[AttributeUsage(AttributeTargets.Method | AttributeTargets.Class)]
+	public sealed class LuaDeprecatedMethodAttribute : Attribute {}
+
 	[AttributeUsage(AttributeTargets.Method)]
 	public sealed class LuaMethodAttribute : Attribute
 	{
