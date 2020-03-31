@@ -11,15 +11,14 @@ namespace BizHawk.Client.EmuHawk
 {
 	public abstract class PadSchemaControl
 	{
-		public readonly Point Location;
-
-		public readonly string Name;
-
 		protected PadSchemaControl(Point location, string name)
 		{
 			Location = location;
 			Name = name;
 		}
+
+		public Point Location { get; }
+		public string Name { get; }
 	}
 
 	/// <summary>A single on/off button</summary>
