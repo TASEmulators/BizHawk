@@ -70,7 +70,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public int MinValue { get; set; }
 
-		public readonly Orientation Orientation;
+		public Orientation Orientation { get; }
 
 		public Size TargetSize { get; set; }
 
@@ -102,9 +102,9 @@ namespace BizHawk.Client.EmuHawk
 	/// <summary>An (X, Y) pair intended to be a screen coordinate (for zappers, mouse, stylus, etc.)</summary>
 	public sealed class TargetedPairSchema : PadSchemaControl
 	{
-		public readonly int MaxValue;
+		public int MaxValue { get; }
 
-		public readonly string SecondaryName;
+		public string SecondaryName { get; }
 
 		public Size TargetSize { get; set; }
 
@@ -118,11 +118,11 @@ namespace BizHawk.Client.EmuHawk
 
 	public sealed class DiscManagerSchema : PadSchemaControl
 	{
-		public readonly IEmulator OwnerEmulator;
+		public IEmulator OwnerEmulator { get; }
 
-		public readonly IReadOnlyList<string> SecondaryNames;
+		public IReadOnlyList<string> SecondaryNames { get; }
 
-		public readonly Size TargetSize;
+		public Size TargetSize { get; }
 
 		public DiscManagerSchema(int x, int y, Size targetSize, IEmulator owner, IReadOnlyList<string> secondaryNames)
 			: base(new Point(x, y), "Disc Select")
