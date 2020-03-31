@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkNew
 
 			_islag = true;
 
-			do_frame(controller);
+			_islag = do_frame(controller);
 
 			if (_islag)
 			{
@@ -68,11 +68,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkNew
 			return true;
 		}
 
-		public void do_frame(IController controller)
+		public bool do_frame(IController controller)
 		{
-			LibGBHawk.GB_frame_advance(GB_Pntr, _controllerDeck.ReadPort1(controller),
-												_controllerDeck.ReadAccX1(controller),
-												_controllerDeck.ReadAccY1(controller), true, true);
+			return LibGBHawk.GB_frame_advance(GB_Pntr, _controllerDeck.ReadPort1(controller),
+														_controllerDeck.ReadAccX1(controller),
+														_controllerDeck.ReadAccY1(controller), true, true);
 		}
 
 		public void do_single_step()

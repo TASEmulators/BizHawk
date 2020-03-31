@@ -231,6 +231,11 @@ namespace GBHawk
 			saver = int_array_saver(vidbuffer, saver, 160 * 144);
 			saver = int_array_saver(frame_buffer, saver, 160 * 144);
 
+			if (Cart_RAM_Length != 0) 
+			{
+				saver = byte_array_saver(Cart_RAM, saver, Cart_RAM_Length);
+			}
+
 			return saver;
 		}
 
@@ -286,6 +291,11 @@ namespace GBHawk
 
 			loader = int_array_loader(vidbuffer, loader, 160 * 144);
 			loader = int_array_loader(frame_buffer, loader, 160 * 144);
+
+			if (Cart_RAM_Length != 0)
+			{
+				loader = byte_array_loader(Cart_RAM, loader, Cart_RAM_Length);
+			}
 
 			return loader;
 		}

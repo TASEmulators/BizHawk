@@ -20,9 +20,6 @@ namespace GBHawk
 
 		MemoryManager* mem_ctrl;
 
-		// not stated
-		int temp_tile;
-
 		// pointers not stated
 		bool* FlagI = nullptr;
 		bool* in_vblank = nullptr;
@@ -183,52 +180,34 @@ namespace GBHawk
 
 		uint8_t HDMA_ctrl() { return (uint8_t)(((HDMA_active ? 0 : 1) << 7) | ((HDMA_length >> 4) - 1)); }
 
-		virtual uint8_t ReadReg(uint32_t addr)
+		virtual uint8_t ReadReg(uint32_t addr) { return 0; }
+
+		virtual void WriteReg(uint32_t addr, uint8_t value) { }
+
+		virtual void tick() { }
+
+		virtual void latch_delay() { }
+
+		virtual void render(uint32_t render_cycle) { }
+
+		virtual void process_sprite() { }
+
+		virtual void OAM_scan(uint32_t OAM_cycle) { }
+
+		virtual void Reset() { }
+
+		virtual void reorder_and_assemble_sprites() { }
+
+		uint8_t BG_PAL_read()
 		{
-			return 0;
-		}
-
-		virtual void WriteReg(uint32_t addr, uint8_t value)
-		{
-
-		}
-
-		virtual void tick()
-		{
-
-		}
-
-		// might be needed, not sure yet
-		virtual void latch_delay()
-		{
-
-		}
-
-		virtual void render(uint32_t render_cycle)
-		{
-
-		}
-
-		virtual void process_sprite()
-		{
-
-		}
-
-		virtual void OAM_scan(uint32_t OAM_cycle)
-		{
-
-		}
-
-		virtual void Reset()
-		{
-
-		}
-
-		// order sprites according to x coordinate
-		// note that for sprites of equal x coordinate, priority goes to first on the list
-		virtual void reorder_and_assemble_sprites()
-		{
-
+			if (VRAM_access_read)
+			{
+				return BG_bytes[BG_bytes_index];
+			}
+			else
+			{
+				return 0xFF;
+			}
 		}
 
 		void color_compute_BG()
@@ -887,7 +866,6 @@ namespace GBHawk
 					STAT &= 0xFC;
 
 					// also the LCD doesn't turn on right away
-
 					// also, the LCD does not enter mode 2 on scanline 0 when first turned on
 					no_scan = true;
 					cycle = 8;
@@ -1306,7 +1284,7 @@ namespace GBHawk
 					}
 
 					// based on sprite priority and pixel values, pick a final pixel color
-					_vidbuffer[LY * 160 + pixel_counter] = (uint32_t)color_palette[pixel];
+					_vidbuffer[LY * 160 + pixel_counter] = color_palette[pixel];
 
 					pixel_counter++;
 
@@ -1933,18 +1911,6 @@ namespace GBHawk
 			}
 
 			return ret;
-		}
-
-		uint8_t BG_PAL_read()
-		{
-			if (VRAM_access_read)
-			{
-				return BG_bytes[BG_bytes_index];
-			}
-			else
-			{
-				return 0xFF;
-			}
 		}
 
 		void WriteReg(uint32_t addr, uint8_t value)
@@ -2716,11 +2682,11 @@ namespace GBHawk
 					// based on sprite priority and pixel values, pick a final pixel color
 					if (use_sprite)
 					{
-						_vidbuffer[LY * 160 + pixel_counter] = (int)OBJ_palette[pal_num * 4 + s_pixel];
+						_vidbuffer[LY * 160 + pixel_counter] = OBJ_palette[pal_num * 4 + s_pixel];
 					}
 					else
 					{
-						_vidbuffer[LY * 160 + pixel_counter] = (int)BG_palette[pal_num * 4 + pixel];
+						_vidbuffer[LY * 160 + pixel_counter] = BG_palette[pal_num * 4 + pixel];
 					}
 
 					pixel_counter++;
@@ -3403,18 +3369,6 @@ namespace GBHawk
 			}
 
 			return ret;
-		}
-
-		uint8_t BG_PAL_read()
-		{
-			if (VRAM_access_read)
-			{
-				return BG_bytes[BG_bytes_index];
-			}
-			else
-			{
-				return 0xFF;
-			}
 		}
 
 		void WriteReg(uint32_t addr, uint8_t value)
@@ -4209,22 +4163,22 @@ namespace GBHawk
 					{
 						if (use_sprite)
 						{
-							_vidbuffer[LY * 160 + pixel_counter] = (uint32_t)OBJ_palette[pal_num * 4 + s_pixel];
+							_vidbuffer[LY * 160 + pixel_counter] = OBJ_palette[pal_num * 4 + s_pixel];
 						}
 						else
 						{
-							_vidbuffer[LY * 160 + pixel_counter] = (uint32_t)BG_palette[pal_num * 4 + pixel];
+							_vidbuffer[LY * 160 + pixel_counter] = BG_palette[pal_num * 4 + pixel];
 						}
 					}
 					else
 					{
 						if (use_sprite)
 						{
-							_vidbuffer[LY * 160 + pixel_counter] = (uint32_t)OBJ_palette[pal_num * 4 + pixel];
+							_vidbuffer[LY * 160 + pixel_counter] = OBJ_palette[pal_num * 4 + pixel];
 						}
 						else
 						{
-							_vidbuffer[LY * 160 + pixel_counter] = (uint32_t)BG_palette[pixel];
+							_vidbuffer[LY * 160 + pixel_counter] = BG_palette[pixel];
 						}
 					}
 
