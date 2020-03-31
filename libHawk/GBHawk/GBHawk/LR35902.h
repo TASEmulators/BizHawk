@@ -2156,7 +2156,7 @@ namespace GBHawk
 
 		#pragma region Operations
 
-		void Read_Func(uint32_t dest, uint32_t src_l, uint32_t src_h)
+		inline void Read_Func(uint32_t dest, uint32_t src_l, uint32_t src_h)
 		{
 			uint32_t addr = (uint32_t)(Regs[src_l] | (Regs[src_h]) << 8);
 			//if (CDLCallback != null)
@@ -2168,24 +2168,24 @@ namespace GBHawk
 		}
 
 		// special read for POP AF that always clears the lower 4 bits of F 
-		void Read_Func_F(uint32_t dest, uint32_t src_l, uint32_t src_h)
+		inline void Read_Func_F(uint32_t dest, uint32_t src_l, uint32_t src_h)
 		{
 			Regs[dest] = (ReadMemory((uint32_t)(Regs[src_l] | (Regs[src_h]) << 8)) & 0xF0);
 		}
 
-		void Write_Func(uint32_t dest_l, uint32_t dest_h, uint32_t src)
+		inline void Write_Func(uint32_t dest_l, uint32_t dest_h, uint32_t src)
 		{
 			uint32_t addr = (uint32_t)(Regs[dest_l] | (Regs[dest_h]) << 8);
 			//CDLCallback ? .Invoke(addr, eCDLogMemFlags.Write | eCDLogMemFlags.Data);
 			WriteMemory(addr, Regs[src]);
 		}
 
-		void TR_Func(uint32_t dest, uint32_t src)
+		inline void TR_Func(uint32_t dest, uint32_t src)
 		{
 			Regs[dest] = Regs[src];
 		}
 
-		void ADD16_Func(uint32_t dest_l, uint32_t dest_h, uint32_t src_l, uint32_t src_h)
+		inline void ADD16_Func(uint32_t dest_l, uint32_t dest_h, uint32_t src_l, uint32_t src_h)
 		{
 			Reg16_d = Regs[dest_l] | (Regs[dest_h] << 8);
 			Reg16_s = Regs[src_l] | (Regs[src_h] << 8);
@@ -2210,7 +2210,7 @@ namespace GBHawk
 			Regs[dest_h] = (uint8_t)ans_h;
 		}
 
-		void ADD8_Func(uint32_t dest, uint32_t src)
+		inline void ADD8_Func(uint32_t dest, uint32_t src)
 		{
 			Reg16_d = Regs[dest];
 			Reg16_d += Regs[src];
@@ -2231,7 +2231,7 @@ namespace GBHawk
 			Regs[dest] = (uint8_t)ans;
 		}
 
-		void SUB8_Func(uint32_t dest, uint32_t src)
+		inline void SUB8_Func(uint32_t dest, uint32_t src)
 		{
 			Reg16_d = Regs[dest];
 			Reg16_d -= Regs[src];
@@ -2251,29 +2251,29 @@ namespace GBHawk
 			Regs[dest] = (uint8_t)ans;
 		}
 
-		void BIT_Func(uint32_t bit, uint32_t src)
+		inline void BIT_Func(uint32_t bit, uint32_t src)
 		{
 			FlagZset(!((Regs[src] & (1 << bit)) > 0));
 			FlagHset(true);
 			FlagNset(false);
 		}
 
-		void SET_Func(uint32_t bit, uint32_t src)
+		inline void SET_Func(uint32_t bit, uint32_t src)
 		{
 			Regs[src] |= (uint8_t)(1 << bit);
 		}
 
-		void RES_Func(uint32_t bit, uint32_t src)
+		inline void RES_Func(uint32_t bit, uint32_t src)
 		{
 			Regs[src] &= (uint8_t)(0xFF - (1 << bit));
 		}
 
-		void ASGN_Func(uint32_t src, uint32_t val)
+		inline void ASGN_Func(uint32_t src, uint32_t val)
 		{
 			Regs[src] = (uint8_t)val;
 		}
 
-		void SWAP_Func(uint32_t src)
+		inline void SWAP_Func(uint32_t src)
 		{
 			temp = (uint32_t)((Regs[src] << 4) & 0xF0);
 			Regs[src] = (uint8_t)(temp | (Regs[src] >> 4));
@@ -2284,7 +2284,7 @@ namespace GBHawk
 			FlagCset(false);
 		}
 
-		void SLA_Func(uint32_t src)
+		inline void SLA_Func(uint32_t src)
 		{
 			FlagCset((Regs[src] & 0x80) > 0);
 
@@ -2295,7 +2295,7 @@ namespace GBHawk
 			FlagNset(false);
 		}
 
-		void SRA_Func(uint32_t src)
+		inline void SRA_Func(uint32_t src)
 		{
 			FlagCset((Regs[src] & 1) > 0);
 
@@ -2308,7 +2308,7 @@ namespace GBHawk
 			FlagNset(false);
 		}
 
-		void SRL_Func(uint32_t src)
+		inline void SRL_Func(uint32_t src)
 		{
 			FlagCset((Regs[src] & 1) > 0);
 
@@ -2319,7 +2319,7 @@ namespace GBHawk
 			FlagNset(false);
 		}
 
-		void CPL_Func(uint32_t src)
+		inline void CPL_Func(uint32_t src)
 		{
 			Regs[src] = (uint8_t)((~Regs[src]) & 0xFF);
 
@@ -2327,21 +2327,21 @@ namespace GBHawk
 			FlagNset(true);
 		}
 
-		void CCF_Func(uint32_t src)
+		inline void CCF_Func(uint32_t src)
 		{
 			FlagCset(!FlagCget());
 			FlagHset(false);
 			FlagNset(false);
 		}
 
-		void SCF_Func(uint32_t src)
+		inline void SCF_Func(uint32_t src)
 		{
 			FlagCset(true);
 			FlagHset(false);
 			FlagNset(false);
 		}
 
-		void AND8_Func(uint32_t dest, uint32_t src)
+		inline void AND8_Func(uint32_t dest, uint32_t src)
 		{
 			Regs[dest] = (uint8_t)(Regs[dest] & Regs[src]);
 
@@ -2351,7 +2351,7 @@ namespace GBHawk
 			FlagNset(false);
 		}
 
-		void OR8_Func(uint32_t dest, uint32_t src)
+		inline void OR8_Func(uint32_t dest, uint32_t src)
 		{
 			Regs[dest] = (uint8_t)(Regs[dest] | Regs[src]);
 
@@ -2361,7 +2361,7 @@ namespace GBHawk
 			FlagNset(false);
 		}
 
-		void XOR8_Func(uint32_t dest, uint32_t src)
+		inline void XOR8_Func(uint32_t dest, uint32_t src)
 		{
 			Regs[dest] = (uint8_t)(Regs[dest] ^ Regs[src]);
 
@@ -2371,7 +2371,7 @@ namespace GBHawk
 			FlagNset(false);
 		}
 
-		void CP8_Func(uint32_t dest, uint32_t src)
+		inline void CP8_Func(uint32_t dest, uint32_t src)
 		{
 			Reg16_d = Regs[dest];
 			Reg16_d -= Regs[src];
@@ -2388,7 +2388,7 @@ namespace GBHawk
 			FlagNset(true);
 		}
 
-		void RRC_Func(uint32_t src)
+		inline void RRC_Func(uint32_t src)
 		{
 			imm = src == Aim;
 			if (imm) { src = A; }
@@ -2402,7 +2402,7 @@ namespace GBHawk
 			FlagNset(false);
 		}
 
-		void RR_Func(uint32_t src)
+		inline void RR_Func(uint32_t src)
 		{
 			imm = src == Aim;
 			if (imm) { src = A; }
@@ -2418,7 +2418,7 @@ namespace GBHawk
 			FlagNset(false);
 		}
 
-		void RLC_Func(uint32_t src)
+		inline void RLC_Func(uint32_t src)
 		{
 			imm = src == Aim;
 			if (imm) { src = A; }
@@ -2433,7 +2433,7 @@ namespace GBHawk
 			FlagNset(false);
 		}
 
-		void RL_Func(uint32_t src)
+		inline void RL_Func(uint32_t src)
 		{
 			imm = src == Aim;
 			if (imm) { src = A; }
@@ -2448,7 +2448,7 @@ namespace GBHawk
 			FlagNset(false);
 		}
 
-		void INC8_Func(uint32_t src)
+		inline void INC8_Func(uint32_t src)
 		{
 			Reg16_d = Regs[src];
 			Reg16_d += 1;
@@ -2467,7 +2467,7 @@ namespace GBHawk
 			Regs[src] = (uint8_t)ans;
 		}
 
-		void DEC8_Func(uint32_t src)
+		inline void DEC8_Func(uint32_t src)
 		{
 			Reg16_d = Regs[src];
 			Reg16_d -= 1;
@@ -2486,7 +2486,7 @@ namespace GBHawk
 			Regs[src] = (uint8_t)ans;
 		}
 
-		void INC16_Func(uint32_t src_l, uint32_t src_h)
+		inline void INC16_Func(uint32_t src_l, uint32_t src_h)
 		{
 			Reg16_d = Regs[src_l] | (Regs[src_h] << 8);
 
@@ -2496,7 +2496,7 @@ namespace GBHawk
 			Regs[src_h] = (uint8_t)((Reg16_d & 0xFF00) >> 8);
 		}
 
-		void DEC16_Func(uint32_t src_l, uint32_t src_h)
+		inline void DEC16_Func(uint32_t src_l, uint32_t src_h)
 		{
 			Reg16_d = Regs[src_l] | (Regs[src_h] << 8);
 
@@ -2506,7 +2506,7 @@ namespace GBHawk
 			Regs[src_h] = (uint8_t)((Reg16_d & 0xFF00) >> 8);
 		}
 
-		void ADC8_Func(uint32_t dest, uint32_t src)
+		inline void ADC8_Func(uint32_t dest, uint32_t src)
 		{
 			Reg16_d = Regs[dest];
 			c = FlagCget() ? 1 : 0;
@@ -2528,7 +2528,7 @@ namespace GBHawk
 			Regs[dest] = (uint8_t)ans;
 		}
 
-		void SBC8_Func(uint32_t dest, uint32_t src)
+		inline void SBC8_Func(uint32_t dest, uint32_t src)
 		{
 			Reg16_d = Regs[dest];
 			c = FlagCget() ? 1 : 0;
@@ -2551,7 +2551,7 @@ namespace GBHawk
 		}
 
 		// DA code courtesy of AWJ: http://forums.nesdev.com/viewtopic.php?f=20&t=15944
-		void DA_Func(uint32_t src)
+		inline void DA_Func(uint32_t src)
 		{
 			a_d = (uint8_t)Regs[src];
 
@@ -2575,7 +2575,7 @@ namespace GBHawk
 		}
 
 		// used for signed operations
-		void ADDS_Func(uint32_t dest_l, uint32_t dest_h, uint32_t src_l, uint32_t src_h)
+		inline void ADDS_Func(uint32_t dest_l, uint32_t dest_h, uint32_t src_l, uint32_t src_h)
 		{
 			Reg16_d = Regs[dest_l];
 			Reg16_s = Regs[src_l];

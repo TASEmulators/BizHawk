@@ -1,8 +1,3 @@
-#include <iostream>
-#include <cstdint>
-#include <iomanip>
-#include <string>
-
 using namespace std;
 
 namespace GBHawk
@@ -219,13 +214,6 @@ namespace GBHawk
 
 		}
 
-		// normal DMA moves twice as fast in double speed mode on GBC
-		// So give it it's own function so we can seperate it from PPU tick
-		virtual void DMA_tick()
-		{
-
-		}
-
 		virtual void OAM_scan(uint32_t OAM_cycle)
 		{
 
@@ -243,14 +231,95 @@ namespace GBHawk
 
 		}
 
-		virtual void color_compute_BG()
+		void color_compute_BG()
 		{
+			uint32_t R;
+			uint32_t G;
+			uint32_t B;
 
+			if ((BG_bytes_index % 2) == 0)
+			{
+				R = (uint32_t)(BG_bytes[BG_bytes_index] & 0x1F);
+				G = (uint32_t)(((BG_bytes[BG_bytes_index] & 0xE0) | ((BG_bytes[BG_bytes_index + 1] & 0x03) << 8)) >> 5);
+				B = (uint32_t)((BG_bytes[BG_bytes_index + 1] & 0x7C) >> 2);
+			}
+			else
+			{
+				R = (uint32_t)(BG_bytes[BG_bytes_index - 1] & 0x1F);
+				G = (uint32_t)(((BG_bytes[BG_bytes_index - 1] & 0xE0) | ((BG_bytes[BG_bytes_index] & 0x03) << 8)) >> 5);
+				B = (uint32_t)((BG_bytes[BG_bytes_index] & 0x7C) >> 2);
+			}
+
+			uint32_t retR = ((R * 13 + G * 2 + B) >> 1) & 0xFF;
+			uint32_t retG = ((G * 3 + B) << 1) & 0xFF;
+			uint32_t retB = ((R * 3 + G * 2 + B * 11) >> 1) & 0xFF;
+
+			BG_palette[BG_bytes_index >> 1] = (uint32_t)(0xFF000000 | (retR << 16) | (retG << 8) | retB);
 		}
 
 		void color_compute_OBJ()
 		{
+			uint32_t R;
+			uint32_t G;
+			uint32_t B;
 
+			if ((OBJ_bytes_index % 2) == 0)
+			{
+				R = (uint32_t)(OBJ_bytes[OBJ_bytes_index] & 0x1F);
+				G = (uint32_t)(((OBJ_bytes[OBJ_bytes_index] & 0xE0) | ((OBJ_bytes[OBJ_bytes_index + 1] & 0x03) << 8)) >> 5);
+				B = (uint32_t)((OBJ_bytes[OBJ_bytes_index + 1] & 0x7C) >> 2);
+			}
+			else
+			{
+				R = (uint32_t)(OBJ_bytes[OBJ_bytes_index - 1] & 0x1F);
+				G = (uint32_t)(((OBJ_bytes[OBJ_bytes_index - 1] & 0xE0) | ((OBJ_bytes[OBJ_bytes_index] & 0x03) << 8)) >> 5);
+				B = (uint32_t)((OBJ_bytes[OBJ_bytes_index] & 0x7C) >> 2);
+			}
+
+			uint32_t retR = ((R * 13 + G * 2 + B) >> 1) & 0xFF;
+			uint32_t retG = ((G * 3 + B) << 1) & 0xFF;
+			uint32_t retB = ((R * 3 + G * 2 + B * 11) >> 1) & 0xFF;
+
+			OBJ_palette[OBJ_bytes_index >> 1] = (uint32_t)(0xFF000000 | (retR << 16) | (retG << 8) | retB);
+		}
+
+		// normal DMA moves twice as fast in double speed mode on GBC
+		// So give it it's own function so we can seperate it from PPU tick
+		void DMA_tick()
+		{
+			// Note that DMA is halted when the CPU is halted
+			if (DMA_start && !cpu_halted[0])
+			{
+				if (DMA_clock >= 4)
+				{
+					DMA_OAM_access = false;
+					if ((DMA_clock % 4) == 1)
+					{
+						// the cpu can't access memory during this time, but we still need the ppu to be able to.
+						DMA_start = false;
+						// Gekkio reports that A14 being high on DMA transfers always represent WRAM accesses
+						// So transfers nominally from higher memory areas are actually still from there (i.e. FF -> DF)
+						uint8_t DMA_actual = DMA_addr;
+						if (DMA_addr > 0xDF) { DMA_actual &= 0xDF; }
+						DMA_byte = ReadMemory(((uint32_t)(DMA_actual << 8) + DMA_inc));
+						DMA_start = true;
+					}
+					else if ((DMA_clock % 4) == 3)
+					{
+						OAM[DMA_inc] = DMA_byte;
+
+						if (DMA_inc < (0xA0 - 1)) { DMA_inc++; }
+					}
+				}
+
+				DMA_clock++;
+
+				if (DMA_clock == 648)
+				{
+					DMA_start = false;
+					DMA_OAM_access = true;
+				}
+			}
 		}
 
 		#pragma endregion
@@ -924,7 +993,7 @@ namespace GBHawk
 									// x-scroll is expected to be latched one cycle later 
 									// this is fine since nothing has started in the rendering until the second cycle
 									// calculate the column number of the tile to start with
-									x_tile = (uint32_t)floor((float)(scroll_x) / 8.0);
+									x_tile = (uint32_t)(scroll_x >> 3);
 									render_offset = scroll_x % 8;
 								}
 
@@ -986,7 +1055,7 @@ namespace GBHawk
 								// x-scroll is expected to be latched one cycle later 
 								// this is fine since nothing has started in the rendering until the second cycle
 								// calculate the column number of the tile to start with
-								x_tile = (uint32_t)floor((float)(scroll_x) / 8.0);
+								x_tile = (uint32_t)(scroll_x >> 3);
 								render_offset = scroll_x % 8;
 							}
 
@@ -1162,7 +1231,8 @@ namespace GBHawk
 				window_counter = 0;
 				render_counter = 0;
 
-				window_x_tile = (uint32_t)floor((float)(pixel_counter - (window_x_latch - 7)) / 8.0);
+				// NOTE: pixel counter is >= window_x_latch - 7 here, so subtraction will result in a positive number
+				window_x_tile = (uint32_t)((pixel_counter - ((int32_t)window_x_latch - 7)) >> 3);
 
 				window_tile_inc = 0;
 				window_started = true;
@@ -1281,7 +1351,7 @@ namespace GBHawk
 					if ((internal_cycle % 2) == 1)
 					{
 						// calculate the row number of the tiles to be fetched
-						y_tile = ((uint32_t)floor(((float)((float)scroll_y + (float)LY)) / (float)8.0)) % 32;
+						y_tile = ((uint32_t)((uint32_t)scroll_y + (uint32_t)LY) >> 3) % 32;
 
 						temp_fetch = y_tile * 32 + (x_tile + tile_inc) % 32;
 						tile_byte = VRAM[0x1800 + (((LCDC & 0x8) > 0) ? 1 : 0) * 0x400 + temp_fetch];
@@ -1562,7 +1632,7 @@ namespace GBHawk
 						else if (((last_eval + render_offset) % 8) == 6) { sprite_fetch_counter += 0; }
 						else if (((last_eval + render_offset) % 8) == 7) { sprite_fetch_counter += 0; }
 
-						consecutive_sprite = (uint32_t)floor((double)(last_eval + render_offset) / 8.0) * 8 + 8 - render_offset;
+						consecutive_sprite = (uint32_t)(((last_eval + render_offset) >> 3) << 3) + 8 - render_offset;
 
 						// special case exists here for sprites at zero with non-zero x-scroll. Not sure exactly the reason for it.
 						if (last_eval == 0 && render_offset != 0)
@@ -1638,45 +1708,6 @@ namespace GBHawk
 					b7 = (sprite_sel[i] & 0x80) >> 7;
 
 					sprite_sel[i] = (uint8_t)(b0 | b1 | b2 | b3 | b4 | b5 | b6 | b7);
-				}
-			}
-		}
-
-		// normal DMA moves twice as fast in double speed mode on GBC
-		// So give it it's own function so we can seperate it from PPU tick
-		void DMA_tick()
-		{
-			// Note that DMA is halted when the CPU is halted
-			if (DMA_start && !cpu_halted[0]) 
-			{
-				if (DMA_clock >= 4)
-				{
-					DMA_OAM_access = false;
-					if ((DMA_clock % 4) == 1)
-					{
-						// the cpu can't access memory during this time, but we still need the ppu to be able to.
-						DMA_start = false;
-						// Gekkio reports that A14 being high on DMA transfers always represent WRAM accesses
-						// So transfers nominally from higher memory areas are actually still from there (i.e. FF -> DF)
-						uint8_t DMA_actual = DMA_addr;
-						if (DMA_addr > 0xDF) { DMA_actual &= 0xDF; }
-						DMA_byte = ReadMemory(((uint32_t)(DMA_actual << 8) + DMA_inc));
-						DMA_start = true;
-					}
-					else if ((DMA_clock % 4) == 3)
-					{
-						OAM[DMA_inc] = DMA_byte;
-
-						if (DMA_inc < (0xA0 - 1)) { DMA_inc++; }
-					}
-				}
-
-				DMA_clock++;
-
-				if (DMA_clock == 648)
-				{
-					DMA_start = false;
-					DMA_OAM_access = true;
 				}
 			}
 		}
@@ -2106,8 +2137,8 @@ namespace GBHawk
 							else
 							{
 								VRAM[(VRAM_Bank[0] * 0x2000) + cur_DMA_dest] = HDMA_byte;
-								cur_DMA_dest = (uint8_t)((cur_DMA_dest + 1) & 0x1FFF);
-								cur_DMA_src = (uint8_t)((cur_DMA_src + 1) & 0xFFFF);
+								cur_DMA_dest = (uint32_t)((cur_DMA_dest + 1) & 0x1FFF);
+								cur_DMA_src = (uint32_t)((cur_DMA_src + 1) & 0xFFFF);
 								HDMA_length--;
 							}
 
@@ -2344,7 +2375,7 @@ namespace GBHawk
 									// x-scroll is expected to be latched one cycle later 
 									// this is fine since nothing has started in the rendering until the second cycle
 									// calculate the column number of the tile to start with
-									x_tile = (uint32_t)floor((float)(scroll_x) / 8.0);
+									x_tile = (uint32_t)(scroll_x >> 3);
 									render_offset = scroll_x % 8;
 								}
 
@@ -2404,7 +2435,7 @@ namespace GBHawk
 								// x-scroll is expected to be latched one cycle later 
 								// this is fine since nothing has started in the rendering until the second cycle
 								// calculate the column number of the tile to start with
-								x_tile = (uint32_t)floor((float)(scroll_x) / 8.0);
+								x_tile = (uint32_t)(scroll_x >> 3);
 								render_offset = scroll_x % 8;
 							}
 
@@ -2605,7 +2636,8 @@ namespace GBHawk
 				window_counter = 0;
 				render_counter = 0;
 
-				window_x_tile = (uint32_t)floor((float)(pixel_counter - (window_x_latch - 7)) / 8.0);
+				// NOTE: pixel counter is >= window_x_latch - 7 here, so subtraction will result in a positive number
+				window_x_tile = (uint32_t)((pixel_counter - ((int32_t)window_x_latch - 7)) >> 3);
 
 				window_tile_inc = 0;
 				window_started = true;
@@ -2735,11 +2767,11 @@ namespace GBHawk
 					if ((internal_cycle % 2) == 1)
 					{
 						// calculate the row number of the tiles to be fetched
-						y_tile = ((uint32_t)floor((float)((uint32_t)scroll_y + LY) / 8.0)) % 32;
+						y_tile = ((uint32_t)((uint32_t)scroll_y + (uint32_t)LY) >> 3) % 32;
 
 						temp_fetch = y_tile * 32 + (x_tile + tile_inc) % 32;
-						tile_byte = VRAM[0x1800 + (((LCDC & 0x4) > 0) ? 1 : 0) * 0x400 + temp_fetch];
-						tile_data[2] = VRAM[0x3800 + (((LCDC & 0x4) > 0) ? 1 : 0) * 0x400 + temp_fetch];
+						tile_byte = VRAM[0x1800 + (((LCDC & 0x8) > 0) ? 1 : 0) * 0x400 + temp_fetch];
+						tile_data[2] = VRAM[0x3800 + (((LCDC & 0x8) > 0) ? 1 : 0) * 0x400 + temp_fetch];
 						VRAM_sel = ((tile_data[2] & 0x8) > 0) ? 1 : 0;
 
 						BG_V_flip = ((tile_data[2] & 0x40) > 0);
@@ -3048,7 +3080,7 @@ namespace GBHawk
 						else if (((last_eval + render_offset) % 8) == 6) { sprite_fetch_counter += 0; }
 						else if (((last_eval + render_offset) % 8) == 7) { sprite_fetch_counter += 0; }
 
-						consecutive_sprite = (uint32_t)floor(((double)last_eval + render_offset) / 8.0) * 8 + 8 - render_offset;
+						consecutive_sprite = (uint32_t)(((last_eval + render_offset) >> 3) << 3) + 8 - render_offset;
 
 						// special case exists here for sprites at zero with non-zero x-scroll. Not sure exactly the reason for it.
 						if (last_eval == 0 && render_offset != 0)
@@ -3126,45 +3158,6 @@ namespace GBHawk
 					b7 = (sprite_sel[i] & 0x80) >> 7;
 
 					sprite_sel[i] = (uint8_t)(b0 | b1 | b2 | b3 | b4 | b5 | b6 | b7);
-				}
-			}
-		}
-
-		// normal DMA moves twice as fast in double speed mode on GBC
-		// So give it it's own function so we can seperate it from PPU tick
-		void DMA_tick()
-		{
-			// Note that DMA is halted when the CPU is halted
-			if (DMA_start && !cpu_halted[0])
-			{
-				if (DMA_clock >= 4)
-				{
-					DMA_OAM_access = false;
-					if ((DMA_clock % 4) == 1)
-					{
-						// the cpu can't access memory during this time, but we still need the ppu to be able to.
-						DMA_start = false;
-						// Gekkio reports that A14 being high on DMA transfers always represent WRAM accesses
-						// So transfers nominally from higher memory areas are actually still from there (i.e. FF -> DF)
-						uint8_t DMA_actual = DMA_addr;
-						if (DMA_addr > 0xDF) { DMA_actual &= 0xDF; }
-						DMA_byte = ReadMemory((uint32_t)((DMA_actual << 8) + DMA_inc));
-						DMA_start = true;
-					}
-					else if ((DMA_clock % 4) == 3)
-					{
-						OAM[DMA_inc] = DMA_byte;
-
-						if (DMA_inc < (0xA0 - 1)) { DMA_inc++; }
-					}
-				}
-
-				DMA_clock++;
-
-				if (DMA_clock == 648)
-				{
-					DMA_start = false;
-					DMA_OAM_access = true;
 				}
 			}
 		}
@@ -3300,58 +3293,6 @@ namespace GBHawk
 					}
 				}
 			}
-		}
-
-		void color_compute_BG()
-		{
-			uint32_t R;
-			uint32_t G;
-			uint32_t B;
-
-			if ((BG_bytes_index % 2) == 0)
-			{
-				R = (uint32_t)(BG_bytes[BG_bytes_index] & 0x1F);
-				G = (uint32_t)(((BG_bytes[BG_bytes_index] & 0xE0) | ((BG_bytes[BG_bytes_index + 1] & 0x03) << 8)) >> 5);
-				B = (uint32_t)((BG_bytes[BG_bytes_index + 1] & 0x7C) >> 2);
-			}
-			else
-			{
-				R = (uint32_t)(BG_bytes[BG_bytes_index - 1] & 0x1F);
-				G = (uint32_t)(((BG_bytes[BG_bytes_index - 1] & 0xE0) | ((BG_bytes[BG_bytes_index] & 0x03) << 8)) >> 5);
-				B = (uint32_t)((BG_bytes[BG_bytes_index] & 0x7C) >> 2);
-			}
-
-			uint32_t retR = ((R * 13 + G * 2 + B) >> 1) & 0xFF;
-			uint32_t retG = ((G * 3 + B) << 1) & 0xFF;
-			uint32_t retB = ((R * 3 + G * 2 + B * 11) >> 1) & 0xFF;
-
-			BG_palette[BG_bytes_index >> 1] = (uint32_t)(0xFF000000 | (retR << 16) | (retG << 8) | retB);
-		}
-
-		void color_compute_OBJ()
-		{
-			uint32_t R;
-			uint32_t G;
-			uint32_t B;
-
-			if ((OBJ_bytes_index % 2) == 0)
-			{
-				R = (uint32_t)(OBJ_bytes[OBJ_bytes_index] & 0x1F);
-				G = (uint32_t)(((OBJ_bytes[OBJ_bytes_index] & 0xE0) | ((OBJ_bytes[OBJ_bytes_index + 1] & 0x03) << 8)) >> 5);
-				B = (uint32_t)((OBJ_bytes[OBJ_bytes_index + 1] & 0x7C) >> 2);
-			}
-			else
-			{
-				R = (uint32_t)(OBJ_bytes[OBJ_bytes_index - 1] & 0x1F);
-				G = (uint32_t)(((OBJ_bytes[OBJ_bytes_index - 1] & 0xE0) | ((OBJ_bytes[OBJ_bytes_index] & 0x03) << 8)) >> 5);
-				B = (uint32_t)((OBJ_bytes[OBJ_bytes_index] & 0x7C) >> 2);
-			}
-
-			uint32_t retR = ((R * 13 + G * 2 + B) >> 1) & 0xFF;
-			uint32_t retG = ((G * 3 + B) << 1) & 0xFF;
-			uint32_t retB = ((R * 3 + G * 2 + B * 11) >> 1) & 0xFF;
-
-			OBJ_palette[OBJ_bytes_index >> 1] = (uint32_t)(0xFF000000 | (retR << 16) | (retG << 8) | retB);
 		}
 
 		void Reset()
@@ -3668,8 +3609,8 @@ namespace GBHawk
 							else
 							{
 								VRAM[(VRAM_Bank[0] * 0x2000) + cur_DMA_dest] = HDMA_byte;
-								cur_DMA_dest = (uint8_t)((cur_DMA_dest + 1) & 0x1FFF);
-								cur_DMA_src = (uint8_t)((cur_DMA_src + 1) & 0xFFFF);
+								cur_DMA_dest = (uint32_t)((cur_DMA_dest + 1) & 0x1FFF);
+								cur_DMA_src = (uint32_t)((cur_DMA_src + 1) & 0xFFFF);
 								HDMA_length--;
 							}
 
@@ -3906,7 +3847,7 @@ namespace GBHawk
 									// x-scroll is expected to be latched one cycle later 
 									// this is fine since nothing has started in the rendering until the second cycle
 									// calculate the column number of the tile to start with
-									x_tile = (uint32_t)floor((float)(scroll_x) / 8.0);
+									x_tile = (uint32_t)(scroll_x >> 3);
 									render_offset = scroll_x % 8;
 								}
 
@@ -3966,7 +3907,7 @@ namespace GBHawk
 								// x-scroll is expected to be latched one cycle later 
 								// this is fine since nothing has started in the rendering until the second cycle
 								// calculate the column number of the tile to start with
-								x_tile = (uint32_t)floor((float)(scroll_x) / 8.0);
+								x_tile = (uint32_t)(scroll_x >> 3);
 								render_offset = scroll_x % 8;
 							}
 
@@ -4160,7 +4101,8 @@ namespace GBHawk
 				window_counter = 0;
 				render_counter = 0;
 
-				window_x_tile = (uint32_t)floor((float)(pixel_counter - (window_x_latch - 7)) / 8.0);
+				// NOTE: pixel counter is >= window_x_latch - 7 here, so subtraction will result in a positive number
+				window_x_tile = (uint32_t)((pixel_counter - ((int32_t)window_x_latch - 7)) >> 3);
 
 				window_tile_inc = 0;
 				window_started = true;
@@ -4330,11 +4272,11 @@ namespace GBHawk
 					if ((internal_cycle % 2) == 1)
 					{
 						// calculate the row number of the tiles to be fetched
-						y_tile = ((uint32_t)floor(((float)scroll_y + (float)LY) / (float)8.0)) % 32;
+						y_tile = ((uint32_t)((uint32_t)scroll_y + (uint32_t)LY) >> 3) % 32;
 
 						temp_fetch = y_tile * 32 + (x_tile + tile_inc) % 32;
-						tile_byte = VRAM[0x1800 + (((LCDC & 0x4) > 0) ? 1 : 0) * 0x400 + temp_fetch];
-						tile_data[2] = VRAM[0x3800 + (((LCDC & 0x4) > 0) ? 1 : 0) * 0x400 + temp_fetch];
+						tile_byte = VRAM[0x1800 + (((LCDC & 0x8) > 0) ? 1 : 0) * 0x400 + temp_fetch];
+						tile_data[2] = VRAM[0x3800 + (((LCDC & 0x8) > 0) ? 1 : 0) * 0x400 + temp_fetch];
 						VRAM_sel = ((tile_data[2] & 0x8) > 0) ? 1 : 0;
 
 						BG_V_flip = ((tile_data[2] & 0x40) > 0) & GBC_compat[0];
@@ -4644,7 +4586,7 @@ namespace GBHawk
 						else if (((last_eval + render_offset) % 8) == 7) { sprite_fetch_counter += 0; }
 
 
-						consecutive_sprite = (uint32_t)floor((((float)last_eval + (float)render_offset) / (float)8.0)) * 8 + 8 - render_offset;
+						consecutive_sprite = (uint32_t)(((last_eval + render_offset) >> 3) << 3) + 8 - render_offset;
 
 						// special case exists here for sprites at zero with non-zero x-scroll. Not sure exactly the reason for it.
 						if (last_eval == 0 && render_offset != 0)
@@ -4722,45 +4664,6 @@ namespace GBHawk
 					b7 = (sprite_sel[i] & 0x80) >> 7;
 
 					sprite_sel[i] = (uint8_t)(b0 | b1 | b2 | b3 | b4 | b5 | b6 | b7);
-				}
-			}
-		}
-
-		// normal DMA moves twice as fast in double speed mode on GBC
-		// So give it it's own function so we can seperate it from PPU tick
-		void DMA_tick()
-		{
-			// Note that DMA is halted when the CPU is halted
-			if (DMA_start && !cpu_halted[0])
-			{
-				if (DMA_clock >= 4)
-				{
-					DMA_OAM_access = false;
-					if ((DMA_clock % 4) == 1)
-					{
-						// the cpu can't access memory during this time, but we still need the ppu to be able to.
-						DMA_start = false;
-						// Gekkio reports that A14 being high on DMA transfers always represent WRAM accesses
-						// So transfers nominally from higher memory areas are actually still from there (i.e. FF -> DF)
-						uint8_t DMA_actual = DMA_addr;
-						if (DMA_addr > 0xDF) { DMA_actual &= 0xDF; }
-						DMA_byte = ReadMemory((uint32_t)((DMA_actual << 8) + DMA_inc));
-						DMA_start = true;
-					}
-					else if ((DMA_clock % 4) == 3)
-					{
-						OAM[DMA_inc] = DMA_byte;
-
-						if (DMA_inc < (0xA0 - 1)) { DMA_inc++; }
-					}
-				}
-
-				DMA_clock++;
-
-				if (DMA_clock == 648)
-				{
-					DMA_start = false;
-					DMA_OAM_access = true;
 				}
 			}
 		}
@@ -4919,58 +4822,6 @@ namespace GBHawk
 					}
 				}
 			}
-		}
-
-		void color_compute_BG()
-		{
-			uint32_t R;
-			uint32_t G;
-			uint32_t B;
-
-			if ((BG_bytes_index % 2) == 0)
-			{
-				R = (uint32_t)(BG_bytes[BG_bytes_index] & 0x1F);
-				G = (uint32_t)(((BG_bytes[BG_bytes_index] & 0xE0) | ((BG_bytes[BG_bytes_index + 1] & 0x03) << 8)) >> 5);
-				B = (uint32_t)((BG_bytes[BG_bytes_index + 1] & 0x7C) >> 2);
-			}
-			else
-			{
-				R = (uint32_t)(BG_bytes[BG_bytes_index - 1] & 0x1F);
-				G = (uint32_t)(((BG_bytes[BG_bytes_index - 1] & 0xE0) | ((BG_bytes[BG_bytes_index] & 0x03) << 8)) >> 5);
-				B = (uint32_t)((BG_bytes[BG_bytes_index] & 0x7C) >> 2);
-			}
-
-			uint32_t retR = ((R * 13 + G * 2 + B) >> 1) & 0xFF;
-			uint32_t retG = ((G * 3 + B) << 1) & 0xFF;
-			uint32_t retB = ((R * 3 + G * 2 + B * 11) >> 1) & 0xFF;
-
-			BG_palette[BG_bytes_index >> 1] = (uint32_t)(0xFF000000 | (retR << 16) | (retG << 8) | retB);
-		}
-
-		void color_compute_OBJ()
-		{
-			uint32_t R;
-			uint32_t G;
-			uint32_t B;
-
-			if ((OBJ_bytes_index % 2) == 0)
-			{
-				R = (uint32_t)(OBJ_bytes[OBJ_bytes_index] & 0x1F);
-				G = (uint32_t)(((OBJ_bytes[OBJ_bytes_index] & 0xE0) | ((OBJ_bytes[OBJ_bytes_index + 1] & 0x03) << 8)) >> 5);
-				B = (uint32_t)((OBJ_bytes[OBJ_bytes_index + 1] & 0x7C) >> 2);
-			}
-			else
-			{
-				R = (uint32_t)(OBJ_bytes[OBJ_bytes_index - 1] & 0x1F);
-				G = (uint32_t)(((OBJ_bytes[OBJ_bytes_index - 1] & 0xE0) | ((OBJ_bytes[OBJ_bytes_index] & 0x03) << 8)) >> 5);
-				B = (uint32_t)((OBJ_bytes[OBJ_bytes_index] & 0x7C) >> 2);
-			}
-
-			uint32_t retR = ((R * 13 + G * 2 + B) >> 1) & 0xFF;
-			uint32_t retG = ((G * 3 + B) << 1) & 0xFF;
-			uint32_t retB = ((R * 3 + G * 2 + B * 11) >> 1) & 0xFF;
-
-			OBJ_palette[OBJ_bytes_index >> 1] = (uint32_t)(0xFF000000 | (retR << 16) | (retG << 8) | retB);
 		}
 
 		void Reset()
