@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 using BizHawk.Emulation.Common;
 
@@ -23,19 +22,33 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private static extern int* GetTopScreenBuffer();
 		[DllImport(dllPath)]
 		private static extern int* GetBottomScreenBuffer();
-		[DllImport(dllPath)]
-		private static extern int GetScreenBufferSize();
 
 		// BizHawk needs to be able to modify the buffer when loading savestates.
-		private int[] _buffer;
+		private const int SingleScreenLength = 256 * 192;
+		private readonly int[] _buffer = new int[256 * 192 * 2];
 		private bool _getNewBuffer = true;
+
 		public int[] GetVideoBuffer()
 		{
-			if (!_getNewBuffer) return _buffer;
-			_getNewBuffer = false;
-			return _buffer = ScreenArranger.UprightStack(TopScreen, BottomScreen, 0);
+			if (_getNewBuffer)
+			{
+				_getNewBuffer = false;
+				PopulateBuffer();
+			}
+
+			return _buffer;
 		}
-		private VideoScreen TopScreen => new VideoScreen(GetTopScreenBuffer(), 256, 192);
-		private VideoScreen BottomScreen => new VideoScreen(GetBottomScreenBuffer(), 256, 192);
+
+		private void PopulateBuffer()
+		{
+			var top = GetTopScreenBuffer();
+			var bottom = GetBottomScreenBuffer();
+
+			for (var i = 0; i < SingleScreenLength; i++)
+			{
+				_buffer[i] = top[i];
+				_buffer[SingleScreenLength + i] = bottom[i]; 
+			}
+		}
 	}
 }
