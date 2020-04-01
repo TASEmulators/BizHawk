@@ -24,32 +24,30 @@ while true do
 		break
 	end
 	
-	local touchStart = ds.touchScreenStart()
-	if touchStart then
-		local bufferX = client.bufferwidth()
-		local bufferY = client.bufferheight()
+	local bufferX = client.bufferwidth()
+	local bufferY = client.bufferheight()
 
-		local btns = joypad.get()
-		
-		if movie.mode() == "PLAY" and emu.framecount() > 0 then
-			btns = movie.getinput(emu.framecount() - 1)
-		end
-
-		local x = btns['TouchX']
-		local y = btns['TouchY']
-		local isDown = btns['Touch']
-
-		-- A bit of a hack to ensure it is not drawing while mouse moving
-		-- on the top screen
-		if y == 0 then
-			x = 0
-		end
-
-		x = x + touchStart.X
-		y = y + touchStart.Y
-
-		Draw(x, y, bufferX, bufferY, isDown)
+	local btns = joypad.get()
+	
+	if movie.mode() == "PLAY" and emu.framecount() > 0 then
+		btns = movie.getinput(emu.framecount() - 1)
 	end
+
+	local x = btns['TouchX']
+	local y = btns['TouchY']
+	local isDown = btns['Touch']
+
+	-- A bit of a hack to ensure it is not drawing while mouse moving
+	-- on the top screen
+	if y == 0 then
+		x = 0
+	end
+
+	pts = client.transformPoint(x, y)
+	local tx = pts["x"];
+	local ty = pts["y"];
+
+	Draw(tx, ty, bufferX, bufferY, isDown)
 
 	emu.frameadvance()
 end
