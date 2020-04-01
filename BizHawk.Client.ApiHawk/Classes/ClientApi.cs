@@ -674,12 +674,6 @@ namespace BizHawk.Client.ApiHawk
 			throw new Exception();
 		}
 
-		[Obsolete]
-		public static int TransformPointX(int x) => TransformPoint(new Point(x, 0)).X;
-
-		[Obsolete]
-		public static int TransformPointY(int y) => TransformPoint(new Point(0, y)).Y;
-
 		public static void Unpause()
 		{
 			InvokeMainFormMethod("UnpauseEmulator");
