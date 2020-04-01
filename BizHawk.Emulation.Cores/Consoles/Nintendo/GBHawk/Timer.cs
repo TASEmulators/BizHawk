@@ -14,11 +14,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public byte timer_old;
 		public byte timer_control;
 		public byte pending_reload;
-		public byte write_ignore;
 		public bool old_state;
 		public bool state;
 		public bool reload_block;
-		public bool TMA_coincidence;	
+		public ulong next_free_cycle;
 		
 		public byte ReadReg(int addr)
 		{
@@ -46,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				// TIMA (Timer Counter)
 				case 0xFF05:
-					if (write_ignore == 0)
+					if (Core.cpu.TotalExecutedCycles >= next_free_cycle)
 					{
 						timer_old = timer;
 						timer = value;
@@ -57,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				// TMA (Timer Modulo)
 				case 0xFF06:
 					timer_reload = value;
-					if (TMA_coincidence)
+					if (Core.cpu.TotalExecutedCycles < next_free_cycle)
 					{
 						timer = timer_reload;
 						timer_old = timer;
@@ -71,35 +70,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
-		public void tick_1()
-		{
-			if (write_ignore > 0)
-			{
-				write_ignore--;
-				if (write_ignore==0)
-				{
-					TMA_coincidence = false;
-				}
-			}
-
-			if (pending_reload > 0)
-			{
-				pending_reload--;
-				if (pending_reload == 0 && !reload_block)
-				{
-					timer = timer_reload;
-					timer_old = timer;
-					write_ignore = 4;
-					TMA_coincidence = true;
-
-					// set interrupts
-					if (Core.REG_FFFF.Bit(2)) { Core.cpu.FlagI = true; }
-					Core.REG_FF0F |= 0x04;
-				}
-			}
-		}
-
-		public void tick_2()
+		public void tick()
 		{
 			divider_reg++;
 
@@ -148,6 +119,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 
 			old_state = state;
+
+			if (pending_reload > 0)
+			{
+				pending_reload--;
+				if (pending_reload == 0 && !reload_block)
+				{
+					timer = timer_reload;
+					timer_old = timer;
+
+					next_free_cycle = 4 + Core.cpu.TotalExecutedCycles;
+
+					// set interrupts
+					if (Core.REG_FFFF.Bit(2)) { Core.cpu.FlagI = true; }
+					Core.REG_FF0F |= 0x04;
+				}
+			}
 		}
 
 		public void Reset()
@@ -158,11 +145,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			timer_old = 0;
 			timer_control = 0xF8;
 			pending_reload = 0;
-			write_ignore = 0;
 			old_state = false;
 			state = false;
 			reload_block = false;
-			TMA_coincidence = false;
+			next_free_cycle = 0;
 	}
 
 		public void SyncState(Serializer ser)
@@ -173,11 +159,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(timer_old), ref timer_old);
 			ser.Sync(nameof(timer_control), ref timer_control);
 			ser.Sync(nameof(pending_reload), ref pending_reload);
-			ser.Sync(nameof(write_ignore), ref write_ignore);
 			ser.Sync(nameof(old_state), ref old_state);
 			ser.Sync(nameof(state), ref state);
 			ser.Sync(nameof(reload_block), ref reload_block);
-			ser.Sync(nameof(TMA_coincidence), ref TMA_coincidence);
+			ser.Sync(nameof(next_free_cycle), ref next_free_cycle);
 		}
 	}
 }

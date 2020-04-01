@@ -176,37 +176,47 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					I_use = false;
 					break;
 				case RD:
-					Read_Func(instr_table[instr_pntr++], instr_table[instr_pntr++], instr_table[instr_pntr++]);
+					Read_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1], instr_table[instr_pntr + 2]);
+					instr_pntr += 3;
 					break;
 				case WR:
-					Write_Func(instr_table[instr_pntr++], instr_table[instr_pntr++], instr_table[instr_pntr++]);
+					Write_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1], instr_table[instr_pntr + 2]);
+					instr_pntr += 3;
 					break;
 				case TR:
-					TR_Func(instr_table[instr_pntr++], instr_table[instr_pntr++]);
+					TR_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1]);
+					instr_pntr += 2;
 					break;
 				case ADD16:
-					ADD16_Func(instr_table[instr_pntr++], instr_table[instr_pntr++], instr_table[instr_pntr++], instr_table[instr_pntr++]);
+					ADD16_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1], instr_table[instr_pntr + 2], instr_table[instr_pntr + 3]);
+					instr_pntr += 4;
 					break;
 				case ADD8:
-					ADD8_Func(instr_table[instr_pntr++], instr_table[instr_pntr++]);
+					ADD8_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1]);
+					instr_pntr += 2;
 					break;
 				case SUB8:
-					SUB8_Func(instr_table[instr_pntr++], instr_table[instr_pntr++]);
+					SUB8_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1]);
+					instr_pntr += 2;
 					break;
 				case ADC8:
-					ADC8_Func(instr_table[instr_pntr++], instr_table[instr_pntr++]);
+					ADC8_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1]);
+					instr_pntr += 2;
 					break;
 				case SBC8:
-					SBC8_Func(instr_table[instr_pntr++], instr_table[instr_pntr++]);
+					SBC8_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1]);
+					instr_pntr += 2;
 					break;
 				case INC16:
-					INC16_Func(instr_table[instr_pntr++], instr_table[instr_pntr++]);
+					INC16_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1]);
+					instr_pntr += 2;
 					break;
 				case INC8:
 					INC8_Func(instr_table[instr_pntr++]);
 					break;
 				case DEC16:
-					DEC16_Func(instr_table[instr_pntr++], instr_table[instr_pntr++]);
+					DEC16_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1]);
+					instr_pntr += 2;
 					break;
 				case DEC8:
 					DEC8_Func(instr_table[instr_pntr++]);
@@ -236,16 +246,20 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					CCF_Func(instr_table[instr_pntr++]);
 					break;
 				case AND8:
-					AND8_Func(instr_table[instr_pntr++], instr_table[instr_pntr++]);
+					AND8_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1]);
+					instr_pntr += 2;
 					break;
 				case XOR8:
-					XOR8_Func(instr_table[instr_pntr++], instr_table[instr_pntr++]);
+					XOR8_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1]);
+					instr_pntr += 2;
 					break;
 				case OR8:
-					OR8_Func(instr_table[instr_pntr++], instr_table[instr_pntr++]);
+					OR8_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1]);
+					instr_pntr += 2;
 					break;
 				case CP8:
-					CP8_Func(instr_table[instr_pntr++], instr_table[instr_pntr++]);
+					CP8_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1]);
+					instr_pntr += 2;
 					break;
 				case SLA:
 					SLA_Func(instr_table[instr_pntr++]);
@@ -260,13 +274,16 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					SWAP_Func(instr_table[instr_pntr++]);
 					break;
 				case BIT:
-					BIT_Func(instr_table[instr_pntr++], instr_table[instr_pntr++]);
+					BIT_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1]);
+					instr_pntr += 2;
 					break;
 				case RES:
-					RES_Func(instr_table[instr_pntr++], instr_table[instr_pntr++]);
+					RES_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1]);
+					instr_pntr += 2;
 					break;
 				case SET:
-					SET_Func(instr_table[instr_pntr++], instr_table[instr_pntr++]);
+					SET_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1]);
+					instr_pntr += 2;
 					break;
 				case EI:
 					if (EI_pending == 0) { EI_pending = 2; }
@@ -457,10 +474,12 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					CB_prefix = true;
 					break;
 				case ASGN:
-					ASGN_Func(instr_table[instr_pntr++], instr_table[instr_pntr++]);
+					ASGN_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1]);
+					instr_pntr += 2;
 					break;
 				case ADDS:
-					ADDS_Func(instr_table[instr_pntr++], instr_table[instr_pntr++], instr_table[instr_pntr++], instr_table[instr_pntr++]);
+					ADDS_Func(instr_table[instr_pntr], instr_table[instr_pntr + 1], instr_table[instr_pntr + 2], instr_table[instr_pntr + 3]);
+					instr_pntr += 4;
 					break;
 				case OP_G:
 					OnExecFetch?.Invoke(RegPC);
@@ -474,7 +493,8 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					instr_pntr--;
 					break;
 				case RD_F:
-					Read_Func_F(instr_table[instr_pntr++], instr_table[instr_pntr++], instr_table[instr_pntr++]);
+					Read_Func_F(instr_table[instr_pntr], instr_table[instr_pntr + 1], instr_table[instr_pntr + 2]);
+					instr_pntr += 3;
 					break;
 				case EI_RETI:
 					EI_pending = 1;

@@ -522,7 +522,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 									// x-scroll is expected to be latched one cycle later 
 									// this is fine since nothing has started in the rendering until the second cycle
 									// calculate the column number of the tile to start with
-									x_tile = (int)Math.Floor((float)(scroll_x) / 8);
+									x_tile = scroll_x >> 3;
 									render_offset = scroll_x % 8;
 								}
 
@@ -582,7 +582,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								// x-scroll is expected to be latched one cycle later 
 								// this is fine since nothing has started in the rendering until the second cycle
 								// calculate the column number of the tile to start with
-								x_tile = (int)Math.Floor((float)(scroll_x) / 8);
+								x_tile = scroll_x >> 3;
 								render_offset = scroll_x % 8;
 							}
 
@@ -911,9 +911,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					case 0: // read a background tile
 						if ((internal_cycle % 2) == 1)
-						{						
+						{
 							// calculate the row number of the tiles to be fetched
-							y_tile = ((int)Math.Floor((float)(scroll_y + LY) / 8)) % 32;
+							y_tile = (((int)scroll_y + LY) >> 3) % 32;
 
 							temp_fetch = y_tile * 32 + (x_tile + tile_inc) % 32;
 							tile_byte = Core.VRAM[0x1800 + (LCDC.Bit(3) ? 1 : 0) * 0x400 + temp_fetch];
@@ -1312,38 +1312,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		// So give it it's own function so we can seperate it from PPU tick
 		public override void DMA_tick()
 		{
-			// Note that DMA is halted when the CPU is halted
-			if (DMA_start && !Core.cpu.halted)
+			if (DMA_clock >= 4)
 			{
-				if (DMA_clock >= 4)
+				DMA_OAM_access = false;
+				if ((DMA_clock % 4) == 1)
 				{
-					DMA_OAM_access = false;
-					if ((DMA_clock % 4) == 1)
-					{
-						// the cpu can't access memory during this time, but we still need the ppu to be able to.
-						DMA_start = false;
-						// Gekkio reports that A14 being high on DMA transfers always represent WRAM accesses
-						// So transfers nominally from higher memory areas are actually still from there (i.e. FF -> DF)
-						byte DMA_actual = DMA_addr;
-						if (DMA_addr > 0xDF) { DMA_actual &= 0xDF; }
-						DMA_byte = Core.ReadMemory((ushort)((DMA_actual << 8) + DMA_inc));
-						DMA_start = true;
-					}
-					else if ((DMA_clock % 4) == 3)
-					{
-						Core.OAM[DMA_inc] = DMA_byte;
-
-						if (DMA_inc < (0xA0 - 1)) { DMA_inc++; }
-					}
-				}
-
-				DMA_clock++;
-
-				if (DMA_clock == 648)
-				{
+					// the cpu can't access memory during this time, but we still need the ppu to be able to.
 					DMA_start = false;
-					DMA_OAM_access = true;
+					// Gekkio reports that A14 being high on DMA transfers always represent WRAM accesses
+					// So transfers nominally from higher memory areas are actually still from there (i.e. FF -> DF)
+					byte DMA_actual = DMA_addr;
+					if (DMA_addr > 0xDF) { DMA_actual &= 0xDF; }
+					DMA_byte = Core.ReadMemory((ushort)((DMA_actual << 8) + DMA_inc));
+					DMA_start = true;
 				}
+				else if ((DMA_clock % 4) == 3)
+				{
+					Core.OAM[DMA_inc] = DMA_byte;
+
+					if (DMA_inc < (0xA0 - 1)) { DMA_inc++; }
+				}
+			}
+
+			DMA_clock++;
+
+			if (DMA_clock == 648)
+			{
+				DMA_start = false;
+				DMA_OAM_access = true;
 			}
 		}
 

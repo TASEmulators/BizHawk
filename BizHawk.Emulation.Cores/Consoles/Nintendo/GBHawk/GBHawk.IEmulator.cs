@@ -87,31 +87,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				if (!HDMA_transfer)
 				{
 					// These things all tick twice as fast in GBC double speed mode
-					ppu.DMA_tick();
-					timer.tick_1();
+					// Note that DMA is halted when the CPU is halted
+					if (ppu.DMA_start && !cpu.halted) { ppu.DMA_tick(); }
 					serialport.serial_transfer_tick();
 					cpu.ExecuteOne(ref REG_FF0F, REG_FFFF);
-					timer.tick_2();
+					timer.tick();
 
 					if (double_speed)
 					{
-						ppu.DMA_tick();
-						timer.tick_1();
+						if (ppu.DMA_start && !cpu.halted) { ppu.DMA_tick(); }
 						serialport.serial_transfer_tick();
 						cpu.ExecuteOne(ref REG_FF0F, REG_FFFF);
-						timer.tick_2();
+						timer.tick();
 					}
 				}
 				else
 				{
-					timer.tick_1();
-					timer.tick_2();
 					cpu.TotalExecutedCycles++;
+					timer.tick();					
 					if (double_speed)
 					{
-						timer.tick_1();
-						timer.tick_2();
 						cpu.TotalExecutedCycles++;
+						timer.tick();						
 					}
 				}
 
@@ -155,31 +152,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			if (!HDMA_transfer)
 			{
 				// These things all tick twice as fast in GBC double speed mode
-				ppu.DMA_tick();
-				timer.tick_1();
+				if (ppu.DMA_start && !cpu.halted) { ppu.DMA_tick(); }
 				serialport.serial_transfer_tick();
 				cpu.ExecuteOne(ref REG_FF0F, REG_FFFF);
-				timer.tick_2();
+				timer.tick();
 
 				if (double_speed)
 				{
-					ppu.DMA_tick();
-					timer.tick_1();
+					if (ppu.DMA_start && !cpu.halted) { ppu.DMA_tick(); }
 					serialport.serial_transfer_tick();
 					cpu.ExecuteOne(ref REG_FF0F, REG_FFFF);
-					timer.tick_2();
+					timer.tick();
 				}
 			}
 			else
 			{
-				timer.tick_1();
-				timer.tick_2();
 				cpu.TotalExecutedCycles++;
+				timer.tick();
+				
 				if (double_speed)
 				{
-					timer.tick_1();
-					timer.tick_2();
 					cpu.TotalExecutedCycles++;
+					timer.tick();				
 				}
 			}
 

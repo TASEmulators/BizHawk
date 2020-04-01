@@ -179,12 +179,13 @@ namespace GBHawk
 				}
 				else
 				{
-					timer.tick();
 					cpu.TotalExecutedCycles++;
+					timer.tick();
+					
 					if (MemMap.double_speed)
 					{
-						timer.tick();
 						cpu.TotalExecutedCycles++;
+						timer.tick();					
 					}
 				}
 
@@ -230,12 +231,13 @@ namespace GBHawk
 			}
 			else
 			{
-				timer.tick();
 				cpu.TotalExecutedCycles++;
+				timer.tick();
+				
 				if (MemMap.double_speed)
 				{
-					timer.tick();
 					cpu.TotalExecutedCycles++;
+					timer.tick();				
 				}
 			}
 
