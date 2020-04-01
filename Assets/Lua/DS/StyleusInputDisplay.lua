@@ -24,9 +24,6 @@ while true do
 		break
 	end
 	
-	local bufferX = client.bufferwidth()
-	local bufferY = client.bufferheight()
-
 	local btns = joypad.get()
 	
 	if movie.mode() == "PLAY" and emu.framecount() > 0 then
@@ -46,8 +43,8 @@ while true do
 	pts = client.transformPoint(x, y)
 	local tx = pts["x"];
 	local ty = pts["y"];
-
-	Draw(tx, ty, bufferX, bufferY, isDown)
+gui.DrawNew("native")
+	Draw(tx, ty, 10000, 10000, isDown)
 
 	emu.frameadvance()
 end
