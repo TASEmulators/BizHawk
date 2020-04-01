@@ -30,7 +30,7 @@ namespace BizHawk.Client.Common
 				// I checked the DeleteOnClose operation to make sure it cleans up when the process is aborted, and it seems to.
 				// Otherwise we would have a more complex tempfile management problem here.
 				// 4KB buffer chosen due to similarity to .net defaults, and fear of anything larger making hiccups for small systems (we could try asyncing this stuff though...)
-				Stream = new FileStream(path, FileMode.Create, System.Security.AccessControl.FileSystemRights.FullControl, FileShare.None, 4 * 1024, FileOptions.DeleteOnClose);
+				Stream = new FileStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.None, 4 * 1024, FileOptions.DeleteOnClose);
 			}
 			else
 			{

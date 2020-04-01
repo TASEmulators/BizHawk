@@ -62,12 +62,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			bool begun = false;
 
+#if FWONLY_DIRECT3D
 			//this needs a begin signal to set the swap chain to the next backbuffer
 			if (cr.GL is IGL_SlimDX9)
 			{
 				cr.Gc.Begin();
 				begun = true;
 			}
+#endif
 
 			if (cr == _activeContext)
 			{

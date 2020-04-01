@@ -1,23 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 	<Import Project="$(SolutionDir)MainSlnCommon.props" />
 	<PropertyGroup>
-		<TargetFramework>net48</TargetFramework>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<UseWindowsForms>true</UseWindowsForms>
 	</PropertyGroup>
-	<ItemGroup>
-		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
-		<Reference Include="Microsoft.CSharp" />
-		<!--<Reference Include="System" />-->
-		<!--<Reference Include="System.Core" />-->
-		<!--<Reference Include="System.Data" />-->
-		<!--<Reference Include="System.Data.DataSetExtensions" />-->
-		<!--<Reference HintPath="../../Users/uptho/Documents/BizHawk-2.3/dll/System.Data.SQLite.dll" Include="System.Data.SQLite, Version=1.0.105.2, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=AMD64" SpecificVersion="false" />-->
-		<!--<Reference Include="System.Drawing" />-->
-		<Reference Include="System.Windows.Forms" />
-		<!--<Reference Include="System.Xml" />-->
-		<!--<Reference Include="System.Xml.Linq" />-->
-	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="$(SolutionDir)BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
 	</ItemGroup>
-	<Import Project="$(SolutionDir)NamespaceAliasHack.targets" />
 </Project>

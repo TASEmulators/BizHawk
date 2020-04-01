@@ -2,7 +2,7 @@
 using System.IO;
 using System.Threading;
 using System.IO.Pipes;
-using SlimDX.DirectInput;
+using OpenTK.Input;
 
 // this is not a very safe or pretty protocol, I'm not proud of it
 namespace BizHawk.Client.EmuHawk

@@ -462,6 +462,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
+#if FWONLY_LUA
 			//start Lua Console if requested in the command line arguments
 			if (_argParser.luaConsole)
 			{
@@ -473,6 +474,7 @@ namespace BizHawk.Client.EmuHawk
 				if (OSTailoredCode.IsUnixHost) Console.WriteLine($"The Lua environment can currently only be created on Windows, {_argParser.luaScript} will not be loaded.");
 				else Tools.LuaConsole.LoadLuaFile(_argParser.luaScript);
 			}
+#endif
 
 			SetStatusBar();
 
@@ -586,10 +588,12 @@ namespace BizHawk.Client.EmuHawk
 				// autohold/autofire must not be affected by the following inputs
 				Global.InputManager.ActiveController.Overrides(Global.InputManager.ButtonOverrideAdapter);
 
+#if FWONLY_LUA
 				if (Tools.Has<LuaConsole>() && !SuppressLua)
 				{
 					Tools.LuaConsole.ResumeScripts(false);
 				}
+#endif
 
 				StepRunLoop_Core();
 				StepRunLoop_Throttle();
@@ -1240,6 +1244,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		[Conditional("FWONLY_LUA")]
 		private void OpenLuaConsole()
 		{
 			Tools.Load<LuaConsole>();
@@ -2727,6 +2732,7 @@ namespace BizHawk.Client.EmuHawk
 		// Alt key hacks
 		protected override void WndProc(ref Message m)
 		{
+#if FWONLY_DIRECTINPUT
 			switch (m.Msg)
 			{
 				case WmDeviceChange:
@@ -2734,6 +2740,7 @@ namespace BizHawk.Client.EmuHawk
 					GamePad360.Initialize();
 					break;
 			}
+#endif
 
 			// this is necessary to trap plain alt keypresses so that only our hotkey system gets them
 			if (m.Msg == 0x0112) // WM_SYSCOMMAND
@@ -2911,10 +2918,12 @@ namespace BizHawk.Client.EmuHawk
 				InputManager.ClickyVirtualPadController.FrameTick();
 				Global.InputManager.ButtonOverrideAdapter.FrameTick();
 
+#if FWONLY_LUA
 				if (Tools.Has<LuaConsole>() && !SuppressLua)
 				{
 					Tools.LuaConsole.LuaImp.CallFrameBeforeEvent();
 				}
+#endif
 
 				if (IsTurboing)
 				{
@@ -2997,10 +3006,12 @@ namespace BizHawk.Client.EmuHawk
 
 				PressFrameAdvance = false;
 
+#if FWONLY_LUA
 				if (Tools.Has<LuaConsole>() && !SuppressLua)
 				{
 					Tools.LuaConsole.LuaImp.CallFrameAfterEvent();
 				}
+#endif
 
 				if (IsTurboing)
 				{
@@ -3775,12 +3786,14 @@ namespace BizHawk.Client.EmuHawk
 						Console.WriteLine("Core reported BoardID: \"{0}\"", Emulator.AsBoardInfo().BoardName);
 					}
 
+#if FWONLY_LUA
 					// restarts the lua console if a different rom is loaded.
 					// im not really a fan of how this is done..
 					if (Config.RecentRoms.Empty || Config.RecentRoms.MostRecent != openAdvancedArgs)
 					{
 						Tools.Restart<LuaConsole>();
 					}
+#endif
 
 					Config.RecentRoms.Add(openAdvancedArgs);
 					JumpLists.AddRecentItem(openAdvancedArgs, ioa.DisplayName);
@@ -4063,10 +4076,12 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.OSD.ClearGuiText();
 				ClientApi.OnStateLoaded(this, userFriendlyStateName);
 
+#if FWONLY_LUA
 				if (Tools.Has<LuaConsole>())
 				{
 					Tools.LuaConsole.LuaImp.CallLoadStateEvent(userFriendlyStateName);
 				}
+#endif
 
 				SetMainformMovieInfo();
 				Tools.UpdateToolsBefore(fromLua);
@@ -4193,10 +4208,12 @@ namespace BizHawk.Client.EmuHawk
 
 			SaveState(path, quickSlotName, fromLua, suppressOSD);
 
+#if FWONLY_LUA
 			if (Tools.Has<LuaConsole>())
 			{
 				Tools.LuaConsole.LuaImp.CallSaveStateEvent(quickSlotName);
 			}
+#endif
 		}
 
 		private void SaveStateAs()

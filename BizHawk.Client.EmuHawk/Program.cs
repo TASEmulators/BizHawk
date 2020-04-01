@@ -144,6 +144,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (Global.Config.DispMethod == EDispMethod.SlimDX9)
 			{
+#if FWONLY_DIRECT3D
 				try
 				{
 					GlobalWin.GL = new IGL_SlimDX9();
@@ -156,6 +157,10 @@ namespace BizHawk.Client.EmuHawk
 					Global.Config.DispMethod = EDispMethod.GdiPlus;
 					goto REDO_DISPMETHOD;
 				}
+#else
+				Global.Config.DispMethod = EDispMethod.GdiPlus;
+				goto REDO_DISPMETHOD;
+#endif
 			}
 			else
 			{
@@ -199,6 +204,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Global.Config.SingleInstanceMode)
 				{
+#if FWONLY
 					try
 					{
 						new SingleInstanceController(args).Run();
@@ -207,6 +213,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						// Eat it, MainForm disposed itself and Run attempts to dispose of itself.  Eventually we would want to figure out a way to prevent that, but in the meantime it is harmless, so just eat the error
 					}
+#endif
 				}
 				else
 				{

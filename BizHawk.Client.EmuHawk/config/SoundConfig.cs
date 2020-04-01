@@ -86,11 +86,13 @@ namespace BizHawk.Client.EmuHawk
 		private void PopulateDeviceList()
 		{
 			IEnumerable<string> deviceNames = Enumerable.Empty<string>();
+#if FWONLY_DIRECTSOUND
 			if (!OSTailoredCode.IsUnixHost)
 			{
 				if (rbSoundMethodDirectSound.Checked) deviceNames = DirectSoundSoundOutput.GetDeviceNames();
 				if (rbSoundMethodXAudio2.Checked) deviceNames = XAudio2SoundOutput.GetDeviceNames();
 			}
+#endif
 			if (rbSoundMethodOpenAL.Checked) deviceNames = OpenALSoundOutput.GetDeviceNames();
 
 			listDevices.Items.Clear();

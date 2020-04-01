@@ -1,176 +1,21 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+	<Import Project="$(SolutionDir)MainSlnCommon.props" />
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<AppDesignerFolder>Properties</AppDesignerFolder>
-		<ApplicationIcon>images/logo.ico</ApplicationIcon>
-		<ApplicationManifest>app.manifest</ApplicationManifest>
-		<ApplicationRevision>0</ApplicationRevision>
-		<ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-		<AssemblyName>EmuHawk</AssemblyName>
-		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-		<BootstrapperEnabled>true</BootstrapperEnabled>
-		<CodeAnalysisRuleSet Condition=" '$(OS)' == 'Windows_NT' ">AllRules.ruleset</CodeAnalysisRuleSet>
-		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-		<ErrorReport>prompt</ErrorReport>
-		<FileAlignment>512</FileAlignment>
-		<FileUpgradeFlags/>
-		<Install>true</Install>
-		<InstallFrom>Disk</InstallFrom>
-		<IsWebBootstrapper>false</IsWebBootstrapper>
-		<LangVersion>8.0</LangVersion>
-		<MapFileExtensions>true</MapFileExtensions>
-		<OldToolsVersion>3.5</OldToolsVersion>
-		<OutputPath>$(SolutionDir)output</OutputPath>
+		<DefineConstants>$(DefineConstants);WINDOWS</DefineConstants>
 		<OutputType>WinExe</OutputType>
-		<Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-		<PlatformTarget>AnyCPU</PlatformTarget>
-		<Prefer32Bit>false</Prefer32Bit>
-		<ProjectGuid>{DD448B37-BA3F-4544-9754-5406E8094723}</ProjectGuid>
-		<ProductVersion>9.0.30729</ProductVersion>
-		<PublishUrl>publish/</PublishUrl>
-		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
-		<RootNamespace>BizHawk.Client.EmuHawk</RootNamespace>
-		<SchemaVersion>2.0</SchemaVersion>
-		<StartupObject>BizHawk.Client.EmuHawk.Program</StartupObject>
-		<TargetFrameworkProfile/>
-		<TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-		<UpdateEnabled>false</UpdateEnabled>
-		<UpdateInterval>7</UpdateInterval>
-		<UpdateIntervalUnits>Days</UpdateIntervalUnits>
-		<UpdateMode>Foreground</UpdateMode>
-		<UpdatePeriodically>false</UpdatePeriodically>
-		<UpdateRequired>false</UpdateRequired>
-		<UpgradeBackupLocation/>
-		<UseApplicationTrust>false</UseApplicationTrust>
-		<UseVSHostingProcess>false</UseVSHostingProcess>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<UseWindowsForms>true</UseWindowsForms>
 	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-		<DebugSymbols>true</DebugSymbols>
-		<DebugType>full</DebugType>
-		<DefineConstants>DEBUG;EXE_PROJECT</DefineConstants>
-		<Optimize>false</Optimize>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-		<DebugSymbols>false</DebugSymbols>
-		<DebugType>pdbonly</DebugType>
-		<DefineConstants>EXE_PROJECT</DefineConstants>
-		<Optimize>true</Optimize>
-	</PropertyGroup>
-	<ItemGroup>
-		<BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-			<Visible>False</Visible>
-			<ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-			<Install>false</Install>
-		</BootstrapperPackage>
-		<BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
-			<Visible>False</Visible>
-			<ProductName>.NET Framework 2.0 %28x86%29</ProductName>
-			<Install>false</Install>
-		</BootstrapperPackage>
-		<BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
-			<Visible>False</Visible>
-			<ProductName>.NET Framework 3.0 %28x86%29</ProductName>
-			<Install>false</Install>
-		</BootstrapperPackage>
-		<BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
-			<Visible>False</Visible>
-			<ProductName>.NET Framework 3.5</ProductName>
-			<Install>false</Install>
-		</BootstrapperPackage>
-		<BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-			<Visible>False</Visible>
-			<ProductName>.NET Framework 3.5 SP1</ProductName>
-			<Install>true</Install>
-		</BootstrapperPackage>
-		<BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-			<Visible>False</Visible>
-			<ProductName>Windows Installer 3.1</ProductName>
-			<Install>true</Install>
-		</BootstrapperPackage>
-	</ItemGroup>
 	<Import Project="$(SolutionDir)CommonStyleCopAnalyzer.props" />
-	<Import Project="$(SolutionDir)CommonRefAssemblies.props" Condition=" '$(OS)' != 'Windows_NT' " />
-	<Import Project="ProjectPkgRefs.props" Condition=" '$(OS)' != 'Windows_NT' " />
-	<ItemGroup Condition=" '$(OS)' == 'Windows_NT' ">
-		<Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed"
-			HintPath="$(SolutionDir)packages/Newtonsoft.Json.12.0.3/lib/net45/Newtonsoft.Json.dll"
-			Private="true" />
-		<Reference Include="OpenTK.GLControl, Version=3.0.1.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4"
-			HintPath="$(SolutionDir)packages/OpenTK.GLControl.3.0.1/lib/net20/OpenTK.GLControl.dll"
-			Private="true" />
-		<Reference Include="ICSharpCode.SharpZipLib, Version=1.1.0.145, Culture=neutral, PublicKeyToken=1b03e6acf1164f73"
-			HintPath="$(SolutionDir)packages/SharpZipLib.1.1.0/lib/net45/ICSharpCode.SharpZipLib.dll"
-			Private="true" />
-		<Reference Include="System.Drawing.Common, Version=4.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51"
-			HintPath="$(SolutionDir)packages/System.Drawing.Common.4.7.0/lib/net461/System.Drawing.Common.dll"
-			Private="true" />
-	</ItemGroup>
 	<ItemGroup>
-		<Reference Include="GongShell"
-			HintPath="$(SolutionDir)References/GongShell.dll"
-			Private="true" />
-		<Reference Include="NLua, Version=1.3.2.0, Culture=neutral, processorArchitecture=MSIL"
-			HintPath="$(SolutionDir)output/dll/nlua/NLua.dll"
-			Private="true"
-			SpecificVersion="false" />
-		<Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL"
-			HintPath="$(SolutionDir)References/OpenTK.dll"
-			Private="true"
-			SpecificVersion="false" />
-		<Reference Include="SlimDX"
-			HintPath="$(SolutionDir)References/x64/SlimDX.dll"
-			Private="true" />
-		<Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
-			HintPath="$(SolutionDir)References/System.ComponentModel.Annotations.dll"
-			Private="true" />
-	</ItemGroup>
-	<ItemGroup>
-		<Reference Include="Microsoft.CSharp" />
-		<Reference Include="Microsoft.VisualBasic" />
-		<Reference Include="System" />
-		<!--<Reference Include="System.Core" RequiredTargetFramework="3.5" />-->
-		<Reference Include="System.Data" />
-		<!--<Reference Include="System.Data.DataSetExtensions" RequiredTargetFramework="3.5" />-->
-		<!--<Reference Include="System.Deployment" Condition=" '$(OS)' == 'Windows_NT' " />-->
-		<Reference Include="System.DirectoryServices" />
-		<Reference Include="System.Drawing" />
-		<Reference Include="System.Net.Http" />
-		<Reference Include="System.Numerics" />
-		<Reference Include="System.Windows.Forms" />
-		<!--<Reference Include="System.Xaml" />-->
-		<Reference Include="System.Xml" />
-		<Reference Include="System.Xml.Linq" /><!-- RequiredTargetFramework="3.5" -->
-		<!--<Reference Include="WindowsBase" />-->
-	</ItemGroup>
-	<ItemGroup>
-		<ProjectReference Include="$(SolutionDir)BizHawk.Client.ApiHawk/BizHawk.Client.ApiHawk.csproj"
-			Name="BizHawk.Client.ApiHawk"
-			Project="{8e2f11f2-3955-4382-8c3a-ceba1276caea}" />
-		<ProjectReference Include="$(SolutionDir)BizHawk.Client.Common/BizHawk.Client.Common.csproj"
-			Name="BizHawk.Client.Common"
-			Project="{24A0AA3C-B25F-4197-B23D-476D6462DBA0}" />
-		<ProjectReference Include="$(SolutionDir)BizHawk.Common/BizHawk.Common.csproj"
-			Name="BizHawk.Common"
-			Project="{866F8D13-0678-4FF9-80A4-A3993FD4D8A3}" />
-		<ProjectReference Include="$(SolutionDir)BizHawk.Emulation.Common/BizHawk.Emulation.Common.csproj"
-			Name="BizHawk.Emulation.Common"
-			Project="{e1a23168-b571-411c-b360-2229e7225e0e}" />
-		<ProjectReference Include="$(SolutionDir)BizHawk.Emulation.Cores/BizHawk.Emulation.Cores.csproj"
-			Name="BizHawk.Emulation.Cores"
-			Project="{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}" />
-		<ProjectReference Include="$(SolutionDir)BizHawk.WinForms.Controls/BizHawk.WinForms.Controls.csproj"
-			Name="BizHawk.WinForms.Controls"
-			Project="{B5A2214B-3CB0-48C4-8DB1-98B38D48AC4A}" />
-		<ProjectReference Include="$(SolutionDir)Bizware/BizHawk.Bizware.BizwareGL/BizHawk.Bizware.BizwareGL.csproj"
-			Name="BizHawk.Bizware.BizwareGL"
-			Project="{9F84A0B2-861E-4EF4-B89B-5E2A3F38A465}" />
-	</ItemGroup>
-	<ItemGroup>
+		<ProjectReference Include="$(SolutionDir)BizHawk.Client.ApiHawk/BizHawk.Client.ApiHawk.csproj" />
+		<ProjectReference Include="$(SolutionDir)BizHawk.WinForms.Controls/BizHawk.WinForms.Controls.csproj" />
 		<Compile Include="**/*.cs" />
 		<Compile Include="$(SolutionDir)BizHawk.Common/OSTailoredCode.cs" Link="OSTailoredCode.cs" />
 		<Compile Include="$(SolutionDir)Version/svnrev.cs" Link="svnrev.cs" />
 		<Compile Include="$(SolutionDir)Version/VersionInfo.cs" Link="VersionInfo.cs" />
+		<Compile Remove="tools/Lua/**/*.cs" />
 		<Compile Remove="Properties/Settings.Designer.cs" />
 		<Content Include="images/logo.ico" />
 		<EmbeddedResource Include="**/*.resx" />
@@ -694,8 +539,6 @@
 		<Compile Update="tools/Watch/WatchValueBox.cs" SubType="Component" />
 		<Compile Update="UpdateChecker.cs" SubType="Code" />
 	</ItemGroup>
-	<Import Project="$(MSBuildBinPath)/Microsoft.CSharp.targets" />
-	<Import Project="$(SolutionDir)CommonResourceGen.props" Condition=" '$(MSBuildRuntimeType)' == 'Core' " />
 	<Target Name="AfterBuild">
 		<ItemGroup>
 			<AssetFiles Include="$(SolutionDir)Assets/**/*.*" Exclude="$(SolutionDir)Assets/**/.gitempty;$(SolutionDir)Assets/**/.gitignore" />

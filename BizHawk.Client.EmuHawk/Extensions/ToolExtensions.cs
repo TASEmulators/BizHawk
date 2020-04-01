@@ -116,6 +116,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 							tsdd.Items.Add(tsmiCopyFile);
 
 							var tsmiTest = new ToolStripMenuItem { Text = "&Shell Context Menu" };
+#if FWONLY
 							tsmiTest.Click += (o, ev) =>
 							{
 								var si = new GongSolutions.Shell.ShellItem(hf.FullPathWithoutMember);
@@ -124,6 +125,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 								tsddi.Owner.Update();
 								scm.ShowContextMenu(tsddi.Owner, new System.Drawing.Point(0, 0));
 							};
+#endif
 							tsdd.Items.Add(tsmiTest);
 
 							tsdd.Items.Add(new ToolStripSeparator());

@@ -331,9 +331,11 @@ namespace BizHawk.Client.EmuHawk
 				case "Trace Logger":
 					Tools.Load<TraceLogger>();
 					break;
+#if FWONLY_LUA
 				case "Lua Console":
 					OpenLuaConsole();
 					break;
+#endif
 				case "Cheats":
 					Tools.Load<Cheats>();
 					break;

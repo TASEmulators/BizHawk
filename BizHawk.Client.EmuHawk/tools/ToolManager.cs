@@ -696,6 +696,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateToolsBefore(bool fromLua = false)
 		{
+#if FWONLY_LUA
 			if (Has<LuaConsole>())
 			{
 				if (!fromLua)
@@ -703,19 +704,23 @@ namespace BizHawk.Client.EmuHawk
 					LuaConsole.LuaImp.StartLuaDrawing();
 				}
 			}
+#endif
 
 			UpdateBefore();
 		}
 
 		public void UpdateToolsAfter(bool fromLua = false)
 		{
+#if FWONLY_LUA
 			if (!fromLua && Has<LuaConsole>())
 			{
 				LuaConsole.ResumeScripts(true);
 			}
+#endif
 
 			UpdateAfter();
 
+#if FWONLY_LUA
 			if (Has<LuaConsole>())
 			{
 				if (!fromLua)
@@ -723,6 +728,7 @@ namespace BizHawk.Client.EmuHawk
 					LuaConsole.LuaImp.EndLuaDrawing();
 				}
 			}
+#endif
 		}
 
 		public void FastUpdateBefore()
@@ -740,10 +746,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void FastUpdateAfter(bool fromLua = false)
 		{
+#if FWONLY_LUA
 			if (!fromLua && _config.RunLuaDuringTurbo && Has<LuaConsole>())
 			{
 				LuaConsole.ResumeScripts(true);
 			}
+#endif
 
 			var afterList = _tools.Where(t => !t.UpdateBefore);
 			foreach (var tool in afterList)
@@ -755,10 +763,12 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
+#if FWONLY_LUA
 			if (_config.RunLuaDuringTurbo && Has<LuaConsole>())
 			{
 				LuaConsole.LuaImp.EndLuaDrawing();
 			}
+#endif
 		}
 
 		private static readonly Lazy<List<string>> LazyAsmTypes = new Lazy<List<string>>(() =>
@@ -820,7 +830,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public SNESGraphicsDebugger SNESGraphicsDebugger => GetTool<SNESGraphicsDebugger>();
 
+#if FWONLY_LUA
 		public LuaConsole LuaConsole => GetTool<LuaConsole>();
+#endif
 
 		public TAStudio TAStudio => GetTool<TAStudio>();
 

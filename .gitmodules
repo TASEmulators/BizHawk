@@ -19,3 +19,6 @@
 	path = melonds
 	url = https://github.com/TASVideos/melonDS.git
 	branch = SuuperW_DSHawk
+[submodule "PeNet"]
+	path = ExternalProjects/PeNet
+	url = ../../nattthebear/PeNet.git

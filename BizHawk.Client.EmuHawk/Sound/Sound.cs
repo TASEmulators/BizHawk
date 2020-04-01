@@ -31,10 +31,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Global.Config.SoundOutputMethod == ESoundOutputMethod.OpenAL)
 					_outputDevice = new OpenALSoundOutput(this);
+#if FWONLY_DIRECTSOUND
 				if (Global.Config.SoundOutputMethod == ESoundOutputMethod.DirectSound)
 					_outputDevice = new DirectSoundSoundOutput(this, mainWindowHandle, Global.Config.SoundDevice);
 				if (Global.Config.SoundOutputMethod == ESoundOutputMethod.XAudio2)
 					_outputDevice = new XAudio2SoundOutput(this);
+#endif
 			}
 
 			if (_outputDevice == null)

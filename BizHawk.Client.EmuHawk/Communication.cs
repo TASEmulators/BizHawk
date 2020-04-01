@@ -389,7 +389,6 @@ namespace BizHawk.Client.EmuHawk
 		class ScreenShot
 		{
 			private IVideoProvider _currentVideoProvider;
-			private readonly ImageConverter _converter = new ImageConverter();
 
 			public BitmapBuffer MakeScreenShotImage()
 			{
@@ -402,7 +401,9 @@ namespace BizHawk.Client.EmuHawk
 
 			public byte[] ImageToByte(Image img)
 			{
-				return (byte[])_converter.ConvertTo(img, typeof(byte[]));
+				using var ms = new MemoryStream();
+				img.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
+				return ms.ToArray();
 			}
 
 			public string ImageToString(Image img)

@@ -52,7 +52,7 @@ namespace BizHawk.BizInvoke
 		static BizInvoker()
 		{
 			var aname = new AssemblyName("BizInvokeProxyAssembly");
-			ImplAssemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(aname, AssemblyBuilderAccess.Run);
+			ImplAssemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(aname, AssemblyBuilderAccess.Run);
 			ImplModuleBuilder = ImplAssemblyBuilder.DefineDynamicModule("BizInvokerModule");
 		}
 
@@ -178,7 +178,7 @@ namespace BizHawk.BizInvoke
 			var ret = new InvokerImpl
 			{
 				Hooks = postCreateHooks,
-				ImplType = type.CreateType()
+				ImplType = type.CreateTypeInfo()
 			};
 			if (monitor)
 			{
@@ -271,7 +271,7 @@ namespace BizHawk.BizInvoke
 			return (o, dll, adapter) =>
 			{
 				var entryPtr = dll.GetProcAddrOrThrow(entryPointName);
-				var interopDelegate = adapter.GetDelegateForFunctionPointer(entryPtr, delegateType.CreateType());
+				var interopDelegate = adapter.GetDelegateForFunctionPointer(entryPtr, delegateType.CreateTypeInfo());
 				o.GetType().GetField(field.Name).SetValue(o, interopDelegate);
 			};
 		}
@@ -325,9 +325,11 @@ namespace BizHawk.BizInvoke
 			il.Emit(OpCodes.Ldarg_0);
 			il.Emit(OpCodes.Ldfld, field);
 			il.EmitCalli(OpCodes.Calli, 
-				nativeCall, 
+				(CallingConventions) (int) nativeCall, //HACK these are, in fact, different enums
 				returnType == typeof(bool) ? typeof(byte) : returnType, // undo winapi style bool garbage
-				nativeParamTypes.ToArray());
+				nativeParamTypes.ToArray(),
+				Type.EmptyTypes
+			);
 
 			if (monitorField != null) // monitor: finally exit
 			{

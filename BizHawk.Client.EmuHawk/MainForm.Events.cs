@@ -1473,10 +1473,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+#if FWONLY_LUA
 		private void LuaConsoleMenuItem_Click(object sender, EventArgs e)
 		{
 			OpenLuaConsole();
 		}
+#endif
 
 		private void TAStudioMenuItem_Click(object sender, EventArgs e)
 		{

@@ -73,6 +73,7 @@ namespace BizHawk.Client.EmuHawk
 			ProcessMovieImport(filename, true);
 		}
 
+		[Conditional("FWONLY_LUA")]
 		private void LoadLuaFile(string filename, string archive = null)
 		{
 			OpenLuaConsole();
@@ -83,6 +84,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		[Conditional("FWONLY_LUA")]
 		private void LoadLuaSession(string filename, string archive = null)
 		{
 			OpenLuaConsole();

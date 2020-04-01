@@ -84,7 +84,11 @@ namespace BizHawk.Client.EmuHawk
 				LoadCustomFont(fceux);
 			}
 
+#if FWONLY_DIRECT3D
 			if (GL is IGL_TK || GL is IGL_SlimDX9)
+#else
+			if (GL is IGL_TK)
+#endif
 			{
 				var fiHq2x = new FileInfo(Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk/hq2x.cgp"));
 				if (fiHq2x.Exists)
@@ -100,10 +104,12 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				string bicubicPath = "Shaders/BizHawk/bicubic-fast.cgp";
+#if FWONLY_DIRECT3D
 				if (GL is IGL_SlimDX9)
 				{
 					bicubicPath = "Shaders/BizHawk/bicubic-normal.cgp";
 				}
+#endif
 				var fiBicubic = new FileInfo(Path.Combine(PathUtils.ExeDirectoryPath, bicubicPath));
 				if (fiBicubic.Exists)
 				{
@@ -894,8 +900,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			bool alternateVsync = false;
 
+#if FWONLY_DIRECT3D
 			// only used by alternate vsync
 			IGL_SlimDX9 dx9 = null;
+#endif
 
 			if (!job.Offscreen)
 			{
@@ -910,6 +918,7 @@ namespace BizHawk.Client.EmuHawk
 				if (Global.DisableSecondaryThrottling)
 					vsync = false;
 
+#if FWONLY_DIRECT3D
 				//for now, it's assumed that the presentation panel is the main window, but that may not always be true
 				if (vsync && Global.Config.DispAlternateVsync && Global.Config.VSyncThrottle)
 				{
@@ -921,6 +930,7 @@ namespace BizHawk.Client.EmuHawk
 						vsync = false;
 					}
 				}
+#endif
 
 				//TODO - whats so hard about triple buffering anyway? just enable it always, and change api to SetVsync(enable,throttle)
 				//maybe even SetVsync(enable,throttlemethod) or just SetVsync(enable,throttle,advanced)
@@ -1006,13 +1016,17 @@ namespace BizHawk.Client.EmuHawk
 				Debug.Assert(inFinalTarget);
 
 				// wait for vsync to begin
+#if FWONLY_DIRECT3D
 				if (alternateVsync) dx9.AlternateVsyncPass(0);
+#endif
 
 				// present and conclude drawing
 				presentationPanel.GraphicsControl.SwapBuffers();
 
 				// wait for vsync to end
+#if FWONLY_DIRECT3D
 				if (alternateVsync) dx9.AlternateVsyncPass(1);
+#endif
 
 				// nope. don't do this. workaround for slow context switching on intel GPUs. just switch to another context when necessary before doing anything
 				// presentationPanel.GraphicsControl.End();

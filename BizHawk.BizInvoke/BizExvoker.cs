@@ -25,7 +25,7 @@ namespace BizHawk.BizInvoke
 		static BizExvoker()
 		{
 			var aname = new AssemblyName("BizExvokeProxyAssembly");
-			ImplAssemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(aname, AssemblyBuilderAccess.Run);
+			ImplAssemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(aname, AssemblyBuilderAccess.Run);
 			ImplModuleBuilder = ImplAssemblyBuilder.DefineDynamicModule("BizExvokerModule");
 		}
 
@@ -73,10 +73,10 @@ namespace BizHawk.BizInvoke
 				foreach (var a in methods)
 				{
 					MethodBuilder unused;
-					var delegateType = BizInvokeUtilities.CreateDelegateType(a.Info, a.Attr.CallingConvention, typeBuilder, out unused).CreateType();
+					var delegateType = BizInvokeUtilities.CreateDelegateType(a.Info, a.Attr.CallingConvention, typeBuilder, out unused).CreateTypeInfo();
 					DelegateTypes.Add(new StoredDelegateInfo(a.Info, delegateType, a.Attr.EntryPoint ?? a.Info.Name));
 				}
-				StorageType = typeBuilder.CreateType();
+				StorageType = typeBuilder.CreateTypeInfo();
 				OriginalType = type;
 			}
 		}

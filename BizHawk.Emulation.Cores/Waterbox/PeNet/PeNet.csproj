@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{FE67C8A3-B4B2-4429-A5BA-379580EEE90C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PeNet</RootNamespace>
+    <AssemblyName>PeNet</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\PeNet.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\PeNet.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\x64\Debug\PeNet.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\x64\Release\PeNet.XML</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CrlUrlList.cs" />
+    <Compile Include="DataDirectoryParsers.cs" />
+    <Compile Include="DotNetConstants.cs" />
+    <Compile Include="DotNetStructureParsers.cs" />
+    <Compile Include="ExportFunction.cs" />
+    <Compile Include="FileCharacteristics.cs" />
+    <Compile Include="PeValidator.cs" />
+    <Compile Include="Structures\MetaDataTables\AbstractMetaDataTable.cs" />
+    <Compile Include="Structures\MetaDataTables\AbstractMetaDataTableRow.cs" />
+    <Compile Include="Structures\MetaDataTables\MetaDataTablesParser.cs" />
+    <Compile Include="Structures\MetaDataTables\ModuleTable.cs" />
+    <Compile Include="Structures\MetaDataTables\ModuleTableRow.cs" />
+    <Compile Include="Structures\MetaDataTables\Parsers\ModuleTableParser.cs" />
+    <Compile Include="Structures\MetaDataTables\Parsers\TypeRefTableParser.cs" />
+    <Compile Include="Structures\MetaDataTables\TypeRefTable.cs" />
+    <Compile Include="Structures\MetaDataTables\TypeRefTableRow.cs" />
+    <Compile Include="Utilities\HeapOffsetBasedIndexSizes.cs" />
+    <Compile Include="Structures\MetaDataTables\MetaDataTableIndexComputation.cs" />
+    <Compile Include="Utilities\SignatureInformation.cs" />
+    <Compile Include="Utilities\Hashes.cs" />
+    <Compile Include="ImpHash\ImportHash.cs" />
+    <Compile Include="ImportFunction.cs" />
+    <Compile Include="Parser\ExportedFunctionsParser.cs" />
+    <Compile Include="Parser\ImageBaseRelocationsParser.cs" />
+    <Compile Include="Parser\ImageBoundImportDescriptorParser.cs" />
+    <Compile Include="Parser\ImageCor20HeaderParser.cs" />
+    <Compile Include="Parser\ImageDebugDirectoryParser.cs" />
+    <Compile Include="Parser\ImageDelayImportDescriptorParser.cs" />
+    <Compile Include="Parser\ImageDosHeaderParser.cs" />
+    <Compile Include="Parser\ImageExportDirectoriesParser.cs" />
+    <Compile Include="Parser\ImageImportDescriptorsParser.cs" />
+    <Compile Include="Parser\ImageLoadConfigDirectoryParser.cs" />
+    <Compile Include="Parser\ImageNtHeadersParser.cs" />
+    <Compile Include="Parser\ImageResourceDirectoryParser.cs" />
+    <Compile Include="Parser\ImageSectionHeadersParser.cs" />
+    <Compile Include="Parser\ImportedFunctionsParser.cs" />
+    <Compile Include="Parser\MetaDataHdrParser.cs" />
+    <Compile Include="Parser\MetaDataStreamStringParser.cs" />
+    <Compile Include="Parser\MetaDataStreamUSParser.cs" />
+    <Compile Include="Parser\MetaDataStreamTablesHeaderParser.cs" />
+    <Compile Include="Parser\PKCS7Parser.cs" />
+    <Compile Include="Parser\RuntimeFunctionsParser.cs" />
+    <Compile Include="Parser\SafeParser.cs" />
+    <Compile Include="Parser\WinCertificateParser.cs" />
+    <Compile Include="NativeStructureParsers.cs" />
+    <Compile Include="Structures\AbstractStructure.cs" />
+    <Compile Include="Structures\Copyright.cs" />
+    <Compile Include="Parser\ImageTlsDirectoryParser.cs" />
+    <Compile Include="Structures\IMAGE_BASE_RELOCATION.cs" />
+    <Compile Include="Structures\IMAGE_BOUND_IMPORT_DESCRIPTOR.cs" />
+    <Compile Include="Structures\IMAGE_COR20_HEADER.cs" />
+    <Compile Include="Structures\IMAGE_DEBUG_DIRECTORY.cs" />
+    <Compile Include="Structures\IMAGE_DELAY_IMPORT_DESCRIPTOR.cs" />
+    <Compile Include="Structures\IMAGE_LOAD_CONFIG_DIRECTORY.cs" />
+    <Compile Include="Structures\IMAGE_RESOURCE_DATA_ENTRY.cs" />
+    <Compile Include="SignatureValidation.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="PatternMatching\AhoCorasick.cs" />
+    <Compile Include="Structures\IMAGE_DATA_DIRECTORY.cs" />
+    <Compile Include="Structures\IMAGE_DOS_HEADER.cs" />
+    <Compile Include="Structures\IMAGE_EXPORT_DIRECTORY.cs" />
+    <Compile Include="Structures\IMAGE_FILE_HEADER.cs" />
+    <Compile Include="Structures\IMAGE_IMPORT_BY_NAME.cs" />
+    <Compile Include="Structures\IMAGE_IMPORT_DESCRIPTOR.cs" />
+    <Compile Include="Structures\IMAGE_NT_HEADERS.cs" />
+    <Compile Include="Structures\IMAGE_OPTIONAL_HEADER.cs" />
+    <Compile Include="Structures\IMAGE_RESOURCE_DIRECTORY.cs" />
+    <Compile Include="Structures\IMAGE_RESOURCE_DIRECTORY_ENTRY.cs" />
+    <Compile Include="Structures\IMAGE_RESOURCE_DIR_STRING_U.cs" />
+    <Compile Include="Structures\IMAGE_SECTION_HEADER.cs" />
+    <Compile Include="Structures\IMAGE_THUNK_DATA.cs" />
+    <Compile Include="ImpHash\OrdinalSymbolMapping.cs" />
+    <Compile Include="PeFile.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Structures\IMAGE_TLS_CALLBACK.cs" />
+    <Compile Include="Structures\IMAGE_TLS_DIRECTORY.cs" />
+    <Compile Include="Structures\METADATAHDR.cs" />
+    <Compile Include="Structures\METADATASTREAMHDR.cs" />
+    <Compile Include="Structures\METADATATABLESHDR.cs" />
+    <Compile Include="Structures\RUNTIME_FUNCTION.cs" />
+    <Compile Include="Structures\UNWIND_CODE.cs" />
+    <Compile Include="Structures\UNWIND_INFO.cs" />
+    <Compile Include="Utilities\ExtensionMethods.cs" />
+    <Compile Include="Utilities\FlagResolver.cs" />
+    <Compile Include="Structures\WIN_CERTIFICATE.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
