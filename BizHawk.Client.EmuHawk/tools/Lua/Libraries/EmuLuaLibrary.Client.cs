@@ -362,8 +362,8 @@ namespace BizHawk.Client.EmuHawk
 			MainForm.TogglePause();
 		}
 
-		[LuaMethodExample("local newPoint = client.transformPoint( 32, 100 );")]
-		[LuaMethod("transformPoint", "Transforms a point in emulator space to a point in client space")]
+		[LuaMethodExample("local newY = client.transform_point( 32, 100 ).y;")]
+		[LuaMethod("transform_point", "Transforms a point (x, y) in emulator space to a point in client space")]
 		public LuaTable TransformPoint(int x, int y) {
 			var transformed = ClientApi.TransformPoint(new Point(x, y));
 			var table = Lua.NewTable();
