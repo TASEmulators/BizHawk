@@ -23,6 +23,7 @@ namespace GBHawk
 		// pointers not stated
 		bool* FlagI = nullptr;
 		bool* in_vblank = nullptr;
+		bool* vblank_rise = nullptr;
 		bool* cpu_halted = nullptr;
 		bool* HDMA_transfer = nullptr;
 		bool* GBC_compat = nullptr;
@@ -197,6 +198,8 @@ namespace GBHawk
 		virtual void Reset() { }
 
 		virtual void reorder_and_assemble_sprites() { }
+
+		void vblank_process();
 
 		uint8_t BG_PAL_read()
 		{
@@ -850,7 +853,7 @@ namespace GBHawk
 
 					if (LY == 144)
 					{
-						in_vblank[0] = true;
+						vblank_process();
 					}
 				}
 
@@ -1787,7 +1790,7 @@ namespace GBHawk
 				{
 					if (OAM_scan_index < 40)
 					{
-						uint32_t temp = DMA_OAM_access ? OAM[OAM_scan_index * 4] : (uint32_t)0xFF;
+						int32_t temp = DMA_OAM_access ? OAM[OAM_scan_index * 4] : (int32_t)0xFF;
 						// (sprite Y - 16) equals LY, we have a sprite
 						if ((temp - 16) <= LY &&
 							((temp - 16) + 8 + (((LCDC & 0x4) > 0) ? 8 : 0)) > LY)
@@ -2220,7 +2223,7 @@ namespace GBHawk
 
 					if (LY == 144)
 					{
-						in_vblank[0] = true;
+						vblank_process();
 					}
 				}
 
@@ -3221,7 +3224,7 @@ namespace GBHawk
 				{
 					if (OAM_scan_index < 40)
 					{
-						uint32_t temp = DMA_OAM_access ? OAM[OAM_scan_index * 4] : (uint32_t)0xFF;
+						int32_t temp = DMA_OAM_access ? OAM[OAM_scan_index * 4] : (int32_t)0xFF;
 						// (sprite Y - 16) equals LY, we have a sprite
 						if ((temp - 16) <= LY &&
 							((temp - 16) + 8 + (((LCDC & 0x4) > 0) ? 8 : 0)) > LY)
@@ -3680,7 +3683,7 @@ namespace GBHawk
 
 					if (LY == 144)
 					{
-						in_vblank[0] = true;
+						vblank_process();
 					}
 				}
 
@@ -4738,7 +4741,7 @@ namespace GBHawk
 				{
 					if (OAM_scan_index < 40)
 					{
-						uint32_t temp = DMA_OAM_access ? OAM[OAM_scan_index * 4] : (uint32_t)0xFF;
+						int32_t temp = DMA_OAM_access ? OAM[OAM_scan_index * 4] : (int32_t)0xFF;
 						// (sprite Y - 16) equals LY, we have a sprite
 						if ((temp - 16) <= LY &&
 							((temp - 16) + 8 + (((LCDC & 0x4) > 0) ? 8 : 0)) > LY)

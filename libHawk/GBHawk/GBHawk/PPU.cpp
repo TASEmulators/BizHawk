@@ -13,4 +13,20 @@ namespace GBHawk
 	{
 		return mem_ctrl->ReadMemory(addr);
 	}
+
+	void PPU::vblank_process()
+	{
+		in_vblank[0] = true;
+		vblank_rise[0] = true;
+
+		if (scanlineCallback && (_scanlineCallbackLine[0] == -1))
+		{
+			scanlineCallback();
+		}
+
+		mem_ctrl->do_controller_check();
+
+		// send the image on VBlank
+		mem_ctrl->SendVideoBuffer();
+	}
 }

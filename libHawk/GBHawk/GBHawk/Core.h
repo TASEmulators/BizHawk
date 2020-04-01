@@ -76,24 +76,26 @@ namespace GBHawk
 			MemMap.serialport_pntr = &serialport;
 			cpu.mem_ctrl = &MemMap;
 
-			MemMap.ppu_pntr->FlagI = &cpu.FlagI;
-			MemMap.ppu_pntr->in_vblank = &MemMap.in_vblank;
-			MemMap.ppu_pntr->cpu_LY = &cpu.LY;
-			MemMap.ppu_pntr->REG_FFFF = &MemMap.REG_FFFF;
-			MemMap.ppu_pntr->REG_FF0F = &MemMap.REG_FF0F;
-			MemMap.ppu_pntr->_scanlineCallbackLine = &MemMap._scanlineCallbackLine;
-			MemMap.ppu_pntr->OAM = &MemMap.OAM[0];
-			MemMap.ppu_pntr->VRAM = &MemMap.VRAM[0];
-			MemMap.ppu_pntr->VRAM_Bank = &MemMap.VRAM_Bank;
-			MemMap.ppu_pntr->cpu_halted = &cpu.halted;
-			MemMap.ppu_pntr->_vidbuffer = &MemMap.vidbuffer[0];
-			MemMap.ppu_pntr->color_palette = &MemMap.color_palette[0];
-			MemMap.ppu_pntr->HDMA_transfer = &MemMap.HDMA_transfer;
-			MemMap.ppu_pntr->GBC_compat = &MemMap.GBC_compat;
+			ppu->FlagI = &cpu.FlagI;
+			ppu->in_vblank = &MemMap.in_vblank;
+			ppu->vblank_rise = &MemMap.vblank_rise;
+			ppu->cpu_LY = &cpu.LY;
+			ppu->REG_FFFF = &MemMap.REG_FFFF;
+			ppu->REG_FF0F = &MemMap.REG_FF0F;
+			ppu->_scanlineCallbackLine = &MemMap._scanlineCallbackLine;
+			ppu->OAM = &MemMap.OAM[0];
+			ppu->VRAM = &MemMap.VRAM[0];
+			ppu->VRAM_Bank = &MemMap.VRAM_Bank;
+			ppu->cpu_halted = &cpu.halted;
+			ppu->_vidbuffer = &MemMap.vidbuffer[0];
+			ppu->color_palette = &MemMap.color_palette[0];
+			ppu->HDMA_transfer = &MemMap.HDMA_transfer;
+			ppu->GBC_compat = &MemMap.GBC_compat;
 
 			timer.FlagI = &cpu.FlagI;
 			timer.REG_FFFF = &MemMap.REG_FFFF;
 			timer.REG_FF0F = &MemMap.REG_FF0F;
+			timer.CPU_cycle_pntr = &cpu.TotalExecutedCycles;
 
 			serialport.GBC_compat = &MemMap.GBC_compat;
 			serialport.FlagI = &cpu.FlagI;
@@ -146,6 +148,9 @@ namespace GBHawk
 				temp_check = 5;
 			}
 			*/
+			MemMap.new_controller_1 = new_controller_1;
+			MemMap.new_accx = new_accx;
+			MemMap.new_accy = new_accy;
 
 			temp_check = 70224;
 			
@@ -160,57 +165,30 @@ namespace GBHawk
 				{
 					// These things all tick twice as fast in GBC double speed mode
 					if (ppu->DMA_start && !cpu.halted) { ppu->DMA_tick(); }
-					timer.tick_1();
 					serialport.serial_transfer_tick();
 					cpu.ExecuteOne(&MemMap.REG_FF0F, &MemMap.REG_FFFF);
-					timer.tick_2();
+					timer.tick();
 
 					if (MemMap.double_speed)
 					{
 						if (ppu->DMA_start && !cpu.halted) { ppu->DMA_tick(); }
-						timer.tick_1();
 						serialport.serial_transfer_tick();
 						cpu.ExecuteOne(&MemMap.REG_FF0F, &MemMap.REG_FFFF);
-						timer.tick_2();
+						timer.tick();
 					}
 				}
 				else
 				{
-					timer.tick_1();
-					timer.tick_2();
+					timer.tick();
 					cpu.TotalExecutedCycles++;
 					if (MemMap.double_speed)
 					{
-						timer.tick_1();
-						timer.tick_2();
+						timer.tick();
 						cpu.TotalExecutedCycles++;
 					}
 				}
 
-				if (MemMap.in_vblank && !MemMap.in_vblank_old)
-				{
-					MemMap.lagged = false;
-
-					// update the controller state on VBlank
-					MemMap.controller_state = new_controller_1;
-					MemMap.Acc_X_state = new_accx;
-					MemMap.Acc_Y_state = new_accy;
-
-					// check if controller state caused interrupt
-					do_controller_check();
-
-					// send the image on VBlank
-					SendVideoBuffer();
-
-					if ((ppu->scanlineCallback) && (MemMap._scanlineCallbackLine == -1))
-					{
-						ppu->scanlineCallback();
-					}
-				}
-
 				MemMap.REG_FF0F_OLD = MemMap.REG_FF0F;
-
-				MemMap.in_vblank_old = MemMap.in_vblank;
 			}
 
 			// turn off the screen so the image doesnt persist
@@ -238,29 +216,25 @@ namespace GBHawk
 				// These things all tick twice as fast in GBC double speed mode
 							// Note that DMA is halted when the CPU is halted
 				if (ppu->DMA_start && !cpu.halted) { ppu->DMA_tick(); }
-				timer.tick_1();
 				serialport.serial_transfer_tick();
 				cpu.ExecuteOne(&MemMap.REG_FF0F, &MemMap.REG_FFFF);
-				timer.tick_2();
+				timer.tick();
 
 				if (MemMap.double_speed)
 				{
 					if (ppu->DMA_start && !cpu.halted) { ppu->DMA_tick(); }
-					timer.tick_1();
 					serialport.serial_transfer_tick();
 					cpu.ExecuteOne(&MemMap.REG_FF0F, &MemMap.REG_FFFF);
-					timer.tick_2();
+					timer.tick();
 				}
 			}
 			else
 			{
-				timer.tick_1();
-				timer.tick_2();
+				timer.tick();
 				cpu.TotalExecutedCycles++;
 				if (MemMap.double_speed)
 				{
-					timer.tick_1();
-					timer.tick_2();
+					timer.tick();
 					cpu.TotalExecutedCycles++;
 				}
 			}
@@ -272,69 +246,6 @@ namespace GBHawk
 
 			MemMap.in_vblank_old = MemMap.in_vblank;
 			MemMap.REG_FF0F_OLD = MemMap.REG_FF0F;		
-		}
-
-		void do_controller_check()
-		{
-			// check if new input changed the input register and triggered IRQ
-			uint8_t contr_prev = MemMap.input_register;
-
-			MemMap.input_register &= 0xF0;
-			if ((MemMap.input_register & 0x30) == 0x20)
-			{
-				MemMap.input_register |= (uint8_t)(MemMap.controller_state & 0xF);
-			}
-			else if ((MemMap.input_register & 0x30) == 0x10)
-			{
-				MemMap.input_register |= (uint8_t)((MemMap.controller_state & 0xF0) >> 4);
-			}
-			else if ((MemMap.input_register & 0x30) == 0x00)
-			{
-				// if both polls are set, then a bit is zero if either or both pins are zero
-				uint8_t temp = (uint8_t)((MemMap.controller_state & 0xF) & ((MemMap.controller_state & 0xF0) >> 4));
-				MemMap.input_register |= temp;
-			}
-			else
-			{
-				MemMap.input_register |= 0xF;
-			}
-
-			// check for interrupts			
-			if (((contr_prev & 8) > 0) && ((MemMap.input_register & 8) == 0) ||
-				((contr_prev & 4) > 0) && ((MemMap.input_register & 4) == 0) ||
-				((contr_prev & 2) > 0) && ((MemMap.input_register & 2) == 0) ||
-				((contr_prev & 1) > 0) && ((MemMap.input_register & 1) == 0))
-			{
-				if ((MemMap.REG_FFFF & 0x10) > 0) { cpu.FlagI = true; }
-				MemMap.REG_FF0F |= 0x10;
-			}
-		}
-
-		void SendVideoBuffer()
-		{
-			if (MemMap.GBC_compat)
-			{
-				if (!ppu->blank_frame)
-				{
-					for (int j = 0; j < (160 * 144); j++) { MemMap.frame_buffer[j] = MemMap.vidbuffer[j]; }
-				}
-
-				ppu->blank_frame = false;
-			}
-			else
-			{
-				if (ppu->blank_frame)
-				{
-					for (int i = 0; i < (160 * 144); i++)
-					{
-						MemMap.vidbuffer[i] = (int)MemMap.color_palette[0];
-					}
-				}
-
-				for (int j = 0; j < (160 * 144); j++) { MemMap.frame_buffer[j] = MemMap.vidbuffer[j]; }
-
-				ppu->blank_frame = false;
-			}
 		}
 
 		void GetVideo(uint32_t* dest) 

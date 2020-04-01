@@ -926,4 +926,74 @@ namespace GBHawk
 			color_palette_BG[i] = color_palette[(ppu_pntr->BGP >> (i * 2)) & 3];
 		}
 	}
+
+	void MemoryManager::do_controller_check()
+	{
+		lagged = false;
+
+		// update the controller state on VBlank
+		controller_state = new_controller_1;
+		Acc_X_state = new_accx;
+		Acc_Y_state = new_accy;
+
+		// check if new input changed the input register and triggered IRQ
+		uint8_t contr_prev = input_register;
+
+		input_register &= 0xF0;
+		if ((input_register & 0x30) == 0x20)
+		{
+			input_register |= (uint8_t)(controller_state & 0xF);
+		}
+		else if ((input_register & 0x30) == 0x10)
+		{
+			input_register |= (uint8_t)((controller_state & 0xF0) >> 4);
+		}
+		else if ((input_register & 0x30) == 0x00)
+		{
+			// if both polls are set, then a bit is zero if either or both pins are zero
+			uint8_t temp = (uint8_t)((controller_state & 0xF) & ((controller_state & 0xF0) >> 4));
+			input_register |= temp;
+		}
+		else
+		{
+			input_register |= 0xF;
+		}
+
+		// check for interrupts			
+		if (((contr_prev & 8) > 0) && ((input_register & 8) == 0) ||
+			((contr_prev & 4) > 0) && ((input_register & 4) == 0) ||
+			((contr_prev & 2) > 0) && ((input_register & 2) == 0) ||
+			((contr_prev & 1) > 0) && ((input_register & 1) == 0))
+		{
+			if ((REG_FFFF & 0x10) > 0) { cpu_pntr->FlagI = true; }
+			REG_FF0F |= 0x10;
+		}
+	}
+
+	void MemoryManager::SendVideoBuffer()
+	{
+		if (GBC_compat)
+		{
+			if (!ppu_pntr->blank_frame)
+			{
+				for (int j = 0; j < (160 * 144); j++) { frame_buffer[j] = vidbuffer[j]; }
+			}
+
+			ppu_pntr->blank_frame = false;
+		}
+		else
+		{
+			if (ppu_pntr->blank_frame)
+			{
+				for (int i = 0; i < (160 * 144); i++)
+				{
+					vidbuffer[i] = color_palette[0];
+				}
+			}
+
+			for (int j = 0; j < (160 * 144); j++) { frame_buffer[j] = vidbuffer[j]; }
+
+			ppu_pntr->blank_frame = false;
+		}
+	}
 }

@@ -29,6 +29,8 @@ namespace GBHawk
 		uint8_t Read_Registers(uint32_t addr);
 		void Write_Registers(uint32_t addr, uint8_t value);
 		void compute_palettes();
+		void do_controller_check();
+		void SendVideoBuffer();
 
 		#pragma region Declarations
 
@@ -46,6 +48,11 @@ namespace GBHawk
 		uint32_t ROM_Length;
 		uint32_t ROM_Mapper;
 		uint32_t Cart_RAM_Length;
+
+		// passed in on frame advace, not stated
+		uint8_t new_controller_1;
+		uint32_t new_accx;
+		uint32_t new_accy;
 
 		// State
 		bool lagged;

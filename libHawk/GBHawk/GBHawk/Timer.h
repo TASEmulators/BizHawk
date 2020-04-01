@@ -19,20 +19,21 @@ namespace GBHawk
 		bool* FlagI = nullptr;
 		uint8_t* REG_FFFF = nullptr;
 		uint8_t* REG_FF0F = nullptr;
+		uint64_t* CPU_cycle_pntr = nullptr;
 
-		bool old_state;
-		bool state;
-		bool reload_block;
-		bool TMA_coincidence;
+		bool old_state = false;
+		bool state = false;
+		bool reload_block = false;
+
+		uint8_t timer_reload = 0;
+		uint8_t timer = 0;
+		uint8_t timer_old = 0;
+		uint8_t timer_control = 0;
+		uint8_t pending_reload = 0;
 		
-		uint8_t timer_reload;
-		uint8_t timer;
-		uint8_t timer_old;
-		uint8_t timer_control;
-		uint8_t pending_reload;
-		uint8_t write_ignore;
-		
-		uint32_t divider_reg;
+		uint32_t divider_reg = 0;
+
+		uint64_t next_free_cycle = 0;
 
 		uint8_t ReadReg(uint32_t addr)
 		{
@@ -60,7 +61,7 @@ namespace GBHawk
 
 				// TIMA (Timer Counter)
 			case 0xFF05:
-				if (write_ignore == 0)
+				if (CPU_cycle_pntr[0] >= next_free_cycle)
 				{
 					timer_old = timer;
 					timer = value;
@@ -71,7 +72,7 @@ namespace GBHawk
 				// TMA (Timer Modulo)
 			case 0xFF06:
 				timer_reload = value;
-				if (TMA_coincidence)
+				if (CPU_cycle_pntr[0] < next_free_cycle)
 				{
 					timer = timer_reload;
 					timer_old = timer;
@@ -85,35 +86,7 @@ namespace GBHawk
 			}
 		}
 
-		void tick_1()
-		{
-			if (write_ignore > 0)
-			{
-				write_ignore--;
-				if (write_ignore == 0)
-				{
-					TMA_coincidence = false;
-				}
-			}
-
-			if (pending_reload > 0)
-			{
-				pending_reload--;
-				if (pending_reload == 0 && !reload_block)
-				{
-					timer = timer_reload;
-					timer_old = timer;
-					write_ignore = 4;
-					TMA_coincidence = true;
-
-					// set interrupts
-					if ((REG_FFFF[0] & 0x4) > 0) { FlagI[0] = true; }
-					REG_FF0F[0] |= 0x04;
-				}
-			}
-		}
-
-		void tick_2()
+		void tick()
 		{
 			divider_reg++;
 
@@ -162,6 +135,22 @@ namespace GBHawk
 			}
 
 			old_state = state;
+
+			if (pending_reload > 0)
+			{
+				pending_reload--;
+				if (pending_reload == 0 && !reload_block)
+				{
+					timer = timer_reload;
+					timer_old = timer;
+
+					next_free_cycle = 4 + CPU_cycle_pntr[0];
+
+					// set interrupts
+					if ((REG_FFFF[0] & 0x4) > 0) { FlagI[0] = true; }
+					REG_FF0F[0] |= 0x04;
+				}
+			}
 		}
 
 		void Reset()
@@ -172,11 +161,10 @@ namespace GBHawk
 			timer_old = 0;
 			timer_control = 0xF8;
 			pending_reload = 0;
-			write_ignore = 0;
 			old_state = false;
 			state = false;
 			reload_block = false;
-			TMA_coincidence = false;
+			next_free_cycle = 0;
 		}
 
 		#pragma region State Save / Load
@@ -187,17 +175,20 @@ namespace GBHawk
 			*saver = (uint8_t)(old_state ? 1 : 0); saver++;
 			*saver = (uint8_t)(state ? 1 : 0); saver++;
 			*saver = (uint8_t)(reload_block ? 1 : 0); saver++;
-			*saver = (uint8_t)(TMA_coincidence ? 1 : 0); saver++;
 
 			*saver = timer_reload; saver++;
 			*saver = timer; saver++;
 			*saver = timer_old; saver++;
 			*saver = timer_control; saver++;
 			*saver = pending_reload; saver++;
-			*saver = write_ignore; saver++;
 
 			*saver = (uint8_t)(divider_reg & 0xFF); saver++; *saver = (uint8_t)((divider_reg >> 8) & 0xFF); saver++;
 			*saver = (uint8_t)((divider_reg >> 16) & 0xFF); saver++; *saver = (uint8_t)((divider_reg >> 24) & 0xFF); saver++;
+
+			*saver = (uint8_t)(next_free_cycle & 0xFF); saver++; *saver = (uint8_t)((next_free_cycle >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((next_free_cycle >> 16) & 0xFF); saver++; *saver = (uint8_t)((next_free_cycle >> 24) & 0xFF); saver++;
+			*saver = (uint8_t)((next_free_cycle >> 32) & 0xFF); saver++; *saver = (uint8_t)((next_free_cycle >> 40) & 0xFF); saver++;
+			*saver = (uint8_t)((next_free_cycle >> 48) & 0xFF); saver++; *saver = (uint8_t)((next_free_cycle >> 56) & 0xFF); saver++;
 
 			return saver;
 		}
@@ -207,17 +198,20 @@ namespace GBHawk
 			old_state = *loader == 1; loader++;
 			state = *loader == 1; loader++;
 			reload_block = *loader == 1; loader++;
-			TMA_coincidence = *loader == 1; loader++;
 
 			timer_reload = *loader; loader++;
 			timer = *loader; loader++;
 			timer_old = *loader; loader++;
 			timer_control = *loader; loader++;
 			pending_reload = *loader; loader++;
-			write_ignore  = *loader; loader++;
 
 			divider_reg  = *loader; loader++; divider_reg |= (*loader << 8); loader++;
 			divider_reg |= (*loader << 16); loader++; divider_reg |= (*loader << 24); loader++;
+
+			next_free_cycle = *loader; loader++; next_free_cycle |= ((uint64_t)*loader << 8); loader++;
+			next_free_cycle |= ((uint64_t)*loader << 16); loader++; next_free_cycle |= ((uint64_t)*loader << 24); loader++;
+			next_free_cycle |= ((uint64_t)*loader << 32); loader++; next_free_cycle |= ((uint64_t)*loader << 40); loader++;
+			next_free_cycle |= ((uint64_t)*loader << 48); loader++; next_free_cycle |= ((uint64_t)*loader << 56); loader++;
 
 			return loader;
 		}
