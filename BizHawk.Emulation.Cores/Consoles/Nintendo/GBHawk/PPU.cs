@@ -9,6 +9,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public uint[] BG_palette = new uint[32];
 		public uint[] OBJ_palette = new uint[32];
 
+		public uint[] color_palette = new uint[4];
+
 		public bool HDMA_active;
 		public bool clear_screen;
 

@@ -63,46 +63,50 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 				else if ((addr >= 0xFF80))
 				{
+					// register FFFF?
 					return ZP_RAM[addr - 0xFF80];
 				}
 				
 				return 0xFF;
 			}
 			
-			if (addr < 0x900)
+			if (addr < 0x8000) 
 			{
-				if (addr < 0x100)
+				if (addr >= 0x900)
 				{
-					// return Either BIOS ROM or Game ROM
-					if ((GB_bios_register & 0x1) == 0)
-					{
-						return _bios[addr]; // Return BIOS
-					}
-					else
-					{
-						return mapper.ReadMemory(addr);
-					}
-				}
-				else if (addr >= 0x200)
-				{
-					// return Either BIOS ROM or Game ROM
-					if (((GB_bios_register & 0x1) == 0) && is_GBC)
-					{
-						return _bios[addr]; // Return BIOS
-					}
-					else
-					{
-						return mapper.ReadMemory(addr);
-					}
+					return mapper.ReadMemory(addr);					
 				}
 				else
 				{
-					return mapper.ReadMemory(addr);
+					if (addr < 0x100)
+					{
+						// return Either BIOS ROM or Game ROM
+						if ((GB_bios_register & 0x1) == 0)
+						{
+							return _bios[addr]; // Return BIOS
+						}
+						else
+						{
+							return mapper.ReadMemory(addr);
+						}
+					}
+					else if (addr >= 0x200)
+					{
+						// return Either BIOS ROM or Game ROM
+						if (((GB_bios_register & 0x1) == 0) && is_GBC)
+						{
+							return _bios[addr]; // Return BIOS
+						}
+						else
+						{
+							return mapper.ReadMemory(addr);
+						}
+					}
+					else
+					{
+						return mapper.ReadMemory(addr);
+					}
 				}
-			}
-			else if (addr < 0x8000)
-			{
-				return mapper.ReadMemory(addr);
 			}
 			else if (addr < 0xA000)
 			{
@@ -113,21 +117,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				return mapper.ReadMemory(addr);
 			}
-			else if (addr < 0xD000)
-			{
-				return RAM[addr - 0xC000];
-			}
-			else if (addr < 0xE000)
-			{
-				return RAM[(RAM_Bank * 0x1000) + (addr - 0xD000)];
-			}
-			else if (addr < 0xF000)
-			{
-				return RAM[addr - 0xE000];
-			}
 			else if (addr < 0xFE00)
 			{
-				return RAM[(RAM_Bank * 0x1000) + (addr - 0xF000)];
+				addr = (ushort)(RAM_Bank * (addr & 0x1000) + (addr & 0xFFF));
+				return RAM[addr];
 			}
 			else if (addr < 0xFEA0)
 			{
@@ -185,83 +178,78 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 				return;
 			}
-
-			if (addr < 0x900)
+		
+			// Writes are more likely from the top down
+			if (addr >= 0xFF00)
 			{
-				if (addr < 0x100)
+				if (addr < 0xFF80)
 				{
-					if ((GB_bios_register & 0x1) == 0)
-					{
-						// No Writing to BIOS
-					}
-					else
-					{
-						mapper.WriteMemory(addr, value);
-					}
+					Write_Registers(addr, value);
 				}
-				else if (addr >= 0x200)
+				else if (addr < 0xFFFF)
 				{
-					if (((GB_bios_register & 0x1) == 0) && is_GBC)
-					{
-						// No Writing to BIOS
-					}
-					else
-					{
-						mapper.WriteMemory(addr, value);
-					}
+					ZP_RAM[addr - 0xFF80] = value;
 				}
 				else
 				{
-					mapper.WriteMemory(addr, value);
+					Write_Registers(addr, value);
 				}
 			}
-			else if (addr < 0x8000)
+			else if (addr >= 0xFE00)
+			{
+				if ((addr < 0xFEA0) && ppu.OAM_access_write)
+				{
+					OAM[addr - 0xFE00] = value;
+				}
+			}
+			else if (addr >= 0xC000)
+			{
+				addr = (ushort)(RAM_Bank * (addr & 0x1000) + (addr & 0xFFF));
+				RAM[addr] = value;
+			}
+			else if (addr >= 0xA000)
 			{
 				mapper.WriteMemory(addr, value);
 			}
-			else if (addr < 0xA000)
+			else if (addr >= 0x8000)
 			{
 				if (ppu.VRAM_access_write) { VRAM[(VRAM_Bank * 0x2000) + (addr - 0x8000)] = value; }
 			}
-			else if (addr < 0xC000)
-			{
-				mapper.WriteMemory(addr, value);
-			}
-			else if (addr < 0xD000)
-			{
-				RAM[addr - 0xC000] = value;
-			}
-			else if (addr < 0xE000)
-			{
-				RAM[(RAM_Bank * 0x1000) + (addr - 0xD000)] = value;
-			}
-			else if (addr < 0xF000)
-			{
-				RAM[addr - 0xE000] = value;
-			}
-			else if (addr < 0xFE00)
-			{
-				RAM[(RAM_Bank * 0x1000) + (addr - 0xF000)] = value;
-			}
-			else if (addr < 0xFEA0)
-			{
-				if (ppu.OAM_access_write) { OAM[addr - 0xFE00] = value; }
-			}
-			else if (addr < 0xFF00)
-			{
-				// unmapped, writing has no effect
-			}
-			else if (addr < 0xFF80)
-			{
-				Write_Registers(addr, value);
-			}
-			else if (addr < 0xFFFF)
-			{
-				ZP_RAM[addr - 0xFF80] = value;
-			}
 			else
 			{
-				Write_Registers(addr, value);
+				if (addr >= 0x900)
+				{
+					mapper.WriteMemory(addr, value);
+				}
+				else
+				{
+					if (addr < 0x100)
+					{
+						if ((GB_bios_register & 0x1) == 0)
+						{
+							// No Writing to BIOS
+						}
+						else
+						{
+							mapper.WriteMemory(addr, value);
+						}
+					}
+					else if (addr >= 0x200)
+					{
+						if (((GB_bios_register & 0x1) == 0) && is_GBC)
+						{
+							// No Writing to BIOS
+						}
+						else
+						{
+							mapper.WriteMemory(addr, value);
+						}
+					}
+					else
+					{
+						mapper.WriteMemory(addr, value);
+					}
+				}
 			}
 		}
 
@@ -305,40 +293,43 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				return 0xFF;
 			}
 
-			if (addr < 0x900)
+			if (addr < 0x8000)
 			{
-				if (addr < 0x100)
-				{
-					// return Either BIOS ROM or Game ROM
-					if ((GB_bios_register & 0x1) == 0)
-					{
-						return _bios[addr]; // Return BIOS
-					}
-					else
-					{
-						return mapper.ReadMemory(addr);
-					}
-				}
-				else if (addr >= 0x200)
-				{
-					// return Either BIOS ROM or Game ROM
-					if (((GB_bios_register & 0x1) == 0) && is_GBC)
-					{
-						return _bios[addr]; // Return BIOS
-					}
-					else
-					{
-						return mapper.ReadMemory(addr);
-					}
-				}
-				else
+				if (addr >= 0x900)
 				{
 					return mapper.ReadMemory(addr);
 				}
-			}
-			else if (addr < 0x8000)
-			{
-				return mapper.PeekMemory(addr);
+				else
+				{
+					if (addr < 0x100)
+					{
+						// return Either BIOS ROM or Game ROM
+						if ((GB_bios_register & 0x1) == 0)
+						{
+							return _bios[addr]; // Return BIOS
+						}
+						else
+						{
+							return mapper.ReadMemory(addr);
+						}
+					}
+					else if (addr >= 0x200)
+					{
+						// return Either BIOS ROM or Game ROM
+						if (((GB_bios_register & 0x1) == 0) && is_GBC)
+						{
+							return _bios[addr]; // Return BIOS
+						}
+						else
+						{
+							return mapper.ReadMemory(addr);
+						}
+					}
+					else
+					{
+						return mapper.ReadMemory(addr);
+					}
+				}
 			}
 			else if (addr < 0xA000)
 			{
@@ -349,21 +340,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				return mapper.PeekMemory(addr);
 			}
-			else if (addr < 0xD000)
-			{
-				return RAM[addr - 0xC000];
-			}
-			else if (addr < 0xE000)
-			{
-				return RAM[(RAM_Bank * 0x1000) + (addr - 0xD000)];
-			}
-			else if (addr < 0xF000)
-			{
-				return RAM[addr - 0xE000];
-			}
 			else if (addr < 0xFE00)
 			{
-				return RAM[(RAM_Bank * 0x1000) + (addr - 0xF000)];
+				addr = (ushort)(RAM_Bank * (addr & 0x1000) + (addr & 0xFFF));
+				return RAM[addr];
 			}
 			else if (addr < 0xFEA0)
 			{

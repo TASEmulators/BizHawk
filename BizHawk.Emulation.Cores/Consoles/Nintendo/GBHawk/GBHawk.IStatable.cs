@@ -77,7 +77,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(addr_access), ref addr_access);
 
 			ser.Sync(nameof(frame_buffer), ref frame_buffer, false);
-			ser.Sync(nameof(_vidbuffer), ref _vidbuffer, false);
+			ser.Sync(nameof(vid_buffer), ref vid_buffer, false);
 
 			// probably a better way to do this
 			if (cart_RAM != null)

@@ -86,11 +86,14 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 		}
 
 		// Memory Access 
-
 		public Func<ushort, byte> ReadMemory;
 		public Action<ushort, byte> WriteMemory;
 		public Func<ushort, byte> PeekMemory;
 		public Func<ushort, byte> DummyReadMemory;
+
+		// Get external interrupt registers
+		public Func<ushort, byte> GetIntRegs;
+		public Action<byte> SetIntRegs;
 
 		// Special Function for Speed switching executed on a STOP
 		public Func<int, int> SpeedFunc;
@@ -134,7 +137,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 		}
 
 		// Execute instructions
-		public void ExecuteOne(ref byte interrupt_src, byte interrupt_enable)
+		public void ExecuteOne()
 		{
 			switch (instr_table[instr_pntr++])
 			{
@@ -424,6 +427,8 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 						stop_time = SpeedFunc(0);
 						stop_check = true;
 					}
+
+					interrupt_src_reg = GetIntRegs(0);
 					
 					if (stop_time > 0)
 					{
@@ -449,7 +454,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 							instr_pntr = 256 * 60 * 2 + 60 * 5; // point to stop loop
 						}
 					}
-					else if (interrupt_src.Bit(4)) // button pressed, not actually an interrupt though
+					else if (interrupt_src_reg.Bit(4)) // button pressed, not actually an interrupt though
 					{
 						TraceCallback?.Invoke(new TraceInfo
 						{
@@ -506,7 +511,10 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					ushort bit_check = instr_table[instr_pntr++];
 					//Console.WriteLine(interrupt_src + " " + interrupt_enable + " " + TotalExecutedCycles);
 
-					if (interrupt_src.Bit(bit_check) && interrupt_enable.Bit(bit_check)) { int_src = bit_check; int_clear = (byte)(1 << bit_check); }
+					interrupt_src_reg = GetIntRegs(0);
+					interrupt_enable_reg = GetIntRegs(1);
+
+					if (interrupt_src_reg.Bit(bit_check) && interrupt_enable_reg.Bit(bit_check)) { int_src = bit_check; int_clear = (byte)(1 << bit_check); }
 					/*
 					if (interrupt_src.Bit(0) && interrupt_enable.Bit(0)) { int_src = 0; int_clear = 1; }
 					else if (interrupt_src.Bit(1) && interrupt_enable.Bit(1)) { int_src = 1; int_clear = 2; }
@@ -530,9 +538,14 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					Halt_bug_2 = false;
 					break;
 				case IRQ_CLEAR:
-					if (interrupt_src.Bit(int_src)) { interrupt_src -= int_clear; }
+					interrupt_src_reg = GetIntRegs(0);
+					interrupt_enable_reg = GetIntRegs(1);
 
-					if ((interrupt_src & interrupt_enable) == 0) { FlagI = false; }
+					if (interrupt_src_reg.Bit(int_src)) { interrupt_src_reg -= int_clear; }
+
+					SetIntRegs(interrupt_src_reg);
+
+					if ((interrupt_src_reg & interrupt_enable_reg) == 0) { FlagI = false; }
 
 					// reset back to default state
 					int_src = 5;

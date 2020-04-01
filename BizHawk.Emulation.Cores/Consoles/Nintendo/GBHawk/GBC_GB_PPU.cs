@@ -884,22 +884,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						if (use_sprite)
 						{
-							Core._vidbuffer[LY * 160 + pixel_counter] = (int)OBJ_palette[pal_num * 4 + s_pixel];
+							Core.vid_buffer[LY * 160 + pixel_counter] = OBJ_palette[pal_num * 4 + s_pixel];
 						}
 						else
 						{
-							Core._vidbuffer[LY * 160 + pixel_counter] = (int)BG_palette[pal_num * 4 + pixel];
+							Core.vid_buffer[LY * 160 + pixel_counter] = BG_palette[pal_num * 4 + pixel];
 						}
 					}
 					else
 					{
 						if (use_sprite)
 						{
-							Core._vidbuffer[LY * 160 + pixel_counter] = (int)OBJ_palette[pal_num * 4 + pixel];
+							Core.vid_buffer[LY * 160 + pixel_counter] = OBJ_palette[pal_num * 4 + pixel];
 						}
 						else
 						{
-							Core._vidbuffer[LY * 160 + pixel_counter] = (int)BG_palette[pixel];
+							Core.vid_buffer[LY * 160 + pixel_counter] = BG_palette[pixel];
 						}						
 					}
 					

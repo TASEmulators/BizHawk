@@ -97,6 +97,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				DummyReadMemory = ReadMemory,
 				OnExecFetch = ExecFetch,
 				SpeedFunc = SpeedFunc,
+				GetIntRegs = GetIntRegs,
+				SetIntRegs = SetIntRegs
 			};
 			
 			timer = new Timer();
@@ -193,8 +195,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			iptr0 = Marshal.AllocHGlobal(VRAM.Length + 1);
 			iptr1 = Marshal.AllocHGlobal(OAM.Length + 1);
-			iptr2 = Marshal.AllocHGlobal(color_palette.Length * 8 * 8 + 1);
-			iptr3 = Marshal.AllocHGlobal(color_palette.Length * 8 * 8 + 1);
+			iptr2 = Marshal.AllocHGlobal(ppu.color_palette.Length * 8 * 8 + 1);
+			iptr3 = Marshal.AllocHGlobal(ppu.color_palette.Length * 8 * 8 + 1);
 
 			_scanlineCallback = null;
 		}
@@ -233,15 +235,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					int[] cp2 = new int[8];
 					for (int i = 0; i < 4; i++)
 					{
-						cp2[i] = (int)color_palette[(ppu.obj_pal_0 >> (i * 2)) & 3];
-						cp2[i + 4] = (int)color_palette[(ppu.obj_pal_1 >> (i * 2)) & 3];
+						cp2[i] = (int)ppu.color_palette[(ppu.obj_pal_0 >> (i * 2)) & 3];
+						cp2[i + 4] = (int)ppu.color_palette[(ppu.obj_pal_1 >> (i * 2)) & 3];
 					}
 					Marshal.Copy(cp2, 0, iptr2, cp2.Length);
 
 					int[] cp = new int[4];
 					for (int i = 0; i < 4; i++)
 					{
-						cp[i] = (int)color_palette[(ppu.BGP >> (i * 2)) & 3];
+						cp[i] = (int)ppu.color_palette[(ppu.BGP >> (i * 2)) & 3];
 					}
 					Marshal.Copy(cp, 0, iptr3, cp.Length);
 				}
@@ -298,7 +300,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			mapper.Reset();
 			cpu.Reset();
 			
-			_vidbuffer = new int[VirtualWidth * VirtualHeight];
+			vid_buffer = new uint[VirtualWidth * VirtualHeight];
 			frame_buffer = new int[VirtualWidth * VirtualHeight];
 		}
 

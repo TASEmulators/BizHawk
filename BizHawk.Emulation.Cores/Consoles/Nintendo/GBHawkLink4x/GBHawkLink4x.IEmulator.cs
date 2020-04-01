@@ -16,62 +16,62 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			//Update the color palette if a setting changed
 			if (Link4xSettings.Palette_A == GBHawk.GBHawk.GBSettings.PaletteType.BW)
 			{
-				A.color_palette[0] = color_palette_BW[0];
-				A.color_palette[1] = color_palette_BW[1];
-				A.color_palette[2] = color_palette_BW[2];
-				A.color_palette[3] = color_palette_BW[3];
+				A.ppu.color_palette[0] = color_palette_BW[0];
+				A.ppu.color_palette[1] = color_palette_BW[1];
+				A.ppu.color_palette[2] = color_palette_BW[2];
+				A.ppu.color_palette[3] = color_palette_BW[3];
 			}
 			else
 			{
-				A.color_palette[0] = color_palette_Gr[0];
-				A.color_palette[1] = color_palette_Gr[1];
-				A.color_palette[2] = color_palette_Gr[2];
-				A.color_palette[3] = color_palette_Gr[3];
+				A.ppu.color_palette[0] = color_palette_Gr[0];
+				A.ppu.color_palette[1] = color_palette_Gr[1];
+				A.ppu.color_palette[2] = color_palette_Gr[2];
+				A.ppu.color_palette[3] = color_palette_Gr[3];
 			}
 
 			if (Link4xSettings.Palette_B == GBHawk.GBHawk.GBSettings.PaletteType.BW)
 			{
-				B.color_palette[0] = color_palette_BW[0];
-				B.color_palette[1] = color_palette_BW[1];
-				B.color_palette[2] = color_palette_BW[2];
-				B.color_palette[3] = color_palette_BW[3];
+				B.ppu.color_palette[0] = color_palette_BW[0];
+				B.ppu.color_palette[1] = color_palette_BW[1];
+				B.ppu.color_palette[2] = color_palette_BW[2];
+				B.ppu.color_palette[3] = color_palette_BW[3];
 			}
 			else
 			{
-				B.color_palette[0] = color_palette_Gr[0];
-				B.color_palette[1] = color_palette_Gr[1];
-				B.color_palette[2] = color_palette_Gr[2];
-				B.color_palette[3] = color_palette_Gr[3];
+				B.ppu.color_palette[0] = color_palette_Gr[0];
+				B.ppu.color_palette[1] = color_palette_Gr[1];
+				B.ppu.color_palette[2] = color_palette_Gr[2];
+				B.ppu.color_palette[3] = color_palette_Gr[3];
 			}
 
 			if (Link4xSettings.Palette_C == GBHawk.GBHawk.GBSettings.PaletteType.BW)
 			{
-				C.color_palette[0] = color_palette_BW[0];
-				C.color_palette[1] = color_palette_BW[1];
-				C.color_palette[2] = color_palette_BW[2];
-				C.color_palette[3] = color_palette_BW[3];
+				C.ppu.color_palette[0] = color_palette_BW[0];
+				C.ppu.color_palette[1] = color_palette_BW[1];
+				C.ppu.color_palette[2] = color_palette_BW[2];
+				C.ppu.color_palette[3] = color_palette_BW[3];
 			}
 			else
 			{
-				C.color_palette[0] = color_palette_Gr[0];
-				C.color_palette[1] = color_palette_Gr[1];
-				C.color_palette[2] = color_palette_Gr[2];
-				C.color_palette[3] = color_palette_Gr[3];
+				C.ppu.color_palette[0] = color_palette_Gr[0];
+				C.ppu.color_palette[1] = color_palette_Gr[1];
+				C.ppu.color_palette[2] = color_palette_Gr[2];
+				C.ppu.color_palette[3] = color_palette_Gr[3];
 			}
 
 			if (Link4xSettings.Palette_D == GBHawk.GBHawk.GBSettings.PaletteType.BW)
 			{
-				D.color_palette[0] = color_palette_BW[0];
-				D.color_palette[1] = color_palette_BW[1];
-				D.color_palette[2] = color_palette_BW[2];
-				D.color_palette[3] = color_palette_BW[3];
+				D.ppu.color_palette[0] = color_palette_BW[0];
+				D.ppu.color_palette[1] = color_palette_BW[1];
+				D.ppu.color_palette[2] = color_palette_BW[2];
+				D.ppu.color_palette[3] = color_palette_BW[3];
 			}
 			else
 			{
-				D.color_palette[0] = color_palette_Gr[0];
-				D.color_palette[1] = color_palette_Gr[1];
-				D.color_palette[2] = color_palette_Gr[2];
-				D.color_palette[3] = color_palette_Gr[3];
+				D.ppu.color_palette[0] = color_palette_Gr[0];
+				D.ppu.color_palette[1] = color_palette_Gr[1];
+				D.ppu.color_palette[2] = color_palette_Gr[2];
+				D.ppu.color_palette[3] = color_palette_Gr[3];
 			}
 
 			if (_tracer.Enabled)

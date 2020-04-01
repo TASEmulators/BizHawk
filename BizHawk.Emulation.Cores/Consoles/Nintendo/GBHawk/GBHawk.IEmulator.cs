@@ -25,17 +25,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			//Update the color palette if a setting changed
 			if (_settings.Palette == GBSettings.PaletteType.BW)
 			{
-				color_palette[0] = color_palette_BW[0];
-				color_palette[1] = color_palette_BW[1];
-				color_palette[2] = color_palette_BW[2];
-				color_palette[3] = color_palette_BW[3];
+				ppu.color_palette[0] = color_palette_BW[0];
+				ppu.color_palette[1] = color_palette_BW[1];
+				ppu.color_palette[2] = color_palette_BW[2];
+				ppu.color_palette[3] = color_palette_BW[3];
 			}
 			else
 			{
-				color_palette[0] = color_palette_Gr[0];
-				color_palette[1] = color_palette_Gr[1];
-				color_palette[2] = color_palette_Gr[2];
-				color_palette[3] = color_palette_Gr[3];
+				ppu.color_palette[0] = color_palette_Gr[0];
+				ppu.color_palette[1] = color_palette_Gr[1];
+				ppu.color_palette[2] = color_palette_Gr[2];
+				ppu.color_palette[3] = color_palette_Gr[3];
 			}
 
 			if (_tracer.Enabled)
@@ -90,14 +90,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					// Note that DMA is halted when the CPU is halted
 					if (ppu.DMA_start && !cpu.halted) { ppu.DMA_tick(); }
 					serialport.serial_transfer_tick();
-					cpu.ExecuteOne(ref REG_FF0F, REG_FFFF);
+					cpu.ExecuteOne();
 					timer.tick();
 
 					if (double_speed)
 					{
 						if (ppu.DMA_start && !cpu.halted) { ppu.DMA_tick(); }
 						serialport.serial_transfer_tick();
-						cpu.ExecuteOne(ref REG_FF0F, REG_FFFF);
+						cpu.ExecuteOne();
 						timer.tick();
 					}
 				}
@@ -137,7 +137,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			// But some GB gams, ex Battletoads, turn off the screen for a long time from the middle of the frame, so need to be cleared.
 			if (ppu.clear_screen)
 			{
-				for (int j = 0; j < frame_buffer.Length; j++) { frame_buffer[j] = (int)color_palette[0]; }
+				for (int j = 0; j < frame_buffer.Length; j++) { frame_buffer[j] = (int)ppu.color_palette[0]; }
 				ppu.clear_screen = false;
 			}
 		}
@@ -154,14 +154,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				// These things all tick twice as fast in GBC double speed mode
 				if (ppu.DMA_start && !cpu.halted) { ppu.DMA_tick(); }
 				serialport.serial_transfer_tick();
-				cpu.ExecuteOne(ref REG_FF0F, REG_FFFF);
+				cpu.ExecuteOne();
 				timer.tick();
 
 				if (double_speed)
 				{
 					if (ppu.DMA_start && !cpu.halted) { ppu.DMA_tick(); }
 					serialport.serial_transfer_tick();
-					cpu.ExecuteOne(ref REG_FF0F, REG_FFFF);
+					cpu.ExecuteOne();
 					timer.tick();
 				}
 			}
@@ -253,7 +253,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			Acc_Y_state = _controllerDeck.ReadAccY1(controller);
 		}
 
+		public byte GetIntRegs(ushort r)
+		{
+			if (r==0)
+			{
+				return REG_FF0F;
+			}
+			else
+			{
+				return REG_FFFF;
+			}
+		}
 
+		public void SetIntRegs(byte r)
+		{
+			REG_FF0F = r;
+		}
 
 		public int Frame => _frame;
 
@@ -280,9 +295,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		#region Video provider
 
-		public int[] _vidbuffer;
-
 		public int[] frame_buffer;
+
+
+		public uint[] vid_buffer;
+
 
 		public int[] GetVideoBuffer()
 		{
@@ -295,7 +312,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				if (!ppu.blank_frame)
 				{
-					for (int j = 0; j < frame_buffer.Length; j++) { frame_buffer[j] = _vidbuffer[j]; }
+					for (int j = 0; j < frame_buffer.Length; j++) { frame_buffer[j] = (int)vid_buffer[j]; }
 				}
 
 				ppu.blank_frame = false;
@@ -304,13 +321,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				if (ppu.blank_frame)
 				{
-					for (int i = 0; i < _vidbuffer.Length; i++)
+					for (int i = 0; i < vid_buffer.Length; i++)
 					{
-						_vidbuffer[i] = (int)color_palette[0];
+						vid_buffer[i] = ppu.color_palette[0];
 					}
 				}
-				
-				for (int j = 0; j < frame_buffer.Length; j++) { frame_buffer[j] = _vidbuffer[j]; }
+
+				for (int j = 0; j < frame_buffer.Length; j++) { frame_buffer[j] = (int)vid_buffer[j]; }
 
 				ppu.blank_frame = false;
 			}
@@ -324,10 +341,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int VsyncNumerator => 262144;
 		public int VsyncDenominator => 4389;
 
-		public static readonly uint[] color_palette_BW = { 0xFFFFFFFF , 0xFFAAAAAA, 0xFF555555, 0xFF000000 };
+		public static readonly uint[] color_palette_BW = { 0xFFFFFFFF, 0xFFAAAAAA, 0xFF555555, 0xFF000000 };
 		public static readonly uint[] color_palette_Gr = { 0xFFA4C505, 0xFF88A905, 0xFF1D551D, 0xFF052505 };
-
-		public uint[] color_palette = new uint[4];
 
 		#endregion
 	}

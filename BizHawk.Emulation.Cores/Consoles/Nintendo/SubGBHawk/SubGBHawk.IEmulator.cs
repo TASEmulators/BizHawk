@@ -15,17 +15,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 			//Update the color palette if a setting changed
 			if (GetSettings().Palette == GBHawk.GBHawk.GBSettings.PaletteType.BW)
 			{
-				_GBCore.color_palette[0] = GBHawk.GBHawk.color_palette_BW[0];
-				_GBCore.color_palette[1] = GBHawk.GBHawk.color_palette_BW[1];
-				_GBCore.color_palette[2] = GBHawk.GBHawk.color_palette_BW[2];
-				_GBCore.color_palette[3] = GBHawk.GBHawk.color_palette_BW[3];
+				_GBCore.ppu.color_palette[0] = GBHawk.GBHawk.color_palette_BW[0];
+				_GBCore.ppu.color_palette[1] = GBHawk.GBHawk.color_palette_BW[1];
+				_GBCore.ppu.color_palette[2] = GBHawk.GBHawk.color_palette_BW[2];
+				_GBCore.ppu.color_palette[3] = GBHawk.GBHawk.color_palette_BW[3];
 			}
 			else
 			{
-				_GBCore.color_palette[0] = GBHawk.GBHawk.color_palette_Gr[0];
-				_GBCore.color_palette[1] = GBHawk.GBHawk.color_palette_Gr[1];
-				_GBCore.color_palette[2] = GBHawk.GBHawk.color_palette_Gr[2];
-				_GBCore.color_palette[3] = GBHawk.GBHawk.color_palette_Gr[3];
+				_GBCore.ppu.color_palette[0] = GBHawk.GBHawk.color_palette_Gr[0];
+				_GBCore.ppu.color_palette[1] = GBHawk.GBHawk.color_palette_Gr[1];
+				_GBCore.ppu.color_palette[2] = GBHawk.GBHawk.color_palette_Gr[2];
+				_GBCore.ppu.color_palette[3] = GBHawk.GBHawk.color_palette_Gr[3];
 			}
 			if (_tracer.Enabled)
 			{

@@ -610,7 +610,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 
 					// based on sprite priority and pixel values, pick a final pixel color
-					Core._vidbuffer[LY * 160 + pixel_counter] = (int)Core.color_palette[pixel];
+					Core.vid_buffer[LY * 160 + pixel_counter] = color_palette[pixel];
 					pixel_counter++;
 
 					if (pixel_counter == 160)
