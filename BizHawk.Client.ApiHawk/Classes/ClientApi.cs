@@ -666,12 +666,12 @@ namespace BizHawk.Client.ApiHawk
 
 		public static Point TransformPoint(Point point)
 		{
-			Type t = ClientAssembly.GetType("BizHawk.Client.EmuHawk.GlobalWin");
-			FieldInfo f = t.GetField("DisplayManager");
-			object displayManager = f.GetValue(null);
-			MethodInfo m = t.GetMethod("TransFormPoint");
-			point = (System.Drawing.Point)m.Invoke(displayManager, new object[] { point });
-			return point;
+			var globalWinType = ClientAssembly.GetType("BizHawk.Client.EmuHawk.GlobalWin");
+			var dispManType = ClientAssembly.GetType("BizHawk.Client.EmuHawk.DisplayManager");
+			var dispManInstance = globalWinType.GetField("DisplayManager").GetValue(null);
+			var transformed = dispManType.GetMethod("TransformPoint")?.Invoke(dispManInstance, new object[] { point });
+			if (transformed is Point p) return p;
+			throw new Exception();
 		}
 
 		[Obsolete]
