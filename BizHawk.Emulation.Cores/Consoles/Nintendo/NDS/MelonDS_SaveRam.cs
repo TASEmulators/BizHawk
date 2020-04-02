@@ -35,6 +35,5 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private static extern void GetSRAM(byte* dst, int length);
 		[DllImport(dllPath)]
 		private static extern void SetSRAM(byte* src, int length);
-
 	}
 }

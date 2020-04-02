@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.IO;
-using System.Drawing;
-
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
@@ -96,7 +94,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			ControllerDefinition.AxisRanges.Add(new ControllerDefinition.AxisRange(0, 96, 191));
 
 			CoreComm = comm;
-			resampler = new SpeexResampler(SpeexResampler.Quality.QUALITY_DEFAULT, 32768, 44100, 32768, 44100);
+			_resampler = new SpeexResampler(SpeexResampler.Quality.QUALITY_DEFAULT, 32768, 44100, 32768, 44100);
 
 			SetUpFiles();
 			if (!Init())

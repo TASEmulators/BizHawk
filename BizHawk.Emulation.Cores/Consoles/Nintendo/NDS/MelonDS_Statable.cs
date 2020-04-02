@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 	{
 		public void LoadStateBinary(BinaryReader reader)
 		{
-			MemoryStream mStream = new MemoryStream();
+			var mStream = new MemoryStream();
 			reader.BaseStream.CopyTo(mStream);
 
 			LoadStateByteArray(mStream.GetBuffer(), (int)mStream.Length);
@@ -33,6 +33,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			{
 				GetSavestateData(ptr, len);
 			}
+
 			return ret;
 		}
 
@@ -44,8 +45,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		[DllImport(dllPath)]
 		private static extern bool UseSavestate(byte* data, int len);
+
 		[DllImport(dllPath)]
 		private static extern int GetSavestateSize();
+
 		[DllImport(dllPath)]
 		private static extern void GetSavestateData(byte* data, int size);
 	}

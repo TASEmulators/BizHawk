@@ -1,7 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Drawing;
 using System.Text;
 using System.Runtime.InteropServices;
 
@@ -14,19 +12,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 	{
 		private MelonSettings _settings = new MelonSettings();
 
-		public MelonSettings GetSettings()
-		{
-			return _settings;
-		}
+		public MelonSettings GetSettings() => _settings;
 
 		public MelonSyncSettings GetSyncSettings()
 		{
-			MelonSyncSettings ret = new MelonSyncSettings();
+			var ret = new MelonSyncSettings();
 			fixed (byte* ptr = ret.UserSettings)
 			{
 				if (!GetUserSettings(ptr))
+				{
 					return null;
+				}
 			}
+
 			ret.BootToFirmware = !GetDirectBoot();
 			ret.TimeAtBoot = GetTimeAtBoot();
 			return ret;
@@ -60,6 +58,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		[DllImport(dllPath)]
 		private static extern bool GetUserSettings(byte* dst);
+
 		[DllImport(dllPath)]
 		private static extern int GetUserSettingsLength();
 
@@ -70,11 +69,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		[DllImport(dllPath)]
 		private static extern bool GetDirectBoot();
+
 		[DllImport(dllPath)]
 		private static extern void SetDirectBoot(bool value);
 
 		[DllImport(dllPath)]
 		private static extern void SetTimeAtBoot(uint value);
+
 		[DllImport(dllPath)]
 		private static extern uint GetTimeAtBoot();
 
@@ -155,7 +156,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					// I do not know how an actual NDS would handle characters that require more than 2 bytes to encode.
 					// They can't be input normally, so I will ignore attempts to set a nickname that uses them.
 					if (Encoding.Unicode.GetBytes(value, 0, value.Length, nick, 0) != value.Length * 2)
+					{
 						return;
+					}
+
 					// The extra 2 bytes on the end will overwrite nickname length, which is set immediately after
 					nick.CopyTo(UserSettings, 6);
 					UserSettings[0x1A] = (byte)value.Length;

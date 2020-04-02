@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
 	unsafe partial class MelonDS : ISoundProvider
 	{
-		SpeexResampler resampler;
+		private readonly SpeexResampler _resampler;
 
 		public bool CanProvideAsync => false;
 
@@ -32,8 +32,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				GetSamples(data, nsamp);
 			}
 			// BizHawk requires a sample rate of 44100 Hz.
-			resampler.EnqueueSamples(samples, nsamp);
-			resampler.GetSamplesSync(out samples, out nsamp);
+			_resampler.EnqueueSamples(samples, nsamp);
+			_resampler.GetSamplesSync(out samples, out nsamp);
 		}
 
 		public void SetSyncMode(SyncSoundMode mode)
