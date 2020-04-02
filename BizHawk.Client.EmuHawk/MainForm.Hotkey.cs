@@ -804,19 +804,16 @@ namespace BizHawk.Client.EmuHawk
 				{
 					num++;
 				}
+
 				var next = (MelonDS.ScreenLayoutKind)Enum.Parse(typeof(MelonDS.ScreenLayoutKind), num.ToString());
-				if (!typeof(MelonDS.ScreenLayoutKind).IsEnumDefined(next))
+				if (typeof(MelonDS.ScreenLayoutKind).IsEnumDefined(next))
 				{
-					next = decrement
-						? Enum.GetValues(typeof(MelonDS.ScreenLayoutKind)).Cast<MelonDS.ScreenLayoutKind>().Last()
-						: default;
+					settings.ScreenLayout = next;
+
+					ds.PutSettings(settings);
+					AddOnScreenMessage($"Screen layout to {next}");
+					FrameBufferResized();
 				}
-
-				settings.ScreenLayout = next;
-
-				ds.PutSettings(settings);
-				AddOnScreenMessage($"Screen layout to {next}");
-				FrameBufferResized();
 			}
 		}
 
