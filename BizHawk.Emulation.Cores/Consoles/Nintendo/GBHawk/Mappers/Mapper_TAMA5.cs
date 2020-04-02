@@ -46,35 +46,35 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ctrl = 0;
 		}
 
-		public override byte ReadMemory(ushort addr)
+		public override byte ReadMemoryLow(ushort addr)
 		{
 			if (addr < 0x4000)
 			{
 				return Core._rom[addr];
 			}
-			else if (addr < 0x8000)
+			else
 			{
 				return Core._rom[(addr - 0x4000) + ROM_bank * 0x4000];
 			}
-			else
+		}
+
+		public override byte ReadMemoryHigh(ushort addr)
+		{
+			switch (ctrl)
 			{
-
-				switch (ctrl)
-				{
-					case 0xA:
-						// The game won't proceed unless this value (anded with 3) is 1
-						// see bank 0: 0x1A7D to 0x1A89
-						return 1;
-					case 0xC:
-						//Console.WriteLine("read low: " + Chip_return_low);
-						return Chip_return_low;
-					case 0xD:
-						//Console.WriteLine("read high: " + Chip_return_high);
-						return Chip_return_high;
-				}
-
-				return 0x0;
+				case 0xA:
+					// The game won't proceed unless this value (anded with 3) is 1
+					// see bank 0: 0x1A7D to 0x1A89
+					return 1;
+				case 0xC:
+					//Console.WriteLine("read low: " + Chip_return_low);
+					return Chip_return_low;
+				case 0xD:
+					//Console.WriteLine("read high: " + Chip_return_high);
+					return Chip_return_high;
 			}
+
+			return 0x0;
 		}
 
 		public override void MapCDL(ushort addr, LR35902.eCDLogMemFlags flags)
@@ -93,9 +93,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
-		public override byte PeekMemory(ushort addr)
+		public override byte PeekMemoryLow(ushort addr)
 		{
-			return ReadMemory(addr);
+			return ReadMemoryLow(addr);
 		}
 
 		public override void WriteMemory(ushort addr, byte value)

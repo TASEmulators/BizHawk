@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
-		public override byte ReadMemory(ushort addr)
+		public override byte ReadMemoryLow(ushort addr)
 		{
 			if (addr < 0x4000)
 			{
@@ -42,28 +42,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					return Core._rom[addr];
 				}
 			}
-			else if (addr < 0x8000)
+			else
 			{
 				return Core._rom[(addr - 0x4000) + (((ROM_bank & 0x60) >> 1) | (ROM_bank & 0xF)) * 0x4000];			
 			}
-			else
-			{
-				if (Core.cart_RAM != null)
-				{
-					if (RAM_enable && (((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length))
-					{
-						return Core.cart_RAM[(addr - 0xA000) + RAM_bank * 0x2000];
-					}
-					else
-					{
-						return 0xFF;
-					}
+		}
 
+		public override byte ReadMemoryHigh(ushort addr)
+		{
+			if (Core.cart_RAM != null)
+			{
+				if (RAM_enable && (((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length))
+				{
+					return Core.cart_RAM[(addr - 0xA000) + RAM_bank * 0x2000];
 				}
 				else
 				{
-					return 0;
+					return 0xFF;
 				}
+
+			}
+			else
+			{
+				return 0;
 			}
 		}
 
@@ -106,9 +107,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
-		public override byte PeekMemory(ushort addr)
+		public override byte PeekMemoryLow(ushort addr)
 		{
-			return ReadMemory(addr);
+			return ReadMemoryLow(addr);
 		}
 
 		public override void WriteMemory(ushort addr, byte value)

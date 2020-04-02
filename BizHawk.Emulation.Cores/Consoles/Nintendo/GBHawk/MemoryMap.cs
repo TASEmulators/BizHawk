@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 					else
 					{
-						return mapper.ReadMemory(addr);
+						return mapper.ReadMemoryLow(addr);
 					}
 				}
 				else if ((addr >= 0xE000) && (addr < 0xF000))
@@ -74,7 +74,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				if (addr >= 0x900)
 				{
-					return mapper.ReadMemory(addr);					
+					return mapper.ReadMemoryLow(addr);					
 				}
 				else
 				{
@@ -87,7 +87,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						}
 						else
 						{
-							return mapper.ReadMemory(addr);
+							return mapper.ReadMemoryLow(addr);
 						}
 					}
 					else if (addr >= 0x200)
@@ -99,12 +99,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						}
 						else
 						{
-							return mapper.ReadMemory(addr);
+							return mapper.ReadMemoryLow(addr);
 						}
 					}
 					else
 					{
-						return mapper.ReadMemory(addr);
+						return mapper.ReadMemoryLow(addr);
 					}
 				}
 			}
@@ -115,7 +115,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			else if (addr < 0xC000)
 			{
-				return mapper.ReadMemory(addr);
+				return mapper.ReadMemoryHigh(addr);
 			}
 			else if (addr < 0xFE00)
 			{
@@ -266,7 +266,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 					else
 					{
-						return mapper.ReadMemory(addr);
+						return mapper.PeekMemoryLow(addr);
 					}
 				}
 				else if ((addr >= 0xE000) && (addr < 0xF000))
@@ -297,7 +297,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				if (addr >= 0x900)
 				{
-					return mapper.ReadMemory(addr);
+					return mapper.PeekMemoryLow(addr);
 				}
 				else
 				{
@@ -310,7 +310,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						}
 						else
 						{
-							return mapper.ReadMemory(addr);
+							return mapper.PeekMemoryLow(addr);
 						}
 					}
 					else if (addr >= 0x200)
@@ -322,12 +322,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						}
 						else
 						{
-							return mapper.ReadMemory(addr);
+							return mapper.PeekMemoryLow(addr);
 						}
 					}
 					else
 					{
-						return mapper.ReadMemory(addr);
+						return mapper.PeekMemoryLow(addr);
 					}
 				}
 			}
@@ -338,7 +338,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			else if (addr < 0xC000)
 			{
-				return mapper.PeekMemory(addr);
+				return mapper.PeekMemoryHigh(addr);
 			}
 			else if (addr < 0xFE00)
 			{

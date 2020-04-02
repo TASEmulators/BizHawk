@@ -7,12 +7,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 	{
 		public GBHawk Core { get; set; }
 
-		public virtual byte ReadMemory(ushort addr)
+		public virtual byte ReadMemoryLow(ushort addr)
 		{
 			return 0;
 		}
 
-		public virtual byte PeekMemory(ushort addr)
+		public virtual byte ReadMemoryHigh(ushort addr)
+		{
+			return 0;
+		}
+
+		public virtual byte PeekMemoryLow(ushort addr)
+		{
+			return 0;
+		}
+
+		public virtual byte PeekMemoryHigh(ushort addr)
 		{
 			return 0;
 		}

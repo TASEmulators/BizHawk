@@ -19,17 +19,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ROM_mask = Core._rom.Length / 0x4000 - 1;
 		}
 
-		public override byte ReadMemory(ushort addr)
+		public override byte ReadMemoryLow(ushort addr)
 		{
 			if (addr < 0x4000)
 			{
 				return Core._rom[addr];
 			}
-			else if (addr < 0x8000)
+			else
 			{
 				return Core._rom[(addr - 0x4000) + ROM_bank * 0x4000];
-			}
-			else if ((addr >= 0xA000) && (addr < 0xA200))
+			} 
+		}
+
+		public override byte ReadMemoryHigh(ushort addr)
+		{
+			if ((addr >= 0xA000) && (addr < 0xA200))
 			{
 				if (RAM_enable)
 				{
@@ -67,9 +71,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
-		public override byte PeekMemory(ushort addr)
+		public override byte PeekMemoryLow(ushort addr)
 		{
-			return ReadMemory(addr);
+			return ReadMemoryLow(addr);
 		}
 
 		public override void WriteMemory(ushort addr, byte value)

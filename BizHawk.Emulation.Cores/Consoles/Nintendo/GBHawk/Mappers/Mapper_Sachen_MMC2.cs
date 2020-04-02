@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			counter = 0;
 		}
 
-		public override byte ReadMemory(ushort addr)
+		public override byte ReadMemoryLow(ushort addr)
 		{
 			if (addr < 0x4000)
 			{
@@ -60,21 +60,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				return Core._rom[addr + BASE_ROM_Bank * 0x4000];
 			}
-			else if (addr < 0x8000)
+			else
 			{
 				int temp_bank = (ROM_bank & ~ROM_bank_mask) | (ROM_bank_mask & BASE_ROM_Bank);
 				temp_bank &= ROM_mask;
 
 				return Core._rom[(addr - 0x4000) + temp_bank * 0x4000];
 			}
-			else
-			{
-				return 0xFF;
-			}
 		}
 
-	public override void MapCDL(ushort addr, LR35902.eCDLogMemFlags flags)
-	{
+		public override byte ReadMemoryHigh(ushort addr)
+		{
+			return 0xFF;
+		}
+
+		public override void MapCDL(ushort addr, LR35902.eCDLogMemFlags flags)
+		{
 			if (addr < 0x4000)
 			{
 				// header is scrambled
@@ -111,9 +112,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
-		public override byte PeekMemory(ushort addr)
+		public override byte PeekMemoryLow(ushort addr)
 		{
-			return ReadMemory(addr);
+			return ReadMemoryLow(addr);
 		}
 
 		public override void WriteMemory(ushort addr, byte value)

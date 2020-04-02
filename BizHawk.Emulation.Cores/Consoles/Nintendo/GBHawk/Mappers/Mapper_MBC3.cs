@@ -45,46 +45,47 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			RTC_regs_latch_wr = true;
 		}
 
-		public override byte ReadMemory(ushort addr)
+		public override byte ReadMemoryLow(ushort addr)
 		{
 			if (addr < 0x4000)
 			{
 				return Core._rom[addr];
 			}
-			else if (addr < 0x8000)
+			else
 			{
 				return Core._rom[(addr - 0x4000) + ROM_bank * 0x4000];
 			}
-			else
-			{
-				if (RAM_enable)
-				{
-					if ((Core.cart_RAM != null) && (RAM_bank <= RAM_mask))
-					{
-						if (((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length)
-						{
-							return Core.cart_RAM[(addr - 0xA000) + RAM_bank * 0x2000];
-						}
-						else
-						{
-							return 0xFF;
-						}
-					}
+		}
 
-					if ((RAM_bank >= 8) && (RAM_bank <= 0xC))
+		public override byte ReadMemoryHigh(ushort addr)
+		{
+			if (RAM_enable)
+			{
+				if ((Core.cart_RAM != null) && (RAM_bank <= RAM_mask))
+				{
+					if (((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length)
 					{
-						//Console.WriteLine("reg: " + (RAM_bank - 8) + " value: " + RTC_regs_latch[RAM_bank - 8] + " cpu: " + Core.cpu.TotalExecutedCycles);
-						return RTC_regs_latch[RAM_bank - 8];
+						return Core.cart_RAM[(addr - 0xA000) + RAM_bank * 0x2000];
 					}
 					else
 					{
-						return 0x0;
+						return 0xFF;
 					}
+				}
+
+				if ((RAM_bank >= 8) && (RAM_bank <= 0xC))
+				{
+					//Console.WriteLine("reg: " + (RAM_bank - 8) + " value: " + RTC_regs_latch[RAM_bank - 8] + " cpu: " + Core.cpu.TotalExecutedCycles);
+					return RTC_regs_latch[RAM_bank - 8];
 				}
 				else
 				{
 					return 0x0;
 				}
+			}
+			else
+			{
+				return 0x0;
 			}
 		}
 
@@ -130,9 +131,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
-		public override byte PeekMemory(ushort addr)
+		public override byte PeekMemoryLow(ushort addr)
 		{
-			return ReadMemory(addr);
+			return ReadMemoryLow(addr);
 		}
 
 		public override void WriteMemory(ushort addr, byte value)
