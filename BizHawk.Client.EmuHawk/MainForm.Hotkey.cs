@@ -775,10 +775,14 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is MelonDS ds)
 			{
 				var settings = ds.GetSettings();
-				if (settings.ScreenRotation == MelonDS.ScreenRotationKind.Rotate0) settings.ScreenRotation = settings.ScreenRotation = MelonDS.ScreenRotationKind.Rotate90;
-				else if (settings.ScreenRotation == MelonDS.ScreenRotationKind.Rotate90) settings.ScreenRotation = settings.ScreenRotation = MelonDS.ScreenRotationKind.Rotate180;
-				else if (settings.ScreenRotation == MelonDS.ScreenRotationKind.Rotate180) settings.ScreenRotation = settings.ScreenRotation = MelonDS.ScreenRotationKind.Rotate270;
-				else if (settings.ScreenRotation == MelonDS.ScreenRotationKind.Rotate270) settings.ScreenRotation = settings.ScreenRotation = MelonDS.ScreenRotationKind.Rotate0;
+				settings.ScreenRotation = settings.ScreenRotation switch
+				{
+					MelonDS.ScreenRotationKind.Rotate0 => settings.ScreenRotation = MelonDS.ScreenRotationKind.Rotate90,
+					MelonDS.ScreenRotationKind.Rotate90 => settings.ScreenRotation = MelonDS.ScreenRotationKind.Rotate180,
+					MelonDS.ScreenRotationKind.Rotate180 => settings.ScreenRotation = MelonDS.ScreenRotationKind.Rotate270,
+					MelonDS.ScreenRotationKind.Rotate270 => settings.ScreenRotation = MelonDS.ScreenRotationKind.Rotate0,
+					_ => settings.ScreenRotation
+				};
 				ds.PutSettings(settings);
 				AddOnScreenMessage($"Screen rotation to {settings.ScreenRotation}");
 				FrameBufferResized();
@@ -803,7 +807,9 @@ namespace BizHawk.Client.EmuHawk
 				var next = (MelonDS.ScreenLayoutKind)Enum.Parse(typeof(MelonDS.ScreenLayoutKind), num.ToString());
 				if (!typeof(MelonDS.ScreenLayoutKind).IsEnumDefined(next))
 				{
-					next = default;
+					next = decrement
+						? Enum.GetValues(typeof(MelonDS.ScreenLayoutKind)).Cast<MelonDS.ScreenLayoutKind>().Last()
+						: default;
 				}
 
 				settings.ScreenLayout = next;
