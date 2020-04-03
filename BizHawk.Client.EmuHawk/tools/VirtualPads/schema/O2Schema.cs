@@ -101,10 +101,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new ConsoleSchema
 			{
-				Size = new Size(75, 50),
+				Size = new Size(150, 50),
 				Buttons = new[]
 				{
-					new ButtonSchema(10, 15, "Power")
+					new ButtonSchema(10, 15, "Reset"),
+					new ButtonSchema(58, 15, "Power")
 				}
 			};
 		}
