@@ -149,7 +149,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			state = false;
 			reload_block = false;
 			next_free_cycle = 0;
-	}
+		}
 
 		public void SyncState(Serializer ser)
 		{

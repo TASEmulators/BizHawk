@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 						"Q", "S", "D", "F", "G", "H", "J", "K",
 						"A", "Z", "X", "C", "V", "B", "M", "PERIOD",
 						"-", "*", "/", "=", "YES", "NO", "CLR", "ENT",
-						"Power"
+						"Reset","Power"
 					})
 					.ToList()
 			};

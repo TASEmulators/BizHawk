@@ -95,6 +95,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			ser.Register<ITraceable>(_tracer);
 			ser.Register<IStatable>(new StateSerializer(SyncState));
 			SetupMemoryDomains();
+			cpu.SetCallbacks(ReadMemory, PeekMemory, PeekMemory, WriteMemory);
+
 			HardReset();
 
 			// set up differences between PAL and NTSC systems
@@ -131,7 +133,12 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 			ppu.Reset();
 
-			cpu.SetCallbacks(ReadMemory, PeekMemory, PeekMemory, WriteMemory);
+			cpu.Reset();
+		}
+
+		public void SoftReset()
+		{
+			cpu.Reset();
 		}
 
 		private void ExecFetch(ushort addr)

@@ -157,6 +157,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					A5_latch = (byte)(cycle - HBL_CNT);
 				}
 				else { VDC_status |= 0x2; }
+
+				if (VDC_ctrl.Bit(2)) { Console.WriteLine("sound INT"); }
 			}
 			else if (addr == 0xA1)
 			{
@@ -740,7 +742,13 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			Grid_H = new byte[18];
 			Grid_V = new byte[10];
 
-			AudioReset();
+			VDC_ctrl = VDC_status = VDC_collision = VDC_color = grid_fill_col = 0;
+			Pixel_Stat = A4_latch = A5_latch = 0;
+			bg_brightness = grid_brightness = grid_fill = LY = cycle = 0;
+			VBL = HBL = lum_en = false;
+
+
+		AudioReset();
 		}
 
 		public void set_region(bool pal_flag)
@@ -821,8 +829,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 															0xC0, 0x60, 0x30, 0x18, 0x0C, 0x06, 0x03, 00, // \				0x3B
 															0x00, 0x00, 0x18, 0x10, 0x10, 0xFF, 0x7E, 00, // (boat 1)		0x3C
 															0x00, 0x03, 0x63, 0xFF, 0xFF, 0x18, 0x08, 00, // (plane)		0x3D
-															0x00, 0x00, 0x00, 0x01, 0x38, 0xFF, 0x7E, 00, // (boat 2)		0x3E
-															0x00, 0x00, 0x00, 0x05, 0x6E, 0xFF, 0x7E, 00  // (boat 3)		0x3F
+															0x00, 0x00, 0x00, 0x10, 0x38, 0xFF, 0x7E, 00, // (boat 2)		0x3E
+															0x00, 0x00, 0x00, 0x06, 0x6E, 0xFF, 0x7E, 00  // (boat 3)		0x3F
 															};
 
 		public static readonly uint[] Color_Palette_SPR =

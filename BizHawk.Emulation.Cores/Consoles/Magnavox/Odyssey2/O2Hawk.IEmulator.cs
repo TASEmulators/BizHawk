@@ -34,6 +34,11 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				HardReset();
 			}
 
+			if (controller.IsPressed("Reset"))
+			{
+				SoftReset();
+			}
+
 			_islag = true;
 
 			do_frame(controller);
