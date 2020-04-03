@@ -1,5 +1,6 @@
 ﻿using BizHawk.Common.NumberExtensions;
 using BizHawk.Common;
+using System;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
@@ -48,12 +49,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							if (((value & 2) > 0) && Core.GBC_compat)
 							{
 								clk_rate = 16;
+								serial_clock = (15 - (int)(Core.cpu.TotalExecutedCycles % 16)) + 1;
 							}
 							else
 							{
 								clk_rate = 512;
-							}						
-							serial_clock = clk_rate;
+								serial_clock = (511 - (int)(Core.cpu.TotalExecutedCycles % 512)) + 1;
+							}
 							can_pulse = true;
 						}
 						else
@@ -70,12 +72,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							if (((value & 2) > 0) && Core.GBC_compat)
 							{
 								clk_rate = 16;
+								serial_clock = (15 - (int)(Core.cpu.TotalExecutedCycles % 16)) + 1;
 							}
 							else
 							{
 								clk_rate = 512;
-							}
-							serial_clock = clk_rate;
+								serial_clock = (511 - (int)(Core.cpu.TotalExecutedCycles % 512)) + 1;
+							}					
 							can_pulse = true;
 						}
 						else

@@ -77,7 +77,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			ResetRegisters();
 			ResetInterrupts();
 			BuildInstructionTable();
-			TotalExecutedCycles = 8;
+			TotalExecutedCycles = 0;
 			stop_check = false;
 			instr_pntr = 256 * 60 * 2; // point to reset
 			stopped = jammed = halted = FlagI = false;

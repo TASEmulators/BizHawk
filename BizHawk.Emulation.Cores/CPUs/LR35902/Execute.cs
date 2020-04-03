@@ -562,8 +562,16 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			// reset
 			instr_table[256 * 60 * 2] = IDLE;
 			instr_table[256 * 60 * 2 + 1] = IDLE;
-			instr_table[256 * 60 * 2 + 2] = HALT_CHK;
-			instr_table[256 * 60 * 2 + 3] = OP;
+			instr_table[256 * 60 * 2 + 2] = IDLE;
+			instr_table[256 * 60 * 2 + 3] = IDLE;
+			instr_table[256 * 60 * 2 + 4] = IDLE;
+			instr_table[256 * 60 * 2 + 5] = IDLE;
+			instr_table[256 * 60 * 2 + 6] = IDLE;
+			instr_table[256 * 60 * 2 + 7] = IDLE;
+			instr_table[256 * 60 * 2 + 8] = IDLE;
+			instr_table[256 * 60 * 2 + 9] = IDLE;
+			instr_table[256 * 60 * 2 + 10] = HALT_CHK;
+			instr_table[256 * 60 * 2 + 11] = OP;
 
 			// halt loop
 			instr_table[256 * 60 * 2 + 60] = IDLE;
