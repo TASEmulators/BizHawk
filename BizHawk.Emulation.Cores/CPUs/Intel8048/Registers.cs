@@ -82,7 +82,6 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 				{
 					RB = 0;
 				}
-
 			}
 		}
 
@@ -193,9 +192,18 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 
 			F1 = false;
 
-			T0 = T1 = false;
+			T0 = T1 = T1_old = false;
 
 			Flag3 = true;
+
+			EA = false;
+
+			TF = false;
+			timer_en = false;
+			counter_en = false;
+			timer_prescale = 0;
+
+			RB = MB = 0;
 		}
 	}
 }

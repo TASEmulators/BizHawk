@@ -134,6 +134,17 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			ppu.Reset();
 
 			cpu.Reset();
+
+			RAM = new byte[0x80];
+
+			ticker = 0;
+
+			addr_latch = 0;
+			kb_byte = 0;;
+			ppu_en = RAM_en = kybrd_en = copy_en = cart_b0 = cart_b1;
+			rom_bank = 0;
+
+			kb_state_row = kb_state_col = 0;
 		}
 
 		public void SoftReset()

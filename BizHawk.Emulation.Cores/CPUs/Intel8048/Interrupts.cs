@@ -42,6 +42,8 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			IntEn = false;
 			TimIntEn = false;
 			INT_MSTR = true;
+			IRQPending = false;
+			TIRQPending = false;
 		}
 	}
 }
