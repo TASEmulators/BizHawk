@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			var values = new int[RegisterNames.Length];
-			LibmGBA.BizGetRegisters(_core, values);
+			LibmGBA.BizGetRegisters(Core, values);
 			var ret = new Dictionary<string, RegisterValue>();
 			for (var i = 0; i < RegisterNames.Length; i++)
 			{
@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		}
 
 		[FeatureNotImplemented]
-		public IMemoryCallbackSystem MemoryCallbacks => throw new NotImplementedException();
+		public IMemoryCallbackSystem MemoryCallbacks { get; }
 
 		public bool CanStep(StepType type) => false;
 

@@ -8,15 +8,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		const string dll = "mgba.dll";
 		const CallingConvention cc = CallingConvention.Cdecl;
 
-		[DllImport(dll, CallingConvention = cc)]
-		public static extern void BizDestroy(IntPtr ctx);
-
-		[DllImport(dll, CallingConvention = cc)]
-		public static extern IntPtr BizCreate(byte[] bios, byte[] data, int length, [In]OverrideInfo dbinfo, bool skipBios);
-
-		[DllImport(dll, CallingConvention = cc)]
-		public static extern void BizReset(IntPtr ctx);
-
 		public enum SaveType : int
 		{
 			Autodetect = -1,
@@ -41,6 +32,35 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			NoOverride = 0x8000 // can probably ignore this
 		}
 
+		[Flags]
+		public enum Layers : int
+		{
+			BG0 = 1,
+			BG1 = 2,
+			BG2 = 4,
+			BG3 = 8,
+			OBJ = 16
+		}
+
+		[Flags]
+		public enum Sounds : int
+		{
+			CH0 = 1,
+			CH1 = 2,
+			CH2 = 4,
+			CH3 = 8,
+			CHA = 16,
+			CHB = 32
+		}
+
+		public enum mWatchpointType
+		{
+			WATCHPOINT_WRITE = 1,
+			WATCHPOINT_READ = 2,
+			WATCHPOINT_RW = 3,
+			WATCHPOINT_WRITE_CHANGE = 4,
+		};
+
 		[StructLayout(LayoutKind.Sequential)]
 		public class OverrideInfo
 		{
@@ -49,13 +69,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			public uint IdleLoop = IDLE_LOOP_NONE;
 			public const uint IDLE_LOOP_NONE = unchecked((uint)0xffffffff);
 		}
-
-		[DllImport(dll, CallingConvention = cc)]
-		public static extern bool BizAdvance(IntPtr ctx, LibVBANext.Buttons keys, int[] vbuff, ref int nsamp, short[] sbuff,
-			long time, short gyrox, short gyroy, short gyroz, byte luma);
-
-		[DllImport(dll, CallingConvention = cc)]
-		public static extern void BizSetPalette(IntPtr ctx, int[] palette);
 
 		[StructLayout(LayoutKind.Sequential)]
 		public class MemoryAreas
@@ -73,10 +86,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		}
 
 		[DllImport(dll, CallingConvention = cc)]
+		public static extern void BizDestroy(IntPtr ctx);
+
+		[DllImport(dll, CallingConvention = cc)]
+		public static extern IntPtr BizCreate(byte[] bios, byte[] data, int length, [In]OverrideInfo dbinfo, bool skipBios);
+
+		[DllImport(dll, CallingConvention = cc)]
+		public static extern void BizReset(IntPtr ctx);
+
+		[DllImport(dll, CallingConvention = cc)]
+		public static extern bool BizAdvance(IntPtr ctx, LibVBANext.Buttons keys, int[] vbuff, ref int nsamp, short[] sbuff,
+			long time, short gyrox, short gyroy, short gyroz, byte luma);
+
+		[DllImport(dll, CallingConvention = cc)]
+		public static extern void BizSetPalette(IntPtr ctx, int[] palette);
+
+		[DllImport(dll, CallingConvention = cc)]
 		public static extern void BizGetMemoryAreas(IntPtr ctx, [Out]MemoryAreas dst);
 
 		[DllImport(dll, CallingConvention = cc)]
 		public static extern int BizGetSaveRam(IntPtr ctx, byte[] dest, int maxsize);
+
 		[DllImport(dll, CallingConvention = cc)]
 		public static extern void BizPutSaveRam(IntPtr ctx, byte[] src, int size);
 
@@ -101,29 +131,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		[DllImport(dll, CallingConvention = cc)]
 		public static extern bool BizPutState(IntPtr ctx, byte[] src, int size);
 
-		[Flags]
-		public enum Layers : int
-		{
-			BG0 = 1,
-			BG1 = 2,
-			BG2 = 4,
-			BG3 = 8,
-			OBJ = 16
-		}
-
 		[DllImport(dll, CallingConvention = cc)]
 		public static extern void BizSetLayerMask(IntPtr ctx, Layers mask);
-
-		[Flags]
-		public enum Sounds : int
-		{
-			CH0 = 1,
-			CH1 = 2,
-			CH2 = 4,
-			CH3 = 8,
-			CHA = 16,
-			CHB = 32
-		}
 
 		[DllImport(dll, CallingConvention = cc)]
 		public static extern void BizSetSoundMask(IntPtr ctx, Sounds mask);
@@ -139,9 +148,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		[UnmanagedFunctionPointer(cc)]
 		public delegate void TraceCallback(string msg);
-
 		[DllImport(dll, CallingConvention = cc)]
 		public static extern void BizSetTraceCallback(TraceCallback cb);
 
+		[UnmanagedFunctionPointer(cc)]
+		public delegate void MemCallback(uint addr, mWatchpointType type, uint oldValue, uint newValue);
+		[DllImport(dll, CallingConvention = cc)]
+		public static extern void BizSetMemCallback(MemCallback cb);
+
+		[UnmanagedFunctionPointer(cc)]
+		public delegate void ExecCallback(uint pc);
+		[DllImport(dll, CallingConvention = cc)]
+		public static extern void BizSetExecCallback(ExecCallback cb);
+
+		[DllImport(dll, CallingConvention = cc)]
+		public static extern int BizSetWatchpoint(IntPtr ctx, uint addr, mWatchpointType type);
+
+		[DllImport(dll, CallingConvention = cc)]
+		public static extern bool BizClearWatchpoint(IntPtr ctx, int id);
 	}
 }

@@ -38,8 +38,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			var skipBios = !DeterministicEmulation && _syncSettings.SkipBios;
 
-			_core = LibmGBA.BizCreate(bios, file, file.Length, GetOverrideInfo(game), skipBios);
-			if (_core == IntPtr.Zero)
+			Core = LibmGBA.BizCreate(bios, file, file.Length, GetOverrideInfo(game), skipBios);
+			if (Core == IntPtr.Zero)
 			{
 				throw new InvalidOperationException($"{nameof(LibmGBA.BizCreate)}() returned NULL!  Bad BIOS? and/or ROM?");
 			}
@@ -60,10 +60,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				};
 				_tracecb = new LibmGBA.TraceCallback((msg) => _tracer.Put(_traceInfo(msg)));
 				ser.Register(_tracer);
+				MemoryCallbacks = new MGBAMemoryCallbackSystem(this);
 			}
 			catch
 			{
-				LibmGBA.BizDestroy(_core);
+				LibmGBA.BizDestroy(Core);
 				throw;
 			}
 		}
@@ -104,7 +105,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			Frame++;
 			if (controller.IsPressed("Power"))
 			{
-				LibmGBA.BizReset(_core);
+				LibmGBA.BizReset(Core);
 
 				// BizReset caused memorydomain pointers to change.
 				WireMemoryDomainPointers();
@@ -113,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			LibmGBA.BizSetTraceCallback(_tracer.Enabled ? _tracecb : null);
 
 			IsLagFrame = LibmGBA.BizAdvance(
-				_core,
+				Core,
 				VBANext.GetButtons(controller),
 				render ? _videobuff : _dummyvideobuff,
 				ref _nsamp,
@@ -150,10 +151,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public void Dispose()
 		{
-			if (_core != IntPtr.Zero)
+			if (Core != IntPtr.Zero)
 			{
-				LibmGBA.BizDestroy(_core);
-				_core = IntPtr.Zero;
+				LibmGBA.BizDestroy(Core);
+				Core = IntPtr.Zero;
 			}
 		}
 
@@ -169,7 +170,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		}
 
 		private readonly byte[] _saveScratch = new byte[262144];
-		private IntPtr _core;
+		internal IntPtr Core;
 
 		private static LibmGBA.OverrideInfo GetOverrideInfo(GameInfo game)
 		{
