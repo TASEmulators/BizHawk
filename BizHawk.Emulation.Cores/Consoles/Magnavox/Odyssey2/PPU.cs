@@ -68,11 +68,12 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			else if (addr == 0xA0)
 			{
 				ret = VDC_ctrl;
-				Core.cpu.IRQPending = false;
+				//Core.cpu.IRQPending = false;
 			}
 			else if (addr == 0xA1)
 			{
 				ret = VDC_status;
+				Core.cpu.IRQPending = false;
 			}
 			else if (addr == 0xA2)
 			{
@@ -173,7 +174,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			else if (addr == 0xA3)
 			{
 				VDC_color = value;
-				//Console.WriteLine("VDC_color: " + value + " " + Core.cpu.TotalExecutedCycles);
+				//Console.WriteLine("VDC_color: " + value + " " + LY + " " + Core.cpu.TotalExecutedCycles);
 				grid_brightness = (!lum_en | VDC_color.Bit(6)) ? 8 : 0;
 				bg_brightness = !lum_en ? 8 : 0;
 			}
@@ -201,6 +202,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			{
 				if (!VDC_ctrl.Bit(3)) { Grid_V[addr - 0xE0] = value; }
 			}
+			//Console.WriteLine(addr + " " + value + " " + LY + " " + Core.cpu.TotalExecutedCycles);
 		}
 
 		public void tick()
@@ -855,7 +857,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			0xFF94309F, // violet
 			0xFF77670B, // yellow
 			0xFF676767, // grey
-			0xFF000000, // black
+			0xFF676767, // grey
 			0xFF5C80F6, // light blue
 			0xFF56C469, // light green
 			0xFF77E6EB, // light blue-green
@@ -976,7 +978,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				}
 
 				C_final = output_bit;
-				C_final *= ((aud_ctrl & 0xF) + 1) * 3200;
+				C_final *= ((aud_ctrl & 0xF) + 1) * 800;
 			}
 
 			if (C_final != latched_sample_C)

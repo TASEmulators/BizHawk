@@ -1,4 +1,5 @@
 ﻿using BizHawk.Emulation.Common;
+using System;
 
 namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 {
@@ -60,6 +61,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			SendVideoBuffer();
 
 			bool frame_chk = true;
+			//Console.WriteLine("----------FRAME----------");
 
 			if (is_pal)
 			{

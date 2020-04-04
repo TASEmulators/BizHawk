@@ -511,7 +511,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 
 		public Action<TraceInfo> TraceCallback;
 
-		public string TraceHeader => "MC6809: PC, machine code, mnemonic, operands, registers (A, B, X, Y, US, SP, DP, CC), Cy, flags (CAFBIFTTR)";
+		public string TraceHeader => "MC6809: PC, machine code, mnemonic, operands, registers (A, B, X, Y, US, SP, DP, CC), Cy, flags (CAFBIFT0T1TFR)";
 
 		public TraceInfo State(bool disassemble = true)
 		{
@@ -521,7 +521,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			{
 				Disassembly = $"{(disassemble ? Disassemble(Regs[PC], ReadMemory, out notused) : "---")} ".PadRight(50),
 				RegisterInfo = string.Format(
-					"A:{0:X2} R0:{1:X2} R1:{2:X2} R2:{3:X2} R3:{4:X2} R4:{5:X2} R5:{6:X2} R6:{7:X2} R7:{8:X2} PSW:{9:X4} Cy:{10} LY:{11} {12}{13}{14}{15}{16}{17}{18}{19}{20}{21}",
+					"A:{0:X2} R0:{1:X2} R1:{2:X2} R2:{3:X2} R3:{4:X2} R4:{5:X2} R5:{6:X2} R6:{7:X2} R7:{8:X2} PSW:{9:X4} Cy:{10} LY:{11} {12}{13}{14}{15}{16}{17}{18}{19}{20}{21}{22}",
 					Regs[A],
 					Regs[(ushort)(R0 + RB)],
 					Regs[(ushort)(R1 + RB)],
@@ -543,6 +543,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 					F1 ? "F" : "f",
 					T0 ? "T" : "t",
 					T1 ? "T" : "t",
+					TF ? "T" : "t",
 					RB > 0 ? "R" : "r"
 					)
 			};
