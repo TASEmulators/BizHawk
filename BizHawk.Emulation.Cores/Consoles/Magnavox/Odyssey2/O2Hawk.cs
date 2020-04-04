@@ -127,10 +127,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			in_vblank = true; // we start off in vblank since the LCD is off
 			in_vblank_old = true;
 
-			// bank switching carts expect to be in upper bank on boot up, so can't have 0 at ports
-			WritePort(1, 0xFF);
-			WritePort(2, 0xFF);
-
 			ppu.Reset();
 
 			cpu.Reset();
@@ -139,12 +135,13 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 			ticker = 0;
 
+			// some of these get overwritten, but 
 			addr_latch = 0;
-			kb_byte = 0;;
-			ppu_en = RAM_en = kybrd_en = copy_en = cart_b0 = cart_b1;
-			rom_bank = 0;
-
 			kb_state_row = kb_state_col = 0;
+
+			// bank switching carts expect to be in upper bank on boot up, so can't have 0 at ports
+			WritePort(1, 0xFF);
+			WritePort(2, 0xFF);
 		}
 
 		public void SoftReset()
