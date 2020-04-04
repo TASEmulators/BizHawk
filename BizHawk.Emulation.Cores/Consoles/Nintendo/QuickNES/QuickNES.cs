@@ -9,6 +9,7 @@ using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.BizInvoke;
+using BizHawk.Common.BufferExtensions;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
@@ -49,7 +50,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 				try
 				{
-
 					file = FixInesHeader(file);
 					LibQuickNES.ThrowStringError(QN.qn_loadines(Context, file, file.Length));
 
@@ -209,10 +209,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 				SetPads(controller, out var j1, out var j2);
 
-				if (Tracer.Enabled)
-					QN.qn_set_tracecb(Context, _traceCb);
-				else
-					QN.qn_set_tracecb(Context, null);
+				QN.qn_set_tracecb(Context, Tracer.Enabled ? _traceCb : null);
 
 				Frame++;
 				LibQuickNES.ThrowStringError(QN.qn_emulate_frame(Context, j1, j2));
@@ -265,7 +262,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				for (int i = 0; i < chrrom.Size; i++)
 					ms.WriteByte(chrrom.PeekByte(i));
 
-			string sha1 = BizHawk.Common.BufferExtensions.BufferExtensions.HashSHA1(ms.ToArray());
+			string sha1 = ms.ToArray().HashSHA1();
 			Console.WriteLine("Hash for BootGod: {0}", sha1);
 
 			// Bail out on ROM's known to not be playable by this core
@@ -288,8 +285,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 					case "Dendy":
 						Console.WriteLine("Bad region {0}! Failing over...", carts[0].System);
 						throw new UnsupportedGameException("Unsupported region!");
-					default:
-						break;
 				}
 
 				BootGodStatus = RomStatus.GoodDump;
@@ -594,6 +589,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			"8EC5D4DEED22E230020596993BB1C42AEB2215DA", // VS. TKO Boxing (VS) [a1]
 			"6A01FB7F185A45BAA21CC1EEDEB945CACA1C4D92", // Battle City (VS) [p1][!]
 			"D9B1B87204E025A637821A0168475E1209CE0C8A", // Top Gun (VS)
+			"4D5C2BF0B8EAA1690182D692A02BE1CC871481F4", // Punch-Out!! (E) (VS)
 		};
 
 		#endregion
