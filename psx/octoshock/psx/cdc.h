@@ -13,9 +13,9 @@ namespace MDFN_IEN_PSX
 struct CD_Audio_Buffer
 {
  int16 Samples[2][0x1000];	// [0][...] = l, [1][...] = r
- int32 Size;
+ uint32 Size;
  uint32 Freq;
- int32 ReadPos;
+ uint32 ReadPos;
 };
 
 class PS_CDC

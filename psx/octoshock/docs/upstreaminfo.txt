@@ -111,3 +111,8 @@
 0.9.39-unstable -> 0.9.39-1
 [NO] mednafen : just org stuff
 [??] cdrom/ccd : something about track AA
+0.9.39-1 -> 0.9.39-2
+[NO] drivers/main : nothing useful
+[NO] mednafen : nothing useful
+[OK] psx/cdc : loadstate, type change
+[OK] psx/cpu : type change, loadstate tweak. ATTN: note about GTE_StateAction

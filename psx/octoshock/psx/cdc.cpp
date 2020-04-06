@@ -368,6 +368,22 @@ SYNCFUNC(PS_CDC)
   NSS(ReportLastF);
 
 	//(%= crap about file format recovery in case SectorPipe_Pos changes)
+
+	if(isReader)
+	{
+		if(AudioBuffer.Size > sizeof(AudioBuffer.Samples[0]) / sizeof(AudioBuffer.Samples[0][0]))
+			AudioBuffer.Size = sizeof(AudioBuffer.Samples[0]) / sizeof(AudioBuffer.Samples[0][0]);
+
+		if(AudioBuffer.ReadPos > AudioBuffer.Size)
+			AudioBuffer.ReadPos = AudioBuffer.Size;
+
+		ResultsRP &= 0xF;
+		ResultsWP &= 0xF;
+		ResultsIn &= 0x1F;
+
+		ADPCM_ResampCurPos &= 0x1F;
+		ADPCM_ResampCurPhase %= 7;
+	}
 }
 
 void PS_CDC::ResetTS(void)

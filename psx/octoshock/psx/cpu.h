@@ -201,7 +201,7 @@ class PS_CPU
 
  //PS_GTE GTE;
 
- uint8 *FastMap[1 << (32 - FAST_MAP_SHIFT)];
+ uintptr_t FastMap[1 << (32 - FAST_MAP_SHIFT)];
  uint8 DummyPage[FAST_MAP_PSIZE];
 
  enum
