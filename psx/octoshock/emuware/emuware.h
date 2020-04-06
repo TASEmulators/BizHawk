@@ -11,6 +11,9 @@
 #define SIZEOF_LONG sizeof(long)
 #define SIZEOF_LONG_LONG sizeof(long long)
 #define SIZEOF_OFF_T sizeof(void*)
+#define SIZEOF_PTRDIFF_T sizeof(void*)
+#define SIZEOF_SIZE_T sizeof(size_t)
+#define SIZEOF_VOID_P sizeof(void*)
 typedef __int64 s64;
 typedef __int32 s32;
 typedef __int16 s16;

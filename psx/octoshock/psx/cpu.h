@@ -64,8 +64,6 @@
 namespace MDFN_IEN_PSX
 {
 
-#define PS_CPU_EMULATE_ICACHE 1
-
 class PS_CPU
 {
  public:

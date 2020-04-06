@@ -115,9 +115,18 @@
 [NO] drivers/main : nothing useful
 [NO] mednafen : nothing useful
 [OK] psx/cdc : loadstate, type change
-[OK] psx/cpu : type change, loadstate tweak. ATTN: note about GTE_StateAction
+[OK] psx/cpu : type change, loadstate tweak. ignore GTE_StateAction.
 [OK] psx/gpu : big update to loadstate, maybe missing things before
 [NO] psx/input/* : loadstate buffer sanity, not used for us
 [OK] psx/mdec : PixelBufferReadOffset fixes
 [OK] psx/psx : event_time initial value
 [OK] psx/spu : loadstate sanity, decided to accept it here
+0.9.39-2 -> 0.9.41
+[OK] math_ops : major revisions
+[NO] mednafen : nothing useful, but check interlace init
+[OK] psx/cpu : remove PS_CPU_EMULATE_ICACHE? ok..
+[NO] psx/frontio : AMCT stuff
+[NO] psx/gpu : render parameters stuff
+[NO] psx/input/dualshocK : AMCT stuff
+[NO] psx/psx : render parameters stuff
+[OK] tests : pasted over and whittled down

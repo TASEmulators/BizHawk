@@ -2806,8 +2806,6 @@ SYNCFUNC(PS_CPU)
 
 	NSS(ScratchRAM.data8);
 
-	//ZERO - REMINDER - GTE_StateAction was here. is it important?
-
 	if(isReader)
 	{
 		ReadAbsorbWhich &= 0x1F;
