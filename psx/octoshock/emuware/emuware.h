@@ -137,3 +137,5 @@ char (*BLAHBLAHBLAH( UNALIGNED T (&)[N] ))[N];
 #else
 #define EW_PACKED( ... )  __VA_ARGS__ __attribute__((__packed__))
 #endif
+
+#define MDFN_IS_BIGENDIAN 0

@@ -172,3 +172,12 @@
 [OK] psx/masmem : not important
 [NO] psx/mdec : not important
 [NO] psx/psx : not important
+
+0.9.45 -> 0.9.45.1
+(nothing)
+
+0.9.45.1 -> 0.9.48
+[OK] endian / many updates, probably for performance
+[OK] psx/irq : tidy
+[OK] psx/gpu : tidy
+[OK] tests: add some gcc tests, and tests for various cpu archs

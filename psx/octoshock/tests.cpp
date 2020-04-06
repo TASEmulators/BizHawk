@@ -64,6 +64,18 @@
 
 #include <atomic>
 
+#ifdef __ARM_NEON__
+#include <arm_neon.h>
+#endif
+
+#ifdef __MMX__
+#include <mmintrin.h>
+#endif
+
+#ifdef __SSE__
+#include <xmmintrin.h>
+#endif
+
 namespace MDFN_TESTS_CPP
 {
 
@@ -733,6 +745,68 @@ void NO_INLINE NO_CLONE TestGCC70941(void)
  assert(tmp == -1);
 }
 
+void NO_INLINE NO_CLONE TestGCC71488_Sub(long long* p, int v)
+{
+	for(unsigned i = 0; i < 4; i++)
+		p[i] = ((!p[4]) > (unsigned)!v) + !p[4];
+}
+
+void NO_INLINE NO_CLONE TestGCC71488(void)
+{
+	long long p[5] = { 0, 0, 0, 0, 0 };
+
+	TestGCC71488_Sub(p, 1);
+
+	assert(p[0] == 2 && p[1] == 2 && p[2] == 2 && p[3] == 2 && p[4] == 0);
+}
+
+int NO_INLINE NO_CLONE TestGCC80631_Sub(int* p)
+{
+	int ret = -1;
+
+	for(int i = 0; i < 8; i++)
+		if(p[i])
+			ret = i;
+
+	return ret;
+}
+
+void NO_INLINE NO_CLONE TestGCC80631(void)
+{
+	int p[32];
+
+	for(int i = 0; i < 32; i++)
+		p[i] = (i == 0 || i >= 8);
+
+	assert(TestGCC80631_Sub(p) == 0);
+}
+
+NO_INLINE NO_CLONE void TestGCC81740_Sub(int* p, unsigned count)
+{
+	static const int good[20] = { 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 10, 5, 6, 7, 8, 15, 10, 11, 12, 13 };
+
+	assert(count == 20);
+
+	for(unsigned i = 0; i < count; i++)
+		assert(good[i] == p[i]);
+}
+
+int TestGCC81740_b;
+
+NO_INLINE NO_CLONE void TestGCC81740(void)
+{
+	int v[4][5] = { 0 };
+
+	for(unsigned i = 0; i < sizeof(v) / sizeof(int); i++)
+		(&v[0][0])[i] = i;
+
+	for(int a = 3; a >= 0; a--)
+		for(TestGCC81740_b = 0; TestGCC81740_b < 3; TestGCC81740_b++)
+			v[TestGCC81740_b + 1][a + 1] = v[TestGCC81740_b][a];
+
+	TestGCC81740_Sub(&v[0][0], sizeof(v) / sizeof(int));
+}
+
 template<typename A, typename B>
 void NO_INLINE NO_CLONE TestSUCompare_Sub(A a, B b)
 {
@@ -763,44 +837,83 @@ void NO_INLINE NO_CLONE TestSUCompare(void)
  TestSUCompare_Sub<int8, uint8>(TestSUCompare_x0, 255);
 }
 
+template<typename T>
+NO_INLINE NO_CLONE void CheckAlignasType_Sub(void* p)
+{
+ assert(((uintptr_t)p % alignof(T)) == 0);
+}
+
+template<size_t I>
+NO_INLINE NO_CLONE void CheckAlignasI_Sub(void* p)
+{
+ assert(((uintptr_t)p % I) == 0);
+}
+
+template<typename T>
+NO_INLINE NO_CLONE void CheckAlignasType(void)
+{
+ alignas(alignof(T)) uint8 lv0[sizeof(T) + 1];
+ alignas(alignof(T)) uint8 lv1[sizeof(T) + 1];
+ alignas(alignof(T)) static uint8 gv0[sizeof(T) + 1];
+ alignas(alignof(T)) static uint8 gv1[sizeof(T) + 1];
+
+ CheckAlignasType_Sub<T>((void*)lv0);
+ CheckAlignasType_Sub<T>((void*)lv1);
+ CheckAlignasType_Sub<T>((void*)gv0);
+ CheckAlignasType_Sub<T>((void*)gv1);
+}
+
+template<size_t I>
+NO_INLINE NO_CLONE void CheckAlignasI(void)
+{
+ alignas(I) uint8 lv0[I + 1];
+ alignas(I) uint8 lv1[I + 1];
+ alignas(I) static uint8 gv0[I + 1];
+ alignas(I) static uint8 gv1[I + 1];
+
+ CheckAlignasI_Sub<I>((void*)lv0);
+ CheckAlignasI_Sub<I>((void*)lv1);
+ CheckAlignasI_Sub<I>((void*)gv0);
+ CheckAlignasI_Sub<I>((void*)gv1);
+}
+
 static void DoAlignmentChecks(void)
 {
- uint8 padding0[3];
- alignas(16) uint8 aligned0[7];
- alignas(4)  uint8 aligned1[2];
- alignas(16) uint32 aligned2[2];
- uint8 padding1[3];
+ static_assert(alignof(uint8) <= sizeof(uint8), "Alignment of type is greater than size of type.");
+ static_assert(alignof(uint16) <= sizeof(uint16), "Alignment of type is greater than size of type.");
+ static_assert(alignof(uint32) <= sizeof(uint32), "Alignment of type is greater than size of type.");
+ static_assert(alignof(uint64) <= sizeof(uint64), "Alignment of type is greater than size of type.");
 
- static uint8 g_padding0[3];
- alignas(16) static uint8 g_aligned0[7];
- alignas(4)  static uint8 g_aligned1[2];
- alignas(16) static uint32 g_aligned2[2];
- static uint8 g_padding1[3];
+ CheckAlignasType<uint16>();
+ CheckAlignasType<uint32>();
+ CheckAlignasType<uint64>();
+ CheckAlignasType<float>();
+ CheckAlignasType<double>();
 
- // Make sure compiler doesn't removing padding vars
- assert((&padding0[1] - &padding0[0]) == 1);
- assert((&padding1[1] - &padding1[0]) == 1);
- assert((&g_padding0[1] - &g_padding0[0]) == 1);
- assert((&g_padding1[1] - &g_padding1[0]) == 1);
+#if defined(ARCH_X86)
+ CheckAlignasI<16>();
+#endif
 
+#if defined(__MMX__)
+ CheckAlignasType<__m64>();
+#endif
 
- assert( (((unsigned long long)&aligned0[0]) & 0xF) == 0);
- assert( (((unsigned long long)&aligned1[0]) & 0x3) == 0);
- assert( (((unsigned long long)&aligned2[0]) & 0xF) == 0);
+#if defined(__SSE__)
+ CheckAlignasType<__m128>();
+#endif
 
- assert(((uint8 *)&aligned0[1] - (uint8 *)&aligned0[0]) == 1);
- assert(((uint8 *)&aligned1[1] - (uint8 *)&aligned1[0]) == 1);
- assert(((uint8 *)&aligned2[1] - (uint8 *)&aligned2[0]) == 4);
+#if defined(ARCH_POWERPC_ALTIVEC)
+ CheckAlignasType<vector unsigned int>();
+ CheckAlignasType<vector unsigned short>();
+#endif
 
-
- assert( (((unsigned long long)&g_aligned0[0]) & 0xF) == 0);
- assert( (((unsigned long long)&g_aligned1[0]) & 0x3) == 0);
- assert( (((unsigned long long)&g_aligned2[0]) & 0xF) == 0);
-
- assert(((uint8 *)&g_aligned0[1] - (uint8 *)&g_aligned0[0]) == 1);
- assert(((uint8 *)&g_aligned1[1] - (uint8 *)&g_aligned1[0]) == 1);
- assert(((uint8 *)&g_aligned2[1] - (uint8 *)&g_aligned2[0]) == 4);
+#ifdef __ARM_NEON__
+ CheckAlignasType<int16x4_t>();
+ CheckAlignasType<int32x4_t>();
+ CheckAlignasType<float32x4_t>();
+#endif
 }
+
 
 static uint32 NO_INLINE NO_CLONE RunMASMemTests_DoomAndGloom(uint32 offset)
 {
@@ -922,6 +1035,48 @@ static void NO_INLINE NO_CLONE RunMiscEndianTests(uint32 arg0, uint32 arg1)
  assert(mem16[0] == 0xDDEE);
  assert(mem16[3] == 0x5566);
  assert(mem16[2] == 0x3344);
+
+ {
+	 uint64 v64 = 0xDEADBEEFCAFEBABEULL;
+
+	 for(unsigned i = 0; i < 8; i++)
+	 {
+		 if(!(i & 0x7))
+		 {
+			 assert(ne64_rbo_be<uint64>(&v64, i) == v64);
+			 assert(ne64_rbo_le<uint64>(&v64, i) == v64);
+		 }
+
+		 if(!(i & 0x3))
+		 {
+			 assert(ne64_rbo_be<uint32>(&v64, i) == (uint32)(v64 >> (32 - i * 8)));
+			 assert(ne64_rbo_le<uint32>(&v64, i) == (uint32)(v64 >> (i * 8)));
+		 }
+
+		 if(!(i & 0x1))
+		 {
+			 assert(ne64_rbo_be<uint16>(&v64, i) == (uint16)(v64 >> (48 - i * 8)));
+			 assert(ne64_rbo_le<uint16>(&v64, i) == (uint16)(v64 >> (i * 8)));
+		 }
+
+		 assert(ne64_rbo_be<uint8>(&v64, i) == (uint8)(v64 >> (56 - i * 8)));
+		 assert(ne64_rbo_le<uint8>(&v64, i) == (uint8)(v64 >> (i * 8)));
+	 }
+
+	 ne64_wbo_be<uint64>(&v64, 0, 0xCAFEBABEDEADBEEF);
+	 assert(v64 == 0xCAFEBABEDEADBEEF);
+	 ne64_wbo_le<uint32>(&v64, 0, 0xD00FDAD0);
+	 ne64_wbo_be<uint16>(&v64, 0, 0xF00D);
+	 uint8 z[2] = { 0xC0, 0xBB };
+	 ne64_rwbo_be<uint8, true>(&v64, 2, &z[0]);
+	 ne64_rwbo_le<uint8, true>(&v64, 4, &z[1]);
+
+	 ne64_rwbo_le<uint8, false>(&v64, 5, &z[0]);
+	 ne64_rwbo_be<uint8, false>(&v64, 3, &z[1]);
+
+	 assert(z[0] == 0xC0 && z[1] == 0xBB);
+	 assert(v64 == 0xF00DC0BBD00FDAD0ULL);
+ }
 
  //
  //
@@ -1704,6 +1859,9 @@ bool MDFN_RunMathTests(void)
  TestGCC60196();
  TestGCC69606();
  TestGCC70941();
+ TestGCC71488();
+ TestGCC80631();
+ TestGCC81740();
 
  TestModTern();
  TestBWNotMask31GTZ();

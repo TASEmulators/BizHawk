@@ -21,7 +21,7 @@
 
 //
 // Reference voodoo, since section anchors don't work with externs
-// WARNING: Don't use with members of (transparent) unions!
+// WARNING: Don't use with members of (anonymous) unions!
 //
 #define GLBVAR(x) static auto& x = GPU.x;
 

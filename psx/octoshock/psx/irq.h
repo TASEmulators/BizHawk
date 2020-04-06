@@ -57,7 +57,7 @@ enum
 uint32 IRQ_GetRegister(unsigned int which, char *special, const uint32 special_len);
 void IRQ_SetRegister(unsigned int which, uint32 value);
 
-};
+}
 
 
 #endif
