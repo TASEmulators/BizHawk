@@ -169,7 +169,6 @@ struct PS_GPU
  bool InVBlank;
  bool sl_zero_reached;
  bool skip;
- bool hide_hoverscan;
  bool field;
  bool field_ram_readout;
  uint32 DisplayFB_CurYOffset;
@@ -206,6 +205,11 @@ struct PS_GPU
  MDFN_Rect *DisplayRect;
  int32 *LineWidths;
  int LineVisFirst, LineVisLast;
+ bool ShowHOverscan;
+ bool CorrectAspect;
+ int32 HVis;
+ int32 HVisOffs;
+ int32 NCABaseW;
  int32 hmc_to_visible;
  /*const*/ bool HardwarePALType;
  uint32 OutputLUT[384];
@@ -226,7 +230,7 @@ struct PS_GPU
  void GPU_Kill(void) MDFN_COLD;
 
  
-	 
+ void GPU_GetGunXTranslation(float* scale, float* offs);
 
  void GPU_Power(void) MDFN_COLD;
 

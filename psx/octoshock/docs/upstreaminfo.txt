@@ -198,7 +198,7 @@
 1.21.3 -> 1.22.0-UNSTABLE
 (mednafen namespaces added all over)
 [NO] endian : nothing important
-[OK] psx/cdc : many changes (described well in changelog). CAUTION: DMForceStop is removed, this may cause problems
+[OK] psx/cdc : many changes (described well in changelog). CAUTION: DMForceStop is removed, this may cause problems on multidisc games
 [OK] psx/psx : remove register keyword, add NO_INLINE
 [NO] psx/dis : minor change, we do it different
 [OK] psx/gpu : silence warning
@@ -212,3 +212,7 @@
 1.22.2 -> 1.23.0
 [OK] psx/cdc : fix a bug
 [NO] psx/psx : GIT change
+
+1.23.0 -> 1.24.0-UNSTABLE
+(MDFN_HIDE litter all over)
+[OK] psx/gpu : (c); ignored AR changes in GIT (TODO: reapply in bizhawk code). changed timing.
