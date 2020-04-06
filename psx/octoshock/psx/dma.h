@@ -25,9 +25,9 @@
 namespace MDFN_IEN_PSX
 {
 
-pscpu_timestamp_t DMA_Update(const pscpu_timestamp_t timestamp);
-void DMA_Write(const pscpu_timestamp_t timestamp, uint32 A, uint32 V);
-uint32 DMA_Read(const pscpu_timestamp_t timestamp, uint32 A);
+MDFN_FASTCALL pscpu_timestamp_t DMA_Update(const pscpu_timestamp_t timestamp);
+MDFN_FASTCALL void DMA_Write(const pscpu_timestamp_t timestamp, uint32 A, uint32 V);
+MDFN_FASTCALL uint32 DMA_Read(const pscpu_timestamp_t timestamp, uint32 A);
 
 void DMA_ResetTS(void);
 

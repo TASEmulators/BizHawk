@@ -31,10 +31,10 @@ class InputDevice
 {
  public:
 
- InputDevice();
- virtual ~InputDevice();
+ InputDevice() MDFN_COLD;
+ virtual ~InputDevice() MDFN_COLD;
 
- virtual void Power(void);
+ virtual void Power(void) MDFN_COLD;
  virtual void UpdateInput(const void *data);
 
  virtual void SyncState(bool isReader, EW::NewState *ns) {}

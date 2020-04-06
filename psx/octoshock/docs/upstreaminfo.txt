@@ -3,6 +3,7 @@
 [OK] psx/CDC : removed stub for Command_Sync (WHY?)
 [OK] psx/psx : fixed bug (SPU-related: clarified read order by turning into two statements)
 [NO] psx/psx : StateAction bugfix
+
 0.9.36.5 -> 0.9.37-UNSTABLE
 (General improvements and state fixups)
 (bios hash check at loadstate time added)
@@ -30,9 +31,11 @@
 [??] psx/psx : SCEE/SCEA/SCEI SCEx stuff changed (???)
 [!!] psx/psx : LoadEXE/PSF1 changes (TODO - need these)
 [OK] psx/spu* : register renames and misc bugfixes
+
 0.9.37-UNSTABLE -> 0.9.37.1
 [NO] psx/cpu : fix some savestate problem with ReadAbsorbDummy, seems alarming but maybe was just backwards compatibility
 [OK] psx/spu : clamp some sound output presumably messed up by prior reverb changes
+
 0.9.37.1 -> 0.9.38-UNSTABLE
 (major CDIF changes)
 (simplefifo refactored)
@@ -64,10 +67,13 @@
 [OK] psx/psx : DMACycleSteal stuff
 [NO] psx/psx : CalcRegion_By_SYSTEMCNF and TestMagicCD updated
 [NO] psx/psx : DiscSanityChecks added (add feature later maybe)
+
 0.9.38-UNSTABLE -> 0.9.38.1
 [NO] psx/psx : DiscSanityChecks fix (OK if we used this feature)
+
 0.9.38.1 -> 0.9.38.2
 [OK] psx/gpu_polygon : Fixes to poly rasterizing
+
 0.9.38.2 -> 0.9.38.4
 [OK] psx/cdc : Change to fundamental sector reading for tomb raider
 [OK] psx/cpu : Elaborate debug poke capabilities
@@ -75,12 +81,15 @@
 [OK] psx/gpu : Alter mouse coordinate translation
 [OK] psx/gpu : Alter texcache invalidation, TPage and DrawMode commands
 [OK] psx/psx : Elaborate debug poke capabilities
+
 0.9.38.4 -> 0.9.38.5
 [OK] psx/cdc : substantial changes to disc swapping and seek retries
 [OK] psx/gpu : change to comments
 [OK] psx/memcard : change to debug output
+
 0.9.38.4 -> 0.9.38.6
 [OK] psx/gpu & gpu_sprite : Fixed GPU emulation timing bugs that caused graphical glitches in "Mr. Driller G". 
+
 0.9.38.5 -> 0.9.38.7
 [OK] psx/cpu : Revisions to exception handling
 [OK] psx/cpu : Many revisions and cleanups to branch and exception handling in opcode implementations
@@ -89,6 +98,7 @@
 [OK] psx/psx : Cleanup
 [OK] psx/timer : Major functional changes
 [NO] psx/timer : Added loadstate sanity checks
+
 0.9.38.7 -> 0.9.39-unstable
 [OK] psx/cdc : "Fantastic Pinball Kyutenkai" enable; add MDFN_COLD
 [OK] psx/cpu : various improvements
@@ -108,9 +118,11 @@
 [OK] psx/sio : (c)
 [OK] psx/spu : (c), comments, inline
 [OK] psx/timer : (c), comments
+
 0.9.39-unstable -> 0.9.39-1
 [NO] mednafen : just org stuff
 [??] cdrom/ccd : something about track AA
+
 0.9.39-1 -> 0.9.39-2
 [NO] drivers/main : nothing useful
 [NO] mednafen : nothing useful
@@ -121,6 +133,7 @@
 [OK] psx/mdec : PixelBufferReadOffset fixes
 [OK] psx/psx : event_time initial value
 [OK] psx/spu : loadstate sanity, decided to accept it here
+
 0.9.39-2 -> 0.9.41
 [OK] math_ops : major revisions
 [NO] mednafen : nothing useful, but check interlace init
@@ -130,9 +143,18 @@
 [NO] psx/input/dualshocK : AMCT stuff
 [NO] psx/psx : render parameters stuff
 [OK] tests : pasted over and whittled down
+
 0.9.41 -> 0.9.42
 [OK] tests : some 64bit casting tests
+
 0.9.42 -> 0.9.43
 [OK] psx/frontio : (c), UpdateOutput() [not needed]
 [OK] psx/input/dualshock : (c), analog state change [TEST]
-[ok] psx/psx : (c), UpdateOutput() [not needed]
+[OK] psx/psx : (c), UpdateOutput() [not needed]
+
+0.9.43 -> 0.9.44.1
+[OK] psx/cdc : add const
+[NO] psx/debug : not used file
+[OK] psx/dis : add const
+[OK] psx/dma : update GPU api. NOTE: found biz bug here. 
+[OK] psx/frontio : add cold

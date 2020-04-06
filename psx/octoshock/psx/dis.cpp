@@ -2,7 +2,7 @@
 /* Mednafen Sony PS1 Emulation Module                                         */
 /******************************************************************************/
 /* dis.cpp:
-**  Copyright (C) 2011-2016 Mednafen Team
+**  Copyright (C) 2011-2017 Mednafen Team
 **
 ** This program is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU General Public License
@@ -144,7 +144,7 @@ struct OpEntry
 
 #define MK_GTE(mnemonic, format, func) { MASK_OP | (0x1U << 25) | MASK_FUNC, (0x1U << 25) | (0x12U << 26) | func, mnemonic, format }
 
-static OpEntry ops[] =
+static const OpEntry ops[] =
 {
 	MK_OP("nop",	"",	0, 0, MASK_RT | MASK_RD | MASK_SA),
 
@@ -345,7 +345,7 @@ EW_EXPORT s32 shock_Util_DisassembleMIPS(u32 PC, u32 instr, void* outbuf, s32 bu
 		"SZ0", "SZ1", "SZ2", "SZ3", "RGB0", "RGB1", "RGB2", "RES1", "MAC0", "MAC1", "MAC2", "MAC3", "IRGB", "ORGB", "LZCS", "LZCR"
 	};
 
-	OpEntry *op = ops;
+	const OpEntry *op = ops;
 
 	while(op->mnemonic)
 	{

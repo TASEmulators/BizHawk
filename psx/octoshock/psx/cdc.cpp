@@ -2465,7 +2465,7 @@ int32 PS_CDC::Command_0x1d(const int arg_count, const uint8 *args)
  return(0);
 }
 
-PS_CDC::CDC_CTEntry PS_CDC::Commands[0x20] =
+const PS_CDC::CDC_CTEntry PS_CDC::Commands[0x20] =
 {
  { /* 0x00, */ 0, 0, NULL, NULL, NULL },
  { /* 0x01, */ 0, 0, "GetStat", &PS_CDC::Command_GetStat, NULL },

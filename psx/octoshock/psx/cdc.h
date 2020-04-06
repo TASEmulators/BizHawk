@@ -240,7 +240,7 @@ class PS_CDC
  void PreSeekHack(int32 target);
  void ReadBase(void);
 
- static CDC_CTEntry Commands[0x20];
+ static const CDC_CTEntry Commands[0x20];
 
  int32 Command_GetStat(const int arg_count, const uint8 *args);
  int32 Command_Setloc(const int arg_count, const uint8 *args);
