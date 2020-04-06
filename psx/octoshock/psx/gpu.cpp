@@ -19,8 +19,7 @@
 ** 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-//#pragma GCC optimize ("unroll-loops")
-#include <Windows.h>
+#pragma GCC optimize ("unroll-loops")
 
 #include <assert.h>
 
