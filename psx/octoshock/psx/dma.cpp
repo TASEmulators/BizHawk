@@ -261,9 +261,9 @@ static INLINE void ChRW(const unsigned ch, const uint32 CRModeCache, uint32 *V, 
 
 	case CH_GPU:
 		if(CRModeCache & 0x1)
-			GPU->WriteDMA(*V);
+			GPU_WriteDMA(*V);
 		else
-			*V = GPU->ReadDMA();
+			*V = GPU_ReadDMA();
 		break;
 
   case CH_CDC:

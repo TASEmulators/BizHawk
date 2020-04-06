@@ -1645,7 +1645,7 @@ static void ThreadSafeErrno_Test(void)
 
 using namespace MDFN_TESTS_CPP;
 
-#ifdef WANT_TEST_EXCEPTOINS
+#ifdef WANT_TEST_EXCEPTIONS
 void MDFN_RunExceptionTests(const unsigned thread_count, const unsigned thread_delay)
 {
  std::atomic_int_least32_t sv;
@@ -1730,7 +1730,9 @@ bool MDFN_RunMathTests(void)
 
  RunMiscEndianTests(0xAA010203, 0xBB030201);
 
+ #ifdef WANT_TEST_EXCEPTIONS
  MDFN_RunExceptionTests(1, 0);
+ #endif
 
  RunSTLTests();
 

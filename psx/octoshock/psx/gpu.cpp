@@ -1571,7 +1571,7 @@ SYNCFUNC(PS_GPU)
 
 }
 
-void GPU_SetRenderOptions(::ShockRenderOptions* opts)
+void PS_GPU::SetRenderOptions(::ShockRenderOptions* opts)
 {
 	hide_hoverscan = opts->renderType == eShockRenderType_ClipOverscan;
 	dump_framebuffer = opts->renderType == eShockRenderType_Framebuffer;

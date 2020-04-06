@@ -160,3 +160,7 @@
 [OK] psx/frontio : add cold
 [OK] psx/gpu : (big change to make GPU static)
 [OK] psx/psx : associated with GPU, add cold; ignored PSF loader cold. NOTE: at smoe point we got RMD_Drive, which I'm not using
+[NO] psx/input/* : not important cold and device specifications stuff
+[OK] psx/mdec : fastcall
+[OK] psx/irq : fastcall
+[NO] types : extensive work to cold, hot, fastcall, etc. macros for compilers

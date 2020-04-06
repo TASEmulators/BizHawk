@@ -67,7 +67,7 @@ void IRQ_Assert(int which, bool status)
 }
 
 
-void IRQ_Write(uint32 A, uint32 V)
+MDFN_FASTCALL void IRQ_Write(uint32 A, uint32 V)
 {
  // FIXME if we ever have "accurate" bus emulation
  V <<= (A & 3) * 8;
@@ -86,7 +86,7 @@ void IRQ_Write(uint32 A, uint32 V)
 }
 
 
-uint32 IRQ_Read(uint32 A)
+MDFN_FASTCALL uint32 IRQ_Read(uint32 A)
 {
  uint32 ret = 0;
 

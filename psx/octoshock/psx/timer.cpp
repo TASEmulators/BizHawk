@@ -148,7 +148,7 @@ static uint32 CalcNextEvent(void)
  return(next_event);
 }
 
-static bool TimerMatch(unsigned i)
+static MDFN_FASTCALL bool TimerMatch(unsigned i)
 {
  bool irq_exact = false;
 
@@ -179,7 +179,7 @@ static bool TimerMatch(unsigned i)
  return irq_exact;
 }
 
-static bool TimerOverflow(unsigned i)
+static MDFN_FASTCALL bool TimerOverflow(unsigned i)
 {
  bool irq_exact = false;
 
@@ -204,7 +204,7 @@ static bool TimerOverflow(unsigned i)
  return irq_exact;
 }
 
-static void ClockTimer(int i, uint32 clocks)
+static MDFN_FASTCALL void ClockTimer(int i, uint32 clocks)
 {
  if(Timers[i].DoZeCounting <= 0)
   clocks = 0;
@@ -255,7 +255,7 @@ static void ClockTimer(int i, uint32 clocks)
  }
 }
 
-void TIMER_SetVBlank(bool status)
+MDFN_FASTCALL void TIMER_SetVBlank(bool status)
 {
  switch(Timers[1].Mode & 0x7)
  {
@@ -298,7 +298,7 @@ void TIMER_SetVBlank(bool status)
  vblank = status;
 }
 
-void TIMER_SetHRetrace(bool status)
+MDFN_FASTCALL void TIMER_SetHRetrace(bool status)
 {
  if(hretrace && !status)
  {
@@ -314,7 +314,7 @@ void TIMER_SetHRetrace(bool status)
  hretrace = status;
 }
 
-void TIMER_AddDotClocks(uint32 count)
+MDFN_FASTCALL void TIMER_AddDotClocks(uint32 count)
 {
  if(Timers[0].Mode & 0x100)
   ClockTimer(0, count);
@@ -326,7 +326,7 @@ void TIMER_ClockHRetrace(void)
   ClockTimer(1, 1);
 }
 
-pscpu_timestamp_t TIMER_Update(const pscpu_timestamp_t timestamp)
+MDFN_FASTCALL pscpu_timestamp_t TIMER_Update(const pscpu_timestamp_t timestamp)
 {
  int32 cpu_clocks = timestamp - lastts;
 
@@ -345,7 +345,7 @@ pscpu_timestamp_t TIMER_Update(const pscpu_timestamp_t timestamp)
  return(timestamp + CalcNextEvent());
 }
 
-static void CalcCountingStart(unsigned which)
+static MDFN_FASTCALL void CalcCountingStart(unsigned which)
 {
  Timers[which].DoZeCounting = true;
 
@@ -372,7 +372,7 @@ static void CalcCountingStart(unsigned which)
  }
 }
 
-void TIMER_Write(const pscpu_timestamp_t timestamp, uint32 A, uint16 V)
+MDFN_FASTCALL void TIMER_Write(const pscpu_timestamp_t timestamp, uint32 A, uint16 V)
 {
  TIMER_Update(timestamp);
 
@@ -411,7 +411,7 @@ void TIMER_Write(const pscpu_timestamp_t timestamp, uint32 A, uint16 V)
  PSX_SetEventNT(PSX_EVENT_TIMER, timestamp + CalcNextEvent());
 }
 
-uint16 TIMER_Read(const pscpu_timestamp_t timestamp, uint32 A)
+MDFN_FASTCALL uint16 TIMER_Read(const pscpu_timestamp_t timestamp, uint32 A)
 {
  uint16 ret = 0;
  int which = (A >> 4) & 0x3;
