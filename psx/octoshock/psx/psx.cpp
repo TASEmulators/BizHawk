@@ -1,19 +1,23 @@
-/* Mednafen - Multi-system Emulator
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+/******************************************************************************/
+/* Mednafen Sony PS1 Emulation Module                                         */
+/******************************************************************************/
+/* psx.cpp:
+**  Copyright (C) 2011-2016 Mednafen Team
+**
+** This program is free software; you can redistribute it and/or
+** modify it under the terms of the GNU General Public License
+** as published by the Free Software Foundation; either version 2
+** of the License, or (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software Foundation, Inc.,
+** 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
 
 #include "octoshock.h"
 #include "psx.h"
@@ -2423,7 +2427,7 @@ EW_EXPORT s32 shock_AnalyzeDisc(ShockDiscRef* disc, ShockDiscInfo* info)
 		fp->seek((int64)rdel * 2048, SEEK_SET);
 		//printf("%08x, %08x\n", rdel * 2048, rdel_len);
 
-		//I think this loop is scanning directory entries until it finds system.cnf and if it never finishes we'll jsut fall out
+		//I think this loop is scanning directory entries until it finds system.cnf and if it never finishes we'll just fall out
 		while(fp->tell() < (((int64)rdel * 2048) + rdel_len))
 		{
 			uint8 len_dr = fp->get_u8();
@@ -2457,10 +2461,17 @@ EW_EXPORT s32 shock_AnalyzeDisc(ShockDiscRef* disc, ShockDiscInfo* info)
 				{
 					bootpos++;
 					while(*bootpos == ' ' || *bootpos == '\t') bootpos++;
-					if(!strncasecmp(bootpos, "cdrom:\\", 7))
+					if(!strncasecmp(bootpos, "cdrom:", 6))
 					{ 
-						bootpos += 7;
-						char *tmp;
+						char* tmp;
+
+						bootpos += 6;
+
+						// strrchr() way will pick up Tekken 3, but only enable if needed due to possibility of regressions.
+						//if((tmp = strrchr(bootpos, '\\')))
+						// bootpos = tmp + 1;
+						while(*bootpos == '\\')
+							bootpos++;
 
 						if((tmp = strchr(bootpos, '_'))) *tmp = 0;
 						if((tmp = strchr(bootpos, '.'))) *tmp = 0;

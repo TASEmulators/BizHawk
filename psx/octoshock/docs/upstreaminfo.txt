@@ -102,4 +102,7 @@
 [OK] psx/input/* : (c)
 [OK] psx/irq : (c)
 [OK] psx/masmem : (c)
-[OK] psx/mdec : 
+[OK] psx/mdec : (c), opts, 
+[NO] psx/psx : cheats support
+[OK] psx/psx : (c), cnf parse
+[OK] psx/sio : (c)

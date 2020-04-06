@@ -340,12 +340,8 @@ class PS_GPU
  int32 *LineWidths;
  int LineVisFirst, LineVisLast;
  int32 hmc_to_visible;
- const bool HardwarePALType;
  uint32 OutputLUT[384];
- //
- //
- // Y, X
- uint16 GPURAM[512][1024];
+
  void ReorderRGB_Var(uint32 out_Rshift, uint32 out_Gshift, uint32 out_Bshift, bool bpp24, const uint16 *src, uint32 *dest, const int32 dx_start, const int32 dx_end, int32 fb_x);
 
  template<uint32 out_Rshift, uint32 out_Gshift, uint32 out_Bshift>
@@ -355,6 +351,10 @@ class PS_GPU
 	 uint32 GetVertStart() { return VertStart; }
 	 uint32 GetVertEnd() { return VertEnd; }
 	 int FirstLine;
+	 const bool HardwarePALType;
+	 
+	 // Y, X
+	 uint16 GPURAM[512][1024];
 };
 
 }
