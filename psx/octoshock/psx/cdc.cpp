@@ -241,6 +241,8 @@ void PS_CDC::Power(void)
 
  SoftReset();
 
+ HoldLogicalPos = false;
+
  DiscStartupDelay = 0;
 
  SPUCounter = SPU->UpdateFromCDC(0);

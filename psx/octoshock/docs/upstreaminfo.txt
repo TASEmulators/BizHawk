@@ -205,3 +205,10 @@
 [OK] psx/mdec : change intrinsics macros; change inline keyword
 [NO] psx/psx : change memcard flushing logic, change cd interface, PSF loading
 [OK] psx/psx : change CNF parsing
+
+1.22.0-UNSTABLE -> 1.22.2
+[OK] psx/cdc : fix a bug
+
+1.22.2 -> 1.23.0
+[OK] psx/cdc : fix a bug
+[NO] psx/psx : GIT change
