@@ -221,7 +221,7 @@ class PS_CPU
 
  uint32 Exception(uint32 code, uint32 PC, const uint32 NP, const uint32 instr) MDFN_WARN_UNUSED_RESULT;
 
- template<bool DebugMode, bool BIOSPrintMode, bool ILHMode> pscpu_timestamp_t RunReal(pscpu_timestamp_t timestamp_in) NO_INLINE;
+ template<bool DebugMode, bool BIOSPrintMode, bool ILHMode> NO_INLINE pscpu_timestamp_t RunReal(pscpu_timestamp_t timestamp_in) NO_INLINE;
 
  template<typename T> T PeekMemory(uint32 address) MDFN_COLD;
  template<typename T> void PokeMemory(uint32 address, T value) MDFN_COLD;

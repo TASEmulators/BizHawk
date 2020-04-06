@@ -140,6 +140,9 @@ static INLINE void PlotPixel(uint32 x, uint32 y, uint16 fore_pix)
   // Efficient 15bpp pixel math algorithms from blargg
   switch(BlendMode)
   {
+   default:	// to silence clang
+	break;
+
    case 0:
 	bg_pix |= 0x8000;
 	pix = ((fore_pix + bg_pix) - ((fore_pix ^ bg_pix) & 0x0421)) >> 1;

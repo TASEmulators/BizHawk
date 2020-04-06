@@ -73,8 +73,8 @@ void PS_CDC::OpenTray()
 	//track the tray state
 	TrayOpen = true;
 
-	//effectively a NOP at t=0
-	DMForceStop();
+	//REMOVED in 1.22.0-UNSTABLE. this may cause problems.
+	//DMForceStop();
 
 	//zero 31-jan-2015 - psxtech says that what this is used for is actually a 'was open' flag which gets cleared after the status gets polled.
 	//so lets set it here, and rename it later if we're sure.

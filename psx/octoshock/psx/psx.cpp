@@ -2457,49 +2457,52 @@ EW_EXPORT s32 shock_AnalyzeDisc(ShockDiscRef* disc, ShockDiscInfo* info)
 				fp->seek(file_lba * 2048, SEEK_SET);
 				fp->read(fb, 2048);
 
-				bootpos = strstr((char*)fb, "BOOT") + 4;
-				while(*bootpos == ' ' || *bootpos == '\t') bootpos++;
-				if(*bootpos == '=')
+				if((bootpos = strstr((char*)fb, "BOOT")))
 				{
-					bootpos++;
+					bootpos += 4;
 					while(*bootpos == ' ' || *bootpos == '\t') bootpos++;
-					if(!strncasecmp(bootpos, "cdrom:", 6))
-					{ 
-						char* tmp;
+					if(*bootpos == '=')
+					{
+						bootpos++;
+						while(*bootpos == ' ' || *bootpos == '\t') bootpos++;
+						if(!strncasecmp(bootpos, "cdrom:", 6))
+						{ 
+							char* tmp;
 
-						bootpos += 6;
+							bootpos += 6;
 
-						// strrchr() way will pick up Tekken 3, but only enable if needed due to possibility of regressions.
-						//if((tmp = strrchr(bootpos, '\\')))
-						// bootpos = tmp + 1;
-						while(*bootpos == '\\')
-							bootpos++;
+							// strrchr() way will pick up Tekken 3, but only enable if needed due to possibility of regressions.
+							//if((tmp = strrchr(bootpos, '\\')))
+							// bootpos = tmp + 1;
+							while(*bootpos == '\\')
+								bootpos++;
 
-						if((tmp = strchr(bootpos, '_'))) *tmp = 0;
-						if((tmp = strchr(bootpos, '.'))) *tmp = 0;
-						if((tmp = strchr(bootpos, ';'))) *tmp = 0;
-						//puts(bootpos);
+							if((tmp = strchr(bootpos, '_'))) *tmp = 0;
+							if((tmp = strchr(bootpos, '.'))) *tmp = 0;
+							if((tmp = strchr(bootpos, ';'))) *tmp = 0;
+							//puts(bootpos);
 
-						if(strlen(bootpos) == 4 && bootpos[0] == 'S' && (bootpos[1] == 'C' || bootpos[1] == 'L' || bootpos[1] == 'I'))
-						{
-							switch(bootpos[2])
+							if(strlen(bootpos) == 4 && toupper(bootpos[0]) == 'S' && (toupper(bootpos[1]) == 'C' || toupper(bootpos[1]) == 'L' || toupper(bootpos[1]) == 'I'))
 							{
-							case 'E':
-								info->region = REGION_EU;
-								strcpy(info->id,"SCEE");
-								goto Breakout;
+								switch(toupper(bootpos[2]))
+								{
+								case 'E':
+									info->region = REGION_EU;
+									strcpy(info->id,"SCEE");
+									goto Breakout;
 
-							case 'U':
-								info->region = REGION_NA;
-								strcpy(info->id,"SCEA");
-								goto Breakout;
+								case 'U':
+									info->region = REGION_NA;
+									strcpy(info->id,"SCEA");
+									goto Breakout;
 
-							case 'K':	// Korea?
-							case 'B':
-							case 'P':
-								info->region = REGION_JP;
-								strcpy(info->id,"SCEI");
-								goto Breakout;
+								case 'K':	// Korea?
+								case 'B':
+								case 'P':
+									info->region = REGION_JP;
+									strcpy(info->id,"SCEI");
+									goto Breakout;
+								}
 							}
 						}
 					}

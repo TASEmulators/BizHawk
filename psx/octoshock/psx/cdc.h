@@ -239,7 +239,6 @@ class PS_CDC
  uint8 MakeStatus(bool cmd_error = false);
  bool DecodeSubQ(uint8 *subpw);
  bool CommandCheckDiscPresent(void);
- void DMForceStop();
 
  void EnbufferizeCDDASector(const uint8 *buf);
  bool XA_Test(const uint8 *sdata);

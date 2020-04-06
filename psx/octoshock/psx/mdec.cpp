@@ -73,7 +73,7 @@
 #include <emmintrin.h>
 #endif
 
-#if 0 //defined(__ARM_NEON__)
+#if 0 //defined(HAVE_NEON_INTRINSICS)
 #include <arm_neon.h>
 #endif
 
@@ -283,7 +283,7 @@ static INLINE void IDCT_1D_Multi(int16 *in_coeff, T *out_coeff)
 //
 //
 //
-#elif 0 //defined(__ARM_NEON__)
+#elif 0 //defined(HAVE_NEON_INTRINSICS)
 //
 //
 //
@@ -351,8 +351,7 @@ static INLINE void IDCT_1D_Multi(int16 *in_coeff, T *out_coeff)
 //
 #endif
 
-static void IDCT(int16 *in_coeff, int8 *out_coeff) NO_INLINE;
-static void IDCT(int16 *in_coeff, int8 *out_coeff)
+static NO_INLINE void IDCT(int16 *in_coeff, int8 *out_coeff)
 {
 	alignas(16) int16 tmpbuf[64];
 
