@@ -130,7 +130,6 @@ namespace MDFN_IEN_PSX
  class PS_SPU;
 
  extern PS_CPU *CPU;
- extern PS_GPU *GPU;
  extern PS_CDC *CDC;
  extern PS_SPU *SPU;
  extern MultiAccessSizeMem<2048 * 1024, false> MainRAM;

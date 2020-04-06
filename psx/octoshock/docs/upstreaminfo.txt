@@ -158,3 +158,5 @@
 [OK] psx/dis : add const
 [OK] psx/dma : update GPU api. NOTE: found biz bug here. 
 [OK] psx/frontio : add cold
+[OK] psx/gpu : (big change to make GPU static)
+[OK] psx/psx : associated with GPU, add cold; ignored PSF loader cold. NOTE: at smoe point we got RMD_Drive, which I'm not using

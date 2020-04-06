@@ -2,7 +2,7 @@
 /* Mednafen Sony PS1 Emulation Module                                         */
 /******************************************************************************/
 /* gpu_common.inc:
-**  Copyright (C) 2011-2016 Mednafen Team
+**  Copyright (C) 2011-2017 Mednafen Team
 **
 ** This program is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU General Public License
@@ -19,8 +19,107 @@
 ** 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
+//
+// Reference voodoo, since section anchors don't work with externs
+// WARNING: Don't use with members of (transparent) unions!
+//
+#define GLBVAR(x) static auto& x = GPU.x;
+
+GLBVAR(CLUT_Cache)
+GLBVAR(CLUT_Cache_VB)
+GLBVAR(SUCV)
+GLBVAR(TexCache)
+GLBVAR(DMAControl)
+GLBVAR(ClipX0)
+GLBVAR(ClipY0)
+GLBVAR(ClipX1)
+GLBVAR(ClipY1)
+GLBVAR(OffsX)
+GLBVAR(OffsY)
+GLBVAR(MaskSetOR)
+GLBVAR(MaskEvalAND)
+GLBVAR(dtd)
+GLBVAR(dfe)
+GLBVAR(TexDisable)
+GLBVAR(TexDisableAllowChange)
+GLBVAR(tww)
+GLBVAR(twh)
+GLBVAR(twx)
+GLBVAR(twy)
+GLBVAR(TexPageX)
+GLBVAR(TexPageY)
+GLBVAR(SpriteFlip)
+GLBVAR(abr)
+GLBVAR(TexMode)
+GLBVAR(Commands)
+GLBVAR(BlitterFIFO)
+GLBVAR(DataReadBuffer)
+GLBVAR(DataReadBufferEx)
+GLBVAR(IRQPending)
+GLBVAR(InCmd)
+GLBVAR(InCmd_CC)
+GLBVAR(InQuad_F3Vertices)
+GLBVAR(InPLine_PrevPoint)
+GLBVAR(FBRW_X)
+GLBVAR(FBRW_Y)
+GLBVAR(FBRW_W)
+GLBVAR(FBRW_H)
+GLBVAR(FBRW_CurY)
+GLBVAR(FBRW_CurX)
+GLBVAR(DisplayFB_XStart)
+GLBVAR(DisplayFB_YStart)
+GLBVAR(HorizStart)
+GLBVAR(HorizEnd)
+GLBVAR(VertStart)
+GLBVAR(VertEnd)
+GLBVAR(DisplayMode)
+GLBVAR(DisplayOff)
+GLBVAR(PhaseChange)
+GLBVAR(InVBlank)
+GLBVAR(sl_zero_reached)
+GLBVAR(skip)
+GLBVAR(hide_hoverscan)
+GLBVAR(dump_framebuffer)
+GLBVAR(field)
+GLBVAR(field_ram_readout)
+GLBVAR(DisplayFB_CurYOffset)
+GLBVAR(DisplayFB_CurLineYReadout)
+GLBVAR(GPUClockCounter)
+GLBVAR(GPUClockRatio)
+GLBVAR(LinesPerField)
+GLBVAR(scanline)
+GLBVAR(DotClockCounter)
+GLBVAR(LineClockCounter)
+GLBVAR(LinePhase)
+GLBVAR(DrawTimeAvail)
+GLBVAR(lastts)
+GLBVAR(DitherLUT)
+GLBVAR(espec)
+GLBVAR(surface)
+GLBVAR(DisplayRect)
+GLBVAR(LineWidths)
+GLBVAR(LineVisFirst)
+GLBVAR(LineVisLast)
+GLBVAR(hmc_to_visible)
+GLBVAR(HardwarePALType)
+GLBVAR(OutputLUT)
+GLBVAR(GPURAM)
+
+#undef GLBVAR
+//
+//
+//
+//
+
+extern const CTEntry Commands_00_1F[0x20];
+extern const CTEntry Commands_20_3F[0x20];
+extern const CTEntry Commands_40_5F[0x20];
+extern const CTEntry Commands_60_7F[0x20];
+extern const CTEntry Commands_80_FF[0x80];
+
+
 template<int BlendMode, bool MaskEval_TA, bool textured>
-INLINE void PS_GPU::PlotPixel(uint32 x, uint32 y, uint16 fore_pix)
+static INLINE void PlotPixel(uint32 x, uint32 y, uint16 fore_pix)
 {
  y &= 511;	// More Y precision bits than GPU RAM installed in (non-arcade, at least) Playstation hardware.
 
@@ -92,7 +191,7 @@ INLINE void PS_GPU::PlotPixel(uint32 x, uint32 y, uint16 fore_pix)
  }
 }
 
-INLINE uint16 PS_GPU::ModTexel(uint16 texel, int32 r, int32 g, int32 b, const int32 dither_x, const int32 dither_y)
+static INLINE uint16 ModTexel(uint16 texel, int32 r, int32 g, int32 b, const int32 dither_x, const int32 dither_y)
 {
  uint16 ret = texel & 0x8000;
 
@@ -104,7 +203,7 @@ INLINE uint16 PS_GPU::ModTexel(uint16 texel, int32 r, int32 g, int32 b, const in
 }
 
 template<uint32 TexMode_TA>
-INLINE void PS_GPU::Update_CLUT_Cache(uint16 raw_clut)
+static INLINE void Update_CLUT_Cache(uint16 raw_clut)
 {
  if(TexMode_TA < 2)
  {
@@ -152,7 +251,7 @@ INLINE void PS_GPU::Update_CLUT_Cache(uint16 raw_clut)
      }
 #endif
 
-INLINE void PS_GPU::RecalcTexWindowStuff(void)
+static INLINE void RecalcTexWindowStuff(void)
 {
  SUCV.TWX_AND = ~(tww << 3);
  SUCV.TWX_ADD = ((twx & tww) << 3) + (TexPageX << (2 - std::min<uint32>(2, TexMode)));
@@ -162,7 +261,7 @@ INLINE void PS_GPU::RecalcTexWindowStuff(void)
 }
 
 template<uint32 TexMode_TA>
-INLINE uint16 PS_GPU::GetTexel(uint32 u_arg, uint32 v_arg)
+static INLINE uint16 GetTexel(uint32 u_arg, uint32 v_arg)
 {
      static_assert(TexMode_TA <= 2, "TexMode_TA must be <= 2");
 
@@ -210,7 +309,7 @@ INLINE uint16 PS_GPU::GetTexel(uint32 u_arg, uint32 v_arg)
      return(fbw);
 }
 
-INLINE bool PS_GPU::LineSkipTest(unsigned y)
+static INLINE bool LineSkipTest(unsigned y)
 {
  //DisplayFB_XStart >= OffsX && DisplayFB_YStart >= OffsY &&
  // ((y & 1) == (DisplayFB_CurLineYReadout & 1))
@@ -232,7 +331,7 @@ INLINE bool PS_GPU::LineSkipTest(unsigned y)
 //#define BM_HELPER(fg) { fg(0), fg(1), fg(2), fg(3) }
 
 #define POLY_HELPER_SUB(bm, cv, tm, mam)	\
-	 G_Command_DrawPolygon<3 + ((cv & 0x8) >> 3), ((cv & 0x10) >> 4), ((cv & 0x4) >> 2), ((cv & 0x2) >> 1) ? bm : -1, ((cv & 1) ^ 1) & ((cv & 0x4) >> 2), tm, mam >
+	 Command_DrawPolygon<3 + ((cv & 0x8) >> 3), ((cv & 0x10) >> 4), ((cv & 0x4) >> 2), ((cv & 0x2) >> 1) ? bm : -1, ((cv & 1) ^ 1) & ((cv & 0x4) >> 2), tm, mam >
 
 #define POLY_HELPER_FG(bm, cv)						\
 	 {								\
@@ -257,7 +356,7 @@ INLINE bool PS_GPU::LineSkipTest(unsigned y)
 //
 //
 
-#define SPR_HELPER_SUB(bm, cv, tm, mam) G_Command_DrawSprite<(cv >> 3) & 0x3,	((cv & 0x4) >> 2), ((cv & 0x2) >> 1) ? bm : -1, ((cv & 1) ^ 1) & ((cv & 0x4) >> 2), tm, mam>
+#define SPR_HELPER_SUB(bm, cv, tm, mam) Command_DrawSprite<(cv >> 3) & 0x3,	((cv & 0x4) >> 2), ((cv & 0x2) >> 1) ? bm : -1, ((cv & 1) ^ 1) & ((cv & 0x4) >> 2), tm, mam>
 
 #define SPR_HELPER_FG(bm, cv)						\
 	 {								\
@@ -283,7 +382,7 @@ INLINE bool PS_GPU::LineSkipTest(unsigned y)
 //
 //
 
-#define LINE_HELPER_SUB(bm, cv, mam) G_Command_DrawLine<((cv & 0x08) >> 3), ((cv & 0x10) >> 4), ((cv & 0x2) >> 1) ? bm : -1, mam>
+#define LINE_HELPER_SUB(bm, cv, mam) Command_DrawLine<((cv & 0x08) >> 3), ((cv & 0x10) >> 4), ((cv & 0x2) >> 1) ? bm : -1, mam>
 
 #define LINE_HELPER_FG(bm, cv)											\
 	 {													\

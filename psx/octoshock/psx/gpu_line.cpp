@@ -2,7 +2,7 @@
 /* Mednafen Sony PS1 Emulation Module                                         */
 /******************************************************************************/
 /* gpu_line.cpp:
-**  Copyright (C) 2011-2016 Mednafen Team
+**  Copyright (C) 2011-2017 Mednafen Team
 **
 ** This program is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU General Public License
@@ -25,6 +25,9 @@
 
 namespace MDFN_IEN_PSX
 {
+namespace PS_GPU_INTERNAL
+{
+
 #include "gpu_common.inc"
 
 struct line_fxp_coord
@@ -116,7 +119,7 @@ static INLINE void AddLineStep(line_fxp_coord &point, const line_fxp_step &step)
 }
 
 template<bool goraud, int BlendMode, bool MaskEval_TA>
-void PS_GPU::DrawLine(line_point *points)
+static void DrawLine(line_point *points)
 {
  int32 i_dx;
  int32 i_dy;
@@ -201,14 +204,14 @@ void PS_GPU::DrawLine(line_point *points)
 }
 
 template<bool polyline, bool goraud, int BlendMode, bool MaskEval_TA>
-INLINE void PS_GPU::Command_DrawLine(const uint32 *cb)
+static void Command_DrawLine(const uint32 *cb)
 {
  const uint8 cc = cb[0] >> 24; // For pline handling later.
  line_point points[2];
 
  DrawTimeAvail -= 16;	// FIXME, correct time.
 
- if(polyline && InCmd == INCMD_PLINE)
+ if(polyline && InCmd == PS_GPU::INCMD_PLINE)
  {
   //printf("PLINE N\n");
   points[0] = InPLine_PrevPoint;
@@ -247,9 +250,9 @@ INLINE void PS_GPU::Command_DrawLine(const uint32 *cb)
  {
   InPLine_PrevPoint = points[1];
 
-  if(InCmd != INCMD_PLINE)
+  if(InCmd != PS_GPU::INCMD_PLINE)
   {
-   InCmd = INCMD_PLINE;
+   InCmd = PS_GPU::INCMD_PLINE;
    InCmd_CC = cc;
   }
  }
@@ -257,16 +260,7 @@ INLINE void PS_GPU::Command_DrawLine(const uint32 *cb)
  DrawLine<goraud, BlendMode, MaskEval_TA>(points);
 }
 
-//
-// C-style function wrappers so our command table isn't so ginormous(in memory usage).
-//
-template<bool polyline, bool goraud, int BlendMode, bool MaskEval_TA>
-static void G_Command_DrawLine(PS_GPU* g, const uint32 *cb)
-{
- g->Command_DrawLine<polyline, goraud, BlendMode, MaskEval_TA>(cb);
-}
-
-const CTEntry PS_GPU::Commands_40_5F[0x20] =
+extern const CTEntry Commands_40_5F[0x20] =
 {
  LINE_HELPER(0x40),
  LINE_HELPER(0x41),
@@ -302,4 +296,5 @@ const CTEntry PS_GPU::Commands_40_5F[0x20] =
  LINE_HELPER(0x5f)
 };
 
+}
 }

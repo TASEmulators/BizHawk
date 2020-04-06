@@ -76,6 +76,8 @@ typedef __uint8_t uint8;
 //#define MDFN_NOWARN_UNUSED __attribute__((unused))
 #define MDFN_NOWARN_UNUSED
 
+#define MDFN_FASTCALL
+
 //#define MDFN_FORMATSTR(a,b,c) __attribute__ ((format (a, b, c)))
 #define MDFN_FORMATSTR(a,b,c)
 

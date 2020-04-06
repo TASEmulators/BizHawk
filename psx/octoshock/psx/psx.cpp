@@ -117,7 +117,7 @@ static unsigned const psx_dbg_level = 0;
 
 struct MDFN_PseudoRNG	// Based off(but not the same as) public-domain "JKISS" PRNG.
 {
- MDFN_PseudoRNG()
+ MDFN_COLD MDFN_PseudoRNG()
  {
   ResetState();
  }
@@ -155,7 +155,7 @@ struct MDFN_PseudoRNG	// Based off(but not the same as) public-domain "JKISS" PR
   return(mina + tmp);
  }
 
- void ResetState(void)	// Must always reset to the same state.
+ MDFN_COLD void ResetState(void)	// Must always reset to the same state.
  {
   x = 123456789;
   y = 987654321;
@@ -183,7 +183,6 @@ static int64 Memcard_SaveDelay[8];
 
 PS_CPU *CPU = NULL;
 PS_SPU *SPU = NULL;
-PS_GPU *GPU = NULL;
 PS_CDC *CDC = NULL;
 FrontIO *FIO = NULL;
 
@@ -342,7 +341,7 @@ void PSX_SetEventNT(const int type, const pscpu_timestamp_t next_timestamp)
 // Called from debug.cpp too.
 void ForceEventUpdates(const pscpu_timestamp_t timestamp)
 {
- PSX_SetEventNT(PSX_EVENT_GPU, GPU->Update(timestamp));
+ PSX_SetEventNT(PSX_EVENT_GPU, GPU_Update(timestamp));
  PSX_SetEventNT(PSX_EVENT_CDC, CDC->Update(timestamp));
 
  PSX_SetEventNT(PSX_EVENT_TIMER, TIMER_Update(timestamp));
@@ -368,7 +367,7 @@ bool PSX_EventHandler(const pscpu_timestamp_t timestamp)
    default: abort();
 
    case PSX_EVENT_GPU:
-	nt = GPU->Update(e->event_time);
+	nt = GPU_Update(e->event_time);
 	break;
 
    case PSX_EVENT_CDC:
@@ -551,9 +550,9 @@ template<typename T, bool IsWrite, bool Access24> static INLINE void MemRW(pscpu
     timestamp++;
 
    if(IsWrite)
-    GPU->Write(timestamp, A, V);
+    GPU_Write(timestamp, A, V);
    else
-    V = GPU->Read(timestamp, A);
+    V = GPU_Read(timestamp, A);
 
    return;
   }
@@ -1011,7 +1010,7 @@ static void PSX_Power(bool powering_up)
 
  MDEC_Power();
  CDC->Power();
- GPU->Power();
+ GPU_Power();
  //SPU->Power();	// Called from CDC->Power()
  IRQ_Power();
 
@@ -1392,11 +1391,9 @@ EW_EXPORT s32 shock_Create(void** psx, s32 region, void* firmware512k)
 
 	CPU = new PS_CPU();
 	SPU = new PS_SPU();
+	GPU_Init(region == REGION_EU);
 	CDC = new PS_CDC();
 	DMA_Init();
-
-	//these steps can't be done without more information
-	GPU = new PS_GPU(region == REGION_EU);
 
 	//setup gpu output surfaces
 	MDFN_PixelFormat nf(MDFN_COLORSPACE_RGB, 16, 8, 0, 24);
@@ -1449,11 +1446,7 @@ EW_EXPORT s32 shock_Destroy(void* psx)
 		SPU = NULL;
 	}
 
-	if(GPU)
-	{
-		delete GPU;
-		GPU = NULL;
-	}
+	GPU_Kill();
 
 	if(CPU)
 	{
@@ -1554,7 +1547,7 @@ EW_EXPORT s32 shock_Step(void* psx, eShockStep step)
 	s_ShockPeripheralState.UpdateInput();
 	
 	//GPU->StartFrame(psf_loader ? NULL : espec); //a reminder that when we do psf, we will be telling the gpu not to draw
-	GPU->StartFrame(&espec);
+	GPU_StartFrame(&espec);
 	
 	//not that it matters, but we may need to control this at some point
 	static const int ResampleQuality = 5;
@@ -1567,15 +1560,15 @@ EW_EXPORT s32 shock_Step(void* psx, eShockStep step)
 	assert(timestamp);
 
 	ForceEventUpdates(timestamp);
-	if(GPU->GetScanlineNum() < 100)
-		printf("[BUUUUUUUG] Frame timing end glitch; scanline=%u, st=%u\n", GPU->GetScanlineNum(), timestamp);
+	if(GPU_GetScanlineNum() < 100)
+		printf("[BUUUUUUUG] Frame timing end glitch; scanline=%u, st=%u\n", GPU_GetScanlineNum(), timestamp);
 
 	espec.SoundBufSize = SPU->EndFrame(espec.SoundBuf);
 
 	CDC->ResetTS();
 	TIMER_ResetTS();
 	DMA_ResetTS();
-	GPU->ResetTS();
+	GPU_ResetTS();
 	FIO->ResetTS();
 
 	RebaseTS(timestamp);
@@ -1637,8 +1630,8 @@ static void _shock_AnalyzeFramebufferCropInfo(int fbIndex, FramebufferCropInfo* 
 	{
 		//printf("%d %d %d %d | %d | %d\n",yo,height, GPU->GetVertStart(), GPU->GetVertEnd(), espec.DisplayRect.y, GPU->FirstLine);
 
-		height = GPU->GetVertEnd() - GPU->GetVertStart();
-		yo = GPU->FirstLine;
+		height = GPU.GetVertEnd() - GPU.GetVertStart();
+		yo = GPU.FirstLine;
 
 		if (espec.DisplayRect.h == 288 || espec.DisplayRect.h == 240)
 		{
@@ -1702,7 +1695,7 @@ void NormalizeFramebuffer()
 
 	int virtual_width = 800;
 	int virtual_height = 480;
-	if (GPU->HardwarePALType)
+	if (GPU.HardwarePALType)
 		virtual_height = 576;
 
 	if (s_ShockConfig.opts.renderType == eShockRenderType_ClipOverscan)
@@ -1907,7 +1900,7 @@ EW_EXPORT s32 shock_GetFramebuffer(void* psx, ShockFramebufferInfo* fb)
 	return SHOCK_OK;
 }
 
-static void LoadEXE(const uint8 *data, const uint32 size, bool ignore_pcsp = false)
+static MDFN_COLD void LoadEXE(const uint8 *data, const uint32 size, bool ignore_pcsp = false)
 {
  uint32 PC;
  uint32 SP;
@@ -2628,7 +2621,7 @@ EW_EXPORT s32 shock_GetMemData(void* psx, void** ptr, s32* size, s32 memType)
 	case eMemType_MainRAM: *ptr = MainRAM.data8; *size = 2048*1024; break;
 	case eMemType_BiosROM: *ptr = BIOSROM->data8; *size = 512*1024; break;
 	case eMemType_PIOMem: *ptr = PIOMem->data8; *size = 64*1024; break;
-	case eMemType_GPURAM: *ptr = GPU->GPURAM; *size = 2*512*1024; break;
+	case eMemType_GPURAM: *ptr = GPU.GPURAM; *size = 2*512*1024; break;
 	case eMemType_SPURAM: *ptr = SPU->SPURAM; *size = 512*1024; break;
 	case eMemType_DCache: *ptr = CPU->debug_GetScratchRAMPtr(); *size = 1024; break;
 	default:
@@ -2698,7 +2691,7 @@ SYNCFUNC(PSX)
 	MDEC_SyncState(isReader,ns);
 	ns->ExitSection("MDEC");
 
-	TSS(GPU); //did some special logic for the CPU, ordering may matter, but probably not
+	TSS((&GPU)); //did some special logic for the CPU, ordering may matter, but probably not
 
 	TSS(SPU);
 	TSS(FIO); //TODO - DUALSHOCK, MC
@@ -2794,7 +2787,7 @@ EW_EXPORT s32 shock_SetRegister_CPU(void* psx, s32 index, u32 value)
 
 EW_EXPORT s32 shock_SetRenderOptions(void* pxs, ShockRenderOptions* opts)
 {
-	GPU->SetRenderOptions(opts);
+	GPU.SetRenderOptions(opts);
 	s_ShockConfig.opts = *opts;
 	return SHOCK_OK;
 }

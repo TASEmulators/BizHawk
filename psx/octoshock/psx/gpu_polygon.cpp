@@ -2,7 +2,7 @@
 /* Mednafen Sony PS1 Emulation Module                                         */
 /******************************************************************************/
 /* gpu_polygon.cpp:
-**  Copyright (C) 2011-2016 Mednafen Team
+**  Copyright (C) 2011-2017 Mednafen Team
 **
 ** This program is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU General Public License
@@ -18,15 +18,16 @@
 ** along with this program; if not, write to the Free Software Foundation, Inc.,
 ** 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
-#ifndef _MSC_VER
+
 #pragma GCC optimize ("no-unroll-loops,no-peel-loops")
-#endif
 
 #include "psx.h"
 #include "gpu.h"
 #include "math_ops.h"
 
 namespace MDFN_IEN_PSX
+{
+namespace PS_GPU_INTERNAL
 {
 #include "gpu_common.inc"
 
@@ -144,7 +145,7 @@ static INLINE void AddIDeltas_DY(i_group &ig, const i_deltas &idl, uint32 count 
 }
 
 template<bool goraud, bool textured, int BlendMode, bool TexMult, uint32 TexMode_TA, bool MaskEval_TA>
-INLINE void PS_GPU::DrawSpan(int y, const int32 x_start, const int32 x_bound, i_group ig, const i_deltas &idl)
+static INLINE void DrawSpan(int y, const int32 x_start, const int32 x_bound, i_group ig, const i_deltas &idl)
 {
   if(LineSkipTest(y))
    return;
@@ -235,7 +236,7 @@ INLINE void PS_GPU::DrawSpan(int y, const int32 x_start, const int32 x_bound, i_
 }
 
 template<bool goraud, bool textured, int BlendMode, bool TexMult, uint32 TexMode_TA, bool MaskEval_TA>
-INLINE void PS_GPU::DrawTriangle(tri_vertex *vertices)
+static INLINE void DrawTriangle(tri_vertex *vertices)
 {
  i_deltas idl;
  unsigned core_vertex;
@@ -505,7 +506,7 @@ INLINE void PS_GPU::DrawTriangle(tri_vertex *vertices)
 }
 
 template<int numvertices, bool goraud, bool textured, int BlendMode, bool TexMult, uint32 TexMode_TA, bool MaskEval_TA>
-INLINE void PS_GPU::Command_DrawPolygon(const uint32 *cb)
+static void Command_DrawPolygon(const uint32 *cb)
 {
  const unsigned cb0 = cb[0];
  tri_vertex vertices[3];
@@ -513,7 +514,7 @@ INLINE void PS_GPU::Command_DrawPolygon(const uint32 *cb)
  //uint32 tpage = 0;
 
  // Base timing is approximate, and could be improved.
- if(numvertices == 4 && InCmd == INCMD_QUAD)
+ if(numvertices == 4 && InCmd == PS_GPU::INCMD_QUAD)
   DrawTimeAvail -= (28 + 18);
  else
   DrawTimeAvail -= (64 + 18);
@@ -527,7 +528,7 @@ INLINE void PS_GPU::Command_DrawPolygon(const uint32 *cb)
 
  if(numvertices == 4)
  {
-  if(InCmd == INCMD_QUAD)
+  if(InCmd == PS_GPU::INCMD_QUAD)
   {
    memcpy(&vertices[0], &InQuad_F3Vertices[1], 2 * sizeof(tri_vertex));
    sv = 2;
@@ -575,13 +576,13 @@ INLINE void PS_GPU::Command_DrawPolygon(const uint32 *cb)
 
  if(numvertices == 4)
  {
-  if(InCmd == INCMD_QUAD)
+  if(InCmd == PS_GPU::INCMD_QUAD)
   {
-   InCmd = INCMD_NONE;
+   InCmd = PS_GPU::INCMD_NONE;
   }
   else
   {
-   InCmd = INCMD_QUAD;
+   InCmd = PS_GPU::INCMD_QUAD;
    InCmd_CC = cb0 >> 24;
    memcpy(&InQuad_F3Vertices[0], &vertices[0], sizeof(tri_vertex) * 3);
   }
@@ -594,16 +595,7 @@ INLINE void PS_GPU::Command_DrawPolygon(const uint32 *cb)
 #undef COORD_FBS
 #undef COORD_MF_INT
 
-//
-// C-style function wrappers so our command table isn't so ginormous(in memory usage).
-//
-template<int numvertices, bool shaded, bool textured, int BlendMode, bool TexMult, uint32 TexMode_TA, bool MaskEval_TA>
-static void G_Command_DrawPolygon(PS_GPU* g, const uint32 *cb)
-{
- g->Command_DrawPolygon<numvertices, shaded, textured, BlendMode, TexMult, TexMode_TA, MaskEval_TA>(cb);
-}
-
-const CTEntry PS_GPU::Commands_20_3F[0x20] =
+extern const CTEntry Commands_20_3F[0x20] =
 {
  /* 0x20 */
  POLY_HELPER(0x20),
@@ -640,4 +632,5 @@ const CTEntry PS_GPU::Commands_20_3F[0x20] =
  POLY_HELPER(0x3f)
 };
 
+}
 }
