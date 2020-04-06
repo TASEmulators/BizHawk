@@ -1067,16 +1067,16 @@ void PS_SPU::Write(pscpu_timestamp_t timestamp, uint32 A, uint16 V)
    case 0x2C: PSX_WARNING("[SPU] Global reg 0x2c set: 0x%04x", V);
 	      break;
 
-   case 0x30: CDVol[0] = V;
+   case 0x30: CDVol[0] = (int16)V;
 	      break;
 
-   case 0x32: CDVol[1] = V;
+   case 0x32: CDVol[1] = (int16)V;
 	      break;
 
-   case 0x34: ExternVol[0] = V;
+   case 0x34: ExternVol[0] = (int16)V;
 	      break;
 
-   case 0x36: ExternVol[1] = V;
+   case 0x36: ExternVol[1] = (int16)V;
 	      break;
 
    case 0x38:

@@ -20,6 +20,7 @@
 */
 
 //#pragma GCC optimize ("unroll-loops")
+#include <Windows.h>
 
 #include <assert.h>
 
@@ -152,6 +153,7 @@ void PS_GPU::SetRenderOptions(::ShockRenderOptions* opts)
 	CorrectAspect = false; //NOT USED? IMPORTANT?
 	HVis = ShowHOverscan ? HVisMax : HVisHideOS;
 	HVisOffs = (HVisMax - HVis) / 2;
+	NCABaseW = (HVis + 6) / 7;
 
 	LineVisFirst = opts->scanline_start;
 	LineVisLast = opts->scanline_end;

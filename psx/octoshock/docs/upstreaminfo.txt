@@ -216,3 +216,11 @@
 1.23.0 -> 1.24.0-UNSTABLE
 (MDFN_HIDE litter all over)
 [OK] psx/gpu : (c); ignored AR changes in GIT (TODO: reapply in bizhawk code). changed timing.
+[OK] psx/input/guncon : TransformInput changes to use GPU_GetGunXTranslation... IGNORED? IMPORTANT? also: hook updates.
+[OK] psx/input/justifier : TransformInput changes to use GPU_GetGunXTranslation... IGNORED? IMPORTANT? also: hook updates.
+[OK] psx/mdec : intrinsic macros changes
+[NO] psx/psx : "psx.correct_aspect". we're not really using this.
+[OK] psx/spu : casts on volumes
+[NO] types : nothing important
+[NO] video/Deinterlacer : IGNORE. we may have weak deinterlacing, but so be it
+[NO] tests : intrinsic macros changes, threading API changes, stream tests

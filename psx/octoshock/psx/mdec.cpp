@@ -77,7 +77,7 @@
 #include <arm_neon.h>
 #endif
 
-#if defined(ARCH_POWERPC_ALTIVEC) && defined(HAVE_ALTIVEC_H)
+#if defined(HAVE_ALTIVEC_INTRINSICS) && defined(HAVE_ALTIVEC_H)
  #include <altivec.h>
 #endif
 

@@ -64,6 +64,10 @@
 
 #include <atomic>
 
+#if defined(HAVE_ALTIVEC_INTRINSICS) && defined(HAVE_ALTIVEC_H)
+#include <altivec.h>
+#endif
+
 #ifdef __ARM_NEON__
 #include <arm_neon.h>
 #endif
@@ -902,7 +906,7 @@ static void DoAlignmentChecks(void)
  CheckAlignasType<__m128>();
 #endif
 
-#if defined(ARCH_POWERPC_ALTIVEC)
+#if defined(HAVE_ALTIVEC_INTRINSICS)
  CheckAlignasType<vector unsigned int>();
  CheckAlignasType<vector unsigned short>();
 #endif

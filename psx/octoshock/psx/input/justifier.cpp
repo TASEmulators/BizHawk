@@ -201,7 +201,6 @@ pscpu_timestamp_t InputDevice_Justifier::GPULineHook(const pscpu_timestamp_t tim
 
  if(pixels && pix_clock)
  {
-  const int avs = 16; // Not 16 for PAL, fixme.
   int32 gx;
   int32 gy;
   int32 gxa;
@@ -216,7 +215,7 @@ pscpu_timestamp_t InputDevice_Justifier::GPULineHook(const pscpu_timestamp_t tim
   {
    for(int32 ix = gxa; ix < (gxa + (int32)(pix_clock / 762925)); ix++)
    {
-    if(ix >= 0 && ix < (int)width && line_counter >= (avs + gy - 6) && line_counter <= (avs + gy + 6))
+		 if(ix >= 0 && ix < (int)width && line_counter >= (gy - 6) && line_counter <= (gy + 6))
     {
      int r, g, b, a;
 
@@ -232,7 +231,7 @@ pscpu_timestamp_t InputDevice_Justifier::GPULineHook(const pscpu_timestamp_t tim
   }
 
   chair_x = gx;
-  chair_y = (avs + gy) - line_counter;
+	chair_y = gy - line_counter;
  }
 
  line_counter++;

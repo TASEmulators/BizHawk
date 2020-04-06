@@ -200,7 +200,6 @@ pscpu_timestamp_t InputDevice_GunCon::GPULineHook(const pscpu_timestamp_t line_t
 
  if(pixels && pix_clock)
  {
-  const int avs = 16; // Not 16 for PAL, fixme.
   int32 gx;
   int32 gy;
 
@@ -209,7 +208,7 @@ pscpu_timestamp_t InputDevice_GunCon::GPULineHook(const pscpu_timestamp_t line_t
 
   for(int32 ix = gx; ix < (gx + (int32)(pix_clock / 762925)); ix++)
   {
-   if(ix >= 0 && ix < (int)width && line_counter >= (avs + gy) && line_counter < (avs + gy + 8))
+		if(ix >= 0 && ix < (int)width && line_counter >= gy && line_counter < (gy + 8))
    {
     int r, g, b, a;
 
@@ -224,7 +223,7 @@ pscpu_timestamp_t InputDevice_GunCon::GPULineHook(const pscpu_timestamp_t line_t
   }
 
   chair_x = gx;
-  chair_y = (avs + gy) - line_counter;
+	chair_y = gy - line_counter;
  }
 
  line_counter++;
