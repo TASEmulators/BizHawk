@@ -89,3 +89,12 @@
 [OK] psx/psx : Cleanup
 [OK] psx/timer : Major functional changes
 [NO] psx/timer : Added loadstate sanity checks
+0.9.38.7 -> 0.9.39-unstable
+[OK] psx/cdc : promote "Fantastic Pinball Kyutenkai" logic to unconditional; add MDFN_COLD
+[OK] psx/cpu : various improvements
+[OK] psx/fastfifo : .h copyright header
+[NO] psx/debug : (file not used)
+[OK] psx/dis : rename opcode, copyright header
+[OK] psx/dma : copyright header
+[OK] psx/frontio : copyright header and minor stuff
+[OK] psx/gpu : copyright, change ctor, member org changes, minor stuff

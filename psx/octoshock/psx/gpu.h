@@ -1,3 +1,24 @@
+/******************************************************************************/
+/* Mednafen Sony PS1 Emulation Module                                         */
+/******************************************************************************/
+/* gpu.h:
+**  Copyright (C) 2011-2016 Mednafen Team
+**
+** This program is free software; you can redistribute it and/or
+** modify it under the terms of the GNU General Public License
+** as published by the Free Software Foundation; either version 2
+** of the License, or (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software Foundation, Inc.,
+** 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
+
 // WARNING WARNING WARNING:  ONLY use CanRead() method of BlitterFIFO, and NOT CanWrite(), since the FIFO is larger than the actual PS1 GPU FIFO to accommodate
 // our lack of fancy superscalarish command sequencer.
 
@@ -103,9 +124,6 @@ class PS_GPU
   GPURAM[(A >> 10) & 0x1FF][A & 0x3FF] = V;
  }
 
- // Y, X
- uint16 GPURAM[512][1024];
-
  private:
 
  uint16 CLUT_Cache[256];
@@ -125,7 +143,7 @@ class PS_GPU
  } SUCV;
  void RecalcTexWindowStuff(void);
 
- struct tTexCache
+ struct
  {
   uint16 Data[4];
   uint32 Tag;
@@ -158,12 +176,12 @@ class PS_GPU
 
  int32 OffsX;
  int32 OffsY;
- 
- bool dtd;
- bool dfe;
 
  uint32 MaskSetOR;
  uint32 MaskEvalAND;
+
+ bool dtd;
+ bool dfe;
 
  bool TexDisable;
  bool TexDisableAllowChange;
@@ -177,8 +195,6 @@ class PS_GPU
 
  uint32 abr;
  uint32 TexMode;
-
- static uint8 DitherLUT[4][4][512];	// Y, X, 8-bit source value(256 extra for saturation)
 
  bool LineSkipTest(unsigned y);
 
@@ -270,9 +286,6 @@ class PS_GPU
  //
  // Display Parameters
  //
- uint32 DisplayMode;
-
- bool DisplayOff;
  uint32 DisplayFB_XStart;
  uint32 DisplayFB_YStart;
 
@@ -281,28 +294,31 @@ class PS_GPU
 
  uint32 VertStart;
  uint32 VertEnd;
+ uint32 DisplayMode;
+ bool DisplayOff;
 
  //
  // Display work vars
  //
+ bool PhaseChange;
+ bool InVBlank;
+ bool sl_zero_reached;
+ bool skip;
+ bool hide_hoverscan;
+ bool field;
+ bool field_ram_readout;
  uint32 DisplayFB_CurYOffset;
  uint32 DisplayFB_CurLineYReadout;
 
- bool InVBlank;
-
  //
  //
  //
- uint32 LinesPerField;
- uint32 scanline;
- bool field;
- bool field_ram_readout;
- bool PhaseChange;
-
- uint32 DotClockCounter;
-
  uint64 GPUClockCounter;
  uint32 GPUClockRatio;
+ uint32 LinesPerField;
+ uint32 scanline;
+ uint32 DotClockCounter;
+
  int32 LineClockCounter;
  int32 LinePhase;
 
@@ -310,28 +326,26 @@ class PS_GPU
 
  pscpu_timestamp_t lastts;
 
+ static uint8 DitherLUT[4][4][512];	// Y, X, 8-bit source value(256 extra for saturation)
  //
  //
  //
- int32 hmc_to_visible;
- bool hide_hoverscan;
  bool dump_framebuffer;
-
- bool sl_zero_reached;
  //
  //
-
+ //
  EmulateSpecStruct *espec;
  MDFN_Surface *surface;
  MDFN_Rect *DisplayRect;
  int32 *LineWidths;
- bool skip;
- public:
- bool HardwarePALType;
- private:
  int LineVisFirst, LineVisLast;
-
+ int32 hmc_to_visible;
+ const bool HardwarePALType;
  uint32 OutputLUT[384];
+ //
+ //
+ // Y, X
+ uint16 GPURAM[512][1024];
  void ReorderRGB_Var(uint32 out_Rshift, uint32 out_Gshift, uint32 out_Bshift, bool bpp24, const uint16 *src, uint32 *dest, const int32 dx_start, const int32 dx_end, int32 fb_x);
 
  template<uint32 out_Rshift, uint32 out_Gshift, uint32 out_Bshift>
