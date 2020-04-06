@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -54,7 +55,9 @@ namespace BizHawk.Client.EmuHawk
 			var entry = _filteredList[e.ItemIndex];
 			e.Item = new ListViewItem(entry.ReturnType);
 			e.Item.SubItems.Add(entry.Library);
-			e.Item.SubItems.Add(entry.Name);
+
+			var deprecated = entry.IsDeprecated ? "[Deprecated] " : "";
+			e.Item.SubItems.Add(deprecated + entry.Name);
 			e.Item.SubItems.Add(entry.ParameterList);
 			e.Item.SubItems.Add(entry.Description);
 		}
@@ -62,48 +65,16 @@ namespace BizHawk.Client.EmuHawk
 		private void OrderColumn(int column)
 		{
 			_columnSort.Column = column;
-			if (_columnSort.Descending)
+
+			_functionList = column switch
 			{
-				switch (column)
-				{
-					case 0: // Return
-						_functionList = _functionList.OrderByDescending(x => x.ReturnType).ToList();
-						break;
-					case 1: // Library
-						_functionList = _functionList.OrderByDescending(x => x.Library).ToList();
-						break;
-					case 2: // Name
-						_functionList = _functionList.OrderByDescending(x => x.Name).ToList();
-						break;
-					case 3: // Parameters
-						_functionList = _functionList.OrderByDescending(x => x.ParameterList).ToList();
-						break;
-					case 4: // Description
-						_functionList = _functionList.OrderByDescending(x => x.Description).ToList();
-						break;
-				}
-			}
-			else
-			{
-				switch (column)
-				{
-					case 0: // Return
-						_functionList = _functionList.OrderBy(x => x.ReturnType).ToList();
-						break;
-					case 1: // Library
-						_functionList = _functionList.OrderBy(x => x.Library).ToList();
-						break;
-					case 2: // Name
-						_functionList = _functionList.OrderBy(x => x.Name).ToList();
-						break;
-					case 3: // Parameters
-						_functionList = _functionList.OrderBy(x => x.ParameterList).ToList();
-						break;
-					case 4: // Description
-						_functionList = _functionList.OrderBy(x => x.Description).ToList();
-						break;
-				}
-			}
+				0 => _functionList.OrderBy(x => x.ReturnType, _columnSort.Descending).ToList(),
+				1 => _functionList.OrderBy(x => x.Library, _columnSort.Descending).ToList(),
+				2 => _functionList.OrderBy(x => x.Name, _columnSort.Descending).ToList(),
+				3 => _functionList.OrderBy(x => x.ParameterList, _columnSort.Descending).ToList(),
+				4 => _functionList.OrderBy(x => x.Description, _columnSort.Descending).ToList(),
+				_ => _functionList
+			};
 
 			UpdateList();
 		}
@@ -176,6 +147,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GenerateFilteredList();
 			FunctionView.VirtualListSize = _filteredList.Count;
+			FunctionView.Refresh();
 		}
 
 		private void FilterBox_KeyUp(object sender, KeyEventArgs e)

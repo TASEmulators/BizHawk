@@ -40,7 +40,7 @@ __Types and notation__
 ** A standard Lua table
 ");
 
-			foreach (var library in this.Where(lf => !lf.IsDeprecated).Select(lf => new { Name = lf.Library, Description = lf.LibraryDescription }).Distinct())
+			foreach (var library in this.Select(lf => new { Name = lf.Library, Description = lf.LibraryDescription }).Distinct())
 			{
 				sb
 					.AppendFormat("%%TAB {0}%%", library.Name)
@@ -56,10 +56,11 @@ __Types and notation__
 
 				foreach (var func in this.Where(lf => lf.Library == library.Name))
 				{
+					string deprecated = func.IsDeprecated ? "__[[deprecated]]__ " : "";
 					sb
 						.AppendFormat("__{0}.{1}__%%%", func.Library, func.Name)
 						.AppendLine().AppendLine()
-						.AppendFormat("* {0} {1}.{2}{3}", func.ReturnType, func.Library, func.Name, func.ParameterList.Replace("[", "[[").Replace("]", "]]"))
+						.AppendFormat("* {4}{0} {1}.{2}{3}", func.ReturnType, func.Library, func.Name, func.ParameterList.Replace("[", "[[").Replace("]", "]]"), deprecated)
 						.AppendLine().AppendLine()
 						.AppendFormat("* {0}", func.Description)
 						.AppendLine().AppendLine();
@@ -158,13 +159,12 @@ __Types and notation__
 	{
 		private readonly LuaMethodAttribute _luaAttributes;
 		private readonly LuaMethodExampleAttribute _luaExampleAttribute;
-		private readonly MethodInfo _method;
 
 		public LibraryFunction(string library, string libraryDescription, MethodInfo method)
 		{
 			_luaAttributes = method.GetCustomAttribute<LuaMethodAttribute>(false);
 			_luaExampleAttribute = method.GetCustomAttribute<LuaMethodExampleAttribute>(false);
-			_method = method;
+			Method = method;
 
 			IsDeprecated = method.GetCustomAttribute<LuaDeprecatedMethodAttribute>(false) != null;
 			Library = library;
@@ -176,7 +176,7 @@ __Types and notation__
 
 		public readonly bool IsDeprecated;
 
-		public MethodInfo Method => _method;
+		public MethodInfo Method { get; }
 
 		public string Name => _luaAttributes.Name;
 
@@ -192,7 +192,7 @@ __Types and notation__
 			{
 				if (_parameterList == null)
 				{
-					var parameters = _method.GetParameters();
+					var parameters = Method.GetParameters();
 
 					var list = new StringBuilder();
 					list.Append('(');
@@ -259,7 +259,7 @@ __Types and notation__
 		{
 			get
 			{
-				var returnType = _method.ReturnType.ToString();
+				var returnType = Method.ReturnType.ToString();
 				return TypeCleanup(returnType).Trim();
 			}
 		}
