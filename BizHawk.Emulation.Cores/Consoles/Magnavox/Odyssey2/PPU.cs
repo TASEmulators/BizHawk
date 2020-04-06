@@ -3,6 +3,17 @@ using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 
+/*
+	Notes: The line position returned by A4 is offset from display by 6 lines.
+	The game blockout requires VBLank interrupt to be able to execute relative to a particular line value,
+	but this line value would fall outside vblank by a wide margin if the Y return matched screen position relative to end of VBL
+	This offset also makes the borders in Cosmic Conflict match to console, so presumably it is correct
+
+	Also, according to the 8245 data sheet, the hbl status flag starts at roughly halfway through the scanline. This is also
+	crucial for Blockout to display correctly.
+
+	Blockout also turns on HBL interrupts and expects them either not to fire (or only one to fire per write to A0)
+*/
 
 namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 {
@@ -16,6 +27,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public int LINE_MAX;
 
 		public const int HBL_CNT = 45;
+		public const int GRID_OFST = 18;
+		public const int OBJ_OFST = -6;
 
 		public byte[] Sprites = new byte[16];
 		public byte[] Sprite_Shapes = new byte[32];
@@ -37,6 +50,10 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public bool VBL;
 		public bool HBL;
 		public bool lum_en;
+
+		public bool latch_x_y;
+		public bool HBL_req;
+		public int LY_ret;
 
 		// local variables not stated
 		int current_pixel_offset;
@@ -68,11 +85,11 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			else if (addr == 0xA0)
 			{
 				ret = VDC_ctrl;
-				//Core.cpu.IRQPending = false;
 			}
 			else if (addr == 0xA1)
 			{
 				ret = VDC_status;
+				// reading status clears IRQ request
 				Core.cpu.IRQPending = false;
 			}
 			else if (addr == 0xA2)
@@ -93,13 +110,14 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			}
 			else if(addr == 0xA4)
 			{
-				if (VDC_ctrl.Bit(1)) { ret = A4_latch; }
-				else { ret = (byte)LY; }
+				if (latch_x_y) { ret = A4_latch; }
+				else { ret = (byte)LY_ret; }
 			}
 			else if (addr == 0xA5)
 			{
-				if (VDC_ctrl.Bit(1)) { ret = A5_latch; }
-				else { ret = (byte)(cycle - HBL_CNT); }
+				// reading the x reg clears the latch
+				if (latch_x_y) { ret = A5_latch; latch_x_y = false; VDC_status |= 0x2; }
+				else { ret = (byte)(cycle); }
 			}
 			else if (addr <= 0xAA)
 			{
@@ -149,17 +167,24 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			}
 			else if (addr == 0xA0)
 			{
-				VDC_ctrl = value;
 				//Console.WriteLine("VDC_ctrl: " + value + " " + Core.cpu.TotalExecutedCycles);
-				if (VDC_ctrl.Bit(1)) 
-				{ 
+				if (value.Bit(1) && !VDC_ctrl.Bit(1))
+				{
 					VDC_status &= 0xFD;
-					A4_latch = (byte)LY;
-					A5_latch = (byte)(cycle - HBL_CNT);
+					latch_x_y = true;
+					A4_latch = (byte)LY_ret;
+					A5_latch = (byte)(cycle);
 				}
-				else { VDC_status |= 0x2; }
+
+				if (value.Bit(0) && !VDC_ctrl.Bit(0))
+				{
+					HBL_req = true;
+				}
+
+				VDC_ctrl = value;
 
 				if (VDC_ctrl.Bit(2)) { Console.WriteLine("sound INT"); }
+				//if (VDC_ctrl.Bit(0)) { Console.WriteLine("HBL INT"); }
 			}
 			else if (addr == 0xA1)
 			{
@@ -209,20 +234,12 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		{
 			Pixel_Stat = 0;
 			// drawing cycles
-			if (cycle >= HBL_CNT)
+			if (cycle < 182)
 			{
 				// draw a pixel
-				if (LY < LINE_VBL)
+				if ((LY < LINE_VBL) && (LY >= 0))
 				{
-					if (cycle == HBL_CNT)
-					{
-						HBL = false;
-						VDC_status |= 0x01;
-						// Send T1 pulses
-						Core.cpu.T1 = false;
-					}
-
-					current_pixel_offset = (cycle - HBL_CNT) * 2;
+					current_pixel_offset = cycle * 2;
 
 					// background
 					Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_BG[((VDC_color >> 3) & 0x7) + bg_brightness];
@@ -236,10 +253,10 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 						grid_fill--;
 					}
 					
-					if ((((cycle - HBL_CNT) % 16) == 8) && ((LY - 24) >= 0))
+					if (((cycle % 16) == 8) && ((LY - GRID_OFST) >= 0))
 					{
-						int k = (int)Math.Floor((cycle - HBL_CNT) / 16.0);
-						int j = (int)Math.Floor((LY - 24) / 24.0);
+						int k = (int)Math.Floor(cycle / 16.0);
+						int j = (int)Math.Floor((LY - GRID_OFST) / 24.0);
 						if ((k < 10) && (j < 8))
 						{
 							if (Grid_V[k].Bit(j))
@@ -254,10 +271,10 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 						}
 					}
 
-					if (((LY % 24) < 3) && ((cycle - HBL_CNT - 8) >= 0) && ((LY - 24) >= 0))
+					if ((((LY - GRID_OFST) % 24) < 3) && ((cycle - 8) >= 0) && ((LY - GRID_OFST) >= 0))
 					{
-						int k = (int)Math.Floor((cycle - HBL_CNT - 8) / 16.0);
-						int j = (int)Math.Floor((LY - 24) / 24.0);
+						int k = (int)Math.Floor((cycle - 8) / 16.0);
+						int j = (int)Math.Floor((LY - GRID_OFST) / 24.0);
 						//Console.WriteLine(k + " " + j);
 						if ((k < 9) && (j < 9))
 						{
@@ -269,7 +286,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 									Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_BG[(VDC_color & 0x7) + grid_brightness];
 									Pixel_Stat |= 0x20;
 
-									if (((cycle - HBL_CNT - 8) % 16) == 15) { grid_fill = 2; grid_fill_col = 0x20; }
+									if (((cycle - 8) % 16) == 15) { grid_fill = 2; grid_fill_col = 0x20; }
 								}
 							}
 							else
@@ -279,20 +296,20 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 									Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_BG[(VDC_color & 0x7) + grid_brightness];
 									Core._vidbuffer[LY * 372 + current_pixel_offset+ 1] = (int)Color_Palette_BG[(VDC_color & 0x7) + grid_brightness];
 									Pixel_Stat |= 0x20;
-									if (((cycle - HBL_CNT - 8) % 16) == 15) { grid_fill = 2; grid_fill_col = 0x20; }
+									if (((cycle - 8) % 16) == 15) { grid_fill = 2; grid_fill_col = 0x20; }
 								}
 							}
 						}
 					}
 					
 					// grid
-					if (VDC_ctrl.Bit(6) && ((LY - 24) >= 0) && ((LY % 24) < 3))
+					if (VDC_ctrl.Bit(6) && ((LY - GRID_OFST) >= 0) && (((LY - GRID_OFST) % GRID_OFST) < 3))
 					{
 
-						if ((((cycle - HBL_CNT) % 16) == 8) || (((cycle - HBL_CNT) % 16) == 9))
+						if (((cycle % 16) == 8) || ((cycle % 16) == 9))
 						{
-							int k = (int)Math.Floor((cycle - HBL_CNT) / 16.0);
-							int j = (int)Math.Floor((LY - 24) / 24.0);
+							int k = (int)Math.Floor(cycle / 16.0);
+							int j = (int)Math.Floor((LY - GRID_OFST) / 24.0);
 							if ((k < 10) && (j < 9))
 							{
 								Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_BG[(VDC_color & 0x7) + grid_brightness];
@@ -305,13 +322,13 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					// single characters
 					for (int i = 0; i < 12; i++)
 					{
-						if ((LY >= Foreground[i * 4]) && (LY < (Foreground[i * 4] + 8 * 2)))
+						if (((LY - OBJ_OFST) >= Foreground[i * 4]) && ((LY - OBJ_OFST) < (Foreground[i * 4] + 8 * 2)))
 						{
-							if (((cycle - HBL_CNT) >= Foreground[i * 4 + 1]) && ((cycle - HBL_CNT) < (Foreground[i * 4 + 1] + 8)))
+							if ((cycle >= Foreground[i * 4 + 1]) && (cycle < (Foreground[i * 4 + 1] + 8)))
 							{
 								// sprite is in drawing region, pick a pixel
-								int offset_y = (LY - Foreground[i * 4]) >> 1;
-								int offset_x = 7 - ((cycle - HBL_CNT) - Foreground[i * 4 + 1]);
+								int offset_y = ((LY - OBJ_OFST) - Foreground[i * 4]) >> 1;
+								int offset_x = 7 - (cycle - Foreground[i * 4 + 1]);
 								int char_sel = Foreground[i * 4 + 2];
 
 								int char_pick = (char_sel - (((~(Foreground[i * 4] >> 1)) + 1) & 0xFF));
@@ -353,13 +370,13 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					// quads
 					for (int i = 3; i >= 0; i--)
 					{
-						if ((LY >= Quad_Chars[i * 16]) && (LY < (Quad_Chars[i * 16] + 8 * 2)))
+						if (((LY - OBJ_OFST) >= Quad_Chars[i * 16]) && ((LY - OBJ_OFST) < (Quad_Chars[i * 16] + 8 * 2)))
 						{
-							if (((cycle - HBL_CNT) >= Quad_Chars[i * 16 + 1]) && ((cycle - HBL_CNT) < (Quad_Chars[i * 16 + 1] + 64)))
+							if ((cycle >= Quad_Chars[i * 16 + 1]) && (cycle < (Quad_Chars[i * 16 + 1] + 64)))
 							{
 								// sprite is in drawing region, pick a pixel
-								int offset_y = (LY - Quad_Chars[i * 16]) >> 1;
-								int offset_x = 63 - ((cycle - HBL_CNT) - Quad_Chars[i * 16 + 1]);
+								int offset_y = ((LY - OBJ_OFST) - Quad_Chars[i * 16]) >> 1;
+								int offset_x = 63 - (cycle - Quad_Chars[i * 16 + 1]);
 								int quad_num = 3;
 								while (offset_x > 15)
 								{
@@ -416,18 +433,18 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 						double_size = Sprites[i * 4 + 2].Bit(2) ? 4 : 2;
 						right_shift = Sprites[i * 4 + 2].Bit(0) ? 1 : 0;
 
-						if ((LY >= Sprites[i * 4]) && (LY < (Sprites[i * 4] + 8 * double_size)))
+						if (((LY - OBJ_OFST) >= Sprites[i * 4]) && ((LY - OBJ_OFST) < (Sprites[i * 4] + 8 * double_size)))
 						{
-							right_shift_even = (Sprites[i * 4 + 2].Bit(1) && (((Sprites[i * 4] + 8 * double_size - LY) % 2) == 0)) ? 1 : 0;
+							right_shift_even = (Sprites[i * 4 + 2].Bit(1) && (((Sprites[i * 4] + 8 * double_size - (LY - OBJ_OFST)) % 2) == 0)) ? 1 : 0;
 							x_base = Sprites[i * 4 + 1];
 
 							if ((right_shift + right_shift_even) == 0)
 							{
-								if (((cycle - HBL_CNT) >= x_base) && ((cycle - HBL_CNT) < (x_base + 8 * (double_size / 2))))
+								if ((cycle >= x_base) && (cycle < (x_base + 8 * (double_size / 2))))
 								{
 									// character is in drawing region, pick a pixel
-									int offset_y = (LY - Sprites[i * 4]) >> (double_size / 2);
-									int offset_x = ((cycle - HBL_CNT) - x_base) >> (double_size / 2 - 1);
+									int offset_y = ((LY - OBJ_OFST) - Sprites[i * 4]) >> (double_size / 2);
+									int offset_x = (cycle - x_base) >> (double_size / 2 - 1);
 
 									int pixel_pick = (Sprite_Shapes[i * 8 + offset_y] >> offset_x) & 1;
 
@@ -448,15 +465,15 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 								// special shifted cases
 								// since we are drawing two pixels at a time, we need to be careful that the next background / grid / char pixel
 								// doesn't overwrite the shifted pixel on the next pass
-								if (((cycle - HBL_CNT) >= x_base) && ((cycle - HBL_CNT) < (x_base + 1 + 8 * (double_size / 2))))
+								if ((cycle >= x_base) && (cycle < (x_base + 1 + 8 * (double_size / 2))))
 								{
 									// character is in drawing region, pick a pixel
-									int offset_y = (LY - Sprites[i * 4]) >> (double_size / 2);
-									int offset_x = ((cycle - HBL_CNT) - x_base) >> (double_size / 2 - 1);
+									int offset_y = ((LY - OBJ_OFST) - Sprites[i * 4]) >> (double_size / 2);
+									int offset_x = (cycle - x_base) >> (double_size / 2 - 1);
 
 									if (double_size == 2)
 									{
-										if (((cycle - HBL_CNT) - x_base) == 8)
+										if ((cycle - x_base) == 8)
 										{
 											offset_x = 7;
 
@@ -477,7 +494,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 												Pixel_Stat |= (byte)(1 << i);
 											}
 										}
-										else if (((cycle - HBL_CNT) - x_base) == 0)
+										else if ((cycle - x_base) == 0)
 										{
 											if ((right_shift + right_shift_even) < 2)
 											{
@@ -498,7 +515,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 										}
 										else
 										{
-											offset_x = cycle - HBL_CNT - x_base;
+											offset_x = cycle - x_base;
 
 											if ((right_shift + right_shift_even) < 2)
 											{
@@ -547,9 +564,9 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 									}
 									else
 									{
-										if ((((cycle - HBL_CNT) - x_base) >> 1) == 8)
+										if (((cycle - x_base) >> 1) == 8)
 										{
-											if ((((cycle - HBL_CNT) - x_base) % 2) == 0)
+											if (((cycle - x_base) % 2) == 0)
 											{
 												offset_x = 7;
 
@@ -570,9 +587,9 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 												}
 											}
 										}
-										else if ((((cycle - HBL_CNT) - x_base) >> 1) == 0)
+										else if (((cycle - x_base) >> 1) == 0)
 										{
-											if ((((cycle - HBL_CNT) - x_base) % 2) == 1)
+											if (((cycle - x_base) % 2) == 1)
 											{
 												offset_x = 0;
 
@@ -611,9 +628,9 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 										}
 										else
 										{
-											if ((((cycle - HBL_CNT) - x_base) % 2) == 1)
+											if (((cycle - x_base) % 2) == 1)
 											{
-												offset_x = (cycle - HBL_CNT - x_base) >> 1;
+												offset_x = (cycle - x_base) >> 1;
 
 												int pixel_pick = (Sprite_Shapes[i * 8 + offset_y] >> offset_x) & 1;
 
@@ -630,7 +647,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 											}
 											else
 											{
-												offset_x = (cycle - HBL_CNT - x_base) >> 1;
+												offset_x = (cycle - x_base) >> 1;
 
 												if ((right_shift + right_shift_even) < 2)
 												{
@@ -699,6 +716,28 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					}
 				}
 			}
+			else
+			{
+				if (cycle == 182 && (LY < LINE_VBL))
+				{
+					HBL = true;
+					// Send T1 pulses
+					Core.cpu.T1 = true;
+				}
+
+				if (cycle == 212 && (LY < LINE_VBL))
+				{
+					VDC_status &= 0xFE;
+					if (VDC_ctrl.Bit(0) && Core.is_pal) { Core.cpu.IRQPending = false; }
+					LY_ret = LY_ret + 1;
+				}
+			}
+
+			if (cycle == 113 && (LY < LINE_VBL))
+			{
+				VDC_status |= 0x01;
+				if (VDC_ctrl.Bit(0) && HBL_req) { Core.cpu.IRQPending = true; HBL_req = false; }
+			}
 
 			cycle++;
 
@@ -717,20 +756,34 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					Core.cpu.IRQPending = true;
 					Core.cpu.T1 = true;
 				}
-				if (LY == LINE_MAX)
+
+				if (LY >= 255)
 				{
-					LY = 0;
+					LY_ret = 0xFF;
+				}
+
+				if (LY == (LINE_MAX - 6))
+				{
+					LY = -6;
+					LY_ret = 0;
+				}
+
+				if (LY == 0)
+				{
 					VBL = false;
 					Core.in_vblank = false;
+					Core.cpu.T1 = false;
+					//Core.cpu.IRQPending = false;
 					VDC_status &= 0xF7;
 					for (int i = 0; i < 8; i++) { VDC_col_ret[i] = 0; }
 				}
+
 				if (LY < LINE_VBL)
 				{
-					HBL = true;
-					VDC_status &= 0xFE;
+					HBL = false;
+					//VDC_status |= 0x01;
 					// send T1 pulses
-					Core.cpu.T1 = true;
+					Core.cpu.T1 = false;
 				}
 			}
 		}
@@ -746,11 +799,11 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 			VDC_ctrl = VDC_status = VDC_collision = VDC_color = grid_fill_col = 0;
 			Pixel_Stat = A4_latch = A5_latch = 0;
-			bg_brightness = grid_brightness = grid_fill = LY = cycle = 0;
+			bg_brightness = grid_brightness = grid_fill = LY_ret = cycle = 0;
 			VBL = HBL = lum_en = false;
+			LY = -6;
 
-
-		AudioReset();
+			AudioReset();
 		}
 
 		public void set_region(bool pal_flag)
@@ -896,6 +949,10 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			ser.Sync(nameof(VBL), ref VBL);
 			ser.Sync(nameof(HBL), ref HBL);
 
+			ser.Sync(nameof(latch_x_y), ref latch_x_y);
+			ser.Sync(nameof(HBL_req), ref HBL_req);
+			ser.Sync(nameof(LY_ret), ref LY_ret);
+
 			AudioSyncState(ser);
 		}
 
@@ -1018,6 +1075,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			ser.Sync(nameof(tick_cnt), ref tick_cnt);
 			ser.Sync(nameof(shift_cnt), ref shift_cnt);
 			ser.Sync(nameof(output_bit), ref output_bit);
+
+			ser.Sync(nameof(latch_x_y), ref latch_x_y);
 		}
 
 		#region audio
