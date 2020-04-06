@@ -1371,6 +1371,15 @@ static int s_FramebufferCurrentWidth;
 
 EW_EXPORT s32 shock_Create(void** psx, s32 region, void* firmware512k)
 {
+	#ifdef SHOCK_RUN_TESTS
+	static bool ranTests = false;
+	if(!ranTests)
+	{
+		ranTests = true;
+		MDFN_RunMathTests();
+	}
+	#endif
+
 	//TODO
  //psx_dbg_level = MDFN_GetSettingUI("psx.dbg_level");
  //DBG_Init();
