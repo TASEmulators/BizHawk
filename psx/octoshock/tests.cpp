@@ -30,6 +30,7 @@
 #include "octoshock.h"
 #include "math_ops.h"
 #include "error.h"
+#include "endian.h"
 
 #ifdef WANT_TEST_LEPACKER
 #include "lepacker.h"

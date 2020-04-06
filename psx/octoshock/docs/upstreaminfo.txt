@@ -164,3 +164,11 @@
 [OK] psx/mdec : fastcall
 [OK] psx/irq : fastcall
 [NO] types : extensive work to cold, hot, fastcall, etc. macros for compilers
+
+0.9.44.1 -> 0.9.45
+(misc #include changes all over)
+[NO] psx/frontio : not important
+[OK] psx/gte : FALSE->false, etc
+[OK] psx/masmem : not important
+[NO] psx/mdec : not important
+[NO] psx/psx : not important

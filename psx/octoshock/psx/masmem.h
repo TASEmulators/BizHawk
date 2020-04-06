@@ -22,8 +22,6 @@
 #ifndef __MDFN_PSX_MASMEM_H
 #define __MDFN_PSX_MASMEM_H
 
-#include "endian.h"
-
 // address must not be >= size specified by template parameter, and address must be a multiple of the byte-size of the
 // unit(1,2,4) being read(except for Read/WriteU24, which only needs to be byte-aligned).
 //

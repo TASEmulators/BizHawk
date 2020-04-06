@@ -873,7 +873,7 @@ static INLINE void MultiplyMatrixByVector(const gtematrix *matrix, const int16 *
   tmp = A_MV(i, tmp + mulr[0]);
   if(crv == CRVectors.FC)
   {
-   Lm_B(i, tmp >> sf, FALSE);
+   Lm_B(i, tmp >> sf, false);
    tmp = 0;
   }
 
@@ -918,7 +918,7 @@ static INLINE void MultiplyMatrixByVector_PT(const gtematrix *matrix, const int1
  Z_FIFO[0] = Z_FIFO[1];
  Z_FIFO[1] = Z_FIFO[2];
  Z_FIFO[2] = Z_FIFO[3];
- Z_FIFO[3] = Lm_D(tmp[2] >> 12, TRUE);
+ Z_FIFO[3] = Lm_D(tmp[2] >> 12, true);
 }
 
 
@@ -1148,7 +1148,7 @@ static INLINE void DepthCue(int mult_IR123, int RGB_from_FIFO, uint32 sf, int lm
   for(i = 0; i < 3; i++)
   {
    MAC[1 + i] = A_MV(i, ((int64)((uint64)(int64)CRVectors.FC[i] << 12) - RGB_temp[i] * IR_temp[i])) >> sf;
-   MAC[1 + i] = A_MV(i, (RGB_temp[i] * IR_temp[i] + IR0 * Lm_B(i, MAC[1 + i], FALSE))) >> sf;
+   MAC[1 + i] = A_MV(i, (RGB_temp[i] * IR_temp[i] + IR0 * Lm_B(i, MAC[1 + i], false))) >> sf;
   }
  }
  else
@@ -1156,7 +1156,7 @@ static INLINE void DepthCue(int mult_IR123, int RGB_from_FIFO, uint32 sf, int lm
   for(i = 0; i < 3; i++)
   {
    MAC[1 + i] = A_MV(i, ((int64)((uint64)(int64)CRVectors.FC[i] << 12) - (int32)((uint32)RGB_temp[i] << 12))) >> sf;
-   MAC[1 + i] = A_MV(i, ((int64)((uint64)(int64)RGB_temp[i] << 12) + IR0 * Lm_B(i, MAC[1 + i], FALSE))) >> sf;
+   MAC[1 + i] = A_MV(i, ((int64)((uint64)(int64)RGB_temp[i] << 12) + IR0 * Lm_B(i, MAC[1 + i], false))) >> sf;
   }
  }
 
@@ -1170,7 +1170,7 @@ static INLINE int32 DCPL(uint32 instr)
 {
  DECODE_FIELDS;
 
- DepthCue(TRUE, FALSE, sf, lm);
+ DepthCue(true, false, sf, lm);
 
  return(8);
 }
@@ -1180,7 +1180,7 @@ static INLINE int32 DPCS(uint32 instr)
 {
  DECODE_FIELDS;
 
- DepthCue(FALSE, FALSE, sf, lm);
+ DepthCue(false, false, sf, lm);
 
  return(8);
 }
@@ -1192,7 +1192,7 @@ static INLINE int32 DPCT(uint32 instr)
 
  for(i = 0; i < 3; i++)
  {
-  DepthCue(FALSE, TRUE, sf, lm);
+  DepthCue(false, true, sf, lm);
  }
 
  return(17);
@@ -1206,9 +1206,9 @@ static INLINE int32 INTPL(uint32 instr)
  MAC[2] = A_MV(1, ((int64)((uint64)(int64)CRVectors.FC[1] << 12) - (int32)((uint32)(int32)IR2 << 12))) >> sf;
  MAC[3] = A_MV(2, ((int64)((uint64)(int64)CRVectors.FC[2] << 12) - (int32)((uint32)(int32)IR3 << 12))) >> sf;
 
- MAC[1] = A_MV(0, ((int64)((uint64)(int64)IR1 << 12) + IR0 * Lm_B(0, MAC[1], FALSE)) >> sf);
- MAC[2] = A_MV(1, ((int64)((uint64)(int64)IR2 << 12) + IR0 * Lm_B(1, MAC[2], FALSE)) >> sf);
- MAC[3] = A_MV(2, ((int64)((uint64)(int64)IR3 << 12) + IR0 * Lm_B(2, MAC[3], FALSE)) >> sf);
+ MAC[1] = A_MV(0, ((int64)((uint64)(int64)IR1 << 12) + IR0 * Lm_B(0, MAC[1], false)) >> sf);
+ MAC[2] = A_MV(1, ((int64)((uint64)(int64)IR2 << 12) + IR0 * Lm_B(1, MAC[2], false)) >> sf);
+ MAC[3] = A_MV(2, ((int64)((uint64)(int64)IR3 << 12) + IR0 * Lm_B(2, MAC[3], false)) >> sf);
 
  MAC_to_IR(lm);
 
@@ -1227,7 +1227,7 @@ static INLINE void NormColorDepthCue(uint32 v, uint32 sf, int lm)
  tmp_vector[0] = IR1; tmp_vector[1] = IR2; tmp_vector[2] = IR3;
  MultiplyMatrixByVector(&Matrices.Color, tmp_vector, CRVectors.B, sf, lm);
 
- DepthCue(TRUE, FALSE, sf, lm);
+ DepthCue(true, false, sf, lm);
 }
 
 static INLINE int32 NCDS(uint32 instr)
@@ -1279,7 +1279,7 @@ static INLINE int32 CDP(uint32 instr)
  tmp_vector[0] = IR1; tmp_vector[1] = IR2; tmp_vector[2] = IR3;
  MultiplyMatrixByVector(&Matrices.Color, tmp_vector, CRVectors.B, sf, lm);
 
- DepthCue(TRUE, FALSE, sf, lm);
+ DepthCue(true, false, sf, lm);
 
  return(13);
 }
@@ -1300,7 +1300,7 @@ static INLINE int32 AVSZ3(uint32 instr)
 
  MAC[0] = F(((int64)ZSF3 * (Z_FIFO[1] + Z_FIFO[2] + Z_FIFO[3])));
 
- OTZ = Lm_D(MAC[0] >> 12, FALSE);
+ OTZ = Lm_D(MAC[0] >> 12, false);
 
  return(5);
 }
@@ -1311,7 +1311,7 @@ static INLINE int32 AVSZ4(uint32 instr)
 
  MAC[0] = F(((int64)ZSF4 * (Z_FIFO[0] + Z_FIFO[1] + Z_FIFO[2] + Z_FIFO[3])));
 
- OTZ = Lm_D(MAC[0] >> 12, FALSE);
+ OTZ = Lm_D(MAC[0] >> 12, false);
 
  return(5);
 }
