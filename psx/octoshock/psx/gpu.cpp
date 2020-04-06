@@ -1659,10 +1659,37 @@ SYNCFUNC(PS_GPU)
 
 	if(isReader)
 	{
-		RecalcTexWindowStuff();
+		//BIZHAWK: not needed
+		//for(unsigned i = 0; i < 256; i++)
+		//{
+		//	TexCache[i].Tag = TexCache_Tag[i];
 
-		//this is kind of typical stuff, BUT: a cursory inspection reveals nothing. the IRQ and CPU modules should be handling it OK
-		//LOOK HERE FOR BUGS
+		//	for(unsigned j = 0; j < 4; j++)
+		//		TexCache[i].Data[j] = TexCache_Data[i][j];
+		//}
+
+		RecalcTexWindowStuff();
+		BlitterFIFO.SaveStatePostLoad();
+
+		HorizStart &= 0xFFF;
+		HorizEnd &= 0xFFF;
+
+		DisplayFB_CurYOffset &= 0x1FF;
+		DisplayFB_CurLineYReadout &= 0x1FF;
+
+		TexPageX &= 0xF * 64;
+		TexPageY &= 0x10 * 16;
+		TexMode &= 0x3;
+		abr &= 0x3;
+
+		ClipX0 &= 1023;
+		ClipY0 &= 1023;
+		ClipX1 &= 1023;
+		ClipY1 &= 1023;
+
+		OffsX = sign_x_to_s32(11, OffsX);
+		OffsY = sign_x_to_s32(11, OffsY);
+
 		IRQ_Assert(IRQ_GPU, IRQPending);
 	}
 
