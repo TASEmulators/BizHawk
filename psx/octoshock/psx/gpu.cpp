@@ -78,20 +78,37 @@ namespace MDFN_IEN_PSX
 	using namespace PS_GPU_INTERNAL;
 
 	void GPU_Init(bool pal_clock_and_tv)
-	{
-		static const int8 dither_table[4][4] =
-		{
-			{ -4,  0, -3,  1 },
-			{  2, -2,  3, -1 },
-			{ -3,  1, -4,  0 },
-			{  3, -1,  2, -2 },
-		};
+{
+ static const int8 dither_table[4][4] =
+ {
+  { -4,  0, -3,  1 },
+  {  2, -2,  3, -1 },
+  { -3,  1, -4,  0 },
+  {  3, -1,  2, -2 },
+ };
 
-		HardwarePALType = pal_clock_and_tv;
-
+ HardwarePALType = pal_clock_and_tv;
  //printf("%zu\n", (size_t)((uintptr_t)DitherLUT - (uintptr_t)this));
  //printf("%zu\n", (size_t)((uintptr_t)GPURAM - (uintptr_t)this));
  //
+
+ for(int y = 0; y < 4; y++)
+  for(int x = 0; x < 4; x++)
+   for(int v = 0; v < 512; v++)
+   {
+    int value = v + dither_table[y][x];
+
+    value >>= 3;
+ 
+    if(value < 0)
+     value = 0;
+
+    if(value > 0x1F)
+     value = 0x1F;
+
+    DitherLUT[y][x][v] = value;
+   }
+
  if(HardwarePALType == false)	// NTSC clock
  {
   GPUClockRatio = 103896; // 65536 * 53693181.818 / (44100 * 768)
@@ -103,7 +120,13 @@ namespace MDFN_IEN_PSX
   hmc_to_visible = 560; 
  }
 
+ memcpy(&Commands[0x00], Commands_00_1F, sizeof(Commands_00_1F));
+ memcpy(&Commands[0x20], Commands_20_3F, sizeof(Commands_20_3F));
+ memcpy(&Commands[0x40], Commands_40_5F, sizeof(Commands_40_5F));
+ memcpy(&Commands[0x60], Commands_60_7F, sizeof(Commands_60_7F));
+ memcpy(&Commands[0x80], Commands_80_FF, sizeof(Commands_80_FF));
 }
+
 
 void GPU_Kill(void)
 {
