@@ -2,7 +2,7 @@
 /* Mednafen Sony PS1 Emulation Module                                         */
 /******************************************************************************/
 /* dualshock.cpp:
-**  Copyright (C) 2012-2016 Mednafen Team
+**  Copyright (C) 2012-2017 Mednafen Team
 **
 ** This program is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU General Public License
@@ -318,18 +318,11 @@ void InputDevice_DualShock::UpdateInput(const void *data)
   if(((rumble_param[0] & 0xC0) == 0x40) && ((rumble_param[1] & 0x01) == 0x01))
    sneaky_weaky = 0xFF;
 
-  MDFN_en16lsb<false>(rumb_dp, sneaky_weaky << 0);
+	MDFN_en16lsb(rumb_dp, sneaky_weaky << 0);
  }
 
- //printf("%d %d %d %d\n", axes[0][0], axes[0][1], axes[1][0], axes[1][1]);
-
  //
- //
- //
- CheckManualAnaModeChange();
-
- //
- // Encode analog mode state last.
+ // Encode analog mode state.
  //
  d8[2] &= ~0x6;
  d8[2] |= (analog_mode ? 0x02 : 0x00);

@@ -132,3 +132,7 @@
 [OK] tests : pasted over and whittled down
 0.9.41 -> 0.9.42
 [OK] tests : some 64bit casting tests
+0.9.42 -> 0.9.43
+[OK] psx/frontio : (c), UpdateOutput() [not needed]
+[OK] psx/input/dualshock : (c), analog state change [TEST]
+[ok] psx/psx : (c), UpdateOutput() [not needed]
