@@ -106,3 +106,5 @@
 [NO] psx/psx : cheats support
 [OK] psx/psx : (c), cnf parse
 [OK] psx/sio : (c)
+[OK] psx/spu : (c), comments, inline
+[OK] psx/timer : (c), comments
