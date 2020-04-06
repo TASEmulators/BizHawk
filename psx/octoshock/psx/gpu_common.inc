@@ -287,10 +287,7 @@ static INLINE uint16 GetTexel(uint32 u_arg, uint32 v_arg)
       // We'll be conservative and just go with 4 for now, until we can run some tests with triangles too.
       //
       DrawTimeAvail -= 4;
-      c->Data[0] = (&GPURAM[0][0])[gro &~ 0x3];
-      c->Data[1] = (&GPURAM[0][1])[gro &~ 0x3];
-      c->Data[2] = (&GPURAM[0][2])[gro &~ 0x3];
-      c->Data[3] = (&GPURAM[0][3])[gro &~ 0x3];
+      memcpy(c->Data, (uint16*)GPURAM + (gro &~ 0x3), 4 * sizeof(uint16));
       c->Tag = (gro &~ 0x3);
      }
 

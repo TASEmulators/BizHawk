@@ -355,7 +355,7 @@ bool InputDevice_Multitap::Clock(bool TxD, int32 &dsr_pulse_delay)
        fm_buffer[i][byte_counter - 0x03] &= (pad_devices[i]->Clock((sb[i][byte_counter - 0x03] >> bit_counter) & 1, tmp_pulse_delay[0][i]) << bit_counter) | (~(1U << bit_counter));
       }
      }
-     ret &= ((&fm_buffer[0][0])[byte_counter - 0x03] >> bit_counter) & 1;
+     ret &= (MDAP(fm_buffer)[byte_counter - 0x03] >> bit_counter) & 1;
     }
    }
    else // to if(full_mode)

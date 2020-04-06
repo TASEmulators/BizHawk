@@ -620,6 +620,7 @@ struct XA_Subheader
  uint8 submode_dup;
  uint8 coding_dup;
 });
+static_assert(sizeof(XA_Subheader) == 8, "XA_Subheader wrong size!");
 
 EW_PACKED(
 struct XA_SoundGroup
@@ -627,6 +628,7 @@ struct XA_SoundGroup
  uint8 params[16];
  uint8 samples[112];
 });
+static_assert(sizeof(XA_SoundGroup) == 128, "XA_SoundGroup wrong size!");
 
 #define XA_SUBMODE_EOF		0x80
 #define XA_SUBMODE_REALTIME	0x40

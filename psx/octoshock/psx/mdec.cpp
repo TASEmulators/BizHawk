@@ -573,12 +573,12 @@ static INLINE void WriteImageData(uint16 V, int32* eat_cycles)
 
    switch(DecodeWB)
    {
-    case 0: IDCT(Coeff, &block_cr[0][0]); break;
-    case 1: IDCT(Coeff, &block_cb[0][0]); break;
-    case 2: IDCT(Coeff, &block_y[0][0]); break;
-    case 3: IDCT(Coeff, &block_y[0][0]); break;
-    case 4: IDCT(Coeff, &block_y[0][0]); break;
-    case 5: IDCT(Coeff, &block_y[0][0]); break;
+    case 0: IDCT(Coeff, MDAP(block_cr)); break;
+    case 1: IDCT(Coeff, MDAP(block_cb)); break;
+    case 2: IDCT(Coeff, MDAP(block_y)); break;
+    case 3: IDCT(Coeff, MDAP(block_y)); break;
+    case 4: IDCT(Coeff, MDAP(block_y)); break;
+    case 5: IDCT(Coeff, MDAP(block_y)); break;
    }   
 
    // Timing in the PS1 MDEC is complex due to (apparent) pipelining, but the average when decoding a large number of blocks is

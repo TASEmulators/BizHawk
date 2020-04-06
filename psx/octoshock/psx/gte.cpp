@@ -59,6 +59,9 @@ struct gtematrix
  int16 MX[3][3];
  int16 dummy;
 });
+#ifndef PSXDEV_GTE_TESTING
+static_assert(sizeof(gtematrix) == 20, "gtematrix wrong size!");
+#endif
 
 typedef struct
 {

@@ -170,10 +170,10 @@ void PS_GPU_FillVideoParams(MDFNGI* gi)
  //
  // For Justifier and Guncon.
  //
- gi->mouse_scale_x = (float)gi->lcm_width / gi->nominal_width;
+ gi->mouse_scale_x = (float)gi->lcm_width;
  gi->mouse_offs_x = (float)(2800 - gi->lcm_width) / 2;
 
- gi->mouse_scale_y = 1.0;
+ gi->mouse_scale_y = gi->nominal_height;
  gi->mouse_offs_y = LineVisFirst;
 }
 

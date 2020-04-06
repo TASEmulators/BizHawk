@@ -181,3 +181,16 @@
 [OK] psx/irq : tidy
 [OK] psx/gpu : tidy
 [OK] tests: add some gcc tests, and tests for various cpu archs
+
+0.9.48 -> 1.21.3
+[OK] psx/cdc : add static asserts (useless: change how variables are saved)
+[NO] psx/cpu : change how variables are saved
+[NO] psx/frontio : change how variables are saved
+[OK] psx/gpu : odd fix to lightgun coords, maybe pointless; change how variables are saved; optimization to GetTexel
+[OK] psx/gte : add static asserts (useless: change how variables are saved)
+[NO] psx/input/* : variable saving, and change to input device setup
+[NO] psx/input/mouse : input buffer format changed? must be due to input device changes in 1.x update
+[OK] psx/input/multitap : MDAP ? weird
+[ON] psx/mdec : MDAP? (ignored: variable saving)
+[NO] psx/psx : frontend memcard error handling, changes from strncasecmp to MDFN_strazicmp and etc; change to ReadSector API?
+[NO] psx/spu : ignored: variable saving
