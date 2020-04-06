@@ -183,13 +183,12 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 				VDC_ctrl = value;
 
-				if (VDC_ctrl.Bit(2)) { Console.WriteLine("sound INT"); }
+				//if (VDC_ctrl.Bit(2)) { Console.WriteLine("sound INT"); }
 				//if (VDC_ctrl.Bit(0)) { Console.WriteLine("HBL INT"); }
 			}
 			else if (addr == 0xA1)
 			{
 				// not writable
-				// VDC_status = value;
 			}
 			else if (addr == 0xA2)
 			{
@@ -728,7 +727,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				if (cycle == 212 && (LY < LINE_VBL))
 				{
 					VDC_status &= 0xFE;
-					if (VDC_ctrl.Bit(0) && Core.is_pal) { Core.cpu.IRQPending = false; }
+					//if (VDC_ctrl.Bit(0)) { Core.cpu.IRQPending = false; }
 					LY_ret = LY_ret + 1;
 				}
 			}
@@ -736,7 +735,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			if (cycle == 113 && (LY < LINE_VBL))
 			{
 				VDC_status |= 0x01;
-				if (VDC_ctrl.Bit(0) && HBL_req) { Core.cpu.IRQPending = true; HBL_req = false; }
+				//if (VDC_ctrl.Bit(0) && HBL_req) { Core.cpu.IRQPending = true; HBL_req = false; }
 			}
 
 			cycle++;
@@ -757,9 +756,9 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					Core.cpu.T1 = true;
 				}
 
-				if (LY >= 255)
+				if (LY >= LINE_VBL)
 				{
-					LY_ret = 0xFF;
+					LY_ret = 0;
 				}
 
 				if (LY == (LINE_MAX - 6))
@@ -773,7 +772,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					VBL = false;
 					Core.in_vblank = false;
 					Core.cpu.T1 = false;
-					//Core.cpu.IRQPending = false;
+					if (Core.is_pal) { Core.cpu.IRQPending = false; }
 					VDC_status &= 0xF7;
 					for (int i = 0; i < 8; i++) { VDC_col_ret[i] = 0; }
 				}
@@ -781,8 +780,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				if (LY < LINE_VBL)
 				{
 					HBL = false;
-					//VDC_status |= 0x01;
-					// send T1 pulses
 					Core.cpu.T1 = false;
 				}
 			}
