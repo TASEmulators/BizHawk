@@ -90,7 +90,7 @@
 [OK] psx/timer : Major functional changes
 [NO] psx/timer : Added loadstate sanity checks
 0.9.38.7 -> 0.9.39-unstable
-[OK] psx/cdc : promote "Fantastic Pinball Kyutenkai" logic to unconditional; add MDFN_COLD
+[OK] psx/cdc : "Fantastic Pinball Kyutenkai" enable; add MDFN_COLD
 [OK] psx/cpu : various improvements
 [OK] psx/fastfifo : .h copyright header
 [NO] psx/debug : (file not used)
@@ -102,3 +102,4 @@
 [OK] psx/input/* : (c)
 [OK] psx/irq : (c)
 [OK] psx/masmem : (c)
+[OK] psx/mdec : 

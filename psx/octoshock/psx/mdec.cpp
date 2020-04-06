@@ -1,19 +1,25 @@
-/* Mednafen - Multi-system Emulator
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+/******************************************************************************/
+/* Mednafen Sony PS1 Emulation Module                                         */
+/******************************************************************************/
+/* mdec.cpp:
+**  Copyright (C) 2011-2016 Mednafen Team
+**
+** This program is free software; you can redistribute it and/or
+** modify it under the terms of the GNU General Public License
+** as published by the Free Software Foundation; either version 2
+** of the License, or (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software Foundation, Inc.,
+** 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
+
+#pragma GCC optimize ("unroll-loops")
 
 /*
  MDEC_READ_FIFO(tfr) vs InCounter vs MDEC_DMACanRead() is a bit fragile right now.  Actually, the entire horrible state machine monstrosity is fragile.
@@ -62,9 +68,13 @@
 
 #include "masmem.h"
 
-#if defined(__SSE2__)
+#if defined(__SSE2__) || (defined(ARCH_X86) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 9)))
 #include <xmmintrin.h>
 #include <emmintrin.h>
+#endif
+
+#if 0 //defined(__ARM_NEON__)
+#include <arm_neon.h>
 #endif
 
 #if defined(ARCH_POWERPC_ALTIVEC) && defined(HAVE_ALTIVEC_H)
@@ -228,65 +238,127 @@ static INLINE int8 Mask9ClampS8(int32 v)
  return v;
 }
 
+////////////////////////
+//
+//
+#pragma GCC push_options
+
+#if defined(__SSE2__) || (defined(ARCH_X86) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 9)))
+//
+//
+//
+#pragma GCC target("sse2")
 template<typename T>
-static void IDCT_1D_Multi(int16 *in_coeff, T *out_coeff)
+static INLINE void IDCT_1D_Multi(int16 *in_coeff, T *out_coeff)
 {
-#if defined(__SSE2__)
-{
- for(unsigned col = 0; col < 8; col++)
- {
-  __m128i c =  _mm_load_si128((__m128i *)&in_coeff[(col * 8)]);
+	for(unsigned col = 0; col < 8; col++)
+	{
+		__m128i c =  _mm_load_si128((__m128i *)&in_coeff[(col * 8)]);
 
-  for(unsigned x = 0; x < 8; x++)
-  {
-   __m128i sum;
-   __m128i m;
-   int32 tmp[4] MDFN_ALIGN(16);
+		for(unsigned x = 0; x < 8; x++)
+		{
+			__m128i sum;
+			__m128i m;
+			alignas(16) int32 tmp[4];
 
-   m = _mm_load_si128((__m128i *)&IDCTMatrix[(x * 8)]);
-   sum = _mm_madd_epi16(m, c);
-   sum = _mm_add_epi32(sum, _mm_shuffle_epi32(sum, (3 << 0) | (2 << 2) | (1 << 4) | (0 << 6)));
-   sum = _mm_add_epi32(sum, _mm_shuffle_epi32(sum, (1 << 0) | (0 << 2)));
+			m = _mm_load_si128((__m128i *)&IDCTMatrix[(x * 8)]);
+			sum = _mm_madd_epi16(m, c);
+			sum = _mm_add_epi32(sum, _mm_shuffle_epi32(sum, (3 << 0) | (2 << 2) | (1 << 4) | (0 << 6)));
+			sum = _mm_add_epi32(sum, _mm_shuffle_epi32(sum, (1 << 0) | (0 << 2)));
 
-   //_mm_store_ss((float *)&tmp[0], (__m128)sum);
-   _mm_store_si128((__m128i*)tmp, sum);
+			//_mm_store_ss((float *)&tmp[0], (__m128)sum);
+			_mm_store_si128((__m128i*)tmp, sum);
 
-   if(sizeof(T) == 1)
-    out_coeff[(col * 8) + x] = Mask9ClampS8((tmp[0] + 0x4000) >> 15);
-   else
-    out_coeff[(x * 8) + col] = (tmp[0] + 0x4000) >> 15;
-  }
- }
+			if(sizeof(T) == 1)
+				out_coeff[(col * 8) + x] = Mask9ClampS8((tmp[0] + 0x4000) >> 15);
+			else
+				out_coeff[(x * 8) + col] = (tmp[0] + 0x4000) >> 15;
+		}
+	}
 }
+//
+//
+//
+#elif 0 //defined(__ARM_NEON__)
+//
+//
+//
+template<typename T>
+static INLINE void IDCT_1D_Multi(int16 *in_coeff, T *out_coeff)
+{
+	for(unsigned col = 0; col < 8; col++)
+	{
+		register int16x4_t c0 = vld1_s16(MDFN_ASSUME_ALIGNED(in_coeff + col * 8 + 0, sizeof(int16x4_t)));
+		register int16x4_t c1 = vld1_s16(MDFN_ASSUME_ALIGNED(in_coeff + col * 8 + 4, sizeof(int16x4_t)));
+		int32 buf[8];
+
+		for(unsigned x = 0; x < 8; x++)
+		{
+			register int32x4_t accum;
+			register int32x2_t sum2;
+
+			accum = vdupq_n_s32(0);
+			accum = vmlal_s16(accum, c0, vld1_s16(MDFN_ASSUME_ALIGNED(IDCTMatrix + x * 8 + 0, sizeof(int16x4_t))));
+			accum = vmlal_s16(accum, c1, vld1_s16(MDFN_ASSUME_ALIGNED(IDCTMatrix + x * 8 + 4, sizeof(int16x4_t))));
+			sum2 = vadd_s32(vget_high_s32(accum), vget_low_s32(accum));
+			sum2 = vpadd_s32(sum2, sum2);
+			vst1_lane_s32(buf + x, sum2, 0);
+		}
+
+		for(unsigned x = 0; x < 8; x++)
+		{
+			if(sizeof(T) == 1)
+				out_coeff[(col * 8) + x] = Mask9ClampS8((buf[x] + 0x4000) >> 15);
+			else
+				out_coeff[(x * 8) + col] = (buf[x] + 0x4000) >> 15;
+		}
+	}
+}
+//
+//
+//
 #else
- for(unsigned col = 0; col < 8; col++)
- {
-  for(unsigned x = 0; x < 8; x++)
-  {
-   int32 sum = 0;
+//
+//
+//
+template<typename T>
+static INLINE void IDCT_1D_Multi(int16 *in_coeff, T *out_coeff)
+{
+	for(unsigned col = 0; col < 8; col++)
+	{
+		for(unsigned x = 0; x < 8; x++)
+		{
+			int32 sum = 0;
 
-   for(unsigned u = 0; u < 8; u++)
-   {
-    sum += (in_coeff[(col * 8) + u] * IDCTMatrix[(x * 8) + u]);
-   }
+			for(unsigned u = 0; u < 8; u++)
+			{
+				sum += (in_coeff[(col * 8) + u] * IDCTMatrix[(x * 8) + u]);
+			}
 
-   if(sizeof(T) == 1)
-    out_coeff[(col * 8) + x] = Mask9ClampS8((sum + 0x4000) >> 15);
-   else
-    out_coeff[(x * 8) + col] = (sum + 0x4000) >> 15;
-  }
- }
-#endif
+			if(sizeof(T) == 1)
+				out_coeff[(col * 8) + x] = Mask9ClampS8((sum + 0x4000) >> 15);
+			else
+				out_coeff[(x * 8) + col] = (sum + 0x4000) >> 15;
+		}
+	}
 }
+//
+//
+//
+#endif
 
 static void IDCT(int16 *in_coeff, int8 *out_coeff) NO_INLINE;
 static void IDCT(int16 *in_coeff, int8 *out_coeff)
 {
- EW_VAR_ALIGN(16) int16 tmpbuf[64];
+	alignas(16) int16 tmpbuf[64];
 
- IDCT_1D_Multi<int16>(in_coeff, tmpbuf);
- IDCT_1D_Multi<int8>(tmpbuf, out_coeff);
+	IDCT_1D_Multi<int16>(in_coeff, tmpbuf);
+	IDCT_1D_Multi<int8>(tmpbuf, out_coeff);
 }
+#pragma GCC pop_options
+//
+//
+///////////////////////
 
 static INLINE void YCbCr_to_RGB(const int8 y, const int8 cb, const int8 cr, int &r, int &g, int &b)
 {
@@ -505,12 +577,9 @@ static INLINE void WriteImageData(uint16 V, int32* eat_cycles)
     case 5: IDCT(Coeff, &block_y[0][0]); break;
    }   
 
-   //
-   // Timing in the actual PS1 MDEC is complex due to (apparent) pipelining, but the average when decoding a large number of blocks is
-   // about 512.  We'll go with a lower value here to be conservative due to timing granularity and other timing deficiencies in Mednafen.  BUT, don't
-   // go lower than 460, or Parasite Eve 2's 3D models will stutter like crazy during FMV-background sequences.
-   //
-   *eat_cycles += 474;
+   // Timing in the PS1 MDEC is complex due to (apparent) pipelining, but the average when decoding a large number of blocks is
+   // about 512.
+   *eat_cycles += 512;
 
    if(DecodeWB >= 2)
    {
