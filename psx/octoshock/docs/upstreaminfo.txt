@@ -108,3 +108,6 @@
 [OK] psx/sio : (c)
 [OK] psx/spu : (c), comments, inline
 [OK] psx/timer : (c), comments
+0.9.39-unstable -> 0.9.39-1
+[NO] mednafen : just org stuff
+[??] cdrom/ccd : something about track AA
