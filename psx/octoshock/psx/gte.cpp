@@ -1,19 +1,25 @@
-/* Mednafen - Multi-system Emulator
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+/******************************************************************************/
+/* Mednafen Sony PS1 Emulation Module                                         */
+/******************************************************************************/
+/* gte.cpp:
+**  Copyright (C) 2011-2016 Mednafen Team
+**
+** This program is free software; you can redistribute it and/or
+** modify it under the terms of the GNU General Public License
+** as published by the Free Software Foundation; either version 2
+** of the License, or (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software Foundation, Inc.,
+** 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
+
+//#pragma GCC optimize ("no-unroll-loops,no-peel-loops")
 
 #include "psx.h"
 #include "gte.h"
@@ -285,7 +291,8 @@ void GTE_WriteCR(unsigned int which, uint32 value)
 	break;
 
   case 30:
-	ZSF4 = value;
+	LZCS = value;
+	LZCR = MDFN_lzcount32(value ^ ((int32)value >> 31));
 	break;
 
   case 31:
@@ -935,7 +942,7 @@ static INLINE void MultiplyMatrixByVector_PT(const gtematrix *matrix, const int1
  }
 
 
-static int32 SQR(uint32 instr)
+static INLINE int32 SQR(uint32 instr)
 {
  DECODE_FIELDS;
 
@@ -949,7 +956,7 @@ static int32 SQR(uint32 instr)
 }
 
 
-static int32 MVMVA(uint32 instr)
+static INLINE int32 MVMVA(uint32 instr)
 {
  DECODE_FIELDS;
 
@@ -1009,7 +1016,7 @@ static INLINE void TransformDQ(int64 h_div_sz)
  IR0 = Lm_H(((int64)DQB + DQA * h_div_sz) >> 12);
 }
 
-static int32 RTPS(uint32 instr)
+static int32 INLINE RTPS(uint32 instr)
 {
  DECODE_FIELDS;
  int64 h_div_sz;
@@ -1023,7 +1030,7 @@ static int32 RTPS(uint32 instr)
  return(15);
 }
 
-static int32 RTPT(uint32 instr)
+static int32 INLINE RTPT(uint32 instr)
 {
  DECODE_FIELDS;
  int i;
@@ -1056,7 +1063,7 @@ static INLINE void NormColor(uint32 sf, int lm, uint32 v)
  MAC_to_RGB_FIFO();
 }
 
-static int32 NCS(uint32 instr)
+static INLINE int32 NCS(uint32 instr)
 {
  DECODE_FIELDS;
 
@@ -1094,7 +1101,7 @@ static INLINE void NormColorColor(uint32 v, uint32 sf, int lm)
  MAC_to_RGB_FIFO();
 }
 
-static int32 NCCS(uint32 instr)
+static INLINE int32 NCCS(uint32 instr)
 {
  DECODE_FIELDS;
 
@@ -1103,7 +1110,7 @@ static int32 NCCS(uint32 instr)
 }
 
 
-static int32 NCCT(uint32 instr)
+static INLINE int32 NCCT(uint32 instr)
 {
  int i;
  DECODE_FIELDS;
@@ -1158,7 +1165,7 @@ static INLINE void DepthCue(int mult_IR123, int RGB_from_FIFO, uint32 sf, int lm
 }
 
 
-static int32 DCPL(uint32 instr)
+static INLINE int32 DCPL(uint32 instr)
 {
  DECODE_FIELDS;
 
@@ -1168,7 +1175,7 @@ static int32 DCPL(uint32 instr)
 }
 
 
-static int32 DPCS(uint32 instr)
+static INLINE int32 DPCS(uint32 instr)
 {
  DECODE_FIELDS;
 
@@ -1177,7 +1184,7 @@ static int32 DPCS(uint32 instr)
  return(8);
 }
 
-static int32 DPCT(uint32 instr)
+static INLINE int32 DPCT(uint32 instr)
 {
  int i;
  DECODE_FIELDS;
@@ -1190,7 +1197,7 @@ static int32 DPCT(uint32 instr)
  return(17);
 }
 
-static int32 INTPL(uint32 instr)
+static INLINE int32 INTPL(uint32 instr)
 {
  DECODE_FIELDS;
 
@@ -1222,7 +1229,7 @@ static INLINE void NormColorDepthCue(uint32 v, uint32 sf, int lm)
  DepthCue(TRUE, FALSE, sf, lm);
 }
 
-static int32 NCDS(uint32 instr)
+static INLINE int32 NCDS(uint32 instr)
 {
  DECODE_FIELDS;
 
@@ -1231,7 +1238,7 @@ static int32 NCDS(uint32 instr)
  return(19);
 }
 
-static int32 NCDT(uint32 instr)
+static INLINE int32 NCDT(uint32 instr)
 {
  int i;
  DECODE_FIELDS;
@@ -1244,7 +1251,7 @@ static int32 NCDT(uint32 instr)
  return(44);
 }
 
-static int32 CC(uint32 instr)
+static INLINE int32 CC(uint32 instr)
 {
  DECODE_FIELDS;
  int16 tmp_vector[3];
@@ -1263,7 +1270,7 @@ static int32 CC(uint32 instr)
  return(11);
 }
 
-static int32 CDP(uint32 instr)
+static INLINE int32 CDP(uint32 instr)
 {
  DECODE_FIELDS;
  int16 tmp_vector[3];
@@ -1276,7 +1283,7 @@ static int32 CDP(uint32 instr)
  return(13);
 }
 
-static int32 NCLIP(uint32 instr)
+static INLINE int32 NCLIP(uint32 instr)
 {
  DECODE_FIELDS;
 
@@ -1286,7 +1293,7 @@ static int32 NCLIP(uint32 instr)
  return(8);
 }
 
-static int32 AVSZ3(uint32 instr)
+static INLINE int32 AVSZ3(uint32 instr)
 {
  DECODE_FIELDS;
 
@@ -1297,7 +1304,7 @@ static int32 AVSZ3(uint32 instr)
  return(5);
 }
 
-static int32 AVSZ4(uint32 instr)
+static INLINE int32 AVSZ4(uint32 instr)
 {
  DECODE_FIELDS;
 
@@ -1311,7 +1318,7 @@ static int32 AVSZ4(uint32 instr)
 
 // -32768 * -32768 - 32767 * -32768 = 2147450880
 // (2 ^ 31) - 1 =		      2147483647
-static int32 OP(uint32 instr)
+static INLINE int32 OP(uint32 instr)
 {
  DECODE_FIELDS;
 
@@ -1324,7 +1331,7 @@ static int32 OP(uint32 instr)
  return(6);
 }
 
-static int32 GPF(uint32 instr)
+static INLINE int32 GPF(uint32 instr)
 {
  DECODE_FIELDS;
 
@@ -1339,7 +1346,7 @@ static int32 GPF(uint32 instr)
  return(5);
 }
 
-static int32 GPL(uint32 instr)
+static INLINE int32 GPL(uint32 instr)
 {
  DECODE_FIELDS;
 
@@ -1492,9 +1499,7 @@ int32 GTE_Instruction(uint32 instr)
 	break;
 */
 
-  case 0x1A:	// Alternate for 0x29?
-	ret = DCPL(instr);
-	break;
+// case 0x1A handled next to case 0x29
 
   case 0x1B:
 	ret = NCCS(instr);
@@ -1548,6 +1553,7 @@ int32 GTE_Instruction(uint32 instr)
 	ret = SQR(instr);
 	break;
 
+	case 0x1A:	// Alternate for 0x29?
   case 0x29:
 	ret = DCPL(instr);
 	break;

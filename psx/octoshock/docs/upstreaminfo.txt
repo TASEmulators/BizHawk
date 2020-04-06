@@ -98,3 +98,7 @@
 [OK] psx/dma : copyright header
 [OK] psx/frontio : copyright header and minor stuff
 [OK] psx/gpu : copyright, change ctor, member org changes, minor stuff
+[OK] psx/gte : (c), CR 30 change, add inlines
+[OK] psx/input/* : (c)
+[OK] psx/irq : (c)
+[OK] psx/masmem : (c)
