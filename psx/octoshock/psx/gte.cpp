@@ -23,6 +23,7 @@
 
 #include "psx.h"
 #include "gte.h"
+#include "math_ops.h"
 
 #undef FALSE
 #undef TRUE

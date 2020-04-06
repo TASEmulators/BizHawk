@@ -69,6 +69,9 @@
 namespace MDFN_IEN_PSX
 {
 
+//static data
+uint8 PS_GPU::DitherLUT[4][4][512];	// Y, X, 8-bit source value(256 extra for saturation)
+
 static const int8 dither_table[4][4] =
 {
  { -4,  0, -3,  1 },
