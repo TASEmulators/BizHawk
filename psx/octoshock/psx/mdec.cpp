@@ -217,6 +217,10 @@ template<bool isReader> void MDEC_SyncState(EW::NewState *ns)
   NSS(RAMOffsetCounter);
   NSS(RAMOffsetWWS);
 
+	if(isReader)
+	{
+		PixelBufferCount32 %= (sizeof(PixelBuffer.pix32) / sizeof(PixelBuffer.pix32[0])) + 1;
+	}
 }
 
 void MDEC_SyncState(bool isReader, EW::NewState *ns)
@@ -677,7 +681,7 @@ void MDEC_Run(int32 clocks)
      MDEC_EAT_CLOCKS(need_eat);
 
      PixelBufferReadOffset = 0;
-     while(PixelBufferReadOffset != PixelBufferCount32)
+     while(PixelBufferReadOffset < PixelBufferCount32)
      {
       MDEC_WRITE_FIFO(MDFN_de32lsb<true>(&PixelBuffer.pix32[PixelBufferReadOffset++]));
      }

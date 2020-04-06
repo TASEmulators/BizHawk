@@ -116,3 +116,8 @@
 [NO] mednafen : nothing useful
 [OK] psx/cdc : loadstate, type change
 [OK] psx/cpu : type change, loadstate tweak. ATTN: note about GTE_StateAction
+[OK] psx/gpu : big update to loadstate, maybe missing things before
+[NO] psx/input/* : loadstate buffer sanity, not used for us
+[OK] psx/mdec : PixelBufferReadOffset fixes
+[OK] psx/psx : event_time initial value
+[OK] psx/spu : loadstate sanity, decided to accept it here

@@ -257,7 +257,7 @@ static void EventReset(void)
   events[i].which = i;
 
   if(i == PSX_EVENT__SYNFIRST)
-   events[i].event_time = 0;
+   events[i].event_time = (int32)0x80000000;
   else if(i == PSX_EVENT__SYNLAST)
    events[i].event_time = 0x7FFFFFFF;
   else

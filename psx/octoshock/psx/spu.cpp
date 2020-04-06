@@ -1239,15 +1239,30 @@ SYNCFUNC(PS_SPU)
 
   NSS(SPURAM);
 
-	//if(isReader)
-	//{
-		//there was more weird crap here about controlling the range of variables. just sanity checks, I guess? to prevent crashes? no thanks, id rather have crashes alert me to nondeterminisms.
-		//and another thing like this, which I think makes no sense. I really need to test these.
-		IRQ_Assert(IRQ_SPU, IRQAsserted);
-	//}
+	if(isReader)
+	{
+		for(unsigned i = 0; i < 24; i++)
+		{
+			Voices[i].DecodeReadPos &= 0x1F;
+			Voices[i].DecodeWritePos &= 0x1F;
+			Voices[i].CurAddr &= 0x3FFFF;
+			Voices[i].StartAddr &= 0x3FFFF;
+			Voices[i].LoopAddr &= 0x3FFFF;
+		}
 
-		//sanity check this
-		  //RvbResPos &= 0x3F;
+		if(clock_divider <= 0 || clock_divider > 768)
+			clock_divider = 768;
+
+		RWAddr &= 0x3FFFF;
+		CWA &= 0x1FF;
+
+		ReverbWA &= 0x3FFFF;
+		ReverbCur &= 0x3FFFF;
+
+		RvbResPos &= 0x3F;
+
+		IRQ_Assert(IRQ_SPU, IRQAsserted);
+	}
 }
 
 uint16 PS_SPU::PeekSPURAM(uint32 address)
