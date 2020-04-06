@@ -130,3 +130,5 @@
 [NO] psx/input/dualshocK : AMCT stuff
 [NO] psx/psx : render parameters stuff
 [OK] tests : pasted over and whittled down
+0.9.41 -> 0.9.42
+[OK] tests : some 64bit casting tests

@@ -1393,6 +1393,66 @@ static void TestRoundPow2(void)
  #endif
 }
 
+template<typename RT, typename T, unsigned sa>
+static NO_INLINE NO_CLONE RT TestCasts_Sub_L(T v)
+{
+	return (RT)v << sa;
+}
+
+template<typename RT, typename T, unsigned sa>
+static NO_INLINE NO_CLONE RT TestCasts_Sub_R(T v)
+{
+	return (RT)v >> sa;
+}
+
+template<typename RT, typename T, signed sa>
+static INLINE RT TestCasts_Sub(T v)
+{
+	if(sa < 0)
+		return TestCasts_Sub_R<RT, T, (-sa) & (8 * sizeof(RT) - 1)>(v);
+	else
+		return TestCasts_Sub_L<RT, T, sa & (8 * sizeof(RT) - 1)>(v);
+}
+
+static void TestCastShift(void)
+{
+	assert((TestCasts_Sub< int64, uint8, 4>(0xEF) == 0x0000000000000EF0ULL));
+	assert((TestCasts_Sub<uint64,  int8, 4>(0xEF) == 0xFFFFFFFFFFFFFEF0ULL));
+
+	assert((TestCasts_Sub< int64, uint16, 4>(0xBEEF) == 0x00000000000BEEF0ULL));
+	assert((TestCasts_Sub<uint64,  int16, 4>(0xBEEF) == 0xFFFFFFFFFFFBEEF0ULL));
+
+	assert((TestCasts_Sub< int64, uint32, 4>(0xDEADBEEF) == 0x0000000DEADBEEF0ULL));
+	assert((TestCasts_Sub<uint64,  int32, 4>(0xDEADBEEF) == 0xFFFFFFFDEADBEEF0ULL));
+
+	assert((TestCasts_Sub< int64, uint8, 20>(0xEF) == 0x000000000EF00000ULL));
+	assert((TestCasts_Sub<uint64,  int8, 20>(0xEF) == 0xFFFFFFFFFEF00000ULL));
+
+	assert((TestCasts_Sub< int64, uint16, 20>(0xBEEF) == 0x0000000BEEF00000ULL));
+	assert((TestCasts_Sub<uint64,  int16, 20>(0xBEEF) == 0xFFFFFFFBEEF00000ULL));
+
+	assert((TestCasts_Sub< int64, uint32, 20>(0xDEADBEEF) == 0x000DEADBEEF00000ULL));
+	assert((TestCasts_Sub<uint64,  int32, 20>(0xDEADBEEF) == 0xFFFDEADBEEF00000ULL));
+
+	assert((TestCasts_Sub< int64, uint8, -4>(0xEF) == 0x000000000000000EULL));
+	assert((TestCasts_Sub<uint64,  int8, -4>(0xEF) == 0x0FFFFFFFFFFFFFFEULL));
+
+	assert((TestCasts_Sub< int64, uint16, -4>(0xBEEF) == 0x0000000000000BEEULL));
+	assert((TestCasts_Sub<uint64,  int16, -4>(0xBEEF) == 0x0FFFFFFFFFFFFBEEULL));
+
+	assert((TestCasts_Sub< int64, uint32, -4>(0xDEADBEEF) == 0x000000000DEADBEEULL));
+	assert((TestCasts_Sub<uint64,  int32, -4>(0xDEADBEEF) == 0x0FFFFFFFFDEADBEEULL));
+
+	assert((TestCasts_Sub< int64, uint8, -20>(0xEF) == 0x0000000000000000ULL));
+	assert((TestCasts_Sub<uint64,  int8, -20>(0xEF) == 0x00000FFFFFFFFFFFULL));
+
+	assert((TestCasts_Sub< int64, uint16, -20>(0xBEEF) == 0x0000000000000000ULL));
+	assert((TestCasts_Sub<uint64,  int16, -20>(0xBEEF) == 0x00000FFFFFFFFFFFULL));
+
+	assert((TestCasts_Sub< int64, uint32, -20>(0xDEADBEEF) == 0x0000000000000DEAULL));
+	assert((TestCasts_Sub<uint64,  int32, -20>(0xDEADBEEF) == 0x00000FFFFFFFFDEAULL));
+}
+
 #ifdef WANT_TEST_TIME
 static void Time_Test(void)
 {
@@ -1694,6 +1754,8 @@ bool MDFN_RunMathTests(void)
  #ifdef WANT_TEST_TIME
  Time_Test();
  #endif
+
+ TestCastShift();
 
 #if 0
 // Not really a math test.
