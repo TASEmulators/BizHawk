@@ -183,8 +183,8 @@ namespace BizHawk.Client.EmuHawk
 						_tools.TAStudio.GoToFrame(Start);
 					}
 
-					_tools.UpdateBefore();
-					_tools.UpdateAfter();
+					_tools.UpdateToolsBefore();
+					_tools.UpdateToolsAfter();
 				}
 				else if (_tools.IsLoaded<TAStudio>())
 				{

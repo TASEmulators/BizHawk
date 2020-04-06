@@ -1087,8 +1087,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_hackyDontUpdate = true;
-			Tools.UpdateBefore();
-			Tools.UpdateAfter();
+			Tools.UpdateToolsBefore();
+			Tools.UpdateToolsAfter();
 			_hackyDontUpdate = false;
 		}
 
@@ -1105,8 +1105,8 @@ namespace BizHawk.Client.EmuHawk
 		private void UpdateOtherTools() // a hack probably, surely there is a better way to do this
 		{
 			_hackyDontUpdate = true;
-			Tools.UpdateBefore();
-			Tools.UpdateAfter();
+			Tools.UpdateToolsBefore();
+			Tools.UpdateToolsAfter();
 			_hackyDontUpdate = false;
 		}
 

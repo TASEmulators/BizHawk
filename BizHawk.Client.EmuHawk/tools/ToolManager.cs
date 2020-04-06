@@ -457,7 +457,7 @@ namespace BizHawk.Client.EmuHawk
 			.Where(t => !t.IsInterface)
 			.Where(IsAvailable);
 		
-		public void UpdateBefore()
+		private void UpdateBefore()
 		{
 			var beforeList = _tools.Where(t => t.UpdateBefore);
 			foreach (var tool in beforeList)
@@ -478,7 +478,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void UpdateAfter()
+		private void UpdateAfter()
 		{
 			var afterList = _tools.Where(t => !t.UpdateBefore);
 			foreach (var tool in afterList)
