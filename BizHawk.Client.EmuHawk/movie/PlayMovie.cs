@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
-using BizHawk.Common.PathExtensions;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -494,40 +494,18 @@ namespace BizHawk.Client.EmuHawk
 				_sortDetailsReverse = false;
 			}
 
-			switch (columnName)
+			detailsList = columnName switch
 			{
-				// Header, Value
-				case "Header":
-					if (_sortDetailsReverse)
-					{
-						detailsList = detailsList
-							.OrderByDescending(x => x.Keys)
-							.ThenBy(x => x.Values).ToList();
-					}
-					else
-					{
-						detailsList = detailsList
-						   .OrderBy(x => x.Keys)
-						   .ThenBy(x => x.Values).ToList();
-					}
-
-					break;
-				case "Value":
-					if (_sortDetailsReverse)
-					{
-						detailsList = detailsList
-							.OrderByDescending(x => x.Values)
-							.ThenBy(x => x.Keys).ToList();
-					}
-					else
-					{
-						detailsList = detailsList
-							.OrderBy(x => x.Values)
-							.ThenBy(x => x.Keys).ToList();
-					}
-
-					break;
-			}
+				"Header" => detailsList
+					.OrderBy(x => x.Keys, _sortDetailsReverse)
+					.ThenBy(x => x.Values)
+					.ToList(),
+				"Value" => detailsList
+					.OrderBy(x => x.Values, _sortDetailsReverse)
+					.ThenBy(x => x.Keys)
+					.ToList(),
+				_ => detailsList
+			};
 
 			DetailsView.Items.Clear();
 			foreach (var detail in detailsList)
