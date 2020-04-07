@@ -3,6 +3,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 	public partial class I8048
 	{
 		public ulong TotalExecutedCycles;
+		public ulong next_T1_check;
 
 		// variables for executing instructions
 		public int instr_pntr = 0;

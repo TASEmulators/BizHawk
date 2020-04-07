@@ -110,6 +110,13 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 
 			ushort ans = (ushort)(Reg16_d & 0xFF);
 
+			// redo for aux carry flag
+			Reg16_d = Regs[dest] & 0xF;
+			Reg16_d += (Regs[src] & 0xF);
+			Reg16_d += c;
+
+			FlagAC = Reg16_d.Bit(4);
+
 			Regs[dest] = ans;
 		}
 

@@ -7,7 +7,9 @@ using BizHawk.Emulation.Common;
 	Notes: The line position returned by A4 is offset from display by 6 lines.
 	The game blockout requires VBLank interrupt to be able to execute relative to a particular line value,
 	but this line value would fall outside vblank by a wide margin if the Y return matched screen position relative to end of VBL
-	This offset also makes the borders in Cosmic Conflict match to console, so presumably it is correct
+	This offset also makes the borders in Cosmic Conflict match to console, so presumably it is correct. 
+	But this effect isn't enough by itself to get correct display. Also from the data sheet for the 8245, the 'program coordinates' of the 
+	grid are 5 scanlines behind ahead of the actual display, so changes take effect 5 scanline later then for other objects like the BG.
 
 	Also, according to the 8245 data sheet, the hbl status flag starts at roughly halfway through the scanline. This is also
 	crucial for Blockout to display correctly.
@@ -27,15 +29,16 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public int LINE_MAX;
 
 		public const int HBL_CNT = 45;
-		public const int GRID_OFST = 18;
-		public const int OBJ_OFST = -6;
+		public const int GRID_OFST = 24;
+		public const int OBJ_OFST = 0;
+		public const int SHT_SZ = 8;
 
 		public byte[] Sprites = new byte[16];
 		public byte[] Sprite_Shapes = new byte[32];
 		public byte[] Foreground = new byte[48];
 		public byte[] Quad_Chars = new byte[64];
-		public byte[] Grid_H = new byte[18];
-		public byte[] Grid_V = new byte[10];
+		public byte[] Grid_H = new byte[18 * SHT_SZ];
+		public byte[] Grid_V = new byte[10 * SHT_SZ];
 		public byte[] VDC_col_ret = new byte[8];
 
 		public byte VDC_ctrl, VDC_status, VDC_collision, VDC_color;
@@ -54,6 +57,10 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public bool latch_x_y;
 		public bool HBL_req;
 		public int LY_ret;
+
+		public byte[] VDC_ctrl_latch = new byte[SHT_SZ];
+		public byte[] VDC_color_latch = new byte[SHT_SZ];
+		public int[] grid_brightness_latch = new int[SHT_SZ];
 
 		// local variables not stated
 		int current_pixel_offset;
@@ -125,15 +132,15 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			}
 			else if ((addr >= 0xC0) && (addr <= 0xC8))
 			{
-				ret = Grid_H[addr - 0xC0];
+				ret = Grid_H[(addr - 0xC0) * SHT_SZ];
 			}
 			else if ((addr >= 0xD0) && (addr <= 0xD8))
 			{
-				ret = Grid_H[addr - 0xD0 + 9];
+				ret = Grid_H[(addr - 0xD0 + 9) * SHT_SZ];
 			}
 			else if ((addr >= 0xE0) && (addr <= 0xE9))
 			{
-				ret = Grid_V[addr - 0xE0];
+				ret = Grid_V[(addr - 0xE0) * SHT_SZ];
 			}
 
 			return ret;
@@ -157,8 +164,20 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			{
 				// chars position is not effected by last bit
 				if ((addr % 4) == 0) { value &= 0xFE; }
-				if (!VDC_ctrl.Bit(5)) { Quad_Chars[addr - 0x40] = value; }
+				if (!VDC_ctrl.Bit(5)) 
+				{ 
+					Quad_Chars[addr - 0x40] = value;
 
+					// X and Y are mapped all together
+					if ((addr % 4) < 2)
+					{
+						for (int i = 0; i < 4; i++)
+						{
+							Quad_Chars[((addr - 0x40) & 0x30) + (addr % 4) + i * 4] = value;
+						}
+					}
+				}
+				
 				//Console.WriteLine("quad: " + (addr - 0x40) + " " + value + " " + Core.cpu.TotalExecutedCycles);
 			}
 			else if (addr < 0xA0)
@@ -182,9 +201,10 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				}
 
 				VDC_ctrl = value;
+				VDC_ctrl_latch[SHT_SZ - 1] = value;
 
-				//if (VDC_ctrl.Bit(2)) { Console.WriteLine("sound INT"); }
-				//if (VDC_ctrl.Bit(0)) { Console.WriteLine("HBL INT"); }
+				if (VDC_ctrl.Bit(2)) { Console.WriteLine("sound INT"); }
+				if (VDC_ctrl.Bit(0)) { Console.WriteLine("HBL INT"); }
 			}
 			else if (addr == 0xA1)
 			{
@@ -201,6 +221,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				//Console.WriteLine("VDC_color: " + value + " " + LY + " " + Core.cpu.TotalExecutedCycles);
 				grid_brightness = (!lum_en | VDC_color.Bit(6)) ? 8 : 0;
 				bg_brightness = !lum_en ? 8 : 0;
+				VDC_color_latch[SHT_SZ - 1] = value;
+				grid_brightness_latch[SHT_SZ - 1] = grid_brightness;
 			}
 			else if (addr == 0xA4)
 			{
@@ -216,15 +238,15 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			}
 			else if ((addr >= 0xC0) && (addr <= 0xC8))
 			{
-				if (!VDC_ctrl.Bit(3)) { Grid_H[addr - 0xC0] = value; }
+				if (!VDC_ctrl.Bit(3)) { Grid_H[(addr - 0xC0) * SHT_SZ + SHT_SZ - 1] = value; } else { Console.WriteLine("blocked"); }
 			}
 			else if ((addr >= 0xD0) && (addr <= 0xD8))
 			{
-				if (!VDC_ctrl.Bit(3)) { Grid_H[addr - 0xD0 + 9] = value; }
+				if (!VDC_ctrl.Bit(3)) { Grid_H[(addr - 0xD0 + 9) * SHT_SZ + SHT_SZ - 1] = value; } else { Console.WriteLine("blocked"); }
 			}
 			else if ((addr >= 0xE0) && (addr <= 0xE9))
 			{
-				if (!VDC_ctrl.Bit(3)) { Grid_V[addr - 0xE0] = value; }
+				if (!VDC_ctrl.Bit(3)) { Grid_V[(addr - 0xE0) * SHT_SZ + SHT_SZ - 1] = value; } else { Console.WriteLine("blocked"); }
 			}
 			//Console.WriteLine(addr + " " + value + " " + LY + " " + Core.cpu.TotalExecutedCycles);
 		}
@@ -246,31 +268,31 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 					if (grid_fill > 0)
 					{
-						Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_BG[(VDC_color & 0x7) + grid_brightness];
-						Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_BG[(VDC_color & 0x7) + grid_brightness];
+						Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_BG[(VDC_color_latch[0] & 0x7) + grid_brightness_latch[0]];
+						Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_BG[(VDC_color_latch[0] & 0x7) + grid_brightness_latch[0]];
 						Pixel_Stat |= grid_fill_col;
 						grid_fill--;
 					}
 					
-					if (((cycle % 16) == 8) && ((LY - GRID_OFST) >= 0))
+					if (((cycle % 16) == 8) && ((LY - GRID_OFST) >= 0) && VDC_ctrl.Bit(3))
 					{
 						int k = (int)Math.Floor(cycle / 16.0);
 						int j = (int)Math.Floor((LY - GRID_OFST) / 24.0);
 						if ((k < 10) && (j < 8))
 						{
-							if (Grid_V[k].Bit(j))
+							if (Grid_V[k * SHT_SZ].Bit(j))
 							{
-								Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_BG[(VDC_color & 0x7) + grid_brightness];
-								Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_BG[(VDC_color & 0x7) + grid_brightness];
+								Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_BG[(VDC_color_latch[0] & 0x7) + grid_brightness_latch[0]];
+								Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_BG[(VDC_color_latch[0] & 0x7) + grid_brightness_latch[0]];
 								Pixel_Stat |= 0x10;
-								if (VDC_ctrl.Bit(7)) { grid_fill = 15; }
+								if (VDC_ctrl_latch[0].Bit(7)) { grid_fill = 15; }
 								else { grid_fill = 1; }
 								grid_fill_col = 0x10;
 							}
 						}
 					}
 
-					if ((((LY - GRID_OFST) % 24) < 3) && ((cycle - 8) >= 0) && ((LY - GRID_OFST) >= 0))
+					if ((((LY - GRID_OFST) % 24) < 3) && ((cycle - 8) >= 0) && ((LY - GRID_OFST) >= 0) && VDC_ctrl.Bit(3))
 					{
 						int k = (int)Math.Floor((cycle - 8) / 16.0);
 						int j = (int)Math.Floor((LY - GRID_OFST) / 24.0);
@@ -279,10 +301,10 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 						{
 							if (j == 8)
 							{
-								if (Grid_H[k + 9].Bit(0))
+								if (Grid_H[(k + 9) * SHT_SZ].Bit(0))
 								{
-									Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_BG[(VDC_color & 0x7) + grid_brightness];
-									Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_BG[(VDC_color & 0x7) + grid_brightness];
+									Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_BG[(VDC_color_latch[0] & 0x7) + grid_brightness_latch[0]];
+									Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_BG[(VDC_color_latch[0] & 0x7) + grid_brightness_latch[0]];
 									Pixel_Stat |= 0x20;
 
 									if (((cycle - 8) % 16) == 15) { grid_fill = 2; grid_fill_col = 0x20; }
@@ -290,10 +312,10 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 							}
 							else
 							{
-								if (Grid_H[k].Bit(j))
+								if (Grid_H[k * SHT_SZ].Bit(j))
 								{
-									Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_BG[(VDC_color & 0x7) + grid_brightness];
-									Core._vidbuffer[LY * 372 + current_pixel_offset+ 1] = (int)Color_Palette_BG[(VDC_color & 0x7) + grid_brightness];
+									Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_BG[(VDC_color_latch[0] & 0x7) + grid_brightness_latch[0]];
+									Core._vidbuffer[LY * 372 + current_pixel_offset+ 1] = (int)Color_Palette_BG[(VDC_color_latch[0] & 0x7) + grid_brightness_latch[0]];
 									Pixel_Stat |= 0x20;
 									if (((cycle - 8) % 16) == 15) { grid_fill = 2; grid_fill_col = 0x20; }
 								}
@@ -302,7 +324,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					}
 					
 					// grid
-					if (VDC_ctrl.Bit(6) && ((LY - GRID_OFST) >= 0) && (((LY - GRID_OFST) % GRID_OFST) < 3))
+					if (VDC_ctrl_latch[0].Bit(6) && ((LY - GRID_OFST) >= 0) && (((LY - GRID_OFST) % GRID_OFST) < 3) && VDC_ctrl.Bit(3))
 					{
 
 						if (((cycle % 16) == 8) || ((cycle % 16) == 9))
@@ -311,8 +333,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 							int j = (int)Math.Floor((LY - GRID_OFST) / 24.0);
 							if ((k < 10) && (j < 9))
 							{
-								Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_BG[(VDC_color & 0x7) + grid_brightness];
-								Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_BG[(VDC_color & 0x7) + grid_brightness];
+								Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_BG[(VDC_color_latch[0] & 0x7) + grid_brightness_latch[0]];
+								Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_BG[(VDC_color_latch[0] & 0x7) + grid_brightness_latch[0]];
 								Pixel_Stat |= 0x20;
 							}
 						}
@@ -367,6 +389,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					}
                     
 					// quads
+					// note: the quads all share X/Y values
 					for (int i = 3; i >= 0; i--)
 					{
 						if (((LY - OBJ_OFST) >= Quad_Chars[i * 16]) && ((LY - OBJ_OFST) < (Quad_Chars[i * 16] + 8 * 2)))
@@ -717,7 +740,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			}
 			else
 			{
-				if (cycle == 182 && (LY < LINE_VBL))
+				if (cycle == 182 && (LY < LINE_VBL) && (LY >= 0))
 				{
 					HBL = true;
 					// Send T1 pulses
@@ -727,15 +750,42 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				if (cycle == 212 && (LY < LINE_VBL))
 				{
 					VDC_status &= 0xFE;
-					//if (VDC_ctrl.Bit(0)) { Core.cpu.IRQPending = false; }
+					if (VDC_ctrl.Bit(0)) { Core.cpu.IRQPending = false; }
 					LY_ret = LY_ret + 1;
+				}
+			}
+
+			if (cycle == 12)
+			{
+				// the grid uses values from 5 lines in the past, so cycle them here
+				for (int j = 0; j < (SHT_SZ - 1); j++)
+				{
+					VDC_ctrl_latch[j] = VDC_ctrl_latch[j + 1];
+					VDC_color_latch[j] = VDC_color_latch[j + 1];
+					grid_brightness_latch[j] = grid_brightness_latch[j + 1];
+				}
+
+				for (int i = 0; i < 18; i++)
+				{
+					for (int j = 0; j < (SHT_SZ - 1); j++)
+					{
+						Grid_H[i * SHT_SZ + j] = Grid_H[i * SHT_SZ + j + 1];
+					}
+				}
+
+				for (int i = 0; i < 10; i++)
+				{
+					for (int j = 0; j < (SHT_SZ - 1); j++)
+					{
+						Grid_V[i * SHT_SZ + j] = Grid_V[i * SHT_SZ + j + 1];
+					}
 				}
 			}
 
 			if (cycle == 113 && (LY < LINE_VBL))
 			{
 				VDC_status |= 0x01;
-				//if (VDC_ctrl.Bit(0) && HBL_req) { Core.cpu.IRQPending = true; HBL_req = false; }
+				if (VDC_ctrl.Bit(0) && HBL_req) { Core.cpu.IRQPending = true; HBL_req = false; }
 			}
 
 			cycle++;
@@ -777,11 +827,13 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					for (int i = 0; i < 8; i++) { VDC_col_ret[i] = 0; }
 				}
 
-				if (LY < LINE_VBL)
+				if (LY < LINE_VBL && (LY >= 0))
 				{
 					HBL = false;
 					Core.cpu.T1 = false;
 				}
+
+				
 			}
 		}
 
@@ -791,8 +843,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			Sprite_Shapes = new byte[32];
 			Foreground = new byte[48];
 			Quad_Chars = new byte[64];
-			Grid_H = new byte[18];
-			Grid_V = new byte[10];
+			Grid_H = new byte[18 * SHT_SZ];
+			Grid_V = new byte[10 * SHT_SZ];
 
 			VDC_ctrl = VDC_status = VDC_collision = VDC_color = grid_fill_col = 0;
 			Pixel_Stat = A4_latch = A5_latch = 0;

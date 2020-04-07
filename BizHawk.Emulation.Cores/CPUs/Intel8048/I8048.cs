@@ -358,6 +358,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 					break;
 				case ST_CNT:
 					counter_en = true;
+					next_T1_check = TotalExecutedCycles + 20;
 					break;
 				case STP_CNT:
 					counter_en = timer_en = false;
@@ -489,7 +490,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 
 			if (counter_en)
 			{
-				if (!T1 && T1_old)
+				if (!T1 && T1_old && (TotalExecutedCycles > next_T1_check))
 				{
 					if (Regs[TIM] == 255)
 					{
@@ -600,6 +601,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			ser.Sync(nameof(T1_old), ref T1_old);
 
 			ser.Sync(nameof(TotalExecutedCycles), ref TotalExecutedCycles);
+			ser.Sync(nameof(next_T1_check), ref next_T1_check);
 
 			ser.EndSection();
 		}
