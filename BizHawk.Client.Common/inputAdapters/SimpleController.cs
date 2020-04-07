@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -43,16 +42,16 @@ namespace BizHawk.Client.Common
 			return Buttons;
 		}
 
-		public void AcceptNewAxes(Tuple<string, float> newValue)
+		public void AcceptNewAxes((string AxisID, float Value) newValue)
 		{
-			Axes[newValue.Item1] = newValue.Item2;
+			Axes[newValue.AxisID] = newValue.Value;
 		}
 
-		public void AcceptNewAxes(IEnumerable<Tuple<string, float>> newValues)
+		public void AcceptNewAxes(IEnumerable<(string AxisID, float Value)> newValues)
 		{
-			foreach (var sv in newValues)
+			foreach (var (axisID, value) in newValues)
 			{
-				Axes[sv.Item1] = sv.Item2;
+				Axes[axisID] = value;
 			}
 		}
 	}

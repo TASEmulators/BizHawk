@@ -338,14 +338,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public List<Tuple<string, float>> GetAxisValues()
+		public List<(string AxisID, float Value)> GetAxisValues()
 		{
-			var axisValuesCopy = new List<Tuple<string,float>>();
+			var axisValuesCopy = new List<(string, float)>();
 			lock (_axisValues)
 			{
 				foreach (var kvp in _axisValues)
 				{
-					axisValuesCopy.Add(new Tuple<string, float>(kvp.Key, kvp.Value));
+					axisValuesCopy.Add((kvp.Key, kvp.Value));
 				}
 			}
 
@@ -394,10 +394,9 @@ namespace BizHawk.Client.EmuHawk
 							{
 								HandleButton(pad.InputNamePrefix + but.ButtonName, but.ButtonAction(), InputFocus.Pad);
 							}
-							foreach (var sv in pad.GetAxes())
+							foreach (var (axisID, f) in pad.GetAxes())
 							{
-								var n = $"{pad.InputNamePrefix}{sv.Item1} Axis";
-								var f = sv.Item2;
+								var n = $"{pad.InputNamePrefix}{axisID} Axis";
 								if (_trackDeltas) _axisDeltas[n] += Math.Abs(f - _axisValues[n]);
 								_axisValues[n] = f;
 							}

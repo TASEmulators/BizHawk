@@ -125,12 +125,12 @@ namespace BizHawk.Client.EmuHawk
 				return;
 		}
 
-		public IEnumerable<Tuple<string, float>> GetFloats()
+		public IEnumerable<(string AxisID, float Value)> GetFloats()
 		{
 			var pis = typeof(JoystickState).GetProperties();
 			foreach (var pi in pis)
 			{
-				yield return new Tuple<string, float>(pi.Name, 10.0f * (float)(int)pi.GetValue(_state, null));
+				yield return (pi.Name, 10.0f * (float)(int)pi.GetValue(_state, null));
 			}
 		}
 

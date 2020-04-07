@@ -122,8 +122,8 @@ namespace BizHawk.Client.Common
 
 				controller.AcceptNewAxes(new[]
 				{
-					new Tuple<string, float>("TouchX", touchX),
-					new Tuple<string, float>("TouchY", touchY)
+					("TouchX", (float) touchX),
+					("TouchY", (float) touchY)
 				});
 			}
 

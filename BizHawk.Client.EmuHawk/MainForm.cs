@@ -970,7 +970,7 @@ namespace BizHawk.Client.EmuHawk
 
 			//also handle floats
 			//we'll need to isolate the mouse coordinates so we can translate them
-			Tuple<string, float> mouseX = null, mouseY = null;
+			(string AxisID, float Value)? mouseX = null, mouseY = null;
 			var floats = Input.Instance.GetAxisValues();
 			foreach (var f in Input.Instance.GetAxisValues())
 			{
@@ -985,11 +985,11 @@ namespace BizHawk.Client.EmuHawk
 			//NOTE: these must go together, because in the case of screen rotation, X and Y are transformed together
 			if(mouseX != null && mouseY != null)
 			{
-				var p = DisplayManager.UntransformPoint(new Point((int)mouseX.Item2, (int)mouseY.Item2));
+				var p = DisplayManager.UntransformPoint(new Point((int) mouseX.Value.Value, (int) mouseY.Value.Value));
 				float x = p.X / (float)_currentVideoProvider.BufferWidth;
 				float y = p.Y / (float)_currentVideoProvider.BufferHeight;
-				conInput.AcceptNewAxes(new Tuple<string, float>("WMouse X", (x * 20000) - 10000));
-				conInput.AcceptNewAxes(new Tuple<string, float>("WMouse Y", (y * 20000) - 10000));
+				conInput.AcceptNewAxes(("WMouse X", (x * 20000) - 10000));
+				conInput.AcceptNewAxes(("WMouse Y", (y * 20000) - 10000));
 			}
 
 		}

@@ -168,36 +168,36 @@ namespace BizHawk.Client.EmuHawk
 			if (!tmpJstate.Equals(jState)) Debug.WriteLine($"Joystick State:\t{tmpJstate}");
 		}
 
-		public IEnumerable<Tuple<string, float>> GetAxes()
+		public IEnumerable<(string AxisID, float Value)> GetAxes()
 		{
 			if (MappedGamePad)
 			{
 				// automapping identified - use OpenTKGamePad
-				yield return new Tuple<string, float>("LeftThumbX", ConstrainFloatInput(state.ThumbSticks.Left.X));
-				yield return new Tuple<string, float>("LeftThumbY", ConstrainFloatInput(state.ThumbSticks.Left.Y));
-				yield return new Tuple<string, float>("RightThumbX", ConstrainFloatInput(state.ThumbSticks.Right.X));
-				yield return new Tuple<string, float>("RightThumbY", ConstrainFloatInput(state.ThumbSticks.Right.Y));
-				yield return new Tuple<string, float>("LeftTrigger", ConstrainFloatInput(state.Triggers.Left));
-				yield return new Tuple<string, float>("RightTrigger", ConstrainFloatInput(state.Triggers.Right));
+				yield return ("LeftThumbX", ConstrainFloatInput(state.ThumbSticks.Left.X));
+				yield return ("LeftThumbY", ConstrainFloatInput(state.ThumbSticks.Left.Y));
+				yield return ("RightThumbX", ConstrainFloatInput(state.ThumbSticks.Right.X));
+				yield return ("RightThumbY", ConstrainFloatInput(state.ThumbSticks.Right.Y));
+				yield return ("LeftTrigger", ConstrainFloatInput(state.Triggers.Left));
+				yield return ("RightTrigger", ConstrainFloatInput(state.Triggers.Right));
 				yield break;
 			}
 			else
 			{
 				// use Joystick
-				yield return new Tuple<string, float>("X", ConstrainFloatInput(jState.GetAxis(0)));
-				yield return new Tuple<string, float>("Y", ConstrainFloatInput(jState.GetAxis(1)));
-				yield return new Tuple<string, float>("Z", ConstrainFloatInput(jState.GetAxis(2)));
-				yield return new Tuple<string, float>("W", ConstrainFloatInput(jState.GetAxis(3)));
-				yield return new Tuple<string, float>("V", ConstrainFloatInput(jState.GetAxis(4)));
-				yield return new Tuple<string, float>("S", ConstrainFloatInput(jState.GetAxis(5)));
-				yield return new Tuple<string, float>("Q", ConstrainFloatInput(jState.GetAxis(6)));
-				yield return new Tuple<string, float>("P", ConstrainFloatInput(jState.GetAxis(7)));
-				yield return new Tuple<string, float>("N", ConstrainFloatInput(jState.GetAxis(8)));
+				yield return ("X", ConstrainFloatInput(jState.GetAxis(0)));
+				yield return ("Y", ConstrainFloatInput(jState.GetAxis(1)));
+				yield return ("Z", ConstrainFloatInput(jState.GetAxis(2)));
+				yield return ("W", ConstrainFloatInput(jState.GetAxis(3)));
+				yield return ("V", ConstrainFloatInput(jState.GetAxis(4)));
+				yield return ("S", ConstrainFloatInput(jState.GetAxis(5)));
+				yield return ("Q", ConstrainFloatInput(jState.GetAxis(6)));
+				yield return ("P", ConstrainFloatInput(jState.GetAxis(7)));
+				yield return ("N", ConstrainFloatInput(jState.GetAxis(8)));
 
 				for (var i = 9; i < 64; i++)
 				{
 					var j = i;
-					yield return new Tuple<string, float>($"Axis{j.ToString()}", ConstrainFloatInput(jState.GetAxis(j)));
+					yield return ($"Axis{j.ToString()}", ConstrainFloatInput(jState.GetAxis(j)));
 				}
 
 				yield break;

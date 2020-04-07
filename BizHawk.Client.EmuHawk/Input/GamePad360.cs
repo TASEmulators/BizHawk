@@ -154,7 +154,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public IEnumerable<Tuple<string, float>> GetFloats()
+		public IEnumerable<(string AxisID, float Value)> GetFloats()
 		{
 			var g = _state.Gamepad;
 
@@ -167,12 +167,12 @@ namespace BizHawk.Client.EmuHawk
 			lTrig *= 10000;
 			rTrig *= 10000;
 
-			yield return new Tuple<string, float>("LeftThumbX", g.sThumbLX / f);
-			yield return new Tuple<string, float>("LeftThumbY", g.sThumbLY / f);
-			yield return new Tuple<string, float>("RightThumbX", g.sThumbRX / f);
-			yield return new Tuple<string, float>("RightThumbY", g.sThumbRY / f);
-			yield return new Tuple<string, float>("LeftTrigger", lTrig);
-			yield return new Tuple<string, float>("RightTrigger", rTrig);
+			yield return ("LeftThumbX", g.sThumbLX / f);
+			yield return ("LeftThumbY", g.sThumbLY / f);
+			yield return ("RightThumbX", g.sThumbRX / f);
+			yield return ("RightThumbY", g.sThumbRY / f);
+			yield return ("LeftTrigger", lTrig);
+			yield return ("RightTrigger", rTrig);
 		}
 
 		public int NumButtons { get; private set; }

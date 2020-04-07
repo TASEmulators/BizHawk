@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using BizHawk.Emulation.Cores.Sony.PSX;
 
 namespace BizHawk.Client.Common
@@ -213,10 +212,10 @@ namespace BizHawk.Client.Common
 					{
 						controllers["P1 L3"] = (controllerState & 0x2) != 0;
 						controllers["P1 R3"] = (controllerState & 0x4) != 0;
-						var leftX = new Tuple<string, float>("P1 LStick X", br.ReadByte());
-						var leftY = new Tuple<string, float>("P1 LStick Y", br.ReadByte());
-						var rightX = new Tuple<string, float>("P1 RStick X", br.ReadByte());
-						var rightY = new Tuple<string, float>("P1 RStick Y", br.ReadByte());
+						var leftX = ("P1 LStick X", (float) br.ReadByte());
+						var leftY = ("P1 LStick Y", (float) br.ReadByte());
+						var rightX = ("P1 RStick X", (float) br.ReadByte());
+						var rightY = ("P1 RStick Y", (float) br.ReadByte());
 
 						controllers.AcceptNewAxes(new[] { leftX, leftY, rightX, rightY });
 					}
@@ -236,10 +235,10 @@ namespace BizHawk.Client.Common
 
 					if (info.Player2Type == OctoshockDll.ePeripheralType.DualShock)
 					{
-						var leftX = new Tuple<string, float>("P2 LStick X", br.ReadByte());
-						var leftY = new Tuple<string, float>("P2 LStick Y", br.ReadByte());
-						var rightX = new Tuple<string, float>("P2 RStick X", br.ReadByte());
-						var rightY = new Tuple<string, float>("P2 RStick Y", br.ReadByte());
+						var leftX = ("P2 LStick X", (float) br.ReadByte());
+						var leftY = ("P2 LStick Y", (float) br.ReadByte());
+						var rightX = ("P2 RStick X", (float) br.ReadByte());
+						var rightY = ("P2 RStick Y", (float) br.ReadByte());
 
 						controllers.AcceptNewAxes(new[] { leftX, leftY, rightX, rightY });
 					}
@@ -267,7 +266,7 @@ namespace BizHawk.Client.Common
 					controllers["Open"] = false;
 				}
 
-				Tuple<string, float> discSelect = new Tuple<string, float>("Disc Select", cdNumber);
+				var discSelect = ("Disc Select", (float) cdNumber);
 				controllers.AcceptNewAxes(new[] { discSelect });
 
 				if ((controlState & 0xFC) != 0)
@@ -351,10 +350,10 @@ namespace BizHawk.Client.Common
 						string rightXRaw = player1Str.Substring(24, 4);
 						string rightYRaw = player1Str.Substring(28, 4);
 
-						Tuple<string, float> leftX = new Tuple<string, float>("P1 LStick X", float.Parse(leftXRaw));
-						Tuple<string, float> leftY = new Tuple<string, float>("P1 LStick Y", float.Parse(leftYRaw));
-						Tuple<string, float> rightX = new Tuple<string, float>("P1 RStick X", float.Parse(rightXRaw));
-						Tuple<string, float> rightY = new Tuple<string, float>("P1 RStick Y", float.Parse(rightYRaw));
+						var leftX = ("P1 LStick X", float.Parse(leftXRaw));
+						var leftY = ("P1 LStick Y", float.Parse(leftYRaw));
+						var rightX = ("P1 RStick X", float.Parse(rightXRaw));
+						var rightY = ("P1 RStick Y", float.Parse(rightYRaw));
 
 						controllers.AcceptNewAxes(new[] { leftX, leftY, rightX, rightY });
 					}
@@ -386,10 +385,10 @@ namespace BizHawk.Client.Common
 						string rightXRaw = player2Str.Substring(24, 4);
 						string rightYRaw = player2Str.Substring(28, 4);
 
-						Tuple<string, float> leftX = new Tuple<string, float>("P2 LStick X", float.Parse(leftXRaw));
-						Tuple<string, float> leftY = new Tuple<string, float>("P2 LStick Y", float.Parse(leftYRaw));
-						Tuple<string, float> rightX = new Tuple<string, float>("P2 RStick X", float.Parse(rightXRaw));
-						Tuple<string, float> rightY = new Tuple<string, float>("P2 RStick Y", float.Parse(rightYRaw));
+						var leftX = ("P2 LStick X", float.Parse(leftXRaw));
+						var leftY = ("P2 LStick Y", float.Parse(leftYRaw));
+						var rightX = ("P2 RStick X", float.Parse(rightXRaw));
+						var rightY = ("P2 RStick Y", float.Parse(rightYRaw));
 
 						controllers.AcceptNewAxes(new[] { leftX, leftY, rightX, rightY });
 					}
@@ -417,7 +416,7 @@ namespace BizHawk.Client.Common
 					controllers["Open"] = false;
 				}
 
-				Tuple<string, float> discSelect = new Tuple<string, float>("Disc Select", cdNumber);
+				var discSelect = ("Disc Select", (float) cdNumber);
 				controllers.AcceptNewAxes(new[] { discSelect });
 
 				if ((controlState & 0xFC) != 0)
