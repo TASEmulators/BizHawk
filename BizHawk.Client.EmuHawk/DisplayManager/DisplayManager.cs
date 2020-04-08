@@ -756,8 +756,8 @@ namespace BizHawk.Client.EmuHawk
 			int bufferHeight = videoProvider.BufferHeight;
 			bool isGlTextureId = videoBuffer.Length == 1;
 
-			int vw = videoProvider.BufferWidth;
-			int vh = videoProvider.BufferHeight;
+			int vw = videoProvider.VirtualWidth;
+			int vh = videoProvider.VirtualHeight;
 
 			//TODO: it is bad that this is happening outside the filter chain
 			//the filter chain has the ability to add padding...
@@ -775,7 +775,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Global.Config.DispManagerAR == EDispManagerAR.System)
 				{
-					//already set
+					//Already set
 				}
 				if (Global.Config.DispManagerAR == EDispManagerAR.Custom)
 				{
