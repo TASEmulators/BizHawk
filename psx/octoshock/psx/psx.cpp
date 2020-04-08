@@ -1404,12 +1404,22 @@ EW_EXPORT s32 shock_Create(void** psx, s32 region, void* firmware512k)
 	CDC = new PS_CDC();
 	DMA_Init();
 
+
 	//setup gpu output surfaces
 	MDFN_PixelFormat nf(MDFN_COLORSPACE_RGB, 16, 8, 0, 24);
 	for(int i=0;i<2;i++)
 	{
 		VTBuffer[i] = new MDFN_Surface(NULL, FB_WIDTH, FB_HEIGHT, FB_WIDTH, nf);
 		VTLineWidths[i] = (int *)calloc(FB_HEIGHT, sizeof(int));
+	}
+
+	for(int rc = 0; rc < 0x8000; rc++)
+	{
+		const uint8 a = rc;
+		const uint8 b = rc >> 8;
+
+		(GPU.OutputLUT +   0)[a] = ((a & 0x1F) << (3 + nf.Rshift)) | ((a >> 5) << (3 + nf.Gshift));
+		(GPU.OutputLUT + 256)[b] = ((b & 0x3) << (6 + nf.Gshift)) | (((b >> 2) & 0x1F) << (3 + nf.Bshift));
 	}
 
 	FIO = new FrontIO();
@@ -1526,7 +1536,7 @@ EW_EXPORT s32 shock_Step(void* psx, eShockStep step)
 
 	memset(&espec, 0, sizeof(EmulateSpecStruct));
 
-	espec.VideoFormatChanged = true; //shouldnt do this every frame..
+	espec.VideoFormatChanged = false;
 	espec.surface = (MDFN_Surface *)VTBuffer[VTBackBuffer];
 	espec.LineWidths = (int *)VTLineWidths[VTBackBuffer];
 	espec.skip = false;
