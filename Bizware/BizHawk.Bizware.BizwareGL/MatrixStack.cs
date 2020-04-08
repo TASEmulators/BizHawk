@@ -63,22 +63,22 @@ namespace BizHawk.Bizware.BizwareGL
 		public void Pop() { Top = stack.Pop(); IsDirty = true; }
 		public void Push() { stack.Push(Top); IsDirty = true; }
 
-		public void RotateAxis(Vector3 axisRotation, float angle) { Top = Top * Matrix4.CreateFromAxisAngle(axisRotation, angle); IsDirty = true; }
+		public void RotateAxis(Vector3 axisRotation, float angle) { PostMultiplyMatrix(Matrix4.CreateFromAxisAngle(axisRotation, angle)); IsDirty = true; }
 
-		public void Scale(Vector3 scale) { PreMultiplyMatrix(Matrix4.CreateScale(scale)); IsDirty = true; }
-		public void Scale(Vector2 scale) { PreMultiplyMatrix(Matrix4.CreateScale(scale.X, scale.Y, 1)); IsDirty = true; }
-		public void Scale(float x, float y, float z) { PreMultiplyMatrix(Matrix4.CreateScale(x, y, z)); IsDirty = true; }
+		public void Scale(Vector3 scale) { PostMultiplyMatrix(Matrix4.CreateScale(scale)); IsDirty = true; }
+		public void Scale(Vector2 scale) { PostMultiplyMatrix(Matrix4.CreateScale(scale.X, scale.Y, 1)); IsDirty = true; }
+		public void Scale(float x, float y, float z) { PostMultiplyMatrix(Matrix4.CreateScale(x, y, z)); IsDirty = true; }
 		public void Scale(float ratio) { Scale(ratio, ratio, ratio); IsDirty = true; }
 		public void Scale(float x, float y) { Scale(x, y, 1); IsDirty = true; }
 
-		public void RotateAxis(float x, float y, float z, float degrees) { PreMultiplyMatrix(Matrix4.CreateFromAxisAngle(new Vector3(x, y, z), MathHelper.DegreesToRadians(degrees))); IsDirty = true; }
-		public void RotateY(float degrees) { PreMultiplyMatrix(Matrix4.CreateRotationY(MathHelper.DegreesToRadians(degrees))); IsDirty = true; }
-		public void RotateX(float degrees) { PreMultiplyMatrix(Matrix4.CreateRotationX(MathHelper.DegreesToRadians(degrees))); IsDirty = true; }
-		public void RotateZ(float degrees) { PreMultiplyMatrix(Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(degrees))); IsDirty = true; }
+		public void RotateAxis(float x, float y, float z, float degrees) { PostMultiplyMatrix(Matrix4.CreateFromAxisAngle(new Vector3(x, y, z), MathHelper.DegreesToRadians(degrees))); IsDirty = true; }
+		public void RotateY(float degrees) { PostMultiplyMatrix(Matrix4.CreateRotationY(MathHelper.DegreesToRadians(degrees))); IsDirty = true; }
+		public void RotateX(float degrees) { PostMultiplyMatrix(Matrix4.CreateRotationX(MathHelper.DegreesToRadians(degrees))); IsDirty = true; }
+		public void RotateZ(float degrees) { PostMultiplyMatrix(Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(degrees))); IsDirty = true; }
 
 		public void Translate(Vector2 v) { Translate(v.X, v.Y, 0); IsDirty = true; }
-		public void Translate(Vector3 trans) { PreMultiplyMatrix(Matrix4.CreateTranslation(trans)); IsDirty = true; }
-		public void Translate(float x, float y, float z) { PreMultiplyMatrix(Matrix4.CreateTranslation(x, y, z)); IsDirty = true; }
+		public void Translate(Vector3 trans) { PostMultiplyMatrix(Matrix4.CreateTranslation(trans)); IsDirty = true; }
+		public void Translate(float x, float y, float z) { PostMultiplyMatrix(Matrix4.CreateTranslation(x, y, z)); IsDirty = true; }
 		public void Translate(float x, float y) { Translate(x, y, 0); IsDirty = true; }
 		public void Translate(Point pt) { Translate(pt.X, pt.Y, 0); IsDirty = true; }
 
