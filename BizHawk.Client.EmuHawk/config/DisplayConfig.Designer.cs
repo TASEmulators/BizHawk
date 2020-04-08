@@ -441,7 +441,7 @@
 			// 
 			this.rbARBySystem.Name = "rbARBySystem";
 			this.rbARBySystem.Tag = BizHawk.Client.Common.EDispManagerAR.System;
-			this.rbARBySystem.Text = "Use system\'s recommendation";
+			this.rbARBySystem.Text = "Use system's recommendation";
 			this.rbARBySystem.CheckedChanged += new System.EventHandler(this.rbARBySystem_CheckedChanged);
 			// 
 			// flpCustomSize
@@ -579,7 +579,7 @@
 			this.btnDefaults.Name = "btnDefaults";
 			this.btnDefaults.Size = new System.Drawing.Size(75, 23);
 			this.btnDefaults.Text = "Defaults";
-			this.toolTip1.SetToolTip(this.btnDefaults, "Unless I forgot to update the button\'s code when I changed a default");
+			this.toolTip1.SetToolTip(this.btnDefaults, "Unless I forgot to update the button's code when I changed a default");
 			this.btnDefaults.Click += new System.EventHandler(this.btnDefaults_Click);
 			// 
 			// tpDispMethod
