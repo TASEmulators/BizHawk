@@ -7,5 +7,7 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
 		<ProjectReference Include="$(SolutionDir)BizHawk.Common/BizHawk.Common.csproj" />
+		<Compile Include="$(SolutionDir)Version/svnrev.cs" />
+		<Compile Include="$(SolutionDir)Version/VersionInfo.cs" />
 	</ItemGroup>
 </Project>

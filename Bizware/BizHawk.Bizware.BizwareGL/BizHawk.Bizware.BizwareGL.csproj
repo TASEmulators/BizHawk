@@ -9,6 +9,8 @@
 		<PackageReference Include="System.Drawing.Common" Version="4.7.0" PrivateAssets="All" />
 		<PackageReference Include="OpenTK" Version="3.0.1" PrivateAssets="All" />
 		<ProjectReference Include="$(SolutionDir)BizHawk.Common/BizHawk.Common.csproj" />
+		<Compile Include="$(SolutionDir)Version/svnrev.cs" />
+		<Compile Include="$(SolutionDir)Version/VersionInfo.cs" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Update="IGuiRenderer.cs" SubType="Code" />
