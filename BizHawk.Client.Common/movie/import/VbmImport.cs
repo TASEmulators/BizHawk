@@ -282,10 +282,10 @@ namespace BizHawk.Client.Common.movie.import
 			{
 				if (Global.Config.GbUseGbHawk || Global.Config.UseSubGBHawk)
 				{
-					var temp_sync = new GBHawk.GBSyncSettings();
-					if (is_GBC) { temp_sync.ConsoleMode = GBHawk.GBSyncSettings.ConsoleModeType.GBC; }
-					else { temp_sync.ConsoleMode = GBHawk.GBSyncSettings.ConsoleModeType.GB; }
-					Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(temp_sync);
+					var tempSync = new GBHawk.GBSyncSettings();
+					if (is_GBC) { tempSync.ConsoleMode = GBHawk.GBSyncSettings.ConsoleModeType.GBC; }
+					else { tempSync.ConsoleMode = GBHawk.GBSyncSettings.ConsoleModeType.GB; }
+					Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(tempSync);
 				}
 				else
 				{
@@ -293,8 +293,8 @@ namespace BizHawk.Client.Common.movie.import
 					if (is_GBC) { temp_sync.ConsoleMode = Gameboy.GambatteSyncSettings.ConsoleModeType.GBC; }
 					else { temp_sync.ConsoleMode = Gameboy.GambatteSyncSettings.ConsoleModeType.GB; }
 					Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(temp_sync);
-				}							
-			}			
+				}
+			}
 		}
 
 		private static SimpleController GbController()

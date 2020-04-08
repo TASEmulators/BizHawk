@@ -52,18 +52,14 @@ namespace BizHawk.Client.Common
 					foreach (XmlNode a in n.ChildNodes)
 					{
 						string filename = a.Attributes["FileName"].Value;
-						byte[] data = new byte[0];
+						byte[] data;
 						if (filename[0] == '|')
 						{
 							// in same archive
 							var ai = f.FindArchiveMember(filename.Substring(1));
 							if (ai != null)
 							{
-								if (originalIndex == null)
-								{
-									originalIndex = f.BoundIndex;
-								}
-
+								originalIndex ??= f.BoundIndex;
 								f.Unbind();
 								f.BindArchiveMember(ai.Value);
 								data = f.GetStream().ReadAllBytes();

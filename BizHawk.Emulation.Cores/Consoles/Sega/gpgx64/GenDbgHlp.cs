@@ -51,8 +51,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			if (disposed) throw new ObjectDisposedException(this.GetType().ToString());
 
-			if (data[statenum] == null)
-				data[statenum] = new byte[length];
+			data[statenum] ??= new byte[length];
 
 			Marshal.Copy(DllBase + start, data[statenum], 0, length);
 			Console.WriteLine("State {0} saved", statenum);
@@ -117,8 +116,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				Console.WriteLine("Clean!");
 		}
 
-
-
 		public GenDbgHlp()
 		{
 			using (StreamReader sr = new StreamReader(symbolname))
@@ -159,7 +156,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			return SymbolsByAddr.GetRange(minidx, maxidx - minidx + 1);
 		}
 
-
 		public struct Symbol : IComparable<Symbol>
 		{
 			public IntPtr addr;
@@ -189,7 +185,5 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			public override string ToString() => $"0x{(int)addr:X8} {name} ({section})";
 		}
-
-
 	}
 }

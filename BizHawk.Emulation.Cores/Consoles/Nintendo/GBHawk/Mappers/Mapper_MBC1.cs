@@ -30,26 +30,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				RAM_mask = Core.cart_RAM.Length / 0x2000 - 1;
 				if (Core.cart_RAM.Length == 0x800) { RAM_mask = 0; }
 			}
-	}
+		}
 
 		public override byte ReadMemoryLow(ushort addr)
 		{
 			if (addr < 0x4000)
 			{
-				// lowest bank is fixed, but is still effected by mode			
+				// lowest bank is fixed, but is still effected by mode
 				if (sel_mode)
 				{
-					return Core._rom[(ROM_bank & 0x60) * 0x4000 + addr];							
+					return Core._rom[(ROM_bank & 0x60) * 0x4000 + addr];
 				}
-				else
-				{
-					return Core._rom[addr];
-				}
+
+				return Core._rom[addr];
 			}
-			else
-			{
-				return Core._rom[(addr - 0x4000) + ROM_bank * 0x4000];
-			}
+
+			return Core._rom[(addr - 0x4000) + ROM_bank * 0x4000];
 		}
 
 		public override byte ReadMemoryHigh(ushort addr)

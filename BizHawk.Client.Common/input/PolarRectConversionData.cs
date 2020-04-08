@@ -1,7 +1,5 @@
 #nullable enable
 
-using System;
-
 namespace BizHawk.Client.Common
 {
 	/// <remarks>This is separate from <see cref="PolarRectConversion"/> because its large size slows or prevents design-time code analysis.</remarks>

@@ -33,11 +33,7 @@ namespace BizHawk.Client.Common
 		[JsonIgnore]
 		public int? Wndx
 		{
-			get
-			{
-				return _wndx;
-			}
-
+			get => _wndx;
 			set
 			{
 				if (value != -32000)
@@ -50,11 +46,7 @@ namespace BizHawk.Client.Common
 		[JsonIgnore]
 		public int? Wndy
 		{
-			get
-			{
-				return _wndy;
-			}
-
+			get => _wndy;
 			set
 			{
 				if (value != -32000)
@@ -104,13 +96,7 @@ namespace BizHawk.Client.Common
 
 		public class ColumnList : List<Column>
 		{
-			public Column this[string name]
-			{
-				get
-				{
-					return this.FirstOrDefault(c => c.Name == name);
-				}
-			}
+			public Column this[string name] => this.FirstOrDefault(c => c.Name == name);
 		}
 
 		public class Column

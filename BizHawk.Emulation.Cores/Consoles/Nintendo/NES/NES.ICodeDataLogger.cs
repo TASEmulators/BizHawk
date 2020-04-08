@@ -68,15 +68,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private void RunCDL(ushort address, CDLog_Flags flags)
 		{
-				if (MapMemory != null)
+			if (MapMemory != null)
+			{
+				CDLog_MapResults results = MapMemory(address, false);
+				switch (results.Type)
 				{
-					CDLog_MapResults results = MapMemory(address, false);
-					switch (results.Type)
-					{
-						case CDLog_AddrType.None: break;
-						case CDLog_AddrType.MainRAM: CDL["Main RAM"][results.Address] |= (byte)flags; break;
-						case CDLog_AddrType.SaveRAM: CDL["Save RAM"][results.Address] |= (byte)flags; break;
-					}
+					case CDLog_AddrType.None: break;
+					case CDLog_AddrType.MainRAM: CDL["Main RAM"][results.Address] |= (byte)flags; break;
+					case CDLog_AddrType.SaveRAM: CDL["Save RAM"][results.Address] |= (byte)flags; break;
+				}
 			}
 		}
 

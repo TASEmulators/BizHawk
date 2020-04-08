@@ -77,17 +77,17 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public void RunCDL(ushort address, CDLog_Flags flags)
 		{
-				if (MapMemory != null)
+			if (MapMemory != null)
+			{
+				CDLog_MapResults results = MapMemory(address, false);
+				switch (results.Type)
 				{
-					CDLog_MapResults results = MapMemory(address, false);
-					switch (results.Type)
-					{
-						case CDLog_AddrType.None: break;
-						case CDLog_AddrType.ROM: CDL["ROM"][results.Address] |= (byte)flags; break;
-						case CDLog_AddrType.MainRAM: CDL["Main RAM"][results.Address] |= (byte)flags; break;
-						case CDLog_AddrType.SaveRAM: CDL["Save RAM"][results.Address] |= (byte)flags; break;
-						case CDLog_AddrType.CartRAM: CDL["Cart (Volatile) RAM"][results.Address] |= (byte)flags; break;
-					}
+					case CDLog_AddrType.None: break;
+					case CDLog_AddrType.ROM: CDL["ROM"][results.Address] |= (byte)flags; break;
+					case CDLog_AddrType.MainRAM: CDL["Main RAM"][results.Address] |= (byte)flags; break;
+					case CDLog_AddrType.SaveRAM: CDL["Save RAM"][results.Address] |= (byte)flags; break;
+					case CDLog_AddrType.CartRAM: CDL["Cart (Volatile) RAM"][results.Address] |= (byte)flags; break;
+				}
 			}
 		}
 

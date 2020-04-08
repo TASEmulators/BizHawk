@@ -158,12 +158,10 @@ namespace BizHawk.Client.Common
 
 		public void SetBigEndian(bool enabled = true) => _isBigEndian = enabled;
 
-		public List<string> GetMemoryDomainList()
-		{
-			var list = new List<string>();
-			foreach (var domain in DomainList) list.Add(domain.Name);
-			return list;
-		}
+		public List<string> GetMemoryDomainList() => 
+			DomainList
+				.Select(domain => domain.Name)
+				.ToList();
 
 		public uint GetMemoryDomainSize(string name = null) => (uint) NamedDomainOrCurrent(name).Size;
 

@@ -162,11 +162,7 @@ namespace BizHawk.Client.Common
 		{
 			if (value.HasValue)
 			{
-				if (pattern == null)
-				{
-					pattern = new AutoPatternFloat(value.Value, _on, 0, _off);
-				}
-
+				pattern ??= new AutoPatternFloat(value.Value, _on, 0, _off);
 				_axisPatterns[name] = pattern;
 			}
 			else
@@ -179,11 +175,7 @@ namespace BizHawk.Client.Common
 		{
 			if (isSticky)
 			{
-				if (pattern == null)
-				{
-					pattern = new AutoPatternBool(_on, _off);
-				}
-
+				pattern ??= new AutoPatternBool(_on, _off);
 				_boolPatterns[button] = pattern;
 			}
 			else

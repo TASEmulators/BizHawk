@@ -416,7 +416,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF55:
 					if (GBC_compat)
 					{
-					ppu.WriteReg(addr, value);
+						ppu.WriteReg(addr, value);
 					}
 					break;
 

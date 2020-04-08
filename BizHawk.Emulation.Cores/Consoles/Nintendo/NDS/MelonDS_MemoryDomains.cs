@@ -16,9 +16,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			MainMemory = new MemoryDomainIntPtr("RAM", MemoryDomain.Endian.Little, (IntPtr)GetMainMemory(), GetMainMemorySize(), true, 4);
 			SystemBus = new MelonSystemBus();
 
-			domains = new SortedList<string, MemoryDomain>();
-			domains.Add("RAM", MainMemory);
-			domains.Add("System Bus", SystemBus);
+			domains = new SortedList<string, MemoryDomain>
+			{
+				{ "RAM", MainMemory },
+				{ "System Bus", SystemBus }
+			};
 		}
 
 		public MemoryDomain this[string name] => domains[name];

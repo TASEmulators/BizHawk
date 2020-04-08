@@ -32,8 +32,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			lock (staticsyncroot)
 			{
-				if (_instance == null)
-					_instance = new BootGodDb();
+				_instance ??= new BootGodDb();
 			}
 		}
 
@@ -41,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			int temp = 0;
 			if(validate) if (!str.EndsWith("k")) throw new Exception();
-			int len=str.Length-1;
+			int len = str.Length - 1;
 			for (int i = 0; i < len; i++)
 			{
 				temp *= 10;
@@ -51,10 +50,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 		public BootGodDb()
 		{
-			//notes: there can be multiple each of prg,chr,wram,vram
-			//we arent tracking the individual hashes yet.
+			// notes: there can be multiple each of prg,chr,wram,vram
+			// we aren't tracking the individual hashes yet.
 
-			//in anticipation of any slowness annoying people, and just for shits and giggles, i made a super fast parser
+			// in anticipation of any slowness annoying people, and just for shits and giggles, i made a super fast parser
 			int state=0;
 			var xmlReader = XmlReader.Create(new MemoryStream(_GetDatabaseBytes()));
 			CartInfo currCart = null;

@@ -82,8 +82,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-
-
 		public override void WriteWram(int addr, byte value)
 		{
 			WriteReg(addr + 0x6000, value);
@@ -100,38 +98,37 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				prg[3] = (byte)(addr & 0x3F);
 			}
-			else if (((addr & 0xF80C) >= 0xB000) && ((addr & 0xF80C) <= 0xE00C))
+			else if ((addr & 0xF80C) >= 0xB000 && (addr & 0xF80C) <= 0xE00C)
 			{
 				int index = (((addr >> 11) - 6) | (addr >> 3)) & 7;
 				chr[index] = (byte)((chr[index] & (0xF0 >> (addr & 4))) | ((value & 0x0F) << (addr & 4)));
 			}
 			else switch (addr & 0xF80C)
-				{
-					case 0x8800: prg[0] = value; break;
-					case 0xA800: prg[1] = value; break;
-					case 0xA000: prg[2] = value; break;
-					case 0x9800: SetMirroring(value & 3); break;
+			{
+				case 0x8800: prg[0] = value; break;
+				case 0xA800: prg[1] = value; break;
+				case 0xA000: prg[2] = value; break;
+				case 0x9800: SetMirroring(value & 3); break;
 
-					// TODO: IRQ
-					case 0xF000: IRQLatch = ((IRQLatch & 0xF0) | (value & 0xF)); break;
-					case 0xF004: IRQLatch = ((IRQLatch & 0x0F) | ((value & 0xF) << 4)); break;
-					case 0xF008:
-						IRQMode = value.Bit(2);
-						IRQa = value.Bit(1);//value>0 ? true:false;
-						IRQr = value.Bit(0);
-						if (IRQa)
-						{
-							IRQPre = 341;
-							IRQCount = IRQLatch;
-						}
-						IrqSignal = false;
-						break;
-					case 0xF00C:
-						IrqSignal = false;
-						IRQa = IRQr;
-						break;
-
-				}
+				// TODO: IRQ
+				case 0xF000: IRQLatch = ((IRQLatch & 0xF0) | (value & 0xF)); break;
+				case 0xF004: IRQLatch = ((IRQLatch & 0x0F) | ((value & 0xF) << 4)); break;
+				case 0xF008:
+					IRQMode = value.Bit(2);
+					IRQa = value.Bit(1);//value>0 ? true:false;
+					IRQr = value.Bit(0);
+					if (IRQa)
+					{
+						IRQPre = 341;
+						IRQCount = IRQLatch;
+					}
+					IrqSignal = false;
+					break;
+				case 0xF00C:
+					IrqSignal = false;
+					IRQa = IRQr;
+					break;
+			}
 		}
 
 		public override byte ReadPpu(int addr)

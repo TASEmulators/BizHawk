@@ -240,7 +240,7 @@ namespace BizHawk.Client.Common.movie.import
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
 					string subtitles = Encoding.UTF8.GetString(stream.ReadAllBytes());
-					using (StringReader reader = new StringReader(subtitles))
+					using (var reader = new StringReader(subtitles))
 					{
 						string line;
 						while ((line = reader.ReadLine()) != null)

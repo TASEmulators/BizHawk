@@ -78,7 +78,8 @@ namespace BizHawk.Client.Common
 				{
 					return Convert.ToUInt64(Header[HeaderKeys.VBlankCount]);
 				}
-				else if (Header.ContainsKey(HeaderKeys.CycleCount))
+
+				if (Header.ContainsKey(HeaderKeys.CycleCount))
 				{
 					var gambatteName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(Gameboy), typeof(CoreAttribute))).CoreName;
 					if (Header[HeaderKeys.Core] == gambatteName)
@@ -86,6 +87,7 @@ namespace BizHawk.Client.Common
 						return Convert.ToUInt64(Header[HeaderKeys.CycleCount]);
 					}
 				}
+
 				return (ulong)Log.Count;
 			}
 		}
@@ -135,13 +137,10 @@ namespace BizHawk.Client.Common
 		{
 			if (frame < FrameCount && frame >= 0)
 			{
-				if (_adapter == null)
+				_adapter ??= new Bk2ControllerAdapter
 				{
-					_adapter = new Bk2ControllerAdapter
-					{
-						Definition = Global.MovieSession.MovieControllerAdapter.Definition
-					};
-				}
+					Definition = Global.MovieSession.MovieControllerAdapter.Definition
+				};
 
 				int getFrame;
 

@@ -307,7 +307,7 @@ namespace BizHawk.Emulation.Common
 				throw new ArgumentException($"Can't autofetch without being an {nameof(ISoundProvider)}?");
 			}
 
-			LibSpeexDSP.RESAMPLER_ERR err = LibSpeexDSP.RESAMPLER_ERR.SUCCESS;
+			var err = LibSpeexDSP.RESAMPLER_ERR.SUCCESS;
 			_st = LibSpeexDSP.speex_resampler_init_frac(2, rationum, ratioden, sratein, srateout, quality, ref err);
 
 			if (_st == IntPtr.Zero)

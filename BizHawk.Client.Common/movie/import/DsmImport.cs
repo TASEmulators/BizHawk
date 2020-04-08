@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Linq;
-using BizHawk.Common;
-using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 

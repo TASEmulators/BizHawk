@@ -53,15 +53,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			int temp = 0;
 			for (int i=0;i<4;i++)
 			{
-			temp = mmc3.prg_regs_8k[i];
+				temp = mmc3.prg_regs_8k[i];
 
-			if ((exRegs[1] & 0x8) > 0)
-				temp = temp & 0x1F;
-			else
-				temp = ((temp & 0x0F) | (exRegs[1] & 0x10));
+				if ((exRegs[1] & 0x8) > 0)
+					temp = temp & 0x1F;
+				else
+					temp = ((temp & 0x0F) | (exRegs[1] & 0x10));
 
-				temp |= (exRegs[1] << 5 & 0x60);
-			prg_regs_8k[i] = (byte)(temp & prg_mask_8k);
+					temp |= (exRegs[1] << 5 & 0x60);
+				prg_regs_8k[i] = (byte)(temp & prg_mask_8k);
 			}
 		}
 

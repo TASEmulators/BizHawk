@@ -240,15 +240,15 @@ namespace BizHawk.Client.Common
 						continue;
 					}
 
-						// compute its hash
-						RealFirmwareFile rff;
-						// NDS's firmware file contains user settings; these are over-written by sync settings, so we shouldn't allow them to impact the hash
-						if (fr.SystemId == "NDS" && fr.FirmwareId == "firmware")
-							rff = reader.Read(new FileInfo(Emulation.Cores.Consoles.Nintendo.NDS.MelonDS.CreateModifiedFirmware(userSpec)));
-						else
-							rff = reader.Read(fi);
-						ri.Size = fi.Length;
-						ri.Hash = rff.Hash;
+					// compute its hash
+					RealFirmwareFile rff;
+					// NDS's firmware file contains user settings; these are over-written by sync settings, so we shouldn't allow them to impact the hash
+					if (fr.SystemId == "NDS" && fr.FirmwareId == "firmware")
+						rff = reader.Read(new FileInfo(Emulation.Cores.Consoles.Nintendo.NDS.MelonDS.CreateModifiedFirmware(userSpec)));
+					else
+						rff = reader.Read(fi);
+					ri.Size = fi.Length;
+					ri.Hash = rff.Hash;
 
 					// check whether it was a known file anyway, and go ahead and bind to the known file, as a perk (the firmwares config doesn't really use this information right now)
 					if (FirmwareDatabase.FirmwareFilesByHash.TryGetValue(rff.Hash, out var ff))

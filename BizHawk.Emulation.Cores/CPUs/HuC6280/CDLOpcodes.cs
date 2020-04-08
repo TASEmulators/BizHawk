@@ -464,7 +464,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 					{
 						MarkBTFrom(btFrom);
 						MarkBTTo(btTo);
-						}
+					}
 					break;
 				case 0x74: // STZ zp,X
 					MarkCode(PC, 2);
@@ -783,7 +783,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 					{
 						MarkBTFrom(btFrom);
 						MarkBTTo(btTo);
-						}
+					}
 					break;
 				case 0xC4: // CPY zp
 					MarkCode(PC, 2);
@@ -855,7 +855,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 					{
 						MarkBTFrom(btFrom);
 						MarkBTTo(btTo);
-						}
+					}
 					break;
 				case 0xD4: // CSH
 					MarkCode(PC, 1);
@@ -924,7 +924,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 					{
 						MarkBTFrom(btFrom);
 						MarkBTTo(btTo+btAlternator);
-						}
+					}
 					break;
 				case 0xE4: // CPX zp
 					MarkCode(PC, 2);
@@ -996,7 +996,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 					{
 						MarkBTFrom(btFrom+btAlternator);
 						MarkBTTo(btTo);
-						}
+					}
 					break;
 				case 0xF4: // SET
 					MarkCode(PC, 1);

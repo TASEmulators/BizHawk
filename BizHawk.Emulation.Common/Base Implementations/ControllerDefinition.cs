@@ -168,11 +168,11 @@ namespace BizHawk.Emulation.Common
 		{
 			get
 			{
-				List<string> list = new List<string>(AxisControls);
+				var list = new List<string>(AxisControls);
 				list.AddRange(BoolButtons);
 
 				// starts with console buttons, then each player's buttons individually
-				List<string>[] ret = new List<string>[PlayerCount + 1];
+				var ret = new List<string>[PlayerCount + 1];
 				for (int i = 0; i < ret.Length; i++)
 				{
 					ret[i] = new List<string>();

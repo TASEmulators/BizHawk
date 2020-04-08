@@ -12,15 +12,9 @@
 			Name = "Null Controller"
 		};
 
-		public bool IsPressed(string button)
-		{
-			return false;
-		}
+		public bool IsPressed(string button) => false;
 
-		public float AxisValue(string name)
-		{
-			return 0f;
-		}
+		public float AxisValue(string name) => 0f;
 
 		public static readonly NullController Instance = new NullController();
 	}

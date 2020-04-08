@@ -76,9 +76,9 @@ namespace BizHawk.Client.Common
 
 		public static object LoadWithType(string serialized)
 		{
-			using TextReader tr = new StringReader(serialized);
-			using JsonTextReader jr = new JsonTextReader(tr);
-			TypeNameEncapsulator tne = (TypeNameEncapsulator)Serializer.Deserialize(jr, typeof(TypeNameEncapsulator));
+			using var tr = new StringReader(serialized);
+			using var jr = new JsonTextReader(tr);
+			var tne = (TypeNameEncapsulator)Serializer.Deserialize(jr, typeof(TypeNameEncapsulator));
 
 			// in the case of trying to deserialize nothing, tne will be nothing
 			// we want to return nothing
@@ -87,9 +87,9 @@ namespace BizHawk.Client.Common
 
 		public static string SaveWithType(object o)
 		{
-			using StringWriter sw = new StringWriter();
-			using JsonTextWriter jw = new JsonTextWriter(sw) { Formatting = Formatting.None };
-			TypeNameEncapsulator tne = new TypeNameEncapsulator { o = o };
+			using var sw = new StringWriter();
+			using var jw = new JsonTextWriter(sw) { Formatting = Formatting.None };
+			var tne = new TypeNameEncapsulator { o = o };
 			Serializer.Serialize(jw, tne, typeof(TypeNameEncapsulator));
 			sw.Flush();
 			return sw.ToString();

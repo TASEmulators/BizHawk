@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using BizHawk.Emulation.Common;
 
@@ -21,10 +20,10 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 
 				for (int i = 0; i < kvp.Value.Length; i++)
 				{
-					if ((kvp.Value[i] & (byte)HuC6280.CDLUsage.Code) != 0)
+					if ((kvp.Value[i] & (byte)CDLUsage.Code) != 0)
 					{
 						int unused;
-						string dis = HuC6280.DisassembleExt(
+						string dis = DisassembleExt(
 							0,
 							out unused,
 							delegate(ushort addr)
@@ -43,24 +42,6 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 			}
 			w.WriteLine("; EOF");
 			w.Flush();
-		}
-
-		private static Dictionary<string, int> SizesFromHuMap(IEnumerable<HuC6280.MemMapping> mm)
-		{
-			Dictionary<string, int> sizes = new Dictionary<string, int>();
-			foreach (var m in mm)
-			{
-				if (!sizes.ContainsKey(m.Name) || m.MaxOffs >= sizes[m.Name])
-				sizes[m.Name] = m.MaxOffs;
-			}
-
-			List<string> keys = new List<string>(sizes.Keys);
-			foreach (var key in keys)
-			{
-				// becase we were looking at offsets, and each bank is 8192 big, we need to add that size
-				sizes[key] += 8192;
-			}
-			return sizes;
 		}
 	}
 

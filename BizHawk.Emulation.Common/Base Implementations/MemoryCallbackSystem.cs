@@ -16,10 +16,7 @@ namespace BizHawk.Emulation.Common
 	{
 		public MemoryCallbackSystem(string[] availableScopes)
 		{
-			if (availableScopes == null)
-			{
-				availableScopes = new[] { "System Bus" };
-			}
+			availableScopes ??= new[] {"System Bus"};
 
 			AvailableScopes = availableScopes;
 			ExecuteCallbacksAvailable = true;

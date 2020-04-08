@@ -14,9 +14,9 @@ namespace BizHawk.Client.Common
 		private Stream _output;
 		private readonly CompressionLevel _level;
 
-		private byte[] _localHeader;
+		private readonly byte[] _localHeader;
 		private List<byte[]> _endBlobs = new List<byte[]>();
-		private byte[] _fileHeaderTemplate;
+		private readonly byte[] _fileHeaderTemplate;
 		private int _numEntries;
 		private bool _disposed;
 
@@ -115,17 +115,18 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		/// <exception cref="NotImplementedException"><paramref name="compressionlevel"/> is <c>0</c></exception>
-		public FrameworkFastZipWriter(string path, int compressionlevel)
+		/// <exception cref="NotImplementedException"><paramref name="compressionLevel"/> is <c>0</c></exception>
+		public FrameworkFastZipWriter(string path, int compressionLevel)
 		{
 			_output = new FileStream(path, FileMode.Create, FileAccess.Write);
-			if (compressionlevel == 0)
+			if (compressionLevel == 0)
+			{
 				throw new NotImplementedException();
-			//_level = CompressionLevel.NoCompression;
-			else if (compressionlevel < 5)
-				_level = CompressionLevel.Fastest;
-			else
-				_level = CompressionLevel.Optimal;
+			}
+
+			_level = compressionLevel < 5
+				? CompressionLevel.Fastest
+				: CompressionLevel.Optimal;
 
 			var dt = DateTime.Now;
 			var mtime = dt.Second >> 1

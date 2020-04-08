@@ -29,10 +29,7 @@ namespace BizHawk.Emulation.Common
 
 		public abstract void PokeByte(long addr, byte val);
 
-		public override string ToString()
-		{
-			return Name;
-		}
+		public override string ToString() => Name;
 
 		public virtual ushort PeekUshort(long addr, bool bigEndian)
 		{

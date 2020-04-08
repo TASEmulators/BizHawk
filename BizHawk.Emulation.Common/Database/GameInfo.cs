@@ -139,11 +139,6 @@ namespace BizHawk.Emulation.Common
 			return defaultVal;
 		}
 
-		public ICollection<string> GetOptions()
-		{
-			return Options.Keys;
-		}
-
 		public IDictionary<string, string> GetOptionsDict()
 		{
 			return new ReadOnlyDictionary<string, string>(Options);

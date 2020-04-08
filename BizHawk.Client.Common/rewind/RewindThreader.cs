@@ -70,10 +70,7 @@ namespace BizHawk.Client.Common
 				savestateCopy = null;
 			}
 
-			if (savestateCopy == null)
-			{
-				savestateCopy = new byte[coreSavestate.Length];
-			}
+			savestateCopy ??= new byte[coreSavestate.Length];
 
 			Buffer.BlockCopy(coreSavestate, 0, savestateCopy, 0, coreSavestate.Length);
 

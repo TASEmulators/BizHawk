@@ -294,11 +294,6 @@ namespace BizHawk.Client.Common
 			return ret;
 		}
 
-		public void SetName(string name)
-		{
-			Names[Names.Count - 1] = name;
-		}
-
 		// TODO: These probably aren't the best way to handle undo/redo.
 		private int _lastGeneral;
 

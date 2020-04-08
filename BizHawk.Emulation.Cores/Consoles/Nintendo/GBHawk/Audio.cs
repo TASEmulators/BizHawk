@@ -720,14 +720,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			if (L_final != latched_sample_L)
 			{
-			_blip_L.AddDelta(master_audio_clock, L_final - latched_sample_L);
-			latched_sample_L = L_final;
+				_blip_L.AddDelta(master_audio_clock, L_final - latched_sample_L);
+				latched_sample_L = L_final;
 			}
 
 			if (R_final != latched_sample_R)
 			{
-			_blip_R.AddDelta(master_audio_clock, R_final - latched_sample_R);
-			latched_sample_R = R_final;
+				_blip_R.AddDelta(master_audio_clock, R_final - latched_sample_R);
+				latched_sample_R = R_final;
 			}
 
 			master_audio_clock++;

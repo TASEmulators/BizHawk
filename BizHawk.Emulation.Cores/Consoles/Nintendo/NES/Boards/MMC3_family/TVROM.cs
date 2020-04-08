@@ -40,10 +40,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				//read patterns from mapper controlled area
 				return base.ReadPpu(addr);
 			}
-			else
-			{
-				return Vram[addr & 0xFFF];
-			}
+
+			return Vram[addr & 0xFFF];
 		}
 
 		public override void WritePpu(int addr, byte value)

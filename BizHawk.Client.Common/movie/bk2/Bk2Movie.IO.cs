@@ -111,9 +111,8 @@ namespace BizHawk.Client.Common
 
 				bl.GetLump(BinaryStateLump.Input, true, delegate(TextReader tr)
 				{
-					string errorMessage;
 					IsCountingRerecords = false;
-					ExtractInputLog(tr, out errorMessage);
+					ExtractInputLog(tr, out _);
 					IsCountingRerecords = true;
 				});
 
@@ -166,20 +165,17 @@ namespace BizHawk.Client.Common
 
 		protected virtual void Write(string fn, bool backup = false)
 		{
-			if (Global.Emulator is Emulation.Cores.Nintendo.SubNESHawk.SubNESHawk)
+			if (Global.Emulator is Emulation.Cores.Nintendo.SubNESHawk.SubNESHawk subNes)
 			{
-				var _subnes = (Emulation.Cores.Nintendo.SubNESHawk.SubNESHawk)Global.Emulator;
-				Header[HeaderKeys.VBlankCount] = _subnes.VBL_CNT.ToString();
+				Header[HeaderKeys.VBlankCount] = subNes.VBL_CNT.ToString();
 			}
-			else if (Global.Emulator is Emulation.Cores.Nintendo.Gameboy.Gameboy)
+			else if (Global.Emulator is Emulation.Cores.Nintendo.Gameboy.Gameboy gameboy)
 			{
-				var _gameboy = (Emulation.Cores.Nintendo.Gameboy.Gameboy)Global.Emulator;
-				Header[HeaderKeys.CycleCount] = _gameboy.CycleCount.ToString();
+				Header[HeaderKeys.CycleCount] = gameboy.CycleCount.ToString();
 			}
-			else if (Global.Emulator is Emulation.Cores.Nintendo.SubGBHawk.SubGBHawk)
+			else if (Global.Emulator is Emulation.Cores.Nintendo.SubGBHawk.SubGBHawk subGb)
 			{
-				var _subgb = (Emulation.Cores.Nintendo.SubGBHawk.SubGBHawk)Global.Emulator;
-				Header[HeaderKeys.VBlankCount] = _subgb.VBL_CNT.ToString();
+				Header[HeaderKeys.VBlankCount] = subGb.VBL_CNT.ToString();
 			}
 
 			var file = new FileInfo(fn);

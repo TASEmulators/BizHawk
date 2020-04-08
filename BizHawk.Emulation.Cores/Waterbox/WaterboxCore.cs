@@ -46,8 +46,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		protected T PreInit<T>(PeRunnerOptions options)
 			where T : LibWaterboxCore
 		{
-			if (options.Path == null)
-				options.Path = CoreComm.CoreFileProvider.DllPath();
+			options.Path ??= CoreComm.CoreFileProvider.DllPath();
 			_exe = new PeRunner(options);
 			using (_exe.EnterExit())
 			{

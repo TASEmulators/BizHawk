@@ -19,10 +19,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			set
 			{
 				_blockID = value;
-
-				if (MetaData == null)
-					MetaData = new Dictionary<BlockDescriptorTitle, string>();
-
+				MetaData ??= new Dictionary<BlockDescriptorTitle, string>();
 				AddMetaData(BlockDescriptorTitle.Block_ID, value.ToString());
 			}
 		}
@@ -37,8 +34,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			set
 			{
 				_blockType = value;
-				if (MetaData == null)
-					MetaData = new Dictionary<BlockDescriptorTitle, string>();
+				MetaData ??= new Dictionary<BlockDescriptorTitle, string>();
 			}
 		}
 
@@ -51,34 +47,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			get => _blockData;
 			set => _blockData = value;
 		}
-
-		/*
-
-        /// <summary>
-        /// An array of bytearray encoded strings (stored in this format for easy Bizhawk serialization)
-        /// Its basically tape information
-        /// </summary>
-        private byte[][] _tapeDescriptionData; 
-
-        /// <summary>
-        /// Returns the Tape Description Data in a human readable format
-        /// </summary>
-        public List<string> TapeDescriptionData
-        {
-            get
-            {
-                List<string> data = new List<string>();
-
-                foreach (byte[] b in _tapeDescriptionData)
-                {
-                    data.Add(Encoding.ASCII.GetString(b));
-                }
-
-                return data;
-            }
-        }
-		*/
-
 
 		#region Block Meta Data
 
@@ -107,8 +75,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		}
 
 		#endregion
-
-
 
 		/// <summary>
 		/// List containing the pulse timing values
@@ -165,7 +131,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			ser.BeginSection("DataBlock" + blockPosition);
 
 			ser.Sync(nameof(_blockID), ref _blockID);
-			//ser.SyncFixedString(nameof(_blockDescription), ref _blockDescription, 200);
 			ser.SyncEnum(nameof(_blockType), ref _blockType);
 			ser.Sync(nameof(_blockData), ref _blockData, true);
 			ser.SyncEnum(nameof(_command), ref _command);

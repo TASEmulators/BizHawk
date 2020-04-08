@@ -196,42 +196,41 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				UpdateChr_2();
 			}
 			else switch ((addr+0x8000) & 0xE001)
-				{
-					case 0x8000: base.WritePrg(addr,value); UpdatePrg(); UpdateChr(); break;
-					case 0x8001:
+			{
+				case 0x8000: base.WritePrg(addr,value); UpdatePrg(); UpdateChr(); break;
+				case 0x8001:
 
-						if (((exRegs[3] << 2) & (mmc3.cmd & 0x8))>0)
-						{
-							exRegs[4 | mmc3.cmd & 0x3] = value;
+					if (((exRegs[3] << 2) & (mmc3.cmd & 0x8))>0)
+					{
+						exRegs[4 | mmc3.cmd & 0x3] = value;
 
-							UpdatePrg_2();
-							UpdateChr_2();
-						}
-						else
-						{
-							base.WritePrg(addr, value);
-							UpdatePrg();
-							UpdateChr();
-						}
-						break;
+						UpdatePrg_2();
+						UpdateChr_2();
+					}
+					else
+					{
+						base.WritePrg(addr, value);
+						UpdatePrg();
+						UpdateChr();
+					}
+					break;
 
-					case 0xA000:
-						if (value == 0)
-						{
-							SetMirrorType(EMirrorType.Vertical);
-						}
-						else
-						{
-							SetMirrorType(EMirrorType.Horizontal);
-						}
-						break;
-					case 0xA001: base.WritePrg(addr, value); break;
-					case 0xC000: base.WritePrg(addr, value); break;
-					case 0xC001: base.WritePrg(addr, value); break;
-					case 0xE000: base.WritePrg(addr, value); break;
-					case 0xE001: base.WritePrg(addr, value); break;
-
-				}
+				case 0xA000:
+					if (value == 0)
+					{
+						SetMirrorType(EMirrorType.Vertical);
+					}
+					else
+					{
+						SetMirrorType(EMirrorType.Horizontal);
+					}
+					break;
+				case 0xA001: base.WritePrg(addr, value); break;
+				case 0xC000: base.WritePrg(addr, value); break;
+				case 0xC001: base.WritePrg(addr, value); break;
+				case 0xE000: base.WritePrg(addr, value); break;
+				case 0xE001: base.WritePrg(addr, value); break;
+			}
 		}
 
 		public override byte ReadPpu(int addr)
