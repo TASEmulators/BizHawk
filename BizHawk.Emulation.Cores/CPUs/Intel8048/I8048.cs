@@ -490,6 +490,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 
 			if (counter_en)
 			{
+				// NOTE: Odyssey 2 games tend to enable the counter within a few cycles of a falling edge and expect to count to take place
 				if (!T1 && T1_old && (TotalExecutedCycles > next_T1_check))
 				{
 					if (Regs[TIM] == 255)

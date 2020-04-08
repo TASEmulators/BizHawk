@@ -253,7 +253,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			}
 			else
 			{
-				if (cycle == 182 && (LY < LINE_VBL))
+				// NOTE: most games expect one less T1 pulse after VBL, maybe some pre-render line
+				if (cycle == 182 && (LY < LINE_VBL) && (LY > 0))
 				{
 					HBL = true;
 					// Send T1 pulses
