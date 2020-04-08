@@ -71,30 +71,18 @@ namespace BizHawk.Emulation.Common
 				.Append(gameInfo.Hash)
 				.Append('\t');
 
-			switch (gameInfo.Status)
+			sb.Append(gameInfo.Status switch
 			{
-				case RomStatus.BadDump:
-					sb.Append("B");
-					break;
-				case RomStatus.TranslatedRom:
-					sb.Append("T");
-					break;
-				case RomStatus.Overdump:
-					sb.Append("O");
-					break;
-				case RomStatus.Bios:
-					sb.Append("I");
-					break;
-				case RomStatus.Homebrew:
-					sb.Append("D");
-					break;
-				case RomStatus.Hack:
-					sb.Append("H");
-					break;
-				case RomStatus.Unknown:
-					sb.Append("U");
-					break;
-			}
+				RomStatus.BadDump => "B",
+				RomStatus.TranslatedRom => "T",
+				RomStatus.Overdump => "O",
+				RomStatus.Bios => "I",
+				RomStatus.Homebrew => "D",
+				RomStatus.Hack => "H",
+				RomStatus.NotInDatabase => "U",
+				RomStatus.Unknown => "U",
+				_ => ""
+			});
 
 			sb
 				.Append('\t')
