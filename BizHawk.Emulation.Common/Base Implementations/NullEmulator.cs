@@ -2,6 +2,7 @@
 {
 	[Core("NullHawk", "", false, true)]
 	[ServiceNotApplicable(new[] {
+		typeof(IVideoProvider),
 		typeof(IBoardInfo),
 		typeof(ICodeDataLogger),
 		typeof(IDebuggable),
@@ -16,16 +17,12 @@
 		typeof(IStatable),
 		typeof(ITraceable)
 	})]
-	public class NullEmulator : IEmulator, IVideoProvider
+	public class NullEmulator : IEmulator
 	{
-		private readonly int[] _frameBuffer = new int[NullVideo.DefaultWidth * NullVideo.DefaultHeight];
-
 		public NullEmulator()
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 		}
-
-		#region IEmulator
 
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
@@ -43,32 +40,8 @@
 		{
 		}
 
-		public string BoardName => null;
-
 		public void Dispose()
 		{
 		}
-
-		#endregion
-
-		#region IVideoProvider
-
-		public int[] GetVideoBuffer() => _frameBuffer;
-
-		public int VirtualWidth => NullVideo.DefaultWidth;
-
-		public int VirtualHeight => NullVideo.DefaultHeight;
-
-		public int BufferWidth => NullVideo.DefaultWidth;
-
-		public int BufferHeight => NullVideo.DefaultHeight;
-
-		public int BackgroundColor => NullVideo.DefaultBackgroundColor;
-
-		public int VsyncNumerator => NullVideo.DefaultVsyncNum;
-
-		public int VsyncDenominator => NullVideo.DefaultVsyncDen;
-
-		#endregion
 	}
 }
