@@ -192,8 +192,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 				VDC_ctrl = value;
 
-				if (VDC_ctrl.Bit(2)) { Console.WriteLine("sound INT"); }
-				if (VDC_ctrl.Bit(0)) { Console.WriteLine("HBL INT"); }
+				//if (VDC_ctrl.Bit(2)) { Console.WriteLine("sound INT"); }
+				//if (VDC_ctrl.Bit(0)) { Console.WriteLine("HBL INT"); }
 			}
 			else if (addr == 0xA1)
 			{
@@ -1046,7 +1046,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				}
 
 				C_final = output_bit;
-				C_final *= ((aud_ctrl & 0xF) + 1) * 800;
+				C_final *= ((aud_ctrl & 0xF) + 1) * 400;
 			}
 
 			if (C_final != latched_sample_C)
