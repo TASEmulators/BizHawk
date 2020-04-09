@@ -255,30 +255,30 @@ static INLINE int8 Mask9ClampS8(int32 v)
 template<typename T>
 static INLINE void IDCT_1D_Multi(int16 *in_coeff, T *out_coeff)
 {
-	for(unsigned col = 0; col < 8; col++)
-	{
-		__m128i c =  _mm_load_si128((__m128i *)&in_coeff[(col * 8)]);
+ for(unsigned col = 0; col < 8; col++)
+ {
+  __m128i c =  _mm_load_si128((__m128i *)&in_coeff[(col * 8)]);
 
-		for(unsigned x = 0; x < 8; x++)
-		{
-			__m128i sum;
-			__m128i m;
-			alignas(16) int32 tmp[4];
+  for(unsigned x = 0; x < 8; x++)
+  {
+   __m128i sum;
+   __m128i m;
+   alignas(16) int32 tmp[4];
 
-			m = _mm_load_si128((__m128i *)&IDCTMatrix[(x * 8)]);
-			sum = _mm_madd_epi16(m, c);
-			sum = _mm_add_epi32(sum, _mm_shuffle_epi32(sum, (3 << 0) | (2 << 2) | (1 << 4) | (0 << 6)));
-			sum = _mm_add_epi32(sum, _mm_shuffle_epi32(sum, (1 << 0) | (0 << 2)));
+   m = _mm_load_si128((__m128i *)&IDCTMatrix[(x * 8)]);
+   sum = _mm_madd_epi16(m, c);
+   sum = _mm_add_epi32(sum, _mm_shuffle_epi32(sum, (3 << 0) | (2 << 2) | (1 << 4) | (0 << 6)));
+   sum = _mm_add_epi32(sum, _mm_shuffle_epi32(sum, (1 << 0) | (0 << 2)));
 
-			//_mm_store_ss((float *)&tmp[0], (__m128)sum);
-			_mm_store_si128((__m128i*)tmp, sum);
+   //_mm_store_ss((float *)&tmp[0], (__m128)sum);
+   _mm_store_si128((__m128i*)tmp, sum);
 
-			if(sizeof(T) == 1)
-				out_coeff[(col * 8) + x] = Mask9ClampS8((tmp[0] + 0x4000) >> 15);
-			else
-				out_coeff[(x * 8) + col] = (tmp[0] + 0x4000) >> 15;
-		}
-	}
+   if(sizeof(T) == 1)
+    out_coeff[(col * 8) + x] = Mask9ClampS8((tmp[0] + 0x4000) >> 15);
+   else
+    out_coeff[(x * 8) + col] = (tmp[0] + 0x4000) >> 15;
+  }
+ }
 }
 //
 //
@@ -290,33 +290,33 @@ static INLINE void IDCT_1D_Multi(int16 *in_coeff, T *out_coeff)
 template<typename T>
 static INLINE void IDCT_1D_Multi(int16 *in_coeff, T *out_coeff)
 {
-	for(unsigned col = 0; col < 8; col++)
-	{
-		register int16x4_t c0 = vld1_s16(MDFN_ASSUME_ALIGNED(in_coeff + col * 8 + 0, sizeof(int16x4_t)));
-		register int16x4_t c1 = vld1_s16(MDFN_ASSUME_ALIGNED(in_coeff + col * 8 + 4, sizeof(int16x4_t)));
-		int32 buf[8];
+ for(unsigned col = 0; col < 8; col++)
+ {
+  register int16x4_t c0 = vld1_s16(MDFN_ASSUME_ALIGNED(in_coeff + col * 8 + 0, sizeof(int16x4_t)));
+  register int16x4_t c1 = vld1_s16(MDFN_ASSUME_ALIGNED(in_coeff + col * 8 + 4, sizeof(int16x4_t)));
+  int32 buf[8];
 
-		for(unsigned x = 0; x < 8; x++)
-		{
-			register int32x4_t accum;
-			register int32x2_t sum2;
+  for(unsigned x = 0; x < 8; x++)
+  {
+   register int32x4_t accum;
+   register int32x2_t sum2;
 
-			accum = vdupq_n_s32(0);
-			accum = vmlal_s16(accum, c0, vld1_s16(MDFN_ASSUME_ALIGNED(IDCTMatrix + x * 8 + 0, sizeof(int16x4_t))));
-			accum = vmlal_s16(accum, c1, vld1_s16(MDFN_ASSUME_ALIGNED(IDCTMatrix + x * 8 + 4, sizeof(int16x4_t))));
-			sum2 = vadd_s32(vget_high_s32(accum), vget_low_s32(accum));
-			sum2 = vpadd_s32(sum2, sum2);
-			vst1_lane_s32(buf + x, sum2, 0);
-		}
+   accum = vdupq_n_s32(0);
+   accum = vmlal_s16(accum, c0, vld1_s16(MDFN_ASSUME_ALIGNED(IDCTMatrix + x * 8 + 0, sizeof(int16x4_t))));
+   accum = vmlal_s16(accum, c1, vld1_s16(MDFN_ASSUME_ALIGNED(IDCTMatrix + x * 8 + 4, sizeof(int16x4_t))));
+   sum2 = vadd_s32(vget_high_s32(accum), vget_low_s32(accum));
+   sum2 = vpadd_s32(sum2, sum2);
+   vst1_lane_s32(buf + x, sum2, 0);
+  }
 
-		for(unsigned x = 0; x < 8; x++)
-		{
-			if(sizeof(T) == 1)
-				out_coeff[(col * 8) + x] = Mask9ClampS8((buf[x] + 0x4000) >> 15);
-			else
-				out_coeff[(x * 8) + col] = (buf[x] + 0x4000) >> 15;
-		}
-	}
+  for(unsigned x = 0; x < 8; x++)
+  {
+   if(sizeof(T) == 1)
+    out_coeff[(col * 8) + x] = Mask9ClampS8((buf[x] + 0x4000) >> 15);
+   else
+    out_coeff[(x * 8) + col] = (buf[x] + 0x4000) >> 15;
+  }
+ }
 }
 //
 //
@@ -328,23 +328,23 @@ static INLINE void IDCT_1D_Multi(int16 *in_coeff, T *out_coeff)
 template<typename T>
 static INLINE void IDCT_1D_Multi(int16 *in_coeff, T *out_coeff)
 {
-	for(unsigned col = 0; col < 8; col++)
-	{
-		for(unsigned x = 0; x < 8; x++)
-		{
-			int32 sum = 0;
+ for(unsigned col = 0; col < 8; col++)
+ {
+  for(unsigned x = 0; x < 8; x++)
+  {
+   int32 sum = 0;
 
-			for(unsigned u = 0; u < 8; u++)
-			{
-				sum += (in_coeff[(col * 8) + u] * IDCTMatrix[(x * 8) + u]);
-			}
+   for(unsigned u = 0; u < 8; u++)
+   {
+    sum += (in_coeff[(col * 8) + u] * IDCTMatrix[(x * 8) + u]);
+   }
 
-			if(sizeof(T) == 1)
-				out_coeff[(col * 8) + x] = Mask9ClampS8((sum + 0x4000) >> 15);
-			else
-				out_coeff[(x * 8) + col] = (sum + 0x4000) >> 15;
-		}
-	}
+   if(sizeof(T) == 1)
+    out_coeff[(col * 8) + x] = Mask9ClampS8((sum + 0x4000) >> 15);
+   else
+    out_coeff[(x * 8) + col] = (sum + 0x4000) >> 15;
+  }
+ }
 }
 //
 //
@@ -353,10 +353,10 @@ static INLINE void IDCT_1D_Multi(int16 *in_coeff, T *out_coeff)
 
 static NO_INLINE void IDCT(int16 *in_coeff, int8 *out_coeff)
 {
-	alignas(16) int16 tmpbuf[64];
+ alignas(16) int16 tmpbuf[64];
 
-	IDCT_1D_Multi<int16>(in_coeff, tmpbuf);
-	IDCT_1D_Multi<int8>(tmpbuf, out_coeff);
+ IDCT_1D_Multi<int16>(in_coeff, tmpbuf);
+ IDCT_1D_Multi<int8>(tmpbuf, out_coeff);
 }
 #pragma GCC pop_options
 //
@@ -682,7 +682,7 @@ MDFN_FASTCALL void MDEC_Run(int32 clocks)
      PixelBufferReadOffset = 0;
      while(PixelBufferReadOffset < PixelBufferCount32)
      {
-      MDEC_WRITE_FIFO(MDFN_de32lsb<true>(&PixelBuffer.pix32[PixelBufferReadOffset++]));
+      MDEC_WRITE_FIFO((MDFN_de32lsb<true>(&PixelBuffer.pix32[PixelBufferReadOffset++])));
      }
     } while(InCounter != 0xFFFF);
    }
@@ -745,7 +745,6 @@ MDFN_FASTCALL void MDEC_Run(int32 clocks)
  }
 }
 #endif
-
 
 MDFN_FASTCALL void MDEC_DMAWrite(uint32 V)
 {
