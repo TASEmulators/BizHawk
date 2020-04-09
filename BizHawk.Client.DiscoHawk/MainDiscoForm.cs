@@ -9,12 +9,11 @@ namespace BizHawk.Client.DiscoHawk
 {
 	public partial class MainDiscoForm : Form
 	{
-		//Release TODO:
-		//An input (queue) list 
-		//An outputted list showing new file name
-		//Progress bar should show file being converted
-		//Add disc button, which puts it on the progress cue (converts it)
-
+		// Release TODO:
+		// An input (queue) list 
+		// An outputted list showing new file name
+		// Progress bar should show file being converted
+		// Add disc button, which puts it on the progress cue (converts it)
 		public MainDiscoForm()
 		{
 			InitializeComponent();
@@ -98,10 +97,10 @@ namespace BizHawk.Client.DiscoHawk
 				: DragDropEffects.None;
 		}
 
-		private List<string> ValidateDrop(IDataObject ido)
+		private static List<string> ValidateDrop(IDataObject ido)
 		{
-			List<string> ret = new List<string>();
-			string[] files = (string[])ido.GetData(System.Windows.Forms.DataFormats.FileDrop);
+			var ret = new List<string>();
+			string[] files = (string[])ido.GetData(DataFormats.FileDrop);
 			if (files == null) return new List<string>();
 			foreach (string str in files)
 			{
@@ -134,6 +133,5 @@ namespace BizHawk.Client.DiscoHawk
 		{
 			new About().ShowDialog();
 		}
-
 	}
 }

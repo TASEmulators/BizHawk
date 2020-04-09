@@ -27,7 +27,7 @@ namespace BizHawk.Client.DiscoHawk
 			string dllDir = Path.Combine(GetExeDirectoryAbsolute(), "dll");
 			SetDllDirectory(dllDir);
 
-			//in case assembly resolution fails, such as if we moved them into the dll subdirectory, this event handler can reroute to them
+			// in case assembly resolution fails, such as if we moved them into the dll subdirectory, this event handler can reroute to them
 			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
 			// but before we even try doing that, whack the MOTW from everything in that directory (that's a dll)
@@ -91,7 +91,7 @@ namespace BizHawk.Client.DiscoHawk
 			return Path.GetDirectoryName(module);
 		}
 
-		static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+		private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
 		{
 			lock (AppDomain.CurrentDomain)
 			{
@@ -104,10 +104,9 @@ namespace BizHawk.Client.DiscoHawk
 				string dllName = $"{new AssemblyName(args.Name).Name}.dll";
 				string directory = Path.Combine(GetExeDirectoryAbsolute(), "dll");
 				string fname = Path.Combine(directory, dllName);
-				if (!File.Exists(fname)) return null;
+				return File.Exists(fname) ? Assembly.LoadFile(fname) : null;
 
 				// it is important that we use LoadFile here and not load from a byte array; otherwise mixed (managed/unmanaged) assemblies can't load
-				return Assembly.LoadFile(fname);
 			}
 		}
 
@@ -139,8 +138,8 @@ namespace BizHawk.Client.DiscoHawk
 		}
 #endif
 
-		private const UInt32 WM_DROPFILES = 0x0233;
-		private const UInt32 WM_COPYDATA = 0x004A;
+		private const uint WM_DROPFILES = 0x0233;
+		private const uint WM_COPYDATA = 0x004A;
 		[DllImport("user32")]
 		public static extern bool ChangeWindowMessageFilter(uint msg, ChangeWindowMessageFilterFlags flags);
 		public enum ChangeWindowMessageFilterFlags : uint
@@ -165,24 +164,23 @@ namespace BizHawk.Client.DiscoHawk
 		}
 	}
 
-	class DiscoHawk
+	internal class DiscoHawk
 	{
-		static List<string> FindCuesRecurse(string dir)
+		private static List<string> FindCuesRecurse(string dir)
 		{
-			List<string> ret = new List<string>();
-			Queue<string> dpTodo = new Queue<string>();
+			var ret = new List<string>();
+			var dpTodo = new Queue<string>();
 			dpTodo.Enqueue(dir);
 			for (; ; )
 			{
-				string dpCurr;
 				if (dpTodo.Count == 0)
 					break;
-				dpCurr = dpTodo.Dequeue();
+				var dpCurr = dpTodo.Dequeue();
 				foreach(var fi in new DirectoryInfo(dpCurr).GetFiles("*.cue"))
 				{
 					ret.Add(fi.FullName);
 				}
-				Parallel.ForEach(new DirectoryInfo(dpCurr).GetDirectories(), (di) =>
+				Parallel.ForEach(new DirectoryInfo(dpCurr).GetDirectories(), di =>
 				{
 					lock(dpTodo)
 						dpTodo.Enqueue(di.FullName);
@@ -309,7 +307,7 @@ namespace BizHawk.Client.DiscoHawk
 
 		} //Run()
 
-		static bool CompareFile(string infile, DiscInterface loadDiscInterface, DiscInterface cmpif, bool verbose, CancellationTokenSource cancelToken, StringWriter sw)
+		private static bool CompareFile(string infile, DiscInterface loadDiscInterface, DiscInterface cmpif, bool verbose, CancellationTokenSource cancelToken, StringWriter sw)
 		{
 			Disc srcDisc = null, dstDisc = null;
 
@@ -325,6 +323,7 @@ namespace BizHawk.Client.DiscoHawk
 				{
 					dmj.IN_DiscMountPolicy.CUE_PregapContradictionModeA = false;
 				}
+
 				dmj.Run();
 
 				srcDisc = dmj.OUT_Disc;
@@ -353,7 +352,6 @@ namespace BizHawk.Client.DiscoHawk
 						sw.Write("({0:X2} - {1})", (byte) item.Control, item.LBA);
 					}
 				}
-
 
 				void SwDumpToc(int index)
 				{
@@ -510,10 +508,8 @@ namespace BizHawk.Client.DiscoHawk
 			}
 			finally
 			{
-				if (srcDisc != null)
-					srcDisc.Dispose();
-				if (dstDisc != null)
-					dstDisc.Dispose();
+				srcDisc?.Dispose();
+				dstDisc?.Dispose();
 			}
 		
 		} //CompareFile
