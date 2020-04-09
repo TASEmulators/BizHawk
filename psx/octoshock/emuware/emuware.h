@@ -51,6 +51,8 @@ typedef __uint16_t uint16;
 typedef __uint8_t uint8;
 #endif
 
+#define MDFN_HIDE
+
 
 //#if MDFN_GCC_VERSION >= MDFN_MAKE_GCCV(4,7,0)
 // #define MDFN_ASSUME_ALIGNED(p, align) __builtin_assume_aligned((p), (align))

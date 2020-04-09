@@ -69,15 +69,15 @@
 namespace MDFN_IEN_PSX
 {
 
-	PS_GPU GPU;
+PS_GPU GPU;
 
-	namespace PS_GPU_INTERNAL
-	{
-		#include "gpu_common.inc"
-	}
-	using namespace PS_GPU_INTERNAL;
+namespace PS_GPU_INTERNAL
+{
+ #include "gpu_common.inc"
+}
+using namespace PS_GPU_INTERNAL;
 
-	void GPU_Init(bool pal_clock_and_tv)
+void GPU_Init(bool pal_clock_and_tv)
 {
  static const int8 dither_table[4][4] =
  {
@@ -127,11 +127,10 @@ namespace MDFN_IEN_PSX
  memcpy(&Commands[0x80], Commands_80_FF, sizeof(Commands_80_FF));
 }
 
-
 void GPU_Kill(void)
 {
-}
 
+}
 
 /*
 2640: 528.000000 660.000000 377.142853 --- 8.000000 10.000000 11.428572
@@ -239,15 +238,15 @@ void PS_GPU::SetRenderOptions(::ShockRenderOptions* opts)
 
 static INLINE void InvalidateTexCache(void)
 {
-	for(auto& c : TexCache)
-		c.Tag = ~0U;
+ for(auto& c : TexCache)
+  c.Tag = ~0U;
 }
 
 static void InvalidateCache(void)
 {
-	CLUT_Cache_VB = ~0U;
+ CLUT_Cache_VB = ~0U;
 
-	InvalidateTexCache();
+ InvalidateTexCache();
 }
 
 static void SoftReset(void) // Control command 0x00
@@ -420,7 +419,7 @@ void GPU_Power(void)
 
 void GPU_ResetTS(void)
 {
-	lastts = 0;
+ lastts = 0;
 }
 
 // Special RAM write mode(16 pixels at a time), does *not* appear to use mask drawing environment settings.
@@ -504,13 +503,11 @@ static void Command_FBCopy(const uint32 *cb)
    }
   }
  }
-
 }
-
 
 static void Command_FBWrite(const uint32 *cb)
 {
-	assert(InCmd == PS_GPU::INCMD_NONE);
+ assert(InCmd == PS_GPU::INCMD_NONE);
 
  FBRW_X = (cb[1] >>  0) & 0x3FF;
  FBRW_Y = (cb[1] >> 16) & 0x3FF;
@@ -539,7 +536,7 @@ static void Command_FBWrite(const uint32 *cb)
 //
 static void Command_FBRead(const uint32 *cb)
 {
-	assert(InCmd == PS_GPU::INCMD_NONE);
+ assert(InCmd == PS_GPU::INCMD_NONE);
 
  FBRW_X = (cb[1] >>  0) & 0x3FF;
  FBRW_Y = (cb[1] >> 16) & 0x3FF;
@@ -556,8 +553,10 @@ static void Command_FBRead(const uint32 *cb)
  FBRW_CurX = FBRW_X;
  FBRW_CurY = FBRW_Y;
 
+ InvalidateTexCache();
+
  if(FBRW_W != 0 && FBRW_H != 0)
-	 InCmd = PS_GPU::INCMD_FBREAD;
+  InCmd = PS_GPU::INCMD_FBREAD;
 }
 
 /*
@@ -657,447 +656,447 @@ static void Command_MaskSetting(const uint32 *cb)
 
 static void Command_ClearCache(const uint32 *cb)
 {
-	InvalidateCache();
+ InvalidateCache();
 }
 
 static void Command_IRQ(const uint32 *cb)
 {
-	IRQPending = true;
-	IRQ_Assert(IRQ_GPU, IRQPending);
+ IRQPending = true;
+ IRQ_Assert(IRQ_GPU, IRQPending);
 }
 
 namespace PS_GPU_INTERNAL
 {
-	extern const CTEntry Commands_00_1F[0x20] =
-	{
-		/* 0x00 */
-		NULLCMD(),
-		OTHER_HELPER(1, 2, false, Command_ClearCache),
-		OTHER_HELPER(3, 3, false, Command_FBFill),
+MDFN_HIDE extern const CTEntry Commands_00_1F[0x20] =
+{
+ /* 0x00 */
+ NULLCMD(),
+ OTHER_HELPER(1, 2, false, Command_ClearCache),
+ OTHER_HELPER(3, 3, false, Command_FBFill),
 
-		NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(),
-		NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(),
+ NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(),
+ NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(),
 
-		/* 0x10 */
-		NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(),
-		NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(),
+ /* 0x10 */
+ NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(),
+ NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(),
 
-		/* 0x1F */
-		OTHER_HELPER(1, 1, false,  Command_IRQ)
-	};
+ /* 0x1F */
+ OTHER_HELPER(1, 1, false,  Command_IRQ)
+};
 
-	extern const CTEntry Commands_80_FF[0x80] =
-	{
-		/* 0x80 ... 0x9F */
-		OTHER_HELPER_X32(4, 2, false, Command_FBCopy),
+MDFN_HIDE extern const CTEntry Commands_80_FF[0x80] =
+{
+ /* 0x80 ... 0x9F */
+ OTHER_HELPER_X32(4, 2, false, Command_FBCopy),
 
-		/* 0xA0 ... 0xBF */
-		OTHER_HELPER_X32(3, 2, false, Command_FBWrite),
+ /* 0xA0 ... 0xBF */
+ OTHER_HELPER_X32(3, 2, false, Command_FBWrite),
 
-		/* 0xC0 ... 0xDF */
-		OTHER_HELPER_X32(3, 2, false, Command_FBRead),
+ /* 0xC0 ... 0xDF */
+ OTHER_HELPER_X32(3, 2, false, Command_FBRead),
 
-		/* 0xE0 */
+ /* 0xE0 */
 
-		NULLCMD(),
-		OTHER_HELPER(1, 2, false, Command_DrawMode),
-		OTHER_HELPER(1, 2, false, Command_TexWindow),
-		OTHER_HELPER(1, 1, true,  Command_Clip0),
-		OTHER_HELPER(1, 1, true,  Command_Clip1),
-		OTHER_HELPER(1, 1, true,  Command_DrawingOffset),
-		OTHER_HELPER(1, 2, false, Command_MaskSetting),
+ NULLCMD(),
+ OTHER_HELPER(1, 2, false, Command_DrawMode),
+ OTHER_HELPER(1, 2, false, Command_TexWindow),
+ OTHER_HELPER(1, 1, true,  Command_Clip0),
+ OTHER_HELPER(1, 1, true,  Command_Clip1),
+ OTHER_HELPER(1, 1, true,  Command_DrawingOffset),
+ OTHER_HELPER(1, 2, false, Command_MaskSetting),
 
-		NULLCMD(),
-		NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(),
+ NULLCMD(),
+ NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(),
 
-		/* 0xF0 */
-		NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(),
-		NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD()
-	};
+ /* 0xF0 */
+ NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(),
+ NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD(), NULLCMD()
+};
 }
 
 static void ProcessFIFO(void)
 {
-	if(!BlitterFIFO.CanRead())
-		return;
+ if(!BlitterFIFO.CanRead())
+  return;
 
-	switch(InCmd)
-	{
-		default:
-			abort();
-			break;
+ switch(InCmd)
+ {
+  default:
+	abort();
+	break;
 
-		case PS_GPU::INCMD_NONE:
-			break;
+  case PS_GPU::INCMD_NONE:
+	break;
 
-		case PS_GPU::INCMD_FBREAD:
-			PSX_WARNING("[GPU] Command FIFO not empty while in FB Read?!");
-			return;
+  case PS_GPU::INCMD_FBREAD:
+	PSX_WARNING("[GPU] Command FIFO not empty while in FB Read?!");
+	return;
 
-		case PS_GPU::INCMD_FBWRITE:
-			{
-				uint32 InData = BlitterFIFO.Read();
+  case PS_GPU::INCMD_FBWRITE:
+       {
+  	uint32 InData = BlitterFIFO.Read();
 
-				for(int i = 0; i < 2; i++)
-				{
-					if(!(GPURAM[FBRW_CurY & 511][FBRW_CurX & 1023] & MaskEvalAND))
-						GPURAM[FBRW_CurY & 511][FBRW_CurX & 1023] = InData | MaskSetOR;
+  	for(int i = 0; i < 2; i++)
+  	{
+   	 if(!(GPURAM[FBRW_CurY & 511][FBRW_CurX & 1023] & MaskEvalAND))
+    	  GPURAM[FBRW_CurY & 511][FBRW_CurX & 1023] = InData | MaskSetOR;
 
-					FBRW_CurX++;
-					if(FBRW_CurX == (FBRW_X + FBRW_W))
-					{
-						FBRW_CurX = FBRW_X;
-						FBRW_CurY++;
-						if(FBRW_CurY == (FBRW_Y + FBRW_H))
-						{
-							InCmd = PS_GPU::INCMD_NONE;
-							break;	// Break out of the for() loop.
-						}
-					}
-					InData >>= 16;
-				}
-				return;
-			}
-			break;
+	 FBRW_CurX++;
+   	 if(FBRW_CurX == (FBRW_X + FBRW_W))
+	 {
+	  FBRW_CurX = FBRW_X;
+	  FBRW_CurY++;
+	  if(FBRW_CurY == (FBRW_Y + FBRW_H))
+	  {
+	   InCmd = PS_GPU::INCMD_NONE;
+	   break;	// Break out of the for() loop.
+	  }
+	 }
+	 InData >>= 16;
+  	}
+  	return;
+       }
+       break;
 
-		case PS_GPU::INCMD_QUAD:
-			{
-				if(DrawTimeAvail < 0)
-					return;
+  case PS_GPU::INCMD_QUAD:
+       {
+	if(DrawTimeAvail < 0)
+	 return;
 
-				const uint32 cc = InCmd_CC;
-				const CTEntry *command = &Commands[cc];
-				unsigned vl = 1 + (bool)(cc & 0x4) + (bool)(cc & 0x10);
-				uint32 CB[3];
-
-				if(BlitterFIFO.CanRead() >= vl)
-				{
-					for(unsigned i = 0; i < vl; i++)
-					{
-						CB[i] = BlitterFIFO.Read();
-					}
-
-					command->func[abr][TexMode | (MaskEvalAND ? 0x4 : 0x0)](CB);
-				}
-				return;
-			}
-			break;
-
-		case PS_GPU::INCMD_PLINE:
-			{
-				if(DrawTimeAvail < 0)
-					return;
-
-				const uint32 cc = InCmd_CC;
-				const CTEntry *command = &Commands[cc];
-				unsigned vl = 1 + (bool)(InCmd_CC & 0x10);
-				uint32 CB[2];
-
-				if((BlitterFIFO.Peek() & 0xF000F000) == 0x50005000)
-				{
-					BlitterFIFO.Read();
-					InCmd = PS_GPU::INCMD_NONE;
-					return;
-				}
-
-				if(BlitterFIFO.CanRead() >= vl)
-				{
-					for(unsigned i = 0; i < vl; i++)
-					{
-						CB[i] = BlitterFIFO.Read();
-					}
-
-					command->func[abr][TexMode | (MaskEvalAND ? 0x4 : 0x0)](CB);
-				}
-				return;
-			}
-			break;
-	}
-
-	const uint32 cc = BlitterFIFO.Peek() >> 24;
+	const uint32 cc = InCmd_CC;
 	const CTEntry *command = &Commands[cc];
+	unsigned vl = 1 + (bool)(cc & 0x4) + (bool)(cc & 0x10);
+	uint32 CB[3];
 
-	if(DrawTimeAvail < 0 && !command->ss_cmd)
-		return;
-
-	if(BlitterFIFO.CanRead() >= command->len)
+	if(BlitterFIFO.CanRead() >= vl)
 	{
-		uint32 CB[0x10];
+	 for(unsigned i = 0; i < vl; i++)
+	 {
+	  CB[i] = BlitterFIFO.Read();
+	 }
 
-		for(unsigned i = 0; i < command->len; i++)
-			CB[i] = BlitterFIFO.Read();
-
-		if(!command->ss_cmd)
-			DrawTimeAvail -= 2;
-
-		#if 0
-		PSX_WARNING("[GPU] Command: %08x %s %d %d %d", CB[0], command->name, command->len, scanline, DrawTimeAvail);
-		if(1)
-		{
-			printf("[GPU]    ");
-			for(unsigned i = 0; i < command->len; i++)
-				printf("0x%08x ", CB[i]);
-			printf("\n");
-		}
-		#endif
-		// A very very ugly kludge to support texture mode specialization. fixme/cleanup/SOMETHING in the future.
-		if(cc >= 0x20 && cc <= 0x3F && (cc & 0x4))
-		{
-			//
-			// Don't alter SpriteFlip here.
-			//
-			SetTPage(CB[4 + ((cc >> 4) & 0x1)] >> 16);
-		}
-
-		if(!command->func[abr][TexMode])
-		{
-			if(CB[0])
-				PSX_WARNING("[GPU] Unknown command: %08x, %d", CB[0], scanline);
-		}
-		else
-		{
-			command->func[abr][TexMode | (MaskEvalAND ? 0x4 : 0x0)](CB);
-		}
+	 command->func[abr][TexMode | (MaskEvalAND ? 0x4 : 0x0)](CB);
 	}
+	return;
+       }
+       break;
+
+  case PS_GPU::INCMD_PLINE:
+       {
+  	if(DrawTimeAvail < 0)
+	 return;
+
+	const uint32 cc = InCmd_CC;
+	const CTEntry *command = &Commands[cc];
+	unsigned vl = 1 + (bool)(InCmd_CC & 0x10);
+	uint32 CB[2];
+
+  	if((BlitterFIFO.Peek() & 0xF000F000) == 0x50005000)
+	{
+	 BlitterFIFO.Read();
+	 InCmd = PS_GPU::INCMD_NONE;
+	 return;
+	}
+
+	if(BlitterFIFO.CanRead() >= vl)
+	{
+	 for(unsigned i = 0; i < vl; i++)
+	 {
+	  CB[i] = BlitterFIFO.Read();
+	 }
+
+	 command->func[abr][TexMode | (MaskEvalAND ? 0x4 : 0x0)](CB);
+	}
+	return;
+       }
+       break;
+ }
+
+ const uint32 cc = BlitterFIFO.Peek() >> 24;
+ const CTEntry *command = &Commands[cc];
+
+ if(DrawTimeAvail < 0 && !command->ss_cmd)
+  return;
+
+ if(BlitterFIFO.CanRead() >= command->len)
+ {
+  uint32 CB[0x10];
+
+  for(unsigned i = 0; i < command->len; i++)
+   CB[i] = BlitterFIFO.Read();
+
+  if(!command->ss_cmd)
+   DrawTimeAvail -= 2;
+
+#if 0
+  PSX_WARNING("[GPU] Command: %08x %s %d %d %d", CB[0], command->name, command->len, scanline, DrawTimeAvail);
+  if(1)
+  {
+   printf("[GPU]    ");
+   for(unsigned i = 0; i < command->len; i++)
+    printf("0x%08x ", CB[i]);
+   printf("\n");
+  }
+#endif
+  // A very very ugly kludge to support texture mode specialization. fixme/cleanup/SOMETHING in the future.
+  if(cc >= 0x20 && cc <= 0x3F && (cc & 0x4))
+  {
+   //
+   // Don't alter SpriteFlip here.
+   //
+   SetTPage(CB[4 + ((cc >> 4) & 0x1)] >> 16);
+  }
+
+  if(!command->func[abr][TexMode])
+  {
+   if(CB[0])
+    PSX_WARNING("[GPU] Unknown command: %08x, %d", CB[0], scanline);
+  }
+  else
+  {
+   command->func[abr][TexMode | (MaskEvalAND ? 0x4 : 0x0)](CB);
+  }
+ }
 }
 
 static void WriteCB(uint32 InData)
 {
-	if(BlitterFIFO.CanRead() >= 0x10 && (InCmd != PS_GPU::INCMD_NONE || (BlitterFIFO.CanRead() - 0x10) >= Commands[BlitterFIFO.Peek() >> 24].fifo_fb_len))
-	{
-		PSX_DBG(PSX_DBG_WARNING, "GPU FIFO overflow!!!\n");
-		return;
-	}
+ if(BlitterFIFO.CanRead() >= 0x10 && (InCmd != PS_GPU::INCMD_NONE || (BlitterFIFO.CanRead() - 0x10) >= Commands[BlitterFIFO.Peek() >> 24].fifo_fb_len))
+ {
+  PSX_DBG(PSX_DBG_WARNING, "GPU FIFO overflow!!!\n");
+  return;
+ }
 
-	BlitterFIFO.Write(InData);
-	ProcessFIFO();
+ BlitterFIFO.Write(InData);
+ ProcessFIFO();
 }
 
 MDFN_FASTCALL void GPU_Write(const pscpu_timestamp_t timestamp, uint32 A, uint32 V)
 {
-	V <<= (A & 3) * 8;
+ V <<= (A & 3) * 8;
 
-	if(A & 4)	// GP1 ("Control")
+ if(A & 4)	// GP1 ("Control")
+ {
+  uint32 command = V >> 24;
+
+  V &= 0x00FFFFFF;
+
+  //PSX_WARNING("[GPU] Control command: %02x %06x %d", command, V, scanline);
+
+  switch(command)
+  {
+   /*
+    0x40-0xFF do NOT appear to be mirrors, at least not on my PS1's GPU.
+   */
+   default: PSX_WARNING("[GPU] Unknown control command %02x - %06x", command, V);
+	    break;
+
+   case 0x00:	// Reset GPU
+	//printf("\n\n************ Soft Reset %u ********* \n\n", scanline);
+	SoftReset();
+	break;
+
+   case 0x01:	// Reset command buffer
+	if(DrawTimeAvail < 0)
+	 DrawTimeAvail = 0;
+	BlitterFIFO.Flush();
+	InCmd = PS_GPU::INCMD_NONE;
+	break;
+
+   case 0x02: 	// Acknowledge IRQ
+	IRQPending = false;
+	IRQ_Assert(IRQ_GPU, IRQPending);
+   	break;
+
+   case 0x03:	// Display enable
+	DisplayOff = V & 1;
+	break;
+
+   case 0x04:	// DMA Setup
+	DMAControl = V & 0x3;
+	break;
+
+   case 0x05:	// Start of display area in framebuffer
+	DisplayFB_XStart = V & 0x3FE; // Lower bit is apparently ignored.
+	DisplayFB_YStart = (V >> 10) & 0x1FF;
+	break;
+
+   case 0x06:	// Horizontal display range
+	HorizStart = V & 0xFFF;
+	HorizEnd = (V >> 12) & 0xFFF;
+	break;
+
+   case 0x07:
+	VertStart = V & 0x3FF;
+	VertEnd = (V >> 10) & 0x3FF;
+	break;
+
+   case 0x08:
+	//printf("\n\nDISPLAYMODE SET: 0x%02x, %u *************************\n\n\n", V & 0xFF, scanline);
+	DisplayMode = V & 0xFF;
+	break;
+
+   case 0x09:
+	TexDisableAllowChange = V & 1;
+	break;
+
+   case 0x10:	// GPU info(?)
+	switch(V & 0xF)
 	{
-		uint32 command = V >> 24;
+	 // DataReadBuffer must remain unchanged for any unhandled GPU info index.
+	 default:  break;
 
-		V &= 0x00FFFFFF;
+	 case 0x2: DataReadBufferEx &= 0xFFF00000;
+		   DataReadBufferEx |= (tww << 0) | (twh << 5) | (twx << 10) | (twy << 15);
+		   DataReadBuffer = DataReadBufferEx;
+		   break;
 
-		//PSX_WARNING("[GPU] Control command: %02x %06x %d", command, V, scanline);
+	 case 0x3: DataReadBufferEx &= 0xFFF00000;
+		   DataReadBufferEx |= (ClipY0 << 10) | ClipX0;
+		   DataReadBuffer = DataReadBufferEx;
+		   break;
 
-		switch(command)
-		{
-			/*
-			0x40-0xFF do NOT appear to be mirrors, at least not on my PS1's GPU.
-			*/
-			default: PSX_WARNING("[GPU] Unknown control command %02x - %06x", command, V);
-				break;
+ 	 case 0x4: DataReadBufferEx &= 0xFFF00000;
+		   DataReadBufferEx |= (ClipY1 << 10) | ClipX1;
+		   DataReadBuffer = DataReadBufferEx;
+		   break;
 
-			case 0x00:	// Reset GPU
-									//printf("\n\n************ Soft Reset %u ********* \n\n", scanline);
-				SoftReset();
-				break;
+	 case 0x5: DataReadBufferEx &= 0xFFC00000;
+		   DataReadBufferEx |= (OffsX & 2047) | ((OffsY & 2047) << 11);
+		   DataReadBuffer = DataReadBufferEx;
+		   break;
 
-			case 0x01:	// Reset command buffer
-				if(DrawTimeAvail < 0)
-					DrawTimeAvail = 0;
-				BlitterFIFO.Flush();
-				InCmd = PS_GPU::INCMD_NONE;
-				break;
+	 case 0x7: DataReadBufferEx = 2;
+		   DataReadBuffer = DataReadBufferEx;
+		   break;
 
-			case 0x02: 	// Acknowledge IRQ
-				IRQPending = false;
-				IRQ_Assert(IRQ_GPU, IRQPending);
-				break;
-
-			case 0x03:	// Display enable
-				DisplayOff = V & 1;
-				break;
-
-			case 0x04:	// DMA Setup
-				DMAControl = V & 0x3;
-				break;
-
-			case 0x05:	// Start of display area in framebuffer
-				DisplayFB_XStart = V & 0x3FE; // Lower bit is apparently ignored.
-				DisplayFB_YStart = (V >> 10) & 0x1FF;
-				break;
-
-			case 0x06:	// Horizontal display range
-				HorizStart = V & 0xFFF;
-				HorizEnd = (V >> 12) & 0xFFF;
-				break;
-
-			case 0x07:
-				VertStart = V & 0x3FF;
-				VertEnd = (V >> 10) & 0x3FF;
-				break;
-
-			case 0x08:
-				//printf("\n\nDISPLAYMODE SET: 0x%02x, %u *************************\n\n\n", V & 0xFF, scanline);
-				DisplayMode = V & 0xFF;
-				break;
-
-			case 0x09:
-				TexDisableAllowChange = V & 1;
-				break;
-
-			case 0x10:	// GPU info(?)
-				switch(V & 0xF)
-				{
-					// DataReadBuffer must remain unchanged for any unhandled GPU info index.
-					default:  break;
-
-					case 0x2: DataReadBufferEx &= 0xFFF00000;
-						DataReadBufferEx |= (tww << 0) | (twh << 5) | (twx << 10) | (twy << 15);
-						DataReadBuffer = DataReadBufferEx;
-						break;
-
-					case 0x3: DataReadBufferEx &= 0xFFF00000;
-						DataReadBufferEx |= (ClipY0 << 10) | ClipX0;
-						DataReadBuffer = DataReadBufferEx;
-						break;
-
-					case 0x4: DataReadBufferEx &= 0xFFF00000;
-						DataReadBufferEx |= (ClipY1 << 10) | ClipX1;
-						DataReadBuffer = DataReadBufferEx;
-						break;
-
-					case 0x5: DataReadBufferEx &= 0xFFC00000;
-						DataReadBufferEx |= (OffsX & 2047) | ((OffsY & 2047) << 11);
-						DataReadBuffer = DataReadBufferEx;
-						break;
-
-					case 0x7: DataReadBufferEx = 2;
-						DataReadBuffer = DataReadBufferEx;
-						break;
-
-					case 0x8: DataReadBufferEx = 0;
-						DataReadBuffer = DataReadBufferEx;
-						break;
-				}
-				//fprintf(stderr, "[GPU] CC 0x10:0x%02x, DRB=0x%02x\n", V & 0xF, DataReadBuffer);
-				break;
-
-		}
+	 case 0x8: DataReadBufferEx = 0;
+		   DataReadBuffer = DataReadBufferEx;
+		   break;
 	}
-	else		// GP0 ("Data")
-	{
-		//uint32 command = V >> 24;
-		//printf("Meow command: %02x\n", command);
-		//assert(!(DMAControl & 2));
-		WriteCB(V);
-	}
+	//fprintf(stderr, "[GPU] CC 0x10:0x%02x, DRB=0x%02x\n", V & 0xF, DataReadBuffer);
+	break;
+
+  }
+ }
+ else		// GP0 ("Data")
+ {
+  //uint32 command = V >> 24;
+  //printf("Meow command: %02x\n", command);
+  //assert(!(DMAControl & 2));
+  WriteCB(V);
+ }
 }
 
 
 MDFN_FASTCALL void GPU_WriteDMA(uint32 V)
 {
-	WriteCB(V);
+ WriteCB(V);
 }
 
 static INLINE uint32 ReadData(void)
 {
-	if(InCmd == PS_GPU::INCMD_FBREAD)
-	{
-		DataReadBufferEx = 0;
-		for(int i = 0; i < 2; i++)
-		{
-			DataReadBufferEx |= GPURAM[FBRW_CurY & 511][FBRW_CurX & 1023] << (i * 16);
+ if(InCmd == PS_GPU::INCMD_FBREAD)
+ {
+  DataReadBufferEx = 0;
+  for(int i = 0; i < 2; i++)
+  {
+   DataReadBufferEx |= GPURAM[FBRW_CurY & 511][FBRW_CurX & 1023] << (i * 16);
 
-			FBRW_CurX++;
-			if(FBRW_CurX == (FBRW_X + FBRW_W))
-			{
-				if((FBRW_CurY + 1) == (FBRW_Y + FBRW_H))
-				{
-					InCmd = PS_GPU::INCMD_NONE;
-				}
-				else
-				{
-					FBRW_CurY++;
-					FBRW_CurX = FBRW_X; 
-				}
-			}
-		}
+   FBRW_CurX++;
+   if(FBRW_CurX == (FBRW_X + FBRW_W))
+   {
+    if((FBRW_CurY + 1) == (FBRW_Y + FBRW_H))
+    {
+     InCmd = PS_GPU::INCMD_NONE;
+    }
+    else
+    {
+     FBRW_CurY++;
+     FBRW_CurX = FBRW_X; 
+    }
+   }
+  }
 
-		return DataReadBufferEx;
-	}
+  return DataReadBufferEx;
+ }
 
-	return DataReadBuffer;
+ return DataReadBuffer;
 }
 
 uint32 GPU_ReadDMA(void)
 {
-	return ReadData();
+ return ReadData();
 }
 
 MDFN_FASTCALL uint32 GPU_Read(const pscpu_timestamp_t timestamp, uint32 A)
 {
-	uint32 ret = 0;
+ uint32 ret = 0;
 
-	if(A & 4)	// Status
-	{
-		ret = (((DisplayMode << 1) & 0x7F) | ((DisplayMode >> 6) & 1)) << 16;
+ if(A & 4)	// Status
+ {
+  ret = (((DisplayMode << 1) & 0x7F) | ((DisplayMode >> 6) & 1)) << 16;
 
-		ret |= (DisplayMode & 0x80) << 7;
+  ret |= (DisplayMode & 0x80) << 7;
 
-		ret |= DMAControl << 29;
+  ret |= DMAControl << 29;
 
-		ret |= (DisplayFB_CurLineYReadout & 1) << 31;
+  ret |= (DisplayFB_CurLineYReadout & 1) << 31;
 
-		ret |= (!field) << 13;
+  ret |= (!field) << 13;
 
-		if(DMAControl & 0x02)
-			ret |= 1 << 25;
+  if(DMAControl & 0x02)
+   ret |= 1 << 25;
 
-		ret |= IRQPending << 24;
+  ret |= IRQPending << 24;
 
-		ret |= DisplayOff << 23;
+  ret |= DisplayOff << 23;
 
-		if(InCmd == PS_GPU::INCMD_NONE && DrawTimeAvail >= 0 && BlitterFIFO.CanRead() == 0x00)	// GPU idle bit.
-			ret |= 1 << 26;
+  if(InCmd == PS_GPU::INCMD_NONE && DrawTimeAvail >= 0 && BlitterFIFO.CanRead() == 0x00)	// GPU idle bit.
+   ret |= 1 << 26;
 
-		if(InCmd == PS_GPU::INCMD_FBREAD)	// Might want to more accurately emulate this in the future?
-			ret |= (1 << 27);
+  if(InCmd == PS_GPU::INCMD_FBREAD)	// Might want to more accurately emulate this in the future?
+   ret |= (1 << 27);
 
-		ret |= GPU_CalcFIFOReadyBit() << 28;		// FIFO has room bit? (kinda).
+  ret |= GPU_CalcFIFOReadyBit() << 28;		// FIFO has room bit? (kinda).
 
-																						//
-																						//
-		ret |= TexPageX >> 6;
-		ret |= TexPageY >> 4;
-		ret |= abr << 5;
-		ret |= TexMode << 7;
+  //
+  //
+  ret |= TexPageX >> 6;
+  ret |= TexPageY >> 4;
+  ret |= abr << 5;
+  ret |= TexMode << 7;
 
-		ret |= dtd << 9;
-		ret |= dfe << 10;
+  ret |= dtd << 9;
+  ret |= dfe << 10;
 
-		if(MaskSetOR)
-			ret |= 1 << 11;
+  if(MaskSetOR)
+   ret |= 1 << 11;
 
-		if(MaskEvalAND)
-			ret |= 1 << 12;
+  if(MaskEvalAND)
+   ret |= 1 << 12;
 
-		ret |= TexDisable << 15;
-	}
-	else		// "Data"
-		ret = ReadData();
+  ret |= TexDisable << 15;
+ }
+ else		// "Data"
+  ret = ReadData();
 
-	if(DMAControl & 2)
-	{
-		//PSX_WARNING("[GPU READ WHEN (DMACONTROL&2)] 0x%08x - ret=0x%08x, scanline=%d", A, ret, scanline);
-	}
+ if(DMAControl & 2)
+ {
+  //PSX_WARNING("[GPU READ WHEN (DMACONTROL&2)] 0x%08x - ret=0x%08x, scanline=%d", A, ret, scanline);
+ }
 
-	return(ret >> ((A & 3) * 8));
+ return(ret >> ((A & 3) * 8));
 }
 
 #if 0
 static INLINE uint32 MDFN_NOWARN_UNUSED ShiftHelper(uint32 val, int shamt, uint32 mask)
 {
-	if(shamt < 0)
-		return((val >> (-shamt)) & mask);
-	else
-		return((val << shamt) & mask);
+ if(shamt < 0)
+  return((val >> (-shamt)) & mask);
+ else
+  return((val << shamt) & mask);
 }
 #endif
 
@@ -1105,490 +1104,465 @@ static INLINE uint32 MDFN_NOWARN_UNUSED ShiftHelper(uint32 val, int shamt, uint3
 #pragma GCC optimize("no-unroll-loops,no-peel-loops,no-crossjumping")
 static INLINE void ReorderRGB_Var(uint32 out_Rshift, uint32 out_Gshift, uint32 out_Bshift, bool bpp24, const uint16 *src, uint32 *dest, const int32 dx_start, const int32 dx_end, int32 fb_x)
 {
-	if(bpp24)	// 24bpp
-	{
-		for(int32 x = dx_start; MDFN_LIKELY(x < dx_end); x++)
-		{
-			uint32 srcpix;
+     if(bpp24)	// 24bpp
+     {
+      for(int32 x = dx_start; MDFN_LIKELY(x < dx_end); x++)
+      {
+       uint32 srcpix;
 
-			srcpix = src[(fb_x >> 1) + 0] | (src[((fb_x >> 1) + 1) & 0x7FF] << 16);
-			srcpix >>= (fb_x & 1) * 8;
+       srcpix = src[(fb_x >> 1) + 0] | (src[((fb_x >> 1) + 1) & 0x7FF] << 16);
+       srcpix >>= (fb_x & 1) * 8;
 
-			dest[x] = (((srcpix >> 0) << out_Rshift) & (0xFF << out_Rshift)) | (((srcpix >> 8) << out_Gshift) & (0xFF << out_Gshift)) |
-				(((srcpix >> 16) << out_Bshift) & (0xFF << out_Bshift));
+       dest[x] = (((srcpix >> 0) << out_Rshift) & (0xFF << out_Rshift)) | (((srcpix >> 8) << out_Gshift) & (0xFF << out_Gshift)) |
+       		 (((srcpix >> 16) << out_Bshift) & (0xFF << out_Bshift));
 
-			fb_x = (fb_x + 3) & 0x7FF;
-		}
-	}				// 15bpp
-	else
-	{
-		for(int32 x = dx_start; MDFN_LIKELY(x < dx_end); x++)
-		{
-			uint32 srcpix = src[fb_x >> 1];
+       fb_x = (fb_x + 3) & 0x7FF;
+      }
+     }				// 15bpp
+     else
+     {
+      for(int32 x = dx_start; MDFN_LIKELY(x < dx_end); x++)
+      {
+       uint32 srcpix = src[fb_x >> 1];
 
-			#if 1
-			dest[x] = OutputLUT[(uint8)srcpix] | (OutputLUT + 256)[(srcpix >> 8) & 0x7F];
-			#else
-			dest[x] = ShiftHelper(srcpix, out_Rshift + 3 -  0, (0xF8 << out_Rshift)) |
-				ShiftHelper(srcpix, out_Gshift + 3 -  5, (0xF8 << out_Gshift)) |
-				ShiftHelper(srcpix, out_Bshift + 3 - 10, (0xF8 << out_Bshift));
-			#endif
-			fb_x = (fb_x + 2) & 0x7FF;
-		}
-	}
+#if 1
+       dest[x] = OutputLUT[(uint8)srcpix] | (OutputLUT + 256)[(srcpix >> 8) & 0x7F];
+#else
+       dest[x] = ShiftHelper(srcpix, out_Rshift + 3 -  0, (0xF8 << out_Rshift)) |
+	         ShiftHelper(srcpix, out_Gshift + 3 -  5, (0xF8 << out_Gshift)) |
+	         ShiftHelper(srcpix, out_Bshift + 3 - 10, (0xF8 << out_Bshift));
+#endif
+       fb_x = (fb_x + 2) & 0x7FF;
+      }
+     }
 
 }
 
 template<uint32 out_Rshift, uint32 out_Gshift, uint32 out_Bshift>
 static NO_INLINE void ReorderRGB(bool bpp24, const uint16 *src, uint32 *dest, const int32 dx_start, const int32 dx_end, int32 fb_x)
 {
-	ReorderRGB_Var(out_Rshift, out_Gshift, out_Bshift, bpp24, src, dest, dx_start, dx_end, fb_x);
+ ReorderRGB_Var(out_Rshift, out_Gshift, out_Bshift, bpp24, src, dest, dx_start, dx_end, fb_x);
 }
 #pragma GCC pop_options
 
 MDFN_FASTCALL pscpu_timestamp_t GPU_Update(const pscpu_timestamp_t sys_timestamp)
 {
-	const uint32 dmc = (DisplayMode & 0x40) ? 4 : (DisplayMode & 0x3);
-	const uint32 dmw = HVisMax / DotClockRatios[dmc];	// Must be <= (768 - drxbo)
-	const uint32 dmpa = HVisOffs / DotClockRatios[dmc];	// Must be <= drxbo
-	int32 sys_clocks = sys_timestamp - lastts;
-	int32 gpu_clocks;
-
-	//printf("GPUISH: %d\n", sys_timestamp - lastts);
-
-	if(!sys_clocks)
-		goto TheEnd;
-
-	DrawTimeAvail += sys_clocks << 1;
-
-	if(DrawTimeAvail > 256)
-		DrawTimeAvail = 256;
-
-	ProcessFIFO();
-
-	//puts("GPU Update Start");
-
-	GPUClockCounter += (uint64)sys_clocks * GPUClockRatio;
-
-	gpu_clocks = GPUClockCounter >> 16;
-	GPUClockCounter -= gpu_clocks << 16;
-
-	while(gpu_clocks > 0)
-	{
-		int32 chunk_clocks = gpu_clocks;
-		int32 dot_clocks;
-
-		if(chunk_clocks > LineClockCounter)
-		{
-			//printf("Chunk: %u, LCC: %u\n", chunk_clocks, LineClockCounter);
-			chunk_clocks = LineClockCounter;
-		}
-
-		gpu_clocks -= chunk_clocks;
-		LineClockCounter -= chunk_clocks;
-
-		DotClockCounter += chunk_clocks;
-		dot_clocks = DotClockCounter / DotClockRatios[DisplayMode & 0x3];
-		DotClockCounter -= dot_clocks * DotClockRatios[DisplayMode & 0x3];
-
-		TIMER_AddDotClocks(dot_clocks);
-
-
-		if(!LineClockCounter)
-		{
-			PSX_SetEventNT(PSX_EVENT_TIMER, TIMER_Update(sys_timestamp));  // We could just call this at the top of GPU_Update(), but do it here for slightly less CPU usage(presumably).
-
-			LinePhase = (LinePhase + 1) & 1;
-
-			if(LinePhase)
-			{
-				TIMER_SetHRetrace(true);
-				LineClockCounter = 200;
-				TIMER_ClockHRetrace();
-			}
-			else
-			{
-				const unsigned int FirstVisibleLine = LineVisFirst + (HardwarePALType ? 20 : 16);
-				const unsigned int VisibleLineCount = LineVisLast + 1 - LineVisFirst; //HardwarePALType ? 288 : 240;
-
-				TIMER_SetHRetrace(false);
-
-				if(DisplayMode & 0x08)
-					LineClockCounter = 3405 - 200;
-				else
-					LineClockCounter = 3412 + PhaseChange - 200;
-
-				scanline = (scanline + 1) % LinesPerField;
-				PhaseChange = !PhaseChange;
-
-				#ifdef WANT_DEBUGGER
-				DBG_GPUScanlineHook(scanline);
-				#endif
-
-				//
-				//
-				//
-				if(scanline == (HardwarePALType ? 308 : 256))	// Will need to be redone if we ever allow for visible vertical overscan with NTSC.
-				{
-					if(sl_zero_reached)
-					{
-						//printf("Req Exit(visible fallthrough case): %u\n", scanline);
-						PSX_RequestMLExit();
-					}
-				}
-
-				if(scanline == (LinesPerField - 1))
-				{
-					if(sl_zero_reached)
-					{
-						//printf("Req Exit(final fallthrough case): %u\n", scanline);
-						PSX_RequestMLExit();
-					}
-
-					if(DisplayMode & 0x20)
-						field = !field;
-					else
-						field = 0;
-				}
-
-				if(scanline == 0)
-				{
-					assert(sl_zero_reached == false);
-					sl_zero_reached = true;
-
-					if(DisplayMode & 0x20)
-					{
-						skip = false;
-
-						if(DisplayMode & 0x08)	// PAL
-							LinesPerField = 313 - field;
-						else			// NTSC
-							LinesPerField = 263 - field;
-					}
-					else
-					{
-						field = 0;	// May not be the correct place for this?
-
-						if(DisplayMode & 0x08)	// PAL
-							LinesPerField = 314;
-						else			// NTSC
-							LinesPerField = 263;
-					}
-
-					if(espec)
-					{
-						if((bool)(DisplayMode & 0x08) != HardwarePALType)
-						{
-							const uint32 black = surface->MakeColor(0, 0, 0);
-
-							DisplayRect->x = 0;
-							DisplayRect->y = 0;
-							DisplayRect->w = 384;
-							DisplayRect->h = VisibleLineCount;
-
-							for(int32 y = 0; y < DisplayRect->h; y++)
-							{
-								uint32 *dest = surface->pixels + y * surface->pitch32;
-
-								LineWidths[y] = 384;
-
-								for(int32 x = 0; x < 384; x++)
-								{
-									dest[x] = black;
-								}
-							}
-
-							if(!DisplayOff)
-							{
-								printf("VIDEO STANDARD MISMATCH");
-								/*DrawText(surface, 0, (DisplayRect->h / 2) - (13 / 2), buffer,
-									surface->MakeColor(0x00, 0xFF, 0x00), MDFN_FONT_6x13_12x13, DisplayRect->w);*/
-							}
-						}
-						else
-						{
-							const uint32 black = surface->MakeColor(0, 0, 0);
-
-							espec->InterlaceOn = (bool)(DisplayMode & 0x20);
-							espec->InterlaceField = (bool)(DisplayMode & 0x20) && field;
-
-							DisplayRect->x = drxbo;
-							DisplayRect->y = 0;
-							DisplayRect->w = 0;
-							DisplayRect->h = VisibleLineCount << (bool)(DisplayMode & 0x20);
-
-							// Clear ~0 state.
-							LineWidths[0] = 0;
-
-							for(int i = 0; i < (DisplayRect->y + DisplayRect->h); i++)
-							{
-								surface->pixels[i * surface->pitch32 + drxbo + 0] =
-									surface->pixels[i * surface->pitch32 + drxbo + 1] = black;
-								LineWidths[i] = 2;
-							}
-						}
-					}
-				}
-
-				//
-				// Don't mess with the order of evaluation of these scanline == VertXXX && (InVblankwhatever) if statements and the following IRQ/timer vblank stuff
-				// unless you know what you're doing!!! (IE you've run further tests to refine the behavior)
-				//
-				if(scanline == VertEnd && !InVBlank)
-				{
-					if(sl_zero_reached)
-					{
-						// Gameplay in Descent(NTSC) has vblank at scanline 236
-						//
-						// Mikagura Shoujo Tanteidan has vblank at scanline 192 during intro
-						//  FMV(which we don't handle here because low-latency in that case is not so important).
-						//
-						if(scanline >= (HardwarePALType ? 260 : 232))
-						{
-							//printf("Req Exit(vblank case): %u\n", scanline);
-							PSX_RequestMLExit();
-						}
-						else
-						{
-							//printf("VBlank too early, chickening out early exit: %u!\n", scanline);
-						}
-					}
-
-					//printf("VBLANK: %u\n", scanline);
-					InVBlank = true;
-
-					DisplayFB_CurYOffset = 0;
-
-					if((DisplayMode & 0x24) == 0x24)
-						field_ram_readout = !field;
-					else
-						field_ram_readout = 0;
-				}
-
-				if(scanline == VertStart && InVBlank)
-				{
-					InVBlank = false;
-
-					// Note to self: X-Men Mutant Academy relies on this being set on the proper scanline in 480i mode(otherwise it locks up on startup).
-					//if(HeightMode)
-					// DisplayFB_CurYOffset = field;
-				}
-
-				IRQ_Assert(IRQ_VBLANK, InVBlank);
-				TIMER_SetVBlank(InVBlank);
-				//
-				//
-				//
-
-				// Needs to occur even in vblank.
-				// Not particularly confident about the timing of this in regards to vblank and the upper bit(ODE) of the GPU status port, though the test that
-				// showed an oddity was pathological in that VertEnd < VertStart in it.
-				if((DisplayMode & 0x24) == 0x24)
-					DisplayFB_CurLineYReadout = (DisplayFB_YStart + (DisplayFB_CurYOffset << 1) + (InVBlank ? 0 : field_ram_readout)) & 0x1FF;
-				else
-					DisplayFB_CurLineYReadout = (DisplayFB_YStart + DisplayFB_CurYOffset) & 0x1FF;
-
-				if((bool)(DisplayMode & 0x08) == HardwarePALType && scanline >= FirstVisibleLine && scanline < (FirstVisibleLine + VisibleLineCount) && !skip && espec)
-				{
-					const uint32 black = surface->MakeColor(0, 0, 0);
-					uint32 *dest;
-					int32 dest_line;
-					int32 fb_x = DisplayFB_XStart * 2;
-					int32 dx_start = HorizStart, dx_end = HorizEnd;
-
-					dest_line = ((scanline - FirstVisibleLine) << espec->InterlaceOn) + espec->InterlaceField;
-					dest = surface->pixels + (drxbo - dmpa) + dest_line * surface->pitch32;
-
-					if(dx_end < dx_start)
-						dx_end = dx_start;
-
-					dx_start = dx_start / DotClockRatios[dmc];
-					dx_end = dx_end / DotClockRatios[dmc];
-
-					dx_start -= hmc_to_visible / DotClockRatios[dmc];
-					dx_end -= hmc_to_visible / DotClockRatios[dmc];
-					dx_start += 7;
-					dx_end += 7;
-
-					if(dx_start < 0)
-					{
-						fb_x -= dx_start * ((DisplayMode & 0x10) ? 3 : 2);
-						fb_x &= 0x7FF; //0x3FF;
-						dx_start = 0;
-					}
-
-					if((uint32)dx_end > dmw)
-						dx_end = dmw;
-
-					if(InVBlank || DisplayOff)
-						dx_start = dx_end = 0;
-
-					LineWidths[dest_line] = dmw - dmpa * 2;
-					//
-					int32 nca_lw = 0, nca_dest_adj = 0;
-
-					if(!CorrectAspect)
-					{
-						nca_lw = NCABaseW << (bool)(dmc & 0x2);
-						nca_dest_adj = (nca_lw - LineWidths[dest_line]) >> 1;
-						assert(nca_dest_adj >= 0);
-						dest += nca_dest_adj;
-					}
-
-
-					//adjustments for people who really just want to see the PSX framebuffer
-					//effectively fixes the xstart registers to be nominal values.
-					//it's unclear what happens to games displaying a peculiar Y range
-					if (dump_framebuffer)
-					{
-						//printf("%d %d %d\n", VertStart, VertEnd, DisplayOff);
-						//special hack: if the game (or the bios...) is set to display no range here, don't modify it
-						//also, as you can see just above, this condition is used to represent an 'off' display
-						//unfortunately, this will usually be taking effect at dest_line==0, and so the 
-						//fully overscanned area will get set for LineWidths[0].
-						//so later on we'll have to use LineWidths[NN], say, as a heuristic to get the framebuffer size
-						if (dx_start == dx_end)
-						{ }
-						else
-						{
-							dx_start = 0;
-							dx_end = 2560 / DotClockRatios[dmc];
-							if(GPU.FirstLine == -99)
-								GPU.FirstLine = dest_line;
-
-							LineWidths[dest_line] = dx_end - dx_start;
-						}
-					}
-
-					{
-						const uint16 *src = GPURAM[DisplayFB_CurLineYReadout];
-
-						for(int32 x = 0; x < dx_start; x++)
-							dest[x] = black;
-
-						//printf("%d %d %d - %d %d\n", scanline, dx_start, dx_end, HorizStart, HorizEnd);
-						if(surface->format.Rshift == 0 && surface->format.Gshift == 8 && surface->format.Bshift == 16)
-							ReorderRGB<0, 8, 16>(DisplayMode & 0x10, src, dest, dx_start, dx_end, fb_x);
-						else if(surface->format.Rshift == 8 && surface->format.Gshift == 16 && surface->format.Bshift == 24)
-							ReorderRGB<8, 16, 24>(DisplayMode & 0x10, src, dest, dx_start, dx_end, fb_x);
-						else if(surface->format.Rshift == 16 && surface->format.Gshift == 8 && surface->format.Bshift == 0)
-							ReorderRGB<16, 8, 0>(DisplayMode & 0x10, src, dest, dx_start, dx_end, fb_x);
-						else if(surface->format.Rshift == 24 && surface->format.Gshift == 16 && surface->format.Bshift == 8)
-							ReorderRGB<24, 16, 8>(DisplayMode & 0x10, src, dest, dx_start, dx_end, fb_x);
-						else
-							ReorderRGB_Var(surface->format.Rshift, surface->format.Gshift, surface->format.Bshift, DisplayMode & 0x10, src, dest, dx_start, dx_end, fb_x);
-
-						for(uint32 x = dx_end; x < dmw; x++)
-							dest[x] = black;
-					}
-
-					//if(scanline == 64)
-					// printf("%u\n", sys_timestamp - ((uint64)gpu_clocks * 65536) / GPUClockRatio);
-
-					PSX_GPULineHook(sys_timestamp, sys_timestamp - ((uint64)gpu_clocks * 65536) / GPUClockRatio, scanline == 0, dest, &surface->format, dmw, (hmc_to_visible - 220) / DotClockRatios[dmc], (HardwarePALType ? 53203425 : 53693182) / DotClockRatios[dmc], DotClockRatios[dmc]);
-
-					if(!CorrectAspect)
-					{
-						dest = surface->pixels + drxbo + dest_line * surface->pitch32;
-
-						for(int32 x = 0; x < nca_dest_adj; x++)
-							dest[x] = black; //rand();
-
-						for(int32 x = nca_dest_adj + LineWidths[dest_line]; x < nca_lw; x++)
-							dest[x] = black; //rand();
-
-						LineWidths[dest_line] = nca_lw;
-					}
-				}
-				else
-				{
-					PSX_GPULineHook(sys_timestamp, sys_timestamp - ((uint64)gpu_clocks * 65536) / GPUClockRatio, scanline == 0, NULL, &surface->format, 0, 0, 0, 0);
-				}
-
-				if(!InVBlank)
-				{
-					DisplayFB_CurYOffset = (DisplayFB_CurYOffset + 1) & 0x1FF;
-				}
-			}
-			PSX_SetEventNT(PSX_EVENT_TIMER, TIMER_Update(sys_timestamp));  // Mostly so the next event time gets recalculated properly in regards to our calls
-																																		 // to TIMER_SetVBlank() and TIMER_SetHRetrace().
-		}	// end if(!LineClockCounter)
-}	// end while(gpu_clocks > 0)
-
-	//puts("GPU Update End");
-
-TheEnd:
-	lastts = sys_timestamp;
-
-	{
-		int32 next_dt = LineClockCounter;
-
-		next_dt = (((int64)next_dt << 16) - GPUClockCounter + GPUClockRatio - 1) / GPUClockRatio;
-
-		next_dt = std::max<int32>(1, next_dt);
-		next_dt = std::min<int32>(128, next_dt);
-
-		//printf("%d\n", next_dt);
-
-		return(sys_timestamp + next_dt);
-	}
+ const uint32 dmc = (DisplayMode & 0x40) ? 4 : (DisplayMode & 0x3);
+ const uint32 dmw = HVisMax / DotClockRatios[dmc];	// Must be <= (768 - drxbo)
+ const uint32 dmpa = HVisOffs / DotClockRatios[dmc];	// Must be <= drxbo
+
+ int32 sys_clocks = sys_timestamp - lastts;
+ int32 gpu_clocks;
+
+ //printf("GPUISH: %d\n", sys_timestamp - lastts);
+
+ if(!sys_clocks)
+  goto TheEnd;
+
+ DrawTimeAvail += sys_clocks << 1;
+
+ if(DrawTimeAvail > 256)
+  DrawTimeAvail = 256;
+
+ ProcessFIFO();
+
+ //puts("GPU Update Start");
+
+ GPUClockCounter += (uint64)sys_clocks * GPUClockRatio;
+
+ gpu_clocks = GPUClockCounter >> 16;
+ GPUClockCounter -= gpu_clocks << 16;
+
+ while(gpu_clocks > 0)
+ {
+  int32 chunk_clocks = gpu_clocks;
+  int32 dot_clocks;
+
+  if(chunk_clocks > LineClockCounter)
+  {
+   //printf("Chunk: %u, LCC: %u\n", chunk_clocks, LineClockCounter);
+   chunk_clocks = LineClockCounter;
+  }
+
+  gpu_clocks -= chunk_clocks;
+  LineClockCounter -= chunk_clocks;
+
+  DotClockCounter += chunk_clocks;
+  dot_clocks = DotClockCounter / DotClockRatios[DisplayMode & 0x3];
+  DotClockCounter -= dot_clocks * DotClockRatios[DisplayMode & 0x3];
+
+  TIMER_AddDotClocks(dot_clocks);
+
+
+  if(!LineClockCounter)
+  {
+   PSX_SetEventNT(PSX_EVENT_TIMER, TIMER_Update(sys_timestamp));  // We could just call this at the top of GPU_Update(), but do it here for slightly less CPU usage(presumably).
+
+   LinePhase = (LinePhase + 1) & 1;
+
+   if(LinePhase)
+   {
+    TIMER_SetHRetrace(true);
+    LineClockCounter = 200;
+    TIMER_ClockHRetrace();
+   }
+   else
+   {
+    const unsigned int FirstVisibleLine = LineVisFirst + (HardwarePALType ? 20 : 16);
+    const unsigned int VisibleLineCount = LineVisLast + 1 - LineVisFirst; //HardwarePALType ? 288 : 240;
+
+    TIMER_SetHRetrace(false);
+
+    if(DisplayMode & 0x08)
+     LineClockCounter = 3405 - 200;
+    else
+     LineClockCounter = 3412 + PhaseChange - 200;
+
+    scanline = (scanline + 1) % LinesPerField;
+    PhaseChange = !PhaseChange;
+
+#ifdef WANT_DEBUGGER
+    DBG_GPUScanlineHook(scanline);
+#endif
+
+    //
+    //
+    //
+    if(scanline == (HardwarePALType ? 308 : 256))	// Will need to be redone if we ever allow for visible vertical overscan with NTSC.
+    {
+     if(sl_zero_reached)
+     {
+      //printf("Req Exit(visible fallthrough case): %u\n", scanline);
+      PSX_RequestMLExit();
+     }
+    }
+
+    if(scanline == (LinesPerField - 1))
+    {
+     if(sl_zero_reached)
+     {
+      //printf("Req Exit(final fallthrough case): %u\n", scanline);
+      PSX_RequestMLExit();
+     }
+
+     if(DisplayMode & 0x20)
+      field = !field;
+     else
+      field = 0;
+    }
+
+    if(scanline == 0)
+    {
+     assert(sl_zero_reached == false);
+     sl_zero_reached = true;
+
+     if(DisplayMode & 0x20)
+     {
+      skip = false;
+
+      if(DisplayMode & 0x08)	// PAL
+       LinesPerField = 313 - field;
+      else			// NTSC
+       LinesPerField = 263 - field;
+     }
+     else
+     {
+      field = 0;	// May not be the correct place for this?
+
+      if(DisplayMode & 0x08)	// PAL
+       LinesPerField = 314;
+      else			// NTSC
+       LinesPerField = 263;
+     }
+
+     if(espec)
+     {
+      if((bool)(DisplayMode & 0x08) != HardwarePALType)
+      {
+       const uint32 black = surface->MakeColor(0, 0, 0);
+
+       DisplayRect->x = 0;
+       DisplayRect->y = 0;
+       DisplayRect->w = 384;
+       DisplayRect->h = VisibleLineCount;
+
+       for(int32 y = 0; y < DisplayRect->h; y++)
+       {
+        uint32 *dest = surface->pixels + y * surface->pitch32;
+
+        LineWidths[y] = 384;
+
+        for(int32 x = 0; x < 384; x++)
+        {
+         dest[x] = black;
+        }
+       }
+
+       if(!DisplayOff)
+       {
+        char buffer[256];
+        printf(("VIDEO STANDARD MISMATCH"));
+  //      DrawText(surface, 0, (DisplayRect->h / 2) - (13 / 2), buffer,
+		//surface->MakeColor(0x00, 0xFF, 0x00), MDFN_FONT_6x13_12x13, DisplayRect->w);
+       }
+      }
+      else
+      {
+       const uint32 black = surface->MakeColor(0, 0, 0);
+
+       espec->InterlaceOn = (bool)(DisplayMode & 0x20);
+       espec->InterlaceField = (bool)(DisplayMode & 0x20) && field;
+
+       DisplayRect->x = drxbo;
+       DisplayRect->y = 0;
+       DisplayRect->w = 0;
+       DisplayRect->h = VisibleLineCount << (bool)(DisplayMode & 0x20);
+
+       // Clear ~0 state.
+       LineWidths[0] = 0;
+
+       for(int i = 0; i < (DisplayRect->y + DisplayRect->h); i++)
+       {
+	surface->pixels[i * surface->pitch32 + drxbo + 0] =
+	surface->pixels[i * surface->pitch32 + drxbo + 1] = black;
+        LineWidths[i] = 2;
+       }
+      }
+     }
+    }
+
+    //
+    // Don't mess with the order of evaluation of these scanline == VertXXX && (InVblankwhatever) if statements and the following IRQ/timer vblank stuff
+    // unless you know what you're doing!!! (IE you've run further tests to refine the behavior)
+    //
+    if(scanline == VertEnd && !InVBlank)
+    {
+     if(sl_zero_reached)
+     {
+      // Gameplay in Descent(NTSC) has vblank at scanline 236
+      //
+      // Mikagura Shoujo Tanteidan has vblank at scanline 192 during intro
+      //  FMV(which we don't handle here because low-latency in that case is not so important).
+      //
+      if(scanline >= (HardwarePALType ? 260 : 232))
+      {
+       //printf("Req Exit(vblank case): %u\n", scanline);
+       PSX_RequestMLExit();
+      }
+      else
+      {
+       //printf("VBlank too early, chickening out early exit: %u!\n", scanline);
+      }
+     }
+
+     //printf("VBLANK: %u\n", scanline);
+     InVBlank = true;
+
+     DisplayFB_CurYOffset = 0;
+
+     if((DisplayMode & 0x24) == 0x24)
+      field_ram_readout = !field;
+     else
+      field_ram_readout = 0;
+    }
+
+    if(scanline == VertStart && InVBlank)
+    {
+     InVBlank = false;
+
+     // Note to self: X-Men Mutant Academy relies on this being set on the proper scanline in 480i mode(otherwise it locks up on startup).
+     //if(HeightMode)
+     // DisplayFB_CurYOffset = field;
+    }
+
+    IRQ_Assert(IRQ_VBLANK, InVBlank);
+    TIMER_SetVBlank(InVBlank);
+    //
+    //
+    //
+
+    // Needs to occur even in vblank.
+    // Not particularly confident about the timing of this in regards to vblank and the upper bit(ODE) of the GPU status port, though the test that
+    // showed an oddity was pathological in that VertEnd < VertStart in it.
+    if((DisplayMode & 0x24) == 0x24)
+     DisplayFB_CurLineYReadout = (DisplayFB_YStart + (DisplayFB_CurYOffset << 1) + (InVBlank ? 0 : field_ram_readout)) & 0x1FF;
+    else
+     DisplayFB_CurLineYReadout = (DisplayFB_YStart + DisplayFB_CurYOffset) & 0x1FF;
+
+    if((bool)(DisplayMode & 0x08) == HardwarePALType && scanline >= FirstVisibleLine && scanline < (FirstVisibleLine + VisibleLineCount) && !skip && espec)
+    {
+     const uint32 black = surface->MakeColor(0, 0, 0);
+     uint32 *dest;
+     int32 dest_line;
+     int32 fb_x = DisplayFB_XStart * 2;
+     int32 dx_start = HorizStart, dx_end = HorizEnd;
+
+     dest_line = ((scanline - FirstVisibleLine) << espec->InterlaceOn) + espec->InterlaceField;
+     dest = surface->pixels + (drxbo - dmpa) + dest_line * surface->pitch32;
+
+     if(dx_end < dx_start)
+      dx_end = dx_start;
+
+     dx_start = dx_start / DotClockRatios[dmc];
+     dx_end = dx_end / DotClockRatios[dmc];
+
+     dx_start -= hmc_to_visible / DotClockRatios[dmc];
+     dx_end -= hmc_to_visible / DotClockRatios[dmc];
+     dx_start += 7;
+     dx_end += 7;
+
+     if(dx_start < 0)
+     {
+      fb_x -= dx_start * ((DisplayMode & 0x10) ? 3 : 2);
+      fb_x &= 0x7FF; //0x3FF;
+      dx_start = 0;
+     }
+
+     if((uint32)dx_end > dmw)
+      dx_end = dmw;
+
+     if(InVBlank || DisplayOff)
+      dx_start = dx_end = 0;
+
+     LineWidths[dest_line] = dmw - dmpa * 2;
+     //
+     int32 nca_lw = 0, nca_dest_adj = 0;
+
+     if(!CorrectAspect)
+     {
+      nca_lw = NCABaseW << (bool)(dmc & 0x2);
+      nca_dest_adj = (nca_lw - LineWidths[dest_line]) >> 1;
+      assert(nca_dest_adj >= 0);
+      dest += nca_dest_adj;
+     }
+
+     {
+      const uint16 *src = GPURAM[DisplayFB_CurLineYReadout];
+
+      for(int32 x = 0; x < dx_start; x++)
+       dest[x] = black;
+
+      //printf("%d %d %d - %d %d\n", scanline, dx_start, dx_end, HorizStart, HorizEnd);
+      if(surface->format.Rshift == 0 && surface->format.Gshift == 8 && surface->format.Bshift == 16)
+       ReorderRGB<0, 8, 16>(DisplayMode & 0x10, src, dest, dx_start, dx_end, fb_x);
+      else if(surface->format.Rshift == 8 && surface->format.Gshift == 16 && surface->format.Bshift == 24)
+       ReorderRGB<8, 16, 24>(DisplayMode & 0x10, src, dest, dx_start, dx_end, fb_x);
+      else if(surface->format.Rshift == 16 && surface->format.Gshift == 8 && surface->format.Bshift == 0)
+       ReorderRGB<16, 8, 0>(DisplayMode & 0x10, src, dest, dx_start, dx_end, fb_x);
+      else if(surface->format.Rshift == 24 && surface->format.Gshift == 16 && surface->format.Bshift == 8)
+       ReorderRGB<24, 16, 8>(DisplayMode & 0x10, src, dest, dx_start, dx_end, fb_x);
+      else
+       ReorderRGB_Var(surface->format.Rshift, surface->format.Gshift, surface->format.Bshift, DisplayMode & 0x10, src, dest, dx_start, dx_end, fb_x);
+
+      for(uint32 x = dx_end; x < dmw; x++)
+       dest[x] = black;
+     }
+
+     //if(scanline == 64)
+     // printf("%u\n", sys_timestamp - ((uint64)gpu_clocks * 65536) / GPUClockRatio);
+
+     PSX_GPULineHook(sys_timestamp, sys_timestamp - ((uint64)gpu_clocks * 65536) / GPUClockRatio, scanline == 0, dest, &surface->format, dmw, (hmc_to_visible - 220) / DotClockRatios[dmc], (HardwarePALType ? 53203425 : 53693182) / DotClockRatios[dmc], DotClockRatios[dmc]);
+
+     if(!CorrectAspect)
+     {
+      dest = surface->pixels + drxbo + dest_line * surface->pitch32;
+
+      for(int32 x = 0; x < nca_dest_adj; x++)
+       dest[x] = black; //rand();
+
+      for(int32 x = nca_dest_adj + LineWidths[dest_line]; x < nca_lw; x++)
+       dest[x] = black; //rand();
+
+      LineWidths[dest_line] = nca_lw;
+     }
+    }
+    else
+    {
+     PSX_GPULineHook(sys_timestamp, sys_timestamp - ((uint64)gpu_clocks * 65536) / GPUClockRatio, scanline == 0, NULL, &surface->format, 0, 0, 0, 0);
+    }
+
+    if(!InVBlank)
+    {
+     DisplayFB_CurYOffset = (DisplayFB_CurYOffset + 1) & 0x1FF;
+    }
+   }
+   PSX_SetEventNT(PSX_EVENT_TIMER, TIMER_Update(sys_timestamp));  // Mostly so the next event time gets recalculated properly in regards to our calls
+								  // to TIMER_SetVBlank() and TIMER_SetHRetrace().
+  }	// end if(!LineClockCounter)
+ }	// end while(gpu_clocks > 0)
+
+ //puts("GPU Update End");
+
+ TheEnd:
+ lastts = sys_timestamp;
+
+ {
+  int32 next_dt = LineClockCounter;
+
+  next_dt = (((int64)next_dt << 16) - GPUClockCounter + GPUClockRatio - 1) / GPUClockRatio;
+
+  next_dt = std::max<int32>(1, next_dt);
+  next_dt = std::min<int32>(128, next_dt);
+
+  //printf("%d\n", next_dt);
+
+  return(sys_timestamp + next_dt);
+ }
 }
 
 void GPU_GetGunXTranslation(float* scale, float* offs)
 {
-	*scale = 1.0;
-	*offs = HVisOffs;
+ *scale = 1.0;
+ *offs = HVisOffs;
 
-	if(!CorrectAspect)
-	{
-		const uint32 dmc = (DisplayMode & 0x40) ? 4 : (DisplayMode & 0x3);
-		const uint32 dmw = HVisMax / DotClockRatios[dmc];	// Must be <= (768 - drxbo)
-		const uint32 dmpa = HVisOffs / DotClockRatios[dmc];	// Must be <= drxbo
-																												//
-		const int32 lw = dmw - dmpa * 2;
-		const int32 nca_lw = NCABaseW << (bool)(dmc & 0x2);
-		int32 nca_dest_adj = (nca_lw - lw) >> 1;
-		*scale = (float)nca_lw / lw; //(float)(DotClockRatios[dmc] << (bool)(dmc & 0x2)) / 7;
-		*offs -= nca_dest_adj * DotClockRatios[dmc];
-		//printf("%f %d %d\n", *scale, lw, nca_lw);
-	}
+ if(!CorrectAspect)
+ {
+  const uint32 dmc = (DisplayMode & 0x40) ? 4 : (DisplayMode & 0x3);
+  const uint32 dmw = HVisMax / DotClockRatios[dmc];	// Must be <= (768 - drxbo)
+  const uint32 dmpa = HVisOffs / DotClockRatios[dmc];	// Must be <= drxbo
+  //
+  const int32 lw = dmw - dmpa * 2;
+  const int32 nca_lw = NCABaseW << (bool)(dmc & 0x2);
+  int32 nca_dest_adj = (nca_lw - lw) >> 1;
+  *scale = (float)nca_lw / lw; //(float)(DotClockRatios[dmc] << (bool)(dmc & 0x2)) / 7;
+  *offs -= nca_dest_adj * DotClockRatios[dmc];
+  //printf("%f %d %d\n", *scale, lw, nca_lw);
+ }
 }
-
 void GPU_StartFrame(EmulateSpecStruct *espec_arg)
 {
-	sl_zero_reached = false;
+ sl_zero_reached = false;
 
-	if(!espec_arg)
-	{
-		espec = NULL;
-		surface = NULL;
-		DisplayRect = NULL;
-		LineWidths = NULL;
-		skip = true;
-		return;
-	}
+ if(!espec_arg)
+ {
+  espec = NULL;
+  surface = NULL;
+  DisplayRect = NULL;
+  LineWidths = NULL;
+  skip = true;
+  return;
+ }
 
-	espec = espec_arg;
+ espec = espec_arg;
 
-	surface = espec->surface;
-	DisplayRect = &espec->DisplayRect;
-	LineWidths = espec->LineWidths;
-	skip = espec->skip;
-	GPU.FirstLine = -99;
+ surface = espec->surface;
+ DisplayRect = &espec->DisplayRect;
+ LineWidths = espec->LineWidths;
+ skip = espec->skip;
 
-	if(espec->VideoFormatChanged)
-	{
-		const auto& f = surface->format;
+ if(espec->VideoFormatChanged)
+ {
+  const auto& f = surface->format;
 
-		for(int rc = 0; rc < 0x8000; rc++)
-		{
-			const uint8 a = rc;
-			const uint8 b = rc >> 8;
+  for(int rc = 0; rc < 0x8000; rc++)
+  {
+   const uint8 a = rc;
+   const uint8 b = rc >> 8;
 
-			(OutputLUT +   0)[a] = ((a & 0x1F) << (3 + f.Rshift)) | ((a >> 5) << (3 + f.Gshift));
-			(OutputLUT + 256)[b] = ((b & 0x3) << (6 + f.Gshift)) | (((b >> 2) & 0x1F) << (3 + f.Bshift));
-		}
-	}
+   (OutputLUT +   0)[a] = ((a & 0x1F) << (3 + f.Rshift)) | ((a >> 5) << (3 + f.Gshift));
+   (OutputLUT + 256)[b] = ((b & 0x3) << (6 + f.Gshift)) | (((b >> 2) & 0x1F) << (3 + f.Bshift));
+  }
+ }
 }
 
 SYNCFUNC(PS_GPU)
