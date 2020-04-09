@@ -39,6 +39,9 @@ namespace BizHawk.Client.EmuHawk
 				case GBColors.ColorType.gba:
 					radioButton6.Checked = true;
 					break;
+				case GBColors.ColorType.libretrogbc:
+					radioButton7.Checked = true;
+					break;
 			}
 		}
 
@@ -101,6 +104,11 @@ namespace BizHawk.Client.EmuHawk
 				_type = GBColors.ColorType.gba;
 			}
 
+			if (sender == radioButton7)
+			{
+				_type = GBColors.ColorType.libretrogbc;
+			}
+
 			if (sender is RadioButton radioButton && radioButton.Checked)
 			{
 				RefreshType();
@@ -116,6 +124,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				s.CGBColors = dlg._type;
 			}
+		}
+
+		private void groupBox1_Enter(object sender, EventArgs e)
+		{
+
 		}
 	}
 }
