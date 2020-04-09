@@ -21,7 +21,6 @@
 
 #include "psx.h"
 #include "gpu.h"
-#include "math_ops.h"
 
 namespace MDFN_IEN_PSX
 {
@@ -260,7 +259,7 @@ static void Command_DrawLine(const uint32 *cb)
  DrawLine<goraud, BlendMode, MaskEval_TA>(points);
 }
 
-extern const CTEntry Commands_40_5F[0x20] =
+MDFN_HIDE extern const CTEntry Commands_40_5F[0x20] =
 {
  LINE_HELPER(0x40),
  LINE_HELPER(0x41),

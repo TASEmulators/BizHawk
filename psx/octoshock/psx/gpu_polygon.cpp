@@ -23,7 +23,6 @@
 
 #include "psx.h"
 #include "gpu.h"
-#include "math_ops.h"
 
 namespace MDFN_IEN_PSX
 {
@@ -595,7 +594,7 @@ static void Command_DrawPolygon(const uint32 *cb)
 #undef COORD_FBS
 #undef COORD_MF_INT
 
-extern const CTEntry Commands_20_3F[0x20] =
+MDFN_HIDE extern const CTEntry Commands_20_3F[0x20] =
 {
  /* 0x20 */
  POLY_HELPER(0x20),

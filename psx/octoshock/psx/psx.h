@@ -27,7 +27,7 @@
 #include "masmem.h"
 #include "endian.h"
 #include "emuware/EW_state.h"
-
+#include "math_ops.h"
 
 //
 // Comment out these 2 defines for extra speeeeed.
