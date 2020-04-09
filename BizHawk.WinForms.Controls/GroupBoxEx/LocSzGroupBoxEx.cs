@@ -7,9 +7,5 @@ namespace BizHawk.WinForms.Controls
 	{
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public new bool AutoSize => base.AutoSize;
-
-		public LocSzGroupBoxEx() : base(out _) {}
-
-		public LocSzGroupBoxEx(out IRadioButtonReadOnlyTracker tracker) : base(out tracker) {}
 	}
 }

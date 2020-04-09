@@ -36,11 +36,11 @@
 			this.cbMasterEnable = new BizHawk.WinForms.Controls.CheckBoxEx();
 			this.lblMasterEnable = new BizHawk.WinForms.Controls.LocSzLabelEx();
 			this.cbMuteFrameAdvance = new BizHawk.WinForms.Controls.CheckBoxEx();
-			this.grpSoundMethod = new BizHawk.WinForms.Controls.SzGroupBoxEx(out var trackerGrpSoundMethod);
+			this.grpSoundMethod = new BizHawk.WinForms.Controls.SzGroupBoxEx();
 			this.flpGrpSoundMethod = new BizHawk.WinForms.Controls.LocSingleColumnFLP();
-			this.rbSoundMethodDirectSound = new BizHawk.WinForms.Controls.RadioButtonEx(trackerGrpSoundMethod);
-			this.rbSoundMethodXAudio2 = new BizHawk.WinForms.Controls.RadioButtonEx(trackerGrpSoundMethod);
-			this.rbSoundMethodOpenAL = new BizHawk.WinForms.Controls.RadioButtonEx(trackerGrpSoundMethod);
+			this.rbSoundMethodDirectSound = new BizHawk.WinForms.Controls.RadioButtonEx(grpSoundMethod.Tracker);
+			this.rbSoundMethodXAudio2 = new BizHawk.WinForms.Controls.RadioButtonEx(grpSoundMethod.Tracker);
+			this.rbSoundMethodOpenAL = new BizHawk.WinForms.Controls.RadioButtonEx(grpSoundMethod.Tracker);
 			this.grpVolume.SuspendLayout();
 			this.flpGrpVolume.SuspendLayout();
 			this.flpFullSpeed.SuspendLayout();

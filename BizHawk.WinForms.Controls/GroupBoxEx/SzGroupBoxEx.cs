@@ -11,9 +11,5 @@ namespace BizHawk.WinForms.Controls
 
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public new Point Location => base.Location;
-
-		public SzGroupBoxEx() : base(out _) {}
-
-		public SzGroupBoxEx(out IRadioButtonReadOnlyTracker tracker) : base(out tracker) {}
 	}
 }
