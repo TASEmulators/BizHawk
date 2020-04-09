@@ -70,7 +70,6 @@ class PS_CDC
  void SetLEC(bool enable) { EnableLEC = enable; }
 
  private:
- CDIF *Cur_CDIF;
  ShockDiscRef* Cur_disc;
  bool EnableLEC;
  bool TrayOpen;
@@ -123,7 +122,7 @@ class PS_CDC
  uint8 SectorPipe_Pos;
  uint8 SectorPipe_In;
 
- //uint8 SubQBuf[0xC];
+ uint8 SubQBuf[0xC];
  uint8 SubQBuf_Safe[0xC];
  bool SubQChecksumOK;
 
@@ -190,8 +189,7 @@ class PS_CDC
   DS_STOPPED = 0,
   DS_SEEKING,
   DS_SEEKING_LOGICAL,
-	DS_SEEKING_LOGICAL2,
-  DS_PLAY_SEEKING,
+  DS_SEEKING_LOGICAL2,
   DS_PLAYING,
   DS_READING,
   //DS_RESETTING
@@ -267,7 +265,7 @@ class PS_CDC
 
  static const CDC_CTEntry Commands[0x20];
 
- int32 Command_GetStat(const int arg_count, const uint8 *args);
+ int32 Command_Nop(const int arg_count, const uint8 *args);
  int32 Command_Setloc(const int arg_count, const uint8 *args);
  int32 Command_Play(const int arg_count, const uint8 *args);
  int32 Command_Forward(const int arg_count, const uint8 *args);
