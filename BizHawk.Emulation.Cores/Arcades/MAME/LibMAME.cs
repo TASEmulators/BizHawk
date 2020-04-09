@@ -13,10 +13,25 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			ERROR, WARNING, INFO, DEBUG, VERBOSE, LOG, COUNT
 		}
 
+		public enum SaveError
+		{
+			NONE, NOT_FOUND, ILLEGAL_REGISTRATIONS, INVALID_HEADER, READ_ERROR, WRITE_ERROR, DISABLED
+		};
+
+		#region C API
+
 		// main launcher
 		[DllImport(dll, CallingConvention = cc)]
-		public static extern UInt32 mame_launch(int argc, string[] argv);
-		
+		public static extern uint mame_launch(int argc, string[] argv);
+
+		[DllImport(dll, CallingConvention = cc)]
+		public static extern SaveError mame_save_buffer(byte[] buf, out int length);
+
+		[DllImport(dll, CallingConvention = cc)]
+		public static extern SaveError mame_load_buffer(byte[] buf, int length);
+
+		#endregion
+
 		#region Lua API
 
 		// execute

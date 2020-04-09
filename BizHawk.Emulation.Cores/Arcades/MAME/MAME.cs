@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		author: "MAMEDev",
 		isPorted: true,
 		isReleased: false,
-		portedVersion: "0.218",
+		portedVersion: "0.220",
 		portedUrl: "https://github.com/mamedev/mame.git",
 		singleInstance: false)]
 	public partial class MAME : IEmulator, IVideoProvider, ISoundProvider, ISettable<object, MAME.SyncSettings>, IStatable
@@ -185,22 +185,20 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			_memAccess = true;
 			_mamePeriodicComplete.WaitOne();
 
-			IntPtr ptr = LibMAME.mame_lua_get_string("return manager:machine():buffer_save()", out var lengthInBytes);
-
-			if (ptr == IntPtr.Zero)
-			{
-				Console.WriteLine("LibMAME ERROR: audio buffer pointer is null");
-				return;
-			}
-
-			Marshal.Copy(ptr, _mameSaveBuffer, 0, lengthInBytes);
-
-			if (!LibMAME.mame_lua_free_string(ptr))
-			{
-				Console.WriteLine("LibMAME ERROR: audio buffer wasn't freed");
-			}
-
 			writer.Write(_mameSaveBuffer.Length);
+
+			LibMAME.SaveError err = LibMAME.mame_save_buffer(_mameSaveBuffer, out int length);
+
+			if (length != _mameSaveBuffer.Length)
+			{
+				throw new InvalidOperationException("Savestate buffer size mismatch!");
+			}
+
+			if (err != LibMAME.SaveError.NONE)
+			{
+				throw new InvalidOperationException("MAME LOADSTATE ERROR: " + err.ToString());
+			}
+
 			writer.Write(_mameSaveBuffer);
 			writer.Write(Frame);
 
@@ -221,18 +219,14 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 
 			reader.Read(_mameSaveBuffer, 0, _mameSaveBuffer.Length);
+			LibMAME.SaveError err = LibMAME.mame_load_buffer(_mameSaveBuffer, _mameSaveBuffer.Length);
+
+			if (err != LibMAME.SaveError.NONE)
+			{
+				throw new InvalidOperationException("MAME SAVESTATE ERROR: " + err.ToString());
+			}
+
 			Frame = reader.ReadInt32();
-
-			string start = "manager:machine():buffer_load(\"";
-			string end = "\")";
-
-			byte[] command = new byte[start.Length + _mameSaveBuffer.Length + end.Length];
-
-			System.Buffer.BlockCopy(Encoding.ASCII.GetBytes(start), 0, command, 0, start.Length);
-			System.Buffer.BlockCopy(_mameSaveBuffer, 0, command, start.Length, _mameSaveBuffer.Length);
-			System.Buffer.BlockCopy(Encoding.ASCII.GetBytes(end), 0, command, start.Length + _mameSaveBuffer.Length, end.Length);
-
-			LibMAME.mame_lua_execute(command);
 
 			_memoryAccessComplete.Set();
 			_memAccess = false;
@@ -711,9 +705,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			UpdateGameName();
 			InitMemoryDomains();
 
-			IntPtr ptr = LibMAME.mame_lua_get_string("return manager:machine():buffer_save()", out var lengthInBytes);
-			_mameSaveBuffer = new byte[lengthInBytes];
-			_hawkSaveBuffer = new byte[lengthInBytes + 4 + 4];
+			int length = LibMAME.mame_lua_get_int("return string.len(manager:machine():buffer_save())");
+			_mameSaveBuffer = new byte[length];
+			_hawkSaveBuffer = new byte[length + 4 + 4];
 
 			_mameStartupComplete.Set();
 		}
