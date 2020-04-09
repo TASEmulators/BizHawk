@@ -51,12 +51,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public static Triple GambatteColor(Triple c)
 		{
 			Triple ret;
+			ret.r = (c.r * 13 + c.g * 2 + c.b) >> 1;
+			ret.g = (c.g * 3 + c.b) << 1;
+			ret.b = (c.r * 3 + c.g * 2 + c.b * 11) >> 1;
+			return ret;
+		}
+
+		public static Triple LibretroGBCColor(Triple c)
+		{
+			Triple ret;
+			ret.r = (c.r * 13 + c.g * 2 + c.b) >> 1;
+			ret.g = (c.g * 3 + c.b) << 1;
+			ret.b = (c.r * 3 + c.g * 2 + c.b * 11) >> 1;
 			double gammaR = Math.Pow((double)c.r / 31, 2.2);
 			double gammaG = Math.Pow((double)c.g / 31, 2.2);
 			double gammaB = Math.Pow((double)c.b / 31, 2.2);
-			ret.r = (int)(Math.Pow(gammaR * .87 + gammaG * .18 - gammaB * .05, 1/ 2.2) * 255 + .5);
-			ret.g = (int)(Math.Pow(gammaG * .66 + gammaR * .115 + gammaB * .225, 1/ 2.2) * 255 + .5);
-			ret.b = (int)(Math.Pow(gammaB * .79 + gammaR * .14 + gammaG * .07, 1/ 2.2) * 255 + .5);
+			ret.r = (int)(Math.Pow(gammaR * .87 + gammaG * .18 - gammaB * .05, 1 / 2.2) * 255 + .5);
+			ret.g = (int)(Math.Pow(gammaG * .66 + gammaR * .115 + gammaB * .225, 1 / 2.2) * 255 + .5);
+			ret.b = (int)(Math.Pow(gammaB * .79 + gammaR * .14 + gammaG * .07, 1 / 2.2) * 255 + .5);
 			ret.r = Math.Max(0, Math.Min(255, ret.r));
 			ret.g = Math.Max(0, Math.Min(255, ret.g));
 			ret.b = Math.Max(0, Math.Min(255, ret.b));
@@ -130,7 +142,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			vbavivid,
 			vbagbnew,
 			vbabgbold,
-			gba
+			gba,
+			libretrogbc
 		}
 
 		public static int[] GetLut(ColorType c)
@@ -151,6 +164,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				case ColorType.vbagbnew: f = NewVBAColor; break;
 				case ColorType.vbabgbold: f = OldVBAColor; break;
 				case ColorType.gba: f = GBAColor; break;
+				case ColorType.libretrogbc: f = LibretroGBCColor; break;
 			}
 
 			int i = 0;
