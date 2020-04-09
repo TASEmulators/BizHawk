@@ -19,7 +19,8 @@
 ** 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-#pragma once
+#ifndef __MDFN_PSX_GTE_H
+#define __MDFN_PSX_GTE_H
 
 namespace MDFN_IEN_PSX
 {
@@ -38,3 +39,4 @@ uint32 GTE_ReadDR(unsigned int which);
 
 }
 
+#endif

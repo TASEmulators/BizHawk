@@ -19,16 +19,12 @@
 ** 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-//#pragma GCC optimize ("no-unroll-loops,no-peel-loops")
+#pragma GCC optimize ("no-unroll-loops,no-peel-loops")
 
+#ifndef PSXDEV_GTE_TESTING
 #include "psx.h"
 #include "gte.h"
-#include "math_ops.h"
-
-#undef FALSE
-#undef TRUE
-#define FALSE 0
-#define TRUE 1
+#endif
 
 /* Notes:
 
@@ -53,12 +49,11 @@ namespace MDFN_IEN_PSX
 {
 #endif
 
-EW_PACKED(
-struct gtematrix
+typedef struct
 {
  int16 MX[3][3];
  int16 dummy;
-});
+} gtematrix;
 #ifndef PSXDEV_GTE_TESTING
 static_assert(sizeof(gtematrix) == 20, "gtematrix wrong size!");
 #endif
@@ -158,7 +153,6 @@ static INLINE uint8 Sat5(int16 cc)
  return(cc);
 }
 
-
 //
 // Newton-Raphson division table.  (Initialized at startup; do NOT save in save states!)
 //
@@ -196,8 +190,6 @@ void GTE_Power(void)
 {
  memset(CR, 0, sizeof(CR));
  //memset(DR, 0, sizeof(DR));
- 	const int x = 5;
-	char v[x];
 
  memset(Matrices.All, 0, sizeof(Matrices.All));
  memset(CRVectors.All, 0, sizeof(CRVectors.All));
@@ -295,8 +287,7 @@ void GTE_WriteCR(unsigned int which, uint32 value)
 	break;
 
   case 30:
-	LZCS = value;
-	LZCR = MDFN_lzcount32(value ^ ((int32)value >> 31));
+	ZSF4 = value;
 	break;
 
   case 31:
@@ -505,16 +496,7 @@ void GTE_WriteDR(unsigned int which, uint32 value)
 
   case 30:
 	LZCS = value;
-	{
-	 uint32 test = value & 0x80000000;
-	 LZCR = 0;
-
-	 while((value & 0x80000000) == test && LZCR < 32)
-	 {
-	  LZCR++;
-	  value <<= 1;
-	 }
-	}
+	LZCR = MDFN_lzcount32(value ^ ((int32)value >> 31));
 	break;
 
   case 31:	// Read-only
@@ -959,7 +941,6 @@ static INLINE int32 SQR(uint32 instr)
  return(5);
 }
 
-
 static INLINE int32 MVMVA(uint32 instr)
 {
  DECODE_FIELDS;
@@ -1020,7 +1001,7 @@ static INLINE void TransformDQ(int64 h_div_sz)
  IR0 = Lm_H(((int64)DQB + DQA * h_div_sz) >> 12);
 }
 
-static int32 INLINE RTPS(uint32 instr)
+static INLINE int32 RTPS(uint32 instr)
 {
  DECODE_FIELDS;
  int64 h_div_sz;
@@ -1034,7 +1015,7 @@ static int32 INLINE RTPS(uint32 instr)
  return(15);
 }
 
-static int32 INLINE RTPT(uint32 instr)
+static INLINE int32 RTPT(uint32 instr)
 {
  DECODE_FIELDS;
  int i;
@@ -1503,7 +1484,7 @@ int32 GTE_Instruction(uint32 instr)
 	break;
 */
 
-// case 0x1A handled next to case 0x29
+  // case 0x1A handled next to case 0x29
 
   case 0x1B:
 	ret = NCCS(instr);
@@ -1557,7 +1538,7 @@ int32 GTE_Instruction(uint32 instr)
 	ret = SQR(instr);
 	break;
 
-	case 0x1A:	// Alternate for 0x29?
+  case 0x1A:	// Alternate for 0x29?
   case 0x29:
 	ret = DCPL(instr);
 	break;
