@@ -125,10 +125,5 @@ namespace BizHawk.Client.EmuHawk
 				s.CGBColors = dlg._type;
 			}
 		}
-
-		private void groupBox1_Enter(object sender, EventArgs e)
-		{
-
-		}
 	}
 }
