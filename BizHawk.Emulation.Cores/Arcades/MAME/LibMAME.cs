@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		// execute
 		[DllImport(dll, CallingConvention = cc)]
-		public static extern void mame_lua_execute(byte[] code);
+		public static extern void mame_lua_execute(string code);
 
 		// get int
 		[DllImport(dll, CallingConvention = cc)]

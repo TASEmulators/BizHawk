@@ -418,7 +418,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 							_memAccess = true;
 							_mamePeriodicComplete.WaitOne();
 							addr += firstOffset;
-							LibMAME.mame_lua_execute(Encoding.ASCII.GetBytes($"{ MAMELuaCommand.GetSpace }:write_u8({ addr << _systemBusAddressShift }, { val })"));
+							LibMAME.mame_lua_execute($"{ MAMELuaCommand.GetSpace }:write_u8({ addr << _systemBusAddressShift }, { val })");
 							_memoryAccessComplete.Set();
 							_memAccess = false;
 						}, dataWidth));
@@ -552,11 +552,11 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		{
 			foreach (var fieldPort in _fieldsPorts)
 			{
-				LibMAME.mame_lua_execute(Encoding.ASCII.GetBytes(
+				LibMAME.mame_lua_execute(
 					"manager:machine():ioport()" +
 					$".ports  [\"{ fieldPort.Value }\"]" +
 					$".fields [\"{ fieldPort.Key   }\"]" +
-					$":set_value({ (_controller.IsPressed(fieldPort.Key) ? 1 : 0) })"));
+					$":set_value({ (_controller.IsPressed(fieldPort.Key) ? 1 : 0) })");
 			}
 		}
 
@@ -621,7 +621,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		{
 			if (_exiting)
 			{
-				LibMAME.mame_lua_execute(Encoding.ASCII.GetBytes(MAMELuaCommand.Exit));
+				LibMAME.mame_lua_execute(MAMELuaCommand.Exit);
 				_exiting = false;
 			}
 			
@@ -636,7 +636,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			if (!_paused)
 			{
-				LibMAME.mame_lua_execute(Encoding.ASCII.GetBytes(MAMELuaCommand.Step));
+				LibMAME.mame_lua_execute(MAMELuaCommand.Step);
 				_frameDone = false;
 				_paused = true;
 			}
@@ -697,7 +697,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private void MAMEBootCallback()
 		{
-			LibMAME.mame_lua_execute(Encoding.ASCII.GetBytes(MAMELuaCommand.Pause));
+			LibMAME.mame_lua_execute(MAMELuaCommand.Pause);
 
 			CheckVersions();
 			GetInputFields();
