@@ -16,6 +16,7 @@ namespace BizHawk.WinForms.Controls
 		/// <seealso cref="TypeNamePrefix">Naming convention for control types</seealso>
 		/// <seealso cref="CheckBoxEx"/>
 		/// <seealso cref="RadioButtonEx"/>
+		/// <seealso cref="SzRadioButtonEx"/>
 		public const bool CheckBoxOrRadioButton = true;
 
 		/// <summary>Inherits <see cref="System.Windows.Forms.GroupBox"/>.</summary>

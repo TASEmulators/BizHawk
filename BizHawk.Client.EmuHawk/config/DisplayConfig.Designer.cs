@@ -64,14 +64,14 @@
 			this.lblAspectRatioNonSquare = new BizHawk.WinForms.Controls.LabelEx();
 			this.rbARBySystem = new BizHawk.WinForms.Controls.RadioButtonEx(trackerGrpAspectRatio);
 			this.flpCustomSize = new BizHawk.WinForms.Controls.SingleRowFLP();
-			this.rbARCustomSize = new BizHawk.WinForms.Controls.RadioButtonEx(trackerGrpAspectRatio);
+			this.rbARCustomSize = new BizHawk.WinForms.Controls.SzRadioButtonEx(trackerGrpAspectRatio);
 			this.txtARCustomWidth = new BizHawk.WinForms.Controls.SzTextBoxEx();
-			this.lblARCustomSizeSeparator = new BizHawk.WinForms.Controls.LabelEx();
+			this.lblARCustomSizeSeparator = new BizHawk.WinForms.Controls.SzLabelEx();
 			this.txtARCustomHeight = new BizHawk.WinForms.Controls.SzTextBoxEx();
 			this.flpCustomAR = new BizHawk.WinForms.Controls.SingleRowFLP();
-			this.rbARCustomRatio = new BizHawk.WinForms.Controls.RadioButtonEx(trackerGrpAspectRatio);
+			this.rbARCustomRatio = new BizHawk.WinForms.Controls.SzRadioButtonEx(trackerGrpAspectRatio);
 			this.txtARCustomRatioH = new BizHawk.WinForms.Controls.SzTextBoxEx();
-			this.lblARCustomRatioSeparator = new BizHawk.WinForms.Controls.LabelEx();
+			this.lblARCustomRatioSeparator = new BizHawk.WinForms.Controls.SzLabelEx();
 			this.txtARCustomRatioV = new BizHawk.WinForms.Controls.SzTextBoxEx();
 			this.cbScaleByInteger = new BizHawk.WinForms.Controls.CheckBoxEx();
 			this.grpCrop = new BizHawk.WinForms.Controls.SzGroupBoxEx();
@@ -99,9 +99,9 @@
 			this.lblDispMethodOpenGL = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.rbDispMethodGDIPlus = new BizHawk.WinForms.Controls.RadioButtonEx(trackerGrpDispMethod);
 			this.lblDispMethodGDIPlus = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.lblDispMethodRestartWarning = new BizHawk.WinForms.Controls.LabelEx();
+			this.lblDispMethodRestartWarning = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.tpMisc = new BizHawk.WinForms.Controls.TabPageEx();
-			this.grpDispFeatures = new BizHawk.WinForms.Controls.SzGroupBoxEx(out var trackerGrpDispFeatures);
+			this.grpDispFeatures = new BizHawk.WinForms.Controls.LocSzGroupBoxEx(out var trackerGrpDispFeatures);
 			this.flpGrpDispFeatures = new BizHawk.WinForms.Controls.LocSingleColumnFLP();
 			this.rbDispFeaturesFull = new BizHawk.WinForms.Controls.RadioButtonEx(trackerGrpDispFeatures);
 			this.rbDispFeaturesMinimal = new BizHawk.WinForms.Controls.RadioButtonEx(trackerGrpDispFeatures);
@@ -214,7 +214,7 @@
 			this.tcDialog.Location = new System.Drawing.Point(4, 4);
 			this.tcDialog.Name = "tcDialog";
 			this.tcDialog.SelectedIndex = 0;
-			this.tcDialog.Size = new System.Drawing.Size(524, 345);
+			this.tcDialog.Size = new System.Drawing.Size(524, 349);
 			this.tcDialog.TabIndex = 17;
 			// 
 			// tpScaling
@@ -222,7 +222,7 @@
 			this.tpScaling.Controls.Add(this.flpTpScaling);
 			this.tpScaling.Name = "tpScaling";
 			this.tpScaling.Padding = new System.Windows.Forms.Padding(3);
-			this.tpScaling.Text = "Scaling & Filtering";
+			this.tpScaling.Text = "Scaling and Filtering";
 			// 
 			// flpTpScaling
 			// 
@@ -237,7 +237,8 @@
 			this.flpTpScaling.Controls.Add(this.btnDefaults);
 			this.flpTpScaling.MinimumSize = new System.Drawing.Size(24, 24);
 			this.flpTpScaling.Name = "flpTpScaling";
-			this.flpTpScaling.Size = new System.Drawing.Size(516, 319);
+			this.flpTpScaling.Padding = new System.Windows.Forms.Padding(0, 4, 0, 0);
+			this.flpTpScaling.Size = new System.Drawing.Size(516, 323);
 			// 
 			// flpUserPrescale
 			// 
@@ -274,7 +275,7 @@
 			// lblUserPrescaleUnits
 			// 
 			this.lblUserPrescaleUnits.Name = "lblUserPrescaleUnits";
-			this.lblUserPrescaleUnits.Text = "X";
+			this.lblUserPrescaleUnits.Text = "x";
 			// 
 			// grpFilter
 			// 
@@ -455,6 +456,7 @@
 			// rbARCustomSize
 			// 
 			this.rbARCustomSize.Name = "rbARCustomSize";
+			this.rbARCustomSize.Size = new System.Drawing.Size(105, 17);
 			this.rbARCustomSize.Tag = BizHawk.Client.Common.EDispManagerAR.Custom;
 			this.rbARCustomSize.Text = "Use custom size:";
 			// 
@@ -466,6 +468,7 @@
 			// lblARCustomSizeSeparator
 			// 
 			this.lblARCustomSizeSeparator.Name = "lblARCustomSizeSeparator";
+			this.lblARCustomSizeSeparator.Size = new System.Drawing.Size(14, 13);
 			this.lblARCustomSizeSeparator.Text = "x";
 			// 
 			// txtARCustomHeight
@@ -484,6 +487,7 @@
 			// rbARCustomRatio
 			// 
 			this.rbARCustomRatio.Name = "rbARCustomRatio";
+			this.rbARCustomRatio.Size = new System.Drawing.Size(105, 17);
 			this.rbARCustomRatio.Tag = BizHawk.Client.Common.EDispManagerAR.CustomRatio;
 			this.rbARCustomRatio.Text = "Use custom AR:";
 			// 
@@ -495,6 +499,7 @@
 			// lblARCustomRatioSeparator
 			// 
 			this.lblARCustomRatioSeparator.Name = "lblARCustomRatioSeparator";
+			this.lblARCustomRatioSeparator.Size = new System.Drawing.Size(14, 13);
 			this.lblARCustomRatioSeparator.Text = ":";
 			// 
 			// txtARCustomRatioV
@@ -512,7 +517,7 @@
 			// 
 			this.grpCrop.Controls.Add(this.flpGrpCrop);
 			this.grpCrop.Name = "grpCrop";
-			this.grpCrop.Size = new System.Drawing.Size(329, 43);
+			this.grpCrop.Size = new System.Drawing.Size(329, 48);
 			this.grpCrop.Text = "Cropping";
 			// 
 			// flpGrpCrop
@@ -669,6 +674,8 @@
 			// 
 			// lblDispMethodRestartWarning
 			// 
+			this.lblDispMethodRestartWarning.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.lblDispMethodRestartWarning.Location = new System.Drawing.Point(0, 0);
 			this.lblDispMethodRestartWarning.Name = "lblDispMethodRestartWarning";
 			this.lblDispMethodRestartWarning.Text = "Changes require restart of program to take effect.\r\n";
 			// 
@@ -676,11 +683,12 @@
 			// 
 			this.tpMisc.Controls.Add(this.grpDispFeatures);
 			this.tpMisc.Name = "tpMisc";
-			this.tpMisc.Text = "Misc";
+			this.tpMisc.Text = "Misc.";
 			// 
 			// grpDispFeatures
 			// 
 			this.grpDispFeatures.Controls.Add(this.flpGrpDispFeatures);
+			this.grpDispFeatures.Location = new System.Drawing.Point(4, 4);
 			this.grpDispFeatures.Name = "grpDispFeatures";
 			this.grpDispFeatures.Size = new System.Drawing.Size(217, 87);
 			this.grpDispFeatures.Text = "Display Features (for speeding up replays)";
@@ -732,7 +740,7 @@
 			// 
 			this.grpWindowed.Controls.Add(this.flpWindowed);
 			this.grpWindowed.Name = "grpWindowed";
-			this.grpWindowed.Size = new System.Drawing.Size(121, 168);
+			this.grpWindowed.Size = new System.Drawing.Size(121, 172);
 			this.grpWindowed.Text = "Windowed";
 			// 
 			// flpWindowed
@@ -791,7 +799,7 @@
 			// 
 			this.grpFS.Controls.Add(this.flpGrpFS);
 			this.grpFS.Name = "grpFS";
-			this.grpFS.Size = new System.Drawing.Size(344, 168);
+			this.grpFS.Size = new System.Drawing.Size(344, 172);
 			this.grpFS.Text = "Fullscreen";
 			// 
 			// flpGrpFS
@@ -846,7 +854,7 @@
 			// lnkDocs
 			// 
 			this.lnkDocs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.lnkDocs.Location = new System.Drawing.Point(11, 359);
+			this.lnkDocs.Location = new System.Drawing.Point(11, 363);
 			this.lnkDocs.Name = "lnkDocs";
 			this.lnkDocs.Text = "Documentation";
 			this.lnkDocs.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkDocs_LinkClicked);
@@ -856,7 +864,7 @@
 			this.flpDialogButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.flpDialogButtons.Controls.Add(this.btnDialogOK);
 			this.flpDialogButtons.Controls.Add(this.btnDialogCancel);
-			this.flpDialogButtons.Location = new System.Drawing.Point(362, 351);
+			this.flpDialogButtons.Location = new System.Drawing.Point(362, 355);
 			this.flpDialogButtons.Name = "flpDialogButtons";
 			this.flpDialogButtons.Size = new System.Drawing.Size(162, 29);
 			// 
@@ -954,7 +962,7 @@
 		private System.Windows.Forms.TabControl tcDialog;
 		private BizHawk.WinForms.Controls.TabPageEx tpScaling;
 		private BizHawk.WinForms.Controls.TabPageEx tpDispMethod;
-		private BizHawk.WinForms.Controls.LabelEx lblDispMethodRestartWarning;
+		private BizHawk.WinForms.Controls.LocLabelEx lblDispMethodRestartWarning;
 		private BizHawk.WinForms.Controls.SzGroupBoxEx grpDispMethod;
 		private BizHawk.WinForms.Controls.LocLabelEx lblDispMethodGDIPlus;
 		private BizHawk.WinForms.Controls.RadioButtonEx rbDispMethodGDIPlus;
@@ -968,7 +976,7 @@
 		private BizHawk.WinForms.Controls.SzGroupBoxEx grpFS;
 		private BizHawk.WinForms.Controls.SzGroupBoxEx grpWindowed;
 		private BizHawk.WinForms.Controls.LabelEx lblWindowedFrameTypeReadout;
-		private BizHawk.WinForms.Controls.SzGroupBoxEx grpDispFeatures;
+		private BizHawk.WinForms.Controls.LocSzGroupBoxEx grpDispFeatures;
 		private BizHawk.WinForms.Controls.RadioButtonEx rbDispFeaturesNothing;
 		private BizHawk.WinForms.Controls.RadioButtonEx rbDispFeaturesMinimal;
 		private BizHawk.WinForms.Controls.RadioButtonEx rbDispFeaturesFull;
@@ -1014,14 +1022,14 @@
 		private BizHawk.WinForms.Controls.LabelEx lblAspectRatioNonSquare;
 		private BizHawk.WinForms.Controls.RadioButtonEx rbARBySystem;
 		private BizHawk.WinForms.Controls.SingleRowFLP flpCustomSize;
-		private BizHawk.WinForms.Controls.RadioButtonEx rbARCustomSize;
+		private BizHawk.WinForms.Controls.SzRadioButtonEx rbARCustomSize;
 		private BizHawk.WinForms.Controls.SzTextBoxEx txtARCustomWidth;
-		private BizHawk.WinForms.Controls.LabelEx lblARCustomSizeSeparator;
+		private BizHawk.WinForms.Controls.SzLabelEx lblARCustomSizeSeparator;
 		private BizHawk.WinForms.Controls.SzTextBoxEx txtARCustomHeight;
 		private BizHawk.WinForms.Controls.SingleRowFLP flpCustomAR;
-		private BizHawk.WinForms.Controls.RadioButtonEx rbARCustomRatio;
+		private BizHawk.WinForms.Controls.SzRadioButtonEx rbARCustomRatio;
 		private BizHawk.WinForms.Controls.SzTextBoxEx txtARCustomRatioH;
-		private BizHawk.WinForms.Controls.LabelEx lblARCustomRatioSeparator;
+		private BizHawk.WinForms.Controls.SzLabelEx lblARCustomRatioSeparator;
 		private BizHawk.WinForms.Controls.SzTextBoxEx txtARCustomRatioV;
 		private BizHawk.WinForms.Controls.CheckBoxEx cbScaleByInteger;
 		private BizHawk.WinForms.Controls.SzGroupBoxEx grpCrop;
