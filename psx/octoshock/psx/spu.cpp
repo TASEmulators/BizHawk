@@ -44,7 +44,12 @@
 	Should shift occur on all stages of ADPCM sample decoding, or only at the end?
 
 	On the real thing, there's some kind of weirdness with ADSR when you voice on when attack_rate(raw) = 0x7F; the envelope level register is repeatedly
-	reset to 0, which you can see by manual writes to the envelope level register.  Normally in the attack phase when attack_rate = 0x7F, enveloping is 		effectively stuck/paused such that the value you write is sticky and won't be replaced or reset.  Note that after you voice on, you can write a new 		attack_rate < 0x7F, and enveloping will work "normally" again shortly afterwards.  You can even write an attack_rate of 0x7F at that point to pause 		enveloping 		clocking.  I doubt any games rely on this, but it's something to keep in mind if we ever need greater insight as to how the SPU 	functions at a low-level in 		order to emulate it at cycle granularity rather than sample granularity, and it may not be a bad idea to 		investigate this oddity further and emulate it in 		the future regardless.
+	reset to 0, which you can see by manual writes to the envelope level register.  Normally in the attack phase when attack_rate = 0x7F, enveloping is
+	effectively stuck/paused such that the value you write is sticky and won't be replaced or reset.  Note that after you voice on, you can write a new
+	attack_rate < 0x7F, and enveloping will work "normally" again shortly afterwards.  You can even write an attack_rate of 0x7F at that point to pause
+	enveloping clocking.  I doubt any games rely on this, but it's something to keep in mind if we ever need greater insight as to how the SPU functions
+	at a low-level in order to emulate it at cycle granularity rather than sample granularity, and it may not be a bad idea to investigate this oddity
+	further and emulate it in the future regardless.
 
 	Voice 1 and 3 waveform output writes to SPURAM might not be correct(noted due to problems reading this area of SPU RAM on the real thing
 	based on my expectations of how this should work).
@@ -617,7 +622,7 @@ int32 PS_SPU::UpdateFromCDC(int32 clocks)
   sample_clocks++;
  }
 
-while(sample_clocks > 0)
+ while(sample_clocks > 0)
  {
   // xxx[0] = left, xxx[1] = right
 
@@ -720,7 +725,7 @@ while(sample_clocks > 0)
    {
     accum_fv[0] += l;
     accum_fv[1] += r;
-	 }
+   }
 
    // Run sweep
    for(int lr = 0; lr < 2; lr++)
