@@ -68,17 +68,17 @@ namespace MDFN_IEN_PSX
 
  typedef int32 pscpu_timestamp_t;
 
- bool PSX_EventHandler(const pscpu_timestamp_t timestamp);
+ bool MDFN_FASTCALL PSX_EventHandler(const pscpu_timestamp_t timestamp);
 
- void PSX_MemWrite8(pscpu_timestamp_t timestamp, uint32 A, uint32 V);
- void PSX_MemWrite16(pscpu_timestamp_t timestamp, uint32 A, uint32 V);
- void PSX_MemWrite24(pscpu_timestamp_t timestamp, uint32 A, uint32 V);
- void PSX_MemWrite32(pscpu_timestamp_t timestamp, uint32 A, uint32 V);
+ void MDFN_FASTCALL PSX_MemWrite8(pscpu_timestamp_t timestamp, uint32 A, uint32 V);
+ void MDFN_FASTCALL PSX_MemWrite16(pscpu_timestamp_t timestamp, uint32 A, uint32 V);
+ void MDFN_FASTCALL PSX_MemWrite24(pscpu_timestamp_t timestamp, uint32 A, uint32 V);
+ void MDFN_FASTCALL PSX_MemWrite32(pscpu_timestamp_t timestamp, uint32 A, uint32 V);
 
- uint8 PSX_MemRead8(pscpu_timestamp_t &timestamp, uint32 A);
- uint16 PSX_MemRead16(pscpu_timestamp_t &timestamp, uint32 A);
- uint32 PSX_MemRead24(pscpu_timestamp_t &timestamp, uint32 A);
- uint32 PSX_MemRead32(pscpu_timestamp_t &timestamp, uint32 A);
+ uint8 MDFN_FASTCALL PSX_MemRead8(pscpu_timestamp_t &timestamp, uint32 A);
+ uint16 MDFN_FASTCALL PSX_MemRead16(pscpu_timestamp_t &timestamp, uint32 A);
+ uint32 MDFN_FASTCALL PSX_MemRead24(pscpu_timestamp_t &timestamp, uint32 A);
+ uint32 MDFN_FASTCALL PSX_MemRead32(pscpu_timestamp_t &timestamp, uint32 A);
 
  uint8 PSX_MemPeek8(uint32 A);
  uint16 PSX_MemPeek16(uint32 A);
@@ -129,10 +129,10 @@ namespace MDFN_IEN_PSX
  class PS_CDC;
  class PS_SPU;
 
- extern PS_CPU *CPU;
- extern PS_CDC *CDC;
- extern PS_SPU *SPU;
- extern MultiAccessSizeMem<2048 * 1024, false> MainRAM;
+ MDFN_HIDE extern PS_CPU *CPU;
+ MDFN_HIDE extern PS_CDC *CDC;
+ MDFN_HIDE extern PS_SPU *SPU;
+ MDFN_HIDE extern MultiAccessSizeMem<2048 * 1024, false> MainRAM;
 }
 
 enum eRegion

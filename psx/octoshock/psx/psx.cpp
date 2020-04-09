@@ -115,6 +115,7 @@ void PSX_DBG(unsigned level, const char *format, ...) noexcept
 static unsigned const psx_dbg_level = 0;
 #endif
 
+
 struct MDFN_PseudoRNG	// Based off(but not the same as) public-domain "JKISS" PRNG.
 {
  MDFN_COLD MDFN_PseudoRNG()
@@ -122,9 +123,9 @@ struct MDFN_PseudoRNG	// Based off(but not the same as) public-domain "JKISS" PR
   ResetState();
  }
 
- u32 RandU32(void)
+ uint32 RandU32(void)
  {
-  u64 t;
+  uint64 t;
 
   x = 314527869 * x + 1234567;
   y ^= y << 5; y ^= y >> 7; y ^= y << 22;
@@ -232,6 +233,7 @@ void PSX_SetDMACycleSteal(unsigned stealage)
 
  DMACycleSteal = stealage;
 }
+
 
 //
 // Event stuff
@@ -353,7 +355,7 @@ void ForceEventUpdates(const pscpu_timestamp_t timestamp)
  CPU->SetEventNT(events[PSX_EVENT__SYNFIRST].next->event_time);
 }
 
-bool PSX_EventHandler(const pscpu_timestamp_t timestamp)
+bool MDFN_FASTCALL PSX_EventHandler(const pscpu_timestamp_t timestamp)
 {
  event_list_entry *e = events[PSX_EVENT__SYNFIRST].next;
 
@@ -410,7 +412,6 @@ void PSX_RequestMLExit(void)
 //
 // End event stuff
 //
-
 
 // Remember to update MemPeek<>() and MemPoke<>() when we change address decoding in MemRW()
 template<typename T, bool IsWrite, bool Access24> static INLINE void MemRW(pscpu_timestamp_t &timestamp, uint32 A, uint32 &V)
@@ -498,7 +499,6 @@ template<typename T, bool IsWrite, bool Access24> static INLINE void MemRW(pscpu
      if(timestamp >= events[PSX_EVENT__SYNFIRST].next->event_time)
       PSX_EventHandler(timestamp);
 
-		 //0.9.36.5 - clarified read order by turning into two statements
      V = SPU->Read(timestamp, A);
      V |= SPU->Read(timestamp, A | 2) << 16;
     }
@@ -562,15 +562,8 @@ template<typename T, bool IsWrite, bool Access24> static INLINE void MemRW(pscpu
    if(!IsWrite)
     timestamp++;
 
-	 if (IsWrite)
-	 {
-		 if (A == 0x1F801820)
-		 {
-			 //per pcsx-rr:
-			 GpuFrameForLag = true;
-		 }
-		 MDEC_Write(timestamp, A, V);
-	 }
+   if(IsWrite)
+    MDEC_Write(timestamp, A, V);
    else
     V = MDEC_Read(timestamp, A);
 
@@ -716,8 +709,8 @@ template<typename T, bool IsWrite, bool Access24> static INLINE void MemRW(pscpu
      else switch(sizeof(T))
      {
       case 1: V = TextMem[(A & 0x7FFFFF) - 65536]; break;
-      case 2: V = MDFN_de16lsb<false>(&TextMem[(A & 0x7FFFFF) - 65536]); break;
-      case 4: V = MDFN_de32lsb<false>(&TextMem[(A & 0x7FFFFF) - 65536]); break;
+      case 2: V = MDFN_de16lsb(&TextMem[(A & 0x7FFFFF) - 65536]); break;
+      case 4: V = MDFN_de32lsb(&TextMem[(A & 0x7FFFFF) - 65536]); break;
      }
     }
    }
@@ -746,27 +739,27 @@ template<typename T, bool IsWrite, bool Access24> static INLINE void MemRW(pscpu
  }
 }
 
-void  PSX_MemWrite8(pscpu_timestamp_t timestamp, uint32 A, uint32 V)
+void MDFN_FASTCALL PSX_MemWrite8(pscpu_timestamp_t timestamp, uint32 A, uint32 V)
 {
  MemRW<uint8, true, false>(timestamp, A, V);
 }
 
-void  PSX_MemWrite16(pscpu_timestamp_t timestamp, uint32 A, uint32 V)
+void MDFN_FASTCALL PSX_MemWrite16(pscpu_timestamp_t timestamp, uint32 A, uint32 V)
 {
  MemRW<uint16, true, false>(timestamp, A, V);
 }
 
-void  PSX_MemWrite24(pscpu_timestamp_t timestamp, uint32 A, uint32 V)
+void MDFN_FASTCALL PSX_MemWrite24(pscpu_timestamp_t timestamp, uint32 A, uint32 V)
 {
  MemRW<uint32, true, true>(timestamp, A, V);
 }
 
-void  PSX_MemWrite32(pscpu_timestamp_t timestamp, uint32 A, uint32 V)
+void MDFN_FASTCALL PSX_MemWrite32(pscpu_timestamp_t timestamp, uint32 A, uint32 V)
 {
  MemRW<uint32, true, false>(timestamp, A, V);
 }
 
-uint8  PSX_MemRead8(pscpu_timestamp_t &timestamp, uint32 A)
+uint8 MDFN_FASTCALL PSX_MemRead8(pscpu_timestamp_t &timestamp, uint32 A)
 {
  uint32 V;
 
@@ -775,7 +768,7 @@ uint8  PSX_MemRead8(pscpu_timestamp_t &timestamp, uint32 A)
  return(V);
 }
 
-uint16  PSX_MemRead16(pscpu_timestamp_t &timestamp, uint32 A)
+uint16 MDFN_FASTCALL PSX_MemRead16(pscpu_timestamp_t &timestamp, uint32 A)
 {
  uint32 V;
 
@@ -784,7 +777,7 @@ uint16  PSX_MemRead16(pscpu_timestamp_t &timestamp, uint32 A)
  return(V);
 }
 
-uint32  PSX_MemRead24(pscpu_timestamp_t &timestamp, uint32 A)
+uint32 MDFN_FASTCALL PSX_MemRead24(pscpu_timestamp_t &timestamp, uint32 A)
 {
  uint32 V;
 
@@ -793,7 +786,7 @@ uint32  PSX_MemRead24(pscpu_timestamp_t &timestamp, uint32 A)
  return(V);
 }
 
-uint32  PSX_MemRead32(pscpu_timestamp_t &timestamp, uint32 A)
+uint32 MDFN_FASTCALL PSX_MemRead32(pscpu_timestamp_t &timestamp, uint32 A)
 {
  uint32 V;
 
@@ -905,8 +898,8 @@ template<typename T, bool Access24> static INLINE uint32 MemPeek(pscpu_timestamp
     else switch(sizeof(T))
     {
      case 1: return(TextMem[(A & 0x7FFFFF) - 65536]); break;
-     case 2: return(MDFN_de16lsb<false>(&TextMem[(A & 0x7FFFFF) - 65536])); break;
-     case 4: return(MDFN_de32lsb<false>(&TextMem[(A & 0x7FFFFF) - 65536])); break;
+     case 2: return(MDFN_de16lsb(&TextMem[(A & 0x7FFFFF) - 65536])); break;
+     case 4: return(MDFN_de32lsb(&TextMem[(A & 0x7FFFFF) - 65536])); break;
     }
    }
   }
@@ -1993,23 +1986,23 @@ static MDFN_COLD void LoadEXE(const uint8 *data, const uint32 size, bool ignore_
 
  po = &PIOMem->data8[0x0800];
 
- MDFN_en32lsb<false>(po, (0x0 << 26) | (31 << 21) | (0x8 << 0));	// JR
+ MDFN_en32lsb(po, (0x0 << 26) | (31 << 21) | (0x8 << 0));	// JR
  po += 4;
- MDFN_en32lsb<false>(po, 0);	// NOP(kinda)
+ MDFN_en32lsb(po, 0);	// NOP(kinda)
  po += 4;
 
  po = &PIOMem->data8[0x1000];
 
  // Load cacheable-region target PC into r2
- MDFN_en32lsb<false>(po, (0xF << 26) | (0 << 21) | (1 << 16) | (0x9F001010 >> 16));      // LUI
+ MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16) | (0x9F001010 >> 16));      // LUI
  po += 4;
- MDFN_en32lsb<false>(po, (0xD << 26) | (1 << 21) | (2 << 16) | (0x9F001010 & 0xFFFF));   // ORI
+ MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (2 << 16) | (0x9F001010 & 0xFFFF));   // ORI
  po += 4;
 
  // Jump to r2
- MDFN_en32lsb<false>(po, (0x0 << 26) | (2 << 21) | (0x8 << 0));	// JR
+ MDFN_en32lsb(po, (0x0 << 26) | (2 << 21) | (0x8 << 0));	// JR
  po += 4;
- MDFN_en32lsb<false>(po, 0);	// NOP(kinda)
+ MDFN_en32lsb(po, 0);	// NOP(kinda)
  po += 4;
 
  //
@@ -2018,42 +2011,42 @@ static MDFN_COLD void LoadEXE(const uint8 *data, const uint32 size, bool ignore_
 
  // Load source address into r8
  uint32 sa = 0x9F000000 + 65536;
- MDFN_en32lsb<false>(po, (0xF << 26) | (0 << 21) | (1 << 16) | (sa >> 16));	// LUI
+ MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16) | (sa >> 16));	// LUI
  po += 4;
- MDFN_en32lsb<false>(po, (0xD << 26) | (1 << 21) | (8 << 16) | (sa & 0xFFFF)); 	// ORI
+ MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (8 << 16) | (sa & 0xFFFF)); 	// ORI
  po += 4;
 
  // Load dest address into r9
- MDFN_en32lsb<false>(po, (0xF << 26) | (0 << 21) | (1 << 16)  | (TextMem_Start >> 16));	// LUI
+ MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16)  | (TextMem_Start >> 16));	// LUI
  po += 4;
- MDFN_en32lsb<false>(po, (0xD << 26) | (1 << 21) | (9 << 16) | (TextMem_Start & 0xFFFF)); 	// ORI
+ MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (9 << 16) | (TextMem_Start & 0xFFFF)); 	// ORI
  po += 4;
 
  // Load size into r10
- MDFN_en32lsb<false>(po, (0xF << 26) | (0 << 21) | (1 << 16)  | (TextMem.size() >> 16));	// LUI
+ MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16)  | (TextMem.size() >> 16));	// LUI
  po += 4;
- MDFN_en32lsb<false>(po, (0xD << 26) | (1 << 21) | (10 << 16) | (TextMem.size() & 0xFFFF)); 	// ORI
+ MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (10 << 16) | (TextMem.size() & 0xFFFF)); 	// ORI
  po += 4;
 
  //
  // Loop begin
  //
  
- MDFN_en32lsb<false>(po, (0x24 << 26) | (8 << 21) | (1 << 16));	// LBU to r1
+ MDFN_en32lsb(po, (0x24 << 26) | (8 << 21) | (1 << 16));	// LBU to r1
  po += 4;
 
- MDFN_en32lsb<false>(po, (0x08 << 26) | (10 << 21) | (10 << 16) | 0xFFFF);	// Decrement size
+ MDFN_en32lsb(po, (0x08 << 26) | (10 << 21) | (10 << 16) | 0xFFFF);	// Decrement size
  po += 4;
 
- MDFN_en32lsb<false>(po, (0x28 << 26) | (9 << 21) | (1 << 16));	// SB from r1
+ MDFN_en32lsb(po, (0x28 << 26) | (9 << 21) | (1 << 16));	// SB from r1
  po += 4;
 
- MDFN_en32lsb<false>(po, (0x08 << 26) | (8 << 21) | (8 << 16) | 0x0001);	// Increment source addr
+ MDFN_en32lsb(po, (0x08 << 26) | (8 << 21) | (8 << 16) | 0x0001);	// Increment source addr
  po += 4;
 
- MDFN_en32lsb<false>(po, (0x05 << 26) | (0 << 21) | (10 << 16) | (-5 & 0xFFFF));
+ MDFN_en32lsb(po, (0x05 << 26) | (0 << 21) | (10 << 16) | (-5 & 0xFFFF));
  po += 4;
- MDFN_en32lsb<false>(po, (0x08 << 26) | (9 << 21) | (9 << 16) | 0x0001);	// Increment dest addr
+ MDFN_en32lsb(po, (0x08 << 26) | (9 << 21) | (9 << 16) | 0x0001);	// Increment dest addr
  po += 4;
 
  //
@@ -2067,31 +2060,31 @@ static MDFN_COLD void LoadEXE(const uint8 *data, const uint32 size, bool ignore_
  }
  else
  {
-  MDFN_en32lsb<false>(po, (0xF << 26) | (0 << 21) | (1 << 16)  | (SP >> 16));	// LUI
+  MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16)  | (SP >> 16));	// LUI
   po += 4;
-  MDFN_en32lsb<false>(po, (0xD << 26) | (1 << 21) | (29 << 16) | (SP & 0xFFFF)); 	// ORI
+  MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (29 << 16) | (SP & 0xFFFF)); 	// ORI
   po += 4;
 
   // Load PC into r2
-  MDFN_en32lsb<false>(po, (0xF << 26) | (0 << 21) | (1 << 16)  | ((PC >> 16) | 0x8000));      // LUI
+  MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16)  | ((PC >> 16) | 0x8000));      // LUI
   po += 4;
-  MDFN_en32lsb<false>(po, (0xD << 26) | (1 << 21) | (2 << 16) | (PC & 0xFFFF));   // ORI
+  MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (2 << 16) | (PC & 0xFFFF));   // ORI
   po += 4;
  }
 
  // Half-assed instruction cache flush. ;)
  for(unsigned i = 0; i < 1024; i++)
  {
-  MDFN_en32lsb<false>(po, 0);
+  MDFN_en32lsb(po, 0);
   po += 4;
  }
 
 
 
  // Jump to r2
- MDFN_en32lsb<false>(po, (0x0 << 26) | (2 << 21) | (0x8 << 0));	// JR
+ MDFN_en32lsb(po, (0x0 << 26) | (2 << 21) | (0x8 << 0));	// JR
  po += 4;
- MDFN_en32lsb<false>(po, 0);	// NOP(kinda)
+ MDFN_en32lsb(po, 0);	// NOP(kinda)
  po += 4;
 }
 
