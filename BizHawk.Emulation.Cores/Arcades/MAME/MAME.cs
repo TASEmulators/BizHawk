@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		portedVersion: "0.220",
 		portedUrl: "https://github.com/mamedev/mame.git",
 		singleInstance: false)]
-	public partial class MAME : IEmulator, IVideoProvider, ISoundProvider, ISettable<object, MAME.SyncSettings>, IStatable
+	public partial class MAME : IEmulator, IVideoProvider, ISoundProvider, ISettable<object, MAME.SyncSettings>, IStatable, IInputPollable
 	{
 		public MAME(string dir, string file, object syncSettings, out string gamename)
 		{
@@ -103,6 +103,11 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		public int BufferHeight { get; private set; } = 240;
 		public int VsyncNumerator { get; private set; } = 60;
 		public int VsyncDenominator { get; private set; } = 1;
+		public int LagCount { get; set; } = 0;
+		public bool IsLagFrame { get; set; } = false;
+
+		[FeatureNotImplemented]
+		public IInputCallbackSystem InputCallbacks => throw new NotImplementedException();
 
 		#endregion
 
@@ -160,12 +165,19 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			Frame++;
 
+			if (IsLagFrame)
+			{
+				LagCount++;
+			}
+
 			return true;
 		}
 
 		public void ResetCounters()
 		{
 			Frame = 0;
+			LagCount = 0;
+			IsLagFrame = false;
 		}
 
 		public void Dispose()
@@ -201,6 +213,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			writer.Write(_mameSaveBuffer);
 			writer.Write(Frame);
+			writer.Write(LagCount);
+			writer.Write(IsLagFrame);
 
 			_memoryAccessComplete.Set();
 			_memAccess = false;
@@ -227,6 +241,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 
 			Frame = reader.ReadInt32();
+			LagCount = reader.ReadInt32();
+			IsLagFrame = reader.ReadBoolean();
 
 			_memoryAccessComplete.Set();
 			_memAccess = false;
@@ -707,7 +723,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			int length = LibMAME.mame_lua_get_int("return string.len(manager:machine():buffer_save())");
 			_mameSaveBuffer = new byte[length];
-			_hawkSaveBuffer = new byte[length + 4 + 4];
+			_hawkSaveBuffer = new byte[length + 4 + 4 + 4 + 1];
 
 			_mameStartupComplete.Set();
 		}
