@@ -469,6 +469,7 @@ namespace BizHawk.Client.Common
 				["8 Players Start"] = '8',
 				["Service"] = 'S',
 				["Service Mode"] = 'S',
+				["Service Button"] = 'S',
 				["Service 1"] = 's',
 				["Service 2"] = 's',
 				["Service 3"] = 's',
@@ -478,6 +479,10 @@ namespace BizHawk.Client.Common
 				["Tilt 2"] = 't',
 				["Tilt 3"] = 't',
 				["Tilt 4"] = 't',
+				["Foot Pedal"] = 'P',
+				["Gun Trigger"] = 'G',
+				["Lightgun X"] = 'X',
+				["Lightgun Y"] = 'Y',
 			}
 		};
 	}
