@@ -7,20 +7,11 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 	{
 		private void SyncState(Serializer ser)
 		{
-			byte[] core = null;
-			if (ser.IsWriter)
-			{
-				using var ms = new MemoryStream();
-				ms.Close();
-				core = ms.ToArray();
-			}
-
 			ser.BeginSection("Odyssey2");
 			cpu.SyncState(ser);
 			mapper.SyncState(ser);
 			ppu.SyncState(ser);
 
-			ser.Sync(nameof(core), ref core, false);
 			ser.Sync("Lag", ref _lagcount);
 			ser.Sync("Frame", ref _frame);
 			ser.Sync("IsLag", ref _islag);
@@ -48,9 +39,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			ser.Sync(nameof(kb_byte), ref kb_byte);
 			ser.Sync(nameof(kb_state_row), ref kb_state_row);
 			ser.Sync(nameof(kb_state_col), ref kb_state_col);
-
-			ser.Sync(nameof(frame_buffer), ref frame_buffer, false);
-			ser.Sync(nameof(_vidbuffer), ref _vidbuffer, false);
 
 			// probably a better way to do this
 			if (cart_RAM != null)
