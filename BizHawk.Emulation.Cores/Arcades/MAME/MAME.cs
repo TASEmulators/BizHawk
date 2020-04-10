@@ -817,7 +817,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				"local bit_step " +
 				"if     address_shift == 0 then bit_step = data_width " +
 				"elseif address_shift >  0 then bit_step = data_width << address_shift " +
-				"elseif address_shift<  0 then bit_step = 8 " +
+				"elseif address_shift <  0 then bit_step = 8 " +
 				"end " +
 				"return space:read_range(0, 0xfffffff, space.data_width, math.floor(bit_step / 8))";
 
