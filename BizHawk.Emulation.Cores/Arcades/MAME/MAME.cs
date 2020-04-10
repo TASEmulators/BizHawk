@@ -416,12 +416,15 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 								throw new ArgumentOutOfRangeException();
 							}
 
-							_memAccess = true;
-							_mamePeriodicComplete.WaitOne();
+							if (!_memAccess)
+							{
+								_memAccess = true;
+								_mamePeriodicComplete.WaitOne();
+							}
+
 							addr += firstOffset;
 							var val = (byte)LibMAME.mame_lua_get_int($"{ MAMELuaCommand.GetSpace }:read_u8({ addr << _systemBusAddressShift })");
 							_memoryAccessComplete.Set();
-							_memAccess = false;
 							return val;
 						},
 						read == "rom" ? (Action<long, byte>)null : delegate (long addr, byte val)
@@ -431,12 +434,15 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 								throw new ArgumentOutOfRangeException();
 							}
 
-							_memAccess = true;
-							_mamePeriodicComplete.WaitOne();
+							if (!_memAccess)
+							{
+								_memAccess = true;
+								_mamePeriodicComplete.WaitOne();
+							}
+
 							addr += firstOffset;
 							LibMAME.mame_lua_execute($"{ MAMELuaCommand.GetSpace }:write_u8({ addr << _systemBusAddressShift }, { val })");
 							_memoryAccessComplete.Set();
-							_memAccess = false;
 						}, dataWidth));
 				}
 			}
@@ -449,11 +455,14 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 						throw new ArgumentOutOfRangeException();
 					}
 
-					_memAccess = true;
-					_mamePeriodicComplete.WaitOne();
+					if (!_memAccess)
+					{
+						_memAccess = true;
+						_mamePeriodicComplete.WaitOne();
+					}
+
 					var val = (byte)LibMAME.mame_lua_get_int($"{ MAMELuaCommand.GetSpace }:read_u8({ addr << _systemBusAddressShift })");
 					_memoryAccessComplete.Set();
-					_memAccess = false;
 					return val;
 				},
 				null, dataWidth));
@@ -564,24 +573,11 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 		}
 
-		private void UpdateInput()
-		{
-			foreach (var fieldPort in _fieldsPorts)
-			{
-				LibMAME.mame_lua_execute(
-					"manager:machine():ioport()" +
-					$".ports  [\"{ fieldPort.Value }\"]" +
-					$".fields [\"{ fieldPort.Key   }\"]" +
-					$":set_value({ (_controller.IsPressed(fieldPort.Key) ? 1 : 0) })");
-			}
-		}
-
 		private void Update()
 		{
 			UpdateFramerate();
 			UpdateVideo();
 			UpdateAspect();
-			UpdateInput();
 		}
 
 		private void UpdateGameName()
@@ -645,6 +641,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			{
 				_mamePeriodicComplete.Set();
 				_memoryAccessComplete.WaitOne();
+				_memAccess = false;
 				return;
 			}
 
@@ -652,30 +649,13 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			if (!_paused)
 			{
+				SendInput();
 				LibMAME.mame_lua_execute(MAMELuaCommand.Step);
 				_frameDone = false;
 				_paused = true;
 			}
 			else if (!_frameDone)
 			{
-				/*
-				IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetSpaceBuffer, out var lengthInBytes);
-
-				if (ptr == IntPtr.Zero)
-				{
-					Console.WriteLine("LibMAME ERROR: audio buffer pointer is null");
-					return;
-				}
-
-				//byte[] buf = new byte[lengthInBytes];
-				//Marshal.Copy(ptr, buf, 0, lengthInBytes);
-
-				if (!LibMAME.mame_lua_free_string(ptr))
-				{
-					Console.WriteLine("LibMAME ERROR: audio buffer wasn't freed");
-				}
-				*/
-
 				Update();
 				_frameDone = true;
 				_mameFrameComplete.Set();
@@ -777,6 +757,18 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					_fieldsPorts.Add(field, tag);
 					MAMEController.BoolButtons.Add(field);
 				}
+			}
+		}
+
+		private void SendInput()
+		{
+			foreach (var fieldPort in _fieldsPorts)
+			{
+				LibMAME.mame_lua_execute(
+					"manager:machine():ioport()" +
+					$".ports  [\"{ fieldPort.Value }\"]" +
+					$".fields [\"{ fieldPort.Key   }\"]" +
+					$":set_value({ (_controller.IsPressed(fieldPort.Key) ? 1 : 0) })");
 			}
 		}
 
