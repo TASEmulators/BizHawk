@@ -505,6 +505,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				, "-nothrottle"                         // forbid throttling to "real" speed of the device
 				, "-update_in_pause"                    // ^ including frame-advancing
 				, "-rompath",            _gameDirectory // mame doesn't load roms from full paths, only from dirs to scan
+				, "-artpath",          "mame\\artwork"
+				, "-cfg_directory",        "mame\\cfg"
+				, "-nvram_directory",    "mame\\nvram"
+				, "-diff_directory",      "mame\\diff"
 				, "-volume",                     "-32"  // lowest attenuation means mame osd remains silent
 				, "-output",                 "console"  // print everything to hawk console
 				, "-samplerate", _sampleRate.ToString() // match hawk samplerate
