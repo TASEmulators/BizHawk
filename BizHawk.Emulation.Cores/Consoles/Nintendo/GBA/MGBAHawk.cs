@@ -67,6 +67,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				LibmGBA.BizDestroy(Core);
 				throw;
 			}
+
+			InputCallbacks = new MemoryBasedInputCallbackSystem(this, "System Bus", new [] { 0x4000130u });
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; }

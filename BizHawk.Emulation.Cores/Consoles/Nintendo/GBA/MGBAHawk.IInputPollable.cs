@@ -1,5 +1,4 @@
-﻿using System;
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
@@ -9,6 +8,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public bool IsLagFrame { get; set; }
 
 		[FeatureNotImplemented]
-		public IInputCallbackSystem InputCallbacks => throw new NotImplementedException();
+		public IInputCallbackSystem InputCallbacks { get; private set; }
 	}
 }
