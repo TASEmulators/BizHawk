@@ -56,9 +56,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			// update the controller state on VBlank
 			GetControllerState(controller);
 
-			// send the image on VBlank
-			SendVideoBuffer();
-
 			bool frame_chk = true;
 			//Console.WriteLine("----------FRAME----------");
 
@@ -110,6 +107,9 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					in_vblank_old = in_vblank;
 				}
 			}
+
+			// send the image on VBlank
+			SendVideoBuffer();
 		}
 
 		public void do_single_step()

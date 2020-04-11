@@ -39,8 +39,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			ser.Sync(nameof(kb_state_row), ref kb_state_row);
 			ser.Sync(nameof(kb_state_col), ref kb_state_col);
 
-			ser.Sync(nameof(_vidbuffer), ref _vidbuffer, false);
-
 			// probably a better way to do this
 			if (cart_RAM != null)
 			{
