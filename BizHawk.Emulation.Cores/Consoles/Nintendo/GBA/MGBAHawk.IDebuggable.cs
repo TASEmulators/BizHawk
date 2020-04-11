@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
@@ -23,7 +22,33 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		[FeatureNotImplemented]
 		public void SetCpuRegister(string register, int value)
 		{
-			throw new NotImplementedException();
+			int index = register?.ToUpper() switch
+			{
+				"R0" => 0,
+				"R1" => 1,
+				"R2" => 2,
+				"R3" => 3,
+				"R4" => 4,
+				"R5" => 5,
+				"R6" => 6,
+				"R7" => 7,
+				"R8" => 8,
+				"R9" => 9,
+				"R10" => 10,
+				"R11" => 11,
+				"R12" => 12,
+				"R13" => 13,
+				"R14" => 14,
+				"R15" => 15,
+				"CPSR" => 16,
+				"SPSR" => 17,
+				_=> -1
+			};
+
+			if (index != -1)
+			{
+				LibmGBA.BizSetRegister(Core, index, value);
+			}
 		}
 
 		[FeatureNotImplemented]
