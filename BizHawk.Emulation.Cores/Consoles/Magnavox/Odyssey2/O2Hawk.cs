@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		isPorted: false,
 		isReleased: false)]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
-	public partial class O2Hawk : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, ISettable<O2Hawk.O2Settings, O2Hawk.O2SyncSettings>
+	public partial class O2Hawk : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, ISettable<O2Hawk.O2Settings, O2Hawk.O2SyncSettings>, IBoardInfo
 	{
 		// memory domains
 		public byte[] RAM = new byte[0x80];
@@ -140,6 +140,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		{
 			cpu.Reset();
 		}
+
+		public string BoardName => mapper.GetType().Name;
 
 		private void ExecFetch(ushort addr)
 		{
