@@ -19,7 +19,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			return ret;
 		}
 
-		[FeatureNotImplemented]
 		public void SetCpuRegister(string register, int value)
 		{
 			int index = register?.ToUpper() switch
