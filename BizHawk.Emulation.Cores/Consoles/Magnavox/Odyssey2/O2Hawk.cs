@@ -60,17 +60,10 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			_syncSettings = (O2SyncSettings)syncSettings ?? new O2SyncSettings();
 			_controllerDeck = new O2HawkControllerDeck("O2 Controller", "O2 Controller");
 
-			byte[] Bios = null;
-
-			Bios = comm.CoreFileProvider.GetFirmware("O2", "BIOS", true, "BIOS Not Found, Cannot Load");
 			ppu = new PPU();
 
-			if (Bios == null)
-			{
-				throw new MissingFirmwareException("Missing Odyssey2 Bios");
-			}
-
-			_bios = Bios;
+			_bios = comm.CoreFileProvider.GetFirmware("O2", "BIOS", true, "BIOS Not Found, Cannot Load")
+				?? throw new MissingFirmwareException("Missing Odyssey2 Bios");
 
 			Buffer.BlockCopy(rom, 0x100, header, 0, 0x50);
 
@@ -92,7 +85,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			_syncSettings = (O2SyncSettings)syncSettings ?? new O2SyncSettings();
 
 			_tracer = new TraceBuffer { Header = cpu.TraceHeader };
-			ser.Register<ITraceable>(_tracer);
+			ser.Register(_tracer);
 			ser.Register<IStatable>(new StateSerializer(SyncState));
 			SetupMemoryDomains();
 			cpu.SetCallbacks(ReadMemory, PeekMemory, PeekMemory, WriteMemory);
@@ -104,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			pic_height = 288;
 			_frameHz = 50;
 
-			if ((game.Region == "US") || (game.Region == "EU-US") || (game.Region == null))
+			if (game.Region == "US" || game.Region == "EU-US" || game.Region == null)
 			{
 				is_pal = false;
 				pic_height = 240;
@@ -112,7 +105,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			}
 
 			ppu.set_region(is_pal);
-
 
 			_vidbuffer = new int[372 * pic_height];
 			frame_buffer = new int[320 * pic_height];
@@ -151,14 +143,16 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		private void ExecFetch(ushort addr)
 		{
-			uint flags = (uint)(MemoryCallbackFlags.AccessRead);
+			uint flags = (uint)MemoryCallbackFlags.AccessRead;
 			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
 		}
 
 		private void Setup_Mapper()
 		{
-			mapper = new MapperDefault();
-			mapper.Core = this;
+			mapper = new MapperDefault
+			{
+				Core = this
+			};
 		}
 	}
 }

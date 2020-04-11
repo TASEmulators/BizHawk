@@ -1,5 +1,4 @@
 ﻿using BizHawk.Emulation.Common;
-using System;
 
 namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 {
@@ -71,10 +70,10 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				{
 					ticker++;
 
-					if ((ticker % 5) == 0)
+					if (ticker % 5 == 0)
 					{
 						ppu.tick();
-						if ((ticker % 10) == 0)
+						if (ticker % 10 == 0)
 						{
 							ppu.Audio_tick();
 						}

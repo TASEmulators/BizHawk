@@ -20,10 +20,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			{
 				return _bios[addr];
 			}
-			else
-			{
-				return mapper.ReadMemory((ushort)((addr - 0x400) | rom_bank));
-			}
+
+			return mapper.ReadMemory((ushort)((addr - 0x400) | rom_bank));
 		}
 
 		public void WriteMemory(ushort addr, byte value)
@@ -47,10 +45,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			{
 				return _bios[addr];
 			}
-			else
-			{
-				return mapper.PeekMemory((ushort)(addr - 0x400));
-			}
+
+			return mapper.PeekMemory((ushort)(addr - 0x400));
 		}
 
 		public byte ReadPort(ushort port)
@@ -62,46 +58,43 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				{
 					return addr_latch;
 				}
-				else
+
+				if (RAM_en)
 				{
-					if (RAM_en)
+					if (addr_latch < 0x80) 
 					{
-						if (addr_latch < 0x80) 
-						{
-							return RAM[addr_latch & 0x7F];
-						}
-						else
-						{
-							// voice module would return here
-							return 0;
-						}
-					}
-					if (ppu_en)
-					{
-						return ppu.ReadReg(addr_latch);
+						return RAM[addr_latch & 0x7F];
 					}
 
-					// if neither RAM or PPU is enabled, then a RD pulse from instruction IN A,BUS will latch controller
-					// onto the bus, but only if they are enabled correctly using port 2
-					if (kybrd_en)
-					{
-						_islag = false;
-						if ((kb_byte & 7) == 1)
-						{
-							return controller_state_1;
-						}
-						if ((kb_byte & 7) == 0)
-						{
-							return controller_state_2;
-						}
-					}
-
-					Console.WriteLine(cpu.TotalExecutedCycles);
-					// not sure what happens if this case is reached, probably whatever the last value on the bus is
+					// voice module would return here
 					return 0;
 				}
+				if (ppu_en)
+				{
+					return ppu.ReadReg(addr_latch);
+				}
+
+				// if neither RAM or PPU is enabled, then a RD pulse from instruction IN A,BUS will latch controller
+				// onto the bus, but only if they are enabled correctly using port 2
+				if (kybrd_en)
+				{
+					_islag = false;
+					if ((kb_byte & 7) == 1)
+					{
+						return controller_state_1;
+					}
+					if ((kb_byte & 7) == 0)
+					{
+						return controller_state_2;
+					}
+				}
+
+				Console.WriteLine(cpu.TotalExecutedCycles);
+				// not sure what happens if this case is reached, probably whatever the last value on the bus is
+				return 0;
 			}
-			else if (port == 1)
+
+			if (port == 1)
 			{
 				// various control pins
 				return (byte)((ppu.lum_en ? 0x80 : 0) |
@@ -113,12 +106,10 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				(cart_b1 ? 0x02 : 0) |
 				(cart_b0 ? 0x01 : 0));
 			}
-			else
-			{
-				// keyboard
-				_islag = false;
-				return kb_byte;
-			}
+
+			// keyboard
+			_islag = false;
+			return kb_byte;
 		}
 
 		public void WritePort(ushort port, byte value)
@@ -175,7 +166,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			{
 				// keyboard
 				kb_byte = (byte)(value & 7);
-                KB_Scan();
+				KB_Scan();
 			}
 		}
 	}
