@@ -170,7 +170,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void Close()
 		{
-			RegisteredFunctions.Clear();
+			RegisteredFunctions.Clear(Global.Emulator); // TODO: don't use globals
 			FormsLibrary.DestroyAll();
 			_lua.Close();
 			_lua = new Lua();

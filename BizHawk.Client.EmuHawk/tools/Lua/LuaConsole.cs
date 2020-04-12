@@ -1257,7 +1257,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClearRegisteredFunctionsContextMenuItem_Click(object sender, EventArgs e)
 		{
-			LuaImp.RegisteredFunctions.Clear();
+			LuaImp.RegisteredFunctions.Clear(Emulator);
 		}
 
 		#endregion

@@ -42,16 +42,16 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void Clear()
+		public void Clear(IEmulator emulator)
 		{
-			if (Global.Emulator.InputCallbacksAvailable())
+			if (emulator.InputCallbacksAvailable())
 			{
-				Global.Emulator.AsInputPollable().InputCallbacks.RemoveAll(_functions.Select(w => w.Callback));
+				emulator.AsInputPollable().InputCallbacks.RemoveAll(_functions.Select(w => w.Callback));
 			}
 
-			if (Global.Emulator.MemoryCallbacksAvailable())
+			if (emulator.MemoryCallbacksAvailable())
 			{
-				var memoryCallbacks = Global.Emulator.AsDebuggable().MemoryCallbacks;
+				var memoryCallbacks = emulator.AsDebuggable().MemoryCallbacks;
 				memoryCallbacks.RemoveAll(_functions.Select(w => w.MemCallback));
 			}
 
