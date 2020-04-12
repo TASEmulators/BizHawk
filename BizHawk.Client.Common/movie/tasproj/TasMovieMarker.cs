@@ -32,15 +32,9 @@ namespace BizHawk.Client.Common
 
 		public string Message { get; set; }
 
-		public override string ToString()
-		{
-			return Frame.ToString() + '\t' + Message;
-		}
+		public override string ToString() => Frame.ToString() + '\t' + Message;
 
-		public override int GetHashCode()
-		{
-			return Frame.GetHashCode();
-		}
+		public override int GetHashCode() => Frame.GetHashCode();
 
 		public override bool Equals(object obj)
 		{

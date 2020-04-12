@@ -87,10 +87,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Ignore that stuff
 		/// </summary>
-		public override bool Poke(string value)
-		{
-			return false;
-		}
+		public override bool Poke(string value) => false;
 
 		/// <summary>
 		/// Ignore that stuff

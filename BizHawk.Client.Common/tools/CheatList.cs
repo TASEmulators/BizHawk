@@ -114,7 +114,7 @@ namespace BizHawk.Client.Common
 				cheat.Changed += CheatChanged;
 				if (Contains(cheat))
 				{
-					_cheatList.Remove(Global.CheatList.FirstOrDefault(c => c.Domain == cheat.Domain && c.Address == cheat.Address));
+					_cheatList.Remove(this.FirstOrDefault(c => c.Domain == cheat.Domain && c.Address == cheat.Address));
 				}
 
 				_cheatList.Add(cheat);

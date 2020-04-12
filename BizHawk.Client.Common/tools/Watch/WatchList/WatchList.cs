@@ -45,17 +45,17 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		static WatchList()
 		{
-			// Initialize mapping of columns to comparers for sorting.
+			// Initialize mapping of columns to comparer for sorting.
 			WatchComparers = new Dictionary<string, IComparer<Watch>>
 			{
-				{ Address, new WatchAddressComparer() },
-				{ Value, new WatchValueComparer() },
-				{ Prev, new WatchPreviousValueComparer() },
-				{ ChangesCol, new WatchChangeCountComparer() },
-				{ Diff, new WatchValueDifferenceComparer() },
-				{ Type, new WatchFullDisplayTypeComparer() },
-				{ Domain, new WatchDomainComparer() },
-				{ Notes, new WatchNoteComparer() }
+				[Address] = new WatchAddressComparer(),
+				[Value] = new WatchValueComparer(),
+				[Prev] = new WatchPreviousValueComparer(),
+				[ChangesCol] = new WatchChangeCountComparer(),
+				[Diff] = new WatchValueDifferenceComparer(),
+				[Type] = new WatchFullDisplayTypeComparer(),
+				[Domain] = new WatchDomainComparer(),
+				[Notes] = new WatchNoteComparer()
 			};
 		}
 
@@ -410,114 +410,111 @@ namespace BizHawk.Client.Common
 			}
 
 			var isBizHawkWatch = true; // Hack to support .wch files from other emulators
-			using (var sr = file.OpenText())
-			{
-				string line;
+			using var sr = file.OpenText();
+			string line;
 
-				if (!append)
+			if (!append)
+			{
+				Clear();
+			}
+
+			while ((line = sr.ReadLine()) != null)
+			{
+				// .wch files from other emulators start with a number representing the number of watch, that line can be discarded here
+				// Any properly formatted line couldn't possibly be this short anyway, this also takes care of any garbage lines that might be in a file
+				if (line.Length < 5)
 				{
-					Clear();
+					isBizHawkWatch = false;
+					continue;
 				}
 
-				while ((line = sr.ReadLine()) != null)
+				if (line.Length >= 6 && line.Substring(0, 6) == "Domain")
 				{
-					// .wch files from other emulators start with a number representing the number of watch, that line can be discarded here
-					// Any properly formatted line couldn't possibly be this short anyway, this also takes care of any garbage lines that might be in a file
-					if (line.Length < 5)
-					{
-						isBizHawkWatch = false;
-						continue;
-					}
+					isBizHawkWatch = true;
+				}
 
-					if (line.Length >= 6 && line.Substring(0, 6) == "Domain")
-					{
-						isBizHawkWatch = true;
-					}
+				if (line.Length >= 8 && line.Substring(0, 8) == "SystemID")
+				{
+					continue;
+				}
 
-					if (line.Length >= 8 && line.Substring(0, 8) == "SystemID")
+				var numColumns = line.HowMany('\t');
+				int startIndex;
+				if (numColumns == 5)
+				{
+					// If 5, then this is a post 1.0.5 .wch file
+					if (isBizHawkWatch)
 					{
-						continue;
-					}
-
-					var numColumns = line.HowMany('\t');
-					int startIndex;
-					if (numColumns == 5)
-					{
-						// If 5, then this is a post 1.0.5 .wch file
-						if (isBizHawkWatch)
-						{
-							// Do nothing here
-						}
-						else
-						{
-							startIndex = line.IndexOf('\t') + 1;
-							line = line.Substring(startIndex, line.Length - startIndex);   // 5 digit value representing the watch position number
-						}
+						// Do nothing here
 					}
 					else
 					{
-						continue;   // If not 4, something is wrong with this line, ignore it
-					}
-
-					// Temporary, rename if kept
-					int addr;
-					var memDomain = _memoryDomains.MainMemory;
-
-					var temp = line.Substring(0, line.IndexOf('\t'));
-					try
-					{
-						addr = int.Parse(temp, NumberStyles.HexNumber);
-					}
-					catch
-					{
-						continue;
-					}
-
-					startIndex = line.IndexOf('\t') + 1;
-					line = line.Substring(startIndex, line.Length - startIndex);   // Type
-					var size = Watch.SizeFromChar(line[0]);
-
-					startIndex = line.IndexOf('\t') + 1;
-					line = line.Substring(startIndex, line.Length - startIndex);   // Signed
-					var type = Watch.DisplayTypeFromChar(line[0]);
-
-					startIndex = line.IndexOf('\t') + 1;
-					line = line.Substring(startIndex, line.Length - startIndex);   // Endian
-					try
-					{
-						startIndex = short.Parse(line[0].ToString());
-					}
-					catch
-					{
-						continue;
-					}
-
-					var bigEndian = startIndex != 0;
-
-					if (isBizHawkWatch)
-					{
 						startIndex = line.IndexOf('\t') + 1;
-						line = line.Substring(startIndex, line.Length - startIndex);   // Domain
-						temp = line.Substring(0, line.IndexOf('\t'));
-						memDomain = _memoryDomains[temp] ?? _memoryDomains.MainMemory;
+						line = line.Substring(startIndex, line.Length - startIndex);   // 5 digit value representing the watch position number
 					}
-
-					startIndex = line.IndexOf('\t') + 1;
-					var notes = line.Substring(startIndex, line.Length - startIndex);
-
-					_watchList.Add(
-						Watch.GenerateWatch(
-							memDomain,
-							addr,
-							size,
-							type,
-							bigEndian,
-							notes));
+				}
+				else
+				{
+					continue;   // If not 4, something is wrong with this line, ignore it
 				}
 
-				CurrentFileName = path;
+				// Temporary, rename if kept
+				int addr;
+				var memDomain = _memoryDomains.MainMemory;
+
+				var temp = line.Substring(0, line.IndexOf('\t'));
+				try
+				{
+					addr = int.Parse(temp, NumberStyles.HexNumber);
+				}
+				catch
+				{
+					continue;
+				}
+
+				startIndex = line.IndexOf('\t') + 1;
+				line = line.Substring(startIndex, line.Length - startIndex);   // Type
+				var size = Watch.SizeFromChar(line[0]);
+
+				startIndex = line.IndexOf('\t') + 1;
+				line = line.Substring(startIndex, line.Length - startIndex);   // Signed
+				var type = Watch.DisplayTypeFromChar(line[0]);
+
+				startIndex = line.IndexOf('\t') + 1;
+				line = line.Substring(startIndex, line.Length - startIndex);   // Endian
+				try
+				{
+					startIndex = short.Parse(line[0].ToString());
+				}
+				catch
+				{
+					continue;
+				}
+
+				var bigEndian = startIndex != 0;
+
+				if (isBizHawkWatch)
+				{
+					startIndex = line.IndexOf('\t') + 1;
+					line = line.Substring(startIndex, line.Length - startIndex);   // Domain
+					temp = line.Substring(0, line.IndexOf('\t'));
+					memDomain = _memoryDomains[temp] ?? _memoryDomains.MainMemory;
+				}
+
+				startIndex = line.IndexOf('\t') + 1;
+				var notes = line.Substring(startIndex, line.Length - startIndex);
+
+				_watchList.Add(
+					Watch.GenerateWatch(
+						memDomain,
+						addr,
+						size,
+						type,
+						bigEndian,
+						notes));
 			}
 
+			CurrentFileName = path;
 			Changes = append;
 
 			return true;

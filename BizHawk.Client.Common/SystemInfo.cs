@@ -8,16 +8,10 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public sealed class SystemInfo
 	{
-		#region Fields
-
 		private const JoypadButton UpDownLeftRight = JoypadButton.Up | JoypadButton.Down | JoypadButton.Left | JoypadButton.Right;
 		private const JoypadButton StandardButtons = JoypadButton.A | JoypadButton.B | JoypadButton.Start | JoypadButton.Select | UpDownLeftRight;
 
 		private static readonly List<SystemInfo> AllSystemInfos = new List<SystemInfo>();
-
-		#endregion
-
-		#region cTor(s)
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SystemInfo"/> class
@@ -35,8 +29,6 @@ namespace BizHawk.Client.Common
 
 			AllSystemInfos.Add(this);
 		}
-
-		#endregion
 
 		#region Methods
 
@@ -269,22 +261,10 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Gets the hashcode for current instance
-		/// </summary>
-		/// <returns>This instance hashcode</returns>
-		public override int GetHashCode()
-		{
-			return base.GetHashCode();
-		}
-
-		/// <summary>
 		/// Returns a <see cref="string"/> representation of current <see cref="SystemInfo"/>
 		/// In fact, return the same as DisplayName property
 		/// </summary>
-		public override string ToString()
-		{
-			return DisplayName;
-		}
+		public override string ToString() => DisplayName;
 
 		/// <summary>
 		/// Determine if two <see cref="SystemInfo"/> are equals.
