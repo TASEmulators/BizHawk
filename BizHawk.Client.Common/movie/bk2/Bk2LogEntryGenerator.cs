@@ -20,7 +20,7 @@ namespace BizHawk.Client.Common
 		}
 
 		public IMovieController MovieControllerAdapter => new Bk2ControllerAdapter(_logKey);
-
+		 
 		public void SetSource(IController source) => _source = source;
 
 		public string GenerateInputDisplay() => CreateLogEntry(forInputDisplay: true);

@@ -147,7 +147,7 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// latches sticky buttons from <see cref="Global.AutofireStickyXORAdapter"/>
+		/// latches sticky buttons from <see cref="AutoFireStickyXorAdapter"/>
 		/// </summary>
 		public void LatchSticky()
 		{
