@@ -27,15 +27,9 @@ namespace BizHawk.Client.Common
 			set => Buttons[button] = value;
 		}
 
-		public virtual bool IsPressed(string button)
-		{
-			return this[button];
-		}
+		public virtual bool IsPressed(string button) => this[button];
 
-		public float AxisValue(string name)
-		{
-			return Axes[name];
-		}
+		public float AxisValue(string name) => Axes[name];
 
 		public IEnumerable<KeyValuePair<string, bool>> BoolButtons()
 		{

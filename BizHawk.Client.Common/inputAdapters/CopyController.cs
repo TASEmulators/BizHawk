@@ -9,15 +9,9 @@ namespace BizHawk.Client.Common
 	{
 		public ControllerDefinition Definition => Curr.Definition;
 
-		public bool IsPressed(string button)
-		{
-			return Curr.IsPressed(button);
-		}
+		public bool IsPressed(string button) => Curr.IsPressed(button);
 
-		public float AxisValue(string name)
-		{
-			return Curr.AxisValue(name);
-		}
+		public float AxisValue(string name) => Curr.AxisValue(name);
 
 		public IController Source { get; set; }
 

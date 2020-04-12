@@ -32,7 +32,6 @@ namespace BizHawk.Client.Common
 			=> _axisOverrides.ContainsKey(name)
 				? _axisOverrides[name]
 				: 0.0F;
-		
 
 		public IEnumerable<string> Overrides => _overrides.Select(kvp => kvp.Key);
 

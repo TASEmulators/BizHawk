@@ -107,7 +107,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RemoveAllBtn_Click(object sender, EventArgs e)
 		{
-			_registeredFunctions.Clear();
+			_registeredFunctions.Clear(Global.Emulator); // TODO: don't use Global
 			PopulateListView();
 		}
 

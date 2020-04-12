@@ -10,38 +10,23 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public class ClickyVirtualPadController : IController
 	{
+		private readonly HashSet<string> _pressed = new HashSet<string>();
+
 		public ControllerDefinition Definition { get; set; }
 
-		public bool IsPressed(string button)
-		{
-			return _pressed.Contains(button);
-		}
+		public bool IsPressed(string button) => _pressed.Contains(button);
 
-		public float AxisValue(string name)
-		{
-			return 0.0f;
-		}
+		public float AxisValue(string name) => 0.0f;
 
 		/// <summary>
 		/// Call this once per frame to do the timekeeping for the hold and release
 		/// </summary>
-		public void FrameTick()
-		{
-			_pressed.Clear();
-		}
+		public void FrameTick() => _pressed.Clear();
 
 		/// <summary>
 		/// Call this to hold the button down for one frame
 		/// </summary>
-		public void Click(string button)
-		{
-			_pressed.Add(button);
-		}
-
-		public void Unclick(string button)
-		{
-			_pressed.Remove(button);
-		}
+		public void Click(string button) => _pressed.Add(button);
 
 		public void Toggle(string button)
 		{
@@ -66,7 +51,5 @@ namespace BizHawk.Client.Common
 				_pressed.Add(button);
 			}
 		}
-
-		private readonly HashSet<string> _pressed = new HashSet<string>();
 	}
 }

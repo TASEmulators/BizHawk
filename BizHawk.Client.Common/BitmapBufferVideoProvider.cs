@@ -20,10 +20,7 @@ namespace BizHawk.Client.Common
 			_bb = null;
 		}
 
-		public int[] GetVideoBuffer()
-		{
-			return _bb.Pixels;
-		}
+		public int[] GetVideoBuffer() => _bb.Pixels;
 
 		public int VirtualWidth => _bb.Width;
 
