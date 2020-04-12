@@ -211,7 +211,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					LuaImp.CallExitEvent(file);
 
-					LuaImp.RegisteredFunctions.RemoveForFile(file);
+					LuaImp.RegisteredFunctions.RemoveForFile(file, Emulator);
 					UpdateRegisteredFunctionsDialog();
 
 					file.Stop();
@@ -941,7 +941,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				foreach (var item in items)
 				{
-					LuaImp.RegisteredFunctions.RemoveForFile(item);
+					LuaImp.RegisteredFunctions.RemoveForFile(item, Emulator);
 					LuaImp.ScriptList.Remove(item);
 				}
 				
@@ -1505,14 +1505,14 @@ namespace BizHawk.Client.EmuHawk
 
 			if (file.Enabled && file.Thread == null)
 			{
-				LuaImp.RegisteredFunctions.RemoveForFile(file); // First remove any existing registered functions for this file
+				LuaImp.RegisteredFunctions.RemoveForFile(file, Emulator); // First remove any existing registered functions for this file
 				EnableLuaFile(file);
 				UpdateRegisteredFunctionsDialog();
 			}
 			else if (!file.Enabled && file.Thread != null)
 			{
 				LuaImp.CallExitEvent(file);
-				LuaImp.RegisteredFunctions.RemoveForFile(file);
+				LuaImp.RegisteredFunctions.RemoveForFile(file, Emulator);
 				UpdateRegisteredFunctionsDialog();
 
 				LuaImp.CallExitEvent(file);

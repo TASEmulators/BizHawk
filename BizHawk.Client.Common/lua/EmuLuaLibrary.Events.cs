@@ -342,7 +342,7 @@ namespace BizHawk.Client.Common
 		{
 			foreach (var nlf in RegisteredFunctions.Where(nlf => nlf.Guid.ToString() == guid))
 			{
-				RegisteredFunctions.Remove(nlf);
+				RegisteredFunctions.Remove(nlf, Emulator);
 				return true;
 			}
 
@@ -355,7 +355,7 @@ namespace BizHawk.Client.Common
 		{
 			foreach (var nlf in RegisteredFunctions.Where(nlf => nlf.Name == name))
 			{
-				RegisteredFunctions.Remove(nlf);
+				RegisteredFunctions.Remove(nlf, Emulator);
 				return true;
 			}
 

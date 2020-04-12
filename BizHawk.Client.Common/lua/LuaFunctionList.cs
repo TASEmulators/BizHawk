@@ -1,57 +1,65 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public class LuaFunctionList : List<NamedLuaFunction>
+	public class LuaFunctionList : IEnumerable<NamedLuaFunction>
 	{
+		private readonly List<NamedLuaFunction> _functions = new List<NamedLuaFunction>();
+
 		public NamedLuaFunction this[string guid] => 
-			this.FirstOrDefault(nlf => nlf.Guid.ToString() == guid);
+			_functions.FirstOrDefault(nlf => nlf.Guid.ToString() == guid);
 
-		public new bool Remove(NamedLuaFunction function)
+		public void Add(NamedLuaFunction nlf) => _functions.Add(nlf);
+
+		public bool Remove(NamedLuaFunction function, IEmulator emulator)
 		{
-			if (Global.Emulator.InputCallbacksAvailable())
+			if (emulator.InputCallbacksAvailable())
 			{
-				Global.Emulator.AsInputPollable().InputCallbacks.Remove(function.Callback);
+				emulator.AsInputPollable().InputCallbacks.Remove(function.Callback);
 			}
 
-			if (Global.Emulator.MemoryCallbacksAvailable())
+			if (emulator.MemoryCallbacksAvailable())
 			{
-				Global.Emulator.AsDebuggable().MemoryCallbacks.Remove(function.MemCallback);
+				emulator.AsDebuggable().MemoryCallbacks.Remove(function.MemCallback);
 			}
 
-			return base.Remove(function);
+			return _functions.Remove(function);
 		}
 
-		public void RemoveForFile(LuaFile file)
+		public void RemoveForFile(LuaFile file, IEmulator emulator)
 		{
-			var functionsToRemove = this
+			var functionsToRemove = _functions
 				.ForFile(file)
 				.ToList();
 
 			foreach (var function in functionsToRemove)
 			{
-				Remove(function);
+				Remove(function, emulator);
 			}
 		}
 
-		public new void Clear()
+		public void Clear()
 		{
 			if (Global.Emulator.InputCallbacksAvailable())
 			{
-				Global.Emulator.AsInputPollable().InputCallbacks.RemoveAll(this.Select(w => w.Callback));
+				Global.Emulator.AsInputPollable().InputCallbacks.RemoveAll(_functions.Select(w => w.Callback));
 			}
 
 			if (Global.Emulator.MemoryCallbacksAvailable())
 			{
 				var memoryCallbacks = Global.Emulator.AsDebuggable().MemoryCallbacks;
-				memoryCallbacks.RemoveAll(this.Select(w => w.MemCallback));
+				memoryCallbacks.RemoveAll(_functions.Select(w => w.MemCallback));
 			}
 
-			base.Clear();
+			_functions.Clear();
 		}
+
+		public IEnumerator<NamedLuaFunction> GetEnumerator() => _functions.GetEnumerator();
+		IEnumerator IEnumerable.GetEnumerator() => _functions.GetEnumerator();
 	}
 
 	public static class LuaFunctionListExtensions

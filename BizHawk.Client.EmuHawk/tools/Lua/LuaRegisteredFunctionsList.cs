@@ -88,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var guid = FunctionView.Items[index].SubItems[2].Text;
 					var nlf = _registeredFunctions[guid];
-					_registeredFunctions.Remove(nlf);
+					_registeredFunctions.Remove(nlf, Global.Emulator); // TODO: don't use Global
 				}
 
 				PopulateListView();
