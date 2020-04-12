@@ -2,7 +2,7 @@
 using BizHawk.Client.Common;
 using BizHawk.Common;
 
-namespace BizHawk.Client.ApiHawk
+namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
 	/// This class holds a joypad for any type of console

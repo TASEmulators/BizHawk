@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Common;
 
-namespace BizHawk.Client.ApiHawk
+namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
 	/// This static class handle all ExternalTools

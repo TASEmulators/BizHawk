@@ -2,8 +2,8 @@
 using System.Windows.Forms;
 using System.IO;
 
-using BizHawk.Client.ApiHawk;
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk;
 using BizHawk.Emulation.Common;
 
 using DisplayType = BizHawk.Client.Common.DisplayType;

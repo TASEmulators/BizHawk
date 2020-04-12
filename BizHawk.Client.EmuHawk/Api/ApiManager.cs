@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Client.ApiHawk;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -15,8 +14,7 @@ namespace BizHawk.Client.EmuHawk
 		private static ApiContainer _container;
 		private static IExternalApiProvider Register(IEmulatorServiceProvider serviceProvider)
 		{
-			foreach (var api in Assembly.Load("BizHawk.Client.Common").GetTypes()
-				.Concat(Assembly.Load("BizHawk.Client.ApiHawk").GetTypes())
+			foreach (var api in Assembly.GetAssembly(typeof(ApiSubsetContainer)).GetTypes()
 				.Concat(Assembly.GetAssembly(typeof(ApiContainer)).GetTypes())
 				.Where(t => typeof(IExternalApi).IsAssignableFrom(t) && t.IsSealed && ServiceInjector.IsAvailable(serviceProvider, t)))
 			{

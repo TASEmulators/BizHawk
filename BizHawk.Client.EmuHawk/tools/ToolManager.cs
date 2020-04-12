@@ -8,7 +8,6 @@ using System.Reflection;
 using System.ComponentModel;
 using System.Windows.Forms;
 
-using BizHawk.Client.ApiHawk;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.CoreExtensions;
 using BizHawk.Common;
@@ -762,7 +761,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private static readonly Lazy<List<string>> LazyAsmTypes = new Lazy<List<string>>(() =>
-			Assembly.GetAssembly(typeof(ToolManager)) // Confining the search to only EmuHawk, for now at least, we may want to broaden for ApiHawk one day
+			Assembly.GetAssembly(typeof(ToolManager)) // Confining the search to only EmuHawk, for now at least, we may want to broaden for external tools one day
 				.GetTypes()
 				.Select(t => t.AssemblyQualifiedName)
 				.ToList());

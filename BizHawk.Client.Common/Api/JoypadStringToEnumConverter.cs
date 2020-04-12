@@ -2,7 +2,7 @@
 using System.Globalization;
 using BizHawk.Client.Common;
 
-namespace BizHawk.Client.ApiHawk
+namespace BizHawk.Client.Common
 {
 	/// <summary>
 	/// This class holds a converter for BizHawk joypad buttons (which is a simple <see cref="string"/>

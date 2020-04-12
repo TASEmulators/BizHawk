@@ -144,9 +144,6 @@
 		<!--<Reference Include="WindowsBase" />-->
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="$(SolutionDir)BizHawk.Client.ApiHawk/BizHawk.Client.ApiHawk.csproj"
-			Name="BizHawk.Client.ApiHawk"
-			Project="{8e2f11f2-3955-4382-8c3a-ceba1276caea}" />
 		<ProjectReference Include="$(SolutionDir)BizHawk.Client.Common/BizHawk.Client.Common.csproj"
 			Name="BizHawk.Client.Common"
 			Project="{24A0AA3C-B25F-4197-B23D-476D6462DBA0}" />

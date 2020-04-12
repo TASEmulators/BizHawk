@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Client.ApiHawk
+﻿namespace BizHawk.Client.Common
 {
 	/// <summary>
 	/// This enum describe how an external tool is handled

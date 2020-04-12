@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BizHawk.Client.ApiHawk
+namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
 	/// This class holds event data for BeforeQuickLoad event

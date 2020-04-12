@@ -3,7 +3,7 @@ using System.Linq;
 
 using BizHawk.Common.ReflectionExtensions;
 
-namespace BizHawk.Client.ApiHawk
+namespace BizHawk.Client.Common
 {
 	/// <summary>
 	/// injects Apis into other classes

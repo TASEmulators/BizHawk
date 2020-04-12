@@ -4,7 +4,7 @@ using System.Linq;
 
 using BizHawk.Client.Common;
 
-namespace BizHawk.Client.ApiHawk
+namespace BizHawk.Client.Common
 {
 	/// <summary>
 	/// A generic implementation of IExternalApi provider that provides

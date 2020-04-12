@@ -14,7 +14,7 @@ using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 // ReSharper disable UnusedMember.Global
-namespace BizHawk.Client.ApiHawk
+namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
 	/// This class contains some methods that

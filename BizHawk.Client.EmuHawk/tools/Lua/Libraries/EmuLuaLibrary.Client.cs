@@ -10,7 +10,6 @@ using System.Threading;
 using System.Diagnostics;
 
 using BizHawk.Common;
-using BizHawk.Client.ApiHawk;
 
 // ReSharper disable StringLiteralTypo
 // ReSharper disable UnusedMember.Global

@@ -26,7 +26,6 @@ using BizHawk.Emulation.Cores.Nintendo.GBHawkLink;
 
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.CoreExtensions;
-using BizHawk.Client.ApiHawk;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common.Base_Implementations;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;

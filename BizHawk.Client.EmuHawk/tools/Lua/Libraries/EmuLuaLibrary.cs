@@ -27,7 +27,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_mainForm = mainForm;
 
-			static ApiContainer InitApiHawkContainerInstance(IEmulatorServiceProvider sp, Action<string> logCallback)
+			static ApiContainer InitApiContainer(IEmulatorServiceProvider sp, Action<string> logCallback)
 			{
 				var ctorParamTypes = new[] { typeof(Action<string>) };
 				var ctorParams = new object[] { logCallback };
@@ -41,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 					ServiceInjector.UpdateServices(sp, instance);
 					libDict.Add(api, instance);
 				}
-				return ApiHawkContainerInstance = new ApiContainer(libDict);
+				return ApiContainerInstance = new ApiContainer(libDict);
 			}
 
 			LuaWait = new AutoResetEvent(false);
@@ -73,9 +73,9 @@ namespace BizHawk.Client.EmuHawk
 						emuHawkLibrary.MainForm = _mainForm;
 					}
 
-					ApiHawkContainerInstance = InitApiHawkContainerInstance(serviceProvider, ConsoleLuaLibrary.LogOutput);
-					if (instance is DelegatingLuaLibraryEmu dlgInstanceEmu) dlgInstanceEmu.APIs = ApiHawkContainerInstance; // this is necessary as the property has the `new` modifier
-					else if (instance is DelegatingLuaLibrary dlgInstance) dlgInstance.APIs = ApiHawkContainerInstance;
+					ApiContainerInstance = InitApiContainer(serviceProvider, ConsoleLuaLibrary.LogOutput);
+					if (instance is DelegatingLuaLibraryEmu dlgInstanceEmu) dlgInstanceEmu.APIs = ApiContainerInstance; // this is necessary as the property has the `new` modifier
+					else if (instance is DelegatingLuaLibrary dlgInstance) dlgInstance.APIs = ApiContainerInstance;
 
 					Libraries.Add(lib, instance);
 				}
@@ -99,7 +99,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		/// <remarks>lazily instantiated</remarks>
-		private static ApiContainer ApiHawkContainerInstance;
+		private static ApiContainer ApiContainerInstance;
 
 		private Lua _lua = new Lua();
 		private Lua _currThread;

@@ -17,7 +17,6 @@ using BizHawk.Client.Common;
 
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Emulation.Cores.Computers.AppleII;
-using BizHawk.Client.ApiHawk;
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Cores.Atari.A7800Hawk;

@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-using BizHawk.Client.ApiHawk;
 using BizHawk.Client.Common;
 
 using static BizHawk.Experiment.AutoGenConfig.ConfigEditorUIGenerators;

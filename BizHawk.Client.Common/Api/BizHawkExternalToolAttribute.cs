@@ -2,7 +2,7 @@
 
 using BizHawk.Client.Common;
 
-namespace BizHawk.Client.ApiHawk
+namespace BizHawk.Client.Common
 {
 	/// <remarks>This class needs to be in the assembly or old tools will throw on load instead of being recognised as old.</remarks>
 	[AttributeUsage(AttributeTargets.Assembly)]
