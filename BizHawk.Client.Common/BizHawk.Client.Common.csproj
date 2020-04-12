@@ -22,7 +22,6 @@
 		<!--<Reference Include="System.Xml.Linq" />-->
 	</ItemGroup>
 	<ItemGroup>
-		<!--<PackageReference Include="Ionic.Zip" Version="1.9.1.8" PrivateAssets="All" />--><!-- only used in IonicZipWriter.cs, unused and removed from compilation -->
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" PrivateAssets="All" />
 		<Reference Include="NLua"
 			HintPath="$(SolutionDir)output/dll/nlua/NLua.dll"
@@ -37,7 +36,6 @@
 	<ItemGroup>
 		<Compile Include="$(SolutionDir)Version/svnrev.cs" />
 		<Compile Include="$(SolutionDir)Version/VersionInfo.cs" />
-		<Compile Remove="IonicZipWriter.cs" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Update="movie/bk2/Bk2Movie.HeaderApi.cs" DependentUpon="Bk2Movie.cs" />
