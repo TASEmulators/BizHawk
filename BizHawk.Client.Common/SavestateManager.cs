@@ -9,9 +9,9 @@ namespace BizHawk.Client.Common
 {
 	public static class SavestateManager
 	{
-		public static void SaveStateFile(string filename, string name)
+		public static void SaveStateFile(IEmulator emulator, string filename)
 		{
-			var core = Global.Emulator.AsStatable();
+			var core = emulator.AsStatable();
 
 			// the old method of text savestate save is now gone.
 			// a text savestate is just like a binary savestate, but with a different core lump
@@ -33,9 +33,9 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			if (Global.Config.SaveScreenshotWithStates && Global.Emulator.HasVideoProvider())
+			if (Global.Config.SaveScreenshotWithStates && emulator.HasVideoProvider())
 			{
-				var vp = Global.Emulator.AsVideoProvider();
+				var vp = emulator.AsVideoProvider();
 				var buff = vp.GetVideoBuffer();
 				if (buff.Length == 1)
 				{
@@ -59,7 +59,7 @@ namespace BizHawk.Client.Common
 
 					using (new SimpleTime("Save Framebuffer"))
 					{
-						bs.PutLump(BinaryStateLump.Framebuffer, s => QuickBmpFile.Save(Global.Emulator.AsVideoProvider(), s, outWidth, outHeight));
+						bs.PutLump(BinaryStateLump.Framebuffer, s => QuickBmpFile.Save(emulator.AsVideoProvider(), s, outWidth, outHeight));
 					}
 				}
 			}
@@ -70,7 +70,7 @@ namespace BizHawk.Client.Common
 					delegate(TextWriter tw)
 					{
 						// this never should have been a core's responsibility
-						tw.WriteLine("Frame {0}", Global.Emulator.Frame);
+						tw.WriteLine("Frame {0}", emulator.Frame);
 						Global.MovieSession.HandleMovieSaveState(tw);
 					});
 			}
@@ -126,9 +126,9 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public static bool LoadStateFile(string path, string name)
+		public static bool LoadStateFile(IEmulator emulator, string path)
 		{
-			var core = Global.Emulator.AsStatable();
+			var core = emulator.AsStatable();
 
 			// try to detect binary first
 			var bl = BinaryStateLoader.LoadAndDetect(path);

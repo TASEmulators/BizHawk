@@ -4057,7 +4057,7 @@ namespace BizHawk.Client.EmuHawk
 				MovieSession.Movie.IsCountingRerecords = false;
 			}
 
-			if (SavestateManager.LoadStateFile(path, userFriendlyStateName))
+			if (SavestateManager.LoadStateFile(Emulator, path))
 			{
 				GlobalWin.OSD.ClearGuiText();
 				ClientApi.OnStateLoaded(this, userFriendlyStateName);
@@ -4136,7 +4136,7 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				SavestateManager.SaveStateFile(path, userFriendlyStateName);
+				SavestateManager.SaveStateFile(Emulator, path);
 
 				ClientApi.OnStateSaved(this, userFriendlyStateName);
 
