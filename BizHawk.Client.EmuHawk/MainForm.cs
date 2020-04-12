@@ -62,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 
 			HandleToggleLightAndLink();
 			SetStatusBar();
-			_stateSlots.Update(SaveStatePrefix());
+			_stateSlots.Update(Emulator, MovieSession.Movie, SaveStatePrefix());
 
 			// New version notification
 			UpdateChecker.CheckComplete += (s2, e2) =>
@@ -2456,7 +2456,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateStatusSlots()
 		{
-			_stateSlots.Update(SaveStatePrefix());
+			_stateSlots.Update(Emulator, MovieSession.Movie, SaveStatePrefix());
 
 			Slot0StatusButton.ForeColor = SlotForeColor(0);
 			Slot1StatusButton.ForeColor = SlotForeColor(1);

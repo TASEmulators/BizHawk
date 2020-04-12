@@ -10,9 +10,9 @@ namespace BizHawk.Client.Common
 		private readonly bool[] _slots = new bool[10];
 		private readonly bool[] _redo = new bool[10];
 
-		public void Update(string saveStatePrefix)
+		public void Update(IEmulator emulator, IMovie movie, string saveStatePrefix)
 		{
-			if (Global.Game == null || Global.Emulator == null)
+			if (!emulator.HasSavestates())
 			{
 				for (int i = 0; i < 10; i++)
 				{
@@ -24,7 +24,7 @@ namespace BizHawk.Client.Common
 
 			for (int i = 0; i < 10; i++)
 			{
-				if (Global.MovieSession.Movie is TasMovie tasMovie)
+				if (movie is TasMovie tasMovie)
 				{
 					_slots[i] = i < tasMovie.Branches.Count;
 				}
@@ -41,9 +41,9 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public bool HasSlot(int slot, string savestatePrefix)
+		public bool HasSlot(IEmulator emulator, IMovie movie, int slot, string savestatePrefix)
 		{
-			if (!Global.Emulator.HasSavestates())
+			if (!emulator.HasSavestates())
 			{
 				return false;
 			}
@@ -53,7 +53,7 @@ namespace BizHawk.Client.Common
 				return false;
 			}
 
-			Update(savestatePrefix);
+			Update(emulator, movie, savestatePrefix);
 			return _slots[slot];
 		}
 
@@ -65,14 +65,14 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void ToggleRedo(int slot)
+		public void ToggleRedo(IMovie movie, int slot)
 		{
-			if (0.RangeTo(9).Contains(slot) && !(Global.MovieSession.Movie is TasMovie)) _redo[slot] ^= true;
+			if (0.RangeTo(9).Contains(slot) && !(movie is TasMovie)) _redo[slot] ^= true;
 		}
 
-		public bool IsRedo(int slot) => 0.RangeTo(9).Contains(slot) && !(Global.MovieSession.Movie is TasMovie) && _redo[slot];
+		public bool IsRedo(IMovie movie, int slot) => 0.RangeTo(9).Contains(slot) && !(movie is TasMovie) && _redo[slot];
 
-		public void SwapBackupSavestate(string path)
+		public void SwapBackupSavestate(IMovie movie, string path, int currentSlot)
 		{
 			// Takes the .state and .bak files and swaps them
 			var state = new FileInfo(path);
@@ -96,7 +96,7 @@ namespace BizHawk.Client.Common
 			temp.CopyTo(path);
 			temp.Delete();
 
-			ToggleRedo(Global.Config.SaveSlot);
+			ToggleRedo(movie, currentSlot);
 		}
 	}
 }

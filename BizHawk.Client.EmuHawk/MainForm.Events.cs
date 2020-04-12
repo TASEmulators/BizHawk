@@ -69,7 +69,7 @@ namespace BizHawk.Client.EmuHawk
 			RecentRomSubMenu.DropDownItems.AddRange(Config.RecentRoms.RecentMenu(LoadRomFromRecent, "ROM", romLoading: true));
 		}
 
-		private bool HasSlot(int slot) => _stateSlots.HasSlot(slot, SaveStatePrefix());
+		private bool HasSlot(int slot) => _stateSlots.HasSlot(Emulator, MovieSession.Movie, slot, SaveStatePrefix());
 
 		private void SaveStateSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -2893,7 +2893,7 @@ namespace BizHawk.Client.EmuHawk
 			if (file.Exists)
 			{
 				UndoSavestateContextMenuItem.Enabled = true;
-				if (_stateSlots.IsRedo(Config.SaveSlot))
+				if (_stateSlots.IsRedo(MovieSession.Movie, Config.SaveSlot))
 				{
 					UndoSavestateContextMenuItem.Text = $"Redo Save to slot {Config.SaveSlot}";
 					UndoSavestateContextMenuItem.Image = Properties.Resources.redo;
@@ -3011,7 +3011,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UndoSavestateContextMenuItem_Click(object sender, EventArgs e)
 		{
-			_stateSlots.SwapBackupSavestate($"{SaveStatePrefix()}.QuickSave{Config.SaveSlot}.State");
+			_stateSlots.SwapBackupSavestate(MovieSession.Movie, $"{SaveStatePrefix()}.QuickSave{Config.SaveSlot}.State", Config.SaveSlot);
 			AddOnScreenMessage($"Save slot {Config.SaveSlot} restored.");
 		}
 
