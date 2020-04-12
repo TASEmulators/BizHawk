@@ -540,7 +540,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		unsafe void DrawEverything()
+		private unsafe void DrawEverything()
 		{
 			ushort dispcnt = ((ushort*)_mmio)[0];
 
@@ -654,7 +654,7 @@ namespace BizHawk.Client.EmuHawk
 			return mdv;
 		}
 
-		void GenerateWidgets()
+		private void GenerateWidgets()
 		{
 			listBoxWidgets.BeginUpdate();
 			_bg0 = MakeMBVWidget("Background 0", 256, 256);
@@ -688,7 +688,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		static void BringToFrontHack(Control c, Control top)
+		private static void BringToFrontHack(Control c, Control top)
 		{
 			c.Click += (o, e) => top.BringToFront();
 			if (c.HasChildren)
@@ -742,7 +742,7 @@ namespace BizHawk.Client.EmuHawk
 			// Do nothing
 		}
 
-		void ShowSelectedWidget()
+		private void ShowSelectedWidget()
 		{
 			if (listBoxWidgets.SelectedItem != null)
 			{

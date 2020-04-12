@@ -54,12 +54,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				ServiceProvider = ser;
 				PutSettings(_settings);
 
-				_tracer = new TraceBuffer
+				Tracer = new TraceBuffer
 				{
 					Header = "ARM7: PC, machine code, mnemonic, operands, registers"
 				};
-				_tracecb = new LibmGBA.TraceCallback((msg) => _tracer.Put(_traceInfo(msg)));
-				ser.Register(_tracer);
+				_tracecb = msg => Tracer.Put(_traceInfo(msg));
+				ser.Register(Tracer);
 				MemoryCallbacks = new MGBAMemoryCallbackSystem(this);
 			}
 			catch
@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public ControllerDefinition ControllerDefinition => GBA.GBAController;
 
-		private ITraceable _tracer { get; set; }
+		private ITraceable Tracer { get; }
 
 		private LibmGBA.TraceCallback _tracecb { get; set; }
 
@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			};
 		}
 
-		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
+		public bool FrameAdvance(IController controller, bool render, bool renderSound = true)
 		{
 			Frame++;
 			if (controller.IsPressed("Power"))
@@ -113,14 +113,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				WireMemoryDomainPointers();
 			}
 
-			LibmGBA.BizSetTraceCallback(_tracer.Enabled ? _tracecb : null);
+			LibmGBA.BizSetTraceCallback(Tracer.Enabled ? _tracecb : null);
 
 			IsLagFrame = LibmGBA.BizAdvance(
 				Core,
 				VBANext.GetButtons(controller),
 				render ? _videobuff : _dummyvideobuff,
 				ref _nsamp,
-				rendersound ? _soundbuff : _dummysoundbuff,
+				renderSound ? _soundbuff : _dummysoundbuff,
 				RTCTime(),
 				(short)controller.AxisValue("Tilt X"),
 				(short)controller.AxisValue("Tilt Y"),
@@ -245,9 +245,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				return (long)DateTime.Now.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
 			}
 
-			long basetime = (long)_syncSettings.RTCInitialTime.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+			long baseTime = (long)_syncSettings.RTCInitialTime.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
 			long increment = Frame * 4389L >> 18;
-			return basetime + increment;
+			return baseTime + increment;
 		}
 	}
 }
