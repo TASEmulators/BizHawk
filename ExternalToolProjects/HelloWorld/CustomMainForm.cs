@@ -52,7 +52,7 @@ namespace HelloWorld
 			ClientApi.BeforeQuickSave += (sender, e) =>
 			{
 				if (e.Slot != 0) return; // only take effect on slot 0
-				var basePath = Path.Combine(PathManager.GetSaveStatePath(Global.Game), "Test");
+				var basePath = Path.Combine(Global.Config.PathEntries.SaveStateAbsolutePath(Global.Game.System), "Test");
 				if (!Directory.Exists(basePath)) Directory.CreateDirectory(basePath);
 				ClientApi.SaveState(Path.Combine(basePath, e.Name));
 				e.Handled = true;
@@ -60,7 +60,7 @@ namespace HelloWorld
 			ClientApi.BeforeQuickLoad += (sender, e) =>
 			{
 				if (e.Slot != 0) return; // only take effect on slot 0
-				var basePath = Path.Combine(PathManager.GetSaveStatePath(Global.Game), "Test");
+				var basePath = Path.Combine(Global.Config.PathEntries.SaveStateAbsolutePath(Global.Game.System), "Test");
 				ClientApi.LoadState(Path.Combine(basePath, e.Name));
 				e.Handled = true;
 			};
