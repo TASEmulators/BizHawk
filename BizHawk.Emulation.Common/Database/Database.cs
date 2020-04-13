@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,7 @@ namespace BizHawk.Emulation.Common
 {
 	public static class Database
 	{
-		private static readonly Dictionary<string, CompactGameInfo> DB = new Dictionary<string, CompactGameInfo>();
+		private static readonly ConcurrentDictionary<string, CompactGameInfo> DB = new ConcurrentDictionary<string, CompactGameInfo>();
 
 		private static string RemoveHashType(string hash)
 		{
