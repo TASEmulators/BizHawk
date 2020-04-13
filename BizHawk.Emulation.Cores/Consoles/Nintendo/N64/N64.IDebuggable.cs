@@ -77,9 +77,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			throw new NotImplementedException();
 		}
 
-		public IMemoryCallbackSystem MemoryCallbacks { get; }
+		public IMemoryCallbackSystem MemoryCallbacks => _memoryCallbacks;
 
-		private readonly MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
+		private readonly MemoryCallbackSystem _memoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
 
 		public bool CanStep(StepType type)
 		{

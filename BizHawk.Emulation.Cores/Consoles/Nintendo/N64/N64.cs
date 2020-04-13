@@ -30,8 +30,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			ServiceProvider = new BasicServiceProvider(this);
 			InputCallbacks = new InputCallbackSystem();
 
-			_memorycallbacks.CallbackAdded += AddBreakpoint;
-			_memorycallbacks.CallbackRemoved += RemoveBreakpoint;
+			_memoryCallbacks.CallbackAdded += AddBreakpoint;
+			_memoryCallbacks.CallbackRemoved += RemoveBreakpoint;
 
 			int SaveType = 0;
 			if (game.OptionValue("SaveType") == "EEPROM_16K")
