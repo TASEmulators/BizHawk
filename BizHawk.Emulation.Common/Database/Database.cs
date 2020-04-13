@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Common
 			if (File.Exists(filename))
 			{
 				Console.WriteLine("loading external game database {0}", line);
-				LoadDatabase(filename);
+				ThreadPool.QueueUserWorkItem((s) => LoadDatabase(filename));
 			}
 			else
 			{
