@@ -221,9 +221,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			//ULADevice.ResetInterrupt();
 			ROMPaged = 0;
 			SpecialPagingMode = false;
+			PagingDisabled = false;
 			RAMPaged = 0;
 			CPU.RegPC = 0;
-
+			
 			Spectrum.SetCpuRegister("SP", 0xFFFF);
 			Spectrum.SetCpuRegister("IY", 0xFFFF);
 			Spectrum.SetCpuRegister("IX", 0xFFFF);
@@ -272,6 +273,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			//ULADevice.ResetInterrupt();
 			ROMPaged = 0;
 			SpecialPagingMode = false;
+			PagingDisabled = false;
 			RAMPaged = 0;
 			CPU.RegPC = 0;
 
