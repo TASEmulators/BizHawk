@@ -159,6 +159,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		/// <returns>Returns a path to the new file.</returns>
 		public static string CreateModifiedFirmware(string firmwarePath)
 		{
+			Directory.CreateDirectory("melon");
+
 			const string newPath = "melon/tohash.bin";
 			byte[] bytes = File.ReadAllBytes(firmwarePath);
 
