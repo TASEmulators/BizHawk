@@ -7,12 +7,12 @@ using System.Text;
 namespace BizHawk.Client.EmuHawk
 {
 	[Description("A library for communicating with other programs")]
-	public sealed class CommunicationLuaLibrary : LuaLibraryBase
+	public sealed class CommLuaLibrary : LuaLibraryBase
 	{
-		public CommunicationLuaLibrary(Lua lua)
+		public CommLuaLibrary(Lua lua)
 			: base(lua) { }
 
-		public CommunicationLuaLibrary(Lua lua, Action<string> logOutputCallback)
+		public CommLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
 
 		public override string Name => "comm";
@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 		public static string GetLuaFunctionsList()
 		{
 			var list = new StringBuilder();
-			foreach (var function in typeof(CommunicationLuaLibrary).GetMethods())
+			foreach (var function in typeof(CommLuaLibrary).GetMethods())
 			{
 				list.AppendLine(function.ToString());
 			}

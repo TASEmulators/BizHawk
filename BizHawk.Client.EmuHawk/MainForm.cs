@@ -701,8 +701,8 @@ namespace BizHawk.Client.EmuHawk
 		/// The most common use case is CamHack for Sonic games.
 		/// Accessing this from Lua allows to keep internal code hacks to minimum.
 		/// <list type="bullet">
-		/// <item><description><see cref="EmuHawkLuaLibrary.InvisibleEmulation(bool)"/></description></item>
-		/// <item><description><see cref="EmuHawkLuaLibrary.SeekFrame(int)"/></description></item>
+		/// <item><description><see cref="ClientLuaLibrary.InvisibleEmulation(bool)"/></description></item>
+		/// <item><description><see cref="ClientLuaLibrary.SeekFrame(int)"/></description></item>
 		/// </list>
 		/// </summary>
 		public bool InvisibleEmulation { get; set; }

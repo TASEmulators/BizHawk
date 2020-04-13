@@ -10,7 +10,7 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Client.Common
 {
 	[Description("A library for registering lua functions to emulator events.\n All events support multiple registered methods.\nAll registered event methods can be named and return a Guid when registered")]
-	public sealed class EventLuaLibrary : LuaLibraryBase
+	public sealed class EventsLuaLibrary : LuaLibraryBase
 	{
 		[OptionalService]
 		private IInputPollable InputPollableCore { get; set; }
@@ -24,10 +24,10 @@ namespace BizHawk.Client.Common
 		[OptionalService]
 		private IMemoryDomains Domains { get; set; }
 
-		public EventLuaLibrary(Lua lua)
+		public EventsLuaLibrary(Lua lua)
 			: base(lua) { }
 
-		public EventLuaLibrary(Lua lua, Action<string> logOutputCallback)
+		public EventsLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
 
 		public override string Name => "event";

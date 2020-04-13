@@ -5,12 +5,12 @@ using NLua;
 // ReSharper disable UnusedAutoPropertyAccessor.Local
 namespace BizHawk.Client.Common
 {
-	public sealed class MemorySavestateEmuLuaLibrary : DelegatingLuaLibrary
+	public sealed class MemorySavestateLuaLibrary : DelegatingLuaLibrary
 	{
-		public MemorySavestateEmuLuaLibrary(Lua lua)
+		public MemorySavestateLuaLibrary(Lua lua)
 			: base(lua) { }
 
-		public MemorySavestateEmuLuaLibrary(Lua lua, Action<string> logOutputCallback)
+		public MemorySavestateLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
 
 		public override string Name => "memorysavestate";

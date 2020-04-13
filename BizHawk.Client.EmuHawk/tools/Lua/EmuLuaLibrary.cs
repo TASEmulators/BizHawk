@@ -68,9 +68,9 @@ namespace BizHawk.Client.EmuHawk
 
 					// TODO: make EmuHawk libraries have a base class with common properties such as this
 					// and inject them here
-					if (instance is EmuHawkLuaLibrary emuHawkLibrary)
+					if (instance is ClientLuaLibrary clientLib)
 					{
-						emuHawkLibrary.MainForm = _mainForm;
+						clientLib.MainForm = _mainForm;
 					}
 
 					ApiContainerInstance = InitApiContainer(serviceProvider, ConsoleLuaLibrary.LogOutput);
@@ -83,8 +83,8 @@ namespace BizHawk.Client.EmuHawk
 
 			_lua.RegisterFunction("print", this, GetType().GetMethod("Print"));
 
-			EmulatorLuaLibrary.FrameAdvanceCallback = Frameadvance;
-			EmulatorLuaLibrary.YieldCallback = EmuYield;
+			EmulationLuaLibrary.FrameAdvanceCallback = Frameadvance;
+			EmulationLuaLibrary.YieldCallback = EmuYield;
 
 			// Add LuaCanvas to Docs
 			Type luaCanvas = typeof(LuaCanvas);
@@ -106,9 +106,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private FormsLuaLibrary FormsLibrary => (FormsLuaLibrary)Libraries[typeof(FormsLuaLibrary)];
 
-		private EventLuaLibrary EventsLibrary => (EventLuaLibrary)Libraries[typeof(EventLuaLibrary)];
+		private EventsLuaLibrary EventsLibrary => (EventsLuaLibrary)Libraries[typeof(EventsLuaLibrary)];
 
-		private EmulatorLuaLibrary EmulatorLuaLibrary => (EmulatorLuaLibrary)Libraries[typeof(EmulatorLuaLibrary)];
+		private EmulationLuaLibrary EmulationLuaLibrary => (EmulationLuaLibrary)Libraries[typeof(EmulationLuaLibrary)];
 
 		public override void Restart(IEmulatorServiceProvider newServiceProvider)
 		{

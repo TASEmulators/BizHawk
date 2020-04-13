@@ -16,7 +16,7 @@ using BizHawk.Common;
 namespace BizHawk.Client.EmuHawk
 {
 	[Description("A library for manipulating the EmuHawk client UI")]
-	public sealed class EmuHawkLuaLibrary : DelegatingLuaLibraryEmu
+	public sealed class ClientLuaLibrary : DelegatingLuaLibraryEmu
 	{
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
@@ -26,10 +26,10 @@ namespace BizHawk.Client.EmuHawk
 
 		public MainForm MainForm { get; set; }
 
-		public EmuHawkLuaLibrary(Lua lua)
+		public ClientLuaLibrary(Lua lua)
 			: base(lua) { }
 
-		public EmuHawkLuaLibrary(Lua lua, Action<string> logOutputCallback)
+		public ClientLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
 
 		public override string Name => "client";

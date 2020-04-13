@@ -14,12 +14,12 @@ namespace BizHawk.Client.EmuHawk
 {
 	[Description("A library for manipulating the Tastudio dialog of the EmuHawk client")]
 	[LuaLibrary(released: true)]
-	public sealed class TastudioLuaLibrary : LuaLibraryBase
+	public sealed class TAStudioLuaLibrary : LuaLibraryBase
 	{
-		public TastudioLuaLibrary(Lua lua)
+		public TAStudioLuaLibrary(Lua lua)
 			: base(lua) { }
 
-		public TastudioLuaLibrary(Lua lua, Action<string> logOutputCallback)
+		public TAStudioLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
 
 		public override string Name => "tastudio";
