@@ -31,6 +31,7 @@ using BizHawk.Emulation.Common.Base_Implementations;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 using BizHawk.Emulation.Cores.Consoles.SNK;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
+using System.Threading.Tasks;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -258,7 +259,7 @@ namespace BizHawk.Client.EmuHawk
 				MessageBox.Show(e.Message);
 			}
 
-			Database.LoadDatabase(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb.txt"));
+			var dbLoadingTask = Task.Factory.StartNew(() => Database.LoadDatabase(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb.txt")));
 
 			// TODO GL - a lot of disorganized wiring-up here
 			// installed separately on Unix (via package manager or from https://developer.nvidia.com/cg-toolkit-download), look in $PATH
@@ -365,6 +366,9 @@ namespace BizHawk.Client.EmuHawk
 				Location = new Point(Config.MainWndx, Config.MainWndy);
 			}
 
+			//This is the earliest the application will need the gameDB to be fully populated. 
+			while (!dbLoadingTask.IsCompleted) ;
+			
 			if (_argParser.cmdRom != null)
 			{
 				// Commandline should always override auto-load
