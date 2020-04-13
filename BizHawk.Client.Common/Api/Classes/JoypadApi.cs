@@ -16,12 +16,12 @@ namespace BizHawk.Client.Common
 
 		private readonly Action<string> LogCallback;
 
-		public IDictionary<string, dynamic> Get(int? controller = null)
+		public IDictionary<string, object> Get(int? controller = null)
 		{
 			return Global.InputManager.AutofireStickyXorAdapter.ToDictionary(controller);
 		}
 
-		public IDictionary<string, dynamic> GetImmediate(int? controller = null)
+		public IDictionary<string, object> GetImmediate(int? controller = null)
 		{
 			return Global.InputManager.ActiveController.ToDictionary(controller);
 		}

@@ -63,11 +63,11 @@ namespace BizHawk.Client.Common
 			return result;
 		}
 
-		public dynamic ReadCommand(string query = null)
+		public object ReadCommand(string query = null)
 		{
 			if (string.IsNullOrWhiteSpace(query)) return "query is empty";
 			if (_dbConnection == null) return "Database not open.";
-			dynamic result;
+			object result;
 			try
 			{
 				_dbConnection.Open();

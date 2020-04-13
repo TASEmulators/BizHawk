@@ -34,15 +34,10 @@ namespace BizHawk.Client.Common
 		[LuaMethodExample("local obSQLrea = SQL.readcommand( \"SELECT * FROM eg_tab WHERE eg_tab_id = 1;\" );")]
 		[LuaMethod("readcommand", "Run a SQLite read command which includes Select. Returns all rows into a LuaTable." +
 			"Ex: select * from rewards")]
-		public dynamic ReadCommand(string query = "")
+		public object ReadCommand(string query = "")
 		{
 			var result = APIs.Sql.ReadCommand(query);
-			if (result is Dictionary<string, object> dict)
-			{
-				return dict.ToLuaTable(Lua);
-			}
-
-			return result;
+			return result is Dictionary<string, object> dict ? dict.ToLuaTable(Lua) : result;
 		}
 	}
 }

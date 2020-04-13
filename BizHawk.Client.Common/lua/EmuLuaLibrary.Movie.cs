@@ -29,12 +29,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local nlmovget = movie.getinput( 500 );")]
 		[LuaMethod("getinput", "Returns a table of buttons pressed on a given frame of the loaded movie")]
-		public LuaTable GetInput(int frame, int? controller = null)
-		{
-			return APIs.Movie
-				.GetInput(frame, controller)
-				.ToLuaTable(Lua);
-		}
+		public LuaTable GetInput(int frame, int? controller = null) => APIs.Movie.GetInput(frame, controller).ToLuaTable(Lua);
 
 		[LuaMethodExample("local stmovget = movie.getinputasmnemonic( 500 );")]
 		[LuaMethod("getinputasmnemonic", "Returns the input of a given frame of the loaded movie in a raw inputlog string")]

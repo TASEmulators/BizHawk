@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+
 namespace BizHawk.Client.Common
 {
 	public interface IInputMovie : IExternalApi
@@ -6,7 +7,7 @@ namespace BizHawk.Client.Common
 		bool StartsFromSavestate();
 		bool StartsFromSaveram();
 		string Filename();
-		IDictionary<string, dynamic> GetInput(int frame, int? controller = null);
+		IDictionary<string, object> GetInput(int frame, int? controller = null);
 		string GetInputAsMnemonic(int frame);
 		bool GetReadOnly();
 		ulong GetRerecordCount();

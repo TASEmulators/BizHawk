@@ -5,6 +5,6 @@ namespace BizHawk.Client.Common
 	public interface IInput : IExternalApi
 	{
 		Dictionary<string, bool> Get();
-		Dictionary<string, dynamic> GetMouse();
+		Dictionary<string, object> GetMouse();
 	}
 }

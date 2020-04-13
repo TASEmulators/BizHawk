@@ -15,9 +15,9 @@ namespace BizHawk.Client.EmuHawk
 			return buttons;
 		}
 
-		public Dictionary<string, dynamic> GetMouse()
+		public Dictionary<string, object> GetMouse()
 		{
-			var buttons = new Dictionary<string, dynamic>();
+			var buttons = new Dictionary<string, object>();
 			// TODO - need to specify whether in "emu" or "native" coordinate space.
 			var p = GlobalWin.DisplayManager.UntransformPoint(Control.MousePosition);
 			buttons["X"] = p.X;

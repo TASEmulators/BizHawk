@@ -29,12 +29,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local nljoyget = joypad.getimmediate( );")]
 		[LuaMethod("getimmediate", "returns a lua table of any controller buttons currently pressed by the user")]
-		public LuaTable GetImmediate(int? controller = null)
-		{
-			return APIs.Joypad
-				.GetImmediate(controller)
-				.ToLuaTable(Lua);
-		}
+		public LuaTable GetImmediate(int? controller = null) => APIs.Joypad.GetImmediate(controller).ToLuaTable(Lua);
 
 		[LuaMethodExample("joypad.setfrommnemonicstr( \"|    0,    0,    0,  100,...R..B....|\" );")]
 		[LuaMethod("setfrommnemonicstr", "sets the given buttons to their provided values for the current frame, string will be interpretted the same way an entry from a movie input log would be")]

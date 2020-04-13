@@ -4,8 +4,8 @@ namespace BizHawk.Client.Common
 {
 	public interface IJoypad : IExternalApi
 	{
-		IDictionary<string, dynamic> Get(int? controller = null);
-		IDictionary<string, dynamic> GetImmediate(int? controller = null);
+		IDictionary<string, object> Get(int? controller = null);
+		IDictionary<string, object> GetImmediate(int? controller = null);
 		void SetFromMnemonicStr(string inputLogEntry);
 		void Set(Dictionary<string, bool> buttons, int? controller = null);
 		void Set(string button, bool? state = null, int? controller = null);

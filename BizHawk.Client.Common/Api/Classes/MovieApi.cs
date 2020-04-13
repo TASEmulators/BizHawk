@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common
 
 		public bool StartsFromSaveram() => Global.MovieSession.Movie.IsActive() && Global.MovieSession.Movie.StartsFromSaveRam;
 
-		public IDictionary<string, dynamic> GetInput(int frame, int? controller = null)
+		public IDictionary<string, object> GetInput(int frame, int? controller = null)
 		{
 			if (Global.MovieSession.Movie.NotActive())
 			{

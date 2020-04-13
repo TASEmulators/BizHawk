@@ -86,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Helpers
 
-		private static void InvokeMainFormMethod(string name, dynamic[] paramList = null)
+		private static void InvokeMainFormMethod(string name, object[] paramList = null)
 		{
 			List<Type> typeList = new List<Type>();
 			MethodInfo method;

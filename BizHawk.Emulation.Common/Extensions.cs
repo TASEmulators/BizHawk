@@ -355,9 +355,9 @@ namespace BizHawk.Emulation.Common
 			return buttons;
 		}
 
-		public static IDictionary<string, dynamic> ToDictionary(this IController controller, int? controllerNum = null)
+		public static IDictionary<string, object> ToDictionary(this IController controller, int? controllerNum = null)
 		{
-			var buttons = new Dictionary<string, dynamic>();
+			var buttons = new Dictionary<string, object>();
 
 			foreach (var button in controller.Definition.BoolButtons)
 			{
