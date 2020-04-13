@@ -62,6 +62,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private static extern void _ResetCounters();
 		[DllImport(dllPath)]
 		private static extern int GetFrameCount();
+		[DllImport(dllPath)]
+		private static extern void SetFrameCount(uint count);
 
 		[DllImport(dllPath)]
 		private static extern void FrameAdvance(short buttons, byte touchX, byte touchY);

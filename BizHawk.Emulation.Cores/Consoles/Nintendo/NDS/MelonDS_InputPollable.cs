@@ -10,13 +10,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		public int LagCount
 		{
 			get => GetLagFrameCount();
-			set => throw new NotImplementedException();
+			set => SetLagFrameCount((uint)value);
 		}
 
 		public bool IsLagFrame
 		{
 			get => _IsLagFrame();
-			set => throw new NotImplementedException();
+			set => SetIsLagFrame(value);
 		}
 
 		public IInputCallbackSystem InputCallbacks => throw new NotImplementedException();
@@ -26,5 +26,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		[DllImport(dllPath)]
 		private static extern int GetLagFrameCount();
+
+		[DllImport(dllPath)]
+		private static extern void SetIsLagFrame(bool isLag);
+		[DllImport(dllPath)]
+		private static extern void SetLagFrameCount(uint count);
+
 	}
 }
