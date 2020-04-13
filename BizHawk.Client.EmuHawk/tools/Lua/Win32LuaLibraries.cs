@@ -110,6 +110,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private EmulationLuaLibrary EmulationLuaLibrary => (EmulationLuaLibrary)Libraries[typeof(EmulationLuaLibrary)];
 
+		public override GuiLuaLibrary GuiLibrary => (GuiLuaLibrary) Libraries[typeof(GuiLuaLibrary)];
+
 		public override void Restart(IEmulatorServiceProvider newServiceProvider)
 		{
 			foreach (var lib in Libraries)

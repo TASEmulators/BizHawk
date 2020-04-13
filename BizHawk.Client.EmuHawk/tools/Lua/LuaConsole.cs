@@ -92,7 +92,7 @@ namespace BizHawk.Client.EmuHawk
 						MainForm.FrameBufferResized();
 					}
 
-					LuaImp.GuiLibrary.DrawFinish();
+					LuaImp.GuiLibrary?.DrawFinish();
 					LuaImp?.Close();
 					GlobalWin.OSD.ClearGuiText();
 				}
@@ -545,7 +545,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (LuaImp.GuiLibrary.SurfaceIsNull)
+			if (LuaImp.GuiLibrary?.SurfaceIsNull == true)
 			{
 				LuaImp.GuiLibrary.DrawNew("emu");
 			}

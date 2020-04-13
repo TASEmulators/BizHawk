@@ -12,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public readonly LuaDocumentation Docs = new LuaDocumentation();
 		public abstract LuaFunctionList RegisteredFunctions { get; }
-		public GuiLuaLibrary GuiLibrary => (GuiLuaLibrary) Libraries[typeof(GuiLuaLibrary)];
+		public abstract GuiLuaLibrary GuiLibrary { get; }
 		protected readonly Dictionary<Type, LuaLibraryBase> Libraries = new Dictionary<Type, LuaLibraryBase>();
 		public IEnumerable<LuaFile> RunningScripts => ScriptList.Where(lf => lf.Enabled);
 		public readonly LuaFileList ScriptList = new LuaFileList();
