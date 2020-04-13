@@ -109,7 +109,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public int ScreenGap { get; set; }
 
 			[DisplayName("Scale Factor")]
-			public uint ScaleFactor { get; set; }
+			public uint ScaleFactor { get; set; } = 1;
 		}
 
 		public class MelonSyncSettings
