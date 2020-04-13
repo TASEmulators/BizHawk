@@ -33,6 +33,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		public bool PutSettings(MelonSettings o)
 		{
 			_settings = o ?? new MelonSettings();
+			SetScaleFactor(_settings.ScaleFactor);
 			return false;
 		}
 
@@ -79,6 +80,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		[DllImport(dllPath)]
 		private static extern uint GetTimeAtBoot();
 
+		[DllImport(dllPath)]
+		private static extern uint GetScaleFactor();
+		[DllImport(dllPath)]
+		private static extern void SetScaleFactor(uint value);
+
 		public enum ScreenLayoutKind
 		{
 			Vertical, Horizontal, Top, Bottom
@@ -101,6 +107,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			[DisplayName("Screen Gap")]
 			public int ScreenGap { get; set; }
+
+			[DisplayName("Scale Factor")]
+			public uint ScaleFactor { get; set; }
 		}
 
 		public class MelonSyncSettings
