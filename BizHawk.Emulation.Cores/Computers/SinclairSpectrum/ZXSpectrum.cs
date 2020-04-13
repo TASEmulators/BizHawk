@@ -205,14 +205,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.ZX_plus2_rom.Value));
 					break;
 				case "PLUS2AROM":
-					embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.ZX_plus2a_rom.Value));
-					break;
 				case "PLUS3ROM":
-					byte[] r0 = Util.DecompressGzipFile(new MemoryStream(Resources.Spectrum3_V4_0_ROM0_bin.Value));
-					byte[] r1 = Util.DecompressGzipFile(new MemoryStream(Resources.Spectrum3_V4_0_ROM1_bin.Value));
-					byte[] r2 = Util.DecompressGzipFile(new MemoryStream(Resources.Spectrum3_V4_0_ROM2_bin.Value));
-					byte[] r3 = Util.DecompressGzipFile(new MemoryStream(Resources.Spectrum3_V4_0_ROM3_bin.Value));
-					embeddedRom = r0.Concat(r1).Concat(r2).Concat(r3).ToArray();
+					embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.ZX_plus2a_rom.Value));
 					break;
 				default:
 					embeddedFound = false;
