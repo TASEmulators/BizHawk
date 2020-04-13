@@ -260,6 +260,8 @@ namespace BizHawk.Client.Common
 			return base.Equals(obj);
 		}
 
+		public override int GetHashCode() => DisplayName.GetHashCode(); // should be unique considering the property's purpose
+
 		/// <summary>
 		/// Returns a <see cref="string"/> representation of current <see cref="SystemInfo"/>
 		/// In fact, return the same as DisplayName property
