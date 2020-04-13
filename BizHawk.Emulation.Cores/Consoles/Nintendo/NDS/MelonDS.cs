@@ -35,8 +35,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				| (controller.IsPressed("R") ? 0x100 : 0) | (controller.IsPressed("L") ? 0x200 : 0)
 				| (controller.IsPressed("X") ? 0x400 : 0) | (controller.IsPressed("Y") ? 0x800 : 0)
 				| (controller.IsPressed("Touch") ? 0x2000 : 0)
-				| (controller.IsPressed("LidOpen") ? 0x4000 : 0) | (controller.IsPressed("LidClose") ? 0x8000 : 0);
-			FrameAdvance((short)buttons, (byte)controller.AxisValue("TouchX"), (byte)controller.AxisValue("TouchY"));
+				| (controller.IsPressed("LidOpen") ? 0x4000 : 0) | (controller.IsPressed("LidClose") ? 0x8000 : 0)
+				| (controller.IsPressed("Power") ? 0x10000 : 0);
+			FrameAdvance((uint)buttons, (byte)controller.AxisValue("TouchX"), (byte)controller.AxisValue("TouchY"));
 			_getNewBuffer = true;
 			return true;
 		}
@@ -66,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private static extern void SetFrameCount(uint count);
 
 		[DllImport(dllPath)]
-		private static extern void FrameAdvance(short buttons, byte touchX, byte touchY);
+		private static extern void FrameAdvance(uint buttons, byte touchX, byte touchY);
 
 		[CoreConstructor("NDS")]
 		public MelonDS(byte[] file, CoreComm comm, object settings, object syncSettings)
@@ -88,6 +89,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			ControllerDefinition.BoolButtons.Add("LidOpen");
 			ControllerDefinition.BoolButtons.Add("LidClose");
+			ControllerDefinition.BoolButtons.Add("Power");
 
 			ControllerDefinition.BoolButtons.Add("Touch");
 			ControllerDefinition.AxisControls.Add("TouchX");
