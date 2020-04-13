@@ -13,16 +13,16 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public class EmuLuaLibrary : PlatformEmuLuaLibrary
+	public class Win32LuaLibraries : LuaLibraries
 	{
 		private readonly MainForm _mainForm;
-		public EmuLuaLibrary()
+		public Win32LuaLibraries()
 		{
 //			if (NLua.Lua.WhichLua == "NLua")
 				_lua["keepalives"] = _lua.NewTable();
 		}
 
-		public EmuLuaLibrary(IEmulatorServiceProvider serviceProvider, MainForm mainForm)
+		public Win32LuaLibraries(IEmulatorServiceProvider serviceProvider, MainForm mainForm)
 			: this()
 		{
 			_mainForm = mainForm;
@@ -49,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 
 			// Register lua libraries
 			foreach (var lib in Assembly.Load("BizHawk.Client.Common").GetTypes()
-				.Concat(Assembly.GetAssembly(typeof(EmuLuaLibrary)).GetTypes())
+				.Concat(Assembly.GetAssembly(typeof(Win32LuaLibraries)).GetTypes())
 				.Where(t => typeof(LuaLibraryBase).IsAssignableFrom(t) && t.IsSealed && ServiceInjector.IsAvailable(serviceProvider, t)))
 			{
 				bool addLibrary = true;

@@ -10,11 +10,11 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public List<LuaEvent> ControlEvents { get; } = new List<LuaEvent>();
 
-		private readonly PlatformEmuLuaLibrary _luaImp;
+		private readonly LuaLibraries _luaImp;
 		private readonly string _currentDirectory = Environment.CurrentDirectory;
 		private readonly LuaFile _ownerFile;
 
-		public LuaWinform(LuaFile ownerFile, PlatformEmuLuaLibrary luaImp)
+		public LuaWinform(LuaFile ownerFile, LuaLibraries luaImp)
 		{
 			_ownerFile = ownerFile;
 			_luaImp = luaImp;

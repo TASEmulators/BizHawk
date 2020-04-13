@@ -563,6 +563,8 @@
 		<Compile Update="tools/Lua/LuaWinform.cs" SubType="Form" />
 		<Compile Update="tools/Lua/LuaWinform.Designer.cs" DependentUpon="LuaWinform.cs" />
 		<EmbeddedResource Update="tools/Lua/LuaWinform.resx" DependentUpon="LuaWinform.cs" />
+		<Compile Update="tools/Lua/UnixLuaLibraries.cs" DependentUpon="LuaLibraries.cs" />
+		<Compile Update="tools/Lua/Win32LuaLibraries.cs" DependentUpon="LuaLibraries.cs" />
 		<Compile Update="tools/Macros/MacroInput.ButtonSelect.cs" SubType="Form" />
 		<Compile Update="tools/Macros/MacroInput.cs" SubType="Form" />
 		<Compile Update="tools/Macros/MacroInput.Designer.cs" DependentUpon="MacroInput.cs" />

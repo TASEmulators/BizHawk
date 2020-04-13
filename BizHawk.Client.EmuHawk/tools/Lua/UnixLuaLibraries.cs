@@ -8,7 +8,7 @@ namespace BizHawk.Client.EmuHawk
 	/// <summary>
 	/// Methods intentionally blank.
 	/// </summary>
-	public sealed class NotReallyLuaLibrary : PlatformEmuLuaLibrary
+	public sealed class UnixLuaLibraries : LuaLibraries
 	{
 		public override void CallExitEvent(LuaFile lf)
 		{
@@ -39,8 +39,8 @@ namespace BizHawk.Client.EmuHawk
 		public override void Restart(IEmulatorServiceProvider newServiceProvider)
 		{
 		}
-		private static readonly EmuLuaLibrary.ResumeResult EmptyResumeResult = new EmuLuaLibrary.ResumeResult();
-		public override EmuLuaLibrary.ResumeResult ResumeScript(LuaFile lf)
+		private static readonly Win32LuaLibraries.ResumeResult EmptyResumeResult = new Win32LuaLibraries.ResumeResult();
+		public override Win32LuaLibraries.ResumeResult ResumeScript(LuaFile lf)
 		{
 			return EmptyResumeResult;
 		}
