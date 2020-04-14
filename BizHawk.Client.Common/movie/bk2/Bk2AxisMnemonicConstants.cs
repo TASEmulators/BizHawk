@@ -2,34 +2,31 @@
 
 namespace BizHawk.Client.Common
 {
-	public class Bk2AxisMnemonicConstants
+	internal static class Bk2AxisMnemonicConstants
 	{
-		public string this[string button]
+		public static string Lookup(string button)
 		{
-			get
+			var key = button
+				.Replace("P1 ", "")
+				.Replace("P2 ", "")
+				.Replace("P3 ", "")
+				.Replace("P4 ", "")
+				.Replace("Key ", "");
+
+			if (SystemOverrides.ContainsKey(Global.Emulator.SystemId) && SystemOverrides[Global.Emulator.SystemId].ContainsKey(key))
 			{
-				var key = button
-					.Replace("P1 ", "")
-					.Replace("P2 ", "")
-					.Replace("P3 ", "")
-					.Replace("P4 ", "")
-					.Replace("Key ", "");
-
-				if (_systemOverrides.ContainsKey(Global.Emulator.SystemId) && _systemOverrides[Global.Emulator.SystemId].ContainsKey(key))
-				{
-					return _systemOverrides[Global.Emulator.SystemId][key];
-				}
-
-				if (_baseMnemonicLookupTable.ContainsKey(key))
-				{
-					return _baseMnemonicLookupTable[key];
-				}
-
-				return button;
+				return SystemOverrides[Global.Emulator.SystemId][key];
 			}
+
+			if (BaseMnemonicLookupTable.ContainsKey(key))
+			{
+				return BaseMnemonicLookupTable[key];
+			}
+
+			return button;
 		}
 
-		private readonly Dictionary<string, string> _baseMnemonicLookupTable = new Dictionary<string, string>
+		private static readonly Dictionary<string, string> BaseMnemonicLookupTable = new Dictionary<string, string>
 		{
 			["Zapper X"] = "zapX",
 			["Zapper Y"] = "zapY",
@@ -48,7 +45,7 @@ namespace BizHawk.Client.Common
 			["Disc Select"] = "Disc"
 		};
 
-		private readonly Dictionary<string, Dictionary<string, string>> _systemOverrides = new Dictionary<string, Dictionary<string, string>>
+		private static readonly Dictionary<string, Dictionary<string, string>> SystemOverrides = new Dictionary<string, Dictionary<string, string>>
 		{
 			["A78"] = new Dictionary<string, string>
 			{

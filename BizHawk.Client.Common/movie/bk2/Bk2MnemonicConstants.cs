@@ -3,46 +3,43 @@
 // ReSharper disable StyleCop.SA1509
 namespace BizHawk.Client.Common
 {
-	public class Bk2MnemonicConstants
+	internal static class Bk2MnemonicConstants
 	{
-		public char this[string button]
+		public static char Lookup(string button)
 		{
-			get
+			var key = button.Replace("Key ", "");
+			if (key.StartsWith("P"))
 			{
-				var key = button.Replace("Key ", "");
-				if (key.StartsWith("P"))
+				if (key.Length > 2 && key[1] == '1' && key[2] >= '0' && key[2] <= '9') // Hack to support 10-20 controllers, TODO: regex this thing instead
 				{
-					if (key.Length > 2 && key[1] == '1' && key[2] >= '0' && key[2] <= '9') // Hack to support 10-20 controllers, TODO: regex this thing instead
-					{
-						key = key.Substring(4);
-					}
-					else if (key.Length > 1 && key[1] >= '0' && key[1] <= '9')
-					{
-						key = key.Substring(3);
-					}
+					key = key.Substring(4);
 				}
-				
-
-				if (_systemOverrides.ContainsKey(Global.Emulator.SystemId) && _systemOverrides[Global.Emulator.SystemId].ContainsKey(key))
+				else if (key.Length > 1 && key[1] >= '0' && key[1] <= '9')
 				{
-					return _systemOverrides[Global.Emulator.SystemId][key];
+					key = key.Substring(3);
 				}
-
-				if (_baseMnemonicLookupTable.ContainsKey(key))
-				{
-					return _baseMnemonicLookupTable[key];
-				}
-
-				if (key.Length == 1)
-				{
-					return key[0];
-				}
-
-				return '!';
 			}
+			
+
+			if (SystemOverrides.ContainsKey(Global.Emulator.SystemId) && SystemOverrides[Global.Emulator.SystemId].ContainsKey(key))
+			{
+				return SystemOverrides[Global.Emulator.SystemId][key];
+			}
+
+			if (BaseMnemonicLookupTable.ContainsKey(key))
+			{
+				return BaseMnemonicLookupTable[key];
+			}
+
+			if (key.Length == 1)
+			{
+				return key[0];
+			}
+
+			return '!';
 		}
 
-		private readonly Dictionary<string, char> _baseMnemonicLookupTable = new Dictionary<string, char>
+		private static readonly Dictionary<string, char> BaseMnemonicLookupTable = new Dictionary<string, char>
 		{
 			["Power"] = 'P',
 			["Reset"] = 'r',
@@ -142,7 +139,7 @@ namespace BizHawk.Client.Common
 			["Previous Disk"] = '<'
 		};
 
-		private readonly Dictionary<string, Dictionary<string, char>> _systemOverrides = new Dictionary<string, Dictionary<string, char>>
+		private static readonly Dictionary<string, Dictionary<string, char>> SystemOverrides = new Dictionary<string, Dictionary<string, char>>
 		{
 			["NES"] = new Dictionary<string, char>
 			{

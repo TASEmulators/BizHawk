@@ -11,8 +11,6 @@ namespace BizHawk.Client.Common
 {
 	public sealed partial class TasMovie : Bk2Movie, INotifyPropertyChanged
 	{
-		private readonly Bk2MnemonicConstants _mnemonics = new Bk2MnemonicConstants();
-
 		public IStringLog VerificationLog { get; } = StringLogUtil.MakeStringLog(); // For movies that do not begin with power-on, this is the input required to get into the initial state
 		public TasBranchCollection Branches { get; } = new TasBranchCollection();
 		public TasSession Session { get; private set; } = new TasSession();
@@ -99,7 +97,7 @@ namespace BizHawk.Client.Common
 			if (adapter.Definition.BoolButtons.Contains(buttonName))
 			{
 				return adapter.IsPressed(buttonName)
-					? _mnemonics[buttonName].ToString()
+					? Bk2MnemonicConstants.Lookup(buttonName).ToString()
 					: "";
 			}
 
