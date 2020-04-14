@@ -705,7 +705,11 @@ namespace BizHawk.Client.EmuHawk
 
 				CurrentTasMovie.PropertyChanged += TasMovie_OnPropertyChanged;
 				CurrentTasMovie.Filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
-				CurrentTasMovie.PopulateWithDefaultHeaderValues();
+				CurrentTasMovie.PopulateWithDefaultHeaderValues(
+					Emulator,
+					Global.Game,
+					Global.FirmwareManager,
+					Config.DefaultAuthor);
 				SetTasMovieCallbacks();
 				CurrentTasMovie.ClearChanges(); // Don't ask to save changes here.
 

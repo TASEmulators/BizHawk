@@ -278,25 +278,30 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 		}
 
 		// TODO: This doesn't really belong here, but not sure where to put it
-		public static void PopulateWithDefaultHeaderValues(this IMovie movie, string author = null)
+		public static void PopulateWithDefaultHeaderValues(
+			this IMovie movie,
+			IEmulator emulator,
+			GameInfo game,
+			FirmwareManager firmwareManager,
+			string author)
 		{
-			movie.Author = author ?? Global.Config.DefaultAuthor;
+			movie.Author = author;
 			movie.EmulatorVersion = VersionInfo.GetEmuVersion();
-			movie.SystemID = Global.Emulator.SystemId;
+			movie.SystemID = emulator.SystemId;
 
-			var settable = new SettingsAdapter(Global.Emulator);
+			var settable = new SettingsAdapter(emulator);
 			if (settable.HasSyncSettings)
 			{
 				movie.SyncSettingsJson = ConfigService.SaveWithType(settable.GetSyncSettings());
 			}
 
-			if (Global.Game != null)
+			if (game.IsNullInstance())
 			{
-				movie.GameName = Global.Game.FilesystemSafeName();
-				movie.Hash = Global.Game.Hash;
-				if (Global.Game.FirmwareHash != null)
+				movie.GameName = game.FilesystemSafeName();
+				movie.Hash = game.Hash;
+				if (game.FirmwareHash != null)
 				{
-					movie.FirmwareHash = Global.Game.FirmwareHash;
+					movie.FirmwareHash = game.FirmwareHash;
 				}
 			}
 			else
@@ -304,23 +309,23 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				movie.GameName = "NULL";
 			}
 
-			if (Global.Emulator.HasBoardInfo())
+			if (emulator.HasBoardInfo())
 			{
-				movie.BoardName = Global.Emulator.AsBoardInfo().BoardName;
+				movie.BoardName = emulator.AsBoardInfo().BoardName;
 			}
 
-			if (Global.Emulator.HasRegions())
+			if (emulator.HasRegions())
 			{
-				var region = Global.Emulator.AsRegionable().Region;
+				var region = emulator.AsRegionable().Region;
 				if (region == Emulation.Common.DisplayType.PAL)
 				{
 					movie.HeaderEntries.Add(HeaderKeys.Pal, "1");
 				}
 			}
 
-			if (Global.FirmwareManager.RecentlyServed.Any())
+			if (firmwareManager.RecentlyServed.Any())
 			{
-				foreach (var firmware in Global.FirmwareManager.RecentlyServed)
+				foreach (var firmware in firmwareManager.RecentlyServed)
 				{
 					var key = $"{firmware.SystemId}_Firmware_{firmware.FirmwareId}";
 
@@ -331,12 +336,12 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				}
 			}
 
-			if (Global.Emulator is GBHawk gbHawk && gbHawk.IsCGBMode())
+			if (emulator is GBHawk gbHawk && gbHawk.IsCGBMode())
 			{
 				movie.HeaderEntries.Add("IsCGBMode", "1");
 			}
 
-			if (Global.Emulator is Gameboy gb)
+			if (emulator is Gameboy gb)
 			{
 				if (gb.IsCGBMode())
 				{
@@ -346,7 +351,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				movie.HeaderEntries.Add(HeaderKeys.CycleCount, "0");
 			}
 
-			if (Global.Emulator is SMS sms)
+			if (emulator is SMS sms)
 			{
 				if (sms.IsSG1000)
 				{
@@ -359,23 +364,23 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				}
 			}
 
-			if (Global.Emulator is GPGX gpgx && gpgx.IsMegaCD)
+			if (emulator is GPGX gpgx && gpgx.IsMegaCD)
 			{
 				movie.HeaderEntries.Add("IsSegaCDMode", "1");
 			}
 
-			if (Global.Emulator is PicoDrive pico && pico.Is32XActive)
+			if (emulator is PicoDrive pico && pico.Is32XActive)
 			{
 				movie.HeaderEntries.Add("Is32X", "1");
 			}
 
-			if (Global.Emulator is SubNESHawk || Global.Emulator is SubGBHawk)
+			if (emulator is SubNESHawk || emulator is SubGBHawk)
 			{
 				movie.HeaderEntries.Add(HeaderKeys.VBlankCount, "0");
 			}
 
 			movie.Core = ((CoreAttribute)Attribute
-				.GetCustomAttribute(Global.Emulator.GetType(), typeof(CoreAttribute)))
+				.GetCustomAttribute(emulator.GetType(), typeof(CoreAttribute)))
 				.CoreName;
 		}
 	}
