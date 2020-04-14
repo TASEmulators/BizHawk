@@ -75,7 +75,6 @@ namespace BizHawk.Client.Common
 		void AddRange(IEnumerable<string> collection);
 		void RemoveRange(int index, int count);
 		IStringLog Clone();
-		void CopyTo(string[] array);
 		void CopyTo(int index, string[] array, int arrayIndex, int count);
 	}
 
@@ -124,7 +123,7 @@ namespace BizHawk.Client.Common
 
 		public IStringLog Clone()
 		{
-			StreamStringLog ret = new StreamStringLog(_mDisk); // doesn't necessarily make sense to copy the mDisk value, they could be designated for different targets...
+			var ret = new StreamStringLog(_mDisk); // doesn't necessarily make sense to copy the mDisk value, they could be designated for different targets...
 			for (int i = 0; i < Count; i++)
 			{
 				ret.Add(this[i]);
@@ -243,14 +242,6 @@ namespace BizHawk.Client.Common
 			{
 				RemoveAt(end);
 				end--;
-			}
-		}
-
-		public void CopyTo(string[] array)
-		{
-			for (int i = 0; i < Count; i++)
-			{
-				array[i] = this[i];
 			}
 		}
 
