@@ -58,26 +58,6 @@ namespace BizHawk.Client.Common
 			Markers.Add(0, startsFromSavestate ? "Savestate" : "Power on");
 		}
 
-		// TODO: use LogGenerators rather than string comparisons
-		private int? DivergentPoint(IStringLog currentLog, IStringLog newLog)
-		{
-			int max = newLog.Count;
-			if (currentLog.Count < newLog.Count)
-			{
-				max = currentLog.Count;
-			}
-
-			for (int i = 0; i < max; i++)
-			{
-				if (newLog[i] != currentLog[i])
-				{
-					return i;
-				}
-			}
-
-			return null;
-		}
-
 		public override void StartNewRecording()
 		{
 			ClearTasprojExtras();
@@ -85,16 +65,6 @@ namespace BizHawk.Client.Common
 			ChangeLog = new TasMovieChangeLog(this);
 
 			base.StartNewRecording();
-		}
-
-		public override void SwitchToPlay()
-		{
-			Mode = MovieMode.Play;
-		}
-
-		public override void SwitchToRecord()
-		{
-			Mode = MovieMode.Record;
 		}
 
 		/// <summary>
@@ -202,10 +172,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public IStringLog GetLogEntries()
-		{
-			return Log;
-		}
+		public IStringLog GetLogEntries() => Log;
 
 		private int? _timelineBranchFrame;
 
@@ -434,7 +401,7 @@ namespace BizHawk.Client.Common
 
 		public void LoadBranch(TasBranch branch)
 		{
-			int? divergentPoint = DivergentPoint(Log, branch.InputLog);
+			int? divergentPoint = Log.DivergentPoint(branch.InputLog);
 
 			Log?.Dispose();
 			Log = branch.InputLog.Clone();
@@ -508,15 +475,8 @@ namespace BizHawk.Client.Common
 			Changes = true;
 		}
 
-		public void ClearChanges()
-		{
-			Changes = false;
-		}
-
-		public void FlagChanges()
-		{
-			Changes = true;
-		}
+		public void ClearChanges() => Changes = false;
+		public void FlagChanges() => Changes = true;
 
 		#endregion
 	}

@@ -184,35 +184,33 @@ namespace BizHawk.Client.Common
 				Directory.CreateDirectory(file.Directory.ToString());
 			}
 
-			using (var bs = new BinaryStateSaver(fn, false))
+			using var bs = new BinaryStateSaver(fn, false);
+			bs.PutLump(BinaryStateLump.Movieheader, tw => tw.WriteLine(Header.ToString()));
+			bs.PutLump(BinaryStateLump.Comments, tw => tw.WriteLine(CommentsString()));
+			bs.PutLump(BinaryStateLump.Subtitles, tw => tw.WriteLine(Subtitles.ToString()));
+			bs.PutLump(BinaryStateLump.SyncSettings, tw => tw.WriteLine(_syncSettingsJson));
+
+			bs.PutLump(BinaryStateLump.Input, WriteInputLog);
+
+			if (StartsFromSavestate)
 			{
-				bs.PutLump(BinaryStateLump.Movieheader, tw => tw.WriteLine(Header.ToString()));
-				bs.PutLump(BinaryStateLump.Comments, tw => tw.WriteLine(CommentsString()));
-				bs.PutLump(BinaryStateLump.Subtitles, tw => tw.WriteLine(Subtitles.ToString()));
-				bs.PutLump(BinaryStateLump.SyncSettings, tw => tw.WriteLine(_syncSettingsJson));
-
-				bs.PutLump(BinaryStateLump.Input, WriteInputLog);
-
-				if (StartsFromSavestate)
+				if (TextSavestate != null)
 				{
-					if (TextSavestate != null)
-					{
-						bs.PutLump(BinaryStateLump.CorestateText, (TextWriter tw) => tw.Write(TextSavestate));
-					}
-					else
-					{
-						bs.PutLump(BinaryStateLump.Corestate, (BinaryWriter bw) => bw.Write(BinarySavestate));
-					}
-
-					if (SavestateFramebuffer != null)
-					{
-						bs.PutLump(BinaryStateLump.Framebuffer, (BinaryWriter bw) => bw.Write(SavestateFramebuffer));
-					}
+					bs.PutLump(BinaryStateLump.CorestateText, (TextWriter tw) => tw.Write(TextSavestate));
 				}
-				else if (StartsFromSaveRam)
+				else
 				{
-					bs.PutLump(BinaryStateLump.MovieSaveRam, (BinaryWriter bw) => bw.Write(SaveRam));
+					bs.PutLump(BinaryStateLump.Corestate, (BinaryWriter bw) => bw.Write(BinarySavestate));
 				}
+
+				if (SavestateFramebuffer != null)
+				{
+					bs.PutLump(BinaryStateLump.Framebuffer, (BinaryWriter bw) => bw.Write(SavestateFramebuffer));
+				}
+			}
+			else if (StartsFromSaveRam)
+			{
+				bs.PutLump(BinaryStateLump.MovieSaveRam, (BinaryWriter bw) => bw.Write(SaveRam));
 			}
 
 			if (!backup)

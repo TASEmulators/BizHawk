@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.AccessControl;
+using System.Text;
 using BizHawk.Common;
 
 namespace BizHawk.Client.Common
@@ -29,6 +30,36 @@ namespace BizHawk.Client.Common
 			}
 
 			return new ListStringLog();
+		}
+
+		public static int? DivergentPoint(this IStringLog currentLog, IStringLog newLog)
+		{
+			int max = newLog.Count;
+			if (currentLog.Count < newLog.Count)
+			{
+				max = currentLog.Count;
+			}
+
+			for (int i = 0; i < max; i++)
+			{
+				if (newLog[i] != currentLog[i])
+				{
+					return i;
+				}
+			}
+
+			return null;
+		}
+
+		public static string ToInputLog(this IStringLog log)
+		{
+			var sb = new StringBuilder();
+			foreach (var record in log)
+			{
+				sb.AppendLine(record);
+			}
+
+			return sb.ToString();
 		}
 	}
 

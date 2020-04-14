@@ -18,20 +18,10 @@ namespace BizHawk.Client.Common
 			Log.Clear();
 		}
 
-		public virtual void StartNewPlayback()
-		{
-			Mode = MovieMode.Play;
-		}
-
-		public virtual void SwitchToRecord()
-		{
-			Mode = MovieMode.Record;
-		}
-
-		public virtual void SwitchToPlay()
-		{
-			Mode = MovieMode.Play;
-		}
+		public void StartNewPlayback() => Mode = MovieMode.Play;
+		public void SwitchToRecord() => Mode = MovieMode.Record;
+		public void SwitchToPlay() => Mode = MovieMode.Play;
+		public void FinishedMode() => Mode = MovieMode.Finished;
 
 		public virtual bool Stop(bool saveChanges = true)
 		{
@@ -49,11 +39,6 @@ namespace BizHawk.Client.Common
 			Mode = MovieMode.Inactive;
 
 			return saved;
-		}
-
-		public void FinishedMode()
-		{
-			Mode = MovieMode.Finished;
 		}
 	}
 }

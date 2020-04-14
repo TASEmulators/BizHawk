@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Newtonsoft.Json;
 
 namespace BizHawk.Client.Common
@@ -19,59 +18,57 @@ namespace BizHawk.Client.Common
 				Directory.CreateDirectory(file.Directory.ToString());
 			}
 
-			using (var bs = new BinaryStateSaver(fn, false))
+			using var bs = new BinaryStateSaver(fn, false);
+			bs.PutLump(BinaryStateLump.Movieheader, tw => tw.WriteLine(Header.ToString()));
+			bs.PutLump(BinaryStateLump.Comments, tw => tw.WriteLine(CommentsString()));
+			bs.PutLump(BinaryStateLump.Subtitles, tw => tw.WriteLine(Subtitles.ToString()));
+			bs.PutLump(BinaryStateLump.SyncSettings, tw => tw.WriteLine(SyncSettingsJson));
+			bs.PutLump(BinaryStateLump.Input, WriteInputLog);
+
+			// TasProj extras
+			var settings = JsonConvert.SerializeObject(TasStateManager.Settings);
+			bs.PutLump(BinaryStateLump.StateHistorySettings, tw => tw.WriteLine(settings));
+
+			bs.PutLump(BinaryStateLump.LagLog, tw => TasLagLog.Save(tw));
+			bs.PutLump(BinaryStateLump.Markers, tw => tw.WriteLine(Markers.ToString()));
+
+			if (StartsFromSavestate)
 			{
-				bs.PutLump(BinaryStateLump.Movieheader, tw => tw.WriteLine(Header.ToString()));
-				bs.PutLump(BinaryStateLump.Comments, tw => tw.WriteLine(CommentsString()));
-				bs.PutLump(BinaryStateLump.Subtitles, tw => tw.WriteLine(Subtitles.ToString()));
-				bs.PutLump(BinaryStateLump.SyncSettings, tw => tw.WriteLine(SyncSettingsJson));
-				bs.PutLump(BinaryStateLump.Input, WriteInputLog);
-
-				// TasProj extras
-				var settings = JsonConvert.SerializeObject(TasStateManager.Settings);
-				bs.PutLump(BinaryStateLump.StateHistorySettings, tw => tw.WriteLine(settings));
-
-				bs.PutLump(BinaryStateLump.LagLog, tw => TasLagLog.Save(tw));
-				bs.PutLump(BinaryStateLump.Markers, tw => tw.WriteLine(Markers.ToString()));
-
-				if (StartsFromSavestate)
+				if (TextSavestate != null)
 				{
-					if (TextSavestate != null)
-					{
-						bs.PutLump(BinaryStateLump.CorestateText, (TextWriter tw) => tw.Write(TextSavestate));
-					}
-					else
-					{
-						bs.PutLump(BinaryStateLump.Corestate, (BinaryWriter bw) => bw.Write(BinarySavestate));
-					}
+					bs.PutLump(BinaryStateLump.CorestateText, (TextWriter tw) => tw.Write(TextSavestate));
 				}
-				else if (StartsFromSaveRam)
+				else
 				{
-					bs.PutLump(BinaryStateLump.MovieSaveRam, (BinaryWriter bw) => bw.Write(SaveRam));
+					bs.PutLump(BinaryStateLump.Corestate, (BinaryWriter bw) => bw.Write(BinarySavestate));
 				}
+			}
+			else if (StartsFromSaveRam)
+			{
+				bs.PutLump(BinaryStateLump.MovieSaveRam, (BinaryWriter bw) => bw.Write(SaveRam));
+			}
 
-				if (ClientSettingsForSave != null)
-				{
-					var clientSettingsJson = ClientSettingsForSave();
-					bs.PutLump(BinaryStateLump.ClientSettings, (TextWriter tw) => tw.Write(clientSettingsJson));
-				}
+			if (ClientSettingsForSave != null)
+			{
+				var clientSettingsJson = ClientSettingsForSave();
+				bs.PutLump(BinaryStateLump.ClientSettings, (TextWriter tw) => tw.Write(clientSettingsJson));
+			}
 
-				if (VerificationLog.Any())
-				{
-					bs.PutLump(BinaryStateLump.VerificationLog, tw => tw.WriteLine(InputLogToString(VerificationLog)));
-				}
+			if (VerificationLog.Any())
+			{
+				bs.PutLump(BinaryStateLump.VerificationLog, tw => tw.WriteLine(VerificationLog.ToInputLog()));
+			}
 
-				if (Branches.Any())
-				{
-					Branches.Save(bs);
-				}
+			if (Branches.Any())
+			{
+				Branches.Save(bs);
+			}
 
-				bs.PutLump(BinaryStateLump.Session, tw => tw.WriteLine(JsonConvert.SerializeObject(Session)));
+			bs.PutLump(BinaryStateLump.Session, tw => tw.WriteLine(JsonConvert.SerializeObject(Session)));
 
-				if (TasStateManager.Settings.SaveStateHistory && !backup)
-				{
-					bs.PutLump(BinaryStateLump.StateHistory, bw => TasStateManager.Save(bw));
-				}
+			if (TasStateManager.Settings.SaveStateHistory && !backup)
+			{
+				bs.PutLump(BinaryStateLump.StateHistory, bw => TasStateManager.Save(bw));
 			}
 
 			if (!backup)
@@ -292,17 +289,6 @@ namespace BizHawk.Client.Common
 			TasStateManager.Clear();
 			Markers.Clear();
 			ChangeLog.ClearLog();
-		}
-
-		private static string InputLogToString(IStringLog log)
-		{
-			var sb = new StringBuilder();
-			foreach (var record in log)
-			{
-				sb.AppendLine(record);
-			}
-
-			return sb.ToString();
 		}
 	}
 }
