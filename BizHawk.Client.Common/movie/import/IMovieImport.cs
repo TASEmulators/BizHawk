@@ -7,7 +7,7 @@ namespace BizHawk.Client.Common
 {
 	public interface IMovieImport
 	{
-		ImportResult Import(string path);
+		ImportResult Import(string path, Config config);
 	}
 
 	internal abstract class MovieImporter : IMovieImport
@@ -16,9 +16,10 @@ namespace BizHawk.Client.Common
 		protected const string Md5 = "MD5";
 		protected const string MovieOrigin = "MovieOrigin";
 
-		public ImportResult Import(string path)
+		public ImportResult Import(string path, Config config)
 		{
 			SourceFile = new FileInfo(path);
+			Config = config;
 
 			if (!SourceFile.Exists)
 			{
@@ -38,6 +39,8 @@ namespace BizHawk.Client.Common
 
 			return Result;
 		}
+
+		protected Config Config { get; private set; }
 
 		protected ImportResult Result { get; } = new ImportResult();
 

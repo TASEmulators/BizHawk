@@ -274,13 +274,13 @@ namespace BizHawk.Client.Common.movie.import
 
 			if (isGBA)
 			{
-				Global.Config.GbaUsemGba = true;
+				Config.GbaUsemGba = true;
 				var ss = new MGBAHawk.SyncSettings { SkipBios = true };
 				Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(ss);
 			}
 			else
 			{
-				if (Global.Config.GbUseGbHawk || Global.Config.UseSubGBHawk)
+				if (Config.GbUseGbHawk || Config.UseSubGBHawk)
 				{
 					var tempSync = new GBHawk.GBSyncSettings();
 					if (is_GBC) { tempSync.ConsoleMode = GBHawk.GBSyncSettings.ConsoleModeType.GBC; }

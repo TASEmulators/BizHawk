@@ -115,7 +115,7 @@ namespace BizHawk.Client.Common.movie.import
 						case "sgb_ntsc":
 						case "sgb_pal":
 							platform = "SNES";
-							Global.Config.GbAsSgb = true;
+							Config.GbAsSgb = true;
 							break;
 					}
 
@@ -283,7 +283,7 @@ namespace BizHawk.Client.Common.movie.import
 
 			Result.Movie.HeaderEntries[HeaderKeys.Platform] = platform;
 			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(ss);
-			Global.Config.SnesInSnes9x = false; // This could be annoying to a user if they don't notice we set this preference, but the alternative is for the movie import to fail to load the movie
+			Config.SnesInSnes9x = false; // TODO: convert to snes9x if user has set this to true
 		}
 
 		private IController EmptyLmsvFrame()
