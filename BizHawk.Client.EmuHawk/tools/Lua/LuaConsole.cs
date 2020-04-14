@@ -954,7 +954,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (LuaListView.SelectedRows.Any())
 			{
-				var script = SelectedFiles.First();
+				var script = SelectedItems.First();
+
+				if (script.IsSeparator)
+				{
+					LuaImp.ScriptList.Add(LuaFile.SeparatorInstance);
+					UpdateDialog();
+					return;
+				}
 
 				var sfd = new SaveFileDialog
 				{
