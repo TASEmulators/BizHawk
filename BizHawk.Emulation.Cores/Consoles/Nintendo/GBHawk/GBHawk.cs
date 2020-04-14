@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public int RAM_Bank;
 		public byte VRAM_Bank;
-		public bool is_GBC;
+		internal bool is_GBC;
 		public bool GBC_compat; // compatibility mode for GB games played on GBC
 		public bool double_speed;
 		public bool speed_switch;

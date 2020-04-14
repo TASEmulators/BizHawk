@@ -118,9 +118,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 			_isPal = _core.IsPal();
 			VsyncNumerator = _isPal ? 53203424 : 53693175;
 			VsyncDenominator = _isPal ? 3420 * 313 : 3420 * 262;
+
+			Is32XActive = game["32X"];
 		}
 
-		public bool Is32xActive => _core.Is32xActive();
+		public bool Is32XActive { get; }
 
 		public static readonly ControllerDefinition PicoDriveController = new ControllerDefinition
 		{

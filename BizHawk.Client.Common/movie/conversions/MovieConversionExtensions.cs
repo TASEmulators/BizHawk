@@ -331,37 +331,40 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				}
 			}
 
-			if (Global.Emulator is GBHawk && ((GBHawk)Global.Emulator).is_GBC)
+			if (Global.Emulator is GBHawk gbHawk && gbHawk.IsCGBMode())
 			{
 				movie.HeaderEntries.Add("IsCGBMode", "1");
 			}
 
-			if (Global.Emulator is Gameboy && ((Gameboy) Global.Emulator).IsCGBMode())
+			if (Global.Emulator is Gameboy gb)
 			{
-				movie.HeaderEntries.Add("IsCGBMode", "1");
-			}
+				if (gb.IsCGBMode())
+				{
+					movie.HeaderEntries.Add("IsCGBMode", "1");
+				}
 
-			if (Global.Emulator is Gameboy)
-			{
 				movie.HeaderEntries.Add(HeaderKeys.CycleCount, "0");
 			}
 
-			if (Global.Emulator is SMS && ((SMS) Global.Emulator).IsSG1000)
+			if (Global.Emulator is SMS sms)
 			{
-				movie.HeaderEntries.Add("IsSGMode", "1");
+				if (sms.IsSG1000)
+				{
+					movie.HeaderEntries.Add("IsSGMode", "1");
+				}
+
+				if (sms.IsGameGear)
+				{
+					movie.HeaderEntries.Add("IsGGMode", "1");
+				}
 			}
 
-			if (Global.Emulator is SMS && ((SMS) Global.Emulator).IsGameGear)
-			{
-				movie.HeaderEntries.Add("IsGGMode", "1");
-			}
-
-			if (Global.Emulator is GPGX && ((GPGX) Global.Emulator).IsMegaCD)
+			if (Global.Emulator is GPGX gpgx && gpgx.IsMegaCD)
 			{
 				movie.HeaderEntries.Add("IsSegaCDMode", "1");
 			}
 
-			if (Global.Emulator is PicoDrive && Global.Game["32X"])
+			if (Global.Emulator is PicoDrive pico && pico.Is32XActive)
 			{
 				movie.HeaderEntries.Add("Is32X", "1");
 			}
