@@ -326,7 +326,7 @@
 			// 
 			this.grpAutoSaveRAM.Controls.Add(this.flpGrpAutoSaveRAM);
 			this.grpAutoSaveRAM.Name = "grpAutoSaveRAM";
-			this.grpAutoSaveRAM.Size = new System.Drawing.Size(238, 52);
+			this.grpAutoSaveRAM.Size = new System.Drawing.Size(238, 54);
 			this.grpAutoSaveRAM.Text = "AutoSaveRAM";
 			// 
 			// flpGrpAutoSaveRAM
