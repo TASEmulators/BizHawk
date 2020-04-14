@@ -212,11 +212,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public string InputStrOrAll()
 		{
-			var m = Global.MovieSession.Movie.IsPlayingOrRecording() && Global.Emulator.Frame > 0
-				? Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 1)
-				: Global.MovieSession.MovieControllerInstance();
+			IController m = Global.InputManager.AutofireStickyXorAdapter;
 
-			return MakeStringFor(Global.InputManager.AutofireStickyXorAdapter.Or(m));
+			if (Global.MovieSession.Movie.IsPlayingOrRecording() && Global.Emulator.Frame > 0)
+			{
+				m = m.Or(Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 1));
+			}
+
+			return MakeStringFor(m);
 		}
 
 		private string MakeStringFor(IController controller)
