@@ -12,21 +12,11 @@ namespace BizHawk.Client.Common
 
 		public Bk2Movie(string filename = null)
 		{
-			Subtitles = new SubtitleList();
-			Comments = new List<string>();
-
 			Filename = filename ?? string.Empty;
-			IsCountingRerecords = true;
-			if (filename != null) Rerecords = 0;
-			Mode = MovieMode.Inactive;
-			MakeBackup = true;
-
 			Header[HeaderKeys.MovieVersion] = "BizHawk v2.0.0";
-
-			Log = StringLogUtil.MakeStringLog();
 		}
 
-		protected bool MakeBackup { get; set; }
+		protected bool MakeBackup { get; set; } = true;
 
 		private string _filename;
 
@@ -48,7 +38,7 @@ namespace BizHawk.Client.Common
 		public const string Extension = "bk2";
 
 		public virtual bool Changes { get; protected set; }
-		public bool IsCountingRerecords { get; set; }
+		public bool IsCountingRerecords { get; set; } = true;
 
 		public ILogEntryGenerator LogGeneratorInstance()
 		{

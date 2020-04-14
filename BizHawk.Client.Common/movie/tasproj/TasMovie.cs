@@ -15,7 +15,7 @@ namespace BizHawk.Client.Common
 
 		public IStringLog VerificationLog { get; } = StringLogUtil.MakeStringLog(); // For movies that do not begin with power-on, this is the input required to get into the initial state
 		public TasBranchCollection Branches { get; } = new TasBranchCollection();
-		public TasSession Session { get; private set; }
+		public TasSession Session { get; private set; } = new TasSession();
 
 		public new const string Extension = "tasproj";
 		public const string DefaultProjectName = "default";
@@ -24,7 +24,7 @@ namespace BizHawk.Client.Common
 		public bool LastPositionStable { get; set; } = true;
 		public TasMovieMarkerList Markers { get; private set; }
 		public bool BindMarkersToInput { get; set; }
-		public int CurrentBranch { get; set; }
+		public int CurrentBranch { get; set; } = -1;
 
 		public TasLagLog TasLagLog { get; } = new TasLagLog();
 
@@ -32,10 +32,7 @@ namespace BizHawk.Client.Common
 		public override string PreferredExtension => Extension;
 		public IStateManager TasStateManager { get; }
 
-		public IStringLog CloneInput()
-		{
-			return Log.Clone();
-		}
+		public IStringLog CloneInput() => Log.Clone();
 
 		public TasMovieRecord this[int index] => new TasMovieRecord
 		{
@@ -55,13 +52,10 @@ namespace BizHawk.Client.Common
 
 			ChangeLog = new TasMovieChangeLog(this);
 			TasStateManager = new TasStateManager(this, Global.Config.DefaultTasStateManagerSettings);
-			Session = new TasSession();
 			Header[HeaderKeys.MovieVersion] = "BizHawk v2.0 Tasproj v1.0";
 			Markers = new TasMovieMarkerList(this);
 			Markers.CollectionChanged += Markers_CollectionChanged;
 			Markers.Add(0, startsFromSavestate ? "Savestate" : "Power on");
-			BindMarkersToInput = false;
-			CurrentBranch = -1;
 		}
 
 		// TODO: use LogGenerators rather than string comparisons

@@ -10,8 +10,8 @@ namespace BizHawk.Client.Common
 
 		public IDictionary<string, string> HeaderEntries => Header;
 
-		public SubtitleList Subtitles { get; }
-		public IList<string> Comments { get; }
+		public SubtitleList Subtitles { get; } = new SubtitleList();
+		public IList<string> Comments { get; } = new List<string>();
 
 		public string SyncSettingsJson
 		{

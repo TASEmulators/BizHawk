@@ -8,7 +8,7 @@ namespace BizHawk.Client.Common
 {
 	public partial class Bk2Movie
 	{
-		protected IStringLog Log { get; set; }
+		protected IStringLog Log { get; set; } = StringLogUtil.MakeStringLog();
 		protected string LogKey { get; set; } = "";
 
 		public void WriteInputLog(TextWriter writer)
