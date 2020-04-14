@@ -11,7 +11,6 @@ using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.MovieConversionExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
-using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 
 namespace BizHawk.Client.EmuHawk

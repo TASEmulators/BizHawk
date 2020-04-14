@@ -4,7 +4,6 @@ using System.IO;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
-using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
