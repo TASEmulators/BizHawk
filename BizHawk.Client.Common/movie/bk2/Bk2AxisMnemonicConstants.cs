@@ -4,7 +4,7 @@ namespace BizHawk.Client.Common
 {
 	internal static class Bk2AxisMnemonicConstants
 	{
-		public static string Lookup(string button)
+		public static string Lookup(string button, string systemId)
 		{
 			var key = button
 				.Replace("P1 ", "")
@@ -13,9 +13,9 @@ namespace BizHawk.Client.Common
 				.Replace("P4 ", "")
 				.Replace("Key ", "");
 
-			if (SystemOverrides.ContainsKey(Global.Emulator.SystemId) && SystemOverrides[Global.Emulator.SystemId].ContainsKey(key))
+			if (SystemOverrides.ContainsKey(systemId) && SystemOverrides[systemId].ContainsKey(key))
 			{
-				return SystemOverrides[Global.Emulator.SystemId][key];
+				return SystemOverrides[systemId][key];
 			}
 
 			if (BaseMnemonicLookupTable.ContainsKey(key))
