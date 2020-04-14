@@ -101,12 +101,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			_resampler = new SpeexResampler(SpeexResampler.Quality.QUALITY_DEFAULT, 32768, 44100, 32768, 44100);
 
 			SetUpFiles();
-			if (!Init())
-				throw new Exception("Failed to init NDS.");
-			InitMemoryDomains();
 
 			PutSettings(settings as MelonSettings);
 			PutSyncSettings(syncSettings as MelonSyncSettings);
+
+			if (!Init())
+				throw new Exception("Failed to init NDS.");
+			InitMemoryDomains();
 
 			fixed (byte* f = file)
 			{
