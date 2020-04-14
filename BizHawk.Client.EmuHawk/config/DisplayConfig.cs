@@ -20,10 +20,10 @@ namespace BizHawk.Client.EmuHawk
 			_config = config;
 			InitializeComponent();
 
-			rbFilterNone.Checked = _config.TargetDisplayFilter == 0;
-			rbFilterHq2x.Checked = _config.TargetDisplayFilter == 1;
-			rbFilterScanline.Checked = _config.TargetDisplayFilter == 2;
-			rbFilterUser.Checked = _config.TargetDisplayFilter == 3;
+			rbNone.Checked = _config.TargetDisplayFilter == 0;
+			rbHq2x.Checked = _config.TargetDisplayFilter == 1;
+			rbScanlines.Checked = _config.TargetDisplayFilter == 2;
+			rbUser.Checked = _config.TargetDisplayFilter == 3;
 
 			_pathSelection = _config.DispUserFilterPath ?? "";
 			RefreshState();
@@ -32,52 +32,52 @@ namespace BizHawk.Client.EmuHawk
 			rbFinalFilterBilinear.Checked = _config.DispFinalFilter == 1;
 			rbFinalFilterBicubic.Checked = _config.DispFinalFilter == 2;
 
-			tbFilterScanlineAlpha.Value = _config.TargetScanlineFilterIntensity;
-			cbLetterbox.Checked = _config.DispFixAspectRatio;
-			cbScaleByInteger.Checked = _config.DispFixScaleInteger;
-			cbFSWinHacks.Checked = _config.DispFullscreenHacks;
+			tbScanlineIntensity.Value = _config.TargetScanlineFilterIntensity;
+			checkLetterbox.Checked = _config.DispFixAspectRatio;
+			checkPadInteger.Checked = _config.DispFixScaleInteger;
+			cbFullscreenHacks.Checked = _config.DispFullscreenHacks;
 			cbAutoPrescale.Checked = _config.DispAutoPrescale;
 
-			cbD3DAltVSync.Checked = _config.DispAlternateVsync;
+			cbAlternateVsync.Checked = _config.DispAlternateVsync;
 
-			if (_config.DispSpeedupFeatures == 2) rbDispFeaturesFull.Checked = true;
-			if (_config.DispSpeedupFeatures == 1) rbDispFeaturesMinimal.Checked = true;
-			if (_config.DispSpeedupFeatures == 0) rbDispFeaturesNothing.Checked = true;
+			if (_config.DispSpeedupFeatures == 2) rbDisplayFull.Checked = true;
+			if (_config.DispSpeedupFeatures == 1) rbDisplayMinimal.Checked = true;
+			if (_config.DispSpeedupFeatures == 0) rbDisplayAbsoluteZero.Checked = true;
 
-			rbDispMethodOpenGL.Checked = _config.DispMethod == EDispMethod.OpenGL;
-			rbDispMethodGDIPlus.Checked = _config.DispMethod == EDispMethod.GdiPlus;
-			rbDispMethodD3D.Checked = _config.DispMethod == EDispMethod.SlimDX9;
+			rbOpenGL.Checked = _config.DispMethod == EDispMethod.OpenGL;
+			rbGDIPlus.Checked = _config.DispMethod == EDispMethod.GdiPlus;
+			rbD3D9.Checked = _config.DispMethod == EDispMethod.SlimDX9;
 
-			cbWindowedStatusBar.Checked = _config.DispChromeStatusBarWindowed;
-			cbWindowedCaption.Checked = _config.DispChromeCaptionWindowed;
-			cbWindowedMenu.Checked = _config.DispChromeMenuWindowed;
-			cbFSStatusBar.Checked = _config.DispChromeStatusBarFullscreen;
-			cbFSMenu.Checked = _config.DispChromeMenuFullscreen;
-			tbWindowedFrameType.Value = _config.DispChromeFrameWindowed;
+			cbStatusBarWindowed.Checked = _config.DispChromeStatusBarWindowed;
+			cbCaptionWindowed.Checked = _config.DispChromeCaptionWindowed;
+			cbMenuWindowed.Checked = _config.DispChromeMenuWindowed;
+			cbStatusBarFullscreen.Checked = _config.DispChromeStatusBarFullscreen;
+			cbMenuFullscreen.Checked = _config.DispChromeMenuFullscreen;
+			trackbarFrameSizeWindowed.Value = _config.DispChromeFrameWindowed;
 			cbFSAutohideMouse.Checked = _config.DispChromeFullscreenAutohideMouse;
 			SyncTrackBar();
 
-			cbDoubleClickFS.Checked = _config.DispChromeAllowDoubleClickFullscreen;
+			cbAllowDoubleclickFullscreen.Checked = _config.DispChromeAllowDoubleClickFullscreen;
 
-			nudUserPrescale.Value = _config.DispPrescale;
+			nudPrescale.Value = _config.DispPrescale;
 
 			if (_config.DispManagerAR == EDispManagerAR.None)
-				rbARSquare.Checked = true;
+				rbUseRaw.Checked = true;
 			else if (_config.DispManagerAR == EDispManagerAR.System)
-				rbARBySystem.Checked = true;
+				rbUseSystem.Checked = true;
 			else if (_config.DispManagerAR == EDispManagerAR.Custom)
-				rbARCustomSize.Checked = true;
+				rbUseCustom.Checked = true;
 			else if (_config.DispManagerAR == EDispManagerAR.CustomRatio)
-				rbARCustomRatio.Checked = true;
+				rbUseCustomRatio.Checked = true;
 
 			if(_config.DispCustomUserARWidth != -1)
-				txtARCustomWidth.Text = _config.DispCustomUserARWidth.ToString();
+				txtCustomARWidth.Text = _config.DispCustomUserARWidth.ToString();
 			if (_config.DispCustomUserARHeight != -1)
-				txtARCustomHeight.Text = _config.DispCustomUserARHeight.ToString();
+				txtCustomARHeight.Text = _config.DispCustomUserARHeight.ToString();
 			if (_config.DispCustomUserArx != -1)
-				txtARCustomRatioH.Text = _config.DispCustomUserArx.ToString();
+				txtCustomARX.Text = _config.DispCustomUserArx.ToString();
 			if (_config.DispCustomUserAry != -1)
-				txtARCustomRatioV.Text = _config.DispCustomUserAry.ToString();
+				txtCustomARY.Text = _config.DispCustomUserAry.ToString();
 
 			txtCropLeft.Text = _config.DispCropLeft.ToString();
 			txtCropTop.Text = _config.DispCropTop.ToString();
@@ -86,18 +86,26 @@ namespace BizHawk.Client.EmuHawk
 
 			RefreshAspectRatioOptions();
 
-			if (OSTailoredCode.IsUnixHost) flpD3DSection.Enabled = false; // Disable SlimDX on Unix
+			if (OSTailoredCode.IsUnixHost)
+			{
+				// Disable SlimDX on Unix
+				rbD3D9.Enabled = false;
+				rbD3D9.AutoCheck = false;
+				cbAlternateVsync.Enabled = false;
+				label13.Enabled = false;
+				label8.Enabled = false;
+			}
 		}
 
-		private void btnDialogOK_Click(object sender, EventArgs e)
+		private void btnOk_Click(object sender, EventArgs e)
 		{
-			if (rbFilterNone.Checked)
+			if (rbNone.Checked)
 				_config.TargetDisplayFilter = 0;
-			if (rbFilterHq2x.Checked)
+			if (rbHq2x.Checked)
 				_config.TargetDisplayFilter = 1;
-			if (rbFilterScanline.Checked)
+			if (rbScanlines.Checked)
 				_config.TargetDisplayFilter = 2;
-			if (rbFilterUser.Checked)
+			if (rbUser.Checked)
 				_config.TargetDisplayFilter = 3;
 
 			if (rbFinalFilterNone.Checked)
@@ -107,34 +115,41 @@ namespace BizHawk.Client.EmuHawk
 			if (rbFinalFilterBicubic.Checked)
 				_config.DispFinalFilter = 2;
 
-			_config.DispPrescale = (int)nudUserPrescale.Value;
+			_config.DispPrescale = (int)nudPrescale.Value;
 
-			_config.TargetScanlineFilterIntensity = tbFilterScanlineAlpha.Value;
-			_config.DispFixAspectRatio = cbLetterbox.Checked;
-			_config.DispFixScaleInteger = cbScaleByInteger.Checked;
-			_config.DispFullscreenHacks = cbFSWinHacks.Checked;
+			_config.TargetScanlineFilterIntensity = tbScanlineIntensity.Value;
+			_config.DispFixAspectRatio = checkLetterbox.Checked;
+			_config.DispFixScaleInteger = checkPadInteger.Checked;
+			_config.DispFullscreenHacks = cbFullscreenHacks.Checked;
 			_config.DispAutoPrescale = cbAutoPrescale.Checked;
 			
-			_config.DispAlternateVsync = cbD3DAltVSync.Checked;
+			_config.DispAlternateVsync = cbAlternateVsync.Checked;
 
-			_config.DispChromeStatusBarWindowed = cbWindowedStatusBar.Checked;
-			_config.DispChromeCaptionWindowed = cbWindowedCaption.Checked;
-			_config.DispChromeMenuWindowed = cbWindowedMenu.Checked;
-			_config.DispChromeStatusBarFullscreen = cbFSStatusBar.Checked;
-			_config.DispChromeMenuFullscreen = cbFSMenu.Checked;
-			_config.DispChromeFrameWindowed = tbWindowedFrameType.Value;
+			_config.DispChromeStatusBarWindowed = cbStatusBarWindowed.Checked;
+			_config.DispChromeCaptionWindowed = cbCaptionWindowed.Checked;
+			_config.DispChromeMenuWindowed = cbMenuWindowed.Checked;
+			_config.DispChromeStatusBarFullscreen = cbStatusBarFullscreen.Checked;
+			_config.DispChromeMenuFullscreen = cbMenuFullscreen.Checked;
+			_config.DispChromeFrameWindowed = trackbarFrameSizeWindowed.Value;
 			_config.DispChromeFullscreenAutohideMouse = cbFSAutohideMouse.Checked;
-			_config.DispChromeAllowDoubleClickFullscreen = cbDoubleClickFS.Checked;
+			_config.DispChromeAllowDoubleClickFullscreen = cbAllowDoubleclickFullscreen.Checked;
 
-			if (rbDispFeaturesFull.Checked) _config.DispSpeedupFeatures = 2;
-			if (rbDispFeaturesMinimal.Checked) _config.DispSpeedupFeatures = 1;
-			if (rbDispFeaturesNothing.Checked) _config.DispSpeedupFeatures = 0;
+			if (rbDisplayFull.Checked) _config.DispSpeedupFeatures = 2;
+			if (rbDisplayMinimal.Checked) _config.DispSpeedupFeatures = 1;
+			if (rbDisplayAbsoluteZero.Checked) _config.DispSpeedupFeatures = 0;
 
-			_config.DispManagerAR = grpAspectRatio.Tracker.GetSelectionTagAs<EDispManagerAR>() ?? throw new InvalidOperationException();
+			if (rbUseRaw.Checked)
+				_config.DispManagerAR = EDispManagerAR.None;
+			else if (rbUseSystem.Checked)
+				_config.DispManagerAR = EDispManagerAR.System;
+			else if (rbUseCustom.Checked)
+				_config.DispManagerAR = EDispManagerAR.Custom;
+			else if (rbUseCustomRatio.Checked)
+				_config.DispManagerAR = EDispManagerAR.CustomRatio;
 
-			if (string.IsNullOrWhiteSpace(txtARCustomWidth.Text))
+			if (string.IsNullOrWhiteSpace(txtCustomARWidth.Text))
 			{
-				if (int.TryParse(txtARCustomWidth.Text, out int dispCustomUserARWidth))
+				if (int.TryParse(txtCustomARWidth.Text, out int dispCustomUserARWidth))
 				{
 					_config.DispCustomUserARWidth = dispCustomUserARWidth;
 				}
@@ -144,9 +159,9 @@ namespace BizHawk.Client.EmuHawk
 				_config.DispCustomUserARWidth = -1;
 			}
 
-			if (string.IsNullOrWhiteSpace(txtARCustomHeight.Text))
+			if (string.IsNullOrWhiteSpace(txtCustomARHeight.Text))
 			{
-				if (int.TryParse(txtARCustomHeight.Text, out int dispCustomUserARHeight))
+				if (int.TryParse(txtCustomARHeight.Text, out int dispCustomUserARHeight))
 				{
 					_config.DispCustomUserARHeight = dispCustomUserARHeight;
 				}
@@ -156,9 +171,9 @@ namespace BizHawk.Client.EmuHawk
 				_config.DispCustomUserARHeight = -1;
 			}
 
-			if (string.IsNullOrWhiteSpace(txtARCustomRatioH.Text))
+			if (string.IsNullOrWhiteSpace(txtCustomARX.Text))
 			{
-				if (float.TryParse(txtARCustomRatioH.Text, out float dispCustomUserArx))
+				if (float.TryParse(txtCustomARX.Text, out float dispCustomUserArx))
 				{
 					_config.DispCustomUserArx = dispCustomUserArx;
 				}
@@ -168,9 +183,9 @@ namespace BizHawk.Client.EmuHawk
 				_config.DispCustomUserArx = -1;
 			}
 
-			if (string.IsNullOrWhiteSpace(txtARCustomRatioV.Text))
+			if (string.IsNullOrWhiteSpace(txtCustomARY.Text))
 			{
-				if (float.TryParse(txtARCustomRatioV.Text, out float dispCustomUserAry))
+				if (float.TryParse(txtCustomARY.Text, out float dispCustomUserAry))
 				{
 					_config.DispCustomUserAry = dispCustomUserAry;
 				}
@@ -181,7 +196,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var oldDisplayMethod = _config.DispMethod;
-			_config.DispMethod = grpDispMethod.Tracker.GetSelectionTagAs<EDispMethod>() ?? throw new InvalidOperationException();
+			if(rbOpenGL.Checked)
+				_config.DispMethod = EDispMethod.OpenGL;
+			if(rbGDIPlus.Checked)
+				_config.DispMethod = EDispMethod.GdiPlus;
+			if(rbD3D9.Checked)
+				_config.DispMethod = EDispMethod.SlimDX9;
 
 			if (int.TryParse(txtCropLeft.Text, out int dispCropLeft))
 			{
@@ -216,10 +236,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RefreshState()
 		{
-			lblFilterUser.Text = Path.GetFileNameWithoutExtension(_pathSelection);
+			lblUserFilterName.Text = Path.GetFileNameWithoutExtension(_pathSelection);
 		}
 
-		private void btnFilterUser_Click(object sender, EventArgs e)
+		private void btnSelectUserFilter_Click(object sender, EventArgs e)
 		{
 			using var ofd = new OpenFileDialog
 			{
@@ -228,7 +248,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 			if (ofd.ShowDialog() == DialogResult.OK)
 			{
-				rbFilterUser.Checked = true;
+				rbUser.Checked = true;
 				var choice = Path.GetFullPath(ofd.FileName);
 				
 				//test the preset
@@ -264,81 +284,81 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void cbLetterbox_CheckedChanged(object sender, EventArgs e)
+		private void checkLetterbox_CheckedChanged(object sender, EventArgs e)
 		{
 			RefreshAspectRatioOptions();
 		}
 
-		private void cbScaleByInteger_CheckedChanged(object sender, EventArgs e)
+		private void checkPadInteger_CheckedChanged(object sender, EventArgs e)
 		{
 			RefreshAspectRatioOptions();
 		}
 
-		private void rbARSquare_CheckedChanged(object sender, EventArgs e)
+		private void rbUseRaw_CheckedChanged(object sender, EventArgs e)
 		{
 			RefreshAspectRatioOptions();
 		}
 
-		private void rbARBySystem_CheckedChanged(object sender, EventArgs e)
+		private void rbUseSystem_CheckedChanged(object sender, EventArgs e)
 		{
 			RefreshAspectRatioOptions();
 		}
 
 		void RefreshAspectRatioOptions()
 		{
-			grpAspectRatio.Enabled = cbLetterbox.Checked;
-			cbScaleByInteger.Enabled = cbLetterbox.Checked;
+			grpARSelection.Enabled = checkLetterbox.Checked;
+			checkPadInteger.Enabled = checkLetterbox.Checked;
 		}
 
-		public void tbFilterScanlineAlpha_Scroll(object sender, EventArgs e)
+		public void tbScanlineIntensity_Scroll(object sender, EventArgs e)
 		{
-			_config.TargetScanlineFilterIntensity = tbFilterScanlineAlpha.Value;
+			_config.TargetScanlineFilterIntensity = tbScanlineIntensity.Value;
 			int scanlines = _config.TargetScanlineFilterIntensity;
 			float percentage = (float) scanlines / 256 * 100;
-			lblFilterScanlineAlpha.Text = $"{percentage:F2}%";
+			lblScanlines.Text = $"{percentage:F2}%";
 		}
 
-		private void tbWidowedFrameType_ValueChanged(object sender, EventArgs e)
+		private void TrackBarFrameSizeWindowed_ValueChanged(object sender, EventArgs e)
 		{
 			SyncTrackBar();
 		}
 
 		private void SyncTrackBar()
 		{
-			if (tbWindowedFrameType.Value == 0)
+			if (trackbarFrameSizeWindowed.Value == 0)
 			{
-				lblWindowedFrameTypeReadout.Text = "None";
+				lblFrameTypeWindowed.Text = "None";
 			}
 
-			if (tbWindowedFrameType.Value == 1)
+			if (trackbarFrameSizeWindowed.Value == 1)
 			{
-				lblWindowedFrameTypeReadout.Text = "Thin";
+				lblFrameTypeWindowed.Text = "Thin";
 			}
 
-			if (tbWindowedFrameType.Value == 2)
+			if (trackbarFrameSizeWindowed.Value == 2)
 			{
-				lblWindowedFrameTypeReadout.Text = "Thick";
+				lblFrameTypeWindowed.Text = "Thick";
 			}
 		}
 
-		private void lnkDocs_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			System.Diagnostics.Process.Start("http://tasvideos.org/Bizhawk/DisplayConfig.html");
 		}
 
-		private void lblD3DAltVSync_Click(object sender, EventArgs e)
+		private void label13_Click(object sender, EventArgs e)
 		{
-			cbD3DAltVSync.Checked ^= true;
+			cbAlternateVsync.Checked ^= true;
 		}
 
 		private void btnDefaults_Click(object sender, EventArgs e)
 		{
-			nudUserPrescale.Value = 1;
-			rbFilterNone.Checked = true;
+			nudPrescale.Value = 1;
+			rbNone.Checked = true;
 			cbAutoPrescale.Checked = true;
 			rbFinalFilterBilinear.Checked = true;
-			cbLetterbox.Checked = true;
-			rbARBySystem.Checked = true;
+			checkLetterbox.Checked = true;
+			rbUseSystem.Checked = true;
 		}
 	}
 }
