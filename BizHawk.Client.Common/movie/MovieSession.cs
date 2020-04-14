@@ -50,9 +50,11 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Simply shortens the verbosity necessary otherwise
 		/// </summary>
-		public ILogEntryGenerator LogGeneratorInstance()
+		public ILogEntryGenerator LogGeneratorInstance(IController source)
 		{
-			return Movie.LogGeneratorInstance();
+			var lg = Movie.LogGeneratorInstance();
+			lg.SetSource(source);
+			return lg;
 		}
 
 		public IMovieController MovieControllerInstance()

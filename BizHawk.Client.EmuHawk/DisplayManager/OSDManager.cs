@@ -188,30 +188,22 @@ namespace BizHawk.Client.EmuHawk
 
 		public string InputStrMovie()
 		{
-			var lg = Global.MovieSession.LogGeneratorInstance();
-			lg.SetSource(Global.MovieSession.MovieControllerAdapter);
-
-			return lg.GenerateInputDisplay();
+			return MakeStringFor(Global.MovieSession.MovieControllerAdapter);
 		}
 
 		public string InputStrImmediate()
 		{
-			var lg = Global.MovieSession.LogGeneratorInstance();
-			lg.SetSource(Global.InputManager.AutofireStickyXorAdapter);
-
-			return lg.GenerateInputDisplay();
+			return MakeStringFor(Global.InputManager.AutofireStickyXorAdapter);
 		}
 
 		public string InputPrevious()
 		{
 			if (Global.MovieSession.Movie.IsPlayingOrRecording())
 			{
-				var lg = Global.MovieSession.LogGeneratorInstance();
 				var state = Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 1);
 				if (state != null)
 				{
-					lg.SetSource(state);
-					return lg.GenerateInputDisplay();
+					return MakeStringFor(state);
 				}
 			}
 
@@ -224,17 +216,12 @@ namespace BizHawk.Client.EmuHawk
 				? Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 1)
 				: Global.MovieSession.MovieControllerInstance();
 
-			var lg = Global.MovieSession.LogGeneratorInstance();
-
-			lg.SetSource(Global.InputManager.AutofireStickyXorAdapter.Or(m));
-			return lg.GenerateInputDisplay();
+			return MakeStringFor(Global.InputManager.AutofireStickyXorAdapter.Or(m));
 		}
 
 		private string MakeStringFor(IController controller)
 		{
-			var lg = Global.MovieSession.LogGeneratorInstance();
-			lg.SetSource(controller);
-			return lg.GenerateInputDisplay();
+			return Global.MovieSession.LogGeneratorInstance(controller).GenerateInputDisplay();
 		}
 
 		public string MakeIntersectImmediatePrevious()
@@ -245,9 +232,7 @@ namespace BizHawk.Client.EmuHawk
 					? Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 1)
 					: Global.MovieSession.MovieControllerInstance();
 
-				var lg = Global.MovieSession.LogGeneratorInstance();
-				lg.SetSource(Global.InputManager.AutofireStickyXorAdapter.And(m));
-				return lg.GenerateInputDisplay();
+				return MakeStringFor(Global.InputManager.AutofireStickyXorAdapter.And(m));
 			}
 
 			return "";

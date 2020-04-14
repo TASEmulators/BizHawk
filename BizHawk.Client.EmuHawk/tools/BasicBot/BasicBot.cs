@@ -976,8 +976,7 @@ namespace BizHawk.Client.EmuHawk
 			UpdateBotStatusIcon();
 			MessageLabel.Text = "Running...";
 			_cachedControlProbabilities = ControlProbabilities;
-			_logGenerator = Global.MovieSession.LogGeneratorInstance();
-			_logGenerator.SetSource(Global.InputManager.ClickyVirtualPadController);
+			_logGenerator = Global.MovieSession.LogGeneratorInstance(Global.InputManager.ClickyVirtualPadController);
 		}
 
 		private string CanStart()

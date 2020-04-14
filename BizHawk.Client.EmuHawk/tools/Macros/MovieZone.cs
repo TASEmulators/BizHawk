@@ -229,8 +229,7 @@ namespace BizHawk.Client.EmuHawk
 			// If the LogKey contains buttons/controls not accepted by the emulator,
 			//	tell the user and display the macro's controller name and player count
 			_inputKey = readText[0];
-			var lg = Global.MovieSession.LogGeneratorInstance();
-			lg.SetSource(Global.MovieSession.MovieControllerAdapter);
+			var lg = Global.MovieSession.LogGeneratorInstance(Global.MovieSession.MovieControllerAdapter);
 			string key = lg.GenerateLogKey();
 			key = key.Replace("LogKey:", "").Replace("#", "");
 			key = key.Substring(0, key.Length - 1);

@@ -42,13 +42,6 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public int LastPositionFrame { get; private set; }
 
-		private Dictionary<string, string> GenerateColumnNames()
-		{
-			var lg = Global.MovieSession.LogGeneratorInstance();
-			lg.SetSource(Global.MovieSession.MovieControllerAdapter);
-			return lg.Map();
-		}
-
 		[ConfigPersist]
 		public TAStudioSettings Settings { get; set; }
 
@@ -420,7 +413,10 @@ namespace BizHawk.Client.EmuHawk
 					Rotatable = true
 				});
 
-			var columnNames = GenerateColumnNames();
+			var columnNames = Global.MovieSession
+				.LogGeneratorInstance(Global.MovieSession.MovieControllerAdapter)
+				.Map();
+
 			foreach (var kvp in columnNames)
 			{
 				ColumnType type;

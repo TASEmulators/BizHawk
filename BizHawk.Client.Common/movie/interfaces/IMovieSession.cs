@@ -30,7 +30,7 @@ namespace BizHawk.Client.Common
 		bool CheckSavestateTimeline(TextReader reader);
 		bool HandleMovieLoadState(TextReader reader);
 
-		ILogEntryGenerator LogGeneratorInstance();
+		ILogEntryGenerator LogGeneratorInstance(IController source);
 
 		void QueueNewMovie(IMovie movie, bool record, IEmulator emulator);
 		void RunQueuedMovie(bool recordMode);

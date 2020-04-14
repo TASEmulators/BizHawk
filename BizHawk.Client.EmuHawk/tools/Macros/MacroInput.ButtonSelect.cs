@@ -48,8 +48,7 @@ namespace BizHawk.Client.EmuHawk
 			s.Refresh();
 
 			// Update the selected zone's key
-			var lg = Global.MovieSession.LogGeneratorInstance();
-			lg.SetSource(Global.MovieSession.MovieControllerAdapter);
+			var lg = Global.MovieSession.LogGeneratorInstance(Global.MovieSession.MovieControllerAdapter);
 			string key = lg.GenerateLogKey();
 			key = key.Replace("LogKey:", "").Replace("#", "");
 
