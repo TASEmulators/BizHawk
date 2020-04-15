@@ -13,41 +13,34 @@ namespace BizHawk.Client.Common
 		private readonly WorkingDictionary<string, bool> _myBoolButtons = new WorkingDictionary<string, bool>();
 		private readonly WorkingDictionary<string, float> _myAxisControls = new WorkingDictionary<string, float>();
 
-		private Bk2ControllerDefinition _type = new Bk2ControllerDefinition();
-		private List<ControlMap> _controlsOrdered = new List<ControlMap>();
+		private readonly Bk2ControllerDefinition _type;
+		private readonly List<ControlMap> _controlsOrdered;
 
-		public Bk2Controller()
-		{
-		}
-
-		public Bk2Controller(string key)
+		public Bk2Controller(string key, ControllerDefinition definition) : this(definition)
 		{
 			_logKey = key;
 			SetLogOverride();
 		}
 
+		public Bk2Controller(ControllerDefinition definition)
+		{
+			_type = new Bk2ControllerDefinition(definition);
+			SetLogOverride();
+
+			_controlsOrdered =  Definition.ControlsOrdered
+				.SelectMany(c => c)
+				.Select(c => new ControlMap
+				{
+					Name = c,
+					IsBool = _type.BoolButtons.Contains(c),
+					IsAxis = _type.AxisControls.Contains(c)
+				})
+				.ToList();
+		}
+
 		#region IController Implementation
 
-		public ControllerDefinition Definition
-		{
-			get => _type;
-			set
-			{
-				_type = new Bk2ControllerDefinition(value);
-				SetLogOverride();
-
-				var def = Global.Emulator.ControllerDefinition;
-				_controlsOrdered =  Definition.ControlsOrdered
-					.SelectMany(c => c)
-					.Select(c => new ControlMap
-					{
-						Name = c,
-						IsBool = def.BoolButtons.Contains(c),
-						IsAxis = def.AxisControls.Contains(c)
-					})
-					.ToList();
-			}
-		}
+		public ControllerDefinition Definition => _type;
 
 		public bool IsPressed(string button) => _myBoolButtons[button];
 		public float AxisValue(string name) => _myAxisControls[name];

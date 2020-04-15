@@ -9,14 +9,14 @@ namespace BizHawk.Client.Common
 	public class Bk2LogEntryGenerator : ILogEntryGenerator
 	{
 		private readonly string _logKey;
-		private IController _source;
+		private IController _source = NullController.Instance;
 
 		public Bk2LogEntryGenerator(string logKey)
 		{
 			_logKey = logKey;
 		}
 
-		public IMovieController MovieControllerAdapter => new Bk2Controller(_logKey);
+		public IMovieController MovieControllerAdapter => new Bk2Controller(_logKey, _source.Definition);
 		 
 		public void SetSource(IController source) => _source = source;
 
@@ -56,11 +56,11 @@ namespace BizHawk.Client.Common
 				{
 					if (_source.Definition.BoolButtons.Contains(button))
 					{
-						dict.Add(button, Bk2MnemonicConstants.Lookup(button, Global.Emulator.SystemId).ToString());
+						dict.Add(button, Bk2MnemonicLookup.Lookup(button, Global.Emulator.SystemId).ToString());
 					}
 					else if (_source.Definition.AxisControls.Contains(button))
 					{
-						dict.Add(button, Bk2MnemonicConstants.LookupAxis(button, Global.Emulator.SystemId));
+						dict.Add(button, Bk2MnemonicLookup.LookupAxis(button, Global.Emulator.SystemId));
 					}
 				}
 			}
@@ -115,7 +115,7 @@ namespace BizHawk.Client.Common
 							}
 							else
 							{
-								sb.Append(_source.IsPressed(button) ? Bk2MnemonicConstants.Lookup(button, Global.Emulator.SystemId) : forInputDisplay ? ' ' : '.');
+								sb.Append(_source.IsPressed(button) ? Bk2MnemonicLookup.Lookup(button, Global.Emulator.SystemId) : forInputDisplay ? ' ' : '.');
 							}
 						}
 					}

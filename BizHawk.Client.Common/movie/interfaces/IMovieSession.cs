@@ -14,6 +14,8 @@ namespace BizHawk.Client.Common
 		IController PreviousFrame { get; }
 		IController CurrentInput { get; }
 
+		void SetMovieController(ControllerDefinition definition);
+
 		bool ReadOnly { get; set; }
 		bool MovieIsQueued { get; }
 

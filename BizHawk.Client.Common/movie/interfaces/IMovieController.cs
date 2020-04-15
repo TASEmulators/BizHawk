@@ -4,8 +4,6 @@ namespace BizHawk.Client.Common
 {
 	public interface IMovieController : IController
 	{
-		new ControllerDefinition Definition { get; set; }
-
 		/// <summary>
 		/// Latches to the given <see cref="IController" />
 		/// </summary>

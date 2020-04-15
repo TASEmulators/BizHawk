@@ -125,10 +125,7 @@ namespace BizHawk.Client.Common
 		{
 			if (frame < FrameCount && frame >= 0)
 			{
-				_adapter ??= new Bk2Controller
-				{
-					Definition = Global.MovieSession.MovieControllerAdapter.Definition
-				};
+				_adapter ??= new Bk2Controller(Global.MovieSession.MovieControllerAdapter.Definition);
 
 				int getFrame;
 

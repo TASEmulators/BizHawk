@@ -97,7 +97,7 @@ namespace BizHawk.Client.Common
 			if (adapter.Definition.BoolButtons.Contains(buttonName))
 			{
 				return adapter.IsPressed(buttonName)
-					? Bk2MnemonicConstants.Lookup(buttonName, Global.Emulator.SystemId).ToString()
+					? Bk2MnemonicLookup.Lookup(buttonName, Global.Emulator.SystemId).ToString()
 					: "";
 			}
 
