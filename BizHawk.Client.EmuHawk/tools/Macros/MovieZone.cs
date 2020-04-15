@@ -12,16 +12,16 @@ namespace BizHawk.Client.EmuHawk
 		private readonly IEmulator _emulator;
 		private readonly ToolManager _tools;
 		private readonly string[] _log;
-		private readonly Bk2Controller _targetController;
+		private readonly IMovieController _targetController;
 		private string _inputKey;
-		private Bk2Controller _controller;
+		private IMovieController _controller;
 
 		public MovieZone(IMovie movie, IEmulator emulator, ToolManager tools, int start, int length, string key = "")
 		{
 			_emulator = emulator;
 			_tools = tools;
 			var lg = movie.LogGeneratorInstance(Global.MovieSession.MovieController);
-			_targetController = new Bk2Controller(_emulator.ControllerDefinition);
+			_targetController = Global.MovieSession.GenerateMovieController();
 			_targetController.SetFrom(_targetController); // Reference and create all buttons
 
 			if (key == "")
@@ -53,7 +53,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			_controller = new Bk2Controller(d);
+			_controller = Global.MovieSession.GenerateMovieController(d);
 			var logGenerator = Global.MovieSession.Movie.LogGeneratorInstance(_controller);
 			logGenerator.GenerateLogEntry(); // Reference and create all buttons.
 
@@ -106,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			var newController = new Bk2Controller(d);
+			var newController = Global.MovieSession.GenerateMovieController(d);
 			var logGenerator = Global.MovieSession.Movie.LogGeneratorInstance(newController);
 			logGenerator.GenerateLogEntry(); // Reference and create all buttons.
 
@@ -252,7 +252,7 @@ namespace BizHawk.Client.EmuHawk
 			Name = Path.GetFileNameWithoutExtension(fileName);
 
 			// Adapters
-			_targetController = new Bk2Controller(_emulator.ControllerDefinition);
+			_targetController = Global.MovieSession.GenerateMovieController();
 			_targetController.SetFrom(_targetController); // Reference and create all buttons
 			string[] keys = _inputKey.Split('|');
 			var d = new ControllerDefinition(_emulator.ControllerDefinition);
@@ -268,7 +268,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			_controller = new Bk2Controller(d);
+			_controller = Global.MovieSession.GenerateMovieController(d);
 		}
 
 		#region Custom Latch

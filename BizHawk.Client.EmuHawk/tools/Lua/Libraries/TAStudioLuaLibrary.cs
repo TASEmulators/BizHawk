@@ -375,17 +375,17 @@ namespace BizHawk.Client.EmuHawk
 				var branch = Tastudio.CurrentTasMovie.Branches.FirstOrDefault(b => b.UniqueIdentifier.ToString() == branchId);
 				if (branch != null && frame < branch.InputLog.Count)
 				{
-					var adapter = new Bk2Controller(Global.MovieSession.MovieController.Definition);
-					adapter.SetFromMnemonic(branch.InputLog[frame]);
+					var controller = Global.MovieSession.GenerateMovieController();
+					controller.SetFromMnemonic(branch.InputLog[frame]);
 
-					foreach (var button in adapter.Definition.BoolButtons)
+					foreach (var button in controller.Definition.BoolButtons)
 					{
-						table[button] = adapter.IsPressed(button);
+						table[button] = controller.IsPressed(button);
 					}
 
-					foreach (var button in adapter.Definition.AxisControls)
+					foreach (var button in controller.Definition.AxisControls)
 					{
-						table[button] = adapter.AxisValue(button);
+						table[button] = controller.AxisValue(button);
 					}
 				}
 			}

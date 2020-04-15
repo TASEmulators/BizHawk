@@ -7,7 +7,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public class Bk2Controller : IMovieController
+	internal class Bk2Controller : IMovieController
 	{
 		private readonly WorkingDictionary<string, bool> _myBoolButtons = new WorkingDictionary<string, bool>();
 		private readonly WorkingDictionary<string, float> _myAxisControls = new WorkingDictionary<string, float>();

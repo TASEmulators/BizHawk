@@ -65,7 +65,7 @@ namespace BizHawk.Client.Common
 			MovieInputSourceAdapter.Source = MultitrackRewiringAdapter;
 			ControllerOutput.Source = MovieOutputHardpoint;
 
-			Global.MovieSession.CreateMovieController(MovieInputSourceAdapter.Definition);
+			Global.MovieSession.RecreateMovieController(MovieInputSourceAdapter.Definition);
 
 			// connect the movie session before MovieOutputHardpoint if it is doing anything
 			// otherwise connect the MovieInputSourceAdapter to it, effectively bypassing the movie session

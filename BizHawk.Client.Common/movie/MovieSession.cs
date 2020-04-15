@@ -47,15 +47,15 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public Action ModeChangedCallback { get; set; }
 
-		public void CreateMovieController(ControllerDefinition definition)
+		public void RecreateMovieController(ControllerDefinition definition)
 		{
 			MovieController = new Bk2Controller(definition);
 		}
 
-		public IMovieController GenerateMovieController()
+		public IMovieController GenerateMovieController(ControllerDefinition definition = null)
 		{
 			// TODO: expose Movie.LogKey and pass in here
-			return new Bk2Controller("", MovieController.Definition);
+			return new Bk2Controller("", definition ?? MovieController.Definition);
 		}
 
 		// Convenience property that gets the controller state from the movie for the most recent frame
