@@ -60,7 +60,7 @@ namespace BizHawk.Client.Common
 					}
 					else if (_source.Definition.AxisControls.Contains(button))
 					{
-						dict.Add(button, Bk2AxisMnemonicConstants.Lookup(button, Global.Emulator.SystemId));
+						dict.Add(button, Bk2MnemonicConstants.LookupAxis(button, Global.Emulator.SystemId));
 					}
 				}
 			}

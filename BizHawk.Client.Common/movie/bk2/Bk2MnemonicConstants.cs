@@ -3,7 +3,7 @@
 // ReSharper disable StyleCop.SA1509
 namespace BizHawk.Client.Common
 {
-	internal static class Bk2MnemonicConstants
+	internal static class Bk2MnemonicLookup
 	{
 		public static char Lookup(string button, string systemId)
 		{
@@ -38,6 +38,29 @@ namespace BizHawk.Client.Common
 
 			return '!';
 		}
+
+		public static string LookupAxis(string button, string systemId)
+		{
+			var key = button
+				.Replace("P1 ", "")
+				.Replace("P2 ", "")
+				.Replace("P3 ", "")
+				.Replace("P4 ", "")
+				.Replace("Key ", "");
+
+			if (AxisSystemOverrides.ContainsKey(systemId) && AxisSystemOverrides[systemId].ContainsKey(key))
+			{
+				return AxisSystemOverrides[systemId][key];
+			}
+
+			if (BaseAxisLookupTable.ContainsKey(key))
+			{
+				return BaseAxisLookupTable[key];
+			}
+
+			return button;
+		}
+
 
 		private static readonly Dictionary<string, char> BaseMnemonicLookupTable = new Dictionary<string, char>
 		{
@@ -480,6 +503,34 @@ namespace BizHawk.Client.Common
 				["Gun Trigger"] = 'G',
 				["Lightgun X"] = 'X',
 				["Lightgun Y"] = 'Y',
+			}
+		};
+
+		private static readonly Dictionary<string, string> BaseAxisLookupTable = new Dictionary<string, string>
+		{
+			["Zapper X"] = "zapX",
+			["Zapper Y"] = "zapY",
+			["Paddle"] = "Pad",
+			["Pen"] = "Pen",
+			["Mouse X"] = "mX",
+			["Mouse Y"] = "mY",
+			["Lightgun X"] = "lX",
+			["Lightgun Y"] = "lY",
+			["X Axis"] = "aX",
+			["Y Axis"] = "aY",
+			["LStick X"] = "lsX",
+			["LStick Y"] = "lsY",
+			["RStick X"] = "rsX",
+			["RStick Y"] = "rsY",
+			["Disc Select"] = "Disc"
+		};
+
+		private static readonly Dictionary<string, Dictionary<string, string>> AxisSystemOverrides = new Dictionary<string, Dictionary<string, string>>
+		{
+			["A78"] = new Dictionary<string, string>
+			{
+				["VPos"] = "X",
+				["HPos"] = "Y"
 			}
 		};
 	}
