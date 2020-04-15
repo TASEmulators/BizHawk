@@ -220,7 +220,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void ClearFrame()
+		private void ClearFrame()
 		{
 			if (Movie.IsPlaying())
 			{
