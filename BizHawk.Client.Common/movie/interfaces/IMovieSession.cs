@@ -7,14 +7,14 @@ namespace BizHawk.Client.Common
 	{
 		IMovie Movie { get; set; }
 		IMovie QueuedMovie { get; }
-		IMovieController MovieControllerAdapter { get; }
+		IMovieController MovieController { get; }
 		IMovieController MovieControllerInstance();
 		MultitrackRecorder MultiTrack { get; }
 
 		IController PreviousFrame { get; }
 		IController CurrentInput { get; }
 
-		void SetMovieController(ControllerDefinition definition);
+		void CreateMovieController(ControllerDefinition definition);
 
 		bool ReadOnly { get; set; }
 		bool MovieIsQueued { get; }

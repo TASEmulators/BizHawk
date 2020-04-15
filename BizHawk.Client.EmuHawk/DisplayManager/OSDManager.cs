@@ -188,7 +188,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public string InputStrMovie()
 		{
-			return MakeStringFor(Global.MovieSession.MovieControllerAdapter);
+			return MakeStringFor(Global.MovieSession.MovieController);
 		}
 
 		public string InputStrImmediate()

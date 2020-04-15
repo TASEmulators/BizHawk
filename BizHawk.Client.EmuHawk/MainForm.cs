@@ -210,7 +210,7 @@ namespace BizHawk.Client.EmuHawk
 			MovieSession = new MovieSession
 			{
 				Movie = MovieService.DefaultInstance,
-				MovieControllerAdapter = MovieService.DefaultInstance.LogGeneratorInstance().MovieControllerAdapter,
+				MovieController = MovieService.DefaultInstance.LogGeneratorInstance().MovieControllerAdapter,
 				MessageCallback = AddOnScreenMessage,
 				PopupCallback = ShowMessageCoreComm,
 				AskYesNoCallback = StateErrorAskUser,

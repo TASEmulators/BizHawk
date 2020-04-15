@@ -49,7 +49,7 @@ namespace BizHawk.Client.Common
 
 		#region IMovieController Implementation
 
-		public void LatchFrom(IController source)
+		public void SetFrom(IController source)
 		{
 			foreach (var button in Definition.BoolButtons)
 			{
@@ -62,7 +62,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void LatchPlayerFrom(IController playerSource, int controllerNum)
+		public void SetPlayerFrom(IController playerSource, int controllerNum)
 		{
 			foreach (var button in playerSource.Definition.BoolButtons)
 			{
@@ -92,7 +92,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void LatchFromSticky(IStickyController controller)
+		public void SetFromSticky(IStickyController controller)
 		{
 			foreach (var button in Definition.BoolButtons)
 			{

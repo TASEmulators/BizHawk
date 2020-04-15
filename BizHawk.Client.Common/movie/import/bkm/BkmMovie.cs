@@ -59,7 +59,7 @@ namespace BizHawk.Client.Common
 
 				var adapter = new BkmControllerAdapter
 				{
-					Definition = Global.MovieSession.MovieControllerAdapter.Definition
+					Definition = Global.MovieSession.MovieController.Definition
 				};
 				adapter.SetControllersAsMnemonic(_log[getFrame]);
 				return adapter;

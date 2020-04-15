@@ -60,7 +60,7 @@ namespace BizHawk.Client.EmuHawk
 		private int? _seekStartFrame;
 		private bool _unpauseAfterSeeking;
 
-		private ControllerDefinition ControllerType => Global.MovieSession.MovieControllerAdapter.Definition;
+		private ControllerDefinition ControllerType => Global.MovieSession.MovieController.Definition;
 
 		public bool WasRecording { get; set; }
 		public AutoPatternBool[] BoolPatterns;

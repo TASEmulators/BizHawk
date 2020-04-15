@@ -17,19 +17,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private string SelectedButton => ButtonBox.Text;
 
-		private bool IsBool => SelectedButton == "Default bool Auto-Fire" || Global.MovieSession.MovieControllerAdapter.Definition.BoolButtons.Contains(SelectedButton);
+		private bool IsBool => SelectedButton == "Default bool Auto-Fire" || Global.MovieSession.MovieController.Definition.BoolButtons.Contains(SelectedButton);
 
 		public PatternsForm(TAStudio owner)
 		{
 			InitializeComponent();
 			_tastudio = owner;
 
-			foreach (var button in Global.MovieSession.MovieControllerAdapter.Definition.BoolButtons)
+			foreach (var button in Global.MovieSession.MovieController.Definition.BoolButtons)
 			{
 				ButtonBox.Items.Add(button);
 			}
 
-			foreach (var button in Global.MovieSession.MovieControllerAdapter.Definition.AxisControls)
+			foreach (var button in Global.MovieSession.MovieController.Definition.AxisControls)
 			{
 				ButtonBox.Items.Add(button);
 			}
@@ -182,7 +182,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (PatternList.SelectedIndex != -1 && PatternList.SelectedIndex < _values.Count)
 			{
-				index = Global.MovieSession.MovieControllerAdapter.Definition.BoolButtons.IndexOf(SelectedButton);
+				index = Global.MovieSession.MovieController.Definition.BoolButtons.IndexOf(SelectedButton);
 				if (SelectedButton == "Default bool Auto-Fire")
 				{
 					index = _tastudio.BoolPatterns.Length - 1;
@@ -202,7 +202,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						index = Global.MovieSession.MovieControllerAdapter.Definition.AxisControls.IndexOf(SelectedButton);
+						index = Global.MovieSession.MovieController.Definition.AxisControls.IndexOf(SelectedButton);
 					}
 
 					LagBox.Checked = _tastudio.FloatPatterns[index].SkipsLag;
@@ -221,7 +221,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdatePattern()
 		{
-			int index = Global.MovieSession.MovieControllerAdapter.Definition.BoolButtons.IndexOf(SelectedButton);
+			int index = Global.MovieSession.MovieController.Definition.BoolButtons.IndexOf(SelectedButton);
 			if (SelectedButton == "Default bool Auto-Fire")
 			{
 				index = _tastudio.BoolPatterns.Length - 1;
@@ -248,7 +248,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					index = Global.MovieSession.MovieControllerAdapter.Definition.AxisControls.IndexOf(SelectedButton);
+					index = Global.MovieSession.MovieController.Definition.AxisControls.IndexOf(SelectedButton);
 				}
 
 				List<float> p = new List<float>();
@@ -271,7 +271,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GetPattern()
 		{
-			int index = Global.MovieSession.MovieControllerAdapter.Definition.BoolButtons.IndexOf(SelectedButton);
+			int index = Global.MovieSession.MovieController.Definition.BoolButtons.IndexOf(SelectedButton);
 
 			if (SelectedButton == "Default bool Auto-Fire")
 			{
@@ -310,7 +310,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					index = Global.MovieSession.MovieControllerAdapter.Definition.AxisControls.IndexOf(SelectedButton);
+					index = Global.MovieSession.MovieController.Definition.AxisControls.IndexOf(SelectedButton);
 				}
 
 				float[] p = _tastudio.FloatPatterns[index].Pattern;

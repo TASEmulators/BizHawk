@@ -21,9 +21,9 @@ namespace BizHawk.Client.EmuHawk
 			_emulator = emulator;
 			_tools = tools;
 			var lg = movie.LogGeneratorInstance();
-			lg.SetSource(Global.MovieSession.MovieControllerAdapter);
+			lg.SetSource(Global.MovieSession.MovieController);
 			_targetController = new Bk2Controller(_emulator.ControllerDefinition);
-			_targetController.LatchFrom(_targetController); // Reference and create all buttons
+			_targetController.SetFrom(_targetController); // Reference and create all buttons
 
 			if (key == "")
 			{
@@ -72,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				for (int i = 0; i < length; i++)
 				{
-					_controller.LatchFrom(movie.GetInputState(i + start));
+					_controller.SetFrom(movie.GetInputState(i + start));
 					_log[i] = logGenerator.GenerateLogEntry();
 				}
 			}
@@ -122,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_controller.SetFromMnemonic(_log[i]);
 				LatchFromSourceButtons(_targetController, _controller);
-				newController.LatchFrom(_targetController);
+				newController.SetFrom(_targetController);
 				_log[i] = logGenerator.GenerateLogEntry();
 			}
 
@@ -229,7 +229,7 @@ namespace BizHawk.Client.EmuHawk
 			// If the LogKey contains buttons/controls not accepted by the emulator,
 			//	tell the user and display the macro's controller name and player count
 			_inputKey = readText[0];
-			var lg = Global.MovieSession.LogGeneratorInstance(Global.MovieSession.MovieControllerAdapter);
+			var lg = Global.MovieSession.LogGeneratorInstance(Global.MovieSession.MovieController);
 			string key = lg.GenerateLogKey();
 			key = key.Replace("LogKey:", "").Replace("#", "");
 			key = key.Substring(0, key.Length - 1);
@@ -258,7 +258,7 @@ namespace BizHawk.Client.EmuHawk
 
 			// Adapters
 			_targetController = new Bk2Controller(_emulator.ControllerDefinition);
-			_targetController.LatchFrom(_targetController); // Reference and create all buttons
+			_targetController.SetFrom(_targetController); // Reference and create all buttons
 			string[] keys = _inputKey.Split('|');
 			var d = new ControllerDefinition(_emulator.ControllerDefinition);
 			foreach (var k in keys)

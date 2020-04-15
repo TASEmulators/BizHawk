@@ -27,7 +27,7 @@ namespace BizHawk.Client.Common
 		public bool MovieIsQueued => QueuedMovie != null;
 
 		public MultitrackRecorder MultiTrack { get; } = new MultitrackRecorder();
-		public IMovieController MovieControllerAdapter { get; set; } = MovieService.DefaultInstance.LogGeneratorInstance().MovieControllerAdapter;
+		public IMovieController MovieController { get; set; } = MovieService.DefaultInstance.LogGeneratorInstance().MovieControllerAdapter;
 
 		public IMovie Movie { get; set; }
 		public bool ReadOnly { get; set; } = true;
@@ -47,9 +47,9 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public Action ModeChangedCallback { get; set; }
 
-		public void SetMovieController(ControllerDefinition definition)
+		public void CreateMovieController(ControllerDefinition definition)
 		{
-			MovieControllerAdapter = new Bk2Controller(definition);
+			MovieController = new Bk2Controller(definition);
 		}
 
 		/// <summary>
@@ -118,16 +118,16 @@ namespace BizHawk.Client.Common
 				if (Movie.InputLogLength > Global.Emulator.Frame)
 				{
 					var input = Movie.GetInputState(Global.Emulator.Frame);
-					MovieControllerAdapter.LatchFrom(input);
+					MovieController.SetFrom(input);
 				}
 
-				MovieControllerAdapter.LatchPlayerFrom(rewiredSource, MultiTrack.CurrentPlayer);
+				MovieController.SetPlayerFrom(rewiredSource, MultiTrack.CurrentPlayer);
 			}
 		}
 
 		public void LatchInputFromPlayer(IController source)
 		{
-			MovieControllerAdapter.LatchFrom(source);
+			MovieController.SetFrom(source);
 		}
 
 		/// <summary>
@@ -149,10 +149,10 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			MovieControllerAdapter.LatchFrom(input);
+			MovieController.SetFrom(input);
 			if (MultiTrack.IsActive)
 			{
-				Global.InputManager.MultitrackRewiringAdapter.Source = MovieControllerAdapter;
+				Global.InputManager.MultitrackRewiringAdapter.Source = MovieController;
 			}
 		}
 
@@ -304,7 +304,7 @@ namespace BizHawk.Client.Common
 			// we don't want TasMovie to latch user input outside its internal recording mode, so limit it to autohold
 			if (Movie is TasMovie && Movie.IsPlaying())
 			{
-				MovieControllerAdapter.LatchFromSticky(Global.InputManager.AutofireStickyXorAdapter);
+				MovieController.SetFromSticky(Global.InputManager.AutofireStickyXorAdapter);
 			}
 			else
 			{

@@ -414,7 +414,7 @@ namespace BizHawk.Client.EmuHawk
 				});
 
 			var columnNames = Global.MovieSession
-				.LogGeneratorInstance(Global.MovieSession.MovieControllerAdapter)
+				.LogGeneratorInstance(Global.MovieSession.MovieController)
 				.Map();
 
 			foreach (var kvp in columnNames)
