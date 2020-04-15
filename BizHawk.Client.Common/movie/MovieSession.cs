@@ -58,14 +58,6 @@ namespace BizHawk.Client.Common
 			return new Bk2Controller("", definition);
 		}
 
-		/// <summary>
-		/// Simply shortens the verbosity necessary otherwise
-		/// </summary>
-		public ILogEntryGenerator LogGeneratorInstance(IController source)
-		{
-			return Movie.LogGeneratorInstance(source);
-		}
-
 		// Convenience property that gets the controller state from the movie for the most recent frame
 		public IController CurrentInput
 		{

@@ -413,7 +413,7 @@ namespace BizHawk.Client.EmuHawk
 					Rotatable = true
 				});
 
-			var columnNames = Global.MovieSession
+			var columnNames = Global.MovieSession.Movie
 				.LogGeneratorInstance(Global.MovieSession.MovieController)
 				.Map();
 

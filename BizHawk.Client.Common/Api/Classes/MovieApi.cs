@@ -45,7 +45,7 @@ namespace BizHawk.Client.Common
 				return string.Empty;
 			}
 
-			var lg = Global.MovieSession.LogGeneratorInstance(
+			var lg = Global.MovieSession.Movie.LogGeneratorInstance(
 				Global.MovieSession.Movie.GetInputState(frame));
 			return lg.GenerateLogEntry();
 		}
