@@ -9,7 +9,6 @@ namespace BizHawk.Client.Common
 {
 	public class Bk2Controller : IMovieController
 	{
-		private readonly string _logKey = "";
 		private readonly WorkingDictionary<string, bool> _myBoolButtons = new WorkingDictionary<string, bool>();
 		private readonly WorkingDictionary<string, float> _myAxisControls = new WorkingDictionary<string, float>();
 
@@ -18,15 +17,19 @@ namespace BizHawk.Client.Common
 
 		public Bk2Controller(string key, ControllerDefinition definition) : this(definition)
 		{
-			_logKey = key;
-			SetLogOverride();
+			if (!string.IsNullOrEmpty(key))
+			{
+				var groups = key.Split(new[] { "#" }, StringSplitOptions.RemoveEmptyEntries);
+
+				_type.ControlsFromLog = groups
+					.Select(group => group.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries).ToList())
+					.ToList();;
+			}
 		}
 
 		public Bk2Controller(ControllerDefinition definition)
 		{
 			_type = new Bk2ControllerDefinition(definition);
-			SetLogOverride();
-
 			_controlsOrdered =  Definition.ControlsOrdered
 				.SelectMany(c => c)
 				.Select(c => new ControlMap
@@ -144,19 +147,6 @@ namespace BizHawk.Client.Common
 		}
 
 		#endregion
-
-		private void SetLogOverride()
-		{
-			if (!string.IsNullOrEmpty(_logKey))
-			{
-				var groups = _logKey.Split(new[] { "#" }, StringSplitOptions.RemoveEmptyEntries);
-				var controls = groups
-					.Select(group => group.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries).ToList())
-					.ToList();
-
-				_type.ControlsFromLog = controls;
-			}
-		}
 
 		private class ControlMap
 		{

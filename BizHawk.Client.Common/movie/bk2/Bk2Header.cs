@@ -8,17 +8,7 @@ namespace BizHawk.Client.Common
 		public new string this[string key]
 		{
 			get => ContainsKey(key) ? base[key] : "";
-			set
-			{
-				if (ContainsKey(key))
-				{
-					base[key] = value;
-				}
-				else
-				{
-					Add(key, value);
-				}
-			}
+			set => base[key] = value;
 		}
 
 		public override string ToString()
