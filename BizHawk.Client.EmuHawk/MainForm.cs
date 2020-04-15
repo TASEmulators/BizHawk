@@ -2273,7 +2273,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CoreSyncSettings(object sender, RomLoader.SettingsLoadArgs e)
 		{
-			if (MovieSession.QueuedMovie != null)
+			if (MovieSession.MovieIsQueued)
 			{
 				if (!string.IsNullOrWhiteSpace(MovieSession.QueuedMovie.SyncSettingsJson))
 				{
@@ -3618,7 +3618,7 @@ namespace BizHawk.Client.EmuHawk
 				// movies should require deterministic emulation in ALL cases
 				// if the core is managing its own DE through SyncSettings a 'deterministic' bool can be passed into the core's constructor
 				// it is then up to the core itself to override its own local DeterministicEmulation setting
-				bool deterministic = args.Deterministic ?? MovieSession.QueuedMovie != null;
+				bool deterministic = args.Deterministic ?? MovieSession.MovieIsQueued;
 
 				if (!Tools.AskSave())
 				{
