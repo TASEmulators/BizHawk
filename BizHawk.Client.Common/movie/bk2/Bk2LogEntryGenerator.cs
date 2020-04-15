@@ -16,7 +16,7 @@ namespace BizHawk.Client.Common
 			_logKey = logKey;
 		}
 
-		public IMovieController MovieControllerAdapter => new Bk2ControllerAdapter(_logKey);
+		public IMovieController MovieControllerAdapter => new Bk2Controller(_logKey);
 		 
 		public void SetSource(IController source) => _source = source;
 

@@ -393,7 +393,7 @@ namespace BizHawk.Client.Common
 			int oldLength = InputLogLength;
 			ChangeLog.AddGeneralUndo(oldLength, oldLength + numFrames - 1);
 
-			Global.MovieSession.MovieControllerAdapter.LatchSticky();
+			Global.MovieSession.MovieControllerAdapter.LatchFromSticky(Global.InputManager.AutofireStickyXorAdapter);
 
 			var lg = LogGeneratorInstance();
 			lg.SetSource(Global.InputManager.MovieOutputHardpoint); // account for autohold. needs autohold pattern to be already recorded in the current frame
@@ -419,8 +419,8 @@ namespace BizHawk.Client.Common
 				ExtendMovieForEdit(frame - Log.Count + 1);
 			}
 
-			var adapter = GetInputState(frame) as Bk2ControllerAdapter;
-			adapter[buttonName] = !adapter.IsPressed(buttonName);
+			var adapter = GetInputState(frame);
+			adapter.SetBool(buttonName, !adapter.IsPressed(buttonName));
 
 			var lg = LogGeneratorInstance();
 			lg.SetSource(adapter);
@@ -438,9 +438,9 @@ namespace BizHawk.Client.Common
 				ExtendMovieForEdit(frame - Log.Count + 1);
 			}
 
-			var adapter = GetInputState(frame) as Bk2ControllerAdapter;
+			var adapter = GetInputState(frame);
 			var old = adapter.IsPressed(buttonName);
-			adapter[buttonName] = val;
+			adapter.SetBool(buttonName, val);
 
 			var lg = LogGeneratorInstance();
 			lg.SetSource(adapter);
@@ -466,9 +466,9 @@ namespace BizHawk.Client.Common
 			int changed = -1;
 			for (int i = 0; i < count; i++)
 			{
-				var adapter = GetInputState(frame + i) as Bk2ControllerAdapter;
+				var adapter = GetInputState(frame + i);
 				bool old = adapter.IsPressed(buttonName);
-				adapter[buttonName] = val;
+				adapter.SetBool(buttonName, val);
 
 				var lg = LogGeneratorInstance();
 				lg.SetSource(adapter);
@@ -496,7 +496,7 @@ namespace BizHawk.Client.Common
 				ExtendMovieForEdit(frame - Log.Count + 1);
 			}
 
-			var adapter = GetInputState(frame) as Bk2ControllerAdapter;
+			var adapter = GetInputState(frame);
 			var old = adapter.AxisValue(buttonName);
 			adapter.SetAxis(buttonName, val);
 
@@ -524,7 +524,7 @@ namespace BizHawk.Client.Common
 			int changed = -1;
 			for (int i = 0; i < count; i++)
 			{
-				var adapter = GetInputState(frame + i) as Bk2ControllerAdapter;
+				var adapter = GetInputState(frame + i);
 				float old = adapter.AxisValue(buttonName);
 				adapter.SetAxis(buttonName, val);
 

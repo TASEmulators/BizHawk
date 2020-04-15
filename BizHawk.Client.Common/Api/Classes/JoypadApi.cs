@@ -31,7 +31,7 @@ namespace BizHawk.Client.Common
 			var lg = Global.MovieSession.MovieControllerInstance();
 			try
 			{
-				lg.SetControllersAsMnemonic(inputLogEntry);
+				lg.SetFromMnemonic(inputLogEntry);
 			}
 			catch (Exception)
 			{

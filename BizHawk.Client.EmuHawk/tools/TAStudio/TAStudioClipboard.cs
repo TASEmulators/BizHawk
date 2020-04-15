@@ -28,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				var lg = Global.MovieSession.MovieControllerInstance();
-				lg.SetControllersAsMnemonic(inputLogEntry);
+				lg.SetFromMnemonic(inputLogEntry);
 
 				foreach (var button in lg.Definition.BoolButtons)
 				{

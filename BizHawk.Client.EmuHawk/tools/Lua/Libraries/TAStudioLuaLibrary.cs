@@ -375,12 +375,12 @@ namespace BizHawk.Client.EmuHawk
 				var branch = Tastudio.CurrentTasMovie.Branches.FirstOrDefault(b => b.UniqueIdentifier.ToString() == branchId);
 				if (branch != null && frame < branch.InputLog.Count)
 				{
-					var adapter = new Bk2ControllerAdapter
+					var adapter = new Bk2Controller
 					{
 						Definition = Global.MovieSession.MovieControllerAdapter.Definition
 					};
 
-					adapter.SetControllersAsMnemonic(branch.InputLog[frame]);
+					adapter.SetFromMnemonic(branch.InputLog[frame]);
 
 					foreach (var button in adapter.Definition.BoolButtons)
 					{

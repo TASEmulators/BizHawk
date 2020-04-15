@@ -6,17 +6,35 @@ namespace BizHawk.Client.Common
 	{
 		new ControllerDefinition Definition { get; set; }
 
-		void LatchPlayerFromSource(IController playerSource, int playerNum);
-
-		void LatchFromSource(IController source);
+		/// <summary>
+		/// Latches to the given <see cref="IController" />
+		/// </summary>
+		void LatchFrom(IController source);
 
 		/// <summary>
-		/// Used by tastudio when it appends new frames in HandleMovieAfterFrameLoop() and ExtendMovieForEdit().
-		/// For buttons it latches autohold state, for analogs it latches mid value.
-		/// All real user input latched by LatchFromPhysical() is ignored.
+		/// Latches to only the buttons in the given <see cref="IController" /> for the given controller
 		/// </summary>
-		void LatchSticky();
+		void LatchPlayerFrom(IController playerSource, int controllerNum);
 
-		void SetControllersAsMnemonic(string mnemonic);
+		/// <summary>
+		/// Latches to the given <see cref="IStickyController" />
+		/// For buttons it latches autohold state, for analogs it latches mid value.
+		/// </summary>
+		void LatchFromSticky(IStickyController controller);
+
+		/// <summary>
+		/// Sets the controller to the state represented by the given mnemonic string
+		/// </summary>
+		void SetFromMnemonic(string mnemonic);
+
+		/// <summary>
+		/// Sets the given boolean button to the given value
+		/// </summary>
+		void SetBool(string buttonName, bool value);
+
+		/// <summary>
+		/// Sets the given axis button to the given value
+		/// </summary>
+		void SetAxis(string buttonName, float value);
 	}
 }

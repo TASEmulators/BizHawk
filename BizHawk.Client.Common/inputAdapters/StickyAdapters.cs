@@ -6,7 +6,12 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public class StickyXorAdapter : IController
+	public interface IStickyController : IController
+	{
+		bool IsSticky(string button);
+	}
+
+	public class StickyXorAdapter : IStickyController
 	{
 		public ControllerDefinition Definition => Source.Definition;
 
@@ -102,7 +107,7 @@ namespace BizHawk.Client.Common
 		}
 	}
 
-	public class AutoFireStickyXorAdapter : IController
+	public class AutoFireStickyXorAdapter : IStickyController
 	{
 		public ControllerDefinition Definition => Source.Definition;
 

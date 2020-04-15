@@ -6,7 +6,7 @@ namespace BizHawk.Client.Common
 {
 	public partial class Bk2Movie : IMovie
 	{
-		private Bk2ControllerAdapter _adapter;
+		private Bk2Controller _adapter;
 
 		public Bk2Movie(string filename = null)
 		{
@@ -121,11 +121,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public virtual IController GetInputState(int frame)
+		public IMovieController GetInputState(int frame)
 		{
 			if (frame < FrameCount && frame >= 0)
 			{
-				_adapter ??= new Bk2ControllerAdapter
+				_adapter ??= new Bk2Controller
 				{
 					Definition = Global.MovieSession.MovieControllerAdapter.Definition
 				};
@@ -148,7 +148,7 @@ namespace BizHawk.Client.Common
 					getFrame = frame;
 				}
 
-				_adapter.SetControllersAsMnemonic(Log[getFrame]);
+				_adapter.SetFromMnemonic(Log[getFrame]);
 				return _adapter;
 			}
 

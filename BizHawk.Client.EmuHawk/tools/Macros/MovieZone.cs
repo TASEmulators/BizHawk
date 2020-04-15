@@ -12,9 +12,9 @@ namespace BizHawk.Client.EmuHawk
 		private readonly IEmulator _emulator;
 		private readonly ToolManager _tools;
 		private readonly string[] _log;
-		private readonly Bk2ControllerAdapter _targetController;
+		private readonly Bk2Controller _targetController;
 		private string _inputKey;
-		private Bk2ControllerAdapter _controller;
+		private Bk2Controller _controller;
 
 		public MovieZone(IMovie movie, IEmulator emulator, ToolManager tools, int start, int length, string key = "")
 		{
@@ -22,8 +22,8 @@ namespace BizHawk.Client.EmuHawk
 			_tools = tools;
 			var lg = movie.LogGeneratorInstance();
 			lg.SetSource(Global.MovieSession.MovieControllerAdapter);
-			_targetController = new Bk2ControllerAdapter { Definition = _emulator.ControllerDefinition };
-			_targetController.LatchFromSource(_targetController); // Reference and create all buttons
+			_targetController = new Bk2Controller { Definition = _emulator.ControllerDefinition };
+			_targetController.LatchFrom(_targetController); // Reference and create all buttons
 
 			if (key == "")
 			{
@@ -54,7 +54,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			_controller = new Bk2ControllerAdapter { Definition = d };
+			_controller = new Bk2Controller { Definition = d };
 			var logGenerator = new Bk2LogEntryGenerator("");
 			logGenerator.SetSource(_controller);
 			logGenerator.GenerateLogEntry(); // Reference and create all buttons.
@@ -72,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				for (int i = 0; i < length; i++)
 				{
-					_controller.LatchFromSource(movie.GetInputState(i + start));
+					_controller.LatchFrom(movie.GetInputState(i + start));
 					_log[i] = logGenerator.GenerateLogEntry();
 				}
 			}
@@ -108,7 +108,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			var newController = new Bk2ControllerAdapter { Definition = d };
+			var newController = new Bk2Controller { Definition = d };
 			var logGenerator = new Bk2LogEntryGenerator("");
 
 			logGenerator.SetSource(newController);
@@ -117,12 +117,12 @@ namespace BizHawk.Client.EmuHawk
 			// Reset all buttons in targetController (it may still have buttons that aren't being set here set true)
 			var tC = new Bk2LogEntryGenerator("");
 			tC.SetSource(_targetController);
-			_targetController.SetControllersAsMnemonic(tC.EmptyEntry);
+			_targetController.SetFromMnemonic(tC.EmptyEntry);
 			for (int i = 0; i < Length; i++)
 			{
-				_controller.SetControllersAsMnemonic(_log[i]);
+				_controller.SetFromMnemonic(_log[i]);
 				LatchFromSourceButtons(_targetController, _controller);
-				newController.LatchFromSource(_targetController);
+				newController.LatchFrom(_targetController);
 				_log[i] = logGenerator.GenerateLogEntry();
 			}
 
@@ -151,7 +151,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				for (int i = 0; i < Length; i++)
 				{ // Overlay the frames.
-					_controller.SetControllersAsMnemonic(_log[i]);
+					_controller.SetFromMnemonic(_log[i]);
 					LatchFromSourceButtons(_targetController, _controller);
 					ORLatchFromSource(_targetController, movie.GetInputState(i + Start));
 					movie.PokeFrame(i + Start, _targetController);
@@ -161,7 +161,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				for (int i = 0; i < Length; i++)
 				{ // Copy over the frame.
-					_controller.SetControllersAsMnemonic(_log[i]);
+					_controller.SetFromMnemonic(_log[i]);
 					LatchFromSourceButtons(_targetController, _controller);
 					movie.PokeFrame(i + Start, _targetController);
 				}
@@ -257,8 +257,8 @@ namespace BizHawk.Client.EmuHawk
 			Name = Path.GetFileNameWithoutExtension(fileName);
 
 			// Adapters
-			_targetController = new Bk2ControllerAdapter { Definition = _emulator.ControllerDefinition };
-			_targetController.LatchFromSource(_targetController); // Reference and create all buttons
+			_targetController = new Bk2Controller { Definition = _emulator.ControllerDefinition };
+			_targetController.LatchFrom(_targetController); // Reference and create all buttons
 			string[] keys = _inputKey.Split('|');
 			var d = new ControllerDefinition();
 			foreach (var k in keys)
@@ -273,16 +273,16 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			_controller = new Bk2ControllerAdapter { Definition = d };
+			_controller = new Bk2Controller { Definition = d };
 		}
 
 		#region Custom Latch
 
-		private void LatchFromSourceButtons(Bk2ControllerAdapter latching, IController source)
+		private void LatchFromSourceButtons(IMovieController latching, IController source)
 		{
 			foreach (string button in source.Definition.BoolButtons)
 			{
-				latching[button] = source.IsPressed(button);
+				latching.SetBool(button, source.IsPressed(button));
 			}
 
 			foreach (string name in source.Definition.AxisControls)
@@ -291,11 +291,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void ORLatchFromSource(Bk2ControllerAdapter latching, IController source)
+		private void ORLatchFromSource(IMovieController latching, IController source)
 		{
 			foreach (string button in latching.Definition.BoolButtons)
 			{
-				latching[button] |= source.IsPressed(button);
+				latching.SetBool(button, latching.IsPressed(button) | source.IsPressed(button));
 			}
 
 			foreach (string name in latching.Definition.AxisControls)

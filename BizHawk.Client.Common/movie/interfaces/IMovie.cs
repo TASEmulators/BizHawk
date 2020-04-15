@@ -239,7 +239,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		/// <param name="frame">The frame of input to be retrieved</param>
 		/// <returns>A controller state representing the specified frame of input, if frame is out of range, will return null</returns>
-		IController GetInputState(int frame);
+		IMovieController GetInputState(int frame);
 
 		#endregion
 	}

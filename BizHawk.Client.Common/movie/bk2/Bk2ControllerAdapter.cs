@@ -7,74 +7,26 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public class Bk2ControllerAdapter : IMovieController
+	public class Bk2Controller : IMovieController
 	{
-		private class ControlMap
-		{
-			public string Name { get; set; }
-			public bool IsBool { get; set; }
-			public bool IsAxis { get; set; }
-		}
-
-		private List<ControlMap> _controlsOrdered = new List<ControlMap>();
-
 		private readonly string _logKey = "";
 		private readonly WorkingDictionary<string, bool> _myBoolButtons = new WorkingDictionary<string, bool>();
 		private readonly WorkingDictionary<string, float> _myAxisControls = new WorkingDictionary<string, float>();
 
-		public Bk2ControllerAdapter()
+		private Bk2ControllerDefinition _type = new Bk2ControllerDefinition();
+		private List<ControlMap> _controlsOrdered = new List<ControlMap>();
+
+		public Bk2Controller()
 		{
 		}
 
-		public Bk2ControllerAdapter(string key)
+		public Bk2Controller(string key)
 		{
 			_logKey = key;
 			SetLogOverride();
 		}
 
-		private void SetLogOverride()
-		{
-			if (!string.IsNullOrEmpty(_logKey))
-			{
-				var groups = _logKey.Split(new[] { "#" }, StringSplitOptions.RemoveEmptyEntries);
-				var controls = groups
-					.Select(group => group.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries).ToList())
-					.ToList();
-
-				_type.ControlsFromLog = controls;
-			}
-		}
-
-		// TODO: get rid of this, add a SetBool() method or something for the set access, replace get with IsPressed
-		public bool this[string button]
-		{
-			get => _myBoolButtons[button];
-			set
-			{
-				if (_myBoolButtons.ContainsKey(button))
-				{
-					_myBoolButtons[button] = value;
-				}
-			}
-		}
-
 		#region IController Implementation
-
-		public bool IsPressed(string button)
-		{
-			return _myBoolButtons[button];
-		}
-
-		public float AxisValue(string name)
-		{
-			return _myAxisControls[name];
-		}
-
-		#endregion
-
-		#region IMovieController Implementation
-
-		private Bk2ControllerDefinition _type = new Bk2ControllerDefinition();
 
 		public ControllerDefinition Definition
 		{
@@ -97,43 +49,14 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		/// <summary>
-		/// latches one player from the source
-		/// </summary>
-		public void LatchPlayerFromSource(IController playerSource, int playerNum)
-		{
-			foreach (var button in playerSource.Definition.BoolButtons)
-			{
-				var bnp = ButtonNameParser.Parse(button);
+		public bool IsPressed(string button) => _myBoolButtons[button];
+		public float AxisValue(string name) => _myAxisControls[name];
 
-				if (bnp?.PlayerNum != playerNum)
-				{
-					continue;
-				}
+		#endregion
 
-				var val = playerSource.IsPressed(button);
-				_myBoolButtons[button] = val;
-			}
+		#region IMovieController Implementation
 
-			foreach (var button in Definition.AxisControls)
-			{
-				var bnp = ButtonNameParser.Parse(button);
-
-				if (bnp?.PlayerNum != playerNum)
-				{
-					continue;
-				}
-
-				var val = playerSource.AxisValue(button);
-
-				_myAxisControls[button] = val;
-			}
-		}
-
-		/// <summary>
-		/// latches all buttons from the provided source
-		/// </summary>
-		public void LatchFromSource(IController source)
+		public void LatchFrom(IController source)
 		{
 			foreach (var button in Definition.BoolButtons)
 			{
@@ -146,14 +69,41 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		/// <summary>
-		/// latches sticky buttons from <see cref="AutoFireStickyXorAdapter"/>
-		/// </summary>
-		public void LatchSticky()
+		public void LatchPlayerFrom(IController playerSource, int controllerNum)
+		{
+			foreach (var button in playerSource.Definition.BoolButtons)
+			{
+				var bnp = ButtonNameParser.Parse(button);
+
+				if (bnp?.PlayerNum != controllerNum)
+				{
+					continue;
+				}
+
+				var val = playerSource.IsPressed(button);
+				_myBoolButtons[button] = val;
+			}
+
+			foreach (var button in Definition.AxisControls)
+			{
+				var bnp = ButtonNameParser.Parse(button);
+
+				if (bnp?.PlayerNum != controllerNum)
+				{
+					continue;
+				}
+
+				var val = playerSource.AxisValue(button);
+
+				_myAxisControls[button] = val;
+			}
+		}
+
+		public void LatchFromSticky(IStickyController controller)
 		{
 			foreach (var button in Definition.BoolButtons)
 			{
-				_myBoolButtons[button] = Global.InputManager.AutofireStickyXorAdapter.IsSticky(button);
+				_myBoolButtons[button] = controller.IsSticky(button);
 			}
 
 			// float controls don't have sticky logic, so latch default value
@@ -163,10 +113,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		/// <summary>
-		/// latches all buttons from the supplied mnemonic string
-		/// </summary>
-		public void SetControllersAsMnemonic(string mnemonic)
+		public void SetFromMnemonic(string mnemonic)
 		{
 			if (!string.IsNullOrWhiteSpace(mnemonic))
 			{
@@ -193,14 +140,39 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		#endregion
+		public void SetBool(string buttonName, bool value)
+		{
+			_myBoolButtons[buttonName] = value;
+		}
 
 		public void SetAxis(string buttonName, float value)
 		{
 			_myAxisControls[buttonName] = value;
 		}
 
-		public class Bk2ControllerDefinition : ControllerDefinition
+		#endregion
+
+		private void SetLogOverride()
+		{
+			if (!string.IsNullOrEmpty(_logKey))
+			{
+				var groups = _logKey.Split(new[] { "#" }, StringSplitOptions.RemoveEmptyEntries);
+				var controls = groups
+					.Select(group => group.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries).ToList())
+					.ToList();
+
+				_type.ControlsFromLog = controls;
+			}
+		}
+
+		private class ControlMap
+		{
+			public string Name { get; set; }
+			public bool IsBool { get; set; }
+			public bool IsAxis { get; set; }
+		}
+
+		private class Bk2ControllerDefinition : ControllerDefinition
 		{
 			public Bk2ControllerDefinition()
 			{

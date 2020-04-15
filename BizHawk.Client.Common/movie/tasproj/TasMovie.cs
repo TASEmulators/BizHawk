@@ -110,16 +110,10 @@ namespace BizHawk.Client.Common
 		}
 
 		public bool BoolIsPressed(int frame, string buttonName)
-		{
-			return ((Bk2ControllerAdapter)GetInputState(frame))
-				.IsPressed(buttonName);
-		}
+			=> GetInputState(frame).IsPressed(buttonName);
 
 		public float GetFloatState(int frame, string buttonName)
-		{
-			return ((Bk2ControllerAdapter)GetInputState(frame))
-				.AxisValue(buttonName);
-		}
+			=> GetInputState(frame).AxisValue(buttonName);
 
 		public void ClearGreenzone()
 		{

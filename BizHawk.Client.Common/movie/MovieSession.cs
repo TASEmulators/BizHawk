@@ -115,16 +115,16 @@ namespace BizHawk.Client.Common
 				if (Movie.InputLogLength > Global.Emulator.Frame)
 				{
 					var input = Movie.GetInputState(Global.Emulator.Frame);
-					MovieControllerAdapter.LatchFromSource(input);
+					MovieControllerAdapter.LatchFrom(input);
 				}
 
-				MovieControllerAdapter.LatchPlayerFromSource(rewiredSource, MultiTrack.CurrentPlayer);
+				MovieControllerAdapter.LatchPlayerFrom(rewiredSource, MultiTrack.CurrentPlayer);
 			}
 		}
 
 		public void LatchInputFromPlayer(IController source)
 		{
-			MovieControllerAdapter.LatchFromSource(source);
+			MovieControllerAdapter.LatchFrom(source);
 		}
 
 		/// <summary>
@@ -146,7 +146,7 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			MovieControllerAdapter.LatchFromSource(input);
+			MovieControllerAdapter.LatchFrom(input);
 			if (MultiTrack.IsActive)
 			{
 				Global.InputManager.MultitrackRewiringAdapter.Source = MovieControllerAdapter;
@@ -301,7 +301,7 @@ namespace BizHawk.Client.Common
 			// we don't want TasMovie to latch user input outside its internal recording mode, so limit it to autohold
 			if (Movie is TasMovie && Movie.IsPlaying())
 			{
-				MovieControllerAdapter.LatchSticky();
+				MovieControllerAdapter.LatchFromSticky(Global.InputManager.AutofireStickyXorAdapter);
 			}
 			else
 			{
