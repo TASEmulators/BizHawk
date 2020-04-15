@@ -329,7 +329,7 @@ namespace BizHawk.Client.Common
 		{
 			Movie = QueuedMovie;
 			QueuedMovie = null;
-			MultiTrack.Restart();
+			MultiTrack.Restart(Global.Emulator.ControllerDefinition.PlayerCount);
 
 			if (recordMode)
 			{
@@ -389,7 +389,7 @@ namespace BizHawk.Client.Common
 				ReadOnly = true;
 			}
 
-			MultiTrack.Restart();
+			MultiTrack.Restart(Global.Emulator.ControllerDefinition.PlayerCount);
 			ModeChangedCallback();
 		}
 

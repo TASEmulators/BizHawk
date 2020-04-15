@@ -6,11 +6,12 @@ namespace BizHawk.Client.Common
 	{
 		public MultitrackRecorder()
 		{
-			Restart();
+			Restart(1);
 		}
 
 		public bool IsActive { get; set; }
 		public int CurrentPlayer { get; private set; }
+		public int PlayerCount { get; private set; }
 		public bool RecordAll { get; private set; }
 
 		/// <summary>
@@ -39,8 +40,9 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void Restart()
+		public void Restart(int playerCount)
 		{
+			PlayerCount = playerCount;
 			IsActive = false;
 			CurrentPlayer = 0;
 			RecordAll = false;
@@ -62,7 +64,7 @@ namespace BizHawk.Client.Common
 		{
 			RecordAll = false;
 			CurrentPlayer++;
-			if (CurrentPlayer > Global.Emulator.ControllerDefinition.PlayerCount)
+			if (CurrentPlayer > PlayerCount)
 			{
 				CurrentPlayer = 1;
 			}
@@ -74,7 +76,7 @@ namespace BizHawk.Client.Common
 			CurrentPlayer--;
 			if (CurrentPlayer < 1)
 			{
-				CurrentPlayer = Global.Emulator.ControllerDefinition.PlayerCount;
+				CurrentPlayer = PlayerCount;
 			}
 		}
 	}
@@ -84,18 +86,11 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public class MultitrackRewiringControllerAdapter : IController
 	{
-		public MultitrackRewiringControllerAdapter()
-		{
-			PlayerSource = 1;
-		}
-
 		public IController Source { get; set; }
-		public int PlayerSource { get; set; }
+		public int PlayerSource { get; set; } = 1;
 		public int PlayerTargetMask { get; set; }
 
 		public ControllerDefinition Definition => Source.Definition;
-
-		public bool this[string button] => IsPressed(button);
 
 		public bool IsPressed(string button)
 		{
@@ -169,9 +164,6 @@ namespace BizHawk.Client.Common
 		public int PlayerNum { get; set; }
 		public string ButtonPart { get; private set; }
 
-		public override string ToString()
-		{
-			return $"P{PlayerNum} {ButtonPart}";
-		}
+		public override string ToString() => $"P{PlayerNum} {ButtonPart}";
 	}
 }
