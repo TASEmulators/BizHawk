@@ -167,10 +167,6 @@ namespace BizHawk.Client.Common
 
 		private class Bk2ControllerDefinition : ControllerDefinition
 		{
-			public Bk2ControllerDefinition()
-			{
-			}
-
 			public Bk2ControllerDefinition(ControllerDefinition source)
 				: base(source)
 			{
