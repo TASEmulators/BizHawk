@@ -6,12 +6,33 @@ namespace BizHawk.Client.Common
 	public interface IMovieSession
 	{
 		IMovie Movie { get; set; }
+
+		/// <summary>
+		/// Gets the queued movie
+		/// When initializing a movie, it will be stored here until Rom processes have been completed, then it will be moved to the Movie property
+		/// If an existing movie is still active, it will remain in the Movie property while the new movie is queued
+		/// </summary>
 		IMovie QueuedMovie { get; }
+
+		bool MovieIsQueued { get; }
+
+		bool ReadOnly { get; set; }
+
 		IMovieController MovieController { get; }
 		MultitrackRecorder MultiTrack { get; }
 
-		IController PreviousFrame { get; }
+		/// <summary>
+		/// Gets the controller state from the movie for the most recent frame
+		/// </summary>
 		IController CurrentInput { get; }
+
+		IController PreviousFrame { get; }
+
+		// TODO: this isn't sustainable
+		bool? PreviousNesInQuickNES { get; set; }
+		bool? PreviousSnesInSnes9x { get; set; }
+		bool? PreviousGbaUsemGba { get; set; }
+		bool? PreviousGbUseGbHawk { get; set; }
 
 		/// <summary>
 		/// Recreates MovieController with the given controller definition
@@ -27,15 +48,6 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		IMovieController GenerateMovieController(ControllerDefinition definition = null);
 
-		bool ReadOnly { get; set; }
-		bool MovieIsQueued { get; }
-
-		// TODO: this isn't sustainable
-		bool? PreviousNesInQuickNES { get; set; }
-		bool? PreviousSnesInSnes9x { get; set; }
-		bool? PreviousGbaUsemGba { get; set; }
-		bool? PreviousGbUseGbHawk { get; set; }
-
 		void HandleMovieOnFrameLoop();
 		void HandleMovieAfterFrameLoop();
 		void HandleMovieSaveState(TextWriter writer);
@@ -44,6 +56,10 @@ namespace BizHawk.Client.Common
 		bool HandleMovieLoadState(TextReader reader);
 
 		void QueueNewMovie(IMovie movie, bool record, IEmulator emulator);
+
+		/// <summary>
+		/// Sets the Movie property with the QueuedMovie, clears the queued movie, and starts the new movie
+		/// </summary>
 		void RunQueuedMovie(bool recordMode);
 
 		void ToggleMultitrack();

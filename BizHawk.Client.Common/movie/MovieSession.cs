@@ -16,21 +16,6 @@ namespace BizHawk.Client.Common
 
 	public class MovieSession : IMovieSession
 	{
-		/// <summary>
-		/// Gets the queued movie
-		/// When initializing a movie, it will be stored here until Rom processes have been completed, then it will be moved to the Movie property
-		/// If an existing movie is still active, it will remain in the Movie property while the new movie is queued
-		/// </summary>
-		public IMovie QueuedMovie { get; private set; }
-
-		// This wrapper but the logic could change, don't make the client code understand these details
-		public bool MovieIsQueued => QueuedMovie != null;
-
-		public MultitrackRecorder MultiTrack { get; } = new MultitrackRecorder();
-		public IMovieController MovieController { get; set; } = new Bk2Controller("", NullController.Instance.Definition);
-
-		public IMovie Movie { get; set; }
-		public bool ReadOnly { get; set; } = true;
 		public Action<string> MessageCallback { get; set; }
 		public Action<string> PopupCallback { get; set; }
 		public Func<string, string, bool> AskYesNoCallback { get; set; }
@@ -47,18 +32,16 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public Action ModeChangedCallback { get; set; }
 
-		public void RecreateMovieController(ControllerDefinition definition)
-		{
-			MovieController = new Bk2Controller(definition);
-		}
+		public IMovie Movie { get; set; }
+		public IMovie QueuedMovie { get; private set; }
 
-		public IMovieController GenerateMovieController(ControllerDefinition definition = null)
-		{
-			// TODO: expose Movie.LogKey and pass in here
-			return new Bk2Controller("", definition ?? MovieController.Definition);
-		}
+		public bool MovieIsQueued => QueuedMovie != null;
+		public bool ReadOnly { get; set; } = true;
 
-		// Convenience property that gets the controller state from the movie for the most recent frame
+		public IMovieController MovieController { get; set; } = new Bk2Controller("", NullController.Instance.Definition);
+
+		public MultitrackRecorder MultiTrack { get; } = new MultitrackRecorder();
+
 		public IController CurrentInput
 		{
 			get
@@ -85,171 +68,45 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private void PopupMessage(string message)
+		// The behavior here is to only temporarily override these settings when playing a movie and then restore the user's preferred settings
+		// A more elegant approach would be appreciated
+		public bool? PreviousNesInQuickNES { get; set; }
+		public bool? PreviousSnesInSnes9x { get; set; }
+		public bool? PreviousGbaUsemGba { get; set; }
+		public bool? PreviousGbUseGbHawk { get; set; }
+
+		public void RecreateMovieController(ControllerDefinition definition)
 		{
-			PopupCallback?.Invoke(message);
+			MovieController = new Bk2Controller(definition);
 		}
 
-		private void Output(string message)
+		public IMovieController GenerateMovieController(ControllerDefinition definition = null)
 		{
-			MessageCallback?.Invoke(message);
-		}
-
-		private void LatchMultitrackPlayerInput(MultitrackRewiringControllerAdapter rewiredSource)
-		{
-			if (MultiTrack.IsActive)
-			{
-				rewiredSource.PlayerSource = 1;
-				rewiredSource.PlayerTargetMask = 1 << MultiTrack.CurrentPlayer;
-				if (MultiTrack.RecordAll)
-				{
-					rewiredSource.PlayerTargetMask = unchecked((int)0xFFFFFFFF);
-				}
-
-				if (Movie.InputLogLength > Global.Emulator.Frame)
-				{
-					var input = Movie.GetInputState(Global.Emulator.Frame);
-					MovieController.SetFrom(input);
-				}
-
-				MovieController.SetPlayerFrom(rewiredSource, MultiTrack.CurrentPlayer);
-			}
-		}
-
-		public void LatchInputFromPlayer(IController source)
-		{
-			MovieController.SetFrom(source);
-		}
-
-		/// <summary>
-		/// Latch input from the input log, if available
-		/// </summary>
-		public void LatchInputFromLog()
-		{
-			var input = Movie.GetInputState(Global.Emulator.Frame);
-
-			// adelikat: TODO: this is likely the source of frame 0 TAStudio bugs, I think the intent is to check if the movie is 0 length?
-			if (Global.Emulator.Frame == 0) // Hacky
-			{
-				HandleMovieAfterFrameLoop(); // Frame 0 needs to be handled.
-			}
-
-			if (input == null)
-			{
-				HandleMovieAfterFrameLoop();
-				return;
-			}
-
-			MovieController.SetFrom(input);
-			if (MultiTrack.IsActive)
-			{
-				Global.InputManager.MultitrackRewiringAdapter.Source = MovieController;
-			}
-		}
-
-		private void HandlePlaybackEnd()
-		{
-			var gambatteName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(Gameboy), typeof(CoreAttribute))).CoreName;
-			if (Movie.Core == gambatteName)
-			{
-				var movieCycles = Convert.ToUInt64(Movie.HeaderEntries[HeaderKeys.CycleCount]);
-				var coreCycles = (Global.Emulator as Gameboy).CycleCount;
-				if (movieCycles != (ulong)coreCycles)
-				{
-					PopupMessage($"Cycle count in the movie ({movieCycles}) doesn't match the emulated value ({coreCycles}).");
-				}
-			}
-
-			// TODO: mainform callback to update on mode change
-			switch (Global.Config.MovieEndAction)
-			{
-				case MovieEndAction.Stop:
-					Movie.Stop();
-					break;
-				case MovieEndAction.Record:
-					Movie.SwitchToRecord();
-					break;
-				case MovieEndAction.Pause:
-					Movie.FinishedMode();
-					PauseCallback();
-					break;
-				default:
-				case MovieEndAction.Finish:
-					Movie.FinishedMode();
-					break;
-			}
-
-			ModeChangedCallback();
-		}
-
-		public void StopMovie(bool saveChanges = true)
-		{
-			var message = "Movie ";
-			if (Movie.IsRecording())
-			{
-				message += "recording ";
-			}
-			else if (Movie.IsPlaying())
-			{
-				message += "playback ";
-			}
-
-			message += "stopped.";
-
-			if (Movie.IsActive())
-			{
-				var result = Movie.Stop(saveChanges);
-				if (result)
-				{
-					Output($"{Path.GetFileName(Movie.Filename)} written to disk.");
-				}
-
-				Output(message);
-				ReadOnly = true;
-			}
-
-			MultiTrack.Restart();
-			ModeChangedCallback();
-		}
-
-		public void HandleMovieSaveState(TextWriter writer)
-		{
-			if (Movie.IsActive())
-			{
-				Movie.WriteInputLog(writer);
-			}
-		}
-
-		private void ClearFrame()
-		{
-			if (Movie.IsPlaying())
-			{
-				Movie.ClearFrame(Global.Emulator.Frame);
-				Output($"Scrubbed input at frame {Global.Emulator.Frame}");
-			}
+			// TODO: expose Movie.LogKey and pass in here
+			return new Bk2Controller("", definition ?? MovieController.Definition);
 		}
 
 		public void HandleMovieOnFrameLoop()
 		{
 			if (!Movie.IsActive())
 			{
-				LatchInputFromPlayer(Global.InputManager.MovieInputSourceAdapter);
+				LatchInputToUser();
 			}
 			else if (Movie.IsFinished())
 			{
 				if (Global.Emulator.Frame < Movie.FrameCount) // This scenario can happen from rewinding (suddenly we are back in the movie, so hook back up to the movie
 				{
 					Movie.SwitchToPlay();
-					LatchInputFromLog();
+					LatchInputToLog();
 				}
 				else
 				{
-					LatchInputFromPlayer(Global.InputManager.MovieInputSourceAdapter);
+					LatchInputToUser();
 				}
 			}
 			else if (Movie.IsPlaying())
 			{
-				LatchInputFromLog();
+				LatchInputToLog();
 
 				if (Movie.IsRecording()) // The movie end situation can cause the switch to record mode, in that case we need to capture some input for this frame
 				{
@@ -262,22 +119,22 @@ namespace BizHawk.Client.Common
 					{
 						if (Global.InputManager.ClientControls.IsPressed("Scrub Input"))
 						{
-							LatchInputFromPlayer(Global.InputManager.MovieInputSourceAdapter);
+							LatchInputToUser();
 							ClearFrame();
 						}
 						else if (Global.Config.MoviePlaybackPokeMode)
 						{
-							LatchInputFromPlayer(Global.InputManager.MovieInputSourceAdapter);
+							LatchInputToUser();
 							var lg = Movie.LogGeneratorInstance(Global.InputManager.MovieOutputHardpoint);
 							if (!lg.IsEmpty)
 							{
-								LatchInputFromPlayer(Global.InputManager.MovieInputSourceAdapter);
+								LatchInputToUser();
 								Movie.PokeFrame(Global.Emulator.Frame, Global.InputManager.MovieOutputHardpoint);
 							}
 							else
 							{
 								// Why, this was already done?
-								LatchInputFromLog();
+								LatchInputToLog();
 							}
 						}
 					}
@@ -287,30 +144,6 @@ namespace BizHawk.Client.Common
 			{
 				HandleFrameLoopForRecordMode();
 			}
-		}
-
-		private void HandleFrameLoopForRecordMode()
-		{
-			// we don't want TasMovie to latch user input outside its internal recording mode, so limit it to autohold
-			if (Movie is TasMovie && Movie.IsPlaying())
-			{
-				MovieController.SetFromSticky(Global.InputManager.AutofireStickyXorAdapter);
-			}
-			else
-			{
-				if (MultiTrack.IsActive)
-				{
-					LatchMultitrackPlayerInput(Global.InputManager.MultitrackRewiringAdapter);
-				}
-				else
-				{
-					LatchInputFromPlayer(Global.InputManager.MovieInputSourceAdapter);
-				}
-			}
-
-			// the movie session makes sure that the correct input has been read and merged to its MovieControllerAdapter;
-			// this has been wired to Global.MovieOutputHardpoint in RewireInputChain
-			Movie.RecordFrame(Global.Emulator.Frame, Global.InputManager.MovieOutputHardpoint);
 		}
 
 		public void HandleMovieAfterFrameLoop()
@@ -326,6 +159,14 @@ namespace BizHawk.Client.Common
 			else if (Movie.Mode == MovieMode.Play && Global.Emulator.Frame >= Movie.InputLogLength)
 			{
 				HandlePlaybackEnd();
+			}
+		}
+
+		public void HandleMovieSaveState(TextWriter writer)
+		{
+			if (Movie.IsActive())
+			{
+				Movie.WriteInputLog(writer);
 			}
 		}
 
@@ -359,11 +200,11 @@ namespace BizHawk.Client.Common
 				}
 				else if (Movie.IsPlaying())
 				{
-					LatchInputFromLog();
+					LatchInputToLog();
 				}
 				else if (Movie.IsFinished())
 				{
-					LatchInputFromPlayer(Global.InputManager.MovieInputSourceAdapter);
+					LatchInputToUser();
 				}
 			}
 			else
@@ -387,54 +228,6 @@ namespace BizHawk.Client.Common
 
 			return true;
 		}
-
-		public void ToggleMultitrack()
-		{
-			if (Movie.IsActive())
-			{
-				if (Global.Config.VBAStyleMovieLoadState)
-				{
-					Output("Multi-track can not be used in Full Movie Loadstates mode");
-				}
-				else
-				{
-					MultiTrack.IsActive ^= true;
-					MultiTrack.SelectNone();
-					Output(MultiTrack.IsActive ? "MultiTrack Enabled" : "MultiTrack Disabled");
-				}
-			}
-			else
-			{
-				Output("MultiTrack cannot be enabled while not recording.");
-			}
-		}
-
-		/// <summary>
-		/// Sets the Movie property with the QueuedMovie, clears the queued movie, and starts the new movie
-		/// </summary>
-		public void RunQueuedMovie(bool recordMode)
-		{
-			Movie = QueuedMovie;
-			QueuedMovie = null;
-			MultiTrack.Restart();
-
-			if (recordMode)
-			{
-				Movie.StartNewRecording();
-				ReadOnly = false;
-			}
-			else
-			{
-				Movie.StartNewPlayback();
-			}
-		}
-
-		// The behavior here is to only temporarily override these settings when playing a movie and then restore the user's preferred settings
-		// A more elegant approach would be appreciated
-		public bool? PreviousNesInQuickNES { get; set; }
-		public bool? PreviousSnesInSnes9x { get; set; }
-		public bool? PreviousGbaUsemGba { get; set; }
-		public bool? PreviousGbUseGbHawk { get; set; }
 
 		/// <exception cref="MoviePlatformMismatchException"><paramref name="record"/> is <see langword="false"/> and <paramref name="movie"/>.<see cref="IMovie.SystemID"/> does not match <paramref name="emulator"/>.<see cref="IEmulator.SystemId"/></exception>
 		public void QueueNewMovie(IMovie movie, bool record, IEmulator emulator)
@@ -530,6 +323,203 @@ namespace BizHawk.Client.Common
 			}
 
 			QueuedMovie = movie;
+		}
+
+		public void RunQueuedMovie(bool recordMode)
+		{
+			Movie = QueuedMovie;
+			QueuedMovie = null;
+			MultiTrack.Restart();
+
+			if (recordMode)
+			{
+				Movie.StartNewRecording();
+				ReadOnly = false;
+			}
+			else
+			{
+				Movie.StartNewPlayback();
+			}
+		}
+
+		public void ToggleMultitrack()
+		{
+			if (Movie.IsActive())
+			{
+				if (Global.Config.VBAStyleMovieLoadState)
+				{
+					Output("Multi-track can not be used in Full Movie Loadstates mode");
+				}
+				else
+				{
+					MultiTrack.IsActive ^= true;
+					MultiTrack.SelectNone();
+					Output(MultiTrack.IsActive ? "MultiTrack Enabled" : "MultiTrack Disabled");
+				}
+			}
+			else
+			{
+				Output("MultiTrack cannot be enabled while not recording.");
+			}
+		}
+
+		public void StopMovie(bool saveChanges = true)
+		{
+			var message = "Movie ";
+			if (Movie.IsRecording())
+			{
+				message += "recording ";
+			}
+			else if (Movie.IsPlaying())
+			{
+				message += "playback ";
+			}
+
+			message += "stopped.";
+
+			if (Movie.IsActive())
+			{
+				var result = Movie.Stop(saveChanges);
+				if (result)
+				{
+					Output($"{Path.GetFileName(Movie.Filename)} written to disk.");
+				}
+
+				Output(message);
+				ReadOnly = true;
+			}
+
+			MultiTrack.Restart();
+			ModeChangedCallback();
+		}
+
+		private void ClearFrame()
+		{
+			if (Movie.IsPlaying())
+			{
+				Movie.ClearFrame(Global.Emulator.Frame);
+				Output($"Scrubbed input at frame {Global.Emulator.Frame}");
+			}
+		}
+
+		private void PopupMessage(string message)
+		{
+			PopupCallback?.Invoke(message);
+		}
+
+		private void Output(string message)
+		{
+			MessageCallback?.Invoke(message);
+		}
+
+		private void LatchInputToMultitrackUser()
+		{
+			var rewiredSource = Global.InputManager.MultitrackRewiringAdapter;
+			if (MultiTrack.IsActive)
+			{
+				rewiredSource.PlayerSource = 1;
+				rewiredSource.PlayerTargetMask = 1 << MultiTrack.CurrentPlayer;
+				if (MultiTrack.RecordAll)
+				{
+					rewiredSource.PlayerTargetMask = unchecked((int)0xFFFFFFFF);
+				}
+
+				if (Movie.InputLogLength > Global.Emulator.Frame)
+				{
+					var input = Movie.GetInputState(Global.Emulator.Frame);
+					MovieController.SetFrom(input);
+				}
+
+				MovieController.SetPlayerFrom(rewiredSource, MultiTrack.CurrentPlayer);
+			}
+		}
+
+		private void LatchInputToUser()
+		{
+			MovieController.SetFrom(Global.InputManager.MovieInputSourceAdapter);
+		}
+
+		// Latch input from the input log, if available
+		private void LatchInputToLog()
+		{
+			var input = Movie.GetInputState(Global.Emulator.Frame);
+
+			// adelikat: TODO: this is likely the source of frame 0 TAStudio bugs, I think the intent is to check if the movie is 0 length?
+			if (Global.Emulator.Frame == 0) // Hacky
+			{
+				HandleMovieAfterFrameLoop(); // Frame 0 needs to be handled.
+			}
+
+			if (input == null)
+			{
+				HandleMovieAfterFrameLoop();
+				return;
+			}
+
+			MovieController.SetFrom(input);
+			if (MultiTrack.IsActive)
+			{
+				Global.InputManager.MultitrackRewiringAdapter.Source = MovieController;
+			}
+		}
+
+		private void HandlePlaybackEnd()
+		{
+			var gambatteName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(Gameboy), typeof(CoreAttribute))).CoreName;
+			if (Movie.Core == gambatteName)
+			{
+				var movieCycles = Convert.ToUInt64(Movie.HeaderEntries[HeaderKeys.CycleCount]);
+				var coreCycles = ((Gameboy)Global.Emulator).CycleCount;
+				if (movieCycles != (ulong)coreCycles)
+				{
+					PopupMessage($"Cycle count in the movie ({movieCycles}) doesn't match the emulated value ({coreCycles}).");
+				}
+			}
+
+			// TODO: mainform callback to update on mode change
+			switch (Global.Config.MovieEndAction)
+			{
+				case MovieEndAction.Stop:
+					Movie.Stop();
+					break;
+				case MovieEndAction.Record:
+					Movie.SwitchToRecord();
+					break;
+				case MovieEndAction.Pause:
+					Movie.FinishedMode();
+					PauseCallback();
+					break;
+				default:
+				case MovieEndAction.Finish:
+					Movie.FinishedMode();
+					break;
+			}
+
+			ModeChangedCallback();
+		}
+
+		private void HandleFrameLoopForRecordMode()
+		{
+			// we don't want TasMovie to latch user input outside its internal recording mode, so limit it to autohold
+			if (Movie is TasMovie && Movie.IsPlaying())
+			{
+				MovieController.SetFromSticky(Global.InputManager.AutofireStickyXorAdapter);
+			}
+			else
+			{
+				if (MultiTrack.IsActive)
+				{
+					LatchInputToMultitrackUser();
+				}
+				else
+				{
+					LatchInputToUser();
+				}
+			}
+
+			// the movie session makes sure that the correct input has been read and merged to its MovieControllerAdapter;
+			// this has been wired to Global.MovieOutputHardpoint in RewireInputChain
+			Movie.RecordFrame(Global.Emulator.Frame, Global.InputManager.MovieOutputHardpoint);
 		}
 	}
 }
