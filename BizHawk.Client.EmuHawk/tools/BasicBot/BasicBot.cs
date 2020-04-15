@@ -779,13 +779,13 @@ namespace BizHawk.Client.EmuHawk
 				if (index < _bestBotAttempt.Log.Count)
 				{
 					var logEntry = _bestBotAttempt.Log[index];
-					var lg = Global.MovieSession.GenerateMovieController(Emulator.ControllerDefinition);
-					lg.SetFromMnemonic(logEntry);
+					var controller = Global.MovieSession.GenerateMovieController();
+					controller.SetFromMnemonic(logEntry);
 
-					foreach (var button in lg.Definition.BoolButtons)
+					foreach (var button in controller.Definition.BoolButtons)
 					{
 						// TODO: make an input adapter specifically for the bot?
-						Global.InputManager.ButtonOverrideAdapter.SetButton(button, lg.IsPressed(button));
+						Global.InputManager.ButtonOverrideAdapter.SetButton(button, controller.IsPressed(button));
 					}
 				}
 				else

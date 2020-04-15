@@ -52,10 +52,10 @@ namespace BizHawk.Client.Common
 			MovieController = new Bk2Controller(definition);
 		}
 
-		public IMovieController GenerateMovieController(ControllerDefinition definition)
+		public IMovieController GenerateMovieController()
 		{
 			// TODO: expose Movie.LogKey and pass in here
-			return new Bk2Controller("", definition);
+			return new Bk2Controller("", MovieController.Definition);
 		}
 
 		// Convenience property that gets the controller state from the movie for the most recent frame

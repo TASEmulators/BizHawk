@@ -28,18 +28,18 @@ namespace BizHawk.Client.Common
 
 		public void SetFromMnemonicStr(string inputLogEntry)
 		{
-			var lg = Global.MovieSession.GenerateMovieController(Global.Emulator.ControllerDefinition);
+			var controller = Global.MovieSession.GenerateMovieController();
 			try
 			{
-				lg.SetFromMnemonic(inputLogEntry);
+				controller.SetFromMnemonic(inputLogEntry);
 			}
 			catch (Exception)
 			{
 				LogCallback($"invalid mnemonic string: {inputLogEntry}");
 				return;
 			}
-			foreach (var button in lg.Definition.BoolButtons) Global.InputManager.ButtonOverrideAdapter.SetButton(button, lg.IsPressed(button));
-			foreach (var floatButton in lg.Definition.AxisControls) Global.InputManager.ButtonOverrideAdapter.SetAxis(floatButton, lg.AxisValue(floatButton));
+			foreach (var button in controller.Definition.BoolButtons) Global.InputManager.ButtonOverrideAdapter.SetButton(button, controller.IsPressed(button));
+			foreach (var floatButton in controller.Definition.AxisControls) Global.InputManager.ButtonOverrideAdapter.SetAxis(floatButton, controller.AxisValue(floatButton));
 		}
 
 		public void Set(Dictionary<string, bool> buttons, int? controller = null)

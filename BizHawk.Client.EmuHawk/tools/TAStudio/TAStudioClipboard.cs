@@ -27,20 +27,20 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				var lg = Global.MovieSession.GenerateMovieController(Global.Emulator.ControllerDefinition);
-				lg.SetFromMnemonic(inputLogEntry);
+				var controller = Global.MovieSession.GenerateMovieController();
+				controller.SetFromMnemonic(inputLogEntry);
 
-				foreach (var button in lg.Definition.BoolButtons)
+				foreach (var button in controller.Definition.BoolButtons)
 				{
-					Global.InputManager.ButtonOverrideAdapter.SetButton(button, lg.IsPressed(button));
+					Global.InputManager.ButtonOverrideAdapter.SetButton(button, controller.IsPressed(button));
 				}
 
-				foreach (var floatButton in lg.Definition.AxisControls)
+				foreach (var floatButton in controller.Definition.AxisControls)
 				{
-					Global.InputManager.ButtonOverrideAdapter.SetAxis(floatButton, lg.AxisValue(floatButton));
+					Global.InputManager.ButtonOverrideAdapter.SetAxis(floatButton, controller.AxisValue(floatButton));
 				}
 
-				return lg;
+				return controller;
 			}
 			catch (Exception)
 			{

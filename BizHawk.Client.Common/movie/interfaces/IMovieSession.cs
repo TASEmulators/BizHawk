@@ -13,9 +13,16 @@ namespace BizHawk.Client.Common
 		IController PreviousFrame { get; }
 		IController CurrentInput { get; }
 
+		/// <summary>
+		/// Recreates MovieController with the given controller definition
+		/// </summary>
 		void CreateMovieController(ControllerDefinition definition);
 
-		IMovieController GenerateMovieController(ControllerDefinition definition);
+		/// <summary>
+		/// Creates a <see cref="IMovieController" /> instance based on the
+		/// current <see cref="MovieController" /> button definition
+		/// </summary>
+		IMovieController GenerateMovieController();
 
 		bool ReadOnly { get; set; }
 		bool MovieIsQueued { get; }
