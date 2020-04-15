@@ -27,7 +27,7 @@ namespace BizHawk.Client.Common
 		public bool MovieIsQueued => QueuedMovie != null;
 
 		public MultitrackRecorder MultiTrack { get; } = new MultitrackRecorder();
-		public IMovieController MovieController { get; set; } = MovieService.DefaultInstance.LogGeneratorInstance().MovieControllerAdapter;
+		public IMovieController MovieController { get; set; } = new Bk2Controller("", NullController.Instance.Definition);
 
 		public IMovie Movie { get; set; }
 		public bool ReadOnly { get; set; } = true;
@@ -52,19 +52,18 @@ namespace BizHawk.Client.Common
 			MovieController = new Bk2Controller(definition);
 		}
 
+		public IMovieController GenerateMovieController(ControllerDefinition definition)
+		{
+			// TODO: expose Movie.LogKey and pass in here
+			return new Bk2Controller("", definition);
+		}
+
 		/// <summary>
 		/// Simply shortens the verbosity necessary otherwise
 		/// </summary>
 		public ILogEntryGenerator LogGeneratorInstance(IController source)
 		{
-			var lg = Movie.LogGeneratorInstance();
-			lg.SetSource(source);
-			return lg;
-		}
-
-		public IMovieController MovieControllerInstance()
-		{
-			return Movie.LogGeneratorInstance().MovieControllerAdapter;
+			return Movie.LogGeneratorInstance(source);
 		}
 
 		// Convenience property that gets the controller state from the movie for the most recent frame
@@ -277,8 +276,7 @@ namespace BizHawk.Client.Common
 						else if (Global.Config.MoviePlaybackPokeMode)
 						{
 							LatchInputFromPlayer(Global.InputManager.MovieInputSourceAdapter);
-							var lg = Movie.LogGeneratorInstance();
-							lg.SetSource(Global.InputManager.MovieOutputHardpoint);
+							var lg = Movie.LogGeneratorInstance(Global.InputManager.MovieOutputHardpoint);
 							if (!lg.IsEmpty)
 							{
 								LatchInputFromPlayer(Global.InputManager.MovieInputSourceAdapter);

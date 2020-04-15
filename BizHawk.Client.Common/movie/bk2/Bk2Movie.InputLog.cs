@@ -288,9 +288,7 @@ namespace BizHawk.Client.Common
 
 		protected void WriteRawInputLog(TextWriter writer)
 		{
-			var lg = new Bk2LogEntryGenerator(LogKey);
-			lg.SetSource(Global.InputManager.MovieOutputHardpoint);
-
+			var lg = new Bk2LogEntryGenerator(LogKey, Global.InputManager.MovieOutputHardpoint);
 			writer.WriteLine(lg.GenerateLogKey());
 
 			foreach (var record in Log)

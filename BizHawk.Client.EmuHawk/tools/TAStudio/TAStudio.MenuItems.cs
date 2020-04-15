@@ -450,8 +450,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					_tasClipboard.Add(new TasClipboardEntry(index, input));
-					var lg = CurrentTasMovie.LogGeneratorInstance();
-					lg.SetSource(input);
+					var lg = CurrentTasMovie.LogGeneratorInstance(input);
 					sb.AppendLine(lg.GenerateLogEntry());
 				}
 
@@ -568,8 +567,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					_tasClipboard.Add(new TasClipboardEntry(index, input));
-					var lg = CurrentTasMovie.LogGeneratorInstance();
-					lg.SetSource(input);
+					var lg = CurrentTasMovie.LogGeneratorInstance(input);
 					sb.AppendLine(lg.GenerateLogEntry());
 				}
 

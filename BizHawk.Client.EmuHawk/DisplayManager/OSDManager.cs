@@ -233,7 +233,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var m = Global.MovieSession.Movie.IsPlayingOrRecording()
 					? Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 1)
-					: Global.MovieSession.MovieControllerInstance();
+					: Global.MovieSession.MovieController;
 
 				return MakeStringFor(Global.InputManager.AutofireStickyXorAdapter.And(m));
 			}

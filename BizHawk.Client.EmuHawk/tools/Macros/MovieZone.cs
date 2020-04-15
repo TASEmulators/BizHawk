@@ -20,8 +20,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_emulator = emulator;
 			_tools = tools;
-			var lg = movie.LogGeneratorInstance();
-			lg.SetSource(Global.MovieSession.MovieController);
+			var lg = movie.LogGeneratorInstance(Global.MovieSession.MovieController);
 			_targetController = new Bk2Controller(_emulator.ControllerDefinition);
 			_targetController.SetFrom(_targetController); // Reference and create all buttons
 
@@ -55,8 +54,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_controller = new Bk2Controller(d);
-			var logGenerator = new Bk2LogEntryGenerator("");
-			logGenerator.SetSource(_controller);
+			var logGenerator = Global.MovieSession.LogGeneratorInstance(_controller);
 			logGenerator.GenerateLogEntry(); // Reference and create all buttons.
 
 			string movieKey = logGenerator.GenerateLogKey().Replace("LogKey:", "").Replace("#", "");
@@ -109,14 +107,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var newController = new Bk2Controller(d);
-			var logGenerator = new Bk2LogEntryGenerator("");
-
-			logGenerator.SetSource(newController);
+			var logGenerator = Global.MovieSession.LogGeneratorInstance(newController);
 			logGenerator.GenerateLogEntry(); // Reference and create all buttons.
 
 			// Reset all buttons in targetController (it may still have buttons that aren't being set here set true)
-			var tC = new Bk2LogEntryGenerator("");
-			tC.SetSource(_targetController);
+			var tC = Global.MovieSession.LogGeneratorInstance(_targetController);
 			_targetController.SetFromMnemonic(tC.EmptyEntry);
 			for (int i = 0; i < Length; i++)
 			{

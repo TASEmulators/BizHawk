@@ -779,7 +779,7 @@ namespace BizHawk.Client.EmuHawk
 				if (index < _bestBotAttempt.Log.Count)
 				{
 					var logEntry = _bestBotAttempt.Log[index];
-					var lg = Global.MovieSession.MovieControllerInstance();
+					var lg = Global.MovieSession.GenerateMovieController(Emulator.ControllerDefinition);
 					lg.SetFromMnemonic(logEntry);
 
 					foreach (var button in lg.Definition.BoolButtons)

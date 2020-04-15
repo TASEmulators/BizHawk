@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override string ToString()
 		{
-			var lg = Global.MovieSession.Movie.LogGeneratorInstance();
+			var lg = Global.MovieSession.Movie.LogGeneratorInstance(ControllerState);
 			return lg.GenerateLogEntry();
 		}
 
@@ -27,7 +27,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				var lg = Global.MovieSession.MovieControllerInstance();
+				var lg = Global.MovieSession.GenerateMovieController(Global.Emulator.ControllerDefinition);
 				lg.SetFromMnemonic(inputLogEntry);
 
 				foreach (var button in lg.Definition.BoolButtons)

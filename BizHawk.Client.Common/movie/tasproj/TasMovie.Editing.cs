@@ -290,13 +290,11 @@ namespace BizHawk.Client.Common
 		public void InsertInput(int frame, IEnumerable<IController> inputStates)
 		{
 			// ChangeLog is done in the InsertInput call.
-			var lg = LogGeneratorInstance();
-
 			var inputLog = new List<string>();
 
 			foreach (var input in inputStates)
 			{
-				lg.SetSource(input);
+				var lg = LogGeneratorInstance(input);
 				inputLog.Add(lg.GenerateLogEntry());
 			}
 
@@ -307,7 +305,7 @@ namespace BizHawk.Client.Common
 		{
 			int firstChangedFrame = -1;
 			ChangeLog.BeginNewBatch($"Copy Over Input: {frame}");
-			var lg = LogGeneratorInstance();
+			
 			var states = inputStates.ToList();
 
 			if (Log.Count < states.Count + frame)
@@ -324,7 +322,7 @@ namespace BizHawk.Client.Common
 					break;
 				}
 
-				lg.SetSource(states[i]);
+				var lg = LogGeneratorInstance(states[i]);
 				var entry = lg.GenerateLogEntry();
 				if (firstChangedFrame == -1 && Log[frame + i] != entry)
 				{
@@ -347,8 +345,7 @@ namespace BizHawk.Client.Common
 			bool endBatch = ChangeLog.BeginNewBatch($"Insert Empty Frame: {frame}", true);
 			ChangeLog.AddGeneralUndo(frame, InputLogLength + count - 1);
 
-			var lg = LogGeneratorInstance();
-			lg.SetSource(Global.MovieSession.MovieControllerInstance());
+			var lg = LogGeneratorInstance(Global.MovieSession.MovieController);
 
 			if (frame > Log.Count())
 			{
@@ -395,8 +392,8 @@ namespace BizHawk.Client.Common
 
 			Global.MovieSession.MovieController.SetFromSticky(Global.InputManager.AutofireStickyXorAdapter);
 
-			var lg = LogGeneratorInstance();
-			lg.SetSource(Global.InputManager.MovieOutputHardpoint); // account for autohold. needs autohold pattern to be already recorded in the current frame
+			// account for autohold. needs autohold pattern to be already recorded in the current frame
+			var lg = LogGeneratorInstance(Global.InputManager.MovieOutputHardpoint);
 
 			for (int i = 0; i < numFrames; i++)
 			{
@@ -422,8 +419,7 @@ namespace BizHawk.Client.Common
 			var adapter = GetInputState(frame);
 			adapter.SetBool(buttonName, !adapter.IsPressed(buttonName));
 
-			var lg = LogGeneratorInstance();
-			lg.SetSource(adapter);
+			var lg = LogGeneratorInstance(adapter);
 			Log[frame] = lg.GenerateLogEntry();
 			Changes = true;
 			InvalidateAfter(frame);
@@ -442,8 +438,7 @@ namespace BizHawk.Client.Common
 			var old = adapter.IsPressed(buttonName);
 			adapter.SetBool(buttonName, val);
 
-			var lg = LogGeneratorInstance();
-			lg.SetSource(adapter);
+			var lg = LogGeneratorInstance(adapter);
 			Log[frame] = lg.GenerateLogEntry();
 
 			if (old != val)
@@ -470,8 +465,7 @@ namespace BizHawk.Client.Common
 				bool old = adapter.IsPressed(buttonName);
 				adapter.SetBool(buttonName, val);
 
-				var lg = LogGeneratorInstance();
-				lg.SetSource(adapter);
+				var lg = LogGeneratorInstance(adapter);
 				Log[frame + i] = lg.GenerateLogEntry();
 
 				if (changed == -1 && old != val)
@@ -500,8 +494,7 @@ namespace BizHawk.Client.Common
 			var old = adapter.AxisValue(buttonName);
 			adapter.SetAxis(buttonName, val);
 
-			var lg = LogGeneratorInstance();
-			lg.SetSource(adapter);
+			var lg = LogGeneratorInstance(adapter);
 			Log[frame] = lg.GenerateLogEntry();
 
 			if (old != val)
@@ -528,8 +521,7 @@ namespace BizHawk.Client.Common
 				float old = adapter.AxisValue(buttonName);
 				adapter.SetAxis(buttonName, val);
 
-				var lg = LogGeneratorInstance();
-				lg.SetSource(adapter);
+				var lg = LogGeneratorInstance(adapter);
 				Log[frame + i] = lg.GenerateLogEntry();
 
 				if (changed == -1 && old != val)

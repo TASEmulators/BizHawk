@@ -580,12 +580,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				var lg = CurrentTasMovie.LogGeneratorInstance();
-				lg.SetSource(Global.MovieSession.MovieControllerInstance());
+				var lg = CurrentTasMovie.LogGeneratorInstance(Global.MovieSession.MovieController);
 				var empty = lg.EmptyEntry;
 				foreach (var row in TasView.SelectedRows)
 				{
-
 					if (CurrentTasMovie[row].LogEntry != empty)
 					{
 						return row;
@@ -599,7 +597,9 @@ namespace BizHawk.Client.EmuHawk
 		private void AddColumn(RollColumn column)
 		{
 			if (TasView.AllColumns[column.Name] == null)
+			{
 				TasView.AllColumns.Add(column);
+			}
 		}
 
 		private void EngageTastudio()
