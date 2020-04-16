@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 
 using BizHawk.Common;
 
@@ -15,7 +14,7 @@ namespace BizHawk.Client.EmuHawk
 		private static readonly List<GamePad> Devices = new List<GamePad>();
 		private static DirectInput _directInput;
 
-		public static void Initialize(Control parent)
+		public static void Initialize(IntPtr mainFormHandle)
 		{
 			lock (SyncObj)
 			{
@@ -31,7 +30,7 @@ namespace BizHawk.Client.EmuHawk
 						continue; // Don't input XBOX 360 controllers into here; we'll process them via XInput (there are limitations in some trigger axes when xbox pads go over xinput)
 
 					var joystick = new Joystick(_directInput, device.InstanceGuid);
-					joystick.SetCooperativeLevel(parent.Handle, CooperativeLevel.Background | CooperativeLevel.Nonexclusive);
+					joystick.SetCooperativeLevel(mainFormHandle, CooperativeLevel.Background | CooperativeLevel.Nonexclusive);
 					foreach (DeviceObjectInstance deviceObject in joystick.GetObjects())
 					{
 						if ((deviceObject.ObjectType & ObjectDeviceType.Axis) != 0)
@@ -125,7 +124,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 		}
 
-		public IEnumerable<(string AxisID, float Value)> GetFloats()
+		public IEnumerable<(string AxisID, float Value)> GetAxes()
 		{
 			var pis = typeof(JoystickState).GetProperties();
 			foreach (var pi in pis)

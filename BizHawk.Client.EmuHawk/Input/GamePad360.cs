@@ -154,7 +154,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public IEnumerable<(string AxisID, float Value)> GetFloats()
+		public IEnumerable<(string AxisID, float Value)> GetAxes()
 		{
 			var g = _state.Gamepad;
 

@@ -88,6 +88,10 @@
 			this.rbLuaInterface = new BizHawk.WinForms.Controls.RadioButtonEx(grpLuaEngine.Tracker);
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.flpDialogButtons = new BizHawk.WinForms.Controls.LocSzSingleRowFLP();
+			this.grpInputMethod = new BizHawk.WinForms.Controls.SzGroupBoxEx();
+			this.flpGrpInputMethod = new BizHawk.WinForms.Controls.LocSingleRowFLP();
+			this.rbInputMethodOpenTK = new BizHawk.WinForms.Controls.RadioButtonEx(grpInputMethod.Tracker);
+			this.rbInputMethodDirectInput = new BizHawk.WinForms.Controls.RadioButtonEx(grpInputMethod.Tracker);
 			this.tcDialog.SuspendLayout();
 			this.tpGeneral.SuspendLayout();
 			this.flpTpGeneral.SuspendLayout();
@@ -111,6 +115,8 @@
 			this.grpLuaEngine.SuspendLayout();
 			this.flpGrpLuaEngine.SuspendLayout();
 			this.flpDialogButtons.SuspendLayout();
+			this.grpInputMethod.SuspendLayout();
+			this.flpGrpInputMethod.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// btnDialogOK
@@ -142,7 +148,7 @@
 			this.tcDialog.Location = new System.Drawing.Point(4, 4);
 			this.tcDialog.Name = "tcDialog";
 			this.tcDialog.SelectedIndex = 0;
-			this.tcDialog.Size = new System.Drawing.Size(379, 363);
+			this.tcDialog.Size = new System.Drawing.Size(379, 389);
 			this.tcDialog.TabIndex = 0;
 			// 
 			// tpGeneral
@@ -160,6 +166,7 @@
 			this.flpTpGeneral.Controls.Add(this.cbNeverAskForSave);
 			this.flpTpGeneral.Controls.Add(this.flpNoFocusEmulate);
 			this.flpTpGeneral.Controls.Add(this.flpNoFocusInput);
+			this.flpTpGeneral.Controls.Add(this.grpInputMethod);
 			this.flpTpGeneral.Controls.Add(this.cbNonQWERTY);
 			this.flpTpGeneral.Controls.Add(this.grpStartup);
 			this.flpTpGeneral.Name = "flpTpGeneral";
@@ -492,10 +499,36 @@
 			this.flpDialogButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.flpDialogButtons.Controls.Add(this.btnDialogOK);
 			this.flpDialogButtons.Controls.Add(this.btnDialogCancel);
-			this.flpDialogButtons.Location = new System.Drawing.Point(247, 370);
+			this.flpDialogButtons.Location = new System.Drawing.Point(247, 396);
 			this.flpDialogButtons.MinimumSize = new System.Drawing.Size(24, 24);
 			this.flpDialogButtons.Name = "flpDialogButtons";
 			this.flpDialogButtons.Size = new System.Drawing.Size(132, 29);
+			// 
+			// grpInputMethod
+			// 
+			this.grpInputMethod.Controls.Add(this.flpGrpInputMethod);
+			this.grpInputMethod.Name = "grpInputMethod";
+			this.grpInputMethod.Size = new System.Drawing.Size(334, 45);
+			this.grpInputMethod.Text = "Input Method (requires restart)";
+			// 
+			// flpGrpInputMethod
+			// 
+			this.flpGrpInputMethod.Controls.Add(this.rbInputMethodDirectInput);
+			this.flpGrpInputMethod.Controls.Add(this.rbInputMethodOpenTK);
+			this.flpGrpInputMethod.Location = new System.Drawing.Point(4, 12);
+			this.flpGrpInputMethod.Name = "flpGrpInputMethod";
+			// 
+			// rbInputMethodOpenTK
+			// 
+			this.rbInputMethodOpenTK.Name = "rbInputMethodOpenTK";
+			this.rbInputMethodOpenTK.Tag = BizHawk.Client.Common.EHostInputMethod.OpenTK;
+			this.rbInputMethodOpenTK.Text = "OpenTK";
+			// 
+			// rbInputMethodDirectInput
+			// 
+			this.rbInputMethodDirectInput.Name = "rbInputMethodDirectInput";
+			this.rbInputMethodDirectInput.Tag = BizHawk.Client.Common.EHostInputMethod.DirectInput;
+			this.rbInputMethodDirectInput.Text = "DirectInput";
 			// 
 			// EmuHawkOptions
 			// 
@@ -503,7 +536,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.btnDialogCancel;
-			this.ClientSize = new System.Drawing.Size(385, 405);
+			this.ClientSize = new System.Drawing.Size(385, 431);
 			this.Controls.Add(this.flpDialogButtons);
 			this.Controls.Add(this.tcDialog);
 			this.MinimumSize = new System.Drawing.Size(401, 444);
@@ -555,6 +588,10 @@
 			this.flpGrpLuaEngine.ResumeLayout(false);
 			this.flpGrpLuaEngine.PerformLayout();
 			this.flpDialogButtons.ResumeLayout(false);
+			this.grpInputMethod.ResumeLayout(false);
+			this.grpInputMethod.PerformLayout();
+			this.flpGrpInputMethod.ResumeLayout(false);
+			this.flpGrpInputMethod.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -620,5 +657,9 @@
 		private BizHawk.WinForms.Controls.SzGroupBoxEx grpLuaEngine;
 		private BizHawk.WinForms.Controls.LocSingleColumnFLP flpGrpLuaEngine;
 		private BizHawk.WinForms.Controls.LocSzSingleRowFLP flpDialogButtons;
+		private BizHawk.WinForms.Controls.SzGroupBoxEx grpInputMethod;
+		private BizHawk.WinForms.Controls.LocSingleRowFLP flpGrpInputMethod;
+		private BizHawk.WinForms.Controls.RadioButtonEx rbInputMethodDirectInput;
+		private BizHawk.WinForms.Controls.RadioButtonEx rbInputMethodOpenTK;
 	}
 }

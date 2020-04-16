@@ -40,4 +40,10 @@
 		Tas = 3,
 		N64Tas = 4
 	}
+
+	public enum EHostInputMethod
+	{
+		OpenTK = 0,
+		DirectInput = 1
+	}
 }

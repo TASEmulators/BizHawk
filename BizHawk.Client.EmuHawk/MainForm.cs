@@ -316,7 +316,7 @@ namespace BizHawk.Client.EmuHawk
 				Sound?.StartSound();
 			};
 
-			Input.Initialize(this);
+			Input.Instance.Adapter.FirstInitAll(Handle);
 			InitControls();
 
 			Global.InputManager.ActiveController = new Controller(NullController.Instance.Definition);
@@ -2721,13 +2721,7 @@ namespace BizHawk.Client.EmuHawk
 		// Alt key hacks
 		protected override void WndProc(ref Message m)
 		{
-			switch (m.Msg)
-			{
-				case WmDeviceChange:
-					GamePad.Initialize(this);
-					GamePad360.Initialize();
-					break;
-			}
+			if (m.Msg == WmDeviceChange) Input.Instance.Adapter.ReInitGamepads(Handle);
 
 			// this is necessary to trap plain alt keypresses so that only our hotkey system gets them
 			if (m.Msg == 0x0112) // WM_SYSCOMMAND

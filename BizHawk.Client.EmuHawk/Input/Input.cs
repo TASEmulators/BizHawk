@@ -114,8 +114,18 @@ namespace BizHawk.Client.EmuHawk
 			Alt = 262144
 		}
 
-		public static Input Instance { get; private set; }
+		private static readonly Lazy<Input> _instance = new Lazy<Input>(() => new Input());
+
+		public static Input Instance => _instance.Value;
+
 		private readonly Thread UpdateThread;
+
+		public readonly HostInputAdapter Adapter = Global.Config.HostInputMethod switch
+		{
+			EHostInputMethod.OpenTK => new OpenTKInputAdapter(),
+			EHostInputMethod.DirectInput => new DirectInputAdapter(),
+			_ => throw new Exception()
+		};
 
 		private Input()
 		{
@@ -125,39 +135,6 @@ namespace BizHawk.Client.EmuHawk
 				Priority = ThreadPriority.AboveNormal // why not? this thread shouldn't be very heavy duty, and we want it to be responsive
 			};
 			UpdateThread.Start();
-		}
-
-		public static void Initialize(Control parent)
-		{
-#if true
-			OTK_Keyboard.Initialize();
-			OTK_GamePad.Initialize();
-#else
-			if (OSTailoredCode.IsUnixHost)
-			{
-				OTK_Keyboard.Initialize();
-				OTK_GamePad.Initialize();
-			}
-			else
-			{
-				KeyInput.Initialize(parent);
-				IPCKeyInput.Initialize();
-				GamePad.Initialize(parent);
-				GamePad360.Initialize();
-			}
-#endif
-			Instance = new Input();
-		}
-
-		public static void Cleanup()
-		{
-#if false
-			if (!OSTailoredCode.IsUnixHost)
-			{
-				KeyInput.Cleanup();
-				GamePad.Cleanup();
-			}
-#endif
 		}
 
 		public enum InputEventType
@@ -292,6 +269,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void HandleAxis(string axis, float newValue)
+		{
+			if (_trackDeltas) _axisDeltas[axis] += Math.Abs(newValue - _axisValues[axis]);
+			_axisValues[axis] = newValue;
+		}
+
 		private static ModifierKey ButtonToModifierKey(string button) => button switch
 		{
 			"LeftShift" => ModifierKey.Shift,
@@ -356,23 +339,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			while (true)
 			{
-#if true
-				var keyEvents = OTK_Keyboard.Update();
-				OTK_GamePad.UpdateAll();
-#else
-				var keyEvents = OSTailoredCode.IsUnixHost
-					? OTK_Keyboard.Update()
-					: KeyInput.Update().Concat(IPCKeyInput.Update());
-				if (OSTailoredCode.IsUnixHost)
-				{
-					OTK_GamePad.UpdateAll();
-				}
-				else
-				{
-					GamePad.UpdateAll();
-					GamePad360.UpdateAll();
-				}
-#endif
+				var keyEvents = Adapter.ProcessHostKeyboards();
+				Adapter.PreprocessHostGamepads();
 
 				//this block is going to massively modify data structures that the binding method uses, so we have to lock it all
 				lock (this)
@@ -386,57 +354,7 @@ namespace BizHawk.Client.EmuHawk
 					lock (_axisValues)
 					{
 						//_axisValues.Clear();
-
-						// analyze OpenTK xinput (or is it libinput?)
-						foreach (var pad in OTK_GamePad.EnumerateDevices())
-						{
-							foreach (var but in pad.buttonObjects)
-							{
-								HandleButton(pad.InputNamePrefix + but.ButtonName, but.ButtonAction(), InputFocus.Pad);
-							}
-							foreach (var (axisID, f) in pad.GetAxes())
-							{
-								var n = $"{pad.InputNamePrefix}{axisID} Axis";
-								if (_trackDeltas) _axisDeltas[n] += Math.Abs(f - _axisValues[n]);
-								_axisValues[n] = f;
-							}
-						}
-
-#if false
-						// analyze xinput
-						foreach (var pad in GamePad360.EnumerateDevices())
-						{
-							string xName = $"X{pad.PlayerNumber} ";
-							for (int b = 0; b < pad.NumButtons; b++)
-								HandleButton(xName + pad.ButtonName(b), pad.Pressed(b), InputFocus.Pad);
-							foreach (var sv in pad.GetAxes())
-							{
-								string n = xName + sv.Item1;
-								float f = sv.Item2;
-								if (_trackDeltas)
-									_axisDeltas[n] += Math.Abs(f - _axisValues[n]);
-								_axisValues[n] = f;
-							}
-						}
-
-						// analyze joysticks
-						foreach (var pad in GamePad.EnumerateDevices())
-						{
-							string jName = $"J{pad.PlayerNumber} ";
-							for (int b = 0; b < pad.NumButtons; b++)
-								HandleButton(jName + pad.ButtonName(b), pad.Pressed(b), InputFocus.Pad);
-							foreach (var sv in pad.GetAxes())
-							{
-								string n = jName + sv.Item1;
-								float f = sv.Item2;
-								//if (n == "J5 RotationZ")
-								//	System.Diagnostics.Debugger.Break();
-								if (_trackDeltas)
-									_axisDeltas[n] += Math.Abs(f - _axisValues[n]);
-								_axisValues[n] = f;
-							}
-						}
-#endif
+						Adapter.ProcessHostGamepads(HandleButton, HandleAxis);
 
 						// analyze moose
 						// other sorts of mouse api (raw input) could easily be added as a separate listing under a different class

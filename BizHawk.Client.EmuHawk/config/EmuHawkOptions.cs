@@ -64,6 +64,17 @@ namespace BizHawk.Client.EmuHawk
 			cbNoFocusEmulate.Checked = _config.RunInBackground;
 			cbNoFocusInput.Checked = _config.AcceptBackgroundInput;
 			cbNoFocusInputGamepadOnly.Checked = _config.AcceptBackgroundInputControllerOnly;
+			switch (_config.HostInputMethod)
+			{
+				case EHostInputMethod.OpenTK:
+					rbInputMethodOpenTK.Checked = true;
+					break;
+				case EHostInputMethod.DirectInput:
+					rbInputMethodDirectInput.Checked = true;
+					break;
+				default:
+					throw new InvalidOperationException();
+			}
 			cbNonQWERTY.Checked = _config.HandleAlternateKeyboardLayouts;
 			cbNeverAskForSave.Checked = _config.SuppressAskSave;
 			cbSingleInstance.Checked = _config.SingleInstanceMode;
@@ -100,6 +111,7 @@ namespace BizHawk.Client.EmuHawk
 			_config.RunInBackground = cbNoFocusEmulate.Checked;
 			_config.AcceptBackgroundInput = cbNoFocusInput.Checked;
 			_config.AcceptBackgroundInputControllerOnly = cbNoFocusInputGamepadOnly.Checked;
+			_config.HostInputMethod = grpInputMethod.Tracker.GetSelectionTagAs<EHostInputMethod>() ?? throw new InvalidOperationException();
 			_config.HandleAlternateKeyboardLayouts = cbNonQWERTY.Checked;
 			_config.SuppressAskSave = cbNeverAskForSave.Checked;
 			_config.SingleInstanceMode = cbSingleInstance.Checked;

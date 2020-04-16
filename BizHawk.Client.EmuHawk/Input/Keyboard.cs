@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Windows.Forms;
+﻿using System;
+using System.Collections.Generic;
+
 using SlimDX;
 using SlimDX.DirectInput;
 
@@ -12,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 		private static DirectInput _directInput;
 		private static Keyboard _keyboard;
 
-		public static void Initialize(Control parent)
+		public static void Initialize(IntPtr mainFormHandle)
 		{
 			lock (SyncObj)
 			{
@@ -21,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 				_directInput = new DirectInput();
 
 				_keyboard = new Keyboard(_directInput);
-				_keyboard.SetCooperativeLevel(parent.Handle, CooperativeLevel.Background | CooperativeLevel.Nonexclusive);
+				_keyboard.SetCooperativeLevel(mainFormHandle, CooperativeLevel.Background | CooperativeLevel.Nonexclusive);
 				_keyboard.Properties.BufferSize = 8;
 			}
 		}

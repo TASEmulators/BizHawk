@@ -242,7 +242,7 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Sound?.Dispose();
 				GlobalWin.Sound = null;
 				GlobalWin.GL.Dispose();
-				Input.Cleanup();
+				Input.Instance.Adapter.DeInitAll();
 			}
 
 			//cleanup:
