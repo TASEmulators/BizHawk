@@ -98,7 +98,7 @@ namespace BizHawk.Client.EmuHawk
 				AddOnScreenMessage("Warning: Movie hash does not match the ROM");
 			}
 
-			return !(Emulator is NullEmulator);
+			return !Emulator.IsNull();
 		}
 
 		public void SetMainformMovieInfo()
