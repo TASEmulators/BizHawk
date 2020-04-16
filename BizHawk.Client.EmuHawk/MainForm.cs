@@ -2942,7 +2942,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				MovieSession.HandleMovieOnFrameLoop();
+				MovieSession.HandleFrameBefore();
 
 				if (Config.AutosaveSaveRAM)
 				{
@@ -2962,7 +2962,7 @@ namespace BizHawk.Client.EmuHawk
 				bool render = !InvisibleEmulation && (!_throttle.skipNextFrame || (_currAviWriter?.UsesVideo ?? false));
 				bool newFrame = Emulator.FrameAdvance(Global.InputManager.ControllerOutput, render, renderSound);
 
-				MovieSession.HandleMovieAfterFrameLoop();
+				MovieSession.HandleFrameAfter();
 
 				if (returnToRecording)
 				{
@@ -2971,7 +2971,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (isRewinding && !IsRewindSlave && MovieSession.Movie.IsRecording())
 				{
-					MovieSession.Movie.Truncate(Global.Emulator.Frame);
+					MovieSession.Movie.Truncate(Emulator.Frame);
 				}
 
 				CheatList.Pulse();

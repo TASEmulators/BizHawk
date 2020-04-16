@@ -91,7 +91,7 @@ namespace BizHawk.Client.Common
 			return new Bk2Controller("", definition ?? MovieController.Definition);
 		}
 
-		public void HandleMovieOnFrameLoop()
+		public void HandleFrameBefore()
 		{
 			if (!Movie.IsActive())
 			{
@@ -151,7 +151,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void HandleMovieAfterFrameLoop()
+		public void HandleFrameAfter()
 		{
 			if (Movie is TasMovie tasMovie)
 			{
@@ -167,7 +167,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void HandleMovieSaveState(TextWriter writer)
+		public void HandleSaveState(TextWriter writer)
 		{
 			if (Movie.IsActive())
 			{
@@ -190,7 +190,7 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		public bool HandleMovieLoadState(TextReader reader)
+		public bool HandleLoadState(TextReader reader)
 		{
 			if (Movie.NotActive())
 			{
@@ -452,12 +452,12 @@ namespace BizHawk.Client.Common
 			// adelikat: TODO: this is likely the source of frame 0 TAStudio bugs, I think the intent is to check if the movie is 0 length?
 			if (Global.Emulator.Frame == 0) // Hacky
 			{
-				HandleMovieAfterFrameLoop(); // Frame 0 needs to be handled.
+				HandleFrameAfter(); // Frame 0 needs to be handled.
 			}
 
 			if (input == null)
 			{
-				HandleMovieAfterFrameLoop();
+				HandleFrameAfter();
 				return;
 			}
 

@@ -71,7 +71,7 @@ namespace BizHawk.Client.Common
 					{
 						// this never should have been a core's responsibility
 						tw.WriteLine("Frame {0}", emulator.Frame);
-						Global.MovieSession.HandleMovieSaveState(tw);
+						Global.MovieSession.HandleSaveState(tw);
 					});
 			}
 
@@ -156,7 +156,7 @@ namespace BizHawk.Client.Common
 					// We must handle movie input AFTER the core is loaded to properly handle mode changes, and input latching
 					if (Global.MovieSession.Movie.IsActive())
 					{
-						bl.GetLump(BinaryStateLump.Input, true, tr => succeed = Global.MovieSession.HandleMovieLoadState(tr));
+						bl.GetLump(BinaryStateLump.Input, true, tr => succeed = Global.MovieSession.HandleLoadState(tr));
 						if (!succeed)
 						{
 							return false;

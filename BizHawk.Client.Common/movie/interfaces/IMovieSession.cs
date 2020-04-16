@@ -48,12 +48,12 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		IMovieController GenerateMovieController(ControllerDefinition definition = null);
 
-		void HandleMovieOnFrameLoop();
-		void HandleMovieAfterFrameLoop();
-		void HandleMovieSaveState(TextWriter writer);
+		void HandleFrameBefore();
+		void HandleFrameAfter();
+		void HandleSaveState(TextWriter writer);
 
 		bool CheckSavestateTimeline(TextReader reader);
-		bool HandleMovieLoadState(TextReader reader);
+		bool HandleLoadState(TextReader reader);
 
 		void QueueNewMovie(IMovie movie, bool record, IEmulator emulator);
 
