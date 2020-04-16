@@ -221,7 +221,7 @@ namespace BizHawk.Client.EmuHawk
 			_throttle = new Throttle();
 
 			Emulator = new NullEmulator();
-			GlobalWin.Tools = new ToolManager(this, Config, Emulator);
+			GlobalWin.Tools = new ToolManager(this, Config, Emulator, MovieSession);
 			CheatList.Changed += Tools.UpdateCheatRelatedTools;
 
 			UpdateStatusSlots();

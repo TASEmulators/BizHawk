@@ -5,12 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.ComponentModel;
-
-using BizHawk.Emulation.Common;
-
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.MovieConversionExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 
 namespace BizHawk.Client.EmuHawk
@@ -18,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class TAStudio : ToolFormBase, IToolFormAutoConfig, IControlMainform
 	{
 		// TODO: UI flow that conveniently allows to start from savestate
-		public TasMovie CurrentTasMovie => Global.MovieSession.Movie as TasMovie;
+		public TasMovie CurrentTasMovie => MovieSession.Movie as TasMovie;
 
 		public bool IsInMenuLoop { get; private set; }
 		public string StatesPath => Config.PathEntries.TastudioStatesAbsolutePath();
@@ -325,7 +323,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Start Scenario 1: A regular movie is active
-			if (Global.MovieSession.Movie.IsActive() && !(Global.MovieSession.Movie is TasMovie))
+			if (MovieSession.Movie.IsActive() && !(MovieSession.Movie is TasMovie))
 			{
 				var result = MessageBox.Show("In order to use Tastudio, a new project must be created from the current movie\nThe current movie will be saved and closed, and a new project file will be created\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
 				if (result == DialogResult.OK)
@@ -341,7 +339,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Start Scenario 2: A tasproj is already active
-			else if (Global.MovieSession.Movie.IsActive() && Global.MovieSession.Movie is TasMovie)
+			else if (MovieSession.Movie.IsActive() && MovieSession.Movie is TasMovie)
 			{
 				bool result = LoadFile(new FileInfo(CurrentTasMovie.Filename), gotoFrame: Emulator.Frame);
 				if (!result)
@@ -380,11 +378,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetTasMovieCallbacks(TasMovie movie = null)
 		{
-			if (movie == null)
-			{
-				movie = CurrentTasMovie;
-			}
-
+			movie ??= CurrentTasMovie;
 			movie.ClientSettingsForSave = ClientSettingsForSave;
 			movie.GetClientSettingsOnLoad = GetClientSettingsOnLoad;
 		}
@@ -413,8 +407,8 @@ namespace BizHawk.Client.EmuHawk
 					Rotatable = true
 				});
 
-			var columnNames = Global.MovieSession.Movie
-				.LogGeneratorInstance(Global.MovieSession.MovieController)
+			var columnNames = MovieSession.Movie
+				.LogGeneratorInstance(MovieSession.MovieController)
 				.Map();
 
 			foreach (var kvp in columnNames)
@@ -580,7 +574,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				var lg = CurrentTasMovie.LogGeneratorInstance(Global.MovieSession.MovieController);
+				var lg = CurrentTasMovie.LogGeneratorInstance(MovieSession.MovieController);
 				var empty = lg.EmptyEntry;
 				foreach (var row in TasView.SelectedRows)
 				{
@@ -612,7 +606,7 @@ namespace BizHawk.Client.EmuHawk
 			MainForm.ClearRewindData();
 			Config.MovieEndAction = MovieEndAction.Record;
 			MainForm.SetMainformMovieInfo();
-			Global.MovieSession.ReadOnly = true;
+			MovieSession.ReadOnly = true;
 			SetSplicer();
 			SetupBoolPatterns();
 		}
@@ -623,11 +617,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ConvertCurrentMovieToTasproj()
 		{
-			Global.MovieSession.Movie.Save();
-			Global.MovieSession.Movie = Global.MovieSession.Movie.ToTasMovie();
-			Global.MovieSession.Movie.Save();
-			Global.MovieSession.Movie.SwitchToPlay();
-			Settings.RecentTas.Add(Global.MovieSession.Movie.Filename);
+			MovieSession.Movie.Save();
+			MovieSession.Movie = MovieSession.Movie.ToTasMovie();
+			MovieSession.Movie.Save();
+			MovieSession.Movie.SwitchToPlay();
+			Settings.RecentTas.Add(MovieSession.Movie.Filename);
 		}
 
 		private bool LoadFile(FileInfo file, bool startsFromSavestate = false, int gotoFrame = 0)
@@ -693,10 +687,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (AskSaveChanges())
 			{
-				Global.MovieSession.Movie = new TasMovie();
+				MovieSession.Movie = new TasMovie();
 				CurrentTasMovie.BindMarkersToInput = Settings.BindMarkersToInput;
 
-				var stateManager = ((TasMovie)Global.MovieSession.Movie).TasStateManager;
+				var stateManager = ((TasMovie)MovieSession.Movie).TasStateManager;
 				stateManager.InvalidateCallback = GreenzoneInvalidated;
 
 				BookMarkControl.LoadedCallback = BranchLoaded;
@@ -831,7 +825,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TastudioStopMovie()
 		{
-			Global.MovieSession.StopMovie(false);
+			MovieSession.StopMovie(false);
 			MainForm.SetMainformMovieInfo();
 		}
 
@@ -839,7 +833,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			MainForm.PauseOnFrame = null;
 			MainForm.AddOnScreenMessage("TAStudio disengaged");
-			Global.MovieSession.Movie = MovieService.DefaultInstance;
+			MovieSession.Movie = MovieService.DefaultInstance;
 			MainForm.TakeBackControl();
 			Config.MovieEndAction = _originalEndAction;
 			MainForm.SetMainformMovieInfo();

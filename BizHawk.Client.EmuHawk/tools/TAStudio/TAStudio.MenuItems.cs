@@ -216,6 +216,7 @@ namespace BizHawk.Client.EmuHawk
 				CurrentTasMovie,
 				Emulator,
 				Tools,
+				MovieSession,
 				TasView.FirstSelectedIndex ?? 0,
 				TasView.LastSelectedIndex ?? 0 - TasView.FirstSelectedIndex ?? 0 + 1);
 

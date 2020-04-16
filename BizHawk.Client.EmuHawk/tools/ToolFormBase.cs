@@ -14,6 +14,8 @@ namespace BizHawk.Client.EmuHawk
 		public Config Config { get; set; }
 		public MainForm MainForm { get; set; }
 
+		public IMovieSession MovieSession { get; set; }
+
 		public static FileInfo OpenFileDialog(string currentFile, string path, string fileType, string fileExt)
 		{
 			if (!Directory.Exists(path))

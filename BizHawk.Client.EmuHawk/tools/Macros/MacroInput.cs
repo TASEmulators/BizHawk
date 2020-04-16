@@ -6,7 +6,6 @@ using System.IO;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
-using BizHawk.Common.PathExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -22,7 +21,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly List<int> _unsavedZones = new List<int>();
 		private bool _selecting;
 
-		private IMovie CurrentMovie => Global.MovieSession.Movie;
+		private IMovie CurrentMovie => MovieSession.Movie;
 
 		// Still need to make sure the user can't load and use macros that 
 		// have options only available for TasMovie
@@ -50,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 			OverlayBox.Enabled = CurrentMovie is TasMovie;
 			PlaceNum.Enabled = CurrentMovie is TasMovie;
 
-			var main = new MovieZone(CurrentMovie, Emulator, Tools, 0, CurrentMovie.InputLogLength)
+			var main = new MovieZone(CurrentMovie, Emulator, Tools, MovieSession, 0, CurrentMovie.InputLogLength)
 			{
 				Name = "Entire Movie"
 			};
@@ -144,7 +143,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var newZone = new MovieZone(CurrentMovie, Emulator, Tools, (int) StartNum.Value, (int) (EndNum.Value - StartNum.Value + 1))
+			var newZone = new MovieZone(CurrentMovie, Emulator, Tools, MovieSession, (int) StartNum.Value, (int) (EndNum.Value - StartNum.Value + 1))
 			{
 				Name = $"Zone {_zones.Count}"
 			};

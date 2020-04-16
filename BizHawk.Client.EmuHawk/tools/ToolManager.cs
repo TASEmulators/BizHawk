@@ -11,7 +11,6 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.CoreExtensions;
 using BizHawk.Common;
-using BizHawk.Common.PathExtensions;
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
 
@@ -23,6 +22,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly Config _config;
 		private IExternalApiProvider _apiProvider;
 		private IEmulator _emulator;
+		private IMovieSession _movieSession;
 
 		// TODO: merge ToolHelper code where logical
 		// For instance, add an IToolForm property called UsesCheats, so that a UpdateCheatRelatedTools() method can update all tools of this type
@@ -32,11 +32,16 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ToolManager"/> class.
 		/// </summary>
-		public ToolManager(MainForm owner, Config config, IEmulator emulator)
+		public ToolManager(
+			MainForm owner,
+			Config config,
+			IEmulator emulator,
+			IMovieSession movieSession)
 		{
 			_owner = owner;
 			_config = config;
 			_emulator = emulator;
+			_movieSession = movieSession;
 			_apiProvider = ApiManager.Restart(_emulator.ServiceProvider);
 		}
 
@@ -68,6 +73,7 @@ namespace BizHawk.Client.EmuHawk
 				tool.Tools = this;
 				tool.Config = _config;
 				tool.MainForm = _owner;
+				tool.MovieSession = _movieSession;
 			}
 		}
 

@@ -779,7 +779,7 @@ namespace BizHawk.Client.EmuHawk
 				if (index < _bestBotAttempt.Log.Count)
 				{
 					var logEntry = _bestBotAttempt.Log[index];
-					var controller = Global.MovieSession.GenerateMovieController();
+					var controller = MovieSession.GenerateMovieController();
 					controller.SetFromMnemonic(logEntry);
 
 					foreach (var button in controller.Definition.BoolButtons)
@@ -946,10 +946,10 @@ namespace BizHawk.Client.EmuHawk
 			GoalGroupBox.Enabled = false;
 			_currentBotAttempt = new BotAttempt { Attempt = Attempts };
 
-			if (Global.MovieSession.Movie.IsRecording())
+			if (MovieSession.Movie.IsRecording())
 			{
-				_oldCountingSetting = Global.MovieSession.Movie.IsCountingRerecords;
-				Global.MovieSession.Movie.IsCountingRerecords = false;
+				_oldCountingSetting = MovieSession.Movie.IsCountingRerecords;
+				MovieSession.Movie.IsCountingRerecords = false;
 			}
 
 			_doNotUpdateValues = true;
@@ -976,7 +976,7 @@ namespace BizHawk.Client.EmuHawk
 			UpdateBotStatusIcon();
 			MessageLabel.Text = "Running...";
 			_cachedControlProbabilities = ControlProbabilities;
-			_logGenerator = Global.MovieSession.Movie.LogGeneratorInstance(Global.InputManager.ClickyVirtualPadController);
+			_logGenerator = MovieSession.Movie.LogGeneratorInstance(Global.InputManager.ClickyVirtualPadController);
 		}
 
 		private string CanStart()
@@ -1011,9 +1011,9 @@ namespace BizHawk.Client.EmuHawk
 			_currentBotAttempt = null;
 			GoalGroupBox.Enabled = true;
 
-			if (Global.MovieSession.Movie.IsRecording())
+			if (MovieSession.Movie.IsRecording())
 			{
-				Global.MovieSession.Movie.IsCountingRerecords = _oldCountingSetting;
+				MovieSession.Movie.IsCountingRerecords = _oldCountingSetting;
 			}
 
 			Config.DisplayMessages = _previousDisplayMessage;

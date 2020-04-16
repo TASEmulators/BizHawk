@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -48,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 			s.Refresh();
 
 			// Update the selected zone's key
-			var lg = Global.MovieSession.Movie.LogGeneratorInstance(Global.MovieSession.MovieController);
+			var lg = MovieSession.Movie.LogGeneratorInstance(MovieSession.MovieController);
 			string key = lg.GenerateLogKey();
 			key = key.Replace("LogKey:", "").Replace("#", "");
 
