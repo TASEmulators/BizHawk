@@ -12,7 +12,7 @@ namespace BizHawk.Client.Common
 		public static CheatCollection CheatList { get; set; } = new CheatCollection();
 		public static FirmwareManager FirmwareManager { get; set; }
 
-		public static IMovieSession MovieSession { get; set; } = new MovieSession();
+		public static IMovieSession MovieSession { get; set; }
 
 		/// <summary>
 		/// Used to disable secondary throttling (e.g. vsync, audio) for unthrottled modes or when the primary (clock) throttle is taking over (e.g. during fast forward/rewind).

@@ -16,21 +16,26 @@ namespace BizHawk.Client.Common
 
 	public class MovieSession : IMovieSession
 	{
-		public Action<string> MessageCallback { get; set; }
-		public Action<string> PopupCallback { get; set; }
-		public Func<string, string, bool> AskYesNoCallback { get; set; }
+		private readonly Action _pauseCallback;
+		private readonly Action _modeChangedCallback;
+		private readonly Action<string> _messageCallback;
+		private readonly Action<string> _popupCallback;
 
-		/// <summary>
-		/// Gets or sets a callback that allows the movie session to pause the emulator
-		/// This is Required!
-		/// </summary>
-		public Action PauseCallback { get; set; }
+		public MovieSession(
+			Action<string> messageCallback,
+			Action<string> popupCallback,
+			Action pauseCallback,
+			Action modeChangedCallback)
+		{
+			_messageCallback = messageCallback;
+			_popupCallback = popupCallback;
+			_pauseCallback = pauseCallback
+				?? throw new ArgumentNullException($"{nameof(pauseCallback)} cannot be null.");
+			_modeChangedCallback = modeChangedCallback
+				?? throw new ArgumentNullException($"{nameof(modeChangedCallback)} CannotUnloadAppDomainException be null.");
 
-		/// <summary>
-		/// Gets or sets a callback that is invoked when the movie mode has changed
-		/// This is Required!
-		/// </summary>
-		public Action ModeChangedCallback { get; set; }
+			Movie = MovieService.DefaultInstance;
+		}
 
 		public IMovie Movie { get; set; }
 		public IMovie QueuedMovie { get; private set; }
@@ -390,7 +395,7 @@ namespace BizHawk.Client.Common
 			}
 
 			MultiTrack.Restart(Global.Emulator.ControllerDefinition.PlayerCount);
-			ModeChangedCallback();
+			_modeChangedCallback();
 		}
 
 		private void ClearFrame()
@@ -404,12 +409,12 @@ namespace BizHawk.Client.Common
 
 		private void PopupMessage(string message)
 		{
-			PopupCallback?.Invoke(message);
+			_popupCallback?.Invoke(message);
 		}
 
 		private void Output(string message)
 		{
-			MessageCallback?.Invoke(message);
+			_messageCallback?.Invoke(message);
 		}
 
 		private void LatchInputToMultitrackUser()
@@ -487,7 +492,7 @@ namespace BizHawk.Client.Common
 					break;
 				case MovieEndAction.Pause:
 					Movie.FinishedMode();
-					PauseCallback();
+					_pauseCallback();
 					break;
 				default:
 				case MovieEndAction.Finish:
@@ -495,7 +500,7 @@ namespace BizHawk.Client.Common
 					break;
 			}
 
-			ModeChangedCallback();
+			_modeChangedCallback();
 		}
 
 		private void HandleFrameLoopForRecordMode()

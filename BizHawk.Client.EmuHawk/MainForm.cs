@@ -207,15 +207,11 @@ namespace BizHawk.Client.EmuHawk
 
 			Global.InputManager.ControllerInputCoalescer = new ControllerInputCoalescer();
 			Global.FirmwareManager = new FirmwareManager();
-			MovieSession = new MovieSession
-			{
-				Movie = MovieService.DefaultInstance,
-				MessageCallback = AddOnScreenMessage,
-				PopupCallback = ShowMessageCoreComm,
-				AskYesNoCallback = StateErrorAskUser,
-				PauseCallback = PauseEmulator,
-				ModeChangedCallback = SetMainformMovieInfo
-			};
+			MovieSession = new MovieSession(
+				AddOnScreenMessage,
+				ShowMessageCoreComm,
+				PauseEmulator,
+				SetMainformMovieInfo);
 
 			Icon = Properties.Resources.logo;
 			InitializeComponent();
