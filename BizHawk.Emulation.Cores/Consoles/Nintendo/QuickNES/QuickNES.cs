@@ -14,7 +14,7 @@ using BizHawk.Common.BufferExtensions;
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
 	[Core(
-		"QuickNes",
+		CoreNames.QuickNes,
 		"",
 		isPorted: true,
 		isReleased: true,

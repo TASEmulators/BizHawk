@@ -10,7 +10,7 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	[Core(
-		"NesHawk",
+		CoreNames.NesHawk,
 		"zeromus, natt, alyosha, adelikat",
 		isPorted: false,
 		isReleased: true)]

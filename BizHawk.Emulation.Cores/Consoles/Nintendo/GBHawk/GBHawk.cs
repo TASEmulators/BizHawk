@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	[Core(
-		"GBHawk",
+		CoreNames.GbHawk,
 		"",
 		isPorted: false,
 		isReleased: true)]

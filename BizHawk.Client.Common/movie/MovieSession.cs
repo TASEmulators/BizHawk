@@ -2,6 +2,7 @@
 using System.IO;
 
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.NES;
@@ -252,69 +253,59 @@ namespace BizHawk.Client.Common
 			// Don't set it to a movie instance of the adapter or you will lose the definition!
 			Global.InputManager.RewireInputChain();
 
-			if (!record && emulator.SystemId == "NES") // For NES we need special logic since the movie will drive which core to load
+			if (!record)
 			{
-				var quicknesName =  typeof(QuickNES).CoreName();
-				var neshawkName = typeof(NES).CoreName();
-
-				// If either is specified use that, else use whatever is currently set
-				if (movie.Core == quicknesName)
+				switch (emulator.SystemId)
 				{
-					PreviousNesInQuickNES = Global.Config.NesInQuickNes;
-					Global.Config.NesInQuickNes = true;
-				}
-				else if (movie.Core == neshawkName)
-				{
-					PreviousNesInQuickNES = Global.Config.NesInQuickNes;
-					Global.Config.NesInQuickNes = false;
-				}
-			}
-			else if (!record && emulator.SystemId == "SNES") // ditto with snes9x vs bsnes
-			{
-				var snes9XName = typeof(Snes9x).CoreName();
-				var bsnesName = typeof(LibsnesCore).CoreName();
-
-				if (movie.Core == snes9XName)
-				{
-					PreviousSnesInSnes9x = Global.Config.SnesInSnes9x;
-					Global.Config.SnesInSnes9x = true;
-				}
-				else if (movie.Core == bsnesName)
-				{
-					PreviousSnesInSnes9x = Global.Config.SnesInSnes9x;
-					Global.Config.SnesInSnes9x = false;
-				}
-			}
-			else if (!record && emulator.SystemId == "GBA") // ditto with GBA, we should probably architect this at some point, this isn't sustainable
-			{
-				var mGBAName = typeof(MGBAHawk).CoreName();
-				var vbaNextName = typeof(VBANext).CoreName();
-
-				if (movie.Core == mGBAName)
-				{
-					PreviousGbaUsemGba = Global.Config.GbaUsemGba;
-					Global.Config.GbaUsemGba = true;
-				}
-				else if (movie.Core == vbaNextName)
-				{
-					PreviousGbaUsemGba = Global.Config.GbaUsemGba;
-					Global.Config.GbaUsemGba = false;
-				}
-			}
-			else if (!record && (emulator.SystemId == "GB" || emulator.SystemId == "GBC"))
-			{
-				var gbHawkName = typeof(GBHawk).CoreName();
-				var gambatteName = typeof(Gameboy).CoreName();
-
-				if (movie.Core == gbHawkName)
-				{
-					PreviousGbUseGbHawk = Global.Config.GbUseGbHawk;
-					Global.Config.GbUseGbHawk = true;
-				}
-				else if (movie.Core == gambatteName)
-				{
-					PreviousGbUseGbHawk = Global.Config.GbUseGbHawk;
-					Global.Config.GbUseGbHawk = false;
+					case "NES":
+						if (movie.Core == CoreNames.QuickNes)
+						{
+							PreviousNesInQuickNES = Global.Config.NesInQuickNes;
+							Global.Config.NesInQuickNes = true;
+						}
+						else if (movie.Core == CoreNames.NesHawk)
+						{
+							PreviousNesInQuickNES = Global.Config.NesInQuickNes;
+							Global.Config.NesInQuickNes = false;
+						}
+						break;
+					case "SNES":
+						if (movie.Core == CoreNames.Snes9X)
+						{
+							PreviousSnesInSnes9x = Global.Config.SnesInSnes9x;
+							Global.Config.SnesInSnes9x = true;
+						}
+						else if (movie.Core == CoreNames.Bsnes)
+						{
+							PreviousSnesInSnes9x = Global.Config.SnesInSnes9x;
+							Global.Config.SnesInSnes9x = false;
+						}
+						break;
+					case "GBA":
+						if (movie.Core == CoreNames.Mgba)
+						{
+							PreviousGbaUsemGba = Global.Config.GbaUsemGba;
+							Global.Config.GbaUsemGba = true;
+						}
+						else if (movie.Core == CoreNames.VbaNext)
+						{
+							PreviousGbaUsemGba = Global.Config.GbaUsemGba;
+							Global.Config.GbaUsemGba = false;
+						}
+						break;
+					case "GB":
+					case "GBC":
+						if (movie.Core == CoreNames.GbHawk)
+						{
+							PreviousGbUseGbHawk = Global.Config.GbUseGbHawk;
+							Global.Config.GbUseGbHawk = true;
+						}
+						else if (movie.Core == CoreNames.Gambatte)
+						{
+							PreviousGbUseGbHawk = Global.Config.GbUseGbHawk;
+							Global.Config.GbUseGbHawk = false;
+						}
+						break;
 				}
 			}
 

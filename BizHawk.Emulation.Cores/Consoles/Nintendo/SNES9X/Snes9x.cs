@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 {
-	[Core("Snes9x", "", true, true,
+	[Core(CoreNames.Snes9X, "", true, true,
 		"5e0319ab3ef9611250efb18255186d0dc0d7e125", "https://github.com/snes9xgit/snes9x", false)]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public class Snes9x : WaterboxCore, 

@@ -297,18 +297,6 @@ namespace BizHawk.Emulation.Common
 			return core.VsyncNumerator() / (double)core.VsyncDenominator();
 		}
 
-		// TODO: a better place for these
-		public static string CoreName(this Type type)
-		{
-			if (type == null)
-			{
-				return "";
-			}
-
-			var attr = (CoreAttribute)Attribute.GetCustomAttribute(type, typeof(CoreAttribute));
-			return attr?.CoreName ?? "";
-		}
-
 		public static bool IsImplemented(this MethodInfo info)
 		{
 			return !info.GetCustomAttributes(false).Any(a => a is FeatureNotImplementedAttribute);

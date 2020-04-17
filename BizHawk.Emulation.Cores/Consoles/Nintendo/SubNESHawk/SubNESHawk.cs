@@ -4,7 +4,7 @@ using BizHawk.Emulation.Cores.Nintendo.NES;
 namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 {
 	[Core(
-		"SubNESHawk",
+		CoreNames.SubNesHawk,
 		"",
 		isPorted: false,
 		isReleased: true)]

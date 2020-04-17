@@ -18,7 +18,7 @@ using BizHawk.Emulation.Cores.Components.W65816;
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
 	[Core(
-		"BSNES",
+		CoreNames.Bsnes,
 		"byuu",
 		isPorted: true,
 		isReleased: true,
