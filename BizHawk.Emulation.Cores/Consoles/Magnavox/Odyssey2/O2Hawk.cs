@@ -21,6 +21,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public byte kb_byte;
 		public bool ppu_en, RAM_en, kybrd_en, copy_en, cart_b0, cart_b1;
 		public ushort rom_bank;
+		public ushort bank_size;
 
 		public byte[] _bios;
 		public readonly byte[] _rom;
@@ -155,6 +156,19 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			{
 				Core = this
 			};
+
+			mapper.Initialize();
+
+			// bank size is different for 12 k carts, it uses all 3k per bank. Note that A11 is held low by the CPU during interrupts
+			// so this means 12k games use the upper 1k outside of vbl
+			if (_rom.Length == 0x3000)
+			{
+				bank_size = 0xC00;
+			}
+			else
+			{
+				bank_size = 0x800;
+			}
 		}
 	}
 }

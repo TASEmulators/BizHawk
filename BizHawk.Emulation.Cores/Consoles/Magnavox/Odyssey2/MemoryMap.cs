@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				return _bios[addr];
 			}
 
-			return mapper.ReadMemory((ushort)((addr - 0x400) | rom_bank));
+			return mapper.ReadMemory((ushort)((addr - 0x400) + bank_size * rom_bank));
 		}
 
 		public void WriteMemory(ushort addr, byte value)
@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				return _bios[addr];
 			}
 
-			return mapper.PeekMemory((ushort)(addr - 0x400));
+			return mapper.PeekMemory((ushort)((addr - 0x400) + bank_size * rom_bank));
 		}
 
 		public byte ReadPort(ushort port)
@@ -155,12 +155,12 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 				rom_bank = (ushort)(cart_b0 ? 1 : 0);
 				rom_bank |= (ushort)(cart_b1 ? 2 : 0);
-				rom_bank = (ushort)(rom_bank << 11);
+				//rom_bank = (ushort)(rom_bank << 12);
 
 				ppu.bg_brightness = !ppu.lum_en ? 8 : 0;
 				ppu.grid_brightness = (!ppu.lum_en | ppu.VDC_color.Bit(6)) ? 8 : 0;
 
-				//Console.WriteLine("main ctrl: " + value + " " + ppu.lum_en + " " + ppu_en + " " + RAM_en + " " + cpu.TotalExecutedCycles + " " + ppu.LY);
+				//Console.WriteLine("main ctrl: " + value + " " + ppu.lum_en + " " + ppu_en + " " + RAM_en + " " + cpu.TotalExecutedCycles + " " + ppu.LY + " " + rom_bank);
 			}
 			else
 			{

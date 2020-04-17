@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					"PPU",
 					256,
 					MemoryDomain.Endian.Little,
-					addr => ppu.ReadReg((int)addr),
+					addr => ppu.PeekReg((int)addr),
 					(addr, value) => ppu.WriteReg((int)addr, value),
 					1)
 			};

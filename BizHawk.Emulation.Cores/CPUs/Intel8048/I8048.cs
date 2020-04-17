@@ -513,7 +513,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 
 		public Action<TraceInfo> TraceCallback;
 
-		public string TraceHeader => "MC6809: PC, machine code, mnemonic, operands, registers (A, B, X, Y, US, SP, DP, CC), Cy, flags (CAFBIFT0T1TFR)";
+		public string TraceHeader => "I8048: PC, machine code, mnemonic, operands, registers (A, B, X, Y, US, SP, DP, CC), Cy, flags (CAFBIFT0T1TFR)";
 
 		public TraceInfo State(bool disassemble = true)
 		{
