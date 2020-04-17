@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 using BizHawk.Emulation.Common;
@@ -74,12 +75,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		// The behavior here is to only temporarily override these settings when playing a movie and then restore the user's preferred settings
-		// A more elegant approach would be appreciated
-		public bool? PreviousNesInQuickNES { get; set; }
-		public bool? PreviousSnesInSnes9x { get; set; }
-		public bool? PreviousGbaUsemGba { get; set; }
-		public bool? PreviousGbUseGbHawk { get; set; }
+		public IDictionary<string, string> PreferredCores { get; } = new Dictionary<string, string>();
 
 		public void RecreateMovieController(ControllerDefinition definition)
 		{
@@ -258,53 +254,21 @@ namespace BizHawk.Client.Common
 				switch (emulator.SystemId)
 				{
 					case "NES":
-						if (movie.Core == CoreNames.QuickNes)
-						{
-							PreviousNesInQuickNES = Global.Config.NesInQuickNes;
-							Global.Config.NesInQuickNes = true;
-						}
-						else if (movie.Core == CoreNames.NesHawk)
-						{
-							PreviousNesInQuickNES = Global.Config.NesInQuickNes;
-							Global.Config.NesInQuickNes = false;
-						}
+						PreferredCores["NES"] = Global.Config.PreferredCores["NES"];
+						Global.Config.PreferredCores["NES"] = movie.Core;
 						break;
 					case "SNES":
-						if (movie.Core == CoreNames.Snes9X)
-						{
-							PreviousSnesInSnes9x = Global.Config.SnesInSnes9x;
-							Global.Config.SnesInSnes9x = true;
-						}
-						else if (movie.Core == CoreNames.Bsnes)
-						{
-							PreviousSnesInSnes9x = Global.Config.SnesInSnes9x;
-							Global.Config.SnesInSnes9x = false;
-						}
+						PreferredCores["SNES"] = Global.Config.PreferredCores["SNES"];
+						Global.Config.PreferredCores["SNES"] = movie.Core;
 						break;
 					case "GBA":
-						if (movie.Core == CoreNames.Mgba)
-						{
-							PreviousGbaUsemGba = Global.Config.GbaUsemGba;
-							Global.Config.GbaUsemGba = true;
-						}
-						else if (movie.Core == CoreNames.VbaNext)
-						{
-							PreviousGbaUsemGba = Global.Config.GbaUsemGba;
-							Global.Config.GbaUsemGba = false;
-						}
+						PreferredCores["GBA"] = Global.Config.PreferredCores["GBA"];
+						Global.Config.PreferredCores["GBA"] = movie.Core;
 						break;
 					case "GB":
 					case "GBC":
-						if (movie.Core == CoreNames.GbHawk)
-						{
-							PreviousGbUseGbHawk = Global.Config.GbUseGbHawk;
-							Global.Config.GbUseGbHawk = true;
-						}
-						else if (movie.Core == CoreNames.Gambatte)
-						{
-							PreviousGbUseGbHawk = Global.Config.GbUseGbHawk;
-							Global.Config.GbUseGbHawk = false;
-						}
+						PreferredCores["GB"] = Global.Config.PreferredCores["GB"];
+						Global.Config.PreferredCores["GB"] = movie.Core;
 						break;
 				}
 			}

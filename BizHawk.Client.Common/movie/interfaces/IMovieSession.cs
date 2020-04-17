@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -28,11 +29,10 @@ namespace BizHawk.Client.Common
 
 		IController PreviousFrame { get; }
 
-		// TODO: this isn't sustainable
-		bool? PreviousNesInQuickNES { get; set; }
-		bool? PreviousSnesInSnes9x { get; set; }
-		bool? PreviousGbaUsemGba { get; set; }
-		bool? PreviousGbUseGbHawk { get; set; }
+		/// <summary>
+		/// Previous saved core preferences. Stored so that they can be stored after a movie overrides the value
+		/// </summary>
+		IDictionary<string, string> PreferredCores { get; }
 
 		/// <summary>
 		/// Recreates MovieController with the given controller definition

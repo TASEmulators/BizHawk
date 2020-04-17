@@ -18,5 +18,6 @@ namespace BizHawk.Emulation.Cores
 		public const string VbaNext = "VBA-Next";
 		public const string GbHawk = "GBHawk";
 		public const string Gambatte = "Gambatte";
+		public const string SubGbHawk = "SubGBHawk";
 	}
 }

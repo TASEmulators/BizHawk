@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
@@ -274,13 +275,13 @@ namespace BizHawk.Client.Common.movie.import
 
 			if (isGBA)
 			{
-				Config.GbaUsemGba = true;
+				Config.PreferredCores["GBA"] = CoreNames.Mgba;
 				var ss = new MGBAHawk.SyncSettings { SkipBios = true };
 				Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(ss);
 			}
 			else
 			{
-				if (Config.GbUseGbHawk || Config.UseSubGBHawk)
+				if (Config.PreferredCores["GB"] == CoreNames.GbHawk || Config.PreferredCores["GB"] == CoreNames.SubGbHawk)
 				{
 					var tempSync = new GBHawk.GBSyncSettings();
 					if (is_GBC) { tempSync.ConsoleMode = GBHawk.GBSyncSettings.ConsoleModeType.GBC; }

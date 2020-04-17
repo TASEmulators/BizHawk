@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
+using BizHawk.Emulation.Cores;
 
 namespace BizHawk.Client.Common
 {
@@ -311,15 +312,17 @@ namespace BizHawk.Client.Common
 		// as this setting spans multiple cores and doesn't actually affect the behavior of any core,
 		// it hasn't been absorbed into the new system
 		public bool GbAsSgb { get; set; }
-		public bool UseSubNESHawk { get; set; }
-		public bool UseSubGBHawk { get; set; }
-		public bool NesInQuickNes { get; set; } = true;
-		public bool SnesInSnes9x { get; set; } = true;
-		public bool GbaUsemGba { get; set; } = true;
 		public bool SgbUseBsnes { get; set; }
-		public bool GbUseGbHawk { get; set; }
 		public bool CoreForcingViaGameDb { get; set; } = true;
 		public string LibretroCore { get; set; }
+
+		public Dictionary<string, string> PreferredCores = new Dictionary<string, string>
+		{
+			["NES"] = CoreNames.QuickNes,
+			["SNES"] = CoreNames.Snes9X,
+			["GBA"] = CoreNames.Mgba,
+			["GB"] = CoreNames.Gambatte
+		};
 
 		// ReSharper disable once UnusedMember.Global
 		public string LastWrittenFrom { get; set; } = VersionInfo.MainVersion;

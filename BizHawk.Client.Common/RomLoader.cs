@@ -610,7 +610,7 @@ namespace BizHawk.Client.Common
 
 								var left = Database.GetGameInfo(leftBytes, "left.gb");
 								var right = Database.GetGameInfo(rightBytes, "right.gb");
-								if (Global.Config.GbUseGbHawk)
+								if (Global.Config.PreferredCores["GB"] == CoreNames.GbHawk)
 								{
 									nextEmulator = new GBHawkLink(
 										nextComm,
@@ -960,7 +960,7 @@ namespace BizHawk.Client.Common
 
 							break;
 						case "SNES":
-							bool useSnes9x = Global.Config.SnesInSnes9x;
+							bool useSnes9x = Global.Config.PreferredCores["SNES"] == CoreNames.Snes9X;
 							if (Global.Config.CoreForcingViaGameDb && !string.IsNullOrEmpty(game.ForcedCore))
 							{
 								if (game.ForcedCore.ToLower() == "snes9x")
@@ -991,80 +991,33 @@ namespace BizHawk.Client.Common
 						case "NES":
 						{
 							// apply main spur-of-the-moment switcheroo as lowest priority
-							string preference = "neshawk";
-							if (Global.Config.NesInQuickNes)
-							{
-								preference = "quicknes";
-							}
+							string preference = Global.Config.PreferredCores["NES"];
 
 							// if user has saw fit to override in gamedb, apply that
 							if (Global.Config.CoreForcingViaGameDb && !string.IsNullOrEmpty(game.ForcedCore))
 							{
-								preference = game.ForcedCore;
+								preference = game.ForcedCore.ToLower() switch
+								{
+									"quicknes" => CoreNames.QuickNes,
+									_ => CoreNames.NesHawk
+								};
 							}
 
 							// but only neshawk is accurate
 							if (forceAccurateCore)
 							{
-								preference = "neshawk";
+								preference = CoreNames.NesHawk;
 							}
 
-							if (preference == "neshawk")
-							{
-								core = Global.Config.UseSubNESHawk
-									? CoreInventory.Instance["NES", "SubNESHawk"]
-									: CoreInventory.Instance["NES", "NesHawk"];
-							}
-							else
-							{
-								core = CoreInventory.Instance["NES", "QuickNes"];
-							}
+							core = CoreInventory.Instance["NES", preference];
 						}
-
 							break;
 
 						case "GB":
-							if (!Global.Config.GbAsSgb)
-							{
-								if (Global.Config.UseSubGBHawk)
-								{
-									core = CoreInventory.Instance["GB", "SubGBHawk"];
-								}
-								else
-								{
-									core = Global.Config.GbUseGbHawk
-									? CoreInventory.Instance["GB", "GBHawk"]
-									: CoreInventory.Instance["GB", "Gambatte"];
-								}			
-							}
-							else
-							{
-								if (Global.Config.SgbUseBsnes)
-								{
-									game.System = "SNES";
-									game.AddOption("SGB");
-									var snes = new LibsnesCore(game, rom.FileData, null, null, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
-									nextEmulator = snes;
-								}
-								else
-								{
-									core = CoreInventory.Instance["SGB", "SameBoy"];
-								}
-							}
-							break;
 						case "GBC":
 							if (!Global.Config.GbAsSgb)
 							{
-								if (Global.Config.UseSubGBHawk)
-								{
-									core = CoreInventory.Instance["GB", "SubGBHawk"];
-								}
-								else
-								{
-									core = Global.Config.GbUseGbHawk
-									? CoreInventory.Instance["GBC", "GBHawk"]
-									: CoreInventory.Instance["GBC", "Gambatte"];
-								}
+								core = CoreInventory.Instance["GB", Global.Config.PreferredCores["GB"]];
 							}
 							else
 							{
@@ -1106,9 +1059,7 @@ namespace BizHawk.Client.Common
 							nextEmulator = cpc;
 							break;
 						case "GBA":
-							core = Global.Config.GbaUsemGba
-								? CoreInventory.Instance["GBA", "mGBA"]
-								: CoreInventory.Instance["GBA", "VBA-Next"];
+							core = CoreInventory.Instance["GBA", Global.Config.PreferredCores["GBA"]];
 							break;
 						case "PSX":
 							nextEmulator = new Octoshock(nextComm, null, null, rom.FileData, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>(), "PSX etc.");

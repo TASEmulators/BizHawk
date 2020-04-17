@@ -1949,7 +1949,7 @@
 			this.GBGambatteMenuItem.Name = "GBGambatteMenuItem";
 			this.GBGambatteMenuItem.Size = new System.Drawing.Size(121, 22);
 			this.GBGambatteMenuItem.Text = "Gambatte";
-			this.GBGambatteMenuItem.Click += new System.EventHandler(this.GBCorePick_Click);
+			this.GBGambatteMenuItem.Click += new System.EventHandler(this.GambatteCorePick_Click);
 			// 
 			// GBGBHawkMenuItem
 			// 

@@ -19,6 +19,7 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Emulation.Cores.Computers.AppleII;
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
+using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Atari.A7800Hawk;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
@@ -936,8 +937,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CoreMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			quickNESMenuItem.Checked = Config.NesInQuickNes;
-			nesHawkMenuItem.Checked = !Config.NesInQuickNes;
+			quickNESMenuItem.Checked = Config.PreferredCores["NES"] == CoreNames.QuickNes;
+			nesHawkMenuItem.Checked = Config.PreferredCores["NES"] == CoreNames.NesHawk;
 		}
 
 		private void ControllersMenuItem_Click(object sender, EventArgs e)
@@ -1199,15 +1200,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NesCoreSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			QuicknesCoreMenuItem.Checked = Config.NesInQuickNes;
-			NesCoreMenuItem.Checked = !Config.NesInQuickNes && !Config.UseSubNESHawk;
-			SubNesHawkMenuItem.Checked = Config.UseSubNESHawk;
+			QuicknesCoreMenuItem.Checked = Config.PreferredCores["NES"] == CoreNames.QuickNes;
+			NesCoreMenuItem.Checked = Config.PreferredCores["NES"] == CoreNames.NesHawk;
+			SubNesHawkMenuItem.Checked = Config.PreferredCores["NES"] == CoreNames.SubNesHawk;
 		}
 
 		private void QuickNesCorePick_Click(object sender, EventArgs e)
 		{
-			Config.NesInQuickNes = true;
-			Config.UseSubNESHawk = false;
+			Config.PreferredCores["NES"] = CoreNames.QuickNes;
 
 			if (Emulator.SystemId == "NES")
 			{
@@ -1217,8 +1217,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NesCorePick_Click(object sender, EventArgs e)
 		{
-			Config.NesInQuickNes = false;
-			Config.UseSubNESHawk = false;
+			Config.PreferredCores["NES"] = CoreNames.NesHawk;
 
 			if (Emulator.SystemId == "NES")
 			{
@@ -1228,20 +1227,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SubNesCorePick_Click(object sender, EventArgs e)
 		{
-			Config.UseSubNESHawk = true;
-			Config.NesInQuickNes = false;
+			Config.PreferredCores["NES"] = CoreNames.SubNesHawk;
 
-			if (!Emulator.IsNull())
-			{
-				FlagNeedsReboot();
-			}
-		}
-
-		private void SubGBCorePick_Click(object sender, EventArgs e)
-		{
-			Config.UseSubGBHawk ^= true;
-
-			if (!Emulator.IsNull())
+			if (Emulator.SystemId == "NES")
 			{
 				FlagNeedsReboot();
 			}
@@ -1249,13 +1237,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CoreSNESSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			Coresnes9xMenuItem.Checked = Config.SnesInSnes9x;
-			CorebsnesMenuItem.Checked = !Config.SnesInSnes9x;
+			Coresnes9xMenuItem.Checked = Config.PreferredCores["SNES"] == CoreNames.Snes9X;
+			CorebsnesMenuItem.Checked = Config.PreferredCores["SNES"] == CoreNames.Bsnes;
 		}
 
 		private void CoreSnesToggle_Click(object sender, EventArgs e)
 		{
-			Config.SnesInSnes9x ^= true;
+			Config.PreferredCores["SNES"] = Config.PreferredCores["SNES"] == CoreNames.Snes9X
+				? CoreNames.Bsnes
+				: CoreNames.Snes9X;
 
 			if (Emulator.SystemId == "SNES")
 			{
@@ -1265,13 +1255,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GbaCoreSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			VbaNextCoreMenuItem.Checked = !Config.GbaUsemGba;
-			MgbaCoreMenuItem.Checked = Config.GbaUsemGba;
+			VbaNextCoreMenuItem.Checked = Config.PreferredCores["GBA"] == CoreNames.VbaNext;
+			MgbaCoreMenuItem.Checked = Config.PreferredCores["GBA"] == CoreNames.Mgba;
 		}
 
 		private void GbaCorePick_Click(object sender, EventArgs e)
 		{
-			Config.GbaUsemGba ^= true;
+			Config.PreferredCores["GBA"] = Config.PreferredCores["GBA"] == CoreNames.VbaNext
+				? CoreNames.Mgba
+				: CoreNames.VbaNext;
 			if (Emulator.SystemId == "GBA")
 			{
 				FlagNeedsReboot();
@@ -1286,16 +1278,34 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBCoreSubmenu_DropDownOpened(object sender, EventArgs e)
 		{
-			GBGambatteMenuItem.Checked = !Config.GbUseGbHawk;
-			GBGBHawkMenuItem.Checked = Config.GbUseGbHawk;
-			SubGBHawkMenuItem.Checked = Config.UseSubGBHawk;
+			GBGambatteMenuItem.Checked = Config.PreferredCores["GB"] == CoreNames.Gambatte;
+			GBGBHawkMenuItem.Checked = Config.PreferredCores["GB"] == CoreNames.GbHawk;
+			SubGBHawkMenuItem.Checked = Config.PreferredCores["GB"] == CoreNames.SubGbHawk;
+		}
+
+		private void SubGBCorePick_Click(object sender, EventArgs e)
+		{
+			Config.PreferredCores["GB"] = CoreNames.SubGbHawk;
+			if (Emulator.SystemId == "GB" || Emulator.SystemId == "GBC")
+			{
+				FlagNeedsReboot();
+			}
 		}
 
 		private void SgbCorePick_Click(object sender, EventArgs e)
 		{
 			Config.SgbUseBsnes ^= true;
-			// TODO: only flag if one of these cores
-			if (!Emulator.IsNull())
+			if (Emulator.SystemId == "GB" || Emulator.SystemId == "GBC")
+			{
+				FlagNeedsReboot();
+			}
+		}
+
+		private void GambatteCorePick_Click(object sender, EventArgs e)
+		{
+			Config.PreferredCores["GB"] = CoreNames.Gambatte;
+
+			if (Emulator.SystemId == "GB" || Emulator.SystemId == "GBC")
 			{
 				FlagNeedsReboot();
 			}
@@ -1303,10 +1313,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBCorePick_Click(object sender, EventArgs e)
 		{
-			Config.GbUseGbHawk ^= true;
-			Config.UseSubGBHawk = false;
-			// TODO: only flag if one of these cores
-			if (!Emulator.IsNull())
+			Config.PreferredCores["GB"] = CoreNames.GbHawk;
+
+			if (Emulator.SystemId == "GB" || Emulator.SystemId == "GBC")
 			{
 				FlagNeedsReboot();
 			}
@@ -1550,13 +1559,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void QuickNesMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.NesInQuickNes = true;
+			Config.PreferredCores["NES"] = CoreNames.QuickNes;
 			FlagNeedsReboot();
 		}
 
 		private void NesHawkMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.NesInQuickNes = false;
+			Config.PreferredCores["NES"] = CoreNames.NesHawk;
 			FlagNeedsReboot();
 		}
 
@@ -2006,13 +2015,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UsemGBAMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.GbaUsemGba = true;
+			Config.PreferredCores["GBA"] = CoreNames.Mgba;
 			FlagNeedsReboot();
 		}
 
 		private void UseVbaNextMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.GbaUsemGba = false;
+			Config.PreferredCores["GBA"] = CoreNames.VbaNext;
 			FlagNeedsReboot();
 		}
 
@@ -2023,8 +2032,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBACoreSelectionSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			GBAmGBAMenuItem.Checked = Config.GbaUsemGba;
-			GBAVBANextMenuItem.Checked = !Config.GbaUsemGba;
+			GBAmGBAMenuItem.Checked = Config.PreferredCores["GBA"] == CoreNames.Mgba;
+			GBAVBANextMenuItem.Checked = Config.PreferredCores["GBA"] == CoreNames.VbaNext;
 		}
 
 		#endregion

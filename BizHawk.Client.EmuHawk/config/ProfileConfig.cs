@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
-
+using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
@@ -113,7 +113,7 @@ namespace BizHawk.Client.EmuHawk
 			PutSyncSettings<N64>(n64Settings);
 
 			// SNES
-			_config.SnesInSnes9x = true;
+			_config.PreferredCores["SNES"] = CoreNames.Snes9X;
 
 			// Genesis
 			var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();
@@ -138,7 +138,7 @@ namespace BizHawk.Client.EmuHawk
 			PutSyncSettings<Atari2600>(a2600Settings);
 
 			// NES
-			_config.NesInQuickNes = true;
+			_config.PreferredCores["NES"] = CoreNames.QuickNes;
 		}
 
 		private void SetLongPlay()
@@ -146,7 +146,7 @@ namespace BizHawk.Client.EmuHawk
 			_config.SaveStateCompressionLevelNormal = 5;
 
 			// SNES
-			_config.SnesInSnes9x = false;
+			_config.PreferredCores["SNES"] = CoreNames.Bsnes;
 
 			// SMS
 			var smsSettings = GetSyncSettings<SMS, SMS.SmsSyncSettings>();
@@ -161,7 +161,7 @@ namespace BizHawk.Client.EmuHawk
 			PutSyncSettings<Atari2600>(a2600Settings);
 
 			// NES
-			_config.NesInQuickNes = false;
+			_config.PreferredCores["NES"] = CoreNames.NesHawk;
 		}
 
 		private void SetTas()
@@ -185,7 +185,7 @@ namespace BizHawk.Client.EmuHawk
 			PutSyncSettings<N64>(n64Settings);
 
 			// SNES
-			_config.SnesInSnes9x = false;
+			_config.PreferredCores["SNES"] = CoreNames.Snes9X;
 
 			// Genesis
 			var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();
@@ -205,7 +205,7 @@ namespace BizHawk.Client.EmuHawk
 			PutSyncSettings<Atari2600>(a2600Settings);
 
 			// NES
-			_config.NesInQuickNes = false;
+			_config.PreferredCores["NES"] = CoreNames.NesHawk;
 		}
 
 		private void SetN64Tas()

@@ -1,10 +1,9 @@
 ﻿using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 {
 	[Core(
-		"SubGBHawk",
+		CoreNames.SubGbHawk,
 		"",
 		isPorted: false,
 		isReleased: true)]

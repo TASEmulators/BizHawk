@@ -5,6 +5,7 @@ using System.Text;
 using BizHawk.Common;
 using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 namespace BizHawk.Client.Common.movie.import
@@ -283,7 +284,7 @@ namespace BizHawk.Client.Common.movie.import
 
 			Result.Movie.HeaderEntries[HeaderKeys.Platform] = platform;
 			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(ss);
-			Config.SnesInSnes9x = false; // TODO: convert to snes9x if user has set this to true
+			Config.PreferredCores["SNES"] = CoreNames.Bsnes; // TODO: convert to snes9x if it is the user's preference
 		}
 
 		private IController EmptyLmsvFrame()
