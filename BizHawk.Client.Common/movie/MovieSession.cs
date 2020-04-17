@@ -251,25 +251,17 @@ namespace BizHawk.Client.Common
 
 			if (!record)
 			{
-				switch (emulator.SystemId)
+				var preference = emulator.SystemId;
+				if (preference == "GBC")
 				{
-					case "NES":
-						PreferredCores["NES"] = Global.Config.PreferredCores["NES"];
-						Global.Config.PreferredCores["NES"] = movie.Core;
-						break;
-					case "SNES":
-						PreferredCores["SNES"] = Global.Config.PreferredCores["SNES"];
-						Global.Config.PreferredCores["SNES"] = movie.Core;
-						break;
-					case "GBA":
-						PreferredCores["GBA"] = Global.Config.PreferredCores["GBA"];
-						Global.Config.PreferredCores["GBA"] = movie.Core;
-						break;
-					case "GB":
-					case "GBC":
-						PreferredCores["GB"] = Global.Config.PreferredCores["GB"];
-						Global.Config.PreferredCores["GB"] = movie.Core;
-						break;
+					// We want to treat GBC the same as GB
+					preference = "GB";
+				}
+
+				if (Global.Config.PreferredCores.ContainsKey(preference))
+				{
+					PreferredCores[preference] = Global.Config.PreferredCores[preference];
+					Global.Config.PreferredCores[preference] = movie.Core;
 				}
 			}
 
