@@ -98,8 +98,11 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 						ret |= VDC_col_ret[i];
 					}					
 				}
-				
-				//Console.WriteLine("col: " + ret + " " + Core.cpu.TotalExecutedCycles);
+
+				// register is reset when read
+				for (int i = 0; i < 8; i++) { VDC_col_ret[i] = 0; }
+
+				//Console.WriteLine("col: " + ret + " " + LY + " " + Core.cpu.TotalExecutedCycles);
 			}
 			else if (addr == 0xA3)
 			{
@@ -346,7 +349,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					Core.in_vblank = false;
 					Core.cpu.T1 = false;
 					if (Core.is_pal) { Core.cpu.IRQPending = false; }
-					for (int i = 0; i < 8; i++) { VDC_col_ret[i] = 0; }
 					LY_ret = 0;
 				}
 
