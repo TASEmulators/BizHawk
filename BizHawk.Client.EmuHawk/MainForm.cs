@@ -2271,9 +2271,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (MovieSession.MovieIsQueued)
 			{
-				if (!string.IsNullOrWhiteSpace(MovieSession.QueuedMovie.SyncSettingsJson))
+				if (!string.IsNullOrWhiteSpace(MovieSession.QueuedSyncSettings))
 				{
-					e.Settings = ConfigService.LoadWithType(MovieSession.QueuedMovie.SyncSettingsJson);
+					e.Settings = ConfigService.LoadWithType(MovieSession.QueuedSyncSettings);
 				}
 				else
 				{

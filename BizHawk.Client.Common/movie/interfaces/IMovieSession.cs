@@ -6,17 +6,14 @@ namespace BizHawk.Client.Common
 	public interface IMovieSession
 	{
 		IMovie Movie { get; set; }
-
-		/// <summary>
-		/// Gets the queued movie
-		/// When initializing a movie, it will be stored here until Rom processes have been completed, then it will be moved to the Movie property
-		/// If an existing movie is still active, it will remain in the Movie property while the new movie is queued
-		/// </summary>
-		IMovie QueuedMovie { get; }
+		bool ReadOnly { get; set; }
 
 		bool MovieIsQueued { get; }
 
-		bool ReadOnly { get; set; }
+		/// <summary>
+		/// Gets the sync settings from a queued movie, if a movie is queued
+		/// </summary>
+		string QueuedSyncSettings { get; }
 
 		IMovieController MovieController { get; }
 		MultitrackRecorder MultiTrack { get; }
@@ -49,6 +46,11 @@ namespace BizHawk.Client.Common
 		bool CheckSavestateTimeline(TextReader reader);
 		bool HandleLoadState(TextReader reader);
 
+		/// <summary>
+		/// Queues up a movie for loading
+		/// When initializing a movie, it will be stored until Rom loading processes have been completed, then it will be moved to the Movie property
+		/// If an existing movie is still active, it will remain in the Movie property while the new movie is queued
+		/// </summary>
 		void QueueNewMovie(IMovie movie, bool record, IEmulator emulator);
 
 		/// <summary>
