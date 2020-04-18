@@ -398,11 +398,13 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			}
 			else
 			{
+				// NOTE: no PC increment here, jump is relative to last 256 address block before increment.
+				// so for a DJNZ starting at 0xFE does not overflow to 0x100 before the jump
 				PopulateCURINSTR(IDLE,
 								IDLE,
 								DEC8, (ushort)(reg + RB),
 								RD, ALU, PC,
-								INC11, PC,
+								IDLE,
 								IDLE,
 								IDLE,
 								IDLE,
