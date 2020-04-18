@@ -162,6 +162,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					{
 						//Console.WriteLine(PB7_undriven + " " + !wrt_val.Bit(7));
 						ppu.ramp_sig = !wrt_val.Bit(7);
+						ppu.new_draw_line();
 						if (PB7_undriven && !wrt_val.Bit(7))
 						{
 							PB7_undriven = false;
@@ -206,6 +207,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 							{
 								ppu.y_vel = (byte)(portA_ret ^ 0x80);
 							}
+
+							ppu.new_draw_line();
 						}
 					}
 
@@ -237,6 +240,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					}
 
 					ppu.x_vel = (byte)(portA_ret ^ 0x80);
+					ppu.new_draw_line();
 
 					int_fl &= 0xE7;
 					update_int_fl();
@@ -281,8 +285,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 							}
 							else
 							{
-								ppu.y_vel = (byte)(portA_ret ^ 0x80);
+								ppu.y_vel = (byte)(portA_ret ^ 0x80);							
 							}
+							ppu.new_draw_line();
 						}
 					}
 
@@ -314,6 +319,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					}
 
 					ppu.x_vel = (byte)(portA_ret ^ 0x80);
+					ppu.new_draw_line();
 
 					int_fl &= 0xFC;
 					update_int_fl();
@@ -336,6 +342,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					{
 						PB7 = false;
 						ppu.ramp_sig = true;
+						ppu.new_draw_line();
 					}
 
 					t1_shot_go = true;
@@ -399,6 +406,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					if ((value & 0xE0) == 0xC0) { ppu.blank_sig = true; }
 					else { ppu.blank_sig = false; }
 
+					ppu.new_draw_line();
+
 					break;
 				case 0xD:
 					// writing to flags does not clear bit 7 directly
@@ -440,13 +449,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 						}
 						else
 						{
-							if (sel1) { ppu.bright = portA_ret; }
-							else { ppu.y_vel = portA_ret; }
+							if (sel1) { ppu.bright = portA_ret; Console.WriteLine("brightness change?"); }
+							else { ppu.y_vel = portA_ret; ppu.new_draw_line(); }
 						}
 					}
 					else
 					{
 						ppu.x_vel = portA_ret;
+						ppu.new_draw_line();
 					}
 
 					int_fl &= 0xFC;
@@ -470,7 +480,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					update_int_fl();
 					if (int_en.Bit(6)) { cpu.IRQPending = true; }
 
-					if (t1_ctrl.Bit(7)) { PB7 = !PB7; ppu.ramp_sig = !PB7; }
+					if (t1_ctrl.Bit(7)) { PB7 = !PB7; ppu.ramp_sig = !PB7; ppu.new_draw_line(); }
 				}
 				else
 				{
@@ -481,7 +491,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 						int_fl |= 0x40;
 						update_int_fl();
 						if (int_en.Bit(6)) { cpu.IRQPending = true; }
-						if (t1_ctrl.Bit(7)) { PB7 = true; ppu.ramp_sig = false; }
+						if (t1_ctrl.Bit(7)) { PB7 = true; ppu.ramp_sig = false; ppu.new_draw_line(); }
 
 						t1_shot_go = false;
 					}				
@@ -538,6 +548,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 						else
 						{
 							ppu.blank_sig = !shift_reg.Bit(7 - shift_count);
+							ppu.new_draw_line();
 
 							shift_count++;
 							shift_reg_wait = 1;

@@ -128,6 +128,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public void get_video_frame()
 		{
+			ppu.draw_screen();
+			
 			for (int i = 0; i < _vidbuffer.Length; i++)
 			{
 				_framebuffer[i] = _vidbuffer[i];
@@ -136,10 +138,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			
 		}
 
-		public int VirtualWidth => 256 + 4;
-		public int VirtualHeight => 384 + 4;
-		public int BufferWidth => 256 + 4;
-		public int BufferHeight => 384 + 4;
+		public int VirtualWidth => (256 + 4) * 2;
+		public int VirtualHeight => (384 + 4) * 2;
+		public int BufferWidth => (256 + 4) * 2;
+		public int BufferHeight => (384 + 4) * 2;
 		public int BackgroundColor => unchecked((int)0xFF000000);
 		public int VsyncNumerator => _frameHz;
 		public int VsyncDenominator => 1;

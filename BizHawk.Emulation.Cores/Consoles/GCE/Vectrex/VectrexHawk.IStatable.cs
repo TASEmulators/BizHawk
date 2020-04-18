@@ -7,14 +7,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 	{
 		private void SyncState(Serializer ser)
 		{
-			byte[] core = null;
-			if (ser.IsWriter)
-			{
-				var ms = new MemoryStream();
-				ms.Close();
-				core = ms.ToArray();
-			}
-
 			ser.BeginSection("VECTREX");
 
 			cpu.SyncState(ser);
@@ -77,8 +69,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			ser.Sync(nameof(joy2_LR), ref joy2_LR);
 			ser.Sync(nameof(joy2_UD), ref joy2_UD);
 
-			ser.Sync(nameof(_framebuffer), ref _framebuffer, false);
-			ser.Sync(nameof(_vidbuffer), ref _vidbuffer, false);
+			// referesh the screen buffer 
+			if (ser.IsReader)
+			{
+				for (int i = 0; i < _framebuffer.Length; i++)
+				{
+					_framebuffer[i] = 0;
+				}
+				ppu.draw_old_screen();
+			}
 
 			ser.EndSection();
 		}
