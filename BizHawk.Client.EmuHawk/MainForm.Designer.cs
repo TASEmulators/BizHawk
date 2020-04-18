@@ -237,6 +237,7 @@
 			this.coreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.quickNESMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.nesHawkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.subNesHawkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator34 = new System.Windows.Forms.ToolStripSeparator();
 			this.NESPPUViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.NESNametableViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -2228,7 +2229,8 @@
 			// 
 			this.coreToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.quickNESMenuItem,
-			this.nesHawkMenuItem});
+			this.nesHawkMenuItem,
+			this.subNesHawkMenuItem});
 			this.coreToolStripMenuItem.Name = "coreToolStripMenuItem";
 			this.coreToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.coreToolStripMenuItem.Text = "&Core";
@@ -2247,6 +2249,13 @@
 			this.nesHawkMenuItem.Size = new System.Drawing.Size(118, 22);
 			this.nesHawkMenuItem.Text = "&NesHawk";
 			this.nesHawkMenuItem.Click += new System.EventHandler(this.NesCorePick_Click);
+			// 
+			// subNesHawkMenuItem
+			// 
+			this.subNesHawkMenuItem.Name = "subNesHawkMenuItem";
+			this.subNesHawkMenuItem.Size = new System.Drawing.Size(118, 22);
+			this.subNesHawkMenuItem.Text = "&SubNesHawk";
+			this.subNesHawkMenuItem.Click += new System.EventHandler(this.SubNesCorePick_Click);
 			// 
 			// toolStripSeparator34
 			// 
@@ -4386,6 +4395,7 @@
 		private System.Windows.Forms.ToolStripMenuItem coreToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem quickNESMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem nesHawkMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem subNesHawkMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator34;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator35;
 		private System.Windows.Forms.ToolStripMenuItem GBACoreSelectionSubMenu;
