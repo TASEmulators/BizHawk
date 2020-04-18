@@ -18,7 +18,6 @@ using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Emulation.Cores.Computers.AppleII;
 using BizHawk.Common;
-using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Atari.A7800Hawk;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
@@ -256,8 +255,9 @@ namespace BizHawk.Client.EmuHawk
 
 			RecordMovieMenuItem.Enabled
 				= PlayMovieMenuItem.Enabled
-				= ImportMoviesMenuItem.Enabled
-				= !Tools.IsLoaded<TAStudio>();
+				= ImportMoviesMenuItem.Enabled 
+				= RecentMovieSubMenu.Enabled
+					= !Tools.IsLoaded<TAStudio>();
 
 			PlayFromBeginningMenuItem.Enabled = MovieSession.Movie.IsActive() && !Tools.IsLoaded<TAStudio>();
 		}
