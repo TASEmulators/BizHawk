@@ -834,29 +834,21 @@ namespace BizHawk.Client.EmuHawk
 			MainForm.TakeBackControl();
 			Config.MovieEndAction = _originalEndAction;
 			MainForm.SetMainformMovieInfo();
-
-			// Do not keep TAStudio's disk save states.
-			// if (Directory.Exists(statesPath)) Directory.Delete(statesPath, true);
-			// TODO - do we need to dispose something here instead?
 		}
 
-		/// <summary>
-		/// Used when starting a new project
-		/// </summary>
-		private static string DefaultTasProjName()
+		// Used when starting a new project
+		private string DefaultTasProjName()
 		{
 			return Path.Combine(
-				Global.Config.PathEntries.MovieAbsolutePath(),
+				Config.PathEntries.MovieAbsolutePath(),
 				$"{TasMovie.DefaultProjectName}.{TasMovie.Extension}");
 		}
 
-		/// <summary>
-		/// Used for things like SaveFile dialogs to suggest a name to the user
-		/// </summary>
-		private static string SuggestedTasProjName()
+		// Used for things like SaveFile dialogs to suggest a name to the user
+		private string SuggestedTasProjName()
 		{
 			return Path.Combine(
-				Global.Config.PathEntries.MovieAbsolutePath(),
+				Config.PathEntries.MovieAbsolutePath(),
 				$"{Global.Game.FilesystemSafeName()}.{TasMovie.Extension}");
 		}
 

@@ -112,7 +112,7 @@ namespace BizHawk.Client.EmuHawk
 				};
 
 				var result = ofd.ShowHawkDialog();
-				if (result == DialogResult.OK)
+				if (result.IsOk())
 				{
 					if (ofd.FileName.EndsWith(TasMovie.Extension))
 					{
