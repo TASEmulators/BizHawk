@@ -2269,7 +2269,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CoreSyncSettings(object sender, RomLoader.SettingsLoadArgs e)
 		{
-			if (MovieSession.MovieIsQueued)
+			if (MovieSession.NewMovieQueued)
 			{
 				if (!string.IsNullOrWhiteSpace(MovieSession.QueuedSyncSettings))
 				{
@@ -3608,7 +3608,7 @@ namespace BizHawk.Client.EmuHawk
 				// movies should require deterministic emulation in ALL cases
 				// if the core is managing its own DE through SyncSettings a 'deterministic' bool can be passed into the core's constructor
 				// it is then up to the core itself to override its own local DeterministicEmulation setting
-				bool deterministic = args.Deterministic ?? MovieSession.MovieIsQueued;
+				bool deterministic = args.Deterministic ?? MovieSession.NewMovieQueued;
 
 				if (!Tools.AskSave())
 				{
@@ -3774,7 +3774,7 @@ namespace BizHawk.Client.EmuHawk
 					JumpLists.AddRecentItem(openAdvancedArgs, ioa.DisplayName);
 
 					// Don't load Save Ram if a movie is being loaded
-					if (!MovieSession.MovieIsQueued)
+					if (!MovieSession.NewMovieQueued)
 					{
 						var movieIsActive = MovieSession.Movie.IsActive();
 						if (File.Exists(Config.PathEntries.SaveRamAbsolutePath(loader.Game, movieIsActive)))

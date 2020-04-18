@@ -40,7 +40,7 @@ namespace BizHawk.Client.Common
 
 		public IMovie Movie { get; set; }
 		public bool ReadOnly { get; set; } = true;
-		public bool MovieIsQueued => _queuedMovie != null;
+		public bool NewMovieQueued => _queuedMovie != null;
 		public string QueuedSyncSettings => _queuedMovie.SyncSettingsJson;
 
 		public IMovieController MovieController { get; set; } = new Bk2Controller("", NullController.Instance.Definition);

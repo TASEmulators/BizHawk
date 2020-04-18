@@ -8,7 +8,10 @@ namespace BizHawk.Client.Common
 		IMovie Movie { get; set; }
 		bool ReadOnly { get; set; }
 
-		bool MovieIsQueued { get; }
+		/// <summary>
+		/// Gets a value indicating whether or not a new movie is queued for loading
+		/// </summary>
+		bool NewMovieQueued { get; }
 
 		/// <summary>
 		/// Gets the sync settings from a queued movie, if a movie is queued
