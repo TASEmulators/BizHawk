@@ -127,7 +127,7 @@ namespace BizHawk.Client.EmuHawk
 							MainForm.StartNewMovie(MovieService.Get(ofd.FileName), false);
 							ConvertCurrentMovieToTasproj();
 							_initialized = false;
-							StartNewMovieWrapper(false);
+							StartNewMovieWrapper(CurrentTasMovie);
 							SetUpColumns();
 							SetTextProperty();
 						}

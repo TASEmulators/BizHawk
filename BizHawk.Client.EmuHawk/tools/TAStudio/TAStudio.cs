@@ -325,10 +325,10 @@ namespace BizHawk.Client.EmuHawk
 			if (MovieSession.Movie.IsActive() && !(MovieSession.Movie is TasMovie))
 			{
 				var result = MessageBox.Show("In order to use Tastudio, a new project must be created from the current movie\nThe current movie will be saved and closed, and a new project file will be created\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-				if (result == DialogResult.OK)
+				if (result.IsOk())
 				{
 					ConvertCurrentMovieToTasproj();
-					StartNewMovieWrapper(false);
+					StartNewMovieWrapper(CurrentTasMovie);
 					SetUpColumns();
 				}
 				else
@@ -705,7 +705,7 @@ namespace BizHawk.Client.EmuHawk
 
 			MovieSession.Movie = tasMovie;
 
-			if (HandleMovieLoadStuff())
+			if (HandleMovieLoadStuff(tasMovie))
 			{
 				CurrentTasMovie.TasStateManager.Capture(); // Capture frame 0 always.
 			}
@@ -720,22 +720,13 @@ namespace BizHawk.Client.EmuHawk
 			MarkerControl.Restart();
 			SetUpColumns();
 			RefreshDialog();
+			TasView.Refresh();
 		}
 
-		private bool HandleMovieLoadStuff(TasMovie movie = null)
+		private bool HandleMovieLoadStuff(TasMovie movie)
 		{
-			bool result;
 			WantsToControlStopMovie = false;
-
-			if (movie == null)
-			{
-				movie = CurrentTasMovie;
-				result = StartNewMovieWrapper(movie.InputLogLength == 0, movie);
-			}
-			else
-			{
-				result = StartNewMovieWrapper(false, movie);
-			}
+			var result = StartNewMovieWrapper(movie);
 
 			if (!result)
 			{
@@ -753,15 +744,13 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
-		private bool StartNewMovieWrapper(bool record, IMovie movie = null)
+		private bool StartNewMovieWrapper(TasMovie movie)
 		{
 			_initializing = true;
 
-			movie ??= CurrentTasMovie;
-			
-			SetTasMovieCallbacks(movie as TasMovie);
+			SetTasMovieCallbacks(movie);
 
-			bool result = MainForm.StartNewMovie(movie, record);
+			bool result = MainForm.StartNewMovie(movie, false);
 			if (result)
 			{
 				CurrentTasMovie.TasStateManager.Capture(); // Capture frame 0 always.

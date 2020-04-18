@@ -123,7 +123,7 @@ namespace BizHawk.Client.EmuHawk
 			if (AskSaveChanges())
 			{
 				WantsToControlStopMovie = false;
-				StartNewMovieWrapper(false);
+				StartNewMovieWrapper(CurrentTasMovie);
 				WantsToControlStopMovie = true;
 				RefreshDialog();
 			}
