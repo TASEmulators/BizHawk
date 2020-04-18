@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
@@ -9,6 +10,11 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public bool StartNewMovie(IMovie movie, bool record)
 		{
+			if (movie == null)
+			{
+				throw new ArgumentNullException($"{nameof(movie)} cannot be null.");
+			}
+
 			try
 			{
 				MovieSession.QueueNewMovie(movie, record, Emulator);

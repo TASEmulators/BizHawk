@@ -121,10 +121,12 @@ namespace BizHawk.Client.EmuHawk
 					else if (ofd.FileName.EndsWith(Bk2Movie.Extension))
 					{
 						var result1 = MessageBox.Show("This is a regular movie, a new project must be created from it, in order to use in TAStudio\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-						if (result1 == DialogResult.OK)
+						if (result1.IsOk())
 						{
+							_initializing = true; // Starting a new movie causes a core reboot
 							MainForm.StartNewMovie(MovieService.Get(ofd.FileName), false);
 							ConvertCurrentMovieToTasproj();
+							_initialized = false;
 							StartNewMovieWrapper(false);
 							SetUpColumns();
 							SetTextProperty();

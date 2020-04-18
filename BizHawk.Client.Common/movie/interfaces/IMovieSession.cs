@@ -64,5 +64,10 @@ namespace BizHawk.Client.Common
 		void ToggleMultitrack();
 
 		void StopMovie(bool saveChanges = true);
+
+		/// <summary>
+		/// If a movie is active, it will be converted to a <see cref="TasMovie" />
+		/// </summary>
+		void ConvertToTasProj();
 	}
 }

@@ -615,11 +615,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ConvertCurrentMovieToTasproj()
 		{
-			MovieSession.Movie.Save();
-			MovieSession.Movie = MovieSession.Movie.ToTasMovie();
-			MovieSession.Movie.Save();
-			MovieSession.Movie.SwitchToPlay();
+			MovieSession.ConvertToTasProj();
 			Settings.RecentTas.Add(MovieSession.Movie.Filename);
+			MainForm.SetMainformMovieInfo();
 		}
 
 		private bool LoadFile(FileInfo file, bool startsFromSavestate = false, int gotoFrame = 0)

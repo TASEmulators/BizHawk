@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-
+using BizHawk.Client.Common.MovieConversionExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
@@ -353,6 +353,14 @@ namespace BizHawk.Client.Common
 			MultiTrack.Restart(Global.Emulator.ControllerDefinition.PlayerCount);
 			_modeChangedCallback();
 			Movie = MovieService.DefaultInstance;
+		}
+
+		public void ConvertToTasProj()
+		{
+			Movie.Save();
+			Movie = Movie.ToTasMovie();
+			Movie.Save();
+			Movie.SwitchToPlay();
 		}
 
 		private void ClearFrame()
