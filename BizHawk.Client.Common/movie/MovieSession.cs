@@ -38,7 +38,7 @@ namespace BizHawk.Client.Common
 			Movie = MovieService.DefaultInstance;
 		}
 
-		public IMovie Movie { get; set; }
+		public IMovie Movie { get; private set; }
 		public bool ReadOnly { get; set; } = true;
 		public bool NewMovieQueued => _queuedMovie != null;
 		public string QueuedSyncSettings => _queuedMovie.SyncSettingsJson;

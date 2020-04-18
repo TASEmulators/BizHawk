@@ -703,8 +703,6 @@ namespace BizHawk.Client.EmuHawk
 			SetTasMovieCallbacks(tasMovie);
 			tasMovie.ClearChanges(); // Don't ask to save changes here.
 
-			MovieSession.Movie = tasMovie;
-
 			if (HandleMovieLoadStuff(tasMovie))
 			{
 				CurrentTasMovie.TasStateManager.Capture(); // Capture frame 0 always.
@@ -750,7 +748,9 @@ namespace BizHawk.Client.EmuHawk
 
 			SetTasMovieCallbacks(movie);
 
+			SuspendLayout();
 			bool result = MainForm.StartNewMovie(movie, false);
+			ResumeLayout();
 			if (result)
 			{
 				CurrentTasMovie.TasStateManager.Capture(); // Capture frame 0 always.
