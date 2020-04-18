@@ -869,7 +869,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_MouseWheel(object sender, MouseEventArgs e)
 		{
-			if (TasView.RightButtonHeld && TasView.CurrentCell.RowIndex.HasValue)
+			if (TasView.RightButtonHeld && TasView?.CurrentCell.RowIndex.HasValue == true)
 			{
 				_suppressContextMenu = true;
 				int notch = e.Delta / 120;
