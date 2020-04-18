@@ -4351,40 +4351,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void ToggleReadOnly()
-		{
-			if (IsSlave && Master.WantsToControlReadOnly)
-			{
-				Master.ToggleReadOnly();
-			}
-			else
-			{
-				if (MovieSession.Movie.IsActive())
-				{
-					MovieSession.ReadOnly ^= true;
-					AddOnScreenMessage(MovieSession.ReadOnly ? "Movie read-only mode" : "Movie read+write mode");
-				}
-				else
-				{
-					AddOnScreenMessage("No movie active");
-				}
-			}
-		}
-
-		private void StopMovie(bool saveChanges = true)
-		{
-			if (IsSlave && Master.WantsToControlStopMovie)
-			{
-				Master.StopMovie(!saveChanges);
-			}
-			else
-			{
-				MovieSession.StopMovie(saveChanges);
-				SetMainformMovieInfo();
-				UpdateStatusSlots();
-			}
-		}
-
 		private void CaptureRewind(bool suppressCaptureRewind)
 		{
 			if (IsRewindSlave)

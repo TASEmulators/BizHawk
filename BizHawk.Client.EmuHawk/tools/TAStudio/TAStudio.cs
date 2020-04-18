@@ -756,10 +756,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_initializing = true;
 
-			if (movie == null)
-			{
-				movie = CurrentTasMovie;
-			}
+			movie ??= CurrentTasMovie;
 			
 			SetTasMovieCallbacks(movie as TasMovie);
 

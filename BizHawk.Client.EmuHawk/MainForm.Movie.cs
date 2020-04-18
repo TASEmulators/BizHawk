@@ -61,18 +61,48 @@ namespace BizHawk.Client.EmuHawk
 			UpdateStatusSlots();
 		}
 
-		public void RestartMovie()
+		private void StopMovie(bool saveChanges = true)
+		{
+			if (IsSlave && Master.WantsToControlStopMovie)
+			{
+				Master.StopMovie(!saveChanges);
+			}
+			else
+			{
+				MovieSession.StopMovie(saveChanges);
+				SetMainformMovieInfo();
+			}
+		}
+
+		private void RestartMovie()
 		{
 			if (IsSlave && Master.WantsToControlRestartMovie)
 			{
 				Master.RestartMovie();
 			}
+			else if (MovieSession.Movie.IsActive())
+			{
+				StartNewMovie(MovieSession.Movie, false);
+				AddOnScreenMessage("Replaying movie file in read-only mode");
+			}
+		}
+
+		private void ToggleReadOnly()
+		{
+			if (IsSlave && Master.WantsToControlReadOnly)
+			{
+				Master.ToggleReadOnly();
+			}
 			else
 			{
 				if (MovieSession.Movie.IsActive())
 				{
-					StartNewMovie(MovieSession.Movie, false);
-					AddOnScreenMessage("Replaying movie file in read-only mode");
+					MovieSession.ReadOnly ^= true;
+					AddOnScreenMessage(MovieSession.ReadOnly ? "Movie read-only mode" : "Movie read+write mode");
+				}
+				else
+				{
+					AddOnScreenMessage("No movie active");
 				}
 			}
 		}

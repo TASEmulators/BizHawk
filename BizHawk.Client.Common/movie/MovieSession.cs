@@ -325,20 +325,20 @@ namespace BizHawk.Client.Common
 
 		public void StopMovie(bool saveChanges = true)
 		{
-			var message = "Movie ";
-			if (Movie.IsRecording())
-			{
-				message += "recording ";
-			}
-			else if (Movie.IsPlaying())
-			{
-				message += "playback ";
-			}
-
-			message += "stopped.";
-
 			if (Movie.IsActive())
 			{
+				var message = "Movie ";
+				if (Movie.IsRecording())
+				{
+					message += "recording ";
+				}
+				else if (Movie.IsPlaying())
+				{
+					message += "playback ";
+				}
+
+				message += "stopped.";
+
 				var result = Movie.Stop(saveChanges);
 				if (result)
 				{
