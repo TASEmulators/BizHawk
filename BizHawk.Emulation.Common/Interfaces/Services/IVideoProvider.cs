@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Common
+﻿using System;
+
+namespace BizHawk.Emulation.Common
 {
 	/// <summary>
 	/// This service provides the ability to pass video output to the client
@@ -61,5 +63,25 @@
 		/// which is less obvious if it is the same as the default video output
 		/// </summary>
 		int BackgroundColor { get; }
+	}
+
+	public static class VideoProviderExtensions
+	{
+		/// <summary>
+		/// Sets the frame buffer to the given frame buffer
+		/// Note: This sets the value returned by <see cref="IVideoProvider.GetVideoBuffer" />
+		/// which relies on the core to send a reference to the frame buffer instead of a copy,
+		/// in order to work
+		/// </summary>
+		public static void PopulateFromBuffer(this IVideoProvider videoProvider, int[] frameBuffer)
+		{
+			var b1 = frameBuffer;
+			var b2 = videoProvider.GetVideoBuffer();
+			int len = Math.Min(b1.Length, b2.Length);
+			for (int i = 0; i < len; i++)
+			{
+				b2[i] = b1[i];
+			}
+		}
 	}
 }

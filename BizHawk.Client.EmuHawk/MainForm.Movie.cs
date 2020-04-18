@@ -44,13 +44,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (movie.SavestateFramebuffer != null && Emulator.HasVideoProvider())
 				{
-					var b1 = movie.SavestateFramebuffer;
-					var b2 = Emulator.AsVideoProvider().GetVideoBuffer();
-					int len = Math.Min(b1.Length, b2.Length);
-					for (int i = 0; i < len; i++)
-					{
-						b2[i] = b1[i];
-					}
+					Emulator.AsVideoProvider().PopulateFromBuffer(movie.SavestateFramebuffer);
 				}
 
 				Emulator.ResetCounters();
