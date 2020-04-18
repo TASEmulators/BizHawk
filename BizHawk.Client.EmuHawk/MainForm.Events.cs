@@ -1557,18 +1557,6 @@ namespace BizHawk.Client.EmuHawk
 
 		#region NES
 
-		private void QuickNesMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.PreferredCores["NES"] = CoreNames.QuickNes;
-			FlagNeedsReboot();
-		}
-
-		private void NesHawkMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.PreferredCores["NES"] = CoreNames.NesHawk;
-			FlagNeedsReboot();
-		}
-
 		private void NesSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			var boardName = Emulator.HasBoardInfo() ? Emulator.AsBoardInfo().BoardName : null;

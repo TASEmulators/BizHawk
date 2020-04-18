@@ -2239,14 +2239,14 @@
 			this.quickNESMenuItem.Name = "quickNESMenuItem";
 			this.quickNESMenuItem.Size = new System.Drawing.Size(118, 22);
 			this.quickNESMenuItem.Text = "&QuickNes";
-			this.quickNESMenuItem.Click += new System.EventHandler(this.QuickNesMenuItem_Click);
+			this.quickNESMenuItem.Click += new System.EventHandler(this.QuickNesCorePick_Click);
 			// 
 			// nesHawkToolStripMenuItem
 			// 
 			this.nesHawkMenuItem.Name = "nesHawkMenuItem";
 			this.nesHawkMenuItem.Size = new System.Drawing.Size(118, 22);
 			this.nesHawkMenuItem.Text = "&NesHawk";
-			this.nesHawkMenuItem.Click += new System.EventHandler(this.NesHawkMenuItem_Click);
+			this.nesHawkMenuItem.Click += new System.EventHandler(this.NesCorePick_Click);
 			// 
 			// toolStripSeparator34
 			// 

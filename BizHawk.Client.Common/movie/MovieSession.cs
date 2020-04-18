@@ -3,14 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
-using BizHawk.Emulation.Cores.Nintendo.NES;
-using BizHawk.Emulation.Cores.Nintendo.SNES9X;
-using BizHawk.Emulation.Cores.Nintendo.SNES;
-using BizHawk.Emulation.Cores.Nintendo.GBA;
-using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 
 namespace BizHawk.Client.Common
 {
