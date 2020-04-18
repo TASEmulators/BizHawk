@@ -73,6 +73,11 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
+		public static void LoadStateText(this IStatable core, string textState)
+		{
+			core.LoadStateText(new StringReader(textState));
+		}
+
 		/// <summary>
 		/// Loads a state directly from a byte array
 		/// </summary>

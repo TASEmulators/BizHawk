@@ -252,5 +252,45 @@ namespace BizHawk.Client.Common
 		public static bool IsRecording(this IMovie movie) => movie?.Mode == MovieMode.Record;
 		public static bool IsFinished(this IMovie movie) => movie.Mode == MovieMode.Finished;
 		public static bool IsPlayingOrRecording(this IMovie movie) => movie?.Mode == MovieMode.Play || movie?.Mode == MovieMode.Record;
+
+
+		/// <summary>
+		/// If the given movie contains a savestate it will be loaded if
+		/// the given core has savestates, and a framebuffer populated
+		/// if it is contained in the state and the given core supports it
+		/// </summary>
+		public static void ProcessSavestate(this IMovie movie, IEmulator emulator)
+		{
+			if (emulator.HasSavestates() && movie.StartsFromSavestate)
+			{
+				if (movie.TextSavestate != null)
+				{
+					emulator.AsStatable().LoadStateText(movie.TextSavestate);
+				}
+				else
+				{
+					emulator.AsStatable().LoadStateBinary(movie.BinarySavestate);
+				}
+
+				if (movie.SavestateFramebuffer != null && emulator.HasVideoProvider())
+				{
+					emulator.AsVideoProvider().PopulateFromBuffer(movie.SavestateFramebuffer);
+				}
+
+				emulator.ResetCounters();
+			}
+		}
+
+		/// <summary>
+		/// Sets the given <see cref="emulator"/> save ram if the movie contains save ram
+		/// and the core supports save ram
+		/// </summary>
+		public static void ProcessSram(this IMovie movie, IEmulator emulator)
+		{
+			if (movie.StartsFromSaveRam && emulator.HasSaveRam())
+			{
+				emulator.AsSaveRam().StoreSaveRam(movie.SaveRam);
+			}
+		}
 	}
 }

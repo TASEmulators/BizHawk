@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
@@ -24,29 +23,6 @@ namespace BizHawk.Client.EmuHawk
 			RebootCore();
 
 			Config.RecentMovies.Add(movie.Filename);
-
-			if (Emulator.HasSavestates() && movie.StartsFromSavestate)
-			{
-				if (movie.TextSavestate != null)
-				{
-					Emulator.AsStatable().LoadStateText(new StringReader(movie.TextSavestate));
-				}
-				else
-				{
-					Emulator.AsStatable().LoadStateBinary(movie.BinarySavestate);
-				}
-
-				if (movie.SavestateFramebuffer != null && Emulator.HasVideoProvider())
-				{
-					Emulator.AsVideoProvider().PopulateFromBuffer(movie.SavestateFramebuffer);
-				}
-
-				Emulator.ResetCounters();
-			}
-			else if (Emulator.HasSaveRam() && movie.StartsFromSaveRam)
-			{
-				Emulator.AsSaveRam().StoreSaveRam(movie.SaveRam);
-			}
 
 			MovieSession.RunQueuedMovie(record);
 

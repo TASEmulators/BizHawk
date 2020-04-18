@@ -288,6 +288,9 @@ namespace BizHawk.Client.Common
 			QueuedMovie = null;
 			MultiTrack.Restart(Global.Emulator.ControllerDefinition.PlayerCount);
 
+			Movie.ProcessSavestate(Global.Emulator);
+			Movie.ProcessSram(Global.Emulator);
+
 			if (recordMode)
 			{
 				Movie.StartNewRecording();
