@@ -64,9 +64,6 @@ namespace BizHawk.Client.EmuHawk
 
 			SetMainformMovieInfo();
 
-			Tools.Restart<VirtualpadTool>();
-
-
 			if (MovieSession.Movie.Hash != Game.Hash)
 			{
 				AddOnScreenMessage("Warning: Movie hash does not match the ROM");
