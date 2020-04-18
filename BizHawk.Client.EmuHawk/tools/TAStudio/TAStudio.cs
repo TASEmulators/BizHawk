@@ -183,12 +183,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InitializeSeekWorker()
 		{
-			if (_seekBackgroundWorker != null)
-			{
-				_seekBackgroundWorker.Dispose();
-				_seekBackgroundWorker = null; // Idk if this line is even useful.
-			}
-
+			_seekBackgroundWorker?.Dispose();
 			_seekBackgroundWorker = new BackgroundWorker
 			{
 				WorkerReportsProgress = true,
@@ -248,6 +243,10 @@ namespace BizHawk.Client.EmuHawk
 				DialogResult = DialogResult.Cancel;
 				return;
 			}
+
+			BookMarkControl.LoadedCallback = BranchLoaded;
+			BookMarkControl.SavedCallback = BranchSaved;
+			BookMarkControl.RemovedCallback = BranchRemoved;
 
 			SetColumnsFromCurrentStickies();
 
@@ -376,9 +375,8 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
-		private void SetTasMovieCallbacks(TasMovie movie = null)
+		private void SetTasMovieCallbacks(TasMovie movie)
 		{
-			movie ??= CurrentTasMovie;
 			movie.ClientSettingsForSave = ClientSettingsForSave;
 			movie.GetClientSettingsOnLoad = GetClientSettingsOnLoad;
 		}
@@ -599,7 +597,7 @@ namespace BizHawk.Client.EmuHawk
 		private void EngageTastudio()
 		{
 			MainForm.AddOnScreenMessage("TAStudio engaged");
-			SetTasMovieCallbacks();
+			SetTasMovieCallbacks(CurrentTasMovie);
 			SetTextProperty();
 			MainForm.RelinquishControl(this);
 			_originalEndAction = Config.MovieEndAction;
@@ -632,14 +630,13 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
-			TasMovie newMovie = new TasMovie(startsFromSavestate: startsFromSavestate);
+			var newMovie = new TasMovie(startsFromSavestate: startsFromSavestate)
+			{
+				Filename = file.FullName,
+				BindMarkersToInput = Settings.BindMarkersToInput
+			};
 			newMovie.TasStateManager.InvalidateCallback = GreenzoneInvalidated;
-			newMovie.Filename = file.FullName;
-			newMovie.BindMarkersToInput = Settings.BindMarkersToInput;
-
-			BookMarkControl.LoadedCallback = BranchLoaded;
-			BookMarkControl.SavedCallback = BranchSaved;
-			BookMarkControl.RemovedCallback = BranchRemoved;
+			
 
 			if (!HandleMovieLoadStuff(newMovie))
 			{
@@ -685,40 +682,46 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StartNewTasMovie()
 		{
-			if (AskSaveChanges())
+			if (!AskSaveChanges())
 			{
-				MovieSession.Movie = new TasMovie();
-				CurrentTasMovie.BindMarkersToInput = Settings.BindMarkersToInput;
-
-				var stateManager = ((TasMovie)MovieSession.Movie).TasStateManager;
-				stateManager.InvalidateCallback = GreenzoneInvalidated;
-
-				BookMarkControl.LoadedCallback = BranchLoaded;
-				BookMarkControl.SavedCallback = BranchSaved;
-				BookMarkControl.RemovedCallback = BranchRemoved;
-
-				CurrentTasMovie.PropertyChanged += TasMovie_OnPropertyChanged;
-				CurrentTasMovie.Filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
-				CurrentTasMovie.PopulateWithDefaultHeaderValues(
-					Emulator,
-					Global.Game,
-					Global.FirmwareManager,
-					Config.DefaultAuthor);
-				SetTasMovieCallbacks();
-				CurrentTasMovie.ClearChanges(); // Don't ask to save changes here.
-
-				if (HandleMovieLoadStuff())
-				{
-					CurrentTasMovie.TasStateManager.Capture(); // Capture frame 0 always.
-				}
-
-				// clear all selections
-				TasView.DeselectAll();
-				BookMarkControl.Restart();
-				MarkerControl.Restart();
-				SetUpColumns();
-				RefreshDialog();
+				return;
 			}
+
+			var tasMovie = new TasMovie
+			{
+				BindMarkersToInput = Settings.BindMarkersToInput,
+				Filename =  DefaultTasProjName() // TODO don't do this, take over any mainform actions that can crash without a filename
+			};
+
+			tasMovie.TasStateManager.InvalidateCallback = GreenzoneInvalidated;
+			tasMovie.PropertyChanged += TasMovie_OnPropertyChanged;
+			
+			tasMovie.PopulateWithDefaultHeaderValues(
+				Emulator,
+				Global.Game,
+				Global.FirmwareManager,
+				Config.DefaultAuthor);
+
+			SetTasMovieCallbacks(tasMovie);
+			tasMovie.ClearChanges(); // Don't ask to save changes here.
+
+			MovieSession.Movie = tasMovie;
+
+			if (HandleMovieLoadStuff())
+			{
+				CurrentTasMovie.TasStateManager.Capture(); // Capture frame 0 always.
+			}
+
+			BookMarkControl.LoadedCallback = BranchLoaded;
+			BookMarkControl.SavedCallback = BranchSaved;
+			BookMarkControl.RemovedCallback = BranchRemoved;
+
+			// clear all selections
+			TasView.DeselectAll();
+			BookMarkControl.Restart();
+			MarkerControl.Restart();
+			SetUpColumns();
+			RefreshDialog();
 		}
 
 		private bool HandleMovieLoadStuff(TasMovie movie = null)
@@ -936,10 +939,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public IEnumerable<int> GetSelection()
-		{
-			return TasView.SelectedRows;
-		}
+		public IEnumerable<int> GetSelection() => TasView.SelectedRows;
 
 		public void RefreshDialog(bool refreshTasView = true, bool refreshBranches = true)
 		{
@@ -1065,21 +1065,11 @@ namespace BizHawk.Client.EmuHawk
 				Emulator.ResetCounters();
 			}
 
-			_hackyDontUpdate = true;
-			Tools.UpdateToolsBefore();
-			Tools.UpdateToolsAfter();
-			_hackyDontUpdate = false;
+			UpdateOtherTools();
 		}
 
-		public void AddBranchExternal()
-		{
-			BookMarkControl.AddBranchExternal();
-		}
-
-		public void RemoveBranchExternal()
-		{
-			BookMarkControl.RemoveBranchExternal();
-		}
+		public void AddBranchExternal() => BookMarkControl.AddBranchExternal();
+		public void RemoveBranchExternal() => BookMarkControl.RemoveBranchExternal();
 
 		private void UpdateOtherTools() // a hack probably, surely there is a better way to do this
 		{
