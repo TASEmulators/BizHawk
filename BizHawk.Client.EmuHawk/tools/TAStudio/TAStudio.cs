@@ -830,7 +830,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			MainForm.PauseOnFrame = null;
 			MainForm.AddOnScreenMessage("TAStudio disengaged");
-			MovieSession.Movie = MovieService.DefaultInstance;
 			MainForm.TakeBackControl();
 			Config.MovieEndAction = _originalEndAction;
 			MainForm.SetMainformMovieInfo();

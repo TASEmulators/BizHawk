@@ -279,11 +279,9 @@ namespace BizHawk.Client.EmuHawk
 				if (Tools.AskSave())
 				{
 					// zero 03-nov-2015 - close game after other steps. tools might need to unhook themselves from a core.
-					MovieSession.Movie.Stop();
+					MovieSession.StopMovie();
 					Tools.Close();
 					CloseGame();
-
-					// does this need to be last for any particular reason? do tool dialogs persist settings when closing?
 					SaveConfig();
 				}
 				else

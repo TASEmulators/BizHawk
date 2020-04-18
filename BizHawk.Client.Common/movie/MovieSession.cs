@@ -352,6 +352,7 @@ namespace BizHawk.Client.Common
 
 			MultiTrack.Restart(Global.Emulator.ControllerDefinition.PlayerCount);
 			_modeChangedCallback();
+			Movie = MovieService.DefaultInstance;
 		}
 
 		private void ClearFrame()
