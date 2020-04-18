@@ -16,6 +16,10 @@ namespace BizHawk.Client.Common
 		private readonly Action<string> _messageCallback;
 		private readonly Action<string> _popupCallback;
 
+		// Previous saved core preferences. Stored here so that when a movie
+		// overrides the values, they can be restored to user preferences 
+		private readonly IDictionary<string, string> _preferredCores = new Dictionary<string, string>();
+
 		public MovieSession(
 			Action<string> messageCallback,
 			Action<string> popupCallback,
@@ -67,8 +71,6 @@ namespace BizHawk.Client.Common
 				return null;
 			}
 		}
-
-		public IDictionary<string, string> PreferredCores { get; } = new Dictionary<string, string>();
 
 		public void RecreateMovieController(ControllerDefinition definition)
 		{
@@ -258,7 +260,7 @@ namespace BizHawk.Client.Common
 
 				if (Global.Config.PreferredCores.ContainsKey(preference))
 				{
-					PreferredCores[preference] = Global.Config.PreferredCores[preference];
+					_preferredCores[preference] = Global.Config.PreferredCores[preference];
 					Global.Config.PreferredCores[preference] = movie.Core;
 				}
 			}
@@ -277,6 +279,11 @@ namespace BizHawk.Client.Common
 
 		public void RunQueuedMovie(bool recordMode)
 		{
+			foreach (var previousPref in _preferredCores)
+			{
+				Global.Config.PreferredCores[previousPref.Key] = previousPref.Value;
+			}
+
 			Movie = QueuedMovie;
 			QueuedMovie = null;
 			MultiTrack.Restart(Global.Emulator.ControllerDefinition.PlayerCount);

@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -23,11 +22,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			RebootCore();
-
-			foreach (var previousPref in MovieSession.PreferredCores)
-			{
-				Config.PreferredCores[previousPref.Key] = previousPref.Value;
-			}
 
 			Config.RecentMovies.Add(movie.Filename);
 

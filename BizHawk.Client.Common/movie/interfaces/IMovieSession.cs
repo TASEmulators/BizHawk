@@ -30,11 +30,6 @@ namespace BizHawk.Client.Common
 		IController PreviousFrame { get; }
 
 		/// <summary>
-		/// Previous saved core preferences. Stored so that they can be stored after a movie overrides the value
-		/// </summary>
-		IDictionary<string, string> PreferredCores { get; }
-
-		/// <summary>
 		/// Recreates MovieController with the given controller definition
 		/// with an empty controller state
 		/// </summary>
