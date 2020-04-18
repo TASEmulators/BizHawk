@@ -34,9 +34,7 @@ namespace BizHawk.Client.Common
 			var guid = new Guid(identifier);
 			try
 			{
-				using var ms = new MemoryStream(_memorySavestates[guid]);
-				using var br = new BinaryReader(ms);
-				StatableCore.LoadStateBinary(br);
+				StatableCore.LoadStateBinary(_memorySavestates[guid]);
 			}
 			catch
 			{

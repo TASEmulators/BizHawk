@@ -39,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					Emulator.AsStatable().LoadStateBinary(new BinaryReader(new MemoryStream(movie.BinarySavestate, false)));
+					Emulator.AsStatable().LoadStateBinary(movie.BinarySavestate);
 				}
 
 				if (movie.SavestateFramebuffer != null && Emulator.HasVideoProvider())

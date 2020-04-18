@@ -72,5 +72,15 @@ namespace BizHawk.Emulation.Common
 				core.LoadStateBinary(br);
 			}
 		}
+
+		/// <summary>
+		/// Loads a state directly from a byte array
+		/// </summary>
+		public static void LoadStateBinary(this IStatable core, byte[] state)
+		{
+			using var ms = new MemoryStream(state, false);
+			using var br = new BinaryReader(ms);
+			core.LoadStateBinary(br);
+		}
 	}
 }

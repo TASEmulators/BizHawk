@@ -371,8 +371,7 @@ namespace BizHawk.Client.Common
 					}
 				}
 
-				using var lastStateReader = new BinaryReader(new MemoryStream(_lastState));
-				Global.Emulator.AsStatable().LoadStateBinary(lastStateReader);
+				Global.Emulator.AsStatable().LoadStateBinary(_lastState);
 			}
 			else
 			{
