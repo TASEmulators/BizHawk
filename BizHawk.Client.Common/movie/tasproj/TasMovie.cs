@@ -28,8 +28,6 @@ namespace BizHawk.Client.Common
 		public override string PreferredExtension => Extension;
 		public IStateManager TasStateManager { get; }
 
-		public IStringLog CloneInput() => Log.Clone();
-
 		/// <exception cref="InvalidOperationException">loaded core does not implement <see cref="IStatable"/></exception>
 		public TasMovie(string path = null, bool startsFromSavestate = false) : base(path)
 		{

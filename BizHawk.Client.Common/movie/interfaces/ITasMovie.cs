@@ -11,7 +11,7 @@ namespace BizHawk.Client.Common
 		void FlagChanges();
 		void ClearChanges();
 		bool BindMarkersToInput { get; set; }
-		IMovieChangeLog ChangeLog { get; set; }
+		IMovieChangeLog ChangeLog { get; }
 		IStateManager TasStateManager { get; }
 		Func<string> ClientSettingsForSave { set; }
 		Action<string> GetClientSettingsOnLoad { set; }
@@ -31,7 +31,7 @@ namespace BizHawk.Client.Common
 
 		string NewBranchText { get; set; }
 
-		IStringLog GetLogEntries(); // TODO: code smell, extension method? IMovie should expose this too? should be a property?
+		IStringLog GetLogEntries();
 
 		int LastEditedFrame { get; }
 		int LastStatedFrame { get; }
@@ -55,7 +55,5 @@ namespace BizHawk.Client.Common
 		bool LastPositionStable { get; set; }
 
 		void LoadBranch(TasBranch branch);
-
-		IStringLog CloneInput();
 	}
 }

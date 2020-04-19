@@ -154,7 +154,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Frame = Tastudio.Emulator.Frame,
 				CoreData = (byte[])Tastudio.StatableEmulator.SaveStateBinary().Clone(),
-				InputLog = Movie.CloneInput(),
+				InputLog = Movie.GetLogEntries().Clone(),
 				CoreFrameBuffer = MainForm.MakeScreenshotImage(),
 				OSDFrameBuffer = MainForm.CaptureOSD(),
 				ChangeLog = new TasMovieChangeLog(Movie),
