@@ -1209,7 +1209,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool AutoAdjustInput()
 		{
-			TasMovieRecord lagLog = CurrentTasMovie[Emulator.Frame - 1]; // Minus one because get frame is +1;
+			var lagLog = CurrentTasMovie[Emulator.Frame - 1]; // Minus one because get frame is +1;
 			bool isLag = Emulator.AsInputPollable().IsLagFrame;
 
 			if (lagLog.WasLagged.HasValue)

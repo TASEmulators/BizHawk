@@ -3015,7 +3015,7 @@ namespace BizHawk.Client.EmuHawk
 					if (PauseOnFrame.HasValue &&
 						PauseOnFrame.Value <= Tools.TAStudio.LastPositionFrame)
 					{
-						TasMovieRecord record = (MovieSession.Movie as TasMovie)[Emulator.Frame];
+						var record = (MovieSession.Movie as ITasMovie)[Emulator.Frame];
 						if (!record.Lagged.HasValue && IsSeeking)
 						{
 							// haven't yet greenzoned the frame, hence it's after editing

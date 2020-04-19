@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 	{
 		public IStringLog VerificationLog { get; } = StringLogUtil.MakeStringLog(); // For movies that do not begin with power-on, this is the input required to get into the initial state
 		public TasBranchCollection Branches { get; } = new TasBranchCollection();
-		public TasSession Session { get; private set; } = new TasSession();
+		public ITasSession Session { get; private set; } = new TasSession();
 
 		public new const string Extension = "tasproj";
 		public const string DefaultProjectName = "default";
@@ -32,7 +32,7 @@ namespace BizHawk.Client.Common
 
 		public IStringLog CloneInput() => Log.Clone();
 
-		public TasMovieRecord this[int index] => new TasMovieRecord
+		public ITasMovieRecord this[int index] => new TasMovieRecord
 		{
 			HasState = TasStateManager.HasState(index),
 			LogEntry = GetInputLogEntry(index),

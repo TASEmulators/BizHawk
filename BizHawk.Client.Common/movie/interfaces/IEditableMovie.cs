@@ -15,8 +15,8 @@ namespace BizHawk.Client.Common
 		IStateManager TasStateManager { get; }
 		Func<string> ClientSettingsForSave { set; }
 		Action<string> GetClientSettingsOnLoad { set; }
-		TasMovieRecord this[int index] { get; }
-		TasSession Session { get; } // TODO: interface it
+		ITasMovieRecord this[int index] { get; }
+		ITasSession Session { get; }
 		TasMovieMarkerList Markers { get; } // TODO: interface it
 		TasBranchCollection Branches { get; } // TODO: interface it
 		TasLagLog TasLagLog { get; } // TODO: interface it
