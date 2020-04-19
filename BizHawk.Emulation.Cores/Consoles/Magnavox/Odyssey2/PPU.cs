@@ -476,89 +476,32 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				}
 			}
 
-			// single characters
-			for (int i = 0; i < 12; i++)
+			if (VDC_ctrl.Bit(5))
+
 			{
-				if (((LY - OBJ_OFST) >= Foreground[i * 4]) && ((LY - OBJ_OFST) < (Foreground[i * 4] + 8 * 2)))
+				// single characters
+				for (int i = 0; i < 12; i++)
 				{
-					if ((cycle >= Foreground[i * 4 + 1]) && (cycle < (Foreground[i * 4 + 1] + 8)))
+					if (((LY - OBJ_OFST) >= Foreground[i * 4]) && ((LY - OBJ_OFST) < (Foreground[i * 4] + 8 * 2)))
 					{
-						// sprite is in drawing region, pick a pixel
-						int offset_y = ((LY - OBJ_OFST) - Foreground[i * 4]) >> 1;
-						int offset_x = 7 - (cycle - Foreground[i * 4 + 1]);
-						int char_sel = Foreground[i * 4 + 2];
-
-						int char_pick = (char_sel - (((~(Foreground[i * 4] >> 1)) + 1) & 0xFF));
-
-						if (char_pick < 0)
+						if ((cycle >= Foreground[i * 4 + 1]) && (cycle < (Foreground[i * 4 + 1] + 8)))
 						{
-							char_pick &= 0xFF;
-							char_pick |= (Foreground[i * 4 + 3] & 1) << 8;
-						}
-						else
-						{
-							char_pick &= 0xFF;
-							char_pick |= (~(Foreground[i * 4 + 3] & 1)) << 8;
-							char_pick &= 0x1FF;
-						}
+							// sprite is in drawing region, pick a pixel
+							int offset_y = ((LY - OBJ_OFST) - Foreground[i * 4]) >> 1;
+							int offset_x = 7 - (cycle - Foreground[i * 4 + 1]);
+							int char_sel = Foreground[i * 4 + 2];
 
-						// don't display past the end of a character
-						int pixel_pick = 0;
-
-						if (((char_pick + 1) & 7) + offset_y < 8)
-						{
-							pixel_pick = (Internal_Graphics[(char_pick + offset_y) % 0x200] >> offset_x) & 1;
-						}
-
-						if (pixel_pick == 1)
-						{
-							if (Core._settings.Show_Chars)
-							{
-								Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_SPR[(Foreground[i * 4 + 3] >> 1) & 0x7];
-								Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_SPR[(Foreground[i * 4 + 3] >> 1) & 0x7];
-							}
-
-							Pixel_Stat |= 0x80;
-						}
-					}
-				}
-			}
-
-			// quads
-			// note: the quads all share X/Y values
-			for (int i = 3; i >= 0; i--)
-			{
-				if (((LY - OBJ_OFST) >= Quad_Chars[i * 16]) && ((LY - OBJ_OFST) < (Quad_Chars[i * 16] + 8 * 2)))
-				{
-					if ((cycle >= Quad_Chars[i * 16 + 1]) && (cycle < (Quad_Chars[i * 16 + 1] + 64)))
-					{
-						// sprite is in drawing region, pick a pixel
-						int offset_y = ((LY - OBJ_OFST) - Quad_Chars[i * 16]) >> 1;
-						int offset_x = 63 - (cycle - Quad_Chars[i * 16 + 1]);
-						int quad_num = 3;
-						while (offset_x > 15)
-						{
-							offset_x -= 16;
-							quad_num--;
-						}
-
-						if (offset_x > 7)
-						{
-							offset_x -= 8;
-
-							int char_sel = Quad_Chars[i * 16 + 4 * quad_num + 2];
-
-							int char_pick = (char_sel - (((~(Quad_Chars[i * 16] >> 1)) + 1) & 0xFF));
+							int char_pick = (char_sel - (((~(Foreground[i * 4] >> 1)) + 1) & 0xFF));
 
 							if (char_pick < 0)
 							{
 								char_pick &= 0xFF;
-								char_pick |= (Quad_Chars[i * 16 + 4 * quad_num + 3] & 1) << 8;
+								char_pick |= (Foreground[i * 4 + 3] & 1) << 8;
 							}
 							else
 							{
 								char_pick &= 0xFF;
-								char_pick |= (~(Quad_Chars[i * 16 + 4 * quad_num + 3] & 1)) << 8;
+								char_pick |= (~(Foreground[i * 4 + 3] & 1)) << 8;
 								char_pick &= 0x1FF;
 							}
 
@@ -572,10 +515,10 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 							if (pixel_pick == 1)
 							{
-								if (Core._settings.Show_Quads)
+								if (Core._settings.Show_Chars)
 								{
-									Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_SPR[(Quad_Chars[i * 16 + 4 * quad_num + 3] >> 1) & 0x7];
-									Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_SPR[(Quad_Chars[i * 16 + 4 * quad_num + 3] >> 1) & 0x7];
+									Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_SPR[(Foreground[i * 4 + 3] >> 1) & 0x7];
+									Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_SPR[(Foreground[i * 4 + 3] >> 1) & 0x7];
 								}
 
 								Pixel_Stat |= 0x80;
@@ -583,148 +526,132 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 						}
 					}
 				}
-			}
 
-			// sprites
-			for (int i = 3; i >= 0; i--)
-			{
-				double_size = Sprites[i * 4 + 2].Bit(2) ? 4 : 2;
-				right_shift = Sprites[i * 4 + 2].Bit(0) ? 1 : 0;
-
-				if (((LY - OBJ_OFST) >= Sprites[i * 4]) && ((LY - OBJ_OFST) < (Sprites[i * 4] + 8 * double_size)))
+				// quads
+				// note: the quads all share X/Y values
+				for (int i = 3; i >= 0; i--)
 				{
-					right_shift_even = (Sprites[i * 4 + 2].Bit(1) && (((Sprites[i * 4] + 8 * double_size - (LY - OBJ_OFST)) % 2) == 0)) ? 1 : 0;
-					x_base = Sprites[i * 4 + 1];
-
-					if ((right_shift + right_shift_even) == 0)
+					if (((LY - OBJ_OFST) >= Quad_Chars[i * 16]) && ((LY - OBJ_OFST) < (Quad_Chars[i * 16] + 8 * 2)))
 					{
-						if ((cycle >= x_base) && (cycle < (x_base + 8 * (double_size / 2))))
+						if ((cycle >= Quad_Chars[i * 16 + 1]) && (cycle < (Quad_Chars[i * 16 + 1] + 64)))
 						{
-							// character is in drawing region, pick a pixel
-							int offset_y = ((LY - OBJ_OFST) - Sprites[i * 4]) >> (double_size / 2);
-							int offset_x = (cycle - x_base) >> (double_size / 2 - 1);
-
-							int pixel_pick = (Sprite_Shapes[i * 8 + offset_y] >> offset_x) & 1;
-
-							if (pixel_pick == 1)
+							// object is in drawing region, pick a pixel
+							int offset_y = ((LY - OBJ_OFST) - Quad_Chars[i * 16]) >> 1;
+							int offset_x = 63 - (cycle - Quad_Chars[i * 16 + 1]);
+							int quad_num = 3;
+							while (offset_x > 15)
 							{
-								if (Core._settings.Show_Sprites)
-								{
-									Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
-									Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
-								}
-
-								Pixel_Stat |= (byte)(1 << i);
+								offset_x -= 16;
+								quad_num--;
 							}
-						}
-					}
-					else
-					{
-						// special shifted cases
-						// since we are drawing two pixels at a time, we need to be careful that the next background / grid / char pixel
-						// doesn't overwrite the shifted pixel on the next pass
-						if ((cycle >= x_base) && (cycle < (x_base + 1 + 8 * (double_size / 2))))
-						{
-							// character is in drawing region, pick a pixel
-							int offset_y = ((LY - OBJ_OFST) - Sprites[i * 4]) >> (double_size / 2);
-							int offset_x = (cycle - x_base) >> (double_size / 2 - 1);
 
-							if (double_size == 2)
+							if (offset_x > 7)
 							{
-								if ((cycle - x_base) == 8)
+								offset_x -= 8;
+
+								int char_sel = Quad_Chars[i * 16 + 4 * quad_num + 2];
+
+								int char_pick = (char_sel - (((~(Quad_Chars[i * 16] >> 1)) + 1) & 0xFF));
+
+								if (char_pick < 0)
 								{
-									offset_x = 7;
-
-									int pixel_pick = (Sprite_Shapes[i * 8 + offset_y] >> offset_x) & 1;
-
-									if (pixel_pick == 1)
-									{
-										if (Core._settings.Show_Sprites)
-										{
-											Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
-
-											if ((right_shift + right_shift_even) == 2)
-											{
-												Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
-											}
-										}
-
-										Pixel_Stat |= (byte)(1 << i);
-									}
-								}
-								else if ((cycle - x_base) == 0)
-								{
-									if ((right_shift + right_shift_even) < 2)
-									{
-										offset_x = 0;
-
-										int pixel_pick = (Sprite_Shapes[i * 8 + offset_y] >> offset_x) & 1;
-
-										if (pixel_pick == 1)
-										{
-											if (Core._settings.Show_Sprites)
-											{
-												Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
-											}
-
-											Pixel_Stat |= (byte)(1 << i);
-										}
-									}
+									char_pick &= 0xFF;
+									char_pick |= (Quad_Chars[i * 16 + 4 * quad_num + 3] & 1) << 8;
 								}
 								else
 								{
-									offset_x = cycle - x_base;
+									char_pick &= 0xFF;
+									char_pick |= (~(Quad_Chars[i * 16 + 4 * quad_num + 3] & 1)) << 8;
+									char_pick &= 0x1FF;
+								}
 
-									if ((right_shift + right_shift_even) < 2)
+								// don't display past the end of a character
+								// for quads, this is controlled by the last quad, so need to recalculate the char
+								int char_sel_3 = Quad_Chars[i * 16 + 4 * 3 + 2];
+
+								int char_pick_3 = (char_sel_3 - (((~(Quad_Chars[i * 16] >> 1)) + 1) & 0xFF));
+
+								if (char_pick_3 < 0)
+								{
+									char_pick_3 &= 0xFF;
+									char_pick_3 |= (Quad_Chars[i * 16 + 4 * 3 + 3] & 1) << 8;
+								}
+								else
+								{
+									char_pick_3 &= 0xFF;
+									char_pick_3 |= (~(Quad_Chars[i * 16 + 4 * 3 + 3] & 1)) << 8;
+									char_pick_3 &= 0x1FF;
+								}
+
+								int pixel_pick = 0;
+
+								if (((char_pick_3 + 1) & 7) + offset_y < 8)
+								{
+									pixel_pick = (Internal_Graphics[(char_pick + offset_y) % 0x200] >> offset_x) & 1;
+								}
+
+								if (pixel_pick == 1)
+								{
+									if (Core._settings.Show_Quads)
 									{
-										int pixel_pick = (Sprite_Shapes[i * 8 + offset_y] >> (offset_x - 1)) & 1;
-
-										if (pixel_pick == 1)
-										{
-											if (Core._settings.Show_Sprites)
-											{
-												Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
-											}
-
-											Pixel_Stat |= (byte)(1 << i);
-										}
-
-										pixel_pick = (Sprite_Shapes[i * 8 + offset_y] >> offset_x) & 1;
-
-										if (pixel_pick == 1)
-										{
-											if (Core._settings.Show_Sprites)
-											{
-												Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
-											}
-
-											Pixel_Stat |= (byte)(1 << i);
-										}
+										Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_SPR[(Quad_Chars[i * 16 + 4 * quad_num + 3] >> 1) & 0x7];
+										Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_SPR[(Quad_Chars[i * 16 + 4 * quad_num + 3] >> 1) & 0x7];
 									}
-									else
-									{
-										offset_x -= 1;
 
-										int pixel_pick = (Sprite_Shapes[i * 8 + offset_y] >> offset_x) & 1;
-
-										if (pixel_pick == 1)
-										{
-											if (Core._settings.Show_Sprites)
-											{
-												Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
-												Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
-											}
-
-											Pixel_Stat |= (byte)(1 << i);
-										}
-									}
+									Pixel_Stat |= 0x80;
 								}
 							}
-							else
+						}
+					}
+				}
+
+				// sprites
+				for (int i = 3; i >= 0; i--)
+				{
+					double_size = Sprites[i * 4 + 2].Bit(2) ? 4 : 2;
+					right_shift = Sprites[i * 4 + 2].Bit(0) ? 1 : 0;
+
+					if (((LY - OBJ_OFST) >= Sprites[i * 4]) && ((LY - OBJ_OFST) < (Sprites[i * 4] + 8 * double_size)))
+					{
+						right_shift_even = (Sprites[i * 4 + 2].Bit(1) && (((Sprites[i * 4] + 8 * double_size - (LY - OBJ_OFST)) % 2) == 0)) ? 1 : 0;
+						x_base = Sprites[i * 4 + 1];
+
+						if ((right_shift + right_shift_even) == 0)
+						{
+							if ((cycle >= x_base) && (cycle < (x_base + 8 * (double_size / 2))))
 							{
-								if (((cycle - x_base) >> 1) == 8)
+								// character is in drawing region, pick a pixel
+								int offset_y = ((LY - OBJ_OFST) - Sprites[i * 4]) >> (double_size / 2);
+								int offset_x = (cycle - x_base) >> (double_size / 2 - 1);
+
+								int pixel_pick = (Sprite_Shapes[i * 8 + offset_y] >> offset_x) & 1;
+
+								if (pixel_pick == 1)
 								{
-									if (((cycle - x_base) % 2) == 0)
+									if (Core._settings.Show_Sprites)
+									{
+										Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
+										Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
+									}
+
+									Pixel_Stat |= (byte)(1 << i);
+								}
+							}
+						}
+						else
+						{
+							// special shifted cases
+							// since we are drawing two pixels at a time, we need to be careful that the next background / grid / char pixel
+							// doesn't overwrite the shifted pixel on the next pass
+							if ((cycle >= x_base) && (cycle < (x_base + 1 + 8 * (double_size / 2))))
+							{
+								// character is in drawing region, pick a pixel
+								int offset_y = ((LY - OBJ_OFST) - Sprites[i * 4]) >> (double_size / 2);
+								int offset_x = (cycle - x_base) >> (double_size / 2 - 1);
+
+								if (double_size == 2)
+								{
+									if ((cycle - x_base) == 8)
 									{
 										offset_x = 7;
 
@@ -735,6 +662,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 											if (Core._settings.Show_Sprites)
 											{
 												Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
+
 												if ((right_shift + right_shift_even) == 2)
 												{
 													Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
@@ -744,27 +672,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 											Pixel_Stat |= (byte)(1 << i);
 										}
 									}
-								}
-								else if (((cycle - x_base) >> 1) == 0)
-								{
-									if (((cycle - x_base) % 2) == 1)
-									{
-										offset_x = 0;
-
-										int pixel_pick = (Sprite_Shapes[i * 8 + offset_y] >> offset_x) & 1;
-
-										if (pixel_pick == 1)
-										{
-											if (Core._settings.Show_Sprites)
-											{
-												Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
-												Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
-											}
-
-											Pixel_Stat |= (byte)(1 << i);
-										}
-									}
-									else
+									else if ((cycle - x_base) == 0)
 									{
 										if ((right_shift + right_shift_even) < 2)
 										{
@@ -783,29 +691,9 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 											}
 										}
 									}
-								}
-								else
-								{
-									if (((cycle - x_base) % 2) == 1)
-									{
-										offset_x = (cycle - x_base) >> 1;
-
-										int pixel_pick = (Sprite_Shapes[i * 8 + offset_y] >> offset_x) & 1;
-
-										if (pixel_pick == 1)
-										{
-											if (Core._settings.Show_Sprites)
-											{
-												Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
-												Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
-											}
-
-											Pixel_Stat |= (byte)(1 << i);
-										}
-									}
 									else
 									{
-										offset_x = (cycle - x_base) >> 1;
+										offset_x = cycle - x_base;
 
 										if ((right_shift + right_shift_even) < 2)
 										{
@@ -848,6 +736,139 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 												}
 
 												Pixel_Stat |= (byte)(1 << i);
+											}
+										}
+									}
+								}
+								else
+								{
+									if (((cycle - x_base) >> 1) == 8)
+									{
+										if (((cycle - x_base) % 2) == 0)
+										{
+											offset_x = 7;
+
+											int pixel_pick = (Sprite_Shapes[i * 8 + offset_y] >> offset_x) & 1;
+
+											if (pixel_pick == 1)
+											{
+												if (Core._settings.Show_Sprites)
+												{
+													Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
+													if ((right_shift + right_shift_even) == 2)
+													{
+														Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
+													}
+												}
+
+												Pixel_Stat |= (byte)(1 << i);
+											}
+										}
+									}
+									else if (((cycle - x_base) >> 1) == 0)
+									{
+										if (((cycle - x_base) % 2) == 1)
+										{
+											offset_x = 0;
+
+											int pixel_pick = (Sprite_Shapes[i * 8 + offset_y] >> offset_x) & 1;
+
+											if (pixel_pick == 1)
+											{
+												if (Core._settings.Show_Sprites)
+												{
+													Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
+													Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
+												}
+
+												Pixel_Stat |= (byte)(1 << i);
+											}
+										}
+										else
+										{
+											if ((right_shift + right_shift_even) < 2)
+											{
+												offset_x = 0;
+
+												int pixel_pick = (Sprite_Shapes[i * 8 + offset_y] >> offset_x) & 1;
+
+												if (pixel_pick == 1)
+												{
+													if (Core._settings.Show_Sprites)
+													{
+														Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
+													}
+
+													Pixel_Stat |= (byte)(1 << i);
+												}
+											}
+										}
+									}
+									else
+									{
+										if (((cycle - x_base) % 2) == 1)
+										{
+											offset_x = (cycle - x_base) >> 1;
+
+											int pixel_pick = (Sprite_Shapes[i * 8 + offset_y] >> offset_x) & 1;
+
+											if (pixel_pick == 1)
+											{
+												if (Core._settings.Show_Sprites)
+												{
+													Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
+													Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
+												}
+
+												Pixel_Stat |= (byte)(1 << i);
+											}
+										}
+										else
+										{
+											offset_x = (cycle - x_base) >> 1;
+
+											if ((right_shift + right_shift_even) < 2)
+											{
+												int pixel_pick = (Sprite_Shapes[i * 8 + offset_y] >> (offset_x - 1)) & 1;
+
+												if (pixel_pick == 1)
+												{
+													if (Core._settings.Show_Sprites)
+													{
+														Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
+													}
+
+													Pixel_Stat |= (byte)(1 << i);
+												}
+
+												pixel_pick = (Sprite_Shapes[i * 8 + offset_y] >> offset_x) & 1;
+
+												if (pixel_pick == 1)
+												{
+													if (Core._settings.Show_Sprites)
+													{
+														Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
+													}
+
+													Pixel_Stat |= (byte)(1 << i);
+												}
+											}
+											else
+											{
+												offset_x -= 1;
+
+												int pixel_pick = (Sprite_Shapes[i * 8 + offset_y] >> offset_x) & 1;
+
+												if (pixel_pick == 1)
+												{
+													if (Core._settings.Show_Sprites)
+													{
+														Core._vidbuffer[LY * 372 + current_pixel_offset] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
+														Core._vidbuffer[LY * 372 + current_pixel_offset + 1] = (int)Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
+													}
+
+													Pixel_Stat |= (byte)(1 << i);
+												}
 											}
 										}
 									}
