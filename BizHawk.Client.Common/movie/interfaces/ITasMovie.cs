@@ -32,8 +32,6 @@ namespace BizHawk.Client.Common
 		IStringLog GetLogEntries();
 
 		int LastEditedFrame { get; }
-		int LastStatedFrame { get; }
-
 		void InsertInput(int frame, string inputState);
 		void InsertInput(int frame, IEnumerable<string> inputLog);
 		void InsertInput(int frame, IEnumerable<IController> inputStates);

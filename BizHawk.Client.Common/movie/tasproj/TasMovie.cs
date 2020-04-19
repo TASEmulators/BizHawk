@@ -40,7 +40,6 @@ namespace BizHawk.Client.Common
 
 		public TasLagLog LagLog { get; } = new TasLagLog();
 
-		public int LastStatedFrame => TasStateManager.Last;
 		public override string PreferredExtension => Extension;
 		public IStateManager TasStateManager { get; }
 

@@ -775,7 +775,7 @@ namespace BizHawk.Client.EmuHawk
 
 			GoToFrame(0);
 			int lastState = 0;
-			int goToFrame = CurrentTasMovie.LastStatedFrame;
+			int goToFrame = CurrentTasMovie.TasStateManager.Last;
 			do
 			{
 				MainForm.FrameAdvance();
