@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using BizHawk.Client.Common.MovieConversionExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.Common
@@ -437,8 +438,7 @@ namespace BizHawk.Client.Common
 
 		private void HandlePlaybackEnd()
 		{
-			var gambatteName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(Gameboy), typeof(CoreAttribute))).CoreName;
-			if (Movie.Core == gambatteName)
+			if (Movie.Core ==  CoreNames.Gambatte)
 			{
 				var movieCycles = Convert.ToUInt64(Movie.HeaderEntries[HeaderKeys.CycleCount]);
 				var coreCycles = ((Gameboy)_emulator).CycleCount;
