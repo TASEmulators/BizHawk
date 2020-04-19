@@ -345,7 +345,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				Tastudio.CurrentTasMovie.NewBranchText = text;
+				Tastudio.CurrentTasMovie.Branches.NewBranchText = text;
 			}
 		}
 

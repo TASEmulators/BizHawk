@@ -664,7 +664,7 @@ namespace BizHawk.Client.EmuHawk
 			SetUpToolStripColumns();
 
 			CurrentTasMovie.PropertyChanged += TasMovie_OnPropertyChanged;
-			CurrentTasMovie.CurrentBranch = CurrentTasMovie.Session.CurrentBranch;
+			CurrentTasMovie.Branches.Current = CurrentTasMovie.Session.CurrentBranch;
 			BookMarkControl.UpdateTextColumnWidth();
 			MarkerControl.UpdateTextColumnWidth();
 			// clear all selections

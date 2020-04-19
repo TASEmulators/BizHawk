@@ -15,12 +15,10 @@ namespace BizHawk.Client.Common
 		public ITasSession Session { get; private set; } = new TasSession();
 
 		public new const string Extension = "tasproj";
-		public string NewBranchText { get; set; } = "";
 		public int LastEditedFrame { get; private set; } = -1;
 		public bool LastPositionStable { get; set; } = true;
 		public TasMovieMarkerList Markers { get; private set; }
 		public bool BindMarkersToInput { get; set; }
-		public int CurrentBranch { get; set; } = -1;
 
 		public TasLagLog LagLog { get; } = new TasLagLog();
 

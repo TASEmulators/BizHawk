@@ -25,6 +25,9 @@ namespace BizHawk.Client.Common
 
 	public interface ITasBranchCollection : IList<TasBranch>
 	{
+		int Current { get; set; }
+		string NewBranchText { get; set; }
+
 		void Swap(int b1, int b2);
 		void Replace(TasBranch old, TasBranch newBranch);
 
@@ -39,6 +42,9 @@ namespace BizHawk.Client.Common
 		{
 			_movie = movie;
 		}
+
+		public int Current { get; set; } = -1;
+		public string NewBranchText { get; set; } = "";
 
 		public void Swap(int b1, int b2)
 		{
