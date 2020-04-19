@@ -228,7 +228,7 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <exception cref="MoviePlatformMismatchException"><paramref name="record"/> is <see langword="false"/> and <paramref name="movie"/>.<see cref="IMovie.SystemID"/> does not match <paramref name="emulator"/>.<see cref="IEmulator.SystemId"/></exception>
-		public void QueueNewMovie(IMovie movie, bool record, IEmulator emulator)
+		public void QueueNewMovie(IMovie movie, bool record, string systemId)
 		{
 			if (movie.IsActive() && movie.Changes)
 			{
@@ -239,10 +239,10 @@ namespace BizHawk.Client.Common
 			{
 				movie.Load(false);
 				
-				if (movie.SystemID != emulator.SystemId)
+				if (movie.SystemID != systemId)
 				{
 					throw new MoviePlatformMismatchException(
-						$"Movie system Id ({movie.SystemID}) does not match the currently loaded platform ({emulator.SystemId}), unable to load");
+						$"Movie system Id ({movie.SystemID}) does not match the currently loaded platform ({systemId}), unable to load");
 				}
 			}
 
@@ -252,7 +252,7 @@ namespace BizHawk.Client.Common
 
 			if (!record)
 			{
-				var preference = emulator.SystemId;
+				var preference = systemId;
 				if (preference == "GBC")
 				{
 					// We want to treat GBC the same as GB

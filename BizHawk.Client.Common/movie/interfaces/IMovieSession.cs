@@ -54,7 +54,7 @@ namespace BizHawk.Client.Common
 		/// When initializing a movie, it will be stored until Rom loading processes have been completed, then it will be moved to the Movie property
 		/// If an existing movie is still active, it will remain in the Movie property while the new movie is queued
 		/// </summary>
-		void QueueNewMovie(IMovie movie, bool record, IEmulator emulator);
+		void QueueNewMovie(IMovie movie, bool record, string systemId);
 
 		/// <summary>
 		/// Sets the Movie property with the QueuedMovie, clears the queued movie, and starts the new movie

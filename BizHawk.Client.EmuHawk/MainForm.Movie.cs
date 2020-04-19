@@ -17,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				MovieSession.QueueNewMovie(movie, record, Emulator);
+				MovieSession.QueueNewMovie(movie, record, Emulator.SystemId);
 			}
 			catch (MoviePlatformMismatchException ex)
 			{
