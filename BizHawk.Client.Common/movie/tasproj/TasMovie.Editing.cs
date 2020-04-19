@@ -7,7 +7,7 @@ namespace BizHawk.Client.Common
 {
 	public partial class TasMovie
 	{
-		public TasMovieChangeLog ChangeLog { get; set; }
+		public IMovieChangeLog ChangeLog { get; set; }
 
 		public override void RecordFrame(int frame, IController source)
 		{

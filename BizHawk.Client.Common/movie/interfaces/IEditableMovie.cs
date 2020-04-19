@@ -11,7 +11,7 @@ namespace BizHawk.Client.Common
 		void FlagChanges();
 		void ClearChanges();
 		bool BindMarkersToInput { get; set; }
-		TasMovieChangeLog ChangeLog { get; set; } // TODO: interface it
+		IMovieChangeLog ChangeLog { get; set; }
 		IStateManager TasStateManager { get; }
 		Func<string> ClientSettingsForSave { set; }
 		Action<string> GetClientSettingsOnLoad { set; }

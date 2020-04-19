@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 		
 		private readonly TAStudio _tastudio;
 		private string _lastUndoAction;
-		private TasMovieChangeLog Log => _tastudio.CurrentTasMovie.ChangeLog;
+		private IMovieChangeLog Log => _tastudio.CurrentTasMovie.ChangeLog;
 
 		public UndoHistoryForm(TAStudio owner)
 		{

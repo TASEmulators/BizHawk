@@ -4,7 +4,32 @@ using System.Linq;
 
 namespace BizHawk.Client.Common
 {
-	public class TasMovieChangeLog
+	public interface IMovieChangeLog
+	{
+		List<string> Names { get; }
+		int UndoIndex { get; }
+		string NextUndoStepName { get; }
+		bool IsRecording { get; set; }
+		void AddInputBind(int frame, bool isDelete, string name = "", bool force = false);
+		void ClearLog(int upTo = -1);
+		bool BeginNewBatch(string name = "", bool keepOldBatch = false);
+		void EndBatch();
+		int Undo();
+		int Redo();
+		bool CanUndo { get; }
+		bool CanRedo { get; }
+		int PreviousUndoFrame { get; }
+		int PreviousRedoFrame { get; }
+		int MaxSteps { get; set; }
+
+		void AddGeneralUndo(int first, int last, string name = "", bool force = false);
+		void SetGeneralRedo(bool force = false);
+		void AddBoolToggle(int frame, string button, bool oldState, string name = "", bool force = false);
+		void AddFloatChange(int frame, string button, float oldState, float newState, string name = "", bool force = false);
+		void AddMarkerChange(TasMovieMarker newMarker, int oldPosition = -1, string oldMessage = "", string name = "", bool force = false);
+	}
+
+	public class TasMovieChangeLog : IMovieChangeLog
 	{
 		public TasMovieChangeLog(ITasMovie movie)
 		{
