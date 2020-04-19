@@ -743,7 +743,7 @@ namespace BizHawk.Client.EmuHawk
 					else
 					{
 						_rightClickInput = new string[1];
-						_rightClickInput[0] = CurrentTasMovie.GetLogEntries()[frame];
+						_rightClickInput[0] = CurrentTasMovie.GetInputLogEntry(frame);
 						_rightClickFrame = frame;
 					}
 

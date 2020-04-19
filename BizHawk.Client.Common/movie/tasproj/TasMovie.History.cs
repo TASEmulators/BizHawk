@@ -417,7 +417,7 @@ namespace BizHawk.Client.Common
 
 			for (int i = 0; i < _undoLength; i++)
 			{
-				_oldLog.Add(movie.GetLogEntries()[FirstFrame + i]);
+				_oldLog.Add(movie.GetInputLogEntry(FirstFrame + i));
 			}
 
 			_bindMarkers = movie.BindMarkersToInput;
@@ -429,7 +429,7 @@ namespace BizHawk.Client.Common
 			_newLog = new List<string>();
 			for (int i = 0; i < _redoLength; i++)
 			{
-				_newLog.Add(movie.GetLogEntries()[FirstFrame + i]);
+				_newLog.Add(movie.GetInputLogEntry(FirstFrame + i));
 			}
 		}
 
