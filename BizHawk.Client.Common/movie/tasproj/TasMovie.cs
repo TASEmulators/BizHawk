@@ -23,7 +23,7 @@ namespace BizHawk.Client.Common
 		public bool BindMarkersToInput { get; set; }
 		public int CurrentBranch { get; set; } = -1;
 
-		public TasLagLog TasLagLog { get; } = new TasLagLog();
+		public TasLagLog LagLog { get; } = new TasLagLog();
 
 		public int LastStatedFrame => TasStateManager.Last;
 		public override string PreferredExtension => Extension;
@@ -35,8 +35,8 @@ namespace BizHawk.Client.Common
 		{
 			HasState = TasStateManager.HasState(index),
 			LogEntry = GetInputLogEntry(index),
-			Lagged = TasLagLog[index + 1],
-			WasLagged = TasLagLog.History(index + 1)
+			Lagged = LagLog[index + 1],
+			WasLagged = LagLog.History(index + 1)
 		};
 
 		/// <exception cref="InvalidOperationException">loaded core does not implement <see cref="IStatable"/></exception>
@@ -71,7 +71,7 @@ namespace BizHawk.Client.Common
 		/// <param name="frame">The last frame that can be valid.</param>
 		private void InvalidateAfter(int frame)
 		{
-			var anyInvalidated = TasLagLog.RemoveFrom(frame);
+			var anyInvalidated = LagLog.RemoveFrom(frame);
 			TasStateManager.Invalidate(frame + 1);
 			Changes = anyInvalidated;
 			LastEditedFrame = frame;
@@ -109,15 +109,6 @@ namespace BizHawk.Client.Common
 			return "!";
 		}
 
-		public void ClearGreenzone()
-		{
-			if (TasStateManager.Any())
-			{
-				TasStateManager.Clear();
-				Changes = true;
-			}
-		}
-
 		public void GreenzoneCurrentFrame()
 		{
 			// todo: this isn't working quite right when autorestore is off and we're editing while seeking
@@ -128,7 +119,7 @@ namespace BizHawk.Client.Common
 				LastPositionStable = false;
 			}
 
-			TasLagLog[Global.Emulator.Frame] = Global.Emulator.AsInputPollable().IsLagFrame;
+			LagLog[Global.Emulator.Frame] = Global.Emulator.AsInputPollable().IsLagFrame;
 
 			if (!TasStateManager.HasState(Global.Emulator.Frame))
 			{
@@ -138,7 +129,7 @@ namespace BizHawk.Client.Common
 
 		public void ClearLagLog()
 		{
-			TasLagLog.Clear();
+			LagLog.Clear();
 		}
 
 		public void CopyLog(IEnumerable<string> log)
@@ -316,7 +307,7 @@ namespace BizHawk.Client.Common
 
 			if (_timelineBranchFrame.HasValue)
 			{
-				TasLagLog.RemoveFrom(_timelineBranchFrame.Value);
+				LagLog.RemoveFrom(_timelineBranchFrame.Value);
 				TasStateManager.Invalidate(_timelineBranchFrame.Value);
 			}
 

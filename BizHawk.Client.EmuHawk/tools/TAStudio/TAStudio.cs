@@ -1220,7 +1220,7 @@ namespace BizHawk.Client.EmuHawk
 					CurrentTasMovie.ChangeLog.IsRecording = false;
 
 					CurrentTasMovie.RemoveFrame(Emulator.Frame - 1);
-					CurrentTasMovie.TasLagLog.RemoveHistoryAt(Emulator.Frame); // Removes from WasLag
+					CurrentTasMovie.LagLog.RemoveHistoryAt(Emulator.Frame); // Removes from WasLag
 
 					CurrentTasMovie.ChangeLog.IsRecording = wasRecording;
 					GoToFrame(Emulator.Frame - 1);
@@ -1234,7 +1234,7 @@ namespace BizHawk.Client.EmuHawk
 					CurrentTasMovie.ChangeLog.IsRecording = false;
 
 					CurrentTasMovie.InsertInput(Emulator.Frame - 1, CurrentTasMovie.GetInputLogEntry(Emulator.Frame - 2));
-					CurrentTasMovie.InsertLagHistory(Emulator.Frame, true);
+					CurrentTasMovie.LagLog.InsertHistoryAt(Emulator.Frame, true);
 
 					CurrentTasMovie.ChangeLog.IsRecording = wasRecording;
 					return true;

@@ -19,7 +19,7 @@ namespace BizHawk.Client.Common
 		ITasSession Session { get; }
 		TasMovieMarkerList Markers { get; }
 		ITasBranchCollection Branches { get; }
-		TasLagLog TasLagLog { get; }
+		TasLagLog LagLog { get; }
 
 		int CurrentBranch { get; set; }
 
@@ -50,14 +50,7 @@ namespace BizHawk.Client.Common
 
 		IStringLog VerificationLog { get; }
 
-		void ClearGreenzone(); // TODO: extension method?
-
 		string DisplayValue(int frame, string buttonName);
-
-		// TODO: delete these and just hit TasLagLog directly
-		void RemoveLagHistory(int frame);
-		void InsertLagHistory(int frame, bool isLag);
-		void SetLag(int frame, bool? value);
 
 		bool LastPositionStable { get; set; }
 

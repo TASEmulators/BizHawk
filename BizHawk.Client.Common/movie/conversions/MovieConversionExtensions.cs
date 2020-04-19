@@ -170,8 +170,8 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			old.TasStateManager.Clear();
 
 			// Lag Log
-			tas.TasLagLog.FromLagLog(old.TasLagLog);
-			tas.TasLagLog.StartFromFrame(frame);
+			tas.LagLog.FromLagLog(old.LagLog);
+			tas.LagLog.StartFromFrame(frame);
 
 			tas.HeaderEntries.Clear();
 			foreach (var kvp in old.HeaderEntries)

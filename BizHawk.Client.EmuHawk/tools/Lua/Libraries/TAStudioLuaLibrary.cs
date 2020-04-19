@@ -111,7 +111,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
-				Tastudio.CurrentTasMovie.SetLag(frame, value);
+				Tastudio.CurrentTasMovie.LagLog[frame] = value;
 			}
 		}
 

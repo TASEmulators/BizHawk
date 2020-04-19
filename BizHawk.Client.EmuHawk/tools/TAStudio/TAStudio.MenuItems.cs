@@ -759,7 +759,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClearGreenzoneMenuItem_Click(object sender, EventArgs e)
 		{
-			CurrentTasMovie.ClearGreenzone();
+			CurrentTasMovie.TasStateManager.Clear();
 			RefreshDialog();
 		}
 

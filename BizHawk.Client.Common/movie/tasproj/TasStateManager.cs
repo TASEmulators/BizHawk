@@ -160,6 +160,8 @@ namespace BizHawk.Client.Common
 					SetState(0, power);
 					_used = (ulong)power.Length;
 				}
+
+				_movie.FlagChanges();
 			}
 		}
 

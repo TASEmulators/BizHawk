@@ -713,12 +713,12 @@ namespace BizHawk.Client.Common
 			if (_delete) // Insert
 			{
 				movie.InsertInput(FirstFrame, _log);
-				movie.InsertLagHistory(FirstFrame + 1, true);
+				movie.LagLog.InsertHistoryAt(FirstFrame + 1, true);
 			}
 			else // Delete
 			{
 				movie.RemoveFrame(FirstFrame);
-				movie.RemoveLagHistory(FirstFrame + 1);
+				movie.LagLog.RemoveHistoryAt(FirstFrame + 1);
 			}
 
 			movie.ChangeLog.IsRecording = wasRecording;
@@ -735,12 +735,12 @@ namespace BizHawk.Client.Common
 			if (_delete)
 			{
 				movie.RemoveFrame(FirstFrame);
-				movie.RemoveLagHistory(FirstFrame + 1);
+				movie.LagLog.RemoveHistoryAt(FirstFrame + 1);
 			}
 			else
 			{
 				movie.InsertInput(FirstFrame, _log);
-				movie.InsertLagHistory(FirstFrame + 1, true);
+				movie.LagLog.InsertHistoryAt(FirstFrame + 1, true);
 			}
 
 			movie.ChangeLog.IsRecording = wasRecording;
