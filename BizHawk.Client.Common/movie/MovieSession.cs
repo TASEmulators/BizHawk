@@ -35,7 +35,7 @@ namespace BizHawk.Client.Common
 			_modeChangedCallback = modeChangedCallback
 				?? throw new ArgumentNullException($"{nameof(modeChangedCallback)} CannotUnloadAppDomainException be null.");
 
-			Movie = MovieService.DefaultInstance;
+			Movie = MovieService.Create();
 		}
 
 		public IMovie Movie { get; private set; }
@@ -352,7 +352,7 @@ namespace BizHawk.Client.Common
 
 			MultiTrack.Restart(Global.Emulator.ControllerDefinition.PlayerCount);
 			_modeChangedCallback();
-			Movie = MovieService.DefaultInstance;
+			Movie = MovieService.Create();
 		}
 
 		public void ConvertToTasProj()

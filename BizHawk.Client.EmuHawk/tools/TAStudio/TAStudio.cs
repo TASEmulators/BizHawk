@@ -628,7 +628,7 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
-			var newMovie = MovieService.CreateTasMovie(startsFromSavestate: startsFromSavestate);
+			var newMovie = MovieService.CreateTas(startsFromSavestate: startsFromSavestate);
 			newMovie.Filename = file.FullName;
 			newMovie.BindMarkersToInput = Settings.BindMarkersToInput;
 			newMovie.TasStateManager.InvalidateCallback = GreenzoneInvalidated;
@@ -683,7 +683,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var tasMovie = MovieService.CreateTasMovie();
+			var tasMovie = MovieService.CreateTas();
 			tasMovie.BindMarkersToInput = Settings.BindMarkersToInput;
 			tasMovie.Filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
 
@@ -821,12 +821,14 @@ namespace BizHawk.Client.EmuHawk
 			MainForm.SetMainformMovieInfo();
 		}
 
+		private const string DefaultTasProjectName = "default";
+
 		// Used when starting a new project
 		private string DefaultTasProjName()
 		{
 			return Path.Combine(
 				Config.PathEntries.MovieAbsolutePath(),
-				$"{MovieService.DefaultTasProjectName}.{MovieService.TasMovieExtension}");
+				$"{DefaultTasProjectName}.{MovieService.TasMovieExtension}");
 		}
 
 		// Used for things like SaveFile dialogs to suggest a name to the user

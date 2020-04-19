@@ -17,6 +17,20 @@ namespace BizHawk.Client.Common
 			return new Bk2Movie(path);
 		}
 
+		/// <summary>
+		/// Creates a standard <see cref="IMovie"/> instance, 
+		/// no path is specified so this is in a minimal state that would not be able to be saved
+		/// </summary>
+		public static IMovie Create() => new Bk2Movie();
+
+		/// <summary>
+		/// Creates a <see cref="ITasSession"/> instance
+		/// </summary>
+		public static ITasMovie CreateTas(bool startsFromSavestate = false)
+		{
+			return new TasMovie(startsFromSavestate: startsFromSavestate);
+		}
+
 		public static string StandardMovieExtension => Bk2Movie.Extension;
 		public static string TasMovieExtension => TasMovie.Extension;
 
@@ -29,18 +43,5 @@ namespace BizHawk.Client.Common
 		{
 			return MovieExtensions.Contains(ext.ToLower().Replace(".", ""));
 		}
-
-		/// <summary>
-		/// Creates a default instance of the default implementation, 
-		/// no path is specified so this is in a minimal state that would not be able to be saved
-		/// </summary>
-		public static IMovie DefaultInstance => new Bk2Movie();
-
-		public static ITasMovie CreateTasMovie(bool startsFromSavestate = false)
-		{
-			return new TasMovie(startsFromSavestate: startsFromSavestate);
-		}
-
-		public const string DefaultTasProjectName = "default";
 	}
 }
