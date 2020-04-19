@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public partial class TasMovie
+	internal partial class TasMovie
 	{
 		public IMovieChangeLog ChangeLog { get; set; }
 

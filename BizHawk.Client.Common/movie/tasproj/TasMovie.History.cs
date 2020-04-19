@@ -615,7 +615,7 @@ namespace BizHawk.Client.Common
 		private readonly string _buttonName;
 		private readonly bool _isFloat = false;
 
-		public MovieActionPaint(int startFrame, int endFrame, string button, bool newS, TasMovie movie)
+		public MovieActionPaint(int startFrame, int endFrame, string button, bool newS, ITasMovie movie)
 		{
 			_newState = newS ? 1 : 0;
 			FirstFrame = startFrame;
@@ -629,7 +629,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public MovieActionPaint(int startFrame, int endFrame, string button, float newS, TasMovie movie)
+		public MovieActionPaint(int startFrame, int endFrame, string button, float newS, ITasMovie movie)
 		{
 			_newState = newS;
 			FirstFrame = startFrame;

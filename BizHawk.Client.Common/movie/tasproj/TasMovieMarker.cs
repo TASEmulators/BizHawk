@@ -69,9 +69,9 @@ namespace BizHawk.Client.Common
 
 	public class TasMovieMarkerList : List<TasMovieMarker>
 	{
-		private readonly TasMovie _movie;
+		private readonly ITasMovie _movie;
 		
-		public TasMovieMarkerList(TasMovie movie)
+		public TasMovieMarkerList(ITasMovie movie)
 		{
 			_movie = movie;
 		}

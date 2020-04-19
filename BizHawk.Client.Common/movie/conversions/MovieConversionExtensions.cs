@@ -15,7 +15,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 {
 	public static class MovieConversionExtensions
 	{
-		public static TasMovie ToTasMovie(this IMovie old, bool copy = false)
+		public static ITasMovie ToTasMovie(this IMovie old, bool copy = false)
 		{
 			string newFilename = $"{old.Filename}.{TasMovie.Extension}";
 
@@ -77,7 +77,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			return tas;
 		}
 
-		public static Bk2Movie ToBk2(this IMovie old, bool copy = false, bool backup = false)
+		public static IMovie ToBk2(this IMovie old, bool copy = false, bool backup = false)
 		{
 			var bk2 = new Bk2Movie(old.Filename.Replace(old.PreferredExtension, Bk2Movie.Extension));
 

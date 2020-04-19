@@ -70,7 +70,7 @@ namespace BizHawk.Client.EmuHawk
 					if (!MovieService.MovieExtensions.Contains(Path.GetExtension(path)))
 					{
 						// If no valid movie extension, add movie extension
-						path += $".{MovieService.DefaultExtension}";
+						path += $".{MovieService.StandardMovieExtension}";
 					}
 				}
 			}

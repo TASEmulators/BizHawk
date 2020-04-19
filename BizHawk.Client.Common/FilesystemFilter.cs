@@ -51,7 +51,7 @@ namespace BizHawk.Client.Common
 
 		public static readonly FilesystemFilter Archives = new FilesystemFilter("Archives", ArchiveExtensions);
 
-		public static readonly FilesystemFilter BizHawkMovies = new FilesystemFilter("Movie Files", new[] { MovieService.DefaultExtension });
+		public static readonly FilesystemFilter BizHawkMovies = new FilesystemFilter("Movie Files", new[] { MovieService.StandardMovieExtension });
 
 		public static readonly FilesystemFilter EmuHawkSaveStates = new FilesystemFilter("Save States", new[] { "State" });
 
@@ -61,7 +61,7 @@ namespace BizHawk.Client.Common
 
 		public static readonly FilesystemFilter PNGs = new FilesystemFilter("PNG Files", new[] { "png" });
 
-		public static readonly FilesystemFilter TAStudioProjects = new FilesystemFilter("TAS Project Files", new[] { TasMovie.Extension });
+		public static readonly FilesystemFilter TAStudioProjects = new FilesystemFilter("TAS Project Files", new[] { MovieService.TasMovieExtension });
 
 		public static readonly FilesystemFilter TextFiles = new FilesystemFilter("Text Files", new[] { "txt" });
 

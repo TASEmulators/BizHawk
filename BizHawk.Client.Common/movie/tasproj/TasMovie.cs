@@ -9,14 +9,13 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public sealed partial class TasMovie : Bk2Movie, ITasMovie
+	internal sealed partial class TasMovie : Bk2Movie, ITasMovie
 	{
 		public IStringLog VerificationLog { get; } = StringLogUtil.MakeStringLog(); // For movies that do not begin with power-on, this is the input required to get into the initial state
 		public ITasBranchCollection Branches { get; } = new TasBranchCollection();
 		public ITasSession Session { get; private set; } = new TasSession();
 
 		public new const string Extension = "tasproj";
-		public const string DefaultProjectName = "default";
 		public string NewBranchText { get; set; } = "";
 		public int LastEditedFrame { get; private set; } = -1;
 		public bool LastPositionStable { get; set; } = true;

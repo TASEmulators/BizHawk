@@ -48,6 +48,8 @@ namespace BizHawk.Client.Common
 
 		#region Properties
 
+		string Name { get; }
+
 		/// <summary>
 		/// Gets the total number of frames that count towards the completion time of the movie
 		/// Possibly (but unlikely different from InputLogLength (could be infinity, or maybe an implementation automatically discounts empty frames at the end of a movie, etc)

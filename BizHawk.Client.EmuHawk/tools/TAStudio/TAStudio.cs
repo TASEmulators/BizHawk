@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class TAStudio : ToolFormBase, IToolFormAutoConfig, IControlMainform
 	{
 		// TODO: UI flow that conveniently allows to start from savestate
-		public ITasMovie CurrentTasMovie => MovieSession.Movie as TasMovie;
+		public ITasMovie CurrentTasMovie => MovieSession.Movie as ITasMovie;
 
 		public bool IsInMenuLoop { get; private set; }
 		public string StatesPath => Config.PathEntries.TastudioStatesAbsolutePath();
@@ -322,7 +322,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Start Scenario 1: A regular movie is active
-			if (MovieSession.Movie.IsActive() && !(MovieSession.Movie is TasMovie))
+			if (MovieSession.Movie.IsActive() && !(MovieSession.Movie is ITasMovie))
 			{
 				var result = MessageBox.Show("In order to use Tastudio, a new project must be created from the current movie\nThe current movie will be saved and closed, and a new project file will be created\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
 				if (result.IsOk())
@@ -338,7 +338,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Start Scenario 2: A tasproj is already active
-			else if (MovieSession.Movie.IsActive() && MovieSession.Movie is TasMovie)
+			else if (MovieSession.Movie.IsActive() && MovieSession.Movie is ITasMovie)
 			{
 				bool result = LoadFile(new FileInfo(CurrentTasMovie.Filename), gotoFrame: Emulator.Frame);
 				if (!result)
@@ -628,11 +628,9 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
-			var newMovie = new TasMovie(startsFromSavestate: startsFromSavestate)
-			{
-				Filename = file.FullName,
-				BindMarkersToInput = Settings.BindMarkersToInput
-			};
+			var newMovie = MovieService.CreateTasMovie(startsFromSavestate: startsFromSavestate);
+			newMovie.Filename = file.FullName;
+			newMovie.BindMarkersToInput = Settings.BindMarkersToInput;
 			newMovie.TasStateManager.InvalidateCallback = GreenzoneInvalidated;
 			
 
@@ -685,11 +683,9 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var tasMovie = new TasMovie
-			{
-				BindMarkersToInput = Settings.BindMarkersToInput,
-				Filename =  DefaultTasProjName() // TODO don't do this, take over any mainform actions that can crash without a filename
-			};
+			var tasMovie = MovieService.CreateTasMovie();
+			tasMovie.BindMarkersToInput = Settings.BindMarkersToInput;
+			tasMovie.Filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
 
 			tasMovie.TasStateManager.InvalidateCallback = GreenzoneInvalidated;
 			tasMovie.PropertyChanged += TasMovie_OnPropertyChanged;
@@ -721,7 +717,7 @@ namespace BizHawk.Client.EmuHawk
 			TasView.Refresh();
 		}
 
-		private bool HandleMovieLoadStuff(TasMovie movie)
+		private bool HandleMovieLoadStuff(ITasMovie movie)
 		{
 			WantsToControlStopMovie = false;
 			var result = StartNewMovieWrapper(movie);
@@ -830,7 +826,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return Path.Combine(
 				Config.PathEntries.MovieAbsolutePath(),
-				$"{TasMovie.DefaultProjectName}.{TasMovie.Extension}");
+				$"{MovieService.DefaultTasProjectName}.{MovieService.TasMovieExtension}");
 		}
 
 		// Used for things like SaveFile dialogs to suggest a name to the user
@@ -838,7 +834,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return Path.Combine(
 				Config.PathEntries.MovieAbsolutePath(),
-				$"{Global.Game.FilesystemSafeName()}.{TasMovie.Extension}");
+				$"{Global.Game.FilesystemSafeName()}.{MovieService.TasMovieExtension}");
 		}
 
 		private void SaveTas()
@@ -1178,7 +1174,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
-			if (Path.GetExtension(filePaths[0]) == $".{TasMovie.Extension}")
+			if (Path.GetExtension(filePaths[0]) == $".{MovieService.TasMovieExtension}")
 			{
 				FileInfo file = new FileInfo(filePaths[0]);
 				if (file.Exists)

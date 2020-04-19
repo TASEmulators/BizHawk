@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace BizHawk.Client.Common
 {
-	public partial class TasMovie
+	internal partial class TasMovie
 	{
 		public Func<string> ClientSettingsForSave { get; set; }
 		public Action<string> GetClientSettingsOnLoad { get; set; }

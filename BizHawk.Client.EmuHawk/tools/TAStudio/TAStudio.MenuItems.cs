@@ -114,11 +114,11 @@ namespace BizHawk.Client.EmuHawk
 				var result = ofd.ShowHawkDialog();
 				if (result.IsOk())
 				{
-					if (ofd.FileName.EndsWith(TasMovie.Extension))
+					if (ofd.FileName.EndsWith(MovieService.TasMovieExtension))
 					{
 						LoadFile(new FileInfo(ofd.FileName));
 					}
-					else if (ofd.FileName.EndsWith(Bk2Movie.Extension))
+					else if (ofd.FileName.EndsWith(MovieService.StandardMovieExtension))
 					{
 						var result1 = MessageBox.Show("This is a regular movie, a new project must be created from it, in order to use in TAStudio\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
 						if (result1.IsOk())

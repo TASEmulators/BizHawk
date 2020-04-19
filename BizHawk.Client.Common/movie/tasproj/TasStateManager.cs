@@ -22,7 +22,7 @@ namespace BizHawk.Client.Common
 		private IEmulator Emulator => Global.Emulator;
 
 		private readonly StateManagerDecay _decay;
-		private readonly TasMovie _movie;
+		private readonly ITasMovie _movie;
 
 		private readonly SortedList<int, byte[]> _states;
 		private readonly ulong _expectedStateSize;
@@ -35,7 +35,7 @@ namespace BizHawk.Client.Common
 		private int FileStateGap => 1 << Settings.FileStateGap;
 
 		/// <exception cref="InvalidOperationException">loaded core expects savestate size of <c>0 B</c></exception>
-		public TasStateManager(TasMovie movie, TasStateManagerSettings settings)
+		public TasStateManager(ITasMovie movie, TasStateManagerSettings settings)
 		{
 			_movie = movie;
 			Settings = new TasStateManagerSettings(settings);

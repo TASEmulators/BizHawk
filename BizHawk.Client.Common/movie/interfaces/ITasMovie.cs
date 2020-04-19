@@ -68,9 +68,6 @@ namespace BizHawk.Client.Common
 		void InsertLagHistory(int frame, bool isLag);
 		void SetLag(int frame, bool? value);
 
-		// TODO: movie to IMovie, bk2 has this too
-		string Name { get; }
-
 		bool LastPositionStable { get; set; }
 
 		// TODO: extension methods?

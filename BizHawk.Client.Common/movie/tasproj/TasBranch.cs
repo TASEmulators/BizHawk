@@ -25,7 +25,7 @@ namespace BizHawk.Client.Common
 	public interface ITasBranchCollection : IList<TasBranch>
 	{
 		void Save(BinaryStateSaver bs);
-		void Load(BinaryStateLoader bl, TasMovie movie);
+		void Load(BinaryStateLoader bl, ITasMovie movie);
 	}
 
 	public class TasBranchCollection : List<TasBranch>, ITasBranchCollection
@@ -108,7 +108,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void Load(BinaryStateLoader bl, TasMovie movie)
+		public void Load(BinaryStateLoader bl, ITasMovie movie)
 		{
 			var nheader = new IndexedStateLump(BinaryStateLump.BranchHeader);
 			var ncore = new IndexedStateLump(BinaryStateLump.BranchCoreData);

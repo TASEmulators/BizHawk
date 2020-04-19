@@ -17,15 +17,13 @@ namespace BizHawk.Client.Common
 			return new Bk2Movie(path);
 		}
 
-		/// <summary>
-		/// Gets the file extension for the default movie implementation used in the client
-		/// </summary>
-		public const string DefaultExtension = "bk2";
+		public static string StandardMovieExtension => Bk2Movie.Extension;
+		public static string TasMovieExtension => TasMovie.Extension;
 
 		/// <summary>
 		/// Gets a list of extensions for all <seealso cref="IMovie"/> implementations
 		/// </summary>
-		public static IEnumerable<string> MovieExtensions => new[] { DefaultExtension, TasMovie.Extension };
+		public static IEnumerable<string> MovieExtensions => new[] { Bk2Movie.Extension, TasMovie.Extension };
 
 		public static bool IsValidMovieExtension(string ext)
 		{
@@ -37,5 +35,12 @@ namespace BizHawk.Client.Common
 		/// no path is specified so this is in a minimal state that would not be able to be saved
 		/// </summary>
 		public static IMovie DefaultInstance => new Bk2Movie();
+
+		public static ITasMovie CreateTasMovie(bool startsFromSavestate = false)
+		{
+			return new TasMovie(startsFromSavestate: startsFromSavestate);
+		}
+
+		public const string DefaultTasProjectName = "default";
 	}
 }

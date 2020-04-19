@@ -45,7 +45,7 @@ namespace BizHawk.Client.Common
 	// TODO: interface me
 	internal class StateManagerDecay
 	{
-		private readonly TasMovie _movie;
+		private readonly ITasMovie _movie;
 		private readonly IStateManager _tsm;
 
 		private List<int> _zeros;		// amount of least significant zeros in bitwise view (also max pattern step)
@@ -56,7 +56,7 @@ namespace BizHawk.Client.Common
 		private int _step;				// initial memory state gap
 		private bool _align;			// extra care about fine alignment. TODO: do we want it?
 
-		public StateManagerDecay(TasMovie movie, IStateManager tsm)
+		public StateManagerDecay(ITasMovie movie, IStateManager tsm)
 		{
 			_movie = movie;
 			_tsm = tsm;
