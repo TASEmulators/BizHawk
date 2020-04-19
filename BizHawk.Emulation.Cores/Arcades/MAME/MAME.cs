@@ -117,8 +117,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private Thread _mameThread;
 		private ManualResetEvent _mameStartupComplete = new ManualResetEvent(false);
 		private ManualResetEvent _mameFrameComplete = new ManualResetEvent(false);
+		private ManualResetEvent _memoryAccessComplete = new ManualResetEvent(false);
 		private AutoResetEvent _mamePeriodicComplete = new AutoResetEvent(false);
-		private AutoResetEvent _memoryAccessComplete = new AutoResetEvent(false);
 		private SortedDictionary<string, string> _fieldsPorts = new SortedDictionary<string, string>();
 		private IController _controller = NullController.Instance;
 		private IMemoryDomains _memoryDomains;
@@ -194,9 +194,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			_memAccess = true;
-			_mamePeriodicComplete.WaitOne();
-
 			writer.Write(_mameSaveBuffer.Length);
 
 			LibMAME.SaveError err = LibMAME.mame_save_buffer(_mameSaveBuffer, out int length);
@@ -215,16 +212,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			writer.Write(Frame);
 			writer.Write(LagCount);
 			writer.Write(IsLagFrame);
-
-			_memoryAccessComplete.Set();
-			_memAccess = false;
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
 		{
-			_memAccess = true;
-			_mamePeriodicComplete.WaitOne();
-
 			int length = reader.ReadInt32();
 
 			if (length != _mameSaveBuffer.Length)
@@ -243,9 +234,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			Frame = reader.ReadInt32();
 			LagCount = reader.ReadInt32();
 			IsLagFrame = reader.ReadBoolean();
-
-			_memoryAccessComplete.Set();
-			_memAccess = false;
 		}
 
 		public byte[] SaveStateBinary()
@@ -500,6 +488,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				 "mame"                                 // dummy, internally discarded by index, so has to go first
 				, _gameFilename                         // no dash for rom names
 				, "-noreadconfig"                       // forbid reading any config files
+				, "-nowriteconfig"                      // forbid writing any config files
 				, "-norewind"                           // forbid rewind savestates (captured upon frame advance)
 				, "-skip_gameinfo"                      // forbid this blocking screen that requires user input
 				, "-nothrottle"                         // forbid throttling to "real" speed of the device
@@ -507,7 +496,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				, "-rompath",            _gameDirectory // mame doesn't load roms from full paths, only from dirs to scan
 				, "-joystick_contradictory"             // L+R/U+D on digital joystick
 				, "-nonvram_save"                       // prevent dumping non-volatile ram to disk
-				, "-cfg_directory",        "mame\\cfg"  // TODO: send PR for -noconfig_save
 				, "-artpath",          "mame\\artwork"  // path to load artowrk from
 				, "-diff_directory",      "mame\\diff"
 				, "-volume",                     "-32"  // lowest attenuation means mame osd remains silent
@@ -641,16 +629,20 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				LibMAME.mame_lua_execute(MAMELuaCommand.Exit);
 				_exiting = false;
 			}
-			
-			if (_memAccess)
+
+			//int MAMEFrame = LibMAME.mame_lua_get_int(MAMELuaCommand.GetFrameNumber);
+
+			for (; _memAccess;)
 			{
 				_mamePeriodicComplete.Set();
 				_memoryAccessComplete.WaitOne();
-				_memAccess = false;
-				return;
-			}
 
-			//int MAMEFrame = LibMAME.mame_lua_get_int(MAMELuaCommand.GetFrameNumber);
+				if (!_frameDone && !_paused)
+				{
+					_memAccess = false;
+					return;
+				}
+			}
 
 			if (!_paused)
 			{
