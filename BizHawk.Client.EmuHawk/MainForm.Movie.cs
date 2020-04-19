@@ -30,7 +30,7 @@ namespace BizHawk.Client.EmuHawk
 
 			Config.RecentMovies.Add(movie.Filename);
 
-			MovieSession.RunQueuedMovie(record);
+			MovieSession.RunQueuedMovie(record, Emulator);
 
 			SetMainformMovieInfo();
 

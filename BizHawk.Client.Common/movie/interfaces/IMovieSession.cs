@@ -59,7 +59,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Sets the Movie property with the QueuedMovie, clears the queued movie, and starts the new movie
 		/// </summary>
-		void RunQueuedMovie(bool recordMode);
+		void RunQueuedMovie(bool recordMode, IEmulator emulator);
 
 		void ToggleMultitrack();
 
