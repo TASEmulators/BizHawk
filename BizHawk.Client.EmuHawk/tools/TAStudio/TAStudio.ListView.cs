@@ -196,7 +196,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (columnName == FrameColumnName)
 			{
-				TasMovieRecord record = CurrentTasMovie[index];
+				var record = CurrentTasMovie[index];
 				offsetX = -3;
 				offsetY = 1;
 
@@ -262,7 +262,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_QueryRowBkColor(int index, ref Color color)
 		{
-			TasMovieRecord record = CurrentTasMovie[index];
+			var record = CurrentTasMovie[index];
 
 			if (MainForm.IsSeeking && MainForm.PauseOnFrame == index)
 			{
@@ -315,7 +315,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (columnName == CursorColumnName)
 				{
-					int branchIndex = CurrentTasMovie.BranchIndexByFrame(index);
+					int branchIndex = CurrentTasMovie.Branches.IndexOfFrame(index);
 					if (branchIndex != -1)
 					{
 						text = branchIndex.ToString();
@@ -356,10 +356,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		// SuuperW: Used in InputRoll.cs to hide lag frames.
 		private bool TasView_QueryFrameLag(int index, bool hideWasLag)
 		{
-			TasMovieRecord lag = CurrentTasMovie[index];
+			var lag = CurrentTasMovie[index];
 			return (lag.Lagged.HasValue && lag.Lagged.Value) || (hideWasLag && lag.WasLagged.HasValue && lag.WasLagged.Value);
 		}
 
@@ -518,7 +517,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (MainForm.EmulatorPaused)
 				{
-					TasMovieRecord record = CurrentTasMovie[LastPositionFrame];
+					var record = CurrentTasMovie[LastPositionFrame];
 					if (!record.Lagged.HasValue && LastPositionFrame > Emulator.Frame)
 					{
 						StartSeeking(LastPositionFrame, true);
@@ -744,7 +743,7 @@ namespace BizHawk.Client.EmuHawk
 					else
 					{
 						_rightClickInput = new string[1];
-						_rightClickInput[0] = CurrentTasMovie.GetLogEntries()[frame];
+						_rightClickInput[0] = CurrentTasMovie.GetInputLogEntry(frame);
 						_rightClickFrame = frame;
 					}
 

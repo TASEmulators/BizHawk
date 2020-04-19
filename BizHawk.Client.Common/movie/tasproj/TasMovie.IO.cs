@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace BizHawk.Client.Common
 {
-	public partial class TasMovie
+	internal partial class TasMovie
 	{
 		public Func<string> ClientSettingsForSave { get; set; }
 		public Action<string> GetClientSettingsOnLoad { get; set; }
@@ -29,7 +29,7 @@ namespace BizHawk.Client.Common
 			var settings = JsonConvert.SerializeObject(TasStateManager.Settings);
 			bs.PutLump(BinaryStateLump.StateHistorySettings, tw => tw.WriteLine(settings));
 
-			bs.PutLump(BinaryStateLump.LagLog, tw => TasLagLog.Save(tw));
+			bs.PutLump(BinaryStateLump.LagLog, tw => LagLog.Save(tw));
 			bs.PutLump(BinaryStateLump.Markers, tw => tw.WriteLine(Markers.ToString()));
 
 			if (StartsFromSavestate)
@@ -179,7 +179,7 @@ namespace BizHawk.Client.Common
 				// TasMovie enhanced information
 				bl.GetLump(BinaryStateLump.LagLog, false, delegate(TextReader tr)
 				{
-					TasLagLog.Load(tr);
+					LagLog.Load(tr);
 				});
 
 				bl.GetLump(BinaryStateLump.StateHistorySettings, false, delegate(TextReader tr)
@@ -285,10 +285,10 @@ namespace BizHawk.Client.Common
 
 		private void ClearTasprojExtras()
 		{
-			ClearLagLog();
+			LagLog.Clear();
 			TasStateManager.Clear();
 			Markers.Clear();
-			ChangeLog.ClearLog();
+			ChangeLog.Clear();
 		}
 	}
 }

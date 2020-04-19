@@ -111,7 +111,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
-				Tastudio.CurrentTasMovie.SetLag(frame, value);
+				Tastudio.CurrentTasMovie.LagLog[frame] = value;
 			}
 		}
 
@@ -337,11 +337,15 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (index != null)
 			{
-				Tastudio.CurrentTasMovie.GetBranch(index.Value).UserText = text;
+				var branch = Tastudio.CurrentTasMovie.Branches[index.Value];
+				if (branch != null)
+				{
+					branch.UserText = text;
+				}
 			}
 			else
 			{
-				Tastudio.CurrentTasMovie.NewBranchText = text;
+				Tastudio.CurrentTasMovie.Branches.NewBranchText = text;
 			}
 		}
 
@@ -354,7 +358,7 @@ namespace BizHawk.Client.EmuHawk
 				return Tastudio.CurrentTasMovie.Branches
 					.Select(b => new
 					{
-						Id = b.UniqueIdentifier.ToString(),
+						Id = b.Uuid.ToString(),
 						b.Frame,
 						Text = b.UserText
 					})
@@ -372,7 +376,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Engaged())
 			{
-				var branch = Tastudio.CurrentTasMovie.Branches.FirstOrDefault(b => b.UniqueIdentifier.ToString() == branchId);
+				var branch = Tastudio.CurrentTasMovie.Branches.FirstOrDefault(b => b.Uuid.ToString() == branchId);
 				if (branch != null && frame < branch.InputLog.Count)
 				{
 					var controller = Global.MovieSession.GenerateMovieController();

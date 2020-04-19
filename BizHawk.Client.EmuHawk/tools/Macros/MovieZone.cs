@@ -128,7 +128,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void PlaceZone(IMovie movie)
 		{
-			if (movie is TasMovie tasMovie)
+			if (movie is ITasMovie tasMovie)
 			{
 				tasMovie.ChangeLog.BeginNewBatch($"Place Macro at {Start}");
 			}
@@ -139,8 +139,9 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (!Replace && movie is TasMovie tasMovie2)
-			{ // Can't be done with a regular movie.
+			// Can't be done with a regular movie.
+			if (!Replace && movie is ITasMovie tasMovie2)
+			{ 
 				tasMovie2.InsertEmptyFrame(Start, Length);
 			}
 
@@ -156,15 +157,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
+				// Copy over the frame.
 				for (int i = 0; i < Length; i++)
-				{ // Copy over the frame.
+				{ 
 					_controller.SetFromMnemonic(_log[i]);
 					LatchFromSourceButtons(_targetController, _controller);
 					movie.PokeFrame(i + Start, _targetController);
 				}
 			}
 
-			if (movie is TasMovie tasMovie3) // Assume TAStudio is open?
+			if (movie is ITasMovie tasMovie3) // Assume TAStudio is open?
 			{
 				tasMovie3.ChangeLog.EndBatch();
 				if (_emulator.Frame > Start)

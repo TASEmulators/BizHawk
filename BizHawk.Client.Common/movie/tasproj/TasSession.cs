@@ -1,9 +1,16 @@
 ﻿namespace BizHawk.Client.Common
 {
-	public class TasSession
+	public interface ITasSession
 	{
-		public int CurrentFrame { get; set; }
-		public int CurrentBranch { get; set; } = -1;
+		int CurrentFrame { get; }
+		int CurrentBranch { get; }
+		void UpdateValues(int frame, int currentBranch);
+	}
+
+	public class TasSession : ITasSession
+	{
+		public int CurrentFrame { get; private set; }
+		public int CurrentBranch { get; private set; } = -1;
 
 		public void UpdateValues(int frame, int currentBranch)
 		{

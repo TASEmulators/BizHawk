@@ -4,7 +4,7 @@ using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.Common
 {
-	public partial class Bk2Movie : IMovie
+	internal partial class Bk2Movie : IMovie
 	{
 		private Bk2Controller _adapter;
 

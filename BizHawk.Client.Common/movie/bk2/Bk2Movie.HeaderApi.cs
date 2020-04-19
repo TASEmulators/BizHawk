@@ -3,7 +3,7 @@ using System.Text;
 
 namespace BizHawk.Client.Common
 {
-	public partial class Bk2Movie
+	internal partial class Bk2Movie
 	{
 		protected readonly Bk2Header Header = new Bk2Header();
 		private string _syncSettingsJson = "";

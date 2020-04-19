@@ -263,8 +263,10 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// add movies
-				fpTodo.AddRange(Directory.GetFiles(dp, $"*.{MovieService.DefaultExtension}"));
-				fpTodo.AddRange(Directory.GetFiles(dp, $"*.{TasMovie.Extension}"));
+				foreach (var extension in MovieService.MovieExtensions)
+				{
+					fpTodo.AddRange(Directory.GetFiles(dp, $"*.{extension}"));
+				}
 			}
 
 			// in parallel, scan each movie

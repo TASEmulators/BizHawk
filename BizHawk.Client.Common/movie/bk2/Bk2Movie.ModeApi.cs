@@ -2,7 +2,7 @@
 
 namespace BizHawk.Client.Common
 {
-	public partial class Bk2Movie
+	internal partial class Bk2Movie
 	{
 		public MovieMode Mode { get; protected set; } = MovieMode.Inactive;
 

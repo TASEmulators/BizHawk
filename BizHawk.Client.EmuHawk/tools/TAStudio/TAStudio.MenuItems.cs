@@ -42,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				int index = Emulator.Frame;
 
-				TasMovie newProject = CurrentTasMovie.ConvertToSavestateAnchoredMovie(
+				 var newProject = CurrentTasMovie.ConvertToSavestateAnchoredMovie(
 					index, (byte[])StatableEmulator.SaveStateBinary().Clone());
 
 				MainForm.PauseEmulator();
@@ -63,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					GoToFrame(index);
-					TasMovie newProject = CurrentTasMovie.ConvertToSaveRamAnchoredMovie(
+					var newProject = CurrentTasMovie.ConvertToSaveRamAnchoredMovie(
 						SaveRamEmulator.CloneSaveRam());
 					MainForm.PauseEmulator();
 					LoadFile(new FileInfo(newProject.Filename), true);
@@ -114,11 +114,11 @@ namespace BizHawk.Client.EmuHawk
 				var result = ofd.ShowHawkDialog();
 				if (result.IsOk())
 				{
-					if (ofd.FileName.EndsWith(TasMovie.Extension))
+					if (ofd.FileName.EndsWith(MovieService.TasMovieExtension))
 					{
 						LoadFile(new FileInfo(ofd.FileName));
 					}
-					else if (ofd.FileName.EndsWith(Bk2Movie.Extension))
+					else if (ofd.FileName.EndsWith(MovieService.StandardMovieExtension))
 					{
 						var result1 = MessageBox.Show("This is a regular movie, a new project must be created from it, in order to use in TAStudio\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
 						if (result1.IsOk())
@@ -759,7 +759,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClearGreenzoneMenuItem_Click(object sender, EventArgs e)
 		{
-			CurrentTasMovie.ClearGreenzone();
+			CurrentTasMovie.TasStateManager.Clear();
 			RefreshDialog();
 		}
 
@@ -775,7 +775,7 @@ namespace BizHawk.Client.EmuHawk
 
 			GoToFrame(0);
 			int lastState = 0;
-			int goToFrame = CurrentTasMovie.LastStatedFrame;
+			int goToFrame = CurrentTasMovie.TasStateManager.Last;
 			do
 			{
 				MainForm.FrameAdvance();

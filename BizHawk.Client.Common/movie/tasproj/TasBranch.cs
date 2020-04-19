@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
 using BizHawk.Bizware.BizwareGL;
 
@@ -16,25 +17,95 @@ namespace BizHawk.Client.Common
 		public TasMovieChangeLog ChangeLog { get; set; }
 		public DateTime TimeStamp { get; set; }
 		public TasMovieMarkerList Markers { get; set; }
-		public Guid UniqueIdentifier { get; set; }
+		public Guid Uuid { get; set; }
 		public string UserText { get; set; }
 
-		public TasBranch Clone()
-		{
-			return (TasBranch)MemberwiseClone();
-		}
+		public TasBranch Clone() => (TasBranch)MemberwiseClone();
 	}
 
-	public class TasBranchCollection : List<TasBranch>
+	public interface ITasBranchCollection : IList<TasBranch>
 	{
+		int Current { get; set; }
+		string NewBranchText { get; set; }
+
+		void Swap(int b1, int b2);
+		void Replace(TasBranch old, TasBranch newBranch);
+
+		void Save(BinaryStateSaver bs);
+		void Load(BinaryStateLoader bl, ITasMovie movie);
+	}
+
+	public class TasBranchCollection : List<TasBranch>, ITasBranchCollection
+	{
+		private readonly ITasMovie _movie;
+		public TasBranchCollection(ITasMovie movie)
+		{
+			_movie = movie;
+		}
+
+		public int Current { get; set; } = -1;
+		public string NewBranchText { get; set; } = "";
+
+		public void Swap(int b1, int b2)
+		{
+			var branch = this[b1];
+
+			if (b2 >= Count)
+			{
+				b2 = Count - 1;
+			}
+
+			Remove(branch);
+			Insert(b2, branch);
+			_movie.FlagChanges();
+		}
+
+		public void Replace(TasBranch old, TasBranch newBranch)
+		{
+			int index = IndexOf(old);
+			newBranch.Uuid = old.Uuid;
+			if (newBranch.UserText == "")
+			{
+				newBranch.UserText = old.UserText;
+			}
+
+			this[index] = newBranch;
+			_movie.FlagChanges();
+		}
+
+		public new TasBranch this[int index]
+		{
+			get => index >= Count || index < 0
+				? null
+				: base [index];
+			set => base[index] = value;
+		}
+
 		public new void Add(TasBranch item)
 		{
-			if (item.UniqueIdentifier == Guid.Empty)
+			if (item == null)
 			{
-				item.UniqueIdentifier = Guid.NewGuid();
+				throw new ArgumentNullException($"{nameof(item)} cannot be null");
+			}
+
+			if (item.Uuid == Guid.Empty)
+			{
+				item.Uuid = Guid.NewGuid();
 			}
 
 			base.Add(item);
+			_movie.FlagChanges();
+		}
+
+		public new bool Remove(TasBranch item)
+		{
+			var result = base.Remove(item);
+			if (result)
+			{
+				_movie.FlagChanges();
+			}
+
+			return result;
 		}
 
 		public void Save(BinaryStateSaver bs)
@@ -55,7 +126,7 @@ namespace BizHawk.Client.Common
 					{
 						b.Frame,
 						b.TimeStamp,
-						b.UniqueIdentifier
+						UniqueIdentifier = b.Uuid
 					}));
 				});
 
@@ -105,7 +176,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void Load(BinaryStateLoader bl, TasMovie movie)
+		public void Load(BinaryStateLoader bl, ITasMovie movie)
 		{
 			var nheader = new IndexedStateLump(BinaryStateLump.BranchHeader);
 			var ncore = new IndexedStateLump(BinaryStateLump.BranchCoreData);
@@ -140,11 +211,11 @@ namespace BizHawk.Client.Common
 					var identifier = header.UniqueIdentifier;
 					if (identifier != null)
 					{
-						b.UniqueIdentifier = (Guid)identifier;
+						b.Uuid = (Guid)identifier;
 					}
 					else
 					{
-						b.UniqueIdentifier = Guid.NewGuid();
+						b.Uuid = Guid.NewGuid();
 					}
 				}))
 				{
@@ -216,6 +287,30 @@ namespace BizHawk.Client.Common
 				nmarkers.Increment();
 				nusertext.Increment();
 			}
+		}
+	}
+
+	public static class TasBranchExtensions
+	{
+		public static int IndexOfFrame(this IList<TasBranch> list, int frame)
+		{
+			var branch = list
+				.Where(b => b.Frame == frame)
+				.OrderByDescending(b => b.TimeStamp)
+				.FirstOrDefault();
+
+			return branch == null
+				? -1
+				: list.IndexOf(branch);
+		}
+
+		// TODO: stop relying on the index value of a branch
+		public static int IndexOfHash(this IList<TasBranch> list, Guid uuid)
+		{
+			var branch = list.SingleOrDefault(b => b.Uuid == uuid);
+			return branch == null
+				? -1
+				: list.IndexOf(branch);
 		}
 	}
 }

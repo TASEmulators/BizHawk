@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class TAStudio : ToolFormBase, IToolFormAutoConfig, IControlMainform
 	{
 		// TODO: UI flow that conveniently allows to start from savestate
-		public TasMovie CurrentTasMovie => MovieSession.Movie as TasMovie;
+		public ITasMovie CurrentTasMovie => MovieSession.Movie as ITasMovie;
 
 		public bool IsInMenuLoop { get; private set; }
 		public string StatesPath => Config.PathEntries.TastudioStatesAbsolutePath();
@@ -322,7 +322,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Start Scenario 1: A regular movie is active
-			if (MovieSession.Movie.IsActive() && !(MovieSession.Movie is TasMovie))
+			if (MovieSession.Movie.IsActive() && !(MovieSession.Movie is ITasMovie))
 			{
 				var result = MessageBox.Show("In order to use Tastudio, a new project must be created from the current movie\nThe current movie will be saved and closed, and a new project file will be created\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
 				if (result.IsOk())
@@ -338,7 +338,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Start Scenario 2: A tasproj is already active
-			else if (MovieSession.Movie.IsActive() && MovieSession.Movie is TasMovie)
+			else if (MovieSession.Movie.IsActive() && MovieSession.Movie is ITasMovie)
 			{
 				bool result = LoadFile(new FileInfo(CurrentTasMovie.Filename), gotoFrame: Emulator.Frame);
 				if (!result)
@@ -375,7 +375,7 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
-		private void SetTasMovieCallbacks(TasMovie movie)
+		private void SetTasMovieCallbacks(ITasMovie movie)
 		{
 			movie.ClientSettingsForSave = ClientSettingsForSave;
 			movie.GetClientSettingsOnLoad = GetClientSettingsOnLoad;
@@ -628,11 +628,9 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
-			var newMovie = new TasMovie(startsFromSavestate: startsFromSavestate)
-			{
-				Filename = file.FullName,
-				BindMarkersToInput = Settings.BindMarkersToInput
-			};
+			var newMovie = MovieService.CreateTas(startsFromSavestate: startsFromSavestate);
+			newMovie.Filename = file.FullName;
+			newMovie.BindMarkersToInput = Settings.BindMarkersToInput;
 			newMovie.TasStateManager.InvalidateCallback = GreenzoneInvalidated;
 			
 
@@ -666,7 +664,7 @@ namespace BizHawk.Client.EmuHawk
 			SetUpToolStripColumns();
 
 			CurrentTasMovie.PropertyChanged += TasMovie_OnPropertyChanged;
-			CurrentTasMovie.CurrentBranch = CurrentTasMovie.Session.CurrentBranch;
+			CurrentTasMovie.Branches.Current = CurrentTasMovie.Session.CurrentBranch;
 			BookMarkControl.UpdateTextColumnWidth();
 			MarkerControl.UpdateTextColumnWidth();
 			// clear all selections
@@ -685,11 +683,9 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var tasMovie = new TasMovie
-			{
-				BindMarkersToInput = Settings.BindMarkersToInput,
-				Filename =  DefaultTasProjName() // TODO don't do this, take over any mainform actions that can crash without a filename
-			};
+			var tasMovie = MovieService.CreateTas();
+			tasMovie.BindMarkersToInput = Settings.BindMarkersToInput;
+			tasMovie.Filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
 
 			tasMovie.TasStateManager.InvalidateCallback = GreenzoneInvalidated;
 			tasMovie.PropertyChanged += TasMovie_OnPropertyChanged;
@@ -721,7 +717,7 @@ namespace BizHawk.Client.EmuHawk
 			TasView.Refresh();
 		}
 
-		private bool HandleMovieLoadStuff(TasMovie movie)
+		private bool HandleMovieLoadStuff(ITasMovie movie)
 		{
 			WantsToControlStopMovie = false;
 			var result = StartNewMovieWrapper(movie);
@@ -733,7 +729,7 @@ namespace BizHawk.Client.EmuHawk
 
 			WantsToControlStopMovie = true;
 
-			CurrentTasMovie.ChangeLog.ClearLog();
+			CurrentTasMovie.ChangeLog.Clear();
 			CurrentTasMovie.ClearChanges();
 
 			SetTextProperty();
@@ -742,7 +738,7 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
-		private bool StartNewMovieWrapper(TasMovie movie)
+		private bool StartNewMovieWrapper(ITasMovie movie)
 		{
 			_initializing = true;
 
@@ -825,12 +821,14 @@ namespace BizHawk.Client.EmuHawk
 			MainForm.SetMainformMovieInfo();
 		}
 
+		private const string DefaultTasProjectName = "default";
+
 		// Used when starting a new project
 		private string DefaultTasProjName()
 		{
 			return Path.Combine(
 				Config.PathEntries.MovieAbsolutePath(),
-				$"{TasMovie.DefaultProjectName}.{TasMovie.Extension}");
+				$"{DefaultTasProjectName}.{MovieService.TasMovieExtension}");
 		}
 
 		// Used for things like SaveFile dialogs to suggest a name to the user
@@ -838,7 +836,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return Path.Combine(
 				Config.PathEntries.MovieAbsolutePath(),
-				$"{Global.Game.FilesystemSafeName()}.{TasMovie.Extension}");
+				$"{Global.Game.FilesystemSafeName()}.{MovieService.TasMovieExtension}");
 		}
 
 		private void SaveTas()
@@ -1178,7 +1176,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
-			if (Path.GetExtension(filePaths[0]) == $".{TasMovie.Extension}")
+			if (Path.GetExtension(filePaths[0]) == $".{MovieService.TasMovieExtension}")
 			{
 				FileInfo file = new FileInfo(filePaths[0]);
 				if (file.Exists)
@@ -1209,7 +1207,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool AutoAdjustInput()
 		{
-			TasMovieRecord lagLog = CurrentTasMovie[Emulator.Frame - 1]; // Minus one because get frame is +1;
+			var lagLog = CurrentTasMovie[Emulator.Frame - 1]; // Minus one because get frame is +1;
 			bool isLag = Emulator.AsInputPollable().IsLagFrame;
 
 			if (lagLog.WasLagged.HasValue)
@@ -1222,7 +1220,7 @@ namespace BizHawk.Client.EmuHawk
 					CurrentTasMovie.ChangeLog.IsRecording = false;
 
 					CurrentTasMovie.RemoveFrame(Emulator.Frame - 1);
-					CurrentTasMovie.RemoveLagHistory(Emulator.Frame); // Removes from WasLag
+					CurrentTasMovie.LagLog.RemoveHistoryAt(Emulator.Frame); // Removes from WasLag
 
 					CurrentTasMovie.ChangeLog.IsRecording = wasRecording;
 					GoToFrame(Emulator.Frame - 1);
@@ -1236,7 +1234,7 @@ namespace BizHawk.Client.EmuHawk
 					CurrentTasMovie.ChangeLog.IsRecording = false;
 
 					CurrentTasMovie.InsertInput(Emulator.Frame - 1, CurrentTasMovie.GetInputLogEntry(Emulator.Frame - 2));
-					CurrentTasMovie.InsertLagHistory(Emulator.Frame, true);
+					CurrentTasMovie.LagLog.InsertHistoryAt(Emulator.Frame, true);
 
 					CurrentTasMovie.ChangeLog.IsRecording = wasRecording;
 					return true;

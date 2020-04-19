@@ -90,7 +90,7 @@ namespace BizHawk.Client.Common
 				bs.PutLump(BinaryStateLump.LagLog,
 					delegate(TextWriter tw)
 					{
-						((TasMovie)Global.MovieSession.Movie).TasLagLog.Save(tw);
+						((TasMovie)Global.MovieSession.Movie).LagLog.Save(tw);
 					});
 			}
 		}
@@ -187,7 +187,7 @@ namespace BizHawk.Client.Common
 					{
 						bl.GetLump(BinaryStateLump.LagLog, false, delegate(TextReader tr)
 						{
-							((TasMovie)Global.MovieSession.Movie).TasLagLog.Load(tr);
+							((TasMovie)Global.MovieSession.Movie).LagLog.Load(tr);
 						});
 					}
 				}

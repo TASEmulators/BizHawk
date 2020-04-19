@@ -45,9 +45,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			ReplaceBox.Enabled = CurrentMovie is TasMovie;
-			OverlayBox.Enabled = CurrentMovie is TasMovie;
-			PlaceNum.Enabled = CurrentMovie is TasMovie;
+			ReplaceBox.Enabled = OverlayBox.Enabled = PlaceNum.Enabled = CurrentMovie is ITasMovie;
 
 			var main = new MovieZone(CurrentMovie, Emulator, Tools, MovieSession, 0, CurrentMovie.InputLogLength)
 			{
@@ -223,7 +221,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (!(CurrentMovie is TasMovie))
+			if (!(CurrentMovie is ITasMovie))
 			{
 				SelectedZone.Start = Emulator.Frame;
 			}
@@ -254,7 +252,7 @@ namespace BizHawk.Client.EmuHawk
 				ZonesList.Items.Add($"{loadZone.Name} - length: {loadZone.Length}");
 
 				// Options only for TasMovie
-				if (!(CurrentMovie is TasMovie))
+				if (!(CurrentMovie is ITasMovie))
 				{
 					loadZone.Replace = false;
 					loadZone.Overlay = false;

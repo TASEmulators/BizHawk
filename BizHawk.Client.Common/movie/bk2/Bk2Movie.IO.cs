@@ -6,7 +6,7 @@ using BizHawk.Common.IOExtensions;
 
 namespace BizHawk.Client.Common
 {
-	public partial class Bk2Movie
+	internal partial class Bk2Movie
 	{
 		public void Save()
 		{
