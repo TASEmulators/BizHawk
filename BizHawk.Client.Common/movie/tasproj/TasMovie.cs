@@ -31,14 +31,6 @@ namespace BizHawk.Client.Common
 
 		public IStringLog CloneInput() => Log.Clone();
 
-		public ITasMovieRecord this[int index] => new TasMovieRecord
-		{
-			HasState = TasStateManager.HasState(index),
-			LogEntry = GetInputLogEntry(index),
-			Lagged = LagLog[index + 1],
-			WasLagged = LagLog.History(index + 1)
-		};
-
 		/// <exception cref="InvalidOperationException">loaded core does not implement <see cref="IStatable"/></exception>
 		public TasMovie(string path = null, bool startsFromSavestate = false) : base(path)
 		{
@@ -55,6 +47,15 @@ namespace BizHawk.Client.Common
 			Markers.CollectionChanged += Markers_CollectionChanged;
 			Markers.Add(0, startsFromSavestate ? "Savestate" : "Power on");
 		}
+
+		public ITasMovieRecord this[int index] => new TasMovieRecord
+		{
+			HasState = TasStateManager.HasState(index),
+			LogEntry = GetInputLogEntry(index),
+			Lagged = LagLog[index + 1],
+			WasLagged = LagLog.History(index + 1)
+		};
+
 
 		public override void StartNewRecording()
 		{

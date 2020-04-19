@@ -56,7 +56,6 @@ namespace BizHawk.Client.Common
 
 		void LoadBranch(TasBranch branch);
 
-		// TODO: extension method
 		IStringLog CloneInput();
 	}
 }
