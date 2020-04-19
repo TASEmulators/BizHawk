@@ -11,7 +11,7 @@ namespace BizHawk.Client.Common
 		string NextUndoStepName { get; }
 		bool IsRecording { get; set; }
 		void AddInputBind(int frame, bool isDelete, string name = "", bool force = false);
-		void ClearLog(int upTo = -1);
+		void Clear(int upTo = -1);
 		bool BeginNewBatch(string name = "", bool keepOldBatch = false);
 		void EndBatch();
 		int Undo();
@@ -56,11 +56,11 @@ namespace BizHawk.Client.Common
 				{
 					if (_history.Count <= value)
 					{
-						ClearLog();
+						Clear();
 					}
 					else
 					{
-						ClearLog(_history.Count - value);
+						Clear(_history.Count - value);
 					}
 				}
 			}
@@ -73,7 +73,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public bool IsRecording { get; set; } = true;
 
-		public void ClearLog(int upTo = -1)
+		public void Clear(int upTo = -1)
 		{
 			if (upTo == -1)
 			{

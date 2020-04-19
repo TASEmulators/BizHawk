@@ -69,7 +69,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClearButton_Click(object sender, EventArgs e)
 		{
-			Log.ClearLog();
+			Log.Clear();
 			UpdateValues();
 		}
 
@@ -164,7 +164,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (SelectedItem != -1)
 			{
-				Log.ClearLog(SelectedItem);
+				Log.Clear(SelectedItem);
 			}
 
 			UpdateValues();

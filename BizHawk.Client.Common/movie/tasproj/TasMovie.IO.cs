@@ -288,7 +288,7 @@ namespace BizHawk.Client.Common
 			ClearLagLog();
 			TasStateManager.Clear();
 			Markers.Clear();
-			ChangeLog.ClearLog();
+			ChangeLog.Clear();
 		}
 	}
 }

@@ -733,7 +733,7 @@ namespace BizHawk.Client.EmuHawk
 
 			WantsToControlStopMovie = true;
 
-			CurrentTasMovie.ChangeLog.ClearLog();
+			CurrentTasMovie.ChangeLog.Clear();
 			CurrentTasMovie.ClearChanges();
 
 			SetTextProperty();
