@@ -100,7 +100,7 @@ namespace BizHawk.Client.Common
 				{
 					for (int i = firstIndex; i < Markers.Count; i++)
 					{
-						TasMovieMarker m = Markers[i];
+						var m = Markers[i];
 						if (m.Frame == frame)
 						{
 							Markers.Remove(m);

@@ -17,9 +17,9 @@ namespace BizHawk.Client.Common
 		Action<string> GetClientSettingsOnLoad { set; }
 		ITasMovieRecord this[int index] { get; }
 		ITasSession Session { get; }
-		TasMovieMarkerList Markers { get; } // TODO: interface it
-		TasBranchCollection Branches { get; } // TODO: interface it
-		TasLagLog TasLagLog { get; } // TODO: interface it
+		TasMovieMarkerList Markers { get; }
+		ITasBranchCollection Branches { get; }
+		TasLagLog TasLagLog { get; }
 
 		int CurrentBranch { get; set; }
 

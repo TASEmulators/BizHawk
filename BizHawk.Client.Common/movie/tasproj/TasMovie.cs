@@ -12,7 +12,7 @@ namespace BizHawk.Client.Common
 	public sealed partial class TasMovie : Bk2Movie, ITasMovie
 	{
 		public IStringLog VerificationLog { get; } = StringLogUtil.MakeStringLog(); // For movies that do not begin with power-on, this is the input required to get into the initial state
-		public TasBranchCollection Branches { get; } = new TasBranchCollection();
+		public ITasBranchCollection Branches { get; } = new TasBranchCollection();
 		public ITasSession Session { get; private set; } = new TasSession();
 
 		public new const string Extension = "tasproj";

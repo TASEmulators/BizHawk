@@ -19,13 +19,16 @@ namespace BizHawk.Client.Common
 		public Guid UniqueIdentifier { get; set; }
 		public string UserText { get; set; }
 
-		public TasBranch Clone()
-		{
-			return (TasBranch)MemberwiseClone();
-		}
+		public TasBranch Clone() => (TasBranch)MemberwiseClone();
 	}
 
-	public class TasBranchCollection : List<TasBranch>
+	public interface ITasBranchCollection : IList<TasBranch>
+	{
+		void Save(BinaryStateSaver bs);
+		void Load(BinaryStateLoader bl, TasMovie movie);
+	}
+
+	public class TasBranchCollection : List<TasBranch>, ITasBranchCollection
 	{
 		public new void Add(TasBranch item)
 		{
