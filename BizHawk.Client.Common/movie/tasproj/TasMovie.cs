@@ -325,16 +325,6 @@ namespace BizHawk.Client.Common
 
 		#region Branches
 
-		public TasBranch GetBranch(int index)
-		{
-			if (index >= Branches.Count || index < 0)
-			{
-				return null;
-			}
-
-			return Branches[index];
-		}
-
 		public void LoadBranch(TasBranch branch)
 		{
 			int? divergentPoint = Log.DivergentPoint(branch.InputLog);
@@ -349,33 +339,6 @@ namespace BizHawk.Client.Common
 				Markers = branch.Markers;
 			}
 
-			Changes = true;
-		}
-
-		public void UpdateBranch(TasBranch old, TasBranch newBranch)
-		{
-			int index = Branches.IndexOf(old);
-			newBranch.Uuid = old.Uuid;
-			if (newBranch.UserText == "")
-			{
-				newBranch.UserText = old.UserText;
-			}
-
-			Branches[index] = newBranch;
-			Changes = true;
-		}
-
-		public void SwapBranches(int b1, int b2)
-		{
-			TasBranch branch = Branches[b1];
-
-			if (b2 >= Branches.Count)
-			{
-				b2 = Branches.Count - 1;
-			}
-
-			Branches.Remove(branch);
-			Branches.Insert(b2, branch);
 			Changes = true;
 		}
 

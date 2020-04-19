@@ -29,8 +29,6 @@ namespace BizHawk.Client.Common
 		void SetBoolState(int frame, string buttonName, bool val);
 		void SetBoolStates(int frame, int count, string buttonName, bool val);
 
-		TasBranch GetBranch(int index); // TODO: this can simply be an extension method, or do the logic inline, or implement directly into the branch class
-
 		string NewBranchText { get; set; }
 
 		IStringLog GetLogEntries(); // TODO: code smell, extension method? IMovie should expose this too? should be a property?
@@ -53,9 +51,6 @@ namespace BizHawk.Client.Common
 		IStringLog VerificationLog { get; }
 
 		void ClearGreenzone(); // TODO: extension method?
-
-		void SwapBranches(int b1, int b2);
-		void UpdateBranch(TasBranch old, TasBranch newBranch);
 
 		string DisplayValue(int frame, string buttonName);
 
