@@ -12,7 +12,7 @@ namespace BizHawk.Client.Common
 	internal sealed partial class TasMovie : Bk2Movie, ITasMovie
 	{
 		public IStringLog VerificationLog { get; } = StringLogUtil.MakeStringLog(); // For movies that do not begin with power-on, this is the input required to get into the initial state
-		public ITasBranchCollection Branches { get; } = new TasBranchCollection();
+		public ITasBranchCollection Branches { get; }
 		public ITasSession Session { get; private set; } = new TasSession();
 
 		public new const string Extension = "tasproj";
@@ -47,6 +47,7 @@ namespace BizHawk.Client.Common
 				throw new InvalidOperationException($"Cannot create a {nameof(TasMovie)} against a core that does not implement {nameof(IStatable)}");
 			}
 
+			Branches = new TasBranchCollection(this);
 			ChangeLog = new TasMovieChangeLog(this);
 			TasStateManager = new TasStateManager(this, Global.Config.DefaultTasStateManagerSettings);
 			Header[HeaderKeys.MovieVersion] = "BizHawk v2.0 Tasproj v1.0";
@@ -344,44 +345,6 @@ namespace BizHawk.Client.Common
 			return index >= Branches.Count
 				? Guid.Empty
 				: Branches[index].UniqueIdentifier;
-		}
-
-		public int BranchIndexByHash(Guid uuid)
-		{
-			TasBranch branch = Branches.SingleOrDefault(b => b.UniqueIdentifier == uuid);
-			if (branch == null)
-			{
-				return -1;
-			}
-
-			return Branches.IndexOf(branch);
-		}
-
-		public int BranchIndexByFrame(int frame)
-		{
-			TasBranch branch = Branches
-				.Where(b => b.Frame == frame)
-				.OrderByDescending(b => b.TimeStamp)
-				.FirstOrDefault();
-
-			if (branch == null)
-			{
-				return -1;
-			}
-
-			return Branches.IndexOf(branch);
-		}
-
-		public void AddBranch(TasBranch branch)
-		{
-			Branches.Add(branch);
-			Changes = true;
-		}
-
-		public void RemoveBranch(TasBranch branch)
-		{
-			Branches.Remove(branch);
-			Changes = true;
 		}
 
 		public void LoadBranch(TasBranch branch)

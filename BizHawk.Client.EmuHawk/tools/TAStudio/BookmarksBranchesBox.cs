@@ -134,9 +134,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Branch()
 		{
-			TasBranch branch = CreateBranch();
+			var branch = CreateBranch();
 			Movie.NewBranchText = ""; // reset every time it's used
-			Movie.AddBranch(branch);
+			Movie.Branches.Add(branch);
 			BranchView.RowCount = Movie.Branches.Count;
 			Movie.CurrentBranch = Movie.Branches.Count - 1;
 			Movie.Session.UpdateValues(Global.Emulator.Frame, Movie.CurrentBranch); // TODO: pass in emulator dependency
@@ -332,7 +332,7 @@ namespace BizHawk.Client.EmuHawk
 			toolTip1.SetToolTip(UndoBranchButton, "Undo Branch Removal");
 			_branchUndo = BranchUndo.Remove;
 
-			Movie.RemoveBranch(SelectedBranch);
+			Movie.Branches.Remove(SelectedBranch);
 			BranchView.RowCount = Movie.Branches.Count;
 
 			if (index == Movie.Branches.Count)
@@ -368,7 +368,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (_branchUndo == BranchUndo.Remove)
 			{
-				Movie.AddBranch(_backupBranch);
+				Movie.Branches.Add(_backupBranch);
 				BranchView.RowCount = Movie.Branches.Count;
 				SavedCallback?.Invoke(Movie.Branches.IndexOf(_backupBranch));
 				Tastudio.MainForm.AddOnScreenMessage("Branch Removal canceled");
@@ -626,7 +626,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var guid = Movie.BranchGuidByIndex(Movie.CurrentBranch);
 				Movie.SwapBranches(e.OldCell.RowIndex.Value, e.NewCell.RowIndex.Value);
-				int newIndex = Movie.BranchIndexByHash(guid);
+				int newIndex = Movie.Branches.IndexOfHash(guid);
 				Movie.CurrentBranch = newIndex;
 				Select(newIndex, true);
 			}
@@ -640,7 +640,7 @@ namespace BizHawk.Client.EmuHawk
 					BranchView.CurrentCell.RowIndex.HasValue &&
 					BranchView.CurrentCell.RowIndex < Movie.Branches.Count)
 				{
-					TasBranch branch = GetBranch(BranchView.CurrentCell.RowIndex.Value);
+					var branch = GetBranch(BranchView.CurrentCell.RowIndex.Value);
 					Point location = PointToScreen(Location);
 					int width = branch.OSDFrameBuffer.Width;
 					int height = branch.OSDFrameBuffer.Height;

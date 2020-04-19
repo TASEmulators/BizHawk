@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
 using BizHawk.Bizware.BizwareGL;
 
@@ -30,14 +31,37 @@ namespace BizHawk.Client.Common
 
 	public class TasBranchCollection : List<TasBranch>, ITasBranchCollection
 	{
+		private readonly ITasMovie _movie;
+		public TasBranchCollection(ITasMovie movie)
+		{
+			_movie = movie;
+		}
+
 		public new void Add(TasBranch item)
 		{
+			if (item == null)
+			{
+				throw new ArgumentNullException($"{nameof(item)} cannot be null");
+			}
+
 			if (item.UniqueIdentifier == Guid.Empty)
 			{
 				item.UniqueIdentifier = Guid.NewGuid();
 			}
 
 			base.Add(item);
+			_movie.FlagChanges();
+		}
+
+		public new bool Remove(TasBranch item)
+		{
+			var result = base.Remove(item);
+			if (result)
+			{
+				_movie.FlagChanges();
+			}
+
+			return result;
 		}
 
 		public void Save(BinaryStateSaver bs)
@@ -219,6 +243,30 @@ namespace BizHawk.Client.Common
 				nmarkers.Increment();
 				nusertext.Increment();
 			}
+		}
+	}
+
+	public static class TasBranchExtensions
+	{
+		public static int IndexOfFrame(this IList<TasBranch> list, int frame)
+		{
+			var branch = list
+				.Where(b => b.Frame == frame)
+				.OrderByDescending(b => b.TimeStamp)
+				.FirstOrDefault();
+
+			return branch == null
+				? -1
+				: list.IndexOf(branch);
+		}
+
+		// TODO: stop relying on the index value of a branch
+		public static int IndexOfHash(this IList<TasBranch> list, Guid uuid)
+		{
+			var branch = list.SingleOrDefault(b => b.UniqueIdentifier == uuid);
+			return branch == null
+				? -1
+				: list.IndexOf(branch);
 		}
 	}
 }

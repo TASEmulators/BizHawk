@@ -53,8 +53,7 @@ namespace BizHawk.Client.Common
 		IStringLog VerificationLog { get; }
 
 		void ClearGreenzone(); // TODO: extension method?
-		int BranchIndexByFrame(int frame); // TODO: extension method
-		int BranchIndexByHash(Guid uuid); // TODO: extension method
+
 		Guid BranchGuidByIndex(int index); // TODO: extension method
 		TasBranch GetBranch(Guid id); // TODO: extension method
 
@@ -69,10 +68,6 @@ namespace BizHawk.Client.Common
 		void SetLag(int frame, bool? value);
 
 		bool LastPositionStable { get; set; }
-
-		// TODO: extension methods?
-		void AddBranch(TasBranch branch);
-		void RemoveBranch(TasBranch branch);
 
 		void LoadBranch(TasBranch branch);
 
