@@ -54,9 +54,6 @@ namespace BizHawk.Client.Common
 
 		void ClearGreenzone(); // TODO: extension method?
 
-		Guid BranchGuidByIndex(int index); // TODO: extension method
-		TasBranch GetBranch(Guid id); // TODO: extension method
-
 		void SwapBranches(int b1, int b2);
 		void UpdateBranch(TasBranch old, TasBranch newBranch);
 

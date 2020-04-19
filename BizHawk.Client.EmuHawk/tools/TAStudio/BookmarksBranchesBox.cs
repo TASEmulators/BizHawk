@@ -235,12 +235,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_backupBranch = CreateBranch();
 
-			var currentHashes = Movie.Branches.Select(b => b.UniqueIdentifier.GetHashCode()).ToList();
+			var currentHashes = Movie.Branches.Select(b => b.Uuid.GetHashCode()).ToList();
 			do
 			{
-				_backupBranch.UniqueIdentifier = Guid.NewGuid();
+				_backupBranch.Uuid = Guid.NewGuid();
 			}
-			while (currentHashes.Contains(_backupBranch.UniqueIdentifier.GetHashCode()));
+			while (currentHashes.Contains(_backupBranch.Uuid.GetHashCode()));
 
 			UndoBranchToolStripMenuItem.Enabled = UndoBranchButton.Enabled = true;
 			UndoBranchToolStripMenuItem.Text = "Undo Branch Load";
@@ -357,13 +357,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (_branchUndo == BranchUndo.Update)
 			{
-				Movie.UpdateBranch(Movie.GetBranch(_backupBranch.UniqueIdentifier), _backupBranch);
+				Movie.UpdateBranch(Movie.Branches.SingleOrDefault(b => b.Uuid == _backupBranch.Uuid), _backupBranch);
 				SavedCallback?.Invoke(Movie.Branches.IndexOf(_backupBranch));
 				Tastudio.MainForm.AddOnScreenMessage("Branch Update canceled");
 			}
 			else if (_branchUndo == BranchUndo.Text)
 			{
-				Movie.GetBranch(_backupBranch.UniqueIdentifier).UserText = _backupBranch.UserText;
+				var branch = Movie.Branches.SingleOrDefault(b => b.Uuid == _backupBranch.Uuid);
+				if (branch != null)
+				{
+					branch.UserText = _backupBranch.UserText;
+				}
+
 				Tastudio.MainForm.AddOnScreenMessage("Branch Text Edit canceled");
 			}
 			else if (_branchUndo == BranchUndo.Remove)
@@ -624,7 +629,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.NewCell.IsDataCell() && e.OldCell.RowIndex < Movie.Branches.Count)
 			{
-				var guid = Movie.BranchGuidByIndex(Movie.CurrentBranch);
+				var guid = Movie.CurrentBranch > Movie.Branches.Count
+					? Guid.Empty
+					: Movie.Branches[Movie.CurrentBranch].Uuid;
+
 				Movie.SwapBranches(e.OldCell.RowIndex.Value, e.NewCell.RowIndex.Value);
 				int newIndex = Movie.Branches.IndexOfHash(guid);
 				Movie.CurrentBranch = newIndex;

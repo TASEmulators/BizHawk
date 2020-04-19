@@ -354,7 +354,7 @@ namespace BizHawk.Client.EmuHawk
 				return Tastudio.CurrentTasMovie.Branches
 					.Select(b => new
 					{
-						Id = b.UniqueIdentifier.ToString(),
+						Id = b.Uuid.ToString(),
 						b.Frame,
 						Text = b.UserText
 					})
@@ -372,7 +372,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Engaged())
 			{
-				var branch = Tastudio.CurrentTasMovie.Branches.FirstOrDefault(b => b.UniqueIdentifier.ToString() == branchId);
+				var branch = Tastudio.CurrentTasMovie.Branches.FirstOrDefault(b => b.Uuid.ToString() == branchId);
 				if (branch != null && frame < branch.InputLog.Count)
 				{
 					var controller = Global.MovieSession.GenerateMovieController();

@@ -335,18 +335,6 @@ namespace BizHawk.Client.Common
 			return Branches[index];
 		}
 
-		public TasBranch GetBranch(Guid id)
-		{
-			return Branches.SingleOrDefault(b => b.UniqueIdentifier == id);
-		}
-
-		public Guid BranchGuidByIndex(int index)
-		{
-			return index >= Branches.Count
-				? Guid.Empty
-				: Branches[index].UniqueIdentifier;
-		}
-
 		public void LoadBranch(TasBranch branch)
 		{
 			int? divergentPoint = Log.DivergentPoint(branch.InputLog);
@@ -367,7 +355,7 @@ namespace BizHawk.Client.Common
 		public void UpdateBranch(TasBranch old, TasBranch newBranch)
 		{
 			int index = Branches.IndexOf(old);
-			newBranch.UniqueIdentifier = old.UniqueIdentifier;
+			newBranch.Uuid = old.Uuid;
 			if (newBranch.UserText == "")
 			{
 				newBranch.UserText = old.UserText;
