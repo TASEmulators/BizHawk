@@ -21,6 +21,8 @@ namespace BizHawk.Client.Common
 		ITasBranchCollection Branches { get; }
 		TasLagLog LagLog { get; }
 
+		void GreenzoneCurrentFrame();
+
 		void ToggleBoolState(int frame, string buttonName);
 		void SetFloatState(int frame, string buttonName, float val);
 		void SetFloatStates(int frame, int count, string buttonName, float val);

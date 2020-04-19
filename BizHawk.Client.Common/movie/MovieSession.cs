@@ -146,7 +146,7 @@ namespace BizHawk.Client.Common
 
 		public void HandleFrameAfter()
 		{
-			if (Movie is TasMovie tasMovie)
+			if (Movie is ITasMovie tasMovie)
 			{
 				tasMovie.GreenzoneCurrentFrame();
 				if (tasMovie.IsPlaying() && Global.Emulator.Frame >= tasMovie.InputLogLength)
@@ -471,7 +471,7 @@ namespace BizHawk.Client.Common
 		private void HandleFrameLoopForRecordMode()
 		{
 			// we don't want TasMovie to latch user input outside its internal recording mode, so limit it to autohold
-			if (Movie is TasMovie && Movie.IsPlaying())
+			if (Movie is ITasMovie && Movie.IsPlaying())
 			{
 				MovieController.SetFromSticky(Global.InputManager.AutofireStickyXorAdapter);
 			}

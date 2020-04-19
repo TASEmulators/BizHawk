@@ -157,7 +157,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			}
 
 			var tas = new TasMovie(newFilename, true) { BinarySavestate = savestate };
-			tas.ClearLagLog();
+			tas.LagLog.Clear();
 
 			var entries = old.GetLogEntries();
 
@@ -242,7 +242,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 
 			var tas = new TasMovie(newFilename, true) { SaveRam = saveRam };
 			tas.TasStateManager.Clear();
-			tas.ClearLagLog();
+			tas.LagLog.Clear();
 
 			var entries = old.GetLogEntries();
 

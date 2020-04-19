@@ -10,21 +10,7 @@ namespace BizHawk.Client.Common
 {
 	internal sealed partial class TasMovie : Bk2Movie, ITasMovie
 	{
-		public IStringLog VerificationLog { get; } = StringLogUtil.MakeStringLog(); // For movies that do not begin with power-on, this is the input required to get into the initial state
-		public ITasBranchCollection Branches { get; }
-		public ITasSession Session { get; private set; } = new TasSession();
-
 		public new const string Extension = "tasproj";
-		public int LastEditedFrame { get; private set; } = -1;
-		public bool LastPositionStable { get; set; } = true;
-		public TasMovieMarkerList Markers { get; private set; }
-		public bool BindMarkersToInput { get; set; }
-
-		public TasLagLog LagLog { get; } = new TasLagLog();
-
-		public int LastStatedFrame => TasStateManager.Last;
-		public override string PreferredExtension => Extension;
-		public IStateManager TasStateManager { get; }
 
 		/// <exception cref="InvalidOperationException">loaded core does not implement <see cref="IStatable"/></exception>
 		public TasMovie(string path = null, bool startsFromSavestate = false) : base(path)
@@ -43,6 +29,21 @@ namespace BizHawk.Client.Common
 			Markers.Add(0, startsFromSavestate ? "Savestate" : "Power on");
 		}
 
+		public IStringLog VerificationLog { get; } = StringLogUtil.MakeStringLog(); // For movies that do not begin with power-on, this is the input required to get into the initial state
+		public ITasBranchCollection Branches { get; }
+		public ITasSession Session { get; private set; } = new TasSession();
+
+		public int LastEditedFrame { get; private set; } = -1;
+		public bool LastPositionStable { get; set; } = true;
+		public TasMovieMarkerList Markers { get; private set; }
+		public bool BindMarkersToInput { get; set; }
+
+		public TasLagLog LagLog { get; } = new TasLagLog();
+
+		public int LastStatedFrame => TasStateManager.Last;
+		public override string PreferredExtension => Extension;
+		public IStateManager TasStateManager { get; }
+
 		public ITasMovieRecord this[int index] => new TasMovieRecord
 		{
 			HasState = TasStateManager.HasState(index),
@@ -50,7 +51,6 @@ namespace BizHawk.Client.Common
 			Lagged = LagLog[index + 1],
 			WasLagged = LagLog.History(index + 1)
 		};
-
 
 		public override void StartNewRecording()
 		{
@@ -61,10 +61,7 @@ namespace BizHawk.Client.Common
 			base.StartNewRecording();
 		}
 
-		/// <summary>
-		/// Removes lag log and greenzone after this frame
-		/// </summary>
-		/// <param name="frame">The last frame that can be valid.</param>
+		// Removes lag log and greenzone after this frame
 		private void InvalidateAfter(int frame)
 		{
 			var anyInvalidated = LagLog.RemoveFrom(frame);
@@ -123,12 +120,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void ClearLagLog()
-		{
-			LagLog.Clear();
-		}
-
-		public void CopyLog(IEnumerable<string> log)
+		internal void CopyLog(IEnumerable<string> log)
 		{
 			Log.Clear();
 			foreach (var entry in log)
@@ -137,7 +129,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void CopyVerificationLog(IEnumerable<string> log)
+		internal void CopyVerificationLog(IEnumerable<string> log)
 		{
 			foreach (string entry in log)
 			{
@@ -310,8 +302,6 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		#region Branches
-
 		public void LoadBranch(TasBranch branch)
 		{
 			int? divergentPoint = Log.DivergentPoint(branch.InputLog);
@@ -328,8 +318,6 @@ namespace BizHawk.Client.Common
 
 			Changes = true;
 		}
-
-		#endregion
 
 		#region Events and Handlers
 

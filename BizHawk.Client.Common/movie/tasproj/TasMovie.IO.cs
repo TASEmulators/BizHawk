@@ -285,7 +285,7 @@ namespace BizHawk.Client.Common
 
 		private void ClearTasprojExtras()
 		{
-			ClearLagLog();
+			LagLog.Clear();
 			TasStateManager.Clear();
 			Markers.Clear();
 			ChangeLog.Clear();
