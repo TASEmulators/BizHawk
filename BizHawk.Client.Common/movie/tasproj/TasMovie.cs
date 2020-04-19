@@ -74,22 +74,29 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+
+		private (int Frame, IMovieController Controller) _displayCache = (-1, new Bk2Controller("", NullController.Instance.Definition));
+
 		/// <summary>
 		/// Returns the mnemonic value for boolean buttons, and actual value for floats,
 		/// for a given frame and button.
 		/// </summary>
 		public string DisplayValue(int frame, string buttonName)
 		{
-			var adapter = GetInputState(frame);
-			return CreateDisplayValueForButton(adapter, buttonName);
+			if (_displayCache.Frame != frame)
+			{
+				_displayCache = (frame, GetInputState(frame));
+			}
+			
+			return CreateDisplayValueForButton(_displayCache.Controller, Global.Emulator.SystemId, buttonName);
 		}
 
-		private string CreateDisplayValueForButton(IController adapter, string buttonName)
+		private static string CreateDisplayValueForButton(IController adapter, string systemId, string buttonName)
 		{
 			if (adapter.Definition.BoolButtons.Contains(buttonName))
 			{
 				return adapter.IsPressed(buttonName)
-					? Bk2MnemonicLookup.Lookup(buttonName, Global.Emulator.SystemId).ToString()
+					? Bk2MnemonicLookup.Lookup(buttonName, systemId).ToString()
 					: "";
 			}
 
