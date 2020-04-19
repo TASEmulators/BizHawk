@@ -42,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				int index = Emulator.Frame;
 
-				TasMovie newProject = CurrentTasMovie.ConvertToSavestateAnchoredMovie(
+				 var newProject = CurrentTasMovie.ConvertToSavestateAnchoredMovie(
 					index, (byte[])StatableEmulator.SaveStateBinary().Clone());
 
 				MainForm.PauseEmulator();
@@ -63,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					GoToFrame(index);
-					TasMovie newProject = CurrentTasMovie.ConvertToSaveRamAnchoredMovie(
+					var newProject = CurrentTasMovie.ConvertToSaveRamAnchoredMovie(
 						SaveRamEmulator.CloneSaveRam());
 					MainForm.PauseEmulator();
 					LoadFile(new FileInfo(newProject.Filename), true);

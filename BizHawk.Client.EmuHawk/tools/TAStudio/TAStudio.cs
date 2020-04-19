@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class TAStudio : ToolFormBase, IToolFormAutoConfig, IControlMainform
 	{
 		// TODO: UI flow that conveniently allows to start from savestate
-		public TasMovie CurrentTasMovie => MovieSession.Movie as TasMovie;
+		public ITasMovie CurrentTasMovie => MovieSession.Movie as TasMovie;
 
 		public bool IsInMenuLoop { get; private set; }
 		public string StatesPath => Config.PathEntries.TastudioStatesAbsolutePath();
@@ -375,7 +375,7 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
-		private void SetTasMovieCallbacks(TasMovie movie)
+		private void SetTasMovieCallbacks(ITasMovie movie)
 		{
 			movie.ClientSettingsForSave = ClientSettingsForSave;
 			movie.GetClientSettingsOnLoad = GetClientSettingsOnLoad;
@@ -742,7 +742,7 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
-		private bool StartNewMovieWrapper(TasMovie movie)
+		private bool StartNewMovieWrapper(ITasMovie movie)
 		{
 			_initializing = true;
 
@@ -1222,7 +1222,7 @@ namespace BizHawk.Client.EmuHawk
 					CurrentTasMovie.ChangeLog.IsRecording = false;
 
 					CurrentTasMovie.RemoveFrame(Emulator.Frame - 1);
-					CurrentTasMovie.RemoveLagHistory(Emulator.Frame); // Removes from WasLag
+					CurrentTasMovie.TasLagLog.RemoveHistoryAt(Emulator.Frame); // Removes from WasLag
 
 					CurrentTasMovie.ChangeLog.IsRecording = wasRecording;
 					GoToFrame(Emulator.Frame - 1);

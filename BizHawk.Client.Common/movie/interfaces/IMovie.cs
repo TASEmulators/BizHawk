@@ -292,5 +292,11 @@ namespace BizHawk.Client.Common
 				emulator.AsSaveRam().StoreSaveRam(movie.SaveRam);
 			}
 		}
+
+		public static bool BoolIsPressed(this IMovie movie, int frame, string buttonName)
+			=> movie.GetInputState(frame).IsPressed(buttonName);
+
+		public static float GetFloatState(this IMovie movie, int frame, string buttonName)
+			=> movie.GetInputState(frame).AxisValue(buttonName);
 	}
 }

@@ -124,7 +124,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			return bk2;
 		}
 
-		public static TasMovie ConvertToSavestateAnchoredMovie(this TasMovie old, int frame, byte[] savestate)
+		public static ITasMovie ConvertToSavestateAnchoredMovie(this ITasMovie old, int frame, byte[] savestate)
 		{
 			string newFilename = old.Filename;
 
@@ -208,7 +208,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			return tas;
 		}
 
-		public static TasMovie ConvertToSaveRamAnchoredMovie(this TasMovie old, byte[] saveRam)
+		public static ITasMovie ConvertToSaveRamAnchoredMovie(this ITasMovie old, byte[] saveRam)
 		{
 			string newFilename = old.Filename;
 

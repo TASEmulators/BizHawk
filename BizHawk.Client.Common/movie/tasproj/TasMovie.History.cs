@@ -6,13 +6,13 @@ namespace BizHawk.Client.Common
 {
 	public class TasMovieChangeLog
 	{
-		public TasMovieChangeLog(TasMovie movie)
+		public TasMovieChangeLog(ITasMovie movie)
 		{
 			_movie = movie;
 		}
 
 		private readonly List<List<IMovieAction>> _history = new List<List<IMovieAction>>();
-		private readonly TasMovie _movie;
+		private readonly ITasMovie _movie;
 
 		private int _maxSteps = 100;
 		private int _totalSteps;
@@ -362,8 +362,8 @@ namespace BizHawk.Client.Common
 
 	public interface IMovieAction
 	{
-		void Undo(TasMovie movie);
-		void Redo(TasMovie movie);
+		void Undo(ITasMovie movie);
+		void Redo(ITasMovie movie);
 
 		int FirstFrame { get; }
 		int LastFrame { get; }
@@ -383,7 +383,7 @@ namespace BizHawk.Client.Common
 		private List<string> _newLog;
 		private readonly bool _bindMarkers;
 
-		public MovieAction(int firstFrame, int lastFrame, TasMovie movie)
+		public MovieAction(int firstFrame, int lastFrame, ITasMovie movie)
 		{
 			FirstFrame = firstFrame;
 			LastFrame = lastFrame;
@@ -398,7 +398,7 @@ namespace BizHawk.Client.Common
 			_bindMarkers = movie.BindMarkersToInput;
 		}
 
-		public void SetRedoLog(TasMovie movie)
+		public void SetRedoLog(ITasMovie movie)
 		{
 			_redoLength = Math.Min(LastFrame + 1, movie.InputLogLength) - FirstFrame;
 			_newLog = new List<string>();
@@ -408,7 +408,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void Undo(TasMovie movie)
+		public void Undo(ITasMovie movie)
 		{
 			bool wasRecording = movie.ChangeLog.IsRecording;
 			movie.ChangeLog.IsRecording = false;
@@ -433,7 +433,7 @@ namespace BizHawk.Client.Common
 			movie.BindMarkersToInput = _bindMarkers;
 		}
 
-		public void Redo(TasMovie movie)
+		public void Redo(ITasMovie movie)
 		{
 			bool wasRecording = movie.ChangeLog.IsRecording;
 			movie.ChangeLog.IsRecording = false;
@@ -483,7 +483,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void Undo(TasMovie movie)
+		public void Undo(ITasMovie movie)
 		{
 			if (FirstFrame == -1) // Action: Place marker
 			{
@@ -500,7 +500,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void Redo(TasMovie movie)
+		public void Redo(ITasMovie movie)
 		{
 			if (FirstFrame == -1) // Action: Place marker
 			{
@@ -546,7 +546,7 @@ namespace BizHawk.Client.Common
 			_isFloat = true;
 		}
 
-		public void Undo(TasMovie movie)
+		public void Undo(ITasMovie movie)
 		{
 			bool wasRecording = movie.ChangeLog.IsRecording;
 			movie.ChangeLog.IsRecording = false;
@@ -563,7 +563,7 @@ namespace BizHawk.Client.Common
 			movie.ChangeLog.IsRecording = wasRecording;
 		}
 
-		public void Redo(TasMovie movie)
+		public void Redo(ITasMovie movie)
 		{
 			bool wasRecording = movie.ChangeLog.IsRecording;
 			movie.ChangeLog.IsRecording = false;
@@ -619,7 +619,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void Undo(TasMovie movie)
+		public void Undo(ITasMovie movie)
 		{
 			bool wasRecording = movie.ChangeLog.IsRecording;
 			movie.ChangeLog.IsRecording = false;
@@ -642,7 +642,7 @@ namespace BizHawk.Client.Common
 			movie.ChangeLog.IsRecording = wasRecording;
 		}
 
-		public void Redo(TasMovie movie)
+		public void Redo(ITasMovie movie)
 		{
 			bool wasRecording = movie.ChangeLog.IsRecording;
 			movie.ChangeLog.IsRecording = false;
@@ -670,7 +670,7 @@ namespace BizHawk.Client.Common
 
 		private readonly bool _bindMarkers;
 
-		public MovieActionBindInput(TasMovie movie, int frame, bool isDelete)
+		public MovieActionBindInput(ITasMovie movie, int frame, bool isDelete)
 		{
 			FirstFrame = LastFrame = frame;
 			_log = movie.GetInputLogEntry(frame);
@@ -678,7 +678,7 @@ namespace BizHawk.Client.Common
 			_bindMarkers = movie.BindMarkersToInput;
 		}
 
-		public void Undo(TasMovie movie)
+		public void Undo(ITasMovie movie)
 		{
 			bool wasRecording = movie.ChangeLog.IsRecording;
 			bool wasBinding = movie.BindMarkersToInput;
@@ -700,7 +700,7 @@ namespace BizHawk.Client.Common
 			movie.BindMarkersToInput = _bindMarkers;
 		}
 
-		public void Redo(TasMovie movie)
+		public void Redo(ITasMovie movie)
 		{
 			bool wasRecording = movie.ChangeLog.IsRecording;
 			bool wasBinding = movie.BindMarkersToInput;

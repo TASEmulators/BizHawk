@@ -9,7 +9,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public sealed partial class TasMovie : Bk2Movie, INotifyPropertyChanged
+	public sealed partial class TasMovie : Bk2Movie, ITasMovie
 	{
 		public IStringLog VerificationLog { get; } = StringLogUtil.MakeStringLog(); // For movies that do not begin with power-on, this is the input required to get into the initial state
 		public TasBranchCollection Branches { get; } = new TasBranchCollection();
@@ -108,12 +108,6 @@ namespace BizHawk.Client.Common
 
 			return "!";
 		}
-
-		public bool BoolIsPressed(int frame, string buttonName)
-			=> GetInputState(frame).IsPressed(buttonName);
-
-		public float GetFloatState(int frame, string buttonName)
-			=> GetInputState(frame).AxisValue(buttonName);
 
 		public void ClearGreenzone()
 		{
