@@ -14,7 +14,15 @@ namespace BizHawk.Client.Common
 		public void WriteInputLog(TextWriter writer)
 		{
 			writer.WriteLine("[Input]");
-			WriteRawInputLog(writer);
+
+			var lg = new Bk2LogEntryGenerator(LogKey, Global.InputManager.MovieOutputHardpoint);
+			writer.WriteLine(lg.GenerateLogKey());
+
+			foreach (var record in Log)
+			{
+				writer.WriteLine(record);
+			}
+
 			writer.WriteLine("[/Input]");
 		}
 
@@ -284,17 +292,6 @@ namespace BizHawk.Client.Common
 			}
 
 			return true;
-		}
-
-		protected void WriteRawInputLog(TextWriter writer)
-		{
-			var lg = new Bk2LogEntryGenerator(LogKey, Global.InputManager.MovieOutputHardpoint);
-			writer.WriteLine(lg.GenerateLogKey());
-
-			foreach (var record in Log)
-			{
-				writer.WriteLine(record);
-			}
 		}
 	}
 }
