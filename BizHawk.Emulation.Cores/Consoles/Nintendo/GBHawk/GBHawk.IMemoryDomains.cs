@@ -57,7 +57,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			if (cart_RAM != null)
 			{
-				var CartRam = new MemoryDomainByteArray("CartRAM", MemoryDomain.Endian.Little, cart_RAM, true, 1);
+				var CartRam = new MemoryDomainDelegate(
+					"CartRAM",
+					cart_RAM.Length,
+					MemoryDomain.Endian.Little,
+					addr => cart_RAM[addr],
+					(addr, value) => cart_RAM[addr] = value,
+					1);
 				domains.Add(CartRam);
 			}
 

@@ -136,6 +136,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			return ReadMemoryLow(addr);
 		}
 
+		public override byte PeekMemoryHigh(ushort addr)
+		{
+
+			if ((Core.cart_RAM != null) && (RAM_bank <= RAM_mask))
+			{
+				if (((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length)
+				{
+					return Core.cart_RAM[(addr - 0xA000) + RAM_bank * 0x2000];
+				}
+				else
+				{
+					return 0xFF;
+				}
+			}
+
+			if ((RAM_bank >= 8) && (RAM_bank <= 0xC))
+			{
+				//Console.WriteLine("reg: " + (RAM_bank - 8) + " value: " + RTC_regs_latch[RAM_bank - 8] + " cpu: " + Core.cpu.TotalExecutedCycles);
+				return RTC_regs_latch[RAM_bank - 8];
+			}
+			else
+			{
+				return 0x0;
+			}
+		}
+
 		public override void WriteMemory(ushort addr, byte value)
 		{
 			if (addr < 0x8000)
