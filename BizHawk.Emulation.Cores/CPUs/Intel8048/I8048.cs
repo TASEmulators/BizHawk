@@ -421,18 +421,23 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 					break;		
 				case TEST_COND:
 					reg_d_ad = cur_instr[instr_pntr++];
-					if ((reg_d_ad == 0) && !TF) { cur_instr[instr_pntr + 9] = IDLE; }
-					if ((reg_d_ad == 1) && T0) { cur_instr[instr_pntr + 9] = IDLE; }
-					if ((reg_d_ad == 2) && !T0) { cur_instr[instr_pntr + 9] = IDLE; }
-					if ((reg_d_ad == 3) && T1) { cur_instr[instr_pntr + 9] = IDLE; }
-					if ((reg_d_ad == 4) && !T1) { cur_instr[instr_pntr + 9] = IDLE; }
-					if ((reg_d_ad == 5) && !F1) { cur_instr[instr_pntr + 9] = IDLE; }
-					if ((reg_d_ad == 6) && IRQPending) { cur_instr[instr_pntr + 9] = IDLE; }
-					if ((reg_d_ad == 7) && (Regs[A] == 0)) { cur_instr[instr_pntr + 9] = IDLE; }
-					if ((reg_d_ad == 8) && !FlagF0) { cur_instr[instr_pntr + 9] = IDLE; }
-					if ((reg_d_ad == 9) && (Regs[A] != 0)) { cur_instr[instr_pntr + 9] = IDLE; }
-					if ((reg_d_ad == 10) && FlagC) { cur_instr[instr_pntr + 9] = IDLE; }
-					if ((reg_d_ad == 11) && !FlagC) { cur_instr[instr_pntr + 9] = IDLE; }
+
+					bool test_pass = true;
+					if ((reg_d_ad == 0) && !TF) { test_pass = false; }
+					if ((reg_d_ad == 1) && T0) { test_pass = false; }
+					if ((reg_d_ad == 2) && !T0) { test_pass = false; }
+					if ((reg_d_ad == 3) && T1) { test_pass = false; }
+					if ((reg_d_ad == 4) && !T1) { test_pass = false; }
+					if ((reg_d_ad == 5) && !F1) { test_pass = false; }
+					if ((reg_d_ad == 6) && IRQPending) { test_pass = false; }
+					if ((reg_d_ad == 7) && (Regs[A] == 0)) { test_pass = false; }
+					if ((reg_d_ad == 8) && !FlagF0) { test_pass = false; }
+					if ((reg_d_ad == 9) && (Regs[A] != 0)) { test_pass = false; }
+					if ((reg_d_ad == 10) && FlagC) { test_pass = false; }
+					if ((reg_d_ad == 11) && !FlagC) { test_pass = false; }
+
+					if (test_pass) { cur_instr[instr_pntr + 6] = ALU2; }
+					else { cur_instr[instr_pntr + 9] = IDLE; }
 					break;
 			}
 

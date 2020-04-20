@@ -433,11 +433,13 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 		{
 			if (Regs[A].Bit(Tebit))
 			{
+				// NOTE: no PC increment here, jump is relative to last 256 address block before increment.
+				// so for a JPB starting at 0xFE does not overflow to 0x100 before the jump
 				PopulateCURINSTR(IDLE,
 								IDLE,
 								IDLE,
 								RD, ALU, PC,
-								INC11, PC,
+								IDLE,
 								IDLE,
 								IDLE,
 								IDLE,
@@ -461,6 +463,9 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 
 		public void JP_COND(ushort COND, ushort SPEC)
 		{
+			// NOTE: PC increment here gets replaced with ALU2 if ondition met, jump is relative to last 256 address block before increment.
+			// so for a JPC starting at 0xFE does not overflow to 0x100 before the jump
+
 			PopulateCURINSTR(IDLE,
 							TEST_COND, COND,
 							IDLE,
