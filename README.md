@@ -49,6 +49,8 @@ Supported consoles and computers:
 * Bandai WonderSwan + Color
 * CBM Commodore 64
 * Coleco Industries ColecoVision
+* GCE Vectrex
+* Magnavox Odyssey² / Videopac G7000
 * Mattel Intellivision
 * NEC
 	* PC Engine / TurboGrafx-16 + SuperGrafx + CD
@@ -240,6 +242,7 @@ Intellivision | IntelliHawk |
 N64 | Mupen64Plus |
 Neo Geo Pocket / Color | NeoPop |
 NES | NesHawk | QuickNes |
+Odyssey² | O2Hawk |
 PC-FX | T.S.T. |
 Playstation (PSX) | Octoshock |
 Sega Game Gear | SMSHawk |
@@ -252,11 +255,12 @@ Super Game Boy | BSNES | SameBoy
 TI-83 | TI83Hawk |
 TurboGrafx / SuperGrafx | PCEHawk |
 Uzebox | Uzem |
+Vectrex | VectrexHawk |
 Virtual Boy | Virtual Boyee |
 WonderSwan / Color | Cygne |
 ZX Spectrum | ZXHawk |
 
-Amstrad CPC, Fairchild Channel F, Magnavox Odyssey², Nintendo DS via [melonDS](https://github.com/Arisotura/melonDS), and MB Vectrex emulation are works-in-progress, as well as a front-end for MAME, and there is **no ETA** for any of them so don't ask. Cores for other systems are only conceptual. If you're willing and able to work on one of these, ask on IRC (see below).
+Amstrad CPC, Fairchild Channel F, and Nintendo DS via [melonDS](https://github.com/Arisotura/melonDS) are works-in-progress, as well as a front-end for MAME, and there is **no ETA** for any of them so don't ask. Cores for other systems are only conceptual. If you're willing and able to work on one of these, ask on IRC (see below).
 
 [to top](#bizhawk)
 
