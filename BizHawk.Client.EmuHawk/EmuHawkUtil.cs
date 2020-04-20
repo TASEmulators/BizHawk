@@ -46,7 +46,7 @@ namespace BizHawk.Client.EmuHawk
 			return emulator switch
 			{
 				Snes9x _ => PromptToSwitchCore("Snes9x", "bsnes", () => Global.Config.PreferredCores["SNES"] = Cores.CoreNames.Bsnes),
-				QuickNES _ => PromptToSwitchCore("QuickNes", "NesHawk", () => Global.Config.PreferredCores["NES"] = Cores.CoreNames.QuickNes),
+				QuickNES _ => PromptToSwitchCore("QuickNes", "NesHawk", () => Global.Config.PreferredCores["NES"] = Cores.CoreNames.NesHawk),
 				_ => true
 			};
 		}
