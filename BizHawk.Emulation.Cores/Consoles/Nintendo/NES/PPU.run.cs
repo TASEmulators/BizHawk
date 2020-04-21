@@ -2,6 +2,7 @@
 
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
+using System.Runtime.CompilerServices;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -78,12 +79,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		//address line 3 relates to the pattern table fetch occuring (the PPU always makes them in pairs).
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private int get_ptread(int par)
 		{
 			int hi = reg_2000.bg_pattern_hi;
 			return (hi << 0xC) | (par << 0x4) | ppur.fv;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		void Read_bgdata(int cycle, int i)
 		{
 			switch (cycle)

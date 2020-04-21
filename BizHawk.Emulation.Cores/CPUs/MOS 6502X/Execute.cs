@@ -1,6 +1,7 @@
 //http://nesdev.parodius.com/6502_cpu.txt
 
 using System;
+using System.Runtime.CompilerServices;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 
@@ -2708,6 +2709,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			rdy_freeze = true;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		void ExecuteOneRetry()
 		{
 			//don't know whether this system is any faster. hard to get benchmarks someone else try it?
@@ -2965,6 +2967,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			}
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void ExecuteOne()
 		{
 			// total cycles now increments every time a cycle is called to accurately count during RDY
@@ -2977,7 +2980,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 			if (!rdy_freeze)
 				mi++;
-		} //ExecuteOne
+		}
 
 		public bool AtInstructionStart()
 		{

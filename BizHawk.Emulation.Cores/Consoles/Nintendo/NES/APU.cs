@@ -11,6 +11,7 @@
 // TODO - refactor length counter to be separate component
 
 using System;
+using System.Runtime.CompilerServices;
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 
@@ -258,6 +259,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			public void Run()
 			{
 				if (env_constant == 1)
@@ -458,6 +460,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					len_cnt--;
 			}
 
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			public void Run()
 			{
 				if (env_constant == 1)
@@ -584,6 +587,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public int Debug_PeriodValue => timer_cnt;
 
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			public void Run()
 			{
 				// when clocked by timer, seq steps forward
@@ -705,6 +709,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ser.EndSection();
 			}
 
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			public void Run()
 			{
 				if (timer > 0) timer--;
@@ -1215,6 +1220,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		int pending_length_change;
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void RunOneFirst()
 		{
 

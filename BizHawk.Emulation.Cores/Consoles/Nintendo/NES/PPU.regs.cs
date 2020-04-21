@@ -7,6 +7,7 @@
 //};
 
 using System;
+using System.Runtime.CompilerServices;
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
@@ -184,11 +185,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				v &= 1;
 			}
 
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			public int get_ntread()
 			{
 				return 0x2000 | (v << 0xB) | (h << 0xA) | (vt << 5) | ht;
 			}
 
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			public int get_2007access()
 			{
 				return ((fv & 3) << 0xC) | (v << 0xB) | (h << 0xA) | (vt << 5) | ht;
@@ -200,6 +203,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//are used in the diagram to represent the right-shift position amount to
 			//apply to the data read from the attribute data (a is always 0). This is why
 			//you only see bits 0 and 1 used off the read attribute data in the diagram.
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			public int get_atread()
 			{
 				return 0x2000 | (v << 0xB) | (h << 0xA) | 0x3C0 | ((vt & 0x1C) << 1) | ((ht & 0x1C) >> 2);
