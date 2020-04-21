@@ -151,10 +151,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			_framebuffer = new int[VirtualWidth * VirtualHeight];
 		}
 
+		// TODO: move this inside the cpu to avoid a non-inlinable function call
 		private void ExecFetch(ushort addr)
 		{
-			uint flags = (uint)MemoryCallbackFlags.AccessExecute;
-			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+			if (MemoryCallbacks.HasExecutes)
+			{
+				uint flags = (uint)MemoryCallbackFlags.AccessExecute;
+				MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+			}
 		}
 
 		private void Setup_Mapper()

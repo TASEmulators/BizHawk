@@ -47,22 +47,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		private void ReadCallback(uint address, ulong cycleOffset)
 		{
 			callbackCycleCount = _cycleCount + cycleOffset;
-			uint flags = (uint)(MemoryCallbackFlags.AccessRead);
-			MemoryCallbacks.CallMemoryCallbacks(address, 0, flags, "System Bus");
+
+			if (MemoryCallbacks.HasReads)
+			{
+				uint flags = (uint)MemoryCallbackFlags.AccessRead;
+				MemoryCallbacks.CallMemoryCallbacks(address, 0, flags, "System Bus");
+			}
 		}
 
 		private void WriteCallback(uint address, ulong cycleOffset)
 		{
 			callbackCycleCount = _cycleCount + cycleOffset;
-			uint flags = (uint)(MemoryCallbackFlags.AccessWrite);
-			MemoryCallbacks.CallMemoryCallbacks(address, 0, flags,"System Bus");
+
+			if (MemoryCallbacks.HasWrites)
+			{
+				uint flags = (uint)MemoryCallbackFlags.AccessWrite;
+				MemoryCallbacks.CallMemoryCallbacks(address, 0, flags,"System Bus");
+			}
 		}
 
 		private void ExecCallback(uint address, ulong cycleOffset)
 		{
 			callbackCycleCount = _cycleCount + cycleOffset;
-			uint flags = (uint)(MemoryCallbackFlags.AccessExecute);
-			MemoryCallbacks.CallMemoryCallbacks(address, 0, flags, "System Bus");
+
+			if (MemoryCallbacks.HasExecutes)
+			{
+				uint flags = (uint)MemoryCallbackFlags.AccessExecute;
+				MemoryCallbacks.CallMemoryCallbacks(address, 0, flags, "System Bus");
+			}
 		}
 
 		/// <summary>

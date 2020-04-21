@@ -888,8 +888,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void ExecFetch(ushort addr)
 		{
-			uint flags = (uint)(MemoryCallbackFlags.CPUZero | MemoryCallbackFlags.AccessExecute);
-			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+			if (MemoryCallbacks.HasExecutes)
+			{
+				uint flags = (uint)(MemoryCallbackFlags.CPUZero | MemoryCallbackFlags.AccessExecute);
+				MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+			}
 		}
 
 		public byte ReadMemory(ushort addr)
@@ -939,8 +942,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
-			uint flags = (uint)(MemoryCallbackFlags.CPUZero | MemoryCallbackFlags.AccessRead);
-			MemoryCallbacks.CallMemoryCallbacks(addr, ret, flags, "System Bus");
+			if (MemoryCallbacks.HasReads)
+			{
+				uint flags = (uint)(MemoryCallbackFlags.CPUZero | MemoryCallbackFlags.AccessRead);
+				MemoryCallbacks.CallMemoryCallbacks(addr, ret, flags, "System Bus");
+			}
 
 			DB = ret;
 			return ret;
@@ -987,8 +993,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				Board.WritePrg(addr - 0x8000, value);
 			}
 
-			uint flags = (uint)(MemoryCallbackFlags.CPUZero | MemoryCallbackFlags.AccessWrite | MemoryCallbackFlags.SizeByte);
-			MemoryCallbacks.CallMemoryCallbacks(addr, value, flags, "System Bus");
+			if (MemoryCallbacks.HasWrites)
+			{
+				uint flags = (uint)(MemoryCallbackFlags.CPUZero | MemoryCallbackFlags.AccessWrite | MemoryCallbackFlags.SizeByte);
+				MemoryCallbacks.CallMemoryCallbacks(addr, value, flags, "System Bus");
+			}
 		}
 
 		// the palette for each VS game needs to be chosen explicitly since there are 6 different ones.

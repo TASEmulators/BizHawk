@@ -144,10 +144,14 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public string BoardName => mapper.GetType().Name;
 
+		// TODO: move callbacks to cpu to avoid non-inlinable function call
 		private void ExecFetch(ushort addr)
 		{
-			uint flags = (uint)MemoryCallbackFlags.AccessRead;
-			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+			if (MemoryCallbacks.HasExecutes)
+			{
+				uint flags = (uint)MemoryCallbackFlags.AccessExecute;
+				MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+			}
 		}
 
 		private void Setup_Mapper()

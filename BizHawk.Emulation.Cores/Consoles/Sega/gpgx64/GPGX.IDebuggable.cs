@@ -57,18 +57,27 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			ExecCallback = new LibGPGX.mem_cb(a =>
 			{
-				uint flags = (uint)(MemoryCallbackFlags.AccessExecute);
-				MemoryCallbacks.CallMemoryCallbacks(a, 0, flags, "M68K BUS");
+				if (MemoryCallbacks.HasExecutes)
+				{
+					uint flags = (uint)MemoryCallbackFlags.AccessExecute;
+					MemoryCallbacks.CallMemoryCallbacks(a, 0, flags, "M68K BUS");
+				}
 			});
 			ReadCallback = new LibGPGX.mem_cb(a =>
 			{
-				uint flags = (uint)(MemoryCallbackFlags.AccessRead);
-				MemoryCallbacks.CallMemoryCallbacks(a, 0, flags, "M68K BUS");
+				if (MemoryCallbacks.HasReads)
+				{
+					uint flags = (uint)MemoryCallbackFlags.AccessRead;
+					MemoryCallbacks.CallMemoryCallbacks(a, 0, flags, "M68K BUS");
+				}
 			});
 			WriteCallback = new LibGPGX.mem_cb(a =>
 			{
-				uint flags = (uint)(MemoryCallbackFlags.AccessWrite);
-				MemoryCallbacks.CallMemoryCallbacks(a, 0, flags, "M68K BUS");
+				if (MemoryCallbacks.HasWrites)
+				{
+					uint flags = (uint)MemoryCallbackFlags.AccessWrite;
+					MemoryCallbacks.CallMemoryCallbacks(a, 0, flags, "M68K BUS");
+				}
 			});
 			_memoryCallbacks.ActiveChanged += RefreshMemCallbacks;
 		}

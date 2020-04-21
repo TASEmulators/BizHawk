@@ -288,8 +288,11 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		private void ExecFetch(ushort addr)
 		{
-			uint flags = (uint)(MemoryCallbackFlags.AccessExecute);
-			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+			if (MemoryCallbacks.HasExecutes)
+			{
+				uint flags = (uint)(MemoryCallbackFlags.AccessExecute);
+				MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+			}
 		}
 
 		private void Reset_Mapper(string m)

@@ -372,47 +372,65 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private void ReadHook(uint addr)
 		{
-			uint flags = (uint)(MemoryCallbackFlags.AccessRead);
-			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
-			// we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
-			// EDIT: for now, theres some IPC re-entrancy problem
-			// RefreshMemoryCallbacks();
+			if (MemoryCallbacks.HasReads)
+			{
+				uint flags = (uint)MemoryCallbackFlags.AccessRead;
+				MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+				// we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
+				// EDIT: for now, theres some IPC re-entrancy problem
+				// RefreshMemoryCallbacks();
+			}
 		}
 
 		private void ExecHook(uint addr)
 		{
-			uint flags = (uint)(MemoryCallbackFlags.AccessExecute);
-			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
-			// we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
-			// EDIT: for now, theres some IPC re-entrancy problem
-			// RefreshMemoryCallbacks();
+			if (MemoryCallbacks.HasExecutes)
+			{
+				uint flags = (uint)MemoryCallbackFlags.AccessExecute;
+				MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+				// we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
+				// EDIT: for now, theres some IPC re-entrancy problem
+				// RefreshMemoryCallbacks();
+			}
 		}
 
 		private void WriteHook(uint addr, byte val)
 		{
-			uint flags = (uint)(MemoryCallbackFlags.AccessWrite);
-			MemoryCallbacks.CallMemoryCallbacks(addr, val, flags, "System Bus");
-			// we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
-			// EDIT: for now, theres some IPC re-entrancy problem
-			// RefreshMemoryCallbacks();
+			if (MemoryCallbacks.HasWrites)
+			{
+				uint flags = (uint)MemoryCallbackFlags.AccessWrite;
+				MemoryCallbacks.CallMemoryCallbacks(addr, val, flags, "System Bus");
+				// we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
+				// EDIT: for now, theres some IPC re-entrancy problem
+				// RefreshMemoryCallbacks();
+			}
 		}
 
 		private void ReadHook_SMP(uint addr)
 		{
-			uint flags = (uint)(MemoryCallbackFlags.AccessRead);
-			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "SMP");
+			if (MemoryCallbacks.HasReads)
+			{
+				uint flags = (uint)MemoryCallbackFlags.AccessRead;
+				MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "SMP");
+			}
 		}
 
 		private void ExecHook_SMP(uint addr)
 		{
-			uint flags = (uint)(MemoryCallbackFlags.AccessExecute);
-			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "SMP");
+			if (MemoryCallbacks.HasExecutes)
+			{
+				uint flags = (uint)MemoryCallbackFlags.AccessExecute;
+				MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "SMP");
+			}
 		}
 
 		private void WriteHook_SMP(uint addr, byte val)
 		{
-			uint flags = (uint)(MemoryCallbackFlags.AccessWrite);
-			MemoryCallbacks.CallMemoryCallbacks(addr, val, flags, "SMP");
+			if (MemoryCallbacks.HasWrites)
+			{
+				uint flags = (uint)MemoryCallbackFlags.AccessWrite;
+				MemoryCallbacks.CallMemoryCallbacks(addr, val, flags, "SMP");
+			}
 		}
 
 		private enum LoadParamType

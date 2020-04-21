@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 
 		public ushort ReadMemoryWrapper(ushort addr, bool peek)
 		{
-			if (MemoryCallbacks != null && !peek)
+			if (MemoryCallbacks != null && MemoryCallbacks.HasReads && !peek)
 			{
 				uint flags = (uint)(MemoryCallbackFlags.AccessRead);
 				MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 
 		public void WriteMemoryWrapper(ushort addr, ushort value, bool poke)
 		{
-			if (MemoryCallbacks != null && !poke)
+			if (MemoryCallbacks != null && MemoryCallbacks.HasWrites && !poke)
 			{
 				uint flags = (uint)(MemoryCallbackFlags.AccessWrite);
 				MemoryCallbacks.CallMemoryCallbacks(addr, value, flags, "System Bus");

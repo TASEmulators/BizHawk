@@ -183,7 +183,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 
 			TraceCallback?.Invoke(CP1610State());
 
-			if (MemoryCallbacks != null)
+			if (MemoryCallbacks != null && MemoryCallbacks.HasExecutes)
 			{
 				uint flags = (uint)(MemoryCallbackFlags.AccessExecute);
 				MemoryCallbacks.CallMemoryCallbacks(RegisterPC, 0, flags, "System Bus");

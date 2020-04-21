@@ -909,6 +909,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 					flags |= MemoryCallbackFlags.AccessExecute;
 					break;
 			}
+
 			MemoryCallbacks.CallMemoryCallbacks(address, value, (uint)flags, "System Bus");
 		}
 

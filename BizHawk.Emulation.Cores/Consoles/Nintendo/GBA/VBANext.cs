@@ -162,18 +162,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			padcb = new LibVBANext.StandardCallback(() => InputCallbacks.Call());
 			fetchcb = new LibVBANext.AddressCallback((addr) => {
-				uint flags = (uint)(MemoryCallbackFlags.AccessExecute);
-				MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+				if (MemoryCallbacks.HasExecutes)
+				{
+					uint flags = (uint)MemoryCallbackFlags.AccessExecute;
+					MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+				}
 			});
 			readcb = new LibVBANext.AddressCallback((addr) =>
 			{
-				uint flags = (uint)(MemoryCallbackFlags.AccessRead);
-				MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+				if (MemoryCallbacks.HasReads)
+				{
+					uint flags = (uint)MemoryCallbackFlags.AccessRead;
+					MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+				}
 			});
 			writecb = new LibVBANext.AddressCallback((addr) =>
 			{
-				uint flags = (uint)(MemoryCallbackFlags.AccessWrite);
-				MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+				if (MemoryCallbacks.HasWrites)
+				{
+					uint flags = (uint)MemoryCallbackFlags.AccessWrite;
+					MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+				}
 			});
 			tracecb = new LibVBANext.TraceCallback((addr, opcode) => Tracer.Put(Trace(addr, opcode)));
 			_inputCallbacks.ActiveChanged += SyncPadCallback;

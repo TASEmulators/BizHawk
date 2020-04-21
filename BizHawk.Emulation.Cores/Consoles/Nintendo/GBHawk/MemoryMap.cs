@@ -27,8 +27,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 	{
 		public byte ReadMemory(ushort addr)
 		{
-			uint flags = (uint)(MemoryCallbackFlags.AccessRead);
-			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+			if (MemoryCallbacks.HasReads)
+			{
+				uint flags = (uint)MemoryCallbackFlags.AccessRead;
+				MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+			}
+			
 			addr_access = addr;
 			
 			if (ppu.DMA_start)
@@ -149,8 +153,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public void WriteMemory(ushort addr, byte value)
 		{
-			uint flags = (uint)(MemoryCallbackFlags.AccessWrite);
-			MemoryCallbacks.CallMemoryCallbacks(addr, value, flags, "System Bus");
+			if (MemoryCallbacks.HasWrites)
+			{
+				uint flags = (uint)MemoryCallbackFlags.AccessWrite;
+				MemoryCallbacks.CallMemoryCallbacks(addr, value, flags, "System Bus");
+			}
+			
 			addr_access = addr;
 
 			if (ppu.DMA_start)

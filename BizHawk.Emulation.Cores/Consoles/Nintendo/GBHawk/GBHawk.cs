@@ -304,10 +304,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			frame_buffer = new int[VirtualWidth * VirtualHeight];
 		}
 
+		// TODO: move callbacks to cpu to avoid having to make a non-inlinable 
 		private void ExecFetch(ushort addr)
 		{
-			uint flags = (uint)(MemoryCallbackFlags.AccessRead);
-			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+			if (MemoryCallbacks.HasExecutes)
+			{
+				uint flags = (uint)MemoryCallbackFlags.AccessExecute;
+				MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+			}
 		}
 
 		private void Setup_Mapper()
