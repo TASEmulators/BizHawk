@@ -5,6 +5,7 @@ using BizHawk.Common.BufferExtensions;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.M6502;
+using System.Runtime.CompilerServices;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
@@ -135,6 +136,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private byte ReadMemory(ushort addr)
 		{
 			if (addr != _lastAddress)
@@ -146,12 +148,17 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_mapper.Bit13 = addr.Bit(13);
 			var temp = _mapper.ReadMemory((ushort)(addr & 0x1FFF));
 			_tia.BusState = temp;
-			var flags = (uint)(MemoryCallbackFlags.AccessRead);
-			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+
+			if (MemoryCallbacks.HasReads)
+			{
+				var flags = (uint)(MemoryCallbackFlags.AccessRead);
+				MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+			}
 
 			return temp;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void WriteMemory(ushort addr, byte value)
 		{
 			if (addr != _lastAddress)
@@ -161,8 +168,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 
 			_mapper.WriteMemory((ushort)(addr & 0x1FFF), value);
-			var flags = (uint)(MemoryCallbackFlags.AccessWrite);
-			MemoryCallbacks.CallMemoryCallbacks(addr, value, flags, "System Bus");
+
+			if (MemoryCallbacks.HasWrites)
+			{
+				var flags = (uint)(MemoryCallbackFlags.AccessWrite);
+				MemoryCallbacks.CallMemoryCallbacks(addr, value, flags, "System Bus");
+			}
 		}
 
 		internal void PokeMemory(ushort addr, byte value)
@@ -170,10 +181,14 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_mapper.PokeMemory((ushort)(addr & 0x1FFF), value);
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void ExecFetch(ushort addr)
 		{
-			var flags = (uint)(MemoryCallbackFlags.AccessExecute);
-			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+			if (MemoryCallbacks.HasExecutes)
+			{
+				var flags = (uint)(MemoryCallbackFlags.AccessExecute);
+				MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+			}
 		}
 
 		private void RebootCore()
