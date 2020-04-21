@@ -1330,6 +1330,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int cart_sound = 0;
 		int old_cart_sound = 0;
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public int EmitSample()
 		{
 			if (recalculate)
@@ -1343,21 +1344,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				int s_dmc = dmc.sample;
 
 				// more properly correct
-				float pulse_out, tnd_out;
-				if (s_pulse0 == 0 && s_pulse1 == 0)
-				  pulse_out = 0;
-				else pulse_out = 95.88f / ((8128.0f / (s_pulse0 + s_pulse1)) + 100.0f);
-				if (s_tri == 0 && s_noise == 0 && s_dmc == 0)
-				  tnd_out = 0;
-				else tnd_out = 159.79f / (1 / ((s_tri / 8227.0f) + (s_noise / 12241.0f /* * NOISEADJUST*/) + (s_dmc / 22638.0f)) + 100);
+				float pulse_out = s_pulse0 == 0 && s_pulse1 == 0
+					? 0
+					: 95.88f / ((8128.0f / (s_pulse0 + s_pulse1)) + 100.0f);
+
+				float tnd_out = s_tri == 0 && s_noise == 0 && s_dmc == 0
+					? 0
+					: 159.79f / (1 / ((s_tri / 8227.0f) + (s_noise / 12241.0f /* * NOISEADJUST*/) + (s_dmc / 22638.0f)) + 100);
+				
+
 				float output = pulse_out + tnd_out;
+
 				// output = output * 2 - 1;
 				// this needs to leave enough headroom for straying DC bias due to the DMC unit getting stuck outputs. smb3 is bad about that. 
-				int mix = (int)(20000 * output * (1 + m_vol/5)) + cart_sound;
-
-				oldmix = mix;
-
-				return mix;
+				oldmix = (int)(20000 * output * (1 + m_vol / 5)) + cart_sound;
 			}
 
 			return oldmix;

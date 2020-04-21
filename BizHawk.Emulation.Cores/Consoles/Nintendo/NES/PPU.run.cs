@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				//TODO - check flashing sirens in werewolf
 				//tack on the deemph bits. THESE MAY BE ORDERED WRONG. PLEASE CHECK IN THE PALETTE CODE
-				xbuf[(target - 1)] = (short)(pixelcolor_latch_1 | reg_2001.intensity_lsl_6);
+				xbuf[target - 1] = (short)(pixelcolor_latch_1 | reg_2001.intensity_lsl_6);
 			}
 		
 			pixelcolor_latch_1 = pixelcolor;

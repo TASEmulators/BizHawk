@@ -763,8 +763,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			InputCallbacks.Call();
 			lagged = false;
-			byte ret = 0;
-
+			byte ret;
 			if (_isVS)
 			{
 				// for whatever reason, in VS left and right controller have swapped regs
