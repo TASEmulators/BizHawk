@@ -60,7 +60,11 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 				LagIFlag = FlagI;
 
 				if (Debug) Logger(State());
-				MemoryCallbacks.CallMemoryCallbacks(PC, 0, (uint)MemoryCallbackFlags.AccessExecute, "System Bus");
+
+				if (MemoryCallbacks.HasExecutes)
+				{
+					MemoryCallbacks.CallMemoryCallbacks(PC, 0, (uint)MemoryCallbackFlags.AccessExecute, "System Bus");
+				}
 
 				if (CDL != null && CDL.Active) CDLOpcode();
 
