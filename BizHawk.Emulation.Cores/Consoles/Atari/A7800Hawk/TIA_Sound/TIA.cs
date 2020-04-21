@@ -29,11 +29,11 @@
 		}
 
 		// Execute TIA cycles
-		public int Execute(int cycles)
+		public int Execute()
 		{
 			LocalAudioCycles = 0;
-			LocalAudioCycles += (AUD[0].Cycle() / 2);
-			LocalAudioCycles += (AUD[1].Cycle() / 2);
+			LocalAudioCycles += AUD[0].Cycle() / 2;
+			LocalAudioCycles += AUD[1].Cycle() / 2;
 
 			return LocalAudioCycles;
 		}

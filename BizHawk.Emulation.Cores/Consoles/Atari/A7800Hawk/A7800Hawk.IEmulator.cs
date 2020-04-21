@@ -166,7 +166,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			// do the audio sampling of TIA audio
 			if (tia._hsyncCnt == 113 || tia._hsyncCnt == 340)
 			{
-				temp_s_tia = tia.Execute(0);
+				temp_s_tia = tia.Execute();
 			}
 
 			// tick the m6532 timer, which is still active although not recommended to use

@@ -1,4 +1,5 @@
 ﻿using BizHawk.Common;
+using System.Runtime.CompilerServices;
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
@@ -48,6 +49,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				return false;
 			}
 
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			private bool Run4()
 			{
 				bool ret = (sr4 & 1) != 0;
@@ -56,6 +58,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				return ret;
 			}
 
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			private bool Run5()
 			{
 				bool ret = (sr5 & 1) != 0;
@@ -64,6 +67,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				return ret;
 			}
 
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			private bool One4()
 			{
 				bool ret = (sr4 & 1) != 0;
@@ -71,6 +75,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				return ret;
 			}
 
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			private bool One5()
 			{
 				bool ret = (sr5 & 1) != 0;
