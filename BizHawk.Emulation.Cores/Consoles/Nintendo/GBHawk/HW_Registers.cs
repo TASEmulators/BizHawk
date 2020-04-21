@@ -174,9 +174,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 					break;
 
-				// Speed Control for GBC
+				// Ram bank for GBC
 				case 0xFF70:
-					if (GBC_compat)
+					if (is_GBC)
 					{
 						ret = (byte)RAM_Bank;
 					}
@@ -447,8 +447,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				// RAM Bank in GBC mode
 				case 0xFF70:
-					//Console.WriteLine(value);
-					if (GBC_compat)
+					if (is_GBC)
 					{
 						RAM_Bank = value & 7;
 						if (RAM_Bank == 0) { RAM_Bank = 1; }
