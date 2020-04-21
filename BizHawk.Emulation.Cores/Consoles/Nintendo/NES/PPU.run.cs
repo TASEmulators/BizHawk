@@ -86,7 +86,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return (hi << 0xC) | (par << 0x4) | ppur.fv;
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		void Read_bgdata(int cycle, int i)
 		{
 			switch (cycle)
