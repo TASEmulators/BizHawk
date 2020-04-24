@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					"WRAM",
 					RAM.Length,
 					MemoryDomain.Endian.Little,
-					addr => RAM[addr],
+					addr => PeekRAM(addr),
 					(addr, value) => RAM[addr] = value,
 					1),
 				new MemoryDomainDelegate(
@@ -29,21 +29,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					"VRAM",
 					VRAM.Length,
 					MemoryDomain.Endian.Little,
-					addr => VRAM[addr],
+					addr => PeekVRAM(addr),
 					(addr, value) => VRAM[addr] = value,
 					1),
 				new MemoryDomainDelegate(
 					"OAM",
 					OAM.Length,
 					MemoryDomain.Endian.Little,
-					addr => OAM[addr],
+					addr => PeekOAM(addr),
 					(addr, value) => OAM[addr] = value,
 					1),
 				new MemoryDomainDelegate(
 					"HRAM",
 					ZP_RAM.Length,
 					MemoryDomain.Endian.Little,
-					addr => ZP_RAM[addr],
+					addr => PeekHRAM(addr),
 					(addr, value) => ZP_RAM[addr] = value,
 					1),
 				new MemoryDomainDelegate(
@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					"CartRAM",
 					cart_RAM.Length,
 					MemoryDomain.Endian.Little,
-					addr => cart_RAM[addr],
+					addr => PeekCART(addr),
 					(addr, value) => cart_RAM[addr] = value,
 					1);
 				domains.Add(CartRam);
@@ -69,6 +69,68 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			MemoryDomains = new MemoryDomainList(domains);
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
+		}
+
+		private byte PeekRAM(long addr)
+		{
+			ushort addr2 = (ushort)(addr & 0x7FFF);
+			if (_settings.VBL_sync)
+			{
+				return RAM_vbls[addr2];
+			}
+			return RAM[addr2];
+		}
+
+		private byte PeekVRAM(long addr)
+		{
+			ushort addr2 = (ushort)(addr & 0x3FFF);
+			if (_settings.VBL_sync)
+			{
+				return VRAM_vbls[addr2];
+			}
+			return VRAM[addr2];
+		}
+
+		private byte PeekHRAM(long addr)
+		{
+			ushort addr2 = (ushort)(addr & 0x7F);
+			if (_settings.VBL_sync)
+			{
+				return ZP_RAM_vbls[addr2];
+			}
+			return ZP_RAM[addr2];
+		}
+
+		private byte PeekOAM(long addr)
+		{
+			if (addr < 0xA0)
+			{
+				if (_settings.VBL_sync)
+				{
+					return OAM_vbls[addr];
+				}
+				return OAM[addr];
+			}
+			return 0xFF;
+		}
+
+		private byte PeekCART(long addr)
+		{
+			if (cart_RAM != null)
+			{
+				if (addr < cart_RAM.Length)
+				{
+					if (_settings.VBL_sync)
+					{
+						return cart_RAM_vbls[addr];
+					}
+					return cart_RAM[addr];
+				}
+
+				return 0xFF;
+			}
+
+			return 0xFF;
 		}
 
 		private byte PeekSystemBus(long addr)

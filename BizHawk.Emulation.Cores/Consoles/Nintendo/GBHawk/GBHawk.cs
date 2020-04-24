@@ -47,6 +47,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public byte[] VRAM = new byte[0x4000];
 		public byte[] OAM = new byte[0xA0];
 
+		// vblank memory domains
+		public byte[] RAM_vbls = new byte[0x8000];
+		public byte[] ZP_RAM_vbls = new byte[0x80];
+		public byte[] VRAM_vbls = new byte[0x4000];
+		public byte[] OAM_vbls = new byte[0xA0];
+
 		public int RAM_Bank;
 		public byte VRAM_Bank;
 		internal bool is_GBC;
@@ -65,6 +71,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public readonly byte[] header = new byte[0x50];
 
 		public byte[] cart_RAM;
+		public byte[] cart_RAM_vbls;
 		public bool has_bat;
 
 		private int _frame = 0;
@@ -173,6 +180,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			Console.WriteLine("SHA1: " + rom.HashSHA1(0, rom.Length));
 			_rom = rom;
 			Setup_Mapper();
+			if (cart_RAM != null) { cart_RAM_vbls = new byte[cart_RAM.Length]; }
 
 			timer.Core = this;
 			audio.Core = this;

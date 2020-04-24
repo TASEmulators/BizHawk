@@ -124,6 +124,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					// send the image on VBlank
 					SendVideoBuffer();
+
+					if (_settings.VBL_sync)
+					{
+						for (int j = 0; j < 0x8000; j++) { RAM_vbls[j] = RAM[j]; }
+						for (int j = 0; j < 0x4000; j++) { VRAM_vbls[j] = VRAM[j]; }
+						for (int j = 0; j < 0x80; j++) { ZP_RAM_vbls[j] = ZP_RAM[j]; }
+						for (int j = 0; j < 0xA0; j++) { OAM_vbls[j] = OAM[j]; }
+
+						if (cart_RAM != null)
+						{
+							for (int j = 0; j < cart_RAM.Length; j++) { cart_RAM_vbls[j] = cart_RAM[j]; }
+						}
+					}
 				}
 
 				REG_FF0F_OLD = REG_FF0F;

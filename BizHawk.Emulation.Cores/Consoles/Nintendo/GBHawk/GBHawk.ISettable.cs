@@ -49,6 +49,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			[DefaultValue(PaletteType.BW)]
 			public PaletteType Palette { get; set; }
 
+			[DisplayName("Read Domains on VBlank")]
+			[Description("When true, memory domains are only updated on VBlank. More consistent for LUA. NOTE: Does not work for system bus, does not apply to writes.")]
+			[DefaultValue(false)]
+			public bool VBL_sync { get; set; }
+
 			public GBSettings Clone()
 			{
 				return (GBSettings)MemberwiseClone();
