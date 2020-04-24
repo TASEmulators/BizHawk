@@ -14,17 +14,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			return _syncSettings.Clone();
 		}
 
-		public bool PutSettings(N64Settings o)
+		public PutSettingsDirtyBits PutSettings(N64Settings o)
 		{
 			_settings = o;
-			return true;
+			return PutSettingsDirtyBits.RebootCore;
 		}
 
-		public bool PutSyncSettings(N64SyncSettings o)
+		public PutSettingsDirtyBits PutSyncSettings(N64SyncSettings o)
 		{
 			_syncSettings = o;
 			SetControllerButtons();
-			return true;
+			return PutSettingsDirtyBits.RebootCore;
 		}
 
 		private void SetControllerButtons()

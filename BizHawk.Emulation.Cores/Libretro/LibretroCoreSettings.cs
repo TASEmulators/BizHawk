@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Libretro
 {
@@ -49,17 +50,17 @@ namespace BizHawk.Emulation.Cores.Libretro
 			return _SyncSettings.Clone();
 		}
 
-		public bool PutSettings(Settings o)
+		public PutSettingsDirtyBits PutSettings(Settings o)
 		{
 			_Settings.Validate();
 			_Settings = o;
 
 			//TODO - store settings into core? or we can just keep doing it before frameadvance
 
-			return false;
+			return PutSettingsDirtyBits.None;
 		}
 
-		public bool PutSyncSettings(SyncSettings o)
+		public PutSettingsDirtyBits PutSyncSettings(SyncSettings o)
 		{
 			bool reboot = false;
 
@@ -68,7 +69,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 			_SyncSettings = o;
 
-			return reboot;
+			return reboot ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 	}
 

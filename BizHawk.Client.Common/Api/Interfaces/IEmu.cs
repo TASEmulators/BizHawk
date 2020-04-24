@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
@@ -26,7 +27,7 @@ namespace BizHawk.Client.Common
 		string GetDisplayType();
 		string GetBoardName();
 		object GetSettings();
-		bool PutSettings(object settings);
+		PutSettingsDirtyBits PutSettings(object settings);
 		void SetRenderPlanes(params bool[] args);
 	}
 }

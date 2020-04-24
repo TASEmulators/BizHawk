@@ -330,19 +330,19 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 			return _syncSettings.Clone();
 		}
 
-		public bool PutSettings(Settings o)
+		public PutSettingsDirtyBits PutSettings(Settings o)
 		{
 			var ret = Settings.NeedsReboot(_settings, o);
 			_settings = o;
 			SetLayerSettings();
-			return ret;
+			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
-		public bool PutSyncSettings(SyncSettings o)
+		public PutSettingsDirtyBits PutSyncSettings(SyncSettings o)
 		{
 			var ret = SyncSettings.NeedsReboot(_syncSettings, o);
 			_syncSettings = o;
-			return ret;
+			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
 		private void SetNativeSettingsBeforeInit()

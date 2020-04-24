@@ -18,17 +18,17 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			return _syncSettings.Clone();
 		}
 
-		public bool PutSettings(A7800Settings o)
+		public PutSettingsDirtyBits PutSettings(A7800Settings o)
 		{
 			_settings = o;
-			return false;
+			return PutSettingsDirtyBits.None;
 		}
 
-		public bool PutSyncSettings(A7800SyncSettings o)
+		public PutSettingsDirtyBits PutSyncSettings(A7800SyncSettings o)
 		{
 			bool ret = A7800SyncSettings.NeedsReboot(_syncSettings, o);
 			_syncSettings = o;
-			return ret;
+			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
 		private A7800Settings _settings = new A7800Settings();

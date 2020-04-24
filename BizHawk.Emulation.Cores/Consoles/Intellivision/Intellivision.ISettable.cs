@@ -18,17 +18,17 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			return _syncSettings.Clone();
 		}
 
-		public bool PutSettings(IntvSettings o)
+		public PutSettingsDirtyBits PutSettings(IntvSettings o)
 		{
 			_settings = o;
-			return false;
+			return PutSettingsDirtyBits.None;
 		}
 
-		public bool PutSyncSettings(IntvSyncSettings o)
+		public PutSettingsDirtyBits PutSyncSettings(IntvSyncSettings o)
 		{
 			bool ret = IntvSyncSettings.NeedsReboot(_syncSettings, o);
 			_syncSettings = o;
-			return ret;
+			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
 		private IntvSettings _settings = new IntvSettings();

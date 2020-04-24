@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			return _settings.Clone();
 		}
 
-		public bool PutSettings(GambatteSettings o)
+		public PutSettingsDirtyBits PutSettings(GambatteSettings o)
 		{
 			_settings = o;
 			if (IsCGBMode())
@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				ChangeDMGColors(_settings.GBPalette);
 			}
 
-			return false;
+			return PutSettingsDirtyBits.None;
 		}
 
 		public GambatteSyncSettings GetSyncSettings()
@@ -34,11 +34,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			return _syncSettings.Clone();
 		}
 
-		public bool PutSyncSettings(GambatteSyncSettings o)
+		public PutSettingsDirtyBits PutSyncSettings(GambatteSyncSettings o)
 		{
 			bool ret = GambatteSyncSettings.NeedsReboot(_syncSettings, o);
 			_syncSettings = o;
-			return ret;
+			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
 		private GambatteSettings _settings;

@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public NESSyncSettings GetSyncSettings() => SyncSettings.Clone();
 
-		public bool PutSettings(NESSettings o)
+		public PutSettingsDirtyBits PutSettings(NESSettings o)
 		{
 			Settings = o;
 			if (Settings.ClipLeftAndRight)
@@ -30,14 +30,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			apu.m_vol = Settings.APU_vol;
 
-			return false;
+			return PutSettingsDirtyBits.None;
 		}
 
-		public bool PutSyncSettings(NESSyncSettings o)
+		public PutSettingsDirtyBits PutSyncSettings(NESSyncSettings o)
 		{
 			bool ret = NESSyncSettings.NeedsReboot(SyncSettings, o);
 			SyncSettings = o;
-			return ret;
+			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
 		internal NESSettings Settings = new NESSettings();
