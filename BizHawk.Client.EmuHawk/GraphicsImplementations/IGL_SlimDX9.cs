@@ -832,7 +832,7 @@ namespace BizHawk.Client.EmuHawk
 			SetViewport(0, 0, width, height);
 		}
 
-		public void SetViewport(sd.Size size)
+		public void SetViewport(Size size)
 		{
 			SetViewport(size.Width, size.Height);
 		}

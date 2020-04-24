@@ -6,11 +6,8 @@ using System.Threading;
 using System.Diagnostics;
 using System.Dynamic;
 using System.IO;
-using System.Text;
-
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using System.IO;
 
 namespace BizHawk.Emulation.Cores.Arcades.MAME
 {

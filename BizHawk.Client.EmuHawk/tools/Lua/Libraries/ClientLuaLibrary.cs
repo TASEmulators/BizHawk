@@ -52,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("borderheight", "Gets the current height in pixels of the letter/pillarbox area (top side only) around the emu display surface, excluding the gameExtraPadding you've set. This function (the whole lot of them) should be renamed or refactored since the padding areas have got more complex.")]
 		public static int BorderHeight()
 		{
-			var point = new System.Drawing.Point(0, 0);
+			var point = new Point(0, 0);
 			return GlobalWin.DisplayManager.TransformPoint(point).Y;
 		}
 
@@ -60,7 +60,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("borderwidth", "Gets the current width in pixels of the letter/pillarbox area (left side only) around the emu display surface, excluding the gameExtraPadding you've set. This function (the whole lot of them) should be renamed or refactored since the padding areas have got more complex.")]
 		public static int BorderWidth()
 		{
-			var point = new System.Drawing.Point(0, 0);
+			var point = new Point(0, 0);
 			return GlobalWin.DisplayManager.TransformPoint(point).X;
 		}
 

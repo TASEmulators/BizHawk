@@ -13,7 +13,6 @@ using System;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
-
 	public unsafe class SNESGraphicsDecoder : IDisposable, IMonitor
 	{
 		public class PaletteSelection
@@ -49,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			return ret;
 		}
 
-		public static Dimensions[,] ObjSizes = new Dimensions[,] 
+		public static Dimensions[,] ObjSizes = 
 		{
 			{ new Dimensions(8,8), new Dimensions(16,16) },
 			{ new Dimensions(8,8), new Dimensions(32,32) },
@@ -63,14 +62,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public static Dimensions SizeInBlocksForBGSize(ScreenSize size)
 		{
-			switch (size)
+			return size switch
 			{
-				case ScreenSize.AAAA_32x32: return new Dimensions(1, 1);
-				case ScreenSize.ABAB_64x32: return new Dimensions(2, 1);
-				case ScreenSize.AABB_32x64: return new Dimensions(1, 2);
-				case ScreenSize.ABCD_64x64: return new Dimensions(2, 2);
-				default: throw new Exception();
-			}
+				ScreenSize.AAAA_32x32 => new Dimensions(1, 1),
+				ScreenSize.ABAB_64x32 => new Dimensions(2, 1),
+				ScreenSize.AABB_32x64 => new Dimensions(1, 2),
+				ScreenSize.ABCD_64x64 => new Dimensions(2, 2),
+				_ => throw new Exception()
+			};
 		}
 
 		public enum BGMode
@@ -78,12 +77,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			Unavailable, Text, Mode7, Mode7Ext, Mode7DC, OBJ
 		}
 
-
 		/// <summary>
 		/// is a BGMode a mode7 type (mode7, mode7ext, mode7DC)
 		/// </summary>
-		public static bool BGModeIsMode7Type(BGMode BGMode) { return BGMode == SNESGraphicsDecoder.BGMode.Mode7 || BGMode == SNESGraphicsDecoder.BGMode.Mode7DC || BGMode == SNESGraphicsDecoder.BGMode.Mode7Ext; }
-
+		public static bool BGModeIsMode7Type(BGMode bgMode) => bgMode == BGMode.Mode7 || bgMode == BGMode.Mode7DC || bgMode == BGMode.Mode7Ext;
 
 		/// <summary>
 		/// this class is not 'smart' - it wont recompute values for you. it's meant to be read only (we should find some way to protect write access to make that clear)
@@ -177,15 +174,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			/// <summary>
 			/// The size of the layer, in tiles
 			/// </summary>
-			public Dimensions ScreenSizeInTiles
-			{
-				get
-				{
-					if (BGMode == SNESGraphicsDecoder.BGMode.Text)
-						return SizeInTilesForBGSize(ScreenSize);
-					else return new Dimensions(128, 128);
-				}
-			}
+			public Dimensions ScreenSizeInTiles => BGMode == BGMode.Text
+				? SizeInTilesForBGSize(ScreenSize)
+				: new Dimensions(128, 128);
 
 			/// <summary>
 			/// The size of the layer, in pixels. This has factored in the selection of 8x8 or 16x16 tiles
@@ -196,7 +187,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			/// returns information about what colors could possibly be used for this bg
 			/// </summary>
 			public PaletteSelection PaletteSelection;
-
 		}
 
 		public class BGInfos
@@ -269,7 +259,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					Address += si.OBJTable1Addr - (256 * 32);
 
 				Address &= 0xFFFF;
-
 			}
 		}
 

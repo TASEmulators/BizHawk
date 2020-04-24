@@ -358,7 +358,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		/// </summary>
 		class DiscInterface : IDisposable
 		{
-			public DiscInterface(DiscSystem.Disc disc, Action<DiscInterface> cbActivity)
+			public DiscInterface(Disc disc, Action<DiscInterface> cbActivity)
 			{
 				this.Disc = disc;
 				cbReadTOC = ShockDisc_ReadTOC;
@@ -371,7 +371,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			OctoshockDll.ShockDisc_ReadLBA cbReadLBA;
 			Action<DiscInterface> cbActivity;
 
-			public DiscSystem.Disc Disc;
+			public Disc Disc;
 			public IntPtr OctoshockHandle;
 
 			public void Dispose()
@@ -414,19 +414,19 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				cbActivity(this);
 
 				//todo - cache reader
-				DiscSystem.DiscSectorReader dsr = new DiscSystem.DiscSectorReader(Disc);
+				var dsr = new DiscSectorReader(Disc);
 				int readed = dsr.ReadLBA_2448(lba, SectorBuffer, 0);
 				if (readed == 2448)
 				{
 					Marshal.Copy(SectorBuffer, 0, new IntPtr(dst), 2448);
 					return OctoshockDll.SHOCK_OK;
 				}
-				else
-					return OctoshockDll.SHOCK_ERROR;
+
+				return OctoshockDll.SHOCK_ERROR;
 			}
 		}
 
-		public List<DiscSystem.Disc> Discs;
+		public List<Disc> Discs;
 		List<DiscInterface> discInterfaces = new List<DiscInterface>();
 		DiscInterface currentDiscInterface;
 

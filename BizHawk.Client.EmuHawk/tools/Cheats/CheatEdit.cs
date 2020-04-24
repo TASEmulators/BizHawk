@@ -156,7 +156,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SetTypeSelected(Common.DisplayType type)
+		private void SetTypeSelected(DisplayType type)
 		{
 			foreach (var item in DisplayTypeDropDown.Items)
 			{

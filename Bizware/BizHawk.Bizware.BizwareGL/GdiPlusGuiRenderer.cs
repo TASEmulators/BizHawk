@@ -17,10 +17,13 @@ namespace BizHawk.Bizware.BizwareGL
 			Owner = gl;
 		}
 
-		readonly OpenTK.Graphics.Color4[] CornerColors = new OpenTK.Graphics.Color4[4] {
-			new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f),new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f),new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f),new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f)
+		readonly OpenTK.Graphics.Color4[] CornerColors =
+		{
+			new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f),
+			new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f),
+			new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f),
+			new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f)
 		};
-
 
 		public void SetCornerColor(int which, OpenTK.Graphics.Color4 color)
 		{
@@ -41,15 +44,12 @@ namespace BizHawk.Bizware.BizwareGL
 			CurrentImageAttributes?.Dispose();
 		}
 
-
 		public void SetPipeline(Pipeline pipeline)
 		{
-		
 		}
 
 		public void SetDefaultPipeline()
 		{
-	
 		}
 
 		public void SetModulateColorWhite()
@@ -72,14 +72,17 @@ namespace BizHawk.Bizware.BizwareGL
 			float b = color.B / 255.0f;
 			float a = color.A / 255.0f;
 
-			float[][] colorMatrixElements = { 
+			float[][] colorMatrixElements =
+			{
 			 new float[] {r,  0,  0,  0,  0},
 			 new float[] {0,  g,  0,  0,  0},
 			 new float[] {0,  0,  b,  0,  0},
 			 new float[] {0,  0,  0,  a,  0},
-			 new float[] {0,  0,  0,  0,  1}};
+			 new float[] {0,  0,  0,  0,  1}
 
-			ColorMatrix colorMatrix = new ColorMatrix(colorMatrixElements);
+			};
+
+			var colorMatrix = new ColorMatrix(colorMatrixElements);
 			CurrentImageAttributes.SetColorMatrix(colorMatrix,ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
 		}
 
@@ -153,9 +156,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public void RectFill(float x, float y, float w, float h)
 		{
-
 		}
-
 
 		public void DrawSubrect(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
 		{
@@ -274,10 +275,8 @@ namespace BizHawk.Bizware.BizwareGL
 
 		unsafe void DrawInternal(Art art, float x, float y, float w, float h, bool fx, bool fy)
 		{
-		
 		}
 
-		
 		public bool IsActive { get; private set; }
 		public IGL Owner { get; }
 		public IGL Gdi => Owner;

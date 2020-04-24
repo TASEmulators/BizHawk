@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common

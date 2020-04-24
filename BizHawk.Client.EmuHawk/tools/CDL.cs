@@ -6,7 +6,6 @@ using BizHawk.Emulation.Common;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
-using BizHawk.Common.PathExtensions;
 
 // TODO - select which memorydomains go out to the CDL file. will this cause a problem when re-importing it? 
 // perhaps missing domains shouldn't fail a check
@@ -190,8 +189,8 @@ namespace BizHawk.Client.EmuHawk
 					if (tsbViewStyle.SelectedIndex == 2)
 						lvi[5 + i] = $"{totals[i] / 1024.0f:0.00}";
 				}
-
 			}
+
 			lvCDL.RowCount = _cdl.Count;
 		}
 

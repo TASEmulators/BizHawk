@@ -43,7 +43,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 			if (WrappedBitmap != null)
 			{
-				CurrLock = WrappedBitmap.LockBits(new sd.Rectangle(0, 0, Width, Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+				CurrLock = WrappedBitmap.LockBits(new Rectangle(0, 0, Width, Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
 				return CurrLock;
 			}
 
@@ -257,7 +257,7 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <summary>
 		/// Initializes the BitmapBuffer from a System.Drawing.Bitmap
 		/// </summary>
-		public BitmapBuffer(sd.Bitmap bitmap, BitmapLoadOptions options)
+		public BitmapBuffer(Bitmap bitmap, BitmapLoadOptions options)
 		{
 			if (options.AllowWrap && bitmap.PixelFormat == PixelFormat.Format32bppArgb)
 			{
@@ -288,7 +288,7 @@ namespace BizHawk.Bizware.BizwareGL
 			HasAlpha = false;
 		}
 
-		void LoadInternal(Stream stream, sd.Bitmap bitmap, BitmapLoadOptions options)
+		void LoadInternal(Stream stream, Bitmap bitmap, BitmapLoadOptions options)
 		{
 			bool cleanup = options.CleanupAlpha0;
 			bool needsPad = true;
@@ -307,7 +307,7 @@ namespace BizHawk.Bizware.BizwareGL
 					int w = bmp.Width;
 					int h = bmp.Height;
 					InitSize(w, h);
-					BitmapData bmpdata = bmp.LockBits(new sd.Rectangle(0, 0, w, h), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+					BitmapData bmpdata = bmp.LockBits(new Rectangle(0, 0, w, h), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
 					Color[] palette = bmp.Palette.Entries;
 					int* ptr = (int*)bmpdata.Scan0.ToPointer();
 					int stride = bmpdata.Stride;
@@ -330,7 +330,7 @@ namespace BizHawk.Bizware.BizwareGL
 					int w = bmp.Width;
 					int h = bmp.Height;
 					InitSize(w, h);
-					BitmapData bmpdata = bmp.LockBits(new sd.Rectangle(0, 0, w, h), ImageLockMode.ReadOnly, PixelFormat.Format8bppIndexed);
+					BitmapData bmpdata = bmp.LockBits(new Rectangle(0, 0, w, h), ImageLockMode.ReadOnly, PixelFormat.Format8bppIndexed);
 					Color[] palette = bmp.Palette.Entries;
 					byte* ptr = (byte*)bmpdata.Scan0.ToPointer();
 					fixed (int* pPtr = &Pixels[0])
@@ -363,7 +363,7 @@ namespace BizHawk.Bizware.BizwareGL
 					int width = bmp.Width;
 					int height = bmp.Height;
 					InitSize(width, height);
-					BitmapData bmpdata = bmp.LockBits(new sd.Rectangle(0, 0, width, height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+					BitmapData bmpdata = bmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
 					int* ptr = (int*)bmpdata.Scan0;
 					int stride = bmpdata.Stride / 4;
 					LoadFrom(width, stride, height, (byte*)ptr, options);
@@ -526,7 +526,7 @@ namespace BizHawk.Bizware.BizwareGL
 			}
 
 			//note: we lock it as 32bpp even if the bitmap is 24bpp so we can write to it more conveniently. 
-			var bmpdata = bmp.LockBits(new sd.Rectangle(0, 0, Width, Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+			var bmpdata = bmp.LockBits(new Rectangle(0, 0, Width, Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
 			if(bmpdata.Stride == bmpdata.Width*4)
 				Marshal.Copy(Pixels, 0, bmpdata.Scan0, Width * Height);

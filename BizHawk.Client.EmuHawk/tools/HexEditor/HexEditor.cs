@@ -12,7 +12,6 @@ using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Common.IOExtensions;
-using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
@@ -24,10 +23,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private class NullMemoryDomain : MemoryDomain
 		{
-			public override byte PeekByte(long addr)
-			{
-				return 0;
-			}
+			public override byte PeekByte(long addr) => 0;
 
 			public override void PokeByte(long addr, byte val)
 			{

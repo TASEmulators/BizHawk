@@ -130,7 +130,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6800
 		}
 
 		//a little CDL related stuff
-		public delegate void DoCDLCallbackType(ushort addr, MC6800.eCDLogMemFlags flags);
+		public delegate void DoCDLCallbackType(ushort addr, eCDLogMemFlags flags);
 
 		public DoCDLCallbackType CDLCallback;
 

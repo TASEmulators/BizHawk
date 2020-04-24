@@ -386,7 +386,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//OAM ADDRESS (write)
 		void write_2003(int addr, byte value)
 		{
-			if (region == PPU.Region.NTSC)
+			if (region == Region.NTSC)
 			{
 				// in NTSC this does several glitchy things to corrupt OAM
 				// commented out for now until better understood

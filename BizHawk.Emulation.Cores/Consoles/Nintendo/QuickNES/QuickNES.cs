@@ -319,7 +319,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		// we need to do this from the raw file since QuickNES hasn't had time to process it yet.
 		byte[] FixInesHeader(byte[] file)
 		{
-			string sha1 = BizHawk.Common.BufferExtensions.BufferExtensions.HashSHA1(file);
+			string sha1 = BufferExtensions.HashSHA1(file);
 			bool didSomething = false;
 
 			Console.WriteLine(sha1);

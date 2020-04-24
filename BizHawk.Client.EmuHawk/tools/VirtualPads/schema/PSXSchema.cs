@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Sony.PSX;

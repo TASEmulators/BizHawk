@@ -1,10 +1,10 @@
 using System;
 using System.Drawing;
-using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 
-namespace BizHawk.Client.EmuHawk.Properties {
+namespace BizHawk.Client.EmuHawk.Properties
+{
 	internal static class Resources {
 		private static readonly Assembly Asm = Assembly.GetExecutingAssembly();
 

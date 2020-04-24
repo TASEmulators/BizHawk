@@ -181,7 +181,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				if (DataIn.Count == 0)
 				{
 					// read in a sector and shove it in the queue
-					DiscSystem.DiscSectorReader dsr = new DiscSectorReader(disc); // TODO - cache reader
+					var dsr = new DiscSectorReader(disc); // TODO - cache reader
 					dsr.ReadLBA_2048(CurrentReadingSector, DataIn.GetBuffer(), 0);
 					DataIn.SignalBufferFilled(2048);
 					CurrentReadingSector++;

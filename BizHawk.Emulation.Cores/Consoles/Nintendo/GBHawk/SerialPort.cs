@@ -1,6 +1,5 @@
 ﻿using BizHawk.Common.NumberExtensions;
 using BizHawk.Common;
-using System;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {

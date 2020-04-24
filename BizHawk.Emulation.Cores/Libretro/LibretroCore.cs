@@ -353,7 +353,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		private byte[] savebuff, savebuff2;
 
-		public void SaveStateBinary(System.IO.BinaryWriter writer)
+		public void SaveStateBinary(BinaryWriter writer)
 		{
 			api.CMD_UpdateSerializeSize();
 			if (savebuff == null || savebuff.Length != (int)api.comm->env.retro_serialize_size)
@@ -371,7 +371,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			writer.Write(IsLagFrame);
 		}
 
-		public void LoadStateBinary(System.IO.BinaryReader reader)
+		public void LoadStateBinary(BinaryReader reader)
 		{
 			int newlen = reader.ReadInt32();
 			if (newlen > savebuff.Length)
@@ -393,8 +393,8 @@ namespace BizHawk.Emulation.Cores.Libretro
 				savebuff2 = new byte[savebuff.Length + 13];
 			}
 
-			var ms = new System.IO.MemoryStream(savebuff2, true);
-			var bw = new System.IO.BinaryWriter(ms);
+			var ms = new MemoryStream(savebuff2, true);
+			var bw = new BinaryWriter(ms);
 			SaveStateBinary(bw);
 			bw.Flush();
 			ms.Close();

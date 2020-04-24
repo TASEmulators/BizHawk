@@ -1,8 +1,6 @@
 ﻿//http://wiki.nesdev.com/w/index.php/TxROM
 //read some background info on namco 108 and DxROM boards here
 
-using BizHawk.Common;
-
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	[NesBoardImplPriority]

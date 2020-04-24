@@ -348,14 +348,14 @@ namespace BizHawk.Client.EmuHawk
 		private void RenderView()
 		{
 			Bitmap bmp = null;
-			System.Drawing.Imaging.BitmapData bmpdata = null;
+			BitmapData bmpdata = null;
 			int* pixelptr = null;
 			int stride = 0;
 
 			Action<int, int> allocate = (w, h) =>
 			{
 				bmp = new Bitmap(w, h);
-				bmpdata = bmp.LockBits(new Rectangle(0, 0, w, h), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+				bmpdata = bmp.LockBits(new Rectangle(0, 0, w, h), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 				pixelptr = (int*)bmpdata.Scan0.ToPointer();
 				stride = bmpdata.Stride;
 			};
@@ -673,7 +673,7 @@ namespace BizHawk.Client.EmuHawk
 
 			int pixsize = paletteCellSize * 16 + paletteCellSpacing * 17;
 			int cellTotalSize = (paletteCellSize + paletteCellSpacing);
-			var bmp = new Bitmap(pixsize, pixsize, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			var bmp = new Bitmap(pixsize, pixsize, PixelFormat.Format32bppArgb);
 			using (var g = Graphics.FromImage(bmp))
 			{
 				for (int y = 0; y < 16; y++)
@@ -987,7 +987,7 @@ namespace BizHawk.Client.EmuHawk
 				//view a tileset tile
 				int bpp = currTileDataState.Bpp;
 
-				var bmp = new Bitmap(8, 8, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+				var bmp = new Bitmap(8, 8, PixelFormat.Format32bppArgb);
 				var bmpdata = bmp.LockBits(new Rectangle(0, 0, 8, 8), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 				if (currTileDataState.Type == eDisplayType.TilesMode7)
 					gd.RenderMode7TilesToScreen((int*)bmpdata.Scan0, bmpdata.Stride / 4, false, false, 1, currTileDataState.Tile, 1);
@@ -1011,7 +1011,7 @@ namespace BizHawk.Client.EmuHawk
 				var bounds = si.ObjSizeBoundsSquare;
 				int width = bounds.Width;
 				int height = bounds.Height;
-				var bmp = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+				var bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
 				var bmpData = bmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 				gd.RenderSpriteToScreen((int*)bmpData.Scan0, bmpData.Stride / 4, 0, 0, si, currObjDataState.Number);
 				bmp.UnlockBits(bmpData);

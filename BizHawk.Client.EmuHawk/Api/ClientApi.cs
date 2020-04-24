@@ -456,23 +456,23 @@ namespace BizHawk.Client.EmuHawk
 
 		public static int BorderHeight()
 		{
-			var point = new System.Drawing.Point(0, 0);
+			var point = new Point(0, 0);
 			Type t = ClientAssembly.GetType("BizHawk.Client.EmuHawk.GlobalWin");
 			FieldInfo f = t.GetField("DisplayManager");
 			object displayManager = f.GetValue(null);
 			MethodInfo m = t.GetMethod("TransFormPoint");
-			point = (System.Drawing.Point) m.Invoke(displayManager, new object[] { point });
+			point = (Point) m.Invoke(displayManager, new object[] { point });
 			return point.Y;
 		}
 
 		public static int BorderWidth()
 		{
-			var point = new System.Drawing.Point(0, 0);
+			var point = new Point(0, 0);
 			Type t = ClientAssembly.GetType("BizHawk.Client.EmuHawk.GlobalWin");
 			FieldInfo f = t.GetField("DisplayManager");
 			object displayManager = f.GetValue(null);
 			MethodInfo m = t.GetMethod("TransFormPoint");
-			point = (System.Drawing.Point)m.Invoke(displayManager, new object[] { point });
+			point = (Point)m.Invoke(displayManager, new object[] { point });
 			return point.X;
 		}
 

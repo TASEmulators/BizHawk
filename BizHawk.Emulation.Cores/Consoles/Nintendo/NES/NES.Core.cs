@@ -174,7 +174,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// set up region
 			switch (_display_type)
 			{
-				case Common.DisplayType.PAL:
+				case DisplayType.PAL:
 					apu = new APU(this, apu, true);
 					ppu.region = PPU.Region.PAL;
 					VsyncNum = 50;
@@ -184,7 +184,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					_display_type = DisplayType.PAL;
 					ClockRate = 5320342.5;
 					break;
-				case Common.DisplayType.NTSC:
+				case DisplayType.NTSC:
 					apu = new APU(this, apu, false);
 					ppu.region = PPU.Region.NTSC;
 					VsyncNum = 39375000;
@@ -194,7 +194,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					ClockRate = 5369318.1818181818181818181818182;
 					break;
 				// this is in bootgod, but not used at all
-				case Common.DisplayType.Dendy:
+				case DisplayType.Dendy:
 					apu = new APU(this, apu, false);
 					ppu.region = PPU.Region.Dendy;
 					VsyncNum = 50;

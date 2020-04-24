@@ -365,7 +365,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				AutoMapperProps.Populate(Board, SyncSettings);
 
 				Console.WriteLine("Using NTSC display type for NSF for now");
-				_display_type = Common.DisplayType.NTSC;
+				_display_type = DisplayType.NTSC;
 
 				HardReset();
 
@@ -403,7 +403,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				AutoMapperProps.Populate(Board, SyncSettings);
 
 				Console.WriteLine("Using NTSC display type for FDS disk image");
-				_display_type = Common.DisplayType.NTSC;
+				_display_type = DisplayType.NTSC;
 
 				HardReset();
 
@@ -730,21 +730,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				Console.WriteLine("Using system region override");
 				fromrom = fromsettings;
 			}
-			switch (fromrom)
+
+			_display_type = fromrom switch
 			{
-				case NESSyncSettings.Region.Dendy:
-					_display_type = Common.DisplayType.Dendy;
-					break;
-				case NESSyncSettings.Region.NTSC:
-					_display_type = Common.DisplayType.NTSC;
-					break;
-				case NESSyncSettings.Region.PAL:
-					_display_type = Common.DisplayType.PAL;
-					break;
-				default:
-					_display_type = Common.DisplayType.NTSC;
-					break;
-			}
+				NESSyncSettings.Region.Dendy => DisplayType.Dendy,
+				NESSyncSettings.Region.NTSC => DisplayType.NTSC,
+				NESSyncSettings.Region.PAL => DisplayType.PAL,
+				_ => DisplayType.NTSC
+			};
 			Console.WriteLine("Using NES system region of {0}", _display_type);
 
 			HardReset();

@@ -6,7 +6,6 @@ using System.Linq;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.MovieConversionExtensions;
-using BizHawk.Common.PathExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {

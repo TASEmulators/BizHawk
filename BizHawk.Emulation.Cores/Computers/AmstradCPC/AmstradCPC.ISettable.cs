@@ -81,7 +81,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			public AmstradCPCSettings()
 			{
-				BizHawk.Common.SettingsUtil.SetDefaultValues(this);
+				SettingsUtil.SetDefaultValues(this);
 			}
 		}
 
@@ -114,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			public AmstradCPCSyncSettings()
 			{
-				BizHawk.Common.SettingsUtil.SetDefaultValues(this);
+				SettingsUtil.SetDefaultValues(this);
 			}
 
 			public static bool NeedsReboot(AmstradCPCSyncSettings x, AmstradCPCSyncSettings y)
@@ -162,8 +162,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			public static CPCMachineMetaData GetMetaObject(MachineType type)
 			{
-				CPCMachineMetaData m = new CPCMachineMetaData();
-				m.MachineType = type;
+				var m = new CPCMachineMetaData { MachineType = type };
 
 				switch (type)
 				{
@@ -191,14 +190,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						break;
 				}
 
-				m.Data.Add(AmstradCPC.GetMemberName((CPCMachineMetaData c) => c.Name), m.Name.Trim());
-				m.Data.Add(AmstradCPC.GetMemberName((CPCMachineMetaData c) => c.Description), m.Description.Trim());
-				m.Data.Add(AmstradCPC.GetMemberName((CPCMachineMetaData c) => c.Released), m.Released.Trim());
-				m.Data.Add(AmstradCPC.GetMemberName((CPCMachineMetaData c) => c.CPU), m.CPU.Trim());
-				m.Data.Add(AmstradCPC.GetMemberName((CPCMachineMetaData c) => c.Memory), m.Memory.Trim());
-				m.Data.Add(AmstradCPC.GetMemberName((CPCMachineMetaData c) => c.Video), m.Video.Trim());
-				m.Data.Add(AmstradCPC.GetMemberName((CPCMachineMetaData c) => c.Audio), m.Audio.Trim());
-				m.Data.Add(AmstradCPC.GetMemberName((CPCMachineMetaData c) => c.Media), m.Media.Trim());
+				m.Data.Add(GetMemberName((CPCMachineMetaData c) => c.Name), m.Name.Trim());
+				m.Data.Add(GetMemberName((CPCMachineMetaData c) => c.Description), m.Description.Trim());
+				m.Data.Add(GetMemberName((CPCMachineMetaData c) => c.Released), m.Released.Trim());
+				m.Data.Add(GetMemberName((CPCMachineMetaData c) => c.CPU), m.CPU.Trim());
+				m.Data.Add(GetMemberName((CPCMachineMetaData c) => c.Memory), m.Memory.Trim());
+				m.Data.Add(GetMemberName((CPCMachineMetaData c) => c.Video), m.Video.Trim());
+				m.Data.Add(GetMemberName((CPCMachineMetaData c) => c.Audio), m.Audio.Trim());
+				m.Data.Add(GetMemberName((CPCMachineMetaData c) => c.Media), m.Media.Trim());
 
 				return m;
 			}
@@ -206,8 +205,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			public static string GetMetaString(MachineType type)
 			{
 				var m = GetMetaObject(type);
-
-				StringBuilder sb = new StringBuilder();
+				var sb = new StringBuilder();
 
 				// get longest title
 				int titleLen = 0;

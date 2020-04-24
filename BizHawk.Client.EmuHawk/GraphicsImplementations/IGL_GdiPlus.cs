@@ -143,7 +143,7 @@ namespace BizHawk.Client.EmuHawk
 				tw.MagFilter = (TextureMagFilter)param;
 		}
 
-		public Texture2d LoadTexture(sd.Bitmap bitmap)
+		public Texture2d LoadTexture(Bitmap bitmap)
 		{
 			var sdBitmap = (Bitmap)bitmap.Clone();
 			GDIPTextureWrapper tw = new GDIPTextureWrapper { SDBitmap = sdBitmap };
@@ -200,21 +200,21 @@ namespace BizHawk.Client.EmuHawk
 
 		public Matrix4 CreateGuiProjectionMatrix(int w, int h)
 		{
-			return CreateGuiProjectionMatrix(new sd.Size(w, h));
+			return CreateGuiProjectionMatrix(new Size(w, h));
 		}
 
 		public Matrix4 CreateGuiViewMatrix(int w, int h, bool autoFlip)
 		{
-			return CreateGuiViewMatrix(new sd.Size(w, h), autoFlip);
+			return CreateGuiViewMatrix(new Size(w, h), autoFlip);
 		}
 
-		public Matrix4 CreateGuiProjectionMatrix(sd.Size dims)
+		public Matrix4 CreateGuiProjectionMatrix(Size dims)
 		{
 			//see CreateGuiViewMatrix for more
 			return Matrix4.Identity;
 		}
 
-		public Matrix4 CreateGuiViewMatrix(sd.Size dims, bool autoFlip)
+		public Matrix4 CreateGuiViewMatrix(Size dims, bool autoFlip)
 		{
 			//on account of gdi+ working internally with a default view exactly like we want, we don't need to setup a new one here
 			//furthermore, we _cant_, without inverting the GuiView and GuiProjection before drawing, to completely undo it
@@ -238,7 +238,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 		}
 
-		public void SetViewport(sd.Size size)
+		public void SetViewport(Size size)
 		{
 			SetViewport(size.Width, size.Height);
 		}

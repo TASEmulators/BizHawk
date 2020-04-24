@@ -4,8 +4,6 @@ using System.IO;
 using System.Text;
 using System.Diagnostics;
 using System.Windows.Forms;
-
-using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
