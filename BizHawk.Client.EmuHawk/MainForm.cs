@@ -810,8 +810,6 @@ namespace BizHawk.Client.EmuHawk
 		private InputManager InputManager => Global.InputManager;
 
 		private IVideoProvider _currentVideoProvider = NullVideo.Instance;
-		int _currentVideoProvider_last_width = -1;
-		int _currentVideoProvider_last_height = -1;
 
 		private ISoundProvider _currentSoundProvider = new NullSound(44100 / 60); // Reasonable default until we have a core instance
 
@@ -1086,26 +1084,8 @@ namespace BizHawk.Client.EmuHawk
 			AddOnScreenMessage($"{fi.Name} saved.");
 		}
 
-		/// <summary>
-		/// This is a separate function because sometimes we may knowingly want to force the layout to recalculate
-		/// When youre not sure, use this
-		/// </summary>
-		public void MaybeFrameBufferResized()
-		{
-			if (_currentVideoProvider_last_width == _currentVideoProvider.BufferWidth
-				&& _currentVideoProvider_last_height == _currentVideoProvider.BufferHeight)
-				return;
-			FrameBufferResized();
-		}
-
-		/// <summary>
-		/// Forces the window layout to recalculate
-		/// </summary>
 		public void FrameBufferResized()
 		{
-			_currentVideoProvider_last_width = _currentVideoProvider.BufferWidth;
-			_currentVideoProvider_last_height = _currentVideoProvider.BufferHeight;
-
 			// run this entire thing exactly twice, since the first resize may adjust the menu stacking
 			for (int i = 0; i < 2; i++)
 			{
