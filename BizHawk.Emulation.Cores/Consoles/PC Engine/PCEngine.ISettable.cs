@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			return _syncSettings.Clone();
 		}
 
-		public bool PutSettings(PCESettings o)
+		public PutSettingsDirtyBits PutSettings(PCESettings o)
 		{
 			bool ret;
 			if (o.ArcadeCardRewindHack != Settings.ArcadeCardRewindHack
@@ -32,14 +32,14 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 			Settings = o;
 
-			return ret;
+			return PutSettingsDirtyBits.None;
 		}
 
-		public bool PutSyncSettings(PCESyncSettings o)
+		public PutSettingsDirtyBits PutSyncSettings(PCESyncSettings o)
 		{
 			bool ret = PCESyncSettings.NeedsReboot(o, _syncSettings);
 			_syncSettings = o;
-			return ret;
+			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
 		public PCESettings Settings;

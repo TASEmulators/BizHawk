@@ -18,18 +18,18 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			return _syncSettings.Clone();
 		}
 
-		public bool PutSettings(ColecoSettings o)
+		public PutSettingsDirtyBits PutSettings(ColecoSettings o)
 		{
 			_settings = o;
-			return false;
+			return PutSettingsDirtyBits.None;
 		}
 
-		public bool PutSyncSettings(ColecoSyncSettings o)
+		public PutSettingsDirtyBits PutSyncSettings(ColecoSyncSettings o)
 		{
 			bool ret = o.SkipBiosIntro != _syncSettings.SkipBiosIntro;
 			ret |= ColecoSyncSettings.NeedsReboot(_syncSettings, o);
 			_syncSettings = o;
-			return ret;
+			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
 		public class ColecoSettings

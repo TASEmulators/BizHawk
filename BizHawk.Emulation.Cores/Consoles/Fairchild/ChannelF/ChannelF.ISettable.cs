@@ -19,17 +19,17 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			return SyncSettings.Clone();
 		}
 
-		public bool PutSettings(ChannelFSettings o)
+		public PutSettingsDirtyBits PutSettings(ChannelFSettings o)
 		{
 			Settings = o;
-			return false;
+			return PutSettingsDirtyBits.None;
 		}
 
-		public bool PutSyncSettings(ChannelFSyncSettings o)
+		public PutSettingsDirtyBits PutSyncSettings(ChannelFSyncSettings o)
 		{
 			bool ret = ChannelFSyncSettings.NeedsReboot(SyncSettings, o);
 			SyncSettings = o;
-			return ret;
+			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
 		public class ChannelFSettings

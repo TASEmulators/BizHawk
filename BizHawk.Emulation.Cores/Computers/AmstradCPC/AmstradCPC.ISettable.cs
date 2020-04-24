@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			return SyncSettings.Clone();
 		}
 
-		public bool PutSettings(AmstradCPCSettings o)
+		public PutSettingsDirtyBits PutSettings(AmstradCPCSettings o)
 		{
 
 			// restore user settings to devices
@@ -42,14 +42,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			Settings = o;
 
-			return false;
+			return PutSettingsDirtyBits.None;
 		}
 
-		public bool PutSyncSettings(AmstradCPCSyncSettings o)
+		public PutSettingsDirtyBits PutSyncSettings(AmstradCPCSyncSettings o)
 		{
 			bool ret = AmstradCPCSyncSettings.NeedsReboot(SyncSettings, o);
 			SyncSettings = o;
-			return ret;
+			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
 		public class AmstradCPCSettings

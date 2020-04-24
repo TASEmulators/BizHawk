@@ -20,17 +20,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			return _syncSettings.Clone();
 		}
 
-		public bool PutSettings(GBSettings o)
+		public PutSettingsDirtyBits PutSettings(GBSettings o)
 		{
 			_settings = o;
-			return false;
+			return PutSettingsDirtyBits.None;
 		}
 
-		public bool PutSyncSettings(GBSyncSettings o)
+		public PutSettingsDirtyBits PutSyncSettings(GBSyncSettings o)
 		{
 			bool ret = GBSyncSettings.NeedsReboot(_syncSettings, o);
 			_syncSettings = o;
-			return ret;
+			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
 		private GBSettings _settings = new GBSettings();

@@ -16,17 +16,17 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			return linkSyncSettings.Clone();
 		}
 
-		public bool PutSettings(GGLinkSettings o)
+		public PutSettingsDirtyBits PutSettings(GGLinkSettings o)
 		{
 			linkSettings = o;
-			return false;
+			return PutSettingsDirtyBits.None;
 		}
 
-		public bool PutSyncSettings(GGLinkSyncSettings o)
+		public PutSettingsDirtyBits PutSyncSettings(GGLinkSyncSettings o)
 		{
 			bool ret = GGLinkSyncSettings.NeedsReboot(linkSyncSettings, o);
 			linkSyncSettings = o;
-			return ret;
+			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
 		private GGLinkSettings linkSettings = new GGLinkSettings();

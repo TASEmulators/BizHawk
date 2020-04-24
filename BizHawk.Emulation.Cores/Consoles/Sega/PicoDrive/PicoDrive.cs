@@ -229,16 +229,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 			return _syncSettings.Clone();
 		}
 
-		public bool PutSettings(object o)
+		public PutSettingsDirtyBits PutSettings(object o)
 		{
-			return false;
+			return PutSettingsDirtyBits.None;
 		}
 
-		public bool PutSyncSettings(SyncSettings o)
+		public PutSettingsDirtyBits PutSyncSettings(SyncSettings o)
 		{
 			var ret = SyncSettings.NeedsReboot(_syncSettings, o);
 			_syncSettings = o;
-			return ret;
+			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
 		#endregion

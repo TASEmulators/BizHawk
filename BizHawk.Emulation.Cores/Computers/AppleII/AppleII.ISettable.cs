@@ -20,16 +20,16 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		public object GetSyncSettings() => null;
 
-		public bool PutSettings(Settings o)
+		public PutSettingsDirtyBits PutSettings(Settings o)
 		{
 			_settings = o;
 			_machine.Video.IsMonochrome = _settings.Monochrome;
 
 			SetCallbacks();
 
-			return false;
+			return PutSettingsDirtyBits.None;
 		}
 
-		public bool PutSyncSettings(object o) => false;
+		public PutSettingsDirtyBits PutSyncSettings(object o) => PutSettingsDirtyBits.None;
 	}
 }

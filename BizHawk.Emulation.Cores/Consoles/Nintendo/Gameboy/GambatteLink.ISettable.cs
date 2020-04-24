@@ -21,14 +21,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			);
 		}
 
-		public bool PutSettings(GambatteLinkSettings o)
+		public PutSettingsDirtyBits PutSettings(GambatteLinkSettings o)
 		{
-			return L.PutSettings(o.L) || R.PutSettings(o.R);
+			return (PutSettingsDirtyBits)((int)L.PutSettings(o.L) | (int)R.PutSettings(o.R));
 		}
 
-		public bool PutSyncSettings(GambatteLinkSyncSettings o)
+		public PutSettingsDirtyBits PutSyncSettings(GambatteLinkSyncSettings o)
 		{
-			return L.PutSyncSettings(o.L) || R.PutSyncSettings(o.R);
+			return (PutSettingsDirtyBits)((int)L.PutSyncSettings(o.L) | (int)R.PutSyncSettings(o.R));
 		}
 
 		public class GambatteLinkSettings

@@ -19,17 +19,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			return _syncSettings.Clone();
 		}
 
-		public bool PutSettings(VectrexSettings o)
+		public PutSettingsDirtyBits PutSettings(VectrexSettings o)
 		{
 			_settings = o;
-			return false;
+			return PutSettingsDirtyBits.None;
 		}
 
-		public bool PutSyncSettings(VectrexSyncSettings o)
+		public PutSettingsDirtyBits PutSyncSettings(VectrexSyncSettings o)
 		{
 			bool ret = VectrexSyncSettings.NeedsReboot(_syncSettings, o);
 			_syncSettings = o;
-			return ret;
+			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
 		private VectrexSettings _settings = new VectrexSettings();

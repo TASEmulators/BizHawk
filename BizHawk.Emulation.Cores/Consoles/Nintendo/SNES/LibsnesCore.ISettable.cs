@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			return _syncSettings.Clone();
 		}
 
-		public bool PutSettings(SnesSettings o)
+		public PutSettingsDirtyBits PutSettings(SnesSettings o)
 		{
 			bool refreshNeeded = o.Palette != _settings.Palette;
 			_settings = o;
@@ -23,17 +23,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				RefreshPalette();
 			}
 
-			return false;
+			return PutSettingsDirtyBits.None;
 		}
 
-		public bool PutSyncSettings(SnesSyncSettings o)
+		public PutSettingsDirtyBits PutSyncSettings(SnesSyncSettings o)
 		{
 			bool ret = o.LeftPort != _syncSettings.LeftPort
 				|| o.RightPort != _syncSettings.RightPort
 				|| o.LimitAnalogChangeSensitivity != _syncSettings.LimitAnalogChangeSensitivity;
 
 			_syncSettings = o;
-			return ret;
+			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
 		private SnesSettings _settings;

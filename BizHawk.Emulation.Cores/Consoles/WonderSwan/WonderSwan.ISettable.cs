@@ -158,19 +158,19 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		public SyncSettings GetSyncSettings() => _syncSettings.Clone();
 
-		public bool PutSettings(Settings o)
+		public PutSettingsDirtyBits PutSettings(Settings o)
 		{
 			_settings = o;
 			var native = _settings.GetNativeSettings();
 			BizSwan.bizswan_putsettings(Core, ref native);
-			return false;
+			return PutSettingsDirtyBits.None;
 		}
 
-		public bool PutSyncSettings(SyncSettings o)
+		public PutSettingsDirtyBits PutSyncSettings(SyncSettings o)
 		{
 			bool ret = SyncSettings.NeedsReboot(o, _syncSettings);
 			_syncSettings = o;
-			return ret;
+			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
 	}
