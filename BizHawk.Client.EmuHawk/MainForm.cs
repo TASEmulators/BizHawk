@@ -3922,12 +3922,12 @@ namespace BizHawk.Client.EmuHawk
 			StopAv();
 
 			CommitCoreSettingsToConfig();
+			Rewinder.Uninitialize();
+
 			if (MovieSession.Movie.IsActive()) // Note: this must be called after CommitCoreSettingsToConfig()
 			{
 				StopMovie();
 			}
-
-			Rewinder.Uninitialize();
 
 			if (Tools.IsLoaded<TraceLogger>())
 			{
