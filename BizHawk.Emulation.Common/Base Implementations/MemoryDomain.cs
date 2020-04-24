@@ -113,7 +113,7 @@ namespace BizHawk.Emulation.Common
 				throw new InvalidOperationException("Invalid length of values array");
 			}
 
-			for (var i = addresses.Start; i < addresses.EndInclusive; i++)
+			for (var i = addresses.Start; i <= addresses.EndInclusive; i++)
 			{
 				values[i - addresses.Start] = PeekByte(i);
 			}
@@ -133,7 +133,7 @@ namespace BizHawk.Emulation.Common
 				throw new InvalidOperationException("Invalid length of values array");
 			}
 
-			for (var i = 0; i<nAddresses; i++)
+			for (var i = 0; i < nAddresses; i++)
 			{
 				values[i] = PeekUshort(start + i*2, bigEndian);
 			}
