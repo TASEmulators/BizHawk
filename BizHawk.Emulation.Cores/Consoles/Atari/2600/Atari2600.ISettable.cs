@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			return SyncSettings.Clone();
 		}
 
-		public PutSettingsDirtyBits PutSettings(A2600Settings o)
+		public bool PutSettings(A2600Settings o)
 		{
 			if (Settings == null || Settings.SECAMColors != o.SECAMColors)
 			{
@@ -29,14 +29,14 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 
 			Settings = o;
-			return PutSettingsDirtyBits.None;
+			return false;
 		}
 
-		public PutSettingsDirtyBits PutSyncSettings(A2600SyncSettings o)
+		public bool PutSyncSettings(A2600SyncSettings o)
 		{
 			bool ret = A2600SyncSettings.NeedsReboot(SyncSettings, o);
 			SyncSettings = o;
-			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
+			return ret;
 		}
 
 		internal A2600Settings Settings { get; private set; }

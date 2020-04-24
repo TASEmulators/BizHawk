@@ -84,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 
 		public NES.NES.NESSettings GetSettings() => _nesCore.GetSettings();
 		public NES.NES.NESSyncSettings GetSyncSettings() => _nesCore.GetSyncSettings();
-		public PutSettingsDirtyBits PutSettings(NES.NES.NESSettings o) => _nesCore.PutSettings(o);
-		public PutSettingsDirtyBits PutSyncSettings(NES.NES.NESSyncSettings o) => _nesCore.PutSyncSettings(o);
+		public bool PutSettings(NES.NES.NESSettings o) => _nesCore.PutSettings(o);
+		public bool PutSyncSettings(NES.NES.NESSyncSettings o) => _nesCore.PutSyncSettings(o);
 	}
 }

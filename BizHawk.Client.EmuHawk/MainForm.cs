@@ -2305,11 +2305,10 @@ namespace BizHawk.Client.EmuHawk
 		public void PutCoreSettings(object o)
 		{
 			var settable = new SettingsAdapter(Emulator);
-			if (!settable.HasSettings)
-				return;
-			var dirty = settable.PutSettings(o);
-			if(dirty.HasFlag(PutSettingsDirtyBits.RebootCore))
+			if (settable.HasSettings && settable.PutSettings(o))
+			{
 				FlagNeedsReboot();
+			}
 		}
 
 		// TODO: Get/Put settings/sync settings methods could become a service we instantiate and use and pass to other forms
@@ -2323,13 +2322,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				AddOnScreenMessage("Attempt to change sync-relevant settings while recording BLOCKED.");
 			}
-			else
+			else if (settable.HasSyncSettings && settable.PutSyncSettings(o))
 			{
-				if (!settable.HasSyncSettings)
-					return;
-				var dirty = settable.PutSyncSettings(o);
-				if(dirty.HasFlag(PutSettingsDirtyBits.RebootCore))
-					FlagNeedsReboot();
+				FlagNeedsReboot();
 			}
 		}
 

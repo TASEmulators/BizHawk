@@ -166,16 +166,16 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 			return _syncSettings.Clone();
 		}
 
-		public PutSettingsDirtyBits PutSettings(object o)
+		public bool PutSettings(object o)
 		{
-			return PutSettingsDirtyBits.None;
+			return false;
 		}
 
-		public PutSettingsDirtyBits PutSyncSettings(SyncSettings o)
+		public bool PutSyncSettings(SyncSettings o)
 		{
 			var ret = SyncSettings.NeedsReboot(_syncSettings, o);
 			_syncSettings = o;
-			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
+			return ret;
 		}
 
 		#endregion

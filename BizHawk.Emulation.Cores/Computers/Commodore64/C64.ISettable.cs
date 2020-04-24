@@ -16,16 +16,16 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			return SyncSettings.Clone();
 		}
 
-		public PutSettingsDirtyBits PutSettings(C64Settings o)
+		public bool PutSettings(C64Settings o)
 		{
 			Settings = o;
-			return PutSettingsDirtyBits.None;
+			return false;
 		}
 
-		public PutSettingsDirtyBits PutSyncSettings(C64SyncSettings o)
+		public bool PutSyncSettings(C64SyncSettings o)
 		{
 			SyncSettings = o;
-			return PutSettingsDirtyBits.None;
+			return false;
 		}
 
 		internal C64Settings Settings { get; private set; }

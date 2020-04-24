@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 
 		public GBHawk.GBHawk.GBSettings GetSettings() => _GBCore.GetSettings();
 		public GBHawk.GBHawk.GBSyncSettings GetSyncSettings() => _GBCore.GetSyncSettings();
-		public PutSettingsDirtyBits PutSettings(GBHawk.GBHawk.GBSettings o) => _GBCore.PutSettings(o);
-		public PutSettingsDirtyBits PutSyncSettings(GBHawk.GBHawk.GBSyncSettings o) => _GBCore.PutSyncSettings(o);
+		public bool PutSettings(GBHawk.GBHawk.GBSettings o) => _GBCore.PutSettings(o);
+		public bool PutSyncSettings(GBHawk.GBHawk.GBSyncSettings o) => _GBCore.PutSyncSettings(o);
 	}
 }

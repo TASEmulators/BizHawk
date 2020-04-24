@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		/// <param name="o">an object of the same type as the return for GetSettings</param>
 		/// <returns>true if a core reboot will be required to make the changes effective</returns>
-		PutSettingsDirtyBits PutSettings(TSettings o);
+		bool PutSettings(TSettings o);
 
 		/// <summary>
 		/// changes the movie-sync relevant settings.  THIS SHOULD NEVER BE CALLED WHILE RECORDING
@@ -49,19 +49,7 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		/// <param name="o">an object of the same type as the return for GetSyncSettings</param>
 		/// <returns>true if a core reboot will be required to make the changes effective</returns>
-		PutSettingsDirtyBits PutSyncSettings(TSync o);
-	}
-
-	//note: this is a bit of a frail API. If a frontend wants a new flag, cores won't know to yea or nay it
-	//this could be solved by adding a KnownSettingsDirtyBits on the settings interface
-	//or, in a pinch, the same thing could be done with THESE flags, so that the interface doesn't 
-	//change but newly-aware cores can simply manifest that they know about more bits, in the same variable they return the bits in
-	[Flags]
-	public enum PutSettingsDirtyBits
-	{
-		None = 0,
-		RebootCore = 1,
-		ScreenLayoutChanged = 2,
+		bool PutSyncSettings(TSync o);
 	}
 
 	/// <summary>
@@ -138,7 +126,7 @@ namespace BizHawk.Emulation.Common
 		}
 
 		/// <exception cref="InvalidOperationException">does not have non-sync settings</exception>
-		public PutSettingsDirtyBits PutSettings(object o)
+		public bool PutSettings(object o)
 		{
 			if (!HasSettings)
 			{
@@ -146,11 +134,11 @@ namespace BizHawk.Emulation.Common
 			}
 
 			_tmp1[0] = o;
-			return (PutSettingsDirtyBits)_puts.Invoke(_emu, _tmp1);
+			return (bool)_puts.Invoke(_emu, _tmp1);
 		}
 
 		/// <exception cref="InvalidOperationException">does not have sync settings</exception>
-		public PutSettingsDirtyBits PutSyncSettings(object o)
+		public bool PutSyncSettings(object o)
 		{
 			if (!HasSyncSettings)
 			{
@@ -158,7 +146,7 @@ namespace BizHawk.Emulation.Common
 			}
 
 			_tmp1[0] = o;
-			return (PutSettingsDirtyBits)_putss.Invoke(_emu, _tmp1);
+			return (bool)_putss.Invoke(_emu, _tmp1);
 		}
 	}
 }

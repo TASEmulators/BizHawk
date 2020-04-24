@@ -308,7 +308,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			return _syncSettings.Clone();
 		}
 
-		public PutSettingsDirtyBits PutSettings(Settings o)
+		public bool PutSettings(Settings o)
 		{
 			_settings = o;
 			int s = 0;
@@ -334,14 +334,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			if (o.ShowSprites3) l |= 2048;
 			_core.biz_set_layers(l);
 
-			return PutSettingsDirtyBits.None; // no reboot needed
+			return false; // no reboot needed
 		}
 
-		public PutSettingsDirtyBits PutSyncSettings(SyncSettings o)
+		public bool PutSyncSettings(SyncSettings o)
 		{
 			var ret = SyncSettings.NeedsReboot(_syncSettings, o);
 			_syncSettings = o;
-			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
+			return ret;
 		}
 
 		public class Settings

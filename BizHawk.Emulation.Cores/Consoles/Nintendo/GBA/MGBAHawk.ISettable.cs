@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			return _settings.Clone();
 		}
 
-		public PutSettingsDirtyBits PutSettings(Settings o)
+		public bool PutSettings(Settings o)
 		{
 			LibmGBA.Layers mask = 0;
 			if (o.DisplayBG0) mask |= LibmGBA.Layers.BG0;
@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			LibmGBA.BizSetPalette(Core, palette);
 
 			_settings = o;
-			return PutSettingsDirtyBits.None;
+			return false;
 		}
 
 		private Settings _settings;
@@ -139,11 +139,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			return _syncSettings.Clone();
 		}
 
-		public PutSettingsDirtyBits PutSyncSettings(SyncSettings o)
+		public bool PutSyncSettings(SyncSettings o)
 		{
 			bool ret = SyncSettings.NeedsReboot(o, _syncSettings);
 			_syncSettings = o;
-			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
+			return ret;
 		}
 
 		private SyncSettings _syncSettings;

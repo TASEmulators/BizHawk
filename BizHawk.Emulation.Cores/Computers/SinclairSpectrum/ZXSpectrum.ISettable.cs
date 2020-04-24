@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		public ZXSpectrumSyncSettings GetSyncSettings() => SyncSettings.Clone();
 
-		public PutSettingsDirtyBits PutSettings(ZXSpectrumSettings o)
+		public bool PutSettings(ZXSpectrumSettings o)
 		{
 			// restore user settings to devices
 			if (_machine?.AYDevice != null)
@@ -39,14 +39,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			Settings = o;
 
-			return PutSettingsDirtyBits.None;
+			return false;
 		}
 
-		public PutSettingsDirtyBits PutSyncSettings(ZXSpectrumSyncSettings o)
+		public bool PutSyncSettings(ZXSpectrumSyncSettings o)
 		{
 			bool ret = ZXSpectrumSyncSettings.NeedsReboot(SyncSettings, o);
 			SyncSettings = o;
-			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
+			return ret;
 		}
 
 		public class ZXSpectrumSettings

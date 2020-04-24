@@ -14,17 +14,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 
 		public GBLink3xSyncSettings GetSyncSettings() => Link3xSyncSettings.Clone();
 
-		public PutSettingsDirtyBits PutSettings(GBLink3xSettings o)
+		public bool PutSettings(GBLink3xSettings o)
 		{
 			Link3xSettings = o;
-			return PutSettingsDirtyBits.None;
+			return false;
 		}
 
-		public PutSettingsDirtyBits PutSyncSettings(GBLink3xSyncSettings o)
+		public bool PutSyncSettings(GBLink3xSyncSettings o)
 		{
 			bool ret = GBLink3xSyncSettings.NeedsReboot(Link3xSyncSettings, o);
 			Link3xSyncSettings = o;
-			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
+			return ret;
 		}
 
 		private GBLink3xSettings Link3xSettings = new GBLink3xSettings();

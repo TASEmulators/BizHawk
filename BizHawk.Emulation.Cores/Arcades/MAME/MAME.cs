@@ -257,18 +257,18 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		#region ISettable
 
 		public object GetSettings() => null;
-		public PutSettingsDirtyBits PutSettings(object o) => PutSettingsDirtyBits.None;
+		public bool PutSettings(object o) => false;
 
 		public SyncSettings GetSyncSettings()
 		{
 			return _syncSettings.Clone();
 		}
 
-		public PutSettingsDirtyBits PutSyncSettings(SyncSettings o)
+		public bool PutSyncSettings(SyncSettings o)
 		{
 			bool ret = SyncSettings.NeedsReboot(o, _syncSettings);
 			_syncSettings = o;
-			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
+			return ret;
 		}
 
 		public class SyncSettings

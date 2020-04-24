@@ -21,19 +21,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			return _syncSettings.Clone();
 		}
 
-		public PutSettingsDirtyBits PutSettings(GPGXSettings o)
+		public bool PutSettings(GPGXSettings o)
 		{
 			bool ret = GPGXSettings.NeedsReboot(_settings, o);
 			_settings = o;
 			Core.gpgx_set_draw_mask(_settings.GetDrawMask());
-			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
+			return ret;
 		}
 
-		public PutSettingsDirtyBits PutSyncSettings(GPGXSyncSettings o)
+		public bool PutSyncSettings(GPGXSyncSettings o)
 		{
 			bool ret = GPGXSyncSettings.NeedsReboot(_syncSettings, o);
 			_syncSettings = o;
-			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
+			return ret;
 		}
 
 		private class UintToHexConverter : TypeConverter

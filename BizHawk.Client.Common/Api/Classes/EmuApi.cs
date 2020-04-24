@@ -195,7 +195,7 @@ namespace BizHawk.Client.Common
 			_ => (object) null
 		};
 
-		public PutSettingsDirtyBits PutSettings(object settings) => Emulator switch
+		public bool PutSettings(object settings) => Emulator switch
 		{
 			GPGX gpgx => gpgx.PutSettings((GPGX.GPGXSettings) settings),
 			LibsnesCore snes => snes.PutSettings((LibsnesCore.SnesSettings) settings),
@@ -204,7 +204,7 @@ namespace BizHawk.Client.Common
 			QuickNES quickNes => quickNes.PutSettings((QuickNES.QuickNESSettings) settings),
 			SMS sms => sms.PutSettings((SMS.SmsSettings) settings),
 			WonderSwan ws => ws.PutSettings((WonderSwan.Settings) settings),
-			_ => PutSettingsDirtyBits.None
+			_ => false
 		};
 
 		public void SetRenderPlanes(params bool[] args)

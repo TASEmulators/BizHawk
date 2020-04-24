@@ -11,10 +11,10 @@ namespace BizHawk.Emulation.Cores.Calculators
 			return _settings.Clone();
 		}
 
-		public PutSettingsDirtyBits PutSettings(TI83Settings o)
+		public bool PutSettings(TI83Settings o)
 		{
 			_settings = o;
-			return PutSettingsDirtyBits.None;
+			return false;
 		}
 
 		public object GetSyncSettings()
@@ -22,9 +22,9 @@ namespace BizHawk.Emulation.Cores.Calculators
 			return null;
 		}
 
-		public PutSettingsDirtyBits PutSyncSettings(object o)
+		public bool PutSyncSettings(object o)
 		{
-			return PutSettingsDirtyBits.None;
+			return false;
 		}
 
 		public class TI83Settings

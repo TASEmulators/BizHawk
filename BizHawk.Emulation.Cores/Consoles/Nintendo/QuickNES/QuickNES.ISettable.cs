@@ -21,21 +21,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			return _syncSettingsNext.Clone();
 		}
 
-		public PutSettingsDirtyBits PutSettings(QuickNESSettings o)
+		public bool PutSettings(QuickNESSettings o)
 		{
 			_settings = o;
 			QN.qn_set_sprite_limit(Context, _settings.NumSprites);
 			RecalculateCrops();
 			CalculatePalette();
 
-			return PutSettingsDirtyBits.None;
+			return false;
 		}
 
-		public PutSettingsDirtyBits PutSyncSettings(QuickNESSyncSettings o)
+		public bool PutSyncSettings(QuickNESSyncSettings o)
 		{
 			bool ret = QuickNESSyncSettings.NeedsReboot(_syncSettings, o);
 			_syncSettingsNext = o;
-			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
+			return ret;
 		}
 
 		private QuickNESSettings _settings;

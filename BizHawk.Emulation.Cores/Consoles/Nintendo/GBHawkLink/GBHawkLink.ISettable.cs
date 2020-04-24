@@ -14,17 +14,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 		public GBLinkSyncSettings GetSyncSettings() => linkSyncSettings.Clone();
 
-		public PutSettingsDirtyBits PutSettings(GBLinkSettings o)
+		public bool PutSettings(GBLinkSettings o)
 		{
 			linkSettings = o;
-			return PutSettingsDirtyBits.None;
+			return false;
 		}
 
-		public PutSettingsDirtyBits PutSyncSettings(GBLinkSyncSettings o)
+		public bool PutSyncSettings(GBLinkSyncSettings o)
 		{
 			bool ret = GBLinkSyncSettings.NeedsReboot(linkSyncSettings, o);
 			linkSyncSettings = o;
-			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
+			return ret;
 		}
 
 		private GBLinkSettings linkSettings = new GBLinkSettings();

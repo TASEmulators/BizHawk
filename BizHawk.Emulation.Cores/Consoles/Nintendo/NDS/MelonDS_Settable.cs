@@ -30,14 +30,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			return ret;
 		}
 
-		public PutSettingsDirtyBits PutSettings(MelonSettings o)
+		public bool PutSettings(MelonSettings o)
 		{
 			_settings = o ?? new MelonSettings();
 			SetScaleFactor(_settings.ScaleFactor);
-			return PutSettingsDirtyBits.None;
+			return false;
 		}
 
-		public PutSettingsDirtyBits PutSyncSettings(MelonSyncSettings o)
+		public bool PutSyncSettings(MelonSyncSettings o)
 		{
 			if (o == null)
 			{
@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			SetTimeAtBoot(o.TimeAtBoot);
 
 			// At present, no sync settings can be modified without requiring a reboot.
-			return PutSettingsDirtyBits.RebootCore;
+			return true;
 		}
 
 		[DllImport(dllPath)]

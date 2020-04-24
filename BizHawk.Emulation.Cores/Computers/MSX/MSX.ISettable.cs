@@ -16,18 +16,18 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			return SyncSettings.Clone();
 		}
 
-		public PutSettingsDirtyBits PutSettings(MSXSettings o)
+		public bool PutSettings(MSXSettings o)
 		{
 			bool ret = MSXSettings.RebootNeeded(Settings, o);
 			Settings = o;
-			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
+			return ret;
 		}
 
-		public PutSettingsDirtyBits PutSyncSettings(MSXSyncSettings o)
+		public bool PutSyncSettings(MSXSyncSettings o)
 		{
 			bool ret = MSXSyncSettings.RebootNeeded(SyncSettings, o);
 			SyncSettings = o;
-			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
+			return ret;
 		}
 
 		internal MSXSettings Settings { get; private set; }

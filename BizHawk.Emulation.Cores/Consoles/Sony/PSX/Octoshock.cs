@@ -1271,17 +1271,17 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			return _SyncSettings.Clone();
 		}
 
-		public PutSettingsDirtyBits PutSettings(Settings o)
+		public bool PutSettings(Settings o)
 		{
 			_Settings.Validate();
 			_Settings = o;
 
 			//TODO - store settings into core? or we can just keep doing it before frameadvance
 
-			return PutSettingsDirtyBits.None;
+			return false;
 		}
 
-		public PutSettingsDirtyBits PutSyncSettings(SyncSettings o)
+		public bool PutSyncSettings(SyncSettings o)
 		{
 			//currently LEC and pad settings changes both require reboot
 			bool reboot = true;
@@ -1293,7 +1293,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			_SyncSettings = o;
 
 
-			return reboot ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
+			return reboot;
 		}
 
 		#endregion

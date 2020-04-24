@@ -439,7 +439,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			return _settings.Clone();
 		}
 
-		public PutSettingsDirtyBits PutSettings(Settings s)
+		public bool PutSettings(Settings s)
 		{
 			var ret = Settings.NeedsReboot(_settings, s);
 			_settings = s;
@@ -449,7 +449,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			//(the correct aspect ratio is no longer an option for other reasons)
 			//_core.SetVideoParameters(s.CorrectAspectRatio, s.HBlend, s.HOverscan, sls, sle);
 
-			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
+			return ret;
 		}
 
 		public SyncSettings GetSyncSettings()
@@ -457,11 +457,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			return _syncSettings.Clone();
 		}
 
-		public PutSettingsDirtyBits PutSyncSettings(SyncSettings s)
+		public bool PutSyncSettings(SyncSettings s)
 		{
 			var ret = SyncSettings.NeedsReboot(_syncSettings, s);
 			_syncSettings = s;
-			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
+			return ret;
 		}
 
 		private void SetVideoParameters()

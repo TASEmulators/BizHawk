@@ -16,17 +16,17 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			return _syncSettings.Clone();
 		}
 
-		public PutSettingsDirtyBits PutSettings(O2Settings o)
+		public bool PutSettings(O2Settings o)
 		{
 			_settings = o;
-			return PutSettingsDirtyBits.None;
+			return false;
 		}
 
-		public PutSettingsDirtyBits PutSyncSettings(O2SyncSettings o)
+		public bool PutSyncSettings(O2SyncSettings o)
 		{
 			bool ret = O2SyncSettings.NeedsReboot(_syncSettings, o);
 			_syncSettings = o;
-			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
+			return ret;
 		}
 
 		public O2Settings _settings = new O2Settings();

@@ -9,18 +9,18 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public SmsSyncSettings GetSyncSettings() => SyncSettings.Clone();
 
-		public PutSettingsDirtyBits PutSettings(SmsSettings o)
+		public bool PutSettings(SmsSettings o)
 		{
 			bool ret = SmsSettings.RebootNeeded(Settings, o);
 			Settings = o;
-			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
+			return ret;
 		}
 
-		public PutSettingsDirtyBits PutSyncSettings(SmsSyncSettings o)
+		public bool PutSyncSettings(SmsSyncSettings o)
 		{
 			bool ret = SmsSyncSettings.RebootNeeded(SyncSettings, o);
 			SyncSettings = o;
-			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
+			return ret;
 		}
 
 		internal SmsSettings Settings { get; private set; }
