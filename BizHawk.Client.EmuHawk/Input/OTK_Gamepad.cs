@@ -24,6 +24,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private static readonly List<OTK_GamePad> Devices = new List<OTK_GamePad>();
 
+		volatile static bool initialized = false;
+
 		/// <remarks>Initialization is only called once when MainForm loads</remarks>
 		public static void Initialize()
 		{
@@ -37,13 +39,16 @@ namespace BizHawk.Client.EmuHawk
 					Devices.Add(new OTK_GamePad(i, ++playerCount));
 				}
 			}
+			initialized = true;
 		}
 
 		public static IEnumerable<OTK_GamePad> EnumerateDevices()
 		{
 			lock (_syncObj)
 			{
-				foreach (var device in Devices) yield return device;
+				if (initialized)
+					foreach (var device in Devices) yield return device;
+				
 			}
 		}
 
