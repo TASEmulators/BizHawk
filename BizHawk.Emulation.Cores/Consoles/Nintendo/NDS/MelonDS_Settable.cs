@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 	{
 		private MelonSettings _settings = new MelonSettings();
 
-		public MelonSettings GetSettings() => _settings;
+		public MelonSettings GetSettings() => _settings.Clone();
 
 		public MelonSyncSettings GetSyncSettings()
 		{
@@ -97,6 +97,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public class MelonSettings
 		{
+			public MelonSettings Clone() => (MelonSettings)MemberwiseClone();
+
 			[DisplayName("Screen Layout")]
 			[Description("Adjusts the layout of the screens")]
 			public ScreenLayoutKind ScreenLayout { get; set; } = ScreenLayoutKind.Vertical;
