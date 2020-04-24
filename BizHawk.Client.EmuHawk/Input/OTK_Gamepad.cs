@@ -29,7 +29,6 @@ namespace BizHawk.Client.EmuHawk
 		/// <remarks>Initialization is only called once when MainForm loads</remarks>
 		public static void Initialize()
 		{
-			CloseAll();
 			var playerCount = 0;
 			for (var i = 0; i < MAX_GAMEPADS; i++)
 			{
@@ -56,7 +55,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			lock (_syncObj)
 			{
-				foreach (var device in Devices) device.Update();
+				if (initialized)
+					foreach (var device in Devices) device.Update();
 			}
 		}
 
@@ -64,7 +64,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			lock (_syncObj)
 			{
-				Devices.Clear();
+				if (!initialized)
+					throw new InvalidOperationException("Well, however did this happen");
 			}
 		}
 
