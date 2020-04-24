@@ -1,5 +1,4 @@
 ﻿using BizHawk.Emulation.Common;
-using System;
 
 
 /*
@@ -44,111 +43,119 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						return 0xFF;
 					}
-					else
-					{
-						return mapper.ReadMemoryLow(addr);
-					}
+
+					return mapper.ReadMemoryLow(addr);
 				}
-				else if ((addr >= 0xE000) && (addr < 0xF000))
+
+				if (addr >= 0xE000 && (addr < 0xF000))
 				{
 					return RAM[addr - 0xE000]; 
 				}
-				else if ((addr >= 0xF000) && (addr < 0xFE00))
+
+				if (addr >= 0xF000 && addr < 0xFE00)
 				{
 					return RAM[(RAM_Bank * 0x1000) + (addr - 0xF000)];
 				}
-				else if ((addr >= 0xFE00) && (addr < 0xFEA0) && ppu.DMA_OAM_access)
+
+				if (addr >= 0xFE00 && addr < 0xFEA0 && ppu.DMA_OAM_access)
 				{
 					return OAM[addr - 0xFE00];
 				}
-				else if ((addr >= 0xFF00) && (addr < 0xFF80)) // The game GOAL! Requires Hardware Regs to be accessible
+
+				if (addr >= 0xFF00 && addr < 0xFF80) // The game GOAL! Requires Hardware Regs to be accessible
 				{
 					return Read_Registers(addr);
 				}
-				else if ((addr >= 0xFF80))
+
+				if ((addr >= 0xFF80))
 				{
 					// register FFFF?
 					return ZP_RAM[addr - 0xFF80];
 				}
-				
+
 				return 0xFF;
 			}
 			
-			if (addr < 0x8000) 
+			if (addr < 0x8000)
 			{
 				if (addr >= 0x900)
 				{
-					return mapper.ReadMemoryLow(addr);					
+					return mapper.ReadMemoryLow(addr);
 				}
-				else
+
+				if (addr < 0x100)
 				{
-					if (addr < 0x100)
+					// return Either BIOS ROM or Game ROM
+					if ((GB_bios_register & 0x1) == 0)
 					{
-						// return Either BIOS ROM or Game ROM
-						if ((GB_bios_register & 0x1) == 0)
-						{
-							return _bios[addr]; // Return BIOS
-						}
-						else
-						{
-							return mapper.ReadMemoryLow(addr);
-						}
+						return _bios[addr]; // Return BIOS
 					}
-					else if (addr >= 0x200)
-					{
-						// return Either BIOS ROM or Game ROM
-						if (((GB_bios_register & 0x1) == 0) && is_GBC)
-						{
-							return _bios[addr]; // Return BIOS
-						}
-						else
-						{
-							return mapper.ReadMemoryLow(addr);
-						}
-					}
-					else
-					{
-						return mapper.ReadMemoryLow(addr);
-					}
+
+					return mapper.ReadMemoryLow(addr);
 				}
+
+				if (addr >= 0x200)
+				{
+					// return Either BIOS ROM or Game ROM
+					if (((GB_bios_register & 0x1) == 0) && is_GBC)
+					{
+						return _bios[addr]; // Return BIOS
+					}
+
+					return mapper.ReadMemoryLow(addr);
+				}
+
+				return mapper.ReadMemoryLow(addr);
 			}
-			else if (addr < 0xA000)
+
+			if (addr < 0xA000)
 			{
-				if (ppu.VRAM_access_read) { return VRAM[(VRAM_Bank * 0x2000) + (addr - 0x8000)]; }
-				else { return 0xFF; }
+				if (ppu.VRAM_access_read)
+				{
+					return VRAM[VRAM_Bank * 0x2000 + (addr - 0x8000)];
+				}
+
+				return 0xFF;
 			}
-			else if (addr < 0xC000)
+
+			if (addr < 0xC000)
 			{
 				return mapper.ReadMemoryHigh(addr);
 			}
-			else if (addr < 0xFE00)
+
+			if (addr < 0xFE00)
 			{
 				addr = (ushort)(RAM_Bank * (addr & 0x1000) + (addr & 0xFFF));
 				return RAM[addr];
 			}
-			else if (addr < 0xFEA0)
+
+			if (addr < 0xFEA0)
 			{
-				if (ppu.OAM_access_read) { return OAM[addr - 0xFE00]; }
-				else { return 0xFF; }
+				if (ppu.OAM_access_read)
+				{
+					return OAM[addr - 0xFE00];
+				}
+
+				return 0xFF;
 			}
-			else if (addr < 0xFF00)
+
+			if (addr < 0xFF00)
 			{
 				// unmapped memory, returns 0xFF
 				return 0xFF;
 			}
-			else if (addr < 0xFF80)
-			{
-				return Read_Registers(addr);
-			}
-			else if (addr < 0xFFFF)
-			{
-				return ZP_RAM[addr - 0xFF80];
-			}
-			else
+
+			if (addr < 0xFF80)
 			{
 				return Read_Registers(addr);
 			}
 
+			if (addr < 0xFFFF)
+			{
+				return ZP_RAM[addr - 0xFF80];
+			}
+
+			return Read_Registers(addr);
 		}
 
 		public void WriteMemory(ushort addr, byte value)
@@ -164,26 +171,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			if (ppu.DMA_start)
 			{
 				// some of gekkio's tests require this to be accessible during DMA
-				if ((addr >= 0xE000) && (addr < 0xF000))
+				if (addr >= 0xE000 && addr < 0xF000)
 				{
 					RAM[addr - 0xE000] = value;
 				}
-				else if ((addr >= 0xF000) && (addr < 0xFE00))
+				else if (addr >= 0xF000 && addr < 0xFE00)
 				{
-					RAM[(RAM_Bank * 0x1000) + (addr - 0xF000)] = value;
+					RAM[RAM_Bank * 0x1000 + (addr - 0xF000)] = value;
 				}
-				else if ((addr >= 0xFE00) && (addr < 0xFEA0) && ppu.DMA_OAM_access)
+				else if (addr >= 0xFE00 && addr < 0xFEA0 && ppu.DMA_OAM_access)
 				{
 					OAM[addr - 0xFE00] = value; 
 				}
-				else if ((addr >= 0xFF00) && (addr < 0xFF80)) // The game GOAL! Requires Hardware Regs to be accessible
+				else if (addr >= 0xFF00 && addr < 0xFF80) // The game GOAL! Requires Hardware Regs to be accessible
 				{
 					Write_Registers(addr, value);
 				}
-				else if ((addr >= 0xFF80))
+				else if (addr >= 0xFF80)
 				{
 					ZP_RAM[addr - 0xFF80] = value;
 				}
+
 				return;
 			}
 		
@@ -205,7 +213,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			else if (addr >= 0xFE00)
 			{
-				if ((addr < 0xFEA0) && ppu.OAM_access_write)
+				if (addr < 0xFEA0 && ppu.OAM_access_write)
 				{
 					OAM[addr - 0xFE00] = value;
 				}
@@ -244,7 +252,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 					else if (addr >= 0x200)
 					{
-						if (((GB_bios_register & 0x1) == 0) && is_GBC)
+						if ((GB_bios_register & 0x1) == 0 && is_GBC)
 						{
 							// No Writing to BIOS
 						}
@@ -272,28 +280,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						return 0xFF;
 					}
-					else
-					{
-						return mapper.PeekMemoryLow(addr);
-					}
+
+					return mapper.PeekMemoryLow(addr);
 				}
-				else if ((addr >= 0xE000) && (addr < 0xF000))
+
+				if (addr >= 0xE000 && addr < 0xF000)
 				{
 					return RAM[addr - 0xE000];
 				}
-				else if ((addr >= 0xF000) && (addr < 0xFE00))
+
+				if (addr >= 0xF000 && addr < 0xFE00)
 				{
 					return RAM[(RAM_Bank * 0x1000) + (addr - 0xF000)];
 				}
-				else if ((addr >= 0xFE00) && (addr < 0xFEA0) && ppu.DMA_OAM_access)
+
+				if (addr >= 0xFE00 && addr < 0xFEA0 && ppu.DMA_OAM_access)
 				{
 					return OAM[addr - 0xFE00];
 				}
-				else if ((addr >= 0xFF00) && (addr < 0xFF80)) // The game GOAL! Requires Hardware Regs to be accessible
+
+				if (addr >= 0xFF00 && addr < 0xFF80) // The game GOAL! Requires Hardware Regs to be accessible
 				{
 					return Read_Registers(addr);
 				}
-				else if ((addr >= 0xFF80))
+
+				if (addr >= 0xFF80)
 				{
 					return ZP_RAM[addr - 0xFF80];
 				}
@@ -307,75 +318,80 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					return mapper.PeekMemoryLow(addr);
 				}
-				else
+
+				if (addr < 0x100)
 				{
-					if (addr < 0x100)
+					// return Either BIOS ROM or Game ROM
+					if ((GB_bios_register & 0x1) == 0)
 					{
-						// return Either BIOS ROM or Game ROM
-						if ((GB_bios_register & 0x1) == 0)
-						{
-							return _bios[addr]; // Return BIOS
-						}
-						else
-						{
-							return mapper.PeekMemoryLow(addr);
-						}
+						return _bios[addr]; // Return BIOS
 					}
-					else if (addr >= 0x200)
-					{
-						// return Either BIOS ROM or Game ROM
-						if (((GB_bios_register & 0x1) == 0) && is_GBC)
-						{
-							return _bios[addr]; // Return BIOS
-						}
-						else
-						{
-							return mapper.PeekMemoryLow(addr);
-						}
-					}
-					else
-					{
-						return mapper.PeekMemoryLow(addr);
-					}
+
+					return mapper.PeekMemoryLow(addr);
 				}
+
+				if (addr >= 0x200)
+				{
+					// return Either BIOS ROM or Game ROM
+					if (((GB_bios_register & 0x1) == 0) && is_GBC)
+					{
+						return _bios[addr]; // Return BIOS
+					}
+
+					return mapper.PeekMemoryLow(addr);
+				}
+
+				return mapper.PeekMemoryLow(addr);
 			}
-			else if (addr < 0xA000)
+
+			if (addr < 0xA000)
 			{
-				if (ppu.VRAM_access_read) { return VRAM[(VRAM_Bank * 0x2000) + (addr - 0x8000)]; }
-				else { return 0xFF; }
+				if (ppu.VRAM_access_read)
+				{
+					return VRAM[(VRAM_Bank * 0x2000) + (addr - 0x8000)];
+				}
+
+				return 0xFF;
 			}
-			else if (addr < 0xC000)
+
+			if (addr < 0xC000)
 			{
 				return mapper.PeekMemoryHigh(addr);
 			}
-			else if (addr < 0xFE00)
+
+			if (addr < 0xFE00)
 			{
 				addr = (ushort)(RAM_Bank * (addr & 0x1000) + (addr & 0xFFF));
 				return RAM[addr];
 			}
-			else if (addr < 0xFEA0)
+
+			if (addr < 0xFEA0)
 			{
-				if (ppu.OAM_access_read) { return OAM[addr - 0xFE00]; }
-				else { return 0xFF; }
+				if (ppu.OAM_access_read)
+				{
+					return OAM[addr - 0xFE00];
+				}
+
+				return 0xFF;
 			}
-			else if (addr < 0xFF00)
+
+			if (addr < 0xFF00)
 			{
 				// unmapped memory, returns 0xFF
 				return 0xFF;
 			}
-			else if (addr < 0xFF80)
-			{
-				return Read_Registers(addr);
-			}
-			else if (addr < 0xFFFF)
-			{
-				return ZP_RAM[addr - 0xFF80];
-			}
-			else
+
+			if (addr < 0xFF80)
 			{
 				return Read_Registers(addr);
 			}
 
+			if (addr < 0xFFFF)
+			{
+				return ZP_RAM[addr - 0xFF80];
+			}
+
+			return Read_Registers(addr);
 		}
 	}
 }

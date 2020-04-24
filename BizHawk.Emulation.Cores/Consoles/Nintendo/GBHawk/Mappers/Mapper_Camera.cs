@@ -1,6 +1,5 @@
 ﻿using BizHawk.Common;
 using BizHawk.Emulation.Cores.Components.LR35902;
-using System;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
@@ -34,10 +33,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				return Core._rom[addr];
 			}
-			else
-			{
-				return Core._rom[(addr - 0x4000) + ROM_bank * 0x4000];
-			}
+
+			return Core._rom[(addr - 0x4000) + ROM_bank * 0x4000];
 		}
 
 		public override byte ReadMemoryHigh(ushort addr)
@@ -48,22 +45,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					return 0;// regs[0];
 				}
-				else
-				{
-					return 0;
-				}
+
+				return 0;
 			}
-			else
+
+			if (/*RAM_enable && */(((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length))
 			{
-				if (/*RAM_enable && */(((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length))
-				{
-					return Core.cart_RAM[(addr - 0xA000) + RAM_bank * 0x2000];
-				}
-				else
-				{
-					return 0xFF;
-				}
+				return Core.cart_RAM[(addr - 0xA000) + RAM_bank * 0x2000];
 			}
+
+			return 0xFF;
 		}
 
 		public override void MapCDL(ushort addr, LR35902.eCDLogMemFlags flags)
@@ -137,7 +128,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						Core.cart_RAM[(addr - 0xA000) + RAM_bank * 0x2000] = value;
 					}
-				}				
+				}
 			}
 		}
 
