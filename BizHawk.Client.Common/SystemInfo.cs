@@ -233,6 +233,8 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public static SystemInfo MSX { get; } = new SystemInfo("MSX", CoreSystem.MSX, 2);
 
+		public static SystemInfo Sgb { get; } = new SystemInfo("SGB", CoreSystem.SuperGameBoy, 4);
+
 		#endregion Get SystemInfo
 
 		/// <summary>
