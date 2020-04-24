@@ -699,7 +699,7 @@ namespace BizHawk.Client.EmuHawk
 			SetTasMovieCallbacks(tasMovie);
 			tasMovie.ClearChanges(); // Don't ask to save changes here.
 
-			if (HandleMovieLoadStuff(tasMovie, false))
+			if (HandleMovieLoadStuff(tasMovie))
 			{
 				CurrentTasMovie.TasStateManager.Capture(); // Capture frame 0 always.
 			}
@@ -717,23 +717,14 @@ namespace BizHawk.Client.EmuHawk
 			TasView.Refresh();
 		}
 
-		private bool HandleMovieLoadStuff(ITasMovie movie, bool loadMovie = true)
+		private bool HandleMovieLoadStuff(ITasMovie movie)
 		{
 			WantsToControlStopMovie = false;
+			var result = StartNewMovieWrapper(movie);
 
-			if (loadMovie)
+			if (!result)
 			{
-				var result = StartNewMovieWrapper(movie);
-
-				if (!result)
-				{
-					return false;
-				}
-			}
-			else
-			{
-				MovieSession.QueueNewMovie(movie, true, Emulator.SystemId);
-				MovieSession.RunQueuedMovie(true, Emulator);
+				return false;
 			}
 
 			WantsToControlStopMovie = true;
