@@ -2310,6 +2310,8 @@ namespace BizHawk.Client.EmuHawk
 			var dirty = settable.PutSettings(o);
 			if(dirty.HasFlag(PutSettingsDirtyBits.RebootCore))
 				FlagNeedsReboot();
+			if (dirty.HasFlag(PutSettingsDirtyBits.ScreenLayoutChanged))
+				FrameBufferResized();
 		}
 
 		// TODO: Get/Put settings/sync settings methods could become a service we instantiate and use and pass to other forms
