@@ -2041,7 +2041,7 @@ namespace BizHawk.Client.EmuHawk
 		private void NDSSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "NDS Settings", false, true);
-			FrameBufferResized();
+			MaybeFrameBufferResized();
 		}
 
 		private void NDSSyncSettingsMenuItem_Click(object sender, EventArgs e)
