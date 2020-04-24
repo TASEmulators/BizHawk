@@ -304,7 +304,7 @@ namespace BizHawk.Client.EmuHawk
 			RefreshAspectRatioOptions();
 		}
 
-		void RefreshAspectRatioOptions()
+		private void RefreshAspectRatioOptions()
 		{
 			grpARSelection.Enabled = checkLetterbox.Checked;
 			checkPadInteger.Enabled = checkLetterbox.Checked;

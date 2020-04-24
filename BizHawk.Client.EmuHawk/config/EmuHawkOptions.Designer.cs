@@ -477,8 +477,8 @@
 			// 
 			// flpGrpLuaEngine
 			// 
-			this.flpGrpLuaEngine.Controls.Add(this.rbKopiLua);
 			this.flpGrpLuaEngine.Controls.Add(this.rbLuaInterface);
+			this.flpGrpLuaEngine.Controls.Add(this.rbKopiLua);
 			this.flpGrpLuaEngine.Location = new System.Drawing.Point(7, 16);
 			this.flpGrpLuaEngine.Name = "flpGrpLuaEngine";
 			// 
@@ -486,13 +486,13 @@
 			// 
 			this.rbKopiLua.Name = "rbKopiLua";
 			this.rbKopiLua.Tag = BizHawk.Client.Common.ELuaEngine.NLuaPlusKopiLua;
-			this.rbKopiLua.Text = "NLua+KopiLua - Reliable but slower";
+			this.rbKopiLua.Text = "NLua+KopiLua - Slower but reliable";
 			// 
 			// rbLuaInterface
 			// 
 			this.rbLuaInterface.Name = "rbLuaInterface";
 			this.rbLuaInterface.Tag = BizHawk.Client.Common.ELuaEngine.LuaPlusLuaInterface;
-			this.rbLuaInterface.Text = "Lua+LuaInterface - Faster but memory leaks,  use at your own risk!";
+			this.rbLuaInterface.Text = "Lua+LuaInterface";
 			// 
 			// flpDialogButtons
 			// 
