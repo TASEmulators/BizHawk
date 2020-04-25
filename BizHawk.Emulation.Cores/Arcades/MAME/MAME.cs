@@ -637,7 +637,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				if (!_frameDone && !_paused)
 				{
 					_memAccess = false;
-					return;
+					break;
 				}
 			}
 
