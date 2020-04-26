@@ -32,7 +32,7 @@ namespace BizHawk.Client.Common
 		public LuaTable GetImmediate(int? controller = null) => APIs.Joypad.GetImmediate(controller).ToLuaTable(Lua);
 
 		[LuaMethodExample("joypad.setfrommnemonicstr( \"|    0,    0,    0,  100,...R..B....|\" );")]
-		[LuaMethod("setfrommnemonicstr", "sets the given buttons to their provided values for the current frame, string will be interpretted the same way an entry from a movie input log would be")]
+		[LuaMethod("setfrommnemonicstr", "sets the given buttons to their provided values for the current frame, string will be interpreted the same way an entry from a movie input log would be")]
 		public void SetFromMnemonicStr(string inputLogEntry) => APIs.Joypad.SetFromMnemonicStr(inputLogEntry);
 
 		[LuaMethodExample("joypad.set( { [\"Left\"] = true, [ \"A\" ] = true, [ \"B\" ] = true } );")]

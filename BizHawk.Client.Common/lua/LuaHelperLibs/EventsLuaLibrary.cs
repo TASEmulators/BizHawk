@@ -124,7 +124,7 @@ namespace BizHawk.Client.Common
 
 		private void LogScopeNotAvailable(string scope)
 		{
-			Log($"{scope} is not an avaialble scope for {Emulator.Attributes().CoreName}");
+			Log($"{scope} is not an available scope for {Emulator.Attributes().CoreName}");
 		}
 
 		#endregion
