@@ -44,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 			set
 			{
 				RecordingModeCheckbox.Checked = value;
-				Global.MovieSession.ReadOnly = !value;
+				Tastudio.MovieSession.ReadOnly = !value;
 				if (RecordingModeCheckbox.Checked)
 				{
 					Tastudio.CurrentTasMovie.SwitchToRecord();
