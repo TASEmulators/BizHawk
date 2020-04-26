@@ -49,7 +49,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						// don't draw for one frame after turning on
 						blank_frame = true;
 					}
-
 					LCDC = value;
 					break; 
 				case 0xFF41: // STAT
@@ -121,6 +120,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					break;
 				case 0xFF4A: // WY
 					window_y = value;
+					if (!window_started) 
+					{ 
+						window_y_latch = window_y;
+						window_y_tile = 0;
+						window_y_tile_inc = 0;
+					}
 					break;
 				case 0xFF4B: // WX
 					window_x = value;
