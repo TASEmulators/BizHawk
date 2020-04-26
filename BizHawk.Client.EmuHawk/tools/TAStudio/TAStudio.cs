@@ -698,7 +698,7 @@ namespace BizHawk.Client.EmuHawk
 
 			SetTasMovieCallbacks(tasMovie);
 			tasMovie.ClearChanges(); // Don't ask to save changes here.
-
+			tasMovie.Save();
 			if (HandleMovieLoadStuff(tasMovie))
 			{
 				CurrentTasMovie.TasStateManager.Capture(); // Capture frame 0 always.
