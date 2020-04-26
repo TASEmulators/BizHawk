@@ -291,7 +291,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				"0Mouse X",
 				"0Mouse Y"
 			},
-			AxisRanges = ControllerDefinition.CreateAxisRangePair(-127, 0, 127, ControllerDefinition.AxisPairOrientation.RightAndUp) //TODO verify direction against hardware
+			AxisRanges = ControllerDefinition.CreateAxisRangePair(-127, 0, 127, ControllerDefinition.AxisPairOrientation.RightAndDown) //TODO verify direction against hardware, R+D inferred from behaviour in Mario Paint
 		};
 
 		public ControllerDefinition Definition => _definition;
