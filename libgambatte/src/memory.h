@@ -83,7 +83,7 @@ public:
 	void ackIrq(unsigned bit, unsigned long cc);
 
 	unsigned readBios(unsigned p) {
-		if(agbMode_ && p >= 0xF3 && p < 0x100) {
+		if(isCgb() && agbMode_ && p >= 0xF3 && p < 0x100) {
 			return (agbOverride[p-0xF3] + bios_[p]) & 0xFF;
 		}
 		return bios_[p];
