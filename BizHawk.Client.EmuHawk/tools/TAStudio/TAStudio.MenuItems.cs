@@ -223,7 +223,7 @@ namespace BizHawk.Client.EmuHawk
 				TasView.LastSelectedIndex ?? 0 - TasView.FirstSelectedIndex ?? 0 + 1);
 
 			//var macroTool = Tools.Load<MacroInputTool>(false);
-			var macroTool = new MacroInputTool() { Config = Global.Config };
+			var macroTool = new MacroInputTool { Config = Config };
 			macroTool.SaveMacroAs(macro);
 		}
 
@@ -235,7 +235,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			//var macroTool = Tools.Load<MacroInputTool>(false);
-			var macroTool = new MacroInputTool() { Config = Global.Config };
+			var macroTool = new MacroInputTool { Config = Config };
 			var macro = macroTool.LoadMacro(Emulator, Tools);
 			if (macro != null)
 			{
@@ -261,7 +261,7 @@ namespace BizHawk.Client.EmuHawk
 					|| Emulator is Emulation.Cores.Nintendo.SubGBHawk.SubGBHawk)
 				{
 					var result = MessageBox.Show("This core requires emulation to be on the last frame when writing the movie, otherwise movie length may appear incorrect.\nSeek there?", "Export movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-					if (result == DialogResult.OK)
+					if (result.IsOk())
 					{
 						GoToFrame(CurrentTasMovie.InputLogLength - 1);
 					}
