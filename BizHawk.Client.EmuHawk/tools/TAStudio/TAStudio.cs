@@ -32,7 +32,10 @@ namespace BizHawk.Client.EmuHawk
 		private readonly int _defaultMainSplitDistance;
 		private readonly int _defaultBranchMarkerSplitDistance;
 
+		private bool _initialized;
 		private bool _exiting;
+
+		private bool CanAutoload => Settings.RecentTas.AutoLoad && !string.IsNullOrEmpty(Settings.RecentTas.MostRecent);
 
 		/// <summary>
 		/// Gets a value that separates "restore last position" logic from seeking caused by navigation.
@@ -143,9 +146,150 @@ namespace BizHawk.Client.EmuHawk
 			BookMarkControl.RemovedCallback = BranchRemoved;
 		}
 
-		public void LoadBranchByIndex(int index)
+		private void Tastudio_Load(object sender, EventArgs e)
 		{
-			BookMarkControl.LoadBranchExternal(index);
+			if (!Engage())
+			{
+				Close();
+				DialogResult = DialogResult.Cancel;
+				return;
+			}
+
+			SetColumnsFromCurrentStickies();
+
+			if (TasView.Rotatable)
+			{
+				RightClickMenu.Items.AddRange(TasView.GenerateContextMenuItems()
+					.ToArray());
+
+				RightClickMenu.Items
+					.OfType<ToolStripMenuItem>()
+					.First(t => t.Name == "RotateMenuItem")
+					.Click += (o, ov) => { CurrentTasMovie.FlagChanges(); };
+			}
+
+			TasView.ScrollSpeed = Settings.ScrollSpeed;
+			TasView.AlwaysScroll = Settings.FollowCursorAlwaysScroll;
+			TasView.ScrollMethod = Settings.FollowCursorScrollMethod;
+			TasView.SeekingCutoffInterval = Settings.SeekingCutoffInterval;
+			BookMarkControl.HoverInterval = Settings.BranchCellHoverInterval;
+
+			_autosaveTimer = new Timer(components);
+			_autosaveTimer.Tick += AutosaveTimerEventProcessor;
+			if (Settings.AutosaveInterval > 0)
+			{
+				_autosaveTimer.Interval = (int)Settings.AutosaveInterval;
+				_autosaveTimer.Start();
+			}
+
+			// Remembering Split container logic
+			if (Settings.MainVerticalSplitDistance > 0)
+			{
+				try
+				{
+					MainVertialSplit.SplitterDistance = Settings.MainVerticalSplitDistance;
+				}
+				catch (Exception)
+				{
+					MainVertialSplit.SplitterDistance = _defaultMainSplitDistance;
+				}
+				
+			}
+
+			if (Settings.BranchMarkerSplitDistance > 0)
+			{
+				try
+				{
+					BranchesMarkersSplit.SplitterDistance = Settings.BranchMarkerSplitDistance;
+				}
+				catch (Exception)
+				{
+					BranchesMarkersSplit.SplitterDistance = _defaultBranchMarkerSplitDistance;
+				}
+			}
+
+			TasView.Font = TasViewFont;
+			CurrentTasMovie.BindMarkersToInput = Settings.BindMarkersToInput;
+			RefreshDialog();
+			_initialized = true;
+		}
+
+		private bool Engage()
+		{
+			MainForm.PauseOnFrame = null;
+			MainForm.PauseEmulator();
+
+			// Nag if inaccurate core, but not if auto-loading
+			if (!CanAutoload )
+			{
+				// Nag but allow the user to continue anyway, so ignore the return value
+				EmuHawkUtil.EnsureCoreIsAccurate(Emulator);
+			}
+
+			// Start Scenario 1: A regular movie is active
+			if (MovieSession.Movie.IsActive() && !(MovieSession.Movie is ITasMovie))
+			{
+				var result = MessageBox.Show("In order to use Tastudio, a new project must be created from the current movie\nThe current movie will be saved and closed, and a new project file will be created\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+				if (result.IsOk())
+				{
+					ConvertCurrentMovieToTasproj();
+					StartNewMovieWrapper(CurrentTasMovie);
+					SetUpColumns();
+				}
+				else
+				{
+					return false;
+				}
+			}
+
+			// Start Scenario 2: A tasproj is already active
+			else if (MovieSession.Movie.IsActive() && MovieSession.Movie is ITasMovie)
+			{
+				bool result = LoadFile(new FileInfo(CurrentTasMovie.Filename), gotoFrame: Emulator.Frame);
+				if (!result)
+				{
+					TasView.AllColumns.Clear();
+					StartNewTasMovie();
+				}
+			}
+
+			// Start Scenario 3: No movie, but user wants to autoload their last project
+			else if (CanAutoload)
+			{
+				bool result = LoadFile(new FileInfo(Settings.RecentTas.MostRecent));
+				if (!result)
+				{
+					TasView.AllColumns.Clear();
+					StartNewTasMovie();
+				}
+			}
+
+			// Start Scenario 4: No movie, default behavior of engaging tastudio with a new default project
+			else
+			{
+				StartNewTasMovie();
+			}
+
+			// Attempts to load failed, abort
+			if (Emulator.IsNull())
+			{
+				Disengage();
+				return false;
+			}
+
+			MainForm.AddOnScreenMessage("TAStudio engaged");
+			SetTasMovieCallbacks(CurrentTasMovie);
+			SetTextProperty();
+			MainForm.RelinquishControl(this);
+			_originalEndAction = Config.MovieEndAction;
+			MainForm.ClearRewindData();
+			Config.MovieEndAction = MovieEndAction.Record;
+			MainForm.SetMainformMovieInfo();
+			MovieSession.ReadOnly = true;
+			SetSplicer();
+			SetupBoolPatterns();
+
+			return true;
 		}
 
 		private void AutosaveTimerEventProcessor(object sender, EventArgs e)
@@ -238,147 +382,15 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
-		private bool _initialized;
-		private void Tastudio_Load(object sender, EventArgs e)
-		{
-			if (!InitializeOnLoad())
-			{
-				Close();
-				DialogResult = DialogResult.Cancel;
-				return;
-			}
-
-			SetColumnsFromCurrentStickies();
-
-			if (TasView.Rotatable)
-			{
-				RightClickMenu.Items.AddRange(TasView.GenerateContextMenuItems()
-					.ToArray());
-
-				RightClickMenu.Items
-					.OfType<ToolStripMenuItem>()
-					.First(t => t.Name == "RotateMenuItem")
-					.Click += (o, ov) => { CurrentTasMovie.FlagChanges(); };
-			}
-
-			TasView.ScrollSpeed = Settings.ScrollSpeed;
-			TasView.AlwaysScroll = Settings.FollowCursorAlwaysScroll;
-			TasView.ScrollMethod = Settings.FollowCursorScrollMethod;
-			TasView.SeekingCutoffInterval = Settings.SeekingCutoffInterval;
-			BookMarkControl.HoverInterval = Settings.BranchCellHoverInterval;
-
-			_autosaveTimer = new Timer(components);
-			_autosaveTimer.Tick += AutosaveTimerEventProcessor;
-			if (Settings.AutosaveInterval > 0)
-			{
-				_autosaveTimer.Interval = (int)Settings.AutosaveInterval;
-				_autosaveTimer.Start();
-			}
-
-			// Remembering Split container logic
-			if (Settings.MainVerticalSplitDistance > 0)
-			{
-				try
-				{
-					MainVertialSplit.SplitterDistance = Settings.MainVerticalSplitDistance;
-				}
-				catch (Exception)
-				{
-					MainVertialSplit.SplitterDistance = _defaultMainSplitDistance;
-				}
-				
-			}
-
-			if (Settings.BranchMarkerSplitDistance > 0)
-			{
-				try
-				{
-					BranchesMarkersSplit.SplitterDistance = Settings.BranchMarkerSplitDistance;
-				}
-				catch (Exception)
-				{
-					BranchesMarkersSplit.SplitterDistance = _defaultBranchMarkerSplitDistance;
-				}
-			}
-
-			TasView.Font = TasViewFont;
-			CurrentTasMovie.BindMarkersToInput = Settings.BindMarkersToInput;
-			RefreshDialog();
-			_initialized = true;
-		}
-
-		private bool CanAutoload => Settings.RecentTas.AutoLoad && !string.IsNullOrEmpty(Settings.RecentTas.MostRecent);
-
-		private bool InitializeOnLoad()
-		{
-			MainForm.PauseOnFrame = null;
-			MainForm.PauseEmulator();
-
-			// Start Scenario 0: core needs a nag
-			// But do not nag if auto-loading
-			if (!CanAutoload && !EmuHawkUtil.EnsureCoreIsAccurate(Emulator))
-			{
-				// Inaccurate core but allow the user to continue anyway
-			}
-
-			// Start Scenario 1: A regular movie is active
-			if (MovieSession.Movie.IsActive() && !(MovieSession.Movie is ITasMovie))
-			{
-				var result = MessageBox.Show("In order to use Tastudio, a new project must be created from the current movie\nThe current movie will be saved and closed, and a new project file will be created\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-				if (result.IsOk())
-				{
-					ConvertCurrentMovieToTasproj();
-					StartNewMovieWrapper(CurrentTasMovie);
-					SetUpColumns();
-				}
-				else
-				{
-					return false;
-				}
-			}
-
-			// Start Scenario 2: A tasproj is already active
-			else if (MovieSession.Movie.IsActive() && MovieSession.Movie is ITasMovie)
-			{
-				bool result = LoadFile(new FileInfo(CurrentTasMovie.Filename), gotoFrame: Emulator.Frame);
-				if (!result)
-				{
-					TasView.AllColumns.Clear();
-					StartNewTasMovie();
-				}
-			}
-
-			// Start Scenario 3: No movie, but user wants to autoload their last project
-			else if (CanAutoload)
-			{
-				bool result = LoadFile(new FileInfo(Settings.RecentTas.MostRecent));
-				if (!result)
-				{
-					TasView.AllColumns.Clear();
-					StartNewTasMovie();
-				}
-			}
-
-			// Start Scenario 4: No movie, default behavior of engaging tastudio with a new default project
-			else
-			{
-				StartNewTasMovie();
-			}
-
-			if (Emulator.IsNull())
-			{
-				DisengageTastudio();
-				return false;
-			}
-
-			EngageTastudio();
-			return true;
-		}
-
 		private void SetTasMovieCallbacks(ITasMovie movie)
 		{
 			movie.ClientSettingsForSave = ClientSettingsForSave;
 			movie.GetClientSettingsOnLoad = GetClientSettingsOnLoad;
+		}
+
+		public void LoadBranchByIndex(int index)
+		{
+			BookMarkControl.LoadBranchExternal(index);
 		}
 
 		private string ClientSettingsForSave()
@@ -594,21 +606,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void EngageTastudio()
-		{
-			MainForm.AddOnScreenMessage("TAStudio engaged");
-			SetTasMovieCallbacks(CurrentTasMovie);
-			SetTextProperty();
-			MainForm.RelinquishControl(this);
-			_originalEndAction = Config.MovieEndAction;
-			MainForm.ClearRewindData();
-			Config.MovieEndAction = MovieEndAction.Record;
-			MainForm.SetMainformMovieInfo();
-			MovieSession.ReadOnly = true;
-			SetSplicer();
-			SetupBoolPatterns();
-		}
-
 		#endregion
 
 		#region Loading
@@ -808,7 +805,7 @@ namespace BizHawk.Client.EmuHawk
 			MainForm.SetMainformMovieInfo();
 		}
 
-		private void DisengageTastudio()
+		private void Disengage()
 		{
 			MainForm.PauseOnFrame = null;
 			MainForm.AddOnScreenMessage("TAStudio disengaged");
@@ -1145,7 +1142,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				WantsToControlStopMovie = false;
 				TastudioStopMovie();
-				DisengageTastudio();
+				Disengage();
 			}
 			else
 			{
