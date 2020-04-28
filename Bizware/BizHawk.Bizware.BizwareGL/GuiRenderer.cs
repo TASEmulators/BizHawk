@@ -140,8 +140,8 @@ namespace BizHawk.Bizware.BizwareGL
 		{
 			Begin();
 
-			Projection = Owner.CreateGuiProjectionMatrix(width, height);
-			Modelview = Owner.CreateGuiViewMatrix(width, height);
+			Projection = Owner.CreateGuiViewMatrix(width, height) * Owner.CreateGuiProjectionMatrix(width, height);
+			Modelview.Clear();
 
 			Owner.SetViewport(width, height);
 		}
