@@ -306,6 +306,15 @@ namespace BizHawk.Client.EmuHawk.Filters
 			bot.Translate(-fxmin, -fymin);
 			matTop = top.Top;
 			matBot = bot.Top;
+
+			//do some more rounding
+			for (int r = 0; r < 4; r++)
+				for (int c = 0; c < 4; c++)
+				{
+					if (Math.Abs(matTop[r, c]) < 0.0000001f) matTop[r, c] = 0;
+					if (Math.Abs(matBot[r, c]) < 0.0000001f) matBot[r, c] = 0;
+				}
+
 			matTopInvert = matTop.Inverted();
 			matBotInvert = matBot.Inverted();
 
