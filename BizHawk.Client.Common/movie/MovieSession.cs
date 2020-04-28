@@ -355,7 +355,10 @@ namespace BizHawk.Client.Common
 
 			MultiTrack.Restart(_emulator.ControllerDefinition.PlayerCount);
 			_modeChangedCallback();
-			Movie = MovieService.Create();
+
+			// TODO: we aren't ready for this line, keeping the old movie hanging around masks a lot of Tastudio problems
+			// Uncommenting this can cause drawing crashes in tastudio since it depends on a ITasMovie and doesn't have one between closing and opening a rom
+			//Movie = MovieService.Create();
 		}
 
 		public void ConvertToTasProj()
