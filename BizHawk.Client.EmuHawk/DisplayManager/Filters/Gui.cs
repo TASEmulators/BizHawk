@@ -388,7 +388,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 			if (renderTop)
 			{
 				GuiRenderer.Modelview.Push();
-				GuiRenderer.Modelview.PostMultiplyMatrix(matTop);
+				GuiRenderer.Modelview.PreMultiplyMatrix(matTop);
 				GuiRenderer.DrawSubrect(InputTexture, 0, 0, 256, 192, 0.0f, 0.0f, 1.0f, 0.5f);
 				GuiRenderer.Modelview.Pop();
 			}
@@ -396,7 +396,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 			if (renderBottom)
 			{
 				GuiRenderer.Modelview.Push();
-				GuiRenderer.Modelview.PostMultiplyMatrix(matBot);
+				GuiRenderer.Modelview.PreMultiplyMatrix(matBot);
 				GuiRenderer.DrawSubrect(InputTexture, 0, 0, 256, 192, 0.0f, 0.5f, 1.0f, 1.0f);
 				GuiRenderer.Modelview.Pop();
 			}

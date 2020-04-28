@@ -83,7 +83,7 @@ namespace BizHawk.Bizware.BizwareGL
 		public void Translate(Point pt) { Translate(pt.X, pt.Y, 0); IsDirty = true; }
 
 		public void PostMultiplyMatrix(MatrixStack ms) { PostMultiplyMatrix(ms.Top); IsDirty = true; }
-		public void PostMultiplyMatrix(Matrix4 value) { Top = value * Top; IsDirty = true; }
-		public void PreMultiplyMatrix(Matrix4 value) { Top = Top * value; IsDirty = true; }
+		public void PostMultiplyMatrix(Matrix4 value) { Top = Top * value; IsDirty = true; }
+		public void PreMultiplyMatrix(Matrix4 value) { Top = value * Top; IsDirty = true; }
 	}
 }
