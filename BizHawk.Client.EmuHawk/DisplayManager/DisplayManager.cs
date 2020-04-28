@@ -754,6 +754,8 @@ namespace BizHawk.Client.EmuHawk
 			int[] videoBuffer = videoProvider.GetVideoBuffer();
 			int bufferWidth = videoProvider.BufferWidth;
 			int bufferHeight = videoProvider.BufferHeight;
+			int presenterTextureWidth = bufferWidth;
+			int presenterTextureHeight = bufferHeight;
 			bool isGlTextureId = videoBuffer.Length == 1;
 
 			int vw = videoProvider.VirtualWidth;
@@ -767,8 +769,8 @@ namespace BizHawk.Client.EmuHawk
 			if(fCoreScreenControl != null)
 			{
 				var sz = fCoreScreenControl.PresizeInput("default", new Size(bufferWidth, bufferHeight));
-				vw = sz.Width;
-				vh = sz.Height;
+				presenterTextureWidth = vw = sz.Width;
+				presenterTextureHeight = vh = sz.Height;
 			}
 
 			if (Global.Config.DispFixAspectRatio)
@@ -832,13 +834,6 @@ namespace BizHawk.Client.EmuHawk
 			//setup the source image filter
 			Filters.SourceImage fInput = filterProgram["input"] as Filters.SourceImage;
 			fInput.Texture = videoTexture;
-
-			int presenterTextureWidth = bufferWidth;
-			int presenterTextureHeight = bufferHeight;
-			
-			//ZERO 29-MAR-2020 - not sure about this
-			presenterTextureWidth = chainOutsize.Width;
-			presenterTextureHeight = chainOutsize.Height;
 
 			//setup the final presentation filter
 			Filters.FinalPresentation fPresent = filterProgram["presentation"] as Filters.FinalPresentation;
