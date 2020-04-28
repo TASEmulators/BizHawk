@@ -47,16 +47,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					return mapper.ReadMemoryLow(addr);
 				}
 
-				if (addr >= 0xE000 && (addr < 0xF000))
+				if (addr >= 0xA000 && addr < 0xC000 && is_GBC)
 				{
-					return RAM[addr - 0xE000]; 
+					// on GBC only, cart is accessible during DMA
+					return mapper.ReadMemoryHigh(addr);
 				}
 
+				if (addr >= 0xE000 && addr < 0xF000)
+				{
+					return RAM[addr - 0xE000];
+				}
 				if (addr >= 0xF000 && addr < 0xFE00)
 				{
 					return RAM[(RAM_Bank * 0x1000) + (addr - 0xF000)];
 				}
-
 				if (addr >= 0xFE00 && addr < 0xFEA0 && ppu.DMA_OAM_access)
 				{
 					return OAM[addr - 0xFE00];
@@ -67,13 +71,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					return Read_Registers(addr);
 				}
 
-				if ((addr >= 0xFF80))
+				if (addr >= 0xFF80)
 				{
-					// register FFFF?
-					return ZP_RAM[addr - 0xFF80];
+					if (addr != 0xFFFF)
+					{
+						return ZP_RAM[addr - 0xFF80];
+					}
+					else
+					{
+						return Read_Registers(addr);
+					}
 				}
 
-				return 0xFF;
+				return ppu.DMA_byte;
 			}
 			
 			if (addr < 0x8000)
@@ -171,6 +181,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			if (ppu.DMA_start)
 			{
 				// some of gekkio's tests require this to be accessible during DMA
+
+				if (addr >= 0xA000 && addr < 0xC000 && is_GBC)
+				{
+					// on GBC only, cart is accessible during DMA
+					mapper.WriteMemory(addr, value);
+				}
+
 				if (addr >= 0xE000 && addr < 0xF000)
 				{
 					RAM[addr - 0xE000] = value;
@@ -189,7 +206,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 				else if (addr >= 0xFF80)
 				{
-					ZP_RAM[addr - 0xFF80] = value;
+					if (addr != 0xFFFF)
+					{
+						ZP_RAM[addr - 0xFF80] = value;
+					}
+					else
+					{
+						Write_Registers(addr, value);
+					}
 				}
 
 				return;
@@ -284,11 +308,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					return mapper.PeekMemoryLow(addr);
 				}
 
+				if (addr >= 0xA000 && addr < 0xC000 && is_GBC)
+				{
+					// on GBC only, cart is accessible during DMA
+					return mapper.ReadMemoryHigh(addr);
+				}
+
 				if (addr >= 0xE000 && addr < 0xF000)
 				{
 					return RAM[addr - 0xE000];
 				}
-
 				if (addr >= 0xF000 && addr < 0xFE00)
 				{
 					return RAM[(RAM_Bank * 0x1000) + (addr - 0xF000)];
@@ -306,10 +335,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				if (addr >= 0xFF80)
 				{
-					return ZP_RAM[addr - 0xFF80];
+					if (addr != 0xFFFF)
+					{
+						return ZP_RAM[addr - 0xFF80];
+					}
+					else
+					{
+						return Read_Registers(addr);
+					}
 				}
 
-				return 0xFF;
+				return ppu.DMA_byte;
 			}
 
 			if (addr < 0x8000)

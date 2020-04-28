@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
-		private GBSettings _settings = new GBSettings();
+		public GBSettings _settings = new GBSettings();
 		public GBSyncSettings _syncSettings = new GBSyncSettings();
 
 		public class GBSettings

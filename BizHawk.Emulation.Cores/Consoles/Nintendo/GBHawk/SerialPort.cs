@@ -48,12 +48,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							if (((value & 2) > 0) && Core.GBC_compat)
 							{
 								clk_rate = 16;
-								serial_clock = (15 - (int)(Core.cpu.TotalExecutedCycles % 16)) + 1;
+								serial_clock = (16 - (int)(Core.cpu.TotalExecutedCycles % 8)) + 1;
 							}
 							else
 							{
 								clk_rate = 512;
-								serial_clock = (511 - (int)(Core.cpu.TotalExecutedCycles % 512)) + 1;
+								serial_clock = 512 - (int)(Core.cpu.TotalExecutedCycles % 256) + 1;
+
+								// there seems to be some clock inverting happening on some transfers
+								// not sure of the exact nature of it, here is one methor that gives correct result on one test rom but not others
+								/*
+								if (Core._syncSettings.GBACGB && Core.is_GBC)
+								{
+									if ((Core.TotalExecutedCycles % 256) > 127)
+									{
+										serial_clock = (8 - (int)(Core.cpu.TotalExecutedCycles % 8)) + 1;
+									}
+								}
+								*/
 							}
 							can_pulse = true;
 						}
@@ -71,12 +83,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							if (((value & 2) > 0) && Core.GBC_compat)
 							{
 								clk_rate = 16;
-								serial_clock = (15 - (int)(Core.cpu.TotalExecutedCycles % 16)) + 1;
+								serial_clock = (16 - (int)(Core.cpu.TotalExecutedCycles % 8)) + 1;
 							}
 							else
 							{
 								clk_rate = 512;
-								serial_clock = (511 - (int)(Core.cpu.TotalExecutedCycles % 512)) + 1;
+								serial_clock = 512 - (int)(Core.cpu.TotalExecutedCycles % 256) + 1;
 							}					
 							can_pulse = true;
 						}

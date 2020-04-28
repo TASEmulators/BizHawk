@@ -58,6 +58,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			do_frame(controller);
 
+			// if the game is stopped but controller interrupts are on, check for interrupts
+			if ((cpu.stopped || cpu.halted) && _islag && ((REG_FFFF & 0x10) == 0x10))
+			{
+				// update the controller state on VBlank
+				GetControllerState(controller);
+
+				do_controller_check();
+			}
+
 			if (_scanlineCallback != null)
 			{
 				if (_scanlineCallbackLine == -1)
@@ -88,14 +97,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					// These things all tick twice as fast in GBC double speed mode
 					// Note that DMA is halted when the CPU is halted
-					if (ppu.DMA_start && !cpu.halted) { ppu.DMA_tick(); }
+					if (ppu.DMA_start && !cpu.halted && !cpu.stopped) { ppu.DMA_tick(); }
 					serialport.serial_transfer_tick();
 					cpu.ExecuteOne();
 					timer.tick();
 
 					if (double_speed)
 					{
-						if (ppu.DMA_start && !cpu.halted) { ppu.DMA_tick(); }
+						if (ppu.DMA_start && !cpu.halted && !cpu.stopped) { ppu.DMA_tick(); }
 						serialport.serial_transfer_tick();
 						cpu.ExecuteOne();
 						timer.tick();
@@ -104,11 +113,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				else
 				{
 					cpu.TotalExecutedCycles++;
-					timer.tick();					
+					timer.tick();				
 					if (double_speed)
 					{
 						cpu.TotalExecutedCycles++;
-						timer.tick();						
+						timer.tick();				
 					}
 				}
 
@@ -165,14 +174,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			if (!HDMA_transfer)
 			{
 				// These things all tick twice as fast in GBC double speed mode
-				if (ppu.DMA_start && !cpu.halted) { ppu.DMA_tick(); }
+				if (ppu.DMA_start && !cpu.halted && !cpu.stopped) { ppu.DMA_tick(); }
 				serialport.serial_transfer_tick();
 				cpu.ExecuteOne();
 				timer.tick();
 
 				if (double_speed)
 				{
-					if (ppu.DMA_start && !cpu.halted) { ppu.DMA_tick(); }
+					if (ppu.DMA_start && !cpu.halted && !cpu.stopped) { ppu.DMA_tick(); }
 					serialport.serial_transfer_tick();
 					cpu.ExecuteOne();
 					timer.tick();
@@ -244,7 +253,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					speed_switch = false;
 					Console.WriteLine("Speed Switch: " + cpu.TotalExecutedCycles);
-					int ret = double_speed ? 35112 : 35112; // actual time needs checking
+					int ret = double_speed ? (32768 - 19) : (32768 - 19); // actual time needs checking
 					double_speed = !double_speed;
 					return ret;
 				}
