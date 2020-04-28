@@ -253,19 +253,12 @@ namespace BizHawk.Client.EmuHawk
 		private void ToBk2MenuItem_Click(object sender, EventArgs e)
 		{
 			_autosaveTimer.Stop();
-
-			if (Emulator.Frame != CurrentTasMovie.InputLogLength - 1)
+			
+			if (Emulator is Emulation.Cores.Nintendo.SubNESHawk.SubNESHawk
+				|| Emulator is Emulation.Cores.Nintendo.Gameboy.Gameboy
+				|| Emulator is Emulation.Cores.Nintendo.SubGBHawk.SubGBHawk)
 			{
-				if (Emulator is Emulation.Cores.Nintendo.SubNESHawk.SubNESHawk
-					|| Emulator is Emulation.Cores.Nintendo.Gameboy.Gameboy
-					|| Emulator is Emulation.Cores.Nintendo.SubGBHawk.SubGBHawk)
-				{
-					var result = MessageBox.Show("This core requires emulation to be on the last frame when writing the movie, otherwise movie length may appear incorrect.\nSeek there?", "Export movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-					if (result.IsOk())
-					{
-						GoToFrame(CurrentTasMovie.InputLogLength - 1);
-					}
-				}
+				MessageBox.Show("This core requires emulation to be on the last frame when writing the movie, otherwise movie length will appear incorrect.\nTAStudio can't handle this, so Export BK2, play it to the end, and then Save Movie.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			}
 
 			var bk2 = CurrentTasMovie.ToBk2(true, true);
