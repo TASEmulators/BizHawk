@@ -137,6 +137,10 @@ namespace BizHawk.Client.EmuHawk
 			TasView.PointedCellChanged += TasView_PointedCellChanged;
 			TasView.MultiSelect = true;
 			LastPositionFrame = -1;
+
+			BookMarkControl.LoadedCallback = BranchLoaded;
+			BookMarkControl.SavedCallback = BranchSaved;
+			BookMarkControl.RemovedCallback = BranchRemoved;
 		}
 
 		public void LoadBranchByIndex(int index)
@@ -243,10 +247,6 @@ namespace BizHawk.Client.EmuHawk
 				DialogResult = DialogResult.Cancel;
 				return;
 			}
-
-			BookMarkControl.LoadedCallback = BranchLoaded;
-			BookMarkControl.SavedCallback = BranchSaved;
-			BookMarkControl.RemovedCallback = BranchRemoved;
 
 			SetColumnsFromCurrentStickies();
 
@@ -703,10 +703,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				CurrentTasMovie.TasStateManager.Capture(); // Capture frame 0 always.
 			}
-
-			BookMarkControl.LoadedCallback = BranchLoaded;
-			BookMarkControl.SavedCallback = BranchSaved;
-			BookMarkControl.RemovedCallback = BranchRemoved;
 
 			// clear all selections
 			TasView.DeselectAll();
