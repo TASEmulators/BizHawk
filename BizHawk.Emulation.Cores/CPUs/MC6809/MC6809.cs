@@ -640,11 +640,9 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 
 		public TraceInfo State(bool disassemble = true)
 		{
-			ushort notused;
-
 			return new TraceInfo
 			{
-				Disassembly = $"{(disassemble ? Disassemble(Regs[PC], ReadMemory, out notused) : "---")} ".PadRight(50),
+				Disassembly = $"{(disassemble ? Disassemble(Regs[PC], ReadMemory, out _) : "---")} ".PadRight(50),
 				RegisterInfo = string.Format(
 					"A:{0:X2} B:{1:X2} X:{2:X4} Y:{3:X4} US:{4:X4} SP:{5:X4} DP:{6:X2} CC:{7:X2} Cy:{8} {9}{10}{11}{12}{13}{14}{15}{16}",
 					Regs[A],

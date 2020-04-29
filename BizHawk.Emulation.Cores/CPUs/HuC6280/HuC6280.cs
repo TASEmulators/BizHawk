@@ -372,11 +372,9 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 
 		public TraceInfo State()
 		{
-			int notused;
-
 			return new TraceInfo
 			{
-				Disassembly = $"{MPR[PC >> 13]:X2}:{PC:X4}:  {ReadMemory(PC):X2}  {Disassemble(PC, out notused)} ".PadRight(30),
+				Disassembly = $"{MPR[PC >> 13]:X2}:{PC:X4}:  {ReadMemory(PC):X2}  {Disassemble(PC, out _)} ".PadRight(30),
 				RegisterInfo = string.Join(" ",
 					$"A:{A:X2}",
 					$"X:{X:X2}",
