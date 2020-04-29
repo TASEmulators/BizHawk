@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// this byte is used to simulate open bus reads and writes
 		// it should be modified by every read and write to a ppu register
 		public byte ppu_open_bus=0;
-		public int double_2007_read; // emulates a hardware bug of back to back 2007 reads
+		public long double_2007_read; // emulates a hardware bug of back to back 2007 reads
 		public int[] ppu_open_bus_decay_timer = new int[8];
 		public byte[] glitchy_reads_2003 = new byte[8];
 
@@ -660,14 +660,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 6: return read_2006();
 				case 7:
 					{
-						if (double_2007_read>0)
+						if (nes.cpu.TotalExecutedCycles == double_2007_read)
 						{
-							double_2007_read = 0;
 							return ppu_open_bus;							
-						} else
+						} 
+						else
 						{
 							ret_spec = read_2007();
-							double_2007_read = 2;
+							double_2007_read = nes.cpu.TotalExecutedCycles + 1;
 						}
 						
 						if (nes.do_the_reread)

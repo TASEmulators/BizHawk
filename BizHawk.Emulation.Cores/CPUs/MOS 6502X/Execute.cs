@@ -706,7 +706,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
-				FetchDummy(); Y++; NZ_Y();
+				_link.DummyReadMemory(PC); Y++; NZ_Y();
 			}
 		}
 		void Imp_DEY()
@@ -714,7 +714,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
-				FetchDummy(); Y--; NZ_Y();
+				_link.DummyReadMemory(PC); ; Y--; NZ_Y();
 			}
 		}
 		void Imp_INX()
@@ -722,7 +722,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
-				FetchDummy(); X++; NZ_X();
+				_link.DummyReadMemory(PC); X++; NZ_X();
 			}
 		}
 		void Imp_DEX()
@@ -730,7 +730,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
-				FetchDummy(); X--; NZ_X();
+				_link.DummyReadMemory(PC); X--; NZ_X();
 			}
 		}
 		void NZ_A()
@@ -751,7 +751,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
-				FetchDummy(); X = S; NZ_X();
+				_link.DummyReadMemory(PC); X = S; NZ_X();
 			}
 		}
 		void Imp_TXS()
@@ -759,7 +759,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
-				FetchDummy(); S = X;
+				_link.DummyReadMemory(PC); S = X;
 			}
 		}
 		void Imp_TAX()
@@ -767,7 +767,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
-				FetchDummy(); X = A; NZ_X();
+				_link.DummyReadMemory(PC); X = A; NZ_X();
 			}
 		}
 		void Imp_TAY()
@@ -775,7 +775,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
-				FetchDummy(); Y = A; NZ_Y();
+				_link.DummyReadMemory(PC); Y = A; NZ_Y();
 			}
 		}
 		void Imp_TYA()
@@ -783,7 +783,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
-				FetchDummy(); A = Y; NZ_A();
+				_link.DummyReadMemory(PC); A = Y; NZ_A();
 			}
 		}
 		void Imp_TXA()
@@ -791,7 +791,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
-				FetchDummy(); A = X; NZ_A();
+				_link.DummyReadMemory(PC); A = X; NZ_A();
 			}
 
 		}
@@ -803,7 +803,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
-				FetchDummy();
+				_link.DummyReadMemory(PC);
 			}
 		}
 		void Imp_CLI()
@@ -814,7 +814,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
-				FetchDummy();
+				_link.DummyReadMemory(PC);
 			}
 		}
 		void Imp_SEC()
@@ -822,7 +822,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
-				FetchDummy(); FlagC = true;
+				_link.DummyReadMemory(PC); FlagC = true;
 			}
 		}
 		void Imp_CLC()
@@ -830,7 +830,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
-				FetchDummy(); FlagC = false;
+				_link.DummyReadMemory(PC); FlagC = false;
 			}
 		}
 		void Imp_SED()
@@ -838,7 +838,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
-				FetchDummy(); FlagD = true;
+				_link.DummyReadMemory(PC); FlagD = true;
 			}
 		}
 		void Imp_CLD()
@@ -846,7 +846,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
-				FetchDummy(); FlagD = false;
+				_link.DummyReadMemory(PC); FlagD = false;
 			}
 		}
 		void Imp_CLV()
@@ -854,7 +854,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
-				FetchDummy(); FlagV = false;
+				_link.DummyReadMemory(PC); FlagV = false;
 			}
 
 		}
@@ -1159,7 +1159,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
-				FetchDummy();
+				_link.DummyReadMemory(PC);
 				alu_temp = (byte)PC + (int)(sbyte)opcode2;
 				PC &= 0xFF00;
 				PC |= (ushort)((alu_temp & 0xFF));
@@ -1183,7 +1183,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
-				FetchDummy();
+				_link.DummyReadMemory(PC);
 				if (alu_temp.Bit(31))
 					PC = (ushort)(PC - 0x100);
 				else PC = (ushort)(PC + 0x100);
@@ -1194,7 +1194,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
-				FetchDummy();
+				_link.DummyReadMemory(PC);
 			}
 		}
 		void DecS()
@@ -2064,7 +2064,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
-				FetchDummy();
+				_link.DummyReadMemory(PC);
 				FlagC = (A & 0x80) != 0;
 				A = (byte)(A << 1);
 				NZ_A();
@@ -2075,7 +2075,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
-				FetchDummy();
+				_link.DummyReadMemory(PC);
 				temp8 = A;
 				A = (byte)((A << 1) | (P & 1));
 				FlagC = (temp8 & 0x80) != 0;
@@ -2087,7 +2087,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
-				FetchDummy();
+				_link.DummyReadMemory(PC);
 				temp8 = A;
 				A = (byte)((A >> 1) | ((P & 1) << 7));
 				FlagC = (temp8 & 1) != 0;
@@ -2099,7 +2099,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
-				FetchDummy();
+				_link.DummyReadMemory(PC);
 				FlagC = (A & 1) != 0;
 				A = (byte)(A >> 1);
 				NZ_A();

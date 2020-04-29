@@ -97,18 +97,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 1:
 					break;
 				case 2:
-					{
-						ppu_addr_temp = ppur.get_atread();
-						byte at = ppubus_read(ppu_addr_temp, true, true);
+					ppu_addr_temp = ppur.get_atread();
+					byte at = ppubus_read(ppu_addr_temp, true, true);
 
-						//modify at to get appropriate palette shift
-						if ((ppur.vt & 2) != 0) at >>= 4;
-						if ((ppur.ht & 2) != 0) at >>= 2;
-						at &= 0x03;
-						at <<= 2;
-						bgdata[i].at = at;
-						break;
-					}
+					//modify at to get appropriate palette shift
+					if ((ppur.vt & 2) != 0) at >>= 4;
+					if ((ppur.ht & 2) != 0) at >>= 2;
+					at &= 0x03;
+					at <<= 2;
+					bgdata[i].at = at;
+					break;
 				case 3:
 					break;
 				case 4:
@@ -123,7 +121,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				case 7:
 					break;
-			} //switch(cycle)
+			}
 		}
 
 		// these are states for the ppu incrementer
@@ -979,18 +977,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{ ppur.status.cycle++; } // increment cycle without running ppu
 					else
 					{ runppu(); }
-				}
-			}
 
-			if (ppur.status.cycle == 341)
-			{
-				ppur.status.cycle = 0;
-				ppur.status.sl++;
+					ppur.status.cycle = 0;
+					ppur.status.sl++;
 
-				if (ppur.status.sl == 241)
-				{
-					do_active_sl = false;
-					do_pre_vbl = true;
+					if (ppur.status.sl == 241)
+					{
+						do_active_sl = false;
+						do_pre_vbl = true;
+					}
 				}
 			}
 		}

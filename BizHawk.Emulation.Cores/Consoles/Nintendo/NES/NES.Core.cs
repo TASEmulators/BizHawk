@@ -450,26 +450,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// OAM DMA start
 			///////////////////////////
 
-			if (sprdma_countdown > 0)
-			{
-				sprdma_countdown--;
-				if (sprdma_countdown == 0)
-				{
-					if (cpu.TotalExecutedCycles % 2 == 0)
-					{
-						cpu_deadcounter = 2;
-					}
-					else
-					{
-						cpu_deadcounter = 1;
-					}
-					oam_dma_exec = true;
-					cpu.RDY = false;
-					oam_dma_index = 0;
-					special_case_delay = true;
-				}
-			}
-
 			if (oam_dma_exec && apu.dmc_dma_countdown != 1 && !dmc_realign)
 			{
 				if (cpu_deadcounter == 0)
@@ -493,14 +473,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					cpu_deadcounter--;
 				}
 			}
-			else if (apu.dmc_dma_countdown == 1)
-			{
-				dmc_realign = true;
-			}
-			else if (dmc_realign)
-			{
-				dmc_realign = false;
-			}
+			
+			dmc_realign = false;
+
 			/////////////////////////////
 			// OAM DMA end
 			/////////////////////////////
@@ -512,6 +487,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (apu.dmc_dma_countdown > 0)
 			{
+				if (apu.dmc_dma_countdown == 1)
+				{
+					dmc_realign = true;
+				}
+
 				cpu.RDY = false;
 				dmc_dma_exec = true;
 				apu.dmc_dma_countdown--;
@@ -553,14 +533,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			apu.RunOneLast();
 
-			if (ppu.double_2007_read > 0)
-				ppu.double_2007_read--;
-
 			if (do_the_reread && cpu.RDY)
 				do_the_reread = false;
 
-			if (IRQ_delay)
-				IRQ_delay = false;
+			IRQ_delay = false;
 
 			if (!dmc_dma_exec && !oam_dma_exec && !cpu.RDY)
 			{
@@ -720,6 +696,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					//this receives 2 because that's just the way it works out.
 					oam_dma_addr = (ushort)(val << 8);
 					sprdma_countdown = 1;
+
+					if (sprdma_countdown > 0)
+					{
+						sprdma_countdown--;
+						if (sprdma_countdown == 0)
+						{
+							if (cpu.TotalExecutedCycles % 2 == 0)
+							{
+								cpu_deadcounter = 2;
+							}
+							else
+							{
+								cpu_deadcounter = 1;
+							}
+							oam_dma_exec = true;
+							cpu.RDY = false;
+							oam_dma_index = 0;
+							special_case_delay = true;
+						}
+					}
 					break;
 				case 0x4015: apu.WriteReg(addr, val); break;
 				case 0x4016:
