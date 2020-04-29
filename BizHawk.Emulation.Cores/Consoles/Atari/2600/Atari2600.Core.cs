@@ -329,6 +329,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal byte ReadControls1(bool peek)
 		{
 			InputCallbacks.Call();
@@ -343,6 +344,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			return value;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal byte ReadControls2(bool peek)
 		{
 			InputCallbacks.Call();
