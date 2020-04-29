@@ -45,5 +45,4 @@
 		<Compile Update="movie/tasproj/TasMovie.Editing.cs" DependentUpon="TasMovie.cs" />
 		<Compile Update="movie/tasproj/TasMovie.IO.cs" DependentUpon="TasMovie.cs" />
 	</ItemGroup>
-	<Import Project="$(SolutionDir)NamespaceAliasHack.targets" />
 </Project>
