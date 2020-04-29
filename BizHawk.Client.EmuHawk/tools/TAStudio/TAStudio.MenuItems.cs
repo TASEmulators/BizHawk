@@ -1317,7 +1317,7 @@ namespace BizHawk.Client.EmuHawk
 					var item = new ToolStripMenuItem($"Show Player {i}")
 					{
 						CheckOnClick = true,
-						Checked = true
+						Checked = playerMenus[i].DropDownItems.OfType<ToolStripMenuItem>().Any(mi => mi.Checked)
 					};
 
 					ToolStripMenuItem dummyObject = playerMenus[i];
