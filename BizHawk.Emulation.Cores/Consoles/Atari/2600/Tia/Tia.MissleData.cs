@@ -93,31 +93,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				return result;
 			}
 
-			public void Resp_check()
-			{
-				if (_draw_signaled)
-				{
-					if (_startSignal < 17)
-					{
-						_startSignal -= _startSignal - 12;
-					}
-
-					else if (_startSignal < 33)
-					{
-						_startSignal -= _startSignal - 28;
-					}
-
-					else if (_startSignal < 65)
-					{
-						_startSignal -= _startSignal - 60;
-					}
-					else if (_startSignal < 161)
-					{
-						_startSignal -= _startSignal - 156;
-					}
-				}
-			}
-
 			public void SyncState(Serializer ser)
 			{
 				ser.BeginSection("Missile");

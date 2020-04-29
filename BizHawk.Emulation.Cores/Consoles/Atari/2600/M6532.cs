@@ -208,7 +208,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				PrescalerCount--;
 
-				if ((PrescalerCount == 0) || Overflowed)
+				if (PrescalerCount == 0 || Overflowed)
 				{
 					Value--;
 
