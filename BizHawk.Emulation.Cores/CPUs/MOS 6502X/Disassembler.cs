@@ -6,13 +6,6 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 {
 	public partial class MOS6502X<TLink> : IDisassemblable
 	{
-		private static ushort peeker_word(ushort address, Func<ushort, byte> peeker)
-		{
-			byte l = peeker(address);
-			byte h = peeker(++address);
-			return (ushort)((h << 8) | l);
-		}
-
 		public string Disassemble(ushort pc, out int bytesToAdvance)
 		{
 			return MOS6502X.Disassemble(pc, out bytesToAdvance, _link.PeekMemory);
