@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		public PutSettingsDirtyBits PutSettings(MelonSettings o)
 		{
 			bool screenChanged = false;
-			if (_settings != null)
+			if (o != null)
 			{
 				screenChanged |= _settings.ScaleFactor != o.ScaleFactor;
 				screenChanged |= _settings.ScreenGap != o.ScreenGap;
