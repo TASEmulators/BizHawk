@@ -912,6 +912,20 @@ namespace BizHawk.Client.EmuHawk
 
 		public IEnumerable<int> GetSelection() => TasView.SelectedRows;
 
+		// Slow but guarantees the entire dialog refreshes
+		private void FullRefresh()
+		{
+			SetTasViewRowCount();
+			TasView.Refresh(); // An extra refresh potentially but we need to guarantee
+			MarkerControl.UpdateValues();
+			BookMarkControl.UpdateValues();
+
+			if (_undoForm != null && !_undoForm.IsDisposed)
+			{
+				_undoForm.UpdateValues();
+			}
+		}
+
 		public void RefreshDialog(bool refreshTasView = true, bool refreshBranches = true)
 		{
 			if (_exiting)
