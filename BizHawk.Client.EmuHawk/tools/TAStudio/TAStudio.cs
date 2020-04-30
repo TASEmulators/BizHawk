@@ -154,8 +154,6 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			SetColumnsFromCurrentStickies();
-
 			if (TasView.Rotatable)
 			{
 				RightClickMenu.Items.AddRange(TasView.GenerateContextMenuItems()
@@ -426,7 +424,7 @@ namespace BizHawk.Client.EmuHawk
 				int digits;
 				if (ControllerType.AxisControls.Contains(kvp.Key))
 				{
-					ControllerDefinition.AxisRange range = ControllerType.AxisRanges
+					var range = ControllerType.AxisRanges
 						[ControllerType.AxisControls.IndexOf(kvp.Key)];
 					type = ColumnType.Float;
 					digits = Math.Max(kvp.Value.Length, range.MaxDigits);
@@ -473,8 +471,15 @@ namespace BizHawk.Client.EmuHawk
 				column.Visible = false;
 			}
 
-			TasView.AllColumns.ColumnsChanged();
+			foreach (var column in TasView.VisibleColumns)
+			{
+				if (Global.InputManager.StickyXorAdapter.IsSticky(column.Name))
+				{
+					column.Emphasis = true;
+				}
+			}
 
+			TasView.AllColumns.ColumnsChanged();
 			SetupBoolPatterns();
 		}
 
@@ -773,17 +778,6 @@ namespace BizHawk.Client.EmuHawk
 				Start = TasView.FirstSelectedIndex ?? 0
 			};
 			loadZone.PlaceZone(CurrentTasMovie);
-		}
-
-		private void SetColumnsFromCurrentStickies()
-		{
-			foreach (var column in TasView.VisibleColumns)
-			{
-				if (Global.InputManager.StickyXorAdapter.IsSticky(column.Name))
-				{
-					column.Emphasis = true;
-				}
-			}
 		}
 
 		#endregion
