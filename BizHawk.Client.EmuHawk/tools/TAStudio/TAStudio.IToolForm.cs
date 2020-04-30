@@ -87,7 +87,7 @@ namespace BizHawk.Client.EmuHawk
 					TasView.AllColumns.Clear();
 					StartNewTasMovie();
 					SetUpColumns();
-					RefreshTasView();
+					TasView.Refresh();
 				}
 				else
 				{

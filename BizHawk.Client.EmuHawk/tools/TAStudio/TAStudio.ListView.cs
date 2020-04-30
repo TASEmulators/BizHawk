@@ -424,10 +424,8 @@ namespace BizHawk.Client.EmuHawk
 		private void TasView_ColumnRightClick(object sender, InputRoll.ColumnClickEventArgs e)
 		{
 			e.Column.Emphasis ^= true;
-
 			UpdateAutoFire(e.Column.Name, e.Column.Emphasis);
-
-			RefreshTasView();
+			TasView.Refresh();
 		}
 
 		private void UpdateAutoFire()
@@ -565,7 +563,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						_extraAxisRows.Clear();
 						AxisEditRow = -1;
-						RefreshTasView();
+						SetTasViewRowCount();
 					}
 					else
 					{
@@ -573,7 +571,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							_extraAxisRows.Clear();
 							AxisEditRow = frame;
-							RefreshTasView();
+							SetTasViewRowCount();
 						}
 
 						_axisEditYPos = e.Y;
@@ -820,7 +818,7 @@ namespace BizHawk.Client.EmuHawk
 					// if a loaded branch log is shorter than selection, keep selection until you attempt to call context menu
 					// you might need it when you load again the branch where this frame exists
 					TasView.DeselectAll();
-					RefreshTasView();
+					SetTasViewRowCount();
 				}
 				else
 				{
@@ -1176,7 +1174,7 @@ namespace BizHawk.Client.EmuHawk
 				TasView.MakeIndexVisible(TasView.CurrentCell.RowIndex.Value); // todo: limit scrolling speed
 			}
 
-			RefreshTasView();
+			SetTasViewRowCount();
 		}
 
 		private void TasView_MouseMove(object sender, MouseEventArgs e)

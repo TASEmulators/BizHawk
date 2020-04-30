@@ -921,7 +921,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (refreshTasView)
 			{
-				RefreshTasView();
+				SetTasViewRowCount();
 			}
 
 			MarkerControl?.UpdateValues();
@@ -937,7 +937,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void RefreshTasView()
+		private void SetTasViewRowCount()
 		{
 			TasView.RowCount = CurrentTasMovie.InputLogLength + 1;
 			_lastRefresh = Emulator.Frame;
