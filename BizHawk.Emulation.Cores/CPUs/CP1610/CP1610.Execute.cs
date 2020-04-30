@@ -20,11 +20,9 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 
 		public TraceInfo CP1610State(bool disassemble = true)
 		{
-			int notused;
-
 			return new TraceInfo
 			{
-				Disassembly = $"{RegisterPC - 1:X4}:  {opcode:X2}  {(disassemble ? Disassemble((ushort)(RegisterPC - 1), out notused) : "---")} ".PadRight(26),
+				Disassembly = $"{RegisterPC - 1:X4}:  {opcode:X2}  {(disassemble ? Disassemble((ushort)(RegisterPC - 1), out _) : "---")} ".PadRight(26),
 				RegisterInfo = string.Join(" ",
 					new[]
 					{

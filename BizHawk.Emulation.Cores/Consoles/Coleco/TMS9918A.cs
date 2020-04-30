@@ -80,7 +80,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			VdpAddress &= 0x3FFF;
 		}
 
-		void WriteRegister(int reg, byte data)
+		private void WriteRegister(int reg, byte data)
 		{
 			if (reg >= 8) return;
 
@@ -106,7 +106,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				case 5: // Sprite Attribute Table Base Address
 					TmsSpriteAttributeBase = (Registers[5] << 7) & 0x3F80;
 					break;
-				case 6: // Sprite Pattern Generator Base Adderss 
+				case 6: // Sprite Pattern Generator Base Address
 					SpritePatternGeneratorBase = (Registers[6] << 11) & 0x3800;
 					break;
 			}

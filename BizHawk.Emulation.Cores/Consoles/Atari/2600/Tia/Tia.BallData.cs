@@ -74,17 +74,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				return result;
 			}
 
-			public void Resp_check()
-			{
-				if (_draw_signaled)
-				{
-					if (_startSignal < 161)
-					{
-						_startSignal -= _startSignal - 156;
-					}
-				}
-			}
-
 			public void SyncState(Serializer ser)
 			{
 				ser.BeginSection("Ball");

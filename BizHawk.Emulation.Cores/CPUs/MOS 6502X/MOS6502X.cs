@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -20,7 +19,6 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		public bool BCD_Enabled = true;
 		public bool debug = false;
-		public bool throw_unhandled;
 
 		public void Reset()
 		{
@@ -150,12 +148,6 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		public const ushort BRKVector = 0xFFFE;
 		public const ushort IRQVector = 0xFFFE;
 
-		enum ExceptionType
-		{
-			BRK, NMI, IRQ
-		}
-
-
 		// ==== CPU State ====
 
 		public byte A;
@@ -198,9 +190,6 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			ser.Sync(nameof(ext_ppu_cycle), ref ext_ppu_cycle);
 			ser.EndSection();
 		}
-
-		public void SaveStateBinary(BinaryWriter writer) { SyncState(Serializer.CreateBinaryWriter(writer)); }
-		public void LoadStateBinary(BinaryReader reader) { SyncState(Serializer.CreateBinaryReader(reader)); }
 
 		// ==== End State ====
 
@@ -261,34 +250,6 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		}
 
 		public long TotalExecutedCycles;
-
-		public ushort ReadWord(ushort address)
-		{
-			byte l = _link.ReadMemory(address);
-			byte h = _link.ReadMemory(++address);
-			return (ushort)((h << 8) | l);
-		}
-
-		public ushort PeekWord(ushort address)
-		{
-			byte l = _link.PeekMemory(address);
-			byte h = _link.PeekMemory(++address);
-			return (ushort)((h << 8) | l);
-		}
-
-		private void WriteWord(ushort address, ushort value)
-		{
-			byte l = (byte)(value & 0xFF);
-			byte h = (byte)(value >> 8);
-			_link.WriteMemory(address, l);
-			_link.WriteMemory(++address, h);
-		}
-
-		private ushort ReadWordPageWrap(ushort address)
-		{
-			ushort highAddress = (ushort)((address & 0xFF00) + ((address + 1) & 0xFF));
-			return (ushort)(_link.ReadMemory(address) | (_link.ReadMemory(highAddress) << 8));
-		}
 
 		// SO pin
 		public void SetOverflow()

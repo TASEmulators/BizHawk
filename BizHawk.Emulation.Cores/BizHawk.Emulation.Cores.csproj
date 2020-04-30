@@ -68,5 +68,4 @@
 		<Compile Update="Consoles/Sony/PSX/Octoshock.*.cs" DependentUpon="Octoshock.cs" />
 		<Compile Update="Consoles/WonderSwan/WonderSwan.*.cs" DependentUpon="WonderSwan.cs" />
 	</ItemGroup>
-	<Import Project="$(SolutionDir)NamespaceAliasHack.targets" />
 </Project>

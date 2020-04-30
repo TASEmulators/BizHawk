@@ -22,15 +22,10 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public bool NonMaskableInterrupt
 		{
 			get => nonMaskableInterrupt;
-			set { if (value && !nonMaskableInterrupt) NonMaskableInterruptPending = true; nonMaskableInterrupt = value; }
+			set { if (value && !nonMaskableInterrupt) nonMaskableInterruptPending = true; nonMaskableInterrupt = value; }
 		}
 
 		private bool nonMaskableInterruptPending;
-		public bool NonMaskableInterruptPending
-		{
-			get => nonMaskableInterruptPending;
-			set => nonMaskableInterruptPending = value;
-		}
 
 		private int interruptMode;
 		public int InterruptMode
@@ -144,7 +139,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			IFF1 = false;
 			IFF2 = false;
 			NonMaskableInterrupt = false;
-			NonMaskableInterruptPending = false;
+			nonMaskableInterruptPending = false;
 			FlagI = false;
 			InterruptMode = 1;
 		}

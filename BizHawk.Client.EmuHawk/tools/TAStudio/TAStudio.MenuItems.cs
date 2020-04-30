@@ -388,13 +388,13 @@ namespace BizHawk.Client.EmuHawk
 		private void DeselectMenuItem_Click(object sender, EventArgs e)
 		{
 			TasView.DeselectAll();
-			RefreshTasView();
+			TasView.Refresh();
 		}
 
 		private void SelectAllMenuItem_Click(object sender, EventArgs e)
 		{
 			TasView.SelectAll();
-			RefreshTasView();
+			TasView.Refresh();
 		}
 
 		private void SelectBetweenMarkersMenuItem_Click(object sender, EventArgs e)
@@ -413,7 +413,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				SetSplicer();
-				RefreshTasView();
+				TasView.Refresh();
 			}
 		}
 
@@ -426,7 +426,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			SetSplicer();
-			RefreshTasView();
+			TasView.Refresh();
 		}
 
 		private void CopyMenuItem_Click(object sender, EventArgs e)
@@ -492,7 +492,7 @@ namespace BizHawk.Client.EmuHawk
 							}
 							else
 							{
-								RefreshDialog();
+								FullRefresh();
 							}
 						}
 					}
@@ -535,7 +535,7 @@ namespace BizHawk.Client.EmuHawk
 							}
 							else
 							{
-								RefreshDialog();
+								FullRefresh();
 							}
 						}
 					}
@@ -578,7 +578,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					RefreshDialog();
+					FullRefresh();
 				}
 			}
 		}
@@ -606,7 +606,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					RefreshDialog();
+					FullRefresh();
 				}
 			}
 		}
@@ -620,7 +620,7 @@ namespace BizHawk.Client.EmuHawk
 				if (rollBackFrame >= CurrentTasMovie.InputLogLength)
 				{
 					// Cannot delete non-existent frames
-					RefreshDialog();
+					FullRefresh();
 					return;
 				}
 
@@ -634,7 +634,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					RefreshDialog();
+					FullRefresh();
 				}
 			}
 		}
@@ -660,7 +660,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					RefreshDialog();
+					FullRefresh();
 				}
 			}
 		}
@@ -681,7 +681,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					RefreshDialog();
+					FullRefresh();
 				}
 			}
 		}
@@ -716,7 +716,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					RefreshDialog();
+					FullRefresh();
 				}
 			}
 		}
@@ -1303,7 +1303,7 @@ namespace BizHawk.Client.EmuHawk
 
 						CurrentTasMovie.FlagChanges();
 						TasView.AllColumns.ColumnsChanged();
-						RefreshTasView();
+						TasView.Refresh();
 					};
 
 					ColumnsSubMenu.DropDownItems.Add(item);
@@ -1317,7 +1317,7 @@ namespace BizHawk.Client.EmuHawk
 					var item = new ToolStripMenuItem($"Show Player {i}")
 					{
 						CheckOnClick = true,
-						Checked = true
+						Checked = playerMenus[i].DropDownItems.OfType<ToolStripMenuItem>().Any(mi => mi.Checked)
 					};
 
 					ToolStripMenuItem dummyObject = playerMenus[i];
@@ -1330,7 +1330,7 @@ namespace BizHawk.Client.EmuHawk
 
 						CurrentTasMovie.FlagChanges();
 						TasView.AllColumns.ColumnsChanged();
-						RefreshTasView();
+						TasView.Refresh();
 					};
 
 					ColumnsSubMenu.DropDownItems.Add(item);
@@ -1345,9 +1345,9 @@ namespace BizHawk.Client.EmuHawk
 		private void RestoreDefaults()
 		{
 			TasView.AllColumns.Clear();
-				SetUpColumns();
-				RefreshTasView();
-				CurrentTasMovie.FlagChanges();
+			SetUpColumns();
+			TasView.Refresh();
+			CurrentTasMovie.FlagChanges();
 
 			MainVertialSplit.SplitterDistance = _defaultMainSplitDistance;
 			BranchesMarkersSplit.SplitterDistance = _defaultBranchMarkerSplitDistance;
@@ -1402,7 +1402,7 @@ namespace BizHawk.Client.EmuHawk
 		private void CancelSeekContextMenuItem_Click(object sender, EventArgs e)
 		{
 			MainForm.PauseOnFrame = null;
-			RefreshTasView();
+			TasView.Refresh();
 		}
 
 		private void BranchContextMenuItem_Click(object sender, EventArgs e)

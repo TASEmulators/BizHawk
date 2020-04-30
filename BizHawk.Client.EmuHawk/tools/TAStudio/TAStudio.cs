@@ -151,11 +151,8 @@ namespace BizHawk.Client.EmuHawk
 			if (!Engage())
 			{
 				Close();
-				DialogResult = DialogResult.Cancel;
 				return;
 			}
-
-			SetColumnsFromCurrentStickies();
 
 			if (TasView.Rotatable)
 			{
@@ -427,7 +424,7 @@ namespace BizHawk.Client.EmuHawk
 				int digits;
 				if (ControllerType.AxisControls.Contains(kvp.Key))
 				{
-					ControllerDefinition.AxisRange range = ControllerType.AxisRanges
+					var range = ControllerType.AxisRanges
 						[ControllerType.AxisControls.IndexOf(kvp.Key)];
 					type = ColumnType.Float;
 					digits = Math.Max(kvp.Value.Length, range.MaxDigits);
@@ -474,8 +471,15 @@ namespace BizHawk.Client.EmuHawk
 				column.Visible = false;
 			}
 
-			TasView.AllColumns.ColumnsChanged();
+			foreach (var column in TasView.VisibleColumns)
+			{
+				if (Global.InputManager.StickyXorAdapter.IsSticky(column.Name))
+				{
+					column.Emphasis = true;
+				}
+			}
 
+			TasView.AllColumns.ColumnsChanged();
 			SetupBoolPatterns();
 		}
 
@@ -776,17 +780,6 @@ namespace BizHawk.Client.EmuHawk
 			loadZone.PlaceZone(CurrentTasMovie);
 		}
 
-		private void SetColumnsFromCurrentStickies()
-		{
-			foreach (var column in TasView.VisibleColumns)
-			{
-				if (Global.InputManager.StickyXorAdapter.IsSticky(column.Name))
-				{
-					column.Emphasis = true;
-				}
-			}
-		}
-
 		#endregion
 
 		private void TastudioPlayMode()
@@ -919,6 +912,20 @@ namespace BizHawk.Client.EmuHawk
 
 		public IEnumerable<int> GetSelection() => TasView.SelectedRows;
 
+		// Slow but guarantees the entire dialog refreshes
+		private void FullRefresh()
+		{
+			SetTasViewRowCount();
+			TasView.Refresh(); // An extra refresh potentially but we need to guarantee
+			MarkerControl.UpdateValues();
+			BookMarkControl.UpdateValues();
+
+			if (_undoForm != null && !_undoForm.IsDisposed)
+			{
+				_undoForm.UpdateValues();
+			}
+		}
+
 		public void RefreshDialog(bool refreshTasView = true, bool refreshBranches = true)
 		{
 			if (_exiting)
@@ -928,7 +935,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (refreshTasView)
 			{
-				RefreshTasView();
+				SetTasViewRowCount();
 			}
 
 			MarkerControl?.UpdateValues();
@@ -944,7 +951,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void RefreshTasView()
+		private void SetTasViewRowCount()
 		{
 			TasView.RowCount = CurrentTasMovie.InputLogLength + 1;
 			_lastRefresh = Emulator.Frame;
