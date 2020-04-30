@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: "BEFORE OPENING AN ISSUE: Search for duplicates"
+    url: "https://github.com/TASVideos/BizHawk/issues?q=is:issue+<search+terms>"
+    about: "Opens the issue tracker here on GitHub. Use `is:issue <search terms>` to find open or closed issues that might be similar to your problem."
+  - name: "Report issues with the Linux port"
+    url: "https://github.com/TASVideos/BizHawk/issues/1430"
+    about: "Linux users: please comment here on #1430 instead of opening a new issue."
+  - name: "Chat with us on IRC"
+    url: "https://webchat.freenode.net/#bizhawk"
+    about: "Joins #bizhawk on freenode with your browser. Please be patient as there isn't always somebody online."
