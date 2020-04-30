@@ -424,7 +424,8 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					stopped = true;
 					if (!stop_check)
 					{
-						stop_time = SpeedFunc(0);
+						// Z contains the second stop byte, not sure if it's useful at all
+						stop_time = SpeedFunc(Regs[Z]);
 						stop_check = true;
 					}
 
@@ -433,6 +434,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					if (stop_time > 0)
 					{
 						stop_time--;
+
 						if (stop_time == 0)
 						{
 							TraceCallback?.Invoke(new TraceInfo
@@ -454,8 +456,10 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 							instr_pntr = 256 * 60 * 2 + 60 * 5; // point to stop loop
 						}
 					}
-					else if (interrupt_src_reg.Bit(4)) // button pressed, not actually an interrupt though
+					else if (interrupt_src_reg.Bit(4)) // button pressed, even if interrupts are not enabled, still exists stop
 					{
+						// TODO: OnExecFetch a gameboy, you can only un-STOP once, needs further testing
+						
 						TraceCallback?.Invoke(new TraceInfo
 						{
 							Disassembly = "====un-stop====",

@@ -17,6 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public bool in_vblank_old;
 		public bool in_vblank;
 		public bool vblank_rise;
+		public bool controller_was_checked;
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
@@ -56,10 +57,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			_islag = true;
 
+			controller_was_checked = false;
+
 			do_frame(controller);
 
-			// if the game is stopped but controller interrupts are on, check for interrupts
-			if ((cpu.stopped || cpu.halted) && _islag && ((REG_FFFF & 0x10) == 0x10))
+			// if the game is halted but controller interrupts are on, check for interrupts
+			// if the game is stopped, any button press will un-stop even if interrupts are off
+			if ((cpu.stopped && !controller_was_checked) || (cpu.halted && ((REG_FFFF & 0x10) == 0x10)))
 			{
 				// update the controller state on VBlank
 				GetControllerState(controller);
@@ -124,6 +128,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				if (in_vblank && !in_vblank_old)
 				{
 					_islag = false;
+
+					controller_was_checked = true;
 
 					// update the controller state on VBlank
 					GetControllerState(controller);
@@ -262,7 +268,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				return 0;
 			}
 
-			// if we are in GB mode, return 0 indicating not switching speed
+			// if we are in GB mode, return 0, cannot switch speed
 			return 0;
 		}
 
