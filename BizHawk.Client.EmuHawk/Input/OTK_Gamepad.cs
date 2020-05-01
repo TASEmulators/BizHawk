@@ -256,8 +256,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// OpenTK's GetAxis returns float values (as opposed to the shorts of SlimDX)
 			const float ConversionFactor = 1.0f / short.MaxValue;
-			const float dzp = (short)4000 * ConversionFactor;
-			const float dzn = (short)-4000 * ConversionFactor;
+			const float dzp = 20000 * ConversionFactor;
+			const float dzn = -20000 * ConversionFactor;
 			//const float dzt = 0.6f;
 
 			// axis
@@ -317,8 +317,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// OpenTK's ThumbSticks contain float values (as opposed to the shorts of SlimDX)
 			const float ConversionFactor = 1.0f / short.MaxValue;
-			const float dzp = (short)4000 * ConversionFactor;
-			const float dzn = (short)-4000 * ConversionFactor;
+			const float dzp = 20000 * ConversionFactor;
+			const float dzn = -20000 * ConversionFactor;
 			const float dzt = 0.6f;
 
 			// buttons
