@@ -484,8 +484,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			{
 				 "mame"                                 // dummy, internally discarded by index, so has to go first
 				, _gameFilename                         // no dash for rom names
-				, "-noreadconfig"                       // forbid reading any config files
-				, "-nowriteconfig"                      // forbid writing any config files
+				, "-noreadconfig"                       // forbid reading ini files
+				, "-nowriteconfig"                      // forbid writing ini files
 				, "-norewind"                           // forbid rewind savestates (captured upon frame advance)
 				, "-skip_gameinfo"                      // forbid this blocking screen that requires user input
 				, "-nothrottle"                         // forbid throttling to "real" speed of the device
@@ -494,7 +494,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				, "-joystick_contradictory"             // L+R/U+D on digital joystick
 				, "-nonvram_save"                       // prevent dumping non-volatile ram to disk
 				, "-artpath",          "mame\\artwork"  // path to load artowrk from
-				, "-diff_directory",      "mame\\diff"
+				, "-diff_directory",      "mame\\diff"  // hdd diffs, whenever stuff is written back to an image
+				, "-cfg_directory",                 ""  // send invalid path to prevent cfg handling
 				, "-volume",                     "-32"  // lowest attenuation means mame osd remains silent
 				, "-output",                 "console"  // print everything to hawk console
 				, "-samplerate", _sampleRate.ToString() // match hawk samplerate
