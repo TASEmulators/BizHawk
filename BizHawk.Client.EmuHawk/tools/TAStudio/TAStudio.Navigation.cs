@@ -35,7 +35,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// Get as close as we can then emulate there
 				StartAtNearestFrameAndEmulate(frame, fromLua, fromRewinding);
-
 				MaybeFollowCursor();
 			}
 			else // Emulate to a future frame
@@ -64,9 +63,6 @@ namespace BizHawk.Client.EmuHawk
 					StartSeeking(frame);
 				}
 			}
-
-			RefreshDialog();
-			UpdateOtherTools();
 		}
 
 		public void GoToPreviousFrame()

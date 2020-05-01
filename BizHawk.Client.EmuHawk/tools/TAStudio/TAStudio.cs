@@ -1228,7 +1228,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				if (!lagLog.WasLagged.Value && isLag)
-				{ // (it shouldn't need to rewind, since the inserted input wasn't polled)
+				{
+					// (it shouldn't need to rewind, since the inserted input wasn't polled)
 					CurrentTasMovie.ChangeLog.AddInputBind(Emulator.Frame - 1, false, $"Bind Input; Insert {Emulator.Frame - 1}");
 					bool wasRecording = CurrentTasMovie.ChangeLog.IsRecording;
 					CurrentTasMovie.ChangeLog.IsRecording = false;
@@ -1290,8 +1291,7 @@ namespace BizHawk.Client.EmuHawk
 				ShowColor = false,
 				Font = TasView.Font
 			};
-			var result = fontDialog.ShowDialog();
-			if (result != DialogResult.Cancel)
+			if (fontDialog.ShowDialog() != DialogResult.Cancel)
 			{
 				TasView.Font = TasViewFont = fontDialog.Font;
 				TasView.Refresh();

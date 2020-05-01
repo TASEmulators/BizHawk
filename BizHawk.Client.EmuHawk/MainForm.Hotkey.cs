@@ -463,7 +463,7 @@ namespace BizHawk.Client.EmuHawk
 				case "Show Cursor":
 					if (Tools.IsLoaded<TAStudio>())
 					{
-						Tools.TAStudio.SetVisibleIndex();
+						Tools.TAStudio.SetVisibleFrame();
 						Tools.TAStudio.RefreshDialog();
 					}
 					else
