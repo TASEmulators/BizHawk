@@ -224,3 +224,10 @@
 [NO] types : nothing important
 [NO] video/Deinterlacer : IGNORE. we may have weak deinterlacing, but so be it
 [NO] tests : intrinsic macros changes, threading API changes, stream tests
+
+1.24.0-UNSTABLE -> 1.24.1
+[OK] psx/spu : some basic emulation fixes	
+[NO] tests : thread stuff
+
+1.24.1 -> 1.24.2
+-nothing-
