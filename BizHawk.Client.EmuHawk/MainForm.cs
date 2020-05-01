@@ -2798,6 +2798,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void LoadConfigFile(string iniPath)
+		{
+			Config = ConfigService.Load<Config>(iniPath);
+			Config.ResolveDefaults();
+			InitControls(); // rebind hotkeys
+			InputManager.SyncControls(Emulator, Config);
+			AddOnScreenMessage($"Config file loaded: {iniPath}");
+		}
+
 		#endregion
 
 		#region Frame Loop
