@@ -490,10 +490,8 @@ namespace BizHawk.Client.EmuHawk
 								GoToLastEmulatedFrameIfNecessary(rollbackFrame);
 								DoAutoRestore();
 							}
-							else
-							{
-								FullRefresh();
-							}
+
+							FullRefresh();
 						}
 					}
 				}
@@ -533,10 +531,8 @@ namespace BizHawk.Client.EmuHawk
 								GoToLastEmulatedFrameIfNecessary(TasView.FirstSelectedIndex.Value);
 								DoAutoRestore();
 							}
-							else
-							{
-								FullRefresh();
-							}
+
+							FullRefresh();
 						}
 					}
 				}
@@ -576,10 +572,8 @@ namespace BizHawk.Client.EmuHawk
 					GoToLastEmulatedFrameIfNecessary(rollBackFrame);
 					DoAutoRestore();
 				}
-				else
-				{
-					FullRefresh();
-				}
+
+				FullRefresh();
 			}
 		}
 
@@ -604,10 +598,8 @@ namespace BizHawk.Client.EmuHawk
 					GoToLastEmulatedFrameIfNecessary(rollBackFrame);
 					DoAutoRestore();
 				}
-				else
-				{
-					FullRefresh();
-				}
+
+				FullRefresh();
 			}
 		}
 
@@ -632,10 +624,8 @@ namespace BizHawk.Client.EmuHawk
 					GoToLastEmulatedFrameIfNecessary(rollBackFrame);
 					DoAutoRestore();
 				}
-				else
-				{
-					FullRefresh();
-				}
+
+				FullRefresh();
 			}
 		}
 
@@ -658,10 +648,8 @@ namespace BizHawk.Client.EmuHawk
 					GoToLastEmulatedFrameIfNecessary(insertionFrame);
 					DoAutoRestore();
 				}
-				else
-				{
-					FullRefresh();
-				}
+
+				FullRefresh();
 			}
 		}
 
@@ -679,10 +667,8 @@ namespace BizHawk.Client.EmuHawk
 					GoToLastEmulatedFrameIfNecessary(insertionFrame);
 					DoAutoRestore();
 				}
-				else
-				{
-					FullRefresh();
-				}
+
+				FullRefresh();
 			}
 		}
 
@@ -692,8 +678,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				int insertionFrame = TasView.FirstSelectedIndex ?? 0;
 				using var framesPrompt = new FramesPrompt();
-				DialogResult result = framesPrompt.ShowDialog();
-				if (result == DialogResult.OK)
+				if (framesPrompt.ShowDialog().IsOk())
 				{
 					InsertNumFrames(insertionFrame, framesPrompt.Frames);
 				}
@@ -714,10 +699,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					GoToFrame(rollbackFrame);
 				}
-				else
-				{
-					FullRefresh();
-				}
+
+				FullRefresh();
 			}
 		}
 
