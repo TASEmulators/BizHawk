@@ -97,26 +97,21 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Makes the given frame visible. If no frame is given, makes the current frame visible.
 		/// </summary>
-		public void SetVisibleIndex(int? indexThatMustBeVisible = null)
+		public void SetVisibleFrame(int? frame = null)
 		{
 			if (TasView.AlwaysScroll && _leftButtonHeld)
 			{
 				return;
 			}
 
-			if (!indexThatMustBeVisible.HasValue)
-			{
-				indexThatMustBeVisible = Emulator.Frame;
-			}
-
-			TasView.ScrollToIndex(indexThatMustBeVisible.Value);
+			TasView.ScrollToIndex(frame ?? Emulator.Frame);
 		}
 
 		private void MaybeFollowCursor()
 		{
 			if (TasPlaybackBox.FollowCursor)
 			{
-				SetVisibleIndex();
+				SetVisibleFrame();
 			}
 		}
 	}

@@ -101,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (MarkerView.AnyRowsSelected)
 			{
-				Tastudio.SetVisibleIndex(SelectedMarkerFrame());
+				Tastudio.SetVisibleFrame(SelectedMarkerFrame());
 				Tastudio.RefreshDialog();
 			}
 		}

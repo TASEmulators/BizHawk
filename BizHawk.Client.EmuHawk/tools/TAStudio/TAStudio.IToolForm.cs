@@ -45,7 +45,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			bool refreshNeeded = false;
+			var refreshNeeded = false;
 			if (AutoadjustInputMenuItem.Checked)
 			{
 				refreshNeeded = AutoAdjustInput();

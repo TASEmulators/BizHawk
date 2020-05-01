@@ -118,7 +118,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (Tastudio.Settings.FollowCursor)
 				{
-					Tastudio.SetVisibleIndex();
+					Tastudio.SetVisibleFrame();
 					Tastudio.RefreshDialog();
 				}
 			}
