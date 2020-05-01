@@ -418,7 +418,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				bitmap = Properties.Resources.StopButton;
+				bitmap = Properties.Resources.Stop;
 			}
 		}
 
