@@ -297,16 +297,16 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 
 			if (game.IsNullInstance())
 			{
+				movie.GameName = "NULL";
+			}
+			else
+			{
 				movie.GameName = game.FilesystemSafeName();
 				movie.Hash = game.Hash;
 				if (game.FirmwareHash != null)
 				{
 					movie.FirmwareHash = game.FirmwareHash;
 				}
-			}
-			else
-			{
-				movie.GameName = "NULL";
 			}
 
 			if (emulator.HasBoardInfo())
