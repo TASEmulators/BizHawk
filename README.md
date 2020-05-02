@@ -90,9 +90,9 @@ Released binaries can be found right here on GitHub (also linked at the top of t
 
 Click `BizHawk-<version>.zip` to download it. Also note the changelog, the full version of which is [here at TASVideos](http://tasvideos.org/Bizhawk/ReleaseHistory.html). Extract it anywhere, but **don't mix different versions** of BizHawk, keep each version in its own folder. Run `EmuHawk.exe` to start. You may move or rename the folder containing `EmuHawk.exe`, even to another drive — as long as you keep all the files together, and the prerequisites are installed when you go to run it.
 
-EmuHawk does have some prerequisites which it can't work without (it will let you know if they're missing). The list is [here](https://github.com/TASVideos/BizHawk-Prereqs/blob/e364066a0f79ad560d6725e6088d680293e09e30/README), and we've made an all-in-one installer which you can get [here](https://github.com/TASVideos/BizHawk-Prereqs/releases/tag/2.1). You should only have to run this once per machine, unless the changelog says we need something extra.
+EmuHawk does have some prerequisites which it can't work without (it will let you know if they're missing). The list is [here](https://github.com/TASVideos/BizHawk-Prereqs/blob/master/README), and we've made an all-in-one installer which you can get [here](https://github.com/TASVideos/BizHawk-Prereqs/releases/latest). You should only have to run this once per machine, unless the changelog says we need something extra.
 
-We will be [following Microsoft](https://support.microsoft.com/en-us/help/13853/windows-lifecycle-fact-sheet) in dropping Windows support, that is, we reserve the right to ignore your problems unless you've updated to at least Win10 1809 "Redstone 5" or Win8.1 KB4530702 (latest at time of writing).
+We will be [following Microsoft](https://support.microsoft.com/en-us/help/13853/windows-lifecycle-fact-sheet) in dropping Windows support, that is, we reserve the right to ignore your problems unless you've updated to at least Win10 1909 or Win8.1 KB4550961.
 
 A "backport" release, [1.13.2](https://github.com/TASVideos/BizHawk/releases/tag/1.13.2), is available for users of Windows XP, 7, or 8.1 32-bit. It has many bugs that will never be fixed and it doesn't have all the features of the later versions.
 
@@ -104,9 +104,9 @@ A "backport" release, [1.13.2](https://github.com/TASVideos/BizHawk/releases/tag
 
 You'll need to either build BizHawk yourself (see [*Building*](#unix-1) below), or download a dev build (see [*Testing*](#testing) below; please note some features are broken in dev builds for unknown reasons).
 
-The runtime dependencies are: Mono "complete", Mono VB.NET, ~~`libwine`~~, glibc, OpenAL, NVIDIA's `cgc` utility, and your distro's LSB implementation (You do *not* need .NET at runtime). Run `EmuHawkMono.sh` to start Mono with the right library and executable paths—you can run it from anywhere, so putting it in a .desktop file is fine.
+The runtime dependencies are: Mono "complete", Mono VB.NET, ~~`libwine`~~, glibc, OpenAL, NVIDIA's `cgc` utility, and your distro's LSB implementation (you do *not* need .NET Core at runtime, only Mono). Run `EmuHawkMono.sh` to start Mono with the right env. vars—you can run it from anywhere, so creating a .desktop file to wrap the script is fine.
 
-The systems that currently work are: GB + GBC (GBHawk), NES (NesHawk), SMS, Atari 7800, and some classic home computers. Nothing other than EmuHawk has been ported. See [#1430](https://github.com/TASVideos/BizHawk/issues/1430) for progress.
+The systems that currently work are: GB + GBC (GBHawk), NES (NesHawk), SMS, Atari 7800, and some classic home computers. See [#1430](https://github.com/TASVideos/BizHawk/issues/1430) for progress.
 
 [to top](#bizhawk)
 
@@ -260,7 +260,7 @@ Virtual Boy | Virtual Boyee |
 WonderSwan / Color | Cygne |
 ZX Spectrum | ZXHawk |
 
-Amstrad CPC, Fairchild Channel F, and Nintendo DS via [melonDS](https://github.com/Arisotura/melonDS) are works-in-progress, as well as a front-end for MAME, and there is **no ETA** for any of them so don't ask. Cores for other systems are only conceptual. If you're willing and able to work on one of these, ask on IRC (see below).
+Amstrad CPC, Fairchild Channel F, MSX, and Nintendo DS via [melonDS](https://github.com/Arisotura/melonDS) are works-in-progress, as well as a front-end for MAME, and there is **no ETA** for any of them so don't ask. Cores for other systems are only conceptual. If you're willing and able to work on one of these, ask on IRC (see below).
 
 [to top](#bizhawk)
 
