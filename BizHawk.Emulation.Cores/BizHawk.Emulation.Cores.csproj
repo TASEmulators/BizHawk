@@ -42,7 +42,6 @@
 		<Compile Update="Consoles/Nintendo/Gameboy/Gambatte.*.cs" DependentUpon="Gambatte.cs" />
 		<Compile Update="Consoles/Nintendo/Gameboy/GambatteLink.*.cs" DependentUpon="GambatteLink.cs" />
 		<Compile Update="Consoles/Nintendo/GBA/MGBAHawk.*.cs" DependentUpon="MGBAHawk.cs" />
-		<Compile Update="Consoles/Nintendo/GBA/VBANext.*.cs" DependentUpon="VBANext.cs" />
 		<Compile Update="Consoles/Nintendo/GBHawk/GBHawk.*.cs" DependentUpon="GBHawk.cs" />
 		<Compile Update="Consoles/Nintendo/GBHawk/*_PPU.cs" DependentUpon="PPU.cs" />
 		<Compile Update="Consoles/Nintendo/GBHawkLink/GBHawkLink.*.cs" DependentUpon="GBHawkLink.cs" />
