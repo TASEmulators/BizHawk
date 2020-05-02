@@ -310,6 +310,6 @@ namespace BizHawk.Client.Common.movie.import
 		}
 
 		private static SimpleController GbaController()
-			=> new SimpleController { Definition = GBA.GBAController };
+			=> new SimpleController { Definition = MGBAHawk.GBAController };
 	}
 }
