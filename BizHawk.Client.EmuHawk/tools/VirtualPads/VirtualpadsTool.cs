@@ -9,7 +9,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class VirtualpadTool : Form, IToolFormAutoConfig
+	public partial class VirtualpadTool : ToolFormBase, IToolFormAutoConfig
 	{
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
@@ -153,19 +153,19 @@ namespace BizHawk.Client.EmuHawk
 
 			Pads.ForEach(p => p.SetPrevious(null)); // Not the cleanest way to clear this every frame
 
-			if (Global.MovieSession.Movie.Mode == MovieMode.Play)
+			if (MovieSession.Movie.Mode == MovieMode.Play)
 			{
 				Readonly = true;
-				if (Global.MovieSession.CurrentInput != null)
+				if (MovieSession.CurrentInput != null)
 				{
-					Pads.ForEach(p => p.Set(Global.MovieSession.CurrentInput));
+					Pads.ForEach(p => p.Set(MovieSession.CurrentInput));
 				}
 			}
 			else
 			{
-				if (Global.MovieSession.Movie.IsRecording())
+				if (MovieSession.Movie.IsRecording())
 				{
-					Pads.ForEach(p => p.SetPrevious(Global.MovieSession.PreviousFrame));
+					Pads.ForEach(p => p.SetPrevious(MovieSession.PreviousFrame));
 				}
 
 				Readonly = false;
