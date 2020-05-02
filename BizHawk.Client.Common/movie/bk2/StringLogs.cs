@@ -110,7 +110,7 @@ namespace BizHawk.Client.Common
 			if (disk)
 			{
 				var path = TempFileManager.GetTempFilename("movieOnDisk");
-				_stream = new FileStream(path, FileMode.Create, FileSystemRights.FullControl, FileShare.None, 4 * 1024, FileOptions.DeleteOnClose);
+				_stream = new FileStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.None, 4 * 1024, FileOptions.DeleteOnClose);
 			}
 			else
 			{
