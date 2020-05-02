@@ -68,7 +68,6 @@
             this.moveUpToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.moveDownToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.pauseToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.RamWatchMenu = new MenuStripEx();
             this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.NewListMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -98,9 +97,7 @@
             this.MoveTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MoveBottomMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SelectAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.PauseMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.DefinePreviousValueSubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.PreviousFrameMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.LastChangeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -338,8 +335,7 @@
             this.toolStripSeparator6,
             this.moveUpToolStripButton,
             this.moveDownToolStripButton,
-            this.toolStripSeparator5,
-            this.pauseToolStripButton});
+            this.toolStripSeparator5});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(364, 25);
@@ -496,17 +492,7 @@
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
             this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
-            // 
-            // pauseToolStripButton
-            // 
-            this.pauseToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.pauseToolStripButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Pause;
-            this.pauseToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.pauseToolStripButton.Name = "pauseToolStripButton";
-            this.pauseToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.pauseToolStripButton.Text = "Pause";
-            this.pauseToolStripButton.Click += new System.EventHandler(this.PauseMenuItem_Click);
-            // 
+			// 
             // RamWatchMenu
             // 
             this.RamWatchMenu.ClickThrough = true;
@@ -626,9 +612,7 @@
             this.MoveDownMenuItem,
             this.MoveTopMenuItem,
             this.MoveBottomMenuItem,
-            this.SelectAllMenuItem,
-            this.toolStripSeparator2,
-            this.PauseMenuItem});
+            this.SelectAllMenuItem});
             this.WatchesSubMenu.Name = "WatchesSubMenu";
             this.WatchesSubMenu.Size = new System.Drawing.Size(64, 20);
             this.WatchesSubMenu.Text = "&Watches";
@@ -774,20 +758,7 @@
             this.SelectAllMenuItem.Size = new System.Drawing.Size(244, 22);
             this.SelectAllMenuItem.Text = "Select &All";
             this.SelectAllMenuItem.Click += new System.EventHandler(this.SelectAllMenuItem_Click);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(241, 6);
-            // 
-            // PauseMenuItem
-            // 
-            this.PauseMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Pause;
-            this.PauseMenuItem.Name = "PauseMenuItem";
-            this.PauseMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.PauseMenuItem.Text = "&Pause";
-            this.PauseMenuItem.Click += new System.EventHandler(this.PauseMenuItem_Click);
-            // 
+			// 
             // OptionsSubMenu
             // 
             this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -1004,9 +975,6 @@
 		private StatusStripEx statusStrip1;
 		private System.Windows.Forms.ToolStripStatusLabel MessageLabel;
 		private System.Windows.Forms.ToolStripButton ErrorIconButton;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-		private System.Windows.Forms.ToolStripMenuItem PauseMenuItem;
-		private System.Windows.Forms.ToolStripButton pauseToolStripButton;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
 		private System.Windows.Forms.ToolStripSeparator Separator4;
 		private System.Windows.Forms.ToolStripMenuItem ReadBreakpointContextMenuItem;

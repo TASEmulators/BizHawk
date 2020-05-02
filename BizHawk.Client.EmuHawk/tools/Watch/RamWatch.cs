@@ -22,7 +22,6 @@ namespace BizHawk.Client.EmuHawk
 		private int _defaultHeight;
 		private string _sortedColumn;
 		private bool _sortReverse;
-		private bool _paused;
 
 		[RequiredService]
 		private IMemoryDomains MemoryDomains { get; set; }
@@ -250,11 +249,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			if (_paused)
-			{
-				return;
-			}
-
 			if ((!IsHandleCreated || IsDisposed) && !Config.DisplayRamWatch)
 			{
 				return;
@@ -277,11 +271,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void FastUpdate()
 		{
-			if (_paused)
-			{
-				return;
-			}
-
 			if ((!IsHandleCreated || IsDisposed) && !Config.DisplayRamWatch)
 			{
 				return;
@@ -713,8 +702,6 @@ namespace BizHawk.Client.EmuHawk
 				FreezeAddressMenuItem.Enabled =
 				SelectedIndices.Any() &&
 				SelectedWatches.All(w => w.Domain.Writable);
-
-			PauseMenuItem.Text = _paused ? "Unpause" : "Pause";
 		}
 
 		private MemoryDomain _currentDomain;
@@ -948,11 +935,6 @@ namespace BizHawk.Client.EmuHawk
 		private void SelectAllMenuItem_Click(object sender, EventArgs e)
 		{
 			WatchListView.SelectAll();
-		}
-
-		private void PauseMenuItem_Click(object sender, EventArgs e)
-		{
-			_paused ^= true;
 		}
 
 		#endregion
