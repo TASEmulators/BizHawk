@@ -1,10 +1,39 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	public static class LibmGBA
 	{
+		[Flags]
+		public enum Buttons : int
+		{
+			A = 1,
+			B = 2,
+			Select = 4,
+			Start = 8,
+			Right = 16,
+			Left = 32,
+			Up = 64,
+			Down = 128,
+			R = 256,
+			L = 512
+		}
+
+		public static Buttons GetButtons(IController c)
+		{
+			Buttons ret = 0;
+			foreach (string s in Enum.GetNames(typeof(Buttons)))
+			{
+				if (c.IsPressed(s))
+				{
+					ret |= (Buttons)Enum.Parse(typeof(Buttons), s);
+				}
+			}
+			return ret;
+		}
+
 		const string dll = "mgba.dll";
 		const CallingConvention cc = CallingConvention.Cdecl;
 
@@ -95,7 +124,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public static extern void BizReset(IntPtr ctx);
 
 		[DllImport(dll, CallingConvention = cc)]
-		public static extern bool BizAdvance(IntPtr ctx, LibVBANext.Buttons keys, int[] vbuff, ref int nsamp, short[] sbuff,
+		public static extern bool BizAdvance(IntPtr ctx, Buttons keys, int[] vbuff, ref int nsamp, short[] sbuff,
 			long time, short gyrox, short gyroy, short gyroz, byte luma);
 
 		[DllImport(dll, CallingConvention = cc)]

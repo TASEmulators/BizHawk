@@ -117,7 +117,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			IsLagFrame = LibmGBA.BizAdvance(
 				Core,
-				VBANext.GetButtons(controller),
+				LibmGBA.GetButtons(controller),
 				render ? _videobuff : _dummyvideobuff,
 				ref _nsamp,
 				renderSound ? _soundbuff : _dummysoundbuff,
