@@ -166,11 +166,6 @@ namespace BizHawk.Client.EmuHawk
 				_current.CoreType = emu.GetType();
 				var controller = new Controller(emu.ControllerDefinition);
 				_current.BoardName = emu.HasBoardInfo() ? emu.AsBoardInfo().BoardName : null;
-				// hack
-				if (emu is VBANext vba)
-				{
-					_current.BoardName = vba.GameCode;
-				}
 
 				_current.Frames = 0;
 				_current.LaggedFrames = 0;
