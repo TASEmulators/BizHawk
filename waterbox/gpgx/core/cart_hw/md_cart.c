@@ -566,6 +566,14 @@ void md_cart_init(void)
   }
 
   /* detect specific mappers */
+  if (strstr(rominfo.consoletype,"SEGA SSF"))
+  {
+    /* Everdrive extended SSF mapper */
+    cart.hw.bankshift = 1;
+
+    /* specific !TIME handler */
+    cart.hw.time_w = mapper_ssf2_w;
+  }
   if (strstr(rominfo.domestic,"SUPER STREET FIGHTER2"))
   {
     /* SSF2 mapper */
