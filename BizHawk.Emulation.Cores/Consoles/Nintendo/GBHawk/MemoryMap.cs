@@ -1,4 +1,5 @@
 ﻿using BizHawk.Emulation.Common;
+using System;
 
 
 /*
@@ -125,6 +126,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					return VRAM[VRAM_Bank * 0x2000 + (addr - 0x8000)];
 				}
 
+				if (ppu.pixel_counter == 160) 
+				{ 
+					return ppu.bus_return; 
+				}
 				return 0xFF;
 			}
 
@@ -253,7 +258,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			else if (addr >= 0x8000)
 			{
-				if (ppu.VRAM_access_write) { VRAM[(VRAM_Bank * 0x2000) + (addr - 0x8000)] = value; }
+				if (ppu.VRAM_access_write) { VRAM[(VRAM_Bank * 0x2000) + (addr - 0x8000)] = value; }				
 			}
 			else
 			{

@@ -571,7 +571,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							{
 								OAM_access_read = false;
 								OAM_access_write = true;
-								VRAM_access_read = false;
 							}
 							else
 							{
@@ -587,6 +586,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								STAT |= 0x03;
 								OAM_INT = false;
 								OAM_access_write = false;
+								VRAM_access_read = false;
 								VRAM_access_write = false;
 
 								// x-scroll is expected to be latched one cycle later 
@@ -958,6 +958,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							temp_fetch = y_tile * 32 + (x_tile + tile_inc) % 32;
 							tile_byte = Core.VRAM[0x1800 + (LCDC.Bit(3) ? 1 : 0) * 0x400 + temp_fetch];
 							tile_data[2] = Core.VRAM[0x3800 + (LCDC.Bit(3) ? 1 : 0) * 0x400 + temp_fetch];
+							bus_return = tile_data[2];
 							VRAM_sel = tile_data[2].Bit(3) ? 1 : 0;
 
 							BG_V_flip = tile_data[2].Bit(6) & Core.GBC_compat;
@@ -983,6 +984,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							if (LCDC.Bit(4))
 							{
 								tile_data[0] = Core.VRAM[(VRAM_sel * 0x2000) + tile_byte * 16 + y_scroll_offset * 2];
+								bus_return = tile_data[0];
 							}
 							else
 							{
@@ -992,6 +994,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 									tile_byte -= 256;
 								}
 								tile_data[0] = Core.VRAM[(VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2];
+								bus_return = tile_data[0];
 							}
 
 							read_case = 2;
@@ -1020,6 +1023,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 									tile_byte += 256;
 								}
 								tile_data[1] = Core.VRAM[(VRAM_sel * 0x2000) + tile_byte * 16 + y_scroll_offset * 2 + 1];
+								bus_return = tile_data[1];
 							}
 							else
 							{
@@ -1029,6 +1033,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 									tile_byte -= 256;
 								}
 								tile_data[1] = Core.VRAM[(VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2 + 1];
+								bus_return = tile_data[1];
 							}
 
 							if (pre_render)
@@ -1063,6 +1068,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							tile_data[2] = Core.VRAM[0x3800 + (LCDC.Bit(6) ? 1 : 0) * 0x400 + temp_fetch];
 							VRAM_sel = tile_data[2].Bit(3) ? 1 : 0;
 							BG_V_flip = tile_data[2].Bit(6) & Core.GBC_compat;
+							bus_return = tile_data[2];
 
 							window_tile_inc++;
 							read_case = 5;
@@ -1083,6 +1089,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							if (LCDC.Bit(4))
 							{
 								tile_data[0] = Core.VRAM[(VRAM_sel * 0x2000) + tile_byte * 16 + y_scroll_offset * 2];
+								bus_return = tile_data[0];
 							}
 							else
 							{
@@ -1092,6 +1099,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 									tile_byte -= 256;
 								}
 								tile_data[0] = Core.VRAM[(VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2];
+								bus_return = tile_data[0];
 							}
 
 							read_case = 6;
@@ -1117,6 +1125,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 									tile_byte += 256;
 								}
 								tile_data[1] = Core.VRAM[(VRAM_sel * 0x2000) + tile_byte * 16 + y_scroll_offset * 2 + 1];
+								bus_return = tile_data[1];
 							}
 							else
 							{
@@ -1126,6 +1135,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 									tile_byte -= 256;
 								}
 								tile_data[1] = Core.VRAM[(VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2 + 1];
+								bus_return = tile_data[1];
 							}
 
 							if (window_pre_render)
@@ -1192,7 +1202,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							{
 								STAT &= 0xFC;
 								STAT |= 0x00;
-
+								
 								if (STAT.Bit(3)) { HBL_INT = true; }
 							}
 						}

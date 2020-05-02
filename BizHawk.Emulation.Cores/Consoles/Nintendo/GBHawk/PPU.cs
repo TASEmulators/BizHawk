@@ -14,6 +14,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public bool HDMA_active;
 		public bool clear_screen;
 
+		// TODO: need a test ROM for the details here
+		public byte bus_return;
+
 		// register variables
 		public byte LCDC;
 		public byte STAT;
@@ -175,6 +178,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(OBJ_palette), ref OBJ_palette, false);
 			ser.Sync(nameof(HDMA_active), ref HDMA_active);
 			ser.Sync(nameof(clear_screen), ref clear_screen);
+			ser.Sync(nameof(bus_return), ref bus_return);
 
 			ser.Sync(nameof(LCDC), ref LCDC);
 			ser.Sync(nameof(STAT), ref STAT);
