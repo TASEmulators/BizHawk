@@ -320,7 +320,6 @@ namespace BizHawk.Client.Common
 		{
 			["NES"] = CoreNames.QuickNes,
 			["SNES"] = CoreNames.Snes9X,
-			["GBA"] = CoreNames.Mgba,
 			["GB"] = CoreNames.Gambatte
 		};
 

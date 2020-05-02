@@ -1258,23 +1258,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void GbaCoreSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			VbaNextCoreMenuItem.Checked = Config.PreferredCores["GBA"] == CoreNames.VbaNext;
-			MgbaCoreMenuItem.Checked = Config.PreferredCores["GBA"] == CoreNames.Mgba;
-		}
-
-		private void GbaCorePick_Click(object sender, EventArgs e)
-		{
-			Config.PreferredCores["GBA"] = Config.PreferredCores["GBA"] == CoreNames.VbaNext
-				? CoreNames.Mgba
-				: CoreNames.VbaNext;
-			if (Emulator.SystemId == "GBA")
-			{
-				FlagNeedsReboot();
-			}
-		}
-
 		private void SGBCoreSubmenu_DropDownOpened(object sender, EventArgs e)
 		{
 			SgbBsnesMenuItem.Checked = Config.SgbUseBsnes;
@@ -2000,27 +1983,9 @@ namespace BizHawk.Client.EmuHawk
 			Tools.Load<GbaGpuView>();
 		}
 
-		private void UsemGBAMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.PreferredCores["GBA"] = CoreNames.Mgba;
-			FlagNeedsReboot();
-		}
-
-		private void UseVbaNextMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.PreferredCores["GBA"] = CoreNames.VbaNext;
-			FlagNeedsReboot();
-		}
-
 		private void GBASubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			GbaGpuViewerMenuItem.Enabled = !OSTailoredCode.IsUnixHost;
-		}
-
-		private void GBACoreSelectionSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			GBAmGBAMenuItem.Checked = Config.PreferredCores["GBA"] == CoreNames.Mgba;
-			GBAVBANextMenuItem.Checked = Config.PreferredCores["GBA"] == CoreNames.VbaNext;
 		}
 
 		#endregion

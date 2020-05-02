@@ -1059,7 +1059,7 @@ namespace BizHawk.Client.Common
 							nextEmulator = cpc;
 							break;
 						case "GBA":
-							core = CoreInventory.Instance["GBA", Global.Config.PreferredCores["GBA"]];
+							core = CoreInventory.Instance["GBA", CoreNames.Mgba];
 							break;
 						case "PSX":
 							nextEmulator = new Octoshock(nextComm, null, null, rom.FileData, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>(), "PSX etc.");

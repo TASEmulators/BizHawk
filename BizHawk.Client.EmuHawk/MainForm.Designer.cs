@@ -191,9 +191,6 @@
 			this.CoreSNESSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.Coresnes9xMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.CorebsnesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.GbaCoreSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.VbaNextCoreMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.MgbaCoreMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SGBCoreSubmenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.SgbBsnesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SgbSameBoyMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -292,9 +289,6 @@
 			this.GBGameGenieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GBPrinterViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GBASubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.GBACoreSelectionSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.GBAmGBAMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.GBAVBANextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GBAcoresettingsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator33 = new System.Windows.Forms.ToolStripSeparator();
 			this.GbaGpuViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1802,7 +1796,6 @@
 			this.CoresSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.NesCoreSubMenu,
 			this.CoreSNESSubMenu,
-			this.GbaCoreSubMenu,
 			this.SGBCoreSubmenu,
 			this.GBCoreSubmenu,
 			this.GBInSGBMenuItem,
@@ -1884,30 +1877,6 @@
 			this.CorebsnesMenuItem.Size = new System.Drawing.Size(109, 22);
 			this.CorebsnesMenuItem.Text = "BSNES";
 			this.CorebsnesMenuItem.Click += new System.EventHandler(this.CoreSnesToggle_Click);
-			// 
-			// GbaCoreSubMenu
-			// 
-			this.GbaCoreSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.VbaNextCoreMenuItem,
-			this.MgbaCoreMenuItem});
-			this.GbaCoreSubMenu.Name = "GbaCoreSubMenu";
-			this.GbaCoreSubMenu.Size = new System.Drawing.Size(223, 22);
-			this.GbaCoreSubMenu.Text = "GBA";
-			this.GbaCoreSubMenu.DropDownOpened += new System.EventHandler(this.GbaCoreSubMenu_DropDownOpened);
-			// 
-			// VbaNextCoreMenuItem
-			// 
-			this.VbaNextCoreMenuItem.Name = "VbaNextCoreMenuItem";
-			this.VbaNextCoreMenuItem.Size = new System.Drawing.Size(120, 22);
-			this.VbaNextCoreMenuItem.Text = "VBA-Next";
-			this.VbaNextCoreMenuItem.Click += new System.EventHandler(this.GbaCorePick_Click);
-			// 
-			// MgbaCoreMenuItem
-			// 
-			this.MgbaCoreMenuItem.Name = "MgbaCoreMenuItem";
-			this.MgbaCoreMenuItem.Size = new System.Drawing.Size(120, 22);
-			this.MgbaCoreMenuItem.Text = "mGBA";
-			this.MgbaCoreMenuItem.Click += new System.EventHandler(this.GbaCorePick_Click);
 			// 
 			// SGBCoreSubmenu
 			// 
@@ -2655,7 +2624,6 @@
 			// GBASubMenu
 			// 
 			this.GBASubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.GBACoreSelectionSubMenu,
 			this.GBAcoresettingsToolStripMenuItem1,
 			this.toolStripSeparator33,
 			this.GbaGpuViewerMenuItem});
@@ -2663,30 +2631,6 @@
 			this.GBASubMenu.Size = new System.Drawing.Size(39, 17);
 			this.GBASubMenu.Text = "GBA";
 			this.GBASubMenu.DropDownOpened += new System.EventHandler(this.GBASubMenu_DropDownOpened);
-			// 
-			// GBACoreSelectionSubMenu
-			// 
-			this.GBACoreSelectionSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.GBAmGBAMenuItem,
-			this.GBAVBANextMenuItem});
-			this.GBACoreSelectionSubMenu.Name = "GBACoreSelectionSubMenu";
-			this.GBACoreSelectionSubMenu.Size = new System.Drawing.Size(129, 22);
-			this.GBACoreSelectionSubMenu.Text = "&Core";
-			this.GBACoreSelectionSubMenu.DropDownOpened += new System.EventHandler(this.GBACoreSelectionSubMenu_DropDownOpened);
-			// 
-			// GBAmGBAMenuItem
-			// 
-			this.GBAmGBAMenuItem.Name = "GBAmGBAMenuItem";
-			this.GBAmGBAMenuItem.Size = new System.Drawing.Size(120, 22);
-			this.GBAmGBAMenuItem.Text = "mGBA";
-			this.GBAmGBAMenuItem.Click += new System.EventHandler(this.UsemGBAMenuItem_Click);
-			// 
-			// GBAVBANextMenuItem
-			// 
-			this.GBAVBANextMenuItem.Name = "GBAVBANextMenuItem";
-			this.GBAVBANextMenuItem.Size = new System.Drawing.Size(120, 22);
-			this.GBAVBANextMenuItem.Text = "&VBA-Next";
-			this.GBAVBANextMenuItem.Click += new System.EventHandler(this.UseVbaNextMenuItem_Click);
 			// 
 			// GBAcoresettingsToolStripMenuItem1
 			// 
@@ -4398,9 +4342,6 @@
 		private System.Windows.Forms.ToolStripMenuItem subNesHawkMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator34;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator35;
-		private System.Windows.Forms.ToolStripMenuItem GBACoreSelectionSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem GBAmGBAMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem GBAVBANextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem PSXHashDiscsToolStripMenuItem;
 		private System.Windows.Forms.Timer timerMouseIdle;
@@ -4455,9 +4396,6 @@
 		private System.Windows.Forms.ToolStripMenuItem NesCoreSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem QuicknesCoreMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem NesCoreMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem GbaCoreSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem VbaNextCoreMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem MgbaCoreMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem Atari7800HawkCoreMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SGBCoreSubmenu;
 		private System.Windows.Forms.ToolStripMenuItem SgbBsnesMenuItem;

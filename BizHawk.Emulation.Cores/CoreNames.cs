@@ -15,7 +15,6 @@ namespace BizHawk.Emulation.Cores
 		public const string Snes9X = "Snes9x";
 		public const string Bsnes = "BSNES";
 		public const string Mgba = "mGBA";
-		public const string VbaNext = "VBA-Next";
 		public const string GbHawk = "GBHawk";
 		public const string Gambatte = "Gambatte";
 		public const string SubGbHawk = "SubGBHawk";
