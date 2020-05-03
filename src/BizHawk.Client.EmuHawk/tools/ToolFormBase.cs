@@ -43,9 +43,8 @@ namespace BizHawk.Client.EmuHawk
 		protected virtual void UpdateBefore() { }
 		protected virtual void UpdateAfter() { }
 		protected virtual void GeneralUpdate() { }
-		protected virtual void FastUpdateAfter() { }
 		protected virtual void FastUpdateBefore() { }
-
+		protected virtual void FastUpdateAfter() { }
 
 		public static FileInfo OpenFileDialog(string currentFile, string path, string fileType, string fileExt)
 		{

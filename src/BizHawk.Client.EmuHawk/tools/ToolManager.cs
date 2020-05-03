@@ -781,8 +781,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public RamSearch RamSearch => GetTool<RamSearch>();
 
-		public Cheats Cheats => GetTool<Cheats>();
-
 		public HexEditor HexEditor => GetTool<HexEditor>();
 
 		public VirtualpadTool VirtualPad => GetTool<VirtualpadTool>();
