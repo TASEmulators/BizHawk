@@ -8,6 +8,7 @@
 		<OutputPath>$(ProjectDir)../../output</OutputPath>
 		<OutputType>WinExe</OutputType>
 		<TargetFramework>net48</TargetFramework>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	</PropertyGroup>
 <!--
 	<PropertyGroup>
@@ -637,6 +638,6 @@
 		<ItemGroup>
 			<AssetFiles Include="$(ProjectDir)../../Assets/**/*.*" Exclude="$(ProjectDir)../../Assets/**/.gitempty;$(ProjectDir)../../Assets/**/.gitignore" />
 		</ItemGroup>
-		<Copy SourceFiles="@(AssetFiles)" DestinationFolder="$(OutputPath)../%(RecursiveDir)" SkipUnchangedFiles="true" />
+		<Copy SourceFiles="@(AssetFiles)" DestinationFolder="$(OutputPath)%(RecursiveDir)" SkipUnchangedFiles="true" />
 	</Target>
 </Project>
