@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			_syncSettings = (SnesSyncSettings)syncSettings ?? new SnesSyncSettings();
 
 			// TODO: pass profile here
-			Api = new LibsnesApi(CoreComm.CoreFileProvider.DllPath())
+			Api = new LibsnesApi(CoreComm.CoreFileProvider.DllPath(), CoreComm)
 			{
 				ReadHook = ReadHook,
 				ExecHook = ExecHook,

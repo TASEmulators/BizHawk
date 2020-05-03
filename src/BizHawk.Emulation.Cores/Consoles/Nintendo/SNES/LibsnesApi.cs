@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			_readonlyFiles.Add(name);
 		}
 
-		public LibsnesApi(string dllPath)
+		public LibsnesApi(string dllPath, CoreComm comm)
 		{
 			_exe = new PeRunner(new PeRunnerOptions
 			{
@@ -69,7 +69,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				InvisibleHeapSizeKB = 8 * 1024,
 				MmapHeapSizeKB = 32 * 1024, // TODO: see if we can safely make libco stacks smaller
 				PlainHeapSizeKB = 2 * 1024, // TODO: wasn't there more in here?
-				SealedHeapSizeKB = 128 * 1024
+				SealedHeapSizeKB = 128 * 1024,
+				SkipCoreConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
+				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 			});
 			using (_exe.EnterExit())
 			{
