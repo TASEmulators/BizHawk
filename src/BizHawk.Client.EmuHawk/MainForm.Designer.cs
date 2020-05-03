@@ -238,7 +238,6 @@
 			this.toolStripSeparator34 = new System.Windows.Forms.ToolStripSeparator();
 			this.NESPPUViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.NESNametableViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.NESGameGenieCodesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MusicRipperMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator17 = new System.Windows.Forms.ToolStripSeparator();
 			this.NesControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -269,7 +268,6 @@
 			this.SmsSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SmsMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.SmsVdpViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.GGGameGenieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TI83SubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.KeypadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.LoadTIFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -286,7 +284,6 @@
 			this.LoadGBInSGBMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator28 = new System.Windows.Forms.ToolStripSeparator();
 			this.GBGPUViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.GBGameGenieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GBPrinterViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GBASubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.GBAcoresettingsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -302,7 +299,6 @@
 			this.toolStripSeparator18 = new System.Windows.Forms.ToolStripSeparator();
 			this.SnesGfxDebuggerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SnesGBInSGBMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SnesGameGenieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SnesOptionsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ColecoSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.ColecoControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -2177,7 +2173,6 @@
 			this.toolStripSeparator34,
 			this.NESPPUViewerMenuItem,
 			this.NESNametableViewerMenuItem,
-			this.NESGameGenieCodesMenuItem,
 			this.MusicRipperMenuItem,
 			this.toolStripSeparator17,
 			this.NesControllerSettingsMenuItem,
@@ -2244,13 +2239,6 @@
 			this.NESNametableViewerMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.NESNametableViewerMenuItem.Text = "&Nametable Viewer";
 			this.NESNametableViewerMenuItem.Click += new System.EventHandler(this.NesNametableViewerMenuItem_Click);
-			// 
-			// NESGameGenieCodesMenuItem
-			// 
-			this.NESGameGenieCodesMenuItem.Name = "NESGameGenieCodesMenuItem";
-			this.NESGameGenieCodesMenuItem.Size = new System.Drawing.Size(217, 22);
-			this.NESGameGenieCodesMenuItem.Text = "&Game Genie Encoder/Decoder";
-			this.NESGameGenieCodesMenuItem.Click += new System.EventHandler(this.NesGameGenieCodesMenuItem_Click);
 			// 
 			// musicRipperToolStripMenuItem
 			// 
@@ -2447,8 +2435,7 @@
 			this.SMSSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.SmsSettingsMenuItem,
 			this.SmsMenuSeparator,
-			this.SmsVdpViewerMenuItem,
-			this.GGGameGenieMenuItem});
+			this.SmsVdpViewerMenuItem});
 			this.SMSSubMenu.Name = "SMSSubMenu";
 			this.SMSSubMenu.Size = new System.Drawing.Size(39, 17);
 			this.SMSSubMenu.Text = "&SMS";
@@ -2472,13 +2459,6 @@
 			this.SmsVdpViewerMenuItem.Size = new System.Drawing.Size(262, 22);
 			this.SmsVdpViewerMenuItem.Text = "&VDP Viewer";
 			this.SmsVdpViewerMenuItem.Click += new System.EventHandler(this.SmsVdpViewerMenuItem_Click);
-			// 
-			// GGGameGenieMenuItem
-			// 
-			this.GGGameGenieMenuItem.Name = "GGGameGenieMenuItem";
-			this.GGGameGenieMenuItem.Size = new System.Drawing.Size(262, 22);
-			this.GGGameGenieMenuItem.Text = "&Game Genie Encoder/Decoder";
-			this.GGGameGenieMenuItem.Click += new System.EventHandler(this.GgGameGenieMenuItem_Click);
 			// 
 			// TI83SubMenu
 			// 
@@ -2574,7 +2554,6 @@
 			this.LoadGBInSGBMenuItem,
 			this.toolStripSeparator28,
 			this.GBGPUViewerMenuItem,
-			this.GBGameGenieMenuItem,
 			this.GBPrinterViewerMenuItem});
 			this.GBSubMenu.Name = "GBSubMenu";
 			this.GBSubMenu.Size = new System.Drawing.Size(32, 17);
@@ -2606,13 +2585,6 @@
 			this.GBGPUViewerMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.GBGPUViewerMenuItem.Text = "GPU Viewer";
 			this.GBGPUViewerMenuItem.Click += new System.EventHandler(this.GbGpuViewerMenuItem_Click);
-			// 
-			// GBGameGenieMenuItem
-			// 
-			this.GBGameGenieMenuItem.Name = "GBGameGenieMenuItem";
-			this.GBGameGenieMenuItem.Size = new System.Drawing.Size(217, 22);
-			this.GBGameGenieMenuItem.Text = "&Game Genie Encoder/Decoder";
-			this.GBGameGenieMenuItem.Click += new System.EventHandler(this.GbGameGenieMenuItem_Click);
 			// 
 			// GBPrinterViewerMenuItem
 			// 
@@ -2698,7 +2670,6 @@
 			this.toolStripSeparator18,
 			this.SnesGfxDebuggerMenuItem,
 			this.SnesGBInSGBMenuItem,
-			this.SnesGameGenieMenuItem,
 			this.SnesOptionsMenuItem});
 			this.SNESSubMenu.Name = "SNESSubMenu";
 			this.SNESSubMenu.Size = new System.Drawing.Size(44, 17);
@@ -2730,13 +2701,6 @@
 			this.SnesGBInSGBMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.SnesGBInSGBMenuItem.Text = "Load GB in SGB";
 			this.SnesGBInSGBMenuItem.Click += new System.EventHandler(this.SnesGbInSgbMenuItem_Click);
-			// 
-			// SnesGameGenieMenuItem
-			// 
-			this.SnesGameGenieMenuItem.Name = "SnesGameGenieMenuItem";
-			this.SnesGameGenieMenuItem.Size = new System.Drawing.Size(217, 22);
-			this.SnesGameGenieMenuItem.Text = "&Game Genie Encoder/Decoder";
-			this.SnesGameGenieMenuItem.Click += new System.EventHandler(this.SnesGameGenieMenuItem_Click);
 			// 
 			// SnesOptionsMenuItem
 			// 
@@ -4101,7 +4065,6 @@
 		private System.Windows.Forms.ToolStripMenuItem LoadConfigMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem NESSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem NESPPUViewerMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem NESGameGenieCodesMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
 		private System.Windows.Forms.ToolStripMenuItem CheatsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem NESNametableViewerMenuItem;
@@ -4228,9 +4191,6 @@
 		private System.Windows.Forms.ToolStripMenuItem FullMovieLoadstatesMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem StopNoSaveContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem StopMovieWithoutSavingMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SnesGameGenieMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem GBGameGenieMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem GGGameGenieMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator29;
 		private System.Windows.Forms.ToolStripMenuItem N64SubMenu;
 		private System.Windows.Forms.ToolStripMenuItem N64PluginSettingsMenuItem;

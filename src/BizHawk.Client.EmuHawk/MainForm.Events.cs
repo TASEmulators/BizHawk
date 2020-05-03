@@ -1596,11 +1596,6 @@ namespace BizHawk.Client.EmuHawk
 			Tools.Load<NESMusicRipper>();
 		}
 
-		private void NesGameGenieCodesMenuItem_Click(object sender, EventArgs e)
-		{
-			Tools.LoadGameGenieEc();
-		}
-
 		private void NesGraphicSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			if (Emulator is NES nes)
@@ -1816,11 +1811,6 @@ namespace BizHawk.Client.EmuHawk
 			GenericCoreConfig.DoDialog(this, "SMS Settings");
 		}
 
-		private void GgGameGenieMenuItem_Click(object sender, EventArgs e)
-		{
-			Tools.LoadGameGenieEc();
-		}
-
 		private void SmsVdpViewerMenuItem_Click(object sender, EventArgs e)
 		{
 			Tools.Load<SmsVdpViewer>();
@@ -1959,11 +1949,6 @@ namespace BizHawk.Client.EmuHawk
 			Tools.Load<GbGpuView>();
 		}
 
-		private void GbGameGenieMenuItem_Click(object sender, EventArgs e)
-		{
-			Tools.LoadGameGenieEc();
-		}
-
 		private void GbPrinterViewerMenuItem_Click(object sender, EventArgs e)
 		{
 			Tools.Load<GBPrinterView>();
@@ -2093,11 +2078,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Config.GbAsSgb ^= true;
 			FlagNeedsReboot();
-		}
-
-		private void SnesGameGenieMenuItem_Click(object sender, EventArgs e)
-		{
-			Tools.LoadGameGenieEc();
 		}
 
 		private void SnesOptionsMenuItem_Click(object sender, EventArgs e)

@@ -517,7 +517,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenGameGenieEncoderDecoderMenuItem_Click(object sender, EventArgs e)
 		{
-			Tools.LoadGameGenieEc();
+			Tools.Load<GameShark>();
 		}
 
 		#endregion

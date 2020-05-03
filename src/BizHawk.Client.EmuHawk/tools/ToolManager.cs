@@ -818,14 +818,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void LoadGameGenieEc()
-		{
-			if (IsAvailable<GameShark>())
-			{
-				Load<GameShark>();
-			}
-		}
-
 		#endregion
 
 		public string GenerateDefaultCheatFilename()
