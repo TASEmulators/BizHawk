@@ -248,12 +248,20 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void NewUpdate(ToolFormUpdateType type)
 		{
-			// NewUpdate TODO: make this a switch
-			if (type != ToolFormUpdateType.PostFrame && type != ToolFormUpdateType.General)
+			switch (type)
 			{
-				return;
+				case ToolFormUpdateType.PostFrame:
+				case ToolFormUpdateType.General:
+					FrameUpdate();
+					break;
+				case ToolFormUpdateType.FastPostFrame:
+					MinimalUpdate();
+					break;
 			}
+		}
 
+		private void FrameUpdate()
+		{
 			if (_searches.Count > 0)
 			{
 				_searches.Update();
@@ -275,7 +283,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void FastUpdate()
+		private void MinimalUpdate()
 		{
 			if (_searches.Count > 0)
 			{

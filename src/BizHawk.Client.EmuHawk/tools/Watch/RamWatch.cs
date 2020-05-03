@@ -222,12 +222,38 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void NewUpdate(ToolFormUpdateType type)
 		{
-			// NewUpdate TODO: make this a switch
-			if (type != ToolFormUpdateType.PostFrame && type != ToolFormUpdateType.General)
+			switch (type)
+			{
+				case ToolFormUpdateType.PostFrame:
+				case ToolFormUpdateType.General:
+					FrameUpdate();
+					break;
+				case ToolFormUpdateType.FastPostFrame:
+					MinimalUpdate();
+					break;
+			}
+		}
+
+		#endregion
+
+		#region Private Methods
+
+		private void MinimalUpdate()
+		{
+			if ((!IsHandleCreated || IsDisposed) && !Config.DisplayRamWatch)
 			{
 				return;
 			}
 
+			if (_watches.Any())
+			{
+				_watches.UpdateValues();
+				DisplayOnScreenWatches();
+			}
+		}
+
+		private void FrameUpdate()
+		{
 			if ((!IsHandleCreated || IsDisposed) && !Config.DisplayRamWatch)
 			{
 				return;
@@ -268,24 +294,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 		}
-
-		public void FastUpdate()
-		{
-			if ((!IsHandleCreated || IsDisposed) && !Config.DisplayRamWatch)
-			{
-				return;
-			}
-
-			if (_watches.Any())
-			{
-				_watches.UpdateValues();
-				DisplayOnScreenWatches();
-			}
-		}
-
-		#endregion
-
-		#region Private Methods
 
 		private void Changes()
 		{
