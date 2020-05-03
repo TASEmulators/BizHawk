@@ -71,8 +71,6 @@ namespace BizHawk.Client.EmuHawk
 		[ConfigPersist]
 		public RamSearchSettings Settings { get; set; }
 
-		public bool UpdateBefore => false;
-
 		private void HardSetDisplayTypeDropDown(Common.DisplayType type)
 		{
 			foreach (var item in DisplayTypeDropdown.Items)
@@ -248,15 +246,16 @@ namespace BizHawk.Client.EmuHawk
 			SetTotal();
 		}
 
-		public void NewUpdate(ToolFormUpdateType type)
-		{
-		}
+		public bool UpdateBefore => false;
 
-		/// <summary>
-		/// This should only be called when the values of the list need an update such as after a poke or emulation occurred
-		/// </summary>
-		public void UpdateValues()
+		public override void NewUpdate(ToolFormUpdateType type)
 		{
+			// NewUpdate TODO: make this a switch
+			if (type != ToolFormUpdateType.PostFrame && type != ToolFormUpdateType.General)
+			{
+				return;
+			}
+
 			if (_searches.Count > 0)
 			{
 				_searches.Update();

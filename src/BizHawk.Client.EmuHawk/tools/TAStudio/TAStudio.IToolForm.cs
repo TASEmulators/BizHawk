@@ -24,11 +24,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool UpdateBefore => false;
 
-		public void NewUpdate(ToolFormUpdateType type) { }
-
 		private int _lastRefresh;
 
-		public void UpdateValues()
+		protected override void UpdateValuesAfter()
 		{
 			if (!IsHandleCreated || IsDisposed || CurrentTasMovie == null)
 			{

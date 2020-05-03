@@ -149,21 +149,19 @@ namespace BizHawk.Client.EmuHawk
 				LoadFileFromRecent(RecentTables[0]);
 			}
 
-			FullUpdate();
+			UpdateValues();
 		}
 
 		#region API
 
 		public bool UpdateBefore => false;
 
-		public void NewUpdate(ToolFormUpdateType type) { }
-
-		public void UpdateValues()
+		protected override void UpdateValuesAfter()
 		{
 			AddressesLabel.Text = GenerateMemoryViewString(true);
 		}
 
-		public void FullUpdate()
+		protected override void UpdateValues()
 		{
 			AddressesLabel.Text = GenerateMemoryViewString(true);
 			AddressLabel.Text = GenerateAddressString();
@@ -210,7 +208,7 @@ namespace BizHawk.Client.EmuHawk
 			SetDataSize(DataSize);
 			SetHeader();
 
-			FullUpdate();
+			UpdateValues();
 		}
 
 		public void SetToAddresses(IEnumerable<long> addresses, MemoryDomain domain, WatchSize size)
@@ -225,7 +223,7 @@ namespace BizHawk.Client.EmuHawk
 				_secondaryHighlightedAddresses.Clear();
 				_secondaryHighlightedAddresses.AddRange(addrList.Where(addr => addr != addrList[0]));
 				ClearNibbles();
-				FullUpdate();
+				UpdateValues();
 				MemoryViewerBox.Refresh();
 			}
 		}
@@ -691,7 +689,7 @@ namespace BizHawk.Client.EmuHawk
 
 			UpdateGroupBoxTitle();
 			SetHeader();
-			FullUpdate();
+			UpdateValues();
 			LastDomain = _domain.Name;
 		}
 
@@ -727,7 +725,7 @@ namespace BizHawk.Client.EmuHawk
 
 			SetHighlighted(address);
 			ClearNibbles();
-			FullUpdate();
+			UpdateValues();
 			MemoryViewerBox.Refresh();
 		}
 
@@ -802,7 +800,7 @@ namespace BizHawk.Client.EmuHawk
 				_digitFormatString = $"{{0:X{DataSize * 2}}} ";
 				SetHeader();
 				UpdateGroupBoxTitle();
-				FullUpdate();
+				UpdateValues();
 				_secondaryHighlightedAddresses.Clear();
 			}
 		}
@@ -1369,7 +1367,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				LoadTable(ofd.FileName);
 				RecentTables.Add(ofd.FileName);
-				FullUpdate();
+				UpdateValues();
 			}
 		}
 
@@ -1389,7 +1387,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				RecentTables.Add(path);
-				FullUpdate();
+				UpdateValues();
 			}
 		}
 
@@ -1519,7 +1517,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			FullUpdate();
+			UpdateValues();
 		}
 
 		private bool _lastSearchWasText;
@@ -1631,7 +1629,7 @@ namespace BizHawk.Client.EmuHawk
 		private void BigEndianMenuItem_Click(object sender, EventArgs e)
 		{
 			BigEndian ^= true;
-			FullUpdate();
+			UpdateValues();
 		}
 
 		private void GoToAddressMenuItem_Click(object sender, EventArgs e)
@@ -1734,7 +1732,7 @@ namespace BizHawk.Client.EmuHawk
 
 				poke.SetWatch(watches);
 				poke.ShowHawkDialog();
-				FullUpdate();
+				UpdateValues();
 			}
 		}
 
@@ -1765,7 +1763,7 @@ namespace BizHawk.Client.EmuHawk
 		private void HexEditor_Resize(object sender, EventArgs e)
 		{
 			SetUpScrollBar();
-			FullUpdate();
+			UpdateValues();
 		}
 
 		private void HexEditor_ResizeEnd(object sender, EventArgs e)
@@ -2014,12 +2012,12 @@ namespace BizHawk.Client.EmuHawk
 
 				ClearNibbles();
 				SetHighlighted(currentAddress + DataSize);
-				FullUpdate();
+				UpdateValues();
 				Refresh();
 			}
 
 			UpdateGroupBoxTitle();
-			FullUpdate();
+			UpdateValues();
 		}
 
 		private void ViewerContextMenuStrip_Opening(object sender, CancelEventArgs e)
@@ -2075,7 +2073,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_secondaryHighlightedAddresses.ForEach(IncrementAddress);
 
-			FullUpdate();
+			UpdateValues();
 		}
 
 		private void DecrementContextItem_Click(object sender, EventArgs e)
@@ -2092,7 +2090,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_secondaryHighlightedAddresses.ForEach(DecrementAddress);
 
-			FullUpdate();
+			UpdateValues();
 		}
 
 		#endregion
@@ -2289,7 +2287,7 @@ namespace BizHawk.Client.EmuHawk
 					_programmaticallyChangingValue = false;
 				}
 
-				FullUpdate();
+				UpdateValues();
 			}
 		}
 

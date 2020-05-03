@@ -141,9 +141,7 @@ namespace BizHawk.Client.EmuHawk
 			CreatePads();
 		}
 
-		public void NewUpdate(ToolFormUpdateType type) { }
-
-		public void UpdateValues()
+		protected override void UpdateValuesAfter()
 		{
 			if (!IsHandleCreated || IsDisposed)
 			{

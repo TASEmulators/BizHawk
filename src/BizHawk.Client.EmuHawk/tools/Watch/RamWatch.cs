@@ -222,8 +222,32 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void NewUpdate(ToolFormUpdateType type)
+		public override void NewUpdate(ToolFormUpdateType type)
 		{
+			// NewUpdate TODO: make this a switch
+			if (type != ToolFormUpdateType.PostFrame && type != ToolFormUpdateType.General)
+			{
+				return;
+			}
+
+			if ((!IsHandleCreated || IsDisposed) && !Config.DisplayRamWatch)
+			{
+				return;
+			}
+
+			GlobalWin.OSD.ClearRamWatches();
+			if (_watches.Any())
+			{
+				_watches.UpdateValues();
+				DisplayOnScreenWatches();
+
+				if (!IsHandleCreated || IsDisposed)
+				{
+					return;
+				}
+
+				WatchListView.RowCount = _watches.Count;
+			}
 		}
 
 		private void DisplayOnScreenWatches()
@@ -244,28 +268,6 @@ namespace BizHawk.Client.EmuHawk
 						Color.Black,
 						frozen ? Color.Cyan : Color.White);
 				}
-			}
-		}
-
-		public void UpdateValues()
-		{
-			if ((!IsHandleCreated || IsDisposed) && !Config.DisplayRamWatch)
-			{
-				return;
-			}
-
-			GlobalWin.OSD.ClearRamWatches();
-			if (_watches.Any())
-			{
-				_watches.UpdateValues();
-				DisplayOnScreenWatches();
-
-				if (!IsHandleCreated || IsDisposed)
-				{
-					return;
-				}
-
-				WatchListView.RowCount = _watches.Count;
 			}
 		}
 
