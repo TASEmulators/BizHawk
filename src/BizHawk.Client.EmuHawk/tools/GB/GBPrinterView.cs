@@ -9,7 +9,7 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class GBPrinterView : Form, IToolFormAutoConfig
+	public partial class GBPrinterView : ToolFormBase, IToolFormAutoConfig
 	{
 		private const int PaperWidth = 160;
 

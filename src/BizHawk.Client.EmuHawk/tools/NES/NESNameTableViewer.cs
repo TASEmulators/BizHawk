@@ -9,7 +9,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class NESNameTableViewer : Form, IToolFormAutoConfig
+	public partial class NESNameTableViewer : ToolFormBase, IToolFormAutoConfig
 	{
 		// TODO:
 		// Show Scroll Lines + UI Toggle

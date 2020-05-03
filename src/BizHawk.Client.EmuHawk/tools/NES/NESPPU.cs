@@ -9,7 +9,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class NesPPU : Form, IToolFormAutoConfig
+	public partial class NesPPU : ToolFormBase, IToolFormAutoConfig
 	{
 		// TODO:
 		// If 8/16 sprite mode, mouse over should put 32x64 version of sprite

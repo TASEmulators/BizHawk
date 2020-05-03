@@ -12,7 +12,7 @@ using BizHawk.Client.Common.cheats;
 namespace BizHawk.Client.EmuHawk
 {
 	[Tool(true, new[] { "GB", "GBA", "GEN", "N64", "NES", "PSX", "SAT", "SMS", "SNES" }, new[] { "Snes9x" })]
-	public partial class GameShark : Form, IToolForm, IToolFormAutoConfig
+	public partial class GameShark : ToolFormBase, IToolFormAutoConfig
 	{
 		[RequiredService]
 		// ReSharper disable once UnusedAutoPropertyAccessor.Local

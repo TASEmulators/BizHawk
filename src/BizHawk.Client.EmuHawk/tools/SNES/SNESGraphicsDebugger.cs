@@ -36,7 +36,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public unsafe partial class SNESGraphicsDebugger : Form, IToolFormAutoConfig
+	public unsafe partial class SNESGraphicsDebugger : ToolFormBase, IToolFormAutoConfig
 	{
 		readonly List<DisplayTypeItem> displayTypeItems = new List<DisplayTypeItem>();
 

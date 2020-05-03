@@ -9,7 +9,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class SmsVdpViewer : Form, IToolFormAutoConfig
+	public partial class SmsVdpViewer : ToolFormBase, IToolFormAutoConfig
 	{
 		[RequiredService]
 		private SMS Sms { get; set; }

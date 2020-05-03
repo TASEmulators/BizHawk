@@ -12,7 +12,7 @@ using ICSharpCode.SharpZipLib.Zip;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class PCESoundDebugger : Form, IToolFormAutoConfig
+	public partial class PCESoundDebugger : ToolFormBase, IToolFormAutoConfig
 	{
 		[RequiredService]
 		private PCEngine PCE { get; set; }

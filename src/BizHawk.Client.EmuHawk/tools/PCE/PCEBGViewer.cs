@@ -9,7 +9,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class PceBgViewer : Form, IToolFormAutoConfig
+	public partial class PceBgViewer : ToolFormBase, IToolFormAutoConfig
 	{
 		[RequiredService]
 		private PCEngine PCE { get; set; }

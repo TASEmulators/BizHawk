@@ -15,7 +15,7 @@ using ICSharpCode.SharpZipLib.Zip;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class NESMusicRipper : Form, IToolFormAutoConfig
+	public partial class NESMusicRipper : ToolFormBase, IToolFormAutoConfig
 	{
 		[RequiredService]
 		private NES Nes { get; set; }

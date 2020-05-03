@@ -12,7 +12,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class GbGpuView : Form, IToolFormAutoConfig
+	public partial class GbGpuView : ToolFormBase, IToolFormAutoConfig
 	{
 		[RequiredService]
 		public IGameboyCommon Gb { get; private set; }
