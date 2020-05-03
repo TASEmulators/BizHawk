@@ -69,6 +69,12 @@ upx -d temp\*.exe
 rem dont need docs xml for assemblies and whatnot
 del temp\dll\*.xml
 
+rem we're building multiple copies of every assembly for some reason. this is a huge pain in the ass.
+rem until that's fixed, we need to delete them from the distribution
+rd /s /q temp\dll\netstandard2.0
+rd /s /q temp\dll\netcoreapp3.1
+rd /s /q temp\dll\net48
+
 cd temp
 
 rem Patch up working dir with a few other things we want
