@@ -29,635 +29,603 @@
 		private void InitializeComponent()
 		{
             this.components = new System.ComponentModel.Container();
-            this.btnDialogOK = new BizHawk.WinForms.Controls.LocSzButtonEx();
-            this.btnDialogCancel = new BizHawk.WinForms.Controls.LocSzButtonEx();
-            this.tcDialog = new System.Windows.Forms.TabControl();
-            this.tpGeneral = new BizHawk.WinForms.Controls.TabPageEx();
-            this.flpTpGeneral = new BizHawk.WinForms.Controls.SingleColumnFLP();
-            this.cbMenusPauseEmulation = new BizHawk.WinForms.Controls.CheckBoxEx();
-            this.cbEnableContextMenu = new BizHawk.WinForms.Controls.CheckBoxEx();
-            this.cbSaveWindowPosition = new BizHawk.WinForms.Controls.CheckBoxEx();
-            this.cbNeverAskForSave = new BizHawk.WinForms.Controls.CheckBoxEx();
-            this.flpNoFocusEmulate = new BizHawk.WinForms.Controls.SingleColumnFLP();
-            this.cbNoFocusEmulate = new BizHawk.WinForms.Controls.CheckBoxEx();
-            this.lblNoFocusEmulate = new BizHawk.WinForms.Controls.LocLabelEx();
-            this.flpNoFocusInput = new BizHawk.WinForms.Controls.SingleColumnFLP();
-            this.flpNoFocusInputCheckBoxes = new BizHawk.WinForms.Controls.SingleRowFLP();
-            this.cbNoFocusInput = new BizHawk.WinForms.Controls.CheckBoxEx();
-            this.cbNoFocusInputGamepadOnly = new BizHawk.WinForms.Controls.CheckBoxEx();
-            this.lblNoFocusInput = new BizHawk.WinForms.Controls.LocLabelEx();
-            this.grpInputMethod = new BizHawk.WinForms.Controls.SzGroupBoxEx();
-            this.flpGrpInputMethod = new BizHawk.WinForms.Controls.LocSingleRowFLP();
-            this.rbInputMethodDirectInput = new BizHawk.WinForms.Controls.RadioButtonEx();
-            this.rbInputMethodOpenTK = new BizHawk.WinForms.Controls.RadioButtonEx();
-            this.cbNonQWERTY = new BizHawk.WinForms.Controls.CheckBoxEx();
-            this.grpStartup = new BizHawk.WinForms.Controls.SzGroupBoxEx();
-            this.flpGrpStartup = new BizHawk.WinForms.Controls.LocSingleColumnFLP();
-            this.cbStartPaused = new BizHawk.WinForms.Controls.CheckBoxEx();
-            this.cbStartInFS = new BizHawk.WinForms.Controls.CheckBoxEx();
-            this.flpSingleInstance = new BizHawk.WinForms.Controls.SingleColumnFLP();
-            this.cbSingleInstance = new BizHawk.WinForms.Controls.CheckBoxEx();
-            this.lblSingleInstanceDesc = new BizHawk.WinForms.Controls.LocLabelEx();
-            this.lblSingleInstanceRestartWarning = new BizHawk.WinForms.Controls.LocLabelEx();
-            this.tpAdvanced = new BizHawk.WinForms.Controls.TabPageEx();
-            this.flpTpAdvanced = new BizHawk.WinForms.Controls.SingleColumnFLP();
-            this.cbBackupSaveRAM = new BizHawk.WinForms.Controls.CheckBoxEx();
-            this.flpAutoSaveRAM = new BizHawk.WinForms.Controls.SingleRowFLP();
-            this.cbAutoSaveRAM = new BizHawk.WinForms.Controls.CheckBoxEx();
-            this.grpAutoSaveRAM = new BizHawk.WinForms.Controls.SzGroupBoxEx();
-            this.flpGrpAutoSaveRAM = new BizHawk.WinForms.Controls.LocSingleColumnFLP();
-            this.lblAutoSaveRAM = new BizHawk.WinForms.Controls.LabelEx();
-            this.flpAutoSaveRAMFreq = new BizHawk.WinForms.Controls.SingleRowFLP();
-            this.lblAutoSaveRAMFreqDesc = new BizHawk.WinForms.Controls.LabelEx();
-            this.cbAutoSaveRAMFreq5s = new BizHawk.WinForms.Controls.RadioButtonEx();
-            this.AutoSaveRAMFreq5min = new BizHawk.WinForms.Controls.RadioButtonEx();
-            this.flpAutoSaveRAMFreqCustom = new BizHawk.WinForms.Controls.SingleRowFLP();
-            this.rbAutoSaveRAMFreqCustom = new BizHawk.WinForms.Controls.RadioButtonEx();
-            this.nudAutoSaveRAMFreqCustom = new BizHawk.WinForms.Controls.SzNUDEx();
-            this.lblAutoSaveRAMFreqCustomUnits = new BizHawk.WinForms.Controls.LabelEx();
-            this.flpFrameAdvPastLag = new BizHawk.WinForms.Controls.SingleColumnFLP();
-            this.cbFrameAdvPastLag = new BizHawk.WinForms.Controls.CheckBoxEx();
-            this.lblFrameAdvPastLag1 = new BizHawk.WinForms.Controls.LocLabelEx();
-            this.lblFrameAdvPastLag2 = new BizHawk.WinForms.Controls.LocLabelEx();
-            this.cbRunLuaDuringTurbo = new BizHawk.WinForms.Controls.CheckBoxEx();
-            this.flpMoviesOnDisk = new BizHawk.WinForms.Controls.SingleColumnFLP();
-            this.cbMoviesOnDisk = new BizHawk.WinForms.Controls.CheckBoxEx();
-            this.lblMoviesOnDisk = new BizHawk.WinForms.Controls.LocLabelEx();
-            this.flpMoviesInAWE = new BizHawk.WinForms.Controls.SingleColumnFLP();
-            this.cbSkipWaterboxIntegrityChecks = new BizHawk.WinForms.Controls.CheckBoxEx();
-            this.lblSkipWaterboxIntegrityChecks = new BizHawk.WinForms.Controls.LocLabelEx();
-            this.grpLuaEngine = new BizHawk.WinForms.Controls.SzGroupBoxEx();
-            this.flpGrpLuaEngine = new BizHawk.WinForms.Controls.LocSingleColumnFLP();
-            this.rbLuaInterface = new BizHawk.WinForms.Controls.RadioButtonEx();
-            this.rbKopiLua = new BizHawk.WinForms.Controls.RadioButtonEx();
+            this.OkBtn = new System.Windows.Forms.Button();
+            this.CancelBtn = new System.Windows.Forms.Button();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.HandleAlternateKeyboardLayoutsCheckBox = new System.Windows.Forms.CheckBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.StartPausedCheckbox = new System.Windows.Forms.CheckBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.StartFullScreenCheckbox = new System.Windows.Forms.CheckBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.SingleInstanceModeCheckbox = new System.Windows.Forms.CheckBox();
+            this.NeverAskSaveCheckbox = new System.Windows.Forms.CheckBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.AcceptBackgroundInputCheckbox = new System.Windows.Forms.CheckBox();
+            this.AcceptBackgroundInputControllerOnlyCheckBox = new System.Windows.Forms.CheckBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.RunInBackgroundCheckbox = new System.Windows.Forms.CheckBox();
+            this.SaveWindowPositionCheckbox = new System.Windows.Forms.CheckBox();
+            this.EnableContextMenuCheckbox = new System.Windows.Forms.CheckBox();
+            this.PauseWhenMenuActivatedCheckbox = new System.Windows.Forms.CheckBox();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.AutosaveSRAMtextBox = new System.Windows.Forms.NumericUpDown();
+            this.AutosaveSRAMradioButton1 = new System.Windows.Forms.RadioButton();
+            this.label8 = new System.Windows.Forms.Label();
+            this.AutosaveSRAMradioButton2 = new System.Windows.Forms.RadioButton();
+            this.AutosaveSRAMradioButton3 = new System.Windows.Forms.RadioButton();
+            this.AutosaveSRAMCheckbox = new System.Windows.Forms.CheckBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.label7 = new System.Windows.Forms.Label();
+            this.LuaInterfaceRadio = new System.Windows.Forms.RadioButton();
+            this.NLuaRadio = new System.Windows.Forms.RadioButton();
+            this.label6 = new System.Windows.Forms.Label();
+            this.cbSkipWaterboxIntegrityChecks = new System.Windows.Forms.CheckBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.cbMoviesOnDisk = new System.Windows.Forms.CheckBox();
+            this.LuaDuringTurboCheckbox = new System.Windows.Forms.CheckBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.FrameAdvSkipLagCheckbox = new System.Windows.Forms.CheckBox();
+            this.BackupSRamCheckbox = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.flpDialogButtons = new BizHawk.WinForms.Controls.LocSzSingleRowFLP();
-            this.tcDialog.SuspendLayout();
-            this.tpGeneral.SuspendLayout();
-            this.flpTpGeneral.SuspendLayout();
-            this.flpNoFocusEmulate.SuspendLayout();
-            this.flpNoFocusInput.SuspendLayout();
-            this.flpNoFocusInputCheckBoxes.SuspendLayout();
-            this.grpInputMethod.SuspendLayout();
-            this.flpGrpInputMethod.SuspendLayout();
-            this.grpStartup.SuspendLayout();
-            this.flpGrpStartup.SuspendLayout();
-            this.flpSingleInstance.SuspendLayout();
-            this.tpAdvanced.SuspendLayout();
-            this.flpTpAdvanced.SuspendLayout();
-            this.flpAutoSaveRAM.SuspendLayout();
-            this.grpAutoSaveRAM.SuspendLayout();
-            this.flpGrpAutoSaveRAM.SuspendLayout();
-            this.flpAutoSaveRAMFreq.SuspendLayout();
-            this.flpAutoSaveRAMFreqCustom.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudAutoSaveRAMFreqCustom)).BeginInit();
-            this.flpFrameAdvPastLag.SuspendLayout();
-            this.flpMoviesOnDisk.SuspendLayout();
-            this.flpMoviesInAWE.SuspendLayout();
-            this.grpLuaEngine.SuspendLayout();
-            this.flpGrpLuaEngine.SuspendLayout();
-            this.flpDialogButtons.SuspendLayout();
+            this.tabControl1.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.tabPage3.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.AutosaveSRAMtextBox)).BeginInit();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // btnDialogOK
+            // OkBtn
             // 
-            this.btnDialogOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDialogOK.Location = new System.Drawing.Point(3, 3);
-            this.btnDialogOK.Name = "btnDialogOK";
-            this.btnDialogOK.Size = new System.Drawing.Size(60, 23);
-            this.btnDialogOK.Text = "&OK";
-            this.btnDialogOK.Click += new System.EventHandler(this.btnDialogOK_Click);
+            this.OkBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.OkBtn.Location = new System.Drawing.Point(280, 425);
+            this.OkBtn.Name = "OkBtn";
+            this.OkBtn.Size = new System.Drawing.Size(60, 23);
+            this.OkBtn.TabIndex = 0;
+            this.OkBtn.Text = "&OK";
+            this.OkBtn.UseVisualStyleBackColor = true;
+            this.OkBtn.Click += new System.EventHandler(this.OkBtn_Click);
             // 
-            // btnDialogCancel
+            // CancelBtn
             // 
-            this.btnDialogCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDialogCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnDialogCancel.Location = new System.Drawing.Point(69, 3);
-            this.btnDialogCancel.Name = "btnDialogCancel";
-            this.btnDialogCancel.Size = new System.Drawing.Size(60, 23);
-            this.btnDialogCancel.Text = "&Cancel";
-            this.btnDialogCancel.Click += new System.EventHandler(this.btnDialogCancel_Click);
+            this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.CancelBtn.Location = new System.Drawing.Point(346, 425);
+            this.CancelBtn.Name = "CancelBtn";
+            this.CancelBtn.Size = new System.Drawing.Size(60, 23);
+            this.CancelBtn.TabIndex = 1;
+            this.CancelBtn.Text = "&Cancel";
+            this.CancelBtn.UseVisualStyleBackColor = true;
+            this.CancelBtn.Click += new System.EventHandler(this.CancelBtn_Click);
             // 
-            // tcDialog
+            // tabControl1
             // 
-            this.tcDialog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tcDialog.Controls.Add(this.tpGeneral);
-            this.tcDialog.Controls.Add(this.tpAdvanced);
-            this.tcDialog.Location = new System.Drawing.Point(4, 4);
-            this.tcDialog.Name = "tcDialog";
-            this.tcDialog.SelectedIndex = 0;
-            this.tcDialog.Size = new System.Drawing.Size(379, 389);
-            this.tcDialog.TabIndex = 0;
-            // 
-            // tpGeneral
-            // 
-            this.tpGeneral.Controls.Add(this.flpTpGeneral);
-            this.tpGeneral.Name = "tpGeneral";
-            this.tpGeneral.Padding = new System.Windows.Forms.Padding(3);
-            this.tpGeneral.Text = "General";
-            // 
-            // flpTpGeneral
-            // 
-            this.flpTpGeneral.Controls.Add(this.cbMenusPauseEmulation);
-            this.flpTpGeneral.Controls.Add(this.cbEnableContextMenu);
-            this.flpTpGeneral.Controls.Add(this.cbSaveWindowPosition);
-            this.flpTpGeneral.Controls.Add(this.cbNeverAskForSave);
-            this.flpTpGeneral.Controls.Add(this.flpNoFocusEmulate);
-            this.flpTpGeneral.Controls.Add(this.flpNoFocusInput);
-            this.flpTpGeneral.Controls.Add(this.grpInputMethod);
-            this.flpTpGeneral.Controls.Add(this.cbNonQWERTY);
-            this.flpTpGeneral.Controls.Add(this.grpStartup);
-            this.flpTpGeneral.Name = "flpTpGeneral";
-            // 
-            // cbMenusPauseEmulation
-            // 
-            this.cbMenusPauseEmulation.Name = "cbMenusPauseEmulation";
-            this.cbMenusPauseEmulation.Text = "Pause when menu activated";
-            // 
-            // cbEnableContextMenu
-            // 
-            this.cbEnableContextMenu.Name = "cbEnableContextMenu";
-            this.cbEnableContextMenu.Text = "Enable Context Menu";
-            // 
-            // cbSaveWindowPosition
-            // 
-            this.cbSaveWindowPosition.Name = "cbSaveWindowPosition";
-            this.cbSaveWindowPosition.Text = "Save Window Position";
-            // 
-            // cbNeverAskForSave
-            // 
-            this.cbNeverAskForSave.Name = "cbNeverAskForSave";
-            this.cbNeverAskForSave.Text = "Never be asked to save changes";
-            // 
-            // flpNoFocusEmulate
-            // 
-            this.flpNoFocusEmulate.Controls.Add(this.cbNoFocusEmulate);
-            this.flpNoFocusEmulate.Controls.Add(this.lblNoFocusEmulate);
-            this.flpNoFocusEmulate.Name = "flpNoFocusEmulate";
-            // 
-            // cbNoFocusEmulate
-            // 
-            this.cbNoFocusEmulate.Name = "cbNoFocusEmulate";
-            this.cbNoFocusEmulate.Text = "Run in background";
-            // 
-            // lblNoFocusEmulate
-            // 
-            this.lblNoFocusEmulate.Location = new System.Drawing.Point(3, 23);
-            this.lblNoFocusEmulate.Name = "lblNoFocusEmulate";
-            this.lblNoFocusEmulate.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
-            this.lblNoFocusEmulate.Text = "When this is set, the client will continue to run when it loses focus";
-            // 
-            // flpNoFocusInput
-            // 
-            this.flpNoFocusInput.Controls.Add(this.flpNoFocusInputCheckBoxes);
-            this.flpNoFocusInput.Controls.Add(this.lblNoFocusInput);
-            this.flpNoFocusInput.Name = "flpNoFocusInput";
-            // 
-            // flpNoFocusInputCheckBoxes
-            // 
-            this.flpNoFocusInputCheckBoxes.Controls.Add(this.cbNoFocusInput);
-            this.flpNoFocusInputCheckBoxes.Controls.Add(this.cbNoFocusInputGamepadOnly);
-            this.flpNoFocusInputCheckBoxes.Name = "flpNoFocusInputCheckBoxes";
-            // 
-            // cbNoFocusInput
-            // 
-            this.cbNoFocusInput.Name = "cbNoFocusInput";
-            this.cbNoFocusInput.Text = "Accept background input";
-            this.cbNoFocusInput.CheckedChanged += new System.EventHandler(this.cbNoFocusInput_CheckedChanged);
-            // 
-            // cbNoFocusInputGamepadOnly
-            // 
-            this.cbNoFocusInputGamepadOnly.Enabled = false;
-            this.cbNoFocusInputGamepadOnly.Name = "cbNoFocusInputGamepadOnly";
-            this.cbNoFocusInputGamepadOnly.Text = "From controller only";
-            // 
-            // lblNoFocusInput
-            // 
-            this.lblNoFocusInput.Location = new System.Drawing.Point(3, 24);
-            this.lblNoFocusInput.Name = "lblNoFocusInput";
-            this.lblNoFocusInput.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
-            this.lblNoFocusInput.Text = "When this is set, the client will receive user input even when focus is lost";
-            // 
-            // grpInputMethod
-            // 
-            this.grpInputMethod.Controls.Add(this.flpGrpInputMethod);
-            this.grpInputMethod.Name = "grpInputMethod";
-            this.grpInputMethod.Size = new System.Drawing.Size(334, 45);
-            this.grpInputMethod.Text = "Input Method (requires restart)";
-            // 
-            // flpGrpInputMethod
-            // 
-            this.flpGrpInputMethod.Controls.Add(this.rbInputMethodDirectInput);
-            this.flpGrpInputMethod.Controls.Add(this.rbInputMethodOpenTK);
-            this.flpGrpInputMethod.Location = new System.Drawing.Point(4, 12);
-            this.flpGrpInputMethod.Name = "flpGrpInputMethod";
-            // 
-            // rbInputMethodDirectInput
-            // 
-            this.rbInputMethodDirectInput.Name = "rbInputMethodDirectInput";
-            this.rbInputMethodDirectInput.Tag = BizHawk.Client.Common.EHostInputMethod.DirectInput;
-            this.rbInputMethodDirectInput.Text = "DirectInput";
-            // 
-            // rbInputMethodOpenTK
-            // 
-            this.rbInputMethodOpenTK.Name = "rbInputMethodOpenTK";
-            this.rbInputMethodOpenTK.Tag = BizHawk.Client.Common.EHostInputMethod.OpenTK;
-            this.rbInputMethodOpenTK.Text = "OpenTK";
-            // 
-            // cbNonQWERTY
-            // 
-            this.cbNonQWERTY.Name = "cbNonQWERTY";
-            this.cbNonQWERTY.Text = "Handle alternate keyboard layouts (e.g. Dvorak) [experimental]";
-            // 
-            // grpStartup
-            // 
-            this.grpStartup.Controls.Add(this.flpGrpStartup);
-            this.grpStartup.Name = "grpStartup";
-            this.grpStartup.Size = new System.Drawing.Size(334, 118);
-            this.grpStartup.Text = "Startup Options";
-            // 
-            // flpGrpStartup
-            // 
-            this.flpGrpStartup.Controls.Add(this.cbStartPaused);
-            this.flpGrpStartup.Controls.Add(this.cbStartInFS);
-            this.flpGrpStartup.Controls.Add(this.flpSingleInstance);
-            this.flpGrpStartup.Location = new System.Drawing.Point(3, 16);
-            this.flpGrpStartup.Name = "flpGrpStartup";
-            // 
-            // cbStartPaused
-            // 
-            this.cbStartPaused.Name = "cbStartPaused";
-            this.cbStartPaused.Text = "Start paused";
-            // 
-            // cbStartInFS
-            // 
-            this.cbStartInFS.Name = "cbStartInFS";
-            this.cbStartInFS.Text = "Start in Fullscreen";
-            // 
-            // flpSingleInstance
-            // 
-            this.flpSingleInstance.Controls.Add(this.cbSingleInstance);
-            this.flpSingleInstance.Controls.Add(this.lblSingleInstanceDesc);
-            this.flpSingleInstance.Controls.Add(this.lblSingleInstanceRestartWarning);
-            this.flpSingleInstance.Name = "flpSingleInstance";
-            // 
-            // cbSingleInstance
-            // 
-            this.cbSingleInstance.Name = "cbSingleInstance";
-            this.cbSingleInstance.Text = "Single instance mode";
-            // 
-            // lblSingleInstanceDesc
-            // 
-            this.lblSingleInstanceDesc.Location = new System.Drawing.Point(3, 23);
-            this.lblSingleInstanceDesc.Name = "lblSingleInstanceDesc";
-            this.lblSingleInstanceDesc.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
-            this.lblSingleInstanceDesc.Text = "Enable to force only one instance of EmuHawk at a time.";
-            // 
-            // lblSingleInstanceRestartWarning
-            // 
-            this.lblSingleInstanceRestartWarning.Location = new System.Drawing.Point(3, 36);
-            this.lblSingleInstanceRestartWarning.Name = "lblSingleInstanceRestartWarning";
-            this.lblSingleInstanceRestartWarning.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
-            this.lblSingleInstanceRestartWarning.Text = "Note: Requires closing and reopening EmuHawk to take effect.";
-            // 
-            // tpAdvanced
-            // 
-            this.tpAdvanced.Controls.Add(this.flpTpAdvanced);
-            this.tpAdvanced.Name = "tpAdvanced";
-            this.tpAdvanced.Text = "Advanced";
-            // 
-            // flpTpAdvanced
-            // 
-            this.flpTpAdvanced.Controls.Add(this.cbBackupSaveRAM);
-            this.flpTpAdvanced.Controls.Add(this.flpAutoSaveRAM);
-            this.flpTpAdvanced.Controls.Add(this.flpFrameAdvPastLag);
-            this.flpTpAdvanced.Controls.Add(this.cbRunLuaDuringTurbo);
-            this.flpTpAdvanced.Controls.Add(this.flpMoviesOnDisk);
-            this.flpTpAdvanced.Controls.Add(this.flpMoviesInAWE);
-            this.flpTpAdvanced.Controls.Add(this.grpLuaEngine);
-            this.flpTpAdvanced.Name = "flpTpAdvanced";
-            // 
-            // cbBackupSaveRAM
-            // 
-            this.cbBackupSaveRAM.Name = "cbBackupSaveRAM";
-            this.cbBackupSaveRAM.Text = "Backup SaveRAM to .SaveRAM.bak";
-            // 
-            // flpAutoSaveRAM
-            // 
-            this.flpAutoSaveRAM.Controls.Add(this.cbAutoSaveRAM);
-            this.flpAutoSaveRAM.Controls.Add(this.grpAutoSaveRAM);
-            this.flpAutoSaveRAM.Name = "flpAutoSaveRAM";
-            // 
-            // cbAutoSaveRAM
-            // 
-            this.cbAutoSaveRAM.Name = "cbAutoSaveRAM";
-            this.cbAutoSaveRAM.CheckedChanged += new System.EventHandler(this.cbAutoSaveRAM_CheckedChanged);
-            // 
-            // grpAutoSaveRAM
-            // 
-            this.grpAutoSaveRAM.Controls.Add(this.flpGrpAutoSaveRAM);
-            this.grpAutoSaveRAM.Name = "grpAutoSaveRAM";
-            this.grpAutoSaveRAM.Size = new System.Drawing.Size(238, 54);
-            this.grpAutoSaveRAM.Text = "AutoSaveRAM";
-            // 
-            // flpGrpAutoSaveRAM
-            // 
-            this.flpGrpAutoSaveRAM.Controls.Add(this.lblAutoSaveRAM);
-            this.flpGrpAutoSaveRAM.Controls.Add(this.flpAutoSaveRAMFreq);
-            this.flpGrpAutoSaveRAM.Location = new System.Drawing.Point(3, 12);
-            this.flpGrpAutoSaveRAM.Name = "flpGrpAutoSaveRAM";
-            // 
-            // lblAutoSaveRAM
-            // 
-            this.lblAutoSaveRAM.Name = "lblAutoSaveRAM";
-            this.lblAutoSaveRAM.Text = "Save SaveRAM to .AutoSaveRAM.SaveRAM";
-            // 
-            // flpAutoSaveRAMFreq
-            // 
-            this.flpAutoSaveRAMFreq.Controls.Add(this.lblAutoSaveRAMFreqDesc);
-            this.flpAutoSaveRAMFreq.Controls.Add(this.cbAutoSaveRAMFreq5s);
-            this.flpAutoSaveRAMFreq.Controls.Add(this.AutoSaveRAMFreq5min);
-            this.flpAutoSaveRAMFreq.Controls.Add(this.flpAutoSaveRAMFreqCustom);
-            this.flpAutoSaveRAMFreq.Name = "flpAutoSaveRAMFreq";
-            // 
-            // lblAutoSaveRAMFreqDesc
-            // 
-            this.lblAutoSaveRAMFreqDesc.Name = "lblAutoSaveRAMFreqDesc";
-            this.lblAutoSaveRAMFreqDesc.Text = "every";
-            // 
-            // cbAutoSaveRAMFreq5s
-            // 
-            this.cbAutoSaveRAMFreq5s.Name = "cbAutoSaveRAMFreq5s";
-            this.cbAutoSaveRAMFreq5s.Text = "5s";
-            // 
-            // AutoSaveRAMFreq5min
-            // 
-            this.AutoSaveRAMFreq5min.Name = "AutoSaveRAMFreq5min";
-            this.AutoSaveRAMFreq5min.Text = "5m";
-            // 
-            // flpAutoSaveRAMFreqCustom
-            // 
-            this.flpAutoSaveRAMFreqCustom.Controls.Add(this.rbAutoSaveRAMFreqCustom);
-            this.flpAutoSaveRAMFreqCustom.Controls.Add(this.nudAutoSaveRAMFreqCustom);
-            this.flpAutoSaveRAMFreqCustom.Controls.Add(this.lblAutoSaveRAMFreqCustomUnits);
-            this.flpAutoSaveRAMFreqCustom.Name = "flpAutoSaveRAMFreqCustom";
-            // 
-            // rbAutoSaveRAMFreqCustom
-            // 
-            this.rbAutoSaveRAMFreqCustom.Name = "rbAutoSaveRAMFreqCustom";
-            this.rbAutoSaveRAMFreqCustom.CheckedChanged += new System.EventHandler(this.rbAutoSaveRAMFreqCustom_CheckedChanged);
-            // 
-            // nudAutoSaveRAMFreqCustom
-            // 
-            this.nudAutoSaveRAMFreqCustom.Maximum = new decimal(new int[] {
+            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage3);
+            this.tabControl1.Location = new System.Drawing.Point(12, 12);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(394, 402);
+            this.tabControl1.TabIndex = 2;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.HandleAlternateKeyboardLayoutsCheckBox);
+            this.tabPage1.Controls.Add(this.groupBox1);
+            this.tabPage1.Controls.Add(this.NeverAskSaveCheckbox);
+            this.tabPage1.Controls.Add(this.label2);
+            this.tabPage1.Controls.Add(this.AcceptBackgroundInputCheckbox);
+            this.tabPage1.Controls.Add(this.AcceptBackgroundInputControllerOnlyCheckBox);
+            this.tabPage1.Controls.Add(this.label1);
+            this.tabPage1.Controls.Add(this.RunInBackgroundCheckbox);
+            this.tabPage1.Controls.Add(this.SaveWindowPositionCheckbox);
+            this.tabPage1.Controls.Add(this.EnableContextMenuCheckbox);
+            this.tabPage1.Controls.Add(this.PauseWhenMenuActivatedCheckbox);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(386, 376);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "General";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // HandleAlternateKeyboardLayoutsCheckBox
+            // 
+            this.HandleAlternateKeyboardLayoutsCheckBox.AutoSize = true;
+            this.HandleAlternateKeyboardLayoutsCheckBox.Location = new System.Drawing.Point(6, 175);
+            this.HandleAlternateKeyboardLayoutsCheckBox.Name = "HandleAlternateKeyboardLayoutsCheckBox";
+            this.HandleAlternateKeyboardLayoutsCheckBox.Size = new System.Drawing.Size(320, 17);
+            this.HandleAlternateKeyboardLayoutsCheckBox.TabIndex = 11;
+            this.HandleAlternateKeyboardLayoutsCheckBox.Text = "Handle alternate keyboard layouts (e.g. Dvorak) [experimental]";
+            this.HandleAlternateKeyboardLayoutsCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.StartPausedCheckbox);
+            this.groupBox1.Controls.Add(this.label14);
+            this.groupBox1.Controls.Add(this.StartFullScreenCheckbox);
+            this.groupBox1.Controls.Add(this.label3);
+            this.groupBox1.Controls.Add(this.SingleInstanceModeCheckbox);
+            this.groupBox1.Location = new System.Drawing.Point(6, 205);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(369, 140);
+            this.groupBox1.TabIndex = 13;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Startup Options";
+            // 
+            // StartPausedCheckbox
+            // 
+            this.StartPausedCheckbox.AutoSize = true;
+            this.StartPausedCheckbox.Location = new System.Drawing.Point(6, 19);
+            this.StartPausedCheckbox.Name = "StartPausedCheckbox";
+            this.StartPausedCheckbox.Size = new System.Drawing.Size(86, 17);
+            this.StartPausedCheckbox.TabIndex = 2;
+            this.StartPausedCheckbox.Text = "Start paused";
+            this.StartPausedCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(26, 99);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(306, 13);
+            this.label14.TabIndex = 12;
+            this.label14.Text = "Note: Requires closing and reopening EmuHawk to take effect.";
+            // 
+            // StartFullScreenCheckbox
+            // 
+            this.StartFullScreenCheckbox.AutoSize = true;
+            this.StartFullScreenCheckbox.Location = new System.Drawing.Point(6, 42);
+            this.StartFullScreenCheckbox.Name = "StartFullScreenCheckbox";
+            this.StartFullScreenCheckbox.Size = new System.Drawing.Size(110, 17);
+            this.StartFullScreenCheckbox.TabIndex = 3;
+            this.StartFullScreenCheckbox.Text = "Start in Fullscreen";
+            this.StartFullScreenCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(26, 85);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(275, 13);
+            this.label3.TabIndex = 11;
+            this.label3.Text = "Enable to force only one instance of EmuHawk at a time.";
+            // 
+            // SingleInstanceModeCheckbox
+            // 
+            this.SingleInstanceModeCheckbox.AutoSize = true;
+            this.SingleInstanceModeCheckbox.Location = new System.Drawing.Point(6, 65);
+            this.SingleInstanceModeCheckbox.Name = "SingleInstanceModeCheckbox";
+            this.SingleInstanceModeCheckbox.Size = new System.Drawing.Size(127, 17);
+            this.SingleInstanceModeCheckbox.TabIndex = 10;
+            this.SingleInstanceModeCheckbox.Text = "Single instance mode";
+            this.SingleInstanceModeCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // NeverAskSaveCheckbox
+            // 
+            this.NeverAskSaveCheckbox.AutoSize = true;
+            this.NeverAskSaveCheckbox.Location = new System.Drawing.Point(6, 72);
+            this.NeverAskSaveCheckbox.Name = "NeverAskSaveCheckbox";
+            this.NeverAskSaveCheckbox.Size = new System.Drawing.Size(184, 17);
+            this.NeverAskSaveCheckbox.TabIndex = 5;
+            this.NeverAskSaveCheckbox.Text = "Never be asked to save changes";
+            this.NeverAskSaveCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(26, 155);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(349, 13);
+            this.label2.TabIndex = 10;
+            this.label2.Text = "When this is set, the client will receive user input even when focus is lost";
+            // 
+            // AcceptBackgroundInputCheckbox
+            // 
+            this.AcceptBackgroundInputCheckbox.AutoSize = true;
+            this.AcceptBackgroundInputCheckbox.Location = new System.Drawing.Point(6, 135);
+            this.AcceptBackgroundInputCheckbox.Name = "AcceptBackgroundInputCheckbox";
+            this.AcceptBackgroundInputCheckbox.Size = new System.Drawing.Size(146, 17);
+            this.AcceptBackgroundInputCheckbox.TabIndex = 8;
+            this.AcceptBackgroundInputCheckbox.Text = "Accept background input";
+            this.AcceptBackgroundInputCheckbox.UseVisualStyleBackColor = true;
+            this.AcceptBackgroundInputCheckbox.CheckedChanged += new System.EventHandler(this.AcceptBackgroundInputCheckbox_CheckedChanged);
+            // 
+            // AcceptBackgroundInputControllerOnlyCheckBox
+            // 
+            this.AcceptBackgroundInputControllerOnlyCheckBox.AutoSize = true;
+            this.AcceptBackgroundInputControllerOnlyCheckBox.Enabled = false;
+            this.AcceptBackgroundInputControllerOnlyCheckBox.Location = new System.Drawing.Point(156, 135);
+            this.AcceptBackgroundInputControllerOnlyCheckBox.Name = "AcceptBackgroundInputControllerOnlyCheckBox";
+            this.AcceptBackgroundInputControllerOnlyCheckBox.Size = new System.Drawing.Size(117, 17);
+            this.AcceptBackgroundInputControllerOnlyCheckBox.TabIndex = 9;
+            this.AcceptBackgroundInputControllerOnlyCheckBox.Text = "From controller only";
+            this.AcceptBackgroundInputControllerOnlyCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(26, 115);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(315, 13);
+            this.label1.TabIndex = 7;
+            this.label1.Text = "When this is set, the client will continue to run when it loses focus";
+            // 
+            // RunInBackgroundCheckbox
+            // 
+            this.RunInBackgroundCheckbox.AutoSize = true;
+            this.RunInBackgroundCheckbox.Location = new System.Drawing.Point(6, 95);
+            this.RunInBackgroundCheckbox.Name = "RunInBackgroundCheckbox";
+            this.RunInBackgroundCheckbox.Size = new System.Drawing.Size(117, 17);
+            this.RunInBackgroundCheckbox.TabIndex = 6;
+            this.RunInBackgroundCheckbox.Text = "Run in background";
+            this.RunInBackgroundCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // SaveWindowPositionCheckbox
+            // 
+            this.SaveWindowPositionCheckbox.AutoSize = true;
+            this.SaveWindowPositionCheckbox.Location = new System.Drawing.Point(6, 49);
+            this.SaveWindowPositionCheckbox.Name = "SaveWindowPositionCheckbox";
+            this.SaveWindowPositionCheckbox.Size = new System.Drawing.Size(133, 17);
+            this.SaveWindowPositionCheckbox.TabIndex = 4;
+            this.SaveWindowPositionCheckbox.Text = "Save Window Position";
+            this.SaveWindowPositionCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // EnableContextMenuCheckbox
+            // 
+            this.EnableContextMenuCheckbox.AutoSize = true;
+            this.EnableContextMenuCheckbox.Location = new System.Drawing.Point(6, 26);
+            this.EnableContextMenuCheckbox.Name = "EnableContextMenuCheckbox";
+            this.EnableContextMenuCheckbox.Size = new System.Drawing.Size(128, 17);
+            this.EnableContextMenuCheckbox.TabIndex = 1;
+            this.EnableContextMenuCheckbox.Text = "Enable Context Menu";
+            this.EnableContextMenuCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // PauseWhenMenuActivatedCheckbox
+            // 
+            this.PauseWhenMenuActivatedCheckbox.AutoSize = true;
+            this.PauseWhenMenuActivatedCheckbox.Location = new System.Drawing.Point(6, 3);
+            this.PauseWhenMenuActivatedCheckbox.Name = "PauseWhenMenuActivatedCheckbox";
+            this.PauseWhenMenuActivatedCheckbox.Size = new System.Drawing.Size(161, 17);
+            this.PauseWhenMenuActivatedCheckbox.TabIndex = 0;
+            this.PauseWhenMenuActivatedCheckbox.Text = "Pause when menu activated";
+            this.PauseWhenMenuActivatedCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.groupBox2);
+            this.tabPage3.Controls.Add(this.AutosaveSRAMCheckbox);
+            this.tabPage3.Controls.Add(this.panel1);
+            this.tabPage3.Controls.Add(this.label6);
+            this.tabPage3.Controls.Add(this.cbSkipWaterboxIntegrityChecks);
+            this.tabPage3.Controls.Add(this.label5);
+            this.tabPage3.Controls.Add(this.cbMoviesOnDisk);
+            this.tabPage3.Controls.Add(this.LuaDuringTurboCheckbox);
+            this.tabPage3.Controls.Add(this.label12);
+            this.tabPage3.Controls.Add(this.label13);
+            this.tabPage3.Controls.Add(this.FrameAdvSkipLagCheckbox);
+            this.tabPage3.Controls.Add(this.BackupSRamCheckbox);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Size = new System.Drawing.Size(386, 376);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Advanced";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.label10);
+            this.groupBox2.Controls.Add(this.label9);
+            this.groupBox2.Controls.Add(this.AutosaveSRAMtextBox);
+            this.groupBox2.Controls.Add(this.AutosaveSRAMradioButton1);
+            this.groupBox2.Controls.Add(this.label8);
+            this.groupBox2.Controls.Add(this.AutosaveSRAMradioButton2);
+            this.groupBox2.Controls.Add(this.AutosaveSRAMradioButton3);
+            this.groupBox2.Location = new System.Drawing.Point(27, 32);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(0);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(265, 60);
+            this.groupBox2.TabIndex = 5;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "AutoSaveRAM";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(9, 34);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(33, 13);
+            this.label10.TabIndex = 1;
+            this.label10.Text = "every";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(6, 16);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(225, 13);
+            this.label9.TabIndex = 0;
+            this.label9.Text = "Save SaveRAM to .AutoSaveRAM.SaveRAM";
+            // 
+            // AutosaveSRAMtextBox
+            // 
+            this.AutosaveSRAMtextBox.Location = new System.Drawing.Point(151, 33);
+            this.AutosaveSRAMtextBox.Maximum = new decimal(new int[] {
             100000,
             0,
             0,
             0});
-            this.nudAutoSaveRAMFreqCustom.Name = "nudAutoSaveRAMFreqCustom";
-            this.nudAutoSaveRAMFreqCustom.Size = new System.Drawing.Size(50, 20);
+            this.AutosaveSRAMtextBox.Name = "AutosaveSRAMtextBox";
+            this.AutosaveSRAMtextBox.Size = new System.Drawing.Size(50, 20);
+            this.AutosaveSRAMtextBox.TabIndex = 5;
             // 
-            // lblAutoSaveRAMFreqCustomUnits
+            // AutosaveSRAMradioButton1
             // 
-            this.lblAutoSaveRAMFreqCustomUnits.Name = "lblAutoSaveRAMFreqCustomUnits";
-            this.lblAutoSaveRAMFreqCustomUnits.Text = "s";
+            this.AutosaveSRAMradioButton1.AutoSize = true;
+            this.AutosaveSRAMradioButton1.Location = new System.Drawing.Point(48, 33);
+            this.AutosaveSRAMradioButton1.Name = "AutosaveSRAMradioButton1";
+            this.AutosaveSRAMradioButton1.Size = new System.Drawing.Size(36, 17);
+            this.AutosaveSRAMradioButton1.TabIndex = 2;
+            this.AutosaveSRAMradioButton1.TabStop = true;
+            this.AutosaveSRAMradioButton1.Text = "5s";
+            this.AutosaveSRAMradioButton1.UseVisualStyleBackColor = true;
             // 
-            // flpFrameAdvPastLag
+            // label8
             // 
-            this.flpFrameAdvPastLag.Controls.Add(this.cbFrameAdvPastLag);
-            this.flpFrameAdvPastLag.Controls.Add(this.lblFrameAdvPastLag1);
-            this.flpFrameAdvPastLag.Controls.Add(this.lblFrameAdvPastLag2);
-            this.flpFrameAdvPastLag.Name = "flpFrameAdvPastLag";
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(202, 35);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(12, 13);
+            this.label8.TabIndex = 6;
+            this.label8.Text = "s";
             // 
-            // cbFrameAdvPastLag
+            // AutosaveSRAMradioButton2
             // 
-            this.cbFrameAdvPastLag.Name = "cbFrameAdvPastLag";
-            this.cbFrameAdvPastLag.Text = "Frame advance button skips non-input frames";
+            this.AutosaveSRAMradioButton2.AutoSize = true;
+            this.AutosaveSRAMradioButton2.Location = new System.Drawing.Point(90, 34);
+            this.AutosaveSRAMradioButton2.Name = "AutosaveSRAMradioButton2";
+            this.AutosaveSRAMradioButton2.Size = new System.Drawing.Size(39, 17);
+            this.AutosaveSRAMradioButton2.TabIndex = 3;
+            this.AutosaveSRAMradioButton2.TabStop = true;
+            this.AutosaveSRAMradioButton2.Text = "5m";
+            this.AutosaveSRAMradioButton2.UseVisualStyleBackColor = true;
             // 
-            // lblFrameAdvPastLag1
+            // AutosaveSRAMradioButton3
             // 
-            this.lblFrameAdvPastLag1.Location = new System.Drawing.Point(3, 23);
-            this.lblFrameAdvPastLag1.Name = "lblFrameAdvPastLag1";
-            this.lblFrameAdvPastLag1.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
-            this.lblFrameAdvPastLag1.Text = "When enabled, the frame advance button will skip over";
+            this.AutosaveSRAMradioButton3.AutoSize = true;
+            this.AutosaveSRAMradioButton3.Location = new System.Drawing.Point(131, 35);
+            this.AutosaveSRAMradioButton3.Name = "AutosaveSRAMradioButton3";
+            this.AutosaveSRAMradioButton3.Size = new System.Drawing.Size(14, 13);
+            this.AutosaveSRAMradioButton3.TabIndex = 4;
+            this.AutosaveSRAMradioButton3.TabStop = true;
+            this.AutosaveSRAMradioButton3.UseVisualStyleBackColor = true;
+            this.AutosaveSRAMradioButton3.CheckedChanged += new System.EventHandler(this.AutosaveSRAMRadioButton3_CheckedChanged);
             // 
-            // lblFrameAdvPastLag2
+            // AutosaveSRAMCheckbox
             // 
-            this.lblFrameAdvPastLag2.Location = new System.Drawing.Point(3, 36);
-            this.lblFrameAdvPastLag2.Name = "lblFrameAdvPastLag2";
-            this.lblFrameAdvPastLag2.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
-            this.lblFrameAdvPastLag2.Text = "frames in which no input was polled (lag frames)";
+            this.AutosaveSRAMCheckbox.AutoSize = true;
+            this.AutosaveSRAMCheckbox.Location = new System.Drawing.Point(6, 35);
+            this.AutosaveSRAMCheckbox.Name = "AutosaveSRAMCheckbox";
+            this.AutosaveSRAMCheckbox.Size = new System.Drawing.Size(15, 14);
+            this.AutosaveSRAMCheckbox.TabIndex = 4;
+            this.AutosaveSRAMCheckbox.UseVisualStyleBackColor = true;
+            this.AutosaveSRAMCheckbox.CheckedChanged += new System.EventHandler(this.AutosaveSRAMCheckbox_CheckedChanged);
             // 
-            // cbRunLuaDuringTurbo
+            // panel1
             // 
-            this.cbRunLuaDuringTurbo.Name = "cbRunLuaDuringTurbo";
-            this.cbRunLuaDuringTurbo.Text = "Run lua scripts when turboing";
+            this.panel1.Controls.Add(this.label7);
+            this.panel1.Controls.Add(this.LuaInterfaceRadio);
+            this.panel1.Controls.Add(this.NLuaRadio);
+            this.panel1.Location = new System.Drawing.Point(6, 312);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(377, 61);
+            this.panel1.TabIndex = 20;
             // 
-            // flpMoviesOnDisk
+            // label7
             // 
-            this.flpMoviesOnDisk.Controls.Add(this.cbMoviesOnDisk);
-            this.flpMoviesOnDisk.Controls.Add(this.lblMoviesOnDisk);
-            this.flpMoviesOnDisk.Name = "flpMoviesOnDisk";
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(3, 1);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(50, 13);
+            this.label7.TabIndex = 0;
+            this.label7.Text = "Lua Core";
             // 
-            // cbMoviesOnDisk
+            // LuaInterfaceRadio
             // 
-            this.cbMoviesOnDisk.Name = "cbMoviesOnDisk";
-            this.cbMoviesOnDisk.Text = "Store movie working data on disk instead of RAM";
+            this.LuaInterfaceRadio.AutoSize = true;
+            this.LuaInterfaceRadio.Location = new System.Drawing.Point(4, 36);
+            this.LuaInterfaceRadio.Name = "LuaInterfaceRadio";
+            this.LuaInterfaceRadio.Size = new System.Drawing.Size(338, 17);
+            this.LuaInterfaceRadio.TabIndex = 2;
+            this.LuaInterfaceRadio.TabStop = true;
+            this.LuaInterfaceRadio.Text = "Lua+LuaInterface - Faster but memory leaks,  use at your own risk!";
+            this.LuaInterfaceRadio.UseVisualStyleBackColor = true;
             // 
-            // lblMoviesOnDisk
+            // NLuaRadio
             // 
-            this.lblMoviesOnDisk.Location = new System.Drawing.Point(3, 23);
-            this.lblMoviesOnDisk.Name = "lblMoviesOnDisk";
-            this.lblMoviesOnDisk.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
-            this.lblMoviesOnDisk.Text = "Will prevent many Out Of Memory crashes during long movies.\r\nYou must restart the" +
-    " program after changing this.";
+            this.NLuaRadio.AutoSize = true;
+            this.NLuaRadio.Location = new System.Drawing.Point(4, 17);
+            this.NLuaRadio.Name = "NLuaRadio";
+            this.NLuaRadio.Size = new System.Drawing.Size(96, 17);
+            this.NLuaRadio.TabIndex = 1;
+            this.NLuaRadio.TabStop = true;
+            this.NLuaRadio.Text = "NLua+KopiLua";
+            this.NLuaRadio.UseVisualStyleBackColor = true;
             // 
-            // flpMoviesInAWE
+            // label6
             // 
-            this.flpMoviesInAWE.Controls.Add(this.cbSkipWaterboxIntegrityChecks);
-            this.flpMoviesInAWE.Controls.Add(this.lblSkipWaterboxIntegrityChecks);
-            this.flpMoviesInAWE.Name = "flpMoviesInAWE";
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(27, 243);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(276, 39);
+            this.label6.TabIndex = 19;
+            this.label6.Text = "Skips some integrity check exceptions in waterbox cores.\r\nUseful for romhackers. " +
+    "Reboot core after changing.\r\nENABLING THIS VOIDS YOUR WARRANTY\r\n";
             // 
             // cbSkipWaterboxIntegrityChecks
             // 
+            this.cbSkipWaterboxIntegrityChecks.AutoSize = true;
+            this.cbSkipWaterboxIntegrityChecks.Location = new System.Drawing.Point(6, 223);
             this.cbSkipWaterboxIntegrityChecks.Name = "cbSkipWaterboxIntegrityChecks";
-            this.cbSkipWaterboxIntegrityChecks.Text = "Store movie working data in extended > 1GB Ram";
+            this.cbSkipWaterboxIntegrityChecks.Size = new System.Drawing.Size(170, 17);
+            this.cbSkipWaterboxIntegrityChecks.TabIndex = 18;
+            this.cbSkipWaterboxIntegrityChecks.Text = "Skip waterbox integrity checks";
+            this.cbSkipWaterboxIntegrityChecks.UseVisualStyleBackColor = true;
             // 
-            // lblSkipWaterboxIntegrityChecks
+            // label5
             // 
-            this.lblSkipWaterboxIntegrityChecks.Location = new System.Drawing.Point(3, 23);
-            this.lblSkipWaterboxIntegrityChecks.Name = "lblSkipWaterboxIntegrityChecks";
-            this.lblSkipWaterboxIntegrityChecks.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
-            this.lblSkipWaterboxIntegrityChecks.Text = "Skips some integrity check exceptions in waterbox cores.\r\nUseful for romhackers.";
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(27, 194);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(299, 26);
+            this.label5.TabIndex = 17;
+            this.label5.Text = "Will prevent many Out Of Memory crashes during long movies.\r\nYou must restart the" +
+    " program after changing this.";
             // 
-            // grpLuaEngine
+            // cbMoviesOnDisk
             // 
-            this.grpLuaEngine.Controls.Add(this.flpGrpLuaEngine);
-            this.grpLuaEngine.Name = "grpLuaEngine";
-            this.grpLuaEngine.Size = new System.Drawing.Size(355, 67);
-            this.grpLuaEngine.Text = "Lua Engine";
+            this.cbMoviesOnDisk.AutoSize = true;
+            this.cbMoviesOnDisk.Location = new System.Drawing.Point(6, 174);
+            this.cbMoviesOnDisk.Name = "cbMoviesOnDisk";
+            this.cbMoviesOnDisk.Size = new System.Drawing.Size(259, 17);
+            this.cbMoviesOnDisk.TabIndex = 16;
+            this.cbMoviesOnDisk.Text = "Store movie working data on disk instead of RAM";
+            this.cbMoviesOnDisk.UseVisualStyleBackColor = true;
             // 
-            // flpGrpLuaEngine
+            // LuaDuringTurboCheckbox
             // 
-            this.flpGrpLuaEngine.Controls.Add(this.rbLuaInterface);
-            this.flpGrpLuaEngine.Controls.Add(this.rbKopiLua);
-            this.flpGrpLuaEngine.Location = new System.Drawing.Point(7, 16);
-            this.flpGrpLuaEngine.Name = "flpGrpLuaEngine";
+            this.LuaDuringTurboCheckbox.AutoSize = true;
+            this.LuaDuringTurboCheckbox.Location = new System.Drawing.Point(6, 151);
+            this.LuaDuringTurboCheckbox.Name = "LuaDuringTurboCheckbox";
+            this.LuaDuringTurboCheckbox.Size = new System.Drawing.Size(166, 17);
+            this.LuaDuringTurboCheckbox.TabIndex = 15;
+            this.LuaDuringTurboCheckbox.Text = "Run lua scripts when turboing";
+            this.LuaDuringTurboCheckbox.UseVisualStyleBackColor = true;
             // 
-            // rbLuaInterface
+            // label12
             // 
-            this.rbLuaInterface.Name = "rbLuaInterface";
-            this.rbLuaInterface.Tag = BizHawk.Client.Common.ELuaEngine.LuaPlusLuaInterface;
-            this.rbLuaInterface.Text = "Lua+LuaInterface";
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(27, 135);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(231, 13);
+            this.label12.TabIndex = 14;
+            this.label12.Text = "frames in which no input was polled (lag frames)";
             // 
-            // rbKopiLua
+            // label13
             // 
-            this.rbKopiLua.Name = "rbKopiLua";
-            this.rbKopiLua.Tag = BizHawk.Client.Common.ELuaEngine.NLuaPlusKopiLua;
-            this.rbKopiLua.Text = "NLua+KopiLua - Slower but reliable";
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(27, 122);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(268, 13);
+            this.label13.TabIndex = 13;
+            this.label13.Text = "When enabled, the frame advance button will skip over";
             // 
-            // flpDialogButtons
+            // FrameAdvSkipLagCheckbox
             // 
-            this.flpDialogButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.flpDialogButtons.Controls.Add(this.btnDialogOK);
-            this.flpDialogButtons.Controls.Add(this.btnDialogCancel);
-            this.flpDialogButtons.Location = new System.Drawing.Point(247, 396);
-            this.flpDialogButtons.MinimumSize = new System.Drawing.Size(24, 24);
-            this.flpDialogButtons.Name = "flpDialogButtons";
-            this.flpDialogButtons.Size = new System.Drawing.Size(132, 29);
+            this.FrameAdvSkipLagCheckbox.AutoSize = true;
+            this.FrameAdvSkipLagCheckbox.Location = new System.Drawing.Point(6, 102);
+            this.FrameAdvSkipLagCheckbox.Name = "FrameAdvSkipLagCheckbox";
+            this.FrameAdvSkipLagCheckbox.Size = new System.Drawing.Size(241, 17);
+            this.FrameAdvSkipLagCheckbox.TabIndex = 12;
+            this.FrameAdvSkipLagCheckbox.Text = "Frame advance button skips non-input frames";
+            this.FrameAdvSkipLagCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // BackupSRamCheckbox
+            // 
+            this.BackupSRamCheckbox.AutoSize = true;
+            this.BackupSRamCheckbox.Location = new System.Drawing.Point(6, 12);
+            this.BackupSRamCheckbox.Name = "BackupSRamCheckbox";
+            this.BackupSRamCheckbox.Size = new System.Drawing.Size(203, 17);
+            this.BackupSRamCheckbox.TabIndex = 3;
+            this.BackupSRamCheckbox.Text = "Backup SaveRAM to .SaveRAM.bak";
+            this.BackupSRamCheckbox.UseVisualStyleBackColor = true;
             // 
             // EmuHawkOptions
             // 
-            this.AcceptButton = this.btnDialogOK;
+            this.AcceptButton = this.OkBtn;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.btnDialogCancel;
-            this.ClientSize = new System.Drawing.Size(393, 431);
-            this.Controls.Add(this.flpDialogButtons);
-            this.Controls.Add(this.tcDialog);
-            this.MinimumSize = new System.Drawing.Size(401, 444);
+            this.CancelButton = this.CancelBtn;
+            this.ClientSize = new System.Drawing.Size(418, 455);
+            this.Controls.Add(this.tabControl1);
+            this.Controls.Add(this.CancelBtn);
+            this.Controls.Add(this.OkBtn);
             this.Name = "EmuHawkOptions";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Customization Options";
             this.Load += new System.EventHandler(this.GuiOptions_Load);
-            this.tcDialog.ResumeLayout(false);
-            this.tpGeneral.ResumeLayout(false);
-            this.tpGeneral.PerformLayout();
-            this.flpTpGeneral.ResumeLayout(false);
-            this.flpTpGeneral.PerformLayout();
-            this.flpNoFocusEmulate.ResumeLayout(false);
-            this.flpNoFocusEmulate.PerformLayout();
-            this.flpNoFocusInput.ResumeLayout(false);
-            this.flpNoFocusInput.PerformLayout();
-            this.flpNoFocusInputCheckBoxes.ResumeLayout(false);
-            this.flpNoFocusInputCheckBoxes.PerformLayout();
-            this.grpInputMethod.ResumeLayout(false);
-            this.grpInputMethod.PerformLayout();
-            this.flpGrpInputMethod.ResumeLayout(false);
-            this.flpGrpInputMethod.PerformLayout();
-            this.grpStartup.ResumeLayout(false);
-            this.grpStartup.PerformLayout();
-            this.flpGrpStartup.ResumeLayout(false);
-            this.flpGrpStartup.PerformLayout();
-            this.flpSingleInstance.ResumeLayout(false);
-            this.flpSingleInstance.PerformLayout();
-            this.tpAdvanced.ResumeLayout(false);
-            this.tpAdvanced.PerformLayout();
-            this.flpTpAdvanced.ResumeLayout(false);
-            this.flpTpAdvanced.PerformLayout();
-            this.flpAutoSaveRAM.ResumeLayout(false);
-            this.flpAutoSaveRAM.PerformLayout();
-            this.grpAutoSaveRAM.ResumeLayout(false);
-            this.grpAutoSaveRAM.PerformLayout();
-            this.flpGrpAutoSaveRAM.ResumeLayout(false);
-            this.flpGrpAutoSaveRAM.PerformLayout();
-            this.flpAutoSaveRAMFreq.ResumeLayout(false);
-            this.flpAutoSaveRAMFreq.PerformLayout();
-            this.flpAutoSaveRAMFreqCustom.ResumeLayout(false);
-            this.flpAutoSaveRAMFreqCustom.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudAutoSaveRAMFreqCustom)).EndInit();
-            this.flpFrameAdvPastLag.ResumeLayout(false);
-            this.flpFrameAdvPastLag.PerformLayout();
-            this.flpMoviesOnDisk.ResumeLayout(false);
-            this.flpMoviesOnDisk.PerformLayout();
-            this.flpMoviesInAWE.ResumeLayout(false);
-            this.flpMoviesInAWE.PerformLayout();
-            this.grpLuaEngine.ResumeLayout(false);
-            this.grpLuaEngine.PerformLayout();
-            this.flpGrpLuaEngine.ResumeLayout(false);
-            this.flpGrpLuaEngine.PerformLayout();
-            this.flpDialogButtons.ResumeLayout(false);
+            this.tabControl1.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.AutosaveSRAMtextBox)).EndInit();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
 
 		}
 
 		#endregion
 
-		private BizHawk.WinForms.Controls.LocSzButtonEx btnDialogOK;
-		private BizHawk.WinForms.Controls.LocSzButtonEx btnDialogCancel;
-		private System.Windows.Forms.TabControl tcDialog;
-		private BizHawk.WinForms.Controls.TabPageEx tpGeneral;
-		private BizHawk.WinForms.Controls.CheckBoxEx cbStartPaused;
-		private BizHawk.WinForms.Controls.CheckBoxEx cbMenusPauseEmulation;
-		private BizHawk.WinForms.Controls.CheckBoxEx cbEnableContextMenu;
-		private BizHawk.WinForms.Controls.CheckBoxEx cbSaveWindowPosition;
-		private BizHawk.WinForms.Controls.CheckBoxEx cbNoFocusEmulate;
-		private BizHawk.WinForms.Controls.LocLabelEx lblNoFocusEmulate;
-		private BizHawk.WinForms.Controls.LocLabelEx lblNoFocusInput;
-		private BizHawk.WinForms.Controls.CheckBoxEx cbNoFocusInput;
-		private BizHawk.WinForms.Controls.CheckBoxEx cbNoFocusInputGamepadOnly;
-		private BizHawk.WinForms.Controls.CheckBoxEx cbNeverAskForSave;
-		private BizHawk.WinForms.Controls.LocLabelEx lblSingleInstanceDesc;
-		private BizHawk.WinForms.Controls.CheckBoxEx cbSingleInstance;
-		private BizHawk.WinForms.Controls.TabPageEx tpAdvanced;
+		private System.Windows.Forms.Button OkBtn;
+		private System.Windows.Forms.Button CancelBtn;
+		private System.Windows.Forms.TabControl tabControl1;
+		private System.Windows.Forms.TabPage tabPage1;
+		private System.Windows.Forms.CheckBox StartPausedCheckbox;
+		private System.Windows.Forms.CheckBox PauseWhenMenuActivatedCheckbox;
+		private System.Windows.Forms.CheckBox EnableContextMenuCheckbox;
+		private System.Windows.Forms.CheckBox SaveWindowPositionCheckbox;
+		private System.Windows.Forms.CheckBox RunInBackgroundCheckbox;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.CheckBox AcceptBackgroundInputCheckbox;
+		private System.Windows.Forms.CheckBox AcceptBackgroundInputControllerOnlyCheckBox;
+		private System.Windows.Forms.CheckBox NeverAskSaveCheckbox;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.CheckBox SingleInstanceModeCheckbox;
+		private System.Windows.Forms.TabPage tabPage3;
 		private System.Windows.Forms.ToolTip toolTip1;
-		private BizHawk.WinForms.Controls.CheckBoxEx cbBackupSaveRAM;
-		private BizHawk.WinForms.Controls.CheckBoxEx cbFrameAdvPastLag;
-		private BizHawk.WinForms.Controls.LocLabelEx lblFrameAdvPastLag2;
-		private BizHawk.WinForms.Controls.LocLabelEx lblFrameAdvPastLag1;
-		private BizHawk.WinForms.Controls.LocLabelEx lblSingleInstanceRestartWarning;
-		private BizHawk.WinForms.Controls.CheckBoxEx cbStartInFS;
-		private BizHawk.WinForms.Controls.CheckBoxEx cbRunLuaDuringTurbo;
-		private BizHawk.WinForms.Controls.SzGroupBoxEx grpStartup;
-		private BizHawk.WinForms.Controls.LocLabelEx lblMoviesOnDisk;
-		private BizHawk.WinForms.Controls.CheckBoxEx cbMoviesOnDisk;
-		private BizHawk.WinForms.Controls.LocLabelEx lblSkipWaterboxIntegrityChecks;
-		private BizHawk.WinForms.Controls.CheckBoxEx cbSkipWaterboxIntegrityChecks;
-		private BizHawk.WinForms.Controls.RadioButtonEx rbLuaInterface;
-		private BizHawk.WinForms.Controls.RadioButtonEx rbKopiLua;
-		private BizHawk.WinForms.Controls.CheckBoxEx cbAutoSaveRAM;
-		private BizHawk.WinForms.Controls.RadioButtonEx AutoSaveRAMFreq5min;
-		private BizHawk.WinForms.Controls.RadioButtonEx cbAutoSaveRAMFreq5s;
-		private BizHawk.WinForms.Controls.SzGroupBoxEx grpAutoSaveRAM;
-		private BizHawk.WinForms.Controls.LabelEx lblAutoSaveRAMFreqDesc;
-		private BizHawk.WinForms.Controls.LabelEx lblAutoSaveRAM;
-		private BizHawk.WinForms.Controls.CheckBoxEx cbNonQWERTY;
-		private BizHawk.WinForms.Controls.SingleColumnFLP flpTpGeneral;
-		private BizHawk.WinForms.Controls.SingleColumnFLP flpNoFocusEmulate;
-		private BizHawk.WinForms.Controls.SingleColumnFLP flpNoFocusInput;
-		private BizHawk.WinForms.Controls.SingleRowFLP flpNoFocusInputCheckBoxes;
-		private BizHawk.WinForms.Controls.LocSingleColumnFLP flpGrpStartup;
-		private BizHawk.WinForms.Controls.SingleColumnFLP flpSingleInstance;
-		private BizHawk.WinForms.Controls.SingleColumnFLP flpTpAdvanced;
-		private BizHawk.WinForms.Controls.SingleRowFLP flpAutoSaveRAM;
-		private BizHawk.WinForms.Controls.LocSingleColumnFLP flpGrpAutoSaveRAM;
-		private BizHawk.WinForms.Controls.SingleRowFLP flpAutoSaveRAMFreq;
-		private BizHawk.WinForms.Controls.SingleRowFLP flpAutoSaveRAMFreqCustom;
-		private BizHawk.WinForms.Controls.RadioButtonEx rbAutoSaveRAMFreqCustom;
-		private BizHawk.WinForms.Controls.SzNUDEx nudAutoSaveRAMFreqCustom;
-		private BizHawk.WinForms.Controls.LabelEx lblAutoSaveRAMFreqCustomUnits;
-		private BizHawk.WinForms.Controls.SingleColumnFLP flpFrameAdvPastLag;
-		private BizHawk.WinForms.Controls.SingleColumnFLP flpMoviesOnDisk;
-		private BizHawk.WinForms.Controls.SingleColumnFLP flpMoviesInAWE;
-		private BizHawk.WinForms.Controls.SzGroupBoxEx grpLuaEngine;
-		private BizHawk.WinForms.Controls.LocSingleColumnFLP flpGrpLuaEngine;
-		private BizHawk.WinForms.Controls.LocSzSingleRowFLP flpDialogButtons;
-		private BizHawk.WinForms.Controls.SzGroupBoxEx grpInputMethod;
-		private BizHawk.WinForms.Controls.LocSingleRowFLP flpGrpInputMethod;
-		private BizHawk.WinForms.Controls.RadioButtonEx rbInputMethodDirectInput;
-		private BizHawk.WinForms.Controls.RadioButtonEx rbInputMethodOpenTK;
+		private System.Windows.Forms.CheckBox BackupSRamCheckbox;
+		private System.Windows.Forms.CheckBox FrameAdvSkipLagCheckbox;
+		private System.Windows.Forms.Label label12;
+		private System.Windows.Forms.Label label13;
+		private System.Windows.Forms.Label label14;
+		private System.Windows.Forms.CheckBox StartFullScreenCheckbox;
+		private System.Windows.Forms.CheckBox LuaDuringTurboCheckbox;
+		private System.Windows.Forms.GroupBox groupBox1;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.CheckBox cbMoviesOnDisk;
+		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.CheckBox cbSkipWaterboxIntegrityChecks;
+		private System.Windows.Forms.Panel panel1;
+		private System.Windows.Forms.Label label7;
+		private System.Windows.Forms.RadioButton LuaInterfaceRadio;
+		private System.Windows.Forms.RadioButton NLuaRadio;
+		private System.Windows.Forms.CheckBox AutosaveSRAMCheckbox;
+		private System.Windows.Forms.Label label8;
+		private System.Windows.Forms.RadioButton AutosaveSRAMradioButton3;
+		private System.Windows.Forms.RadioButton AutosaveSRAMradioButton2;
+		private System.Windows.Forms.RadioButton AutosaveSRAMradioButton1;
+		private System.Windows.Forms.GroupBox groupBox2;
+		private System.Windows.Forms.NumericUpDown AutosaveSRAMtextBox;
+		private System.Windows.Forms.Label label10;
+		private System.Windows.Forms.Label label9;
+		private System.Windows.Forms.CheckBox HandleAlternateKeyboardLayoutsCheckBox;
 	}
 }

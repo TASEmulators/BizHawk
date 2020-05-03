@@ -20,117 +20,112 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				if (cbAutoSaveRAMFreq5s.Checked)
+				if (AutosaveSRAMradioButton1.Checked)
 				{
 					return 5;
 				}
 
-				if (AutoSaveRAMFreq5min.Checked)
+				if (AutosaveSRAMradioButton2.Checked)
 				{
 					return 5 * 60;
 				}
 
-				return (int)nudAutoSaveRAMFreqCustom.Value;
+				return (int)AutosaveSRAMtextBox.Value;
 			}
 			set
 			{
 				switch (value)
 				{
 					case 5:
-						cbAutoSaveRAMFreq5s.Checked = true;
-						nudAutoSaveRAMFreqCustom.Enabled = false;
+						AutosaveSRAMradioButton1.Checked = true;
+						AutosaveSRAMtextBox.Enabled = false;
 						break;
 					case 5 * 60:
-						AutoSaveRAMFreq5min.Checked = true;
-						nudAutoSaveRAMFreqCustom.Enabled = false;
+						AutosaveSRAMradioButton2.Checked = true;
+						AutosaveSRAMtextBox.Enabled = false;
 						break;
 					default:
-						rbAutoSaveRAMFreqCustom.Checked = true;
-						nudAutoSaveRAMFreqCustom.Enabled = true;
+						AutosaveSRAMradioButton3.Checked = true;
+						AutosaveSRAMtextBox.Enabled = true;
 						break;
 				}
 
-				nudAutoSaveRAMFreqCustom.Value = value;
+				AutosaveSRAMtextBox.Value = value;
 			}
 		}
 
 		private void GuiOptions_Load(object sender, EventArgs e)
 		{
-			cbStartInFS.Checked = _config.StartFullscreen;
-			cbStartPaused.Checked = _config.StartPaused;
-			cbMenusPauseEmulation.Checked = _config.PauseWhenMenuActivated;
-			cbEnableContextMenu.Checked = _config.ShowContextMenu;
-			cbSaveWindowPosition.Checked = _config.SaveWindowPosition;
-			cbNoFocusEmulate.Checked = _config.RunInBackground;
-			cbNoFocusInput.Checked = _config.AcceptBackgroundInput;
-			cbNoFocusInputGamepadOnly.Checked = _config.AcceptBackgroundInputControllerOnly;
-			switch (_config.HostInputMethod)
-			{
-				case EHostInputMethod.OpenTK:
-					rbInputMethodOpenTK.Checked = true;
-					break;
-				case EHostInputMethod.DirectInput:
-					rbInputMethodDirectInput.Checked = true;
-					break;
-				default:
-					throw new InvalidOperationException();
-			}
-			cbNonQWERTY.Checked = _config.HandleAlternateKeyboardLayouts;
-			cbNeverAskForSave.Checked = _config.SuppressAskSave;
-			cbSingleInstance.Checked = _config.SingleInstanceMode;
+			StartFullScreenCheckbox.Checked = _config.StartFullscreen;
+			StartPausedCheckbox.Checked = _config.StartPaused;
+			PauseWhenMenuActivatedCheckbox.Checked = _config.PauseWhenMenuActivated;
+			EnableContextMenuCheckbox.Checked = _config.ShowContextMenu;
+			SaveWindowPositionCheckbox.Checked = _config.SaveWindowPosition;
+			RunInBackgroundCheckbox.Checked = _config.RunInBackground;
+			AcceptBackgroundInputCheckbox.Checked = _config.AcceptBackgroundInput;
+			AcceptBackgroundInputControllerOnlyCheckBox.Checked = _config.AcceptBackgroundInputControllerOnly;
+			HandleAlternateKeyboardLayoutsCheckBox.Checked = _config.HandleAlternateKeyboardLayouts;
+			NeverAskSaveCheckbox.Checked = _config.SuppressAskSave;
+			SingleInstanceModeCheckbox.Checked = _config.SingleInstanceMode;
 
-			cbBackupSaveRAM.Checked = _config.BackupSaveram;
-			cbAutoSaveRAM.Checked = _config.AutosaveSaveRAM;
-			grpAutoSaveRAM.Enabled = cbAutoSaveRAM.Checked;
+			BackupSRamCheckbox.Checked = _config.BackupSaveram;
+			AutosaveSRAMCheckbox.Checked = _config.AutosaveSaveRAM;
+			groupBox2.Enabled = AutosaveSRAMCheckbox.Checked;
 			AutosaveSaveRAMSeconds = _config.FlushSaveRamFrames / 60;
-			cbFrameAdvPastLag.Checked = _config.SkipLagFrame;
-			cbRunLuaDuringTurbo.Checked = _config.RunLuaDuringTurbo;
+			FrameAdvSkipLagCheckbox.Checked = _config.SkipLagFrame;
+			LuaDuringTurboCheckbox.Checked = _config.RunLuaDuringTurbo;
 			cbMoviesOnDisk.Checked = _config.MoviesOnDisk;
 			cbSkipWaterboxIntegrityChecks.Checked = _config.SkipWaterboxIntegrityChecks;
 
 			switch (_config.LuaEngine)
 			{
 				case ELuaEngine.LuaPlusLuaInterface:
-					rbLuaInterface.Checked = true;
+					LuaInterfaceRadio.Checked = true;
 					break;
 				case ELuaEngine.NLuaPlusKopiLua:
-					rbKopiLua.Checked = true;
+					NLuaRadio.Checked = true;
 					break;
 				default:
 					throw new ArgumentOutOfRangeException();
 			}
 		}
 
-		private void btnDialogOK_Click(object sender, EventArgs e)
+		private void OkBtn_Click(object sender, EventArgs e)
 		{
-			_config.StartFullscreen = cbStartInFS.Checked;
-			_config.StartPaused = cbStartPaused.Checked;
-			_config.PauseWhenMenuActivated = cbMenusPauseEmulation.Checked;
-			_config.ShowContextMenu = cbEnableContextMenu.Checked;
-			_config.SaveWindowPosition = cbSaveWindowPosition.Checked;
-			_config.RunInBackground = cbNoFocusEmulate.Checked;
-			_config.AcceptBackgroundInput = cbNoFocusInput.Checked;
-			_config.AcceptBackgroundInputControllerOnly = cbNoFocusInputGamepadOnly.Checked;
-			_config.HostInputMethod = grpInputMethod.Tracker.GetSelectionTagAs<EHostInputMethod>() ?? throw new InvalidOperationException();
-			_config.HandleAlternateKeyboardLayouts = cbNonQWERTY.Checked;
-			_config.SuppressAskSave = cbNeverAskForSave.Checked;
-			_config.SingleInstanceMode = cbSingleInstance.Checked;
+			_config.StartFullscreen = StartFullScreenCheckbox.Checked;
+			_config.StartPaused = StartPausedCheckbox.Checked;
+			_config.PauseWhenMenuActivated = PauseWhenMenuActivatedCheckbox.Checked;
+			_config.ShowContextMenu = EnableContextMenuCheckbox.Checked;
+			_config.SaveWindowPosition = SaveWindowPositionCheckbox.Checked;
+			_config.RunInBackground = RunInBackgroundCheckbox.Checked;
+			_config.AcceptBackgroundInput = AcceptBackgroundInputCheckbox.Checked;
+			_config.AcceptBackgroundInputControllerOnly = AcceptBackgroundInputControllerOnlyCheckBox.Checked;
+			_config.HandleAlternateKeyboardLayouts = HandleAlternateKeyboardLayoutsCheckBox.Checked;
+			_config.SuppressAskSave = NeverAskSaveCheckbox.Checked;
+			_config.SingleInstanceMode = SingleInstanceModeCheckbox.Checked;
 
-			_config.BackupSaveram = cbBackupSaveRAM.Checked;
-			_config.AutosaveSaveRAM = cbAutoSaveRAM.Checked;
+			_config.BackupSaveram = BackupSRamCheckbox.Checked;
+			_config.AutosaveSaveRAM = AutosaveSRAMCheckbox.Checked;
 			_config.FlushSaveRamFrames = AutosaveSaveRAMSeconds * 60;
 			if (_mainForm.AutoFlushSaveRamIn > _config.FlushSaveRamFrames)
 			{
 				_mainForm.AutoFlushSaveRamIn = _config.FlushSaveRamFrames;
 			}
 
-			_config.SkipLagFrame = cbFrameAdvPastLag.Checked;
-			_config.RunLuaDuringTurbo = cbRunLuaDuringTurbo.Checked;
+			_config.SkipLagFrame = FrameAdvSkipLagCheckbox.Checked;
+			_config.RunLuaDuringTurbo = LuaDuringTurboCheckbox.Checked;
 			_config.MoviesOnDisk = cbMoviesOnDisk.Checked;
 			_config.SkipWaterboxIntegrityChecks = cbSkipWaterboxIntegrityChecks.Checked;
 
 			var prevLuaEngine = _config.LuaEngine;
-			_config.LuaEngine = grpLuaEngine.Tracker.GetSelectionTagAs<ELuaEngine>() ?? throw new InvalidOperationException();
+			if (LuaInterfaceRadio.Checked)
+			{
+				_config.LuaEngine = ELuaEngine.LuaPlusLuaInterface;
+			}
+			else if (NLuaRadio.Checked)
+			{
+				_config.LuaEngine = ELuaEngine.NLuaPlusKopiLua;
+			}
 
 			_mainForm.AddOnScreenMessage("Custom configurations saved.");
 			if (prevLuaEngine != _config.LuaEngine)
@@ -142,26 +137,26 @@ namespace BizHawk.Client.EmuHawk
 			DialogResult = DialogResult.OK;
 		}
 
-		private void btnDialogCancel_Click(object sender, EventArgs e)
+		private void CancelBtn_Click(object sender, EventArgs e)
 		{
 			Close();
 			DialogResult = DialogResult.Cancel;
 			_mainForm.AddOnScreenMessage("Customizing aborted.");
 		}
 
-		private void cbNoFocusInput_CheckedChanged(object sender, EventArgs e)
+		private void AcceptBackgroundInputCheckbox_CheckedChanged(object sender, EventArgs e)
 		{
-			cbNoFocusInputGamepadOnly.Enabled = cbNoFocusInput.Checked;
+			AcceptBackgroundInputControllerOnlyCheckBox.Enabled = AcceptBackgroundInputCheckbox.Checked;
 		}
 
-		private void cbAutoSaveRAM_CheckedChanged(object sender, EventArgs e)
+		private void AutosaveSRAMCheckbox_CheckedChanged(object sender, EventArgs e)
 		{
-			grpAutoSaveRAM.Enabled = cbAutoSaveRAM.Checked;
+			groupBox2.Enabled = AutosaveSRAMCheckbox.Checked;
 		}
 
-		private void rbAutoSaveRAMFreqCustom_CheckedChanged(object sender, EventArgs e)
+		private void AutosaveSRAMRadioButton3_CheckedChanged(object sender, EventArgs e)
 		{
-			nudAutoSaveRAMFreqCustom.Enabled = rbAutoSaveRAMFreqCustom.Checked;
+			AutosaveSRAMtextBox.Enabled = AutosaveSRAMradioButton3.Checked;
 		}
 	}
 }
