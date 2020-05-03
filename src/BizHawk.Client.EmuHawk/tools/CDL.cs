@@ -82,11 +82,7 @@ namespace BizHawk.Client.EmuHawk
 			});
 		}
 
-		protected override void UpdateAfter()
-		{
-			// NewUpdate TODO: consolidate
-			UpdateDisplay(false);
-		}
+		protected override void UpdateAfter() => UpdateDisplay(false);
 
 		public void Restart()
 		{

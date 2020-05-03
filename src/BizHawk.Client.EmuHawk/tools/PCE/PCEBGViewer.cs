@@ -81,11 +81,7 @@ namespace BizHawk.Client.EmuHawk
 			// Nothing to do
 		}
 
-		protected override void UpdateBefore()
-		{
-			// NewUpdate TODO: consolidate
-			Generate();
-		}
+		protected override void UpdateBefore() => Generate();
 
 		#region Events
 
