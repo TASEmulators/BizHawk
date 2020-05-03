@@ -634,8 +634,8 @@
 		<Compile Update="tools/Watch/WatchValueBox.cs" SubType="Component" />
 		<Compile Update="UpdateChecker.cs" SubType="Code" />
 	</ItemGroup>
-	<Target Name="PreBuild" AfterTargets="PreBuildEvent">
-		<Exec Command='"$(ProjectDir)..\..\Dist\copy_assets_and_emuhawk_to_output.bat"' Condition=" '$(OS)' == 'Windows_NT' " />
-		<Exec Command='"$(ProjectDir)../../Dist/copy_assets_and_emuhawk_to_output.sh"' Condition=" '$(OS)' != 'Windows_NT' " />
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command='"$(ProjectDir)..\..\Build\copy_assets_and_emuhawk_to_output.bat"' Condition=" '$(OS)' == 'Windows_NT' " />
+		<Exec Command='"$(ProjectDir)../../Build/copy_assets_and_emuhawk_to_output.sh"' Condition=" '$(OS)' != 'Windows_NT' " />
 	</Target>
 </Project>
