@@ -411,7 +411,6 @@
 		<Compile Update="PlatformChooser.cs" SubType="Form" />
 		<Compile Update="PlatformChooser.Designer.cs" DependentUpon="PlatformChooser.cs" />
 		<EmbeddedResource Update="PlatformChooser.resx" DependentUpon="PlatformChooser.cs" />
-		<Compile Update="Properties/Resources.cs" DependentUpon="Resources.resx" />
 		<Compile Update="RomStatusPicker.cs" SubType="Form" />
 		<Compile Update="RomStatusPicker.Designer.cs" DependentUpon="RomStatusPicker.cs" />
 		<EmbeddedResource Update="RomStatusPicker.resx" DependentUpon="RomStatusPicker.cs" />
