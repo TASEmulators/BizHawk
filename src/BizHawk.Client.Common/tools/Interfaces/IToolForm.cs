@@ -11,11 +11,13 @@
 		/// Called before a frame emulates
 		/// </summary>
 		PreFrame,
+		FastPreFrame,
 
 		/// <summary>
 		/// Called after a frame emulates
 		/// </summary>
-		PostFrame
+		PostFrame,
+		FastPostFrame
 	}
 
 	public interface IToolForm
@@ -24,13 +26,6 @@
 		/// A new extensible update method
 		/// </summary>
 		void NewUpdate(ToolFormUpdateType type);
-
-		/// <summary>
-		/// Will be called by the client when performance is critical,
-		/// The tool should only do the minimum to still function,
-		/// Drawing should not occur if possible, during a fast update
-		/// </summary>
-		void FastUpdate();
 
 		/// <summary>
 		/// Will be called anytime the dialog needs to be restarted, such as when a new ROM is loaded

@@ -17,10 +17,6 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		public void FastUpdate()
-		{
-		}
-
 		public void Restart()
 		{
 			textBox1_TextChanged(null, null);

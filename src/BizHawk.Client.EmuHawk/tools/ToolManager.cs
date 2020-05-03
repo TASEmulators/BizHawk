@@ -464,8 +464,7 @@ namespace BizHawk.Client.EmuHawk
 		
 		private void UpdateBefore()
 		{
-			var beforeList = _tools.Where(t => t.UpdateBefore);
-			foreach (var tool in beforeList)
+			foreach (var tool in _tools)
 			{
 				if (!tool.IsDisposed
 					|| (tool is RamWatch && _config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
@@ -477,8 +476,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateAfter()
 		{
-			var afterList = _tools.Where(t => !t.UpdateBefore);
-			foreach (var tool in afterList)
+			foreach (var tool in _tools)
 			{
 				if (!tool.IsDisposed
 					|| (tool is RamWatch && _config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
@@ -700,13 +698,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void FastUpdateBefore()
 		{
-			var beforeList = _tools.Where(t => t.UpdateBefore);
-			foreach (var tool in beforeList)
+			foreach (var tool in _tools)
 			{
 				if (!tool.IsDisposed
 					|| (tool is RamWatch && _config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
 				{
-					tool.FastUpdate();
+					tool.NewUpdate(ToolFormUpdateType.FastPreFrame);
 				}
 			}
 		}
@@ -718,13 +715,12 @@ namespace BizHawk.Client.EmuHawk
 				LuaConsole.ResumeScripts(true);
 			}
 
-			var afterList = _tools.Where(t => !t.UpdateBefore);
-			foreach (var tool in afterList)
+			foreach (var tool in _tools)
 			{
 				if (!tool.IsDisposed
 					|| (tool is RamWatch && _config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
 				{
-					tool.FastUpdate();
+					tool.NewUpdate(ToolFormUpdateType.FastPostFrame);
 				}
 			}
 

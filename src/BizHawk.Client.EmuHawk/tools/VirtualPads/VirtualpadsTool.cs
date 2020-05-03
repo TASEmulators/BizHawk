@@ -172,7 +172,7 @@ namespace BizHawk.Client.EmuHawk
 			Pads.ForEach(pad => pad.UpdateValues());
 		}
 
-		public void FastUpdate()
+		protected override void FastUpdate()
 		{
 			// TODO: SetPrevious logic should go here too or that will get out of whack
 

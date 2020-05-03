@@ -188,10 +188,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void FastUpdate()
-		{
-		}
-
 		public void Restart()
 		{
 			CloseFile();

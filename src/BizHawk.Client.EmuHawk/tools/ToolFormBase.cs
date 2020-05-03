@@ -31,6 +31,12 @@ namespace BizHawk.Client.EmuHawk
 				case ToolFormUpdateType.General:
 					UpdateValues();
 					break;
+				case ToolFormUpdateType.FastPreFrame:
+					FastUpdateBefore();
+					break;
+				case ToolFormUpdateType.FastPostFrame:
+					FastUpdate();
+					break;
 			}
 		}
 
@@ -38,6 +44,8 @@ namespace BizHawk.Client.EmuHawk
 		protected virtual void UpdateValuesBefore() { } // UpdateBefore()
 		protected virtual void UpdateValuesAfter() { } // UpdateAfter()
 		protected virtual void UpdateValues() { } // FullUpdate()
+		protected virtual void FastUpdate() { } // FastUpdateAfter
+		protected virtual void FastUpdateBefore() { }
 
 
 		public static FileInfo OpenFileDialog(string currentFile, string path, string fileType, string fileExt)

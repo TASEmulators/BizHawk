@@ -28,11 +28,6 @@ namespace BizHawk.Client.EmuHawk
 			);
 		}
 
-		public void FastUpdate()
-		{
-			// Do nothing
-		}
-
 		public void Restart()
 		{
 			SetTools();

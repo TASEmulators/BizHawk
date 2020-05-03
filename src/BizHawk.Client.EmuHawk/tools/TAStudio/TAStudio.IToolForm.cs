@@ -63,11 +63,6 @@ namespace BizHawk.Client.EmuHawk
 			RefreshDialog(refreshNeeded, refreshBranches: false);
 		}
 
-		public void FastUpdate()
-		{
-			// Do nothing
-		}
-
 		public void Restart()
 		{
 			if (!IsHandleCreated || IsDisposed)

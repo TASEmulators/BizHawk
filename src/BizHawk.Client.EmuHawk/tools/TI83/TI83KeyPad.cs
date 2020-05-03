@@ -33,11 +33,6 @@ namespace BizHawk.Client.EmuHawk
 			Global.InputManager.ClickyVirtualPadController.Click(name);
 		}
 
-		public void FastUpdate()
-		{
-			// Do nothing
-		}
-
 		public void Restart()
 		{
 			// Do nothing
