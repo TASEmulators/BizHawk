@@ -10,9 +10,11 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private Thread _thread;
 		private List<BatchRunner.Result> _mostRecentResults;
+		private MainForm _mainForm;
 
-		public BatchRun()
+		public BatchRun(MainForm mainForm)
 		{
+			this._mainForm = mainForm;
 			InitializeComponent();
 		}
 
@@ -81,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				var pp = (Tuple<int, List<string>>)o;
-				BatchRunner br = new BatchRunner(pp.Item2, pp.Item1);
+				BatchRunner br = new BatchRunner(_mainForm, pp.Item2, pp.Item1);
 				br.OnProgress += br_OnProgress;
 				var results = br.Run();
 				this.Invoke(() => { label3.Text = "Status: Finished!"; _mostRecentResults = results; });

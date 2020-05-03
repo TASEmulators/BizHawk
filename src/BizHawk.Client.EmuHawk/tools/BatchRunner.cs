@@ -65,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public BatchRunner(IEnumerable<string> files, int numFrames)
+		public BatchRunner(MainForm mainForm, IEnumerable<string> files, int numFrames)
 		{
 			_files = new List<string>(files);
 			_numFrames = numFrames;
@@ -74,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 			_ldr.OnLoadError += OnLoadError;
 			_ldr.ChooseArchive = ChooseArchive;
 			var cfp = new CoreFileProvider(CommMessage, Global.FirmwareManager, Global.Config.PathEntries, Global.Config.FirmwareUserSpecifications);
-			_comm = new CoreComm(CommMessage, CommMessage, cfp);
+			_comm = mainForm.CreateCoreComm();
 		}
 
 		private void OnLoadError(object sender, RomLoader.RomErrorArgs e)

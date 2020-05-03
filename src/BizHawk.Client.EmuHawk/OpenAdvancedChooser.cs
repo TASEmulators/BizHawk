@@ -71,12 +71,7 @@ namespace BizHawk.Client.EmuHawk
 			// scan the current libretro core to see if it can be launched with NoGame,and other stuff
 			try
 			{
-				var cfp = new CoreFileProvider(
-					Console.WriteLine,
-					Global.FirmwareManager,
-					Global.Config.PathEntries,
-					Global.Config.FirmwareUserSpecifications);
-				var coreComm = new CoreComm(Console.WriteLine, Console.WriteLine, cfp);
+				var coreComm = _mainForm.CreateCoreComm();
 				using var retro = new LibretroCore(coreComm, Global.Game, core);
 				btnLibretroLaunchGame.Enabled = true;
 				if (retro.Description.SupportsNoGame)

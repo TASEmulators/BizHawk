@@ -83,14 +83,18 @@ namespace BizHawk.Client.EmuHawk
 			// its.. weird. don't ask.
 		}
 
-		private CoreComm CreateCoreComm()
+		public CoreComm CreateCoreComm()
 		{
 			var cfp = new CoreFileProvider(
 				ShowMessageCoreComm,
 				Global.FirmwareManager,
 				Config.PathEntries,
 				Config.FirmwareUserSpecifications);
-			return new CoreComm(ShowMessageCoreComm, NotifyCoreComm, cfp);
+			var prefs = CoreComm.CorePreferencesFlags.None;
+			if (Config.SkipWaterboxIntegrityChecks)
+				prefs = CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck | CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck;
+
+			return new CoreComm(ShowMessageCoreComm, NotifyCoreComm, cfp, prefs);
 		}
 
 		public MainForm(string[] args)

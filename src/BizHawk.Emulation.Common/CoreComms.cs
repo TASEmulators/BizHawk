@@ -13,11 +13,14 @@ namespace BizHawk.Emulation.Common
 		public CoreComm(
 			Action<string> showMessage,
 			Action<string> notifyMessage,
-			ICoreFileProvider coreFileProvider)
+			ICoreFileProvider coreFileProvider,
+			CorePreferencesFlags prefs
+			)
 		{
 			ShowMessage = showMessage;
 			Notify = notifyMessage;
 			CoreFileProvider = coreFileProvider;
+			CorePreferences = prefs;
 		}
 
 		public ICoreFileProvider CoreFileProvider { get; }
@@ -31,5 +34,18 @@ namespace BizHawk.Emulation.Common
 		/// Gets a message to show. less annoying (OSD message). Should be used for ignorable helpful messages
 		/// </summary>
 		public Action<string> Notify { get; }
+
+		[Flags]
+		public enum CorePreferencesFlags
+		{
+			None = 0,
+			WaterboxCoreConsistencyCheck = 1,
+			WaterboxMemoryConsistencyCheck = 2
+		}
+
+		/// <summary>
+		/// Yeah, I put more stuff in corecomm. If you don't like it, change the settings/syncsettings stuff to support multiple "settings sets" to act like ini file sections kind of, so that we can hand a generic settings object to cores instead of strictly ones defined by the cores
+		/// </summary>
+		public CorePreferencesFlags CorePreferences { get; }
 	}
 }
