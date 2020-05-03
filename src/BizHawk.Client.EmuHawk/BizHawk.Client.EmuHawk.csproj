@@ -2,12 +2,14 @@
 	<Import Project="../MainSlnCommon.props" />
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<ApplicationIcon>images/logo.ico</ApplicationIcon>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
 		<DefineConstants>$(DefineConstants);EXE_PROJECT</DefineConstants>
-		<OutputPath>$(ProjectDir)bin</OutputPath>
+		<OutputPath>$(ProjectDir)../../output</OutputPath>
 		<OutputType>WinExe</OutputType>
 		<TargetFramework>net48</TargetFramework>
+		<TargetName>EmuHawk</TargetName>
 	</PropertyGroup>
 <!--
 	<PropertyGroup>
@@ -638,7 +640,7 @@
 		<Compile Update="UpdateChecker.cs" SubType="Code" />
 	</ItemGroup>
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command='"$(ProjectDir)..\..\Build\copy_assets_and_emuhawk_to_output.bat"' Condition=" '$(OS)' == 'Windows_NT' " />
-		<Exec Command='"$(ProjectDir)../../Build/copy_assets_and_emuhawk_to_output.sh"' Condition=" '$(OS)' != 'Windows_NT' " />
+		<Exec Command='"$(ProjectDir)..\..\Build\postbuild_emuhawk.bat"' Condition=" '$(OS)' == 'Windows_NT' " />
+		<Exec Command='"$(ProjectDir)../../Build/postbuild_emuhawk.sh"' Condition=" '$(OS)' != 'Windows_NT' " />
 	</Target>
 </Project>
