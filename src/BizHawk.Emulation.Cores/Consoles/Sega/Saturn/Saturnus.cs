@@ -93,7 +93,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 				InvisibleHeapSizeKB = 8 * 1024, // 4MB of framebuffer
 				MmapHeapSizeKB = 0, // not used?
 				PlainHeapSizeKB = 24 * 1024, // up to 16MB of cart ram
-				StartAddress = LibSaturnus.StartAddress
+				StartAddress = LibSaturnus.StartAddress,
+				SkipCoreConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
+				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 			});
 
 			SetFirmwareCallbacks();

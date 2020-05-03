@@ -48,7 +48,9 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 				SealedHeapSizeKB = 5 * 1024, // must be a bit larger than the ROM size
 				InvisibleHeapSizeKB = 4,
 				PlainHeapSizeKB = 5 * 1024, // must be a bit larger than the ROM size
-				StartAddress = startAddress
+				StartAddress = startAddress,
+				SkipCoreConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
+				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 			});
 
 			if (!_neopop.LoadSystem(rom, rom.Length, _syncSettings.Language))
