@@ -24,12 +24,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private int _lastRefresh;
 
-		protected override void UpdateValues()
+		protected override void GeneralUpdate()
 		{
 			RefreshDialog();
 		}
 
-		protected override void UpdateValuesAfter()
+		protected override void UpdateAfter()
 		{
 			if (!IsHandleCreated || IsDisposed || CurrentTasMovie == null)
 			{

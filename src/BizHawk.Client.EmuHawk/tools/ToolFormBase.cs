@@ -23,28 +23,27 @@ namespace BizHawk.Client.EmuHawk
 			switch (type)
 			{
 				case ToolFormUpdateType.PreFrame:
-					UpdateValuesBefore();
+					UpdateBefore();
 					break;
 				case ToolFormUpdateType.PostFrame:
-					UpdateValuesAfter();
+					UpdateAfter();
 					break;
 				case ToolFormUpdateType.General:
-					UpdateValues();
+					GeneralUpdate();
 					break;
 				case ToolFormUpdateType.FastPreFrame:
 					FastUpdateBefore();
 					break;
 				case ToolFormUpdateType.FastPostFrame:
-					FastUpdate();
+					FastUpdateAfter();
 					break;
 			}
 		}
 
-		// TODO: rename these
-		protected virtual void UpdateValuesBefore() { } // UpdateBefore()
-		protected virtual void UpdateValuesAfter() { } // UpdateAfter()
-		protected virtual void UpdateValues() { } // FullUpdate()
-		protected virtual void FastUpdate() { } // FastUpdateAfter
+		protected virtual void UpdateBefore() { }
+		protected virtual void UpdateAfter() { }
+		protected virtual void GeneralUpdate() { }
+		protected virtual void FastUpdateAfter() { }
 		protected virtual void FastUpdateBefore() { }
 
 

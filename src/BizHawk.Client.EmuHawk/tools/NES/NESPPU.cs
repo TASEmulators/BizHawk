@@ -57,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 			ChrRomViewReload();
 		}
 
-		protected override void UpdateValuesBefore()
+		protected override void UpdateBefore()
 		{
 			_ppu.InstallCallback2(() => Generate(), _scanline);
 		}

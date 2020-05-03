@@ -128,7 +128,7 @@ namespace BizHawk.Client.EmuHawk
 				: $"@{address:X4} ({address / 1024}K)";
 		}
 
-		protected override void UpdateValuesAfter()
+		protected override void UpdateAfter()
 		{
 			SyncCore();
 			if (Visible && !checkScanlineControl.Checked)

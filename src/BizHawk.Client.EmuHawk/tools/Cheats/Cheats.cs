@@ -62,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Tools that want to refresh the cheats list should call this, not UpdateValues
 		/// </summary>
-		protected override void UpdateValues()
+		protected override void GeneralUpdate()
 		{
 			CheatListView.RowCount = Global.CheatList.Count;
 			TotalLabel.Text = $"{Global.CheatList.CheatCount} {(Global.CheatList.CheatCount == 1 ? "cheat" : "cheats")} {Global.CheatList.ActiveCount} active";
@@ -81,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					Config.RecentCheats.Add(path);
-					UpdateValues();
+					GeneralUpdate();
 					UpdateMessageLabel();
 				}
 			}
@@ -109,7 +109,7 @@ namespace BizHawk.Client.EmuHawk
 				if (result)
 				{
 					Global.CheatList.Load(file.FullName, append);
-					UpdateValues();
+					GeneralUpdate();
 					UpdateMessageLabel();
 					Config.RecentCheats.Add(Global.CheatList.CurrentFileName);
 				}
@@ -142,7 +142,7 @@ namespace BizHawk.Client.EmuHawk
 			ToggleGameGenieButton();
 			CheatEditor.SetAddEvent(AddCheat);
 			CheatEditor.SetEditEvent(EditCheat);
-			UpdateValues();
+			GeneralUpdate();
 		}
 
 		private void SetColumns()
@@ -171,7 +171,7 @@ namespace BizHawk.Client.EmuHawk
 		private void AddCheat()
 		{
 			Global.CheatList.Add(CheatEditor.GetCheat());
-			UpdateValues();
+			GeneralUpdate();
 			UpdateMessageLabel();
 		}
 
@@ -182,7 +182,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!newCheat.IsSeparator) // If a separator comes from the cheat editor something must have been invalid
 			{
 				Global.CheatList.Exchange(CheatEditor.OriginalCheat, newCheat);
-				UpdateValues();
+				GeneralUpdate();
 				UpdateMessageLabel();
 			}
 		}
@@ -317,7 +317,7 @@ namespace BizHawk.Client.EmuHawk
 			if (result)
 			{
 				Global.CheatList.NewList(Tools.GenerateDefaultCheatFilename());
-				UpdateValues();
+				GeneralUpdate();
 				UpdateMessageLabel();
 				ToggleGameGenieButton();
 			}
@@ -422,7 +422,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				CheatListView.DeselectAll();
-				UpdateValues();
+				GeneralUpdate();
 			}
 		}
 
@@ -437,7 +437,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.CheatList.Add(Cheat.Separator);
 			}
 			
-			UpdateValues();
+			GeneralUpdate();
 			UpdateMessageLabel();
 		}
 
@@ -465,7 +465,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			UpdateMessageLabel();
-			UpdateValues();
+			GeneralUpdate();
 		}
 
 		private void MoveDownMenuItem_Click(object sender, EventArgs e)
@@ -493,7 +493,7 @@ namespace BizHawk.Client.EmuHawk
 				CheatListView.SelectRow(index, true);
 			}
 
-			UpdateValues();
+			GeneralUpdate();
 		}
 
 		private void SelectAllMenuItem_Click(object sender, EventArgs e)
@@ -630,7 +630,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_sortedColumn = column.Name;
 			_sortReverse ^= true;
-			UpdateValues();
+			GeneralUpdate();
 		}
 
 		private void NewCheatForm_DragDrop(object sender, DragEventArgs e)
@@ -639,7 +639,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Path.GetExtension(filePaths[0]) == ".cht")
 			{
 				LoadFile(new FileInfo(filePaths[0]), append: false);
-				UpdateValues();
+				GeneralUpdate();
 				UpdateMessageLabel();
 			}
 		}

@@ -253,7 +253,7 @@ namespace BizHawk.Client.EmuHawk
 		
 		#endregion
 
-		protected override void UpdateValuesBefore() => Update(fast: false);
+		protected override void UpdateBefore() => Update(fast: false);
 		protected override void FastUpdateBefore() => Update(fast: true);
 
 		public void Restart()

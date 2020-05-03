@@ -534,7 +534,7 @@ namespace BizHawk.Client.EmuHawk
 		// what was last passed to the emu core
 		private int _cbScanlineEmu = -4; // force refresh
 
-		protected override void UpdateValuesBefore()
+		protected override void UpdateBefore()
 		{
 			if (!IsHandleCreated || IsDisposed)
 			{

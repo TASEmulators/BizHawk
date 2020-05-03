@@ -42,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 			Generate(true);
 		}
 
-		protected override void UpdateValuesBefore()
+		protected override void UpdateBefore()
 		{
 			_ppu.InstallCallback1(() => Generate(), _scanline);
 		}
@@ -200,7 +200,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RefreshImageContextMenuItem_Click(object sender, EventArgs e)
 		{
-			UpdateValues();
+			GeneralUpdate();
 			NameTableView.Refresh();
 		}
 

@@ -135,7 +135,7 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewPalette.Refresh();
 		}
 
-		protected override void UpdateValuesBefore()
+		protected override void UpdateBefore()
 		{
 			unsafe
 			{
@@ -150,7 +150,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			UpdateValues();
+			GeneralUpdate();
 		}
 
 		private void bmpViewPalette_MouseClick(object sender, MouseEventArgs e)

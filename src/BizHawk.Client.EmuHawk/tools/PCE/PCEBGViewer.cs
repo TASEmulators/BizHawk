@@ -81,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 			// Nothing to do
 		}
 
-		protected override void UpdateValuesBefore()
+		protected override void UpdateBefore()
 		{
 			// NewUpdate TODO: consolidate
 			Generate();

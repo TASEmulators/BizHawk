@@ -706,10 +706,10 @@ namespace BizHawk.Client.EmuHawk
 			_mmio = mem.mmio;
 
 			_cbScanlineEmu = 500; // force an update
-			UpdateValues();
+			GeneralUpdate();
 		}
 
-		protected override void UpdateValuesBefore()
+		protected override void UpdateBefore()
 		{
 			if (!IsHandleCreated || IsDisposed)
 			{

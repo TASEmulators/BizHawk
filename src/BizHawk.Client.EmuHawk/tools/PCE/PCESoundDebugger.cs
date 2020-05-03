@@ -38,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 			base.OnShown(e);
 		}
 
-		protected override void UpdateValuesAfter()
+		protected override void UpdateAfter()
 		{
 			foreach (var entry in _psgEntries)
 			{

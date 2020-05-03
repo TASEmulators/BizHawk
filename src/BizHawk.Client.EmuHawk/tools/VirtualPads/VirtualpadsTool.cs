@@ -137,7 +137,7 @@ namespace BizHawk.Client.EmuHawk
 			CreatePads();
 		}
 
-		protected override void UpdateValuesAfter()
+		protected override void UpdateAfter()
 		{
 			if (!IsHandleCreated || IsDisposed)
 			{
@@ -172,7 +172,7 @@ namespace BizHawk.Client.EmuHawk
 			Pads.ForEach(pad => pad.UpdateValues());
 		}
 
-		protected override void FastUpdate()
+		protected override void FastUpdateAfter()
 		{
 			// TODO: SetPrevious logic should go here too or that will get out of whack
 

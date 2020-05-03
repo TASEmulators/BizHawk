@@ -61,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 			_connected = false;
 		}
 
-		protected override void UpdateValuesAfter()
+		protected override void UpdateAfter()
 		{
 			// Automatically connect once the game is running
 			if (!_connected)

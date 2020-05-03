@@ -30,7 +30,7 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewSPPal.ChangeBitmapSize(256, 256);
 		}
 
-		protected override void UpdateValuesBefore()
+		protected override void UpdateBefore()
 		{
 			DrawBacks();
 			DrawSprites();
@@ -158,7 +158,7 @@ namespace BizHawk.Client.EmuHawk
 		private void CheckBoxVDC2_CheckedChanged(object sender, EventArgs e)
 		{
 			_vdc = checkBoxVDC2.Checked ? Emu.VDC2 : Emu.VDC1;
-			UpdateValues();
+			GeneralUpdate();
 		}
 
 		private void BmpViewBGPal_MouseClick(object sender, MouseEventArgs e)
