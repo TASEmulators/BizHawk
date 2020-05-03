@@ -640,7 +640,9 @@
 		<Compile Update="UpdateChecker.cs" SubType="Code" />
 	</ItemGroup>
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command='"$(ProjectDir)..\..\Build\postbuild_emuhawk.bat"' Condition=" '$(OS)' == 'Windows_NT' " />
-		<Exec Command='"$(ProjectDir)../../Build/postbuild_emuhawk.sh"' Condition=" '$(OS)' != 'Windows_NT' " />
+		<ItemGroup>
+			<AssetFiles Include="$(ProjectDir)../../Assets/**/*.*" />
+		</ItemGroup>
+		<Copy SourceFiles="@(AssetFiles)" DestinationFolder="$(OutputPath)%(RecursiveDir)" SkipUnchangedFiles="true" />
 	</Target>
 </Project>
