@@ -637,6 +637,6 @@
 		<ItemGroup>
 			<AssetFiles Include="$(ProjectDir)../../Assets/**/*.*" Exclude="$(ProjectDir)../../Assets/**/.gitempty;$(ProjectDir)../../Assets/**/.gitignore" />
 		</ItemGroup>
-		<Copy SourceFiles="@(AssetFiles)" DestinationFolder="$(OutputPath)%(RecursiveDir)" SkipUnchangedFiles="true" />
+		<Copy SourceFiles="@(AssetFiles)" DestinationFolder="$(OutputPath)../%(RecursiveDir)" SkipUnchangedFiles="true" />
 	</Target>
 </Project>
