@@ -50,6 +50,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private readonly PeFile _pe;
 		private readonly byte[] _fileHash;
 
+		private bool _skipCoreConsistencyCheck;
+		private bool _skipMemoryConsistencyCheck;
+
 		public ulong Size { get; }
 		public ulong Start { get; }
 
@@ -116,12 +119,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		public PeWrapper(string moduleName, byte[] fileData, ulong destAddress)
+		public PeWrapper(string moduleName, byte[] fileData, ulong destAddress, bool skipCoreConsistencyCheck, bool skipMemoryConsistencyCheck)
 		{
 			ModuleName = moduleName;
 			_pe = new PeFile(fileData);
 			Size = _pe.ImageNtHeaders.OptionalHeader.SizeOfImage;
 			Start = destAddress;
+			this._skipCoreConsistencyCheck = skipCoreConsistencyCheck;
+			this._skipMemoryConsistencyCheck = skipMemoryConsistencyCheck;
 
 			if (Size < _pe.ImageSectionHeaders.Max(s => (ulong)s.VirtualSize + s.VirtualAddress))
 			{
@@ -409,13 +414,24 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			if (br.ReadUInt64() != MAGIC)
 				// file id is missing.  probable cause:  garbage savestate
 				throw new InvalidOperationException("Savestate corrupted!");
-			if (!br.ReadBytes(_fileHash.Length).SequenceEqual(_fileHash))
-				// the .dll file that is loaded now has a different hash than the .dll that created the savestate
-				throw new InvalidOperationException("Core consistency check failed.  Is this a savestate from a different version?");
-			if (!br.ReadBytes(Memory.XorHash.Length).SequenceEqual(Memory.XorHash))
-				// the post-Seal memory state is different. probable cause:  different rom or different version of rom,
-				// different syncsettings
-				throw new InvalidOperationException("Memory consistency check failed.  Is this savestate from different SyncSettings?");
+
+			var fileHash = br.ReadBytes(_fileHash.Length);
+			if (!_skipCoreConsistencyCheck)
+			{
+				if (!fileHash.SequenceEqual(_fileHash))
+					// the .dll file that is loaded now has a different hash than the .dll that created the savestate
+					throw new InvalidOperationException("Core consistency check failed.  Is this a savestate from a different version?");
+			}
+
+			var xorHash = br.ReadBytes(Memory.XorHash.Length);
+			if (!_skipMemoryConsistencyCheck)
+			{
+				if (!xorHash.SequenceEqual(Memory.XorHash))
+					// the post-Seal memory state is different. probable cause:  different rom or different version of rom,
+					// different syncsettings
+					throw new InvalidOperationException("Memory consistency check failed.  Is this savestate from different SyncSettings?");
+			}
+
 			if (br.ReadUInt64() != Start)
 				// dll loaded somewhere else.  probable cause: internal logic error.
 				// unlikely to get this far if the previous checks pssed

@@ -56,6 +56,16 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// start address in memory
 		/// </summary>
 		public ulong StartAddress { get; set; } = PeRunner.CanonicalStart;
+
+		/// <summary>
+		/// Skips the "core consistency check"
+		/// </summary>
+		public bool SkipCoreConsistencyCheck { get; set; } = false;
+
+		/// <summary>
+		/// Skips the "memory consistency check"
+		/// </summary>
+		public bool SkipMemoryConsistencyCheck { get; set; } = false;
 	}
 
 	public class PeRunner : Swappable, IImportResolver, IBinaryStateable
@@ -1014,7 +1024,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							data = File.ReadAllBytes(path);
 						}
 
-						var module = new PeWrapper(moduleName, data, _nextStart);
+						var module = new PeWrapper(moduleName, data, _nextStart, opt.SkipCoreConsistencyCheck, opt.SkipMemoryConsistencyCheck);
 						ComputeNextStart(module.Size);
 						AddMemoryBlock(module.Memory, moduleName);
 						_savestateComponents.Add(module);
