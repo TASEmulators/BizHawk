@@ -58,10 +58,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 		}
 
-		public void NewUpdate(ToolFormUpdateType type)
-		{
-		}
-
 		public void Restart()
 		{
 			// Really, there's not necessarily a reason to clear it at all,
@@ -71,7 +67,7 @@ namespace BizHawk.Client.EmuHawk
 			_connected = false;
 		}
 
-		public void UpdateValues()
+		protected override void UpdateValuesAfter()
 		{
 			// Automatically connect once the game is running
 			if (!_connected)

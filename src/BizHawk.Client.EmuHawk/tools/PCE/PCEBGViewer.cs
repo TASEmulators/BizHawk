@@ -85,10 +85,9 @@ namespace BizHawk.Client.EmuHawk
 			// Nothing to do
 		}
 
-		public void NewUpdate(ToolFormUpdateType type) { }
-
-		public void UpdateValues()
+		protected override void UpdateValuesBefore()
 		{
+			// NewUpdate TODO: consolidate
 			Generate();
 		}
 
