@@ -61,8 +61,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool UpdateBefore => true;
 
-		public void NewUpdate(ToolFormUpdateType type) { }
-		public void UpdateValues()
+		protected override void UpdateValuesBefore()
 		{
 			_ppu.InstallCallback2(() => Generate(), _scanline);
 		}
