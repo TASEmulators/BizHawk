@@ -119,13 +119,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private IEnumerable<LuaFile> SelectedFiles => SelectedItems.Where(x => !x.IsSeparator);
 
-		public void NewUpdate(ToolFormUpdateType type) { }
-
-		public void UpdateValues()
-		{
-			// Do nothing
-		}
-
 		public void FastUpdate()
 		{
 			// Do nothing

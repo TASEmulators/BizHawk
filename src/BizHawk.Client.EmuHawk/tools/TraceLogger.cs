@@ -133,9 +133,7 @@ namespace BizHawk.Client.EmuHawk
 			public Action<TraceInfo> Putter { get; set; }
 		}
 
-		public void UpdateValues() { }
-
-		public void NewUpdate(ToolFormUpdateType type)
+		public override void NewUpdate(ToolFormUpdateType type)
 		{
 			if (type == ToolFormUpdateType.PostFrame)
 			{

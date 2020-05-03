@@ -87,14 +87,6 @@ namespace BizHawk.Client.EmuHawk
 			MacroInputTool_Load(null, null);
 		}
 
-		public void NewUpdate(ToolFormUpdateType type) { }
-
-		// These do absolutely nothing.
-		public void UpdateValues()
-		{
-
-		}
-
 		public void FastUpdate()
 		{
 
