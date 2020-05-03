@@ -159,7 +159,7 @@
 		<ProjectReference Include="$(SolutionDir)BizHawk.WinForms.Controls/BizHawk.WinForms.Controls.csproj"
 			Name="BizHawk.WinForms.Controls"
 			Project="{B5A2214B-3CB0-48C4-8DB1-98B38D48AC4A}" />
-		<ProjectReference Include="$(SolutionDir)Bizware/BizHawk.Bizware.BizwareGL/BizHawk.Bizware.BizwareGL.csproj"
+		<ProjectReference Include="$(SolutionDir)BizHawk.Bizware.BizwareGL/BizHawk.Bizware.BizwareGL.csproj"
 			Name="BizHawk.Bizware.BizwareGL"
 			Project="{9F84A0B2-861E-4EF4-B89B-5E2A3F38A465}" />
 	</ItemGroup>
