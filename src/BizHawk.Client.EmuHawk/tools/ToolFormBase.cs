@@ -18,7 +18,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public virtual bool AskSaveChanges() => true;
 
-		public virtual void NewUpdate(ToolFormUpdateType type)
+		public virtual void UpdateValues(ToolFormUpdateType type)
 		{
 			switch (type)
 			{

@@ -469,7 +469,7 @@ namespace BizHawk.Client.EmuHawk
 				if (!tool.IsDisposed
 					|| (tool is RamWatch && _config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
 				{
-					tool.NewUpdate(ToolFormUpdateType.PreFrame);
+					tool.UpdateValues(ToolFormUpdateType.PreFrame);
 				}
 			}
 		}
@@ -481,7 +481,7 @@ namespace BizHawk.Client.EmuHawk
 				if (!tool.IsDisposed
 					|| (tool is RamWatch && _config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
 				{
-					tool.NewUpdate(ToolFormUpdateType.PostFrame);
+					tool.UpdateValues(ToolFormUpdateType.PostFrame);
 				}
 			}
 		}
@@ -498,7 +498,7 @@ namespace BizHawk.Client.EmuHawk
 				if (!tool.IsDisposed ||
 					(tool is RamWatch && _config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
 				{
-					tool.NewUpdate(ToolFormUpdateType.General);
+					tool.UpdateValues(ToolFormUpdateType.General);
 				}
 			}
 		}
@@ -703,7 +703,7 @@ namespace BizHawk.Client.EmuHawk
 				if (!tool.IsDisposed
 					|| (tool is RamWatch && _config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
 				{
-					tool.NewUpdate(ToolFormUpdateType.FastPreFrame);
+					tool.UpdateValues(ToolFormUpdateType.FastPreFrame);
 				}
 			}
 		}
@@ -720,7 +720,7 @@ namespace BizHawk.Client.EmuHawk
 				if (!tool.IsDisposed
 					|| (tool is RamWatch && _config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
 				{
-					tool.NewUpdate(ToolFormUpdateType.FastPostFrame);
+					tool.UpdateValues(ToolFormUpdateType.FastPostFrame);
 				}
 			}
 

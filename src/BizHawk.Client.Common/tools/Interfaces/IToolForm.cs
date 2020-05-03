@@ -23,9 +23,9 @@
 	public interface IToolForm
 	{
 		/// <summary>
-		/// A new extensible update method
+		/// Directs the tool to update, with an indicator of the type of update
 		/// </summary>
-		void NewUpdate(ToolFormUpdateType type);
+		void UpdateValues(ToolFormUpdateType type);
 
 		/// <summary>
 		/// Will be called anytime the dialog needs to be restarted, such as when a new ROM is loaded

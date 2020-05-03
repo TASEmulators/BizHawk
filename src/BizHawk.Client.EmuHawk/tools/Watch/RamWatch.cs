@@ -105,7 +105,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_watches.Add(watch);
 			WatchListView.RowCount = _watches.Count;
-			UpdateValues();
+			GeneralUpdate();
 			UpdateWatchCount();
 			Changes();
 		}
@@ -163,7 +163,7 @@ namespace BizHawk.Client.EmuHawk
 					Config.RecentWatches.Add(path);
 					WatchListView.RowCount = _watches.Count;
 					UpdateWatchCount();
-					UpdateValues();
+					GeneralUpdate();
 					UpdateStatusBar();
 					_watches.Changes = false;
 				}
@@ -187,7 +187,7 @@ namespace BizHawk.Client.EmuHawk
 					UpdateWatchCount();
 					Config.RecentWatches.Add(_watches.CurrentFileName);
 					UpdateStatusBar();
-					UpdateValues();
+					GeneralUpdate();
 					PokeAddressToolBarItem.Enabled =
 						FreezeAddressToolBarItem.Enabled =
 						SelectedIndices.Any()
@@ -210,7 +210,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_watches.RefreshDomains(MemoryDomains);
 				_watches.Reload();
-				UpdateValues();
+				GeneralUpdate();
 				UpdateStatusBar();
 			}
 			else
@@ -220,7 +220,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public override void NewUpdate(ToolFormUpdateType type)
+		public override void UpdateValues(ToolFormUpdateType type)
 		{
 			switch (type)
 			{
@@ -344,7 +344,7 @@ namespace BizHawk.Client.EmuHawk
 			WatchListView.RowCount = _watches.Count;
 			UpdateWatchCount();
 			UpdateStatusBar();
-			UpdateValues();
+			GeneralUpdate();
 		}
 
 		private void EditWatch(bool duplicate = false)
@@ -388,7 +388,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				UpdateValues();
+				GeneralUpdate();
 			}
 			else if (SelectedSeparators.Any() && !duplicate)
 			{
@@ -414,7 +414,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				UpdateValues();
+				GeneralUpdate();
 			}
 		}
 
@@ -484,7 +484,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_watches.Clear();
 				WatchListView.RowCount = _watches.Count;
-				UpdateValues();
+				GeneralUpdate();
 				UpdateWatchCount();
 				UpdateStatusBar();
 				_sortReverse = false;
@@ -743,7 +743,7 @@ namespace BizHawk.Client.EmuHawk
 				Changes();
 				UpdateWatchCount();
 				WatchListView.RowCount = _watches.Count;
-				UpdateValues();
+				GeneralUpdate();
 			}
 		}
 
@@ -763,7 +763,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				WatchListView.RowCount = _watches.Count;
-				UpdateValues();
+				GeneralUpdate();
 				UpdateWatchCount();
 			}
 		}
@@ -786,7 +786,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (poke.ShowHawkDialog(this) == DialogResult.OK)
 				{
-					UpdateValues();
+					GeneralUpdate();
 				}
 			}
 		}
@@ -824,7 +824,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ClearChangeCountsMenuItem_Click(object sender, EventArgs e)
 		{
 			_watches.ClearChangeCounts();
-			UpdateValues();
+			GeneralUpdate();
 		}
 
 		private void MoveUpMenuItem_Click(object sender, EventArgs e)
@@ -989,7 +989,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				UpdateValues();
+				GeneralUpdate();
 			}
 		}
 
@@ -1065,7 +1065,7 @@ namespace BizHawk.Client.EmuHawk
 				_watches.Load(filePaths[0], append: false);
 				Config.RecentWatches.Add(_watches.CurrentFileName);
 				WatchListView.RowCount = _watches.Count;
-				UpdateValues();
+				GeneralUpdate();
 			}
 		}
 
@@ -1225,7 +1225,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			WatchListView.RowCount = _watches.Count;
-			UpdateValues();
+			GeneralUpdate();
 			UpdateWatchCount();
 			UpdateStatusBar();
 		}

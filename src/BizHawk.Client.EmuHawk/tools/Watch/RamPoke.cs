@@ -93,7 +93,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var success = _watchList.All(watch => watch.Poke(ValueBox.Text));
 
-			ParentTool?.NewUpdate(ToolFormUpdateType.General);
+			ParentTool?.UpdateValues(ToolFormUpdateType.General);
 
 			if (success)
 			{
