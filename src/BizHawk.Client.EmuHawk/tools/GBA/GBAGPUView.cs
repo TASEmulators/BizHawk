@@ -697,7 +697,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-
 		public void Restart()
 		{
 			var mem = GBA.GetMemoryAreas();
@@ -729,11 +728,6 @@ namespace BizHawk.Client.EmuHawk
 					GBA.SetScanlineCallback(DrawEverything, _cbScanline.Value);
 				}
 			}
-		}
-
-		public void FastUpdate()
-		{
-			// Do nothing
 		}
 
 		private void ShowSelectedWidget()

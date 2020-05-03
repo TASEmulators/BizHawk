@@ -87,11 +87,6 @@ namespace BizHawk.Client.EmuHawk
 			Generate();
 		}
 
-		public void FastUpdate()
-		{
-			// Do nothing
-		}
-
 		#region Events
 
 		#region Menu

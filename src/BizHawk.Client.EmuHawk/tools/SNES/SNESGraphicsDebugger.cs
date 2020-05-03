@@ -138,11 +138,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void FastUpdate()
-		{
-			// To do
-		}
-
 		public void UpdateToolsLoadstate()
 		{
 			SyncCore();

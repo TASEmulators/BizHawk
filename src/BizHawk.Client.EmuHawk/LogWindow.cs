@@ -34,8 +34,6 @@ namespace BizHawk.Client.EmuHawk
 			Attach();
 		}
 
-		public void FastUpdate() { }
-
 		public void Restart() { }
 
 		private void Attach()

@@ -88,11 +88,6 @@ namespace BizHawk.Client.EmuHawk
 			UpdateDisplay(false);
 		}
 
-		public void FastUpdate()
-		{
-			// Do nothing
-		}
-
 		public void Restart()
 		{
 			//don't try to recover the current CDL!

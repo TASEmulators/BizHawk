@@ -165,11 +165,6 @@ namespace BizHawk.Client.EmuHawk
 			AddressLabel.Text = GenerateAddressString();
 		}
 
-		public void FastUpdate()
-		{
-			// Do nothing
-		}
-
 		public void Restart()
 		{
 			if (!(MainForm.CurrentlyOpenRomArgs.OpenAdvanced is OpenAdvanced_MAME))

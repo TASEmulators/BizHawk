@@ -15,10 +15,6 @@ namespace BizHawk.Client.EmuHawk
 		private NES.NESSettings _oldSettings;
 		private NES.NESSettings _settings;
 
-		public void FastUpdate()
-		{
-		}
-
 		public void Restart()
 		{
 			NESSoundConfig_Load(null, null);

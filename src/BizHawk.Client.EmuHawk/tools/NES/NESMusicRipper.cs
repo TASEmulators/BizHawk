@@ -30,11 +30,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 		}
 
-		public void FastUpdate()
-		{
-			// Do nothing
-		}
-
 		private bool _isRunning;
 
 		// http://www.phy.mtu.edu/~suits/notefreqs.html

@@ -47,11 +47,6 @@ namespace BizHawk.Client.EmuHawk
 			_ppu.InstallCallback1(() => Generate(), _scanline);
 		}
 
-		public void FastUpdate()
-		{
-			// Do nothing
-		}
-
 		private unsafe void DrawTile(int* dst, int pitch, byte* pal, byte* tile, int* finalPal)
 		{
 			dst += 7;

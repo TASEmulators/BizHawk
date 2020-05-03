@@ -53,11 +53,6 @@ namespace BizHawk.Client.EmuHawk
 		[ConfigPersist]
 		public CheatsSettings Settings { get; set; }
 
-		public void FastUpdate()
-		{
-			// Do nothing
-		}
-
 		public void Restart()
 		{
 			CheatEditor.MemoryDomains = Core;

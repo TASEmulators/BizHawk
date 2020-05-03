@@ -138,11 +138,6 @@ namespace BizHawk.Client.EmuHawk
 			BreakPointControl1.UpdateValues();
 		}
 
-		public void FastUpdate()
-		{
-			// Nothing to do
-		}
-
 		public void Restart()
 		{
 			DisengageDebugger();

@@ -52,10 +52,6 @@ namespace BizHawk.Client.EmuHawk
 			Gb?.SetPrinterCallback(null);
 		}
 
-		public void FastUpdate()
-		{
-		}
-
 		public void Restart()
 		{
 			// Really, there's not necessarily a reason to clear it at all,

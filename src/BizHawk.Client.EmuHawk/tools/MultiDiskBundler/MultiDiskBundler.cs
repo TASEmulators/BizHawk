@@ -61,17 +61,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		#region IToolForm
-
-		public void FastUpdate()
-		{
-		}
-
 		public void Restart()
 		{
 		}
-
-		#endregion
 
 		private void CancelBtn_Click(object sender, EventArgs e)
 		{

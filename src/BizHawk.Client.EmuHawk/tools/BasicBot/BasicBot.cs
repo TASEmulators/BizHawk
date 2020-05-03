@@ -253,21 +253,13 @@ namespace BizHawk.Client.EmuHawk
 		
 		#endregion
 
-		protected override void UpdateValuesBefore()
-		{
-			// NewUpdate TODO: consolidate
-			Update(fast: false);
-		}
-
-		public void FastUpdate()
-		{
-			Update(fast: true);
-		}
+		protected override void UpdateValuesBefore() => Update(fast: false);
+		protected override void FastUpdateBefore() => Update(fast: true);
 
 		public void Restart()
 		{
-			if (_currentDomain == null ||
-				MemoryDomains.Contains(_currentDomain))
+			if (_currentDomain == null
+				|| MemoryDomains.Contains(_currentDomain))
 			{
 				_currentDomain = MemoryDomains.MainMemory;
 				_bigEndian = _currentDomain.EndianType == MemoryDomain.Endian.Big;

@@ -87,11 +87,6 @@ namespace BizHawk.Client.EmuHawk
 			MacroInputTool_Load(null, null);
 		}
 
-		public void FastUpdate()
-		{
-
-		}
-
 		public override bool AskSaveChanges()
 		{
 			if (_unsavedZones.Count == 0 || IsDisposed)

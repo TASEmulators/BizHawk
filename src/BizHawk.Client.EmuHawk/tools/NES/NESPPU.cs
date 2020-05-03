@@ -62,11 +62,6 @@ namespace BizHawk.Client.EmuHawk
 			_ppu.InstallCallback2(() => Generate(), _scanline);
 		}
 
-		public void FastUpdate()
-		{
-			// Do nothing
-		}
-
 		public void Restart()
 		{
 			Generate(true);

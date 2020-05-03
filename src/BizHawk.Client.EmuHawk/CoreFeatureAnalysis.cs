@@ -253,10 +253,6 @@ namespace BizHawk.Client.EmuHawk
 			CoreTree.EndUpdate();
 		}
 
-		public void FastUpdate()
-		{
-		}
-
 		public void Restart()
 		{
 			var ci = new CoreInfo(Emulator);

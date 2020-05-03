@@ -27,10 +27,6 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		public void FastUpdate()
-		{
-		}
-
 		public void Restart()
 		{
 		}

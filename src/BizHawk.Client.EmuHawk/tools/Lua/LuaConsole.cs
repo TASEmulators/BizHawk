@@ -117,11 +117,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private IEnumerable<LuaFile> SelectedFiles => SelectedItems.Where(x => !x.IsSeparator);
 
-		public void FastUpdate()
-		{
-			// Do nothing
-		}
-
 		private void LuaConsole_Load(object sender, EventArgs e)
 		{
 			// Hack for previous config settings

@@ -38,9 +38,7 @@ namespace BizHawk.Client.EmuHawk
 			base.OnShown(e);
 		}
 
-		public void NewUpdate(ToolFormUpdateType type) { }
-
-		public void UpdateValues()
+		protected override void UpdateValuesAfter()
 		{
 			foreach (var entry in _psgEntries)
 			{
@@ -145,11 +143,6 @@ namespace BizHawk.Client.EmuHawk
 				SyncLists();
 			lvPsgWaveforms.EndUpdate();
 			lvChannels.EndUpdate();
-		}
-
-		public void FastUpdate()
-		{
-			// Todo
 		}
 
 		private class PsgEntry
