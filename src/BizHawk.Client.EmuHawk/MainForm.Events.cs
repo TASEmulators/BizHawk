@@ -1207,7 +1207,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			QuicknesCoreMenuItem.Checked = Config.PreferredCores["NES"] == CoreNames.QuickNes;
 			NesCoreMenuItem.Checked = Config.PreferredCores["NES"] == CoreNames.NesHawk;
-			SubNesHawkMenuItem.Checked = Config.PreferredCores["NES"] == CoreNames.SubNesHawk;
+			SubNesHawkNesMenuItem.Checked = Config.PreferredCores["NES"] == CoreNames.SubNesHawk;
 		}
 
 		private void QuickNesCorePick_Click(object sender, EventArgs e)

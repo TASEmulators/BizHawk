@@ -186,7 +186,7 @@
 			this.QuicknesCoreMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.NesCoreMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator38 = new System.Windows.Forms.ToolStripSeparator();
-			this.SubNesHawkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SubNesHawkNesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SubGBHawkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.CoreSNESSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.Coresnes9xMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1815,7 +1815,7 @@
 			this.QuicknesCoreMenuItem,
 			this.NesCoreMenuItem,
 			this.toolStripSeparator38,
-			this.SubNesHawkMenuItem});
+			this.SubNesHawkNesMenuItem});
 			this.NesCoreSubMenu.Name = "NesCoreSubMenu";
 			this.NesCoreSubMenu.Size = new System.Drawing.Size(223, 22);
 			this.NesCoreSubMenu.Text = "NES";
@@ -1842,10 +1842,10 @@
 			// 
 			// SubNesHawkMenuItem
 			// 
-			this.SubNesHawkMenuItem.Name = "SubNesHawkMenuItem";
-			this.SubNesHawkMenuItem.Size = new System.Drawing.Size(209, 22);
-			this.SubNesHawkMenuItem.Text = "SubNesHawk (Experimental)";
-			this.SubNesHawkMenuItem.Click += new System.EventHandler(this.SubNesCorePick_Click);
+			this.SubNesHawkNesMenuItem.Name = "SubNesHawkNesMenuItem";
+			this.SubNesHawkNesMenuItem.Size = new System.Drawing.Size(209, 22);
+			this.SubNesHawkNesMenuItem.Text = "SubNesHawk (Experimental)";
+			this.SubNesHawkNesMenuItem.Click += new System.EventHandler(this.SubNesCorePick_Click);
 			// 
 			// SubGBHawkMenuItem
 			// 
@@ -4427,7 +4427,7 @@
 		private System.Windows.Forms.ToolStripMenuItem AmstradCPCDisksSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem cpcd1ToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AmstradCPCNonSyncSettingsToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SubNesHawkMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SubNesHawkNesMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SubGBHawkMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator38;
 		private System.Windows.Forms.ToolStripMenuItem NDSSubMenu;
