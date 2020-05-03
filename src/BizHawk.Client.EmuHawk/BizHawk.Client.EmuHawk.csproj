@@ -99,6 +99,7 @@
 			Private="true"
 			SpecificVersion="false" />
 		<PackageReference Include="OpenTK.GLControl" Version="3.0.1" PrivateAssets="all" />
+		<PackageReference Include="SharpCompress" Version="0.24.0" PrivateAssets="all" />
 		<PackageReference Include="SharpZipLib" Version="1.1.0" PrivateAssets="all" />
 		<Reference Include="SlimDX"
 			HintPath="$(ProjectDir)../../References/x64/SlimDX.dll"
