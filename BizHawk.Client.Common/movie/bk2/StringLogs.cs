@@ -12,21 +12,11 @@ namespace BizHawk.Client.Common
 	{
 		public static bool DefaultToDisk { get; set; }
 
-		public static bool DefaultToAwe { get; set; }
-
-		/// <exception cref="InvalidOperationException"><see cref="DefaultToAwe"/> is <see langword="true"/> but not running on Windows host</exception>
 		public static IStringLog MakeStringLog()
 		{
 			if (DefaultToDisk)
 			{
 				return new StreamStringLog(true);
-			}
-
-			if (DefaultToAwe)
-			{
-				return OSTailoredCode.IsUnixHost
-					? throw new InvalidOperationException("logging to AWE is only available on Windows for now")
-					: new StreamStringLog(false);
 			}
 
 			return new ListStringLog();
@@ -114,7 +104,8 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				_stream = new AWEMemoryStream();
+				//but leave this in case we want to retain the option for more efficient management than the list of strings
+				throw new InvalidOperationException("Not supported anymore");
 			}
 
 			_bw = new BinaryWriter(_stream);

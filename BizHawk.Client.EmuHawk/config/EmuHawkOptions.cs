@@ -86,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 			cbFrameAdvPastLag.Checked = _config.SkipLagFrame;
 			cbRunLuaDuringTurbo.Checked = _config.RunLuaDuringTurbo;
 			cbMoviesOnDisk.Checked = _config.MoviesOnDisk;
-			cbMoviesInAWE.Checked = _config.MoviesInAwe;
+			cbSkipWaterboxIntegrityChecks.Checked = _config.SkipWaterboxIntegrityChecks;
 
 			switch (_config.LuaEngine)
 			{
@@ -127,7 +127,7 @@ namespace BizHawk.Client.EmuHawk
 			_config.SkipLagFrame = cbFrameAdvPastLag.Checked;
 			_config.RunLuaDuringTurbo = cbRunLuaDuringTurbo.Checked;
 			_config.MoviesOnDisk = cbMoviesOnDisk.Checked;
-			_config.MoviesInAwe = cbMoviesInAWE.Checked;
+			_config.SkipWaterboxIntegrityChecks = cbSkipWaterboxIntegrityChecks.Checked;
 
 			var prevLuaEngine = _config.LuaEngine;
 			_config.LuaEngine = grpLuaEngine.Tracker.GetSelectionTagAs<ELuaEngine>() ?? throw new InvalidOperationException();
