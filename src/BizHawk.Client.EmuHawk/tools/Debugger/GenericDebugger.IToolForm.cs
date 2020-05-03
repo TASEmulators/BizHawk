@@ -148,7 +148,5 @@ namespace BizHawk.Client.EmuHawk
 			DisengageDebugger();
 			EngageDebugger();
 		}
-
-		public bool UpdateBefore => false;
 	}
 }

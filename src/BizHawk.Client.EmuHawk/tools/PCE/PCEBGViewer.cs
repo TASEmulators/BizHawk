@@ -30,10 +30,6 @@ namespace BizHawk.Client.EmuHawk
 			Activated += (o, e) => Generate();
 		}
 
-		#region Public API
-
-		public bool UpdateBefore => true;
-
 		public unsafe void Generate()
 		{
 			if (PCE.Frame % RefreshRate.Value != 0)
@@ -95,8 +91,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// Do nothing
 		}
-
-		#endregion
 
 		#region Events
 

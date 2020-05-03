@@ -22,8 +22,6 @@ namespace BizHawk.Client.EmuHawk
 		private bool _hackyDontUpdate;
 		private bool _initializing; // If true, will bypass restart logic, this is necessary since loading projects causes a movie to load which causes a rom to reload causing dialogs to restart
 
-		public bool UpdateBefore => false;
-
 		private int _lastRefresh;
 
 		protected override void UpdateValues()

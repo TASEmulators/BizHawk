@@ -27,10 +27,6 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		#region IToolForm
-
-		public bool UpdateBefore => true;
-
 		public void FastUpdate()
 		{
 		}
@@ -38,8 +34,6 @@ namespace BizHawk.Client.EmuHawk
 		public void Restart()
 		{
 		}
-
-		#endregion
 
 		private void Go_Click(object sender, EventArgs e)
 		{

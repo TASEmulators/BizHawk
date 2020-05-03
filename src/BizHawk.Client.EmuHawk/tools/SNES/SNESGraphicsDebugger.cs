@@ -128,8 +128,6 @@ namespace BizHawk.Client.EmuHawk
 				: $"@{address:X4} ({address / 1024}K)";
 		}
 
-		public bool UpdateBefore => false;
-
 		protected override void UpdateValuesAfter()
 		{
 			SyncCore();

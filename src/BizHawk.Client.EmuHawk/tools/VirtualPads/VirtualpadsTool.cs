@@ -127,10 +127,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		#region IToolForm Implementation
-
-		public bool UpdateBefore => false;
-
 		public void Restart()
 		{
 			if (!IsHandleCreated || IsDisposed)
@@ -185,8 +181,6 @@ namespace BizHawk.Client.EmuHawk
 				Pads.ForEach(pad => pad.Clear());
 			}
 		}
-
-		#endregion
 
 		#region Menu
 

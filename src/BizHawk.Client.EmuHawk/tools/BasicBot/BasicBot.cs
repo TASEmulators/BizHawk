@@ -253,12 +253,9 @@ namespace BizHawk.Client.EmuHawk
 		
 		#endregion
 
-		#region IToolForm Implementation
-
-		public bool UpdateBefore => true;
-
 		protected override void UpdateValuesBefore()
 		{
+			// NewUpdate TODO: consolidate
 			Update(fast: false);
 		}
 
@@ -293,8 +290,6 @@ namespace BizHawk.Client.EmuHawk
 				SetupControlsAndProperties();
 			}
 		}
-
-		#endregion
 
 		#region Control Events
 

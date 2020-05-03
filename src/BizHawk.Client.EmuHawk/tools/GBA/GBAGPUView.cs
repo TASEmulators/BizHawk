@@ -710,8 +710,6 @@ namespace BizHawk.Client.EmuHawk
 			UpdateValues();
 		}
 
-		public bool UpdateBefore => true;
-
 		protected override void UpdateValuesBefore()
 		{
 			if (!IsHandleCreated || IsDisposed)

@@ -113,8 +113,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public LuaLibraries LuaImp { get; private set; }
 
-		public bool UpdateBefore => true;
-
 		private IEnumerable<LuaFile> SelectedItems =>  LuaListView.SelectedRows.Select(index => LuaImp.ScriptList[index]);
 
 		private IEnumerable<LuaFile> SelectedFiles => SelectedItems.Where(x => !x.IsSeparator);

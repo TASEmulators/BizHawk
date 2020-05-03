@@ -53,8 +53,6 @@ namespace BizHawk.Client.EmuHawk
 		[ConfigPersist]
 		public CheatsSettings Settings { get; set; }
 
-		public bool UpdateBefore => false;
-
 		public void FastUpdate()
 		{
 			// Do nothing

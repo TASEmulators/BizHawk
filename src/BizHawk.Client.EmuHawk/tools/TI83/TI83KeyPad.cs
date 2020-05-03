@@ -33,10 +33,6 @@ namespace BizHawk.Client.EmuHawk
 			Global.InputManager.ClickyVirtualPadController.Click(name);
 		}
 
-		#region Public API
-
-		public bool UpdateBefore => false;
-
 		public void FastUpdate()
 		{
 			// Do nothing
@@ -46,8 +42,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// Do nothing
 		}
-
-		#endregion
 
 		private void SetToolTips()
 		{

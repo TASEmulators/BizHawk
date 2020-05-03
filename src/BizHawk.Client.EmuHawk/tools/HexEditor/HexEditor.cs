@@ -154,8 +154,6 @@ namespace BizHawk.Client.EmuHawk
 
 		#region API
 
-		public bool UpdateBefore => false;
-
 		protected override void UpdateValuesAfter()
 		{
 			AddressesLabel.Text = GenerateMemoryViewString(true);

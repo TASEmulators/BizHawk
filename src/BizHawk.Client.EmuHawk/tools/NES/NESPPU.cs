@@ -57,10 +57,6 @@ namespace BizHawk.Client.EmuHawk
 			ChrRomViewReload();
 		}
 
-		#region Public API
-
-		public bool UpdateBefore => true;
-
 		protected override void UpdateValuesBefore()
 		{
 			_ppu.InstallCallback2(() => Generate(), _scanline);
@@ -76,8 +72,6 @@ namespace BizHawk.Client.EmuHawk
 			Generate(true);
 			ChrRomViewReload();
 		}
-
-		#endregion
 
 		private byte GetBit(byte[] ppuBus, int address, int bit)
 		{

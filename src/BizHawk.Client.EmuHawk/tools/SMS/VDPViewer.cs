@@ -158,8 +158,6 @@ namespace BizHawk.Client.EmuHawk
 			UpdateValues();
 		}
 
-		public bool UpdateBefore => true;
-
 		private void bmpViewPalette_MouseClick(object sender, MouseEventArgs e)
 		{
 			int p = Math.Min(Math.Max(e.Y / 16, 0), 1);

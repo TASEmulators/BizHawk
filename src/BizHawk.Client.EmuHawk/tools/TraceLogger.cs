@@ -93,8 +93,6 @@ namespace BizHawk.Client.EmuHawk
 			});
 		}
 
-		public bool UpdateBefore => false;
-
 		private void SaveConfigSettings()
 		{
 			//Tracer.Enabled = LoggingEnabled.Checked;

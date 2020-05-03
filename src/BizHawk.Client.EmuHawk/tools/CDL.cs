@@ -82,8 +82,6 @@ namespace BizHawk.Client.EmuHawk
 			});
 		}
 
-		public bool UpdateBefore => false;
-
 		protected override void UpdateValuesAfter()
 		{
 			// NewUpdate TODO: consolidate

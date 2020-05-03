@@ -30,10 +30,6 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewSPPal.ChangeBitmapSize(256, 256);
 		}
 
-		#region IToolForm
-
-		public bool UpdateBefore => true;
-
 		protected override void UpdateValuesBefore()
 		{
 			DrawBacks();
@@ -163,8 +159,6 @@ namespace BizHawk.Client.EmuHawk
 
 			CheckBoxVDC2_CheckedChanged(null, null);
 		}
-
-		#endregion
 
 		private void CheckBoxVDC2_CheckedChanged(object sender, EventArgs e)
 		{

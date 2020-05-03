@@ -45,14 +45,6 @@
 		/// </summary>
 		bool AskSaveChanges();
 
-		/// <summary>
-		/// Indicates whether the tool should be updated before a frame loop or after.
-		/// In general, tools that draw graphics from the core should update before the loop,
-		/// Information tools such as those that display core ram values should be after.
-		/// AWESOME! no separate preupdate and postupdate hooks. seriously?
-		/// </summary>
-		bool UpdateBefore { get; }
-
 		// Necessary winform calls
 		bool Focus();
 		bool ContainsFocus { get; }

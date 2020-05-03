@@ -28,8 +28,6 @@ namespace BizHawk.Client.EmuHawk
 			);
 		}
 
-		public bool UpdateBefore => false;
-
 		public void FastUpdate()
 		{
 			// Do nothing

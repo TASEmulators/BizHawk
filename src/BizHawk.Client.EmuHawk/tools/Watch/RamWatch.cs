@@ -99,8 +99,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public IEnumerable<Watch> Watches => _watches.Where(x => !x.IsSeparator);
 
-		public bool UpdateBefore => false;
-
 		#region API
 
 		public void AddWatch(Watch watch)

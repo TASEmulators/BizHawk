@@ -38,8 +38,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart() { }
 
-		public bool UpdateBefore => true;
-
 		private void Attach()
 		{
 			_logStream = new LogStream();

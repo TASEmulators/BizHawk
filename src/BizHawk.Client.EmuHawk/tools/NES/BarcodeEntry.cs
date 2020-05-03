@@ -7,7 +7,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class BarcodeEntry : Form, IToolForm
+	public partial class BarcodeEntry : ToolFormBase, IToolForm
 	{
 		[RequiredService]
 		private DatachBarcode Reader { get; set; }
@@ -15,14 +15,6 @@ namespace BizHawk.Client.EmuHawk
 		public BarcodeEntry()
 		{
 			InitializeComponent();
-		}
-
-		#region IToolForm
-
-		public void NewUpdate(ToolFormUpdateType type) { }
-
-		public void UpdateValues()
-		{
 		}
 
 		public void FastUpdate()
@@ -33,15 +25,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			textBox1_TextChanged(null, null);
 		}
-
-		public bool AskSaveChanges()
-		{
-			return true;
-		}
-
-		public bool UpdateBefore => false;
-
-		#endregion
 
 		private void textBox1_TextChanged(object sender, EventArgs e)
 		{

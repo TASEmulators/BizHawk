@@ -246,8 +246,6 @@ namespace BizHawk.Client.EmuHawk
 			SetTotal();
 		}
 
-		public bool UpdateBefore => false;
-
 		public override void NewUpdate(ToolFormUpdateType type)
 		{
 			// NewUpdate TODO: make this a switch

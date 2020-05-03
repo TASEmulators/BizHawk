@@ -52,8 +52,6 @@ namespace BizHawk.Client.EmuHawk
 			Gb?.SetPrinterCallback(null);
 		}
 
-		public bool UpdateBefore => false;
-
 		public void FastUpdate()
 		{
 		}

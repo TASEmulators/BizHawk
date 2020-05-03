@@ -37,10 +37,6 @@ namespace BizHawk.Client.EmuHawk
 			Generate(true);
 		}
 
-		#region Public API
-
-		public bool UpdateBefore => true;
-
 		public void Restart()
 		{
 			Generate(true);
@@ -55,8 +51,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// Do nothing
 		}
-
-		#endregion
 
 		private unsafe void DrawTile(int* dst, int pitch, byte* pal, byte* tile, int* finalPal)
 		{

@@ -26,8 +26,6 @@ namespace BizHawk.Client.EmuHawk
 			SyncContents();
 		}
 
-		public bool UpdateBefore => true;
-
 		public void Restart()
 		{
 		}
