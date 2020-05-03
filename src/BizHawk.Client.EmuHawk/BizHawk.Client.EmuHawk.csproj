@@ -5,10 +5,9 @@
 		<ApplicationIcon>images/logo.ico</ApplicationIcon>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
 		<DefineConstants>$(DefineConstants);EXE_PROJECT</DefineConstants>
-		<OutputPath>$(ProjectDir)../../output</OutputPath>
+		<OutputPath>$(ProjectDir)bin</OutputPath>
 		<OutputType>WinExe</OutputType>
 		<TargetFramework>net48</TargetFramework>
-		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	</PropertyGroup>
 <!--
 	<PropertyGroup>
@@ -412,6 +411,7 @@
 		<Compile Update="PlatformChooser.cs" SubType="Form" />
 		<Compile Update="PlatformChooser.Designer.cs" DependentUpon="PlatformChooser.cs" />
 		<EmbeddedResource Update="PlatformChooser.resx" DependentUpon="PlatformChooser.cs" />
+		<Compile Update="Properties/Resources.cs" DependentUpon="Resources.resx" />
 		<Compile Update="RomStatusPicker.cs" SubType="Form" />
 		<Compile Update="RomStatusPicker.Designer.cs" DependentUpon="RomStatusPicker.cs" />
 		<EmbeddedResource Update="RomStatusPicker.resx" DependentUpon="RomStatusPicker.cs" />
@@ -634,10 +634,8 @@
 		<Compile Update="tools/Watch/WatchValueBox.cs" SubType="Component" />
 		<Compile Update="UpdateChecker.cs" SubType="Code" />
 	</ItemGroup>
-	<Target Name="EmuHawkAfterBuild" AfterTargets="Build">
-		<ItemGroup>
-			<AssetFiles Include="$(ProjectDir)../../Assets/**/*.*" Exclude="$(ProjectDir)../../Assets/**/.gitempty;$(ProjectDir)../../Assets/**/.gitignore" />
-		</ItemGroup>
-		<Copy SourceFiles="@(AssetFiles)" DestinationFolder="$(OutputPath)%(RecursiveDir)" SkipUnchangedFiles="true" />
+	<Target Name="PreBuild" AfterTargets="PreBuildEvent">
+		<Exec Command='"$(ProjectDir)..\..\Dist\copy_assets_and_emuhawk_to_output.bat"' Condition=" '$(OS)' == 'Windows_NT' " />
+		<Exec Command='"$(ProjectDir)../../Dist/copy_assets_and_emuhawk_to_output.sh"' Condition=" '$(OS)' != 'Windows_NT' " />
 	</Target>
 </Project>
