@@ -1,9 +1,9 @@
 <Project>
 	<PropertyGroup>
-		<CodeAnalysisRuleSet>$(SolutionDir)Common.ruleset</CodeAnalysisRuleSet>
+		<CodeAnalysisRuleSet>$(ProjectDir)../../Common.ruleset</CodeAnalysisRuleSet>
 	</PropertyGroup>
 	<ItemGroup>
-		<AdditionalFiles Include="$(SolutionDir).stylecop.json" />
-		<Analyzer Include="$(SolutionDir)packages/StyleCop.Analyzers.Unstable.1.2.0.164/analyzers/dotnet/cs/*.dll" /><!-- already restored by first transitive dep (BizHawk.Common) -->
+		<AdditionalFiles Include="$(ProjectDir)../../.stylecop.json" />
+		<Analyzer Include="$(ProjectDir)../../packages/StyleCop.Analyzers.Unstable.1.2.0.164/analyzers/dotnet/cs/*.dll" /><!-- already restored by first transitive dep (BizHawk.Common) -->
 	</ItemGroup>
 </Project>

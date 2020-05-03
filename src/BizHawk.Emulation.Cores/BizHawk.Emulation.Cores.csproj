@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<Import Project="$(SolutionDir)src/MainSlnCommon.props" />
+	<Import Project="../MainSlnCommon.props" />
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<TargetFrameworks>netstandard2.0;netcoreapp3.1</TargetFrameworks>
@@ -8,13 +8,13 @@
 		<PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" PrivateAssets="All" />
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" PrivateAssets="All" />
 		<PackageReference Include="OpenTK" Version="3.0.1" PrivateAssets="All" />
-		<Reference Include="PeNet" HintPath="$(SolutionDir)References/PeNet.dll" Private="true" />
-		<Reference Include="Virtu" HintPath="$(SolutionDir)References/Virtu.dll" Private="true" />
-		<ProjectReference Include="$(SolutionDir)src/BizHawk.BizInvoke/BizHawk.BizInvoke.csproj" />
-		<ProjectReference Include="$(SolutionDir)src/BizHawk.Emulation.Common/BizHawk.Emulation.Common.csproj" />
-		<ProjectReference Include="$(SolutionDir)src/BizHawk.Emulation.DiscSystem/BizHawk.Emulation.DiscSystem.csproj" />
-		<Compile Include="$(SolutionDir)src/Version/svnrev.cs" />
-		<Compile Include="$(SolutionDir)src/Version/VersionInfo.cs" />
+		<Reference Include="PeNet" HintPath="$(ProjectDir)../../References/PeNet.dll" Private="true" />
+		<Reference Include="Virtu" HintPath="$(ProjectDir)../../References/Virtu.dll" Private="true" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.BizInvoke/BizHawk.BizInvoke.csproj" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.Common/BizHawk.Emulation.Common.csproj" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.DiscSystem/BizHawk.Emulation.DiscSystem.csproj" />
+		<Compile Include="$(ProjectDir)../Version/svnrev.cs" />
+		<Compile Include="$(ProjectDir)../Version/VersionInfo.cs" />
 		<EmbeddedResource Include="Resources/**/*" />
 	</ItemGroup>
 	<ItemGroup>

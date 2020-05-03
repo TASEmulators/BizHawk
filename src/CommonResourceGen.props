@@ -6,14 +6,14 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<Reference Include="System.Buffers"
-			HintPath="$(SolutionDir)References/System.Buffers.dll" />
+			HintPath="$(ProjectDir)../../References/System.Buffers.dll" />
 		<Reference Include="System.Memory"
-			HintPath="$(SolutionDir)References/System.Memory.dll" />
+			HintPath="$(ProjectDir)../../References/System.Memory.dll" />
 		<Reference Include="System.Numerics.Vectors"
-			HintPath="$(SolutionDir)References/System.Numerics.Vectors.dll" />
+			HintPath="$(ProjectDir)../../References/System.Numerics.Vectors.dll" />
 		<Reference Include="System.Resources.Extensions"
-			HintPath="$(SolutionDir)References/System.Resources.Extensions.dll" />
+			HintPath="$(ProjectDir)../../References/System.Resources.Extensions.dll" />
 		<Reference Include="System.Runtime.CompilerServices.Unsafe"
-			HintPath="$(SolutionDir)References/System.Runtime.CompilerServices.Unsafe.dll" />
+			HintPath="$(ProjectDir)../../References/System.Runtime.CompilerServices.Unsafe.dll" />
 	</ItemGroup>
 </Project>

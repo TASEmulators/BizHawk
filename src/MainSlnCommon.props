@@ -1,11 +1,11 @@
 <Project>
-	<Import Project="$(SolutionDir)Common.props" />
+	<Import Project="../Common.props" />
 	<PropertyGroup>
-		<CodeAnalysisRuleSet>$(SolutionDir)Common.ruleset</CodeAnalysisRuleSet>
+		<CodeAnalysisRuleSet>$(ProjectDir)../../Common.ruleset</CodeAnalysisRuleSet>
 		<NoWarn>NU1701</NoWarn><!-- can't use .ruleset, and NU1702 can't be silenced at all (see https://github.com/NuGet/Home/issues/8797) -->
-		<OutputPath>$(SolutionDir)output/dll</OutputPath>
+		<OutputPath>$(ProjectDir)../../output/dll</OutputPath>
 	</PropertyGroup>
 	<ItemGroup>
-		<AdditionalFiles Include="$(SolutionDir).stylecop.json" />
+		<AdditionalFiles Include="$(ProjectDir)../../.stylecop.json" />
 	</ItemGroup>
 </Project>

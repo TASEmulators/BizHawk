@@ -20,7 +20,7 @@
 		<MapFileExtensions>true</MapFileExtensions>
 		<NoWin32Manifest>true</NoWin32Manifest>
 		<OldToolsVersion>3.5</OldToolsVersion>
-		<OutputPath>$(SolutionDir)output</OutputPath>
+		<OutputPath>$(ProjectDir)../../output</OutputPath>
 		<OutputType>Exe</OutputType>
 		<Platform Condition=" '$(Platform)' == '' ">x86</Platform>
 		<PlatformTarget>AnyCPU</PlatformTarget>
@@ -71,8 +71,8 @@
 			<Install>true</Install>
 		</BootstrapperPackage>
 	</ItemGroup>
-	<Import Project="$(SolutionDir)src/CommonStyleCopAnalyzer.props" />
-	<Import Project="$(SolutionDir)src/CommonRefAssemblies.props" Condition=" '$(OS)' != 'Windows_NT' " />
+	<Import Project="../CommonStyleCopAnalyzer.props" />
+	<Import Project="../CommonRefAssemblies.props" Condition=" '$(OS)' != 'Windows_NT' " />
 	<ItemGroup>
 		<Reference Include="System" />
 		<!--<Reference Include="System.Core" RequiredTargetFramework="3.5" />-->
@@ -83,17 +83,17 @@
 		<!--<Reference Include="System.Xml" />-->
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="$(SolutionDir)src/BizHawk.Common/BizHawk.Common.csproj"
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Common/BizHawk.Common.csproj"
 			Name="BizHawk.Common"
 			Project="{866F8D13-0678-4FF9-80A4-A3993FD4D8A3}" />
-		<ProjectReference Include="$(SolutionDir)src/BizHawk.Emulation.DiscSystem/BizHawk.Emulation.DiscSystem.csproj"
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.DiscSystem/BizHawk.Emulation.DiscSystem.csproj"
 			Name="BizHawk.Emulation.DiscSystem"
 			Project="{f51946ea-827f-4d82-b841-1f2f6d060312}" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Include="**/*.cs" />
-		<Compile Include="$(SolutionDir)src/Version/svnrev.cs" Link="svnrev.cs" />
-		<Compile Include="$(SolutionDir)src/Version/VersionInfo.cs" Link="VersionInfo.cs" />
+		<Compile Include="$(ProjectDir)../Version/svnrev.cs" Link="svnrev.cs" />
+		<Compile Include="$(ProjectDir)../Version/VersionInfo.cs" Link="VersionInfo.cs" />
 		<Content Include="discohawk.ico" />
 		<EmbeddedResource Include="**/*.resx" />
 		<None Include="app.config" />
@@ -110,5 +110,5 @@
 		<EmbeddedResource Update="MainDiscoForm.resx" DependentUpon="MainDiscoForm.cs" SubType="Designer" />
 	</ItemGroup>
 	<Import Project="$(MSBuildToolsPath)/Microsoft.CSharp.targets" />
-	<Import Project="$(SolutionDir)src/CommonResourceGen.props" Condition=" '$(MSBuildRuntimeType)' == 'Core' " />
+	<Import Project="../CommonResourceGen.props" Condition=" '$(MSBuildRuntimeType)' == 'Core' " />
 </Project>
