@@ -470,14 +470,6 @@ namespace BizHawk.Client.EmuHawk
 				if (!tool.IsDisposed
 					|| (tool is RamWatch && _config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
 				{
-					tool.UpdateValues();
-				}
-			}
-
-			foreach (var tool in _tools)
-			{
-				if (!tool.IsDisposed)
-				{
 					tool.NewUpdate(ToolFormUpdateType.PreFrame);
 				}
 			}
@@ -490,14 +482,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (!tool.IsDisposed
 					|| (tool is RamWatch && _config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
-				{
-					tool.UpdateValues();
-				}
-			}
-
-			foreach (var tool in _tools)
-			{
-				if (!tool.IsDisposed)
 				{
 					tool.NewUpdate(ToolFormUpdateType.PostFrame);
 				}
@@ -516,7 +500,7 @@ namespace BizHawk.Client.EmuHawk
 				if (!tool.IsDisposed ||
 					(tool is RamWatch && _config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
 				{
-					tool.UpdateValues();
+					tool.NewUpdate(ToolFormUpdateType.General);
 				}
 			}
 		}
@@ -583,22 +567,6 @@ namespace BizHawk.Client.EmuHawk
 			return _tools
 				.Select(tool => tool.AskSaveChanges())
 				.All(result => result);
-		}
-
-		/// <summary>
-		/// Calls AskSave() on an instance of T, if it exists, else returns true
-		/// The caller should interpret false as cancel and will back out of the action that invokes this call
-		/// </summary>
-		/// <typeparam name="T">Type of tool</typeparam>
-		public bool AskSave<T>() where T : IToolForm
-		{
-			if (_config.SuppressAskSave) // User has elected to not be nagged
-			{
-				return true;
-			}
-
-			var tool = _tools.FirstOrDefault(t => t is T);
-			return tool != null && tool.AskSaveChanges();
 		}
 
 		/// <summary>
@@ -889,11 +857,7 @@ namespace BizHawk.Client.EmuHawk
 			UpdateValues<RamWatch>();
 			UpdateValues<RamSearch>();
 			UpdateValues<HexEditor>();
-
-			if (Has<Cheats>())
-			{
-				Cheats.UpdateDialog();
-			}
+			UpdateValues<Cheats>();
 
 			_owner.UpdateCheatStatus();
 		}

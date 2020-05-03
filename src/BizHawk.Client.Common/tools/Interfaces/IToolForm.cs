@@ -2,11 +2,10 @@
 {
 	public enum ToolFormUpdateType
 	{
-		// reserved
-		Legacy, LegacyFast,
-
-		// reserved concept: we can run other events through here (should probably rename then)
-		Reset,
+		/// <summary>
+		/// Called by other tools and other events outside of a frame loop
+		/// </summary>
+		General,
 
 		/// <summary>
 		/// Called before a frame emulates
@@ -21,11 +20,6 @@
 
 	public interface IToolForm
 	{
-		/// <summary>
-		/// Will be called by the client anytime an Update needs to occur, such as after an emulated frame, a loadstate, or a related dialog has made a relevant change
-		/// </summary>
-		void UpdateValues();
-
 		/// <summary>
 		/// A new extensible update method
 		/// </summary>
