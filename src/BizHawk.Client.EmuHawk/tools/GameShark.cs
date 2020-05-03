@@ -39,14 +39,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 		}
 
-		public void NewUpdate(ToolFormUpdateType type)
-		{
-		}
-
-		public void UpdateValues()
-		{
-		}
-
 		#endregion
 
 		private void Go_Click(object sender, EventArgs e)

@@ -117,9 +117,9 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewTiles.Refresh();
 		}
 
-		public void NewUpdate(ToolFormUpdateType type) { }
+		public bool UpdateBefore => true;
 
-		public unsafe void UpdateValues()
+		protected override unsafe void UpdateValuesBefore()
 		{
 			if (Emu == null)
 			{
@@ -149,8 +149,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			UpdateValues();
 		}
-
-		public bool UpdateBefore => true;
 
 		private void bmpViewPal_MouseClick(object sender, MouseEventArgs e)
 		{

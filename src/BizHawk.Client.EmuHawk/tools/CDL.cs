@@ -82,10 +82,11 @@ namespace BizHawk.Client.EmuHawk
 			});
 		}
 
-		public void NewUpdate(ToolFormUpdateType type) { }
+		public bool UpdateBefore => false;
 
-		public void UpdateValues()
+		protected override void UpdateValuesAfter()
 		{
+			// NewUpdate TODO: consolidate
 			UpdateDisplay(false);
 		}
 
@@ -235,8 +236,6 @@ namespace BizHawk.Client.EmuHawk
 			ShutdownCDL();
 			return true;
 		}
-
-		public bool UpdateBefore => false;
 
 		private bool _autoloading;
 		public void LoadFile(string path)

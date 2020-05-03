@@ -130,13 +130,6 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		public void NewUpdate(ToolFormUpdateType type) { }
-
-		public void UpdateValues()
-		{
-			// Nothing to do
-		}
-
 		private void FullUpdate()
 		{
 			RegisterPanel.UpdateValues();

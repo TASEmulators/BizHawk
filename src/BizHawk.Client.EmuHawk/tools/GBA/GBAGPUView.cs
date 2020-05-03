@@ -29,8 +29,6 @@ namespace BizHawk.Client.EmuHawk
 
 		// MobileDetailView memory;
 
-		public bool UpdateBefore => true;
-
 		public GbaGpuView()
 		{
 			InitializeComponent();
@@ -712,10 +710,9 @@ namespace BizHawk.Client.EmuHawk
 			UpdateValues();
 		}
 
-		public void NewUpdate(ToolFormUpdateType type) { }
+		public bool UpdateBefore => true;
 
-		/// <summary>belongs in ToolsBefore</summary>
-		public void UpdateValues()
+		protected override void UpdateValuesBefore()
 		{
 			if (!IsHandleCreated || IsDisposed)
 			{

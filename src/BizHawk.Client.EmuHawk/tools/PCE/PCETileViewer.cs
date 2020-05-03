@@ -32,9 +32,9 @@ namespace BizHawk.Client.EmuHawk
 
 		#region IToolForm
 
-		public void NewUpdate(ToolFormUpdateType type) { }
+		public bool UpdateBefore => true;
 
-		public void UpdateValues()
+		protected override void UpdateValuesBefore()
 		{
 			DrawBacks();
 			DrawSprites();
@@ -163,8 +163,6 @@ namespace BizHawk.Client.EmuHawk
 
 			CheckBoxVDC2_CheckedChanged(null, null);
 		}
-
-		public bool UpdateBefore => true;
 
 		#endregion
 

@@ -436,8 +436,9 @@ namespace BizHawk.Client.EmuHawk
 				var marker = Tastudio.CurrentTasMovie.Markers.Get(frame);
 				if (marker != null)
 				{
+					// NewUpdate TODO: test if this refresh works well enough
 					Tastudio.CurrentTasMovie.Markers.Remove(marker);
-					Tastudio.UpdateValues();
+					Tastudio.RefreshDialog();
 				}
 			}
 		}
@@ -455,8 +456,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
+					// NewUpdate TODO: test if this refresh works well enough
 					Tastudio.CurrentTasMovie.Markers.Add(frame, message);
-					Tastudio.UpdateValues();
+					Tastudio.RefreshDialog();
 				}
 			}
 		}

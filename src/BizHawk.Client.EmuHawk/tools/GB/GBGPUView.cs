@@ -54,8 +54,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public bool UpdateBefore => true;
-
 		public GbGpuView()
 		{
 			InitializeComponent();
@@ -536,12 +534,9 @@ namespace BizHawk.Client.EmuHawk
 		// what was last passed to the emu core
 		private int _cbScanlineEmu = -4; // force refresh
 
-		public void NewUpdate(ToolFormUpdateType type) { }
+		public bool UpdateBefore => true;
 
-		/// <summary>
-		/// put me in ToolsBefore
-		/// </summary>
-		public void UpdateValues()
+		protected override void UpdateValuesBefore()
 		{
 			if (!IsHandleCreated || IsDisposed)
 			{

@@ -257,9 +257,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool UpdateBefore => true;
 
-		public void NewUpdate(ToolFormUpdateType type) { }
-
-		public void UpdateValues()
+		protected override void UpdateValuesBefore()
 		{
 			Update(fast: false);
 		}
