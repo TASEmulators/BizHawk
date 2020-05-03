@@ -187,7 +187,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (_tools.IsLoaded<TAStudio>())
 				{
-					_tools.TAStudio.UpdateValues();
+					_tools.UpdateValues<TAStudio>();
 				}
 			}
 

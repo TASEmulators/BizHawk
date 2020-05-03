@@ -18,6 +18,34 @@ namespace BizHawk.Client.EmuHawk
 
 		public virtual bool AskSaveChanges() => true;
 
+		public virtual void UpdateValues(ToolFormUpdateType type)
+		{
+			switch (type)
+			{
+				case ToolFormUpdateType.PreFrame:
+					UpdateBefore();
+					break;
+				case ToolFormUpdateType.PostFrame:
+					UpdateAfter();
+					break;
+				case ToolFormUpdateType.General:
+					GeneralUpdate();
+					break;
+				case ToolFormUpdateType.FastPreFrame:
+					FastUpdateBefore();
+					break;
+				case ToolFormUpdateType.FastPostFrame:
+					FastUpdateAfter();
+					break;
+			}
+		}
+
+		protected virtual void UpdateBefore() { }
+		protected virtual void UpdateAfter() { }
+		protected virtual void GeneralUpdate() { }
+		protected virtual void FastUpdateBefore() { }
+		protected virtual void FastUpdateAfter() { }
+
 		public static FileInfo OpenFileDialog(string currentFile, string path, string fileType, string fileExt)
 		{
 			if (!Directory.Exists(path))

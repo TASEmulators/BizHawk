@@ -10,7 +10,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class CoreFeatureAnalysis : Form, IToolFormAutoConfig
+	public partial class CoreFeatureAnalysis : ToolFormBase, IToolFormAutoConfig
 	{
 		#region ConfigPersist
 
@@ -117,8 +117,6 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			KnownCores = new Dictionary<string, CoreInfo>();
 		}
-
-		public void NewUpdate(ToolFormUpdateType type) { }
 
 		private TreeNode CreateCoreTree(CoreInfo ci)
 		{
@@ -255,16 +253,6 @@ namespace BizHawk.Client.EmuHawk
 			CoreTree.EndUpdate();
 		}
 
-		#region IToolForm
-
-		public void UpdateValues()
-		{
-		}
-
-		public void FastUpdate()
-		{
-		}
-
 		public void Restart()
 		{
 			var ci = new CoreInfo(Emulator);
@@ -273,11 +261,5 @@ namespace BizHawk.Client.EmuHawk
 			DoCurrentCoreTree(ci);
 			DoAllCoresTree(ci);
 		}
-
-		public bool AskSaveChanges() => true;
-
-		public bool UpdateBefore => false;
-
-		#endregion
 	}
 }

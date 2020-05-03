@@ -437,7 +437,7 @@ namespace BizHawk.Client.EmuHawk
 				if (marker != null)
 				{
 					Tastudio.CurrentTasMovie.Markers.Remove(marker);
-					Tastudio.UpdateValues();
+					Tastudio.RefreshDialog();
 				}
 			}
 		}
@@ -456,7 +456,7 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					Tastudio.CurrentTasMovie.Markers.Add(frame, message);
-					Tastudio.UpdateValues();
+					Tastudio.RefreshDialog();
 				}
 			}
 		}

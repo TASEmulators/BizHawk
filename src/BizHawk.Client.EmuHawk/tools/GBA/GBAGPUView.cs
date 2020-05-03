@@ -29,8 +29,6 @@ namespace BizHawk.Client.EmuHawk
 
 		// MobileDetailView memory;
 
-		public bool UpdateBefore => true;
-
 		public GbaGpuView()
 		{
 			InitializeComponent();
@@ -699,7 +697,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-
 		public void Restart()
 		{
 			var mem = GBA.GetMemoryAreas();
@@ -709,13 +706,10 @@ namespace BizHawk.Client.EmuHawk
 			_mmio = mem.mmio;
 
 			_cbScanlineEmu = 500; // force an update
-			UpdateValues();
+			GeneralUpdate();
 		}
 
-		public void NewUpdate(ToolFormUpdateType type) { }
-
-		/// <summary>belongs in ToolsBefore</summary>
-		public void UpdateValues()
+		protected override void UpdateBefore()
 		{
 			if (!IsHandleCreated || IsDisposed)
 			{
@@ -734,11 +728,6 @@ namespace BizHawk.Client.EmuHawk
 					GBA.SetScanlineCallback(DrawEverything, _cbScanline.Value);
 				}
 			}
-		}
-
-		public void FastUpdate()
-		{
-			// Do nothing
 		}
 
 		private void ShowSelectedWidget()

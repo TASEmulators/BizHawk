@@ -22,13 +22,14 @@ namespace BizHawk.Client.EmuHawk
 		private bool _hackyDontUpdate;
 		private bool _initializing; // If true, will bypass restart logic, this is necessary since loading projects causes a movie to load which causes a rom to reload causing dialogs to restart
 
-		public bool UpdateBefore => false;
-
-		public void NewUpdate(ToolFormUpdateType type) { }
-
 		private int _lastRefresh;
 
-		public void UpdateValues()
+		protected override void GeneralUpdate()
+		{
+			RefreshDialog();
+		}
+
+		protected override void UpdateAfter()
 		{
 			if (!IsHandleCreated || IsDisposed || CurrentTasMovie == null)
 			{
@@ -60,11 +61,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			RefreshDialog(refreshNeeded, refreshBranches: false);
-		}
-
-		public void FastUpdate()
-		{
-			// Do nothing
 		}
 
 		public void Restart()

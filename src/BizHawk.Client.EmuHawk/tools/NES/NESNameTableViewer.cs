@@ -37,28 +37,15 @@ namespace BizHawk.Client.EmuHawk
 			Generate(true);
 		}
 
-		#region Public API
-
-		public bool UpdateBefore => true;
-
 		public void Restart()
 		{
 			Generate(true);
 		}
 
-		public void NewUpdate(ToolFormUpdateType type) { }
-
-		public void UpdateValues()
+		protected override void UpdateBefore()
 		{
 			_ppu.InstallCallback1(() => Generate(), _scanline);
 		}
-
-		public void FastUpdate()
-		{
-			// Do nothing
-		}
-
-		#endregion
 
 		private unsafe void DrawTile(int* dst, int pitch, byte* pal, byte* tile, int* finalPal)
 		{
@@ -213,7 +200,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RefreshImageContextMenuItem_Click(object sender, EventArgs e)
 		{
-			UpdateValues();
+			GeneralUpdate();
 			NameTableView.Refresh();
 		}
 

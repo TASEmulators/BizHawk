@@ -253,26 +253,13 @@ namespace BizHawk.Client.EmuHawk
 		
 		#endregion
 
-		#region IToolForm Implementation
-
-		public bool UpdateBefore => true;
-
-		public void NewUpdate(ToolFormUpdateType type) { }
-
-		public void UpdateValues()
-		{
-			Update(fast: false);
-		}
-
-		public void FastUpdate()
-		{
-			Update(fast: true);
-		}
+		protected override void UpdateBefore() => Update(fast: false);
+		protected override void FastUpdateBefore() => Update(fast: true);
 
 		public void Restart()
 		{
-			if (_currentDomain == null ||
-				MemoryDomains.Contains(_currentDomain))
+			if (_currentDomain == null
+				|| MemoryDomains.Contains(_currentDomain))
 			{
 				_currentDomain = MemoryDomains.MainMemory;
 				_bigEndian = _currentDomain.EndianType == MemoryDomain.Endian.Big;
@@ -295,8 +282,6 @@ namespace BizHawk.Client.EmuHawk
 				SetupControlsAndProperties();
 			}
 		}
-
-		#endregion
 
 		#region Control Events
 

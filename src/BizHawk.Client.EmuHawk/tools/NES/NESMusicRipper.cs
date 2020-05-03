@@ -26,21 +26,8 @@ namespace BizHawk.Client.EmuHawk
 			SyncContents();
 		}
 
-		public bool UpdateBefore => true;
-
 		public void Restart()
 		{
-		}
-
-		public void NewUpdate(ToolFormUpdateType type) { }
-
-		public void UpdateValues()
-		{
-		}
-
-		public void FastUpdate()
-		{
-			// Do nothing
 		}
 
 		private bool _isRunning;

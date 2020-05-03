@@ -40,8 +40,6 @@ namespace BizHawk.Client.EmuHawk
 	{
 		readonly List<DisplayTypeItem> displayTypeItems = new List<DisplayTypeItem>();
 
-		public bool UpdateBefore => false;
-
 		[RequiredService]
 		private LibsnesCore Emulator { get; set; }
 
@@ -130,9 +128,7 @@ namespace BizHawk.Client.EmuHawk
 				: $"@{address:X4} ({address / 1024}K)";
 		}
 
-		public void NewUpdate(ToolFormUpdateType type) { }
-
-		public void UpdateValues()
+		protected override void UpdateAfter()
 		{
 			SyncCore();
 			if (Visible && !checkScanlineControl.Checked)
@@ -140,11 +136,6 @@ namespace BizHawk.Client.EmuHawk
 				RegenerateData();
 				InternalUpdateValues();
 			}
-		}
-
-		public void FastUpdate()
-		{
-			// To do
 		}
 
 		public void UpdateToolsLoadstate()

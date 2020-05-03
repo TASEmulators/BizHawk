@@ -93,8 +93,6 @@ namespace BizHawk.Client.EmuHawk
 			});
 		}
 
-		public bool UpdateBefore => false;
-
 		private void SaveConfigSettings()
 		{
 			//Tracer.Enabled = LoggingEnabled.Checked;
@@ -133,9 +131,7 @@ namespace BizHawk.Client.EmuHawk
 			public Action<TraceInfo> Putter { get; set; }
 		}
 
-		public void UpdateValues() { }
-
-		public void NewUpdate(ToolFormUpdateType type)
+		public override void UpdateValues(ToolFormUpdateType type)
 		{
 			if (type == ToolFormUpdateType.PostFrame)
 			{
@@ -190,10 +186,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else Tracer.Sink = null;
 			}
-		}
-
-		public void FastUpdate()
-		{
 		}
 
 		public void Restart()

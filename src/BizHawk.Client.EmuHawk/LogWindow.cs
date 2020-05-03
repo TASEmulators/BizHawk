@@ -34,15 +34,7 @@ namespace BizHawk.Client.EmuHawk
 			Attach();
 		}
 
-		public void UpdateValues() { } // TODO
-
-		public void NewUpdate(ToolFormUpdateType type) { }
-
-		public void FastUpdate() { }
-
 		public void Restart() { }
-
-		public bool UpdateBefore => true;
 
 		private void Attach()
 		{

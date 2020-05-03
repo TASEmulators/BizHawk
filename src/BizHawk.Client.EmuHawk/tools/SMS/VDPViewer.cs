@@ -135,9 +135,7 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewPalette.Refresh();
 		}
 
-		public void NewUpdate(ToolFormUpdateType type) { }
-
-		public void UpdateValues()
+		protected override void UpdateBefore()
 		{
 			unsafe
 			{
@@ -150,17 +148,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void FastUpdate()
-		{
-			// Do nothing
-		}
-
 		public void Restart()
 		{
-			UpdateValues();
+			GeneralUpdate();
 		}
-
-		public bool UpdateBefore => true;
 
 		private void bmpViewPalette_MouseClick(object sender, MouseEventArgs e)
 		{

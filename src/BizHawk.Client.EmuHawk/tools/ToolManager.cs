@@ -464,42 +464,24 @@ namespace BizHawk.Client.EmuHawk
 		
 		private void UpdateBefore()
 		{
-			var beforeList = _tools.Where(t => t.UpdateBefore);
-			foreach (var tool in beforeList)
+			foreach (var tool in _tools)
 			{
 				if (!tool.IsDisposed
 					|| (tool is RamWatch && _config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
 				{
-					tool.UpdateValues();
-				}
-			}
-
-			foreach (var tool in _tools)
-			{
-				if (!tool.IsDisposed)
-				{
-					tool.NewUpdate(ToolFormUpdateType.PreFrame);
+					tool.UpdateValues(ToolFormUpdateType.PreFrame);
 				}
 			}
 		}
 
 		private void UpdateAfter()
 		{
-			var afterList = _tools.Where(t => !t.UpdateBefore);
-			foreach (var tool in afterList)
+			foreach (var tool in _tools)
 			{
 				if (!tool.IsDisposed
 					|| (tool is RamWatch && _config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
 				{
-					tool.UpdateValues();
-				}
-			}
-
-			foreach (var tool in _tools)
-			{
-				if (!tool.IsDisposed)
-				{
-					tool.NewUpdate(ToolFormUpdateType.PostFrame);
+					tool.UpdateValues(ToolFormUpdateType.PostFrame);
 				}
 			}
 		}
@@ -516,7 +498,7 @@ namespace BizHawk.Client.EmuHawk
 				if (!tool.IsDisposed ||
 					(tool is RamWatch && _config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
 				{
-					tool.UpdateValues();
+					tool.UpdateValues(ToolFormUpdateType.General);
 				}
 			}
 		}
@@ -583,22 +565,6 @@ namespace BizHawk.Client.EmuHawk
 			return _tools
 				.Select(tool => tool.AskSaveChanges())
 				.All(result => result);
-		}
-
-		/// <summary>
-		/// Calls AskSave() on an instance of T, if it exists, else returns true
-		/// The caller should interpret false as cancel and will back out of the action that invokes this call
-		/// </summary>
-		/// <typeparam name="T">Type of tool</typeparam>
-		public bool AskSave<T>() where T : IToolForm
-		{
-			if (_config.SuppressAskSave) // User has elected to not be nagged
-			{
-				return true;
-			}
-
-			var tool = _tools.FirstOrDefault(t => t is T);
-			return tool != null && tool.AskSaveChanges();
 		}
 
 		/// <summary>
@@ -732,13 +698,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void FastUpdateBefore()
 		{
-			var beforeList = _tools.Where(t => t.UpdateBefore);
-			foreach (var tool in beforeList)
+			foreach (var tool in _tools)
 			{
 				if (!tool.IsDisposed
 					|| (tool is RamWatch && _config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
 				{
-					tool.FastUpdate();
+					tool.UpdateValues(ToolFormUpdateType.FastPreFrame);
 				}
 			}
 		}
@@ -750,13 +715,12 @@ namespace BizHawk.Client.EmuHawk
 				LuaConsole.ResumeScripts(true);
 			}
 
-			var afterList = _tools.Where(t => !t.UpdateBefore);
-			foreach (var tool in afterList)
+			foreach (var tool in _tools)
 			{
 				if (!tool.IsDisposed
 					|| (tool is RamWatch && _config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
 				{
-					tool.FastUpdate();
+					tool.UpdateValues(ToolFormUpdateType.FastPostFrame);
 				}
 			}
 
@@ -816,8 +780,6 @@ namespace BizHawk.Client.EmuHawk
 		public RamWatch RamWatch => GetTool<RamWatch>();
 
 		public RamSearch RamSearch => GetTool<RamSearch>();
-
-		public Cheats Cheats => GetTool<Cheats>();
 
 		public HexEditor HexEditor => GetTool<HexEditor>();
 
@@ -889,11 +851,7 @@ namespace BizHawk.Client.EmuHawk
 			UpdateValues<RamWatch>();
 			UpdateValues<RamSearch>();
 			UpdateValues<HexEditor>();
-
-			if (Has<Cheats>())
-			{
-				Cheats.UpdateDialog();
-			}
+			UpdateValues<Cheats>();
 
 			_owner.UpdateCheatStatus();
 		}

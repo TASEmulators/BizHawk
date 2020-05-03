@@ -38,9 +38,7 @@ namespace BizHawk.Client.EmuHawk
 			base.OnShown(e);
 		}
 
-		public void NewUpdate(ToolFormUpdateType type) { }
-
-		public void UpdateValues()
+		protected override void UpdateAfter()
 		{
 			foreach (var entry in _psgEntries)
 			{
@@ -147,11 +145,6 @@ namespace BizHawk.Client.EmuHawk
 			lvChannels.EndUpdate();
 		}
 
-		public void FastUpdate()
-		{
-			// Todo
-		}
-
 		private class PsgEntry
 		{
 			public int Index { get; set; }
@@ -169,8 +162,6 @@ namespace BizHawk.Client.EmuHawk
 		public void Restart()
 		{
 		}
-
-		public bool UpdateBefore => false;
 
 		// 32*16 samples, 16bit, mono, 8khz (but we'll change the sample rate)
 		private static readonly byte[] EmptyWav = {

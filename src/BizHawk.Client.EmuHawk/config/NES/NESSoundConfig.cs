@@ -7,26 +7,13 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class NESSoundConfig : Form, IToolForm
+	public partial class NESSoundConfig : ToolFormBase, IToolForm
 	{
 		[RequiredService]
 		private NES NES { get; set; }
 
 		private NES.NESSettings _oldSettings;
 		private NES.NESSettings _settings;
-
-		public bool AskSaveChanges() { return true; }
-		public bool UpdateBefore => false;
-
-		public void UpdateValues()
-		{
-		}
-
-		public void NewUpdate(ToolFormUpdateType type) { }
-
-		public void FastUpdate()
-		{
-		}
 
 		public void Restart()
 		{

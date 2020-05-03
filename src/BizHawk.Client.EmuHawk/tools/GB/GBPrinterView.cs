@@ -52,16 +52,6 @@ namespace BizHawk.Client.EmuHawk
 			Gb?.SetPrinterCallback(null);
 		}
 
-		public bool UpdateBefore => false;
-
-		public void FastUpdate()
-		{
-		}
-
-		public void NewUpdate(ToolFormUpdateType type)
-		{
-		}
-
 		public void Restart()
 		{
 			// Really, there's not necessarily a reason to clear it at all,
@@ -71,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 			_connected = false;
 		}
 
-		public void UpdateValues()
+		protected override void UpdateAfter()
 		{
 			// Automatically connect once the game is running
 			if (!_connected)

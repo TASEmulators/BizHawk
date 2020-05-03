@@ -130,13 +130,6 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		public void NewUpdate(ToolFormUpdateType type) { }
-
-		public void UpdateValues()
-		{
-			// Nothing to do
-		}
-
 		private void FullUpdate()
 		{
 			RegisterPanel.UpdateValues();
@@ -145,17 +138,10 @@ namespace BizHawk.Client.EmuHawk
 			BreakPointControl1.UpdateValues();
 		}
 
-		public void FastUpdate()
-		{
-			// Nothing to do
-		}
-
 		public void Restart()
 		{
 			DisengageDebugger();
 			EngageDebugger();
 		}
-
-		public bool UpdateBefore => false;
 	}
 }

@@ -117,9 +117,7 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewTiles.Refresh();
 		}
 
-		public void NewUpdate(ToolFormUpdateType type) { }
-
-		public unsafe void UpdateValues()
+		protected override unsafe void UpdateBefore()
 		{
 			if (Emu == null)
 			{
@@ -140,24 +138,17 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void FastUpdate()
-		{
-			// Do nothing
-		}
-
 		public void Restart()
 		{
-			UpdateValues();
+			GeneralUpdate();
 		}
-
-		public bool UpdateBefore => true;
 
 		private void bmpViewPal_MouseClick(object sender, MouseEventArgs e)
 		{
 			int idx = e.Y / 16;
 			idx = Math.Min(3, Math.Max(idx, 0));
 			_palIndex = idx;
-			UpdateValues();
+			GeneralUpdate();
 		}
 
 		private void VDPViewer_KeyDown(object sender, KeyEventArgs e)

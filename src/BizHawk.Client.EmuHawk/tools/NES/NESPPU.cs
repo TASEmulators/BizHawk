@@ -57,19 +57,9 @@ namespace BizHawk.Client.EmuHawk
 			ChrRomViewReload();
 		}
 
-		#region Public API
-
-		public bool UpdateBefore => true;
-
-		public void NewUpdate(ToolFormUpdateType type) { }
-		public void UpdateValues()
+		protected override void UpdateBefore()
 		{
 			_ppu.InstallCallback2(() => Generate(), _scanline);
-		}
-
-		public void FastUpdate()
-		{
-			// Do nothing
 		}
 
 		public void Restart()
@@ -77,8 +67,6 @@ namespace BizHawk.Client.EmuHawk
 			Generate(true);
 			ChrRomViewReload();
 		}
-
-		#endregion
 
 		private byte GetBit(byte[] ppuBus, int address, int bit)
 		{

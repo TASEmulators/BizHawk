@@ -30,11 +30,7 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewSPPal.ChangeBitmapSize(256, 256);
 		}
 
-		#region IToolForm
-
-		public void NewUpdate(ToolFormUpdateType type) { }
-
-		public void UpdateValues()
+		protected override void UpdateBefore()
 		{
 			DrawBacks();
 			DrawSprites();
@@ -43,11 +39,6 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewBGPal.Refresh();
 			bmpViewSP.Refresh();
 			bmpViewSPPal.Refresh();
-		}
-
-		public void FastUpdate()
-		{
-			// Do nothing
 		}
 
 		static unsafe void Draw16x16(byte* src, int* dest, int pitch, int* pal)
@@ -164,14 +155,10 @@ namespace BizHawk.Client.EmuHawk
 			CheckBoxVDC2_CheckedChanged(null, null);
 		}
 
-		public bool UpdateBefore => true;
-
-		#endregion
-
 		private void CheckBoxVDC2_CheckedChanged(object sender, EventArgs e)
 		{
 			_vdc = checkBoxVDC2.Checked ? Emu.VDC2 : Emu.VDC1;
-			UpdateValues();
+			GeneralUpdate();
 		}
 
 		private void BmpViewBGPal_MouseClick(object sender, MouseEventArgs e)

@@ -127,10 +127,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		#region IToolForm Implementation
-
-		public bool UpdateBefore => false;
-
 		public void Restart()
 		{
 			if (!IsHandleCreated || IsDisposed)
@@ -141,9 +137,7 @@ namespace BizHawk.Client.EmuHawk
 			CreatePads();
 		}
 
-		public void NewUpdate(ToolFormUpdateType type) { }
-
-		public void UpdateValues()
+		protected override void UpdateAfter()
 		{
 			if (!IsHandleCreated || IsDisposed)
 			{
@@ -178,7 +172,7 @@ namespace BizHawk.Client.EmuHawk
 			Pads.ForEach(pad => pad.UpdateValues());
 		}
 
-		public void FastUpdate()
+		protected override void FastUpdateAfter()
 		{
 			// TODO: SetPrevious logic should go here too or that will get out of whack
 
@@ -187,8 +181,6 @@ namespace BizHawk.Client.EmuHawk
 				Pads.ForEach(pad => pad.Clear());
 			}
 		}
-
-		#endregion
 
 		#region Menu
 
