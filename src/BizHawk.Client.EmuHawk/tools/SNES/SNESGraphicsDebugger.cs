@@ -41,7 +41,6 @@ namespace BizHawk.Client.EmuHawk
 		readonly List<DisplayTypeItem> displayTypeItems = new List<DisplayTypeItem>();
 
 		public bool UpdateBefore => false;
-		public bool AskSaveChanges() => true;
 
 		[RequiredService]
 		private LibsnesCore Emulator { get; set; }

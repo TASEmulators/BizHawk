@@ -42,7 +42,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart() { }
 
-		public bool AskSaveChanges() => true;
 		public bool UpdateBefore => true;
 
 		private void Attach()

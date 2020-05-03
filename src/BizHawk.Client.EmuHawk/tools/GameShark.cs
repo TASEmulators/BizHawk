@@ -30,7 +30,6 @@ namespace BizHawk.Client.EmuHawk
 		#region IToolForm
 
 		public bool UpdateBefore => true;
-		public bool AskSaveChanges() => true;
 
 		public void FastUpdate()
 		{

@@ -644,7 +644,7 @@ namespace BizHawk.Client.EmuHawk
 			AddFileWatches();
 		}
 
-		public bool AskSaveChanges()
+		public override bool AskSaveChanges()
 		{
 			if (LuaImp.ScriptList.Changes && !string.IsNullOrEmpty(LuaImp.ScriptList.Filename))
 			{

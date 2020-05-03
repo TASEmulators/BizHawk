@@ -35,7 +35,6 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Public API
 
-		public bool AskSaveChanges() => true;
 		public bool UpdateBefore => false;
 
 		public void NewUpdate(ToolFormUpdateType type) { }

@@ -170,10 +170,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 		}
 
-		public bool AskSaveChanges() => true;
-
 		public bool UpdateBefore => false;
-
 
 		// 32*16 samples, 16bit, mono, 8khz (but we'll change the sample rate)
 		private static readonly byte[] EmptyWav = {

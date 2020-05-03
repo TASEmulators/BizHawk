@@ -164,8 +164,6 @@ namespace BizHawk.Client.EmuHawk
 			CheckBoxVDC2_CheckedChanged(null, null);
 		}
 
-		public bool AskSaveChanges() => true;
-
 		public bool UpdateBefore => true;
 
 		#endregion

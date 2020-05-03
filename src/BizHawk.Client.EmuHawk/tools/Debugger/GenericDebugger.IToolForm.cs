@@ -156,8 +156,6 @@ namespace BizHawk.Client.EmuHawk
 			EngageDebugger();
 		}
 
-		public bool AskSaveChanges() => true;
-
 		public bool UpdateBefore => false;
 	}
 }

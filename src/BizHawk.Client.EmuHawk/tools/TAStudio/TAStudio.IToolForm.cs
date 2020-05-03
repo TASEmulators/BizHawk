@@ -96,7 +96,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public bool AskSaveChanges()
+		public override bool AskSaveChanges()
 		{
 			if (_suppressAskSave)
 			{

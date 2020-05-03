@@ -112,7 +112,7 @@ namespace BizHawk.Client.EmuHawk
 			Changes();
 		}
 
-		public bool AskSaveChanges()
+		public override bool AskSaveChanges()
 		{
 			if (_watches.Changes)
 			{

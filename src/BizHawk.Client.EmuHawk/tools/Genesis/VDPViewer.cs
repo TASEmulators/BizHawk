@@ -150,8 +150,6 @@ namespace BizHawk.Client.EmuHawk
 			UpdateValues();
 		}
 
-		public bool AskSaveChanges() => true;
-
 		public bool UpdateBefore => true;
 
 		private void bmpViewPal_MouseClick(object sender, MouseEventArgs e)

@@ -194,7 +194,7 @@ namespace BizHawk.Client.EmuHawk
 			lvCDL.RowCount = _cdl.Count;
 		}
 
-		public bool AskSaveChanges()
+		public override bool AskSaveChanges()
 		{
 			// nothing to fear:
 			if (_cdl == null)

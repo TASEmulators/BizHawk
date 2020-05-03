@@ -71,8 +71,6 @@ namespace BizHawk.Client.EmuHawk
 		[ConfigPersist]
 		public RamSearchSettings Settings { get; set; }
 
-		public bool AskSaveChanges() => true;
-
 		public bool UpdateBefore => false;
 
 		private void HardSetDisplayTypeDropDown(Common.DisplayType type)

@@ -95,8 +95,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool UpdateBefore => false;
 
-		public bool AskSaveChanges() => true;
-
 		private void SaveConfigSettings()
 		{
 			//Tracer.Enabled = LoggingEnabled.Checked;

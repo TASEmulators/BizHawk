@@ -296,8 +296,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public bool AskSaveChanges() => true;
-
 		#endregion
 
 		#region Control Events

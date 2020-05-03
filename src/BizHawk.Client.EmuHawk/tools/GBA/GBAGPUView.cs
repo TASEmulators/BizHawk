@@ -29,7 +29,6 @@ namespace BizHawk.Client.EmuHawk
 
 		// MobileDetailView memory;
 
-		public bool AskSaveChanges() => true;
 		public bool UpdateBefore => true;
 
 		public GbaGpuView()

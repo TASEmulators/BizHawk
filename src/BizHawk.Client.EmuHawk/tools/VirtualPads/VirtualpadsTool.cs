@@ -129,7 +129,6 @@ namespace BizHawk.Client.EmuHawk
 
 		#region IToolForm Implementation
 
-		public bool AskSaveChanges() => true;
 		public bool UpdateBefore => false;
 
 		public void Restart()

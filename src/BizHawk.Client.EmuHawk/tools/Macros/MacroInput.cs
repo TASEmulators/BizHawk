@@ -102,7 +102,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool UpdateBefore => true;
 
-		public bool AskSaveChanges()
+		public override bool AskSaveChanges()
 		{
 			if (_unsavedZones.Count == 0 || IsDisposed)
 			{

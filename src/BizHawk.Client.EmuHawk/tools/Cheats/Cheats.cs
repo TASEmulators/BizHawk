@@ -110,11 +110,6 @@ namespace BizHawk.Client.EmuHawk
 					: Path.GetFileName(Global.CheatList.CurrentFileName);
 		}
 
-		public bool AskSaveChanges()
-		{
-			return true;
-		}
-
 		private void LoadFile(FileSystemInfo file, bool append)
 		{
 			if (file != null)

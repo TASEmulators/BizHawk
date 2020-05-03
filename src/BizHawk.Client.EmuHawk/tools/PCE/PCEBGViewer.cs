@@ -32,7 +32,6 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Public API
 
-		public bool AskSaveChanges() => true;
 		public bool UpdateBefore => true;
 
 		public unsafe void Generate()
