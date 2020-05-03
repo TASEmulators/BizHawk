@@ -2,34 +2,34 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28729.10
 MinimumVisualStudioVersion = 16.0.28729.10
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Version", "Version\Version.csproj", "{0CE8B337-08E3-4602-BF10-C4D4C75D2F13}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Version", "src\Version\Version.csproj", "{0CE8B337-08E3-4602-BF10-C4D4C75D2F13}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Client.Common", "BizHawk.Client.Common\BizHawk.Client.Common.csproj", "{24A0AA3C-B25F-4197-B23D-476D6462DBA0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Client.Common", "src\BizHawk.Client.Common\BizHawk.Client.Common.csproj", "{24A0AA3C-B25F-4197-B23D-476D6462DBA0}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0CE8B337-08E3-4602-BF10-C4D4C75D2F13} = {0CE8B337-08E3-4602-BF10-C4D4C75D2F13}
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Common", "BizHawk.Common\BizHawk.Common.csproj", "{866F8D13-0678-4FF9-80A4-A3993FD4D8A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Common", "src\BizHawk.Common\BizHawk.Common.csproj", "{866F8D13-0678-4FF9-80A4-A3993FD4D8A3}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0CE8B337-08E3-4602-BF10-C4D4C75D2F13} = {0CE8B337-08E3-4602-BF10-C4D4C75D2F13}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Client.EmuHawk", "BizHawk.Client.EmuHawk\BizHawk.Client.EmuHawk.csproj", "{DD448B37-BA3F-4544-9754-5406E8094723}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Client.EmuHawk", "src\BizHawk.Client.EmuHawk\BizHawk.Client.EmuHawk.csproj", "{DD448B37-BA3F-4544-9754-5406E8094723}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0CE8B337-08E3-4602-BF10-C4D4C75D2F13} = {0CE8B337-08E3-4602-BF10-C4D4C75D2F13}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Client.DiscoHawk", "BizHawk.Client.DiscoHawk\BizHawk.Client.DiscoHawk.csproj", "{C4366030-6D03-424B-AE53-F4F43BB217C3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Client.DiscoHawk", "src\BizHawk.Client.DiscoHawk\BizHawk.Client.DiscoHawk.csproj", "{C4366030-6D03-424B-AE53-F4F43BB217C3}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0CE8B337-08E3-4602-BF10-C4D4C75D2F13} = {0CE8B337-08E3-4602-BF10-C4D4C75D2F13}
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Emulation.DiscSystem", "BizHawk.Emulation.DiscSystem\BizHawk.Emulation.DiscSystem.csproj", "{F51946EA-827F-4D82-B841-1F2F6D060312}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Emulation.DiscSystem", "src\BizHawk.Emulation.DiscSystem\BizHawk.Emulation.DiscSystem.csproj", "{F51946EA-827F-4D82-B841-1F2F6D060312}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0CE8B337-08E3-4602-BF10-C4D4C75D2F13} = {0CE8B337-08E3-4602-BF10-C4D4C75D2F13}
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Emulation.Common", "BizHawk.Emulation.Common\BizHawk.Emulation.Common.csproj", "{E1A23168-B571-411C-B360-2229E7225E0E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Emulation.Common", "src\BizHawk.Emulation.Common\BizHawk.Emulation.Common.csproj", "{E1A23168-B571-411C-B360-2229E7225E0E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0CE8B337-08E3-4602-BF10-C4D4C75D2F13} = {0CE8B337-08E3-4602-BF10-C4D4C75D2F13}
 	EndProjectSection
@@ -38,16 +38,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client", "Client", "{B51F11
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Emulation", "Emulation", "{3627C08B-3E43-4224-9DA4-40BD69495FBC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Emulation.Cores", "BizHawk.Emulation.Cores\BizHawk.Emulation.Cores.csproj", "{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Emulation.Cores", "src\BizHawk.Emulation.Cores\BizHawk.Emulation.Cores.csproj", "{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0CE8B337-08E3-4602-BF10-C4D4C75D2F13} = {0CE8B337-08E3-4602-BF10-C4D4C75D2F13}
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Bizware.BizwareGL", "BizHawk.Bizware.BizwareGL\BizHawk.Bizware.BizwareGL.csproj", "{9F84A0B2-861E-4EF4-B89B-5E2A3F38A465}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Bizware.BizwareGL", "src\BizHawk.Bizware.BizwareGL\BizHawk.Bizware.BizwareGL.csproj", "{9F84A0B2-861E-4EF4-B89B-5E2A3F38A465}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.BizInvoke", "BizHawk.BizInvoke\BizHawk.BizInvoke.csproj", "{E5D76DC1-84A8-47AF-BE25-E76F06D2FBBC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.BizInvoke", "src\BizHawk.BizInvoke\BizHawk.BizInvoke.csproj", "{E5D76DC1-84A8-47AF-BE25-E76F06D2FBBC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.WinForms.Controls", "BizHawk.WinForms.Controls\BizHawk.WinForms.Controls.csproj", "{B5A2214B-3CB0-48C4-8DB1-98B38D48AC4A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.WinForms.Controls", "src\BizHawk.WinForms.Controls\BizHawk.WinForms.Controls.csproj", "{B5A2214B-3CB0-48C4-8DB1-98B38D48AC4A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

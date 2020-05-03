@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<Import Project="$(SolutionDir)MainSlnCommon.props" />
+	<Import Project="$(SolutionDir)src/MainSlnCommon.props" />
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<TargetFrameworks>netstandard2.0;netcoreapp3.1</TargetFrameworks>
 	</PropertyGroup>
 	<ItemGroup>
-		<ProjectReference Include="$(SolutionDir)BizHawk.Common/BizHawk.Common.csproj" />
-		<Compile Include="$(SolutionDir)Version/svnrev.cs" />
-		<Compile Include="$(SolutionDir)Version/VersionInfo.cs" />
+		<ProjectReference Include="$(SolutionDir)src/BizHawk.Common/BizHawk.Common.csproj" />
+		<Compile Include="$(SolutionDir)src/Version/svnrev.cs" />
+		<Compile Include="$(SolutionDir)src/Version/VersionInfo.cs" />
 	</ItemGroup>
 </Project>

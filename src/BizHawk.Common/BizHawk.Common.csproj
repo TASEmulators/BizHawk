@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<Import Project="$(SolutionDir)MainSlnCommon.props" />
+	<Import Project="$(SolutionDir)src/MainSlnCommon.props" />
 	<Import Project="$(SolutionDir)CommonNullable.props" />
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -12,7 +12,7 @@
 			Condition=" '$(MachineRunAnalyzersDuringBuild)' != '' " />
 		<PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.164"
 			Condition=" '$(MachineRunAnalyzersDuringBuild)' != '' " />
-		<Compile Include="$(SolutionDir)Version/svnrev.cs" />
-		<Compile Include="$(SolutionDir)Version/VersionInfo.cs" />
+		<Compile Include="$(SolutionDir)src/Version/svnrev.cs" />
+		<Compile Include="$(SolutionDir)src/Version/VersionInfo.cs" />
 	</ItemGroup>
 </Project>

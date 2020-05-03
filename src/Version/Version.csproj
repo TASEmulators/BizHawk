@@ -18,7 +18,7 @@
 		<Exec Command="&quot;$(MSBuildProjectDirectory)\subwcrev.bat&quot; $(MSBuildProjectDirectory)" Condition=" '$(OS)' == 'Windows_NT' " WorkingDirectory="$(MSBuildProjectDirectory)" />
 	</Target>
 	<Target Name="PreBuild" AfterTargets="PreBuildEvent">
-		<Exec Command='"$(ProjectDir)..\Build\BizHawk.Build.Tool.exe" GIT_REV --wc "$(ProjectDir).." --template "$(ProjectDir)svnrev_template" --out "$(ProjectDir)svnrev.cs"' Condition=" '$(OS)' == 'Windows_NT' " />
-		<Exec Command='"$(ProjectDir)../Build/standin.sh"' Condition=" '$(OS)' != 'Windows_NT' " />
+		<Exec Command='"$(ProjectDir)..\..\Build\BizHawk.Build.Tool.exe" GIT_REV --wc "$(ProjectDir).." --template "$(ProjectDir)svnrev_template" --out "$(ProjectDir)svnrev.cs"' Condition=" '$(OS)' == 'Windows_NT' " />
+		<Exec Command='"$(ProjectDir)../../Build/standin.sh"' Condition=" '$(OS)' != 'Windows_NT' " />
 	</Target>
 </Project>
