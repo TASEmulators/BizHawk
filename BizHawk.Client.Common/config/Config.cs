@@ -81,9 +81,9 @@ namespace BizHawk.Client.Common
 		public bool ShowContextMenu { get; set; } = true;
 		public bool EnableBackupMovies { get; set; } = true;
 		public bool MoviesOnDisk { get; set; }
-		public bool MoviesInAwe { get; set; }
 		public bool HotkeyConfigAutoTab { get; set; } = true;
 		public bool InputConfigAutoTab { get; set; } = true;
+		public bool SkipWaterboxIntegrityChecks { get; set; } = false;
 		public bool BackupSavestates { get; set; } = true;
 		public bool SaveScreenshotWithStates { get; set; } = true;
 		public int BigScreenshotSize { get; set; } = 128 * 1024;
