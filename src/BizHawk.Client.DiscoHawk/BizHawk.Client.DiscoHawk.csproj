@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<ApplicationIcon>discohawk.ico</ApplicationIcon>
 		<DefineConstants>$(DefineConstants);WINDOWS</DefineConstants>
-		<OutputPath>$(ProjectDir)bin</OutputPath>
+		<OutputPath>$(ProjectDir)../../output</OutputPath>
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net48</TargetFramework>
 	</PropertyGroup>
@@ -82,8 +82,4 @@
 		<EmbeddedResource Update="MainDiscoForm.resx" DependentUpon="MainDiscoForm.cs" SubType="Designer" />
 -->
 	</ItemGroup>
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command='"$(ProjectDir)..\..\Build\copy_discohawk_to_output.bat"' Condition=" '$(OS)' == 'Windows_NT' " />
-		<Exec Command='"$(ProjectDir)../../Build/copy_discohawk_to_output.sh"' Condition=" '$(OS)' != 'Windows_NT' " />
-	</Target>
 </Project>
