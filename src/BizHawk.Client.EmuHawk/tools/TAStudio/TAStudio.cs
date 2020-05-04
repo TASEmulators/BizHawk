@@ -1000,9 +1000,7 @@ namespace BizHawk.Client.EmuHawk
 				// why not use this? because I'm not letting the form freely run. it all has to be under this loop.
 				// i could use this and then poll StepRunLoop_Core() repeatedly, but.. that's basically what I'm doing
 				// PauseOnFrame = frame;
-				
-				// can't re-enter lua while doing this
-				MainForm.SuppressLua = true;
+
 				while (Emulator.Frame != frame)
 				{
 					MainForm.SeekFrameAdvance();
