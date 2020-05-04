@@ -1,5 +1,6 @@
 ﻿using BizHawk.Common;
 using System;
+using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Common
 {
@@ -157,6 +158,21 @@ namespace BizHawk.Emulation.Common
 				{
 					throw new ArgumentOutOfRangeException(nameof(addr));
 				}
+			}
+		}
+
+		public override void BulkPeekByte(Range<long> addresses, byte[] values)
+		{
+			var start = (ulong)addresses.Start;
+			var count = addresses.Count();
+
+			if (start < (ulong)Size && (start + count) <= (ulong)Size)
+			{
+				Marshal.Copy((IntPtr)((ulong)Data + start), values, 0, (int)count);
+			}
+			else
+			{
+				throw new ArgumentOutOfRangeException(nameof(addresses));
 			}
 		}
 
