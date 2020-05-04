@@ -631,13 +631,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 		}
 
-		private void Update()
-		{
-			UpdateFramerate();
-			UpdateVideo();
-			UpdateAspect();
-		}
-
 		private void UpdateGameName()
 		{
 			_gameName = MameGetString(MAMELuaCommand.GetGameName);
@@ -688,7 +681,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 			else if (!_frameDone)
 			{
-				Update();
+				UpdateVideo();
 				_frameDone = true;
 				_mameFrameComplete.Set();
 			}
@@ -729,7 +722,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			CheckVersions();
 			GetInputFields();
-			Update();
+			UpdateVideo();
+			UpdateAspect();
+			UpdateFramerate();
 			UpdateGameName();
 			InitMemoryDomains();
 
@@ -751,10 +746,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			{
 				_mameStartupComplete.Set();
 				_loadFailure += data;
-			}
-			else
-			{
-				_loadFailure = "";
 			}
 
 			// mame sends osd_output_channel casted to int, we implicitly cast it back
@@ -781,6 +772,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			string inputFields = MameGetString(MAMELuaCommand.GetInputFields);
 			string[] portFields = inputFields.Split(';');
 			MAMEController.BoolButtons.Clear();
+			_fieldsPorts.Clear();
 
 			foreach (string portField in portFields)
 			{
