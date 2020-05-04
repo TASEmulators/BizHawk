@@ -483,6 +483,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			var size = (long)LibMAME.mame_lua_get_double(MAMELuaCommand.GetSpaceAddressMask) + 1;
 			var dataWidth = LibMAME.mame_lua_get_int(MAMELuaCommand.GetSpaceDataWidth) >> 3; // mame returns in bits
 			var endianString = MameGetString(MAMELuaCommand.GetSpaceEndianness);
+			//var addrSize = (size * 2).ToString();
 
 			MemoryDomain.Endian endian = MemoryDomain.Endian.Unknown;
 
@@ -502,11 +503,11 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				var read = MameGetString($"return { MAMELuaCommand.SpaceMap }[{ i }].readtype");
 				var write = MameGetString($"return { MAMELuaCommand.SpaceMap }[{ i }].writetype");
 
-				if (read == "ram" && write == "ram" /* || read == "rom" */)
+				if (read == "ram" && write == "ram" || read == "rom")
 				{
 					var firstOffset = LibMAME.mame_lua_get_int($"return { MAMELuaCommand.SpaceMap }[{ i }].offset");
 					var lastOffset = LibMAME.mame_lua_get_int($"return { MAMELuaCommand.SpaceMap }[{ i }].endoff");
-					var name = $"{ read.ToUpper() } { firstOffset:X}-{ lastOffset:X}";
+					var name = $"{ read.ToUpper() } ${ firstOffset:X} - ${ lastOffset:X}";
 
 					domains.Add(new MemoryDomainDelegate(name, lastOffset - firstOffset + 1, endian,
 						delegate (long addr)
@@ -665,7 +666,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				_mamePeriodicComplete.Set();
 				_memoryAccessComplete.WaitOne();
 
-				if (!_frameDone && !_paused) // FrameAdvance() has been requested
+				if (!_frameDone && !_paused || _exiting) // FrameAdvance() has been requested
 				{
 					_memAccess = false;
 					return;
