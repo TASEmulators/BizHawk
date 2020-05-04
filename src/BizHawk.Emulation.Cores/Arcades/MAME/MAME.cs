@@ -525,6 +525,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			var size = (long)LibMAME.mame_lua_get_double(MAMELuaCommand.GetSpaceAddressMask) + 1;
 			var dataWidth = LibMAME.mame_lua_get_int(MAMELuaCommand.GetSpaceDataWidth) >> 3; // mame returns in bits
 			var endianString = MameGetString(MAMELuaCommand.GetSpaceEndianness);
+			var deviceName = MameGetString(MAMELuaCommand.GetMainCPUName);
 			//var addrSize = (size * 2).ToString();
 
 			MemoryDomain.Endian endian = MemoryDomain.Endian.Unknown;
@@ -549,7 +550,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				{
 					var firstOffset = LibMAME.mame_lua_get_int($"return { MAMELuaCommand.SpaceMap }[{ i }].offset");
 					var lastOffset = LibMAME.mame_lua_get_int($"return { MAMELuaCommand.SpaceMap }[{ i }].endoff");
-					var name = $"{ read.ToUpper() } ${ firstOffset:X} - ${ lastOffset:X}";
+					var name = $"{ deviceName } : { read } : 0x{ firstOffset:X}-0x{ lastOffset:X}";
 
 					domains.Add(new MemoryDomainDelegate(name, lastOffset - firstOffset + 1, endian,
 						delegate (long addr)
@@ -564,7 +565,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				}
 			}
 
-			domains.Add(new MemoryDomainDelegate("System Bus", size, endian,
+			domains.Add(new MemoryDomainDelegate(deviceName + " : System Bus", size, endian,
 				delegate (long addr)
 				{
 					return _peek(addr, 0, size);
@@ -828,6 +829,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			public const string GetRefresh = "return select(2, next(manager:machine().screens)):refresh_attoseconds()";
 			public const string GetWidth = "return (select(1, manager:machine():video():size()))";
 			public const string GetHeight = "return (select(2, manager:machine():video():size()))";
+			public const string GetMainCPUName = "return manager:machine().devices[\":maincpu\"]:shortname()";
 
 			// memory space
 			public const string GetSpace = "return manager:machine().devices[\":maincpu\"].spaces[\"program\"]";
