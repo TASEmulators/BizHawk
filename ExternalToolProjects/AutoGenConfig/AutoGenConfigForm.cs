@@ -26,8 +26,6 @@ namespace BizHawk.Experiment.AutoGenConfig
 
 		public override string Text => "AutoGenConfig";
 
-		public bool UpdateBefore => false;
-
 		public AutoGenConfigForm()
 		{
 			ClientSize = new Size(640, 720);
@@ -151,12 +149,8 @@ namespace BizHawk.Experiment.AutoGenConfig
 
 		public bool AskSaveChanges() => true;
 
-		public void FastUpdate() {}
-
-		public void NewUpdate(ToolFormUpdateType type) {}
-
 		public void Restart() {}
 
-		public void UpdateValues() {}
+		public void UpdateValues(ToolFormUpdateType type) {}
 	}
 }

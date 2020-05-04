@@ -123,11 +123,7 @@ namespace BizHawk.DBManTool
 
 		public override string Text => "DBMan";
 
-		public bool UpdateBefore => false;
-
 		public bool AskSaveChanges() => true;
-
-		public void FastUpdate() {}
 
 #if false
 		/// <remarks>This was just sitting in <c>BizHawk.Client.DBMan/Program.cs</c>.</remarks>
@@ -139,10 +135,8 @@ namespace BizHawk.DBManTool
 		}
 #endif
 
-		public void NewUpdate(ToolFormUpdateType type) {}
-
 		public void Restart() {}
 
-		public void UpdateValues() {}
+		public void UpdateValues(ToolFormUpdateType type) {}
 	}
 }

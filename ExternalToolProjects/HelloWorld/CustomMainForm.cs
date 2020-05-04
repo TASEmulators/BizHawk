@@ -66,15 +66,7 @@ namespace HelloWorld
 			};
 		}
 
-		/// <remarks>We want <see cref="UpdateValues"/> to be called before rendering.</remarks>
-		public bool UpdateBefore => true;
-
 		public bool AskSaveChanges() => true;
-
-		/// <remarks>This is called instead of the usual <see cref="UpdateValues"/> when EmuHawk is turboing.</remarks>
-		public void FastUpdate() {}
-
-		public void NewUpdate(ToolFormUpdateType type) {}
 
 		/// <remarks>This is called once when the form is opened, and every time a new movie session starts.</remarks>
 		public void Restart()
@@ -96,10 +88,14 @@ namespace HelloWorld
 			}
 		}
 
-		/// <remarks>Called just before every video frame.</remarks>
-		public void UpdateValues()
+		public void UpdateValues(ToolFormUpdateType type)
 		{
-			if (Global.Game.Name == "Null" || Watches.Count < 3) return;
+			if (!(type == ToolFormUpdateType.PreFrame || type == ToolFormUpdateType.FastPreFrame)
+			    || Global.Game.Name == "Null"
+			    || Watches.Count < 3)
+			{
+				return;
+			}
 			Watches.UpdateValues();
 			label_Watch1.Text = $"First watch ({Watches[0].AddressString}) current value: {Watches[0].ValueString}";
 			label_Watch2.Text = $"Second watch ({Watches[1].AddressString}) current value: {Watches[1].ValueString}";
