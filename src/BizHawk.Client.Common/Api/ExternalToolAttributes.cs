@@ -98,6 +98,8 @@ namespace BizHawk.Client.Common
 	{
 		public string Description { get; set; }
 
+		public string[] LoadAssemblyFiles { get; set; }
+
 		public readonly string Name;
 
 		public ExternalToolAttribute(string name)

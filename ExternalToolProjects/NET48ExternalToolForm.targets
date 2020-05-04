@@ -29,5 +29,6 @@
 	</ItemGroup>
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<Copy SourceFiles="$(OutputPath)$(MSBuildProjectName).dll" DestinationFolder="$(ProjectDir)../../output/ExternalTools" />
+		<Copy SourceFiles="@(NET48ExternalToolFormDependency)" DestinationFolder="$(ProjectDir)../../output/ExternalTools" />
 	</Target>
 </Project>

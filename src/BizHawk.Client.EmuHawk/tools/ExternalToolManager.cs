@@ -95,6 +95,10 @@ namespace BizHawk.Client.EmuHawk
 				if (applicabilityAttrs.Count > 1) throw new ExternalToolApplicabilityAttributeBase.DuplicateException();
 
 				var toolAttribute = allAttrs.OfType<ExternalToolAttribute>().First();
+				if (toolAttribute.LoadAssemblyFiles != null)
+				{
+					foreach (var depFilename in toolAttribute.LoadAssemblyFiles) Assembly.LoadFrom($"ExternalTools/{depFilename}");
+				}
 				var embeddedIconAttr = allAttrs.OfType<ExternalToolEmbeddedIconAttribute>().FirstOrDefault();
 				if (embeddedIconAttr != null)
 				{
