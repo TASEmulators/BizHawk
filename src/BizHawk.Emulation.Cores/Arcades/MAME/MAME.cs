@@ -475,6 +475,48 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		#region IMemoryDomains
 
+		private byte _peek(long addr, int firstOffset, long size)
+		{
+			if (addr < 0 || addr >= size)
+			{
+				throw new ArgumentOutOfRangeException();
+			}
+
+			if (!_memAccess)
+			{
+				_memAccess = true;
+				_mamePeriodicComplete.WaitOne();
+			}
+
+			addr += firstOffset;
+
+			var val = (byte)LibMAME.mame_lua_get_int($"{ MAMELuaCommand.GetSpace }:read_u8({ addr << _systemBusAddressShift })");
+
+			_memoryAccessComplete.Set();
+
+			return val;
+		}
+
+		private void _poke(long addr, byte val, int firstOffset, long size)
+		{
+			if (addr < 0 || addr >= size)
+			{
+				throw new ArgumentOutOfRangeException();
+			}
+
+			if (!_memAccess)
+			{
+				_memAccess = true;
+				_mamePeriodicComplete.WaitOne();
+			}
+
+			addr += firstOffset;
+
+			LibMAME.mame_lua_execute($"{ MAMELuaCommand.GetSpace }:write_u8({ addr << _systemBusAddressShift }, { val })");
+
+			_memoryAccessComplete.Set();
+		}
+
 		private void InitMemoryDomains()
 		{
 			var domains = new List<MemoryDomain>();
@@ -512,59 +554,20 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					domains.Add(new MemoryDomainDelegate(name, lastOffset - firstOffset + 1, endian,
 						delegate (long addr)
 						{
-							if (addr < 0 || addr >= size)
-							{
-								throw new ArgumentOutOfRangeException();
-							}
-
-							if (!_memAccess)
-							{
-								_memAccess = true;
-								_mamePeriodicComplete.WaitOne();
-							}
-
-							addr += firstOffset;
-							var val = (byte)LibMAME.mame_lua_get_int($"{ MAMELuaCommand.GetSpace }:read_u8({ addr << _systemBusAddressShift })");
-							_memoryAccessComplete.Set();
-							return val;
+							return _peek(addr, firstOffset, size);
 						},
 						read == "rom" ? (Action<long, byte>)null : delegate (long addr, byte val)
 						{
-							if (addr < 0 || addr >= size)
-							{
-								throw new ArgumentOutOfRangeException();
-							}
-
-							if (!_memAccess)
-							{
-								_memAccess = true;
-								_mamePeriodicComplete.WaitOne();
-							}
-
-							addr += firstOffset;
-							LibMAME.mame_lua_execute($"{ MAMELuaCommand.GetSpace }:write_u8({ addr << _systemBusAddressShift }, { val })");
-							_memoryAccessComplete.Set();
-						}, dataWidth));
+							_poke(addr, val, firstOffset, size);
+						},
+						dataWidth));
 				}
 			}
 
 			domains.Add(new MemoryDomainDelegate("System Bus", size, endian,
 				delegate (long addr)
 				{
-					if (addr < 0 || addr >= size)
-					{
-						throw new ArgumentOutOfRangeException();
-					}
-
-					if (!_memAccess)
-					{
-						_memAccess = true;
-						_mamePeriodicComplete.WaitOne();
-					}
-
-					var val = (byte)LibMAME.mame_lua_get_int($"{ MAMELuaCommand.GetSpace }:read_u8({ addr << _systemBusAddressShift })");
-					_memoryAccessComplete.Set();
-					return val;
+					return _peek(addr, 0, size);
 				},
 				null, dataWidth));
 
