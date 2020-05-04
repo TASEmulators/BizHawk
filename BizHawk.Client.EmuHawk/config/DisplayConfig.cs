@@ -147,7 +147,7 @@ namespace BizHawk.Client.EmuHawk
 			else if (rbUseCustomRatio.Checked)
 				_config.DispManagerAR = EDispManagerAR.CustomRatio;
 
-			if (string.IsNullOrWhiteSpace(txtCustomARWidth.Text))
+			if (!string.IsNullOrWhiteSpace(txtCustomARWidth.Text))
 			{
 				if (int.TryParse(txtCustomARWidth.Text, out int dispCustomUserARWidth))
 				{
@@ -159,7 +159,7 @@ namespace BizHawk.Client.EmuHawk
 				_config.DispCustomUserARWidth = -1;
 			}
 
-			if (string.IsNullOrWhiteSpace(txtCustomARHeight.Text))
+			if (!string.IsNullOrWhiteSpace(txtCustomARHeight.Text))
 			{
 				if (int.TryParse(txtCustomARHeight.Text, out int dispCustomUserARHeight))
 				{
@@ -171,7 +171,7 @@ namespace BizHawk.Client.EmuHawk
 				_config.DispCustomUserARHeight = -1;
 			}
 
-			if (string.IsNullOrWhiteSpace(txtCustomARX.Text))
+			if (!string.IsNullOrWhiteSpace(txtCustomARX.Text))
 			{
 				if (float.TryParse(txtCustomARX.Text, out float dispCustomUserArx))
 				{
@@ -183,7 +183,7 @@ namespace BizHawk.Client.EmuHawk
 				_config.DispCustomUserArx = -1;
 			}
 
-			if (string.IsNullOrWhiteSpace(txtCustomARY.Text))
+			if (!string.IsNullOrWhiteSpace(txtCustomARY.Text))
 			{
 				if (float.TryParse(txtCustomARY.Text, out float dispCustomUserAry))
 				{
