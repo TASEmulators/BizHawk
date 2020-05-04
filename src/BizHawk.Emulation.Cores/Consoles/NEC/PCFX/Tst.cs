@@ -71,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 				PlainHeapSizeKB = 4 * 1024,
 				MmapHeapSizeKB = 6 * 1024,
 				SkipCoreConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
-				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
+				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			});
 
 			SetCdCallbacks();

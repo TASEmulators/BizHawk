@@ -58,12 +58,15 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public ulong StartAddress { get; set; } = PeRunner.CanonicalStart;
 
 		/// <summary>
-		/// Skips the "core consistency check"
+		/// Skips the check that the wbx file and other associated dlls match from state save to state load.
+		/// DO NOT SET THIS TO TRUE.  A different executable most likely means different meanings for memory locations,
+		/// and nothing will make sense.
 		/// </summary>
 		public bool SkipCoreConsistencyCheck { get; set; } = false;
 
 		/// <summary>
-		/// Skips the "memory consistency check"
+		/// Skips the check that the initial memory state (after init, but before any running) matches from state save to state load.
+		/// DO NOT SET THIS TO TRUE.  The initial memory state must be the same for the XORed memory contents in the savestate to make sense.
 		/// </summary>
 		public bool SkipMemoryConsistencyCheck { get; set; } = false;
 	}

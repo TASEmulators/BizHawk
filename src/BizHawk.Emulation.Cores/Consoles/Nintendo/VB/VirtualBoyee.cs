@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 				InvisibleHeapSizeKB = 256,
 				PlainHeapSizeKB = 256,
 				SkipCoreConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
-				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
+				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			});
 
 			if (!_boyee.Load(rom, rom.Length, LibVirtualBoyee.NativeSyncSettings.FromFrontendSettings(_syncSettings)))

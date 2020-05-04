@@ -92,7 +92,7 @@ namespace BizHawk.Client.EmuHawk
 				Config.FirmwareUserSpecifications);
 			var prefs = CoreComm.CorePreferencesFlags.None;
 			if (Config.SkipWaterboxIntegrityChecks)
-				prefs = CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck | CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck;
+				prefs = CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck;
 
 			return new CoreComm(ShowMessageCoreComm, NotifyCoreComm, cfp, prefs);
 		}

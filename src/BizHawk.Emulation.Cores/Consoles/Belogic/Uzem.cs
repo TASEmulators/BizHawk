@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Belogic
 				MmapHeapSizeKB = 4,
 				PlainHeapSizeKB = 4,
 				SkipCoreConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
-				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
+				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			});
 
 			_exe.AddReadonlyFile(rom, "romfile");

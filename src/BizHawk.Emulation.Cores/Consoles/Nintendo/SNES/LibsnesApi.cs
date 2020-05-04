@@ -71,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				PlainHeapSizeKB = 2 * 1024, // TODO: wasn't there more in here?
 				SealedHeapSizeKB = 128 * 1024,
 				SkipCoreConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
-				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
+				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			});
 			using (_exe.EnterExit())
 			{
