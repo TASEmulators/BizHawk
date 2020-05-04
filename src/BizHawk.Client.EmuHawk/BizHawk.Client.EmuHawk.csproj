@@ -10,6 +10,7 @@
 		<OutputType>WinExe</OutputType>
 		<TargetFramework>net48</TargetFramework>
 		<TargetName>EmuHawk</TargetName>
+		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 	</PropertyGroup>
 <!--
 	<PropertyGroup>
