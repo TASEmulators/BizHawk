@@ -1006,8 +1006,6 @@ namespace BizHawk.Client.EmuHawk
 					MainForm.SeekFrameAdvance();
 				}
 
-				MainForm.SuppressLua = false;
-
 				if (!wasPaused)
 				{
 					MainForm.UnpauseEmulator();
