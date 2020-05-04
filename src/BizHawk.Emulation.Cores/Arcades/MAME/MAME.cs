@@ -155,6 +155,11 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			_paused = false;
 			_frameDone = false;
 
+			if (_memAccess)
+			{
+				_mamePeriodicComplete.WaitOne();
+			}
+
 			for (; _frameDone == false;)
 			{
 				_mameFrameComplete.WaitOne();
@@ -638,7 +643,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				if (!_frameDone && !_paused)
 				{
 					_memAccess = false;
-					break;
+					return;
 				}
 			}
 
