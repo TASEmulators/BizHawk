@@ -751,6 +751,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				_mameStartupComplete.Set();
 				_loadFailure += data;
 			}
+			else
+			{
+				_loadFailure = "";
+			}
 
 			// mame sends osd_output_channel casted to int, we implicitly cast it back
 			if (!data.Contains("pause = "))
