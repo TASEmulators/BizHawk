@@ -1,4 +1,76 @@
-﻿using System;
+﻿#region Implementation docs
+
+/*
+                    FrameAdvance()
+
+MAME fires the periodic callback on every video and debugger update,
+which happens every VBlank and also repeatedly at certain time
+intervals while paused. Since MAME's luaengine runs in a separate
+thread, it's only safe to update everything we need per frame during
+this callback, when it's explicitly waiting for further lua commands.
+
+If we disable throttling and pass -update_in_pause, there will be no
+delay between video updates. This allows to run at full speed while
+frame-stepping.
+
+MAME only captures new frame data once per VBlank, while unpaused.
+But it doesn't have an exclusive VBlank callback we could attach to.
+It has a LUA_ON_FRAME_DONE callback, but that fires even more
+frequently and updates all sorts of other non-video stuff, and we
+need none of that here.
+
+So we filter out all the calls that happen while paused (non-VBlank
+updates). Then, when Hawk asks us to advance a frame, we virtually
+unpause and declare the new frame unfinished. This informs MAME that
+it should advance one frame internally. Hawk starts waiting for the
+MAME thread to complete the request.
+
+After MAME's done advancing, it fires the periodic callback again.
+That's when we update everything and declare the new frame finished,
+filtering out any further updates again. Then we allow Hawk to
+complete frame-advancing.
+
+
+                    Memory access
+
+All memory access needs to be done while we're inside a callback,
+otherwise we get crashes inside SOL (as described above).
+
+We can't know in advance how many addresses we'll be reading (bulkread
+in hawk is too complicated to fully implement), but we can assume
+that when a new FrameAdvance() request arrives, all the reading requests
+have ended for that frame.
+
+So once the first memory read is requested, we put this whole callback
+on hold and just wait for FrameAdvance(). This allows for as many memreads
+as one may dream of, without letting MAME to execute anything in its main
+thread.
+
+Upon new FrameAdvance(), we wait for the current memread to complete,
+then we immeditely let go of the callback, without executing any further
+logic. Only when MAME fires the callback once more, we consider it safe to
+process FrameAdvance() further.
+
+
+                      Strings
+
+MAME's luaengine uses lua strings to return C strings as well as
+binary buffers. You're meant to know which you're going to get and
+handle that accordingly.
+
+When we want to get a C string, we Marshal.PtrToStringAnsi().
+With buffers, we Marshal.Copy() to our new buffer.
+MameGetString() only covers the former because it's the same steps
+every time, while buffers use to need aditional logic.
+
+In both cases MAME wants us to manually free the string buffer. It's
+made that way to make the buffer persist actoss C API calls.
+
+*/
+
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -46,21 +118,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		#region Utility
 
-		/* strings and MAME
-		 * 
-		 * MAME's luaengine uses lua strings to return C strings as well as
-		 * binary buffers. You're meant to know which you're going to get and
-		 * handle that accordingly.
-		 * 
-		 * When we want to get a C string, we Marshal.PtrToStringAnsi().
-		 * With buffers, we Marshal.Copy() to our new buffer.
-		 * MameGetString() only covers the former because it's the same steps
-		 * every time, while buffers use to need aditional logic.
-		 * 
-		 * In both cases MAME wants us to manually free the string buffer. It's
-		 * made that way to make the buffer persist actoss C API calls.
-		 * 
-		 */
 		private static string MameGetString(string command)
 		{
 			IntPtr ptr = LibMAME.mame_lua_get_string(command, out var lengthInBytes);
@@ -595,36 +652,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		#region Callbacks
 
-		/*
-		 * FrameAdvance() and MAME
-		 * 
-		 * MAME fires the periodic callback on every video and debugger update,
-		 * which happens every VBlank and also repeatedly at certain time
-		 * intervals while paused. Since MAME's luaengine runs in a separate
-		 * thread, it's only safe to update everything we need per frame during
-		 * this callback, when it's explicitly waiting for further lua commands.
-		 * 
-		 * If we disable throttling and pass -update_in_pause, there will be no
-		 * delay between video updates. This allows to run at full speed while
-		 * frame-stepping.
-		 * 
-		 * MAME only captures new frame data once per VBlank, while unpaused.
-		 * But it doesn't have an exclusive VBlank callback we could attach to.
-		 * It has a LUA_ON_FRAME_DONE callback, but that fires even more
-		 * frequently and updates all sorts of other non-video stuff, and we
-		 * need none of that here.
-		 * 
-		 * So we filter out all the calls that happen while paused (non-VBlank
-		 * updates). Then, when Hawk asks us to advance a frame, we virtually
-		 * unpause and declare the new frame unfinished. This informs MAME that
-		 * it should advance one frame internally. Hawk starts waiting for the
-		 * MAME thread to complete the request.
-		 * 
-		 * After MAME's done advancing, it fires the periodic callback again.
-		 * That's when we update everything and declare the new frame finished,
-		 * filtering out any further updates again. Then we allow Hawk to
-		 * complete frame-advancing.
-		 */
 		private void MAMEPeriodicCallback()
 		{
 			if (_exiting)
@@ -633,19 +660,19 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				_exiting = false;
 			}
 
-			//int MAMEFrame = LibMAME.mame_lua_get_int(MAMELuaCommand.GetFrameNumber);
-
 			for (; _memAccess;)
 			{
 				_mamePeriodicComplete.Set();
 				_memoryAccessComplete.WaitOne();
 
-				if (!_frameDone && !_paused)
+				if (!_frameDone && !_paused) // FrameAdvance() has been requested
 				{
 					_memAccess = false;
 					return;
 				}
 			}
+
+			//int MAMEFrame = LibMAME.mame_lua_get_int(MAMELuaCommand.GetFrameNumber);
 
 			if (!_paused)
 			{
