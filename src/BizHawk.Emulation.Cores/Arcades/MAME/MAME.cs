@@ -199,6 +199,59 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		#endregion
 
+		#region Launchers
+
+		private void AsyncLaunchMAME()
+		{
+			_mameThread.Start();
+			_mameStartupComplete.WaitOne();
+		}
+
+		private void ExecuteMAMEThread()
+		{
+			// dodge GC
+			_periodicCallback = MAMEPeriodicCallback;
+			_soundCallback = MAMESoundCallback;
+			_bootCallback = MAMEBootCallback;
+			_logCallback = MAMELogCallback;
+
+			LibMAME.mame_set_periodic_callback(_periodicCallback);
+			LibMAME.mame_set_sound_callback(_soundCallback);
+			LibMAME.mame_set_boot_callback(_bootCallback);
+			LibMAME.mame_set_log_callback(_logCallback);
+
+			// https://docs.mamedev.org/commandline/commandline-index.html
+			string[] args =
+			{
+				 "mame"                                 // dummy, internally discarded by index, so has to go first
+				, _gameFilename                         // no dash for rom names
+				, "-noreadconfig"                       // forbid reading ini files
+				, "-nowriteconfig"                      // forbid writing ini files
+				, "-norewind"                           // forbid rewind savestates (captured upon frame advance)
+				, "-skip_gameinfo"                      // forbid this blocking screen that requires user input
+				, "-nothrottle"                         // forbid throttling to "real" speed of the device
+				, "-update_in_pause"                    // ^ including frame-advancing
+				, "-rompath",            _gameDirectory // mame doesn't load roms from full paths, only from dirs to scan
+				, "-joystick_contradictory"             // L+R/U+D on digital joystick
+				, "-nonvram_save"                       // prevent dumping non-volatile ram to disk
+				, "-artpath",          "mame\\artwork"  // path to load artowrk from
+				, "-diff_directory",      "mame\\diff"  // hdd diffs, whenever stuff is written back to an image
+				, "-cfg_directory",                 ""  // send invalid path to prevent cfg handling
+				, "-volume",                     "-32"  // lowest attenuation means mame osd remains silent
+				, "-output",                 "console"  // print everything to hawk console
+				, "-samplerate", _sampleRate.ToString() // match hawk samplerate
+				, "-video",                     "none"  // forbid mame window altogether
+				, "-keyboardprovider",          "none"
+				, "-mouseprovider",             "none"
+				, "-lightgunprovider",          "none"
+				, "-joystickprovider",          "none"
+			};
+
+			LibMAME.mame_launch(args.Length, args);
+		}
+
+		#endregion
+
 		#region IEmulator
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound = true)
@@ -516,59 +569,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			_memoryDomains = new MemoryDomainList(domains);
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(_memoryDomains);
-		}
-
-		#endregion
-
-		#region Launchers
-
-		private void AsyncLaunchMAME()
-		{
-			_mameThread.Start();
-			_mameStartupComplete.WaitOne();
-		}
-
-		private void ExecuteMAMEThread()
-		{
-			// dodge GC
-			_periodicCallback = MAMEPeriodicCallback;
-			_soundCallback = MAMESoundCallback;
-			_bootCallback = MAMEBootCallback;
-			_logCallback = MAMELogCallback;
-
-			LibMAME.mame_set_periodic_callback(_periodicCallback);
-			LibMAME.mame_set_sound_callback(_soundCallback);
-			LibMAME.mame_set_boot_callback(_bootCallback);
-			LibMAME.mame_set_log_callback(_logCallback);
-
-			// https://docs.mamedev.org/commandline/commandline-index.html
-			string[] args =
-			{
-				 "mame"                                 // dummy, internally discarded by index, so has to go first
-				, _gameFilename                         // no dash for rom names
-				, "-noreadconfig"                       // forbid reading ini files
-				, "-nowriteconfig"                      // forbid writing ini files
-				, "-norewind"                           // forbid rewind savestates (captured upon frame advance)
-				, "-skip_gameinfo"                      // forbid this blocking screen that requires user input
-				, "-nothrottle"                         // forbid throttling to "real" speed of the device
-				, "-update_in_pause"                    // ^ including frame-advancing
-				, "-rompath",            _gameDirectory // mame doesn't load roms from full paths, only from dirs to scan
-				, "-joystick_contradictory"             // L+R/U+D on digital joystick
-				, "-nonvram_save"                       // prevent dumping non-volatile ram to disk
-				, "-artpath",          "mame\\artwork"  // path to load artowrk from
-				, "-diff_directory",      "mame\\diff"  // hdd diffs, whenever stuff is written back to an image
-				, "-cfg_directory",                 ""  // send invalid path to prevent cfg handling
-				, "-volume",                     "-32"  // lowest attenuation means mame osd remains silent
-				, "-output",                 "console"  // print everything to hawk console
-				, "-samplerate", _sampleRate.ToString() // match hawk samplerate
-				, "-video",                     "none"  // forbid mame window altogether
-				, "-keyboardprovider",          "none"
-				, "-mouseprovider",             "none"
-				, "-lightgunprovider",          "none"
-				, "-joystickprovider",          "none"
-			};
-
-			LibMAME.mame_launch(args.Length, args);
 		}
 
 		#endregion
