@@ -1467,6 +1467,19 @@ static void mapper_seganet_w(uint32 address, uint32 data)
   }
 }
 
+static unsigned int mapper32k_bank_value = 0;
+
+static unsigned int mapper32k_bank_r8(unsigned int address)
+{
+	address |= mapper32k_bank_value;
+	return cart.rom[address];
+}
+static unsigned int mapper32k_bank_r16(unsigned int address)
+{
+	address |= mapper32k_bank_value;
+	return *(uint16 *)(cart.rom + address);
+}
+
 /*
   Custom ROM Bankswitch used in Soul Edge VS Samurai Spirits, Top Fighter, Mulan, Pocket Monsters II, Lion King 3, Super King Kong 99, Pokemon Stadium
 */
@@ -1477,14 +1490,11 @@ static void mapper_32k_w(uint32 data)
   /* 64 x 32k banks */
   if (data)
   {
+	  mapper32k_bank_value = (data & 0x3f) << 15;
     for (i=0; i<0x10; i++)
     {
-      /* Remap to unused ROM area  */
-      m68k.memory_map[i].base = &cart.rom[0x400000 + (i << 16)];
-
-      /* address = address OR (value << 15) */
-      memcpy(m68k.memory_map[i].base, cart.rom + ((i << 16) | (data & 0x3f) << 15), 0x8000);
-      memcpy(m68k.memory_map[i].base + 0x8000, cart.rom + ((i << 16) | ((data | 1) & 0x3f) << 15), 0x8000);
+	  m68k.memory_map[i].read8 = mapper32k_bank_r8;
+	  m68k.memory_map[i].read16 = mapper32k_bank_r16;
     }
   }
   else
@@ -1492,8 +1502,9 @@ static void mapper_32k_w(uint32 data)
     /* reset default $000000-$0FFFFF mapping */
     for (i=0; i<16; i++)
     {
-      m68k.memory_map[i].base = &cart.rom[i << 16];
-    }
+	  m68k.memory_map[i].read8 = NULL;
+	  m68k.memory_map[i].read16 = NULL;
+	}
   }
 }
 
