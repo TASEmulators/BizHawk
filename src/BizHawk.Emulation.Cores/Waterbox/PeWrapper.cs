@@ -416,7 +416,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				throw new InvalidOperationException("Savestate corrupted!");
 
 			var fileHash = br.ReadBytes(_fileHash.Length);
-			if (!_skipCoreConsistencyCheck)
+			if (_skipCoreConsistencyCheck)
+			{
+				throw new InvalidOperationException("We decided that the core consistency check should always run");
+			}
+			else
 			{
 				if (!fileHash.SequenceEqual(_fileHash))
 					// the .dll file that is loaded now has a different hash than the .dll that created the savestate
