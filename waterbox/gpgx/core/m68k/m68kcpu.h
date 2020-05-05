@@ -817,7 +817,7 @@ INLINE uint m68ki_read_imm_16(void)
 #else
   uint pc = REG_PC;
   REG_PC += 2;
-  return m68k_read_immediate_16(pc);
+  return m68ki_read_16(pc);
 #endif /* M68K_EMULATE_PREFETCH */
 }
 
