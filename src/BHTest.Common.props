@@ -1,0 +1,17 @@
+<Project>
+	<Import Project="../Common.props" />
+	<Import Project="../CommonNullable.props" />
+	<PropertyGroup>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<OutputPath>$(ProjectDir)../../test_output</OutputPath>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" PrivateAssets="all" />
+		<PackageReference Include="MSTest.TestAdapter" Version="2.1.1" PrivateAssets="all" />
+		<PackageReference Include="MSTest.TestFramework" Version="2.1.1" PrivateAssets="all" />
+		<PackageReference Include="JunitXml.TestLogger" Version="2.1.32" PrivateAssets="all" />
+		<ProjectReference Include="$(ProjectDir)../$(MSBuildProjectName.Substring(7))/$(MSBuildProjectName.Substring(7)).csproj" />
+	</ItemGroup>
+</Project>
