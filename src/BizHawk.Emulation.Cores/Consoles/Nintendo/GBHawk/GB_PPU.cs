@@ -664,7 +664,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							temp_fetch = y_tile * 32 + (x_tile + tile_inc) % 32;
 							tile_byte = Core.VRAM[0x1800 + (LCDC.Bit(3) ? 1 : 0) * 0x400 + temp_fetch];
 
+							bus_return = (byte)tile_byte;
 							read_case = 1;
+
 							if (!pre_render)
 							{
 								tile_inc++;
@@ -691,6 +693,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								tile_data[0] = Core.VRAM[0x1000 + tile_byte * 16 + y_scroll_offset * 2];
 							}
 
+							bus_return = tile_data[0];
 							read_case = 2;
 						}
 						break;
@@ -725,6 +728,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								tile_data[1] = Core.VRAM[0x1000 + tile_byte * 16 + y_scroll_offset * 2 + 1];
 							}
 
+							bus_return = tile_data[1];
+
 							if (pre_render)
 							{
 								// here we set up rendering
@@ -755,6 +760,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							temp_fetch = window_y_tile * 32 + (window_x_tile + window_tile_inc) % 32;
 							tile_byte = Core.VRAM[0x1800 + (LCDC.Bit(6) ? 1 : 0) * 0x400 + temp_fetch];
 
+							bus_return = (byte)tile_byte;
+
 							window_tile_inc++;
 							read_case = 5;
 						}
@@ -782,6 +789,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 								tile_data[0] = Core.VRAM[0x1000 + tile_byte * 16 + y_scroll_offset * 2];
 							}
+
+							bus_return = tile_data[0];
 
 							read_case = 6;
 						}
@@ -812,6 +821,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 								tile_data[1] = Core.VRAM[0x1000 + tile_byte * 16 + y_scroll_offset * 2 + 1];
 							}
+
+							bus_return = tile_data[1];
 
 							if (window_pre_render)
 							{
