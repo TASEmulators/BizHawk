@@ -1176,6 +1176,7 @@
 			this.Name = "BasicBot";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Basic Bot";
+			this.Load += new System.EventHandler(this.BasicBot_Load);
 			this.BotMenu.ResumeLayout(false);
 			this.BotMenu.PerformLayout();
 			this.BotStatusStrip.ResumeLayout(false);
