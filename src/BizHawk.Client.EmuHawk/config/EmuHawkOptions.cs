@@ -77,6 +77,18 @@ namespace BizHawk.Client.EmuHawk
 			cbMoviesOnDisk.Checked = _config.MoviesOnDisk;
 			cbSkipWaterboxIntegrityChecks.Checked = _config.SkipWaterboxIntegrityChecks;
 
+			switch (_config.HostInputMethod)
+			{
+				case EHostInputMethod.OpenTK:
+					rbInputMethodOpenTK.Checked = true;
+					break;
+				case EHostInputMethod.DirectInput:
+					rbInputMethodDirectInput.Checked = true;
+					break;
+				default:
+					throw new InvalidOperationException();
+			}
+
 			switch (_config.LuaEngine)
 			{
 				case ELuaEngine.LuaPlusLuaInterface:
@@ -103,6 +115,8 @@ namespace BizHawk.Client.EmuHawk
 			_config.HandleAlternateKeyboardLayouts = HandleAlternateKeyboardLayoutsCheckBox.Checked;
 			_config.SuppressAskSave = NeverAskSaveCheckbox.Checked;
 			_config.SingleInstanceMode = SingleInstanceModeCheckbox.Checked;
+			if(rbInputMethodDirectInput.Checked) _config.HostInputMethod =  EHostInputMethod.DirectInput;
+			if(rbInputMethodOpenTK.Checked) _config.HostInputMethod = EHostInputMethod.OpenTK;
 
 			_config.BackupSaveram = BackupSRamCheckbox.Checked;
 			_config.AutosaveSaveRAM = AutosaveSRAMCheckbox.Checked;
