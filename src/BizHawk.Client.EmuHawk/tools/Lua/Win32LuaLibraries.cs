@@ -122,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void StartLuaDrawing()
 		{
-			if (ScriptList.Count != 0 && GuiLibrary.SurfaceIsNull)
+			if (ScriptList.Count != 0 && GuiLibrary.SurfaceIsNull && !SuppressLua)
 			{
 				GuiLibrary.DrawNew("emu");
 			}
@@ -130,7 +130,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void EndLuaDrawing()
 		{
-			if (ScriptList.Count != 0)
+			if (ScriptList.Count != 0 && !SuppressLua)
 			{
 				GuiLibrary.DrawFinish();
 			}
@@ -157,12 +157,18 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void CallFrameBeforeEvent()
 		{
-			EventsLibrary.CallFrameBeforeEvent();
+			if (!SuppressLua)
+			{
+				EventsLibrary.CallFrameBeforeEvent();
+			}
 		}
 
 		public override void CallFrameAfterEvent()
 		{
-			EventsLibrary.CallFrameAfterEvent();
+			if (!SuppressLua)
+			{
+				EventsLibrary.CallFrameAfterEvent();
+			}
 		}
 
 		public override void CallExitEvent(LuaFile lf)

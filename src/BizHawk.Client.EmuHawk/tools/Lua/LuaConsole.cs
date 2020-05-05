@@ -520,6 +520,45 @@ namespace BizHawk.Client.EmuHawk
 			return result;
 		}
 
+		protected override void UpdateBefore()
+		{
+			if (LuaImp.SuppressLua)
+			{
+				return;
+			}
+
+			LuaImp.CallFrameBeforeEvent();
+			LuaImp.StartLuaDrawing();
+		}
+
+		protected override void UpdateAfter()
+		{
+			if (LuaImp.SuppressLua)
+			{
+				return;
+			}
+
+			LuaImp.CallFrameAfterEvent();
+			ResumeScripts(true);
+			LuaImp.EndLuaDrawing();
+		}
+
+		protected override void FastUpdateBefore()
+		{
+			if (Config.RunLuaDuringTurbo)
+			{
+				UpdateBefore();
+			}
+		}
+
+		protected override void FastUpdateAfter()
+		{
+			if (Config.RunLuaDuringTurbo)
+			{
+				UpdateAfter();
+			}
+		}
+
 		/// <summary>
 		/// resumes suspended Co-routines
 		/// </summary>
@@ -527,6 +566,16 @@ namespace BizHawk.Client.EmuHawk
 		public void ResumeScripts(bool includeFrameWaiters)
 		{
 			if (!LuaImp.ScriptList.Any())
+			{
+				return;
+			}
+
+			if (LuaImp.SuppressLua)
+			{
+				return;
+			}
+
+			if (MainForm.IsTurboing && !Config.RunLuaDuringTurbo)
 			{
 				return;
 			}

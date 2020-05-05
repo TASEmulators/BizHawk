@@ -18,6 +18,7 @@ namespace BizHawk.Client.EmuHawk
 		public readonly LuaFileList ScriptList = new LuaFileList();
 
 		public bool IsRebootingCore { get; set; } // pretty hacky.. we don't want a lua script to be able to restart itself by rebooting the core
+		public bool SuppressLua { get; set; }
 		public EventWaitHandle LuaWait { get; protected set; }
 
 		public abstract void CallExitEvent(LuaFile lf);

@@ -461,30 +461,6 @@ namespace BizHawk.Client.EmuHawk
 			.Where(t => typeof(IToolForm).IsAssignableFrom(t))
 			.Where(t => !t.IsInterface)
 			.Where(IsAvailable);
-		
-		private void UpdateBefore()
-		{
-			foreach (var tool in _tools)
-			{
-				if (!tool.IsDisposed
-					|| (tool is RamWatch && _config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
-				{
-					tool.UpdateValues(ToolFormUpdateType.PreFrame);
-				}
-			}
-		}
-
-		private void UpdateAfter()
-		{
-			foreach (var tool in _tools)
-			{
-				if (!tool.IsDisposed
-					|| (tool is RamWatch && _config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
-				{
-					tool.UpdateValues(ToolFormUpdateType.PostFrame);
-				}
-			}
-		}
 
 		/// <summary>
 		/// Calls UpdateValues() on an instance of T, if it exists
@@ -665,33 +641,26 @@ namespace BizHawk.Client.EmuHawk
 			return tool;
 		}
 
-		public void UpdateToolsBefore(bool fromLua = false)
+		public void UpdateToolsBefore()
 		{
-			if (Has<LuaConsole>())
+			foreach (var tool in _tools)
 			{
-				if (!fromLua)
+				if (!tool.IsDisposed
+					|| (tool is RamWatch && _config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
 				{
-					LuaConsole.LuaImp.StartLuaDrawing();
+					tool.UpdateValues(ToolFormUpdateType.PreFrame);
 				}
 			}
-
-			UpdateBefore();
 		}
 
-		public void UpdateToolsAfter(bool fromLua = false)
+		public void UpdateToolsAfter()
 		{
-			if (!fromLua && Has<LuaConsole>())
+			foreach (var tool in _tools)
 			{
-				LuaConsole.ResumeScripts(true);
-			}
-
-			UpdateAfter();
-
-			if (Has<LuaConsole>())
-			{
-				if (!fromLua)
+				if (!tool.IsDisposed
+					|| (tool is RamWatch && _config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
 				{
-					LuaConsole.LuaImp.EndLuaDrawing();
+					tool.UpdateValues(ToolFormUpdateType.PostFrame);
 				}
 			}
 		}
@@ -708,13 +677,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void FastUpdateAfter(bool fromLua = false)
+		public void FastUpdateAfter()
 		{
-			if (!fromLua && _config.RunLuaDuringTurbo && Has<LuaConsole>())
-			{
-				LuaConsole.ResumeScripts(true);
-			}
-
 			foreach (var tool in _tools)
 			{
 				if (!tool.IsDisposed
@@ -722,11 +686,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					tool.UpdateValues(ToolFormUpdateType.FastPostFrame);
 				}
-			}
-
-			if (_config.RunLuaDuringTurbo && Has<LuaConsole>())
-			{
-				LuaConsole.LuaImp.EndLuaDrawing();
 			}
 		}
 

@@ -449,7 +449,7 @@ namespace BizHawk.Client.EmuHawk
 			StopBot();
 			_replayMode = true;
 			_doNotUpdateValues = true;
-			MainForm.LoadQuickSave(SelectedSlot, false, true); // Triggers an UpdateValues call
+			MainForm.LoadQuickSave(SelectedSlot, true); // Triggers an UpdateValues call
 			_doNotUpdateValues = false;
 			_startFrame = Emulator.Frame;
 			SetNormalSpeed();
@@ -797,7 +797,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					_currentBotAttempt = new BotAttempt { Attempt = Attempts };
-					MainForm.LoadQuickSave(SelectedSlot, false, true);
+					MainForm.LoadQuickSave(SelectedSlot, true);
 				}
 
 				// Before this would have 2 additional hits before the frame even advanced, making the amount of inputs greater than the number of frames to test.
@@ -936,7 +936,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_doNotUpdateValues = true;
-			MainForm.LoadQuickSave(SelectedSlot, false, true); // Triggers an UpdateValues call
+			MainForm.LoadQuickSave(SelectedSlot, true); // Triggers an UpdateValues call
 			_doNotUpdateValues = false;
 
 			_targetFrame = Emulator.Frame + (int)FrameLengthNumeric.Value;

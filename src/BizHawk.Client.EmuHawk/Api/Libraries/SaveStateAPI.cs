@@ -24,12 +24,13 @@ namespace BizHawk.Client.EmuHawk
 				LogCallback($"could not find file: {path}");
 				return;
 			}
-			GlobalWin.MainForm.LoadState(path, Path.GetFileName(path), true, suppressOSD);
+
+			GlobalWin.MainForm.LoadState(path, Path.GetFileName(path), suppressOSD);
 		}
 
 		public void LoadSlot(int slotNum, bool suppressOSD)
 		{
-			if (0.RangeTo(9).Contains(slotNum)) GlobalWin.MainForm.LoadQuickSave($"QuickSave{slotNum}", true, suppressOSD);
+			if (0.RangeTo(9).Contains(slotNum)) GlobalWin.MainForm.LoadQuickSave($"QuickSave{slotNum}", suppressOSD);
 		}
 
 		public void Save(string path, bool suppressOSD) => GlobalWin.MainForm.SaveState(path, path, true, suppressOSD);

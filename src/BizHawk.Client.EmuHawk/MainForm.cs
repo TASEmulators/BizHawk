@@ -582,7 +582,7 @@ namespace BizHawk.Client.EmuHawk
 				// autohold/autofire must not be affected by the following inputs
 				Global.InputManager.ActiveController.Overrides(Global.InputManager.ButtonOverrideAdapter);
 
-				if (Tools.Has<LuaConsole>() && !SuppressLua)
+				if (Tools.Has<LuaConsole>())
 				{
 					Tools.LuaConsole.ResumeScripts(false);
 				}
@@ -704,9 +704,6 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public bool InvisibleEmulation { get; set; }
 
-		// runloop won't exec lua
-		public bool SuppressLua { get; set; }
-
 		public long MouseWheelTracker { get; private set; }
 
 		private int? _pauseOnFrame;
@@ -721,9 +718,8 @@ namespace BizHawk.Client.EmuHawk
 
 				if (value == null) // TODO: make an Event handler instead, but the logic here is that after turbo seeking, tools will want to do a real update when the emulator finally pauses
 				{
-					bool skipScripts = !(Config.TurboSeek && !Config.RunLuaDuringTurbo && !SuppressLua);
-					Tools.UpdateToolsBefore(skipScripts);
-					Tools.UpdateToolsAfter(skipScripts);
+					Tools.UpdateToolsBefore();
+					Tools.UpdateToolsAfter();
 				}
 			}
 		}
@@ -1577,9 +1573,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void UpdateToolsAfter(bool fromLua = false)
+		private void UpdateToolsAfter()
 		{
-			Tools.UpdateToolsAfter(fromLua);
+			Tools.UpdateToolsAfter();
 			HandleToggleLightAndLink();
 		}
 
@@ -2916,11 +2912,6 @@ namespace BizHawk.Client.EmuHawk
 				InputManager.ClickyVirtualPadController.FrameTick();
 				Global.InputManager.ButtonOverrideAdapter.FrameTick();
 
-				if (Tools.Has<LuaConsole>() && !SuppressLua)
-				{
-					Tools.LuaConsole.LuaImp.CallFrameBeforeEvent();
-				}
-
 				if (IsTurboing)
 				{
 					Tools.FastUpdateBefore();
@@ -3002,18 +2993,13 @@ namespace BizHawk.Client.EmuHawk
 
 				PressFrameAdvance = false;
 
-				if (Tools.Has<LuaConsole>() && !SuppressLua)
-				{
-					Tools.LuaConsole.LuaImp.CallFrameAfterEvent();
-				}
-
 				if (IsTurboing)
 				{
-					Tools.FastUpdateAfter(SuppressLua);
+					Tools.FastUpdateAfter();
 				}
 				else
 				{
-					UpdateToolsAfter(SuppressLua);
+					UpdateToolsAfter();
 				}
 
 				if (!PauseAvi && newFrame && !InvisibleEmulation)
@@ -4042,7 +4028,7 @@ namespace BizHawk.Client.EmuHawk
 			return int.Parse(slot.Substring(slot.Length - 1, 1));
 		}
 
-		public void LoadState(string path, string userFriendlyStateName, bool fromLua = false, bool suppressOSD = false) // Move to client.common
+		public void LoadState(string path, string userFriendlyStateName, bool suppressOSD = false) // Move to client.common
 		{
 			if (!Emulator.HasSavestates())
 			{
@@ -4053,14 +4039,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Master.LoadState();
 				return;
-			}
-
-			// If from lua, disable counting rerecords
-			bool wasCountingRerecords = MovieSession.Movie.IsCountingRerecords;
-
-			if (fromLua)
-			{
-				MovieSession.Movie.IsCountingRerecords = false;
 			}
 
 			if (SavestateManager.LoadStateFile(Emulator, path))
@@ -4074,8 +4052,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				SetMainformMovieInfo();
-				Tools.UpdateToolsBefore(fromLua);
-				UpdateToolsAfter(fromLua);
+				Tools.UpdateToolsBefore();
+				UpdateToolsAfter();
 				UpdateToolsLoadstate();
 				InputManager.AutoFireController.ClearStarts();
 
@@ -4093,11 +4071,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				AddOnScreenMessage("Loadstate error!");
 			}
-
-			MovieSession.Movie.IsCountingRerecords = wasCountingRerecords;
 		}
 
-		public void LoadQuickSave(string quickSlotName, bool fromLua = false, bool suppressOSD = false)
+		public void LoadQuickSave(string quickSlotName, bool suppressOSD = false)
 		{
 			if (!Emulator.HasSavestates())
 			{
@@ -4124,7 +4100,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			LoadState(path, quickSlotName, fromLua, suppressOSD);
+			LoadState(path, quickSlotName, suppressOSD);
 		}
 
 		public void SaveState(string path, string userFriendlyStateName, bool fromLua = false, bool suppressOSD = false)
