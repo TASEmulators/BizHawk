@@ -9,17 +9,17 @@ namespace BizHawk.Client.EmuHawk
 	// ReSharper disable once UnusedMember.Global
 	public class GbSchema : IVirtualPadSchema
 	{
-		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
+		public virtual IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
 			switch (core.ControllerDefinition.Name)
 			{
 				case "Gameboy Controller + Tilt":
-					yield return StandardControllerH();
+					yield return StandardControllerH(1);
 					yield return ConsoleButtonsH();
 					yield return TiltControls();
 					break;
 				case "Gameboy Controller H":
-					yield return StandardControllerH();
+					yield return StandardControllerH(1);
 					yield return ConsoleButtonsH();
 					break;
 				default:
@@ -62,26 +62,26 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// GBHawk controllers
-		private static PadSchema StandardControllerH()
+		protected static PadSchema StandardControllerH(int controller)
 		{
 			return new PadSchema
 			{
 				Size = new Size(174, 79),
 				Buttons = new[]
 				{
-					ButtonSchema.Up(14, 12, 1),
-					ButtonSchema.Down(14, 56, 1), 
-					ButtonSchema.Left(2, 34, 1), 
-					ButtonSchema.Right(24, 34, 1), 
-					new ButtonSchema(122, 34, 1, "B"),
-					new ButtonSchema(146, 34, 1, "A"),
-					new ButtonSchema(52, 34, "P1 Select") { DisplayName = "s" },
-					new ButtonSchema(74, 34, "P1 Start") { DisplayName = "S" }
+					ButtonSchema.Up(14, 12, controller),
+					ButtonSchema.Down(14, 56, controller), 
+					ButtonSchema.Left(2, 34, controller), 
+					ButtonSchema.Right(24, 34, controller), 
+					new ButtonSchema(122, 34, controller, "B"),
+					new ButtonSchema(146, 34, controller, "A"),
+					new ButtonSchema(52, 34, controller, "Select") { DisplayName = "s" },
+					new ButtonSchema(74, 34, controller, "Start") { DisplayName = "S" }
 				}
 			};
 		}
 
-		private static PadSchema ConsoleButtonsH()
+		protected static PadSchema ConsoleButtonsH()
 		{
 			return new ConsoleSchema
 			{
@@ -107,6 +107,31 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			};
+		}
+	}
+
+	[Schema("GB3x")]
+	public class Gb3XSchema : GbSchema
+	{
+		public override IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
+		{
+			yield return StandardControllerH(1);
+			yield return StandardControllerH(2);
+			yield return StandardControllerH(3);
+			yield return ConsoleButtonsH();
+		}
+	}
+
+	[Schema("GB4x")]
+	public class Gb4XSchema : GbSchema
+	{
+		public override IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
+		{
+			yield return StandardControllerH(1);
+			yield return StandardControllerH(2);
+			yield return StandardControllerH(3);
+			yield return StandardControllerH(4);
+			yield return ConsoleButtonsH();
 		}
 	}
 }
