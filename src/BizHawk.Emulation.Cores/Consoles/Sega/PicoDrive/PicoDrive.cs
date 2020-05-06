@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 				MmapHeapSizeKB = 4096,
 				PlainHeapSizeKB = 64,
 				SkipCoreConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
-				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
+				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			});
 
 			if (has32xBios)

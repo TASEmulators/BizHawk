@@ -95,7 +95,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 				PlainHeapSizeKB = 24 * 1024, // up to 16MB of cart ram
 				StartAddress = LibSaturnus.StartAddress,
 				SkipCoreConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
-				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
+				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			});
 
 			SetFirmwareCallbacks();

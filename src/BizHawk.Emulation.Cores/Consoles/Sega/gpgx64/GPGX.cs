@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				PlainHeapSizeKB = 64,
 				MmapHeapSizeKB = 1 * 1024,
 				SkipCoreConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
-				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
+				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			});
 
 			using (_elf.EnterExit())

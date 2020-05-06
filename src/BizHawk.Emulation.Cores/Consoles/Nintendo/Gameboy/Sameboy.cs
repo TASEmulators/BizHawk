@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 				PlainHeapSizeKB = 4,
 				MmapHeapSizeKB = 1024,
 				SkipCoreConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
-				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
+				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			});
 
 			_cgb = (rom[0x143] & 0xc0) == 0xc0 && !sgb;

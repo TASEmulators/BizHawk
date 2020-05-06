@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 				InvisibleHeapSizeKB = 6 * 1024,
 				PlainHeapSizeKB = 64,
 				SkipCoreConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
-				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
+				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			});
 
 			if (!_core.biz_init())
