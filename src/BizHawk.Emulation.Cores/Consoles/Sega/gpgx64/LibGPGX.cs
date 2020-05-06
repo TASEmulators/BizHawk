@@ -50,7 +50,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		}
 
 		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
-		public abstract bool gpgx_init(string feromextension, load_archive_cb feload_archive_cb, bool sixbutton, INPUT_SYSTEM system_a, INPUT_SYSTEM system_b, Region region, [In]InitSettings settings);
+		public abstract bool gpgx_init(
+			string feromextension,
+			load_archive_cb feload_archive_cb,
+			bool sixbutton, INPUT_SYSTEM system_a, INPUT_SYSTEM system_b, Region region, bool forcesram,
+			[In]InitSettings settings);
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void gpgx_get_fps(ref int num, ref int den);

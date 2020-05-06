@@ -43,6 +43,8 @@
 
 T_SRAM sram;
 
+extern int cinterface_force_sram;
+
 /****************************************************************************
  * A quick guide to external RAM on the Genesis
  *
@@ -201,17 +203,15 @@ void sram_init()
       /* this prevents backup RAM from being mapped in place of mirrored ROM when using S&K LOCK-ON feature */
       sram.on = 0;
     }
-
-    // by default, enable backup RAM for ROM smaller than 2MB
-	/*
-    else if (cart.romsize <= 0x200000)
+    else if (cinterface_force_sram && cart.romsize <= 0x200000)
     {
-      // 64KB static RAM mapped to $200000-$20ffff
+      // by default, gpgx enables saveram for all rom no bigger than 2MB
+	  // we don't do that because it confuses ram searches and debugging, and adds extra baggage to savestates
+	  // but some games do need it, so allow that to be hacked in here
       sram.start = 0x200000;
       sram.end = 0x20ffff;
       sram.on = 1;
     }
-	*/
   }
 }
 
