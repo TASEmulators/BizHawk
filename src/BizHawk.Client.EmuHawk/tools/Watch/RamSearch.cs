@@ -302,8 +302,9 @@ namespace BizHawk.Client.EmuHawk
 			_searches = new RamSearchEngine(_settings, MemoryDomains);
 			MessageLabel.Text = "Search restarted";
 			DoDomainSizeCheck();
-			NewSearch();
-			SetSize(_settings.Size);
+			_dropdownDontfire = true;
+			SetSize(_settings.Size); // Calls NewSearch() automatically
+			_dropdownDontfire = false;
 			HardSetDisplayTypeDropDown(_settings.Type);
 		}
 
@@ -680,7 +681,6 @@ namespace BizHawk.Client.EmuHawk
 			PopulateTypeDropDown();
 			_dropdownDontfire = false;
 			SpecificValueBox.Type = _settings.Type;
-			SetReboot(true);
 			NewSearch();
 		}
 
