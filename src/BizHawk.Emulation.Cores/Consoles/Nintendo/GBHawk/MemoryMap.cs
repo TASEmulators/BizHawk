@@ -153,20 +153,51 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				return RAM[addr];
 			}
 
-			if (addr < 0xFEA0)
-			{
-				if (ppu.OAM_access_read)
-				{
-					return OAM[addr - 0xFE00];
-				}
-
-				return 0xFF;
-			}
-
 			if (addr < 0xFF00)
 			{
-				// unmapped memory, returns 0xFF
-				return 0xFF;
+				if (addr < 0xFEA0)
+				{
+					if (ppu.OAM_access_read)
+					{
+						return OAM[addr - 0xFE00];
+					}
+
+					return 0xFF;
+				}
+
+				// unmapped memory, return depends on console and rendering
+				if (is_GBC)
+				{
+					if (_syncSettings.GBACGB)
+					{
+						// in GBA mode, it returns a reflection of the address somehow
+						if (ppu.OAM_access_read)
+						{
+							return (byte)((addr & 0xF0) | ((addr & 0xF0) >> 4));
+						}
+
+						return 0xFF;
+					}
+					else
+					{
+						// in a normal gbc it returns something from the upper two rows of OAM, still needs work
+						if (ppu.OAM_access_read)
+						{
+							return OAM[(addr & 0xF) | 0x80];
+						}
+
+						return 0xFF;
+					}
+				}
+				else
+				{
+					if (ppu.OAM_access_read)
+					{
+						return 0;
+					}
+
+					return 0xFF;
+				}
 			}
 
 			if (addr < 0xFF80)
@@ -251,9 +282,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			else if (addr >= 0xFE00)
 			{
-				if (addr < 0xFEA0 && ppu.OAM_access_write)
+				if (addr < 0xFEA0)
 				{
-					OAM[addr - 0xFE00] = value;
+					if (ppu.OAM_access_write) { OAM[addr - 0xFE00] = value; }
+				}
+				// unmapped memory writes depend on console
+				else
+				{
+					if (is_GBC)
+					{
+						if (_syncSettings.GBACGB)
+						{
+							// in GBA mode, writes have no effect as far as tested, might need more thorough tests
+						}
+						else
+						{
+							// in a normal gbc it writes the value to upper two rows of OAM, still needs work
+							if (ppu.OAM_access_write) { OAM[(addr & 0xF) | 0x80] = value; }
+						}
+					}
+					else
+					{
+						if (ppu.OAM_access_write) { OAM[addr - 0xFEA0 + 0x40] = 0; }
+					}
 				}
 			}
 			else if (addr >= 0xC000)
@@ -423,20 +474,51 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				return RAM[addr];
 			}
 
-			if (addr < 0xFEA0)
-			{
-				if (ppu.OAM_access_read)
-				{
-					return OAM[addr - 0xFE00];
-				}
-
-				return 0xFF;
-			}
-
 			if (addr < 0xFF00)
 			{
-				// unmapped memory, returns 0xFF
-				return 0xFF;
+				if (addr < 0xFEA0)
+				{
+					if (ppu.OAM_access_read)
+					{
+						return OAM[addr - 0xFE00];
+					}
+
+					return 0xFF;
+				}
+
+				// unmapped memory, return depends on console and rendering
+				if (is_GBC)
+				{
+					if (_syncSettings.GBACGB)
+					{
+						// in GBA mode, it returns a reflection of the address somehow
+						if (ppu.OAM_access_read)
+						{
+							return (byte)((addr & 0xF0) | ((addr & 0xF0) >> 4));
+						}
+
+						return 0xFF;
+					}
+					else
+					{
+						// in a normal gbc it returns something from the upper two rows of OAM, still needs work
+						if (ppu.OAM_access_read)
+						{
+							return OAM[(addr & 0xF) | 0x80];
+						}
+
+						return 0xFF;
+					}
+				}
+				else
+				{
+					if (ppu.OAM_access_read)
+					{
+						return 0;
+					}
+
+					return 0xFF;
+				}
 			}
 
 			if (addr < 0xFF80)
