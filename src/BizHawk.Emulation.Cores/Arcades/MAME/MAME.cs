@@ -522,8 +522,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			var domains = new List<MemoryDomain>();
 
 			_systemBusAddressShift = LibMAME.mame_lua_get_int(MAMELuaCommand.GetSpaceAddressShift);
-			var size = (long)LibMAME.mame_lua_get_double(MAMELuaCommand.GetSpaceAddressMask) + 1;
 			var dataWidth = LibMAME.mame_lua_get_int(MAMELuaCommand.GetSpaceDataWidth) >> 3; // mame returns in bits
+			var size = (long)LibMAME.mame_lua_get_double(MAMELuaCommand.GetSpaceAddressMask) + dataWidth;
 			var endianString = MameGetString(MAMELuaCommand.GetSpaceEndianness);
 			var deviceName = MameGetString(MAMELuaCommand.GetMainCPUName);
 			//var addrSize = (size * 2).ToString();
