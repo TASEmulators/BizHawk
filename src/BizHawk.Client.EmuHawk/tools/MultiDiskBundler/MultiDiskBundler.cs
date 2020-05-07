@@ -27,8 +27,11 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		private void MultiGameCreator_Load(object sender, EventArgs e)
+		private void MultiGameCreator_Load(object sender, EventArgs e) => Restart();
+
+		public void Restart()
 		{
+			FileSelectorPanel.Controls.Clear();
 			AddButton_Click(null, null);
 			AddButton_Click(null, null);
 
@@ -58,11 +61,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				FileSelectors.First().Path = MainForm.CurrentlyOpenRom;
+				Recalculate();
 			}
-		}
-
-		public void Restart()
-		{
 		}
 
 		private void CancelBtn_Click(object sender, EventArgs e)
@@ -117,9 +117,7 @@ namespace BizHawk.Client.EmuHawk
 			mdf.NameChanged += FileSelector_NameChanged;
 			mdf.SystemString = SystemDropDown.SelectedText;
 
-
 			groupBox.Controls.Add(mdf);
-
 			FileSelectorPanel.Controls.Add(groupBox);
 		}
 
