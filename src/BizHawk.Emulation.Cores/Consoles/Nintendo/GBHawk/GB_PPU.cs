@@ -459,11 +459,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			// i.e. just keeping track of the lowest x-value sprite
 			if (render_cycle == 0)
 			{
-				/*
-				OAM_access_read = false;
-				OAM_access_write = true;
-				VRAM_access_read = false;
-				*/
 				// window X is latched for the scanline, mid-line changes have no effect
 				window_x_latch = window_x;
 
@@ -620,6 +615,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					if (pixel_counter == 160)
 					{
+						hbl_countdown = 2;
 						read_case = 8;
 					}
 				}
@@ -874,15 +870,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					case 8: // done reading, we are now in phase 0
 						pre_render = true;
 
-						STAT &= 0xFC;
-						STAT |= 0x00;
+						if (hbl_countdown > 0)
+						{
+							hbl_countdown--;
+							if (hbl_countdown == 0)
+							{
+								VRAM_access_read = true;
+								VRAM_access_write = true;
+								OAM_access_read = true;
+								OAM_access_write = true;
 
-						if (STAT.Bit(3)) { HBL_INT = true; }
+								read_case = 18;
+							}
+							else
+							{
+								STAT &= 0xFC;
+								STAT |= 0x00;
 
-						OAM_access_read = true;
-						OAM_access_write = true;
-						VRAM_access_read = true;
-						VRAM_access_write = true;					
+								if (STAT.Bit(3)) { HBL_INT = true; }
+							}
+						}
 						break;
 
 					case 9:
@@ -901,6 +908,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					case 16:
 					case 17:
 						read_case--;
+						break;
+					case 18:
+						// end of rendering
 						break;
 				}
 				internal_cycle++;

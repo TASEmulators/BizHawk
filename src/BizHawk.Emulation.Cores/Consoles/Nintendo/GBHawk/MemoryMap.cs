@@ -58,13 +58,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					return RAM[addr - 0xE000];
 				}
+
 				if (addr >= 0xF000 && addr < 0xFE00)
 				{
 					return RAM[(RAM_Bank * 0x1000) + (addr - 0xF000)];
 				}
-				if (addr >= 0xFE00 && addr < 0xFEA0 && ppu.DMA_OAM_access)
+
+				if (addr >= 0xFE00 && addr < 0xFEA0)
 				{
-					return OAM[addr - 0xFE00];
+					if (ppu.DMA_OAM_access)
+					{
+						return OAM[addr - 0xFE00];
+					}	
+					else 
+					{
+						return 0xFF;
+					}				
 				}
 
 				if (addr >= 0xFF00 && addr < 0xFF80) // The game GOAL! Requires Hardware Regs to be accessible
@@ -127,7 +136,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 
 				if (ppu.pixel_counter == 160) 
-				{ 
+				{
 					return ppu.bus_return; 
 				}
 				return 0xFF;
@@ -323,14 +332,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					return RAM[addr - 0xE000];
 				}
+
 				if (addr >= 0xF000 && addr < 0xFE00)
 				{
 					return RAM[(RAM_Bank * 0x1000) + (addr - 0xF000)];
 				}
 
-				if (addr >= 0xFE00 && addr < 0xFEA0 && ppu.DMA_OAM_access)
+				if (addr >= 0xFE00 && addr < 0xFEA0)
 				{
-					return OAM[addr - 0xFE00];
+					if (ppu.DMA_OAM_access)
+					{
+						return OAM[addr - 0xFE00];
+					}
+					else
+					{
+						return 0xFF;
+					}
 				}
 
 				if (addr >= 0xFF00 && addr < 0xFF80) // The game GOAL! Requires Hardware Regs to be accessible

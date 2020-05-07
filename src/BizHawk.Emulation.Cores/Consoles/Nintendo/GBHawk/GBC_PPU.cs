@@ -269,7 +269,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public override void tick()
 		{
 			// Do HDMA ticks
-			if (HDMA_active)
+			if (HDMA_active && !Core.cpu.halted && !Core.cpu.stopped)
 			{
 				if (HDMA_length > 0)
 				{
@@ -704,11 +704,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			// i.e. just keeping track of the lowest x-value sprite
 			if (render_cycle == 0)
 			{
-				/*
-				OAM_access_read = false;
-				OAM_access_write = true;
-				VRAM_access_read = false;
-				*/
 				// window X is latched for the scanline, mid-line changes have no effect
 				window_x_latch = window_x;
 
@@ -1158,7 +1153,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					case 8: // done reading, we are now in phase 0
 						pre_render = true;
 
-						// the other interrupts appear to be delayed by 1 CPU cycle, so do the same here
 						if (hbl_countdown > 0)
 						{
 							hbl_countdown--;
@@ -1168,7 +1162,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								OAM_access_read = true;
 								OAM_access_write = true;
 								VRAM_access_read = true;
-								VRAM_access_write = true;						
+								VRAM_access_write = true;
+
+								read_case = 18;
 							}
 							else
 							{
@@ -1196,6 +1192,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					case 16:
 					case 17:
 						read_case--;
+						break;
+					case 18:
+						// end of rendering
 						break;
 				}
 				internal_cycle++;
