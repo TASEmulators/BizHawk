@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Components
 {
-	// TODO: Sound mixer is a good concept, but it needs to be refactored to use an ISoundProvider, it perhaps can enforce only recieving providers in Async mode
+	// TODO: Sound mixer is a good concept, but it needs to be refactored to use an ISoundProvider, it perhaps can enforce only receiving providers in Async mode
 	/// <summary>
 	/// An interface that extends a sound provider to provide mixing capabilities through the SoundMixer class
 	/// </summary>

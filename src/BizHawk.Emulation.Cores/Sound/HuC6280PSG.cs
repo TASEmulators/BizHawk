@@ -37,10 +37,10 @@ namespace BizHawk.Emulation.Cores.Components
 		private readonly Queue<QueuedCommand> commands = new Queue<QueuedCommand>(256);
 		private long frameStartTime, frameStopTime;
 
-		const int SampleRate = 44100;
-		const int PsgBase = 3580000;
-		static readonly byte[] LogScale = { 0, 0, 10, 10, 13, 13, 16, 16, 20, 20, 26, 26, 32, 32, 40, 40, 51, 51, 64, 64, 81, 81, 102, 102, 128, 128, 161, 161, 203, 203, 255, 255 };
-		static readonly byte[] VolumeReductionTable = { 0x1F, 0x1D, 0x1B, 0x19, 0x17, 0x15, 0x13, 0x10, 0x0F, 0x0D, 0x0B, 0x09, 0x07, 0x05, 0x03, 0x00 };
+		private const int SampleRate = 44100;
+		private const int PsgBase = 3580000;
+		private static readonly byte[] LogScale = { 0, 0, 10, 10, 13, 13, 16, 16, 20, 20, 26, 26, 32, 32, 40, 40, 51, 51, 64, 64, 81, 81, 102, 102, 128, 128, 161, 161, 203, 203, 255, 255 };
+		private static readonly byte[] VolumeReductionTable = { 0x1F, 0x1D, 0x1B, 0x19, 0x17, 0x15, 0x13, 0x10, 0x0F, 0x0D, 0x0B, 0x09, 0x07, 0x05, 0x03, 0x00 };
 
 		public byte MainVolumeLeft;
 		public byte MainVolumeRight;
@@ -56,27 +56,28 @@ namespace BizHawk.Emulation.Cores.Components
 			}
 		}
 
-		public void BeginFrame(long cycles)
+		internal void BeginFrame(long cycles)
 		{
 			while (commands.Count > 0)
 			{
 				var cmd = commands.Dequeue();
 				WritePSGImmediate(cmd.Register, cmd.Value);
 			}
+
 			frameStartTime = cycles;
 		}
 
-		public void EndFrame(long cycles)
+		internal void EndFrame(long cycles)
 		{
 			frameStopTime = cycles;
 		}
 
-		public void WritePSG(byte register, byte value, long cycles)
+		internal void WritePSG(byte register, byte value, long cycles)
 		{
 			commands.Enqueue(new QueuedCommand { Register = register, Value = value, Time = cycles - frameStartTime });
 		}
 
-		public void WritePSGImmediate(int register, byte value)
+		private void WritePSGImmediate(int register, byte value)
 		{
 			register &= 0x0F;
 			switch (register)
@@ -161,7 +162,7 @@ namespace BizHawk.Emulation.Cores.Components
 			MixSamples(samples, start, samples.Length - start);
 		}
 
-		void MixSamples(short[] samples, int start, int len)
+		private void MixSamples(short[] samples, int start, int len)
 		{
 			for (int i = 0; i < 6; i++)
 			{
@@ -170,7 +171,7 @@ namespace BizHawk.Emulation.Cores.Components
 			}
 		}
 
-		void MixChannel(short[] samples, int start, int len, PSGChannel channel)
+		private void MixChannel(short[] samples, int start, int len, PSGChannel channel)
 		{
 			if (channel.Enabled == false) return;
 			if (channel.DDA == false && channel.Volume == 0) return;
@@ -224,7 +225,7 @@ namespace BizHawk.Emulation.Cores.Components
 			}
 		}
 
-		public void SyncState(Serializer ser)
+		internal void SyncState(Serializer ser)
 		{
 			ser.BeginSection("PSG");
 			ser.Sync(nameof(MainVolumeLeft), ref MainVolumeLeft);
@@ -255,7 +256,7 @@ namespace BizHawk.Emulation.Cores.Components
 			ser.EndSection();
 		}
 
-		class QueuedCommand
+		private class QueuedCommand
 		{
 			public byte Register;
 			public byte Value;
