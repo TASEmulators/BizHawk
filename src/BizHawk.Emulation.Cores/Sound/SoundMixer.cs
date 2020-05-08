@@ -14,26 +14,21 @@ namespace BizHawk.Emulation.Cores.Components
 	// This is a straightforward class to mix/chain multiple ISoundProvider sources.
 	internal sealed class SoundMixer : IAsyncSoundProvider
 	{
-		private readonly List<IMixedSoundProvider> SoundProviders;
+		private readonly List<IMixedSoundProvider> _soundProviders;
 
 		public SoundMixer(params IMixedSoundProvider[] soundProviders)
 		{
-			SoundProviders = new List<IMixedSoundProvider>(soundProviders);
-		}
-
-		public void AddSource(IMixedSoundProvider source)
-		{
-			SoundProviders.Add(source);
+			_soundProviders = new List<IMixedSoundProvider>(soundProviders);
 		}
 
 		public void DisableSource(IMixedSoundProvider source)
 		{
-			SoundProviders.Remove(source);
+			_soundProviders.Remove(source);
 		}
 
 		public void DiscardSamples()
 		{
-			foreach (var soundSource in SoundProviders)
+			foreach (var soundSource in _soundProviders)
 			{
 				soundSource.DiscardSamples();
 			}
@@ -41,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Components
 
 		public void GetSamples(short[] samples)
 		{
-			foreach (var soundSource in SoundProviders)
+			foreach (var soundSource in _soundProviders)
 			{
 				soundSource.GetSamples(samples);
 			}
@@ -50,8 +45,8 @@ namespace BizHawk.Emulation.Cores.Components
 		// Splits the volume space equally between available sources.
 		public void EqualizeVolumes()
 		{
-			int eachVolume = short.MaxValue / SoundProviders.Count;
-			foreach (var source in SoundProviders)
+			int eachVolume = short.MaxValue / _soundProviders.Count;
+			foreach (var source in _soundProviders)
 			{
 				source.MaxVolume = eachVolume;
 			}
