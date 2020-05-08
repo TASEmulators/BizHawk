@@ -43,9 +43,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			ser.Sync(nameof(p4_read), ref p4_read);
 			ser.Sync(nameof(stand_alone), ref stand_alone);
 			ser.Sync(nameof(disablePSG), ref disablePSG);
-			ser.Sync(nameof(sampleclock), ref sampleclock);
-			ser.Sync(nameof(old_s_L), ref old_s_L);
-			ser.Sync(nameof(old_s_R), ref old_s_R);
+			ser.Sync("sampleclock", ref SampleClock);
+			ser.Sync("old_s_L", ref OldSl);
+			ser.Sync("old_s_R", ref OldSr);
 
 			if (SaveRAM != null)
 			{

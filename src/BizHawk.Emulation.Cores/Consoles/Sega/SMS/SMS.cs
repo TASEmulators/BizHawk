@@ -20,13 +20,14 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		isPorted: false,
 		isReleased: true)]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
-	public partial class SMS : IEmulator, ISaveRam, IInputPollable, IRegionable,
+	public partial class SMS : IEmulator, ISoundProvider, ISaveRam, IInputPollable, IRegionable,
 		IDebuggable, ISettable<SMS.SmsSettings, SMS.SmsSyncSettings>, ICodeDataLogger
 	{
 		[CoreConstructor(new[] { "SMS", "SG", "GG" })]
 		public SMS(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
 		{
-			ServiceProvider = new BasicServiceProvider(this);
+			var ser = new BasicServiceProvider(this);
+			ServiceProvider = ser;
 			Settings = (SmsSettings)settings ?? new SmsSettings();
 			SyncSettings = (SmsSyncSettings)syncSettings ?? new SmsSyncSettings();
 
@@ -77,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				HasYM2413 = true;
 			}
 
-			Cpu = new Z80A()
+			Cpu = new Z80A
 			{
 				ReadHardware = ReadPort,
 				WriteHardware = WritePort,
@@ -99,7 +100,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 
 			Vdp = new VDP(this, Cpu, IsGameGear ? VdpMode.GameGear : VdpMode.SMS, Region);
-			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(Vdp);
+			ser.Register<IVideoProvider>(Vdp);
 			PSG = new SN76489sms();
 			YM2413 = new YM2413();
 			//SoundMixer = new SoundMixer(YM2413, PSG);
@@ -108,10 +109,10 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				disablePSG = true;
 			}
 
-			blip_L.SetRates(3579545, 44100);
-			blip_R.SetRates(3579545, 44100);
+			BlipL.SetRates(3579545, 44100);
+			BlipR.SetRates(3579545, 44100);
 
-			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(this);
+			ser.Register<ISoundProvider>(this);
 
 			SystemRam = new byte[0x2000];
 
@@ -195,10 +196,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			Tracer = new TraceBuffer { Header = Cpu.TraceHeader };
 
-			var serviceProvider = ServiceProvider as BasicServiceProvider;
-			serviceProvider.Register<ITraceable>(Tracer);
-			serviceProvider.Register<IDisassemblable>(Cpu);
-			serviceProvider.Register<IStatable>(new StateSerializer(SyncState));
+			ser.Register(Tracer);
+			ser.Register<IDisassemblable>(Cpu);
+			ser.Register<IStatable>(new StateSerializer(SyncState));
 			Vdp.ProcessOverscan();
 
 			Cpu.ReadMemory = ReadMemory;
@@ -212,7 +212,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public void HardReset()
 		{
-
 		}
 
 		// Constants
@@ -230,7 +229,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public byte[] SystemRam;
 		public VDP Vdp;
 		public SN76489sms PSG;
-		private YM2413 YM2413;
+
 		public bool IsGameGear { get; set; }
 		public bool IsGameGear_C { get; set; }
 		public bool IsSG1000 { get; set; }
@@ -340,14 +339,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		/// </summary>
 		private Action<ushort, byte> WriteMemoryMapper;
 
-		/// <summary>
-		/// A dummy FetchMemory that simply reads the memory
-		/// </summary>
-		private byte FetchMemory_StubThunk(ushort address)
-		{
-			return ReadMemory(address);
-		}
-
 		private byte ReadPort(ushort port)
 		{
 			port &= 0xFF;
@@ -425,6 +416,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			else if (port == 0xF2 && HasYM2413) YM2413.DetectionValue = value;
 		}
 
-		private SmsSyncSettings.Regions _region;
+		private readonly SmsSyncSettings.Regions _region;
 	}
 }

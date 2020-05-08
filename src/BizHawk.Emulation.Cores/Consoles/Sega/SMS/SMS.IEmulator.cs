@@ -1,9 +1,8 @@
 ﻿using BizHawk.Emulation.Common;
-using System;
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
-	public partial class SMS : IEmulator, ISoundProvider
+	public partial class SMS : IEmulator
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
@@ -41,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		// not savestated variables
 		int s_L, s_R;
 
-		public bool FrameAdvance(IController controller, bool render, bool rendersound)
+		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
 			_controller = controller;
 			_lagged = true;
@@ -96,19 +95,19 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					s_L = PSG.current_sample_L;
 					s_R = PSG.current_sample_R;
 
-					if (s_L != old_s_L)
+					if (s_L != OldSl)
 					{
-						blip_L.AddDelta(sampleclock, s_L - old_s_L);
-						old_s_L = s_L;
+						BlipL.AddDelta(SampleClock, s_L - OldSl);
+						OldSl = s_L;
 					}
 
-					if (s_R != old_s_R)
+					if (s_R != OldSr)
 					{
-						blip_R.AddDelta(sampleclock, s_R - old_s_R);
-						old_s_R = s_R;
+						BlipR.AddDelta(SampleClock, s_R - OldSr);
+						OldSr = s_R;
 					}
 
-					sampleclock++;
+					SampleClock++;
 				}
 
 				if (Vdp.ScanLine == scanlinesPerFrame - 1)
@@ -172,95 +171,17 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public void Dispose()
 		{
-			if (blip_L != null)
+			if (BlipL != null)
 			{
-				blip_L.Dispose();
-				blip_L = null;
+				BlipL.Dispose();
+				BlipL = null;
 			}
 
-			if (blip_R != null)
+			if (BlipR != null)
 			{
-				blip_R.Dispose();
-				blip_R = null;
+				BlipR.Dispose();
+				BlipR = null;
 			}
 		}
-
-		#region Audio
-
-		public BlipBuffer blip_L = new BlipBuffer(4096);
-		public BlipBuffer blip_R = new BlipBuffer(4096);
-		const int blipbuffsize = 4096;
-
-		public uint sampleclock;
-		public int old_s_L = 0;
-		public int old_s_R = 0;
-
-		public bool CanProvideAsync => false;
-
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode != SyncSoundMode.Sync)
-			{
-				throw new NotSupportedException("Only sync mode is supported");
-			}
-		}
-
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async not supported");
-		}
-
-		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
-
-		public void GetSamplesSync(out short[] samples, out int nsamp)
-		{
-			if (!disablePSG)
-			{
-				blip_L.EndFrame(sampleclock);
-				blip_R.EndFrame(sampleclock);
-
-				nsamp = Math.Max(Math.Max(blip_L.SamplesAvailable(), blip_R.SamplesAvailable()), 1);
-				samples = new short[nsamp * 2];
-
-				blip_L.ReadSamplesLeft(samples, nsamp);
-				blip_R.ReadSamplesRight(samples, nsamp);
-
-				ApplyYMAudio(samples);
-			}
-			else
-			{
-				nsamp = 735;
-				samples = new short[nsamp * 2];
-				ApplyYMAudio(samples);
-			}
-
-			sampleclock = 0;
-		}
-
-		public void DiscardSamples()
-		{
-			blip_L.Clear();
-			blip_R.Clear();
-			sampleclock = 0;
-		}
-
-		public void ApplyYMAudio(short[] samples)
-		{
-			if (HasYM2413)
-			{
-				short[] fmsamples = new short[samples.Length];
-				YM2413.GetSamples(fmsamples);
-				//naive mixing. need to study more
-				int len = samples.Length;
-				for (int i = 0; i < len; i++)
-				{
-					short fmsamp = fmsamples[i];
-					samples[i] = (short)(samples[i] + fmsamp);
-				}
-			}
-		}
-
-		#endregion
-
 	}
 }

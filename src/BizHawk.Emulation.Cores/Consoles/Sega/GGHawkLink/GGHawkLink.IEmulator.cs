@@ -206,36 +206,36 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 					int s_L = L.PSG.current_sample_L;
 					int s_R = L.PSG.current_sample_R;
 
-					if (s_L != L.old_s_L)
+					if (s_L != L.OldSl)
 					{
-						L.blip_L.AddDelta(L.sampleclock, s_L - L.old_s_L);
-						L.old_s_L = s_L;
+						L.BlipL.AddDelta(L.SampleClock, s_L - L.OldSl);
+						L.OldSl = s_L;
 					}
 
-					if (s_R != L.old_s_R)
+					if (s_R != L.OldSr)
 					{
-						L.blip_R.AddDelta(L.sampleclock, s_R - L.old_s_R);
-						L.old_s_R = s_R;
+						L.BlipR.AddDelta(L.SampleClock, s_R - L.OldSr);
+						L.OldSr = s_R;
 					}
 
-					L.sampleclock++;
+					L.SampleClock++;
 
 					s_L = R.PSG.current_sample_L;
 					s_R = R.PSG.current_sample_R;
 
-					if (s_L != R.old_s_L)
+					if (s_L != R.OldSl)
 					{
-						R.blip_L.AddDelta(R.sampleclock, s_L - R.old_s_L);
-						R.old_s_L = s_L;
+						R.BlipL.AddDelta(R.SampleClock, s_L - R.OldSl);
+						R.OldSl = s_L;
 					}
 
-					if (s_R != R.old_s_R)
+					if (s_R != R.OldSr)
 					{
-						R.blip_R.AddDelta(R.sampleclock, s_R - R.old_s_R);
-						R.old_s_R = s_R;
+						R.BlipR.AddDelta(R.SampleClock, s_R - R.OldSr);
+						R.OldSr = s_R;
 					}
 
-					R.sampleclock++;
+					R.SampleClock++;
 				}
 
 				if (S == scanlinesPerFrame - 1)
