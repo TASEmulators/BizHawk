@@ -5,12 +5,11 @@
 // TODO The savestate support here is very simplistic and incomplete. However, this does not result in desyncs as the YM2413 is write-only.
 // TODO This should eventually be replaced, due to 1) uncertain licensing terms 2) This is not a native C# implementation, but a naive port.
 using System;
-
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Components
 {
-	public sealed class YM2413 : IMixedSoundProvider
+	public sealed class YM2413
 	{
 		public byte DetectionValue;
 		public byte RegisterLatch;
@@ -19,7 +18,6 @@ namespace BizHawk.Emulation.Cores.Components
 
 		public YM2413()
 		{
-			MaxVolume = short.MaxValue;
 			opll = OPLL_new(3579545, 44100, 0);
 		}
 
@@ -32,7 +30,6 @@ namespace BizHawk.Emulation.Cores.Components
 
 		public YM2413(ChipType type)
 		{
-			MaxVolume = short.MaxValue;
 			opll = OPLL_new(3579545, 44100, (int)type);
 		}
 
@@ -65,13 +62,11 @@ namespace BizHawk.Emulation.Cores.Components
 			OPLL_writeReg(opll, register, value);
 		}
 
-		public void DiscardSamples() { }
-		public int MaxVolume { get; set; }
 		public void GetSamples(short[] samples)
 		{
 			for (int i = 0; i < samples.Length; )
 			{
-				short val = (short)(calc(opll) * MaxVolume / short.MaxValue);
+				short val = calc(opll);
 				samples[i++] = val;
 				samples[i++] = val;
 			}
