@@ -23,12 +23,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		IInputPollable, IDebuggable, IDriveLight, ICodeDataLogger, IDisassemblable
 	{
 		[CoreConstructor("GEN")]
-		public GPGX(CoreComm comm, byte[] file, object settings, object syncSettings)
-			: this(comm, file, null, settings, syncSettings)
+		public GPGX(CoreComm comm, GameInfo game, byte[] file, object settings, object syncSettings)
+			: this(comm, game, file, null, settings, syncSettings)
 		{
 		}
 
-		public GPGX(CoreComm comm, byte[] rom, IEnumerable<Disc> cds, object settings, object syncSettings)
+		public GPGX(CoreComm comm, GameInfo game, byte[] rom, IEnumerable<Disc> cds, object settings, object syncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			// this can influence some things internally (autodetect romtype, etc)
@@ -114,7 +114,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 						break;
 				}
 
-				if (!Core.gpgx_init(romextension, LoadCallback, _syncSettings.UseSixButton, system_a, system_b, _syncSettings.Region, _syncSettings.GetNativeSettings()))
+				var initResult = Core.gpgx_init(
+					romextension,
+					LoadCallback, _syncSettings.UseSixButton, system_a, system_b, _syncSettings.Region, game["sram"],
+					_syncSettings.GetNativeSettings());
+
+				if (!initResult)
 					throw new Exception($"{nameof(Core.gpgx_init)}() failed");
 
 				{

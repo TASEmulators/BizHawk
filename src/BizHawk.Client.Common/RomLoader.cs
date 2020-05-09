@@ -557,7 +557,7 @@ namespace BizHawk.Client.Common
 							nextEmulator = null;
 							break;
 						case "GEN":
-							var genesis = new GPGX(nextComm, null, new[] { disc }, GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
+							var genesis = new GPGX(nextComm, game, null, new[] { disc }, GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
 							nextEmulator = genesis;
 							break;
 						case "SAT":
@@ -824,7 +824,7 @@ namespace BizHawk.Client.Common
 								{
 									return false;
 								}
-								nextEmulator = new GPGX(nextComm, null, genDiscs, GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
+								nextEmulator = new GPGX(nextComm, game, null, genDiscs, GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
 								break;
 							case "Game Gear":
 								var leftBytesGG = xmlGame.Assets.First().Value;

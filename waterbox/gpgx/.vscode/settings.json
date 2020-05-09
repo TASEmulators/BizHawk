@@ -2,5 +2,8 @@
 {
     "editor.tabSize": 4,
     "editor.insertSpaces": false,
-    "editor.detectIndentation": false
+	"editor.detectIndentation": false,
+	"files.associations": {
+		"callbacks.h": "c"
+	}
 }
