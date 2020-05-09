@@ -1,5 +1,5 @@
 ﻿using System;
-
+using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
@@ -169,6 +169,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			return true;
 		}
 
+		// NOTE: this is HLE only and should be replaced eventually. It relies on information that a physical adapter does not have to sync transfers.
+		// I think the adapter can see the high bit of each tranfer byte on its port, so is probably using that for syncing.
+		// But, the details aren't known.
 		public void do_frame_4x()
 		{
 			// advance one full frame
@@ -262,21 +265,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 						}
 						else
 						{
-							if ((A.serialport.clk_rate == -1) && A.serialport.serial_start)
+							if ((A.serialport.clk_rate == -1) && A.serialport.serial_control.Bit(7))
 							{
 								ready_to_transmit = true;
 
 								if ((status_byte & 0x20) == 0x20)
 								{
-									if (!((B.serialport.clk_rate == -1) && B.serialport.serial_start)) { ready_to_transmit = false; }
+									if (!((B.serialport.clk_rate == -1) && B.serialport.serial_control.Bit(7))) { ready_to_transmit = false; }
 								}
 								if ((status_byte & 0x40) == 0x40)
 								{
-									if (!((C.serialport.clk_rate == -1) && C.serialport.serial_start)) { ready_to_transmit = false; }
+									if (!((C.serialport.clk_rate == -1) && C.serialport.serial_control.Bit(7))) { ready_to_transmit = false; }
 								}
 								if ((status_byte & 0x80) == 0x80)
 								{
-									if (!((D.serialport.clk_rate == -1) && D.serialport.serial_start)) { ready_to_transmit = false; }
+									if (!((D.serialport.clk_rate == -1) && D.serialport.serial_control.Bit(7))) { ready_to_transmit = false; }
 								}
 							}
 
@@ -297,7 +300,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 							// first byte sent is 0xFE
 							if (ping_player == 1)
 							{
-								if ((A.serialport.clk_rate == -1) && A.serialport.serial_start)
+								if ((A.serialport.clk_rate == -1) && A.serialport.serial_control.Bit(7))
 								{
 									A.serialport.serial_clock = 1;
 									A.serialport.going_out = (byte)(A.serialport.serial_data >> 7);
@@ -308,7 +311,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 							}
 							else if (ping_player == 2)
 							{
-								if ((B.serialport.clk_rate == -1) && B.serialport.serial_start)
+								if ((B.serialport.clk_rate == -1) && B.serialport.serial_control.Bit(7))
 								{
 									B.serialport.serial_clock = 1;
 									B.serialport.going_out = (byte)(B.serialport.serial_data >> 7);
@@ -319,7 +322,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 							}
 							else if (ping_player == 3)
 							{
-								if ((C.serialport.clk_rate == -1) && C.serialport.serial_start)
+								if ((C.serialport.clk_rate == -1) && C.serialport.serial_control.Bit(7))
 								{
 									C.serialport.serial_clock = 1;
 									C.serialport.going_out = (byte)(C.serialport.serial_data >> 7);
@@ -330,7 +333,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 							}
 							else
 							{
-								if ((D.serialport.clk_rate == -1) && D.serialport.serial_start)
+								if ((D.serialport.clk_rate == -1) && D.serialport.serial_control.Bit(7))
 								{
 									D.serialport.serial_clock = 1;
 									D.serialport.going_out = (byte)(D.serialport.serial_data >> 7);
@@ -367,7 +370,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 							// the next 3 bytes are the status byte (which may be updated in between each transfer)
 							if (ping_player == 1)
 							{
-								if ((A.serialport.clk_rate == -1) && A.serialport.serial_start)
+								if ((A.serialport.clk_rate == -1) && A.serialport.serial_control.Bit(7))
 								{
 									A.serialport.serial_clock = 1;
 									A.serialport.going_out = (byte)(A.serialport.serial_data >> 7);
@@ -378,7 +381,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 							}
 							else if (ping_player == 2)
 							{
-								if ((B.serialport.clk_rate == -1) && B.serialport.serial_start)
+								if ((B.serialport.clk_rate == -1) && B.serialport.serial_control.Bit(7))
 								{
 									B.serialport.serial_clock = 1;
 									B.serialport.going_out = (byte)(B.serialport.serial_data >> 7);
@@ -389,7 +392,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 							}
 							else if (ping_player == 3)
 							{
-								if ((C.serialport.clk_rate == -1) && C.serialport.serial_start)
+								if ((C.serialport.clk_rate == -1) && C.serialport.serial_control.Bit(7))
 								{
 									C.serialport.serial_clock = 1;
 									C.serialport.going_out = (byte)(C.serialport.serial_data >> 7);
@@ -400,7 +403,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 							}
 							else
 							{
-								if ((D.serialport.clk_rate == -1) && D.serialport.serial_start)
+								if ((D.serialport.clk_rate == -1) && D.serialport.serial_control.Bit(7))
 								{
 									D.serialport.serial_clock = 1;
 									D.serialport.going_out = (byte)(D.serialport.serial_data >> 7);
@@ -522,21 +525,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 						}
 						else
 						{
-							if ((A.serialport.clk_rate == -1) && A.serialport.serial_start)
+							if ((A.serialport.clk_rate == -1) && A.serialport.serial_control.Bit(7))
 							{
 								ready_to_transmit = true;
 
 								if ((status_byte & 0x20) == 0x20)
 								{
-									if (!((B.serialport.clk_rate == -1) && B.serialport.serial_start)) { ready_to_transmit = false; }
+									if (!((B.serialport.clk_rate == -1) && B.serialport.serial_control.Bit(7))) { ready_to_transmit = false; }
 								}
 								if ((status_byte & 0x40) == 0x40)
 								{
-									if (!((C.serialport.clk_rate == -1) && C.serialport.serial_start)) { ready_to_transmit = false; }
+									if (!((C.serialport.clk_rate == -1) && C.serialport.serial_control.Bit(7))) { ready_to_transmit = false; }
 								}
 								if ((status_byte & 0x80) == 0x80)
 								{
-									if (!((D.serialport.clk_rate == -1) && D.serialport.serial_start)) { ready_to_transmit = false; }
+									if (!((D.serialport.clk_rate == -1) && D.serialport.serial_control.Bit(7))) { ready_to_transmit = false; }
 								}
 							}
 
@@ -671,7 +674,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 					{
 						A.serialport.going_out = (byte)(A.serialport.serial_data >> 7);
 
-						if ((B.serialport.clk_rate == -1) && B.serialport.serial_start && A.serialport.can_pulse)
+						if ((B.serialport.clk_rate == -1) && A.serialport.can_pulse)
 						{
 							B.serialport.serial_clock = A.serialport.serial_clock;
 							B.serialport.going_out = (byte)(B.serialport.serial_data >> 7);
@@ -687,7 +690,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 
 						B.serialport.going_out = (byte)(B.serialport.serial_data >> 7);
 
-						if ((A.serialport.clk_rate == -1) && A.serialport.serial_start && B.serialport.can_pulse)
+						if ((A.serialport.clk_rate == -1) && B.serialport.can_pulse)
 						{
 							A.serialport.serial_clock = B.serialport.serial_clock;
 							A.serialport.going_out = (byte)(A.serialport.serial_data >> 7);
@@ -709,7 +712,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 					{
 						C.serialport.going_out = (byte)(C.serialport.serial_data >> 7);
 
-						if ((D.serialport.clk_rate == -1) && D.serialport.serial_start && C.serialport.can_pulse)
+						if ((D.serialport.clk_rate == -1) && C.serialport.can_pulse)
 						{
 							D.serialport.serial_clock = C.serialport.serial_clock;
 							D.serialport.going_out = (byte)(D.serialport.serial_data >> 7);
@@ -725,7 +728,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 
 						D.serialport.going_out = (byte)(D.serialport.serial_data >> 7);
 
-						if ((C.serialport.clk_rate == -1) && C.serialport.serial_start && D.serialport.can_pulse)
+						if ((C.serialport.clk_rate == -1) && D.serialport.can_pulse)
 						{
 							C.serialport.serial_clock = D.serialport.serial_clock;
 							C.serialport.going_out = (byte)(C.serialport.serial_data >> 7);
@@ -749,7 +752,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 					{
 						A.serialport.going_out = (byte)(A.serialport.serial_data >> 7);
 
-						if ((D.serialport.clk_rate == -1) && D.serialport.serial_start && A.serialport.can_pulse)
+						if ((D.serialport.clk_rate == -1) && A.serialport.can_pulse)
 						{
 							D.serialport.serial_clock = A.serialport.serial_clock;
 							D.serialport.going_out = (byte)(D.serialport.serial_data >> 7);
@@ -765,7 +768,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 
 						D.serialport.going_out = (byte)(D.serialport.serial_data >> 7);
 
-						if ((A.serialport.clk_rate == -1) && A.serialport.serial_start && D.serialport.can_pulse)
+						if ((A.serialport.clk_rate == -1) && D.serialport.can_pulse)
 						{
 							A.serialport.serial_clock = D.serialport.serial_clock;
 							A.serialport.going_out = (byte)(A.serialport.serial_data >> 7);
@@ -787,7 +790,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 					{
 						B.serialport.going_out = (byte)(B.serialport.serial_data >> 7);
 
-						if ((C.serialport.clk_rate == -1) && C.serialport.serial_start && B.serialport.can_pulse)
+						if ((C.serialport.clk_rate == -1) && B.serialport.can_pulse)
 						{
 							C.serialport.serial_clock = B.serialport.serial_clock;
 							C.serialport.going_out = (byte)(C.serialport.serial_data >> 7);
@@ -803,7 +806,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 
 						C.serialport.going_out = (byte)(C.serialport.serial_data >> 7);
 
-						if ((B.serialport.clk_rate == -1) && B.serialport.serial_start && C.serialport.can_pulse)
+						if ((B.serialport.clk_rate == -1) && C.serialport.can_pulse)
 						{
 							B.serialport.serial_clock = C.serialport.serial_clock;
 							B.serialport.going_out = (byte)(B.serialport.serial_data >> 7);
@@ -827,7 +830,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 					{
 						C.serialport.going_out = (byte)(C.serialport.serial_data >> 7);
 
-						if ((A.serialport.clk_rate == -1) && A.serialport.serial_start && C.serialport.can_pulse)
+						if ((A.serialport.clk_rate == -1) && C.serialport.can_pulse)
 						{
 							A.serialport.serial_clock = C.serialport.serial_clock;
 							A.serialport.going_out = (byte)(A.serialport.serial_data >> 7);
@@ -843,7 +846,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 
 						A.serialport.going_out = (byte)(A.serialport.serial_data >> 7);
 
-						if ((C.serialport.clk_rate == -1) && C.serialport.serial_start && A.serialport.can_pulse)
+						if ((C.serialport.clk_rate == -1) && A.serialport.can_pulse)
 						{
 							C.serialport.serial_clock = A.serialport.serial_clock;
 							C.serialport.going_out = (byte)(C.serialport.serial_data >> 7);
@@ -865,7 +868,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 					{
 						B.serialport.going_out = (byte)(B.serialport.serial_data >> 7);
 
-						if ((D.serialport.clk_rate == -1) && D.serialport.serial_start && B.serialport.can_pulse)
+						if ((D.serialport.clk_rate == -1) && B.serialport.can_pulse)
 						{
 							D.serialport.serial_clock = B.serialport.serial_clock;
 							D.serialport.going_out = (byte)(D.serialport.serial_data >> 7);
@@ -881,7 +884,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 
 						D.serialport.going_out = (byte)(D.serialport.serial_data >> 7);
 
-						if ((B.serialport.clk_rate == -1) && B.serialport.serial_start && D.serialport.can_pulse)
+						if ((B.serialport.clk_rate == -1) && D.serialport.can_pulse)
 						{
 							B.serialport.serial_clock = D.serialport.serial_clock;
 							B.serialport.going_out = (byte)(B.serialport.serial_data >> 7);

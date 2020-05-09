@@ -9,7 +9,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public byte serial_control;
 		public byte serial_data;
-		public bool serial_start;
 		public bool can_pulse;
 		public int serial_clock;
 		public int serial_bits;
@@ -39,65 +38,40 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					break;
 
 				case 0xFF02:
-					if (((value & 0x80) > 0) && !serial_start)
+					if ((value & 0x1) == 1)
 					{
-						serial_start = true;
 						serial_bits = 8;
-						if ((value & 1) > 0)
-						{
-							if (((value & 2) > 0) && Core.GBC_compat)
-							{
-								clk_rate = 16;
-								serial_clock = (16 - (int)(Core.cpu.TotalExecutedCycles % 8)) + 1;
-							}
-							else
-							{
-								clk_rate = 512;
-								serial_clock = 512 - (int)(Core.cpu.TotalExecutedCycles % 256) + 1;
 
-								// there seems to be some clock inverting happening on some transfers
-								// not sure of the exact nature of it, here is one methor that gives correct result on one test rom but not others
-								/*
-								if (Core._syncSettings.GBACGB && Core.is_GBC)
+						if (((value & 2) > 0) && Core.GBC_compat)
+						{
+							clk_rate = 16;
+							serial_clock = (16 - (int)(Core.cpu.TotalExecutedCycles % 8)) + 1;
+						}
+						else
+						{
+							clk_rate = 512;
+							serial_clock = 512 - (int)(Core.cpu.TotalExecutedCycles % 256) + 1;
+
+							// there seems to be some clock inverting happening on some transfers
+							// not sure of the exact nature of it, here is one methor that gives correct result on one test rom but not others
+							/*
+							if (Core._syncSettings.GBACGB && Core.is_GBC)
+							{
+								if ((Core.TotalExecutedCycles % 256) > 127)
 								{
-									if ((Core.TotalExecutedCycles % 256) > 127)
-									{
-										serial_clock = (8 - (int)(Core.cpu.TotalExecutedCycles % 8)) + 1;
-									}
+									serial_clock = (8 - (int)(Core.cpu.TotalExecutedCycles % 8)) + 1;
 								}
-								*/
 							}
-							can_pulse = true;
+							*/
 						}
-						else
-						{
-							clk_rate = -1;
-							serial_clock = clk_rate;
-							can_pulse = false;
-						}
+						can_pulse = true;
 					}
-					else if (serial_start)
+					else
 					{
-						if ((value & 1) > 0)
-						{
-							if (((value & 2) > 0) && Core.GBC_compat)
-							{
-								clk_rate = 16;
-								serial_clock = (16 - (int)(Core.cpu.TotalExecutedCycles % 8)) + 1;
-							}
-							else
-							{
-								clk_rate = 512;
-								serial_clock = 512 - (int)(Core.cpu.TotalExecutedCycles % 256) + 1;
-							}					
-							can_pulse = true;
-						}
-						else
-						{
-							clk_rate = -1;
-							serial_clock = clk_rate;
-							can_pulse = false;
-						}
+						serial_bits = 8;
+						clk_rate = -1;
+						serial_clock = clk_rate;
+						can_pulse = false;
 					}
 
 					if (Core.GBC_compat)
@@ -116,9 +90,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public void serial_transfer_tick()
 		{
-			if (serial_start)
-			{
-				if (serial_clock > 0) { serial_clock--; }
+			if (serial_clock > 0) 
+			{ 
+				serial_clock--;
 
 				if (serial_clock == 0)
 				{
@@ -131,7 +105,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if (serial_bits == 0)
 						{
 							serial_control &= 0x7F;
-							serial_start = false;
 
 							if (Core.REG_FFFF.Bit(3)) { Core.cpu.FlagI = true; }
 							Core.REG_FF0F |= 0x08;
@@ -150,10 +123,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 			serial_control = 0x7E;
 			serial_data = 0x00;
-			serial_start = false;
-			serial_clock = 0;
-			serial_bits = 0;
-			clk_rate = 16;
+			serial_clock = -1;
+			serial_bits = 8;
+			clk_rate = -1;
 			going_out = 0;
 			coming_in = 1;		
 			can_pulse = false;
@@ -163,7 +135,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 			ser.Sync(nameof(serial_control), ref serial_control);
 			ser.Sync(nameof(serial_data), ref serial_data);
-			ser.Sync(nameof(serial_start), ref serial_start);
 			ser.Sync(nameof(serial_clock), ref serial_clock);
 			ser.Sync(nameof(serial_bits), ref serial_bits);
 			ser.Sync(nameof(clk_rate), ref clk_rate);

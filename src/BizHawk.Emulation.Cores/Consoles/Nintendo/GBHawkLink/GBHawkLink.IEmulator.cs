@@ -110,7 +110,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 					{
 						L.serialport.going_out = (byte)(L.serialport.serial_data >> 7);
 
-						if ((R.serialport.clk_rate == -1) && R.serialport.serial_start && L.serialport.can_pulse)
+						if ((R.serialport.clk_rate == -1) && L.serialport.can_pulse)
 						{
 							R.serialport.serial_clock = L.serialport.serial_clock;
 							R.serialport.going_out = (byte)(R.serialport.serial_data >> 7);
@@ -126,7 +126,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 						R.serialport.going_out = (byte)(R.serialport.serial_data >> 7);
 
-						if ((L.serialport.clk_rate == -1) && L.serialport.serial_start && R.serialport.can_pulse)
+						if ((L.serialport.clk_rate == -1) && R.serialport.can_pulse)
 						{
 							L.serialport.serial_clock = R.serialport.serial_clock;
 							L.serialport.going_out = (byte)(L.serialport.serial_data >> 7);

@@ -292,29 +292,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								OAM_access_write = false;
 								VRAM_access_read = false;
 								VRAM_access_write = false;
+								rendering_complete = false;
 							}
 						}
-						else
+						else if (!rendering_complete)
 						{
-							if (cycle >= 85)
+							if (cycle == 85)
 							{
-								if (cycle == 85)
-								{
-									// x-scroll is expected to be latched one cycle later 
-									// this is fine since nothing has started in the rendering until the second cycle
-									// calculate the column number of the tile to start with
-									x_tile = scroll_x >> 3;
-									render_offset = scroll_x % 8;
-								}
-
-								// render the screen and handle hblank
-								render(cycle - 85);
+								// x-scroll is expected to be latched one cycle later 
+								// this is fine since nothing has started in the rendering until the second cycle
+								// calculate the column number of the tile to start with
+								x_tile = scroll_x >> 3;
+								render_offset = scroll_x % 8;
 							}
+
+							// render the screen and handle hblank
+							render(cycle - 85);
 						}
 					}
 					else
 					{
-						if (cycle <= 80)
+						if (cycle < 83)
 						{
 							if (cycle == 2)
 							{							
@@ -345,14 +343,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								OAM_access_read = false;
 								OAM_access_write = true;
 								VRAM_access_read = false;
+								rendering_complete = false;
 							}
-							else 
+							else if (cycle < 80)
 							{
 								// here OAM scanning is performed
 								OAM_scan(cycle);
 							} 						
 						}
-						else if (cycle >= 83)
+						else if (!rendering_complete)
 						{
 							if (cycle == 84)
 							{
@@ -910,7 +909,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						read_case--;
 						break;
 					case 18:
-						// end of rendering
+						rendering_complete = true;
 						break;
 				}
 				internal_cycle++;

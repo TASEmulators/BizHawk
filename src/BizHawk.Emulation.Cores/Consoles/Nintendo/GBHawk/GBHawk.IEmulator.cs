@@ -92,7 +92,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 			for (int i = 0; i < 70224; i++)
 			{
-				// These things do not change speed in GBC double spped mode
+				// These things do not change speed in GBC double speed mode
 				audio.tick();
 				ppu.tick();
 				if (Use_MT) { mapper.Mapper_Tick(); }

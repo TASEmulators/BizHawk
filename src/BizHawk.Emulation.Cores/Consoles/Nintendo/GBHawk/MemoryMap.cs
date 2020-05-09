@@ -376,7 +376,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				if (addr >= 0xA000 && addr < 0xC000 && is_GBC)
 				{
 					// on GBC only, cart is accessible during DMA
-					return mapper.ReadMemoryHigh(addr);
+					return mapper.PeekMemoryHigh(addr);
 				}
 
 				if (addr >= 0xE000 && addr < 0xF000)
