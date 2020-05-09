@@ -155,7 +155,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			Cpu = new HuC6280(MemoryCallbacks);
 			VCE = new VCE();
 			VDC1 = new VDC(this, Cpu, VCE);
-			PSG = new HuC6280PSG();
+			PSG = new HuC6280PSG(735);
 			SCSI = new ScsiCDBus(this, disc);
 
 			Cpu.Logger = s => Tracer.Put(s);
@@ -166,7 +166,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				Cpu.ReadMemory21 = ReadMemory;
 				Cpu.WriteMemory21 = WriteMemory;
 				Cpu.WriteVDC = VDC1.WriteVDC;
-				_soundProvider = new FakeSyncSound(PSG, 735);
+				_soundProvider = PSG;
 				CDAudio = new CDAudio(null, 0);
 			}
 
@@ -178,7 +178,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				Cpu.ReadMemory21 = ReadMemorySGX;
 				Cpu.WriteMemory21 = WriteMemorySGX;
 				Cpu.WriteVDC = VDC1.WriteVDC;
-				_soundProvider = new FakeSyncSound(PSG, 735);
+				_soundProvider = PSG;
 				CDAudio = new CDAudio(null, 0);
 			}
 
@@ -193,9 +193,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				CDAudio = new CDAudio(disc);
 				SetCDAudioCallback();
 				PSG.MaxVolume = short.MaxValue * 3 / 4;
-				SoundMixer = new SoundMixer(PSG, CDAudio, ADPCM);
-				_soundProvider = new FakeSyncSound(SoundMixer, 735);
-				Cpu.ThinkAction = (cycles) => { SCSI.Think(); ADPCM.Think(cycles); };
+				SoundMixer = new SoundMixer(735, PSG, CDAudio, ADPCM);
+				_soundProvider = SoundMixer;
+				Cpu.ThinkAction = cycles => { SCSI.Think(); ADPCM.Think(cycles); };
 			}
 
 			if (rom.Length == 0x60000)

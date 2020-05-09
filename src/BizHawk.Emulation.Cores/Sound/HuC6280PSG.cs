@@ -11,8 +11,10 @@ namespace BizHawk.Emulation.Cores.Components
 	// It is embedded on the CPU and doesn't have its own part number. None the less, it is emulated separately from the 6280 CPU.
 
 	// Sound refactor TODO: IMixedSoundProvider must inherit ISoundProvider
-	public sealed class HuC6280PSG : IMixedSoundProvider
+	// TODo: this provides "fake" sync sound by hardcoding the number of samples
+	public sealed class HuC6280PSG : ISoundProvider, IMixedSoundProvider
 	{
+		private readonly int _spf;
 		public class PSGChannel
 		{
 			public ushort Frequency;
@@ -44,11 +46,11 @@ namespace BizHawk.Emulation.Cores.Components
 
 		public byte MainVolumeLeft;
 		public byte MainVolumeRight;
-		public int MaxVolume { get; set; }
+		public int MaxVolume { get; set; } = short.MaxValue;
 
-		public HuC6280PSG()
+		public HuC6280PSG(int spf)
 		{
-			MaxVolume = short.MaxValue;
+			_spf = spf;
 			Waves.InitWaves();
 			for (int i = 0; i < 8; i++)
 			{
@@ -147,7 +149,25 @@ namespace BizHawk.Emulation.Cores.Components
 
 		public void DiscardSamples() { }
 
-		public void GetSamples(short[] samples)
+		public bool CanProvideAsync => true;
+
+		public void SetSyncMode(SyncSoundMode mode) => SyncMode = mode;
+		public SyncSoundMode SyncMode { get; private set; }
+
+		public void GetSamplesSync(out short[] samples, out int nsamp)
+		{
+			if (SyncMode != SyncSoundMode.Sync)
+			{
+				throw new InvalidOperationException("Must be in sync mode to call a sync method");
+			}
+
+			short[] ret = new short[_spf * 2];
+			GetSamplesAsync(ret);
+			samples = ret;
+			nsamp = _spf;
+		}
+
+		public void GetSamplesAsync(short[] samples)
 		{
 			int elapsedCycles = (int)(frameStopTime - frameStartTime);
 			int start = 0;

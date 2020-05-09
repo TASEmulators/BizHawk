@@ -1,5 +1,6 @@
 ﻿using System;
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.DiscSystem;
 
 // The state of the cd player is quantized to the frame level.
@@ -139,7 +140,23 @@ namespace BizHawk.Emulation.Cores.Components
 			}
 		}
 
-		public void GetSamples(short[] samples)
+		public bool CanProvideAsync => true;
+		public void SetSyncMode(SyncSoundMode mode)
+		{
+			if (mode != SyncSoundMode.Async)
+			{
+				throw new NotImplementedException("Only async currently supported.");
+			}
+		}
+
+		public SyncSoundMode SyncMode => SyncSoundMode.Async;
+
+		public void GetSamplesSync(out short[] samples, out int nsamp)
+		{
+			throw new NotImplementedException("Sync sound not yet supported");
+		}
+
+		public void GetSamplesAsync(short[] samples)
 		{
 			if (Mode != CDAudioMode_Playing)
 				return;

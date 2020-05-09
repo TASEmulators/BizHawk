@@ -1,15 +1,16 @@
 ﻿using System;
 
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components;
 
 namespace BizHawk.Emulation.Cores.PCEngine
 {
 	public sealed class ADPCM : IMixedSoundProvider
 	{
-		ScsiCDBus SCSI;
-		PCEngine pce;
-		MetaspuSoundProvider SoundProvider = new MetaspuSoundProvider();
+		private readonly ScsiCDBus _scsi;
+		private readonly PCEngine _pce;
+		private readonly VecnaSynchronizer _synchronizer = new VecnaSynchronizer();
 
 		// ***************************************************************************
 
@@ -60,8 +61,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public ADPCM(PCEngine pcEngine, ScsiCDBus scsi)
 		{
-			pce = pcEngine;
-			SCSI = scsi;
+			_pce = pcEngine;
+			_scsi = scsi;
 			MaxVolume = 24576;
 		}
 
@@ -156,24 +157,24 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 			if (AdpcmCdDmaRequested)
 			{
-				if (SCSI.REQ && SCSI.IO && !SCSI.CD && !SCSI.ACK)
+				if (_scsi.REQ && _scsi.IO && !_scsi.CD && !_scsi.ACK)
 				{
-					byte dmaByte = SCSI.DataBits;
+					byte dmaByte = _scsi.DataBits;
 					RAM[WriteAddress++] = dmaByte;
 					AdpcmLength++;
 
-					SCSI.ACK = false;
-					SCSI.REQ = false;
-					SCSI.Think();
+					_scsi.ACK = false;
+					_scsi.REQ = false;
+					_scsi.Think();
 				}
 
-				if (SCSI.DataTransferInProgress == false)
+				if (_scsi.DataTransferInProgress == false)
 					Port180B = 0;
 			}
 
-			pce.IntADPCM = HalfReached;
-			pce.IntStop = EndReached;
-			pce.RefreshIRQ2();
+			_pce.IntADPCM = HalfReached;
+			_pce.IntStop = EndReached;
+			_pce.RefreshIRQ2();
 		}
 
 		// ***************************************************************************
@@ -281,7 +282,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		private void AdpcmEmitSample()
 		{
 			if (AdpcmIsPlaying == false)
-				SoundProvider.Buffer.EnqueueSample(0, 0);
+				_synchronizer.EnqueueSample(0, 0);
 			else
 			{
 				if (nextSampleTimer <= 0)
@@ -301,21 +302,37 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				}
 
 				short adjustedSample = (short)((playingSample - 2048) * MaxVolume / 2048);
-				SoundProvider.Buffer.EnqueueSample(adjustedSample, adjustedSample);
+				_synchronizer.EnqueueSample(adjustedSample, adjustedSample);
 			}
 		}
 
-		public void GetSamples(short[] samples)
+		public void GetSamplesAsync(short[] samples)
 		{
-			SoundProvider.GetSamplesAsync(samples);
+			_synchronizer.OutputSamples(samples, samples.Length / 2);
 		}
 
 		public void DiscardSamples()
 		{
-			SoundProvider.DiscardSamples();
+			_synchronizer.Clear();
 		}
 
 		public int MaxVolume { get; set; }
+		public bool CanProvideAsync => true;
+
+		public void SetSyncMode(SyncSoundMode mode)
+		{
+			if (mode != SyncSoundMode.Async)
+			{
+				throw new NotImplementedException("Only async currently supported.");
+			}
+		}
+
+		public SyncSoundMode SyncMode => SyncSoundMode.Async;
+
+		public void GetSamplesSync(out short[] samples, out int nsamp)
+		{
+			throw new NotImplementedException("Sync sound not yet supported");
+		}
 
 		// ***************************************************************************
 
@@ -351,9 +368,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			if (ser.IsReader)
 			{
 				Port180E = port180E;
-				pce.IntADPCM = HalfReached;
-				pce.IntStop = EndReached;
-				pce.RefreshIRQ2();
+				_pce.IntADPCM = HalfReached;
+				_pce.IntStop = EndReached;
+				_pce.RefreshIRQ2();
 			}
 		}
 	}
