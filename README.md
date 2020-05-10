@@ -186,7 +186,7 @@ Games may internally [save your progress](https://en.wikipedia.org/wiki/Saved_ga
 
 BizHawk can write in-game saves to disk - this is called flushing. Every time you save in the game (not to be confusing with *emulator savestates*), you should backup your saves! Go to `File` > `Save RAM` and hit `Flush Save Ram`. Note that some systems use SRAM for irrelevant tasks and store temporary data there, and the menu may become bold without in-game saves involved. Be aware when the game is *supposed to save* and flush accordingly.
 
-BizHawk can be configured to flush saves to disk automatically in `Config` > `Customize` > `Advanced AutoSaveRAM`. Opon closing the ROM (which includes any core reboot) BizHawk may try to flush save RAM automatically as well.
+BizHawk can be configured to flush saves to disk automatically in `Config` > `Customize` > `Advanced AutoSaveRAM`. Upon closing the ROM (which includes any core reboot) BizHawk may try to flush save RAM automatically as well.
 
 ```
 
