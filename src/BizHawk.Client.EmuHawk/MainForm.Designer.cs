@@ -2352,7 +2352,6 @@
 			this.PCESubMenu.Name = "PCESubMenu";
 			this.PCESubMenu.Size = new System.Drawing.Size(38, 17);
 			this.PCESubMenu.Text = "&PCE";
-			this.PCESubMenu.DropDownOpened += new System.EventHandler(this.PceSubMenu_DropDownOpened);
 			// 
 			// PceSettingsMenuItem
 			// 

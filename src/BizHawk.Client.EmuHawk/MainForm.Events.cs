@@ -1724,10 +1724,6 @@ namespace BizHawk.Client.EmuHawk
 
 		#region PCE
 
-		private void PceSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-		}
-
 		private void PceSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "PCE Settings");
