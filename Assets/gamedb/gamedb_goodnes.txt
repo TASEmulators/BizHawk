@@ -179,7 +179,7 @@ acc01149108010328c2839783c09b030650696a8	G	2-in-1 - Cosmo Cop + Cyber Monster (S
 7c4d0353d9f3ff2f064a47b11497fb159f41b1f0	U	2-in-1 - Donkey Kong Country + Jungle Book (Unl)	NES
 33930c8fd186490d99ee2fe387b987ac0831c123	G	2-in-1 - Donkey Kong Country 4 + Jungle Book 2 (Unl) [!]	NES
 25943e4d0130c62aed75d92fafab75f8470c0e75	C	2-in-1 - Donkey Kong Country 4 + Jungle Book 2 (Unl) [t1]	NES
-47fcca3baebba912638d0eda77fb1676e5f0bc8e	G	2-in-1 - Family Kid &amp; Aladdin 4 (Ch) [!]	NES
+47fcca3baebba912638d0eda77fb1676e5f0bc8e	G	2-in-1 - Family Kid & Aladdin 4 (Ch) [!]	NES
 fdc4b64f9d981bf024c93c0bf39c332e2189eb2e	G	2-in-1 - Mortal Kombat 3 Extra 60 People + Super Shinobi (King005) (Ch) [!]	NES
 ec5e8712f994f929218cea18dc9d7dff7eb55495	G	2-in-1 - Mortal Kombat V Turbo 30 + Super Aladdin (Unl) [p1][!]	NES
 754512f9474fba9a3bf50cf315ff5b33d106b29c	U	2-in-1 - Mortal Kombat VI + Mortal Kombat VII (NT-639) (Ch)	NES
@@ -521,7 +521,7 @@ ebd9d408ae00cc23b460a60a77c39336008c5671	H	Abarenradin (Abarenbou Tengu Hack)	NE
 eafc03f2f232660ed3e9eccf27c2f2527c8fe50b	U	ABM Study Card v5.0 (Ch)	NES
 0f75aec9810879bdc65269bbb1596542bd23ddf5	H	Abnormal Contra (Hack)	NES
 64a897591d15f88ffd05773baf690dfa60f0d0d2	U	About 8 Eyes (R) (PD)	NES
-f8287728e18eefd9b190597555f1f370b183a388	U	About Advanced Dungeons &amp; Dragons - Heroes of the Lance (R) (PD)	NES
+f8287728e18eefd9b190597555f1f370b183a388	U	About Advanced Dungeons & Dragons - Heroes of the Lance (R) (PD)	NES
 9f194dc9272c92ffa84f2ac2eee4dd0548f56c54	U	About Adventures in the Magic Kingdom (R) (PD)	NES
 c9671a576386702a8dc2242bd2b8f20e53025ffd	U	About Adventures of Bayou Billy, The (R) (PD)	NES
 2835208676b1e9ac56a06389762b58cd4caf186b	U	About Armadillo (R) (PD)	NES
@@ -563,7 +563,7 @@ a7db1747bc516ed061c4d5c70afcaa474ddb5cb0	U	Action53 Games 0.03 by Damian Yerrick
 e2e0219e2da3727d01306e46d358f69ef83c92e1	U	Action53 Games MGC2012_2MBIT by Damian Yerrick (PD)	NES
 d94968e5a043ff6a75d22a4351f86963c444b56f	U	Action53 Games MGC2012_4MBIT by Damian Yerrick (PD)	NES
 906b9c03ebb1fdb7ccfe263efcbb97ac19608757	H	Actual Haou no Tairiku (Haou no Tairiku Hack)	NES
-45bb116d48c9726104def6268a49384e628054fe	U	Add &amp; Sub (Unl)	NES
+45bb116d48c9726104def6268a49384e628054fe	U	Add & Sub (Unl)	NES
 22ad5c56344105eee089b6fa8d00657180ed0e00	U	Add Em Up (Ch) (Wxn)	NES
 08c039c6114ee51b987b27d301b273c3c20114cc	G	Addams Family, The (E) (M3) [!]	NES
 c831410a86a9b759a1e5ec53e8e1ee6789c79569	G	Addams Family, The (U) [!]	NES
@@ -587,39 +587,39 @@ ec1811b0248129413f5be023c0b0d81a87f6e0d2	T	Addams Family, The - Pugsley's Scaven
 cd6914dd1a78ba33570b4e578f4347df2f4e31b6	C	Addams Family, The - Pugsley's Scavenger Hunt (U) [t1]	NES
 cf504f5bc99886f933161057a20a9539b6f86ed6	B	Adoventoro Tcheco v1.0 (Kero Kero Keroppi no Daibouken 2 Hack) [o1]	NES
 93985ed946c8f21bb18f8b88c4830eaf8b62d551	H	Adoventoro Tcheco v1.0 (Kero Kero Keroppi no Daibouken 2 Hack)	NES
-273f99684dbdfcf27cfca58136132898217bfbc5	G	Advanced Dungeons &amp; Dragons - Dragon Strike (U) [!]	NES
-7a888c56b64ffd5a1b2653fa6b6d9c207fb6006f	B	Advanced Dungeons &amp; Dragons - Dragon Strike (U) [b1]	NES
-d8737a92ad99191fa6653dc2094be81e6c9a1b9e	B	Advanced Dungeons &amp; Dragons - Dragon Strike (U) [o1]	NES
-cca11ec6eb0721d6d2e7decbca51b66d5d8548c8	B	Advanced Dungeons &amp; Dragons - Dragon Strike (U) [o2]	NES
-00ae1a7b6cdf1c9b624b29488f54485103b8dcf1	C	Advanced Dungeons &amp; Dragons - Dragon Strike (U) [t1]	NES
-fba99cd8cfb0d44eaaee300dcd194520b41a92b2	G	Advanced Dungeons &amp; Dragons - Dragons of Flame (J) [!]	NES
-f788bbc014cd740449e1a0299feae7234d69a5cf	B	Advanced Dungeons &amp; Dragons - Dragons of Flame (J) [b1]	NES
-071c57824564e1081f721ced5db1981c6d3ca034	B	Advanced Dungeons &amp; Dragons - Dragons of Flame (J) [o1]	NES
-25f20b279a150136b337b10f618a251a34c90b73	T	Advanced Dungeons &amp; Dragons - Dragons of Flame (J) [T+Eng1.03_DvD Translations]	NES
-e40073be785c7cce9c256e4be575b425e8719340	G	Advanced Dungeons &amp; Dragons - Heroes of the Lance (J) [!]	NES
-963bea44db79635410a56faa0eefcec79509ca93	U	Advanced Dungeons &amp; Dragons - Heroes of the Lance (U) (Prototype)	NES
-d9328b02916d365c97ed21074333257968e55f91	G	Advanced Dungeons &amp; Dragons - Heroes of the Lance (U) [!]	NES
-b091cd121984c85dd850979948401f6c10613e5a	B	Advanced Dungeons &amp; Dragons - Heroes of the Lance (U) [b1]	NES
-e5564fb5a4b54dbd103803e2e15acd6d390b1cdf	B	Advanced Dungeons &amp; Dragons - Heroes of the Lance (U) [b2]	NES
-cc4a023e907b5fa3f415ebb284d64f7b95f92114	B	Advanced Dungeons &amp; Dragons - Heroes of the Lance (U) [b3]	NES
-5207100c4d9eb4dd9cd2e2f8b5814fa4ed3aca6e	B	Advanced Dungeons &amp; Dragons - Heroes of the Lance (U) [o1]	NES
-9c2a89479470349deddb38cdbda242b26b6589fd	B	Advanced Dungeons &amp; Dragons - Heroes of the Lance (U) [o2]	NES
-2611badd4923ab1ef83db2e98b6c944416dc1367	T	Advanced Dungeons &amp; Dragons - Heroes of the Lance (U) [T+Rus0.30_Chief-Net]	NES
-5bc6b4d5e2b27983e678376a95b041ecb3abe819	G	Advanced Dungeons &amp; Dragons - Hillsfar (J) [!]	NES
-5f86c4b515c1cdaf18dd22f60a2d59116e9b2f05	B	Advanced Dungeons &amp; Dragons - Hillsfar (J) [b1]	NES
-988c9199cafb56b54691af8bedaf161fbf9353d1	B	Advanced Dungeons &amp; Dragons - Hillsfar (J) [b2]	NES
-94af82688883d02b83733b36e300d1e742940e1a	B	Advanced Dungeons &amp; Dragons - Hillsfar (J) [o1]	NES
-806eb65696593368bef9b62e63b1d8624c637030	G	Advanced Dungeons &amp; Dragons - Hillsfar (U) [!]	NES
-4aedc8efec6f8df4bfbab548a9523778b6fc9594	B	Advanced Dungeons &amp; Dragons - Hillsfar (U) [o1]	NES
-22261fef73fb2161c513632ff614af0ca17d8105	G	Advanced Dungeons &amp; Dragons - Pool of Radiance (J) [!]	NES
-7eca79e1a9684dbbf30dd282c3b44f0fd25deae4	B	Advanced Dungeons &amp; Dragons - Pool of Radiance (J) [b1]	NES
-8612381815f8d64128310ee201bb1b8560c98ab9	B	Advanced Dungeons &amp; Dragons - Pool of Radiance (J) [b1][o1]	NES
-28eaac4e09ed87fa70a10cca7f70a112502f5c8f	B	Advanced Dungeons &amp; Dragons - Pool of Radiance (J) [o1]	NES
-a056d59aae542b15ce5361ab49954e746863029b	B	Advanced Dungeons &amp; Dragons - Pool of Radiance (J) [o2]	NES
-81eefb9fa6552b95bb086552a043097d6ecdd051	G	Advanced Dungeons &amp; Dragons - Pool of Radiance (U) [!]	NES
-7ddd3a1811b62e94a59d1f5c17045dfd786640a7	B	Advanced Dungeons &amp; Dragons - Pool of Radiance (U) [b1]	NES
-995527d6333875de6ab0d99b00a77b3b6901db8c	B	Advanced Dungeons &amp; Dragons - Pool of Radiance (U) [b2]	NES
-b9aab0a607081b9409da575ce15aa5e1517e52d9	B	Advanced Dungeons &amp; Dragons - Pool of Radiance (U) [o1]	NES
+273f99684dbdfcf27cfca58136132898217bfbc5	G	Advanced Dungeons & Dragons - Dragon Strike (U) [!]	NES
+7a888c56b64ffd5a1b2653fa6b6d9c207fb6006f	B	Advanced Dungeons & Dragons - Dragon Strike (U) [b1]	NES
+d8737a92ad99191fa6653dc2094be81e6c9a1b9e	B	Advanced Dungeons & Dragons - Dragon Strike (U) [o1]	NES
+cca11ec6eb0721d6d2e7decbca51b66d5d8548c8	B	Advanced Dungeons & Dragons - Dragon Strike (U) [o2]	NES
+00ae1a7b6cdf1c9b624b29488f54485103b8dcf1	C	Advanced Dungeons & Dragons - Dragon Strike (U) [t1]	NES
+fba99cd8cfb0d44eaaee300dcd194520b41a92b2	G	Advanced Dungeons & Dragons - Dragons of Flame (J) [!]	NES
+f788bbc014cd740449e1a0299feae7234d69a5cf	B	Advanced Dungeons & Dragons - Dragons of Flame (J) [b1]	NES
+071c57824564e1081f721ced5db1981c6d3ca034	B	Advanced Dungeons & Dragons - Dragons of Flame (J) [o1]	NES
+25f20b279a150136b337b10f618a251a34c90b73	T	Advanced Dungeons & Dragons - Dragons of Flame (J) [T+Eng1.03_DvD Translations]	NES
+e40073be785c7cce9c256e4be575b425e8719340	G	Advanced Dungeons & Dragons - Heroes of the Lance (J) [!]	NES
+963bea44db79635410a56faa0eefcec79509ca93	U	Advanced Dungeons & Dragons - Heroes of the Lance (U) (Prototype)	NES
+d9328b02916d365c97ed21074333257968e55f91	G	Advanced Dungeons & Dragons - Heroes of the Lance (U) [!]	NES
+b091cd121984c85dd850979948401f6c10613e5a	B	Advanced Dungeons & Dragons - Heroes of the Lance (U) [b1]	NES
+e5564fb5a4b54dbd103803e2e15acd6d390b1cdf	B	Advanced Dungeons & Dragons - Heroes of the Lance (U) [b2]	NES
+cc4a023e907b5fa3f415ebb284d64f7b95f92114	B	Advanced Dungeons & Dragons - Heroes of the Lance (U) [b3]	NES
+5207100c4d9eb4dd9cd2e2f8b5814fa4ed3aca6e	B	Advanced Dungeons & Dragons - Heroes of the Lance (U) [o1]	NES
+9c2a89479470349deddb38cdbda242b26b6589fd	B	Advanced Dungeons & Dragons - Heroes of the Lance (U) [o2]	NES
+2611badd4923ab1ef83db2e98b6c944416dc1367	T	Advanced Dungeons & Dragons - Heroes of the Lance (U) [T+Rus0.30_Chief-Net]	NES
+5bc6b4d5e2b27983e678376a95b041ecb3abe819	G	Advanced Dungeons & Dragons - Hillsfar (J) [!]	NES
+5f86c4b515c1cdaf18dd22f60a2d59116e9b2f05	B	Advanced Dungeons & Dragons - Hillsfar (J) [b1]	NES
+988c9199cafb56b54691af8bedaf161fbf9353d1	B	Advanced Dungeons & Dragons - Hillsfar (J) [b2]	NES
+94af82688883d02b83733b36e300d1e742940e1a	B	Advanced Dungeons & Dragons - Hillsfar (J) [o1]	NES
+806eb65696593368bef9b62e63b1d8624c637030	G	Advanced Dungeons & Dragons - Hillsfar (U) [!]	NES
+4aedc8efec6f8df4bfbab548a9523778b6fc9594	B	Advanced Dungeons & Dragons - Hillsfar (U) [o1]	NES
+22261fef73fb2161c513632ff614af0ca17d8105	G	Advanced Dungeons & Dragons - Pool of Radiance (J) [!]	NES
+7eca79e1a9684dbbf30dd282c3b44f0fd25deae4	B	Advanced Dungeons & Dragons - Pool of Radiance (J) [b1]	NES
+8612381815f8d64128310ee201bb1b8560c98ab9	B	Advanced Dungeons & Dragons - Pool of Radiance (J) [b1][o1]	NES
+28eaac4e09ed87fa70a10cca7f70a112502f5c8f	B	Advanced Dungeons & Dragons - Pool of Radiance (J) [o1]	NES
+a056d59aae542b15ce5361ab49954e746863029b	B	Advanced Dungeons & Dragons - Pool of Radiance (J) [o2]	NES
+81eefb9fa6552b95bb086552a043097d6ecdd051	G	Advanced Dungeons & Dragons - Pool of Radiance (U) [!]	NES
+7ddd3a1811b62e94a59d1f5c17045dfd786640a7	B	Advanced Dungeons & Dragons - Pool of Radiance (U) [b1]	NES
+995527d6333875de6ab0d99b00a77b3b6901db8c	B	Advanced Dungeons & Dragons - Pool of Radiance (U) [b2]	NES
+b9aab0a607081b9409da575ce15aa5e1517e52d9	B	Advanced Dungeons & Dragons - Pool of Radiance (U) [o1]	NES
 1e28999c356e61b1df86830e6a44a28064b5c817	G	Adventure Island (E) [!]	NES
 22ee75b82f4a6412aa6bb940e109704975b95185	G	Adventure Island (U) [!]	NES
 1fda3bdfb434a51ce1b0d8ecc1048bead586aa78	B	Adventure Island (U) [b1]	NES
@@ -762,7 +762,7 @@ a13dd4b5b89d9409f17cddac89d6cd9565ce515f	G	Adventures of Gilligan's Island, The 
 3ab83784dae8e89b6008210e0b5cfbd70819afcf	C	Adventures of Gilligan's Island, The (U) [t1]	NES
 38b3d3a93b7d6f586eea866323bd3fb9e4eca3a8	H	Adventures of Ice Mario (SMB1 Hack) [a1]	NES
 6f8e6102756ba3bc48ae2a859f6f9d0b29f790df	H	Adventures of Ice Mario (SMB1 Hack)	NES
-31c22dc41dc70de595ba39e4851a71072d6c5f2c	U	Adventures of Lex &amp; Grim, The (PD)	NES
+31c22dc41dc70de595ba39e4851a71072d6c5f2c	U	Adventures of Lex & Grim, The (PD)	NES
 c43118388202bf348bae335eb2311ab8a0562bcb	U	Adventures of Lolo (E) (VC)	NES
 d37c8003bf052404248ffaca106f7d32c75c8076	G	Adventures of Lolo (E) [!]	NES
 ad9ef7f61d97ecfc837f5f1eeb952935867306d7	G	Adventures of Lolo (J) [!]	NES
@@ -887,8 +887,8 @@ f532c6e8d7d0443005f236bcfa2e6da52c0ac538	G	Ai Senshi Nicol (FDS Conversion) [p2]
 df393788cf372f5b2e173ae3ee2b488d5d8b9efb	B	Aigiina no Yogen - From The Legend of Balubalouk (J) [b1]	NES
 e277bdd8af36aaef9637477498834b1ed2074ae8	B	Aigiina no Yogen - From The Legend of Balubalouk (J) [b2]	NES
 e58d3146df2f09b3f98e4a35d132e05aa3347843	B	Aigiina no Yogen - From The Legend of Balubalouk (J) [p1]	NES
-a4f42cbcb63f4d827055cbe1ced904ae0ccac4f7	T	Aigiina no Yogen - From The Legend of Balubalouk (J) [T+Eng0.30_KP Hacks&amp;Trans]	NES
-6305751b6a7c3b24aa7f5f182dec3a4358bf3bcc	T	Aigiina no Yogen - From The Legend of Balubalouk (J) [T+Eng0.30_KP Hacks&amp;Trans][t1]	NES
+a4f42cbcb63f4d827055cbe1ced904ae0ccac4f7	T	Aigiina no Yogen - From The Legend of Balubalouk (J) [T+Eng0.30_KP Hacks&Trans]	NES
+6305751b6a7c3b24aa7f5f182dec3a4358bf3bcc	T	Aigiina no Yogen - From The Legend of Balubalouk (J) [T+Eng0.30_KP Hacks&Trans][t1]	NES
 4bf385b7915e35d7fef3cd311caf9fdc7cb38048	C	Aigiina no Yogen - From The Legend of Balubalouk (J) [t1]	NES
 93e4145c080847cf0d1c95e69d0f78e957fa4101	H	Air (SMB1 Hack)	NES
 e6aa612a23d571cf1b2196d13f0a4ec420d15efb	U	AIR - NES Visual Novel System V20040617 by NES Hack Factory (PD)	NES
@@ -1558,14 +1558,14 @@ c1dd041495a2ea02ffbbc583344b87137df8e984	B	Back to the Future (U) [b4]	NES
 48404a7e46e0070aa1920130858315926d31b97e	B	Back to the Future (U) [o1]	NES
 5f262291edbcb4b4a72ca057bf8b379853af4556	T	Back to the Future (U) [T+Pol]	NES
 24cc7674f742deec05ed246824f1bd6511ffdad6	H	Back to the Future 4 by RyanVG (Back to the Future Hack)	NES
-641de451615a4f7004039308628c043b5ade6c31	H	Back to the Future 5 &amp; 6 by RyanVG (Back to the Future II &amp; III Hack)	NES
+641de451615a4f7004039308628c043b5ade6c31	H	Back to the Future 5 & 6 by RyanVG (Back to the Future II & III Hack)	NES
 4c79761269d0b9aaff4f9f9dcb28d8a106fa92b6	G	Back to the Future IV (Unl) [!]	NES
-42ac1fcea405552892bed982a90a99d1292e4cdb	G	Back to the Future Part II &amp; III (U) [!]	NES
-8338134a546f6c068c2b9e1bfdec45cab78d9571	B	Back to the Future Part II &amp; III (U) [b1]	NES
-4476ea6bbd674b081d4b36574c2746afad97abd6	B	Back to the Future Part II &amp; III (U) [b2]	NES
-060e5dde73dc19d931d561b28251a7c501771182	B	Back to the Future Part II &amp; III (U) [b3]	NES
-22ee09afdc4cb6f9790b9f87b0f49bcb19c6dce7	B	Back to the Future Part II &amp; III (U) [o1]	NES
-081f5da36bb4aaa0ad0b3bfafbf71a2ff1062697	C	Back to the Future Part II &amp; III (U) [t1]	NES
+42ac1fcea405552892bed982a90a99d1292e4cdb	G	Back to the Future Part II & III (U) [!]	NES
+8338134a546f6c068c2b9e1bfdec45cab78d9571	B	Back to the Future Part II & III (U) [b1]	NES
+4476ea6bbd674b081d4b36574c2746afad97abd6	B	Back to the Future Part II & III (U) [b2]	NES
+060e5dde73dc19d931d561b28251a7c501771182	B	Back to the Future Part II & III (U) [b3]	NES
+22ee09afdc4cb6f9790b9f87b0f49bcb19c6dce7	B	Back to the Future Part II & III (U) [o1]	NES
+081f5da36bb4aaa0ad0b3bfafbf71a2ff1062697	C	Back to the Future Part II & III (U) [t1]	NES
 798d3f6cc1bf9a2dfcbb586c92fbd3e63ae7c172	U	Background Music by Tony Young (PD)	NES
 86d389f46bde561394a7e69ff960f747a5ef297b	U	Backstroke (Ch) (Wxn)	NES
 92584bffe7d2ee47a01b480826466f78ff59f7dc	U	Bad Apple 2 v2009-12-24 (PD)	NES
@@ -1988,9 +1988,9 @@ fc950662b264fea1ad9f240360fde542283f04e1	U	Batman Title Screen Remake by Macbee 
 91643c910a8c26b65e32cd8e4e8426d78d33713c	H	Batman V1.1 by Macbee (Batman Hack)	NES
 e517ce0acda2a46341290b96fec12b2be51924ee	H	Batman V1.2 by Macbee (Batman Hack)	NES
 1a9fe00ebc831950bced93c556d1116543456460	U	Bator Demo (PD)	NES
-f6177c581ed0b1d4625ec478caec3aa5939dc229	G	Batsu &amp; Terii - Makyou no Tetsujin Race (J) [!]	NES
-6a7a694a7bbcf59df990eec4be2c1157f104d43c	B	Batsu &amp; Terii - Makyou no Tetsujin Race (J) [o1]	NES
-b7256a34856009ac3cdfeeb8142dd3fcc9c17c2e	G	Batsu &amp; Terii - Makyou no Tetsujin Race (R) [!]	NES
+f6177c581ed0b1d4625ec478caec3aa5939dc229	G	Batsu & Terii - Makyou no Tetsujin Race (J) [!]	NES
+6a7a694a7bbcf59df990eec4be2c1157f104d43c	B	Batsu & Terii - Makyou no Tetsujin Race (J) [o1]	NES
+b7256a34856009ac3cdfeeb8142dd3fcc9c17c2e	G	Batsu & Terii - Makyou no Tetsujin Race (R) [!]	NES
 e3b20fb71dc6b44c911627cd321968a36578ea66	U	Battle Ball (1-0) by UDISI (PD)	NES
 5915f487be763881a1f06cfdce689b1e1a503dd2	U	Battle Ball (1-1) by UDISI (PD)	NES
 19fbe1d547f0cf085c99a80bbd3073f4d1ed33a0	U	Battle Ball (1-21) by UDISI (PD)	NES
@@ -2161,16 +2161,16 @@ bd753272dcf11cb9b4c5d1e8d45436754897c97d	B	Battleship (U) [b2]	NES
 086e81e018013de624c9d18fb24771e503d68c47	B	Battleship (U) [b4]	NES
 94dca436e97e7b6bfcfd4e13da6f08c5c81f2e2c	B	Battletank 2000 (Joust Hack) [o1]	NES
 5f0c7a2228e747d174590dc54a090daa73c74761	H	Battletank 2000 (Joust Hack)	NES
-a5ab91d6a0df0bce2349a6322c536f4705287a4f	G	Battletoads &amp; Double Dragon - The Ultimate Team (E) [!]	NES
-61832d0f955cff169ff059bd557be4f522b15b7c	G	Battletoads &amp; Double Dragon - The Ultimate Team (U) [!]	NES
-b87d42a12a0f94a08b8476b1b2a0f1a36e050e3c	B	Battletoads &amp; Double Dragon - The Ultimate Team (U) [o1]	NES
-a2f86721e107a039157724de5f69d3c1625ca214	G	Battletoads &amp; Double Dragon - The Ultimate Team (U) [p1][!]	NES
-3af7d0f3d2c7a105f958b205ae71fee6fa31536d	B	Battletoads &amp; Double Dragon - The Ultimate Team (U) [p2]	NES
-dfe30b43464bb61470b4306d9f24f6ef43c685c2	B	Battletoads &amp; Double Dragon - The Ultimate Team (U) [p3]	NES
-ecdfa52d66575bede303075206e73c4a0aeb619a	C	Battletoads &amp; Double Dragon - The Ultimate Team (U) [t1]	NES
-01ba0fa9342c6f8e196eeb8dbf49a3407df37a34	C	Battletoads &amp; Double Dragon - The Ultimate Team (U) [t2]	NES
-4cea01a1ca8d219a696c4c8b0f04465da3aa872f	C	Battletoads &amp; Double Dragon - The Ultimate Team (U) [t3]	NES
-1b7750a413fcd4d907da8654a9b78c7aa0ed423c	H	Battletoads &amp; Double Dragon - The Ultimate Team by myaso (Hack)	NES
+a5ab91d6a0df0bce2349a6322c536f4705287a4f	G	Battletoads & Double Dragon - The Ultimate Team (E) [!]	NES
+61832d0f955cff169ff059bd557be4f522b15b7c	G	Battletoads & Double Dragon - The Ultimate Team (U) [!]	NES
+b87d42a12a0f94a08b8476b1b2a0f1a36e050e3c	B	Battletoads & Double Dragon - The Ultimate Team (U) [o1]	NES
+a2f86721e107a039157724de5f69d3c1625ca214	G	Battletoads & Double Dragon - The Ultimate Team (U) [p1][!]	NES
+3af7d0f3d2c7a105f958b205ae71fee6fa31536d	B	Battletoads & Double Dragon - The Ultimate Team (U) [p2]	NES
+dfe30b43464bb61470b4306d9f24f6ef43c685c2	B	Battletoads & Double Dragon - The Ultimate Team (U) [p3]	NES
+ecdfa52d66575bede303075206e73c4a0aeb619a	C	Battletoads & Double Dragon - The Ultimate Team (U) [t1]	NES
+01ba0fa9342c6f8e196eeb8dbf49a3407df37a34	C	Battletoads & Double Dragon - The Ultimate Team (U) [t2]	NES
+4cea01a1ca8d219a696c4c8b0f04465da3aa872f	C	Battletoads & Double Dragon - The Ultimate Team (U) [t3]	NES
+1b7750a413fcd4d907da8654a9b78c7aa0ed423c	H	Battletoads & Double Dragon - The Ultimate Team by myaso (Hack)	NES
 37e99fa67463140b2875d1079ade1ea7f3f2821f	G	Battletoads (E) [!]	NES
 cbe809d8091d4421548e63c7b5e0b7ae972b45cf	G	Battletoads (J) [!]	NES
 a9fd5d06382c88293462161bd8d882eb859b98d0	C	Battletoads (J) [t2]	NES
@@ -2195,7 +2195,7 @@ a5b0bf325118b719367f8d7816504e04877452e7	B	Be-Bop-Highschool - Koukousei Gokurak
 f07f637a55fa92b6875adb08ab9864446141440c	H	Beast Machines (Ikari Hack)	NES
 b44a2ba9f96d3810d10801e6e3a4f68f112fbb6a	G	Beat n Box (K) (Unl) [!]	NES
 8bd8815ac4c09077145f2640bc37a5ac0e2b41ef	G	Beauty and the Beast (E) [!]	NES
-062f1bca6345f1346f96bf776768cb4a5fec7f2b	U	Beavis &amp; Butt-head Title Screen by Macbee 1.0 (PD)	NES
+062f1bca6345f1346f96bf776768cb4a5fec7f2b	U	Beavis & Butt-head Title Screen by Macbee 1.0 (PD)	NES
 b47df8791af3e39ac486b5d09b313109e8aeebcf	G	Bee 52 (Camerica) [!]	NES
 4af2961903378200d6db3ebc2cb77a28af7e3c3c	B	Bee 52 (Camerica) [o1]	NES
 48a7de1e5288428c6efb51c2d036efcce7f13384	T	Bee 52 (Camerica) [T+Rus_Magicteam]	NES
@@ -2255,16 +2255,16 @@ b77195b1c6bfc9be2e2b7c8e00a4f1e4eb717f52	B	Bible Adventures (Wisdom Tree) (V1.3)
 9459027fe75f19e2bf8f6c86ffd3410445a2f28e	B	Bible Buffet (Wisdom Tree) (V6.0) [b1]	NES
 f28787091c0a1d219de7c1ac574b5f8ba94dfe04	B	Bible Buffet (Wisdom Tree) (V6.0) [o1]	NES
 10e4ad1a87f4522960574d651f2a832596ce156f	H	Bicycle Race (F-1 Race Hack)	NES
-75c71cc6d187c855b3e982edcea8eccb729ee917	G	Big Bird's Hide &amp; Speak (U) [!]	NES
-12eb07f634424deb6a2336c2c3f0ce34722ebbca	B	Big Bird's Hide &amp; Speak (U) [b1]	NES
-396b8bad5215abd2ce509edaf5cd4a65ed0c6548	B	Big Bird's Hide &amp; Speak (U) [b1][o1]	NES
-1fdbfdda17130146dc78c3914976de451726d0e1	B	Big Bird's Hide &amp; Speak (U) [b2]	NES
-5002d3ce6a5c809969e6eda26f58c872045e017c	B	Big Bird's Hide &amp; Speak (U) [b3]	NES
-f529a06bd217c6e5678a6eb3e4bf6db5120a7d43	B	Big Bird's Hide &amp; Speak (U) [b4]	NES
-56564ef56008813863efeb82acc0f9008c9a7175	B	Big Bird's Hide &amp; Speak (U) [b6]	NES
-8d9dda7bfb0ee4192f8e1c6ddfed3167b565bb75	B	Big Bird's Hide &amp; Speak (U) [b7]	NES
-91201e10a1e91f10a06b98512275108ebd7d3f1d	B	Big Bird's Hide &amp; Speak (U) [o1]	NES
-89d7f554a62ce24f3442b64cfea4cc7bd5ecb0d1	B	Big Bird's Hide &amp; Speak (U) [o2]	NES
+75c71cc6d187c855b3e982edcea8eccb729ee917	G	Big Bird's Hide & Speak (U) [!]	NES
+12eb07f634424deb6a2336c2c3f0ce34722ebbca	B	Big Bird's Hide & Speak (U) [b1]	NES
+396b8bad5215abd2ce509edaf5cd4a65ed0c6548	B	Big Bird's Hide & Speak (U) [b1][o1]	NES
+1fdbfdda17130146dc78c3914976de451726d0e1	B	Big Bird's Hide & Speak (U) [b2]	NES
+5002d3ce6a5c809969e6eda26f58c872045e017c	B	Big Bird's Hide & Speak (U) [b3]	NES
+f529a06bd217c6e5678a6eb3e4bf6db5120a7d43	B	Big Bird's Hide & Speak (U) [b4]	NES
+56564ef56008813863efeb82acc0f9008c9a7175	B	Big Bird's Hide & Speak (U) [b6]	NES
+8d9dda7bfb0ee4192f8e1c6ddfed3167b565bb75	B	Big Bird's Hide & Speak (U) [b7]	NES
+91201e10a1e91f10a06b98512275108ebd7d3f1d	B	Big Bird's Hide & Speak (U) [o1]	NES
+89d7f554a62ce24f3442b64cfea4cc7bd5ecb0d1	B	Big Bird's Hide & Speak (U) [o2]	NES
 6208f86f22c8445d3936ad5fd715069083ab6ab8	H	Big Kids Pro-Wrestling by RyanVG (Tag Team Pro-Wrestling Hack)	NES
 91cf3e24b02ae75b7be395e524d9545bee50ab81	G	Big Nose Freaks Out (Camerica) (Aladdin) [!]	NES
 60550d03da8eba47778b2c6ea708ca96364d0148	B	Big Nose Freaks Out (Camerica) (Aladdin) [o1]	NES
@@ -2312,10 +2312,10 @@ ed31a87395748473cc106d7fa454ba04a53f1dbd	B	Bikkuriman World - Gekitou Sei Senshi
 dab4f077c1220c1cee5c56d8c9fdaf797af78d15	B	Bikkuriman World - Gekitou Sei Senshi (J) [o2]	NES
 d07fc347b34340ec3bee5b5366d51a97d235f0f5	H	Bikkuriman World - Gekitou Sei Senshi (J) [p1][hM02]	NES
 14de52da6383e9f6c72d812c728d8be95cc4d8ff	T	Bikkuriman World - Gekitou Sei Senshi (J) [T+Eng]	NES
-bb3a2c8fcc6801a3658b5cd4e5c10bbbe1a96cb1	G	Bill &amp; Ted's Excellent Video Game Adventure (U) [!]	NES
-e1abcfdf970177b00e8a3c8a37f433bbd66c6f58	B	Bill &amp; Ted's Excellent Video Game Adventure (U) [b1]	NES
-1fd46ea2cb68aa9a02eb7e42703df393af6c65ef	B	Bill &amp; Ted's Excellent Video Game Adventure (U) [b2]	NES
-b6e33ffe9574e09443c80bd07f20aa7cbdce98c8	B	Bill &amp; Ted's Excellent Video Game Adventure (U) [o1]	NES
+bb3a2c8fcc6801a3658b5cd4e5c10bbbe1a96cb1	G	Bill & Ted's Excellent Video Game Adventure (U) [!]	NES
+e1abcfdf970177b00e8a3c8a37f433bbd66c6f58	B	Bill & Ted's Excellent Video Game Adventure (U) [b1]	NES
+1fd46ea2cb68aa9a02eb7e42703df393af6c65ef	B	Bill & Ted's Excellent Video Game Adventure (U) [b2]	NES
+b6e33ffe9574e09443c80bd07f20aa7cbdce98c8	B	Bill & Ted's Excellent Video Game Adventure (U) [o1]	NES
 a677abfc4fa5ddd76092e41ae02cf3fd7eb05f9b	G	Bill Elliott's NASCAR Challenge (U) [!]	NES
 e81f0dd2d7982ca6caefe8bc9afb09235cc58a47	B	Bill Elliott's NASCAR Challenge (U) [b1]	NES
 3320ccda897692e186aa559d4939dea6cab7aafd	B	Bill Elliott's NASCAR Challenge (U) [b2]	NES
@@ -2689,8 +2689,8 @@ ea8923de0101a2fa05aa86b193244e06746d5a9f	C	Booby Kids (J) [t1]	NES
 d73bff0c21555d9d313b3adaf95e56dcba0fdf94	B	Boogerman II (Rex-Soft) [o1]	NES
 1569ea8845e6bb128da9823fcb493d3aec0cc130	G	Boogerman II (Rex-Soft) [U][!].unf	NES
 b2d980ac5e1a19e11e8240fb627973c8642311b7	B	Boogerman II (Rex-Soft) [U][o1].unf	NES
-f3908331337357ec80b4a24f49b73ebbb0f3048d	T	Boris &amp; Boa Boa (Nuts &amp; Milk Hack) [T+Rus_Cool-Spot]	NES
-a7346085c5d6b761d04b9b2744a2ede13603fe3e	H	Boris &amp; Boa Boa (Nuts &amp; Milk Hack)	NES
+f3908331337357ec80b4a24f49b73ebbb0f3048d	T	Boris & Boa Boa (Nuts & Milk Hack) [T+Rus_Cool-Spot]	NES
+a7346085c5d6b761d04b9b2744a2ede13603fe3e	H	Boris & Boa Boa (Nuts & Milk Hack)	NES
 fbfd34bb9a3a36789b5dac2d7aed0bf85217c2fc	H	Boss Rush (Castlevania Hack) [a1]	NES
 1d8a29a5d9c203e7d735696ef2099a9e746226ab	H	Boss Rush (Castlevania Hack)	NES
 0096f2938f633e1708c5e310dd0d80e2ec628b67	U	Boss Test (PD)	NES
@@ -2780,7 +2780,7 @@ b65d1ff7c15dc37808fdc6c92919c868b1694b65	B	BreakThru (U) [b4]	NES
 bb336fb04e0003ea495afdc19cb13aad1007a230	B	BreakThru (U) [o5]	NES
 8e43fc66fb280ac4330320f2a979a0e48e34fa9a	T	BreakThru (U) [T+Rus1.2_Multisoft]	NES
 58114b87cd95478361eb22ce3b0f173ca81729fc	G	Brilliant Com Pack 2 (K) [!]	NES
-0538fdcac01639743e5fc053ef83089b6d7654cd	G	Bruce &amp; Leo (Tom &amp; Jerry) (Unl) [!]	NES
+0538fdcac01639743e5fc053ef83089b6d7654cd	G	Bruce & Leo (Tom & Jerry) (Unl) [!]	NES
 c3637f75754e7c3c665f5d9583502663dccf1ea0	B	Brush Roller (Unl) [b1]	NES
 1895e8d17b8721e49f802c0c247765f3dca1a1eb	B	Brush Roller (Unl) [o1]	NES
 314700b6c4e1006b4f48ba856fd290b07c54c6d2	U	Brush Roller (Unl)	NES
@@ -3139,8 +3139,8 @@ dc441137c9c0cf5fde9cb7fd8d8ae795777ca372	H	Captain Tsubasa Vol. II - Chin3 by Zi
 54d55d350114fd3346020c3f11b57774c9b7ea00	H	Captain Tsubasa Vol. II - China vs Japan (Hack)	NES
 d9d049618757de596a2e3230726cf7c4a099c961	H	Captain Tsubasa Vol. II - Chinese Team Going Forward in Rainstorm (Hack)	NES
 cd12f75b44883312c1c92817a47ca97bb082e585	H	Captain Tsubasa Vol. II - Chinese Team Running in the Rain (Hack)	NES
-45a1cded0f8ab9763fe99476e6c7d7192ad92f37	H	Captain Tsubasa Vol. II - Circle &amp; Cross (Hack)	NES
-b915156298b2e589b7fa1711a19fb61d19f9ff8b	H	Captain Tsubasa Vol. II - Club Plus &amp; Fix Edition (Hack)	NES
+45a1cded0f8ab9763fe99476e6c7d7192ad92f37	H	Captain Tsubasa Vol. II - Circle & Cross (Hack)	NES
+b915156298b2e589b7fa1711a19fb61d19f9ff8b	H	Captain Tsubasa Vol. II - Club Plus & Fix Edition (Hack)	NES
 ca77e6d6d0f3762fb0e28ef8393a6dfb3a859720	B	Captain Tsubasa Vol. II - Comback of Twins J Edition (Hack) [o1]	NES
 a94d3768b57d1037b76cae5e559937cea1152f22	H	Captain Tsubasa Vol. II - Comback of Twins J Edition (Hack)	NES
 ad449f5d79a68b2b98b0ace2907dd58d36e13011	H	Captain Tsubasa Vol. II - Comback of Twins K Edition (Hack)	NES
@@ -3257,7 +3257,7 @@ ed65670dcfadc367c4d141669654d27a29907aaa	H	Captain Tsubasa Vol. II - New Artists
 497c6fe476abef31de7d1e692aa5fb9ad31ad7ec	H	Captain Tsubasa Vol. II - New Platinum Partner (Hack)	NES
 72b411a5e93105c1c02f16419513884b547c550b	H	Captain Tsubasa Vol. II - New Road of Emperor Plus (Hack)	NES
 a02b202044bff2c06f9649e45adea5c10f88c764	H	Captain Tsubasa Vol. II - New Road of Emperor Remake Run Wildly Edition (Hack)	NES
-4ae227e0d97577b4f1d0a4386a7f2833b70bbede	H	Captain Tsubasa Vol. II - Nippon no Ovari by sisqo &amp; kral 89 (Hack)	NES
+4ae227e0d97577b4f1d0a4386a7f2833b70bbede	H	Captain Tsubasa Vol. II - Nippon no Ovari by sisqo & kral 89 (Hack)	NES
 af9d5e442cac049bc6ee97bef21832c915f8fcbe	H	Captain Tsubasa Vol. II - OMG by Heroy (Hack)	NES
 1c7d72b8019bf8977f3694121c94de3a05707348	H	Captain Tsubasa Vol. II - Onur Edition 2011 (Hack)	NES
 c4947d4d58cffc8d80e6b3240e0f2e775d0e6a92	H	Captain Tsubasa Vol. II - Orbit of Honor (Hack)	NES
@@ -3275,7 +3275,7 @@ ad0c06288f4ac3427524ee33f72c64e2026828ce	H	Captain Tsubasa Vol. II - Prince Nye 
 2025ce107819e051765845e15bdabbdcabb2450b	H	Captain Tsubasa Vol. II - Prince with Unlimited Allure (Hack)	NES
 6641d0f7166219e302b53a0391e78f2bdca0c942	H	Captain Tsubasa Vol. II - Prologue of New Legend (Hack)	NES
 32f51d3c805b1594bca7a5128663fcbe377f9df9	H	Captain Tsubasa Vol. II - Prologue of New Tanaru Legend (Hack)	NES
-1f229c31596e5dec91d410c72b616d519aea78d5	H	Captain Tsubasa Vol. II - Raiju &amp; Ocelot Edition (Hack)	NES
+1f229c31596e5dec91d410c72b616d519aea78d5	H	Captain Tsubasa Vol. II - Raiju & Ocelot Edition (Hack)	NES
 ce161826da7f3e46f3943bc05da23b5c866aaaae	H	Captain Tsubasa Vol. II - Raise of Western (Hack)	NES
 adddaf33336b9721aa4dafb07eda260fd5229bdf	H	Captain Tsubasa Vol. II - Rampion Edition (Hack)	NES
 a0759a83d16996fc6084eb95af2f0db1b2f345e9	H	Captain Tsubasa Vol. II - Relin Edition v1.1 by mazong1123 (Hack)	NES
@@ -3313,7 +3313,7 @@ e8e48b44700c1efaf8c03e1752b03190febecc4f	H	Captain Tsubasa Vol. II - Sino-Korean
 e4d0b8f696fca5c834215e8f1c92ca7008687a46	H	Captain Tsubasa Vol. II - Soccer Kiss (Hack)	NES
 9de5ffb7096c436ec5914d1d6dbbff508487638b	H	Captain Tsubasa Vol. II - Soccer Master in Argentina (Hack)	NES
 15a5fc93c408ca75e9c7af3ec20355b101566941	H	Captain Tsubasa Vol. II - Sonunda Basardim Ilk Hackim (Hack)	NES
-dacfa7746cd9772000bf7a7797727bf69003b447	H	Captain Tsubasa Vol. II - Speed of Ball Controlable &amp; All Footballer (Hack)	NES
+dacfa7746cd9772000bf7a7797727bf69003b447	H	Captain Tsubasa Vol. II - Speed of Ball Controlable & All Footballer (Hack)	NES
 ae4dcc4971b095da02cdd15506a95a848ad0994e	H	Captain Tsubasa Vol. II - Speed of Ball Controlable (Hack)	NES
 90f3a515d7fc88faa4dcecc02544df6dcfb28fff	H	Captain Tsubasa Vol. II - Star 4 (Hack)	NES
 390b7a42c5a05cb85ef3758886aec39e0433be95	H	Captain Tsubasa Vol. II - Story of Ryuji Amamiya (Hack)	NES
@@ -3359,7 +3359,7 @@ f1110e5206ebe7261caca6bf65dc8629ba3aa643	H	Captain Tsubasa Vol. II - The New Joi
 78d3750224ac99d57c8c549f49daf8bd4327f5e3	H	Captain Tsubasa Vol. II - The Road to the King of World Cup of Romania (Hack)	NES
 08d80198896115199a243fd8989549eb824bf19f	H	Captain Tsubasa Vol. II - The World of King (Hack)	NES
 fec3bd3b15e2c178ba6ccddf168321b86a5b4b90	H	Captain Tsubasa Vol. II - The World of Master (Hack)	NES
-d638f9a142c98b9a295a303e5de3a9fb32731daf	H	Captain Tsubasa Vol. II - The World of Matsuyama &amp; Emperor (Hack)	NES
+d638f9a142c98b9a295a303e5de3a9fb32731daf	H	Captain Tsubasa Vol. II - The World of Matsuyama & Emperor (Hack)	NES
 db23d6e2e46a103a98ab28da85c9d8ca6ff46177	H	Captain Tsubasa Vol. II - Three Musketeers of Uruguay (Hack)	NES
 9bc51e53dcb4a006d4548909b3d0d8046a1b80ab	H	Captain Tsubasa Vol. II - Tiger Arrive by hy1897 (Hack)	NES
 263445f5044a2ecda0da9bb742033c143d8111ae	H	Captain Tsubasa Vol. II - Tiger Arrive III (Hack)	NES
@@ -3369,9 +3369,9 @@ bea5f2dd7f36a90f796bfb4b5dbb8caec26cc8cf	H	Captain Tsubasa Vol. II - Tiger Threa
 dec1df219d5440f0dfd1bb89bf8c9cf112052187	H	Captain Tsubasa Vol. II - Tiger Wake Up (Hack)	NES
 abcc4f5e5956bd4b81907417f9c9449627cbb209	H	Captain Tsubasa Vol. II - To Cleave a Path Toward the World (Hack)	NES
 4b938a7c140412a36d901ec34d4e6e3ab2316733	H	Captain Tsubasa Vol. II - Tong's Final Perfect Edition (Hack)	NES
-1fbd50eac32baa20a3c691607e2b7dccabc5a988	H	Captain Tsubasa Vol. II - True &amp; False Poland (Hack)	NES
+1fbd50eac32baa20a3c691607e2b7dccabc5a988	H	Captain Tsubasa Vol. II - True & False Poland (Hack)	NES
 c56e2fc9b792d1d4955f09d9406645f4dda3b422	H	Captain Tsubasa Vol. II - Two Brothers Edition (Hack)	NES
-909592b6fa254e85e6dfdd39450602ccd087d337	H	Captain Tsubasa Vol. II - Two Dragons Among Sky &amp; Land (Hack)	NES
+909592b6fa254e85e6dfdd39450602ccd087d337	H	Captain Tsubasa Vol. II - Two Dragons Among Sky & Land (Hack)	NES
 3ce8b238c3112085e1c8fb7803c37dfeeb5121c0	H	Captain Tsubasa Vol. II - Two Stars (Hack)	NES
 9dc7a0de94dc1533aa787cb326ae285b1cf3100c	H	Captain Tsubasa Vol. II - Ucuncu Edition (Hack)	NES
 f12da591683afe725fbd7c31f6dcb96d943c1be1	H	Captain Tsubasa Vol. II - United Team (Hack)	NES
@@ -3413,8 +3413,8 @@ d78d1b5a76ba5e791ed37678b0099bfb51c69e09	H	Captain Tsubasa Vol. II by EricPonti 
 fc72f4d7e9b57f86d30510db962162cee3d81ad7	H	Captain Tsubasa Vol. II by Farouk (Hack)	NES
 5278e84254d596732eabccb63f59133f98cbc700	H	Captain Tsubasa Vol. II by Greatsocrar (90807) (Hack)	NES
 84f25e8916f06b02034f0f2d1629f6a26c2f5db6	H	Captain Tsubasa Vol. II by Hambg (Hack)	NES
-19fdc8c7b290cc0b4baa05217c4003a26caff94c	H	Captain Tsubasa Vol. II by Kral89 &amp; Sisqo (101003) (Hack)	NES
-ece3a2266a8274efcae34d605821c526573418a8	H	Captain Tsubasa Vol. II by Kral89 &amp; Sisqo (90824) (Hack)	NES
+19fdc8c7b290cc0b4baa05217c4003a26caff94c	H	Captain Tsubasa Vol. II by Kral89 & Sisqo (101003) (Hack)	NES
+ece3a2266a8274efcae34d605821c526573418a8	H	Captain Tsubasa Vol. II by Kral89 & Sisqo (90824) (Hack)	NES
 509f6256210049d730719f86852393dd51459352	H	Captain Tsubasa Vol. II by RUI (V071103) (Hack)	NES
 5723575f7f28cac92ea1b620eec3f5e5c0769d37	H	Captain Tsubasa Vol. II by Shinigami (120419) (Hack)	NES
 f895c25e330122f9d848bc3c19dbec92c0fa6a9c	H	Captain Tsubasa Vol. II by Xiangfuxi (081104) (Hack)	NES
@@ -3828,12 +3828,12 @@ f53c5c4f9e6b3d0bdb9960157aef5deba002c8f7	U	Chinese Character Demo (PD)	NES
 4f68fe97f00351696f83fb6a4b1ad868474316e9	G	Chinese Checkers (Sachen-JAP) [U][!].unf	NES
 6662918d3ca6b789b71b7dffd0288d04edeb617a	G	Chinese Checkers (Sachen-USA) [!]	NES
 a58b71b4b9ff14be13f3539405b23bccbca93b69	G	Chinese Checkers (Sachen-USA) [U][!].unf	NES
-0db90c9ca321bb3accc6e376cab46018d934e149	G	Chip &amp; Dale 3 (Heavy Barrel) (Unl) [p1][!]	NES
-f874f6cceea1b5bfb950ae05e636238550c8b5f0	U	Chip &amp; Dale 3 (Heavy Barrel) (Unl) [p1][a1]	NES
-711ce9a3c6672fc26f5d3715fd6b240a1c2c2d42	U	Chip &amp; Dale 3 (Heavy Barrel) (Unl) [p1][a2]	NES
-9137af6f4a6da817eb5fd40ff4d5bdc9899151d5	B	Chip &amp; Dale 3 (Heavy Barrel) (Unl) [p1][o1]	NES
-9bc93a75bd86efa25173dc0190cb22f70f897890	T	Chip &amp; Dale 3 (Heavy Barrel) (Unl) [p1][T+Rus_Cool-Spot]	NES
-0b3ae3706a2038e6396cddd64c1a5f66f3db4634	T	Chip &amp; Dale 3 (Heavy Barrel) (Unl) [p1][T+Rus_Paha13]	NES
+0db90c9ca321bb3accc6e376cab46018d934e149	G	Chip & Dale 3 (Heavy Barrel) (Unl) [p1][!]	NES
+f874f6cceea1b5bfb950ae05e636238550c8b5f0	U	Chip & Dale 3 (Heavy Barrel) (Unl) [p1][a1]	NES
+711ce9a3c6672fc26f5d3715fd6b240a1c2c2d42	U	Chip & Dale 3 (Heavy Barrel) (Unl) [p1][a2]	NES
+9137af6f4a6da817eb5fd40ff4d5bdc9899151d5	B	Chip & Dale 3 (Heavy Barrel) (Unl) [p1][o1]	NES
+9bc93a75bd86efa25173dc0190cb22f70f897890	T	Chip & Dale 3 (Heavy Barrel) (Unl) [p1][T+Rus_Cool-Spot]	NES
+0b3ae3706a2038e6396cddd64c1a5f66f3db4634	T	Chip & Dale 3 (Heavy Barrel) (Unl) [p1][T+Rus_Paha13]	NES
 0752c8fa49ef9ca6828ba2e08b22f2a673e5469c	G	Chip 'n Dale Rescue Rangers (E) [!]	NES
 93140bf336c482ec8bbec50fcd586a2889830e6b	T	Chip 'n Dale Rescue Rangers (E) [T+Fre100%_Terminus]	NES
 c16130b878cb7f4b799ba5eb373e066ac7e5b7d7	T	Chip 'n Dale Rescue Rangers (E) [T+Ger_TischlDeckDich]	NES
@@ -4008,10 +4008,10 @@ df432e5bd5c9afa1c91e7c76ff5e5521d136643d	U	Chu Chu Rocket V.d by DWEdit (PD)	NES
 d07c459890ae980bf2cd0ddfcb793ff9bdcbec74	U	Chu Chu Rocket V.h by DWEdit (PD)	NES
 681f4869dbee15da0f71d1ea6aca743b1acc787e	U	Chu Chu Rocket V.xx by DWEdit (PD)	NES
 828b78d6b479566b2e58c8764fcc8a8b08a1292f	U	Chu Da D (Ch)	NES
-d4f3b7146af41e6e6914002569d0952a00dd9a7c	U	Chu Han Zheng Ba - The War Between Chu &amp; Han (Ch) (Wxn)	NES
-cc5f73da064f2d9960a4992b23c188e84fae7577	B	Chu Han Zheng Ba - The War Between Chu &amp; Han (Ch) [b1]	NES
-1cf6a0e4337112405be96cad63a673d1193376dc	H	Chu Han Zheng Ba - The War Between Chu &amp; Han (Ch) [f1]	NES
-3c7099746e8a9e63a6f2dcc86d1610944458a5fe	U	Chu Han Zheng Ba - The War Between Chu &amp; Han (Ch)	NES
+d4f3b7146af41e6e6914002569d0952a00dd9a7c	U	Chu Han Zheng Ba - The War Between Chu & Han (Ch) (Wxn)	NES
+cc5f73da064f2d9960a4992b23c188e84fae7577	B	Chu Han Zheng Ba - The War Between Chu & Han (Ch) [b1]	NES
+1cf6a0e4337112405be96cad63a673d1193376dc	H	Chu Han Zheng Ba - The War Between Chu & Han (Ch) [f1]	NES
+3c7099746e8a9e63a6f2dcc86d1610944458a5fe	U	Chu Han Zheng Ba - The War Between Chu & Han (Ch)	NES
 8aeac2380737ada73c4b6e87f751751785e416bf	H	Chu Liu Xiang (Ch) (Wxn) [f1]	NES
 2abe3e855bc7d3ee0c38fd16f8d4fc387d3a991e	U	Chu Liu Xiang (Ch) (Wxn)	NES
 f69a7ff64f4f2c6f6ab89925b267e199152c00cd	U	Chu Liu Xiang (Ch)	NES
@@ -4517,7 +4517,7 @@ e283f529f23c1defcfdcf27b2eda4289f3c9d920	T	Cosmo Genesis (J) [T-Eng1.0_Aeon Gene
 fd3d9f8a6c862773194c3e23b420aabe9453d2d6	T	Cosmo Police Galivan (J) [T+Eng1.00_Jair]	NES
 6f38d0ada341f86f3055f689dd0f90c62556d91e	U	Cosmo Police Galivan (J)	NES
 ec493cbab694b87477ff240d3b86bca0c4e62451	G	Cosmos Cop (CN-08) (Unl) [!]	NES
-c4020f7aa09357974739e640673ef60af8386e21	H	Counteroffensive of Mamoru Izawa &amp; Kazuki Sorimachi (Captain Tsubasa II Hack)	NES
+c4020f7aa09357974739e640673ef60af8386e21	H	Counteroffensive of Mamoru Izawa & Kazuki Sorimachi (Captain Tsubasa II Hack)	NES
 08c1a73e515cf5d3cc3573b6406a8ef351bc34f7	U	Cow Boy (Unl)	NES
 3f12e2ac5e074e7970735d896331bb7e5ef5bb73	G	Cowboy Kid (U) [!]	NES
 80eadde91d7172ef7694662aaaede874ecac7379	B	Cowboy Kid (U) [o1]	NES
@@ -5047,8 +5047,8 @@ eb9b77ea091d80f61a612f3b0a04fdc68ba2a23f	B	Dian Shi Ma Li (Ch) [b2]	NES
 fcfc928aecb25f3ee16dc42018b1c73d5283b5b4	B	Dian Shi Ma Li (Ch) [b2][o1]	NES
 4eccc37c236b3f18c308631c68c7b2ce1614d28c	B	Dian Shi Ma Li (Ch) [b3]	NES
 050671f45712f65fec84dc490214a6942a8c53ff	B	Dian Shi Ma Li (Ch) [p1]	NES
-1c3b08f68ebe4981b84c074520b96a42d3b45d79	B	Dick &amp; Milk (Nuts &amp; Milk Hack) [o1]	NES
-717328a839ca5aecc45cc1bdb48f5a0a87d913b9	H	Dick &amp; Milk (Nuts &amp; Milk Hack)	NES
+1c3b08f68ebe4981b84c074520b96a42d3b45d79	B	Dick & Milk (Nuts & Milk Hack) [o1]	NES
+717328a839ca5aecc45cc1bdb48f5a0a87d913b9	H	Dick & Milk (Nuts & Milk Hack)	NES
 6ac01a581a1fd6b74ed6092943bd63066e14dbf0	H	Dick Baseball (Baseball Hack)	NES
 29ecd49dc1a66ffc0a1abf9117a84a96a5f976a3	B	Dick Dug (Dig Dug Hack) [o1]	NES
 1cff27dd1346d2a068e56c26d0282a7773738fb9	B	Dick Dug (Dig Dug Hack) [o2]	NES
@@ -5257,11 +5257,11 @@ c26482ee39405d332aafcfff65fd378cbfd49cf6	T	Donkey Kong (W) (PRG1) [T+Nor1.00_Jus
 e745fda35e90bcbbe470fa62f5dfd9b7cadefa5a	T	Donkey Kong (W) (PRG1) [T+Rus_Cool-Spot]	NES
 037b98dffd8203777ec37a8acd54945f4baae3ae	T	Donkey Kong (W) (PRG1) [T+Spa_PaladinKnights]	NES
 7156d06e0e1cea71c71005aad8160939fa12efdf	H	Donkey Kong - Dendyman's Revenge (Hack)	NES
-b2ba46743405fd399e86b34211310805a17986b6	H	Donkey Kong 2 (Nuts &amp; Milk Hack) [a1]	NES
-ea58fb27efbcc20f34ecb7781de299766b9ee76a	T	Donkey Kong 2 (Nuts &amp; Milk Hack) [T+Rus_Cool-Spot]	NES
-800163f4b72901412b6a1899c2ba13123375abfb	H	Donkey Kong 2 (Nuts &amp; Milk Hack)	NES
-f0e1d4d624573b4f7be5273947871417d87cfe5a	T	Donkey Kong 2 Demo Ver.5 (Nuts &amp; Milk Hack) [T+Rus_Cool-Spot]	NES
-50b7580c05843cea716cf2624057df6bb9cfe061	H	Donkey Kong 2 Demo Ver.5 (Nuts &amp; Milk Hack)	NES
+b2ba46743405fd399e86b34211310805a17986b6	H	Donkey Kong 2 (Nuts & Milk Hack) [a1]	NES
+ea58fb27efbcc20f34ecb7781de299766b9ee76a	T	Donkey Kong 2 (Nuts & Milk Hack) [T+Rus_Cool-Spot]	NES
+800163f4b72901412b6a1899c2ba13123375abfb	H	Donkey Kong 2 (Nuts & Milk Hack)	NES
+f0e1d4d624573b4f7be5273947871417d87cfe5a	T	Donkey Kong 2 Demo Ver.5 (Nuts & Milk Hack) [T+Rus_Cool-Spot]	NES
+50b7580c05843cea716cf2624057df6bb9cfe061	H	Donkey Kong 2 Demo Ver.5 (Nuts & Milk Hack)	NES
 c4e4062a91ea9fdbd575b77535bc7a4194e46694	U	Donkey Kong 3 (U) (GBA e-Reader)	NES
 2fdc5f68313f0fb619fa1f741cd517cc0cb18c56	T	Donkey Kong 3 (U) [T+Rus_Cool-Spot][a1]	NES
 ec6fa944c672a2522c8bc270a25842281c65ff5d	G	Donkey Kong 3 (W) [!]	NES
@@ -5446,7 +5446,7 @@ dd3490d98b8ced80263db9d17721e34dbf12db85	T	Double Dragon II - The Revenge (U) (P
 c46342b03cec7f9a895db964125760237340f116	H	Double Dragon II - The Revenge - Classic Strengthened Edition (Hack)	NES
 35844839991c094e86ab59205d5c0c29dda490f3	H	Double Dragon II - The Revenge - Clone of Bosses Edition (Hack)	NES
 a3c419051711233cd192405f14986059805626a4	H	Double Dragon II - The Revenge - Ultimate Strengthened Edition (Hack)	NES
-c19b034e5886c97da670b1381bb94dfa9873e96e	H	Double Dragon II - The Revenge by D.S.ghtMaster&amp;KRIZAL (Hack)	NES
+c19b034e5886c97da670b1381bb94dfa9873e96e	H	Double Dragon II - The Revenge by D.S.ghtMaster&KRIZAL (Hack)	NES
 3a0fadff2b3beec2dc1f13b12eb7840af588aad7	H	Double Dragon II - The Revenge by KRIZAL (Hack)	NES
 dd37c6f3de1ceaed9a8bd1abcf9aafbf47b74059	H	Double Dragon II - The Revenge Control Hack by Evgeny (Hack)	NES
 9fca8eb7eb3a635ad71afa3e719aa5cd1ba9a7c3	H	Double Dragon III - Skip Level (Hack) [a1]	NES
@@ -5465,7 +5465,7 @@ f878cbd0d7065df4a4ca1733085f03955b64819f	C	Double Dragon III - The Rosetta Stone
 a0ccc44a8723ceb83a644c45fd6e724b4dadcb90	C	Double Dragon III - The Rosetta Stone (J) [t3]	NES
 9ad84eeb300efaf15a69955ffbc6d65dfc50f99c	H	Double Dragon III - The Rosetta Stone - Additional Moves by shinwa (Hack)	NES
 88d2150bac12098680e23e92be8f5de8869cc421	H	Double Dragon III - The Rosetta Stone - Bosses Usable Edition by shinwa (Hack)	NES
-f57e4ae9c12e05343b6dee3e4af21b2513971345	H	Double Dragon III - The Rosetta Stone - Combined Skill &amp; Enemies Changed Edition (Hack)	NES
+f57e4ae9c12e05343b6dee3e4af21b2513971345	H	Double Dragon III - The Rosetta Stone - Combined Skill & Enemies Changed Edition (Hack)	NES
 2a88c78e830290d901a4010e5950f9149ab0db2d	H	Double Dragon III - The Rosetta Stone - Combined Skill Edition (Hack)	NES
 f2fdc2ae7491dec5c9980678645dbd9b65160709	H	Double Dragon III - The Rosetta Stone - Shuang Zai Long 3 by madcell (Hack)	NES
 a1da64a21156c537b75162f0b64da651eee1a6b8	H	Double Dragon III - The Rosetta Stone - Super Skill Edition (Hack)	NES
@@ -5995,7 +5995,7 @@ e81a4d42dd06ba171ef5e812623115b291f295b6	T	Dream Master (J) [T+Eng]	NES
 5a71c261b50146962940fbbd840be8617b47e07b	G	DreamGEAR 75-in-1 (Unl) [U][!].unf	NES
 907564f256368d67d9ce6b361896e7d375ad7589	U	Dreamworld Pogie (Prototype)	NES
 7525ca4bb891940d308164dee33c497d826c1960	H	Dreamworld Pogie Revival (Dreamworld Pogie Hack)	NES
-882a3686982874112af0d20875e3f7e9496a7392	U	Driar by Stefan Adolfsson &amp; David Eriksson (PD)	NES
+882a3686982874112af0d20875e3f7e9496a7392	U	Driar by Stefan Adolfsson & David Eriksson (PD)	NES
 0cc28dc56c8ee9bb5114708b98348a592da9aec4	U	Dringle (Unl)	NES
 af8febe0ef1011e5838bf3c38933ecea06721042	U	Drip for NES Ported by quietust (2006-08-16) (PD) [U].unf	NES
 54261d0c387cd62161d5a0ad4cff9b0d3f48c3c7	U	Drip for NES Ported by quietust (2006-10) (PD) [U].unf	NES
@@ -6089,9 +6089,9 @@ bfcf258c012d2369ec581038abae2021f147f531	U	Duel, The by Bokudono (PD)	NES
 d6c42a64492dd75bf31b07fd8f0dba421b30ba99	B	Dumbass (PD) [b1]	NES
 19af20fc254fe8ff443f7db8d4461b7d71dee0cf	U	Dune War (Unl) (VT03)	NES
 26b782d3f6d080bb0fb0cbd236be3d0e7ad174b2	U	Dung Dung No 1 (Ch)	NES
-04295f33c9555d4694c57aa6423dbe1466b98836	G	Dungeon &amp; Magic - Swords of Element (J) [!]	NES
-d8054f63f849e6b01497450d763867ba43423a26	B	Dungeon &amp; Magic - Swords of Element (J) [b1]	NES
-f4b42da49b97bf4d93fde1016602087fe5c5b0cb	B	Dungeon &amp; Magic - Swords of Element (J) [o1]	NES
+04295f33c9555d4694c57aa6423dbe1466b98836	G	Dungeon & Magic - Swords of Element (J) [!]	NES
+d8054f63f849e6b01497450d763867ba43423a26	B	Dungeon & Magic - Swords of Element (J) [b1]	NES
+f4b42da49b97bf4d93fde1016602087fe5c5b0cb	B	Dungeon & Magic - Swords of Element (J) [o1]	NES
 427506826bf9cf2ef144100be2e3f98d9e979798	G	Dungeon Kid (J) [!]	NES
 602ca2cada36025c04562dc174f7ceca284885b3	B	Dungeon Kid (J) [b1]	NES
 d8519092cf52b7a4f0fc94a9829ada12681c0279	C	Dungeon Kid (J) [t1]	NES
@@ -6219,8 +6219,8 @@ c4085b7a4aabd8ac27fdc2b647715d451a2bc04a	B	Eliminator Boat Duel (U) [b1]	NES
 d0ef1150ab6cdcb076a528cf2b18a780864d4bb3	B	Eliminator Boat Duel (U) [o1]	NES
 00009ecaf75344e39cc9a94805f5113c10f270a2	B	Eliminator Boat Duel (U) [o2]	NES
 02b277caef0970078dfb3f2dbb7ced731380ecfd	G	Elite (E) [!]	NES
-aa3b7bbb929efd9c2b364e63000ccb1cc107c2a0	B	Elite (E) [f1] (NTSC by Ian Bell &amp; David Braben) [o1]	NES
-17c4f91469931ea309bfff4faba3f3c34deed3c7	H	Elite (E) [f1] (NTSC by Ian Bell &amp; David Braben)	NES
+aa3b7bbb929efd9c2b364e63000ccb1cc107c2a0	B	Elite (E) [f1] (NTSC by Ian Bell & David Braben) [o1]	NES
+17c4f91469931ea309bfff4faba3f3c34deed3c7	H	Elite (E) [f1] (NTSC by Ian Bell & David Braben)	NES
 092849f8d75ac1206f63bb82e43c4f670fb8eed1	H	Elite Tecmo League (Tecmo Super Bowl Hack)	NES
 4d4faac62a455dfa8ada73480e6c67906b3957e1	H	Elite Tecmo League Clock (Tecmo Super Bowl Hack)	NES
 8bb770863ccded715de87dbccbf26e36c8363572	H	Elite Tecmo League S1 Week 03 (Tecmo Super Bowl Hack)	NES
@@ -6261,7 +6261,7 @@ f59d7b0cf20d9abaf6a7b7f1b66744ea55f9d2fa	G	Erika to Satoru no Yume Bouken (J) [!
 c42a1191d0292f208873e0e1ab122d7354c7925e	H	Erika to Satoru no Yume Bouken (J) [f1]	NES
 222ac701664930f295da954393e8eb9376017f33	B	Erika to Satoru no Yume Bouken (J) [f1][o1]	NES
 bc59e706bc0cda456e496b2403a41df61eebfdbb	B	Erika to Satoru no Yume Bouken (J) [hM04][b1]	NES
-00222d1ea57c7ee4bb614536642d03f02cbca769	H	Ernie &amp; The Muppets Take It All Off (Sesame Street ABC Hack)	NES
+00222d1ea57c7ee4bb614536642d03f02cbca769	H	Ernie & The Muppets Take It All Off (Sesame Street ABC Hack)	NES
 4f4355afcfde87e651c32eda7610d67c02396ff8	G	Erunaaku no Zaihou (J) [!]	NES
 aff3198813f2e25c9684b63354f1da6bdf2d7c6d	B	Erunaaku no Zaihou (J) [b1]	NES
 8d68935e94134eec22a4259080b3ce5590e4f7a3	B	Erunaaku no Zaihou (J) [b2]	NES
@@ -6419,7 +6419,7 @@ a0375e7e0da9093417a9d081b7606ed9f5c71ac3	B	F-15 Strike Eagle (U) [o1]	NES
 96ab957763051c6b8d952567450469c9af99e3d4	B	F22 (Ch) [b1]	NES
 63c23c5bb78d256a0361e7a7a0ffb24d8c87cc11	T	Facemaker (Dr. PC Jr.) (Ch) [T+Rus_Cool-Spot]	NES
 dc8fde977a5a06d579f80d0861b235014b678a53	U	Facemaker (Dr. PC Jr.) (Ch)	NES
-ea97d054a53c65428d1c1ee27c2fc5c945944843	U	Fade to Black by Frederik Schultz &amp; Morgan Johansson (PD)	NES
+ea97d054a53c65428d1c1ee27c2fc5c945944843	U	Fade to Black by Frederik Schultz & Morgan Johansson (PD)	NES
 9f3d83c3b6e620d9e67cf5cd49428c3f88a71ca4	H	Fall of the Moon v1.0 (Zelda Hack)	NES
 508dfa36b062dfd1a465301ada3a876acc402582	U	Falldown by Sivak (2008) (PD)	NES
 45543a0aed48f5d0943a8ee33ea8a9709c3bfa3d	H	Falling Mario by WA (SMB1 Hack)	NES
@@ -6441,7 +6441,7 @@ f07d48f7355480f855a60d0e8c65621f4e4c643d	H	Famicom Jump II - Saikyou no 7 Nin (J
 9c5381325383bf6c074b2c3cdcc825e138615a19	G	Famicom Meijin Sen (J) [!]	NES
 44c1d079b75deeb3e858240a0d4a10d5d7add87c	U	Famicom Meijin Sen (J) [a1]	NES
 aaf74b17bfe8c18fd672fcae18741956d1c3380e	B	Famicom Meijin Sen (J) [a1][o1]	NES
-6992f115820264ceaaff988cb4bfbe3c5e35ecc9	U	Famicom Pro Action Rocky Encoder-Decoder by Chris Covell, ReaperSMS &amp; Jamethiel (PD)	NES
+6992f115820264ceaaff988cb4bfbe3c5e35ecc9	U	Famicom Pro Action Rocky Encoder-Decoder by Chris Covell, ReaperSMS & Jamethiel (PD)	NES
 21727912fe4ae683da2c7aadb029f355079964fd	U	Famicom Sequencer V0.5 (PD)	NES
 052e6915a4b6c15982d5b134fce7581210c7d8de	U	Famicom Shougi - Ryuuousen (J) (Prototype)	NES
 e4cc5f8e013fae686d97f3901c261b5abfcc9d5b	B	Famicom Shougi - Ryuuousen (J) [o1]	NES
@@ -6580,10 +6580,10 @@ a3d852930db34bb76c1ac1531311dd5552b8e7be	G	Fantasy Zone (Tengen) [!]	NES
 96aca644fb0450542d35573e99afdd1534f8191f	H	Fantasy Zone 2 - The Teardrop of Opa-Opa (J) [hFFE]	NES
 7b7b333f5f4da08f523256518b5244006c994090	B	Fantasy Zone 2 - The Teardrop of Opa-Opa (J) [o1]	NES
 808cc9050dcee35fa499d601e8567166bda4493a	C	Fantasy Zone 2 - The Teardrop of Opa-Opa (J) [t1]	NES
-2841d46704680033b183c7c07945dbbcb68427ed	G	Faria - A World of Mystery &amp; Danger! (U) [!]	NES
-b9350d2ca19c4185b8cb32ffa5e51b114a5702fc	B	Faria - A World of Mystery &amp; Danger! (U) [b1]	NES
-6129ba26219de2586562234e8f16a29ad6c586db	B	Faria - A World of Mystery &amp; Danger! (U) [o1]	NES
-24027380173f2004a44870c8fee3eb9dd1027d76	C	Faria - A World of Mystery &amp; Danger! (U) [t1]	NES
+2841d46704680033b183c7c07945dbbcb68427ed	G	Faria - A World of Mystery & Danger! (U) [!]	NES
+b9350d2ca19c4185b8cb32ffa5e51b114a5702fc	B	Faria - A World of Mystery & Danger! (U) [b1]	NES
+6129ba26219de2586562234e8f16a29ad6c586db	B	Faria - A World of Mystery & Danger! (U) [o1]	NES
+24027380173f2004a44870c8fee3eb9dd1027d76	C	Faria - A World of Mystery & Danger! (U) [t1]	NES
 e7fdd7976a9c834f171b3ac39ab69259e05a0afa	G	Faria - Fuuin no Tsurugi (J) [!]	NES
 d87116e7aee1b8fac894b30b4aaa50539aaedab9	B	Faria - Fuuin no Tsurugi (J) [b1]	NES
 2235a01f54223dd2609cef3dc3dc82b7775b9bfb	B	Faria - Fuuin no Tsurugi (J) [b2]	NES
@@ -6631,7 +6631,7 @@ e86add4e0badb9396c18bbc2b786b08a044dd83d	H	Faxanadu Uncensored Edition by Safari
 0db354cc152ff3413e401160d5f51871326628aa	C	FC Genjin - Freakthoropus Computerus (J) [t1]	NES
 99e513dba565f5b4f648bc0a1a0f52aff5a48946	U	FC Genjin - Freakthoropus Computerus (J)	NES
 99d5f61fc8fda02db984308368277a326c123977	U	FC Intro by emumax (PD)	NES
-416b236dd5babc127555185e15a22f70e718186e	U	FC WIN2000 (for Infrared Mouse &amp; Keyboard) (Ch)	NES
+416b236dd5babc127555185e15a22f70e718186e	U	FC WIN2000 (for Infrared Mouse & Keyboard) (Ch)	NES
 07252ffa0df0f65d681e79ab2ba38250ec85c08b	U	FC-Subor V3.0 Music Demo (Unl)	NES
 e0d0eaaf0523d3442072134667198ea5ee342934	H	Fedsvd MLB (R.B.I. Baseball Hack) [a1]	NES
 6411512f09c63c6679c258b9c8cbd87791581f1f	H	Fedsvd MLB (R.B.I. Baseball Hack)	NES
@@ -6664,7 +6664,7 @@ c2add8e26655ba9b6774197dc1a6e730f0a92c0b	U	Feng Se Huan Xiang (ES-1138) (Ch)	NES
 083793f71533db327cbcbe0ae27d4a1483733777	U	Feng Yun (Ch) (Decrypted)	NES
 1a0ced71e62f11bccb4b2de3fe0433240e75357b	U	Feng Yun (Ch) (Wxn)	NES
 ea0d9f0df87a2c5b518642bb793d67b544ae5165	U	Feng Yun (Ch)	NES
-8008cd3ff792a2c7e5e34c34543394d6ffbf48b5	U	Fengli Dance 12-in-1 &amp; 24-in-1 (Ch)	NES
+8008cd3ff792a2c7e5e34c34543394d6ffbf48b5	U	Fengli Dance 12-in-1 & 24-in-1 (Ch)	NES
 1f3c590a05e3897f4266302f744dd65e70e501b0	G	Ferrari - Grand Prix Challenge (E) [!]	NES
 146e39e962c6fff24724fe55d632ba4217cc3b67	G	Ferrari - Grand Prix Challenge (J) [!]	NES
 bee319db995fc25dd6ee88217e10420aab7310ca	G	Ferrari - Grand Prix Challenge (U) [!]	NES
@@ -6829,13 +6829,13 @@ b0f164556d8cb71b2c04bd7d9d306c0e7c026772	H	Final Fantasy Epica V2.0 by Clomax Do
 edafdca67ae322a086386b219d67c526de592f73	H	Final Fantasy Gaiden (FF1 Hack)	NES
 083294dfaa5238c750110ce0d95b57ebcd9c9ce6	H	Final Fantasy Hard Type by Red Wizard (FF1 Hack)	NES
 5b46b541851eefc0954bd7f15ef860dc43bf1fac	H	Final Fantasy Hardtype V1.1 (FF1 Hack)	NES
-4b22c2c88fc71eacf270ea51ef218944bb4c536a	G	Final Fantasy I &amp; II (J) [!]	NES
-b3c2be46b4118df618a90969aec3836c36213187	B	Final Fantasy I &amp; II (J) [b1]	NES
-f68f71e3475a0d2a3455eb4ea55aa7c6b4989329	B	Final Fantasy I &amp; II (J) [b2]	NES
-e0a971450a7907f8e5ac1749638d03800c371cce	B	Final Fantasy I &amp; II (J) [o1]	NES
-5c86afaee19c4d564be583d19639af9e3308a6c6	B	Final Fantasy I &amp; II (J) [o1][T+Eng1.00_Demiforce]	NES
-704d46eb311a7d07268ea57de26cdacc3a83711a	T	Final Fantasy I &amp; II (J) [T+Eng1.00_Demiforce,Grond]	NES
-ff5a216e3da57ee7133449a4ac6b0e8957a23595	T	Final Fantasy I &amp; II (J) [T+Eng1.00_Demiforce]	NES
+4b22c2c88fc71eacf270ea51ef218944bb4c536a	G	Final Fantasy I & II (J) [!]	NES
+b3c2be46b4118df618a90969aec3836c36213187	B	Final Fantasy I & II (J) [b1]	NES
+f68f71e3475a0d2a3455eb4ea55aa7c6b4989329	B	Final Fantasy I & II (J) [b2]	NES
+e0a971450a7907f8e5ac1749638d03800c371cce	B	Final Fantasy I & II (J) [o1]	NES
+5c86afaee19c4d564be583d19639af9e3308a6c6	B	Final Fantasy I & II (J) [o1][T+Eng1.00_Demiforce]	NES
+704d46eb311a7d07268ea57de26cdacc3a83711a	T	Final Fantasy I & II (J) [T+Eng1.00_Demiforce,Grond]	NES
+ff5a216e3da57ee7133449a4ac6b0e8957a23595	T	Final Fantasy I & II (J) [T+Eng1.00_Demiforce]	NES
 ae373debd5a1d787eec28214c221fa4590c20844	U	Final Fantasy II (J) (VC)	NES
 1a9e01a29472f1161bd16e1b4d76994346a505f6	G	Final Fantasy II (J) [!]	NES
 de129faa757050a925e5060f65bdc390d3978eb4	H	Final Fantasy II (J) [hM02]	NES
@@ -6876,7 +6876,7 @@ ddc7b6b85ab0eaf26586d5a97aaa04c3620c2d1e	H	Final Fantasy II (J) [hM02][T-Eng1.0]
 20079a629ff38fb2e76cf3a6e78c782588c890ef	T	Final Fantasy II (J) [T+Bra100%_Thirteen Traducoes]	NES
 90a5ccc3119aa91947f086c3c9fc069a7f80ef09	T	Final Fantasy II (J) [T+Eng0.36_Toma,AlanMidas]	NES
 62ed16088e5293a9f238161c12fe59eaa196f1f8	T	Final Fantasy II (J) [T+Eng1.03_Demiforce]	NES
-b7a849df213b59cd43066d15eeec4df983c0b5f5	T	Final Fantasy II (J) [T+Eng1.03_Demiforce][f1] (Title &amp; Weapon-Magic Exploit by Parasyte)	NES
+b7a849df213b59cd43066d15eeec4df983c0b5f5	T	Final Fantasy II (J) [T+Eng1.03_Demiforce][f1] (Title & Weapon-Magic Exploit by Parasyte)	NES
 de7fecb42947a24fbf632e2ccfccbdba69a857fb	T	Final Fantasy II (J) [T+Eng1.03_Demiforce][f1] (Title by Parasyte v1.0)	NES
 73f8436f78cec36f4d205a2dc5cc25fe949efc22	T	Final Fantasy II (J) [T+Eng1.03PasoFami_Demiforce]	NES
 4e68ee5da3dbe2ed7348be072825364c87d2ab6a	T	Final Fantasy II (J) [T+Ita0.99a_Weapon Hunter]	NES
@@ -7085,7 +7085,7 @@ b7b3054034234ffaea975e4158f32f0f6bd12721	B	Fire Emblem Gaiden (J) [T+Eng97b2_J2E
 de04536e3fa70d9dbccf62e0dc2e58bf02ac94f4	H	Fire Emblem Gaiden by jibo818 (070502) (Hack)	NES
 ead6701e3998cd7f81c8e8fccd1bb12a0bd90169	H	Fire Emblem Gaiden by Lewis GT (070806) (Hack)	NES
 d0c52c96c29dd6144215e63047b39972982894d1	H	Fire Emblem Gaiden by scorpioywk v3.0a (Hack)	NES
-44b79228f44efc9acf9f878a08e8d8493c311ca7	H	Fire Emblem Map &amp; Enemy by One Talent (Hack)	NES
+44b79228f44efc9acf9f878a08e8d8493c311ca7	H	Fire Emblem Map & Enemy by One Talent (Hack)	NES
 209f7ca3f4f9e179881aa9387dc6ad5dea4f4575	B	Fire Emblem Two Dragon Edition (Hack) [b1]	NES
 efa0e83b2bcb0f02fc81fc7b434ffe56209d3d67	H	Fire Emblem Two Dragon Edition (Hack)	NES
 85438df235e84b38452282aa2f96624f31986b59	B	Fire Flight Z (Formation Z Hack) [o1]	NES
@@ -7127,17 +7127,17 @@ c212375ac4a48de955e608af2ccc9cd36cc040fe	T	Fleet Commander (J) [T+Rus_Chief-Net]
 18e4116d04aa688a8a8629f3b6770ec8436d2778	G	Flight of the Intruder (U) [!]	NES
 425d371df518c142c9dfc9764e02ac53ada94d0e	B	Flight of the Intruder (U) [b1]	NES
 b823ee04d31bdf6937ddfc3a1e81f2fa8ea3cf2f	B	Flight of the Intruder (U) [o1]	NES
-9695b227545fca9cd6c95abf348ff51b175634f6	G	Flintstones, The - The Rescue of Dino &amp; Hoppy (E) [!]	NES
-66b701bcf13ea261cf459058d141f078fc66652c	C	Flintstones, The - The Rescue of Dino &amp; Hoppy (E) [t1]	NES
-9d1ba8a9cb5afe378bf4cdf94dee5eecd80ccf6b	U	Flintstones, The - The Rescue of Dino &amp; Hoppy (J)	NES
-549de66388ff02e33a40bf7ef83e207f98a50888	G	Flintstones, The - The Rescue of Dino &amp; Hoppy (U) [!]	NES
-db9f7f37cac7a00752beffe5a14c295f1722823e	B	Flintstones, The - The Rescue of Dino &amp; Hoppy (U) [b1]	NES
-c0a6a7cbf5de4451aed7f5f8fe6b67df97c4c11b	B	Flintstones, The - The Rescue of Dino &amp; Hoppy (U) [b2]	NES
-18c335127d0338318ac04d43b6ee434623db761c	B	Flintstones, The - The Rescue of Dino &amp; Hoppy (U) [o1]	NES
-805737b473814baeeaf98bdacd2de810dae5c8e5	G	Flintstones, The - The Rescue of Dino &amp; Hoppy (U) [p1][!]	NES
-ad651e65a9e7333a415f1071f0783a3f4ea53218	B	Flintstones, The - The Rescue of Dino &amp; Hoppy (U) [p2]	NES
-deb230107c87863a7226d4466470aa5b824d6d0c	C	Flintstones, The - The Rescue of Dino &amp; Hoppy (U) [t1]	NES
-4c2199ab578faf2cb1f244e5a562ecc0918f27ca	C	Flintstones, The - The Rescue of Dino &amp; Hoppy (U) [t2]	NES
+9695b227545fca9cd6c95abf348ff51b175634f6	G	Flintstones, The - The Rescue of Dino & Hoppy (E) [!]	NES
+66b701bcf13ea261cf459058d141f078fc66652c	C	Flintstones, The - The Rescue of Dino & Hoppy (E) [t1]	NES
+9d1ba8a9cb5afe378bf4cdf94dee5eecd80ccf6b	U	Flintstones, The - The Rescue of Dino & Hoppy (J)	NES
+549de66388ff02e33a40bf7ef83e207f98a50888	G	Flintstones, The - The Rescue of Dino & Hoppy (U) [!]	NES
+db9f7f37cac7a00752beffe5a14c295f1722823e	B	Flintstones, The - The Rescue of Dino & Hoppy (U) [b1]	NES
+c0a6a7cbf5de4451aed7f5f8fe6b67df97c4c11b	B	Flintstones, The - The Rescue of Dino & Hoppy (U) [b2]	NES
+18c335127d0338318ac04d43b6ee434623db761c	B	Flintstones, The - The Rescue of Dino & Hoppy (U) [o1]	NES
+805737b473814baeeaf98bdacd2de810dae5c8e5	G	Flintstones, The - The Rescue of Dino & Hoppy (U) [p1][!]	NES
+ad651e65a9e7333a415f1071f0783a3f4ea53218	B	Flintstones, The - The Rescue of Dino & Hoppy (U) [p2]	NES
+deb230107c87863a7226d4466470aa5b824d6d0c	C	Flintstones, The - The Rescue of Dino & Hoppy (U) [t1]	NES
+4c2199ab578faf2cb1f244e5a562ecc0918f27ca	C	Flintstones, The - The Rescue of Dino & Hoppy (U) [t2]	NES
 354415e5472c4cbf4978744c97a9a53c6b61cb49	G	Flintstones, The - The Surprise at Dinosaur Peak! (E) [!]	NES
 5a6ae3e6897414758a8791783f3a482e5a2dd0fb	G	Flintstones, The - The Surprise at Dinosaur Peak! (U) [!]	NES
 a3bdfaa4d67de0f1468d9fe701a8988e2e732744	B	Flintstones, The - The Surprise at Dinosaur Peak! (U) [o1]	NES
@@ -7284,9 +7284,9 @@ ff9ba69080f51331a10df9c2f7531ab5a9a34e58	B	Front Line (J) [T-Chi][b1]	NES
 2b257fa8049678600b4db8461b56bfceee1056aa	H	Front Line 2 Hardcore (Front Line Hack)	NES
 a9966b9065b29defc48a2566136b634f74dd31e7	U	FS Demo by KZ-S (PD)	NES
 3759f6d43be742defb5b52117e5378645332c816	H	Fucked Up Bros 2 (SMB2 Hack)	NES
-0bc48f6ceee853de3535bb49227415e5d817ba0e	H	Fucked Up North &amp; South (Hack)	NES
+0bc48f6ceee853de3535bb49227415e5d817ba0e	H	Fucked Up North & South (Hack)	NES
 794d30faa4ba81046405f3c6599b73c3a297b2ad	H	Fucker's Quest by Shitdic (Fester's Quest Hack)	NES
-b346af0a6ef44db9e251ed18a3925f8396868496	H	Fudan Mario by DU-6&amp;Hi (SMB1 Hack)	NES
+b346af0a6ef44db9e251ed18a3925f8396868496	H	Fudan Mario by DU-6&Hi (SMB1 Hack)	NES
 1ae0646964ad522f78427d5f29401b197020a4df	G	Fudou Myouou Den (J) [!]	NES
 54f3061ca2ccc87342d44cec098a4c07d530d6ce	B	Fudou Myouou Den (J) [hFFE][b1]	NES
 056280af7a109617d1f0d21e228dcb9dbe394693	H	Fudou Myouou Den (J) [hM80]	NES
@@ -7525,8 +7525,8 @@ c6954c8d5030bd3f446644e2a02b3135d3bbff93	B	Garou Densetsu Special (Unl) [hM04][b
 fe0d1d3f7662bcba4c550440696d6fb24b3181a9	B	Garou Densetsu Special (Unl) [hM04][b5]	NES
 aec04b867e7de8dc7ace8563bd693b9199c4a33a	H	Garou Densetsu Special (Unl) [hM04][f1]	NES
 de38a34367495ff5e899b574e15495f78a5e5678	U	Garou Densetsu Special (Unl)	NES
-7f95489c35713f1befb5bfbfc6a51b523eaa1b50	T	Gary's Nuts (J) (Nuts &amp; Milk Hack) [T+Rus_Cool-Spot]	NES
-468e874670c5b8e7db979db02d5eb5d4bae256a4	H	Gary's Nuts (J) (Nuts &amp; Milk Hack)	NES
+7f95489c35713f1befb5bfbfc6a51b523eaa1b50	T	Gary's Nuts (J) (Nuts & Milk Hack) [T+Rus_Cool-Spot]	NES
+468e874670c5b8e7db979db02d5eb5d4bae256a4	H	Gary's Nuts (J) (Nuts & Milk Hack)	NES
 b5a669ea96249a23ca3b868ac1c7555e611ee83b	U	Gauntlet (PC10)	NES
 d3a2ad975e2e955e39fb3fd64e93ff983af81e0d	G	Gauntlet (Tengen) [!]	NES
 debb19b46939a296bad008cffbb3bb0f8d6608d3	B	Gauntlet (Tengen) [b1]	NES
@@ -7978,7 +7978,7 @@ bc39a2546b530fc84e90052d4077676da97ed679	T	Grand Master (J) [T-Eng_Stardust Crus
 aa0fb9dd052ee687ff02ed2713ed92a3887e76f0	U	Grand Master (J)	NES
 0f01b092ce5d02d5c6e3ea553290a06c8281ee24	U	Grandia (Ch) (Wxn)	NES
 8bcdc14b93f52cd4a657c18fee21cdc4ed6298a1	H	Graros (Seicross Hack)	NES
-f5d968639bb462819500cb33a3644487f177740b	U	Grave Digger by Tarnow, Hollis, Gillotti &amp; Subramanian (PD)	NES
+f5d968639bb462819500cb33a3644487f177740b	U	Grave Digger by Tarnow, Hollis, Gillotti & Subramanian (PD)	NES
 d0da677def74b64e1b2d25748e2bce691566c4b0	B	Great Adventures of Weiny, The (Mario Bros Hack) [o1]	NES
 b0b0a350e4360fb03cf536c961f2f4fa68f98dbf	H	Great Adventures of Weiny, The (Mario Bros Hack)	NES
 a55e9323d89d855672dcb20dc29efd2f53ded972	G	Great Battle Cyber (J) [!]	NES
@@ -8019,9 +8019,9 @@ e327e3e3814f0ea008d347eeee1b72e378abb857	B	Gremlins 2 - The New Batch (U) [b1]	N
 abc3dfd1cc1fab09eb5edb6223570a26f974c9e8	C	Gremlins 2 - The New Batch (U) [t1]	NES
 34eea8840f666fca69d85f6dfa5fdf77a297b3b3	U	Greys Demo by Chris Covell (PD)	NES
 3b3dea215ac51563b049f9f5a643bc1e5e88c8aa	H	Grond's Final Fantasy (FF1 Hack)	NES
-3d1098ccc2250e8e007170d2143112d61f348a31	H	Grond's Final Fantasy Bugfix &amp; Balancing (FF1 Hack) [a1]	NES
-076003fdac7b73059f8e45c9d9f8ae5a04af5c9c	H	Grond's Final Fantasy Bugfix &amp; Balancing (FF1 Hack)	NES
-1e18667e99767f3ab6acf54b685986b230696722	H	Grond's Final Fantasy Bugfix &amp; Balancing (v1.1) (FF1 Hack)	NES
+3d1098ccc2250e8e007170d2143112d61f348a31	H	Grond's Final Fantasy Bugfix & Balancing (FF1 Hack) [a1]	NES
+076003fdac7b73059f8e45c9d9f8ae5a04af5c9c	H	Grond's Final Fantasy Bugfix & Balancing (FF1 Hack)	NES
+1e18667e99767f3ab6acf54b685986b230696722	H	Grond's Final Fantasy Bugfix & Balancing (v1.1) (FF1 Hack)	NES
 0828f94fedee148987ac3cfa4a270d26306bc6b0	U	GSD Super Student Computer Cartridge (Ch)	NES
 f8229677bfad4050a24bfb9a78521a6e36d3cac4	G	Gu Ba Zhan Shi Xi Hua (Ch) [!]	NES
 bd147f4eeafe37d73524a0d0a6735a422376e482	U	Gu Ba Zhan Shi Xi Hua (Ch) [a1]	NES
@@ -8203,7 +8203,7 @@ e545041ff87271f56f975d73d7b772d37f06d2bb	H	Hanjuku Eiyuu (J) [hM02]	NES
 810a86d04016eeba01cdc826f80babb86619b8d7	H	Hanjuku Eiyuu (J) [hM02][a1]	NES
 e7305030fe0261de587b16c85a0acab9386bc858	B	Hanjuku Eiyuu (J) [o1]	NES
 11777a01cdb2d242233742d4a302c1af51f759e4	H	Hanjuku Eiyuu by fenglianxilin (070808) (Hack)	NES
-fbb406a103e79df26ac4ef208b7f9df16006ee44	H	Hansel &amp; Gretel (SMB1 Hack)	NES
+fbb406a103e79df26ac4ef208b7f9df16006ee44	H	Hansel & Gretel (SMB1 Hack)	NES
 9be59e3c120046c2b9e68bb5f25d21f1b2dc8386	U	Happy Angel Legend (Unl)	NES
 9a07441300f5f13898f777020fe8cb04361d3ca6	H	Happy Birthday - BMF x 28 (SMB1 Hack)	NES
 65855650819327782bce279dbaea220090deeb6e	G	Happy Birthday Bugs (J) [!]	NES
@@ -9118,10 +9118,10 @@ af45f13c326ce6e8b5e29eb583faf5d9a74349b7	B	Iron Tank - The Invasion of Normandy 
 3b4a5cb92fc0df0cb8e6fb4528a5414004005116	B	Iron Tank - The Invasion of Normandy (U) [o2]	NES
 f745f07efda10a0c685f693df47ed8b15b3aa458	C	Iron Tank - The Invasion of Normandy (U) [t1]	NES
 c8c011ab830e9aefd2c6335a40857fda48186356	C	Iron Tank - The Invasion of Normandy (U) [t2]	NES
-bf7b26e28cecc6a46131971210bfb10123ab9dab	G	Ironsword - Wizards &amp; Warriors II (E) [!]	NES
-97b79e432f62403fb9f877090850c41112a9a168	G	Ironsword - Wizards &amp; Warriors II (U) [!]	NES
-cdc3da09fdd4478b5c8f1640ea26604cdf096a62	B	Ironsword - Wizards &amp; Warriors II (U) [b1]	NES
-84f6af51c04d27e877480bc9136d4c0401bb2461	B	Ironsword - Wizards &amp; Warriors II (U) [o1]	NES
+bf7b26e28cecc6a46131971210bfb10123ab9dab	G	Ironsword - Wizards & Warriors II (E) [!]	NES
+97b79e432f62403fb9f877090850c41112a9a168	G	Ironsword - Wizards & Warriors II (U) [!]	NES
+cdc3da09fdd4478b5c8f1640ea26604cdf096a62	B	Ironsword - Wizards & Warriors II (U) [b1]	NES
+84f6af51c04d27e877480bc9136d4c0401bb2461	B	Ironsword - Wizards & Warriors II (U) [o1]	NES
 5d9402702b33d226e822dd4a39b9004dcd90b787	U	IRQ Flag Operation Test by Shay Green (30 Jun 2005) (PD)	NES
 7fbd5c094f63d8d0ad9cfb0730e809875bcdace6	U	IRQ Flag Timing Test by Shay Green (30 Jun 2005) (PD)	NES
 5b87d2e908ae68348ccb306764ac7ec9067395e3	U	IRQ Handler Test by Shay Green (30 Jun 2005) (PD)	NES
@@ -9390,15 +9390,15 @@ e54091563b9f39863a93f8c0260b3b5518628576	T	JJ - Tobidase Daisakusen Part 2 (J) [
 f19a702eefcb6467176916a6f612974dcba0fb19	T	JJ - Tobidase Daisakusen Part 2 (J) [T+Rus]	NES
 6c2aee3bfe22bdbcab6f707720b3675c2d439c42	T	JJ - Tobidase Daisakusen Part 2 (J) [T+Rus][t1]	NES
 90dd8e45ade16e684489d34343856b6a0b8dac26	C	JJ - Tobidase Daisakusen Part 2 (J) [t1]	NES
-935a56567d1e8516c104ead5e9ecbc6d8e9b0a1f	G	Joe &amp; Mac - Caveman Ninja (E) [!]	NES
-36bafdf6f8d531fecb3553c1923eeafac4a05c28	G	Joe &amp; Mac - Caveman Ninja (U) [!]	NES
-79a02ad09b776734e9e341d91137e989ea482f8e	B	Joe &amp; Mac - Caveman Ninja (U) [b1]	NES
-6edbe6c00f8246a1f8c1a6fa543e9e2e83ea666e	B	Joe &amp; Mac - Caveman Ninja (U) [o1]	NES
-e3b06ee583b47c55b5a1c9354482a27ad2cfbfde	G	Joe &amp; Mac - Caveman Ninja (U) [p1][!]	NES
-bcf23b47befc698b9c8e1c2e1aa48529ac6ecf06	B	Joe &amp; Mac - Caveman Ninja (U) [p2]	NES
-ef454083c6720b6f0a541257eb9a41758f27746c	B	Joe &amp; Mac - Caveman Ninja (U) [p3]	NES
-f8139f01b7c3ca2b14cefec784ae64781c8f956d	C	Joe &amp; Mac - Caveman Ninja (U) [t1] (No Time)	NES
-9031b847c51320960655849c750f027b20d05a80	C	Joe &amp; Mac - Caveman Ninja (U) [t2]	NES
+935a56567d1e8516c104ead5e9ecbc6d8e9b0a1f	G	Joe & Mac - Caveman Ninja (E) [!]	NES
+36bafdf6f8d531fecb3553c1923eeafac4a05c28	G	Joe & Mac - Caveman Ninja (U) [!]	NES
+79a02ad09b776734e9e341d91137e989ea482f8e	B	Joe & Mac - Caveman Ninja (U) [b1]	NES
+6edbe6c00f8246a1f8c1a6fa543e9e2e83ea666e	B	Joe & Mac - Caveman Ninja (U) [o1]	NES
+e3b06ee583b47c55b5a1c9354482a27ad2cfbfde	G	Joe & Mac - Caveman Ninja (U) [p1][!]	NES
+bcf23b47befc698b9c8e1c2e1aa48529ac6ecf06	B	Joe & Mac - Caveman Ninja (U) [p2]	NES
+ef454083c6720b6f0a541257eb9a41758f27746c	B	Joe & Mac - Caveman Ninja (U) [p3]	NES
+f8139f01b7c3ca2b14cefec784ae64781c8f956d	C	Joe & Mac - Caveman Ninja (U) [t1] (No Time)	NES
+9031b847c51320960655849c750f027b20d05a80	C	Joe & Mac - Caveman Ninja (U) [t2]	NES
 5e44cea620e33e3c7c04c67163b0a9c612939c47	G	John Elway's Quarterback (U) [!]	NES
 d0e8588498ff005c311492c221b3c67721b8d42d	B	John Elway's Quarterback (U) [o1]	NES
 f67733b11991cc1c2301bf9d97df7c2b25a6bfdf	B	John Elway's Quarterback (U) [o2]	NES
@@ -9413,11 +9413,11 @@ e53a42ac93b757541e853695dd0c7ae50b437874	B	Jongbou (J) [f1][o1]	NES
 1c07244a8b98dde1f4ecb176097ca6aacd8c785d	B	Jongbou (J) [f1][o3]	NES
 ce8415b6a7585a752d1979ef87d4227591789e97	G	Jordan Vs Bird - One On One (U) [!]	NES
 538668aaa59db38e072cd1f499dead9236bbe13f	B	Jordan Vs Bird - One On One (U) [o1]	NES
-011a7ce0c86929a5788a67ed49c5dc587c53f991	U	Joshua &amp; the Battle of Jericho (Wisdom Tree) (V5.0 CHR 6.0)	NES
-4d838a393823b2ab2fcca48b6cda6292f2992880	G	Joshua &amp; the Battle of Jericho (Wisdom Tree) (V6.0) [!]	NES
-4856a12ba4f01e0ca41bfa6c95039fc302a60724	B	Joshua &amp; the Battle of Jericho (Wisdom Tree) (V6.0) [b1]	NES
-e598d9753a823d39fda3cddc486a56ffb0ebee33	B	Joshua &amp; the Battle of Jericho (Wisdom Tree) (V6.0) [b2]	NES
-eb320ad334f8f26044eb1084b070003bafc4e7d1	B	Joshua &amp; the Battle of Jericho (Wisdom Tree) (V6.0) [o1]	NES
+011a7ce0c86929a5788a67ed49c5dc587c53f991	U	Joshua & the Battle of Jericho (Wisdom Tree) (V5.0 CHR 6.0)	NES
+4d838a393823b2ab2fcca48b6cda6292f2992880	G	Joshua & the Battle of Jericho (Wisdom Tree) (V6.0) [!]	NES
+4856a12ba4f01e0ca41bfa6c95039fc302a60724	B	Joshua & the Battle of Jericho (Wisdom Tree) (V6.0) [b1]	NES
+e598d9753a823d39fda3cddc486a56ffb0ebee33	B	Joshua & the Battle of Jericho (Wisdom Tree) (V6.0) [b2]	NES
+eb320ad334f8f26044eb1084b070003bafc4e7d1	B	Joshua & the Battle of Jericho (Wisdom Tree) (V6.0) [o1]	NES
 85f64db051e8c173a18905066052d412a8eb1d6c	G	Journey to Silius (E) [!]	NES
 275244538589393b552b159ab1d380090c8e8996	G	Journey to Silius (U) [!]	NES
 08c67ce185d2a4230d6c954bd90587192d2e34d2	B	Journey to Silius (U) [b1]	NES
@@ -9990,10 +9990,10 @@ f324e7c8c3ad102ecdcca011ecc494f6f345d768	G	Kirby's Adventure (U) (PRG1) [!]	NES
 455a81e5644317409d6047a7dccff56cb07cde89	H	Kirby's Adventure 2 (SMB1 Hack)	NES
 c6f778708182114b4f58093575cf51b5de9926b7	H	Kirby's Adventure FUCKED (Hack)	NES
 15175dfe4b255b3ffc1003e7ffc3d87888fd3acc	U	Kirby's Dreamland 3 Title Screen Demake by Macbee v1.0 (PD)	NES
-c445072c3362fa3fb2cc481706d5b1b96b368798	B	Kirby's Nuts (Nuts &amp; Milk Hack) [o1]	NES
-67c1d833caa09444555711fdb32e7f16dfe61389	T	Kirby's Nuts (Nuts &amp; Milk Hack) [T+Rus_Cool-Spot]	NES
-d875bd8977d6486ac3c5c874d9d4f2cdcdc0841a	T	Kirby's Nuts by Kidwhatever (Nuts &amp; Milk Hack) [T+Rus_Multisoft]	NES
-046d3a72942639a1a0c8a6eaa8c0a049051ea113	H	Kirby's Nuts by Kidwhatever (Nuts &amp; Milk Hack)	NES
+c445072c3362fa3fb2cc481706d5b1b96b368798	B	Kirby's Nuts (Nuts & Milk Hack) [o1]	NES
+67c1d833caa09444555711fdb32e7f16dfe61389	T	Kirby's Nuts (Nuts & Milk Hack) [T+Rus_Cool-Spot]	NES
+d875bd8977d6486ac3c5c874d9d4f2cdcdc0841a	T	Kirby's Nuts by Kidwhatever (Nuts & Milk Hack) [T+Rus_Multisoft]	NES
+046d3a72942639a1a0c8a6eaa8c0a049051ea113	H	Kirby's Nuts by Kidwhatever (Nuts & Milk Hack)	NES
 576b13815dbcfdb621b2654ab14b30a8080a8a4a	H	Kiri5 Star (SMB1 Hack) [a1]	NES
 58f4d00498313f5179fd5749e9c15efeef0b5910	H	Kiri5 Star (SMB1 Hack)	NES
 226da664994cee80f3af52fe98f77b92df291766	H	Kiri7 (SMB1 Hack)	NES
@@ -10182,7 +10182,7 @@ b338354bf584e2abccb625d88f543d27d5d9e542	H	Kunio-kun no Nekketsu Soccer League -
 340c0dc4d29883152e31a79aa5477b851dbdfeb2	H	Kunio-kun no Nekketsu Soccer League - Striker (Hack)	NES
 d39199f9c1550add08c12d5a13bbb59fcb6b3b2c	H	Kunio-kun no Nekketsu Soccer League - Super Maltreatment Edition (Hack)	NES
 4f78b071b96bf1b2c5e8098bf1529b1b333e246d	H	Kunio-kun no Nekketsu Soccer League - Super Striker (Hack)	NES
-f407cdd3308b4dd5ab48c74db33a8879e880f588	H	Kunio-kun no Nekketsu Soccer League - To Change Skill &amp; Hit Keeper (Hack)	NES
+f407cdd3308b4dd5ab48c74db33a8879e880f588	H	Kunio-kun no Nekketsu Soccer League - To Change Skill & Hit Keeper (Hack)	NES
 3ca8ef95f367374000aa14223b7c0fd746a7f584	H	Kunio-kun no Nekketsu Soccer League - TT (Hack)	NES
 d64b96f6171876119a5af8bf0ead7e879ed8770d	H	Kunio-kun no Nekketsu Soccer League - Twin Shot by altinfener38 (Hack)	NES
 e45275579fd75471bd6c2f8ce8980c7bd6b907ab	H	Kunio-kun no Nekketsu Soccer League by oktucu (110806) (Hack)	NES
@@ -10272,7 +10272,7 @@ e6226a1bdf7c304438f4444df242f5ab5b4a1f67	B	Lagrange Point (J) [b1][o1]	NES
 ab6818c5e75516264d3a285ecbec5a4884683612	B	Lagrange Point (J) [b1][t1]	NES
 65557407307ca0313775510120b9e8b09f08e860	C	Lagrange Point (J) [t1]	NES
 cc44c4f1b8f8075e428389cde3b2c3ee583942e2	U	Lair's Secret (Unl)	NES
-bce119365efcbcab4bc03f7dc4f6dae5514ac172	H	Lam by darkdata (Milk &amp; Nuts Hack)	NES
+bce119365efcbcab4bc03f7dc4f6dae5514ac172	H	Lam by darkdata (Milk & Nuts Hack)	NES
 6a0005e1bfd16f99cc79766e543dc624248d6cf8	U	LAN Master bu shiru (PD) (2011-06-10)	NES
 81763892417f2b2a89bfbac83b240ef5da322369	U	LAN Master by shiru (PD)	NES
 62fac07016d534852c9da61c060e8bd19ba5e6f0	G	Laser Invasion (U) [!]	NES
@@ -10339,7 +10339,7 @@ a86fb55799df29a70132e35ba305dad820068022	T	Legend of Kage, The (U) [T+Rus_Shedev
 f2755fe982e51a7f31a237aee03b91d364795629	H	Legend of Prince Valiant, The (E) [hM04]	NES
 773fefddc1a15ab045bc0e23151bf5d157e98bc5	C	Legend of Prince Valiant, The (E) [t1]	NES
 60bf4889b5b99b7441b91b4c9f4e8820bc4d0c7a	U	Legend of Robin Hood, The (U) (Prototype)	NES
-961e2890880a2185fd21ca25b6874c5d6ffcc6b8	H	Legend of Sean, The (Master Chu &amp; The Drunkard Hu Hack)	NES
+961e2890880a2185fd21ca25b6874c5d6ffcc6b8	H	Legend of Sean, The (Master Chu & The Drunkard Hu Hack)	NES
 ee3a7feabc22fa45256416681496626493b7a2e9	H	Legend of Super Pikachu Bros 3 (SMB3 Hack)	NES
 2cc6cc45fa63f9354acd4f6b9d9deadfa88900c8	U	Legend of the Black Shawarma Medley (Music Demo) by Snowbro (PD)	NES
 1d195beeb4b3edbf8d1d53df8f7b756ad77890cf	H	Legend of the Blob Bros. 2 V1.0 by BMF54123 (SMB2 Hack)	NES
@@ -10700,7 +10700,7 @@ e1308b338c2b75bb5674547312d445cadcafa40c	U	Luan Shi San Guo (Ch)	NES
 7ed2f88638929b7e81a93510e19560ce0f4decf5	H	Luigi and the Christmas Quest (Final) (SMB1 Hack)	NES
 f880b618845829fe41d313d7386bea4545a97246	H	Luigi and the Christmas Quest (SMB1 Hack) [a1]	NES
 fcd6b2a1d32aca07ff8a1caa4a7e7ab09f8f243d	H	Luigi and the Christmas Quest (SMB1 Hack)	NES
-8fc67b2f8613c711def655519a390b41f5614ce0	H	Luigi and the New Quest (Level &amp; Graphics Patch) (SMB1 Hack)	NES
+8fc67b2f8613c711def655519a390b41f5614ce0	H	Luigi and the New Quest (Level & Graphics Patch) (SMB1 Hack)	NES
 76515328e14754247618e9aed6cac87a49a2e494	H	Luigi and the New Quest (New Level Patch) (SMB1 Hack)	NES
 56bd3d597f4024ed558e34c5fa1e7dbee4c7f63d	H	Luigi and the New Quest (Partial Levels Patch) (SMB1 Hack)	NES
 b38c3b1d8bddf46e382ebfc8b13248214ba081a8	H	Luigi and the New Quest (SMB1 Hack) [a1]	NES
@@ -10751,10 +10751,10 @@ c8e128a54bf9aba9d9dd0f28a45f34e443ff0cdc	T	Lupin Sansei - Pandora no Isan (J) [T
 1d1f04e0bed7113be71d78eedc4cbd2a92bad32e	C	Lupin Sansei - Pandora no Isan (J) [t1]	NES
 18d0afcb194f5a7eca06efac29473fa22a499014	C	Lupin Sansei - Pandora no Isan (J) [t2]	NES
 96edd908d86043c856d189c3db7a95998771aae6	H	M Mario (SMB1 Hack)	NES
-e0064546070f426da5fdc9d05a1affa74d955882	U	M&amp;M Heroes (Ch) (Wxn)	NES
-7bc4d849ea854df4ec39bc632d38ab888cfa30a0	H	M&amp;M Heroes (Unl) [f1]	NES
-f63e163ed15f5bd977c0132679cb5f5a7f23f45a	T	M&amp;M Heroes (Unl) [T+Rus_FedX IV]	NES
-a7ab98cadb51b86837fc9a71e72619c0d27a9a9d	U	M&amp;M Heroes (Unl)	NES
+e0064546070f426da5fdc9d05a1affa74d955882	U	M&M Heroes (Ch) (Wxn)	NES
+7bc4d849ea854df4ec39bc632d38ab888cfa30a0	H	M&M Heroes (Unl) [f1]	NES
+f63e163ed15f5bd977c0132679cb5f5a7f23f45a	T	M&M Heroes (Unl) [T+Rus_FedX IV]	NES
+a7ab98cadb51b86837fc9a71e72619c0d27a9a9d	U	M&M Heroes (Unl)	NES
 9f026896275121d4cfb8ac34bd9e0cba96372508	U	M-Day (Ch) (Wxn)	NES
 afac4a56c2cf511e3cf983e16890adbf2f896bfd	G	M.C Kids (U) (Prototype) [!]	NES
 0fabf7ee8ed5bdc855daa5b16c49efc4b94497ba	G	M.C Kids (U) [!]	NES
@@ -10778,7 +10778,7 @@ deade5ae2b4f0948763b7e77b6561dfed5fdc8ff	B	M.U.S.C.L.E. (U) [o3]	NES
 0579081f3d7c4b5b756351bff82fd42f9e1eb54e	B	M.U.S.C.L.E. (U) [o4]	NES
 0414719a4ad314926d8d9b9fc8461d7303501ba0	B	M.U.S.C.L.E. (U) [o5]	NES
 4d7786106e6e550d993f20319428f27cae6ba998	U	M82 Game Selectable Working Product Display (E)	NES
-a58de11d0f58995d642fc3d556b3b554c3cb6493	U	Ma Bu Mi Zhen &amp; Qu Wei Cheng Yu Wu (Ch)	NES
+a58de11d0f58995d642fc3d556b3b554c3cb6493	U	Ma Bu Mi Zhen & Qu Wei Cheng Yu Wu (Ch)	NES
 6b1d4795428ca175d83abcf06b4d6def3d7b9e11	B	Ma Li 12 (Yoshi no Cookie) [p1]	NES
 7c9daf77487a885367666c4f9dbc7714b0ce1439	B	Ma Li 12 (Yoshi no Cookie) [p1][o1]	NES
 39fcdb90ab5fe745eeebef591127dae761b02e81	U	Mac OS Demo (Large) by Chris Covell (PD)	NES
@@ -10994,9 +10994,9 @@ b8eabd4dfe1710ea8d74a990a2701ccda27d07d2	B	Making Love (Battle City Hack) [o1]	N
 0792c8302caf2641f3644146500d669bd21ef0d1	T	Making Love (Battle City Hack) [T+Rus_Cool-Spot][a1]	NES
 6efde8835d2f8c34875e24de8cdc353452d9f9b5	H	Making Love (Battle City Hack)	NES
 e5c0edeec0c4c45e4cfcf0ff0d48304ee90c215c	H	Male Lover Eon Man (Time Diver Eon Man Hack)	NES
-f76c5b3598b7869e57f438b861b6a198ef59a80e	B	Maluex (Nuts &amp; Milk Hack) [o1]	NES
-544a5ed93d8ec8c34822f827126961377087e58d	B	Maluex (Nuts &amp; Milk Hack) [o2]	NES
-4f26475c03365c125f9f9590bced09e3158f6a9a	H	Maluex (Nuts &amp; Milk Hack)	NES
+f76c5b3598b7869e57f438b861b6a198ef59a80e	B	Maluex (Nuts & Milk Hack) [o1]	NES
+544a5ed93d8ec8c34822f827126961377087e58d	B	Maluex (Nuts & Milk Hack) [o2]	NES
+4f26475c03365c125f9f9590bced09e3158f6a9a	H	Maluex (Nuts & Milk Hack)	NES
 76edf6482110b1dcfebb2c57e00993ad80cc7878	U	Mandelbrot (PD)	NES
 3764bbd627f1a6b5790712019e06efa3a011d4e4	U	Manhole by KZ-S (PD) [a1]	NES
 b01b5adc58b6b81cae093e3ad43ad6fc4065237a	U	Manhole by KZ-S (PD)	NES
@@ -11072,8 +11072,8 @@ fca0c2983073ae17f1034077b0769e64dc33e179	B	Marble Madness (U) [o1]	NES
 14565b90be871acba746be154cdfc254c9c79193	H	Maria's Golf (Golf Hack)	NES
 038103f080bd837c11b8e82d03a57909006e2d4f	H	Marilunker (Spelunker Hack)	NES
 a86de28534e8d6b80a4e193a34073a6a58c30626	H	Marilunker by Tsurumidou (Spelunker Hack)	NES
-9ca35258a3637b43c45ef7f17a75c7b32ea969a8	G	Mario &amp; Yoshi (E) [!]	NES
-5f69d6fe6299cd09e359f0db360495a40f8359fa	H	Mario + Toad (Nuts &amp; Milk Hack)	NES
+9ca35258a3637b43c45ef7f17a75c7b32ea969a8	G	Mario & Yoshi (E) [!]	NES
+5f69d6fe6299cd09e359f0db360495a40f8359fa	H	Mario + Toad (Nuts & Milk Hack)	NES
 0c2494b25620c81cf4a514ed9659429e59b4c6ef	H	Mario 1337 (SMB1 Hack)	NES
 ff70fcbdf643b0c71cb2f8c170f315a4af755531	B	Mario 16 (1993) (Unl) [b1]	NES
 3a6f026690bbf5f13b1066e5b100f783a6928c8b	B	Mario 16 (1993) (Unl) [o1]	NES
@@ -11096,8 +11096,8 @@ e972a5ee5b0f8f68a08106bce39ae1c82d34e1d2	H	Mario a la Caza del Tesoro V1.0 Spani
 69b006cd318393e610e77ee22fd29ee4f10f0fda	H	Mario Adventure Island (Takahashi Meijin no Bouken Shima Hack)	NES
 34edbd53301273a8a31f1fade92003bf197d2926	T	Mario and Goombas by Cool-Spot (Mappy Hack) [T+Rus_Cool-Spot]	NES
 bc2eafe7d8c3b63595ecb75f19760e4ab5634e56	H	Mario and Goombas by Cool-Spot (Mappy Hack)	NES
-fdd6a65ea316ec531c0f96804bd02941add01b44	T	Mario and Luigi (Nuts &amp; Milk Hack) [T+Rus_Cool-Spot]	NES
-01b81f8e7ba17db3298822035435cd0c1ab87de6	H	Mario and Luigi (Nuts &amp; Milk Hack)	NES
+fdd6a65ea316ec531c0f96804bd02941add01b44	T	Mario and Luigi (Nuts & Milk Hack) [T+Rus_Cool-Spot]	NES
+01b81f8e7ba17db3298822035435cd0c1ab87de6	H	Mario and Luigi (Nuts & Milk Hack)	NES
 e9bd0d304d265fa5a25c47cfed2d847605d3de76	H	Mario Bomb Jack (Mighty Bomb Jack Hack)	NES
 ef30e7d464a79dd4482b0da82c41504f46e477d2	H	Mario Bros in the Clouds (SMB1 Hack)	NES
 1bf3152946f6b697dd80aa9ba5b16bddab8ac0c2	G	Mario Bros. (E) (PRG1) [!]	NES
@@ -11235,7 +11235,7 @@ c90404b3c08265dfbc0677e7eb8a91eda8cf9a19	H	Mario Runner by Y.Project (Championsh
 441f1355cc8d159de0f82bd5471b5e25efac9448	H	Mario Satanic Freak Bros 2 (SMB2 Hack)	NES
 35cc22c2861cb67e3feee8bb10bcc22bf1c611e3	H	Mario Spy vs Spy (Spy vs Spy Hack)	NES
 38550a3ca3fc7f3263b26758ed37a9e3ba7e87fe	B	Mario Tails (SMB1 Hack) [b1]	NES
-fcd488c8f40e2956b1030d2b0e9ca4565694a5be	H	Mario Tank &amp; Sub (SMB1 Hack)	NES
+fcd488c8f40e2956b1030d2b0e9ca4565694a5be	H	Mario Tank & Sub (SMB1 Hack)	NES
 764d9f6c2d2f9130c8de46fe9a0a408d3e96b13e	H	Mario Tokes A Doobie (SMB1 Hack)	NES
 2b5135b41e78505abf5489a2ab52faefee4a65fa	H	Mario Tower (SMB1 Hack)	NES
 48b8f691f3d73d8d2aa35c2f1e9c869c97d8b97b	H	Mario vs Monkey by Hax0r Kyo (Mario Bros Hack)	NES
@@ -11310,11 +11310,11 @@ a2b6008b8c2a65cd6e2312614505c463e1f4615f	B	Mashou (J) [hM02][b1]	NES
 1f1b2f43de9c29e41a9514a6019978529a9bfac8	C	Mashou (J) [t1]	NES
 1d9757ab82c6e1095bc88765e3ff012d0ad7375a	U	Masmix v0.06, The by Wojciech Andralojc (PD)	NES
 2a493dcfeeb0d7f928cb8862b8e8be295ed3c685	U	Master Chess (Ch) (Wxn)	NES
-62918362f30e4840ed4e7719339520cfefc92a2a	G	Master Chu &amp; The Drunkard Hu (Color Dreams) [!]	NES
-569065844ea9f5c29fb80becef94190358dc9fe3	B	Master Chu &amp; The Drunkard Hu (Color Dreams) [o1]	NES
-de04b54e6bb4bcfc3cb8a40669cf52499c51ff89	U	Master Chu &amp; The Drunkard Hu (Joy Van)	NES
-9c98deede6eaa1c352d75c9cd8d1ca67ba16f77a	G	Master Chu &amp; The Drunkard Hu (Sachen) [!]	NES
-08a2fbefe2e5543b9ef3e8342009456d67500884	G	Master Chu &amp; The Drunkard Hu (Sachen) [U][!].unf	NES
+62918362f30e4840ed4e7719339520cfefc92a2a	G	Master Chu & The Drunkard Hu (Color Dreams) [!]	NES
+569065844ea9f5c29fb80becef94190358dc9fe3	B	Master Chu & The Drunkard Hu (Color Dreams) [o1]	NES
+de04b54e6bb4bcfc3cb8a40669cf52499c51ff89	U	Master Chu & The Drunkard Hu (Joy Van)	NES
+9c98deede6eaa1c352d75c9cd8d1ca67ba16f77a	G	Master Chu & The Drunkard Hu (Sachen) [!]	NES
+08a2fbefe2e5543b9ef3e8342009456d67500884	G	Master Chu & The Drunkard Hu (Sachen) [U][!].unf	NES
 00e58c05c1ddc011418b762e203283ba61510549	U	Master Fighter 3 (Unl) [a1]	NES
 0aeb922bd4bfe12fde656729e0ee0058276b7a95	U	Master Fighter 3 (Unl)	NES
 89ec66a8c33722a5bd1120bc69393b237e72de03	G	Master Fighter II (Unl) (UT1374 PCB) [!]	NES
@@ -11785,11 +11785,11 @@ b64e5757c43c4270c7ec4656823b3dd7f506a31c	U	Metal Max (J) (VC)	NES
 9a9401b7e009d560978053035ba854484258453f	H	Metal Max - Shining Strengthened Edition (Hack)	NES
 f0ded676241e773791a3209281b6290ca6c2a115	H	Metal Max by ZTOUYIA (090214) (Hack)	NES
 7af64b80c8857dba498a520298ab438b92a27a0d	H	Metal Max Night Edition by MISAKA KEN (Hack)	NES
-491f6a151cb43c794f1e0984e3645e946b5f5600	G	Metal Mech - Man &amp; Machine (U) [!]	NES
-c46b547aaa2295d6e6daa978b971a47a1ea12906	B	Metal Mech - Man &amp; Machine (U) [b1]	NES
-b5806e8504f79d790fc67bc31e6d2ccca2990011	B	Metal Mech - Man &amp; Machine (U) [o1]	NES
-3e06e7b5db6da401ec312ab490b7069e8624a62f	B	Metal Mech - Man &amp; Machine (U) [o2]	NES
-079f970b54f70e2144b5c9f197331f08a46b9aa2	B	Metal Mech - Man &amp; Machine (U) [o3]	NES
+491f6a151cb43c794f1e0984e3645e946b5f5600	G	Metal Mech - Man & Machine (U) [!]	NES
+c46b547aaa2295d6e6daa978b971a47a1ea12906	B	Metal Mech - Man & Machine (U) [b1]	NES
+b5806e8504f79d790fc67bc31e6d2ccca2990011	B	Metal Mech - Man & Machine (U) [o1]	NES
+3e06e7b5db6da401ec312ab490b7069e8624a62f	B	Metal Mech - Man & Machine (U) [o2]	NES
+079f970b54f70e2144b5c9f197331f08a46b9aa2	B	Metal Mech - Man & Machine (U) [o3]	NES
 5aa98fc076e38002f08bfb3130cca0fbbe03058f	U	Metal Slader Glory (J) (VC)	NES
 a62908e4873cf88f4a3c571c2b06d3d7c51e7450	G	Metal Slader Glory (J) [!]	NES
 c62cc944e7cfac05ac9b99170dadfe1d8b5a3965	B	Metal Slader Glory (J) [b1]	NES
@@ -11828,7 +11828,7 @@ b0e1e0cd36b40aab2f9fecf057098abdad718cd3	T	Metroid (U) [T+Fre_Terminus]	NES
 6170e1db74b46a77ad701c0ec87bd129adccd037	T	Metroid (U) [T+Spa050_PaladinKnights]	NES
 574117fa7c66279a1373e25d792a40f45286fce2	T	Metroid (U) [T+Spa100b_ereza]	NES
 0d589c18ee0e59b7c7d17d7b6a698dcd968eb56e	T	Metroid (U) [T+Swe1.0_TheTranslator]	NES
-180d37be77a6bcbb5a572364ab214defe84ca0b8	H	Metroid - Unused GFX Tiles &amp; 99 Energy Units by Grond (Metroid Hack)	NES
+180d37be77a6bcbb5a572364ab214defe84ca0b8	H	Metroid - Unused GFX Tiles & 99 Energy Units by Grond (Metroid Hack)	NES
 e7980c189177ab863b254a2a7a9683440557e3c0	H	Metroid - Wart's Invasion (Metroid Hack)	NES
 fe72d83deeb11b4579f7b07fb2e231137af396f0	H	Metroid - Zebian Illusion (Metroid Hack)	NES
 0be24e45e1ef766d67701aae299e1315c66e0979	H	Metroid 2000 (Metroid Hack)	NES
@@ -11994,7 +11994,7 @@ b47d159f82fe0ec2b458ead44337255f387f5179	C	Mighty Final Fight (U) [t1]	NES
 855f819f6745c64532be84cb771dcda43bed5abc	C	Mighty Final Fight (U) [t4]	NES
 c54abb5f91ff22e164510adb94be037661ffe0ee	C	Mighty Final Fight (U) [t5]	NES
 b63f9117a0d864ecf028c79cf0b759d02ca12dc7	H	Mighty Final Fight - Rock (Hack)	NES
-da6b671f63e0884a06edc4ffab18e80ef3815e5c	H	Mighty Final Fight - Skill &amp; Enemies Changed (Hack)	NES
+da6b671f63e0884a06edc4ffab18e80ef3815e5c	H	Mighty Final Fight - Skill & Enemies Changed (Hack)	NES
 706a4d92a6f892f50768216222deb0943cf1c8fb	H	Mikamari 1 (SMB1 Hack)	NES
 291ecdfa63678f47489874c3b68bdbfe47a8651c	H	Mikamari 2 (SMB1 Hack)	NES
 4eaa8f7c55b779ffd5310062d0f6012b77fcb0d2	H	Mikamari 3 (SMB1 Hack)	NES
@@ -12469,7 +12469,7 @@ e9ebfd1a44a8b62ab774e421770f0caee34c34d4	U	Mr Brownstone by Snowbro (PD)	NES
 363c095b7d6b0b035365d55bbcd822c911adecf2	H	Mr. Happyface (Ms. Pac-Man Hack) [a1]	NES
 141991d10b5c2424d44bc2e8dfd62cd528e710ae	H	Mr. Happyface (Ms. Pac-Man Hack)	NES
 b5bf9531fe5900dc946e92114f7983088bfe232f	H	Mr. Men (Dig Dug II Hack)	NES
-141f8ddc64afb5f28a51b7265268ef76c1f11f4a	H	Mr. Pac-Man by Dave Augusta &amp; Googie (v1.0) (Ms. Pac-Man Hack)	NES
+141f8ddc64afb5f28a51b7265268ef76c1f11f4a	H	Mr. Pac-Man by Dave Augusta & Googie (v1.0) (Ms. Pac-Man Hack)	NES
 7893f168fd56adad3546b5db267b286ff659a349	H	Mr. Sandman! by The Eadernator (SMB1 Hack)	NES
 697d523d2db7f1ebdcf91bf501422c6a033fbd44	B	Mr. Saturn's Dragon Quest v1.21 (Dragon Warrior PRG0 Hack) [o1]	NES
 93c5f1cb016f46ba5e1033997a8cd8bfdfa43e89	H	Mr. Saturn's Dragon Quest v1.21 (Dragon Warrior PRG0 Hack)	NES
@@ -12682,7 +12682,7 @@ cecd61c0a2321d44500bee546e04e382259b93f7	T	Nekketsu! Street Basket - Ganbare Dun
 13e673bd83bff5923729e259c42fed0995d989be	T	Nekketsu! Street Basket - Ganbare Dunk Heroes (J) [T-Eng.50]	NES
 7e129fa870424cbc23f274f373ae0e389c7d127f	U	Nekketsu! Street Basket - Ganbare Dunk Heroes (J)	NES
 ffd1705e5919b87d5a26d49a8f48d35d57497796	H	Nekketsu! Street Basket - Ganbare Dunk Heroes - Spirit Edition (Hack)	NES
-f5f295588ef93bb1ac44d16df184ac67ab678167	H	Nekketsu! Street Basket - Ganbare Dunk Heroes by AXI&amp;AHE (v0.9) (Hack)	NES
+f5f295588ef93bb1ac44d16df184ac67ab678167	H	Nekketsu! Street Basket - Ganbare Dunk Heroes by AXI&AHE (v0.9) (Hack)	NES
 6a50ac4d84116cd39b57531a44f6509ef151829a	H	Nekketsu! Street Basket - Ganbare Dunk Heroes by D.S.ghtMaster+KRIZAL (Hack)	NES
 fbfa57623728465fd3c2582c8fc5930430502da9	H	Nekketsu! Street Basket - Ganbare Dunk Heroes by PU (100426) (Hack)	NES
 fb0a992bc148de44d82277b5cf4e3aba40ad6e38	G	Nemo - Pajama Hero (J) [!]	NES
@@ -13233,20 +13233,20 @@ ca1f630cfcf80e817e6e395b5bd52497f1604e63	B	Nobunaga's Ambition 2 (U) [o1]	NES
 a8fd3c5c20777b94d1204145104f72a93f83d225	U	Nomolos - Storming the Catsle Demo (PD)	NES
 9c5d4c2654998e874b3eda5e3f0af8b5e353575e	U	Nong Chang Xiao Jing Ling (NJ025) (Ch)	NES
 4e48b65b60f94a054b865f9e1cb3fd47cf9b4949	H	Normal (Lolo1 Hack)	NES
-766a602e239895343819c2980ecd296da14613e1	G	North &amp; South (E) [!]	NES
-3c1f1f3ba8ce62899c2153116c3bd73ae058e554	T	North &amp; South (E) [T+FreFinal_Generation IX]	NES
-023b6b9ac517453541324e3cca279588b94d5016	G	North &amp; South (J) [!]	NES
-2a7f6052219e8ed69f307b8eb3d724fdded74ae1	G	North &amp; South (U) [!]	NES
-da1d5fb3d856cee918a57e510a93d32e33af2843	B	North &amp; South (U) [b1]	NES
-f2f1257a99f9fe3788851e62577798b7cb400cfb	B	North &amp; South (U) [b1][o1]	NES
-58346ef19200fce9be100cc21284f31b6a1dad61	B	North &amp; South (U) [b1][o2]	NES
-2342eec6311f597ea24bf418a9ff26030b5edd43	B	North &amp; South (U) [b2]	NES
-7df0cc39d279659e4df9319aa74e24152a4db884	B	North &amp; South (U) [b3]	NES
-2a08ba115a2ee1b6a7f07829bde5049dde11ec6c	B	North &amp; South (U) [b4]	NES
-7dee9233fc66d18c92ac477965ba3f15892bda78	B	North &amp; South (U) [b5]	NES
-f7ab568fd4b65dfcc89aeba81e7b127740967700	B	North &amp; South (U) [b6]	NES
-1a38e957fc2953c987ea4f129f17edc6adc133f6	B	North &amp; South (U) [b7]	NES
-53cbaf5517f6aba9a5eeba311ddfa03680898ac0	T	North &amp; South (U) [T+Swe1.0_TheTranslator]	NES
+766a602e239895343819c2980ecd296da14613e1	G	North & South (E) [!]	NES
+3c1f1f3ba8ce62899c2153116c3bd73ae058e554	T	North & South (E) [T+FreFinal_Generation IX]	NES
+023b6b9ac517453541324e3cca279588b94d5016	G	North & South (J) [!]	NES
+2a7f6052219e8ed69f307b8eb3d724fdded74ae1	G	North & South (U) [!]	NES
+da1d5fb3d856cee918a57e510a93d32e33af2843	B	North & South (U) [b1]	NES
+f2f1257a99f9fe3788851e62577798b7cb400cfb	B	North & South (U) [b1][o1]	NES
+58346ef19200fce9be100cc21284f31b6a1dad61	B	North & South (U) [b1][o2]	NES
+2342eec6311f597ea24bf418a9ff26030b5edd43	B	North & South (U) [b2]	NES
+7df0cc39d279659e4df9319aa74e24152a4db884	B	North & South (U) [b3]	NES
+2a08ba115a2ee1b6a7f07829bde5049dde11ec6c	B	North & South (U) [b4]	NES
+7dee9233fc66d18c92ac477965ba3f15892bda78	B	North & South (U) [b5]	NES
+f7ab568fd4b65dfcc89aeba81e7b127740967700	B	North & South (U) [b6]	NES
+1a38e957fc2953c987ea4f129f17edc6adc133f6	B	North & South (U) [b7]	NES
+53cbaf5517f6aba9a5eeba311ddfa03680898ac0	T	North & South (U) [T+Swe1.0_TheTranslator]	NES
 f25301c5586eaf0bd53f95cbf264a0e4207731e2	U	Nothing Demo (PD)	NES
 7b3ff58b8684313b775fcffcdd24347060be5d38	G	Novel Diamond 999999-in-1 [U][p1][!].unf	NES
 077c8e387d2c605e4a1fb3b7a3b8e743feaffc64	U	NROM Template 0.01 by Damian Yerrick (2011) (PD)	NES
@@ -13278,28 +13278,28 @@ f67c0b6e6386ab3672759b7e1edbca7cfeecf4d5	H	Nude Punch Out (Punch-Out!! Hack)	NES
 9072be68ee2eaa942c474a7eba228640d7693ba9	U	Nuevo Tipo de Computadora (Game Star)	NES
 44b74d6a242b6446fa5a937884fb5a01da15a1cb	U	Nullsleep - Kuribos Requiem (PD)	NES
 15bb5ad31ef26025bb744e53e238f9880c90b9bd	U	NumberGuess by Vincent van der Leun (PD)	NES
-cca97fba72ca56809dd216618f5962eb6ea2f1aa	G	Nuts &amp; Milk (J) [!]	NES
-38ad30d95aaa4376b282f98efd89df92846bb940	B	Nuts &amp; Milk (J) [o1]	NES
-50ce8cec6085dd639292ae274bb5e913c9e1fc24	B	Nuts &amp; Milk (J) [o2]	NES
-73b1aeb8c794ae7c1f662411c34d7ff11b362369	B	Nuts &amp; Milk (J) [p1]	NES
-c01df7f32a0724e2258786a114f948e5d5ec7963	B	Nuts &amp; Milk (J) [p1][o1]	NES
-e5a0ad38498935f360997c0925b539014618aa8a	T	Nuts &amp; Milk (J) [T+Bra_JM-trad]	NES
-8a5022c666bab63216563f76ca202125af6cb0ba	T	Nuts &amp; Milk (J) [T+Chi_MS emumax]	NES
-f8c39e1b575a1ff6775329bbca4b723059b42ed0	T	Nuts &amp; Milk (J) [T+FreFinal_ks151]	NES
-7b84df69272bc4e29327c037ffd2d3d129df39be	T	Nuts &amp; Milk (J) [T+Rus_CARI]	NES
-4a7726cbad59730bf05715e6549ddd0616637a1b	T	Nuts &amp; Milk (J) [T+Rus_Cool-Spot]	NES
-4929bc380983b6b5cd0602c45b1964381e8ac170	T	Nuts &amp; Milk (J) [T+Rus_Mario Soft]	NES
-bcff20a94a6d026ac3d061e90599a1c881ef0a1c	T	Nuts &amp; Milk (J) [T+Rus_Multisoft]	NES
-5a93e79325dd52cceb312ad84ced5b0c055cd9b6	T	Nuts &amp; Milk (J) [T-Chi_MS emumax]	NES
-5cccfd9cd3b6ab918003e46c8faf210255d5736a	T	Nuts &amp; Milk (J) [T-Chi_MS emumax][a1]	NES
-b3d5d4f11b7d68d82c8ca5240f8239f930b1c688	T	Nuts &amp; Milk (J) [T-Chi_MS emumax][a2]	NES
-e878b5c62b83cc13acf466480bc037c5d99b77e7	T	Nuts &amp; Milk (J) [t1][T+Rus_Cool-Spot]	NES
-9a229b126f0573659448bba903a13048dd21c99a	C	Nuts &amp; Milk (J) [t2] (9 Lives)	NES
-d8289a152855628af82aafefe5e3e9ed765d6523	C	Nuts &amp; Milk (J) [t3] (50 Lives)	NES
-573df023388af04977b8ffd787987e66ea16efc6	C	Nuts &amp; Milk (J) [t4] (100 Lives)	NES
-0b00c2eef9ed256599f9584b0ba366f838065fec	B	Nuts &amp; Milk by PE (Hack) [o1]	NES
-bcff4b0d1d7dfea58018434e6a9aca29568a7844	T	Nuts &amp; Milk by PE (Hack) [T+Rus_Cool-Spot]	NES
-8cdde663a326c50ab9d8cb434628dcd5490f3797	H	Nuts &amp; Milk by PE (Hack)	NES
+cca97fba72ca56809dd216618f5962eb6ea2f1aa	G	Nuts & Milk (J) [!]	NES
+38ad30d95aaa4376b282f98efd89df92846bb940	B	Nuts & Milk (J) [o1]	NES
+50ce8cec6085dd639292ae274bb5e913c9e1fc24	B	Nuts & Milk (J) [o2]	NES
+73b1aeb8c794ae7c1f662411c34d7ff11b362369	B	Nuts & Milk (J) [p1]	NES
+c01df7f32a0724e2258786a114f948e5d5ec7963	B	Nuts & Milk (J) [p1][o1]	NES
+e5a0ad38498935f360997c0925b539014618aa8a	T	Nuts & Milk (J) [T+Bra_JM-trad]	NES
+8a5022c666bab63216563f76ca202125af6cb0ba	T	Nuts & Milk (J) [T+Chi_MS emumax]	NES
+f8c39e1b575a1ff6775329bbca4b723059b42ed0	T	Nuts & Milk (J) [T+FreFinal_ks151]	NES
+7b84df69272bc4e29327c037ffd2d3d129df39be	T	Nuts & Milk (J) [T+Rus_CARI]	NES
+4a7726cbad59730bf05715e6549ddd0616637a1b	T	Nuts & Milk (J) [T+Rus_Cool-Spot]	NES
+4929bc380983b6b5cd0602c45b1964381e8ac170	T	Nuts & Milk (J) [T+Rus_Mario Soft]	NES
+bcff20a94a6d026ac3d061e90599a1c881ef0a1c	T	Nuts & Milk (J) [T+Rus_Multisoft]	NES
+5a93e79325dd52cceb312ad84ced5b0c055cd9b6	T	Nuts & Milk (J) [T-Chi_MS emumax]	NES
+5cccfd9cd3b6ab918003e46c8faf210255d5736a	T	Nuts & Milk (J) [T-Chi_MS emumax][a1]	NES
+b3d5d4f11b7d68d82c8ca5240f8239f930b1c688	T	Nuts & Milk (J) [T-Chi_MS emumax][a2]	NES
+e878b5c62b83cc13acf466480bc037c5d99b77e7	T	Nuts & Milk (J) [t1][T+Rus_Cool-Spot]	NES
+9a229b126f0573659448bba903a13048dd21c99a	C	Nuts & Milk (J) [t2] (9 Lives)	NES
+d8289a152855628af82aafefe5e3e9ed765d6523	C	Nuts & Milk (J) [t3] (50 Lives)	NES
+573df023388af04977b8ffd787987e66ea16efc6	C	Nuts & Milk (J) [t4] (100 Lives)	NES
+0b00c2eef9ed256599f9584b0ba366f838065fec	B	Nuts & Milk by PE (Hack) [o1]	NES
+bcff4b0d1d7dfea58018434e6a9aca29568a7844	T	Nuts & Milk by PE (Hack) [T+Rus_Cool-Spot]	NES
+8cdde663a326c50ab9d8cb434628dcd5490f3797	H	Nuts & Milk by PE (Hack)	NES
 4381f42f7b69e00e4d44ba643331f0b8d4d6af12	U	Nyancat V1 by DerekB (PD)	NES
 486b47656c93db07fae5a8749278414531efb6ce	U	Nyancat V2 by DerekB (PD)	NES
 ab7e39224ff304c4619329c026cf9c079002921e	H	Oaty Invaders by Pope Hentai (Space Invaders Hack)	NES
@@ -14127,14 +14127,14 @@ fad06695ceb4520547470a3df1a7b5c561d056ca	U	Pattern Table Pixel-Flickering Demo F
 f052c4486726c3abac420bd6f411fbecd551d4ab	H	PCGC Tank Chinese (Battle City Hack)	NES
 c1df3c306ed45974b45c4832f72e93382f38a0e8	U	PCM Demo (PD) [a1]	NES
 72f4b89acfb66e7abeafc894507b8c8b8f3d4225	U	PCM Demo (PD)	NES
-9d75e5dcaa20e302b0820331d0995d1cb9b4c50d	H	Peach &amp; Daisy - The Royal Quest (Alpha) (SMB1 Hack) [a1]	NES
-83e35177b4c0cbcb92d6ab975a2d876964eba303	H	Peach &amp; Daisy - The Royal Quest (Alpha) (SMB1 Hack)	NES
-84701b4567b09170bdb5dd7eb0a0fd54afa64a50	H	Peach &amp; Daisy and The Royal Games (SMB1 Hack)	NES
-8559c0dc7d22d61b77306d0f270e0bb3e27ca620	H	Peach &amp; Daisy and The Royal Games with Hacked Music (SMB1 Hack)	NES
-2488999a27d64decba8545ad41b6884cf8b02fac	H	Peach &amp; Daisy in The Ultimate Quest (SMB3 PRG0 Hack)	NES
-91ffa269fa5ffb549e9a12cc14bf7574b95b2226	H	Peach &amp; Daisy in The Ultimate Quest (SMB3 PRG1 Hack) [a1]	NES
-6ac4ce8f754326ce7d6e1bc33f90528eeebd82cd	H	Peach &amp; Daisy in The Ultimate Quest (SMB3 PRG1 Hack)	NES
-1218041ff94ed80d91b5b83f760bd78645791233	H	Peach &amp; Daisy in The Ultimate Quest V2b (SMB3 PRG1 Hack)	NES
+9d75e5dcaa20e302b0820331d0995d1cb9b4c50d	H	Peach & Daisy - The Royal Quest (Alpha) (SMB1 Hack) [a1]	NES
+83e35177b4c0cbcb92d6ab975a2d876964eba303	H	Peach & Daisy - The Royal Quest (Alpha) (SMB1 Hack)	NES
+84701b4567b09170bdb5dd7eb0a0fd54afa64a50	H	Peach & Daisy and The Royal Games (SMB1 Hack)	NES
+8559c0dc7d22d61b77306d0f270e0bb3e27ca620	H	Peach & Daisy and The Royal Games with Hacked Music (SMB1 Hack)	NES
+2488999a27d64decba8545ad41b6884cf8b02fac	H	Peach & Daisy in The Ultimate Quest (SMB3 PRG0 Hack)	NES
+91ffa269fa5ffb549e9a12cc14bf7574b95b2226	H	Peach & Daisy in The Ultimate Quest (SMB3 PRG1 Hack) [a1]	NES
+6ac4ce8f754326ce7d6e1bc33f90528eeebd82cd	H	Peach & Daisy in The Ultimate Quest (SMB3 PRG1 Hack)	NES
+1218041ff94ed80d91b5b83f760bd78645791233	H	Peach & Daisy in The Ultimate Quest V2b (SMB3 PRG1 Hack)	NES
 a3714d4067896c3eafdc820fb75d72b2e9a44600	H	Peach's Nightmare - No Mercy (Beta) (SMB1 Hack)	NES
 9485ea0fca9c569c50b12c1bbdaf58d188ebca3f	H	Peach's Nightmare - No Mercy (SMB1 Hack)	NES
 c2f75c845b3ed54285153bf66cfa649ff9525931	H	Peachy Mario by Mana (SMB1 Hack)	NES
@@ -14151,12 +14151,12 @@ f8d094394bb036ffb0d7f4c6572c876d481eaaec	U	Pegasus 5-in-1 (Golden Five) (Unl)	NE
 8bb6485cafa110f01e60da35ce5d537b886c5cc3	U	Pegs by Sly Dog Studios (PD)	NES
 4d3d00d774ee6153d55878112c3aeeb48189b819	U	Penalty Kick (Ch) (Wxn)	NES
 cee202c3fbcc89608d6e333bdc290bd6224cc53e	H	Pencilvania (CV Hack)	NES
-f828bba945c4291586c9843a7bcff4400125cc88	U	Penguin &amp; Seal, The (Dung Dung No 1) (Sachen) (Ch)	NES
-eac74d9de2001baa8fa76e740f9866d612612e33	G	Penguin &amp; Seal, The (Sachen-HES) [!]	NES
-dab87920067b13c1252b47673ff078c882651ed0	B	Penguin &amp; Seal, The (Sachen-HES) [o1]	NES
-41994a3c8f15bfbba09fe48ce2f98b9691fbfd7b	G	Penguin &amp; Seal, The (Sachen-HES) [U][!].unf	NES
+f828bba945c4291586c9843a7bcff4400125cc88	U	Penguin & Seal, The (Dung Dung No 1) (Sachen) (Ch)	NES
+eac74d9de2001baa8fa76e740f9866d612612e33	G	Penguin & Seal, The (Sachen-HES) [!]	NES
+dab87920067b13c1252b47673ff078c882651ed0	B	Penguin & Seal, The (Sachen-HES) [o1]	NES
+41994a3c8f15bfbba09fe48ce2f98b9691fbfd7b	G	Penguin & Seal, The (Sachen-HES) [U][!].unf	NES
 74a1ae73ec743bc20f9959c3f4434b8c2a9b3cd5	U	Penguin (Ch) (Wxn)	NES
-84e0889f31db8949d9e4281a6dc84350d5caef19	H	Penguin (Nuts &amp; Milk Hack)	NES
+84e0889f31db8949d9e4281a6dc84350d5caef19	H	Penguin (Nuts & Milk Hack)	NES
 8226578f38034a45a2023d7340115149ed2d96bf	H	Penguin Shoot (Battle City Hack)	NES
 19f3aa482f2ed6f46d81fcb55960c9e56c039cf2	B	Penguin-kun Wars (J) [b1]	NES
 f04547d268c367e4bf42c47b2c15a7fa41a60ee7	B	Penguin-kun Wars (J) [p1]	NES
@@ -14178,15 +14178,15 @@ ed96ab727ba734cda8f619ff171f5eeaf100c0f1	B	Perfect Bowling (J) [o1]	NES
 e2798f1b0f34fb4177b032ad37c6117632a2b8f7	G	Pesterminator - The Western Exterminator (Color Dreams) [!]	NES
 6427975ec1a6c8eb2b44fbd23727ca4673dee6f1	B	Pesterminator - The Western Exterminator (Color Dreams) [o1]	NES
 ec5b7cea33ded1afa919a8e2d975ba25e7cb2d8e	U	Pet 4-in-1 (Unl)	NES
-faf1e63eaf03dba975d9f40cccbe446a71386ab2	G	Peter Pan &amp; The Pirates (U) [!]	NES
-bcf8aca930e0edfe72da7e836f121cce7ecfb0cd	B	Peter Pan &amp; The Pirates (U) [b1]	NES
-0f71b02b1828d6fa3cf477b304e2e49c90333a40	B	Peter Pan &amp; The Pirates (U) [b2]	NES
-6f633431bcb0ec6a5d2883ea742c4281f6fe7351	B	Peter Pan &amp; The Pirates (U) [b3]	NES
-4596be40277f40d4c8c7546a25a08f912dbf7645	B	Peter Pan &amp; The Pirates (U) [o1]	NES
-acc8e6a5efee672e34b11ad2d699ba2adbe91770	B	Peter Pan &amp; The Pirates (U) [o2]	NES
-c51d1b51e599b5cf5743458ec7248c7653b461c2	B	Peter Pan &amp; The Pirates (U) [o3]	NES
-4eac15442ca9bc0ba7591e219e5d24176df1fa57	B	Peter Pan &amp; The Pirates (U) [o4]	NES
-93b0e1be6669692c19d51d35d4b8a31bdbf90573	C	Peter Pan &amp; The Pirates (U) [t1]	NES
+faf1e63eaf03dba975d9f40cccbe446a71386ab2	G	Peter Pan & The Pirates (U) [!]	NES
+bcf8aca930e0edfe72da7e836f121cce7ecfb0cd	B	Peter Pan & The Pirates (U) [b1]	NES
+0f71b02b1828d6fa3cf477b304e2e49c90333a40	B	Peter Pan & The Pirates (U) [b2]	NES
+6f633431bcb0ec6a5d2883ea742c4281f6fe7351	B	Peter Pan & The Pirates (U) [b3]	NES
+4596be40277f40d4c8c7546a25a08f912dbf7645	B	Peter Pan & The Pirates (U) [o1]	NES
+acc8e6a5efee672e34b11ad2d699ba2adbe91770	B	Peter Pan & The Pirates (U) [o2]	NES
+c51d1b51e599b5cf5743458ec7248c7653b461c2	B	Peter Pan & The Pirates (U) [o3]	NES
+4eac15442ca9bc0ba7591e219e5d24176df1fa57	B	Peter Pan & The Pirates (U) [o4]	NES
+93b0e1be6669692c19d51d35d4b8a31bdbf90573	C	Peter Pan & The Pirates (U) [t1]	NES
 1c6ebffde98f4afaba4032d68a6d2713d7ce6c01	H	Phantasy Star The Hopeless (Air Fortress Hack)	NES
 de763651d0d6ab670935b86f412e24d853f4a6d1	G	Phantom Air Mission (E) [!]	NES
 373b6c4721e73142ea77be78439e741d6f86ad29	G	Phantom Fighter (U) [!]	NES
@@ -14609,7 +14609,7 @@ e5c46255f9723358115d9a15142a1d2ed8e2123f	U	Powerpak Boot Loader V1.10 (PD)	NES
 99155590ec76d5541aff7e49ed3f998517130ac2	U	Powerpak Boot Loader V1.11 (PD)	NES
 949f5a882611b0dd79333c5ba338e587d9fc986e	U	Powerpak NSF V1.20 (PD)	NES
 2e360a03a7b1e38dca4bf8d1153549b42a15bbf4	U	Powerpak NSF V1.34 (PD)	NES
-9e470702ad1466d62245453dc8c6bb50b92c30c2	U	PPU Palette RAM Access &amp; Mirroring Test by Shay Green (15 Sep 2005) (PD)	NES
+9e470702ad1466d62245453dc8c6bb50b92c30c2	U	PPU Palette RAM Access & Mirroring Test by Shay Green (15 Sep 2005) (PD)	NES
 4aad1a570833e0365592ac54ea13019dcd3d15e4	U	PPU Timing V2 by Kevin Horton (PD)	NES
 a376886d844d36e0a073d39fb343c3955fa908e5	U	PR2_test (PD)	NES
 502923edd8e4efd7ff1b3c1eef302997ef3cff0b	U	PR8 NES Drum Synth v0.99 by Neil Baldwin (2011) (PD)	NES
@@ -14848,7 +14848,7 @@ d9492dd8f558b7db25e6fee6b95f008e9f7e6061	G	Qix (U) [!]	NES
 84ef8209b0dc88bf9794e3373c35e64dd7bbf375	B	Qix (U) [b2]	NES
 5411c6741a26912adcc0b5ec87813dca9cb77cce	B	Qix (U) [o1]	NES
 9440b56316739c25dd4a1470c36eb29fe41a7c11	H	Quadruple Dragons (FF1 Hack)	NES
-05dbd91abd97b747b4470f1ea2109274714b6532	U	Quadz by Michael Blain, Mark Schmit &amp; Phil Yam (PD)	NES
+05dbd91abd97b747b4470f1ea2109274714b6532	U	Quadz by Michael Blain, Mark Schmit & Phil Yam (PD)	NES
 b053482f9ced7a1835fe961cc2373ff9521b74a2	U	Quantum Disco Brothers by wAMMA (PD) (PAL)	NES
 93efdadedba42f4ec7a6cdf5634187ff38b66f91	G	Quarter Back Scramble (J) [!]	NES
 10532a9c32080431fb5711ff42ef83187cf13639	G	Quarth (J) [!]	NES
@@ -14941,7 +14941,7 @@ ecd19585722f8985b1e898dae23231aa2f75cdc5	H	R.B.I. Baseball - Fantasy Baseball Le
 949b63ad49546c59901f143d6331dcb0f290fdad	H	R.B.I. Baseball - Greats of College Baseball by fightonusc (Hack)	NES
 4599d3da7bf2968980000c6dc6ba9fc4a1bc67a0	H	R.B.I. Baseball - Heaven Vs Hell by Britznoc (Hack)	NES
 a9947effb0e21f56beb66b771dc8f62d06ac33ba	H	R.B.I. Baseball - Hunt for October '06 by Fryak (Hack)	NES
-da4bb9c9b18ff1e37c13852824b28ed5563dfb51	H	R.B.I. Baseball - Japanese League &amp; Negro League by DrNick (Hack)	NES
+da4bb9c9b18ff1e37c13852824b28ed5563dfb51	H	R.B.I. Baseball - Japanese League & Negro League by DrNick (Hack)	NES
 2d94e410ca61c704bb319ea7e4fc8980765fe97e	H	R.B.I. Baseball - Mexican League 1979 - Northern Division by Cafetero (Hack)	NES
 79230b44c7a4429f96bba1bce5da3306d04cdbf0	H	R.B.I. Baseball - Mexican League 1979 - Southern Division by Cafetero (Hack)	NES
 cd415b9405d8ae4d52038ef086b017c498fdbc3d	H	R.B.I. Baseball - Same Team Fix (Hack)	NES
@@ -15037,7 +15037,7 @@ e875c71d507573f1c4559e7b8e797a5f05adc6d2	B	Racket Attack (U) [b6]	NES
 f55f2a192bc6d0927fedd445cb0515c5284467f2	B	Racket Attack (U) [b8]	NES
 90716b3b6b4bb2bfb39f16248a257fe07557ba70	B	Racket Attack (U) [o1]	NES
 a2bc61169a2c21a68bc6d48441538e178bcb563b	B	Racket Attack (U) [o2]	NES
-b1197945728949126af2049e96d2433a7813a9da	G	Rackets &amp; Rivals (E) [!]	NES
+b1197945728949126af2049e96d2433a7813a9da	G	Rackets & Rivals (E) [!]	NES
 66a0be81eb404220b2c519dcc3ca3432e883ac5a	G	Rad Racer (E) [!]	NES
 cda80a93a5fa2622064056b5bc5e93eeb1c811de	B	Rad Racer (PC10) [b1]	NES
 7e0332479069fe729f44f61d8f337d228efc2a07	U	Rad Racer (PC10)	NES
@@ -15202,12 +15202,12 @@ b00813ed6a0b4602b1384d6f7418052dc496dead	G	Reigen Doushi (J) [!]	NES
 cb58b0109a4dc4c1f757035842da3b79744f4e9e	B	Remote Control (U) [o1]	NES
 068c2b2053974a7cad3e7a0637bc6354f32694e0	B	Remote Control (U) [o2]	NES
 075b4a6af861726f45d0da61052769886a080e35	B	Remote Control (U) [o3]	NES
-982f6bc24423ecc04199c8fa3f8d156c9af1a9b3	G	Ren &amp; Stimpy Show, The (U) [!]	NES
-07a8119abea8e83455f8aa45224418cc3af784a4	B	Ren &amp; Stimpy Show, The (U) [b1]	NES
-2476bf9fed478b6612c50be88448cd14cf694a17	B	Ren &amp; Stimpy Show, The (U) [b2]	NES
-ce765eceee5a44dbf2112f3e986c8cb0d11ac54d	B	Ren &amp; Stimpy Show, The (U) [b3]	NES
-04b8201def7ae785ea69e592fa66f9a3f6838093	B	Ren &amp; Stimpy Show, The (U) [o1]	NES
-14c3f7970827f6f231f142396843966a0be4478f	B	Ren &amp; Stimpy Show, The (U) [o2]	NES
+982f6bc24423ecc04199c8fa3f8d156c9af1a9b3	G	Ren & Stimpy Show, The (U) [!]	NES
+07a8119abea8e83455f8aa45224418cc3af784a4	B	Ren & Stimpy Show, The (U) [b1]	NES
+2476bf9fed478b6612c50be88448cd14cf694a17	B	Ren & Stimpy Show, The (U) [b2]	NES
+ce765eceee5a44dbf2112f3e986c8cb0d11ac54d	B	Ren & Stimpy Show, The (U) [b3]	NES
+04b8201def7ae785ea69e592fa66f9a3f6838093	B	Ren & Stimpy Show, The (U) [o1]	NES
+14c3f7970827f6f231f142396843966a0be4478f	B	Ren & Stimpy Show, The (U) [o2]	NES
 c3e3e30408fda21ee2383e128b13e1b0f5650c32	U	Renegade (U) (VC)	NES
 bce48217b901a2bbd81fb89586661da6a442a179	G	Renegade (U) [!]	NES
 3da61d5ef055b8fb8f0eb9605b7bb08f3cbbd21c	B	Renegade (U) [b1]	NES
@@ -15234,7 +15234,7 @@ ce9be360c843606897cba2878e8ad3bd57134369	H	Retro Mario Bros 3 (Older) (SMB3 PRG1
 47958c4b9b18116ffd4aafad43aeb4bfa3ec173d	H	Retro Mario Bros 3 (SMB3 PRG1 Hack)	NES
 85e5e4241d7fb3cb4bd03f2ec44c3439960e2f49	U	Retrocoders' Demo for Y2Kode (PD)	NES
 5e4eb9f1a8b2a9dc60308c380659aa040d164545	U	Retrocoders' Music ROMS - Years Behind (PD)	NES
-482360d347ba7c0deb945f93d43cc85377fc3654	H	Return BC by Bishop &amp; Multisoft (Battle City Hack)	NES
+482360d347ba7c0deb945f93d43cc85377fc3654	H	Return BC by Bishop & Multisoft (Battle City Hack)	NES
 4be8bc2dfd966d52c3dc27042813eaaadf4217e3	H	Return BC by Bishop (Battle City Hack)	NES
 caa8da6dcf9d28028dfd6d2e6e86537fd0be3eb1	B	Return of the Black Mage by Redrum (Warpman Hack) [o1]	NES
 717c53d094d0d7f01358568a92e938934a82960c	H	Return of the Black Mage by Redrum (Warpman Hack)	NES
@@ -16117,8 +16117,8 @@ c1332faaa9e40f1953a8f470b851f2a1f869715c	H	Sansuu 3 Nen - Keisan Game (J) [hM03]
 a9ce58ea73e0f63d264d0f79f23a077797fd52ff	B	Sansuu 3 Nen - Keisan Game (J) [hM03][o1]	NES
 dafe0132cf7850ddbc50bc3a0f516d8a0b6049c6	G	Sansuu 4 Nen - Keisan Game (J) (Prototype) [!]	NES
 7c5b6f8b54790e73d72088854253395360625d7f	G	Sansuu 4 Nen - Keisan Game (J) [!]	NES
-c6ac68e9dfaf87f774f8ff94a7a0eef3591e2d68	G	Sansuu 5 &amp; 6 Nen - Keisan Game (J) (Prototype) [!]	NES
-6020dc7df0e63dc00293d2fea63aef698f608942	U	Sansuu 5 &amp; 6 Nen - Keisan Game (J)	NES
+c6ac68e9dfaf87f774f8ff94a7a0eef3591e2d68	G	Sansuu 5 & 6 Nen - Keisan Game (J) (Prototype) [!]	NES
+6020dc7df0e63dc00293d2fea63aef698f608942	U	Sansuu 5 & 6 Nen - Keisan Game (J)	NES
 4631b718863e7e0819f8a5a20871df489667894f	U	Santa Claus (Ch) (Wxn)	NES
 4dd9861f9e77fd1d79058ec168d3659765f9b9a1	B	SARS Kung Fu 2003 by Jeremiah Johnson (Kung Fu Hack) [o1]	NES
 5d2b88a9b421114ee9161a32a4a4be36e4d33c95	H	SARS Kung Fu 2003 by Jeremiah Johnson (Kung Fu Hack)	NES
@@ -16151,8 +16151,8 @@ e0f27eda215acd60fd3333d971f353ade4022774	H	Schneider (Captain Tsubasa II Hack)	N
 e31b969724dc19ade8c2e82bd36b506653de7b58	U	Screen Saver Demo by KZ-S (PD)	NES
 49735dfc8bcbb6a53b484832f6ee8a2b3379935e	U	Screen2NES Zelda Demo V2 by Afroman (PD)	NES
 ac503144a0cf452f71a5ba3076f6c2ee130d58f0	U	Scroll Demo by HollowOne11 (PD)	NES
-31f013891c2daa44cda80afc5fe9ed632823750a	U	ScrollNES 0.1 2010 by NO CARRIER &amp; Batsly Adams (PD) [a1]	NES
-64a95d6b75ee8a90df670e3740980063289a81a5	U	ScrollNES 0.1 2010 by NO CARRIER &amp; Batsly Adams (PD)	NES
+31f013891c2daa44cda80afc5fe9ed632823750a	U	ScrollNES 0.1 2010 by NO CARRIER & Batsly Adams (PD) [a1]	NES
+64a95d6b75ee8a90df670e3740980063289a81a5	U	ScrollNES 0.1 2010 by NO CARRIER & Batsly Adams (PD)	NES
 5ced0cb435fb8c3e28f3f3bbfe55b6ca196970ba	G	SD Battle Oozumou - Heisei Hero Basho (J) [!]	NES
 077c2d4b9ef42e915e13c40bf7e88fce098d0f14	G	SD Gundam - Gachapon Senshi 2 - Capsule Senki (J) [!]	NES
 382496bc94169a2e13ddf946cdee66a8f15035f8	B	SD Gundam - Gachapon Senshi 2 - Capsule Senki (J) [b1]	NES
@@ -16664,8 +16664,8 @@ dc06b62c59901190ad2f04f6a9b857c16c2400ec	H	Skinhead Fight (Nekketsu Kakutou Dens
 d25f42a6f677399c05e08b8c164dfd43cb6be2b5	H	Skinhead on Ice (Nekketsu Hockey Hack)	NES
 1fd7896dfa2af88a0056fa712074b43f59c0e4da	H	Skinhead Racing (Downtown - Nekketsu Koushin Kyoku Hack)	NES
 d383d346725ed66ea41d619daa311867c9dc5c58	G	Sklad Nomer 18 (Unl) [!]	NES
-b191e5d30e31e1f8613c4b3fb40b770f97ae92ed	G	Skull &amp; Crossbones (Tengen) [!]	NES
-6b05670da10c0ba5eb33c94fb931a5464741239e	B	Skull &amp; Crossbones (Tengen) [o1]	NES
+b191e5d30e31e1f8613c4b3fb40b770f97ae92ed	G	Skull & Crossbones (Tengen) [!]	NES
+6b05670da10c0ba5eb33c94fb931a5464741239e	B	Skull & Crossbones (Tengen) [o1]	NES
 8427c83a22306c0ee376f782e948601985f49f5a	B	Skullanoid by Evan Lucore (Arkanoid Hack) [o1]	NES
 146cb857051c2fc6892e0a65b8246abf0bceabf3	H	Skullanoid by Evan Lucore (Arkanoid Hack)	NES
 3fc678eae782f6337e6522285b9b78b0541067a9	G	Sky Destroyer (J) [!]	NES
@@ -16974,11 +16974,11 @@ eb60b5015be750db9484d7f5a74fdd23ec22d150	G	Solar Jetman - Hunt for the Golden Wa
 65f10ecade7082e8cebd1e2cc9c18ba67746691c	B	Solar Jetman - Hunt for the Golden Warpship (U) [o1]	NES
 195959f8fc5daf5ed05dc8b7fd72a5e5a748a8bb	T	Solar Jetman - Hunt for the Golden Warpship (U) [T+Bra1.0_TraduROMS]	NES
 a632ae12fec13637ee1824bad5e4f6e180add3d8	T	Solar Jetman - Hunt for the Golden Warpship (U) [T+Rus_Chief-Net]	NES
-c05e8c0f26044ee2ed8873b9939f1a97e71fc29f	U	Solar Wars 2001 by Chris Covell, Joey Parsell &amp; Michel Iwaniec (PD)	NES
-4d42ecc70c481f7fe68a8a2961ac27860fa97575	U	Solar Wars by Chris Covell, Joey Parsell &amp; Michel Iwaniec (PD) [a1]	NES
-da5ecfca8ee9f6a313039266fe0c705db84978d3	U	Solar Wars by Chris Covell, Joey Parsell &amp; Michel Iwaniec (PD)	NES
-ce8b4818719ecad6b35ce9ca4ef573467e160126	U	Solar Wars Silent V.1 by Chris Covell, Joey Parsell &amp; Michel Iwaniec (PD)	NES
-728e45acb68985ce8cc73c5f97ab226992ccfc09	U	Solar Wars Silent V.2 by Chris Covell, Joey Parsell &amp; Michel Iwaniec (PD)	NES
+c05e8c0f26044ee2ed8873b9939f1a97e71fc29f	U	Solar Wars 2001 by Chris Covell, Joey Parsell & Michel Iwaniec (PD)	NES
+4d42ecc70c481f7fe68a8a2961ac27860fa97575	U	Solar Wars by Chris Covell, Joey Parsell & Michel Iwaniec (PD) [a1]	NES
+da5ecfca8ee9f6a313039266fe0c705db84978d3	U	Solar Wars by Chris Covell, Joey Parsell & Michel Iwaniec (PD)	NES
+ce8b4818719ecad6b35ce9ca4ef573467e160126	U	Solar Wars Silent V.1 by Chris Covell, Joey Parsell & Michel Iwaniec (PD)	NES
+728e45acb68985ce8cc73c5f97ab226992ccfc09	U	Solar Wars Silent V.2 by Chris Covell, Joey Parsell & Michel Iwaniec (PD)	NES
 dc50b0576187261030236687f37540cd429749ae	H	Soldier VS Mario (SMB1 Hack)	NES
 67bd42b43a2e0fc012569c02ab18bf7ec679443f	T	Solitair (from Nuevo Tipo de Computadora) (Unl) [T+Rus_Cool-Spot]	NES
 b3fcfd458cb9ad4c69414b37b17b4c9cdd3d7abd	T	Solitair (from Nuevo Tipo de Computadora) (Unl) [T+Rus_Cool-Spot][a1]	NES
@@ -17245,7 +17245,7 @@ c9374202764fa52c749144b7ddcf26a9687a7d8a	B	Sqoon (U) [o3]	NES
 9bf0d67acdfde71eb391c7d35b6e45671c4fe35d	U	Square (Ch) (Wxn)	NES
 4072c52beeb14b128e0f1f497b4a72377fe59923	U	Square Box by Quietust (PD)	NES
 a864d3b913cefc885e01e0dacc53077ea7f5c727	U	Square Box by Quietust [U] (PD).unf	NES
-7517bed4dbdc71c3184a9632e460f223b7a2191f	U	Square City by Mankeli, Zonzki &amp; Bananmos (PD)	NES
+7517bed4dbdc71c3184a9632e460f223b7a2191f	U	Square City by Mankeli, Zonzki & Bananmos (PD)	NES
 90c1266a1bfc51c6a8fd5ae75a90bd9b6d491949	G	Square Force (Unl) [!]	NES
 f00d2feb353450bd6294bb431a54cee729e56689	G	Square no Tom Sawyer (J) [!]	NES
 af6443e035e95a7917b773fc2a32a9d7709caae5	B	Square no Tom Sawyer (J) [b1]	NES
@@ -17566,11 +17566,11 @@ b3ed4ba03dba257229c68c4ea0173f8961bc00a2	B	Strider (U) [o1]	NES
 be18c598d75b1b8504952154938868723b045daa	C	Strider (U) [t1]	NES
 a25bfd8f0cf77ee96f6b07deebe6313eb3787ea3	G	Strike Wolf (MGC-014) (Unl) [!]	NES
 80cdb522e0d2adc41595c6dcec9fe330816b077e	H	Strip Aerobics (beta) by Golden Gun (Dance Aerobics Hack)	NES
-356fa145d802faa849c66b1c0e549de850cdffb1	U	Stroke &amp; Match Golf (Ladies) (VS)	NES
-53ed0cca26f766bbeb6d10bf90dd2891bda93ebe	G	Stroke &amp; Match Golf (VS) [!]	NES
-c988eb9e17969812cd4d09896fd28da9ae3a6a13	U	Stroke &amp; Match Golf (VS) [a1]	NES
-6c756c8e4263a5b4dc8cc2502dc4e63fac6fab29	B	Stroke &amp; Match Golf (VS) [a1][b1]	NES
-7bbd19e207a78c833f8ae5ff535cbf974f299d73	B	Stroke &amp; Match Golf (VS) [a1][b2]	NES
+356fa145d802faa849c66b1c0e549de850cdffb1	U	Stroke & Match Golf (Ladies) (VS)	NES
+53ed0cca26f766bbeb6d10bf90dd2891bda93ebe	G	Stroke & Match Golf (VS) [!]	NES
+c988eb9e17969812cd4d09896fd28da9ae3a6a13	U	Stroke & Match Golf (VS) [a1]	NES
+6c756c8e4263a5b4dc8cc2502dc4e63fac6fab29	B	Stroke & Match Golf (VS) [a1][b1]	NES
+7bbd19e207a78c833f8ae5ff535cbf974f299d73	B	Stroke & Match Golf (VS) [a1][b2]	NES
 7bba18f6c4970a841fcca61cfa0c137fe4d79156	U	Strong Pill (Ch) (Wxn)	NES
 8af29c451a88c37520a3ba67289b0ea984f1799a	H	Stronghold (SMB1 Hack)	NES
 0b1ff1e0010dfebe2e8a072df96ae1ce7af0595e	H	Stronghold, The (SMB1 Hack)	NES
@@ -17582,7 +17582,7 @@ b9a9a64cf606bba1fb70b3da70926ae2f22781f6	B	Stunt Kids (Camerica) [o1]	NES
 75f1475b12ab45bd82aff0d46224dfec8b6ad663	H	Subcon 2000 (Final) (SMB2 Hack)	NES
 13e7f2ca2c7ee1aea28245af364ce4fa6ac8b592	H	Subcon 2000 (SMB2 Hack)	NES
 488d37154efc7611de0cded75aade267222777a6	U	Submarine War (Ch) (Wxn)	NES
-8d24486170a3ffc5f36d89bae423a1d9fa173b60	U	Subor Figure Ratiocination &amp; IQ Puzzle (Ch)	NES
+8d24486170a3ffc5f36d89bae423a1d9fa173b60	U	Subor Figure Ratiocination & IQ Puzzle (Ch)	NES
 88318d936361115b784f072ec7f1bddb0e6728ba	U	Subor V1.0 (R) [a1]	NES
 786f2da157861fd6db2aaf84fe95cc83244594fa	U	Subor V1.0 (R)	NES
 406a458af2f51a1b44ea18e1999781ca22b5b3c7	B	Subor V3.0 (Ch) [b1]	NES
@@ -17649,8 +17649,8 @@ add98da0583a4a1cb6d5bfecf305fa64457d7b90	H	SUP-Noid (Arkanoid Hack)	NES
 60081d0d62971348268c68f3c352c1da7cfc0d88	B	Super 1997 4-in-1 [p1]	NES
 5e5ce5cbd73ea88ee012c88c0e7be30130f55ebd	G	Super 1998 3-in-1 (NT-008 PCB) [p1][!]	NES
 fb947bf2f88e9cb8d33c0a7de8c243969bb54fdb	G	Super 1998 3-in-1 (VT-850, NT-008 PCB) [p1][!]	NES
-b103bd0b66e8ea798e64295e799fefe6b69cfd2b	G	Super 2-in-1 (Soccer Game &amp; Crazy Dance) (Unl) [!]	NES
-3d580c1ce546b60664f2c6367d804a673478bc8d	H	Super 2-in-1 (Soccer Game &amp; Crazy Dance) (Unl) [f1]	NES
+b103bd0b66e8ea798e64295e799fefe6b69cfd2b	G	Super 2-in-1 (Soccer Game & Crazy Dance) (Unl) [!]	NES
+3d580c1ce546b60664f2c6367d804a673478bc8d	H	Super 2-in-1 (Soccer Game & Crazy Dance) (Unl) [f1]	NES
 a21a620a1eaed19ef52e8f184dec2872cee2005a	U	Super 2-in-1 (Unl)	NES
 997bbb9a3e52507fa488810ed90b613e5ba1f4cd	B	Super 22-in-1 [p1]	NES
 5830ff9449a0388450718d014a9034e32645bdec	G	Super 24-in-1 [U][p1][!].unf	NES
@@ -18009,7 +18009,7 @@ c48a6d63859327ffb4d7aac6ac4fb15f9d663c37	H	Super Luigi - The Red Coin Quest Demo
 ea69228d23f05be1205ed891e558485069060736	H	Super Mari 2 by Maikami (SMB1 Hack)	NES
 8301685fec5dc281b46b32acc1fadde588ca59bc	H	Super Mari by Maikami (SMB1 Hack) [a1]	NES
 749484a5d999730184edd0c5b1d234a841d08c63	H	Super Mari by Maikami (SMB1 Hack)	NES
-9c2562be31541ef7df69e4133daaa3e2531cdedf	U	Super Mario &amp; Sonic 2 (Ch)	NES
+9c2562be31541ef7df69e4133daaa3e2531cdedf	U	Super Mario & Sonic 2 (Ch)	NES
 bf0ddfe1e564829c52d7aff0560721231994e786	U	Super Mario 14 (Unl)	NES
 9f9f52fd92b660721b0ccccab1d99fc22729b289	H	Super Mario 3 Challenge (SMB3 PAL Hack)	NES
 8a812f75451c88130424e39b4e38972dbbfa0b2a	H	Super Mario 4 (SMB1 Hack) [a1]	NES
@@ -18899,15 +18899,15 @@ fd7b1e21e33988714e0c6e5d881c40d11bc651cd	B	Swords and Serpents (U) [b1]	NES
 a737d3984b88328a5d5f9709547b931f99e3f32d	B	Swords and Serpents (U) [b2]	NES
 297d50d7296544ab74ccf019aca1869424b99932	B	Swords and Serpents (U) [o1]	NES
 77f4ea6ebcdd71a5dab45b014dd300458e625b19	B	Swords and Serpents (U) [o2]	NES
-592c8b6be5816ba771b4fc18ec6a72cfee06d2c7	G	T&amp;C 2 - Thrilla's Surfari (U) [!]	NES
-55e8093bbbe53bd9d8d0d90952fcb6aeb9240b23	B	T&amp;C 2 - Thrilla's Surfari (U) [b1]	NES
-846b6b442ec5532c53d198da7c7d5909c97aff3c	B	T&amp;C 2 - Thrilla's Surfari (U) [b2]	NES
-6a101fb054fbe93b6c6ca33245e3f8b8710e45a8	B	T&amp;C 2 - Thrilla's Surfari (U) [o1]	NES
-ec1ac46af157cbe49383402373ab04a483105980	B	T&amp;C 2 - Thrilla's Surfari (U) [p1]	NES
-7114bc8b0aad3094e59ccedba2845c1c032b15cc	G	T&amp;C Surf Design (U) [!]	NES
-a8d63aa540cf74d966b465036f9a423136c8536b	B	T&amp;C Surf Design (U) [b1]	NES
-006c8859d1ab3429daa1228cd6161af3cdabb236	B	T&amp;C Surf Design (U) [b2]	NES
-aff91bfb462c2aa10cc2d51ce93a04f050d7f84d	B	T&amp;C Surf Design (U) [o1]	NES
+592c8b6be5816ba771b4fc18ec6a72cfee06d2c7	G	T&C 2 - Thrilla's Surfari (U) [!]	NES
+55e8093bbbe53bd9d8d0d90952fcb6aeb9240b23	B	T&C 2 - Thrilla's Surfari (U) [b1]	NES
+846b6b442ec5532c53d198da7c7d5909c97aff3c	B	T&C 2 - Thrilla's Surfari (U) [b2]	NES
+6a101fb054fbe93b6c6ca33245e3f8b8710e45a8	B	T&C 2 - Thrilla's Surfari (U) [o1]	NES
+ec1ac46af157cbe49383402373ab04a483105980	B	T&C 2 - Thrilla's Surfari (U) [p1]	NES
+7114bc8b0aad3094e59ccedba2845c1c032b15cc	G	T&C Surf Design (U) [!]	NES
+a8d63aa540cf74d966b465036f9a423136c8536b	B	T&C Surf Design (U) [b1]	NES
+006c8859d1ab3429daa1228cd6161af3cdabb236	B	T&C Surf Design (U) [b2]	NES
+aff91bfb462c2aa10cc2d51ce93a04f050d7f84d	B	T&C Surf Design (U) [o1]	NES
 fdbe721de58985fa9388e8dacaab2b9bbd2594bb	G	Taan Hak Fung Wan King Tank (Ch) [!]	NES
 07d463406d853ee92d196bedbf1c9d304fbfc442	T	Taan Hak Fung Wan King Tank (Ch) [T+Rus_Cool-Spot]	NES
 09f2fc1c42469212c6867ae1a8049716f59e8773	U	Table Tennis (Ch) (Wxn)	NES
@@ -19076,12 +19076,12 @@ cda500269bb162b0724f974b104cdc1573cd69dd	C	TaleSpin (U) [t4]	NES
 ba0f38461b625da1b4d2d87ffe2d425e4300c7bc	U	Tall Pixel Demo by Damian Yerrick (PD)	NES
 dab071f1829851c34483f02b1da737ee3ccd13b6	G	Tamura Koushou Mahjong Seminar (J) [!]	NES
 21047b05fe5387b1c08834439f8fb153735da6ff	B	Tamura Koushou Mahjong Seminar (J) [b1]	NES
-4a6a524759ca64e2983cb188ff439178075e304c	U	Tanespot by Jonathan &amp; Hans Knektar (PD)	NES
+4a6a524759ca64e2983cb188ff439178075e304c	U	Tanespot by Jonathan & Hans Knektar (PD)	NES
 74bb1012db87e69d6deb37de19446c668886049b	U	Tang Bo Hu Dian Qiu Xiang (NJ069) (Ch)	NES
 61c396d07aae17b391121f07cf9ba92bec0ca736	U	Tang Mu Li Xian Ji (Ch)	NES
 eac84b8189e3ec871f6974376e158737c2a376c7	G	Tanigawa Kouji no Shougi Shinan II (J) [!]	NES
 9c3c6e0dd492ae7ea8f38224089a3f0b0b979880	G	Tanigawa Kouji no Shougi Shinan III (J) [!]	NES
-d061ab6624edb4fdaf4d2a1df75499d1238eccf5	H	Tank &amp; Sub Mario (SMB1 Hack)	NES
+d061ab6624edb4fdaf4d2a1df75499d1238eccf5	H	Tank & Sub Mario (SMB1 Hack)	NES
 459a8d83e8d0d992a2685ce6da135a2e691ed1a6	H	Tank (Battle City Hack)	NES
 7f7888211e30b4dc296ee5addfbf8c62985bd9f9	U	Tank (Ch) (Wxn)	NES
 b5544d657fadef726ada69718407ab509dc69c47	U	Tank 1990 (Ch) [a1]	NES
@@ -19112,8 +19112,8 @@ e30f43730fd9b74ebe5dc5c88e5bc0f72dc19fef	H	Tank Duel (Chi Title) (Battle City Ha
 e5f6c4aebfa1123554d4e3ef984f0a7e0bfdaef8	H	Tank Duel 2 (Battle City Hack)	NES
 74ca37027c5e461fc88adc33fa428d832a5b225e	B	Tank Z by TOF (Battle City Hack) [o1]	NES
 007775f70b0726f7e20241484bf59e84cb35ce6f	H	Tank Z by TOF (Battle City Hack)	NES
-b5b01322bde1c061a76471fb544f90ecfbd0622b	T	Tanks &amp; Milk (Nuts &amp; Milk Hack) [T+Rus_Mitz]	NES
-832900808ad3add22e973fbb65408139abc0ed1a	H	Tanks &amp; Milk (Nuts &amp; Milk Hack)	NES
+b5b01322bde1c061a76471fb544f90ecfbd0622b	T	Tanks & Milk (Nuts & Milk Hack) [T+Rus_Mitz]	NES
+832900808ad3add22e973fbb65408139abc0ed1a	H	Tanks & Milk (Nuts & Milk Hack)	NES
 b07bd06624f56133c87610a8bb722be10e495147	G	Tantei Jinguuji Saburou - Toki no Sugiyuku Mama ni (J) [!]	NES
 2c0a885c049a4de54a31f51086cb20006e11beb8	U	Tantei Jinguuji Saburou - Yokohamakou Renzoku Satsujin Jiken (J) (VC)	NES
 be8ae507a738cc2059a598f2cfe68a0e848939c4	G	Tantei Jinguuji Saburou - Yokohamakou Renzoku Satsujin Jiken (J) [!]	NES
@@ -19446,7 +19446,7 @@ f0a930d6451dd861698c153e2e4af341b506942a	H	Tecmo Rose Bowl 2002 1-AA College Foo
 b7d7e496ca9dfa023d79dcc973208c1c63477125	G	Tecmo Super Bowl (U) [!]	NES
 09d7268535053f7ba16f94f4e4846a0d2705ee41	B	Tecmo Super Bowl (U) [b1]	NES
 4f197e5d60df3bb0df051e46614b3de55edd0d7d	B	Tecmo Super Bowl (U) [o1]	NES
-ac3da734fa5eda62df44ecfb8912c18cb0f6623f	H	Tecmo Super Bowl 1962 Edit by Denny, Jstout &amp; Elway7 (Hack)	NES
+ac3da734fa5eda62df44ecfb8912c18cb0f6623f	H	Tecmo Super Bowl 1962 Edit by Denny, Jstout & Elway7 (Hack)	NES
 761290f53aa1bfee1f9ddabbbdc70482dd415d1c	H	Tecmo Super Bowl 1968 by Carther (Hack)	NES
 ea38b12e3cd3192d07637f32055ce1a3a82be32f	H	Tecmo Super Bowl 1968 Even Team - Online Tecmo Tourney Version (Hack)	NES
 6f4441535cc711207a204ee375bc7d0b535a9d19	H	Tecmo Super Bowl 1983-1984 - BO FB Offtackle Left (Hack)	NES
@@ -19502,7 +19502,7 @@ cab90185c6f732f922f915cada0e9010a1330f6a	H	Tecmo Super Bowl 2006 - AFC Champions
 ce0e7ecec10a711a0e3afc31155ef920adc28cb9	H	Tecmo Super Bowl 2006 by GRG (Hack)	NES
 b75b315ca3c96ec8a2632a0373928979c4aefeab	H	Tecmo Super Bowl 2006 v.2 by RBPD5015 (Hack)	NES
 59783d5c20f9f046738532d7323f5c2dadaae333	H	Tecmo Super Bowl 2006 v.final by mattjones18 (Hack)	NES
-9d2c88538919d6e1a2fc60215b721ff7d3e2b9b9	H	Tecmo Super Bowl 2006 v.update - Title Screen by mattjones18&amp;andrewmarsh13 (Hack)	NES
+9d2c88538919d6e1a2fc60215b721ff7d3e2b9b9	H	Tecmo Super Bowl 2006 v.update - Title Screen by mattjones18&andrewmarsh13 (Hack)	NES
 40efbfe8bbb00f3db078fdcf522957653020fd4f	H	Tecmo Super Bowl 2006 v1 by drummer4god (Hack)	NES
 bc25eaf09228d5a1c6a0f692898509b1de119534	H	Tecmo Super Bowl 2006 v1 by mattjones18 (Hack)	NES
 95ddb60aaa75a8d2adb03c4f6d63dceca65dcadb	H	Tecmo Super Bowl 2006 v2 by drummer4god (Hack)	NES
@@ -19739,7 +19739,7 @@ bed34bf7c2bda653eda7a3eb1181c6a7c4cb0a65	H	Tecmo Super Bowl X Globe Bowl (Hack)	
 10c4e09361a27a527dd4337ff62a49409670343c	H	Tecmo Super Bowl X IHSAA (Hack)	NES
 058e6dd332cc20282b87b001ee554f01666a939b	H	Tecmo Super Bowl X Mutant League (Hack)	NES
 a2ddbeb71c07961cf875f0f01a3eca1b1dc7dd8f	H	Tecmo Super Bowl X Olympics (Hack)	NES
-3f5d28fe0591911ff8b60b59a80502572407af62	H	Tecmo Super Bowl X World &amp; USFL (Hack)	NES
+3f5d28fe0591911ff8b60b59a80502572407af62	H	Tecmo Super Bowl X World & USFL (Hack)	NES
 07e33fb37a8ef1ef32582fc3ade1a1d42750c891	H	Tecmo Super Bowl X World League (Hack)	NES
 1dccdc47be881eda06fc80bb6ee95b769177a814	H	Tecmo Super Bowl X XFL (Hack)	NES
 30b6033e6ef01cbd8099beff41a10dfeda91436e	H	Tecmo Super Bowl XFL - Updated by GRG (Hack)	NES
@@ -20036,7 +20036,7 @@ d9e05cd3cb72d02352ce907f65137c161f000d51	H	Tenchi wo Kurau II - Star and Rainbow
 606b6c26886e37f674ba0b076825a0c18e51b838	H	Tenchi wo Kurau II - Valiant General Edition by lmjny (Hack)	NES
 947659dcc3aa847b7abcd701e7328c13aff76941	H	Tenchi wo Kurau II - Weiruwei's Final Edition (Hack)	NES
 7ce8f14c477da953cb66f7f0bfb89772de574e8f	H	Tenchi wo Kurau II - Woman Edition (Hack)	NES
-53bbb3a3def86ddf00d763c1ed171282d10dd29b	H	Tenchi wo Kurau II - Wu Jin &amp; Guo Tai (Hack)	NES
+53bbb3a3def86ddf00d763c1ed171282d10dd29b	H	Tenchi wo Kurau II - Wu Jin & Guo Tai (Hack)	NES
 81be25d041c91f81e1b6df190b6baf886ee9a75c	H	Tenchi wo Kurau II - Yellow Turban Story (Hack)	NES
 17c71e03f6423c5f706e616182b1eea779913fd7	H	Tenchi wo Kurau II - Yuan Luzhi Story (Hack)	NES
 fa8396969fd18af4606f9a6d36cadc45eb747987	H	Tenchi wo Kurau II - Yuan Shao Story (Hack)	NES
@@ -20252,16 +20252,16 @@ c697f7159f401fa736320a25a4f1b06233198f81	B	Three Stooges (U) [o1]	NES
 2d2dd56f453715fc2fd8d0abf95bc2459f1d6082	B	Three Stooges (U) [o2]	NES
 8c30cfc34cf89bae61591f599f6f24b3b255cb00	B	Three Stooges (U) [o3]	NES
 1a618d99702421566c04e14096bf23ab25207f83	B	Three Stooges (U) [o4]	NES
-5203dd2cbaafba9e5d4581a8252f2d47413902d8	G	Thunder &amp; Lightning (U) [!]	NES
-537819f97ddad1210614b59bffc81a6ef045a9ed	B	Thunder &amp; Lightning (U) [b1]	NES
-cec96de01564f5bd14ace8668cd616f5f54094c8	B	Thunder &amp; Lightning (U) [b1][o1]	NES
-2eef9579430f9c00a59504715ebe3f4b3b4fbc4f	B	Thunder &amp; Lightning (U) [b1][o2]	NES
-0a7c1edf9d2b26497de3aec1aa67a600795b72ca	B	Thunder &amp; Lightning (U) [b2]	NES
-e6a90c84a3bd1e6c4e34d08df3ef4ff74c2206a3	B	Thunder &amp; Lightning (U) [b3]	NES
-2ea8b553bda94064f8142e8e2ea1d258db857da7	B	Thunder &amp; Lightning (U) [b4]	NES
-f04edfb835d9b14827f2e3359c81b7678b16b71b	B	Thunder &amp; Lightning (U) [b5]	NES
-da657ecdd900b9b0d4ddc0473b9e9a92624d0659	B	Thunder &amp; Lightning (U) [b6]	NES
-468c6e236ddcab75bdc31e18f1731ffa52a62ade	C	Thunder &amp; Lightning (U) [t1]	NES
+5203dd2cbaafba9e5d4581a8252f2d47413902d8	G	Thunder & Lightning (U) [!]	NES
+537819f97ddad1210614b59bffc81a6ef045a9ed	B	Thunder & Lightning (U) [b1]	NES
+cec96de01564f5bd14ace8668cd616f5f54094c8	B	Thunder & Lightning (U) [b1][o1]	NES
+2eef9579430f9c00a59504715ebe3f4b3b4fbc4f	B	Thunder & Lightning (U) [b1][o2]	NES
+0a7c1edf9d2b26497de3aec1aa67a600795b72ca	B	Thunder & Lightning (U) [b2]	NES
+e6a90c84a3bd1e6c4e34d08df3ef4ff74c2206a3	B	Thunder & Lightning (U) [b3]	NES
+2ea8b553bda94064f8142e8e2ea1d258db857da7	B	Thunder & Lightning (U) [b4]	NES
+f04edfb835d9b14827f2e3359c81b7678b16b71b	B	Thunder & Lightning (U) [b5]	NES
+da657ecdd900b9b0d4ddc0473b9e9a92624d0659	B	Thunder & Lightning (U) [b6]	NES
+468c6e236ddcab75bdc31e18f1731ffa52a62ade	C	Thunder & Lightning (U) [t1]	NES
 ff9a9dadbc051dba184bb2b75898d0b1e2003fa9	H	Thunder Mario v0.1 (SMB1 Hack) [a1]	NES
 ca34b25a91844a3553460f5c8a2c9c965aa2aa5c	H	Thunder Mario v0.1 (SMB1 Hack)	NES
 e14b6ba27655313943a2bb440aa753bb6ca6fed5	U	Thunder Warrior (Unl)	NES
@@ -20288,7 +20288,7 @@ cb0899ae2d9a0ad60edd0ada2b0a62c79be46893	U	Thwaite V0.03 by Damian Yerrick (2011
 276a18af8b307acd1edf98594e29710eeccf1c8c	U	Tian Long Ba Bu (NJ035) (Ch)	NES
 cac9a7bb24890cc9cd7ab020581a5b609e1e1d0d	U	Tian Wang Xiang Mo Zhuan (Ch) (Decrypted)	NES
 ab39d3fe1be075db59fe77abfb225249cfefcf90	U	Tiao Wu Tan (Ch)	NES
-93e851e78f811175edb368d37dd7060c82fcfc3a	T	Tic &amp; Tac 2 - Rangers du Risque (Chip 'n Dale 2 Hack) [T+Fre]	NES
+93e851e78f811175edb368d37dd7060c82fcfc3a	T	Tic & Tac 2 - Rangers du Risque (Chip 'n Dale 2 Hack) [T+Fre]	NES
 9bff3f91adf6fce47baae595be44fcd9c906884b	U	Tic-Tac by Sly Dog Studios (PD)	NES
 3bdb74f3a9f0620ca6581a7ad8a9864b810e3772	U	Tic-Tac XO by Sly Dog Studios (PD)	NES
 15ac45742f1830dd6ba727cf41a4a9d9676a6d2a	B	Tie Fighter (Older) (SMB1 Hack) [b1]	NES
@@ -20430,7 +20430,7 @@ b4bc7b0867d9ecc88fe89bb6b4c564c495455363	H	Toaster Bros (SMB1 Hack)	NES
 6e89817eb2531c4260120a609b89de354a5fd39d	H	Tobi (SMB1 Hack)	NES
 b01ede8636ad9642476c09541b85ffb3d6bbb11a	U	Tobidase Daisakusen (FDS Conversion)	NES
 c1307b51a96018211ef8105cbbbe90cd3e16a67b	H	Todos Contra TCHECO 2.0 by Macbee (Rockin' Kats Hack)	NES
-bf27c3c6ea6f06ff6d3071eb0e105608038e8052	U	ToeJam &amp; Earl Title Screen (PD)	NES
+bf27c3c6ea6f06ff6d3071eb0e105608038e8052	U	ToeJam & Earl Title Screen (PD)	NES
 3d03d92a8f68a8d0619de48b710c9d514663b63e	H	Toilet Mario (SMB1 Hack) [a1]	NES
 8af0f78307042ecb8d938600b83daca6f76f004c	H	Toilet Mario (SMB1 Hack)	NES
 f11c1240a664c5424a8c7eba7eeb42343c792350	U	Toita Basketball (Unl)	NES
@@ -20464,30 +20464,30 @@ aef80dedb58085fc4b779e3747d69492f3b666bf	G	Tokoro San no Mamoru mo Semeru mo (J)
 b42120ffa11f8c809db4e6dd0ba11a8eebcd65bd	H	Tokoro San no Mamoru mo Semeru mo (Saitama Hack)	NES
 ecf1fd4135beebe35c7ca8036e1a085dacdc4f5d	U	Tokumaru Raycaster 00 (PD)	NES
 2fca78b0d4a436579b3ed6c72dfe3888f3154644	U	Tokumaru Raycaster 01 (PD)	NES
-d67f0beeb7603c224177264f13fc4b2d08ad679b	G	Tom &amp; Jerry (E) [!]	NES
-7e1048cd8d868d1df56ed613f660b8513a6d71ea	T	Tom &amp; Jerry (J) [T+Chi_MS emumax]	NES
-709016db8902eb4c6a99cd462fd1627babbbfbe4	U	Tom &amp; Jerry (J)	NES
-d6ebfe209995e8db14e82df952e8c5b10b025460	G	Tom &amp; Jerry (U) [!]	NES
-8620b79e4f0087a6a44ac3c31d2746292e573d49	B	Tom &amp; Jerry (U) [b1]	NES
-201867ffc992c4038021d8510fe8beea4f3e305a	B	Tom &amp; Jerry (U) [b2]	NES
-936d84aafd680e4b52cfd006fd0f3ec8abfa2c24	B	Tom &amp; Jerry (U) [b3]	NES
-fe4ed3c8f29cbdb649a233b85e224f04f6a7f533	B	Tom &amp; Jerry (U) [o1]	NES
-6f8965f2e332e96a43de03ccca6a12b982f4a95a	B	Tom &amp; Jerry (U) [p1]	NES
-7e984e9696e8d089ad870c68944ff2b95f053732	T	Tom &amp; Jerry (U) [p1][T+Rus_2R Team]	NES
-623f8b48b17e34653a0d9cd1db0b0facb8429b8f	B	Tom &amp; Jerry (U) [p2]	NES
-8ecbe4a0a6b94542409c0990357de968e2e85f22	T	Tom &amp; Jerry (U) [T+Ara_Hisoka]	NES
-22c95df30f90c68b0d64b412029f9e905195bca1	T	Tom &amp; Jerry (U) [T+Pol]	NES
-28ceb78e1a2f2646bb47a8c5ed293605a7fa8a5f	T	Tom &amp; Jerry (U) [T+Rus]	NES
-c3a972e3cd3f9832f7f46756d68744952e1585e9	C	Tom &amp; Jerry (U) [t1]	NES
-168e14e08574662823d6e4604540225205e29301	U	Tom &amp; Jerry 3 (Unl)	NES
+d67f0beeb7603c224177264f13fc4b2d08ad679b	G	Tom & Jerry (E) [!]	NES
+7e1048cd8d868d1df56ed613f660b8513a6d71ea	T	Tom & Jerry (J) [T+Chi_MS emumax]	NES
+709016db8902eb4c6a99cd462fd1627babbbfbe4	U	Tom & Jerry (J)	NES
+d6ebfe209995e8db14e82df952e8c5b10b025460	G	Tom & Jerry (U) [!]	NES
+8620b79e4f0087a6a44ac3c31d2746292e573d49	B	Tom & Jerry (U) [b1]	NES
+201867ffc992c4038021d8510fe8beea4f3e305a	B	Tom & Jerry (U) [b2]	NES
+936d84aafd680e4b52cfd006fd0f3ec8abfa2c24	B	Tom & Jerry (U) [b3]	NES
+fe4ed3c8f29cbdb649a233b85e224f04f6a7f533	B	Tom & Jerry (U) [o1]	NES
+6f8965f2e332e96a43de03ccca6a12b982f4a95a	B	Tom & Jerry (U) [p1]	NES
+7e984e9696e8d089ad870c68944ff2b95f053732	T	Tom & Jerry (U) [p1][T+Rus_2R Team]	NES
+623f8b48b17e34653a0d9cd1db0b0facb8429b8f	B	Tom & Jerry (U) [p2]	NES
+8ecbe4a0a6b94542409c0990357de968e2e85f22	T	Tom & Jerry (U) [T+Ara_Hisoka]	NES
+22c95df30f90c68b0d64b412029f9e905195bca1	T	Tom & Jerry (U) [T+Pol]	NES
+28ceb78e1a2f2646bb47a8c5ed293605a7fa8a5f	T	Tom & Jerry (U) [T+Rus]	NES
+c3a972e3cd3f9832f7f46756d68744952e1585e9	C	Tom & Jerry (U) [t1]	NES
+168e14e08574662823d6e4604540225205e29301	U	Tom & Jerry 3 (Unl)	NES
 67e2781b74c0771c377bfd11308662ab906e7a09	G	Tom Sawyer no Bouken (J) [!]	NES
 da0a506fda6aba44a56ac998b613176a7b8f8919	T	Tom Sawyer no Bouken (J) [T+Rus_Guyver]	NES
 a506f23a0f5905fe85051e14e9ad1e0e181163ed	C	Tom Sawyer no Bouken (J) [t1]	NES
 2ffc983e94e5ec9fc654052a442297c2b1ab24a1	H	Tom Servo (Megaman III Hack)	NES
-9c1de5cd49641d025d75c4024ee303ed0135673e	G	Tombs &amp; Treasure (U) [!]	NES
-582a21a4e41a0e844d66cd3c7e75bc75939c0cb5	B	Tombs &amp; Treasure (U) [o1]	NES
-2e819d9c061ab801c931ef547ce737de8f92403a	B	Tombs &amp; Treasure (U) [o2]	NES
-6a1536f70666a52075e967ed24b1e48cbd7fa8a1	C	Tombs &amp; Treasure (U) [t1]	NES
+9c1de5cd49641d025d75c4024ee303ed0135673e	G	Tombs & Treasure (U) [!]	NES
+582a21a4e41a0e844d66cd3c7e75bc75939c0cb5	B	Tombs & Treasure (U) [o1]	NES
+2e819d9c061ab801c931ef547ce737de8f92403a	B	Tombs & Treasure (U) [o2]	NES
+6a1536f70666a52075e967ed24b1e48cbd7fa8a1	C	Tombs & Treasure (U) [t1]	NES
 ea4f4ddf8d26245a0a16078f913d0074a080261c	U	Tommy T's Play Me Sound Editor (PD)	NES
 3b287cb938e58a77c6d5aefdfb47fe9027c17055	G	Toobin' (Tengen) [!]	NES
 df8f7e23d1cca410226951d89fd6d4cdbd8aaf4e	B	Toobin' (Tengen) [b1]	NES
@@ -20520,11 +20520,11 @@ ee7747f09f98e6fc1717652a7a485982f5b2d6d6	G	Top Gun - The Second Mission (U) [!]	
 3dfdd953c496287d95c38a5e8653b6fdaadc0ede	B	Top Gun - The Second Mission (U) [o1]	NES
 9f92f4d56710b97b79525b7d055041a7ff302697	H	Top Gun Altered (Hack)	NES
 334e4ff5070846b5db6f1f0d1eba80cb1a1141c8	U	Top Gun III (Unl)	NES
-d3de04f554a5ae57750f12aedc810c0c3db3d2ea	G	Top Players' Tennis - Featuring Chris Evert &amp; Ivan Lendl (U) [!]	NES
-1dc84f0db89649761867fb52711d31566ff26883	B	Top Players' Tennis - Featuring Chris Evert &amp; Ivan Lendl (U) [b1]	NES
-e42950f3b54f3368e3fdc54e03bfe9e728334561	B	Top Players' Tennis - Featuring Chris Evert &amp; Ivan Lendl (U) [b2]	NES
-ef32f202aa300422587ce967621b3a7afeb9065a	B	Top Players' Tennis - Featuring Chris Evert &amp; Ivan Lendl (U) [b3]	NES
-50a9b1a803d4c5c55799657c340e942dc976e3f4	B	Top Players' Tennis - Featuring Chris Evert &amp; Ivan Lendl (U) [o1]	NES
+d3de04f554a5ae57750f12aedc810c0c3db3d2ea	G	Top Players' Tennis - Featuring Chris Evert & Ivan Lendl (U) [!]	NES
+1dc84f0db89649761867fb52711d31566ff26883	B	Top Players' Tennis - Featuring Chris Evert & Ivan Lendl (U) [b1]	NES
+e42950f3b54f3368e3fdc54e03bfe9e728334561	B	Top Players' Tennis - Featuring Chris Evert & Ivan Lendl (U) [b2]	NES
+ef32f202aa300422587ce967621b3a7afeb9065a	B	Top Players' Tennis - Featuring Chris Evert & Ivan Lendl (U) [b3]	NES
+50a9b1a803d4c5c55799657c340e942dc976e3f4	B	Top Players' Tennis - Featuring Chris Evert & Ivan Lendl (U) [o1]	NES
 d4d46dc4d99459c8dd57f30eeb16aa03358540f3	G	Top Rider (J) [!]	NES
 fd4d0f89989a257c35fc243eeb6f5c6d3f36b88a	B	Top Rider (J) [b1]	NES
 cf633f8b8571bead545ed8d72da9b22771c1b255	H	Top Rider (J) [hM04]	NES
@@ -20588,26 +20588,26 @@ d67238510c7f9b72eec13d5269a0158ffa975055	C	Toxic Crusaders (U) [t1]	NES
 aad697dda0e00fd508d0e9469660194701f25a2a	H	Toxic Crusaders Debug by dragon2snow (Hack)	NES
 7c748e5a83fb07905cadc427d1909a04af8c51ec	H	Toy Story (Unl) [hM219]	NES
 e3a08bd0e03b4b395410ec1ccdd9c0f49400a410	U	Toy Story (Unl)	NES
-f036a0ba914cac462525480fe583e2a7871d192c	B	Track &amp; Field (PC10) [b1]	NES
-95f499762d567ca9c8373cff73253937529baeab	U	Track &amp; Field (PC10)	NES
-df8425d96b3ac613eec604d66b32e91b001488d0	G	Track &amp; Field (U) [!]	NES
-ac29221519765ec4a10e5f6ef5549dd1393436c7	B	Track &amp; Field (U) [b1]	NES
-5a7c68d213dd96b2e4f4cedd3de4165c711ba945	B	Track &amp; Field (U) [o1]	NES
-c2d8a7573451d64681d2baa10b83e7d1e3c1c04a	B	Track &amp; Field (U) [p1]	NES
-abee2b7e0513ba2e55a522a0105e461f2f5cb267	T	Track &amp; Field (U) [T+Bra100%_BRGames]	NES
-70b74fc1f7623f133a7f49f9e1b54418164f4056	G	Track &amp; Field II (E) [!]	NES
-29bd3871447df2ad02a5ab1ec2c9256e85a5c359	G	Track &amp; Field II (U) (PRG0) [!]	NES
-316a53f846cdbf55c021f8e9497f06e2b08245e4	B	Track &amp; Field II (U) (PRG0) [b1]	NES
-97e6822b57a61ed4f1f763582a1fb2f556f44632	B	Track &amp; Field II (U) (PRG0) [b2]	NES
-921d31753740408fe8b3cce41e36609ada225068	B	Track &amp; Field II (U) (PRG0) [b3]	NES
-817ca6d0d790458dfa248763170dd05b0408ab25	B	Track &amp; Field II (U) (PRG0) [b4]	NES
-16994d0c5085bc91e0768b39c462c8920fdfdb26	B	Track &amp; Field II (U) (PRG0) [o1]	NES
-dda552f0a6b95dbcc891cff98220fad2fd08eaad	B	Track &amp; Field II (U) (PRG0) [o2]	NES
-62ce1b905f5bcf37d65c6126f962a8088c1ce171	T	Track &amp; Field II (U) (PRG0) [T+Bra1.0_ROMHackBR]	NES
-533cd4effd292961c38d5d3bec9bf4bab4acaa32	T	Track &amp; Field II (U) (PRG0) [T+Swe1.0_TheTranslator]	NES
-a3ca238ef9744175b1bdc70bcdb70aafe97239bc	T	Track &amp; Field II (U) (PRG0) [T+Swe1.0_TheTranslator][a1]	NES
-768e8707b2af9167cfd2851c968988185d463f98	G	Track &amp; Field II (U) (REVA) [!]	NES
-830d9875c723a15fb322b4f12a750f618268e80b	G	Track &amp; Field in Barcelona (E) [!]	NES
+f036a0ba914cac462525480fe583e2a7871d192c	B	Track & Field (PC10) [b1]	NES
+95f499762d567ca9c8373cff73253937529baeab	U	Track & Field (PC10)	NES
+df8425d96b3ac613eec604d66b32e91b001488d0	G	Track & Field (U) [!]	NES
+ac29221519765ec4a10e5f6ef5549dd1393436c7	B	Track & Field (U) [b1]	NES
+5a7c68d213dd96b2e4f4cedd3de4165c711ba945	B	Track & Field (U) [o1]	NES
+c2d8a7573451d64681d2baa10b83e7d1e3c1c04a	B	Track & Field (U) [p1]	NES
+abee2b7e0513ba2e55a522a0105e461f2f5cb267	T	Track & Field (U) [T+Bra100%_BRGames]	NES
+70b74fc1f7623f133a7f49f9e1b54418164f4056	G	Track & Field II (E) [!]	NES
+29bd3871447df2ad02a5ab1ec2c9256e85a5c359	G	Track & Field II (U) (PRG0) [!]	NES
+316a53f846cdbf55c021f8e9497f06e2b08245e4	B	Track & Field II (U) (PRG0) [b1]	NES
+97e6822b57a61ed4f1f763582a1fb2f556f44632	B	Track & Field II (U) (PRG0) [b2]	NES
+921d31753740408fe8b3cce41e36609ada225068	B	Track & Field II (U) (PRG0) [b3]	NES
+817ca6d0d790458dfa248763170dd05b0408ab25	B	Track & Field II (U) (PRG0) [b4]	NES
+16994d0c5085bc91e0768b39c462c8920fdfdb26	B	Track & Field II (U) (PRG0) [o1]	NES
+dda552f0a6b95dbcc891cff98220fad2fd08eaad	B	Track & Field II (U) (PRG0) [o2]	NES
+62ce1b905f5bcf37d65c6126f962a8088c1ce171	T	Track & Field II (U) (PRG0) [T+Bra1.0_ROMHackBR]	NES
+533cd4effd292961c38d5d3bec9bf4bab4acaa32	T	Track & Field II (U) (PRG0) [T+Swe1.0_TheTranslator]	NES
+a3ca238ef9744175b1bdc70bcdb70aafe97239bc	T	Track & Field II (U) (PRG0) [T+Swe1.0_TheTranslator][a1]	NES
+768e8707b2af9167cfd2851c968988185d463f98	G	Track & Field II (U) (REVA) [!]	NES
+830d9875c723a15fb322b4f12a750f618268e80b	G	Track & Field in Barcelona (E) [!]	NES
 d974155c893375bdc5701e18b2feac774c4a59e5	B	TradeMark Mario (SMB1 Hack) [o1]	NES
 1263a4459dfa4722581a46d94bf1429f1465f683	H	TradeMark Mario (SMB1 Hack)	NES
 c953cb58d25ed19b477779b81b1962bb25e06cdb	H	Tranny Tramps - The Family Jewels (Double Dragon III Hack)	NES
@@ -21002,7 +21002,7 @@ f6642a2ee4fd9cf1a8c4f991d9e427627fe5ea3b	U	Variable Width Font Demo v0.01 by Dam
 8548c230871abaf39c965bc3f87488ec1ca13fff	U	Variable Width Font Demo v0.02 by Damian Yerrick+Blargg (PD)	NES
 582450682d233eb3b1279b1e11a0e0137602be6b	U	Variable Width Font Demo v0.03 by Damian Yerrick+Blargg (PD)	NES
 afd24e18c113309cbc0917c73fdb2c7865511990	U	VBL Flag Clearing Timing Test by Shay Green (6 Nov 2005) (PD)	NES
-6e1faa816c80462f5ee293c1847ee829683ea8a9	U	VBL Flag Operation &amp; PPU Timing Test by Shay Green (7 Nov 2005) (PD)	NES
+6e1faa816c80462f5ee293c1847ee829683ea8a9	U	VBL Flag Operation & PPU Timing Test by Shay Green (7 Nov 2005) (PD)	NES
 3aef088d11ce1b6b8b2db07aba9aa79b6d8526e3	U	VBL Timing Test by Shay Green (6 Nov 2005) (PD)	NES
 45585124fb0ba1b93995c4c15ec48382c90af165	U	Vectest3 (PD)	NES
 2d55988a0e29604c90c844df15da34764688fbf0	U	Vector Demo (PD)	NES
@@ -21094,7 +21094,7 @@ a99e0bc1b9087b3f2540c1b18425af6083e74f0e	T	Volleyball (UE) [T+FreBeta_ks151]	NES
 2b711242f71bdee2a9ec5045c4863b2b030bbbd8	T	Volleyball (UE) [T+Ita1.0_ZombiKiller]	NES
 028bfd4d3228343a992cecf5fdd9d4805d8a3cc2	G	Volshebnaya Palitra (R) [!]	NES
 58832f2ce7232a8e476b5376f533300eb6b702de	U	Vote for Oniken on Greenlight (PD)	NES
-c81a649f330e3de4784d94e5ea00b502a207716c	U	VRAM Access &amp; Internal Read Buffer Operation Test by Shay Green (15 Sep 2005) (PD)	NES
+c81a649f330e3de4784d94e5ea00b502a207716c	U	VRAM Access & Internal Read Buffer Operation Test by Shay Green (15 Sep 2005) (PD)	NES
 475ec5c8f610793d2ec555021e18f9230b151d63	U	VRC6 Sound Demo by Siudym (PD) (PAL)	NES
 3e6154c79f27c5c9b2d4eba11c78570c9c5425cb	H	VS. Airman (SMB1 Hack)	NES
 f9db1a17425dcd34a7bc68c0f86d5c338e58e795	B	VS. Blink (VS SMB1 Hack) [o1]	NES
@@ -21190,9 +21190,9 @@ abae2b3ed342bc069abee73137744e5b36b4b0ab	B	Wall Street Kid (U) [b1]	NES
 7aca04613ec4e14df9c954f3e08605b5d981fadc	B	Wall Street Kid (U) [o2]	NES
 3b07de583fdf353d0e78f46b161e1e0c955b45d1	B	Wall Street Kid (U) [o3]	NES
 1f5b5b4552ad51bc07a8aa99345b25190527995e	B	Wall Street Kid (U) [o4]	NES
-7d60a48aa52afcdf64ea9b249ade7cc8e83301c6	U	Wally Bear &amp; the No Gang (AVE) (Prototype)	NES
-cd1ee26c0cef8c48b72cc4000ac7a577b8c4c0b5	G	Wally Bear &amp; the No Gang (AVE) [!]	NES
-6603d08ee41b39350184cdf03537eb36162e2f01	B	Wally Bear &amp; the No Gang (AVE) [o1]	NES
+7d60a48aa52afcdf64ea9b249ade7cc8e83301c6	U	Wally Bear & the No Gang (AVE) (Prototype)	NES
+cd1ee26c0cef8c48b72cc4000ac7a577b8c4c0b5	G	Wally Bear & the No Gang (AVE) [!]	NES
+6603d08ee41b39350184cdf03537eb36162e2f01	B	Wally Bear & the No Gang (AVE) [o1]	NES
 dd8c8a387158230df68e20bd90b6c729589a5116	H	Waluigi's Adventure by Googie (SMB1 Hack) [a1]	NES
 0de42862be2fea4d569700db9a01ef7745e2d97a	H	Waluigi's Adventure by Googie (SMB1 Hack) [a2]	NES
 a9c35c50a1a447728621fffbad42f32a521c09ed	B	Waluigi's Adventure by Googie (SMB1 Hack) [b1]	NES
@@ -21267,7 +21267,7 @@ ad680a185bed1fdb8f6f885deaad6ed3ae565ea1	H	Waterboy, The (Harry's Legend Hack)	N
 dc88673fb3defcf60fcbbc5b2968dab20a188ad8	U	WAV2NES Sample (PD)	NES
 831595bf54bf5dc41031358b87c7a3f30b2da765	U	Wavetable5 Demo by Blargg (PD)	NES
 0b8582204c535c3b9c7d1b89342f22efb455a757	U	Wavetable6 4-Channel Music Demo by Blargg (PD)	NES
-f5391038938d1c8577e572f0480ebf600bfd6482	U	Wavy &amp; Stretch Demo V0.3 by Chris Covell (PD)	NES
+f5391038938d1c8577e572f0480ebf600bfd6482	U	Wavy & Stretch Demo V0.3 by Chris Covell (PD)	NES
 c3c8bc28a11c11e45d48bdb8dd6b03d9e1974c47	U	Way Out (Ch) (Wxn)	NES
 2470ce28d144f6d1320a81e8f1faeabd07bed462	G	Wayne Gretzky Hockey (U) [!]	NES
 2be91df36a683e1e09f3f897ba5170fff22f2ac7	B	Wayne Gretzky Hockey (U) [b1]	NES
@@ -21385,14 +21385,14 @@ d3040b0e2e70f426236cf76e3dbc7bc23967eb28	T	Willow (U) [T+Fre100]	NES
 5e108abf60f2f8467c5a7f962cf11f0702c370a5	T	Willow (U) [T+Rus_arsen13,Tigran]	NES
 c6639a7b826fc3c85167334d7e3902db896a4779	T	Willow (U) [T-Fre010]	NES
 3352a0493d4d40de75b3036ee01133e2fbe8e602	C	Willow (U) [t1]	NES
-d94557741ae526a0cc7b4a3be5aa4a825baf9a85	G	Wily &amp; Light no Rockboard - That's Paradise (J) [!]	NES
-be4507a270fb3406cd483f2fd4e34da74a22d7a7	B	Wily &amp; Light no Rockboard - That's Paradise (J) [b1]	NES
-f44c84c330d5d84ec5410ad81e4300e4be9578a9	B	Wily &amp; Light no Rockboard - That's Paradise (J) [b1][o1]	NES
-40bce9f07c099e021bc1a7c73e5cd81de026c630	T	Wily &amp; Light no Rockboard - That's Paradise (J) [T+Eng1.1(Megaman)_Interordi]	NES
-0cedcf804a8fce45e56ec7f4d8be454838589cc2	T	Wily &amp; Light no Rockboard - That's Paradise (J) [T+Eng1.1(Rockman)_Interordi]	NES
-8166ad98dc32344e803d662333bda1b2acc29035	T	Wily &amp; Light no Rockboard - That's Paradise (J) [T-Eng(Megaman)_Interordi]	NES
-479364d2a6bb8db8c3343ce813157a8024a2ab92	T	Wily &amp; Light no Rockboard - That's Paradise (J) [T-Eng(Rockman)_Interordi]	NES
-35993e347372d4496ccc387b5a29f71a1f0bdba2	T	Wily &amp; Light no Rockboard - That's Paradise (J) [T-Eng0.10_Interordi]	NES
+d94557741ae526a0cc7b4a3be5aa4a825baf9a85	G	Wily & Light no Rockboard - That's Paradise (J) [!]	NES
+be4507a270fb3406cd483f2fd4e34da74a22d7a7	B	Wily & Light no Rockboard - That's Paradise (J) [b1]	NES
+f44c84c330d5d84ec5410ad81e4300e4be9578a9	B	Wily & Light no Rockboard - That's Paradise (J) [b1][o1]	NES
+40bce9f07c099e021bc1a7c73e5cd81de026c630	T	Wily & Light no Rockboard - That's Paradise (J) [T+Eng1.1(Megaman)_Interordi]	NES
+0cedcf804a8fce45e56ec7f4d8be454838589cc2	T	Wily & Light no Rockboard - That's Paradise (J) [T+Eng1.1(Rockman)_Interordi]	NES
+8166ad98dc32344e803d662333bda1b2acc29035	T	Wily & Light no Rockboard - That's Paradise (J) [T-Eng(Megaman)_Interordi]	NES
+479364d2a6bb8db8c3343ce813157a8024a2ab92	T	Wily & Light no Rockboard - That's Paradise (J) [T-Eng(Rockman)_Interordi]	NES
+35993e347372d4496ccc387b5a29f71a1f0bdba2	T	Wily & Light no Rockboard - That's Paradise (J) [T-Eng0.10_Interordi]	NES
 49773466c4296d77f0697c073ed66d4fe3375459	G	Win, Lose or Draw (U) [!]	NES
 8f37e6b4dbbfcbb1c9b4e1620f0dd459837e0e06	B	Win, Lose or Draw (U) [b1]	NES
 8993dafeff608f9c2f9a4508ac9e334795ae87be	B	Win, Lose or Draw (U) [o1]	NES
@@ -21432,17 +21432,17 @@ f324f1977d4b7840c37821990247993c26fa46fc	G	Wizardry - Proving Grounds of the Mad
 9a7adb06a54e7bccb74583a6217b47e5a9525520	B	Wizardry II - Llylgamyn no Densetsu (J) [b1]	NES
 56fbae974686e83054fafe06e9d8a2b6bbb82ce9	B	Wizardry II - Llylgamyn no Densetsu (J) [b2]	NES
 026ae09c426d6eb689270b384349f20890578a82	G	Wizardry III - Diamond no Kishi (J) [!]	NES
-61ff5043afb71553b21f04378b0e9f3179b5ef81	G	Wizards &amp; Warriors (E) [!]	NES
-5c135a7971013cf6e3a2243bcdd6938cf5ba4b5b	G	Wizards &amp; Warriors (U) (PRG0) [!]	NES
-5c8df2859ddc204537fd83cadcee540faacf175e	B	Wizards &amp; Warriors (U) (PRG0) [o1]	NES
-59e36195a3fb2a3d5fd3db02cedb0e71b54bb3cd	T	Wizards &amp; Warriors (U) (PRG0) [T+Rus_Guyver]	NES
-f1e061a739ed0a1963a357c8df3f19fffd9b77c3	G	Wizards &amp; Warriors (U) (PRG1) [!]	NES
-c6f1bed4cf59c155cd8e03109cefc0f451426450	G	Wizards &amp; Warriors III - Kuros - Visions of Power (E) [!]	NES
-9c04e7357e5b39cfd9d0a119c52102197b4a1be0	G	Wizards &amp; Warriors III - Kuros - Visions of Power (U) [!]	NES
-f4c54e865c9b76e7b96045d285a0b8a81a1e8095	B	Wizards &amp; Warriors III - Kuros - Visions of Power (U) [b1]	NES
-5a5063fa947b0755dfb5f8313e6b7cd0384bb424	B	Wizards &amp; Warriors III - Kuros - Visions of Power (U) [b2]	NES
-7f2093ea1e427e54b42ef0e607f64c0cc4bce2d7	B	Wizards &amp; Warriors III - Kuros - Visions of Power (U) [o1]	NES
-f12e91ee96a101aad014bda73933a053219a33c3	C	Wizards &amp; Warriors III - Kuros - Visions of Power (U) [t1]	NES
+61ff5043afb71553b21f04378b0e9f3179b5ef81	G	Wizards & Warriors (E) [!]	NES
+5c135a7971013cf6e3a2243bcdd6938cf5ba4b5b	G	Wizards & Warriors (U) (PRG0) [!]	NES
+5c8df2859ddc204537fd83cadcee540faacf175e	B	Wizards & Warriors (U) (PRG0) [o1]	NES
+59e36195a3fb2a3d5fd3db02cedb0e71b54bb3cd	T	Wizards & Warriors (U) (PRG0) [T+Rus_Guyver]	NES
+f1e061a739ed0a1963a357c8df3f19fffd9b77c3	G	Wizards & Warriors (U) (PRG1) [!]	NES
+c6f1bed4cf59c155cd8e03109cefc0f451426450	G	Wizards & Warriors III - Kuros - Visions of Power (E) [!]	NES
+9c04e7357e5b39cfd9d0a119c52102197b4a1be0	G	Wizards & Warriors III - Kuros - Visions of Power (U) [!]	NES
+f4c54e865c9b76e7b96045d285a0b8a81a1e8095	B	Wizards & Warriors III - Kuros - Visions of Power (U) [b1]	NES
+5a5063fa947b0755dfb5f8313e6b7cd0384bb424	B	Wizards & Warriors III - Kuros - Visions of Power (U) [b2]	NES
+7f2093ea1e427e54b42ef0e607f64c0cc4bce2d7	B	Wizards & Warriors III - Kuros - Visions of Power (U) [o1]	NES
+f12e91ee96a101aad014bda73933a053219a33c3	C	Wizards & Warriors III - Kuros - Visions of Power (U) [t1]	NES
 175b452b31adac390d5a36c654aaf4de49ec19c9	B	Wizzy (Formation Z Hack) [o1]	NES
 eae3e42bc9b02382207f39edfd71b77b5228c4d4	B	Wizzy (Formation Z Hack) [o2]	NES
 2f416726d94f7541709b61a1f1e8a4ae8d2ef14d	B	Wizzy (Formation Z Hack) [o3]	NES
@@ -21993,7 +21993,7 @@ f52a4b77d37156db3d470b7a2acf1625d041520c	U	Zero Pong V3.0 by Zero-Soul (PD)	NES
 9119581a22ac8fe03a546f0088132eaa55692abd	U	Zhan Guo Qun Xiong Chuan (Ch)	NES
 349e2e47a59a14151c190fd687de973f82ea8c69	B	Zhan Guo Qun Xiong Zhuan (Ch) [b1]	NES
 9680484cd6a1aba6164bb07a7b556c1a90b1d9d7	U	Zhan Guo Qun Xiong Zhuan (Ch)	NES
-54b371871d45aad6219e6394ed379dd9db24b6b8	U	Zhan Guo Si Chuan Sheng (C&amp;E) (Unl)	NES
+54b371871d45aad6219e6394ed379dd9db24b6b8	U	Zhan Guo Si Chuan Sheng (C&E) (Unl)	NES
 be6140cc9fb99c7ab5388dfe5c7c13fa4cfe2a3f	G	Zhen Ben Xi You Ji (Asder) [!]	NES
 902dd1345e1440b4297b1046ce0c2db26fbbca5e	C	Zhen Jia Hou Wang (ES-1061) (Ch) (Decrypted) [t1]	NES
 af9e06787f450260f9810c3d4a54674f24adea1b	U	Zhen Jia Hou Wang (ES-1061) (Ch) (Decrypted)	NES

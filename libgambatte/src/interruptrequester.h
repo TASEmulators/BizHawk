@@ -1,21 +1,21 @@
-/***************************************************************************
- *   Copyright (C) 2010 by Sindre Aamås                                    *
- *   aamas@stud.ntnu.no                                                    *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License version 2 as     *
- *   published by the Free Software Foundation.                            *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License version 2 for more details.                *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   version 2 along with this program; if not, write to the               *
- *   Free Software Foundation, Inc.,                                       *
- *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+//
+//   Copyright (C) 2010 by sinamas <sinamas at users.sourceforge.net>
+//
+//   This program is free software; you can redistribute it and/or modify
+//   it under the terms of the GNU General Public License version 2 as
+//   published by the Free Software Foundation.
+//
+//   This program is distributed in the hope that it will be useful,
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//   GNU General Public License version 2 for more details.
+//
+//   You should have received a copy of the GNU General Public License
+//   version 2 along with this program; if not, write to the
+//   Free Software Foundation, Inc.,
+//   51 Franklin St, Fifth Floor, Boston, MA  02110-1301, USA.
+//
+
 #ifndef INTERRUPT_REQUESTER_H
 #define INTERRUPT_REQUESTER_H
 
@@ -24,72 +24,81 @@
 #include "newstate.h"
 
 namespace gambatte {
+
 struct SaveState;
-enum MemEventId { UNHALT, END, BLIT, SERIAL, OAM, DMA, TIMA, VIDEO, INTERRUPTS };
+
+enum IntEventId { intevent_unhalt,
+                  intevent_end,
+                  intevent_blit,
+                  intevent_serial,
+                  intevent_oam,
+                  intevent_dma,
+                  intevent_tima,
+                  intevent_video,
+                  intevent_interrupts, intevent_last = intevent_interrupts };
 
 class InterruptRequester {
-	MinKeeper<INTERRUPTS + 1> eventTimes;
-	unsigned long minIntTime;
-	unsigned ifreg_;
-	unsigned iereg_;
-	
-	class IntFlags {
-		friend class InterruptRequester;
-		unsigned char flags_;
-		enum { IME_MASK = 1, HALTED_MASK = 2 };
-		
-	public:
-		IntFlags() : flags_(0) {}
-		
-		bool ime() const { return flags_ & IME_MASK; }
-		bool halted() const { return flags_ & HALTED_MASK; }
-		bool imeOrHalted() const { return flags_; }
-		
-		void setIme() { flags_ |= IME_MASK; }
-		void unsetIme() { flags_ &= ~IME_MASK; }
-		
-		void setHalted() { flags_ |= HALTED_MASK; }
-		void unsetHalted() { flags_ &= ~HALTED_MASK; }
-		
-		void set(const bool ime, const bool halted) { flags_ = halted * HALTED_MASK + ime * IME_MASK; }
-	} intFlags;
-	
 public:
 	InterruptRequester();
-	
-	void loadState(const SaveState &);
-	
+	void loadState(SaveState const &);
 	void resetCc(unsigned long oldCc, unsigned long newCc);
-	
 	unsigned ifreg() const { return ifreg_; }
 	unsigned iereg() const { return iereg_; }
 	unsigned pendingIrqs() const { return ifreg_ & iereg_; }
-	bool ime() const { return intFlags.ime(); }
-	bool halted() const { return intFlags.halted(); }
-	
+	bool ime() const { return intFlags_.ime(); }
+	bool halted() const { return intFlags_.halted(); }
 	void ei(unsigned long cc);
 	void di();
 	void halt();
 	void unhalt();
 	void flagIrq(unsigned bit);
-	void ackIrq(unsigned bit);
+	void flagIrq(unsigned bit, unsigned long cc);
+	void ackIrq(unsigned bit) { ifreg_ &= ~bit; }
 	void setIereg(unsigned iereg);
 	void setIfreg(unsigned ifreg);
-	
-	MemEventId minEventId() const { return static_cast<MemEventId>(eventTimes.min()); }
-	unsigned long minEventTime() const { return eventTimes.minValue(); }
-	template<MemEventId id> void setEventTime(unsigned long value) { eventTimes.setValue<id>(value); }
-	void setEventTime(const MemEventId id, unsigned long value) { eventTimes.setValue(id, value); }
-	unsigned long eventTime(MemEventId id) const { return eventTimes.value(id); }
+	void setMinIntTime(unsigned long cc);
 
+	IntEventId minEventId() const { return static_cast<IntEventId>(eventTimes_.min()); }
+	unsigned long minEventTime() const { return eventTimes_.minValue(); }
+	template<IntEventId id> void setEventTime(unsigned long value) { eventTimes_.setValue<id>(value); }
+	void setEventTime(IntEventId id, unsigned long value) { eventTimes_.setValue(id, value); }
+	unsigned long eventTime(IntEventId id) const { return eventTimes_.value(id); }
+
+private:
+	class IntFlags {
+		friend class InterruptRequester;
+	public:
+		IntFlags() : flags_(0) {}
+		bool ime() const { return flags_ & flag_ime; }
+		bool halted() const { return flags_ & flag_halted; }
+		bool imeOrHalted() const { return flags_; }
+		void setIme() { flags_ |= flag_ime; }
+		void unsetIme() { flags_ &= ~(1u * flag_ime); }
+		void setHalted() { flags_ |= flag_halted; }
+		void unsetHalted() { flags_ &= ~(1u * flag_halted); }
+		void set(bool ime, bool halted) { flags_ = halted * flag_halted + ime * flag_ime; }
+
+	private:
+		unsigned char flags_;
+		enum { flag_ime = 1, flag_halted = 2 };
+	};
+
+	MinKeeper<intevent_last + 1> eventTimes_;
+	unsigned long minIntTime_;
+	unsigned ifreg_;
+	unsigned iereg_;
+	IntFlags intFlags_;
+
+
+public:
 	template<bool isReader>void SyncState(NewState *ns);
 };
 
-inline void flagHdmaReq(InterruptRequester *const intreq) { intreq->setEventTime<DMA>(0); }
-inline void flagGdmaReq(InterruptRequester *const intreq) { intreq->setEventTime<DMA>(1); }
-inline void ackDmaReq(InterruptRequester *const intreq) { intreq->setEventTime<DMA>(DISABLED_TIME); }
-inline bool hdmaReqFlagged(const InterruptRequester &intreq) { return intreq.eventTime(DMA) == 0; }
-inline bool gdmaReqFlagged(const InterruptRequester &intreq) { return intreq.eventTime(DMA) == 1; }
+inline void flagHdmaReq(InterruptRequester &intreq) { intreq.setEventTime<intevent_dma>(0); }
+inline void flagGdmaReq(InterruptRequester &intreq) { intreq.setEventTime<intevent_dma>(1); }
+inline void ackDmaReq(InterruptRequester &intreq) { intreq.setEventTime<intevent_dma>(disabled_time); }
+inline bool hdmaReqFlagged(InterruptRequester const &intreq) { return intreq.eventTime(intevent_dma) == 0; }
+inline bool gdmaReqFlagged(InterruptRequester const &intreq) { return intreq.eventTime(intevent_dma) == 1; }
 
 }
 

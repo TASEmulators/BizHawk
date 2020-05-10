@@ -37,6 +37,7 @@
 #include "debugger/dbg_memory.h"
 #include "debugger/debugger.h"
 #include "memory/memory.h"
+#include "memory/pif.h"
 #include "r4300/r4300.h"
 #include "main/rom.h"
 
@@ -224,6 +225,10 @@ EXPORT void * CALL DebugMemGetPointer(m64p_dbg_memptr_type mem_ptr_type)
 
 		case EEPROM:
             return eeprom;
+		case M64P_DBG_PTR_SRAM:
+            return sram;
+		case M64P_DBG_PTR_FLASHRAM:
+            return flashram;
 		case MEMPAK1:
 			return mempack[0];
 		case MEMPAK2:
@@ -260,6 +265,10 @@ EXPORT int CALL MemGetSize(m64p_dbg_memptr_type mem_ptr_type)
 
 		case EEPROM:
             return 0x800;
+		case M64P_DBG_PTR_SRAM:
+            return 0x8000;
+		case M64P_DBG_PTR_FLASHRAM:
+            return 0x20000;
 		case MEMPAK1:
 			return 0x8000;
 		case MEMPAK2:

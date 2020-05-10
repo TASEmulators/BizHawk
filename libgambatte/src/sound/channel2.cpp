@@ -1,176 +1,158 @@
-/***************************************************************************
- *   Copyright (C) 2007 by Sindre Aamås                                    *
- *   aamas@stud.ntnu.no                                                    *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License version 2 as     *
- *   published by the Free Software Foundation.                            *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License version 2 for more details.                *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   version 2 along with this program; if not, write to the               *
- *   Free Software Foundation, Inc.,                                       *
- *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+//
+//   Copyright (C) 2007 by sinamas <sinamas at users.sourceforge.net>
+//
+//   This program is free software; you can redistribute it and/or modify
+//   it under the terms of the GNU General Public License version 2 as
+//   published by the Free Software Foundation.
+//
+//   This program is distributed in the hope that it will be useful,
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//   GNU General Public License version 2 for more details.
+//
+//   You should have received a copy of the GNU General Public License
+//   version 2 along with this program; if not, write to the
+//   Free Software Foundation, Inc.,
+//   51 Franklin St, Fifth Floor, Boston, MA  02110-1301, USA.
+//
+
 #include "channel2.h"
+#include "psgdef.h"
 #include "../savestate.h"
+#include <algorithm>
 
-namespace gambatte {
+using namespace gambatte;
 
-Channel2::Channel2() :
-	staticOutputTest(*this, dutyUnit),
-	disableMaster(master, dutyUnit),
-	lengthCounter(disableMaster, 0x3F),
-	envelopeUnit(staticOutputTest),
-	cycleCounter(0),
-	soMask(0),
-	prevOut(0),
-	nr4(0),
-	master(false)
+Channel2::Channel2()
+: staticOutputTest_(*this, dutyUnit_)
+, disableMaster_(master_, dutyUnit_)
+, lengthCounter_(disableMaster_, 0x3F)
+, envelopeUnit_(staticOutputTest_)
+, soMask_(0)
+, prevOut_(0)
+, nr4_(0)
+, master_(false)
 {
 	setEvent();
 }
 
 void Channel2::setEvent() {
-// 	nextEventUnit = &dutyUnit;
-// 	if (envelopeUnit.getCounter() < nextEventUnit->getCounter())
-		nextEventUnit = &envelopeUnit;
-	if (lengthCounter.getCounter() < nextEventUnit->getCounter())
-		nextEventUnit = &lengthCounter;
+	nextEventUnit = &envelopeUnit_;
+	if (lengthCounter_.counter() < nextEventUnit->counter())
+		nextEventUnit = &lengthCounter_;
 }
 
-void Channel2::setNr1(const unsigned data) {
-	lengthCounter.nr1Change(data, nr4, cycleCounter);
-	dutyUnit.nr1Change(data, cycleCounter);
-	
+void Channel2::setNr1(unsigned data, unsigned long cc) {
+	lengthCounter_.nr1Change(data, nr4_, cc);
+	dutyUnit_.nr1Change(data, cc);
 	setEvent();
 }
 
-void Channel2::setNr2(const unsigned data) {
-	if (envelopeUnit.nr2Change(data))
-		disableMaster();
+void Channel2::setNr2(unsigned data, unsigned long cc) {
+	if (envelopeUnit_.nr2Change(data))
+		disableMaster_();
 	else
-		staticOutputTest(cycleCounter);
-	
+		staticOutputTest_(cc);
+
 	setEvent();
 }
 
-void Channel2::setNr3(const unsigned data) {
-	dutyUnit.nr3Change(data, cycleCounter);
+void Channel2::setNr3(unsigned data, unsigned long cc) {
+	dutyUnit_.nr3Change(data, cc);
 	setEvent();
 }
 
-void Channel2::setNr4(const unsigned data) {
-	lengthCounter.nr4Change(nr4, data, cycleCounter);
-		
-	nr4 = data;
-	
-	if (data & 0x80) { //init-bit
-		nr4 &= 0x7F;
-		master = !envelopeUnit.nr4Init(cycleCounter);
-		staticOutputTest(cycleCounter);
+void Channel2::setNr4(unsigned data, unsigned long cc, unsigned long ref) {
+	lengthCounter_.nr4Change(nr4_, data, cc);
+	nr4_ = data;
+
+	if (nr4_ & psg_nr4_init) {
+		nr4_ -= psg_nr4_init;
+		master_ = !envelopeUnit_.nr4Init(cc);
+		staticOutputTest_(cc);
 	}
-	
-	dutyUnit.nr4Change(data, cycleCounter);
-	
+
+	dutyUnit_.nr4Change(data, cc, ref, master_);
 	setEvent();
 }
 
-void Channel2::setSo(const unsigned long soMask) {
-	this->soMask = soMask;
-	staticOutputTest(cycleCounter);
+void Channel2::setSo(unsigned long soMask, unsigned long cc) {
+	soMask_ = soMask;
+	staticOutputTest_(cc);
 	setEvent();
 }
 
 void Channel2::reset() {
-	cycleCounter = 0x1000 | (cycleCounter & 0xFFF); // cycleCounter >> 12 & 7 represents the frame sequencer position.
-	
-// 	lengthCounter.reset();
-	dutyUnit.reset();
-	envelopeUnit.reset();
-	
+	dutyUnit_.reset();
+	envelopeUnit_.reset();
 	setEvent();
 }
 
-void Channel2::init(const bool cgb) {
-	lengthCounter.init(cgb);
+void Channel2::loadState(SaveState const &state) {
+	dutyUnit_.loadState(state.spu.ch2.duty, state.mem.ioamhram.get()[0x116],
+		state.spu.ch2.nr4, state.spu.cycleCounter);
+	envelopeUnit_.loadState(state.spu.ch2.env, state.mem.ioamhram.get()[0x117],
+		state.spu.cycleCounter);
+	lengthCounter_.loadState(state.spu.ch2.lcounter, state.spu.cycleCounter);
+
+	nr4_ = state.spu.ch2.nr4;
+	master_ = state.spu.ch2.master;
 }
 
-void Channel2::loadState(const SaveState &state) {
-	dutyUnit.loadState(state.spu.ch2.duty, state.mem.ioamhram.get()[0x116], state.spu.ch2.nr4,state.spu.cycleCounter);
-	envelopeUnit.loadState(state.spu.ch2.env, state.mem.ioamhram.get()[0x117], state.spu.cycleCounter);
-	lengthCounter.loadState(state.spu.ch2.lcounter, state.spu.cycleCounter);
-	
-	cycleCounter = state.spu.cycleCounter;
-	nr4 = state.spu.ch2.nr4;
-	master = state.spu.ch2.master;
-}
+void Channel2::update(uint_least32_t* buf, unsigned long const soBaseVol, unsigned long cc, unsigned long const end) {
+	unsigned long const outBase = envelopeUnit_.dacIsOn() ? soBaseVol & soMask_ : 0;
+	unsigned long const outLow = outBase * -15;
 
-void Channel2::update(uint_least32_t *buf, const unsigned long soBaseVol, unsigned long cycles) {
-	const unsigned long outBase = envelopeUnit.dacIsOn() ? soBaseVol & soMask : 0;
-	const unsigned long outLow = outBase * (0 - 15ul);
-	const unsigned long endCycles = cycleCounter + cycles;
-	
-	for (;;) {
-		const unsigned long outHigh = master ? outBase * (envelopeUnit.getVolume() * 2 - 15ul) : outLow;
-		const unsigned long nextMajorEvent = nextEventUnit->getCounter() < endCycles ? nextEventUnit->getCounter() : endCycles;
-		unsigned long out = dutyUnit.isHighState() ? outHigh : outLow;
-		
-		while (dutyUnit.getCounter() <= nextMajorEvent) {
-			*buf += out - prevOut;
-			prevOut = out;
-			buf += dutyUnit.getCounter() - cycleCounter;
-			cycleCounter = dutyUnit.getCounter();
-			
-			dutyUnit.event();
-			out = dutyUnit.isHighState() ? outHigh : outLow;
+	while (cc < end) {
+		unsigned long const outHigh = master_
+			? outBase * (envelopeUnit_.getVolume() * 2l - 15)
+			: outLow;
+		unsigned long const nextMajorEvent = std::min(nextEventUnit->counter(), end);
+		unsigned long out = dutyUnit_.isHighState() ? outHigh : outLow;
+
+		while (dutyUnit_.counter() <= nextMajorEvent) {
+			*buf += out - prevOut_;
+			prevOut_ = out;
+			buf += dutyUnit_.counter() - cc;
+			cc = dutyUnit_.counter();
+			dutyUnit_.event();
+			out = dutyUnit_.isHighState() ? outHigh : outLow;
 		}
-		
-		if (cycleCounter < nextMajorEvent) {
-			*buf += out - prevOut;
-			prevOut = out;
-			buf += nextMajorEvent - cycleCounter;
-			cycleCounter = nextMajorEvent;
+		if (cc < nextMajorEvent) {
+			*buf += out - prevOut_;
+			prevOut_ = out;
+			buf += nextMajorEvent - cc;
+			cc = nextMajorEvent;
 		}
-		
-		if (nextEventUnit->getCounter() == nextMajorEvent) {
+		if (nextEventUnit->counter() == nextMajorEvent) {
 			nextEventUnit->event();
 			setEvent();
-		} else
-			break;
+		}
 	}
-	
-	if (cycleCounter & SoundUnit::COUNTER_MAX) {
-		dutyUnit.resetCounters(cycleCounter);
-		lengthCounter.resetCounters(cycleCounter);
-		envelopeUnit.resetCounters(cycleCounter);
-		
-		cycleCounter -= SoundUnit::COUNTER_MAX;
+
+	if (cc >= SoundUnit::counter_max) {
+		dutyUnit_.resetCounters(cc);
+		lengthCounter_.resetCounters(cc);
+		envelopeUnit_.resetCounters(cc);
 	}
 }
 
 SYNCFUNC(Channel2)
 {
-	SSS(lengthCounter);
-	SSS(dutyUnit);
-	SSS(envelopeUnit);
+	SSS(lengthCounter_);
+	SSS(dutyUnit_);
+	SSS(envelopeUnit_);
 
 	EBS(nextEventUnit, 0);
-	EVS(nextEventUnit, &dutyUnit, 1);
-	EVS(nextEventUnit, &envelopeUnit, 2);
-	EVS(nextEventUnit, &lengthCounter, 3);
+	EVS(nextEventUnit, &dutyUnit_, 1);
+	EVS(nextEventUnit, &envelopeUnit_, 2);
+	EVS(nextEventUnit, &lengthCounter_, 3);
 	EES(nextEventUnit, NULL);
 
-	NSS(cycleCounter);
-	NSS(soMask);
-	NSS(prevOut);
+	NSS(soMask_);
+	NSS(prevOut_);
 
-	NSS(nr4);
-	NSS(master);
+	NSS(nr4_);
+	NSS(master_);
 }
 
-}

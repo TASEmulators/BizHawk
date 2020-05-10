@@ -45,6 +45,7 @@
 #include "eeprom_i2c.h"
 #include "eeprom_spi.h"
 #include "gamepad.h"
+#include <emulibc.h>
 
 #define CART_CNT (55)
 
@@ -237,6 +238,9 @@ static const md_entry_t rom_database[CART_CNT] =
 /* Top Shooter (arcade hardware) */
   {0xffff,0x3632,0x20,0x20,{{0x00,0x00,0x00,0x00},{0xffffff,0xffffff,0xffffff,0xffffff},{0x000000,0x000000,0x000000,0x000000},0,0,NULL,NULL,topshooter_r,topshooter_w}}
 };
+
+
+static uint8* mapper_32k_scratch = NULL;
 
 
 /************************************************************
@@ -544,6 +548,12 @@ void md_cart_init(void)
         j++;
       }
 
+	  if (rom_database[i].cart_hw.regs_w == custom_regs_w)
+	  {
+		// allocate extra memory needed for the bank swapping on these carts
+		mapper_32k_scratch = alloc_plain(1 << 20);
+	  }
+
       /* leave loop */
       i = CART_CNT;
     }
@@ -566,6 +576,14 @@ void md_cart_init(void)
   }
 
   /* detect specific mappers */
+  if (strstr(rominfo.consoletype,"SEGA SSF"))
+  {
+    /* Everdrive extended SSF mapper */
+    cart.hw.bankshift = 1;
+
+    /* specific !TIME handler */
+    cart.hw.time_w = mapper_ssf2_w;
+  }
   if (strstr(rominfo.domestic,"SUPER STREET FIGHTER2"))
   {
     /* SSF2 mapper */
@@ -1471,8 +1489,8 @@ static void mapper_32k_w(uint32 data)
   {
     for (i=0; i<0x10; i++)
     {
-      /* Remap to unused ROM area  */
-      m68k.memory_map[i].base = &cart.rom[0x400000 + (i << 16)];
+      /* Remap to extra scratch area  */
+      m68k.memory_map[i].base = &mapper_32k_scratch[i << 16];
 
       /* address = address OR (value << 15) */
       memcpy(m68k.memory_map[i].base, cart.rom + ((i << 16) | (data & 0x3f) << 15), 0x8000);

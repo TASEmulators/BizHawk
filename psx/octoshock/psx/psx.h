@@ -1,3 +1,24 @@
+/******************************************************************************/
+/* Mednafen Sony PS1 Emulation Module                                         */
+/******************************************************************************/
+/* psx.h:
+**  Copyright (C) 2011-2016 Mednafen Team
+**
+** This program is free software; you can redistribute it and/or
+** modify it under the terms of the GNU General Public License
+** as published by the Free Software Foundation; either version 2
+** of the License, or (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software Foundation, Inc.,
+** 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
+
 #pragma once
 
 #include "octoshock.h"
@@ -6,7 +27,7 @@
 #include "masmem.h"
 #include "endian.h"
 #include "emuware/EW_state.h"
-
+#include "math_ops.h"
 
 //
 // Comment out these 2 defines for extra speeeeed.
@@ -47,17 +68,17 @@ namespace MDFN_IEN_PSX
 
  typedef int32 pscpu_timestamp_t;
 
- bool PSX_EventHandler(const pscpu_timestamp_t timestamp);
+ bool MDFN_FASTCALL PSX_EventHandler(const pscpu_timestamp_t timestamp);
 
- void PSX_MemWrite8(pscpu_timestamp_t timestamp, uint32 A, uint32 V);
- void PSX_MemWrite16(pscpu_timestamp_t timestamp, uint32 A, uint32 V);
- void PSX_MemWrite24(pscpu_timestamp_t timestamp, uint32 A, uint32 V);
- void PSX_MemWrite32(pscpu_timestamp_t timestamp, uint32 A, uint32 V);
+ void MDFN_FASTCALL PSX_MemWrite8(pscpu_timestamp_t timestamp, uint32 A, uint32 V);
+ void MDFN_FASTCALL PSX_MemWrite16(pscpu_timestamp_t timestamp, uint32 A, uint32 V);
+ void MDFN_FASTCALL PSX_MemWrite24(pscpu_timestamp_t timestamp, uint32 A, uint32 V);
+ void MDFN_FASTCALL PSX_MemWrite32(pscpu_timestamp_t timestamp, uint32 A, uint32 V);
 
- uint8 PSX_MemRead8(pscpu_timestamp_t &timestamp, uint32 A);
- uint16 PSX_MemRead16(pscpu_timestamp_t &timestamp, uint32 A);
- uint32 PSX_MemRead24(pscpu_timestamp_t &timestamp, uint32 A);
- uint32 PSX_MemRead32(pscpu_timestamp_t &timestamp, uint32 A);
+ uint8 MDFN_FASTCALL PSX_MemRead8(pscpu_timestamp_t &timestamp, uint32 A);
+ uint16 MDFN_FASTCALL PSX_MemRead16(pscpu_timestamp_t &timestamp, uint32 A);
+ uint32 MDFN_FASTCALL PSX_MemRead24(pscpu_timestamp_t &timestamp, uint32 A);
+ uint32 MDFN_FASTCALL PSX_MemRead32(pscpu_timestamp_t &timestamp, uint32 A);
 
  uint8 PSX_MemPeek8(uint32 A);
  uint16 PSX_MemPeek16(uint32 A);
@@ -92,7 +113,7 @@ namespace MDFN_IEN_PSX
  void PSX_GPULineHook(const pscpu_timestamp_t timestamp, const pscpu_timestamp_t line_timestamp, bool vsync, uint32 *pixels, const MDFN_PixelFormat* const format, const unsigned width, const unsigned pix_clock_offset, const unsigned pix_clock, const unsigned pix_clock_divider);
 
  uint32 PSX_GetRandU32(uint32 mina, uint32 maxa);
-};
+}
 
 
 #include "dis.h"
@@ -108,12 +129,11 @@ namespace MDFN_IEN_PSX
  class PS_CDC;
  class PS_SPU;
 
- extern PS_CPU *CPU;
- extern PS_GPU *GPU;
- extern PS_CDC *CDC;
- extern PS_SPU *SPU;
- extern MultiAccessSizeMem<2048 * 1024, false> MainRAM;
-};
+ MDFN_HIDE extern PS_CPU *CPU;
+ MDFN_HIDE extern PS_CDC *CDC;
+ MDFN_HIDE extern PS_SPU *SPU;
+ MDFN_HIDE extern MultiAccessSizeMem<2048 * 1024, false> MainRAM;
+}
 
 enum eRegion
 {

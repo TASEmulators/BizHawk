@@ -8,10 +8,12 @@
 #include gamedb_gba.txt
 #include gamedb_gbc.txt
 #include gamedb_lynx.txt
-#include gamedb_msx1.txt
-#include gamedb_msx2.txt
+#include gamedb_msx.txt
+;#include gamedb_msx1-L.txt (legacy?)
+;#include gamedb_msx2-L.txt (legacy?)
 #include gamedb_n64.txt
 #include gamedb_nes.txt
+#include gamedb_Odyssey2.txt
 #include gamedb_pce_cd.txt
 #include gamedb_pce_hucards.txt
 #include gamedb_psx.txt
@@ -21,11 +23,13 @@
 #include gamedb_sega_md.txt
 #include gamedb_snes.txt
 #include gamedb_user.txt
+#include gamedb_vectrex.txt
 #include gamedb_ws.txt
 #include gamedb_wsc.txt
 #include gamedb_zxspectrum.txt
 #include gamedb_amstradcpc.txt
 #include gamedb_ngp.txt
+#include gamedb_channelf.txt
 
 ; ************ TI-83 ************
 

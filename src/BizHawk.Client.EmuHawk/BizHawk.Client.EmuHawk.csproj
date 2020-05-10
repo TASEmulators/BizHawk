@@ -1,0 +1,631 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="../MainSlnCommon.props" />
+	<PropertyGroup>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<ApplicationIcon>images/logo.ico</ApplicationIcon>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<DefineConstants>$(DefineConstants);EXE_PROJECT</DefineConstants>
+		<OutputPath>$(ProjectDir)../../output</OutputPath>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net48</TargetFramework>
+		<TargetName>EmuHawk</TargetName>
+		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+	</PropertyGroup>
+<!--
+	<PropertyGroup>
+		<AppDesignerFolder>Properties</AppDesignerFolder>
+		<ApplicationRevision>0</ApplicationRevision>
+		<ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+		<AssemblyName>EmuHawk</AssemblyName>
+		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+		<BootstrapperEnabled>true</BootstrapperEnabled>
+		<FileAlignment>512</FileAlignment>
+		<FileUpgradeFlags/>
+		<Install>true</Install>
+		<InstallFrom>Disk</InstallFrom>
+		<IsWebBootstrapper>false</IsWebBootstrapper>
+		<MapFileExtensions>true</MapFileExtensions>
+		<OldToolsVersion>3.5</OldToolsVersion>
+		<Prefer32Bit>false</Prefer32Bit>
+		<ProjectGuid>{DD448B37-BA3F-4544-9754-5406E8094723}</ProjectGuid>
+		<ProductVersion>9.0.30729</ProductVersion>
+		<PublishUrl>publish/</PublishUrl>
+		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+		<RootNamespace>BizHawk.Client.EmuHawk</RootNamespace>
+		<SchemaVersion>2.0</SchemaVersion>
+		<StartupObject>BizHawk.Client.EmuHawk.Program</StartupObject>
+		<TargetFrameworkProfile/>
+		<UpdateEnabled>false</UpdateEnabled>
+		<UpdateInterval>7</UpdateInterval>
+		<UpdateIntervalUnits>Days</UpdateIntervalUnits>
+		<UpdateMode>Foreground</UpdateMode>
+		<UpdatePeriodically>false</UpdatePeriodically>
+		<UpdateRequired>false</UpdateRequired>
+		<UpgradeBackupLocation/>
+		<UseApplicationTrust>false</UseApplicationTrust>
+		<UseVSHostingProcess>false</UseVSHostingProcess>
+	</PropertyGroup>
+	<ItemGroup>
+		<BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+			<Visible>False</Visible>
+			<ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+			<Install>false</Install>
+		</BootstrapperPackage>
+		<BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+			<Visible>False</Visible>
+			<ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+			<Install>false</Install>
+		</BootstrapperPackage>
+		<BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+			<Visible>False</Visible>
+			<ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+			<Install>false</Install>
+		</BootstrapperPackage>
+		<BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+			<Visible>False</Visible>
+			<ProductName>.NET Framework 3.5</ProductName>
+			<Install>false</Install>
+		</BootstrapperPackage>
+		<BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+			<Visible>False</Visible>
+			<ProductName>.NET Framework 3.5 SP1</ProductName>
+			<Install>true</Install>
+		</BootstrapperPackage>
+		<BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+			<Visible>False</Visible>
+			<ProductName>Windows Installer 3.1</ProductName>
+			<Install>true</Install>
+		</BootstrapperPackage>
+	</ItemGroup>
+-->
+	<ItemGroup>
+		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" PrivateAssets="All" /><!-- for (extra?) dynamic type support -->
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="all" />
+		<Reference Include="Microsoft.VisualBasic" />
+		<Reference Include="System.DirectoryServices" />
+		<PackageReference Include="System.Drawing.Common" Version="4.7.0" PrivateAssets="all" />
+		<Reference Include="System.Net.Http" />
+		<Reference Include="System.Windows.Forms" />
+	</ItemGroup>
+	<ItemGroup>
+		<Reference Include="GongShell" HintPath="$(ProjectDir)../../References/GongShell.dll" Private="true" />
+		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" PrivateAssets="all" />
+		<Reference Include="NLua, Version=1.3.2.0, Culture=neutral, processorArchitecture=MSIL" HintPath="$(ProjectDir)../../output/dll/nlua/NLua.dll" Private="true" SpecificVersion="false" />
+		<Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL" HintPath="$(ProjectDir)../../References/OpenTK.dll" Private="true" SpecificVersion="false" />
+		<PackageReference Include="OpenTK.GLControl" Version="3.0.1" PrivateAssets="all" />
+		<PackageReference Include="SharpCompress" Version="0.24.0" PrivateAssets="all" />
+		<PackageReference Include="SharpZipLib" Version="1.1.0" PrivateAssets="all" />
+		<Reference Include="SlimDX" HintPath="$(ProjectDir)../../References/x64/SlimDX.dll" Private="true" />
+		<Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" HintPath="$(ProjectDir)../../References/System.ComponentModel.Annotations.dll" Private="true" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.WinForms.Controls/BizHawk.WinForms.Controls.csproj" />
+		<Compile Include="$(ProjectDir)../BizHawk.Common/OSTailoredCode.cs" />
+		<Compile Include="$(ProjectDir)../Version/svnrev.cs" />
+		<Compile Include="$(ProjectDir)../Version/VersionInfo.cs" />
+		<Compile Remove="Properties/Settings.Designer.cs" />
+		<Content Include="images/logo.ico" />
+		<EmbeddedResource Include="images/**/*" />
+		<EmbeddedResource Include="Resources/**/*" />
+		<EmbeddedResource Remove="images/.ico" />
+		<EmbeddedResource Remove="images/AtariControllerIcon.png" />
+		<EmbeddedResource Remove="images/BuilderDialog_delete.bmp" />
+		<EmbeddedResource Remove="images/BuilderDialog_movedown.bmp" />
+		<EmbeddedResource Remove="images/BuilderDialog_moveup.bmp" />
+		<EmbeddedResource Remove="images/C64Symbol.png" />
+		<EmbeddedResource Remove="images/cheat.png" />
+		<EmbeddedResource Remove="images/Cheats.ico" />
+		<EmbeddedResource Remove="images/ControllerImages/TI83Calculator.png" />
+		<EmbeddedResource Remove="images/corphawk.ico" />
+		<EmbeddedResource Remove="images/Debugger.ico" />
+		<EmbeddedResource Remove="images/dual.png" />
+		<EmbeddedResource Remove="images/ForwardMore.png" />
+		<EmbeddedResource Remove="images/gba-icon.png" />
+		<EmbeddedResource Remove="images/GenesisControllerIcon.png" />
+		<EmbeddedResource Remove="images/InserSeparator.bmp" />
+		<EmbeddedResource Remove="images/Lua.ico" />
+		<EmbeddedResource Remove="images/NESControllerIcon.png" />
+		<EmbeddedResource Remove="images/pcejin1.bmp" />
+		<EmbeddedResource Remove="images/PlayButton.png" />
+		<EmbeddedResource Remove="images/PrintPreviewHS.png" />
+		<EmbeddedResource Remove="images/SaveAllHS.png" />
+		<EmbeddedResource Remove="images/sms-icon.png" />
+		<EmbeddedResource Remove="images/snes9x.ico" />
+		<EmbeddedResource Remove="images/SNESControllerIcon.png" />
+		<EmbeddedResource Remove="images/tastudio/ts_h_piano_*.png" />
+		<EmbeddedResource Remove="images/tastudio/ts_v_piano_*.png" />
+		<EmbeddedResource Remove="images/textdoc.png" />
+		<EmbeddedResource Remove="images/TruncateFromRW.png" />
+		<EmbeddedResource Remove="images/TurboFastForward.png" />
+		<EmbeddedResource Remove="images/user_blue.png" />
+		<EmbeddedResource Remove="images/WarningHS.png" />
+		<EmbeddedResource Remove="Resources/courier16px.bmfc" />
+		<EmbeddedResource Remove="Resources/ZXSpectrumKeyboard.bmp" />
+		<None Remove="packages.config" />
+		<None Remove="Properties/Resources.resources" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Update="ArchiveChooser.cs" SubType="Form" />
+		<Compile Update="ArchiveChooser.Designer.cs" DependentUpon="ArchiveChooser.cs" />
+		<EmbeddedResource Update="ArchiveChooser.resx" DependentUpon="ArchiveChooser.cs" SubType="Designer" />
+		<Compile Update="AVOut/FFmpegWriterForm.cs" SubType="Form" />
+		<Compile Update="AVOut/FFmpegWriterForm.Designer.cs" DependentUpon="FFmpegWriterForm.cs" />
+		<EmbeddedResource Update="AVOut/FFmpegWriterForm.resx" DependentUpon="FFmpegWriterForm.cs" />
+		<Compile Update="AVOut/GifWriterForm.cs" SubType="Form" />
+		<Compile Update="AVOut/GifWriterForm.Designer.cs" DependentUpon="GifWriterForm.cs" />
+		<EmbeddedResource Update="AVOut/GifWriterForm.resx" DependentUpon="GifWriterForm.cs" />
+		<Compile Update="AVOut/JMDForm.cs" SubType="Form" />
+		<Compile Update="AVOut/JMDForm.Designer.cs" DependentUpon="JMDForm.cs" />
+		<EmbeddedResource Update="AVOut/JMDForm.resx" DependentUpon="JMDForm.cs" />
+		<Compile Update="AVOut/NumericTextBox.cs" SubType="Component" />
+		<Compile Update="AVOut/Quantize/OctreeQuantizer.cs" SubType="Code" />
+		<Compile Update="AVOut/Quantize/PaletteTable.cs" SubType="Code" />
+		<Compile Update="AVOut/Quantize/Quantizer.cs" SubType="Code" />
+		<Compile Update="AVOut/SynclessRecordingTools.cs" SubType="Form" />
+		<Compile Update="AVOut/SynclessRecordingTools.Designer.cs" DependentUpon="SynclessRecordingTools.cs" />
+		<EmbeddedResource Update="AVOut/SynclessRecordingTools.resx" DependentUpon="SynclessRecordingTools.cs" />
+		<Compile Update="AVOut/VideoWriterChooserForm.cs" SubType="Form" />
+		<Compile Update="AVOut/VideoWriterChooserForm.Designer.cs" DependentUpon="VideoWriterChooserForm.cs" />
+		<EmbeddedResource Update="AVOut/VideoWriterChooserForm.resx" DependentUpon="VideoWriterChooserForm.cs" />
+		<Compile Update="BizBox.cs" SubType="Form" />
+		<Compile Update="BizBox.Designer.cs" DependentUpon="BizBox.cs" />
+		<EmbeddedResource Update="BizBox.resx" DependentUpon="BizBox.cs" />
+		<Compile Update="BizBoxInfoControl.cs" SubType="UserControl" />
+		<Compile Update="BizBoxInfoControl.Designer.cs" DependentUpon="BizBoxInfoControl.cs" />
+		<EmbeddedResource Update="BizBoxInfoControl.resx" DependentUpon="BizBoxInfoControl.cs" />
+		<Compile Update="config/A7800/A7800ControllerSettings.cs" SubType="Form" />
+		<Compile Update="config/A7800/A7800ControllerSettings.Designer.cs" DependentUpon="A7800ControllerSettings.cs" />
+		<EmbeddedResource Update="config/A7800/A7800ControllerSettings.resx" DependentUpon="A7800ControllerSettings.cs" />
+		<Compile Update="config/A7800/A7800FilterSettings.cs" SubType="Form" />
+		<Compile Update="config/A7800/A7800FilterSettings.Designer.cs" DependentUpon="A7800FilterSettings.cs" />
+		<EmbeddedResource Update="config/A7800/A7800FilterSettings.resx" DependentUpon="A7800FilterSettings.cs" />
+		<Compile Update="config/AmstradCPC/AmstradCPCAudioSettings.cs" SubType="Form" />
+		<Compile Update="config/AmstradCPC/AmstradCPCAudioSettings.Designer.cs" DependentUpon="AmstradCPCAudioSettings.cs" />
+		<EmbeddedResource Update="config/AmstradCPC/AmstradCPCAudioSettings.resx" DependentUpon="AmstradCPCAudioSettings.cs" />
+		<Compile Update="config/AmstradCPC/AmstradCPCCoreEmulationSettings.cs" SubType="Form" />
+		<Compile Update="config/AmstradCPC/AmstradCPCCoreEmulationSettings.Designer.cs" DependentUpon="AmstradCPCCoreEmulationSettings.cs" />
+		<EmbeddedResource Update="config/AmstradCPC/AmstradCPCCoreEmulationSettings.resx" DependentUpon="AmstradCPCCoreEmulationSettings.cs" />
+		<Compile Update="config/AmstradCPC/AmstradCPCNonSyncSettings.cs" SubType="Form" />
+		<Compile Update="config/AmstradCPC/AmstradCPCNonSyncSettings.Designer.cs" DependentUpon="AmstradCPCNonSyncSettings.cs" />
+		<EmbeddedResource Update="config/AmstradCPC/AmstradCPCNonSyncSettings.resx" DependentUpon="AmstradCPCNonSyncSettings.cs" />
+		<Compile Update="config/AmstradCPC/AmstradCPCPokeMemory.cs" SubType="Form" />
+		<Compile Update="config/AmstradCPC/AmstradCPCPokeMemory.Designer.cs" DependentUpon="AmstradCPCPokeMemory.cs" />
+		<EmbeddedResource Update="config/AmstradCPC/AmstradCPCPokeMemory.resx" DependentUpon="AmstradCPCPokeMemory.cs" />
+		<Compile Update="config/AnalogRangeConfigControl.cs" SubType="UserControl" />
+		<Compile Update="config/AnalogRangeConfigControl.Designer.cs" DependentUpon="AnalogRangeConfigControl.cs" />
+		<EmbeddedResource Update="config/AnalogRangeConfigControl.resx" DependentUpon="AnalogRangeConfigControl.cs" />
+		<Compile Update="config/AnalogRangeConfig.cs" SubType="Component" />
+		<Compile Update="config/AnalogRangeConfig.Designer.cs" DependentUpon="AnalogRangeConfig.cs" />
+		<Compile Update="config/AutofireConfig.cs" SubType="Form" />
+		<Compile Update="config/AutofireConfig.Designer.cs" DependentUpon="AutofireConfig.cs" />
+		<EmbeddedResource Update="config/AutofireConfig.resx" DependentUpon="AutofireConfig.cs" />
+		<Compile Update="config/ColecoVision/ColecoControllerSettings.cs" SubType="Form" />
+		<Compile Update="config/ColecoVision/ColecoControllerSettings.Designer.cs" DependentUpon="ColecoControllerSettings.cs" />
+		<EmbeddedResource Update="config/ColecoVision/ColecoControllerSettings.resx" DependentUpon="ColecoControllerSettings.cs" />
+		<Compile Update="config/ControllerConfig/AnalogBindControl.cs" SubType="UserControl" />
+		<Compile Update="config/ControllerConfig/AnalogBindControl.Designer.cs" DependentUpon="AnalogBindControl.cs" />
+		<EmbeddedResource Update="config/ControllerConfig/AnalogBindControl.resx" DependentUpon="AnalogBindControl.cs" />
+		<Compile Update="config/ControllerConfig/AnalogBindPanel.cs" SubType="UserControl" />
+		<Compile Update="config/ControllerConfig/ControllerConfigPanel.cs" SubType="UserControl" />
+		<Compile Update="config/ControllerConfig/ControllerConfigPanel.Designer.cs" DependentUpon="ControllerConfigPanel.cs" />
+		<EmbeddedResource Update="config/ControllerConfig/ControllerConfigPanel.resx" DependentUpon="ControllerConfigPanel.cs" />
+		<Compile Update="config/ControllerConfig.cs" SubType="Form" />
+		<Compile Update="config/ControllerConfig.Designer.cs" DependentUpon="ControllerConfig.cs" />
+		<EmbeddedResource Update="config/ControllerConfig.resx" DependentUpon="ControllerConfig.cs" />
+		<Compile Update="config/DisplayConfig.cs" SubType="Form" />
+		<Compile Update="config/DisplayConfig.Designer.cs" DependentUpon="DisplayConfig.cs" />
+		<EmbeddedResource Update="config/DisplayConfig.resx" DependentUpon="DisplayConfig.cs" SubType="Designer" />
+		<Compile Update="config/EmuHawkOptions.cs" SubType="Form" />
+		<Compile Update="config/EmuHawkOptions.Designer.cs" DependentUpon="EmuHawkOptions.cs" />
+		<EmbeddedResource Update="config/EmuHawkOptions.resx" DependentUpon="EmuHawkOptions.cs" />
+		<Compile Update="config/FileExtensionPreferences.cs" SubType="Form" />
+		<Compile Update="config/FileExtensionPreferences.Designer.cs" DependentUpon="FileExtensionPreferences.cs" />
+		<EmbeddedResource Update="config/FileExtensionPreferences.resx" DependentUpon="FileExtensionPreferences.cs" />
+		<Compile Update="config/FileExtensionPreferencesPicker.cs" SubType="UserControl" />
+		<Compile Update="config/FileExtensionPreferencesPicker.Designer.cs" DependentUpon="FileExtensionPreferencesPicker.cs" />
+		<EmbeddedResource Update="config/FileExtensionPreferencesPicker.resx" DependentUpon="FileExtensionPreferencesPicker.cs" />
+		<Compile Update="config/FirmwaresConfig.cs" SubType="Form" />
+		<Compile Update="config/FirmwaresConfig.Designer.cs" DependentUpon="FirmwaresConfig.cs" />
+		<EmbeddedResource Update="config/FirmwaresConfig.resx" DependentUpon="FirmwaresConfig.cs" />
+		<Compile Update="config/FirmwaresConfigInfo.cs" SubType="Form" />
+		<Compile Update="config/FirmwaresConfigInfo.Designer.cs" DependentUpon="FirmwaresConfigInfo.cs" />
+		<EmbeddedResource Update="config/FirmwaresConfigInfo.resx" DependentUpon="FirmwaresConfigInfo.cs" />
+		<Compile Update="config/GB/BmpView.cs" SubType="Component" />
+		<Compile Update="config/GB/CGBColorChooserForm.cs" SubType="Form" />
+		<Compile Update="config/GB/CGBColorChooserForm.Designer.cs" DependentUpon="CGBColorChooserForm.cs" />
+		<EmbeddedResource Update="config/GB/CGBColorChooserForm.resx" DependentUpon="CGBColorChooserForm.cs" />
+		<Compile Update="config/GB/ColorChooserForm.cs" SubType="Form" />
+		<Compile Update="config/GB/ColorChooserForm.Designer.cs" DependentUpon="ColorChooserForm.cs" />
+		<EmbeddedResource Update="config/GB/ColorChooserForm.resx" DependentUpon="ColorChooserForm.cs" />
+		<Compile Update="config/GB/DGBPrefs.cs" SubType="Form" />
+		<Compile Update="config/GB/DGBPrefs.Designer.cs" DependentUpon="DGBPrefs.cs" />
+		<EmbeddedResource Update="config/GB/DGBPrefs.resx" DependentUpon="DGBPrefs.cs" />
+		<Compile Update="config/GB/GBPrefControl.cs" SubType="UserControl" />
+		<Compile Update="config/GB/GBPrefControl.Designer.cs" DependentUpon="GBPrefControl.cs" />
+		<EmbeddedResource Update="config/GB/GBPrefControl.resx" DependentUpon="GBPrefControl.cs" />
+		<Compile Update="config/GB/GBPrefs.cs" SubType="Form" />
+		<Compile Update="config/GB/GBPrefs.Designer.cs" DependentUpon="GBPrefs.cs" />
+		<EmbeddedResource Update="config/GB/GBPrefs.resx" DependentUpon="GBPrefs.cs" />
+		<Compile Update="config/GenericCoreConfig.cs" SubType="Form" />
+		<Compile Update="config/GenericCoreConfig.Designer.cs" DependentUpon="GenericCoreConfig.cs" />
+		<EmbeddedResource Update="config/GenericCoreConfig.resx" DependentUpon="GenericCoreConfig.cs" />
+		<Compile Update="config/HotkeyConfig.cs" SubType="Form" />
+		<Compile Update="config/HotkeyConfig.Designer.cs" DependentUpon="HotkeyConfig.cs" />
+		<EmbeddedResource Update="config/HotkeyConfig.resx" DependentUpon="HotkeyConfig.cs" />
+		<Compile Update="config/InputCompositeWidget.cs" SubType="UserControl" />
+		<Compile Update="config/InputCompositeWidget.Designer.cs" DependentUpon="InputCompositeWidget.cs" />
+		<EmbeddedResource Update="config/InputCompositeWidget.resx" DependentUpon="InputCompositeWidget.cs" />
+		<Compile Update="config/INTV/IntvControllerSettings.cs" SubType="Form" />
+		<Compile Update="config/INTV/IntvControllerSettings.Designer.cs" DependentUpon="IntvControllerSettings.cs" />
+		<EmbeddedResource Update="config/INTV/IntvControllerSettings.resx" DependentUpon="IntvControllerSettings.cs" />
+		<Compile Update="config/MessageConfig.cs" SubType="Form" />
+		<Compile Update="config/MessageConfig.Designer.cs" DependentUpon="MessageConfig.cs" />
+		<EmbeddedResource Update="config/MessageConfig.resx" DependentUpon="MessageConfig.cs" SubType="Designer" />
+		<Compile Update="config/N64/N64ControllerSettingControl.cs" SubType="UserControl" />
+		<Compile Update="config/N64/N64ControllerSettingControl.Designer.cs" DependentUpon="N64ControllerSettingControl.cs" />
+		<EmbeddedResource Update="config/N64/N64ControllerSettingControl.resx" DependentUpon="N64ControllerSettingControl.cs" />
+		<Compile Update="config/N64/N64ControllersSetup.cs" SubType="Form" />
+		<Compile Update="config/N64/N64ControllersSetup.Designer.cs" DependentUpon="N64ControllersSetup.cs" />
+		<EmbeddedResource Update="config/N64/N64ControllersSetup.resx" DependentUpon="N64ControllersSetup.cs" />
+		<Compile Update="config/N64/N64VideoPluginconfig.cs" SubType="Form" />
+		<Compile Update="config/N64/N64VideoPluginconfig.Designer.cs" DependentUpon="N64VideoPluginconfig.cs" />
+		<EmbeddedResource Update="config/N64/N64VideoPluginconfig.resx" DependentUpon="N64VideoPluginconfig.cs" />
+		<Compile Update="config/NDS/NDSSettings.cs" SubType="Form" />
+		<Compile Update="config/NDS/NDSSettings.Designer.cs" DependentUpon="NDSSettings.cs" />
+		<EmbeddedResource Update="config/NDS/NDSSettings.resx" DependentUpon="NDSSettings.cs" />
+		<Compile Update="config/NES/NesControllerSettings.cs" SubType="Form" />
+		<Compile Update="config/NES/NesControllerSettings.Designer.cs" DependentUpon="NesControllerSettings.cs" />
+		<EmbeddedResource Update="config/NES/NesControllerSettings.resx" DependentUpon="NesControllerSettings.cs" />
+		<Compile Update="config/NES/NESGraphicsConfig.cs" SubType="Form" />
+		<Compile Update="config/NES/NESGraphicsConfig.Designer.cs" DependentUpon="NESGraphicsConfig.cs" />
+		<EmbeddedResource Update="config/NES/NESGraphicsConfig.resx" DependentUpon="NESGraphicsConfig.cs" />
+		<Compile Update="config/NES/NESSoundConfig.cs" SubType="Form" />
+		<Compile Update="config/NES/NESSoundConfig.Designer.cs" DependentUpon="NESSoundConfig.cs" />
+		<EmbeddedResource Update="config/NES/NESSoundConfig.resx" DependentUpon="NESSoundConfig.cs" />
+		<Compile Update="config/NES/NESSyncSettingsForm.cs" SubType="Form" />
+		<Compile Update="config/NES/NESSyncSettingsForm.Designer.cs" DependentUpon="NESSyncSettingsForm.cs" />
+		<EmbeddedResource Update="config/NES/NESSyncSettingsForm.resx" DependentUpon="NESSyncSettingsForm.cs" />
+		<Compile Update="config/NES/NESVSSettings.cs" SubType="Form" />
+		<Compile Update="config/NES/NESVSSettings.Designer.cs" DependentUpon="NESVSSettings.cs" />
+		<EmbeddedResource Update="config/NES/NESVSSettings.resx" DependentUpon="NESVSSettings.cs" />
+		<Compile Update="config/NES/QuickNesConfig.cs" SubType="Form" />
+		<Compile Update="config/NES/QuickNesConfig.Designer.cs" DependentUpon="QuickNesConfig.cs" />
+		<EmbeddedResource Update="config/NES/QuickNesConfig.resx" DependentUpon="QuickNesConfig.cs" />
+		<Compile Update="config/PathConfig.cs" SubType="Form" />
+		<Compile Update="config/PathConfig.Designer.cs" DependentUpon="PathConfig.cs" />
+		<EmbeddedResource Update="config/PathConfig.resx" DependentUpon="PathConfig.cs" />
+		<Compile Update="config/PathInfo.cs" SubType="Form" />
+		<Compile Update="config/PathInfo.Designer.cs" DependentUpon="PathInfo.cs" />
+		<EmbeddedResource Update="config/PathInfo.resx" DependentUpon="PathInfo.cs" />
+		<Compile Update="config/ProfileConfig.cs" SubType="Form" />
+		<Compile Update="config/ProfileConfig.Designer.cs" DependentUpon="ProfileConfig.cs" />
+		<EmbeddedResource Update="config/ProfileConfig.resx" DependentUpon="ProfileConfig.cs" />
+		<Compile Update="config/PSX/PSXControllerConfig.cs" SubType="Form" />
+		<Compile Update="config/PSX/PSXControllerConfig.Designer.cs" DependentUpon="PSXControllerConfig.cs" />
+		<EmbeddedResource Update="config/PSX/PSXControllerConfig.resx" DependentUpon="PSXControllerConfig.cs" />
+		<Compile Update="config/PSX/PSXHashDiscs.cs" SubType="Form" />
+		<Compile Update="config/PSX/PSXHashDiscs.Designer.cs" DependentUpon="PSXHashDiscs.cs" />
+		<EmbeddedResource Update="config/PSX/PSXHashDiscs.resx" DependentUpon="PSXHashDiscs.cs" />
+		<Compile Update="config/PSX/PSXOptions.cs" SubType="Form" />
+		<Compile Update="config/PSX/PSXOptions.Designer.cs" DependentUpon="PSXOptions.cs" />
+		<EmbeddedResource Update="config/PSX/PSXOptions.resx" DependentUpon="PSXOptions.cs" />
+		<Compile Update="config/RewindConfig.cs" SubType="Form" />
+		<Compile Update="config/RewindConfig.Designer.cs" DependentUpon="RewindConfig.cs" />
+		<EmbeddedResource Update="config/RewindConfig.resx" DependentUpon="RewindConfig.cs" />
+		<Compile Update="config/SNES/SNESControllerConfig.cs" SubType="Form" />
+		<Compile Update="config/SNES/SNESControllerConfig.Designer.cs" DependentUpon="SNESControllerConfig.cs" />
+		<EmbeddedResource Update="config/SNES/SNESControllerConfig.resx" DependentUpon="SNESControllerConfig.cs" />
+		<Compile Update="config/SNES/SNESOptions.cs" SubType="Form" />
+		<Compile Update="config/SNES/SNESOptions.Designer.cs" DependentUpon="SNESOptions.cs" />
+		<EmbeddedResource Update="config/SNES/SNESOptions.resx" DependentUpon="SNESOptions.cs" />
+		<Compile Update="config/SoundConfig.cs" SubType="Form" />
+		<Compile Update="config/SoundConfig.Designer.cs" DependentUpon="SoundConfig.cs" />
+		<EmbeddedResource Update="config/SoundConfig.resx" DependentUpon="SoundConfig.cs" SubType="Designer" />
+		<Compile Update="config/TI83/TI83PaletteConfig.cs" SubType="Form" />
+		<Compile Update="config/TI83/TI83PaletteConfig.Designer.cs" DependentUpon="TI83PaletteConfig.cs" />
+		<EmbeddedResource Update="config/TI83/TI83PaletteConfig.resx" DependentUpon="TI83PaletteConfig.cs" />
+		<Compile Update="config/ZXSpectrum/ZXSpectrumAudioSettings.cs" SubType="Form" />
+		<Compile Update="config/ZXSpectrum/ZXSpectrumAudioSettings.Designer.cs" DependentUpon="ZXSpectrumAudioSettings.cs" />
+		<EmbeddedResource Update="config/ZXSpectrum/ZXSpectrumAudioSettings.resx" DependentUpon="ZXSpectrumAudioSettings.cs" />
+		<Compile Update="config/ZXSpectrum/ZXSpectrumCoreEmulationSettings.cs" SubType="Form" />
+		<Compile Update="config/ZXSpectrum/ZXSpectrumCoreEmulationSettings.Designer.cs" DependentUpon="ZXSpectrumCoreEmulationSettings.cs" />
+		<EmbeddedResource Update="config/ZXSpectrum/ZXSpectrumCoreEmulationSettings.resx" DependentUpon="ZXSpectrumCoreEmulationSettings.cs" />
+		<Compile Update="config/ZXSpectrum/ZXSpectrumJoystickSettings.cs" SubType="Form" />
+		<Compile Update="config/ZXSpectrum/ZXSpectrumJoystickSettings.Designer.cs" DependentUpon="ZXSpectrumJoystickSettings.cs" />
+		<EmbeddedResource Update="config/ZXSpectrum/ZXSpectrumJoystickSettings.resx" DependentUpon="ZXSpectrumJoystickSettings.cs" />
+		<Compile Update="config/ZXSpectrum/ZXSpectrumNonSyncSettings.cs" SubType="Form" />
+		<Compile Update="config/ZXSpectrum/ZXSpectrumNonSyncSettings.Designer.cs" DependentUpon="ZXSpectrumNonSyncSettings.cs" />
+		<EmbeddedResource Update="config/ZXSpectrum/ZXSpectrumNonSyncSettings.resx" DependentUpon="ZXSpectrumNonSyncSettings.cs" />
+		<Compile Update="config/ZXSpectrum/ZXSpectrumPokeMemory.cs" SubType="Form" />
+		<Compile Update="config/ZXSpectrum/ZXSpectrumPokeMemory.Designer.cs" DependentUpon="ZXSpectrumPokeMemory.cs" />
+		<EmbeddedResource Update="config/ZXSpectrum/ZXSpectrumPokeMemory.resx" DependentUpon="ZXSpectrumPokeMemory.cs" />
+		<Compile Update="CoreFeatureAnalysis.cs" SubType="Form" />
+		<Compile Update="CoreFeatureAnalysis.Designer.cs" DependentUpon="CoreFeatureAnalysis.cs" />
+		<EmbeddedResource Update="CoreFeatureAnalysis.resx" DependentUpon="CoreFeatureAnalysis.cs" />
+		<Compile Update="CustomControls/ExceptionBox.cs" SubType="Form" />
+		<Compile Update="CustomControls/ExceptionBox.designer.cs" DependentUpon="ExceptionBox.cs" />
+		<EmbeddedResource Update="CustomControls/ExceptionBox.resx" DependentUpon="ExceptionBox.cs" />
+		<Compile Update="CustomControls/FolderBrowserDialogEx.cs" SubType="Component" />
+		<Compile Update="CustomControls/HexTextBox.cs" SubType="Component" />
+		<Compile Update="CustomControls/InputRoll/InputRoll.cs" SubType="Component" />
+		<Compile Update="CustomControls/InputRoll/InputRoll.Drawing.cs" DependentUpon="InputRoll.cs" SubType="Component" />
+		<Compile Update="CustomControls/InputWidget.cs" SubType="Component" />
+		<Compile Update="CustomControls/MenuButton.cs" SubType="Component" />
+		<Compile Update="CustomControls/MiscControls.cs" SubType="Component" />
+		<Compile Update="CustomControls/MsgBox.cs" SubType="Form" />
+		<Compile Update="CustomControls/MsgBox.designer.cs" DependentUpon="MsgBox.cs" />
+		<EmbeddedResource Update="CustomControls/MsgBox.resx" DependentUpon="MsgBox.cs" />
+		<Compile Update="CustomControls/RepeatButton.cs" SubType="Component" />
+		<Compile Update="CustomControls/ToolStripEx.cs" SubType="Component" />
+		<Compile Update="CustomControls/TransparentTrackbar.cs" SubType="Component" />
+		<Compile Update="CustomControls/ViewportPanel.cs" SubType="Component" />
+		<Compile Update="GraphicsImplementations/GLControlWrapper_GdiPlus.cs" SubType="Component" />
+		<Compile Update="GraphicsImplementations/GLControlWrapper_SlimDX9.cs" SubType="Component" />
+		<Compile Update="GraphicsImplementations/GraphicsControl.cs" SubType="UserControl" />
+		<Compile Update="GraphicsImplementations/GraphicsControl_TK.cs" SubType="UserControl" />
+		<Compile Update="GraphicsImplementations/RetainedGraphicsControl.cs" SubType="UserControl" />
+		<Compile Update="LogWindow.cs" SubType="Form" />
+		<Compile Update="LogWindow.Designer.cs" DependentUpon="LogWindow.cs" />
+		<EmbeddedResource Update="LogWindow.resx" DependentUpon="LogWindow.cs" />
+		<Compile Update="MainForm.cs" SubType="Form" />
+		<Compile Update="MainForm.Designer.cs" DependentUpon="MainForm.cs" />
+		<Compile Update="MainForm.Events.cs" DependentUpon="MainForm.cs" SubType="Form" />
+		<Compile Update="MainForm.FileLoader.cs" DependentUpon="MainForm.cs" SubType="Form" />
+		<Compile Update="MainForm.Hotkey.cs" DependentUpon="MainForm.cs" SubType="Form" />
+		<Compile Update="MainForm.Movie.cs" DependentUpon="MainForm.cs" SubType="Form" />
+		<EmbeddedResource Update="MainForm.resx" DependentUpon="MainForm.cs" SubType="Designer" />
+		<Compile Update="movie/EditCommentsForm.cs" SubType="Form" />
+		<Compile Update="movie/EditCommentsForm.Designer.cs" DependentUpon="EditCommentsForm.cs" />
+		<EmbeddedResource Update="movie/EditCommentsForm.resx" DependentUpon="EditCommentsForm.cs" />
+		<Compile Update="movie/EditSubtitlesForm.cs" SubType="Form" />
+		<Compile Update="movie/EditSubtitlesForm.Designer.cs" DependentUpon="EditSubtitlesForm.cs" />
+		<EmbeddedResource Update="movie/EditSubtitlesForm.resx" DependentUpon="EditSubtitlesForm.cs" />
+		<Compile Update="movie/PlayMovie.cs" SubType="Form" />
+		<Compile Update="movie/PlayMovie.Designer.cs" DependentUpon="PlayMovie.cs" />
+		<EmbeddedResource Update="movie/PlayMovie.resx" DependentUpon="PlayMovie.cs" />
+		<Compile Update="movie/RecordMovie.cs" SubType="Form" />
+		<Compile Update="movie/RecordMovie.Designer.cs" DependentUpon="RecordMovie.cs" />
+		<EmbeddedResource Update="movie/RecordMovie.resx" DependentUpon="RecordMovie.cs" />
+		<Compile Update="movie/SubtitleMaker.cs" SubType="Form" />
+		<Compile Update="movie/SubtitleMaker.Designer.cs" DependentUpon="SubtitleMaker.cs" />
+		<EmbeddedResource Update="movie/SubtitleMaker.resx" DependentUpon="SubtitleMaker.cs" />
+		<Compile Update="OpenAdvancedChooser.cs" SubType="Form" />
+		<Compile Update="OpenAdvancedChooser.Designer.cs" DependentUpon="OpenAdvancedChooser.cs" />
+		<EmbeddedResource Update="OpenAdvancedChooser.resx" DependentUpon="OpenAdvancedChooser.cs" />
+		<Compile Update="PlatformChooser.cs" SubType="Form" />
+		<Compile Update="PlatformChooser.Designer.cs" DependentUpon="PlatformChooser.cs" />
+		<EmbeddedResource Update="PlatformChooser.resx" DependentUpon="PlatformChooser.cs" />
+<!-- creates circular dependency
+		<Compile Update="Properties/Resources.cs" DependentUpon="Resources.resx" />
+-->
+		<Compile Update="RomStatusPicker.cs" SubType="Form" />
+		<Compile Update="RomStatusPicker.Designer.cs" DependentUpon="RomStatusPicker.cs" />
+		<EmbeddedResource Update="RomStatusPicker.resx" DependentUpon="RomStatusPicker.cs" />
+		<Compile Update="tools/BasicBot/BasicBot.cs" SubType="Form" />
+		<Compile Update="tools/BasicBot/BasicBot.Designer.cs" DependentUpon="BasicBot.cs" />
+		<EmbeddedResource Update="tools/BasicBot/BasicBot.resx" DependentUpon="BasicBot.cs" />
+		<Compile Update="tools/BasicBot/BotControlsRow.cs" SubType="UserControl" />
+		<Compile Update="tools/BasicBot/BotControlsRow.Designer.cs" DependentUpon="BotControlsRow.cs" />
+		<EmbeddedResource Update="tools/BasicBot/BotControlsRow.resx" DependentUpon="BotControlsRow.cs" />
+		<Compile Update="tools/BatchRun.cs" SubType="Form" />
+		<Compile Update="tools/BatchRun.Designer.cs" DependentUpon="BatchRun.cs" />
+		<EmbeddedResource Update="tools/BatchRun.resx" DependentUpon="BatchRun.cs" />
+		<Compile Update="tools/CDL.cs" SubType="Form" />
+		<Compile Update="tools/CDL.designer.cs" DependentUpon="CDL.cs" />
+		<EmbeddedResource Update="tools/CDL.resx" DependentUpon="CDL.cs" />
+		<Compile Update="tools/Cheats/CheatEdit.cs" SubType="UserControl" />
+		<Compile Update="tools/Cheats/CheatEdit.Designer.cs" DependentUpon="CheatEdit.cs" />
+		<EmbeddedResource Update="tools/Cheats/CheatEdit.resx" DependentUpon="CheatEdit.cs" />
+		<Compile Update="tools/Cheats/Cheats.cs" SubType="Form" />
+		<Compile Update="tools/Cheats/Cheats.Designer.cs" DependentUpon="Cheats.cs" />
+		<EmbeddedResource Update="tools/Cheats/Cheats.resx" DependentUpon="Cheats.cs" />
+		<Compile Update="tools/Debugger/AddBreakpointDialog.cs" SubType="Form" />
+		<Compile Update="tools/Debugger/AddBreakpointDialog.Designer.cs" DependentUpon="AddBreakpointDialog.cs" />
+		<EmbeddedResource Update="tools/Debugger/AddBreakpointDialog.resx" DependentUpon="AddBreakpointDialog.cs" />
+		<Compile Update="tools/Debugger/BreakpointControl.cs" SubType="UserControl" />
+		<Compile Update="tools/Debugger/BreakpointControl.Designer.cs" DependentUpon="BreakpointControl.cs" />
+		<EmbeddedResource Update="tools/Debugger/BreakpointControl.resx" DependentUpon="BreakpointControl.cs" />
+		<Compile Update="tools/Debugger/GenericDebugger.cs" SubType="Form" />
+		<Compile Update="tools/Debugger/GenericDebugger.Designer.cs" DependentUpon="GenericDebugger.cs" />
+		<Compile Update="tools/Debugger/GenericDebugger.Disassembler.cs" DependentUpon="GenericDebugger.cs" SubType="Form" />
+		<Compile Update="tools/Debugger/GenericDebugger.IControlMainform.cs" DependentUpon="GenericDebugger.cs" SubType="Form" />
+		<Compile Update="tools/Debugger/GenericDebugger.IToolForm.cs" DependentUpon="GenericDebugger.cs" SubType="Form" />
+		<EmbeddedResource Update="tools/Debugger/GenericDebugger.resx" DependentUpon="GenericDebugger.cs" />
+		<Compile Update="tools/Debugger/RegisterBoxControl.cs" SubType="UserControl" />
+		<Compile Update="tools/Debugger/RegisterBoxControl.Designer.cs" DependentUpon="RegisterBoxControl.cs" />
+		<EmbeddedResource Update="tools/Debugger/RegisterBoxControl.resx" DependentUpon="RegisterBoxControl.cs" />
+		<Compile Update="tools/GameShark.cs" SubType="Form" />
+		<Compile Update="tools/GameShark.Designer.cs" DependentUpon="GameShark.cs" />
+		<EmbeddedResource Update="tools/GameShark.resx" DependentUpon="GameShark.cs" SubType="Designer" />
+		<Compile Update="tools/GBA/GBAGPUView.cs" SubType="Form" />
+		<Compile Update="tools/GBA/GBAGPUView.Designer.cs" DependentUpon="GBAGPUView.cs" />
+		<EmbeddedResource Update="tools/GBA/GBAGPUView.resx" DependentUpon="GBAGPUView.cs" />
+		<Compile Update="tools/GBA/MobileBmpView.cs" SubType="Form" />
+		<Compile Update="tools/GBA/MobileBmpView.Designer.cs" DependentUpon="MobileBmpView.cs" />
+		<EmbeddedResource Update="tools/GBA/MobileBmpView.resx" DependentUpon="MobileBmpView.cs" />
+		<Compile Update="tools/GBA/MobileDetailView.cs" SubType="Form" />
+		<Compile Update="tools/GBA/MobileDetailView.Designer.cs" DependentUpon="MobileDetailView.cs" />
+		<EmbeddedResource Update="tools/GBA/MobileDetailView.resx" DependentUpon="MobileDetailView.cs" />
+		<Compile Update="tools/GB/GBGPUView.cs" SubType="Form" />
+		<Compile Update="tools/GB/GBGPUView.Designer.cs" DependentUpon="GBGPUView.cs" />
+		<EmbeddedResource Update="tools/GB/GBGPUView.resx" DependentUpon="GBGPUView.cs" />
+		<Compile Update="tools/GB/GBPrinterView.cs" SubType="Form" />
+		<Compile Update="tools/GB/GBPrinterView.Designer.cs" DependentUpon="GBPrinterView.cs" />
+		<EmbeddedResource Update="tools/GB/GBPrinterView.resx" DependentUpon="GBPrinterView.cs" />
+		<Compile Update="tools/Genesis/GenDbgWind.cs" SubType="Form" />
+		<Compile Update="tools/Genesis/GenDbgWind.Designer.cs" DependentUpon="GenDbgWind.cs" />
+		<EmbeddedResource Update="tools/Genesis/GenDbgWind.resx" DependentUpon="GenDbgWind.cs" />
+		<Compile Update="tools/Genesis/VDPViewer.cs" SubType="Form" />
+		<Compile Update="tools/Genesis/VDPViewer.Designer.cs" DependentUpon="VDPViewer.cs" />
+		<EmbeddedResource Update="tools/Genesis/VDPViewer.resx" DependentUpon="VDPViewer.cs" />
+		<Compile Update="tools/HexEditor/HexColor.cs" SubType="Form" />
+		<Compile Update="tools/HexEditor/HexColor.Designer.cs" DependentUpon="HexColor.cs" />
+		<EmbeddedResource Update="tools/HexEditor/HexColor.resx" DependentUpon="HexColor.cs" />
+		<Compile Update="tools/HexEditor/HexEditor.cs" SubType="Form" />
+		<Compile Update="tools/HexEditor/HexEditor.Designer.cs" DependentUpon="HexEditor.cs" />
+		<EmbeddedResource Update="tools/HexEditor/HexEditor.resx" DependentUpon="HexEditor.cs" />
+		<Compile Update="tools/HexEditor/HexFind.cs" SubType="Form" />
+		<Compile Update="tools/HexEditor/HexFind.Designer.cs" DependentUpon="HexFind.cs" />
+		<EmbeddedResource Update="tools/HexEditor/HexFind.resx" DependentUpon="HexFind.cs" />
+		<Compile Update="tools/InputPrompt.cs" SubType="Form" />
+		<Compile Update="tools/InputPrompt.Designer.cs" DependentUpon="InputPrompt.cs" />
+		<EmbeddedResource Update="tools/InputPrompt.resx" DependentUpon="InputPrompt.cs" SubType="Designer" />
+		<Compile Update="tools/Lua/LuaButton.cs" SubType="Component" />
+		<Compile Update="tools/Lua/LuaCanvas.cs" SubType="Form" />
+		<Compile Update="tools/Lua/LuaCanvas.Designer.cs" DependentUpon="LuaCanvas.cs" />
+		<EmbeddedResource Update="tools/Lua/LuaCanvas.resx" DependentUpon="LuaCanvas.cs" />
+		<Compile Update="tools/Lua/LuaCheckbox.cs" SubType="Component" />
+		<Compile Update="tools/Lua/LuaConsole.cs" SubType="Form" />
+		<Compile Update="tools/Lua/LuaConsole.Designer.cs" DependentUpon="LuaConsole.cs" />
+		<EmbeddedResource Update="tools/Lua/LuaConsole.resx" DependentUpon="LuaConsole.cs" />
+		<Compile Update="tools/Lua/LuaDropDown.cs" SubType="Component" />
+		<Compile Update="tools/Lua/LuaFunctionsForm.cs" SubType="Form" />
+		<Compile Update="tools/Lua/LuaFunctionsForm.Designer.cs" DependentUpon="LuaFunctionsForm.cs" />
+		<EmbeddedResource Update="tools/Lua/LuaFunctionsForm.resx" DependentUpon="LuaFunctionsForm.cs" />
+		<Compile Update="tools/Lua/LuaPictureBox.cs" SubType="Component" />
+		<Compile Update="tools/Lua/LuaRegisteredFunctionsList.cs" SubType="Form" />
+		<Compile Update="tools/Lua/LuaRegisteredFunctionsList.Designer.cs" DependentUpon="LuaRegisteredFunctionsList.cs" />
+		<EmbeddedResource Update="tools/Lua/LuaRegisteredFunctionsList.resx" DependentUpon="LuaRegisteredFunctionsList.cs" />
+		<Compile Update="tools/Lua/LuaTextBox.cs" SubType="Component" />
+		<Compile Update="tools/Lua/LuaWinform.cs" SubType="Form" />
+		<Compile Update="tools/Lua/LuaWinform.Designer.cs" DependentUpon="LuaWinform.cs" />
+		<EmbeddedResource Update="tools/Lua/LuaWinform.resx" DependentUpon="LuaWinform.cs" />
+		<Compile Update="tools/Lua/UnixLuaLibraries.cs" DependentUpon="LuaLibraries.cs" />
+		<Compile Update="tools/Lua/Win32LuaLibraries.cs" DependentUpon="LuaLibraries.cs" />
+		<Compile Update="tools/Macros/MacroInput.ButtonSelect.cs" SubType="Form" />
+		<Compile Update="tools/Macros/MacroInput.cs" SubType="Form" />
+		<Compile Update="tools/Macros/MacroInput.Designer.cs" DependentUpon="MacroInput.cs" />
+		<EmbeddedResource Update="tools/Macros/MacroInput.resx" DependentUpon="MacroInput.cs" />
+		<Compile Update="tools/MultiDiskBundler/MultiDiskBundler.cs" SubType="Form" />
+		<Compile Update="tools/MultiDiskBundler/MultiDiskBundler.Designer.cs" DependentUpon="MultiDiskBundler.cs" />
+		<EmbeddedResource Update="tools/MultiDiskBundler/MultiDiskBundler.resx" DependentUpon="MultiDiskBundler.cs" />
+		<Compile Update="tools/MultiDiskBundler/MultiDiskFileSelector.cs" SubType="UserControl" />
+		<Compile Update="tools/MultiDiskBundler/MultiDiskFileSelector.Designer.cs" DependentUpon="MultiDiskFileSelector.cs" />
+		<EmbeddedResource Update="tools/MultiDiskBundler/MultiDiskFileSelector.resx" DependentUpon="MultiDiskFileSelector.cs" />
+		<Compile Update="tools/NES/BarcodeEntry.cs" SubType="Form" />
+		<Compile Update="tools/NES/BarcodeEntry.Designer.cs" DependentUpon="BarcodeEntry.cs" />
+		<EmbeddedResource Update="tools/NES/BarcodeEntry.resx" DependentUpon="BarcodeEntry.cs" />
+		<Compile Update="tools/NES/NameTableViewer.cs" SubType="Component" />
+		<Compile Update="tools/NES/NESMusicRipper.cs" SubType="Form" />
+		<Compile Update="tools/NES/NESMusicRipper.Designer.cs" DependentUpon="NESMusicRipper.cs" />
+		<EmbeddedResource Update="tools/NES/NESMusicRipper.resx" DependentUpon="NESMusicRipper.cs" />
+		<Compile Update="tools/NES/NESNameTableViewer.cs" SubType="Form" />
+		<Compile Update="tools/NES/NESNameTableViewer.Designer.cs" DependentUpon="NESNameTableViewer.cs" />
+		<EmbeddedResource Update="tools/NES/NESNameTableViewer.resx" DependentUpon="NESNameTableViewer.cs" />
+		<Compile Update="tools/NES/NESPPU.cs" SubType="Form" />
+		<Compile Update="tools/NES/NESPPU.Designer.cs" DependentUpon="NESPPU.cs" />
+		<EmbeddedResource Update="tools/NES/NESPPU.resx" DependentUpon="NESPPU.cs" SubType="Designer" />
+		<Compile Update="tools/NES/PaletteViewer.cs" SubType="Component" />
+		<Compile Update="tools/NES/PatternViewer.cs" SubType="Component" />
+		<EmbeddedResource Update="tools/NES/PatternViewer.resx" DependentUpon="PatternViewer.cs" />
+		<Compile Update="tools/NES/SpriteViewer.cs" SubType="Component" />
+		<Compile Update="tools/PCE/PCEBGCanvas.cs" SubType="Component" />
+		<Compile Update="tools/PCE/PCEBGViewer.cs" SubType="Form" />
+		<Compile Update="tools/PCE/PCEBGViewer.Designer.cs" DependentUpon="PCEBGViewer.cs" />
+		<EmbeddedResource Update="tools/PCE/PCEBGViewer.resx" DependentUpon="PCEBGViewer.cs" />
+		<Compile Update="tools/PCE/PCESoundDebugger.cs" SubType="Form" />
+		<Compile Update="tools/PCE/PCESoundDebugger.Designer.cs" DependentUpon="PCESoundDebugger.cs" />
+		<EmbeddedResource Update="tools/PCE/PCESoundDebugger.resx" DependentUpon="PCESoundDebugger.cs" />
+		<Compile Update="tools/PCE/PCETileViewer.cs" SubType="Form" />
+		<Compile Update="tools/PCE/PCETileViewer.Designer.cs" DependentUpon="PCETileViewer.cs" />
+		<EmbeddedResource Update="tools/PCE/PCETileViewer.resx" DependentUpon="PCETileViewer.cs" />
+		<Compile Update="tools/SMS/VDPViewer.cs" SubType="Form" />
+		<Compile Update="tools/SMS/VDPViewer.Designer.cs" DependentUpon="VDPViewer.cs" />
+		<EmbeddedResource Update="tools/SMS/VDPViewer.resx" DependentUpon="VDPViewer.cs" />
+		<Compile Update="tools/SNES/SNESGraphicsDebugger.cs" SubType="Form" />
+		<Compile Update="tools/SNES/SNESGraphicsDebugger.Designer.cs" DependentUpon="SNESGraphicsDebugger.cs" />
+		<EmbeddedResource Update="tools/SNES/SNESGraphicsDebugger.resx" DependentUpon="SNESGraphicsDebugger.cs" />
+		<Compile Update="tools/SNES/SNESGraphicsViewer.cs" SubType="Component" />
+		<Compile Update="tools/TAStudio/BookmarksBranchesBox.cs" SubType="UserControl" />
+		<Compile Update="tools/TAStudio/BookmarksBranchesBox.Designer.cs" DependentUpon="BookmarksBranchesBox.cs" />
+		<EmbeddedResource Update="tools/TAStudio/BookmarksBranchesBox.resx" DependentUpon="BookmarksBranchesBox.cs" SubType="Designer" />
+		<Compile Update="tools/TAStudio/DefaultGreenzoneSettings.cs" SubType="Form" />
+		<Compile Update="tools/TAStudio/DefaultGreenzoneSettings.Designer.cs" DependentUpon="DefaultGreenzoneSettings.cs" />
+		<EmbeddedResource Update="tools/TAStudio/DefaultGreenzoneSettings.resx" DependentUpon="DefaultGreenzoneSettings.cs" />
+		<Compile Update="tools/TAStudio/FramesPrompt.cs" SubType="Form" />
+		<Compile Update="tools/TAStudio/FramesPrompt.Designer.cs" DependentUpon="FramesPrompt.cs" />
+		<EmbeddedResource Update="tools/TAStudio/FramesPrompt.resx" DependentUpon="FramesPrompt.cs" />
+		<Compile Update="tools/TAStudio/GreenzoneSettings.cs" SubType="Form" />
+		<Compile Update="tools/TAStudio/GreenzoneSettings.Designer.cs" DependentUpon="GreenzoneSettings.cs" />
+		<EmbeddedResource Update="tools/TAStudio/GreenzoneSettings.resx" DependentUpon="GreenzoneSettings.cs" />
+		<Compile Update="tools/TAStudio/HeaderEditor.cs" SubType="Form" />
+		<Compile Update="tools/TAStudio/HeaderEditor.Designer.cs" DependentUpon="HeaderEditor.cs" />
+		<EmbeddedResource Update="tools/TAStudio/HeaderEditor.resx" DependentUpon="HeaderEditor.cs" />
+		<Compile Update="tools/TAStudio/MarkerControl.cs" SubType="UserControl" />
+		<Compile Update="tools/TAStudio/MarkerControl.Designer.cs" DependentUpon="MarkerControl.cs" />
+		<EmbeddedResource Update="tools/TAStudio/MarkerControl.resx" DependentUpon="MarkerControl.cs" />
+		<Compile Update="tools/TAStudio/PatternsForm.cs" SubType="Form" />
+		<Compile Update="tools/TAStudio/PatternsForm.Designer.cs" DependentUpon="PatternsForm.cs" />
+		<EmbeddedResource Update="tools/TAStudio/PatternsForm.resx" DependentUpon="PatternsForm.cs" />
+		<Compile Update="tools/TAStudio/PlaybackBox.cs" SubType="UserControl" />
+		<Compile Update="tools/TAStudio/PlaybackBox.Designer.cs" DependentUpon="PlaybackBox.cs" />
+		<EmbeddedResource Update="tools/TAStudio/PlaybackBox.resx" DependentUpon="PlaybackBox.cs" />
+		<Compile Update="tools/TAStudio/ScreenshotForm.cs" SubType="Form" />
+		<Compile Update="tools/TAStudio/ScreenshotForm.Designer.cs" DependentUpon="ScreenshotForm.cs" />
+		<EmbeddedResource Update="tools/TAStudio/ScreenshotForm.resx" DependentUpon="ScreenshotForm.cs" />
+		<Compile Update="tools/TAStudio/TAStudio.Callbacks.cs" DependentUpon="TAStudio.cs" SubType="Form" />
+		<Compile Update="tools/TAStudio/TAStudio.cs" SubType="Form" />
+		<Compile Update="tools/TAStudio/TAStudio.Designer.cs" DependentUpon="TAStudio.cs" />
+		<Compile Update="tools/TAStudio/TAStudio.IControlMainForm.cs" DependentUpon="TAStudio.cs" SubType="Form" />
+		<Compile Update="tools/TAStudio/TAStudio.IToolForm.cs" DependentUpon="TAStudio.cs" SubType="Form" />
+		<Compile Update="tools/TAStudio/TAStudio.ListView.cs" DependentUpon="TAStudio.cs" SubType="Form" />
+		<Compile Update="tools/TAStudio/TAStudio.MenuItems.cs" DependentUpon="TAStudio.cs" SubType="Form" />
+		<Compile Update="tools/TAStudio/TAStudio.Navigation.cs" DependentUpon="TAStudio.cs" SubType="Form" />
+		<EmbeddedResource Update="tools/TAStudio/TAStudio.resx" DependentUpon="TAStudio.cs" />
+		<Compile Update="tools/TAStudio/UndoHistoryForm.cs" SubType="Form" />
+		<Compile Update="tools/TAStudio/UndoHistoryForm.Designer.cs" DependentUpon="UndoHistoryForm.cs" />
+		<EmbeddedResource Update="tools/TAStudio/UndoHistoryForm.resx" DependentUpon="UndoHistoryForm.cs" />
+		<Compile Update="tools/TI83/TI83KeyPad.cs" SubType="Form" />
+		<Compile Update="tools/TI83/TI83KeyPad.Designer.cs" DependentUpon="TI83KeyPad.cs" />
+		<EmbeddedResource Update="tools/TI83/TI83KeyPad.resx" DependentUpon="TI83KeyPad.cs" />
+		<Compile Update="tools/ToolBox.cs" SubType="Form" />
+		<Compile Update="tools/ToolBox.Designer.cs" DependentUpon="ToolBox.cs" />
+		<EmbeddedResource Update="tools/ToolBox.resx" DependentUpon="ToolBox.cs" SubType="Designer" />
+		<Compile Update="tools/ToolFormBase.cs" SubType="Form" />
+		<Compile Update="tools/TraceLogger.cs" SubType="Form" />
+		<Compile Update="tools/TraceLogger.Designer.cs" DependentUpon="TraceLogger.cs" />
+		<EmbeddedResource Update="tools/TraceLogger.resx" DependentUpon="TraceLogger.cs" />
+		<Compile Update="tools/VirtualPads/controls/components/AnalogStickPanel.cs" SubType="Component" />
+		<Compile Update="tools/VirtualPads/controls/VirtualPadAnalogButton.cs" SubType="UserControl" />
+		<Compile Update="tools/VirtualPads/controls/VirtualPadAnalogButton.Designer.cs" DependentUpon="VirtualPadAnalogButton.cs" />
+		<EmbeddedResource Update="tools/VirtualPads/controls/VirtualPadAnalogButton.resx" DependentUpon="VirtualPadAnalogButton.cs" />
+		<Compile Update="tools/VirtualPads/controls/VirtualPadAnalogStick.cs" SubType="UserControl" />
+		<Compile Update="tools/VirtualPads/controls/VirtualPadAnalogStick.Designer.cs" DependentUpon="VirtualPadAnalogStick.cs" />
+		<EmbeddedResource Update="tools/VirtualPads/controls/VirtualPadAnalogStick.resx" DependentUpon="VirtualPadAnalogStick.cs" />
+		<Compile Update="tools/VirtualPads/controls/VirtualPadButton.cs" SubType="Component" />
+		<Compile Update="tools/VirtualPads/controls/VirtualPadDiscManager.cs" SubType="UserControl" />
+		<Compile Update="tools/VirtualPads/controls/VirtualPadDiscManager.Designer.cs" DependentUpon="VirtualPadDiscManager.cs" />
+		<EmbeddedResource Update="tools/VirtualPads/controls/VirtualPadDiscManager.resx" DependentUpon="VirtualPadDiscManager.cs" />
+		<Compile Update="tools/VirtualPads/controls/VirtualPadTargetScreen.cs" SubType="UserControl" />
+		<Compile Update="tools/VirtualPads/controls/VirtualPadTargetScreen.Designer.cs" DependentUpon="VirtualPadTargetScreen.cs" />
+		<EmbeddedResource Update="tools/VirtualPads/controls/VirtualPadTargetScreen.resx" DependentUpon="VirtualPadTargetScreen.cs" />
+		<Compile Update="tools/VirtualPads/VirtualPad.cs" SubType="UserControl" />
+		<Compile Update="tools/VirtualPads/VirtualPad.Designer.cs" DependentUpon="VirtualPad.cs" />
+		<EmbeddedResource Update="tools/VirtualPads/VirtualPad.resx" DependentUpon="VirtualPad.cs" />
+		<Compile Update="tools/VirtualPads/VirtualpadsTool.cs" SubType="Form" />
+		<Compile Update="tools/VirtualPads/VirtualpadsTool.Designer.cs" DependentUpon="VirtualpadsTool.cs" />
+		<EmbeddedResource Update="tools/VirtualPads/VirtualpadsTool.resx" DependentUpon="VirtualpadsTool.cs" />
+		<Compile Update="tools/Watch/RamPoke.cs" SubType="Form" />
+		<Compile Update="tools/Watch/RamPoke.Designer.cs" DependentUpon="RamPoke.cs" />
+		<EmbeddedResource Update="tools/Watch/RamPoke.resx" DependentUpon="RamPoke.cs" />
+		<Compile Update="tools/Watch/RamSearch.cs" SubType="Form" />
+		<Compile Update="tools/Watch/RamSearch.Designer.cs" DependentUpon="RamSearch.cs" />
+		<EmbeddedResource Update="tools/Watch/RamSearch.resx" DependentUpon="RamSearch.cs" />
+		<Compile Update="tools/Watch/RamWatch.cs" SubType="Form" />
+		<Compile Update="tools/Watch/RamWatch.Designer.cs" DependentUpon="RamWatch.cs" />
+		<EmbeddedResource Update="tools/Watch/RamWatch.resx" DependentUpon="RamWatch.cs" />
+		<Compile Update="tools/Watch/WatchEditor.cs" SubType="Form" />
+		<Compile Update="tools/Watch/WatchEditor.Designer.cs" DependentUpon="WatchEditor.cs" />
+		<EmbeddedResource Update="tools/Watch/WatchEditor.resx" DependentUpon="WatchEditor.cs" />
+		<Compile Update="tools/Watch/WatchValueBox.cs" SubType="Component" />
+		<Compile Update="UpdateChecker.cs" SubType="Code" />
+	</ItemGroup>
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<ItemGroup>
+			<AssetFiles Include="$(ProjectDir)../../Assets/**/*.*" />
+		</ItemGroup>
+		<Copy SourceFiles="@(AssetFiles)" DestinationFolder="$(OutputPath)%(RecursiveDir)" SkipUnchangedFiles="true" />
+	</Target>
+</Project>

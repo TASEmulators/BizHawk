@@ -40,6 +40,8 @@ uint8 cinterface_custom_backdrop = 0;
 uint32 cinterface_custom_backdrop_color = 0xffff00ff; // pink
 extern uint8 border;
 
+int cinterface_force_sram = 0;
+
 #ifdef _MSC_VER
 #define GPGX_EX __declspec(dllexport)
 #else
@@ -502,9 +504,16 @@ struct InitSettings
 	uint32_t BackdropColor;
 };
 
-GPGX_EX int gpgx_init(const char *feromextension, ECL_ENTRY int (*feload_archive_cb)(const char *filename, unsigned char *buffer, int maxsize), int sixbutton, char system_a, char system_b, int region, struct InitSettings *settings)
+GPGX_EX int gpgx_init(
+	const char *feromextension,
+	ECL_ENTRY int (*feload_archive_cb)(const char *filename, unsigned char *buffer, int maxsize),
+	int sixbutton, char system_a, char system_b, int region, int forcesram,
+	struct InitSettings *settings)
 {
     _debug_puts("Initializing GPGX native...");
+
+	cinterface_force_sram = forcesram;
+
 	memset(&bitmap, 0, sizeof(bitmap));
 
 	strncpy(romextension, feromextension, 3);

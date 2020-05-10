@@ -106,9 +106,9 @@ int WriteBMP32(int width, int height, const void* buf, const char *filename)
 		{
 			u8* pixel = (u8*)buf + (height-i-1)*width*4;
 			pixel += (x*4);
-			elems_written += fwrite(pixel+2,1,1,file);
-			elems_written += fwrite(pixel+1,1,1,file);
 			elems_written += fwrite(pixel+0,1,1,file);
+			elems_written += fwrite(pixel+1,1,1,file);
+			elems_written += fwrite(pixel+2,1,1,file);
 			elems_written += fwrite(pixel+3,1,1,file);
 		}
 	fclose(file);
@@ -306,10 +306,19 @@ int main(int argc, char **argv)
 	//placeholder for instance
 	void* psx = NULL;
 
+	ShockRenderOptions renderOpts;
+	renderOpts.deinterlaceMode = eShockDeinterlaceMode_Weave;
+	renderOpts.renderType = eShockRenderType_Normal;
+	renderOpts.scanline_start = 0;
+	renderOpts.scanline_end = 239;
+	renderOpts.skip = false;
+
+
 	shock_Create(&psx, REGION_NA, firmware);
 	shock_OpenTray(psx);
 	shock_SetDisc(psx,bin.disc);
 	shock_CloseTray(psx);
+	shock_SetRenderOptions(psx, &renderOpts);
 	shock_Peripheral_Connect(psx,0x01,ePeripheralType_DualShock);
 	shock_PowerOn(psx);
 

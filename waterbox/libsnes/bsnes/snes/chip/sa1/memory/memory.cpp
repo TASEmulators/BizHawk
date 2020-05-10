@@ -129,7 +129,9 @@ uint8 SA1::mmc_read(unsigned addr) {
   }
 
   static auto read = [](unsigned addr) {
-    return cartridge.rom.read(bus.mirror(addr, cartridge.rom.size()));
+    auto myaddr = bus.mirror(addr, cartridge.rom.size());
+    cdlInfo.set(eCDLog_AddrType_CARTROM, myaddr);
+    return cartridge.rom.read(myaddr);
   };
 
   if((addr & 0xe08000) == 0x008000) {  //$00-1f:8000-ffff

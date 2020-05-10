@@ -1,30 +1,35 @@
-/* Mednafen - Multi-system Emulator
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+/******************************************************************************/
+/* Mednafen Sony PS1 Emulation Module                                         */
+/******************************************************************************/
+/* gpu_sprite.cpp:
+**  Copyright (C) 2011-2017 Mednafen Team
+**
+** This program is free software; you can redistribute it and/or
+** modify it under the terms of the GNU General Public License
+** as published by the Free Software Foundation; either version 2
+** of the License, or (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software Foundation, Inc.,
+** 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
 
 #include "psx.h"
 #include "gpu.h"
-#include "math_ops.h"
 
 namespace MDFN_IEN_PSX
+{
+namespace PS_GPU_INTERNAL
 {
 #include "gpu_common.inc"
 
 template<bool textured, int BlendMode, bool TexMult, uint32 TexMode_TA, bool MaskEval_TA, bool FlipX, bool FlipY>
-void PS_GPU::DrawSprite(int32 x_arg, int32 y_arg, int32 w, int32 h, uint8 u_arg, uint8 v_arg, uint32 color)
+static void DrawSprite(int32 x_arg, int32 y_arg, int32 w, int32 h, uint8 u_arg, uint8 v_arg, uint32 color)
 {
  const int32 r = color & 0xFF;
  const int32 g = (color >> 8) & 0xFF;
@@ -143,7 +148,7 @@ void PS_GPU::DrawSprite(int32 x_arg, int32 y_arg, int32 w, int32 h, uint8 u_arg,
 }
 
 template<uint8 raw_size, bool textured, int BlendMode, bool TexMult, uint32 TexMode_TA, bool MaskEval_TA>
-INLINE void PS_GPU::Command_DrawSprite(const uint32 *cb)
+static void Command_DrawSprite(const uint32 *cb)
 {
  int32 x, y;
  int32 w, h;
@@ -229,16 +234,7 @@ INLINE void PS_GPU::Command_DrawSprite(const uint32 *cb)
  }
 }
 
-//
-// C-style function wrappers so our command table isn't so ginormous(in memory usage).
-//
-template<uint8 raw_size, bool textured, int BlendMode, bool TexMult, uint32 TexMode_TA, bool MaskEval_TA>
-static void G_Command_DrawSprite(PS_GPU* g, const uint32 *cb)
-{
- g->Command_DrawSprite<raw_size, textured, BlendMode, TexMult, TexMode_TA, MaskEval_TA>(cb);
-}
-
-const CTEntry PS_GPU::Commands_60_7F[0x20] =
+MDFN_HIDE extern const CTEntry Commands_60_7F[0x20] =
 {
  SPR_HELPER(0x60),
  SPR_HELPER(0x61),
@@ -274,4 +270,5 @@ const CTEntry PS_GPU::Commands_60_7F[0x20] =
  SPR_HELPER(0x7f)
 };
 
+}
 }

@@ -67,7 +67,9 @@ enum eCDLog_Flags
 	eCDLog_Flags_ExecFirst = 0x01,
 	eCDLog_Flags_ExecOperand = 0x02,
 	eCDLog_Flags_CPUData = 0x04,
-	eCDLog_Flags_DMAData = 0x08, //not supported yet
+	eCDLog_Flags_DMAData = 0x08,
+	eCDLog_Flags_CPUXFlag = 0x10, //these values are picky, don't change them
+	eCDLog_Flags_CPUMFlag = 0x20, //these values are picky, don't change them
 	eCDLog_Flags_BRR = 0x80
 };
 

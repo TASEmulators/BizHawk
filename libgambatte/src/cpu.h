@@ -1,21 +1,21 @@
-/***************************************************************************
- *   Copyright (C) 2007 by Sindre Aamås                                    *
- *   aamas@stud.ntnu.no                                                    *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License version 2 as     *
- *   published by the Free Software Foundation.                            *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License version 2 for more details.                *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   version 2 along with this program; if not, write to the               *
- *   Free Software Foundation, Inc.,                                       *
- *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+//
+//   Copyright (C) 2007 by sinamas <sinamas at users.sourceforge.net>
+//
+//   This program is free software; you can redistribute it and/or modify
+//   it under the terms of the GNU General Public License version 2 as
+//   published by the Free Software Foundation.
+//
+//   This program is distributed in the hope that it will be useful,
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//   GNU General Public License version 2 for more details.
+//
+//   You should have received a copy of the GNU General Public License
+//   version 2 along with this program; if not, write to the
+//   Free Software Foundation, Inc.,
+//   51 Franklin St, Fifth Floor, Boston, MA  02110-1301, USA.
+//
+
 #ifndef CPU_H
 #define CPU_H
 
@@ -25,67 +25,40 @@
 namespace gambatte {
 
 class CPU {
-	Memory memory;
-	
-	unsigned long cycleCounter_;
-
-	unsigned short PC;
-	unsigned short SP;
-	
-	unsigned HF1, HF2, ZF, CF;
-
-	unsigned char A, B, C, D, E, /*F,*/ H, L;
-
-	bool skip;
-	
-	int *interruptAddresses;
-	int numInterruptAddresses;
-	int hitInterruptAddress;
-
-	void process(unsigned long cycles);
-	
-	void (*tracecallback)(void *);
-
 public:
-	
 	CPU();
-// 	void halt();
-
-// 	unsigned interrupt(unsigned address, unsigned cycleCounter);
-	
 	long runFor(unsigned long cycles);
 	void setStatePtrs(SaveState &state);
-	void loadState(const SaveState &state);
-	void setLayers(unsigned mask) { memory.setLayers(mask); }
-	
-	void loadSavedata(const char *data) { memory.loadSavedata(data); }
-	int saveSavedataLength() {return memory.saveSavedataLength(); }
-	void saveSavedata(char *dest) { memory.saveSavedata(dest); }
-	
-	bool getMemoryArea(int which, unsigned char **data, int *length) { return memory.getMemoryArea(which, data, length); }
+	void loadState(SaveState const &state);
+	void setLayers(unsigned mask) { mem_.setLayers(mask); }
+	void loadSavedata(char const *data) { mem_.loadSavedata(data, cycleCounter_); }
+	int saveSavedataLength() {return mem_.saveSavedataLength(); }
+	void saveSavedata(char *dest) { mem_.saveSavedata(dest, cycleCounter_); }
 
-	void setVideoBuffer(uint_least32_t *const videoBuf, const int pitch) {
-		memory.setVideoBuffer(videoBuf, pitch);
+	bool getMemoryArea(int which, unsigned char **data, int *length) { return mem_.getMemoryArea(which, data, length); }
+
+	void setVideoBuffer(uint_least32_t *videoBuf, std::ptrdiff_t pitch) {
+		mem_.setVideoBuffer(videoBuf, pitch);
 	}
-	
+
 	void setInputGetter(unsigned (*getInput)()) {
-		memory.setInputGetter(getInput);
+		mem_.setInputGetter(getInput);
 	}
 
 	void setReadCallback(MemoryCallback callback) {
-		memory.setReadCallback(callback);
+		mem_.setReadCallback(callback);
 	}
 
 	void setWriteCallback(MemoryCallback callback) {
-		memory.setWriteCallback(callback);
+		mem_.setWriteCallback(callback);
 	}
 
 	void setExecCallback(MemoryCallback callback) {
-		memory.setExecCallback(callback);
+		mem_.setExecCallback(callback);
 	}
 
 	void setCDCallback(CDCallback cdc) {
-		memory.setCDCallback(cdc);
+		mem_.setCDCallback(cdc);
 	}
 
 	void setTraceCallback(void (*callback)(void *)) {
@@ -93,52 +66,66 @@ public:
 	}
 
 	void setScanlineCallback(void (*callback)(), int sl) {
-		memory.setScanlineCallback(callback, sl);
-	}
-
-	void setRTCCallback(std::uint32_t (*callback)()) {
-		memory.setRTCCallback(callback);
+		mem_.setScanlineCallback(callback, sl);
 	}
 
 	void setLinkCallback(void(*callback)()) {
-		memory.setLinkCallback(callback);
+		mem_.setLinkCallback(callback);
 	}
-	
-	int load(const char *romfiledata, unsigned romfilelength, bool forceDmg, bool multicartCompat) {
-		return memory.loadROM(romfiledata, romfilelength, forceDmg, multicartCompat);
+
+	LoadRes load(char const *romfiledata, unsigned romfilelength, unsigned flags) {
+		return mem_.loadROM(romfiledata, romfilelength, flags);
 	}
-	
-	bool loaded() const { return memory.loaded(); }
-	const char * romTitle() const { return memory.romTitle(); }
-	
-	void setSoundBuffer(uint_least32_t *const buf) { memory.setSoundBuffer(buf); }
-	unsigned fillSoundBuffer() { return memory.fillSoundBuffer(cycleCounter_); }
-	
-	bool isCgb() const { return memory.isCgb(); }
-	
-	void setDmgPaletteColor(unsigned palNum, unsigned colorNum, unsigned rgb32) {
-		memory.setDmgPaletteColor(palNum, colorNum, rgb32);
+
+	bool loaded() const { return mem_.loaded(); }
+	char const * romTitle() const { return mem_.romTitle(); }
+	void setSoundBuffer(uint_least32_t *buf) { mem_.setSoundBuffer(buf); }
+	std::size_t fillSoundBuffer() { return mem_.fillSoundBuffer(cycleCounter_); }
+	bool isCgb() const { return mem_.isCgb(); }
+
+	void setDmgPaletteColor(int palNum, int colorNum, unsigned long rgb32) {
+		mem_.setDmgPaletteColor(palNum, colorNum, rgb32);
 	}
 
 	void setCgbPalette(unsigned *lut) {
-		memory.setCgbPalette(lut);
+		mem_.setCgbPalette(lut);
 	}
-	
-	unsigned char* cgbBiosBuffer() { return memory.cgbBiosBuffer(); }
-	unsigned char* dmgBiosBuffer() { return memory.dmgBiosBuffer(); }
-	bool gbIsCgb() { return memory.gbIsCgb(); }
+	void setTimeMode(bool useCycles) { mem_.setTimeMode(useCycles, cycleCounter_); }
+	void setRtcDivisorOffset(long const rtcDivisorOffset) { mem_.setRtcDivisorOffset(rtcDivisorOffset); }
 
-	//unsigned char ExternalRead(unsigned short addr) { return memory.read(addr, cycleCounter_); }
-	unsigned char ExternalRead(unsigned short addr) { return memory.peek(addr); }
-	void ExternalWrite(unsigned short addr, unsigned char val) { memory.write_nocb(addr, val, cycleCounter_); }
+	void setBios(char const *buffer, std::size_t size) { mem_.setBios(buffer, size); }
 
-	int LinkStatus(int which) { return memory.LinkStatus(which); }
+	unsigned char externalRead(unsigned short addr) {return mem_.peek(addr); }
 
-	void GetRegs(int *dest);
+	void externalWrite(unsigned short addr, unsigned char val) {
+		mem_.write_nocb(addr, val, cycleCounter_);
+	}
 
-	void SetInterruptAddresses(int *addrs, int numAddrs);
-	int GetHitInterruptAddress();
+	int linkStatus(int which) { return mem_.linkStatus(which); }
 
+	void getRegs(int *dest);
+	void setInterruptAddresses(int *addrs, int numAddrs);
+	int getHitInterruptAddress();
+
+private:
+	Memory mem_;
+	unsigned long cycleCounter_;
+	unsigned short pc;
+	unsigned short sp;
+	unsigned hf1, hf2, zf, cf;
+	unsigned char a, b, c, d, e, /*f,*/ h, l;
+	unsigned char opcode_;
+	bool prefetched_;
+
+	int *interruptAddresses;
+	int numInterruptAddresses;
+	int hitInterruptAddress;
+
+	void process(unsigned long cycles);
+
+	void (*tracecallback)(void *);
+
+public:
 	template<bool isReader>void SyncState(NewState *ns);
 };
 

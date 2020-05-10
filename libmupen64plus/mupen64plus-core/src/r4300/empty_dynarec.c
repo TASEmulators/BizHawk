@@ -978,7 +978,27 @@ void gendsubu()
 {
 }
 
+void gentge()
+{
+}
+
+void gentgeu()
+{
+}
+
+void gentlt()
+{
+}
+
+void gentltu()
+{
+}
+
 void genteq()
+{
+}
+
+void gentne()
 {
 }
 

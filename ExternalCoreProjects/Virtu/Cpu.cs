@@ -1,173 +1,184 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.IO;
-using Newtonsoft.Json;
 
 namespace Jellyfish.Virtu
 {
-	public sealed partial class Cpu : MachineComponent
+	public interface ICpu
 	{
-		public Cpu() { }
-		public Cpu(Machine machine) :
-			base(machine)
-		{
-			ExecuteOpCode65N02 = new Action[OpCodeCount]
-            {
-                Execute65X02Brk00, Execute65X02Ora01, Execute65N02Nop02, Execute65N02Nop03, 
-                Execute65N02Nop04, Execute65X02Ora05, Execute65X02Asl06, Execute65N02Nop07, 
-                Execute65X02Php08, Execute65X02Ora09, Execute65X02Asl0A, Execute65N02Nop0B, 
-                Execute65N02Nop0C, Execute65X02Ora0D, Execute65X02Asl0E, Execute65N02Nop0F, 
-                Execute65X02Bpl10, Execute65X02Ora11, Execute65N02Nop12, Execute65N02Nop13, 
-                Execute65N02Nop14, Execute65X02Ora15, Execute65X02Asl16, Execute65N02Nop17, 
-                Execute65X02Clc18, Execute65X02Ora19, Execute65N02Nop1A, Execute65N02Nop1B, 
-                Execute65N02Nop1C, Execute65X02Ora1D, Execute65N02Asl1E, Execute65N02Nop1F, 
-                Execute65X02Jsr20, Execute65X02And21, Execute65N02Nop22, Execute65N02Nop23, 
-                Execute65X02Bit24, Execute65X02And25, Execute65X02Rol26, Execute65N02Nop27, 
-                Execute65X02Plp28, Execute65X02And29, Execute65X02Rol2A, Execute65N02Nop2B, 
-                Execute65X02Bit2C, Execute65X02And2D, Execute65X02Rol2E, Execute65N02Nop2F, 
-                Execute65X02Bmi30, Execute65X02And31, Execute65N02Nop32, Execute65N02Nop33, 
-                Execute65N02Nop34, Execute65X02And35, Execute65X02Rol36, Execute65N02Nop37, 
-                Execute65X02Sec38, Execute65X02And39, Execute65N02Nop3A, Execute65N02Nop3B, 
-                Execute65N02Nop3C, Execute65X02And3D, Execute65N02Rol3E, Execute65N02Nop3F, 
-                Execute65X02Rti40, Execute65X02Eor41, Execute65N02Nop42, Execute65N02Nop43, 
-                Execute65N02Nop44, Execute65X02Eor45, Execute65X02Lsr46, Execute65N02Nop47, 
-                Execute65X02Pha48, Execute65X02Eor49, Execute65X02Lsr4A, Execute65N02Nop4B, 
-                Execute65X02Jmp4C, Execute65X02Eor4D, Execute65X02Lsr4E, Execute65N02Nop4F, 
-                Execute65X02Bvc50, Execute65X02Eor51, Execute65N02Nop52, Execute65N02Nop53, 
-                Execute65N02Nop54, Execute65X02Eor55, Execute65X02Lsr56, Execute65N02Nop57, 
-                Execute65X02Cli58, Execute65X02Eor59, Execute65N02Nop5A, Execute65N02Nop5B, 
-                Execute65N02Nop5C, Execute65X02Eor5D, Execute65N02Lsr5E, Execute65N02Nop5F, 
-                Execute65X02Rts60, Execute65N02Adc61, Execute65N02Nop62, Execute65N02Nop63, 
-                Execute65N02Nop64, Execute65N02Adc65, Execute65X02Ror66, Execute65N02Nop67, 
-                Execute65X02Pla68, Execute65N02Adc69, Execute65X02Ror6A, Execute65N02Nop6B, 
-                Execute65N02Jmp6C, Execute65N02Adc6D, Execute65X02Ror6E, Execute65N02Nop6F, 
-                Execute65X02Bvs70, Execute65N02Adc71, Execute65N02Nop72, Execute65N02Nop73, 
-                Execute65N02Nop74, Execute65N02Adc75, Execute65X02Ror76, Execute65N02Nop77, 
-                Execute65X02Sei78, Execute65N02Adc79, Execute65N02Nop7A, Execute65N02Nop7B, 
-                Execute65N02Nop7C, Execute65N02Adc7D, Execute65N02Ror7E, Execute65N02Nop7F, 
-                Execute65N02Nop80, Execute65X02Sta81, Execute65N02Nop82, Execute65N02Nop83, 
-                Execute65X02Sty84, Execute65X02Sta85, Execute65X02Stx86, Execute65N02Nop87, 
-                Execute65X02Dey88, Execute65N02Nop89, Execute65X02Txa8A, Execute65N02Nop8B, 
-                Execute65X02Sty8C, Execute65X02Sta8D, Execute65X02Stx8E, Execute65N02Nop8F, 
-                Execute65X02Bcc90, Execute65X02Sta91, Execute65N02Nop92, Execute65N02Nop93, 
-                Execute65X02Sty94, Execute65X02Sta95, Execute65X02Stx96, Execute65N02Nop97, 
-                Execute65X02Tya98, Execute65X02Sta99, Execute65X02Txs9A, Execute65N02Nop9B, 
-                Execute65N02Nop9C, Execute65X02Sta9D, Execute65N02Nop9E, Execute65N02Nop9F, 
-                Execute65X02LdyA0, Execute65X02LdaA1, Execute65X02LdxA2, Execute65N02NopA3, 
-                Execute65X02LdyA4, Execute65X02LdaA5, Execute65X02LdxA6, Execute65N02NopA7, 
-                Execute65X02TayA8, Execute65X02LdaA9, Execute65X02TaxAA, Execute65N02NopAB, 
-                Execute65X02LdyAC, Execute65X02LdaAD, Execute65X02LdxAE, Execute65N02NopAF, 
-                Execute65X02BcsB0, Execute65X02LdaB1, Execute65N02NopB2, Execute65N02NopB3, 
-                Execute65X02LdyB4, Execute65X02LdaB5, Execute65X02LdxB6, Execute65N02NopB7, 
-                Execute65X02ClvB8, Execute65X02LdaB9, Execute65X02TsxBA, Execute65N02NopBB, 
-                Execute65X02LdyBC, Execute65X02LdaBD, Execute65X02LdxBE, Execute65N02NopBF, 
-                Execute65X02CpyC0, Execute65X02CmpC1, Execute65N02NopC2, Execute65N02NopC3, 
-                Execute65X02CpyC4, Execute65X02CmpC5, Execute65X02DecC6, Execute65N02NopC7, 
-                Execute65X02InyC8, Execute65X02CmpC9, Execute65X02DexCA, Execute65N02NopCB, 
-                Execute65X02CpyCC, Execute65X02CmpCD, Execute65X02DecCE, Execute65N02NopCF, 
-                Execute65X02BneD0, Execute65X02CmpD1, Execute65N02NopD2, Execute65N02NopD3, 
-                Execute65N02NopD4, Execute65X02CmpD5, Execute65X02DecD6, Execute65N02NopD7, 
-                Execute65X02CldD8, Execute65X02CmpD9, Execute65N02NopDA, Execute65N02NopDB, 
-                Execute65N02NopDC, Execute65X02CmpDD, Execute65N02DecDE, Execute65N02NopDF, 
-                Execute65X02CpxE0, Execute65N02SbcE1, Execute65N02NopE2, Execute65N02NopE3, 
-                Execute65X02CpxE4, Execute65N02SbcE5, Execute65X02IncE6, Execute65N02NopE7, 
-                Execute65X02InxE8, Execute65N02SbcE9, Execute65X02NopEA, Execute65N02NopEB, 
-                Execute65X02CpxEC, Execute65N02SbcED, Execute65X02IncEE, Execute65N02NopEF, 
-                Execute65X02BeqF0, Execute65N02SbcF1, Execute65N02NopF2, Execute65N02NopF3, 
-                Execute65N02NopF4, Execute65N02SbcF5, Execute65X02IncF6, Execute65N02NopF7, 
-                Execute65X02SedF8, Execute65N02SbcF9, Execute65N02NopFA, Execute65N02NopFB, 
-                Execute65N02NopFC, Execute65N02SbcFD, Execute65N02IncFE, Execute65N02NopFF
-            };
+		// ReSharper disable once UnusedMember.Global
+		void Reset();
 
-			ExecuteOpCode65C02 = new Action[OpCodeCount]
-            {
-                Execute65X02Brk00, Execute65X02Ora01, Execute65C02Nop02, Execute65C02Nop03, 
-                Execute65C02Tsb04, Execute65X02Ora05, Execute65X02Asl06, Execute65C02Nop07, 
-                Execute65X02Php08, Execute65X02Ora09, Execute65X02Asl0A, Execute65C02Nop0B, 
-                Execute65C02Tsb0C, Execute65X02Ora0D, Execute65X02Asl0E, Execute65C02Nop0F, 
-                Execute65X02Bpl10, Execute65X02Ora11, Execute65C02Ora12, Execute65C02Nop13, 
-                Execute65C02Trb14, Execute65X02Ora15, Execute65X02Asl16, Execute65C02Nop17, 
-                Execute65X02Clc18, Execute65X02Ora19, Execute65C02Ina1A, Execute65C02Nop1B, 
-                Execute65C02Trb1C, Execute65X02Ora1D, Execute65C02Asl1E, Execute65C02Nop1F, 
-                Execute65X02Jsr20, Execute65X02And21, Execute65C02Nop22, Execute65C02Nop23, 
-                Execute65X02Bit24, Execute65X02And25, Execute65X02Rol26, Execute65C02Nop27, 
-                Execute65X02Plp28, Execute65X02And29, Execute65X02Rol2A, Execute65C02Nop2B, 
-                Execute65X02Bit2C, Execute65X02And2D, Execute65X02Rol2E, Execute65C02Nop2F, 
-                Execute65X02Bmi30, Execute65X02And31, Execute65C02And32, Execute65C02Nop33, 
-                Execute65C02Bit34, Execute65X02And35, Execute65X02Rol36, Execute65C02Nop37, 
-                Execute65X02Sec38, Execute65X02And39, Execute65C02Dea3A, Execute65C02Nop3B, 
-                Execute65C02Bit3C, Execute65X02And3D, Execute65C02Rol3E, Execute65C02Nop3F, 
-                Execute65X02Rti40, Execute65X02Eor41, Execute65C02Nop42, Execute65C02Nop43, 
-                Execute65C02Nop44, Execute65X02Eor45, Execute65X02Lsr46, Execute65C02Nop47, 
-                Execute65X02Pha48, Execute65X02Eor49, Execute65X02Lsr4A, Execute65C02Nop4B, 
-                Execute65X02Jmp4C, Execute65X02Eor4D, Execute65X02Lsr4E, Execute65C02Nop4F, 
-                Execute65X02Bvc50, Execute65X02Eor51, Execute65C02Eor52, Execute65C02Nop53, 
-                Execute65C02Nop54, Execute65X02Eor55, Execute65X02Lsr56, Execute65C02Nop57, 
-                Execute65X02Cli58, Execute65X02Eor59, Execute65C02Phy5A, Execute65C02Nop5B, 
-                Execute65C02Nop5C, Execute65X02Eor5D, Execute65C02Lsr5E, Execute65C02Nop5F, 
-                Execute65X02Rts60, Execute65C02Adc61, Execute65C02Nop62, Execute65C02Nop63, 
-                Execute65C02Stz64, Execute65C02Adc65, Execute65X02Ror66, Execute65C02Nop67, 
-                Execute65X02Pla68, Execute65C02Adc69, Execute65X02Ror6A, Execute65C02Nop6B, 
-                Execute65C02Jmp6C, Execute65C02Adc6D, Execute65X02Ror6E, Execute65C02Nop6F, 
-                Execute65X02Bvs70, Execute65C02Adc71, Execute65C02Adc72, Execute65C02Nop73, 
-                Execute65C02Stz74, Execute65C02Adc75, Execute65X02Ror76, Execute65C02Nop77, 
-                Execute65X02Sei78, Execute65C02Adc79, Execute65C02Ply7A, Execute65C02Nop7B, 
-                Execute65C02Jmp7C, Execute65C02Adc7D, Execute65C02Ror7E, Execute65C02Nop7F, 
-                Execute65C02Bra80, Execute65X02Sta81, Execute65C02Nop82, Execute65C02Nop83, 
-                Execute65X02Sty84, Execute65X02Sta85, Execute65X02Stx86, Execute65C02Nop87, 
-                Execute65X02Dey88, Execute65C02Bit89, Execute65X02Txa8A, Execute65C02Nop8B, 
-                Execute65X02Sty8C, Execute65X02Sta8D, Execute65X02Stx8E, Execute65C02Nop8F, 
-                Execute65X02Bcc90, Execute65X02Sta91, Execute65C02Sta92, Execute65C02Nop93, 
-                Execute65X02Sty94, Execute65X02Sta95, Execute65X02Stx96, Execute65C02Nop97, 
-                Execute65X02Tya98, Execute65X02Sta99, Execute65X02Txs9A, Execute65C02Nop9B, 
-                Execute65C02Stz9C, Execute65X02Sta9D, Execute65C02Stz9E, Execute65C02Nop9F, 
-                Execute65X02LdyA0, Execute65X02LdaA1, Execute65X02LdxA2, Execute65C02NopA3, 
-                Execute65X02LdyA4, Execute65X02LdaA5, Execute65X02LdxA6, Execute65C02NopA7, 
-                Execute65X02TayA8, Execute65X02LdaA9, Execute65X02TaxAA, Execute65C02NopAB, 
-                Execute65X02LdyAC, Execute65X02LdaAD, Execute65X02LdxAE, Execute65C02NopAF, 
-                Execute65X02BcsB0, Execute65X02LdaB1, Execute65C02LdaB2, Execute65C02NopB3, 
-                Execute65X02LdyB4, Execute65X02LdaB5, Execute65X02LdxB6, Execute65C02NopB7, 
-                Execute65X02ClvB8, Execute65X02LdaB9, Execute65X02TsxBA, Execute65C02NopBB, 
-                Execute65X02LdyBC, Execute65X02LdaBD, Execute65X02LdxBE, Execute65C02NopBF, 
-                Execute65X02CpyC0, Execute65X02CmpC1, Execute65C02NopC2, Execute65C02NopC3, 
-                Execute65X02CpyC4, Execute65X02CmpC5, Execute65X02DecC6, Execute65C02NopC7, 
-                Execute65X02InyC8, Execute65X02CmpC9, Execute65X02DexCA, Execute65C02NopCB, 
-                Execute65X02CpyCC, Execute65X02CmpCD, Execute65X02DecCE, Execute65C02NopCF, 
-                Execute65X02BneD0, Execute65X02CmpD1, Execute65C02CmpD2, Execute65C02NopD3, 
-                Execute65C02NopD4, Execute65X02CmpD5, Execute65X02DecD6, Execute65C02NopD7, 
-                Execute65X02CldD8, Execute65X02CmpD9, Execute65C02PhxDA, Execute65C02NopDB, 
-                Execute65C02NopDC, Execute65X02CmpDD, Execute65C02DecDE, Execute65C02NopDF, 
-                Execute65X02CpxE0, Execute65C02SbcE1, Execute65C02NopE2, Execute65C02NopE3, 
-                Execute65X02CpxE4, Execute65C02SbcE5, Execute65X02IncE6, Execute65C02NopE7, 
-                Execute65X02InxE8, Execute65C02SbcE9, Execute65X02NopEA, Execute65C02NopEB, 
-                Execute65X02CpxEC, Execute65C02SbcED, Execute65X02IncEE, Execute65C02NopEF, 
-                Execute65X02BeqF0, Execute65C02SbcF1, Execute65C02SbcF2, Execute65C02NopF3, 
-                Execute65C02NopF4, Execute65C02SbcF5, Execute65X02IncF6, Execute65C02NopF7, 
-                Execute65X02SedF8, Execute65C02SbcF9, Execute65C02PlxFA, Execute65C02NopFB, 
-                Execute65C02NopFC, Execute65C02SbcFD, Execute65C02IncFE, Execute65C02NopFF
-            };
-		}
+		// ReSharper disable once UnusedMember.Global
+		int Execute();
+		long Cycles { get; }
+		int Multiplier { get; }
 
-		public override void Initialize()
+		// ReSharper disable once UnusedMember.Global
+		void Sync(IComponentSerializer ser);
+	}
+
+	// ReSharper disable once UnusedMember.Global
+	public sealed partial class Cpu : ICpu
+	{
+		private readonly IMemoryBus _memory;
+
+		public Cpu(IMemoryBus memory)
 		{
-			_memory = Machine.Memory;
+			_memory = memory;
+			InitializeOpCodeDelegates();
 
 			Is65C02 = true;
-			IsThrottled = false;
 			Multiplier = 1;
-
 			RS = 0xFF;
 		}
 
-		public override void Reset()
+		private void InitializeOpCodeDelegates()
+		{
+			_executeOpCode65N02 = new Action[]
+			{
+				Execute65X02Brk00, Execute65X02Ora01, Execute65N02Nop02, Execute65N02Nop03,
+				Execute65N02Nop04, Execute65X02Ora05, Execute65X02Asl06, Execute65N02Nop07,
+				Execute65X02Php08, Execute65X02Ora09, Execute65X02Asl0A, Execute65N02Nop0B,
+				Execute65N02Nop0C, Execute65X02Ora0D, Execute65X02Asl0E, Execute65N02Nop0F,
+				Execute65X02Bpl10, Execute65X02Ora11, Execute65N02Nop12, Execute65N02Nop13,
+				Execute65N02Nop14, Execute65X02Ora15, Execute65X02Asl16, Execute65N02Nop17,
+				Execute65X02Clc18, Execute65X02Ora19, Execute65N02Nop1A, Execute65N02Nop1B,
+				Execute65N02Nop1C, Execute65X02Ora1D, Execute65N02Asl1E, Execute65N02Nop1F,
+				Execute65X02Jsr20, Execute65X02And21, Execute65N02Nop22, Execute65N02Nop23,
+				Execute65X02Bit24, Execute65X02And25, Execute65X02Rol26, Execute65N02Nop27,
+				Execute65X02Plp28, Execute65X02And29, Execute65X02Rol2A, Execute65N02Nop2B,
+				Execute65X02Bit2C, Execute65X02And2D, Execute65X02Rol2E, Execute65N02Nop2F,
+				Execute65X02Bmi30, Execute65X02And31, Execute65N02Nop32, Execute65N02Nop33,
+				Execute65N02Nop34, Execute65X02And35, Execute65X02Rol36, Execute65N02Nop37,
+				Execute65X02Sec38, Execute65X02And39, Execute65N02Nop3A, Execute65N02Nop3B,
+				Execute65N02Nop3C, Execute65X02And3D, Execute65N02Rol3E, Execute65N02Nop3F,
+				Execute65X02Rti40, Execute65X02Eor41, Execute65N02Nop42, Execute65N02Nop43,
+				Execute65N02Nop44, Execute65X02Eor45, Execute65X02Lsr46, Execute65N02Nop47,
+				Execute65X02Pha48, Execute65X02Eor49, Execute65X02Lsr4A, Execute65N02Nop4B,
+				Execute65X02Jmp4C, Execute65X02Eor4D, Execute65X02Lsr4E, Execute65N02Nop4F,
+				Execute65X02Bvc50, Execute65X02Eor51, Execute65N02Nop52, Execute65N02Nop53,
+				Execute65N02Nop54, Execute65X02Eor55, Execute65X02Lsr56, Execute65N02Nop57,
+				Execute65X02Cli58, Execute65X02Eor59, Execute65N02Nop5A, Execute65N02Nop5B,
+				Execute65N02Nop5C, Execute65X02Eor5D, Execute65N02Lsr5E, Execute65N02Nop5F,
+				Execute65X02Rts60, Execute65N02Adc61, Execute65N02Nop62, Execute65N02Nop63,
+				Execute65N02Nop64, Execute65N02Adc65, Execute65X02Ror66, Execute65N02Nop67,
+				Execute65X02Pla68, Execute65N02Adc69, Execute65X02Ror6A, Execute65N02Nop6B,
+				Execute65N02Jmp6C, Execute65N02Adc6D, Execute65X02Ror6E, Execute65N02Nop6F,
+				Execute65X02Bvs70, Execute65N02Adc71, Execute65N02Nop72, Execute65N02Nop73,
+				Execute65N02Nop74, Execute65N02Adc75, Execute65X02Ror76, Execute65N02Nop77,
+				Execute65X02Sei78, Execute65N02Adc79, Execute65N02Nop7A, Execute65N02Nop7B,
+				Execute65N02Nop7C, Execute65N02Adc7D, Execute65N02Ror7E, Execute65N02Nop7F,
+				Execute65N02Nop80, Execute65X02Sta81, Execute65N02Nop82, Execute65N02Nop83,
+				Execute65X02Sty84, Execute65X02Sta85, Execute65X02Stx86, Execute65N02Nop87,
+				Execute65X02Dey88, Execute65N02Nop89, Execute65X02Txa8A, Execute65N02Nop8B,
+				Execute65X02Sty8C, Execute65X02Sta8D, Execute65X02Stx8E, Execute65N02Nop8F,
+				Execute65X02Bcc90, Execute65X02Sta91, Execute65N02Nop92, Execute65N02Nop93,
+				Execute65X02Sty94, Execute65X02Sta95, Execute65X02Stx96, Execute65N02Nop97,
+				Execute65X02Tya98, Execute65X02Sta99, Execute65X02Txs9A, Execute65N02Nop9B,
+				Execute65N02Nop9C, Execute65X02Sta9D, Execute65N02Nop9E, Execute65N02Nop9F,
+				Execute65X02LdyA0, Execute65X02LdaA1, Execute65X02LdxA2, Execute65N02NopA3,
+				Execute65X02LdyA4, Execute65X02LdaA5, Execute65X02LdxA6, Execute65N02NopA7,
+				Execute65X02TayA8, Execute65X02LdaA9, Execute65X02TaxAA, Execute65N02NopAB,
+				Execute65X02LdyAC, Execute65X02LdaAD, Execute65X02LdxAE, Execute65N02NopAF,
+				Execute65X02BcsB0, Execute65X02LdaB1, Execute65N02NopB2, Execute65N02NopB3,
+				Execute65X02LdyB4, Execute65X02LdaB5, Execute65X02LdxB6, Execute65N02NopB7,
+				Execute65X02ClvB8, Execute65X02LdaB9, Execute65X02TsxBA, Execute65N02NopBB,
+				Execute65X02LdyBC, Execute65X02LdaBD, Execute65X02LdxBE, Execute65N02NopBF,
+				Execute65X02CpyC0, Execute65X02CmpC1, Execute65N02NopC2, Execute65N02NopC3,
+				Execute65X02CpyC4, Execute65X02CmpC5, Execute65X02DecC6, Execute65N02NopC7,
+				Execute65X02InyC8, Execute65X02CmpC9, Execute65X02DexCA, Execute65N02NopCB,
+				Execute65X02CpyCC, Execute65X02CmpCD, Execute65X02DecCE, Execute65N02NopCF,
+				Execute65X02BneD0, Execute65X02CmpD1, Execute65N02NopD2, Execute65N02NopD3,
+				Execute65N02NopD4, Execute65X02CmpD5, Execute65X02DecD6, Execute65N02NopD7,
+				Execute65X02CldD8, Execute65X02CmpD9, Execute65N02NopDA, Execute65N02NopDB,
+				Execute65N02NopDC, Execute65X02CmpDD, Execute65N02DecDE, Execute65N02NopDF,
+				Execute65X02CpxE0, Execute65N02SbcE1, Execute65N02NopE2, Execute65N02NopE3,
+				Execute65X02CpxE4, Execute65N02SbcE5, Execute65X02IncE6, Execute65N02NopE7,
+				Execute65X02InxE8, Execute65N02SbcE9, Execute65X02NopEA, Execute65N02NopEB,
+				Execute65X02CpxEC, Execute65N02SbcED, Execute65X02IncEE, Execute65N02NopEF,
+				Execute65X02BeqF0, Execute65N02SbcF1, Execute65N02NopF2, Execute65N02NopF3,
+				Execute65N02NopF4, Execute65N02SbcF5, Execute65X02IncF6, Execute65N02NopF7,
+				Execute65X02SedF8, Execute65N02SbcF9, Execute65N02NopFA, Execute65N02NopFB,
+				Execute65N02NopFC, Execute65N02SbcFD, Execute65N02IncFE, Execute65N02NopFF
+			};
+
+			_executeOpCode65C02 = new Action[]
+			{
+				Execute65X02Brk00, Execute65X02Ora01, Execute65C02Nop02, Execute65C02Nop03,
+				Execute65C02Tsb04, Execute65X02Ora05, Execute65X02Asl06, Execute65C02Nop07,
+				Execute65X02Php08, Execute65X02Ora09, Execute65X02Asl0A, Execute65C02Nop0B,
+				Execute65C02Tsb0C, Execute65X02Ora0D, Execute65X02Asl0E, Execute65C02Nop0F,
+				Execute65X02Bpl10, Execute65X02Ora11, Execute65C02Ora12, Execute65C02Nop13,
+				Execute65C02Trb14, Execute65X02Ora15, Execute65X02Asl16, Execute65C02Nop17,
+				Execute65X02Clc18, Execute65X02Ora19, Execute65C02Ina1A, Execute65C02Nop1B,
+				Execute65C02Trb1C, Execute65X02Ora1D, Execute65C02Asl1E, Execute65C02Nop1F,
+				Execute65X02Jsr20, Execute65X02And21, Execute65C02Nop22, Execute65C02Nop23,
+				Execute65X02Bit24, Execute65X02And25, Execute65X02Rol26, Execute65C02Nop27,
+				Execute65X02Plp28, Execute65X02And29, Execute65X02Rol2A, Execute65C02Nop2B,
+				Execute65X02Bit2C, Execute65X02And2D, Execute65X02Rol2E, Execute65C02Nop2F,
+				Execute65X02Bmi30, Execute65X02And31, Execute65C02And32, Execute65C02Nop33,
+				Execute65C02Bit34, Execute65X02And35, Execute65X02Rol36, Execute65C02Nop37,
+				Execute65X02Sec38, Execute65X02And39, Execute65C02Dea3A, Execute65C02Nop3B,
+				Execute65C02Bit3C, Execute65X02And3D, Execute65C02Rol3E, Execute65C02Nop3F,
+				Execute65X02Rti40, Execute65X02Eor41, Execute65C02Nop42, Execute65C02Nop43,
+				Execute65C02Nop44, Execute65X02Eor45, Execute65X02Lsr46, Execute65C02Nop47,
+				Execute65X02Pha48, Execute65X02Eor49, Execute65X02Lsr4A, Execute65C02Nop4B,
+				Execute65X02Jmp4C, Execute65X02Eor4D, Execute65X02Lsr4E, Execute65C02Nop4F,
+				Execute65X02Bvc50, Execute65X02Eor51, Execute65C02Eor52, Execute65C02Nop53,
+				Execute65C02Nop54, Execute65X02Eor55, Execute65X02Lsr56, Execute65C02Nop57,
+				Execute65X02Cli58, Execute65X02Eor59, Execute65C02Phy5A, Execute65C02Nop5B,
+				Execute65C02Nop5C, Execute65X02Eor5D, Execute65C02Lsr5E, Execute65C02Nop5F,
+				Execute65X02Rts60, Execute65C02Adc61, Execute65C02Nop62, Execute65C02Nop63,
+				Execute65C02Stz64, Execute65C02Adc65, Execute65X02Ror66, Execute65C02Nop67,
+				Execute65X02Pla68, Execute65C02Adc69, Execute65X02Ror6A, Execute65C02Nop6B,
+				Execute65C02Jmp6C, Execute65C02Adc6D, Execute65X02Ror6E, Execute65C02Nop6F,
+				Execute65X02Bvs70, Execute65C02Adc71, Execute65C02Adc72, Execute65C02Nop73,
+				Execute65C02Stz74, Execute65C02Adc75, Execute65X02Ror76, Execute65C02Nop77,
+				Execute65X02Sei78, Execute65C02Adc79, Execute65C02Ply7A, Execute65C02Nop7B,
+				Execute65C02Jmp7C, Execute65C02Adc7D, Execute65C02Ror7E, Execute65C02Nop7F,
+				Execute65C02Bra80, Execute65X02Sta81, Execute65C02Nop82, Execute65C02Nop83,
+				Execute65X02Sty84, Execute65X02Sta85, Execute65X02Stx86, Execute65C02Nop87,
+				Execute65X02Dey88, Execute65C02Bit89, Execute65X02Txa8A, Execute65C02Nop8B,
+				Execute65X02Sty8C, Execute65X02Sta8D, Execute65X02Stx8E, Execute65C02Nop8F,
+				Execute65X02Bcc90, Execute65X02Sta91, Execute65C02Sta92, Execute65C02Nop93,
+				Execute65X02Sty94, Execute65X02Sta95, Execute65X02Stx96, Execute65C02Nop97,
+				Execute65X02Tya98, Execute65X02Sta99, Execute65X02Txs9A, Execute65C02Nop9B,
+				Execute65C02Stz9C, Execute65X02Sta9D, Execute65C02Stz9E, Execute65C02Nop9F,
+				Execute65X02LdyA0, Execute65X02LdaA1, Execute65X02LdxA2, Execute65C02NopA3,
+				Execute65X02LdyA4, Execute65X02LdaA5, Execute65X02LdxA6, Execute65C02NopA7,
+				Execute65X02TayA8, Execute65X02LdaA9, Execute65X02TaxAA, Execute65C02NopAB,
+				Execute65X02LdyAC, Execute65X02LdaAD, Execute65X02LdxAE, Execute65C02NopAF,
+				Execute65X02BcsB0, Execute65X02LdaB1, Execute65C02LdaB2, Execute65C02NopB3,
+				Execute65X02LdyB4, Execute65X02LdaB5, Execute65X02LdxB6, Execute65C02NopB7,
+				Execute65X02ClvB8, Execute65X02LdaB9, Execute65X02TsxBA, Execute65C02NopBB,
+				Execute65X02LdyBC, Execute65X02LdaBD, Execute65X02LdxBE, Execute65C02NopBF,
+				Execute65X02CpyC0, Execute65X02CmpC1, Execute65C02NopC2, Execute65C02NopC3,
+				Execute65X02CpyC4, Execute65X02CmpC5, Execute65X02DecC6, Execute65C02NopC7,
+				Execute65X02InyC8, Execute65X02CmpC9, Execute65X02DexCA, Execute65C02NopCB,
+				Execute65X02CpyCC, Execute65X02CmpCD, Execute65X02DecCE, Execute65C02NopCF,
+				Execute65X02BneD0, Execute65X02CmpD1, Execute65C02CmpD2, Execute65C02NopD3,
+				Execute65C02NopD4, Execute65X02CmpD5, Execute65X02DecD6, Execute65C02NopD7,
+				Execute65X02CldD8, Execute65X02CmpD9, Execute65C02PhxDA, Execute65C02NopDB,
+				Execute65C02NopDC, Execute65X02CmpDD, Execute65C02DecDE, Execute65C02NopDF,
+				Execute65X02CpxE0, Execute65C02SbcE1, Execute65C02NopE2, Execute65C02NopE3,
+				Execute65X02CpxE4, Execute65C02SbcE5, Execute65X02IncE6, Execute65C02NopE7,
+				Execute65X02InxE8, Execute65C02SbcE9, Execute65X02NopEA, Execute65C02NopEB,
+				Execute65X02CpxEC, Execute65C02SbcED, Execute65X02IncEE, Execute65C02NopEF,
+				Execute65X02BeqF0, Execute65C02SbcF1, Execute65C02SbcF2, Execute65C02NopF3,
+				Execute65C02NopF4, Execute65C02SbcF5, Execute65X02IncF6, Execute65C02NopF7,
+				Execute65X02SedF8, Execute65C02SbcF9, Execute65C02PlxFA, Execute65C02NopFB,
+				Execute65C02NopFC, Execute65C02SbcFD, Execute65C02IncFE, Execute65C02NopFF
+			};
+		}
+
+		public void Reset()
 		{
 			RS = (RS - 3) & 0xFF; // [4-14]
 			RPC = _memory.ReadRomRegionE0FF(0xFFFC) | (_memory.ReadRomRegionE0FF(0xFFFD) << 8);
-			RP |= (PB | PI);
+			RP |= (Pb | Pi);
 			if (Is65C02) // [C-10]
 			{
-				RP &= ~PD;
+				RP &= ~Pd;
 			}
 		}
 
@@ -177,12 +188,12 @@ namespace Jellyfish.Virtu
 				RA, RX, RY, RP, RS, RPC, EA, CC);
 		}
 
-		public string[] TraceState()
+		private string[] TraceState()
 		{
 			string[] parts = new string[2];
-			parts[0] = string.Format("{0:X4}  {1:X2} {2} ", RPC, _memory.Read(RPC), ReadOpcode(RPC));
+			parts[0] = $"{RPC:X4}  {_memory.Read(RPC):X2} {ReadOpcode(RPC)} ";
 			parts[1] = string.Format(
-				"A:{0:X2} X:{1:X2} Y:{2:X2} P:{3:X2} SP:{4:X2} Cy:{5}",
+				"A:{0:X2} X:{1:X2} Y:{2:X2} P:{3:X2} SP:{4:X2} {6}{7}{8}{9}{10}{11}{12}{13} Cy:{5}",
 				RA,
 				RX,
 				RY,
@@ -204,164 +215,164 @@ namespace Jellyfish.Virtu
 		private string ReadOpcode(int pc)
 		{
 			//It would be so much better if I could just use the MOS6502X's Disassemble Method here.
-
-			if (pc <= 0xFFFD)	//sanity check to make sure we don't read from outside address space.
+			if (pc <= 0xFFFD)   //sanity check to make sure we don't read from outside address space.
 			{
 				switch (_memory.Peek(pc))
 				{
-					case 0x0C: return string.Format("NOP (${0:X4})", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x0D: return string.Format("ORA ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x0E: return string.Format("ASL ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x19: return string.Format("ORA ${0:X4},Y *", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x1D: return string.Format("ORA ${0:X4},X *", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x1E: return string.Format("ASL ${0:X4},X", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x20: return string.Format("JSR ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x2C: return string.Format("BIT ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x2D: return string.Format("AND ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x2E: return string.Format("ROL ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x39: return string.Format("AND ${0:X4},Y *", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x3D: return string.Format("AND ${0:X4},X *", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x3E: return string.Format("ROL ${0:X4},X", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x4C: return string.Format("JMP ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x4D: return string.Format("EOR ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x4E: return string.Format("LSR ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x59: return string.Format("EOR ${0:X4},Y *", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x5D: return string.Format("EOR ${0:X4},X *", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x5E: return string.Format("LSR ${0:X4},X", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x6C: return string.Format("JMP (${0:X4})", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x6D: return string.Format("ADC ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x6E: return string.Format("ROR ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x79: return string.Format("ADC ${0:X4},Y *", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x7D: return string.Format("ADC ${0:X4},X *", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x7E: return string.Format("ROR ${0:X4},X", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x8C: return string.Format("STY ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x8D: return string.Format("STA ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x8E: return string.Format("STX ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x99: return string.Format("STA ${0:X4},Y", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0x9D: return string.Format("STA ${0:X4},X", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xAC: return string.Format("LDY ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xAD: return string.Format("LDA ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xAE: return string.Format("LDX ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xB9: return string.Format("LDA ${0:X4},Y *", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xBC: return string.Format("LDY ${0:X4},X *", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xBD: return string.Format("LDA ${0:X4},X *", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xBE: return string.Format("LDX ${0:X4},Y *", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xCC: return string.Format("CPY ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xCD: return string.Format("CMP ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xCE: return string.Format("DEC ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xD9: return string.Format("CMP ${0:X4},Y *", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xDD: return string.Format("CMP ${0:X4},X *", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xDE: return string.Format("DEC ${0:X4},X", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xEC: return string.Format("CPX ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xED: return string.Format("SBC ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xEE: return string.Format("INC ${0:X4}", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xF9: return string.Format("SBC ${0:X4},Y *", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xFD: return string.Format("SBC ${0:X4},X *", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-					case 0xFE: return string.Format("INC ${0:X4},X", _memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8);
-
+					case 0x0C: return $"NOP (${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4})";
+					case 0x0D: return $"ORA ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0x0E: return $"ASL ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0x19: return $"ORA ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},Y *";
+					case 0x1D: return $"ORA ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},X *";
+					case 0x1E: return $"ASL ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},X";
+					case 0x20: return $"JSR ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0x2C: return $"BIT ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0x2D: return $"AND ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0x2E: return $"ROL ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0x39: return $"AND ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},Y *";
+					case 0x3D: return $"AND ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},X *";
+					case 0x3E: return $"ROL ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},X";
+					case 0x4C: return $"JMP ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0x4D: return $"EOR ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0x4E: return $"LSR ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0x59: return $"EOR ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},Y *";
+					case 0x5D: return $"EOR ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},X *";
+					case 0x5E: return $"LSR ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},X";
+					case 0x6C: return $"JMP (${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4})";
+					case 0x6D: return $"ADC ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0x6E: return $"ROR ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0x79: return $"ADC ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},Y *";
+					case 0x7D: return $"ADC ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},X *";
+					case 0x7E: return $"ROR ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},X";
+					case 0x8C: return $"STY ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0x8D: return $"STA ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0x8E: return $"STX ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0x99: return $"STA ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},Y";
+					case 0x9D: return $"STA ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},X";
+					case 0xAC: return $"LDY ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0xAD: return $"LDA ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0xAE: return $"LDX ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0xB9: return $"LDA ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},Y *";
+					case 0xBC: return $"LDY ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},X *";
+					case 0xBD: return $"LDA ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},X *";
+					case 0xBE: return $"LDX ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},Y *";
+					case 0xCC: return $"CPY ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0xCD: return $"CMP ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0xCE: return $"DEC ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0xD9: return $"CMP ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},Y *";
+					case 0xDD: return $"CMP ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},X *";
+					case 0xDE: return $"DEC ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},X";
+					case 0xEC: return $"CPX ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0xED: return $"SBC ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0xEE: return $"INC ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4}";
+					case 0xF9: return $"SBC ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},Y *";
+					case 0xFD: return $"SBC ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},X *";
+					case 0xFE: return $"INC ${_memory.Peek(pc + 1) | _memory.Peek(pc + 2) << 8:X4},X";
 				}
 			}
-			if (pc <= 0xFFFE)	//read two-byte opcodes here
+
+			if (pc <= 0xFFFE)   //read two-byte opcodes here
 			{
 				switch (_memory.Peek(pc))
 				{
-					case 0x01: return string.Format("ORA (${0:X2},X)", _memory.Peek(++pc));
-					case 0x04: return string.Format("NOP ${0:X2}", _memory.Peek(++pc));
-					case 0x05: return string.Format("ORA ${0:X2}", _memory.Peek(++pc));
-					case 0x06: return string.Format("ASL ${0:X2}", _memory.Peek(++pc));
-					case 0x09: return string.Format("ORA #${0:X2}", _memory.Peek(++pc));
-					case 0x10: return string.Format("BPL ${0:X4}", pc + 2 + (sbyte)_memory.Peek(pc + 1));
-					case 0x11: return string.Format("ORA (${0:X2}),Y *", _memory.Peek(++pc));
-					case 0x14: return string.Format("NOP ${0:X2},X", _memory.Peek(++pc));
-					case 0x15: return string.Format("ORA ${0:X2},X", _memory.Peek(++pc));
-					case 0x16: return string.Format("ASL ${0:X2},X", _memory.Peek(++pc));
-					case 0x1C: return string.Format("NOP (${0:X2},X)", _memory.Peek(++pc));
-					case 0x21: return string.Format("AND (${0:X2},X)", _memory.Peek(++pc));
-					case 0x24: return string.Format("BIT ${0:X2}", _memory.Peek(++pc));
-					case 0x25: return string.Format("AND ${0:X2}", _memory.Peek(++pc));
-					case 0x26: return string.Format("ROL ${0:X2}", _memory.Peek(++pc));
-					case 0x29: return string.Format("AND #${0:X2}", _memory.Peek(++pc));
-					case 0x30: return string.Format("BMI ${0:X4}", pc + 2 + (sbyte)_memory.Peek(pc + 1));
-					case 0x31: return string.Format("AND (${0:X2}),Y *", _memory.Peek(++pc));
-					case 0x34: return string.Format("NOP ${0:X2},X", _memory.Peek(++pc));
-					case 0x35: return string.Format("AND ${0:X2},X", _memory.Peek(++pc));
-					case 0x36: return string.Format("ROL ${0:X2},X", _memory.Peek(++pc));
-					case 0x3C: return string.Format("NOP (${0:X2},X)", _memory.Peek(++pc));
-					case 0x41: return string.Format("EOR (${0:X2},X)", _memory.Peek(++pc));
-					case 0x44: return string.Format("NOP ${0:X2}", _memory.Peek(++pc));
-					case 0x45: return string.Format("EOR ${0:X2}", _memory.Peek(++pc));
-					case 0x46: return string.Format("LSR ${0:X2}", _memory.Peek(++pc));
-					case 0x49: return string.Format("EOR #${0:X2}", _memory.Peek(++pc));
-					case 0x50: return string.Format("BVC ${0:X4}", pc + 2 + (sbyte)_memory.Peek(pc + 1));
-					case 0x51: return string.Format("EOR (${0:X2}),Y *", _memory.Peek(++pc));
-					case 0x54: return string.Format("NOP ${0:X2},X", _memory.Peek(++pc));
-					case 0x55: return string.Format("EOR ${0:X2},X", _memory.Peek(++pc));
-					case 0x56: return string.Format("LSR ${0:X2},X", _memory.Peek(++pc));
-					case 0x5C: return string.Format("NOP (${0:X2},X)", _memory.Peek(++pc));
-					case 0x61: return string.Format("ADC (${0:X2},X)", _memory.Peek(++pc));
-					case 0x64: return string.Format("NOP ${0:X2}", _memory.Peek(++pc));
-					case 0x65: return string.Format("ADC ${0:X2}", _memory.Peek(++pc));
-					case 0x66: return string.Format("ROR ${0:X2}", _memory.Peek(++pc));
-					case 0x69: return string.Format("ADC #${0:X2}", _memory.Peek(++pc));
-					case 0x70: return string.Format("BVS ${0:X4}", pc + 2 + (sbyte)_memory.Peek(pc + 1));
-					case 0x71: return string.Format("ADC (${0:X2}),Y *", _memory.Peek(++pc));
-					case 0x74: return string.Format("NOP ${0:X2},X", _memory.Peek(++pc));
-					case 0x75: return string.Format("ADC ${0:X2},X", _memory.Peek(++pc));
-					case 0x76: return string.Format("ROR ${0:X2},X", _memory.Peek(++pc));
-					case 0x7C: return string.Format("NOP (${0:X2},X)", _memory.Peek(++pc));
-					case 0x80: return string.Format("NOP #${0:X2}", _memory.Peek(++pc));
-					case 0x81: return string.Format("STA (${0:X2},X)", _memory.Peek(++pc));
-					case 0x82: return string.Format("NOP #${0:X2}", _memory.Peek(++pc));
-					case 0x84: return string.Format("STY ${0:X2}", _memory.Peek(++pc));
-					case 0x85: return string.Format("STA ${0:X2}", _memory.Peek(++pc));
-					case 0x86: return string.Format("STX ${0:X2}", _memory.Peek(++pc));
-					case 0x89: return string.Format("NOP #${0:X2}", _memory.Peek(++pc));
-					case 0x90: return string.Format("BCC ${0:X4}", pc + 2 + (sbyte)_memory.Peek(pc + 1));
-					case 0x91: return string.Format("STA (${0:X2}),Y", _memory.Peek(++pc));
-					case 0x94: return string.Format("STY ${0:X2},X", _memory.Peek(++pc));
-					case 0x95: return string.Format("STA ${0:X2},X", _memory.Peek(++pc));
-					case 0x96: return string.Format("STX ${0:X2},Y", _memory.Peek(++pc));
-					case 0xA0: return string.Format("LDY #${0:X2}", _memory.Peek(++pc));
-					case 0xA1: return string.Format("LDA (${0:X2},X)", _memory.Peek(++pc));
-					case 0xA2: return string.Format("LDX #${0:X2}", _memory.Peek(++pc));
-					case 0xA4: return string.Format("LDY ${0:X2}", _memory.Peek(++pc));
-					case 0xA5: return string.Format("LDA ${0:X2}", _memory.Peek(++pc));
-					case 0xA6: return string.Format("LDX ${0:X2}", _memory.Peek(++pc));
-					case 0xA9: return string.Format("LDA #${0:X2}", _memory.Peek(++pc));
-					case 0xB0: return string.Format("BCS ${0:X4}", pc + 2 + (sbyte)_memory.Peek(pc + 1));
-					case 0xB1: return string.Format("LDA (${0:X2}),Y *", _memory.Peek(++pc));
-					case 0xB4: return string.Format("LDY ${0:X2},X", _memory.Peek(++pc));
-					case 0xB5: return string.Format("LDA ${0:X2},X", _memory.Peek(++pc));
-					case 0xB6: return string.Format("LDX ${0:X2},Y", _memory.Peek(++pc));
-					case 0xC0: return string.Format("CPY #${0:X2}", _memory.Peek(++pc));
-					case 0xC1: return string.Format("CMP (${0:X2},X)", _memory.Peek(++pc));
-					case 0xC2: return string.Format("NOP #${0:X2}", _memory.Peek(++pc));
-					case 0xC4: return string.Format("CPY ${0:X2}", _memory.Peek(++pc));
-					case 0xC5: return string.Format("CMP ${0:X2}", _memory.Peek(++pc));
-					case 0xC6: return string.Format("DEC ${0:X2}", _memory.Peek(++pc));
-					case 0xC9: return string.Format("CMP #${0:X2}", _memory.Peek(++pc));
-					case 0xD0: return string.Format("BNE ${0:X4}", pc + 2 + (sbyte)_memory.Peek(pc + 1));
-					case 0xD1: return string.Format("CMP (${0:X2}),Y *", _memory.Peek(++pc));
-					case 0xD4: return string.Format("NOP ${0:X2},X", _memory.Peek(++pc));
-					case 0xD5: return string.Format("CMP ${0:X2},X", _memory.Peek(++pc));
-					case 0xD6: return string.Format("DEC ${0:X2},X", _memory.Peek(++pc));
-					case 0xDC: return string.Format("NOP (${0:X2},X)", _memory.Peek(++pc));
-					case 0xE0: return string.Format("CPX #${0:X2}", _memory.Peek(++pc));
-					case 0xE1: return string.Format("SBC (${0:X2},X)", _memory.Peek(++pc));
-					case 0xE2: return string.Format("NOP #${0:X2}", _memory.Peek(++pc));
-					case 0xE4: return string.Format("CPX ${0:X2}", _memory.Peek(++pc));
-					case 0xE5: return string.Format("SBC ${0:X2}", _memory.Peek(++pc));
-					case 0xE6: return string.Format("INC ${0:X2}", _memory.Peek(++pc));
-					case 0xE9: return string.Format("SBC #${0:X2}", _memory.Peek(++pc));
-					case 0xF0: return string.Format("BEQ ${0:X4}", pc + 2 + (sbyte)_memory.Peek(pc + 1));
-					case 0xF1: return string.Format("SBC (${0:X2}),Y *", _memory.Peek(++pc));
-					case 0xF4: return string.Format("NOP ${0:X2},X", _memory.Peek(++pc));
-					case 0xF5: return string.Format("SBC ${0:X2},X", _memory.Peek(++pc));
-					case 0xF6: return string.Format("INC ${0:X2},X", _memory.Peek(++pc));
-					case 0xFC: return string.Format("NOP (${0:X2},X)", _memory.Peek(++pc));
+					case 0x01: return $"ORA (${_memory.Peek(++pc):X2},X)";
+					case 0x04: return $"NOP ${_memory.Peek(++pc):X2}";
+					case 0x05: return $"ORA ${_memory.Peek(++pc):X2}";
+					case 0x06: return $"ASL ${_memory.Peek(++pc):X2}";
+					case 0x09: return $"ORA #${_memory.Peek(++pc):X2}";
+					case 0x10: return $"BPL ${pc + 2 + (sbyte) _memory.Peek(pc + 1):X4}";
+					case 0x11: return $"ORA (${_memory.Peek(++pc):X2}),Y *";
+					case 0x14: return $"NOP ${_memory.Peek(++pc):X2},X";
+					case 0x15: return $"ORA ${_memory.Peek(++pc):X2},X";
+					case 0x16: return $"ASL ${_memory.Peek(++pc):X2},X";
+					case 0x1C: return $"NOP (${_memory.Peek(++pc):X2},X)";
+					case 0x21: return $"AND (${_memory.Peek(++pc):X2},X)";
+					case 0x24: return $"BIT ${_memory.Peek(++pc):X2}";
+					case 0x25: return $"AND ${_memory.Peek(++pc):X2}";
+					case 0x26: return $"ROL ${_memory.Peek(++pc):X2}";
+					case 0x29: return $"AND #${_memory.Peek(++pc):X2}";
+					case 0x30: return $"BMI ${pc + 2 + (sbyte) _memory.Peek(pc + 1):X4}";
+					case 0x31: return $"AND (${_memory.Peek(++pc):X2}),Y *";
+					case 0x34: return $"NOP ${_memory.Peek(++pc):X2},X";
+					case 0x35: return $"AND ${_memory.Peek(++pc):X2},X";
+					case 0x36: return $"ROL ${_memory.Peek(++pc):X2},X";
+					case 0x3C: return $"NOP (${_memory.Peek(++pc):X2},X)";
+					case 0x41: return $"EOR (${_memory.Peek(++pc):X2},X)";
+					case 0x44: return $"NOP ${_memory.Peek(++pc):X2}";
+					case 0x45: return $"EOR ${_memory.Peek(++pc):X2}";
+					case 0x46: return $"LSR ${_memory.Peek(++pc):X2}";
+					case 0x49: return $"EOR #${_memory.Peek(++pc):X2}";
+					case 0x50: return $"BVC ${pc + 2 + (sbyte) _memory.Peek(pc + 1):X4}";
+					case 0x51: return $"EOR (${_memory.Peek(++pc):X2}),Y *";
+					case 0x54: return $"NOP ${_memory.Peek(++pc):X2},X";
+					case 0x55: return $"EOR ${_memory.Peek(++pc):X2},X";
+					case 0x56: return $"LSR ${_memory.Peek(++pc):X2},X";
+					case 0x5C: return $"NOP (${_memory.Peek(++pc):X2},X)";
+					case 0x61: return $"ADC (${_memory.Peek(++pc):X2},X)";
+					case 0x64: return $"NOP ${_memory.Peek(++pc):X2}";
+					case 0x65: return $"ADC ${_memory.Peek(++pc):X2}";
+					case 0x66: return $"ROR ${_memory.Peek(++pc):X2}";
+					case 0x69: return $"ADC #${_memory.Peek(++pc):X2}";
+					case 0x70: return $"BVS ${pc + 2 + (sbyte) _memory.Peek(pc + 1):X4}";
+					case 0x71: return $"ADC (${_memory.Peek(++pc):X2}),Y *";
+					case 0x74: return $"NOP ${_memory.Peek(++pc):X2},X";
+					case 0x75: return $"ADC ${_memory.Peek(++pc):X2},X";
+					case 0x76: return $"ROR ${_memory.Peek(++pc):X2},X";
+					case 0x7C: return $"NOP (${_memory.Peek(++pc):X2},X)";
+					case 0x80: return $"NOP #${_memory.Peek(++pc):X2}";
+					case 0x81: return $"STA (${_memory.Peek(++pc):X2},X)";
+					case 0x82: return $"NOP #${_memory.Peek(++pc):X2}";
+					case 0x84: return $"STY ${_memory.Peek(++pc):X2}";
+					case 0x85: return $"STA ${_memory.Peek(++pc):X2}";
+					case 0x86: return $"STX ${_memory.Peek(++pc):X2}";
+					case 0x89: return $"NOP #${_memory.Peek(++pc):X2}";
+					case 0x90: return $"BCC ${pc + 2 + (sbyte) _memory.Peek(pc + 1):X4}";
+					case 0x91: return $"STA (${_memory.Peek(++pc):X2}),Y";
+					case 0x94: return $"STY ${_memory.Peek(++pc):X2},X";
+					case 0x95: return $"STA ${_memory.Peek(++pc):X2},X";
+					case 0x96: return $"STX ${_memory.Peek(++pc):X2},Y";
+					case 0xA0: return $"LDY #${_memory.Peek(++pc):X2}";
+					case 0xA1: return $"LDA (${_memory.Peek(++pc):X2},X)";
+					case 0xA2: return $"LDX #${_memory.Peek(++pc):X2}";
+					case 0xA4: return $"LDY ${_memory.Peek(++pc):X2}";
+					case 0xA5: return $"LDA ${_memory.Peek(++pc):X2}";
+					case 0xA6: return $"LDX ${_memory.Peek(++pc):X2}";
+					case 0xA9: return $"LDA #${_memory.Peek(++pc):X2}";
+					case 0xB0: return $"BCS ${pc + 2 + (sbyte) _memory.Peek(pc + 1):X4}";
+					case 0xB1: return $"LDA (${_memory.Peek(++pc):X2}),Y *";
+					case 0xB4: return $"LDY ${_memory.Peek(++pc):X2},X";
+					case 0xB5: return $"LDA ${_memory.Peek(++pc):X2},X";
+					case 0xB6: return $"LDX ${_memory.Peek(++pc):X2},Y";
+					case 0xC0: return $"CPY #${_memory.Peek(++pc):X2}";
+					case 0xC1: return $"CMP (${_memory.Peek(++pc):X2},X)";
+					case 0xC2: return $"NOP #${_memory.Peek(++pc):X2}";
+					case 0xC4: return $"CPY ${_memory.Peek(++pc):X2}";
+					case 0xC5: return $"CMP ${_memory.Peek(++pc):X2}";
+					case 0xC6: return $"DEC ${_memory.Peek(++pc):X2}";
+					case 0xC9: return $"CMP #${_memory.Peek(++pc):X2}";
+					case 0xD0: return $"BNE ${pc + 2 + (sbyte) _memory.Peek(pc + 1):X4}";
+					case 0xD1: return $"CMP (${_memory.Peek(++pc):X2}),Y *";
+					case 0xD4: return $"NOP ${_memory.Peek(++pc):X2},X";
+					case 0xD5: return $"CMP ${_memory.Peek(++pc):X2},X";
+					case 0xD6: return $"DEC ${_memory.Peek(++pc):X2},X";
+					case 0xDC: return $"NOP (${_memory.Peek(++pc):X2},X)";
+					case 0xE0: return $"CPX #${_memory.Peek(++pc):X2}";
+					case 0xE1: return $"SBC (${_memory.Peek(++pc):X2},X)";
+					case 0xE2: return $"NOP #${_memory.Peek(++pc):X2}";
+					case 0xE4: return $"CPX ${_memory.Peek(++pc):X2}";
+					case 0xE5: return $"SBC ${_memory.Peek(++pc):X2}";
+					case 0xE6: return $"INC ${_memory.Peek(++pc):X2}";
+					case 0xE9: return $"SBC #${_memory.Peek(++pc):X2}";
+					case 0xF0: return $"BEQ ${pc + 2 + (sbyte) _memory.Peek(pc + 1):X4}";
+					case 0xF1: return $"SBC (${_memory.Peek(++pc):X2}),Y *";
+					case 0xF4: return $"NOP ${_memory.Peek(++pc):X2},X";
+					case 0xF5: return $"SBC ${_memory.Peek(++pc):X2},X";
+					case 0xF6: return $"INC ${_memory.Peek(++pc):X2},X";
+					case 0xFC: return $"NOP (${_memory.Peek(++pc):X2},X)";
 				}
 			}
-			if (pc <= 0xFFFF)	//read one-byte opcodes here
+
+			if (pc <= 0xFFFF) // read one-byte opcodes here
 			{
 				switch (_memory.Peek(pc))
 				{
@@ -402,27 +413,24 @@ namespace Jellyfish.Virtu
 					case 0xFA: return "NOP";
 				}
 			}
+
 			return "---";
 		}
 
 		public int Execute()
 		{
-			if (TraceCallback != null)
-			{
-				TraceCallback(TraceState());
-			}
-
+			TraceCallback?.Invoke(TraceState());
 			CC = 0;
 			OpCode = _memory.ReadOpcode(RPC);
 			RPC = (RPC + 1) & 0xFFFF;
 			_executeOpCode[OpCode]();
 			Cycles += CC;
 
-
 			return CC;
 		}
 
 		#region Core Operand Actions
+
 		private void GetAddressAbs() // abs
 		{
 			EA = _memory.Read(RPC) | (_memory.Read(RPC + 1) << 8);
@@ -508,7 +516,6 @@ namespace Jellyfish.Virtu
 		private int Pull()
 		{
 			RS = (RS + 1) & 0xFF;
-
 			return _memory.ReadZeroPage(0x0100 + RS);
 		}
 
@@ -537,7 +544,6 @@ namespace Jellyfish.Virtu
 		{
 			int data = _memory.Read(RPC);
 			RPC = (RPC + 1) & 0xFFFF;
-
 			return data;
 		}
 
@@ -615,34 +621,37 @@ namespace Jellyfish.Virtu
 		{
 			_memory.WriteZeroPage(EA, data);
 		}
+
 		#endregion
 
 		#region Core OpCode Actions
 		private void ExecuteAdc65N02(int data, int cc)
 		{
-			if ((RP & PD) == 0x0)
+			if ((RP & Pd) == 0x0)
 			{
-				int ra = RA + data + (RP & PC);
-				RP = RP & ~(PC | PN | PV | PZ) | ((ra >> 8) & PC) | DataPNZ[ra & 0xFF] | (((~(RA ^ data) & (RA ^ (ra & 0xFF))) >> 1) & PV);
+				int ra = RA + data + (RP & Pc);
+				RP = RP & ~(Pc | Pn | Pv | Pz) | ((ra >> 8) & Pc) | DataPnz[ra & 0xFF] | (((~(RA ^ data) & (RA ^ (ra & 0xFF))) >> 1) & Pv);
 				RA = ra & 0xFF;
 				CC += cc;
 			}
 			else // decimal
 			{
-				int ral = (RA & 0x0F) + (data & 0x0F) + (RP & PC);
+				int ral = (RA & 0x0F) + (data & 0x0F) + (RP & Pc);
 				int rah = (RA >> 4) + (data >> 4);
 				if (ral >= 10)
 				{
 					ral -= 10;
 					rah++;
 				}
+
 				int ra = (ral | (rah << 4)) & 0xFF;
-				RP = RP & ~(PC | PN | PV | PZ) | DataPN[ra] | (((~(RA ^ data) & (RA ^ ra)) >> 1) & PV) | DataPZ[(RA + data + (RP & PC)) & 0xFF];
+				RP = RP & ~(Pc | Pn | Pv | Pz) | DataPn[ra] | (((~(RA ^ data) & (RA ^ ra)) >> 1) & Pv) | DataPz[(RA + data + (RP & Pc)) & 0xFF];
 				if (rah >= 10)
 				{
 					rah -= 10;
-					RP |= PC;
+					RP |= Pc;
 				}
+
 				RA = (ral | (rah << 4)) & 0xFF;
 				CC += cc;
 			}
@@ -650,30 +659,32 @@ namespace Jellyfish.Virtu
 
 		private void ExecuteAdc65C02(int data, int cc)
 		{
-			if ((RP & PD) == 0x0)
+			if ((RP & Pd) == 0x0)
 			{
-				int ra = RA + data + (RP & PC);
-				RP = RP & ~(PC | PN | PV | PZ) | ((ra >> 8) & PC) | DataPNZ[ra & 0xFF] | (((~(RA ^ data) & (RA ^ (ra & 0xFF))) >> 1) & PV);
+				int ra = RA + data + (RP & Pc);
+				RP = RP & ~(Pc | Pn | Pv | Pz) | ((ra >> 8) & Pc) | DataPnz[ra & 0xFF] | (((~(RA ^ data) & (RA ^ (ra & 0xFF))) >> 1) & Pv);
 				RA = ra & 0xFF;
 				CC += cc;
 			}
 			else // decimal
 			{
-				int ral = (RA & 0x0F) + (data & 0x0F) + (RP & PC);
+				int ral = (RA & 0x0F) + (data & 0x0F) + (RP & Pc);
 				int rah = (RA >> 4) + (data >> 4);
 				if (ral >= 10)
 				{
 					ral -= 10;
 					rah++;
 				}
-				RP &= ~PC;
+
+				RP &= ~Pc;
 				if (rah >= 10)
 				{
 					rah -= 10;
-					RP |= PC;
+					RP |= Pc;
 				}
+
 				int ra = (ral | (rah << 4)) & 0xFF;
-				RP = RP & ~(PN | PV | PZ) | DataPNZ[ra] | (((~(RA ^ data) & (RA ^ ra)) >> 1) & PV);
+				RP = RP & ~(Pn | Pv | Pz) | DataPnz[ra] | (((~(RA ^ data) & (RA ^ ra)) >> 1) & Pv);
 				RA = ra;
 				CC += cc + 1;
 			}
@@ -682,15 +693,15 @@ namespace Jellyfish.Virtu
 		private void ExecuteAnd(int data, int cc)
 		{
 			RA &= data;
-			RP = RP & ~(PN | PZ) | DataPNZ[RA];
+			RP = RP & ~(Pn | Pz) | DataPnz[RA];
 			CC += cc;
 		}
 
 		private int ExecuteAsl(int data, int cc)
 		{
-			RP = RP & ~PC | ((data >> 7) & PC);
+			RP = RP & ~Pc | ((data >> 7) & Pc);
 			data = (data << 1) & 0xFF;
-			RP = RP & ~(PN | PZ) | DataPNZ[data];
+			RP = RP & ~(Pn | Pz) | DataPnz[data];
 			CC += cc;
 
 			return data;
@@ -698,15 +709,15 @@ namespace Jellyfish.Virtu
 
 		private void ExecuteAslImp(int cc)
 		{
-			RP = RP & ~PC | ((RA >> 7) & PC);
+			RP = RP & ~Pc | ((RA >> 7) & Pc);
 			RA = (RA << 1) & 0xFF;
-			RP = RP & ~(PN | PZ) | DataPNZ[RA];
+			RP = RP & ~(Pn | Pz) | DataPnz[RA];
 			CC += cc;
 		}
 
 		private void ExecuteBcc(int cc)
 		{
-			if ((RP & PC) == 0x0)
+			if ((RP & Pc) == 0x0)
 			{
 				int rpc = (RPC + 1) & 0xFFFF;
 				RPC = (RPC + 1 + (sbyte)_memory.Read(RPC)) & 0xFFFF;
@@ -721,7 +732,7 @@ namespace Jellyfish.Virtu
 
 		private void ExecuteBcs(int cc)
 		{
-			if ((RP & PC) != 0x0)
+			if ((RP & Pc) != 0x0)
 			{
 				int rpc = (RPC + 1) & 0xFFFF;
 				RPC = (RPC + 1 + (sbyte)_memory.Read(RPC)) & 0xFFFF;
@@ -736,7 +747,7 @@ namespace Jellyfish.Virtu
 
 		private void ExecuteBeq(int cc)
 		{
-			if ((RP & PZ) != 0x0)
+			if ((RP & Pz) != 0x0)
 			{
 				int rpc = (RPC + 1) & 0xFFFF;
 				RPC = (RPC + 1 + (sbyte)_memory.Read(RPC)) & 0xFFFF;
@@ -751,19 +762,19 @@ namespace Jellyfish.Virtu
 
 		private void ExecuteBit(int data, int cc)
 		{
-			RP = RP & ~(PN | PV | PZ) | (data & (PN | PV)) | DataPZ[RA & data];
+			RP = RP & ~(Pn | Pv | Pz) | (data & (Pn | Pv)) | DataPz[RA & data];
 			CC += cc;
 		}
 
 		private void ExecuteBitImm(int data, int cc)
 		{
-			RP = RP & ~PZ | DataPZ[RA & data];
+			RP = RP & ~Pz | DataPz[RA & data];
 			CC += cc;
 		}
 
 		private void ExecuteBmi(int cc)
 		{
-			if ((RP & PN) != 0x0)
+			if ((RP & Pn) != 0x0)
 			{
 				int rpc = (RPC + 1) & 0xFFFF;
 				RPC = (RPC + 1 + (sbyte)_memory.Read(RPC)) & 0xFFFF;
@@ -778,7 +789,7 @@ namespace Jellyfish.Virtu
 
 		private void ExecuteBne(int cc)
 		{
-			if ((RP & PZ) == 0x0)
+			if ((RP & Pz) == 0x0)
 			{
 				int rpc = (RPC + 1) & 0xFFFF;
 				RPC = (RPC + 1 + (sbyte)_memory.Read(RPC)) & 0xFFFF;
@@ -793,7 +804,7 @@ namespace Jellyfish.Virtu
 
 		private void ExecuteBpl(int cc)
 		{
-			if ((RP & PN) == 0x0)
+			if ((RP & Pn) == 0x0)
 			{
 				int rpc = (RPC + 1) & 0xFFFF;
 				RPC = (RPC + 1 + (sbyte)_memory.Read(RPC)) & 0xFFFF;
@@ -818,15 +829,15 @@ namespace Jellyfish.Virtu
 			int rpc = (RPC + 1) & 0xFFFF; // [4-18]
 			Push(rpc >> 8);
 			Push(rpc & 0xFF);
-			Push(RP | PB);
-			RP |= PI;
+			Push(RP | Pb);
+			RP |= Pi;
 			RPC = _memory.Read(0xFFFE) | (_memory.Read(0xFFFF) << 8);
 			CC += cc;
 		}
 
 		private void ExecuteBvc(int cc)
 		{
-			if ((RP & PV) == 0x0)
+			if ((RP & Pv) == 0x0)
 			{
 				int rpc = (RPC + 1) & 0xFFFF;
 				RPC = (RPC + 1 + (sbyte)_memory.Read(RPC)) & 0xFFFF;
@@ -841,7 +852,7 @@ namespace Jellyfish.Virtu
 
 		private void ExecuteBvs(int cc)
 		{
-			if ((RP & PV) != 0x0)
+			if ((RP & Pv) != 0x0)
 			{
 				int rpc = (RPC + 1) & 0xFFFF;
 				RPC = (RPC + 1 + (sbyte)_memory.Read(RPC)) & 0xFFFF;
@@ -856,60 +867,60 @@ namespace Jellyfish.Virtu
 
 		private void ExecuteClc(int cc)
 		{
-			RP &= ~PC;
+			RP &= ~Pc;
 			CC += cc;
 		}
 
 		private void ExecuteCld(int cc)
 		{
-			RP &= ~PD;
+			RP &= ~Pd;
 			CC += cc;
 		}
 
 		private void ExecuteCli(int cc)
 		{
-			RP &= ~PI;
+			RP &= ~Pi;
 			CC += cc;
 		}
 
 		private void ExecuteClv(int cc)
 		{
-			RP &= ~PV;
+			RP &= ~Pv;
 			CC += cc;
 		}
 
 		private void ExecuteCmp(int data, int cc)
 		{
 			int diff = RA - data;
-			RP = RP & ~(PC | PN | PZ) | ((~diff >> 8) & PC) | DataPNZ[diff & 0xFF];
+			RP = RP & ~(Pc | Pn | Pz) | ((~diff >> 8) & Pc) | DataPnz[diff & 0xFF];
 			CC += cc;
 		}
 
 		private void ExecuteCpx(int data, int cc)
 		{
 			int diff = RX - data;
-			RP = RP & ~(PC | PN | PZ) | ((~diff >> 8) & PC) | DataPNZ[diff & 0xFF];
+			RP = RP & ~(Pc | Pn | Pz) | ((~diff >> 8) & Pc) | DataPnz[diff & 0xFF];
 			CC += cc;
 		}
 
 		private void ExecuteCpy(int data, int cc)
 		{
 			int diff = RY - data;
-			RP = RP & ~(PC | PN | PZ) | ((~diff >> 8) & PC) | DataPNZ[diff & 0xFF];
+			RP = RP & ~(Pc | Pn | Pz) | ((~diff >> 8) & Pc) | DataPnz[diff & 0xFF];
 			CC += cc;
 		}
 
 		private void ExecuteDea(int cc)
 		{
 			RA = (RA - 1) & 0xFF;
-			RP = RP & ~(PN | PZ) | DataPNZ[RA];
+			RP = RP & ~(Pn | Pz) | DataPnz[RA];
 			CC += cc;
 		}
 
 		private int ExecuteDec(int data, int cc)
 		{
 			data = (data - 1) & 0xFF;
-			RP = RP & ~(PN | PZ) | DataPNZ[data];
+			RP = RP & ~(Pn | Pz) | DataPnz[data];
 			CC += cc;
 
 			return data;
@@ -918,35 +929,35 @@ namespace Jellyfish.Virtu
 		private void ExecuteDex(int cc)
 		{
 			RX = (RX - 1) & 0xFF;
-			RP = RP & ~(PN | PZ) | DataPNZ[RX];
+			RP = RP & ~(Pn | Pz) | DataPnz[RX];
 			CC += cc;
 		}
 
 		private void ExecuteDey(int cc)
 		{
 			RY = (RY - 1) & 0xFF;
-			RP = RP & ~(PN | PZ) | DataPNZ[RY];
+			RP = RP & ~(Pn | Pz) | DataPnz[RY];
 			CC += cc;
 		}
 
 		private void ExecuteEor(int data, int cc)
 		{
 			RA ^= data;
-			RP = RP & ~(PN | PZ) | DataPNZ[RA];
+			RP = RP & ~(Pn | Pz) | DataPnz[RA];
 			CC += cc;
 		}
 
 		private void ExecuteIna(int cc)
 		{
 			RA = (RA + 1) & 0xFF;
-			RP = RP & ~(PN | PZ) | DataPNZ[RA];
+			RP = RP & ~(Pn | Pz) | DataPnz[RA];
 			CC += cc;
 		}
 
 		private int ExecuteInc(int data, int cc)
 		{
 			data = (data + 1) & 0xFF;
-			RP = RP & ~(PN | PZ) | DataPNZ[data];
+			RP = RP & ~(Pn | Pz) | DataPnz[data];
 			CC += cc;
 
 			return data;
@@ -955,28 +966,14 @@ namespace Jellyfish.Virtu
 		private void ExecuteInx(int cc)
 		{
 			RX = (RX + 1) & 0xFF;
-			RP = RP & ~(PN | PZ) | DataPNZ[RX];
+			RP = RP & ~(Pn | Pz) | DataPnz[RX];
 			CC += cc;
 		}
 
 		private void ExecuteIny(int cc)
 		{
 			RY = (RY + 1) & 0xFF;
-			RP = RP & ~(PN | PZ) | DataPNZ[RY];
-			CC += cc;
-		}
-
-		private void ExecuteIrq(int cc)
-		{
-			Push(RPC >> 8);
-			Push(RPC & 0xFF);
-			Push(RP & ~PB);
-			RP |= PI;
-			if (Is65C02) // [C-10]
-			{
-				RP &= ~PD;
-			}
-			RPC = _memory.Read(0xFFFE) | (_memory.Read(0xFFFF) << 8);
+			RP = RP & ~(Pn | Pz) | DataPnz[RY];
 			CC += cc;
 		}
 
@@ -1019,29 +1016,29 @@ namespace Jellyfish.Virtu
 		private void ExecuteLda(int data, int cc)
 		{
 			RA = data;
-			RP = RP & ~(PN | PZ) | DataPNZ[RA];
+			RP = RP & ~(Pn | Pz) | DataPnz[RA];
 			CC += cc;
 		}
 
 		private void ExecuteLdx(int data, int cc)
 		{
 			RX = data;
-			RP = RP & ~(PN | PZ) | DataPNZ[RX];
+			RP = RP & ~(Pn | Pz) | DataPnz[RX];
 			CC += cc;
 		}
 
 		private void ExecuteLdy(int data, int cc)
 		{
 			RY = data;
-			RP = RP & ~(PN | PZ) | DataPNZ[RY];
+			RP = RP & ~(Pn | Pz) | DataPnz[RY];
 			CC += cc;
 		}
 
 		private int ExecuteLsr(int data, int cc)
 		{
-			RP = RP & ~PC | (data & PC);
+			RP = RP & ~Pc | (data & Pc);
 			data >>= 1;
-			RP = RP & ~(PN | PZ) | DataPNZ[data];
+			RP = RP & ~(Pn | Pz) | DataPnz[data];
 			CC += cc;
 
 			return data;
@@ -1049,23 +1046,9 @@ namespace Jellyfish.Virtu
 
 		private void ExecuteLsrImp(int cc)
 		{
-			RP = RP & ~PC | (RA & PC);
+			RP = RP & ~Pc | (RA & Pc);
 			RA >>= 1;
-			RP = RP & ~(PN | PZ) | DataPNZ[RA];
-			CC += cc;
-		}
-
-		private void ExecuteNmi(int cc)
-		{
-			Push(RPC >> 8);
-			Push(RPC & 0xFF);
-			Push(RP & ~PB);
-			RP |= PI;
-			if (Is65C02) // [C-10]
-			{
-				RP &= ~PD;
-			}
-			RPC = _memory.Read(0xFFFA) | (_memory.Read(0xFFFB) << 8);
+			RP = RP & ~(Pn | Pz) | DataPnz[RA];
 			CC += cc;
 		}
 
@@ -1083,7 +1066,7 @@ namespace Jellyfish.Virtu
 		private void ExecuteOra(int data, int cc)
 		{
 			RA |= data;
-			RP = RP & ~(PN | PZ) | DataPNZ[RA];
+			RP = RP & ~(Pn | Pz) | DataPnz[RA];
 			CC += cc;
 		}
 
@@ -1095,7 +1078,7 @@ namespace Jellyfish.Virtu
 
 		private void ExecutePhp(int cc)
 		{
-			Push(RP | PB); // [4-18]
+			Push(RP | Pb); // [4-18]
 			CC += cc;
 		}
 
@@ -1114,7 +1097,7 @@ namespace Jellyfish.Virtu
 		private void ExecutePla(int cc)
 		{
 			RA = Pull();
-			RP = RP & ~(PN | PZ) | DataPNZ[RA];
+			RP = RP & ~(Pn | Pz) | DataPnz[RA];
 			CC += cc;
 		}
 
@@ -1127,23 +1110,23 @@ namespace Jellyfish.Virtu
 		private void ExecutePlx(int cc)
 		{
 			RX = Pull();
-			RP = RP & ~(PN | PZ) | DataPNZ[RX];
+			RP = RP & ~(Pn | Pz) | DataPnz[RX];
 			CC += cc;
 		}
 
 		private void ExecutePly(int cc)
 		{
 			RY = Pull();
-			RP = RP & ~(PN | PZ) | DataPNZ[RY];
+			RP = RP & ~(Pn | Pz) | DataPnz[RY];
 			CC += cc;
 		}
 
 		private int ExecuteRol(int data, int cc)
 		{
-			int c = RP & PC;
-			RP = RP & ~PC | ((data >> 7) & PC);
+			int c = RP & Pc;
+			RP = RP & ~Pc | ((data >> 7) & Pc);
 			data = ((data << 1) | c) & 0xFF;
-			RP = RP & ~(PN | PZ) | DataPNZ[data];
+			RP = RP & ~(Pn | Pz) | DataPnz[data];
 			CC += cc;
 
 			return data;
@@ -1151,19 +1134,19 @@ namespace Jellyfish.Virtu
 
 		private void ExecuteRolImp(int cc)
 		{
-			int c = RP & PC;
-			RP = RP & ~PC | ((RA >> 7) & PC);
+			int c = RP & Pc;
+			RP = RP & ~Pc | ((RA >> 7) & Pc);
 			RA = ((RA << 1) | c) & 0xFF;
-			RP = RP & ~(PN | PZ) | DataPNZ[RA];
+			RP = RP & ~(Pn | Pz) | DataPnz[RA];
 			CC += cc;
 		}
 
 		private int ExecuteRor(int data, int cc)
 		{
-			int c = RP & PC;
-			RP = RP & ~PC | (data & PC);
+			int c = RP & Pc;
+			RP = RP & ~Pc | (data & Pc);
 			data = (c << 7) | (data >> 1);
-			RP = RP & ~(PN | PZ) | DataPNZ[data];
+			RP = RP & ~(Pn | Pz) | DataPnz[data];
 			CC += cc;
 
 			return data;
@@ -1171,10 +1154,10 @@ namespace Jellyfish.Virtu
 
 		private void ExecuteRorImp(int cc)
 		{
-			int c = RP & PC;
-			RP = RP & ~PC | (RA & PC);
+			int c = RP & Pc;
+			RP = RP & ~Pc | (RA & Pc);
 			RA = (c << 7) | (RA >> 1);
-			RP = RP & ~(PN | PZ) | DataPNZ[RA];
+			RP = RP & ~(Pn | Pz) | DataPnz[RA];
 			CC += cc;
 		}
 
@@ -1195,16 +1178,16 @@ namespace Jellyfish.Virtu
 
 		private void ExecuteSbc65N02(int data, int cc)
 		{
-			if ((RP & PD) == 0x0)
+			if ((RP & Pd) == 0x0)
 			{
-				int ra = RA - data - (~RP & PC);
-				RP = RP & ~(PC | PN | PV | PZ) | ((~ra >> 8) & PC) | DataPNZ[ra & 0xFF] | ((((RA ^ data) & (RA ^ (ra & 0xFF))) >> 1) & PV);
+				int ra = RA - data - (~RP & Pc);
+				RP = RP & ~(Pc | Pn | Pv | Pz) | ((~ra >> 8) & Pc) | DataPnz[ra & 0xFF] | ((((RA ^ data) & (RA ^ (ra & 0xFF))) >> 1) & Pv);
 				RA = ra & 0xFF;
 				CC += cc;
 			}
 			else // decimal
 			{
-				int ral = (RA & 0x0F) - (data & 0x0F) - (~RP & PC);
+				int ral = (RA & 0x0F) - (data & 0x0F) - (~RP & Pc);
 				int rah = (RA >> 4) - (data >> 4);
 				if (ral < 0)
 				{
@@ -1212,11 +1195,11 @@ namespace Jellyfish.Virtu
 					rah--;
 				}
 				int ra = (ral | (rah << 4)) & 0xFF;
-				RP = RP & ~(PN | PV | PZ) | PC | DataPN[ra] | ((((RA ^ data) & (RA ^ ra)) >> 1) & PV) | DataPZ[(RA - data - (~RP & PC)) & 0xFF];
+				RP = RP & ~(Pn | Pv | Pz) | Pc | DataPn[ra] | ((((RA ^ data) & (RA ^ ra)) >> 1) & Pv) | DataPz[(RA - data - (~RP & Pc)) & 0xFF];
 				if (rah < 0)
 				{
 					rah += 10;
-					RP &= ~PC;
+					RP &= ~Pc;
 				}
 				RA = (ral | (rah << 4)) & 0xFF;
 				CC += cc;
@@ -1225,30 +1208,30 @@ namespace Jellyfish.Virtu
 
 		private void ExecuteSbc65C02(int data, int cc)
 		{
-			if ((RP & PD) == 0x0)
+			if ((RP & Pd) == 0x0)
 			{
-				int ra = RA - data - (~RP & PC);
-				RP = RP & ~(PC | PN | PV | PZ) | ((~ra >> 8) & PC) | DataPNZ[ra & 0xFF] | ((((RA ^ data) & (RA ^ (ra & 0xFF))) >> 1) & PV);
+				int ra = RA - data - (~RP & Pc);
+				RP = RP & ~(Pc | Pn | Pv | Pz) | ((~ra >> 8) & Pc) | DataPnz[ra & 0xFF] | ((((RA ^ data) & (RA ^ (ra & 0xFF))) >> 1) & Pv);
 				RA = ra & 0xFF;
 				CC += cc;
 			}
 			else // decimal
 			{
-				int ral = (RA & 0x0F) - (data & 0x0F) - (~RP & PC);
+				int ral = (RA & 0x0F) - (data & 0x0F) - (~RP & Pc);
 				int rah = (RA >> 4) - (data >> 4);
 				if (ral < 0)
 				{
 					ral += 10;
 					rah--;
 				}
-				RP |= PC;
+				RP |= Pc;
 				if (rah < 0)
 				{
 					rah += 10;
-					RP &= ~PC;
+					RP &= ~Pc;
 				}
 				int ra = (ral | (rah << 4)) & 0xFF;
-				RP = RP & ~(PN | PV | PZ) | DataPNZ[ra] | ((((RA ^ data) & (RA ^ ra)) >> 1) & PV);
+				RP = RP & ~(Pn | Pv | Pz) | DataPnz[ra] | ((((RA ^ data) & (RA ^ ra)) >> 1) & Pv);
 				RA = ra;
 				CC += cc + 1;
 			}
@@ -1256,19 +1239,19 @@ namespace Jellyfish.Virtu
 
 		private void ExecuteSec(int cc)
 		{
-			RP |= PC;
+			RP |= Pc;
 			CC += cc;
 		}
 
 		private void ExecuteSed(int cc)
 		{
-			RP |= PD;
+			RP |= Pd;
 			CC += cc;
 		}
 
 		private void ExecuteSei(int cc)
 		{
-			RP |= PI;
+			RP |= Pi;
 			CC += cc;
 		}
 
@@ -1295,20 +1278,20 @@ namespace Jellyfish.Virtu
 		private void ExecuteTax(int cc)
 		{
 			RX = RA;
-			RP = RP & ~(PN | PZ) | DataPNZ[RX];
+			RP = RP & ~(Pn | Pz) | DataPnz[RX];
 			CC += cc;
 		}
 
 		private void ExecuteTay(int cc)
 		{
 			RY = RA;
-			RP = RP & ~(PN | PZ) | DataPNZ[RY];
+			RP = RP & ~(Pn | Pz) | DataPnz[RY];
 			CC += cc;
 		}
 
 		private int ExecuteTrb(int data, int cc)
 		{
-			RP = RP & ~PZ | DataPZ[RA & data];
+			RP = RP & ~Pz | DataPz[RA & data];
 			data &= ~RA;
 			CC += cc;
 
@@ -1317,7 +1300,7 @@ namespace Jellyfish.Virtu
 
 		private int ExecuteTsb(int data, int cc)
 		{
-			RP = RP & ~PZ | DataPZ[RA & data];
+			RP = RP & ~Pz | DataPz[RA & data];
 			data |= RA;
 			CC += cc;
 
@@ -1327,14 +1310,14 @@ namespace Jellyfish.Virtu
 		private void ExecuteTsx(int cc)
 		{
 			RX = RS;
-			RP = RP & ~(PN | PZ) | DataPNZ[RX];
+			RP = RP & ~(Pn | Pz) | DataPnz[RX];
 			CC += cc;
 		}
 
 		private void ExecuteTxa(int cc)
 		{
 			RA = RX;
-			RP = RP & ~(PN | PZ) | DataPNZ[RA];
+			RP = RP & ~(Pn | Pz) | DataPnz[RA];
 			CC += cc;
 		}
 
@@ -1347,7 +1330,7 @@ namespace Jellyfish.Virtu
 		private void ExecuteTya(int cc)
 		{
 			RA = RY;
-			RP = RP & ~(PN | PZ) | DataPNZ[RA];
+			RP = RP & ~(Pn | Pz) | DataPnz[RA];
 			CC += cc;
 		}
 		#endregion
@@ -2085,9 +2068,11 @@ namespace Jellyfish.Virtu
 		{
 			ExecuteTya(2);
 		}
+
 		#endregion
 
 		#region 65N02 OpCode Actions
+
 		private void Execute65N02Adc61() // adc (zpg, x)
 		{
 			GetAddressZpgIndX();
@@ -2747,6 +2732,7 @@ namespace Jellyfish.Virtu
 			GetAddressAbsXCC();
 			ExecuteSbc65N02(ReadAbsX(), 4);
 		}
+
 		#endregion
 
 		#region 65C02 OpCode Actions
@@ -3432,94 +3418,84 @@ namespace Jellyfish.Virtu
 			GetAddressAbs();
 			WriteAbs(ExecuteTsb(ReadAbs(), 6));
 		}
+
 		#endregion
 
-		[JsonIgnore]
-		public bool Is65C02 { get { return _is65C02; } set { _is65C02 = value; _executeOpCode = _is65C02 ? ExecuteOpCode65C02 : ExecuteOpCode65N02; } }
-		public bool IsThrottled { get; set; }
-		public int Multiplier { get; set; }
+		private bool Is65C02
+		{
+			get => _is65C02;
+			set { _is65C02 = value; _executeOpCode = _is65C02 ? _executeOpCode65C02 : _executeOpCode65N02; }
+		}
 
-		public int RA { get; set; }
-		public int RX { get; set; }
-		public int RY { get; set; }
-		public int RS { get; set; }
-		public int RP { get; set; }
-		public int RPC { get; set; }
-		public int EA { get; private set; }
-		public int CC { get; private set; }
-		public int OpCode { get; private set; }
-		public long Cycles { get; private set; }
+		public int Multiplier { get => _multiplier; private set => _multiplier = value; }
 
-		private Memory _memory;
+		public int RA { get => _ra; set => _ra = value; }
+		public int RX { get => _rx; set => _rx = value; }
+		public int RY { get => _ry; set => _ry = value; }
+		public int RS { get => _rs; set => _rs = value; }
+		public int RP { get => _rp; set => _rp = value; }
+		public int RPC { get => _rpc; set => _rpc = value; }
+		public int EA { get => _ea; private set => _ea = value; }
+		public int CC { get => _cc; private set => _cc = value; }
+		public int OpCode { get => _opCode; private set => _opCode = value; }
+		public long Cycles { get => _cycles; private set => _cycles = value; }
 
-		private bool _is65C02;
-		private Action[] _executeOpCode;
-
-		[JsonIgnore]
 		public Action<string[]> TraceCallback;
 
-		/// <summary>Carry Flag</summary>   
-		[JsonIgnore]
+		/// <summary>Carry Flag</summary>
 		public bool FlagC
 		{
-			get { return (RP & 0x01) != 0; }
-			set { RP = (byte)((RP & ~0x01) | (value ? 0x01 : 0x00)); }
+			get => (RP & 0x01) != 0;
+			set => RP = (byte)((RP & ~0x01) | (value ? 0x01 : 0x00));
 		}
 
 		/// <summary>Zero Flag</summary>
-		[JsonIgnore]
 		public bool FlagZ
 		{
-			get { return (RP & 0x02) != 0; }
-			set { RP = (byte)((RP & ~0x02) | (value ? 0x02 : 0x00)); }
+			get => (RP & 0x02) != 0;
+			set => RP = (byte)((RP & ~0x02) | (value ? 0x02 : 0x00));
 		}
 
 		/// <summary>Interrupt Disable Flag</summary>
-		[JsonIgnore]
 		public bool FlagI
 		{
-			get { return (RP & 0x04) != 0; }
-			set { RP = (byte)((RP & ~0x04) | (value ? 0x04 : 0x00)); }
+			get => (RP & 0x04) != 0;
+			set => RP = (byte)((RP & ~0x04) | (value ? 0x04 : 0x00));
 		}
 
 		/// <summary>Decimal Mode Flag</summary>
-		[JsonIgnore]
 		public bool FlagD
 		{
-			get { return (RP & 0x08) != 0; }
-			set { RP = (byte)((RP & ~0x08) | (value ? 0x08 : 0x00)); }
+			get => (RP & 0x08) != 0;
+			set => RP = (byte)((RP & ~0x08) | (value ? 0x08 : 0x00));
 		}
 
 		/// <summary>Break Flag</summary>
-		[JsonIgnore]
 		public bool FlagB
 		{
-			get { return (RP & 0x10) != 0; }
-			set { RP = (byte)((RP & ~0x10) | (value ? 0x10 : 0x00)); }
+			get => (RP & 0x10) != 0;
+			set => RP = (byte)((RP & ~0x10) | (value ? 0x10 : 0x00));
 		}
 
 		/// <summary>T... Flag</summary>
-		[JsonIgnore]
 		public bool FlagT
 		{
-			get { return (RP & 0x20) != 0; }
-			set { RP = (byte)((RP & ~0x20) | (value ? 0x20 : 0x00)); }
+			get => (RP & 0x20) != 0;
+			set => RP = (byte)((RP & ~0x20) | (value ? 0x20 : 0x00));
 		}
 
 		/// <summary>Overflow Flag</summary>
-		[JsonIgnore]
 		public bool FlagV
 		{
-			get { return (RP & 0x40) != 0; }
-			set { RP = (byte)((RP & ~0x40) | (value ? 0x40 : 0x00)); }
+			get => (RP & 0x40) != 0;
+			set => RP = (byte)((RP & ~0x40) | (value ? 0x40 : 0x00));
 		}
 
 		/// <summary>Negative Flag</summary>
-		[JsonIgnore]
 		public bool FlagN
 		{
-			get { return (RP & 0x80) != 0; }
-			set { RP = (byte)((RP & ~0x80) | (value ? 0x80 : 0x00)); }
+			get => (RP & 0x80) != 0;
+			set => RP = (byte)((RP & ~0x80) | (value ? 0x80 : 0x00));
 		}
 	}
 }

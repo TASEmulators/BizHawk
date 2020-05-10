@@ -1,19 +1,25 @@
-/* Mednafen - Multi-system Emulator
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+/******************************************************************************/
+/* Mednafen Sony PS1 Emulation Module                                         */
+/******************************************************************************/
+/* timer.cpp:
+**  Copyright (C) 2011-2016 Mednafen Team
+**
+** This program is free software; you can redistribute it and/or
+** modify it under the terms of the GNU General Public License
+** as published by the Free Software Foundation; either version 2
+** of the License, or (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software Foundation, Inc.,
+** 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
+
+#pragma GCC optimize ("unroll-loops")
 
 #include <assert.h>
 #include "psx.h"
@@ -50,7 +56,8 @@
 
 	Overflow/Carry flag	      0x1000
 		Cleared on mode/status read.
-		Set when counter overflows from 0xFFFF->0.
+		Set repeatedly after counter overflows from 0xFFFF->0 while before the next clocking(FIXME: currently not emulated correctly in respect
+		to the constant/repeated setting after an overflow but before the next clocking).
 
  Hidden flags:
 	IRQ done
@@ -141,7 +148,7 @@ static uint32 CalcNextEvent(void)
  return(next_event);
 }
 
-static bool TimerMatch(unsigned i)
+static MDFN_FASTCALL bool TimerMatch(unsigned i)
 {
  bool irq_exact = false;
 
@@ -172,7 +179,7 @@ static bool TimerMatch(unsigned i)
  return irq_exact;
 }
 
-static bool TimerOverflow(unsigned i)
+static MDFN_FASTCALL bool TimerOverflow(unsigned i)
 {
  bool irq_exact = false;
 
@@ -197,7 +204,7 @@ static bool TimerOverflow(unsigned i)
  return irq_exact;
 }
 
-static void ClockTimer(int i, uint32 clocks)
+static MDFN_FASTCALL void ClockTimer(int i, uint32 clocks)
 {
  if(Timers[i].DoZeCounting <= 0)
   clocks = 0;
@@ -248,7 +255,7 @@ static void ClockTimer(int i, uint32 clocks)
  }
 }
 
-void TIMER_SetVBlank(bool status)
+MDFN_FASTCALL void TIMER_SetVBlank(bool status)
 {
  switch(Timers[1].Mode & 0x7)
  {
@@ -291,7 +298,7 @@ void TIMER_SetVBlank(bool status)
  vblank = status;
 }
 
-void TIMER_SetHRetrace(bool status)
+MDFN_FASTCALL void TIMER_SetHRetrace(bool status)
 {
  if(hretrace && !status)
  {
@@ -307,7 +314,7 @@ void TIMER_SetHRetrace(bool status)
  hretrace = status;
 }
 
-void TIMER_AddDotClocks(uint32 count)
+MDFN_FASTCALL void TIMER_AddDotClocks(uint32 count)
 {
  if(Timers[0].Mode & 0x100)
   ClockTimer(0, count);
@@ -319,7 +326,7 @@ void TIMER_ClockHRetrace(void)
   ClockTimer(1, 1);
 }
 
-pscpu_timestamp_t TIMER_Update(const pscpu_timestamp_t timestamp)
+MDFN_FASTCALL pscpu_timestamp_t TIMER_Update(const pscpu_timestamp_t timestamp)
 {
  int32 cpu_clocks = timestamp - lastts;
 
@@ -338,7 +345,7 @@ pscpu_timestamp_t TIMER_Update(const pscpu_timestamp_t timestamp)
  return(timestamp + CalcNextEvent());
 }
 
-static void CalcCountingStart(unsigned which)
+static MDFN_FASTCALL void CalcCountingStart(unsigned which)
 {
  Timers[which].DoZeCounting = true;
 
@@ -365,7 +372,7 @@ static void CalcCountingStart(unsigned which)
  }
 }
 
-void TIMER_Write(const pscpu_timestamp_t timestamp, uint32 A, uint16 V)
+MDFN_FASTCALL void TIMER_Write(const pscpu_timestamp_t timestamp, uint32 A, uint16 V)
 {
  TIMER_Update(timestamp);
 
@@ -404,7 +411,7 @@ void TIMER_Write(const pscpu_timestamp_t timestamp, uint32 A, uint16 V)
  PSX_SetEventNT(PSX_EVENT_TIMER, timestamp + CalcNextEvent());
 }
 
-uint16 TIMER_Read(const pscpu_timestamp_t timestamp, uint32 A)
+MDFN_FASTCALL uint16 TIMER_Read(const pscpu_timestamp_t timestamp, uint32 A)
 {
  uint16 ret = 0;
  int which = (A >> 4) & 0x3;

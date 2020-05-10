@@ -14,4 +14,8 @@
 [submodule "mgba"]
 	path = mgba
 	url = https://github.com/TASVideos/mgba.git
-	branch = bizhawk-0.6
+	branch = bizhawk-0.9
+[submodule "melonds"]
+	path = melonds
+	url = https://github.com/TASVideos/melonDS.git
+	branch = SuuperW_DSHawk

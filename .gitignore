@@ -2,7 +2,7 @@
 /snes9xgit
 
 svnrev.cs
-.vs/**
+**/.vs/**
 **/bin/**
 **/obj/**
 /output/**
@@ -12,6 +12,7 @@ svnrev.cs
 **/ipch/**
 
 *.ilk
+*.il
 *.tlog
 *.obj
 *.o
@@ -74,3 +75,12 @@ libsnes/vs2015/libsnes.VC.db
 waterbox/**/*.wbx
 waterbox/**/*.wbx.in
 /BizHawkTool_template.zip
+
+mono_crash*
+
+.idea
+
+packages
+
+BizHawk.Emulation.Common/BizHawk.Emulation.Common.csproj.nuget.*
+BizHawk.Emulation.Common/project.assets.json

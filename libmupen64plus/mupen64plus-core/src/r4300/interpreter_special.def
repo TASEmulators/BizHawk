@@ -354,11 +354,61 @@ DECLARE_INSTRUCTION(DSUBU)
    ADD_TO_PC(1);
 }
 
+DECLARE_INSTRUCTION(TGE)
+{
+   if (rrs >= rrt)
+   {
+     DebugMessage(M64MSG_ERROR, "trap exception in TGE");
+     //stop=1;
+   }
+   ADD_TO_PC(1);
+}
+
+DECLARE_INSTRUCTION(TGEU)
+{
+   if ((unsigned long long)rrs >= (unsigned long long)rrt)
+   {
+     DebugMessage(M64MSG_ERROR, "trap exception in TGEU");
+     //stop=1;
+   }
+   ADD_TO_PC(1);
+}
+
+DECLARE_INSTRUCTION(TLT)
+{
+   if (rrs < rrt)
+   {
+     DebugMessage(M64MSG_ERROR, "trap exception in TLT");
+     //stop=1;
+   }
+   ADD_TO_PC(1);
+}
+
+DECLARE_INSTRUCTION(TLTU)
+{
+   if ((unsigned long long)rrs < (unsigned long long)rrt)
+   {
+     DebugMessage(M64MSG_ERROR, "trap exception in TLTU");
+     //stop=1;
+   }
+   ADD_TO_PC(1);
+}
+
 DECLARE_INSTRUCTION(TEQ)
 {
    if (rrs == rrt)
    {
      DebugMessage(M64MSG_ERROR, "trap exception in TEQ");
+     //stop=1;
+   }
+   ADD_TO_PC(1);
+}
+
+DECLARE_INSTRUCTION(TNE)
+{
+   if (rrs != rrt)
+   {
+     DebugMessage(M64MSG_ERROR, "trap exception in TNE");
      //stop=1;
    }
    ADD_TO_PC(1);

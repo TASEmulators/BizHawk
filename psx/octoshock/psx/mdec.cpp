@@ -1,19 +1,25 @@
-/* Mednafen - Multi-system Emulator
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+/******************************************************************************/
+/* Mednafen Sony PS1 Emulation Module                                         */
+/******************************************************************************/
+/* mdec.cpp:
+**  Copyright (C) 2011-2016 Mednafen Team
+**
+** This program is free software; you can redistribute it and/or
+** modify it under the terms of the GNU General Public License
+** as published by the Free Software Foundation; either version 2
+** of the License, or (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software Foundation, Inc.,
+** 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
+
+#pragma GCC optimize ("unroll-loops")
 
 /*
  MDEC_READ_FIFO(tfr) vs InCounter vs MDEC_DMACanRead() is a bit fragile right now.  Actually, the entire horrible state machine monstrosity is fragile.
@@ -62,12 +68,16 @@
 
 #include "masmem.h"
 
-#if defined(__SSE2__)
+#if defined(__SSE2__) || (defined(ARCH_X86) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 9)))
 #include <xmmintrin.h>
 #include <emmintrin.h>
 #endif
 
-#if defined(ARCH_POWERPC_ALTIVEC) && defined(HAVE_ALTIVEC_H)
+#if 0 //defined(HAVE_NEON_INTRINSICS)
+#include <arm_neon.h>
+#endif
+
+#if defined(HAVE_ALTIVEC_INTRINSICS) && defined(HAVE_ALTIVEC_H)
  #include <altivec.h>
 #endif
 
@@ -207,6 +217,10 @@ template<bool isReader> void MDEC_SyncState(EW::NewState *ns)
   NSS(RAMOffsetCounter);
   NSS(RAMOffsetWWS);
 
+	if(isReader)
+	{
+		PixelBufferCount32 %= (sizeof(PixelBuffer.pix32) / sizeof(PixelBuffer.pix32[0])) + 1;
+	}
 }
 
 void MDEC_SyncState(bool isReader, EW::NewState *ns)
@@ -228,10 +242,18 @@ static INLINE int8 Mask9ClampS8(int32 v)
  return v;
 }
 
+////////////////////////
+//
+//
+#pragma GCC push_options
+
+#if defined(__SSE2__) || (defined(ARCH_X86) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 9)))
+//
+//
+//
+#pragma GCC target("sse2")
 template<typename T>
-static void IDCT_1D_Multi(int16 *in_coeff, T *out_coeff)
-{
-#if defined(__SSE2__)
+static INLINE void IDCT_1D_Multi(int16 *in_coeff, T *out_coeff)
 {
  for(unsigned col = 0; col < 8; col++)
  {
@@ -241,7 +263,7 @@ static void IDCT_1D_Multi(int16 *in_coeff, T *out_coeff)
   {
    __m128i sum;
    __m128i m;
-   int32 tmp[4] MDFN_ALIGN(16);
+   alignas(16) int32 tmp[4];
 
    m = _mm_load_si128((__m128i *)&IDCTMatrix[(x * 8)]);
    sum = _mm_madd_epi16(m, c);
@@ -258,7 +280,54 @@ static void IDCT_1D_Multi(int16 *in_coeff, T *out_coeff)
   }
  }
 }
+//
+//
+//
+#elif 0 //defined(HAVE_NEON_INTRINSICS)
+//
+//
+//
+template<typename T>
+static INLINE void IDCT_1D_Multi(int16 *in_coeff, T *out_coeff)
+{
+ for(unsigned col = 0; col < 8; col++)
+ {
+  register int16x4_t c0 = vld1_s16(MDFN_ASSUME_ALIGNED(in_coeff + col * 8 + 0, sizeof(int16x4_t)));
+  register int16x4_t c1 = vld1_s16(MDFN_ASSUME_ALIGNED(in_coeff + col * 8 + 4, sizeof(int16x4_t)));
+  int32 buf[8];
+
+  for(unsigned x = 0; x < 8; x++)
+  {
+   register int32x4_t accum;
+   register int32x2_t sum2;
+
+   accum = vdupq_n_s32(0);
+   accum = vmlal_s16(accum, c0, vld1_s16(MDFN_ASSUME_ALIGNED(IDCTMatrix + x * 8 + 0, sizeof(int16x4_t))));
+   accum = vmlal_s16(accum, c1, vld1_s16(MDFN_ASSUME_ALIGNED(IDCTMatrix + x * 8 + 4, sizeof(int16x4_t))));
+   sum2 = vadd_s32(vget_high_s32(accum), vget_low_s32(accum));
+   sum2 = vpadd_s32(sum2, sum2);
+   vst1_lane_s32(buf + x, sum2, 0);
+  }
+
+  for(unsigned x = 0; x < 8; x++)
+  {
+   if(sizeof(T) == 1)
+    out_coeff[(col * 8) + x] = Mask9ClampS8((buf[x] + 0x4000) >> 15);
+   else
+    out_coeff[(x * 8) + col] = (buf[x] + 0x4000) >> 15;
+  }
+ }
+}
+//
+//
+//
 #else
+//
+//
+//
+template<typename T>
+static INLINE void IDCT_1D_Multi(int16 *in_coeff, T *out_coeff)
+{
  for(unsigned col = 0; col < 8; col++)
  {
   for(unsigned x = 0; x < 8; x++)
@@ -276,17 +345,23 @@ static void IDCT_1D_Multi(int16 *in_coeff, T *out_coeff)
     out_coeff[(x * 8) + col] = (sum + 0x4000) >> 15;
   }
  }
-#endif
 }
+//
+//
+//
+#endif
 
-static void IDCT(int16 *in_coeff, int8 *out_coeff) NO_INLINE;
-static void IDCT(int16 *in_coeff, int8 *out_coeff)
+static NO_INLINE void IDCT(int16 *in_coeff, int8 *out_coeff)
 {
- EW_VAR_ALIGN(16) int16 tmpbuf[64];
+ alignas(16) int16 tmpbuf[64];
 
  IDCT_1D_Multi<int16>(in_coeff, tmpbuf);
  IDCT_1D_Multi<int8>(tmpbuf, out_coeff);
 }
+#pragma GCC pop_options
+//
+//
+///////////////////////
 
 static INLINE void YCbCr_to_RGB(const int8 y, const int8 cb, const int8 cr, int &r, int &g, int &b)
 {
@@ -497,20 +572,17 @@ static INLINE void WriteImageData(uint16 V, int32* eat_cycles)
 
    switch(DecodeWB)
    {
-    case 0: IDCT(Coeff, &block_cr[0][0]); break;
-    case 1: IDCT(Coeff, &block_cb[0][0]); break;
-    case 2: IDCT(Coeff, &block_y[0][0]); break;
-    case 3: IDCT(Coeff, &block_y[0][0]); break;
-    case 4: IDCT(Coeff, &block_y[0][0]); break;
-    case 5: IDCT(Coeff, &block_y[0][0]); break;
+    case 0: IDCT(Coeff, MDAP(block_cr)); break;
+    case 1: IDCT(Coeff, MDAP(block_cb)); break;
+    case 2: IDCT(Coeff, MDAP(block_y)); break;
+    case 3: IDCT(Coeff, MDAP(block_y)); break;
+    case 4: IDCT(Coeff, MDAP(block_y)); break;
+    case 5: IDCT(Coeff, MDAP(block_y)); break;
    }   
 
-   //
-   // Timing in the actual PS1 MDEC is complex due to (apparent) pipelining, but the average when decoding a large number of blocks is
-   // about 512.  We'll go with a lower value here to be conservative due to timing granularity and other timing deficiencies in Mednafen.  BUT, don't
-   // go lower than 460, or Parasite Eve 2's 3D models will stutter like crazy during FMV-background sequences.
-   //
-   *eat_cycles += 474;
+   // Timing in the PS1 MDEC is complex due to (apparent) pipelining, but the average when decoding a large number of blocks is
+   // about 512.
+   *eat_cycles += 512;
 
    if(DecodeWB >= 2)
    {
@@ -536,7 +608,7 @@ static INLINE void WriteImageData(uint16 V, int32* eat_cycles)
 #define MDEC_READ_FIFO(n)  { MDEC_WAIT_COND(InFIFO.CanRead()); n = InFIFO.Read(); }
 #define MDEC_EAT_CLOCKS(n) { ClockCounter -= (n); MDEC_WAIT_COND(ClockCounter > 0); }
 
-void MDEC_Run(int32 clocks)
+MDFN_FASTCALL void MDEC_Run(int32 clocks)
 {
  static const unsigned MDRPhaseBias = __COUNTER__ + 1;
 
@@ -608,9 +680,9 @@ void MDEC_Run(int32 clocks)
      MDEC_EAT_CLOCKS(need_eat);
 
      PixelBufferReadOffset = 0;
-     while(PixelBufferReadOffset != PixelBufferCount32)
+     while(PixelBufferReadOffset < PixelBufferCount32)
      {
-      MDEC_WRITE_FIFO(MDFN_de32lsb<true>(&PixelBuffer.pix32[PixelBufferReadOffset++]));
+      MDEC_WRITE_FIFO((MDFN_de32lsb<true>(&PixelBuffer.pix32[PixelBufferReadOffset++])));
      }
     } while(InCounter != 0xFFFF);
    }
@@ -674,8 +746,7 @@ void MDEC_Run(int32 clocks)
 }
 #endif
 
-
-void MDEC_DMAWrite(uint32 V)
+MDFN_FASTCALL void MDEC_DMAWrite(uint32 V)
 {
  if(InFIFO.CanWrite())
  {
@@ -688,7 +759,7 @@ void MDEC_DMAWrite(uint32 V)
  }
 }
 
-uint32 MDEC_DMARead(uint32* offs)
+MDFN_FASTCALL uint32 MDEC_DMARead(uint32* offs)
 {
  uint32 V = 0;
 
@@ -732,7 +803,7 @@ bool MDEC_DMACanRead(void)
  return((OutFIFO.CanRead() >= 0x20) && (Control & (1U << 29)));
 }
 
-void MDEC_Write(const pscpu_timestamp_t timestamp, uint32 A, uint32 V)
+MDFN_FASTCALL void MDEC_Write(const pscpu_timestamp_t timestamp, uint32 A, uint32 V)
 {
  //PSX_WARNING("[MDEC] Write: 0x%08x 0x%08x, %d  --- %u %u", A, V, timestamp, InFIFO.CanRead(), OutFIFO.CanRead());
  if(A & 4)
@@ -780,7 +851,7 @@ void MDEC_Write(const pscpu_timestamp_t timestamp, uint32 A, uint32 V)
  }
 }
 
-uint32 MDEC_Read(const pscpu_timestamp_t timestamp, uint32 A)
+MDFN_FASTCALL uint32 MDEC_Read(const pscpu_timestamp_t timestamp, uint32 A)
 {
  uint32 ret = 0;
 

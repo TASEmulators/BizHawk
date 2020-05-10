@@ -1,0 +1,1484 @@
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Type:	TOSEC
+;;; Source:	MSX MSX - Applications - [ROM] (TOSEC-v2012-04-15)
+;;; FileGen:	2020-02-07 10:53:22 (UTC)
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Bad Dumps
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Hacks
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+A24C566A9BD438A4377D8645039431E6	H	MT-Base (1987)(Micro Technology)(NL)[cr Speedy-Hacking No]	MSX			NL
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Over Dumps
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Translated
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Home Brew
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Believed Good
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+0CA0BC3192891C844813963545CB27A8		Cheese (1984)(Nipon Electronics)(JP)[mouse]	MSX			JP
+EFBA1BDE3BE6A3B1D6C235E4152DD261		Designer's Pencil, The (1984)(Pony Canyon)(JP)	MSX			JP
+515D5E66D1C215642D0E40A5E4BB9091		Dr. Copy-MSX v2.0 (1987)(Emiiru)(JP)	MSX			JP
+144E534CD1FD39C7E3FDCA776DC5A394		Eddy II (1984)(HAL Laboratory)(JP)	MSX			JP
+5BA2C72617EEA98101ACD59DC0696A99		Eddy II (1984)(HAL Laboratory)(JP)[a]	MSX			JP
+67EE3B624B84977A6FBC8BB1E1D8BEB9		FALC - Family Automation Language for Community (1984)(Sony)(JP)	MSX			JP
+31EC0861771017D024DD2E9AE72C2687		Home Calc (1984)(Matsushita Electric Industrial)(JP)	MSX			JP
+68FB0EDD8AC141D1D49535E5C5A98A04		Joytelop (1985)(JVC)(JP)	MSX			JP
+3C041801933E4CD9E63DE4170474979E		Kakikukekon (1985)(Casio)(JP)	MSX			JP
+9A1FEA866BF212266B540F31027BCD04		Konami's Game Master - European Version (1986)(Konami)(JP)[a][RC-735]	MSX			JP
+B4C20087E3FCF18FA270591F266A0937		Konami's Game Master - European Version (1986)(Konami)(JP)[RC-735]	MSX			JP
+FC825E62A51500B01F202DC08514A038		Konami's Game Master - Japanese Version (1985)(Konami)(JP)[a][RC-735]	MSX			JP
+9D5784C6B9B0F1DD3530B36EDCDCC47F		Konami's Game Master - Japanese Version (1985)(Konami)(JP)[RC-735]	MSX			JP
+660D6F9B5F951EF3AE3066F4C0766FF8		Konami's Game Master II (1988)(Konami)(JP)[a][RC-755]	MSX			JP
+AE7DD50D7EBBF9655AAF4245A3B17382		Konami's Game Master II (1988)(Konami)(JP)[a2][RC-755]	MSX			JP
+1FECD63CF4967DD6D2D4F6901D8D210B		Konami's Game Master II (1988)(Konami)(JP)[RC-755]	MSX			JP
+9722AFDE54A1E9C47FE1FD954CBFB246		Konami's Synthesizer (1986)(Konami)(JP)[a][RC-741]	MSX			JP
+458365AA94BEDCEF0718207C7ECBCF85		Konami's Synthesizer (1986)(Konami)(JP)[RC-741]	MSX			JP
+1C5DD99177224F2F7E3F2B38D1E5E13C		MSX Eiwajiten. MSX English-Japanese Dictionary (1988)(Hi-Score Software)(JP)	MSX			JP
+1720B10455456C9650EF01DF39003322		MSX Home Writer (1985)(Sony)(JP)	MSX			JP
+B71EA4135E7693D0F58E4D383C67B691		MSX-Aid (1986)(ASCII)(JP)	MSX			JP
+59DB5AC478946C092789CF2332FA87BE		MSX-Logo (1985)(Logo Computer Systems)(NL)[8103-23 - Dutch]	MSX			NL
+228105879B1514B0B1B6EA60821808D4		MUE - Music Editor (1984)(HAL Laboratory)(JP)	MSX			JP
+AB600EF7556DA280CA270C277D55D864		Music Harmonizer 3 (1984)(Rittor Music)(JP)	MSX			JP
+5A56FD9162FB3F6B10D7B795C08381B5		Music Studio G7 (1985)(Sony)(JP)	MSX			JP
+C2C97D709C4A372FECF7924665E1536E		NGA (1985)(The Links)(JP)	MSX			JP
+CC5456C42E5C3E6B7F6C8E29F8C3DDFC		NGA II (1985)(The Links)(JP)	MSX			JP
+F07C7CB16E4C8C4FCD9C55A5D6C67F08		NGA II (1985)(The Links)(JP)[a]	MSX			JP
+2D63114526A7DAB0B8C4B277FE601589		Pasokon Sakkyokuka. Computer Music Composer (1984)(Rittor Music)(JP)[press LSHIFT at boot]	MSX			JP
+7C8EDD81B65F2A09C388BE06A5321FC9		PSG Music Writer (1984)(Rittor Music)	MSX	
+D2BCC5E5C7D391484572BFD840293F09		Simple ASM v1.0 (1984)(Coral Sea)(JP)[type CALL START or CALL EDT]	MSX			JP
+62FE3CAE317C532F9C11A8A148447D18		Spread Sheet (1984)(Computermates)	MSX	
+CAA68E3E518D463CC6BD11C33C8B6D21		Super Monitor v1.1 (1985)(Emiiru)	MSX	
+E9C4D73991E625624319A3EB9B6081F1		Super Monitor v1.2 (1985)(Emiiru)	MSX	
+06C7C94665F34EF0942A3194A4C8BA00		Super Synthesizer (1984)(Victor)(JP)	MSX			JP
+3D24F0C7C609CF6848826A00927FCD7A		Super Synthesizer (1984)(Victor)(JP)[a]	MSX			JP
+81404A245C25A421C8EC4DC629EC4952		Synthe Saurus v1.1 (1988)(Bit2)(JP)	MSX			JP
+F31233A420335439E54C15F3DEC21358		Zen Assembler (1986)(Kuma Computers)(GB)	MSX			GB
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Type:	TOSEC
+;;; Source:	MSX MSX - Compilations - [ROM] (TOSEC-v2012-04-15)
+;;; FileGen:	2020-02-07 10:53:22 (UTC)
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Bad Dumps
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Hacks
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Over Dumps
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Translated
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Home Brew
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Believed Good
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+E0B1ED12B586B53B87DC66E756099721		Activision Gamecase (2002)(JAM)	MSX	
+3193E6AF7DBBF130A7F2BDBFA9337437		Casio Gamecase (2002)(JAM)	MSX	
+5147D60367BFA42327B1BF5CC8B0330D		Compile Gamecase (2002)(JAM)	MSX	
+603D2B429B05E69AAF6AE15EB40DD1E0		Game World - 126 Games (1990)(-)	MSX	
+3E3671CA10BF0C579AD40C8E3F3D840D		Hal Gamecase (2002)(JAM)	MSX	
+68D3187E88680C2F82A14B69C4050972		MSX-FAN Fandom Library 1 (1988)(Technopolis Soft)(JP)	MSX			JP
+7EC4CF6AFC2F8D9E5341D1EADF86A4E8		MSX-FAN Fandom Library 2 (1988)(Technopolis Soft)(JP)	MSX			JP
+3190CE45A2A2CF02EB34BA3233DB018A		MSX-FAN Fandom Library 3 (1988)(Technopolis Soft)(JP)	MSX			JP
+0A955B0104E15E6A48B1C31849BCEB02		Tape Gamecase (2002)(JAM)	MSX	
+566D16CBEFD6F27DBC6C59CA290B3390		Time and Magik III - The Price of Magik (1986)(Level 9 Computing)(GB)	MSX			GB
+F31233A420335439E54C15F3DEC21358		Zen Assembler (1986)(Kuma Computers)(GB)	MSX			GB
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Type:	TOSEC
+;;; Source:	MSX MSX - Demos - [ROM] (TOSEC-v2012-04-15)
+;;; FileGen:	2020-02-07 10:53:22 (UTC)
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Bad Dumps
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Hacks
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Over Dumps
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Translated
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Home Brew
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Believed Good
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+FE043097CECE49648477AD2CFEA69FD7		Psychedelia (1984)(Aackosoft)(NL)	MSX			NL
+566D16CBEFD6F27DBC6C59CA290B3390		Time and Magik III - The Price of Magik (1986)(Level 9 Computing)(GB)	MSX			GB
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Type:	TOSEC
+;;; Source:	MSX MSX - Firmware (TOSEC-v2012-04-15)
+;;; FileGen:	2020-02-07 10:53:22 (UTC)
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Bad Dumps
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Hacks
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+80DCD1AD1A4CF65D64B7BA10504E8190	H	MSX-DOS v2.2 (1984)(Microsoft)(US)(Disk 1 of 8)[f][0]	MSX			US
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Over Dumps
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Translated
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Home Brew
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Believed Good
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+76E6109A432272BBCEE2990F086104A0		Datagame Videotext Modem (19xx)(-)[DATAGAME.ROM]	MSX	
+AC82AB716E1698E80F9BC0AD1C4A56CF		Digital Design Eletronica Brazilian-Expert (19xx)(Digital Design Eletronica)(BR)[DISK.ROM]	MSX			BR
+B5312075030D4BBCF72973E835CFCE9B		Digital Design Eletronica DDX v1.0 - Port Based (19xx)(Digital Design Eletronica)(BR)[DDX10.ROM]	MSX			BR
+6072BC6C0016DBC7CBA76948458BF69B		Digital Design Eletronica DDX v3.0 - Mixed Port + Memory Based (19xx)(Digital Design Eletronica)(BR)[DDX30.ROM]	MSX			BR
+3B24D3BBC40CCB816264207145FF1F33		Digital Design Eletronica DDX v3.0c - Mixed Port + Memory Based (19xx)(Digital Design Eletronica)(BR)[DDX30C.ROM]	MSX			BR
+ABDBC70A4393C3272A7718AE99F8CC54		Digital Design Eletronica DDX v3.0d - Mixed Port + Memory Based (19xx)(Digital Design Eletronica)(BR)[DDX30D.ROM]	MSX			BR
+09A67D9C4B6E00E312C8395D9108DF12		Digital Design Eletronica DDX v3.0f - Mixed Port + Memory Based (19xx)(Digital Design Eletronica)(BR)[DDX30F.ROM]	MSX			BR
+38AFB3C92A4870687638354108F9CDA6		Digital Design Eletronica LiftRom Informatica 1989 (1989)(Digital Design Eletronica)(BR)[LIFTROM.ROM]	MSX			BR
+E38A9BFB8B397AA6C721F47EEFE130B9		Disk BASIC v1.0 for FS-FD1 (1987)(Matsushita Electric Industrial)(JP)	MSX			JP
+8428D1C1FB1D7A039FB68A222DD237FD		Disk BASIC v1.0 for FS-FD1A (1987)(Matsushita Electric Industrial)(JP)	MSX			JP
+125330DC743633DD4393D8F9A06FD2EA		Disk BASIC v1.0 for FS-FD351 (1985)(National)	MSX	
+1162FC9BC00E206C86918885B5EA10D3		Disk BASIC v1.1 for Epcom Sharp HB-3600 - Memory Based (1987)(Sharp)[SHARP.ROM]	MSX	
+420B729ABA0E206F7EC7F52957BF2E1E		DX7 Voicing Program YRM-13 (1984)(Yamaha)(JP)	MSX			JP
+60D987D27E6003C90678A5CB43ED148F		FB-01 Voicing Program YRM-56 (1985)(Yamaha)(JP)	MSX			JP
+AE2E0440DEFD75A8A986CC28EBEF8354		FM Music Composer II YRM-55 (1985)(Yamaha)(JP)	MSX			JP
+C652303F533C9BB0F8FBD272931E1D05		FM Music Composer YRM-15 (1984)(Yamaha)(JP)	MSX			JP
+BEA9539AE16DDC69711F25C878C99D1A		FM Music Macro YRM-11 (1984)(Yamaha)(JP)	MSX			JP
+AF8537262DF8DF267072F359399A7635		FM Pana Amusement Cartridge 16k v1.3 (1988)(Matsushita Electric Industrial)(JP)[FMPAC.ROM]	MSX			JP
+6F69CC8B5ED761B03AFD78000DFB0E19		FM Pana Amusement Cartridge 64k v1.3 (1988)(Matsushita Electric Industrial)(JP)[FMPAC.ROM]	MSX			JP
+BF430274DEB3F62D90986C6B40869978		FM Voicing Program YRM-12 (1985)(Yamaha)(JP)[no disk support]	MSX			JP
+A0452DBF5ACE7D2E49D0A8029EFED09A		Goldstar FC-200 MSX Disk BASIC (19xx)(Goldstar)	MSX	
+F35EDF0808FDD1A81F86EA647E5B38EE		Kanji ROM - JIS 1st Class for MSX-Write (1986)(ASCII)(JP)	MSX			JP
+C1E961A3E0F016E5409950EBCC5BFB4F		MegaRAM Disk DDX v1.1 (1989)(Digital Design Eletronica)(BR)	MSX			BR
+6B29D76005D573CF7BF7CF04500CFF9B		Microsol Tecnologia CDX2 1986 - Port Based (19xx)(-)[CDX-2.ROM]	MSX	
+5683B507AEB089380AF82A68E1B5463A		MIDI Macro YRM-33 (1986)(Yamaha)(JP)	MSX			JP
+16E5A4CA948C636A868FD0E267DA61C6		Mitsubishi MLFX1 BASIC BIOS (1983)(Mitsubishi Electronics)(JP)	MSX			JP
+EE2DCD6371357BB4B3CF46FCB5AC3154		MSX Acao Expert (19xx)(-)(BR)	MSX			BR
+337C2ABC33DC539C6AA2DBE0F5E7F523		MSX Audio FS-CA1 (1988)(Matsushita Electric Industrial)(JP)	MSX			JP
+9CC985086B6448F4CFFDCE0D95071FA4		MSX BASIC Cassette (19xx)(Elf)(JP)[CASSETTE A]	MSX			JP
+DC097654263FFB9FBE0D4C23AF5698D6		MSX BASIC Cassette (19xx)(Elf)(JP)[CASSETTE B]	MSX			JP
+DC6DFD991FFDC948A4216706C5717EB0		MSX BASIC Kun (1986)(ASCII)(JP)[a][XBASIC.ROM]	MSX			JP
+2A905423946F9876EBBFADE9445BC82B		MSX BASIC Kun (1986)(ASCII)(JP)[XBASIC.ROM]	MSX			JP
+4D42677B708457FEEC2978B75C45CC79		MSX BASIC Kun Plus v2.0 (1988)(ASCII)(JP)[a][XBASIC2.ROM]	MSX			JP
+0B6120F289336538BC564548109F97C6		MSX BASIC Kun Plus v2.0 (1988)(ASCII)(JP)[XBASIC2.ROM]	MSX			JP
+6D38551EC463D9E3FFB1DC1A6FDE8583		MSX BASIC Kun Plus v2.1 (1992)(ASCII)(JP)[XBASIC2.ROM]	MSX			JP
+761ADB92119B8D4B9545D91BF92FCD10		MSX BIOS ROM Image (19xx)(-)	MSX	
+BD8811D6D14F48E1119FE6DE815B351A		MSX BIOS ROM Image (19xx)(-)[a]	MSX	
+B12571C013CD5022CB3CE511EFAD04EF		MSX BIOS ROM Image Japanese (19xx)(-)	MSX	
+8EDA14CCACF16D9FA035629724BA2895		MSX BIOS ROM Image Korean (19xx)(-)	MSX	
+2ECAD47B942717CEF49A877A3AAE8DD0		MSX BIOS ROM Image Russian (19xx)(-)	MSX	
+9DED765D56F6947E0DC9922763EE7B8D		MSX BIOS ROM Image UK (19xx)(-)	MSX	
+394EFBC50FB7DF1151130D8C162F85C3		MSX Hangul Input Software v2.0 - Daewoo IQ-1000 DPC-100 (1984)(Qnix)	MSX	
+A3358F488AFDEEA9FC0486BA0C81A888		MSX ROM Image HotBit v1.1 (19xx)(Sharp)[HOTBIT11.ROM]	MSX	
+AA95AEA2563CD5EC0A0919B44CC17D47		MSX System v1.0 + MSX BASIC (1983)(Microsoft)(US)[a][MSX.ROM]	MSX			US
+95C94878C0ECF0B4C0D8BC8DEAA9D7F3		MSX System v1.0 + MSX BASIC (1983)(Microsoft)(US)[MSX.ROM]	MSX			US
+9218F6DD89F7BA01E3090D44721B4260		MSX System v1.0 + MSX BASIC Japanese (1983)(Microsoft)(US)[JAPMSX1.ROM]	MSX			US
+C84F362C44192659273D45AE97462362		MSX System v1.0 + MSX BASIC Korean (1983)(Microsoft)(US)[KORMSX1.ROM]	MSX			US
+47713E6274886B9A81B33F9B7FB79D78		MSX System v1.0 + MSX BASIC UK (1983)(Microsoft)(US)[MSXUK.ROM]	MSX			US
+546AFC078124698CAE4C4B8DFB7CCBC3		MSX v2.0 Korean Han (1984)(Qnix)[MSXHAN.ROM]	MSX	
+A2786C3FDDF03D04EA27BABA464F57AE		MSX-DOS v1.0 (1986)(Technoahead)[TECHNOAH.ROM]	MSX	
+20DBD1A0E09D5F563C0C7A7B213C251A		MSX-DOS v2.2 (1984)(Microsoft)(US)(Disk 2 of 8)[1]	MSX			US
+7B12CB667BB8000361729A92E5E5A3BE		MSX-DOS v2.2 (1984)(Microsoft)(US)(Disk 3 of 8)[2]	MSX			US
+2E99B7BC26C46EFA06DAC37EF055EB38		MSX-DOS v2.2 (1984)(Microsoft)(US)(Disk 5 of 8)[4]	MSX			US
+B8B8F46B4189E5906CDC5D83F605C257		MSX-DOS v2.2 (1984)(Microsoft)(US)[a][DISK.ROM]	MSX			US
+C99E74CE27B07A32AA5D450C3CB91B4E		MSX-DOS v2.2 (1984)(Microsoft)(US)[a2][DISK.ROM]	MSX			US
+973368692A03FCA68C0E658856348460		MSX-DOS v2.2 (1984)(Microsoft)(US)[DISK.ROM]	MSX			US
+151F3659D993F68B1694FD1BFDE022D5		MSX-Write (1986)(ASCII)(JP)	MSX			JP
+841CF24BD4606CCE44D414641F21805D		Music Module MSX-Audio (19xx)(-)[MODULE.ROM]	MSX	
+38CEAC0E507CE410FD6095FEE0AC7AC7		National FS-SR022 MSX Bunsetsu Henkan Jisho (1985)(National)	MSX	
+AA63EC638470E181F00954358F44D011		National FS-SR022 MSX Jisho Data (1985)(National)	MSX	
+F873F1260B14F1468FA118778AE1C3D2		National Matsushita CF-3300 MSX BIOS + BASIC v1.0 (1984)(Matsushita Electric Industrial)(JP)[MSX1.ROM]	MSX			JP
+318B6AA76DA71C54CCAD7734356E1902		National Matsushita CF-3300 MSX Disk BASIC v1.0 (1984)(Matsushita Electric Industrial)(JP)[DISK.ROM]	MSX			JP
+F005E55C680BA6E7B19F6D4DC8F73CE5		National Matsushita FS-4000 MSX BIOS + BASIC v1.0 (1985)(Matsushita Electric Industrial)(JP)[MSX1.ROM]	MSX			JP
+EA67465FF992C11E4B146479E5A16E32		National Matsushita FS-4000 MSX Standard Kanji Driver (1985)(Matsushita Electric Industrial)(JP)[MSXKANJI.ROM]	MSX			JP
+090539674630C1338A90A1DF943A93E2		National Matsushita FS-4000 MSX Standard Kanji Font (1985)(Matsushita Electric Industrial)(JP)[KANJI.ROM]	MSX			JP
+8B81959FFC63982E32E484FE94B7CEC4		National Matsushita FS-4000 MSX Word Processor (1985)(Matsushita Electric Industrial)(JP)[MSXWORD.ROM]	MSX			JP
+B4415A26072ED955D83CC88D0DC16405		Philips NMS-1205 Music Module ROM MSX1 (19xx)(Philips)	MSX	
+B9759FA5CC4DB4775203892DD701CC8A		Philips NMS-1431 Printer #1 (19xx)(Philips)[1431.BI1]	MSX	
+453ED6324420515ABFEE5B37D8DFFED4		Philips NMS-1431 Printer #2 (19xx)(Philips)[1431.BI2]	MSX	
+364A1A579FE5CB8DBA54519BCFCDAC0D		Philips VG-8020 MSX BIOS + BASIC v1.0 (1985)(Philips)	MSX	
+41CB37B71775919827E42DB57BF2176B		Philips VY-0010 DiskDrive (19xx)(Philips)	MSX	
+0F65402BEA72F3326502706F49DA122F		Play Card System UPA-01 (1985)(Yamaha)(JP)	MSX			JP
+FE043097CECE49648477AD2CFEA69FD7		Psychedelia (1984)(Aackosoft)(NL)	MSX			NL
+279EFD1EAE0D358EECD4EDC7D9ADEDF3		RS232 BIOS and BASIC extensions (19xx)(-)[RS232.ROM]	MSX	
+1F374A08E886D873E4FB1FA5DBDFB452		RS232 BIOS and BASIC extensions Gradiente - 80 Column (19xx)(-)[CT80NET.ROM]	MSX	
+A0AD98D02A5E1D36B0B75EB0625D2D0C		RS232 BIOS and BASIC extensions Gradiente - 80 Column, Astex Word Processor (19xx)(-)[CT80E.ROM]	MSX	
+715037DBD87A677D9FDA007F9D67D2C6		RS232 BIOS and BASIC Extensions Terminal Cibertron (19xx)(-)[CIBERTRO.ROM]	MSX	
+A61F3D974C783DBDD73BE27ADECB4093		RS232 Modem Cartridge (19xx)(-)[RS232.ROM]	MSX	
+D83AF2172000385FFDB031991FC37F8E		Sanyo Lightpen (19xx)(-)[MLP001.ROM]	MSX	
+616D17CB4E205205F3B56979AE3D4372		Sistema MSX v1.0 Br + MSX BASIC Gradiente (19xx)(-)[MSX.ROM]	MSX	
+D13C1FC9AD4897C322F51AAB3AD3B30D		Sistema MSX v1.1 Br + MSX BASIC Expert Gradiente (19xx)(-)[EXPERT11.ROM]	MSX	
+1D89C2D66E18538B1065D1C37CB83E4D		Sony HB-201P BASIC BIOS (1984)(Sony)(JP)	MSX			JP
+F748115B4873A68B4A0425935BEE320A		Sony HB-201P Firmware (1984)(Sony)(JP)	MSX			JP
+0829C99D6192E88065657F9275634961		Sony HB-75D Internal software (1984)(Sony)(DE)[INTERNAL.ROM]	MSX			DE
+4655329D3F37BF1A655D05F2ABD1AA62		Sony HB-75D MSX BIOS + BASIC v1.0 (1984)(Sony)(DE)[MSX1.ROM]	MSX			DE
+9FEE5C622FF65C276D79C3F2F9905E4F		Sony HB75P Firmware (19xx)(Sony)(JP)	MSX			JP
+76CDC12C2849BE763AACD1D397B989BE		Sony HBD-50 BASIC BIOS (19xx)(Sony)(JP)	MSX			JP
+2D1B61DAC1685896AAE0538D0F74FFB3		Sony HBD-F1 BASIC BIOS (19xx)(Sony)(JP)	MSX			JP
+F7AECA5B9ECE4481B9C280E3AB60B76C		Sony HBK-30 BASIC BIOS (19xx)(Sony)(JP)	MSX			JP
+BB53012AC162BD9A9644D163C0B924E0		Spectravideo SVI-738 MSX BIOS + BASIC v1.0 (1983)(Spectravideo)(GB)[MSX1.ROM]	MSX			GB
+A063A2ACBCF12B5F1D2919B119A6FE19		Spectravideo SVI-738 MSX Disk BASIC v1.0 (1983)(Spectravideo)(GB)[DISKO.ROM]	MSX			GB
+44388A24D925BC06A1D47DB7F638922A		TMG 2 Gradiente Modem (19xx)(-)[TM2GRAD.ROM]	MSX	
+38EB2E535B8FE6886597081F79F27243		Toshiba HX-MU900 MSX-Audio (1985)(Toshiba)(JP)[MMOD1.ROM]	MSX			JP
+41FA839B7EB931959EE587B9A55D922B		Yamaha SFG-05 System (1984)(Yamaha)(JP)[SFG05.ROM]	MSX			JP
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Type:	TOSEC
+;;; Source:	MSX MSX - Games - [ROM] (TOSEC-v2012-04-15)
+;;; FileGen:	2020-02-07 10:53:22 (UTC)
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Bad Dumps
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+A0268D94089779EED740346B2F87481A	B	Aliens. Alien 2 (1987)(Square)(JP)[b]	MSX			JP
+2266637325073D6390F2DD95393C05B1	B	Arubatoros. Albatross (1986)(Telenet Japan)(JP)[b]	MSX			JP
+413DE66CCB31F9BE011F09A75BE4701A	B	Bifamu. Galaxy Drift Motorcycle Femme (1984)(Bandai)(JP)[b]	MSX			JP
+4CA9F5E8EC595C26A3B6AC15FDEA3CE0	B	Bomber Man Special (1986)(Hudson Soft)(JP)[b]	MSX			JP
+34BB830FB736927BE6B7DA599F77FADE	B	Championship Lode Runner (1985)(Sony)(JP)[cr Prosoft][b]	MSX			JP
+3F3B3A1D1AE210F72927C9819B0257BB	B	Courageous Perseus (1985)(Cosmos Computer)(JP)[b]	MSX			JP
+37B5E404CD71956C41EF5677659D7BEB	B	Cross Blaim (1986)(dB-Soft)(JP)[b]	MSX			JP
+BEC687CEBA5E87B32FDDD5969D0494A1	B	Crusader (1985)(Pony Canyon)(JP)[b]	MSX			JP
+567B5653E2BADA5FA7D9DE584A562B2D	B	C-So! (1985)(Pony Canyon)(JP)[b]	MSX			JP
+34DF847D6B625A984CBB8018915E288A	B	Dig Dug (1984)(Namcot)(JP)[b]	MSX			JP
+4CBBC78579941D52A3B6633A7E0BEA5D	B	Doki Doki Penguin Land (1985)(Pony Canyon)(JP)[b]	MSX			JP
+9FA589983D29D4E58EA9C0BCF47D48F7	B	Dragon Slayer 3 - Romancia. Dragon Slayer Jr (1987)(Falcom)(JP)[b]	MSX			JP
+3639586E79F158042DB9A0BD5C59D2A7	B	Eggerland Mystery (1985)(HAL Laboratory)(JP)[b]	MSX			JP
+BF2CC0E26D55F0143609000C8EBCF242	B	Eggerland Mystery 2. Meikyushinwa. Labyrinth Myth (1986)(HAL Laboratory)(JP)[b]	MSX			JP
+F0837B4A6F47A2396575BBAE4712834B	B	Exerion II - Zorni (1984)(Jaleco)(JP)[b]	MSX			JP
+39A37746403E60D9DFD1B128DD9AEA3A	B	Exerion II - Zorni (1984)(Jaleco)(JP)[u][b]	MSX			JP
+7FB2892CA62D259637FAF5137ED128C2	B	Flicky (1985)(Micronet)(JP)[b]	MSX			JP
+45B12292B48658044A18FA60BD5948B2	B	Gofer no Yabou Episode II. Nemesis 3 - The Eve of Destruction (1988)(Konami)(JP)[o][b][RC-764]	MSX			JP
+0D75AF4EB1EDEB053EE859099EA70F98	B	Gradius. Nemesis (1986)(Konami)(JP)[b][SCC][RC-742]	MSX			JP
+6B6D173CC0B3CCDC067606FEF1BFBFF5	B	H.E.R.O. (1984)(Pony Canyon)(JP)[u][b]	MSX			JP
+C50C80735A3AE696B288A709909E16AE	B	Hydlide II - Shine of Darkness (1986)(T&E Soft)(JP)[b]	MSX			JP
+ADABAABC11A56576481A8526147BB17E	B	Hype (1987)(Methodic Solutions)(NL)[b]	MSX			NL
+B5103D7437630B1EE00389B6A9007988	B	Indian no Bouken. Indian's Adventure (1984)(Hudson Soft)(JP)[b]	MSX			JP
+AB7803129E7BD8DEBBFE25321416B0B3	B	Kage no Densetsu. Legend of Kage (1986)(Taito)(JP)[b]	MSX			JP
+470A0254AE3219B0E5BA2C94D8A9578B	B	King's Knight (1986)(Square)(JP)[b]	MSX			JP
+841DB58B66014E71E5D27A8FABB83F50	B	Knightmare. Majyo Densetsu (1986)(Konami)(JP)[b][RC-739]	MSX			JP
+D68C26E7513BAD6892A7CA80A6C277BB	B	Koneko no Daibouken. Kitty's Great Adventure. Catboy (1986)(Casio)(JP)[b]	MSX			JP
+6993619CACA1FF3B38005577EE1B5908	B	Lunar Ball (1985)(Pony Canyon)(JP)[b]	MSX			JP
+98E24CFD2AA5C08282E61E080520D6DD	B	Magunam. Kiki Ippatsu. Magnum Prohibition 1931 (1988)(Toshiba-EMI)(JP)[b]	MSX			JP
+AB32DB52E6DEDE4F2604E05616DF0ABF	B	Midnight Building (1984)(ASCII)(JP)[b]	MSX			JP
+42AF37C8DDA5A05253945A5BBF87F4C1	B	Mr. Do! vs Unicorns (1984)(Sony)(JP)[b]	MSX			JP
+955563E9D9B469922498E0B41EC8F06D	B	Ninja Jaja Maru Kun (1986)(Nippon Dexter)(JP)[b]	MSX			JP
+1F0AEEA6F778927E5B8A223BCCA3C8E2	B	Ninja Kun. Majyo no Bouken (1985)(Nippon Dexter)(JP)[b]	MSX			JP
+E5EDF1BD200E46401415016921DC4C81	B	O'connor (1990)(Santa Claus Software)[b]	MSX	
+7F8AA32084229987D77CE33E5CF3F934	B	Oil's Well (1985)(Comptiq)(JP)[b]	MSX			JP
+246A692350564893FE99BDCEDCDEF9D4	B	Oil's Well (1985)(Comptiq)(JP)[u][b]	MSX			JP
+E0226648681DADA247FC01289DBF76E0	B	O'Mac Farmer (1984)(ASCII)(JP)[b]	MSX			JP
+D4273060BF55182D0E8DE447C6DAE626	B	Pipi (1985)(Nippon Dexter)(JP)[b]	MSX			JP
+0AC901E32B79DB844D17A93C6F5828AE	B	Play Ball (1986)(Sony)(JP)[b]	MSX			JP
+BCCB01412FF9EB87FD38C789656960AD	B	Robowres 2001 (1988)(Zemina)(KR)[b]	MSX			KR
+4DB3786C77C5578344B6D2276FC14EF8	B	Roller Ball (1984)(HAL Laboratory)(JP)[b]	MSX			JP
+148A58DEE8795D636497590677AAE5D8	B	Scarlet 7 (1986)(Toshiba-EMI)(JP)[b]	MSX			JP
+4031D894AE614BC2CD015F52D8DA2C76	B	Scion (1985)(Sony)(JP)[o][b]	MSX			JP
+93952054FEEE477C1717DDEFA5CBBB1A	B	Scramble Eggs (1983)(Ample Software)(JP)[o][b]	MSX			JP
+7BB030BB0AF990CD1BC72D08178A92BA	B	Seiken Acho. Kung-Fu Master Taekwondo (1985)(Irem - ASCII)(JP)[b]	MSX			JP
+AD4F43BC1187BF4D9AAA67A99692D7D7	B	Shindobaddo Nanatsu no Bouken. The Seven Adventures of Sindbad (1986)(Casio)(JP)[b]	MSX			JP
+428730CFA4C0B67BA259B33EB3E291C6	B	Skooter (1987)(Al Alamiah)(KW)[b]	MSX	
+710240C34359351E4BF8178ECB71E81B	B	Space Busters (1985)(Aackosoft)(NL)[b]	MSX			NL
+EA57D7EEC84D2A64022ED33AE61488D5	B	Star Blazer (1985)(Sony)(JP)[b]	MSX			JP
+BA0424736BEFD6783D63A213AE92997C	B	Super Laydock - Mission Striker (1988)(Zemina)(KR)[u]	MSX			KR
+62A59424B30CD15432DF381295A765CD	B	Tritorn (1986)(Xain)(JP)[b]	MSX			JP
+490AF2970DAE2212DE72189B44D60E36	B	Youkai Yashiki. Boynight. Haunted House (1986)(Casio)(JP)[b]	MSX			JP
+7B9AA50610422A73D17A72E653DFDBA5	B	Zaider - Battle of Peguss (1986)(Cosmos Computer)(JP)[b]	MSX			JP
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Hacks
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+D4C02275B006A0972E4CCADDAEB8793F	H	Anaza. Kaleidoscope Special (1987)(Hot-B)(JP)[cr Edgard]	MSX			JP
+B42EC6397DC274E73242514CC21835DB	H	Anaza. Kaleidoscope Special (1987)(Hot-B)(JP)[cr Sammi]	MSX			JP
+A196B6838C7EA19BCFE373DF937A0E6A	H	Antarctic Adventure - Japanese Version (1984)(Konami)(JP)[cr Prosoft][RC-701]	MSX			JP
+FDCF34564547F3FF8D3719E7DAC66ECE	H	Aquapolis SOS (1983)(General)(JP)[cr Sammi]	MSX			JP
+FBF9175CC1E2E319D8D6585EE70D46AF	H	Bank Panic (1985)(Pony Canyon)(JP)[cr Prosoft]	MSX			JP
+1F133ED5DAECDC5B5185F073537A1010	H	Bomber Man Special (1986)(Hudson Soft)(JP)[cr SoftMen]	MSX			JP
+73DA6EA589014E665C8C8CF8C3C49927	H	Casio World Open (1985)(Casio)(JP)[cr Boram Soft]	MSX			JP
+598A3E08C6C69177289C1DB408DF11E5	H	Castle, The (1986)(ASCII)(JP)[cr Static Soft]	MSX			JP
+CDCE8291CC7A26E5D219A814BE1675C6	H	Championship Lode Runner (1985)(Sony)(JP)[cr Prosoft][b2]	MSX			JP
+3DDC82FAF717816F0954116C8ABE7B88	H	Choro Q (1984)(Taito)(JP)[cr Prosoft]	MSX			JP
+340404F3C9D2C9E34AD350E58E1A16E5	H	Crazy Cars (1988)(Titus)(GB)[cr VIP Soft]	MSX			GB
+A11272F90B0B840828DCD308291510DD	H	Donkey Kong (1986)(Ocean Software)(GB)[cr Dr. Jekyl and mr hyde]	MSX			GB
+80E7944E074C70C8EAFA98D27584F3E1	H	Door Door Mk2 (1985)(Enix)(JP)[cr Unicorn]	MSX			JP
+EB5A3B333DFDCCFD726E98C8D4F032D1	H	Eggerland Mystery 2. Meikyushinwa. Labyrinth Myth (1986)(HAL Laboratory)(JP)[h THEVMA]	MSX			JP
+B44659764A9A6F36EFEED21F6832EB92	H	Gofer no Yabou Episode II. Nemesis 3 - The Eve of Destruction (1988)(Konami)(JP)[t][RC-764]	MSX			JP
+95E14D5795B7DEAA7863B52D6A43D32C	H	Gozira 3D. Godzilla vs 3 Major Monsters (1984)(Bandai)(JP)[h Dino Sourcers]	MSX			JP
+14CE3ADC4FB4455F12AD9E2F3A1477E3	H	Gradius 2. Nemesis 2 (1987)(Konami)(JP)[t][RC-751]	MSX			JP
+9115688F91CA1C6F4B5C60DD5888EFC4	H	Gradius. Nemesis (1986)(Konami)(JP)[t][SCC][RC-742]	MSX			JP
+F0306F73615766353B85855D94C2BBAF	H	Gulkave (1986)(Pony Canyon)(JP)[cr Crack Fm]	MSX			JP
+63CD7E99AA658F60779F2DDA75452C60	H	Gunfright (1986)(Nippon Dexter)(JP)[cr Sammi]	MSX			JP
+451FEA340648EBDF5DAED23D30CCC83E	H	H.E.R.O. (1984)(Pony Canyon)(JP)[cr Purplesoft][o]	MSX			JP
+C56CCF913F2EB94C3BDB92180D1A4294	H	Hole in One Professional (1986)(HAL Laboratory)(JP)[cr Hillsoft]	MSX			JP
+6B744850AECE858BD3C2586C37A061D6	H	Issunhoushi no Donnamondai. Little Samurai (1987)(Casio)(JP)[cr Angel]	MSX			JP
+1633CE1811CC37E0477E6C266CCF7736	H	Issunhoushi no Donnamondai. Little Samurai (1987)(Casio)(JP)[cr Sammi]	MSX			JP
+ED06A532D79CC65E075E7738C75E8D07	H	Konami's Tennis (1984)(Konami)(JP)[cr Prosoft][RC-720]	MSX			JP
+3CBFE5EC7366410409148111AFF7C459	H	Kung-Fu Thai Kun. Isao Lord (1985)(Toshiba-EMI)(JP)[cr Claus]	MSX			JP
+1E26432BA2D657581632A5EFBC69197D	H	Laptick 2 (1986)(dB-Soft)(JP)[cr Flash]	MSX			JP
+3C546E43E52BB36FF880F38DA995B15D	H	Magical Tree (1984)(Konami)(JP)[cr Magicalsoft][RC-713]	MSX			JP
+75FCEC5678765A17FD9647ACEFEF4E6C	H	Mayhem (1985)(Mr. Micro)(GB)[cr Magicracks]	MSX			GB
+C4F6B935A0968A5A451AFE20D0156F31	H	Moai no Hihou. Secret Treasure of Moai (1986)(Casio)(JP)[cr Static Soft]	MSX			JP
+20ED6AD5C7079FE87D4C31D2AE3E918E	H	Mo-Karimakka. Bochibochidenna Sport (1986)(Leben Pro)(JP)[cr Canal Cracker]	MSX			JP
+545C9F198980AC0D34CFE22BD7C71DE1	H	Moon Patrol (1984)(IREM)(JP)[cr Prosoft]	MSX			JP
+DCBC41C2CB4AA1CE3D482249A5CF7410	H	Moon Patrol (1984)(IREM)(JP)[cr Prosoft][o]	MSX			JP
+B1B962D477D02F304174D2A829EA8E03	H	Mr. Do's Wildride (1985)(Nippon Columbia - Colpax - Universal)[cr Angel]	MSX	
+513944CA300731048DB3A03D08995A80	H	Ninja Jaja Maru Kun (1986)(Nippon Dexter)(JP)[cr Prosoft]	MSX			JP
+B98BEA4D22768D9E0BEAA5C71A56EB7C	H	Pachicom (1985)(Toshiba-EMI)(JP)[cr Boram Soft]	MSX			JP
+63631A3F9902C50B68C35CFE2144F746	H	Parodius - Tako Saves Earth (1988)(Konami)(JP)[t][RC-759]	MSX			JP
+420947D57174B849BBBDC7BA1E45A186	H	Pegasus (1988)(Victor)(JP)[cr Prosoft]	MSX			JP
+336C9681C25C7F8486669428C9D42612	H	Penguin Kun Wars (1985)(ASCII)(JP)[cr Prosoft]	MSX			JP
+516993AE3D3259559E66CD0551339854	H	Poppaq the Fish (1986)(ASCII)(JP)[cr Boram Soft]	MSX			JP
+EFF388556E79AB5857961D2965028868	H	Protector, The (1985)(Pony Canyon)(JP)[t]	MSX			JP
+E39B0C2C8BB8012D8D1515CF163EFAA8	H	Rambo (1985)(Pack In Video)(JP)[h R. Bittencourt][t +2]	MSX			JP
+96796221EC5E2ED0D85A646C16D9A9D8	H	Salamander - Operation X (1987)(Konami)(JP)[t][RC-758]	MSX			JP
+8189D1786771BD39E1FDC3717C4A404A	H	Scarlet 7 (1986)(Toshiba-EMI)(JP)[cr Crack FM]	MSX			JP
+A5CDCFA1D2D4DFEC700E83B8C5AE25CE	H	Ski Command (1984)(Casio)(JP)[t]	MSX			JP
+22D79D80A250B58BF4170B10664C8F6D	H	Skygaldo (1986)(Magical Zoo)(JP)[cr Sammi]	MSX			JP
+E33594F6CA8FAAB7376B6B3804A9CDBA	H	Slapshot. Hockey sobre hielo (1985)(Indescomp)(ES)(en)[cr Philippe Vanheule]	MSX	en		ES
+CCEDE5D90A46333F06A40C4584076221	H	Star Soldier (1986)(Hudson Soft)(JP)[cr Turbo Soft]	MSX			JP
+200FF60C8E80C08002B80F946E6E95ED	H	Takahasi Meijin no Boukenjima. Wonder Boy (1986)(Hudson Soft)(JP)[cr Magosoft]	MSX			JP
+7F4AC30E5AAA2604420F9FF870C802A4	H	Takahasi Meijin no Boukenjima. Wonder Boy (1986)(Hudson Soft)(JP)[cr Star Frontiers]	MSX			JP
+28BB9D414407432FA73A5D8D97BF8480	H	Takeru Densetsu. Legend of Takeru (1987)(Brother Industries)(JP)[cr Sammy]	MSX			JP
+4D257E8A91D6B0A30035D9A848BFF492	H	Tensai Rabbian Daifunsen (1986)(Toshiba-EMI)(JP)[cr Crack Fm]	MSX			JP
+B334D84575A522B71B19E0DFBE537253	H	Thexder (1986)(Game Arts)(JP)[cr Magicracks]	MSX			JP
+960AA840AD7F1A21BA3BD6296F85C787	H	Yie Ar Kung-Fu II - The Emperor Yie-Gah (1985)(Konami)(JP)[t][RC-737]	MSX			JP
+7A619FFD7F56ABF561037ECE78163D67	H	Yume Tairiku Adventure. Penguin Adventure (1986)(Konami)(JP)[cr Screen][RC-743]	MSX			JP
+6E39505E2DAD90D2951701FCCE0C10D6	H	Zanac - 2nd Version (1987)(Pony Canyon)(JP)[cr Krull Software]	MSX			JP
+852B6D3E943100F808EAD15A6561B64B	H	Zanac (1986)(Pony Canyon)(JP)[t]	MSX			JP
+9CCD30C83437EC8ADF2E1BDB7E6DB254	H	Zoom 909 (1985)(Sega)(JP)[cr Prosoft]	MSX			JP
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Over Dumps
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+2D13AEA89E5010FAD16F0BE977A802DC	O	Alibaba and 40 Thieves (1984)(ICM)[o]	MSX	
+7295474536EBDF4D0223F5A742E4192E	O	Antarctic Adventure - Japanese Version (1984)(Konami)(JP)[o][RC-701]	MSX			JP
+5499EEE2D9A73AD779C34084E321DBDF	O	Athletic Land (1984)(Konami)(beta)[o][RC-700]	MSX	
+087C7ABF272591009FA9F756225F355F	O	Battle Cross (1984)(Sony)(JP)[o]	MSX			JP
+C78403672546ED9F505DD74773EBFA7E	O	Beamrider (1984)(Pony Canyon)(JP)[o]	MSX			JP
+14E6AC2CD3CA4EEB82AE6FA3DE804975	O	Bomber Man (1986)(Korea Soft Bank)[o]	MSX	
+76A9C47172C1E5EAE76A011064EA223B	O	Crazy Train (1983)(Sony)(JP)[o]	MSX			JP
+21D453DA70A70EF2214E40AAF58471B2	O	David II (1984)(ASCII)(JP)[o]	MSX			JP
+E0A4B134D32E540E62F1BD13BAB03599	O	E.I. - Exa Innova (1984)(Sony)(JP)[o]	MSX			JP
+5598707443247B64C9C7FE72AA974751	O	Galaxian (1984)(Namcot)(JP)[o]	MSX			JP
+44D66D612B285B60149E6E6140AF1F6B	O	Golvellius (1987)(Compile)(JP)[o]	MSX			JP
+A9E6FF2038CEBFF490E44AD89C53A8EE	O	Gomoku Narabe - Omo Go (1984)(Toshiba-EMI)(JP)[o]	MSX			JP
+2BA6F43DA5D2F31C3AAB9F8B0A29317B	O	H.E.R.O. (1984)(Pony Canyon)(JP)[o]	MSX			JP
+9C40115A913764AB227EF54A12DF7346	O	Hanafuda Koi Koi - Gostop Godori (1984)(ASCII)(JP)[o]	MSX			JP
+967A1AFE992AAF8D2E085FB7A1FE23A5	O	Iligks Episode I - Theseus (1984)(ASCII)(JP)[o]	MSX			JP
+C25B1A7CE7EA2F85AA598C0B05E76584	O	Jump Coaster (1984)(Nippon Columbia - Colpax - Universal)[o]	MSX	
+74AFD6D2537D90F793219030BF879310	O	Juno First (1983)(Sony)(JP)[o]	MSX			JP
+988AD24ADB540C8F8AA61F11F3FB287B	O	Mr. Chin (1984)(HAL Laboratory)(JP)[o]	MSX			JP
+97D7328B35C053AA57F2E3F8FE0B48E1	O	Mr. Do! (1984)(Nippon Columbia - Colpax - Universal)[o]	MSX	
+01AC8519E2A04E24AD1E798851F1048F	O	Mr. Do! vs Unicorns (1984)(Sony)(JP)[o]	MSX			JP
+060BC3176B100915F971DDBF3526FAEE	O	Mr. Do's Wildride (1985)(Nippon Columbia - Colpax - Universal)[o]	MSX	
+EDD1B22F496AF2431DFB9EEEC4EACF8B	O	Pyramid Warp (1983)(T&E Soft)(JP)[o]	MSX			JP
+ABD1D5B68770DAA98F79292B865F1910	O	Scramble Eggs (1983)(Ample Software)(JP)[o]	MSX			JP
+97471B4722B69AD84F811570BA78E9A2	O	Sofia (1988)(Radio Wave Newspaper Publisher)(JP)[o]	MSX			JP
+2C564A5FE435A52BE9FE03166738ED57	O	Space Maze Attack (1983)(HAL Laboratory)(JP)[o]	MSX			JP
+1CBB59AC656DF79CEBFA56D140C808B0	O	Space Trouble (1984)(HAL Laboratory)(JP)[o]	MSX			JP
+BB36A880C1F915652A611041169EF71C	O	Sparkie (1983)(Sony)(JP)[o]	MSX			JP
+66DBEF52013DDFA76D57A365B77DF8E1	O	Step Up (1983)(HAL Laboratory)(JP)[o]	MSX			JP
+C0CDD054CC932A5AB6E81440A9D89857	O	Super Cobra (1983)(Konami)(JP)[o][RC-705]	MSX			JP
+C26003945426597730999996F41BB3F7	O	Tank Battalion (1984)(Namcot)(JP)[o]	MSX			JP
+D2999EF0C3DDC6A2C79F4E8CA7EB66DA	O	Video Hustler. Konami's Billiards (1984)(Konami)(JP)[o][RC-706]	MSX			JP
+402901A468697318A5C91D4CF6FE155C	O	Warp & Warp (1984)(Namcot)(JP)[o]	MSX			JP
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Translated
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+20B5AF8E868316800676A68C56E1FAB6	T	B.C.'s Quest for Tires II - Grog's Revenge (1985)(Comptiq)(JP)[tr it]	MSX			JP
+DF2B29421381D75BA11059D143304866	T	Elevator Action (1985)(Nidecom)(JP)[tr pt MSX Informatica]	MSX			JP
+8725B1BF807308E295819594677BAA3A	T	Knightmare III - Shalom (1987)(Konami)(JP)[tr pt R. Bittencourt][RC-754]	MSX			JP
+6C49E103277A8010171E189324097401	T	Mole Mole (1985)(Victor)(JP)[tr pt]	MSX			JP
+C1123BE8192B045C5536CD744E9EBCB3	T	Ninja Kun. Majyo no Bouken (1985)(Nippon Dexter)(JP)[tr pt Paulisoft Informatica]	MSX			JP
+0ECDE32C67544EB08CCCA5CC9EDB724E	T	Penguin Kun Wars (1985)(ASCII)(JP)[tr pt]	MSX			JP
+08FE82C1B52710940C0C8BEC356DEEA4	T	Pico Pico (1983)(Micro Cabin)(JP)[tr pt Daniel]	MSX			JP
+666560C2102C705DB703803623251373	T	Seiken Acho. Kung-Fu Master Taekwondo (1985)(Irem - ASCII)(JP)[tr pt EngeSoft]	MSX			JP
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Home Brew
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Believed Good
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+941392BCDC6102AC638916A78B94D858		10 Yard Fight (1986)(IREM)(JP)	MSX			JP
+023C05CFB90D7C334A424ACBD9CBC768		10 Yard Fight (1986)(IREM)(JP)[a]	MSX			JP
+61ECF8CF74E340691E584AFEE719A66E		1942 (1986)(ASCII)(JP)	MSX			JP
+284F6DF2BC8B829BC99775B52A00C509		1942 (1986)(ASCII)(JP)[a]	MSX			JP
+1C4C07351FAAE07D11C100153C193744		1942 (1987)(Zemina)(KR)	MSX			KR
+3B8EBF97B2F6E080448771191F046A79		1942 (1987)(Zemina)(KR)[a]	MSX			KR
+AE898E560F7C672540B0AC95B6E03C24		3D Golf Simulation - High Speed Edition (1984)(T&E Soft)(JP)	MSX			JP
+66C604647010990FFDB372683F4DDFD1		3D Golf Simulation - Normal Edition (1983)(T&E Soft)(JP)	MSX			JP
+6CF80E1861DE859E3E8E84941CA33EF1		3D Golf Simulation - Normal Edition (1983)(T&E Soft)(JP)[a]	MSX			JP
+8EA4964B35509BA0D021D35AA76F324C		3D Tennis (1983)(ASCII)(JP)	MSX			JP
+252D7546181F824BFE669CF1AD5522B2		3D Water Driver (1984)(Apollo Technica)(JP)	MSX			JP
+EE9FE57E172B4E734847B95CDB57E9D5		A Life M36 Planet - MotherBrain has Been Aliving (1987)(Pixel)(JP)	MSX			JP
+66A5C9C5989FA72F8D89876F2876B5A1		A.E. (1983)(Toshiba-EMI)(JP)	MSX			JP
+EB50EED382CB236C64693C3CF8637065		A.E. (1983)(Toshiba-EMI)(JP)[a]	MSX			JP
+DFA4DC1F4FBF0EDD19D5C58C4384EB21		A1 Spirit - The Way to Formula 1 (1987)(Konami)(JP)	MSX			JP
+399552677F6ECEB94F6C86878F4ACB12		Actman (1984)(ASCII)(JP)	MSX			JP
+4EA5502BCFB84A2681DF823904B151BC		Actman (1984)(ASCII)(JP)[a]	MSX			JP
+49AB15C69631F664C2596F10D78FA8AD		Adven'chuta! (1983)(MIA)(JP)	MSX			JP
+F4A4EDAE9BF0650D0A002A31B9063B8C		Alcazar - The Forgotten Fortress (1985)(Pony Canyon)(JP)	MSX			JP
+4448FF0E82651AAF079621584AEAC9DF		Alcazar - The Forgotten Fortress (1985)(Pony Canyon)(JP)[a]	MSX			JP
+3124D9A9C78EFA4E8F0415D19799424D		Alibaba and 40 Thieves (1984)(ICM)	MSX	
+15F437B07AE49417512E69C0A3C53BD9		Alibaba and 40 Thieves (1984)(ICM)[a]	MSX	
+FADF6A531358780542A2463E57AC3F0D		Alibaba and 40 Thieves (1984)(ICM)[a2]	MSX	
+D3BF725EAC47A825985E3EC5929E0D22		Alibaba and 40 Thieves (1984)(ICM)[a3]	MSX	
+A3281F4D33EBC764E457627B6EBD533D		Alien 8 (1985)(Ultimate Play The Game)(GB)	MSX			GB
+2D71CA6A0EE125631020EBD7B2AA791C		Alien 8 (1986)(Nippon Dexter)(JP)	MSX			JP
+F3E7F81C0228FDCBB6D55623A8AF6969		Aliens. Alien 2 (1987)(Square)(JP)	MSX			JP
+3DBB75D222DC216C72A8A046E400F2E6		Aliens. Alien 2 (1987)(Square)(JP)[a]	MSX			JP
+FEC81B03474E475329E887E9F37877A5		Aliens. Alien 2 (1987)(Square)(JP)[a2]	MSX			JP
+CAA610054EF09F874DBBDB56DFC067D1		Alpha Roid (1986)(Pony Canyon)(JP)	MSX			JP
+E660010A7C5FDD99305CB3B8F5F7AFA9		Alpha Roid (1986)(Pony Canyon)(JP)[a]	MSX			JP
+E0A2D5AC2EAB2CFE6A37C999F9A827EC		Alpha Squadron (1985)(Sony)(JP)	MSX			JP
+1022B950227BEEB54CFB5F0BF24102F1		American Truck (1986)(Telenet Japan)(ES)	MSX			ES
+0A1D92B42302637D885A5EEA06A2792A		American Truck (1986)(Telenet Japan)(JP)	MSX			JP
+1C16E3DB3E0618DB8E3B48F346B38866		American Truck (1986)(Telenet Japan)(JP)[a]	MSX			JP
+56BABC13770B5F0E851B1137999047B5		American Truck (1986)(Telenet Japan)(JP)[a2]	MSX			JP
+6095E9F6232AF47B719DFA5FF8B2E82B		Anaza. Kaleidoscope Special (1987)(Hot-B)(JP)	MSX			JP
+D6ED8A5592A40F11D15A58DFD54A947F		Angelo (1984)(ASCII)(JP)	MSX			JP
+C2E31AAED6D7AE6ADEB7656AC5A20FFD		Angelo (1984)(ASCII)(JP)[a]	MSX			JP
+9811A759C1DFA62E721A3DA8F3F78153		Animal Land Murder Case (1987)(Enix)(JP)	MSX			JP
+8A8CBE37E5BD6633FD0E6798D7936A75		Animal Land Murder Case (1987)(Enix)(JP)[a]	MSX			JP
+4B1B0AB36E6DDB1FA317CF43E0A4611A		Antarctic Adventure - European Version (1984)(Konami)(JP)[a][RC-701]	MSX			JP
+122526147C3ADA793E0AD233DF408C2C		Antarctic Adventure - European Version (1984)(Konami)(JP)[RC-701]	MSX			JP
+B8A921F0F77FC83ACFE6C6F0B9814FA3		Antarctic Adventure - European Version (1984)(Konami)(JP)[SCC][RC-701]	MSX			JP
+2FEF0C223344D31FAB2183C28AD2C062		Antarctic Adventure - European Version (1984)(Konami)(JP)[SCC+][RC-701]	MSX			JP
+97EE96F00FAC07A5D70A3801D8A9805A		Antarctic Adventure - Japanese Version (1984)(Konami)(JP)[RC-701]	MSX			JP
+CF623B0847E0DC101CB183D7ADE3CB27		Anty (1984)(Bothtec)(JP)	MSX			JP
+49C243728F19F0E82276D27378726214		Anty (1984)(Bothtec)(JP)[a]	MSX			JP
+0A57575FA460E4E49FE6F460B2953079		Aquapolis SOS (1983)(General)(JP)	MSX			JP
+796881611B3499463CCDBD59DC9F731A		Aquattack (1984)(Toshiba-EMI)(JP)	MSX			JP
+AA341DF27BE5CDF8BB5D42EB081B4F63		Aramo (1986)(Xain)(JP)	MSX			JP
+B13FE412F5F3A6B72059FEEF3350C452		Arkanoid (1986)(TAITO)(JP)	MSX			JP
+2F6DC432C81402B838958EEBE82DE801		Arkanoid (1986)(Taito)(JP)[a]	MSX			JP
+9A911C98431BA82AEC9907142AEE3EFF		Arkanoid (1986)(Taito)(JP)[a3]	MSX			JP
+635D75FE6D31024DE5CA36AE886C37A1		Arkanoid (1986)(Taito)[a2]	MSX	
+CC80943502FEC02A4F750DFA7D45E3DF		Arubatoros. Albatross (1986)(Telenet Japan)(JP)	MSX			JP
+E6FE7DDF8F1B3AB0AD1D7071E3BCFFA5		Arubatoros. Albatross (1986)(Telenet Japan)(JP)[a]	MSX			JP
+4784DF4C2AD12DE2F3C6D8C96FD932BF		Astro Marine Corps (1989)(Dinamic Software)(ES)	MSX			ES
+0855944D76448A593AC0C05F645AB257		Athletic Ball. Ghost Flipper (1984)(ASCII)(JP)	MSX			JP
+B8D661BD9CBF59E3A75DBA499F00060C		Athletic Land (1984)(Konami)(beta)[RC-700]	MSX	
+71D8E4E09DECC1C6E691D18CC0402CCA		Athletic Land (1984)(Konami)(JP)[a][RC-700]	MSX			JP
+2AD5CEA9A2F22CB66B95317BB864E176		Athletic Land (1984)(Konami)(JP)[RC-700]	MSX			JP
+1B267EC91BC535E4F34CDCE66165E8D8		Attack 4 Women Volleyball (1986)(Pax Softonica)(JP)	MSX			JP
+BD46CA36C8380C023BF9D36F4AB2AA0D		B.C.'s Quest for Tires (1985)(Toshiba-EMI)(JP)	MSX			JP
+DE0CDD0C1912CAB84AE56480CF7DA38F		B.C.'s Quest for Tires (1985)(Toshiba-EMI)(JP)[a]	MSX			JP
+A90F7B4914E36B8EA1359A01D6AAE56E		B.C.'s Quest for Tires II - Grog's Revenge (1985)(Comptiq)(JP)	MSX			JP
+F8C9DFCAC1321BEC1C8CE7B7C65B51C6		B.C.'s Quest for Tires II - Grog's Revenge (1985)(Comptiq)(JP)[a]	MSX			JP
+0E1D88688BCA7C7C85CA50F7972E6A1D		B.C.'s Quest for Tires II - Grog's Revenge (1986)(Topia)(KR)	MSX			KR
+84A7A3F9E12AE520DC84A4955FA54F37		Back to the Future (1985)(Pony Canyon)(JP)	MSX			JP
+ED4F0D4D8F406525D873A312B872E1A7		Back to the Future (1985)(Pony Canyon)(JP)[a]	MSX			JP
+E2179F0FC46676C63FC312183D3BB712		Backgammon (1984)(Electric Software)(GB)	MSX			GB
+E89D06514855E8A5E2EF9F09624EF260		Backgammon (1985)(Sony)(JP)	MSX			JP
+1D32D26352D70562F351A8FE5B9B9352		Backgammon (1985)(Sony)(JP)[a]	MSX			JP
+E276218C030D9C339D590562CF349B1A		Banana (1984)(ASCII)(JP)	MSX			JP
+F68E4AE63D03B5AD0A736231588524F0		Bank Panic (1985)(Pony Canyon)(JP)	MSX			JP
+0242D2EBF0F2E7B8D4D840C13F426C73		Bank Panic (1985)(Pony Canyon)(JP)[a2]	MSX			JP
+58FB5A8F48406F2AFB142A6EA64D929D		Batman (1986)(Pack In Video)(JP)	MSX			JP
+D4699360E67662372DF04CD242889C27		Batman (1986)(Pack In Video)(JP)[a]	MSX			JP
+C74E9A3355B49EB2A8F3065881691E99		Batten Tanuki no Daibouken. Raccoon Dog (1986)(Tecno Soft)	MSX	
+E10711878C2E67E33F29E5E82438DF86		Batten Tanuki no Daibouken. Raccoon Dog (1986)(Tecno Soft)[a]	MSX	
+421193175C8B23A32521936EC1B71053		Batten Tanuki no Daibouken. Raccoon Dog (1986)(Tecno Soft)[a2]	MSX	
+916AD37B0EF7DC3A01F5EC52936A52B8		Battle Cross (1984)(Sony)(JP)	MSX			JP
+8891A92DE2734BE03F50E624B555ECFF		Battle Ship Clapton II (1984)(T&E Soft)(JP)	MSX			JP
+FA1434664F2E7F27865C80B6EE4BD37B		Battle Ship Clapton II (1984)(T&E Soft)(JP)[a]	MSX			JP
+E87647634337F07604076E6C2AD18A82		Beach-Head (1985)(US Gold)(GB)	MSX			GB
+A58DA9AA7FE01503955A567795FDE33E		Beamrider (1984)(Pony Canyon)(JP)	MSX			JP
+C0746F391EAC069CC8CA45D44D5E4EF0		Bee & Flower (1983)(Think Soft)	MSX	
+7BA0957C28A33FE31C77549A02914206		Bee & Flower (1983)(Think Soft)[a]	MSX	
+A6C86938D04EE2CAE83ADD54EA44EB9E		Bee & Flower (1983)(Think Soft)[a2]	MSX	
+522CA5603D88F9779492BCE2561EE048		Bifamu. Galaxy Drift Motorcycle Femme (1984)(Bandai)(JP)	MSX			JP
+817FC937AD606961DA6637D38430BB3E		Binary Land (1984)(Kuma Computers)(GB)	MSX			GB
+530EFDC907D45137A97A9DF917E6D7BD		Black Onyx II, The - Search for the Fire Crystal (1986)(ASCII)(JP)	MSX			JP
+8EACC9D87174D02723EC1FFC9680FA67		Black Onyx, The (1985)(ASCII)(JP)(jp)	MSX			JP
+580282BC8E0ED63B2F5A1B72BCC45FC8		Black Onyx, The (1986)(Prosoft)(KR)(jp)	MSX			KR
+5A839DD19D6D0992CA92D79AF65B1961		Blagger (1984)(Alligata Software)(GB)	MSX			GB
+5196CB0411D4E9458F1B5C226E723573		Blagger (1984)(Micro Cabin)(JP)[a]	MSX			JP
+ED154F68AC837D4C393054A7030A5D3D		Blagger (1984)(Micro Cabin)(JP)[a2]	MSX			JP
+D790FE070EF6DB6C155EACFD9DCA41E9		Block Hole (1990)(Zemina)(KR)	MSX			KR
+FA3F66390A2ED8D3E4DB6D75DE81B91D		Blockade Runner (1984)(Toshiba-EMI)(JP)	MSX			JP
+20A0D82302B2971BE9579F0CE3CE182E		Blusy Shop (2005)(MSXnake)	MSX	
+D49A1E7DA3B402F1C26381AEC7F0E257		Boggy '84 (1984)(Nippon Columbia - Colpax - Universal)	MSX	
+ED3620892FB8A70154732FFAC6F0B1EF		Boggy '84 (1984)(Nippon Columbia - Colpax - Universal)[a]	MSX	
+0EB9E7BC52517751402094937C903CF8		Boggy '84 (1984)(Nippon Columbia - Colpax - Universal)[a2]	MSX	
+911D6AE84A956DD5051A28A56F925D2A		Boing Boing (1985)(Idealogic)(ES)	MSX			ES
+F1AE6A6AB7619BA331F8F83F02914EBE		Bokosuka Wars (1984)(ASCII)(JP)	MSX			JP
+641544B0AD077CD28965496C53A2F38A		Bokosuka Wars (1984)(ASCII)(JP)[a]	MSX			JP
+9AC872334C01A9B564347113432544D6		Bomb Man (2005)(AGsoftware)	MSX	
+AB3FB38F829D4BF3D47F2DA56A9C1436		Bomber King (1988)(Hudson Soft)(JP)	MSX			JP
+7A277F7AC3FCC30B995CBD672C8FC094		Bomber Man (1983)(Hudson Soft)(JP)	MSX			JP
+0DA84AE4E042C64A0B40D47DD3633E3E		Bomber Man (1986)(Korea Soft Bank)	MSX	
+9D2A723C099EC83CA1A354EEF20776B7		Bomber Man (1986)(Korea Soft Bank)[a]	MSX	
+310A80F84FFA24C3B873DF0E6A7168AB		Bomber Man Special (1986)(Hudson Soft)(JP)	MSX			JP
+7128F95264554CD8D096F11D7B5D757C		Bomber Man. Eric and the Floaters (1985)(Kuma Computers)(GB)	MSX			GB
+628461A03BF67D80A08EA3E097242ACD		Boogie Woogi Jungle (1985)(Ample Software)(JP)	MSX			JP
+00C5E4B1ACB6CCCC97ADD5B23F0388B7		Boogie Woogi Jungle (1985)(Ample Software)(JP)[a]	MSX			JP
+BD595C10C45097CC8CEAF0A0A8615106		Boogie Woogi Jungle (1985)(Ample Software)(JP)[a2]	MSX			JP
+51F979CED0EB81ACFC0B03D21DF07503		Boomerang (1984)(ASCII)(JP)	MSX			JP
+3ABE8B3C1EA30E9CA95354B02100721B		Boomerang (1984)(ASCII)(JP)[a]	MSX			JP
+9E98015A26D7615DB9DEA90F6D97B4B9		Borfesu. Bolu Fez and Five Evil Spirits (1987)(XTalSoft)(JP)	MSX			JP
+437E2B5013786EBF95F2BC36ED680F27		Bosconian (1984)(Namcot)(JP)	MSX			JP
+BDABFF2B7B3A303A810100FE0B6FB971		Bosconian (1984)(Namcot)(JP)[a]	MSX			JP
+CF6FF5A10589CB4BFB7A181DF45379C9		Bosconian (1984)(Namcot)(JP)[a2]	MSX			JP
+50B6E827957C844345C1F066844295CD		Bouken Roman - Dota (1986)(System Soft)(JP)	MSX			JP
+48EF84C090C1F9D1FDF590F9C34C1CFE		Bouken Roman - Dota (1986)(System Soft)(JP)[a]	MSX			JP
+CC1AE8F12792C7994656471EA38CE3DE		Boulder Dash (1985)(Databyte)(GB)	MSX			GB
+0192133ACE5EFFDF566ADF5F929A4367		Bouncing Block (1988)(Idealogic)(ES)[a][aka Igloo]	MSX			ES
+C0EEF47ADA3A2D204B43B55E9C45C788		Bouncing Block (1988)(Idealogic)(ES)[aka Igloo]	MSX			ES
+B5E6D3F1FB1B3C01415DD71D05104D78		Bousou Tokkyuu SOS. Stop the Express (1985)(Hudson Soft)(JP)	MSX			JP
+4CE9972056A9457903629744B7C0C07B		Bousou Tokkyuu SOS. Stop the Express (1985)(Hudson Soft)(JP)[a]	MSX			JP
+D427CD092ABD45D178D56E41E7822679		Brain, The (1983)(ASCII)(JP)	MSX			JP
+EAB747201237EF95C210148A3888A0B1		Break In (1987)(Jaleco)(JP)	MSX			JP
+D0E57136B7DD3569EEEEEB04188EF4ED		Break Out (1983)(ASCII)(JP)	MSX			JP
+6AF13CC410872E50046E1BEB99BC10D8		Brother Adventure. Mario Bros (1987)(Zemina)(KR)	MSX			KR
+814B00D855265A42B977371DD04A0F43		Brother Adventure. Mario Bros (1987)(Zemina)(KR)[a]	MSX			KR
+844141F51C9D8BC24D13882257A53300		Bruce Lee (1985)(Comptiq)(JP)	MSX			JP
+B74D9122EB2B0DEB67B17D3523449A88		Burger Time (1986)(Radio Wave Newspaper Publisher)(JP)	MSX			JP
+B9F360926546B28083C00D5FFD5AF292		Buru to Marty Kikiippatsu. Inspecteur Z (1986)(HAL Laboratory)(JP)	MSX			JP
+E0936235730855D17D91B402C047201C		Buru to Marty Kikiippatsu. Inspecteur Z (1986)(HAL Laboratory)(JP)[a]	MSX			JP
+55C8DF7F2DDC5E3011310D264980C474		Butamaru Pants. Pig Mock (1983)(HAL Laboratory)(JP)	MSX			JP
+F9F42F856D1818D84AC32DA2C8FAE929		Butamaru Pants. Pig Mock (1983)(HAL Laboratory)(JP)[a]	MSX			JP
+5591580E9B0FCCD4EFC351EF6FFB4DB3		Butamaru Pants. Pig Mock (1983)(HAL Laboratory)(JP)[a2]	MSX			JP
+A46DBB59535BF812574BD8CEF354B491		Cabbage Patch Kids (1984)(Konami)(JP)[a][RC-716]	MSX			JP
+3E73055C7BF05FDEB170647BE0505DB5		Cabbage Patch Kids (1984)(Konami)(JP)[a2][RC-716]	MSX			JP
+12608E48350B5F910123685113860573		Cabbage Patch Kids (1984)(Konami)(JP)[RC-716]	MSX			JP
+75DDCB444DC1139678D0848AE902CD3A		Candoo Ninja (1983)(ASCII)(JP)	MSX			JP
+236C97FE58AABB9F19FF699D3E73809B		Candoo Ninja (1983)(ASCII)(JP)[a]	MSX			JP
+ED8013ED61F6735D5040BFA0E1E5139B		Cannon Ball (1983)(Hudson Soft)(JP)	MSX			JP
+FAB05F70B7E480D9DEE494F65B95AB52		Cannon Ball (1983)(Hudson Soft)(JP)[a]	MSX			JP
+5A9385CA98221ADFD9E6675FEA190EA6		Cannon Ball (1983)(Hudson Soft)(JP)[a2]	MSX			JP
+B40C21385ADAE9176B67CC2B5223894E		Cannon Fighter (1984)(Policy)(JP)	MSX			JP
+16D02D09DF5E0D87D7AD188F740D00A7		Captain Chef (1984)(Nippon Columbia - Colpax - Universal)	MSX	
+FD6E245DECC4A7A7D09A888794AB577A		Captain Cosmo (1984)(ASCII)(JP)	MSX			JP
+8E28BC85961EC9B6B6765CCBD4FE1997		Captain Cosmo (1984)(ASCII)(JP)[a]	MSX			JP
+AFB607270F33DB1915766B58108C6AF7		Car Fighter (1985)(Casio)(JP)	MSX			JP
+359D2702010C34E4495580BB7E89EE61		Car Jamboree (1984)(Sony)(JP)	MSX			JP
+81658DFD6791B94CA64B253ECD019A2C		Car Jamboree (1984)(Sony)(JP)[a]	MSX			JP
+1E0D9875EA6F9DE3DFEDF7ABB3DED5C7		Car Race (1983)(Ample Software)(JP)	MSX			JP
+0EFEF976545353C5EF315FC4DA5502AC		Car Race (1983)(Ample Software)(JP)[a]	MSX			JP
+1506F247B2D90E66246D01D508289CA5		Car Race (1983)(Ample Software)(JP)[a2]	MSX			JP
+DB93FA660F66160A63C5944940E4DC03		Casio World Open (1985)(Casio)(JP)	MSX			JP
+A80048433A4863F8D92EF9082CBA7837		Castle Excellent (1986)(ASCII)(JP)	MSX			JP
+0D17CFF46C7D26C08FC65671F8761B40		Castle Excellent (1986)(ASCII)(JP)[a]	MSX			JP
+5AE339850B9EE628A9326C95DCAB040C		Castle, The (1986)(ASCII)(JP)	MSX			JP
+015A4F70F73C9D59452B716E2CC0C2D0		Caverns of Titan (2005)(Jose Luis Tur)	MSX	
+AA1A772EC0DA33F7DE6DE68440B6C07B		Chack 'n Pop (1984)(TAITO)(JP)	MSX			JP
+615EC47A3030CEC2D880C0DC0EB9E31B		Chack 'n Pop (1984)(Taito)[a]	MSX	
+4B8CEF832A46CBBD348FF6D2F432AD89		Challenge Derby (1985)(Pony Canyon)(JP)	MSX			JP
+33C3A00F268F2A99807F08029F18F259		Champion Boulder Dash (1985)(Comptiq)(JP)	MSX			JP
+7164B72A06B210804174630131B718A8		Champion Boxing (1985)(Pony Canyon)(JP)	MSX			JP
+9626A8B01A0D22173F9980B52E9771D4		Champion Ice Hockey (1986)(Pony Canyon)(JP)	MSX			JP
+B100917A059667FAB359D507CA56233E		Champion Kendo (1986)(Pony Canyon)(JP)	MSX			JP
+7CF02A10F4645AC6936D5EBFDE194F74		Champion Kendo (1986)(Pony Canyon)(JP)[a]	MSX			JP
+804F81C79DA29544B5EE5FA1AE8A01A7		Champion Pro Wrestling (1985)(Pony Canyon)(JP)	MSX			JP
+3500C4EF753939C05C526E5472DA4223		Champion Pro Wrestling (1985)(Pony Canyon)(JP)[a]	MSX			JP
+05F1FC6912C84DCBF8FC876CCACE426B		Champion Pro Wrestling (1985)(Pony Canyon)(JP)[a2]	MSX			JP
+B63B643C4A212F0106F93320E3F8B371		Champion Soccer (1985)(Pony Canyon)(JP)	MSX			JP
+4180CC41BF2EFB3033C2E7EF867CC87E		Championship Lode Runner (1985)(Sony)(JP)	MSX			JP
+616D67D1209D9D0E1EA31776022AC572		Cheating Wives (2005)(Crappysoft)	MSX	
+6D6736A701CBA17BCE17DADBA748630A		Checkers in Tantan Tanuki (1985)(Pony Canyon)(JP)	MSX			JP
+D7A68BD161BA21E5A0D71E45B12C9812		Chess Game, The (1985)(Al Alamiah)(KW)	MSX	
+6CF190970C510E46F7B1255D2B7FC543		Chess Master (1985)(Philips)	MSX	
+F6CF8B99459EB5293CDCC8FEFC84A71C		Chocobo Racing (2004)(HL-Soft)	MSX	
+ED07F46ADA21F018C40D38A746F519BB		Choplifter (1985)(Broderbund)	MSX	
+78664709059EDA63EF429DF7CBC3B6A2		Choplifter (1985)(Broderbund)[a]	MSX	
+27121600B9C989885FAE3DCECE2CF07A		Choplifter (1985)(Broderbund)[a2]	MSX	
+FB48D5E9CDEA7D080DBCF1702F533642		Choro Q (1984)(TAITO)(JP)	MSX			JP
+976EC4B376F74716E07757370F446013		Choro Q (1984)(Taito)(JP)[a]	MSX			JP
+5995CC6F08FDC9E883ECCE34D1398029		Circus Charlie (1984)(Konami)(JP)[RC-712]	MSX			JP
+8A3339BC88A1D1BF3AEB0B39202B7951		City Connection (1986)(Jaleco)(JP)	MSX			JP
+31B9BAEAC5C300C08899996FC860F930		City Connection (1986)(Jaleco)(JP)[a]	MSX			JP
+2F1B0F586F0DCCC41216406467AEAD3C		Classic Minesweeper (2004)(Karoshi)[RKS02]	MSX	
+581CEDC4F31ED1BF447FBB8480DE8560		Classic Pong v0.15 (2004)(Karoshi)[RKS01]	MSX	
+A2D04F11274663356B045F0897B8877E		Coaster Race (1986)(Sony)(JP)	MSX			JP
+02C3EDAF887A54669BA3C25480C7EEC0		Coaster Race (1986)(Sony)(JP)[a]	MSX			JP
+F85DEE784FA3210CC470D9273A2D8992		Coaster Race (1986)(Sony)(JP)[a2]	MSX			JP
+51D3E2426907224AB2244315CB05132C		Color Ball (1983)(Hudson Soft)(JP)	MSX			JP
+FEFD9CA0AE920A6905C4618713424D98		Color Ball (1983)(Hudson Soft)(JP)[a]	MSX			JP
+3AF0BE2FF76E5587CB776073DB41FA89		Color Ball (1983)(Hudson Soft)(JP)[a2]	MSX			JP
+C922B5EF698059CD4130B0CA6CDE7FEB		Color Tochika. Pillbox (1983)(Magic Software)(JP)	MSX			JP
+B302AEA4458DD159D93340AA5EBD10CB		Color Tochika. Pillbox (1983)(Magic Software)(JP)[a]	MSX			JP
+9F3A1432A34A25241F9F7705A34FD81A		Come On! Picot (1986)(Pony Canyon)(JP)	MSX			JP
+FE66C074FBEA5AC7073B82C4B4500EB3		Comecocos (19xx)(Idealogic)(ES)	MSX			ES
+22416BA63118EF8F1CC14D2BCAF3C56E		Comet Tail (1983)(ASCII)(JP)	MSX			JP
+C63F0EA3A8BBB9E41906FCBCE6ED40EB		Comic Bakery (1984)(Konami)(JP)[a][RC-714]	MSX			JP
+DF0AF27C7FDA4D2992A12FF1BD287F01		Comic Bakery (1984)(Konami)(JP)[a2][RC-714]	MSX			JP
+6F6EAE0A2AF8353ECC93D69F02085500		Comic Bakery (1984)(Konami)(JP)[RC-714]	MSX			JP
+B6004B5FA3659409795CC4857CC14860		Computer Billiards (1985)(Sony)(JP)	MSX			JP
+FF5123383260E3C9357771FC31CF199F		Computer Billiards (1985)(Sony)(JP)[a]	MSX			JP
+9049F90A9C9903AECBB7DD7849686C64		Computer Billiards (1985)(Sony)(JP)[a2]	MSX			JP
+99522573A9F136A4B392241FD0E39266		Computer Billiards (1985)(Sony)(JP)[a3]	MSX			JP
+496D62F19424927657C141B5E3FFA816		Computer Chess (1985)(Sony)(JP)	MSX			JP
+D0EAB12BB1268F381CB4AABAB27C0809		Computer Othello (1984)(Sony)(JP)	MSX			JP
+2140B617656F08DA8393066D44E2CCE1		Computer Othello (1984)(Sony)(JP)[a]	MSX			JP
+FEC149B9AA0B478F1EBE47F3247CAF79		Computer Pachinko (1984)(Sony)(JP)	MSX			JP
+4A92B7AC094B541E932E7A5818614CC9		Computer Wars (2004)(Crappysoft)(ES)	MSX			ES
+383E32BDF8BC95F2AFA55738D700B700		Con-Dori (1983)(Cross Talk)(JP)	MSX			JP
+6B60F17BB655FE258DEC6B966179B07A		Con-Dori (1983)(Cross Talk)(JP)[a]	MSX			JP
+115327E682914F4F82E7CA6B2AE8DFFD		Con-Dori (1983)(Cross Talk)(JP)[a2]	MSX			JP
+E70CE050B71D6377B2A9A71BCF5C4261		Confused (1986)(Al Alamiah)(KW)	MSX	
+C71F684FD9E3D430BFD3DA7B8077AC6B		Cosmic Battle (2005)(Vendetta)(beta)	MSX	
+CA26BBF9D960A99DA1220535209F834A		Cosmic Soldier 2 - Psychic War (1987)(Kogado)(JP)	MSX			JP
+7E84C7A98E6380396B97D1A487EB448E		Cosmo Explorer (1985)(Sony)(JP)	MSX			JP
+BBF3CC9C6CEB4F84943DCB5C4D6ED4E2		Cosmo Explorer (1985)(Sony)(JP)[a]	MSX			JP
+7B2AFCBFB1747C0FA11D3DB9D09753F2		Courageous Perseus (1985)(Cosmos Computer)(JP)	MSX			JP
+87A95C9055F7C3E030B9D48C8DA8AABF		Courageous Perseus (1985)(Cosmos Computer)(JP)[a]	MSX			JP
+E1C1DC9AC4DCEFE4E8F191B1A3DC6B10		Craze (1988)(Heart Soft)(JP)	MSX			JP
+4BFA1379A388C19E90810B064AD351A2		Craze (1988)(Heart Soft)(JP)[a]	MSX			JP
+A6CD4292D7F68036E303BDF9AC1E4265		Crazy Buggy (2005)(Crappysoft)	MSX	
+D43A895CB4222450F01F6E39936CE774		Crazy Bullet (1983)(ASCII)(JP)	MSX			JP
+69CAE7694B271D2C071C8413FD2D42F1		Crazy Bullet (1983)(ASCII)(JP)[a]	MSX			JP
+46ACB233F59CC0117301AD18617B0DEE		Crazy Cars (1988)(Titus)(GB)	MSX			GB
+A8D894BA863CED24BC314CA6E7E9E016		Crazy Train (1983)(Sony)(JP)	MSX			JP
+A69C6253D5F94565CA2E355EB7532EE8		Crazy Train (1983)(Sony)(JP)[a]	MSX			JP
+C853D2DFC162E0C0DE883F4502FF0F1F		Crazy Train (1983)(Sony)(JP)[a2]	MSX			JP
+35CA518BEE64C9781CAD8B4A3974D10D		Crazy Train (1983)(Sony)(JP)[a3]	MSX			JP
+F7BCBF41CFAA37DCCF159B52DFF7BE92		Cross Blaim (1986)(dB-Soft)(JP)	MSX			JP
+3F6CA4AB412A7C5E8CA9DED41C7ECF91		Crusader (1985)(Pony Canyon)(JP)	MSX			JP
+0623769F09E0DEE2A6D81EF52998047B		Crusader (1985)(Pony Canyon)(JP)[a]	MSX			JP
+73D601525EFB66DDBD3F0EF46E133A07		Crusader (1985)(Pony Canyon)(JP)[a2]	MSX			JP
+340BA6AE6CC3C4EF8C924BD6966B6670		C-So! (1985)(Pony Canyon)(JP)	MSX			JP
+029DBDAEACE66734FC8D07B2E1F379A5		C-So! (1985)(Pony Canyon)(JP)[a]	MSX			JP
+4876EAF017883717249015770CA881F4		Cure, The (2005)(XL2S Entertainment)	MSX	
+A268A017B074DC92050ACD7571A2401F		Daidasso. Great Escape (1985)(Carry Lab)(JP)	MSX			JP
+0B59208A8E7D66EE00FBDAE83D18DCCD		Daishogai Keiba. Exciting Jockey (1984)(Casio)(JP)	MSX			JP
+3F6D25FDBAE76B29B417B63C97F80FBA		Daiva Story 4 - Asura's Bloodfeud (1987)(T&E Soft)(JP)	MSX			JP
+908C850C61C688F1CAFCEA2F8C0ABEA7		Daiva Story 4 - Asura's Bloodfeud (1987)(T&E Soft)(JP)[a]	MSX			JP
+1DA5BF81CDBF56427F7CC02119DEF044		Dam Busters, The (1985)(Comptiq)(JP)	MSX			JP
+1C5CE09D76D9D51123E9756ED3D7917B		Dam Busters, The (1985)(Comptiq)(JP)[a]	MSX			JP
+3A9BF05EDB369300D4576A703A62BB71		Danger X4 (1984)(ASCII)(JP)	MSX			JP
+77739E3D0A583F1FB220B37B0FCCF5D9		Danger X4 (1984)(ASCII)(JP)[a]	MSX			JP
+4AFC591ED124858B6C20526C928CD37C		Danger X4 (1984)(ASCII)(JP)[a2]	MSX			JP
+A2B5BB5DE0869E0948165FF010754DFD		David II (1984)(ASCII)(JP)	MSX			JP
+63C4C6C984FDE23357F62D19A244D306		Dawn Patrol (1986)(Pony Canyon)(JP)	MSX			JP
+41C933E969597E05E8BB7798250E9E2B		D-Day (1984)(Jaleco)(JP)	MSX			JP
+240FFCF657577F24BE1996EEBE1711B1		D-Day (1984)(Jaleco)(JP)[a]	MSX			JP
+F791FDD30DFD64019281AE53E4343BD4		D-Day (1984)(Jaleco)(JP)[a2]	MSX			JP
+7023238B1F392D1A6EB84ABE6D059D85		D-Day (1984)(Jaleco)(JP)[a3]	MSX			JP
+094A5CCE2C38EB66B103B0317C92B65A		Decathlon (1984)(Pony Canyon)(JP)	MSX			JP
+42149C1162BB8C6F00AE679D9F52D430		Decathlon (1984)(Pony Canyon)(JP)[a]	MSX			JP
+4010DB3F6E840FB420DA733A151D0E58		Deep Dungeon (1988)(Scaptrust)(JP)	MSX			JP
+44BA30921C8D352683009B62F442DB00		Deep Dungeon II (1988)(Scaptrust)(JP)	MSX			JP
+CFE9BB7E89718D3596BCB9F3451A9FF8		Demon Crystal Saga II - Knither Special (1987)(Radio Wave Newspaper Publisher)(JP)	MSX			JP
+71C5FE1B4DEC31174289CCF54B9FFE86		Demon Crystal, The (1986)(Radio Wave Newspaper Publisher)(JP)	MSX			JP
+E8808BA3E3B47426A674B1C4601CD97A		Demonia (1986)(Microids)(GB)(fr)	MSX	fr		GB
+D79662571A44DDC6A4F9E2803B6AB554		Devil's Heaven (1984)(General)(JP)	MSX			JP
+77B171D7C068A1B3AD42438D3D4A7354		Dig Dug (1984)(Namcot)(JP)	MSX			JP
+C0CBFD77FF3CABB9CF44ED53BF0ED14B		Dig Dug (1984)(Namcot)(JP)[a]	MSX			JP
+A8BD6F979FAA15284955142AE2DF0BD2		Dip Dip (1985)(Indescomp)(ES)	MSX			ES
+15F5F13185A90B1497867E14318150FE		Doki Doki Penguin Land (1985)(Pony Canyon)(JP)	MSX			JP
+02D42DEC8E6F73B08D3CA9B2DC24EFB6		Doki Doki Penguin Land (1985)(Pony Canyon)(JP)[a]	MSX			JP
+50435CE4BB1373F57C903D85BC3C7986		Door Door Mk2 (1985)(Enix)	MSX	
+F6E96AC27933C8066FC69BBDDD81D6E2		Dorodon (1984)(Sony)(JP)	MSX			JP
+F9403BC268CD7CADD1B8EBCBD97568C8		Dragon Attack (1983)(HAL Laboratory)(JP)	MSX			JP
+4905A90DBB014D941E133A0DADD48D00		Dragon Attack (1983)(HAL Laboratory)(JP)[a]	MSX			JP
+67FC0F5AD04DA75A16E8A2CD5F1451AC		Dragon Quest (1986)(Enix)(JP)	MSX			JP
+A05839977FACCD697C4F5C93CCD3C005		Dragon Quest (1986)(Enix)(JP)[a]	MSX			JP
+24E032267E25C5DE56D988F07B973F7F		Dragon Quest II (1988)(Enix)(JP)	MSX			JP
+A6FDC63C228C505425A8D05DDF0EFBD5		Dragon Quest II (1988)(Enix)(JP)[a]	MSX			JP
+8BFB3CC95C950083342C20B0B0193893		Dragon Quest II (1988)(Enix)(JP)[a2]	MSX			JP
+B1218CC7F604CB1ABED7C7BE4F057EBB		Dragon Slayer (1985)(Square)(JP)	MSX			JP
+368BCF39CE5FB246F24FD58C8655F017		Dragon Slayer 2 - Xanadu (1987)(Falcom)(JP)	MSX			JP
+03E7119173912F9444CB96ED58BA4957		Dragon Slayer 2 - Xanadu (1987)(Zemina)(KR)	MSX			KR
+A79B39EB8308B292CDD5EE2EB2FCCC0D		Dragon Slayer 3 - Romancia. Dragon Slayer Jr (1987)(Falcom)(JP)	MSX			JP
+4E0428536041219C7C4A58856E10E9D5		Dragon Slayer 4 - Drasle Family (1987)(Falcom)(JP)	MSX			JP
+2793DC76B379F3BF8F0059415D7848E5		Drainer (1987)(Victor)(JP)	MSX			JP
+79127654AE5B14F3F09C73F3702FC43C		Driller Tanks (1984)(Hudson Soft)(JP)	MSX			JP
+54CA0E7965DCB7D74CAC44714818E6C1		Driller Tanks (1984)(Hudson Soft)(JP)[a]	MSX			JP
+9A1D605CDC945454D7A78FE41979D83A		Drink It! (2006)(Crappysoft)	MSX	
+02B361E630E09859F09310AD00C62BF3		Duck Hunt (2004)(Karoshi)[RK703][gunstick]	MSX	
+8DD86DF557313164D5F50F134843069F		Dungeon Hunter (1989)(ASCII)(JP)	MSX			JP
+E9EE344FA47388CC33F74F36BBFD56C6		Dungeon Master (1986)(ASCII)(JP)	MSX			JP
+167F1D9FF7D743BFC774B6162129C055		Dunk Shot (1986)(HAL Laboratory)(JP)	MSX			JP
+D440664792946C7D9C4E6489C04B3D4F		Dunk Shot (1986)(HAL Laboratory)(JP)[a]	MSX			JP
+3003C07E1D01EA63F8A7BF6ECF2CDB4D		Dustin (1987)(Dinamic Software)(ES)	MSX			ES
+92C65A326270B3BAA0478959F91B7ED6		Dynamite Bowl (1988)(Toshiba-EMI)(JP)	MSX			JP
+AF986C1F68FBAC987C72AB759E1D55F3		E.I. - Exa Innova (1984)(Sony)(JP)	MSX			JP
+A691A81C0EBEAA439D649D1488EB3A12		E.I. - Exa Innova (1984)(Sony)(JP)[a]	MSX			JP
+DE791775915FA550AAFCAA05A8110831		Eagle Fighter (1985)(Casio)(JP)	MSX			JP
+E7D23F58B964D3B4DDF85D130F5AF0C6		Eagle Fighter (1985)(Casio)(JP)[a]	MSX			JP
+F94D3A0D3A3D120370E338F95B48C363		Eat Blue! 2004 (2004)(Paxanga Soft)	MSX	
+3E6C060EE4426A94BEA154F661E1FE2E		Eat Blue! 2004 v2 (2004)(Paxanga Soft)	MSX	
+1214BDFB319DA16A7E9A7EB646238005		Eggerland Mystery (1985)(HAL Laboratory)(JP)	MSX			JP
+886B6A075CC986B6CE8C9C315B0384AF		Eggerland Mystery 2. Meikyushinwa. Labyrinth Myth (1986)(HAL Laboratory)(JP)	MSX			JP
+ACDF6CAF45F51F7ADE125C34BEE747DB		Eggerland Mystery 2. Meikyushinwa. Labyrinth Myth (1986)(HAL Laboratory)(JP)[a]	MSX			JP
+4ECECCA3E5358198C39747D08D3E5F66		Elevator Action (1985)(Nidecom)(JP)	MSX			JP
+C3EE55F1AC8E844B7F599401CAD2D047		Erika (1987)(Jast)(JP)	MSX			JP
+702E8CB880A60132C3ACE8FD21BA9560		Exchanger (1983)(ASCII)(JP)	MSX			JP
+20F73611970EFDB8408D24D6C1D03FDA		Exchanger (1983)(ASCII)(JP)[a]	MSX			JP
+165E08772153F210DD5080E06B27BFA6		Exerion (1984)(Jaleco)(JP)	MSX			JP
+CDF09DCCB0D3B83FF0A5917207AED728		Exerion (1984)(Jaleco)(JP)[a]	MSX			JP
+2A8F52021A49D05616A45992F111CD6A		Exerion (1984)(Jaleco)(JP)[a2]	MSX			JP
+B78A12462D37679779FDE4F610A817F8		Exerion (1984)(Uranio)(IT)	MSX			IT
+C87926EC309B7B5F99F081D8D7C031A9		Exerion II - Zorni (1984)(Jaleco)(JP)	MSX			JP
+E8519FC1F9A4AF0115A8ABB450B32BD6		Exerion II - Zorni (1984)(Jaleco)(JP)[a]	MSX			JP
+985081B984B6C6D4A83949509B9260B7		Exoide-Z (1986)(Casio)(JP)	MSX			JP
+67EECAE6CBB4A1FBB5F6F549DD614C1D		Exoide-Z (1986)(Casio)(JP)[a]	MSX			JP
+1BB9D2437C2304088D36EBBC655FE2C1		Exoide-Z (1986)(Casio)(JP)[a2]	MSX			JP
+1C7C29B7F4527BBA7160641616FCB6A3		Exoide-Z Area 5 (1986)(Casio)(JP)	MSX			JP
+603D4C819A51D0C20FF9FA9F902D3FFD		F-1 Spirit - The Way to Formula 1 (1987)(Konami)(JP)[a][RC-752]	MSX			JP
+910CC3718C00C9AF6A808E277F0E7586		F-1 Spirit - The Way to Formula 1 (1987)(Konami)(JP)[RC-752]	MSX			JP
+298CCA1F79A4494C41CFB9EB1E586A50		F-1 Spirit - The Way to Formula 1 (1987)(Konami)(JP)[SCC][RC-752]	MSX			JP
+FCF0F1CA4AB651512E27BAA397AE774F		F-1 Spirit - The Way to Formula 1 (1987)(Zemina)(KR)[RC-752]	MSX			KR
+C7C38266C0778D3E3669CD3A8DE313FE		F16 Fighting Falcon (1985)(ASCII)(JP)	MSX			JP
+9926D3629D71A880FAF8BD14F6488288		Fa Tetris (1989)(Fa Soft)(KR)	MSX			KR
+DF328B3806F98F0045253C50C21A9B33		Factory Infection (2004)(Karoshi)[RK705]	MSX	
+137210CD4B18CF23B6801FFCCFEF384B		Fairy (1985)(ASCII)(JP)	MSX			JP
+C4751C8B79083A88803A41CEF9AAE459		Fairyland Story, The (1987)(Hot-B)(JP)	MSX			JP
+87087F0E02A68996C2C9F3BABFC439AD		Fairyland Story, The (1987)(Hot-B)(JP)[a]	MSX			JP
+CC9C7DFCF2331DE6B5EFFC67BA873503		Fairyland Story, The (1987)(Hot-B)(JP)[a2]	MSX			JP
+27B5D76F266E5A480B68ECB866ADF0D3		Fantasy Zone (1986)(Pony Canyon)(JP)	MSX			JP
+D093730F86608542D6BB8DC0119185D4		Fantasy Zone (1987)(Zemina)(KR)	MSX			KR
+FA08CB479EB8583BDA197F33D2BFE389		Final Justice (1985)(Pony Canyon)(JP)	MSX			JP
+3941897F18ADCDBF9FD41BCE79B65DAA		Final Justice (1985)(Pony Canyon)(JP)[a]	MSX			JP
+A2199BC0FAA46AABD3B588D624E7C443		Final Justice (1985)(Pony Canyon)(JP)[a2]	MSX			JP
+1AE71FCAFE599DFB0A552E2E2C866BC4		Final Mahjong (1983)(MIA)(JP)	MSX			JP
+7320BFE382401088813EF3936CFB8E23		Final Zone Wolf (1986)(Telenet Japan)(JP)	MSX			JP
+5CB83FEBDE2E0A2973D055DD02912B05		Final Zone Wolf (1986)(Zemina)(KR)	MSX			KR
+DE4DADEEA372B1883FECD5365B40A87C		Fire Rescue (1984)(Hudson Soft)(JP)	MSX			JP
+042291EA5B22AB193F1EF7E60AB98FA7		Fire Rescue (1984)(Hudson Soft)(JP)[a]	MSX			JP
+131E6B5F20160C9903B580A3B41BE2EE		Flappy Limited (1985)(dB-Soft)(JP)	MSX			JP
+B4398263F3FD64715537028ACC491C00		Flappy Limited (1985)(dB-Soft)(JP)[a]	MSX			JP
+E29F65233B000520F5481517E0027E41		Flappy Limited 85 (1985)(dB-Soft)(JP)	MSX			JP
+6A1DEE46A182E896696C2E8F4C5CA9C1		Flash Splash (1984)(Toshiba-EMI)(JP)	MSX			JP
+C6BD4C8B1957FCC90CA11157309903AF		Flashpoint (1990)(Zemina)(KR)	MSX			KR
+BDBEE6D2575E0E30027D6CCCE6ADD7D7		Flashpoint (1990)(Zemina)(KR)[a]	MSX			KR
+A892A61A27E35D5D72B89FBFD77D0C11		Flicky (1985)(Micronet)(JP)	MSX			JP
+C3EB3D6FCDD41898D6B5515F122B413E		Flics, Les (1985)(PSS)(GB)	MSX			GB
+403B903B49C30769DFE8E5D9205B68C4		Flight Deck II (1986)(Pony Canyon)(JP)	MSX			JP
+00DC00046FE00258D2F901DEAF00AECB		Flight Deck II (1986)(Pony Canyon)(JP)[a]	MSX			JP
+2028E2CED4A1157552BAE0D4043774D3		Flight Simulator (1986)(subLOGIC)(JP)	MSX			JP
+DFB14DF7CCC7B8B3837A1AEE1BC5E669		Flight Simulator (1986)(subLOGIC)(JP)[a]	MSX			JP
+2E8670CA8D9BEBA115334E00283C4EA5		Flipper Slipper (1984)(ASCII)(JP)	MSX			JP
+CC2E6B180DF7B928E7CBEB6B514B18B6		Flipper Slipper (1984)(ASCII)(JP)[a]	MSX			JP
+569E2610A8094789A83C708495BCB995		Formation Z (1985)(Nippon Dexter)(JP)	MSX			JP
+9ADD9B8B02369B48A507494DF5C7303E		Formation Z (1985)(Nippon Dexter)(JP)[a]	MSX			JP
+ACB2CEA4C65FFC93B27DCDFD525A6731		Frogger (1983)(Konami)(JP)[a][RC-704]	MSX			JP
+4DAF350513798227186C3454BB396114		Frogger (1983)(Konami)(JP)[RC-704]	MSX			JP
+845EA332500757B86912F513B8F6F49A		Frontline (1984)(TAITO)(JP)	MSX			JP
+0C81629EEBF187779EEBDA248A956C40		Frontline (1984)(Taito)(JP)[a]	MSX			JP
+5EA44C3480D577DE238EDDCD7B2C6B91		Frontline (1984)(Taito)(JP)[a2]	MSX			JP
+1232FC0A6E9D276A2F5B0A5DB0CBEBC1		Fruit Panic (1984)(Pony Canyon)(JP)	MSX			JP
+85A84DFE95CA2966E77EBD7F24CEBB78		Fruit Search (1983)(HAL Laboratory)(JP)	MSX			JP
+4EDECDD9F495A690333BFBF06BCDE944		Fruit Search (1983)(HAL Laboratory)(JP)[a]	MSX			JP
+0982842B41AC13B03B574B41B46B7DE0		Funky Mouse (1984)(ASCII)(JP)	MSX			JP
+95D97E535A679C6A2E62743B5600EF66		Futbol (1985)(Indescomp)(ES)	MSX			ES
+CDACEDB676F2AB537BEEA78A4C1F742A		G.P. World (1985)(Pony Canyon)(JP)	MSX			JP
+83A311F703C75347A5A3DF0E9FF2B7E7		Galaga (1984)(Namcot)(JP)	MSX			JP
+09BE689678E35041419AE28CF2913F04		Galaga (1984)(Namcot)(JP)[a]	MSX			JP
+AD242A3199771CD5EE35EA5CDD5276B5		Galaga (1984)(Namcot)(JP)[a2]	MSX			JP
+117C0F6C294C73AF928443A504850994		Galaga (1984)(Namcot)(JP)[a3]	MSX			JP
+08165F2FEC4CD6ACAF7FBE0BF49303EA		Galaxian (1984)(Namcot)(JP)	MSX			JP
+C94D5F115F27250148677E4495C973C3		Galaxian (1984)(Namcot)(JP)[a]	MSX			JP
+7B12ABA02CCEAE5E3A05CE9F0CA9ACF3		Galaxian (1984)(Namcot)(JP)[a2]	MSX			JP
+78DC3B798F7C6D47976E42604971BC42		Galaxian (1984)(Namcot)(JP)[o2]	MSX			JP
+E83B59597E53FFB1C424469488A9210C		Gall Force - Defense of Chaos (1986)(Sony)(JP)	MSX			JP
+7A8147F1A5B886A63A09A3A31DAA9E49		Gall Force - Defense of Chaos (1986)(Sony)(JP)[a]	MSX			JP
+C5FA1C8C6676FAA382DB530EEAB349B6		Gall Force - Defense of Chaos (1986)(Sony)(JP)[a2]	MSX			JP
+1E248329A15A995969958A138FB25038		Gambler Jikichushinpa (1988)(Game Arts)(JP)	MSX			JP
+6156187523E00A072F0F9500E5111624		Game Land (1984)(Casio)(JP)	MSX			JP
+79AF27B8292CE59123F7D8AC64CCA55C		Gang Master (1983)(ASCII)(JP)	MSX			JP
+702CDC13D4050B011BF4339E64708F5F		Genghis Khan (1986)(Koei)(JP)	MSX			JP
+006F1A686F2904762D57E71FDA555613		Ghostbusters (1985)(Pony Canyon)(JP)	MSX			JP
+AC2E61850414F7B528C8753A3D804394		Glider (1985)(ASCII)(JP)	MSX			JP
+A9E41CB3920EC0CE6348325C638A19AD		Glider (1985)(ASCII)(JP)[a]	MSX			JP
+EC1A568F12FA3303804216F35E1CD841		Gniffel v2 (2004)(Dioniso)	MSX	
+DC31287CED6E601EA7FDF2AF9759C58F		Gofer no Yabou Episode II. Nemesis 3 - The Eve of Destruction (1988)(Konami)(JP)[a][RC-764]	MSX			JP
+FF9FEDE25893DC32F6A7DB275173B2B9		Gofer no Yabou Episode II. Nemesis 3 - The Eve of Destruction (1988)(Konami)(JP)[a2][RC-764]	MSX			JP
+55C020211EDCFC4C5A5D66BDD48F7D16		Gofer no Yabou Episode II. Nemesis 3 - The Eve of Destruction (1988)(Konami)(JP)[RC-764]	MSX			JP
+AAA5EB619E90C1A3D1C2F5714BCCC0EA		Gofer no Yabou Episode II. Nemesis 3 - The Eve of Destruction (1988)(Konami)(JP)[SCC][RC-764]	MSX			JP
+B56500EBB55C2E5FB20DE542EF739D5B		Gokiburi Daisakusen. Bug Bomb (1983)(Magic Software)(JP)	MSX			JP
+277B93F5F1A7EF399479FFDF98844922		Golf Game (1983)(ASCII)(JP)	MSX			JP
+AE65C3CEB17FD6187AAD36DCFB3B9858		Golf Kyou. Hudson 3D Golf. Golf Crazy (1984)(Hudson Soft)(JP)	MSX			JP
+3A0CA365D2E9446DEFC3DAD2B5483BBD		Golf Kyou. Hudson 3D Golf. Golf Crazy (1984)(Hudson Soft)(JP)[a]	MSX			JP
+4A8C2CDDAF5561D8747E056442B2BEEE		Golgo 13 - Okami no Su (1986)(Pony Canyon)(JP)	MSX			JP
+A37CF005C8E8479FD9533065A1F33967		Golvellius (1987)(Compile)	MSX	
+AB0FE259831647DA8F6E8DCF24FB0B45		Golvellius (1987)(Compile)(JP)[a]	MSX			JP
+BBA195151FC2247A00D92E9BF5E51A79		Gomoku Narabe - Omo Go (1984)(Toshiba-EMI)(JP)	MSX			JP
+3FCB5FF74698E75F7782183E94C54DEE		Gomoku Narabe - Omo Go (1984)(Toshiba-EMI)(JP)[a]	MSX			JP
+E25E87AECC04F4E5047B9AF12135CDE1		Goonies, The (1986)(Konami)(JP)[a][RC-734]	MSX			JP
+24A6D9CFA9E38E120678A538663E8AD2		Goonies, The (1986)(Konami)(JP)[a2][RC-734]	MSX			JP
+518B1DDCF77E38E9F1370F94B41875C4		Goonies, The (1986)(Konami)(JP)[RC-734]	MSX			JP
+8A7C8149F1F3B7A5FC93CD66A7FB2AD5		Gozira 3D. Godzilla vs 3 Major Monsters (1984)(Bandai)(JP)	MSX			JP
+4724699F410FA266A6BCB223EE8C99FC		Gozira Kun. Godzilla (1985)(Toho)(JP)	MSX			JP
+B197C822F012647A5C30EEA2BA009FC5		Gozira Kun. Godzilla (1985)(Toho)(JP)[a]	MSX			JP
+FF98B021526417A0422DF2A1D7E9ECDF		Gradius 2. Nemesis 2 (1987)(Konami)(beta)[a][RC-751]	MSX	
+76D211421642FE6CFCD56AF525B0D877		Gradius 2. Nemesis 2 (1987)(Konami)(beta)[RC-751]	MSX	
+ABBCFC00F71051434E0E82E29B6EA1EF		Gradius 2. Nemesis 2 (1987)(Konami)(JP)[a][RC-751]	MSX			JP
+648E923715E4B54CBECE186F098E0956		Gradius 2. Nemesis 2 (1987)(Konami)(JP)[penguin version][RC-751]	MSX			JP
+EE3E6A50E3DE131D217E5DAB55519011		Gradius 2. Nemesis 2 (1987)(Konami)(JP)[RC-751]	MSX			JP
+C1EAEAF5F0B432D2C6A53735B6F53B6D		Gradius 2. Nemesis 2 (1987)(Konami)(JP)[SCC][RC-751]	MSX			JP
+797016FDBF2B23138C543FEE5C8CC34B		Gradius. Nemesis (1986)(Konami)(JP)[a][RC-742]	MSX			JP
+1D19E90B3DF492F0F1956747279FBBAC		Gradius. Nemesis (1986)(Konami)(JP)[a][SCC][RC-742]	MSX			JP
+25C0349164616A7540FAA04DCC90237A		Gradius. Nemesis (1986)(Konami)(JP)[SCC][RC-742]	MSX			JP
+CD78EBEB472FD24AC0F569D262BB2BD4		Gradius. Nemesis (1986)(Konami)(JP)[SCC+][RC-742]	MSX			JP
+697F6A318B187510655A28F3A0FE698D		Green Beret (1986)(Konami)(JP)	MSX			JP
+F0653353E486843B0C827746E0CFA078		Green Beret (1986)(Konami)(JP)[a]	MSX			JP
+19C599289767DB875F21B6165A1DF0CF		Green Beret (1987)(Zemina)(KR)	MSX			KR
+8B89872B9BF500DCD0716BE780B94A63		Griel's Quest for the Sangraal (2005)(Karoshi)[a][RK709]	MSX	
+A02EE1D95223091749CE400C768B2159		Griel's Quest for the Sangraal (2005)(Karoshi)[RK709]	MSX	
+213477F5CEC0A668DD78E8C03452FDD6		Griel's Quest for the Sangraal EX (2005)(Karoshi)[a][RK709EX]	MSX	
+767BE00C25DD3617B8EEC069DD49D784		Griel's Quest for the Sangraal EX (2005)(Karoshi)[RK709EX]	MSX	
+CE1F65F3E0CBAC542FD00D98A443339F		Guardic (1986)(Compile)	MSX	
+9E21B956D02CDF275BAA501837ACA094		Guardic (1986)(Compile)(JP)[a]	MSX			JP
+3D4C39117898C3406A2297CA2C7D3253		Gulkave (1986)(Pony Canyon)(JP)	MSX			JP
+4DB871206AAC5E6BBC11B2719355DF22		Gulkave (1986)(Pony Canyon)(JP)[a]	MSX			JP
+862E4A94AB67BE5DFC3B9667647E3BD3		Gulkave (1986)(Pony Canyon)(JP)[a2]	MSX			JP
+C980274ACB56219033C8BB6431DF8C42		Gunfright (1986)(Nippon Dexter)(JP)	MSX			JP
+DA87792D8321E1C364B3D67E083F3EFF		Gunfright (1986)(Ultimate Play The Game)(GB)	MSX			GB
+E2D53D146BF8BECD62DBD5F910632DFB		Gunjin Shougi Mars (1986)(Toshiba-EMI)(JP)	MSX			JP
+E86777336EF6B1E02182C5B45FCA7AAF		Guru Logic (2003)(Karoshi)[RK701]	MSX	
+7FE07A76E5ABA51F25EC2B2BE85C6246		Gyro Adventure (1984)(Nippon Columbia - Colpax - Universal)(JP)[Martos]	MSX			JP
+99E8E6260B5B42069B64E281209A1143		Gyrodine (1986)(TAITO)(JP)	MSX			JP
+E71C92C88C654685D298752A0199AAAB		Hadesu no Monshou. The Seal of Hades (1986)(Casio)(JP)	MSX			JP
+DE05BCAEFE28DEA107F7467D8FA3A2F0		Hadesu no Monshou. The Seal of Hades (1986)(Casio)(JP)[a]	MSX			JP
+6D4DEFE4EBF20968C5EA2FC843736B75		Haja no Fuin (1987)(Kogado)(JP)	MSX			JP
+9ED14F5BFE1BD83D2A82C93DEBBAE959		Hanafuda (1984)(Toshiba-EMI)(JP)	MSX			JP
+6CBFEBD9AC448ED19A5C8DA61E634E15		Hanafuda Koi Koi - Gostop Godori (1984)(ASCII)(JP)	MSX			JP
+014D351DB47D5BEABDE8851BDCC94A0E		Hang-On (1986)(Pony Canyon)(JP)	MSX			JP
+262AFF738452EB2B62E1881BF23DBD4B		Hang-On (1986)(Pony Canyon)(JP)[a]	MSX			JP
+8ED0C9F88FDC84B877451C1B528ABAE3		Hang-On (1986)(Pony Canyon)(JP)[a2]	MSX			JP
+6706AEFE8C4C247590EAADFC9677EE36		Happy Fret (1985)(Micro Cabin)(JP)	MSX			JP
+7C364B9C215D6DDC49262F5EF0E2742E		Harapeko Pakkun (1984)(ASCII)(JP)	MSX			JP
+164CFDB577F0C976BFB30956761CBA1C		Harry Fox MSX Special (1986)(Micro Cabin)(JP)	MSX			JP
+4A9FCB047E8D56241F1104DB1260AD13		Harry Fox Yki no Maoh (1985)(Micro Cabin)(JP)	MSX			JP
+ECD6A109C73D2C90DD1828F551009C3E		Hayabusa. Moonsweeper (1985)(Toshiba-EMI)(JP)	MSX			JP
+87FAA2B74F98F753687686F761CDD860		Head over Heels (1987)(Ocean Software)(GB)	MSX			GB
+9C131FB9742940FB19F65992CB190BBF		Heavy Boxing (1983)(HAL Laboratory)(JP)	MSX			JP
+483A80DAA6374E0ABE2467EF01593093		Heavy Boxing (1983)(HAL Laboratory)(JP)[a]	MSX			JP
+00C9363913697332A6797BA2E2A2DD9F		Heist, The (1985)(Comptiq)(JP)	MSX			JP
+F5D051EC82B155864A7BB12456FE01EC		Heist, The (1985)(Comptiq)(JP)[a]	MSX			JP
+905D9C68751745E0412875020EDB1F37		Heli Tank (1984)(ASCII)(JP)	MSX			JP
+552E7CCF6514B49BDF5A3E70FE0BC688		High Way Star (1984)(ASCII)(JP)	MSX			JP
+00677667FCA3DD010477F4CCE31D611B		High Way Star (1984)(Qnix)	MSX	
+8272EEF7C3E3B5E6BACD5656651A1E22		Hisha (1985)(Micro Cabin)(JP)	MSX			JP
+4A74A4B7F27E50C03F635556C58E6F81		Hitsuji Yai. Pretty Sheep (1984)(Hudson Soft)(JP)	MSX			JP
+D359766A67B048685FF297D415720F2A		Hitsuji Yai. Pretty Sheep (1984)(Hudson Soft)(JP)[a]	MSX			JP
+9EC76EF0FF9B1F3B948A8BB0ECA88A19		Hole in One (1984)(HAL Laboratory)(JP)	MSX			JP
+C786B6FE4D57EC4D74EB1BAA2C71873E		Hole in One (1984)(HAL Laboratory)(JP)[a]	MSX			JP
+27C969ED0E07CD33288974B977AB09CC		Hole in One (1984)(HAL Laboratory)(JP)[a2]	MSX			JP
+361BC72571B9EB44E74EA97C963F116F		Hole in One (1984)(HAL Laboratory)(JP)[a3]	MSX			JP
+3D73EE9D147FFBA2F62AEF4259121A97		Hole in One Professional (1986)(HAL Laboratory)(JP)	MSX			JP
+B106F5A35ED5D8803B2858A053788AA4		Hole in One Professional (1986)(HAL Laboratory)(JP)[a]	MSX			JP
+388919B63C03572AC6786CC97704A22B		Hopper (1986)(Al Alamiah)(KW)	MSX	
+F5D8EDDCBCE4F47E0F7C3EFD540CC131		Hustle Chumy (1983)(General)(JP)	MSX			JP
+5B746084672688B835BB0B29BF807D6F		Hustle Chumy (1983)(General)(JP)[a]	MSX			JP
+0C7C6F7E2316F6DCCCE75FA497A2690F		Hydlide (1985)(T&E Soft)(JP)	MSX			JP
+35E314E2976D37FAFE2D5BE15C9C3611		Hydlide II - Shine of Darkness (1986)(T&E Soft)(JP)	MSX			JP
+784A031211E9D55F9B1B323E3C2254AF		Hydlide II - Shine of Darkness (1986)(T&E Soft)(JP)[a]	MSX			JP
+45DFA17E171BE705AC724B5C9DD41704		Hydlide III - The Space Memories (1987)(T&E Soft)(JP)	MSX			JP
+511018104F7F51CE81A45651930F4C3F		Hydlide III - The Space Memories (1987)(Zemina)(KR)	MSX			KR
+5352404E1434C53266169A2BE3DB0866		Hyper Olympic 1 (1984)(Konami)(JP)[RC-710]	MSX			JP
+77F023FCB66181850AA2F62BD24325D8		Hyper Olympic 2 (1984)(Konami)(JP)[RC-711]	MSX			JP
+D302BA993F34A093E64829A8C60A7993		Hyper Rally (1985)(Konami)(JP)[a][RC-718]	MSX			JP
+D7BB9E5695E7D80BFDBD8136C392EA8C		Hyper Rally (1985)(Konami)(JP)[a][SCC+][RC-718]	MSX			JP
+352EF9AEC5E2D38C4A2604F9C97E880F		Hyper Rally (1985)(Konami)(JP)[a2][RC-718]	MSX			JP
+924B32297D0F3D94E0282BB0968CFF1C		Hyper Rally (1985)(Konami)(JP)[a3][RC-718]	MSX			JP
+888D019ADE6429B9BD955DB456187C8A		Hyper Rally (1985)(Konami)(JP)[RC-718]	MSX			JP
+A056558ED6878F6C95A411990754F56C		Hyper Rally (1985)(Konami)(JP)[SCC+][RC-718]	MSX			JP
+B870891550234B6ADA5D876F88C57B6F		Hyper Sports 1 (1984)(Konami)(JP)[a][RC-715]	MSX			JP
+DE40A94E4FBBD653379B78B62C417608		Hyper Sports 1 (1984)(Konami)(JP)[RC-715]	MSX			JP
+EE74322B9491B521160D9F9D46E10E31		Hyper Sports 2 (1984)(Konami)(JP)[a][SCC+][RC-717]	MSX			JP
+665E6C909788650BB0187A8D7DDDED80		Hyper Sports 2 (1984)(Konami)(JP)[RC-717]	MSX			JP
+48B5ECDA8DA4C798AF4EB302E8A7AB7A		Hyper Sports 2 (1984)(Konami)(JP)[SCC][RC-717]	MSX			JP
+A9A407E72DE9041CBCBE2E3D388BC51C		Hyper Sports 2 (1984)(Konami)(JP)[SCC+][RC-717]	MSX			JP
+95B5B6DF69509694D92238CF5AF366F9		Hyper Sports 3 (1985)(Konami)(JP)[a][RC-733]	MSX			JP
+01A2C85070D987A1B83F591E83B5BCFE		Hyper Sports 3 (1985)(Konami)(JP)[a2][RC-733]	MSX			JP
+88E29E9C1D5AD3CA4F2B8C65ACB04C43		Hyper Sports 3 (1985)(Konami)(JP)[RC-733]	MSX			JP
+849FE2E7103C6185970A2B161AE4BFDB		Ice World (1985)(Casio)(JP)	MSX			JP
+0EF0F6936855BB39B42B1AFAC0C52C71		Iga Ninpouten 2. Small Ninja 2 - The Mooncastle (1986)(Casio)(JP)	MSX			JP
+27F1765968E11BAFACDE1205EDB7885A		Iga Ninpouten. Small Ninja (1985)(Casio)(JP)	MSX			JP
+3939BEBD01324A75F3912289B3AC2404		Iligks Episode I - Theseus (1984)(ASCII)(JP)	MSX			JP
+B808FE1910C3346D95B098692889F222		Iligks Episode I - Theseus (1984)(ASCII)(JP)[a]	MSX			JP
+624BF5A7292944496E825014590FB5CB		Iligks Episode IV - The Maze of Illegus (1984)(ASCII)(JP)	MSX			JP
+B4571F90A52854C579A33FC5998F88DA		Iligks Episode IV - The Maze of Illegus (1984)(ASCII)(JP)[a]	MSX			JP
+1C54DE46A5BB1FCEADD60D5D63035055		Indian no Bouken. Indian's Adventure (1984)(Hudson Soft)(JP)	MSX			JP
+8AEDC43B85BBC6A20A4742EB8EAE22A3		Issunhoushi no Donnamondai. Little Samurai (1987)(Casio)(JP)	MSX			JP
+40C7CD9563B90EBCF6D42B1D396A7974		Issunhoushi no Donnamondai. Little Samurai (1987)(Casio)(JP)[a]	MSX			JP
+5F4A638B669F1E273017FB23E2581A6F		J.P. Winkle (1986)(MSX Magazine)(JP)	MSX			JP
+D0C96D2790DC3FB78278C31A8D79F292		J.P. Winkle (1986)(MSX Magazine)(JP)[a]	MSX			JP
+EA9BA10BA1197BA0EDA87A76098301DC		Jagur (1987)(Hudson Soft)(JP)	MSX			JP
+9048E758150EE26D91AF2D51D1502071		Jagur (1987)(Hudson Soft)(JP)[a]	MSX			JP
+B9486302BB42747A3F847DF144D63FD3		Jagur (1987)(Hudson Soft)(JP)[a2]	MSX			JP
+D296D37D4FCD007D6D4F214F4CAFF3EC		Jagur (1987)(Hudson Soft)(JP)[a3]	MSX			JP
+95449C74AA6F968C609EC46E5D95F716		Janka (1985)(ASCII)(JP)	MSX			JP
+45FC6994D275524482F28696824B0D96		Janyu Mahjong (1987)(Tecno Soft)(JP)	MSX			JP
+DE9A0789AE69FF3C54B94F0BA374722D		Jet Bomber (1985)(Al Alamiah)(KW)	MSX	
+1DB0A91BEAA256B00CBF9540511E04B4		Jet Set Willy (1985)(Hudson Soft)(JP)(en)	MSX	en		JP
+F26E7FB9B97A3FEE63483985921F4495		Jet Set Willy (1985)(Software Projects)(GB)	MSX			GB
+94233A7CEDFF37B82069E687B197A248		Jigsaw Set (1983)(MIA)(JP)	MSX			JP
+3132CDEF39CDD9889B9603D1E8E57224		Jissen - 4-nin Mahjong. Four Battle Mahjong (1984)(Sony)(JP)	MSX			JP
+E64F0823048093864B905796FC074AD2		Jump (1985)(ASCII)(JP)	MSX			JP
+467B9EF1F35187BAB918BE84EAF98BAE		Jump Coaster (1984)(Nippon Columbia - Colpax - Universal)	MSX	
+993FAA9E0DB9D9995B6B32CF7CE3CE08		Jump Coaster (1984)(Nippon Columbia - Colpax - Universal)[o2]	MSX	
+28131817D965FCB9037BA3CDA31F320D		Jump Land (1985)(Nippon Columbia - Colpax - Universal)	MSX	
+05769D26EFC7C988220859D2BF9B4A9C		Jumping Rabbit (1984)(MIA)(JP)	MSX			JP
+11B98B059D713FE4152D030EC46965B8		Juno First (1983)(Sony)(JP)	MSX			JP
+823B00451A33B68152AF9943CC6AB025		Juno First (1983)(Sony)(JP)[a]	MSX			JP
+98D3720DC7AB5F2C4BC4C2A0DCAAA4D4		Juno First (1983)(Sony)(JP)[o2]	MSX			JP
+8DA447C1B6A85B0A6D68185DC8A8EAD1		Juno First (1983)(Sony)(JP)[o3]	MSX			JP
+1EBB3629249282AD170DA852E2251932		Jyankyo (1984)(Hudson Soft)(JP)	MSX			JP
+8E59C543F38BF4CA3986E7117D68F87D		Kage no Densetsu. Legend of Kage (1986)(TAITO)(JP)	MSX			JP
+4C4721BE8DCF66678B2258A9A722B6D4		Kage no Densetsu. Legend of Kage (1986)(Taito)(JP)[a]	MSX			JP
+95D08A2B399D8E5974FF4A15BE09182F		Karamaru (1984)(HAL Laboratory)(JP)	MSX			JP
+762AF9D1FC7CE79EAC231C7C858DA568		Karuizawa Kidnapping Guidance, The (1986)(Enix)(JP)	MSX			JP
+C7694EC0996EBCD6A850BE7064E48753		Keiba. The Horse Race (1986)(Champion Soft)(JP)	MSX			JP
+C5B05F12E6C3BFE8F8391E949508EFF7		Kenja no Ishi. The Stone of Wisdom (1986)(Casio)(JP)	MSX			JP
+D5B40B5104B999CFC88B9C904410D1C2		Keystone Kapers (1984)(Pony Canyon)(JP)	MSX			JP
+3603D0BD610E6E42BBDE4617A2CC9DE3		Keystone Kapers (1984)(Pony Canyon)(JP)[a]	MSX			JP
+D31C47FE1203347C802CA568ADEE87A6		Kick It (1986)(Aackosoft)(NL)	MSX			NL
+B8E00A95125C7F0A1BC082CC52CBD006		Kick It (1986)(Aackosoft)(NL)[a]	MSX			NL
+E110C6F1E6A4B357F18006A4D2506B66		Kinasai (1984)(-)	MSX	
+03C8743FA19D446F6C53D1091FFAD78F		King & Balloon (1984)(Namcot)(JP)	MSX			JP
+8C307660C8FB29CFD8FF8342C95218CB		King & Balloon (1984)(Namcot)(JP)[a]	MSX			JP
+E0D35583330F9AFCCDFE02B513AC4C01		King Leonard (1986)(Mind Games Espana)(ES)	MSX			ES
+AA07815527E9B367BDEADA484A11AB5A		King's Knight (1986)(Square)(JP)	MSX			JP
+73984702F5C4A7211E6DC2B8E527384E		King's Knight (1986)(Square)(JP)[a]	MSX			JP
+EDFF7B7511F1055AFA483FF3BED04D84		King's Knight (1986)(Square)(JP)[a2]	MSX			JP
+300E9E31A54E21F091B7E81B50DB4184		King's Knight (1986)(Square)(JP)[a3]	MSX			JP
+DC990D182C3EC2B053E9BBE5B3FBF488		King's Valley (1985)(Konami)(JP)[a][RC-727]	MSX			JP
+0724CBA4A28619F3758A35235AA55326		King's Valley (1985)(Konami)(JP)[a2][RC-727]	MSX			JP
+DCD8D9508BE4FD38FDB4C8F50B16DBE3		King's Valley (1985)(Konami)(JP)[a3][RC-727]	MSX			JP
+B1E77E416CDBE46E31A50D6412A0A7BD		King's Valley (1985)(Konami)(JP)[a4][RC-727]	MSX			JP
+F485D4C28102F3C5E7FB1EBA8520382C		King's Valley (1985)(Konami)(JP)[RC-727]	MSX			JP
+2F8A812F46E09E39DD3D0DA8524EE96C		King's Valley II - The Seal of El Giza (1988)(Konami)(JP)[RC-760]	MSX			JP
+7C002653A7D54C8404EACE7B0694B70D		King's Valley II - The Seal of El Giza (1988)(Konami)(JP)[SCC][RC-760]	MSX			JP
+46051F8A0AAEFAA012B8783ADA3DA4FD		Kinnikuman. Muscle Man (1985)(Bandai)(JP)	MSX			JP
+1CD39F900EDF496A967E4FC8E48D1451		Kinnikuman. Muscle Man (1985)(Bandai)(JP)[a]	MSX			JP
+489075D5E2F3B9B60C41FBF8AD27AC7E		Knight Lore (1985)(Nippon Dexter)(JP)	MSX			JP
+FE12D44A5C06199394AD022AF7BB88E8		Knightmare II - The Maze of Galious (1987)(Konami)(JP)[a][RC-749]	MSX			JP
+0924CF4480C9A4F3FBD922449900C913		Knightmare II - The Maze of Galious (1987)(Konami)(JP)[RC-749]	MSX			JP
+3653C9AD32CA363DBA0FA81F707EA428		Knightmare II - The Maze of Galious (1987)(Zemina)(KR)[RC-749]	MSX			KR
+845F200E4A101ED52685CAFEA9B9ED3F		Knightmare III - Shalom (1987)(Konami)(JP)[a][RC-754]	MSX			JP
+2A2A47925227A82F3C614F85C0A21CC7		Knightmare III - Shalom (1987)(Konami)(JP)[a2][RC-754]	MSX			JP
+9A9E8E4FC95A15AAF5E0A40C498CF0DA		Knightmare III - Shalom (1987)(Konami)(JP)[a3][RC-754]	MSX			JP
+355F48B2A181880E60314F69752F9084		Knightmare III - Shalom (1987)(Konami)(JP)[RC-754]	MSX			JP
+2F4E87CC751D116EA996AD4A2118F4AC		Knightmare. Majyo Densetsu (1986)(Konami)(JP)[a][RC-739]	MSX			JP
+EBFCABA358D7CECA95C7385276321F78		Knightmare. Majyo Densetsu (1986)(Konami)(JP)[a2][RC-739]	MSX			JP
+3B46F970FD4BD442737E41CAAB527390		Knightmare. Majyo Densetsu (1986)(Konami)(JP)[RC-739]	MSX			JP
+9C5B35E494EAA8AB66296DC796C7EF82		Knightmare. Majyo Densetsu (1986)(Konami)(JP)[SCC][RC-739]	MSX			JP
+991A2606DDC64AC5C95BE523E071CDAC		Knightmare. Majyo Densetsu (1986)(Konami)(JP)[SCC+][RC-739]	MSX			JP
+B5E2111E8DD37F2BBFEB6D39F98291BB		Kobashi (2004)(Desire in Envy)(NL)	MSX			NL
+3AF3C665A9BC926DB76E4E2933322803		Koji Tanigawa's Shougi Shinan (1986)(Pony Canyon)(JP)	MSX			JP
+039A7EA2DE0AA7261CAD28AC8539E887		Konami's Baseball (1984)(Konami)(JP)[a][RC-724]	MSX			JP
+94E62B3F7BD8C4BF72192B85F6E557B8		Konami's Baseball (1984)(Konami)(JP)[RC-724]	MSX			JP
+FC6D84B56C654DA2BD5A07C51059795E		Konami's Billiards (1984)(Konami)(JP)[a][RC-706]	MSX			JP
+F68D85AF1F91562D61994FA6605CB999		Konami's Billiards (1984)(Konami)(JP)[RC-706]	MSX			JP
+3C276AE556DDD0FEEA9DF0D5D31A5E1D		Konami's Boxing (1985)(Konami)(JP)[a][RC-736]	MSX			JP
+649B8D9D5462605127E0F161C41C7FFA		Konami's Boxing (1985)(Konami)(JP)[a][SCC+][RC-736]	MSX			JP
+C499D7891CB5663E5DDC4D175775FC8A		Konami's Boxing (1985)(Konami)(JP)[a2][RC-736]	MSX			JP
+5B96ED50AD20CEAE2AAC53584A0DBE15		Konami's Boxing (1985)(Konami)(JP)[RC-736]	MSX			JP
+1A1B0F6E1D4501FF64ED21184268BB73		Konami's Boxing (1985)(Konami)(JP)[SCC][RC-736]	MSX			JP
+97B499AF2815FBAE8C4CE52B6DA20E29		Konami's Boxing (1985)(Konami)(JP)[SCC+][RC-736]	MSX			JP
+937C06EFBA04804C506C7403269416EB		Konami's Football (1985)(Konami)(JP)[a][RC-732]	MSX			JP
+83E03A16040F7CE9B92A5249C7A11091		Konami's Football (1985)(Konami)(JP)[a2][RC-732]	MSX			JP
+CE6B54A1EA81F0099F1B88C6A9187225		Konami's Football (1985)(Konami)(JP)[RC-732]	MSX			JP
+DC5029E65C38582E1503127704E33477		Konami's Golf (1985)(Konami)(JP)[a][RC-723]	MSX			JP
+7D22B53C88FE5B6B352E9AF89E1C16D3		Konami's Golf (1985)(Konami)(JP)[a2][RC-723]	MSX			JP
+82FE3A8B30D2325E5A6468CA99E05566		Konami's Golf (1985)(Konami)(JP)[RC-723]	MSX			JP
+A2F99279D0F9A7BE065886020AF54763		Konami's Mahjong Dojo (1984)(Konami)(JP)[RC-707]	MSX			JP
+692EF0B5BE5FD1E7AE0F33B16C2C356F		Konami's Ping Pong (1985)(Konami)(JP)[a][RC-731]	MSX			JP
+5A8F82FF60E53A6D7AEE01B0B8354E5D		Konami's Ping Pong (1985)(Konami)(JP)[a2][RC-731]	MSX			JP
+9352ECA87EE56A2E1E5DB813FD686B91		Konami's Ping Pong (1985)(Konami)(JP)[a3][RC-731]	MSX			JP
+8D1BA9794CF586433717812E178E7E2A		Konami's Ping Pong (1985)(Konami)(JP)[RC-731]	MSX			JP
+F38F3AA7DA1635CB8A6397304BD3A0EB		Konami's Pooyan (1985)(Hudson Soft)(JP)	MSX			JP
+A113021087CC957F6BD64600A315E44D		Konami's Soccer (1985)(Konami)(JP)[a][RC-732]	MSX			JP
+367AD85A80FE041D9741EDE84970F844		Konami's Soccer (1985)(Konami)(JP)[a2][RC-732]	MSX			JP
+5075EE182797E8BA048ACE606D55E9DD		Konami's Soccer (1985)(Konami)(JP)[a3][RC-732]	MSX			JP
+81FBCFF39644D5FF3B4FF1399BA66939		Konami's Soccer (1985)(Konami)(JP)[RC-732]	MSX			JP
+40A928853F589A082DB157D999667A93		Konami's Tennis (1984)(Konami)(JP)[a][RC-720]	MSX			JP
+D7C2393662307613DF1B8D497B11D147		Konami's Tennis (1984)(Konami)(JP)[RC-720]	MSX			JP
+23732E5BCB4B6669B5CB6E3677A856BC		Koneko no Daibouken. Kitty's Great Adventure. Catboy (1986)(Casio)(JP)	MSX			JP
+D2DD69A414CAF7487A1BFC695D7ABEDF		Kralizec 8k Tetris (2004)(Kralizec)(ES)	MSX			ES
+73181553059DA31B484977193E68CCC6		Kralizec Battle Tetris (2004)(Kralizec)(ES)	MSX			ES
+CEADBE653E1DB2A75588E5C8FECBB336		Kralizec Tetris (2005)(Kralizec)(ES)	MSX			ES
+49E62C2A6FF42ADF32E307BA44B2DA1A		Kung Fu Master (1984)(ASCII)(JP)	MSX			JP
+11E30C71EA0652AED07BE591C28F471B		Kung Fu Master (1984)(ASCII)(JP)[a]	MSX			JP
+5C45DCC46E8ADB05DAFE338132D4439C		Kung Fu Master (1984)(ASCII)(JP)[a2]	MSX			JP
+8DEBFE14CB9A88A0BFDA8D2023DDDBB8		Kung-Fu Thai Kun. Isao Lord (1985)(Toshiba-EMI)(JP)	MSX			JP
+62152C1298CD8BE1EF7095B24966C393		Kung-Fu Thai Kun. Isao Lord (1985)(Toshiba-EMI)(JP)[a]	MSX			JP
+89074BC1801ABC318012C4F20EEA0BF7		Ladder Building (1984)(ASCII)(JP)	MSX			JP
+CB12BD103E67278893B530DFA42ABA7E		Laptick 2 (1986)(dB-Soft)(JP)	MSX			JP
+A30185600355031B7D06097F6F376607		Le Mans 2 (1985)(Electric Software)(GB)	MSX			GB
+BFC1027AE05FBF19F95298941CE6887E		Legendly Knight (1988)(Topia)(KR)	MSX			KR
+2F63647AEF7AE6C33BBA0E0347D7C362		Legendly Knight (1988)(Topia)(KR)[a]	MSX			KR
+69A8CE244A5AD5DF11B462B48EA22A1F		Light Corridor, The (1990)(Infogrames)(FR)	MSX			FR
+6BD8F952D144FF1B8D0EFF88BD5CF43B		Lode Run (2005)(AGsoftware)	MSX	
+86E45796F8EF150484283D97AF31AB44		Lode Runner (1984)(Sony)(JP)	MSX			JP
+F668298AD121728414DE1AAEAC8D6B21		Lode Runner (1984)(Sony)(JP)[a]	MSX			JP
+93D8D13DDFC7AB1D8D92466A83C40E0E		Lode Runner II (1985)(Sony)(JP)	MSX			JP
+33F5D0E33F702C97222BD101C70C7588		Lord Over (1983)(ASCII)(JP)	MSX			JP
+6DD83D93DFEE5D65F563AA2DFE00574E		Lot Lot (1985)(Technopolis Soft)(JP)	MSX			JP
+CFBF0A20549F3B91E3D6E6251DCA5781		Lunar Ball (1985)(Pony Canyon)(JP)	MSX			JP
+F32095BA0B10BF52B8D919DD952C8901		Mac Attack (1986)(Al Alamiah)(KW)	MSX	
+5C06700589FC651ABEAE9247618620A2		Machinegun Joe vs the Mafia (1984)(Hudson Soft)(JP)	MSX			JP
+BD6B7923AE611036BDAAFBBEBAFF9042		Macross Countdown (1985)(Bothtec)(JP)	MSX			JP
+4CA58D79550605F2425002A9C2FFCF4A		Macross Countdown (1985)(Bothtec)(JP)[a]	MSX			JP
+EFBDDF9E48BFEEDB98B173802A9DC533		Magical Kid Wiz (1986)(Sony)(JP)	MSX			JP
+7FD3E5F0DC5E4789CA33EA49B0F5206F		Magical Kid Wiz (1986)(Sony)(JP)[a]	MSX			JP
+34E4F27C45D352BCCE57C9BE0E77FC98		Magical Kid Wiz (1986)(Sony)(JP)[a2]	MSX			JP
+A32E834B413FFD5471690C75D48D4C9A		Magical Stones (2005)(Dioniso)	MSX	
+1F47A9922D132FFF199FCE8AF7196807		Magical Stones 8k (2005)(Dioniso)	MSX	
+91181B037E4A772149A00990E9F8B51C		Magical Tree (1984)(Konami)(JP)[a][RC-713]	MSX			JP
+B6B37561CF14F7149150B1944E4DECE8		Magical Tree (1984)(Konami)(JP)[RC-713]	MSX			JP
+6DDBCFA5F75E3FBED798C699B570BDA6		Magunam. Kiki Ippatsu. Magnum Prohibition 1931 (1988)(Toshiba-EMI)(JP)	MSX			JP
+EDC528F506BB5118D747E96DC5CB7A36		Magunam. Kiki Ippatsu. Magnum Prohibition 1931 (1988)(Toshiba-EMI)(JP)[a]	MSX			JP
+4BB6F0EBBE4810CEA08C04A313434AB5		Mahjong Friend (1984)(Taito)(JP)	MSX			JP
+C999C1EDF359A07797D3DE404FD7D400		Manes (1984)(ASCII)(JP)	MSX			JP
+0220C76ABBD036DF95A0FD6702623099		Manes (1984)(ASCII)(JP)[a]	MSX			JP
+98F3372B44E5C18BDB3D9EDD6D28B64B		Manes (1984)(ASCII)(JP)[a2]	MSX			JP
+8293591E4BEFDA1DCC689D90EAED8983		Manicomio (2005)(Crappysoft)(ES)	MSX			ES
+594460D47162AB5261073B961B02B377		Mansion, The (2005)(Yermani Soft)	MSX	
+18F02BDBA73800D028BFAD2F9FA776D1		Mansion, The (2005)(Yermani Soft)(ES)	MSX			ES
+AC32E186DA2C5CEDC5ABBDCABE7575FF		Mappy (1984)(Namcot)(JP)	MSX			JP
+134F8A060BB879A343AFCAE975E45ADF		Mappy (1984)(Namcot)(JP)[a]	MSX			JP
+1C8F344249B311B13AD4BADE12CA49D3		Mappy (1984)(Namcot)(JP)[a2]	MSX			JP
+88D9ACD090F139CB2FD539C71A95E95F		Marchen Veil (1986)(System Sacom)(JP)	MSX			JP
+80CA2C6BE9F35D3F8A90E163A935548D		Marine Battle (1983)(ASCII)(JP)	MSX			JP
+C6FF0756FE538A9E36501DA62E544315		Mars II (1990)(Nagi-P Soft)	MSX	
+A9DCDC50DF823232D8F0E579FCD02531		Mars Lander (2006)(Crappysoft)	MSX	
+354BFB3D60F96FFE67BBDCF9A6A25110		Mashou no Yakata Gabalin. Goblin (1987)(Pony Canyon)(JP)	MSX			JP
+65F4DE7E2DAD263973DAD54B70A79F74		Mashou no Yakata Gabalin. Goblin (1987)(Pony Canyon)(JP)[a]	MSX			JP
+EE13593FF9CA5785807D39D73D5798B0		Maze Attack (1983)(HAL Laboratory)(JP)	MSX			JP
+634211CBD37AEC34F36D721A89EBFE2D		Megalopolis SOS (1983)(General)(JP)	MSX			JP
+D340D1C2C3BDEA0BD45BD7BA2A32A41B		Megalopolis SOS (1983)(General)(JP)[a]	MSX			JP
+7B0F7C290C54E987F4E63B072B76F257		Megalopolis SOS (1983)(General)(JP)[a2]	MSX			JP
+E6CCED1F7B8BE930ECA6AD07D13AA540		Meikyuu no Tobira. Gate of Labyrinth (1987)(Radio Wave Newspaper Publisher)(JP)	MSX			JP
+C55DE6B14318ADD3DD52E9859D2652B4		Midnight Brothers (1986)(Sony)(JP)	MSX			JP
+1C4B42F7BEF2505107C1364856668E00		Midnight Brothers (1986)(Sony)(JP)[a]	MSX			JP
+00E338D94573C8294B27F89AA8715DDC		Midnight Building (1984)(ASCII)(JP)	MSX			JP
+95144C997793A55ABF77C61BC611B9CE		Midway (1983)(Magic Software)(JP)[yellow bckgrnd welcome screen]	MSX			JP
+21A5CFBB590099E7A8230322AC613E2B		Mil Caras (1985)(Idealogic)(ES)	MSX			ES
+E13B4EA7CDC0284FB1AB0C3929F59D7A		Mini Golf (1985)(Namcot)(JP)	MSX			JP
+D8202641E594AD22109778BB0520CEAA		Mini Golf (1985)(Namcot)(JP)[a]	MSX			JP
+6469A75EF7C2574B8A46778681267F10		Mirai. Future (1987)(Xain)(JP)	MSX			JP
+223BD344FE8833C2EB385C256EB7029A		Mitsume ga Tooru. The Three-Eyed One Comes Here (1989)(Natsume)(JP)	MSX			JP
+07C577AF358459020C0CCA448F6E4BF7		Mitsume ga Tooru. The Three-Eyed One Comes Here (1989)(Natsume)(JP)[a]	MSX			JP
+2D2F5B2EA8BEA2F6DAA765EFFFCF6A4B		Mitsume ga Tooru. The Three-Eyed One Comes Here (1989)(Natsume)(JP)[a2]	MSX			JP
+11BE236E0B417B2109C64E72205D1D09		Moai no Hihou. Secret Treasure of Moai (1986)(Casio)(JP)	MSX			JP
+85AD26F918B93A20F16FADC8D5720400		Moai no Hihou. Secret Treasure of Moai (1986)(Casio)(JP)[a]	MSX			JP
+6549BA87C4E7DF1F45FE772FC216C606		Mobile Planet Stylus - Approach from the Westgate (1986)(HAL Laboratory)(JP)	MSX			JP
+1C494B6738DBE37EFAA9250BB0FB5BCE		Mobile Suit Gundam (1984)(Bandai)(JP)	MSX			JP
+A24D55A747F70F62A36D60853FAD6788		Mobile Suit Gundam (1984)(Bandai)(JP)[a]	MSX			JP
+63CC9F241760EA7C37385745DC96EE7F		Mo-Karimakka. Bochibochidenna Sport (1986)(Leben Pro)(JP)	MSX			JP
+11A66BB4D76B97F3E7195886ABF88B3C		Mole (1983)(ASCII)(JP)	MSX			JP
+1E65207D8EF8F93149123CB11C0DA193		Mole Mole 2 (1987)(Victor)(JP)	MSX			JP
+FFC6F6F03C57C5211C154E2B57CFBDE3		Monogatari Megami Tensei. Digital Devil Story (1987)(Telenet Japan)(JP)	MSX			JP
+5FAAA5AB88E24224584577C4C43EFC40		Monogatari Megami Tensei. Digital Devil Story (1987)(Telenet Japan)(JP)[a]	MSX			JP
+EB62BCEEA0B6D367CDDA7C8BA22DAEB0		Monster's Fair (1984)(Toho)(JP)	MSX			JP
+4D938E6E42A98B00DBCC51896545F537		Moon Landing (1983)(ASCII)(JP)	MSX			JP
+5A9E04834727D034A27DFC7D67780333		Moon Patrol (1984)(IREM)(JP)	MSX			JP
+08D62230A75E7D2EC25F3E19702DB9C0		Mopi Ranger (1985)(Konami)(JP)[a][RC-728]	MSX			JP
+5C1330F308A90E214201127899F2ED38		Mopi Ranger (1985)(Konami)(JP)[a2][RC-728]	MSX			JP
+6B78BA42542729E2494D591444D095F0		Mopi Ranger (1985)(Konami)(JP)[a3][RC-728]	MSX			JP
+393713DF47B733544C62356F79993576		Mopi Ranger (1985)(Konami)(JP)[a4][RC-728]	MSX			JP
+E49C00545380B331315156B346E34F63		Mopi Ranger (1985)(Konami)(JP)[RC-728]	MSX			JP
+7509F98C9D864FA6B54569530E1ED40D		Morita Kazurou no Othello (1986)(Toshiba-EMI)(JP)	MSX			JP
+7074EB1975D750E13B24FAD5CDDD3C3A		Mouser (1983)(Sony)(JP)	MSX			JP
+CB63AF0D101B208BED717D53ABF20577		Mr. Chef & the Sausages (2004)(Paxanga Soft)	MSX	
+CA5ECA35D80E88AD0741B301774F1D7B		Mr. Chef & the Sausages (2004)(Paxanga Soft)[a]	MSX	
+1FAC7BC23B97EE0C67FF5EDFB33BF355		Mr. Chin (1984)(HAL Laboratory)(JP)	MSX			JP
+4D763A2C579B44976AF451798AF0E9EC		Mr. Chin (1984)(HAL Laboratory)(JP)[o2]	MSX			JP
+4067429251D1E5CE073F9EE27AF5879B		Mr. Do! (1984)(Nippon Columbia - Colpax - Universal)	MSX	
+24962C3C58880B7EE9CF08BB5FE0C45F		Mr. Do! vs Unicorns (1984)(Sony)(JP)	MSX			JP
+F2C5EAE5E6D01F4A3509DC71E6CAC660		Mr. Do's Wildride (1985)(Nippon Columbia - Colpax - Universal)	MSX	
+EF0D5EE35C0DA882700FB70F3A741852		MSX Baseball (1984)(Panasoft)(JP)	MSX			JP
+3E4CEE14D1BB740B7820B57137DFC010		MSX Baseball (1984)(Panasoft)(JP)[a]	MSX			JP
+12E4AED81AB79613A55FA675F1650040		MSX Baseball (1984)(Panasoft)(JP)[a2]	MSX			JP
+4F6042F6EB61229A4FBCD6E3C0F74DAB		MSX Baseball II (1986)(Panasoft)(JP)	MSX			JP
+666A2C98B77D86FE27DB2BB703AF4887		MSX Derby (1983)(ASCII)(JP)	MSX			JP
+DBE509FD2177719E978521EA761A897C		MSX Rugby (1985)(Panasoft)(JP)	MSX			JP
+1E8D3C5D0D024378BF87C0B6F6CCFD3E		MSX Shougi Game (1985)(Sony)(JP)	MSX			JP
+890FC9338125EC372EAA05A9DEE0EAD2		MSX Soccer (1985)(Panasoft)(JP)	MSX			JP
+BFDC3ABDE91B4A27FAEF30B4FB9C7C46		MSX Soccer (1985)(Panasoft)(JP)[a]	MSX			JP
+BECBA7DC8E80AE8DD2A98171D2574E60		MSX-21 (1983)(ASCII)(JP)	MSX			JP
+45C45ECEFA4B26979D9992DC063D1345		Namake's Bridgedrome (2005)(Buresto Faiya)	MSX	
+044E427840993306FF6797B6B463E6AB		Nausicaa (1984)(Technopolis Soft)(JP)[press LSHIFT at boot]	MSX			JP
+770FC71692FA332730519CEDBD615366		Nessen Koushiyen. Exciting Baseball (1984)(Casio)(JP)	MSX			JP
+1CEF56E98590AA54AF089795CFA128CE		New Bubble Bobble. Boggle Boggle (1988)(Zemina)(KR)	MSX			KR
+6EAFF5F70E053B2CC8D750DD3D4168BD		New Bubble Bobble. Boggle Boggle (1988)(Zemina)(KR)[a]	MSX			KR
+946E95371EC006580DF1A06E3959C64D		Nightshade (1985)(Nippon Dexter)(JP)	MSX			JP
+AF351E317199C110F4596727292C6644		Nightshade (1985)(Ultimate Play The Game)(GB)	MSX			GB
+17B009C75B552171BFCB162C3A8F45A1		Ningyo Densetsu. Fathom (1985)(Toshiba-EMI)(JP)	MSX			JP
+51F452871408B5A5B6C7CCFD371A57FA		Ninja Jaja Maru Kun (1986)(Nippon Dexter)(JP)	MSX			JP
+DD57940F08DBC691F817DD5FFA512CE1		Ninja Kun (1983)(Micro Cabin)(JP)	MSX			JP
+93781B29A22FC0110B7A02411CB663B5		Ninja Kun. Majyo no Bouken (1985)(Nippon Dexter)(JP)	MSX			JP
+BBA32A10829BB4F6E7144FBAA3BD4FEB		Ninja Princess (1986)(Pony Canyon)(JP)	MSX			JP
+B7C462BF90F0F97123D7D5590DF4E206		Ninja Princess (1986)(Pony Canyon)(JP)[a]	MSX			JP
+3FCBAC54FAF796D7809ECF90A3624189		Ninjya Kage (1984)(Hudson Soft)(JP)	MSX			JP
+6DCBBF656DA69C6E3DA2770DE67C37CD		Ninjya Kage (1984)(Hudson Soft)(JP)[a]	MSX			JP
+B4F2413986BA1E3F3186E1C18824C380		Nobunaga no Yabou - Zenkoku Han (1987)(Koei)(JP)	MSX			JP
+0E738FD0C5E850662F30762432216364		Norseman (1984)(Electric Software)(GB)	MSX			GB
+6A705ECE3771E49C30B4424F567AADAD		Nyan Nyan Pro Wrestling (1986)(Victor)(JP)	MSX			JP
+E83E8D43C8CA5E6FEC21996D47A619ED		Nyorols (1983)(MIA)(JP)	MSX			JP
+036A085753A91634DC6A82FBE17251D3		Oil's Well (1985)(Comptiq)(JP)	MSX			JP
+9CB4A6AE96B0C98AE826B520AC268AF6		Oil's Well (1985)(Comptiq)(JP)[a]	MSX			JP
+92303B04DD5DB753B478F1A0782B6557		O'Mac Farmer (1984)(ASCII)(JP)	MSX			JP
+3591483233B665DC5CE55E123F51AF4B		Othello (1985)(Pony Canyon)(JP)	MSX			JP
+798E2E45BA5E084453E686C31328709D		Pachicom (1985)(Toshiba-EMI)(JP)	MSX			JP
+4AEB3ABAE877421186B94AF41BB79561		Pachinko - U.F.O. (1984)(Casio)(JP)	MSX			JP
+01078DD71F4E70E95BC3ACDF605C19DA		Pac-Man (1984)(Namcot)(JP)	MSX			JP
+6DFE9E94BC59518918B7EB6EE29927A0		Pac-Man (1984)(Namcot)(JP)[a]	MSX			JP
+E32BC0A181DC1073AFB74E615C085775		Pac-Man (1984)(Namcot)(JP)[a2]	MSX			JP
+DA801620C9472CB14C31EA9F3C1DC196		Pai Panic (1983)(ASCII)(JP)	MSX			JP
+08E4D8D212DD1EB5CC54B26FDF983A4A		Pair Logic (2005)(AGsoftware)	MSX	
+4980AE2A0540738EC094324FAE521F71		Pairs (1983)(ASCII)(JP)	MSX			JP
+36EBA31F25BB907D3E3C90D39BAED63A		Pairs (1983)(ASCII)(JP)[a]	MSX			JP
+63D4E4360BF187C3BF8CE789D4CFB116		Pairs (1983)(ASCII)(JP)[a2]	MSX			JP
+629F18292B2F7A7D3862678A7C221A95		Panther (1986)(IREM)(JP)	MSX			JP
+BC250F705C0285E3040E633E698D81B3		Parachuteless Joe (2005)(Paxanga Soft)	MSX	
+E753BB6637DD811F1E9B41747A1D3C58		Parodius - Tako Saves Earth (1988)(Konami)(JP)[a][RC-759]	MSX			JP
+55ADF3B4576B370DD2680D80C333EBDE		Parodius - Tako Saves Earth (1988)(Konami)(JP)[a][SCC][RC-759]	MSX			JP
+790972D4E53FCBC2EE46317A583FB52E		Parodius - Tako Saves Earth (1988)(Konami)(JP)[RC-759]	MSX			JP
+9548807E96BF5FA2688EA24BF9ED62AF		Parodius - Tako Saves Earth (1988)(Konami)(JP)[SCC][RC-759]	MSX			JP
+455DF4D49FF8300C702CE961919AC61C		Pass Ball (1983)(ASCII)(JP)	MSX			JP
+7224FA4AADD5A2614AFF3BBC339B1CE1		Pastfinder (1984)(Pony Canyon)(JP)	MSX			JP
+8CCCA56B46815714DC5C79A616DE60A0		Payload (1985)(Sony)(JP)	MSX			JP
+331F8AAF504E51C650979D6C55875D8A		Payload (1985)(Sony)(JP)[a]	MSX			JP
+EC2E7BA716246B7CBA3AF0C24A32E73C		Peetan (1984)(Nippon Columbia - Colpax - Universal)	MSX	
+1D7CF641645355B56725D98F61DF87E5		Pegasus (1988)(Victor)(JP)	MSX			JP
+F6B948EF25C59441E4EFD0B7F8115EF7		Penguin Kun Wars (1985)(ASCII)(JP)	MSX			JP
+2C7D000CFE37354D7D754658B9470D63		Penguin Race (2003)(Dioniso)	MSX	
+17B55FB340F89ABF313A099C15C58FCA		Pico Pico (1983)(Micro Cabin)(JP)	MSX			JP
+AC0BC988775B9C65C92CFB200F9B1BEB		Picture Puzzle (1983)(HAL Laboratory)(JP)	MSX			JP
+9383BA8643FD1000B5CC099CF9D46822		Picture Puzzle (1983)(HAL Laboratory)(JP)[a]	MSX			JP
+6EE570B6FA73FE9A147846078CDDC11C		Picture Puzzle v2 (2004)(Karoshi)[RK706]	MSX	
+57CDD034B93FAB07CCC961466BF16019		Pinball Blaster (1988)(Eurosoft)(NL)	MSX			NL
+C157E3E1518DEE347F6150428D2E7AB5		Pinball Maker. Ball Blitz (1985)(Nippon Columbia - Colpax - Universal)	MSX	
+DF9C0F9B9841D6EB30891846CD94CC81		Pine Applin (1984)(Canon Sale)(JP)	MSX			JP
+A2BC1C96C6CC21FB1845F52950D88A5F		Pine Applin (1984)(Canon Sale)(JP)[a]	MSX			JP
+BAED450A5E77EEE1DC63F140951BA977		Pinky Chase (1984)(Nippon Columbia - Colpax - Universal)	MSX	
+A444D0018A1ECC80913E93A6500B10BB		Pipi (1985)(Nippon Dexter)(JP)	MSX			JP
+AF60DEE247D1534DCFF06704BFD04A4B		Pippols (1985)(Konami)(JP)[a][RC-729]	MSX			JP
+45FF8D1CCFB242451BEA1B2EDC517602		Pippols (1985)(Konami)(JP)[a][SCC+][RC-729]	MSX			JP
+C97DEA7ED6C7C37379FCDCDA1B50E8D4		Pippols (1985)(Konami)(JP)[a2][RC-729]	MSX			JP
+F4AFC761CDA302C78F20F81C1922AA36		Pippols (1985)(Konami)(JP)[a3][RC-729]	MSX			JP
+6EBF486BB421177A7CF18123EBAEAB18		Pippols (1985)(Konami)(JP)[RC-729]	MSX			JP
+B2051D6EE5D1E908F741973054F8F357		Pippols (1985)(Konami)(JP)[SCC+][RC-729]	MSX			JP
+29CC190CF89338B819A2F6ABD0F12A17		Pitfall (1984)(Pony Canyon)(JP)	MSX			JP
+D388E0DA9A698CC9CB7C77BE3EBAD301		Pitfall (1984)(Pony Canyon)(JP)[a]	MSX			JP
+1368D138CDEB0A143DA75834C8679A2F		Pitfall (1984)(Pony Canyon)(JP)[a2]	MSX			JP
+B13AE27995D3B0D688BC78AF1A5DFDE7		Pitfall II - Lost Caverns (1985)(Pony Canyon)(JP)	MSX			JP
+79759C816DDDC119C453BBC8C1E4A379		Pitfall II - Lost Caverns (1985)(Pony Canyon)(JP)[a]	MSX			JP
+BA0097E85D210DF4777149C9904A9D9D		Play Ball (1986)(Sony)(JP)	MSX			JP
+928E172112796922674275E1E2028AD7		Poiny X Senryo Sakusen - Operation Thanksgiving (1986)(Victor)(JP)[press LSHIFT at boot]	MSX			JP
+05AED39F1D75BDD75F25B7DD7763F946		Police Story, The (1985)(Pony Canyon)(JP)	MSX			JP
+9C6C811BCBB8AA94B39DE0BCDE159A3E		Police Story, The (1985)(Pony Canyon)(JP)[a]	MSX			JP
+82F35E875D31DF810AF990AE62BD80CE		Poppaq the Fish (1986)(ASCII)(JP)	MSX			JP
+33FCAD51A0A896D6C85848371B9D82BE		Professional Baseball (1986)(Technopolis Soft)(JP)	MSX			JP
+CFE18B0A192EFE6E6F5DE55F82B2A8E1		Professional Mahjong v2.2 (1986)(Chatnoir)(JP)	MSX			JP
+5BDE548D26288B4C7C7CD05159F5A493		Protector, The (1985)(Pony Canyon)(JP)	MSX			JP
+14285B64E2AE1DD5B47C468A2D66F22D		Punchy (1984)(Mr. Micro)(GB)	MSX			GB
+9E72E4378DEBDDAE3FFE9BDC3282D674		Puzzle Panic (1986)(System Soft)(JP)	MSX			JP
+6B9F3F0C3A6D1D6ABD3D4A4589CCDD1F		Pyramid Warp (1983)(T&E Soft)(JP)	MSX			JP
+44C7432F4A29145D8CAAED3F1F01B0F3		Q-Bert (1986)(Konami)(JP)[a][RC-746]	MSX			JP
+977F313ED84FBF4B2308151547E040B7		Q-Bert (1986)(Konami)(JP)[RC-746]	MSX			JP
+6533EA0CB544A8F2F57BD6FB890C8084		Queen's Golf (1984)(ASCII)(JP)	MSX			JP
+9CAAAC572A2D931BFB17C1654A452EE1		Queen's Golf (1984)(ASCII)(JP)[a]	MSX			JP
+CD349578FBE18F0BEA6F92620B21121E		Queen's Golf (1984)(ASCII)(JP)[a2]	MSX			JP
+9AE80F681FC4AD5A3D9D2B2B577D1A4C		Raid on Bungeling Bay (1985)(Sony)(JP)	MSX			JP
+3E5900C0F1B940095F82C16B3E7CFB00		Rally-X (1984)(Namcot)(JP)	MSX			JP
+7D1EDA308BF52235B80087799DC1A50F		Rally-X (1984)(Namcot)(JP)[a]	MSX			JP
+5A60B80CC16A9FC4E8AE5E9E1235BD32		Rally-X (1984)(Namcot)(JP)[a2]	MSX			JP
+679F1D3AFF24008B17A62189612DFE26		Rally-X (1984)(Namcot)(JP)[a3]	MSX			JP
+3B32EA457EDD4B727DB2F9B1EAC21E0B		Rambo (1985)(Pack In Video)(JP)	MSX			JP
+DEDC8B11B770A8DB20F2AA57D8D764D1		Rambo (1985)(Pack In Video)(JP)[a]	MSX			JP
+1C397A6D6B24B474F3BF759CE2A77926		Rambo (1985)(Pack In Video)(JP)[a2]	MSX			JP
+436BE4C449FC3E195F790579417A28B9		Rambo (1985)(Pack In Video)(JP)[a3]	MSX			JP
+38C0ACA7B477941BD12358CF6B949490		Real Tennis (1983)(HAL Laboratory)(JP)	MSX			JP
+A52BFD0531581F53C9F7FC4149685C31		Red Zone (1985)(ASCII)(JP)	MSX			JP
+84207C363863368CE11F46CD3EAB70F6		Red Zone (1985)(ASCII)(JP)[a]	MSX			JP
+1CFA94CDAB75E1A2E98BFE48659F9A47		Relics (1986)(Bothtec)(JP)	MSX			JP
+C191D4AB4DBBACD362D2850B86BEA1D4		Renju & Ojama Dogs (1985)(Pony Canyon)(JP)	MSX			JP
+53025AA48A41A6A1B7FAB88B93074D6F		Rise Out from Dungeons (1983)(ASCII)(JP)	MSX			JP
+FDAD9B86434EA448ACB117E5929420D0		Rise Out from Dungeons (1983)(ASCII)(JP)[a]	MSX			JP
+A84C88DE3EA62E5EC3C313D4C0F4E929		Rise Out from Dungeons (1983)(ASCII)(JP)[a2]	MSX			JP
+822283A036B1FA618668F4045C20C25C		River Raid (1984)(Pony Canyon)(JP)	MSX			JP
+E71FAC4870E00B7600DB3E8E31988A32		River Raid (1984)(Pony Canyon)(JP)[a]	MSX			JP
+8AE5B5C13F45321F555AB1103092AD76		Road Fighter (1985)(Konami)(JP)[a][RC-730]	MSX			JP
+A6E944961EE5FF96BDCF29F4D1A3539D		Road Fighter (1985)(Konami)(JP)[a][SCC+][RC-730]	MSX			JP
+DBBF94864BFDDA2482AF75736AA1E893		Road Fighter (1985)(Konami)(JP)[RC-730]	MSX			JP
+F8976CECE4DF5871E98D2553AE22DE57		Road Fighter (1985)(Konami)(JP)[SCC+][RC-730]	MSX			JP
+5D0E0AFC416EF46F2FD1D0B60816320A		Robofrog (1985)(ASCII)(JP)	MSX			JP
+2BE9C29ACD4D2929B34B700EF2DC10D3		Robofrog (1985)(ASCII)(JP)[a]	MSX			JP
+6CC72822CF9D537DAD2932B877119537		Robowres 2001 (1987)(Micronet)(JP)	MSX			JP
+C38F3CF4FF4CFEDF568E225288EA270A		Rock 'n Bolt (1985)(Pony Canyon)(JP)	MSX			JP
+8E0610B9C7B9BC98EB79EF54154D19B6		Roger Rubbish (1985)(Spectravideo)(GB)	MSX			GB
+CBB4957FBCD7F129BC39EB790EA4CE72		Roger Rubbish (1985)(Spectravideo)(GB)[a]	MSX			GB
+A928D443A2C01A01F3FE9F9903973291		Roller Ball (1984)(HAL Laboratory)(JP)	MSX			JP
+7B7B42FCA96A434F4B6C8B5BE03936A5		Roller Ball (1984)(HAL Laboratory)(JP)[a2]	MSX			JP
+CF7CDE41848C71A012CD31A33BA10A5E		Roller Ball (1984)(HAL Laboratory)(JP)[a3]	MSX			JP
+D2560E3B7D4E137BDBBA8426030D2F44		Rotors (1984)(ASCII)(JP)	MSX			JP
+99BC435A1E7885F02B28B7FE94AB2499		R-Type (1988)(IREM)(JP)	MSX			JP
+3CE7E6360A798F33940405E6501DCFF2		R-Type v2 (1988)(IREM)(JP)	MSX			JP
+324E6E87465ECF49AF0C613A87467E10		R-Type v2 (1988)(IREM)(JP)[a]	MSX			JP
+0F03B2306E11C5182351DB3B7AA30533		Saimazoom (2005)(Karoshi)[RK708]	MSX	
+B0D4FB9A9A88FB65C12D2B567B567171		Saimazoom (2005)(Karoshi)[RK708EN]	MSX	
+EC869B375D7517A7BA6161B10F5DEE06		Salamander - Operation X (1987)(Konami)(JP)[RC-758]	MSX			JP
+59767E46E226F5C69469694817839189		Salamander - Operation X (1987)(Konami)(JP)[SCC][RC-758]	MSX			JP
+0DA25C28FCE818D6FA7231CB6A914783		Salamander - Operation X (1988)(Zemina)(KR)[RC-758]	MSX			KR
+305BF5B78B03D28B92DEF20AD89A4E4B		Sangokushi. Romance of Three Kingdoms (1986)(Koei)(JP)	MSX			JP
+C39692644983104279C32F0E2538C773		Sangokushi. Romance of Three Kingdoms (1986)(Koei)(JP)[a]	MSX			JP
+740A3E9D6A90AE40E37D9DADF94CF10E		Sangokushi. Romance of Three Kingdoms (1986)(Koei)(JP)[a2]	MSX			JP
+1FFD12DA68283DC821266AFAFF6FEB93		Sangokushi. Romance of Three Kingdoms (1986)(Koei)(JP)[a3]	MSX			JP
+AEE5C2FCC3EC1EB99C31EFB865AAE439		Sasa (1983)(ASCII)(JP)	MSX			JP
+77C7883244434C541C2B4FF159471D7D		Sasa (1983)(ASCII)(JP)[a]	MSX			JP
+1239740BC0836F090F9271F32F95B210		Saurusland (1982)(Nippon Columbia - Colpax - Universal)	MSX	
+8F36B2807F33063D4F68F8D2822105EF		Scarlet 7 (1986)(Toshiba-EMI)(JP)	MSX			JP
+855E2BF57C9211BA347FACC0B3124B0D		Scion (1985)(Sony)(JP)	MSX			JP
+E6FBEF6E5C344B9533ECBCE493F33668		Scope On - Fight in Space (1983)(ASCII)(JP)	MSX			JP
+0F48F90E059527AEB99C8B7E73850C09		Scramble Eggs (1983)(Ample Software)(JP)	MSX			JP
+87B69C90F0126C9345DF0D050F5F2278		Sea Hunter (1985)(Spectravideo)(GB)	MSX			GB
+A6931C419AEA8870B32BE2B62ACDB13B		Seiken Acho. Kung-Fu Master Taekwondo (1985)(Irem - ASCII)(JP)	MSX			JP
+A2BDA3945FD30A31AF5019AA9AC3C87A		Seiken Acho. Kung-Fu Master Taekwondo (1985)(Irem - ASCII)(JP)[a]	MSX			JP
+6E844B848141F77CC485E79151F1183B		Seleniak (2004)(Guzuta Raster Leisure)	MSX	
+C64BA63BFF4C856E5C05FF288E720169		Seleniak vM1 (2004)(Guzuta Raster Leisure)	MSX	
+C129FBAA8CAABB21CC28E3FE35304576		Senjyo (1984)(Sony)(JP)	MSX			JP
+F36BD789F048A9A41E8C0A0850F1C2C2		Senjyo (1984)(Sony)(JP)[a]	MSX			JP
+0FEB4713CAC3A4ED491363259F9D163B		Senjyo no Ookami. Wolf's Battlefield. Commando (1987)(ASCII)(JP)	MSX			JP
+5351CCA0DE390954762EDC6E71A00BC7		Sewer Sam (1984)(Toshiba-EMI)(JP)	MSX			JP
+914F1A6FB163DCD6D057CD9289A1961F		Shindobaddo Nanatsu no Bouken. The Seven Adventures of Sindbad (1986)(Casio)(JP)	MSX			JP
+CE5D57AC6753A16926F3DAE48AAF896E		Shougi (1985)(Micro Cabin)(JP)	MSX			JP
+113761F27C6C8594646AC71FC80B2CB8		Shougi (1986)(Pony Canyon)(JP)	MSX			JP
+6A33115CFAEB4AB837CEA08B80847F6C		Shougi Meijin (1985)(Toshiba-EMI)(JP)	MSX			JP
+90B4FD28773830D2F6CD5B70D9B7D909		Shout Match (1987)(Victor)(JP)	MSX			JP
+DE4FB0BD91C103B1CDCA1EF05579619A		Sink King (2004)(Guzuta Raster Leisure)	MSX	
+FF7221AA4A2A0A81B3801D5A538FAE51		Ski Command (1984)(Casio)(JP)	MSX			JP
+B5B6D2FDF248D384867CDD958750503E		Ski Command (1984)(Casio)(JP)[a]	MSX			JP
+10848381F15A3D2CDCED059E038FA9D9		Ski Command (1984)(Casio)(JP)[a2]	MSX			JP
+4226499B09D7175BA1B833AC03154ABE		Skooter (1987)(Al Alamiah)(KW)	MSX	
+E13740C751DDE4BB4F36B7BDC34C2422		Skooter (1987)(Pony Canyon)(JP)	MSX			JP
+F8C4ADD212B508F673974C808639E09E		Sky Jaguar (1984)(Konami)(JP)[RC-721]	MSX			JP
+5B1BE147071CFE8C68AE6CCA47DE3C75		Sky Jaguar (1984)(Konami)(JP)[SCC+][RC-721]	MSX			JP
+BC2A68A2E2A923BE4B50F6E95DEAC9B8		Skygaldo (1986)(Magical Zoo)(JP)	MSX			JP
+26EA2A731F8C0E1A947A3196FCBAD4E7		Slapshot. Hockey sobre hielo (1985)(Indescomp)(ES)(en)	MSX	en		ES
+E73B22C4E1A3B00C28C0B6A80638F24A		Snail Maze (2004)(Karoshi)[RK702]	MSX	
+7BACB69889A402D4A759949026FB5675		Snake It (1986)(Al Alamiah)(KW)	MSX	
+AC6F14A21D8D6685D0C09AEC48C3060B		Snoopy Town (2005)(AGsoftware)	MSX	
+EFF2CF82FC4320983E0DC7E6F5BE3E9B		Snow Climber (2003)(Desire in Envy)	MSX	
+FB79C061294A3350734C6D3BBEA69602		Sofia (1988)(Radio Wave Newspaper Publisher)(JP)	MSX			JP
+BD6DD76FC48224C69E88B8636D070DED		Soukoban (1984)(ASCII)(JP)	MSX			JP
+2D6865CC11E87F6707888F6634215929		Soukoban (1984)(ASCII)(JP)[a]	MSX			JP
+4B73979EAE8B309294CAEC36F2510965		Soukoban (1984)(ASCII)(JP)[a2]	MSX			JP
+5AA5F8AFD3A8B63D7F5C46619E8209FF		Soukoban (1984)(Qnix)	MSX	
+0DF9CF6AA0D183B819FC151DB41AA7A6		Soukoban Pocket Edition (2004)(Karoshi)[RK704]	MSX	
+9775B57330FEBC25C83CA72563B0B14A		Space Camp (1986)(Pack In Video)(JP)	MSX			JP
+B6AE80810E49E4E919490F821E58ACB6		Space Camp (1986)(Pack In Video)(JP)[a]	MSX			JP
+75DA285250ED2BC511DE05AB93E2B70D		Space Crussader (2005)(Yermani Soft)	MSX	
+34B4A646852646054F59CC478F297D27		Space Crussader (2005)(Yermani Soft)(ES)	MSX			ES
+CC67DC39F1C37AC5D2BDCAA9F9016756		Space Invaders (1985)(TAITO)(JP)	MSX			JP
+60FD0543D90593F43B257E4BB8E5CFBA		Space Maze Attack (1983)(HAL Laboratory)(JP)[a]	MSX			JP
+CD2D390BAEB71771621652A1FC8B3529		Space Maze Attack (1983)(HAL Laboratory)(JP)[a2]	MSX			JP
+6A5D57300184097C19BED1540556DDCC		Space Trouble (1984)(HAL Laboratory)(JP)	MSX			JP
+39BEBB78B65FCF01E8C731061C342957		Space Walk (1985)(Mastertronic)(GB)	MSX			GB
+C63514D5502F055C2D0C795BA5C5F078		Sparkie (1983)(Sony)(JP)	MSX			JP
+A0B0B038A04A7A24B3F5C3C98354E091		Sparkie (1983)(Sony)(JP)[a]	MSX			JP
+61D068F5068A26B46FD3CAB37D33E8C9		Sparkie (1983)(Sony)(JP)[o2]	MSX			JP
+29293A0887A32A2AAAB79369EFAEBE0B		Spelunker (1986)(Broderbund)	MSX	
+EE54F8C51511C64962E2E02F0A1B331C		Spelunker (1986)(Broderbund)[a]	MSX	
+144C27A3F2AEC5FFBC0EFB792A2B92ED		Spider, The (1983)(Hudson Soft)(JP)	MSX			JP
+6712C15BAAC6B6576003EA9432957359		Spy vs Spy II - The Island Caper (1987)(Databyte)	MSX	
+E0802F030DCA1800C02339778A920499		Square Dancer (1984)(Toshiba-EMI)(JP)	MSX			JP
+5B7557CF0CC8518104A77BC2EBA6B480		Squish'em (1984)(ASCII)(JP)	MSX			JP
+607675ACF5B615248E30762D8459CA68		Squish'em (1984)(ASCII)(JP)[a]	MSX			JP
+44419CE8C78D783B83CD2ED05A72032C		Star Blazer (1985)(Sony)(JP)	MSX			JP
+C83D32109B0EF51E5D9B89B9B71D5DC5		Star Blazer (1985)(Sony)(JP)[a]	MSX			JP
+00CC2C958E5F37D16CE8F65129F2452E		Star Blazer (1985)(Sony)(JP)[a2]	MSX			JP
+B014D74E1C846C619719271CE6E6D483		Star Command (1983)(ASCII)(JP)	MSX			JP
+73F5513C1C7605AD995A2363F69217EC		Star Force (1985)(Hudson Soft)(JP)	MSX			JP
+202E2DF136F4BA32D175DD8E93210BBB		Star Force (1985)(Hudson Soft)(JP)[a]	MSX			JP
+DDD203B5D3683692090DE56ABE367234		Star Soldier (1986)(Hudson Soft)(JP)	MSX			JP
+5009B3EB94B67CEECB026685C1D9AE89		Star Soldier (1986)(Hudson Soft)(JP)[a]	MSX			JP
+F2689755AB196A05EB733C787A29EAE0		Starship Simulator (1984)(ASCII)(JP)	MSX			JP
+02C744B0D7C6C3E21D0DAA487919DEF4		Starship Simulator (1984)(ASCII)(JP)[a]	MSX			JP
+90A46682A91CB55E7BDAD88921CBBF34		Step Up (1983)(HAL Laboratory)(JP)	MSX			JP
+50149F6EBE9CC884B9E9FE39C13CA6C4		Step Up (1983)(HAL Laboratory)(JP)[a]	MSX			JP
+6F573F1647AC30BF6A484D754D15AEF2		Stepper (1985)(ASCII)(JP)	MSX			JP
+B7D39C884ECACA2B273212ED6F240168		Strangeloop (1987)(Nippon Dexter)(JP)	MSX			JP
+8E8D25FB32D690D928CF011826C2A75B		Stratos v3 (2004)(CEZ Games Studio)(ES)	MSX			ES
+6AF0D8E392D9F8F6A4ACD2B51578648A		Suparobo (1984)(ASCII)(JP)	MSX			JP
+A97BE3921464521AC2068AD3796B07B2		Super Billiards (1983)(HAL Laboratory)(JP)	MSX			JP
+9D8050E84296462FDCF4C131558B57F0		Super Boy II (1989)(Zemina)(KR)	MSX			KR
+7C757AD7D44E8D1AA330AF1A5B864B06		Super Boy III (1991)(Zemina)(KR)	MSX			KR
+4C88B05D489CF8D1E3B15C4F9B6C67FD		Super Bubble Bobble (1988)(Zemina)(KR)	MSX			KR
+B2624083A0CB576E7E2113D42BD8BD8A		Super Cobra (1983)(Konami)(JP)[a][RC-705]	MSX			JP
+ABB3476BCC65186EE764829658CA98F1		Super Cobra (1983)(Konami)(JP)[o2][RC-705]	MSX			JP
+54FD5B5ED51A0E9DDD01ED8D5D7910C2		Super Cobra (1983)(Konami)(JP)[o3][RC-705]	MSX			JP
+94620318823A2AEB024A8DB03E96D823		Super Cobra (1983)(Konami)(JP)[RC-705]	MSX			JP
+D27ABBF55E924FE5B8C3DAB2BAE86A3C		Super Cobra (1983)(Konami)(JP)[SCC][RC-705]	MSX			JP
+59A6691F09A2C80B639200B382FA2733		Super Cobra (1983)(Konami)(JP)[SCC+][RC-705]	MSX			JP
+20B7C2CA54CAF8AE73ED868FF9C10EFE		Super Columns (1990)(Hi-Com)	MSX	
+4BA7F2027F60964360ED7FAA1F3F9075		Super Cross Force (1983)(Spectravideo)(GB)	MSX			GB
+303DE81590F62C06C1AB211AD5326FEB		Super Drinker (1983)(Ample Software)(JP)	MSX			JP
+4428BDF16978821240A237E28E9D4DEC		Super Golf (1985)(Sony)(JP)	MSX			JP
+F5065590FD8FBF6C286CB60623336403		Super Laydock - Mission Striker (1987)(T&E Soft)(JP)	MSX			JP
+81CFDE2BCEEFD0988374DDE7AB141A9B		Super Laydock - Mission Striker (1988)(Zemina)(KR)	MSX			KR
+0FFB57FA3B81CAFD4B5ED3A4B9606B64		Super Pachinko (1985)(Nippon Columbia - Colpax - Universal)	MSX	
+CE0BA8915EAE1567EB946151D37F08D9		Super Pierrot (1988)(Nidecom)(JP)	MSX			JP
+0598333B7883FEF8051F8CE749D03903		Super Snake (1983)(HAL Laboratory)(JP)	MSX			JP
+EB1B5D762B7088D56DDB7C07C6034DA4		Super Snake (1983)(HAL Laboratory)(JP)[a]	MSX			JP
+535BDBECCCC21117AD4C4BA6D05172CD		Super Snake (1983)(HAL Laboratory)(JP)[a2]	MSX			JP
+CBEB5BC8A176421C10ED7F4BCAFF1F1A		Super Soccer (1985)(Sony)(JP)	MSX			JP
+5686175C42AC6CD0B82E0A40CBE7A9DC		Super Tennis (1985)(Sony)(JP)	MSX			JP
+88A7979BC05AC2A4061814838DDE8414		Supertripper (1985)(Indescomp)(ES)	MSX			ES
+E02E64F42071C0177779E78211E89DFB		Sutaa Torappu. Star Trap (1987)(Jast)(JP)	MSX			JP
+55823C5D69588499A1D366FC1127F6A5		Sweet Acorn (1985)(TAITO)(JP)	MSX			JP
+3C775A2EC743B0B1D1FE2C0ABE7B78AC		Sweet Acorn (1985)(Taito)(JP)[a]	MSX			JP
+45E8238E7405ADE86C027F158BCF9446		Swing (1985)(Pony Canyon)(JP)	MSX			JP
+5CE76C7D6C437A35884F5D41849AE563		Swing (1985)(Pony Canyon)(JP)[a]	MSX			JP
+C8ABA1D3BCD38F7B7061662571BBB03F		Syougun. Shigun (1987)(Nippon Dexter)(JP)	MSX			JP
+F995DC16607CD2FF9254890FCA522288		Takahasi Meijin no Boukenjima. Wonder Boy (1986)(Hudson Soft)(JP)	MSX			JP
+6EF4D4A19FFB1CBA9511716B7751BF45		Takahasi Meijin no Boukenjima. Wonder Boy (1986)(Hudson Soft)(JP)[a]	MSX			JP
+6C7E44DC11EA013D16817DD831D9F6C1		Takeru Densetsu. Legend of Takeru (1987)(Brother Industries)(JP)	MSX			JP
+2CC55AC499325B6F245CA1D0ACA14F3D		Tank Battalion (1984)(Namcot)(JP)	MSX			JP
+FA2B3CDD056890CE47123397D8A00F88		Tank Battalion (1984)(Namcot)(JP)[o2]	MSX			JP
+24D2C81046E7D885202143EDAB4884A6		Tatica (1984)(ASCII)(JP)	MSX			JP
+8045ADB606BC448E4176EED1D751F182		Tawara (1984)(ASCII)(JP)	MSX			JP
+37A3C3CB2ABF04BDED5A9FDBF3422CDD		Tawara (1984)(ASCII)(JP)[a]	MSX			JP
+585670C8DC5E70438173BEA1DC9FA4F8		Tawara (1984)(ASCII)(JP)[a2]	MSX			JP
+F30A7DF481A0EECF71FB4A0D1168F35D		Tear of Nile (1986)(Victor)(JP)	MSX			JP
+0FCD8BFE6E479D1F6BFEB145AF976F1B		Teki Paki (2003)(CEZ Games Studio)(beta)	MSX	
+B5EB8D81DA72686D704944626BCA4080		Telebunnie (1983)(ASCII)(JP)	MSX			JP
+B8339DFC3D0D8AD80C46D1F9B4E7EE02		Telebunnie (1983)(ASCII)(JP)[a]	MSX			JP
+CF04DDBC4642154F4BF0D0ED66BD0627		Tensai Rabbian Daifunsen (1986)(Toshiba-EMI)(JP)	MSX			JP
+CCF9A69648906BF242096824785817A9		Tenshidachi no Gogo. Afternoon Angels (1987)(Jast)(JP)	MSX			JP
+A52B563494C1B8DE21CFAF3F4F28064B		Tension (1988)(System 4)(ES)	MSX			ES
+4E050C0E849FDD6EAB5EDD5262FF1772		Tetra Horror (1984)(ASCII)(JP)	MSX			JP
+085F85D42C1B53F95DA79061617F7874		Tetra Horror (1984)(ASCII)(JP)[a]	MSX			JP
+D9CDE65C28C138223221B4824EED6A92		Tetris (19xx)(Zemina)(KR)	MSX			KR
+5E5611EA29B3346DC396C50DBF39B1A3		Tetsuman (1985)(HAL Laboratory)(JP)	MSX			JP
+DED4A820CBB0E21E6692D8C29A1AADBA		Tetsuman (1985)(HAL Laboratory)(JP)[a]	MSX			JP
+CD369AA54B6BD6572FE84993074EDC42		Thexder (1986)(Game Arts)(JP)	MSX			JP
+FA240B615FC870AB0F693CBC2EA135C1		Thexder (1986)(Game Arts)(JP)[a]	MSX			JP
+996A004024B421A03AC00898E869F7F6		Thexder (1986)(Game Arts)(JP)[a2]	MSX			JP
+6A4C5C53C3F1895ECA630DE281A041ED		Thunder Ball (1985)(ASCII)(JP)	MSX			JP
+91395E79E8DDF88B62AEE35C53C314C3		Thunder Ball (1985)(ASCII)(JP)[a]	MSX			JP
+39E14F12C73AC5F709E8F466E64DEE20		Thunder Bolt (1986)(Pixel)(JP)	MSX			JP
+ED8477C41FCCBCB6D86226409FAC08B7		Thunder Bolt (1986)(Pixel)(JP)[a]	MSX			JP
+39C9F7FD4B126B9342687A55D41EA258		Thunder Bolt (1986)(Pixel)(JP)[a2]	MSX			JP
+8484030B071A2F15B1CA9D9F73471EE7		Time Pilot (1983)(Konami)(JP)[a][RC-703]	MSX			JP
+E40A0E17187516DAE62CB022E592E950		Time Pilot (1983)(Konami)(JP)[RC-703]	MSX			JP
+FACCD03C7928D583A366A3918C912B49		Tomboyish Becky's Large Adventure (1983)(MIA)(JP)	MSX			JP
+CF4838387A0D66B33195C6B76761B910		Tomboyish Becky's Large Adventure (1983)(MIA)(JP)[a]	MSX			JP
+C47B53B72C6C3588EA5B881C0FCDBA2B		Tomboyish Becky's Large Adventure (1983)(MIA)(JP)[a2]	MSX			JP
+59A7335DBFC81CB92EBCE1D463D5089D		Toobin' (1989)(Domark)(GB)	MSX			GB
+1B840745AB51D80945BF9F95B49330CE		Top Roller (1984)(Jaleco)(JP)	MSX			JP
+1C15A83D25AD1E3B93682128260AC0C8		Topple Zip (1986)(Bothtec)(JP)	MSX			JP
+8DA49CFB7782C6F6391B61CF66105D69		Tower of Druaga, The (1986)(Namcot)(JP)	MSX			JP
+11D9D5946251C696C49622E1818D507B		Track & Field 1. Hyper Olympic 1 (1984)(Konami)(JP)[RC-710]	MSX			JP
+C3C6EAFC4CCAB58148A5B9373AF4A7C2		Track & Field 2. Hyper Olympic 2 (1984)(Konami)(JP)[RC-711]	MSX			JP
+3DF646AFE612C5825E8143F83E5D1D5A		Traffic (1986)(Sony)(JP)	MSX			JP
+BEFCB461D2E1314802629479AE417D79		Traffic (1986)(Sony)(JP)[a]	MSX			JP
+165D0E64762E6412E04ECE9093839731		Tragaperras (2005)(MSXnake)(ES)	MSX			ES
+4A21EB60960D1AA20A83B593910EE322		Trial Ski (1984)(ASCII)(JP)	MSX			JP
+9084EC03A483C2398D084438E1AB9D49		Trick Boy. Pinball (1984)(T&E Soft)(JP)	MSX			JP
+A358A0DDC52590FECEA1A1CBD9EC0221		Tritorn (1986)(Xain)(JP)	MSX			JP
+6FAEFFED313261654F20CEC30B221C54		Trump Aid (1986)(Toshiba-EMI)(JP)	MSX			JP
+20E3A7434F2C0512EBEB086870AF4E2E		Tumego 120 (1987)(Champion Soft)(JP)	MSX			JP
+668751F47FEF040A740EC741328303F0		Turboat (1984)(ASCII)(JP)	MSX			JP
+FAF6E9BC623449DA97EA1FD68361342A		Turmoil (1984)(ASCII)(JP)	MSX			JP
+037D87D19A5C3C14190F91F3D372088E		Turmoil (1984)(Qnix)	MSX	
+358DA2721789FC389DE5843E803ECC36		T-Virus - Brain Dead! v2 (2004)(Dioniso)	MSX	
+C8E06FB33EABA8E98495B2DBF8508D3C		Twin Bee (1986)(Konami)(JP)[a][RC-740]	MSX			JP
+7F72E5C16252AF19397D5A0B70FB3EDB		Twin Bee (1986)(Konami)(JP)[a][SCC+][RC-740]	MSX			JP
+F28ACEF3373808AB8AF529CA6404FB5C		Twin Bee (1986)(Konami)(JP)[a2][RC-740]	MSX			JP
+5D88A7BF93F788E4DABF820E32912447		Twin Bee (1986)(Konami)(JP)[a3][RC-740]	MSX			JP
+8F0765E5FC6E05807495837E272CADDF		Twin Bee (1986)(Konami)(JP)[RC-740]	MSX			JP
+E24D5F1E2174BB50109ABB2415BF1B65		Twin Bee (1986)(Konami)(JP)[SCC+][RC-740]	MSX			JP
+AD4326826E4DBA3B41402229E743C48E		Twin Hammer (1989)(Best)	MSX	
+3315E22D7FA88BBEEFFA93B89631E5DE		TZR Grand Prix Rider (1986)(ASCII)(JP)	MSX			JP
+A42F93D075D81CFCD0B5956377BC0A39		Ultra-Man (1984)(Bandai)(JP)	MSX			JP
+0F87F52BD0492A37109FA00544805FB9		Universe - Unknown (2005)(Infinite)	MSX	
+4FE279AA34D14EBD92FCC561CA8F5BAC		Universe - Unknown v2 (2005)(Infinite)	MSX	
+5F695680C415F5CCD2F0A0FE740A63A5		Valis - The Fantasm Soldier (1986)(Telenet Japan)(JP)	MSX			JP
+1CF78754C93CDD2A34666B41C1257B2B		Valis - The Fantasm Soldier (1987)(Zemina)(KR)	MSX			KR
+B8F49B4081017CBFBF40B9FAD57A4E2A		Vaxol (1987)(Heart Soft)(JP)	MSX			JP
+EB02FC17381DF7F03A6EFCED2D545A68		Venus Fire (1987)(Victor)(JP)	MSX			JP
+08A7BF1AD4FDC213A203F191615BBC9C		Video Hustler. Konami's Billiards (1984)(Konami)(JP)[a][RC-706]	MSX			JP
+C6AEAAD4043B59D253953A26E4A7EB1B		Video Hustler. Konami's Billiards (1984)(Konami)(JP)[a][SCC+][RC-706]	MSX			JP
+062E1D90EA259B01B9D3A591475767ED		Video Hustler. Konami's Billiards (1984)(Konami)(JP)[o2][RC-706]	MSX			JP
+26F6E5DD454768BB2DDB661511657FD8		Video Hustler. Konami's Billiards (1984)(Konami)(JP)[o3][RC-706]	MSX			JP
+CCFB673858F03940ACA707AD5C4AF7F2		Video Hustler. Konami's Billiards (1984)(Konami)(JP)[RC-706]	MSX			JP
+C45C6C737E9A3A3D3EC5235313B7A3D2		Video Hustler. Konami's Billiards (1984)(Konami)(JP)[SCC][RC-706]	MSX			JP
+E314F2ABDC74E3EE2CB81739BCE834C7		Video Hustler. Konami's Billiards (1984)(Konami)(JP)[SCC+][RC-706]	MSX			JP
+4E388F8C95FB3CF30A35BBD1F0B3C717		Viking (2005)(Jose Luis Tur)	MSX	
+C033D1ECE8A927FC88AB2AA02C5E8EF8		Viking (2005)(Jose Luis Tur)(ES)	MSX			ES
+1DB1908A3B8710F0C8DEBC5CB7DAC6D5		Volguard (1985)(dB-Soft)(JP)	MSX			JP
+A594C61FD7DE01723674EB6FCB19875D		Warp & Warp (1984)(Namcot)(JP)	MSX			JP
+B2F25B3999413001F9AF20CCD8B4A91B		Warrior (1984)(ASCII)(JP)	MSX			JP
+487F6F4EC935C471F440749BD5609C73		Warroid (1985)(ASCII)(JP)	MSX			JP
+39DEA9BA5095F056D3B901BC7AFACACF		Warroid (1985)(ASCII)(JP)[a]	MSX			JP
+A9F281253B8DB5880BE6ED4922D412D6		Wedding Bells (1984)(Nippon Columbia - Colpax - Universal)	MSX	
+87734E05CD0F0CDFC780717EDA8F845B		Wedding Bells (1984)(Nippon Columbia - Colpax - Universal)[a]	MSX	
+61F7E08CD80DE5BE1452667D80D4531A		Wing Man 2 (1987)(Enix)(JP)	MSX			JP
+BA0C8B751EB022A2DEC316CD62FE4725		Wrangler (1985)(Sony)(ES)	MSX			ES
+496283BA7B09CD7DFEC1A13DA4B7249A		Wreck, The (1984)(Electric Software)(GB)	MSX			GB
+0D89C25C18DDC03053AE1C8BABEC1DC9		Xyxolog. Xyzolog (1985)(Nidecom)(JP)	MSX			JP
+493258BDFEAC3B0D9F48420868019335		Xyxolog. Xyzolog (1985)(Nidecom)(JP)[a]	MSX			JP
+FD1CCA7E17F5BBEF20F962BAF17EB41D		Yabyum (1985)(Gerritsen, Tom)(NL)	MSX			NL
+6D2BF2F354AB79AD1AE04F80AC8900CF		Yakyuu Kyo. Baseball Craze (1984)(Hudson Soft)(JP)	MSX			JP
+41FA839B7EB931959EE587B9A55D922B		Yamaha SFG-05 System (1984)(Yamaha)(JP)[SFG05.ROM]	MSX			JP
+3D8C3484191EBC324F2BB24A4B088086		Yellow Submarine (1987)(Brother Industries)(JP)	MSX			JP
+C061F8207FB3A862EEF4ECD6E1ACDE2A		Yie Ar Kung-Fu (1985)(Konami)(JP)[a][RC-725]	MSX			JP
+983A3D5031CDA4C9701EEE524566EBA5		Yie Ar Kung-Fu (1985)(Konami)(JP)[RC-725]	MSX			JP
+71821CC1732864CB7B9500B17BFFBF5B		Yie Ar Kung-Fu (1985)(Konami)(JP)[SCC][RC-725]	MSX			JP
+7FF8B8D712A008CD79BF120EE8FE2153		Yie Ar Kung-Fu (1985)(Konami)(JP)[SCC+][RC-725]	MSX			JP
+6372224D6879DA76CD14C7EAFAAEF346		Yie Ar Kung-Fu II - The Emperor Yie-Gah (1985)(Konami)(JP)[a][RC-737]	MSX			JP
+75B15FEB6FC3976C606B988E8F904D0A		Yie Ar Kung-Fu II - The Emperor Yie-Gah (1985)(Konami)(JP)[a2][RC-737]	MSX			JP
+B591BB62CEC12FCC13F54885CF3C7DF6		Yie Ar Kung-Fu II - The Emperor Yie-Gah (1985)(Konami)(JP)[RC-737]	MSX			JP
+1F8E670B01F329B989A2EA08379EA35D		Yie Ar Kung-Fu II - The Emperor Yie-Gah (1985)(Konami)(JP)[SCC][RC-737]	MSX			JP
+24AFC53C7627D55E588FCD2D5492ADDB		Yie Ar Kung-Fu II - The Emperor Yie-Gah (1985)(Konami)(JP)[SCC+][RC-737]	MSX			JP
+7120EAC2FF88C302D80D2CFC5DFCC03C		Youkai Tanken Chima Chima (1985)(Bothtec)(JP)	MSX			JP
+BCEC9FDAC121E3EE668946CDBEDF63CF		Youkai Yashiki. Boynight. Haunted House (1986)(Casio)(JP)	MSX			JP
+F5DA7659FF2A76D94341F4BAB84BEAE3		Young Sherlock - The Legacy of Doyle (1985)(Pack In Video)(JP)	MSX			JP
+4C0D373E999CE241B8D5F41FFE379205		Young Sherlock - The Legacy of Doyle (1985)(Pack In Video)(JP)[a]	MSX			JP
+9C3B9492F2B565CBDDF562195F540993		Yume Tairiku Adventure. Penguin Adventure (1986)(Konami)(JP)[a][RC-743]	MSX			JP
+B078834ABE5659A3EB32560F88B19F36		Yume Tairiku Adventure. Penguin Adventure (1986)(Konami)(JP)[a2][RC-743]	MSX			JP
+3A705B83FF05999D924007126993A390		Yume Tairiku Adventure. Penguin Adventure (1986)(Konami)(JP)[RC-743]	MSX			JP
+DD85486474983645D0576C76C7267415		Yume Tairiku Adventure. Penguin Adventure (1987)(Zemina)(KR)[RC-743]	MSX			KR
+21E0D73E03755E0F773E6056DCCDB702		Zaider - Battle of Peguss (1986)(Cosmos Computer)(JP)	MSX			JP
+B115607552685656F43F324868D200A8		Zaider - Battle of Peguss (1986)(Cosmos Computer)(JP)[a]	MSX			JP
+8500BD6A80B4355C11AF6084710A75C9		Zanac - 2nd Version (1987)(Pony Canyon)(JP)	MSX			JP
+B98531BBD765AC46EB21A81568C89417		Zanac - 2nd Version (1987)(Pony Canyon)(JP)[a]	MSX			JP
+B38C69DCB7D7162983C8CB2ED175DD56		Zanac (1986)(Pony Canyon)(JP)	MSX			JP
+7AE5847140746484EC6CF739EEDE5B15		Zanac (1986)(Pony Canyon)(JP)[a]	MSX			JP
+452C3B57D75C6CE64111F82F642BE0E5		Zaxxon (1985)(Pony Canyon)(JP)	MSX			JP
+8AD24CB1636B8CCE01E1CB6F9FCD6FD6		Zaxxon (1985)(Pony Canyon)(JP)[a]	MSX			JP
+46E90AB77E297CF759C912888ECE9A63		Zenji (1984)(Pony Canyon)(JP)	MSX			JP
+39F2E4DB9272E79E8B6A0FC8BB2E3708		Zenji (1984)(Pony Canyon)(JP)[a]	MSX			JP
+A72CA83A29C96ECBDAC405D2877F696C		Zexas Limited (1985)(dB-Soft)(JP)	MSX			JP
+23F4722A2359120C3CA93CFFE3D1DA18		Zexas Limited (1985)(dB-Soft)(JP)[a]	MSX			JP
+D3F660402A99BD8BE674073FF33B8B61		Zexas Limited (1985)(dB-Soft)(JP)[a2]	MSX			JP
+D8E09F622AF52E07A83F19CA58AEE194		Zoom 909 (1985)(Sega)(JP)	MSX			JP

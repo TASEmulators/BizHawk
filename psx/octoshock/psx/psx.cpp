@@ -1,19 +1,23 @@
-/* Mednafen - Multi-system Emulator
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+/******************************************************************************/
+/* Mednafen Sony PS1 Emulation Module                                         */
+/******************************************************************************/
+/* psx.cpp:
+**  Copyright (C) 2011-2017 Mednafen Team
+**
+** This program is free software; you can redistribute it and/or
+** modify it under the terms of the GNU General Public License
+** as published by the Free Software Foundation; either version 2
+** of the License, or (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software Foundation, Inc.,
+** 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
 
 #include "octoshock.h"
 #include "psx.h"
@@ -36,7 +40,7 @@
 #include "input/memcard.h"
 #include "input/multitap.h"
 
-
+#include <array>
 #include <stdarg.h>
 #include <ctype.h>
 
@@ -111,16 +115,17 @@ void PSX_DBG(unsigned level, const char *format, ...) noexcept
 static unsigned const psx_dbg_level = 0;
 #endif
 
+
 struct MDFN_PseudoRNG	// Based off(but not the same as) public-domain "JKISS" PRNG.
 {
- MDFN_PseudoRNG()
+ MDFN_COLD MDFN_PseudoRNG()
  {
   ResetState();
  }
 
- u32 RandU32(void)
+ uint32 RandU32(void)
  {
-  u64 t;
+  uint64 t;
 
   x = 314527869 * x + 1234567;
   y ^= y << 5; y ^= y >> 7; y ^= y << 22;
@@ -151,7 +156,7 @@ struct MDFN_PseudoRNG	// Based off(but not the same as) public-domain "JKISS" PR
   return(mina + tmp);
  }
 
- void ResetState(void)	// Must always reset to the same state.
+ MDFN_COLD void ResetState(void)	// Must always reset to the same state.
  {
   x = 123456789;
   y = 987654321;
@@ -179,7 +184,6 @@ static int64 Memcard_SaveDelay[8];
 
 PS_CPU *CPU = NULL;
 PS_SPU *SPU = NULL;
-PS_GPU *GPU = NULL;
 PS_CDC *CDC = NULL;
 FrontIO *FIO = NULL;
 
@@ -230,6 +234,7 @@ void PSX_SetDMACycleSteal(unsigned stealage)
  DMACycleSteal = stealage;
 }
 
+
 //
 // Event stuff
 //
@@ -253,7 +258,7 @@ static void EventReset(void)
   events[i].which = i;
 
   if(i == PSX_EVENT__SYNFIRST)
-   events[i].event_time = 0;
+   events[i].event_time = (int32)0x80000000;
   else if(i == PSX_EVENT__SYNLAST)
    events[i].event_time = 0x7FFFFFFF;
   else
@@ -338,7 +343,7 @@ void PSX_SetEventNT(const int type, const pscpu_timestamp_t next_timestamp)
 // Called from debug.cpp too.
 void ForceEventUpdates(const pscpu_timestamp_t timestamp)
 {
- PSX_SetEventNT(PSX_EVENT_GPU, GPU->Update(timestamp));
+ PSX_SetEventNT(PSX_EVENT_GPU, GPU_Update(timestamp));
  PSX_SetEventNT(PSX_EVENT_CDC, CDC->Update(timestamp));
 
  PSX_SetEventNT(PSX_EVENT_TIMER, TIMER_Update(timestamp));
@@ -350,7 +355,7 @@ void ForceEventUpdates(const pscpu_timestamp_t timestamp)
  CPU->SetEventNT(events[PSX_EVENT__SYNFIRST].next->event_time);
 }
 
-bool PSX_EventHandler(const pscpu_timestamp_t timestamp)
+bool MDFN_FASTCALL PSX_EventHandler(const pscpu_timestamp_t timestamp)
 {
  event_list_entry *e = events[PSX_EVENT__SYNFIRST].next;
 
@@ -364,7 +369,7 @@ bool PSX_EventHandler(const pscpu_timestamp_t timestamp)
    default: abort();
 
    case PSX_EVENT_GPU:
-	nt = GPU->Update(e->event_time);
+	nt = GPU_Update(e->event_time);
 	break;
 
    case PSX_EVENT_CDC:
@@ -407,7 +412,6 @@ void PSX_RequestMLExit(void)
 //
 // End event stuff
 //
-
 
 // Remember to update MemPeek<>() and MemPoke<>() when we change address decoding in MemRW()
 template<typename T, bool IsWrite, bool Access24> static INLINE void MemRW(pscpu_timestamp_t &timestamp, uint32 A, uint32 &V)
@@ -495,7 +499,6 @@ template<typename T, bool IsWrite, bool Access24> static INLINE void MemRW(pscpu
      if(timestamp >= events[PSX_EVENT__SYNFIRST].next->event_time)
       PSX_EventHandler(timestamp);
 
-		 //0.9.36.5 - clarified read order by turning into two statements
      V = SPU->Read(timestamp, A);
      V |= SPU->Read(timestamp, A | 2) << 16;
     }
@@ -547,9 +550,9 @@ template<typename T, bool IsWrite, bool Access24> static INLINE void MemRW(pscpu
     timestamp++;
 
    if(IsWrite)
-    GPU->Write(timestamp, A, V);
+    GPU_Write(timestamp, A, V);
    else
-    V = GPU->Read(timestamp, A);
+    V = GPU_Read(timestamp, A);
 
    return;
   }
@@ -559,15 +562,8 @@ template<typename T, bool IsWrite, bool Access24> static INLINE void MemRW(pscpu
    if(!IsWrite)
     timestamp++;
 
-	 if (IsWrite)
-	 {
-		 if (A == 0x1F801820)
-		 {
-			 //per pcsx-rr:
-			 GpuFrameForLag = true;
-		 }
-		 MDEC_Write(timestamp, A, V);
-	 }
+   if(IsWrite)
+    MDEC_Write(timestamp, A, V);
    else
     V = MDEC_Read(timestamp, A);
 
@@ -713,8 +709,8 @@ template<typename T, bool IsWrite, bool Access24> static INLINE void MemRW(pscpu
      else switch(sizeof(T))
      {
       case 1: V = TextMem[(A & 0x7FFFFF) - 65536]; break;
-      case 2: V = MDFN_de16lsb<false>(&TextMem[(A & 0x7FFFFF) - 65536]); break;
-      case 4: V = MDFN_de32lsb<false>(&TextMem[(A & 0x7FFFFF) - 65536]); break;
+      case 2: V = MDFN_de16lsb(&TextMem[(A & 0x7FFFFF) - 65536]); break;
+      case 4: V = MDFN_de32lsb(&TextMem[(A & 0x7FFFFF) - 65536]); break;
      }
     }
    }
@@ -743,27 +739,27 @@ template<typename T, bool IsWrite, bool Access24> static INLINE void MemRW(pscpu
  }
 }
 
-void  PSX_MemWrite8(pscpu_timestamp_t timestamp, uint32 A, uint32 V)
+void MDFN_FASTCALL PSX_MemWrite8(pscpu_timestamp_t timestamp, uint32 A, uint32 V)
 {
  MemRW<uint8, true, false>(timestamp, A, V);
 }
 
-void  PSX_MemWrite16(pscpu_timestamp_t timestamp, uint32 A, uint32 V)
+void MDFN_FASTCALL PSX_MemWrite16(pscpu_timestamp_t timestamp, uint32 A, uint32 V)
 {
  MemRW<uint16, true, false>(timestamp, A, V);
 }
 
-void  PSX_MemWrite24(pscpu_timestamp_t timestamp, uint32 A, uint32 V)
+void MDFN_FASTCALL PSX_MemWrite24(pscpu_timestamp_t timestamp, uint32 A, uint32 V)
 {
  MemRW<uint32, true, true>(timestamp, A, V);
 }
 
-void  PSX_MemWrite32(pscpu_timestamp_t timestamp, uint32 A, uint32 V)
+void MDFN_FASTCALL PSX_MemWrite32(pscpu_timestamp_t timestamp, uint32 A, uint32 V)
 {
  MemRW<uint32, true, false>(timestamp, A, V);
 }
 
-uint8  PSX_MemRead8(pscpu_timestamp_t &timestamp, uint32 A)
+uint8 MDFN_FASTCALL PSX_MemRead8(pscpu_timestamp_t &timestamp, uint32 A)
 {
  uint32 V;
 
@@ -772,7 +768,7 @@ uint8  PSX_MemRead8(pscpu_timestamp_t &timestamp, uint32 A)
  return(V);
 }
 
-uint16  PSX_MemRead16(pscpu_timestamp_t &timestamp, uint32 A)
+uint16 MDFN_FASTCALL PSX_MemRead16(pscpu_timestamp_t &timestamp, uint32 A)
 {
  uint32 V;
 
@@ -781,7 +777,7 @@ uint16  PSX_MemRead16(pscpu_timestamp_t &timestamp, uint32 A)
  return(V);
 }
 
-uint32  PSX_MemRead24(pscpu_timestamp_t &timestamp, uint32 A)
+uint32 MDFN_FASTCALL PSX_MemRead24(pscpu_timestamp_t &timestamp, uint32 A)
 {
  uint32 V;
 
@@ -790,7 +786,7 @@ uint32  PSX_MemRead24(pscpu_timestamp_t &timestamp, uint32 A)
  return(V);
 }
 
-uint32  PSX_MemRead32(pscpu_timestamp_t &timestamp, uint32 A)
+uint32 MDFN_FASTCALL PSX_MemRead32(pscpu_timestamp_t &timestamp, uint32 A)
 {
  uint32 V;
 
@@ -902,8 +898,8 @@ template<typename T, bool Access24> static INLINE uint32 MemPeek(pscpu_timestamp
     else switch(sizeof(T))
     {
      case 1: return(TextMem[(A & 0x7FFFFF) - 65536]); break;
-     case 2: return(MDFN_de16lsb<false>(&TextMem[(A & 0x7FFFFF) - 65536])); break;
-     case 4: return(MDFN_de32lsb<false>(&TextMem[(A & 0x7FFFFF) - 65536])); break;
+     case 2: return(MDFN_de16lsb(&TextMem[(A & 0x7FFFFF) - 65536])); break;
+     case 4: return(MDFN_de32lsb(&TextMem[(A & 0x7FFFFF) - 65536])); break;
     }
    }
   }
@@ -1007,7 +1003,7 @@ static void PSX_Power(bool powering_up)
 
  MDEC_Power();
  CDC->Power();
- GPU->Power();
+ GPU_Power();
  //SPU->Power();	// Called from CDC->Power()
  IRQ_Power();
 
@@ -1058,11 +1054,18 @@ struct ShockState
 
 struct ShockPeripheral
 {
-	ePeripheralType type;
+	ePeripheralType type = ePeripheralType_None;
 	u8 buffer[32]; //must be larger than 16+3+1 or thereabouts because the dualshock writes some rumble data into it. bleck, ill fix it later
 	//TODO: test for multitap. does it need to be as large as 4 of whatever the single largest port would be?
 	//well, it must manage its own stuff.. its not like we feed in external data, right?
-	InputDevice* device;
+	InputDevice* device = nullptr;
+
+	~ShockPeripheral()
+	{
+		//do not do this! FIO takes care of finishing this off
+		//I know, it's all a mess
+		//delete device;
+	}
 };
 
 static int addressToPortNum(int address)
@@ -1087,15 +1090,13 @@ struct {
 	//"This is kind of redundant with the frontIO code, and should be merged with it eventually, when the configurability gets more advanced"
 	//I dunno.
 
-	ShockPeripheral ports[10];
+	std::array<ShockPeripheral,10> ports;
 
 	void Initialize()
 	{
+		reconstruct(&ports);
 		for(int i=0;i<10;i++)
-		{
-			ports[i].type = ePeripheralType_None;
 			memset(ports[i].buffer,0,sizeof(ports[i].buffer));
-		}
 		reconstruct(FIO);
 	}
 
@@ -1133,6 +1134,7 @@ struct {
 			return SHOCK_ERROR;
 		}
 		ports[portnum].type = (ePeripheralType)type;
+		if(ports[portnum].device) delete ports[portnum].device;
 		ports[portnum].device = next;
 		memset(ports[portnum].buffer,0,sizeof(ports[portnum].buffer));
 
@@ -1303,13 +1305,10 @@ struct {
 
 	void UpdateInput()
 	{
-		for(int i=0;i<10;i++)
+		for(int i=0;i<ports.size();i++)
 		{
-			for(int i=0;i<ARRAY_SIZE(ports);i++)
-			{
-				if(ports[i].device)
-					ports[i].device->UpdateInput(ports[i].buffer);
-			}
+			if(ports[i].device)
+				ports[i].device->UpdateInput(ports[i].buffer);
 		}
 	}
 
@@ -1365,6 +1364,15 @@ static int s_FramebufferCurrentWidth;
 
 EW_EXPORT s32 shock_Create(void** psx, s32 region, void* firmware512k)
 {
+	#ifdef SHOCK_RUN_TESTS
+	static bool ranTests = false;
+	if(!ranTests)
+	{
+		ranTests = true;
+		MDFN_RunMathTests();
+	}
+	#endif
+
 	//TODO
  //psx_dbg_level = MDFN_GetSettingUI("psx.dbg_level");
  //DBG_Init();
@@ -1385,11 +1393,10 @@ EW_EXPORT s32 shock_Create(void** psx, s32 region, void* firmware512k)
 
 	CPU = new PS_CPU();
 	SPU = new PS_SPU();
+	GPU_Init(region == REGION_EU);
 	CDC = new PS_CDC();
 	DMA_Init();
 
-	//these steps can't be done without more information
-	GPU = new PS_GPU(region == REGION_EU);
 
 	//setup gpu output surfaces
 	MDFN_PixelFormat nf(MDFN_COLORSPACE_RGB, 16, 8, 0, 24);
@@ -1397,6 +1404,15 @@ EW_EXPORT s32 shock_Create(void** psx, s32 region, void* firmware512k)
 	{
 		VTBuffer[i] = new MDFN_Surface(NULL, FB_WIDTH, FB_HEIGHT, FB_WIDTH, nf);
 		VTLineWidths[i] = (int *)calloc(FB_HEIGHT, sizeof(int));
+	}
+
+	for(int rc = 0; rc < 0x8000; rc++)
+	{
+		const uint8 a = rc;
+		const uint8 b = rc >> 8;
+
+		(GPU.OutputLUT +   0)[a] = ((a & 0x1F) << (3 + nf.Rshift)) | ((a >> 5) << (3 + nf.Gshift));
+		(GPU.OutputLUT + 256)[b] = ((b & 0x3) << (6 + nf.Gshift)) | (((b >> 2) & 0x1F) << (3 + nf.Bshift));
 	}
 
 	FIO = new FrontIO();
@@ -1442,11 +1458,7 @@ EW_EXPORT s32 shock_Destroy(void* psx)
 		SPU = NULL;
 	}
 
-	if(GPU)
-	{
-		delete GPU;
-		GPU = NULL;
-	}
+	GPU_Kill();
 
 	if(CPU)
 	{
@@ -1517,7 +1529,7 @@ EW_EXPORT s32 shock_Step(void* psx, eShockStep step)
 
 	memset(&espec, 0, sizeof(EmulateSpecStruct));
 
-	espec.VideoFormatChanged = true; //shouldnt do this every frame..
+	espec.VideoFormatChanged = false;
 	espec.surface = (MDFN_Surface *)VTBuffer[VTBackBuffer];
 	espec.LineWidths = (int *)VTLineWidths[VTBackBuffer];
 	espec.skip = false;
@@ -1547,7 +1559,7 @@ EW_EXPORT s32 shock_Step(void* psx, eShockStep step)
 	s_ShockPeripheralState.UpdateInput();
 	
 	//GPU->StartFrame(psf_loader ? NULL : espec); //a reminder that when we do psf, we will be telling the gpu not to draw
-	GPU->StartFrame(&espec);
+	GPU_StartFrame(&espec);
 	
 	//not that it matters, but we may need to control this at some point
 	static const int ResampleQuality = 5;
@@ -1560,15 +1572,15 @@ EW_EXPORT s32 shock_Step(void* psx, eShockStep step)
 	assert(timestamp);
 
 	ForceEventUpdates(timestamp);
-	if(GPU->GetScanlineNum() < 100)
-		printf("[BUUUUUUUG] Frame timing end glitch; scanline=%u, st=%u\n", GPU->GetScanlineNum(), timestamp);
+	if(GPU_GetScanlineNum() < 100)
+		printf("[BUUUUUUUG] Frame timing end glitch; scanline=%u, st=%u\n", GPU_GetScanlineNum(), timestamp);
 
 	espec.SoundBufSize = SPU->EndFrame(espec.SoundBuf);
 
 	CDC->ResetTS();
 	TIMER_ResetTS();
 	DMA_ResetTS();
-	GPU->ResetTS();
+	GPU_ResetTS();
 	FIO->ResetTS();
 
 	RebaseTS(timestamp);
@@ -1630,8 +1642,8 @@ static void _shock_AnalyzeFramebufferCropInfo(int fbIndex, FramebufferCropInfo* 
 	{
 		//printf("%d %d %d %d | %d | %d\n",yo,height, GPU->GetVertStart(), GPU->GetVertEnd(), espec.DisplayRect.y, GPU->FirstLine);
 
-		height = GPU->GetVertEnd() - GPU->GetVertStart();
-		yo = GPU->FirstLine;
+		height = GPU.GetVertEnd() - GPU.GetVertStart();
+		yo = GPU.FirstLine;
 
 		if (espec.DisplayRect.h == 288 || espec.DisplayRect.h == 240)
 		{
@@ -1695,7 +1707,7 @@ void NormalizeFramebuffer()
 
 	int virtual_width = 800;
 	int virtual_height = 480;
-	if (GPU->HardwarePALType)
+	if (GPU.HardwarePALType)
 		virtual_height = 576;
 
 	if (s_ShockConfig.opts.renderType == eShockRenderType_ClipOverscan)
@@ -1900,7 +1912,7 @@ EW_EXPORT s32 shock_GetFramebuffer(void* psx, ShockFramebufferInfo* fb)
 	return SHOCK_OK;
 }
 
-static void LoadEXE(const uint8 *data, const uint32 size, bool ignore_pcsp = false)
+static MDFN_COLD void LoadEXE(const uint8 *data, const uint32 size, bool ignore_pcsp = false)
 {
  uint32 PC;
  uint32 SP;
@@ -1974,23 +1986,23 @@ static void LoadEXE(const uint8 *data, const uint32 size, bool ignore_pcsp = fal
 
  po = &PIOMem->data8[0x0800];
 
- MDFN_en32lsb<false>(po, (0x0 << 26) | (31 << 21) | (0x8 << 0));	// JR
+ MDFN_en32lsb(po, (0x0 << 26) | (31 << 21) | (0x8 << 0));	// JR
  po += 4;
- MDFN_en32lsb<false>(po, 0);	// NOP(kinda)
+ MDFN_en32lsb(po, 0);	// NOP(kinda)
  po += 4;
 
  po = &PIOMem->data8[0x1000];
 
  // Load cacheable-region target PC into r2
- MDFN_en32lsb<false>(po, (0xF << 26) | (0 << 21) | (1 << 16) | (0x9F001010 >> 16));      // LUI
+ MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16) | (0x9F001010 >> 16));      // LUI
  po += 4;
- MDFN_en32lsb<false>(po, (0xD << 26) | (1 << 21) | (2 << 16) | (0x9F001010 & 0xFFFF));   // ORI
+ MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (2 << 16) | (0x9F001010 & 0xFFFF));   // ORI
  po += 4;
 
  // Jump to r2
- MDFN_en32lsb<false>(po, (0x0 << 26) | (2 << 21) | (0x8 << 0));	// JR
+ MDFN_en32lsb(po, (0x0 << 26) | (2 << 21) | (0x8 << 0));	// JR
  po += 4;
- MDFN_en32lsb<false>(po, 0);	// NOP(kinda)
+ MDFN_en32lsb(po, 0);	// NOP(kinda)
  po += 4;
 
  //
@@ -1999,42 +2011,42 @@ static void LoadEXE(const uint8 *data, const uint32 size, bool ignore_pcsp = fal
 
  // Load source address into r8
  uint32 sa = 0x9F000000 + 65536;
- MDFN_en32lsb<false>(po, (0xF << 26) | (0 << 21) | (1 << 16) | (sa >> 16));	// LUI
+ MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16) | (sa >> 16));	// LUI
  po += 4;
- MDFN_en32lsb<false>(po, (0xD << 26) | (1 << 21) | (8 << 16) | (sa & 0xFFFF)); 	// ORI
+ MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (8 << 16) | (sa & 0xFFFF)); 	// ORI
  po += 4;
 
  // Load dest address into r9
- MDFN_en32lsb<false>(po, (0xF << 26) | (0 << 21) | (1 << 16)  | (TextMem_Start >> 16));	// LUI
+ MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16)  | (TextMem_Start >> 16));	// LUI
  po += 4;
- MDFN_en32lsb<false>(po, (0xD << 26) | (1 << 21) | (9 << 16) | (TextMem_Start & 0xFFFF)); 	// ORI
+ MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (9 << 16) | (TextMem_Start & 0xFFFF)); 	// ORI
  po += 4;
 
  // Load size into r10
- MDFN_en32lsb<false>(po, (0xF << 26) | (0 << 21) | (1 << 16)  | (TextMem.size() >> 16));	// LUI
+ MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16)  | (TextMem.size() >> 16));	// LUI
  po += 4;
- MDFN_en32lsb<false>(po, (0xD << 26) | (1 << 21) | (10 << 16) | (TextMem.size() & 0xFFFF)); 	// ORI
+ MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (10 << 16) | (TextMem.size() & 0xFFFF)); 	// ORI
  po += 4;
 
  //
  // Loop begin
  //
  
- MDFN_en32lsb<false>(po, (0x24 << 26) | (8 << 21) | (1 << 16));	// LBU to r1
+ MDFN_en32lsb(po, (0x24 << 26) | (8 << 21) | (1 << 16));	// LBU to r1
  po += 4;
 
- MDFN_en32lsb<false>(po, (0x08 << 26) | (10 << 21) | (10 << 16) | 0xFFFF);	// Decrement size
+ MDFN_en32lsb(po, (0x08 << 26) | (10 << 21) | (10 << 16) | 0xFFFF);	// Decrement size
  po += 4;
 
- MDFN_en32lsb<false>(po, (0x28 << 26) | (9 << 21) | (1 << 16));	// SB from r1
+ MDFN_en32lsb(po, (0x28 << 26) | (9 << 21) | (1 << 16));	// SB from r1
  po += 4;
 
- MDFN_en32lsb<false>(po, (0x08 << 26) | (8 << 21) | (8 << 16) | 0x0001);	// Increment source addr
+ MDFN_en32lsb(po, (0x08 << 26) | (8 << 21) | (8 << 16) | 0x0001);	// Increment source addr
  po += 4;
 
- MDFN_en32lsb<false>(po, (0x05 << 26) | (0 << 21) | (10 << 16) | (-5 & 0xFFFF));
+ MDFN_en32lsb(po, (0x05 << 26) | (0 << 21) | (10 << 16) | (-5 & 0xFFFF));
  po += 4;
- MDFN_en32lsb<false>(po, (0x08 << 26) | (9 << 21) | (9 << 16) | 0x0001);	// Increment dest addr
+ MDFN_en32lsb(po, (0x08 << 26) | (9 << 21) | (9 << 16) | 0x0001);	// Increment dest addr
  po += 4;
 
  //
@@ -2048,31 +2060,31 @@ static void LoadEXE(const uint8 *data, const uint32 size, bool ignore_pcsp = fal
  }
  else
  {
-  MDFN_en32lsb<false>(po, (0xF << 26) | (0 << 21) | (1 << 16)  | (SP >> 16));	// LUI
+  MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16)  | (SP >> 16));	// LUI
   po += 4;
-  MDFN_en32lsb<false>(po, (0xD << 26) | (1 << 21) | (29 << 16) | (SP & 0xFFFF)); 	// ORI
+  MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (29 << 16) | (SP & 0xFFFF)); 	// ORI
   po += 4;
 
   // Load PC into r2
-  MDFN_en32lsb<false>(po, (0xF << 26) | (0 << 21) | (1 << 16)  | ((PC >> 16) | 0x8000));      // LUI
+  MDFN_en32lsb(po, (0xF << 26) | (0 << 21) | (1 << 16)  | ((PC >> 16) | 0x8000));      // LUI
   po += 4;
-  MDFN_en32lsb<false>(po, (0xD << 26) | (1 << 21) | (2 << 16) | (PC & 0xFFFF));   // ORI
+  MDFN_en32lsb(po, (0xD << 26) | (1 << 21) | (2 << 16) | (PC & 0xFFFF));   // ORI
   po += 4;
  }
 
  // Half-assed instruction cache flush. ;)
  for(unsigned i = 0; i < 1024; i++)
  {
-  MDFN_en32lsb<false>(po, 0);
+  MDFN_en32lsb(po, 0);
   po += 4;
  }
 
 
 
  // Jump to r2
- MDFN_en32lsb<false>(po, (0x0 << 26) | (2 << 21) | (0x8 << 0));	// JR
+ MDFN_en32lsb(po, (0x0 << 26) | (2 << 21) | (0x8 << 0));	// JR
  po += 4;
- MDFN_en32lsb<false>(po, 0);	// NOP(kinda)
+ MDFN_en32lsb(po, 0);	// NOP(kinda)
  po += 4;
 }
 
@@ -2420,7 +2432,7 @@ EW_EXPORT s32 shock_AnalyzeDisc(ShockDiscRef* disc, ShockDiscInfo* info)
 		fp->seek((int64)rdel * 2048, SEEK_SET);
 		//printf("%08x, %08x\n", rdel * 2048, rdel_len);
 
-		//I think this loop is scanning directory entries until it finds system.cnf and if it never finishes we'll jsut fall out
+		//I think this loop is scanning directory entries until it finds system.cnf and if it never finishes we'll just fall out
 		while(fp->tell() < (((int64)rdel * 2048) + rdel_len))
 		{
 			uint8 len_dr = fp->get_u8();
@@ -2448,42 +2460,52 @@ EW_EXPORT s32 shock_AnalyzeDisc(ShockDiscRef* disc, ShockDiscInfo* info)
 				fp->seek(file_lba * 2048, SEEK_SET);
 				fp->read(fb, 2048);
 
-				bootpos = strstr((char*)fb, "BOOT") + 4;
-				while(*bootpos == ' ' || *bootpos == '\t') bootpos++;
-				if(*bootpos == '=')
+				if((bootpos = strstr((char*)fb, "BOOT")))
 				{
-					bootpos++;
+					bootpos += 4;
 					while(*bootpos == ' ' || *bootpos == '\t') bootpos++;
-					if(!strncasecmp(bootpos, "cdrom:\\", 7))
-					{ 
-						bootpos += 7;
-						char *tmp;
+					if(*bootpos == '=')
+					{
+						bootpos++;
+						while(*bootpos == ' ' || *bootpos == '\t') bootpos++;
+						if(!strncasecmp(bootpos, "cdrom:", 6))
+						{ 
+							char* tmp;
 
-						if((tmp = strchr(bootpos, '_'))) *tmp = 0;
-						if((tmp = strchr(bootpos, '.'))) *tmp = 0;
-						if((tmp = strchr(bootpos, ';'))) *tmp = 0;
-						//puts(bootpos);
+							bootpos += 6;
 
-						if(strlen(bootpos) == 4 && bootpos[0] == 'S' && (bootpos[1] == 'C' || bootpos[1] == 'L' || bootpos[1] == 'I'))
-						{
-							switch(bootpos[2])
+							// strrchr() way will pick up Tekken 3, but only enable if needed due to possibility of regressions.
+							//if((tmp = strrchr(bootpos, '\\')))
+							// bootpos = tmp + 1;
+							while(*bootpos == '\\')
+								bootpos++;
+
+							if((tmp = strchr(bootpos, '_'))) *tmp = 0;
+							if((tmp = strchr(bootpos, '.'))) *tmp = 0;
+							if((tmp = strchr(bootpos, ';'))) *tmp = 0;
+							//puts(bootpos);
+
+							if(strlen(bootpos) == 4 && toupper(bootpos[0]) == 'S' && (toupper(bootpos[1]) == 'C' || toupper(bootpos[1]) == 'L' || toupper(bootpos[1]) == 'I'))
 							{
-							case 'E':
-								info->region = REGION_EU;
-								strcpy(info->id,"SCEE");
-								goto Breakout;
+								switch(toupper(bootpos[2]))
+								{
+								case 'E':
+									info->region = REGION_EU;
+									strcpy(info->id,"SCEE");
+									goto Breakout;
 
-							case 'U':
-								info->region = REGION_NA;
-								strcpy(info->id,"SCEA");
-								goto Breakout;
+								case 'U':
+									info->region = REGION_NA;
+									strcpy(info->id,"SCEA");
+									goto Breakout;
 
-							case 'K':	// Korea?
-							case 'B':
-							case 'P':
-								info->region = REGION_JP;
-								strcpy(info->id,"SCEI");
-								goto Breakout;
+								case 'K':	// Korea?
+								case 'B':
+								case 'P':
+									info->region = REGION_JP;
+									strcpy(info->id,"SCEI");
+									goto Breakout;
+								}
 							}
 						}
 					}
@@ -2497,11 +2519,6 @@ EW_EXPORT s32 shock_AnalyzeDisc(ShockDiscRef* disc, ShockDiscInfo* info)
 	catch(const char* str)
 	{
 		//puts(e.what());
-		int zzz=9;
-	}
-	catch(...)
-	{
-		int zzz=9;
 	}
 
 	//uhmm couldnt find system.cnf. try another way
@@ -2619,7 +2636,7 @@ EW_EXPORT s32 shock_GetMemData(void* psx, void** ptr, s32* size, s32 memType)
 	case eMemType_MainRAM: *ptr = MainRAM.data8; *size = 2048*1024; break;
 	case eMemType_BiosROM: *ptr = BIOSROM->data8; *size = 512*1024; break;
 	case eMemType_PIOMem: *ptr = PIOMem->data8; *size = 64*1024; break;
-	case eMemType_GPURAM: *ptr = GPU->GPURAM; *size = 2*512*1024; break;
+	case eMemType_GPURAM: *ptr = GPU.GPURAM; *size = 2*512*1024; break;
 	case eMemType_SPURAM: *ptr = SPU->SPURAM; *size = 512*1024; break;
 	case eMemType_DCache: *ptr = CPU->debug_GetScratchRAMPtr(); *size = 1024; break;
 	default:
@@ -2689,7 +2706,7 @@ SYNCFUNC(PSX)
 	MDEC_SyncState(isReader,ns);
 	ns->ExitSection("MDEC");
 
-	TSS(GPU); //did some special logic for the CPU, ordering may matter, but probably not
+	TSS((&GPU)); //did some special logic for the CPU, ordering may matter, but probably not
 
 	TSS(SPU);
 	TSS(FIO); //TODO - DUALSHOCK, MC
@@ -2785,7 +2802,7 @@ EW_EXPORT s32 shock_SetRegister_CPU(void* psx, s32 index, u32 value)
 
 EW_EXPORT s32 shock_SetRenderOptions(void* pxs, ShockRenderOptions* opts)
 {
-	GPU->SetRenderOptions(opts);
+	GPU.SetRenderOptions(opts);
 	s_ShockConfig.opts = *opts;
 	return SHOCK_OK;
 }

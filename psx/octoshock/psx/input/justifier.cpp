@@ -1,19 +1,23 @@
-/* Mednafen - Multi-system Emulator
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+/******************************************************************************/
+/* Mednafen Sony PS1 Emulation Module                                         */
+/******************************************************************************/
+/* justifier.cpp:
+**  Copyright (C) 2012-2016 Mednafen Team
+**
+** This program is free software; you can redistribute it and/or
+** modify it under the terms of the GNU General Public License
+** as published by the Free Software Foundation; either version 2
+** of the License, or (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software Foundation, Inc.,
+** 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
 
 #include "../psx.h"
 #include "../frontio.h"
@@ -197,7 +201,6 @@ pscpu_timestamp_t InputDevice_Justifier::GPULineHook(const pscpu_timestamp_t tim
 
  if(pixels && pix_clock)
  {
-  const int avs = 16; // Not 16 for PAL, fixme.
   int32 gx;
   int32 gy;
   int32 gxa;
@@ -212,7 +215,7 @@ pscpu_timestamp_t InputDevice_Justifier::GPULineHook(const pscpu_timestamp_t tim
   {
    for(int32 ix = gxa; ix < (gxa + (int32)(pix_clock / 762925)); ix++)
    {
-    if(ix >= 0 && ix < (int)width && line_counter >= (avs + gy - 6) && line_counter <= (avs + gy + 6))
+		 if(ix >= 0 && ix < (int)width && line_counter >= (gy - 6) && line_counter <= (gy + 6))
     {
      int r, g, b, a;
 
@@ -228,7 +231,7 @@ pscpu_timestamp_t InputDevice_Justifier::GPULineHook(const pscpu_timestamp_t tim
   }
 
   chair_x = gx;
-  chair_y = (avs + gy) - line_counter;
+	chair_y = gy - line_counter;
  }
 
  line_counter++;

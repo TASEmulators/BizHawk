@@ -1041,9 +1041,34 @@ void gendsubu(void)
 #endif
 }
 
+void gentge(void)
+{
+   gencallinterp((unsigned int)cached_interpreter_table.TGE, 0);
+}
+
+void gentgeu(void)
+{
+   gencallinterp((unsigned int)cached_interpreter_table.TGEU, 0);
+}
+
+void gentlt(void)
+{
+   gencallinterp((unsigned int)cached_interpreter_table.TLT, 0);
+}
+
+void gentltu(void)
+{
+   gencallinterp((unsigned int)cached_interpreter_table.TLTU, 0);
+}
+
 void genteq(void)
 {
    gencallinterp((unsigned int)cached_interpreter_table.TEQ, 0);
+}
+
+void gentne(void)
+{
+   gencallinterp((unsigned int)cached_interpreter_table.TNE, 0);
 }
 
 void gendsll(void)

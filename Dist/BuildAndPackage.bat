@@ -9,15 +9,12 @@ if "%1"=="" (
 git --version > NUL
 @if errorlevel 1 goto MISSINGGIT
 
-reg query "HKLM\SOFTWARE\Microsoft\MSBuild\ToolsVersions\14.0" /v MSBuildToolsPath > nul 2>&1
-if ERRORLEVEL 1 goto MISSINGMSBUILD
+for /f "usebackq tokens=*" %%A in (`vswhere -version "[16.0,17.0)" -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe`) do SET MSBUILDPATH=%%A
 
-for /f "skip=2 tokens=2,*" %%A in ('reg.exe query "HKLM\SOFTWARE\Microsoft\MSBuild\ToolsVersions\14.0" /v MSBuildToolsPath') do SET MSBUILDDIR=%%B
+IF "%MSBUILDPATH%"=="" GOTO MISSINGMSBUILD
 
-IF NOT EXIST %MSBUILDDIR%nul goto MISSINGMSBUILD
-IF NOT EXIST %MSBUILDDIR%msbuild.exe goto MISSINGMSBUILD
-
-call "%MSBUILDDIR%msbuild.exe" ..\BizHawk.sln /p:Configuration=Release /p:Platform="Any Cpu" /t:rebuild
+nuget restore ..\BizHawk.sln
+call "%MSBUILDPATH%" ..\BizHawk.sln "/p:Configuration=Release;Platform=Any CPU;MachineRunAnalyzersDuringBuild=true" /t:rebuild
 
 @if errorlevel 1 goto MSBUILDFAILED
 
@@ -71,6 +68,12 @@ upx -d temp\*.exe
 
 rem dont need docs xml for assemblies and whatnot
 del temp\dll\*.xml
+
+rem we're building multiple copies of every assembly for some reason. this is a huge pain in the ass.
+rem until that's fixed, we need to delete them from the distribution
+rmdir /s /q temp\dll\netstandard2.0
+rmdir /s /q temp\dll\netcoreapp3.1
+rmdir /s /q temp\dll\net48
 
 cd temp
 

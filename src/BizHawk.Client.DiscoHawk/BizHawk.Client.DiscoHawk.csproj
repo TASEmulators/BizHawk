@@ -1,0 +1,87 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="../MainSlnCommon.props" />
+	<PropertyGroup>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<ApplicationIcon>discohawk.ico</ApplicationIcon>
+		<DefineConstants>$(DefineConstants);WINDOWS</DefineConstants>
+		<OutputPath>$(ProjectDir)../../output</OutputPath>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net48</TargetFramework>
+		<TargetName>DiscoHawk</TargetName>
+	</PropertyGroup>
+<!--
+	<PropertyGroup>
+		<AppDesignerFolder>Properties</AppDesignerFolder>
+		<ApplicationRevision>0</ApplicationRevision>
+		<ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+		<AssemblyName>DiscoHawk</AssemblyName>
+		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+		<BootstrapperEnabled>true</BootstrapperEnabled>
+		<FileAlignment>512</FileAlignment>
+		<FileUpgradeFlags/>
+		<Install>true</Install>
+		<InstallFrom>Disk</InstallFrom>
+		<IsWebBootstrapper>false</IsWebBootstrapper>
+		<MapFileExtensions>true</MapFileExtensions>
+		<NoWin32Manifest>true</NoWin32Manifest>
+		<OldToolsVersion>3.5</OldToolsVersion>
+		<ProductVersion>9.0.30729</ProductVersion>
+		<ProjectGuid>{C4366030-6D03-424B-AE53-F4F43BB217C3}</ProjectGuid>
+		<PublishUrl>publish/</PublishUrl>
+		<RootNamespace>BizHawk.Client.DiscoHawk</RootNamespace>
+		<SchemaVersion>2.0</SchemaVersion>
+		<StartupObject/>
+		<TargetFrameworkProfile/>
+		<UpdateEnabled>false</UpdateEnabled>
+		<UpdateInterval>7</UpdateInterval>
+		<UpdateIntervalUnits>Days</UpdateIntervalUnits>
+		<UpdateMode>Foreground</UpdateMode>
+		<UpdatePeriodically>false</UpdatePeriodically>
+		<UpdateRequired>false</UpdateRequired>
+		<UpgradeBackupLocation/>
+		<UseApplicationTrust>false</UseApplicationTrust>
+		<UseVSHostingProcess>false</UseVSHostingProcess>
+	</PropertyGroup>
+	<ItemGroup>
+		<BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+			<Visible>False</Visible>
+			<ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+			<Install>false</Install>
+		</BootstrapperPackage>
+		<BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+			<Visible>False</Visible>
+			<ProductName>.NET Framework 3.5 SP1</ProductName>
+			<Install>true</Install>
+		</BootstrapperPackage>
+		<BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+			<Visible>False</Visible>
+			<ProductName>Windows Installer 3.1</ProductName>
+			<Install>true</Install>
+		</BootstrapperPackage>
+	</ItemGroup>
+-->
+	<ItemGroup>
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="all" />
+		<Reference Include="System.Web" />
+		<Reference Include="System.Windows.Forms" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.DiscSystem/BizHawk.Emulation.DiscSystem.csproj" />
+		<Compile Include="$(ProjectDir)../Version/svnrev.cs" Link="svnrev.cs" />
+		<Compile Include="$(ProjectDir)../Version/VersionInfo.cs" Link="VersionInfo.cs" />
+		<Content Include="discohawk.ico" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Update="About.cs" SubType="Form" />
+		<Compile Update="About.Designer.cs" DependentUpon="About.cs" />
+		<EmbeddedResource Update="About.resx" DependentUpon="About.cs" />
+		<Compile Update="ComparisonResults.cs" SubType="Form" />
+		<Compile Update="ComparisonResults.Designer.cs" DependentUpon="ComparisonResults.cs" />
+		<EmbeddedResource Update="ComparisonResults.resx" DependentUpon="ComparisonResults.cs" />
+		<Compile Update="MainDiscoForm.cs" SubType="Form" />
+		<Compile Update="MainDiscoForm.Designer.cs" DependentUpon="MainDiscoForm.cs" />
+
+		<EmbeddedResource Remove="MainDiscoForm.resx" />
+<!-- TODO uses non-string
+		<EmbeddedResource Update="MainDiscoForm.resx" DependentUpon="MainDiscoForm.cs" SubType="Designer" />
+-->
+	</ItemGroup>
+</Project>

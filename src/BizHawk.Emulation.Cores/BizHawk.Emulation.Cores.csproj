@@ -1,0 +1,70 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="../MainSlnCommon.props" />
+	<PropertyGroup>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<TargetFrameworks>netstandard2.0;netcoreapp3.1</TargetFrameworks>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" PrivateAssets="All" />
+		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" PrivateAssets="All" />
+		<PackageReference Include="OpenTK" Version="3.0.1" PrivateAssets="All" />
+		<Reference Include="PeNet" HintPath="$(ProjectDir)../../References/PeNet.dll" Private="true" />
+		<Reference Include="Virtu" HintPath="$(ProjectDir)../../References/Virtu.dll" Private="true" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.BizInvoke/BizHawk.BizInvoke.csproj" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.Common/BizHawk.Emulation.Common.csproj" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.DiscSystem/BizHawk.Emulation.DiscSystem.csproj" />
+		<Compile Include="$(ProjectDir)../Version/svnrev.cs" />
+		<Compile Include="$(ProjectDir)../Version/VersionInfo.cs" />
+		<EmbeddedResource Include="Resources/**/*" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Update="Calculator/TI83.*.cs" DependentUpon="TI83.cs" />
+		<Compile Update="Computers/AppleII/AppleII.*.cs" DependentUpon="AppleII.cs" />
+		<Compile Update="Computers/Commodore64/C64.*.cs" DependentUpon="C64.cs" />
+		<Compile Update="Computers/SinclairSpectrum/Hardware/Disk/NECUPD765.*.cs" DependentUpon="NECUPD765.cs" />
+		<Compile Update="Computers/SinclairSpectrum/Hardware/Disk/NECUPS765.Static.cs" DependentUpon="NECUPD765.cs" />
+		<Compile Update="Computers/SinclairSpectrum/Machine/Pentagon128K/Pentagon128.*.cs" DependentUpon="Pentagon128.cs" />
+		<Compile Update="Computers/SinclairSpectrum/Machine/SpectrumBase.*.cs" DependentUpon="SpectrumBase.cs" />
+		<Compile Update="Computers/SinclairSpectrum/Machine/ZXSpectrum128K/ZX128.*.cs" DependentUpon="ZX128.cs" />
+		<Compile Update="Computers/SinclairSpectrum/Machine/ZXSpectrum128KPlus2a/ZX128Plus2a.*.cs" DependentUpon="ZX128Plus2a.cs" />
+		<Compile Update="Computers/SinclairSpectrum/Machine/ZXSpectrum128KPlus3/ZX128Plus3.*.cs" DependentUpon="ZX128Plus3.cs" />
+		<Compile Update="Computers/SinclairSpectrum/Machine/ZXSpectrum48K/ZX48.*.cs" DependentUpon="ZX48.cs" />
+		<Compile Update="Computers/SinclairSpectrum/ZXSpectrum.*.cs" DependentUpon="ZXSpectrum.cs" />
+		<Compile Update="Consoles/Atari/2600/Atari2600.*.cs" DependentUpon="Atari2600.cs" />
+		<Compile Update="Consoles/Atari/A7800Hawk/A7800Hawk.*.cs" DependentUpon="A7800Hawk.cs" />
+		<Compile Update="Consoles/Atari/A7800Hawk/MemoryMap.cs" DependentUpon="A7800Hawk.cs" />
+		<Compile Update="Consoles/Atari/lynx/Lynx.*.cs" DependentUpon="Lynx.cs" />
+		<Compile Update="Consoles/Coleco/ColecoVision.*.cs" DependentUpon="ColecoVision.cs" />
+		<Compile Update="Consoles/GCE/Vectrex/VectrexHawk.*.cs" DependentUpon="VectrexHawk..cs" />
+		<Compile Update="Consoles/Intellivision/Intellivision.*.cs" DependentUpon="Intellivision.cs" />
+		<Compile Update="Consoles/Magnavox/Odyssey2/O2Hawk.*.cs" DependentUpon="O2Hawk.cs" />
+		<Compile Update="Consoles/MSX/MSX.*.cs" DependentUpon="MSX.cs" />
+		<Compile Update="Consoles/Nintendo/Gameboy/Gambatte.*.cs" DependentUpon="Gambatte.cs" />
+		<Compile Update="Consoles/Nintendo/Gameboy/GambatteLink.*.cs" DependentUpon="GambatteLink.cs" />
+		<Compile Update="Consoles/Nintendo/GBA/MGBAHawk.*.cs" DependentUpon="MGBAHawk.cs" />
+		<Compile Update="Consoles/Nintendo/GBHawk/GBHawk.*.cs" DependentUpon="GBHawk.cs" />
+		<Compile Update="Consoles/Nintendo/GBHawk/*_PPU.cs" DependentUpon="PPU.cs" />
+		<Compile Update="Consoles/Nintendo/GBHawkLink/GBHawkLink.*.cs" DependentUpon="GBHawkLink.cs" />
+		<Compile Update="Consoles/Nintendo/GBHawkLink3x/GBHawkLink3x.*.cs" DependentUpon="GBHawkLink3x.cs" />
+		<Compile Update="Consoles/Nintendo/GBHawkLink4x/GBHawkLink4x.*.cs" DependentUpon="GBHawkLink4x.cs" />
+		<Compile Update="Consoles/Nintendo/N64/N64.*.cs" DependentUpon="N64.cs" />
+		<Compile Update="Consoles/Nintendo/NES/Boards/AxROM.cs" SubType="Code" />
+		<Compile Update="Consoles/Nintendo/NES/Boards/CPROM.cs" SubType="Code" />
+		<Compile Update="Consoles/Nintendo/NES/Boards/GxROM.cs" SubType="Code" />
+		<Compile Update="Consoles/Nintendo/NES/Boards/IC_74x377.cs" SubType="Code" />
+		<Compile Update="Consoles/Nintendo/NES/Boards/NROM.cs" SubType="Code" />
+		<Compile Update="Consoles/Nintendo/NES/Boards/SxROM.cs" SubType="Code" />
+		<Compile Update="Consoles/Nintendo/NES/Boards/UxROM.cs" SubType="Code" />
+		<Compile Update="Consoles/Nintendo/NES/NES.*.cs" DependentUpon="NES.cs" />
+		<Compile Update="Consoles/Nintendo/SubNESHawk/SubNESHawk.*.cs" DependentUpon="SubNESHawk.cs" />
+		<Compile Update="Consoles/Nintendo/QuickNES/QuickNES.*.cs" DependentUpon="QuickNES.cs" />
+		<Compile Update="Consoles/Nintendo/SNES/LibsnesCore.*.cs" DependentUpon="LibsnesCore.cs" />
+		<Compile Update="Consoles/PC Engine/PCEngine.*.cs" DependentUpon="PCEngine.cs" />
+		<Compile Update="Consoles/Sega/GGHawkLink/GGHawkLink.*.cs" DependentUpon="GGHawkLink.cs" />
+		<Compile Update="Consoles/Sega/gpgx64/GPGX.*.cs" DependentUpon="GPGX.cs" />
+		<Compile Update="Consoles/Sega/SMS/SMS.*.cs" DependentUpon="SMS.cs" />
+		<Compile Update="Consoles/Sony/PSX/Octoshock.cs" SubType="Code" />
+		<Compile Update="Consoles/Sony/PSX/Octoshock.*.cs" DependentUpon="Octoshock.cs" />
+		<Compile Update="Consoles/WonderSwan/WonderSwan.*.cs" DependentUpon="WonderSwan.cs" />
+	</ItemGroup>
+</Project>

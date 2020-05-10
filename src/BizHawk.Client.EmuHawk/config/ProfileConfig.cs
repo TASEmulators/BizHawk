@@ -1,0 +1,249 @@
+﻿using System;
+using System.Windows.Forms;
+
+using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores;
+using BizHawk.Emulation.Cores.Nintendo.N64;
+using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
+using BizHawk.Emulation.Cores.Sega.MasterSystem;
+using BizHawk.Emulation.Cores.ColecoVision;
+using BizHawk.Emulation.Cores.Atari.Atari2600;
+
+namespace BizHawk.Client.EmuHawk
+{
+	public partial class ProfileConfig : Form
+	{
+		private readonly MainForm _mainForm;
+		private readonly IEmulator _emulator;
+		private readonly Config _config;
+
+		public ProfileConfig(
+			MainForm mainForm,
+			IEmulator emulator,
+			Config config)
+		{
+			_mainForm = mainForm;
+			_emulator = emulator;
+			_config = config;
+			InitializeComponent();
+			Icon = Properties.Resources.user_blue;
+		}
+
+		private void ProfileConfig_Load(object sender, EventArgs e)
+		{
+			ProfileSelectComboBox.SelectedItem = _config.SelectedProfile switch
+			{
+				ClientProfile.Casual => "Casual Gaming",
+				ClientProfile.Longplay => "Longplays",
+				ClientProfile.Tas => "Tool-assisted Speedruns",
+				ClientProfile.N64Tas => "N64 Tool-assisted Speedruns",
+				_ => "Casual Gaming"
+			};
+
+			AutoCheckForUpdates.Checked = _config.UpdateAutoCheckEnabled;
+		}
+
+		private void OkBtn_Click(object sender, EventArgs e)
+		{
+			_config.SelectedProfile = ProfileSelectComboBox.SelectedItem.ToString() switch
+			{
+				"Longplays" => ClientProfile.Longplay,
+				"Tool-assisted Speedruns" => ClientProfile.Tas,
+				"N64 Tool-assisted Speedruns" => ClientProfile.N64Tas,
+				_ => ClientProfile.Casual
+			};
+
+			SetCasual();
+
+			switch (_config.SelectedProfile)
+			{
+				case ClientProfile.Longplay:
+					SetLongPlay();
+					break;
+				case ClientProfile.Tas:
+					SetTas();
+					break;
+				case ClientProfile.N64Tas:
+					SetTas();
+					SetN64Tas();
+					break;
+			}
+
+			bool oldUpdateAutoCheckEnabled = _config.UpdateAutoCheckEnabled;
+			_config.UpdateAutoCheckEnabled = AutoCheckForUpdates.Checked;
+			if (_config.UpdateAutoCheckEnabled != oldUpdateAutoCheckEnabled)
+			{
+				if (!_config.UpdateAutoCheckEnabled)
+				{
+					UpdateChecker.ResetHistory();
+				}
+
+				UpdateChecker.BeginCheck(); // Call even if auto checking is disabled to trigger event (it won't actually check)
+			}
+
+			DialogResult = DialogResult.OK;
+			Close();
+		}
+
+		private void CancelBtn_Click(object sender, EventArgs e)
+		{
+			DialogResult = DialogResult.Cancel;
+			Close();
+		}
+
+		private void SetCasual()
+		{
+			_config.NoLowResLargeScreenshotWithStates = false;
+			_config.SaveScreenshotWithStates = false;
+			_config.AllowUdlr = false;
+			_config.BackupSavestates = false;
+
+			_config.SaveStateCompressionLevelNormal = 0;
+			_config.Rewind.EnabledLarge = false;
+			_config.Rewind.EnabledMedium = false;
+			_config.Rewind.EnabledSmall = true;
+			_config.SkipLagFrame = false;
+
+			// N64
+			var n64Settings = GetSyncSettings<N64, N64SyncSettings>();
+			n64Settings.Rsp = N64SyncSettings.RspType.Rsp_Hle;
+			n64Settings.Core = N64SyncSettings.CoreType.Interpret;
+			_config.N64UseCircularAnalogConstraint = true;
+			PutSyncSettings<N64>(n64Settings);
+
+			// SNES
+			_config.PreferredCores["SNES"] = CoreNames.Snes9X;
+
+			// Genesis
+			var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();
+			genesisSettings.Region = LibGPGX.Region.Autodetect;
+			PutSyncSettings<GPGX>(genesisSettings);
+
+			// SMS
+			var smsSettings = GetSyncSettings<SMS, SMS.SmsSyncSettings>();
+			smsSettings.UseBios = false;
+			PutSyncSettings<SMS>(smsSettings);
+
+			// Coleco
+			var colecoSettings = GetSyncSettings<ColecoVision, ColecoVision.ColecoSyncSettings>();
+			colecoSettings.SkipBiosIntro = false;
+			PutSyncSettings<ColecoVision>(colecoSettings);
+
+			// A2600
+			var a2600Settings = GetSyncSettings<Atari2600, Atari2600.A2600SyncSettings>();
+			a2600Settings.FastScBios = true;
+			a2600Settings.LeftDifficulty = false;
+			a2600Settings.RightDifficulty = false;
+			PutSyncSettings<Atari2600>(a2600Settings);
+
+			// NES
+			_config.PreferredCores["NES"] = CoreNames.QuickNes;
+		}
+
+		private void SetLongPlay()
+		{
+			_config.SaveStateCompressionLevelNormal = 5;
+
+			// SNES
+			_config.PreferredCores["SNES"] = CoreNames.Bsnes;
+
+			// SMS
+			var smsSettings = GetSyncSettings<SMS, SMS.SmsSyncSettings>();
+			smsSettings.UseBios = true;
+			PutSyncSettings<SMS>(smsSettings);
+
+			// A2600
+			var a2600Settings = GetSyncSettings<Atari2600, Atari2600.A2600SyncSettings>();
+			a2600Settings.FastScBios = false;
+			a2600Settings.LeftDifficulty = true;
+			a2600Settings.RightDifficulty = true;
+			PutSyncSettings<Atari2600>(a2600Settings);
+
+			// NES
+			_config.PreferredCores["NES"] = CoreNames.NesHawk;
+		}
+
+		private void SetTas()
+		{
+			// General
+			_config.SaveScreenshotWithStates = true;
+			_config.AllowUdlr = true;
+			_config.BackupSavestates = true;
+			_config.SkipLagFrame = false;
+			_config.SaveStateCompressionLevelNormal = 5;
+
+			// Rewind
+			_config.Rewind.EnabledLarge = false;
+			_config.Rewind.EnabledMedium = false;
+			_config.Rewind.EnabledSmall = false;
+
+			// N64
+			var n64Settings = GetSyncSettings<N64, N64SyncSettings>();
+			n64Settings.Core = N64SyncSettings.CoreType.Pure_Interpret;
+			_config.N64UseCircularAnalogConstraint = false;
+			PutSyncSettings<N64>(n64Settings);
+
+			// SNES
+			_config.PreferredCores["SNES"] = CoreNames.Snes9X;
+
+			// Genesis
+			var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();
+			genesisSettings.Region = LibGPGX.Region.Autodetect;
+			PutSyncSettings<GPGX>(genesisSettings);
+
+			// SMS
+			var smsSettings = GetSyncSettings<SMS, SMS.SmsSyncSettings>();
+			smsSettings.UseBios = true;
+			PutSyncSettings<SMS>(smsSettings);
+
+			// A2600
+			var a2600Settings = GetSyncSettings<Atari2600, Atari2600.A2600SyncSettings>();
+			a2600Settings.FastScBios = false;
+			a2600Settings.LeftDifficulty = true;
+			a2600Settings.RightDifficulty = true;
+			PutSyncSettings<Atari2600>(a2600Settings);
+
+			// NES
+			_config.PreferredCores["NES"] = CoreNames.NesHawk;
+		}
+
+		private void SetN64Tas()
+		{
+			// General
+			_config.BackupSavestates = false;
+			_config.SkipLagFrame = true;
+			_config.SaveStateCompressionLevelNormal = 0;
+		}
+
+		private TSetting GetSyncSettings<TEmulator, TSetting>()
+			where TSetting : class, new()
+			where TEmulator : IEmulator
+		{
+			// should we complain if we get a successful object from the config file, but it is the wrong type?
+			object fromCore = null;
+			var settable = new SettingsAdapter(_emulator);
+			if (settable.HasSyncSettings)
+			{
+				fromCore = settable.GetSyncSettings();
+			}
+
+			return fromCore as TSetting
+				?? _config.GetCoreSyncSettings<TEmulator>() as TSetting
+				?? new TSetting(); // guaranteed to give sensible defaults
+		}
+
+		private void PutSyncSettings<TEmulator>(object o)
+			where TEmulator : IEmulator
+		{
+			if (_emulator is TEmulator)
+			{
+				_mainForm.PutCoreSyncSettings(o);
+			}
+			else
+			{
+				_config.PutCoreSyncSettings<TEmulator>(o);
+			}
+		}
+	}
+}

@@ -1,27 +1,30 @@
-/* Mednafen - Multi-system Emulator
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+/******************************************************************************/
+/* Mednafen Sony PS1 Emulation Module                                         */
+/******************************************************************************/
+/* gte.cpp:
+**  Copyright (C) 2011-2016 Mednafen Team
+**
+** This program is free software; you can redistribute it and/or
+** modify it under the terms of the GNU General Public License
+** as published by the Free Software Foundation; either version 2
+** of the License, or (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software Foundation, Inc.,
+** 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
 
+#pragma GCC optimize ("no-unroll-loops,no-peel-loops")
+
+#ifndef PSXDEV_GTE_TESTING
 #include "psx.h"
 #include "gte.h"
-
-#undef FALSE
-#undef TRUE
-#define FALSE 0
-#define TRUE 1
+#endif
 
 /* Notes:
 
@@ -46,12 +49,14 @@ namespace MDFN_IEN_PSX
 {
 #endif
 
-EW_PACKED(
-struct gtematrix
+typedef struct
 {
  int16 MX[3][3];
  int16 dummy;
-});
+} gtematrix;
+#ifndef PSXDEV_GTE_TESTING
+static_assert(sizeof(gtematrix) == 20, "gtematrix wrong size!");
+#endif
 
 typedef struct
 {
@@ -148,7 +153,6 @@ static INLINE uint8 Sat5(int16 cc)
  return(cc);
 }
 
-
 //
 // Newton-Raphson division table.  (Initialized at startup; do NOT save in save states!)
 //
@@ -186,8 +190,6 @@ void GTE_Power(void)
 {
  memset(CR, 0, sizeof(CR));
  //memset(DR, 0, sizeof(DR));
- 	const int x = 5;
-	char v[x];
 
  memset(Matrices.All, 0, sizeof(Matrices.All));
  memset(CRVectors.All, 0, sizeof(CRVectors.All));
@@ -494,16 +496,7 @@ void GTE_WriteDR(unsigned int which, uint32 value)
 
   case 30:
 	LZCS = value;
-	{
-	 uint32 test = value & 0x80000000;
-	 LZCR = 0;
-
-	 while((value & 0x80000000) == test && LZCR < 32)
-	 {
-	  LZCR++;
-	  value <<= 1;
-	 }
-	}
+	LZCR = MDFN_lzcount32(value ^ ((int32)value >> 31));
 	break;
 
   case 31:	// Read-only
@@ -865,7 +858,7 @@ static INLINE void MultiplyMatrixByVector(const gtematrix *matrix, const int16 *
   tmp = A_MV(i, tmp + mulr[0]);
   if(crv == CRVectors.FC)
   {
-   Lm_B(i, tmp >> sf, FALSE);
+   Lm_B(i, tmp >> sf, false);
    tmp = 0;
   }
 
@@ -910,7 +903,7 @@ static INLINE void MultiplyMatrixByVector_PT(const gtematrix *matrix, const int1
  Z_FIFO[0] = Z_FIFO[1];
  Z_FIFO[1] = Z_FIFO[2];
  Z_FIFO[2] = Z_FIFO[3];
- Z_FIFO[3] = Lm_D(tmp[2] >> 12, TRUE);
+ Z_FIFO[3] = Lm_D(tmp[2] >> 12, true);
 }
 
 
@@ -935,7 +928,7 @@ static INLINE void MultiplyMatrixByVector_PT(const gtematrix *matrix, const int1
  }
 
 
-static int32 SQR(uint32 instr)
+static INLINE int32 SQR(uint32 instr)
 {
  DECODE_FIELDS;
 
@@ -948,8 +941,7 @@ static int32 SQR(uint32 instr)
  return(5);
 }
 
-
-static int32 MVMVA(uint32 instr)
+static INLINE int32 MVMVA(uint32 instr)
 {
  DECODE_FIELDS;
 
@@ -1009,7 +1001,7 @@ static INLINE void TransformDQ(int64 h_div_sz)
  IR0 = Lm_H(((int64)DQB + DQA * h_div_sz) >> 12);
 }
 
-static int32 RTPS(uint32 instr)
+static INLINE int32 RTPS(uint32 instr)
 {
  DECODE_FIELDS;
  int64 h_div_sz;
@@ -1023,7 +1015,7 @@ static int32 RTPS(uint32 instr)
  return(15);
 }
 
-static int32 RTPT(uint32 instr)
+static INLINE int32 RTPT(uint32 instr)
 {
  DECODE_FIELDS;
  int i;
@@ -1056,7 +1048,7 @@ static INLINE void NormColor(uint32 sf, int lm, uint32 v)
  MAC_to_RGB_FIFO();
 }
 
-static int32 NCS(uint32 instr)
+static INLINE int32 NCS(uint32 instr)
 {
  DECODE_FIELDS;
 
@@ -1094,7 +1086,7 @@ static INLINE void NormColorColor(uint32 v, uint32 sf, int lm)
  MAC_to_RGB_FIFO();
 }
 
-static int32 NCCS(uint32 instr)
+static INLINE int32 NCCS(uint32 instr)
 {
  DECODE_FIELDS;
 
@@ -1103,7 +1095,7 @@ static int32 NCCS(uint32 instr)
 }
 
 
-static int32 NCCT(uint32 instr)
+static INLINE int32 NCCT(uint32 instr)
 {
  int i;
  DECODE_FIELDS;
@@ -1140,7 +1132,7 @@ static INLINE void DepthCue(int mult_IR123, int RGB_from_FIFO, uint32 sf, int lm
   for(i = 0; i < 3; i++)
   {
    MAC[1 + i] = A_MV(i, ((int64)((uint64)(int64)CRVectors.FC[i] << 12) - RGB_temp[i] * IR_temp[i])) >> sf;
-   MAC[1 + i] = A_MV(i, (RGB_temp[i] * IR_temp[i] + IR0 * Lm_B(i, MAC[1 + i], FALSE))) >> sf;
+   MAC[1 + i] = A_MV(i, (RGB_temp[i] * IR_temp[i] + IR0 * Lm_B(i, MAC[1 + i], false))) >> sf;
   }
  }
  else
@@ -1148,7 +1140,7 @@ static INLINE void DepthCue(int mult_IR123, int RGB_from_FIFO, uint32 sf, int lm
   for(i = 0; i < 3; i++)
   {
    MAC[1 + i] = A_MV(i, ((int64)((uint64)(int64)CRVectors.FC[i] << 12) - (int32)((uint32)RGB_temp[i] << 12))) >> sf;
-   MAC[1 + i] = A_MV(i, ((int64)((uint64)(int64)RGB_temp[i] << 12) + IR0 * Lm_B(i, MAC[1 + i], FALSE))) >> sf;
+   MAC[1 + i] = A_MV(i, ((int64)((uint64)(int64)RGB_temp[i] << 12) + IR0 * Lm_B(i, MAC[1 + i], false))) >> sf;
   }
  }
 
@@ -1158,39 +1150,39 @@ static INLINE void DepthCue(int mult_IR123, int RGB_from_FIFO, uint32 sf, int lm
 }
 
 
-static int32 DCPL(uint32 instr)
+static INLINE int32 DCPL(uint32 instr)
 {
  DECODE_FIELDS;
 
- DepthCue(TRUE, FALSE, sf, lm);
+ DepthCue(true, false, sf, lm);
 
  return(8);
 }
 
 
-static int32 DPCS(uint32 instr)
+static INLINE int32 DPCS(uint32 instr)
 {
  DECODE_FIELDS;
 
- DepthCue(FALSE, FALSE, sf, lm);
+ DepthCue(false, false, sf, lm);
 
  return(8);
 }
 
-static int32 DPCT(uint32 instr)
+static INLINE int32 DPCT(uint32 instr)
 {
  int i;
  DECODE_FIELDS;
 
  for(i = 0; i < 3; i++)
  {
-  DepthCue(FALSE, TRUE, sf, lm);
+  DepthCue(false, true, sf, lm);
  }
 
  return(17);
 }
 
-static int32 INTPL(uint32 instr)
+static INLINE int32 INTPL(uint32 instr)
 {
  DECODE_FIELDS;
 
@@ -1198,9 +1190,9 @@ static int32 INTPL(uint32 instr)
  MAC[2] = A_MV(1, ((int64)((uint64)(int64)CRVectors.FC[1] << 12) - (int32)((uint32)(int32)IR2 << 12))) >> sf;
  MAC[3] = A_MV(2, ((int64)((uint64)(int64)CRVectors.FC[2] << 12) - (int32)((uint32)(int32)IR3 << 12))) >> sf;
 
- MAC[1] = A_MV(0, ((int64)((uint64)(int64)IR1 << 12) + IR0 * Lm_B(0, MAC[1], FALSE)) >> sf);
- MAC[2] = A_MV(1, ((int64)((uint64)(int64)IR2 << 12) + IR0 * Lm_B(1, MAC[2], FALSE)) >> sf);
- MAC[3] = A_MV(2, ((int64)((uint64)(int64)IR3 << 12) + IR0 * Lm_B(2, MAC[3], FALSE)) >> sf);
+ MAC[1] = A_MV(0, ((int64)((uint64)(int64)IR1 << 12) + IR0 * Lm_B(0, MAC[1], false)) >> sf);
+ MAC[2] = A_MV(1, ((int64)((uint64)(int64)IR2 << 12) + IR0 * Lm_B(1, MAC[2], false)) >> sf);
+ MAC[3] = A_MV(2, ((int64)((uint64)(int64)IR3 << 12) + IR0 * Lm_B(2, MAC[3], false)) >> sf);
 
  MAC_to_IR(lm);
 
@@ -1219,10 +1211,10 @@ static INLINE void NormColorDepthCue(uint32 v, uint32 sf, int lm)
  tmp_vector[0] = IR1; tmp_vector[1] = IR2; tmp_vector[2] = IR3;
  MultiplyMatrixByVector(&Matrices.Color, tmp_vector, CRVectors.B, sf, lm);
 
- DepthCue(TRUE, FALSE, sf, lm);
+ DepthCue(true, false, sf, lm);
 }
 
-static int32 NCDS(uint32 instr)
+static INLINE int32 NCDS(uint32 instr)
 {
  DECODE_FIELDS;
 
@@ -1231,7 +1223,7 @@ static int32 NCDS(uint32 instr)
  return(19);
 }
 
-static int32 NCDT(uint32 instr)
+static INLINE int32 NCDT(uint32 instr)
 {
  int i;
  DECODE_FIELDS;
@@ -1244,7 +1236,7 @@ static int32 NCDT(uint32 instr)
  return(44);
 }
 
-static int32 CC(uint32 instr)
+static INLINE int32 CC(uint32 instr)
 {
  DECODE_FIELDS;
  int16 tmp_vector[3];
@@ -1263,7 +1255,7 @@ static int32 CC(uint32 instr)
  return(11);
 }
 
-static int32 CDP(uint32 instr)
+static INLINE int32 CDP(uint32 instr)
 {
  DECODE_FIELDS;
  int16 tmp_vector[3];
@@ -1271,12 +1263,12 @@ static int32 CDP(uint32 instr)
  tmp_vector[0] = IR1; tmp_vector[1] = IR2; tmp_vector[2] = IR3;
  MultiplyMatrixByVector(&Matrices.Color, tmp_vector, CRVectors.B, sf, lm);
 
- DepthCue(TRUE, FALSE, sf, lm);
+ DepthCue(true, false, sf, lm);
 
  return(13);
 }
 
-static int32 NCLIP(uint32 instr)
+static INLINE int32 NCLIP(uint32 instr)
 {
  DECODE_FIELDS;
 
@@ -1286,24 +1278,24 @@ static int32 NCLIP(uint32 instr)
  return(8);
 }
 
-static int32 AVSZ3(uint32 instr)
+static INLINE int32 AVSZ3(uint32 instr)
 {
  DECODE_FIELDS;
 
  MAC[0] = F(((int64)ZSF3 * (Z_FIFO[1] + Z_FIFO[2] + Z_FIFO[3])));
 
- OTZ = Lm_D(MAC[0] >> 12, FALSE);
+ OTZ = Lm_D(MAC[0] >> 12, false);
 
  return(5);
 }
 
-static int32 AVSZ4(uint32 instr)
+static INLINE int32 AVSZ4(uint32 instr)
 {
  DECODE_FIELDS;
 
  MAC[0] = F(((int64)ZSF4 * (Z_FIFO[0] + Z_FIFO[1] + Z_FIFO[2] + Z_FIFO[3])));
 
- OTZ = Lm_D(MAC[0] >> 12, FALSE);
+ OTZ = Lm_D(MAC[0] >> 12, false);
 
  return(5);
 }
@@ -1311,7 +1303,7 @@ static int32 AVSZ4(uint32 instr)
 
 // -32768 * -32768 - 32767 * -32768 = 2147450880
 // (2 ^ 31) - 1 =		      2147483647
-static int32 OP(uint32 instr)
+static INLINE int32 OP(uint32 instr)
 {
  DECODE_FIELDS;
 
@@ -1324,7 +1316,7 @@ static int32 OP(uint32 instr)
  return(6);
 }
 
-static int32 GPF(uint32 instr)
+static INLINE int32 GPF(uint32 instr)
 {
  DECODE_FIELDS;
 
@@ -1339,7 +1331,7 @@ static int32 GPF(uint32 instr)
  return(5);
 }
 
-static int32 GPL(uint32 instr)
+static INLINE int32 GPL(uint32 instr)
 {
  DECODE_FIELDS;
 
@@ -1492,9 +1484,7 @@ int32 GTE_Instruction(uint32 instr)
 	break;
 */
 
-  case 0x1A:	// Alternate for 0x29?
-	ret = DCPL(instr);
-	break;
+  // case 0x1A handled next to case 0x29
 
   case 0x1B:
 	ret = NCCS(instr);
@@ -1548,6 +1538,7 @@ int32 GTE_Instruction(uint32 instr)
 	ret = SQR(instr);
 	break;
 
+  case 0x1A:	// Alternate for 0x29?
   case 0x29:
 	ret = DCPL(instr);
 	break;

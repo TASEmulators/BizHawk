@@ -1,56 +1,55 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Text.RegularExpressions;
-using Jellyfish.Library;
 
 namespace Jellyfish.Virtu
 {
-    public abstract class Disk525
-    {
-		public Disk525() { }
-        protected Disk525(string name, byte[] data, bool isWriteProtected)
-        {
-            Name = name;
-            Data = data;
-            IsWriteProtected = isWriteProtected;
-        }
+	internal abstract class Disk525
+	{
+		protected byte[] Data;
+		public bool IsWriteProtected;
 
-        public static Disk525 CreateDisk(string name, byte[] data, bool isWriteProtected)
-        {
-            if (name == null)
-            {
-                throw new ArgumentNullException("name");
-            }
+		protected Disk525(byte[] data, bool isWriteProtected)
+		{
+			Data = data;
+			IsWriteProtected = isWriteProtected;
+		}
 
-            if (name.EndsWith(".do", StringComparison.OrdinalIgnoreCase) ||
-                name.EndsWith(".dsk", StringComparison.OrdinalIgnoreCase)) // assumes dos sector skew
-            {
-                return new DiskDsk(name, data, isWriteProtected, SectorSkew.Dos);
-            }
-            else if (name.EndsWith(".nib", StringComparison.OrdinalIgnoreCase))
-            {
-                return new DiskNib(name, data, isWriteProtected);
-            }
-            else if (name.EndsWith(".po", StringComparison.OrdinalIgnoreCase))
-            {
-                return new DiskDsk(name, data, isWriteProtected, SectorSkew.ProDos);
-            }
+		public virtual void Sync(IComponentSerializer ser)
+		{
+			ser.Sync(nameof(Data), ref Data, false);
+			ser.Sync(nameof(IsWriteProtected), ref IsWriteProtected);
+		}
 
-            return null;
-        }
+		public static Disk525 CreateDisk(string name, byte[] data, bool isWriteProtected)
+		{
+			if (name == null)
+			{
+				throw new ArgumentNullException(nameof(name));
+			}
 
-        public abstract void ReadTrack(int number, int fraction, byte[] buffer);
-        public abstract void WriteTrack(int number, int fraction, byte[] buffer);
+			if (name.EndsWith(".do", StringComparison.OrdinalIgnoreCase) ||
+				name.EndsWith(".dsk", StringComparison.OrdinalIgnoreCase)) // assumes dos sector skew
+			{
+				return new DiskDsk(data, isWriteProtected, SectorSkew.Dos);
+			}
 
-        public string Name { get; private set; }
+			if (name.EndsWith(".nib", StringComparison.OrdinalIgnoreCase))
+			{
+				return new DiskNib(data, isWriteProtected);
+			}
 
-        public byte[] Data { get; protected set; }
-        public bool IsWriteProtected { get; private set; }
+			if (name.EndsWith(".po", StringComparison.OrdinalIgnoreCase))
+			{
+				return new DiskDsk(data, isWriteProtected, SectorSkew.ProDos);
+			}
 
-        public const int SectorCount = 16;
-        public const int SectorSize = 0x100;
-        public const int TrackCount = 35;
-        public const int TrackSize = 0x1A00;
-    }
+			return null;
+		}
+
+		public abstract void ReadTrack(int number, int fraction, byte[] buffer);
+		public abstract void WriteTrack(int number, int fraction, byte[] buffer);
+
+		public const int SectorCount = 16;
+		public const int SectorSize = 0x100;
+		public const int TrackSize = 0x1A00;
+	}
 }

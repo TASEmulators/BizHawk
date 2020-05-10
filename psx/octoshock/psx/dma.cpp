@@ -1,19 +1,23 @@
-/* Mednafen - Multi-system Emulator
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+/******************************************************************************/
+/* Mednafen Sony PS1 Emulation Module                                         */
+/******************************************************************************/
+/* dma.cpp:
+**  Copyright (C) 2011-2016 Mednafen Team
+**
+** This program is free software; you can redistribute it and/or
+** modify it under the terms of the GNU General Public License
+** as published by the Free Software Foundation; either version 2
+** of the License, or (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software Foundation, Inc.,
+** 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
 
 #include "psx.h"
 #include "mdec.h"
@@ -139,7 +143,7 @@ static INLINE bool ChCan(const unsigned ch, const uint32 CRModeCache)
   
   case CH_GPU: 
 	if(CRModeCache & 0x1)
-	 return(GPU->DMACanWrite());
+	 return(GPU_DMACanWrite());
 	else
 	 return(true);
 
@@ -202,7 +206,7 @@ static void RecalcHalt(void)
  if((DMACH[1].WordCounter || (DMACH[1].ChanControl & (1 << 24))) && (DMACH[1].ChanControl & 0x200) && (DMACH[1].WordCounter || MDEC_DMACanRead()))
   Halt = true;
 
- if((DMACH[2].WordCounter || (DMACH[2].ChanControl & (1 << 24))) && (DMACH[2].ChanControl & 0x200) && ((DMACH[2].ChanControl & 0x1) && (DMACH[2].WordCounter || GPU->DMACanWrite())))
+ if((DMACH[2].WordCounter || (DMACH[2].ChanControl & (1 << 24))) && (DMACH[2].ChanControl & 0x200) && ((DMACH[2].ChanControl & 0x1) && (DMACH[2].WordCounter || GPU_DMACanWrite())))
   Halt = true;
 
  if((DMACH[3].WordCounter || (DMACH[3].ChanControl & (1 << 24))) && !(DMACH[3].ChanControl & 0x100))
@@ -255,16 +259,12 @@ static INLINE void ChRW(const unsigned ch, const uint32 CRModeCache, uint32 *V, 
 	   *V = MDEC_DMARead(offset);
 	  break;
 
-  case CH_GPU:
-	  if(CRModeCache & 0x1)
-		{
-			if(DMACH[CH_GPU].ChanControl == 0x01000401)
-				GpuFrameForLag = true;
-	   GPU->WriteDMA(*V);
-		}
-	  else
-	   *V = GPU->ReadDMA();
-	  break;
+	case CH_GPU:
+		if(CRModeCache & 0x1)
+			GPU_WriteDMA(*V);
+		else
+			*V = GPU_ReadDMA();
+		break;
 
   case CH_CDC:
 	  // 0x1f801018 affects CDC DMA timing.
@@ -575,13 +575,13 @@ static INLINE int32 CalcNextEvent(int32 next_event)
  return(next_event);
 }
 
-pscpu_timestamp_t DMA_Update(const pscpu_timestamp_t timestamp)
+MDFN_FASTCALL pscpu_timestamp_t DMA_Update(const pscpu_timestamp_t timestamp)
 {
 //   uint32 dc = (DMAControl >> (ch * 4)) & 0xF;
  int32 clocks = timestamp - lastts;
  lastts = timestamp;
 
- GPU->Update(timestamp);
+ GPU_Update(timestamp);
  MDEC_Run(clocks);
 
  RunChannel(timestamp, clocks, 0);
@@ -622,7 +622,7 @@ static void CheckLinkedList(uint32 addr)
 }
 #endif
 
-void DMA_Write(const pscpu_timestamp_t timestamp, uint32 A, uint32 V)
+MDFN_FASTCALL void DMA_Write(const pscpu_timestamp_t timestamp, uint32 A, uint32 V)
 {
  int ch = (A & 0x7F) >> 4;
 
@@ -683,7 +683,7 @@ void DMA_Write(const pscpu_timestamp_t timestamp, uint32 A, uint32 V)
 	     RunChannel(timestamp, 1, ch);
 	     DMACH[ch].ClockCounter = 0;
 #endif
-	     PSX_WARNING("[DMA] Forced stop for channel %d -- scanline=%d", ch, GPU->GetScanlineNum());
+	     PSX_WARNING("[DMA] Forced stop for channel %d -- scanline=%d", ch, GPU_GetScanlineNum());
 	     //MDFN_DispMessage("[DMA] Forced stop for channel %d", ch);
 	    }
 
@@ -695,7 +695,7 @@ void DMA_Write(const pscpu_timestamp_t timestamp, uint32 A, uint32 V)
 	    if(!(OldCC & (1 << 24)) && (V & (1 << 24)))
 	    {
 	     //if(ch == 0 || ch == 1)
-	     // PSX_WARNING("[DMA] Started DMA for channel=%d --- CHCR=0x%08x --- BCR=0x%08x --- scanline=%d", ch, DMACH[ch].ChanControl, DMACH[ch].BlockControl, GPU->GetScanlineNum());
+	     // PSX_WARNING("[DMA] Started DMA for channel=%d --- CHCR=0x%08x --- BCR=0x%08x --- scanline=%d", ch, DMACH[ch].ChanControl, DMACH[ch].BlockControl, GPU_GetScanlineNum());
 
 	     DMACH[ch].WordCounter = 0;
 	     DMACH[ch].ClockCounter = 0;
@@ -719,7 +719,7 @@ void DMA_Write(const pscpu_timestamp_t timestamp, uint32 A, uint32 V)
  PSX_SetEventNT(PSX_EVENT_DMA, timestamp + CalcNextEvent(0x10000000));
 }
 
-uint32 DMA_Read(const pscpu_timestamp_t timestamp, uint32 A)
+MDFN_FASTCALL uint32 DMA_Read(const pscpu_timestamp_t timestamp, uint32 A)
 {
  int ch = (A & 0x7F) >> 4;
  uint32 ret = 0;

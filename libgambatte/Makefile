@@ -11,7 +11,7 @@ else
 	$(error Unknown arch)
 endif
 
-CXXFLAGS = -Wall -Iinclude -Isrc -O3 -std=c++11 -fno-exceptions -flto
+CXXFLAGS = -Wall -Iinclude -Isrc -O3 -std=c++11 -fno-exceptions -flto -fPIC
 TARGET = libgambatte.dll
 LDFLAGS_32 = -static -static-libgcc -static-libstdc++
 LDFLAGS_64 =
@@ -25,12 +25,12 @@ SRCS = \
 	src/cpu.cpp \
 	src/gambatte.cpp \
 	src/initstate.cpp \
-	src/interrupter.cpp \
 	src/interruptrequester.cpp \
 	src/memory.cpp \
 	src/mem/cartridge.cpp \
 	src/mem/memptrs.cpp \
 	src/mem/rtc.cpp \
+	src/mem/time.cpp \
 	src/newstate.cpp \
 	src/sound.cpp \
 	src/sound/channel1.cpp \
@@ -61,6 +61,6 @@ $(TARGET) : $(OBJS)
 clean:
 	$(RM) $(OBJS)
 	$(RM) $(TARGET)
-	
+
 install:
 	$(CP) $(TARGET) $(DEST_$(ARCH))

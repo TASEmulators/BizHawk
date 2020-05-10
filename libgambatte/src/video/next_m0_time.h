@@ -6,14 +6,16 @@
 namespace gambatte {
 
 class NextM0Time {
-	unsigned predictedNextM0Time_;
-	
 public:
 	NextM0Time() : predictedNextM0Time_(0) {}
-	void predictNextM0Time(const class PPU &v);
+	void predictNextM0Time(class PPU const &v);
 	void invalidatePredictedNextM0Time() { predictedNextM0Time_ = 0; }
-	unsigned predictedNextM0Time() const { return predictedNextM0Time_; }
+	unsigned long predictedNextM0Time() const { return predictedNextM0Time_; }
 
+private:
+	unsigned long predictedNextM0Time_;
+
+public:
 	template<bool isReader>void SyncState(NewState *ns);
 };
 

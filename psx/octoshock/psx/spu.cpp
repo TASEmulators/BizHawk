@@ -1,19 +1,25 @@
-/* Mednafen - Multi-system Emulator
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+/******************************************************************************/
+/* Mednafen Sony PS1 Emulation Module                                         */
+/******************************************************************************/
+/* spu.cpp:
+**  Copyright (C) 2011-2016 Mednafen Team
+**
+** This program is free software; you can redistribute it and/or
+** modify it under the terms of the GNU General Public License
+** as published by the Free Software Foundation; either version 2
+** of the License, or (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software Foundation, Inc.,
+** 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
+
+#pragma GCC optimize ("unroll-loops")
 
 /* TODO:
 	Note to self: Emulating the SPU at more timing accuracy than sample, and emulating the whole SPU RAM write port FIFO thing and hypothetical periodic FIFO commit to
@@ -38,7 +44,12 @@
 	Should shift occur on all stages of ADPCM sample decoding, or only at the end?
 
 	On the real thing, there's some kind of weirdness with ADSR when you voice on when attack_rate(raw) = 0x7F; the envelope level register is repeatedly
-	reset to 0, which you can see by manual writes to the envelope level register.  Normally in the attack phase when attack_rate = 0x7F, enveloping is 		effectively stuck/paused such that the value you write is sticky and won't be replaced or reset.  Note that after you voice on, you can write a new 		attack_rate < 0x7F, and enveloping will work "normally" again shortly afterwards.  You can even write an attack_rate of 0x7F at that point to pause 		enveloping 		clocking.  I doubt any games rely on this, but it's something to keep in mind if we ever need greater insight as to how the SPU 	functions at a low-level in 		order to emulate it at cycle granularity rather than sample granularity, and it may not be a bad idea to 		investigate this oddity further and emulate it in 		the future regardless.
+	reset to 0, which you can see by manual writes to the envelope level register.  Normally in the attack phase when attack_rate = 0x7F, enveloping is
+	effectively stuck/paused such that the value you write is sticky and won't be replaced or reset.  Note that after you voice on, you can write a new
+	attack_rate < 0x7F, and enveloping will work "normally" again shortly afterwards.  You can even write an attack_rate of 0x7F at that point to pause
+	enveloping clocking.  I doubt any games rely on this, but it's something to keep in mind if we ever need greater insight as to how the SPU functions
+	at a low-level in order to emulate it at cycle granularity rather than sample granularity, and it may not be a bad idea to investigate this oddity
+	further and emulate it in the future regardless.
 
 	Voice 1 and 3 waveform output writes to SPURAM might not be correct(noted due to problems reading this area of SPU RAM on the real thing
 	based on my expectations of how this should work).
@@ -383,7 +394,7 @@ void PS_SPU::RunDecoder(SPU_Voice *voice)
     }
     else
     {
-     if(voice->LoopAddr != voice->CurAddr)
+     if((voice->LoopAddr ^ voice->CurAddr) & ~0x7)
      {
       PSX_DBG(PSX_DBG_FLOOD, "[SPU] Ignore: LoopAddr=0x%08x, SampLA=0x%08x\n", voice->LoopAddr, voice->CurAddr);
      }
@@ -465,7 +476,7 @@ void PS_SPU::CacheEnvelope(SPU_Voice *voice)
  ADSR->SustainLevel = (Sl + 1) << 11;
 }
 
-void PS_SPU::ResetEnvelope(SPU_Voice *voice)
+INLINE void PS_SPU::ResetEnvelope(SPU_Voice *voice)
 {
  SPU_ADSR *ADSR = &voice->ADSR;
 
@@ -474,7 +485,7 @@ void PS_SPU::ResetEnvelope(SPU_Voice *voice)
  ADSR->Phase = ADSR_ATTACK;
 }
 
-void PS_SPU::ReleaseEnvelope(SPU_Voice *voice)
+INLINE void PS_SPU::ReleaseEnvelope(SPU_Voice *voice)
 {
  SPU_ADSR *ADSR = &voice->ADSR;
 
@@ -483,7 +494,7 @@ void PS_SPU::ReleaseEnvelope(SPU_Voice *voice)
 }
 
 
-void PS_SPU::RunEnvelope(SPU_Voice *voice)
+INLINE void PS_SPU::RunEnvelope(SPU_Voice *voice)
 {
  SPU_ADSR *ADSR = &voice->ADSR;
  int increment;
@@ -611,7 +622,7 @@ int32 PS_SPU::UpdateFromCDC(int32 clocks)
   sample_clocks++;
  }
 
-while(sample_clocks > 0)
+ while(sample_clocks > 0)
  {
   // xxx[0] = left, xxx[1] = right
 
@@ -669,6 +680,11 @@ while(sample_clocks > 0)
 
    //PSX_WARNING("[SPU] Voice %d CurPhase=%08x, pitch=%04x, CurAddr=%08x", voice_num, voice->CurPhase, voice->Pitch, voice->CurAddr);
 
+   if(voice->DecodePlayDelay)
+   {
+    voice->IgnoreSampLA = false;
+   }
+
    //
    // Decode new samples if necessary.
    //
@@ -714,7 +730,7 @@ while(sample_clocks > 0)
    {
     accum_fv[0] += l;
     accum_fv[1] += r;
-	 }
+   }
 
    // Run sweep
    for(int lr = 0; lr < 2; lr++)
@@ -756,7 +772,26 @@ while(sample_clocks > 0)
    {
     if(voice->ADSR.Phase != ADSR_RELEASE)
     {
-     ReleaseEnvelope(voice);
+     // TODO/FIXME:
+     //  To fix all the missing notes in "Dragon Ball GT: Final Bout" music, !voice->DecodePlayDelay instead of
+     //  voice->DecodePlayDelay < 3 is necessary, but that would cause the length of time for which the voice off is
+     //  effectively ignored to be too long by about half a sample(rough test measurement).  That, combined with current
+     //  CPU and DMA emulation timing inaccuracies(execution generally too fast), creates a significant risk of regressions
+     //  in other games, so be very conservative for now.
+     //
+     //  Also, voice on should be ignored during the delay as well, but comprehensive tests are needed before implementing that
+     //  due to some effects that appear to occur repeatedly during the delay on a PS1 but are currently only emulated as
+     //  performed when the voice on is processed(e.g. curaddr = startaddr).
+     //
+     if(voice->DecodePlayDelay < 3)
+     {
+      if(voice->DecodePlayDelay)
+       PSX_DBG(PSX_DBG_WARNING, "[SPU] Voice %u off maybe should be ignored, but isn't due to current emulation code limitations; dpd=%u\n", voice_num, voice->DecodePlayDelay);
+
+      ReleaseEnvelope(voice);
+     }
+     else
+      PSX_DBG(PSX_DBG_WARNING, "[SPU] Voice %u off ignored.\n", voice_num);
     }
    }
 
@@ -953,6 +988,11 @@ void PS_SPU::Write(pscpu_timestamp_t timestamp, uint32 A, uint16 V)
 
    case 0x0E: voice->LoopAddr = (V << 2) & 0x3FFFF;
 	      voice->IgnoreSampLA = true;
+
+	      if(voice->DecodePlayDelay || (VoiceOn & (1U << (voice - Voices))))
+	      {
+	       PSX_WARNING("[SPU] Loop address for voice %u written during voice on delay.", (unsigned)(voice - Voices));
+	      }
 	      //if((voice - Voices) == 22)
 	      //{
 	      // SPUIRQ_DBG("Manual loop address setting for voice %d: %04x", (int)(voice - Voices), V);
@@ -1061,16 +1101,16 @@ void PS_SPU::Write(pscpu_timestamp_t timestamp, uint32 A, uint16 V)
    case 0x2C: PSX_WARNING("[SPU] Global reg 0x2c set: 0x%04x", V);
 	      break;
 
-   case 0x30: CDVol[0] = V;
+   case 0x30: CDVol[0] = (int16)V;
 	      break;
 
-   case 0x32: CDVol[1] = V;
+   case 0x32: CDVol[1] = (int16)V;
 	      break;
 
-   case 0x34: ExternVol[0] = V;
+   case 0x34: ExternVol[0] = (int16)V;
 	      break;
 
-   case 0x36: ExternVol[1] = V;
+   case 0x36: ExternVol[1] = (int16)V;
 	      break;
 
    case 0x38:
@@ -1233,15 +1273,30 @@ SYNCFUNC(PS_SPU)
 
   NSS(SPURAM);
 
-	//if(isReader)
-	//{
-		//there was more weird crap here about controlling the range of variables. just sanity checks, I guess? to prevent crashes? no thanks, id rather have crashes alert me to nondeterminisms.
-		//and another thing like this, which I think makes no sense. I really need to test these.
-		IRQ_Assert(IRQ_SPU, IRQAsserted);
-	//}
+	if(isReader)
+	{
+		for(unsigned i = 0; i < 24; i++)
+		{
+			Voices[i].DecodeReadPos &= 0x1F;
+			Voices[i].DecodeWritePos &= 0x1F;
+			Voices[i].CurAddr &= 0x3FFFF;
+			Voices[i].StartAddr &= 0x3FFFF;
+			Voices[i].LoopAddr &= 0x3FFFF;
+		}
 
-		//sanity check this
-		  //RvbResPos &= 0x3F;
+		if(clock_divider <= 0 || clock_divider > 768)
+			clock_divider = 768;
+
+		RWAddr &= 0x3FFFF;
+		CWA &= 0x1FF;
+
+		ReverbWA &= 0x3FFFF;
+		ReverbCur &= 0x3FFFF;
+
+		RvbResPos &= 0x3F;
+
+		IRQ_Assert(IRQ_SPU, IRQAsserted);
+	}
 }
 
 uint16 PS_SPU::PeekSPURAM(uint32 address)

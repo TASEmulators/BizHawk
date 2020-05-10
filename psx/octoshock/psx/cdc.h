@@ -1,3 +1,24 @@
+/******************************************************************************/
+/* Mednafen Sony PS1 Emulation Module                                         */
+/******************************************************************************/
+/* cdc.h:
+**  Copyright (C) 2011-2018 Mednafen Team
+**
+** This program is free software; you can redistribute it and/or
+** modify it under the terms of the GNU General Public License
+** as published by the Free Software Foundation; either version 2
+** of the License, or (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software Foundation, Inc.,
+** 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
+
 #ifndef __MDFN_PSX_CDC_H
 #define __MDFN_PSX_CDC_H
 
@@ -13,17 +34,17 @@ namespace MDFN_IEN_PSX
 struct CD_Audio_Buffer
 {
  int16 Samples[2][0x1000];	// [0][...] = l, [1][...] = r
- int32 Size;
+ uint32 Size;
  uint32 Freq;
- int32 ReadPos;
+ uint32 ReadPos;
 };
 
 class PS_CDC
 {
  public:
 
- PS_CDC();
- ~PS_CDC();
+ PS_CDC() MDFN_COLD;
+ ~PS_CDC() MDFN_COLD;
 
  template<bool isReader>void SyncState(EW::NewState *ns);
 
@@ -31,7 +52,7 @@ class PS_CDC
  void SetDisc(ShockDiscRef *disc, const char disc_id[4], bool poke);
  void CloseTray(bool poke);
 
- void Power(void);
+ void Power(void) MDFN_COLD;
  void ResetTS(void);
 
  int32 CalcNextEvent(void);	// Returns in master cycles to next event.
@@ -49,7 +70,6 @@ class PS_CDC
  void SetLEC(bool enable) { EnableLEC = enable; }
 
  private:
- CDIF *Cur_CDIF;
  ShockDiscRef* Cur_disc;
  bool EnableLEC;
  bool TrayOpen;
@@ -102,7 +122,7 @@ class PS_CDC
  uint8 SectorPipe_Pos;
  uint8 SectorPipe_In;
 
- //uint8 SubQBuf[0xC];
+ uint8 SubQBuf[0xC];
  uint8 SubQBuf_Safe[0xC];
  bool SubQChecksumOK;
 
@@ -169,10 +189,10 @@ class PS_CDC
   DS_STOPPED = 0,
   DS_SEEKING,
   DS_SEEKING_LOGICAL,
-  DS_PLAY_SEEKING,
+  DS_SEEKING_LOGICAL2,
   DS_PLAYING,
   DS_READING,
-  DS_RESETTING
+  //DS_RESETTING
  };
  int DriveStatus;
  int StatusAfterSeek;
@@ -183,6 +203,8 @@ class PS_CDC
  int32 PlayTrackMatch;
 
  int32 PSRCounter;
+
+ bool HoldLogicalPos;
 
  int32 CurSector;
  uint32 SectorsRead;	// Reset to 0 on Read*/Play command start; used in the rough simulation of PS1 SetLoc->Read->Pause->Read behavior.
@@ -201,6 +223,7 @@ class PS_CDC
 
  int32 SeekTarget;
  uint32 SeekRetryCounter;
+ int SeekFinished;
 
  pscpu_timestamp_t lastts;
 
@@ -214,7 +237,6 @@ class PS_CDC
  uint8 MakeStatus(bool cmd_error = false);
  bool DecodeSubQ(uint8 *subpw);
  bool CommandCheckDiscPresent(void);
- void DMForceStop();
 
  void EnbufferizeCDDASector(const uint8 *buf);
  bool XA_Test(const uint8 *sdata);
@@ -225,6 +247,7 @@ class PS_CDC
  uint8 xa_cur_chan;
 
  uint8 ReportLastF;
+ int32 ReportStartupDelay;
 
  void HandlePlayRead(void);
 
@@ -240,9 +263,9 @@ class PS_CDC
  void PreSeekHack(int32 target);
  void ReadBase(void);
 
- static CDC_CTEntry Commands[0x20];
+ static const CDC_CTEntry Commands[0x20];
 
- int32 Command_GetStat(const int arg_count, const uint8 *args);
+ int32 Command_Nop(const int arg_count, const uint8 *args);
  int32 Command_Setloc(const int arg_count, const uint8 *args);
  int32 Command_Play(const int arg_count, const uint8 *args);
  int32 Command_Forward(const int arg_count, const uint8 *args);

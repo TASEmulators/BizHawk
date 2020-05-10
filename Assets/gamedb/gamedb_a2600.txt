@@ -50,9 +50,9 @@ sha1:a65f487740069640952803218b70580b2fb724b7		A-Team, The (Atari) (Prototype) (
 sha1:821cffe5f5940b2951f280d07d2691e140f54ad2		A-Team, The (Atari) (Prototype) (PAL-60) [!]	A26		m=F8;NTSC=true
 sha1:53413577afe7def1d390e3892c45822405513c07		A-Team, The (Atari) (Prototype) [!]	A26		m=F8;NTSC=true
 sha1:3607f46475f4b1b8989f7327f90ca53a4ac0e9fe		A-VCS-tec Challenge (beta 5) (PD)	A26		m=F8;NTSC=true
-sha1:d7c62df8300a68b21ce672cfaa4d0f2f4b3d0ce1		Acid Drop (1992) (Salu) (PAL) [!]	A26		m=F6;PAL=true
-sha1:66216ed98295f3fde35a0cc9398b4f2fc79f2375		Acid Drop (1992) (Salu) (PAL) [b1]	A26		m=F8;PAL=true
-sha1:2ad5e47e360842bb5f9c23bbe2c19866d890f427		Acid Drop (NTSC Conversion) (TJ)	A26		m=F8;NTSC=true
+sha1:d7c62df8300a68b21ce672cfaa4d0f2f4b3d0ce1		Acid Drop (1992) (Salu) (PAL) [!]	A26		SP_RESET=true;m=F6;PAL=true
+sha1:66216ed98295f3fde35a0cc9398b4f2fc79f2375		Acid Drop (1992) (Salu) (PAL) [b1]	A26		SP_RESET=true;m=F8;PAL=true
+sha1:2ad5e47e360842bb5f9c23bbe2c19866d890f427		Acid Drop (NTSC Conversion) (TJ)	A26		SP_RESET=true;m=F8;NTSC=true
 sha1:9e6fb047ee9fa0a454ca23673ed9693430032dc6		Action Force (1983) (Parker Bros) (PAL) [!]	A26		m=4K;PAL=true
 sha1:bfcc35feee3713f5028122844d027c88a84772b6		2 Pak Special Red - Motocross,Boom Bang (1990) (PAL) [!]	A26		m=F6;PAL=true
 sha1:8a503416ca6f2404bc52382e337f31238bba9534		3-D Corridor Demo 2 (29-03-2003) (MP)	A26		m=4K;NTSC=true
@@ -68,13 +68,13 @@ sha1:317a7b8693af44095c23437253a32cc748824ccf		Adventure (Color Scrolling) [h1]	
 sha1:4ffe36c5113305714e27c72d7f3abecc9b08a630		Adventure (New Graphics) [h1]	A26		m=4K;NTSC=true
 sha1:0b0875ad1bd494c9dd8de4ff0a06938e699f60d5		Adventure 34 by Kurt Howe (Adventure Hack)	A26		m=4K;NTSC=true
 sha1:8501444b12f7f9e2103cd2bcf0c8d3f5b7536569		Adventure II (Adventure Hack)	A26		m=4K;NTSC=true
-sha1:03a495c7bfa0671e24aa4d9460d232731f68cb43		Adventures of Tron (1983) (Mattel)	A26		m=4K;NTSC=true
+sha1:03a495c7bfa0671e24aa4d9460d232731f68cb43		Adventures of Tron (1983) (Mattel)	A26		SP_RESET=true;m=4K;NTSC=true
 sha1:6e420544bf91f603639188824a2b570738bb7e02		Adventures on GX-12 (Telegames) (PAL) [!]	A26		m=4K;PAL=true
 sha1:3b02e7dacb418c44d0d3dc77d60a9663b90b0fbc		Air Raid (Men-A-Vision)	A26		m=4K;NTSC=true
-sha1:e65a0c6c5a1f9f05ebcfaaa7b2c9ee6625bf2d83		Air Raiders (1982) (Mattel) (PAL) [p1][!]	A26		m=4K;PAL=true
-sha1:29f5c73d1fe806a4284547274dd73f9972a7ed70		Air Raiders (1982) (Mattel) [!]	A26		m=4K;NTSC=true
-sha1:a9a51405b521ae0b465f521fa098e8b3aedd018b		Air Raiders (1982) (Mattel) [a1][!]	A26		m=4K;NTSC=true
-sha1:39a98b42f0670dfe6a842645f09f24583ae8ee60		Air Raiders (1982) (Mattel) [h1]	A26		m=4K;NTSC=true
+sha1:e65a0c6c5a1f9f05ebcfaaa7b2c9ee6625bf2d83		Air Raiders (1982) (Mattel) (PAL) [p1][!]	A26		SP_RESET=true;m=4K;PAL=true
+sha1:29f5c73d1fe806a4284547274dd73f9972a7ed70		Air Raiders (1982) (Mattel) [!]	A26		SP_RESET=true;m=4K;NTSC=true
+sha1:a9a51405b521ae0b465f521fa098e8b3aedd018b		Air Raiders (1982) (Mattel) [a1][!]	A26		SP_RESET=true;m=4K;NTSC=true
+sha1:39a98b42f0670dfe6a842645f09f24583ae8ee60		Air Raiders (1982) (Mattel) [h1]	A26		SP_RESET=true;m=4K;NTSC=true
 sha1:b96c7a509bf610f61f82377bfd506db3dba2b423		Air-Sea Battle (1977) (Atari) (PAL) [!]	A26		m=2K;PAL=true
 sha1:a746fdc82b336a9d499bf17f50b41e0193ba595e		Air-Sea Battle (1977) (Atari) [!]	A26		m=2K;NTSC=true
 sha1:d3897fc60585e420ae816a2db909400f6cbadd88		Air-Sea Battle (1977) (Atari) [o1]	A26		m=2K;NTSC=true
@@ -323,9 +323,9 @@ sha1:67387d0d3d48a44800c44860bf15339a81f41aa9		Bugs (1982) (Data Age) [!]	A26		m
 sha1:a8aedea627c67c38032cdde441fb98dad226916a		Bugs (1983) (Gameworld) (PAL) [!]	A26		m=4K;PAL=true
 sha1:9c0e13af336a986c271fe828fafdca250afba647		Bugs Bunny (Atari) (Prototype) [!]	A26		m=F8;NTSC=true
 sha1:13534da5c382ed20d070ffe93f35c4c11b36e1bc		Bullet Demo (20-12-2002) (CT)	A26		m=4K;NTSC=true
-sha1:5614c32e76c8b272c38c16720ebbb1818d3d3103		Bump 'N' Jump (1983) (Mattel) [b1]	A26		m=F6;NTSC=true
-sha1:1819ef408c1216c83dcfeceec28d13f6ea5ca477		Bump 'N' Jump (1983) (Mattel)	A26		m=E7;NTSC=true
-sha1:35bc4048f58bb170313872a0bce44fb1ca3217cc		Bump 'N' Jump (Telegames) (PAL) [!]	A26		m=F8;PAL=true
+sha1:5614c32e76c8b272c38c16720ebbb1818d3d3103		Bump 'N' Jump (1983) (Mattel) [b1]	A26		SP_RESET=true;m=F6;NTSC=true
+sha1:1819ef408c1216c83dcfeceec28d13f6ea5ca477		Bump 'N' Jump (1983) (Mattel)	A26		SP_RESET=true;m=E7;NTSC=true
+sha1:35bc4048f58bb170313872a0bce44fb1ca3217cc		Bump 'N' Jump (Telegames) (PAL) [!]	A26		SP_RESET=true;m=F8;PAL=true
 sha1:ad48f4952e867a2b97900d965b69f50fddf8ba2d		Bumper Bash (1983) (Spectravideo) (PAL) [!]	A26		m=4K;PAL=true
 sha1:6c199782c79686dc0cbce6d5fe805f276a86a3f5		Bumper Bash (1983) (Spectravideo)	A26		m=4K;NTSC=true
 sha1:49e01b8048ae344cb65838f6b1c1de0e1f416f29		Burgertime (1982) (Mattel)	A26		SP_RESET=true;m=E7;NTSC=true
@@ -855,8 +855,8 @@ sha1:6b9e591cc53844795725fc66c564f0364d1fbe40		Frogger II - Threedeep! (1983) (P
 sha1:bce92de22fc8950f0eebb643d96fe9fa5dba2b72		Frogger II - Threedeep! (1984) (Parker Bros) (PAL) [!]	A26		m=E0;PAL=true
 sha1:5215cf9051e833482e115d16ff90fee5f01c3e84		Frogger Preview (1982) (Starpath) [a1]	A26		m=AR;NTSC=true
 sha1:2edb64be1bb6f4215f520ec2f487b19f29724b8d		Frogger Preview (1982) (Starpath)	A26		m=AR;NTSC=true
-sha1:7682b4b6d45865b7eec1244e5d76f0f2efdb17e7		Frogs and Flies (1982) (Mattel) (PAL) [p1][!]	A26		m=4K;PAL=true
-sha1:f344d5a8dc895c5a2ae0288f3c6cb66650e49167		Frogs and Flies (1982) (Mattel) [!]	A26		m=4K;NTSC=true
+sha1:7682b4b6d45865b7eec1244e5d76f0f2efdb17e7		Frogs and Flies (1982) (Mattel) (PAL) [p1][!]	A26		SP_RESET=true;m=4K;PAL=true
+sha1:f344d5a8dc895c5a2ae0288f3c6cb66650e49167		Frogs and Flies (1982) (Mattel) [!]	A26		SP_RESET=true;m=4K;NTSC=true
 sha1:cf32bfcd7f2c3b7d2a6ad2f298aea2dfad8242e7		Front Line (1982) (Coleco)	A26		m=F8;NTSC=true
 sha1:58a6f82434ccf49ca420596809ce9545373845a2		Frostbite (1983) (Activision) (PAL) [!]	A26		m=4K;PAL=true
 sha1:8ad03667bbf73d3c7760cb82f2c4442f8745483c		Frostbite (1983) (Activision) (PAL) [p1][!]	A26		m=4K;PAL=true
@@ -1256,9 +1256,9 @@ sha1:128c3a98d78b043edabe8964cf7998955342fa2d		Kiss Meets Pacman (Cody Pittman) 
 sha1:45623a1c8fb5074de98c37f005edd5b1d0937dae		Klax (1990) (Atari) (PAL) [!]	A26		m=F6SC;PAL=true
 sha1:3162259c6dbfbb57a2ea41d849155702151ee39b		Klax (1990) (Atari)	A26		m=F6SC;NTSC=true
 sha1:759597d1d779cfdfd7aa30fd28a59acc58ca2533		Knight on the Town (1982) (Playaround)	A26		m=4K;NTSC=true
-sha1:2f550743e237f6dc8c75c389a01b02e9a396fdad		Kool Aid Man (1982) (Mattel)	A26		m=4K;NTSC=true
-sha1:f5c193ed00bf557ddd5ab698d92a7483b89c6519		Kool Aid Man (Fixed) (15-11-2002) (CT)	A26		m=4K;NTSC=true
-sha1:38f55fc76bec14eb661a7b594301c271aa5f5f3b		Kool Aid Man (PAL Conversion) (16-11-2002) (Fabrizio Zavagli)	A26		m=4K;NTSC=true
+sha1:2f550743e237f6dc8c75c389a01b02e9a396fdad		Kool Aid Man (1982) (Mattel)	A26		SP_RESET=true;m=4K;NTSC=true
+sha1:f5c193ed00bf557ddd5ab698d92a7483b89c6519		Kool Aid Man (Fixed) (15-11-2002) (CT)	A26		SP_RESET=true;m=4K;NTSC=true
+sha1:38f55fc76bec14eb661a7b594301c271aa5f5f3b		Kool Aid Man (PAL Conversion) (16-11-2002) (Fabrizio Zavagli)	A26		SP_RESET=true;m=4K;NTSC=true
 sha1:82e64366795b011c2a2f1755bf899cc2c0617fe8		Krieg Der Sterne (Atlantis-Ariola) (PAL) [!]	A26		m=4K;PAL=true
 sha1:4bdf1cf73316bdb0002606facf11b6ddcb287207		Krull (1983) (Atari) [!]	A26		m=F8;NTSC=true
 sha1:07a1c1b1a2297c4edde0e16f610b5ec23c775217		Krull (CCE)	A26		m=F8;NTSC=true
@@ -1305,9 +1305,9 @@ sha1:4f3e51f68c10d2fa7c4b9764b0cb81fdded0fde4		Lilly Adventure (Starsoft) (NTSC 
 sha1:63f4776aa4c35d124001918b733cdb4d46dfbe9b		Lilly Adventure (Starsoft) (PAL) [!]	A26		m=4K;PAL=true
 sha1:5425578808363ee72dbba6195533549679137777		Lines Demo (Eckhard Stolberg) (PAL) (PD)	A26		m=2K;PAL=true
 sha1:fe208ad775cbf9523e7a99632b9f10f2c9c7aa87		Lochjaw (1982) (Apollo)	A26		m=4K;NTSC=true
-sha1:119171935ed9ea877de4f2a68aee31cd55bc697d		Lock 'N' Chase (1982) (Mattel) (PAL) [p1][!]	A26		m=4K;PAL=true
-sha1:fc3d75d46d917457aa1701bf47844817d0ba96c3		Lock 'N' Chase (1982) (Mattel) [!]	A26		m=4K;NTSC=true
-sha1:075ec3678ceabbee46a7d576fdd199a4ab908cc0		Lock 'N' Chase (1982) (Telegames) (PAL) [!]	A26		m=4K;PAL=true
+sha1:119171935ed9ea877de4f2a68aee31cd55bc697d		Lock 'N' Chase (1982) (Mattel) (PAL) [p1][!]	A26		SP_RESET=true;m=4K;PAL=true
+sha1:fc3d75d46d917457aa1701bf47844817d0ba96c3		Lock 'N' Chase (1982) (Mattel) [!]	A26		SP_RESET=true;m=4K;NTSC=true
+sha1:075ec3678ceabbee46a7d576fdd199a4ab908cc0		Lock 'N' Chase (1982) (Telegames) (PAL) [!]	A26		SP_RESET=true;m=4K;PAL=true
 sha1:ef02fdb94ac092247bfcd5f556e01a68c06a4832		Lord of The Rings (1983) (Parker Bros) (Prototype)	A26		m=E0;NTSC=true
 sha1:43575ed97f8a585c5bae6fb1a7b2133c87b4d256		Lord of the Rings - Fellowship of the Ring by Adam Thornton (Dark Mage Hack) (PD) [a1]	A26		m=4K;NTSC=true
 sha1:721514e5c31c8f2b30b4a2bf2cda69a810cac75b		Lord of the Rings - Fellowship of the Ring by Adam Thornton (Dark Mage Hack) (PD)	A26		m=4K;NTSC=true
@@ -1359,8 +1359,8 @@ sha1:6ef010513e01520560616994cbe3f10995490996		Max3 (2001) (Maxime Beauvais) (PD
 sha1:a2b13017d759346174e3d8dd53b6347222d3b85d		Maze (AKA Slot Racers) (1978) (Sears) [!]	A26		m=2K;NTSC=true
 sha1:05f8d0e9f9bec192dfe5947965039817c8c390df		Maze (AKA Slot Racers) (1978) (Sears) [o1]	A26		m=2K;NTSC=true
 sha1:365a3af336d71f8f80345de9fcebb100f5141182		Maze 003 Demo (PD)	A26		m=4K;NTSC=true
-sha1:4a255c1d277f9ceb98dfe61ec2c6f7537ca4e7bf		Maze Craze (1978) (Atari) (PAL) [!]	A26		m=4K;PAL=true
-sha1:aba25089d87cd6fee8d206b880baa5d938aae255		Maze Craze (1978) (Atari)	A26		m=4K;NTSC=true
+sha1:4a255c1d277f9ceb98dfe61ec2c6f7537ca4e7bf		Maze Craze (1978) (Atari) (PAL) [!]	A26		SP_FRAME=true;m=4K;PAL=true
+sha1:aba25089d87cd6fee8d206b880baa5d938aae255		Maze Craze (1978) (Atari)	A26		SP_FRAME=true;m=4K;NTSC=true
 sha1:43c309177fde4adf59c99ba5d3865df2a588a79e		Maze Demo 1 (PD)	A26		m=4K;NTSC=true
 sha1:648e91958afdf264e8e6b45521ecb542fb340586		Maze Demo 2 (PD)	A26		m=4K;NTSC=true
 sha1:0103b35b1aef6b10c1c0a44b213ebf30af708df6		McDonald's (1983) (Parker Bros) (Prototype) [!]	A26		m=4K;NTSC=true
@@ -1559,9 +1559,9 @@ sha1:03eb4a3b3db04c1782e1a91d27ea515163d258fb		Oink! (CCE)	A26		m=4K;NTSC=true
 sha1:7feef3965706bc64f0f0a940149b2523e0735ce6		Okie Dokie (4K) (PD)	A26		m=4K;NTSC=true
 sha1:7bd1cbddefcf3bd24da570be015234d0c444a7e5		Okie Dokie (Older) (PD)	A26		m=2K;NTSC=true
 sha1:8a47b1930971f271a935c50d423e152aaea6ac59		Okie Dokie (PD)	A26		m=2K;NTSC=true
-sha1:ca4f26716120d2e4ba531c2ea50b570b9980756e		Omega Race (1983) (CBS Electronics) [o1]	A26		m=F6SC;NTSC=true
-sha1:dcaab259e7617c7ac7d349893451896a9ca0e292		Omega Race (1983) (CBS Electronics)	A26		m=FA;NTSC=true
-sha1:c7a9ecad6c1a82048de54d33b231abd89fb08bd8		Omega Race JS (TJ)	A26		m=FA;NTSC=true
+sha1:ca4f26716120d2e4ba531c2ea50b570b9980756e		Omega Race (1983) (CBS Electronics) [o1]	A26		SP_RESET=true;m=F6SC;NTSC=true
+sha1:dcaab259e7617c7ac7d349893451896a9ca0e292		Omega Race (1983) (CBS Electronics)	A26		SP_RESET=true;m=FA;NTSC=true
+sha1:c7a9ecad6c1a82048de54d33b231abd89fb08bd8		Omega Race JS (TJ)	A26		SP_RESET=true;m=FA;NTSC=true
 sha1:fbf180f8f35178099244bc1ae341ccff87838907		One Blue Bar Demo (PD)	A26		m=4K;NTSC=true
 sha1:e52ca6e73c931ef71c63e164704fb398086e4308		One On One by Angelino (Basketball Hack)	A26		m=2K;NTSC=true
 sha1:98007f26356b4032a2ae4e9fddea5a38a988eb13		Oscar's Trash Race (1983) (Atari) (PAL) [!]	A26		m=F8;PAL=true
@@ -2302,8 +2302,8 @@ sha1:7c2a2ddbdef639ed2985ce66ae717b2285a94ae0		Star Raiders (1982) (Atari) (PAL)
 sha1:e10cce1a438c82bd499e1eb31a3f07d7254198f5		Star Raiders (1982) (Atari)	A26		m=F8;NTSC=true
 sha1:d2b6290afb81bad126321d923d222c26e2de5fa8		Star Ship - Outer Space (1977) [o1]	A26		m=2K;NTSC=true
 sha1:878e78ed46e29c44949d0904a2198826e412ed81		Star Ship - Outer Space (1977)	A26		m=2K;NTSC=true
-sha1:de05d1ca8ad1e7a85df3faf25b1aa90b159afded		Star Strike (1982) (Mattel)	A26		m=4K;NTSC=true
-sha1:a0e29405a92773bf3baa2845788a8add8f3bc0b1		Star Strike (Telegames) (PAL) [!]	A26		m=4K;PAL=true
+sha1:de05d1ca8ad1e7a85df3faf25b1aa90b159afded		Star Strike (1982) (Mattel)	A26		SP_RESET=true;m=4K;NTSC=true
+sha1:a0e29405a92773bf3baa2845788a8add8f3bc0b1		Star Strike (Telegames) (PAL) [!]	A26		SP_RESET=true;m=4K;PAL=true
 sha1:667a528e8cf3fd7f533cf67993f48bcc3c100e0d		Star Trek - Strategic Operations Simulator (1983) (Sega) (PAL) [!]	A26		m=F8;PAL=true
 sha1:61a3ebbffa0bfb761295c66e189b62915f4818d9		Star Trek - Strategic Operations Simulator (1983) (Sega)	A26		m=F8;NTSC=true
 sha1:417bb89e1117413321ffba48a17e005b2687680b		Star Voyager (1982) (CCE) [!]	A26		m=4K;NTSC=true
@@ -2554,8 +2554,8 @@ sha1:ccf422636180f24becaa8af0cc391f95e599a330		Tunnel Demo (28-03-2003) (AD)	A26
 sha1:0f6552a0afe40cc1c448313569db8c9a8cda6d21		Tunnel Demo (Cycling Colours 2) (29-03-2003) (AD)	A26		m=4K;NTSC=true
 sha1:8dad50a3918c7462811c2def42f289cd123822af		Tunnel Demo (Red Spiral) (30-03-2003) (AD)	A26		m=4K;NTSC=true
 sha1:4df103678f9c88b017e64f1e14e741fc6e15340c		Tunnel Demo 2 (27-03-2003) (CT)	A26		m=4K;NTSC=true
-sha1:fc1a0b58765a7dcbd8e33562e1074ddd9e0ac624		Tunnel Runner (1983) (CBS Electronics) [!]	A26		m=FA;NTSC=true
-sha1:460094d7689ac0c4435b72e3e390f4b6f2ef112c		Tunnel Runner (1983) (CBS Electronics) [a1][!]	A26		m=FA;NTSC=true
+sha1:fc1a0b58765a7dcbd8e33562e1074ddd9e0ac624		Tunnel Runner (1983) (CBS Electronics) [!]	A26		SP_RESET=true;m=FA;NTSC=true
+sha1:460094d7689ac0c4435b72e3e390f4b6f2ef112c		Tunnel Runner (1983) (CBS Electronics) [a1][!]	A26		SP_RESET=true;m=FA;NTSC=true
 sha1:0921fab66ce4b712701326ce105e1a84ac47b497		Turbo (Coleco) Prototype Fake v0.1 (TJ)	A26		m=2K;NTSC=true
 sha1:b594a9acedd4734070776bf69d0f08abb5c261bf		Turbo WIP (TJ)	A26		m=F8;NTSC=true
 sha1:1162fe46977f01b4d25efab813e0d05ec90aeadc		Turmoil (1982) (20th Century Fox) [!]	A26		m=4K;NTSC=true
@@ -2596,7 +2596,7 @@ sha1:082a7bc7d0fdbf307501cd146e18ed3d03b9ec0f		Vertical Ship Demo 1 (PD)	A26		m=
 sha1:1d641abfb95e3b4b7abaad42a8760c8c9ce993a6		Vertically Scrolling Playfield (02-02-2003) (Aaron Bergstrom)	A26		m=4K;NTSC=true
 sha1:24c1c6e1a495137bec53818c2cd8bd83c8336d21		Video Checkers (1978) (Atari) (PAL) [!]	A26		m=4K;PAL=true
 sha1:babae88a832b76d8c5af6ea63b8f10a0da5bb992		Video Checkers (1978) (Atari)	A26		m=4K;NTSC=true
-sha1:043ef523e4fcb9fc2fc2fda21f15671bf8620fc3		Video Chess (1978) (Atari)	A26		m=4K;NTSC=true
+sha1:043ef523e4fcb9fc2fc2fda21f15671bf8620fc3		Video Chess (1978) (Atari)	A26		SP_FRAME=true;m=4K;NTSC=true
 sha1:3f2ad3666eb713b20484e3677d8e1cac8fbd323e		Video Cube (CCE)	A26		m=4K;NTSC=true
 sha1:1554b146d076b64776bf49136cea01f60eeba4c1		Video Jogger (Exus) (PAL)	A26		m=4K;PAL=true
 sha1:19d4f52d399c2ab70e411be51b715341db7a41bf		Video Life (CommaVid) [h1]	A26		m=CV;NTSC=true
@@ -2698,4 +2698,10 @@ sha1:9CD8217DCCBE60F9A25A930D614EE5384F432A83		Boulder Dash (2005) (Andrew Davie
 sha1:00CCF622E7BA4D0A39DCBABAB771CE815B0FB8FE		Boulder Dash (2005) (Andrew Davie) (WIP) (PAL	A26		m=3E;NTSC=true
 sha1:650DA2339D41D1D2F180A6CAFE8DC311AC588ACD		Boulder Dash Intro Tune (2005) (Erik Ehrling)	A26		m=4K;NTSC=true
 sha1:F28E52921646A18467577370808454F494C15EFE		0840 EconoBanking	A26		m=0840;NTSC=true
-sha1:2A9647E27AB27E6CF82B3BF122EDF212FA34AE86		Halo2600 Final	A26	m=m4K
+sha1:2A9647E27AB27E6CF82B3BF122EDF212FA34AE86		Halo2600 Final	A26	m=4K
+sha1:341BB93E67C21063F3910845D1AF59FEA129FF21		Bang!	A26		m=F4SC
+sha1:62E7A3CE40BE1C29870D892639FBD394977281F5		DHmoveValues(rev2)	A26		m=F6SC
+sha1:FBB0FE0A859BF764D060E264561734B8F7CFC9D7		REF	A26		m=4K;NTSC=true
+sha1:58AA6BBA1D0D26C1287135FC9237B684A984B6BE		Princess Rescue	A26	m=F4;NTSC=true
+sha1:29404640B4579938057969D93A77C9A676AF9965		Crazy Balloon	A26	m=4K;NTSC=true
+

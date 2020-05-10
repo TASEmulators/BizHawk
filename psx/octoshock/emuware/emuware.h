@@ -10,7 +10,10 @@
 #define SIZEOF_INT sizeof(int)
 #define SIZEOF_LONG sizeof(long)
 #define SIZEOF_LONG_LONG sizeof(long long)
-#define SIZEOF_OFF_T sizeof(void*)
+#define SIZEOF_OFF_T sizeof(off_t)
+#define SIZEOF_PTRDIFF_T sizeof(void*)
+#define SIZEOF_SIZE_T sizeof(size_t)
+#define SIZEOF_VOID_P sizeof(void*)
 typedef __int64 s64;
 typedef __int32 s32;
 typedef __int16 s16;
@@ -48,6 +51,8 @@ typedef __uint16_t uint16;
 typedef __uint8_t uint8;
 #endif
 
+#define MDFN_HIDE
+
 
 //#if MDFN_GCC_VERSION >= MDFN_MAKE_GCCV(4,7,0)
 // #define MDFN_ASSUME_ALIGNED(p, align) __builtin_assume_aligned((p), (align))
@@ -72,6 +77,8 @@ typedef __uint8_t uint8;
 
 //#define MDFN_NOWARN_UNUSED __attribute__((unused))
 #define MDFN_NOWARN_UNUSED
+
+#define MDFN_FASTCALL
 
 //#define MDFN_FORMATSTR(a,b,c) __attribute__ ((format (a, b, c)))
 #define MDFN_FORMATSTR(a,b,c)
@@ -132,3 +139,5 @@ char (*BLAHBLAHBLAH( UNALIGNED T (&)[N] ))[N];
 #else
 #define EW_PACKED( ... )  __VA_ARGS__ __attribute__((__packed__))
 #endif
+
+#define MDFN_IS_BIGENDIAN 0
