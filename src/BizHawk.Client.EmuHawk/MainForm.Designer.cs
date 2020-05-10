@@ -254,16 +254,11 @@
 			this.VSServiceSwitchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.BarcodeReaderMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PCESubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.PceControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.PCEGraphicsSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.PceSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator32 = new System.Windows.Forms.ToolStripSeparator();
 			this.PCEBGViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PCEtileViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PceSoundDebuggerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator25 = new System.Windows.Forms.ToolStripSeparator();
-			this.PCEAlwaysPerformSpriteLimitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.PCEAlwaysEqualizeVolumesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.PCEArcadeCardRewindEnableMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SMSSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.SmsSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SmsMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
@@ -2349,34 +2344,22 @@
 			// PCESubMenu
 			// 
 			this.PCESubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.PceControllerSettingsMenuItem,
-			this.PCEGraphicsSettingsMenuItem,
+			this.PceSettingsMenuItem,
 			this.toolStripSeparator32,
 			this.PCEBGViewerMenuItem,
 			this.PCEtileViewerToolStripMenuItem,
-			this.PceSoundDebuggerToolStripMenuItem,
-			this.toolStripSeparator25,
-			this.PCEAlwaysPerformSpriteLimitMenuItem,
-			this.PCEAlwaysEqualizeVolumesMenuItem,
-			this.PCEArcadeCardRewindEnableMenuItem});
+			this.PceSoundDebuggerToolStripMenuItem});
 			this.PCESubMenu.Name = "PCESubMenu";
 			this.PCESubMenu.Size = new System.Drawing.Size(38, 17);
 			this.PCESubMenu.Text = "&PCE";
 			this.PCESubMenu.DropDownOpened += new System.EventHandler(this.PceSubMenu_DropDownOpened);
 			// 
-			// PceControllerSettingsMenuItem
+			// PceSettingsMenuItem
 			// 
-			this.PceControllerSettingsMenuItem.Name = "PceControllerSettingsMenuItem";
-			this.PceControllerSettingsMenuItem.Size = new System.Drawing.Size(240, 22);
-			this.PceControllerSettingsMenuItem.Text = "Controller Settings";
-			this.PceControllerSettingsMenuItem.Click += new System.EventHandler(this.PceControllerSettingsMenuItem_Click);
-			// 
-			// PCEGraphicsSettingsMenuItem
-			// 
-			this.PCEGraphicsSettingsMenuItem.Name = "PCEGraphicsSettingsMenuItem";
-			this.PCEGraphicsSettingsMenuItem.Size = new System.Drawing.Size(240, 22);
-			this.PCEGraphicsSettingsMenuItem.Text = "Graphics Settings";
-			this.PCEGraphicsSettingsMenuItem.Click += new System.EventHandler(this.PceGraphicsSettingsMenuItem_Click);
+			this.PceSettingsMenuItem.Name = "PceSettingsMenuItem";
+			this.PceSettingsMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.PceSettingsMenuItem.Text = "Settings...";
+			this.PceSettingsMenuItem.Click += new System.EventHandler(this.PceSettingsMenuItem_Click);
 			// 
 			// toolStripSeparator32
 			// 
@@ -2403,32 +2386,6 @@
 			this.PceSoundDebuggerToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
 			this.PceSoundDebuggerToolStripMenuItem.Text = "&Sound Debugger";
 			this.PceSoundDebuggerToolStripMenuItem.Click += new System.EventHandler(this.PceSoundDebuggerMenuItem_Click);
-			// 
-			// toolStripSeparator25
-			// 
-			this.toolStripSeparator25.Name = "toolStripSeparator25";
-			this.toolStripSeparator25.Size = new System.Drawing.Size(237, 6);
-			// 
-			// PCEAlwaysPerformSpriteLimitMenuItem
-			// 
-			this.PCEAlwaysPerformSpriteLimitMenuItem.Name = "PCEAlwaysPerformSpriteLimitMenuItem";
-			this.PCEAlwaysPerformSpriteLimitMenuItem.Size = new System.Drawing.Size(240, 22);
-			this.PCEAlwaysPerformSpriteLimitMenuItem.Text = "Always Perform Sprite Limit";
-			this.PCEAlwaysPerformSpriteLimitMenuItem.Click += new System.EventHandler(this.PceAlwaysPerformSpriteLimitMenuItem_Click);
-			// 
-			// PCEAlwaysEqualizeVolumesMenuItem
-			// 
-			this.PCEAlwaysEqualizeVolumesMenuItem.Name = "PCEAlwaysEqualizeVolumesMenuItem";
-			this.PCEAlwaysEqualizeVolumesMenuItem.Size = new System.Drawing.Size(240, 22);
-			this.PCEAlwaysEqualizeVolumesMenuItem.Text = "Always Equalize Volumes (PCE-CD)";
-			this.PCEAlwaysEqualizeVolumesMenuItem.Click += new System.EventHandler(this.PceAlwaysEqualizeVolumesMenuItem_Click);
-			// 
-			// PCEArcadeCardRewindEnableMenuItem
-			// 
-			this.PCEArcadeCardRewindEnableMenuItem.Name = "PCEArcadeCardRewindEnableMenuItem";
-			this.PCEArcadeCardRewindEnableMenuItem.Size = new System.Drawing.Size(240, 22);
-			this.PCEArcadeCardRewindEnableMenuItem.Text = "Arcade Card Rewind-Enable Hack";
-			this.PCEArcadeCardRewindEnableMenuItem.Click += new System.EventHandler(this.PceArcadeCardRewindEnableMenuItem_Click);
 			// 
 			// SMSSubMenu
 			// 
@@ -4141,11 +4098,6 @@
 		private System.Windows.Forms.ToolStripMenuItem ForumsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ScreenshotClipboardMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem PCESubMenu;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator25;
-		private System.Windows.Forms.ToolStripMenuItem PCEGraphicsSettingsMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem PCEAlwaysPerformSpriteLimitMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem PCEAlwaysEqualizeVolumesMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem PCEArcadeCardRewindEnableMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SMSSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem PCEBGViewerMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ScreenshotContextMenuItem;
@@ -4266,7 +4218,7 @@
 		private System.Windows.Forms.ToolStripMenuItem ProfilesMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem PceSoundDebuggerToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SynclessRecordingMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem PceControllerSettingsMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem PceSettingsMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator32;
 		private System.Windows.Forms.ToolStripStatusLabel ProfileFirstBootLabel;
 		private System.Windows.Forms.ToolStripMenuItem MovieEndSubMenu;

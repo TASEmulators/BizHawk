@@ -107,8 +107,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public void RenderScanLine()
 		{
-			if (((ActiveLine + ViewStartLine) >= pce.Settings.Bottom_Line) ||
-				((ActiveLine + ViewStartLine) < pce.Settings.Top_Line))	
+			if (((ActiveLine + ViewStartLine) >= pce.Settings.BottomLine) ||
+				((ActiveLine + ViewStartLine) < pce.Settings.TopLine))	
 				return;
 
 			RenderBackgroundScanline(pce.Settings.ShowBG1);
@@ -126,7 +126,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				int p = vce.Palette[256];
 				fixed (int* FBptr = FrameBuffer)
 				{
-					int* dst = FBptr + (ActiveLine + ViewStartLine - pce.Settings.Top_Line) * FramePitch;
+					int* dst = FBptr + (ActiveLine + ViewStartLine - pce.Settings.TopLine) * FramePitch;
 					for (int i = 0; i < FrameWidth; i++)
 						*dst++ = p;
 				}
@@ -150,7 +150,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			{
 				// pointer to the BAT and the framebuffer for this line
 				ushort* BatRow = VRAMptr + yTile * BatWidth;
-				int* dst = FBptr + (ActiveLine + ViewStartLine - pce.Settings.Top_Line) * FramePitch;
+				int* dst = FBptr + (ActiveLine + ViewStartLine - pce.Settings.TopLine) * FramePitch;
 
 				// parameters that change per tile
 				ushort BatEnt;
@@ -204,7 +204,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			if (BackgroundEnabled == false)
 			{
 				for (int i = 0; i < FrameWidth; i++)
-					FrameBuffer[((ActiveLine + ViewStartLine - pce.Settings.Top_Line) * FramePitch) + i] = vce.Palette[256];
+					FrameBuffer[((ActiveLine + ViewStartLine - pce.Settings.TopLine) * FramePitch) + i] = vce.Palette[256];
 				return;
 			}
 
@@ -228,10 +228,10 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 				byte c = PatternBuffer[(tileNo * 64) + (yOfs * 8) + xOfs];
 				if (c == 0)
-					FrameBuffer[((ActiveLine + ViewStartLine - pce.Settings.Top_Line) * FramePitch) + x] = vce.Palette[0];
+					FrameBuffer[((ActiveLine + ViewStartLine - pce.Settings.TopLine) * FramePitch) + x] = vce.Palette[0];
 				else
 				{
-					FrameBuffer[((ActiveLine + ViewStartLine - pce.Settings.Top_Line) * FramePitch) + x] = show ? vce.Palette[paletteBase + c] : vce.Palette[0];
+					FrameBuffer[((ActiveLine + ViewStartLine - pce.Settings.TopLine) * FramePitch) + x] = show ? vce.Palette[paletteBase + c] : vce.Palette[0];
 					PriorityBuffer[x] = 1;
 				}
 			}
@@ -363,7 +363,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 							{
 								InterSpritePriorityBuffer[xs] = 1;
 								if ((priority || PriorityBuffer[xs] == 0) && show)
-									FrameBuffer[((ActiveLine + ViewStartLine - pce.Settings.Top_Line) * FramePitch) + xs] = vce.Palette[paletteBase + pixel];
+									FrameBuffer[((ActiveLine + ViewStartLine - pce.Settings.TopLine) * FramePitch) + xs] = vce.Palette[paletteBase + pixel];
 							}
 						}
 					}
@@ -380,7 +380,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 							{
 								InterSpritePriorityBuffer[xs] = 1;
 								if ((priority || PriorityBuffer[xs] == 0) && show)
-									FrameBuffer[((ActiveLine + ViewStartLine - pce.Settings.Top_Line) * FramePitch) + xs] = vce.Palette[paletteBase + pixel];
+									FrameBuffer[((ActiveLine + ViewStartLine - pce.Settings.TopLine) * FramePitch) + xs] = vce.Palette[paletteBase + pixel];
 							}
 
 						}
@@ -401,7 +401,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 							{
 								InterSpritePriorityBuffer[xs] = 1;
 								if ((priority || PriorityBuffer[xs] == 0) && show)
-									FrameBuffer[((ActiveLine + ViewStartLine - pce.Settings.Top_Line) * FramePitch) + xs] = vce.Palette[paletteBase + pixel];
+									FrameBuffer[((ActiveLine + ViewStartLine - pce.Settings.TopLine) * FramePitch) + xs] = vce.Palette[paletteBase + pixel];
 							}
 						}
 						if (width == 32)
@@ -417,7 +417,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 								{
 									InterSpritePriorityBuffer[xs] = 1;
 									if ((priority || PriorityBuffer[xs] == 0) && show)
-										FrameBuffer[((ActiveLine + ViewStartLine - pce.Settings.Top_Line) * FramePitch) + xs] = vce.Palette[paletteBase + pixel];
+										FrameBuffer[((ActiveLine + ViewStartLine - pce.Settings.TopLine) * FramePitch) + xs] = vce.Palette[paletteBase + pixel];
 								}
 							}
 						}
@@ -436,7 +436,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public int VirtualWidth => FramePitch;
 		public int VirtualHeight => BufferHeight;
 		public int BufferWidth => FramePitch;
-		public int BufferHeight => (pce.Settings.Bottom_Line - pce.Settings.Top_Line);
+		public int BufferHeight => (pce.Settings.BottomLine - pce.Settings.TopLine);
 		public int BackgroundColor => vce.Palette[256];
 
 		public int VsyncNumerator

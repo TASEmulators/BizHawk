@@ -47,24 +47,21 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public class PCESettings
 		{
-			public bool ShowBG1 = true;
-			public bool ShowOBJ1 = true;
-			public bool ShowBG2 = true;
-			public bool ShowOBJ2 = true;
+			public bool ShowBG1 { get; set; } = true;
+			public bool ShowOBJ1 { get; set; } = true;
+			public bool ShowBG2 { get; set; } = true;
+			public bool ShowOBJ2 { get; set; } = true;
 
 			// cropping settings
-			public int Top_Line = 18;
-			public int Bottom_Line = 252;
+			public int TopLine { get; set; } = 18;
+			public int BottomLine { get; set; } = 252;
 
 			// these three require core reboot to use
-			public bool SpriteLimit = false;
-			public bool EqualizeVolume = false;
-			public bool ArcadeCardRewindHack = true;
+			public bool SpriteLimit { get; set; }
+			public bool EqualizeVolume { get; set; } 
+			public bool ArcadeCardRewindHack{ get; set; } 
 
-			public PCESettings Clone()
-			{
-				return (PCESettings)MemberwiseClone();
-			}
+			public PCESettings Clone() => (PCESettings)MemberwiseClone();
 		}
 
 		public class PCESyncSettings
@@ -99,10 +96,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public PceControllerType Port5 { get; set; } = PceControllerType.Unplugged;
 
-			public PCESyncSettings Clone()
-			{
-				return (PCESyncSettings)MemberwiseClone();
-			}
+			public PCESyncSettings Clone() => (PCESyncSettings)MemberwiseClone();
 
 			public static bool NeedsReboot(PCESyncSettings x, PCESyncSettings y)
 			{

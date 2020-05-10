@@ -89,27 +89,15 @@
 		<Reference Include="System.Windows.Forms" />
 	</ItemGroup>
 	<ItemGroup>
-		<Reference Include="GongShell"
-			HintPath="$(ProjectDir)../../References/GongShell.dll"
-			Private="true" />
+		<Reference Include="GongShell" HintPath="$(ProjectDir)../../References/GongShell.dll" Private="true" />
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" PrivateAssets="all" />
-		<Reference Include="NLua, Version=1.3.2.0, Culture=neutral, processorArchitecture=MSIL"
-			HintPath="$(ProjectDir)../../output/dll/nlua/NLua.dll"
-			Private="true"
-			SpecificVersion="false" />
-		<Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL"
-			HintPath="$(ProjectDir)../../References/OpenTK.dll"
-			Private="true"
-			SpecificVersion="false" />
+		<Reference Include="NLua, Version=1.3.2.0, Culture=neutral, processorArchitecture=MSIL" HintPath="$(ProjectDir)../../output/dll/nlua/NLua.dll" Private="true" SpecificVersion="false" />
+		<Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL" HintPath="$(ProjectDir)../../References/OpenTK.dll" Private="true" SpecificVersion="false" />
 		<PackageReference Include="OpenTK.GLControl" Version="3.0.1" PrivateAssets="all" />
 		<PackageReference Include="SharpCompress" Version="0.24.0" PrivateAssets="all" />
 		<PackageReference Include="SharpZipLib" Version="1.1.0" PrivateAssets="all" />
-		<Reference Include="SlimDX"
-			HintPath="$(ProjectDir)../../References/x64/SlimDX.dll"
-			Private="true" />
-		<Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
-			HintPath="$(ProjectDir)../../References/System.ComponentModel.Annotations.dll"
-			Private="true" />
+		<Reference Include="SlimDX" HintPath="$(ProjectDir)../../References/x64/SlimDX.dll" Private="true" />
+		<Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" HintPath="$(ProjectDir)../../References/System.ComponentModel.Annotations.dll" Private="true" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
@@ -311,12 +299,6 @@
 		<Compile Update="config/PathInfo.cs" SubType="Form" />
 		<Compile Update="config/PathInfo.Designer.cs" DependentUpon="PathInfo.cs" />
 		<EmbeddedResource Update="config/PathInfo.resx" DependentUpon="PathInfo.cs" />
-		<Compile Update="config/PCE/PCEControllerConfig.cs" SubType="Form" />
-		<Compile Update="config/PCE/PCEControllerConfig.Designer.cs" DependentUpon="PCEControllerConfig.cs" />
-		<EmbeddedResource Update="config/PCE/PCEControllerConfig.resx" DependentUpon="PCEControllerConfig.cs" />
-		<Compile Update="config/PCE/PCEGraphicsConfig.cs" SubType="Form" />
-		<Compile Update="config/PCE/PCEGraphicsConfig.Designer.cs" DependentUpon="PCEGraphicsConfig.cs" />
-		<EmbeddedResource Update="config/PCE/PCEGraphicsConfig.resx" DependentUpon="PCEGraphicsConfig.cs" />
 		<Compile Update="config/ProfileConfig.cs" SubType="Form" />
 		<Compile Update="config/ProfileConfig.Designer.cs" DependentUpon="ProfileConfig.cs" />
 		<EmbeddedResource Update="config/ProfileConfig.resx" DependentUpon="ProfileConfig.cs" />

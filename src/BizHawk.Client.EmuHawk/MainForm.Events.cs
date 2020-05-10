@@ -1726,30 +1726,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PceSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			var s = ((PCEngine)Emulator).GetSettings();
-
-			PceControllerSettingsMenuItem.Enabled = MovieSession.Movie.NotActive();
-			PCEAlwaysPerformSpriteLimitMenuItem.Checked = s.SpriteLimit;
-			PCEAlwaysEqualizeVolumesMenuItem.Checked = s.EqualizeVolume;
-			PCEArcadeCardRewindEnableMenuItem.Checked = s.ArcadeCardRewindHack;
 		}
 
-		private void PceControllerSettingsMenuItem_Click(object sender, EventArgs e)
+		private void PceSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is PCEngine pce)
-			{
-				using var dlg = new PCEControllerConfig(this, pce.GetSyncSettings().Clone());
-				dlg.ShowDialog();
-			}
-		}
-
-		private void PceGraphicsSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Emulator is PCEngine pce)
-			{
-				using var form = new PCEGraphicsConfig(this, pce.GetSettings().Clone());
-				form.ShowDialog();
-			}
+			GenericCoreConfig.DoDialog(this, "PCE Settings");
 		}
 
 		private void PceBgViewerMenuItem_Click(object sender, EventArgs e)
@@ -1765,36 +1746,6 @@ namespace BizHawk.Client.EmuHawk
 		private void PceSoundDebuggerMenuItem_Click(object sender, EventArgs e)
 		{
 			Tools.Load<PCESoundDebugger>();
-		}
-
-		private void PceAlwaysPerformSpriteLimitMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Emulator is PCEngine pce)
-			{
-				var s = pce.GetSettings();
-				s.SpriteLimit ^= true;
-				PutCoreSettings(s);
-			}
-		}
-
-		private void PceAlwaysEqualizeVolumesMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Emulator is PCEngine pce)
-			{
-				var s = pce.GetSettings();
-				s.EqualizeVolume ^= true;
-				PutCoreSettings(s);
-			}
-		}
-
-		private void PceArcadeCardRewindEnableMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Emulator is PCEngine pce)
-			{
-				var s = pce.GetSettings();
-				s.ArcadeCardRewindHack ^= true;
-				PutCoreSettings(s);
-			}
 		}
 
 		#endregion

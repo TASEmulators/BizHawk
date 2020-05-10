@@ -152,8 +152,6 @@ namespace BizHawk.Client.EmuHawk
 				NesControllerSettingsMenuItem.Image = Properties.Resources.GameController;
 				NESGraphicSettingsMenuItem.Image = Properties.Resources.tvIcon;
 				NESSoundChannelsMenuItem.Image = Properties.Resources.AudioHS;
-				PceControllerSettingsMenuItem.Image = Properties.Resources.GameController;
-				PCEGraphicsSettingsMenuItem.Image = Properties.Resources.tvIcon;
 				KeypadMenuItem.Image = Properties.Resources.calculator;
 				PSXControllerSettingsMenuItem.Image = Properties.Resources.GameController;
 				SNESControllerConfigurationMenuItem.Image = Properties.Resources.GameController;

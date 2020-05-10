@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		int IVideoLogicalOffsets.ScreenX => 0;
 
-		int IVideoLogicalOffsets.ScreenY => Settings.Top_Line;
+		int IVideoLogicalOffsets.ScreenY => Settings.TopLine;
 
 		public PCEngine(CoreComm comm, GameInfo game, Disc disc, object settings, object syncSettings)
 		{
