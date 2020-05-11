@@ -359,6 +359,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 				case ST_CNT:
 					counter_en = true;
 					next_T1_check = TotalExecutedCycles + 20;
+					timer_en = false;
 					break;
 				case STP_CNT:
 					counter_en = timer_en = false;
@@ -366,6 +367,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 				case ST_T:
 					timer_en = true;
 					timer_prescale = 0;
+					counter_en = false;
 					break;
 				case SET_ADDR_8:
 					reg_d_ad = cur_instr[instr_pntr++];
@@ -487,6 +489,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 						if (TimIntEn)
 						{
 							TIRQPending = true;
+							//Console.WriteLine("Timer: " + TotalExecutedCycles);
 						}
 					}
 					Regs[TIM] = (ushort)((Regs[TIM] + 1) & 0xFF);
@@ -504,7 +507,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 						if (TimIntEn)
 						{
 							TIRQPending = true;
-							//Console.WriteLine(TotalExecutedCycles);
+							//Console.WriteLine("Counter: " + TotalExecutedCycles);
 						}
 					}
 					Regs[TIM] = (ushort)((Regs[TIM] + 1) & 0xFF);

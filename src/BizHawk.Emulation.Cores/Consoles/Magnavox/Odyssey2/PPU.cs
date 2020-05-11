@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		int right_shift_even;
 		int x_base;
 
-		public byte ReadReg(int addr)
+		public virtual byte ReadReg(int addr)
 		{
 			byte ret = 0;
 
@@ -96,19 +96,20 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					if (VDC_collision.Bit(i))
 					{
 						ret |= VDC_col_ret[i];
-					}					
+						//VDC_col_ret[i] = 0;
+					}
 				}
 
-				// register is reset when read
+				// register is reset when read, but not external
 				for (int i = 0; i < 8; i++) { VDC_col_ret[i] = 0; }
 
-				//Console.WriteLine("col: " + ret + " " + LY + " " + Core.cpu.TotalExecutedCycles);
+				//Console.WriteLine("col: " + VDC_collision + " " + ret + " " + LY + " " + Core.cpu.TotalExecutedCycles);
 			}
 			else if (addr == 0xA3)
 			{
 				ret = VDC_color;
 			}
-			else if(addr == 0xA4)
+			else if (addr == 0xA4)
 			{
 				if (latch_x_y) { ret = A4_latch; }
 				else { ret = (byte)((LY_ret >= 0) ? LY_ret : 0); }
@@ -140,7 +141,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		}
 
 		//Peek method for memory domains that doesn't effect IRQ
-		public byte PeekReg(int addr)
+		public virtual byte PeekReg(int addr)
 		{
 			byte ret = 0;
 
@@ -150,7 +151,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			else if (addr < 0xA0) { ret = Sprite_Shapes[addr - 0x80]; }
 			else if (addr == 0xA0) { ret = VDC_ctrl; }
 			else if (addr == 0xA1) { ret = VDC_status; }
-			else if (addr == 0xA2) 
+			else if (addr == 0xA2)
 			{
 				for (int i = 0; i < 8; i++)
 				{
@@ -185,7 +186,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			if (addr < 0x10)
 			{
 				if (!VDC_ctrl.Bit(5)) { Sprites[addr] = value; }
-                //Console.WriteLine("spr: " + addr + " " + value + " " + Core.cpu.TotalExecutedCycles);
+				//Console.WriteLine("spr: " + addr + " " + value + " " + Core.cpu.TotalExecutedCycles);
 			}
 			else if (addr < 0x40)
 			{
@@ -198,8 +199,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			{
 				// chars position is not effected by last bit
 				if ((addr % 4) == 0) { value &= 0xFE; }
-				if (!VDC_ctrl.Bit(5)) 
-				{ 
+				if (!VDC_ctrl.Bit(5))
+				{
 					Quad_Chars[addr - 0x40] = value;
 
 					// X and Y are mapped all together
@@ -211,7 +212,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 						}
 					}
 				}
-				
+
 				//Console.WriteLine("quad: " + (addr - 0x40) + " " + value + " " + Core.cpu.TotalExecutedCycles);
 			}
 			else if (addr < 0xA0)
@@ -246,7 +247,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			else if (addr == 0xA2)
 			{
 				VDC_collision = value;
-				//Console.WriteLine("VDC_collide: " + value + " " + Core.cpu.TotalExecutedCycles);
+
+				Console.WriteLine("VDC_collide: " + value + " " + Core.cpu.TotalExecutedCycles);
 			}
 			else if (addr == 0xA3)
 			{
@@ -282,7 +284,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			//Console.WriteLine(addr + " " + value + " " + LY + " " + Core.cpu.TotalExecutedCycles);
 		}
 
-		public void tick()
+		public virtual void tick()
 		{
 			Pixel_Stat = 0;
 			// drawing cycles 
@@ -356,11 +358,11 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				{
 					HBL = false;
 					Core.cpu.T1 = false;
-				}				
+				}
 			}
 		}
 
-		public void Reset()
+		public virtual void Reset()
 		{
 			Sprites = new byte[16];
 			Sprite_Shapes = new byte[32];
@@ -378,7 +380,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			AudioReset();
 		}
 
-		public void set_region(bool pal_flag)
+		public virtual void set_region(bool pal_flag)
 		{
 			is_pal = pal_flag;
 
@@ -394,7 +396,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			}
 		}
 
-		public void process_pixel()
+		public virtual void process_pixel()
 		{
 			current_pixel_offset = cycle * 2;
 
@@ -1218,5 +1220,167 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		}
 
 		#endregion
+	}
+
+	public class NTSC_PPU : PPU
+	{
+		public override void tick()
+		{
+			Pixel_Stat = 0;
+			// drawing cycles 
+			// note: clipping might need to be handled differently between PAL and NTSC
+			if (cycle < 182)
+			{
+				if ((LY < LINE_VBL) && (LY >= 0))
+				{
+					// draw a pixel
+					process_pixel();
+				}
+			}
+			else
+			{
+				// NOTE: most games expect one less T1 pulse after VBL, maybe some pre-render line
+				if (cycle == 182 && (LY < LINE_VBL) && (LY > 0))
+				{
+					HBL = true;
+					// Send T1 pulses
+					Core.cpu.T1 = true;
+				}
+
+				if (cycle == 212 && (LY < LINE_VBL))
+				{
+					VDC_status &= 0xFE;
+					if (VDC_ctrl.Bit(0)) { Core.cpu.IRQPending = false; }
+					LY_ret = LY_ret + 1;
+				}
+			}
+
+			if (cycle == 113 && (LY < LINE_VBL))
+			{
+				VDC_status |= 0x01;
+				if (VDC_ctrl.Bit(0) && HBL_req) { Core.cpu.IRQPending = true; HBL_req = false; }
+			}
+
+			cycle++;
+
+			// end of scanline
+			if (cycle == 228)
+			{
+				cycle = 0;
+
+				LY++;
+
+				if (LY == LINE_VBL)
+				{
+					VBL = true;
+					Core.in_vblank = true;
+					VDC_status |= 0x08;
+					Core.cpu.IRQPending = true;
+					Core.cpu.T1 = true;
+				}
+
+				if (LY >= LINE_VBL)
+				{
+					LY_ret = 0;
+				}
+
+				if (LY == LINE_MAX)
+				{
+					LY = 0;
+					VBL = false;
+					Core.in_vblank = false;
+					Core.cpu.T1 = false;
+					if (Core.is_pal) { Core.cpu.IRQPending = false; }
+					LY_ret = 0;
+				}
+
+				if (LY < LINE_VBL)
+				{
+					HBL = false;
+					Core.cpu.T1 = false;
+				}
+			}
+		}
+	}
+
+	public class PAL_PPU : PPU
+	{
+		public override void tick()
+		{
+			Pixel_Stat = 0;
+			// drawing cycles 
+			// note: clipping might need to be handled differently between PAL and NTSC
+			if (cycle < 182)
+			{
+				if ((LY < LINE_VBL) && (LY >= 0))
+				{
+					// draw a pixel
+					process_pixel();
+				}
+			}
+			else
+			{
+				// NOTE: most games expect one less T1 pulse after VBL, maybe some pre-render line
+				if (cycle == 182 && (LY < LINE_VBL) && (LY > 0))
+				{
+					HBL = true;
+					// Send T1 pulses
+					Core.cpu.T1 = true;
+				}
+
+				if (cycle == 212 && (LY < LINE_VBL))
+				{
+					VDC_status &= 0xFE;
+					if (VDC_ctrl.Bit(0)) { Core.cpu.IRQPending = false; }
+					LY_ret = LY_ret + 1;
+				}
+			}
+
+			if (cycle == 113 && (LY < LINE_VBL))
+			{
+				VDC_status |= 0x01;
+				if (VDC_ctrl.Bit(0) && HBL_req) { Core.cpu.IRQPending = true; HBL_req = false; }
+			}
+
+			cycle++;
+
+			// end of scanline
+			if (cycle == 228)
+			{
+				cycle = 0;
+
+				LY++;
+
+				if (LY == LINE_VBL)
+				{
+					VBL = true;
+					Core.in_vblank = true;
+					VDC_status |= 0x08;
+					Core.cpu.IRQPending = true;
+					Core.cpu.T1 = true;
+				}
+
+				if (LY >= LINE_VBL)
+				{
+					LY_ret = 0;
+				}
+
+				if (LY == LINE_MAX)
+				{
+					LY = 0;
+					VBL = false;
+					Core.in_vblank = false;
+					Core.cpu.T1 = false;
+					if (Core.is_pal) { Core.cpu.IRQPending = false; }
+					LY_ret = 0;
+				}
+
+				if (LY < LINE_VBL)
+				{
+					HBL = false;
+					Core.cpu.T1 = false;
+				}
+			}
+		}
 	}
 }
