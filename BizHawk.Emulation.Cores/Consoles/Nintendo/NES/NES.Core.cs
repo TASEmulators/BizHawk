@@ -841,6 +841,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				WriteReg(addr, value);
 			}
+			else if (addr < 0x6000)
+			{
+				//let's ignore pokes to EXP until someone asks for it. there's really almost no way that could ever be done without the board having a PokeEXP method
+			}
+			else if (addr < 0x8000)
+			{
+				Board.WriteWram(addr - 0x6000, value);
+			}
 			else
 			{
 				// apply a cheat to non-writable memory
