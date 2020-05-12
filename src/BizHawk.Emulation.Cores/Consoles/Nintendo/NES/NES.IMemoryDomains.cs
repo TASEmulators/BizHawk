@@ -12,8 +12,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			var domains = new List<MemoryDomain>();
 			var RAM = new MemoryDomainByteArray("RAM", MemoryDomain.Endian.Little, ram, true, 1);
-			var SystemBus = new MemoryDomainDelegate("System Bus", 0x10000, MemoryDomain.Endian.Little,
-				addr => PeekMemory((ushort)addr), (addr, value) => ApplySystemBusPoke((int)addr, value), 1);
+
+			// System bus gets it's own class in order to send compare values to cheats
+			var SystemBus = new MemoryDomainDelegateSysBusNES("System Bus", 0x10000, MemoryDomain.Endian.Little,
+				addr => PeekMemory((ushort)addr), (addr, value) => ApplySystemBusPoke((int)addr, value), 1,
+				(addr, value, compare, comparetype) => ApplyCompareCheat(addr, value, compare, comparetype));
+
 			var PPUBus = new MemoryDomainDelegate("PPU Bus", 0x4000, MemoryDomain.Endian.Little,
 				addr => ppu.ppubus_peek((int)addr), (addr, value) => ppu.ppubus_write((int)addr, value), 1);
 			var CIRAMdomain = new MemoryDomainByteArray("CIRAM (nametables)", MemoryDomain.Endian.Little, CIRAM, true, 1);
