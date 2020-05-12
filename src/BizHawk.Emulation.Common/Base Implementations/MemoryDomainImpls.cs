@@ -318,4 +318,105 @@ namespace BizHawk.Emulation.Common
 			_monitor = monitor;
 		}
 	}
+
+	public class MemoryDomainDelegateSysBusNES : MemoryDomain
+	{
+		private Action<long, byte> _poke;
+
+		// TODO: use an array of Ranges
+		private Action<Range<long>, byte[]> _bulkPeekByte { get; set; }
+		private Action<Range<long>, bool, ushort[]> _bulkPeekUshort { get; set; }
+		private Action<Range<long>, bool, uint[]> _bulkPeekUint { get; set; }
+
+		public Func<long, byte> Peek { get; set; }
+
+		public Action<long, byte> Poke
+		{
+			get => _poke;
+			set
+			{
+				_poke = value;
+				Writable = value != null;
+			}
+		}
+
+		private Action<int, byte, int, int> sendcheattocore { get; set; }
+
+		public override byte PeekByte(long addr)
+		{
+			return Peek(addr);
+		}
+
+		public override void PokeByte(long addr, byte val)
+		{
+			_poke?.Invoke(addr, val);
+		}
+
+		public override void BulkPeekByte(Range<long> addresses, byte[] values)
+		{
+			if (_bulkPeekByte != null)
+			{
+				_bulkPeekByte.Invoke(addresses, values);
+			}
+			else
+			{
+				base.BulkPeekByte(addresses, values);
+			}
+		}
+
+		public override void BulkPeekUshort(Range<long> addresses, bool bigEndian, ushort[] values)
+		{
+			if (_bulkPeekUshort != null)
+			{
+				_bulkPeekUshort.Invoke(addresses, EndianType == Endian.Big, values);
+			}
+			else
+			{
+				base.BulkPeekUshort(addresses, EndianType == Endian.Big, values);
+			}
+		}
+
+		public override void BulkPeekUint(Range<long> addresses, bool bigEndian, uint[] values)
+		{
+			if (_bulkPeekUint != null)
+			{
+				_bulkPeekUint.Invoke(addresses, EndianType == Endian.Big, values);
+			}
+			else
+			{
+				base.BulkPeekUint(addresses, EndianType == Endian.Big, values);
+			}
+		}
+
+		public override void SendCheatToCore(int addr, byte value, int compare, int comparetype)
+		{
+			if (sendcheattocore != null)
+			{
+				sendcheattocore.Invoke(addr, value, compare, comparetype);
+			}
+			else
+			{
+				base.SendCheatToCore(addr, value, compare, comparetype);
+			}		
+		}
+
+		public MemoryDomainDelegateSysBusNES(
+			string name,
+			long size,
+			Endian endian,
+			Func<long, byte> peek,
+			Action<long, byte> poke,
+			int wordSize,
+			Action<int, byte, int, int> nescheatpoke = null)
+		{
+			Name = name;
+			EndianType = endian;
+			Size = size;
+			Peek = peek;
+			_poke = poke;
+			Writable = poke != null;
+			WordSize = wordSize;
+			sendcheattocore = nescheatpoke;
+		}
+	}
 }

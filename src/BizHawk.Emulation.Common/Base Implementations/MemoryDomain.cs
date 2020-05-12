@@ -158,5 +158,7 @@ namespace BizHawk.Emulation.Common
 				values[i] = PeekUint(start + i*4, bigEndian);
 			}
 		}
+
+		public virtual void SendCheatToCore(int addr, byte value, int compare, int compare_type) { }
 	}
 }

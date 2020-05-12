@@ -48,8 +48,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		// cheat addr index tracker
 		// disables all cheats each frame
-		public int[] cheat_indexes = new int[0x10000];
-		public byte[] cheat_active = new byte[0x10000];
+		public int[] cheat_addresses = new int[0x1000];
+		public byte[] cheat_value = new byte[0x1000];
+		public int[] cheat_compare_val = new int[0x1000];
+		public int[] cheat_compare_type = new int[0x1000];
 		public int num_cheats;
 
 		// new input system
@@ -852,7 +854,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			else
 			{
 				// apply a cheat to non-writable memory
-				ApplyCheat(addr, value, null);
+				ApplyCheat(addr, value);
 			}
 		}
 
@@ -907,6 +909,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				// easy optimization, since rom reads are so common, move this up (reordering the rest of these else ifs is not easy)
 				ret = Board.ReadPrg(addr - 0x8000);
+
+				// handle cheats, currently all cheats are of game genie style only
+				if (num_cheats != 0)
+				{
+					for (int i = 0; i < num_cheats; i++)
+					{
+						if (cheat_addresses[i] == addr)
+						{
+							if (cheat_compare_type[i] == 0) 
+							{ 
+								ret = cheat_value[i]; 
+							}
+							else if ((cheat_compare_type[i] == 1) && ((int)ret == cheat_compare_val[i]))
+							{
+								ret = cheat_value[i];
+							}					
+						}
+					}
+				}
 			}
 			else if (addr < 0x0800)
 			{
@@ -933,19 +954,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ret = Board.ReadWram(addr - 0x6000);
 			}
 
-			// handle cheats (currently cheats can only freeze read only areas)
-			// there is no way to distinguish between a memory poke and a memory freeze
-			if (num_cheats !=0)
-			{
-				for (int i = 0; i < num_cheats; i++)
-				{
-					if(cheat_indexes[i] == addr)
-					{
-						ret = cheat_active[addr];
-					}
-				}
-			}
-
 			if (MemoryCallbacks.HasReads)
 			{
 				uint flags = (uint)(MemoryCallbackFlags.CPUZero | MemoryCallbackFlags.AccessRead);
@@ -956,13 +964,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return ret;
 		}
 
-		public void ApplyCheat(int addr, byte value, byte? compare)
+		public void ApplyCheat(int addr, byte value)
 		{
 			if (addr <= 0xFFFF)
 			{
-				cheat_indexes[num_cheats] = addr;
-				cheat_active[addr] = value;
-				num_cheats++;
+				cheat_addresses[num_cheats] = addr;
+				cheat_value[num_cheats] = value;
+
+				// there is no compare here
+				cheat_compare_val[num_cheats] = -1;
+				cheat_compare_type[num_cheats] = 0;
+
+				if (num_cheats < 0x1000) { num_cheats++; }
+			}
+		}
+
+		public void ApplyCompareCheat(int addr, byte value, int compare, int comparetype)
+		{
+			if (addr <= 0xFFFF)
+			{
+				cheat_addresses[num_cheats] = addr;
+				cheat_value[num_cheats] = value;
+
+				cheat_compare_val[num_cheats] = compare;
+				cheat_compare_type[num_cheats] = comparetype;
+
+				if (num_cheats < 0x1000) { num_cheats++; }
 			}
 		}
 

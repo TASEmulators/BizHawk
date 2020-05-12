@@ -1,4 +1,5 @@
 ﻿using BizHawk.Emulation.Common;
+using System;
 
 namespace BizHawk.Client.Common
 {
@@ -229,6 +230,20 @@ namespace BizHawk.Client.Common
 						case WatchSize.DWord:
 							_watch.Poke(((DWordWatch)_watch).FormatValue((uint)_val));
 							break;
+					}
+				}
+
+				// This will take effect only for NES, and will pulse the cheat with compare option directly to the core
+				// Only works for byte cheats currently
+				if (_watch.Size == WatchSize.Byte && _watch.Domain.Name == "System Bus")
+				{
+					if (Compare.HasValue)
+					{
+						_watch.Domain.SendCheatToCore((int)Address.Value, (byte)Value, Compare.Value, (int)ComparisonType);						
+					}
+					else
+					{
+						_watch.Domain.SendCheatToCore((int)Address.Value, (byte)Value, -1, 0);
 					}
 				}
 			}
