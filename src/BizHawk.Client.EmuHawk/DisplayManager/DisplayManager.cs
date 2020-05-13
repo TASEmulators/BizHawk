@@ -305,11 +305,12 @@ namespace BizHawk.Client.EmuHawk
 			//add lua layer 'emu'
 			AppendLuaLayer(chain, "emu");
 
-			if (Global.Config.DispPrescale != 1)
-			{
-				var fPrescale = new Filters.PrescaleFilter() { Scale = Global.Config.DispPrescale };
-				chain.AddFilter(fPrescale, "user_prescale");
-			}
+			if(includeUserFilters)
+				if (Global.Config.DispPrescale != 1)
+				{
+					var fPrescale = new Filters.PrescaleFilter() { Scale = Global.Config.DispPrescale };
+					chain.AddFilter(fPrescale, "user_prescale");
+				}
 
 			// add user-selected retro shader
 			if (selectedChain != null)
@@ -352,7 +353,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// add final presentation
-			chain.AddFilter(fPresent, "presentation");
+			if (includeUserFilters)
+				chain.AddFilter(fPresent, "presentation");
 
 			//add lua layer 'native'
 			AppendLuaLayer(chain, "native");
@@ -699,7 +701,8 @@ namespace BizHawk.Client.EmuHawk
 				VideoProvider = fvp,
 				Simulate = true,
 				ChainOutsize = chainOutsize,
-				IncludeUserFilters = true
+				IncludeUserFilters = true,
+				IncludeOSD = true,
 			};
 			var filterProgram = UpdateSourceInternal(job);
 
@@ -723,6 +726,12 @@ namespace BizHawk.Client.EmuHawk
 			public bool Offscreen;
 			public BitmapBuffer OffscreenBb;
 			public bool IncludeOSD;
+
+			/// <summary>
+			/// This has been changed a bit to mean "not raw".
+			/// Someone needs to rename it, but the sense needs to be inverted and some method args need renaming too
+			/// Suggested: IsRaw (with inverted sense)
+			/// </summary>
 			public bool IncludeUserFilters;
 		}
 
@@ -837,17 +846,20 @@ namespace BizHawk.Client.EmuHawk
 
 			//setup the final presentation filter
 			Filters.FinalPresentation fPresent = filterProgram["presentation"] as Filters.FinalPresentation;
-			fPresent.VirtualTextureSize = new Size(vw, vh);
-			fPresent.TextureSize = new Size(presenterTextureWidth, presenterTextureHeight);
-			fPresent.BackgroundColor = videoProvider.BackgroundColor;
-			fPresent.GuiRenderer = Renderer;
-			fPresent.Flip = isGlTextureId;
-			fPresent.Config_FixAspectRatio = Global.Config.DispFixAspectRatio;
-			fPresent.Config_FixScaleInteger = Global.Config.DispFixScaleInteger;
-			fPresent.Padding = ClientExtraPadding;
-			fPresent.AutoPrescale = Global.Config.DispAutoPrescale;
+			if (fPresent != null)
+			{
+				fPresent.VirtualTextureSize = new Size(vw, vh);
+				fPresent.TextureSize = new Size(presenterTextureWidth, presenterTextureHeight);
+				fPresent.BackgroundColor = videoProvider.BackgroundColor;
+				fPresent.GuiRenderer = Renderer;
+				fPresent.Flip = isGlTextureId;
+				fPresent.Config_FixAspectRatio = Global.Config.DispFixAspectRatio;
+				fPresent.Config_FixScaleInteger = Global.Config.DispFixScaleInteger;
+				fPresent.Padding = ClientExtraPadding;
+				fPresent.AutoPrescale = Global.Config.DispAutoPrescale;
 
-			fPresent.GL = GL;
+				fPresent.GL = GL;
+			}
 
 			//POOPY. why are we delivering the GL context this way? such bad
 			Filters.ScreenControlNDS fNDS = filterProgram["CoreScreenControl"] as Filters.ScreenControlNDS;
