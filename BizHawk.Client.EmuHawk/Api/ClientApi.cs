@@ -96,9 +96,9 @@ namespace BizHawk.Client.EmuHawk
 				{
 					typeList.Add(obj.GetType());
 				}
-				method = MainFormClass.GetMethod(name, typeList.ToArray());
+				method = MainFormClass.GetMethod(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance, null, typeList.ToArray(), null);
 			}
-			else method = MainFormClass.GetMethod(name);
+			else method = MainFormClass.GetMethod(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
 			if(method != null)
 				method.Invoke(ClientMainFormInstance, paramList);
@@ -258,11 +258,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="bottom">Bottom padding</param>
 		public static void SetGameExtraPadding(int left, int top, int right, int bottom)
 		{
-			FieldInfo f = ClientAssembly.GetType("BizHawk.Client.EmuHawk.GlobalWin").GetField("DisplayManager");
-			object displayManager = f.GetValue(null);
-			f = f.FieldType.GetField("GameExtraPadding");
-			f.SetValue(displayManager, new Padding(left, top, right, bottom));
-
+			GlobalWin.DisplayManager.GameExtraPadding = new Padding(left, top, right, bottom);
 			InvokeMainFormMethod("FrameBufferResized");
 		}
 
@@ -305,11 +301,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="bottom">Bottom padding</param>
 		public static void SetExtraPadding(int left, int top, int right, int bottom)
 		{
-			FieldInfo f = ClientAssembly.GetType("BizHawk.Client.EmuHawk.GlobalWin").GetField("DisplayManager");
-			object displayManager = f.GetValue(null);
-			f = f.FieldType.GetField("ClientExtraPadding");
-			f.SetValue(displayManager, new Padding(left, top, right, bottom));
-
+			GlobalWin.DisplayManager.ClientExtraPadding = new Padding(left, top, right, bottom);
 			InvokeMainFormMethod("FrameBufferResized");
 		}
 
