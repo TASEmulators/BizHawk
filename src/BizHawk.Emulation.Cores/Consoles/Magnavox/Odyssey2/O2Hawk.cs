@@ -61,8 +61,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			_syncSettings = (O2SyncSettings)syncSettings ?? new O2SyncSettings();
 			_controllerDeck = new O2HawkControllerDeck("O2 Controller", "O2 Controller");
 
-			ppu = new PPU();
-
 			_bios = comm.CoreFileProvider.GetFirmware("O2", "BIOS", true, "BIOS Not Found, Cannot Load")
 				?? throw new MissingFirmwareException("Missing Odyssey2 Bios");
 
@@ -75,11 +73,9 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 			_frameHz = 60;
 
-			ppu.Core = this;
 			cpu.Core = this;
 
 			ser.Register<IVideoProvider>(this);
-			ser.Register<ISoundProvider>(ppu);
 			ServiceProvider = ser;
 
 			_settings = (O2Settings)settings ?? new O2Settings();
@@ -91,24 +87,30 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			SetupMemoryDomains();
 			cpu.SetCallbacks(ReadMemory, PeekMemory, PeekMemory, WriteMemory);
 
-			HardReset();
-
 			// set up differences between PAL and NTSC systems
-			is_pal = true;
-			pic_height = 288;
-			_frameHz = 50;
-
 			if (game.Region == "US" || game.Region == "EU-US" || game.Region == null)
 			{
 				is_pal = false;
 				pic_height = 240;
 				_frameHz = 60;
-			}
 
+				ppu = new NTSC_PPU();
+			}
+			else
+			{
+				is_pal = true;
+				pic_height = 288;
+				_frameHz = 50;
+				ppu = new PAL_PPU();
+			}
+			ppu.Core = this;
 			ppu.set_region(is_pal);
+			ser.Register<ISoundProvider>(ppu);
 
 			_vidbuffer = new int[372 * pic_height];
 			frame_buffer = new int[320 * pic_height];
+
+			HardReset();
 		}
 
 		public DisplayType Region => DisplayType.NTSC;
