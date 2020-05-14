@@ -150,15 +150,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 					b |= LibSameboy.Buttons.SELECT;
 				if (c.IsPressed($"P{i} Start"))
 					b |= LibSameboy.Buttons.START;
+				if (_sgb)
+				{
+					// The SGB SNES side code enforces U+D/L+R prohibitions
+					if (((uint)b & 0x30) == 0x30)
+						b &= unchecked((LibSameboy.Buttons)~0x30);
+					if (((uint)b & 0xc0) == 0xc0)
+						b &= unchecked((LibSameboy.Buttons)~0xc0);
+				}
 				if (i != 1)
+				{
 					b = (LibSameboy.Buttons)((uint)b << 8);
+				}
 			}
 			return b;
 		}
-
-
-
-
 
 		public new bool SaveRamModified => _core.HasSaveRam();
 
