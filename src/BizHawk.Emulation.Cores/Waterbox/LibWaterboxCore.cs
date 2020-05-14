@@ -150,6 +150,30 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				}
 			}
 
+			public override void BulkPeekByte(Range<long> addresses, byte[] values)
+			{
+				if (_addressMangler != 0)
+				{
+					base.BulkPeekByte(addresses, values);
+					return;
+				}
+	
+				var start = (ulong)addresses.Start;
+				var count = addresses.Count();
+
+				if (start < (ulong)Size && (start + count) <= (ulong)Size)
+				{
+					using (_monitor.EnterExit())
+					{
+					 	Marshal.Copy(Z.US((ulong)_data + start), values, 0, (int)count);
+					}
+				}
+				else
+				{
+					throw new ArgumentOutOfRangeException(nameof(addresses));
+				}
+			}
+
 			public WaterboxMemoryDomain(MemoryArea m, IMonitor monitor)
 			{
 				Name = Marshal.PtrToStringAnsi(m.Name);
