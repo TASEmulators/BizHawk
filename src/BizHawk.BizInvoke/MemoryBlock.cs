@@ -37,8 +37,8 @@ namespace BizHawk.BizInvoke
 					0,
 					0,
 					Z.UU(Size),
-					Z.US(AddressRange.Start)
-				) != Z.US(AddressRange.Start))
+					Z.US(Start)
+				) != Z.US(Start))
 			{
 				throw new InvalidOperationException($"{nameof(Kernel32.MapViewOfFileEx)}() returned NULL");
 			}

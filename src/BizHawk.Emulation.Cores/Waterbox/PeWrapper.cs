@@ -441,7 +441,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				// unlikely to get this far if the previous checks pssed
 				throw new InvalidOperationException("Trickys elves moved on you!");
 
-			Memory.Protect(Memory.AddressRange.Start, Memory.Size, MemoryBlockBase.Protection.RW);
+			Memory.Protect(Memory.Start, Memory.Size, MemoryBlockBase.Protection.RW);
 
 			foreach (var s in _sections)
 			{
