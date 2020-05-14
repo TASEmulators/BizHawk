@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// </summary>
 	public partial class ZX128Plus3 : SpectrumBase
 	{
-		#region Construction
+
 
 		/// <summary>
 		/// Main constructor
@@ -48,6 +48,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			InitializeMedia(files);
 		}
 
-		#endregion
+
 	}
 }

@@ -890,7 +890,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public System.Drawing.Size VideoProvider_Padding { get; private set; }
 
-		#region Debugging
+
 
 		OctoshockDll.ShockCallback_Mem mem_cb;
 
@@ -956,9 +956,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		private IMemoryDomains MemoryDomains;
 
-		#endregion
 
-		#region ISoundProvider
+
+
 
 		//private short[] sbuff = new short[1454 * 2]; //this is the most ive ever seen.. don't know why. two frames worth i guess
 		private short[] sbuff = new short[1611 * 2]; //need this for pal
@@ -992,9 +992,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			throw new InvalidOperationException("Async mode is not supported.");
 		}
 
-		#endregion
 
-		#region ISaveRam
+
+
 
 		public byte[] CloneSaveRam()
 		{
@@ -1058,10 +1058,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			}
 		}
 
-		#endregion //ISaveRam
 
 
-		#region Savestates
+
+
 		//THIS IS STILL AWFUL
 
 		byte[] savebuff;
@@ -1144,9 +1144,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			return savebuff2;
 		}
 
-		#endregion
 
-		#region Settings
+
+
 
 		Settings _Settings = new Settings();
 		SyncSettings _SyncSettings;
@@ -1296,6 +1296,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			return reboot ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
-		#endregion
+
 	}
 }

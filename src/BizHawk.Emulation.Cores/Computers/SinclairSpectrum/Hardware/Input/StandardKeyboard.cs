@@ -183,7 +183,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			return (byte)index;
 		}
 
-		#region IPortIODevice
+
 
 		/// <summary>
 		/// Device responds to an IN instruction
@@ -267,7 +267,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			return false;
 		}
 
-		#endregion
+
 
 		public void SyncState(Serializer ser)
 		{

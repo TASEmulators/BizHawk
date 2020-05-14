@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 	/// </summary>
 	public static class LibMSX
 	{
-		# region Core
+
 		/// <returns>opaque state pointer</returns>
 		[DllImport("MSXHawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern IntPtr MSX_create();
@@ -71,9 +71,9 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		[DllImport("MSXHawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern uint MSX_get_audio(IntPtr core, int[] aud_buf,  ref uint n_samp);
 
-		#endregion
 
-		#region State Save / Load
+
+
 
 		/// <summary>
 		/// Save State
@@ -91,9 +91,9 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		[DllImport("MSXHAWK.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void MSX_load_state(IntPtr core, byte[] loader);
 
-		#endregion
 
-		#region Memory Domain Functions
+
+
 
 		/// <summary>
 		/// Read the system bus
@@ -119,9 +119,9 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		[DllImport("MSXHawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern byte MSX_getram(IntPtr core, int addr);
 
-		#endregion
 
-		#region Tracer
+
+
 		/// <summary>
 		/// type of the cpu trace callback
 		/// </summary>
@@ -186,6 +186,6 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		/// <param name="l">copy length, must be obtained from appropriate get legnth function</param>
 		[DllImport("MSXHawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void MSX_getdisassembly(IntPtr core, StringBuilder h, int t, int l);
-		#endregion
+
 	}
 }

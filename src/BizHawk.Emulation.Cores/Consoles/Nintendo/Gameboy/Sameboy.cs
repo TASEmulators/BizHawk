@@ -105,7 +105,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 			InitializeRtc(_syncSettings.InitialTime);
 		}
 
-		#region Controller
+
 
 		private static readonly ControllerDefinition _gbDefinition;
 		private static readonly ControllerDefinition _sgbDefinition;
@@ -156,9 +156,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 			return b;
 		}
 
-		#endregion
 
-		#region ISaveram
+
+
 
 		public new bool SaveRamModified => _core.HasSaveRam();
 
@@ -176,9 +176,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 			_exe.RemoveReadonlyFile("save.ram");
 		}
 
-		#endregion
 
-		#region ISettable
+
+
 
 		private Settings _settings;
 		private SyncSettings _syncSettings;
@@ -261,7 +261,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
-		#endregion
+
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{

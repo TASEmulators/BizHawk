@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// </summary>
 	class Screen128Plus2a : ULA
 	{
-		#region Construction
+
 
 		public Screen128Plus2a(SpectrumBase machine)
 			: base(machine)
@@ -45,6 +45,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			GenerateP3PortTable();
 		}
 
-		#endregion
+
 	}
 }

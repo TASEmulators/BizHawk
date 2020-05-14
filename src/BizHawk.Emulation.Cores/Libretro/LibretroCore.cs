@@ -207,7 +207,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		public int VsyncNumerator { get; private set; }
 		public int VsyncDenominator { get; private set; }
 
-		#region ISoundProvider
+
 
 		SpeexResampler resampler;
 
@@ -243,7 +243,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			nsamprecv += (int)frames;
 		}
 
-		#endregion
+
 
 		public static ControllerDefinition CreateControllerDefinition(SyncSettings syncSettings)
 		{
@@ -296,7 +296,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		public string SystemId => "Libretro";
 		public bool DeterministicEmulation => false;
 
-		#region ISaveRam
+
 		//TODO - terrible things will happen if this changes at runtime
 
 		byte[] saverambuff = new byte[0];
@@ -340,7 +340,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			set => throw new NotImplementedException();
 		}
 
-		#endregion
+
 
 		public void ResetCounters()
 		{
@@ -349,7 +349,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			IsLagFrame = false;
 		}
 
-		#region savestates
+
 
 		private byte[] savebuff, savebuff2;
 
@@ -401,7 +401,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			return savebuff2;
 		}
 
-		#endregion
+
 
 
 	} //class

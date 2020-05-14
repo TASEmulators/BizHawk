@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     /// </summary>
     public abstract partial class SpectrumBase
     {
-        #region Memory Fields & Properties
+
 
         /// <summary>
         /// ROM Banks
@@ -88,9 +88,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public byte LastContendedReadByte;
 
-        #endregion
 
-        #region Memory Related Methods
+
+
 
         /// <summary>
         /// Simulates reading from the bus
@@ -159,9 +159,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public abstract bool ContendedBankPaged();
 
-        #endregion
 
-        #region Helper Methods
+
+
 
         /// <summary>
         /// Detects whether this is a 48k machine (or a 128k in 48k mode)
@@ -243,6 +243,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
         }
 
-        #endregion
+
     }
 }

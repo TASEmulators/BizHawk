@@ -182,7 +182,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		#region Menu
+
 
 		private void PadsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -219,6 +219,6 @@ namespace BizHawk.Client.EmuHawk
 			ClearAlsoClearsAnalog ^= true;
 		}
 
-		#endregion
+
 	}
 }

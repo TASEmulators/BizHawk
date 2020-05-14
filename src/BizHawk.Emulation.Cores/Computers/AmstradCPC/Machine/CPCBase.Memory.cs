@@ -6,7 +6,7 @@
 	/// </summary>
 	public abstract partial class CPCBase
 	{
-		#region Memory Fields & Properties
+
 
 		/* ROM Banks */
 		/// <summary>
@@ -60,9 +60,9 @@
 		/// </summary>
 		public int RAM64KBank;
 
-		#endregion
 
-		#region Memory Related Methods
+
+
 
 		/// <summary>
 		/// Simulates reading from the bus
@@ -138,6 +138,6 @@
 			return result;
 		}
 
-		#endregion
+
 	}
 }

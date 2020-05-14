@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			NONE, NOT_FOUND, ILLEGAL_REGISTRATIONS, INVALID_HEADER, READ_ERROR, WRITE_ERROR, DISABLED
 		};
 
-		#region C API
+
 
 		// main launcher
 		[DllImport(dll, CallingConvention = cc)]
@@ -30,9 +30,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		[DllImport(dll, CallingConvention = cc)]
 		public static extern SaveError mame_load_buffer(byte[] buf, int length);
 
-		#endregion
 
-		#region Lua API
+
+
 
 		// execute
 		[DllImport(dll, CallingConvention = cc)]
@@ -58,9 +58,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		[DllImport(dll, CallingConvention = cc)]
 		public static extern bool mame_lua_free_string(IntPtr pointer);
 
-		#endregion
 
-		#region Callbacks
+
+
 
 		// periodic
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -86,6 +86,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		[DllImport(dll, CallingConvention = cc)]
 		public static extern void mame_set_log_callback(LogCallbackDelegate cb);
 
-		#endregion
+
 	}
 }

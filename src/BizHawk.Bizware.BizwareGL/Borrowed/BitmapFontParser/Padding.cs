@@ -4,7 +4,7 @@ namespace Cyotek.Drawing.BitmapFont
 {
   public struct Padding
   {
-    #region  Public Constructors
+
 
     public Padding(int left, int top, int right, int bottom)
       : this()
@@ -15,18 +15,18 @@ namespace Cyotek.Drawing.BitmapFont
       this.Bottom = bottom;
     }
 
-    #endregion  Public Constructors
 
-    #region  Public Methods
+
+
 
     public override string ToString()
     {
       return string.Format("{0}, {1}, {2}, {3}", this.Left, this.Top, this.Right, this.Bottom);
     }
 
-    #endregion  Public Methods
 
-    #region  Public Properties
+
+
 
     public int Top { get; set; }
 
@@ -36,6 +36,6 @@ namespace Cyotek.Drawing.BitmapFont
 
     public int Bottom { get; set; }
 
-    #endregion  Public Properties
+
   }
 }

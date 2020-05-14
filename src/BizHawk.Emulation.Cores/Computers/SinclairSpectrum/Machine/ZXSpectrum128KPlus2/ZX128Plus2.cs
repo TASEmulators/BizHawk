@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// </summary>
 	public partial class ZX128Plus2 : ZX128
 	{
-		#region Construction
+
 
 		/// <summary>
 		/// Main constructor
@@ -20,6 +20,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		}
 
-		#endregion
+
 	}
 }

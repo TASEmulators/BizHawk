@@ -30,7 +30,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		#region IVirtualPadControl Implementation
+
 
 		public void UpdateValues()
 		{
@@ -75,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		#endregion
+
 
 		public void Bump(int? x)
 		{

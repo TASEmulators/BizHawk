@@ -41,16 +41,16 @@ namespace BizHawk.Client.Common
 				.ToList();
 		}
 
-		#region IController Implementation
+
 
 		public ControllerDefinition Definition => _type;
 
 		public bool IsPressed(string button) => _myBoolButtons[button];
 		public float AxisValue(string name) => _myAxisControls[name];
 
-		#endregion
 
-		#region IMovieController Implementation
+
+
 
 		public void SetFrom(IController source)
 		{
@@ -146,7 +146,7 @@ namespace BizHawk.Client.Common
 			_myAxisControls[buttonName] = value;
 		}
 
-		#endregion
+
 
 		private class ControlMap
 		{

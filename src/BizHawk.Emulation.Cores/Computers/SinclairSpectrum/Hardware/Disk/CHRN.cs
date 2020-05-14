@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public int DataID { get; set; }
 
-		#region Helper Methods
+
 
 		/// <summary>
 		/// Missing Address Mark (Sector_ID or DAM not found)
@@ -175,6 +175,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 		}
 
-		#endregion
+
 	}
 }

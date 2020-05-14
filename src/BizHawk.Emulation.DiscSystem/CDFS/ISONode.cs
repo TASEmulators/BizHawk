@@ -5,7 +5,7 @@
 	/// </summary>
 	public class ISONode
 	{
-		#region Public Properties
+
 
 		/// <summary>
 		/// The record this node was created from.
@@ -21,9 +21,9 @@
 		/// </summary>
 		public long Length;
 
-		#endregion
 
-		#region Construction
+
+
 
 		/// <summary>
 		/// Constructor.
@@ -37,6 +37,6 @@
 			this.Length = record.LengthOfData;
 		}
 
-		#endregion
+
 	}
 }

@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		public int[] CroppedBuffer = new int[102 * 58];
 
-		#region IVideoProvider
+
 
 		public int VirtualWidth => BufferWidth * 2;
 		public int VirtualHeight => (int)((double)BufferHeight * 1.3) * 2;
@@ -50,12 +50,12 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			
 		}
 
-		#endregion
 
-		#region IRegionable
+
+
 
 		public DisplayType Region => DisplayType.NTSC;
 
-		#endregion
+
 	}
 }

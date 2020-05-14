@@ -17,14 +17,14 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public static class ExternalToolManager
 	{
-		#region Fields
+
 
 		private static readonly FileSystemWatcher DirectoryMonitor;
 		private static readonly List<ToolStripMenuItem> MenuItems = new List<ToolStripMenuItem>();
 
-		#endregion
 
-		#region cTor(s)
+
+
 
 		/// <summary>
 		/// Initialization
@@ -50,9 +50,9 @@ namespace BizHawk.Client.EmuHawk
 			BuildToolStrip();
 		}
 
-		#endregion
 
-		#region Methods
+
+
 
 		/// <summary>
 		/// Build the ToolStrip menu
@@ -162,9 +162,9 @@ namespace BizHawk.Client.EmuHawk
 			MenuItems.Add(GenerateToolTipFromFileName(e.FullPath));
 		}
 
-		#endregion
 
-		#region Properties
+
+
 
 		/// <summary>
 		/// Gets a prebuild <see cref="ToolStripMenuItem"/>
@@ -172,6 +172,6 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public static IEnumerable<ToolStripMenuItem> ToolStripMenu => MenuItems;
 
-		#endregion
+
 	}
 }

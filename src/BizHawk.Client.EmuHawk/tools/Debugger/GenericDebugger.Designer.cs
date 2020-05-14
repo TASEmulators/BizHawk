@@ -20,7 +20,7 @@
 			base.Dispose(disposing);
 		}
 
-		#region Windows Form Designer generated code
+
 
 		/// <summary>
 		/// Required method for Designer support - do not modify
@@ -380,7 +380,7 @@
 
 		}
 
-		#endregion
+
 
 		private MenuStripEx menuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;

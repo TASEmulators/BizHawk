@@ -20,7 +20,7 @@
 			base.Dispose(disposing);
 		}
 
-		#region Windows Form Designer generated code
+
 
 		/// <summary>
 		/// Required method for Designer support - do not modify
@@ -298,7 +298,7 @@
 
 		}
 
-		#endregion
+
 
 		private System.Windows.Forms.MenuStrip MacroMenu;
 		private System.Windows.Forms.ToolStripMenuItem FileSubMenu;

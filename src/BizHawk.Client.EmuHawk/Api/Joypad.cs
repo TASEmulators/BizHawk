@@ -9,16 +9,16 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public sealed class Joypad
 	{
-		#region Fields
+
 
 		private JoypadButton _pressedButtons;
 		private float _analogX;
 		private float _analogY;
 		private int _player;
 
-		#endregion
 
-		#region cTor(s)
+
+
 
 		/// <summary>
 		/// Initialize a new instance of <see cref="Joypad"/>
@@ -37,9 +37,9 @@ namespace BizHawk.Client.EmuHawk
 			_player = player;
 		}
 
-		#endregion
 
-		#region Methods
+
+
 
 		/// <summary>
 		/// Add specified input to current ones
@@ -68,9 +68,9 @@ namespace BizHawk.Client.EmuHawk
 			_pressedButtons ^= input;
 		}
 
-		#endregion
 
-		#region Properties
+
+
 
 		/// <summary>
 		/// Gets or sets X value for Analog stick
@@ -112,6 +112,6 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public SystemInfo System { get; }
 
-		#endregion
+
 	}
 }

@@ -20,7 +20,7 @@
 			base.Dispose(disposing);
 		}
 
-		#region Component Designer generated code
+
 
 		/// <summary> 
 		/// Required method for Designer support - do not modify 
@@ -137,7 +137,7 @@
 
 		}
 
-		#endregion
+
 
 		private System.Windows.Forms.PropertyGrid propertyGrid1;
 		private System.Windows.Forms.Button buttonDefaults;

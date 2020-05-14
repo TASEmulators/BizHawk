@@ -282,7 +282,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		#region Change History
+
 
 		private bool AddMovieAction(string name)
 		{
@@ -380,10 +380,10 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		#endregion
+
 	}
 
-	#region Classes
+
 
 	public interface IMovieAction
 	{
@@ -748,5 +748,5 @@ namespace BizHawk.Client.Common
 		}
 	}
 
-	#endregion
+
 }

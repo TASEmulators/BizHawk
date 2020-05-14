@@ -165,7 +165,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			}
 		}
 
-		#region Audio
+
 
 		public BlipBuffer blip = new BlipBuffer(4500);
 
@@ -213,9 +213,9 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			blip.Clear();
 		}
 
-		#endregion
 
-		#region Video
+
+
 		public int _frameHz = 60;
 
 		public int[] _vidbuffer = new int[192 * 256];
@@ -235,6 +235,6 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		public int VsyncNumerator => _frameHz;
 		public int VsyncDenominator => 1;
 
-		#endregion
+
 	}
 }

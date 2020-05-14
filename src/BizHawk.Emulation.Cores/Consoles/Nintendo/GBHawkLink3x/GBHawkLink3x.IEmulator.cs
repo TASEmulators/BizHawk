@@ -419,7 +419,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 			R.Dispose();
 		}
 
-		#region Video provider
+
 
 		public int[] _vidbuffer = new int[160 * 2 * 144 * 2];
 
@@ -450,9 +450,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 		public static readonly uint[] color_palette_BW = { 0xFFFFFFFF , 0xFFAAAAAA, 0xFF555555, 0xFF000000 };
 		public static readonly uint[] color_palette_Gr = { 0xFFA4C505, 0xFF88A905, 0xFF1D551D, 0xFF052505 };
 
-		#endregion
 
-		#region audio
+
+
 
 		public bool CanProvideAsync => false;
 
@@ -513,6 +513,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 			R.audio.DisposeSound();
 		}
 
-		#endregion
+
 	}
 }

@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 			};
 		}
 
-		#region Controller
+
 
 		private static int GetButtons(IController c)
 		{
@@ -119,9 +119,9 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 
 		public override ControllerDefinition ControllerDefinition => NeoGeoPortableController;
 
-		#endregion
 
-		#region ISettable
+
+
 
 		private SyncSettings _syncSettings;
 
@@ -180,9 +180,9 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
-		#endregion
 
-		#region ISaveram
+
+
 
 		public new bool SaveRamModified => _neopop.HasSaveRam();
 
@@ -203,6 +203,6 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 				throw new InvalidOperationException("Core rejected the saveram");
 		}
 
-		#endregion
+
 	}
 }

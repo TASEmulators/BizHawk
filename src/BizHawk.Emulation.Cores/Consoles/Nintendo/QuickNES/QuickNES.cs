@@ -89,7 +89,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		int IVideoLogicalOffsets.ScreenY => _settings.ClipTopAndBottom ? 8 : 0;
 
-		#region FPU precision
+
 
 		private interface IFPCtrl : IDisposable
 		{
@@ -125,9 +125,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		IFPCtrl FP;
 
-		#endregion
 
-		#region Controller
+
+
 
 		public ControllerDefinition ControllerDefinition { get; private set; }
 
@@ -195,7 +195,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				j2 = 0;
 		}
 
-		#endregion
+
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
@@ -243,7 +243,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			LagCount = 0;
 		}
 
-		#region bootgod
+
 
 		public RomStatus? BootGodStatus { get; private set; }
 		public string BootGodName { get; private set; }
@@ -298,7 +298,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			}
 		}
 
-		#endregion
+
 
 		public void Dispose()
 		{
@@ -338,7 +338,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			return file;
 		}
 
-		#region Blacklist
+
 
 		// These games are known to not work in quicknes but quicknes thinks it can run them, bail out if one of these is loaded
 		private static readonly HashSet<string> HashBlackList = new HashSet<string>
@@ -594,6 +594,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			"4D5C2BF0B8EAA1690182D692A02BE1CC871481F4", // Punch-Out!! (E) (VS)
 		};
 
-		#endregion
+
 	}
 }

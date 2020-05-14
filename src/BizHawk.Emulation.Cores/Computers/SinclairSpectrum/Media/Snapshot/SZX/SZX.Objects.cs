@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// </summary>
 	public partial class SZX
 	{
-		#region ZX-State Header
+
 
 		public enum MachineIdentifier : byte
 		{
@@ -50,9 +50,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			public byte chFlags;
 		}
 
-		#endregion
 
-		#region ZXSTBLOCK Header
+
+
 
 		/// <summary>
 		/// Block Header. Each real block starts with this header.
@@ -63,9 +63,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			public uint dwSize;
 		}
 
-		#endregion
 
-		#region ZXSTCREATOR
+
+
 
 		/// <summary>
 		/// This block identifies the program that created this zx-state file.
@@ -81,9 +81,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			public byte[] chData;
 		}
 
-		#endregion
 
-		#region ZXSTZ80REGS
+
+
 
 		/// <summary>
 		/// The last instruction executed was an EI instruction or an invalid $DD or $FD prefix.
@@ -114,9 +114,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			public ushort wMemPtr;
 		}
 
-		#endregion
 
-		#region ZXSTSPECREGS
+
+
 
 		[StructLayout(LayoutKind.Sequential, Pack = 1)]
 		public struct ZXSTSPECREGS
@@ -129,9 +129,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			public byte[] chReserved;
 		}
 
-		#endregion
 
-		#region ZXSTAYBLOCK
+
+
 
 		/// <summary>
 		/// Fuller Box emulation
@@ -156,9 +156,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			public byte[] chAyRegs;
 		}
 
-		#endregion
 
-		#region ZXSTRAMPAGE
+
+
 
 		/// <summary>
 		/// Ram pages are compressed using Zlib
@@ -177,9 +177,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			public byte[] ramPage;
 		}
 
-		#endregion
 
-		#region ZXSTKEYBOARD
+
+
 
 		/// <summary>
 		/// Keyboard state
@@ -212,9 +212,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			public byte chKeyboardJoystick;
 		}
 
-		#endregion
 
-		#region ZXSTJOYSTICK
+
+
 
 		/// <summary>
 		/// Joystick setup for both players.
@@ -227,9 +227,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			public byte chTypePlayer2;
 		}
 
-		#endregion
 
-		#region ZXSTTAPE
+
+
 
 		/// <summary>
 		/// Cassette Recorder state
@@ -251,9 +251,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			public char[] szFileExtension;
 		}
 
-		#endregion
 
-		#region ZXSTPLUS3
+
+
 
 		/// <summary>
 		/// The number of drives connected to the Spectrum +3 and whether their motors are turned on. 
@@ -266,9 +266,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			public byte fMotorOn;
 		}
 
-		#endregion
 
-		#region ZXSTDSKFILE
+
+
 
 		/// <summary>
 		/// Not implemented. All disk images are currently links to external .dsk or .ipf files
@@ -296,110 +296,110 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			public int dwUncompressedSize;
 		}
 
-		#endregion
 
-		#region Not Yet Implemented
 
-		#region ZXSTATASP
 
-		#endregion
 
-		#region ZXSTATARAM
 
-		#endregion
 
-		#region ZXSTCF
 
-		#endregion
 
-		#region ZXSTCFRAM
 
-		#endregion
 
-		#region ZXSTCOVOX
 
-		#endregion
 
-		#region ZXSTBETA128
 
-		#endregion
 
-		#region ZXSTBETADISK
 
-		#endregion
 
-		#region ZXSTDOCK
 
-		#endregion
 
-		#region ZXSTGS
 
-		#endregion
 
-		#region ZXSTGSRAMPAGE
 
-		#endregion
 
-		#region ZXSTIF1
 
-		#endregion
 
-		#region ZXSTIF2ROM
 
-		#endregion
 
-		#region ZXSTMCART
 
-		#endregion
 
-		#region ZXSTMOUSE
 
-		#endregion
 
-		#region ZXSTMULTIFACE
 
-		#endregion
 
-		#region ZXSTOPUS
 
-		#endregion
 
-		#region ZXSTOPUSDISK
 
-		#endregion
 
-		#region ZXSTPLUSD
 
-		#endregion
 
-		#region ZXSTPLUSDDISK
 
-		#endregion
 
-		#region ZXSTROM
 
-		#endregion
 
-		#region ZXSTSCLDREGS
 
-		#endregion
 
-		#region ZXSTSIDE
 
-		#endregion
 
-		#region ZXSTSPECDRUM
 
-		#endregion
 
-		#region ZXSTUSPEECH
 
-		#endregion
 
-		#region ZXSTZXPRINTER
 
-		#endregion
 
-		#endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	}
 }

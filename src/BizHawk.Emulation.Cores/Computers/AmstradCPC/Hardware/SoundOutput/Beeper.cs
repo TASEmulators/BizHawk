@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// </summary>
 	public class Beeper : ISoundProvider, IBeeperDevice
 	{
-		#region Fields and Properties
+
 
 		/// <summary>
 		/// Sample Rate 
@@ -72,9 +72,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		private readonly BlipBuffer blip = new BlipBuffer(883);
 
-		#endregion
 
-		#region Private Methods
+
+
 
 		/// <summary>
 		/// Takes an int 0-100 and returns the relevant short volume to output
@@ -101,9 +101,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			return shortvol / increment;
 		}
 
-		#endregion
 
-		#region Construction & Initialisation
+
+
 
 		public Beeper(CPCBase machine)
 		{
@@ -120,9 +120,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			_tStatesPerFrame = tStatesPerFrame;
 		}
 
-		#endregion
 
-		#region IBeeperDevice
+
+
 
 		/// <summary>
 		/// Processes an incoming pulse value and adds it to the blipbuffer
@@ -151,9 +151,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			LastPulse = pulse;
 		}
 
-		#endregion
 
-		#region ISoundProvider
+
+
 
 		public bool CanProvideAsync => false;
 
@@ -187,9 +187,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 		}
 
-		#endregion
 
-		#region State Serialization
+
+
 
 		public void SyncState(Serializer ser)
 		{
@@ -201,6 +201,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			ser.EndSection();
 		}
 
-		#endregion
+
 	}
 }

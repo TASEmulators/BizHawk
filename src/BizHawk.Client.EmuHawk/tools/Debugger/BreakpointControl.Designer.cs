@@ -20,7 +20,7 @@
 			base.Dispose(disposing);
 		}
 
-		#region Component Designer generated code
+
 
 		/// <summary> 
 		/// Required method for Designer support - do not modify 
@@ -178,7 +178,7 @@
 
 		}
 
-		#endregion
+
 
 		private System.Windows.Forms.ListView BreakpointView;
 		public System.Windows.Forms.ColumnHeader columnHeader1;

@@ -589,14 +589,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			public byte FillerByte { get; set; }
 			public virtual Sector[] Sectors { get; set; }
 
-			#region UDI
+
 
 			public virtual byte TrackType { get; set; }
 			public virtual int TLEN { get; set; }
 			public virtual int CLEN => TLEN / 8 + (TLEN % 8 / 7) / 8;
 			public virtual byte[] TrackData { get; set; }
 
-			#endregion
+
 
 			/// <summary>
 			/// Presents a contiguous byte array of all sector data for this track

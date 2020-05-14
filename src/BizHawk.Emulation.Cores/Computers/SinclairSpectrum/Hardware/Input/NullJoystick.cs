@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		private int _joyLine;
 		private SpectrumBase _machine;
 
-		#region Construction
+
 
 		public NullJoystick(SpectrumBase machine, int playerNumber)
 		{
@@ -25,9 +25,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}.ToArray();
 		}
 
-		#endregion
 
-		#region IJoystick
+
+
 
 		public JoystickType JoyType => JoystickType.NULL;
 
@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			return (_joyLine & (1 << pos)) != 0;
 		}
 
-		#endregion
+
 
 		/// <summary>
 		/// Active bits high

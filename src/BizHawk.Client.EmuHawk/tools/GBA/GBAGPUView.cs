@@ -44,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 			RecomputeRefresh();
 		}
 
-		#region drawing primitives
+
 
 		private unsafe void DrawTile256(int* dest, int pitch, byte* tile, ushort* palette, bool hFlip, bool vFlip)
 		{
@@ -535,7 +535,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 
-		#endregion
+
 
 		private unsafe void DrawEverything()
 		{
@@ -751,7 +751,7 @@ namespace BizHawk.Client.EmuHawk
 			ShowSelectedWidget();
 		}
 
-		#region refresh control
+
 
 		private int? _cbScanline;
 		private int? _cbScanlineEmu = 500;
@@ -793,14 +793,14 @@ namespace BizHawk.Client.EmuHawk
 			DrawEverything();
 		}
 
-		#endregion
+
 
 		private void GbaGpuView_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			GBA?.SetScanlineCallback(null, 0);
 		}
 
-		#region copy to clipboard
+
 
 		private void timerMessage_Tick(object sender, EventArgs e)
 		{
@@ -831,6 +831,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 		}
-		#endregion
+
 	}
 }

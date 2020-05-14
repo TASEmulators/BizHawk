@@ -178,7 +178,7 @@ namespace BizHawk.Client.EmuHawk
 			base.OnDoubleClick(e);
 		}
 
-		#region Properties
+
 
 		/// <summary>
 		/// Gets or sets the amount of left and right padding on the text inside a cell
@@ -400,9 +400,9 @@ namespace BizHawk.Client.EmuHawk
 		[Category("Behavior")]
 		public bool Rotatable { get; set; }
 
-		#endregion
 
-		#region Event Handlers
+
+
 
 		/// <summary>
 		/// Fire the <see cref="QueryItemText"/> event which requests the text for the passed cell
@@ -556,9 +556,9 @@ namespace BizHawk.Client.EmuHawk
 			public int NewDisplayIndex { get; }
 		}
 
-		#endregion
 
-		#region Api
+
+
 
 		private int? _lastSelectedRow;
 
@@ -962,9 +962,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public string RotateHotkeyStr => "Ctrl+Shift+F";
 
-		#endregion
 
-		#region Mouse and Key Events
+
+
 
 		private bool _columnDownMoved;
 		private int _previousX; // TODO: move me
@@ -1549,9 +1549,9 @@ namespace BizHawk.Client.EmuHawk
 			base.OnKeyDown(e);
 		}
 
-		#endregion
 
-		#region Change Events
+
+
 
 		protected override void OnResize(EventArgs e)
 		{
@@ -1634,9 +1634,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		#endregion
 
-		#region Helpers
+
+
 
 		private void DoColumnReorder()
 		{
@@ -2093,6 +2093,6 @@ namespace BizHawk.Client.EmuHawk
 			return (VisibleRows + 1) * LagFramesToHide;
 		}
 
-		#endregion
+
 	}
 }

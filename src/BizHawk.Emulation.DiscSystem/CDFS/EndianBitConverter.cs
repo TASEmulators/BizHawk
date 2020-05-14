@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// begins.
 	/// </summary>
 	public class EndianBitConverter {
-		#region Static Constructors
+
 
 		/// <summary>
 		/// Build a converter from little endian to the system endian-ness.
@@ -30,18 +30,18 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <returns>The converter</returns>
 		public static EndianBitConverter CreateForBigEndian() => new EndianBitConverter(BitConverter.IsLittleEndian);
 
-		#endregion
 
-		#region Private Properties
+
+
 
 		/// <summary>
 		/// Keep track of whether we need to swap the bytes or not
 		/// </summary>
 		private bool swap;
 
-		#endregion
 
-		#region Private Constructor
+
+
 
 		/// <summary>
 		/// Create the converter with the given endian-ness.
@@ -51,9 +51,9 @@ namespace BizHawk.Emulation.DiscSystem
 			swap = swapBytes;
 		}
 
-		#endregion
 
-		#region 16-bit
+
+
 
 		public short ToInt16(byte[] data) {
 			return ToInt16(data, 0);
@@ -70,9 +70,9 @@ namespace BizHawk.Emulation.DiscSystem
 			return BitConverter.ToInt16(corrected, offset);
 		}
 
-		#endregion
 
-		#region 32-bit
+
+
 
 		public int ToInt32(byte[] data) {
 			return ToInt32(data, 0);
@@ -89,9 +89,9 @@ namespace BizHawk.Emulation.DiscSystem
 			return BitConverter.ToInt32(corrected, offset);
 		}
 
-		#endregion
 
-		#region 64-bit
+
+
 
 		public long ToInt64(byte[] data) {
 			return ToInt64(data, 0);
@@ -108,11 +108,11 @@ namespace BizHawk.Emulation.DiscSystem
 			return BitConverter.ToInt64(corrected, offset);
 		}
 
-		#endregion
+
 
 		// (asni 20171013) - Some methods I wrote that have been shoehorned in from another project to speed up development time
 		// If these are offensive in any way, tell me I suck and that I need to do more work with existing methods
-		#region Misc
+
 
 		/// <summary>
 		/// Returns a byte array of any length
@@ -144,6 +144,6 @@ namespace BizHawk.Emulation.DiscSystem
 			return result;
 		}
 
-		#endregion
+
 	}
 }

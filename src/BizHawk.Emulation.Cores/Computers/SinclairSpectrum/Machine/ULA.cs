@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// </summary>
 	public abstract class ULA : IVideoProvider
 	{
-		#region Other Devices
+
 
 		/// <summary>
 		/// The emulated spectrum
@@ -22,9 +22,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		protected CPUMonitor CPUMon;
 
-		#endregion
 
-		#region Construction & Initialisation
+
+
 
 		public ULA(SpectrumBase machine)
 		{
@@ -33,9 +33,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			borderType = _machine.Spectrum.SyncSettings.BorderType;
 		}
 
-		#endregion
 
-		#region Palettes
+
+
 
 		/// <summary>
 		/// The standard ULA palette
@@ -60,9 +60,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             Colors.ARGB(0xFF, 0xFF, 0xFF), // Bright White
         };
 
-		#endregion
 
-		#region Timing
+
+
 
 		/// <summary>
 		/// The CPU speed
@@ -120,9 +120,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public bool Border4T;
 		public int Border4TStage;
 
-		#endregion
 
-		#region Interrupt Generation
+
+
 
 		/// <summary>
 		/// Signs that an interrupt has been raised in this frame.
@@ -200,9 +200,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 		}
 
-		#endregion
 
-		#region Screen Layout
+
+
 
 		/// <summary>
 		/// Total pixels in one display row
@@ -233,9 +233,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		protected int ScanLineWidth;
 
-		#endregion
 
-		#region State
+
+
 
 		/// <summary>
 		/// The last T-State cycle at which the screen was rendered
@@ -264,15 +264,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		public int BorderColor = 7;
 
-		#endregion
 
-		#region Conversions
+
+
 
 		public int FrameLength => FrameCycleLength;
 
-		#endregion
 
-		#region Rendering Configuration
+
+
 
 		/// <summary>
 		/// Holds all information regarding rendering the screen based on the current T-State
@@ -539,9 +539,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 		}
 
-		#endregion
 
-		#region Render Methods
+
+
 
 		/// <summary>
 		/// Renders to the screen buffer based on the current cycle
@@ -760,9 +760,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 		}
 
-		#endregion
 
-		#region Contention
+
+
 
 		/// <summary>
 		/// Returns the contention value for the current t-state
@@ -800,9 +800,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			return RenderingTable.Renderer[tstate].ContentionValue;
 		}
 
-		#endregion
 
-		#region IVideoProvider
+
+
 
 		/// <summary>
 		/// Video output buffer
@@ -1017,9 +1017,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			set => _borderType = value;
 		}
 
-		#endregion
 
-		#region Serialization
+
+
 
 		public void SyncState(Serializer ser)
 		{
@@ -1049,6 +1049,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			ser.EndSection();
 		}
 
-		#endregion
+
 	}
 }

@@ -209,7 +209,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			_scanlineCallback = null;
 		}
 
-		#region GPUViewer
+
 
 		public bool IsCGBMode() => is_GBC;
 
@@ -284,7 +284,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			_printerCallback = null;
 		}
 
-		#endregion
+
 
 		public DisplayType Region => DisplayType.NTSC;
 

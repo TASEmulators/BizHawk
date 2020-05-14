@@ -20,7 +20,7 @@
 			base.Dispose(disposing);
 		}
 
-		#region Component Designer generated code
+
 
 		/// <summary> 
 		/// Required method for Designer support - do not modify 
@@ -61,7 +61,7 @@
 
 		}
 
-		#endregion
+
 
 		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;

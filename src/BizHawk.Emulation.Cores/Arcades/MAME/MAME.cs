@@ -1,4 +1,4 @@
-﻿#region Implementation docs
+﻿
 
 /*
                     FrameAdvance()
@@ -68,7 +68,7 @@ made that way to make the buffer persist actoss C API calls.
 
 */
 
-#endregion
+
 
 using System;
 using System.Collections.Generic;
@@ -116,7 +116,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 		}
 
-		#region Utility
+
 
 		private static string MameGetString(string command)
 		{
@@ -138,9 +138,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			return ret;
 		}
 
-		#endregion
 
-		#region Properties
+
+
 
 		public IEmulatorServiceProvider ServiceProvider { get; }
 		public ControllerDefinition ControllerDefinition => MAMEController;
@@ -163,9 +163,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		[FeatureNotImplemented]
 		public IInputCallbackSystem InputCallbacks => throw new NotImplementedException();
 
-		#endregion
 
-		#region Fields
+
+
 
 		private SyncSettings _syncSettings;
 		private Thread _mameThread;
@@ -197,9 +197,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private LibMAME.BootCallbackDelegate _bootCallback;
 		private LibMAME.LogCallbackDelegate _logCallback;
 
-		#endregion
 
-		#region Launchers
+
+
 
 		private void AsyncLaunchMAME()
 		{
@@ -250,9 +250,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			LibMAME.mame_launch(args.Length, args);
 		}
 
-		#endregion
 
-		#region IEmulator
+
+
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound = true)
 		{
@@ -300,9 +300,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			_hawkSaveBuffer = new byte[0];
 		}
 
-		#endregion
 
-		#region IStatable
+
+
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
@@ -364,9 +364,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			return _hawkSaveBuffer;
 		}
 
-		#endregion
 
-		#region ISettable
+
+
 
 		public object GetSettings() => null;
 		public PutSettingsDirtyBits PutSettings(object o) => PutSettingsDirtyBits.None;
@@ -398,9 +398,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			public ExpandoObject ExpandoSettings { get; set; }
 		}
 
-		#endregion
 
-		#region ISoundProvider
+
+
 
 		public void SetSyncMode(SyncSoundMode mode)
 		{
@@ -471,9 +471,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			_audioSamples.Clear();
 		}
 
-		#endregion
 
-		#region IMemoryDomains
+
+
 
 		private byte _peek(long addr, int firstOffset, long size)
 		{
@@ -576,9 +576,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(_memoryDomains);
 		}
 
-		#endregion
 
-		#region Updaters
+
+
 
 		private void UpdateFramerate()
 		{
@@ -646,9 +646,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				$"MAMEHawk is { version }");
 		}
 
-		#endregion
 
-		#region Callbacks
+
+
 
 		private void MAMEPeriodicCallback()
 		{
@@ -757,9 +757,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 		}
 
-		#endregion
 
-		#region Input
+
+
 
 		public static ControllerDefinition MAMEController = new ControllerDefinition
 		{
@@ -800,9 +800,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 		}
 
-		#endregion
 
-		#region Lua Commands
+
+
 
 		private class MAMELuaCommand
 		{
@@ -862,6 +862,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				"return table.concat(final)";
 		}
 
-		#endregion
+
 	}
 }

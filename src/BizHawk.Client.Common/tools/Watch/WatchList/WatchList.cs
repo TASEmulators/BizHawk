@@ -19,7 +19,7 @@ namespace BizHawk.Client.Common
 	public sealed partial class WatchList
 		: IList<Watch>
 	{
-		#region Fields
+
 
 		public const string Address = "AddressColumn";
 		public const string Value = "ValueColumn";
@@ -36,9 +36,9 @@ namespace BizHawk.Client.Common
 		private readonly string _systemId;
 		private IMemoryDomains _memoryDomains;
 
-		#endregion
 
-		#region cTor(s)
+
+
 
 		/// <summary>
 		/// Static constructor for the <see cref="WatchList"/> class.
@@ -71,11 +71,11 @@ namespace BizHawk.Client.Common
 			_systemId = systemId;
 		}
 
-		#endregion
 
-		#region Methods
 
-		#region ICollection<Watch>
+
+
+
 
 		/// <summary>
 		/// Adds a <see cref="Watch"/> into the current collection
@@ -135,9 +135,9 @@ namespace BizHawk.Client.Common
 			return result;
 		}
 
-		#endregion
 
-		#region IList<Watch>
+
+
 
 		/// <summary>
 		/// Determines the zero-base position of the specified <see cref="Watch"/>
@@ -170,9 +170,9 @@ namespace BizHawk.Client.Common
 			Changes = true;
 		}
 
-		#endregion IList<Watch>
 
-		#region IEnumerable<Watch>
+
+
 
 		/// <summary>
 		/// Returns an enumerator that iterates through the collection
@@ -192,7 +192,7 @@ namespace BizHawk.Client.Common
 			return GetEnumerator();
 		}
 
-		#endregion IEnumerable<Watch>
+
 
 		/// <summary>
 		/// Add an existing collection of <see cref="Watch"/> into the current one
@@ -284,11 +284,11 @@ namespace BizHawk.Client.Common
 			});
 		}
 
-		#endregion
 
-		#region Propeties
 
-		#region ICollection<Watch>
+
+
+
 
 		/// <summary>
 		/// Gets the number of elements contained in this <see cref="WatchList"/>
@@ -301,9 +301,9 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public bool IsReadOnly => false;
 
-		#endregion ICollection<Watch>
 
-		#region IList<Watch>
+
+
 
 		/// <summary>
 		/// Gets or sets element at the specified index
@@ -316,7 +316,7 @@ namespace BizHawk.Client.Common
 			set => _watchList[index] = value;
 		}
 
-		#endregion IList<Watch>
+
 
 		/// <summary>
 		/// Gets or sets a value indicating whether the collection has changed or not
@@ -333,9 +333,9 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public int WatchCount => _watchList.Count(watch => !watch.IsSeparator);
 
-		#endregion
 
-		#region File handling logic - probably needs to be its own class
+
+
 
 		public bool Load(string path, bool append)
 		{
@@ -519,6 +519,6 @@ namespace BizHawk.Client.Common
 
 			return true;
 		}
-		#endregion
+
 	}
 }

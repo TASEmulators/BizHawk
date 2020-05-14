@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 			return new LibVirtualBoyee.FrameInfo { Buttons = GetButtons(controller) };
 		}
 
-		#region Controller
+
 
 		private LibVirtualBoyee.Buttons GetButtons(IController c)
 		{
@@ -118,9 +118,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 
 		public override ControllerDefinition ControllerDefinition => VirtualBoyController;
 
-		#endregion
 
-		#region ISettable
+
+
 
 		public class SyncSettings
 		{
@@ -250,6 +250,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
-		#endregion
+
 	}
 }

@@ -22,7 +22,7 @@
 			_dropdownMenu.Dispose();
 		}
 
-		#region Component Designer generated code
+
 
 		/// <summary> 
 		/// Required method for Designer support - do not modify 
@@ -89,7 +89,7 @@
 
 		}
 
-		#endregion
+
 
 		private System.Windows.Forms.Button btnSpecial;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;

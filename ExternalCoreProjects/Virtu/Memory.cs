@@ -280,7 +280,7 @@ namespace Jellyfish.Virtu
 			MapRegionD0FF();
 		}
 
-		#region Core Read & Write
+
 
 		public int ReadOpcode(int address)
 		{
@@ -336,9 +336,9 @@ namespace Jellyfish.Virtu
 			_zeroPage[address] = (byte)data;
 		}
 
-		#endregion
 
-		#region Read Actions
+
+
 
 		private int ReadIoRegionC0CF(int address)
 		{
@@ -794,9 +794,9 @@ namespace Jellyfish.Virtu
 			return _romRegionE0FF[address - 0xE000];
 		}
 
-		#endregion
 
-		#region Write Actions
+
+
 
 		private void WriteIoRegionC0C0(int address, byte data)
 		{
@@ -1702,9 +1702,9 @@ namespace Jellyfish.Virtu
 		{
 		}
 
-		#endregion
 
-		#region Softswitch Actions
+
+
 		private void MapRegion0001()
 		{
 			if (!IsZeroPageAux)
@@ -2070,7 +2070,7 @@ namespace Jellyfish.Virtu
 			}
 		}
 
-		#endregion
+
 
 		private static int SetBit7(int data, bool value)
 		{

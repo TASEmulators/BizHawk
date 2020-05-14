@@ -363,7 +363,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		#region Internal Classes
+
 
 		public class Track
 		{
@@ -408,6 +408,6 @@ namespace BizHawk.Emulation.Common
 			public int GetChecksum256() => SectorData.Sum(b => b % 256);
 		}
 
-		#endregion
+
 	}
 }

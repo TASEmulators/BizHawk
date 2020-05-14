@@ -1184,7 +1184,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				((NOISE_enable ? 1 : 0) << 3));
 		}
 
-		#region audio
+
 
 		public bool CanProvideAsync => false;
 
@@ -1243,6 +1243,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			_blip_R = null;
 		}
 
-		#endregion
+
 	}
 }

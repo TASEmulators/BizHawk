@@ -15,7 +15,7 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public class OTK_GamePad
 	{
-		#region Static Members
+
 
 		/// <remarks>They don't have a way to query this for some reason. 4 is the minimum promised.</remarks>
 		private const int MAX_GAMEPADS = 4;
@@ -77,9 +77,9 @@ namespace BizHawk.Client.EmuHawk
 			return num * 10000.0f;
 		}
 
-		#endregion
 
-		#region Instance Members
+
+
 
 		/// <summary>The GUID as detected by OpenTK.Input.Joystick (or if that failed, a random one generated on construction)</summary>
 		public readonly Guid Guid;
@@ -367,7 +367,7 @@ namespace BizHawk.Client.EmuHawk
 			_gamePadCapabilities?.HasRightVibrationMotor == true ? right : 0
 		);
 
-		#endregion
+
 	}
 }
 

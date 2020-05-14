@@ -129,7 +129,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 		public bool DriveLightEnabled => true;
 		public bool DriveLightOn { get; private set; }
 
-		#region ISettable
+
 
 		public class Settings
 		{
@@ -391,6 +391,6 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 			_core.EnableLayers(l);
 		}
 
-		#endregion
+
 	}
 }

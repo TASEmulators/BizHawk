@@ -98,7 +98,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		public string SystemId => "WSWAN";
 		public bool DeterministicEmulation { get; }
 
-		#region Debugging
+
 
 		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
 		public IInputCallbackSystem InputCallbacks => _inputCallbacks;
@@ -189,9 +189,9 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 				MemoryCallbacks.HasExecutes ? ExecCallbackD : null);
 		}
 
-		#endregion
 
-		#region IVideoProvider
+
+
 
 		void InitVideo(bool rotate)
 		{
@@ -220,6 +220,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		public int VsyncNumerator => 3072000; // master CPU clock, also pixel clock
 		public int VsyncDenominator => (144 + 15) * (224 + 32); // 144 vislines, 15 vblank lines; 224 vispixels, 32 hblank pixels
 
-		#endregion
+
 	}
 }

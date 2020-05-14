@@ -20,7 +20,7 @@
 			base.Dispose(disposing);
 		}
 
-		#region Windows Form Designer generated code
+
 
 		/// <summary>
 		/// Required method for Designer support - do not modify
@@ -84,7 +84,7 @@
 
 		}
 
-		#endregion
+
 
 		private GBPrefControl gbPrefControl1;
 		private System.Windows.Forms.Button buttonOK;

@@ -125,7 +125,7 @@ namespace BizHawk.Client.EmuHawk
 			return instance;
 		}
 
-		#region Enumerable to Enumerable<T>
+
 
 		/// <summary>
 		/// Converts the outdated IEnumerable Controls property to an <see cref="IEnumerable{T}"/> like .NET should have done a long time ago
@@ -141,7 +141,7 @@ namespace BizHawk.Client.EmuHawk
 			return tabControl.TabPages.Cast<TabPage>();
 		}
 
-		#endregion
+
 	}
 
 	public static class FormExtensions

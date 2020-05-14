@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				"Check type operation is not implemented for this converter");
 		}
 
-		#region Static Tools
+
 
 		/// <summary>
 		/// Converts an int32 value into a byte array
@@ -118,6 +118,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			ds.Read(destBuffer, 0, destBuffer.Length);
 		}
 
-		#endregion
+
 	}
 }

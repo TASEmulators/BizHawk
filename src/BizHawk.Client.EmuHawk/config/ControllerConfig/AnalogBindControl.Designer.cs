@@ -20,7 +20,7 @@
 			base.Dispose(disposing);
 		}
 
-		#region Component Designer generated code
+
 
 		/// <summary> 
 		/// Required method for Designer support - do not modify 
@@ -156,7 +156,7 @@
 
 		}
 
-		#endregion
+
 
 		private System.Windows.Forms.TextBox textBox1;
 		private System.Windows.Forms.Label labelButtonName;

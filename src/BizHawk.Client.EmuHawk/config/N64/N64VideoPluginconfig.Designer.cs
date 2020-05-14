@@ -20,7 +20,7 @@
 			base.Dispose(disposing);
 		}
 
-		#region Windows Form Designer generated code
+
 
 		/// <summary>
 		/// Required method for Designer support - do not modify
@@ -4675,7 +4675,7 @@
 
 		}
 
-		#endregion
+
 
 		private System.Windows.Forms.TabControl N64plugintabcontrol;
 		private System.Windows.Forms.TabPage N64vpluginglobaltab;

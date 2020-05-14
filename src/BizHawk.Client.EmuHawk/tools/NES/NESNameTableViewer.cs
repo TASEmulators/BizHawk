@@ -179,9 +179,9 @@ namespace BizHawk.Client.EmuHawk
 			NameTableView.Refresh();
 		}
 
-		#region Events
 
-		#region Menu and Context Menu
+
+
 
 		private void ScreenshotMenuItem_Click(object sender, EventArgs e)
 		{
@@ -204,9 +204,9 @@ namespace BizHawk.Client.EmuHawk
 			NameTableView.Refresh();
 		}
 
-		#endregion
 
-		#region Dialog and Controls
+
+
 
 		private void NesNameTableViewer_KeyDown(object sender, KeyEventArgs e)
 		{
@@ -323,8 +323,8 @@ namespace BizHawk.Client.EmuHawk
 			PaletteLabel.Text = "";
 		}
 
-		#endregion
 
-		#endregion
+
+
 	}
 }

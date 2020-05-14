@@ -79,7 +79,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		*/
 
 
-		#region Block Meta Data
+
 
 		/// <summary>
 		/// Dictionary of block related data
@@ -105,7 +105,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 		}
 
-		#endregion
+
 
 
 

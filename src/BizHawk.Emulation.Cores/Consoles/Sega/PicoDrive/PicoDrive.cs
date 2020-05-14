@@ -183,7 +183,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 			_core.SetCDReadCallback(_cdcallback);
 		}
 
-		#region ISettable
+
 
 		public class SyncSettings
 		{
@@ -243,19 +243,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
-		#endregion
 
-		#region IDriveLight
+
+
 
 		public bool DriveLightEnabled { get; }
 		public bool DriveLightOn { get; private set; }
 
-		#endregion
 
-		#region IRegionable
+
+
 
 		public DisplayType Region => _isPal ? DisplayType.PAL : DisplayType.NTSC;
 
-		#endregion
+
 	}
 }
