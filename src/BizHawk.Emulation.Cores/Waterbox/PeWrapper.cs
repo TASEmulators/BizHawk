@@ -296,7 +296,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// </summary>
 		private void ProtectMemory()
 		{
-			Memory.Protect(Memory.AddressRange.Start, Memory.Size, MemoryBlockBase.Protection.R);
+			Memory.Protect(Memory.Start, Memory.Size, MemoryBlockBase.Protection.R);
 
 			foreach (var s in _sections)
 			{
