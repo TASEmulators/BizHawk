@@ -216,8 +216,6 @@ namespace Jellyfish.Virtu
 			DirtyScreenText();
 		}
 
-		#region Draw Methods
-
 		private void DrawText40(int data, int x, int y)
 		{
 			int color = IsMonochrome ? ColorMono00 : ColorWhite00;
@@ -737,9 +735,6 @@ namespace Jellyfish.Virtu
 			}
 		}
 
-		#endregion
-
-		#region Flush Methods
 		private void FlushRowMode0(int y)
 		{
 			int address = (_memory.IsVideoPage2 ? 0x0800 : 0x0400) + AddressOffset[y];
@@ -951,7 +946,6 @@ namespace Jellyfish.Virtu
 				FlushRowMode2(y); // text80
 			}
 		}
-		#endregion
 
 		private void FlushRowEvent()
 		{

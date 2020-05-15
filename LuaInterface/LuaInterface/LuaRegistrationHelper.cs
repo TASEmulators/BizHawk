@@ -6,7 +6,6 @@ namespace NLua
 {
     public static class LuaRegistrationHelper
     {
-        #region Tagged instance methods
         /// <summary>
         /// Registers all public instance methods in an object tagged with <see cref="LuaGlobalAttribute"/> as Lua global functions
         /// </summary>
@@ -14,10 +13,8 @@ namespace NLua
         /// <param name="o">The object to get the methods from</param>
         public static void TaggedInstanceMethods(Lua lua, object o)
         {
-            #region Sanity checks
             if (lua == null) throw new ArgumentNullException("lua");
             if (o == null) throw new ArgumentNullException("o");
-            #endregion
 
             foreach (MethodInfo method in o.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public))
             {
@@ -30,9 +27,7 @@ namespace NLua
                 }
             }
         }
-        #endregion
 
-        #region Tagged static methods
         /// <summary>
         /// Registers all public static methods in a class tagged with <see cref="LuaGlobalAttribute"/> as Lua global functions
         /// </summary>
@@ -40,11 +35,9 @@ namespace NLua
         /// <param name="type">The class type to get the methods from</param>
         public static void TaggedStaticMethods(Lua lua, Type type)
         {
-            #region Sanity checks
             if (lua == null) throw new ArgumentNullException("lua");
             if (type == null) throw new ArgumentNullException("type");
             if (!type.IsClass) throw new ArgumentException("The type must be a class!", "type");
-            #endregion
 
             foreach (MethodInfo method in type.GetMethods(BindingFlags.Static | BindingFlags.Public))
             {
@@ -57,9 +50,7 @@ namespace NLua
                 }
             }
         }
-        #endregion
 
-        #region Enumeration
         /// <summary>
         /// Registers an enumeration's values for usage as a Lua variable table
         /// </summary>
@@ -68,9 +59,7 @@ namespace NLua
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter", Justification = "The type parameter is used to select an enum type")]
         public static void Enumeration<T>(Lua lua)
         {
-            #region Sanity checks
             if (lua == null) throw new ArgumentNullException("lua");
-            #endregion
 
             Type type = typeof(T);
             if (!type.IsEnum) throw new ArgumentException("The type must be an enumeration!");
@@ -85,6 +74,5 @@ namespace NLua
                 lua[path] = values[i];
             }
         }
-        #endregion
     }
 }
