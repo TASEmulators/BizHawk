@@ -154,11 +154,11 @@ namespace BizHawk.BizInvoke
 				throw new InvalidOperationException("Out of Thunk memory");
 			}
 
-			private int FindUsedIndex(object o)
+			private int FindUsedIndex(object lifetime)
 			{
 				for (int i = 0; i < _refs.Length; i++)
 				{
-					if (_refs[i] == o)
+					if (_refs[i]?.Target == lifetime)
 						return i;
 				}
 				return -1;
