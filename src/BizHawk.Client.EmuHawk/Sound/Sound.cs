@@ -25,8 +25,7 @@ namespace BizHawk.Client.EmuHawk
 			if (OSTailoredCode.IsUnixHost)
 			{
 				// at the moment unix/mono can only support OpenAL (so ignore whatever is set in the config)
-//				_outputDevice = new OpenALSoundOutput(this);
-				// scratch that it's trying to load openal.dll for some reason
+				_outputDevice = new OpenALSoundOutput(this);
 			}
 			else
 			{

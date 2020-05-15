@@ -230,7 +230,7 @@ namespace BizHawk.Client.Common
 		public int DispCropBottom { get; set; } = 0;
 
 		// Sound options
-		public ESoundOutputMethod SoundOutputMethod { get; set; } = DetectDirectX() ? ESoundOutputMethod.DirectSound : ESoundOutputMethod.Dummy; // with OpenAL, Mono is trying to load openal.dll for some reason
+		public ESoundOutputMethod SoundOutputMethod { get; set; } = DetectDirectX() ? ESoundOutputMethod.DirectSound : ESoundOutputMethod.OpenAL;
 		public bool SoundEnabled { get; set; } = true;
 		public bool SoundEnabledNormal { get; set; } = true;
 		public bool SoundEnabledRWFF { get; set; } = true;
