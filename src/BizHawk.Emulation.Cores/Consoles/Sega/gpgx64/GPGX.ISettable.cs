@@ -265,18 +265,18 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			[DisplayName("Three band low gain")]
 			[Description("Only active when filter type is three band")]
-			[DefaultValue((short)1)]
-			public short LowGain { get; set; }
+			[DefaultValue(1f)]
+			public float LowGain { get; set; }
 
 			[DisplayName("Three band mid gain")]
 			[Description("Only active when filter type is three band")]
-			[DefaultValue((short)1)]
-			public short MidGain { get; set; }
+			[DefaultValue(1f)]
+			public float MidGain { get; set; }
 
 			[DisplayName("Three band high gain")]
 			[Description("Only active when filter type is three band")]
-			[DefaultValue((short)1)]
-			public short HighGain { get; set; }
+			[DefaultValue(1f)]
+			public float HighGain { get; set; }
 
 			[Description("Magic pink by default. Requires core reboot")]
 			[TypeConverter(typeof(UintToHexConverter))]
@@ -291,9 +291,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					LowPassRange = LowPassRange,
 					LowFreq = LowFreq,
 					HighFreq = HighFreq,
-					LowGain = LowGain,
-					MidGain = MidGain,
-					HighGain = HighGain,
+					LowGain = (short)(LowGain * 100),
+					MidGain = (short)(MidGain * 100),
+					HighGain = (short)(HighGain * 100),
 					BackdropColor = BackdropColor
 				};
 			}
