@@ -27,12 +27,18 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// <summary>
 		/// get a page index within the block
 		/// </summary>
-		private int GetPage(ulong addr) => (int) ((addr - Memory.AddressRange.Start) >> WaterboxUtils.PageShift);
+		private int GetPage(ulong addr)
+		{
+			return (int)((addr - Memory.Start) >> WaterboxUtils.PageShift);
+		}
 
 		/// <summary>
 		/// get a start address for a page index within the block
 		/// </summary>
-		private ulong GetStartAddr(int page) => Memory.AddressRange.Start + ((ulong) page << WaterboxUtils.PageShift);
+		private ulong GetStartAddr(int page)
+		{
+			return ((ulong)page << WaterboxUtils.PageShift) + Memory.Start;
+		}
 
 		private const MemoryBlockBase.Protection FREE = (MemoryBlockBase.Protection)255;
 
@@ -172,7 +178,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			// TODO: what is the expected behavior when everything requested for remap is allocated,
 			// but with different protections?
-			if (oldSize == 0 || newSize == 0 || start < Memory.AddressRange.Start || Memory.AddressRange.EndInclusive < start + oldSize - 1)
+			if (start < Memory.Start || start + oldSize > Memory.End || oldSize == 0 || newSize == 0)
 				return 0;
 
 			var oldStartPage = GetPage(start);
@@ -237,7 +243,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public bool Protect(ulong start, ulong size, MemoryBlockBase.Protection prot)
 		{
-			if (size == 0 || start < Memory.AddressRange.Start || Memory.AddressRange.EndInclusive < start + size - 1)
+			if (start < Memory.Start || start + size > Memory.End || size == 0)
 				return false;
 
 			var startPage = GetPage(start);
@@ -268,8 +274,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			bw.Write(Memory.XorHash);
 			bw.Write(_pagesAsBytes);
 
-			Memory.Protect(Memory.AddressRange.Start, Memory.Size, MemoryBlockBase.Protection.R);
-			var srcs = Memory.GetXorStream(Memory.AddressRange.Start, Memory.Size, false);
+			Memory.Protect(Memory.Start, Memory.Size, MemoryBlockBase.Protection.R);
+			var srcs = Memory.GetXorStream(Memory.Start, Memory.Size, false);
 			for (int i = 0, addr = 0; i < _pages.Length; i++, addr += WaterboxUtils.PageSize)
 			{
 				if (_pages[i] != FREE)
@@ -299,8 +305,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				throw new InvalidOperationException("Unexpected error reading!");
 
 			Used = 0;
-			Memory.Protect(Memory.AddressRange.Start, Memory.Size, MemoryBlockBase.Protection.RW);
-			var dsts = Memory.GetXorStream(Memory.AddressRange.Start, Memory.Size, true);
+			Memory.Protect(Memory.Start, Memory.Size, MemoryBlockBase.Protection.RW);
+			var dsts = Memory.GetXorStream(Memory.Start, Memory.Size, true);
 			for (int i = 0, addr = 0; i < _pages.Length; i++, addr += WaterboxUtils.PageSize)
 			{
 				if (_pages[i] != FREE)

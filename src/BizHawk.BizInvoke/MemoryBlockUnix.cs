@@ -27,8 +27,8 @@ namespace BizHawk.BizInvoke
 		{
 			if (Active) throw new InvalidOperationException("Already active");
 
-			var ptr = mmap(Z.US(AddressRange.Start), Z.UU(Size), MemoryProtection.Read | MemoryProtection.Write | MemoryProtection.Execute, 16, _fd, IntPtr.Zero);
-			if (ptr != Z.US(AddressRange.Start)) throw new InvalidOperationException($"{nameof(mmap)}() returned NULL or the wrong pointer");
+			var ptr = mmap(Z.US(Start), Z.UU(Size), MemoryProtection.Read | MemoryProtection.Write | MemoryProtection.Execute, 16, _fd, IntPtr.Zero);
+			if (ptr != Z.US(Start)) throw new InvalidOperationException($"{nameof(mmap)}() returned NULL or the wrong pointer");
 
 			ProtectAll();
 			Active = true;
@@ -39,7 +39,7 @@ namespace BizHawk.BizInvoke
 		{
 			if (!Active) throw new InvalidOperationException("Not active");
 
-			var exitCode = munmap(Z.US(AddressRange.Start), Z.UU(Size));
+			var exitCode = munmap(Z.US(Start), Z.UU(Size));
 			if (exitCode != 0) throw new InvalidOperationException($"{nameof(munmap)}() returned {exitCode}");
 
 			Active = false;
@@ -51,10 +51,10 @@ namespace BizHawk.BizInvoke
 			if (!Active) throw new InvalidOperationException("Not active");
 
 			// temporarily switch the entire block to `R`
-			var exitCode = mprotect(Z.US(AddressRange.Start), Z.UU(Size), MemoryProtection.Read);
+			var exitCode = mprotect(Z.US(Start), Z.UU(Size), MemoryProtection.Read);
 			if (exitCode != 0) throw new InvalidOperationException($"{nameof(mprotect)}() returned {exitCode}!");
 
-			var ret = WaterboxUtils.Hash(GetStream(AddressRange.Start, Size, false));
+			var ret = WaterboxUtils.Hash(GetStream(Start, Size, false));
 			ProtectAll();
 			return ret;
 		}
@@ -107,11 +107,11 @@ namespace BizHawk.BizInvoke
 			if (!Active) throw new InvalidOperationException("Not active");
 
 			// temporarily switch the entire block to `R`: in case some areas are unreadable, we don't want that to complicate things
-			var exitCode = mprotect(Z.US(AddressRange.Start), Z.UU(Size), MemoryProtection.Read);
+			var exitCode = mprotect(Z.US(Start), Z.UU(Size), MemoryProtection.Read);
 			if (exitCode != 0) throw new InvalidOperationException($"{nameof(mprotect)}() returned {exitCode}!");
 
 			_snapshot = new byte[Size];
-			GetStream(AddressRange.Start, Size, false).CopyTo(new MemoryStream(_snapshot, true));
+			GetStream(Start, Size, false).CopyTo(new MemoryStream(_snapshot, true));
 			XorHash = WaterboxUtils.Hash(_snapshot);
 			ProtectAll();
 		}
