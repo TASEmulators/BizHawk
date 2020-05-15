@@ -208,7 +208,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			ppu.DisposeSound();
 		}
 
-
+		#region Video provider
 
 		public int _frameHz = 60;
 
@@ -253,6 +253,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public uint[] color_palette = new uint[4];
 
-
+		#endregion
 	}
 }

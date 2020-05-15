@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// </summary>
 	public class DatacorderDevice : IPortIODevice
 	{
-
+		#region Construction
 
 		private SpectrumBase _machine { get; set; }
 		private Z80A _cpu { get; set; }
@@ -37,9 +37,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			_buzzer = machine.TapeBuzzer;
 		}
 
+		#endregion
 
-
-
+		#region State Information
 
 		/// <summary>
 		/// Internal counter used to trigger tape buzzer output
@@ -113,9 +113,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		private bool currentState = false;
 
+		#endregion
 
-
-
+		#region Datacorder Device Settings
 
 		/// <summary>
 		/// Signs whether the device should autodetect when the Z80 has entered into
@@ -123,9 +123,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		private bool _autoPlay;
 
+		#endregion
 
-
-
+		#region Emulator    
 
 		/// <summary>
 		/// Should be fired at the end of every frame
@@ -144,9 +144,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			//_buzzer.ProcessPulseValue(currentState);
 		}
 
+		#endregion
 
-
-
+		#region Tape Controls
 
 		/// <summary>
 		/// Starts the tape playing from the beginning of the current block
@@ -431,9 +431,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			RTZ();
 		}
 
+		#endregion
 
-
-
+		#region Tape Device Methods        
 
 		/// <summary>
 		/// Is called every cpu cycle but runs every 50 t-states
@@ -731,9 +731,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		}
 
+		#endregion
 
-
-
+		#region TapeMonitor
 
 		private long _lastINCycle = 0;
 		private int _monitorCount;
@@ -908,9 +908,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 		}
 
+		#endregion
 
-
-
+		#region IPortIODevice
 
 		/// <summary>
 		/// Mask constants
@@ -961,9 +961,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			return true;
 		}
 
+		#endregion
 
-
-
+		#region State Serialization
 
 		/// <summary>
 		/// Bizhawk state serialization
@@ -986,6 +986,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			ser.EndSection();
 		}
 
-
+		#endregion
 	}
 }

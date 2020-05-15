@@ -431,7 +431,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			return temp;
 		}
 
-
+		#region IDisassemblable
 
 		public string Cpu
 		{
@@ -452,6 +452,6 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			return ret;
 		}
 
-
+		#endregion
 	}
 }

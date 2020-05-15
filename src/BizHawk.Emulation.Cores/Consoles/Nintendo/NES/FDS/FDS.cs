@@ -17,14 +17,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	[NesBoardImplCancel]
 	internal sealed class FDS : NesBoardBase
 	{
-
+		#region configuration
 		/// <summary>FDS bios image; should be 8192 bytes</summary>
 		public byte[] biosrom;
 		/// <summary>.FDS disk image</summary>
 		byte[] diskimage;
+		#endregion
 
-
-
+		#region state
 		RamAdapter diskdrive;
 		FDSAudio audio;
 		/// <summary>currently loaded side of the .FDS image, 0 based</summary>
@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int timervalue;
 		/// <summary>4022.0,1</summary>
 		byte timerreg;
-
+		#endregion
 
 		public override void SyncState(Serializer ser)
 		{

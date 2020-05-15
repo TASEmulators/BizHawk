@@ -81,7 +81,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-
+		#region Log Editing
 
 		public void AppendFrame(IController source)
 		{
@@ -165,7 +165,7 @@ namespace BizHawk.Client.Common
 			Changes = true;
 		}
 
-
+		#endregion
 
 		protected void SetFrameAt(int frameNum, string frame)
 		{

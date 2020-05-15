@@ -100,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 
-
+		#region drawing primitives
 
 		/// <summary>
 		/// draw a single 2bpp tile
@@ -354,7 +354,7 @@ namespace BizHawk.Client.EmuHawk
 			b.UnlockBits(lockData);
 		}
 
-
+		#endregion
 
 		void ScanlineCallback(byte lcdc)
 		{
@@ -483,7 +483,7 @@ namespace BizHawk.Client.EmuHawk
 			Gb?.SetScanlineCallback(null, 0);
 		}
 
-
+		#region refresh
 
 		private void radioButtonRefreshFrame_CheckedChanged(object sender, EventArgs e) { ComputeRefreshValues(); }
 		private void radioButtonRefreshScanline_CheckedChanged(object sender, EventArgs e) { ComputeRefreshValues(); }
@@ -565,9 +565,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		#endregion
 
-
-
+		#region mouseovers
 
 		private string _freezeLabel;
 		private Bitmap _freezeBmp;
@@ -894,7 +894,7 @@ namespace BizHawk.Client.EmuHawk
 			SpriteMouseover(e.X, e.Y);
 		}
 
-
+		#endregion
 
 		private void bmpView_MouseClick(object sender, MouseEventArgs e)
 		{
@@ -909,7 +909,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-
+		#region copyimage
 
 		private readonly Timer _messageTimer = new Timer();
 
@@ -943,7 +943,7 @@ namespace BizHawk.Client.EmuHawk
 			labelClipboard.Text = "CTRL+C copies the pane under the mouse.";
 		}
 
-
+		#endregion
 
 		private void ButtonChangeColor_Click(object sender, EventArgs e)
 		{

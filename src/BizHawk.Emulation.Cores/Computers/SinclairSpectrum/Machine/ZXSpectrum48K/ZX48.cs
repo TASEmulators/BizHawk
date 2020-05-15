@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// </summary>
 	public partial class ZX48 : SpectrumBase
 	{
-
+		#region Construction
 
 		/// <summary>
 		/// Main constructor
@@ -37,9 +37,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			InitializeMedia(files);
 		}
 
+		#endregion
 
-
-
+		#region Reset
 
 		public override void HardReset()
 		{
@@ -52,6 +52,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 		}
 
-
+		#endregion
 	}
 }

@@ -183,7 +183,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 
 		public DisplayType Region => _isPal ? DisplayType.PAL : DisplayType.NTSC;
 
-
+		#region ISettable
 
 		public class Settings
 		{
@@ -479,9 +479,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			_core.SetVideoParameters(correctAspect, _settings.HBlend, _settings.HOverscan, sls, sle);
 		}
 
+		#endregion
 
-
-
+		#region IStatable
 
 		protected override void SaveStateBinaryInternal(BinaryWriter writer)
 		{
@@ -505,9 +505,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			//PutSettings(_settings);
 		}
 
+		#endregion
 
-
-
+		#region Callbacks
 
 		private LibSaturnus.FirmwareSizeCallback _firmwareSizeCallback;
 		private LibSaturnus.FirmwareDataCallback _firmwareDataCallback;
@@ -602,7 +602,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		public bool DriveLightEnabled => true;
 		public bool DriveLightOn { get; private set; }
 
-
+		#endregion
 
 		private const int PalFpsNum = 1734687500;
 		private const int PalFpsDen = 61 * 455 * 1251;

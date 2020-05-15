@@ -125,7 +125,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-
+		#region Query callbacks
 
 		// public static Color CurrentFrame_FrameCol = Color.FromArgb(0xCF, 0xED, 0xFC); Why?
 		public static Color CurrentFrame_InputLog => Color.FromArgb(0xB5, 0xE7, 0xF7);
@@ -362,9 +362,9 @@ namespace BizHawk.Client.EmuHawk
 			return (lag.Lagged.HasValue && lag.Lagged.Value) || (hideWasLag && lag.WasLagged.HasValue && lag.WasLagged.Value);
 		}
 
+		#endregion
 
-
-
+		#region Events
 
 		private void TasView_ColumnClick(object sender, InputRoll.ColumnClickEventArgs e)
 		{
@@ -1461,6 +1461,6 @@ namespace BizHawk.Client.EmuHawk
 			RefreshDialog();
 		}
 
-
+		#endregion
 	}
 }

@@ -20,7 +20,7 @@
 			base.Dispose(disposing);
 		}
 
-
+		#region Windows Form Designer generated code
 
 		/// <summary>
 		/// Required method for Designer support - do not modify
@@ -190,7 +190,7 @@
 
 		}
 
-
+		#endregion
 
 		private System.Windows.Forms.ListBox listBoxWidgets;
 		private System.Windows.Forms.Panel panel1;

@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 			return true;
 		}
 
-
+		#region link cable
 
 		private class LinkCable
 		{
@@ -278,7 +278,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 			}
 		}
 
-
+		#endregion
 
 		private class PrefixController : IController
 		{

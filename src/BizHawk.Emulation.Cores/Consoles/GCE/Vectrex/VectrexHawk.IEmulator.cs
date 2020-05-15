@@ -114,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			audio.DisposeSound();
 		}
 
-
+		#region Video provider
 
 		public int _frameHz = 50;
 
@@ -146,6 +146,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		public int VsyncNumerator => _frameHz;
 		public int VsyncDenominator => 1;
 
-
+		#endregion
 	}
 }

@@ -20,7 +20,7 @@
 			base.Dispose(disposing);
 		}
 
-
+		#region Component Designer generated code
 
 		/// <summary> 
 		/// Required method for Designer support - do not modify 
@@ -276,7 +276,7 @@
 
 		}
 
-
+		#endregion
 
 		private System.Windows.Forms.GroupBox BookmarksBranchesGroupBox;
 		private InputRoll BranchView;

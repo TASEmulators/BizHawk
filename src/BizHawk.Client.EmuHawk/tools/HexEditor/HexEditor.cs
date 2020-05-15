@@ -152,7 +152,7 @@ namespace BizHawk.Client.EmuHawk
 			GeneralUpdate();
 		}
 
-
+		#region API
 
 		protected override void UpdateAfter()
 		{
@@ -344,7 +344,7 @@ namespace BizHawk.Client.EmuHawk
 			_hexFind.Close();
 		}
 
-
+		#endregion
 
 		private byte[] ConvertHexStringToByteArray(string str)
 		{
@@ -1247,9 +1247,9 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
+		#region Events
 
-
-
+		#region File Menu
 
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -1395,9 +1395,9 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
+		#endregion
 
-
-
+		#region Edit
 
 		private void EditMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
@@ -1551,9 +1551,9 @@ namespace BizHawk.Client.EmuHawk
 			FindPrev(_findStr, false);
 		}
 
+		#endregion
 
-
-
+		#region Options
 
 		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -1729,9 +1729,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		#endregion
 
-
-
+		#region Settings Menu
 
 		private void SetColorsMenuItem_Click(object sender, EventArgs e)
 		{
@@ -1749,9 +1749,9 @@ namespace BizHawk.Client.EmuHawk
 			Colors = new ColorConfig();
 		}
 
+		#endregion
 
-
-
+		#region Context Menu and Dialog Events
 
 		private void HexEditor_Resize(object sender, EventArgs e)
 		{
@@ -2086,9 +2086,9 @@ namespace BizHawk.Client.EmuHawk
 			GeneralUpdate();
 		}
 
+		#endregion
 
-
-
+		#region MemoryViewer Events
 
 		private void HexEditor_MouseWheel(object sender, MouseEventArgs e)
 		{
@@ -2284,9 +2284,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		#endregion
 
-
-
+		#endregion
 
 		private void viewN64MatrixToolStripMenuItem_Click(object sender, EventArgs e)
 		{

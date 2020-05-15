@@ -292,7 +292,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-
+		#region Events
 
 		private void NewPathConfig_Load(object sender, EventArgs e)
 		{
@@ -336,6 +336,6 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-
+		#endregion
 	}
 }

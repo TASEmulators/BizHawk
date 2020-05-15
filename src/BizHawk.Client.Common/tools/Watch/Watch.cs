@@ -50,9 +50,9 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		#region Methods
 
-
-
+		#region Static
 
 		/// <summary>
 		/// Generate sa <see cref="Watch"/> from a given string
@@ -146,7 +146,7 @@ namespace BizHawk.Client.Common
 			};
 		}
 
-
+		#region Operators
 
 		/// <summary>
 		/// Equality operator between two <see cref="Watch"/>
@@ -255,11 +255,11 @@ namespace BizHawk.Client.Common
 			return a.CompareTo(b) >= 0;
 		}
 
+		#endregion Operators
 
+		#endregion Static
 
-
-
-
+		#region Abstracts
 
 		/// <summary>
 		/// Gets a list a <see cref="DisplayType"/> that can be used for this <see cref="Watch"/>
@@ -277,9 +277,9 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public abstract void Update();
 
+		#endregion Abstracts
 
-
-
+		#region Protected
 
 		protected byte GetByte(bool bypassFreeze = false)
 		{
@@ -365,7 +365,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-
+		#endregion Protected
 
 		/// <summary>
 		/// Sets the number of changes to 0
@@ -375,7 +375,7 @@ namespace BizHawk.Client.Common
 			ChangeCount = 0;
 		}
 
-
+		#region IEquatable<Watch>
 
 		/// <summary>
 		/// Determines if this <see cref="Watch"/> is equals to another
@@ -394,9 +394,9 @@ namespace BizHawk.Client.Common
 				Size == other.Size;
 		}
 
+		#endregion IEquatable<Watch>
 
-
-
+		#region IEquatable<Cheat>
 
 		/// <summary>
 		/// Determines if this <see cref="Watch"/> is equals to an instance of <see cref="Cheat"/>
@@ -411,9 +411,9 @@ namespace BizHawk.Client.Common
 				&& Size == other.Size;
 		}
 
+		#endregion IEquatable<Cheat>
 
-
-
+		#region  IComparable<Watch>
 
 		/// <summary>
 		/// Compares two <see cref="Watch"/> together and determine which one comes first.
@@ -442,7 +442,7 @@ namespace BizHawk.Client.Common
 			return Address.CompareTo(other.Address);
 		}
 
-
+		#endregion IComparable<Watch>
 
 		/// <summary>
 		/// Determines if this object is Equals to another
@@ -499,11 +499,11 @@ namespace BizHawk.Client.Common
 		/// <returns>A well formatted string representation</returns>
 		public virtual string ToDisplayString() => $"{Notes}: {ValueString}";
 
+		#endregion
 
+		#region Properties
 
-
-
-
+		#region Abstracts
 
 		/// <summary>
 		/// Gets a string representation of difference
@@ -551,7 +551,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public abstract string PreviousStr { get; }
 
-
+		#endregion Abstracts
 
 		/// <summary>
 		/// Gets the address in the <see cref="MemoryDomain"/>
@@ -631,7 +631,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public WatchSize Size { get; }
 
-
+		#endregion
 
 		// TODO: Replace all the following stuff by implementing ISerializable
 		public static string DisplayTypeToString(DisplayType type)

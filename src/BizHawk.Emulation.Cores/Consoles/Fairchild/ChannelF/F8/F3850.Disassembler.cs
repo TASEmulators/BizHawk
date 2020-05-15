@@ -314,9 +314,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			return temp;
 		}
 
+		#region IDisassemblable
 
-
-
+		#endregion
 
 		public string Cpu
 		{

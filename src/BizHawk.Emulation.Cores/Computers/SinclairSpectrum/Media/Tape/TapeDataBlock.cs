@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			set => _blockData = value;
 		}
 
-
+		#region Block Meta Data
 
 		/// <summary>
 		/// Dictionary of block related data
@@ -74,7 +74,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 		}
 
-
+		#endregion
 
 		/// <summary>
 		/// List containing the pulse timing values

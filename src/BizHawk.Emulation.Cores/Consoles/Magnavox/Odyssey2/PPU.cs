@@ -1031,7 +1031,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			AudioSyncState(ser);
 		}
 
-
+		#region audio
 
 		private BlipBuffer _blip_C = new BlipBuffer(15000);
 
@@ -1219,7 +1219,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			_blip_C = null;
 		}
 
-
+		#endregion
 	}
 
 	public class NTSC_PPU : PPU

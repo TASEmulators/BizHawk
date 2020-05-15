@@ -58,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _previousDisplayMessage;
 		private bool _previousInvisibleEmulation;
 
-
+		#region Services and Settings
 
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
@@ -80,7 +80,7 @@ namespace BizHawk.Client.EmuHawk
 			public bool InvisibleEmulation { get; set; }
 		}
 
-
+		#endregion
 
 		public BasicBot()
 		{
@@ -98,7 +98,7 @@ namespace BizHawk.Client.EmuHawk
 			_previousDisplayMessage = Config.DisplayMessages;
 		}
 
-
+		#region UI Bindings
 
 		private Dictionary<string, double> ControlProbabilities =>
 			ControlProbabilityPanel.Controls
@@ -251,7 +251,7 @@ namespace BizHawk.Client.EmuHawk
 		// Need to find out if having RamWatch open while TasStudio is open causes issues.
 		// there appears to be  "hack"(?) line in ToolManager.UpdateBefore that seems to refresh the RamWatch.  Not sure that is causing any issue since it does look like the RamWatch is ahead too much..
 		
-
+		#endregion
 
 		protected override void UpdateBefore() => Update(fast: false);
 		protected override void FastUpdateBefore() => Update(fast: true);
@@ -283,9 +283,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		#region Control Events
 
-
-
+		#region FileMenu
 
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -373,9 +373,9 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
+		#endregion
 
-
-
+		#region Options Menu
 
 		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -423,7 +423,7 @@ namespace BizHawk.Client.EmuHawk
 			Settings.TurboWhenBotting ^= true;
 		}
 
-
+		#endregion
 
 		private void RunBtn_Click(object sender, EventArgs e)
 		{
@@ -469,9 +469,9 @@ namespace BizHawk.Client.EmuHawk
 			Frames = 0;
 		}
 
+		#endregion
 
-
-
+		#region Classes
 
 		private class BotAttempt
 		{
@@ -518,9 +518,9 @@ namespace BizHawk.Client.EmuHawk
 			public int DataSize { get; set; }
 		}
 
+		#endregion
 
-
-
+		#region File Handling
 
 		private void LoadFileFromRecent(string path)
 		{
@@ -667,7 +667,7 @@ namespace BizHawk.Client.EmuHawk
 			MessageLabel.Text = $"{Path.GetFileName(CurrentFileName)} saved";
 		}
 
-
+		#endregion
 
 		public bool HasFrameAdvanced()
 		{

@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public override bool IsWriter => false;
 
-
+		#region Construction
 
 		private DatacorderDevice _datacorder;
 
@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			_datacorder = _tapeDevice;
 		}
 
-
+		#endregion
 
 		/// <summary>
 		/// Returns TRUE if pzx header is detected

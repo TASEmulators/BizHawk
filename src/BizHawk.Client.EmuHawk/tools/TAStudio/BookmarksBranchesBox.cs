@@ -77,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 			});
 		}
 
-
+		#region Query callbacks
 
 		private void QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
@@ -125,9 +125,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		#endregion
 
-
-
+		#region Actions
 
 		public void Branch()
 		{
@@ -574,9 +574,9 @@ namespace BizHawk.Client.EmuHawk
 			return false;
 		}
 
+		#endregion
 
-
-
+		#region Events
 
 		private void BranchView_MouseDown(object sender, MouseEventArgs e)
 		{
@@ -677,6 +677,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-
+		#endregion
 	}
 }

@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// </summary>
 	public class AY38912 : IPSG
 	{
-
+		#region Device Fields
 
 		/// <summary>
 		/// The emulated machine (passed in via constructor)
@@ -32,9 +32,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		private int _audioBufferIndex;
 		private int _lastStateRendered;
 
+		#endregion
 
-
-
+		#region Construction & Initialization
 
 		/// <summary>
 		/// Main constructor
@@ -54,9 +54,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			Reset();
 		}
 
+		#endregion
 
-
-
+		#region IPortIODevice
 
 		/// <summary>
 		/// |11-- ---- ---- --0-|	-	IN	-	Read value of currently selected register	
@@ -109,11 +109,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			return false;
 		}
 
+		#endregion
 
+		#region AY Implementation
 
-
-
-
+		#region Public Properties
 
 		/// <summary>
 		/// AY mixer panning configuration
@@ -183,9 +183,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			return _registers;
 		}
 
+		#endregion
 
-
-
+		#region Public Methods
 
 		/// <summary>
 		/// Resets the PSG
@@ -357,9 +357,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			BufferUpdate(frameCycle);
 		}
 
+		#endregion
 
-
-
+		#region Private Fields
 
 		/// <summary>
 		/// Register indicies
@@ -564,9 +564,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			0x905E,0x905E,0xB550,0xB550,0xD7A0,0xD7A0,0xFFFF,0xFFFF,
 		};
 
+		#endregion
 
-
-
+		#region Private Methods
 
 		/// <summary>
 		/// Forces an update of the volume tables
@@ -722,11 +722,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			_lastStateRendered = cycle;
 		}
 
+		#endregion
 
+		#endregion
 
-
-
-
+		#region ISoundProvider
 
 		public bool CanProvideAsync => false;
 
@@ -755,9 +755,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			DiscardSamples();
 		}
 
+		#endregion
 
-
-
+		#region State Serialization
 
 		public int nullDump = 0;
 
@@ -820,6 +820,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			ser.EndSection();
 		}
 
-
+		#endregion
 	}
 }

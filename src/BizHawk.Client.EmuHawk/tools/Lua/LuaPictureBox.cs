@@ -9,7 +9,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class LuaPictureBox : PictureBox
 	{
-
+		#region Helpers
 		private readonly Dictionary<string, Image> _imageCache = new Dictionary<string, Image>();
 
 		private readonly Dictionary<Color, SolidBrush> _solidBrushes = new Dictionary<Color, SolidBrush>();
@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 			return p;
 		}
 
-
+		#endregion
 
 		private Color _defaultForeground = Color.Black;
 		private Color? _defaultBackground;

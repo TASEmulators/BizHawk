@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// </summary>
 	public partial class Pentagon128 : SpectrumBase
 	{
-
+		#region Construction
 
 		/// <summary>
 		/// Main constructor
@@ -45,6 +45,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			InitializeMedia(files);
 		}
 
-
+		#endregion
 	}
 }

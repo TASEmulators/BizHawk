@@ -12,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class TAStudio
 	{
-
+		#region File Menu
 
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -304,9 +304,9 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
+		#endregion
 
-
-
+		#region Edit
 
 		private void EditSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -775,9 +775,9 @@ namespace BizHawk.Client.EmuHawk
 			MessageBox.Show("Integrity Check passed");
 		}
 
+		#endregion
 
-
-
+		#region Config
 
 		private void ConfigSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -981,9 +981,9 @@ namespace BizHawk.Client.EmuHawk
 			Settings.LoadBranchOnDoubleClick ^= true;
 		}
 
+		#endregion
 
-
-
+		#region Metadata
 
 		private void HeaderMenuItem_Click(object sender, EventArgs e)
 		{
@@ -1030,9 +1030,9 @@ namespace BizHawk.Client.EmuHawk
 			}.ShowDialog();
 		}
 
+		#endregion
 
-
-
+		#region Settings Menu
 
 		private void SettingsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -1163,9 +1163,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		#endregion
 
-
-
+		#region Columns
 
 		private void SetUpToolStripColumns()
 		{
@@ -1336,9 +1336,9 @@ namespace BizHawk.Client.EmuHawk
 			BranchesMarkersSplit.SplitterDistance = _defaultBranchMarkerSplitDistance;
 		}
 
+		#endregion
 
-
-
+		#region Context Menu
 
 		private void RightClickMenu_Opened(object sender, EventArgs e)
 		{
@@ -1393,9 +1393,9 @@ namespace BizHawk.Client.EmuHawk
 			BookMarkControl.Branch();
 		}
 
+		#endregion
 
-
-
+		#region Help
 
 		private void TASEditorManualOnlineMenuItem_Click(object sender, EventArgs e)
 		{
@@ -1407,6 +1407,6 @@ namespace BizHawk.Client.EmuHawk
 			System.Diagnostics.Process.Start("http://tasvideos.org/forum/viewtopic.php?t=13505");
 		}
 
-
+		#endregion
 	}
 }

@@ -993,7 +993,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			D.Dispose();
 		}
 
-
+		#region Video provider
 
 		public int[] _vidbuffer = new int[160 * 2 * 144 * 2];
 
@@ -1030,9 +1030,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 
 		public uint[] color_palette = new uint[4];
 
+		#endregion
 
-
-
+		#region audio
 
 		public bool CanProvideAsync => false;
 
@@ -1106,6 +1106,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			D.audio.DisposeSound();
 		}
 
-
+		#endregion
 	}
 }

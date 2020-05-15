@@ -20,7 +20,7 @@
 			base.Dispose(disposing);
 		}
 
-
+		#region Windows Form Designer generated code
 
 		/// <summary>
 		/// Required method for Designer support - do not modify
@@ -1210,7 +1210,7 @@
 			this.PerformLayout();
 		}
 
-
+		#endregion
 
 		private MenuStripEx BotMenu;
 		private System.Windows.Forms.ToolStripMenuItem FileSubMenu;

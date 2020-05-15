@@ -20,7 +20,7 @@
 			base.Dispose(disposing);
 		}
 
-
+		#region Component Designer generated code
 
 		/// <summary> 
 		/// Required method for Designer support - do not modify 
@@ -64,7 +64,7 @@
 
 		}
 
-
+		#endregion
 
 		private System.Windows.Forms.Label FileExtensionLabel;
 		private System.Windows.Forms.ComboBox PlatformDropdown;

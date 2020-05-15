@@ -10,15 +10,15 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// </summary>
 	public class CRTDevice : IVideoProvider
 	{
-
+		#region Devices
 
 		private CPCBase _machine;
 		private CRCT_6845 CRCT => _machine.CRCT;
 		private AmstradGateArray GateArray => _machine.GateArray;
 
+		#endregion
 
-
-
+		#region Construction
 
 		public CRTDevice(CPCBase machine)
 		{
@@ -29,9 +29,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			CRCT.AttachVSYNCCallback(OnVSYNC);
 		}
 
+		#endregion
 
-
-
+		#region Palettes
 
 		/// <summary>
 		/// The standard CPC Pallete (ordered by firmware #)
@@ -109,9 +109,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         };
 
 
+		#endregion
 
-
-
+		#region Public Stuff        
 
 		/// <summary>
 		/// The current scanline that is being added to
@@ -170,9 +170,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		}
 
+		#endregion
 
-
-
+		#region IVideoProvider
 
 		/// <summary>
 		/// Video output buffer
@@ -232,9 +232,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		protected int[] croppedBuffer;
 
+		#endregion
 
-
-
+		#region Serialization
 
 		public void SyncState(Serializer ser)
 		{
@@ -248,7 +248,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			ser.EndSection();
 		}
 
-
+		#endregion
 	}
 
 	/// <summary>

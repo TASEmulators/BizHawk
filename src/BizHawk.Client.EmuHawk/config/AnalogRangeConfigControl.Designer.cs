@@ -20,7 +20,7 @@
 			base.Dispose(disposing);
 		}
 
-
+		#region Component Designer generated code
 
 		/// <summary> 
 		/// Required method for Designer support - do not modify 
@@ -126,7 +126,7 @@
 
 		}
 
-
+		#endregion
 
 		private AnalogRangeConfig AnalogRange;
 		private System.Windows.Forms.NumericUpDown XNumeric;

@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// </summary>
 	public class ZX16 : ZX48
 	{
-
+		#region Construction
 
 		/// <summary>
 		/// Main constructor
@@ -19,9 +19,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		}
 
+		#endregion
 
-
-
+		#region Memory
 
 		/* 48K Spectrum has NO memory paging
          * 
@@ -133,6 +133,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			RomData.RomBytes?.CopyTo(ROM0, 0);
 		}
 
-
+		#endregion
 	}
 }

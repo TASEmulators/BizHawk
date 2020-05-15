@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
             base.Dispose(disposing);
         }
 
-
+        #region Windows Form Designer generated code
 
         /// <summary>
         /// Required method for Designer support - do not modify
@@ -238,7 +238,7 @@ namespace BizHawk.Client.EmuHawk
 
         }
 
-
+        #endregion
 
         private System.Windows.Forms.Label label1;
         private HexTextBox AddressBox;

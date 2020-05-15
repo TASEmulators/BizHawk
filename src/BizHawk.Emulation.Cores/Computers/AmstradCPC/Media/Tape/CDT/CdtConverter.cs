@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		private List<KeyValuePair<int, int>> _loopCounter = new List<KeyValuePair<int, int>>();
 
-
+		#region Construction
 
 		private DatacorderDevice _datacorder;
 
@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			_datacorder = _tapeDevice;
 		}
 
-
+		#endregion
 
 		/// <summary>
 		/// CDT format is essentially exactly the same as the TZX format
@@ -328,9 +328,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 		}
 
+		#region TZX Block Processors
 
-
-
+		#region ID 10 - Standard Speed Data Block
 		/*              length: [02,03]+04
 				Offset	    Value	Type	    Description
 				0x00	    -	    WORD	    Pause after this block (ms.) {1000}
@@ -374,9 +374,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// generate PAUSE block
 			CreatePauseBlock(_datacorder.DataBlocks.Last());
 		}
+		#endregion
 
-
-
+		#region ID 11 - Turbo Speed Data Block
 		/*              length: [0F,10,11]+12
 				Offset	Value	Type	Description
 				0x00	-	    WORD	Length of PILOT pulse {2168}
@@ -436,9 +436,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// generate PAUSE block
 			CreatePauseBlock(_datacorder.DataBlocks.Last());
 		}
+		#endregion
 
-
-
+		#region ID 12 - Pure Tone
 		/*              length: 04
 				Offset	Value	Type	Description
 				0x00	-	    WORD	Length of one pulse in T-states
@@ -476,9 +476,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// advance the position to the next block
 			_position += blockLen;
 		}
+		#endregion
 
-
-
+		#region ID 13 - Pulse sequence
 		/*              length: [00]*02+01
 				Offset	Value	Type	Description
 				0x00	N	    BYTE	Number of pulses
@@ -513,9 +513,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// add the block
 			_datacorder.DataBlocks.Add(t);
 		}
+		#endregion
 
-
-
+		#region ID 14 - Pure Data Block
 		/*              length: [07,08,09]+0A
 				Offset	Value	Type	Description
 				0x00	-	    WORD	Length of ZERO bit pulse
@@ -566,9 +566,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// generate PAUSE block
 			CreatePauseBlock(_datacorder.DataBlocks.Last());
 		}
+		#endregion
 
-
-
+		#region ID 15 - Direct Recording
 		/*              length: [05,06,07]+08
 				Offset	Value	Type	Description
 				0x00	-	    WORD	Number of T-states per sample (bit of data)
@@ -674,9 +674,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// generate PAUSE block
 			CreatePauseBlock(_datacorder.DataBlocks.Last());
 		}
+		#endregion
 
-
-
+		#region ID 18 - CSW Recording
 		/*              length: [00,01,02,03]+04
 				Offset	Value	Type	Description
 				0x00	10+N	DWORD	Block length (without these four bytes)
@@ -747,9 +747,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// generate PAUSE block
 			CreatePauseBlock(_datacorder.DataBlocks.Last());
 		}
+		#endregion
 
-
-
+		#region ID 19 - Generalized Data Block
 		/*              length: [00,01,02,03]+04
 				Offset	                    Value	Type	    Description
 				0x00	                    -	    DWORD	    Block length (without these four bytes)
@@ -845,9 +845,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// advance the position to the next block
 			_position += blockLen;
 		}
+		#endregion
 
-
-
+		#region ID 20 - Pause (silence) or 'Stop the Tape' command
 		/*              length: 02
 				Offset	Value	Type	Description
 				0x00	-	    WORD	Pause duration (ms.)
@@ -904,9 +904,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			CreatePauseBlock(_datacorder.DataBlocks.Last());
 
 		}
+		#endregion
 
-
-
+		#region ID 21 - Group start
 		/*              length: [00]+01
 				Offset	Value	Type	Description
 				0x00	L	BYTE	Length of the group name string
@@ -940,9 +940,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// advance to next block 
 			_position += nameLength;
 		}
+		#endregion
 
-
-
+		#region ID 22 - Group end
 		/*              length: 00              
 
 				This indicates the end of a group. This block has no body.           */
@@ -960,9 +960,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// add to tape
 			_datacorder.DataBlocks.Add(t);
 		}
+		#endregion
 
-
-
+		#region ID 23 - Jump to block
 		/*              length: 02
 				Offset	Value	Type	Description
 				0x00	-	    WORD	Relative jump value              
@@ -1013,9 +1013,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// advance to next block 
 			_position += 2;
 		}
+		#endregion
 
-
-
+		#region ID 24 - Loop start
 		/*              length: 02
 				Offset	Value	Type	Description
 				0x00	-	    WORD	Number of repetitions (greater than 1)           
@@ -1054,9 +1054,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// advance to next block 
 			_position += 2;
 		}
+		#endregion
 
-
-
+		#region ID 25 - Loop end
 		/*              length: 00    
 
 				This is the same as BASIC's NEXT statement. It means that the utility should jump back to the start of the loop if it hasn't 
@@ -1103,9 +1103,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 			}
 		}
+		#endregion
 
-
-
+		#region ID 26 - Call sequence
 		/*              length: [00,01]*02+02
 				Offset	Value	Type	Description
 				0x00	N	    WORD	Number of calls to be made
@@ -1136,9 +1136,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// advance to next block 
 			_position += blockSize;
 		}
+		#endregion
 
-
-
+		#region ID 27 - Return from sequence
 		/*              length: 00  
 
 				This block indicates the end of the Called Sequence. The next block played will be the block after the last CALL block (or the next Call, 
@@ -1158,9 +1158,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// add to tape
 			_datacorder.DataBlocks.Add(t);
 		}
+		#endregion
 
-
-
+		#region ID 28 - Select block
 		/*              length: [00,01]+02
 				Offset	Value	Type	Description
 				0x00	-	    WORD	Length of the whole block (without these two bytes)
@@ -1199,9 +1199,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// advance to next block 
 			_position += blockSize;
 		}
+		#endregion
 
-
-
+		#region ID 2A - Stop the tape if in 48K mode
 		/*              length: 04
 						Offset	Value	Type	Description
 						0x00	0	    DWORD	Length of the block without these four bytes (0)
@@ -1229,9 +1229,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// advance to next block 
 			_position += blockSize;
 		}
+		#endregion
 
-
-
+		#region ID 2B - Set signal level
 		/*              length: 05
 				Offset	Value	Type	Description
 				0x00	1	    DWORD	Block length (without these four bytes)
@@ -1255,9 +1255,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// advance to next block 
 			_position += 5;
 		}
+		#endregion
 
-
-
+		#region ID 30 - Text description
 		/*              length: [00]+01
 				Offset	Value	Type	Description
 				0x00	N	    BYTE	Length of the text description
@@ -1293,9 +1293,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// advance to next block 
 			_position += textLen;
 		}
+		#endregion
 
-
-
+		#region ID 31 - Message block
 		/*              length: [01]+02
 				Offset	Value	Type	Description
 				0x00	-	    BYTE	Time (in seconds) for which the message should be displayed
@@ -1338,9 +1338,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// advance to next block 
 			_position += msgLen;
 		}
+		#endregion
 
-
-
+		#region ID 32 - Archive info
 		/*              length: [00,01]+02
 				Offset	Value	Type	Description
 				0x00	-	    WORD	Length of the whole block (without these two bytes)
@@ -1447,9 +1447,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// add to tape
 			_datacorder.DataBlocks.Add(t);
 		}
+		#endregion
 
-
-
+		#region ID 33 - Hardware type
 		/*              length: [00]*03+01
 				Offset	Value	Type	Description
 				0x00	N	    BYTE	Number of machines and hardware types for which info is supplied
@@ -1503,9 +1503,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// add to tape
 			_datacorder.DataBlocks.Add(t);
 		}
+		#endregion
 
-
-
+		#region ID 35 - Custom info block
 		/*              length: [10,11,12,13]+14
 				Offset	Value	Type	Description
 				0x00	-	    CHAR[10]	Identification string (in ASCII)
@@ -1537,9 +1537,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// advance to next block 
 			_position += blockLen;
 		}
+		#endregion
 
-
-
+		#region ID 5A - "Glue" block
 		/*              length: 09
 				Offset	Value	Type	Description
 				0x00	-	    BYTE[9]	Value: { "XTape!",0x1A,MajR,MinR } 
@@ -1566,9 +1566,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// advance to next block 
 			_position += 9;
 		}
+		#endregion
 
-
-
+		#region UnDetected Blocks
 
 		private void ProcessUnidentifiedBlock(byte[] data)
 		{
@@ -1589,13 +1589,13 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			_position += 4;
 		}
 
+		#endregion
 
-
-
+		#region Depreciated Blocks
 
 		// These mostly should be ignored by ZXHawk - here for completeness
 
-
+		#region ID 16 - C64 ROM Type Data Block
 		private void ProcessBlockID16(byte[] data)
 		{
 			// zxhawk will not implement this block. it will however handle it so subsequent blocks can be parsed
@@ -1614,9 +1614,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			int blockLen = GetInt32(data, _position);
 			_position += blockLen;
 		}
+		#endregion
 
-
-
+		#region ID 17 - C64 Turbo Tape Data Block
 		private void ProcessBlockID17(byte[] data)
 		{
 			// zxhawk will not implement this block. it will however handle it so subsequent blocks can be parsed
@@ -1635,9 +1635,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			int blockLen = GetInt32(data, _position);
 			_position += blockLen;
 		}
+		#endregion
 
-
-
+		#region ID 34 - Emulation info
 		private void ProcessBlockID34(byte[] data)
 		{
 			// currently not implemented properly in ZXHawk
@@ -1654,9 +1654,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// advance to next block 
 			_position += 8;
 		}
+		#endregion
 
-
-
+		#region ID 40 - Snapshot block
 		/*              length: [01,02,03]+04
                 Offset	Value	Type	Description
                 0x00	-	    BYTE	Snapshot type:
@@ -1693,13 +1693,13 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// advance to next block 
 			_position += blockLen;
 		}
+		#endregion
 
+		#endregion
 
+		#endregion
 
-
-
-
-
+		#region DataBlockDecoder
 
 		/// <summary>
 		/// Used to process either a standard or turbo data block
@@ -1972,9 +1972,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			return nBlock;
 		}
 
+		#endregion
 
-
-
+		#region Pause Block Creator
 
 		/// <summary>
 		/// If necessary a separate PAUSE block will be created
@@ -2011,7 +2011,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 		}
 
-
+		#endregion
 	}
 
 	public enum DataBlockType

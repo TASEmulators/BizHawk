@@ -6,7 +6,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class LuaAutocompleteInstaller
 	{
-
+		#region API
 
 		public enum TextEditors { Sublime2, NotePad }
 
@@ -43,7 +43,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-
+		#endregion
 
 		private string AppDataFolder => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 

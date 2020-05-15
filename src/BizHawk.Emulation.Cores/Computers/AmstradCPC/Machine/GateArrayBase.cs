@@ -16,16 +16,16 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public int Z80ClockSpeed = 4000000;
 		public int FrameLength = 79872;
 
-
+		#region Devices
 
 		private CPCBase _machine;
 		private Z80A CPU => _machine.CPU;
 		private CRCT_6845 CRCT => _machine.CRCT;
 		private IPSG PSG => _machine.AYDevice;
 
+		#endregion
 
-
-
+		#region Constants
 
 		/// <summary>
 		/// CRTC Register constants
@@ -49,9 +49,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public const int LPEN_ADDR_H = 16;
 		public const int LPEN_ADDR_L = 17;
 
+		#endregion
 
-
-
+		#region Palletes
 
 		/// <summary>
 		/// The standard CPC Pallete (ordered by firmware #)
@@ -128,9 +128,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             Colors.ARGB(0x80, 0x80, 0xFF), // Pastel Blue
         };
 
+		#endregion
 
-
-
+		#region Construction
 
 		public GateArrayBase(CPCBase machine)
 		{
@@ -204,9 +204,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 		}
 
+		#endregion
 
-
-
+		#region State
 
 		private int[] PenColours;
 		private int CurrentPen;
@@ -225,9 +225,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		public bool WaitLine;
 
+		#endregion
 
-
-
+		#region Clock Operations
 
 		/// <summary>
 		/// The gatearray runs on a 16Mhz clock
@@ -265,9 +265,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 		}
 
+		#endregion
 
-
-
+		#region Internal Methods
 
 		/// <summary>
 		/// Selects the pen
@@ -366,9 +366,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 
 
+		#endregion
 
-
-
+		#region Reset
 
 		public void Reset()
 		{
@@ -380,9 +380,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			//VSYNCDelyCnt = 0;
 		}
 
+		#endregion
 
-
-
+		#region IPortIODevice
 
 		/// <summary>
 		/// Device responds to an IN instruction
@@ -434,9 +434,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			return true;
 		}
 
+		#endregion
 
-
-
+		#region IVideoProvider
 
 		/// <summary>
 		/// Video output buffer
@@ -513,6 +513,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		protected int[] croppedBuffer;
 
-
+		#endregion
 	}
 }

@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			PutSettings(settings);
 		}
 
-
+		#region controller
 
 		private readonly short[] _inputState = new short[16 * 8];
 		private List<ControlDefUnMerger> _cdums;
@@ -267,7 +267,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 		private ControllerDefinition _controllerDefinition;
 		public override ControllerDefinition ControllerDefinition => _controllerDefinition;
 
-
+		#endregion
 
 		public DisplayType Region { get; }
 
@@ -286,16 +286,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 		public override int VirtualWidth => BufferWidth == 256 && BufferHeight <= 240 ? 293 : 587;
 		public override int VirtualHeight => BufferHeight <= 240 && BufferWidth == 512 ? BufferHeight * 2 : BufferHeight;
 
-
+		#region IStatable
 
 		protected override void LoadStateBinaryInternal(BinaryReader reader)
 		{
 			_core.biz_post_load_state();
 		}
 
+		#endregion
 
-
-
+		#region settings
 
 		private Settings _settings;
 		private SyncSettings _syncSettings;
@@ -461,6 +461,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			}
 		}
 
-
+		#endregion
 	}
 }

@@ -331,7 +331,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			_blip.SetRates(1500000, 44100);
 		}
 
-
+		#region audio
 
 		public bool CanProvideAsync => false;
 
@@ -386,6 +386,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			_blip = null;
 		}
 
-
+		#endregion
 	}
 }

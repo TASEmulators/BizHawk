@@ -81,7 +81,7 @@ namespace BizHawk.Emulation.Cores.Sound
 			lastPulse = pulse;
 		}
 
-
+		#region Volume Handling
 
 		/// <summary>
 		/// Beeper volume
@@ -131,9 +131,9 @@ namespace BizHawk.Emulation.Cores.Sound
 			return shortvol / increment;
 		}
 
+		#endregion
 
-
-
+		#region ISoundProvider
 
 		public bool CanProvideAsync => false;
 
@@ -169,9 +169,9 @@ namespace BizHawk.Emulation.Cores.Sound
 			clockCounter = 0;
 		}
 
+		#endregion
 
-
-
+		#region State Serialization
 
 		public void SyncState(Serializer ser)
 		{
@@ -184,6 +184,6 @@ namespace BizHawk.Emulation.Cores.Sound
 			ser.EndSection();
 		}
 
-
+		#endregion
 	}
 }

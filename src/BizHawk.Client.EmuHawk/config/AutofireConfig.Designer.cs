@@ -2,7 +2,7 @@
 {
 	partial class AutofireConfig
 	{
-
+		#region Windows Form Designer generated code
 
 		/// <summary>
 		/// Required method for Designer support - do not modify
@@ -160,7 +160,7 @@
 
 		}
 
-
+		#endregion
 
 		private BizHawk.WinForms.Controls.SzButtonEx btnDialogOK;
 		private BizHawk.WinForms.Controls.SzButtonEx btnDialogCancel;

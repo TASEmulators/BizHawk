@@ -249,7 +249,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			public byte[] RawBlockData;
 			public int StartPos;
 
-
+			#region INFO
 
 			public int INFOmediaType;
 			public int INFOencoderType;
@@ -270,9 +270,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			public int INFOdiskNumber;
 			public int INFOcreatorId;
 
+			#endregion
 
-
-
+			#region IMGE
 
 			public int IMGEtrack;
 			public int IMGEside;
@@ -289,9 +289,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			public int IMGEtrackFlags;
 			public int IMGEdataKey;
 
+			#endregion
 
-
-
+			#region DATA
 
 			public int DATAlength;
 			public int DATAbitSize;
@@ -299,7 +299,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			public int DATAdataKey;
 			public byte[] DATAextraDataRaw;
 
-
+			#endregion
 
 			public static IPFBlock ParseNextBlock(ref int startPos, FloppyDisk disk, byte[] data, List<IPFBlock> blockCollection)
 			{

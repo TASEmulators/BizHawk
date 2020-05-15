@@ -14,7 +14,7 @@ namespace BizHawk.Common
 	{
 		public Serializer() { }
 
-
+		#region Public
 
 		public bool IsReader => _isReader;
 
@@ -749,9 +749,9 @@ namespace BizHawk.Common
 			}
 		}
 
+		#endregion
 
-
-
+		#region Privates
 
 		private BinaryReader _br;
 		private BinaryWriter _bw;
@@ -1284,6 +1284,6 @@ namespace BizHawk.Common
 			public readonly Dictionary<string, string> Items = new Dictionary<string, string>();
 		}
 
-
+		#endregion
 	}
 }

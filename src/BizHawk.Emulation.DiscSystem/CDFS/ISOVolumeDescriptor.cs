@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// </summary>
 	public class ISOVolumeDescriptor
 	{
-
+		#region Constants
 
 		/// <summary>
 		/// We are handling the parsing by reading the entire header and
@@ -25,16 +25,16 @@ namespace BizHawk.Emulation.DiscSystem
 		private const int LENGTH_TIME = 17;
 		private const int LENGTH_RESERVED = 512;
 
+		#endregion
 
-
-
+		#region Private Properties
 
 		private EndianBitConverter bc = EndianBitConverter.CreateForLittleEndian();
 		private EndianBitConverter bcBig = EndianBitConverter.CreateForBigEndian();
 
+		#endregion
 
-
-
+		#region Public Properties
 
 		/// <summary>
 		/// The type of this volume description, only 1 and 255 are supported
@@ -166,9 +166,9 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public int AddressOfPathTable;
 
+		#endregion
 
-
-
+		#region Construction
 
 		/// <summary>
 		/// Constructor.
@@ -217,9 +217,9 @@ namespace BizHawk.Emulation.DiscSystem
 			this.AddressOfPathTable = 0;            
 		}
 
+		#endregion
 
-
-
+		#region Parsing
 
 		/// <summary>
 		/// Start parsing the volume descriptor header.
@@ -485,9 +485,9 @@ namespace BizHawk.Emulation.DiscSystem
 			return false;
 		}        
 
+		#endregion
 
-
-
+		#region Type Information
 
 		/// <summary>
 		/// Returns true if this is the terminator volume descriptor.
@@ -498,7 +498,7 @@ namespace BizHawk.Emulation.DiscSystem
 			return (this.Type == 255);
 		}
 
-
+		#endregion
 	}
 
 	/// <summary>
@@ -506,7 +506,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// </summary>
 	public class CDIPathNode
 	{
-
+		#region Public Properties
 
 		/// <summary>
 		/// The length of the directory name.
@@ -536,9 +536,9 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public string Name;
 
+		#endregion
 
-
-
+		#region Construction
 
 		/// <summary>
 		/// Empty Constructor
@@ -548,9 +548,9 @@ namespace BizHawk.Emulation.DiscSystem
 
 		}
 
+		#endregion
 
-
-
+		#region Parsing
 
 		/*
 			BP  Size in bytes   Description
@@ -603,6 +603,6 @@ namespace BizHawk.Emulation.DiscSystem
 			return pathNodes;
 		}
 
-
+		#endregion
 	}
 }

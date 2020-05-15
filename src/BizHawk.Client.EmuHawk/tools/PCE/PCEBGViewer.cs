@@ -83,9 +83,9 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void UpdateBefore() => Generate();
 
+		#region Events
 
-
-
+		#region Menu
 
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -110,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-
+		#endregion
 
 		private void Canvas_MouseMove(object sender, MouseEventArgs e)
 		{
@@ -124,6 +124,6 @@ namespace BizHawk.Client.EmuHawk
 			PaletteLabel.Text = paletteNo.ToString();
 		}
 
-
+		#endregion
 	}
 }

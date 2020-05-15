@@ -21,7 +21,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private RegisterValue PCRegister => Debuggable.GetCpuFlagsAndRegisters()[Disassembler.PCRegisterName];
 
-
+		#region Implementation checking
 
 		// TODO: be cachey with checks that depend on catching exceptions
 		private bool CanUseMemoryCallbacks
@@ -128,7 +128,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-
+		#endregion
 
 		private void FullUpdate()
 		{

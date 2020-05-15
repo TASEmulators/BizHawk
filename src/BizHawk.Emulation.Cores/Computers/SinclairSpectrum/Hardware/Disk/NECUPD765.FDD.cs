@@ -8,17 +8,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// <summary>
 	/// Floppy drive related stuff
 	/// </summary>
-
+	#region Attribution
 	/*
         Implementation based on the information contained here:
         http://www.cpcwiki.eu/index.php/765_FDC
         and here:
         http://www.cpcwiki.eu/imgs/f/f3/UPD765_Datasheet_OCRed.pdf
     */
-
+	#endregion
 	public partial class NECUPD765 : IFDDHost
 	{
-
+		#region Drive State
 
 		/// <summary>
 		/// FDD Flag - motor on/off
@@ -50,9 +50,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		private DriveState[] DriveStates = new DriveState[4];
 
+		#endregion
 
-
-
+		#region FDD Methods
 
 		/// <summary>
 		/// Initialization / reset of the floppy drive subsystem
@@ -145,9 +145,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			return sector;
 		}
 
+		#endregion
 
-
-
+		#region IFDDHost
 
 		// IFDDHost methods that fall through to the currently active drive
 
@@ -180,16 +180,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		public FloppyDisk Disk { get; set; }
 
+		#endregion
 
-
-
+		#region Drive Status Class
 
 		/// <summary>
 		/// Holds specfic state information about a drive
 		/// </summary>
 		private class DriveState : IFDDHost
 		{
-
+			#region State
 
 			/// <summary>
 			/// The drive ID from an FDC perspective
@@ -304,18 +304,18 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			/// </summary>
 			private NECUPD765 FDC;
 
+			#endregion
 
-
-
+			#region Lookups
 
 			/// <summary>
 			/// TRUE if we are on track 0
 			/// </summary>
 			public bool FLAG_TRACK0 => TrackIndex == 0;
 
+			#endregion
 
-
-
+			#region Public Methods
 			/*
             /// <summary>
             /// Moves the head across the disk cylinders
@@ -756,9 +756,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		}
 	*/
 
+			#endregion
 
-
-
+			#region Construction
 
 			public DriveState(int driveID, NECUPD765 fdc)
 			{
@@ -766,9 +766,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				FDC = fdc;
 			}
 
+			#endregion
 
-
-
+			#region IFDDHost
 
 			/// <summary>
 			/// Parses a new disk image and loads it into this floppy drive
@@ -838,9 +838,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				}
 			}
 
+			#endregion
 
-
-
+			#region StateSerialization
 
 			public void SyncState(Serializer ser)
 			{
@@ -868,9 +868,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				//ser.SyncEnum(nameof(SeekIntState), ref SeekIntState);
 			}
 
-
+			#endregion
 		}
 
-
+		#endregion
 	}
 }

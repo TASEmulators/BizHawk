@@ -290,7 +290,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			R.Dispose();
 		}
 
-
+		#region Video provider
 
 		public int _frameHz = 60;
 
@@ -329,9 +329,9 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 		public uint[] color_palette = new uint[4];
 
+		#endregion
 
-
-
+		#region audio
 
 		public bool CanProvideAsync => false;
 
@@ -386,6 +386,6 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 		}
 
-
+		#endregion
 	}
 }

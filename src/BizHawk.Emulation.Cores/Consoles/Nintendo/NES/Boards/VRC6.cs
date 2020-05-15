@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//If you change any of the IRQ logic here, be sure to change it in VRC 4/7 as well.
 	internal sealed class VRC6 : NesBoardBase
 	{
-
+		#region CHRLUT
 		// what did i do in a previous life to deserve this?
 
 		// given the bottom four bits of $b003, and a 1K address region in PPU $0000:$3fff,
@@ -104,7 +104,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 		}
-
+		#endregion
 
 		//configuration
 		int prg_bank_mask_8k, chr_bank_mask_1k;

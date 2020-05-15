@@ -200,7 +200,7 @@ namespace BizHawk.Client.EmuHawk
 			BigEndianCheckBox.Checked = domain.EndianType == Emu.MemoryDomain.Endian.Big;
 		}
 
-
+		#region Events
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
@@ -324,6 +324,6 @@ namespace BizHawk.Client.EmuHawk
 			_changedDisplayType = true;
 		}
 
-
+		#endregion
 	}
 }

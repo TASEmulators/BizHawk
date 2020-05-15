@@ -41,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly string[] _nonArchive = { ".ISO", ".CUE", ".CCD" };
 
-
+		#region Loaders
 
 		private void LoadCdl(string filename, string archive = null)
 		{
@@ -127,7 +127,7 @@ namespace BizHawk.Client.EmuHawk
 			((RamWatch) Tools.Get<RamWatch>()).LoadWatchFile(new FileInfo(filename), false);
 		}
 
-
+		#endregion
 
 		private void ProcessFileList(IEnumerable<string> fileList, ref Dictionary<LoadOrdering, List<FileInformation>> sortedFiles, string archive = null)
 		{

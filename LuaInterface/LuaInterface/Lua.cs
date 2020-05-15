@@ -420,7 +420,7 @@ namespace NLua
             }
 		}
 
-
+        #region Globals auto-complete
         private readonly List<string> globals = new List<string>();
         private bool globalsSorted;
 
@@ -460,7 +460,7 @@ namespace NLua
             // If the type is a class or an interface and recursion hasn't been running too long, list the members
             else if ((type.IsClass || type.IsInterface) && type != typeof(string) && recursionCounter < 2)
             {
-
+                #region Methods
                 foreach (MethodInfo method in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
                 {
                     if (
@@ -482,9 +482,9 @@ namespace NLua
                         globals.Add(command);
                     }
                 }
+                #endregion
 
-
-
+                #region Fields
                 foreach (FieldInfo field in type.GetFields(BindingFlags.Public | BindingFlags.Instance))
                 {
                     if (
@@ -496,9 +496,9 @@ namespace NLua
                         registerGlobal(path + "." + field.Name, field.FieldType, recursionCounter + 1);
                     }
                 }
+                #endregion
 
-
-
+                #region Properties
                 foreach (PropertyInfo property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
                 {
                     if (
@@ -512,7 +512,7 @@ namespace NLua
                         registerGlobal(path + "." + property.Name, property.PropertyType, recursionCounter + 1);
                     }
                 }
-
+                #endregion
             }
             // Otherwise simply add the element to the list
             else globals.Add(path);
@@ -520,7 +520,7 @@ namespace NLua
             // List will need to be sorted on next access
             globalsSorted = false;
         }
-
+        #endregion
 
 
 
@@ -726,7 +726,7 @@ namespace NLua
 		 * or userdata
 		 */
 
-
+      #region lua debug functions
 
       /// <summary>
       /// lua hook calback delegate
@@ -960,7 +960,7 @@ namespace NLua
          translator.push(luaState, value);
       }
 
-
+      #endregion
 
 			List<int> scheduledDisposes = new List<int>();
 
@@ -1089,7 +1089,7 @@ namespace NLua
             translator.pushFunction(luaState,function);
         }
 
-
+        #region IDisposable Members
 
         public virtual void Dispose()
         {
@@ -1104,7 +1104,7 @@ namespace NLua
             System.GC.WaitForPendingFinalizers();
         }
 
-
+        #endregion
    }
 
    /// <summary>

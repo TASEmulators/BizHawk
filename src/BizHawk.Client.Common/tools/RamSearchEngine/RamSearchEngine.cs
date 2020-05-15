@@ -41,7 +41,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			CompareValue = compareValue;
 		}
 
-
+		#region API
 
 		public IEnumerable<long> OutOfRangeAddress => _watchList
 			.Where(watch => watch.Address >= Domain.Size)
@@ -313,9 +313,9 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			}
 		}
 
+		#endregion
 
-
-
+		#region Undo API
 
 		public bool UndoEnabled { get; set; }
 		
@@ -350,9 +350,9 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			return _watchList.Count;
 		}
 
+		#endregion
 
-
-
+		#region Comparisons
 
 		private IEnumerable<IMiniWatch> ComparePrevious(IEnumerable<IMiniWatch> watchList)
 		{
@@ -599,7 +599,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			throw new InvalidCastException();
 		}
 
-
+		#endregion
 
 		private long SignExtendAsNeeded(long val)
 		{

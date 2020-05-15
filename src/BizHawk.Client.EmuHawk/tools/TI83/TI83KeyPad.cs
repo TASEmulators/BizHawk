@@ -99,9 +99,9 @@ namespace BizHawk.Client.EmuHawk
 			KeyPadToolTips.RemoveAll();
 		}
 
+		#region Events
 
-
-
+		#region Menu
 
 		private void ExitMenuItem_Click(object sender, EventArgs e)
 		{
@@ -127,9 +127,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		#endregion
 
-
-
+		#region Dialog and Controls
 
 		private void EnterButton_Click(object sender, EventArgs e) => KeyClick("ENTER");
 		private void DashButton_Click(object sender, EventArgs e) => KeyClick("DASH");
@@ -184,8 +184,8 @@ namespace BizHawk.Client.EmuHawk
 		private void PeriodButton_Click(object sender, EventArgs e) => KeyClick("DOT");
 		private void ZeroButton_Click(object sender, EventArgs e) => KeyClick("0");
 
+		#endregion
 
-
-
+		#endregion
 	}
 }

@@ -429,7 +429,7 @@ namespace Jellyfish.Virtu
 			return CC;
 		}
 
-
+		#region Core Operand Actions
 
 		private void GetAddressAbs() // abs
 		{
@@ -622,9 +622,9 @@ namespace Jellyfish.Virtu
 			_memory.WriteZeroPage(EA, data);
 		}
 
+		#endregion
 
-
-
+		#region Core OpCode Actions
 		private void ExecuteAdc65N02(int data, int cc)
 		{
 			if ((RP & Pd) == 0x0)
@@ -1333,9 +1333,9 @@ namespace Jellyfish.Virtu
 			RP = RP & ~(Pn | Pz) | DataPnz[RA];
 			CC += cc;
 		}
+		#endregion
 
-
-
+		#region 6502 OpCode Actions
 		private void Execute65X02And21() // and (zpg, x)
 		{
 			GetAddressZpgIndX();
@@ -2069,9 +2069,9 @@ namespace Jellyfish.Virtu
 			ExecuteTya(2);
 		}
 
+		#endregion
 
-
-
+		#region 65N02 OpCode Actions
 
 		private void Execute65N02Adc61() // adc (zpg, x)
 		{
@@ -2733,9 +2733,9 @@ namespace Jellyfish.Virtu
 			ExecuteSbc65N02(ReadAbsX(), 4);
 		}
 
+		#endregion
 
-
-
+		#region 65C02 OpCode Actions
 		private void Execute65C02Adc61() // adc (zpg, x)
 		{
 			GetAddressZpgIndX();
@@ -3419,7 +3419,7 @@ namespace Jellyfish.Virtu
 			WriteAbs(ExecuteTsb(ReadAbs(), 6));
 		}
 
-
+		#endregion
 
 		private bool Is65C02
 		{

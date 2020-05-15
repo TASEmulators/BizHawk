@@ -6,26 +6,26 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// <summary>
 	/// The NEC floppy disk controller (and floppy drive) found in the +3
 	/// </summary>
-
+	#region Attribution
 	/*
         Implementation based on the information contained here:
         http://www.cpcwiki.eu/index.php/765_FDC
         and here:
         http://www.cpcwiki.eu/imgs/f/f3/UPD765_Datasheet_OCRed.pdf
     */
-
+	#endregion
 	public partial class NECUPD765
 	{
-
+		#region Devices
 
 		/// <summary>
 		/// The emulated spectrum machine
 		/// </summary>
 		private CPCBase _machine;
 
+		#endregion
 
-
-
+		#region Construction & Initialization
 
 		/// <summary>
 		/// Main constructor
@@ -148,9 +148,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			};
 		}
 
+		#endregion
 
-
-
+		#region State Serialization
 
 		public void SyncState(Serializer ser)
 		{
@@ -243,6 +243,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			ser.EndSection();
 		}
 
-
+		#endregion
 	}
 }

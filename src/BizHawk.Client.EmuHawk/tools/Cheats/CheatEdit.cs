@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 			ValueBox.Nullable = false;
 		}
 
-
+		#region Privates
 
 		private const string HexInd = "0x";
 
@@ -271,9 +271,9 @@ namespace BizHawk.Client.EmuHawk
 			_editCallback?.Invoke();
 		}
 
+		#endregion
 
-
-
+		#region API
 
 		public void SetCheat(Cheat cheat)
 		{
@@ -346,7 +346,7 @@ namespace BizHawk.Client.EmuHawk
 			_editCallback = editCallback;
 		}
 
-
+		#endregion
 
 		private void CompareBox_TextChanged(object sender, EventArgs e)
 		{

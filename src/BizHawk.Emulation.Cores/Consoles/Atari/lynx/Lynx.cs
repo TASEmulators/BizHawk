@@ -160,7 +160,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			}
 		}
 
-
+		#region Controller
 
 		private static readonly ControllerDefinition LynxTroller = new ControllerDefinition
 		{
@@ -186,6 +186,6 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			return ret;
 		}
 
-
+		#endregion
 	}
 }

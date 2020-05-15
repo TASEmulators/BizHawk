@@ -84,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-
+		#region RTC
 
 		private static readonly DateTime Epoch = new DateTime(1970, 1, 1, 0, 0, 0);
 		private long _clockTime;
@@ -112,9 +112,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
+		#endregion
 
-
-
+		#region ISaveRam
 
 		private LibWaterboxCore.MemoryArea[] _saveramAreas;
 		private int _saveramSize;
@@ -179,9 +179,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
+		#endregion ISaveRam
 
-
-
+		#region IEmulator
 
 		protected abstract LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound);
 		protected virtual void FrameAdvancePost()
@@ -245,9 +245,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public IInputCallbackSystem InputCallbacks { get; } = new InputCallbackSystem();
 		public virtual ControllerDefinition ControllerDefinition { get; protected set; } = NullController.Instance.Definition;
 
+		#endregion
 
-
-
+		#region IStatable
 
 		public void LoadStateBinary(BinaryReader reader)
 		{
@@ -310,9 +310,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		}
 
+		#endregion
 
-
-
+		#region ISoundProvider
 
 		public void SetSyncMode(SyncSoundMode mode)
 		{
@@ -342,9 +342,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public bool CanProvideAsync => false;
 		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
+		#endregion
 
-
-
+		#region IVideoProvider
 
 		public virtual int[] GetVideoBuffer()
 		{
@@ -360,6 +360,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public virtual int VsyncDenominator { get; protected set; }
 		public int BackgroundColor => unchecked((int)0xff000000);
 
-
+		#endregion
 	}
 }

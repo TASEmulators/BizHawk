@@ -6,21 +6,21 @@ namespace BizHawk.Client.Common
 {
 	public interface IGui : IDisposable, IExternalApi
 	{
-
+		#region Gui API
 		void ToggleCompositingMode();
 		ImageAttributes GetAttributes();
 		void SetAttributes(ImageAttributes a);
 		void DrawNew(string name, bool clear = true);
 		void DrawFinish();
 		bool HasGUISurface { get; }
+		#endregion
 
-
-
+		#region Helpers
 		void SetPadding(int all);
 		void SetPadding(int x, int y);
 		void SetPadding(int l, int t, int r, int b);
 		(int Left, int Top, int Right, int Bottom) GetPadding();
-
+		#endregion
 
 		void AddMessage(string message);
 		void ClearGraphics();

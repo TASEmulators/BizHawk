@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//If you change any of the IRQ logic here, be sure to change it in VRC 3/6/7 as well.
 	internal sealed class VRC2_4 : NesBoardBase
 	{
-
+		#region addressmaps
 
 		// remaps addresses into vrc2b form
 		// all varieties of vrc2&4 require A15 = 1 (ie, we're in 8000:ffff), and key on A14:A12 in the same way
@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return addr & 0x7000 | (addr >> 3) & 1 | (addr >> 1) & 3 | (addr << 1) & 2;
 		}
 
-
+		#endregion
 
 		private int prg_bank_mask_8k, chr_bank_mask_1k;
 		private int prg_reg_mask_8k;

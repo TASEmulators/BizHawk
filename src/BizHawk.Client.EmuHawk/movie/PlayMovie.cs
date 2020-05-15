@@ -287,9 +287,9 @@ namespace BizHawk.Client.EmuHawk
 			RefreshMovieList();
 		}
 
+		#region Events
 
-
-
+		#region Movie List
 
 		private void RefreshMovieList()
 		{
@@ -473,9 +473,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		#endregion
 
-
-
+		#region Details
 
 		private void DetailsView_ColumnClick(object sender, ColumnClickEventArgs e)
 		{
@@ -543,9 +543,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		#endregion
 
-
-
+		#region Misc Widgets
 
 		private void BrowseMovies_Click(object sender, EventArgs e)
 		{
@@ -616,7 +616,7 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-
+		#endregion
 
 		private bool _programmaticallyChangingStopFrameCheckbox;
 		private void StopOnFrameCheckbox_CheckedChanged(object sender, EventArgs e)
@@ -646,6 +646,6 @@ namespace BizHawk.Client.EmuHawk
 			StopOnFrameTextBox.Enabled = !LastFrameCheckbox.Checked;
 		}
 
-
+		#endregion
 	}
 }

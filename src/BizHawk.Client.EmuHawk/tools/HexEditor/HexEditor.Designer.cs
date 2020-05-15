@@ -20,7 +20,7 @@
 			base.Dispose(disposing);
 		}
 
-
+		#region Windows Form Designer generated code
 
 		/// <summary>
 		/// Required method for Designer support - do not modify
@@ -666,7 +666,7 @@
 
 		}
 
-
+		#endregion
 
 		public MenuStripEx HexMenuStrip;
 		private System.Windows.Forms.ToolStripMenuItem FileSubMenu;

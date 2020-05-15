@@ -10,14 +10,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// </summary>
 	public class CRCT_6845 : IPortIODevice
 	{
-
+		#region Devices
 
 		private CPCBase _machine { get; set; }
 		private CRCTType ChipType;
 
+		#endregion
 
-
-
+		#region CallBacks
 
 		public delegate void CallBack();
 
@@ -34,9 +34,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			HSYNC_Callbacks += hCall;
 		}
 
+		#endregion
 
-
-
+		#region Construction
 
 		public CRCT_6845(CRCTType chipType, CPCBase machine)
 		{
@@ -48,9 +48,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private const int WRITE = 0;
 		private const int READ = 1;
 
+		#endregion
 
-
-
+		#region Public Lines
 
 		/// <summary>
 		/// Denotes that HSYNC is active
@@ -84,9 +84,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public int VLC;
 
+		#endregion
 
-
-
+		#region Public Lookups
 
 		/*
          *  These are not accessible directlyon real hardware
@@ -227,9 +227,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public int LatchedScreenWidthBytes;
 
+		#endregion
 
-
-
+		#region Internal Registers and State
 
 		/*
         Index    Register Name                          Range       CPC Setting    Notes
@@ -430,9 +430,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		private int VSYNCCounter;
 
+		#endregion
 
-
-
+		#region Public Methods
 
 		public void ClockCycle()
 		{
@@ -796,9 +796,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			VLC = 0;
 		}
 
+		#endregion
 
-
-
+		#region Internal Methods
 
 		/// <summary>
 		/// Selects a register
@@ -1018,9 +1018,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 		}
 
+		#endregion
 
-
-
+		#region PortIODevice
 
 		/*
             #BCXX    %x0xxxx00 xxxxxxxx    6845 CRTC Index                            -       Write
@@ -1094,9 +1094,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			return accessed;
 		}
 
+		#endregion
 
-
-
+		#region Serialization
 
 		public void SyncState(Serializer ser)
 		{
@@ -1122,9 +1122,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			ser.EndSection();
 		}
 
+		#endregion
 
-
-
+		#region Enums
 
 		/// <summary>
 		/// The types of CRCT chip found in the CPC range
@@ -1139,6 +1139,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			AMS40226 = 4
 		}
 
-
+		#endregion
 	}
 }

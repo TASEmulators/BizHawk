@@ -102,7 +102,7 @@ namespace BizHawk.Client.EmuHawk
 			public bool BindMarkersToInput { get; set; }
 		}
 
-
+		#region Initializing
 
 		public TAStudio()
 		{
@@ -610,9 +610,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		#endregion
 
-
-
+		#region Loading
 
 		private void ConvertCurrentMovieToTasproj()
 		{
@@ -780,7 +780,7 @@ namespace BizHawk.Client.EmuHawk
 			loadZone.PlaceZone(CurrentTasMovie);
 		}
 
-
+		#endregion
 
 		private void TastudioPlayMode()
 		{
@@ -1130,7 +1130,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-
+		#region Dialog Events
 
 		private void Tastudio_Closing(object sender, FormClosingEventArgs e)
 		{
@@ -1199,7 +1199,7 @@ namespace BizHawk.Client.EmuHawk
 			return base.ProcessCmdKey(ref msg, keyData);
 		}
 
-
+		#endregion
 
 		private bool AutoAdjustInput()
 		{
