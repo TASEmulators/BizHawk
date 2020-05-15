@@ -265,17 +265,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			[DisplayName("Three band low gain")]
 			[Description("Only active when filter type is three band")]
-			[DefaultValue((short)1)]
+			[DefaultValue((short)100)]
 			public short LowGain { get; set; }
 
 			[DisplayName("Three band mid gain")]
 			[Description("Only active when filter type is three band")]
-			[DefaultValue((short)1)]
+			[DefaultValue((short)100)]
 			public short MidGain { get; set; }
 
 			[DisplayName("Three band high gain")]
 			[Description("Only active when filter type is three band")]
-			[DefaultValue((short)1)]
+			[DefaultValue((short)100)]
 			public short HighGain { get; set; }
 
 			[Description("Magic pink by default. Requires core reboot")]
