@@ -414,6 +414,7 @@ void CMD_LoadCartridgeSGB()
 
 void CMD_init()
 {
+	SNES::config.random = !!comm.value;
 	snes_init();
 
 	SNES::input.connect(SNES::Controller::Port1, comm.inports[0]);
