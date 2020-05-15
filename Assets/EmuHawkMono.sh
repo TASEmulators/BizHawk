@@ -17,7 +17,7 @@ if [ -z "$libpath" ]; then
 	printf "%s\n" "Unknown distro, assuming WINE library location is /usr/lib/wine..."
 	libpath="/usr/lib/wine"
 fi
-export LD_LIBRARY_PATH="$libpath"
+export LD_LIBRARY_PATH="$PWD:$libpath"
 if [ "$1" = "--mono-no-redirect" ]; then
 	shift
 	printf "(received --mono-no-redirect, stdout was not captured)\n" >EmuHawkMono_laststdout.txt
