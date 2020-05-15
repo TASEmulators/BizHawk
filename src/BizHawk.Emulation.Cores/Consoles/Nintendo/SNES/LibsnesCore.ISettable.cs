@@ -71,6 +71,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			public bool LimitAnalogChangeSensitivity { get; set; } = true;
 
+			public bool RandomizedInitialState { get; set; } = true;
+
 			public SnesSyncSettings Clone()
 			{
 				return (SnesSyncSettings)MemberwiseClone();

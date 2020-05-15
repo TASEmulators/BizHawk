@@ -18,10 +18,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
-		public void CMD_init()
+		public void CMD_init(bool randomize)
 		{
-			_core.Message(eMessage.eMessage_CMD_init);
-			WaitForCMD();
+			using (_exe.EnterExit())
+			{
+				_comm->value = randomize ? 1u : 0u;
+				_core.Message(eMessage.eMessage_CMD_init);
+				WaitForCMD();
+			}
 		}
 		public void CMD_power()
 		{

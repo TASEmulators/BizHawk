@@ -75,8 +75,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			_controllerDeck = new LibsnesControllerDeck(_syncSettings);
 			_controllerDeck.NativeInit(Api);
-			
-			Api.CMD_init();
+
+			Api.CMD_init(_syncSettings.RandomizedInitialState);
 
 			Api.QUERY_set_path_request(snes_path_request);
 
