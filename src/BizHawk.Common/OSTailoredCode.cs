@@ -34,7 +34,7 @@ namespace BizHawk.Common
 		{
 			int FreeByPtr(IntPtr hModule);
 
-			IntPtr? GetProcAddrOrNull(IntPtr hModule, string procName);
+			IntPtr GetProcAddrOrNull(IntPtr hModule, string procName);
 
 			/// <exception cref="InvalidOperationException">could not find symbol</exception>
 			IntPtr GetProcAddrOrThrow(IntPtr hModule, string procName);
@@ -61,17 +61,18 @@ namespace BizHawk.Common
 
 			public int FreeByPtr(IntPtr hModule) => dlclose(hModule);
 
-			public IntPtr? GetProcAddrOrNull(IntPtr hModule, string procName)
+			public IntPtr GetProcAddrOrNull(IntPtr hModule, string procName)
 			{
 				var p = dlsym(hModule, procName);
-				return p == IntPtr.Zero ? (IntPtr?) null : p;
+				return p;
 			}
 
 			public IntPtr GetProcAddrOrThrow(IntPtr hModule, string procName)
 			{
 				_ = dlerror(); // the Internet said to do this
 				var p = GetProcAddrOrNull(hModule, procName);
-				if (p != null) return p.Value;
+				if (p != IntPtr.Zero)
+					return p;
 				var errCharPtr = dlerror();
 				throw new InvalidOperationException($"error in {nameof(dlsym)}{(errCharPtr == IntPtr.Zero ? string.Empty : $": {Marshal.PtrToStringAnsi(errCharPtr)}")}");
 			}
@@ -104,13 +105,19 @@ namespace BizHawk.Common
 
 			public int FreeByPtr(IntPtr hModule) => FreeLibrary(hModule) ? 0 : 1;
 
-			public IntPtr? GetProcAddrOrNull(IntPtr hModule, string procName)
+			public IntPtr GetProcAddrOrNull(IntPtr hModule, string procName)
 			{
 				var p = GetProcAddress(hModule, procName);
-				return p == IntPtr.Zero ? (IntPtr?) null : p;
+				return p;
 			}
 
-			public IntPtr GetProcAddrOrThrow(IntPtr hModule, string procName) => GetProcAddrOrNull(hModule, procName) ?? throw new InvalidOperationException($"got null pointer from {nameof(GetProcAddress)}, error code: {GetLastError()}");
+			public IntPtr GetProcAddrOrThrow(IntPtr hModule, string procName)
+			{
+				var ret = GetProcAddrOrNull(hModule, procName);
+				if (ret == IntPtr.Zero)
+					throw new InvalidOperationException($"got null pointer from {nameof(GetProcAddress)}, error code: {GetLastError()}");
+				return ret;
+			}
 
 			public IntPtr? LoadOrNull(string dllToLoad)
 			{
