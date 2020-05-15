@@ -24,11 +24,7 @@ namespace BizHawk.Client.Common
 		public static LuaTable ToLuaTable<T>(this IList<T> list, Lua lua, int indexFrom = 0)
 		{
 			var table = lua.NewTable();
-			var indexAfterLast = indexFrom + list.Count;
-			for (var i = indexFrom; i != indexAfterLast; i++)
-			{
-				table[i] = list[i];
-			}
+			for (int i = 0, l = list.Count; i != l; i++) table[indexFrom + i] = list[i];
 			return table;
 		}
 
