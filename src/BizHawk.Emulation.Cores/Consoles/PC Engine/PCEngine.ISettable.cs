@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 			Settings = o;
 
-			return PutSettingsDirtyBits.None;
+			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
 		public PutSettingsDirtyBits PutSyncSettings(PCESyncSettings o)
