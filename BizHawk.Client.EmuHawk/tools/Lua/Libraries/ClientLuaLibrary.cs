@@ -21,7 +21,7 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
 
-		[RequiredService]
+		[OptionalService]
 		private IVideoProvider VideoProvider { get; set; }
 
 		public MainForm MainForm { get; set; }
@@ -68,14 +68,14 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("bufferheight", "Gets the visible height of the emu display surface (the core video output). This excludes the gameExtraPadding you've set.")]
 		public int BufferHeight()
 		{
-			return VideoProvider.BufferHeight;
+			return VideoProvider?.BufferHeight ?? NullVideo.Instance.BufferHeight; // TODO: consider exposing the video provider from mainform, so it can decide NullVideo is the correct substitute
 		}
 
 		[LuaMethodExample("local inclibuf = client.bufferwidth( );")]
 		[LuaMethod("bufferwidth", "Gets the visible width of the emu display surface (the core video output). This excludes the gameExtraPadding you've set.")]
 		public int BufferWidth()
 		{
-			return VideoProvider.BufferWidth;
+			return VideoProvider?.BufferWidth ?? NullVideo.Instance.BufferWidth;
 		}
 
 		[LuaMethodExample("client.clearautohold( );")]
