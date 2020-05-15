@@ -52,7 +52,7 @@ uint32 system_clock;
 const int16 SVP_cycles = 800; 
 
 uint8 pause_b;
-EQSTATE eq;
+static EQSTATE eq[2];
 int16 llp,rrp;
 
 /******************************************************************************************/
@@ -169,10 +169,11 @@ void audio_reset(void)
 
 void audio_set_equalizer(void)
 {
-  init_3band_state(&eq,config.low_freq,config.high_freq,snd.sample_rate);
-  eq.lg = (double)(config.lg) / 100.0;
-  eq.mg = (double)(config.mg) / 100.0;
-  eq.hg = (double)(config.hg) / 100.0;
+  init_3band_state(&eq[0],config.low_freq,config.high_freq,snd.sample_rate);
+  init_3band_state(&eq[1],config.low_freq,config.high_freq,snd.sample_rate);
+  eq[0].lg = eq[1].lg = (double)(config.lg) / 100.0;
+  eq[0].mg = eq[1].mg = (double)(config.mg) / 100.0;
+  eq[0].hg = eq[1].hg = (double)(config.hg) / 100.0;
 }
 
 void audio_shutdown(void)
@@ -278,8 +279,8 @@ int audio_update(int16 *buffer)
       do
       {
         /* 3 Band EQ */
-        l = do_3band(&eq,out[0]);
-        r = do_3band(&eq,out[1]);
+        l = do_3band(&eq[0],out[0]);
+        r = do_3band(&eq[1],out[1]);
 
         /* clipping (16-bit samples) */
         if (l > 32767) l = 32767;

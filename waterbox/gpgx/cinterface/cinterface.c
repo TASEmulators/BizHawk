@@ -546,9 +546,9 @@ GPGX_EX int gpgx_init(
 	config.lp_range = settings->LowPassRange; //0x9999; /* 0.6 in 16.16 fixed point */
 	config.low_freq = settings->LowFreq; //880;
 	config.high_freq = settings->HighFreq; //5000;
-	config.lg = settings->LowGain; //1.0;
-	config.mg = settings->MidGain; //1.0;
-	config.hg = settings->HighGain; //1.0;
+	config.lg = settings->LowGain; //100;
+	config.mg = settings->MidGain; //100;
+	config.hg = settings->HighGain; //100;
 	config.dac_bits = 14; /* MAX DEPTH */
 	config.ym2413= 2; /* AUTO */
 	config.mono  = 0; /* STEREO output */
