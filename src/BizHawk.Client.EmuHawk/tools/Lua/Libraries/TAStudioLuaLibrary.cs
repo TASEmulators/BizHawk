@@ -329,8 +329,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		#region Branches
-
 		[LuaMethodExample("tastudio.setbranchtext( \"Some text\", 1 );")]
 		[LuaMethod("setbranchtext", "adds the given message to the existing branch, or to the branch that will be created next if branch index is not specified")]
 		public void SetBranchText(string text, int? index = null)
@@ -407,10 +405,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		#endregion
-
-		#region Markers
-
 		[LuaMethodExample("local sttasget = tastudio.getmarker( 500 );")]
 		[LuaMethod("getmarker", "returns the marker text at the given frame, or an empty string if there is no marker for the given frame")]
 		public string GetMarker(int frame)
@@ -460,10 +454,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 		}
-
-		#endregion
-
-		#region Events
 
 		[LuaMethodExample("tastudio.onqueryitembg( function( currentindex, itemname )\r\n\tconsole.log( \"called during the background draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)\" );\r\nend );")]
 		[LuaMethod("onqueryitembg", "called during the background draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)")]
@@ -572,7 +562,5 @@ namespace BizHawk.Client.EmuHawk
 				};
 			}
 		}
-
-		#endregion
 	}
 }

@@ -40,8 +40,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		#region Unique Library Methods
-
 		[LuaMethodExample("local stmaiget = mainmemory.getname( );")]
 		[LuaMethod("getname", "returns the name of the domain defined as main memory for the given core")]
 		public string GetName()
@@ -55,10 +53,6 @@ namespace BizHawk.Client.Common
 		{
 			return (uint)Domain.Size;
 		}
-
-		#endregion
-
-		#region Common Special and Legacy Methods
 
 		[LuaMethodExample("local uimairea = mainmemory.readbyte( 0x100 );")]
 		[LuaMethod("readbyte", "gets the value from the given address as an unsigned byte")]
@@ -124,10 +118,6 @@ namespace BizHawk.Client.Common
 			APIs.Mem.WriteFloat(addr, value, Domain.Name);
 		}
 
-		#endregion
-
-		#region 1 Byte
-
 		[LuaMethodExample("local inmairea = mainmemory.read_s8( 0x100 );")]
 		[LuaMethod("read_s8", "read signed byte")]
 		public int ReadS8(int addr) => APIs.Mem.ReadS8(addr, Domain.Name);
@@ -143,10 +133,6 @@ namespace BizHawk.Client.Common
 		[LuaMethodExample("mainmemory.write_u8( 0x100, 1000 );")]
 		[LuaMethod("write_u8", "write unsigned byte")]
 		public void WriteU8(int addr, uint value) => APIs.Mem.WriteU8(addr, value, Domain.Name);
-
-		#endregion
-
-		#region 2 Byte
 
 		[LuaMethodExample("local inmairea = mainmemory.read_s16_le( 0x100 );")]
 		[LuaMethod("read_s16_le", "read signed 2 byte value, little endian")]
@@ -212,10 +198,6 @@ namespace BizHawk.Client.Common
 			APIs.Mem.WriteU16(addr, value, Domain.Name);
 		}
 
-		#endregion
-
-		#region 3 Byte
-
 		[LuaMethodExample("local inmairea = mainmemory.read_s24_le( 0x100 );")]
 		[LuaMethod("read_s24_le", "read signed 24 bit value, little endian")]
 		public int ReadS24Little(int addr)
@@ -280,10 +262,6 @@ namespace BizHawk.Client.Common
 			APIs.Mem.WriteU24(addr, value, Domain.Name);
 		}
 
-		#endregion
-
-		#region 4 Byte
-
 		[LuaMethodExample("local inmairea = mainmemory.read_s32_le( 0x100 );")]
 		[LuaMethod("read_s32_le", "read signed 4 byte value, little endian")]
 		public int ReadS32Little(int addr)
@@ -347,7 +325,5 @@ namespace BizHawk.Client.Common
 			APIs.Mem.SetBigEndian();
 			APIs.Mem.WriteU32(addr, value, Domain.Name);
 		}
-
-		#endregion
 	}
 }

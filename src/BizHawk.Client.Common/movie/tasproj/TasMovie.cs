@@ -325,8 +325,6 @@ namespace BizHawk.Client.Common
 			Changes = true;
 		}
 
-		#region Events and Handlers
-
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		private bool _changes;
@@ -357,7 +355,5 @@ namespace BizHawk.Client.Common
 
 		public void ClearChanges() => Changes = false;
 		public void FlagChanges() => Changes = true;
-
-		#endregion
 	}
 }

@@ -36,8 +36,6 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class MainForm : Form
 	{
-		#region Constructors and Initialization, and Tear down
-
 		private void MainForm_Load(object sender, EventArgs e)
 		{
 			SetWindowText();
@@ -634,10 +632,6 @@ namespace BizHawk.Client.EmuHawk
 			base.Dispose(disposing);
 		}
 
-		#endregion
-
-		#region Pause
-
 		private bool _emulatorPaused;
 		public bool EmulatorPaused
 		{
@@ -667,10 +661,6 @@ namespace BizHawk.Client.EmuHawk
 
 			public bool Paused { get; }
 		}
-
-		#endregion
-
-		#region Properties
 
 		public string CurrentlyOpenRom { get; private set; } // todo - delete me and use only args instead
 		public LoadRomArgs CurrentlyOpenRomArgs { get; private set; }
@@ -725,10 +715,6 @@ namespace BizHawk.Client.EmuHawk
 		public bool IsSeeking => PauseOnFrame.HasValue;
 		private bool IsTurboSeeking => PauseOnFrame.HasValue && Config.TurboSeek;
 		public bool IsTurboing => InputManager.ClientControls["Turbo"] || IsTurboSeeking;
-
-		#endregion
-
-		#region Public Methods
 
 		public void AddOnScreenMessage(string message)
 		{
@@ -1427,10 +1413,6 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
-		#endregion
-
-		#region Private variables
-
 		private Size _lastVideoSize = new Size(-1, -1), _lastVirtualSize = new Size(-1, -1);
 		private readonly SaveSlotManager _stateSlots = new SaveSlotManager();
 
@@ -1496,9 +1478,6 @@ namespace BizHawk.Client.EmuHawk
 
 		// countdown for saveram autoflushing
 		public int AutoFlushSaveRamIn { get; set; }
-		#endregion
-
-		#region Private methods
 
 		private void SetStatusBar()
 		{
@@ -2804,10 +2783,6 @@ namespace BizHawk.Client.EmuHawk
 			AddOnScreenMessage($"Config file loaded: {iniPath}");
 		}
 
-		#endregion
-
-		#region Frame Loop
-
 		private void StepRunLoop_Throttle()
 		{
 			SyncThrottle();
@@ -3097,10 +3072,6 @@ namespace BizHawk.Client.EmuHawk
 			_timestampLastFpsUpdate = Stopwatch.GetTimestamp();
 			_framesSinceLastFpsUpdate = 0;
 		}
-
-		#endregion
-
-		#region AVI Stuff
 
 		/// <summary>
 		/// start AVI recording, unattended
@@ -3458,10 +3429,6 @@ namespace BizHawk.Client.EmuHawk
 
 			return null;
 		}
-
-		#endregion
-
-		#region Scheduled for refactor
 
 		public string SaveStatePrefix()
 		{
@@ -3998,10 +3965,6 @@ namespace BizHawk.Client.EmuHawk
 			Rewinder.Clear();
 		}
 
-		#endregion
-
-		#region Tool Control API
-
 		// TODO: move me
 		public IControlMainform Master { get; private set; }
 
@@ -4448,7 +4411,5 @@ namespace BizHawk.Client.EmuHawk
 
 			return isRewinding;
 		}
-
-		#endregion
 	}
 }

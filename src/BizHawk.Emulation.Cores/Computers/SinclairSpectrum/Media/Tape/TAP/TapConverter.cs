@@ -27,18 +27,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public override bool IsWriter => false;
 
-		#region Construction
-
 		private DatacorderDevice _datacorder;
 
 		public TapConverter(DatacorderDevice _tapeDevice)
 		{
 			_datacorder = _tapeDevice;
 		}
-
-		#endregion
-
-		#region TAP Format Constants
 
 		/// <summary>
 		/// Pilot pulse length
@@ -89,8 +83,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// Used bit count in last byte
 		/// </summary>
 		public const int BIT_COUNT_IN_LAST = 8;
-
-		#endregion
 
 		/// <summary>
 		/// DeSerialization method

@@ -16,8 +16,6 @@ namespace BizHawk.Common
 	// to do anything useful, passed targets should be [StructLayout.Sequential] or [StructLayout.Explicit]
 	public class BinaryQuickSerializer
 	{
-		#region methodinfo from a lambda expression.  cool.
-
 		private static MethodInfo FromExpression(Expression e)
 		{
 			var caller = e as MethodCallExpression;
@@ -33,10 +31,6 @@ namespace BizHawk.Common
 		{
 			return FromExpression(f.Body);
 		}
-
-		#endregion
-
-		#region read and write handlers for individual fields
 
 		private static readonly Dictionary<Type, MethodInfo> Readhandlers = new Dictionary<Type, MethodInfo>();
 		private static readonly Dictionary<Type, MethodInfo> Writehandlers = new Dictionary<Type, MethodInfo>();
@@ -92,10 +86,6 @@ namespace BizHawk.Common
 			AddR<ulong>(r => r.ReadUInt64());
 			AddW<ulong>(r => r.Write(0UL));
 		}
-
-		#endregion
-
-		#region dynamic code generation
 
 		private delegate void Reader(object target, BinaryReader r);
 		private delegate void Writer(object target, BinaryWriter w);
@@ -170,8 +160,6 @@ namespace BizHawk.Common
 				Write = (Writer)wmeth.CreateDelegate(typeof(Writer))
 			};
 		}
-
-		#endregion
 
 		private static readonly IDictionary<Type, SerializationFactory> Serializers =
 			new ConcurrentDictionary<Type, SerializationFactory>();

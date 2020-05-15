@@ -5,8 +5,6 @@
 	/// </summary>
 	public class ISONode
 	{
-		#region Public Properties
-
 		/// <summary>
 		/// The record this node was created from.
 		/// </summary>
@@ -21,10 +19,6 @@
 		/// </summary>
 		public long Length;
 
-		#endregion
-
-		#region Construction
-
 		/// <summary>
 		/// Constructor.
 		/// TODO: Make this constructor protected???
@@ -36,7 +30,5 @@
 			this.Offset = record.OffsetOfData;
 			this.Length = record.LengthOfData;
 		}
-
-		#endregion
 	}
 }

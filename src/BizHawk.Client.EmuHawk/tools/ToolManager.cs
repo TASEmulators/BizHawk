@@ -718,7 +718,6 @@ namespace BizHawk.Client.EmuHawk
 		public bool IsAvailable<T>() => IsAvailable(typeof(T));
 
 		// Note: Referencing these properties creates an instance of the tool and persists it.  They should be referenced by type if this is not desired
-		#region Tools
 
 		private T GetTool<T>() where T : class, IToolForm, new()
 		{
@@ -750,10 +749,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public TAStudio TAStudio => GetTool<TAStudio>();
 
-		#endregion
-
-		#region Specialized Tool Loading Logic
-
 		public void LoadRamWatch(bool loadDialog)
 		{
 			if (IsLoaded<RamWatch>())
@@ -776,8 +771,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 		}
-
-		#endregion
 
 		public string GenerateDefaultCheatFilename()
 		{

@@ -23,8 +23,6 @@ namespace BizHawk.Client.EmuHawk
 			ForeColor = SystemColors.ControlText;
 		}
 
-		#region IVirtualPadControl Implementation
-
 		public void Clear()
 		{
 			if (!ReadOnly)
@@ -74,8 +72,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 		}
-
-		#endregion
 
 		protected override void WndProc(ref Message m)
 		{

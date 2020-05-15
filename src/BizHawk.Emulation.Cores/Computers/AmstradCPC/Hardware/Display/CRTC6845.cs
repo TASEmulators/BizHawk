@@ -42,8 +42,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		private CRTCType ChipType;
 
-		#region Construction
-
 		/// <summary>
 		/// The only constructor
 		/// </summary>
@@ -51,10 +49,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			ChipType = type;
 		}
-
-		#endregion
-
-		#region Input Lines
 
 		/// <summary>
 		/// The ClK isaTTUMOS-compatible input used to synchronize all CRT' functions except for the processor interface. 
@@ -84,10 +78,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public bool LPSTB => _LPSTB;
 
 		private bool _LPSTB;
-
-		#endregion
-
-		#region Output Lines
 
 		// State output lines      
 		/// <summary>
@@ -199,10 +189,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 		}
 
-		#endregion
-
-		#region Internal State
-
 		/// <summary>
 		/// Character pos address (0 index).
 		/// Feeds the MA lines
@@ -291,10 +277,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		private int StartAddressLatch;
 
-		#endregion
-
-		#region Internal Registers
-
 		/// <summary>
 		/// The currently selected register
 		/// </summary>
@@ -323,10 +305,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// depending on the current CRTC status
 		/// </summary>
 		private byte AsicStatusRegister2;
-
-		#endregion
-
-		#region Databus Interface
 
 		/*
                 RegIdx    Register Name                 Type
@@ -429,10 +407,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			return accessed;
 		}
-
-		#endregion
-
-		#region Type-Specific Logic
 
 		/// <summary>
 		/// Runs a clock cycle for the current chip type
@@ -679,12 +653,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 		}
 
-		#endregion
-
-		#region Type-Specific Internal Methods		
-
-		#region Sync Widths
-
 		/// <summary>
 		/// Current programmed HSYNC width for Type 0 (HD6845S & UM6845) & Type 1 (UM6845R)
 		/// </summary>
@@ -730,10 +698,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		// Bits 7..4 are ignored. 
 		// Vertical Sync is fixed at 16 lines.
 		private int VSYNCWidth_Type1_2 => 16;
-
-		#endregion
-
-		#region Register Access
 
 		/// <summary>
 		/// Read Register (HD6845S & UM6845)
@@ -1128,12 +1092,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			return false;
 		}
-
-		#endregion
-
-		#endregion
-
-		#region Clock Cycles
 
 		/* persistent switch signals */
 		bool s_VS;
@@ -2147,10 +2105,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		}
 
-		#endregion
-
-		#region Enums & Constants
-
 		/* Horizontal Timing Register Constants */
 		/// <summary>
 		/// This 8 bit write-only register determines the horizontal frequency of HS. 
@@ -2283,10 +2237,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			TransparentMemory
 		}
 
-		#endregion
-
-		#region Serialization
-
 		public void SyncState(Serializer ser)
 		{
 			ser.BeginSection("CRCT");
@@ -2324,7 +2274,5 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			//ser.Sync(nameof(VS), ref VS);
 			ser.EndSection();
 		}
-
-		#endregion
 	}
 }

@@ -81,8 +81,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		#region Log Editing
-
 		public void AppendFrame(IController source)
 		{
 			var lg = LogGeneratorInstance(source);
@@ -164,8 +162,6 @@ namespace BizHawk.Client.Common
 			SetFrameAt(frame, lg.EmptyEntry);
 			Changes = true;
 		}
-
-		#endregion
 
 		protected void SetFrameAt(int frameNum, string frame)
 		{

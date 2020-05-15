@@ -12,8 +12,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// </summary>
 	public class DatacorderDevice
 	{
-		#region Construction
-
 		private CPCBase _machine;
 		private Z80A _cpu => _machine.CPU;
 		private IBeeperDevice _buzzer => _machine.TapeBuzzer;
@@ -33,10 +31,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			_machine = machine;
 		}
-
-		#endregion
-
-		#region State Information
 
 		/// <summary>
 		/// Signs whether the tape motor is running
@@ -142,19 +136,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		private bool currentState = false;
 
-		#endregion
-
-		#region Datacorder Device Settings
-
 		/// <summary>
 		/// Signs whether the device should autodetect when the Z80 has entered into
 		/// 'load' mode and auto-play the tape if neccesary
 		/// </summary>
 		private bool _autoPlay;
-
-		#endregion
-
-		#region Emulator    
 
 		/// <summary>
 		/// Should be fired at the end of every frame
@@ -169,10 +155,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			//_buzzer.ProcessPulseValue(currentState);
 		}
-
-		#endregion
-
-		#region Tape Controls
 
 		/// <summary>
 		/// Starts the tape playing from the beginning of the current block
@@ -379,10 +361,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			RTZ();
 		}
-
-		#endregion
-
-		#region Tape Device Methods        
 
 		/// <summary>
 		/// Is called every cpu cycle but runs every 50 t-states
@@ -642,11 +620,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			currentState = !currentState;
 		}
 
-		#endregion
-
-		#region TapeMonitor
-
-
 
 		public void AutoStopTape()
 		{
@@ -743,10 +716,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         }
         */
 
-		#endregion
-
-		#region IPortIODevice
-
 		/// <summary>
 		/// Mask constants
 		/// </summary>
@@ -800,10 +769,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             */
 		}
 
-		#endregion
-
-		#region State Serialization
-
 		/// <summary>
 		/// BizHawk state serialization
 		/// </summary>
@@ -820,7 +785,5 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			ser.Sync(nameof(tapeMotor), ref tapeMotor);
 			ser.EndSection();
 		}
-
-		#endregion
 	}
 }

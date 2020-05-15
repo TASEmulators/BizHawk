@@ -72,8 +72,6 @@ namespace BizHawk.Emulation.Cores.Components
 			}
 		}
 
-		#region Implementation Uglyness
-
 		/* Mask */
 		static int OPLL_MASK_CH(int x) { return (1 << (x)); }
 		const int OPLL_MASK_HH = (1 << (9));
@@ -1858,7 +1856,5 @@ namespace BizHawk.Emulation.Cores.Components
 			}
 
 		}
-
-		#endregion
 	}
 }

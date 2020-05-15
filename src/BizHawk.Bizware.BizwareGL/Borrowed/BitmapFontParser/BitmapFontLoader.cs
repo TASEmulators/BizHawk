@@ -12,8 +12,6 @@ namespace Cyotek.Drawing.BitmapFont
 
 	public static class BitmapFontLoader
 	{
-		#region  Public Class Methods
-
 		/// <summary>
 		/// Loads a bitmap font from an XML file.
 		/// </summary>
@@ -115,10 +113,6 @@ namespace Cyotek.Drawing.BitmapFont
 			return font;
 		}
 
-		#endregion  Public Class Methods
-
-		#region  Private Class Methods
-
 		/// <summary>
 		/// Creates a Padding object from a string representation
 		/// </summary>
@@ -164,7 +158,5 @@ namespace Cyotek.Drawing.BitmapFont
 
 			return result;
 		}
-
-		#endregion  Private Class Methods
 	}
 }

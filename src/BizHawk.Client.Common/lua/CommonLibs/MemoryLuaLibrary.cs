@@ -21,8 +21,6 @@ namespace BizHawk.Client.Common
 
 		public override string Name => "memory";
 
-		#region Unique Library Methods
-
 		[LuaMethodExample("local nlmemget = memory.getmemorydomainlist();")]
 		[LuaMethod("getmemorydomainlist", "Returns a string of the memory domains for the loaded platform core. List will be a single string delimited by line feeds")]
 		public LuaTable GetMemoryDomainList()
@@ -51,10 +49,6 @@ namespace BizHawk.Client.Common
 		[LuaMethodExample("local stmemhas = memory.hash_region( 0x100, 50, mainmemory.getname( ) );")]
 		[LuaMethod("hash_region", "Returns a hash as a string of a region of memory, starting from addr, through count bytes. If the domain is unspecified, it uses the current region.")]
 		public string HashRegion(int addr, int count, string domain = null) => APIs.Mem.HashRegion(addr, count, domain);
-
-		#endregion
-
-		#region Common Special and Legacy Methods
 
 		[LuaMethodExample("local uimemrea = memory.readbyte( 0x100, mainmemory.getname( ) );")]
 		[LuaMethod("readbyte", "gets the value from the given address as an unsigned byte")]
@@ -120,10 +114,6 @@ namespace BizHawk.Client.Common
 			APIs.Mem.WriteFloat(addr, value, domain);
 		}
 
-		#endregion
-
-		#region 1 Byte
-
 		[LuaMethodExample("local inmemrea = memory.read_s8( 0x100, mainmemory.getname( ) );")]
 		[LuaMethod("read_s8", "read signed byte")]
 		public int ReadS8(int addr, string domain = null) => APIs.Mem.ReadS8(addr, domain);
@@ -139,10 +129,6 @@ namespace BizHawk.Client.Common
 		[LuaMethodExample("memory.write_u8( 0x100, 1000, mainmemory.getname( ) );")]
 		[LuaMethod("write_u8", "write unsigned byte")]
 		public void WriteU8(int addr, uint value, string domain = null) => APIs.Mem.WriteU8(addr, value, domain);
-
-		#endregion
-
-		#region 2 Byte
 
 		[LuaMethodExample("local inmemrea = memory.read_s16_le( 0x100, mainmemory.getname( ) );")]
 		[LuaMethod("read_s16_le", "read signed 2 byte value, little endian")]
@@ -208,10 +194,6 @@ namespace BizHawk.Client.Common
 			APIs.Mem.WriteU16(addr, value, domain);
 		}
 
-		#endregion
-
-		#region 3 Byte
-
 		[LuaMethodExample("local inmemrea = memory.read_s24_le( 0x100, mainmemory.getname( ) );")]
 		[LuaMethod("read_s24_le", "read signed 24 bit value, little endian")]
 		public int ReadS24Little(int addr, string domain = null)
@@ -276,10 +258,6 @@ namespace BizHawk.Client.Common
 			APIs.Mem.WriteU24(addr, value, domain);
 		}
 
-		#endregion
-
-		#region 4 Byte
-
 		[LuaMethodExample("local inmemrea = memory.read_s32_le( 0x100, mainmemory.getname( ) );")]
 		[LuaMethod("read_s32_le", "read signed 4 byte value, little endian")]
 		public int ReadS32Little(int addr, string domain = null)
@@ -343,7 +321,5 @@ namespace BizHawk.Client.Common
 			APIs.Mem.SetBigEndian();
 			APIs.Mem.WriteU32(addr, value, domain);
 		}
-
-		#endregion
 	}
 }

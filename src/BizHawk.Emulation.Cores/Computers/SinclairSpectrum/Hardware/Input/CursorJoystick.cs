@@ -12,8 +12,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		//private int _joyLine;
 		private SpectrumBase _machine;
 
-		#region Construction
-
 		public CursorJoystick(SpectrumBase machine, int playerNumber)
 		{
 			_machine = machine;
@@ -38,10 +36,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             "Key 7",    // up
             "Key 0",    // fire
         };
-
-		#endregion
-
-		#region IJoystick
 
 		public JoystickType JoyType => JoystickType.Cursor;
 
@@ -91,8 +85,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			var l = _machine.KeyboardDevice.GetKeyStatus(btnLookups[pos]);
 			return l;
 		}
-
-		#endregion
 
 		/// <summary>
 		/// Gets the bit position of a particular joystick binding from the matrix

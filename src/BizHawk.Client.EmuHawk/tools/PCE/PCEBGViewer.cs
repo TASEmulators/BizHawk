@@ -83,10 +83,6 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void UpdateBefore() => Generate();
 
-		#region Events
-
-		#region Menu
-
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			VDC2MenuItem.Enabled = PCE.SystemId == "SGX";
@@ -110,8 +106,6 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		#endregion
-
 		private void Canvas_MouseMove(object sender, MouseEventArgs e)
 		{
 			var vdc = _vdcType == 0 ? PCE.VDC1 : PCE.VDC2;
@@ -123,7 +117,5 @@ namespace BizHawk.Client.EmuHawk
 			XYLabel.Text = $"{xTile}:{yTile}";
 			PaletteLabel.Text = paletteNo.ToString();
 		}
-
-		#endregion
 	}
 }

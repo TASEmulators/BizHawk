@@ -292,8 +292,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		#region Events
-
 		private void NewPathConfig_Load(object sender, EventArgs e)
 		{
 			LoadSettings();
@@ -335,7 +333,5 @@ namespace BizHawk.Client.EmuHawk
 			_mainForm.AddOnScreenMessage("Path config aborted");
 			Close();
 		}
-
-		#endregion
 	}
 }

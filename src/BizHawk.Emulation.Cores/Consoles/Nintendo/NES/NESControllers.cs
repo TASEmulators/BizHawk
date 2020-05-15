@@ -14,8 +14,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	 * possible with the electronic interface available, but never used.
 	 */
 
-	#region interfaces and such
-
 	/// <summary>
 	/// callback type for PPU to tell if there's light for a lightgun to detect
 	/// </summary>
@@ -120,8 +118,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		ControllerDefinition GetDefinition();
 		void SyncState(Serializer ser);
 	}
-
-	#endregion
 
 	/// <summary>
 	/// a NES or AV famicom, with two attached devices
@@ -804,7 +800,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	public class FamilyBasicKeyboard : IFamicomExpansion
 	{
-		#region buttonlookup
 		static string[] Buttons =
 		{
 			"0]",
@@ -889,7 +884,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			"0DOWN",
 
 		};
-		#endregion
 
 		static ControllerDefinition Definition = new ControllerDefinition { BoolButtons = new List<string>(Buttons) };
 
@@ -1130,8 +1124,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 	}
 
-	#region settings
-
 	public class NESControlSettings
 	{
 		static readonly Dictionary<string, Type> FamicomExpansions;
@@ -1244,6 +1236,4 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 	}
-
-	#endregion
 }

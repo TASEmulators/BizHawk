@@ -309,12 +309,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		#region Events
-
-		#region Menu and Context Menu
-
-		#region File
-
 		private void SavePaletteScreenshotMenuItem_Click(object sender, EventArgs e)
 		{
 			PaletteView.Screenshot();
@@ -349,10 +343,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Close();
 		}
-
-		#endregion
-
-		#region Pattern
 
 		private void Table0PaletteSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -448,18 +438,10 @@ namespace BizHawk.Client.EmuHawk
 			UpdatePaletteSelection();
 		}
 
-		#endregion
-
-		#region Settings
-
 		private void SettingsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			cHRROMTileViewerToolStripMenuItem.Checked = ChrRomView;
 		}
-
-		#endregion
-
-		#region Context Menus
 
 		private void PaletteRefreshMenuItem_Click(object sender, EventArgs e)
 		{
@@ -475,12 +457,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			SpriteView.Refresh();
 		}
-
-		#endregion
-
-		#endregion
-
-		#region Dialog and Controls
 
 		private void NesPPU_MouseClick(object sender, MouseEventArgs e)
 		{
@@ -779,8 +755,6 @@ namespace BizHawk.Client.EmuHawk
 			_ppu?.RemoveCallback2();
 		}
 
-		#endregion
-
 		private MemoryDomain _chrRom;
 		private readonly byte[] _chrRomCache = new byte[8192];
 
@@ -823,8 +797,6 @@ namespace BizHawk.Client.EmuHawk
 				DrawPatternView(CHRROMView, _chrRomCache, _ppu.GetPalette(), _ppu.GetPalRam());
 			}
 		}
-
-		#endregion
 
 		private void NumericUpDownChrRomBank_ValueChanged(object sender, EventArgs e)
 		{

@@ -119,7 +119,6 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 		public DisplayType Region => DisplayType.NTSC;
 
-		#region Trace Logger
 		private ITraceable Tracer;
 
 		private LibMSX.TraceCallback tracecb;
@@ -143,8 +142,6 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 				RegisterInfo = new_r.ToString()
 			});
 		}
-
-		#endregion
 
 		private MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
 		public IMemoryCallbackSystem MemoryCallbacks => _memorycallbacks;

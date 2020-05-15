@@ -185,20 +185,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 
 
-		#region IRegionable
-
 		public DisplayType Region => DisplayType.PAL;
-
-		#endregion
-
-		#region IDriveLight
 
 		public bool DriveLightEnabled => true;
 
 		public bool DriveLightOn =>
 			(_machine?.TapeDevice != null && _machine.TapeDevice.TapeIsPlaying)
 			|| (_machine?.UPDDiskDevice != null && _machine.UPDDiskDevice.DriveLight);
-
-		#endregion
 	}
 }

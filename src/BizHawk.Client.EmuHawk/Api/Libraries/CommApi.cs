@@ -28,8 +28,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public string SocketServerGetInfo() => GlobalWin.socketServer.GetInfo();
 
-		#region MemoryMappedFile
-
 		public void MmfSetFilename(string filename) => GlobalWin.memoryMappedFiles.Filename = filename;
 
 		public string MmfGetFilename() => GlobalWin.memoryMappedFiles.Filename;
@@ -39,10 +37,6 @@ namespace BizHawk.Client.EmuHawk
 		public int MmfWrite(string mmf_filename, string outputString) => GlobalWin.memoryMappedFiles.WriteToFile(mmf_filename, Encoding.ASCII.GetBytes(outputString));
 
 		public string MmfRead(string mmf_filename, int expectedSize) => GlobalWin.memoryMappedFiles.ReadFromFile(mmf_filename, expectedSize);
-
-		#endregion
-
-		#region HTTP
 
 		public string HttpTest() => string.Join("\n", GlobalWin.httpCommunication.TestGet(), GlobalWin.httpCommunication.SendScreenshot(), "done testing");
 
@@ -63,7 +57,5 @@ namespace BizHawk.Client.EmuHawk
 		public string HttpGetPostUrl() => GlobalWin.httpCommunication.PostUrl;
 
 		public string HttpGetGetUrl() => GlobalWin.httpCommunication.GetUrl;
-
-		#endregion
 	}
 }

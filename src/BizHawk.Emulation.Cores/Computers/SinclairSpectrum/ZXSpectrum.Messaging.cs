@@ -44,8 +44,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			CoreComm.Notify(sb.ToString());
 		}
 
-		#region Input Message Methods
-
 		/// <summary>
 		/// Called when certain input presses are detected
 		/// </summary>
@@ -55,10 +53,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			sb.Append(input);
 			SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Input);
 		}
-
-		#endregion
-
-		#region DiskDevice Message Methods
 
 		/// <summary>
 		/// Disk message that is fired on core init
@@ -145,10 +139,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				sb.Clear();
 			}
 		}
-
-		#endregion
-
-		#region TapeDevice Message Methods
 
 		/// <summary>
 		/// Tape message that is fired on core init
@@ -429,8 +419,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			sb.Append(p.ToString("N0") + "%");
 			SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
 		}
-
-		#endregion
 
 		/// <summary>
 		/// Checks whether message category is allowed to be sent

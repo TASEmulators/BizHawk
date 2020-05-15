@@ -8,8 +8,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// </summary>
 	public partial class CPC6128 : CPCBase
 	{
-		#region Construction
-
 		/// <summary>
 		/// Main constructor
 		/// </summary>
@@ -42,7 +40,5 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			InitializeMedia(files);
 		}
-
-		#endregion
 	}
 }

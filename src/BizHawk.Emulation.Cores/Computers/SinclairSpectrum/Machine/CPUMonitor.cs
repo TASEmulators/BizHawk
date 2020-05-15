@@ -9,15 +9,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// </summary>
 	public class CPUMonitor
 	{
-		#region Devices
-
 		private SpectrumBase _machine;
 		private Z80A _cpu;
 		public MachineType machineType = MachineType.ZXSpectrum48;
-
-		#endregion
-
-		#region Lookups
 
 		/// <summary>
 		/// CPU total executes t-states
@@ -42,19 +36,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 		}
 
-		#endregion
-
-		#region Construction
-
 		public CPUMonitor(SpectrumBase machine)
 		{
 			_machine = machine;
 			_cpu = _machine.CPU;
 		}
-
-		#endregion
-
-		#region State
 
 		/// <summary>
 		/// The last 16-bit port address that was detected
@@ -65,10 +51,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// If true, the next read memory operation has been contended
 		/// </summary>
 		public bool NextMemReadContended;
-
-		#endregion
-
-		#region Methods
 
 		/// <summary>
 		/// Handles the ULA and CPU cycle clocks, along with any memory and port contention
@@ -387,10 +369,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		}
 
-		#endregion
-
-		#region Serialization
-
 		public void SyncState(Serializer ser)
 		{
 			ser.BeginSection(nameof(CPUMonitor));
@@ -398,7 +376,5 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			ser.Sync(nameof(NextMemReadContended), ref NextMemReadContended);
 			ser.EndSection();
 		}
-
-		#endregion
 	}
 }

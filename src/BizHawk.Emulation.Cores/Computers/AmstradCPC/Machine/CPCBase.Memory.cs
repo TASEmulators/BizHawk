@@ -6,8 +6,6 @@
 	/// </summary>
 	public abstract partial class CPCBase
 	{
-		#region Memory Fields & Properties
-
 		/* ROM Banks */
 		/// <summary>
 		/// Lower: OS ROM
@@ -59,10 +57,6 @@
 		/// On a machine with more than 128K RAM (standard memory expansion) this selects each additional 64K above the first upper 64K
 		/// </summary>
 		public int RAM64KBank;
-
-		#endregion
-
-		#region Memory Related Methods
 
 		/// <summary>
 		/// Simulates reading from the bus
@@ -137,7 +131,5 @@
 
 			return result;
 		}
-
-		#endregion
 	}
 }

@@ -30,10 +30,6 @@ namespace BizHawk.Client.Common
 			AllSystemInfos.Add(this);
 		}
 
-		#region Methods
-
-		#region Get SystemInfo
-
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for Apple II
 		/// </summary>
@@ -235,8 +231,6 @@ namespace BizHawk.Client.Common
 
 		public static SystemInfo Sgb { get; } = new SystemInfo("SGB", CoreSystem.SuperGameBoy, 4);
 
-		#endregion Get SystemInfo
-
 		/// <summary>
 		/// Get a <see cref="SystemInfo"/> by its <see cref="CoreSystem"/>
 		/// </summary>
@@ -294,10 +288,6 @@ namespace BizHawk.Client.Common
 			return !(system1 == system2);
 		}
 
-		#endregion
-
-		#region Properties
-
 		/// <summary>
 		/// Gets <see cref="JoypadButton"/> available for this system
 		/// </summary>
@@ -317,7 +307,5 @@ namespace BizHawk.Client.Common
 		/// Gets core used for this system as <see cref="CoreSystem"/> enum
 		/// </summary>
 		public CoreSystem System { get; }
-
-		#endregion
 	}
 }

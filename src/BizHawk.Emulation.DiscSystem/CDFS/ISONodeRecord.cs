@@ -8,8 +8,6 @@ namespace BizHawk.Emulation.DiscSystem
 	/// </summary>
 	public class ISONodeRecord
 	{
-		#region Constants
-
 		/// <summary>
 		/// String representing the current directory entry
 		/// </summary>
@@ -19,10 +17,6 @@ namespace BizHawk.Emulation.DiscSystem
 		/// String representing the parent directory entry
 		/// </summary>
 		public const string PARENT_DIRECTORY = "..";
-
-		#endregion
-
-		#region Public Properties
 
 		/// <summary>
 		/// The length of the record in bytes.
@@ -87,10 +81,6 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public string Name;
 
-		#endregion
-
-		#region Construction
-
 		/// <summary>
 		/// Constructor
 		/// </summary>
@@ -116,10 +106,6 @@ namespace BizHawk.Emulation.DiscSystem
 			this.Name = null;
 		}
 
-		#endregion
-
-		#region File/Directory Methods
-
 		/// <summary>
 		/// Return true if the record represents a file.
 		/// </summary>
@@ -137,10 +123,6 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			return ((this.Flags >> 1) & 0x01) == 1;
 		}
-
-		#endregion
-
-		#region Parsing
 
 		/// <summary>
 		/// Parse the record from an array and offset.
@@ -314,7 +296,5 @@ namespace BizHawk.Emulation.DiscSystem
 			// Seek to end
 			s.Seek(startPosition + this.Length, SeekOrigin.Begin);
 		}
-
-		#endregion
 	}
 }

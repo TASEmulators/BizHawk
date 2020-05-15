@@ -6,8 +6,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// </summary>
 	class ScreenPentagon128 : ULA
 	{
-		#region Construction
-
 		public ScreenPentagon128(SpectrumBase machine)
 			: base(machine)
 		{
@@ -42,7 +40,5 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			SetupScreenSize();
 		}
-
-		#endregion
 	}
 }

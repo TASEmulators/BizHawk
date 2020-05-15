@@ -77,8 +77,6 @@ namespace BizHawk.Client.EmuHawk
 			});
 		}
 
-		#region Query callbacks
-
 		private void QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = "";
@@ -124,10 +122,6 @@ namespace BizHawk.Client.EmuHawk
 				color = Color.FromArgb((byte)(color.A - 24), (byte)(color.R - 24), (byte)(color.G - 24), (byte)(color.B - 24));
 			}
 		}
-
-		#endregion
-
-		#region Actions
 
 		public void Branch()
 		{
@@ -574,10 +568,6 @@ namespace BizHawk.Client.EmuHawk
 			return false;
 		}
 
-		#endregion
-
-		#region Events
-
 		private void BranchView_MouseDown(object sender, MouseEventArgs e)
 		{
 			BranchesContextMenu.Close();
@@ -676,7 +666,5 @@ namespace BizHawk.Client.EmuHawk
 				_screenshot.FadeOut();
 			}
 		}
-
-		#endregion
 	}
 }

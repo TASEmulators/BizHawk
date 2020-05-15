@@ -321,8 +321,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			audio.DisposeSound();
 		}
 
-		#region Video provider
-
 		public int[] frame_buffer;
 
 
@@ -371,7 +369,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public static readonly uint[] color_palette_BW = { 0xFFFFFFFF, 0xFFAAAAAA, 0xFF555555, 0xFF000000 };
 		public static readonly uint[] color_palette_Gr = { 0xFFA4C505, 0xFF88A905, 0xFF1D551D, 0xFF052505 };
-
-		#endregion
 	}
 }

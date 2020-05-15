@@ -5,8 +5,6 @@
 	/// </summary>
 	public class ISOFileNode : ISONode
 	{
-		#region Construction
-
 		/// <summary>
 		/// Constructor.
 		/// </summary>
@@ -16,7 +14,5 @@
 		{
 			// Do Nothing
 		}
-
-		#endregion
 	}
 }

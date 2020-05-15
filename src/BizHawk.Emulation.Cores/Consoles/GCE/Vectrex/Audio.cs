@@ -331,8 +331,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			_blip.SetRates(1500000, 44100);
 		}
 
-		#region audio
-
 		public bool CanProvideAsync => false;
 
 		public void SetSyncMode(SyncSoundMode mode)
@@ -385,7 +383,5 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			_blip.Dispose();
 			_blip = null;
 		}
-
-		#endregion
 	}
 }

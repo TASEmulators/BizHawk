@@ -99,8 +99,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public IEnumerable<Watch> Watches => _watches.Where(x => !x.IsSeparator);
 
-		#region API
-
 		public void AddWatch(Watch watch)
 		{
 			_watches.Add(watch);
@@ -233,10 +231,6 @@ namespace BizHawk.Client.EmuHawk
 					break;
 			}
 		}
-
-		#endregion
-
-		#region Private Methods
 
 		private void MinimalUpdate()
 		{
@@ -637,12 +631,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		#endregion
-
-		#region Winform Events
-
-		#region File Menu
-
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			SaveMenuItem.Enabled = _watches.Changes;
@@ -690,10 +678,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Close();
 		}
-
-		#endregion
-
-		#region Watch
 
 		private void WatchesSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -945,10 +929,6 @@ namespace BizHawk.Client.EmuHawk
 			WatchListView.SelectAll();
 		}
 
-		#endregion
-
-		#region Options
-
 		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			WatchesOnScreenMenuItem.Checked = Config.DisplayRamWatch;
@@ -1028,10 +1008,6 @@ namespace BizHawk.Client.EmuHawk
 			WatchListView.AllColumns.Clear();
 			SetColumns();
 		}
-
-		#endregion
-
-		#region Dialog, Context Menu, and ListView Events
 
 		private void RamWatch_Load(object sender, EventArgs e)
 		{
@@ -1229,9 +1205,6 @@ namespace BizHawk.Client.EmuHawk
 			UpdateWatchCount();
 			UpdateStatusBar();
 		}
-
-		#endregion
-		#endregion
 
 		// Stupid designer
 		protected void DragEnterWrapper(object sender, DragEventArgs e)

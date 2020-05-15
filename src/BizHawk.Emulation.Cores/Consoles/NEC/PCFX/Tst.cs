@@ -129,8 +129,6 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 		public bool DriveLightEnabled => true;
 		public bool DriveLightOn { get; private set; }
 
-		#region ISettable
-
 		public class Settings
 		{
 			[Description("Emulate a buggy ADPCM codec that makes some games sound better")]
@@ -390,7 +388,5 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 				l |= LibTst.Layers.RAINBOW;
 			_core.EnableLayers(l);
 		}
-
-		#endregion
 	}
 }

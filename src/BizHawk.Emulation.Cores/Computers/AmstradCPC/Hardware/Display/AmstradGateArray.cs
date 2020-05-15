@@ -16,8 +16,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// </summary>
 	public class AmstradGateArray : IPortIODevice, IVideoProvider
 	{
-		#region Devices
-
 		private CPCBase _machine;
 		private Z80A CPU => _machine.CPU;
 		private CRCT_6845 CRCT => _machine.CRCT;
@@ -29,10 +27,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public const ushort PCh = 1;
 
 		private GateArrayType ChipType;
-
-		#endregion
-
-		#region Palettes
 
 		/// <summary>
 		/// The standard CPC Pallete (ordered by firmware #)
@@ -109,10 +103,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             Colors.ARGB(0x80, 0x80, 0xFF), // Pastel Blue
         };
 
-		#endregion
-
-		#region Clocks and Timing
-
 		/// <summary>
 		/// The Gate Array Clock Speed
 		/// </summary>
@@ -143,10 +133,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public int GAFrameLength = 319488;
 
-		#endregion
-
-		#region Construction
-
 		public AmstradGateArray(CPCBase machine, GateArrayType chipType)
 		{
 			_machine = machine;
@@ -163,10 +149,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			InitByteLookup();
 			CalculateNextScreenMemory();
 		}
-
-		#endregion
-
-		#region Registers and Internal State
 
 		/// <summary>
 		/// PENR (register 0) - Pen Selection
@@ -427,10 +409,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		private byte VideoByte2;
 
-		#endregion
-
-		#region Clock Business
-
 		/// <summary>
 		/// Called every CPU cycle
 		/// In reality the GA is clocked at 16Mhz (4 times the frequency of the CPU)
@@ -549,10 +527,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 		}
 
-		#endregion
-
-		#region Frame & Interrupt Handling
-
 		/// <summary>
 		/// The CRCT builds the picture in a strange way, so that the top left of the display area is the first pixel from
 		/// video RAM. The borders come either side of the HSYNC and VSYNCs later on:
@@ -660,10 +634,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 			}
 		}
-
-		#endregion
-
-		#region Rendering Business
 
 		/// <summary>
 		/// Builds up current scanline character information
@@ -923,10 +893,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			});
 		}
 
-		#endregion
-
-		#region Public Methods
-
 		/// <summary>
 		/// Called when the Z80 acknowledges an interrupt
 		/// </summary>
@@ -972,10 +938,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			slBackup = slCounter;
 			slCounter = 0;
 		}
-
-		#endregion
-
-		#region IVideoProvider
 
 		public int[] ScreenBuffer;
 
@@ -1178,10 +1140,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			set => _borderType = value;
 		}
 
-		#endregion
-
-		#region IPortIODevice
-
 		/// <summary>
 		/// Device responds to an IN instruction
 		/// </summary>
@@ -1237,10 +1195,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			return true;
 		}
 
-		#endregion
-
-		#region Serialization
-
 		public void SyncState(Serializer ser)
 		{
 			ser.BeginSection("GateArray");
@@ -1274,10 +1228,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			ser.Sync(nameof(NextVidRamLine), ref NextVidRamLine, false);
 			ser.EndSection();
 		}
-
-		#endregion
-
-		#region Enums, Classes & Lookups
 
 		/// <summary>
 		/// Represents a single scanline (in characters)
@@ -1379,7 +1329,5 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			/// </summary>
 			Amstrad40489,
 		}
-
-		#endregion
 	}
 }

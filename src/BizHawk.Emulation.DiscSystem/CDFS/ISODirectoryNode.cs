@@ -10,16 +10,10 @@ namespace BizHawk.Emulation.DiscSystem
 	/// </summary>
 	public class ISODirectoryNode : ISONode
 	{
-		#region Public Properties
-
 		/// <summary>
 		/// The children in this directory.
 		/// </summary>
 		public Dictionary<string, ISONode> Children;
-
-		#endregion
-
-		#region Construction
 
 		/// <summary>
 		/// Constructor.
@@ -30,10 +24,6 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			this.Children = new Dictionary<string, ISONode>();
 		}
-
-		#endregion
-
-		#region Parsing
 
 		/// <summary>
 		/// Parse the children based on the data in this directory.
@@ -118,10 +108,6 @@ namespace BizHawk.Emulation.DiscSystem
 			s.Seek(currentPosition, SeekOrigin.Begin);
 		}
 
-		#endregion
-
-		#region Printing
-
 		/// <summary>
 		/// Print out this node's children.
 		/// </summary>
@@ -151,7 +137,5 @@ namespace BizHawk.Emulation.DiscSystem
 				}
 			}
 		}
-
-		#endregion
 	}
 }

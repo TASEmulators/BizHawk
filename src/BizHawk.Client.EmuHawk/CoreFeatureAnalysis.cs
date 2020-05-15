@@ -12,8 +12,6 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class CoreFeatureAnalysis : ToolFormBase, IToolFormAutoConfig
 	{
-		#region ConfigPersist
-
 		private class CoreInfo
 		{
 			public string CoreName { get; set; }
@@ -105,8 +103,6 @@ namespace BizHawk.Client.EmuHawk
 
 		[ConfigPersist]
 		private Dictionary<string, CoreInfo> KnownCores { get; set; }
-
-		#endregion
 
 		// ReSharper disable once UnusedAutoPropertyAccessor.Local
 		[RequiredService]

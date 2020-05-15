@@ -723,10 +723,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		#region Events
-
-		#region File Menu
-
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			SaveSessionMenuItem.Enabled = LuaImp.ScriptList.Changes;
@@ -807,10 +803,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Close();
 		}
-
-		#endregion
-
-		#region Script
 
 		private void ScriptSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -1124,10 +1116,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		#endregion
-
-		#region Options
-
 		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			DisableScriptsOnLoadMenuItem.Checked = Config.DisableLuaScriptsOnLoad;
@@ -1219,10 +1207,6 @@ namespace BizHawk.Client.EmuHawk
 			_luaAutoInstaller.InstallBizLua(LuaAutocompleteInstaller.TextEditors.NotePad, LuaImp.Docs);
 		}
 
-		#endregion
-
-		#region Help
-
 		private void FunctionsListMenuItem_Click(object sender, EventArgs e)
 		{
 			new LuaFunctionsForm(LuaImp.Docs).Show();
@@ -1232,10 +1216,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Process.Start("http://tasvideos.org/BizHawk/LuaFunctions.html");
 		}
-
-		#endregion
-
-		#region Toolbar and Context Menu
 
 		private void ScriptListContextMenu_Opening(object sender, CancelEventArgs e)
 		{
@@ -1301,10 +1281,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			LuaImp.RegisteredFunctions.Clear(Emulator);
 		}
-
-		#endregion
-
-		#region Dialog, Listview, OutputBox, InputBox
 
 		private void LuaConsole_DragDrop(object sender, DragEventArgs e)
 		{
@@ -1510,8 +1486,6 @@ namespace BizHawk.Client.EmuHawk
 			return false;
 		}
 
-		#endregion
-
 		private void EraseToolbarItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.DisplayManager.ClearLuaSurfaces();
@@ -1522,8 +1496,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GenericDragEnter(sender, e);
 		}
-
-		#endregion
 
 		private void LuaListView_DoubleClick(object sender, EventArgs e)
 		{

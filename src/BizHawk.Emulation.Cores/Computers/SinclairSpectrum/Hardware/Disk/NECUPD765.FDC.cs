@@ -8,18 +8,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// <summary>
 	/// FDC State and Methods
 	/// </summary>
-	#region Attribution
 	/*
         Implementation based on the information contained here:
         http://www.cpcwiki.eu/index.php/765_FDC
         and here:
         http://www.cpcwiki.eu/imgs/f/f3/UPD765_Datasheet_OCRed.pdf
     */
-	#endregion
 	public partial class NECUPD765
 	{
-		#region Controller State
-
 		/// <summary>
 		/// Signs whether the drive is active
 		/// </summary>
@@ -274,12 +270,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             b7     FT  Fault (if supported: 1=Drive failure)
         */
 		private byte Status3;
-
-		#endregion
-
-		#region UPD Internal Functions
-
-		#region READ Commands
 
 		/// <summary>
 		/// Read Data
@@ -1281,10 +1271,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 		}
 
-		#endregion
-
-		#region WRITE Commands
-
 		/// <summary>
 		/// Write Data
 		/// COMMAND:    8 parameter bytes
@@ -1759,10 +1745,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 		}
 
-		#endregion
-
-		#region SCAN Commands
-
 		/// <summary>
 		/// Scan Equal
 		/// COMMAND:    8 parameter bytes
@@ -1870,10 +1852,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					break;
 			}
 		}
-
-		#endregion
-
-		#region OTHER Commands
 
 		/// <summary>
 		/// Specify
@@ -2343,12 +2321,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					break;
 			}
 		}
-
-		#endregion
-
-		#endregion
-
-		#region Controller Methods
 
 		/// <summary>
 		/// Called when a status register read is required
@@ -2834,7 +2806,5 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			CommCounter = 0;
 			ResCounter = 0;
 		}
-
-		#endregion
 	}
 }

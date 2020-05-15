@@ -335,8 +335,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		}
 
 
-		#region Video provider
-
 		public int _frameHz = 60;
 		public int _screen_width = 320;
 		public int _screen_height = 263;
@@ -372,10 +370,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			{ "NTSC",  "NTSC"},
 			{ "Pal",  "Pal"}
 		};
-
-		#endregion
-
-		#region Sound provider
 
 		private BlipBuffer _blip = new BlipBuffer(4096);
 
@@ -429,7 +423,5 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			_blip.Dispose();
 			_blip = null;
 		}
-
-		#endregion
 	}
 }

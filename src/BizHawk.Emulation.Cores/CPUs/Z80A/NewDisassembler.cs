@@ -431,8 +431,6 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			return temp;
 		}
 
-		#region IDisassemblable
-
 		public string Cpu
 		{
 			get => "Z80";
@@ -451,7 +449,5 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			string ret = Disassemble((ushort)addr, a => m.PeekByte(a), out length);
 			return ret;
 		}
-
-		#endregion
 	}
 }

@@ -22,8 +22,6 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public static class ClientApi
 	{
-		#region Fields
-
 		private static IEmulator Emulator { get; set; }
 		private static IVideoProvider VideoProvider { get; set; }
 
@@ -60,10 +58,6 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public static event StateSavedEventHandler StateSaved;
 
-		#endregion
-
-		#region cTor(s)
-
 		/// <summary>
 		/// Static stuff initialization
 		/// </summary>
@@ -79,12 +73,6 @@ namespace BizHawk.Client.EmuHawk
 			Emulator = emu;
 			VideoProvider = emu.AsVideoProviderOrDefault();
 		}
-
-		#endregion
-
-		#region Methods
-
-		#region Helpers
 
 		private static void InvokeMainFormMethod(string name, object[] paramList = null)
 		{
@@ -114,9 +102,6 @@ namespace BizHawk.Client.EmuHawk
 			MainFormClass.GetField(name).SetValue(ClientMainFormInstance, value);
 		}
 
-		#endregion
-
-		#region Public
 		/// <summary>
 		/// THE FrameAdvance stuff
 		/// </summary>
@@ -393,7 +378,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			InvokeMainFormMethod("UnpauseEmulator");
 		}
-		#endregion Public
 
 		/// <summary>
 		/// Gets all current inputs for each joypad and store
@@ -690,10 +674,6 @@ namespace BizHawk.Client.EmuHawk
 			return (int)t.GetField("Y").GetValue(o);
 		}
 
-		#endregion
-
-		#region Properties
-
 		/// <summary>
 		/// Gets current emulated system
 		/// </summary>
@@ -748,7 +728,5 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 		}
-
-		#endregion
 	}
 }

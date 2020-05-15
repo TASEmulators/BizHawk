@@ -185,16 +185,10 @@ namespace BizHawk.Client.EmuHawk
 			Disassembler.Cpu = ((ComboBox) sender).SelectedItem.ToString();
 		}
 
-		#region File
-
 		private void ExitMenuItem_Click(object sender, EventArgs e)
 		{
 			Close();
 		}
-
-		#endregion
-
-		#region Debug
 
 		private void RunBtn_Click(object sender, EventArgs e)
 		{
@@ -227,8 +221,6 @@ namespace BizHawk.Client.EmuHawk
 				FullUpdate();
 			}
 		}
-
-		#endregion
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
 		{

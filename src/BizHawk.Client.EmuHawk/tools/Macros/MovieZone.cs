@@ -275,8 +275,6 @@ namespace BizHawk.Client.EmuHawk
 			_controller = _movieSession.GenerateMovieController(d);
 		}
 
-		#region Custom Latch
-
 		private void LatchFromSourceButtons(IMovieController latching, IController source)
 		{
 			foreach (string button in source.Definition.BoolButtons)
@@ -307,7 +305,5 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 		}
-
-		#endregion
 	}
 }

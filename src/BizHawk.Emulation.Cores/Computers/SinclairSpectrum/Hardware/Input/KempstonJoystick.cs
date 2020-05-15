@@ -8,8 +8,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		private int _joyLine;
 		private SpectrumBase _machine;
 
-		#region Construction
-
 		public KempstonJoystick(SpectrumBase machine, int playerNumber)
 		{
 			_machine = machine;
@@ -25,10 +23,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				"P" + _playerNumber + " Button",
 			}.ToArray();
 		}
-
-		#endregion
-
-		#region IJoystick
 
 		public JoystickType JoyType => JoystickType.Kempston;
 
@@ -61,8 +55,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			var pos = GetBitPos(key);
 			return (_joyLine & (1 << pos)) != 0;
 		}
-
-		#endregion
 
 		/// <summary>
 		/// Active bits high

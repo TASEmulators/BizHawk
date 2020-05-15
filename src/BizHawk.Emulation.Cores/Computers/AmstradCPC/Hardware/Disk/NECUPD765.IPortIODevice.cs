@@ -8,18 +8,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// <summary>
 	/// IPortIODevice
 	/// </summary>
-	#region Attribution
 	/*
         Implementation based on the information contained here:
         http://www.cpcwiki.eu/index.php/765_FDC
         and here:
         http://www.cpcwiki.eu/imgs/f/f3/UPD765_Datasheet_OCRed.pdf
     */
-	#endregion
 	public partial class NECUPD765 : IPortIODevice
 	{
-		#region Dev Logging
-
 		public string outputfile = @"D:\Dropbox\Dropbox\_Programming\TASVideos\BizHawk\output\zxhawkio-" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".csv";
 		public string outputString = "STATUS,WRITE,READ,CODE,MT,MF,SK,CMDCNT,RESCNT,EXECCNT,EXECLEN\r\n";
 		public bool writeDebug = false;
@@ -68,8 +64,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			//outputString += sb.ToString();
 			dLog.Add(sb.ToString());
 		}
-
-		#endregion
 
 		public void ReadStatus(ref int data)
 		{

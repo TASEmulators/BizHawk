@@ -282,8 +282,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		#region Change History
-
 		private bool AddMovieAction(string name)
 		{
 			if (UndoIndex + 1 != _history.Count)
@@ -379,11 +377,7 @@ namespace BizHawk.Client.Common
 				_history.Last().Add(new MovieActionBindInput(_movie, frame, isDelete));
 			}
 		}
-
-		#endregion
 	}
-
-	#region Classes
 
 	public interface IMovieAction
 	{
@@ -747,6 +741,4 @@ namespace BizHawk.Client.Common
 			movie.BindMarkersToInput = _bindMarkers;
 		}
 	}
-
-	#endregion
 }

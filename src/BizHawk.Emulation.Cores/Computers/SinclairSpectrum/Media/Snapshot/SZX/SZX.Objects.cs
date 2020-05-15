@@ -8,8 +8,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// </summary>
 	public partial class SZX
 	{
-		#region ZX-State Header
-
 		public enum MachineIdentifier : byte
 		{
 			ZXSTMID_16K = 0,
@@ -50,10 +48,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			public byte chFlags;
 		}
 
-		#endregion
-
-		#region ZXSTBLOCK Header
-
 		/// <summary>
 		/// Block Header. Each real block starts with this header.
 		/// </summary>
@@ -62,10 +56,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			public uint dwId;
 			public uint dwSize;
 		}
-
-		#endregion
-
-		#region ZXSTCREATOR
 
 		/// <summary>
 		/// This block identifies the program that created this zx-state file.
@@ -80,10 +70,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 1)]
 			public byte[] chData;
 		}
-
-		#endregion
-
-		#region ZXSTZ80REGS
 
 		/// <summary>
 		/// The last instruction executed was an EI instruction or an invalid $DD or $FD prefix.
@@ -114,10 +100,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			public ushort wMemPtr;
 		}
 
-		#endregion
-
-		#region ZXSTSPECREGS
-
 		[StructLayout(LayoutKind.Sequential, Pack = 1)]
 		public struct ZXSTSPECREGS
 		{
@@ -128,10 +110,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
 			public byte[] chReserved;
 		}
-
-		#endregion
-
-		#region ZXSTAYBLOCK
 
 		/// <summary>
 		/// Fuller Box emulation
@@ -156,10 +134,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			public byte[] chAyRegs;
 		}
 
-		#endregion
-
-		#region ZXSTRAMPAGE
-
 		/// <summary>
 		/// Ram pages are compressed using Zlib
 		/// </summary>
@@ -176,10 +150,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 0x4000)]
 			public byte[] ramPage;
 		}
-
-		#endregion
-
-		#region ZXSTKEYBOARD
 
 		/// <summary>
 		/// Keyboard state
@@ -212,10 +182,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			public byte chKeyboardJoystick;
 		}
 
-		#endregion
-
-		#region ZXSTJOYSTICK
-
 		/// <summary>
 		/// Joystick setup for both players.
 		/// </summary>
@@ -226,10 +192,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			public byte chTypePlayer1;
 			public byte chTypePlayer2;
 		}
-
-		#endregion
-
-		#region ZXSTTAPE
 
 		/// <summary>
 		/// Cassette Recorder state
@@ -251,10 +213,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			public char[] szFileExtension;
 		}
 
-		#endregion
-
-		#region ZXSTPLUS3
-
 		/// <summary>
 		/// The number of drives connected to the Spectrum +3 and whether their motors are turned on. 
 		/// Any blocks specifying which disk files are in which drive will follow this one.
@@ -265,10 +223,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			public byte chNumDrives;
 			public byte fMotorOn;
 		}
-
-		#endregion
-
-		#region ZXSTDSKFILE
 
 		/// <summary>
 		/// Not implemented. All disk images are currently links to external .dsk or .ipf files
@@ -295,111 +249,5 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			public byte chDriveNum;
 			public int dwUncompressedSize;
 		}
-
-		#endregion
-
-		#region Not Yet Implemented
-
-		#region ZXSTATASP
-
-		#endregion
-
-		#region ZXSTATARAM
-
-		#endregion
-
-		#region ZXSTCF
-
-		#endregion
-
-		#region ZXSTCFRAM
-
-		#endregion
-
-		#region ZXSTCOVOX
-
-		#endregion
-
-		#region ZXSTBETA128
-
-		#endregion
-
-		#region ZXSTBETADISK
-
-		#endregion
-
-		#region ZXSTDOCK
-
-		#endregion
-
-		#region ZXSTGS
-
-		#endregion
-
-		#region ZXSTGSRAMPAGE
-
-		#endregion
-
-		#region ZXSTIF1
-
-		#endregion
-
-		#region ZXSTIF2ROM
-
-		#endregion
-
-		#region ZXSTMCART
-
-		#endregion
-
-		#region ZXSTMOUSE
-
-		#endregion
-
-		#region ZXSTMULTIFACE
-
-		#endregion
-
-		#region ZXSTOPUS
-
-		#endregion
-
-		#region ZXSTOPUSDISK
-
-		#endregion
-
-		#region ZXSTPLUSD
-
-		#endregion
-
-		#region ZXSTPLUSDDISK
-
-		#endregion
-
-		#region ZXSTROM
-
-		#endregion
-
-		#region ZXSTSCLDREGS
-
-		#endregion
-
-		#region ZXSTSIDE
-
-		#endregion
-
-		#region ZXSTSPECDRUM
-
-		#endregion
-
-		#region ZXSTUSPEECH
-
-		#endregion
-
-		#region ZXSTZXPRINTER
-
-		#endregion
-
-		#endregion
 	}
 }

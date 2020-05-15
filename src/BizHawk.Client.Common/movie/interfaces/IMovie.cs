@@ -33,8 +33,6 @@ namespace BizHawk.Client.Common
 	// TODO: consider other event handlers, switching modes?
 	public interface IMovie
 	{
-		#region Status
-
 		/// <summary>
 		/// Gets the current movie mode
 		/// </summary>
@@ -43,10 +41,6 @@ namespace BizHawk.Client.Common
 		bool IsCountingRerecords { get; set; }
 
 		bool Changes { get; }
-
-		#endregion
-
-		#region Properties
 
 		string Name { get; }
 
@@ -120,10 +114,6 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		ILogEntryGenerator LogGeneratorInstance(IController source);
 
-		#endregion
-
-		#region File Handling API
-
 		// Filename of the movie, settable by the client
 		string Filename { get; set; }
 
@@ -165,10 +155,6 @@ namespace BizHawk.Client.Common
 		/// <param name="errorMessage">Returns an error message, if any</param>
 		bool ExtractInputLog(TextReader reader, out string errorMessage);
 
-		#endregion
-
-		#region Mode Handling API
-
 		/// <summary>
 		/// Tells the movie to start recording from the beginning.
 		/// </summary>
@@ -201,10 +187,6 @@ namespace BizHawk.Client.Common
 		/// Tells the movie to go into "Finished" mode, where the user resumes control of input but the movie is still loaded in memory
 		/// </summary>
 		void FinishedMode();
-
-		#endregion
-
-		#region Editing API
 
 		/// <summary>
 		/// Replaces the given frame's input with an empty frame
@@ -242,8 +224,6 @@ namespace BizHawk.Client.Common
 		/// <param name="frame">The frame of input to be retrieved</param>
 		/// <returns>A controller state representing the specified frame of input, if frame is out of range, will return null</returns>
 		IMovieController GetInputState(int frame);
-
-		#endregion
 	}
 
 	public static class MovieExtensions

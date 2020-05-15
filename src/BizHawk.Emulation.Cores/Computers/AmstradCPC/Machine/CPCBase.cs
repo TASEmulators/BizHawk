@@ -9,8 +9,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// </summary>
 	public abstract partial class CPCBase
 	{
-		#region Devices
-
 		/// <summary>
 		/// The calling ZXSpectrum class (piped in via constructor)
 		/// </summary>
@@ -77,10 +75,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public int FrameLength;
 
-		#endregion
-
-		#region Emulator State
-
 		/// <summary>
 		/// Signs whether the frame has ended
 		/// </summary>
@@ -117,10 +111,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public bool _render;
 		public bool _renderSound;
 
-		#endregion
-
-		#region Constants
-
 		/// <summary>
 		/// Mask constants & misc
 		/// </summary>
@@ -129,10 +119,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		protected const int MIC_BIT = 0x08;
 		protected const int TAPE_BIT = 0x40;
 		protected const int AY_SAMPLE_RATE = 16;
-
-		#endregion
-
-		#region Emulation Loop
 
 		/// <summary>
 		/// Executes a single frame
@@ -198,10 +184,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			GateArray.FrameClock = 0;
 		}
-
-		#endregion
-
-		#region Reset Functions
 
 		/// <summary>
 		/// Hard reset of the emulated machine
@@ -311,10 +293,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             */
 		}
 
-		#endregion
-
-		#region IStatable
-
 		public void SyncState(Serializer ser)
 		{
 			ser.BeginSection("CPCMachine");
@@ -363,8 +341,5 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			ser.EndSection();
 		}
-
-		#endregion
-
 	}
 }

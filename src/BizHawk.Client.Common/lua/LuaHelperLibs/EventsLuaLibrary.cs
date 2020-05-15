@@ -32,8 +32,6 @@ namespace BizHawk.Client.Common
 
 		public override string Name => "event";
 
-		#region Events Library Helpers
-
 		public void CallExitEvent(LuaFile luaFile)
 		{
 			var exitCallbacks = RegisteredFunctions
@@ -126,8 +124,6 @@ namespace BizHawk.Client.Common
 		{
 			Log($"{scope} is not an available scope for {Emulator.Attributes().CoreName}");
 		}
-
-		#endregion
 
 
 		[LuaMethodExample("local steveonf = event.onframeend(\r\n\tfunction()\r\n\t\tconsole.log( \"Calls the given lua function at the end of each frame, after all emulation and drawing has completed. Note: this is the default behavior of lua scripts\" );\r\n\tend\r\n\t, \"Frame name\" );")]

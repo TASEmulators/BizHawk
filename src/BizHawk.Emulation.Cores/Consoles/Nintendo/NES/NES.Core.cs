@@ -62,8 +62,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//Sound config
 		public void SetVol1(int v) { apu.m_vol = v; }
 
-		#region Audio
-
 		BlipBuffer blip = new BlipBuffer(4096);
 		const int blipbuffsize = 4096;
 
@@ -116,8 +114,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			blip.Clear();
 			apu.sampleclock = 0;
 		}
-
-		#endregion
 
 		public void HardReset()
 		{

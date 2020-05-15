@@ -314,10 +314,6 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			return temp;
 		}
 
-		#region IDisassemblable
-
-		#endregion
-
 		public string Cpu
 		{
 			get => "F3850";

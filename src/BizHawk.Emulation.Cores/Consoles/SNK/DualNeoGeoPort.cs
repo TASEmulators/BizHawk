@@ -67,8 +67,6 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 			return true;
 		}
 
-		#region link cable
-
 		private class LinkCable
 		{
 			public readonly BlockingCollection<LinkRequest> LeftIn = new BlockingCollection<LinkRequest>();
@@ -277,8 +275,6 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 				ConnectPointers();
 			}
 		}
-
-		#endregion
 
 		private class PrefixController : IController
 		{

@@ -32,8 +32,6 @@ namespace BizHawk.Client.EmuHawk
 			YNumeric.Maximum = TargetPanel.Height - 1;
 		}
 
-		#region IVirtualPadControl Implementation
-
 		public void UpdateValues()
 		{
 			TargetPanel.Refresh();
@@ -98,8 +96,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 		}
-
-		#endregion
 
 		// Size of the extra controls to the right / bottom of the target panel at 96 DPI
 		private Size PaddingSize => new Size(0, 30);

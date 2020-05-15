@@ -114,8 +114,6 @@ namespace BizHawk.Client.Common
 			return ((int) u << sh) >> sh;
 		}
 
-		#region Endian Handling
-
 		private uint ReadUnsignedLittle(long addr, int size, string domain = null)
 		{
 			uint v = 0;
@@ -151,10 +149,6 @@ namespace BizHawk.Client.Common
 			if (_isBigEndian) WriteUnsignedBig(addr, value, size, domain);
 			else WriteUnsignedLittle(addr, value, size, domain);
 		}
-
-		#endregion
-
-		#region Unique Library Methods
 
 		public void SetBigEndian(bool enabled = true) => _isBigEndian = enabled;
 
@@ -209,10 +203,6 @@ namespace BizHawk.Client.Common
 			using var hasher = SHA256.Create();
 			return hasher.ComputeHash(data).BytesToHexString();
 		}
-
-		#endregion
-
-		#region Common Special and Legacy Methods
 
 		public uint ReadByte(long addr, string domain = null) => ReadUnsignedByte(addr, domain);
 
@@ -272,10 +262,6 @@ namespace BizHawk.Client.Common
 			d.PokeUint(addr, BitConverter.ToUInt32(BitConverter.GetBytes((float) value), 0), _isBigEndian);
 		}
 
-		#endregion
-
-		#region 1 Byte
-
 		public int ReadS8(long addr, string domain = null) => (sbyte) ReadUnsignedByte(addr, domain);
 
 		public uint ReadU8(long addr, string domain = null) => (byte) ReadUnsignedByte(addr, domain);
@@ -283,10 +269,6 @@ namespace BizHawk.Client.Common
 		public void WriteS8(long addr, int value, string domain = null) => WriteSigned(addr, value, 1, domain);
 
 		public void WriteU8(long addr, uint value, string domain = null) => WriteUnsignedByte(addr, value, domain);
-
-		#endregion
-
-		#region 2 Byte
 
 		public int ReadS16(long addr, string domain = null) => (short) ReadSigned(addr, 2, domain);
 
@@ -296,10 +278,6 @@ namespace BizHawk.Client.Common
 
 		public void WriteU16(long addr, uint value, string domain = null) => WriteUnsigned(addr, value, 2, domain);
 
-		#endregion
-
-		#region 3 Byte
-
 		public int ReadS24(long addr, string domain = null) => ReadSigned(addr, 3, domain);
 
 		public uint ReadU24(long addr, string domain = null) => ReadUnsigned(addr, 3, domain);
@@ -308,10 +286,6 @@ namespace BizHawk.Client.Common
 
 		public void WriteU24(long addr, uint value, string domain = null) => WriteUnsigned(addr, value, 3, domain);
 
-		#endregion
-
-		#region 4 Byte
-
 		public int ReadS32(long addr, string domain = null) => ReadSigned(addr, 4, domain);
 
 		public uint ReadU32(long addr, string domain = null) => ReadUnsigned(addr, 4, domain);
@@ -319,7 +293,5 @@ namespace BizHawk.Client.Common
 		public void WriteS32(long addr, int value, string domain = null) => WriteSigned(addr, value, 4, domain);
 
 		public void WriteU32(long addr, uint value, string domain = null) => WriteUnsigned(addr, value, 4, domain);
-
-		#endregion
 	}
 }

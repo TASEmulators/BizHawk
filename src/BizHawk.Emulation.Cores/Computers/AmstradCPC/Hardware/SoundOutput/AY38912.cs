@@ -13,8 +13,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// </summary>
 	public class AY38912 : IPSG
 	{
-		#region Device Fields
-
 		/// <summary>
 		/// The emulated machine (passed in via constructor)
 		/// </summary>
@@ -30,10 +28,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private int _lastStateRendered;
 		//private int _clockCyclesPerFrame;
 		//private int _cyclesPerSample;
-
-		#endregion
-
-		#region Construction & Initialization
 
 		/// <summary>
 		/// Main constructor
@@ -57,12 +51,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			UpdateVolume();
 			Reset();
 		}
-
-		#endregion
-
-		#region AY Implementation
-
-		#region Public Properties
 
 		/// <summary>
 		/// AY mixer panning configuration
@@ -123,10 +111,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			get => _activeRegister;
 			set => _activeRegister = (byte)value;
 		}
-
-		#endregion
-
-		#region Public Methods
 
 		/// <summary>
 		/// Resets the PSG
@@ -357,10 +341,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			BufferUpdate(frameCycle);
 		}
 
-		#endregion
-
-		#region Private Fields
-
 		/// <summary>
 		/// Register indicies
 		/// </summary>
@@ -568,10 +548,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			0x905E,0x905E,0xB550,0xB550,0xD7A0,0xD7A0,0xFFFF,0xFFFF,
 		};
 
-		#endregion
-
-		#region Private Methods
-
 		/// <summary>
 		/// Forces an update of the volume tables
 		/// </summary>
@@ -726,12 +702,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			_lastStateRendered = cycle;
 		}
 
-		#endregion
-
-		#endregion
-
-		#region ISoundProvider
-
 		public bool CanProvideAsync => false;
 
 		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
@@ -798,10 +768,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             */
 		}
 
-		#endregion
-
-		#region State Serialization
-
 		public int nullDump = 0;
 
 		/// <summary>
@@ -866,7 +832,5 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			ser.EndSection();
 		}
-
-		#endregion
 	}
 }

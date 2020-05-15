@@ -209,8 +209,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			_scanlineCallback = null;
 		}
 
-		#region GPUViewer
-
 		public bool IsCGBMode() => is_GBC;
 
 		public IntPtr iptr0 = IntPtr.Zero;
@@ -283,8 +281,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 			_printerCallback = null;
 		}
-
-		#endregion
 
 		public DisplayType Region => DisplayType.NTSC;
 

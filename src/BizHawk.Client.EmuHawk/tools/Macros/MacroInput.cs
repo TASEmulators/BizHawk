@@ -214,8 +214,6 @@ namespace BizHawk.Client.EmuHawk
 			SelectedZone.PlaceZone(CurrentMovie);
 		}
 
-		#region Menu Items
-
 		private void SaveAsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			if (SelectedZone == null)
@@ -264,8 +262,6 @@ namespace BizHawk.Client.EmuHawk
 				Config.PathEntries["Global", "Macros"].Path,
 				Global.Game.FilesystemSafeName()), null);
 		}
-
-		#endregion
 
 		public bool SaveMacroAs(MovieZone macro)
 		{

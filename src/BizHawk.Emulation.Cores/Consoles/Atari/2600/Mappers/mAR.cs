@@ -33,8 +33,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	*/
 	internal sealed class mAR : MapperBase
 	{
-		#region SuperCharger Data
-
 		private readonly byte[] _dummyRomCode =
 		{
 			0xa5, 0xfa, 0x85, 0x80, 0x4c, 0x18, 0xf8, 0xff,
@@ -111,8 +109,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 			0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00
 		};
-
-		#endregion
 
 		private byte[] _superChargerImage = new byte[8192];
 		private int[] _imageOffsets = new int[2];

@@ -1184,8 +1184,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				((NOISE_enable ? 1 : 0) << 3));
 		}
 
-		#region audio
-
 		public bool CanProvideAsync => false;
 
 		public void SetSyncMode(SyncSoundMode mode)
@@ -1242,7 +1240,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			_blip_L = null;
 			_blip_R = null;
 		}
-
-		#endregion
 	}
 }

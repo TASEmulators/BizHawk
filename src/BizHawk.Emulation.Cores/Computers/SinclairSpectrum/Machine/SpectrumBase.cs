@@ -10,8 +10,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// </summary>
 	public abstract partial class SpectrumBase
 	{
-		#region Devices
-
 		/// <summary>
 		/// The calling ZXSpectrum class (piped in via constructor)
 		/// </summary>
@@ -78,10 +76,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		protected bool PrinterPortStrobe;
 
-		#endregion
-
-		#region Emulator State
-
 		/// <summary>
 		/// Signs whether the frame has ended
 		/// </summary>
@@ -118,10 +112,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public bool _render;
 		public bool _renderSound;
 
-		#endregion
-
-		#region Constants
-
 		/// <summary>
 		/// Mask constants & misc
 		/// </summary>
@@ -130,10 +120,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		protected const int MIC_BIT = 0x08;
 		protected const int TAPE_BIT = 0x40;
 		protected const int AY_SAMPLE_RATE = 16;
-
-		#endregion
-
-		#region Emulation Loop
 
 		/// <summary>
 		/// Executes a single frame
@@ -208,10 +194,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				}
 			}
 		}
-
-		#endregion
-
-		#region Reset Functions
 
 		/// <summary>
 		/// Hard reset of the emulated machine
@@ -317,10 +299,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 		}
 
-		#endregion
-
-		#region IStatable
-
 		public void SyncState(Serializer ser)
 		{
 			ser.BeginSection("ZXMachine");
@@ -387,7 +365,5 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			ser.EndSection();
 		}
-
-		#endregion
 	}
 }

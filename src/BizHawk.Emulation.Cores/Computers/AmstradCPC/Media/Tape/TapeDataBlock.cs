@@ -79,8 +79,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		*/
 
 
-		#region Block Meta Data
-
 		/// <summary>
 		/// Dictionary of block related data
 		/// </summary>
@@ -104,9 +102,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				MetaData.Add(descriptor, data);
 			}
 		}
-
-		#endregion
-
 
 
 		/// <summary>

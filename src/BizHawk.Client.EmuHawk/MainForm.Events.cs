@@ -32,8 +32,6 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class MainForm
 	{
-		#region File Menu
-
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			SaveStateSubMenu.Enabled =
@@ -685,10 +683,6 @@ namespace BizHawk.Client.EmuHawk
 			_exitCode = exitCode;
 		}
 
-		#endregion
-
-		#region Emulation Menu
-
 		private void EmulationMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			PauseMenuItem.Checked = _didMenuPause ? _wasPaused : EmulatorPaused;
@@ -735,10 +729,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			HardReset();
 		}
-
-		#endregion
-
-		#region View
 
 		private void ViewSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -856,10 +846,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Tools.Load<LogWindow>();
 		}
-
-		#endregion
-
-		#region Config
 
 		private void ConfigSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -1378,10 +1364,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		#endregion
-
-		#region Tools
-
 		private void ToolsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			ToolBoxMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["ToolBox"].Bindings;
@@ -1534,10 +1516,6 @@ namespace BizHawk.Client.EmuHawk
 			using var form = new BatchRun(this);
 			form.ShowDialog();
 		}
-
-		#endregion
-
-		#region NES
 
 		private void NesSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -1720,10 +1698,6 @@ namespace BizHawk.Client.EmuHawk
 			Tools.Load<BarcodeEntry>();
 		}
 
-		#endregion
-
-		#region PCE
-
 		private void PceSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "PCE Settings");
@@ -1744,10 +1718,6 @@ namespace BizHawk.Client.EmuHawk
 			Tools.Load<PCESoundDebugger>();
 		}
 
-		#endregion
-
-		#region SMS
-
 		private void SmsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			SmsVdpViewerMenuItem.Visible = Game.System != "SG";
@@ -1762,10 +1732,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Tools.Load<SmsVdpViewer>();
 		}
-
-		#endregion
-
-		#region TI83
 
 		private void Ti83SubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -1826,18 +1792,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		#endregion
-
-		#region Atari
-
 		private void AtariSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "Atari 2600 Settings");
 		}
-
-		#endregion
-
-		#region Atari7800
 
 		private void A7800SubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -1863,10 +1821,6 @@ namespace BizHawk.Client.EmuHawk
 				form.ShowDialog();
 			}
 		}
-
-		#endregion
-
-		#region GB
 
 		private void GbSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -1901,10 +1855,6 @@ namespace BizHawk.Client.EmuHawk
 			Tools.Load<GBPrinterView>();
 		}
 
-		#endregion
-
-		#region GBA
-
 		private void GbaCoreSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "Gameboy Advance Settings");
@@ -1919,10 +1869,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GbaGpuViewerMenuItem.Enabled = !OSTailoredCode.IsUnixHost;
 		}
-
-		#endregion
-
-		#region NDS
 
 		private void NDSSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -1943,10 +1889,6 @@ namespace BizHawk.Client.EmuHawk
 				form.ShowDialog();
 			}
 		}
-
-		#endregion
-
-		#region PSX
 
 		private void PsxSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -1986,10 +1928,6 @@ namespace BizHawk.Client.EmuHawk
 				form.ShowDialog();
 			}
 		}
-
-		#endregion
-
-		#region SNES
 
 		private void SnesSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -2040,10 +1978,6 @@ namespace BizHawk.Client.EmuHawk
 			GenericCoreConfig.DoDialog(this, "Snes9x Settings");
 		}
 
-		#endregion
-
-		#region Coleco
-
 		private void ColecoSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			if (Emulator is ColecoVision coleco)
@@ -2083,10 +2017,6 @@ namespace BizHawk.Client.EmuHawk
 				form.ShowDialog();
 			}
 		}
-
-		#endregion
-
-		#region N64
 
 		private void N64SubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -2157,18 +2087,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		#endregion
-
-		#region Saturn
-
 		private void SaturnPreferencesMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "Saturn Settings");
 		}
-
-		#endregion
-
-		#region DGB
 
 		private void DgbSettingsMenuItem_Click(object sender, EventArgs e)
 		{
@@ -2183,63 +2105,35 @@ namespace BizHawk.Client.EmuHawk
 			GenericCoreConfig.DoDialog(this, "Gameboy Settings");
 		}
 
-		#endregion
-
-		#region GB3x
-
 		private void GB3xSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "Gameboy Settings");
 		}
-
-		#endregion
-
-		#region GB4x
 
 		private void GB4xSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "Gameboy Settings");
 		}
 
-		#endregion
-
-		#region GGL
-
 		private void GgSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "Game Gear Settings");
 		}
-
-		#endregion
-
-		#region Vectrex
 
 		private void VectrexSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "Vectrex Settings", true, false);
 		}
 
-		#endregion
-
-		#region MSX
-
 		private void MsxSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "MSX Settings");
 		}
 
-		#endregion
-
-		#region O2Hawk
-
 		private void O2HawkSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "Odyssey Settings");
 		}
-
-		#endregion
-
-		#region GEN
 
 		private void GenVdpViewerMenuItem_Click(object sender, EventArgs e)
 		{
@@ -2251,18 +2145,10 @@ namespace BizHawk.Client.EmuHawk
 			GenericCoreConfig.DoDialog(this, "Genesis Settings");
 		}
 
-		#endregion
-
-		#region Wondersawn
-
 		private void WonderSwanSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "WonderSwan Settings");
 		}
-
-		#endregion
-
-		#region Apple II
 
 		private void AppleIISettingsMenuItem_Click(object sender, EventArgs e)
 		{
@@ -2303,10 +2189,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		#endregion
-
-		#region C64
-
 		private void C64SubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			if (Emulator is C64 c64)
@@ -2346,10 +2228,6 @@ namespace BizHawk.Client.EmuHawk
 			GenericCoreConfig.DoDialog(this, "C64 Settings");
 		}
 
-		#endregion
-
-		#region Intv
-
 		private void IntVSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			IntVControllerSettingsMenuItem.Enabled = MovieSession.Movie.NotActive();
@@ -2364,35 +2242,20 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		#endregion
-
-		#region VirtualBoy
 		private void VirtualBoySettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "VirtualBoy Settings");
 		}
-
-		#endregion
-
-		#region NeoGeoPocket
 
 		private void NeoGeoSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "NeoPop Settings");
 		}
 
-		#endregion
-
-		#region PC-FX
-
 		private void PCFXSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "PC-FX Settings");
 		}
-
-		#endregion
-
-		#region ZXSpectrum
 
 		private void ZXSpectrumControllerConfigurationMenuItem_Click(object sender, EventArgs e)
 		{
@@ -2542,10 +2405,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		#endregion
-
-		#region AmstradCPC
-
 		private void AmstradCpcCoreEmulationSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			if (Emulator is AmstradCPC cpc)
@@ -2660,17 +2519,10 @@ namespace BizHawk.Client.EmuHawk
 			
 		}
 
-		#endregion
-
-		#region Arcade
 		private void ArcadeSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "Arcade Settings");
 		}
-
-		#endregion
-
-		#region Help
 
 		private void HelpSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -2697,10 +2549,6 @@ namespace BizHawk.Client.EmuHawk
 			using var form = new BizBox();
 			form.ShowDialog();
 		}
-
-		#endregion
-
-		#region Context Menu
 
 		private void MainFormContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
 		{
@@ -2914,10 +2762,6 @@ namespace BizHawk.Client.EmuHawk
 			FrameBufferResized();
 		}
 
-		#endregion
-
-		#region Status Bar
-
 		private void DumpStatusButton_Click(object sender, EventArgs e)
 		{
 			string details = Emulator.RomDetails();
@@ -3030,10 +2874,6 @@ namespace BizHawk.Client.EmuHawk
 				UpdateChecker.BeginCheck(skipCheck: true); // Trigger event to hide new version notification
 			}
 		}
-
-		#endregion
-
-		#region Form Events
 
 		private void MainForm_Activated(object sender, EventArgs e)
 		{
@@ -3167,7 +3007,5 @@ namespace BizHawk.Client.EmuHawk
 				Sound.StartSound();
 			}
 		}
-
-		#endregion
 	}
 }

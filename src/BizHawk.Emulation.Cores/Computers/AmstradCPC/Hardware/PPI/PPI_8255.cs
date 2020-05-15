@@ -11,8 +11,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// </summary>
 	public class PPI_8255 : IPortIODevice
 	{
-		#region Devices
-
 		private CPCBase _machine;
 		private CRCT_6845 CRTC => _machine.CRCT;
 		private AmstradGateArray GateArray => _machine.GateArray;
@@ -20,19 +18,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private DatacorderDevice Tape => _machine.TapeDevice;
 		private IKeyboard Keyboard => _machine.KeyboardDevice;
 
-		#endregion
-
-		#region Construction
-
 		public PPI_8255(CPCBase machine)
 		{
 			_machine = machine;
 			Reset();
 		}
-
-		#endregion
-
-		#region Implementation
 
 		/// <summary>
 		/// BDIR Line connected to PSG
@@ -74,8 +64,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// Returns the currently latched port direction for Port C (upper half)
 		/// </summary>
 		private PortDirection DirPortCU => Regs[PORT_CONTROL].Bit(3) ? PortDirection.Input : PortDirection.Output;
-
-		#region OUT Methods
 
 		/// <summary>
 		/// Writes to Port A
@@ -187,10 +175,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 		}
 
-		#endregion
-
-		#region IN Methods
-
 		/// <summary>
 		/// Reads from Port A
 		/// </summary>
@@ -296,12 +280,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 
 
-		#endregion
-
-		#endregion
-
-		#region Reset
-
 		public void Reset()
 		{
 			for (int i = 0; i < 3; i++)
@@ -311,10 +289,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			Regs[3] = 0xff;
 		}
-
-		#endregion
-
-		#region IPortIODevice
 
 		/*
             #F4XX	%xxxx0x00 xxxxxxxx	8255 PIO Port A (PSG Data)	                Read	Write
@@ -419,18 +393,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			return true;
 		}
 
-		#endregion
-
-		#region Serialization
-
 		public void SyncState(Serializer ser)
 		{
 			ser.BeginSection("PPI");
 			ser.Sync(nameof(Regs), ref Regs, false);
 			ser.EndSection();
 		}
-
-		#endregion
 	}
 
 	public enum PortDirection

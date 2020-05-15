@@ -331,9 +331,6 @@
 		<!-- Use string.Empty for empty strings -->
 		<Rule Id="SA1122" Action="Hidden" />
 
-		<!-- Do not use regions -->
-		<Rule Id="SA1124" Action="Hidden" />
-
 		<!-- Generic type constraints should be on their own line -->
 		<Rule Id="SA1127" Action="Hidden" />
 

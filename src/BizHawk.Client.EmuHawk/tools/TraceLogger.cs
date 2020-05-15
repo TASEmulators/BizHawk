@@ -297,10 +297,6 @@ namespace BizHawk.Client.EmuHawk
 			return result.IsOk() ? new FileInfo(sfd.FileName) : null;
 		}
 
-		#region Events
-
-		#region Menu Items
-
 		private void SaveLogMenuItem_Click(object sender, EventArgs e)
 		{
 			LogFile = GetFileFromUser();
@@ -379,10 +375,6 @@ namespace BizHawk.Client.EmuHawk
 				_splitFile = FileSizeCap != 0;
 			}
 		}
-
-		#endregion
-
-		#region Dialog and ListView Events
 
 		private void LoggingEnabled_CheckedChanged(object sender, EventArgs e)
 		{
@@ -484,10 +476,6 @@ namespace BizHawk.Client.EmuHawk
 
 			SetTracerBoxTitle();
 		}
-
-		#endregion
-
-		#endregion
 
 		private void ClearMenuItem_Click(object sender, EventArgs e)
 		{

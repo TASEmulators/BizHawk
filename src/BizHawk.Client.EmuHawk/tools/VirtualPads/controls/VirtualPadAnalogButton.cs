@@ -30,8 +30,6 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		#region IVirtualPadControl Implementation
-
 		public void UpdateValues()
 		{
 			if (AnalogTrackBar.Value != (int)Global.InputManager.StickyXorAdapter.AxisValue(Name))
@@ -74,8 +72,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 		}
-
-		#endregion
 
 		public void Bump(int? x)
 		{

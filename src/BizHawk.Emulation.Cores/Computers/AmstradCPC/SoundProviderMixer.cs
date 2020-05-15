@@ -112,8 +112,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 		}
 
-		#region ISoundProvider
-
 		public bool CanProvideAsync => false;
 		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
@@ -208,8 +206,5 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				samples[i] = sectorVal;
 			}
 		}
-
-		#endregion
-
 	}
 }

@@ -6,16 +6,10 @@ namespace Cyotek.Drawing.BitmapFont
 {
   public struct Character
   {
-    #region  Public Methods
-
     public override string ToString()
     {
       return this.Char.ToString();
     }
-
-    #endregion  Public Methods
-
-    #region  Public Properties
 
     public int Channel { get; set; }
 
@@ -28,7 +22,5 @@ namespace Cyotek.Drawing.BitmapFont
     public int TexturePage { get; set; }
 
     public int XAdvance { get; set; }
-
-    #endregion  Public Properties
   }
 }

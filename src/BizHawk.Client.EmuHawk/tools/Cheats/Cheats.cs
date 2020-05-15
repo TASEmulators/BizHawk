@@ -332,10 +332,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		#region Events
-
-		#region File
-
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			SaveMenuItem.Enabled = Global.CheatList.Changes;
@@ -390,10 +386,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Close();
 		}
-
-		#endregion
-
-		#region Cheats
 
 		private void CheatsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -520,10 +512,6 @@ namespace BizHawk.Client.EmuHawk
 			Tools.Load<GameShark>();
 		}
 
-		#endregion
-
-		#region Options
-
 		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			AlwaysLoadCheatsMenuItem.Checked = Config.LoadCheatFileByGame;
@@ -591,10 +579,6 @@ namespace BizHawk.Client.EmuHawk
 			CheatListView.AllColumns.Clear();
 			SetColumns();
 		}
-
-		#endregion
-
-		#region ListView and Dialog Events
 
 		private void CheatListView_DoubleClick(object sender, EventArgs e)
 		{
@@ -681,10 +665,6 @@ namespace BizHawk.Client.EmuHawk
 			RefreshFloatingWindowControl(Settings.FloatingWindow);
 			base.OnShown(e);
 		}
-
-		#endregion
-
-		#endregion
 
 		public class CheatsSettings : ToolDialogSettings
 		{

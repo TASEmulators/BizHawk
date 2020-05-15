@@ -163,8 +163,6 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			return res;
 		}
 
-		#region Tables
-
 		static readonly string[] Size2_0 = { "01", "11", "10" };
 		static readonly string[] Size2_1 = { "00", "01", "10" };
 		static readonly string[] Size1 = { "0", "1" };
@@ -347,7 +345,5 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			"1110", // GT  Greater Than (signed)
 			"1111"  // LE  Less or Equal (signed)
 		};
-
-		#endregion
 	}
 }

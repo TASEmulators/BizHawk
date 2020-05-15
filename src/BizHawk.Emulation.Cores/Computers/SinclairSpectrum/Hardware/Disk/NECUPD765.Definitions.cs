@@ -6,18 +6,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     /// <summary>
     /// Definitions
     /// </summary>
-    #region Attribution
     /*
         Implementation based on the information contained here:
         http://www.cpcwiki.eu/index.php/765_FDC
         and here:
         http://www.cpcwiki.eu/imgs/f/f3/UPD765_Datasheet_OCRed.pdf
     */
-    #endregion
     public partial class NECUPD765
     {
-        #region Enums
-
         /// <summary>
         /// Defines the current phase of the controller
         /// </summary>
@@ -306,10 +302,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             Increment,
             Decrement
         }
-        
-        #endregion
-
-        #region Constants
 
         // Command Instruction Constants
         // Designates the default postitions within the cmdbuffer array
@@ -683,10 +675,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public const int SEEK_ABNORMALTERM = 5;
         public const int SEEK_DRIVENOTREADY = 6;
 
-        #endregion
-
-        #region Classes & Structs
-
         /// <summary>
         /// Class that holds information about a specific command
         /// </summary>
@@ -819,8 +807,5 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 ser.EndSection();
             }
         }
-       
-
-        #endregion
     }
 }

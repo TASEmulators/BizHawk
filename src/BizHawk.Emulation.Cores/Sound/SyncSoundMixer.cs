@@ -173,8 +173,6 @@ namespace BizHawk.Emulation.Cores.Components
 			return lookup.InputNSamp;
 		}
 
-		#region ISoundProvider
-
 		public bool CanProvideAsync => false;
 		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
@@ -239,8 +237,6 @@ namespace BizHawk.Emulation.Cores.Components
 				samples[i] = (short)sampleVal;
 			}
 		}
-
-		#endregion
 
 		/// <summary>
 		/// Instantiated for every ISoundProvider source that is added to the mixer

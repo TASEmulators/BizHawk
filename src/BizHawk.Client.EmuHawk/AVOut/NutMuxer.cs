@@ -15,8 +15,6 @@ namespace BizHawk.Client.EmuHawk
 	{
 		// this code isn't really any good for general purpose nut creation
 
-		#region simple buffer reuser
-
 		public class ReusableBufferPool<T>
 		{
 			private readonly List<T[]> _available = new List<T[]>();
@@ -83,10 +81,6 @@ namespace BizHawk.Client.EmuHawk
 				_available.Add(buffer);
 			}
 		}
-
-		#endregion
-
-		#region binary write helpers
 
 		/// <summary>
 		/// variable length value, unsigned
@@ -183,10 +177,6 @@ namespace BizHawk.Client.EmuHawk
 			stream.Write(b, 0, 4);
 		}
 
-		#endregion
-
-		#region CRC calculator
-
 		private static readonly uint[] CrcTable =
 		{
 			0x00000000, 0x04C11DB7, 0x09823B6E, 0x0D4326D9,
@@ -210,8 +200,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 			return crc;
 		}
-
-		#endregion
 
 		/// <summary>
 		/// writes a single packet out, including CheckSums
@@ -303,8 +291,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		#region fields
-
 		/// <summary>
 		/// stores basic AV parameters
 		/// </summary>
@@ -353,10 +339,6 @@ namespace BizHawk.Client.EmuHawk
 		private readonly Queue<NutFrame> _audioQueue;
 
 		readonly ReusableBufferPool<byte> _bufferPool = new ReusableBufferPool<byte>(12);
-
-		#endregion
-
-		#region header writers
 
 		/// <summary>
 		/// write out the main header
@@ -441,8 +423,6 @@ namespace BizHawk.Client.EmuHawk
 
 			header.Flush();
 		}
-
-		#endregion
 
 		/// <summary>
 		/// stores a single frame with syncpoint, in mux-ready form

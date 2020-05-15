@@ -40,8 +40,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool _dropdownDontfire; // Used as a hack to get around lame .net dropdowns, there's no way to set their index without firing the SelectedIndexChanged event!
 
-		#region Initialize, Load, and Save
-
 		public RamSearch()
 		{
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
@@ -233,10 +231,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		#endregion
-
-		#region Public
-
 		/// <summary>
 		/// This should be called anytime the search list changes
 		/// </summary>
@@ -412,10 +406,6 @@ namespace BizHawk.Client.EmuHawk
 			var mi = radios[index].GetType().GetMethod("OnClick", BindingFlags.Instance | BindingFlags.NonPublic);
 			mi?.Invoke(radios[index], new object[] { new EventArgs() });
 		}
-
-		#endregion
-
-		#region Private
 
 		private void ToggleSearchDependentToolBarItems()
 		{
@@ -937,8 +927,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		#endregion
-
 		public class RamSearchSettings : ToolDialogSettings
 		{
 			public RamSearchSettings()
@@ -964,10 +952,6 @@ namespace BizHawk.Client.EmuHawk
 
 			public RecentFiles RecentSearches { get; set; }
 		}
-
-		#region Winform Events
-
-		#region File
 
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -1039,10 +1023,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Close();
 		}
-
-		#endregion
-
-		#region Settings
 
 		private void SettingsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -1183,10 +1163,6 @@ namespace BizHawk.Client.EmuHawk
 			_searches.SetEndian(_settings.BigEndian);
 		}
 
-		#endregion
-
-		#region Search
-
 		private void SearchSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			ClearChangeCountsMenuItem.Enabled = _settings.IsDetailed();
@@ -1294,10 +1270,6 @@ namespace BizHawk.Client.EmuHawk
 			UpdateUndoToolBarButtons();
 		}
 
-		#endregion
-
-		#region Options
-
 		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			AutoloadDialogMenuItem.Checked = Settings.AutoLoad;
@@ -1391,10 +1363,6 @@ namespace BizHawk.Client.EmuHawk
 			WatchListView.AllColumns.Clear();
 			SetColumns();
 		}
-
-		#endregion
-
-		#region ContextMenu and Toolbar
 
 		private void ListViewContextMenu_Opening(object sender, CancelEventArgs e)
 		{
@@ -1509,10 +1477,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		#endregion
-
-		#region Compare To Box
-
 		private void PreviousValueRadio_Click(object sender, EventArgs e)
 		{
 			SpecificValueBox.Enabled = false;
@@ -1611,10 +1575,6 @@ namespace BizHawk.Client.EmuHawk
 			SetCompareValue(((INumberBox)sender).ToRawInt());
 		}
 
-		#endregion
-
-		#region Comparison Operator Box
-
 		private void EqualToRadio_Click(object sender, EventArgs e)
 		{
 			DifferentByBox.Enabled = false;
@@ -1676,10 +1636,6 @@ namespace BizHawk.Client.EmuHawk
 			WatchListView.Refresh();
 		}
 
-		#endregion
-
-		#region ListView Events
-
 		private void WatchListView_KeyDown(object sender, KeyEventArgs e)
 		{
 			switch (e.KeyCode)
@@ -1736,10 +1692,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		#endregion
-
-		#region Dialog Events
-
 		private void NewRamSearch_Activated(object sender, EventArgs e)
 		{
 			WatchListView.Refresh();
@@ -1769,9 +1721,5 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GenericDragEnter(sender, e);
 		}
-
-		#endregion
-
-		#endregion
 	}
 }

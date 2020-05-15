@@ -13,8 +13,6 @@ namespace BizHawk.Client.Common
 {
 	public class QuickBmpFile
 	{
-		#region Structs
-
 		[StructLayout(LayoutKind.Sequential, Pack = 1)]
 		private class BITMAPFILEHEADER
 		{
@@ -85,8 +83,6 @@ namespace BizHawk.Client.Common
 			BI_JPEG = 4,
 			BI_PNG = 5
 		}
-
-		#endregion
 
 		private static unsafe byte[] GetBytes(object o)
 		{

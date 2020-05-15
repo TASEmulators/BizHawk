@@ -7,8 +7,6 @@ namespace BizHawk.Client.Common
 {
 	internal class BkmControllerAdapter : IController
 	{
-		#region IController Implementation
-
 		public ControllerDefinition Definition { get; set; }
 
 		public bool IsPressed(string button)
@@ -20,8 +18,6 @@ namespace BizHawk.Client.Common
 		{
 			return _myFloatControls[name];
 		}
-
-		#endregion
 
 		/// <summary>
 		/// latches all buttons from the supplied mnemonic string

@@ -282,21 +282,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 		}
 
-		#region IRegionable
-
 		public DisplayType Region => DisplayType.PAL;
-
-		#endregion
-
-		#region IDriveLight
 
 		public bool DriveLightEnabled => true;
 
 		public bool DriveLightOn =>
 			_machine?.TapeDevice?.TapeIsPlaying == true
 			|| _machine?.UPDDiskDevice?.DriveLight == true;
-
-		#endregion
-
 	}
 }

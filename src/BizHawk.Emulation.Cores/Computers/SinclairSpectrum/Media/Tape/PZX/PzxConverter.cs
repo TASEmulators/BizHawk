@@ -42,16 +42,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		private List<KeyValuePair<int, int>> _loopCounter = new List<KeyValuePair<int, int>>();
 
-		#region Construction
-
 		private DatacorderDevice _datacorder;
 
 		public PzxConverter(DatacorderDevice _tapeDevice)
 		{
 			_datacorder = _tapeDevice;
 		}
-
-		#endregion
 
 		/// <summary>
 		/// Returns TRUE if pzx header is detected

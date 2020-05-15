@@ -64,8 +64,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 
-		#region IVirtualPadControl
-
 		public void Clear()
 		{
 		}
@@ -131,8 +129,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public bool ReadOnly { get; set; }
-
-		#endregion
 
 		private void lvDiscs_SelectedIndexChanged(object sender, EventArgs e)
 		{

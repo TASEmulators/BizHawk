@@ -161,8 +161,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// </summary>
 		private LibGambatte.Buttons CurrentButtons = 0;
 
-		#region ALL SAVESTATEABLE STATE GOES HERE
-
 		/// <summary>
 		/// internal gambatte state
 		/// </summary>
@@ -187,10 +185,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public long CycleCount => (long)_cycleCount;
 		public double ClockRate => TICKSPERSECOND;
 
-		#endregion
-
-		#region controller
-
 		public static readonly ControllerDefinition GbController = new ControllerDefinition
 		{
 			Name = "Gameboy Controller",
@@ -206,8 +200,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			IsLagFrame = false;
 			return CurrentButtons;
 		}
-
-		#endregion
 
 		/// <summary>
 		/// true if the emulator is currently emulating CGB
@@ -370,8 +362,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			}
 		}
 
-		#region ppudebug
-
 		public IntPtr _vram = IntPtr.Zero;
 		public IntPtr _bgpal = IntPtr.Zero;
 		public IntPtr _sppal = IntPtr.Zero;
@@ -458,10 +448,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		LibGambatte.ScanlineCallback scanlinecb;
 		ScanlineCallback endofframecallback;
 
-		#endregion
-
-		#region palette
-
 		/// <summary>
 		/// update gambatte core's internal colors
 		/// </summary>
@@ -478,7 +464,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			int[] lut = GBColors.GetLut(type);
 			LibGambatte.gambatte_setcgbpalette(GambatteState, lut);
 		}
-
-		#endregion
 	}
 }

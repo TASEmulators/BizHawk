@@ -23,8 +23,6 @@ namespace BizHawk.Client.EmuHawk
 		// TODO: replace references to ConsoleLuaLibrary.Log with a callback that is passed in
 		public override string Name => "forms";
 
-		#region Forms Library Helpers
-
 		private readonly List<LuaWinform> _luaForms = new List<LuaWinform>();
 
 		public void WindowClosed(IntPtr handle)
@@ -59,8 +57,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			control.Text = caption ?? "";
 		}
-
-		#endregion
 
 		[LuaMethodExample("forms.addclick( 332, function()\r\n\tconsole.log( \"adds the given lua function as a click event to the given control\" );\r\nend );")]
 		[LuaMethod("addclick", "adds the given lua function as a click event to the given control")]
@@ -447,8 +443,6 @@ namespace BizHawk.Client.EmuHawk
 
 			return (int)pictureBox.Handle;
 		}
-
-		#region LuaPictureBox Methods
 
 		[LuaMethodExample("forms.clear( 334, 0x000000FF );")]
 		[LuaMethod(
@@ -1235,8 +1229,6 @@ namespace BizHawk.Client.EmuHawk
 
 			return 0;
 		}
-
-		#endregion
 
 		[LuaMethodExample("forms.setdropdownitems( 332, { \"item1\", \"item2\" } );")]
 		[LuaMethod("setdropdownitems", "Sets the items for a given dropdown box")]

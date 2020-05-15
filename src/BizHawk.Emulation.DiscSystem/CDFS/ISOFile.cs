@@ -46,16 +46,10 @@ namespace BizHawk.Emulation.DiscSystem
 	/// </summary>
 	public class ISOFile
 	{
-		#region Constants
-
 		/// <summary>
 		/// We are hard coding the SECTOR_SIZE
 		/// </summary>
 		public const int SECTOR_SIZE = 2048;
-
-		#endregion
-
-		#region Static Members
 
 		/// <summary>
 		/// Making this a static for now. Every other way I tried was fairly ineligant (asni)
@@ -63,10 +57,6 @@ namespace BizHawk.Emulation.DiscSystem
 		public static ISOFormat Format;
 
 		public static List<CDIPathNode> CDIPathTable;
-
-		#endregion
-
-		#region Public Members
 
 		/// <summary>
 		/// This is a list of all the volume descriptors in the disk image.
@@ -84,10 +74,6 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public ISOFormat CDFSType;
 
-		#endregion
-
-		#region Construction
-
 		/// <summary>
 		/// Construct the ISO file data structures, but leave everything
 		/// blank.
@@ -95,10 +81,6 @@ namespace BizHawk.Emulation.DiscSystem
 		public ISOFile()
 		{
 		}
-
-		#endregion
-
-		#region Parsing
 
 		/// <summary>
 		/// Parse the given stream to populate the iso information
@@ -216,10 +198,6 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 		}
 
-		#endregion
-
-		#region Printing
-
 		/// <summary>
 		/// Print the directory tree for the image.
 		/// </summary>
@@ -229,17 +207,11 @@ namespace BizHawk.Emulation.DiscSystem
 			this.Root.Print(0);
 		}
 
-		#endregion
-
-		#region Misc
-
 		public enum ISOFormat
 		{
 			Unknown,
 			ISO9660,
 			CDInteractive
 		}
-
-		#endregion 
 	}
 }

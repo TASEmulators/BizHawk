@@ -10,8 +10,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	/// </summary>
 	public class RamAdapter
 	{
-		#region fix broken images
-
 		static void WriteBlock(Stream dest, byte[] data, int pregap)
 		{
 			for (int i = 0; i < pregap - 1; i++)
@@ -91,10 +89,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return tmp;
 		}
 
-		#endregion
-
-		#region crc
-
 		/// <summary>
 		/// advance a 16 bit CRC register with 1 new input bit.  x.25 standard
 		/// </summary>
@@ -119,8 +113,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			return crc;
 		}
-
-		#endregion
 
 		public void SyncState(Serializer ser)
 		{
@@ -154,7 +146,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(lookingforendofgap), ref lookingforendofgap);
 		}
 
-		#region state
 		/// <summary>the original contents of this disk when it was loaded.  for virtual saveram diff</summary>
 		byte[] originaldisk = null;
 		/// <summary>currently loaded disk side (ca 65k bytes)</summary>
@@ -195,8 +186,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		bool bytetransferflag;
 		bool lookingforendofgap = false;
-
-		#endregion
 
 		public Action<bool> DriveLightCallback;
 
