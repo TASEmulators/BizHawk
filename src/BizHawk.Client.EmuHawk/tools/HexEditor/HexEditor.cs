@@ -499,7 +499,8 @@ namespace BizHawk.Client.EmuHawk
 		private string GenerateMemoryViewString(bool forWindow)
 		{
 			var rowStr = new StringBuilder();
-			var test = MakeValues();
+			var hexValues = MakeValues(DataSize);
+			var charValues = MakeValues(1);
 			for (var i = 0; i < _rowsVisible; i++)
 			{
 				_row = i + HexScrollBar.Value;
@@ -513,23 +514,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (_addr + j + DataSize <= _domain.Size)
 					{
-						var addressVal = test[_addr + j];
+						var addressVal = hexValues[_addr + j];
 						rowStr.AppendFormat(_digitFormatString, addressVal);
-						//int tVal = 0;
-						//for (int k = 0; k < DataSize; k++)
-						//{
-						//	int tNext = MakeValue(1, _addr + j + k);
-						//	if (BigEndian)
-						//	{
-						//		tVal += (tNext << (k * 8));
-						//	}
-						//	else
-						//	{
-						//		tVal += (tNext << ((DataSize - k - 1) * 8));
-						//	}
-						//}
-
-						//rowStr.AppendFormat(_digitFormatString, tVal);
 					}
 					else
 					{
@@ -547,7 +533,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (_addr + k < _domain.Size)
 					{
-						byte b = MakeByte(_addr + k);
+						
+						byte b = (byte)charValues[_addr + k];
 						char c = Remap(b);
 						rowStr.Append(c);
 						//winforms will be using these as escape codes for hotkeys
@@ -561,7 +548,7 @@ namespace BizHawk.Client.EmuHawk
 			return rowStr.ToString();
 		}
 
-		private Dictionary<long, long> MakeValues()
+		private Dictionary<long, long> MakeValues(int dataSize)
 		{
 			var addresses = new List<long>();
 
@@ -576,7 +563,7 @@ namespace BizHawk.Client.EmuHawk
 
 				for (var j = 0; j < 16; j += DataSize)
 				{
-					if (_addr + j + DataSize <= _domain.Size)
+					if (_addr + j + dataSize <= _domain.Size)
 					{
 						var address = _addr + j;
 						addresses.Add(address);
