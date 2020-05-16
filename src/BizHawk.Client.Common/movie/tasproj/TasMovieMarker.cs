@@ -142,9 +142,9 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void Add(int frame, string message, bool fromHistory = false)
+		public void Add(int frame, string message)
 		{
-			Add(new TasMovieMarker(frame, message), fromHistory);
+			Add(new TasMovieMarker(frame, message));
 		}
 
 		public new void AddRange(IEnumerable<TasMovieMarker> collection)
@@ -161,18 +161,9 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		// the inherited one
 		public new void Insert(int index, TasMovieMarker item)
 		{
-			Insert(index, item, false);
-		}
-
-		public void Insert(int index, TasMovieMarker item, bool fromHistory)
-		{
-			if (!fromHistory)
-			{
-				_movie.ChangeLog.AddMarkerChange(item);
-			}
+			_movie.ChangeLog.AddMarkerChange(item);
 
 			base.Insert(index, item);
 			Sort((m1, m2) => m1.Frame.CompareTo(m2.Frame));
@@ -197,23 +188,14 @@ namespace BizHawk.Client.Common
 			OnListChanged(NotifyCollectionChangedAction.Add);
 		}
 
-		// the inherited one
 		public new void Remove(TasMovieMarker item)
-		{
-			Remove(item, false);
-		}
-
-		public void Remove(TasMovieMarker item, bool fromHistory)
 		{
 			if (item == null || item.Frame == 0) // TODO: Don't do this.
 			{
 				return;
 			}
 
-			if (!fromHistory)
-			{
-				_movie.ChangeLog.AddMarkerChange(null, item.Frame, item.Message);
-			}
+			_movie.ChangeLog.AddMarkerChange(null, item.Frame, item.Message);
 
 			base.Remove(item);
 			OnListChanged(NotifyCollectionChangedAction.Remove);
@@ -244,7 +226,7 @@ namespace BizHawk.Client.Common
 			return removeCount;
 		}
 
-		public void Move(int fromFrame, int toFrame, bool fromHistory = false)
+		public void Move(int fromFrame, int toFrame)
 		{
 			if (fromFrame == 0) // no thanks!
 			{
@@ -258,8 +240,8 @@ namespace BizHawk.Client.Common
 			}
 
 			_movie.ChangeLog.AddMarkerChange(m, m.Frame);
-			Insert(0, new TasMovieMarker(toFrame, m.Message), fromHistory);
-			Remove(m, fromHistory);
+			Insert(0, new TasMovieMarker(toFrame, m.Message));
+			Remove(m);
 		}
 
 		/// <summary>

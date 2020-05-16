@@ -435,12 +435,12 @@ namespace BizHawk.Client.Common
 
 			if (_redoLength != Length)
 			{
-				movie.InsertEmptyFrame(FirstFrame, Length - _redoLength, true);
+				movie.InsertEmptyFrame(FirstFrame, Length - _redoLength);
 			}
 
 			if (_undoLength != Length)
 			{
-				movie.RemoveFrames(FirstFrame, movie.InputLogLength - _undoLength, true);
+				movie.RemoveFrames(FirstFrame, movie.InputLogLength - _undoLength);
 			}
 
 			for (int i = 0; i < _undoLength; i++)
@@ -504,36 +504,46 @@ namespace BizHawk.Client.Common
 
 		public void Undo(ITasMovie movie)
 		{
+			bool wasRecording = movie.ChangeLog.IsRecording;
+			movie.ChangeLog.IsRecording = false;
+
 			if (FirstFrame == -1) // Action: Place marker
 			{
-				movie.Markers.Remove(movie.Markers.Get(LastFrame), true);
+				movie.Markers.Remove(movie.Markers.Get(LastFrame));
 			}
 			else if (LastFrame == -1) // Action: Remove marker
 			{
-				movie.Markers.Add(FirstFrame, _oldMessage, true);
+				movie.Markers.Add(FirstFrame, _oldMessage);
 			}
 			else // Action: Move/rename marker
 			{
-				movie.Markers.Move(LastFrame, FirstFrame, true);
+				movie.Markers.Move(LastFrame, FirstFrame);
 				movie.Markers.Get(LastFrame).Message = _oldMessage;
 			}
+
+			movie.ChangeLog.IsRecording = wasRecording;
 		}
 
 		public void Redo(ITasMovie movie)
 		{
+			bool wasRecording = movie.ChangeLog.IsRecording;
+			movie.ChangeLog.IsRecording = false;
+
 			if (FirstFrame == -1) // Action: Place marker
 			{
-				movie.Markers.Add(LastFrame, _oldMessage, true);
+				movie.Markers.Add(LastFrame, _oldMessage);
 			}
 			else if (LastFrame == -1) // Action: Remove marker
 			{
-				movie.Markers.Remove(movie.Markers.Get(FirstFrame), true);
+				movie.Markers.Remove(movie.Markers.Get(FirstFrame));
 			}
 			else // Action: Move/rename marker
 			{
-				movie.Markers.Move(FirstFrame, LastFrame, true);
+				movie.Markers.Move(FirstFrame, LastFrame);
 				movie.Markers.Get(LastFrame).Message = _newMessage;
 			}
+
+			movie.ChangeLog.IsRecording = wasRecording;
 		}
 	}
 

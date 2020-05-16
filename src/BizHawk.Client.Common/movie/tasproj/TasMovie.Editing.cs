@@ -177,15 +177,17 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void RemoveFrames(int removeStart, int removeUpTo, bool fromHistory = false)
+		/// <summary>
+		/// Remove all frames between removeStart and removeUpTo (excluding removeUpTo).
+		/// </summary>
+		/// <param name="removeStart">The first frame to remove.</param>
+		/// <param name="removeUpTo">The frame after the last frame to remove.</param>
+		public void RemoveFrames(int removeStart, int removeUpTo)
 		{
 			bool endBatch = ChangeLog.BeginNewBatch($"Remove Frames: {removeStart}-{removeUpTo}", true);
 			ChangeLog.AddGeneralUndo(removeStart, InputLogLength - 1);
 
-			for (int i = removeUpTo - 1; i >= removeStart; i--)
-			{
-				Log.RemoveAt(i);
-			}
+			Log.RemoveRange(removeStart, removeUpTo - removeStart);
 
 			if (BindMarkersToInput)
 			{
@@ -203,7 +205,7 @@ namespace BizHawk.Client.Common
 						}
 						else
 						{
-							Markers.Move(m.Frame, m.Frame - (removeUpTo - removeStart), fromHistory);
+							Markers.Move(m.Frame, m.Frame - (removeUpTo - removeStart));
 						}
 					}
 				}
@@ -340,7 +342,7 @@ namespace BizHawk.Client.Common
 			return firstChangedFrame;
 		}
 
-		public void InsertEmptyFrame(int frame, int count = 1, bool fromHistory = false)
+		public void InsertEmptyFrame(int frame, int count = 1)
 		{
 			bool endBatch = ChangeLog.BeginNewBatch($"Insert Empty Frame: {frame}", true);
 			ChangeLog.AddGeneralUndo(frame, InputLogLength + count - 1);
@@ -367,7 +369,7 @@ namespace BizHawk.Client.Common
 					for (int i = firstIndex; i < Markers.Count; i++)
 					{
 						TasMovieMarker m = Markers[i];
-						Markers.Move(m.Frame, m.Frame + count, fromHistory);
+						Markers.Move(m.Frame, m.Frame + count);
 					}
 				}
 
