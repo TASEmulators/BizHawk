@@ -377,7 +377,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 							}
 							else
 							{
-								instr_pntr = 256 * 60 * 2 + 60; // point to halt loop
+								instr_pntr = 256 * 60 * 2 + 60; // exit halt loop
 							}
 						}
 						else
@@ -444,10 +444,9 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 							});
 
 							stopped = false;
-							OnExecFetch?.Invoke(RegPC);
-							if (TraceCallback != null && !CB_prefix) TraceCallback(State());
-							CDLCallback?.Invoke(RegPC, eCDLogMemFlags.FetchFirst);
-							FetchInstruction(ReadMemory(RegPC++));
+
+							// it takes the CPU 4 cycles longer to restart then the rest of the system.
+							instr_pntr = 256 * 60 * 2 + 60;
 
 							stop_check = false;
 						}
@@ -458,7 +457,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					}
 					else if (interrupt_src_reg.Bit(4)) // button pressed, even if interrupts are not enabled, still exists stop
 					{
-						// TODO: OnExecFetch a gameboy, you can only un-STOP once, needs further testing
+						// TODO: On a gameboy, you can only un-STOP once, needs further testing
 						
 						TraceCallback?.Invoke(new TraceInfo
 						{
