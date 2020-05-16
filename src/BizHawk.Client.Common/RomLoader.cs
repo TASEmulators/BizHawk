@@ -837,7 +837,7 @@ namespace BizHawk.Client.Common
 					rom = new RomGame(file);
 					game = rom.GameInfo;
 				}
-				else if (ext != null) // most extensions
+				else
 				{
 					rom = new RomGame(file);
 
