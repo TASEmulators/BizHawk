@@ -986,10 +986,6 @@ namespace BizHawk.Client.Common
 								}
 							}
 							break;
-						case "A78":
-							var gameDbPath = Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb_a7800.csv");
-							nextEmulator = new A7800Hawk(nextComm, game, rom.RomData, gameDbPath, GetCoreSettings<A7800Hawk>(), GetCoreSyncSettings<A7800Hawk>());
-							break;
 						case "C64":
 							var c64 = new C64(nextComm, Enumerable.Repeat(rom.FileData, 1), rom.GameInfo, GetCoreSettings<C64>(), GetCoreSyncSettings<C64>());
 							nextEmulator = c64;
