@@ -95,7 +95,7 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			var lib = OSTailoredCode.LinkedLibManager.LoadOrNull("mednadisc.dll");
 			_IsLibraryAvailable = lib != null
-				&& OSTailoredCode.LinkedLibManager.GetProcAddrOrNull(lib.Value, "mednadisc_LoadCD") != null;
+				&& OSTailoredCode.LinkedLibManager.GetProcAddrOrZero(lib.Value, "mednadisc_LoadCD") != IntPtr.Zero;
 			if (lib != null) OSTailoredCode.LinkedLibManager.FreeByPtr(lib.Value);
 		}
 

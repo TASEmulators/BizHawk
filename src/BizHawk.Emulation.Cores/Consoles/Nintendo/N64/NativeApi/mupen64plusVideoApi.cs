@@ -60,8 +60,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 				videoplugin);
 			GFXReadScreen2 = mupen64plusApi.GetTypedDelegate<ReadScreen2>(GfxDll, "ReadScreen2");
 			GFXReadScreen2Res = mupen64plusApi.GetTypedDelegate<ReadScreen2Res>(GfxDll, "ReadScreen2");
-			var funcPtr = OSTailoredCode.LinkedLibManager.GetProcAddrOrNull(GfxDll, "GetScreenTextureID");
-			if (funcPtr != null) GFXGetScreenTextureID = (GetScreenTextureID) Marshal.GetDelegateForFunctionPointer(funcPtr.Value, typeof(GetScreenTextureID));
+			var funcPtr = OSTailoredCode.LinkedLibManager.GetProcAddrOrZero(GfxDll, "GetScreenTextureID");
+			if (funcPtr != IntPtr.Zero) GFXGetScreenTextureID = (GetScreenTextureID) Marshal.GetDelegateForFunctionPointer(funcPtr, typeof(GetScreenTextureID));
 		}
 
 		public void GetScreenDimensions(ref int width, ref int height)

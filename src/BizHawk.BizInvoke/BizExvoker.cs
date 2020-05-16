@@ -95,9 +95,9 @@ namespace BizHawk.BizInvoke
 				}
 			}
 
-			public IntPtr? GetProcAddrOrNull(string entryPoint) => EntryPoints.TryGetValue(entryPoint, out var ret) ? ret : (IntPtr?) null;
+			public IntPtr GetProcAddrOrZero(string entryPoint) => EntryPoints.TryGetValue(entryPoint, out var ret) ? ret : IntPtr.Zero;
 
-			public IntPtr GetProcAddrOrThrow(string entryPoint) => GetProcAddrOrNull(entryPoint) ?? throw new InvalidOperationException($"could not find {entryPoint} in exports");
+			public IntPtr GetProcAddrOrThrow(string entryPoint) => EntryPoints.TryGetValue(entryPoint, out var ret) ? ret : throw new InvalidOperationException($"could not find {entryPoint} in exports");
 		}
 
 		static readonly Dictionary<Type, DelegateStorage> Impls = new Dictionary<Type, DelegateStorage>();
