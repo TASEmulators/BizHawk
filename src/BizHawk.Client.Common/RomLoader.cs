@@ -214,8 +214,7 @@ namespace BizHawk.Client.Common
 			return discs;
 		}
 
-		public bool LoadRom(string path, CoreComm nextComm, string launchLibretroCore, bool forceAccurateCore = false,
-			int recursiveCount = 0) // forceAccurateCore is currently just for Quicknes vs Neshawk but could be used for other situations
+		public bool LoadRom(string path, CoreComm nextComm, string launchLibretroCore, bool forceAccurateCore = false, int recursiveCount = 0)
 		{
 			if (recursiveCount > 1) // hack to stop recursive calls from endlessly rerunning if we can't load it
 			{
