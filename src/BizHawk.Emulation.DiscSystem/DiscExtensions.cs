@@ -4,15 +4,15 @@ namespace BizHawk.Emulation.DiscSystem
 {
 	public static class DiscExtensions
 	{
-		public static Disc Create(this DiscType diskType, string discPath, Action<string> errorCallback)
+		public static Disc Create(this DiscType type, string path, Action<string> errorCallback)
 		{
 			//--- load the disc in a context which will let us abort if it's going to take too long
-			var discMountJob = new DiscMountJob { IN_FromPath = discPath, IN_SlowLoadAbortThreshold = 8 };
+			var discMountJob = new DiscMountJob { IN_FromPath = path, IN_SlowLoadAbortThreshold = 8 };
 			discMountJob.Run();
 			var disc = discMountJob.OUT_Disc;
 			if (disc == null)
 			{
-				throw new InvalidOperationException($"Can't find the file specified: {discPath}");
+				throw new InvalidOperationException($"Can't find the file specified: {path}");
 			}
 
 			if (discMountJob.OUT_SlowLoadAborted)
@@ -28,9 +28,9 @@ namespace BizHawk.Emulation.DiscSystem
 
 			var discType = new DiscIdentifier(disc).DetectDiscType();
 
-			if (discType != diskType)
+			if (discType != type)
 			{
-				errorCallback($"Not a {diskType} disc");
+				errorCallback($"Not a {type} disc");
 				return null;
 			}
 

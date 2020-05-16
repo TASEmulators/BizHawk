@@ -202,7 +202,7 @@ namespace BizHawk.Client.Common
 		private List<Disc> DiscsFromXml(XmlGame xmlGame, string systemId, DiscType diskType)
 		{
 			var discs = new List<Disc>();
-			foreach (var e in xmlGame.AssetFullPaths.Where(a => IsDisc(Path.GetExtension(a))))
+			foreach (var e in xmlGame.AssetFullPaths.Where(a => Disc.IsValidExtension(Path.GetExtension(a))))
 			{
 				var disc = diskType.Create(e, str => { DoLoadErrorCallback(str, systemId, LoadErrorType.DiscError); });
 				if (disc != null)
@@ -417,7 +417,7 @@ namespace BizHawk.Client.Common
 						System = "PSX"
 					};
 				}
-				else if (IsDisc(ext))
+				else if (Disc.IsValidExtension(ext))
 				{
 					if (file.IsArchive)
 					{
@@ -768,7 +768,8 @@ namespace BizHawk.Client.Common
 								break;
 							case "GEN":
 								var genDiscs = DiscsFromXml(xmlGame, "GEN", DiscType.MegaCD);
-								var romBytes = xmlGame.Assets.Where(a => !IsDisc(a.Key))
+								var romBytes = xmlGame.Assets
+									.Where(a => !Disc.IsValidExtension(a.Key))
 									.Select(a => a.Value)
 									.FirstOrDefault();
 								if (!genDiscs.Any() && romBytes == null)
@@ -1107,11 +1108,5 @@ namespace BizHawk.Client.Common
 			Game = game;
 			return true;
 		}
-
-		private static bool IsDisc(string extension) =>
-			extension == ".iso"
-			|| extension == ".cue"
-			|| extension == ".ccd"
-			|| extension == ".mds";
 	}
 }
