@@ -10,7 +10,6 @@ namespace BizHawk.Client.Common
 		int UndoIndex { get; }
 		string NextUndoStepName { get; }
 		bool IsRecording { get; set; }
-		void AddInputBind(int frame, bool isDelete, string name = "", bool force = false);
 		void Clear(int upTo = -1);
 		bool BeginNewBatch(string name = "", bool keepOldBatch = false);
 		void EndBatch();
@@ -27,6 +26,9 @@ namespace BizHawk.Client.Common
 		void AddBoolToggle(int frame, string button, bool oldState, string name = "", bool force = false);
 		void AddFloatChange(int frame, string button, float oldState, float newState, string name = "", bool force = false);
 		void AddMarkerChange(TasMovieMarker newMarker, int oldPosition = -1, string oldMessage = "", string name = "", bool force = false);
+		void AddInputBind(int frame, bool isDelete, string name = "", bool force = false);
+		void AddInsertFrames(int frame, int count, string name = "", bool force = false);
+		void AddInsertInput(int frame, List<string> newInputs, string name = "", bool force = false);
 	}
 
 	public class TasMovieChangeLog : IMovieChangeLog
@@ -375,6 +377,24 @@ namespace BizHawk.Client.Common
 			{
 				AddMovieAction(name);
 				_history.Last().Add(new MovieActionBindInput(_movie, frame, isDelete));
+			}
+		}
+
+		public void AddInsertFrames(int frame, int count, string name = "", bool force = false)
+		{
+			if (IsRecording || force)
+			{
+				AddMovieAction(name);
+				_history.Last().Add(new MovieActionInsertFrames(frame, count));
+			}
+		}
+
+		public void AddInsertInput(int frame, List<string> newInputs, string name = "", bool force = false)
+		{
+			if (IsRecording || force)
+			{
+				AddMovieAction(name);
+				_history.Last().Add(new MovieActionInsertFrames(frame, newInputs));
 			}
 		}
 	}
@@ -749,6 +769,59 @@ namespace BizHawk.Client.Common
 
 			movie.ChangeLog.IsRecording = wasRecording;
 			movie.BindMarkersToInput = _bindMarkers;
+		}
+	}
+
+	public class MovieActionInsertFrames : IMovieAction
+	{
+		public int FirstFrame { get; }
+		public int LastFrame { get; }
+		private readonly int _count;
+		private readonly bool _onlyEmpty;
+
+		private readonly List<string> _newInputs;
+
+		public MovieActionInsertFrames(int frame, int count)
+		{
+			FirstFrame = frame;
+			LastFrame = frame + count;
+			_count = count;
+			_onlyEmpty = true;
+		}
+
+		public MovieActionInsertFrames(int frame, List<string> newInputs)
+		{
+			FirstFrame = frame;
+			LastFrame = frame + newInputs.Count();
+			_onlyEmpty = false;
+			_newInputs = newInputs;
+		}
+		
+		public void Undo(ITasMovie movie)
+		{
+			bool wasRecording = movie.ChangeLog.IsRecording;
+			movie.ChangeLog.IsRecording = false;
+
+			movie.RemoveFrames(FirstFrame, LastFrame);
+
+			movie.ChangeLog.IsRecording = wasRecording;
+		}
+
+		public void Redo(ITasMovie movie)
+		{
+			bool wasRecording = movie.ChangeLog.IsRecording;
+			movie.ChangeLog.IsRecording = false;
+
+			if (_onlyEmpty)
+			{
+				movie.InsertEmptyFrame(FirstFrame, _count);
+			}
+			else
+			{
+				movie.InsertInput(FirstFrame, _newInputs);
+			}
+
+			movie.ChangeLog.IsRecording = wasRecording;
 		}
 	}
 }

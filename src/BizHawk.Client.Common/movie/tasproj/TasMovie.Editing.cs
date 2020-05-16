@@ -225,45 +225,14 @@ namespace BizHawk.Client.Common
 
 		public void InsertInput(int frame, string inputState)
 		{
-			bool endBatch = ChangeLog.BeginNewBatch($"Insert Frame: {frame}", true);
-			ChangeLog.AddGeneralUndo(frame, InputLogLength);
-
-			Log.Insert(frame, inputState);
-			Changes = true;
-			InvalidateAfter(frame);
-
-			if (BindMarkersToInput)
-			{
-				bool wasRecording = ChangeLog.IsRecording;
-				ChangeLog.IsRecording = false;
-				int firstIndex = Markers.FindIndex(m => m.Frame >= frame);
-				if (firstIndex != -1)
-				{
-					for (int i = firstIndex; i < Markers.Count; i++)
-					{
-						TasMovieMarker m = Markers[i];
-						Markers.Move(m.Frame, m.Frame + 1);
-					}
-				}
-
-				ChangeLog.IsRecording = wasRecording;
-			}
-
-			ChangeLog.SetGeneralRedo();
-			if (endBatch)
-			{
-				ChangeLog.EndBatch();
-			}
+			var inputLog = new List<string>();
+			inputLog.Add(inputState);
+			InsertInput(frame, inputLog); // ChangeLog handled within
 		}
 
 		public void InsertInput(int frame, IEnumerable<string> inputLog)
 		{
-			bool endBatch = ChangeLog.BeginNewBatch($"Insert Frame: {frame}", true);
-			ChangeLog.AddGeneralUndo(frame, InputLogLength + inputLog.Count() - 1);
-
 			Log.InsertRange(frame, inputLog);
-			Changes = true;
-			InvalidateAfter(frame);
 
 			if (BindMarkersToInput)
 			{
@@ -282,11 +251,10 @@ namespace BizHawk.Client.Common
 				ChangeLog.IsRecording = wasRecording;
 			}
 
-			ChangeLog.SetGeneralRedo();
-			if (endBatch)
-			{
-				ChangeLog.EndBatch();
-			}
+			Changes = true;
+			InvalidateAfter(frame);
+			
+			ChangeLog.AddInsertInput(frame, inputLog.ToList(), $"Insert {inputLog.Count()} frame(s) at {frame}");
 		}
 
 		public void InsertInput(int frame, IEnumerable<IController> inputStates)
@@ -344,9 +312,6 @@ namespace BizHawk.Client.Common
 
 		public void InsertEmptyFrame(int frame, int count = 1)
 		{
-			bool endBatch = ChangeLog.BeginNewBatch($"Insert Empty Frame: {frame}", true);
-			ChangeLog.AddGeneralUndo(frame, InputLogLength + count - 1);
-
 			var lg = LogGeneratorInstance(Global.MovieSession.MovieController);
 
 			if (frame > Log.Count())
@@ -354,10 +319,7 @@ namespace BizHawk.Client.Common
 				frame = Log.Count();
 			}
 
-			for (int i = 0; i < count; i++)
-			{
-				Log.Insert(frame, lg.EmptyEntry);
-			}
+			Log.InsertRange(frame, Enumerable.Repeat(lg.EmptyEntry, count).ToList());
 
 			if (BindMarkersToInput)
 			{
@@ -379,11 +341,7 @@ namespace BizHawk.Client.Common
 			Changes = true;
 			InvalidateAfter(frame);
 
-			ChangeLog.SetGeneralRedo();
-			if (endBatch)
-			{
-				ChangeLog.EndBatch();
-			}
+			ChangeLog.AddInsertFrames(frame, count, $"Insert {count} empty frame(s) at {frame}");
 		}
 
 		private void ExtendMovieForEdit(int numFrames)
