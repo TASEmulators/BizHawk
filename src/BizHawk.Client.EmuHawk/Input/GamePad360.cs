@@ -42,19 +42,20 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// some users won't even have xinput installed. in order to avoid spurious exceptions and possible instability, check for the library first
 				var llManager = OSTailoredCode.LinkedLibManager;
-				var libraryHandle = llManager.LoadOrNull("xinput1_3.dll") ?? llManager.LoadOrNull("xinput1_4.dll");
-				if (libraryHandle != null)
+				var libraryHandle = llManager.LoadOrZero("xinput1_3.dll");
+				if (libraryHandle == IntPtr.Zero) libraryHandle = llManager.LoadOrZero("xinput1_4.dll");
+				if (libraryHandle != IntPtr.Zero)
 				{
 					XInputGetStateExProc = (XInputGetStateExProcDelegate) Marshal.GetDelegateForFunctionPointer(
-						Win32Imports.GetProcAddressOrdinal(libraryHandle.Value, new IntPtr(100)),
+						Win32Imports.GetProcAddressOrdinal(libraryHandle, new IntPtr(100)),
 						typeof(XInputGetStateExProcDelegate)
 					);
 				}
 				else
 				{
-					libraryHandle = llManager.LoadOrNull("xinput9_1_0.dll");
+					libraryHandle = llManager.LoadOrZero("xinput9_1_0.dll");
 				}
-				IsAvailable = libraryHandle != null;
+				IsAvailable = libraryHandle != IntPtr.Zero;
 
 				// don't remove this code. it's important to catch errors on systems with broken xinput installs.
 				// (probably, checking for the library was adequate, but let's not get rid of this anyway)

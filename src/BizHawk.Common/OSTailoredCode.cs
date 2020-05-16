@@ -39,7 +39,7 @@ namespace BizHawk.Common
 			/// <exception cref="InvalidOperationException">could not find symbol</exception>
 			IntPtr GetProcAddrOrThrow(IntPtr hModule, string procName);
 
-			IntPtr? LoadOrNull(string dllToLoad);
+			IntPtr LoadOrZero(string dllToLoad);
 
 			/// <exception cref="InvalidOperationException">could not find library</exception>
 			IntPtr LoadOrThrow(string dllToLoad);
@@ -72,14 +72,15 @@ namespace BizHawk.Common
 				throw new InvalidOperationException($"error in {nameof(dlsym)}{(errCharPtr == IntPtr.Zero ? string.Empty : $": {Marshal.PtrToStringAnsi(errCharPtr)}")}");
 			}
 
-			public IntPtr? LoadOrNull(string dllToLoad)
+			public IntPtr LoadOrZero(string dllToLoad) => dlopen(dllToLoad, RTLD_NOW);
+
+			public IntPtr LoadOrThrow(string dllToLoad)
 			{
-				const int RTLD_NOW = 2;
-				var p = dlopen(dllToLoad, RTLD_NOW);
-				return p == IntPtr.Zero ? (IntPtr?) null : p;
+				var ret = LoadOrZero(dllToLoad);
+				return ret != IntPtr.Zero ? ret : throw new InvalidOperationException($"got null pointer from {nameof(dlopen)}, error: {Marshal.PtrToStringAnsi(dlerror())}");
 			}
 
-			public IntPtr LoadOrThrow(string dllToLoad) => LoadOrNull(dllToLoad) ?? throw new InvalidOperationException($"got null pointer from {nameof(dlopen)}, error: {Marshal.PtrToStringAnsi(dlerror())}");
+			private const int RTLD_NOW = 2;
 		}
 
 		private class WindowsLLManager : ILinkedLibManager
@@ -108,13 +109,13 @@ namespace BizHawk.Common
 				return ret != IntPtr.Zero ? ret : throw new InvalidOperationException($"got null pointer from {nameof(GetProcAddress)}, error code: {GetLastError()}");
 			}
 
-			public IntPtr? LoadOrNull(string dllToLoad)
-			{
-				var p = LoadLibrary(dllToLoad);
-				return p == IntPtr.Zero ? (IntPtr?) null : p;
-			}
+			public IntPtr LoadOrZero(string dllToLoad) => LoadLibrary(dllToLoad);
 
-			public IntPtr LoadOrThrow(string dllToLoad) => LoadOrNull(dllToLoad) ?? throw new InvalidOperationException($"got null pointer from {nameof(LoadLibrary)}, error code: {GetLastError()}");
+			public IntPtr LoadOrThrow(string dllToLoad)
+			{
+				var ret = LoadOrZero(dllToLoad);
+				return ret != IntPtr.Zero ? ret : throw new InvalidOperationException($"got null pointer from {nameof(LoadLibrary)}, error code: {GetLastError()}");
+			}
 		}
 
 		public enum DistinctOS : byte

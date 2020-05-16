@@ -32,14 +32,14 @@ namespace BizHawk.Client.EmuHawk
 
 			static void CheckLib(string dllToLoad, string desc)
 			{
-				var p = OSTC.LinkedLibManager.LoadOrNull(dllToLoad);
-				if (p == null)
+				var p = OSTC.LinkedLibManager.LoadOrZero(dllToLoad);
+				if (p == IntPtr.Zero)
 				{
 					using (var box = new ExceptionBox($"EmuHawk needs {desc} in order to run! See the readme for more info. (EmuHawk will now close.)")) box.ShowDialog();
 					Process.GetCurrentProcess().Kill();
 					return;
 				}
-				OSTC.LinkedLibManager.FreeByPtr(p.Value);
+				OSTC.LinkedLibManager.FreeByPtr(p);
 			}
 			CheckLib("vcruntime140.dll", "Microsoft's Universal CRT (MSVC 14.0+ / VS 2015+)");
 			CheckLib("msvcr100.dll", "Microsoft's Visual C++ Runtime 10.0 (VS 2010)"); // for Mupen64Plus, and some others
