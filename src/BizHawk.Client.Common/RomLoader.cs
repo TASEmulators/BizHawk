@@ -203,7 +203,7 @@ namespace BizHawk.Client.Common
 		{
 			var discs = new List<Disc>();
 			var sw = new StringWriter();
-			foreach (var e in xmlGame.AssetFullPaths)
+			foreach (var e in xmlGame.AssetFullPaths.Where(a => IsDisc(Path.GetExtension(a))))
 			{
 				string discPath = e;
 
@@ -468,7 +468,7 @@ namespace BizHawk.Client.Common
 						System = "PSX"
 					};
 				}
-				else if (ext == ".iso" || ext == ".cue" || ext == ".ccd" || ext == ".mds")
+				else if (IsDisc(ext))
 				{
 					if (file.IsArchive)
 					{
@@ -818,13 +818,15 @@ namespace BizHawk.Client.Common
 									(Tst.Settings)GetCoreSettings<Tst>(), (Tst.SyncSettings)GetCoreSyncSettings<Tst>());
 								break;
 							case "GEN":
-								// We are assuming discs only, for now
 								var genDiscs = DiscsFromXml(xmlGame, "GEN", DiscType.MegaCD);
-								if (!genDiscs.Any())
+								var romBytes = xmlGame.Assets.Where(a => !IsDisc(a.Key))
+									.Select(a => a.Value)
+									.FirstOrDefault();
+								if (!genDiscs.Any() && romBytes == null)
 								{
 									return false;
 								}
-								nextEmulator = new GPGX(nextComm, game, null, genDiscs, GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
+								nextEmulator = new GPGX(nextComm, game, romBytes, genDiscs, GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
 								break;
 							case "Game Gear":
 								var leftBytesGG = xmlGame.Assets.First().Value;
@@ -1165,5 +1167,11 @@ namespace BizHawk.Client.Common
 			Game = game;
 			return true;
 		}
+
+		private static bool IsDisc(string extension) =>
+			extension == ".iso"
+			|| extension == ".cue"
+			|| extension == ".ccd"
+			|| extension == ".mds";
 	}
 }
