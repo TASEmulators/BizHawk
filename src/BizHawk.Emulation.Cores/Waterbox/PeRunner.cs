@@ -108,8 +108,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				var pointers = entries.Select(e =>
 				{
 					var ptr = imports.GetProcAddrOrNull(e);
-					if (ptr != IntPtr.Zero)
-						return ptr;
+					if (ptr != null) return ptr.Value;
 					var s = $"Trapped on unimplemented function {moduleName}:{e}";
 					Action del = () =>
 					{
@@ -1105,7 +1104,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		public IntPtr GetProcAddrOrNull(string entryPoint) => _modules[0].GetProcAddrOrNull(entryPoint); // _modules[0] is always the main module
+		public IntPtr? GetProcAddrOrNull(string entryPoint) => _modules[0].GetProcAddrOrNull(entryPoint); // _modules[0] is always the main module
 
 		public IntPtr GetProcAddrOrThrow(string entryPoint) => _modules[0].GetProcAddrOrThrow(entryPoint);
 
