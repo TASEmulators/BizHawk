@@ -11,9 +11,9 @@ extern "C" {
 #define ECL_ENTRY
 // mark a visible symbol
 #ifdef __cplusplus
-#define ECL_EXPORT extern "C" __attribute__((visibility("default")))
+#define ECL_EXPORT extern "C" __attribute__((visibility("default"))) __attribute__((used))
 #else
-#define ECL_EXPORT __attribute__((visibility("default")))
+#define ECL_EXPORT __attribute__((visibility("default"))) __attribute__((used))
 #endif
 
 // allocate memory from the "sealed" pool.  this memory can never be freed,

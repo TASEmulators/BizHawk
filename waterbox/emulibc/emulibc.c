@@ -1,6 +1,6 @@
 #include "emulibc.h"
 
-#define __WBXSYSCALL __attribute__((section(".wbxsyscall")))
+#define __WBXSYSCALL __attribute__((section(".wbxsyscall"))) __attribute__((visibility("default")))
 
 __WBXSYSCALL void *(*__walloc_sealed)(size_t);
 void *alloc_sealed(size_t size)
