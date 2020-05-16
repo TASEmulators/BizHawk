@@ -382,30 +382,23 @@ namespace BizHawk.Client.Common
 						discNames.Add(discName);
 						discs.Add(disc);
 
-						var discType = new DiscIdentifier(disc).DetectDiscType();
 						sw.WriteLine("{0}", Path.GetFileName(e.Path));
-						if (discType == DiscType.SonyPSX)
+
+						string discHash = new DiscHasher(disc).Calculate_PSX_BizIDHash().ToString("X8");
+						game = Database.CheckDatabase(discHash);
+						if (game == null || game.IsRomStatusBad() || game.Status == RomStatus.NotInDatabase)
 						{
-							string discHash = new DiscHasher(disc).Calculate_PSX_BizIDHash().ToString("X8");
-							game = Database.CheckDatabase(discHash);
-							if (game == null || game.IsRomStatusBad() || game.Status == RomStatus.NotInDatabase)
-							{
-								sw.WriteLine("Disc could not be identified as known-good. Look for a better rip.");
-							}
-							else
-							{
-								sw.WriteLine("Disc was identified (99.99% confidently) as known good with disc id hash CRC32:{0:X8}", discHash);
-								sw.WriteLine("Nonetheless it could be an unrecognized romhack or patched version.");
-								sw.WriteLine("According to redump.org, the ideal hash for entire disc is: CRC32:{0:X8}", game.GetStringValue("dh"));
-								sw.WriteLine("The file you loaded hasn't been hashed entirely (it would take too long)");
-								sw.WriteLine("Compare it with the full hash calculated by the PSX menu's Hash Discs tool");
-							}
+							sw.WriteLine("Disc could not be identified as known-good. Look for a better rip.");
 						}
 						else
 						{
-							sw.WriteLine("Not a PSX disc");
+							sw.WriteLine("Disc was identified (99.99% confidently) as known good with disc id hash CRC32:{0:X8}", discHash);
+							sw.WriteLine("Nonetheless it could be an unrecognized romhack or patched version.");
+							sw.WriteLine("According to redump.org, the ideal hash for entire disc is: CRC32:{0:X8}", game.GetStringValue("dh"));
+							sw.WriteLine("The file you loaded hasn't been hashed entirely (it would take too long)");
+							sw.WriteLine("Compare it with the full hash calculated by the PSX menu's Hash Discs tool");
 						}
-
+						
 						sw.WriteLine("-------------------------");
 					}
 
@@ -689,28 +682,21 @@ namespace BizHawk.Client.Common
 									discNames.Add(discName);
 									discs.Add(disc);
 
-									var discType = new DiscIdentifier(disc).DetectDiscType();
 									sw.WriteLine("{0}", Path.GetFileName(e));
-									if (discType == DiscType.SonyPSX)
+
+									string discHash = new DiscHasher(disc).Calculate_PSX_BizIDHash().ToString("X8");
+									game = Database.CheckDatabase(discHash);
+									if (game == null || game.IsRomStatusBad() || game.Status == RomStatus.NotInDatabase)
 									{
-										string discHash = new DiscHasher(disc).Calculate_PSX_BizIDHash().ToString("X8");
-										game = Database.CheckDatabase(discHash);
-										if (game == null || game.IsRomStatusBad() || game.Status == RomStatus.NotInDatabase)
-										{
-											sw.WriteLine("Disc could not be identified as known-good. Look for a better rip.");
-										}
-										else
-										{
-											sw.WriteLine("Disc was identified (99.99% confidently) as known good with disc id hash CRC32:{0:X8}", discHash);
-											sw.WriteLine("Nonetheless it could be an unrecognized romhack or patched version.");
-											sw.WriteLine("According to redump.org, the ideal hash for entire disc is: CRC32:{0:X8}", game.GetStringValue("dh"));
-											sw.WriteLine("The file you loaded hasn't been hashed entirely (it would take too long)");
-											sw.WriteLine("Compare it with the full hash calculated by the PSX menu's Hash Discs tool");
-										}
+										sw.WriteLine("Disc could not be identified as known-good. Look for a better rip.");
 									}
 									else
 									{
-										sw.WriteLine("Not a PSX disc");
+										sw.WriteLine("Disc was identified (99.99% confidently) as known good with disc id hash CRC32:{0:X8}", discHash);
+										sw.WriteLine("Nonetheless it could be an unrecognized romhack or patched version.");
+										sw.WriteLine("According to redump.org, the ideal hash for entire disc is: CRC32:{0:X8}", game.GetStringValue("dh"));
+										sw.WriteLine("The file you loaded hasn't been hashed entirely (it would take too long)");
+										sw.WriteLine("Compare it with the full hash calculated by the PSX menu's Hash Discs tool");
 									}
 
 									sw.WriteLine("-------------------------");
