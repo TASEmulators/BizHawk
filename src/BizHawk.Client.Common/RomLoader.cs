@@ -891,7 +891,7 @@ namespace BizHawk.Client.Common
 
 							if (useSnes9x)
 							{
-								core = CoreInventory.Instance["SNES", "Snes9x"];
+								core = CoreInventory.Instance["SNES", CoreNames.Snes9X];
 							}
 							else
 							{
@@ -946,7 +946,7 @@ namespace BizHawk.Client.Common
 								}
 								else
 								{
-									core = CoreInventory.Instance["SGB", "SameBoy"];
+									core = CoreInventory.Instance["SGB", CoreNames.SameBoy];
 								}
 							}
 							break;
@@ -980,16 +980,16 @@ namespace BizHawk.Client.Common
 						case "GEN":
 							if (Global.Config.CoreForcingViaGameDb && game.ForcedCore?.ToLower() == "pico")
 							{
-								core = CoreInventory.Instance["GEN", "PicoDrive"];
+								core = CoreInventory.Instance["GEN", CoreNames.PicoDrive];
 							}
 							else
 							{
-								core = CoreInventory.Instance["GEN", "Genplus-gx"];
+								core = CoreInventory.Instance["GEN", CoreNames.Gpgx];
 							}
 
 							break;
 						case "32X":
-							core = CoreInventory.Instance["GEN", "PicoDrive"];
+							core = CoreInventory.Instance["GEN", CoreNames.PicoDrive];
 							break;
 					}
 

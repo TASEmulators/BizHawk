@@ -18,5 +18,8 @@ namespace BizHawk.Emulation.Cores
 		public const string GbHawk = "GBHawk";
 		public const string Gambatte = "Gambatte";
 		public const string SubGbHawk = "SubGBHawk";
+		public const string SameBoy = "SameBoy";
+		public const string PicoDrive = "PicoDrive";
+		public const string Gpgx = "Genplus-gx";
 	}
 }
