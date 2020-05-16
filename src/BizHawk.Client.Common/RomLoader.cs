@@ -377,7 +377,7 @@ namespace BizHawk.Client.Common
 					var sw = new StringWriter();
 					foreach (var e in m3u.Entries)
 					{
-						var disc = DiscType.SonyPSX.Create(e.Path, (str) => { DoLoadErrorCallback(str, "PSX", LoadErrorType.DiscError); });
+						var disc = DiscType.SonyPSX.Create(e.Path, str => { DoLoadErrorCallback(str, "PSX", LoadErrorType.DiscError); });
 						var discName = Path.GetFileNameWithoutExtension(e.Path);
 						discNames.Add(discName);
 						discs.Add(disc);
@@ -671,8 +671,8 @@ namespace BizHawk.Client.Common
 
 								nextEmulator = new AmstradCPC(
 									nextComm,
-									xmlGame.Assets.Select(a => a.Value), //.First(),
-									cpcGI, // GameInfo.NullInstance,
+									xmlGame.Assets.Select(a => a.Value),
+									cpcGI,
 									(AmstradCPC.AmstradCPCSettings)GetCoreSettings<AmstradCPC>(),
 									(AmstradCPC.AmstradCPCSyncSettings)GetCoreSyncSettings<AmstradCPC>());
 								break;
@@ -683,35 +683,14 @@ namespace BizHawk.Client.Common
 								var sw = new StringWriter();
 								foreach (var e in entries)
 								{
-									string discPath = e;
+									var disc = DiscType.SonyPSX.Create(e, str => { DoLoadErrorCallback(str, "PSX", LoadErrorType.DiscError); });
 
-									//--- load the disc in a context which will let us abort if it's going to take too long
-									var discMountJob = new DiscMountJob { IN_FromPath = discPath, IN_SlowLoadAbortThreshold = 8 };
-									discMountJob.Run();
-									var disc = discMountJob.OUT_Disc;
-
-									if (discMountJob.OUT_SlowLoadAborted)
-									{
-										DoLoadErrorCallback("This disc would take too long to load. Run it through DiscoHawk first, or find a new rip because this one is probably junk", "PSX", LoadErrorType.DiscError);
-										return false;
-									}
-
-									if (discMountJob.OUT_ErrorLevel)
-									{
-										throw new InvalidOperationException($"\r\n{discMountJob.OUT_Log}");
-									}
-
-									if (disc == null)
-									{
-										throw new InvalidOperationException("Can't load one of the files specified in the M3U");
-									}
-
-									var discName = Path.GetFileNameWithoutExtension(discPath);
+									var discName = Path.GetFileNameWithoutExtension(e);
 									discNames.Add(discName);
 									discs.Add(disc);
 
 									var discType = new DiscIdentifier(disc).DetectDiscType();
-									sw.WriteLine("{0}", Path.GetFileName(discPath));
+									sw.WriteLine("{0}", Path.GetFileName(e));
 									if (discType == DiscType.SonyPSX)
 									{
 										string discHash = new DiscHasher(disc).Calculate_PSX_BizIDHash().ToString("X8");
