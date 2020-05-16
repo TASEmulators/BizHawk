@@ -372,7 +372,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				// GBC compatibility register (I think)
 				case 0xFF4C:
-					if ((value != 0xC0) && (value != 0x80))// && (value != 0xFF) && (value != 0x04))
+					if ((value != 0xC0) && (value != 0x80) && (GB_bios_register == 0))// && (value != 0xFF) && (value != 0x04))
 					{
 						Console.Write("GBC Compatibility? ");
 						Console.WriteLine(value);
@@ -381,6 +381,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						// cpu operation is a function of hardware only
 						//cpu.is_GBC = GBC_compat;
 					}
+					Console.Write("GBC Compatibility? ");
+					Console.WriteLine(value);
 					break;
 
 				// Speed Control for GBC
@@ -500,9 +502,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					break;
 
 				default:
-					Console.Write(addr);
-					Console.Write(" ");
-					Console.WriteLine(value);
+					Console.WriteLine(addr + " " + value);
 					break;
 			}
 		}

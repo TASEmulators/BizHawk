@@ -97,6 +97,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			// this procedure allows several glitchy timer ticks, since it only measures falling edge of the state
 			// so things like turning the timer off and resetting the divider will tick the timer
+			// NOTE: Some additional glitches happen on GBC, but they are non-deterministic and not emulated here
 			if (old_state && !state)
 			{
 				timer_old = timer;
