@@ -1060,9 +1060,6 @@ namespace BizHawk.Client.Common
 							var cpc = new AmstradCPC(nextComm, Enumerable.Repeat(rom.RomData, 1), Enumerable.Repeat(rom.GameInfo, 1).ToList(), GetCoreSettings<AmstradCPC>(), GetCoreSyncSettings<AmstradCPC>());
 							nextEmulator = cpc;
 							break;
-						case "GBA":
-							core = CoreInventory.Instance["GBA", CoreNames.Mgba];
-							break;
 						case "PSX":
 							nextEmulator = new Octoshock(nextComm, null, null, rom.FileData, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>(), "PSX etc.");
 							break;
@@ -1083,12 +1080,6 @@ namespace BizHawk.Client.Common
 							break;
 						case "32X":
 							core = CoreInventory.Instance["GEN", "PicoDrive"];
-							break;
-						case "VEC":
-							core = CoreInventory.Instance["VEC", "VectrexHawk"];
-							break;
-						case "O2":
-							core = CoreInventory.Instance["O2", "O2Hawk"];
 							break;
 					}
 
