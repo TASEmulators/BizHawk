@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 
-//ARCHITECTURE NOTE:
-//No provisions are made for caching synthesized data for later accelerated use.
-//This is because, in the worst case that might result in synthesizing an entire disc in memory.
-//Instead, users should be advised to `hawk` the disc first for most rapid access so that synthesis won't be necessary and speed will be maximized.
-//This will result in a completely flattened CCD where everything comes right off the hard drive
-//Our choice here might be an unwise decision for disc ID and miscellaneous purposes but it's best for gaming and stream-converting (hawking and hashing)
+// ARCHITECTURE NOTE:
+// No provisions are made for caching synthesized data for later accelerated use.
+// This is because, in the worst case that might result in synthesizing an entire disc in memory.
+// Instead, users should be advised to `hawk` the disc first for most rapid access so that synthesis won't be necessary and speed will be maximized.
+// This will result in a completely flattened CCD where everything comes right off the hard drive
+// Our choice here might be an unwise decision for disc ID and miscellaneous purposes but it's best for gaming and stream-converting (hawking and hashing)
 
-//TODO: in principle, we could mount audio to decode only on an as-needed basis
-//this might result in hiccups during emulation, though, so it should be an option.
-//This would imply either decode-length processing (scan file without decoding) or decoding and discarding the data.
-//We should probably have some richer policy specifications for this kind of thing, but it's not a high priority. Main workflow is still discohawking.
-//Alternate policies would probably be associated with copious warnings (examples: ? ? ?)
+// TODO: in principle, we could mount audio to decode only on an as-needed basis
+// this might result in hiccups during emulation, though, so it should be an option.
+// This would imply either decode-length processing (scan file without decoding) or decoding and discarding the data.
+// We should probably have some richer policy specifications for this kind of thing, but it's not a high priority. Main workflow is still discohawking.
+// Alternate policies would probably be associated with copious warnings (examples: ? ? ?)
 
 namespace BizHawk.Emulation.DiscSystem
 {

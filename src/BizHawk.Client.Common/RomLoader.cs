@@ -202,41 +202,12 @@ namespace BizHawk.Client.Common
 		private List<Disc> DiscsFromXml(XmlGame xmlGame, string systemId, DiscType diskType)
 		{
 			var discs = new List<Disc>();
-			var sw = new StringWriter();
 			foreach (var e in xmlGame.AssetFullPaths.Where(a => IsDisc(Path.GetExtension(a))))
 			{
-				string discPath = e;
-
-				//--- load the disc in a context which will let us abort if it's going to take too long
-				var discMountJob = new DiscMountJob { IN_FromPath = discPath, IN_SlowLoadAbortThreshold = 8 };
-				discMountJob.Run();
-				var disc = discMountJob.OUT_Disc;
-
-				if (discMountJob.OUT_SlowLoadAborted)
-				{
-					DoLoadErrorCallback("This disc would take too long to load. Run it through DiscoHawk first, or find a new rip because this one is probably junk", systemId, LoadErrorType.DiscError);
-				}
-
-				else if (discMountJob.OUT_ErrorLevel)
-				{
-					throw new InvalidOperationException($"\r\n{discMountJob.OUT_Log}");
-				}
-
-				else if (disc == null)
-				{
-					throw new InvalidOperationException("Can't load one of the files specified in the XML");
-				}
-
-				else
+				var disc = diskType.Create(e, str => { DoLoadErrorCallback(str, systemId, LoadErrorType.DiscError); });
+				if (disc != null)
 				{
 					discs.Add(disc);
-
-					var discType = new DiscIdentifier(disc).DetectDiscType();
-
-					if (discType != diskType)
-					{
-						DoLoadErrorCallback($"Not a {systemId} disc", systemId, LoadErrorType.DiscError);
-					}
 				}
 			}
 
@@ -407,35 +378,13 @@ namespace BizHawk.Client.Common
 					var sw = new StringWriter();
 					foreach (var e in m3u.Entries)
 					{
-						string discPath = e.Path;
-
-						//--- load the disc in a context which will let us abort if it's going to take too long
-						var discMountJob = new DiscMountJob { IN_FromPath = discPath, IN_SlowLoadAbortThreshold = 8 };
-						discMountJob.Run();
-						var disc = discMountJob.OUT_Disc;
-
-						if (discMountJob.OUT_SlowLoadAborted)
-						{
-							DoLoadErrorCallback("This disc would take too long to load. Run it through DiscoHawk first, or find a new rip because this one is probably junk", "", LoadErrorType.DiscError);
-							return false;
-						}
-
-						if (discMountJob.OUT_ErrorLevel)
-						{
-							throw new InvalidOperationException($"\r\n{discMountJob.OUT_Log}");
-						}
-
-						if (disc == null)
-						{
-							throw new InvalidOperationException("Can't load one of the files specified in the M3U");
-						}
-
-						var discName = Path.GetFileNameWithoutExtension(discPath);
+						var disc = DiscType.SonyPSX.Create(e.Path, (str) => { DoLoadErrorCallback(str, "PSX", LoadErrorType.DiscError); });
+						var discName = Path.GetFileNameWithoutExtension(e.Path);
 						discNames.Add(discName);
 						discs.Add(disc);
 
 						var discType = new DiscIdentifier(disc).DetectDiscType();
-						sw.WriteLine("{0}", Path.GetFileName(discPath));
+						sw.WriteLine("{0}", Path.GetFileName(e.Path));
 						if (discType == DiscType.SonyPSX)
 						{
 							string discHash = new DiscHasher(disc).Calculate_PSX_BizIDHash().ToString("X8");
