@@ -456,7 +456,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public IEnumerable<Type> AvailableTools => Assembly
-			.GetAssembly(typeof(IToolForm))
+			.GetAssembly(typeof(ToolManager))
 			.GetTypes()
 			.Where(t => typeof(IToolForm).IsAssignableFrom(t))
 			.Where(t => !t.IsInterface)
