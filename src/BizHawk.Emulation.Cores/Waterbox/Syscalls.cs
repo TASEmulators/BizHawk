@@ -367,10 +367,16 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			return -1;
 		}
 
+		[BizExport(CallingConvention.Cdecl, EntryPoint = "__wsyscalltab[205]")]
+		public long SetThreadArea(IntPtr uinfo)
+		{
+			return 38; // ENOSYS
+		}
+
 		[BizExport(CallingConvention.Cdecl, EntryPoint = "__wsyscalltab[218]")]
 		public long SetTidAddress(IntPtr address)
 		{
-			return 8675309;
+			return 8675309; // arbitrary thread id
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -557,7 +563,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				.ToList();
 		}
 
-		private static readonly Regex ExportRegex = new Regex("__wsyscalltab[(\\d+)]");
+		private static readonly Regex ExportRegex = new Regex("__wsyscalltab\\[(\\d+)\\]");
 
 		public IntPtr GetProcAddrOrZero(string entryPoint)
 		{

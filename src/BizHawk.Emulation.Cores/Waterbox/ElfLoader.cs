@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			var start = loadsegs.Min(s => s.Address);
 			start = WaterboxUtils.AlignDown(start);
 			var end = loadsegs.Max(s => s.Address + s.Size);
-			end = WaterboxUtils.AlignUp(start);
+			end = WaterboxUtils.AlignUp(end);
 			var size = end - start;
 
 			if (start != assumedStart)

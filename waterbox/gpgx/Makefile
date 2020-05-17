@@ -32,5 +32,6 @@ clean:
 	rm -rf $(OBJ_DIR)
 	rm -f $(TARGET)
 
-#install:
-#	$(CP) $(TARGET) $(DEST_$(ARCH))
+install: $(TARGET)
+	cp -f $< $(OUTPUTDLL_DIR)
+	gzip --stdout --best $< > $(OUTPUTDLL_DIR)/$<.gz
