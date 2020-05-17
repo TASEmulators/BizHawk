@@ -47,7 +47,7 @@ namespace BizHawk.Client.Common
 
 			_decay = new StateManagerDecay(_movie, this);
 
-			_expectedStateSize = (ulong)Core.SaveStateBinary().Length;
+			_expectedStateSize = (ulong)Core.CloneSavestate().Length; // TODO: why do we store this in a ulong?
 			if (_expectedStateSize == 0)
 			{
 				throw new InvalidOperationException("Savestate size can not be zero!");
