@@ -5,6 +5,7 @@
 		<TargetFrameworks>netstandard2.0;netcoreapp3.1</TargetFrameworks>
 	</PropertyGroup>
 	<ItemGroup>
+		<PackageReference Include="ELFSharp" Version="2.9.0" />
 		<PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" PrivateAssets="All" />
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" PrivateAssets="All" />
 		<PackageReference Include="OpenTK" Version="3.0.1" PrivateAssets="All" />
