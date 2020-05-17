@@ -46,11 +46,6 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Ignore that stuff
 		/// </summary>
-		public override int ValueNoFreeze => 0;
-
-		/// <summary>
-		/// Ignore that stuff
-		/// </summary>
 		public override int Previous => 0;
 
 		/// <summary>

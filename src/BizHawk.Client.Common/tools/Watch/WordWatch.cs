@@ -222,12 +222,6 @@ namespace BizHawk.Client.Common
 		public override int Value => GetWord();
 
 		/// <summary>
-		/// Gets the current value
-		/// but with stuff I don't understand
-		/// </summary>
-		public override int ValueNoFreeze => GetWord(true);
-
-		/// <summary>
 		/// Get a string representation of the current value
 		/// </summary>
 		public override string ValueString => FormatValue(GetWord());
