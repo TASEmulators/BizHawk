@@ -10,6 +10,7 @@ namespace BizHawk.Common.StringExtensions
 #pragma warning disable CS8602 // no idea --yoshi
 
 		/// <returns>the substring of <paramref name="str"/> before the first occurrence of <paramref name="value"/>, or <see langword="null"/> if not found</returns>
+		/// <remarks>TODO rename <c>SubstringBeforeOrNull</c>, might as well split this class at the same time</remarks>
 		public static string? GetPrecedingString(this string str, string value)
 		{
 			var index = str.IndexOf(value);
@@ -189,5 +190,11 @@ namespace BizHawk.Common.StringExtensions
 
 		/// <returns><paramref name="str"/> with the trailing substring <paramref name="suffix"/> removed (iff <paramref name="str"/> ends with <paramref name="suffix"/>, otherwise <paramref name="str"/> unmodified)</returns>
 		public static string RemoveSuffix(this string str, string suffix) => str.EndsWith(suffix) ? str.Substring(0, str.Length - suffix.Length) : str;
+
+		public static string SubstringBefore(this string str, char separator)
+		{
+			var index = str.IndexOf(separator);
+			return index < 0 ? str : str.Substring(0, index);
+		}
 	}
 }
