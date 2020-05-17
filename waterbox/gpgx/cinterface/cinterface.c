@@ -140,7 +140,7 @@ GPGX_EX void gpgx_set_input_callback(ECL_ENTRY void (*fecb)(void))
 
 GPGX_EX void gpgx_set_cdd_callback(ECL_ENTRY void (*cddcb)(int lba, void *dest, int audio))
 {
-    cdd_readcallback = cddcb;
+	cdd_readcallback = cddcb;
 }
 
 ECL_ENTRY int (*load_archive_cb)(const char *filename, unsigned char *buffer, int maxsize);
@@ -279,7 +279,7 @@ GPGX_EX void* gpgx_get_sram(int *size)
 	}
 	else if (cdd.loaded && scd.cartridge.id)
 	{
-	    int sz = scd.cartridge.mask + 1;
+		int sz = scd.cartridge.mask + 1;
 		memcpy(tempsram, scd.cartridge.area, sz);
 		memcpy(tempsram + sz, scd.bram, 0x2000);
 		*size = sz + 0x2000;
@@ -291,14 +291,14 @@ GPGX_EX void* gpgx_get_sram(int *size)
 		return scd.bram;
 	}
 	else if (scd.cartridge.id)
-    {
-        *size = scd.cartridge.mask + 1;
-        return scd.cartridge.area;
-    }
+	{
+		*size = scd.cartridge.mask + 1;
+		return scd.cartridge.area;
+	}
 	else
 	{
-        *size = 0;
-        return NULL;
+		*size = 0;
+		return NULL;
 	}
 }
 
@@ -306,40 +306,40 @@ GPGX_EX int gpgx_put_sram(const uint8 *data, int size)
 {
 	if (sram.on)
 	{
-	    if (size != saveramsize())
-            return 0;
-	    memcpy(sram.sram, data, size);
+		if (size != saveramsize())
+			return 0;
+		memcpy(sram.sram, data, size);
 		return 1;
 	}
 	else if (cdd.loaded && scd.cartridge.id)
 	{
-	    int sz = scd.cartridge.mask + 1;
-	    if (size != sz + 0x2000)
-            return 0;
-        memcpy(scd.cartridge.area, data, sz);
-        memcpy(scd.bram, data + sz, 0x2000);
+		int sz = scd.cartridge.mask + 1;
+		if (size != sz + 0x2000)
+			return 0;
+		memcpy(scd.cartridge.area, data, sz);
+		memcpy(scd.bram, data + sz, 0x2000);
 		return 1;
 	}
 	else if (cdd.loaded)
 	{
 		if (size != 0x2000)
-            return 0;
-        memcpy(scd.bram, data, size);
+			return 0;
+		memcpy(scd.bram, data, size);
 		return 1;
 	}
 	else if (scd.cartridge.id)
-    {
-        int sz = scd.cartridge.mask + 1;
-        if (size != sz)
-            return 0;
-        memcpy(scd.cartridge.area, data, size);
-        return 1;
-    }
+	{
+		int sz = scd.cartridge.mask + 1;
+		if (size != sz)
+			return 0;
+		memcpy(scd.cartridge.area, data, size);
+		return 1;
+	}
 	else
 	{
-        if (size != 0)
-            return 0;
-        return 1; // "successful"?
+		if (size != 0)
+			return 0;
+		return 1; // "successful"?
 	}
 }
 
@@ -506,7 +506,7 @@ GPGX_EX int gpgx_init(
 	int sixbutton, char system_a, char system_b, int region, int forcesram,
 	struct InitSettings *settings)
 {
-    _debug_puts("Initializing GPGX native...");
+	_debug_puts("Initializing GPGX native...");
 
 	cinterface_force_sram = forcesram;
 
@@ -526,12 +526,12 @@ GPGX_EX int gpgx_init(
 
 	ext.md_cart.rom = alloc_sealed(32 * 1024 * 1024);
 	SZHVC_add = alloc_sealed(131072);
-    SZHVC_sub = alloc_sealed(131072);
-    ym2612_lfo_pm_table = alloc_sealed(131072);
-    vdp_bp_lut = alloc_sealed(262144);
-    vdp_lut = alloc_sealed(6 * sizeof(*vdp_lut));
-    for (int i = 0; i < 6; i++)
-        vdp_lut[i] = alloc_sealed(65536);
+	SZHVC_sub = alloc_sealed(131072);
+	ym2612_lfo_pm_table = alloc_sealed(131072);
+	vdp_bp_lut = alloc_sealed(262144);
+	vdp_lut = alloc_sealed(6 * sizeof(*vdp_lut));
+	for (int i = 0; i < 6; i++)
+		vdp_lut[i] = alloc_sealed(65536);
 
 	/* sound options */
 	config.psg_preamp  = 150;
@@ -634,7 +634,7 @@ GPGX_EX void gpgx_set_draw_mask(int mask)
 
 GPGX_EX void gpgx_invalidate_pattern_cache(void)
 {
-    vdp_invalidate_full_cache();
+	vdp_invalidate_full_cache();
 }
 
 typedef struct

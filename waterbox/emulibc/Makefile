@@ -1,6 +1,6 @@
 include ../common.mak
 
-CCFLAGS := $(CCFLAGS) -Wall -O3
+CCFLAGS := $(CCFLAGS) -Wall -O3 -flto
 
 SRCS:=$(shell find $(ROOT_DIR) -type f -name '*.c')
 OBJ_DIR:=$(ROOT_DIR)/obj

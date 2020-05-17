@@ -10,7 +10,9 @@ print-%: ;
 
 .DEFAULT_GOAL := all
 
+#LD_PLUGIN := $(shell gcc --print-file-name=liblto_plugin.so)
+
 CC := $(WATERBOX_DIR)/musl/waterbox-sysroot/bin/musl-gcc
 CCFLAGS := -mabi=ms -fvisibility=hidden -I$(WATERBOX_DIR)/emulibc -fno-exceptions -Wall -mcmodel=large
-LDFLAGS := -static -Wl,-Ttext,0x0000036f00000000
+LDFLAGS := -fuse-ld=gold -static -Wl,-Ttext,0x0000036f00000000 #-Wl,--plugin,$(LD_PLUGIN)
 CXXFLAGS := ($CCFLAGS) -fno-rtti
