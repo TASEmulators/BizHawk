@@ -185,7 +185,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveBk2BackupMenuItem_Click(object sender, EventArgs e)
 		{
 			_autosaveTimer.Stop();
-			var bk2 = CurrentTasMovie.ToBk2(copy: true, backup: true);
+			var bk2 = CurrentTasMovie.ToBk2();
 			MessageStatusLabel.Text = "Exporting to .bk2...";
 			Cursor = Cursors.WaitCursor;
 			Update();
@@ -258,7 +258,7 @@ namespace BizHawk.Client.EmuHawk
 				MessageBox.Show("This core requires emulation to be on the last frame when writing the movie, otherwise movie length will appear incorrect.\nTAStudio can't handle this, so Export BK2, play it to the end, and then Save Movie.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			}
 
-			var bk2 = CurrentTasMovie.ToBk2(true, true);
+			var bk2 = CurrentTasMovie.ToBk2();
 			MessageStatusLabel.Text = "Exporting to .bk2...";
 			Cursor = Cursors.WaitCursor;
 			Update();
