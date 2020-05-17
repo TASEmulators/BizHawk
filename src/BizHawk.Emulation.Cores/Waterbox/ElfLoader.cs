@@ -5,13 +5,14 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using BizHawk.BizInvoke;
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 using ELFSharp.ELF;
 using ELFSharp.ELF.Sections;
 using ELFSharp.ELF.Segments;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
-	public class ElfLoader : IImportResolver, IDisposable
+	public class ElfLoader : IImportResolver, IDisposable, IBinaryStateable
 	{
 		private readonly ELF<ulong> _elf;
 		private readonly byte[] _elfHash;
@@ -77,8 +78,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				.ToList();
 
 			_visibleSymbols = _allSymbols
-				.Where(s => s.Binding == SymbolBinding.Global)
-				// TODO: Filter visibility https://github.com/konrad-kruczynski/elfsharp/issues/71
+				.Where(s => s.Binding == SymbolBinding.Global && s.Visibility == SymbolVisibility.Default)
 				.ToDictionary(s => s.Name);
 			
 			_importSymbols = _visibleSymbols.Values
@@ -99,6 +99,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			PrintSections();
 			PrintGdbData();
 			PrintTopSavableSymbols();
+			Protect();
 		}
 
 		private void PrintGdbData()
@@ -170,8 +171,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		// connect all of the .wbxsyscall stuff
 		public void ConnectSyscalls(IImportResolver syscalls)
 		{
-			if (_everythingSealed)
-				Memory.Protect(Memory.Start, Memory.Size, MemoryBlockBase.Protection.R);
+			Memory.Protect(Memory.Start, Memory.Size, MemoryBlockBase.Protection.RW);
 
 			var tmp = new IntPtr[1];
 
@@ -197,8 +197,15 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				}
 			}
 
-			if (_everythingSealed)
-				Protect();
+			Protect();
+		}
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		private delegate void ElfEntryDelegate();
+
+		public void RunNativeInit()
+		{
+			CallingConventionAdapters.Waterbox.GetDelegateForFunctionPointer<ElfEntryDelegate>(Z.US(_elf.EntryPoint))();
 		}
 
 		public void SealImportsAndTakeXorSnapshot()

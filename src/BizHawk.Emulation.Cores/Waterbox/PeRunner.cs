@@ -74,132 +74,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	public class PeRunner : Swappable, IImportResolver, IBinaryStateable
 	{
 		/// <summary>
-		/// serves as a standin for libpsxscl.so
-		/// </summary>
-		private class Psx
-		{
-			private readonly PeRunner _parent;
-			private readonly List<Delegate> _traps = new List<Delegate>();
-
-			public Psx(PeRunner parent)
-			{
-				_parent = parent;
-			}
-
-			[StructLayout(LayoutKind.Sequential)]
-			public struct PsxContext
-			{
-				public int Size;
-				public int Options;
-				public IntPtr SyscallVtable;
-				public IntPtr LdsoVtable;
-				public IntPtr PsxVtable;
-				public uint SysIdx;
-				public uint LibcIdx;
-				public IntPtr PthreadSurrogate;
-				public IntPtr PthreadCreate;
-				public IntPtr DoGlobalCtors;
-				public IntPtr DoGlobalDtors;
-			}
-
-			private void PopulateVtable(string moduleName, ICollection<string> entries, IntPtr table)
-			{
-				var imports = _parent._exports[moduleName];
-				var pointers = entries.Select(e =>
-				{
-					var ptr = imports.GetProcAddrOrZero(e);
-					if (ptr != IntPtr.Zero) return ptr;
-					var s = $"Trapped on unimplemented function {moduleName}:{e}";
-					Action del = () =>
-					{
-						Console.WriteLine(s);
-						throw new InvalidOperationException(s);
-					};
-					_traps.Add(del);
-					return CallingConventionAdapters.Waterbox.GetFunctionPointerForDelegate(del);
-				}).ToArray();
-				Marshal.Copy(pointers, 0, table, pointers.Length);
-			}
-
-			/// <summary>
-			/// called by the PeRunner to reset pointers after a loadsave
-			/// </summary>
-			public void ReloadVtables()
-			{
-				_traps.Clear();
-
-				PopulateVtable("__syscalls", Enumerable.Range(0, 340).Select(i => "n" + i).ToList(), _syscallVtable);
-				PopulateVtable("__syscalls", new[] // ldso
-				{
-					"dladdr", "dlinfo", "dlsym", "dlopen", "dlclose", "dlerror", "reset_tls"
-				}, _ldsoVtable);
-				PopulateVtable("__syscalls", new[] // psx
-				{
-					"start_main", "convert_thread", "unmapself", "log_output", "pthread_self"
-				}, _psxVtable);
-				/*unsafe
-                {
-                    var ptr = (IntPtr*)_psxVtable;
-                    Console.WriteLine("AWESOMES: " + ptr[0]);
-                }*/
-			}
-
-			private IntPtr _syscallVtable;
-			private IntPtr _ldsoVtable;
-			private IntPtr _psxVtable;
-
-			private IntPtr AllocVtable(int count)
-			{
-				return Z.US(_parent._invisibleheap.Allocate((ulong)(count * IntPtr.Size), 16));
-			}
-
-			[BizExport(CallingConvention.Cdecl, EntryPoint = "__psx_init")]
-			public int PsxInit(ref int argc, ref IntPtr argv, ref IntPtr envp, [In, Out]ref PsxContext context)
-			{
-				{
-					// argc = 1, argv = ["foobar, NULL], envp = [NULL]
-					argc = 1;
-					var argArea = _parent._sealedheap.Allocate(32, 16);
-					argv = Z.US(argArea);
-					envp = Z.US(argArea + (uint)IntPtr.Size * 2);
-					Marshal.WriteIntPtr(Z.US(argArea), Z.US(argArea + 24));
-					Marshal.WriteInt64(Z.US(argArea + 24), 0x7261626f6f66);
-				}
-
-				context.SyscallVtable = _syscallVtable = AllocVtable(340);
-				context.LdsoVtable = _ldsoVtable = AllocVtable(7);
-				context.PsxVtable = _psxVtable = AllocVtable(5);
-				// ctx comes from the native stack, where it could have any garbage in uninited fields
-				context.SysIdx = 0;
-				context.LibcIdx = 0;
-				context.DoGlobalCtors = IntPtr.Zero;
-				context.DoGlobalDtors = IntPtr.Zero;
-
-				ReloadVtables();
-
-				// TODO: we can't set these pointers 4 and preserve across session
-				// until we find out where they get saved to and add a way to reset them
-				/*var extraTable = CreateVtable("__syscalls", new[]
-				{
-					"pthread_surrogate", "pthread_create", "do_global_ctors", "do_global_dtors"
-				});
-				var tmp = new IntPtr[4];
-				Marshal.Copy(extraTable, tmp, 0, 4);
-				context.PthreadSurrogate = tmp[0];
-				context.PthreadCreate = tmp[1];
-				context.DoGlobalCtors = tmp[2];
-				context.DoGlobalDtors = tmp[3];*/
-
-				return 0; // success
-			}
-		}
-
-		/// <summary>
 		/// usual starting point for the executable
 		/// </summary>
 		public const ulong CanonicalStart = 0x0000036f00000000;
-
-		public const ulong AlternateStart = 0x0000036e00000000;
 
 		/// <summary>
 		/// the next place where we can put a module or heap
@@ -242,9 +119,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		internal MapHeap _mmapheap;
 
 		/// <summary>
-		/// all loaded PE files
+		/// the loaded elf file
 		/// </summary>
-		private readonly List<PeWrapper> _modules = new List<PeWrapper>();
+		private ElfLoader _module;
 
 		/// <summary>
 		/// all loaded heaps
@@ -261,14 +138,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// </summary>
 		private readonly List<IBinaryStateable> _savestateComponents = new List<IBinaryStateable>();
 
-		/// <summary>
-		/// all of the exports, including real PeWrapper ones and fake ones
-		/// </summary>
-		private readonly Dictionary<string, IImportResolver> _exports = new Dictionary<string, IImportResolver>();
+		private readonly EmuLibc _emu;
+		private readonly Syscalls _syscalls;
 
-		private Psx _psx;
-		private EmuLibc _emu;
-		private Syscalls _syscalls;
+		/// <summary>
+		/// the set of functions made available for the elf module
+		/// </summary>
+		private readonly IImportResolver _imports;
 
 		/// <summary>
 		/// timestamp of creation acts as a sort of "object id" in the savestate
@@ -295,61 +171,45 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		private delegate void LibcEntryRoutineD(IntPtr appMain, IntPtr psxInit, int options);
-
 		public PeRunner(PeRunnerOptions opt)
 		{
 			_nextStart = opt.StartAddress;
 			Initialize(_nextStart);
 			using (this.EnterExit())
 			{
-				// load any predefined exports
-				_psx = new Psx(this);
-				_exports.Add("libpsxscl.so", BizExvoker.GetExvoker(_psx, CallingConventionAdapters.Waterbox));
 				_emu = new EmuLibc(this);
-				_exports.Add("libemuhost.so", BizExvoker.GetExvoker(_emu, CallingConventionAdapters.Waterbox));
 				_syscalls = new Syscalls(this);
-				_exports.Add("__syscalls", BizExvoker.GetExvoker(_syscalls, CallingConventionAdapters.Waterbox));
 
-				// load and connect all modules, starting with the executable
-				var todoModules = new Queue<string>();
-				todoModules.Enqueue(opt.Filename);
+				_imports = new PatchImportResolver(
+					NotImplementedSyscalls.Instance,
+					BizExvoker.GetExvoker(_emu, CallingConventionAdapters.Waterbox),
+					BizExvoker.GetExvoker(_syscalls, CallingConventionAdapters.Waterbox)
+				);
 
-				while (todoModules.Count > 0)
+				if (true)
 				{
-					var moduleName = todoModules.Dequeue();
-					if (!_exports.ContainsKey(moduleName))
+					var moduleName = opt.Filename;
+
+					var path = Path.Combine(opt.Path, moduleName);
+					var gzpath = path + ".gz";
+					byte[] data;
+					if (File.Exists(gzpath))
 					{
-						var path = Path.Combine(opt.Path, moduleName);
-						var gzpath = path + ".gz";
-						byte[] data;
-						if (File.Exists(gzpath))
-						{
-							using var fs = new FileStream(gzpath, FileMode.Open, FileAccess.Read);
-							data = Util.DecompressGzipFile(fs);
-						}
-						else
-						{
-							data = File.ReadAllBytes(path);
-						}
-
-						var module = new PeWrapper(moduleName, data, _nextStart, opt.SkipCoreConsistencyCheck, opt.SkipMemoryConsistencyCheck);
-						ComputeNextStart(module.Size);
-						AddMemoryBlock(module.Memory, moduleName);
-						_savestateComponents.Add(module);
-						_disposeList.Add(module);
-
-						_exports.Add(moduleName, module);
-						_modules.Add(module);
-						foreach (var name in module.ImportsByModule.Keys)
-						{
-							todoModules.Enqueue(name);
-						}
+						using var fs = new FileStream(gzpath, FileMode.Open, FileAccess.Read);
+						data = Util.DecompressGzipFile(fs);
 					}
-				}
+					else
+					{
+						data = File.ReadAllBytes(path);
+					}
 
-				_exports["libc.so"] = new PatchImportResolver(_exports["libc.so"], BizExvoker.GetExvoker(_libcpatch, CallingConventionAdapters.Waterbox));
+					_module = new ElfLoader(moduleName, data, _nextStart, opt.SkipCoreConsistencyCheck, opt.SkipMemoryConsistencyCheck);
+
+					ComputeNextStart(_module.Memory.Size);
+					AddMemoryBlock(_module.Memory, moduleName);
+					_savestateComponents.Add(_module);
+					_disposeList.Add(_module);
+				}
 
 				ConnectAllImports();
 
@@ -377,40 +237,46 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					System.Diagnostics.Debugger.Break();
 				}
 
-				// run unmanaged init code
-				var libcEnter = _exports["libc.so"].GetProcAddrOrThrow("__libc_entry_routine");
-				var psxInit = _exports["libpsxscl.so"].GetProcAddrOrThrow("__psx_init");
-
-				var del = (LibcEntryRoutineD)CallingConventionAdapters.Waterbox.GetDelegateForFunctionPointer(libcEnter, typeof(LibcEntryRoutineD));
-				// the current mmglue code doesn't use the main pointer at all, and this just returns
-				del(IntPtr.Zero, psxInit, 0);
-
-				foreach (var m in _modules)
-				{
-					m.RunGlobalCtors();
-				}
-
-				/*try
-				{
-					_modules[0].RunExeEntry();
-					//throw new InvalidOperationException("main() returned!");
-				}
-				catch //(EndOfMainException)
-				{
-				}
-				_modules[0].RunGlobalCtors();
-				foreach (var m in _modules.Skip(1))
-				{
-					if (!m.RunDllEntry())
-						throw new InvalidOperationException("DllMain() returned false");
-					m.RunGlobalCtors();
-				}*/
+				_module.RunNativeInit();
 			}
 		}
 
-		public IntPtr GetProcAddrOrZero(string entryPoint) => _modules[0].GetProcAddrOrZero(entryPoint); // _modules[0] is always the main module
+		public IntPtr GetProcAddrOrZero(string entryPoint)
+		{
+			var addr = _module.GetProcAddrOrZero(entryPoint);
+			if (addr != IntPtr.Zero)
+			{
+				var exclude = _imports.GetProcAddrOrZero(entryPoint);
+				if (exclude != IntPtr.Zero)
+				{
+					// don't reexport anything that's part of waterbox internals
+					return IntPtr.Zero;
+				}	
+			}
+			return addr;
+		}
 
-		public IntPtr GetProcAddrOrThrow(string entryPoint) => _modules[0].GetProcAddrOrThrow(entryPoint);
+		public IntPtr GetProcAddrOrThrow(string entryPoint)
+		{
+			var addr = _module.GetProcAddrOrZero(entryPoint);
+			if (addr != IntPtr.Zero)
+			{
+				var exclude = _imports.GetProcAddrOrZero(entryPoint);
+				if (exclude != IntPtr.Zero)
+				{
+					// don't reexport anything that's part of waterbox internals
+					throw new InvalidOperationException($"Tried to resolve {entryPoint}, but it should not be exported");
+				}
+				else
+				{
+					return addr;
+				}
+			}
+			else
+			{
+				throw new InvalidOperationException($"{entryPoint} was not exported from elf");
+			}
+		}
 
 		public void Seal()
 		{
@@ -422,10 +288,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				// but it breaks xor state verification, so when we seal, nuke it.
 
 				// this could be the responsibility of something else other than the PeRunner; I am not sure yet...
-				if (_exports.TryGetValue("libco.so", out var libco))
+
+				// TODO: MAKE SURE THIS STILL WORKS
+				IntPtr co_clean;
+				if ((co_clean = _module.GetProcAddrOrZero("co_clean")) != IntPtr.Zero)
 				{
 					Console.WriteLine("Calling co_clean()...");
-					CallingConventionAdapters.Waterbox.GetDelegateForFunctionPointer<Action>(libco.GetProcAddrOrThrow("co_clean"))();
+					CallingConventionAdapters.Waterbox.GetDelegateForFunctionPointer<Action>(co_clean)();
 				}
 
 				_sealedheap.Seal();
@@ -434,24 +303,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					if (h != _invisibleheap && h != _sealedheap) // TODO: if we have more non-savestated heaps, refine this hack
 						h.Memory.SaveXorSnapshot();
 				}
-				foreach (var pe in _modules)
-				{
-					pe.SealImportsAndTakeXorSnapshot();
-				}
-
+				_module.SealImportsAndTakeXorSnapshot();
 				_mmapheap?.Memory.SaveXorSnapshot();
 			}
 		}
 
 		private void ConnectAllImports()
 		{
-			foreach (var module in _modules)
-			{
-				foreach (var name in module.ImportsByModule.Keys)
-				{
-					module.ConnectImports(name, _exports[name]);
-				}
-			}
+			_module.ConnectSyscalls(_imports);
 		}
 
 		/// <summary>
@@ -521,7 +380,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					// Exvoker imports need to be reconnected
 					Console.WriteLine($"Restoring {nameof(PeRunner)} state from a different core...");
 					ConnectAllImports();
-					_psx.ReloadVtables();
 				}
 			}
 		}
@@ -535,8 +393,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					d.Dispose();
 				_disposeList.Clear();
 				PurgeMemoryBlocks();
-				_modules.Clear();
-				_exports.Clear();
+				_module = null;
 				_heap = null;
 				_sealedheap = null;
 				_invisibleheap = null;

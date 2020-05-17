@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using BizHawk.BizInvoke;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Waterbox
@@ -522,5 +524,61 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			return RemoveFileInternal<TransientFile>(name).GetContents();
 		}
+	}
+
+	/// <summary>
+	/// Provides useful traps for any syscalls that are not implemented by libc
+	/// </summary>
+	internal class NotImplementedSyscalls : IImportResolver
+	{
+		private class Trap
+		{
+			private readonly int _index;
+			private readonly IImportResolver _resolver;
+			public Trap(int index)
+			{
+				_index = index;
+				_resolver = BizExvoker.GetExvoker(this, CallingConventionAdapters.Waterbox);
+			}
+			[BizExport(CallingConvention.Cdecl, EntryPoint="@@")]
+			public void RunTrap()
+			{
+				var s = $"Trapped on unimplemented syscall {_index}";
+				Console.WriteLine(s);
+				throw new InvalidOperationException(s);
+			}
+			public IntPtr FunctionPointer => _resolver.GetProcAddrOrThrow("@@");
+		}
+		private readonly List<Trap> _traps;
+		private NotImplementedSyscalls()
+		{
+			_traps = Enumerable.Range(0, 512)
+				.Select(i => new Trap(i))
+				.ToList();
+		}
+
+		private static readonly Regex ExportRegex = new Regex("__wsyscalltab[(\\d+)]");
+
+		public IntPtr GetProcAddrOrZero(string entryPoint)
+		{
+			var m = ExportRegex.Match(entryPoint);
+			if (m.Success)
+			{
+				return _traps[int.Parse(m.Groups[1].Value)].FunctionPointer;
+			}
+			return IntPtr.Zero;
+		}
+
+		public IntPtr GetProcAddrOrThrow(string entryPoint)
+		{
+			var m = ExportRegex.Match(entryPoint);
+			if (m.Success)
+			{
+				return _traps[int.Parse(m.Groups[1].Value)].FunctionPointer;
+			}
+			throw new InvalidOperationException($"{entryPoint} was not of the format __wsyscalltab[#]");
+		}
+
+		public static NotImplementedSyscalls Instance { get; } = new NotImplementedSyscalls();
 	}
 }
