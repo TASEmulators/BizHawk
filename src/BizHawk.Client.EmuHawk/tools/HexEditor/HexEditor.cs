@@ -571,7 +571,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			Dictionary<long, long> dict = new Dictionary<long, long>();
+			var dict = new Dictionary<long, long>();
 			var range = new MutableRange<long>(addresses[0], addresses[0] + addresses.Count - 1);
 
 			switch (DataSize)
@@ -610,13 +610,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			return dict;
-		}
-
-		private byte MakeByte(long address)
-		{
-			return Global.CheatList.IsActive(_domain, address)
-				? Global.CheatList.GetByteValue(_domain, address).Value
-				: _domain.PeekByte(address); 
 		}
 
 		private int MakeValue(int dataSize, long address)
