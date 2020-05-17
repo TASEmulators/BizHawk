@@ -11,6 +11,6 @@ print-%: ;
 .DEFAULT_GOAL := all
 
 CC := $(WATERBOX_DIR)/musl/waterbox-sysroot/bin/musl-gcc
-CCFLAGS := -mabi=ms -fPIE -fvisibility=hidden -I$(WATERBOX_DIR)/emulibc -fno-exceptions -Wall -mcmodel=large
-LDFLAGS := -static
+CCFLAGS := -mabi=ms -fvisibility=hidden -I$(WATERBOX_DIR)/emulibc -fno-exceptions -Wall -mcmodel=large
+LDFLAGS := -static -Wl,-Ttext,0x0000036f00000000
 CXXFLAGS := ($CCFLAGS) -fno-rtti
