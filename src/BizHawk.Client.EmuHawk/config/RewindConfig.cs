@@ -175,7 +175,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (TriggerRewindSettingsReload)
 			{
-				_rewinder.Initialize();
+				_rewinder.Initialize(_statableCore, _config.Rewind);
 			}
 
 			// These settings are not used by DoRewindSettings

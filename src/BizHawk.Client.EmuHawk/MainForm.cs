@@ -3775,7 +3775,10 @@ namespace BizHawk.Client.EmuHawk
 					OnRomChanged();
 					DisplayManager.Blank();
 
-					Rewinder.Initialize();
+					if (Emulator.HasSavestates())
+					{
+						Rewinder.Initialize(Emulator.AsStatable(), Config.Rewind);
+					}
 
 					Global.InputManager.StickyXorAdapter.ClearStickies();
 					Global.InputManager.StickyXorAdapter.ClearStickyAxes();
@@ -4313,7 +4316,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (!suppressCaptureRewind && Rewinder.RewindActive)
 			{
-				Rewinder.Capture();
+				Rewinder.Capture(Emulator.Frame);
 			}
 		}
 
