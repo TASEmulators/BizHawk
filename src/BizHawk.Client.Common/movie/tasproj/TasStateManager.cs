@@ -25,13 +25,12 @@ namespace BizHawk.Client.Common
 		private readonly ITasMovie _movie;
 
 		private readonly SortedList<int, byte[]> _states;
-		private readonly ulong _expectedStateSize;
+		private readonly double _expectedStateSizeInMb;
 
 		private ulong _used;
 		private int _stateFrequency;
 		
-		private int MaxStates => (int)(Settings.Cap / _expectedStateSize) +
-			(int)((ulong)Settings.DiskCapacityMb * 1024 * 1024 / _expectedStateSize);
+		private int MaxStates => (int)(Settings.CapacityMb / _expectedStateSizeInMb + 1);
 		private int FileStateGap => 1 << Settings.FileStateGap;
 
 		/// <exception cref="InvalidOperationException">loaded core expects savestate size of <c>0 B</c></exception>
@@ -47,8 +46,8 @@ namespace BizHawk.Client.Common
 
 			_decay = new StateManagerDecay(_movie, this);
 
-			_expectedStateSize = (ulong)Core.CloneSavestate().Length; // TODO: why do we store this in a ulong?
-			if (_expectedStateSize == 0)
+			_expectedStateSizeInMb = Core.CloneSavestate().Length / (double)(1024 * 1024);
+			if (_expectedStateSizeInMb.HawkFloatEquality(0))
 			{
 				throw new InvalidOperationException("Savestate size can not be zero!");
 			}
@@ -103,7 +102,7 @@ namespace BizHawk.Client.Common
 
 		public void UpdateStateFrequency()
 		{
-			_stateFrequency = ((int)_expectedStateSize / Settings.MemStateGapDivider / 1024)
+			_stateFrequency = ((int)_expectedStateSizeInMb / Settings.MemStateGapDivider / 1024)
 				.Clamp(MinFrequency, MaxFrequency);
 
 			_decay.UpdateSettings(MaxStates, _stateFrequency, 4);
