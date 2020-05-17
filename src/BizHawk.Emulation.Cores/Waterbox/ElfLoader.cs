@@ -105,11 +105,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private void PrintGdbData()
 		{
 			Console.WriteLine("GDB Symbol Load:");
-			var symload = $"add-sym {ModuleName} {_sectionsByName[".text"].LoadAddress}";
-			if (_sectionsByName.ContainsKey(".data"))
-				symload += $" -s .data {_sectionsByName[".data"].LoadAddress}";
-			if (_sectionsByName.ContainsKey(".bss"))
-				symload += $" -s .bss {_sectionsByName[".bss"].LoadAddress}";
+			Console.WriteLine($"  add-sym {ModuleName}");
 		}
 
 		private void PrintSections()
