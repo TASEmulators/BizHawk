@@ -432,7 +432,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 				var start = heap.Memory.Start;
 				var end = start + heap.Used;
-				var max = heap.Memory.End;
+				var max = heap.Memory.EndExclusive;
 
 				var p = (ulong)_p;
 

@@ -17,15 +17,15 @@ namespace BizHawk.BizInvoke
 				throw new ArgumentOutOfRangeException(nameof(size), size, "cannot create 0-length block");
 			Start = start;
 			Size = WaterboxUtils.AlignUp(size);
-			End = Start + Size;
-			_pageData = new Protection[GetPage(End - 1) + 1];
+			EndExclusive = Start + Size;
+			_pageData = new Protection[GetPage(EndExclusive - 1) + 1];
 		}
 
 		/// <summary>stores last set memory protection value for each page</summary>
 		protected readonly Protection[] _pageData;
 
-		/// <summary>ending address of the memory block; equal to <see cref="Start"/> + <see cref="Size"/></summary>
-		public readonly ulong End;
+		/// <summary>end address of the memory block (not part of the block; class invariant: equal to <see cref="Start"/> + <see cref="Size"/>)</summary>
+		public readonly ulong EndExclusive;
 
 		/// <summary>total size of the memory block</summary>
 		public readonly ulong Size;
@@ -44,7 +44,7 @@ namespace BizHawk.BizInvoke
 		/// <summary>get a page index within the block</summary>
 		protected int GetPage(ulong addr)
 		{
-			if (addr < Start || End <= addr) throw new ArgumentOutOfRangeException();
+			if (addr < Start || EndExclusive <= addr) throw new ArgumentOutOfRangeException(nameof(addr), addr, "invalid address");
 			return (int) ((addr - Start) >> WaterboxUtils.PageShift);
 		}
 
@@ -52,23 +52,23 @@ namespace BizHawk.BizInvoke
 		protected ulong GetStartAddr(int page) => ((ulong) page << WaterboxUtils.PageShift) + Start;
 
 		/// <summary>Get a stream that can be used to read or write from part of the block. Does not check for or change <see cref="Protect"/>!</summary>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="start"/> or end (= <paramref name="start"/> + <paramref name="length"/>) are outside <see cref="AddressRange"/></exception>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="start"/> or end (= <paramref name="start"/> + <paramref name="length"/> - <c>1</c>) are outside [<see cref="Start"/>, <see cref="EndExclusive"/>), the range of the block</exception>
 		public Stream GetStream(ulong start, ulong length, bool writer)
 		{
 			if (start < Start)
-				throw new ArgumentOutOfRangeException(nameof(start));
-			if (End < start + length)
-				throw new ArgumentOutOfRangeException(nameof(length));
+				throw new ArgumentOutOfRangeException(nameof(start), start, "invalid address");
+			if (EndExclusive < start + length)
+				throw new ArgumentOutOfRangeException(nameof(length), length, "requested length implies invalid end address");
 			return new MemoryViewStream(!writer, writer, (long) start, (long) length, this);
 		}
 
 		/// <summary>get a stream that can be used to read or write from part of the block. both reads and writes will be XORed against an earlier recorded snapshot</summary>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="start"/> or end (= <paramref name="start"/> + <paramref name="length"/>) are outside bounds of memory block (<see cref="Start"/> and <see cref="End"/>)</exception>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="start"/> or end (= <paramref name="start"/> + <paramref name="length"/> - <c>1</c>) are outside [<see cref="Start"/>, <see cref="EndExclusive"/>), the range of the block</exception>
 		/// <exception cref="InvalidOperationException">no snapshot taken (haven't called <see cref="SaveXorSnapshot"/>)</exception>
 		public Stream GetXorStream(ulong start, ulong length, bool writer)
 		{
-			if (start < Start) throw new ArgumentOutOfRangeException(nameof(start));
-			if (End < start + length) throw new ArgumentOutOfRangeException(nameof(length));
+			if (start < Start) throw new ArgumentOutOfRangeException(nameof(start), start, "invalid address");
+			if (EndExclusive < start + length) throw new ArgumentOutOfRangeException(nameof(length), length, "requested length implies invalid end address");
 			if (_snapshot == null) throw new InvalidOperationException("No snapshot taken!");
 			return new MemoryViewXorStream(!writer, writer, (long) start, (long) length, this, _snapshot, (long) (start - Start));
 		}
