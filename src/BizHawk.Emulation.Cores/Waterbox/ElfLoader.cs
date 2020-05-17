@@ -81,9 +81,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				.Where(s => s.Binding == SymbolBinding.Global && s.Visibility == SymbolVisibility.Default)
 				.ToDictionary(s => s.Name);
 
-			// Can't seem to force global binding on some of the wbx symbols sometimes
 			_importSymbols = _allSymbols
-				.Where(s => s.Visibility == SymbolVisibility.Default && s.PointedSection == _imports)
+				// TODO: No matter what attributes I provide, I seem to end up with Local and/or Hidden symbols in
+				// .wbxsyscall a lot of the time on heavily optimized release builds.
+				// Fortunately, there's nothing else in .wbxsyscall so we can just not filter at all.
+				.Where(s => s.PointedSection == _imports)
 				.ToList();
 
 
