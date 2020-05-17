@@ -319,7 +319,7 @@ namespace BizHawk.Client.EmuHawk
 
 			Global.InputManager.ActiveController = new Controller(NullController.Instance.Definition);
 			Global.InputManager.AutoFireController = _autofireNullControls;
-			Global.InputManager.AutofireStickyXorAdapter.SetOnOffPatternFromConfig();
+			Global.InputManager.AutofireStickyXorAdapter.SetOnOffPatternFromConfig(Config.AutofireOn, Config.AutofireOff);
 			try
 			{
 				GlobalWin.Sound = new Sound(Handle);

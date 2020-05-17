@@ -57,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 			_autoFireController.On = _config.AutofireOn = (int)nudPatternOn.Value;
 			_autoFireController.Off = _config.AutofireOff = (int)nudPatternOff.Value;
 			_config.AutofireLagFrames = cbConsiderLag.Checked;
-			_stickyXorAdapter.SetOnOffPatternFromConfig();
+			_stickyXorAdapter.SetOnOffPatternFromConfig(_config.AutofireOn, _config.AutofireOff);
 
 			Close();
 		}
