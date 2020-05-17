@@ -200,10 +200,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			GlobalWin.MainForm = this;
-			Rewinder = new Rewinder
-			{
-				MessageCallback = AddOnScreenMessage
-			};
+			Rewinder = new Rewinder();
 
 			Global.InputManager.ControllerInputCoalescer = new ControllerInputCoalescer();
 			Global.FirmwareManager = new FirmwareManager();

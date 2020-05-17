@@ -19,8 +19,6 @@ namespace BizHawk.Client.Common
 		private bool _lastRewindLoadedState;
 		private byte[] _deltaBuffer = new byte[0];
 
-		public Action<string> MessageCallback { get; set; }
-
 		public bool RewindActive => RewindEnabled && !SuspendRewind;
 
 		private bool RewindEnabled { get; set; }
@@ -60,10 +58,6 @@ namespace BizHawk.Client.Common
 				RewindEnabled = rewindConfig.EnabledSmall;
 				RewindFrequency = rewindConfig.FrequencySmall;
 			}
-
-			MessageCallback?.Invoke(RewindEnabled ?
-				$"Rewind enabled, frequency: {RewindFrequency}" :
-				"Rewind disabled");
 
 			_rewindDeltaEnable = rewindConfig.UseDelta;
 
