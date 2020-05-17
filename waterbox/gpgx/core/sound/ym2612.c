@@ -129,6 +129,7 @@
 /************************************************************************/
 
 #include "shared.h"
+#include <emulibc.h>
 
 /* envelope generator */
 #define ENV_BITS    10
@@ -164,7 +165,7 @@
 *   TL_RES_LEN - sinus resolution (X axis)
 */
 #define TL_TAB_LEN (13*2*TL_RES_LEN)
-static signed int tl_tab[TL_TAB_LEN];
+ECL_SEALED static signed int tl_tab[TL_TAB_LEN];
 
 #define ENV_QUIET    (TL_TAB_LEN>>3)
 

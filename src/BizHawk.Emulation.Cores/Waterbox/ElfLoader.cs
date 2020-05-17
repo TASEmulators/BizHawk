@@ -113,11 +113,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			Console.WriteLine($"Mounted `{ModuleName}` @{Memory.Start:x16}");
 			foreach (var s in _elf.Sections.OrderBy(s => s.LoadAddress))
 			{
-				Console.WriteLine("  @{0:x16} {1}{2}{3} `{4}` {5} bytes",
+				Console.WriteLine("  @{0:x16} {1}{2}{3}{4} `{5}` {6} bytes",
 					s.LoadAddress,
 					(s.Flags & SectionFlags.Allocatable) != 0 ? "R" : " ",
 					(s.Flags & SectionFlags.Writable) != 0 ? "W" : " ",
 					(s.Flags & SectionFlags.Executable) != 0 ? "X" : " ",
+					_savedSections.Contains(s) ? "V" : " ",
 					s.Name,
 					s.Size);
 			}
@@ -127,10 +128,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			Console.WriteLine("Top savestate symbols:");
 			var tops = _allSymbols
-				.Where(s => s.PointedSection != null && (s.PointedSection.Flags & SectionFlags.Writable) != 0)
+				.Where(s => _savedSections.Contains(s.PointedSection))
 				.OrderByDescending(s => s.Size)
+				.Where(s => s.Size >= 20 * 1024)
 				.Take(30)
-				.Select(s => $"  {s.Name} size {s.Size}");
+				.Select(s => $"  {s.Name} {s.Size / 1024}kiB");
 
 			foreach (var text in tops)
 			{
@@ -155,8 +157,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private void Protect()
 		{
 			Memory.Protect(Memory.Start, Memory.Size, MemoryBlockBase.Protection.R);
-			foreach (var sec in _elf.Sections.Where(s => (s.Flags & SectionFlags.Allocatable) != 0 && !IsSpecialReadonlySection(s)))
+			foreach (var sec in _elf.Sections.Where(s => (s.Flags & SectionFlags.Allocatable) != 0))
 			{
+				if (_everythingSealed && IsSpecialReadonlySection(sec))
+					continue;
+
 				if ((sec.Flags & SectionFlags.Executable) != 0)
 					Memory.Protect(sec.LoadAddress, sec.Size, MemoryBlockBase.Protection.RX);
 				else if ((sec.Flags & SectionFlags.Writable) != 0)
@@ -239,8 +244,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				Marshal.Copy(invData, 0, Z.US(_invisible.LoadAddress), (int)_invisible.Size);
 			}
 
-			Protect();
 			_everythingSealed = true;
+			Protect();
 		}
 
 		private bool _disposed = false;
