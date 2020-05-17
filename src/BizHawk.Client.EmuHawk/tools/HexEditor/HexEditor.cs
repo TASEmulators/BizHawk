@@ -561,7 +561,7 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				}
 
-				for (var j = 0; j < 16; j += DataSize)
+				for (var j = 0; j < 16; j += dataSize)
 				{
 					if (_addr + j + dataSize <= _domain.Size)
 					{
