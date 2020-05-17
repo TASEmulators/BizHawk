@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 				SystemId = sgb ? "SGB" : "GB"
 			})
 		{
-			_core = PreInit<LibSameboy>(new PeRunnerOptions
+			_core = PreInit<LibSameboy>(new WaterboxOptions
 			{
 				Filename = "sameboy.wbx",
 				SbrkHeapSizeKB = 192,

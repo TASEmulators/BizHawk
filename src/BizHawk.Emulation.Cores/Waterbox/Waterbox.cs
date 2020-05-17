@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
-	public class PeRunnerOptions
+	public class WaterboxOptions
 	{
 		// string directory, string filename, ulong heapsize, ulong sealedheapsize, ulong invisibleheapsize
 		/// <summary>
@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// <summary>
 		/// start address in memory
 		/// </summary>
-		public ulong StartAddress { get; set; } = PeRunner.CanonicalStart;
+		public ulong StartAddress { get; set; } = Waterbox.CanonicalStart;
 
 		/// <summary>
 		/// Skips the check that the wbx file and other associated dlls match from state save to state load.
@@ -71,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public bool SkipMemoryConsistencyCheck { get; set; } = false;
 	}
 
-	public class PeRunner : Swappable, IImportResolver, IBinaryStateable
+	public class Waterbox : Swappable, IImportResolver, IBinaryStateable
 	{
 		/// <summary>
 		/// usual starting point for the executable
@@ -171,7 +171,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		public PeRunner(PeRunnerOptions opt)
+		public Waterbox(WaterboxOptions opt)
 		{
 			_nextStart = opt.StartAddress;
 			Initialize(_nextStart);
@@ -378,7 +378,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				{
 					// if a different runtime instance than this one saved the state,
 					// Exvoker imports need to be reconnected
-					Console.WriteLine($"Restoring {nameof(PeRunner)} state from a different core...");
+					Console.WriteLine($"Restoring {nameof(Waterbox)} state from a different core...");
 					ConnectAllImports();
 				}
 			}

@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 			_settings = settings ?? new Settings();
 			_syncSettings = syncSettings ?? new SyncSettings();
 
-			_boyee = PreInit<LibVirtualBoyee>(new PeRunnerOptions
+			_boyee = PreInit<LibVirtualBoyee>(new WaterboxOptions
 			{
 				Filename = "vb.wbx",
 				SbrkHeapSizeKB = 256,

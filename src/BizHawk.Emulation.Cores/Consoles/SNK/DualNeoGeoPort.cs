@@ -28,9 +28,10 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 		[CoreConstructor("DNGP")]
 		public DualNeoGeoPort(CoreComm comm, byte[] rom, bool deterministic)
 		{
+			// this will throw on construct:  we need to compile two different copies of ngp at different starts
 			CoreComm = comm;
-			_left = new NeoGeoPort(comm, rom, new NeoGeoPort.SyncSettings { Language = LibNeoGeoPort.Language.English }, deterministic, PeRunner.CanonicalStart);
-			_right = new NeoGeoPort(comm, rom, new NeoGeoPort.SyncSettings { Language = LibNeoGeoPort.Language.English }, deterministic, PeRunner.AlternateStart);
+			_left = new NeoGeoPort(comm, rom, new NeoGeoPort.SyncSettings { Language = LibNeoGeoPort.Language.English }, deterministic, Waterbox.Waterbox.CanonicalStart);
+			_right = new NeoGeoPort(comm, rom, new NeoGeoPort.SyncSettings { Language = LibNeoGeoPort.Language.English }, deterministic, Waterbox.Waterbox.CanonicalStart);
 			_linkCable = new LinkCable();
 			_leftEnd = new LinkInterop(_left, _linkCable.LeftIn, _linkCable.LeftOut);
 			_rightEnd = new LinkInterop(_right, _linkCable.RightIn, _linkCable.RightOut);

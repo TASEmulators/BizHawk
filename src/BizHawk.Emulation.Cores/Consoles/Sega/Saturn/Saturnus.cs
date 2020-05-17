@@ -85,7 +85,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 				throw new InvalidOperationException("Some disks are not valid");
 			InitCallbacks();
 
-			_core = PreInit<LibSaturnus>(new PeRunnerOptions
+			_core = PreInit<LibSaturnus>(new WaterboxOptions
 			{
 				Filename = "ss.wbx",
 				SbrkHeapSizeKB = 128,
