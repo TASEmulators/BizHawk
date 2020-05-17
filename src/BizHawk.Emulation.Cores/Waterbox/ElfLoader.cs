@@ -80,9 +80,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			_visibleSymbols = _allSymbols
 				.Where(s => s.Binding == SymbolBinding.Global && s.Visibility == SymbolVisibility.Default)
 				.ToDictionary(s => s.Name);
-			
-			_importSymbols = _visibleSymbols.Values
-				.Where(s => s.PointedSection == _imports)
+
+			// Can't seem to force global binding on some of the wbx symbols sometimes
+			_importSymbols = _allSymbols
+				.Where(s => s.Visibility == SymbolVisibility.Default && s.PointedSection == _imports)
 				.ToList();
 
 
