@@ -300,7 +300,7 @@ namespace BizHawk.Client.Common
 				// each one records how to get back to the previous state, once we've gone back to
 				// the second item, it's already resulted in the first state being loaded. The
 				// first item is just a junk entry with the initial value of _lastState (0 bytes).
-				if (_rewindBuffer.Count <= 1 || (Global.MovieSession.Movie.IsActive() && Global.MovieSession.Movie.InputLogLength == 0))
+				if (_rewindBuffer.Count <= 1)
 				{
 					break;
 				}
