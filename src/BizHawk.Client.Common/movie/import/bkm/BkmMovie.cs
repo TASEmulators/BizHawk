@@ -9,14 +9,9 @@ namespace BizHawk.Client.Common
 		private readonly List<string> _log = new List<string>();
 		private int? _loopOffset;
 
-		public BkmMovie()
-		{
-			Header = new BkmHeader { [HeaderKeys.MovieVersion] = "BizHawk v0.0.1" };
-		}
-
 		public string PreferredExtension => "bkm";
 
-		public BkmHeader Header { get; }
+		public BkmHeader Header { get; } = new BkmHeader();
 		public string Filename { get; set; } = "";
 		public bool Loaded { get; private set; }
 		
