@@ -38,12 +38,12 @@ namespace BizHawk.Client.Common
 		void InsertInput(int frame, IEnumerable<string> inputLog);
 		void InsertInput(int frame, IEnumerable<IController> inputStates);
 
-		void InsertEmptyFrame(int frame, int count = 1, bool fromHistory = false);
+		void InsertEmptyFrame(int frame, int count = 1);
 		int CopyOverInput(int frame, IEnumerable<IController> inputStates);
 
 		void RemoveFrame(int frame);
 		void RemoveFrames(ICollection<int> frames);
-		void RemoveFrames(int removeStart, int removeUpTo, bool fromHistory = false);
+		void RemoveFrames(int removeStart, int removeUpTo);
 		void SetFrame(int frame, string source);
 
 		void LoadBranch(TasBranch branch);

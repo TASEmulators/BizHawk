@@ -85,206 +85,112 @@ namespace BizHawk.Client.Common
 			ChangeLog.SetGeneralRedo();
 		}
 
-		public void RemoveFrame(int frame)
+		private void ShiftBindedMarkers(int frame, int offset)
 		{
-			bool endBatch = ChangeLog.BeginNewBatch($"Remove Frame: {frame}", true);
-			ChangeLog.AddGeneralUndo(frame, InputLogLength - 1);
-
-			Log.RemoveAt(frame);
 			if (BindMarkersToInput)
 			{
-				bool wasRecording = ChangeLog.IsRecording;
-				ChangeLog.IsRecording = false;
-				int firstIndex = Markers.FindIndex(m => m.Frame >= frame);
-				if (firstIndex != -1)
-				{
-					for (int i = firstIndex; i < Markers.Count; i++)
-					{
-						var m = Markers[i];
-						if (m.Frame == frame)
-						{
-							Markers.Remove(m);
-						}
-						else
-						{
-							Markers.Move(m.Frame, m.Frame - 1);
-						}
-					}
-				}
-
-				ChangeLog.IsRecording = wasRecording;
+				Markers.ShiftAt(frame, offset);
 			}
+		}
 
-			Changes = true;
-			InvalidateAfter(frame);
-
-			ChangeLog.SetGeneralRedo();
-			if (endBatch)
-			{
-				ChangeLog.EndBatch();
-			}
+		public void RemoveFrame(int frame)
+		{
+			RemoveFrames(frame, frame + 1);
 		}
 
 		public void RemoveFrames(ICollection<int> frames)
 		{
 			if (frames.Any())
 			{
-				var invalidateAfter = frames.Min();
-
-				bool endBatch = ChangeLog.BeginNewBatch("Remove Multiple Frames", true);
-				ChangeLog.AddGeneralUndo(invalidateAfter, InputLogLength - 1);
-
-				foreach (var frame in frames.OrderByDescending(f => f)) // Removing them in reverse order allows us to remove by index;
+				// Separate the given frames into contiguous blocks
+				// and process each block independently
+				List<int> framesToDelete = frames.OrderBy(f => f).ToList();
+				// f is the current index for framesToDelete
+				int startFrame, prevFrame, frame;
+				int f = 0;
+				int numDeleted = 0;
+				while (numDeleted != framesToDelete.Count)
 				{
-					if (frame < Log.Count)
+					prevFrame = startFrame = framesToDelete[f];
+					f++;
+					for (; f < framesToDelete.Count; f++)
 					{
-						Log.RemoveAt(frame);
-					}
-
-					if (BindMarkersToInput) // TODO: This is slow, is there a better way to do it?
-					{
-						bool wasRecording = ChangeLog.IsRecording;
-						ChangeLog.IsRecording = false;
-						int firstIndex = Markers.FindIndex(m => m.Frame >= frame);
-						if (firstIndex != -1)
+						frame = framesToDelete[f];
+						if (frame - 1 != prevFrame)
 						{
-							for (int i = firstIndex; i < Markers.Count; i++)
-							{
-								TasMovieMarker m = Markers[i];
-								if (m.Frame == frame)
-								{
-									Markers.Remove(m);
-								}
-								else
-								{
-									Markers.Move(m.Frame, m.Frame - 1);
-								}
-							}
+							f--;
+							break;
 						}
-
-						ChangeLog.IsRecording = wasRecording;
+						prevFrame = frame;
 					}
-				}
-
-				Changes = true;
-				InvalidateAfter(invalidateAfter);
-
-				ChangeLog.SetGeneralRedo();
-				if (endBatch)
-				{
-					ChangeLog.EndBatch();
+					// Each block is logged as an individual ChangeLog entry
+					RemoveFrames(startFrame - numDeleted, prevFrame + 1 - numDeleted);
+					numDeleted += prevFrame + 1 - startFrame;
 				}
 			}
 		}
 
-		public void RemoveFrames(int removeStart, int removeUpTo, bool fromHistory = false)
+		/// <summary>
+		/// Remove all frames between removeStart and removeUpTo (excluding removeUpTo).
+		/// </summary>
+		/// <param name="removeStart">The first frame to remove.</param>
+		/// <param name="removeUpTo">The frame after the last frame to remove.</param>
+		public void RemoveFrames(int removeStart, int removeUpTo)
 		{
-			bool endBatch = ChangeLog.BeginNewBatch($"Remove Frames: {removeStart}-{removeUpTo}", true);
-			ChangeLog.AddGeneralUndo(removeStart, InputLogLength - 1);
+			// Log.GetRange() might be preferrable, but Log's type complicates that.
+			string[] removedInputs = new string[removeUpTo - removeStart];
+			Log.CopyTo(removeStart, removedInputs, 0, removedInputs.Length);
 
-			for (int i = removeUpTo - 1; i >= removeStart; i--)
-			{
-				Log.RemoveAt(i);
-			}
-
+			// Pre-process removed markers for the ChangeLog.
+			List<TasMovieMarker> removedMarkers = new List<TasMovieMarker>();
 			if (BindMarkersToInput)
 			{
 				bool wasRecording = ChangeLog.IsRecording;
 				ChangeLog.IsRecording = false;
-				int firstIndex = Markers.FindIndex(m => m.Frame >= removeStart);
-				if (firstIndex != -1)
+
+				// O(n^2) removal time, but removing many binded markers in a deleted section is probably rare.
+				removedMarkers = Markers.Where(m => m.Frame >= removeStart && m.Frame < removeUpTo).ToList();
+				foreach (var marker in removedMarkers)
 				{
-					for (int i = firstIndex; i < Markers.Count; i++)
-					{
-						TasMovieMarker m = Markers[i];
-						if (m.Frame < removeUpTo)
-						{
-							Markers.Remove(m);
-						}
-						else
-						{
-							Markers.Move(m.Frame, m.Frame - (removeUpTo - removeStart), fromHistory);
-						}
-					}
+					Markers.Remove(marker);
 				}
 
 				ChangeLog.IsRecording = wasRecording;
 			}
+
+			Log.RemoveRange(removeStart, removeUpTo - removeStart);
+
+			ShiftBindedMarkers(removeUpTo, removeStart - removeUpTo);
 
 			Changes = true;
 			InvalidateAfter(removeStart);
 
-			ChangeLog.SetGeneralRedo();
-			if (endBatch)
-			{
-				ChangeLog.EndBatch();
-			}
+			ChangeLog.AddRemoveFrames(
+				removeStart,
+				removeUpTo,
+				removedInputs.ToList(),
+				removedMarkers,
+				$"Remove frames {removeStart}-{removeUpTo - 1}"
+			);
 		}
 
 		public void InsertInput(int frame, string inputState)
 		{
-			bool endBatch = ChangeLog.BeginNewBatch($"Insert Frame: {frame}", true);
-			ChangeLog.AddGeneralUndo(frame, InputLogLength);
-
-			Log.Insert(frame, inputState);
-			Changes = true;
-			InvalidateAfter(frame);
-
-			if (BindMarkersToInput)
-			{
-				bool wasRecording = ChangeLog.IsRecording;
-				ChangeLog.IsRecording = false;
-				int firstIndex = Markers.FindIndex(m => m.Frame >= frame);
-				if (firstIndex != -1)
-				{
-					for (int i = firstIndex; i < Markers.Count; i++)
-					{
-						TasMovieMarker m = Markers[i];
-						Markers.Move(m.Frame, m.Frame + 1);
-					}
-				}
-
-				ChangeLog.IsRecording = wasRecording;
-			}
-
-			ChangeLog.SetGeneralRedo();
-			if (endBatch)
-			{
-				ChangeLog.EndBatch();
-			}
+			var inputLog = new List<string>();
+			inputLog.Add(inputState);
+			InsertInput(frame, inputLog); // ChangeLog handled within
 		}
 
 		public void InsertInput(int frame, IEnumerable<string> inputLog)
 		{
-			bool endBatch = ChangeLog.BeginNewBatch($"Insert Frame: {frame}", true);
-			ChangeLog.AddGeneralUndo(frame, InputLogLength + inputLog.Count() - 1);
-
 			Log.InsertRange(frame, inputLog);
+
+			ShiftBindedMarkers(frame, inputLog.Count());
+
 			Changes = true;
 			InvalidateAfter(frame);
-
-			if (BindMarkersToInput)
-			{
-				bool wasRecording = ChangeLog.IsRecording;
-				ChangeLog.IsRecording = false;
-				int firstIndex = Markers.FindIndex(m => m.Frame >= frame);
-				if (firstIndex != -1)
-				{
-					for (int i = firstIndex; i < Markers.Count; i++)
-					{
-						TasMovieMarker m = Markers[i];
-						Markers.Move(m.Frame, m.Frame + inputLog.Count());
-					}
-				}
-
-				ChangeLog.IsRecording = wasRecording;
-			}
-
-			ChangeLog.SetGeneralRedo();
-			if (endBatch)
-			{
-				ChangeLog.EndBatch();
-			}
+			
+			ChangeLog.AddInsertInput(frame, inputLog.ToList(), $"Insert {inputLog.Count()} frame(s) at {frame}");
 		}
 
 		public void InsertInput(int frame, IEnumerable<IController> inputStates)
@@ -340,48 +246,22 @@ namespace BizHawk.Client.Common
 			return firstChangedFrame;
 		}
 
-		public void InsertEmptyFrame(int frame, int count = 1, bool fromHistory = false)
+		public void InsertEmptyFrame(int frame, int count = 1)
 		{
-			bool endBatch = ChangeLog.BeginNewBatch($"Insert Empty Frame: {frame}", true);
-			ChangeLog.AddGeneralUndo(frame, InputLogLength + count - 1);
-
-			var lg = LogGeneratorInstance(Global.MovieSession.MovieController);
-
 			if (frame > Log.Count())
 			{
 				frame = Log.Count();
 			}
 
-			for (int i = 0; i < count; i++)
-			{
-				Log.Insert(frame, lg.EmptyEntry);
-			}
+			var lg = LogGeneratorInstance(Global.MovieSession.MovieController);
+			Log.InsertRange(frame, Enumerable.Repeat(lg.EmptyEntry, count).ToList());
 
-			if (BindMarkersToInput)
-			{
-				bool wasRecording = ChangeLog.IsRecording;
-				ChangeLog.IsRecording = false;
-				int firstIndex = Markers.FindIndex(m => m.Frame >= frame);
-				if (firstIndex != -1)
-				{
-					for (int i = firstIndex; i < Markers.Count; i++)
-					{
-						TasMovieMarker m = Markers[i];
-						Markers.Move(m.Frame, m.Frame + count, fromHistory);
-					}
-				}
-
-				ChangeLog.IsRecording = wasRecording;
-			}
+			ShiftBindedMarkers(frame, count);
 
 			Changes = true;
 			InvalidateAfter(frame);
 
-			ChangeLog.SetGeneralRedo();
-			if (endBatch)
-			{
-				ChangeLog.EndBatch();
-			}
+			ChangeLog.AddInsertFrames(frame, count, $"Insert {count} empty frame(s) at {frame}");
 		}
 
 		private void ExtendMovieForEdit(int numFrames)

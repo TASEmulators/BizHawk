@@ -10,7 +10,6 @@ namespace BizHawk.Client.Common
 		int UndoIndex { get; }
 		string NextUndoStepName { get; }
 		bool IsRecording { get; set; }
-		void AddInputBind(int frame, bool isDelete, string name = "", bool force = false);
 		void Clear(int upTo = -1);
 		bool BeginNewBatch(string name = "", bool keepOldBatch = false);
 		void EndBatch();
@@ -27,6 +26,10 @@ namespace BizHawk.Client.Common
 		void AddBoolToggle(int frame, string button, bool oldState, string name = "", bool force = false);
 		void AddFloatChange(int frame, string button, float oldState, float newState, string name = "", bool force = false);
 		void AddMarkerChange(TasMovieMarker newMarker, int oldPosition = -1, string oldMessage = "", string name = "", bool force = false);
+		void AddInputBind(int frame, bool isDelete, string name = "", bool force = false);
+		void AddInsertFrames(int frame, int count, string name = "", bool force = false);
+		void AddInsertInput(int frame, List<string> newInputs, string name = "", bool force = false);
+		void AddRemoveFrames(int removeStart, int removeUpTo, List<string> oldInputs, List<TasMovieMarker> removedMarkers, string name = "", bool force = false);
 	}
 
 	public class TasMovieChangeLog : IMovieChangeLog
@@ -67,9 +70,9 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Gets or sets a value indicating whether the movie is in recording mode
+		/// Gets or sets a value indicating whether the movie is recording action history.
 		/// This is not intended to turn off the ChangeLog, but to disable the normal recording process.
-		/// Use this to manually control the ChangeLog. (Useful for when you are making lots of 
+		/// Use this to manually control the ChangeLog. (Useful for disabling the ChangeLog during undo/redo).
 		/// </summary>
 		public bool IsRecording { get; set; } = true;
 
@@ -377,6 +380,33 @@ namespace BizHawk.Client.Common
 				_history.Last().Add(new MovieActionBindInput(_movie, frame, isDelete));
 			}
 		}
+
+		public void AddInsertFrames(int frame, int count, string name = "", bool force = false)
+		{
+			if (IsRecording || force)
+			{
+				AddMovieAction(name);
+				_history.Last().Add(new MovieActionInsertFrames(frame, count));
+			}
+		}
+
+		public void AddInsertInput(int frame, List<string> newInputs, string name = "", bool force = false)
+		{
+			if (IsRecording || force)
+			{
+				AddMovieAction(name);
+				_history.Last().Add(new MovieActionInsertFrames(frame, newInputs));
+			}
+		}
+
+		public void AddRemoveFrames(int removeStart, int removeUpTo, List<string> oldInputs, List<TasMovieMarker> removedMarkers, string name = "", bool force = false)
+		{
+			if (IsRecording || force)
+			{
+				AddMovieAction(name);
+				_history.Last().Add(new MovieActionRemoveFrames(removeStart, removeUpTo, oldInputs, removedMarkers));
+			}
+		}
 	}
 
 	public interface IMovieAction
@@ -435,12 +465,12 @@ namespace BizHawk.Client.Common
 
 			if (_redoLength != Length)
 			{
-				movie.InsertEmptyFrame(FirstFrame, Length - _redoLength, true);
+				movie.InsertEmptyFrame(FirstFrame, Length - _redoLength);
 			}
 
 			if (_undoLength != Length)
 			{
-				movie.RemoveFrames(FirstFrame, movie.InputLogLength - _undoLength, true);
+				movie.RemoveFrames(FirstFrame, movie.InputLogLength - _undoLength);
 			}
 
 			for (int i = 0; i < _undoLength; i++)
@@ -504,36 +534,46 @@ namespace BizHawk.Client.Common
 
 		public void Undo(ITasMovie movie)
 		{
+			bool wasRecording = movie.ChangeLog.IsRecording;
+			movie.ChangeLog.IsRecording = false;
+
 			if (FirstFrame == -1) // Action: Place marker
 			{
-				movie.Markers.Remove(movie.Markers.Get(LastFrame), true);
+				movie.Markers.Remove(movie.Markers.Get(LastFrame));
 			}
 			else if (LastFrame == -1) // Action: Remove marker
 			{
-				movie.Markers.Add(FirstFrame, _oldMessage, true);
+				movie.Markers.Add(FirstFrame, _oldMessage);
 			}
 			else // Action: Move/rename marker
 			{
-				movie.Markers.Move(LastFrame, FirstFrame, true);
+				movie.Markers.Move(LastFrame, FirstFrame);
 				movie.Markers.Get(LastFrame).Message = _oldMessage;
 			}
+
+			movie.ChangeLog.IsRecording = wasRecording;
 		}
 
 		public void Redo(ITasMovie movie)
 		{
+			bool wasRecording = movie.ChangeLog.IsRecording;
+			movie.ChangeLog.IsRecording = false;
+
 			if (FirstFrame == -1) // Action: Place marker
 			{
-				movie.Markers.Add(LastFrame, _oldMessage, true);
+				movie.Markers.Add(LastFrame, _oldMessage);
 			}
 			else if (LastFrame == -1) // Action: Remove marker
 			{
-				movie.Markers.Remove(movie.Markers.Get(FirstFrame), true);
+				movie.Markers.Remove(movie.Markers.Get(FirstFrame));
 			}
 			else // Action: Move/rename marker
 			{
-				movie.Markers.Move(FirstFrame, LastFrame, true);
+				movie.Markers.Move(FirstFrame, LastFrame);
 				movie.Markers.Get(LastFrame).Message = _newMessage;
 			}
+
+			movie.ChangeLog.IsRecording = wasRecording;
 		}
 	}
 
@@ -739,6 +779,98 @@ namespace BizHawk.Client.Common
 
 			movie.ChangeLog.IsRecording = wasRecording;
 			movie.BindMarkersToInput = _bindMarkers;
+		}
+	}
+
+	public class MovieActionInsertFrames : IMovieAction
+	{
+		public int FirstFrame { get; }
+		public int LastFrame { get; }
+		private readonly int _count;
+		private readonly bool _onlyEmpty;
+
+		private readonly List<string> _newInputs;
+
+		public MovieActionInsertFrames(int frame, int count)
+		{
+			FirstFrame = frame;
+			LastFrame = frame + count;
+			_count = count;
+			_onlyEmpty = true;
+		}
+
+		public MovieActionInsertFrames(int frame, List<string> newInputs)
+		{
+			FirstFrame = frame;
+			LastFrame = frame + newInputs.Count();
+			_onlyEmpty = false;
+			_newInputs = newInputs;
+		}
+		
+		public void Undo(ITasMovie movie)
+		{
+			bool wasRecording = movie.ChangeLog.IsRecording;
+			movie.ChangeLog.IsRecording = false;
+
+			movie.RemoveFrames(FirstFrame, LastFrame);
+
+			movie.ChangeLog.IsRecording = wasRecording;
+		}
+
+		public void Redo(ITasMovie movie)
+		{
+			bool wasRecording = movie.ChangeLog.IsRecording;
+			movie.ChangeLog.IsRecording = false;
+
+			if (_onlyEmpty)
+			{
+				movie.InsertEmptyFrame(FirstFrame, _count);
+			}
+			else
+			{
+				movie.InsertInput(FirstFrame, _newInputs);
+			}
+
+			movie.ChangeLog.IsRecording = wasRecording;
+		}
+	}
+
+	public class MovieActionRemoveFrames : IMovieAction
+	{
+		public int FirstFrame { get; }
+		public int LastFrame { get; }
+
+		private readonly List<string> _oldInputs;
+		private readonly List<TasMovieMarker> _removedMarkers;
+
+		public MovieActionRemoveFrames(int removeStart, int removeUpTo, List<string> oldInputs, List<TasMovieMarker> removedMarkers)
+		{
+			FirstFrame = removeStart;
+			LastFrame = removeUpTo;
+			_oldInputs = oldInputs;
+			_removedMarkers = removedMarkers;
+		}
+		
+		public void Undo(ITasMovie movie)
+		{
+			bool wasRecording = movie.ChangeLog.IsRecording;
+			movie.ChangeLog.IsRecording = false;
+
+			movie.InsertInput(FirstFrame, _oldInputs);
+
+			movie.Markers.AddRange(_removedMarkers);
+
+			movie.ChangeLog.IsRecording = wasRecording;
+		}
+
+		public void Redo(ITasMovie movie)
+		{
+			bool wasRecording = movie.ChangeLog.IsRecording;
+			movie.ChangeLog.IsRecording = false;
+
+			movie.RemoveFrames(FirstFrame, LastFrame);
+
+			movie.ChangeLog.IsRecording = wasRecording;
 		}
 	}
 }
