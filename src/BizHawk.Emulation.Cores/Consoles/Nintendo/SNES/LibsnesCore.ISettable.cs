@@ -30,7 +30,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			bool ret = o.LeftPort != _syncSettings.LeftPort
 				|| o.RightPort != _syncSettings.RightPort
-				|| o.LimitAnalogChangeSensitivity != _syncSettings.LimitAnalogChangeSensitivity;
+				|| o.LimitAnalogChangeSensitivity != _syncSettings.LimitAnalogChangeSensitivity
+				|| o.RandomizedInitialState != _syncSettings.RandomizedInitialState;
 
 			_syncSettings = o;
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
@@ -70,6 +71,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			public LibsnesControllerDeck.ControllerType RightPort { get; set; } = LibsnesControllerDeck.ControllerType.Gamepad;
 
 			public bool LimitAnalogChangeSensitivity { get; set; } = true;
+
+			public bool RandomizedInitialState { get; set; } = true;
 
 			public SnesSyncSettings Clone()
 			{
