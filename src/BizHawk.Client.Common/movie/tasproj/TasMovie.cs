@@ -65,7 +65,10 @@ namespace BizHawk.Client.Common
 		{
 			var anyInvalidated = LagLog.RemoveFrom(frame);
 			TasStateManager.Invalidate(frame + 1);
-			Changes = anyInvalidated;
+			if (anyInvalidated)
+			{
+				Changes = true;
+			}
 			LastEditedFrame = frame;
 
 			if (anyInvalidated && Global.MovieSession.Movie.IsCountingRerecords)
