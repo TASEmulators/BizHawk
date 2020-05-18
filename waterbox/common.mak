@@ -2,7 +2,7 @@
 
 WATERBOX_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 ROOT_DIR := $(shell dirname $(realpath $(lastword $(filter-out $(lastword $(MAKEFILE_LIST)), $(MAKEFILE_LIST)))))
-OUTPUTDLL_DIR := $(shell realpath $(WATERBOX_DIR)/../output/dll)
+OUTPUTDLL_DIR := $(realpath $(WATERBOX_DIR)/../output/dll)
 OBJ_DIR := $(ROOT_DIR)/obj/release
 DOBJ_DIR := $(ROOT_DIR)/obj/debug
 EMULIBC_OBJS := $(WATERBOX_DIR)/emulibc/obj/release/emulibc.c.o
@@ -13,7 +13,7 @@ print-%: ;
 
 #LD_PLUGIN := $(shell gcc --print-file-name=liblto_plugin.so)
 
-CC := $(WATERBOX_DIR)/musl/waterbox-sysroot/bin/musl-gcc
+CC := $(WATERBOX_DIR)/sysroot/bin/musl-gcc
 CCFLAGS := $(CCFLAGS) -mabi=ms -fvisibility=hidden -I$(WATERBOX_DIR)/emulibc -fno-exceptions -Wall -mcmodel=large \
 	-mstack-protector-guard=global
 LDFLAGS := $(LDFLAGS) -fuse-ld=gold -static -Wl,-Ttext,0x0000036f00000000 #-Wl,--plugin,$(LD_PLUGIN)
