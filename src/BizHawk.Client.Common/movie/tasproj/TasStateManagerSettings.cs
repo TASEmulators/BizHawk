@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using Newtonsoft.Json;
 
 namespace BizHawk.Client.Common
 {
@@ -64,12 +63,5 @@ namespace BizHawk.Client.Common
 		[DisplayName("State interval for .tasproj")]
 		[Description("The actual state gap in frames is calculated as Nth power on 2")]
 		public int FileStateGap { get; set; }
-
-		/// <summary>
-		/// The memory state capacity in bytes.
-		/// </summary>
-		[JsonIgnore]
-		[Browsable(false)]
-		public ulong Cap => (ulong)CapacityMb * 1024UL * 1024UL;
 	}
 }

@@ -135,11 +135,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					return VRAM[VRAM_Bank * 0x2000 + (addr - 0x8000)];
 				}
 
-				if (ppu.pixel_counter == 160) 
+				if (!HDMA_transfer)
 				{
-					return ppu.bus_return; 
+					if (ppu.pixel_counter == 160)
+					{
+						return ppu.bus_return;
+					}
+
+					return 0xFF;
 				}
-				return 0xFF;
+				else
+				{
+					return 0xFF;
+				}				
 			}
 
 			if (addr < 0xC000)

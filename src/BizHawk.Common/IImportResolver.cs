@@ -10,7 +10,7 @@ namespace BizHawk.Common
 	/// <seealso cref="PatchImportResolver"/>
 	public interface IImportResolver
 	{
-		IntPtr GetProcAddrOrNull(string entryPoint);
+		IntPtr GetProcAddrOrZero(string entryPoint);
 
 		/// <exception cref="InvalidOperationException">could not find symbol</exception>
 		IntPtr GetProcAddrOrThrow(string entryPoint);
@@ -32,7 +32,7 @@ namespace BizHawk.Common
 			_p = OSTailoredCode.LinkedLibManager.LoadOrThrow(OSTailoredCode.IsUnixHost ? ResolveFilePath(dllName) : dllName);
 		}
 
-		public IntPtr GetProcAddrOrNull(string entryPoint) => OSTailoredCode.LinkedLibManager.GetProcAddrOrNull(_p, entryPoint);
+		public IntPtr GetProcAddrOrZero(string entryPoint) => OSTailoredCode.LinkedLibManager.GetProcAddrOrZero(_p, entryPoint);
 
 		public IntPtr GetProcAddrOrThrow(string entryPoint) => OSTailoredCode.LinkedLibManager.GetProcAddrOrThrow(_p, entryPoint);
 
@@ -84,7 +84,7 @@ namespace BizHawk.Common
 			Environment.SetEnvironmentVariable("PATH", envpath, EnvironmentVariableTarget.Process);
 		}
 
-		public IntPtr GetProcAddrOrNull(string procName) => OSTailoredCode.LinkedLibManager.GetProcAddrOrNull(HModule, procName);
+		public IntPtr GetProcAddrOrZero(string procName) => OSTailoredCode.LinkedLibManager.GetProcAddrOrZero(HModule, procName);
 
 		public IntPtr GetProcAddrOrThrow(string procName) => OSTailoredCode.LinkedLibManager.GetProcAddrOrThrow(HModule, procName);
 
@@ -106,23 +106,20 @@ namespace BizHawk.Common
 			_resolvers = resolvers.ToList();
 		}
 
-		public IntPtr GetProcAddrOrNull(string entryPoint)
+		public IntPtr GetProcAddrOrZero(string entryPoint)
 		{
-			for (var i = _resolvers.Count - 1; i != -1; i--)
+			for (var i = _resolvers.Count - 1; i != 0; i--)
 			{
-				var ret = _resolvers[i].GetProcAddrOrNull(entryPoint);
-				if (ret != IntPtr.Zero)
-					return ret;
+				var ret = _resolvers[i].GetProcAddrOrZero(entryPoint);
+				if (ret != IntPtr.Zero) return ret;
 			}
-			return IntPtr.Zero;
+			return _resolvers[0].GetProcAddrOrZero(entryPoint); // if it's Zero/NULL, return it anyway - the search failed
 		}
 
 		public IntPtr GetProcAddrOrThrow(string entryPoint)
 		{
-			var ret = GetProcAddrOrNull(entryPoint);
-			if (ret == IntPtr.Zero)
-				throw new InvalidOperationException($"{entryPoint} was not found in any of the aggregated resolvers");
-			return ret;
+			var ret = GetProcAddrOrZero(entryPoint);
+			return ret != IntPtr.Zero ? ret : throw new InvalidOperationException($"{entryPoint} was not found in any of the aggregated resolvers");
 		}
 	}
 }

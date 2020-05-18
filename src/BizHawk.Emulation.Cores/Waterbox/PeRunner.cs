@@ -107,9 +107,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				var imports = _parent._exports[moduleName];
 				var pointers = entries.Select(e =>
 				{
-					var ptr = imports.GetProcAddrOrNull(e);
-					if (ptr != IntPtr.Zero)
-						return ptr;
+					var ptr = imports.GetProcAddrOrZero(e);
+					if (ptr != IntPtr.Zero) return ptr;
 					var s = $"Trapped on unimplemented function {moduleName}:{e}";
 					Action del = () =>
 					{
@@ -433,7 +432,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 				var start = heap.Memory.Start;
 				var end = start + heap.Used;
-				var max = heap.Memory.End;
+				var max = heap.Memory.EndExclusive;
 
 				var p = (ulong)_p;
 
@@ -1105,7 +1104,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		public IntPtr GetProcAddrOrNull(string entryPoint) => _modules[0].GetProcAddrOrNull(entryPoint); // _modules[0] is always the main module
+		public IntPtr GetProcAddrOrZero(string entryPoint) => _modules[0].GetProcAddrOrZero(entryPoint); // _modules[0] is always the main module
 
 		public IntPtr GetProcAddrOrThrow(string entryPoint) => _modules[0].GetProcAddrOrThrow(entryPoint);
 

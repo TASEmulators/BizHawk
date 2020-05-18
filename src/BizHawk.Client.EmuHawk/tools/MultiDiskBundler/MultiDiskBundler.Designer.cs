@@ -142,6 +142,7 @@
             "GB",
 			"GB3x",
 			"GB4x",
+			"GEN",
 			"PCFX",
             "PSX",
             "SAT",

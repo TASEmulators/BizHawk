@@ -34,12 +34,12 @@ namespace BizHawk.Common
 		{
 			int FreeByPtr(IntPtr hModule);
 
-			IntPtr GetProcAddrOrNull(IntPtr hModule, string procName);
+			IntPtr GetProcAddrOrZero(IntPtr hModule, string procName);
 
 			/// <exception cref="InvalidOperationException">could not find symbol</exception>
 			IntPtr GetProcAddrOrThrow(IntPtr hModule, string procName);
 
-			IntPtr? LoadOrNull(string dllToLoad);
+			IntPtr LoadOrZero(string dllToLoad);
 
 			/// <exception cref="InvalidOperationException">could not find library</exception>
 			IntPtr LoadOrThrow(string dllToLoad);
@@ -61,30 +61,26 @@ namespace BizHawk.Common
 
 			public int FreeByPtr(IntPtr hModule) => dlclose(hModule);
 
-			public IntPtr GetProcAddrOrNull(IntPtr hModule, string procName)
-			{
-				var p = dlsym(hModule, procName);
-				return p;
-			}
+			public IntPtr GetProcAddrOrZero(IntPtr hModule, string procName) => dlsym(hModule, procName);
 
 			public IntPtr GetProcAddrOrThrow(IntPtr hModule, string procName)
 			{
 				_ = dlerror(); // the Internet said to do this
-				var p = GetProcAddrOrNull(hModule, procName);
-				if (p != IntPtr.Zero)
-					return p;
+				var p = GetProcAddrOrZero(hModule, procName);
+				if (p != IntPtr.Zero) return p;
 				var errCharPtr = dlerror();
 				throw new InvalidOperationException($"error in {nameof(dlsym)}{(errCharPtr == IntPtr.Zero ? string.Empty : $": {Marshal.PtrToStringAnsi(errCharPtr)}")}");
 			}
 
-			public IntPtr? LoadOrNull(string dllToLoad)
+			public IntPtr LoadOrZero(string dllToLoad) => dlopen(dllToLoad, RTLD_NOW);
+
+			public IntPtr LoadOrThrow(string dllToLoad)
 			{
-				const int RTLD_NOW = 2;
-				var p = dlopen(dllToLoad, RTLD_NOW);
-				return p == IntPtr.Zero ? (IntPtr?) null : p;
+				var ret = LoadOrZero(dllToLoad);
+				return ret != IntPtr.Zero ? ret : throw new InvalidOperationException($"got null pointer from {nameof(dlopen)}, error: {Marshal.PtrToStringAnsi(dlerror())}");
 			}
 
-			public IntPtr LoadOrThrow(string dllToLoad) => LoadOrNull(dllToLoad) ?? throw new InvalidOperationException($"got null pointer from {nameof(dlopen)}, error: {Marshal.PtrToStringAnsi(dlerror())}");
+			private const int RTLD_NOW = 2;
 		}
 
 		private class WindowsLLManager : ILinkedLibManager
@@ -105,27 +101,21 @@ namespace BizHawk.Common
 
 			public int FreeByPtr(IntPtr hModule) => FreeLibrary(hModule) ? 0 : 1;
 
-			public IntPtr GetProcAddrOrNull(IntPtr hModule, string procName)
-			{
-				var p = GetProcAddress(hModule, procName);
-				return p;
-			}
+			public IntPtr GetProcAddrOrZero(IntPtr hModule, string procName) => GetProcAddress(hModule, procName);
 
 			public IntPtr GetProcAddrOrThrow(IntPtr hModule, string procName)
 			{
-				var ret = GetProcAddrOrNull(hModule, procName);
-				if (ret == IntPtr.Zero)
-					throw new InvalidOperationException($"got null pointer from {nameof(GetProcAddress)}, error code: {GetLastError()}");
-				return ret;
+				var ret = GetProcAddrOrZero(hModule, procName);
+				return ret != IntPtr.Zero ? ret : throw new InvalidOperationException($"got null pointer from {nameof(GetProcAddress)}, error code: {GetLastError()}");
 			}
 
-			public IntPtr? LoadOrNull(string dllToLoad)
+			public IntPtr LoadOrZero(string dllToLoad) => LoadLibrary(dllToLoad);
+
+			public IntPtr LoadOrThrow(string dllToLoad)
 			{
-				var p = LoadLibrary(dllToLoad);
-				return p == IntPtr.Zero ? (IntPtr?) null : p;
+				var ret = LoadOrZero(dllToLoad);
+				return ret != IntPtr.Zero ? ret : throw new InvalidOperationException($"got null pointer from {nameof(LoadLibrary)}, error code: {GetLastError()}");
 			}
-
-			public IntPtr LoadOrThrow(string dllToLoad) => LoadOrNull(dllToLoad) ?? throw new InvalidOperationException($"got null pointer from {nameof(LoadLibrary)}, error code: {GetLastError()}");
 		}
 
 		public enum DistinctOS : byte

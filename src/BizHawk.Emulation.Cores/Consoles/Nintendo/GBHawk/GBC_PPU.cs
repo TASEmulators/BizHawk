@@ -25,10 +25,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int HDMA_tick;
 		public byte HDMA_byte;
 
-		// accessors for derived values
-		public byte BG_pal_ret => (byte)(((BG_bytes_inc ? 1 : 0) << 7) | (BG_bytes_index & 0x3F));
+		// the first read on GBA (and first two on GBC) encounter access glitches if the source address is VRAM
+		public byte HDMA_VRAM_access_glitch;
 
-		public byte OBJ_pal_ret => (byte)(((OBJ_bytes_inc ? 1 : 0) << 7) | (OBJ_bytes_index & 0x3F));
+		// accessors for derived values
+		public byte BG_pal_ret => (byte)(((BG_bytes_inc ? 1 : 0) << 7) | (BG_bytes_index & 0x3F) | 0x40);
+
+		public byte OBJ_pal_ret => (byte)(((OBJ_bytes_inc ? 1 : 0) << 7) | (OBJ_bytes_index & 0x3F) | 0x40);
 
 		public byte HDMA_ctrl => (byte)(((HDMA_active ? 0 : 1) << 7) | ((HDMA_length >> 4) - 1));
 
@@ -69,15 +72,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF4B: ret = window_x;						break; // WX
 
 				// These are GBC specific Regs
-				case 0xFF51: ret = HDMA_src_hi;						break; // HDMA1
-				case 0xFF52: ret = HDMA_src_lo;						break; // HDMA2
-				case 0xFF53: ret = HDMA_dest_hi;					break; // HDMA3
-				case 0xFF54: ret = HDMA_dest_lo;					break; // HDMA4
+				case 0xFF51: ret = 0xFF;							break; // HDMA1 (src_hi)
+				case 0xFF52: ret = 0xFF;							break; // HDMA2 (src_lo)
+				case 0xFF53: ret = 0xFF;							break; // HDMA3 (dest_hi)
+				case 0xFF54: ret = 0xFF;							break; // HDMA4 (dest_lo)
 				case 0xFF55: ret = HDMA_ctrl;						break; // HDMA5
 				case 0xFF68: ret = BG_pal_ret;						break; // BGPI
 				case 0xFF69: ret = BG_PAL_read();					break; // BGPD
 				case 0xFF6A: ret = OBJ_pal_ret;						break; // OBPI
-				case 0xFF6B: ret = OBJ_bytes[OBJ_bytes_index];		break; // OBPD
+				case 0xFF6B: ret = OBJ_PAL_read();					break; // OBPD
 			}
 
 			return ret;
@@ -88,6 +91,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			if (VRAM_access_read)
 			{
 				return BG_bytes[BG_bytes_index];
+			}
+			else
+			{
+				return 0xFF;
+			}
+		}
+
+		public byte OBJ_PAL_read()
+		{
+			if (VRAM_access_read)
+			{
+				return OBJ_bytes[OBJ_bytes_index];
 			}
 			else
 			{
@@ -106,6 +121,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						VRAM_access_write = true;
 						OAM_access_read = true;
 						OAM_access_write = true;
+
+						// turing off the screen causes HDMA to run for one cycle
+						HDMA_run_once = true;
 					}
 
 					if (!LCDC.Bit(7) && value.Bit(7))
@@ -180,6 +198,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF51: // HDMA1
 					HDMA_src_hi = value;
 					cur_DMA_src = (ushort)(((HDMA_src_hi & 0xFF) << 8) | (cur_DMA_src & 0xF0));
+					if (cur_DMA_src >= 0xE000) { cur_DMA_src &= 0xBFFF; }
 					break;
 				case 0xFF52: // HDMA2
 					HDMA_src_lo = value;
@@ -197,7 +216,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					if (!HDMA_active)
 					{
 						HDMA_mode = value.Bit(7);
-						HDMA_countdown = 4;
+						HDMA_countdown = Core.double_speed ? 2 : 4; // wait one cpu cycle before starting (TODO: what if VRAM not accessible?)
 						HDMA_tick = 0;
 						if (value.Bit(7))
 						{
@@ -211,27 +230,40 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							HBL_test = true;
 							HBL_HDMA_go = false;
 
-							if (!LCDC.Bit(7))
-							{
-								HDMA_run_once =true;
-							}
+							if (!LCDC.Bit(7)) { HDMA_run_once = true; }
+							else { HDMA_run_once = false; }
 						}
 						else
 						{
 							// HDMA immediately
 							HDMA_active = true;
 							Core.HDMA_transfer = true;
+							VRAM_access_read = false;
 						}
+						//Console.WriteLine(cur_DMA_src + " " + cur_DMA_dest + " " + Core.cpu.TotalExecutedCycles);
 
 						HDMA_length = ((value & 0x7F) + 1) * 16;
+
+						if (!LCDC.Bit(7) && (cur_DMA_src >= 0x8000) && (cur_DMA_src < 0xA000))
+						{
+							// NOTE: GBA SP apparently only has one glitched access, not sure what gameboy player is
+							HDMA_VRAM_access_glitch = 2;
+						}
+						else
+						{
+							HDMA_VRAM_access_glitch = 0;
+						}
 					}
 					else
 					{
-						//terminate the transfer
+						//terminate the transfer if disabling
 						if (!value.Bit(7))
 						{
 							HDMA_active = false;
+							Core.HDMA_transfer = false;
 						}
+						// always update length
+						HDMA_length = ((value & 0x7F) + 1) * 16;
 					}
 
 					break;
@@ -255,8 +287,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					OBJ_bytes_inc = ((value & 0x80) == 0x80);
 					break;
 				case 0xFF6B: // OBPD
-					OBJ_transfer_byte = value;
-					OBJ_bytes[OBJ_bytes_index] = value;
+					if (VRAM_access_write)
+					{
+						OBJ_transfer_byte = value;
+						OBJ_bytes[OBJ_bytes_index] = value;
+					}
 
 					// change the appropriate palette color
 					color_compute_OBJ();
@@ -284,13 +319,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							// immediately transfer bytes, 2 bytes per cycles
 							if ((HDMA_tick % 2) == 0)
 							{
-								HDMA_byte = Core.ReadMemory(cur_DMA_src);
+								if (HDMA_VRAM_access_glitch > 0)
+								{
+									HDMA_byte = Core.ReadMemory(Core.cpu.RegPC);
+									HDMA_VRAM_access_glitch--;
+								}
+								else
+								{
+									HDMA_byte = Core.ReadMemory(cur_DMA_src);
+								}
 							}
 							else
 							{
 								Core.VRAM[(Core.VRAM_Bank * 0x2000) + cur_DMA_dest] = HDMA_byte;
 								cur_DMA_dest = (ushort)((cur_DMA_dest + 1) & 0x1FFF);
 								cur_DMA_src = (ushort)((cur_DMA_src + 1) & 0xFFFF);
+								if (cur_DMA_src >= 0xE000) { cur_DMA_src &= 0xBFFF; }
+
 								HDMA_length--;
 							}
 
@@ -300,16 +345,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					else
 					{
 						// only transfer during mode 0, and only 16 bytes at a time
-						if (((STAT & 3) == 0) && (LY != last_HBL) && HBL_test && (LY_inc == 1) && (cycle > 4))
+						// cycle > 90 prevents triggering early when turning on LCD (presumably the real event is transition from mode 3 to 0.)
+						if (((STAT & 3) == 0) && (LY != last_HBL) && HBL_test && (LY_inc == 1) && (cycle > 90))
 						{
 							HBL_HDMA_go = true;
 							HBL_test = false;
+							VRAM_access_read = false;
 						}
 						else if (HDMA_run_once)
 						{
 							HBL_HDMA_go = true;
 							HBL_test = false;
 							HDMA_run_once = false;
+							VRAM_access_read = false;
 						}
 
 						if (HBL_HDMA_go && (HBL_HDMA_count > 0))
@@ -324,13 +372,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							{
 								if ((HDMA_tick % 2) == 0)
 								{
-									HDMA_byte = Core.ReadMemory(cur_DMA_src);
+									if (HDMA_VRAM_access_glitch > 0)
+									{
+										HDMA_byte = Core.ReadMemory(Core.cpu.RegPC);
+										HDMA_VRAM_access_glitch--;
+									}
+									else
+									{
+										HDMA_byte = Core.ReadMemory(cur_DMA_src);
+									}
 								}
 								else
 								{
 									Core.VRAM[(Core.VRAM_Bank * 0x2000) + cur_DMA_dest] = HDMA_byte;
 									cur_DMA_dest = (ushort)((cur_DMA_dest + 1) & 0x1FFF);
 									cur_DMA_src = (ushort)((cur_DMA_src + 1) & 0xFFFF);
+									if (cur_DMA_src >= 0xE000) { cur_DMA_src &= 0xBFFF; }
+
 									HDMA_length--;
 									HBL_HDMA_count--;
 								}
@@ -339,7 +397,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								{
 
 									HBL_test = true;
-									last_HBL = LY;
+									if (LCDC.Bit(7)) { last_HBL = LY; }
+									else { last_HBL = 0xFF; }
 									HBL_HDMA_count = 0x10;
 									HBL_HDMA_go = false;
 									HDMA_countdown = 4;
@@ -351,6 +410,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						else
 						{
 							Core.HDMA_transfer = false;
+							VRAM_access_read = true;
 						}
 					}					
 				}
@@ -358,6 +418,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					HDMA_active = false;
 					Core.HDMA_transfer = false;
+					VRAM_access_read = true;
 				}
 			}		
 			
@@ -1557,6 +1618,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(HDMA_dest_lo), ref HDMA_dest_lo);
 			ser.Sync(nameof(HDMA_tick), ref HDMA_tick);
 			ser.Sync(nameof(HDMA_byte), ref HDMA_byte);
+			ser.Sync(nameof(HDMA_VRAM_access_glitch), ref HDMA_VRAM_access_glitch);
 
 			ser.Sync(nameof(VRAM_sel), ref VRAM_sel);
 			ser.Sync(nameof(BG_V_flip), ref BG_V_flip);
@@ -1651,6 +1713,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			last_HBL = 0;
 			HBL_HDMA_go = false;
 			HBL_test = false;
+			HDMA_VRAM_access_glitch = 0;
+
+			for (int i = 0; i < BG_bytes.Length; i++) { BG_bytes[i] = 0xFF; }
+			for (int i = 0; i < OBJ_bytes.Length; i++) { OBJ_bytes[i] = 0xFF; }
 		}
 	}
 }

@@ -37,7 +37,7 @@ namespace BizHawk.Client.Common
 			_modeChangedCallback = modeChangedCallback
 				?? throw new ArgumentNullException($"{nameof(modeChangedCallback)} CannotUnloadAppDomainException be null.");
 
-			Movie = MovieService.Create();
+			Movie = new Bk2Movie();
 		}
 
 		public IMovie Movie { get; private set; }

@@ -36,7 +36,7 @@ namespace BizHawk.Client.Common
 			public RomWhitelist(CoreSystem system, params string[] romHashes)
 			{
 				if (system == CoreSystem.Null) throw new ArgumentException("there are no roms for the NULL system", nameof(system));
-				if (!romHashes.All(StringExtensions.IsHex)) throw new ArgumentException("misformatted hash", nameof(romHashes));
+				if (!romHashes.All(NumericStringExtensions.IsHex)) throw new ArgumentException("misformatted hash", nameof(romHashes));
 				_system = system;
 				_romHashes = romHashes.ToList();
 			}

@@ -117,11 +117,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				else
 				{
 					cpu.TotalExecutedCycles++;
-					timer.tick();				
+					timer.tick();
+
 					if (double_speed)
 					{
 						cpu.TotalExecutedCycles++;
-						timer.tick();				
+						timer.tick();
 					}
 				}
 
@@ -259,7 +260,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					speed_switch = false;
 					Console.WriteLine("Speed Switch: " + cpu.TotalExecutedCycles);
-					int ret = double_speed ? (32768 - 19) : (32768 - 19); // actual time needs checking
+					int ret = double_speed ? (32768 - 20) : (32768 - 20); // actual time needs checking
 					double_speed = !double_speed;
 					return ret;
 				}

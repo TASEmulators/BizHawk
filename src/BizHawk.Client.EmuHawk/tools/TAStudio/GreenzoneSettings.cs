@@ -82,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MemStateGapDivider_ValueChanged(object sender, EventArgs e)
 		{
-			int val = (int)(Statable.SaveStateBinary().Length / MemStateGapDividerNumeric.Value / 1024);
+			int val = (int)(Statable.CloneSavestate().Length / MemStateGapDividerNumeric.Value / 1024);
 
 			if (val <= 1)
 				MemStateGapDividerNumeric.Maximum = MemStateGapDividerNumeric.Value;

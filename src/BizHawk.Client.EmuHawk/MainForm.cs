@@ -200,10 +200,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			GlobalWin.MainForm = this;
-			Rewinder = new Rewinder
-			{
-				MessageCallback = AddOnScreenMessage
-			};
+			Rewinder = new Rewinder();
 
 			Global.InputManager.ControllerInputCoalescer = new ControllerInputCoalescer();
 			Global.FirmwareManager = new FirmwareManager();
@@ -319,7 +316,7 @@ namespace BizHawk.Client.EmuHawk
 
 			Global.InputManager.ActiveController = new Controller(NullController.Instance.Definition);
 			Global.InputManager.AutoFireController = _autofireNullControls;
-			Global.InputManager.AutofireStickyXorAdapter.SetOnOffPatternFromConfig();
+			Global.InputManager.AutofireStickyXorAdapter.SetOnOffPatternFromConfig(Config.AutofireOn, Config.AutofireOff);
 			try
 			{
 				GlobalWin.Sound = new Sound(Handle);
@@ -3775,7 +3772,10 @@ namespace BizHawk.Client.EmuHawk
 					OnRomChanged();
 					DisplayManager.Blank();
 
-					Rewinder.Initialize();
+					if (Emulator.HasSavestates())
+					{
+						Rewinder.Initialize(Emulator.AsStatable(), Config.Rewind);
+					}
 
 					Global.InputManager.StickyXorAdapter.ClearStickies();
 					Global.InputManager.StickyXorAdapter.ClearStickyAxes();
@@ -4313,7 +4313,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (!suppressCaptureRewind && Rewinder.RewindActive)
 			{
-				Rewinder.Capture();
+				Rewinder.Capture(Emulator.Frame);
 			}
 		}
 

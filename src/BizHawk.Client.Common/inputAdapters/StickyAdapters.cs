@@ -146,10 +146,10 @@ namespace BizHawk.Client.Common
 		private int _on;
 		private int _off;
 
-		public void SetOnOffPatternFromConfig()
+		public void SetOnOffPatternFromConfig(int on, int off)
 		{
-			_on = Global.Config.AutofireOn < 1 ? 0 : Global.Config.AutofireOn;
-			_off = Global.Config.AutofireOff < 1 ? 0 : Global.Config.AutofireOff;
+			_on = on < 0 ? 0 : on;
+			_off = off < 0 ? 0 : off;
 		}
 
 		private readonly WorkingDictionary<string, AutoPatternBool> _boolPatterns = new WorkingDictionary<string, AutoPatternBool>();

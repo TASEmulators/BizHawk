@@ -109,7 +109,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (_config.SaveStateType == SaveStateTypeE.Binary)
 					{
-						movieToRecord.BinarySavestate = (byte[])core.SaveStateBinary().Clone();
+						movieToRecord.BinarySavestate = core.CloneSavestate();
 					}
 					else
 					{

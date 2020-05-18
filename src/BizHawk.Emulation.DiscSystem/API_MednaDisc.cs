@@ -93,10 +93,10 @@ namespace BizHawk.Emulation.DiscSystem
 
 		static void CheckLibrary()
 		{
-			var lib = OSTailoredCode.LinkedLibManager.LoadOrNull("mednadisc.dll");
-			_IsLibraryAvailable = lib != null
-				&& OSTailoredCode.LinkedLibManager.GetProcAddrOrNull(lib.Value, "mednadisc_LoadCD") != null;
-			if (lib != null) OSTailoredCode.LinkedLibManager.FreeByPtr(lib.Value);
+			var lib = OSTailoredCode.LinkedLibManager.LoadOrZero("mednadisc.dll");
+			_IsLibraryAvailable = lib != IntPtr.Zero
+				&& OSTailoredCode.LinkedLibManager.GetProcAddrOrZero(lib, "mednadisc_LoadCD") != IntPtr.Zero;
+			if (lib != IntPtr.Zero) OSTailoredCode.LinkedLibManager.FreeByPtr(lib);
 		}
 
 		static MednaDisc()

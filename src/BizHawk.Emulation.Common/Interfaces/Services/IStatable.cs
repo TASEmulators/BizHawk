@@ -87,5 +87,20 @@ namespace BizHawk.Emulation.Common
 			using var br = new BinaryReader(ms);
 			core.LoadStateBinary(br);
 		}
+
+		/// <summary>
+		/// Creates a byte array copy of the core's current state
+		/// This creates a new buffer, and should not be used in performance sensitive situations
+		/// </summary>
+		public static byte[] CloneSavestate(this IStatable core)
+		{
+			using var ms = new MemoryStream();
+			using var bw = new BinaryWriter(ms);
+			core.SaveStateBinary(bw);
+			bw.Flush();
+			var stateBuffer = ms.ToArray();
+			bw.Close();
+			return stateBuffer;
+		}
 	}
 }

@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.MovieConversionExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -38,10 +39,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (AskSaveChanges())
 			{
-				int index = Emulator.Frame;
-
 				 var newProject = CurrentTasMovie.ConvertToSavestateAnchoredMovie(
-					index, (byte[])StatableEmulator.SaveStateBinary().Clone());
+					Emulator.Frame, StatableEmulator.CloneSavestate());
 
 				MainForm.PauseEmulator();
 				LoadFile(new FileInfo(newProject.Filename), true);
@@ -186,7 +185,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveBk2BackupMenuItem_Click(object sender, EventArgs e)
 		{
 			_autosaveTimer.Stop();
-			var bk2 = CurrentTasMovie.ToBk2(copy: true, backup: true);
+			var bk2 = CurrentTasMovie.ToBk2();
 			MessageStatusLabel.Text = "Exporting to .bk2...";
 			Cursor = Cursors.WaitCursor;
 			Update();
@@ -259,7 +258,7 @@ namespace BizHawk.Client.EmuHawk
 				MessageBox.Show("This core requires emulation to be on the last frame when writing the movie, otherwise movie length will appear incorrect.\nTAStudio can't handle this, so Export BK2, play it to the end, and then Save Movie.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			}
 
-			var bk2 = CurrentTasMovie.ToBk2(true, true);
+			var bk2 = CurrentTasMovie.ToBk2();
 			MessageStatusLabel.Text = "Exporting to .bk2...";
 			Cursor = Cursors.WaitCursor;
 			Update();
@@ -752,7 +751,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (CurrentTasMovie.TasStateManager.HasState(Emulator.Frame))
 				{
-					byte[] state = (byte[])StatableEmulator.SaveStateBinary().Clone();
+					byte[] state = StatableEmulator.CloneSavestate();
 					byte[] greenZone = CurrentTasMovie.TasStateManager[Emulator.Frame];
 
 					if (!state.SequenceEqual(greenZone))

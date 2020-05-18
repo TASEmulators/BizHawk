@@ -4,11 +4,9 @@ using System.IO;
 using System.Linq;
 
 using BizHawk.Common;
-using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Libretro;
-using BizHawk.Emulation.Cores.Atari.A7800Hawk;
 using BizHawk.Emulation.Cores.Calculators;
 using BizHawk.Emulation.Cores.Computers.AppleII;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
@@ -202,49 +200,19 @@ namespace BizHawk.Client.Common
 		private List<Disc> DiscsFromXml(XmlGame xmlGame, string systemId, DiscType diskType)
 		{
 			var discs = new List<Disc>();
-			var sw = new StringWriter();
-			foreach (var e in xmlGame.AssetFullPaths)
+			foreach (var e in xmlGame.AssetFullPaths.Where(a => Disc.IsValidExtension(Path.GetExtension(a))))
 			{
-				string discPath = e;
-
-				//--- load the disc in a context which will let us abort if it's going to take too long
-				var discMountJob = new DiscMountJob { IN_FromPath = discPath, IN_SlowLoadAbortThreshold = 8 };
-				discMountJob.Run();
-				var disc = discMountJob.OUT_Disc;
-
-				if (discMountJob.OUT_SlowLoadAborted)
-				{
-					DoLoadErrorCallback("This disc would take too long to load. Run it through DiscoHawk first, or find a new rip because this one is probably junk", systemId, LoadErrorType.DiscError);
-				}
-
-				else if (discMountJob.OUT_ErrorLevel)
-				{
-					throw new InvalidOperationException($"\r\n{discMountJob.OUT_Log}");
-				}
-
-				else if (disc == null)
-				{
-					throw new InvalidOperationException("Can't load one of the files specified in the XML");
-				}
-
-				else
+				var disc = diskType.Create(e, str => { DoLoadErrorCallback(str, systemId, LoadErrorType.DiscError); });
+				if (disc != null)
 				{
 					discs.Add(disc);
-
-					var discType = new DiscIdentifier(disc).DetectDiscType();
-
-					if (discType != diskType)
-					{
-						DoLoadErrorCallback($"Not a {systemId} disc", systemId, LoadErrorType.DiscError);
-					}
 				}
 			}
 
 			return discs;
 		}
 
-		public bool LoadRom(string path, CoreComm nextComm, string launchLibretroCore, bool forceAccurateCore = false,
-			int recursiveCount = 0) // forceAccurateCore is currently just for Quicknes vs Neshawk but could be used for other situations
+		public bool LoadRom(string path, CoreComm nextComm, string launchLibretroCore, bool forceAccurateCore = false, int recursiveCount = 0)
 		{
 			if (recursiveCount > 1) // hack to stop recursive calls from endlessly rerunning if we can't load it
 			{
@@ -407,57 +375,28 @@ namespace BizHawk.Client.Common
 					var sw = new StringWriter();
 					foreach (var e in m3u.Entries)
 					{
-						string discPath = e.Path;
-
-						//--- load the disc in a context which will let us abort if it's going to take too long
-						var discMountJob = new DiscMountJob { IN_FromPath = discPath, IN_SlowLoadAbortThreshold = 8 };
-						discMountJob.Run();
-						var disc = discMountJob.OUT_Disc;
-
-						if (discMountJob.OUT_SlowLoadAborted)
-						{
-							DoLoadErrorCallback("This disc would take too long to load. Run it through DiscoHawk first, or find a new rip because this one is probably junk", "", LoadErrorType.DiscError);
-							return false;
-						}
-
-						if (discMountJob.OUT_ErrorLevel)
-						{
-							throw new InvalidOperationException($"\r\n{discMountJob.OUT_Log}");
-						}
-
-						if (disc == null)
-						{
-							throw new InvalidOperationException("Can't load one of the files specified in the M3U");
-						}
-
-						var discName = Path.GetFileNameWithoutExtension(discPath);
+						var disc = DiscType.SonyPSX.Create(e.Path, str => { DoLoadErrorCallback(str, "PSX", LoadErrorType.DiscError); });
+						var discName = Path.GetFileNameWithoutExtension(e.Path);
 						discNames.Add(discName);
 						discs.Add(disc);
 
-						var discType = new DiscIdentifier(disc).DetectDiscType();
-						sw.WriteLine("{0}", Path.GetFileName(discPath));
-						if (discType == DiscType.SonyPSX)
+						sw.WriteLine("{0}", Path.GetFileName(e.Path));
+
+						string discHash = new DiscHasher(disc).Calculate_PSX_BizIDHash().ToString("X8");
+						game = Database.CheckDatabase(discHash);
+						if (game == null || game.IsRomStatusBad() || game.Status == RomStatus.NotInDatabase)
 						{
-							string discHash = new DiscHasher(disc).Calculate_PSX_BizIDHash().ToString("X8");
-							game = Database.CheckDatabase(discHash);
-							if (game == null || game.IsRomStatusBad() || game.Status == RomStatus.NotInDatabase)
-							{
-								sw.WriteLine("Disc could not be identified as known-good. Look for a better rip.");
-							}
-							else
-							{
-								sw.WriteLine("Disc was identified (99.99% confidently) as known good with disc id hash CRC32:{0:X8}", discHash);
-								sw.WriteLine("Nonetheless it could be an unrecognized romhack or patched version.");
-								sw.WriteLine("According to redump.org, the ideal hash for entire disc is: CRC32:{0:X8}", game.GetStringValue("dh"));
-								sw.WriteLine("The file you loaded hasn't been hashed entirely (it would take too long)");
-								sw.WriteLine("Compare it with the full hash calculated by the PSX menu's Hash Discs tool");
-							}
+							sw.WriteLine("Disc could not be identified as known-good. Look for a better rip.");
 						}
 						else
 						{
-							sw.WriteLine("Not a PSX disc");
+							sw.WriteLine("Disc was identified (99.99% confidently) as known good with disc id hash CRC32:{0:X8}", discHash);
+							sw.WriteLine("Nonetheless it could be an unrecognized romhack or patched version.");
+							sw.WriteLine("According to redump.org, the ideal hash for entire disc is: CRC32:{0:X8}", game.GetStringValue("dh"));
+							sw.WriteLine("The file you loaded hasn't been hashed entirely (it would take too long)");
+							sw.WriteLine("Compare it with the full hash calculated by the PSX menu's Hash Discs tool");
 						}
-
+						
 						sw.WriteLine("-------------------------");
 					}
 
@@ -468,7 +407,7 @@ namespace BizHawk.Client.Common
 						System = "PSX"
 					};
 				}
-				else if (ext == ".iso" || ext == ".cue" || ext == ".ccd" || ext == ".mds")
+				else if (Disc.IsValidExtension(ext))
 				{
 					if (file.IsArchive)
 					{
@@ -723,8 +662,8 @@ namespace BizHawk.Client.Common
 
 								nextEmulator = new AmstradCPC(
 									nextComm,
-									xmlGame.Assets.Select(a => a.Value), //.First(),
-									cpcGI, // GameInfo.NullInstance,
+									xmlGame.Assets.Select(a => a.Value),
+									cpcGI,
 									(AmstradCPC.AmstradCPCSettings)GetCoreSettings<AmstradCPC>(),
 									(AmstradCPC.AmstradCPCSyncSettings)GetCoreSyncSettings<AmstradCPC>());
 								break;
@@ -735,55 +674,27 @@ namespace BizHawk.Client.Common
 								var sw = new StringWriter();
 								foreach (var e in entries)
 								{
-									string discPath = e;
+									var disc = DiscType.SonyPSX.Create(e, str => { DoLoadErrorCallback(str, "PSX", LoadErrorType.DiscError); });
 
-									//--- load the disc in a context which will let us abort if it's going to take too long
-									var discMountJob = new DiscMountJob { IN_FromPath = discPath, IN_SlowLoadAbortThreshold = 8 };
-									discMountJob.Run();
-									var disc = discMountJob.OUT_Disc;
-
-									if (discMountJob.OUT_SlowLoadAborted)
-									{
-										DoLoadErrorCallback("This disc would take too long to load. Run it through DiscoHawk first, or find a new rip because this one is probably junk", "PSX", LoadErrorType.DiscError);
-										return false;
-									}
-
-									if (discMountJob.OUT_ErrorLevel)
-									{
-										throw new InvalidOperationException($"\r\n{discMountJob.OUT_Log}");
-									}
-
-									if (disc == null)
-									{
-										throw new InvalidOperationException("Can't load one of the files specified in the M3U");
-									}
-
-									var discName = Path.GetFileNameWithoutExtension(discPath);
+									var discName = Path.GetFileNameWithoutExtension(e);
 									discNames.Add(discName);
 									discs.Add(disc);
 
-									var discType = new DiscIdentifier(disc).DetectDiscType();
-									sw.WriteLine("{0}", Path.GetFileName(discPath));
-									if (discType == DiscType.SonyPSX)
+									sw.WriteLine("{0}", Path.GetFileName(e));
+
+									string discHash = new DiscHasher(disc).Calculate_PSX_BizIDHash().ToString("X8");
+									game = Database.CheckDatabase(discHash);
+									if (game == null || game.IsRomStatusBad() || game.Status == RomStatus.NotInDatabase)
 									{
-										string discHash = new DiscHasher(disc).Calculate_PSX_BizIDHash().ToString("X8");
-										game = Database.CheckDatabase(discHash);
-										if (game == null || game.IsRomStatusBad() || game.Status == RomStatus.NotInDatabase)
-										{
-											sw.WriteLine("Disc could not be identified as known-good. Look for a better rip.");
-										}
-										else
-										{
-											sw.WriteLine("Disc was identified (99.99% confidently) as known good with disc id hash CRC32:{0:X8}", discHash);
-											sw.WriteLine("Nonetheless it could be an unrecognized romhack or patched version.");
-											sw.WriteLine("According to redump.org, the ideal hash for entire disc is: CRC32:{0:X8}", game.GetStringValue("dh"));
-											sw.WriteLine("The file you loaded hasn't been hashed entirely (it would take too long)");
-											sw.WriteLine("Compare it with the full hash calculated by the PSX menu's Hash Discs tool");
-										}
+										sw.WriteLine("Disc could not be identified as known-good. Look for a better rip.");
 									}
 									else
 									{
-										sw.WriteLine("Not a PSX disc");
+										sw.WriteLine("Disc was identified (99.99% confidently) as known good with disc id hash CRC32:{0:X8}", discHash);
+										sw.WriteLine("Nonetheless it could be an unrecognized romhack or patched version.");
+										sw.WriteLine("According to redump.org, the ideal hash for entire disc is: CRC32:{0:X8}", game.GetStringValue("dh"));
+										sw.WriteLine("The file you loaded hasn't been hashed entirely (it would take too long)");
+										sw.WriteLine("Compare it with the full hash calculated by the PSX menu's Hash Discs tool");
 									}
 
 									sw.WriteLine("-------------------------");
@@ -818,13 +729,16 @@ namespace BizHawk.Client.Common
 									(Tst.Settings)GetCoreSettings<Tst>(), (Tst.SyncSettings)GetCoreSyncSettings<Tst>());
 								break;
 							case "GEN":
-								// We are assuming discs only, for now
 								var genDiscs = DiscsFromXml(xmlGame, "GEN", DiscType.MegaCD);
-								if (!genDiscs.Any())
+								var romBytes = xmlGame.Assets
+									.Where(a => !Disc.IsValidExtension(a.Key))
+									.Select(a => a.Value)
+									.FirstOrDefault();
+								if (!genDiscs.Any() && romBytes == null)
 								{
 									return false;
 								}
-								nextEmulator = new GPGX(nextComm, game, null, genDiscs, GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
+								nextEmulator = new GPGX(nextComm, game, romBytes, genDiscs, GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
 								break;
 							case "Game Gear":
 								var leftBytesGG = xmlGame.Assets.First().Value;
@@ -886,7 +800,7 @@ namespace BizHawk.Client.Common
 					rom = new RomGame(file);
 					game = rom.GameInfo;
 				}
-				else if (ext != null) // most extensions
+				else
 				{
 					rom = new RomGame(file);
 
@@ -975,7 +889,7 @@ namespace BizHawk.Client.Common
 
 							if (useSnes9x)
 							{
-								core = CoreInventory.Instance["SNES", "Snes9x"];
+								core = CoreInventory.Instance["SNES", CoreNames.Snes9X];
 							}
 							else
 							{
@@ -1030,13 +944,9 @@ namespace BizHawk.Client.Common
 								}
 								else
 								{
-									core = CoreInventory.Instance["SGB", "SameBoy"];
+									core = CoreInventory.Instance["SGB", CoreNames.SameBoy];
 								}
 							}
-							break;
-						case "A78":
-							var gameDbPath = Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb_a7800.csv");
-							nextEmulator = new A7800Hawk(nextComm, game, rom.RomData, gameDbPath, GetCoreSettings<A7800Hawk>(), GetCoreSyncSettings<A7800Hawk>());
 							break;
 						case "C64":
 							var c64 = new C64(nextComm, Enumerable.Repeat(rom.FileData, 1), rom.GameInfo, GetCoreSettings<C64>(), GetCoreSyncSettings<C64>());
@@ -1058,9 +968,6 @@ namespace BizHawk.Client.Common
 							var cpc = new AmstradCPC(nextComm, Enumerable.Repeat(rom.RomData, 1), Enumerable.Repeat(rom.GameInfo, 1).ToList(), GetCoreSettings<AmstradCPC>(), GetCoreSyncSettings<AmstradCPC>());
 							nextEmulator = cpc;
 							break;
-						case "GBA":
-							core = CoreInventory.Instance["GBA", CoreNames.Mgba];
-							break;
 						case "PSX":
 							nextEmulator = new Octoshock(nextComm, null, null, rom.FileData, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>(), "PSX etc.");
 							break;
@@ -1071,22 +978,16 @@ namespace BizHawk.Client.Common
 						case "GEN":
 							if (Global.Config.CoreForcingViaGameDb && game.ForcedCore?.ToLower() == "pico")
 							{
-								core = CoreInventory.Instance["GEN", "PicoDrive"];
+								core = CoreInventory.Instance["GEN", CoreNames.PicoDrive];
 							}
 							else
 							{
-								core = CoreInventory.Instance["GEN", "Genplus-gx"];
+								core = CoreInventory.Instance["GEN", CoreNames.Gpgx];
 							}
 
 							break;
 						case "32X":
-							core = CoreInventory.Instance["GEN", "PicoDrive"];
-							break;
-						case "VEC":
-							core = CoreInventory.Instance["VEC", "VectrexHawk"];
-							break;
-						case "O2":
-							core = CoreInventory.Instance["O2", "O2Hawk"];
+							core = CoreInventory.Instance["GEN", CoreNames.PicoDrive];
 							break;
 					}
 

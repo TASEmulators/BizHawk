@@ -265,14 +265,8 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public abstract void Update();
 
-		protected byte GetByte(bool bypassFreeze = false)
+		protected byte GetByte()
 		{
-			if (!bypassFreeze && Global.CheatList.IsActive(_domain, Address))
-			{
-				// LIAR logic
-				return Global.CheatList.GetByteValue(_domain, Address) ?? 0;
-			}
-			
 			if (_domain.Size == 0)
 			{
 				return _domain.PeekByte(Address);
@@ -281,14 +275,8 @@ namespace BizHawk.Client.Common
 			return _domain.PeekByte(Address % _domain.Size);
 		}
 
-		protected ushort GetWord(bool bypassFreeze = false)
+		protected ushort GetWord()
 		{
-			if (!bypassFreeze && Global.CheatList.IsActive(_domain, Address))
-			{
-				// LIAR logic
-				return (ushort)(Global.CheatList.GetCheatValue(_domain, Address, WatchSize.Word) ?? 0);
-			}
-
 			if (_domain.Size == 0)
 			{
 				return _domain.PeekUshort(Address, BigEndian);
@@ -297,14 +285,8 @@ namespace BizHawk.Client.Common
 			return _domain.PeekUshort(Address % _domain.Size, BigEndian); // TODO: % size still isn't correct since it could be the last byte of the domain
 		}
 
-		protected uint GetDWord(bool bypassFreeze = false)
+		protected uint GetDWord()
 		{
-			if (!bypassFreeze && Global.CheatList.IsActive(_domain, Address))
-			{
-				// LIAR logic
-				return (uint)(Global.CheatList.GetCheatValue(_domain, Address, WatchSize.DWord) ?? 0);
-			}
-
 			if (_domain.Size == 0)
 			{
 				return _domain.PeekUint(Address, BigEndian); // TODO: % size still isn't correct since it could be the last byte of the domain
@@ -484,13 +466,6 @@ namespace BizHawk.Client.Common
 		/// Gets the current value
 		/// </summary>
 		public abstract int Value { get; }
-
-		/// <summary>
-		/// Gets the current value
-		/// but with stuff I don't understand
-		/// </summary>
-		/// <remarks>zero 15-nov-2015 - bypass LIAR LOGIC, see fdc9ea2aa922876d20ba897fb76909bf75fa6c92 https://github.com/TASVideos/BizHawk/issues/326 </remarks>
-		public abstract int ValueNoFreeze { get; }
 
 		/// <summary>
 		/// Gets a string representation of the current value

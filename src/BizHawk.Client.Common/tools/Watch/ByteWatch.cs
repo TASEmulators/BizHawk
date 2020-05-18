@@ -208,13 +208,6 @@ namespace BizHawk.Client.Common
 		public override int Value => GetByte();
 
 		/// <summary>
-		/// Gets the current value
-		/// but with stuff I don't understand
-		/// </summary>
-		/// <remarks>zero 15-nov-2015 - bypass LIAR LOGIC, see fdc9ea2aa922876d20ba897fb76909bf75fa6c92 https://github.com/TASVideos/BizHawk/issues/326 </remarks>
-		public override int ValueNoFreeze => GetByte(true);
-
-		/// <summary>
 		/// Get a string representation of the current value
 		/// </summary>
 		public override string ValueString => FormatValue(GetByte());

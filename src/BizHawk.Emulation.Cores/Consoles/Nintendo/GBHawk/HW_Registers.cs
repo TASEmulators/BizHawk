@@ -110,7 +110,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					break;
 
 				case 0xFF4F: // VBK
-					if (GBC_compat)
+					if (is_GBC)
 					{
 						ret = (byte)(0xFE | VRAM_Bank);
 					}
@@ -164,7 +164,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF69:
 				case 0xFF6A:
 				case 0xFF6B:
-					if (GBC_compat)
+					if (is_GBC)
 					{
 						ret = ppu.ReadReg(addr);
 					}
@@ -176,7 +176,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				// Ram bank for GBC
 				case 0xFF70:
-					if (is_GBC)
+					if (GBC_compat)
 					{
 						ret = (byte)RAM_Bank;
 					}
@@ -372,7 +372,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				// GBC compatibility register (I think)
 				case 0xFF4C:
-					if ((value != 0xC0) && (value != 0x80))// && (value != 0xFF) && (value != 0x04))
+					if ((value != 0xC0) && (value != 0x80) && (GB_bios_register == 0))// && (value != 0xFF) && (value != 0x04))
 					{
 						Console.Write("GBC Compatibility? ");
 						Console.WriteLine(value);
@@ -381,6 +381,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						// cpu operation is a function of hardware only
 						//cpu.is_GBC = GBC_compat;
 					}
+					Console.Write("GBC Compatibility? ");
+					Console.WriteLine(value);
 					break;
 
 				// Speed Control for GBC
@@ -393,7 +395,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				// VBK
 				case 0xFF4F:
-					if (GBC_compat && !ppu.HDMA_active)
+					if (is_GBC/* && !ppu.HDMA_active*/)
 					{
 						VRAM_Bank = (byte)(value & 1);
 					}
@@ -439,15 +441,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF69:
 				case 0xFF6A:
 				case 0xFF6B:
-					//if (GBC_compat)
-					//{
+					if (is_GBC)
+					{
 						ppu.WriteReg(addr, value);
-					//}
+					}
 					break;
 
 				// RAM Bank in GBC mode
 				case 0xFF70:
-					if (is_GBC)
+					if (GBC_compat)
 					{
 						RAM_Bank = value & 7;
 						if (RAM_Bank == 0) { RAM_Bank = 1; }
@@ -500,9 +502,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					break;
 
 				default:
-					Console.Write(addr);
-					Console.Write(" ");
-					Console.WriteLine(value);
+					Console.WriteLine(addr + " " + value);
 					break;
 			}
 		}
