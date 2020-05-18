@@ -20,6 +20,7 @@ namespace BizHawk.Client.EmuHawk
 			var ss = bsnes.GetSyncSettings();
 			using var dlg = new SNESOptions
 			{
+				RandomizedInitialState = ss.RandomizedInitialState,
 				AlwaysDoubleSize = s.AlwaysDoubleSize,
 				CropSGBFrame = s.CropSGBFrame,
 				ShowObj1 = s.ShowOBJ_0,
@@ -37,6 +38,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				s.AlwaysDoubleSize = dlg.AlwaysDoubleSize;
 				s.CropSGBFrame = dlg.CropSGBFrame;
+				ss.RandomizedInitialState = dlg.RandomizedInitialState;
 				s.ShowOBJ_0 = dlg.ShowObj1;
 				s.ShowOBJ_1 = dlg.ShowObj2;
 				s.ShowOBJ_2 = dlg.ShowObj3;
@@ -65,6 +67,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get => cbCropSGBFrame.Checked;
 			set => cbCropSGBFrame.Checked = value;
+		}
+
+		private bool RandomizedInitialState
+		{
+			get => cbRandomizedInitialState.Checked;
+			set => cbRandomizedInitialState.Checked = value;
 		}
 
 		private bool ShowObj1 { get => Obj1Checkbox.Checked; set => Obj1Checkbox.Checked = value;
