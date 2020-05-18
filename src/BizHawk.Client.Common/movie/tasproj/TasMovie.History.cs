@@ -29,6 +29,7 @@ namespace BizHawk.Client.Common
 		void AddInputBind(int frame, bool isDelete, string name = "", bool force = false);
 		void AddInsertFrames(int frame, int count, string name = "", bool force = false);
 		void AddInsertInput(int frame, List<string> newInputs, string name = "", bool force = false);
+		void AddRemoveFrames(int removeStart, int removeUpTo, List<string> oldInputs, List<TasMovieMarker> removedMarkers, string name = "", bool force = false);
 	}
 
 	public class TasMovieChangeLog : IMovieChangeLog
@@ -69,9 +70,9 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Gets or sets a value indicating whether the movie is in recording mode
+		/// Gets or sets a value indicating whether the movie is recording action history.
 		/// This is not intended to turn off the ChangeLog, but to disable the normal recording process.
-		/// Use this to manually control the ChangeLog. (Useful for when you are making lots of 
+		/// Use this to manually control the ChangeLog. (Useful for disabling the ChangeLog during undo/redo).
 		/// </summary>
 		public bool IsRecording { get; set; } = true;
 
@@ -395,6 +396,15 @@ namespace BizHawk.Client.Common
 			{
 				AddMovieAction(name);
 				_history.Last().Add(new MovieActionInsertFrames(frame, newInputs));
+			}
+		}
+
+		public void AddRemoveFrames(int removeStart, int removeUpTo, List<string> oldInputs, List<TasMovieMarker> removedMarkers, string name = "", bool force = false)
+		{
+			if (IsRecording || force)
+			{
+				AddMovieAction(name);
+				_history.Last().Add(new MovieActionRemoveFrames(removeStart, removeUpTo, oldInputs, removedMarkers));
 			}
 		}
 	}
@@ -820,6 +830,45 @@ namespace BizHawk.Client.Common
 			{
 				movie.InsertInput(FirstFrame, _newInputs);
 			}
+
+			movie.ChangeLog.IsRecording = wasRecording;
+		}
+	}
+
+	public class MovieActionRemoveFrames : IMovieAction
+	{
+		public int FirstFrame { get; }
+		public int LastFrame { get; }
+
+		private readonly List<string> _oldInputs;
+		private readonly List<TasMovieMarker> _removedMarkers;
+
+		public MovieActionRemoveFrames(int removeStart, int removeUpTo, List<string> oldInputs, List<TasMovieMarker> removedMarkers)
+		{
+			FirstFrame = removeStart;
+			LastFrame = removeUpTo;
+			_oldInputs = oldInputs;
+			_removedMarkers = removedMarkers;
+		}
+		
+		public void Undo(ITasMovie movie)
+		{
+			bool wasRecording = movie.ChangeLog.IsRecording;
+			movie.ChangeLog.IsRecording = false;
+
+			movie.InsertInput(FirstFrame, _oldInputs);
+
+			movie.Markers.AddRange(_removedMarkers);
+
+			movie.ChangeLog.IsRecording = wasRecording;
+		}
+
+		public void Redo(ITasMovie movie)
+		{
+			bool wasRecording = movie.ChangeLog.IsRecording;
+			movie.ChangeLog.IsRecording = false;
+
+			movie.RemoveFrames(FirstFrame, LastFrame);
 
 			movie.ChangeLog.IsRecording = wasRecording;
 		}

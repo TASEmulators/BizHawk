@@ -28,7 +28,7 @@ namespace BizHawk.Client.Common
 			Message = split[1];
 		}
 
-		public int Frame { get; }
+		public int Frame { get; private set; }
 
 		public string Message { get; set; }
 
@@ -64,6 +64,17 @@ namespace BizHawk.Client.Common
 			}
 
 			return marker.Frame != frame;
+		}
+
+		/// <summary>
+		/// Shifts the marker's position directly.
+		/// Should be used sparingly and only while considering the surrounding frames.
+		/// Intended for moving binded markers during frame inserts/deletions.
+		/// </summary>
+		/// <param name="offset">Amount to shift marker by.</param>
+		public void ShiftTo(int offset)
+		{
+			Frame += offset;
 		}
 	}
 
@@ -318,6 +329,14 @@ namespace BizHawk.Client.Common
 		public TasMovieMarker Get(int frame)
 		{
 			return this.FirstOrDefault(m => m == frame);
+		}
+		
+		public void ShiftAt(int frame, int offset)
+		{
+			foreach (var marker in this.Where(m => m.Frame >= frame).ToList())
+			{
+				marker.ShiftTo(offset);
+			}
 		}
 	}
 }
