@@ -95,37 +95,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public static void PopulateFramebuffer(BinaryReader br)
-		{
-			if (!Global.Emulator.HasVideoProvider())
-			{
-				return;
-			}
-
-			try
-			{
-				using (new SimpleTime("Load Framebuffer"))
-				{
-					QuickBmpFile.Load(Global.Emulator.AsVideoProvider(), br.BaseStream);
-				}
-			}
-			catch
-			{
-				var buff = Global.Emulator.AsVideoProvider().GetVideoBuffer();
-				try
-				{
-					for (int i = 0; i < buff.Length; i++)
-					{
-						int j = br.ReadInt32();
-						buff[i] = j;
-					}
-				}
-				catch (EndOfStreamException)
-				{
-				}
-			}
-		}
-
 		public static bool LoadStateFile(IEmulator emulator, string path)
 		{
 			var core = emulator.AsStatable();
@@ -200,6 +169,37 @@ namespace BizHawk.Client.Common
 			}
 
 			return false;
+		}
+
+		private static void PopulateFramebuffer(BinaryReader br)
+		{
+			if (!Global.Emulator.HasVideoProvider())
+			{
+				return;
+			}
+
+			try
+			{
+				using (new SimpleTime("Load Framebuffer"))
+				{
+					QuickBmpFile.Load(Global.Emulator.AsVideoProvider(), br.BaseStream);
+				}
+			}
+			catch
+			{
+				var buff = Global.Emulator.AsVideoProvider().GetVideoBuffer();
+				try
+				{
+					for (int i = 0; i < buff.Length; i++)
+					{
+						int j = br.ReadInt32();
+						buff[i] = j;
+					}
+				}
+				catch (EndOfStreamException)
+				{
+				}
+			}
 		}
 	}
 }
