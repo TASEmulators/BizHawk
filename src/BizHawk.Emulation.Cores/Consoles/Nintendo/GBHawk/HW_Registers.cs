@@ -101,7 +101,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF4D:
 					if (GBC_compat)
 					{
-						ret = (byte)(((double_speed ? 1 : 0) << 7) + ((speed_switch ? 1 : 0)));
+						ret = (byte)(((double_speed ? 1 : 0) << 7) | (speed_switch ? 1 : 0) | 0x7E);
 					}
 					else
 					{

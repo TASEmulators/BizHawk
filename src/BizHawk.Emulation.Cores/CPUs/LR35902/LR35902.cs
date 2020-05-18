@@ -425,7 +425,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					if (!stop_check)
 					{
 						// Z contains the second stop byte, not sure if it's useful at all
-						stop_time = SpeedFunc(Regs[Z]);
+						stop_time = SpeedFunc(0);
 						stop_check = true;
 					}
 
@@ -433,6 +433,11 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					
 					if (stop_time > 0)
 					{
+						if (stop_time == (32768 - 43))
+						{
+							SpeedFunc(1);							
+						}
+
 						stop_time--;
 
 						if (stop_time == 0)
