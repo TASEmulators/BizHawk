@@ -27,7 +27,7 @@ CXXFLAGS_DEBUG :=
 CXXFLAGS_RELEASE :=
 
 ifneq ($(filter %.cpp, $(SRCS)), )
-CXX_EXTRA_LIBS := -lc++abi -lc++
+CXX_EXTRA_LIBS := -lc++ -lc++abi
 endif
 
 _OBJS := $(addsuffix .o,$(SRCS))

@@ -2,10 +2,11 @@
 MYPATH="`dirname \"$0\"`"
 SYSROOT="`realpath \"$MYPATH/../sysroot\"`"
 LLVMDIR="`realpath \"$MYPATH/../../../llvm-project\"`"
-mkdir -p build1
+rm -rf build1
+mkdir build1
 cd build1
-export CFLAGS="-mabi=ms -fno-exceptions -mcmodel=large -mstack-protector-guard=global"
-export CXXFLAGS="-mabi=ms -fno-exceptions -mcmodel=large -mstack-protector-guard=global"
+export CFLAGS="-mabi=ms -fno-exceptions -mcmodel=large -mstack-protector-guard=global -fno-use-cxa-atexit"
+export CXXFLAGS="-mabi=ms -fno-exceptions -mcmodel=large -mstack-protector-guard=global -fno-use-cxa-atexit"
 cmake \
 	-DCMAKE_C_COMPILER="$SYSROOT/bin/musl-gcc" \
 	-DCMAKE_CXX_COMPILER="$SYSROOT/bin/musl-gcc" \
