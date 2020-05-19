@@ -196,30 +196,30 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			var heap = _parent._heap;
 
 			var start = heap.Memory.Start;
-			var end = start + heap.Used;
-			var max = heap.Memory.End;
+			var currentEnd = start + heap.Used;
+			var maxEnd = heap.Memory.EndExclusive;
 
 			var p = (ulong)_p;
 
-			if (p < start || p > max)
+			if (p < start || p > maxEnd)
 			{
 				// failure: return current break
-				return Z.UU(end);
+				return Z.UU(currentEnd);
 			}
-			else if (p > end)
+			else if (p > currentEnd)
 			{
 				// increase size of heap
-				heap.Allocate(p - end, 1);
+				heap.Allocate(p - currentEnd, 1);
 				return Z.UU(p);
 			}
-			else if (p < end)
+			else if (p < currentEnd)
 			{
 				throw new InvalidOperationException("We don't support shrinking heaps");
 			}
 			else
 			{
 				// no change
-				return Z.UU(end);
+				return Z.UU(currentEnd);
 			}
 		}
 
