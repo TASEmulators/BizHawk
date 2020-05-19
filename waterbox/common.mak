@@ -8,6 +8,10 @@ DOBJ_DIR := $(ROOT_DIR)/obj/debug
 EMULIBC_OBJS := $(WATERBOX_DIR)/emulibc/obj/release/emulibc.c.o
 EMULIBC_DOBJS := $(WATERBOX_DIR)/emulibc/obj/debug/emulibc.c.o
 SYSROOT := $(WATERBOX_DIR)/sysroot
+ifdef NEED_LIBCO
+EMULIBC_OBJS := $(EMULIBC_OBJS) $(shell find $(WATERBOX_DIR)/libco/obj/release -type f -name '*.o')
+EMULIBC_DOBJS := $(EMULIBC_DOBJS) $(shell find $(WATERBOX_DIR)/libco/obj/debug -type f -name '*.o')
+endif
 
 print-%: ;
 	@echo $* = $($*)
@@ -30,9 +34,9 @@ ifneq ($(filter %.cpp, $(SRCS)), )
 CXX_EXTRA_LIBS := -lc++ -lc++abi
 endif
 
-_OBJS := $(addsuffix .o,$(SRCS))
-OBJS := $(patsubst $(ROOT_DIR)%,$(OBJ_DIR)%,$(_OBJS))
-DOBJS := $(patsubst $(ROOT_DIR)%,$(DOBJ_DIR)%,$(_OBJS))
+_OBJS := $(addsuffix .o, $(realpath $(SRCS)))
+OBJS := $(patsubst $(ROOT_DIR)%, $(OBJ_DIR)%, $(_OBJS))
+DOBJS := $(patsubst $(ROOT_DIR)%, $(DOBJ_DIR)%, $(_OBJS))
 
 $(OBJ_DIR)/%.c.o: %.c
 	@echo cc $<
