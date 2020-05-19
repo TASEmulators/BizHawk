@@ -203,20 +203,15 @@ namespace BizHawk.Emulation.DiscSystem
 				if (sysId == "ASAHI-CDV")
 					return DiscType.Playdia;
 
-				if (sysId == "CDTV" || sysId == "AMIGA")
+				if (sysId == "CDTV" || sysId == "AMIGA"
+					|| iso.Root.Children.Keys.Any(k => k.ToLowerInvariant().Contains("cd32")))
+				{
 					return DiscType.Amiga;
-				foreach (var f in iso.Root.Children)
-					if (f.Key.ToLower().Contains("cd32"))
-						return DiscType.Amiga;
+				}
 
 				// NeoGeoCD Check
-				var absTxt = iso.Root.Children.Where(a => a.Key.Contains("ABS.TXT")).ToList();
-				if (absTxt.Count > 0)
-				{
-					if (SectorContains("abstracted by snk", Convert.ToInt32(absTxt.First().Value.Offset)))
-						return DiscType.NeoGeoCD;
-				}
-					
+				var absTxt = iso.Root.Children.Where(kvp => kvp.Key.Contains("ABS.TXT")).Select(kvp => kvp.Value).FirstOrDefault();
+				if (absTxt != null && SectorContains("abstracted by snk", Convert.ToInt32(absTxt.Offset))) return DiscType.NeoGeoCD;
 
 				return DiscType.UnknownCDFS;
 			}                

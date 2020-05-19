@@ -720,9 +720,8 @@ namespace BizHawk.Emulation.DiscSystem
 				{
 					int relMSF = -1;
 
-					var track = mdsf.TOCEntries.Where(t => t.Point == i).FirstOrDefault();
-					if (track == null)
-						break;
+					var track = mdsf.TOCEntries.FirstOrDefault(t => t.Point == i);
+					if (track == null) break;
 
 					// ignore the info entries
 					if (track.Point == 0xA0 ||
@@ -733,10 +732,12 @@ namespace BizHawk.Emulation.DiscSystem
 					}
 
 					// get the blob(s) for this track
-					// its probably a safe assumption that there will be only one blob per track, 
-					// but i'm still not 100% sure on this 
+					// it's probably a safe assumption that there will be only one blob per track, but I'm still not 100% sure on this
 					var tr = mdsf.TOCEntries.FirstOrDefault(a => a.Point == i) ?? throw new MDSParseException("BLOB Error!");
 
+#if true
+					if (tr.ImageFileNamePaths.Count == 0) throw new MDSParseException("BLOB Error!");
+#else // this is the worst use of lists and LINQ I've seen in this god-forsaken codebase, I hope for all our sakes that it's not a workaround for some race condition --yoshi
 					List<string> blobstrings = new List<string>();
 					foreach (var t in tr.ImageFileNamePaths)
 					{
@@ -752,6 +753,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 					// is the currBlob valid for this track, or do we need to increment?   
 					string bString = tBlobs.First();
+#endif
 
 					IBlob mdfBlob = null;
 					

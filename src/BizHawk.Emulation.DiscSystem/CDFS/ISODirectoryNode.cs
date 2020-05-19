@@ -122,12 +122,8 @@ namespace BizHawk.Emulation.DiscSystem
 				tabs += "  ";
 			}
 
-			// Get the names and sort
-			string[] names = this.Children.Keys.ToArray();
-			Array.Sort(names);
-
-			// Print the directory names recursively
-			foreach (string s in names)
+			// Print the directory names recursively, sorted alphabetically
+			foreach (string s in this.Children.Keys.OrderBy(s => s))
 			{
 				ISONode n = this.Children[s];
 				Console.WriteLine(tabs + s);
