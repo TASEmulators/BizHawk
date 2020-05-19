@@ -1,0 +1,24 @@
+#!/bin/sh
+MYPATH="`dirname \"$0\"`"
+SYSROOT="`realpath \"$MYPATH/../sysroot\"`"
+LLVMDIR="`realpath \"$MYPATH/../../../llvm-project\"`"
+mkdir -p build1
+cd build1
+export CFLAGS="-mabi=ms -fno-exceptions -mcmodel=large -mstack-protector-guard=global"
+export CXXFLAGS="-mabi=ms -fno-exceptions -mcmodel=large -mstack-protector-guard=global"
+cmake \
+	-DCMAKE_C_COMPILER="$SYSROOT/bin/musl-gcc" \
+	-DCMAKE_CXX_COMPILER="$SYSROOT/bin/musl-gcc" \
+	-DLIBCXXABI_ENABLE_EXCEPTIONS=OFF \
+	-DLIBCXXABI_ENABLE_PIC=OFF \
+	-DLIBCXXABI_ENABLE_THREADS=OFF \
+	-DLIBCXXABI_ENABLE_SHARED=OFF \
+	-DLIBCXXABI_BAREMETAL=ON \
+	-DLIBCXXABI_SILENT_TERMINATE=ON \
+	-DLIBCXXABI_INCLUDE_TESTS=OFF \
+	-DLIBCXXABI_LINK_TESTS_WITH_SHARED_LIBCXXABI=OFF \
+	-DLIBCXXABI_LIBCXX_INCLUDES="$LLVMDIR/libcxx/include" \
+	-DCMAKE_INSTALL_PREFIX="$SYSROOT" \
+	-DCMAKE_AR="/usr/bin/gcc-ar" \
+	-DCMAKE_RANLIB="/usr/bin/gcc-ranlib" \
+	../../../../llvm-project/libcxxabi
