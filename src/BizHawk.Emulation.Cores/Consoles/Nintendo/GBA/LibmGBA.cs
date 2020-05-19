@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			WATCHPOINT_READ = 2,
 			WATCHPOINT_RW = 3,
 			WATCHPOINT_WRITE_CHANGE = 4,
-		};
+		}
 
 		[StructLayout(LayoutKind.Sequential)]
 		public class OverrideInfo

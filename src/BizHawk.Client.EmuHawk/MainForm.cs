@@ -947,9 +947,9 @@ namespace BizHawk.Client.EmuHawk
 			var floats = Input.Instance.GetAxisValues();
 			foreach (var f in Input.Instance.GetAxisValues())
 			{
-				if (f.Item1 == "WMouse X")
+				if (f.AxisID == "WMouse X")
 					mouseX = f;
-				else if (f.Item1 == "WMouse Y")
+				else if (f.AxisID == "WMouse Y")
 					mouseY = f;
 				else conInput.AcceptNewAxes(f);
 			}

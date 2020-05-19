@@ -714,7 +714,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
-				_link.DummyReadMemory(PC); ; Y--; NZ_Y();
+				_link.DummyReadMemory(PC); Y--; NZ_Y();
 			}
 		}
 		void Imp_INX()

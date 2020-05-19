@@ -23,7 +23,7 @@ namespace BizHawk.Client.Common
 
 				_type.ControlsFromLog = groups
 					.Select(group => group.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries).ToList())
-					.ToList();;
+					.ToList();
 			}
 		}
 
