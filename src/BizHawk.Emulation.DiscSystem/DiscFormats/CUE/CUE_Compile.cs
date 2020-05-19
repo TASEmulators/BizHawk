@@ -399,7 +399,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			});
 		}
 
-		public void Run()
+		public override void Run()
 		{
 			//in params
 			var cue = IN_CueFile;

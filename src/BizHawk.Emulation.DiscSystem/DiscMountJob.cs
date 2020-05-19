@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.DiscSystem
 		public bool OUT_SlowLoadAborted { get; private set; }
 
 		/// <exception cref="NotSupportedException"><see cref="IN_DiscInterface"/> is <see cref="DiscInterface.LibMirage"/></exception>
-		public void Run()
+		public override void Run()
 		{
 			switch (IN_DiscInterface)
 			{
@@ -136,7 +136,7 @@ namespace BizHawk.Emulation.DiscSystem
 				cue_content ??= File.ReadAllText(cuePath);
 				parseJob.IN_CueString = cue_content;
 				bool okParse = true;
-				try { parseJob.Run(parseJob); }
+				try { parseJob.Run(); }
 				catch (DiscJobAbortException) { okParse = false; parseJob.FinishLog(); }
 				if (!string.IsNullOrEmpty(parseJob.OUT_Log)) Console.WriteLine(parseJob.OUT_Log);
 				ConcatenateJobLog(parseJob);

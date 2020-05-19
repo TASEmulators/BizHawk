@@ -375,10 +375,10 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			job.FinishLog();
 		} //LoadFromString
 
-		public void Run(ParseCueJob job)
+		public override void Run()
 		{
-			job.OUT_CueFile = new CUE_File();
-			job.LoadFromString(job);
+			OUT_CueFile = new CUE_File();
+			LoadFromString(this);
 		}
 	}
 
