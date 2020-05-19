@@ -67,6 +67,8 @@ namespace BizHawk.Emulation.DiscSystem
 
 			public void Load(string path)
 			{
+				const string MISFORMED_EXCEPTION_MESSAGE = "Mis-formed ECM file";
+
 				stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
 				
 				//skip header
@@ -77,17 +79,17 @@ namespace BizHawk.Emulation.DiscSystem
 				{
 					//read block count. this format is really stupid. maybe its good for detecting non-ecm files or something.
 					int b = stream.ReadByte();
-					if (b == -1) MisformedException();
+					if (b == -1) throw new InvalidOperationException(MISFORMED_EXCEPTION_MESSAGE);
 					int bytes = 1;
 					int T = b & 3;
 					long N = (b >> 2) & 0x1F;
 					int nbits = 5;
 					while (b.Bit(7))
 					{
-						if (bytes == 5) MisformedException(); //if we're gonna need a 6th byte, this file is broken
+						if (bytes == 5) throw new InvalidOperationException(MISFORMED_EXCEPTION_MESSAGE); //if we're gonna need a 6th byte, this file is broken
 						b = stream.ReadByte();
 						bytes++;
-						if (b == -1) MisformedException();
+						if (b == -1) throw new InvalidOperationException(MISFORMED_EXCEPTION_MESSAGE);
 						N |= (long)(b & 0x7F) << nbits;
 						nbits += 7;
 					}
@@ -98,7 +100,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 					//the 0x80000000 business is confusing, but this is almost positively an error
 					if (N >= 0x100000000)
-						MisformedException();
+						throw new InvalidOperationException(MISFORMED_EXCEPTION_MESSAGE);
 
 					uint todo = (uint)N + 1;
 
@@ -132,7 +134,7 @@ namespace BizHawk.Emulation.DiscSystem
 						stream.Seek(todo * 2328, SeekOrigin.Current);
 						logOffset += todo * 2336;
 					}
-					else MisformedException();
+					else throw new InvalidOperationException(MISFORMED_EXCEPTION_MESSAGE);
 				}
 
 				//TODO - endian bug. need an endian-independent binary reader with good license (miscutils is apache license) 
@@ -141,11 +143,6 @@ namespace BizHawk.Emulation.DiscSystem
 				EDC = br.ReadInt32();
 
 				Length = logOffset;
-			}
-
-			private void MisformedException()
-			{
-				throw new InvalidOperationException("Mis-formed ECM file");
 			}
 
 			public static bool IsECM(string path)
