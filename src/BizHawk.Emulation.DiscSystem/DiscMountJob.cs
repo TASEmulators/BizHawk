@@ -101,106 +101,96 @@ namespace BizHawk.Emulation.DiscSystem
 
 		private void RunBizHawk()
 		{
-			string infile = IN_FromPath;
-			string cue_content = null;
-
-			var cfr = new CueFileResolver();
-
-		RERUN:
-			var ext = Path.GetExtension(infile).ToLowerInvariant();
-
-			if (ext == ".iso")
+			void LoadCue(string cueDirPath, string cueContent)
 			{
-				//make a fake cue file to represent this iso file and rerun it as a cue
-				string filebase = Path.GetFileName(infile);
-				cue_content = $@"
-					FILE ""{filebase}"" BINARY
-						TRACK 01 MODE1/2048
-							INDEX 01 00:00:00";
-				infile = Path.ChangeExtension(infile, ".cue");
-				goto RERUN;
-			}
-			if (ext == ".cue")
-			{
-				//TODO - major renovation of error handling needed
+				//TODO major renovation of error handling needed
 
-				//TODO - make sure code is designed so no matter what happens, a disc is disposed in case of errors.
-				//perhaps the CUE_Format2 (once renamed to something like Context) can handle that
-				var cuePath = IN_FromPath;
+				//TODO make sure code is designed so no matter what happens, a disc is disposed in case of errors.
+				// perhaps the CUE_Format2 (once renamed to something like Context) can handle that
+				var cfr = new CueFileResolver();
 				var cueContext = new CUE_Context { DiscMountPolicy = IN_DiscMountPolicy, Resolver = cfr };
 
-				if (!cfr.IsHardcodedResolve) cfr.SetBaseDirectory(Path.GetDirectoryName(infile));
+				if (!cfr.IsHardcodedResolve) cfr.SetBaseDirectory(cueDirPath);
 
-				//parse the cue file
+				// parse the cue file
 				var parseJob = new ParseCueJob();
-				cue_content ??= File.ReadAllText(cuePath);
-				parseJob.IN_CueString = cue_content;
-				bool okParse = true;
-				try { parseJob.Run(); }
-				catch (DiscJobAbortException) { okParse = false; parseJob.FinishLog(); }
+				parseJob.IN_CueString = cueContent;
+				var okParse = true;
+				try
+				{
+					parseJob.Run();
+				}
+				catch (DiscJobAbortException)
+				{
+					okParse = false;
+					parseJob.FinishLog();
+				}
 				if (!string.IsNullOrEmpty(parseJob.OUT_Log)) Console.WriteLine(parseJob.OUT_Log);
 				ConcatenateJobLog(parseJob);
-				if (!okParse)
-					goto DONE;
+				if (!okParse) return;
 
-				// compile the cue file:
-				// includes this work: resolve required bin files and find out what it's gonna take to load the cue
+				// compile the cue file
+				// includes resolving required bin files and finding out what would processing would need to happen in order to load the cue
 				var compileJob = new CompileCueJob
 				{
 					IN_CueContext = cueContext,
 					IN_CueFile = parseJob.OUT_CueFile
 				};
-				bool okCompile = true;
-				try { compileJob.Run(); }
-				catch (DiscJobAbortException) { okCompile = false; compileJob.FinishLog();  }
+				var okCompile = true;
+				try
+				{
+					compileJob.Run();
+				}
+				catch (DiscJobAbortException)
+				{
+					okCompile = false;
+					compileJob.FinishLog();
+				}
 				if (!string.IsNullOrEmpty(compileJob.OUT_Log)) Console.WriteLine(compileJob.OUT_Log);
 				ConcatenateJobLog(compileJob);
-				if (!okCompile || compileJob.OUT_ErrorLevel)
-					goto DONE;
+				if (!okCompile || compileJob.OUT_ErrorLevel) return;
 
-				//check slow loading threshold
+				// check slow loading threshold
 				if (compileJob.OUT_LoadTime > IN_SlowLoadAbortThreshold)
 				{
 					Warn("Loading terminated due to slow load threshold");
 					OUT_SlowLoadAborted = true;
-					goto DONE;
+					return;
 				}
 
-				//actually load it all up
+				// actually load it all up
 				var loadJob = new LoadCueJob { IN_CompileJob = compileJob };
 				loadJob.Run();
-				//TODO - need better handling of log output
+				//TODO need better handling of log output
 				if (!string.IsNullOrEmpty(loadJob.OUT_Log)) Console.WriteLine(loadJob.OUT_Log);
 				ConcatenateJobLog(loadJob);
 
 				OUT_Disc = loadJob.OUT_Disc;
-				//OUT_Disc.DiscMountPolicy = IN_DiscMountPolicy; //NOT SURE WE NEED THIS (only makes sense for cue probably)
-			}
-			else if (ext == ".ccd")
-			{
-				CCD_Format ccdLoader = new CCD_Format();
-				OUT_Disc = ccdLoader.LoadCCDToDisc(IN_FromPath, IN_DiscMountPolicy);
-			}
-			else if (ext == ".mds")
-			{
-				MDS_Format mdsLoader = new MDS_Format();
-				OUT_Disc = mdsLoader.LoadMDSToDisc(IN_FromPath, IN_DiscMountPolicy);
+//				OUT_Disc.DiscMountPolicy = IN_DiscMountPolicy; // NOT SURE WE NEED THIS (only makes sense for cue probably)
 			}
 
-
-		DONE:
-
-			//setup the lowest level synth provider
-			if (OUT_Disc != null)
+			switch (Path.GetExtension(IN_FromPath).ToLowerInvariant())
 			{
-				var sssp = new ArraySectorSynthProvider
-				{
-					Sectors = OUT_Disc._Sectors,
-					FirstLBA = -150
-				};
-				OUT_Disc.SynthProvider = sssp;
+				case ".ccd":
+					OUT_Disc = new CCD_Format().LoadCCDToDisc(IN_FromPath, IN_DiscMountPolicy);
+					break;
+				case ".cue":
+					LoadCue(Path.GetDirectoryName(IN_FromPath), File.ReadAllText(IN_FromPath));
+					break;
+				case ".iso":
+					// make a fake .cue file to represent this .iso and mount that
+					LoadCue(Path.GetDirectoryName(IN_FromPath), $@"
+					FILE ""{Path.GetFileName(IN_FromPath)}"" BINARY
+						TRACK 01 MODE1/2048
+							INDEX 01 00:00:00");
+					break;
+				case ".mds":
+					OUT_Disc = new MDS_Format().LoadMDSToDisc(IN_FromPath, IN_DiscMountPolicy);
+					break;
 			}
+
+			// set up the lowest level synth provider
+			if (OUT_Disc != null) OUT_Disc.SynthProvider = new ArraySectorSynthProvider { Sectors = OUT_Disc._Sectors, FirstLBA = -150 };
 		}
 	}
-	
 }
