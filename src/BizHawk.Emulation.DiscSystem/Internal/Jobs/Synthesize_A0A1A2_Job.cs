@@ -14,22 +14,22 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// "First Recorded Track Number" value for TOC (usually 1)
 		/// </summary>
-		public int IN_FirstRecordedTrackNumber;
+		public int IN_FirstRecordedTrackNumber { private get; set; }
 
 		/// <summary>
 		/// "Last Recorded Track Number" value for TOC
 		/// </summary>
-		public int IN_LastRecordedTrackNumber;
+		public int IN_LastRecordedTrackNumber { private get; set; }
 
 		/// <summary>
 		/// The absolute timestamp of the lead-out track
 		/// </summary>
-		public int IN_LeadoutTimestamp;
+		public int IN_LeadoutTimestamp { private get; set; }
 
 		/// <summary>
 		/// The session format for this TOC
 		/// </summary>
-		public SessionFormat IN_Session1Format;
+		public SessionFormat IN_Session1Format { private get; set; }
 
 		/// <summary>appends the new entries to the provided list</summary>
 		/// <exception cref="InvalidOperationException"><see cref="IN_Session1Format"/> is <see cref="SessionFormat.None"/> or a non-member</exception>

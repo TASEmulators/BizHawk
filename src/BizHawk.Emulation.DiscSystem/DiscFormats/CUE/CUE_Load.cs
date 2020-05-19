@@ -33,12 +33,12 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		/// <summary>
 		/// The results of the compile job, a prerequisite for this
 		/// </summary>
-		public CompileCueJob IN_CompileJob;
+		public CompileCueJob IN_CompileJob { private get; set; }
 
 		/// <summary>
 		/// The resulting disc
 		/// </summary>
-		public Disc OUT_Disc;
+		public Disc OUT_Disc { get; private set; }
 
 		private enum BurnType
 		{

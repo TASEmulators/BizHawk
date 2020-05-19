@@ -121,33 +121,33 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		/// <summary>
 		/// input: the CueFile to analyze
 		/// </summary>
-		public CUE_File IN_CueFile;
+		public CUE_File IN_CueFile { private get; set; }
 
 		/// <summary>
 		/// The context used for this compiling job
 		/// TODO - rename something like context
 		/// </summary>
-		public CUE_Context IN_CueContext;
+		public CUE_Context IN_CueContext { internal get; set; }
 
 		/// <summary>
 		/// output: high level disc info
 		/// </summary>
-		public CompiledDiscInfo OUT_CompiledDiscInfo;
+		public CompiledDiscInfo OUT_CompiledDiscInfo { get; private set; }
 
 		/// <summary>
 		/// output: CD-Text set at the global level (before any track commands)
 		/// </summary>
-		public CompiledCDText OUT_GlobalCDText;
+		public CompiledCDText OUT_GlobalCDText { get; private set; }
 
 		/// <summary>
 		/// output: The compiled file info
 		/// </summary>
-		public List<CompiledCueFile> OUT_CompiledCueFiles;
+		public List<CompiledCueFile> OUT_CompiledCueFiles { get; private set; }
 
 		/// <summary>
 		/// output: The compiled track info
 		/// </summary>
-		public List<CompiledCueTrack> OUT_CompiledCueTracks;
+		public List<CompiledCueTrack> OUT_CompiledCueTracks { get; private set; }
 
 		/// <summary>
 		/// output: An integer between 0 and 10 indicating how costly it will be to load this disc completely.
@@ -156,7 +156,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		/// 1 - Requires minimal processing (indexing ECM)
 		/// 10 - Requires ages, decoding audio data, etc.
 		/// </summary>
-		public int OUT_LoadTime;
+		public int OUT_LoadTime { get; private set; }
 
 		//-----------------------------------------------------------------
 

@@ -318,11 +318,12 @@ namespace BizHawk.Client.DiscoHawk
 				sw.WriteLine("BEGIN COMPARE: {0}\nSRC {1} vs DST {2}", infile, loadDiscInterface, cmpif);
 
 				//reload the original disc, with new policies as needed
-				var dmj = new DiscMountJob { IN_DiscInterface = loadDiscInterface, IN_FromPath = infile };
-				if (cmpif == DiscInterface.MednaDisc)
+				var dmj = new DiscMountJob
 				{
-					dmj.IN_DiscMountPolicy.CUE_PregapContradictionModeA = false;
-				}
+					IN_DiscInterface = loadDiscInterface,
+					IN_DiscMountPolicy = new DiscMountPolicy { CUE_PregapContradictionModeA = cmpif != DiscInterface.MednaDisc },
+					IN_FromPath = infile
+				};
 
 				dmj.Run();
 

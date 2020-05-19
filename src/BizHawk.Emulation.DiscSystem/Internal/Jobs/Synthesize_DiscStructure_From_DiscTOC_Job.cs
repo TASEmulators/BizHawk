@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.DiscSystem
 {
 	class Synthesize_DiscStructure_From_DiscTOC_Job
 	{
-		public Disc IN_Disc;
+		public Disc IN_Disc { private get; set; }
 		public DiscTOC TOCRaw;
 		public DiscStructure Result;
 
