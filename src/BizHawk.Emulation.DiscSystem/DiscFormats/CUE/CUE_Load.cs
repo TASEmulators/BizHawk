@@ -163,7 +163,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			OUT_Disc.RawTOCEntries.Add(new RawTOCEntry { QData = toc_sq });
 		}
 
-		public void Run()
+		public override void Run()
 		{
 			//params
 			var compiled = IN_CompileJob;
