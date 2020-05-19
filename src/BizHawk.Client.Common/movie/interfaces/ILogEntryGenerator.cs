@@ -23,7 +23,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Generates a dictionary of button names to their corresponding mnemonic values
 		/// </summary>
-		Dictionary<string, string> Map();
+		IDictionary<string, string> Map();
 
 		/// <summary>
 		/// Generates a display friendly version of the input log entry

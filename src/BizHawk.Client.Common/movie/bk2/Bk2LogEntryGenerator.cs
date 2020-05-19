@@ -42,7 +42,7 @@ namespace BizHawk.Client.Common
 			return sb.ToString();
 		}
 
-		public Dictionary<string, string> Map()
+		public IDictionary<string, string> Map()
 		{
 			var dict = new Dictionary<string, string>();
 			foreach (var group in _source.Definition.ControlsOrdered.Where(c => c.Any()))
