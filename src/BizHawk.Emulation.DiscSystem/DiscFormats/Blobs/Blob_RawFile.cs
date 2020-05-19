@@ -24,11 +24,8 @@ namespace BizHawk.Emulation.DiscSystem
 			private BufferedStream fs;
 			public void Dispose()
 			{
-				if (fs != null)
-				{
-					fs.Dispose();
-					fs = null;
-				}
+				fs?.Dispose();
+				fs = null;
 			}
 			public int Read(long byte_pos, byte[] buffer, int offset, int count)
 			{
@@ -39,8 +36,7 @@ namespace BizHawk.Emulation.DiscSystem
 				//really, we need a smarter asynchronous read-ahead buffer. that requires substantially more engineering, some kind of 'DiscUniverse' of carefully managed threads and such.
 				
 				const int buffersize = 2352 * 75 * 2;
-				if (fs == null)
-					fs = new BufferedStream(new FileStream(physicalPath, FileMode.Open, FileAccess.Read, FileShare.Read), buffersize);
+				fs ??= new BufferedStream(new FileStream(physicalPath, FileMode.Open, FileAccess.Read, FileShare.Read), buffersize);
 				long target = byte_pos + Offset;
 				if (fs.Position != target)
 					fs.Position = target;

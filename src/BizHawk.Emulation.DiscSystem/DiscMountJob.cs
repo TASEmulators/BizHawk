@@ -133,8 +133,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 				//parse the cue file
 				var parseJob = new ParseCueJob();
-				if (cue_content == null)
-					cue_content = File.ReadAllText(cuePath);
+				cue_content ??= File.ReadAllText(cuePath);
 				parseJob.IN_CueString = cue_content;
 				bool okParse = true;
 				try { parseJob.Run(parseJob); }

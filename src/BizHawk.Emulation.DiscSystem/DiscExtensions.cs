@@ -9,11 +9,7 @@ namespace BizHawk.Emulation.DiscSystem
 			//--- load the disc in a context which will let us abort if it's going to take too long
 			var discMountJob = new DiscMountJob { IN_FromPath = path, IN_SlowLoadAbortThreshold = 8 };
 			discMountJob.Run();
-			var disc = discMountJob.OUT_Disc;
-			if (disc == null)
-			{
-				throw new InvalidOperationException($"Can't find the file specified: {path}");
-			}
+			var disc = discMountJob.OUT_Disc ?? throw new InvalidOperationException($"Can't find the file specified: {path}");
 
 			if (discMountJob.OUT_SlowLoadAborted)
 			{

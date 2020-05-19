@@ -207,8 +207,8 @@ namespace BizHawk.Emulation.DiscSystem
 			//algorithm from zlib's crc32_combine. read http://www.leapsecond.com/tools/crcomb.c for more
 			private uint crc32_combine(uint crc1, uint crc2, int len2)
 			{
-				if (even == null) even = new uint[32];    // even-power-of-two zeros operator
-				if (odd == null) odd = new uint[32];    // odd-power-of-two zeros operator
+				even ??= new uint[32]; // even-power-of-two zeros operator
+				odd ??= new uint[32]; // odd-power-of-two zeros operator
 
 				// degenerate case
 				if (len2 == 0)

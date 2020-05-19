@@ -45,19 +45,15 @@ namespace BizHawk.Emulation.DiscSystem
 				private BufferedStream fs;
 				public void Dispose()
 				{
-					if (fs != null)
-					{
-						fs.Dispose();
-						fs = null;
-					}
+					fs?.Dispose();
+					fs = null;
 				}
 				public int Read(long byte_pos, byte[] buffer, int offset, int count)
 				{
 					//use quite a large buffer, because normally we will be reading these sequentially but in small chunks.
 					//this enhances performance considerably
 					const int buffersize = 2352 * 75 * 2;
-					if (fs == null)
-						fs = new BufferedStream(new FileStream(physicalPath, FileMode.Open, FileAccess.Read, FileShare.Read), buffersize);
+					fs ??= new BufferedStream(new FileStream(physicalPath, FileMode.Open, FileAccess.Read, FileShare.Read), buffersize);
 					long target = byte_pos + Offset;
 					if (fs.Position != target)
 						fs.Position = target;
@@ -93,8 +89,7 @@ namespace BizHawk.Emulation.DiscSystem
 						throw new Blob_WaveFile_Exception("Not a RIFF WAVE file");
 					}
 
-					var fmt = rm.riff.subchunks.FirstOrDefault(chunk => chunk.tag == "fmt ") as RiffMaster.RiffSubchunk_fmt;
-					if (fmt == null)
+					if (!(rm.riff.subchunks.FirstOrDefault(chunk => chunk.tag == "fmt ") is RiffMaster.RiffSubchunk_fmt fmt))
 					{
 						throw new Blob_WaveFile_Exception("Not a valid RIFF WAVE file (missing fmt chunk");
 					}
@@ -116,7 +111,7 @@ namespace BizHawk.Emulation.DiscSystem
 					}
 
 					//acquire the start of the data chunk
-					var dataChunk = rm.riff.subchunks.FirstOrDefault(chunk => chunk.tag == "data") as RiffMaster.RiffSubchunk;
+					var dataChunk = (RiffMaster.RiffSubchunk) rm.riff.subchunks.First(chunk => chunk.tag == "data");
 					waveDataStreamPos = dataChunk.Position;
 					mDataLength = dataChunk.Length;
 				}

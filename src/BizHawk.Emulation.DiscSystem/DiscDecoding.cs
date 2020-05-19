@@ -160,15 +160,7 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 
 		/// <exception cref="AudioDecoder_Exception">could not find source audio for <paramref name="audioPath"/></exception>
-		public byte[] AcquireWaveData(string audioPath)
-		{
-			string path = FindAudio(audioPath);
-			if (path == null)
-			{
-				throw new AudioDecoder_Exception($"Could not find source audio for: {Path.GetFileName(audioPath)}");
-			}
-			return new FFMpeg().DecodeAudio(path);
-		}
-
+		public byte[] AcquireWaveData(string audioPath) => new FFMpeg()
+			.DecodeAudio(FindAudio(audioPath) ?? throw new AudioDecoder_Exception($"Could not find source audio for: {Path.GetFileName(audioPath)}"));
 	}
 }

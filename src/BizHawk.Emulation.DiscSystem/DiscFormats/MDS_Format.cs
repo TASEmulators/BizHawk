@@ -288,16 +288,13 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 
 		/// <exception cref="MDSParseException">header is malformed or identifies file as MDS 2.x, or any track has a DVD mode</exception>
-		public AFile Parse(Stream stream)
+		public AFile Parse(FileStream stream)
 		{
 			EndianBitConverter bc = EndianBitConverter.CreateForLittleEndian();
 			EndianBitConverter bcBig = EndianBitConverter.CreateForBigEndian();
 			bool isDvd = false;
 
-			var aFile = new AFile
-			{
-				MDSPath = (stream as FileStream).Name
-			};
+			var aFile = new AFile { MDSPath = stream.Name };
 
 			stream.Seek(0, SeekOrigin.Begin);
 
@@ -738,12 +735,7 @@ namespace BizHawk.Emulation.DiscSystem
 					// get the blob(s) for this track
 					// its probably a safe assumption that there will be only one blob per track, 
 					// but i'm still not 100% sure on this 
-					var tr = (from a in mdsf.TOCEntries
-								  where a.Point == i
-								  select a).FirstOrDefault();
-
-					if (tr == null)
-						throw new MDSParseException("BLOB Error!");
+					var tr = mdsf.TOCEntries.FirstOrDefault(a => a.Point == i) ?? throw new MDSParseException("BLOB Error!");
 
 					List<string> blobstrings = new List<string>();
 					foreach (var t in tr.ImageFileNamePaths)
@@ -817,7 +809,7 @@ namespace BizHawk.Emulation.DiscSystem
 						CUE.SS_Base sBase = null;
 
 						// get the current blob from the BlobIndex
-						Disc.Blob_RawFile currBlob = BlobIndex[currBlobIndex] as Disc.Blob_RawFile;
+						Disc.Blob_RawFile currBlob = (Disc.Blob_RawFile) BlobIndex[currBlobIndex];
 						long currBlobLength = currBlob.Length;
 						long currBlobPosition = sector;
 						if (currBlobPosition == currBlobLength)
