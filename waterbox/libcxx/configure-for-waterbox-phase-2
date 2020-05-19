@@ -10,8 +10,8 @@ cp -n "/usr/include/linux/version.h" "$SYSROOT/include/linux"
 rm -rf build2
 mkdir build2
 cd build2
-export CFLAGS="-mabi=ms -fno-exceptions -mcmodel=large -mstack-protector-guard=global -fno-use-cxa-atexit"
-export CXXFLAGS="-mabi=ms -fno-exceptions -mcmodel=large -mstack-protector-guard=global -fno-use-cxa-atexit"
+export CFLAGS="-mabi=ms -mcmodel=large -mstack-protector-guard=global -fno-use-cxa-atexit"
+export CXXFLAGS="-mabi=ms -mcmodel=large -mstack-protector-guard=global -fno-use-cxa-atexit"
 cmake \
 	-DCMAKE_C_COMPILER="$SYSROOT/bin/musl-gcc" \
 	-DCMAKE_CXX_COMPILER="$SYSROOT/bin/musl-gcc" \
@@ -20,10 +20,11 @@ cmake \
 	-DLIBCXX_CXX_ABI="libcxxabi" \
 	-DLIBCXX_CXX_ABI_INCLUDE_PATHS="$LLVMDIR/libcxxabi/include" \
 	-DLIBCXX_ENABLE_STATIC_ABI_LIBRARY=ON \
-	-DLIBCXX_ENABLE_EXCEPTIONS=OFF \
-	-DLIBCXX_ENABLE_RTTI=OFF \
+	-DLIBCXX_ENABLE_EXCEPTIONS=ON \
+	-DLIBCXX_ENABLE_RTTI=ON \
 	-DLIBCXX_ENABLE_THREADS=OFF \
 	-DLIBCXX_HAS_MUSL_LIBC=ON \
+	-DLIBCXX_USE_COMPILER_RT=ON \
 	-DLIBCXX_INCLUDE_TESTS=OFF \
 	-DLIBCXX_INCLUDE_BENCHMARKS=OFF \
 	-DLIBCXX_STATICALLY_LINK_ABI_IN_STATIC_LIBRARY=OFF \

@@ -2,26 +2,18 @@
 MYPATH="`dirname \"$0\"`"
 SYSROOT="`realpath \"$MYPATH/../sysroot\"`"
 LLVMDIR="`realpath \"$MYPATH/../../../llvm-project\"`"
-rm -rf build1
-mkdir build1
-cd build1
+rm -rf build0
+mkdir build0
+cd build0
 export CFLAGS="-mabi=ms -mcmodel=large -mstack-protector-guard=global -fno-use-cxa-atexit"
 export CXXFLAGS="-mabi=ms -mcmodel=large -mstack-protector-guard=global -fno-use-cxa-atexit"
 cmake \
 	-DCMAKE_C_COMPILER="$SYSROOT/bin/musl-gcc" \
 	-DCMAKE_CXX_COMPILER="$SYSROOT/bin/musl-gcc" \
-	-DLIBCXXABI_ENABLE_EXCEPTIONS=ON \
-	-DLIBCXXABI_ENABLE_PIC=OFF \
-	-DLIBCXXABI_ENABLE_THREADS=OFF \
-	-DLIBCXXABI_ENABLE_SHARED=OFF \
-	-DLIBCXXABI_BAREMETAL=ON \
-	-DLIBCXXABI_SILENT_TERMINATE=ON \
-	-DLIBCXXABI_USE_LLVM_UNWINDER=ON \
-	-DLIBCXXABI_USE_COMPILER_RT=ON \
-	-DLIBCXXABI_INCLUDE_TESTS=OFF \
-	-DLIBCXXABI_LINK_TESTS_WITH_SHARED_LIBCXXABI=OFF \
-	-DLIBCXXABI_LIBCXX_INCLUDES="$LLVMDIR/libcxx/include" \
+	-DLIBUNWIND_ENABLE_SHARED=OFF \
+	-DLIBUNWIND_ENABLE_THREADS=OFF \
+	-DLIBUNWIND_USE_COMPILER_RT=ON \
 	-DCMAKE_INSTALL_PREFIX="$SYSROOT" \
 	-DCMAKE_AR="/usr/bin/gcc-ar" \
 	-DCMAKE_RANLIB="/usr/bin/gcc-ranlib" \
-	../../../../llvm-project/libcxxabi
+	../../../../llvm-project/libunwind

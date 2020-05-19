@@ -19,19 +19,20 @@ print-%: ;
 #LD_PLUGIN := $(shell gcc --print-file-name=liblto_plugin.so)
 
 CC := $(SYSROOT)/bin/musl-gcc
-CCFLAGS := $(CCFLAGS) -mabi=ms -fvisibility=hidden -I$(WATERBOX_DIR)/emulibc -fno-exceptions -Wall -mcmodel=large \
+CCFLAGS := $(CCFLAGS) -mabi=ms -fvisibility=hidden -I$(WATERBOX_DIR)/emulibc -Wall -mcmodel=large \
 	-mstack-protector-guard=global
 LDFLAGS := $(LDFLAGS) -fuse-ld=gold -static -Wl,-Ttext,0x0000036f00000000 #-Wl,--plugin,$(LD_PLUGIN)
 CCFLAGS_DEBUG := -O0 -g
 CCFLAGS_RELEASE := -O3 -flto
 LDFLAGS_DEBUG :=
 LDFLAGS_RELEASE :=
-CXXFLAGS := $(CXXFLAGS) -fno-rtti -I$(SYSROOT)/include/c++/v1 -fno-use-cxa-atexit
+CXXFLAGS := $(CXXFLAGS) -I$(SYSROOT)/include/c++/v1 -fno-use-cxa-atexit
 CXXFLAGS_DEBUG :=
 CXXFLAGS_RELEASE :=
 
+EXTRA_LIBS := -L $(SYSROOT)/lib/linux -lclang_rt.builtins-x86_64
 ifneq ($(filter %.cpp, $(SRCS)), )
-CXX_EXTRA_LIBS := -lc++ -lc++abi
+EXTRA_LIBS := -lc++ -lc++abi -lunwind $(EXTRA_LIBS)
 endif
 
 _OBJS := $(addsuffix .o, $(realpath $(SRCS)))
@@ -69,10 +70,10 @@ debug: $(TARGET_DEBUG)
 
 $(TARGET_RELEASE): $(OBJS) $(EMULIBC_OBJS)
 	@echo ld $@
-	@$(CC) -o $@ $(LDFLAGS) $(LDFLAGS_RELEASE) $(CCFLAGS) $(CCFLAGS_RELEASE) $(OBJS) $(EMULIBC_OBJS) $(CXX_EXTRA_LIBS)
+	@$(CC) -o $@ $(LDFLAGS) $(LDFLAGS_RELEASE) $(CCFLAGS) $(CCFLAGS_RELEASE) $(OBJS) $(EMULIBC_OBJS) $(EXTRA_LIBS)
 $(TARGET_DEBUG): $(DOBJS) $(EMULIBC_DOBJS)
 	@echo ld $@
-	@$(CC) -o $@ $(LDFLAGS) $(LDFLAGS_DEBUG) $(CCFLAGS) $(CCFLAGS_DEBUG) $(DOBJS) $(EMULIBC_DOBJS) $(CXX_EXTRA_LIBS)
+	@$(CC) -o $@ $(LDFLAGS) $(LDFLAGS_DEBUG) $(CCFLAGS) $(CCFLAGS_DEBUG) $(DOBJS) $(EMULIBC_DOBJS) $(EXTRA_LIBS)
 
 install: $(TARGET_RELEASE)
 	@cp -f $< $(OUTPUTDLL_DIR)
