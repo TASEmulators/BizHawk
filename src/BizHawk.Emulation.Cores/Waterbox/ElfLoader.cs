@@ -150,6 +150,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			return sec.Name.Contains(".rel.ro")
 				|| sec.Name.StartsWith(".got")
+				|| sec.Name == ".init_array"
+				|| sec.Name == ".fini_array"
 				|| sec == _imports
 				|| sec == _sealed;
 		}
