@@ -58,21 +58,21 @@ namespace BizHawk.Emulation.DiscSystem
 	{
 		public DiscSectorReaderPolicy Policy = new DiscSectorReaderPolicy();
 
-		Disc disc;
+		private Disc disc;
 
 		public DiscSectorReader(Disc disc)
 		{
 			this.disc = disc;
 		}
 
-		void PrepareJob(int lba)
+		private void PrepareJob(int lba)
 		{
 			job.LBA = lba;
 			job.Params = disc.SynthParams;
 			job.Disc = disc;
 		}
 
-		void PrepareBuffer(byte[] buffer, int offset, int size)
+		private void PrepareBuffer(byte[] buffer, int offset, int size)
 		{
 			if (Policy.DeterministicClearBuffer) Array.Clear(buffer, offset, size);
 		}
@@ -126,7 +126,7 @@ namespace BizHawk.Emulation.DiscSystem
 			return 2448;
 		}
 
-		int ReadLBA_2048_Mode1(int lba, byte[] buffer, int offset)
+		private int ReadLBA_2048_Mode1(int lba, byte[] buffer, int offset)
 		{
 			//we can read the 2048 bytes directly
 			var sector = disc.SynthProvider.Get(lba);
@@ -145,7 +145,7 @@ namespace BizHawk.Emulation.DiscSystem
 			return 2048;
 		}
 
-		int ReadLBA_2048_Mode2_Form1(int lba, byte[] buffer, int offset)
+		private int ReadLBA_2048_Mode2_Form1(int lba, byte[] buffer, int offset)
 		{
 			//we can read the 2048 bytes directly but we have to get them from the mode 2 data
 			var sector = disc.SynthProvider.Get(lba);
@@ -297,8 +297,8 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 
 		//lets not try to these as a sector cache. it gets too complicated. its just a temporary variable.
-		byte[] buf2442 = new byte[2448];
-		byte[] buf12 = new byte[12];
-		SectorSynthJob job = new SectorSynthJob();
+		private byte[] buf2442 = new byte[2448];
+		private byte[] buf12 = new byte[12];
+		private SectorSynthJob job = new SectorSynthJob();
 	}
 }

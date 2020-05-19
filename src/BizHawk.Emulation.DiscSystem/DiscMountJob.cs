@@ -99,7 +99,7 @@ namespace BizHawk.Emulation.DiscSystem
 			FinishLog();
 		}
 
-		void RunBizHawk()
+		private void RunBizHawk()
 		{
 			string infile = IN_FromPath;
 			string cue_content = null;

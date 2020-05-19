@@ -36,12 +36,13 @@ namespace BizHawk.Emulation.DiscSystem
 						length = new FileInfo(physicalPath).Length;
 					}
 				}
-				string physicalPath;
-				long length;
+
+				private string physicalPath;
+				private long length;
 
 				public long Offset = 0;
 
-				BufferedStream fs;
+				private BufferedStream fs;
 				public void Dispose()
 				{
 					if (fs != null)
@@ -132,9 +133,9 @@ namespace BizHawk.Emulation.DiscSystem
 				return RiffSource.BaseStream.Read(buffer, offset, count);
 			}
 
-			RiffMaster RiffSource;
-			long waveDataStreamPos;
-			long mDataLength;
+			private RiffMaster RiffSource;
+			private long waveDataStreamPos;
+			private long mDataLength;
 			public long Length => mDataLength;
 
 			public void Dispose()

@@ -51,14 +51,14 @@ namespace BizHawk.Emulation.DiscSystem
 	/// </summary>
 	public class DiscStream : System.IO.Stream
 	{
-		int SectorSize;
-		int NumSectors;
-		Disc Disc;
+		private int SectorSize;
+		private int NumSectors;
+		private Disc Disc;
 
-		long currPosition;
-		byte[] cachedSectorBuffer;
-		int cachedSector;
-		DiscSectorReader dsr;
+		private long currPosition;
+		private byte[] cachedSectorBuffer;
+		private int cachedSector;
+		private DiscSectorReader dsr;
 
 		/// <exception cref="NotSupportedException"><paramref name="view"/> is not <see cref="DiscSectorReaderPolicy.EUserData2048Mode.AssumeMode1"/> or <see cref="DiscSectorReaderPolicy.EUserData2048Mode.AssumeMode2_Form1"/></exception>
 		public DiscStream(Disc disc, EDiscStreamView view, int from_lba)

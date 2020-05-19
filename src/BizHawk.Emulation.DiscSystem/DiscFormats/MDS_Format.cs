@@ -609,7 +609,7 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 
 		/// <exception cref="MDSParseException">path reference no longer points to file</exception>
-		Dictionary<int, IBlob> MountBlobs(AFile mdsf, Disc disc)
+		private Dictionary<int, IBlob> MountBlobs(AFile mdsf, Disc disc)
 		{
 			Dictionary<int, IBlob> BlobIndex = new Dictionary<int, IBlob>();
 
@@ -651,7 +651,7 @@ namespace BizHawk.Emulation.DiscSystem
 			return BlobIndex;
 		}
 
-		RawTOCEntry EmitRawTOCEntry(ATOCEntry entry)
+		private RawTOCEntry EmitRawTOCEntry(ATOCEntry entry)
 		{
 			BCD2 tno, ino;
 

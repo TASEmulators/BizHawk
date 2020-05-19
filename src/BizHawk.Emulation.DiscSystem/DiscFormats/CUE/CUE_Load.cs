@@ -45,25 +45,25 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			Normal, Pregap, Postgap
 		}
 
-		class BlobInfo
+		private class BlobInfo
 		{
 			public IBlob Blob;
 			public long Length;
 		}
 
 		//not sure if we need this...
-		class TrackInfo
+		private class TrackInfo
 		{
 			public int Length;
 
 			public CompiledCueTrack CompiledCueTrack;
 		}
 
-		List<BlobInfo> BlobInfos;
-		List<TrackInfo> TrackInfos = new List<TrackInfo>();
+		private List<BlobInfo> BlobInfos;
+		private List<TrackInfo> TrackInfos = new List<TrackInfo>();
 
 
-		void MountBlobs()
+		private void MountBlobs()
 		{
 			IBlob file_blob = null;
 
@@ -125,7 +125,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		}
 
 
-		void AnalyzeTracks()
+		private void AnalyzeTracks()
 		{
 			var compiledTracks = IN_CompileJob.OUT_CompiledCueTracks;
 
@@ -148,7 +148,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			}
 		}
 
-		void EmitRawTOCEntry(CompiledCueTrack cct)
+		private void EmitRawTOCEntry(CompiledCueTrack cct)
 		{
 			SubchannelQ toc_sq = new SubchannelQ();
 			//absent some kind of policy for how to set it, this is a safe assumption:

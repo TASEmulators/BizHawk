@@ -160,14 +160,14 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 		//-----------------------------------------------------------------
 
-		CompiledCDText curr_cdtext;
-		int curr_blobIndex = -1;
-		CompiledCueTrack curr_track = null;
-		CompiledCueFile curr_file = null;
-		bool discinfo_session1Format_determined = false;
-		bool curr_fileHasTrack = false;
+		private CompiledCDText curr_cdtext;
+		private int curr_blobIndex = -1;
+		private CompiledCueTrack curr_track = null;
+		private CompiledCueFile curr_file = null;
+		private bool discinfo_session1Format_determined = false;
+		private bool curr_fileHasTrack = false;
 
-		void UpdateDiscInfo(CUE_File.Command.TRACK trackCommand)
+		private void UpdateDiscInfo(CUE_File.Command.TRACK trackCommand)
 		{
 			if (OUT_CompiledDiscInfo.FirstRecordedTrackNumber == 0)
 				OUT_CompiledDiscInfo.FirstRecordedTrackNumber = trackCommand.Number;
@@ -194,7 +194,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			}
 		}
 
-		void CloseFile()
+		private void CloseFile()
 		{
 			if (curr_track != null)
 			{
@@ -205,7 +205,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			curr_file = null;
 		}
 
-		void OpenFile(CUE_File.Command.FILE f)
+		private void OpenFile(CUE_File.Command.FILE f)
 		{
 			if (curr_file != null)
 				CloseFile();
@@ -284,7 +284,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			//TODO - check for mismatches between track types and file types, or is that best done when interpreting the commands?
 		}
 
-		void CreateTrack1Pregap()
+		private void CreateTrack1Pregap()
 		{
 			if (OUT_CompiledCueTracks[1].PregapLength.Sector == 0) { }
 			else if (OUT_CompiledCueTracks[1].PregapLength.Sector == 150) { }
@@ -295,7 +295,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			OUT_CompiledCueTracks[1].PregapLength = new Timestamp(150);
 		}
 
-		void FinalAnalysis()
+		private void FinalAnalysis()
 		{
 			//some quick checks:
 			if (OUT_CompiledCueFiles.Count == 0)
@@ -334,7 +334,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		}
 
 
-		void CloseTrack()
+		private void CloseTrack()
 		{
 			if (curr_track == null)
 				return;
@@ -360,7 +360,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			curr_track = null;
 		}
 
-		void OpenTrack(CUE_File.Command.TRACK trackCommand)
+		private void OpenTrack(CUE_File.Command.TRACK trackCommand)
 		{
 			//assert that a file is open
 			if(curr_file == null)
@@ -390,7 +390,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			UpdateDiscInfo(trackCommand);
 		}
 
-		void AddIndex(CUE_File.Command.INDEX indexCommand)
+		private void AddIndex(CUE_File.Command.INDEX indexCommand)
 		{
 			curr_track.Indexes.Add(new CompiledCueIndex
 			{

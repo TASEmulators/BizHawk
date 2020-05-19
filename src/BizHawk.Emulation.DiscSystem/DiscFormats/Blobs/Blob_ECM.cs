@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.DiscSystem
 	{
 		internal class Blob_ECM : IBlob
 		{
-			FileStream stream;
+			private FileStream stream;
 			
 			public void Dispose()
 			{
@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.DiscSystem
 			/// <summary>
 			/// the ECMfile-provided EDC integrity checksum. not being used right now
 			/// </summary>
-			int EDC;
+			private int EDC;
 
 			public long Length;
 
@@ -143,7 +143,7 @@ namespace BizHawk.Emulation.DiscSystem
 				Length = logOffset;
 			}
 
-			void MisformedException()
+			private void MisformedException()
 			{
 				throw new InvalidOperationException("Mis-formed ECM file");
 			}
@@ -166,7 +166,7 @@ namespace BizHawk.Emulation.DiscSystem
 			/// <summary>
 			/// finds the IndexEntry for the specified logical offset
 			/// </summary>
-			int FindInIndex(long offset, int LastReadIndex)
+			private int FindInIndex(long offset, int LastReadIndex)
 			{
 				//try to avoid searching the index. check the last index we we used.
 				for(int i=0;i<2;i++) //try 2 times
@@ -201,7 +201,7 @@ namespace BizHawk.Emulation.DiscSystem
 				return listIndex;
 			}
 
-			void Reconstruct(byte[] secbuf, int type)
+			private void Reconstruct(byte[] secbuf, int type)
 			{
 				//sync
 				secbuf[0] = 0;
@@ -250,8 +250,8 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 
 			//we don't want to keep churning through this many big byte arrays while reading stuff, so we save a sector cache.
-			readonly byte[] Read_SectorBuf = new byte[2352];
-			int Read_LastIndex = 0;
+			private readonly byte[] Read_SectorBuf = new byte[2352];
+			private int Read_LastIndex = 0;
 
 			public int Read(long byte_pos, byte[] buffer, int offset, int _count)
 			{

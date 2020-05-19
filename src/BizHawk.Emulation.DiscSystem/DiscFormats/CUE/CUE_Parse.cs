@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 	/// <summary>
 	/// Performs minimum parse processing on a cue file
 	/// </summary>
-	class ParseCueJob : DiscJob
+	internal class ParseCueJob : DiscJob
 	{
 		/// <summary>
 		/// input: the cue string to parse
@@ -30,10 +30,10 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		public bool IN_Strict { private get; set; } = false;
 
 
-		class CueLineParser
+		private class CueLineParser
 		{
-			int index;
-			string str;
+			private int index;
+			private string str;
 			public bool EOF;
 			public CueLineParser(string line)
 			{
@@ -51,12 +51,12 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				return ret;
 			}
 
-			enum Mode
+			private enum Mode
 			{
 				Normal, Quotable
 			}
 
-			string ReadToken(Mode mode)
+			private string ReadToken(Mode mode)
 			{
 				if (EOF) return null;
 
@@ -128,7 +128,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			}
 		}
 
-		void LoadFromString(ParseCueJob job)
+		private void LoadFromString(ParseCueJob job)
 		{
 			string cueString = job.IN_CueString;
 			TextReader tr = new StringReader(cueString);

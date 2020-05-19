@@ -1,6 +1,6 @@
 namespace BizHawk.Emulation.DiscSystem
 {
-	static class SynthUtils
+	internal static class SynthUtils
 	{
 		/// <summary>
 		/// Calculates the checksum of the provided Q subchannel buffer and emplaces it

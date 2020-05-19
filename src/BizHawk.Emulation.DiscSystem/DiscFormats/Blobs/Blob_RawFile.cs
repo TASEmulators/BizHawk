@@ -15,12 +15,13 @@ namespace BizHawk.Emulation.DiscSystem
 					length = new FileInfo(physicalPath).Length;
 				}
 			}
-			string physicalPath;
-			long length;
+
+			private string physicalPath;
+			private long length;
 
 			public long Offset = 0;
 
-			BufferedStream fs;
+			private BufferedStream fs;
 			public void Dispose()
 			{
 				if (fs != null)

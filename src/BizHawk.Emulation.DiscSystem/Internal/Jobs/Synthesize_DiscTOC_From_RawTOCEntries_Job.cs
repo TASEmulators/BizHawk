@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// When a disc drive firmware reads the lead-in area, it builds this TOC from finding q-mode 1 sectors in the Q subchannel of the lead-in area.
 	/// Question: I guess it must ignore q-mode != 1? what else would it do with it?
 	/// </summary>
-	class Synthesize_DiscTOC_From_RawTOCEntries_Job
+	internal class Synthesize_DiscTOC_From_RawTOCEntries_Job
 	{
 		public IEnumerable<RawTOCEntry> Entries;
 		public List<string> Log = new List<string>();

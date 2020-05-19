@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.DiscSystem
 			this.disc = disc;
 		}
 
-		Disc disc;
+		private Disc disc;
 
 		/// <summary>
 		/// calculates the hash for quick PSX Disc identification
@@ -127,7 +127,7 @@ namespace BizHawk.Emulation.DiscSystem
 				}
 			}
 
-			uint current = 0xFFFFFFFF;
+			private uint current = 0xFFFFFFFF;
 
 			/// <exception cref="ArgumentOutOfRangeException">
 			/// <paramref name="offset"/> is negative, or
@@ -147,7 +147,7 @@ namespace BizHawk.Emulation.DiscSystem
 					}
 			}
 
-			byte[] smallbuf = new byte[8];
+			private byte[] smallbuf = new byte[8];
 			public void Add(int data)
 			{
 				smallbuf[0] = (byte)((data) & 0xFF);
@@ -171,7 +171,7 @@ namespace BizHawk.Emulation.DiscSystem
 				set => current = value;
 			}
 
-			uint gf2_matrix_times(uint[] mat, uint vec)
+			private uint gf2_matrix_times(uint[] mat, uint vec)
 			{
 				int matIdx = 0;
 				uint sum = 0;
@@ -185,7 +185,7 @@ namespace BizHawk.Emulation.DiscSystem
 				return sum;
 			}
 
-			void gf2_matrix_square(uint[] square, uint[] mat)
+			private void gf2_matrix_square(uint[] square, uint[] mat)
 			{
 				int n;
 				for (n = 0; n < 32; n++)
@@ -202,10 +202,10 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 
 			//tables used by crc32_combine
-			uint[] even, odd;
+			private uint[] even, odd;
 
 			//algorithm from zlib's crc32_combine. read http://www.leapsecond.com/tools/crcomb.c for more
-			uint crc32_combine(uint crc1, uint crc2, int len2)
+			private uint crc32_combine(uint crc1, uint crc2, int len2)
 			{
 				if (even == null) even = new uint[32];    // even-power-of-two zeros operator
 				if (odd == null) odd = new uint[32];    // odd-power-of-two zeros operator
