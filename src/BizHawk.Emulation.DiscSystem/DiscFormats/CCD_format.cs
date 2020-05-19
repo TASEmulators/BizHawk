@@ -214,31 +214,18 @@ namespace BizHawk.Emulation.DiscSystem
 			return sections;
 		}
 
-		private int PreParseIntegrityCheck(List<CCDSection> sections)
-		{
-			if (sections.Count == 0) throw new CCDParseException("Malformed CCD format: no sections");
-
-			//we need at least a CloneCD and Disc section
-			if (sections.Count < 2) throw new CCDParseException("Malformed CCD format: insufficient sections");
-
-			var ccdSection = sections[0];
-			if (ccdSection.Name != "CLONECD")
-				throw new CCDParseException("Malformed CCD format: confusing first section name");
-
-			if (!ccdSection.ContainsKey("VERSION"))
-				throw new CCDParseException("Malformed CCD format: missing version in CloneCD section");
-
-			if(sections[1].Name != "DISC")
-				throw new CCDParseException("Malformed CCD format: section[1] isn't [Disc]");
-
-			int version = ccdSection["VERSION"];
-
-			return version;
-		}
-
 		/// <exception cref="CCDParseException">parsed <see cref="CCDFile.DataTracksScrambled"/> is <c>1</c>, parsed session number is not <c>1</c>, or malformed entry</exception>
 		public CCDFile ParseFrom(Stream stream)
 		{
+			static int PreParseIntegrityCheck(IReadOnlyList<CCDSection> sections)
+			{
+				if (sections.Count == 0) throw new CCDParseException("Malformed CCD format: no sections");
+				if (sections.Count < 2) throw new CCDParseException("Malformed CCD format: insufficient sections"); //we need at least a CloneCD and Disc section
+				if (sections[0].Name != "CLONECD") throw new CCDParseException("Malformed CCD format: confusing first section name");
+				if (sections[1].Name != "DISC") throw new CCDParseException("Malformed CCD format: section[1] isn't [Disc]");
+				return sections[0].TryGetValue("VERSION", out var version) ? version : throw new CCDParseException("Malformed CCD format: missing version in CloneCD section");
+			}
+
 			CCDFile ccdf = new CCDFile();
 
 			var sections = ParseSections(stream);

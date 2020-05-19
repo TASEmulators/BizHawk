@@ -38,9 +38,6 @@ namespace BizHawk.Emulation.DiscSystem
 			BaseStream = null;
 		}
 
-		private static string ReadTag(BinaryReader br) =>
-			string.Concat(br.ReadChar(), br.ReadChar(), br.ReadChar(), br.ReadChar());
-
 		protected static void WriteTag(BinaryWriter bw, string tag)
 		{
 			for (int i = 0; i < 4; i++)
@@ -278,7 +275,9 @@ namespace BizHawk.Emulation.DiscSystem
 
 		private long readCounter;
 		private RiffChunk ReadChunk(BinaryReader br)
-		 {
+		{
+			static string ReadTag(BinaryReader br) => string.Concat(br.ReadChar(), br.ReadChar(), br.ReadChar(), br.ReadChar());
+
 			RiffChunk ret;
 			string tag = ReadTag(br); readCounter += 4;
 			uint size = br.ReadUInt32(); readCounter += 4;
