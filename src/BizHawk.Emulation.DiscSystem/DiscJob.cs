@@ -27,12 +27,12 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// Whether there were any errors
 		/// </summary>
-		public bool OUT_ErrorLevel = false;
+		public bool OUT_ErrorLevel { get; private set; } = false;
 
 		/// <summary>
 		/// output: log transcript of the job
 		/// </summary>
-		public string OUT_Log;
+		public string OUT_Log { get; private set; }
 
 		/// <summary>
 		/// Finishes logging. Flushes the output and closes the logging mechanism

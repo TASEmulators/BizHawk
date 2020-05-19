@@ -14,34 +14,34 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// The filename to be loaded
 		/// </summary>
-		public string IN_FromPath;
+		public string IN_FromPath { private get; set; }
 
 		/// <summary>
 		/// Slow-loading cues won't finish loading if this threshold is exceeded.
 		/// Set to 10 to always load a cue
 		/// </summary>
-		public int IN_SlowLoadAbortThreshold = 10;
+		public int IN_SlowLoadAbortThreshold { private get; set; } = 10;
 
 		/// <summary>
 		/// Cryptic policies to be used when mounting the disc.
 		/// </summary>
-		public DiscMountPolicy IN_DiscMountPolicy = new DiscMountPolicy();
+		public DiscMountPolicy IN_DiscMountPolicy { private get; set; } = new DiscMountPolicy();
 
 		/// <summary>
 		/// The interface to be used for loading the disc.
 		/// Usually you'll want DiscInterface.BizHawk, but others can be used for A/B testing
 		/// </summary>
-		public DiscInterface IN_DiscInterface = DiscInterface.BizHawk;
+		public DiscInterface IN_DiscInterface { private get; set; } = DiscInterface.BizHawk;
 
 		/// <summary>
 		/// The resulting disc
 		/// </summary>
-		public Disc OUT_Disc;
+		public Disc OUT_Disc { get; private set; }
 
 		/// <summary>
 		/// Whether a mount operation was aborted due to being too slow
 		/// </summary>
-		public bool OUT_SlowLoadAborted;
+		public bool OUT_SlowLoadAborted { get; private set; }
 
 		/// <exception cref="NotSupportedException"><see cref="IN_DiscInterface"/> is <see cref="DiscInterface.LibMirage"/></exception>
 		public void Run()

@@ -17,17 +17,17 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		/// <summary>
 		/// input: the cue string to parse
 		/// </summary>
-		public string IN_CueString;
+		public string IN_CueString { private get; set; }
 
 		/// <summary>
 		/// output: the resulting minimally-processed cue file
 		/// </summary>
-		public CUE_File OUT_CueFile;
+		public CUE_File OUT_CueFile { get; private set; }
 
 		/// <summary>
 		/// Indicates whether parsing will be strict or lenient
 		/// </summary>
-		public bool IN_Strict = false;
+		public bool IN_Strict { private get; set; } = false;
 
 
 		class CueLineParser

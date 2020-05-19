@@ -13,12 +13,12 @@ namespace BizHawk.Emulation.DiscSystem.SBI
 		/// <summary>
 		/// The file to be loaded
 		/// </summary>
-		public string IN_Path;
+		public string IN_Path { private get; set; }
 
 		/// <summary>
 		/// The resulting interpreted data
 		/// </summary>
-		public SubQPatchData OUT_Data;
+		public SubQPatchData OUT_Data { get; private set; }
 
 		/// <exception cref="SBIParseException">file at <see cref="IN_Path"/> does not contain valid header or contains misformatted record</exception>
 		public void Run()
