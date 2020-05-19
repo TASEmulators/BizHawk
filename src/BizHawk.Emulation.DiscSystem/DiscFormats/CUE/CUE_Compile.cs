@@ -433,49 +433,49 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				if (cmd is CUE_File.Command.COMMENT) continue;
 
 				//CD-text and related
-				if (cmd is CUE_File.Command.PERFORMER) curr_cdtext.Performer = (cmd as CUE_File.Command.PERFORMER).Value;
-				if (cmd is CUE_File.Command.SONGWRITER) curr_cdtext.Songwriter = (cmd as CUE_File.Command.SONGWRITER).Value;
-				if (cmd is CUE_File.Command.TITLE) curr_cdtext.Title = (cmd as CUE_File.Command.TITLE).Value;
-				if (cmd is CUE_File.Command.ISRC) curr_cdtext.ISRC = (cmd as CUE_File.Command.ISRC).Value;
+				if (cmd is CUE_File.Command.PERFORMER performerCmd) curr_cdtext.Performer = performerCmd.Value;
+				if (cmd is CUE_File.Command.SONGWRITER songwriterCmd) curr_cdtext.Songwriter = songwriterCmd.Value;
+				if (cmd is CUE_File.Command.TITLE titleCmd) curr_cdtext.Title = titleCmd.Value;
+				if (cmd is CUE_File.Command.ISRC isrcCmd) curr_cdtext.ISRC = isrcCmd.Value;
 
 				//flags can only be set when a track command is running
-				if (cmd is CUE_File.Command.FLAGS)
+				if (cmd is CUE_File.Command.FLAGS flagsCmd)
 				{
 					if (curr_track == null)
 						Warn("Ignoring invalid flag commands outside of a track command");
 					else
 						//take care to |= it here, so the data flag doesn't get cleared
-						curr_track.Flags |= (cmd as CUE_File.Command.FLAGS).Flags;
+						curr_track.Flags |= flagsCmd.Flags;
 				}
 
-				if (cmd is CUE_File.Command.TRACK)
+				if (cmd is CUE_File.Command.TRACK trackCmd)
 				{
 					CloseTrack();
-					OpenTrack(cmd as CUE_File.Command.TRACK);
+					OpenTrack(trackCmd);
 				}
 
-				if (cmd is CUE_File.Command.FILE)
+				if (cmd is CUE_File.Command.FILE fileCmd)
 				{
 					CloseFile();
-					OpenFile(cmd as CUE_File.Command.FILE);
+					OpenFile(fileCmd);
 				}
 
-				if (cmd is CUE_File.Command.INDEX)
+				if (cmd is CUE_File.Command.INDEX indexCmd)
 				{
 					//todo - validate no postgap specified
-					AddIndex(cmd as CUE_File.Command.INDEX);
+					AddIndex(indexCmd);
 				}
 
-				if (cmd is CUE_File.Command.PREGAP)
+				if (cmd is CUE_File.Command.PREGAP pregapCmd)
 				{
 					//validate track open
 					//validate no indexes
-					curr_track.PregapLength = (cmd as CUE_File.Command.PREGAP).Length;
+					curr_track.PregapLength = pregapCmd.Length;
 				}
 
-				if (cmd is CUE_File.Command.POSTGAP)
+				if (cmd is CUE_File.Command.POSTGAP postgapCmd)
 				{
-					curr_track.PostgapLength = (cmd as CUE_File.Command.POSTGAP).Length;
+					curr_track.PostgapLength = postgapCmd.Length;
 				}
 
 			}

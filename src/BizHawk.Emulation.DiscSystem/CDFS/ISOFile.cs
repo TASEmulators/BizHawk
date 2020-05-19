@@ -167,7 +167,7 @@ namespace BizHawk.Emulation.DiscSystem
 			foreach (var d in dirs)
 			{
 				// process all files in this directory (and recursively process files in sub folders
-				ISODirectoryNode idn = d.Value as ISODirectoryNode;
+				ISODirectoryNode idn = (ISODirectoryNode) d.Value;
 				if (dirsParsed.Where(a => a == idn).Count() > 0)
 					continue;
 
@@ -182,13 +182,11 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			foreach (var n in idn)
 			{
-				if (n.Value.GetType() == typeof(ISODirectoryNode))
+				if (n.Value is ISODirectoryNode subdirNode)
 				{
-					if (dirsParsed.Where(a => a == n.Value).Count() > 0)
-						continue;
-
-					dirsParsed.Add(n.Value as ISODirectoryNode);
-					ProcessDirectoryFiles((n.Value as ISODirectoryNode).Children);
+					if (dirsParsed.Where(a => a == subdirNode).Count() > 0) continue;
+					dirsParsed.Add(subdirNode);
+					ProcessDirectoryFiles(subdirNode.Children);
 				}
 				else
 				{

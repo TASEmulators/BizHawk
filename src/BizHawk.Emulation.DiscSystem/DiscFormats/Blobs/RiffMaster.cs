@@ -181,13 +181,11 @@ namespace BizHawk.Emulation.DiscSystem
 			public RiffChunk GetSubchunk(string tag, string type)
 			{
 				foreach (RiffChunk rc in subchunks)
-					if (rc.tag == tag)
-					{
-						if (type == null) return rc;
-						RiffContainer cont = rc as RiffContainer;
-						if (cont != null && cont.type == type)
-							return rc;
-					}
+				{
+					if (rc.tag != tag) continue;
+					if (type == null) return rc;
+					if (rc is RiffContainer cont && cont.type == type) return cont;
+				}
 				return null;
 			}
 
@@ -242,8 +240,7 @@ namespace BizHawk.Emulation.DiscSystem
 				foreach (RiffChunk chunk in subchunks)
 				{
 					RiffSubchunk rsc = chunk as RiffSubchunk;
-					if (chunk == null)
-						throw new FormatException("Invalid subchunk of INFO list");
+					if (chunk == null) throw new FormatException("Invalid subchunk of INFO list"); //TODO is this supposed to be a check on `rsc` (i.e. as a type check)? --yoshi
 					dictionary[rsc.tag] = System.Text.Encoding.ASCII.GetString(rsc.ReadAll());
 				}
 			}

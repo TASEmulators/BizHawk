@@ -188,7 +188,7 @@ namespace BizHawk.Emulation.DiscSystem
 				if (appId == "PSP GAME")
 					return DiscType.SonyPSP;
 				// in case the appId is not set correctly...
-				if (iso.Root.Children.Where(a => a.Key == "PSP_GAME").FirstOrDefault().Value as ISODirectoryNode != null)
+				if (iso.Root.Children.TryGetValue("PSP_GAME", out var node) && node is ISODirectoryNode)
 					return DiscType.SonyPSP;
 
 				if (sysId == "SEGA SEGASATURN")
