@@ -453,8 +453,8 @@ struct avr8
 		memset(io, 0, sizeof(io));
 		memset(sram, 0, sizeof(sram));
 		memset(eeprom, 0, sizeof(eeprom));
-		memset(progmem, 0, progSize / 2);
-		memset(progmemDecoded, 0, progSize / 2);
+		memset(progmem, 0, progSize / 2 * sizeof(*progmem));
+		memset(progmemDecoded, 0, progSize / 2 * sizeof(*progmemDecoded));
 	}
 
 	/*Core*/

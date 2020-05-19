@@ -7,13 +7,14 @@ OBJ_DIR := $(ROOT_DIR)/obj/release
 DOBJ_DIR := $(ROOT_DIR)/obj/debug
 EMULIBC_OBJS := $(WATERBOX_DIR)/emulibc/obj/release/emulibc.c.o
 EMULIBC_DOBJS := $(WATERBOX_DIR)/emulibc/obj/debug/emulibc.c.o
+SYSROOT := $(WATERBOX_DIR)/sysroot
 
 print-%: ;
 	@echo $* = $($*)
 
 #LD_PLUGIN := $(shell gcc --print-file-name=liblto_plugin.so)
 
-CC := $(WATERBOX_DIR)/sysroot/bin/musl-gcc
+CC := $(SYSROOT)/bin/musl-gcc
 CCFLAGS := $(CCFLAGS) -mabi=ms -fvisibility=hidden -I$(WATERBOX_DIR)/emulibc -fno-exceptions -Wall -mcmodel=large \
 	-mstack-protector-guard=global
 LDFLAGS := $(LDFLAGS) -fuse-ld=gold -static -Wl,-Ttext,0x0000036f00000000 #-Wl,--plugin,$(LD_PLUGIN)
@@ -21,9 +22,13 @@ CCFLAGS_DEBUG := -O0 -g
 CCFLAGS_RELEASE := -O3 -flto
 LDFLAGS_DEBUG :=
 LDFLAGS_RELEASE :=
-CXXFLAGS := -fno-rtti
+CXXFLAGS := $(CXXFLAGS) -fno-rtti -I$(SYSROOT)/include/c++/v1 -fno-use-cxa-atexit
 CXXFLAGS_DEBUG :=
 CXXFLAGS_RELEASE :=
+
+ifneq ($(filter %.cpp, $(SRCS)), )
+CXX_EXTRA_LIBS := -lc++abi -lc++
+endif
 
 _OBJS := $(addsuffix .o,$(SRCS))
 OBJS := $(patsubst $(ROOT_DIR)%,$(OBJ_DIR)%,$(_OBJS))
@@ -60,10 +65,10 @@ debug: $(TARGET_DEBUG)
 
 $(TARGET_RELEASE): $(OBJS) $(EMULIBC_OBJS)
 	@echo ld $@
-	@$(CC) -o $@ $(LDFLAGS) $(LDFLAGS_RELEASE) $(CCFLAGS) $(CCFLAGS_RELEASE) $(OBJS) $(EMULIBC_OBJS)
+	@$(CC) -o $@ $(LDFLAGS) $(LDFLAGS_RELEASE) $(CCFLAGS) $(CCFLAGS_RELEASE) $(OBJS) $(EMULIBC_OBJS) $(CXX_EXTRA_LIBS)
 $(TARGET_DEBUG): $(DOBJS) $(EMULIBC_DOBJS)
 	@echo ld $@
-	@$(CC) -o $@ $(LDFLAGS) $(LDFLAGS_DEBUG) $(CCFLAGS) $(CCFLAGS_DEBUG) $(DOBJS) $(EMULIBC_DOBJS)
+	@$(CC) -o $@ $(LDFLAGS) $(LDFLAGS_DEBUG) $(CCFLAGS) $(CCFLAGS_DEBUG) $(DOBJS) $(EMULIBC_DOBJS) $(CXX_EXTRA_LIBS)
 
 install: $(TARGET_RELEASE)
 	@cp -f $< $(OUTPUTDLL_DIR)
