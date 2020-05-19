@@ -10,20 +10,20 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 	{
 		public bool caseSensitive = false;
 		public bool IsHardcodedResolve { get; private set; }
-		string baseDir;
+		private string baseDir;
 
 		/// <summary>
 		/// Retrieving the FullName from a FileInfo can be slow (and probably other operations), so this will cache all the needed values
 		/// TODO - could we treat it like an actual cache and only fill the FullName if it's null?
 		/// </summary>
-		struct MyFileInfo
+		private struct MyFileInfo
 		{
 			public string FullName;
 			public FileInfo FileInfo;
 		}
 
-		DirectoryInfo diBasedir;
-		MyFileInfo[] fisBaseDir;
+		private DirectoryInfo diBasedir;
+		private MyFileInfo[] fisBaseDir;
 
 		/// <summary>
 		/// sets the base directory and caches the list of files in the directory
@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			}
 		}
 
-		MyFileInfo[] MyFileInfosFromFileInfos(FileInfo[] fis)
+		private MyFileInfo[] MyFileInfosFromFileInfos(FileInfo[] fis)
 		{
 			var myfis = new MyFileInfo[fis.Length];
 			for (int i = 0; i < fis.Length; i++)

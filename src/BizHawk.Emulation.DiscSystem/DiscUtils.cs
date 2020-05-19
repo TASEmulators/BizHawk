@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.DiscSystem
 {
 	public static class DiscUtils
 	{
-		static byte IntToBCD(int n)
+		private static byte IntToBCD(int n)
 		{
 			int tens = Math.DivRem(n, 10, out var ones);
 			return (byte)((tens << 4) | ones);

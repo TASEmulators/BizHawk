@@ -158,7 +158,7 @@ namespace BizHawk.Emulation.DiscSystem
 			public CCDParseException(string message) : base(message) { }
 		}
 
-		class CCDSection : Dictionary<string,int>
+		private class CCDSection : Dictionary<string,int>
 		{
 			public string Name;
 			public int FetchOrDefault(int def, string key)
@@ -176,7 +176,7 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 		}
 
-		List<CCDSection> ParseSections(Stream stream)
+		private List<CCDSection> ParseSections(Stream stream)
 		{
 			List<CCDSection> sections = new List<CCDSection>();
 
@@ -214,7 +214,7 @@ namespace BizHawk.Emulation.DiscSystem
 			return sections;
 		}
 
-		int PreParseIntegrityCheck(List<CCDSection> sections)
+		private int PreParseIntegrityCheck(List<CCDSection> sections)
 		{
 			if (sections.Count == 0) throw new CCDParseException("Malformed CCD format: no sections");
 
@@ -438,7 +438,7 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 		}
 
-		class SS_CCD : ISectorSynthJob2448
+		private class SS_CCD : ISectorSynthJob2448
 		{
 			public void Synth(SectorSynthJob job)
 			{

@@ -227,7 +227,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// This is reasonable approach to ID saturn.
 		/// </summary>
-		bool DetectSegaSaturn()
+		private bool DetectSegaSaturn()
 		{
 			return StringAt("SEGA SEGASATURN", 0);
 		}
@@ -235,12 +235,12 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// probably wrong
 		/// </summary>
-		bool DetectMegaCD()
+		private bool DetectMegaCD()
 		{
 			return StringAt("SEGADISCSYSTEM", 0) || StringAt("SEGADISCSYSTEM", 16);
 		}
 
-		bool DetectPSX()
+		private bool DetectPSX()
 		{
 			if (!StringAt("          Licensed  by          ", 0, 4)) return false;
 			return (StringAt("Sony Computer Entertainment Euro", 32, 4)
@@ -250,7 +250,7 @@ namespace BizHawk.Emulation.DiscSystem
 				);
 		}
 
-		bool DetectPCFX()
+		private bool DetectPCFX()
 		{
 			var toc = _disc.TOC;
 			for (int t = toc.FirstRecordedTrackNumber;
@@ -268,7 +268,7 @@ namespace BizHawk.Emulation.DiscSystem
 		//asni 20171011 - this ONLY works if a valid cuefile/ccd is passed into DiscIdentifier.
 		//if an .iso is presented, the internally manufactured cue data does not work - possibly something to do with
 		//track 01 being Audio. Not tested, but presumably PCFX has the same issue
-		bool DetectTurboCD()
+		private bool DetectTurboCD()
 		{
 			var toc = _disc.TOC;
 			for (int t = toc.FirstRecordedTrackNumber;
@@ -283,7 +283,7 @@ namespace BizHawk.Emulation.DiscSystem
 			return false;
 		}
 
-		bool Detect3DO()
+		private bool Detect3DO()
 		{
 			var toc = _disc.TOC;
 			for (int t = toc.FirstRecordedTrackNumber;
@@ -298,7 +298,7 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 
 		//asni - slightly longer running than the others due to its brute-force nature. Should run later in the method
-		bool DetectDreamcast()
+		private bool DetectDreamcast()
 		{
 			for (int i = 0; i < 1000; i++)
 			{
@@ -309,12 +309,12 @@ namespace BizHawk.Emulation.DiscSystem
 			return false;
 		}
 
-		bool DetectCDi()
+		private bool DetectCDi()
 		{
 			return StringAt("CD-RTOS", 8, 16);
 		}
 
-		bool DetectGameCube()
+		private bool DetectGameCube()
 		{
 			var data = ReadSectorCached(0);
 			if (data == null) return false;
@@ -326,7 +326,7 @@ namespace BizHawk.Emulation.DiscSystem
 			return hexString == "C2339F3D";
 		}
 
-		bool DetectWii()
+		private bool DetectWii()
 		{
 			var data = ReadSectorCached(0);
 			if (data == null) return false;

@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.DiscSystem
 			return !ret.Parse(sr) ? null : ret;
 		}
 
-		bool Parse(StreamReader sr)
+		private bool Parse(StreamReader sr)
 		{
 			bool ext = false;
 			int runtime = -1;

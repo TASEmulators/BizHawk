@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 	}
 
-	class DiscJobAbortException : Exception
+	internal class DiscJobAbortException : Exception
 	{
 	}
 }

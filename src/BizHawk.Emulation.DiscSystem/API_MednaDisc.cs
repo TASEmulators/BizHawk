@@ -31,13 +31,13 @@ namespace BizHawk.Emulation.DiscSystem
 			//leave the disc open until this is disposed so we can read sectors from it
 		}
 
-		IntPtr handle;
+		private IntPtr handle;
 
 		public MednadiscTOC TOC;
 		public MednadiscTOCTrack[] TOCTracks;
 
-		[ThreadStatic] static byte[] buf2442 = new byte[2448];
-		[ThreadStatic] static byte[] buf96 = new byte[96];
+		[ThreadStatic] private static byte[] buf2442 = new byte[2448];
+		[ThreadStatic] private static byte[] buf96 = new byte[96];
 
 
 		public void Read_2442(int LBA, byte[] buffer, int offset)
@@ -91,7 +91,7 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 #endif
 
-		static void CheckLibrary()
+		private static void CheckLibrary()
 		{
 			var lib = OSTailoredCode.LinkedLibManager.LoadOrZero("mednadisc.dll");
 			_IsLibraryAvailable = lib != IntPtr.Zero
@@ -104,7 +104,7 @@ namespace BizHawk.Emulation.DiscSystem
 			CheckLibrary();
 		}
 
-		static bool _IsLibraryAvailable;
+		private static bool _IsLibraryAvailable;
 		public static bool IsLibraryAvailable => _IsLibraryAvailable;
 
 		public void Dispose()

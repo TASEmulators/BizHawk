@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 	/// <summary>
 	/// Represents the contents of a cue file
 	/// </summary>
-	class CUE_File
+	internal class CUE_File
 	{
 		// (here are all the commands we can encounter)
 		public static class Command

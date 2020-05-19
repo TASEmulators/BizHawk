@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		//note: accepts . or : in the stream stream/substream separator in the stream ID format, since that changed at some point in FFMPEG history
 		//if someone has a better idea how to make the determination of whether an audio stream is available, I'm all ears
-		static readonly Regex rxHasAudio = new Regex(@"Stream \#(\d*(\.|\:)\d*)\: Audio", RegexOptions.Compiled);
+		private static readonly Regex rxHasAudio = new Regex(@"Stream \#(\d*(\.|\:)\d*)\: Audio", RegexOptions.Compiled);
 		public AudioQueryResult QueryAudio(string path)
 		{
 			var ret = new AudioQueryResult();
@@ -106,7 +106,7 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 	}
 
-	class AudioDecoder
+	internal class AudioDecoder
 	{
 		[Serializable]
 		public class AudioDecoder_Exception : Exception
@@ -121,7 +121,7 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 		}
 
-		bool CheckForAudio(string path)
+		private bool CheckForAudio(string path)
 		{
 			FFMpeg ffmpeg = new FFMpeg();
 			var qa = ffmpeg.QueryAudio(path);
@@ -132,7 +132,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// finds audio at a path similar to the provided path (i.e. finds Track01.mp3 for Track01.wav)
 		/// TODO - isnt this redundant with CueFileResolver?
 		/// </summary>
-		string FindAudio(string audioPath)
+		private string FindAudio(string audioPath)
 		{
 			string basePath = Path.GetFileNameWithoutExtension(audioPath);
 			//look for potential candidates

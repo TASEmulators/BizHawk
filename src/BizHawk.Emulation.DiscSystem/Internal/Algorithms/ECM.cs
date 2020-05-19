@@ -33,14 +33,14 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.DiscSystem
 {
-	static class ECM
+	internal static class ECM
 	{
 		//EDC (crc) acceleration table
-		static readonly uint[] edc_table = new uint[256];
+		private static readonly uint[] edc_table = new uint[256];
 
 		//math acceleration tables over GF(2^8) with yellowbook specified primitive polynomial 0x11D
-		static readonly byte[] mul2tab = new byte[256];
-		static readonly byte[] div3tab = new byte[256];
+		private static readonly byte[] mul2tab = new byte[256];
+		private static readonly byte[] div3tab = new byte[256];
 
 		static ECM()
 		{
@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// calculate EDC crc tables
 		/// </summary>
-		static void Prep_EDC()
+		private static void Prep_EDC()
 		{
 			//14.3 of yellowbook specifies EDC crc as P(x) = (x^16 + x^15 + x^2 + 1) . (x^16 + x^2 + x + 1) 
 			//confirmation at http://cdmagediscussion.yuku.com/topic/742/EDC-calculation
@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// calculate math lookup tables for ECC calculations. 
 		/// </summary>
-		static void Prep_ECC()
+		private static void Prep_ECC()
 		{
 			//create a table implementing f(i) = i*2 
 			for (int i = 0; i < 256; i++)
@@ -220,7 +220,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// returns the address from a sector. useful for saving it before zeroing it for ECC calculations
 		/// </summary>
-		static uint GetSectorAddress(byte[] sector, int sector_offset)
+		private static uint GetSectorAddress(byte[] sector, int sector_offset)
 		{
 			return (uint)(
 				(sector[sector_offset + 12 + 0] << 0)
@@ -233,7 +233,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// sets the address for a sector. useful for restoring it after zeroing it for ECC calculations
 		/// </summary>
-		static void SetSectorAddress(byte[] sector, int sector_offset, uint address)
+		private static void SetSectorAddress(byte[] sector, int sector_offset, uint address)
 		{
 			sector[sector_offset + 12 + 0] = (byte)((address >> 0) & 0xFF);
 			sector[sector_offset + 12 + 1] = (byte)((address >> 8) & 0xFF);

@@ -9,7 +9,8 @@ namespace BizHawk.Emulation.DiscSystem
 	/// TODO - add a flag indicating whether clearing has happened
 	/// TODO - add output to the job indicating whether interleaving has happened. let the sector reader be responsible
 	/// </summary>
-	[Flags] enum ESectorSynthPart
+	[Flags]
+	internal enum ESectorSynthPart
 	{
 		/// <summary>
 		/// The data sector header is required. There's no header for audio tracks/sectors.
@@ -100,7 +101,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// <summary>
 	/// Basic unit of sector synthesis
 	/// </summary>
-	interface ISectorSynthJob2448
+	internal interface ISectorSynthJob2448
 	{
 		/// <summary>
 		/// Synthesizes a sctor with the given job parameters
@@ -111,7 +112,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// <summary>
 	/// Not a proper job? maybe with additional flags, it could be
 	/// </summary>
-	class SectorSynthJob
+	internal class SectorSynthJob
 	{
 		public int LBA;
 		public ESectorSynthPart Parts;
@@ -124,7 +125,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// <summary>
 	/// an ISectorSynthProvider that just returns a value from an array of pre-made sectors
 	/// </summary>
-	class ArraySectorSynthProvider : ISectorSynthProvider
+	internal class ArraySectorSynthProvider : ISectorSynthProvider
 	{
 		public List<ISectorSynthJob2448> Sectors = new List<ISectorSynthJob2448>();
 		public int FirstLBA;
@@ -140,7 +141,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// <summary>
 	/// an ISectorSynthProvider that just returns a fixed synthesizer
 	/// </summary>
-	class SimpleSectorSynthProvider : ISectorSynthProvider
+	internal class SimpleSectorSynthProvider : ISectorSynthProvider
 	{
 		public ISectorSynthJob2448 SS;
 
@@ -150,11 +151,11 @@ namespace BizHawk.Emulation.DiscSystem
 	/// <summary>
 	/// Returns 'Patch' synth if the provided condition is met
 	/// </summary>
-	class ConditionalSectorSynthProvider : ISectorSynthProvider
+	internal class ConditionalSectorSynthProvider : ISectorSynthProvider
 	{
-		Func<int,bool> Condition;
-		ISectorSynthJob2448 Patch;
-		ISectorSynthProvider Parent;
+		private Func<int,bool> Condition;
+		private ISectorSynthJob2448 Patch;
+		private ISectorSynthProvider Parent;
 		public void Install(Disc disc, Func<int, bool> condition, ISectorSynthJob2448 patch)
 		{
 			Parent = disc.SynthProvider;
@@ -171,7 +172,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// <summary>
 	/// When creating a disc, this is set with a callback that can deliver an ISectorSynthJob2448 for the given LBA
 	/// </summary>
-	interface ISectorSynthProvider
+	internal interface ISectorSynthProvider
 	{
 		/// <summary>
 		/// Retrieves an ISectorSynthJob2448 for the given LBA
@@ -184,14 +185,14 @@ namespace BizHawk.Emulation.DiscSystem
 	/// To cut down on resource utilization, these can be stored in a disc and are tightly coupled to
 	/// the SectorSynths that have been setup for it
 	/// </summary>
-	struct SectorSynthParams
+	internal struct SectorSynthParams
 	{
 		//public long[] BlobOffsets;
 		public MednaDisc MednaDisc;
 	}
 
 
-	class SS_PatchQ : ISectorSynthJob2448
+	internal class SS_PatchQ : ISectorSynthJob2448
 	{
 		public ISectorSynthJob2448 Original;
 		public byte[] Buffer_SubQ = new byte[12];
@@ -208,7 +209,7 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 	}
 
-	class SS_Leadout : ISectorSynthJob2448
+	internal class SS_Leadout : ISectorSynthJob2448
 	{
 		public int SessionNumber;
 		public DiscMountPolicy Policy;

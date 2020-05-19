@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// Please be sure to test round-tripping when you make any changes. This architecture is a bit tricky to use, but it works if you're careful.
 	/// TODO - clarify stream disposing semantics
 	/// </summary>
-	class RiffMaster : IDisposable
+	internal class RiffMaster : IDisposable
 	{
 		public RiffMaster() { }
 
@@ -152,7 +152,8 @@ namespace BizHawk.Emulation.DiscSystem
 				Flush();
 				base.WriteStream(s);
 			}
-			void Flush()
+
+			private void Flush()
 			{
 				MemoryStream ms = new MemoryStream();
 				BinaryWriter bw = new BinaryWriter(ms);

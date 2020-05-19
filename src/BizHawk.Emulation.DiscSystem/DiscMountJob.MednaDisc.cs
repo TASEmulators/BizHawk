@@ -2,7 +2,7 @@
 {
 	partial class DiscMountJob
 	{
-		class SS_MednaDisc : ISectorSynthJob2448
+		private class SS_MednaDisc : ISectorSynthJob2448
 		{
 			public void Synth(SectorSynthJob job)
 			{
@@ -17,7 +17,7 @@
 			}
 		}
 
-		void RunMednaDisc()
+		private void RunMednaDisc()
 		{
 			var disc = new Disc();
 			OUT_Disc = disc;
