@@ -15,6 +15,10 @@ make
 make install
 cd ../emulibc
 make
-cd ../gpgx
+cd ../libco
+make
+cd ../libcxx
+./do-everything.sh
+cd ../<insert your favourite core here>
 make
 make install
