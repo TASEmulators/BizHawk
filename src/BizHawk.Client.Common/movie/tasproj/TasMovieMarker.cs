@@ -201,7 +201,7 @@ namespace BizHawk.Client.Common
 
 		public new void Remove(TasMovieMarker item)
 		{
-			if (item == null || item.Frame == 0) // TODO: Don't do this.
+			if (item == null) // TODO: Don't do this.
 			{
 				return;
 			}
@@ -239,11 +239,6 @@ namespace BizHawk.Client.Common
 
 		public void Move(int fromFrame, int toFrame)
 		{
-			if (fromFrame == 0) // no thanks!
-			{
-				return;
-			}
-
 			TasMovieMarker m = Get(fromFrame);
 			if (m == null) // TODO: Don't do this.
 			{

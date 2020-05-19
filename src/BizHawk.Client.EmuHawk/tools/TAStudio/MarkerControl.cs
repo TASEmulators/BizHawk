@@ -102,7 +102,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			EditMarkerToolStripMenuItem.Enabled =
 				RemoveMarkerToolStripMenuItem.Enabled =
-				MarkerInputRoll.AnyRowsSelected && MarkerView.SelectedRows.First() != 0;
+				MarkerInputRoll.AnyRowsSelected;
 
 			JumpToMarkerToolStripMenuItem.Enabled =
 				ScrollToMarkerToolStripMenuItem.Enabled =
@@ -279,7 +279,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			EditMarkerButton.Enabled =
 				RemoveMarkerButton.Enabled =
-				MarkerInputRoll.AnyRowsSelected && MarkerView.SelectedRows.First() != 0;
+				MarkerInputRoll.AnyRowsSelected;
 
 			JumpToMarkerButton.Enabled =
 				ScrollToMarkerButton.Enabled =
