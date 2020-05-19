@@ -108,7 +108,7 @@ namespace BizHawk.Emulation.Common
 				throw new ArgumentException();
 			}
 
-			if (addresses.EndInclusive - addresses.Start + 1 != values.Length)
+			if ((long) addresses.Count() != values.Length)
 			{
 				throw new InvalidOperationException("Invalid length of values array");
 			}
@@ -126,13 +126,13 @@ namespace BizHawk.Emulation.Common
 				throw new ArgumentException();
 			}
 
-			long start = addresses.Start;
-			long nAddresses = addresses.EndInclusive - addresses.Start + 1;
+			var nAddresses = (long) addresses.Count();
 			if (nAddresses != values.Length)
 			{
 				throw new InvalidOperationException("Invalid length of values array");
 			}
 
+			var start = addresses.Start;
 			for (var i = 0; i < nAddresses; i++)
 			{
 				values[i] = PeekUshort(start + i*2, bigEndian);
@@ -146,13 +146,13 @@ namespace BizHawk.Emulation.Common
 				throw new ArgumentException();
 			}
 
-			long start = addresses.Start;
-			long nAddresses = addresses.EndInclusive - addresses.Start + 1;
+			var nAddresses = (long) addresses.Count();
 			if (nAddresses != values.Length)
 			{
 				throw new InvalidOperationException("Invalid length of values array");
 			}
 
+			var start = addresses.Start;
 			for (var i = 0; i<nAddresses; i++)
 			{
 				values[i] = PeekUint(start + i*4, bigEndian);
