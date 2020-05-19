@@ -178,7 +178,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			// TODO: what is the expected behavior when everything requested for remap is allocated,
 			// but with different protections?
-			if (start < Memory.Start || start + oldSize > Memory.End || oldSize == 0 || newSize == 0)
+			if (start < Memory.Start || start + oldSize > Memory.EndExclusive || oldSize == 0 || newSize == 0)
 				return 0;
 
 			var oldStartPage = GetPage(start);
@@ -243,7 +243,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public bool Protect(ulong start, ulong size, MemoryBlockBase.Protection prot)
 		{
-			if (start < Memory.Start || start + size > Memory.End || size == 0)
+			if (start < Memory.Start || start + size > Memory.EndExclusive || size == 0)
 				return false;
 
 			var startPage = GetPage(start);

@@ -9,7 +9,7 @@ using System.ComponentModel;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 {
-	[Core("PicoDrive", "notaz", true, true,
+	[Core(CoreNames.PicoDrive, "notaz", true, true,
 		"0e352905c7aa80b166933970abbcecfce96ad64e", "https://github.com/notaz/picodrive", false)]
 	public class PicoDrive : WaterboxCore, IDriveLight, IRegionable, ISettable<object, PicoDrive.SyncSettings>
 	{
@@ -22,10 +22,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 		[CoreConstructor("GEN")]
 		public PicoDrive(CoreComm comm, GameInfo game, byte[] rom, bool deterministic, SyncSettings syncSettings)
 			: this(comm, game, rom, null, deterministic, syncSettings)
-		{ }
-
-		public PicoDrive(CoreComm comm, GameInfo game, Disc cd, bool deterministic, SyncSettings syncSettings)
-			: this(comm, game, null, cd, deterministic, syncSettings)
 		{ }
 
 		private PicoDrive(CoreComm comm, GameInfo game, byte[] rom, Disc cd, bool deterministic, SyncSettings syncSettings)

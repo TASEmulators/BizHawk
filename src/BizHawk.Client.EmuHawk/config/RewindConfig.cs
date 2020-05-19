@@ -42,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 			RewindSpeedNumeric.Value = _config.Rewind.SpeedMultiplier;
 			DiskBufferCheckbox.Checked = _config.Rewind.OnDisk;
 			RewindIsThreadedCheckbox.Checked = _config.Rewind.IsThreaded;
-			_stateSize = _statableCore.SaveStateBinary().Length;
+			_stateSize = _statableCore.CloneSavestate().Length;
 			BufferSizeUpDown.Value = Math.Max(_config.Rewind.BufferSize, BufferSizeUpDown.Minimum);
 
 			_mediumStateSize = _config.Rewind.MediumStateSize;
@@ -175,7 +175,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (TriggerRewindSettingsReload)
 			{
-				_rewinder.Initialize();
+				_rewinder.Initialize(_statableCore, _config.Rewind);
 			}
 
 			// These settings are not used by DoRewindSettings

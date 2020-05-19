@@ -173,42 +173,42 @@ namespace BizHawk.Client.Common
 						default:
 						case CompareType.None: // This should never happen, but it's here just in case.  adelikat: And yet it does! Cheat Code converter doesn't do this.  Changing this to default to equal since 99.9999% of all cheats are going to be equals
 						case CompareType.Equal:
-							if (_compare.Value == _watch.ValueNoFreeze) 
+							if (_compare.Value == _watch.Value) 
 							{
 								_watch.Poke(GetStringForPulse(_val));
 							}
 
 							break;
 						case CompareType.GreaterThan:
-							if (_compare.Value > _watch.ValueNoFreeze) 
+							if (_compare.Value > _watch.Value) 
 							{
 								_watch.Poke(GetStringForPulse(_val));
 							}
 
 							break;
 						case CompareType.GreaterThanOrEqual:
-							if (_compare.Value >= _watch.ValueNoFreeze)
+							if (_compare.Value >= _watch.Value)
 							{
 								_watch.Poke(GetStringForPulse(_val));
 							}
 
 							break;
 						case CompareType.LessThan:
-							if (_compare.Value < _watch.ValueNoFreeze) 
+							if (_compare.Value < _watch.Value) 
 							{
 								_watch.Poke(GetStringForPulse(_val));
 							}
 
 							break;
 						case CompareType.LessThanOrEqual:
-							if (_compare.Value <= _watch.ValueNoFreeze)
+							if (_compare.Value <= _watch.Value)
 							{
 								_watch.Poke(GetStringForPulse(_val));
 							}
 
 							break;
 						case CompareType.NotEqual:
-							if (_compare.Value != _watch.ValueNoFreeze)
+							if (_compare.Value != _watch.Value)
 							{
 								_watch.Poke(GetStringForPulse(_val));
 							}

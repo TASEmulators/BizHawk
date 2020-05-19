@@ -7,18 +7,15 @@ namespace BizHawk.Client.Common
 	{
 		public BkmHeader()
 		{
-			Comments = new List<string>();
-			Subtitles = new SubtitleList();
-
 			this[HeaderKeys.EmulationVersion] = VersionInfo.GetEmuVersion();
-			this[HeaderKeys.Platform] = Global.Emulator != null ? Global.Emulator.SystemId : "";
 			this[HeaderKeys.GameName] = "";
 			this[HeaderKeys.Author] = "";
 			this[HeaderKeys.Rerecords] = "0";
+			this[HeaderKeys.MovieVersion] = "BizHawk v0.0.1";
 		}
 
-		public List<string> Comments { get; }
-		public SubtitleList Subtitles { get; }
+		public List<string> Comments { get; } = new List<string>();
+		public SubtitleList Subtitles { get; } = new SubtitleList();
 
 		public string SavestateBinaryBase64Blob
 		{

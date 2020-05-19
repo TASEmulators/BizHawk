@@ -6,6 +6,8 @@ namespace BizHawk.Client.Common
 {
 	public class Rewinder
 	{
+		private IStatable _statableCore;
+
 		private const int MaxByteArraySize = 0x7FFFFFC7; // .NET won't let us allocate more than this in one array
 
 		private StreamBlobDatabase _rewindBuffer;
@@ -16,8 +18,6 @@ namespace BizHawk.Client.Common
 		private bool _rewindDeltaEnable;
 		private bool _lastRewindLoadedState;
 		private byte[] _deltaBuffer = new byte[0];
-
-		public Action<string> MessageCallback { get; set; }
 
 		public bool RewindActive => RewindEnabled && !SuspendRewind;
 
@@ -35,43 +35,37 @@ namespace BizHawk.Client.Common
 
 		public int RewindFrequency { get; private set; }
 
-		public void Initialize()
+		public void Initialize(IStatable statableCore, RewindConfig rewindConfig)
 		{
 			Uninitialize();
 
-			if (Global.Emulator.HasSavestates())
-			{
-				int stateSize = Global.Emulator.AsStatable().SaveStateBinary().Length;
+			_statableCore = statableCore;
 
-				if (stateSize >= Global.Config.Rewind.LargeStateSize)
-				{
-					RewindEnabled = Global.Config.Rewind.EnabledLarge;
-					RewindFrequency = Global.Config.Rewind.FrequencyLarge;
-				}
-				else if (stateSize >= Global.Config.Rewind.MediumStateSize)
-				{
-					RewindEnabled = Global.Config.Rewind.EnabledMedium;
-					RewindFrequency = Global.Config.Rewind.FrequencyMedium;
-				}
-				else
-				{
-					RewindEnabled = Global.Config.Rewind.EnabledSmall;
-					RewindFrequency = Global.Config.Rewind.FrequencySmall;
-				}
+			int stateSize = _statableCore.CloneSavestate().Length;
+
+			if (stateSize >= rewindConfig.LargeStateSize)
+			{
+				RewindEnabled = rewindConfig.EnabledLarge;
+				RewindFrequency = rewindConfig.FrequencyLarge;
+			}
+			else if (stateSize >= rewindConfig.MediumStateSize)
+			{
+				RewindEnabled = rewindConfig.EnabledMedium;
+				RewindFrequency = rewindConfig.FrequencyMedium;
+			}
+			else
+			{
+				RewindEnabled = rewindConfig.EnabledSmall;
+				RewindFrequency = rewindConfig.FrequencySmall;
 			}
 
-			DoMessage(RewindEnabled ?
-				$"Rewind enabled, frequency: {RewindFrequency}" :
-				"Rewind disabled");
-
-			_rewindDeltaEnable = Global.Config.Rewind.UseDelta;
+			_rewindDeltaEnable = rewindConfig.UseDelta;
 
 			if (RewindActive)
 			{
-				var capacity = Global.Config.Rewind.BufferSize * 1024L * 1024L;
-				_rewindBuffer = new StreamBlobDatabase(Global.Config.Rewind.OnDisk, capacity, BufferManage);
-
-				_rewindThread = new RewindThreader(CaptureInternal, RewindInternal, Global.Config.Rewind.IsThreaded);
+				var capacity = rewindConfig.BufferSize * 1024L * 1024L;
+				_rewindBuffer = new StreamBlobDatabase(rewindConfig.OnDisk, capacity, BufferManage);
+				_rewindThread = new RewindThreader(CaptureInternal, RewindInternal, rewindConfig.IsThreaded);
 			}
 		}
 
@@ -99,11 +93,6 @@ namespace BizHawk.Client.Common
 		{
 			_rewindBuffer?.Clear();
 			_lastState = new byte[0];
-		}
-
-		private void DoMessage(string message)
-		{
-			MessageCallback?.Invoke(message);
 		}
 
 		private byte[] BufferManage(byte[] inbuf, ref long size, bool allocate)
@@ -141,24 +130,19 @@ namespace BizHawk.Client.Common
 			throw new OutOfMemoryException();
 		}
 
-		public void Capture()
+		public void Capture(int frame)
 		{
 			if (!RewindActive)
 			{
 				return;
 			}
 
-			if (_rewindThread == null)
-			{
-				Initialize();
-			}
-
-			if (_rewindThread == null || Global.Emulator.Frame % RewindFrequency != 0)
+			if (_rewindThread == null || frame % RewindFrequency != 0)
 			{
 				return;
 			}
 
-			_rewindThread.Capture(Global.Emulator.AsStatable().SaveStateBinary());
+			_rewindThread.Capture(_statableCore.SaveStateBinary());
 		}
 
 		private void CaptureInternal(byte[] coreSavestate)
@@ -310,7 +294,7 @@ namespace BizHawk.Client.Common
 				// each one records how to get back to the previous state, once we've gone back to
 				// the second item, it's already resulted in the first state being loaded. The
 				// first item is just a junk entry with the initial value of _lastState (0 bytes).
-				if (_rewindBuffer.Count <= 1 || (Global.MovieSession.Movie.IsActive() && Global.MovieSession.Movie.InputLogLength == 0))
+				if (_rewindBuffer.Count <= 1)
 				{
 					break;
 				}
@@ -371,7 +355,7 @@ namespace BizHawk.Client.Common
 					}
 				}
 
-				Global.Emulator.AsStatable().LoadStateBinary(_lastState);
+				_statableCore.LoadStateBinary(_lastState);
 			}
 			else
 			{
@@ -380,7 +364,7 @@ namespace BizHawk.Client.Common
 					throw new InvalidOperationException();
 				}
 
-				Global.Emulator.AsStatable().LoadStateBinary(reader);
+				_statableCore.LoadStateBinary(reader);
 			}
 		}
 	}

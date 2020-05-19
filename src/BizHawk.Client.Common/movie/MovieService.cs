@@ -18,12 +18,6 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Creates a standard <see cref="IMovie"/> instance, 
-		/// no path is specified so this is in a minimal state that would not be able to be saved
-		/// </summary>
-		public static IMovie Create() => new Bk2Movie();
-
-		/// <summary>
 		/// Creates a <see cref="ITasSession"/> instance
 		/// </summary>
 		public static ITasMovie CreateTas(bool startsFromSavestate = false)

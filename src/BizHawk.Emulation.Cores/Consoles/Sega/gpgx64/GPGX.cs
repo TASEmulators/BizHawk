@@ -12,7 +12,7 @@ using System.Linq;
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
 	[Core(
-		"Genplus-gx",
+		CoreNames.Gpgx,
 		"",
 		isPorted: true,
 		isReleased: true,

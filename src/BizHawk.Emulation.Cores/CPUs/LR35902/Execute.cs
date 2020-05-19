@@ -576,7 +576,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			// exit halt / stop loop
 			instr_table[256 * 60 * 2 + 60] = IDLE;
 			instr_table[256 * 60 * 2 + 60 + 1] = IDLE;
-			instr_table[256 * 60 * 2 + 60 + 2] = IDLE;
+			instr_table[256 * 60 * 2 + 60 + 2] = HALT_CHK;
 			instr_table[256 * 60 * 2 + 60 + 3] = OP;
 
 			// skipped loop

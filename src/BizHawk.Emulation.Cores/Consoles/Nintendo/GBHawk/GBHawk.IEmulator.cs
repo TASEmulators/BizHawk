@@ -101,10 +101,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					// These things all tick twice as fast in GBC double speed mode
 					// Note that DMA is halted when the CPU is halted
-					if (ppu.DMA_start && !cpu.halted && !cpu.stopped) { ppu.DMA_tick(); }
-					serialport.serial_transfer_tick();
-					cpu.ExecuteOne();
-					timer.tick();
 
 					if (double_speed)
 					{
@@ -113,17 +109,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						cpu.ExecuteOne();
 						timer.tick();
 					}
+				
+					if (ppu.DMA_start && !cpu.halted && !cpu.stopped) { ppu.DMA_tick(); }
+					serialport.serial_transfer_tick();
+					cpu.ExecuteOne();
+					timer.tick();					
 				}
 				else
 				{
-					cpu.TotalExecutedCycles++;
-					timer.tick();
-
 					if (double_speed)
 					{
 						cpu.TotalExecutedCycles++;
 						timer.tick();
 					}
+
+					cpu.TotalExecutedCycles++;
+					timer.tick();
 				}
 
 				if (in_vblank && !in_vblank_old)
@@ -254,23 +255,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		// Switch Speed (GBC only)
 		public int SpeedFunc(int temp)
 		{
-			if (is_GBC)
+			if (temp == 0)
 			{
-				if (speed_switch)
+				if (is_GBC)
 				{
-					speed_switch = false;
-					Console.WriteLine("Speed Switch: " + cpu.TotalExecutedCycles);
-					int ret = double_speed ? (32768 - 20) : (32768 - 20); // actual time needs checking
-					double_speed = !double_speed;
-					return ret;
+					if (speed_switch)
+					{
+						speed_switch = false;
+						Console.WriteLine("Speed Switch: " + cpu.TotalExecutedCycles);
+						int ret = double_speed ? 32768 - 20 : 32768 - 20; // actual time needs checking
+						return ret;
+					}
+
+					// if we are not switching speed, return 0
+					return 0;
 				}
 
-				// if we are not switching speed, return 0
+				// if we are in GB mode, return 0, cannot switch speed
 				return 0;
 			}
-
-			// if we are in GB mode, return 0, cannot switch speed
-			return 0;
+			else
+			{
+				double_speed = !double_speed;
+				return 0;
+			}
 		}
 
 		public void GetControllerState(IController controller)

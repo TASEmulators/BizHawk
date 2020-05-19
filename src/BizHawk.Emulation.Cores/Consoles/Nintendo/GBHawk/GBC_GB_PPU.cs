@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF68: ret = BG_pal_ret;						break; // BGPI
 				case 0xFF69: ret = BG_PAL_read();					break; // BGPD
 				case 0xFF6A: ret = OBJ_pal_ret;						break; // OBPI
-				case 0xFF6B: ret = OBJ_bytes[OBJ_bytes_index];		break; // OBPD
+				case 0xFF6B: ret = OBJ_PAL_read();					break; // OBPD
 			}
 
 			return ret;
@@ -93,6 +93,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			if (VRAM_access_read)
 			{
 				return BG_bytes[BG_bytes_index];
+			}
+			else
+			{
+				return 0xFF;
+			}
+		}
+
+		public byte OBJ_PAL_read()
+		{
+			if (VRAM_access_read && Core.GBC_compat)
+			{
+				return OBJ_bytes[OBJ_bytes_index];
 			}
 			else
 			{
@@ -281,8 +293,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					OBJ_bytes_inc = ((value & 0x80) == 0x80);
 					break;
 				case 0xFF6B: // OBPD
-					OBJ_transfer_byte = value;
-					OBJ_bytes[OBJ_bytes_index] = value;
+					if (VRAM_access_write && Core.GBC_compat)
+					{
+						OBJ_transfer_byte = value;
+						OBJ_bytes[OBJ_bytes_index] = value;
+					}
 
 					// change the appropriate palette color
 					color_compute_OBJ();
