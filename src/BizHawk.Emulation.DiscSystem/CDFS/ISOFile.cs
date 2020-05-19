@@ -156,25 +156,16 @@ namespace BizHawk.Emulation.DiscSystem
 		public List<KeyValuePair<string, ISOFileNode>> EnumerateAllFilesRecursively()
 		{
 			fileNodes = new List<KeyValuePair<string, ISOFileNode>>();
+			if (Root.Children == null) return fileNodes;
+
 			dirsParsed = new List<ISODirectoryNode>();
-
-			if (Root.Children == null)
-				return fileNodes;
-
-			// get all folders
-			var dirs = (from a in Root.Children where a.Value.GetType() == typeof(ISODirectoryNode) select a);
-			// iterate through each folder
-			foreach (var d in dirs)
+			foreach (var idn in Root.Children.Values.OfType<ISODirectoryNode>()) // iterate through each folder
 			{
-				// process all files in this directory (and recursively process files in sub folders
-				ISODirectoryNode idn = (ISODirectoryNode) d.Value;
-				if (dirsParsed.Where(a => a == idn).Count() > 0)
-					continue;
-
+				// process all files in this directory (and recursively process files in subfolders)
+				if (dirsParsed.Contains(idn)) continue;
 				dirsParsed.Add(idn);
 				ProcessDirectoryFiles(idn.Children);                
 			}
-
 			return fileNodes.Distinct().ToList();
 		}  
 
@@ -184,7 +175,7 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				if (n.Value is ISODirectoryNode subdirNode)
 				{
-					if (dirsParsed.Where(a => a == subdirNode).Count() > 0) continue;
+					if (dirsParsed.Contains(subdirNode)) continue;
 					dirsParsed.Add(subdirNode);
 					ProcessDirectoryFiles(subdirNode.Children);
 				}
