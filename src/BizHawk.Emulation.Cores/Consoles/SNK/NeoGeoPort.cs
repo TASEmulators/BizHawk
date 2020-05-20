@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 
 		[CoreConstructor("NGP")]
 		public NeoGeoPort(CoreComm comm, byte[] rom, SyncSettings syncSettings, bool deterministic)
-			: this(comm, rom, syncSettings, deterministic, PeRunner.CanonicalStart)
+			: this(comm, rom, syncSettings, deterministic, WaterboxHost.CanonicalStart)
 		{
 		}
 
@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 
 			_syncSettings = syncSettings ?? new SyncSettings();
 
-			_neopop = PreInit<LibNeoGeoPort>(new PeRunnerOptions
+			_neopop = PreInit<LibNeoGeoPort>(new WaterboxOptions
 			{
 				Filename = "ngp.wbx",
 				SbrkHeapSizeKB = 256,

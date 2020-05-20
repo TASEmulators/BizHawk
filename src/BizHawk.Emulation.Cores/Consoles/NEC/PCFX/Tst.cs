@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 			_syncSettings = syncSettings ?? new SyncSettings();
 			BufferHeight = _settings.ScanlineEnd - _settings.ScanlineStart + 1;
 
-			_core = PreInit<LibTst>(new PeRunnerOptions
+			_core = PreInit<LibTst>(new WaterboxOptions
 			{
 				Filename = "pcfx.wbx",
 				SbrkHeapSizeKB = 512,

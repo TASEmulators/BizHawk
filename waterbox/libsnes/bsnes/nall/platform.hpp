@@ -31,6 +31,9 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#include <string>
+#include <vector>
+
 #if defined(_WIN32)
   #include <io.h>
   #include <direct.h>
@@ -39,8 +42,6 @@
   #undef interface
   #define dllexport __declspec(dllexport)
 	//bad things happen without these here
-	#include <string>
-	#include <vector>
 #else
   #include <unistd.h>
   #include <pwd.h>

@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			settings ??= new Settings();
 			syncSettings ??= new SyncSettings();
 
-			_core = PreInit<LibSnes9x>(new PeRunnerOptions
+			_core = PreInit<LibSnes9x>(new WaterboxOptions
 			{
 				Filename = "snes9x.wbx",
 				SbrkHeapSizeKB = 1024,

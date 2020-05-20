@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 
 			_syncSettings = syncSettings ?? new SyncSettings();
 
-			_core = PreInit<LibPicoDrive>(new PeRunnerOptions
+			_core = PreInit<LibPicoDrive>(new WaterboxOptions
 			{
 				Filename = "picodrive.wbx",
 				SbrkHeapSizeKB = 64,

@@ -28,6 +28,7 @@ to do:
 /** EkeEke (2011): removed multiple chips support, cleaned code & added FM board interface for Genesis Plus GX **/
 
 #include "shared.h"
+#include <emulibc.h>
 
 #define FREQ_SH 16  /* 16.16 fixed point (frequency calculations) */
 #define EG_SH   16  /* 16.16 fixed point (EG timing)              */
@@ -341,7 +342,7 @@ static const UINT8 mul_tab[16]= {
 *  TL_RES_LEN - sinus resolution (X axis)
 */
 #define TL_TAB_LEN (11*2*TL_RES_LEN)
-static signed int tl_tab[TL_TAB_LEN];
+ECL_SEALED static signed int tl_tab[TL_TAB_LEN];
 
 #define ENV_QUIET    (TL_TAB_LEN>>5)
 

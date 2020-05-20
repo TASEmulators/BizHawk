@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Belogic
 				DefaultFpsDenominator = 476840
 			})
 		{
-			_uze = PreInit<LibUzem>(new PeRunnerOptions
+			_uze = PreInit<LibUzem>(new WaterboxOptions
 			{
 				Filename = "uzem.wbx",
 				SbrkHeapSizeKB = 20,

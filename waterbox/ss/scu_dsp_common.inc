@@ -20,8 +20,9 @@
 */
 
 // base ptr must match the waterbox base load location!
+// TODO: Since we're not relocating, can't we use DSP_Init?
 #if (defined(__x86_64__) && defined(__code_model_small__) && !defined(__PIC__) && !defined(__pic__)) || SIZEOF_VOID_P <= 4
- #define DSP_INSTR_BASE_UIPT 0x36d00000000ul
+ #define DSP_INSTR_BASE_UIPT 0x36f00000000ul
  #define DSP_INSTR_RECOVER_TCAST uint32
 #else
  #define DSP_INSTR_BASE_UIPT ((uintptr_t)DSP_Init)

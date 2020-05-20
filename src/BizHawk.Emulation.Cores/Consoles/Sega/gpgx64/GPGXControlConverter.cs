@@ -179,9 +179,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			Console.WriteLine("Genesis Controller report:");
 			foreach (var e in input.system)
-				Console.WriteLine("S:{0}", e);
+				Console.WriteLine("  S:{0}", e);
 			foreach (var e in input.dev)
-				Console.WriteLine("D:{0}", e);
+				Console.WriteLine("  D:{0}", e);
 
 			int player = 1;
 

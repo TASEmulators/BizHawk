@@ -22,7 +22,7 @@
 #ifndef __MDFN_M68K_H
 #define __MDFN_M68K_H
 
-#include "ss.h"
+#include "../ss.h"
 
 class M68K
 {

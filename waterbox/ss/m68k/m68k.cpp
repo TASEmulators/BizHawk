@@ -44,7 +44,7 @@
 	CMPM (a7)+,(a7)+
 */
 
-#include "ss.h"
+#include "../ss.h"
 #include "m68k.h"
 
 #include <tuple>

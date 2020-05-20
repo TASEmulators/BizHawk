@@ -1,12 +1,24 @@
-This is the experimental "waterbox" project for bizhawk.
+This is the native side of the experimental "waterbox" project for bizhawk.
+It consists of a modified musl libc, and build scripts to tie it all together.
 
-libc.so, libgcc_s.so, libstdc++.so.6, and the waterbox executables are built with a modified verion of the midipix project.
-The makefiles for the cores only support the cross compilation setup (build from whatever linux box you built midipix
-from).
+How to use:
 
-The mmglue portion of the midipix project is modified; get the correct version from <ssh://git@github.com/nattthebear/mmglue.git>.
+1. Get a full Bizhawk checkout.
+	* This needs to be in an NTFS path which is then foreign mounted in WSL2
+2. Get WSL2 + Ubuntu 20.4LTS
+	* Other combinations may work.  Shrug.
+3. Start running commands:
 
-gpgx: This is a modified version of our gpgx core
-snes9x: Based off of snes9x 1.54.
-
-
+cd musl
+./configure-for-waterbox
+make
+make install
+cd ../emulibc
+make
+cd ../libco
+make
+cd ../libcxx
+./do-everything.sh
+cd ../<insert your favourite core here>
+make
+make install

@@ -19,3 +19,6 @@
 	path = melonds
 	url = https://github.com/TASVideos/melonDS.git
 	branch = SuuperW_DSHawk
+[submodule "waterbox/musl"]
+	path = waterbox/musl
+	url = https://github.com/nattthebear/musl.git

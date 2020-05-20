@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/mman.h>
+#include <emulibc.h>
 
 static long long co_active_buffer[64];
 static cothread_t co_active_handle = 0;
@@ -57,7 +58,7 @@ static void crash()
 	assert(0); /* called only if cothread_t entrypoint returns */
 }
 
-void co_clean()
+ECL_EXPORT void co_clean()
 {
 	memset(co_active_buffer, 0, sizeof(co_active_buffer));
 }

@@ -1,0 +1,19 @@
+#!/bin/sh
+MYPATH="`dirname \"$0\"`"
+SYSROOT="`realpath \"$MYPATH/../sysroot\"`"
+LLVMDIR="`realpath \"$MYPATH/../../../llvm-project\"`"
+rm -rf build0
+mkdir build0
+cd build0
+export CFLAGS="-mabi=ms -mcmodel=large -mstack-protector-guard=global -fno-use-cxa-atexit"
+export CXXFLAGS="-mabi=ms -mcmodel=large -mstack-protector-guard=global -fno-use-cxa-atexit"
+cmake \
+	-DCMAKE_C_COMPILER="$SYSROOT/bin/musl-gcc" \
+	-DCMAKE_CXX_COMPILER="$SYSROOT/bin/musl-gcc" \
+	-DLIBUNWIND_ENABLE_SHARED=OFF \
+	-DLIBUNWIND_ENABLE_THREADS=OFF \
+	-DLIBUNWIND_USE_COMPILER_RT=ON \
+	-DCMAKE_INSTALL_PREFIX="$SYSROOT" \
+	-DCMAKE_AR="/usr/bin/gcc-ar" \
+	-DCMAKE_RANLIB="/usr/bin/gcc-ranlib" \
+	../../../../llvm-project/libunwind
