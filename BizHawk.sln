@@ -51,7 +51,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.WinForms.Controls",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{74391239-9BC1-40CE-A3D7-180737C5302A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Common.Tests", "src\BizHawk.Tests\BizHawk.Common.Tests.csproj", "{284E19E2-661D-4A7D-864A-AC2FC91E7C25}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Tests", "src\BizHawk.Tests\BizHawk.Tests.csproj", "{284E19E2-661D-4A7D-864A-AC2FC91E7C25}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
