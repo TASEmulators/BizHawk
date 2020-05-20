@@ -142,6 +142,10 @@ namespace BizHawk.Client.EmuHawk.CoreExtensions
 					return SystemInfo.O2;
 				case "MAME":
 					return SystemInfo.Mame;
+				case "uzem":
+					return SystemInfo.UzeBox;
+				case "PCFX":
+						return SystemInfo.Pcfx;
 			}
 		}
 	}

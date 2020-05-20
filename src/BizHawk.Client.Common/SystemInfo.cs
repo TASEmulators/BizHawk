@@ -231,6 +231,10 @@ namespace BizHawk.Client.Common
 
 		public static SystemInfo Sgb { get; } = new SystemInfo("SGB", CoreSystem.SuperGameBoy, 4);
 
+		public static SystemInfo Pcfx { get; } = new SystemInfo("PCFX", CoreSystem.PcFx, 1);
+
+		public static SystemInfo UzeBox { get; } = new SystemInfo("uzem", CoreSystem.UzeBox, 1);
+
 		/// <summary>
 		/// Get a <see cref="SystemInfo"/> by its <see cref="CoreSystem"/>
 		/// </summary>
