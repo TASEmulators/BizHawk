@@ -68,6 +68,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				.ToDictionary(s => s.Name);
 			
 			_sectionsByName.TryGetValue(".wbxsyscall", out _imports);
+			if (_imports == null)
+			{
+				// Likely cause:  This is a valid elf file, but it was not compiled by our toolchain at all
+				throw new InvalidOperationException("Missing .wbxsyscall section!");
+			}
 			_sectionsByName.TryGetValue(".sealed", out _sealed);
 			_sectionsByName.TryGetValue(".invis", out _invisible);
 
@@ -180,10 +185,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			Memory.Protect(Memory.Start, Memory.Size, MemoryBlockBase.Protection.RW);
 
 			var tmp = new IntPtr[1];
+			var ptrSize = (ulong)IntPtr.Size;
 
 			foreach (var s in _importSymbols)
 			{
-				if (s.Size == 8)
+				if (s.Size == ptrSize)
 				{
 					var p = syscalls.GetProcAddrOrThrow(s.Name);
 					tmp[0] = p;
@@ -191,14 +197,17 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				}
 				else
 				{
-					if ((s.Size & 7) != 0)
+					if (s.Size % ptrSize != 0)
+					{
+						// They're supposed to be arrays of pointers, so uhhh yeah?
 						throw new InvalidOperationException($"Symbol {s.Name} has unexpected size");
-					var count = (int)(s.Size >> 3);
+					}
+					var count = (int)(s.Size / ptrSize);
 					for (var i = 0; i < count; i++)
 					{
 						var p = syscalls.GetProcAddrOrThrow($"{s.Name}[{i}]");
 						tmp[0] = p;
-						Marshal.Copy(tmp, 0, Z.US(s.Value + (ulong)(i * 8)), 1);
+						Marshal.Copy(tmp, 0, Z.US(s.Value + ((ulong)i * ptrSize)), 1);
 					}
 				}
 			}
@@ -206,12 +215,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			Protect();
 		}
 
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		private delegate void ElfEntryDelegate();
-
 		public void RunNativeInit()
 		{
-			CallingConventionAdapters.Waterbox.GetDelegateForFunctionPointer<ElfEntryDelegate>(Z.US(_elf.EntryPoint))();
+			CallingConventionAdapters.Waterbox.GetDelegateForFunctionPointer<Action>(Z.US(_elf.EntryPoint))();
 		}
 
 		public void SealImportsAndTakeXorSnapshot()
@@ -222,16 +228,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			// save import values, then zero them all (for hash purposes), then take our snapshot, then load them again,
 			// then set the .wbxsyscall area to read only
 			byte[] impData = null;
-			if (_imports != null)
-			{
-				impData = new byte[_imports.Size];
-				Marshal.Copy(Z.US(_imports.LoadAddress), impData, 0, (int)_imports.Size);
-				WaterboxUtils.ZeroMemory(Z.US(_imports.LoadAddress), (long)_imports.Size);
-			}
-			else
-			{
-				throw new Exception("Call natt (_imports??)");
-			}
+			impData = new byte[_imports.Size];
+			Marshal.Copy(Z.US(_imports.LoadAddress), impData, 0, (int)_imports.Size);
+			WaterboxUtils.ZeroMemory(Z.US(_imports.LoadAddress), (long)_imports.Size);
+
 			byte[] invData = null;
 			if (_invisible != null)
 			{
@@ -239,11 +239,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				Marshal.Copy(Z.US(_invisible.LoadAddress), invData, 0, (int)_invisible.Size);
 				WaterboxUtils.ZeroMemory(Z.US(_invisible.LoadAddress), (long)_invisible.Size);
 			}
+
 			Memory.SaveXorSnapshot();
-			if (_imports != null)
-			{
-				Marshal.Copy(impData, 0, Z.US(_imports.LoadAddress), (int)_imports.Size);
-			}
+
+			Marshal.Copy(impData, 0, Z.US(_imports.LoadAddress), (int)_imports.Size);
+
 			if (_invisible != null)
 			{
 				Marshal.Copy(invData, 0, Z.US(_invisible.LoadAddress), (int)_invisible.Size);
