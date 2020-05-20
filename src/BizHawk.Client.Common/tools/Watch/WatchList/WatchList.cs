@@ -400,7 +400,7 @@ namespace BizHawk.Client.Common
 					continue;
 				}
 
-				var numColumns = line.HowMany('\t');
+				var numColumns = line.Count(c => c == '\t');
 				int startIndex;
 				if (numColumns == 5)
 				{

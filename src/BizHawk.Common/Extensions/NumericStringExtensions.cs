@@ -27,7 +27,7 @@ namespace BizHawk.Common.StringExtensions
 		/// This method returning <see langword="true"/> for some <paramref name="str"/> does not imply that <see cref="float.TryParse(string,out float)">float.TryParse</see> will also return <see langword="true"/>.<br/>
 		/// Also this has nothing to do with fixed- vs. floating-point numbers, a better name would be <c>IsUnsignedDecimal</c>.
 		/// </remarks>
-		public static bool IsFixedPoint(this string? str) => !string.IsNullOrWhiteSpace(str) && str.HowMany('.') <= 1 && str.All(IsFixedPoint);
+		public static bool IsFixedPoint(this string? str) => !string.IsNullOrWhiteSpace(str) && str.Count(c => c == '.') <= 1 && str.All(IsFixedPoint);
 
 		/// <returns><see langword="true"/> iff <paramref name="c"/> is <c>'-'</c>, <c>'.'</c>, or a digit</returns>
 		/// <remarks>Also this has nothing to do with fixed- vs. floating-point numbers, a better name would be <c>IsSignedDecimal</c>.</remarks>
@@ -80,7 +80,7 @@ namespace BizHawk.Common.StringExtensions
 		/// This method returning <see langword="true"/> for some <paramref name="str"/> does not imply that <see cref="float.TryParse(string,out float)">float.TryParse</see> will also return <see langword="true"/>.<br/>
 		/// Also this has nothing to do with fixed- vs. floating-point numbers, a better name would be <c>IsSignedDecimal</c>.
 		/// </remarks>
-		public static bool IsFloat(this string? str) => !string.IsNullOrWhiteSpace(str) && str.HowMany('.') <= 1 && str[0].IsFloat() && str.Substring(1).All(IsFixedPoint);
+		public static bool IsFloat(this string? str) => !string.IsNullOrWhiteSpace(str) && str.Count(c => c == '.') <= 1 && str[0].IsFloat() && str.Substring(1).All(IsFixedPoint);
 
 		/// <returns>
 		/// <see langword="true"/> iff <paramref name="str"/> is not <see langword="null"/>,
