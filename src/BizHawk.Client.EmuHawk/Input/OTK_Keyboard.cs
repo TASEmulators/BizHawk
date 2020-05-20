@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 			// misc. printables (ASCII order)
 			Key.Space, Key.Quote, Key.Comma, Key.Minus, Key.Period, Key.Slash, Key.Semicolon, Key.Plus, Key.BracketLeft, Key.BackSlash, Key.BracketRight, Key.Tilde,
 			// misc. (alphabetically)
-			Key.BackSpace, Key.CapsLock, Key.Delete, Key.Down, Key.End, Key.Enter, Key.Escape, Key.Home, Key.Insert, Key.Left, Key.PageDown, Key.PageUp, Key.Pause, Key.Right, Key.ScrollLock, Key.Tab, Key.Up,
+			Key.BackSpace, Key.CapsLock, Key.Delete, Key.Down, Key.End, Key.Enter, Key.Escape, Key.Home, Key.Insert, Key.Left, Key.NumLock, Key.PageDown, Key.PageUp, Key.Pause, Key.PrintScreen, Key.Right, Key.ScrollLock, Key.Tab, Key.Up,
 			// modifier
 			Key.WinLeft, Key.WinRight, Key.ControlLeft, Key.ControlRight, Key.AltLeft, Key.AltRight, Key.ShiftLeft, Key.ShiftRight,
 

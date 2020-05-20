@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		public enum SaveError
 		{
 			NONE, NOT_FOUND, ILLEGAL_REGISTRATIONS, INVALID_HEADER, READ_ERROR, WRITE_ERROR, DISABLED
-		};
+		}
 
 		// main launcher
 		[DllImport(dll, CallingConvention = cc)]

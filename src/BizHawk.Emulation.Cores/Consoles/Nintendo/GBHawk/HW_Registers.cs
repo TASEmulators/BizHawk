@@ -374,8 +374,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF4C:
 					if ((value != 0xC0) && (value != 0x80) && (GB_bios_register == 0))// && (value != 0xFF) && (value != 0x04))
 					{
-						Console.Write("GBC Compatibility? ");
-						Console.WriteLine(value);
 						GBC_compat = false;
 
 						// cpu operation is a function of hardware only

@@ -4,6 +4,7 @@ using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Common.NumberExtensions;
 
+// TODO: Double speed timing of frame sequencer needs fixing
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	// Audio Emulation
@@ -108,6 +109,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public int sequencer_len, sequencer_vol, sequencer_swp;
 		public bool timer_bit_old;
+		public int sequencer_reset_cd;
 
 		public byte sample;
 
@@ -226,7 +228,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						SQ1_frq &= 0xFF;
 						SQ1_frq |= (ushort)((value & 7) << 8);
 
-						if (((sequencer_len & 1) > 0))
+						if (((sequencer_len & 1) == 0))
 						{
 							if (!SQ1_len_en && ((value & 0x40) > 0) && (SQ1_len_cntr > 0))
 							{
@@ -242,7 +244,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							if (SQ1_len_cntr == 0)
 							{
 								SQ1_len_cntr = 64;
-								if (((value & 0x40) > 0) && ((sequencer_len & 1) > 0)) { SQ1_len_cntr--; }
+								if (((value & 0x40) > 0) && ((sequencer_len & 1) == 0)) { SQ1_len_cntr--; }
 							}
 							SQ1_vol_state = SQ1_st_vol;
 							SQ1_vol_per = (SQ1_per > 0) ? SQ1_per : 8;
@@ -318,7 +320,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						SQ2_frq &= 0xFF;
 						SQ2_frq |= (ushort)((value & 7) << 8);
 
-						if ((sequencer_len & 1) > 0)
+						if ((sequencer_len & 1) == 0)
 						{
 							if (!SQ2_len_en && ((value & 0x40) > 0) && (SQ2_len_cntr > 0))
 							{
@@ -335,7 +337,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							if (SQ2_len_cntr == 0)
 							{
 								SQ2_len_cntr = 64;
-								if (((value & 0x40) > 0) && ((sequencer_len & 1) > 0)) { SQ2_len_cntr--; }
+								if (((value & 0x40) > 0) && ((sequencer_len & 1) == 0)) { SQ2_len_cntr--; }
 							}
 							SQ2_intl_cntr = (2048 - SQ2_frq) * 4;
 							SQ2_vol_state = SQ2_st_vol;
@@ -371,7 +373,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						WAVE_frq &= 0xFF;
 						WAVE_frq |= (ushort)((value & 7) << 8);
 
-						if ((sequencer_len & 1) > 0)
+						if ((sequencer_len & 1) == 0)
 						{
 							if (!WAVE_len_en && ((value & 0x40) > 0) && (WAVE_len_cntr > 0))
 							{
@@ -405,7 +407,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							if (WAVE_len_cntr == 0)
 							{
 								WAVE_len_cntr = 256;
-								if (((value & 0x40) > 0) && ((sequencer_len & 1) > 0)) { WAVE_len_cntr--; }
+								if (((value & 0x40) > 0) && ((sequencer_len & 1) == 0)) { WAVE_len_cntr--; }
 							}
 							WAVE_intl_cntr = (2048 - WAVE_frq) * 2 + 6; // trigger delay for wave channel
 							WAVE_wave_cntr = 0;
@@ -447,7 +449,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						Audio_Regs[NR44] = value;
 						NOISE_trigger = (value & 0x80) > 0;
 
-						if ((sequencer_len & 1) > 0)
+						if ((sequencer_len & 1) == 0)
 						{
 							if (!NOISE_len_en && ((value & 0x40) > 0) && (NOISE_len_cntr > 0))
 							{
@@ -464,7 +466,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							if (NOISE_len_cntr == 0)
 							{
 								NOISE_len_cntr = 64;
-								if (((value & 0x40) > 0) && ((sequencer_len & 1) > 0)) { NOISE_len_cntr--; }
+								if (((value & 0x40) > 0) && ((sequencer_len & 1) == 0)) { NOISE_len_cntr--; }
 							}
 							NOISE_intl_cntr = (DIVISOR[NOISE_div_code] << NOISE_clk_shft);
 							NOISE_vol_state = NOISE_st_vol;
@@ -571,9 +573,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						AUD_CTRL_power = (value & 0x80) > 0;
 						if (AUD_CTRL_power)
 						{
-							sequencer_vol = 0;
-							sequencer_len = 0;
-							sequencer_swp = 0;
+							sequencer_reset_cd = 4;
 						}
 						break;
 
@@ -737,14 +737,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			// so if it's constantly written to, these values won't update
 			bool check = Core.double_speed ? Core.timer.divider_reg.Bit(13) : Core.timer.divider_reg.Bit(12);
 
-			if (check && !timer_bit_old)
-			{
+			if (!check && timer_bit_old && AUD_CTRL_power)
+			{				
 				sequencer_vol++; sequencer_vol &= 0x7;
 				sequencer_len++; sequencer_len &= 0x7;
 				sequencer_swp++; sequencer_swp &= 0x7;
 
 				// clock the lengths
-				if ((sequencer_len & 1) > 0)
+				if ((sequencer_len & 1) == 0)
 				{
 					if (SQ1_len_en && SQ1_len_cntr > 0)
 					{
@@ -769,7 +769,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 
 				// clock the sweep
-				if ((sequencer_swp == 3) || (sequencer_swp == 7))
+				if ((sequencer_swp == 0) || (sequencer_swp == 4))
 				{
 					SQ1_intl_swp_cnt--;
 					if ((SQ1_intl_swp_cnt == 0) && SQ1_swp_enable)
@@ -821,7 +821,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 
 				// clock the volume envelope
-				if (sequencer_vol == 0)
+				if (sequencer_vol == 1)
 				{
 					if (SQ1_per > 0)
 					{
@@ -891,6 +891,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 			}
 			timer_bit_old = Core.double_speed ? Core.timer.divider_reg.Bit(13) : Core.timer.divider_reg.Bit(12);
+
+			if (sequencer_reset_cd > 0)
+			{
+				sequencer_reset_cd--;
+								
+				if (sequencer_reset_cd == 0)
+				{
+					if (Core.double_speed)
+					{
+						sequencer_len = Core.timer.divider_reg.Bit(13) ? 0 : 1;
+						sequencer_vol = Core.timer.divider_reg.Bit(13) ? 0 : 1;
+						sequencer_swp = Core.timer.divider_reg.Bit(13) ? 0 : 1;
+					}
+					else
+					{
+						sequencer_len = Core.timer.divider_reg.Bit(12) ? 0 : 1;
+						sequencer_vol = Core.timer.divider_reg.Bit(12) ? 0 : 1;
+						sequencer_swp = Core.timer.divider_reg.Bit(12) ? 0 : 1;
+					}				
+				}
+			}
 		}
 
 		public void power_off()
@@ -918,10 +939,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				SQ1_length = SQ2_length = WAVE_length = NOISE_length = 0;
 				SQ1_len_cntr = SQ2_len_cntr = WAVE_len_cntr = NOISE_len_cntr = 0;
 			}
-
-			sequencer_len = 0;
-			sequencer_vol = 0;
-			sequencer_swp = 0;
 		}
 
 		public void Reset()
@@ -962,6 +979,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			sequencer_len = 0;
 			sequencer_swp = 0;
 			sequencer_vol = 0;
+			sequencer_reset_cd = 0;
 
 			sample = 0;
 
@@ -1147,6 +1165,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(sequencer_vol), ref sequencer_vol);
 			ser.Sync(nameof(sequencer_swp), ref sequencer_swp);
 			ser.Sync(nameof(timer_bit_old), ref timer_bit_old);
+			ser.Sync(nameof(sequencer_reset_cd), ref sequencer_reset_cd);
 
 			ser.Sync(nameof(master_audio_clock), ref master_audio_clock);
 

@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static readonly List<OTK_GamePad> Devices = new List<OTK_GamePad>();
 
-		volatile static bool initialized = false;
+		private static volatile bool initialized = false;
 
 		/// <remarks>Initialization is only called once when MainForm loads</remarks>
 		public static void Initialize()

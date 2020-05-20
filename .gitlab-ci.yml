@@ -2,7 +2,8 @@ image: mcr.microsoft.com/dotnet/core/sdk:3.1
 
 stages:
   - build
-  - deploy
+  - test
+  - archive
 
 build:
   artifacts:
@@ -10,12 +11,28 @@ build:
     name: "BizHawk_tempbuild_$CI_COMMIT_REF_SLUG"
     paths:
       - output
-    when: always
+      - test_output
   script:
-    - Dist/BuildRelease.sh -p:MachineRunAnalyzersDuringBuild=true
+    - Dist/BuildRelease.sh
   stage: build
 
-deploy_artifact:
+check_style:
+  script:
+    - Dist/BuildRelease.sh -p:MachineRunAnalyzersDuringBuild=true
+  stage: test
+
+run_tests:
+  artifacts:
+    paths:
+      - test_output/*.coverage.xml
+    reports:
+      junit:
+        - test_output/*.coverage.xml
+  script:
+    - Dist/BuildTestRelease.sh
+  stage: test
+
+create_archive:
   artifacts:
     expire_in: "1 month"
     name: "BizHawk_devbuild_$CI_COMMIT_REF_SLUG"
@@ -25,7 +42,7 @@ deploy_artifact:
     - master
   script:
     - ''
-  stage: deploy
+  stage: archive
 
 cache:
   key: "$CI_COMMIT_REF_SLUG"
