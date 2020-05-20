@@ -293,7 +293,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					OBJ_bytes_inc = ((value & 0x80) == 0x80);
 					break;
 				case 0xFF6B: // OBPD
-					if (VRAM_access_write && Core.GBC_compat)
+					if (VRAM_access_write/* && Core.GBC_compat*/)
 					{
 						OBJ_transfer_byte = value;
 						OBJ_bytes[OBJ_bytes_index] = value;
