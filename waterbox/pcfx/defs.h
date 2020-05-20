@@ -6,6 +6,7 @@
 #include <cassert>
 #include <cstring>
 #include <cstdlib>
+#include <cstdio>
 #include <memory>
 
 typedef uint8_t uint8;

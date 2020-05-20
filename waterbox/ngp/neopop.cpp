@@ -24,6 +24,7 @@
 #include "flash.h"
 
 #include <algorithm>
+#include <time.h>
 
 namespace MDFN_IEN_NGP
 {

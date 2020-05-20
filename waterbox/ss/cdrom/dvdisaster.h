@@ -35,7 +35,7 @@
  *** Everything #includeable is rolled up herein...
  */
 
-#include "ss.h"
+#include "../ss.h"
 
 #include <ctype.h>
 #include <errno.h>

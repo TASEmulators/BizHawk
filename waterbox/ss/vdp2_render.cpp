@@ -30,7 +30,7 @@
 #include "vdp2_render.h"
 
 #include <array>
-#include <atomic>
+// #include <atomic>
 #include <algorithm>
 
 // "Array" is a bit of a misnomer, but it helps avoid confusion with memset() semantics hopefully.
