@@ -22,3 +22,6 @@
 [submodule "waterbox/musl"]
 	path = waterbox/musl
 	url = https://github.com/nattthebear/musl.git
+[submodule "waterbox/meega/fs-uae"]
+	path = waterbox/meega/fs-uae
+	url = git@github.com:FrodeSolheim/fs-uae.git
