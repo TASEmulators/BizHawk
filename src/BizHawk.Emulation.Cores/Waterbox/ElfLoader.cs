@@ -220,7 +220,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				throw new InvalidOperationException($"{nameof(ElfLoader)} already sealed!");
 
 			// save import values, then zero them all (for hash purposes), then take our snapshot, then load them again,
-			// then set the .idata area to read only
+			// then set the .wbxsyscall area to read only
 			byte[] impData = null;
 			if (_imports != null)
 			{
@@ -294,7 +294,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public void SaveStateBinary(BinaryWriter bw)
 		{
 			if (!_everythingSealed)
-				throw new InvalidOperationException(".idata sections must be closed before saving state");
+				throw new InvalidOperationException(".wbxsyscall section must be closed before saving state");
 
 			bw.Write(MAGIC);
 			bw.Write(_elfHash);
@@ -312,7 +312,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			if (!_everythingSealed)
 				// operations happening in the wrong order.  probable cause: internal logic error.  make sure frontend calls Seal
-				throw new InvalidOperationException(".idata sections must be closed before loading state");
+				throw new InvalidOperationException(".wbxsyscall section must be closed before loading state");
 
 			if (br.ReadUInt64() != MAGIC)
 				// file id is missing.  probable cause:  garbage savestate
