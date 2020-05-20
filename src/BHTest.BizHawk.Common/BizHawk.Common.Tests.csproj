@@ -1,6 +1,6 @@
-<Project>
-	<Import Project="../Common.props" />
-	<Import Project="../CommonNullable.props" />
+<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="../../Common.props" />
+	<Import Project="../../CommonNullable.props" />
 	<PropertyGroup>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<OutputPath>$(ProjectDir)../../test_output</OutputPath>
@@ -12,6 +12,8 @@
 		<PackageReference Include="MSTest.TestAdapter" Version="2.1.1" PrivateAssets="all" />
 		<PackageReference Include="MSTest.TestFramework" Version="2.1.1" PrivateAssets="all" />
 		<PackageReference Include="JunitXml.TestLogger" Version="2.1.32" PrivateAssets="all" />
-		<ProjectReference Include="$(ProjectDir)../$(MSBuildProjectName.Substring(7))/$(MSBuildProjectName.Substring(7)).csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\BizHawk.Common\BizHawk.Common.csproj" />
 	</ItemGroup>
 </Project>
