@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
-		private Waterbox.Waterbox _exe;
+		private WaterboxHost _exe;
 		private CoreImpl _core;
 		private bool _disposed;
 		private CommStruct* _comm;
@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public LibsnesApi(string dllPath, CoreComm comm)
 		{
-			_exe = new Waterbox.Waterbox(new WaterboxOptions
+			_exe = new WaterboxHost(new WaterboxOptions
 			{
 				Filename = "libsnes.wbx",
 				Path = dllPath,

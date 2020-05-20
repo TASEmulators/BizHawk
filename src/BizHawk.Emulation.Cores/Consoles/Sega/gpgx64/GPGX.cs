@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				throw new InvalidOperationException("ROM too big!  Did you try to load a CD as a ROM?");
 			}
 
-			_elf = new Waterbox.Waterbox(new WaterboxOptions
+			_elf = new WaterboxHost(new WaterboxOptions
 			{
 				Path = comm.CoreFileProvider.DllPath(),
 				Filename = "gpgx.wbx",
@@ -166,7 +166,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		}
 
 		private LibGPGX Core;
-		private Waterbox.Waterbox _elf;
+		private WaterboxHost _elf;
 
 		private Disc[] _cds;
 		private int _discIndex;

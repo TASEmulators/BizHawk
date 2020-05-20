@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		IInputPollable, ISaveRam
 	{
 		private LibWaterboxCore _core;
-		protected Waterbox _exe;
+		protected WaterboxHost _exe;
 		protected LibWaterboxCore.MemoryArea[] _memoryAreas;
 		private LibWaterboxCore.EmptyCallback _inputCallback;
 		protected CoreComm CoreComm { get; }
@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			where T : LibWaterboxCore
 		{
 			options.Path ??= CoreComm.CoreFileProvider.DllPath();
-			_exe = new Waterbox(options);
+			_exe = new WaterboxHost(options);
 			using (_exe.EnterExit())
 			{
 				var ret = BizInvoker.GetInvoker<T>(_exe, _exe, CallingConventionAdapters.Waterbox);

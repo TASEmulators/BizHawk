@@ -9,8 +9,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	/// </summary>
 	internal class EmuLibc
 	{
-		private readonly Waterbox _parent;
-		public EmuLibc(Waterbox parent)
+		private readonly WaterboxHost _parent;
+		public EmuLibc(WaterboxHost parent)
 		{
 			_parent = parent;
 		}

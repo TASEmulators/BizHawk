@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 	{
 		// some of the internal code uses wizardry by which certain pointers in ss.wbx[.text]
 		// must be greater than or equal to this address, but less than 4GB bigger than it
-		public const ulong StartAddress = Waterbox.Waterbox.CanonicalStart;
+		public const ulong StartAddress = WaterboxHost.CanonicalStart;
 
 		[StructLayout(LayoutKind.Sequential)]
 		public class TOC

@@ -160,8 +160,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private readonly List<IFileObject> _openFiles = new List<IFileObject>();
 		private readonly Dictionary<string, IFileObject> _availableFiles = new Dictionary<string, IFileObject>();
 
-		private readonly Waterbox _parent;
-		public Syscalls(Waterbox parent)
+		private readonly WaterboxHost _parent;
+		public Syscalls(WaterboxHost parent)
 		{
 			_parent = parent;
 			var stdin = new SpecialFile(Stream.Null, "___stdin");

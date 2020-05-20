@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 
 		[CoreConstructor("NGP")]
 		public NeoGeoPort(CoreComm comm, byte[] rom, SyncSettings syncSettings, bool deterministic)
-			: this(comm, rom, syncSettings, deterministic, Waterbox.Waterbox.CanonicalStart)
+			: this(comm, rom, syncSettings, deterministic, WaterboxHost.CanonicalStart)
 		{
 		}
 
