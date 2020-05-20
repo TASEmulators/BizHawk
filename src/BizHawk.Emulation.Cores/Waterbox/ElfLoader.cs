@@ -134,17 +134,21 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private void PrintTopSavableSymbols()
 		{
-			Console.WriteLine("Top savestate symbols:");
 			var tops = _allSymbols
 				.Where(s => _savedSections.Contains(s.PointedSection))
 				.OrderByDescending(s => s.Size)
 				.Where(s => s.Size >= 20 * 1024)
 				.Take(30)
-				.Select(s => $"  {s.Name} {s.Size / 1024}kiB");
+				.Select(s => $"  {s.Name} {s.Size / 1024}kiB")
+				.ToList();
 
-			foreach (var text in tops)
+			if (tops.Count > 0)
 			{
-				Console.WriteLine(text);
+				Console.WriteLine("Top savestate symbols:");
+				foreach (var text in tops)
+				{
+					Console.WriteLine(text);
+				}
 			}
 		}
 

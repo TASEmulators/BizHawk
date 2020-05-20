@@ -36,7 +36,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		[BizExport(CallingConvention.Cdecl, EntryPoint = "__w_debug_puts")]
 		public void DebugPuts(IntPtr s)
 		{
-			Console.WriteLine("_debug_puts:" + Marshal.PtrToStringAnsi(s));
+			// TODO: Should be PtrToStringUtf8
+			Console.WriteLine(Marshal.PtrToStringAnsi(s));
 		}
 	}
 }
