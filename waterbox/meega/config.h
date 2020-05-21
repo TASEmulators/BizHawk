@@ -12,4 +12,4 @@
 // #define WITH_THREADED_CPU
 #define WITH_TOCCATA
 #define FPU_UAE 1
-
+#define ARCADIA

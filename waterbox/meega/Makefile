@@ -2,6 +2,9 @@
 #	src/ar.cpp
 #	src/archivers/zip/unzip.cpp
 #	src/archivers/zip/unzip.h
+#	src/blkdev_cdimage.cpp
+#	src/cfgfile.cpp
+
 libuae_a_SOURCES = \
 	src/a2065.cpp \
 	src/a2091.cpp \
@@ -53,7 +56,6 @@ libuae_a_SOURCES = \
 	src/autoconf.cpp \
 	src/blitter.cpp \
 	src/blkdev.cpp \
-	src/blkdev_cdimage.cpp \
 	src/bsdsocket.cpp \
 	src/calc.cpp \
 	src/casablanca.cpp \
@@ -62,7 +64,6 @@ libuae_a_SOURCES = \
 	src/cdrom.cpp \
 	src/cdtv.cpp \
 	src/cdtvcr.cpp \
-	src/cfgfile.cpp \
 	src/cia.cpp \
 	src/consolehook.cpp \
 	src/cpuboard.cpp \
