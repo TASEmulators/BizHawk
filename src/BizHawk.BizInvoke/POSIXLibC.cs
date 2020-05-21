@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-using static BizHawk.BizInvoke.MemoryBlockBase;
+using static BizHawk.BizInvoke.MemoryBlock;
 
 namespace BizHawk.BizInvoke
 {

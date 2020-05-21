@@ -5,12 +5,12 @@ using static BizHawk.BizInvoke.POSIXLibC;
 
 namespace BizHawk.BizInvoke
 {
-	public sealed class MemoryBlockUnix : MemoryBlockBase
+	public sealed class MemoryBlockUnix : MemoryBlock
 	{
 		/// <summary>handle returned by <see cref="memfd_create"/></summary>
 		private int _fd;
 
-		/// <inheritdoc cref="MemoryBlockBase(ulong,ulong)"/>
+		/// <inheritdoc cref="MemoryBlock(ulong,ulong)"/>
 		/// <exception cref="InvalidOperationException">failed to get file descriptor (never thrown as <see cref="NotImplementedException"/> is thrown first)</exception>
 		/// <exception cref="NotImplementedException">always</exception>
 		public MemoryBlockUnix(ulong start, ulong size) : base(start, size)
@@ -22,7 +22,7 @@ namespace BizHawk.BizInvoke
 			#endif
 		}
 
-		/// <exception cref="InvalidOperationException"><see cref="MemoryBlockBase.Active"/> is <see langword="true"/> or failed to map memory</exception>
+		/// <exception cref="InvalidOperationException"><see cref="MemoryBlock.Active"/> is <see langword="true"/> or failed to map memory</exception>
 		public override void Activate()
 		{
 			if (Active) throw new InvalidOperationException("Already active");
@@ -34,7 +34,7 @@ namespace BizHawk.BizInvoke
 			Active = true;
 		}
 
-		/// <exception cref="InvalidOperationException"><see cref="MemoryBlockBase.Active"/> is <see langword="false"/> or failed to unmap memory</exception>
+		/// <exception cref="InvalidOperationException"><see cref="MemoryBlock.Active"/> is <see langword="false"/> or failed to unmap memory</exception>
 		public override void Deactivate()
 		{
 			if (!Active) throw new InvalidOperationException("Not active");
@@ -45,7 +45,7 @@ namespace BizHawk.BizInvoke
 			Active = false;
 		}
 
-		/// <exception cref="InvalidOperationException"><see cref="MemoryBlockBase.Active"/> is <see langword="false"/> or failed to make memory read-only</exception>
+		/// <exception cref="InvalidOperationException"><see cref="MemoryBlock.Active"/> is <see langword="false"/> or failed to make memory read-only</exception>
 		public override byte[] FullHash()
 		{
 			if (!Active) throw new InvalidOperationException("Not active");
@@ -100,7 +100,7 @@ namespace BizHawk.BizInvoke
 			}
 		}
 
-		/// <exception cref="InvalidOperationException">snapshot already taken, <see cref="MemoryBlockBase.Active"/> is <see langword="false"/>, or failed to make memory read-only</exception>
+		/// <exception cref="InvalidOperationException">snapshot already taken, <see cref="MemoryBlock.Active"/> is <see langword="false"/>, or failed to make memory read-only</exception>
 		public override void SaveXorSnapshot()
 		{
 			if (_snapshot != null) throw new InvalidOperationException("Snapshot already taken");

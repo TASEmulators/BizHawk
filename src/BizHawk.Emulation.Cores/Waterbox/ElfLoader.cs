@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private bool _everythingSealed;
 
-		public MemoryBlockBase Memory { get; private set; }
+		public MemoryBlock Memory { get; private set; }
 
 		public string ModuleName { get; }
 
@@ -94,9 +94,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				.ToList();
 
 
-			Memory = MemoryBlock.CallPlatformCtor(start, size);
+			Memory = MemoryBlock.Create(start, size);
 			Memory.Activate();
-			Memory.Protect(Memory.Start, Memory.Size, MemoryBlockBase.Protection.RW);
+			Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.RW);
 
 			foreach (var seg in loadsegs)
 			{
@@ -170,23 +170,23 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// </summary>
 		private void Protect()
 		{
-			Memory.Protect(Memory.Start, Memory.Size, MemoryBlockBase.Protection.R);
+			Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.R);
 			foreach (var sec in _elf.Sections.Where(s => (s.Flags & SectionFlags.Allocatable) != 0))
 			{
 				if (_everythingSealed && IsSpecialReadonlySection(sec))
 					continue;
 
 				if ((sec.Flags & SectionFlags.Executable) != 0)
-					Memory.Protect(sec.LoadAddress, sec.Size, MemoryBlockBase.Protection.RX);
+					Memory.Protect(sec.LoadAddress, sec.Size, MemoryBlock.Protection.RX);
 				else if ((sec.Flags & SectionFlags.Writable) != 0)
-					Memory.Protect(sec.LoadAddress, sec.Size, MemoryBlockBase.Protection.RW);
+					Memory.Protect(sec.LoadAddress, sec.Size, MemoryBlock.Protection.RW);
 			}
 		}
 
 		// connect all of the .wbxsyscall stuff
 		public void ConnectSyscalls(IImportResolver syscalls)
 		{
-			Memory.Protect(Memory.Start, Memory.Size, MemoryBlockBase.Protection.RW);
+			Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.RW);
 
 			var tmp = new IntPtr[1];
 			var ptrSize = (ulong)IntPtr.Size;
@@ -343,7 +343,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					throw new InvalidOperationException("Memory consistency check failed.  Is this savestate from different SyncSettings?");
 			}
 
-			Memory.Protect(Memory.Start, Memory.Size, MemoryBlockBase.Protection.RW);
+			Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.RW);
 
 			foreach (var s in _savedSections)
 			{
