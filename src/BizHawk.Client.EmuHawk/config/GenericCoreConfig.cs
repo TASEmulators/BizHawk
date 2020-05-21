@@ -130,6 +130,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_s = Activator.CreateInstance(_s.GetType());
 				propertyGrid1.SelectedObject = _s;
+				_settingsChanged = true;
 			}
 
 			if (_ss != null)
