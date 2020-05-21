@@ -5,9 +5,9 @@
 		<TargetFrameworks>netstandard2.0;netcoreapp3.1</TargetFrameworks>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" PrivateAssets="All" />
-		<PackageReference Include="System.Drawing.Common" Version="4.7.0" PrivateAssets="All" />
-		<PackageReference Include="OpenTK" Version="3.0.1" PrivateAssets="All" />
+		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" /><!-- for (extra?) dynamic type support -->
+		<PackageReference Include="System.Drawing.Common" Version="4.7.0" />
+		<PackageReference Include="OpenTK" Version="3.0.1" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Common/BizHawk.Common.csproj" />
 		<Compile Include="$(ProjectDir)../Version/svnrev.cs" />
 		<Compile Include="$(ProjectDir)../Version/VersionInfo.cs" />
