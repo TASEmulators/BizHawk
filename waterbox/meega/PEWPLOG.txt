@@ -1,0 +1,162 @@
+cxx fs-uae/src/a2091.cpp
+In file included from /mnt/c/Develop/BizHawk/waterbox/meega/fs-uae/src/include/readcpu.h:6,
+                 from /mnt/c/Develop/BizHawk/waterbox/meega/fs-uae/src/include/newcpu.h:23,
+                 from fs-uae/src/a2091.cpp:33:
+/mnt/c/Develop/BizHawk/waterbox/meega/fs-uae/src/include/uae/enum.h:7: warning: "ENUMDECL" redefined
+    7 | #define ENUMDECL enum
+      | 
+In file included from fs-uae/src/a2091.cpp:26:
+/mnt/c/Develop/BizHawk/waterbox/meega/fs-uae/src/include/sysdeps.h:257: note: this is the location of the previous definition
+  257 | #define ENUMDECL typedef enum
+      | 
+In file included from /mnt/c/Develop/BizHawk/waterbox/meega/fs-uae/src/include/readcpu.h:6,
+                 from /mnt/c/Develop/BizHawk/waterbox/meega/fs-uae/src/include/newcpu.h:23,
+                 from fs-uae/src/a2091.cpp:33:
+/mnt/c/Develop/BizHawk/waterbox/meega/fs-uae/src/include/uae/enum.h:8: warning: "ENUMNAME" redefined
+    8 | #define ENUMNAME(name) ; typedef int name ;
+      | 
+In file included from fs-uae/src/a2091.cpp:26:
+/mnt/c/Develop/BizHawk/waterbox/meega/fs-uae/src/include/sysdeps.h:258: note: this is the location of the previous definition
+  258 | #define ENUMNAME(name) name
+      | 
+fs-uae/src/a2091.cpp: In function ‘bool do_dma_commodore_8727(wd_state*, scsi_data*)’:
+fs-uae/src/a2091.cpp:703:29: warning: comparison of integer expressions of different signedness: ‘volatile int’ and ‘long unsigned int’ [-Wsign-compare]
+  703 |    if (wd->wc.wd_dataoffset < sizeof wd->wc.wd_data - 1) {
+      |        ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+fs-uae/src/a2091.cpp:732:29: warning: comparison of integer expressions of different signedness: ‘volatile int’ and ‘long unsigned int’ [-Wsign-compare]
+  732 |    if (wd->wc.wd_dataoffset < sizeof wd->wc.wd_data - 1) {
+      |        ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+fs-uae/src/a2091.cpp: In function ‘bool do_dma_commodore(wd_state*, scsi_data*)’:
+fs-uae/src/a2091.cpp:772:29: warning: comparison of integer expressions of different signedness: ‘volatile int’ and ‘long unsigned int’ [-Wsign-compare]
+  772 |    if (wd->wc.wd_dataoffset < sizeof wd->wc.wd_data)
+      |        ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+fs-uae/src/a2091.cpp:793:29: warning: comparison of integer expressions of different signedness: ‘volatile int’ and ‘long unsigned int’ [-Wsign-compare]
+  793 |    if (wd->wc.wd_dataoffset < sizeof wd->wc.wd_data)
+      |        ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+fs-uae/src/a2091.cpp: In function ‘bool do_dma_gvp_s2(wd_state*, scsi_data*)’:
+fs-uae/src/a2091.cpp:874:29: warning: comparison of integer expressions of different signedness: ‘volatile int’ and ‘long unsigned int’ [-Wsign-compare]
+  874 |    if (wd->wc.wd_dataoffset < sizeof wd->wc.wd_data)
+      |        ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+fs-uae/src/a2091.cpp:895:29: warning: comparison of integer expressions of different signedness: ‘volatile int’ and ‘long unsigned int’ [-Wsign-compare]
+  895 |    if (wd->wc.wd_dataoffset < sizeof wd->wc.wd_data)
+      |        ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+fs-uae/src/a2091.cpp: In function ‘void wd_cmd_sel_xfer(wd_chip_state*, wd_state*, bool)’:
+fs-uae/src/a2091.cpp:1117:17: warning: comparison of integer expressions of different signedness: ‘int’ and ‘uae_u32’ {aka ‘unsigned int’} [-Wsign-compare]
+ 1117 |   for (i = 0; i < gettc (wd); i++) {
+      |               ~~^~~~~~~~~~~~
+fs-uae/src/a2091.cpp: In function ‘void wd_cmd_trans_info(wd_state*, scsi_data*, bool)’:
+fs-uae/src/a2091.cpp:1303:7: warning: variable ‘v’ set but not used [-Wunused-but-set-variable]
+ 1303 |   int v;
+      |       ^
+fs-uae/src/a2091.cpp: In function ‘void wdscsi_put(wd_chip_state*, wd_state*, uae_u8)’:
+fs-uae/src/a2091.cpp:1611:25: warning: comparison of integer expressions of different signedness: ‘volatile int’ and ‘long unsigned int’ [-Wsign-compare]
+ 1611 |   if (wd->wd_dataoffset < sizeof wd->wd_data)
+      |       ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+fs-uae/src/a2091.cpp: In function ‘uae_u8 wdscsi_get(wd_chip_state*, wd_state*)’:
+fs-uae/src/a2091.cpp:1667:25: warning: comparison of integer expressions of different signedness: ‘volatile int’ and ‘long unsigned int’ [-Wsign-compare]
+ 1667 |   if (wd->wd_dataoffset < sizeof wd->wd_data)
+      |       ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+fs-uae/src/a2091.cpp: In function ‘void a2090_st506(wd_state*, uae_u8)’:
+fs-uae/src/a2091.cpp:2028:20: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+ 2028 |  for (int i = 0; i < sizeof cb; i++) {
+      |                  ~~^~~~~~~~~~~
+fs-uae/src/a2091.cpp:2046:22: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+ 2046 |    for (int i = 0; i < sizeof sdp; i++) {
+      |                    ~~^~~~~~~~~~~~
+fs-uae/src/a2091.cpp:2069:22: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+ 2069 |    for (int i = 0; i < sizeof ccba; i++) {
+      |                    ~~^~~~~~~~~~~~~
+fs-uae/src/a2091.cpp:2132:21: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+ 2132 |  for (int i = 12; i < sizeof cb; i++) {
+      |                   ~~^~~~~~~~~~~
+fs-uae/src/a2091.cpp: In function ‘uae_u32 dmac_gvp_read_byte(wd_state*, uaecptr)’:
+fs-uae/src/a2091.cpp:3085:18: warning: comparison of integer expressions of different signedness: ‘uaecptr’ {aka ‘unsigned int’} and ‘int’ [-Wsign-compare]
+ 3085 |  } else if (addr >= wd->gdmac.s1_ramoffset && !wd->gdmac.series2) {
+      |             ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~
+fs-uae/src/a2091.cpp: In function ‘uae_u32 dmac_gvp_read_word(wd_state*, uaecptr)’:
+fs-uae/src/a2091.cpp:3171:18: warning: comparison of integer expressions of different signedness: ‘uaecptr’ {aka ‘unsigned int’} and ‘int’ [-Wsign-compare]
+ 3171 |  } else if (addr >= wd->gdmac.s1_ramoffset && !wd->gdmac.series2) {
+      |             ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~
+fs-uae/src/a2091.cpp: In function ‘void dmac_gvp_write_byte(wd_state*, uaecptr, uae_u32)’:
+fs-uae/src/a2091.cpp:3228:11: warning: comparison of integer expressions of different signedness: ‘uaecptr’ {aka ‘unsigned int’} and ‘int’ [-Wsign-compare]
+ 3228 |  if (addr >= wd->gdmac.s1_ramoffset && !wd->gdmac.series2) {
+      |      ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~
+fs-uae/src/a2091.cpp: In function ‘void dmac_gvp_write_word(wd_state*, uaecptr, uae_u32)’:
+fs-uae/src/a2091.cpp:3336:11: warning: comparison of integer expressions of different signedness: ‘uaecptr’ {aka ‘unsigned int’} and ‘int’ [-Wsign-compare]
+ 3336 |  if (addr >= wd->gdmac.s1_ramoffset && !wd->gdmac.series2) {
+      |      ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~
+fs-uae/src/a2091.cpp: In function ‘void* scsi_thread(void*)’:
+fs-uae/src/a2091.cpp:3875:24: warning: unused variable ‘wd’ [-Wunused-variable]
+ 3875 |  struct wd_chip_state *wd = &wds->wc;
+      |                        ^~
+fs-uae/src/a2091.cpp: In function ‘bool gvp_init(autoconfig_info*, bool, bool)’:
+fs-uae/src/a2091.cpp:4277:6: warning: variable ‘romtype’ set but not used [-Wunused-but-set-variable]
+ 4277 |  int romtype;
+      |      ^~~~~~~
+In file included from /mnt/c/Develop/BizHawk/waterbox/meega/fs-uae/src/include/newcpu.h:26,
+                 from fs-uae/src/a2091.cpp:33:
+/mnt/c/Develop/BizHawk/waterbox/meega/fs-uae/src/softfloat/softfloat.h: At global scope:
+/mnt/c/Develop/BizHawk/waterbox/meega/fs-uae/src/softfloat/softfloat.h:329:20: warning: ‘void float_raise(uint8_t, float_status*)’ declared ‘static’ but never defined [-Wunused-function]
+  329 | static inline void float_raise(uint8_t flags, float_status *status);
+      |                    ^~~~~~~~~~~
+fs-uae/src/a2091.cpp:4270:13: warning: ‘bool is_gvp_accelerator()’ defined but not used [-Wunused-function]
+ 4270 | static bool is_gvp_accelerator(void)
+      |             ^~~~~~~~~~~~~~~~~~
+fs-uae/src/a2091.cpp:1780:13: warning: ‘void xt_wait_data(wd_state*, int)’ defined but not used [-Wunused-function]
+ 1780 | static void xt_wait_data(struct wd_state *wds, int len)
+      |             ^~~~~~~~~~~~
+cxx fs-uae/src/akiko.cpp
+cxx fs-uae/src/amax.cpp
+In file included from /mnt/c/Develop/BizHawk/waterbox/meega/fs-uae/src/include/readcpu.h:6,
+                 from /mnt/c/Develop/BizHawk/waterbox/meega/fs-uae/src/include/newcpu.h:23,
+                 from fs-uae/src/amax.cpp:10:
+/mnt/c/Develop/BizHawk/waterbox/meega/fs-uae/src/include/uae/enum.h:7: warning: "ENUMDECL" redefined
+    7 | #define ENUMDECL enum
+      | 
+In file included from fs-uae/src/amax.cpp:3:
+/mnt/c/Develop/BizHawk/waterbox/meega/fs-uae/src/include/sysdeps.h:257: note: this is the location of the previous definition
+  257 | #define ENUMDECL typedef enum
+      | 
+In file included from /mnt/c/Develop/BizHawk/waterbox/meega/fs-uae/src/include/readcpu.h:6,
+                 from /mnt/c/Develop/BizHawk/waterbox/meega/fs-uae/src/include/newcpu.h:23,
+                 from fs-uae/src/amax.cpp:10:
+/mnt/c/Develop/BizHawk/waterbox/meega/fs-uae/src/include/uae/enum.h:8: warning: "ENUMNAME" redefined
+    8 | #define ENUMNAME(name) ; typedef int name ;
+      | 
+In file included from fs-uae/src/amax.cpp:3:
+/mnt/c/Develop/BizHawk/waterbox/meega/fs-uae/src/include/sysdeps.h:258: note: this is the location of the previous definition
+  258 | #define ENUMNAME(name) name
+      | 
+In file included from /mnt/c/Develop/BizHawk/waterbox/meega/fs-uae/src/include/newcpu.h:26,
+                 from fs-uae/src/amax.cpp:10:
+/mnt/c/Develop/BizHawk/waterbox/meega/fs-uae/src/softfloat/softfloat.h:329:20: warning: ‘void float_raise(uint8_t, float_status*)’ declared ‘static’ but never defined [-Wunused-function]
+  329 | static inline void float_raise(uint8_t flags, float_status *status);
+      |                    ^~~~~~~~~~~
+cxx fs-uae/src/ar.cpp
+In file included from /mnt/c/Develop/BizHawk/waterbox/meega/fs-uae/src/include/readcpu.h:6,
+                 from /mnt/c/Develop/BizHawk/waterbox/meega/fs-uae/src/include/newcpu.h:23,
+                 from fs-uae/src/ar.cpp:212:
+/mnt/c/Develop/BizHawk/waterbox/meega/fs-uae/src/include/uae/enum.h:7: warning: "ENUMDECL" redefined
+    7 | #define ENUMDECL enum
+      | 
+In file included from fs-uae/src/ar.cpp:205:
+/mnt/c/Develop/BizHawk/waterbox/meega/fs-uae/src/include/sysdeps.h:257: note: this is the location of the previous definition
+  257 | #define ENUMDECL typedef enum
+      | 
+In file included from /mnt/c/Develop/BizHawk/waterbox/meega/fs-uae/src/include/readcpu.h:6,
+                 from /mnt/c/Develop/BizHawk/waterbox/meega/fs-uae/src/include/newcpu.h:23,
+                 from fs-uae/src/ar.cpp:212:
+/mnt/c/Develop/BizHawk/waterbox/meega/fs-uae/src/include/uae/enum.h:8: warning: "ENUMNAME" redefined
+    8 | #define ENUMNAME(name) ; typedef int name ;
+      | 
+In file included from fs-uae/src/ar.cpp:205:
+/mnt/c/Develop/BizHawk/waterbox/meega/fs-uae/src/include/sysdeps.h:258: note: this is the location of the previous definition
+  258 | #define ENUMNAME(name) name
+      | 
+In file included from /mnt/c/Develop/BizHawk/waterbox/meega/fs-uae/src/include/gfxboard.h:8,
+                 from fs-uae/src/ar.cpp:219:
+/mnt/c/Develop/BizHawk/waterbox/meega/fs-uae/src/include/picasso96.h:12:10: fatal error: picasso96_win.h: No such file or directory
+   12 | #include "picasso96_win.h"
+      |          ^~~~~~~~~~~~~~~~~
+compilation terminated.
+make: *** [../common.mak:57: /mnt/c/Develop/BizHawk/waterbox/meega/obj/debug/fs-uae/src/ar.cpp.o] Error 1
