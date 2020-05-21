@@ -184,6 +184,11 @@ static unsigned char *PicoCartAlloc(int filesize, int is_sms)
     // align to 512K for memhandlers
     rom_alloc_size = (filesize + 0x7ffff) & ~0x7ffff;
   }
+  if (rom_alloc_size < 0x400000) {
+	// sh2 memory mapping assumes that there's at least this much readable memory
+	// The comment in that code is `0x3fffff; // FIXME`, but I guess it was never fixed
+    rom_alloc_size = 0x400000;
+  }
 
   if (rom_alloc_size - filesize < 4)
     rom_alloc_size += 4; // padding for out-of-bound exec protection
