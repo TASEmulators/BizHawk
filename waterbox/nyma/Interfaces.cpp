@@ -4,6 +4,7 @@
 #include "mednafen/src/settings.h"
 #include "mednafen/src/mempatcher.h"
 #include "mednafen/src/mednafen-driver.h"
+#include "mednafen/src/player.h"
 
 namespace Mednafen
 {
@@ -85,4 +86,16 @@ namespace Mednafen
 	{
 		return nullptr;
 	}
+
+	// player.h
+	void Player_Init(int tsongs, const std::string &album, const std::string &artist, const std::string &copyright, const std::vector<std::string> &snames, bool override_gi)
+	{}
+	void Player_Draw(MDFN_Surface *surface, MDFN_Rect *dr, int CurrentSong, int16 *samples, int32 sampcount)
+	{}
+}
+
+// zlib.h
+uint32_t crc32(uint32_t crc, unsigned const char *buf, size_t len)
+{
+	return 0;
 }
