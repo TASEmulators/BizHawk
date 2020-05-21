@@ -768,9 +768,15 @@ static void scd_write_byte(unsigned int address, unsigned int data)
     default:
     {
       /* SUB-CPU communication words */
-      if ((address & 0xf0) == 0x20)
+      if ((address & 0x1f0) == 0x20)
       {
         s68k_poll_sync(1 << ((address - 0x10) & 0x1f));
+      }
+      /* MAIN-CPU communication words */
+      else if ((address & 0x1f0) == 0x10)
+      {
+        /* read-only (Sega Classic Arcade Collection) */
+        return;
       }
 
       /* default registers */
@@ -1055,9 +1061,15 @@ static void scd_write_word(unsigned int address, unsigned int data)
     default:
     {
       /* SUB-CPU communication words */
-      if ((address & 0xf0) == 0x20)
+      if ((address & 0x1f0) == 0x20)
       {
         s68k_poll_sync(3 << ((address - 0x10) & 0x1e));
+      }
+      /* MAIN-CPU communication words */
+      else if ((address & 0x1f0) == 0x10)
+      {
+        /* read-only (Sega Classic Arcade Collection) */
+        return;
       }
 
       /* default registers */
