@@ -214,38 +214,21 @@ namespace BizHawk.Client.Common
 
 		public bool LoadRom(string path, CoreComm nextComm, string launchLibretroCore, bool forceAccurateCore = false, int recursiveCount = 0)
 		{
+			if (path == null) return false;
+
 			if (recursiveCount > 1) // hack to stop recursive calls from endlessly rerunning if we can't load it
 			{
 				DoLoadErrorCallback("Failed multiple attempts to load ROM.", "");
 				return false;
 			}
 
-			bool cancel = false;
-
-			if (path == null)
-			{
-				return false;
-			}
-
-			using var file = new HawkFile(); // I'm almost certain that we'll see NREs unless Open or Parse is called, so I deprecated this ctor as a nag --yoshi
-			// only try mounting a file if a filename was given
-			if (!string.IsNullOrEmpty(path))
-			{
-				// MAME uses these extensions for arcade ROMs, but also accepts all sorts of variations of archives, folders, and files. if we let archive loader handle this, it won't know where to stop, since it'd require MAME's ROM database (which contains ROM names and blob hashes) to look things up, and even then it might be confused by archive/folder structure
-				// so assume the user provides the proper ROM directly, and handle possible errors later
-				if (OpenAdvanced is OpenAdvanced_MAME)
-				{
-					file.NonArchiveExtensions = new[] { ".zip", ".7z" };
-				}
-
-				file.Open(path);
-
-				// if the provided file doesn't even exist, give up!
-				if (!file.Exists)
-				{
-					return false;
-				}
-			}
+			using var file = new HawkFile(
+				path,
+				nonArchiveExtensions: OpenAdvanced is OpenAdvanced_MAME
+					? new[] { ".zip", ".7z" } // MAME uses these extensions for arcade ROMs, but also accepts all sorts of variations of archives, folders, and files. if we let archive loader handle this, it won't know where to stop, since it'd require MAME's ROM database (which contains ROM names and blob hashes) to look things up, and even then it might be confused by archive/folder structure. so assume the user provides the proper ROM directly, and handle possible errors later
+					: null
+			);
+			if (!file.Exists) return false; // if the provided file doesn't even exist, give up!
 
 			CanonicalFullPath = file.CanonicalFullPath;
 
@@ -256,6 +239,7 @@ namespace BizHawk.Client.Common
 			try
 			{
 				string ext = null;
+				var cancel = false;
 
 				if (OpenAdvanced is OpenAdvanced_Libretro)
 				{
