@@ -117,8 +117,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public int latched_sample_L, latched_sample_R;
 
-		public int SQ1_bias_gain, SQ2_bias_gain, WAVE_bias_gain, NOISE_bias_gain;
-
 		public byte ReadReg(int addr)
 		{
 			byte ret = 0;
@@ -351,7 +349,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						Audio_Regs[NR30] = value;
 						WAVE_DAC_pow = (value & 0x80) > 0;
 						if (!WAVE_DAC_pow) { WAVE_enable = false; }
-						//calculate_bias_gain_w();
+						calculate_bias_gain_w();
 						break;
 					case 0xFF1B:                                        // NR31 (length)
 						Audio_Regs[NR31] = value;
@@ -375,6 +373,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 						if ((sequencer_len & 1) == 0)
 						{
+							
 							if (!WAVE_len_en && ((value & 0x40) > 0) && (WAVE_len_cntr > 0))
 							{
 								WAVE_len_cntr--;
@@ -410,11 +409,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								if (((value & 0x40) > 0) && ((sequencer_len & 1) == 0)) { WAVE_len_cntr--; }
 							}
 							WAVE_intl_cntr = (2048 - WAVE_frq) * 2 + 6; // trigger delay for wave channel
+
 							WAVE_wave_cntr = 0;
 							if (!WAVE_DAC_pow) { WAVE_enable = false; }
 						}
 
-						//calculate_bias_gain_w();
+						calculate_bias_gain_w();
 						WAVE_len_en = (value & 0x40) > 0;
 						break;
 					case 0xFF20:                                        // NR41 (length)
@@ -612,7 +612,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					SQ1_duty_cntr++;
 					SQ1_duty_cntr &= 7;
 
-					SQ1_output = DUTY_CYCLES[SQ1_duty * 8 + SQ1_duty_cntr] ? SQ1_vol_state : SQ1_bias_gain;
+					SQ1_output = DUTY_CYCLES[SQ1_duty * 8 + SQ1_duty_cntr] ? (SQ1_vol_state + 15) : 15;
 
 					// avoid aliasing at high frequenices
 					//if (SQ1_frq > 0x7F0) { SQ1_output = 0; }
@@ -629,7 +629,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					SQ2_duty_cntr++;
 					SQ2_duty_cntr &= 7;
 
-					SQ2_output = DUTY_CYCLES[SQ2_duty * 8 + SQ2_duty_cntr] ? SQ2_vol_state : SQ2_bias_gain;
+					SQ2_output = DUTY_CYCLES[SQ2_duty * 8 + SQ2_duty_cntr] ? (SQ2_vol_state + 15) : 15;
 
 					// avoid aliasing at high frequenices
 					//if (SQ2_frq > 0x7F0) { SQ2_output = 0; }
@@ -670,7 +670,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						sample = (byte)((sample & 0xF) >> 2);
 					}
 
-					WAVE_output = sample;
+					WAVE_output = (sample + 15);
 
 					// NOTE: The sample buffer is only reloaded after the current sample is played, even if just triggered
 					WAVE_wave_cntr++;
@@ -697,7 +697,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						NOISE_LFSR |= (bit_lfsr << 6);
 					}
 
-					NOISE_output = (NOISE_LFSR & 1) > 0 ? NOISE_bias_gain : NOISE_vol_state;
+					NOISE_output = (NOISE_LFSR & 1) > 0 ? 15 : (NOISE_vol_state + 15);
 				}
 			}
 
@@ -989,99 +989,41 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public void calculate_bias_gain_a()
 		{
-			if ((AUD_CTRL_sq1_R_en | AUD_CTRL_sq1_L_en) && ((Audio_Regs[NR12] & 0xF8) > 0)) 
-			{ 
-				SQ1_bias_gain = (AUD_CTRL_vol_R | AUD_CTRL_vol_L) >> 2; 
-			}
-			else
-			{
-				SQ1_bias_gain = 0;
-			}
-			if ((AUD_CTRL_sq2_R_en | AUD_CTRL_sq2_L_en) && ((Audio_Regs[NR22] & 0xF8) > 0)) 
-			{ 
-				SQ2_bias_gain = (AUD_CTRL_vol_R | AUD_CTRL_vol_L) >> 2; 
-			}
-			else
-			{
-				SQ2_bias_gain = 0;
-			}
-			if ((AUD_CTRL_wave_R_en | AUD_CTRL_wave_L_en) && WAVE_DAC_pow) 
-			{ 
-				WAVE_bias_gain = (AUD_CTRL_vol_R | AUD_CTRL_vol_L) >> 2; 
-			}
-			else
-			{
-				WAVE_bias_gain = 0;
-			}
-			if ((AUD_CTRL_noise_R_en | AUD_CTRL_noise_L_en) && ((Audio_Regs[NR42] & 0xF8) > 0)) 
-			{ 
-				NOISE_bias_gain = (AUD_CTRL_vol_R | AUD_CTRL_vol_L) >> 2; 
-			}
-			else
-			{
-				NOISE_bias_gain = 0;
-			}
+			if (!SQ1_enable && ((Audio_Regs[NR12] & 0xF8) > 0)) { SQ1_output = 15; }
+			else if ((Audio_Regs[NR12] & 0xF8) == 0) { SQ1_output = 0; }
 
-			if (!SQ1_enable) { SQ1_output = (AUD_CTRL_vol_R | AUD_CTRL_vol_L) >> 1; }
-			if (!SQ2_enable) { SQ2_output = (AUD_CTRL_vol_R | AUD_CTRL_vol_L) >> 1; }
-			//if (!WAVE_enable) { WAVE_output = (AUD_CTRL_vol_R | AUD_CTRL_vol_L) >> 1; }
-			if (!NOISE_enable) { NOISE_output = (AUD_CTRL_vol_R | AUD_CTRL_vol_L) >> 2; }
+			if (!SQ2_enable && ((Audio_Regs[NR22] & 0xF8) > 0)) { SQ2_output = 15; }
+			else if ((Audio_Regs[NR22] & 0xF8) == 0) { SQ2_output = 0; }
+
+			if (!WAVE_enable && WAVE_DAC_pow) { WAVE_output = 22; }
+			else if (!WAVE_DAC_pow) { WAVE_output = 22; }
+
+			if (!NOISE_enable && ((Audio_Regs[NR42] & 0xF8) > 0)) { NOISE_output = 15; }
+			else if ((Audio_Regs[NR42] & 0xF8) == 0) { NOISE_output = 0; }
 		}
 
 		public void calculate_bias_gain_1()
 		{
-			if ((AUD_CTRL_sq1_R_en | AUD_CTRL_sq1_L_en) && ((Audio_Regs[NR12] & 0xF8) > 0))
-			{
-				SQ1_bias_gain = (AUD_CTRL_vol_R | AUD_CTRL_vol_L) >> 3;
-			}
-			else
-			{
-				SQ1_bias_gain = 0;
-			}
-
-			if (!SQ1_enable) { SQ1_output = (AUD_CTRL_vol_R | AUD_CTRL_vol_L) >> 1; }
+			if (!SQ1_enable && ((Audio_Regs[NR12] & 0xF8) > 0)) { SQ1_output = 15; }
+			else if ((Audio_Regs[NR12] & 0xF8) == 0) { SQ1_output = 0; }
 		}
 
 		public void calculate_bias_gain_2()
 		{
-			if ((AUD_CTRL_sq2_R_en | AUD_CTRL_sq2_L_en) && ((Audio_Regs[NR22] & 0xF8) > 0))
-			{
-				SQ2_bias_gain = (AUD_CTRL_vol_R | AUD_CTRL_vol_L) >> 3;
-			}
-			else
-			{
-				SQ2_bias_gain = 0;
-			}
-
-			if (!SQ2_enable) { SQ2_output = (AUD_CTRL_vol_R | AUD_CTRL_vol_L) >> 1; }
+			if (!SQ2_enable && ((Audio_Regs[NR22] & 0xF8) > 0)) { SQ2_output = 15; }
+			else if ((Audio_Regs[NR22] & 0xF8) == 0) { SQ2_output = 0; }
 		}
 
 		public void calculate_bias_gain_w()
 		{
-			if ((AUD_CTRL_wave_R_en | AUD_CTRL_wave_L_en) && WAVE_DAC_pow)
-			{
-				WAVE_bias_gain = (AUD_CTRL_vol_R | AUD_CTRL_vol_L) >> 3;
-			}
-			else
-			{
-				WAVE_bias_gain = 0;
-			}
-
-			if (!WAVE_enable) { WAVE_output = (AUD_CTRL_vol_R | AUD_CTRL_vol_L) >> 1; }
+			if (!WAVE_enable && WAVE_DAC_pow) { WAVE_output = 22; }
+			else if (!WAVE_DAC_pow)  { WAVE_output = 22; }
 		}
 
 		public void calculate_bias_gain_n()
 		{
-			if ((AUD_CTRL_noise_R_en | AUD_CTRL_noise_L_en) && ((Audio_Regs[NR42] & 0xF8) > 0))
-			{
-				NOISE_bias_gain = (AUD_CTRL_vol_R | AUD_CTRL_vol_L) >> 3;
-			}
-			else
-			{
-				NOISE_bias_gain = 0;
-			}
-
-			if (!NOISE_enable) { NOISE_output = (AUD_CTRL_vol_R | AUD_CTRL_vol_L) >> 2; }
+			if (!NOISE_enable && ((Audio_Regs[NR42] & 0xF8) > 0)) { NOISE_output = 15; }
+			else if ((Audio_Regs[NR42] & 0xF8) == 0) { NOISE_output = 0; }
 		}
 
 		public void SyncState(Serializer ser)
@@ -1186,11 +1128,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(AUD_CTRL_power), ref AUD_CTRL_power);
 			ser.Sync(nameof(AUD_CTRL_vol_L), ref AUD_CTRL_vol_L);
 			ser.Sync(nameof(AUD_CTRL_vol_R), ref AUD_CTRL_vol_R);
-
-			ser.Sync(nameof(SQ1_bias_gain), ref SQ1_bias_gain);
-			ser.Sync(nameof(SQ2_bias_gain), ref SQ2_bias_gain);
-			ser.Sync(nameof(WAVE_bias_gain), ref WAVE_bias_gain);
-			ser.Sync(nameof(NOISE_bias_gain), ref NOISE_bias_gain);
 		}
 
 		public byte Read_NR52()
