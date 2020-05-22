@@ -47,10 +47,11 @@ ECL_EXPORT bool Init(const InitData& data)
 		EES->SoundFormatChanged = true;
 		EES->SoundRate = 44100;
 
+		std::unique_ptr<Stream> gamestream(new FileStream(data.FileNameFull, FileStream::MODE_READ, false));
 		GameFile gf({
 			&NVFS,
 			"",
-			std::unique_ptr<Stream>(new FileStream(data.FileNameFull, FileStream::MODE_READ, false)).get(),
+			gamestream.get(),
 			data.FileNameExt,
 			data.FileNameBase,
 			&NVFS,
