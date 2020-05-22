@@ -14,15 +14,13 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 						OP };
 		}
 
-		private void INC_16(ushort srcL, ushort srcH)
+		private void INC_16(ushort src_l, ushort src_h)
 		{
 			cur_instr = new[]
 						{IDLE,
 						IDLE,
 						IDLE,
-						INC16,
-						srcL,
-						srcH,
+						INC16, src_l, src_h,
 						IDLE,
 						IDLE,
 						HALT_CHK,
@@ -35,9 +33,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 						{IDLE,
 						IDLE,
 						IDLE,
-						DEC16,
-						src_l,
-						src_h,
+						DEC16, src_l, src_h,
 						IDLE,
 						IDLE,
 						HALT_CHK,

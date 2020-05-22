@@ -18,6 +18,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public bool in_vblank;
 		public bool vblank_rise;
 		public bool controller_was_checked;
+		public bool delays_to_process;
+		public int controller_delay_cd;
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
@@ -108,12 +110,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						serialport.serial_transfer_tick();
 						cpu.ExecuteOne();
 						timer.tick();
+						if (delays_to_process) { process_delays(); }
 					}
 				
 					if (ppu.DMA_start && !cpu.halted && !cpu.stopped) { ppu.DMA_tick(); }
 					serialport.serial_transfer_tick();
 					cpu.ExecuteOne();
-					timer.tick();					
+					timer.tick();
+					if (delays_to_process) { process_delays(); }
 				}
 				else
 				{
@@ -121,10 +125,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						cpu.TotalExecutedCycles++;
 						timer.tick();
+						if (delays_to_process) { process_delays(); }
 					}
 
 					cpu.TotalExecutedCycles++;
 					timer.tick();
+					if (delays_to_process) { process_delays(); }
 				}
 
 				if (in_vblank && !in_vblank_old)
@@ -186,6 +192,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				serialport.serial_transfer_tick();
 				cpu.ExecuteOne();
 				timer.tick();
+				if (delays_to_process) { process_delays(); }
 
 				if (double_speed)
 				{
@@ -193,17 +200,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					serialport.serial_transfer_tick();
 					cpu.ExecuteOne();
 					timer.tick();
+					if (delays_to_process) { process_delays(); }
 				}
 			}
 			else
 			{
 				cpu.TotalExecutedCycles++;
 				timer.tick();
-				
+				if (delays_to_process) { process_delays(); }
+
 				if (double_speed)
 				{
 					cpu.TotalExecutedCycles++;
-					timer.tick();				
+					timer.tick();
+					if (delays_to_process) { process_delays(); }
 				}
 			}
 
@@ -249,6 +259,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				if (REG_FFFF.Bit(4)) { cpu.FlagI = true; }
 				REG_FF0F |= 0x10;
+			}
+		}
+		
+		public void process_delays()
+		{
+			// triggering an interrupt with a write to the control register takes 4 cycles to trigger interrupt
+			controller_delay_cd--;
+			if (controller_delay_cd == 0)
+			{
+				if (REG_FFFF.Bit(4)) { cpu.FlagI = true; }
+				REG_FF0F |= 0x10;
+				delays_to_process = false;
 			}
 		}
 
