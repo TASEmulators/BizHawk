@@ -92,6 +92,7 @@ namespace BizHawk.Client.EmuHawk
 				method.Invoke(ClientMainFormInstance, paramList);
 		}
 
+		// Helpers for cases where access to a private or protected field may be needed
 		private static object GetMainFormField(string name)
 		{
 			return MainFormClass.GetField(name);
@@ -107,10 +108,8 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public static void DoFrameAdvance()
 		{
-			InvokeMainFormMethod("FrameAdvance");
-
+			GlobalWin.MainForm.FrameAdvance();
 			InvokeMainFormMethod("StepRunLoop_Throttle");
-
 			InvokeMainFormMethod("Render");
 		}
 
@@ -122,6 +121,32 @@ namespace BizHawk.Client.EmuHawk
 		{
 			DoFrameAdvance();
 			UnpauseEmulation();
+		}
+
+		/// <summary>
+		/// Use with <see cref="InvisibleEmulation(bool)"/> for CamHack.
+		/// Refer to <see cref="MainForm.InvisibleEmulation"/> for the workflow details.
+		/// </summary>
+		public static void SeekFrame(int frame)
+		{
+			bool wasPaused = GlobalWin.MainForm.EmulatorPaused;
+			while (Emulator.Frame != frame)
+			{
+				GlobalWin.MainForm.SeekFrameAdvance();
+			}
+			if (!wasPaused)
+			{
+				GlobalWin.MainForm.UnpauseEmulator();
+			}
+		}
+
+		/// <summary>
+		/// Use with <see cref="SeekFrame(int)"/> for CamHack.
+		/// Refer to <see cref="MainForm.InvisibleEmulation"/> for the workflow details.
+		/// </summary>
+		public static void InvisibleEmulation(bool invisible)
+		{
+			GlobalWin.MainForm.InvisibleEmulation = invisible;
 		}
 
 		/// <summary>
@@ -148,7 +173,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="name">Savestate friendly name</param>
 		public static void LoadState(string name)
 		{
-			InvokeMainFormMethod("LoadState", new object[] { Path.Combine(Global.Config.PathEntries.SaveStateAbsolutePath(Global.Game.System), $"{name}.State"), name, false, false });
+			GlobalWin.MainForm.LoadState(Path.Combine(Global.Config.PathEntries.SaveStateAbsolutePath(Global.Game.System), $"{name}.State"), name, false);
 		}
 
 
@@ -231,7 +256,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="name">Savestate friendly name</param>
 		public static void SaveState(string name)
 		{
-			InvokeMainFormMethod("SaveState", new object[] { Path.Combine(Global.Config.PathEntries.SaveStateAbsolutePath(Global.Game.System), $"{name}.State"), name, false });
+			GlobalWin.MainForm.SaveState(Path.Combine(Global.Config.PathEntries.SaveStateAbsolutePath(Global.Game.System), $"{name}.State"), name, false);
 		}
 
 		/// <summary>
@@ -244,7 +269,7 @@ namespace BizHawk.Client.EmuHawk
 		public static void SetGameExtraPadding(int left, int top, int right, int bottom)
 		{
 			GlobalWin.DisplayManager.GameExtraPadding = new Padding(left, top, right, bottom);
-			InvokeMainFormMethod("FrameBufferResized");
+			GlobalWin.MainForm.FrameBufferResized();
 		}
 
 		/// <summary>
@@ -287,7 +312,7 @@ namespace BizHawk.Client.EmuHawk
 		public static void SetExtraPadding(int left, int top, int right, int bottom)
 		{
 			GlobalWin.DisplayManager.ClientExtraPadding = new Padding(left, top, right, bottom);
-			InvokeMainFormMethod("FrameBufferResized");
+			GlobalWin.MainForm.FrameBufferResized();
 		}
 
 		/// <summary>
@@ -376,7 +401,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public static void UnpauseEmulation()
 		{
-			InvokeMainFormMethod("UnpauseEmulator");
+			GlobalWin.MainForm.UnpauseEmulator();
 		}
 
 		/// <summary>
@@ -422,12 +447,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void CloseEmulator()
 		{
-			InvokeMainFormMethod("CloseEmulator");
+			GlobalWin.MainForm.CloseEmulator();
 		}
 
 		public static void CloseEmulatorWithCode(int exitCode)
 		{
-			InvokeMainFormMethod("CloseEmulator", new object[] {exitCode});
+			GlobalWin.MainForm.CloseEmulator(exitCode);
 		}
 
 		public static int BorderHeight()
@@ -464,12 +489,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void ClearAutohold()
 		{
-			InvokeMainFormMethod("ClearHolds");
+			GlobalWin.MainForm.ClearHolds();
 		}
 
 		public static void CloseRom()
 		{
-			InvokeMainFormMethod("CloseRom");
+			GlobalWin.MainForm.CloseRom();
 		}
 
 		public static void DisplayMessages(bool value)
@@ -479,7 +504,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void EnableRewind(bool enabled)
 		{
-			InvokeMainFormMethod("EnableRewind", new object[] {enabled});
+			GlobalWin.MainForm.EnableRewind(enabled);
 		}
 
 		public static void FrameSkip(int numFrames)
@@ -487,7 +512,7 @@ namespace BizHawk.Client.EmuHawk
 			if (numFrames > 0)
 			{
 				Global.Config.FrameSkip = numFrames;
-				InvokeMainFormMethod("FrameSkipMessage");
+				GlobalWin.MainForm.FrameSkipMessage();
 			}
 			else
 			{
@@ -507,24 +532,24 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void SetSoundOn(bool enable)
 		{
-			if (enable != Global.Config.SoundEnabled) InvokeMainFormMethod("ToggleSound");
+			if (enable != Global.Config.SoundEnabled) GlobalWin.MainForm.ToggleSound();
 		}
 
 		public static bool GetSoundOn() => Global.Config.SoundEnabled;
 
 		public static bool IsPaused()
 		{
-			return (bool) GetMainFormField("EmulatorPaused");
+			return GlobalWin.MainForm.EmulatorPaused;
 		}
 
 		public static bool IsTurbo()
 		{
-			return (bool)GetMainFormField("IsTurboing");
+			return GlobalWin.MainForm.IsTurboing;
 		}
 
 		public static bool IsSeeking()
 		{
-			return (bool)GetMainFormField("IsSeeking");
+			return GlobalWin.MainForm.IsSeeking;
 		}
 
 		public static void OpenRom(string path)
@@ -539,49 +564,44 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void Pause()
 		{
-			InvokeMainFormMethod("PauseEmulator");
+			GlobalWin.MainForm.PauseEmulator();
 		}
 
 		public static void PauseAv()
 		{
-			SetMainFormField("PauseAvi", true);
+			GlobalWin.MainForm.PauseAvi=true;
 		}
 
 		public static void RebootCore()
 		{
-			InvokeMainFormMethod("RebootCore");
+			GlobalWin.MainForm.RebootCore();
 		}
 
 		public static void SaveRam()
 		{
-			InvokeMainFormMethod("FlushSaveRAM");
+			GlobalWin.MainForm.FlushSaveRAM();
 		}
 
 		public static int ScreenHeight()
 		{
-			Type t = GetMainFormField("PresentationPanel").GetType();
-			object o = GetMainFormField("PresentationPanel");
-			o = t.GetField("NativeSize").GetValue(o);
-			t = t.GetField("NativeSize").GetType();
-
-			return (int) t.GetField("Height").GetValue(o);
+			return GlobalWin.MainForm.PresentationPanel.NativeSize.Height;
 		}
 
 		public static void Screenshot(string path = null)
 		{
 			if (path == null)
 			{
-				InvokeMainFormMethod("TakeScreenshot");
+				GlobalWin.MainForm.TakeScreenshot();
 			}
 			else
 			{
-				InvokeMainFormMethod("TakeScreenshot", new object[] {path});
+				GlobalWin.MainForm.TakeScreenshot(path);
 			}
 		}
 
 		public static void ScreenshotToClipboard()
 		{
-			InvokeMainFormMethod("TakeScreenshotToClipboard");
+			GlobalWin.MainForm.TakeScreenshotToClipboard();
 		}
 
 		public static void SetTargetScanlineIntensity(int val)
@@ -596,12 +616,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static int ScreenWidth()
 		{
-			Type t = GetMainFormField("PresentationPanel").GetType();
-			object o = GetMainFormField("PresentationPanel");
-			o = t.GetField("NativeSize").GetValue(o);
-			t = t.GetField("NativeSize").GetType();
-
-			return (int) t.GetField("Width").GetValue(o);
+			return GlobalWin.MainForm.PresentationPanel.NativeSize.Width;
 		}
 
 		public static void SetWindowSize(int size)
@@ -609,13 +624,8 @@ namespace BizHawk.Client.EmuHawk
 			if (size == 1 || size == 2 || size == 3 || size == 4 || size == 5 || size == 10)
 			{
 				Global.Config.TargetZoomFactors[Emulator.SystemId] = size;
-				InvokeMainFormMethod("FrameBufferResized");
-				Type t = ClientAssembly.GetType("BizHawk.Client.EmuHawk.GlobalWin");
-				FieldInfo f = t.GetField("OSD");
-				object osd = f.GetValue(null);
-				t = f.GetType();
-				MethodInfo m = t.GetMethod("AddMessage");
-				m.Invoke(osd, new object[] { $"Window size set to {size}x" });
+				GlobalWin.MainForm.FrameBufferResized();
+				GlobalWin.OSD.AddMessage($"Window size set to {size}x");
 			}
 			else
 			{
@@ -627,7 +637,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (percent.StrictlyBoundedBy(0.RangeTo(6400)))
 			{
-				InvokeMainFormMethod("ClickSpeedItem", new object[] {percent});
+
+				GlobalWin.MainForm.ClickSpeedItem(percent);
 			}
 			else
 			{
@@ -637,7 +648,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void TogglePause()
 		{
-			InvokeMainFormMethod("TogglePause");
+			GlobalWin.MainForm.TogglePause();
 		}
 
 		public static Point TransformPoint(Point point)
@@ -652,26 +663,22 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void Unpause()
 		{
-			InvokeMainFormMethod("UnpauseEmulator");
+			GlobalWin.MainForm.UnpauseEmulator();
 		}
 
 		public static void UnpauseAv()
 		{
-			SetMainFormField("PauseAvi", false);
+			GlobalWin.MainForm.PauseAvi=false;
 		}
 
 		public static int Xpos()
 		{
-			object o = GetMainFormField("DesktopLocation");
-			Type t = MainFormClass.GetField("DesktopLocation").GetType();
-			return (int)t.GetField("X").GetValue(o);
+			return GlobalWin.MainForm.DesktopLocation.X;
 		}
 
 		public static int Ypos()
 		{
-			object o = GetMainFormField("DesktopLocation");
-			Type t = MainFormClass.GetField("DesktopLocation").GetType();
-			return (int)t.GetField("Y").GetValue(o);
+			return GlobalWin.MainForm.DesktopLocation.Y;
 		}
 
 		/// <summary>
