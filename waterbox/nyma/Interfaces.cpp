@@ -54,7 +54,7 @@ namespace Mednafen
 		va_start(argp, format);
 		vfprintf(t == MDFN_NOTICE_ERROR ? stderr : stdout, format, argp);
 	}
-	void MDFND_MidSync(EmulateSpecStruct *espec, const unsigned flags)
+	void MDFN_MidSync(EmulateSpecStruct *espec, const unsigned flags)
 	{}
 
 	bool MDFNSS_StateAction(StateMem *sm, const unsigned load, const bool data_only, const SFORMAT *sf, const char *sname, const bool optional) noexcept
@@ -100,6 +100,8 @@ namespace Mednafen
 	{}
 	void MDFNMP_ApplyPeriodicCheats(void)
 	{}
+	std::vector<SUBCHEAT> SubCheats[8];
+	bool SubCheatsOn;
 
 	// player.h
 	void Player_Init(int tsongs, const std::string &album, const std::string &artist, const std::string &copyright, const std::vector<std::string> &snames, bool override_gi)

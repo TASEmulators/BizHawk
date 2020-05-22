@@ -113,6 +113,33 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo& frame)
 	}
 }
 
+struct SystemInfo
+{
+	int32_t MaxWidth;
+	int32_t MaxHeight;
+	int32_t NominalWidth;
+	int32_t NominalHeight;
+	int32_t VideoSystem;
+	int32_t FpsFixed;
+};
+SystemInfo SI;
+
+ECL_EXPORT SystemInfo* GetSystemInfo()
+{
+	SI.MaxWidth = Game->fb_width;
+	SI.MaxHeight = Game->fb_height;
+	SI.NominalWidth = Game->nominal_width;
+	SI.NominalHeight = Game->nominal_height;
+	SI.VideoSystem = Game->VideoSystem;
+	SI.FpsFixed = Game->fps;
+	return &SI;
+} 
+
+ECL_EXPORT const char* GetLayerData()
+{
+	return Game->LayerNames;
+}
+
 ECL_EXPORT void SetLayers(uint64_t layers)
 {
 	Game->SetLayerEnableMask(layers);
@@ -127,20 +154,20 @@ ECL_EXPORT void SetInputCallback(void (*cb)())
 // same information as PortInfo, but easier to marshal
 struct NPortInfo
 {
-	const char *ShortName;
-	const char *FullName;
-	const char *DefaultDeviceShortName;
+	const char* ShortName;
+	const char* FullName;
+	const char* DefaultDeviceShortName;
 	struct NDeviceInfo
 	{
-		const char *ShortName;
-		const char *FullName;
-		const char *Description;
+		const char* ShortName;
+		const char* FullName;
+		const char* Description;
 		uint32_t Flags;
 		uint32_t ByteLength;
 		struct NInput
 		{
-			const char *SettingName;
-			const char *Name;
+			const char* SettingName;
+			const char* Name;
 			int16_t ConfigOrder;
 			uint16_t BitOffset;
 			InputDeviceInputType Type; // uint8_t
@@ -166,7 +193,7 @@ struct NPortInfo
 						const char* SettingName;
 						const char* Name;
 						const char* Description;
-					}* Positions;
+					} Positions[16];
 					uint32_t NumPositions;
 					uint32_t DefaultPosition;
 				} Switch;
@@ -178,9 +205,10 @@ struct NPortInfo
 						const char* Name;
 						int32_t Color; // (msb)0RGB(lsb), -1 for unused.
 						int32_t _Padding;
-					}* States;
+					} States[16];
 					uint32_t NumStates;
 				} Status;
+				uint8_t _Padding2[400];
 			};
 		} Inputs[256];
 	} Devices[32];
@@ -226,8 +254,7 @@ ECL_EXPORT NPortInfo* GetInputDevices()
 					case IDIT_SWITCH:
 						c.Switch.NumPositions = z.Switch.NumPos;
 						c.Switch.DefaultPosition = z.Switch.DefPos;
-						c.Switch.Positions = (decltype(c.Switch.Positions))calloc(z.Switch.NumPos, sizeof(*c.Switch.Positions));
-						for (unsigned i = 0; i < z.Switch.NumPos; i++)
+						for (unsigned i = 0; i < 16 && i < z.Switch.NumPos; i++)
 						{
 							c.Switch.Positions[i].SettingName = z.Switch.Pos[i].SettingName;
 							c.Switch.Positions[i].Name = z.Switch.Pos[i].Name;
@@ -236,8 +263,7 @@ ECL_EXPORT NPortInfo* GetInputDevices()
 						break;
 					case IDIT_STATUS:
 						c.Status.NumStates = z.Status.NumStates;
-						c.Status.States = (decltype(c.Status.States))calloc(z.Status.NumStates, sizeof(*c.Status.States));
-						for (unsigned i = 0; i < z.Status.NumStates; i++)
+						for (unsigned i = 0; i < 16 && i < z.Status.NumStates; i++)
 						{
 							c.Status.States[i].ShortName = z.Status.States[i].ShortName;
 							c.Status.States[i].Name = z.Status.States[i].Name;

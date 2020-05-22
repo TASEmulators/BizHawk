@@ -287,7 +287,7 @@ namespace BizHawk.BizInvoke
 			var paramTypes = paramInfos.Select(p => p.ParameterType).ToArray();
 			var nativeParamTypes = new List<Type>();
 			var returnType = baseMethod.ReturnType;
-			if (returnType != typeof(void) && !returnType.IsPrimitive)
+			if (returnType != typeof(void) && !returnType.IsPrimitive && !returnType.IsPointer)
 			{
 				throw new InvalidOperationException("Only primitive return types are supported");
 			}
@@ -527,7 +527,7 @@ namespace BizHawk.BizInvoke
 				return typeof(IntPtr);
 			}
 
-			if (type.IsPrimitive || type.IsEnum)
+			if (type.IsPrimitive || type.IsEnum || type.IsPointer)
 			{
 				il.Emit(OpCodes.Ldarg, (short)idx);
 				return type;
