@@ -5,7 +5,7 @@
 		<TargetFrameworks>netstandard2.0;netcoreapp3.1</TargetFrameworks>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="ELFSharp" Version="2.10.0" PrivateAssets="all" />
+		<PackageReference Include="ELFSharp" Version="2.10.0" />
 		<Reference Include="Virtu" HintPath="$(ProjectDir)../../References/Virtu.dll" Private="true" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.BizInvoke/BizHawk.BizInvoke.csproj" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.Common/BizHawk.Emulation.Common.csproj" />
