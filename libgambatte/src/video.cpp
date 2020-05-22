@@ -290,6 +290,16 @@ bool LCD::vramReadable(unsigned long const cc) {
 		|| cc + 2 >= m0TimeOfCurrentLine(cc);
 }
 
+bool LCD::vramExactlyReadable(unsigned long const cc) {
+	if (vramHasBeenExactlyRead) {
+		return false;
+	}
+	if (cc + 2 + isDoubleSpeed() == m0TimeOfCurrentLine(cc)) {
+		vramHasBeenExactlyRead = true;
+	}
+	return cc + 2 + isDoubleSpeed() == m0TimeOfCurrentLine(cc);
+}
+
 bool LCD::vramWritable(unsigned long const cc) {
 	if (cc >= eventTimes_.nextEventTime())
 		update(cc);
@@ -848,4 +858,5 @@ SYNCFUNC(LCD)
 	SSS(lycIrq_);
 	SSS(nextM0Time_);
 	NSS(statReg_);
+	NSS(vramHasBeenExactlyRead);
 }

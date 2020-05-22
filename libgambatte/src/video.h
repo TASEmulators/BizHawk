@@ -102,6 +102,7 @@ public:
 	void resetCc(unsigned long oldCC, unsigned long newCc);
 	void speedChange(unsigned long cycleCounter);
 	bool vramReadable(unsigned long cycleCounter);
+	bool vramExactlyReadable(unsigned long cycleCounter);
 	bool vramWritable(unsigned long cycleCounter);
 	bool oamReadable(unsigned long cycleCounter);
 	bool oamWritable(unsigned long cycleCounter);
@@ -228,6 +229,7 @@ public:
 	LycIrq lycIrq_;
 	NextM0Time nextM0Time_;
 	unsigned char statReg_;
+	bool vramHasBeenExactlyRead = false;
 
 	static void setDmgPalette(unsigned long palette[],
 	                          unsigned long const dmgColors[],
@@ -235,13 +237,13 @@ public:
 
 	unsigned long gbcToRgb32(const unsigned bgr15);
 	void doCgbColorChange(unsigned char *const pdata, unsigned long *const palette, unsigned index, const unsigned data);
-
 	void refreshPalettes();
 	void setDBuffer();
 	void doMode2IrqEvent();
 	void event();
 	unsigned long m0TimeOfCurrentLine(unsigned long cc);
 	bool cgbpAccessible(unsigned long cycleCounter);
+	
 	bool lycRegChangeStatTriggerBlockedByM0OrM1Irq(unsigned data, unsigned long cc);
 	bool lycRegChangeTriggersStatIrq(unsigned old, unsigned data, unsigned long cc);
 	bool statChangeTriggersM0LycOrM1StatIrqCgb(unsigned old, unsigned data, bool lycperiod, unsigned long cc);
