@@ -34,7 +34,7 @@ CXXFLAGS := $(CXXFLAGS) $(COMMONFLAGS) -I$(SYSROOT)/include/c++/v1 -fno-use-cxa-
 CXXFLAGS_DEBUG := -O0 -g
 CXXFLAGS_RELEASE := -O3 -flto
 
-EXTRA_LIBS := -L $(SYSROOT)/lib/linux -lclang_rt.builtins-x86_64
+EXTRA_LIBS := -L $(SYSROOT)/lib/linux -lclang_rt.builtins-x86_64 $(EXTRA_LIBS)
 ifneq ($(filter %.cpp,$(SRCS)),)
 EXTRA_LIBS := -lc++ -lc++abi -lunwind $(EXTRA_LIBS)
 endif

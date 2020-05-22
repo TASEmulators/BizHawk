@@ -296,7 +296,7 @@
 #define HAVE_MEMSET 1
 
 /* Define to 1 if you have the `mkdir' function. */
-#undef HAVE_MKDIR
+#define HAVE_MKDIR 1
 
 /* Define to 1 if you have a working `mmap' system call. */
 #undef HAVE_MMAP

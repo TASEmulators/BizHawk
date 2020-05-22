@@ -9,6 +9,7 @@
 namespace Mednafen
 {
 	MDFNGI *MDFNGameInfo = NULL;
+	NativeVFS NVFS;
 
 	std::string MDFN_MakeFName(MakeFName_Type type, int id1, const char *cd1)
 	{
@@ -72,20 +73,6 @@ namespace Mednafen
 	{}
 	void MDFNMP_ApplyPeriodicCheats(void)
 	{}
-
-	// file.h
-	bool MDFN_DumpToFile(const std::string& path, const void *data, const uint64 length, bool throw_on_error)
-	{
-		return true;
-	}
-	bool MDFN_DumpToFile(const std::string& path, const std::vector<PtrLengthPair> &pearpairs, bool throw_on_error)
-	{
-		return true;
-	}
-	std::unique_ptr<Stream> MDFN_AmbigGZOpenHelper(const std::string& path, std::vector<size_t> good_sizes)
-	{
-		return nullptr;
-	}
 
 	// player.h
 	void Player_Init(int tsongs, const std::string &album, const std::string &artist, const std::string &copyright, const std::vector<std::string> &snames, bool override_gi)
