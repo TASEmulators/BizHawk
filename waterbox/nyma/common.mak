@@ -47,5 +47,6 @@ SRCS := \
 	$(call cdir,trio) \
 	$(call cdir,cputest) \
 	$(call cppdir,compress) \
+	$(call cppdir,video) \
 	$(filter-out %generate.cpp,$(call cppdir,sound)) \
-	Interfaces.cpp
+	Interfaces.cpp NymaCore.cpp

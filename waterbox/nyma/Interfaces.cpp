@@ -6,6 +6,9 @@
 #include "mednafen/src/mednafen-driver.h"
 #include "mednafen/src/player.h"
 
+#include <stdio.h>
+#include <stdarg.h>
+
 namespace Mednafen
 {
 	MDFNGI *MDFNGameInfo = NULL;
@@ -17,16 +20,40 @@ namespace Mednafen
 	}
 
 	// mednafen-driver.h
+	static int curindent = 0;
 	void MDFN_indent(int indent)
-	{}
+	{
+		curindent += indent;
+		if(curindent < 0)
+		{
+			fprintf(stderr, "MDFN_indent negative!\n");
+			curindent = 0;
+		}
+	}
 	void MDFN_printf(const char *format, ...) noexcept
-	{}
+	{
+		for (int i = 0; i < curindent; i++)
+			putchar('\t');
+		va_list argp;
+		va_start(argp, format);
+		vprintf(format, argp);
+   		va_end(argp);		
+	}
 	void MDFND_OutputNotice(MDFN_NoticeType t, const char* s) noexcept
-	{}
+	{
+		fputs(s, t == MDFN_NOTICE_ERROR ? stderr : stdout);
+		fputc('\n', t == MDFN_NOTICE_ERROR ? stderr : stdout);
+	}
 	void MDFND_OutputInfo(const char* s) noexcept
-	{}
+	{
+		puts(s);
+	}
 	void MDFN_Notify(MDFN_NoticeType t, const char* format, ...) noexcept
-	{}
+	{
+		va_list argp;
+		va_start(argp, format);
+		vfprintf(t == MDFN_NOTICE_ERROR ? stderr : stdout, format, argp);
+	}
 	void MDFND_MidSync(EmulateSpecStruct *espec, const unsigned flags)
 	{}
 
