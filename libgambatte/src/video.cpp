@@ -294,7 +294,7 @@ bool LCD::vramExactlyReadable(unsigned long const cc) {
 	if (vramHasBeenExactlyRead) {
 		return false;
 	}
-	if ((cc + 2 + isDoubleSpeed() > m0TimeOfCurrentLine(cc)) && (cc + 2 + isDoubleSpeed() < m0TimeOfCurrentLine(cc) + 4)) {
+	if (cc + 2 + isDoubleSpeed() == m0TimeOfCurrentLine(cc)) {
 		vramHasBeenExactlyRead = true;
 	}
 	return cc + 2 + isDoubleSpeed() == m0TimeOfCurrentLine(cc);
