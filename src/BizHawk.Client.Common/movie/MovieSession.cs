@@ -263,8 +263,18 @@ namespace BizHawk.Client.Common
 
 				if (Global.Config.PreferredCores.ContainsKey(preference))
 				{
+					string movieCore = Global.Config.PreferredCores[preference];
+					if (string.IsNullOrWhiteSpace(movie.Core))
+					{
+						PopupMessage($"No core specified in the movie file, using the preferred core {Global.Config.PreferredCores[preference]} instead.");
+					}
+					else
+					{
+						movieCore = movie.Core;
+					}
+
 					_preferredCores[preference] = Global.Config.PreferredCores[preference];
-					Global.Config.PreferredCores[preference] = movie.Core;
+					Global.Config.PreferredCores[preference] = movieCore;
 				}
 			}
 
