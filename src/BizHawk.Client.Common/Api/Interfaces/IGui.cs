@@ -31,8 +31,10 @@ namespace BizHawk.Client.Common
 		void DrawBox(int x, int y, int x2, int y2, Color? line = null, Color? background = null);
 		void DrawEllipse(int x, int y, int width, int height, Color? line = null, Color? background = null);
 		void DrawIcon(string path, int x, int y, int? width = null, int? height = null);
+		void DrawImage(Image img, int x, int y, int? width = null, int? height = null, bool cache = true);
 		void DrawImage(string path, int x, int y, int? width = null, int? height = null, bool cache = true);
 		void ClearImageCache();
+		void DrawImageRegion(Image img, int source_x, int source_y, int source_width, int source_height, int dest_x, int dest_y, int? dest_width = null, int? dest_height = null);
 		void DrawImageRegion(string path, int source_x, int source_y, int source_width, int source_height, int dest_x, int dest_y, int? dest_width = null, int? dest_height = null);
 		void DrawLine(int x1, int y1, int x2, int y2, Color? color = null);
 		void DrawAxis(int x, int y, int size, Color? color = null);

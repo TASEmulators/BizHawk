@@ -246,6 +246,21 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void DrawImage(Image img, int x, int y, int? width = null, int? height = null, bool cache = true)
+		{
+			using var g = GetGraphics();
+			g.CompositingMode = _compositingMode;
+			g.DrawImage(
+				img,
+				new Rectangle(x, y, width ?? img.Width, height ?? img.Height),
+				0,
+				0,
+				img.Width,
+				img.Height,
+				GraphicsUnit.Pixel,
+				_attributes
+			);
+		}
 		public void DrawImage(string path, int x, int y, int? width = null, int? height = null, bool cache = true)
 		{
 			if (!File.Exists(path))
@@ -274,6 +289,22 @@ namespace BizHawk.Client.EmuHawk
 		{
 			foreach (var image in _imageCache) image.Value.Dispose();
 			_imageCache.Clear();
+		}
+
+		public void DrawImageRegion(Image img, int source_x, int source_y, int source_width, int source_height, int dest_x, int dest_y, int? dest_width = null, int? dest_height = null)
+		{
+			using var g = GetGraphics();
+			g.CompositingMode = _compositingMode;
+			g.DrawImage(
+				img,
+				new Rectangle(dest_x, dest_y, dest_width ?? source_width, dest_height ?? source_height),
+				source_x,
+				source_y,
+				source_width,
+				source_height,
+				GraphicsUnit.Pixel,
+				_attributes
+			);
 		}
 
 		public void DrawImageRegion(string path, int source_x, int source_y, int source_width, int source_height, int dest_x, int dest_y, int? dest_width = null, int? dest_height = null)
