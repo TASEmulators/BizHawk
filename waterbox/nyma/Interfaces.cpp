@@ -93,9 +93,3 @@ namespace Mednafen
 	void Player_Draw(MDFN_Surface *surface, MDFN_Rect *dr, int CurrentSong, int16 *samples, int32 sampcount)
 	{}
 }
-
-// zlib.h
-uint32_t crc32(uint32_t crc, unsigned const char *buf, size_t len)
-{
-	return 0;
-}

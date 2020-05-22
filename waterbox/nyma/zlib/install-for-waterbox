@@ -1,0 +1,8 @@
+#!/bin/sh
+MYPATH="`dirname \"$0\"`"
+SYSROOT="`realpath \"$MYPATH/../../sysroot\"`"
+
+cp zlib.h $SYSROOT/include
+cp zconf.h $SYSROOT/include
+cp libz.a $SYSROOT/lib
+gcc-ranlib $SYSROOT/lib/libz.a
