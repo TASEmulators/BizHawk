@@ -29,6 +29,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				SealedHeapSizeKB = 1024 * 16,
 				InvisibleHeapSizeKB = 1024 * 16,
 				PlainHeapSizeKB = 1024 * 16,
+				MmapHeapSizeKB = 1024 * 16,
 				StartAddress = WaterboxHost.CanonicalStart,
 				SkipCoreConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
