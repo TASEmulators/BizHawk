@@ -9,9 +9,7 @@ namespace BizHawk.Common.Tests.Client.Common.Movie
 	public class LogGeneratorTests
 	{
 		private SimpleController _boolController = null!;
-		private Bk2LogEntryGenerator _lg = null!;
 		private SimpleController _floatController = null!;
-		private Bk2LogEntryGenerator _floatLg = null!;
 
 		[TestInitialize]
 		public void Initializer()
@@ -33,9 +31,6 @@ namespace BizHawk.Common.Tests.Client.Common.Movie
 					}
 				}
 			};
-
-			_lg = new Bk2LogEntryGenerator("NES", _boolController);
-			_floatLg = new Bk2LogEntryGenerator("NES", _floatController);
 		}
 
 		[TestMethod]
@@ -59,7 +54,8 @@ namespace BizHawk.Common.Tests.Client.Common.Movie
 		public void GenerateLogEntry_BoolPressed_GeneratesMnemonic()
 		{
 			_boolController["A"] = true;
-			var actual = _lg.GenerateLogEntry();
+			var lg = new Bk2LogEntryGenerator("NES", _boolController);
+			var actual = lg.GenerateLogEntry();
 			Assert.AreEqual("|A|", actual);
 		}
 
@@ -67,38 +63,17 @@ namespace BizHawk.Common.Tests.Client.Common.Movie
 		public void GenerateLogEntry_BoolUnPressed_GeneratesPeriod()
 		{
 			_boolController["A"] = false;
-			var actual = _lg.GenerateLogEntry();
+			var lg = new Bk2LogEntryGenerator("NES", _boolController);
+			var actual = lg.GenerateLogEntry();
 			Assert.AreEqual("|.|", actual);
 		}
 
 		[TestMethod]
 		public void GenerateLogEntry_Floats()
 		{
-			var actual = _floatLg.GenerateLogEntry();
+			var lg = new Bk2LogEntryGenerator("NES", _floatController);
+			var actual = lg.GenerateLogEntry();
 			Assert.AreEqual("|    0,    0,|", actual);
-		}
-
-		[TestMethod]
-		public void GenerateInputDisplay_BoolPressed_GeneratesMnemonic()
-		{
-			_boolController["A"] = true;
-			var actual = _lg.GenerateInputDisplay();
-			Assert.AreEqual("A", actual);
-		}
-
-		[TestMethod]
-		public void GenerateInputDisplay_BoolUnPressed_GeneratesSpace()
-		{
-			_boolController["A"] = false;
-			var actual = _lg.GenerateInputDisplay();
-			Assert.AreEqual(" ", actual);
-		}
-
-		[TestMethod]
-		public void GenerateInputDisplay_Floats()
-		{
-			var actual = _floatLg.GenerateInputDisplay();
-			Assert.AreEqual("    0,    0,", actual);
 		}
 	}
 }

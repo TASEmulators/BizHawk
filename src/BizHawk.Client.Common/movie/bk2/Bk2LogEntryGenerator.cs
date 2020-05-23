@@ -17,8 +17,6 @@ namespace BizHawk.Client.Common
 			_source = source;
 		}
 
-		public string GenerateInputDisplay() => CreateLogEntry(forInputDisplay: true);
-
 		public bool IsEmpty => EmptyEntry == GenerateLogEntry();
 
 		public string EmptyEntry => CreateLogEntry(createEmpty: true);
@@ -63,14 +61,11 @@ namespace BizHawk.Client.Common
 			return dict;
 		}
 
-		private string CreateLogEntry(bool createEmpty = false, bool forInputDisplay = false)
+		private string CreateLogEntry(bool createEmpty = false)
 		{
 			var sb = new StringBuilder();
 
-			if (!forInputDisplay)
-			{
-				sb.Append('|');
-			}
+			sb.Append('|');
 
 			foreach (var group in _source.Definition.ControlsOrdered)
 			{
@@ -93,14 +88,7 @@ namespace BizHawk.Client.Common
 								val = (int)_source.AxisValue(button);
 							}
 
-							if (forInputDisplay && val == mid)
-							{
-								sb.Append("      ");
-							}
-							else
-							{
-								sb.Append(val.ToString().PadLeft(5, ' ')).Append(',');
-							}
+							sb.Append(val.ToString().PadLeft(5, ' ')).Append(',');
 						}
 						else if (_source.Definition.BoolButtons.Contains(button))
 						{
@@ -112,15 +100,12 @@ namespace BizHawk.Client.Common
 							{
 								sb.Append(_source.IsPressed(button)
 									? Bk2MnemonicLookup.Lookup(button, _systemId)
-									: forInputDisplay ? ' ' : '.');
+									: '.');
 							}
 						}
 					}
 
-					if (!forInputDisplay)
-					{
-						sb.Append('|');
-					}
+					sb.Append('|');
 				}
 			}
 

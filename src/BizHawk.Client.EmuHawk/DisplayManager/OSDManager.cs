@@ -224,7 +224,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private string MakeStringFor(IController controller)
 		{
-			return Global.MovieSession.Movie.LogGeneratorInstance(controller).GenerateInputDisplay();
+			return new Bk2InputDisplayGenerator(Global.Emulator.SystemId, controller).Generate();
 		}
 
 		public string MakeIntersectImmediatePrevious()

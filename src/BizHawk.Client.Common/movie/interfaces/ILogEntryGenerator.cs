@@ -26,11 +26,6 @@ namespace BizHawk.Client.Common
 		IDictionary<string, string> Map();
 
 		/// <summary>
-		/// Generates a display friendly version of the input log entry
-		/// </summary>
-		string GenerateInputDisplay();
-
-		/// <summary>
 		/// Gets a value indicating whether or not the current controller state is "empty"
 		/// </summary>
 		bool IsEmpty { get; }
