@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-
+using System.Linq;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -81,29 +81,12 @@ namespace BizHawk.Client.Common
 			return table;
 		}
 
-		public List<string> GetComments()
-		{
-			var list = new List<string>(Global.MovieSession.Movie.Comments.Count);
-			if (Global.MovieSession.Movie.NotActive())
-			{
-				return list;
-			}
+		public List<string> GetComments() => Global.MovieSession.Movie.Comments.ToList();
 
-			for (var i = 0; i < Global.MovieSession.Movie.Comments.Count; i++) list[i] = Global.MovieSession.Movie.Comments[i];
-			return list;
-		}
-
-		public List<string> GetSubtitles()
-		{
-			var list = new List<string>(Global.MovieSession.Movie.Subtitles.Count);
-			if (Global.MovieSession.Movie.NotActive())
-			{
-				return list;
-			}
-
-			for (var i = 0; i < Global.MovieSession.Movie.Subtitles.Count; i++) list[i] = Global.MovieSession.Movie.Subtitles[i].ToString();
-			return list;
-		}
+		public List<string> GetSubtitles() =>
+			Global.MovieSession.Movie.Subtitles
+				.Select(s => s.ToString())
+				.ToList();
 
 		public string Filename() => Global.MovieSession.Movie.Filename;
 
