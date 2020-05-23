@@ -324,9 +324,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public IDictionary<string, float> GetAxisValues()
 		{
-			// TODO: this is a refactor of code that was making a copy of the input
-			// Probably just returning the dictionary is all that is actually needed
-			return _axisValues.ToDictionary(k => k.Key, v => v.Value);
+			return _axisValues;
 		}
 
 		private void UpdateThreadProc()
