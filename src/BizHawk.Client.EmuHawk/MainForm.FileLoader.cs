@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 			LegacyMovieFile
 		}
 
-		public struct FileInformation
+		private readonly struct FileInformation
 		{
 			public string DirectoryName { get; }
 			public string FileName { get; }
