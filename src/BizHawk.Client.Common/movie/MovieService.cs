@@ -18,11 +18,11 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Creates a <see cref="ITasSession"/> instance
+		/// Creates a <see cref="ITasMovie"/> instance
 		/// </summary>
-		public static ITasMovie CreateTas(bool startsFromSavestate = false)
+		public static ITasMovie CreateTas(string filename, bool startsFromSavestate = false)
 		{
-			return new TasMovie(startsFromSavestate: startsFromSavestate);
+			return new TasMovie(filename, startsFromSavestate);
 		}
 
 		public static string StandardMovieExtension => Bk2Movie.Extension;

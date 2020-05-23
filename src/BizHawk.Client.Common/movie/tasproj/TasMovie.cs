@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 		public new const string Extension = "tasproj";
 
 		/// <exception cref="InvalidOperationException">loaded core does not implement <see cref="IStatable"/></exception>
-		internal TasMovie(string path = null, bool startsFromSavestate = false) : base(path)
+		internal TasMovie(string path, bool startsFromSavestate = false) : base(path)
 		{
 			if (!Global.Emulator.HasSavestates())
 			{

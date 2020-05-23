@@ -623,8 +623,7 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
-			var newMovie = MovieService.CreateTas(startsFromSavestate: startsFromSavestate);
-			newMovie.Filename = file.FullName;
+			var newMovie = MovieService.CreateTas(file.FullName, startsFromSavestate);
 			newMovie.BindMarkersToInput = Settings.BindMarkersToInput;
 			newMovie.TasStateManager.InvalidateCallback = GreenzoneInvalidated;
 			
@@ -678,9 +677,10 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var tasMovie = MovieService.CreateTas();
+			var filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
+			var tasMovie = MovieService.CreateTas(filename);
 			tasMovie.BindMarkersToInput = Settings.BindMarkersToInput;
-			tasMovie.Filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
+			
 
 			tasMovie.TasStateManager.InvalidateCallback = GreenzoneInvalidated;
 			tasMovie.PropertyChanged += TasMovie_OnPropertyChanged;

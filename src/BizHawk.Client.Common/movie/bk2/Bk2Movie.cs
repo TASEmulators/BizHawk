@@ -8,9 +8,14 @@ namespace BizHawk.Client.Common
 	{
 		private Bk2Controller _adapter;
 
-		internal Bk2Movie(string filename = null)
+		internal Bk2Movie(string filename)
 		{
-			Filename = filename ?? string.Empty;
+			if (string.IsNullOrWhiteSpace(filename))
+			{
+				throw new ArgumentNullException($"{nameof(filename)} can not be null.");
+			}
+
+			Filename = filename;
 			Header[HeaderKeys.MovieVersion] = "BizHawk v2.0.0";
 		}
 
