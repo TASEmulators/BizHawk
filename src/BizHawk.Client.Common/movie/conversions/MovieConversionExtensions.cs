@@ -230,7 +230,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				}
 			}
 
-			var tas = new TasMovie(newFilename) { SaveRam = saveRam };
+			var tas = new TasMovie(newFilename, false) { SaveRam = saveRam };
 			tas.TasStateManager.Clear();
 			tas.LagLog.Clear();
 
@@ -246,7 +246,6 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			}
 
 			tas.StartsFromSaveRam = true;
-			tas.StartsFromSavestate = false;
 			tas.SyncSettingsJson = old.SyncSettingsJson;
 
 			tas.Comments.Clear();

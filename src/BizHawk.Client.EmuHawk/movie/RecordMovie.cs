@@ -105,7 +105,6 @@ namespace BizHawk.Client.EmuHawk
 					var core = _emulator.AsStatable();
 
 					movieToRecord.StartsFromSavestate = true;
-					movieToRecord.StartsFromSaveRam = false;
 
 					if (_config.SaveStateType == SaveStateTypeE.Binary)
 					{
@@ -128,7 +127,6 @@ namespace BizHawk.Client.EmuHawk
 				else if (StartFromCombo.SelectedItem.ToString() == "SaveRam"  && _emulator.HasSaveRam())
 				{
 					var core = _emulator.AsSaveRam();
-					movieToRecord.StartsFromSavestate = false;
 					movieToRecord.StartsFromSaveRam = true;
 					movieToRecord.SaveRam = core.CloneSaveRam();
 				}
