@@ -194,7 +194,7 @@ namespace BizHawk.Client.EmuHawk
 			public InputFocus Source;
 			public override string ToString()
 			{
-				return $"{EventType.ToString()}:{LogicalButton.ToString()}";
+				return $"{EventType}:{LogicalButton}";
 			}
 		}
 
