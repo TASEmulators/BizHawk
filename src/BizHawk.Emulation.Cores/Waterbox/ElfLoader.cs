@@ -137,7 +137,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				var actuallySaved = allocated.Where(a => a.LoadAddress + a.Size > _saveStart);
 				var oopsSaved = actuallySaved.Except(saveable);
 				foreach (var s in oopsSaved)
-					throw new InvalidOperationException($"ElfLoader: Section {s.Name} will be saved, but that was not expected");
+				{
+					Console.WriteLine($"ElfLoader: Section {s.Name} will be saved, but that was not expected");
+				}
 			}
 
 			PrintSections();

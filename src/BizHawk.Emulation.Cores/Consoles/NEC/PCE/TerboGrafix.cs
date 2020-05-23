@@ -7,13 +7,14 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 	public class TerboGrafix : NymaCore, IRegionable
 	{
 		[CoreConstructor("PCE")]
-		public TerboGrafix(GameInfo game, byte[] rom, CoreComm comm)
+		public TerboGrafix(GameInfo game, byte[] rom, CoreComm comm, string extension)
 			: base(game, rom, comm, new Configuration
 			{
+				SystemId = "PCE" // whatever
 				// TODO: This stuff isn't used so much
 			})
 		{
-			DoInit<LibNymaCore>(game, rom, "pce.wbx");
+			DoInit<LibNymaCore>(game, rom, "pce.wbx", extension);
 		}
 	}
 }

@@ -978,7 +978,9 @@ namespace BizHawk.Client.Common
 					if (core != null)
 					{
 						// use CoreInventory
-						nextEmulator = core.Create(nextComm, game, rom.RomData, rom.FileData, Deterministic, GetCoreSettings(core.Type), GetCoreSyncSettings(core.Type));
+						nextEmulator = core.Create(
+							nextComm, game, rom.RomData, rom.FileData, Deterministic,
+							GetCoreSettings(core.Type), GetCoreSyncSettings(core.Type), rom.Extension);
 					}
 				}
 

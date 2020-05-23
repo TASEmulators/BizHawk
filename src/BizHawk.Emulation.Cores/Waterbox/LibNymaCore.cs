@@ -70,69 +70,36 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			public byte* InputPortData;
 		}
 
+		/// <summary>
+		/// Gets raw layer data to be handled by NymaCore.GetLayerData
+		/// </summary>
 		[BizImport(CC)]
 		public abstract byte* GetLayerData();
 
 		/// <summary>
-		/// Gets a string array of valid layers to pass to SetLayers, or null if that method should not be called
-		/// TODO: This needs to be in NymaCore under a monitor lock
+		/// Set enabled layers (or is it disabled layers?).  Only call if NymaCore.GetLayerData() returned non null
 		/// </summary>
-		public string[] GetLayerDataReal()
-		{
-			var p = GetLayerData();
-			if (p == null)
-				return null;
-			var ret = new List<string>();
-			var q = p;
-			while (true)
-			{
-				if (*q == 0)
-				{
-					if (q > p)
-						ret.Add(Marshal.PtrToStringAnsi((IntPtr)p));
-					else
-						break;
-					p = ++q;
-				}
-				q++;
-			}
-			return ret.ToArray();
-		}
-
-		/// <summary>
-		/// Set enabled layers (or is it disabled layers?).  Only call if GetLayerDataReal() returned non null
-		/// </summary>
-		/// <param name="layers">bitmask in order defined by GetLayerDataReal</param>
+		/// <param name="layers">bitmask in order defined by NymaCore.GetLayerData</param>
 		[BizImport(CC)]
 		public abstract void SetLayers(ulong layers);
 
 		public enum InputType : byte
 		{
 			PADDING = 0,	// n-bit, zero
-
 			BUTTON,		// 1-bit
 			BUTTON_CAN_RAPID, // 1-bit
-
 			SWITCH,		// ceil(log2(n))-bit
 					// Current switch position(default 0).
 					// Persistent, and bidirectional communication(can be modified driver side, and Mednafen core and emulation module side)
-
 			STATUS,		// ceil(log2(n))-bit
 					// emulation module->driver communication
-
 			AXIS,		// 16-bits; 0 through 65535; 32768 is centered position
-
 			POINTER_X,	// mouse pointer, 16-bits, signed - in-screen/window range before scaling/offseting normalized coordinates: [0.0, 1.0)
 			POINTER_Y,	// see: mouse_scale_x, mouse_scale_y, mouse_offs_x, mouse_offs_y
-
 			AXIS_REL,		// mouse relative motion, 16-bits, signed
-
 			BYTE_SPECIAL,
-
 			RESET_BUTTON,	// 1-bit
-
 			BUTTON_ANALOG,	// 16-bits, 0 - 65535
-
 			RUMBLE,		// 16-bits, lower 8 bits are weak rumble(0-255), next 8 bits are strong rumble(0-255), 0=no rumble, 255=max rumble.  Somewhat subjective, too...
 		}
 
@@ -155,91 +122,119 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-		public class NPortInfos
+		public struct NPortInfo
 		{
-			[MarshalAs(UnmanagedType.LPArray, SizeConst = 16)]
-			public NPortInfo[] Infos;
+			public IntPtr _shortName;
+			public IntPtr _fullName;
+			public IntPtr _defaultDeviceShortName;
+			public uint NumDevices;
+
+			public string ShortName => Marshal.PtrToStringAnsi(_shortName);
+			public string FullName => Marshal.PtrToStringAnsi(_fullName);
+			public string DefaultDeviceShortName => Marshal.PtrToStringAnsi(_defaultDeviceShortName);
 		}
 		[StructLayout(LayoutKind.Sequential)]
-		public class NPortInfo
+		public struct NDeviceInfo
 		{
-			public string ShortName;
-			public string FullName;
-			public string DefaultDeviceShortName;
+			public IntPtr _shortName;
+			public IntPtr _fullName;
+			public IntPtr _description;
+			public DeviceFlags Flags;
+			public uint ByteLength;
+			public uint NumInputs;
 
+			public string ShortName => Marshal.PtrToStringAnsi(_shortName);
+			public string FullName => Marshal.PtrToStringAnsi(_fullName);
+			public string Description => Marshal.PtrToStringAnsi(_description);
+		}
+		[StructLayout(LayoutKind.Sequential)]
+		public struct NInputInfo
+		{
+			public IntPtr _settingName;
+			public IntPtr _name;
+			public short ConfigOrder;
+			public ushort BitOffset;
+			public InputType Type;
+			public AxisFlags Flags;
+			public byte BitSize;
+
+			public string SettingName => Marshal.PtrToStringAnsi(_settingName);
+			public string Name => Marshal.PtrToStringAnsi(_name);
+		}
+		[StructLayout(LayoutKind.Sequential)]
+		public struct NButtonInfo
+		{
+			public IntPtr _excludeName;
+
+			public string ExcludeName => Marshal.PtrToStringAnsi(_excludeName);
+		}
+		[StructLayout(LayoutKind.Sequential)]
+		public struct NAxisInfo
+		{
+			public IntPtr _settingsNameNeg;
+			public IntPtr _settingsNamePos;
+			public IntPtr _nameNeg;
+			public IntPtr _namePos;
+
+			public string SettingsNameNeg => Marshal.PtrToStringAnsi(_settingsNameNeg);
+			public string SettingsNamePos => Marshal.PtrToStringAnsi(_settingsNamePos);
+			public string NameNeg => Marshal.PtrToStringAnsi(_nameNeg);
+			public string NamePos => Marshal.PtrToStringAnsi(_namePos);
+		}
+		[StructLayout(LayoutKind.Sequential)]
+		public struct NSwitchInfo
+		{
+			public uint NumPositions;
+			public uint DefaultPosition;
 			[StructLayout(LayoutKind.Sequential)]
-			public class NDeviceInfo
+			public struct Position
 			{
-				public string ShortName;
-				public string FullName;
-				public string Description;
-				public DeviceFlags Flags;
-				public uint ByteLength;
-				[StructLayout(LayoutKind.Sequential)]
-				public class NInput
-				{
-					public string SettingName;
-					public string Name;
-					public short ConfigOrder;
-					public ushort BitOffset;
-					public InputType Type;
-					public AxisFlags Flags;
-					public byte BitSize;
-					public byte _Padding;
-					[StructLayout(LayoutKind.Sequential)]
-					public class Button
-					{
-						public string ExcludeName;
-					}
-					[StructLayout(LayoutKind.Sequential)]
-					public class Axis
-					{
-						public string SettingsNameNeg;
-						public string SettingsNamePos;
-						public string NameNeg;
-						public string NamePos;
-					}
-					[StructLayout(LayoutKind.Sequential)]
-					public class Switch
-					{
-						[StructLayout(LayoutKind.Sequential)]
-						public class Position
-						{
-							public string SettingName;
-							public string Name;
-							public string Description;
-						}
-						[MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-						public Position[] Positions;
-						public uint NumPositions;
-						public uint DefaultPosition;
-					}
-					[StructLayout(LayoutKind.Sequential)]
-					public class Status
-					{
-						public class State
-						{
-							public IntPtr ShortName;
-							public IntPtr Name;
-							public int Color; // (msb)0RGB(lsb), -1 for unused.
-							public int _Padding;
-						}
-						[MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-						public State[] States;
-						public uint NumStates;
-					}
-					[MarshalAs(UnmanagedType.ByValArray, SizeConst = 400)]
-					public byte[] UnionData;
-				}
-				[MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
-				public NInput[] Inputs;
+				public IntPtr _settingName;
+				public IntPtr _name;
+				public IntPtr _description;
+
+				public string SettingName => Marshal.PtrToStringAnsi(_settingName);
+				public string Name => Marshal.PtrToStringAnsi(_name);
+				public string Description => Marshal.PtrToStringAnsi(_description);
 			}
-			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 32)]
-			public NDeviceInfo[] Devices;
+		}
+		[StructLayout(LayoutKind.Sequential)]
+		public struct NStatusInfo
+		{
+			public uint NumStates;
+			[StructLayout(LayoutKind.Sequential)]
+			public struct State
+			{
+				public IntPtr _shortName;
+				public IntPtr _name;
+				public int Color; // (msb)0RGB(lsb), -1 for unused.
+				public int _Padding;
+
+				public string ShortName => Marshal.PtrToStringAnsi(_shortName);
+				public string Name => Marshal.PtrToStringAnsi(_name);
+			}
 		}
 
 		[BizImport(CC, Compatibility = true)]
-		public abstract NPortInfos GetInputDevices();
+		public abstract uint GetNumPorts();
+		[BizImport(CC, Compatibility = true)]
+		public abstract NPortInfo* GetPort(uint port);
+		[BizImport(CC, Compatibility = true)]
+		public abstract NDeviceInfo* GetDevice(uint port, uint dev);
+		[BizImport(CC, Compatibility = true)]
+		public abstract NInputInfo* GetInput(uint port, uint dev, uint input);
+		[BizImport(CC, Compatibility = true)]
+		public abstract NButtonInfo* GetButton(uint port, uint dev, uint input);
+		[BizImport(CC, Compatibility = true)]
+		public abstract NSwitchInfo* GetSwitch(uint port, uint dev, uint input);
+		[BizImport(CC, Compatibility = true)]
+		public abstract NSwitchInfo.Position* GetSwitchPosition(uint port, uint dev, uint input, int i);
+		[BizImport(CC, Compatibility = true)]
+		public abstract NStatusInfo* GetStatus(uint port, uint dev, uint input);
+		[BizImport(CC, Compatibility = true)]
+		public abstract NStatusInfo.State* GetStatusState(uint port, uint dev, uint input, int i);
+		[BizImport(CC, Compatibility = true)]
+		public abstract NAxisInfo* GetAxis(uint port, uint dev, uint input);
 
 		[BizImport(CC, Compatibility = true)]
 		public abstract void SetInputDevices(string[] devices);

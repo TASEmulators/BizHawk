@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private ControllerAdapter _controllerAdapter;
 		private readonly byte[] _inputPortData = new byte[16 * 16];
 
-		protected T DoInit<T>(GameInfo game, byte[] rom, string filename)
+		protected T DoInit<T>(GameInfo game, byte[] rom, string filename, string extension)
 			where T : LibNymaCore
 		{
 			var t = PreInit<T>(new WaterboxOptions
@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				{
 					// TODO: Set these as some cores need them
 					FileNameBase = "",
-					FileNameExt = "",
+					FileNameExt = extension.Trim('.').ToLowerInvariant(),
 					FileNameFull = fn
 				});
 
@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				VsyncNumerator = info.FpsFixed;
 				VsyncDenominator = 1 << 24;
 
-				_controllerAdapter = new ControllerAdapter(_nyma.GetInputDevices().Infos, new string[0]);
+				_controllerAdapter = new ControllerAdapter(_nyma, new string[0]);
 				_nyma.SetInputDevices(_controllerAdapter.Devices);
 
 				PostInit();
@@ -105,21 +105,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			_frameAdvanceInputLock.Free();
 		}
 
-		private static T ControllerData<T>(byte[] data)
-		{
-			fixed(byte *p = data)
-			{
-				return (T)Marshal.PtrToStructure((IntPtr)p, typeof(T));
-			}
-		}
-
 		protected delegate void ControllerThunk(IController c, byte[] b);
 
 		protected class ControllerAdapter
 		{
 			public string[] Devices { get; }
 			public ControllerDefinition Definition { get; }
-			public ControllerAdapter(LibNymaCore.NPortInfo[] portInfos, string[] devices)
+			public ControllerAdapter(LibNymaCore core, string[] config)
 			{
 				var ret = new ControllerDefinition
 				{
@@ -128,17 +120,36 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 				var finalDevices = new List<string>();
 
-				for (int i = 0, devByteStart = 0; i < portInfos.Length && portInfos[i].ShortName != null; i++)
+				var numPorts = core.GetNumPorts();
+				for (uint i = 0, devByteStart = 0; i < numPorts; i++)
 				{
-					var port = portInfos[i];
-					var devName = i < devices.Length ? devices[i] : port.DefaultDeviceShortName;
+					var port = *core.GetPort(i);
+					var devName = i < config.Length ? config[i] : port.DefaultDeviceShortName;
 					finalDevices.Add(devName);
 
-					var dev = port.Devices.SingleOrDefault(d => d.ShortName == devName);
+					var devices = Enumerable.Range(0, (int)port.NumDevices)
+						.Select(j => new { Index = (uint)j, Device = *core.GetDevice(i, (uint)j) })
+						.ToList();
+					
+					var device = devices.FirstOrDefault(a => a.Device.ShortName == devName);
+					if (device == null)
+					{
+						Console.WriteLine($"Warn: unknown controller device {devName}");
+						device = devices.FirstOrDefault(a => a.Device.ShortName == port.DefaultDeviceShortName);
+						if (device == null)
+							throw new InvalidOperationException($"Fail: unknown controller device {port.DefaultDeviceShortName}");
+					}
+
+					var dev = device.Device;
 					var category = port.FullName + " - " + dev.FullName;
 
-					foreach (var input in dev.Inputs.OrderBy(i => i.ConfigOrder))
+					var inputs = Enumerable.Range(0, (int)dev.NumInputs)
+						.Select(iix => new { Index = iix, Data = *core.GetInput(i, device.Index, (uint)iix) })
+						.OrderBy(a => a.Data.ConfigOrder);
+
+					foreach (var inputzz in inputs)
 					{
+						var input = inputzz.Data;
 						var bitSize = (int)input.BitSize;
 						var bitOffset = (int)input.BitOffset;
 						var byteStart = devByteStart + bitOffset / 8;
@@ -153,7 +164,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							case LibNymaCore.InputType.BUTTON:
 							case LibNymaCore.InputType.BUTTON_CAN_RAPID:
 							{
-								var data = ControllerData<LibNymaCore.NPortInfo.NDeviceInfo.NInput.Button>(input.UnionData);
+								var data = *core.GetButton(i, device.Index, (uint)inputzz.Index);
 								// TODO: Wire up data.ExcludeName
 								ret.BoolButtons.Add(name);
 								_thunks.Add((c, b) =>
@@ -165,7 +176,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							}
 							case LibNymaCore.InputType.SWITCH:
 							{
-								var data = ControllerData<LibNymaCore.NPortInfo.NDeviceInfo.NInput.Switch>(input.UnionData);
+								var data = *core.GetSwitch(i, device.Index, (uint)inputzz.Index);
 								// TODO: Possibly bulebutton for 2 states?
 								ret.AxisControls.Add(name);
 								ret.AxisRanges.Add(new ControllerDefinition.AxisRange(
@@ -179,7 +190,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							}
 							case LibNymaCore.InputType.AXIS:
 							{
-								var data = ControllerData<LibNymaCore.NPortInfo.NDeviceInfo.NInput.Axis>(input.UnionData);
+								var data = core.GetAxis(i, device.Index, (uint)inputzz.Index);
 								ret.AxisControls.Add(name);
 								ret.AxisRanges.Add(new ControllerDefinition.AxisRange(
 									0, 0x8000, 0xffff, (input.Flags & LibNymaCore.AxisFlags.INVERT_CO) != 0
@@ -194,7 +205,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							}
 							case LibNymaCore.InputType.AXIS_REL:
 							{
-								var data = ControllerData<LibNymaCore.NPortInfo.NDeviceInfo.NInput.Axis>(input.UnionData);
+								var data = core.GetAxis(i, device.Index, (uint)inputzz.Index);
 								ret.AxisControls.Add(name);
 								ret.AxisRanges.Add(new ControllerDefinition.AxisRange(
 									-0x8000, 0, 0x7fff, (input.Flags & LibNymaCore.AxisFlags.INVERT_CO) != 0
@@ -221,13 +232,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 								// ret.AxisRanges.Add(new ControllerDefinition.AxisRange(0, 0.5, 1, true));
 								// break;
 							}
+							// TODO: wire up statuses to something (not controller, of course)
 							default:
 								throw new NotImplementedException($"Unimplemented button type {input.Type}");
 						}
 						ret.CategoryLabels[name] = category;
 					}
 
-					devByteStart += (int)dev.ByteLength;
+					devByteStart += dev.ByteLength;
 				}
 				Definition = ret;
 				Devices = finalDevices.ToArray();
@@ -244,5 +256,33 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		}
 
 		public DisplayType Region { get; protected set; }
+
+		/// <summary>
+		/// Gets a string array of valid layers to pass to SetLayers, or null if that method should not be called
+		/// </summary>
+		private string[] GetLayerData()
+		{
+			using (_exe.EnterExit())
+			{
+				var p = _nyma.GetLayerData();
+				if (p == null)
+					return null;
+				var ret = new List<string>();
+				var q = p;
+				while (true)
+				{
+					if (*q == 0)
+					{
+						if (q > p)
+							ret.Add(Marshal.PtrToStringAnsi((IntPtr)p));
+						else
+							break;
+						p = ++q;
+					}
+					q++;
+				}
+				return ret.ToArray();
+			}
+		}
 	}
 }

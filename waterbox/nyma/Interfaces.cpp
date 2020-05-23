@@ -62,24 +62,50 @@ namespace Mednafen
 		abort();
 	}
 
+	static const MDFNSetting* GetSetting(const char* name)
+	{
+		const MDFNSetting* s;
+		for (int i = 0; s = &MDFNGameInfo->Settings[i], s->name; i++)
+		{
+			if (strcmp(s->name, name) == 0)
+				return s;
+		}
+		return nullptr;
+	}
+
 	uint64 MDFN_GetSettingUI(const char *name)
 	{
+		auto s = GetSetting(name);
+		if (s)
+			return strtoul(s->default_value, nullptr, 10);
 		return 0;
 	}
 	int64 MDFN_GetSettingI(const char *name)
 	{
+		auto s = GetSetting(name);
+		if (s)
+			return strtol(s->default_value, nullptr, 10);
 		return 0;
 	}
 	double MDFN_GetSettingF(const char *name)
 	{
+		auto s = GetSetting(name);
+		if (s)
+			return strtod(s->default_value, nullptr);
 		return 0;
 	}
 	bool MDFN_GetSettingB(const char *name)
 	{
-		return false;
+		auto s = GetSetting(name);
+		if (s)
+			return strtol(s->default_value, nullptr, 10) != 0;
+		return 0;
 	}
 	std::string MDFN_GetSettingS(const char *name)
 	{
+		auto s = GetSetting(name);
+		if (s)
+			return s->default_value;
 		return "";
 	}
 

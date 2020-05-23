@@ -146,7 +146,12 @@ ECL_EXPORT void SetLayers(uint64_t layers)
 }
 
 ECL_EXPORT void GetMemoryAreas(MemoryArea* m)
-{}
+{
+	m[0].Data = (void*)pixels;
+	m[0].Name = "PEWP";
+	m[0].Size = Game->fb_width * Game->fb_height * 4;
+	m[0].Flags = MEMORYAREA_FLAGS_PRIMARY | MEMORYAREA_FLAGS_WORDSIZE4;
+}
 
 ECL_EXPORT void SetInputCallback(void (*cb)())
 {}
@@ -157,140 +162,155 @@ struct NPortInfo
 	const char* ShortName;
 	const char* FullName;
 	const char* DefaultDeviceShortName;
-	struct NDeviceInfo
+	uint32_t NumDevices;
+};
+struct NDeviceInfo
+{
+	const char* ShortName;
+	const char* FullName;
+	const char* Description;
+	uint32_t Flags;
+	uint32_t ByteLength;
+	uint32_t NumInputs;
+};
+struct NInputInfo
+{
+	const char* SettingName;
+	const char* Name;
+	int16_t ConfigOrder;
+	uint16_t BitOffset;
+	InputDeviceInputType Type; // uint8_t
+	uint8_t Flags;
+	uint8_t BitSize;
+};
+struct NButtonInfo
+{
+	const char* ExcludeName;
+};
+struct NAxisInfo
+{
+	// negative, then positive
+	const char* SettingName[2];
+	const char* Name[2];	
+};
+struct NSwitchInfo
+{
+	uint32_t NumPositions;
+	uint32_t DefaultPosition;
+	struct Position
+	{
+		const char* SettingName;
+		const char* Name;
+		const char* Description;
+	};
+};
+struct NStatusInfo
+{
+	uint32_t NumStates;
+	struct State
 	{
 		const char* ShortName;
-		const char* FullName;
-		const char* Description;
-		uint32_t Flags;
-		uint32_t ByteLength;
-		struct NInput
-		{
-			const char* SettingName;
-			const char* Name;
-			int16_t ConfigOrder;
-			uint16_t BitOffset;
-			InputDeviceInputType Type; // uint8_t
-			uint8_t Flags;
-			uint8_t BitSize;
-			uint8_t _Padding;
-			union
-			{
-				struct
-				{
-					const char* ExcludeName;
-				} Button;
-				struct
-				{
-					// negative, then positive
-					const char* SettingName[2];
-					const char* Name[2];
-				} Axis;
-				struct
-				{
-					struct
-					{
-						const char* SettingName;
-						const char* Name;
-						const char* Description;
-					} Positions[16];
-					uint32_t NumPositions;
-					uint32_t DefaultPosition;
-				} Switch;
-				struct
-				{
-					struct
-					{
-						const char* ShortName;
-						const char* Name;
-						int32_t Color; // (msb)0RGB(lsb), -1 for unused.
-						int32_t _Padding;
-					} States[16];
-					uint32_t NumStates;
-				} Status;
-				uint8_t _Padding2[400];
-			};
-		} Inputs[256];
-	} Devices[32];
+		const char* Name;
+		int32_t Color; // (msb)0RGB(lsb), -1 for unused.
+		int32_t _Padding;
+	};
 };
 
-NPortInfo PortInfos[MAX_PORTS] = {};
-
-ECL_EXPORT NPortInfo* GetInputDevices()
+ECL_EXPORT uint32_t GetNumPorts()
 {
-	for (unsigned port = 0; port < MAX_PORTS && port < Game->PortInfo.size(); port++)
-	{
-		auto& a = PortInfos[port];
-		auto& x = Game->PortInfo[port];
-		a.ShortName = x.ShortName;
-		a.FullName = x.FullName;
-		a.DefaultDeviceShortName = x.DefaultDevice;
-		for (unsigned dev = 0; dev < 32 && dev < x.DeviceInfo.size(); dev++)
-		{
-			auto& b = a.Devices[dev];
-			auto& y = x.DeviceInfo[dev];
-			b.ShortName = y.ShortName;
-			b.FullName = y.FullName;
-			b.Description = y.Description;
-			b.Flags = y.Flags;
-			b.ByteLength = y.IDII.InputByteSize;
-			for (unsigned input = 0; input < 256 && input < y.IDII.size(); input++)
-			{
-				auto& c = b.Inputs[input];
-				auto& z = y.IDII[input];
-				c.SettingName = z.SettingName;
-				c.Name = z.Name;
-				c.ConfigOrder = z.ConfigOrder;
-				c.BitOffset = z.BitOffset;
-				c.Type = z.Type;
-				c.Flags = z.Flags;
-				c.BitSize = z.BitSize;
-				switch (z.Type)
-				{
-					case IDIT_BUTTON:
-					case IDIT_BUTTON_CAN_RAPID:
-						c.Button.ExcludeName = z.Button.ExcludeName;
-						break;
-					case IDIT_SWITCH:
-						c.Switch.NumPositions = z.Switch.NumPos;
-						c.Switch.DefaultPosition = z.Switch.DefPos;
-						for (unsigned i = 0; i < 16 && i < z.Switch.NumPos; i++)
-						{
-							c.Switch.Positions[i].SettingName = z.Switch.Pos[i].SettingName;
-							c.Switch.Positions[i].Name = z.Switch.Pos[i].Name;
-							c.Switch.Positions[i].Description = z.Switch.Pos[i].Description;
-						}
-						break;
-					case IDIT_STATUS:
-						c.Status.NumStates = z.Status.NumStates;
-						for (unsigned i = 0; i < 16 && i < z.Status.NumStates; i++)
-						{
-							c.Status.States[i].ShortName = z.Status.States[i].ShortName;
-							c.Status.States[i].Name = z.Status.States[i].Name;
-							c.Status.States[i].Color = z.Status.States[i].Color;
-						}
-						break;
-					case IDIT_AXIS:
-					case IDIT_AXIS_REL:
-						c.Axis.SettingName[0] = z.Axis.sname_dir[0];
-						c.Axis.SettingName[1] = z.Axis.sname_dir[1];
-						c.Axis.Name[0] = z.Axis.name_dir[0];
-						c.Axis.Name[1] = z.Axis.name_dir[1];
-						break;
-					default:
-						// other types have no extended information
-						break;
-				}
-			}
-		}
-	}
-	return PortInfos;
+	return Game->PortInfo.size();
+}
+ECL_EXPORT NPortInfo& GetPort(uint32_t port)
+{
+	auto& a = *(NPortInfo*)InputPortData;
+	auto& x = Game->PortInfo[port];
+	a.ShortName = x.ShortName;
+	a.FullName = x.FullName;
+	a.DefaultDeviceShortName = x.DefaultDevice;
+	a.NumDevices = x.DeviceInfo.size();
+	return a;
+}
+ECL_EXPORT NDeviceInfo& GetDevice(uint32_t port, uint32_t dev)
+{
+	auto& b = *(NDeviceInfo*)InputPortData;
+	auto& y = Game->PortInfo[port].DeviceInfo[dev];
+	b.ShortName = y.ShortName;
+	b.FullName = y.FullName;
+	b.Description = y.Description;
+	b.Flags = y.Flags;
+	b.ByteLength = y.IDII.InputByteSize;
+	b.NumInputs = y.IDII.size();
+	return b;
+}
+ECL_EXPORT NInputInfo& GetInput(uint32_t port, uint32_t dev, uint32_t input)
+{
+	auto& c = *(NInputInfo*)InputPortData;
+	auto& z = Game->PortInfo[port].DeviceInfo[dev].IDII[input];
+	c.SettingName = z.SettingName;
+	c.Name = z.Name;
+	c.ConfigOrder = z.ConfigOrder;
+	c.BitOffset = z.BitOffset;
+	c.Type = z.Type;
+	c.Flags = z.Flags;
+	c.BitSize = z.BitSize;
+	return c;
+}
+ECL_EXPORT NButtonInfo& GetButton(uint32_t port, uint32_t dev, uint32_t input)
+{
+	auto& c = *(NButtonInfo*)InputPortData;
+	auto& z = Game->PortInfo[port].DeviceInfo[dev].IDII[input].Button;
+	c.ExcludeName = z.ExcludeName;
+	return c;
+}
+ECL_EXPORT NSwitchInfo& GetSwitch(uint32_t port, uint32_t dev, uint32_t input)
+{
+	auto& c = *(NSwitchInfo*)InputPortData;
+	auto& z = Game->PortInfo[port].DeviceInfo[dev].IDII[input].Switch;
+	c.NumPositions = z.NumPos;
+	c.DefaultPosition = z.DefPos;
+	return c;
+}
+ECL_EXPORT NSwitchInfo::Position& GetSwitchPosition(uint32_t port, uint32_t dev, uint32_t input, int i)
+{
+	auto& c = *(NSwitchInfo::Position*)InputPortData;
+	auto& z = Game->PortInfo[port].DeviceInfo[dev].IDII[input].Switch;
+	c.SettingName = z.Pos[i].SettingName;
+	c.Name = z.Pos[i].Name;
+	c.Description = z.Pos[i].Description;
+	return c;
+}
+ECL_EXPORT NStatusInfo& GetStatus(uint32_t port, uint32_t dev, uint32_t input)
+{
+	auto& c = *(NStatusInfo*)InputPortData;
+	auto& z = Game->PortInfo[port].DeviceInfo[dev].IDII[input].Status;
+	c.NumStates = z.NumStates;
+	return c;
+}
+ECL_EXPORT NStatusInfo::State& GetStatusState(uint32_t port, uint32_t dev, uint32_t input, int i)
+{
+	auto& c = *(NStatusInfo::State*)InputPortData;
+	auto& z = Game->PortInfo[port].DeviceInfo[dev].IDII[input].Status;
+	c.ShortName = z.States[i].ShortName;
+	c.Name = z.States[i].Name;
+	c.Color = z.States[i].Color;
+	return c;
+}
+ECL_EXPORT NAxisInfo& GetAxis(uint32_t port, uint32_t dev, uint32_t input)
+{
+	auto& c = *(NAxisInfo*)InputPortData;
+	auto& z = Game->PortInfo[port].DeviceInfo[dev].IDII[input].Axis;
+	c.SettingName[0] = z.sname_dir[0];
+	c.SettingName[1] = z.sname_dir[1];
+	c.Name[0] = z.name_dir[0];
+	c.Name[1] = z.name_dir[1];
+	return c;
 }
 
 ECL_EXPORT void SetInputDevices(const char** devices)
 {
 	for (unsigned port = 0; port < MAX_PORTS && devices[port]; port++)
 	{
-		Game->SetInput(port, devices[port], &InputPortData[port * MAX_PORT_DATA]);
+		std::string dev(devices[port]);
+		Game->SetInput(port, dev.c_str(), &InputPortData[port * MAX_PORT_DATA]);
 	}
 }
