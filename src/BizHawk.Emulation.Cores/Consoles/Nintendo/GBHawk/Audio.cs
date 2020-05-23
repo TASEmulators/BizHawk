@@ -240,6 +240,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						{
 							SQ1_enable = true;
 							SQ1_vol_done = false;
+							SQ1_duty_cntr = 0;
+
 							if (SQ1_len_cntr == 0)
 							{
 								SQ1_len_cntr = 64;
@@ -247,8 +249,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							}
 							SQ1_vol_state = SQ1_st_vol;
 							SQ1_vol_per = (SQ1_per > 0) ? SQ1_per : 8;
+							if (sequencer_vol == 4) { SQ1_vol_per++; }
 							SQ1_frq_shadow = SQ1_frq;
-							SQ1_intl_cntr = (2048 - SQ1_frq_shadow) * 4;
+							SQ1_intl_cntr = ((2048 - SQ1_frq_shadow) * 4) | (SQ1_intl_cntr & 3);
 
 							SQ1_intl_swp_cnt = SQ1_swp_prd > 0 ? SQ1_swp_prd : 8;
 							SQ1_calc_done = false;
@@ -332,15 +335,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						{
 							SQ2_enable = true;
 							SQ2_vol_done = false;
+							SQ2_duty_cntr = 0;
 
 							if (SQ2_len_cntr == 0)
 							{
 								SQ2_len_cntr = 64;
 								if (((value & 0x40) > 0) && ((sequencer_len & 1) == 0)) { SQ2_len_cntr--; }
 							}
-							SQ2_intl_cntr = (2048 - SQ2_frq) * 4;
+							SQ2_intl_cntr = ((2048 - SQ2_frq) * 4) | (SQ2_intl_cntr & 3);
 							SQ2_vol_state = SQ2_st_vol;
 							SQ2_vol_per = (SQ2_per > 0) ? SQ2_per : 8;
+							if (sequencer_vol == 4) { SQ2_vol_per++; }
 							if ((SQ2_vol_state == 0) && !SQ2_env_add) { SQ2_enable = false; }
 						}
 						calculate_bias_gain_2();
@@ -472,6 +477,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							NOISE_intl_cntr = (DIVISOR[NOISE_div_code] << NOISE_clk_shft);
 							NOISE_vol_state = NOISE_st_vol;
 							NOISE_vol_per = (NOISE_per > 0) ? NOISE_per : 8;
+							if (sequencer_vol == 4) { NOISE_vol_per++; }
 							NOISE_LFSR = 0x7FFF;
 							if ((NOISE_vol_state == 0) && !NOISE_env_add) { NOISE_enable = false; }
 						}
@@ -822,7 +828,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 
 				// clock the volume envelope
-				if (sequencer_vol == 1)
+				if (sequencer_vol == 5)
 				{
 					if (SQ1_per > 0)
 					{
