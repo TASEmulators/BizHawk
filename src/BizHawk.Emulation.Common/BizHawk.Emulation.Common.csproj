@@ -6,6 +6,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.API/BizHawk.API.csproj" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Common/BizHawk.Common.csproj" />
 		<Compile Include="$(ProjectDir)../Version/svnrev.cs" />
 		<Compile Include="$(ProjectDir)../Version/VersionInfo.cs" />

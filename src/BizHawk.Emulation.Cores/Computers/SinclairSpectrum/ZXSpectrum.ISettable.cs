@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Text;
 
+using BizHawk.API.ApiHawk;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 

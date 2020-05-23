@@ -1,12 +1,13 @@
-﻿using BizHawk.Common;
-using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Properties;
-using BizHawk.Emulation.Cores.Waterbox;
-using System;
-
+﻿using System;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+
+using BizHawk.API.ApiHawk;
+using BizHawk.Common;
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Properties;
+using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 {

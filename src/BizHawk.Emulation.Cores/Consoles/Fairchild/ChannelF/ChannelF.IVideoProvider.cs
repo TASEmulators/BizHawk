@@ -1,4 +1,5 @@
-﻿using BizHawk.Common;
+﻿using BizHawk.API.ApiHawk;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.ChannelF

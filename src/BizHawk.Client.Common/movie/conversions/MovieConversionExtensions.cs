@@ -305,7 +305,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			if (emulator.HasRegions())
 			{
 				var region = emulator.AsRegionable().Region;
-				if (region == Emulation.Common.DisplayType.PAL)
+				if (region == API.ApiHawk.DisplayType.PAL)
 				{
 					movie.HeaderEntries.Add(HeaderKeys.Pal, "1");
 				}

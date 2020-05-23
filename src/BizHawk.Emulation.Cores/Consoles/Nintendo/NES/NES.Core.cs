@@ -3,6 +3,7 @@
 using System;
 using System.Linq;
 
+using BizHawk.API.ApiHawk;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.M6502;
 

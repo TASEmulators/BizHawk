@@ -1,8 +1,10 @@
-﻿using BizHawk.Common;
-using BizHawk.Emulation.Common;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+
+using BizHawk.API.ApiHawk;
+using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {

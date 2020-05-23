@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Linq;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
+using BizHawk.API.ApiHawk;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 

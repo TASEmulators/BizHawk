@@ -1,11 +1,13 @@
-﻿using BizHawk.Emulation.Common;
+﻿using System;
+using System.ComponentModel;
+using System.IO;
+using System.Runtime.InteropServices;
+
+using BizHawk.API.ApiHawk;
+using BizHawk.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.Emulation.DiscSystem;
-using System;
-using System.Runtime.InteropServices;
-using System.IO;
-using BizHawk.Common;
-using System.ComponentModel;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 {

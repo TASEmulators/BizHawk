@@ -284,7 +284,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			if (OverscanFrameBuffer == null)
 			{
-				if (Sms.Region == Common.DisplayType.NTSC)
+				if (Sms.Region == API.ApiHawk.DisplayType.NTSC)
 				{
 					overscanLeft = 13;
 					overscanRight = 15;

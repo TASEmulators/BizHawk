@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel;
+
+using BizHawk.API.ApiHawk;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64

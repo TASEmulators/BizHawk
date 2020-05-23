@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using BizHawk.API.ApiHawk;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components;

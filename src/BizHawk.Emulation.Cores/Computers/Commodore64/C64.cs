@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using BizHawk.API.ApiHawk;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge;

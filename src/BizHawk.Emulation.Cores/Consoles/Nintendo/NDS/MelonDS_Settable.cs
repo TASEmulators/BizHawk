@@ -1,9 +1,11 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Text;
 using System.Runtime.InteropServices;
+using System.Text;
 
+using BizHawk.API.ApiHawk;
 using BizHawk.Emulation.Common;
+
 using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS

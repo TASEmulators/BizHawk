@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
+using BizHawk.API.Base;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
@@ -27,6 +28,7 @@ namespace BizHawk.Client.EmuHawk
 				.Concat(Assembly.GetAssembly(typeof(ApiContainer)).GetTypes())
 				.Where(t => /*t.IsClass && */t.IsSealed
 					&& typeof(IExternalApi).IsAssignableFrom(t)
+					&& !t.FullName.EndsWith("LegacyImpl") // Dumb hack to prevent crashes on startup. API will not work even with hack because I removed the implementations that were IExternalApi-only. --yoshi
 					&& ServiceInjector.IsAvailable(serviceProvider, t)))
 			{
 				var instance = api.GetConstructor(ctorParamTypes)?.Invoke(new object[] { logCallback })
