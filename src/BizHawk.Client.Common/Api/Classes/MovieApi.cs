@@ -98,7 +98,7 @@ namespace BizHawk.Client.Common
 
 		public bool IsLoaded() => Global.MovieSession.Movie.IsActive();
 
-		public double Length() => Global.MovieSession.Movie.FrameCount;
+		public int Length() => Global.MovieSession.Movie.FrameCount;
 
 		public string Mode() => Global.MovieSession.Movie.Mode.ToString().ToUpper();
 

@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 		ulong GetRerecordCount();
 		bool GetRerecordCounting();
 		bool IsLoaded();
-		double Length();
+		int Length();
 		string Mode();
 		void Save(string filename = "");
 		void SetReadOnly(bool readOnly);

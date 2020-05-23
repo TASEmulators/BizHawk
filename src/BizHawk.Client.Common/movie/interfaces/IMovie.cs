@@ -46,12 +46,12 @@ namespace BizHawk.Client.Common
 
 		/// <summary>
 		/// Gets the total number of frames that count towards the completion time of the movie
-		/// Possibly (but unlikely different from InputLogLength (could be infinity, or maybe an implementation automatically discounts empty frames at the end of a movie, etc)
 		/// </summary>
-		double FrameCount { get; }
+		int FrameCount { get; }
 
 		/// <summary>
-		/// Gets the actual length of the input log, should only be used by code that iterates or needs a real length
+		/// Gets the actual length of the input log, should only be used by code that needs a the input log length
+		/// specifically, not the frame count
 		/// </summary>
 		int InputLogLength { get; }
 

@@ -44,19 +44,7 @@ namespace BizHawk.Client.Common
 			return new Bk2LogEntryGenerator(Global.Emulator.SystemId, source);
 		}
 
-		public double FrameCount
-		{
-			get
-			{
-				if (LoopOffset.HasValue)
-				{
-					return double.PositiveInfinity;
-				}
-				
-				return Log.Count;
-			}
-		}
-
+		public int FrameCount => Log.Count;
 		public int InputLogLength => Log.Count;
 
 		public ulong TimeLength
@@ -123,26 +111,7 @@ namespace BizHawk.Client.Common
 			if (frame < FrameCount && frame >= 0)
 			{
 				_adapter ??= new Bk2Controller(Global.MovieSession.MovieController.Definition);
-
-				int getFrame;
-
-				if (LoopOffset.HasValue)
-				{
-					if (frame < Log.Count)
-					{
-						getFrame = frame;
-					}
-					else
-					{
-						getFrame = ((frame - LoopOffset.Value) % (Log.Count - LoopOffset.Value)) + LoopOffset.Value;
-					}
-				}
-				else
-				{
-					getFrame = frame;
-				}
-
-				_adapter.SetFromMnemonic(Log[getFrame]);
+				_adapter.SetFromMnemonic(Log[frame]);
 				return _adapter;
 			}
 
