@@ -190,32 +190,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		protected int? LoopOffset
-		{
-			get
-			{
-				var offsetStr = Header[HeaderKeys.LoopOffset];
-				if (!string.IsNullOrWhiteSpace(offsetStr))
-				{
-					return int.Parse(offsetStr);
-				}
-
-				return null;
-			}
-
-			set
-			{
-				if (value.HasValue)
-				{
-					Header[HeaderKeys.LoopOffset] = value.ToString();
-				}
-				else
-				{
-					Header.Remove(HeaderKeys.LoopOffset);
-				}
-			}
-		}
-
 		protected string CommentsString()
 		{
 			var sb = new StringBuilder();
