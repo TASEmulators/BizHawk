@@ -62,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ToggleReadOnly()
 		{
-			if (CurrentTasMovie.IsPlaying())
+			if (CurrentTasMovie.IsPlayingOrFinished())
 			{
 				TastudioRecordMode();
 			}

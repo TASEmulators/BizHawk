@@ -146,7 +146,7 @@ namespace BizHawk.Client.EmuHawk
 
 			Pads.ForEach(p => p.SetPrevious(null)); // Not the cleanest way to clear this every frame
 
-			if (MovieSession.Movie.Mode == MovieMode.Play)
+			if (MovieSession.Movie.IsPlaying())
 			{
 				Readonly = true;
 				if (MovieSession.CurrentInput != null)
@@ -154,13 +154,9 @@ namespace BizHawk.Client.EmuHawk
 					Pads.ForEach(p => p.Set(MovieSession.CurrentInput));
 				}
 			}
-			else
+			else if (MovieSession.Movie.IsRecording())
 			{
-				if (MovieSession.Movie.IsRecording())
-				{
-					Pads.ForEach(p => p.SetPrevious(MovieSession.PreviousFrame));
-				}
-
+				Pads.ForEach(p => p.SetPrevious(MovieSession.PreviousFrame));
 				Readonly = false;
 			}
 

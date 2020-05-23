@@ -2388,26 +2388,22 @@ namespace BizHawk.Client.EmuHawk
 		private void SoftReset()
 		{
 			// is it enough to run this for one frame? maybe..
-			if (Emulator.ControllerDefinition.BoolButtons.Contains("Reset"))
+			if (Emulator.ControllerDefinition.BoolButtons.Contains("Reset")
+				&& !MovieSession.Movie.IsPlaying())
 			{
-				if (MovieSession.Movie.Mode != MovieMode.Play)
-				{
-					InputManager.ClickyVirtualPadController.Click("Reset");
-					AddOnScreenMessage("Reset button pressed.");
-				}
+				InputManager.ClickyVirtualPadController.Click("Reset");
+				AddOnScreenMessage("Reset button pressed.");
 			}
 		}
 
 		private void HardReset()
 		{
 			// is it enough to run this for one frame? maybe..
-			if (Emulator.ControllerDefinition.BoolButtons.Contains("Power"))
+			if (Emulator.ControllerDefinition.BoolButtons.Contains("Power")
+				&& !MovieSession.Movie.IsPlaying())
 			{
-				if (MovieSession.Movie.Mode != MovieMode.Play)
-				{
-					InputManager.ClickyVirtualPadController.Click("Power");
-					AddOnScreenMessage("Power button pressed.");
-				}
+				InputManager.ClickyVirtualPadController.Click("Power");
+				AddOnScreenMessage("Power button pressed.");
 			}
 		}
 
@@ -2683,13 +2679,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			FDSControlsMenuItem.DropDownItems.Add(name, null, delegate
 			{
-				if (Emulator.ControllerDefinition.BoolButtons.Contains(button))
+				if (Emulator.ControllerDefinition.BoolButtons.Contains(button)
+					&& !MovieSession.Movie.IsPlaying())
 				{
-					if (MovieSession.Movie.Mode != MovieMode.Play)
-					{
-						InputManager.ClickyVirtualPadController.Click(button);
-						AddOnScreenMessage(msg);
-					}
+					InputManager.ClickyVirtualPadController.Click(button);
+					AddOnScreenMessage(msg);
 				}
 			});
 		}

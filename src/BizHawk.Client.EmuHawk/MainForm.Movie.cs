@@ -44,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SetMainformMovieInfo()
 		{
-			if (MovieSession.Movie.IsPlaying())
+			if (MovieSession.Movie.IsPlayingOrFinished())
 			{
 				PlayRecordStatusButton.Image = Properties.Resources.Play;
 				PlayRecordStatusButton.ToolTipText = "Movie is in playback mode";

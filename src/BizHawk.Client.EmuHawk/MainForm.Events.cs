@@ -688,10 +688,10 @@ namespace BizHawk.Client.EmuHawk
 			PauseMenuItem.Checked = _didMenuPause ? _wasPaused : EmulatorPaused;
 
 			SoftResetMenuItem.Enabled = Emulator.ControllerDefinition.BoolButtons.Contains("Reset")
-				&& MovieSession.Movie.Mode != MovieMode.Play;
+				&& !MovieSession.Movie.IsPlaying();
 
 			HardResetMenuItem.Enabled = Emulator.ControllerDefinition.BoolButtons.Contains("Power")
-				&& MovieSession.Movie.Mode != MovieMode.Play;
+				&& !MovieSession.Movie.IsPlaying();
 
 			PauseMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Pause"].Bindings;
 			RebootCoreMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Reboot Core"].Bindings;
@@ -1614,7 +1614,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FdsEjectDiskMenuItem_Click(object sender, EventArgs e)
 		{
-			if (MovieSession.Movie.Mode != MovieMode.Play)
+			if (!MovieSession.Movie.IsPlaying())
 			{
 				InputManager.ClickyVirtualPadController.Click("FDS Eject");
 				AddOnScreenMessage("FDS disk ejected.");
@@ -1626,7 +1626,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is NES nes && nes.IsVS
 			|| Emulator is SubNESHawk sub && sub.IsVs)
 			{
-				if (MovieSession.Movie.Mode != MovieMode.Play)
+				if (!MovieSession.Movie.IsPlaying())
 				{
 					InputManager.ClickyVirtualPadController.Click("Insert Coin P1");
 					AddOnScreenMessage("P1 Coin Inserted");
@@ -1639,7 +1639,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is NES nes && nes.IsVS
 				|| Emulator is SubNESHawk sub && sub.IsVs)
 			{
-				if (MovieSession.Movie.Mode != MovieMode.Play)
+				if (!MovieSession.Movie.IsPlaying())
 				{
 					InputManager.ClickyVirtualPadController.Click("Insert Coin P2");
 					AddOnScreenMessage("P2 Coin Inserted");
@@ -1652,7 +1652,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is NES nes && nes.IsVS
 				|| Emulator is SubNESHawk sub && sub.IsVs)
 			{
-				if (MovieSession.Movie.Mode != MovieMode.Play)
+				if (!MovieSession.Movie.IsPlaying())
 				{
 					InputManager.ClickyVirtualPadController.Click("Service Switch");
 					AddOnScreenMessage("Service Switch Pressed");
@@ -2844,7 +2844,7 @@ namespace BizHawk.Client.EmuHawk
 		private void LinkConnectStatusBarButton_Click(object sender, EventArgs e)
 		{
 			// toggle Link status (only outside of a movie session)
-			if (MovieSession.Movie.Mode != MovieMode.Play)
+			if (!MovieSession.Movie.IsPlaying())
 			{
 				Emulator.AsLinkable().LinkConnected ^= true;
 				Console.WriteLine("Cable connect status to {0}", Emulator.AsLinkable().LinkConnected);

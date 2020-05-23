@@ -78,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 				return sb.ToString();
 			}
 
-			if (Global.MovieSession.Movie.IsPlaying())
+			if (Global.MovieSession.Movie.IsPlayingOrFinished())
 			{
 				var sb = new StringBuilder();
 				sb
@@ -272,7 +272,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Config.DisplayInput && !Global.Game.IsNullInstance())
 			{
-				if (Global.MovieSession.Movie.Mode == MovieMode.Play
+				if (Global.MovieSession.Movie.IsPlaying()
 					|| (Global.MovieSession.Movie.IsFinished() && Global.Emulator.Frame == Global.MovieSession.Movie.InputLogLength)) // Account for the last frame of the movie, the movie state is immediately "Finished" here but we still want to show the input
 				{
 					var input = InputStrMovie();
