@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public byte[] Wave_RAM = new byte[16];
 
-		public const int DAC_OFST = 8;
+		public const int DAC_OFST = -8;
 
 		// Audio Variables
 		// derived
