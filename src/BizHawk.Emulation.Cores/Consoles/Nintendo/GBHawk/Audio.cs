@@ -55,7 +55,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public byte[] Wave_RAM = new byte[16];
 
-		public const int DAC_OFST = -8;
+		public const int DAC_OFST = 8;
+		public int WAVE_decay_counter;
+		public bool WAVE_decay_done;
 
 		// Audio Variables
 		// derived
@@ -685,6 +687,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					sample = Wave_RAM[WAVE_wave_cntr >> 1];
 				}
 			}
+			else if (!WAVE_decay_done && (++WAVE_decay_counter == 200))
+			{
+				WAVE_decay_counter = 0;
+
+				// wave state must decay slow enough that games that turn on and off the wave channel to fill wave RAM don't buzz too much
+				if (!WAVE_DAC_pow)
+				{
+					if (WAVE_output > 0)  {  WAVE_output--; }
+					else { WAVE_decay_done = true; }
+				}
+				else
+				{
+					if (WAVE_output > DAC_OFST)
+					{
+						WAVE_output--;
+					}
+					else if (WAVE_output < DAC_OFST)
+					{
+						WAVE_output++;
+					}
+					else { WAVE_decay_done = true; }
+				}
+			}
 
 			// calculate noise output
 			if (NOISE_enable)
@@ -1002,8 +1027,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			if (!SQ2_enable && ((Audio_Regs[NR22] & 0xF8) > 0)) { SQ2_output = DAC_OFST; }
 			else if ((Audio_Regs[NR22] & 0xF8) == 0) { SQ2_output = 0; }
 
-			if (!WAVE_enable && WAVE_DAC_pow) { WAVE_output = DAC_OFST; }
-			else if (!WAVE_DAC_pow) { WAVE_output = 0; }
+			if (!WAVE_enable && WAVE_DAC_pow) { WAVE_decay_counter = 0; WAVE_decay_done = false; }
+			else if (!WAVE_DAC_pow) { WAVE_decay_counter = 0; WAVE_decay_done = false; }
 
 			if (!NOISE_enable && ((Audio_Regs[NR42] & 0xF8) > 0)) { NOISE_output = DAC_OFST; }
 			else if ((Audio_Regs[NR42] & 0xF8) == 0) { NOISE_output = 0; }
@@ -1023,8 +1048,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public void calculate_bias_gain_w()
 		{
-			if (!WAVE_enable && WAVE_DAC_pow) { WAVE_output = DAC_OFST; }
-			else if (!WAVE_DAC_pow) {  WAVE_output = 0; }
+			if (!WAVE_enable && WAVE_DAC_pow) { WAVE_decay_counter = 0; WAVE_decay_done = false; }
+			else if (!WAVE_DAC_pow) { WAVE_decay_counter = 0; WAVE_decay_done = false; }
 		}
 
 		public void calculate_bias_gain_n()
@@ -1115,6 +1140,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(sequencer_swp), ref sequencer_swp);
 			ser.Sync(nameof(timer_bit_old), ref timer_bit_old);
 			ser.Sync(nameof(sequencer_reset_cd), ref sequencer_reset_cd);
+			ser.Sync(nameof(WAVE_decay_counter), ref WAVE_decay_counter);
+			ser.Sync(nameof(WAVE_decay_done), ref WAVE_decay_done);
 
 			ser.Sync(nameof(master_audio_clock), ref master_audio_clock);
 
