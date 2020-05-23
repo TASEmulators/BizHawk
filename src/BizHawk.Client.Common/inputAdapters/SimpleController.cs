@@ -31,14 +31,11 @@ namespace BizHawk.Client.Common
 
 		public float AxisValue(string name) => Axes[name];
 
-		public IEnumerable<KeyValuePair<string, bool>> BoolButtons()
-		{
-			return Buttons;
-		}
+		public IDictionary<string, bool> BoolButtons() => Buttons;
 
-		public void AcceptNewAxes((string AxisID, float Value) newValue)
+		public void AcceptNewAxis(string axisId, float value)
 		{
-			Axes[newValue.AxisID] = newValue.Value;
+			Axes[axisId] = value;
 		}
 
 		public void AcceptNewAxes(IEnumerable<(string AxisID, float Value)> newValues)

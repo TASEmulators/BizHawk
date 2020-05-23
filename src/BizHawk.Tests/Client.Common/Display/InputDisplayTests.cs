@@ -63,7 +63,7 @@ namespace BizHawk.Tests.Client.Common.Display
 		[TestMethod]
 		public void Generate_MidRangeDisplaysEmpty()
 		{
-			_floatController.AcceptNewAxes(("StickX", MidValue));
+			_floatController.AcceptNewAxis("StickX", MidValue);
 			var displayGenerator = new Bk2InputDisplayGenerator("NES", _floatController);
 			var actual = displayGenerator.Generate();
 			Assert.AreEqual("          0,", actual);

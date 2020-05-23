@@ -313,7 +313,8 @@ namespace BizHawk.Client.EmuHawk
 				return _inputEvents.Count == 0 ? null : _inputEvents.Dequeue();
 			}
 		}
-		void EnqueueEvent(InputEvent ie)
+
+		private void EnqueueEvent(InputEvent ie)
 		{
 			lock (this)
 			{
@@ -321,18 +322,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public List<(string AxisID, float Value)> GetAxisValues()
+		public IDictionary<string, float> GetAxisValues()
 		{
-			var axisValuesCopy = new List<(string, float)>();
-			lock (_axisValues)
-			{
-				foreach (var kvp in _axisValues)
-				{
-					axisValuesCopy.Add((kvp.Key, kvp.Value));
-				}
-			}
-
-			return axisValuesCopy;
+			// TODO: this is a refactor of code that was making a copy of the input
+			// Probably just returning the dictionary is all that is actually needed
+			return _axisValues.ToDictionary(k => k.Key, v => v.Value);
 		}
 
 		private void UpdateThreadProc()
