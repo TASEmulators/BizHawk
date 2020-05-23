@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Drawing;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -23,15 +23,14 @@ namespace BizHawk.Client.EmuHawk
 	public static class ClientApi
 	{
 		private static IEmulator Emulator { get; set; }
+
 		private static IVideoProvider VideoProvider { get; set; }
 
-		private static readonly Assembly ClientAssembly;
-		private static readonly object ClientMainFormInstance;
-		private static readonly Type MainFormClass;
-		private static readonly Array JoypadButtonsArray = Enum.GetValues(typeof(JoypadButton));
+		private static readonly IReadOnlyCollection<JoypadButton> JoypadButtonsArray = Enum.GetValues(typeof(JoypadButton)).Cast<JoypadButton>().ToList(); //TODO can the return of GetValues be cast to JoypadButton[]? --yoshi
 
 		internal static readonly BizHawkSystemIdToEnumConverter SystemIdConverter = new BizHawkSystemIdToEnumConverter();
-		internal static readonly JoypadStringToEnumConverter JoypadConverter = new JoypadStringToEnumConverter();
+
+		private static readonly JoypadStringToEnumConverter JoypadConverter = new JoypadStringToEnumConverter();
 
 		private static List<Joypad> _allJoyPads;
 
@@ -40,67 +39,32 @@ namespace BizHawk.Client.EmuHawk
 		/// or has click on the item menu)
 		/// </summary>
 		public static event BeforeQuickLoadEventHandler BeforeQuickLoad;
+
 		/// <summary>
 		/// Occurs before a quicksave is done (just after user has pressed the shortcut button
 		/// or has click on the item menu)
 		/// </summary>
 		public static event BeforeQuickSaveEventHandler BeforeQuickSave;
+
 		/// <summary>
 		/// Occurs when a ROM is successfully loaded
 		/// </summary>
 		public static event EventHandler RomLoaded;
+
 		/// <summary>
 		/// Occurs when a savestate is successfully loaded
 		/// </summary>
 		public static event StateLoadedEventHandler StateLoaded;
+
 		/// <summary>
 		/// Occurs when a savestate is successfully saved
 		/// </summary>
 		public static event StateSavedEventHandler StateSaved;
 
-		/// <summary>
-		/// Static stuff initialization
-		/// </summary>
-		static ClientApi()
-		{
-			ClientAssembly = Assembly.GetEntryAssembly();
-			ClientMainFormInstance = ClientAssembly.GetType("BizHawk.Client.EmuHawk.GlobalWin").GetField("MainForm").GetValue(null);
-			MainFormClass = ClientAssembly.GetType("BizHawk.Client.EmuHawk.MainForm");
-		}
-
 		public static void UpdateEmulatorAndVP(IEmulator emu = null)
 		{
 			Emulator = emu;
 			VideoProvider = emu.AsVideoProviderOrDefault();
-		}
-
-		private static void InvokeMainFormMethod(string name, object[] paramList = null)
-		{
-			List<Type> typeList = new List<Type>();
-			MethodInfo method;
-			if (paramList != null)
-			{
-				foreach (var obj in paramList)
-				{
-					typeList.Add(obj.GetType());
-				}
-				method = MainFormClass.GetMethod(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance, null, typeList.ToArray(), null);
-			}
-			else method = MainFormClass.GetMethod(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-
-			if(method != null)
-				method.Invoke(ClientMainFormInstance, paramList);
-		}
-
-		// Helpers for cases where access to a private or protected field may be needed
-		private static object GetMainFormField(string name)
-		{
-			return MainFormClass.GetField(name);
-		}
-
-		private static void SetMainFormField(string name, object value)
-		{
-			MainFormClass.GetField(name).SetValue(ClientMainFormInstance, value);
 		}
 
 		/// <summary>
@@ -109,8 +73,8 @@ namespace BizHawk.Client.EmuHawk
 		public static void DoFrameAdvance()
 		{
 			GlobalWin.MainForm.FrameAdvance();
-			InvokeMainFormMethod("StepRunLoop_Throttle");
-			InvokeMainFormMethod("Render");
+			GlobalWin.MainForm.StepRunLoop_Throttle();
+			GlobalWin.MainForm.Render();
 		}
 
 		/// <summary>
@@ -129,25 +93,16 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public static void SeekFrame(int frame)
 		{
-			bool wasPaused = GlobalWin.MainForm.EmulatorPaused;
-			while (Emulator.Frame != frame)
-			{
-				GlobalWin.MainForm.SeekFrameAdvance();
-			}
-			if (!wasPaused)
-			{
-				GlobalWin.MainForm.UnpauseEmulator();
-			}
+			var wasPaused = GlobalWin.MainForm.EmulatorPaused;
+			while (Emulator.Frame != frame) GlobalWin.MainForm.SeekFrameAdvance();
+			if (!wasPaused) GlobalWin.MainForm.UnpauseEmulator();
 		}
 
 		/// <summary>
 		/// Use with <see cref="SeekFrame(int)"/> for CamHack.
 		/// Refer to <see cref="MainForm.InvisibleEmulation"/> for the workflow details.
 		/// </summary>
-		public static void InvisibleEmulation(bool invisible)
-		{
-			GlobalWin.MainForm.InvisibleEmulation = invisible;
-		}
+		public static void InvisibleEmulation(bool invisible) => GlobalWin.MainForm.InvisibleEmulation = invisible;
 
 		/// <summary>
 		/// Gets a <see cref="Joypad"/> for specified player
@@ -157,25 +112,16 @@ namespace BizHawk.Client.EmuHawk
 		/// <exception cref="IndexOutOfRangeException">Raised when you specify a player less than 1 or greater than maximum allows (see SystemInfo class to get this information)</exception>
 		public static Joypad GetInput(int player)
 		{
-			if (!1.RangeTo(RunningSystem.MaxControllers).Contains(player))
-			{
-				throw new IndexOutOfRangeException($"{RunningSystem.DisplayName} does not support {player} controller(s)");
-			}
-			
+			if (!1.RangeTo(RunningSystem.MaxControllers).Contains(player)) throw new IndexOutOfRangeException($"{RunningSystem.DisplayName} does not support {player} controller(s)");
 			GetAllInputs();
 			return _allJoyPads[player - 1];
 		}
-
 
 		/// <summary>
 		/// Load a savestate specified by its name
 		/// </summary>
 		/// <param name="name">Savestate friendly name</param>
-		public static void LoadState(string name)
-		{
-			GlobalWin.MainForm.LoadState(Path.Combine(Global.Config.PathEntries.SaveStateAbsolutePath(Global.Game.System), $"{name}.State"), name, false);
-		}
-
+		public static void LoadState(string name) => GlobalWin.MainForm.LoadState(Path.Combine(Global.Config.PathEntries.SaveStateAbsolutePath(Global.Game.System), $"{name}.State"), name, suppressOSD: false);
 
 		/// <summary>
 		/// Raised before a quickload is done (just after pressing shortcut button)
@@ -185,13 +131,14 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="eventHandled">A boolean that can be set if users want to handle save themselves; if so, BizHawk won't do anything</param>
 		public static void OnBeforeQuickLoad(object sender, string quickSaveSlotName, out bool eventHandled)
 		{
-			eventHandled = false;
-			if (BeforeQuickLoad != null)
+			if (BeforeQuickLoad == null)
 			{
-				var e = new BeforeQuickLoadEventArgs(quickSaveSlotName);
-				BeforeQuickLoad(sender, e);
-				eventHandled = e.Handled;
+				eventHandled = false;
+				return;
 			}
+			var e = new BeforeQuickLoadEventArgs(quickSaveSlotName);
+			BeforeQuickLoad(sender, e);
+			eventHandled = e.Handled;
 		}
 
 
@@ -203,13 +150,14 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="eventHandled">A boolean that can be set if users want to handle save themselves; if so, BizHawk won't do anything</param>
 		public static void OnBeforeQuickSave(object sender, string quickSaveSlotName, out bool eventHandled)
 		{
-			eventHandled = false;
-			if (BeforeQuickSave != null)
+			if (BeforeQuickSave == null)
 			{
-				var e = new BeforeQuickSaveEventArgs(quickSaveSlotName);
-				BeforeQuickSave(sender, e);
-				eventHandled = e.Handled;
+				eventHandled = false;
+				return;
 			}
+			var e = new BeforeQuickSaveEventArgs(quickSaveSlotName);
+			BeforeQuickSave(sender, e);
+			eventHandled = e.Handled;
 		}
 
 
@@ -218,20 +166,14 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		/// <param name="sender">Object who raised the event</param>
 		/// <param name="stateName">User friendly name for saved state</param>
-		public static void OnStateLoaded(object sender, string stateName)
-		{
-			StateLoaded?.Invoke(sender, new StateLoadedEventArgs(stateName));
-		}
+		public static void OnStateLoaded(object sender, string stateName) => StateLoaded?.Invoke(sender, new StateLoadedEventArgs(stateName));
 
 		/// <summary>
 		/// Raise when a state is saved
 		/// </summary>
 		/// <param name="sender">Object who raised the event</param>
 		/// <param name="stateName">User friendly name for saved state</param>
-		public static void OnStateSaved(object sender, string stateName)
-		{
-			StateSaved?.Invoke(sender, new StateSavedEventArgs(stateName));
-		}
+		public static void OnStateSaved(object sender, string stateName) => StateSaved?.Invoke(sender, new StateSavedEventArgs(stateName));
 
 		/// <summary>
 		/// Raise when a rom is successfully Loaded
@@ -243,21 +185,14 @@ namespace BizHawk.Client.EmuHawk
 			RomLoaded?.Invoke(null, EventArgs.Empty);
 
 			_allJoyPads = new List<Joypad>(RunningSystem.MaxControllers);
-			for (int i = 1; i <= RunningSystem.MaxControllers; i++)
-			{
-				_allJoyPads.Add(new Joypad(RunningSystem, i));
-			}
+			for (var i = 1; i <= RunningSystem.MaxControllers; i++) _allJoyPads.Add(new Joypad(RunningSystem, i));
 		}
-
 
 		/// <summary>
 		/// Save a state with specified name
 		/// </summary>
 		/// <param name="name">Savestate friendly name</param>
-		public static void SaveState(string name)
-		{
-			GlobalWin.MainForm.SaveState(Path.Combine(Global.Config.PathEntries.SaveStateAbsolutePath(Global.Game.System), $"{name}.State"), name, false);
-		}
+		public static void SaveState(string name) => GlobalWin.MainForm.SaveState(Path.Combine(Global.Config.PathEntries.SaveStateAbsolutePath(Global.Game.System), $"{name}.State"), name, fromLua: false);
 
 		/// <summary>
 		/// Sets the extra padding added to the 'native' surface so that you can draw HUD elements in predictable placements
@@ -266,7 +201,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="top">Top padding</param>
 		/// <param name="right">Right padding</param>
 		/// <param name="bottom">Bottom padding</param>
-		public static void SetGameExtraPadding(int left, int top, int right, int bottom)
+		public static void SetGameExtraPadding(int left, int top = 0, int right = 0, int bottom = 0)
 		{
 			GlobalWin.DisplayManager.GameExtraPadding = new Padding(left, top, right, bottom);
 			GlobalWin.MainForm.FrameBufferResized();
@@ -276,73 +211,13 @@ namespace BizHawk.Client.EmuHawk
 		/// Sets the extra padding added to the 'native' surface so that you can draw HUD elements in predictable placements
 		/// </summary>
 		/// <param name="left">Left padding</param>
-		public static void SetGameExtraPadding(int left)
-		{
-			SetGameExtraPadding(left, 0, 0, 0);
-		}
-
-		/// <summary>
-		/// Sets the extra padding added to the 'native' surface so that you can draw HUD elements in predictable placements
-		/// </summary>
-		/// <param name="left">Left padding</param>
-		/// <param name="top">Top padding</param>
-		public static void SetGameExtraPadding(int left, int top)
-		{
-			SetGameExtraPadding(left, top, 0, 0);
-		}
-
-		/// <summary>
-		/// Sets the extra padding added to the 'native' surface so that you can draw HUD elements in predictable placements
-		/// </summary>
-		/// <param name="left">Left padding</param>
-		/// <param name="top">Top padding</param>
-		/// <param name="right">Right padding</param>
-		public static void SetGameExtraPadding(int left, int top, int right)
-		{
-			SetGameExtraPadding(left, top, right, 0);
-		}
-
-		/// <summary>
-		/// Sets the extra padding added to the 'native' surface so that you can draw HUD elements in predictable placements
-		/// </summary>
-		/// <param name="left">Left padding</param>
 		/// <param name="top">Top padding</param>
 		/// <param name="right">Right padding</param>
 		/// <param name="bottom">Bottom padding</param>
-		public static void SetExtraPadding(int left, int top, int right, int bottom)
+		public static void SetExtraPadding(int left, int top = 0, int right = 0, int bottom = 0)
 		{
 			GlobalWin.DisplayManager.ClientExtraPadding = new Padding(left, top, right, bottom);
 			GlobalWin.MainForm.FrameBufferResized();
-		}
-
-		/// <summary>
-		/// Sets the extra padding added to the 'native' surface so that you can draw HUD elements in predictable placements
-		/// </summary>
-		/// <param name="left">Left padding</param>
-		public static void SetExtraPadding(int left)
-		{
-			SetExtraPadding(left, 0, 0, 0);
-		}
-
-		/// <summary>
-		/// Sets the extra padding added to the 'native' surface so that you can draw HUD elements in predictable placements
-		/// </summary>
-		/// <param name="left">Left padding</param>
-		/// <param name="top">Top padding</param>
-		public static void SetExtraPadding(int left, int top)
-		{
-			SetExtraPadding(left, top, 0, 0);
-		}
-
-		/// <summary>
-		/// Sets the extra padding added to the 'native' surface so that you can draw HUD elements in predictable placements
-		/// </summary>
-		/// <param name="left">Left padding</param>
-		/// <param name="top">Top padding</param>
-		/// <param name="right">Right padding</param>
-		public static void SetExtraPadding(int left, int top, int right)
-		{
-			SetExtraPadding(left, top, right, 0);
 		}
 
 		/// <summary>
@@ -354,55 +229,41 @@ namespace BizHawk.Client.EmuHawk
 		/// <remarks>Still have some strange behaviour with multiple inputs; so this feature is still in beta</remarks>
 		public static void SetInput(int player, Joypad joypad)
 		{
-			if (!1.RangeTo(RunningSystem.MaxControllers).Contains(player))
+			if (!1.RangeTo(RunningSystem.MaxControllers).Contains(player)) throw new IndexOutOfRangeException($"{RunningSystem.DisplayName} does not support {player} controller(s)");
+
+			if (joypad.Inputs == 0)
 			{
-				throw new IndexOutOfRangeException($"{RunningSystem.DisplayName} does not support {player} controller(s)");
+				Global.InputManager.AutofireStickyXorAdapter.ClearStickies();
 			}
 			else
 			{
-				if (joypad.Inputs == 0)
+				foreach (var button in JoypadButtonsArray.Where(button => joypad.Inputs.HasFlag(button)))
 				{
-					AutoFireStickyXorAdapter joypadAdapter = Global.InputManager.AutofireStickyXorAdapter;
-					joypadAdapter.ClearStickies();
+					Global.InputManager.AutofireStickyXorAdapter.SetSticky(
+						RunningSystem == SystemInfo.GB
+							? $"{JoypadConverter.ConvertBack(button, RunningSystem)}"
+							: $"P{player} {JoypadConverter.ConvertBack(button, RunningSystem)}",
+						isSticky: true
+					);
 				}
-				else
-				{
-					foreach (JoypadButton button in JoypadButtonsArray)
-					{
-						if (joypad.Inputs.HasFlag(button))
-						{
-							AutoFireStickyXorAdapter joypadAdapter = Global.InputManager.AutofireStickyXorAdapter;
-							joypadAdapter.SetSticky(
-								RunningSystem == SystemInfo.GB
-									? $"{JoypadConverter.ConvertBack(button, RunningSystem)}"
-									: $"P{player} {JoypadConverter.ConvertBack(button, RunningSystem)}", true);
-						}
-					}
-				}
-
-				//Using this break joypad usage (even in UI); have to figure out why
-#if false
-				if ((RunningSystem.AvailableButtons & JoypadButton.AnalogStick) == JoypadButton.AnalogStick)
-				{
-					var joypadAdaptor = Global.AutofireStickyXORAdapter;
-					for (var i = 1; i <= RunningSystem.MaxControllers; i++)
-					{
-						joypadAdaptor.SetAxis($"P{i} X Axis", _allJoyPads[i - 1].AnalogX);
-						joypadAdaptor.SetAxis($"P{i} Y Axis", _allJoyPads[i - 1].AnalogY);
-					}
-				}
-#endif
 			}
-		}
 
+#if false // Using this breaks joypad usage (even in UI); have to figure out why
+			if ((RunningSystem.AvailableButtons & JoypadButton.AnalogStick) == JoypadButton.AnalogStick)
+			{
+				for (var i = 1; i <= RunningSystem.MaxControllers; i++)
+				{
+					Global.InputManager.AutofireStickyXorAdapter.SetAxis($"P{i} X Axis", _allJoyPads[i - 1].AnalogX);
+					Global.InputManager.AutofireStickyXorAdapter.SetAxis($"P{i} Y Axis", _allJoyPads[i - 1].AnalogY);
+				}
+			}
+#endif
+		}
 
 		/// <summary>
 		/// Resume the emulation
 		/// </summary>
-		public static void UnpauseEmulation()
-		{
-			GlobalWin.MainForm.UnpauseEmulator();
-		}
+		public static void UnpauseEmulation() => GlobalWin.MainForm.UnpauseEmulator();
 
 		/// <summary>
 		/// Gets all current inputs for each joypad and store
@@ -412,32 +273,19 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var joypadAdapter = Global.InputManager.AutofireStickyXorAdapter;
 
-			var pressedButtons = joypadAdapter.Definition.BoolButtons
-				.Where(b => joypadAdapter.IsPressed(b));
+			var pressedButtons = joypadAdapter.Definition.BoolButtons.Where(b => joypadAdapter.IsPressed(b));
 
-			foreach (Joypad j in _allJoyPads)
-			{
-				j.ClearInputs();
-			}
+			foreach (var j in _allJoyPads) j.ClearInputs();
 
 			Parallel.ForEach(pressedButtons, button =>
 			{
-				if (RunningSystem == SystemInfo.GB)
-				{
-					_allJoyPads[0].AddInput(JoypadConverter.Convert(button));
-				}
-				else
-				{
-					if (int.TryParse(button.Substring(1, 2), out var player))
-					{
-						_allJoyPads[player - 1].AddInput(JoypadConverter.Convert(button.Substring(3)));
-					}
-				}
+				if (RunningSystem == SystemInfo.GB) _allJoyPads[0].AddInput(JoypadConverter.Convert(button));
+				else if (int.TryParse(button.Substring(1, 2), out var player)) _allJoyPads[player - 1].AddInput(JoypadConverter.Convert(button.Substring(3)));
 			});
 
 			if ((RunningSystem.AvailableButtons & JoypadButton.AnalogStick) == JoypadButton.AnalogStick)
 			{
-				for (int i = 1; i <= RunningSystem.MaxControllers; i++)
+				for (var i = 1; i <= RunningSystem.MaxControllers; i++)
 				{
 					_allJoyPads[i - 1].AnalogX = joypadAdapter.AxisValue($"P{i} X Axis");
 					_allJoyPads[i - 1].AnalogY = joypadAdapter.AxisValue($"P{i} Y Axis");
@@ -445,67 +293,25 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public static void CloseEmulator()
-		{
-			GlobalWin.MainForm.CloseEmulator();
-		}
+		public static void CloseEmulator() => GlobalWin.MainForm.CloseEmulator();
 
-		public static void CloseEmulatorWithCode(int exitCode)
-		{
-			GlobalWin.MainForm.CloseEmulator(exitCode);
-		}
+		public static void CloseEmulatorWithCode(int exitCode) => GlobalWin.MainForm.CloseEmulator(exitCode);
 
-		public static int BorderHeight()
-		{
-			var point = new Point(0, 0);
-			Type t = ClientAssembly.GetType("BizHawk.Client.EmuHawk.GlobalWin");
-			FieldInfo f = t.GetField("DisplayManager");
-			object displayManager = f.GetValue(null);
-			MethodInfo m = t.GetMethod("TransFormPoint");
-			point = (Point) m.Invoke(displayManager, new object[] { point });
-			return point.Y;
-		}
+		public static int BorderHeight() => GlobalWin.DisplayManager.TransformPoint(new Point(0, 0)).Y;
 
-		public static int BorderWidth()
-		{
-			var point = new Point(0, 0);
-			Type t = ClientAssembly.GetType("BizHawk.Client.EmuHawk.GlobalWin");
-			FieldInfo f = t.GetField("DisplayManager");
-			object displayManager = f.GetValue(null);
-			MethodInfo m = t.GetMethod("TransFormPoint");
-			point = (Point)m.Invoke(displayManager, new object[] { point });
-			return point.X;
-		}
+		public static int BorderWidth() => GlobalWin.DisplayManager.TransformPoint(new Point(0, 0)).X;
 
-		public static int BufferHeight()
-		{
-			return VideoProvider.BufferHeight;
-		}
+		public static int BufferHeight() => VideoProvider.BufferHeight;
 
-		public static int BufferWidth()
-		{
-			return VideoProvider.BufferWidth;
-		}
+		public static int BufferWidth() => VideoProvider.BufferWidth;
 
-		public static void ClearAutohold()
-		{
-			GlobalWin.MainForm.ClearHolds();
-		}
+		public static void ClearAutohold() => GlobalWin.MainForm.ClearHolds();
 
-		public static void CloseRom()
-		{
-			GlobalWin.MainForm.CloseRom();
-		}
+		public static void CloseRom() => GlobalWin.MainForm.CloseRom();
 
-		public static void DisplayMessages(bool value)
-		{
-			Global.Config.DisplayMessages = value;
-		}
+		public static void DisplayMessages(bool value) => Global.Config.DisplayMessages = value;
 
-		public static void EnableRewind(bool enabled)
-		{
-			GlobalWin.MainForm.EnableRewind(enabled);
-		}
+		public static void EnableRewind(bool enabled) => GlobalWin.MainForm.EnableRewind(enabled);
 
 		public static void FrameSkip(int numFrames)
 		{
@@ -520,15 +326,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public static int GetTargetScanlineIntensity()
-		{
-			return Global.Config.TargetScanlineFilterIntensity;
-		}
+		public static int GetTargetScanlineIntensity() => Global.Config.TargetScanlineFilterIntensity;
 
-		public static int GetWindowSize()
-		{
-			return Global.Config.TargetZoomFactors[Emulator.SystemId];
-		}
+		public static int GetWindowSize() => Global.Config.TargetZoomFactors[Emulator.SystemId];
 
 		public static void SetSoundOn(bool enable)
 		{
@@ -537,87 +337,37 @@ namespace BizHawk.Client.EmuHawk
 
 		public static bool GetSoundOn() => Global.Config.SoundEnabled;
 
-		public static bool IsPaused()
-		{
-			return GlobalWin.MainForm.EmulatorPaused;
-		}
+		public static bool IsPaused() => GlobalWin.MainForm.EmulatorPaused;
 
-		public static bool IsTurbo()
-		{
-			return GlobalWin.MainForm.IsTurboing;
-		}
+		public static bool IsTurbo() => GlobalWin.MainForm.IsTurboing;
 
-		public static bool IsSeeking()
-		{
-			return GlobalWin.MainForm.IsSeeking;
-		}
+		public static bool IsSeeking() => GlobalWin.MainForm.IsSeeking;
 
-		public static void OpenRom(string path)
-		{
-			var ioa = OpenAdvancedSerializer.ParseWithLegacy(path);
-			Type t = ClientAssembly.GetType("BizHawk.Client.EmuHawk.GlobalWin.MainForm.LoadRomArgs");
-			object o = Activator.CreateInstance(t);
-			t.GetField("OpenAdvanced").SetValue(o, ioa);
+		public static void OpenRom(string path) => GlobalWin.MainForm.LoadRom(path, new MainForm.LoadRomArgs { OpenAdvanced = OpenAdvancedSerializer.ParseWithLegacy(path) });
 
-			InvokeMainFormMethod("LoadRom", new[] {path, o});
-		}
+		public static void Pause() => GlobalWin.MainForm.PauseEmulator();
 
-		public static void Pause()
-		{
-			GlobalWin.MainForm.PauseEmulator();
-		}
+		public static void PauseAv() => GlobalWin.MainForm.PauseAvi = true;
 
-		public static void PauseAv()
-		{
-			GlobalWin.MainForm.PauseAvi=true;
-		}
+		public static void RebootCore() => GlobalWin.MainForm.RebootCore();
 
-		public static void RebootCore()
-		{
-			GlobalWin.MainForm.RebootCore();
-		}
+		public static void SaveRam() => GlobalWin.MainForm.FlushSaveRAM();
 
-		public static void SaveRam()
-		{
-			GlobalWin.MainForm.FlushSaveRAM();
-		}
-
-		public static int ScreenHeight()
-		{
-			return GlobalWin.MainForm.PresentationPanel.NativeSize.Height;
-		}
+		public static int ScreenHeight() => GlobalWin.MainForm.PresentationPanel.NativeSize.Height;
 
 		public static void Screenshot(string path = null)
 		{
-			if (path == null)
-			{
-				GlobalWin.MainForm.TakeScreenshot();
-			}
-			else
-			{
-				GlobalWin.MainForm.TakeScreenshot(path);
-			}
+			if (path == null) GlobalWin.MainForm.TakeScreenshot();
+			else GlobalWin.MainForm.TakeScreenshot(path);
 		}
 
-		public static void ScreenshotToClipboard()
-		{
-			GlobalWin.MainForm.TakeScreenshotToClipboard();
-		}
+		public static void ScreenshotToClipboard() => GlobalWin.MainForm.TakeScreenshotToClipboard();
 
-		public static void SetTargetScanlineIntensity(int val)
-		{
-			Global.Config.TargetScanlineFilterIntensity = val;
-		}
+		public static void SetTargetScanlineIntensity(int val) => Global.Config.TargetScanlineFilterIntensity = val;
 
-		public static void SetScreenshotOSD(bool value)
-		{
-			Global.Config.ScreenshotCaptureOsd = value;
-		}
+		public static void SetScreenshotOSD(bool value) => Global.Config.ScreenshotCaptureOsd = value;
 
-		public static int ScreenWidth()
-		{
-			return GlobalWin.MainForm.PresentationPanel.NativeSize.Width;
-		}
+		public static int ScreenWidth() => GlobalWin.MainForm.PresentationPanel.NativeSize.Width;
 
 		public static void SetWindowSize(int size)
 		{
@@ -635,51 +385,21 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void SpeedMode(int percent)
 		{
-			if (percent.StrictlyBoundedBy(0.RangeTo(6400)))
-			{
-
-				GlobalWin.MainForm.ClickSpeedItem(percent);
-			}
-			else
-			{
-				Console.WriteLine("Invalid speed value");
-			}
+			if (percent.StrictlyBoundedBy(0.RangeTo(6400))) GlobalWin.MainForm.ClickSpeedItem(percent);
+			else Console.WriteLine("Invalid speed value");
 		}
 
-		public static void TogglePause()
-		{
-			GlobalWin.MainForm.TogglePause();
-		}
+		public static void TogglePause() => GlobalWin.MainForm.TogglePause();
 
-		public static Point TransformPoint(Point point)
-		{
-			var globalWinType = ClientAssembly.GetType("BizHawk.Client.EmuHawk.GlobalWin");
-			var dispManType = ClientAssembly.GetType("BizHawk.Client.EmuHawk.DisplayManager");
-			var dispManInstance = globalWinType.GetField("DisplayManager").GetValue(null);
-			var transformed = dispManType.GetMethod("TransformPoint")?.Invoke(dispManInstance, new object[] { point });
-			if (transformed is Point p) return p;
-			throw new Exception();
-		}
+		public static Point TransformPoint(Point point) => GlobalWin.DisplayManager.TransformPoint(point);
 
-		public static void Unpause()
-		{
-			GlobalWin.MainForm.UnpauseEmulator();
-		}
+		public static void Unpause() => GlobalWin.MainForm.UnpauseEmulator();
 
-		public static void UnpauseAv()
-		{
-			GlobalWin.MainForm.PauseAvi=false;
-		}
+		public static void UnpauseAv() => GlobalWin.MainForm.PauseAvi = false;
 
-		public static int Xpos()
-		{
-			return GlobalWin.MainForm.DesktopLocation.X;
-		}
+		public static int Xpos() => GlobalWin.MainForm.DesktopLocation.X;
 
-		public static int Ypos()
-		{
-			return GlobalWin.MainForm.DesktopLocation.Y;
-		}
+		public static int Ypos() => GlobalWin.MainForm.DesktopLocation.Y;
 
 		/// <summary>
 		/// Gets current emulated system
@@ -691,45 +411,23 @@ namespace BizHawk.Client.EmuHawk
 				switch (Global.Emulator.SystemId)
 				{
 					case "PCE":
-						if (((PCEngine)Global.Emulator).Type == NecSystemType.TurboGrafx)
+						return ((PCEngine) Global.Emulator).Type switch
 						{
-							return SystemInfo.PCE;
-						}
-						else if (((PCEngine)Global.Emulator).Type == NecSystemType.SuperGrafx)
-						{
-							return SystemInfo.SGX;
-						}
-						else
-						{
-							return SystemInfo.PCECD;
-						}
-
+							NecSystemType.TurboGrafx => SystemInfo.PCE,
+							NecSystemType.TurboCD => SystemInfo.PCECD,
+							NecSystemType.SuperGrafx => SystemInfo.SGX,
+							_ => throw new ArgumentOutOfRangeException()
+						};
 					case "SMS":
-						if (((SMS)Global.Emulator).IsSG1000)
-						{
-							return SystemInfo.SG;
-						}
-						else if (((SMS)Global.Emulator).IsGameGear)
-						{
-							return SystemInfo.GG;
-						}
-						else
-						{
-							return SystemInfo.SMS;
-						}
-
+						var sms = (SMS) Global.Emulator;
+						return sms.IsSG1000
+							? SystemInfo.SG
+							: sms.IsGameGear
+								? SystemInfo.GG
+								: SystemInfo.SMS;
 					case "GB":
-						if (Global.Emulator is Gameboy gb)
-						{
-							return gb.IsCGBMode()
-								? SystemInfo.GBC
-								: SystemInfo.GB;
-						}
-						else
-						{
-							return SystemInfo.DualGB;
-						}
-
+						if (Global.Emulator is Gameboy gb) return gb.IsCGBMode() ? SystemInfo.GBC : SystemInfo.GB;
+						return SystemInfo.DualGB;
 					default:
 						return SystemInfo.FindByCoreSystem(SystemIdConverter.Convert(Global.Emulator.SystemId));
 				}

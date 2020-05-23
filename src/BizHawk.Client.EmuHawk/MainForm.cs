@@ -2104,7 +2104,7 @@ namespace BizHawk.Client.EmuHawk
 			AddOnScreenMessage(message);
 		}
 
-		private void Render()
+		internal void Render()
 		{
 			if (Config.DispSpeedupFeatures == 0)
 			{
@@ -2781,7 +2781,7 @@ namespace BizHawk.Client.EmuHawk
 			AddOnScreenMessage($"Config file loaded: {iniPath}");
 		}
 
-		private void StepRunLoop_Throttle()
+		internal void StepRunLoop_Throttle()
 		{
 			SyncThrottle();
 			_throttle.signal_frameAdvance = _runloopFrameAdvance;
