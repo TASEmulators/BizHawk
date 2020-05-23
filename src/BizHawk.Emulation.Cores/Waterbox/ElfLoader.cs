@@ -26,8 +26,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private readonly Section<ulong> _sealed;
 		private readonly Section<ulong> _invisible;
 
-		private readonly List<Section<ulong>> _savedSections;
-
 		private readonly bool _skipCoreConsistencyCheck;
 		private readonly bool _skipMemoryConsistencyCheck;
 
@@ -36,6 +34,20 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public MemoryBlock Memory { get; private set; }
 
 		public string ModuleName { get; }
+
+		/// <summary>
+		/// Where writable data begins
+		/// </summary>
+		private ulong _writeStart;
+		/// <summary>
+		/// Where writiable data begins after seal
+		/// </summary>
+		private ulong _postSealWriteStart;
+		/// <summary>
+		/// Where the saveable program data begins
+		/// </summary>
+		private ulong _saveStart;
+		private ulong _execEnd;
 
 		public ElfLoader(string moduleName, byte[] fileData, ulong assumedStart, bool skipCoreConsistencyCheck, bool skipMemoryConsistencyCheck)
 		{
@@ -76,12 +88,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			_sectionsByName.TryGetValue(".sealed", out _sealed);
 			_sectionsByName.TryGetValue(".invis", out _invisible);
 
-			_savedSections = _elf.Sections
-				.Where(s => (s.Flags & SectionFlags.Allocatable) != 0 && (s.Flags & SectionFlags.Writable) != 0)
-				.Where(s => !IsSpecialReadonlySection(s) && s != _invisible)
-				.OrderBy(s => s.LoadAddress)
-				.ToList();
-
 			_visibleSymbols = _allSymbols
 				.Where(s => s.Binding == SymbolBinding.Global && s.Visibility == SymbolVisibility.Default)
 				.ToDictionary(s => s.Name);
@@ -93,7 +99,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				.Where(s => s.PointedSection == _imports)
 				.ToList();
 
-
 			Memory = MemoryBlock.Create(start, size);
 			Memory.Activate();
 			Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.RW);
@@ -102,6 +107,37 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				var data = seg.GetFileContents();
 				Marshal.Copy(data, 0, Z.US(seg.Address), Math.Min((int)seg.Size, (int)seg.FileSize));
+			}
+
+			{
+				// Compute RW boundaries
+
+				var allocated = _elf.Sections
+					.Where(s => (s.Flags & SectionFlags.Allocatable) != 0);
+				var writable = allocated
+					.Where(s => (s.Flags & SectionFlags.Writable) != 0);
+				var postSealWritable = writable
+					.Where(s => !IsSpecialReadonlySection(s));
+				var saveable = postSealWritable
+					.Where(s => s != _invisible);
+				var executable = allocated
+					.Where(s => (s.Flags & SectionFlags.Executable) != 0);
+
+				_writeStart = WaterboxUtils.AlignDown(writable.Min(s => s.LoadAddress));
+				_postSealWriteStart = WaterboxUtils.AlignDown(postSealWritable.Min(s => s.LoadAddress));
+				_saveStart = WaterboxUtils.AlignDown(saveable.Min(s => s.LoadAddress));
+				_execEnd = WaterboxUtils.AlignUp(executable.Max(s => s.LoadAddress + s.Size));
+
+				// validate; this may require linkscript cooperation
+				// due to the segment limitations, the only thing we'd expect to catch is a custom eventually readonly section
+				// in the wrong place (because the linkscript doesn't know "eventually readonly")
+				if (_execEnd > _writeStart)
+					throw new InvalidOperationException($"ElfLoader: Executable data to {_execEnd:X16} overlaps writable data from {_writeStart}");
+				
+				var actuallySaved = allocated.Where(a => a.LoadAddress + a.Size > _saveStart);
+				var oopsSaved = actuallySaved.Except(saveable);
+				foreach (var s in oopsSaved)
+					throw new InvalidOperationException($"ElfLoader: Section {s.Name} will be saved, but that was not expected");
 			}
 
 			PrintSections();
@@ -126,7 +162,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					(s.Flags & SectionFlags.Allocatable) != 0 ? "R" : " ",
 					(s.Flags & SectionFlags.Writable) != 0 ? "W" : " ",
 					(s.Flags & SectionFlags.Executable) != 0 ? "X" : " ",
-					_savedSections.Contains(s) ? "V" : " ",
+					s.LoadAddress + s.Size > _saveStart ? "V" : " ",
 					s.Name,
 					s.Size);
 			}
@@ -135,7 +171,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private void PrintTopSavableSymbols()
 		{
 			var tops = _allSymbols
-				.Where(s => _savedSections.Contains(s.PointedSection))
+				.Where(s => s.Value + s.Size > _saveStart)
 				.OrderByDescending(s => s.Size)
 				.Where(s => s.Size >= 20 * 1024)
 				.Take(30)
@@ -170,17 +206,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// </summary>
 		private void Protect()
 		{
-			Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.R);
-			foreach (var sec in _elf.Sections.Where(s => (s.Flags & SectionFlags.Allocatable) != 0))
-			{
-				if (_everythingSealed && IsSpecialReadonlySection(sec))
-					continue;
+			var writeStart = _everythingSealed ? _postSealWriteStart : _writeStart;
 
-				if ((sec.Flags & SectionFlags.Executable) != 0)
-					Memory.Protect(sec.LoadAddress, sec.Size, MemoryBlock.Protection.RX);
-				else if ((sec.Flags & SectionFlags.Writable) != 0)
-					Memory.Protect(sec.LoadAddress, sec.Size, MemoryBlock.Protection.RW);
-			}
+			Memory.Protect(Memory.Start, _execEnd - Memory.Start, MemoryBlock.Protection.RX);
+			Memory.Protect(_execEnd, writeStart - _execEnd, MemoryBlock.Protection.R);
+			Memory.Protect(writeStart, Memory.EndExclusive - writeStart, MemoryBlock.Protection.RW);
 		}
 
 		// connect all of the .wbxsyscall stuff
@@ -304,12 +334,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			bw.Write(_elfHash);
 			bw.Write(Memory.XorHash);
 
-			foreach (var s in _savedSections)
-			{
-				var ms = Memory.GetXorStream(s.LoadAddress, s.Size, false);
-				bw.Write(s.Size);
-				ms.CopyTo(bw.BaseStream);
-			}
+			var len = Memory.EndExclusive - _saveStart;
+			var ms = Memory.GetXorStream(_saveStart, len, false);
+			bw.Write(len);
+			ms.CopyTo(bw.BaseStream);
 		}
 
 		public void LoadStateBinary(BinaryReader br)
@@ -343,18 +371,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					throw new InvalidOperationException("Memory consistency check failed.  Is this savestate from different SyncSettings?");
 			}
 
-			Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.RW);
-
-			foreach (var s in _savedSections)
-			{
-				if (br.ReadUInt64() != s.Size)
-					throw new InvalidOperationException("Unexpected section size for " + s.Name);
-
-				var ms = Memory.GetXorStream(s.LoadAddress, s.Size, true);
-				WaterboxUtils.CopySome(br.BaseStream, ms, (long)s.Size);
-			}
-
-			Protect();
+			var len = Memory.EndExclusive - _saveStart;
+			if (br.ReadUInt64() != len)
+				throw new InvalidOperationException("Unexpected saved length");
+			var ms = Memory.GetXorStream(_saveStart, len, true);
+			WaterboxUtils.CopySome(br.BaseStream, ms, (long)len);
 		}
 	}
 }

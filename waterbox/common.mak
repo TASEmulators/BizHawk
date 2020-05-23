@@ -25,7 +25,7 @@ CC := $(SYSROOT)/bin/musl-gcc
 COMMONFLAGS := -mabi=ms -fvisibility=hidden -I$(WATERBOX_DIR)/emulibc -Wall -mcmodel=large \
 	-mstack-protector-guard=global -no-pie -fno-pic -fno-pie
 CCFLAGS := $(CCFLAGS) $(COMMONFLAGS)
-LDFLAGS := $(LDFLAGS) -fuse-ld=gold -static -Wl,-Ttext,0x0000036f00000000 #-Wl,--plugin,$(LD_PLUGIN)
+LDFLAGS := $(LDFLAGS) -static -Wl,--eh-frame-hdr -T $(WATERBOX_DIR)/linkscript.T #-Wl,--plugin,$(LD_PLUGIN)
 CCFLAGS_DEBUG := -O0 -g
 CCFLAGS_RELEASE := -O3 -flto
 LDFLAGS_DEBUG :=
