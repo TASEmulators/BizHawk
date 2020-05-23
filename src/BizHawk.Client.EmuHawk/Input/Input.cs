@@ -324,7 +324,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public IDictionary<string, float> GetAxisValues()
 		{
-			return _axisValues;
+			lock (_axisValues)
+			{
+				return _axisValues.ToDictionary(d => d.Key, d => d.Value);
+			}
+			
 		}
 
 		private void UpdateThreadProc()
