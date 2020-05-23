@@ -8,7 +8,7 @@ namespace BizHawk.Client.Common
 	{
 		private Bk2Controller _adapter;
 
-		public Bk2Movie(string filename = null)
+		internal Bk2Movie(string filename = null)
 		{
 			Filename = filename ?? string.Empty;
 			Header[HeaderKeys.MovieVersion] = "BizHawk v2.0.0";

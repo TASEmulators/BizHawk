@@ -79,7 +79,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 
 		public static IMovie ToBk2(this IMovie old)
 		{
-			var bk2 = new Bk2Movie(old.Filename.Replace(old.PreferredExtension, Bk2Movie.Extension));
+			var bk2 = MovieService.Get(old.Filename.Replace(old.PreferredExtension, Bk2Movie.Extension));
 
 			for (var i = 0; i < old.InputLogLength; i++)
 			{

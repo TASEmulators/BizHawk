@@ -15,9 +15,9 @@
 			Result.Movie = ToBk2(movie);
 		}
 
-		public static Bk2Movie ToBk2(BkmMovie old)
+		private static IMovie ToBk2(BkmMovie old)
 		{
-			var bk2 = new Bk2Movie(old.Filename.Replace(old.PreferredExtension, Bk2Movie.Extension));
+			var bk2 = MovieService.Get(old.Filename.Replace(old.PreferredExtension, Bk2Movie.Extension));
 
 			for (var i = 0; i < old.InputLogLength; i++)
 			{
