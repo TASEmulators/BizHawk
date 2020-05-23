@@ -7,15 +7,15 @@ namespace BizHawk.Client.Common
 	{
 		public Dictionary<Type, IExternalApi> Libraries { get; set; }
 
-		public IEmu Emu => (IEmu) Libraries[typeof(EmuApi)];
-		public IGameInfo GameInfo => (IGameInfo) Libraries[typeof(GameInfoApi)];
-		public IJoypad Joypad => (IJoypad) Libraries[typeof(JoypadApi)];
-		public IMem Mem => (IMem) Libraries[typeof(MemApi)];
-		public IMemEvents MemEvents => (IMemEvents) Libraries[typeof(MemEventsApi)];
-		public IMemorySaveState MemorySaveState => (IMemorySaveState) Libraries[typeof(MemorySaveStateApi)];
-		public IInputMovie Movie => (IInputMovie) Libraries[typeof(MovieApi)];
-		public ISql Sql => (ISql) Libraries[typeof(SqlApi)];
-		public IUserData UserData => (IUserData) Libraries[typeof(UserDataApi)];
+		public IEmu Emu => (IEmu) Libraries[typeof(IEmu)];
+		public IGameInfo GameInfo => (IGameInfo) Libraries[typeof(IGameInfo)];
+		public IJoypad Joypad => (IJoypad) Libraries[typeof(IJoypad)];
+		public IMem Mem => (IMem) Libraries[typeof(IMem)];
+		public IMemEvents MemEvents => (IMemEvents) Libraries[typeof(IMemEvents)];
+		public IMemorySaveState MemorySaveState => (IMemorySaveState) Libraries[typeof(IMemorySaveState)];
+		public IInputMovie Movie => (IInputMovie) Libraries[typeof(IInputMovie)];
+		public ISql Sql => (ISql) Libraries[typeof(ISql)];
+		public IUserData UserData => (IUserData) Libraries[typeof(IUserData)];
 
 		public ApiSubsetContainer(Dictionary<Type, IExternalApi> libs)
 		{
