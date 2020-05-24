@@ -60,9 +60,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public static Triple LibretroGBCColor(Triple c)
 		{
 			Triple ret;
-			ret.r = (c.r * 13 + c.g * 2 + c.b) >> 1;
-			ret.g = (c.g * 3 + c.b) << 1;
-			ret.b = (c.r * 3 + c.g * 2 + c.b * 11) >> 1;
 			double gammaR = Math.Pow((double)c.r / 31, 2.2);
 			double gammaG = Math.Pow((double)c.g / 31, 2.2);
 			double gammaB = Math.Pow((double)c.b / 31, 2.2);
