@@ -47,5 +47,8 @@ namespace BizHawk.Client.Common
 		void SetFrame(int frame, string source);
 
 		void LoadBranch(TasBranch branch);
+
+		void CopyLog(IEnumerable<string> log);
+		void CopyVerificationLog(IEnumerable<string> log);
 	}
 }

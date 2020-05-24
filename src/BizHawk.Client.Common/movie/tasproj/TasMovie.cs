@@ -129,7 +129,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		internal void CopyLog(IEnumerable<string> log)
+		public void CopyLog(IEnumerable<string> log)
 		{
 			Log.Clear();
 			foreach (var entry in log)
@@ -138,7 +138,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		internal void CopyVerificationLog(IEnumerable<string> log)
+		public void CopyVerificationLog(IEnumerable<string> log)
 		{
 			foreach (string entry in log)
 			{

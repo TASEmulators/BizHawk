@@ -37,7 +37,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				}
 			}
 
-			var tas = new TasMovie(newFilename, old.StartsFromSavestate);
+			var tas = (ITasMovie)MovieService.Get(newFilename, old.StartsFromSavestate);
 
 			for (var i = 0; i < old.InputLogLength; i++)
 			{
@@ -146,7 +146,8 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				}
 			}
 
-			var tas = new TasMovie(newFilename, true) { BinarySavestate = savestate };
+			var tas = (ITasMovie)MovieService.Get(newFilename, true);
+			tas.BinarySavestate = savestate;
 			tas.LagLog.Clear();
 
 			var entries = old.GetLogEntries();
@@ -230,7 +231,8 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				}
 			}
 
-			var tas = new TasMovie(newFilename, false) { SaveRam = saveRam };
+			var tas = (ITasMovie) MovieService.Get(newFilename, false);
+			tas.SaveRam = saveRam;
 			tas.TasStateManager.Clear();
 			tas.LagLog.Clear();
 
