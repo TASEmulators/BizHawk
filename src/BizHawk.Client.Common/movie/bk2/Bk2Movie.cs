@@ -1,6 +1,6 @@
 ﻿using System;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Nintendo.Gameboy;
+using BizHawk.Emulation.Cores;
 
 namespace BizHawk.Client.Common
 {
@@ -61,13 +61,10 @@ namespace BizHawk.Client.Common
 					return Convert.ToUInt64(Header[HeaderKeys.VBlankCount]);
 				}
 
-				if (Header.ContainsKey(HeaderKeys.CycleCount))
+				if (Header.ContainsKey(HeaderKeys.CycleCount)
+					&& Header[HeaderKeys.Core] == CoreNames.Gambatte)
 				{
-					var gambatteName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(Gameboy), typeof(CoreAttribute))).CoreName;
-					if (Header[HeaderKeys.Core] == gambatteName)
-					{
-						return Convert.ToUInt64(Header[HeaderKeys.CycleCount]);
-					}
+					return Convert.ToUInt64(Header[HeaderKeys.CycleCount]);
 				}
 
 				return (ulong)Log.Count;

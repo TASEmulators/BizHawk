@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Text;
 using BizHawk.Common;
@@ -18,8 +17,7 @@ namespace BizHawk.Client.Common.movie.import
 		private LibsnesControllerDeck _deck;
 		protected override void RunImport()
 		{
-			var bsnesName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(LibsnesCore), typeof(CoreAttribute))).CoreName;
-			Result.Movie.HeaderEntries[HeaderKeys.Core] = bsnesName;
+			Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.Bsnes;
 
 			var hf = new HawkFile(SourceFile.FullName);
 

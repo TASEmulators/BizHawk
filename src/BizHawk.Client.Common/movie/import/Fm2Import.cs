@@ -2,7 +2,7 @@
 
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
-using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Client.Common
@@ -14,8 +14,7 @@ namespace BizHawk.Client.Common
 	{
 		protected override void RunImport()
 		{
-			var neshawkName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(NES), typeof(CoreAttribute))).CoreName;
-			Result.Movie.HeaderEntries[HeaderKeys.Core] = neshawkName;
+			Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.NesHawk;
 			const string emulator = "FCEUX";
 			var platform = "NES"; // TODO: FDS?
 
