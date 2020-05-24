@@ -1,6 +1,4 @@
-﻿using System;
-
-using BizHawk.Common;
+﻿using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -54,9 +52,6 @@ namespace BizHawk.Client.Common
 					return;
 				case "Saturn Controller":
 					SetSaturnControllersAsMnemonic(mnemonic);
-					return;
-				case "PSP Controller":
-					// TODO
 					return;
 				case "GPGX Genesis Controller":
 				{
@@ -569,28 +564,7 @@ namespace BizHawk.Client.Common
 				_mnemonic = mnemonic;
 			}
 
-			public bool this[int c]
-			{
-				get
-				{
-					if (string.IsNullOrEmpty(_mnemonic))
-					{
-						return false;
-					}
-
-					if (_mnemonic[c] == '.')
-					{
-						return false;
-					}
-
-					if (_mnemonic[c] == '?')
-					{
-						return new Random((int)DateTime.Now.Ticks).Next(0, 10) > 5;
-					}
-
-					return true;
-				}
-			}
+			public bool this[int c] => !string.IsNullOrEmpty(_mnemonic) && _mnemonic[c] != '.';
 		}
 	}
 }
