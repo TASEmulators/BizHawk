@@ -68,7 +68,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 			if (_isLag)
 			{
 				_lagCount++;
-				VBL_CNT++;
 			}
 
 			reset_frame = false;
@@ -103,6 +102,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 
 				current_cycle++;
 				frame_cycle++;
+				Cycle_CNT++;
 
 				if (frame_cycle == 70224)
 				{

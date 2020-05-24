@@ -175,7 +175,7 @@ namespace BizHawk.Client.Common
 			}
 			else if (Global.Emulator is Emulation.Cores.Nintendo.SubGBHawk.SubGBHawk subGb)
 			{
-				Header[HeaderKeys.VBlankCount] = subGb.VBL_CNT.ToString();
+				Header[HeaderKeys.CycleCount] = subGb.Cycle_CNT.ToString();
 			}
 
 			var file = new FileInfo(fn);

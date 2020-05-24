@@ -61,8 +61,12 @@ namespace BizHawk.Client.Common
 					return Convert.ToUInt64(Header[HeaderKeys.VBlankCount]);
 				}
 
-				if (Header.ContainsKey(HeaderKeys.CycleCount)
-					&& Header[HeaderKeys.Core] == CoreNames.Gambatte)
+				if (Header.ContainsKey(HeaderKeys.CycleCount) && Header[HeaderKeys.Core] == CoreNames.Gambatte)
+				{
+					return Convert.ToUInt64(Header[HeaderKeys.CycleCount]);
+				}
+
+				if (Header.ContainsKey(HeaderKeys.CycleCount) && Header[HeaderKeys.Core] == CoreNames.SubGbHawk)
 				{
 					return Convert.ToUInt64(Header[HeaderKeys.CycleCount]);
 				}

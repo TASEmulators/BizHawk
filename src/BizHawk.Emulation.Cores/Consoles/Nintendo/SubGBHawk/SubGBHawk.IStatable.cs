@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 			ser.Sync(nameof(frame_cycle), ref frame_cycle);
 			ser.Sync(nameof(input_frame_length), ref input_frame_length);
 			ser.Sync(nameof(input_frame_length_int), ref input_frame_length_int);
-			ser.Sync(nameof(VBL_CNT), ref VBL_CNT);
+			ser.Sync(nameof(Cycle_CNT), ref Cycle_CNT);
 		}
 	}
 }

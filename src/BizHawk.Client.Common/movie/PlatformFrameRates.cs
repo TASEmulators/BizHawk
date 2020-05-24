@@ -102,7 +102,7 @@ namespace BizHawk.Client.Common
 			var pal = movie.HeaderEntries.ContainsKey(HeaderKeys.Pal)
 				&& movie.HeaderEntries[HeaderKeys.Pal] == "1";
 
-			if (movie.HeaderEntries.ContainsKey(HeaderKeys.CycleCount) && core == "Gambatte")
+			if (movie.HeaderEntries.ContainsKey(HeaderKeys.CycleCount) && ((core == "Gambatte") || (core == "SubGBHawk")))
 			{
 				system = "GB_Clock";
 			}

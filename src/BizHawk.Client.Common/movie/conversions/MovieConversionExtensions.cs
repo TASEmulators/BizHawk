@@ -330,9 +330,14 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				movie.HeaderEntries.Add("IsCGBMode", "1");
 			}
 
-			if (emulator is SubGBHawk subgbHawk && subgbHawk._GBCore.IsCGBMode())
+			if (emulator is SubGBHawk subgbHawk)
 			{
-				movie.HeaderEntries.Add("IsCGBMode", "1");
+				if (subgbHawk._GBCore.IsCGBMode())
+				{
+					movie.HeaderEntries.Add("IsCGBMode", "1");
+				}
+
+				movie.HeaderEntries.Add(HeaderKeys.CycleCount, "0");
 			}
 
 			if (emulator is Gameboy gb)
