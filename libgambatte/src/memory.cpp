@@ -655,10 +655,11 @@ unsigned Memory::nontrivial_read(unsigned const p, unsigned long const cc) {
 				if (!lcd_.vramReadable(cc))
 					return 0xFF;
 
-				if (lcd_.vramExactlyReadable(cc))
-					if (p < 0x9000) {
+				if (p < 0x9000) {
+					if (lcd_.vramExactlyReadable(cc)) {
 						return 0x00;
 					}
+				}
 
 				return cart_.vrambankptr()[p];
 			}
