@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using BizHawk.BizInvoke;
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
@@ -59,7 +60,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			/// <summary>
 			/// true to skip video rendering
 			/// </summary>
-			public int SkipRendering;
+			public short SkipRendering;
+			/// <summary>
+			/// true to skip audion rendering
+			/// </summary>
+			public short SkipSoundening;
 			/// <summary>
 			/// a single command to run at the start of this frame
 			/// </summary>
@@ -129,9 +134,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			public IntPtr _defaultDeviceShortName;
 			public uint NumDevices;
 
-			public string ShortName => Marshal.PtrToStringAnsi(_shortName);
-			public string FullName => Marshal.PtrToStringAnsi(_fullName);
-			public string DefaultDeviceShortName => Marshal.PtrToStringAnsi(_defaultDeviceShortName);
+			public string ShortName => Mershul.PtrToStringUtf8(_shortName);
+			public string FullName => Mershul.PtrToStringUtf8(_fullName);
+			public string DefaultDeviceShortName => Mershul.PtrToStringUtf8(_defaultDeviceShortName);
 		}
 		[StructLayout(LayoutKind.Sequential)]
 		public struct NDeviceInfo
@@ -143,9 +148,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			public uint ByteLength;
 			public uint NumInputs;
 
-			public string ShortName => Marshal.PtrToStringAnsi(_shortName);
-			public string FullName => Marshal.PtrToStringAnsi(_fullName);
-			public string Description => Marshal.PtrToStringAnsi(_description);
+			public string ShortName => Mershul.PtrToStringUtf8(_shortName);
+			public string FullName => Mershul.PtrToStringUtf8(_fullName);
+			public string Description => Mershul.PtrToStringUtf8(_description);
 		}
 		[StructLayout(LayoutKind.Sequential)]
 		public struct NInputInfo
@@ -158,15 +163,15 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			public AxisFlags Flags;
 			public byte BitSize;
 
-			public string SettingName => Marshal.PtrToStringAnsi(_settingName);
-			public string Name => Marshal.PtrToStringAnsi(_name);
+			public string SettingName => Mershul.PtrToStringUtf8(_settingName);
+			public string Name => Mershul.PtrToStringUtf8(_name);
 		}
 		[StructLayout(LayoutKind.Sequential)]
 		public struct NButtonInfo
 		{
 			public IntPtr _excludeName;
 
-			public string ExcludeName => Marshal.PtrToStringAnsi(_excludeName);
+			public string ExcludeName => Mershul.PtrToStringUtf8(_excludeName);
 		}
 		[StructLayout(LayoutKind.Sequential)]
 		public struct NAxisInfo
@@ -176,10 +181,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			public IntPtr _nameNeg;
 			public IntPtr _namePos;
 
-			public string SettingsNameNeg => Marshal.PtrToStringAnsi(_settingsNameNeg);
-			public string SettingsNamePos => Marshal.PtrToStringAnsi(_settingsNamePos);
-			public string NameNeg => Marshal.PtrToStringAnsi(_nameNeg);
-			public string NamePos => Marshal.PtrToStringAnsi(_namePos);
+			public string SettingsNameNeg => Mershul.PtrToStringUtf8(_settingsNameNeg);
+			public string SettingsNamePos => Mershul.PtrToStringUtf8(_settingsNamePos);
+			public string NameNeg => Mershul.PtrToStringUtf8(_nameNeg);
+			public string NamePos => Mershul.PtrToStringUtf8(_namePos);
 		}
 		[StructLayout(LayoutKind.Sequential)]
 		public struct NSwitchInfo
@@ -193,9 +198,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				public IntPtr _name;
 				public IntPtr _description;
 
-				public string SettingName => Marshal.PtrToStringAnsi(_settingName);
-				public string Name => Marshal.PtrToStringAnsi(_name);
-				public string Description => Marshal.PtrToStringAnsi(_description);
+				public string SettingName => Mershul.PtrToStringUtf8(_settingName);
+				public string Name => Mershul.PtrToStringUtf8(_name);
+				public string Description => Mershul.PtrToStringUtf8(_description);
 			}
 		}
 		[StructLayout(LayoutKind.Sequential)]
@@ -210,8 +215,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				public int Color; // (msb)0RGB(lsb), -1 for unused.
 				public int _Padding;
 
-				public string ShortName => Marshal.PtrToStringAnsi(_shortName);
-				public string Name => Marshal.PtrToStringAnsi(_name);
+				public string ShortName => Mershul.PtrToStringUtf8(_shortName);
+				public string Name => Mershul.PtrToStringUtf8(_name);
 			}
 		}
 
@@ -236,6 +241,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		[BizImport(CC, Compatibility = true)]
 		public abstract NAxisInfo* GetAxis(uint port, uint dev, uint input);
 
+		/// <summary>
+		/// Set what input devices we're going to use
+		/// </summary>
+		/// <param name="devices">MUST end with a null string</param>
 		[BizImport(CC, Compatibility = true)]
 		public abstract void SetInputDevices(string[] devices);
 
@@ -249,7 +258,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-		public class SystemInfo
+		public struct SystemInfo
 		{
 			public int MaxWidth;
 			public int MaxHeight;
@@ -260,6 +269,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		}
 
 		[BizImport(CC, Compatibility = true)]
-		public abstract SystemInfo GetSystemInfo();
+		public abstract SystemInfo* GetSystemInfo();
 	}
 }

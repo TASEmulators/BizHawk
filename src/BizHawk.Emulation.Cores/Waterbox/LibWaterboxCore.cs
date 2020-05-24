@@ -176,7 +176,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 			public WaterboxMemoryDomain(MemoryArea m, IMonitor monitor)
 			{
-				Name = Marshal.PtrToStringAnsi(m.Name);
+				Name = Mershul.PtrToStringUtf8(m.Name);
 				EndianType = (m.Flags & MemoryDomainFlags.YugeEndian) != 0 ? Endian.Big : Endian.Little;
 				_data = m.Data;
 				Size = m.Size;

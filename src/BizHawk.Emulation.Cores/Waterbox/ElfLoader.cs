@@ -195,10 +195,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// </summary>
 		private bool IsSpecialReadonlySection(Section<ulong> sec)
 		{
+			// TODO: I don't think there are any more relro sections, right?
 			return sec.Name.Contains(".rel.ro")
 				|| sec.Name.StartsWith(".got")
 				|| sec.Name == ".init_array"
 				|| sec.Name == ".fini_array"
+				|| sec.Name == ".tbss"
 				|| sec == _imports
 				|| sec == _sealed;
 		}

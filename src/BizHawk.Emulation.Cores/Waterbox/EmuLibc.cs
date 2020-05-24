@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 using BizHawk.BizInvoke;
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
@@ -36,8 +37,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		[BizExport(CallingConvention.Cdecl, EntryPoint = "__w_debug_puts")]
 		public void DebugPuts(IntPtr s)
 		{
-			// TODO: Should be PtrToStringUtf8
-			Console.WriteLine(Marshal.PtrToStringAnsi(s));
+			Console.WriteLine(Mershul.PtrToStringUtf8(s));
 		}
 	}
 }

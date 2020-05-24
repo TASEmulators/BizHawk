@@ -36,12 +36,13 @@ ECL_EXPORT bool Init(const InitData& data)
 		samples = new int16_t[22050 * 2];
 		Surf = new MDFN_Surface(
 			pixels, Game->fb_width, Game->fb_height, Game->fb_width,
-			MDFN_PixelFormat(MDFN_COLORSPACE_RGB, 0, 8, 16, 24)
+			MDFN_PixelFormat(MDFN_COLORSPACE_RGB, 16, 8, 0, 24)
 		);
 		EES = new EmulateSpecStruct();
 		EES->surface = Surf;
 		EES->VideoFormatChanged = true;
 		EES->LineWidths = new int32_t[Game->fb_height];
+		memset(EES->LineWidths, 0xff, Game->fb_height * sizeof(int32_t));
 		EES->SoundBuf = samples;
 		EES->SoundBufMaxSize = 22050;
 		EES->SoundFormatChanged = true;
@@ -71,7 +72,8 @@ ECL_EXPORT bool Init(const InitData& data)
 struct MyFrameInfo: public FrameInfo
 {
 	// true to skip video rendering
-	int32_t SkipRendering;
+	int16_t SkipRendering;
+	int16_t SkipSoundening;
 	// a single MDFN_MSC_* command to run at the start of this frame; 0 if none
 	int32_t Command;
 	// raw data for each input port, assumed to be MAX_PORTS * MAX_PORT_DATA long
@@ -92,24 +94,43 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo& frame)
 
 	EES->VideoFormatChanged = false;
 	EES->SoundFormatChanged = false;
-	frame.Cycles = EES->MasterCycles; // TODO: Was this supposed to be total or delta?
-	memcpy(frame.SoundBuffer, EES->SoundBuf, EES->SoundBufSize * 4);
-	frame.Samples = EES->SoundBufSize;
-
-	// TODO: Use linewidths
-	int w = EES->DisplayRect.w;
-	int h = EES->DisplayRect.h;
-	frame.Width = w;
-	frame.Height = h;
-	int srcp = Game->fb_width;
-	int dstp = Game->fb_height;
-	uint32_t* src = pixels + EES->DisplayRect.x + EES->DisplayRect.y * srcp;
-	uint32_t* dst = pixels;
-	for (int line = 0; line < h; line++)
+	frame.Cycles = EES->MasterCycles;
+	if (!frame.SkipSoundening)
 	{
-		memcpy(dst, src, w * 4);
-		src += srcp;
-		dst += dstp;
+		memcpy(frame.SoundBuffer, EES->SoundBuf, EES->SoundBufSize * 4);
+		frame.Samples = EES->SoundBufSize;
+	}
+	if (!frame.SkipRendering)
+	{
+		int h = EES->DisplayRect.h;
+		int lineStart = EES->DisplayRect.y;
+		int lineEnd = lineStart + h;
+
+		auto multiWidth = EES->LineWidths[0] != -1;
+		int w;
+		if (multiWidth)
+		{
+			w = 0;
+			for (int line = lineStart; line < lineEnd; line++)
+				w = std::max(w, EES->LineWidths[line]);
+		}
+		else
+		{
+			w = EES->DisplayRect.w;
+		}
+
+		frame.Width = w;
+		frame.Height = h;
+		int srcp = Game->fb_width;
+		int dstp = w;
+		uint32_t* src = pixels + EES->DisplayRect.x + EES->DisplayRect.y * srcp;
+		uint32_t* dst = frame.VideoBuffer;
+		for (int line = lineStart; line < lineEnd; line++)
+		{
+			memcpy(dst, src, (multiWidth ? EES->LineWidths[line] : w) * sizeof(uint32_t));
+			src += srcp;
+			dst += dstp;
+		}
 	}
 }
 

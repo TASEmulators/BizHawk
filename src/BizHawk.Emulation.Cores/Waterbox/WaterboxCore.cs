@@ -197,9 +197,19 @@ namespace BizHawk.Emulation.Cores.Waterbox
 						LagCount++;
 					AdvanceRtc();
 
-					BufferWidth = frame.Width;
-					BufferHeight = frame.Height;
-					_numSamples = frame.Samples;
+					if (render)
+					{
+						BufferWidth = frame.Width;
+						BufferHeight = frame.Height;
+					}
+					if (rendersound)
+					{
+						_numSamples = frame.Samples;
+					}
+					else
+					{
+						_numSamples = 0;
+					}
 
 					FrameAdvancePost();
 				}
@@ -319,7 +329,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 		}
 
-		protected readonly short[] _soundBuffer;
+		protected short[] _soundBuffer;
 		protected int _numSamples;
 		public bool CanProvideAsync => false;
 		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
