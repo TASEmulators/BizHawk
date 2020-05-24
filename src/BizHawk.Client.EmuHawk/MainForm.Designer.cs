@@ -193,8 +193,11 @@
 			this.CorebsnesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SGBCoreSubmenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.SgbBsnesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.PceHawkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.TurboNymaMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SgbSameBoyMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GBCoreSubmenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.PceCoreSubmenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.GBGambatteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GBGBHawkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GBInSGBMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1789,6 +1792,7 @@
 			this.CoreSNESSubMenu,
 			this.SGBCoreSubmenu,
 			this.GBCoreSubmenu,
+			this.PceCoreSubmenu,
 			this.GBInSGBMenuItem,
 			this.toolStripMenuItem16,
 			this.AllowGameDbCoreOverridesMenuItem,
@@ -1879,6 +1883,16 @@
 			this.SGBCoreSubmenu.Text = "SGB";
 			this.SGBCoreSubmenu.DropDownOpened += new System.EventHandler(this.SGBCoreSubmenu_DropDownOpened);
 			// 
+			// PceCoreSubmenu
+			// 
+			this.PceCoreSubmenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+				this.PceHawkMenuItem,
+				this.TurboNymaMenuItem});
+			this.PceCoreSubmenu.Name = "PceCoreSubmenu";
+			this.PceCoreSubmenu.Size = new System.Drawing.Size(223, 22);
+			this.PceCoreSubmenu.Text = "PCE";
+			this.PceCoreSubmenu.DropDownOpened += new System.EventHandler(this.PceCoreSubmenu_DropDownOpened);
+			// 
 			// SgbBsnesMenuItem
 			// 
 			this.SgbBsnesMenuItem.Name = "SgbBsnesMenuItem";
@@ -1892,6 +1906,20 @@
 			this.SgbSameBoyMenuItem.Size = new System.Drawing.Size(118, 22);
 			this.SgbSameBoyMenuItem.Text = "SameBoy";
 			this.SgbSameBoyMenuItem.Click += new System.EventHandler(this.SgbCorePick_Click);
+			// 
+			// PceHawkMenuItem
+			// 
+			this.PceHawkMenuItem.Name = "PceHawkMenuItem";
+			this.PceHawkMenuItem.Size = new System.Drawing.Size(118, 22);
+			this.PceHawkMenuItem.Text = "PCEHawk";
+			this.PceHawkMenuItem.Click += new System.EventHandler(this.PceHawkCorePick_Click);
+			// 
+			// TurboNymaMenuItem
+			// 
+			this.TurboNymaMenuItem.Name = "TurboNymaMenuItem";
+			this.TurboNymaMenuItem.Size = new System.Drawing.Size(118, 22);
+			this.TurboNymaMenuItem.Text = "TurboNyma";
+			this.TurboNymaMenuItem.Click += new System.EventHandler(this.TurboNymaCorePick_Click);
 			// 
 			// GBCoreSubmenu
 			// 
@@ -4311,7 +4339,10 @@
 		private System.Windows.Forms.ToolStripMenuItem SGBCoreSubmenu;
 		private System.Windows.Forms.ToolStripMenuItem SgbBsnesMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SgbSameBoyMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem PceHawkMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem TurboNymaMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem GBCoreSubmenu;
+		private System.Windows.Forms.ToolStripMenuItem PceCoreSubmenu;
 		private System.Windows.Forms.ToolStripMenuItem GBGambatteMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem GBGBHawkMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem pCFXToolStripMenuItem;

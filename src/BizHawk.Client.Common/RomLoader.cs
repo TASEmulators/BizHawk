@@ -837,7 +837,15 @@ namespace BizHawk.Client.Common
 					switch (game.System)
 					{
 						default:
-							core = CoreInventory.Instance[game.System];
+							if (Global.Config.PreferredCores.TryGetValue(game.System, out string coreName))
+							{
+								core = CoreInventory.Instance[game.System, coreName];
+							}
+							else
+							{
+								core = CoreInventory.Instance[game.System];
+							}
+
 							break;
 
 						case null:

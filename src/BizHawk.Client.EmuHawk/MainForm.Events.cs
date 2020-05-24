@@ -1257,6 +1257,12 @@ namespace BizHawk.Client.EmuHawk
 			SubGBHawkMenuItem.Checked = Config.PreferredCores["GB"] == CoreNames.SubGbHawk;
 		}
 
+		private void PceCoreSubmenu_DropDownOpened(object sender, EventArgs e)
+		{
+			PceHawkMenuItem.Checked = Config.PreferredCores["PCE"] == CoreNames.PceHawk;
+			TurboNymaMenuItem.Checked = Config.PreferredCores["PCE"] == CoreNames.TurboNyma;
+		}
+
 		private void SubGBCorePick_Click(object sender, EventArgs e)
 		{
 			Config.PreferredCores["GB"] = CoreNames.SubGbHawk;
@@ -1285,11 +1291,36 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void PceHawkCorePick_Click(object sender, EventArgs e)
+		{
+			// TODO: do we want to be able to pick different cores for each system?
+			Config.PreferredCores["PCE"] = CoreNames.PceHawk;
+			Config.PreferredCores["PCECD"] = CoreNames.PceHawk;
+			Config.PreferredCores["SGX"] = CoreNames.PceHawk;
+
+			if (Emulator.SystemId == "PCE" || Emulator.SystemId == "PCECD" || Emulator.SystemId == "SGX")
+			{
+				FlagNeedsReboot();
+			}
+		}
+
+		private void TurboNymaCorePick_Click(object sender, EventArgs e)
+		{
+			Config.PreferredCores["PCE"] = CoreNames.TurboNyma;
+			Config.PreferredCores["PCECD"] = CoreNames.TurboNyma;
+			Config.PreferredCores["SGX"] = CoreNames.TurboNyma;
+
+			if (Emulator.SystemId == "PCE" || Emulator.SystemId == "PCECD" || Emulator.SystemId == "SGX")
+			{
+				FlagNeedsReboot();
+			}
+		}
+
 		private void GBCorePick_Click(object sender, EventArgs e)
 		{
-			Config.PreferredCores["GB"] = CoreNames.GbHawk;
+			Config.PreferredCores["PCE"] = CoreNames.TurboNyma;
 
-			if (Emulator.SystemId == "GB" || Emulator.SystemId == "GBC")
+			if (Emulator.SystemId == "PCE" || Emulator.SystemId == "PCECD")
 			{
 				FlagNeedsReboot();
 			}
