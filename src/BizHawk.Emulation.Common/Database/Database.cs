@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -54,12 +55,12 @@ namespace BizHawk.Emulation.Common
 			var filename = Path.Combine(path, line);
 			if (File.Exists(filename))
 			{
-				Console.WriteLine("loading external game database {0}", line);
+				Debug.WriteLine("loading external game database {0}", line);
 				LoadDatabase(filename);
 			}
 			else
 			{
-				Console.WriteLine("BENIGN: missing external game database {0}", line);
+				Debug.WriteLine("BENIGN: missing external game database {0}", line);
 			}
 		}
 
@@ -146,16 +147,18 @@ namespace BizHawk.Emulation.Common
 						ForcedCore = items.Length >= 8 ? items[7].ToLowerInvariant() : ""
 					};
 
+#if DEBUG
 					if (DB.ContainsKey(game.Hash))
 					{
 						Console.WriteLine("gamedb: Multiple hash entries {0}, duplicate detected on \"{1}\" and \"{2}\"", game.Hash, game.Name, DB[game.Hash].Name);
 					}
+#endif
 
 					DB[game.Hash] = game;
 				}
 				catch
 				{
-					Console.WriteLine($"Error parsing database entry: {line}");
+					Debug.WriteLine($"Error parsing database entry: {line}");
 				}
 			}
 		}
