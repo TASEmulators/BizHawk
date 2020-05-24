@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public bool clear_screen;
 
 		// TODO: need a test ROM for the details here
-		public byte bus_return;
+		public int bus_address;
 		public bool rendering_complete;
 
 		// register variables
@@ -84,6 +84,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public bool latch_new_data;
 		public int render_counter;
 		public int render_offset;
+		public int scroll_offset;
 		public int pixel_counter;
 		public int pixel;
 		public byte[] sprite_data = new byte[2];
@@ -179,7 +180,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(OBJ_palette), ref OBJ_palette, false);
 			ser.Sync(nameof(HDMA_active), ref HDMA_active);
 			ser.Sync(nameof(clear_screen), ref clear_screen);
-			ser.Sync(nameof(bus_return), ref bus_return);
+			ser.Sync(nameof(bus_address), ref bus_address);
 			ser.Sync(nameof(rendering_complete), ref rendering_complete);
 
 			ser.Sync(nameof(LCDC), ref LCDC);

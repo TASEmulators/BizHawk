@@ -139,7 +139,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					if (ppu.pixel_counter == 160)
 					{
-						return ppu.bus_return;
+						return VRAM[ppu.bus_address];
 					}
 
 					return 0xFF;
