@@ -203,20 +203,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public delegate void snes_trace_t(uint which, string msg);
 
 
-		[StructLayout(LayoutKind.Explicit)]
+		[StructLayout(LayoutKind.Sequential, Pack = 1)]
 		public struct CPURegs
 		{
-			[FieldOffset(0)]
 			public uint pc;
-			[FieldOffset(4)]
 			public ushort a, x, y, z, s, d, vector; //7x
-			[FieldOffset(18)]
 			public byte p, nothing;
-			[FieldOffset(20)]
 			public uint aa, rd;
-			[FieldOffset(28)]
 			public byte sp, dp, db, mdr;
-			[FieldOffset(32)]
 			public ushort v, h;
 		}
 
