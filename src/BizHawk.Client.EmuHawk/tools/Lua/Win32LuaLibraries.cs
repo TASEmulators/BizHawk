@@ -27,23 +27,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_mainForm = mainForm;
 
-			static ApiContainer InitApiContainer(IEmulatorServiceProvider sp, Action<string> logCallback)
-			{
-				var ctorParamTypes = new[] { typeof(Action<string>) };
-				var ctorParams = new object[] { logCallback };
-				var libDict = new Dictionary<Type, IExternalApi>();
-				foreach (var api in Assembly.GetAssembly(typeof(EmuApi)).GetTypes()
-					.Concat(Assembly.GetAssembly(typeof(ToolApi)).GetTypes())
-					.Where(t => t.IsSealed && typeof(IExternalApi).IsAssignableFrom(t) && ServiceInjector.IsAvailable(sp, t)))
-				{
-					var ctorWithParams = api.GetConstructor(ctorParamTypes);
-					var instance = (IExternalApi) (ctorWithParams == null ? Activator.CreateInstance(api) : ctorWithParams.Invoke(ctorParams));
-					ServiceInjector.UpdateServices(sp, instance);
-					libDict.Add(api, instance);
-				}
-				return ApiContainerInstance = new ApiContainer(libDict);
-			}
-
 			LuaWait = new AutoResetEvent(false);
 			Docs.Clear();
 
@@ -73,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 						clientLib.MainForm = _mainForm;
 					}
 
-					ApiContainerInstance = InitApiContainer(serviceProvider, ConsoleLuaLibrary.LogOutput);
+					ApiContainerInstance = ApiManager.RestartLua(serviceProvider, ConsoleLuaLibrary.LogOutput);
 					if (instance is DelegatingLuaLibraryEmu dlgInstanceEmu) dlgInstanceEmu.APIs = ApiContainerInstance; // this is necessary as the property has the `new` modifier
 					else if (instance is DelegatingLuaLibrary dlgInstance) dlgInstance.APIs = ApiContainerInstance;
 

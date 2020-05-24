@@ -12,7 +12,7 @@ namespace BizHawk.Client.Common
 
 		public IReadOnlyCollection<Type> AvailableApis => _libs.Keys.ToList();
 
-		public BasicApiProvider(IReadOnlyDictionary<Type, IExternalApi> libs) => _libs = libs;
+		public BasicApiProvider(IApiContainer apiContainer) => _libs = apiContainer.Libraries;
 
 		public object? GetApi(Type t) => _libs.TryGetValue(t, out var api) ? api : null;
 
