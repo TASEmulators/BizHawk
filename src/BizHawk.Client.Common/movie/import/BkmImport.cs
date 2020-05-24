@@ -16,7 +16,7 @@
 			}
 
 			Result.Movie.HeaderEntries.Clear();
-			foreach (var kvp in bkm.HeaderEntries)
+			foreach (var kvp in bkm.Header)
 			{
 				Result.Movie.HeaderEntries[kvp.Key] = kvp.Value;
 			}
@@ -35,7 +35,6 @@
 				Result.Movie.Subtitles.Add(sub);
 			}
 
-			Result.Movie.TextSavestate = bkm.TextSavestate;
 			Result.Movie.BinarySavestate = bkm.BinarySavestate;
 		}
 	}

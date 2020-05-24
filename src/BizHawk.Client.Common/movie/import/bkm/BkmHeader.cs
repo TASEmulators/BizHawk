@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Text;
 
 namespace BizHawk.Client.Common
 {
@@ -7,7 +6,6 @@ namespace BizHawk.Client.Common
 	{
 		public BkmHeader()
 		{
-			this[HeaderKeys.EmulationVersion] = VersionInfo.GetEmuVersion();
 			this[HeaderKeys.GameName] = "";
 			this[HeaderKeys.Author] = "";
 			this[HeaderKeys.Rerecords] = "0";
@@ -56,25 +54,6 @@ namespace BizHawk.Client.Common
 			Comments.Clear();
 			Subtitles.Clear();
 			base.Clear();
-		}
-
-		public override string ToString()
-		{
-			var sb = new StringBuilder();
-
-			foreach (var kvp in this)
-			{
-				sb
-					.Append(kvp.Key)
-					.Append(' ')
-					.Append(kvp.Value)
-					.AppendLine();
-			}
-
-			sb.Append(Subtitles);
-			Comments.ForEach(comment => sb.AppendLine(comment));
-
-			return sb.ToString();
 		}
 
 		public bool ParseLineFromFile(string line)
