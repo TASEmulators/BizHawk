@@ -27,6 +27,7 @@ using BizHawk.Emulation.Cores.Consoles.Sega.Saturn;
 using BizHawk.Emulation.Cores.Consoles.NEC.PCFX;
 using BizHawk.Emulation.Cores.Computers.AmstradCPC;
 using BizHawk.Emulation.Cores.Consoles.ChannelF;
+using BizHawk.Emulation.Cores.Consoles.NEC.PCE;
 
 namespace BizHawk.Client.Common
 {
@@ -510,9 +511,24 @@ namespace BizHawk.Client.Common
 							nextEmulator = new Tst(nextComm, new[] { disc },
 								(Tst.Settings)GetCoreSettings<Tst>(), (Tst.SyncSettings)GetCoreSyncSettings<Tst>());
 							break;
-						case "PCE":
+						case "PCE": // TODO: this is clearly not used, its set to PCE by code above
 						case "PCECD":
-							nextEmulator = new PCEngine(nextComm, game, disc, GetCoreSettings<PCEngine>(), GetCoreSyncSettings<PCEngine>());
+							string core = CoreNames.PceHawk;
+							if (Global.Config.PreferredCores.TryGetValue("PCECD", out string preferredCore))
+							{
+								core = preferredCore;
+							}
+
+							if (core == CoreNames.PceHawk)
+							{
+								nextEmulator = new PCEngine(nextComm, game, disc, GetCoreSettings<PCEngine>(), GetCoreSyncSettings<PCEngine>());
+							}
+							else
+							{
+								// TODO: pass disc in
+								nextEmulator = new TerboGrafix(game, null, nextComm, "dunno what to put here");
+							}
+							
 							break;
 					}
 				}
