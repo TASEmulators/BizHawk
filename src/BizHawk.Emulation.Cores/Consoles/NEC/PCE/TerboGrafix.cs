@@ -3,7 +3,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 {
-	[Core("Terbo Grafix", "Mednafen Team", true, false, "", "", false)]
+	[Core(CoreNames.TerboGrafix, "Mednafen Team", true, false, "", "", false)]
 	public class TerboGrafix : NymaCore, IRegionable
 	{
 		[CoreConstructor("PCE")]
