@@ -177,7 +177,11 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 			clearItem.Click += (o, ev) => recent.Clear();
 			items.Add(clearItem);
 
-			var freezeItem = new ToolStripMenuItem { Text = recent.Frozen ? "&Unfreeze" : "&Freeze" };
+			var freezeItem = new ToolStripMenuItem
+			{
+				Text = recent.Frozen ? "&Unfreeze" : "&Freeze",
+				Image = recent.Frozen ? Properties.Resources.Unfreeze : Properties.Resources.Freeze
+			};
 			freezeItem.Click += (o, ev) => recent.Frozen ^= true;
 			items.Add(freezeItem);
 
