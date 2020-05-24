@@ -6,51 +6,37 @@
 	{
 		protected override void RunImport()
 		{
-			var movie = new BkmMovie
+			var bkm = new BkmMovie { Filename = SourceFile.FullName };
+			bkm.Load();
+
+			for (var i = 0; i < bkm.InputLogLength; i++)
 			{
-				Filename = SourceFile.FullName
-			};
-
-			movie.Load();
-			Result.Movie = ToBk2(movie);
-		}
-
-		private static IMovie ToBk2(BkmMovie old)
-		{
-			var bk2 = MovieService.Get(old.Filename.Replace(old.PreferredExtension, Bk2Movie.Extension));
-
-			for (var i = 0; i < old.InputLogLength; i++)
-			{
-				var input = old.GetInputState(i);
-				bk2.AppendFrame(input);
+				var input = bkm.GetInputState(i);
+				Result.Movie.AppendFrame(input);
 			}
 
-			bk2.HeaderEntries.Clear();
-			foreach (var kvp in old.HeaderEntries)
+			Result.Movie.HeaderEntries.Clear();
+			foreach (var kvp in bkm.HeaderEntries)
 			{
-				bk2.HeaderEntries[kvp.Key] = kvp.Value;
+				Result.Movie.HeaderEntries[kvp.Key] = kvp.Value;
 			}
 
-			bk2.SyncSettingsJson = old.SyncSettingsJson;
+			Result.Movie.SyncSettingsJson = bkm.SyncSettingsJson;
 
-			bk2.Comments.Clear();
-			foreach (var comment in old.Comments)
+			Result.Movie.Comments.Clear();
+			foreach (var comment in bkm.Comments)
 			{
-				bk2.Comments.Add(comment);
+				Result.Movie.Comments.Add(comment);
 			}
 
-			bk2.Subtitles.Clear();
-			foreach (var sub in old.Subtitles)
+			Result.Movie.Subtitles.Clear();
+			foreach (var sub in bkm.Subtitles)
 			{
-				bk2.Subtitles.Add(sub);
+				Result.Movie.Subtitles.Add(sub);
 			}
 
-			bk2.TextSavestate = old.TextSavestate;
-			bk2.BinarySavestate = old.BinarySavestate;
-
-			bk2.Save();
-
-			return bk2;
+			Result.Movie.TextSavestate = bkm.TextSavestate;
+			Result.Movie.BinarySavestate = bkm.BinarySavestate;
 		}
 	}
 }
