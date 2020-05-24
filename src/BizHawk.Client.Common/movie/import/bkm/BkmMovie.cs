@@ -7,7 +7,6 @@ namespace BizHawk.Client.Common
 	internal class BkmMovie
 	{
 		private readonly List<string> _log = new List<string>();
-		private int? _loopOffset;
 
 		public string PreferredExtension => "bkm";
 
@@ -17,46 +16,17 @@ namespace BizHawk.Client.Common
 		
 		public int InputLogLength => _log.Count;
 
-		public double FrameCount
-		{
-			get
-			{
-				if (_loopOffset.HasValue)
-				{
-					return double.PositiveInfinity;
-				}
-				
-				return Loaded ? _log.Count : 0;
-			}
-		}
+		public int FrameCount => Loaded ? _log.Count : 0;
 
 		public BkmControllerAdapter GetInputState(int frame)
 		{
 			if (frame < FrameCount && frame >= 0)
 			{
-				int getFrame;
-
-				if (_loopOffset.HasValue)
-				{
-					if (frame < _log.Count)
-					{
-						getFrame = frame;
-					}
-					else
-					{
-						getFrame = ((frame - _loopOffset.Value) % (_log.Count - _loopOffset.Value)) + _loopOffset.Value;
-					}
-				}
-				else
-				{
-					getFrame = frame;
-				}
-
 				var adapter = new BkmControllerAdapter
 				{
 					Definition = Global.MovieSession.MovieController.Definition
 				};
-				adapter.SetControllersAsMnemonic(_log[getFrame]);
+				adapter.SetControllersAsMnemonic(_log[frame]);
 				return adapter;
 			}
 
@@ -99,23 +69,9 @@ namespace BizHawk.Client.Common
 				{
 					if (line == "")
 					{
-						continue;
-					}
-
-					if (line.Contains("LoopOffset"))
-					{
-						try
-						{
-							_loopOffset = int.Parse(line.Split(new[] { ' ' }, 2)[1]);
-						}
-						catch (Exception)
-						{
-							continue;
-						}
 					}
 					else if (Header.ParseLineFromFile(line))
 					{
-						continue;
 					}
 					else if (line.StartsWith("|"))
 					{
