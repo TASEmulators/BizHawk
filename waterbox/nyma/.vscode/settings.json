@@ -1,0 +1,6 @@
+{
+	"files.associations": {
+		"*.mak": "makefile",
+		"typeinfo": "cpp"
+	}
+}

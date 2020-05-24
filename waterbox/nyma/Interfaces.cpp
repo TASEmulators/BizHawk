@@ -8,6 +8,15 @@
 
 #include <stdio.h>
 #include <stdarg.h>
+#include <emulibc.h>
+
+enum { SETTING_VALUE_MAX_LENGTH = 256 };
+
+static void (*FrontendSettingQuery)(const char* setting, char* dest);
+ECL_EXPORT void SetFrontendSettingQuery(void (*q)(const char* setting, char* dest))
+{
+	FrontendSettingQuery = q;
+}
 
 namespace Mednafen
 {
@@ -76,37 +85,50 @@ namespace Mednafen
 	uint64 MDFN_GetSettingUI(const char *name)
 	{
 		auto s = GetSetting(name);
-		if (s)
-			return strtoul(s->default_value, nullptr, 10);
-		return 0;
+		char tmp[SETTING_VALUE_MAX_LENGTH];
+		FrontendSettingQuery(name, tmp);
+		if (s && s->type == MDFNST_ENUM)
+		{
+			for (int i = 0; s->enum_list[i].string; i++)
+			{
+				if (strcmp(s->enum_list[i].string, tmp) == 0)
+					return s->enum_list[i].number;
+			}
+			for (int i = 0; s->enum_list[i].string; i++)
+			{
+				if (strcmp(s->enum_list[i].string, s->default_value) == 0)
+					return s->enum_list[i].number;
+			}
+			return 0;
+		}
+		else
+		{
+			return strtoul(tmp, nullptr, 10);
+		}
 	}
 	int64 MDFN_GetSettingI(const char *name)
 	{
-		auto s = GetSetting(name);
-		if (s)
-			return strtol(s->default_value, nullptr, 10);
-		return 0;
+		char tmp[SETTING_VALUE_MAX_LENGTH];
+		FrontendSettingQuery(name, tmp);
+		return strtol(tmp, nullptr, 10);
 	}
 	double MDFN_GetSettingF(const char *name)
 	{
-		auto s = GetSetting(name);
-		if (s)
-			return strtod(s->default_value, nullptr);
-		return 0;
+		char tmp[SETTING_VALUE_MAX_LENGTH];
+		FrontendSettingQuery(name, tmp);
+		return strtod(tmp, nullptr);
 	}
 	bool MDFN_GetSettingB(const char *name)
 	{
-		auto s = GetSetting(name);
-		if (s)
-			return strtol(s->default_value, nullptr, 10) != 0;
-		return 0;
+		char tmp[SETTING_VALUE_MAX_LENGTH];
+		FrontendSettingQuery(name, tmp);
+		return strtol(tmp, nullptr, 10) != 0;
 	}
 	std::string MDFN_GetSettingS(const char *name)
 	{
-		auto s = GetSetting(name);
-		if (s)
-			return s->default_value;
-		return "";
+		char tmp[SETTING_VALUE_MAX_LENGTH];
+		FrontendSettingQuery(name, tmp);
+		return std::string(tmp);
 	}
 
 	void MDFNMP_Init(uint32 ps, uint32 numpages)

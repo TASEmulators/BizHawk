@@ -526,7 +526,8 @@ namespace BizHawk.Client.Common
 							else
 							{
 								// TODO: pass disc in
-								nextEmulator = new TerboGrafix(game, null, nextComm, "dunno what to put here");
+								throw new NotImplementedException();
+								// nextEmulator = new TerboGrafix(game, null, nextComm, "dunno what to put here");
 							}
 							
 							break;

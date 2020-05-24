@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using BizHawk.Common;
@@ -9,35 +10,42 @@ namespace BizHawk.Emulation.Cores.Waterbox
 {
 	public unsafe abstract partial class NymaCore : WaterboxCore
 	{
-		protected NymaCore(GameInfo game, byte[] rom, CoreComm comm, Configuration c)
-			: base(comm, c)
+		protected NymaCore(GameInfo game, byte[] rom, CoreComm comm, string systemId, string controllerDeckName,
+			NymaSettings settings, NymaSyncSettings syncSettings)
+			: base(comm, new Configuration { SystemId = systemId })
 		{
+			_settings = settings ?? new NymaSettings();
+			_syncSettings = syncSettings ?? new NymaSyncSettings();
+			_syncSettingsActual = _syncSettings;
+			_controllerDeckName = controllerDeckName;
 		}
 
 		private LibNymaCore _nyma;
-		protected T DoInit<T>(GameInfo game, byte[] rom, string filename, string extension)
+		protected T DoInit<T>(GameInfo game, byte[] rom, string wbxFilename, string extension)
 			where T : LibNymaCore
 		{
 			var t = PreInit<T>(new WaterboxOptions
 			{
-				// TODO cfg and stuff
-				Filename = filename,
+				// TODO fix these up
+				Filename = wbxFilename,
 				SbrkHeapSizeKB = 1024 * 16,
 				SealedHeapSizeKB = 1024 * 16,
 				InvisibleHeapSizeKB = 1024 * 16,
 				PlainHeapSizeKB = 1024 * 16,
 				MmapHeapSizeKB = 1024 * 16,
-				StartAddress = WaterboxHost.CanonicalStart,
 				SkipCoreConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			});
 			_nyma = t;
+			_settingsQueryDelegate = new LibNymaCore.FrontendSettingQuery(SettingsQuery);
+			var fn = game.FilesystemSafeName();
 
 			using (_exe.EnterExit())
 			{
-				var fn = game.FilesystemSafeName();
-
+				_nyma.PreInit();
+				InitSyncSettingsInfo();
 				_exe.AddReadonlyFile(rom, fn);
+				_nyma.SetFrontendSettingQuery(_settingsQueryDelegate);
 
 				var didInit = _nyma.Init(new LibNymaCore.InitData
 				{
@@ -72,15 +80,22 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				}
 				VsyncNumerator = info.FpsFixed;
 				VsyncDenominator = 1 << 24;
-
 				_soundBuffer = new short[22050 * 2];
 
 				InitControls();
-
+				_nyma.SetFrontendSettingQuery(null);
 				PostInit();
+				SettingsInfo.LayerNames = GetLayerData();
+				_nyma.SetFrontendSettingQuery(_settingsQueryDelegate);
+				PutSettings(_settings);
 			}
 
 			return t;
+		}
+
+		protected override void LoadStateBinaryInternal(BinaryReader reader)
+		{
+			_nyma.SetFrontendSettingQuery(_settingsQueryDelegate);
 		}
 
 		// todo: bleh
@@ -107,31 +122,28 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public DisplayType Region { get; protected set; }
 
 		/// <summary>
-		/// Gets a string array of valid layers to pass to SetLayers, or null if that method should not be called
+		/// Gets a string array of valid layers to pass to SetLayers, or an empty list if that method should not be called
 		/// </summary>
-		private string[] GetLayerData()
+		private List<string> GetLayerData()
 		{
-			using (_exe.EnterExit())
+			var ret = new List<string>();
+			var p = _nyma.GetLayerData();
+			if (p == null)
+				return ret;
+			var q = p;
+			while (true)
 			{
-				var p = _nyma.GetLayerData();
-				if (p == null)
-					return null;
-				var ret = new List<string>();
-				var q = p;
-				while (true)
+				if (*q == 0)
 				{
-					if (*q == 0)
-					{
-						if (q > p)
-							ret.Add(Mershul.PtrToStringUtf8((IntPtr)p));
-						else
-							break;
-						p = ++q;
-					}
-					q++;
+					if (q > p)
+						ret.Add(Mershul.PtrToStringUtf8((IntPtr)p));
+					else
+						break;
+					p = q + 1;
 				}
-				return ret.ToArray();
+				q++;
 			}
+			return ret;
 		}
 	}
 }

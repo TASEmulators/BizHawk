@@ -25,6 +25,15 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			public string FileNameFull;
 		}
 
+		/// <summary>
+		/// Do this before calling anything, even settings queries
+		/// </summary>
+		[BizImport(CC, Compatibility = true)]
+		public abstract void PreInit();
+
+		/// <summary>
+		/// Load a ROM
+		/// </summary>
 		[BizImport(CC, Compatibility = true)]
 		public abstract bool Init([In]InitData data);
 
@@ -270,5 +279,16 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		[BizImport(CC, Compatibility = true)]
 		public abstract SystemInfo* GetSystemInfo();
+
+		[BizImport(CC, Compatibility = true)]
+		public abstract void IterateSettings(int index, [In, Out]NymaCore.NymaSettingsInfo.MednaSettingS s);
+
+		[BizImport(CC, Compatibility = true)]
+		public abstract void IterateSettingEnums(int index, int enumIndex,[In, Out]NymaCore.NymaSettingsInfo.MednaSettingS.EnumValueS e);
+
+		public delegate void FrontendSettingQuery(string setting, IntPtr dest);
+		[BizImport(CC)]
+		public abstract void SetFrontendSettingQuery(FrontendSettingQuery q);
+
 	}
 }

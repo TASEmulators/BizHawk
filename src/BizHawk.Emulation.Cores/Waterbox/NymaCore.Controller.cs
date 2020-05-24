@@ -9,10 +9,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	{
 		private ControllerAdapter _controllerAdapter;
 		private readonly byte[] _inputPortData = new byte[16 * 16];
+		private readonly string _controllerDeckName;
 
 		private void InitControls()
 		{
-			_controllerAdapter = new ControllerAdapter(_nyma, new string[0]);
+			_controllerAdapter = new ControllerAdapter(_nyma, _syncSettingsActual.PortDevices);
 			_nyma.SetInputDevices(_controllerAdapter.Devices);
 			ControllerDefinition = _controllerAdapter.Definition;
 		}
@@ -34,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			/// </summary>
 			public string[] Devices { get; }
 			public ControllerDefinition Definition { get; }
-			public ControllerAdapter(LibNymaCore core, string[] config)
+			public ControllerAdapter(LibNymaCore core, IList<string> config)
 			{
 				var ret = new ControllerDefinition
 				{
@@ -49,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				for (uint port = 0, devByteStart = 0; port < numPorts; port++, devByteStart += MAX_PORT_DATA)
 				{
 					var portInfo = *core.GetPort(port);
-					var deviceName = port < config.Length ? config[port] : portInfo.DefaultDeviceShortName;
+					var deviceName = port < config.Count ? config[(int)port] : portInfo.DefaultDeviceShortName;
 					finalDevices.Add(deviceName);
 
 					var devices = Enumerable.Range(0, (int)portInfo.NumDevices)
@@ -91,7 +92,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							case LibNymaCore.InputType.BUTTON:
 							case LibNymaCore.InputType.BUTTON_CAN_RAPID:
 							{
-								var data = *core.GetButton(port, device.Index, (uint)input.Index);
+								// var data = *core.GetButton(port, device.Index, (uint)input.Index);
 								// TODO: Wire up data.ExcludeName
 								ret.BoolButtons.Add(name);
 								_thunks.Add((c, b) =>
@@ -104,21 +105,23 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							case LibNymaCore.InputType.SWITCH:
 							{
 								var data = *core.GetSwitch(port, device.Index, (uint)input.Index);
+								var zzhacky = (int)data.DefaultPosition;
 								// TODO: Possibly bulebutton for 2 states?
 								ret.AxisControls.Add(name);
 								ret.AxisRanges.Add(new ControllerDefinition.AxisRange(
 									0, (int)data.DefaultPosition, (int)data.NumPositions - 1));
-								// HACK: Silently discard this until bizhawk fixes its shit
-								// _thunks.Add((c, b) =>
-								// {
-								// 	var val = (int)Math.Round(c.AxisValue(name));
-								// 	b[byteStart] |= (byte)(1 << bitOffset);
-								// });
+								_thunks.Add((c, b) =>
+								{
+									// HACK: Silently discard this until bizhawk fixes its shit
+								 	// var val = (int)Math.Round(c.AxisValue(name));
+									var val = zzhacky;
+								 	b[byteStart] |= (byte)(val << bitOffset);
+								});
 								break;
 							}
 							case LibNymaCore.InputType.AXIS:
 							{
-								var data = core.GetAxis(port, device.Index, (uint)input.Index);
+								// var data = core.GetAxis(port, device.Index, (uint)input.Index);
 								ret.AxisControls.Add(name);
 								ret.AxisRanges.Add(new ControllerDefinition.AxisRange(
 									0, 0x8000, 0xffff, (inputInfo.Flags & LibNymaCore.AxisFlags.INVERT_CO) != 0
@@ -133,7 +136,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							}
 							case LibNymaCore.InputType.AXIS_REL:
 							{
-								var data = core.GetAxis(port, device.Index, (uint)input.Index);
+								// var data = core.GetAxis(port, device.Index, (uint)input.Index);
 								ret.AxisControls.Add(name);
 								ret.AxisRanges.Add(new ControllerDefinition.AxisRange(
 									-0x8000, 0, 0x7fff, (inputInfo.Flags & LibNymaCore.AxisFlags.INVERT_CO) != 0

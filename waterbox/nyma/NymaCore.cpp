@@ -26,12 +26,15 @@ enum { MAX_PORTS = 16 };
 enum { MAX_PORT_DATA = 16 };
 static uint8_t InputPortData[MAX_PORTS * MAX_PORT_DATA];
 
+ECL_EXPORT void PreInit()
+{
+	SetupMDFNGameInfo();
+}
+
 ECL_EXPORT bool Init(const InitData& data)
 {
 	try
 	{
-		SetupMDFNGameInfo();
-
 		pixels = new uint32_t[Game->fb_width * Game->fb_height];
 		samples = new int16_t[22050 * 2];
 		Surf = new MDFN_Surface(
@@ -333,5 +336,50 @@ ECL_EXPORT void SetInputDevices(const char** devices)
 	{
 		std::string dev(devices[port]);
 		Game->SetInput(port, dev.c_str(), &InputPortData[port * MAX_PORT_DATA]);
+	}
+}
+
+struct NSetting
+{
+	const char* Name;
+	const char* Description;
+	const char* SettingsKey;
+	const char* DefaultValue;
+	const char* Min;
+	const char* Max;
+	uint32_t Flags;
+	uint32_t Type;
+};
+struct NEnumValue
+{
+	const char* Name;
+	const char* Description;
+	const char* Value;
+};
+
+ECL_EXPORT void IterateSettings(int index, NSetting& s)
+{
+	auto& a = Game->Settings[index];
+	if (a.name)
+	{
+		s.Name = a.description;
+		s.Description = a.description_extra;
+		s.SettingsKey = a.name;
+		s.DefaultValue = a.default_value;
+		s.Min = a.minimum;
+		s.Max = a.maximum;
+		s.Flags = a.flags;
+		s.Type = a.type;
+	}
+}
+
+ECL_EXPORT void IterateSettingEnums(int index, int enumIndex, NEnumValue& e)
+{
+	auto& a = Game->Settings[index].enum_list[enumIndex];
+	if (a.string)
+	{
+		e.Name = a.description;
+		e.Description = a.description_extra;
+		e.Value = a.string;
 	}
 }

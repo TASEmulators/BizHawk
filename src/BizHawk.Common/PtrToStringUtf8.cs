@@ -10,6 +10,8 @@ namespace BizHawk.Common
 		/// </summary>
 		public static unsafe string PtrToStringUtf8(IntPtr p)
 		{
+			if (p == IntPtr.Zero)
+				return null;
 			byte* b = (byte*)p;
 			int len = 0;
 			while (*b++ != 0)
