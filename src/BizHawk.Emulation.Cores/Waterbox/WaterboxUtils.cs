@@ -11,10 +11,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// </summary>
 		public static void CopySome(Stream src, Stream dst, long len)
 		{
-			var buff = new byte[4096];
+			var buff = new byte[65536];
 			while (len > 0)
 			{
-				int r = src.Read(buff, 0, (int)Math.Min(len, 4096));
+				int r = src.Read(buff, 0, (int)Math.Min(len, 65536));
 				dst.Write(buff, 0, r);
 				len -= r;
 			}

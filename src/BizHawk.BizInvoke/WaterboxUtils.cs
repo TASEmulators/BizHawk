@@ -45,26 +45,24 @@ namespace BizHawk.BizInvoke
 		/// <summary>
 		/// system page size
 		/// </summary>
-		public static int PageSize { get; }
+		public const int PageSize = 4096;
 
 		/// <summary>
 		/// bitshift corresponding to PageSize
 		/// </summary>
-		public static int PageShift { get; }
+		public const int PageShift = 12;
 		/// <summary>
 		/// bitmask corresponding to PageSize
 		/// </summary>
-		public static ulong PageMask { get; }
+		public const ulong PageMask = 4095;
 
 		static WaterboxUtils()
 		{
-			int p = PageSize = Environment.SystemPageSize;
-			while (p != 1)
+			if (PageSize != Environment.SystemPageSize)
 			{
-				p >>= 1;
-				PageShift++;
+				// We can do it, but we'll have to change up some waterbox stuff
+				throw new InvalidOperationException("Wrong page size");
 			}
-			PageMask = (ulong)(PageSize - 1);
 		}
 
 		/// <summary>

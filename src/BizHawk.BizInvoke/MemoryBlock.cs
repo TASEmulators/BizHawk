@@ -50,7 +50,8 @@ namespace BizHawk.BizInvoke
 		/// <summary>get a page index within the block</summary>
 		protected int GetPage(ulong addr)
 		{
-			if (addr < Start || EndExclusive <= addr) throw new ArgumentOutOfRangeException(nameof(addr), addr, "invalid address");
+			if (addr < Start || EndExclusive <= addr)
+				throw new ArgumentOutOfRangeException(nameof(addr), addr, "invalid address");
 			return (int) ((addr - Start) >> WaterboxUtils.PageShift);
 		}
 
@@ -70,7 +71,7 @@ namespace BizHawk.BizInvoke
 				throw new ArgumentOutOfRangeException(nameof(start), start, "invalid address");
 			if (EndExclusive < start + length)
 				throw new ArgumentOutOfRangeException(nameof(length), length, "requested length implies invalid end address");
-			return new MemoryViewStream(!writer, writer, (long) start, (long) length, this);
+			return new MemoryViewStream(!writer, writer, (long)start, (long)length, this);
 		}
 
 		/// <summary>
@@ -90,7 +91,7 @@ namespace BizHawk.BizInvoke
 				throw new ArgumentOutOfRangeException(nameof(length), length, "requested length implies invalid end address");
 			if (_snapshot == null)
 				throw new InvalidOperationException("No snapshot taken!");
-			return new MemoryViewXorStream(!writer, writer, (long) start, (long) length, this, _snapshot, (long) (start - Start));
+			return new MemoryViewXorStream(!writer, writer, (long)start, (long)length, this, _snapshot, (long)(start - Start));
 		}
 
 		/// <summary>activate the memory block, swapping it in at the pre-specified address</summary>

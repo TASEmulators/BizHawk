@@ -36,11 +36,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			Console.WriteLine("Created heap `{1}` at {0:x16}:{2:x16}", start, name, start + size);
 		}
 
-		private ulong EnsureAlignment(int align)
+		private ulong AlignForAllocation(int align)
 		{
 			if (align > 1)
 			{
-				ulong newused = ((Used - 1) | (ulong)(align - 1)) + 1;
+				ulong newused = ((Used - 1) | (ulong)((uint)align - 1)) + 1;
 				if (newused > Memory.Size)
 				{
 					throw new InvalidOperationException($"Failed to meet alignment {align} on heap {Name}");
@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			if (Sealed)
 				throw new InvalidOperationException($"Attempt made to allocate from sealed heap {Name}");
 
-			ulong allocstart = EnsureAlignment(align);
+			ulong allocstart = AlignForAllocation(align);
 			ulong newused = allocstart + size;
 			if (newused > Memory.Size)
 			{
@@ -114,10 +114,25 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				{
 					throw new InvalidOperationException($"Hash did not match for heap {Name}.  Is this the same rom with the same SyncSettings?");
 				}
+				var oldUsedAligned = WaterboxUtils.AlignUp(Used);
 				var usedAligned = WaterboxUtils.AlignUp(used);
+				if (usedAligned > oldUsedAligned)
+				{
+					// grow
+					var s = Memory.Start + oldUsedAligned;
+					var l = usedAligned - oldUsedAligned;
+					Memory.Protect(s, l, MemoryBlock.Protection.RW);
+				}
+				else if (usedAligned < oldUsedAligned)
+				{
+					// shrink
+					var s = Memory.Start + usedAligned;
+					var l = oldUsedAligned - usedAligned;
+					// like elsewhere, we zero on free to avoid nondeterminism if later reallocated
+					WaterboxUtils.ZeroMemory(Z.US(s), (long)l);
+					Memory.Protect(s, l, MemoryBlock.Protection.None);
+				}
 
-				Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.None);
-				Memory.Protect(Memory.Start, used, MemoryBlock.Protection.RW);
 				var ms = Memory.GetXorStream(Memory.Start, usedAligned, true);
 				WaterboxUtils.CopySome(br.BaseStream, ms, (long)usedAligned);
 				Used = used;

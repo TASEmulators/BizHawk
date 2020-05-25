@@ -40,9 +40,20 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			return ((ulong)page << WaterboxUtils.PageShift) + Memory.Start;
 		}
 
+		/// <summary>
+		/// Sentinel value used to indicate unmapped pages.
+		/// Needed because mapped pages are allowed to be protected to None
+		/// </summary>
 		private const MemoryBlock.Protection FREE = (MemoryBlock.Protection)255;
 
+		/// <summary>
+		/// Bitmap of protections.  Similar to MemoryBlock._pageData (and unfortunately mirrors the same information),
+		/// but also handles FREE
+		/// </summary>
 		private readonly MemoryBlock.Protection[] _pages;
+		/// <summary>
+		/// alias of _pages used for serialization
+		/// </summary>
 		private readonly byte[] _pagesAsBytes;
 
 		public MapHeap(ulong start, ulong size, string name)
@@ -67,6 +78,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		// used in realloc
 		private int FindConsecutiveFreePagesAssumingFreed(int count, int startPage, int numPages)
 		{
+			// TODO: I'm sure there are sublinear algorithms for this, if the right data is maintained
 			var starts = new List<int>();
 			var sizes = new List<int>();
 
@@ -86,6 +98,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					currStart = i + 1;
 				}
 			}
+			// find smallest hole to reduce fragmentation
+			// TODO: Is this needed?
 			int bestIdx = -1;
 			int bestSize = int.MaxValue;
 			for (int i = 0; i < sizes.Count; i++)

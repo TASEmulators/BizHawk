@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using BizHawk.Common;
 
 namespace BizHawk.BizInvoke
 {
@@ -79,15 +80,17 @@ namespace BizHawk.BizInvoke
 		/// </summary>
 		public static ICallingConventionAdapter Native { get; } = new NativeConvention();
 
+		static CallingConventionAdapters()
+		{
+			Waterbox = OSTailoredCode.IsUnixHost
+				? (ICallingConventionAdapter)new SysVHostMsGuest()
+				: new NativeConvention();
+		}
+
 		/// <summary>
 		/// convention appropriate for waterbox guests
 		/// </summary>
-		public static ICallingConventionAdapter Waterbox { get; } =
-#if true
-			new NativeConvention();
-#else
-			new SysVHostMsGuest();
-#endif
+		public static ICallingConventionAdapter Waterbox { get; }
 
 		private class SysVHostMsGuest : ICallingConventionAdapter
 		{
