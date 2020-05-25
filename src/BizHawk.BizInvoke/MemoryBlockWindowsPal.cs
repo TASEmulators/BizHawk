@@ -25,7 +25,7 @@ namespace BizHawk.BizInvoke
 			_handle = Kernel32.CreateFileMapping(
 				Kernel32.INVALID_HANDLE_VALUE,
 				IntPtr.Zero,
-				Kernel32.FileMapProtection.PageExecuteReadWrite | Kernel32.FileMapProtection.SectionCommit,
+				Kernel32.FileMapProtection.PageExecuteReadWrite | Kernel32.FileMapProtection.SectionReserve,
 				(uint)(_size >> 32),
 				(uint)_size,
 				null
@@ -63,6 +63,12 @@ namespace BizHawk.BizInvoke
 				throw new InvalidOperationException($"{nameof(Kernel32.VirtualProtect)}() returned FALSE!");
 		}
 
+		public void Commit(ulong length)
+		{
+			if (Kernel32.VirtualAlloc(Z.UU(_start), Z.UU(length), Kernel32.AllocationType.MEM_COMMIT, Kernel32.MemoryProtection.READWRITE) != Z.UU(_start))
+				throw new InvalidOperationException($"{nameof(Kernel32.VirtualAlloc)}() returned NULL!");
+		}
+
 		private static Kernel32.MemoryProtection GetKernelMemoryProtectionValue(Protection prot)
 		{
 			Kernel32.MemoryProtection p;
@@ -95,8 +101,25 @@ namespace BizHawk.BizInvoke
 		private static class Kernel32
 		{
 			[DllImport("kernel32.dll", SetLastError = true)]
+			public static extern UIntPtr VirtualAlloc(UIntPtr lpAddress, UIntPtr dwSize,
+				AllocationType flAllocationType, MemoryProtection flProtect);
+
+			[DllImport("kernel32.dll", SetLastError = true)]
 			public static extern bool VirtualProtect(UIntPtr lpAddress, UIntPtr dwSize,
 			   MemoryProtection flNewProtect, out MemoryProtection lpflOldProtect);
+
+			[Flags]
+			public enum AllocationType : uint
+			{
+				MEM_COMMIT = 0x00001000,
+				MEM_RESERVE = 0x00002000,
+				MEM_RESET = 0x00080000,
+				MEM_RESET_UNDO = 0x1000000,
+				MEM_LARGE_PAGES = 0x20000000,
+				MEM_PHYSICAL = 0x00400000,
+				MEM_TOP_DOWN = 0x00100000,
+				MEM_WRITE_WATCH = 0x00200000
+			}
 
 			[Flags]
 			public enum MemoryProtection : uint

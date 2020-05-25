@@ -11,6 +11,7 @@ namespace BizHawk.Emulation.Common
 			_d = d;
 		}
 		private readonly MemoryDomain _d;
+		private long _position;
 
 		public override bool CanRead => true;
 
@@ -20,7 +21,16 @@ namespace BizHawk.Emulation.Common
 
 		public override long Length => _d.Size;
 
-		public override long Position { get; set; }
+		public override long Position
+		{
+			get => _position;
+			set
+			{
+				if (value < 0 || value > _d.Size) 
+					throw new IOException("Position out of range");
+				_position = value;
+			}
+		}
 
 		public override void Flush()
 		{

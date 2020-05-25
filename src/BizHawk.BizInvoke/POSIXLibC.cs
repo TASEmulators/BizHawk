@@ -25,10 +25,12 @@ namespace BizHawk.BizInvoke
 
 		[DllImport("libc.so.6")]
 		public static extern int munmap(IntPtr addr, UIntPtr length);
+		[DllImport("libc.so.6")]
+		public static extern int ftruncate(int fd, IntPtr length);
 
 		/// <remarks>32-bit signed int</remarks>
 		[Flags]
-		public enum MemoryProtection { None = 0x0, Read = 0x1, Write = 0x2, Execute = 0x4 }
+		public enum MemoryProtection : int { None = 0x0, Read = 0x1, Write = 0x2, Execute = 0x4 }
 
 		public static MemoryProtection ToMemoryProtection(this Protection prot)
 		{
