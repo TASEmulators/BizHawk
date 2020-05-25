@@ -132,7 +132,10 @@ namespace BizHawk.Client.Common
 						}
 					}
 
-					bl.GetLump(BinaryStateLump.Framebuffer, false, PopulateFramebuffer);
+					if (emulator.HasVideoProvider())
+					{
+						bl.GetLump(BinaryStateLump.Framebuffer, false, br => PopulateFramebuffer(br, emulator.AsVideoProvider()));
+					}
 
 					string userData = "";
 					bl.GetLump(BinaryStateLump.UserData, false, delegate(TextReader tr)
@@ -171,23 +174,18 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
-		private static void PopulateFramebuffer(BinaryReader br)
+		private static void PopulateFramebuffer(BinaryReader br, IVideoProvider videoProvider)
 		{
-			if (!Global.Emulator.HasVideoProvider())
-			{
-				return;
-			}
-
 			try
 			{
 				using (new SimpleTime("Load Framebuffer"))
 				{
-					QuickBmpFile.Load(Global.Emulator.AsVideoProvider(), br.BaseStream);
+					QuickBmpFile.Load(videoProvider, br.BaseStream);
 				}
 			}
 			catch
 			{
-				var buff = Global.Emulator.AsVideoProvider().GetVideoBuffer();
+				var buff = videoProvider.GetVideoBuffer();
 				try
 				{
 					for (int i = 0; i < buff.Length; i++)
