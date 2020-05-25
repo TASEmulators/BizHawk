@@ -310,21 +310,18 @@ namespace BizHawk.Client.Common
 
 		public void SaveOnClose()
 		{
-			if (Global.Config.CheatsAutoSaveOnClose)
+			if (Changes && _cheatList.Any())
 			{
-				if (Changes && _cheatList.Any())
+				if (string.IsNullOrWhiteSpace(CurrentFileName))
 				{
-					if (string.IsNullOrWhiteSpace(CurrentFileName))
-					{
-						CurrentFileName = _defaultFileName;
-					}
+					CurrentFileName = _defaultFileName;
+				}
 
-					SaveFile(CurrentFileName);
-				}
-				else if (!_cheatList.Any() && !string.IsNullOrWhiteSpace(CurrentFileName))
-				{
-					new FileInfo(CurrentFileName).Delete();
-				}
+				SaveFile(CurrentFileName);
+			}
+			else if (!_cheatList.Any() && !string.IsNullOrWhiteSpace(CurrentFileName))
+			{
+				new FileInfo(CurrentFileName).Delete();
 			}
 		}
 

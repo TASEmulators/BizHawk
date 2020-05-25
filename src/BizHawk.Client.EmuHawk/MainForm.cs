@@ -3891,7 +3891,11 @@ namespace BizHawk.Client.EmuHawk
 				Tools.Get<TraceLogger>().Restart();
 			}
 
-			CheatList.SaveOnClose();
+			if (Config.CheatsAutoSaveOnClose)
+			{
+				CheatList.SaveOnClose();
+			}
+
 			Emulator.Dispose();
 			Emulator = new NullEmulator();
 			ClientApi.UpdateEmulatorAndVP(Emulator);
