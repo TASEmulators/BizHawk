@@ -24,6 +24,8 @@ typedef struct
 	int64_t Flags;
 } MemoryArea;
 
+typedef void (*MemoryFunctionHook)(uint8_t* buffer, int64_t address, int64_t count, bool write);
+
 #define MEMORYAREA_FLAGS_WRITABLE 1
 #define MEMORYAREA_FLAGS_SAVERAMMABLE 2
 #define MEMORYAREA_FLAGS_ONEFILLED 4
@@ -34,6 +36,7 @@ typedef struct
 #define MEMORYAREA_FLAGS_WORDSIZE4 128
 #define MEMORYAREA_FLAGS_WORDSIZE8 256
 #define MEMORYAREA_FLAGS_SWAPPED 512
+#define MEMORYAREA_FLAGS_FUNCTIONHOOK 1024
 
 #ifdef __cplusplus
 }

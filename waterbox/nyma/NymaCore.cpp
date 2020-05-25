@@ -190,14 +190,6 @@ ECL_EXPORT void SetLayers(uint64_t layers)
 	Game->SetLayerEnableMask(layers);
 }
 
-ECL_EXPORT void GetMemoryAreas(MemoryArea* m)
-{
-	m[0].Data = (void*)pixels;
-	m[0].Name = "PEWP";
-	m[0].Size = Game->fb_width * Game->fb_height * 4;
-	m[0].Flags = MEMORYAREA_FLAGS_PRIMARY | MEMORYAREA_FLAGS_WORDSIZE4;
-}
-
 ECL_EXPORT void SetInputCallback(void (*cb)())
 {}
 

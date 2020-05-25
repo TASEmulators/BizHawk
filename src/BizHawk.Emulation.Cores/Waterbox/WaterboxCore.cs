@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					.ToArray();
 				_saveramSize = (int)_saveramAreas.Sum(a => a.Size);
 
-				var memoryDomains = _memoryAreas.Select(a => new LibWaterboxCore.WaterboxMemoryDomain(a, _exe));
+				var memoryDomains = _memoryAreas.Select(a => WaterboxMemoryDomain.Create(a, _exe));
 				var primaryIndex = _memoryAreas
 					.Select((a, i) => new { a, i })
 					.Single(a => (a.a.Flags & LibWaterboxCore.MemoryDomainFlags.Primary) != 0).i;

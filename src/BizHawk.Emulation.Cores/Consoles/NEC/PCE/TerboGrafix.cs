@@ -27,5 +27,8 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 			};
 			DoInit<LibNymaCore>(game, null, discs, "pce.wbx", null, firmwares);
 		}
+
+		// pce always has two layers, sgx always has 4, and mednafen knows this
+		public override string SystemId => SettingsInfo.LayerNames.Count == 4 ? "SGX" : "PCE";
 	}
 }
