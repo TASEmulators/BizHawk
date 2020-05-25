@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				var ret = new ControllerDefinition
 				{
-					Name = "TODO"
+					Name = "Mednafen Controller"
 				};
 
 				var finalDevices = new List<string>();

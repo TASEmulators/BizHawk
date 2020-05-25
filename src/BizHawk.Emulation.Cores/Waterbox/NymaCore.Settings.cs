@@ -112,7 +112,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				public string Name { get; set; }
 				public string Description { get; set; }
-				public string SettingdValue { get; set; }
+				public string SettingValue { get; set; }
 			}
 			public class Port
 			{
@@ -258,7 +258,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							{
 								Name = dev.FullName,
 								Description = dev.Description,
-								SettingdValue = dev.ShortName
+								SettingValue = dev.ShortName
 							};
 						})
 						.ToList()

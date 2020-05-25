@@ -25,7 +25,25 @@ namespace Mednafen
 
 	std::string MDFN_MakeFName(MakeFName_Type type, int id1, const char *cd1)
 	{
-		return "";
+		std::string ret;
+		switch (type)
+		{
+			case MDFNMKF_STATE: ret += "STATE:"; break;
+			case MDFNMKF_SNAP: ret += "SNAP:"; break;
+			case MDFNMKF_SAV: ret += "SAV:"; break;
+			case MDFNMKF_SAVBACK: ret += "SAVBACK:"; break;
+			case MDFNMKF_CHEAT: ret += "CHEAT:"; break;
+			case MDFNMKF_PALETTE: ret += "PALETTE:"; break;
+			case MDFNMKF_IPS: ret += "IPS:"; break;
+			case MDFNMKF_MOVIE: ret += "MOVIE:"; break;
+			case MDFNMKF_SNAP_DAT: ret += "SNAP_DAT:"; break;
+			case MDFNMKF_CHEAT_TMP: ret += "CHEAT_TMP:"; break;
+			case MDFNMKF_FIRMWARE: ret += "FIRMWARE:"; break;
+			case MDFNMKF_PGCONFIG: ret += "PGCONFIG:"; break;
+			default: ret += "UNKNOWN:"; break;
+		}
+		ret += cd1;
+		return ret;
 	}
 
 	// mednafen-driver.h

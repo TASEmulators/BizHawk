@@ -35,7 +35,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// Load a ROM
 		/// </summary>
 		[BizImport(CC, Compatibility = true)]
-		public abstract bool Init([In]InitData data);
+		public abstract bool InitRom([In]InitData data);
+
+		/// <summary>
+		/// Load some CDs
+		/// </summary>
+		[BizImport(CC)]
+		public abstract bool InitCd(int numdisks);
 
 		public enum CommandType : int
 		{
@@ -290,5 +296,30 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		[BizImport(CC)]
 		public abstract void SetFrontendSettingQuery(FrontendSettingQuery q);
 
+		[StructLayout(LayoutKind.Sequential)]
+		public class TOC
+		{
+			public int FirstTrack;
+			public int LastTrack;
+			public int DiskType;
+
+			[StructLayout(LayoutKind.Sequential)]
+			public struct Track
+			{
+				public int Adr;
+				public int Control;
+				public int Lba;
+				public int Valid;
+			}
+
+			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 101)]
+			public Track[] Tracks;
+		}
+		[UnmanagedFunctionPointer(CC)]
+		public delegate void CDTOCCallback(int disk, [In, Out]TOC toc);
+		[UnmanagedFunctionPointer(CC)]
+		public delegate void CDSectorCallback(int disk, int lba, IntPtr dest);
+		[BizImport(CC)]
+		public abstract void SetCDCallbacks(CDTOCCallback toccallback, CDSectorCallback sectorcallback);
 	}
 }

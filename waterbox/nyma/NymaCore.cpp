@@ -24,32 +24,37 @@ struct InitData
 
 enum { MAX_PORTS = 16 };
 enum { MAX_PORT_DATA = 16 };
-static uint8_t InputPortData[MAX_PORTS * MAX_PORT_DATA];
+static uint8_t InputPortData[(MAX_PORTS + 1) * MAX_PORT_DATA];
 
 ECL_EXPORT void PreInit()
 {
 	SetupMDFNGameInfo();
 }
 
-ECL_EXPORT bool Init(const InitData& data)
+static void Setup()
+{
+	pixels = new uint32_t[Game->fb_width * Game->fb_height];
+	samples = new int16_t[22050 * 2];
+	Surf = new MDFN_Surface(
+		pixels, Game->fb_width, Game->fb_height, Game->fb_width,
+		MDFN_PixelFormat(MDFN_COLORSPACE_RGB, 16, 8, 0, 24)
+	);
+	EES = new EmulateSpecStruct();
+	EES->surface = Surf;
+	EES->VideoFormatChanged = true;
+	EES->LineWidths = new int32_t[Game->fb_height];
+	memset(EES->LineWidths, 0xff, Game->fb_height * sizeof(int32_t));
+	EES->SoundBuf = samples;
+	EES->SoundBufMaxSize = 22050;
+	EES->SoundFormatChanged = true;
+	EES->SoundRate = 44100;
+}
+
+ECL_EXPORT bool InitRom(const InitData& data)
 {
 	try
 	{
-		pixels = new uint32_t[Game->fb_width * Game->fb_height];
-		samples = new int16_t[22050 * 2];
-		Surf = new MDFN_Surface(
-			pixels, Game->fb_width, Game->fb_height, Game->fb_width,
-			MDFN_PixelFormat(MDFN_COLORSPACE_RGB, 16, 8, 0, 24)
-		);
-		EES = new EmulateSpecStruct();
-		EES->surface = Surf;
-		EES->VideoFormatChanged = true;
-		EES->LineWidths = new int32_t[Game->fb_height];
-		memset(EES->LineWidths, 0xff, Game->fb_height * sizeof(int32_t));
-		EES->SoundBuf = samples;
-		EES->SoundBufMaxSize = 22050;
-		EES->SoundFormatChanged = true;
-		EES->SoundRate = 44100;
+		Setup();
 
 		std::unique_ptr<Stream> gamestream(new FileStream(data.FileNameFull, FileStream::MODE_READ, false));
 		GameFile gf({
@@ -64,6 +69,22 @@ ECL_EXPORT bool Init(const InitData& data)
 		});
 
 		Game->Load(&gf);
+	}
+	catch(...)
+	{
+		return false;
+	}
+	return true;
+}
+
+void StartGameWithCds(int numdisks);
+
+ECL_EXPORT bool InitCd(int numdisks)
+{
+	try
+	{
+		Setup();
+		StartGameWithCds(numdisks);
 	}
 	catch(...)
 	{

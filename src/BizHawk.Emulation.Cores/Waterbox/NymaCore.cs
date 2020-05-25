@@ -5,12 +5,14 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
 	public unsafe abstract partial class NymaCore : WaterboxCore
 	{
-		protected NymaCore(GameInfo game, byte[] rom, CoreComm comm, string systemId, string controllerDeckName,
+		protected NymaCore(CoreComm comm,
+			string systemId, string controllerDeckName,
 			NymaSettings settings, NymaSyncSettings syncSettings)
 			: base(comm, new Configuration { SystemId = systemId })
 		{
@@ -21,7 +23,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		}
 
 		private LibNymaCore _nyma;
-		protected T DoInit<T>(GameInfo game, byte[] rom, string wbxFilename, string extension)
+		protected T DoInit<T>(GameInfo game, byte[] rom, Disc[] discs, string wbxFilename, string extension,
+			ICollection<KeyValuePair<string, byte[]>> firmwares = null)
 			where T : LibNymaCore
 		{
 			var t = PreInit<T>(new WaterboxOptions
@@ -38,27 +41,55 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			});
 			_nyma = t;
 			_settingsQueryDelegate = new LibNymaCore.FrontendSettingQuery(SettingsQuery);
-			var fn = game.FilesystemSafeName();
 
 			using (_exe.EnterExit())
 			{
 				_nyma.PreInit();
 				InitSyncSettingsInfo();
-				_exe.AddReadonlyFile(rom, fn);
 				_nyma.SetFrontendSettingQuery(_settingsQueryDelegate);
-
-				var didInit = _nyma.Init(new LibNymaCore.InitData
+				if (firmwares != null)
 				{
-					// TODO: Set these as some cores need them
-					FileNameBase = "",
-					FileNameExt = extension.Trim('.').ToLowerInvariant(),
-					FileNameFull = fn
-				});
+					foreach (var kvp in firmwares)
+					{
+						_exe.AddReadonlyFile(kvp.Value, kvp.Key);
+					}
+				}
+				if (discs?.Length > 0)
+				{
+					_disks = discs;
+					_diskReaders = _disks.Select(d => new DiscSectorReader(d) { Policy = _diskPolicy }).ToArray();
+					_cdTocCallback = CDTOCCallback;
+					_cdSectorCallback = CDSectorCallback;
+					_nyma.SetCDCallbacks(_cdTocCallback, _cdSectorCallback);
+					var didInit = _nyma.InitCd(_disks.Length);
+					if (!didInit)
+						throw new InvalidOperationException("Core rejected the CDs!");
+				}
+				else
+				{
+					var fn = game.FilesystemSafeName();
+					_exe.AddReadonlyFile(rom, fn);
 
-				if (!didInit)
-					throw new InvalidOperationException("Core rejected the rom!");
+					var didInit = _nyma.InitRom(new LibNymaCore.InitData
+					{
+						// TODO: Set these as some cores need them
+						FileNameBase = "",
+						FileNameExt = extension.Trim('.').ToLowerInvariant(),
+						FileNameFull = fn
+					});
 
-				_exe.RemoveReadonlyFile(fn);
+					if (!didInit)
+						throw new InvalidOperationException("Core rejected the rom!");
+
+					_exe.RemoveReadonlyFile(fn);
+				}
+				if (firmwares != null)
+				{
+					foreach (var kvp in firmwares)
+					{
+						_exe.RemoveReadonlyFile(kvp.Key);
+					}
+				}
 
 				var info = *_nyma.GetSystemInfo();
 				_videoBuffer = new int[info.MaxWidth * info.MaxHeight];
@@ -84,9 +115,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 				InitControls();
 				_nyma.SetFrontendSettingQuery(null);
+				_nyma.SetCDCallbacks(null, null);
 				PostInit();
 				SettingsInfo.LayerNames = GetLayerData();
 				_nyma.SetFrontendSettingQuery(_settingsQueryDelegate);
+				_nyma.SetCDCallbacks(_cdTocCallback, _cdSectorCallback);
 				PutSettings(_settings);
 			}
 
@@ -96,6 +129,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		protected override void LoadStateBinaryInternal(BinaryReader reader)
 		{
 			_nyma.SetFrontendSettingQuery(_settingsQueryDelegate);
+			_nyma.SetCDCallbacks(_cdTocCallback, _cdSectorCallback);
 		}
 
 		// todo: bleh

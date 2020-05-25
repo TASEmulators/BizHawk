@@ -525,9 +525,9 @@ namespace BizHawk.Client.Common
 							}
 							else
 							{
-								// TODO: pass disc in
-								throw new NotImplementedException();
-								// nextEmulator = new TerboGrafix(game, null, nextComm, "dunno what to put here");
+								nextEmulator = new TerboGrafix(game, new[] { disc }, nextComm,
+									(Emulation.Cores.Waterbox.NymaCore.NymaSettings)GetCoreSettings<TerboGrafix>(),
+									(Emulation.Cores.Waterbox.NymaCore.NymaSyncSettings)GetCoreSyncSettings<TerboGrafix>());
 							}
 							
 							break;
