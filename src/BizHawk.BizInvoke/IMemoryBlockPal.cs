@@ -10,14 +10,14 @@ namespace BizHawk.BizInvoke
 		/// <summary>
 		/// Map in the memory area at the predetermined address
 		/// </summary>
-		void PalActivate();
+		void Activate();
 		/// <summary>
 		/// Unmap the memory area
 		/// </summary>
-		void PalDeactivate();
+		void Deactivate();
 		/// <summary>
 		/// Change protection on some addresses, guaranteed to be page aligned and in the memory area
 		/// </summary>
-		void PalProtect(ulong start, ulong size, MemoryBlock.Protection prot);
+		void Protect(ulong start, ulong size, MemoryBlock.Protection prot);
 	}
 }

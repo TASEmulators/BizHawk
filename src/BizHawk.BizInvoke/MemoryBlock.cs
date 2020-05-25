@@ -57,8 +57,13 @@ namespace BizHawk.BizInvoke
 		/// <summary>get a start address for a page index within the block</summary>
 		protected ulong GetStartAddr(int page) => ((ulong) page << WaterboxUtils.PageShift) + Start;
 
-		/// <summary>Get a stream that can be used to read or write from part of the block. Does not check for or change <see cref="Protect"/>!</summary>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="start"/> or end (= <paramref name="start"/> + <paramref name="length"/> - <c>1</c>) are outside [<see cref="Start"/>, <see cref="EndExclusive"/>), the range of the block</exception>
+		/// <summary>
+		/// Get a stream that can be used to read or write from part of the block. Does not check for or change <see cref="Protect"/>!
+		/// </summary>
+		/// <exception cref="ArgumentOutOfRangeException">
+		/// <paramref name="start"/> or end (= <paramref name="start"/> + <paramref name="length"/> - <c>1</c>)
+		/// are outside [<see cref="Start"/>, <see cref="EndExclusive"/>), the range of the block
+		/// </exception>
 		public Stream GetStream(ulong start, ulong length, bool writer)
 		{
 			if (start < Start)
@@ -68,14 +73,23 @@ namespace BizHawk.BizInvoke
 			return new MemoryViewStream(!writer, writer, (long) start, (long) length, this);
 		}
 
-		/// <summary>get a stream that can be used to read or write from part of the block. both reads and writes will be XORed against an earlier recorded snapshot</summary>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="start"/> or end (= <paramref name="start"/> + <paramref name="length"/> - <c>1</c>) are outside [<see cref="Start"/>, <see cref="EndExclusive"/>), the range of the block</exception>
+		/// <summary>
+		/// get a stream that can be used to read or write from part of the block.
+		/// both reads and writes will be XORed against an earlier recorded snapshot
+		/// </summary>
+		/// <exception cref="ArgumentOutOfRangeException">
+		/// <paramref name="start"/> or end (= <paramref name="start"/> + <paramref name="length"/> - <c>1</c>) are outside
+		/// [<see cref="Start"/>, <see cref="EndExclusive"/>), the range of the block
+		/// </exception>
 		/// <exception cref="InvalidOperationException">no snapshot taken (haven't called <see cref="SaveXorSnapshot"/>)</exception>
 		public Stream GetXorStream(ulong start, ulong length, bool writer)
 		{
-			if (start < Start) throw new ArgumentOutOfRangeException(nameof(start), start, "invalid address");
-			if (EndExclusive < start + length) throw new ArgumentOutOfRangeException(nameof(length), length, "requested length implies invalid end address");
-			if (_snapshot == null) throw new InvalidOperationException("No snapshot taken!");
+			if (start < Start)
+				throw new ArgumentOutOfRangeException(nameof(start), start, "invalid address");
+			if (EndExclusive < start + length)
+				throw new ArgumentOutOfRangeException(nameof(length), length, "requested length implies invalid end address");
+			if (_snapshot == null)
+				throw new InvalidOperationException("No snapshot taken!");
 			return new MemoryViewXorStream(!writer, writer, (long) start, (long) length, this, _snapshot, (long) (start - Start));
 		}
 
@@ -85,29 +99,33 @@ namespace BizHawk.BizInvoke
 		{
 			if (Active)
 				throw new InvalidOperationException("Already active");
-			_pal.PalActivate();
+			_pal.Activate();
 			ProtectAll();
 			Active = true;
 		}
 
 		/// <summary>deactivate the memory block, removing it from RAM but leaving it immediately available to swap back in</summary>
-		/// <exception cref="InvalidOperationException"><see cref="MemoryBlock.Active"/> is <see langword="false"/> or failed to unmap file view</exception>
+		/// <exception cref="InvalidOperationException">
+		/// <see cref="MemoryBlock.Active"/> is <see langword="false"/> or failed to unmap file view
+		/// </exception>
 		public void Deactivate()
 		{
 			if (!Active)
 				throw new InvalidOperationException("Not active");
-			_pal.PalDeactivate();
+			_pal.Deactivate();
 			Active = false;
 		}
 
 		/// <summary>take a hash of the current full contents of the block, including unreadable areas</summary>
-		/// <exception cref="InvalidOperationException"><see cref="MemoryBlock.Active"/> is <see langword="false"/> or failed to make memory read-only</exception>
+		/// <exception cref="InvalidOperationException">
+		/// <see cref="MemoryBlock.Active"/> is <see langword="false"/> or failed to make memory read-only
+		/// </exception>
 		public byte[] FullHash()
 		{
 			if (!Active)
 				throw new InvalidOperationException("Not active");
 			// temporarily switch the entire block to `R`
-			_pal.PalProtect(Start, Size, Protection.R);
+			_pal.Protect(Start, Size, Protection.R);
 			var ret = WaterboxUtils.Hash(GetStream(Start, Size, false));
 			ProtectAll();
 			return ret;
@@ -132,7 +150,7 @@ namespace BizHawk.BizInvoke
 				var computedEnd = WaterboxUtils.AlignUp(start + length);
 				var computedLength = computedEnd - computedStart;
 
-				_pal.PalProtect(computedStart, computedLength, prot);
+				_pal.Protect(computedStart, computedLength, prot);
 			}
 		}
 
@@ -146,14 +164,16 @@ namespace BizHawk.BizInvoke
 				{
 					ulong zstart = GetStartAddr(ps);
 					ulong zend = GetStartAddr(i + 1);
-					_pal.PalProtect(zstart, zend - zstart, _pageData[i]);
+					_pal.Protect(zstart, zend - zstart, _pageData[i]);
 					ps = i + 1;
 				}
 			}
 		}
 
 		/// <summary>take a snapshot of the entire memory block's contents, for use in <see cref="GetXorStream"/></summary>
-		/// <exception cref="InvalidOperationException">snapshot already taken, <see cref="MemoryBlock.Active"/> is <see langword="false"/>, or failed to make memory read-only</exception>
+		/// <exception cref="InvalidOperationException">
+		/// snapshot already taken, <see cref="MemoryBlock.Active"/> is <see langword="false"/>, or failed to make memory read-only
+		/// </exception>
 		public void SaveXorSnapshot()
 		{
 			if (_snapshot != null)
@@ -163,7 +183,7 @@ namespace BizHawk.BizInvoke
 
 			// temporarily switch the entire block to `R`: in case some areas are unreadable, we don't want
 			// that to complicate things
-			_pal.PalProtect(Start, Size, Protection.R);
+			_pal.Protect(Start, Size, Protection.R);
 
 			_snapshot = new byte[Size];
 			var ds = new MemoryStream(_snapshot, true);
@@ -236,8 +256,10 @@ namespace BizHawk.BizInvoke
 
 			public override int Read(byte[] buffer, int offset, int count)
 			{
-				if (!_readable) throw new InvalidOperationException();
-				if (count < 0 || buffer.Length < count + offset) throw new ArgumentOutOfRangeException();
+				if (!_readable)
+					throw new InvalidOperationException();
+				if (count < 0 || buffer.Length < count + offset)
+					throw new ArgumentOutOfRangeException();
 				EnsureNotDisposed();
 
 				count = (int) Math.Min(count, _length - _pos);
@@ -273,8 +295,10 @@ namespace BizHawk.BizInvoke
 
 			public override void Write(byte[] buffer, int offset, int count)
 			{
-				if (!_writable) throw new InvalidOperationException();
-				if (count < 0 || _length - _pos < count || buffer.Length < count + offset) throw new ArgumentOutOfRangeException();
+				if (!_writable)
+					throw new InvalidOperationException();
+				if (count < 0 || _length - _pos < count || buffer.Length < count + offset)
+					throw new ArgumentOutOfRangeException();
 				EnsureNotDisposed();
 
 				Marshal.Copy(buffer, offset, Z.SS(_ptr + _pos), count);

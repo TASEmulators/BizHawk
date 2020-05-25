@@ -36,7 +36,7 @@ namespace BizHawk.BizInvoke
 			}
 		}
 
-		public void PalActivate()
+		public void Activate()
 		{
 			if (Kernel32.MapViewOfFileEx(
 					_handle,
@@ -51,13 +51,13 @@ namespace BizHawk.BizInvoke
 			}
 		}
 
-		public void PalDeactivate()
+		public void Deactivate()
 		{
 			if (!Kernel32.UnmapViewOfFile(Z.US(_start)))
 				throw new InvalidOperationException($"{nameof(Kernel32.UnmapViewOfFile)}() returned NULL");
 		}
 
-		public void PalProtect(ulong start, ulong size, Protection prot)
+		public void Protect(ulong start, ulong size, Protection prot)
 		{
 			if (!Kernel32.VirtualProtect(Z.UU(start), Z.UU(size), GetKernelMemoryProtectionValue(prot), out var old))
 				throw new InvalidOperationException($"{nameof(Kernel32.VirtualProtect)}() returned FALSE!");

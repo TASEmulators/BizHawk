@@ -44,21 +44,21 @@ namespace BizHawk.BizInvoke
 			Dispose();
 		}
 
-		public void PalActivate()
+		public void Activate()
 		{
 			var ptr = mmap(Z.US(_start), Z.UU(_size), MemoryProtection.Read | MemoryProtection.Write | MemoryProtection.Execute, 16, _fd, IntPtr.Zero);
 			if (ptr != Z.US(_start))
 				throw new InvalidOperationException($"{nameof(mmap)}() returned NULL or the wrong pointer");
 		}
 
-		public void PalDeactivate()
+		public void Deactivate()
 		{
 			var exitCode = munmap(Z.US(_start), Z.UU(_size));
 			if (exitCode != 0)
 				throw new InvalidOperationException($"{nameof(munmap)}() returned {exitCode}");
 		}
 
-		public void PalProtect(ulong start, ulong size, Protection prot)
+		public void Protect(ulong start, ulong size, Protection prot)
 		{
 			var exitCode = mprotect(
 				Z.US(start),
