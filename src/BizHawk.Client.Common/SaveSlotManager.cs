@@ -24,7 +24,7 @@ namespace BizHawk.Client.Common
 
 			for (int i = 0; i < 10; i++)
 			{
-				if (movie is TasMovie tasMovie)
+				if (movie is ITasMovie tasMovie)
 				{
 					_slots[i] = i < tasMovie.Branches.Count;
 				}
@@ -67,10 +67,10 @@ namespace BizHawk.Client.Common
 
 		public void ToggleRedo(IMovie movie, int slot)
 		{
-			if (0.RangeTo(9).Contains(slot) && !(movie is TasMovie)) _redo[slot] ^= true;
+			if (0.RangeTo(9).Contains(slot) && !(movie is ITasMovie)) _redo[slot] ^= true;
 		}
 
-		public bool IsRedo(IMovie movie, int slot) => 0.RangeTo(9).Contains(slot) && !(movie is TasMovie) && _redo[slot];
+		public bool IsRedo(IMovie movie, int slot) => 0.RangeTo(9).Contains(slot) && !(movie is ITasMovie) && _redo[slot];
 
 		public void SwapBackupSavestate(IMovie movie, string path, int currentSlot)
 		{

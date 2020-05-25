@@ -85,12 +85,12 @@ namespace BizHawk.Client.Common
 					});
 			}
 
-			if (Global.MovieSession.Movie.IsActive() && Global.MovieSession.Movie is TasMovie)
+			if (Global.MovieSession.Movie.IsActive() && Global.MovieSession.Movie is ITasMovie)
 			{
 				bs.PutLump(BinaryStateLump.LagLog,
 					delegate(TextWriter tw)
 					{
-						((TasMovie)Global.MovieSession.Movie).LagLog.Save(tw);
+						((ITasMovie)Global.MovieSession.Movie).LagLog.Save(tw);
 					});
 			}
 		}
@@ -152,11 +152,11 @@ namespace BizHawk.Client.Common
 						Global.UserBag = (Dictionary<string, object>)ConfigService.LoadWithType(userData);
 					}
 
-					if (Global.MovieSession.Movie.IsActive() && Global.MovieSession.Movie is TasMovie)
+					if (Global.MovieSession.Movie.IsActive() && Global.MovieSession.Movie is ITasMovie)
 					{
 						bl.GetLump(BinaryStateLump.LagLog, false, delegate(TextReader tr)
 						{
-							((TasMovie)Global.MovieSession.Movie).LagLog.Load(tr);
+							((ITasMovie)Global.MovieSession.Movie).LagLog.Load(tr);
 						});
 					}
 				}
