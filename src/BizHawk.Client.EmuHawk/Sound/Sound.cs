@@ -41,6 +41,11 @@ namespace BizHawk.Client.EmuHawk
 				_outputDevice = new DummySoundOutput(this);
 		}
 
+		/// <summary>
+		/// The maximum number of milliseconds the sound output buffer can go below full before causing a noticeable sound interruption.
+		/// </summary>
+		public int SoundMaxBufferDeficitMs { get; set; }
+
 		public void Dispose()
 		{
 			if (_disposed) return;
@@ -64,7 +69,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_outputProvider.MaxSamplesDeficit = _outputDevice.MaxSamplesDeficit;
 
-			Global.SoundMaxBufferDeficitMs = (int)Math.Ceiling(SamplesToMilliseconds(_outputDevice.MaxSamplesDeficit));
+			SoundMaxBufferDeficitMs = (int)Math.Ceiling(SamplesToMilliseconds(_outputDevice.MaxSamplesDeficit));
 
 			IsStarted = true;
 		}
@@ -77,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_bufferedProvider?.DiscardSamples();
 
-			Global.SoundMaxBufferDeficitMs = 0;
+			SoundMaxBufferDeficitMs = 0;
 
 			IsStarted = false;
 		}
@@ -161,7 +166,7 @@ namespace BizHawk.Client.EmuHawk
 					_outputProvider.BaseSoundProvider.GetSamplesSync(out samples, out sampleCount);
 					sampleOffset = 0;
 
-					if (Global.DisableSecondaryThrottling && sampleCount > samplesNeeded)
+					if (GlobalWin.DisableSecondaryThrottling && sampleCount > samplesNeeded)
 					{
 						return;
 					}
@@ -189,7 +194,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					if (Global.DisableSecondaryThrottling) // This indicates rewind or fast-forward
+					if (GlobalWin.DisableSecondaryThrottling) // This indicates rewind or fast-forward
 					{
 						_outputProvider.OnVolatility();
 					}

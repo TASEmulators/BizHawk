@@ -914,7 +914,7 @@ namespace BizHawk.Client.EmuHawk
 				//this makes sense... but we don't have the infrastructure to support it now (we'd have to enable triple buffering or something like that)
 				//so what we're gonna do is disable vsync no matter what if throttling is off, and maybe nobody will notice.
 				//update 26-mar-2016: this upsets me. When fast-forwarding and skipping frames, vsync should still work. But I'm not changing it yet
-				if (Global.DisableSecondaryThrottling)
+				if (GlobalWin.DisableSecondaryThrottling)
 					vsync = false;
 
 				//for now, it's assumed that the presentation panel is the main window, but that may not always be true

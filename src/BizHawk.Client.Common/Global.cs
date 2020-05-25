@@ -14,16 +14,6 @@ namespace BizHawk.Client.Common
 
 		public static IMovieSession MovieSession { get; set; }
 
-		/// <summary>
-		/// Used to disable secondary throttling (e.g. vsync, audio) for unthrottled modes or when the primary (clock) throttle is taking over (e.g. during fast forward/rewind).
-		/// </summary>
-		public static bool DisableSecondaryThrottling { get; set; }
-
-		/// <summary>
-		/// The maximum number of milliseconds the sound output buffer can go below full before causing a noticeable sound interruption.
-		/// </summary>
-		public static int SoundMaxBufferDeficitMs { get; set; }
-
 		public static InputManager InputManager { get; } = new InputManager();
 
 		public static Dictionary<string, object> UserBag { get; set; } = new Dictionary<string, object>();

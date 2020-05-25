@@ -322,7 +322,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (elapsedTime >= timePerFrame)
 				{
-					int maxMissedFrames = (int)Math.Ceiling((Global.SoundMaxBufferDeficitMs / 1000.0) / ((double)timePerFrame / afsfreq));
+					int maxMissedFrames = (int)Math.Ceiling((GlobalWin.Sound.SoundMaxBufferDeficitMs / 1000.0) / ((double)timePerFrame / afsfreq));
 					if (maxMissedFrames < 3)
 						maxMissedFrames = 3;
 

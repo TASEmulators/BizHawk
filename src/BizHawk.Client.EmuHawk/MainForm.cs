@@ -2030,7 +2030,7 @@ namespace BizHawk.Client.EmuHawk
 				speedPercent = Math.Max(speedPercent * Config.Rewind.SpeedMultiplier / Rewinder.RewindFrequency, 5);
 			}
 
-			Global.DisableSecondaryThrottling = _unthrottled || turbo || fastForward || rewind;
+			GlobalWin.DisableSecondaryThrottling = _unthrottled || turbo || fastForward || rewind;
 
 			// realtime throttle is never going to be so exact that using a double here is wrong
 			_throttle.SetCoreFps(Emulator.VsyncRate());
