@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 			_mainForm = mainForm;
 			InitializeComponent();
 
-			var settable = new SettingsAdapter(Global.Emulator);
+			var settable = new SettingsAdapter(GlobalWin.Emulator);
 
 			if (settable.HasSettings && !ignoreSettings)
 			{

@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 			using var dlg = new DGBPrefs();
 			dlg.PutSettings(s, ss);
 
-			var emu = (GambatteLink)Global.Emulator;
+			var emu = (GambatteLink)GlobalWin.Emulator;
 			dlg.gbPrefControl1.ColorGameBoy = emu.IsCGBMode(false);
 			dlg.gbPrefControl2.ColorGameBoy = emu.IsCGBMode(true);
 

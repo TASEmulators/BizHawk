@@ -206,7 +206,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// an experimental feature
-			if (source && Global.Emulator is Octoshock psx)
+			if (source && GlobalWin.Emulator is Octoshock psx)
 			{
 				var corePadding = psx.VideoProvider_Padding;
 				padding.Left += corePadding.Width / 2;
@@ -460,7 +460,7 @@ namespace BizHawk.Client.EmuHawk
 
 		Filters.BaseFilter CreateCoreScreenControl()
 		{
-			if (Global.Emulator is MelonDS nds)
+			if (GlobalWin.Emulator is MelonDS nds)
 			{
 				//TODO: need to pipe layout settings into here now
 				var filter = new Filters.ScreenControlNDS(nds);

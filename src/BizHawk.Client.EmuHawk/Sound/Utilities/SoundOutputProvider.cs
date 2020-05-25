@@ -114,7 +114,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool LogDebug { get; set; }
 
-		private double AdvertisedSamplesPerFrame => SampleRate / Global.Emulator.VsyncRate();
+		private double AdvertisedSamplesPerFrame => SampleRate / GlobalWin.Emulator.VsyncRate();
 
 		/// <exception cref="InvalidOperationException">not constructed in standalone mode</exception>
 		public void GetSamples(short[] samples)

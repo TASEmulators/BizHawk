@@ -88,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var guid = FunctionView.Items[index].SubItems[2].Text;
 					var nlf = _registeredFunctions[guid];
-					_registeredFunctions.Remove(nlf, Global.Emulator); // TODO: don't use Global
+					_registeredFunctions.Remove(nlf, GlobalWin.Emulator); // TODO: don't use Global
 				}
 
 				PopulateListView();
@@ -107,7 +107,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RemoveAllBtn_Click(object sender, EventArgs e)
 		{
-			_registeredFunctions.Clear(Global.Emulator); // TODO: don't use Global
+			_registeredFunctions.Clear(GlobalWin.Emulator); // TODO: don't use Global
 			PopulateListView();
 		}
 

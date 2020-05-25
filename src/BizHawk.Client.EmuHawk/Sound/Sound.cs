@@ -109,7 +109,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (source.SyncMode == SyncSoundMode.Async)
 			{
-				_bufferedAsync.RecalculateMagic(Global.Emulator.VsyncRate());
+				_bufferedAsync.RecalculateMagic(GlobalWin.Emulator.VsyncRate());
 				_bufferedProvider = _bufferedAsync;
 			}
 			else throw new InvalidOperationException("Unsupported sync mode.");
@@ -122,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
 		internal void HandleInitializationOrUnderrun(bool isUnderrun, ref int samplesNeeded)
 		{
 			// Fill device buffer with silence but leave enough room for one frame
-			int samplesPerFrame = (int)Math.Round(SampleRate / (double)Global.Emulator.VsyncRate());
+			int samplesPerFrame = (int)Math.Round(SampleRate / (double)GlobalWin.Emulator.VsyncRate());
 			int silenceSamples = Math.Max(samplesNeeded - samplesPerFrame, 0);
 			_outputDevice.WriteSamples(new short[silenceSamples * 2], 0, silenceSamples);
 			samplesNeeded -= silenceSamples;

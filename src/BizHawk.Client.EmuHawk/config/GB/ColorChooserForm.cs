@@ -232,7 +232,7 @@ namespace BizHawk.Client.EmuHawk
 		private static void DoColorChooserFormDialog(IWin32Window parent, Gameboy.GambatteSettings s, bool fromMenu)
 		{
 			using var dlg = new ColorChooserForm();
-			var gb = Global.Emulator as Gameboy;
+			var gb = GlobalWin.Emulator as Gameboy;
 			if (fromMenu)
 			{
 				s = gb.GetSettings();

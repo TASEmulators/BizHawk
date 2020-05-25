@@ -6,7 +6,6 @@ namespace BizHawk.Client.Common
 {
 	public static class Global
 	{
-		public static IEmulator Emulator { get; set; }
 		public static Config Config { get; set; }
 		public static GameInfo Game { get; set; }
 		public static CheatCollection CheatList { get; set; } = new CheatCollection();

@@ -173,7 +173,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (_currentVideoProvider == null)
 				{
-					_currentVideoProvider = Global.Emulator.AsVideoProviderOrDefault();
+					_currentVideoProvider = GlobalWin.Emulator.AsVideoProviderOrDefault();
 				}
 
 				Initialized = true;
@@ -395,7 +395,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (_currentVideoProvider == null)
 				{
-					_currentVideoProvider = Global.Emulator.AsVideoProviderOrDefault();
+					_currentVideoProvider = GlobalWin.Emulator.AsVideoProviderOrDefault();
 				}
 				return GlobalWin.DisplayManager.RenderVideoProvider(_currentVideoProvider);
 			}

@@ -778,13 +778,13 @@ namespace BizHawk.Client.EmuHawk
 		// This is a quick hack to reduce the dependency on Globals
 		private IEmulator Emulator
 		{
-			get => Global.Emulator;
+			get => GlobalWin.Emulator;
 
 			set
 			{
-				Global.Emulator = value;
-				_currentVideoProvider = Global.Emulator.AsVideoProviderOrDefault();
-				_currentSoundProvider = Global.Emulator.AsSoundProviderOrDefault();
+				GlobalWin.Emulator = value;
+				_currentVideoProvider = GlobalWin.Emulator.AsVideoProviderOrDefault();
+				_currentSoundProvider = GlobalWin.Emulator.AsSoundProviderOrDefault();
 			}
 		}
 

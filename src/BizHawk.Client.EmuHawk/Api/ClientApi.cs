@@ -408,10 +408,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				switch (Global.Emulator.SystemId)
+				switch (GlobalWin.Emulator.SystemId)
 				{
 					case "PCE":
-						return ((PCEngine) Global.Emulator).Type switch
+						return ((PCEngine) GlobalWin.Emulator).Type switch
 						{
 							NecSystemType.TurboGrafx => SystemInfo.PCE,
 							NecSystemType.TurboCD => SystemInfo.PCECD,
@@ -419,17 +419,17 @@ namespace BizHawk.Client.EmuHawk
 							_ => throw new ArgumentOutOfRangeException()
 						};
 					case "SMS":
-						var sms = (SMS) Global.Emulator;
+						var sms = (SMS) GlobalWin.Emulator;
 						return sms.IsSG1000
 							? SystemInfo.SG
 							: sms.IsGameGear
 								? SystemInfo.GG
 								: SystemInfo.SMS;
 					case "GB":
-						if (Global.Emulator is Gameboy gb) return gb.IsCGBMode() ? SystemInfo.GBC : SystemInfo.GB;
+						if (GlobalWin.Emulator is Gameboy gb) return gb.IsCGBMode() ? SystemInfo.GBC : SystemInfo.GB;
 						return SystemInfo.DualGB;
 					default:
-						return SystemInfo.FindByCoreSystem(SystemIdConverter.Convert(Global.Emulator.SystemId));
+						return SystemInfo.FindByCoreSystem(SystemIdConverter.Convert(GlobalWin.Emulator.SystemId));
 				}
 			}
 		}
