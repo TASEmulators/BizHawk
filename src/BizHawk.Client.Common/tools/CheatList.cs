@@ -171,19 +171,6 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
-		public bool Remove(Watch watch)
-		{
-			var cheat = _cheatList.FirstOrDefault(c => c == watch);
-			if (cheat != (Cheat)null)
-			{
-				_cheatList.Remove(cheat);
-				Changes = true;
-				return true;
-			}
-			
-			return false;
-		}
-
 		public bool Contains(Cheat cheat)
 		{
 			return _cheatList.Any(c => c == cheat);
@@ -246,66 +233,6 @@ namespace BizHawk.Client.Common
 					cheat.Enabled &&
 					cheat.Domain == domain
 					&& cheat.Contains(address));
-		}
-
-		/// <summary>
-		/// Returns the value of a given byte in a cheat, If the cheat is a single byte this will be the same indexing the cheat,
-		/// But if the cheat is multi-byte, this will return just the cheat value for that specific byte
-		/// </summary>
-		/// <returns>Returns null if address is not a part of a cheat, else returns the value of that specific byte only</returns>
-		public byte? GetByteValue(MemoryDomain domain, long addr)
-		{
-			var activeCheat = _cheatList.FirstOrDefault(cheat => cheat.Contains(addr));
-			if (activeCheat == (Cheat)null)
-			{
-				return null;
-			}
-
-			return activeCheat.GetByteVal(addr);
-		}
-
-		/// <summary>
-		/// Returns the value of a given cheat, or a partial value of a multi-byte cheat
-		/// Note that address + size MUST NOT exceed the range of the cheat or undefined behavior will occur
-		/// </summary>
-		/// <param name="domain">The <seealso cref="MemoryDomain"/> to apply cheats to</param>
-		/// <param name="addr">The starting address for which you will get the number of bytes</param>
-		/// <param name="size">The number of bytes of the cheat to return</param>
-		/// <returns>The value, or null if it can't resolve the address with a given cheat</returns>
-		public int? GetCheatValue(MemoryDomain domain, long addr, WatchSize size)
-		{
-			var activeCheat = _cheatList.FirstOrDefault(cheat => cheat.Contains(addr));
-			if (activeCheat == (Cheat)null)
-			{
-				return null;
-			}
-
-			switch (activeCheat.Size)
-			{
-				default:
-				case WatchSize.Byte:
-					return activeCheat.Value;
-				case WatchSize.Word:
-					return size == WatchSize.Byte
-						? GetByteValue(domain, addr)
-						: activeCheat.Value;
-				case WatchSize.DWord:
-					if (size == WatchSize.Byte)
-					{
-						return GetByteValue(domain, addr);
-					}
-					else if (size == WatchSize.Word)
-					{
-						if (activeCheat.Address == addr)
-						{
-							return (activeCheat.Value.Value >> 16) & 0xFFFF;
-						}
-
-						return activeCheat.Value.Value & 0xFFFF;
-					}
-
-					return activeCheat.Value;
-			}
 		}
 
 		public void SaveOnClose()
