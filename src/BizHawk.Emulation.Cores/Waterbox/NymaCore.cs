@@ -137,6 +137,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
+			DriveLightOn = false;
 			_controllerAdapter.SetBits(controller, _inputPortData);
 			_frameAdvanceInputLock = GCHandle.Alloc(_inputPortData, GCHandleType.Pinned);
 			var ret = new LibNymaCore.FrameInfo
