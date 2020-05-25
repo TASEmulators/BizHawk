@@ -3748,10 +3748,10 @@ namespace BizHawk.Client.EmuHawk
 
 					Tools.Restart(Emulator);
 
-					if (Config.LoadCheatFileByGame)
+					if (Config.LoadCheatFileByGame && Emulator.HasMemoryDomains())
 					{
 						CheatList.SetDefaultFileName(Tools.GenerateDefaultCheatFilename());
-						if (CheatList.AttemptToLoadCheatFile())
+						if (CheatList.AttemptToLoadCheatFile(Emulator.AsMemoryDomains()))
 						{
 							AddOnScreenMessage("Cheats file loaded");
 						}

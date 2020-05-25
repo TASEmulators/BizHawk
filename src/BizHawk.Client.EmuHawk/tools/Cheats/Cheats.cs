@@ -73,7 +73,7 @@ namespace BizHawk.Client.EmuHawk
 			var askResult = !Global.CheatList.Changes || AskSaveChanges();
 			if (askResult)
 			{
-				var loadResult = Global.CheatList.Load(path, append: false);
+				var loadResult = Global.CheatList.Load(Core, path, append: false);
 				if (!loadResult)
 				{
 					Config.RecentCheats.HandleLoadError(path);
@@ -108,7 +108,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (result)
 				{
-					Global.CheatList.Load(file.FullName, append);
+					Global.CheatList.Load(Core, file.FullName, append);
 					GeneralUpdate();
 					UpdateMessageLabel();
 					Config.RecentCheats.Add(Global.CheatList.CurrentFileName);

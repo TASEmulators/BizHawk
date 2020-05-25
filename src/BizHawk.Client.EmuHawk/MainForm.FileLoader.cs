@@ -52,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadCheats(string filename, string archive = null)
 		{
-			CheatList.Load(filename, false);
+			CheatList.Load(Emulator.AsMemoryDomains(), filename, false);
 			Tools.Load<Cheats>();
 		}
 

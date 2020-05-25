@@ -72,10 +72,10 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Looks for a .cht file that matches the ROM loaded based on the default filename for a given ROM
 		/// </summary>
-		public bool AttemptToLoadCheatFile()
+		public bool AttemptToLoadCheatFile(IMemoryDomains domains)
 		{
 			var file = new FileInfo(_defaultFileName);
-			return file.Exists && Load(file.FullName, false);
+			return file.Exists && Load(domains, file.FullName, false);
 		}
 
 		public void NewList(string defaultFileName, bool autosave = false)
@@ -321,7 +321,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public bool Load(string path, bool append)
+		public bool Load(IMemoryDomains domains, string path, bool append)
 		{
 			var file = new FileInfo(path);
 			if (file.Exists == false)
@@ -376,7 +376,7 @@ namespace BizHawk.Client.Common
 								compare = int.Parse(vals[2], NumberStyles.HexNumber);
 							}
 
-							var domain = Global.Emulator.AsMemoryDomains()[vals[3]];
+							var domain = domains[vals[3]];
 							var enabled = vals[4] == "1";
 							var name = vals[5];
 
