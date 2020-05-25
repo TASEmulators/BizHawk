@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
-using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
@@ -16,18 +15,7 @@ namespace BizHawk.Client.Common
 			get
 			{
 				var result = _lagLog.TryGetValue(frame, out var lag);
-				if (result)
-				{
-					return lag;
-				}
-
-				// TODO: don't do this here, the calling code should decide if showing the current emulator state is the right decision
-				if (frame == Global.Emulator.Frame)
-				{
-					return Global.Emulator.AsInputPollable().IsLagFrame;
-				}
-
-				return null;
+				return result ? (bool?)lag : null;
 			}
 
 			set

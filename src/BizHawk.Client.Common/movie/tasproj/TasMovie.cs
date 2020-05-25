@@ -43,13 +43,26 @@ namespace BizHawk.Client.Common
 		public override string PreferredExtension => Extension;
 		public IStateManager TasStateManager { get; }
 
-		public ITasMovieRecord this[int index] => new TasMovieRecord
+		public ITasMovieRecord this[int index]
 		{
-			HasState = TasStateManager.HasState(index),
-			LogEntry = GetInputLogEntry(index),
-			Lagged = LagLog[index + 1],
-			WasLagged = LagLog.History(index + 1)
-		};
+			get
+			{
+				var lagIndex = index + 1;
+				var lagged = LagLog[lagIndex];
+				if (lagged == null && Global.Emulator.Frame == lagIndex)
+				{
+					lagged = Global.Emulator.AsInputPollable().IsLagFrame;
+				}
+
+				return new TasMovieRecord
+				{
+					HasState = TasStateManager.HasState(index),
+					LogEntry = GetInputLogEntry(index),
+					Lagged = lagged,
+					WasLagged = LagLog.History(lagIndex)
+				};
+			}
+		}
 
 		public override void StartNewRecording()
 		{
