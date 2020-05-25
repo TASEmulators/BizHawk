@@ -64,17 +64,20 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				_core.GetMemoryAreas(areas);
 				_memoryAreas = areas.Where(a => a.Data != IntPtr.Zero && a.Size != 0)
 					.ToArray();
-				_saveramAreas = _memoryAreas.Where(a => (a.Flags & LibWaterboxCore.MemoryDomainFlags.Saverammable) != 0)
+
+				var memoryDomains = _memoryAreas.Select(a => WaterboxMemoryDomain.Create(a, _exe)).ToList();
+				var primaryDomain = memoryDomains
+					.Where(md => md.Definition.Flags.HasFlag(LibWaterboxCore.MemoryDomainFlags.Primary))
+					.Single();
+	
+				var mdl = new MemoryDomainList(memoryDomains.Cast<MemoryDomain>().ToList());
+				mdl.MainMemory = primaryDomain;
+				_serviceProvider.Register<IMemoryDomains>(mdl);
+
+				_saveramAreas = memoryDomains
+					.Where(md => md.Definition.Flags.HasFlag(LibWaterboxCore.MemoryDomainFlags.Saverammable))
 					.ToArray();
 				_saveramSize = (int)_saveramAreas.Sum(a => a.Size);
-
-				var memoryDomains = _memoryAreas.Select(a => WaterboxMemoryDomain.Create(a, _exe));
-				var primaryIndex = _memoryAreas
-					.Select((a, i) => new { a, i })
-					.Single(a => (a.a.Flags & LibWaterboxCore.MemoryDomainFlags.Primary) != 0).i;
-				var mdl = new MemoryDomainList(memoryDomains.Cast<MemoryDomain>().ToList());
-				mdl.MainMemory = mdl[primaryIndex];
-				_serviceProvider.Register<IMemoryDomains>(mdl);
 
 				var sr = _core as ICustomSaveram;
 				if (sr != null)
@@ -110,7 +113,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		private LibWaterboxCore.MemoryArea[] _saveramAreas;
+		private WaterboxMemoryDomain[] _saveramAreas;
 		private int _saveramSize;
 
 		public unsafe bool SaveRamModified
@@ -119,18 +122,29 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				if (_saveramSize == 0)
 					return false;
+				var buff = new byte[4096];
 				using (_exe.EnterExit())
 				{
-					foreach (var area in _saveramAreas)
+					fixed(byte* bp = buff)
 					{
-						int* p = (int*)area.Data;
-						int* pend = p + area.Size / sizeof(int);
-						int cmp = (area.Flags & LibWaterboxCore.MemoryDomainFlags.OneFilled) != 0 ? -1 : 0;
-
-						while (p < pend)
+						foreach (var area in _saveramAreas)
 						{
-							if (*p++ != cmp)
-								return true;
+							var stream = new MemoryDomainStream(area);
+							int cmp = (area.Definition.Flags & LibWaterboxCore.MemoryDomainFlags.OneFilled) != 0 ? -1 : 0;
+							while (true)
+							{
+								int nread = stream.Read(buff, 0, 4096);
+								if (nread == 0)
+									break;
+								
+								int* p = (int*)bp;
+								int* pend = p + nread / sizeof(int);
+								while (p < pend)
+								{
+									if (*p++ != cmp)
+										return true;
+								}
+							}
 						}
 					}
 				}
@@ -145,11 +159,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			using (_exe.EnterExit())
 			{
 				var ret = new byte[_saveramSize];
-				var offs = 0;
+				var dest = new MemoryStream(ret, true);
 				foreach (var area in _saveramAreas)
 				{
-					Marshal.Copy(area.Data, ret, offs, (int)area.Size);
-					offs += (int)area.Size;
+					new MemoryDomainStream(area).CopyTo(dest);
 				}
 				return ret;
 			}
@@ -163,11 +176,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					throw new InvalidOperationException("Saveram size mismatch");
 				using (_exe.EnterExit())
 				{
-					var offs = 0;
+					var source = new MemoryStream(data, false);
 					foreach (var area in _saveramAreas)
 					{
-						Marshal.Copy(data, offs, area.Data, (int)area.Size);
-						offs += (int)area.Size;
+						WaterboxUtils.CopySome(source, new MemoryDomainStream(area), area.Size);
 					}
 				}
 			}

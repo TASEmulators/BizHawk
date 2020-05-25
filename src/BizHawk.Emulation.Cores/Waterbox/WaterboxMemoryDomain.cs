@@ -15,10 +15,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		protected readonly IMonitor _monitor;
 		protected readonly long _addressMangler;
 
-		public static MemoryDomain Create(MemoryArea m, IMonitor monitor)
+		public MemoryArea Definition { get; }
+
+		public static WaterboxMemoryDomain Create(MemoryArea m, IMonitor monitor)
 		{
 			return m.Flags.HasFlag(MemoryDomainFlags.FunctionHook)
-				? (MemoryDomain)new WaterboxMemoryDomainFunc(m, monitor)
+				? (WaterboxMemoryDomain)new WaterboxMemoryDomainFunc(m, monitor)
 				: new WaterboxMemoryDomainPointer(m, monitor);
 		}
 
@@ -48,6 +50,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				_addressMangler = 0;
 			}
+			Definition = m;
 		}
 	}
 
