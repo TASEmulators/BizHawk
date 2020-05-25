@@ -5,11 +5,11 @@ using BizHawk.Common;
 
 namespace BizHawk.BizInvoke
 {
-	public abstract class MemoryBlock : IDisposable
+	public class MemoryBlock : IDisposable
 	{
 		/// <summary>allocate <paramref name="size"/> bytes starting at a particular address <paramref name="start"/></summary>
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="start"/> is not aligned or <paramref name="size"/> is <c>0</c></exception>
-		protected MemoryBlock(ulong start, ulong size)
+		public MemoryBlock(ulong start, ulong size)
 		{
 			if (!WaterboxUtils.Aligned(start))
 				throw new ArgumentOutOfRangeException(nameof(start), start, "start address must be aligned");
@@ -19,7 +19,13 @@ namespace BizHawk.BizInvoke
 			Size = WaterboxUtils.AlignUp(size);
 			EndExclusive = Start + Size;
 			_pageData = new Protection[GetPage(EndExclusive - 1) + 1];
+
+			_pal = OSTailoredCode.IsUnixHost
+				? (IMemoryBlockPal)new MemoryBlockUnixPal(Start, Size)
+				: new MemoryBlockWindowsPal(Start, Size);
 		}
+
+		private IMemoryBlockPal _pal;
 
 		/// <summary>stores last set memory protection value for each page</summary>
 		protected readonly Protection[] _pageData;
@@ -74,40 +80,111 @@ namespace BizHawk.BizInvoke
 		}
 
 		/// <summary>activate the memory block, swapping it in at the pre-specified address</summary>
-		public abstract void Activate();
+		/// <exception cref="InvalidOperationException"><see cref="MemoryBlock.Active"/> is <see langword="true"/> or failed to map file view</exception>
+		public void Activate()
+		{
+			if (Active)
+				throw new InvalidOperationException("Already active");
+			_pal.PalActivate();
+			ProtectAll();
+			Active = true;
+		}
 
 		/// <summary>deactivate the memory block, removing it from RAM but leaving it immediately available to swap back in</summary>
-		public abstract void Deactivate();
+		/// <exception cref="InvalidOperationException"><see cref="MemoryBlock.Active"/> is <see langword="false"/> or failed to unmap file view</exception>
+		public void Deactivate()
+		{
+			if (!Active)
+				throw new InvalidOperationException("Not active");
+			_pal.PalDeactivate();
+			Active = false;
+		}
 
 		/// <summary>take a hash of the current full contents of the block, including unreadable areas</summary>
-		public abstract byte[] FullHash();
+		/// <exception cref="InvalidOperationException"><see cref="MemoryBlock.Active"/> is <see langword="false"/> or failed to make memory read-only</exception>
+		public byte[] FullHash()
+		{
+			if (!Active)
+				throw new InvalidOperationException("Not active");
+			// temporarily switch the entire block to `R`
+			_pal.PalProtect(Start, Size, Protection.R);
+			var ret = WaterboxUtils.Hash(GetStream(Start, Size, false));
+			ProtectAll();
+			return ret;
+		}
 
-		/// <summary>set r/w/x protection on a portion of memory. rounded to encompassing pages</summary>
-		public abstract void Protect(ulong start, ulong length, Protection prot);
+
+		/// <summary>set r/w/x protection on a portion of memory. rounded to encompassing pages</summary
+		/// <exception cref="InvalidOperationException">failed to protect memory</exception>
+		public void Protect(ulong start, ulong length, Protection prot)
+		{
+			if (length == 0)
+				return;
+			int pstart = GetPage(start);
+			int pend = GetPage(start + length - 1);
+
+			for (int i = pstart; i <= pend; i++)
+				_pageData[i] = prot; // also store the value for later use
+
+			if (Active) // it's legal to Protect() if we're not active; the information is just saved for the next activation
+			{
+				var computedStart = WaterboxUtils.AlignDown(start);
+				var computedEnd = WaterboxUtils.AlignUp(start + length);
+				var computedLength = computedEnd - computedStart;
+
+				_pal.PalProtect(computedStart, computedLength, prot);
+			}
+		}
 
 		/// <summary>restore all recorded protections</summary>
-		protected abstract void ProtectAll();
+		private void ProtectAll()
+		{
+			int ps = 0;
+			for (int i = 0; i < _pageData.Length; i++)
+			{
+				if (i == _pageData.Length - 1 || _pageData[i] != _pageData[i + 1])
+				{
+					ulong zstart = GetStartAddr(ps);
+					ulong zend = GetStartAddr(i + 1);
+					_pal.PalProtect(zstart, zend - zstart, _pageData[i]);
+					ps = i + 1;
+				}
+			}
+		}
 
 		/// <summary>take a snapshot of the entire memory block's contents, for use in <see cref="GetXorStream"/></summary>
-		public abstract void SaveXorSnapshot();
+		/// <exception cref="InvalidOperationException">snapshot already taken, <see cref="MemoryBlock.Active"/> is <see langword="false"/>, or failed to make memory read-only</exception>
+		public void SaveXorSnapshot()
+		{
+			if (_snapshot != null)
+				throw new InvalidOperationException("Snapshot already taken");
+			if (!Active)
+				throw new InvalidOperationException("Not active");
 
-		public abstract void Dispose(bool disposing);
+			// temporarily switch the entire block to `R`: in case some areas are unreadable, we don't want
+			// that to complicate things
+			_pal.PalProtect(Start, Size, Protection.R);
+
+			_snapshot = new byte[Size];
+			var ds = new MemoryStream(_snapshot, true);
+			var ss = GetStream(Start, Size, false);
+			ss.CopyTo(ds);
+			XorHash = WaterboxUtils.Hash(_snapshot);
+
+			ProtectAll();
+		}
 
 		public void Dispose()
 		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
-		}
-
-		~MemoryBlock()
-		{
-			Dispose(false);
+			if (_pal != null)
+			{
+				_pal.Dispose();
+				_pal = null;
+			}
 		}
 
 		/// <summary>allocate <paramref name="size"/> bytes starting at a particular address <paramref name="start"/></summary>
-		public static MemoryBlock Create(ulong start, ulong size) => OSTailoredCode.IsUnixHost
-			? (MemoryBlock) new MemoryBlockUnix(start, size)
-			: new MemoryBlockWindows(start, size);
+		public static MemoryBlock Create(ulong start, ulong size) => new MemoryBlock(start, size);
 
 		/// <summary>allocate <paramref name="size"/> bytes at any address</summary>
 		public static MemoryBlock Create(ulong size) => Create(0, size);
