@@ -19,6 +19,18 @@ namespace BizHawk.Client.Common
 			Header[HeaderKeys.MovieVersion] = "BizHawk v2.0.0";
 		}
 
+		public virtual void Attach(IEmulator emulator)
+		{
+			if (!Emulator.IsNull())
+			{
+				throw new InvalidOperationException("A core has already been attached!");
+			}
+
+			Emulator = emulator;
+		}
+
+		public IEmulator Emulator { get; private set; }
+
 		protected bool MakeBackup { get; set; } = true;
 
 		private string _filename;
@@ -45,8 +57,7 @@ namespace BizHawk.Client.Common
 
 		public ILogEntryGenerator LogGeneratorInstance(IController source)
 		{
-			// TODO: when Bk2 movies have an instance of the core, use that
-			return new Bk2LogEntryGenerator(Global.Emulator.SystemId, source);
+			return new Bk2LogEntryGenerator(Emulator.SystemId, source);
 		}
 
 		public int FrameCount => Log.Count;
@@ -86,9 +97,9 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Config.VBAStyleMovieLoadState)
 			{
-				if (Global.Emulator.Frame < Log.Count)
+				if (Emulator.Frame < Log.Count)
 				{
-					Truncate(Global.Emulator.Frame);
+					Truncate(Emulator.Frame);
 				}
 			}
 

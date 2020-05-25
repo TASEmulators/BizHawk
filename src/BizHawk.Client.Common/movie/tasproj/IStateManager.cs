@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
@@ -12,6 +13,17 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		/// <returns>A savestate for the given frame or an empty array if there isn't one</returns>
 		byte[] this[int frame] { get; }
+
+		/// <summary>
+		/// Attaches a core to the given state manager instance, this must be done and
+		/// it must be done only once, a state manager can not and should not exist for more
+		/// than the lifetime of the core
+		/// </summary>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown if attempting to attach a core when one is already attached
+		/// or if the given core does not meet all required dependencies
+		/// </exception>
+		void Attach(IEmulator emulator);
 
 		TasStateManagerSettings Settings { get; set; }
 

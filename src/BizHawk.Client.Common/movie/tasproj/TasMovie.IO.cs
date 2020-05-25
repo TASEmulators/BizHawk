@@ -270,12 +270,6 @@ namespace BizHawk.Client.Common
 							TasStateManager.Load(br);
 						});
 					}
-
-					// Movie should always have a state at frame 0.
-					if (!StartsFromSavestate && Global.Emulator.Frame == 0)
-					{
-						TasStateManager.Capture();
-					}
 				}
 			}
 

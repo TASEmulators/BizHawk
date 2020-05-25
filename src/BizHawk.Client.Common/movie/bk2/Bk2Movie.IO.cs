@@ -165,15 +165,15 @@ namespace BizHawk.Client.Common
 
 		protected virtual void Write(string fn, bool backup = false)
 		{
-			if (Global.Emulator is Emulation.Cores.Nintendo.SubNESHawk.SubNESHawk subNes)
+			if (Emulator is Emulation.Cores.Nintendo.SubNESHawk.SubNESHawk subNes)
 			{
 				Header[HeaderKeys.VBlankCount] = subNes.VBL_CNT.ToString();
 			}
-			else if (Global.Emulator is Emulation.Cores.Nintendo.Gameboy.Gameboy gameboy)
+			else if (Emulator is Emulation.Cores.Nintendo.Gameboy.Gameboy gameboy)
 			{
 				Header[HeaderKeys.CycleCount] = gameboy.CycleCount.ToString();
 			}
-			else if (Global.Emulator is Emulation.Cores.Nintendo.SubGBHawk.SubGBHawk subGb)
+			else if (Emulator is Emulation.Cores.Nintendo.SubGBHawk.SubGBHawk subGb)
 			{
 				Header[HeaderKeys.CycleCount] = subGb.Cycle_CNT.ToString();
 			}

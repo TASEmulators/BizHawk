@@ -17,15 +17,14 @@ namespace BizHawk.Client.Common
 		private const int MinFrequency = 1;
 		private const int MaxFrequency = 16;
 
-		// TODO: pass this in, and find a solution to a stale reference (this is instantiated BEFORE a new core instance is made, making this one stale if it is simply set in the constructor
-		private IStatable Core => Global.Emulator.AsStatable();
-		private IEmulator Emulator => Global.Emulator;
+		private IStatable _core;
+		private IEmulator _emulator;
 
-		private readonly StateManagerDecay _decay;
+		private StateManagerDecay _decay;
 		private readonly ITasMovie _movie;
 
-		private readonly SortedList<int, byte[]> _states;
-		private readonly double _expectedStateSizeInMb;
+		private SortedList<int, byte[]> _states  = new SortedList<int, byte[]>();
+		private double _expectedStateSizeInMb;
 
 		private ulong _used;
 		private int _stateFrequency;
@@ -43,10 +42,26 @@ namespace BizHawk.Client.Common
 			{
 				SetState(0, _movie.BinarySavestate);
 			}
+		}
+
+		public void Attach(IEmulator emulator)
+		{
+			if (!_emulator.IsNull())
+			{
+				throw new InvalidOperationException("A core has already been attached!");
+			}
+
+			if (!emulator.HasSavestates())
+			{
+				throw new InvalidOperationException($"A core must be able to provide an {nameof(IStatable)} service");
+			}
+
+			_emulator = emulator;
+			_core = emulator.AsStatable();
 
 			_decay = new StateManagerDecay(_movie, this);
 
-			_expectedStateSizeInMb = Core.CloneSavestate().Length / (double)(1024 * 1024);
+			_expectedStateSizeInMb = _core.CloneSavestate().Length / (double)(1024 * 1024);
 			if (_expectedStateSizeInMb.HawkFloatEquality(0))
 			{
 				throw new InvalidOperationException("Savestate size can not be zero!");
@@ -112,7 +127,7 @@ namespace BizHawk.Client.Common
 		public void Capture(bool force = false)
 		{
 			bool shouldCapture;
-			int frame = Emulator.Frame;
+			int frame = _emulator.Frame;
 
 			if (_movie.StartsFromSavestate && frame == 0) // Never capture frame 0 on savestate anchored movies since we have it anyway
 			{
@@ -137,7 +152,7 @@ namespace BizHawk.Client.Common
 
 			if (shouldCapture)
 			{
-				SetState(frame, (byte[])Core.SaveStateBinary().Clone(), skipRemoval: false);
+				SetState(frame, (byte[])_core.SaveStateBinary().Clone(), skipRemoval: false);
 			}
 		}
 
@@ -301,7 +316,7 @@ namespace BizHawk.Client.Common
 		{
 			if (Count + 1 > MaxStates)
 			{
-				_decay.Trigger(Emulator.Frame, Count + 1 - MaxStates);
+				_decay.Trigger(_emulator.Frame, Count + 1 - MaxStates);
 			}
 		}
 

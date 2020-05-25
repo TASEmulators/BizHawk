@@ -18,7 +18,6 @@ namespace BizHawk.Client.Common
 		private readonly Action<string> _popupCallback;
 
 		private IMovie _queuedMovie;
-		private IEmulator _emulator = new NullEmulator();
 
 		// Previous saved core preferences. Stored here so that when a movie
 		// overrides the values, they can be restored to user preferences 
@@ -51,9 +50,9 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				if (Movie.IsPlayingOrRecording() && _emulator.Frame > 0)
+				if (Movie.IsPlayingOrRecording() && Movie.Emulator.Frame > 0)
 				{
-					return Movie.GetInputState(_emulator.Frame - 1);
+					return Movie.GetInputState(Movie.Emulator.Frame - 1);
 				}
 
 				return null;
@@ -64,9 +63,9 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				if (Movie.IsPlayingOrRecording() && _emulator.Frame > 1)
+				if (Movie.IsPlayingOrRecording() && Movie.Emulator.Frame > 1)
 				{
-					return Movie.GetInputState(_emulator.Frame - 2);
+					return Movie.GetInputState(Movie.Emulator.Frame - 2);
 				}
 
 				return null;
@@ -92,7 +91,7 @@ namespace BizHawk.Client.Common
 			}
 			else if (Movie.IsFinished())
 			{
-				if (_emulator.Frame < Movie.FrameCount) // This scenario can happen from rewinding (suddenly we are back in the movie, so hook back up to the movie
+				if (Movie.Emulator.Frame < Movie.FrameCount) // This scenario can happen from rewinding (suddenly we are back in the movie, so hook back up to the movie
 				{
 					Movie.SwitchToPlay();
 					LatchInputToLog();
@@ -127,7 +126,7 @@ namespace BizHawk.Client.Common
 							if (!lg.IsEmpty)
 							{
 								LatchInputToUser();
-								Movie.PokeFrame(_emulator.Frame, Global.InputManager.MovieOutputHardpoint);
+								Movie.PokeFrame(Movie.Emulator.Frame, Global.InputManager.MovieOutputHardpoint);
 							}
 							else
 							{
@@ -149,12 +148,12 @@ namespace BizHawk.Client.Common
 			if (Movie is ITasMovie tasMovie)
 			{
 				tasMovie.GreenzoneCurrentFrame();
-				if (tasMovie.IsPlayingOrFinished() && _emulator.Frame >= tasMovie.InputLogLength)
+				if (tasMovie.IsPlayingOrFinished() && Movie.Emulator.Frame >= tasMovie.InputLogLength)
 				{
 					HandleFrameLoopForRecordMode();
 				}
 			}
-			else if (Movie.IsPlaying() && _emulator.Frame >= Movie.InputLogLength)
+			else if (Movie.IsPlaying() && Movie.Emulator.Frame >= Movie.InputLogLength)
 			{
 				HandlePlaybackEnd();
 			}
@@ -290,7 +289,7 @@ namespace BizHawk.Client.Common
 
 		public void RunQueuedMovie(bool recordMode, IEmulator emulator)
 		{
-			_emulator = emulator;
+			_queuedMovie.Attach(emulator);
 			foreach (var previousPref in _preferredCores)
 			{
 				Global.Config.PreferredCores[previousPref.Key] = previousPref.Value;
@@ -298,10 +297,10 @@ namespace BizHawk.Client.Common
 
 			Movie = _queuedMovie;
 			_queuedMovie = null;
-			MultiTrack.Restart(_emulator.ControllerDefinition.PlayerCount);
+			MultiTrack.Restart(Movie.Emulator.ControllerDefinition.PlayerCount);
 
-			Movie.ProcessSavestate(_emulator);
-			Movie.ProcessSram(_emulator);
+			Movie.ProcessSavestate(Movie.Emulator);
+			Movie.ProcessSram(Movie.Emulator);
 
 			if (recordMode)
 			{
@@ -359,14 +358,14 @@ namespace BizHawk.Client.Common
 
 				Output(message);
 				ReadOnly = true;
-			}
 
-			MultiTrack.Restart(_emulator.ControllerDefinition.PlayerCount);
-			_modeChangedCallback();
+				MultiTrack.Restart(Movie.Emulator.ControllerDefinition.PlayerCount);
+				_modeChangedCallback();
+			}
 
 			// TODO: we aren't ready for this line, keeping the old movie hanging around masks a lot of Tastudio problems
 			// Uncommenting this can cause drawing crashes in tastudio since it depends on a ITasMovie and doesn't have one between closing and opening a rom
-			//Movie = MovieService.Create();
+			//Movie = null;
 		}
 
 		public void ConvertToTasProj()
@@ -381,8 +380,8 @@ namespace BizHawk.Client.Common
 		{
 			if (Movie.IsPlayingOrFinished())
 			{
-				Movie.ClearFrame(_emulator.Frame);
-				Output($"Scrubbed input at frame {_emulator.Frame}");
+				Movie.ClearFrame(Movie.Emulator.Frame);
+				Output($"Scrubbed input at frame {Movie.Emulator.Frame}");
 			}
 		}
 
@@ -408,9 +407,9 @@ namespace BizHawk.Client.Common
 					rewiredSource.PlayerTargetMask = unchecked((int)0xFFFFFFFF);
 				}
 
-				if (Movie.InputLogLength > _emulator.Frame)
+				if (Movie.InputLogLength > Movie.Emulator.Frame)
 				{
-					var input = Movie.GetInputState(_emulator.Frame);
+					var input = Movie.GetInputState(Movie.Emulator.Frame);
 					MovieController.SetFrom(input);
 				}
 
@@ -426,10 +425,10 @@ namespace BizHawk.Client.Common
 		// Latch input from the input log, if available
 		private void LatchInputToLog()
 		{
-			var input = Movie.GetInputState(_emulator.Frame);
+			var input = Movie.GetInputState(Movie.Emulator.Frame);
 
 			// adelikat: TODO: this is likely the source of frame 0 TAStudio bugs, I think the intent is to check if the movie is 0 length?
-			if (_emulator.Frame == 0) // Hacky
+			if (Movie.Emulator.Frame == 0) // Hacky
 			{
 				HandleFrameAfter(); // Frame 0 needs to be handled.
 			}
@@ -452,7 +451,7 @@ namespace BizHawk.Client.Common
 			if (Movie.Core ==  CoreNames.Gambatte)
 			{
 				var movieCycles = Convert.ToUInt64(Movie.HeaderEntries[HeaderKeys.CycleCount]);
-				var coreCycles = ((Gameboy)_emulator).CycleCount;
+				var coreCycles = ((Gameboy)Movie.Emulator).CycleCount;
 				if (movieCycles != (ulong)coreCycles)
 				{
 					PopupMessage($"Cycle count in the movie ({movieCycles}) doesn't match the emulated value ({coreCycles}).");
@@ -502,7 +501,7 @@ namespace BizHawk.Client.Common
 
 			// the movie session makes sure that the correct input has been read and merged to its MovieControllerAdapter;
 			// this has been wired to Global.MovieOutputHardpoint in RewireInputChain
-			Movie.RecordFrame(_emulator.Frame, Global.InputManager.MovieOutputHardpoint);
+			Movie.RecordFrame(Movie.Emulator.Frame, Global.InputManager.MovieOutputHardpoint);
 		}
 	}
 }

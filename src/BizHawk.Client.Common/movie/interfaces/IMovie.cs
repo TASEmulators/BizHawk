@@ -224,6 +224,22 @@ namespace BizHawk.Client.Common
 		/// <param name="frame">The frame of input to be retrieved</param>
 		/// <returns>A controller state representing the specified frame of input, if frame is out of range, will return null</returns>
 		IMovieController GetInputState(int frame);
+
+		/// <summary>
+		/// Attaches a core to the given movie instance, this must be done and
+		/// it must be done only once, a movie can not and should not exist for more
+		/// than the lifetime of the core
+		/// </summary>
+		/// <exception cref="System.InvalidOperationException">
+		/// Thrown if attempting to attach a core when one is already attached
+		/// or if the given core does not meet all required dependencies
+		/// </exception>
+		void Attach(IEmulator emulator);
+
+		/// <summary>
+		/// The currently attached core or null if not yet attached
+		/// </summary>
+		IEmulator Emulator { get; }
 	}
 
 	public static class MovieExtensions

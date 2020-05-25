@@ -11,15 +11,11 @@ namespace BizHawk.Client.Common
 	internal sealed partial class TasMovie : Bk2Movie, ITasMovie
 	{
 		public new const string Extension = "tasproj";
+		private IInputPollable _inputPollable;
 
 		/// <exception cref="InvalidOperationException">loaded core does not implement <see cref="IStatable"/></exception>
 		internal TasMovie(string path, bool startsFromSavestate) : base(path)
 		{
-			if (!Global.Emulator.HasSavestates())
-			{
-				throw new InvalidOperationException($"Cannot create a {nameof(TasMovie)} against a core that does not implement {nameof(IStatable)}");
-			}
-
 			Branches = new TasBranchCollection(this);
 			ChangeLog = new TasMovieChangeLog(this);
 			TasStateManager = new TasStateManager(this, Global.Config.DefaultTasStateManagerSettings);
@@ -27,6 +23,23 @@ namespace BizHawk.Client.Common
 			Markers = new TasMovieMarkerList(this);
 			Markers.CollectionChanged += Markers_CollectionChanged;
 			Markers.Add(0, startsFromSavestate ? "Savestate" : "Power on");
+		}
+
+		public override void Attach(IEmulator emulator)
+		{
+			if (!emulator.HasSavestates())
+			{
+				throw new InvalidOperationException($"A core must be able to provide an {nameof(IStatable)} service");
+			}
+
+			if (!emulator.CanPollInput())
+			{
+				throw new InvalidOperationException($"A core must be able to provide an {nameof(IInputPollable)} service");
+			}
+
+			_inputPollable = emulator.AsInputPollable();
+			TasStateManager.Attach(emulator);
+			base.Attach(emulator);
 		}
 
 		public IStringLog VerificationLog { get; } = StringLogUtil.MakeStringLog(); // For movies that do not begin with power-on, this is the input required to get into the initial state
@@ -49,9 +62,9 @@ namespace BizHawk.Client.Common
 			{
 				var lagIndex = index + 1;
 				var lagged = LagLog[lagIndex];
-				if (lagged == null && Global.Emulator.Frame == lagIndex)
+				if (lagged == null && Emulator.Frame == lagIndex)
 				{
-					lagged = Global.Emulator.AsInputPollable().IsLagFrame;
+					lagged = _inputPollable.IsLagFrame;
 				}
 
 				return new TasMovieRecord
@@ -104,7 +117,7 @@ namespace BizHawk.Client.Common
 				_displayCache = (frame, GetInputState(frame));
 			}
 			
-			return CreateDisplayValueForButton(_displayCache.Controller, Global.Emulator.SystemId, buttonName);
+			return CreateDisplayValueForButton(_displayCache.Controller, Emulator.SystemId, buttonName);
 		}
 
 		private static string CreateDisplayValueForButton(IController adapter, string systemId, string buttonName)
@@ -128,17 +141,17 @@ namespace BizHawk.Client.Common
 		{
 			// todo: this isn't working quite right when autorestore is off and we're editing while seeking
 			// but accounting for that requires access to Mainform.IsSeeking
-			if (Global.Emulator.Frame > LastEditedFrame)
+			if (Emulator.Frame > LastEditedFrame)
 			{
 				// emulated a new frame, current editing segment may change now. taseditor logic
 				LastPositionStable = false;
 			}
 
-			LagLog[Global.Emulator.Frame] = Global.Emulator.AsInputPollable().IsLagFrame;
+			LagLog[Emulator.Frame] = _inputPollable.IsLagFrame;
 
-			if (!TasStateManager.HasState(Global.Emulator.Frame))
+			if (!TasStateManager.HasState(Emulator.Frame))
 			{
-				TasStateManager.Capture(Global.Emulator.Frame == LastEditedFrame - 1);
+				TasStateManager.Capture(Emulator.Frame == LastEditedFrame - 1);
 			}
 		}
 
