@@ -16,7 +16,10 @@ namespace BizHawk.Client.Common
 				ChangeLog.AddGeneralUndo(frame - 1, frame - 1, $"Record Frame: {frame}");
 			}
 
-			base.RecordFrame(frame, source);
+			var lg = LogGeneratorInstance(source);
+			SetFrameAt(frame, lg.GenerateLogEntry());
+
+			Changes = true;
 
 			LagLog.RemoveFrom(frame);
 			LagLog[frame] = _inputPollable.IsLagFrame;
