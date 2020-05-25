@@ -23,6 +23,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		public static extern uint mame_launch(int argc, string[] argv);
 
 		[DllImport(dll, CallingConvention = cc)]
+		public static extern char mame_read_byte(uint address);
+
+		[DllImport(dll, CallingConvention = cc)]
 		public static extern SaveError mame_save_buffer(byte[] buf, out int length);
 
 		[DllImport(dll, CallingConvention = cc)]

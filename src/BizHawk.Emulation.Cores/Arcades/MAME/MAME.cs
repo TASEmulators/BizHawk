@@ -218,7 +218,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				, "-nonvram_save"                       // prevent dumping non-volatile ram to disk
 				, "-artpath",          "mame\\artwork"  // path to load artowrk from
 				, "-diff_directory",      "mame\\diff"  // hdd diffs, whenever stuff is written back to an image
-				, "-cfg_directory",                 ""  // send invalid path to prevent cfg handling
+				, "-cfg_directory",                ":"  // send invalid path to prevent cfg handling
 				, "-volume",                     "-32"  // lowest attenuation means mame osd remains silent
 				, "-output",                 "console"  // print everything to hawk console
 				, "-samplerate", _sampleRate.ToString() // match hawk samplerate
@@ -452,7 +452,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			addr += firstOffset;
 
-			var val = (byte)LibMAME.mame_lua_get_int($"{ MAMELuaCommand.GetSpace }:read_u8({ addr << _systemBusAddressShift })");
+			var val = (byte)LibMAME.mame_read_byte((uint)addr << _systemBusAddressShift);
 
 			_memoryAccessComplete.Set();
 
