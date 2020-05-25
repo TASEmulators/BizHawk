@@ -64,11 +64,11 @@ namespace BizHawk.Client.Common
 		}
 
 		// todo: go through all states once, remove as many as we need. refactor to not need goto
-		public void Trigger(int decayStates)
+		public void Trigger(int frame, int decayStates)
 		{
 			for (; decayStates > 0 && _tsm.Count > 1;)
 			{
-				int baseStateIndex = _tsm.GetStateIndexByFrame(Global.Emulator.Frame);
+				int baseStateIndex = _tsm.GetStateIndexByFrame(frame);
 				int baseStateFrame = _tsm.GetStateFrameByIndex(baseStateIndex) / _step;	// reduce right away
 				int forwardPriority = -1000000;
 				int backwardPriority = -1000000;

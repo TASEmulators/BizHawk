@@ -301,7 +301,7 @@ namespace BizHawk.Client.Common
 		{
 			if (Count + 1 > MaxStates)
 			{
-				_decay.Trigger(Count + 1 - MaxStates);
+				_decay.Trigger(Emulator.Frame, Count + 1 - MaxStates);
 			}
 		}
 
