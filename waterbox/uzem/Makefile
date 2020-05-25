@@ -1,4 +1,4 @@
-CCFLAGS := \
+CXXFLAGS := \
 	-Wall -Werror=int-to-pointer-cast \
 	-Wno-reorder \
 	-std=c++0x -fomit-frame-pointer \

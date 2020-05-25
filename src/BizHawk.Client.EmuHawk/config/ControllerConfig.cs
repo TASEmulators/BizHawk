@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using BizHawk.Common;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
+using System.Text.RegularExpressions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -88,6 +89,8 @@ namespace BizHawk.Client.EmuHawk
 			return new AnalogBindPanel(settings, buttons) { Dock = DockStyle.Fill, AutoScroll = true };
 		}
 
+		private static Regex ButtonMatchesPlayer = new Regex("^P(\\d+)\\s");
+
 		private void LoadToPanel<T>(Control dest, string controllerName, IList<string> controllerButtons, Dictionary<string,string> categoryLabels, IDictionary<string, Dictionary<string, T>> settingsBlock, T defaultValue, PanelCreator<T> createPanel)
 		{
 			if (!settingsBlock.TryGetValue(controllerName, out var settings))
@@ -110,92 +113,57 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			// split the list of all settings into buckets by player number
-			var buckets = new List<string>[MaxPlayers + 1];
-			var categoryBuckets = new WorkingDictionary<string, List<string>>();
-			for (var i = 0; i < buckets.Length; i++)
-			{
-				buckets[i] = new List<string>();
-			}
+			// split the list of all settings into buckets by player number, or supplied category
+			// the order that buttons appeared in determines the order of the tabs
+			var orderedBuckets = new List<KeyValuePair<string, List<string>>>();
+			var buckets = new Dictionary<string, List<string>>();
 
 			// by iterating through only the controller's active buttons, we're silently
 			// discarding anything that's not on the controller right now.  due to the way
 			// saving works, those entries will still be preserved in the config file, tho
 			foreach (var button in controllerButtons)
 			{
-				int i;
-				for (i = MaxPlayers; i > 0; i--)
-				{
-					if (button.StartsWith($"P{i}"))
-					{
-						break;
-					}
-				}
-
-				if (i > MaxPlayers) // couldn't find
-				{
-					i = 0;
-				}
-
+				Match m;
+				string categoryLabel; // = "Console"; // anything that wants not console can set it in the categorylabels
 				if (categoryLabels.ContainsKey(button))
 				{
-					categoryBuckets[categoryLabels[button]].Add(button);
+					categoryLabel = categoryLabels[button];
+				}
+				else if ((m = ButtonMatchesPlayer.Match(button)).Success)
+				{
+					categoryLabel = $"Player {m.Groups[1].Value}";
 				}
 				else
 				{
-					buckets[i].Add(button);
+					categoryLabel = "Console"; // anything that wants not console can set it in the categorylabels
 				}
+
+				if (!buckets.ContainsKey(categoryLabel))
+				{
+					var l = new List<string>();
+					buckets.Add(categoryLabel, l);
+					orderedBuckets.Add(new KeyValuePair<string, List<string>>(categoryLabel, l));
+				}
+
+				buckets[categoryLabel].Add(button);
 			}
 
-			if (buckets[0].Count == controllerButtons.Count)
+			if (orderedBuckets.Count == 1)
 			{
 				// everything went into bucket 0, so make no tabs at all
 				dest.Controls.Add(createPanel(settings, controllerButtons.ToList(), dest.Size));
 			}
 			else
 			{
-				// create multiple player tabs
+				// create multiple tabs
 				var tt = new TabControl { Dock = DockStyle.Fill };
 				dest.Controls.Add(tt);
 				int pageIdx = 0;
-				for (int i = 1; i <= MaxPlayers; i++)
+				foreach (var kvp in orderedBuckets)
 				{
-					if (buckets[i].Count > 0)
-					{
-						string tabName = _emulator.SystemId != "WSWAN" ? $"Player {i}" : i == 1 ? "Normal" : "Rotated"; // hack
-						tt.TabPages.Add(tabName);
-						tt.TabPages[pageIdx].Controls.Add(createPanel(settings, buckets[i], tt.Size));
-						pageIdx++;
-					}
-				}
-
-				foreach (var cat in categoryBuckets)
-				{
-					string tabName = cat.Key;
+					string tabName = kvp.Key;
 					tt.TabPages.Add(tabName);
-					tt.TabPages[pageIdx].Controls.Add(createPanel(settings, cat.Value, tt.Size));
-
-					// ZxHawk hack - it uses multiple categoryLabels
-					if (_emulator.SystemId == "ZXSpectrum"
-						|| _emulator.SystemId == "AmstradCPC"
-						|| _emulator.SystemId == "ChannelF")
-					{
-						pageIdx++;
-					}
-				}
-
-				if (buckets[0].Count > 0)
-				{
-					// ZXHawk needs to skip this bit
-					if (_emulator.SystemId == "ZXSpectrum" || _emulator.SystemId == "AmstradCPC" || _emulator.SystemId == "ChannelF")
-						return;
-
-					string tabName =
-						(_emulator.SystemId == "C64") ? "Keyboard" :
-						(_emulator.SystemId == "MAME") ? "Misc" :
-						"Console"; // hack
-					tt.TabPages.Add(tabName);
-					tt.TabPages[pageIdx].Controls.Add(createPanel(settings, buckets[0], tt.Size));
+					tt.TabPages[pageIdx++].Controls.Add(createPanel(settings, kvp.Value, tt.Size));
 				}
 			}
 		}

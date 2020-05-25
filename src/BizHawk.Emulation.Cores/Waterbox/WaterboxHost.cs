@@ -229,7 +229,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					_disposeList.Add(_mmapheap);
 				}
 
-				Console.WriteLine("About to enter unmanaged code");
+				System.Diagnostics.Debug.WriteLine($"About to enter unmanaged code for {opt.Filename}");
 				if (!OSTailoredCode.IsUnixHost && !System.Diagnostics.Debugger.IsAttached && Win32Imports.IsDebuggerPresent())
 				{
 					// this means that GDB or another unconventional debugger is attached.

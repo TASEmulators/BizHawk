@@ -7,7 +7,7 @@
 		<ApplicationManifest>app.manifest</ApplicationManifest>
 		<DefineConstants>$(DefineConstants);EXE_PROJECT</DefineConstants>
 		<OutputPath>$(ProjectDir)../../output</OutputPath>
-		<OutputType>WinExe</OutputType>
+		<OutputType>Exe</OutputType>
 		<TargetFramework>net48</TargetFramework>
 		<TargetName>EmuHawk</TargetName>
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>

@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Common
+﻿using System.Threading;
+
+namespace BizHawk.Emulation.Common
 {
 	[Core("NullHawk", "", false, true)]
 	[ServiceNotApplicable(new[] {
@@ -28,7 +30,13 @@
 
 		public ControllerDefinition ControllerDefinition => NullController.Instance.Definition;
 
-		public bool FrameAdvance(IController controller, bool render, bool renderSound) => true;
+		public bool FrameAdvance(IController controller, bool render, bool renderSound)
+		{
+			// real cores wouldn't do something like this, but this just keeps speed reasonable
+			// if all throttles are off
+			Thread.Sleep(5);
+			return true;
+		}
 
 		public int Frame => 0;
 

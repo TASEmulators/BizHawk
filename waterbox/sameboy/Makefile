@@ -1,12 +1,12 @@
-FLAGS := -Wall -Werror=pointer-to-int-cast -Werror=int-to-pointer-cast -Werror=implicit-function-declaration \
+FLAGS := -Wall -Werror=int-to-pointer-cast \
 	-Wno-multichar \
-	-fomit-frame-pointer
+	-fomit-frame-pointer -DGB_INTERNAL -D_GNU_SOURCE
 
 CCFLAGS := $(FLAGS) \
 	-std=gnu99 \
-	-DLSB_FIRST -D_GNU_SOURCE -DGB_INTERNAL
+	-DLSB_FIRST -Werror=pointer-to-int-cast -Werror=implicit-function-declaration
 
-CPPFLAGS := $(FLAGS) -DSPC_NO_COPY_STATE_FUNCS -std=c++0x -D_GNU_SOURCE -DGB_INTERNAL
+CXXFLAGS := $(FLAGS) -DSPC_NO_COPY_STATE_FUNCS -std=c++0x -fno-exceptions -fno-rtti
 
 TARGET := sameboy.wbx
 

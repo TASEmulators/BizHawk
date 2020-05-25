@@ -28,20 +28,21 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 		[CoreConstructor("DNGP")]
 		public DualNeoGeoPort(CoreComm comm, byte[] rom, bool deterministic)
 		{
-			// this will throw on construct:  we need to compile two different copies of ngp at different starts
-			CoreComm = comm;
-			_left = new NeoGeoPort(comm, rom, new NeoGeoPort.SyncSettings { Language = LibNeoGeoPort.Language.English }, deterministic, WaterboxHost.CanonicalStart);
-			_right = new NeoGeoPort(comm, rom, new NeoGeoPort.SyncSettings { Language = LibNeoGeoPort.Language.English }, deterministic, WaterboxHost.CanonicalStart);
-			_linkCable = new LinkCable();
-			_leftEnd = new LinkInterop(_left, _linkCable.LeftIn, _linkCable.LeftOut);
-			_rightEnd = new LinkInterop(_right, _linkCable.RightIn, _linkCable.RightOut);
+			throw new NotImplementedException();
+			// // this will throw on construct:  we need to compile two different copies of ngp at different starts
+			// CoreComm = comm;
+			// _left = new NeoGeoPort(comm, rom, new NeoGeoPort.SyncSettings { Language = LibNeoGeoPort.Language.English }, deterministic, WaterboxHost.CanonicalStart);
+			// _right = new NeoGeoPort(comm, rom, new NeoGeoPort.SyncSettings { Language = LibNeoGeoPort.Language.English }, deterministic, WaterboxHost.CanonicalStart);
+			// _linkCable = new LinkCable();
+			// _leftEnd = new LinkInterop(_left, _linkCable.LeftIn, _linkCable.LeftOut);
+			// _rightEnd = new LinkInterop(_right, _linkCable.RightIn, _linkCable.RightOut);
 
 
-			_serviceProvider = new BasicServiceProvider(this);
-			_soundProvider = new DualSyncSound(_left, _right);
-			_serviceProvider.Register<ISoundProvider>(_soundProvider);
-			_videoProvider = new SideBySideVideo(_left, _right);
-			_serviceProvider.Register<IVideoProvider>(_videoProvider);
+			// _serviceProvider = new BasicServiceProvider(this);
+			// _soundProvider = new DualSyncSound(_left, _right);
+			// _serviceProvider.Register<ISoundProvider>(_soundProvider);
+			// _videoProvider = new SideBySideVideo(_left, _right);
+			// _serviceProvider.Register<IVideoProvider>(_videoProvider);
 		}
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)

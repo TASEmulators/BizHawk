@@ -1,10 +1,13 @@
 # common parts of all waterbox cores
 
 WATERBOX_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-ROOT_DIR := $(shell dirname $(realpath $(lastword $(filter-out $(lastword $(MAKEFILE_LIST)), $(MAKEFILE_LIST)))))
+ROOT_DIR := $(shell dirname $(realpath $(lastword $(filter-out $(lastword $(MAKEFILE_LIST)),$(MAKEFILE_LIST)))))
 OUTPUTDLL_DIR := $(realpath $(WATERBOX_DIR)/../output/dll)
-OBJ_DIR := $(ROOT_DIR)/obj/release
-DOBJ_DIR := $(ROOT_DIR)/obj/debug
+ifeq ($(OUT_DIR),)
+OUT_DIR := $(ROOT_DIR)/obj
+endif
+OBJ_DIR := $(OUT_DIR)/release
+DOBJ_DIR := $(OUT_DIR)/debug
 EMULIBC_OBJS := $(WATERBOX_DIR)/emulibc/obj/release/emulibc.c.o
 EMULIBC_DOBJS := $(WATERBOX_DIR)/emulibc/obj/debug/emulibc.c.o
 SYSROOT := $(WATERBOX_DIR)/sysroot
@@ -19,25 +22,26 @@ print-%: ;
 #LD_PLUGIN := $(shell gcc --print-file-name=liblto_plugin.so)
 
 CC := $(SYSROOT)/bin/musl-gcc
-CCFLAGS := $(CCFLAGS) -mabi=ms -fvisibility=hidden -I$(WATERBOX_DIR)/emulibc -Wall -mcmodel=large \
-	-mstack-protector-guard=global
-LDFLAGS := $(LDFLAGS) -fuse-ld=gold -static -Wl,-Ttext,0x0000036f00000000 #-Wl,--plugin,$(LD_PLUGIN)
+COMMONFLAGS := -mabi=ms -fvisibility=hidden -I$(WATERBOX_DIR)/emulibc -Wall -mcmodel=large \
+	-mstack-protector-guard=global -no-pie -fno-pic -fno-pie
+CCFLAGS := $(CCFLAGS) $(COMMONFLAGS)
+LDFLAGS := $(LDFLAGS) -static -Wl,--eh-frame-hdr -T $(WATERBOX_DIR)/linkscript.T #-Wl,--plugin,$(LD_PLUGIN)
 CCFLAGS_DEBUG := -O0 -g
 CCFLAGS_RELEASE := -O3 -flto
 LDFLAGS_DEBUG :=
 LDFLAGS_RELEASE :=
-CXXFLAGS := $(CXXFLAGS) -I$(SYSROOT)/include/c++/v1 -fno-use-cxa-atexit
-CXXFLAGS_DEBUG :=
-CXXFLAGS_RELEASE :=
+CXXFLAGS := $(CXXFLAGS) $(COMMONFLAGS) -I$(SYSROOT)/include/c++/v1 -fno-use-cxa-atexit
+CXXFLAGS_DEBUG := -O0 -g
+CXXFLAGS_RELEASE := -O3 -flto
 
-EXTRA_LIBS := -L $(SYSROOT)/lib/linux -lclang_rt.builtins-x86_64
-ifneq ($(filter %.cpp, $(SRCS)), )
+EXTRA_LIBS := -L $(SYSROOT)/lib/linux -lclang_rt.builtins-x86_64 $(EXTRA_LIBS)
+ifneq ($(filter %.cpp,$(SRCS)),)
 EXTRA_LIBS := -lc++ -lc++abi -lunwind $(EXTRA_LIBS)
 endif
 
-_OBJS := $(addsuffix .o, $(realpath $(SRCS)))
-OBJS := $(patsubst $(ROOT_DIR)%, $(OBJ_DIR)%, $(_OBJS))
-DOBJS := $(patsubst $(ROOT_DIR)%, $(DOBJ_DIR)%, $(_OBJS))
+_OBJS := $(addsuffix .o,$(realpath $(SRCS)))
+OBJS := $(patsubst $(ROOT_DIR)%,$(OBJ_DIR)%,$(_OBJS))
+DOBJS := $(patsubst $(ROOT_DIR)%,$(DOBJ_DIR)%,$(_OBJS))
 
 $(OBJ_DIR)/%.c.o: %.c
 	@echo cc $<
@@ -46,7 +50,7 @@ $(OBJ_DIR)/%.c.o: %.c
 $(OBJ_DIR)/%.cpp.o: %.cpp
 	@echo cxx $<
 	@mkdir -p $(@D)
-	@$(CC) -c -o $@ $< $(CCFLAGS) $(CXXFLAGS) $(CCFLAGS_RELEASE) 
+	@$(CC) -c -o $@ $< $(CXXFLAGS) $(CXXFLAGS_RELEASE) 
 $(DOBJ_DIR)/%.c.o: %.c
 	@echo cc $<
 	@mkdir -p $(@D)
@@ -54,7 +58,7 @@ $(DOBJ_DIR)/%.c.o: %.c
 $(DOBJ_DIR)/%.cpp.o: %.cpp
 	@echo cxx $<
 	@mkdir -p $(@D)
-	@$(CC) -c -o $@ $< $(CCFLAGS) $(CXXFLAGS) $(CCFLAGS_DEBUG) $(CXXFLAGS_DEBUG)
+	@$(CC) -c -o $@ $< $(CXXFLAGS) $(CXXFLAGS_DEBUG)
 
 ifndef NO_WBX_TARGETS
 
@@ -97,8 +101,8 @@ endif
 
 .PHONY: clean clean-release clean-debug
 clean:
-	rm -rf $(ROOT_DIR)/obj
+	rm -rf $(OUT_DIR)
 clean-release:
-	rm -rf $(ROOT_DIR)/obj/release
+	rm -rf $(OUT_DIR)/release
 clean-debug:
-	rm -rf $(ROOT_DIR)/obj/debug
+	rm -rf $(OUT_DIR)/debug

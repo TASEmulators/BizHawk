@@ -80,7 +80,8 @@ namespace BizHawk.Emulation.Cores
 				byte[] file,
 				bool deterministic,
 				object settings,
-				object syncSettings
+				object syncSettings,
+				string extension
 			)
 			{
 				object[] o = new object[_paramMap.Count];
@@ -91,6 +92,7 @@ namespace BizHawk.Emulation.Cores
 				Bp(o, "deterministic", deterministic);
 				Bp(o, "settings", settings);
 				Bp(o, "syncsettings", syncSettings);
+				Bp(o, "extension", extension);
 
 				return (IEmulator)CTor.Invoke(o);
 			}

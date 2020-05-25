@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 	public enum NecSystemType { TurboGrafx, TurboCD, SuperGrafx }
 
 	[Core(
-		"PCEHawk",
+		CoreNames.PceHawk,
 		"Vecna",
 		isPorted: false,
 		isReleased: true)]

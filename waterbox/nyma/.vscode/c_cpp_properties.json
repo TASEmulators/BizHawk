@@ -1,0 +1,20 @@
+{
+    "configurations": [
+        {
+            "name": "Waterbox",
+            "includePath": [
+				"${workspaceFolder}",
+				"${workspaceFolder}/mednafen/include",
+				"${workspaceFolder}/common",
+				"${workspaceFolder}/mednafen/src/trio",
+				"${workspaceFolder}/../sysroot/include",
+				"${workspaceFolder}/../sysroot/include/c++/v1",
+				"${workspaceFolder}/../emulibc"
+            ],
+            "defines": [
+            ],
+            "intelliSenseMode": "gcc-x64"
+        }
+    ],
+    "version": 4
+}

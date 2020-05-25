@@ -10,8 +10,8 @@ sed -i -e '13c\' -e '' "$SYSROOT/lib/musl-gcc.specs"
 rm -rf build-
 mkdir build-
 cd build-
-export CFLAGS="-mabi=ms -mcmodel=large -mstack-protector-guard=global"
-export CXXFLAGS="-mabi=ms -mcmodel=large -mstack-protector-guard=global"
+export CFLAGS="-mabi=ms -mcmodel=large -mstack-protector-guard=global -no-pie -fno-pic -fno-pie"
+export CXXFLAGS="-mabi=ms -mcmodel=large -mstack-protector-guard=global -no-pie -fno-pic -fno-pie"
 cmake \
 	-DCMAKE_C_COMPILER="$SYSROOT/bin/musl-gcc" \
 	-DCMAKE_CXX_COMPILER="$SYSROOT/bin/musl-gcc" \
@@ -22,6 +22,8 @@ cmake \
 	-DCOMPILER_RT_BUILD_PROFILE=OFF \
 	-DCOMPILER_RT_CAN_EXECUTE_TESTS=OFF \
 	-DCOMPILER_RT_USE_BUILTINS_LIBRARY=ON \
+	-UCOMPILER_RT_BAREMETAL_BUILD \
+	-DCOMPILER_RT_BAREMETAL_BUILD=ON \
 	-DCMAKE_INSTALL_PREFIX="$SYSROOT" \
 	-DCMAKE_AR="/usr/bin/gcc-ar" \
 	-DCMAKE_RANLIB="/usr/bin/gcc-ranlib" \

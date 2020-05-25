@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
 using BizHawk.BizInvoke;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -13,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	/// <summary>
 	/// syscall emulation layer
 	/// </summary>
-	internal class Syscalls : IBinaryStateable
+	internal partial class Syscalls : IBinaryStateable
 	{
 		public interface IFileObject : IBinaryStateable
 		{
@@ -287,12 +286,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		}
 
 		[BizExport(CallingConvention.Cdecl, EntryPoint = "__wsyscalltab[2]")]
-		public int Open(string path, int flags, int mode)
+		public long Open(string path, int flags, int mode)
 		{
 			if (!_availableFiles.TryGetValue(path, out var o))
-				return -1;
+				return -ENOENT;
 			if (_openFiles.Contains(o))
-				return -1;
+				return -EACCES;
 			FileAccess access;
 			switch (flags & 3)
 			{
@@ -306,10 +305,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					access = FileAccess.ReadWrite;
 					break;
 				default:
-					return -1;
+					return -EINVAL;
 			}
 			if (!o.Open(access))
-				return -1;
+				return -EACCES;
 			int fd;
 			for (fd = 0; fd < _openFiles.Count; fd++)
 				if (_openFiles[fd] == null)
@@ -321,13 +320,15 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			return fd;
 		}
 		[BizExport(CallingConvention.Cdecl, EntryPoint = "__wsyscalltab[3]")]
-		public int Close(int fd)
+		public long Close(int fd)
 		{
 			if (fd < 0 || fd >= _openFiles.Count)
-				return -1;
+				return -EBADF;
 			var o = _openFiles[fd];
-			if (o == null || !o.Close())
-				return -1;
+			if (o == null)
+				return -EBADF;
+			if (!o.Close())
+				return -EIO;
 			_openFiles[fd] = null;
 			return 0;
 		}
@@ -335,8 +336,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public long Seek(int fd, long offset, int type)
 		{
 			var s = StreamForFd(fd);
-			if (s == null || !s.CanSeek)
-				return -1;
+			if (s == null)
+				return -EBADF;
+			if (!s.CanSeek)
+				return -ESPIPE;
 			SeekOrigin o;
 			switch (type)
 			{
@@ -350,23 +353,20 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					o = SeekOrigin.End;
 					break;
 				default:
-					return -1;
+					return -EINVAL;
 			}
-			return s.Seek(offset, o);
+			try
+			{
+				return s.Seek(offset, o);
+			}
+			catch (IOException)
+			{
+				// usually means bad offset, since we already filtered out on CanSeek
+				return -EINVAL;
+			}
 		}
 
-		[BizExport(CallingConvention.Cdecl, EntryPoint = "__wsyscalltab[4]")]
-		public int Stat(string path, IntPtr statbuf)
-		{
-			return -1;
-		}
-
-		[BizExport(CallingConvention.Cdecl, EntryPoint = "__wsyscalltab[5]")]
-		public int Fstat(int fd, IntPtr statbuf)
-		{
-			return -1;
-		}
-
+		// TODO: Remove this entirely once everything is compiled against the new libc
 		[BizExport(CallingConvention.Cdecl, EntryPoint = "__wsyscalltab[205]")]
 		public long SetThreadArea(IntPtr uinfo)
 		{
@@ -376,6 +376,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		[BizExport(CallingConvention.Cdecl, EntryPoint = "__wsyscalltab[218]")]
 		public long SetTidAddress(IntPtr address)
 		{
+			// pretend we succeeded
 			return 8675309; // arbitrary thread id
 		}
 
@@ -392,76 +393,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			time.Seconds = 1495889068;
 			time.NanoSeconds = 0;
 			return 0;
-		}
-
-		[BizExport(CallingConvention.Cdecl, EntryPoint = "__wsyscalltab[9]")]
-		public IntPtr MMap(IntPtr address, UIntPtr size, int prot, int flags, int fd, IntPtr offs)
-		{
-			if (address != IntPtr.Zero)
-				return Z.SS(-1);
-			MemoryBlock.Protection mprot;
-			switch (prot)
-			{
-				case 0: mprot = MemoryBlock.Protection.None; break;
-				default:
-				case 6: // W^X
-				case 7: // W^X
-				case 4: // exec only????
-				case 2: return Z.SS(-1); // write only????
-				case 3: mprot = MemoryBlock.Protection.RW; break;
-				case 1: mprot = MemoryBlock.Protection.R; break;
-				case 5: mprot = MemoryBlock.Protection.RX; break;
-			}
-			if ((flags & 0x20) == 0)
-			{
-				// MAP_ANONYMOUS is required
-				return Z.SS(-1);
-			}
-			if ((flags & 0xf00) != 0)
-			{
-				// various unsupported flags
-				return Z.SS(-1);
-			}
-
-			var ret = _parent._mmapheap.Map((ulong)size, mprot);
-			return ret == 0 ? Z.SS(-1) : Z.US(ret);
-		}
-		[BizExport(CallingConvention.Cdecl, EntryPoint = "__wsyscalltab[25]")]
-		public IntPtr MRemap(UIntPtr oldAddress, UIntPtr oldSize,
-			UIntPtr newSize, int flags)
-		{
-			if ((flags & 2) != 0)
-			{
-				// don't support MREMAP_FIXED
-				return Z.SS(-1);
-			}
-			var ret = _parent._mmapheap.Remap((ulong)oldAddress, (ulong)oldSize, (ulong)newSize,
-				(flags & 1) != 0);
-			return ret == 0 ? Z.SS(-1) : Z.US(ret);
-		}
-		[BizExport(CallingConvention.Cdecl, EntryPoint = "__wsyscalltab[11]")]
-		public int MUnmap(UIntPtr address, UIntPtr size)
-		{
-			return _parent._mmapheap.Unmap((ulong)address, (ulong)size) ? 0 : -1;
-		}
-
-		[BizExport(CallingConvention.Cdecl, EntryPoint = "__wsyscalltab[10]")]
-		public int MProtect(UIntPtr address, UIntPtr size, int prot)
-		{
-			MemoryBlock.Protection mprot;
-			switch (prot)
-			{
-				case 0: mprot = MemoryBlock.Protection.None; break;
-				default:
-				case 6: // W^X
-				case 7: // W^X
-				case 4: // exec only????
-				case 2: return -1; // write only????
-				case 3: mprot = MemoryBlock.Protection.RW; break;
-				case 1: mprot = MemoryBlock.Protection.R; break;
-				case 5: mprot = MemoryBlock.Protection.RX; break;
-			}
-			return _parent._mmapheap.Protect((ulong)address, (ulong)size, mprot) ? 0 : -1;
 		}
 
 		public void SaveStateBinary(BinaryWriter bw)
@@ -530,61 +461,5 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			return RemoveFileInternal<TransientFile>(name).GetContents();
 		}
-	}
-
-	/// <summary>
-	/// Provides useful traps for any syscalls that are not implemented by libc
-	/// </summary>
-	internal class NotImplementedSyscalls : IImportResolver
-	{
-		private class Trap
-		{
-			private readonly int _index;
-			private readonly IImportResolver _resolver;
-			public Trap(int index)
-			{
-				_index = index;
-				_resolver = BizExvoker.GetExvoker(this, CallingConventionAdapters.Waterbox);
-			}
-			[BizExport(CallingConvention.Cdecl, EntryPoint="@@")]
-			public void RunTrap()
-			{
-				var s = $"Trapped on unimplemented syscall {_index}";
-				Console.WriteLine(s);
-				throw new InvalidOperationException(s);
-			}
-			public IntPtr FunctionPointer => _resolver.GetProcAddrOrThrow("@@");
-		}
-		private readonly List<Trap> _traps;
-		private NotImplementedSyscalls()
-		{
-			_traps = Enumerable.Range(0, 512)
-				.Select(i => new Trap(i))
-				.ToList();
-		}
-
-		private static readonly Regex ExportRegex = new Regex("__wsyscalltab\\[(\\d+)\\]");
-
-		public IntPtr GetProcAddrOrZero(string entryPoint)
-		{
-			var m = ExportRegex.Match(entryPoint);
-			if (m.Success)
-			{
-				return _traps[int.Parse(m.Groups[1].Value)].FunctionPointer;
-			}
-			return IntPtr.Zero;
-		}
-
-		public IntPtr GetProcAddrOrThrow(string entryPoint)
-		{
-			var m = ExportRegex.Match(entryPoint);
-			if (m.Success)
-			{
-				return _traps[int.Parse(m.Groups[1].Value)].FunctionPointer;
-			}
-			throw new InvalidOperationException($"{entryPoint} was not of the format __wsyscalltab[#]");
-		}
-
-		public static NotImplementedSyscalls Instance { get; } = new NotImplementedSyscalls();
 	}
 }

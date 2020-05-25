@@ -90,13 +90,17 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			/// for a yuge endian domain, if true, bytes are stored word-swapped from their native ordering
 			/// </summary>
 			Swapped = 512,
+			/// <summary>
+			/// If true, Data is a function to call and not a pointer
+			/// </summary>
+			FunctionHook = 1024,
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct MemoryArea
 		{
 			/// <summary>
-			/// pointer to the data in memory
+			/// pointer to the data in memory, or a function hook to call
 			/// </summary>
 			public IntPtr Data;
 			/// <summary>
@@ -111,97 +115,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		}
 
 		[UnmanagedFunctionPointer(CC)]
+		public delegate void MemoryFunctionHook(IntPtr buffer, long address, long count, bool write);
+
+		[UnmanagedFunctionPointer(CC)]
 		public delegate void EmptyCallback();
-
-		public unsafe class WaterboxMemoryDomain : MemoryDomain
-		{
-			private readonly IntPtr _data;
-			private readonly IMonitor _monitor;
-			private readonly long _addressMangler;
-
-			public override byte PeekByte(long addr)
-			{
-				if ((ulong)addr < (ulong)Size)
-				{
-					using (_monitor.EnterExit())
-					{
-						return ((byte*)_data)[addr ^ _addressMangler];
-					}
-				}
-
-				throw new ArgumentOutOfRangeException(nameof(addr));
-			}
-
-			public override void PokeByte(long addr, byte val)
-			{
-				if (Writable)
-				{
-					if ((ulong)addr < (ulong)Size)
-					{
-						using (_monitor.EnterExit())
-						{
-							((byte*)_data)[addr ^ _addressMangler] = val;
-						}
-					}
-					else
-					{
-						throw new ArgumentOutOfRangeException(nameof(addr));
-					}
-				}
-			}
-
-			public override void BulkPeekByte(Range<long> addresses, byte[] values)
-			{
-				if (_addressMangler != 0)
-				{
-					base.BulkPeekByte(addresses, values);
-					return;
-				}
-	
-				var start = (ulong)addresses.Start;
-				var count = addresses.Count();
-
-				if (start < (ulong)Size && (start + count) <= (ulong)Size)
-				{
-					using (_monitor.EnterExit())
-					{
-					 	Marshal.Copy(Z.US((ulong)_data + start), values, 0, (int)count);
-					}
-				}
-				else
-				{
-					throw new ArgumentOutOfRangeException(nameof(addresses));
-				}
-			}
-
-			public WaterboxMemoryDomain(MemoryArea m, IMonitor monitor)
-			{
-				Name = Marshal.PtrToStringAnsi(m.Name);
-				EndianType = (m.Flags & MemoryDomainFlags.YugeEndian) != 0 ? Endian.Big : Endian.Little;
-				_data = m.Data;
-				Size = m.Size;
-				Writable = (m.Flags & MemoryDomainFlags.Writable) != 0;
-				if ((m.Flags & MemoryDomainFlags.WordSize1) != 0)
-					WordSize = 1;
-				else if ((m.Flags & MemoryDomainFlags.WordSize2) != 0)
-					WordSize = 2;
-				else if ((m.Flags & MemoryDomainFlags.WordSize4) != 0)
-					WordSize = 4;
-				else if ((m.Flags & MemoryDomainFlags.WordSize8) != 0)
-					WordSize = 8;
-				else
-					throw new InvalidOperationException("Unknown word size for memory domain");
-				_monitor = monitor;
-				if ((m.Flags & MemoryDomainFlags.Swapped) != 0 && EndianType == Endian.Big)
-				{
-					_addressMangler = WordSize - 1;
-				}
-				else
-				{
-					_addressMangler = 0;
-				}
-			}
-		}
 
 		[BizImport(CC)]
 		public abstract void FrameAdvance([In, Out] FrameInfo frame);

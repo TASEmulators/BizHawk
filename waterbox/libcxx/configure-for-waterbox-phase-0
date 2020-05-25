@@ -5,8 +5,8 @@ LLVMDIR="`realpath \"$MYPATH/../../../llvm-project\"`"
 rm -rf build0
 mkdir build0
 cd build0
-export CFLAGS="-mabi=ms -mcmodel=large -mstack-protector-guard=global -fno-use-cxa-atexit"
-export CXXFLAGS="-mabi=ms -mcmodel=large -mstack-protector-guard=global -fno-use-cxa-atexit"
+export CFLAGS="-mabi=ms -mcmodel=large -mstack-protector-guard=global -fno-use-cxa-atexit -no-pie -fno-pic -fno-pie -D_WIN64 -D_LIBUNWIND_IS_BAREMETAL -D_LIBUNWIND_SUPPORT_DWARF_UNWIND"
+export CXXFLAGS="-mabi=ms -mcmodel=large -mstack-protector-guard=global -fno-use-cxa-atexit -no-pie -fno-pic -fno-pie -D_WIN64 -D_LIBUNWIND_IS_BAREMETAL -D_LIBUNWIND_SUPPORT_DWARF_UNWIND"
 cmake \
 	-DCMAKE_C_COMPILER="$SYSROOT/bin/musl-gcc" \
 	-DCMAKE_CXX_COMPILER="$SYSROOT/bin/musl-gcc" \

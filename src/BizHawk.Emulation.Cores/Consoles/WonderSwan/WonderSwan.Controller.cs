@@ -35,6 +35,32 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 				"Power",
 				"Rotate"
+			},
+			CategoryLabels =
+			{
+				{ "P1 X1", "Normal" },
+				{ "P1 X2", "Normal" },
+				{ "P1 X3", "Normal" },
+				{ "P1 X4", "Normal" },
+				{ "P1 Y1", "Normal" },
+				{ "P1 Y2", "Normal" },
+				{ "P1 Y3", "Normal" },
+				{ "P1 Y4", "Normal" },
+				{ "P1 Start", "Normal" },
+				{ "P1 B", "Normal" },
+				{ "P1 A", "Normal" },
+
+				{ "P2 X1", "Rotated" },
+				{ "P2 X2", "Rotated" },
+				{ "P2 X3", "Rotated" },
+				{ "P2 X4", "Rotated" },
+				{ "P2 Y1", "Rotated" },
+				{ "P2 Y2", "Rotated" },
+				{ "P2 Y3", "Rotated" },
+				{ "P2 Y4", "Rotated" },
+				{ "P2 Start", "Rotated" },
+				{ "P2 B", "Rotated" },
+				{ "P2 A", "Rotated" },
 			}
 		};
 		public ControllerDefinition ControllerDefinition => WonderSwanController;
