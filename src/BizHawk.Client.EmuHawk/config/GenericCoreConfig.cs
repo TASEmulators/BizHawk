@@ -17,8 +17,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private GenericCoreConfig(MainForm mainForm, bool ignoreSettings = false, bool ignoreSyncSettings = false)
 		{
-			_mainForm = mainForm;
 			InitializeComponent();
+			_mainForm = mainForm;
 
 			var settable = new SettingsAdapter(GlobalWin.Emulator);
 
@@ -108,8 +108,27 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void DoDialog(MainForm owner, string title)
 		{
-			using var dlg = new GenericCoreConfig(owner) { Text = title };
-			dlg.ShowDialog(owner);
+			if (GlobalWin.Emulator is Emulation.Cores.Waterbox.NymaCore core)
+			{
+				var desc = new Emulation.Cores.Waterbox.NymaTypeDescriptorProvider(core.SettingsInfo);
+				try
+				{
+					// OH GOD THE HACKS WHY
+					TypeDescriptor.AddProvider(desc, typeof(Emulation.Cores.Waterbox.NymaCore.NymaSettings));
+					TypeDescriptor.AddProvider(desc, typeof(Emulation.Cores.Waterbox.NymaCore.NymaSyncSettings));
+					DoDialog(owner, "Nyma Core", !core.HasSettings, !core.HasSyncSettings);
+				}
+				finally
+				{
+					TypeDescriptor.RemoveProvider(desc, typeof(Emulation.Cores.Waterbox.NymaCore.NymaSettings));
+					TypeDescriptor.RemoveProvider(desc, typeof(Emulation.Cores.Waterbox.NymaCore.NymaSyncSettings));
+				}
+			}
+			else
+			{
+				using var dlg = new GenericCoreConfig(owner) { Text = title };
+				dlg.ShowDialog(owner);
+			}
 		}
 
 		public static void DoDialog(MainForm owner, string title, bool hideSettings, bool hideSyncSettings)
@@ -117,7 +136,6 @@ namespace BizHawk.Client.EmuHawk
 			using var dlg = new GenericCoreConfig(owner, hideSettings, hideSyncSettings) { Text = title };
 			dlg.ShowDialog(owner);
 		}
-
 		private void PropertyGrid2_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
 		{
 			_syncSettingsChanged = true;

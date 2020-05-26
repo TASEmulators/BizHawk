@@ -184,8 +184,9 @@ namespace BizHawk.Client.EmuHawk
 			VideoProvider = emu.AsVideoProviderOrDefault();
 			RomLoaded?.Invoke(null, EventArgs.Empty);
 
-			_allJoyPads = new List<Joypad>(RunningSystem.MaxControllers);
-			for (var i = 1; i <= RunningSystem.MaxControllers; i++) _allJoyPads.Add(new Joypad(RunningSystem, i));
+			// TODO: Don't crash
+			// _allJoyPads = new List<Joypad>(RunningSystem.MaxControllers);
+			// for (var i = 1; i <= RunningSystem.MaxControllers; i++) _allJoyPads.Add(new Joypad(RunningSystem, i));
 		}
 
 		/// <summary>

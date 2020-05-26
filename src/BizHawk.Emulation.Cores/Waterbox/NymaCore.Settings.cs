@@ -6,11 +6,16 @@ using System.Text;
 using BizHawk.BizInvoke;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
 	unsafe partial class NymaCore : ISettable<NymaCore.NymaSettings, NymaCore.NymaSyncSettings>
 	{
+		/// <summary>
+		/// Settings that we shouldn't show the user
+		/// </summary>
+		protected virtual ICollection<string> HiddenSettings { get; } = new string[0];
 		public NymaSettingsInfo SettingsInfo { get; private set; }
 		private NymaSettings _settings;
 		private NymaSyncSettings _syncSettings;
@@ -18,8 +23,16 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// What this core was actually started with
 		/// </summary>
 		private NymaSyncSettings _syncSettingsActual;
-		public NymaSettings GetSettings() => _settings.Clone();
-		public NymaSyncSettings GetSyncSettings() => _syncSettings.Clone();
+		public NymaSettings GetSettings()
+		{
+			var ret = _settings.Clone();
+			return ret;
+		}
+		public NymaSyncSettings GetSyncSettings()
+		{
+			var ret = _syncSettings.Clone();
+			return ret;
+		}
 
 		public PutSettingsDirtyBits PutSettings(NymaSettings o)
 		{
@@ -57,13 +70,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public class NymaSyncSettings
 		{
 			public Dictionary<string, string> MednafenValues { get; set; } = new Dictionary<string, string>();
-			public List<string> PortDevices { get; set; } = new List<string>();
+			public Dictionary<int, string> PortDevices { get; set; } = new Dictionary<int, string>();
 			public NymaSyncSettings Clone()
 			{
 				return new NymaSyncSettings
 				{
 					MednafenValues = new Dictionary<string, string>(MednafenValues),
-					PortDevices = new List<string>(PortDevices)
+					PortDevices = new Dictionary<int, string>(PortDevices)
 				};
 			}
 
@@ -71,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				if (!(obj is NymaSyncSettings x))
 					return false;
-				return PortDevices.SequenceEqual(x.PortDevices)
+				return new HashSet<KeyValuePair<int, string>>(PortDevices).SetEquals(x.PortDevices)
 					&& new HashSet<KeyValuePair<string, string>>(MednafenValues).SetEquals(x.MednafenValues);
 			}
 
@@ -83,7 +96,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private void SettingsQuery(string name, IntPtr dest)
 		{
-			if (!_syncSettingsActual.MednafenValues.TryGetValue(name, out var val))
+			if (!_syncSettingsActual.MednafenValues.TryGetValue(name, out var val) || HiddenSettings.Contains(name))
 			{
 				if (SettingsInfo.SettingsByKey.TryGetValue(name, out var info))
 				{
@@ -102,6 +115,15 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		}
 
 		private LibNymaCore.FrontendSettingQuery _settingsQueryDelegate;
+
+		/// <summary>
+		/// If true, the settings object has at least one settable value in it
+		/// </summary>
+		public bool HasSettings => SettingsInfo.LayerNames.Any();
+		/// <summary>
+		/// If true, the syncSettings object has at least one settable value in it
+		/// </summary>
+		public bool HasSyncSettings => SettingsInfo.Ports.Any() || SettingsInfo.Settings.Any();
 
 		public class NymaSettingsInfo
 		{
@@ -213,6 +235,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					Flags = (SettingFlags)s.Flags;
 					Type = (SettingType)s.Type;
 				}
+				public List<MednaSetting.EnumValue> SettingEnums { get; set; } = new List<MednaSetting.EnumValue>();
 			}
 			[StructLayout(LayoutKind.Sequential)]
 			public class MednaSettingS
@@ -234,8 +257,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				}
 			}
 			public List<MednaSetting> Settings { get; set; } = new List<MednaSetting>();
-			public Dictionary<string, List<MednaSetting.EnumValue>> SettingEnums { get; set; } = new Dictionary<string, List<MednaSetting.EnumValue>>();
 			public Dictionary<string, MednaSetting> SettingsByKey { get; set; } = new Dictionary<string, MednaSetting>();
+			public HashSet<string> HiddenSettings { get; set; } = new HashSet<string>();
 		}
 		private void InitSyncSettingsInfo()
 		{
@@ -277,7 +300,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				s.SettingsByKey.Add(ss.SettingsKey, ss);
 				if (ss.Type == NymaSettingsInfo.MednaSetting.SettingType.ENUM)
 				{
-					var l = new List<NymaSettingsInfo.MednaSetting.EnumValue>();
+					var l = ss.SettingEnums;
 					for (var j = 0;; j++)
 					{
 						var ff = new NymaSettingsInfo.MednaSettingS.EnumValueS();
@@ -287,10 +310,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 						var ee = new NymaSettingsInfo.MednaSetting.EnumValue(ff);
 						l.Add(ee);
 					}
-					s.SettingEnums.Add(ss.SettingsKey, l);
 				}
 			}
 
+			s.HiddenSettings = new HashSet<string>(HiddenSettings);
 			SettingsInfo = s;
 		}
 	}

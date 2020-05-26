@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			/// </summary>
 			public string[] Devices { get; }
 			public ControllerDefinition Definition { get; }
-			public ControllerAdapter(LibNymaCore core, IList<string> config)
+			public ControllerAdapter(LibNymaCore core, IDictionary<int, string> config)
 			{
 				var ret = new ControllerDefinition
 				{
@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				for (uint port = 0, devByteStart = 0; port < numPorts; port++, devByteStart += MAX_PORT_DATA)
 				{
 					var portInfo = *core.GetPort(port);
-					var deviceName = port < config.Count ? config[(int)port] : portInfo.DefaultDeviceShortName;
+					var deviceName = config.ContainsKey((int)port) ? config[(int)port] : portInfo.DefaultDeviceShortName;
 					finalDevices.Add(deviceName);
 
 					var devices = Enumerable.Range(0, (int)portInfo.NumDevices)

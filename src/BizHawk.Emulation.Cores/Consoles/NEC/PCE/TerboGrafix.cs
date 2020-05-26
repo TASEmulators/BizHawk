@@ -30,5 +30,15 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 
 		// pce always has two layers, sgx always has 4, and mednafen knows this
 		public override string SystemId => SettingsInfo.LayerNames.Count == 4 ? "SGX" : "PCE";
+
+		protected override ICollection<string> HiddenSettings { get; } = new[]
+		{
+			// handled by hawk
+			"pce.cdbios",
+			"pce.gecdbios",
+			// so fringe i don't want people bothering me about it
+			"pce.resamp_rate_error",
+			"pce.vramsize",
+		};
 	}
 }
