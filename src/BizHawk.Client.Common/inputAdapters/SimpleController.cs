@@ -13,12 +13,12 @@ namespace BizHawk.Client.Common
 		public ControllerDefinition Definition { get; set; }
 
 		protected WorkingDictionary<string, bool> Buttons { get; private set; } = new WorkingDictionary<string, bool>();
-		protected WorkingDictionary<string, float> Axes { get; private set; } = new WorkingDictionary<string, float>();
+		protected WorkingDictionary<string, int> Axes { get; private set; } = new WorkingDictionary<string, int>();
 
 		public void Clear()
 		{
 			Buttons = new WorkingDictionary<string, bool>();
-			Axes = new WorkingDictionary<string, float>();
+			Axes = new WorkingDictionary<string, int>();
 		}
 
 		public bool this[string button]
@@ -29,16 +29,16 @@ namespace BizHawk.Client.Common
 
 		public virtual bool IsPressed(string button) => this[button];
 
-		public float AxisValue(string name) => Axes[name];
+		public int AxisValue(string name) => Axes[name];
 
 		public IDictionary<string, bool> BoolButtons() => Buttons;
 
-		public void AcceptNewAxis(string axisId, float value)
+		public void AcceptNewAxis(string axisId, int value)
 		{
 			Axes[axisId] = value;
 		}
 
-		public void AcceptNewAxes(IEnumerable<(string AxisID, float Value)> newValues)
+		public void AcceptNewAxes(IEnumerable<(string AxisID, int Value)> newValues)
 		{
 			foreach (var (axisID, value) in newValues)
 			{

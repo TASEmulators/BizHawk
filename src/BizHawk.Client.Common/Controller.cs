@@ -23,11 +23,11 @@ namespace BizHawk.Client.Common
 
 		public bool IsPressed(string button) => _buttons[button];
 
-		public float AxisValue(string name) => _axes[name];
+		public int AxisValue(string name) => _axes[name];
 
 		private readonly WorkingDictionary<string, List<string>> _bindings = new WorkingDictionary<string, List<string>>();
 		private readonly WorkingDictionary<string, bool> _buttons = new WorkingDictionary<string, bool>();
-		private readonly WorkingDictionary<string, float> _axes = new WorkingDictionary<string, float>();
+		private readonly WorkingDictionary<string, int> _axes = new WorkingDictionary<string, int>();
 		private readonly Dictionary<string, ControllerDefinition.AxisRange> _axisRanges = new WorkingDictionary<string, ControllerDefinition.AxisRange>();
 		private readonly Dictionary<string, AnalogBind> _axisBindings = new Dictionary<string, AnalogBind>();
 
@@ -53,7 +53,7 @@ namespace BizHawk.Client.Common
 		{
 			foreach (var kvp in _axisBindings)
 			{
-				var input = _axes[kvp.Key];
+				var input = (float) _axes[kvp.Key];
 				string outKey = kvp.Key;
 				float multiplier = kvp.Value.Mult;
 				float deadZone = kvp.Value.Deadzone;
@@ -91,7 +91,9 @@ namespace BizHawk.Client.Common
 					// zero 09-mar-2015 - at this point, we should only have integers, since that's all 100% of consoles ever see
 					// if this becomes a problem we can add flags to the range and update GUIs to be able to display floats
 
-					_axes[outKey] = output.ConstrainWithin(range.FloatRange);
+					// fixed maybe? --yoshi
+
+					_axes[outKey] = (int) output.ConstrainWithin(range.FloatRange);
 				}
 			}
 		}

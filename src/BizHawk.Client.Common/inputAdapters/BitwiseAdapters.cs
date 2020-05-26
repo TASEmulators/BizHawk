@@ -18,7 +18,7 @@ namespace BizHawk.Client.Common
 
 		// pass floats solely from the original source
 		// this works in the code because SourceOr is the autofire controller
-		public float AxisValue(string name) => Source.AxisValue(name);
+		public int AxisValue(string name) => Source.AxisValue(name);
 
 		internal IController Source { get; set; }
 		internal IController SourceAnd { get; set; }
@@ -40,7 +40,7 @@ namespace BizHawk.Client.Common
 
 		// pass floats solely from the original source
 		// this works in the code because SourceOr is the autofire controller
-		public float AxisValue(string name) => Source.AxisValue(name);
+		public int AxisValue(string name) => Source.AxisValue(name);
 
 		internal IController Source { get; set; }
 		internal IController SourceXor { get; set; }
@@ -58,7 +58,7 @@ namespace BizHawk.Client.Common
 
 		// pass floats solely from the original source
 		// this works in the code because SourceOr is the autofire controller
-		public float AxisValue(string name) => Source.AxisValue(name);
+		public int AxisValue(string name) => Source.AxisValue(name);
 
 		internal IController Source { get; set; }
 		internal IController SourceOr { get; set; }

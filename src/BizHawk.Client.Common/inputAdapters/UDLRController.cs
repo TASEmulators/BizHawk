@@ -144,7 +144,7 @@ namespace BizHawk.Client.Common
 		}
 
 		// The float format implies no U+D and no L+R no matter what, so just passthru
-		public float AxisValue(string name)
+		public int AxisValue(string name)
 		{
 			return Source.AxisValue(name);
 		}

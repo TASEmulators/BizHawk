@@ -84,7 +84,7 @@ namespace BizHawk.Emulation.Common
 				return _src.IsPressed(_remaps[button]);
 			}
 
-			public float AxisValue(string name)
+			public int AxisValue(string name)
 			{
 				return _src.AxisValue(_remaps[name]);
 			}

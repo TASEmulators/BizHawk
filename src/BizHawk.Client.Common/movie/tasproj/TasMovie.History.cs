@@ -24,7 +24,7 @@ namespace BizHawk.Client.Common
 		void AddGeneralUndo(int first, int last, string name = "", bool force = false);
 		void SetGeneralRedo(bool force = false);
 		void AddBoolToggle(int frame, string button, bool oldState, string name = "", bool force = false);
-		void AddFloatChange(int frame, string button, float oldState, float newState, string name = "", bool force = false);
+		void AddAxisChange(int frame, string button, int oldState, int newState, string name = "", bool force = false);
 		void AddMarkerChange(TasMovieMarker newMarker, int oldPosition = -1, string oldMessage = "", string name = "", bool force = false);
 		void AddInputBind(int frame, bool isDelete, string name = "", bool force = false);
 		void AddInsertFrames(int frame, int count, string name = "", bool force = false);
@@ -350,7 +350,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void AddFloatChange(int frame, string button, float oldState, float newState, string name = "", bool force = false)
+		public void AddAxisChange(int frame, string button, int oldState, int newState, string name = "", bool force = false)
 		{
 			if (IsRecording || force)
 			{
@@ -582,11 +582,11 @@ namespace BizHawk.Client.Common
 		public int FirstFrame { get; }
 		public int LastFrame => FirstFrame;
 
-		private readonly float _oldState;
-		private readonly float _newState;
+		private readonly int _oldState;
+		private readonly int _newState;
 
 		private readonly string _buttonName;
-		private readonly bool _isFloat;
+		private readonly bool _isAxis;
 
 		public MovieActionFrameEdit(int frame, string button, bool oldS, bool newS)
 		{
@@ -596,13 +596,13 @@ namespace BizHawk.Client.Common
 			_buttonName = button;
 		}
 
-		public MovieActionFrameEdit(int frame, string button, float oldS, float newS)
+		public MovieActionFrameEdit(int frame, string button, int oldS, int newS)
 		{
 			_oldState = oldS;
 			_newState = newS;
 			FirstFrame = frame;
 			_buttonName = button;
-			_isFloat = true;
+			_isAxis = true;
 		}
 
 		public void Undo(ITasMovie movie)
@@ -610,9 +610,9 @@ namespace BizHawk.Client.Common
 			bool wasRecording = movie.ChangeLog.IsRecording;
 			movie.ChangeLog.IsRecording = false;
 
-			if (_isFloat)
+			if (_isAxis)
 			{
-				movie.SetFloatState(FirstFrame, _buttonName, _oldState);
+				movie.SetAxisState(FirstFrame, _buttonName, _oldState);
 			}
 			else
 			{
@@ -627,9 +627,9 @@ namespace BizHawk.Client.Common
 			bool wasRecording = movie.ChangeLog.IsRecording;
 			movie.ChangeLog.IsRecording = false;
 
-			if (_isFloat)
+			if (_isAxis)
 			{
-				movie.SetFloatState(FirstFrame, _buttonName, _newState);
+				movie.SetAxisState(FirstFrame, _buttonName, _newState);
 			}
 			else
 			{
@@ -644,10 +644,10 @@ namespace BizHawk.Client.Common
 	{
 		public int FirstFrame { get; }
 		public int LastFrame { get; }
-		private readonly List<float> _oldState;
-		private readonly float _newState;
+		private readonly List<int> _oldState;
+		private readonly int _newState;
 		private readonly string _buttonName;
-		private readonly bool _isFloat = false;
+		private readonly bool _isAxis = false;
 
 		public MovieActionPaint(int startFrame, int endFrame, string button, bool newS, ITasMovie movie)
 		{
@@ -655,7 +655,7 @@ namespace BizHawk.Client.Common
 			FirstFrame = startFrame;
 			LastFrame = endFrame;
 			_buttonName = button;
-			_oldState = new List<float>(endFrame - startFrame + 1);
+			_oldState = new List<int>(endFrame - startFrame + 1);
 
 			for (int i = 0; i < endFrame - startFrame + 1; i++)
 			{
@@ -663,14 +663,14 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public MovieActionPaint(int startFrame, int endFrame, string button, float newS, ITasMovie movie)
+		public MovieActionPaint(int startFrame, int endFrame, string button, int newS, ITasMovie movie)
 		{
 			_newState = newS;
 			FirstFrame = startFrame;
 			LastFrame = endFrame;
 			_buttonName = button;
-			_isFloat = true;
-			_oldState = new List<float>(endFrame - startFrame + 1);
+			_isAxis = true;
+			_oldState = new List<int>(endFrame - startFrame + 1);
 
 			for (int i = 0; i < endFrame - startFrame + 1; i++)
 			{
@@ -683,11 +683,11 @@ namespace BizHawk.Client.Common
 			bool wasRecording = movie.ChangeLog.IsRecording;
 			movie.ChangeLog.IsRecording = false;
 
-			if (_isFloat)
+			if (_isAxis)
 			{
 				for (int i = 0; i < _oldState.Count; i++)
 				{
-					movie.SetFloatState(FirstFrame + i, _buttonName, _oldState[i]);
+					movie.SetAxisState(FirstFrame + i, _buttonName, _oldState[i]);
 				}
 			}
 			else
@@ -706,9 +706,9 @@ namespace BizHawk.Client.Common
 			bool wasRecording = movie.ChangeLog.IsRecording;
 			movie.ChangeLog.IsRecording = false;
 
-			if (_isFloat)
+			if (_isAxis)
 			{
-				movie.SetFloatStates(FirstFrame, LastFrame - FirstFrame + 1, _buttonName, _newState);
+				movie.SetAxisStates(FirstFrame, LastFrame - FirstFrame + 1, _buttonName, _newState);
 			}
 			else
 			{

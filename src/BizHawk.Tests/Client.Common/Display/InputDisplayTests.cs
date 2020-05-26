@@ -10,7 +10,7 @@ namespace BizHawk.Tests.Client.Common.Display
 	{
 		private const int MidValue = 100;
 		private SimpleController _boolController = null!;
-		private SimpleController _floatController = null!;
+		private SimpleController _axisController = null!;
 
 		[TestInitialize]
 		public void Initializer()
@@ -20,7 +20,7 @@ namespace BizHawk.Tests.Client.Common.Display
 				Definition = new ControllerDefinition { BoolButtons = { "A" } }
 			};
 
-			_floatController = new SimpleController
+			_axisController = new SimpleController
 			{
 				Definition = new ControllerDefinition
 				{
@@ -55,7 +55,7 @@ namespace BizHawk.Tests.Client.Common.Display
 		[TestMethod]
 		public void Generate_Floats()
 		{
-			var displayGenerator = new Bk2InputDisplayGenerator("NES", _floatController);
+			var displayGenerator = new Bk2InputDisplayGenerator("NES", _axisController);
 			var actual = displayGenerator.Generate();
 			Assert.AreEqual("    0,    0,", actual);
 		}
@@ -63,8 +63,8 @@ namespace BizHawk.Tests.Client.Common.Display
 		[TestMethod]
 		public void Generate_MidRangeDisplaysEmpty()
 		{
-			_floatController.AcceptNewAxis("StickX", MidValue);
-			var displayGenerator = new Bk2InputDisplayGenerator("NES", _floatController);
+			_axisController.AcceptNewAxis("StickX", MidValue);
+			var displayGenerator = new Bk2InputDisplayGenerator("NES", _axisController);
 			var actual = displayGenerator.Generate();
 			Assert.AreEqual("          0,", actual);
 		}

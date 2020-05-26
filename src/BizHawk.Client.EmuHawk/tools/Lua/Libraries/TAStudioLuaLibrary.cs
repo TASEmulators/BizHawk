@@ -34,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 			public int Number;
 			public string Button;
 			public bool ValueBool;
-			public float ValueFloat;
+			public int ValueAxis;
 		}
 
 		public enum LuaChangeTypes
@@ -212,13 +212,13 @@ namespace BizHawk.Client.EmuHawk
 
 					if (frame < Tastudio.CurrentTasMovie.InputLogLength)
 					{
-						if (Tastudio.CurrentTasMovie.GetFloatState(frame, button) != value) // Check if the button state is not already in the state the user set in the lua script
+						if (Tastudio.CurrentTasMovie.GetAxisState(frame, button) != (int) value) // Check if the button state is not already in the state the user set in the lua script
 						{
 							newChange.Type = LuaChangeTypes.InputChange;
 							newChange.InputType = InputChangeTypes.Float;
 							newChange.Frame = frame;
 							newChange.Button = button;
-							newChange.ValueFloat = value;
+							newChange.ValueAxis = (int) value;
 
 							_changeList.Add(newChange);
 						}
@@ -229,7 +229,7 @@ namespace BizHawk.Client.EmuHawk
 						newChange.InputType = InputChangeTypes.Float;
 						newChange.Frame = frame;
 						newChange.Button = button;
-						newChange.ValueFloat = value;
+						newChange.ValueAxis = (int) value;
 
 						_changeList.Add(newChange);
 					}
@@ -288,7 +288,7 @@ namespace BizHawk.Client.EmuHawk
 										Tastudio.CurrentTasMovie.SetBoolState(_changeList[i].Frame, _changeList[i].Button, _changeList[i].ValueBool);
 										break;
 									case InputChangeTypes.Float:
-										Tastudio.CurrentTasMovie.SetFloatState(_changeList[i].Frame, _changeList[i].Button, _changeList[i].ValueFloat);
+										Tastudio.CurrentTasMovie.SetAxisState(_changeList[i].Frame, _changeList[i].Button, _changeList[i].ValueAxis);
 										break;
 								}
 								break;

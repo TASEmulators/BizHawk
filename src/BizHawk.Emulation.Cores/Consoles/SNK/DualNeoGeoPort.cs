@@ -291,7 +291,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 
 			public ControllerDefinition Definition => null;
 
-			public float AxisValue(string name)
+			public int AxisValue(string name)
 			{
 				return _controller.AxisValue(_prefix + name);
 			}

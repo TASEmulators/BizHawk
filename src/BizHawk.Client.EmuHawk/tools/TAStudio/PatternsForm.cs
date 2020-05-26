@@ -199,14 +199,14 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (SelectedButton == "Default float Auto-Fire")
 					{
-						index = _tastudio.FloatPatterns.Length - 1;
+						index = _tastudio.AxisPatterns.Length - 1;
 					}
 					else
 					{
 						index = _tastudio.MovieSession.MovieController.Definition.AxisControls.IndexOf(SelectedButton);
 					}
 
-					LagBox.Checked = _tastudio.FloatPatterns[index].SkipsLag;
+					LagBox.Checked = _tastudio.AxisPatterns[index].SkipsLag;
 					ValueNum.Value = Convert.ToDecimal(_values[PatternList.SelectedIndex]);
 					CountNum.Value = _counts[PatternList.SelectedIndex];
 				}
@@ -245,23 +245,23 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (SelectedButton == "Default float Auto-Fire")
 				{
-					index = _tastudio.FloatPatterns.Length - 1;
+					index = _tastudio.AxisPatterns.Length - 1;
 				}
 				else
 				{
 					index = _tastudio.MovieSession.MovieController.Definition.AxisControls.IndexOf(SelectedButton);
 				}
 
-				List<float> p = new List<float>();
+				var p = new List<int>();
 				for (int i = 0; i < _counts.Count; i++)
 				{
 					for (int c = 0; c < _counts[i]; c++)
 					{
-						p.Add(Convert.ToSingle(_values[i]));
+						p.Add((int) Convert.ToSingle(_values[i]));
 					}
 				}
 
-				_tastudio.FloatPatterns[index] = new AutoPatternFloat(p.ToArray(), LagBox.Checked, 0, _loopAt);
+				_tastudio.AxisPatterns[index] = new AutoPatternAxis(p.ToArray(), LagBox.Checked, 0, _loopAt);
 			}
 
 			if ((SelectedButton != "Default float Auto-Fire") && (SelectedButton != "Default bool Auto-Fire"))
@@ -307,15 +307,15 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (SelectedButton == "Default float Auto-Fire")
 				{
-					index = _tastudio.FloatPatterns.Length - 1;
+					index = _tastudio.AxisPatterns.Length - 1;
 				}
 				else
 				{
 					index = _tastudio.MovieSession.MovieController.Definition.AxisControls.IndexOf(SelectedButton);
 				}
 
-				float[] p = _tastudio.FloatPatterns[index].Pattern;
-				float lastValue = p[0];
+				var p = _tastudio.AxisPatterns[index].Pattern;
+				var lastValue = p[0];
 				_counts.Clear();
 				_values.Clear();
 				_counts.Add(1);
@@ -334,7 +334,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				_loopAt = _tastudio.FloatPatterns[index].Loop;
+				_loopAt = _tastudio.AxisPatterns[index].Loop;
 			}
 		}
 	}

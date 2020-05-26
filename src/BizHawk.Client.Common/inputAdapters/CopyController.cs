@@ -11,7 +11,7 @@ namespace BizHawk.Client.Common
 
 		public bool IsPressed(string button) => Curr.IsPressed(button);
 
-		public float AxisValue(string name) => Curr.AxisValue(name);
+		public int AxisValue(string name) => Curr.AxisValue(name);
 
 		public IController Source { get; set; }
 

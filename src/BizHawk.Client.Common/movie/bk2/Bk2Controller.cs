@@ -10,7 +10,7 @@ namespace BizHawk.Client.Common
 	internal class Bk2Controller : IMovieController
 	{
 		private readonly WorkingDictionary<string, bool> _myBoolButtons = new WorkingDictionary<string, bool>();
-		private readonly WorkingDictionary<string, float> _myAxisControls = new WorkingDictionary<string, float>();
+		private readonly WorkingDictionary<string, int> _myAxisControls = new WorkingDictionary<string, int>();
 
 		private readonly Bk2ControllerDefinition _type;
 		private readonly List<ControlMap> _controlsOrdered;
@@ -44,7 +44,7 @@ namespace BizHawk.Client.Common
 		public ControllerDefinition Definition => _type;
 
 		public bool IsPressed(string button) => _myBoolButtons[button];
-		public float AxisValue(string name) => _myAxisControls[name];
+		public int AxisValue(string name) => _myAxisControls[name];
 
 		public void SetFrom(IController source)
 		{
@@ -135,7 +135,7 @@ namespace BizHawk.Client.Common
 			_myBoolButtons[buttonName] = value;
 		}
 
-		public void SetAxis(string buttonName, float value)
+		public void SetAxis(string buttonName, int value)
 		{
 			_myAxisControls[buttonName] = value;
 		}

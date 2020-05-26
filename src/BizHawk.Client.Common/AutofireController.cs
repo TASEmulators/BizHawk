@@ -47,7 +47,7 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <exception cref="NotImplementedException">always</exception>
-		public float AxisValue(string name)
+		public int AxisValue(string name)
 		{
 			throw new NotImplementedException();
 		}

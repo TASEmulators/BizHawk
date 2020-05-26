@@ -128,7 +128,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 								));
 								_thunks.Add((c, b) =>
 								{
-									var val = (ushort)Math.Round(c.AxisValue(name));
+									var val = c.AxisValue(name);
 									b[byteStart] = (byte)val;
 									b[byteStart + 1] = (byte)(val >> 8);
 								});									
@@ -143,7 +143,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 								));
 								_thunks.Add((c, b) =>
 								{
-									var val = (short)Math.Round(c.AxisValue(name));
+									var val = c.AxisValue(name);
 									b[byteStart] = (byte)val;
 									b[byteStart + 1] = (byte)(val >> 8);
 								});									

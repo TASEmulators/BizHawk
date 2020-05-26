@@ -295,7 +295,7 @@ namespace BizHawk.Client.Common
 		public static bool BoolIsPressed(this IMovie movie, int frame, string buttonName)
 			=> movie.GetInputState(frame).IsPressed(buttonName);
 
-		public static float GetFloatState(this IMovie movie, int frame, string buttonName)
+		public static int GetAxisState(this IMovie movie, int frame, string buttonName)
 			=> movie.GetInputState(frame).AxisValue(buttonName);
 	}
 }

@@ -14,7 +14,7 @@
 
 		public bool IsPressed(string button) => false;
 
-		public float AxisValue(string name) => 0f;
+		public int AxisValue(string name) => 0;
 
 		public static readonly NullController Instance = new NullController();
 	}

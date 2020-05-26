@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		public Dictionary<string, string> CategoryLabels { get; } = new Dictionary<string, string>();
 
-		public void ApplyAxisConstraints(string constraintClass, IDictionary<string, float> floatButtons)
+		public void ApplyAxisConstraints(string constraintClass, IDictionary<string, int> axes)
 		{
 			if (AxisConstraints == null)
 			{
@@ -82,10 +82,10 @@ namespace BizHawk.Emulation.Common
 							string xAxis = constraint.Params[0] as string ?? "";
 							string yAxis = constraint.Params[1] as string ?? "";
 							float range = (float)constraint.Params[2];
-							if (!floatButtons.ContainsKey(xAxis)) break;
-							if (!floatButtons.ContainsKey(yAxis)) break;
-							double xVal = floatButtons[xAxis];
-							double yVal = floatButtons[yAxis];
+							if (!axes.ContainsKey(xAxis)) break;
+							if (!axes.ContainsKey(yAxis)) break;
+							double xVal = axes[xAxis];
+							double yVal = axes[yAxis];
 							double length = Math.Sqrt((xVal * xVal) + (yVal * yVal));
 							if (length > range)
 							{
@@ -94,8 +94,8 @@ namespace BizHawk.Emulation.Common
 								yVal *= ratio;
 							}
 
-							floatButtons[xAxis] = (float)xVal;
-							floatButtons[yAxis] = (float)yVal;
+							axes[xAxis] = (int) xVal;
+							axes[yAxis] = (int) yVal;
 							break;
 						}
 				}

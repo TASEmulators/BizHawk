@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 
 		void PreprocessHostGamepads();
 
-		void ProcessHostGamepads(Action<string?, bool, InputFocus> handleButton, Action<string?, float> handleAxis);
+		void ProcessHostGamepads(Action<string?, bool, InputFocus> handleButton, Action<string?, int> handleAxis);
 
 		IEnumerable<KeyEvent> ProcessHostKeyboards();
 	}
@@ -51,19 +51,19 @@ namespace BizHawk.Client.EmuHawk
 			GamePad360.UpdateAll();
 		}
 
-		public void ProcessHostGamepads(Action<string?, bool, InputFocus> handleButton, Action<string?, float> handleAxis)
+		public void ProcessHostGamepads(Action<string?, bool, InputFocus> handleButton, Action<string?, int> handleAxis)
 		{
 			foreach (var pad in GamePad360.EnumerateDevices())
 			{
 				var inputNamePrefix = $"X{pad.PlayerNumber} ";
 				for (int b = 0, n = pad.NumButtons; b < n; b++) handleButton(inputNamePrefix + pad.ButtonName(b), pad.Pressed(b), InputFocus.Pad);
-				foreach (var (axisName, f) in pad.GetAxes()) handleAxis(inputNamePrefix + axisName, f);
+				foreach (var (axisName, f) in pad.GetAxes()) handleAxis(inputNamePrefix + axisName, (int) f);
 			}
 			foreach (var pad in GamePad.EnumerateDevices())
 			{
 				var inputNamePrefix = $"J{pad.PlayerNumber} ";
 				for (int b = 0, n = pad.NumButtons; b < n; b++) handleButton(inputNamePrefix + pad.ButtonName(b), pad.Pressed(b), InputFocus.Pad);
-				foreach (var (axisName, f) in pad.GetAxes()) handleAxis(inputNamePrefix + axisName, f);
+				foreach (var (axisName, f) in pad.GetAxes()) handleAxis(inputNamePrefix + axisName, (int) f);
 			}
 		}
 
@@ -84,12 +84,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void PreprocessHostGamepads() => OTK_GamePad.UpdateAll();
 
-		public void ProcessHostGamepads(Action<string?, bool, InputFocus> handleButton, Action<string?, float> handleAxis)
+		public void ProcessHostGamepads(Action<string?, bool, InputFocus> handleButton, Action<string?, int> handleAxis)
 		{
 			foreach (var pad in OTK_GamePad.EnumerateDevices())
 			{
 				foreach (var but in pad.buttonObjects) handleButton(pad.InputNamePrefix + but.ButtonName, but.ButtonAction(), InputFocus.Pad);
-				foreach (var (axisID, f) in pad.GetAxes()) handleAxis($"{pad.InputNamePrefix}{axisID} Axis", f);
+				foreach (var (axisID, f) in pad.GetAxes()) handleAxis($"{pad.InputNamePrefix}{axisID} Axis", (int) f);
 			}
 		}
 

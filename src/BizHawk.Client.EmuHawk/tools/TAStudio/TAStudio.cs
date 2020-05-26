@@ -489,14 +489,14 @@ namespace BizHawk.Client.EmuHawk
 			if (BoolPatterns == null)
 			{
 				BoolPatterns = new AutoPatternBool[ControllerType.BoolButtons.Count + 2];
-				FloatPatterns = new AutoPatternFloat[ControllerType.AxisControls.Count + 2];
+				AxisPatterns = new AutoPatternAxis[ControllerType.AxisControls.Count + 2];
 			}
 			else
 			{
 				bStart = BoolPatterns.Length - 2;
-				fStart = FloatPatterns.Length - 2;
+				fStart = AxisPatterns.Length - 2;
 				Array.Resize(ref BoolPatterns, ControllerType.BoolButtons.Count + 2);
-				Array.Resize(ref FloatPatterns, ControllerType.AxisControls.Count + 2);
+				Array.Resize(ref AxisPatterns, ControllerType.AxisControls.Count + 2);
 			}
 
 			for (int i = bStart; i < BoolPatterns.Length - 2; i++)
@@ -508,14 +508,13 @@ namespace BizHawk.Client.EmuHawk
 			BoolPatterns[BoolPatterns.Length - 1] = new AutoPatternBool(
 				Config.AutofireOn, Config.AutofireOff);
 
-			for (int i = fStart; i < FloatPatterns.Length - 2; i++)
+			for (int i = fStart; i < AxisPatterns.Length - 2; i++)
 			{
-				FloatPatterns[i] = new AutoPatternFloat(new[] { 1f });
+				AxisPatterns[i] = new AutoPatternAxis(new[] { 1 });
 			}
 
-			FloatPatterns[FloatPatterns.Length - 2] = new AutoPatternFloat(new[] { 1f });
-			FloatPatterns[FloatPatterns.Length - 1] = new AutoPatternFloat(
-				1f, Config.AutofireOn, 0f, Config.AutofireOff);
+			AxisPatterns[AxisPatterns.Length - 2] = new AutoPatternAxis(new[] { 1 });
+			AxisPatterns[AxisPatterns.Length - 1] = new AutoPatternAxis(1, Config.AutofireOn, 0, Config.AutofireOff);
 
 			SetUpToolStripColumns();
 		}

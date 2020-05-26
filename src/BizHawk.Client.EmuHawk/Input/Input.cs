@@ -200,7 +200,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly Dictionary<string, LogicalButton> _modifierState = new Dictionary<string, LogicalButton>();
 		private readonly WorkingDictionary<string, bool> _lastState = new WorkingDictionary<string, bool>();
-		private readonly WorkingDictionary<string, float> _axisValues = new WorkingDictionary<string, float>();
+		private readonly WorkingDictionary<string, int> _axisValues = new WorkingDictionary<string, int>();
 		private readonly WorkingDictionary<string, float> _axisDeltas = new WorkingDictionary<string, float>();
 		private bool _trackDeltas;
 		private bool _ignoreEventsNextPoll;
@@ -269,7 +269,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void HandleAxis(string axis, float newValue)
+		private void HandleAxis(string axis, int newValue)
 		{
 			if (_trackDeltas) _axisDeltas[axis] += Math.Abs(newValue - _axisValues[axis]);
 			_axisValues[axis] = newValue;
@@ -322,7 +322,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public IDictionary<string, float> GetAxisValues()
+		public IDictionary<string, int> GetAxisValues()
 		{
 			lock (_axisValues)
 			{

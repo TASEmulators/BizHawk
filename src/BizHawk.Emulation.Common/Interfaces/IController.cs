@@ -13,8 +13,8 @@
 		bool IsPressed(string button);
 
 		/// <summary>
-		/// Returns the state of a float control
+		/// Returns the state of an axis control
 		/// </summary>
-		float AxisValue(string name);
+		int AxisValue(string name);
 	}
 }

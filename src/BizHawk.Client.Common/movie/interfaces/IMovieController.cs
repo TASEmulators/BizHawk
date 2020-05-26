@@ -33,6 +33,6 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Sets the given axis button to the given value
 		/// </summary>
-		void SetAxis(string buttonName, float value);
+		void SetAxis(string buttonName, int value);
 	}
 }

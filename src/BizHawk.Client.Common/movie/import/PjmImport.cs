@@ -212,10 +212,10 @@ namespace BizHawk.Client.Common
 					{
 						controllers["P1 L3"] = (controllerState & 0x2) != 0;
 						controllers["P1 R3"] = (controllerState & 0x4) != 0;
-						var leftX = ("P1 LStick X", (float) br.ReadByte());
-						var leftY = ("P1 LStick Y", (float) br.ReadByte());
-						var rightX = ("P1 RStick X", (float) br.ReadByte());
-						var rightY = ("P1 RStick Y", (float) br.ReadByte());
+						var leftX = ("P1 LStick X", (int) br.ReadByte());
+						var leftY = ("P1 LStick Y", (int) br.ReadByte());
+						var rightX = ("P1 RStick X", (int) br.ReadByte());
+						var rightY = ("P1 RStick Y", (int) br.ReadByte());
 
 						controllers.AcceptNewAxes(new[] { leftX, leftY, rightX, rightY });
 					}
@@ -235,10 +235,10 @@ namespace BizHawk.Client.Common
 
 					if (info.Player2Type == OctoshockDll.ePeripheralType.DualShock)
 					{
-						var leftX = ("P2 LStick X", (float) br.ReadByte());
-						var leftY = ("P2 LStick Y", (float) br.ReadByte());
-						var rightX = ("P2 RStick X", (float) br.ReadByte());
-						var rightY = ("P2 RStick Y", (float) br.ReadByte());
+						var leftX = ("P2 LStick X", (int) br.ReadByte());
+						var leftY = ("P2 LStick Y", (int) br.ReadByte());
+						var rightX = ("P2 RStick X", (int) br.ReadByte());
+						var rightY = ("P2 RStick Y", (int) br.ReadByte());
 
 						controllers.AcceptNewAxes(new[] { leftX, leftY, rightX, rightY });
 					}
@@ -266,7 +266,7 @@ namespace BizHawk.Client.Common
 					controllers["Open"] = false;
 				}
 
-				var discSelect = ("Disc Select", (float) cdNumber);
+				var discSelect = ("Disc Select", cdNumber);
 				controllers.AcceptNewAxes(new[] { discSelect });
 
 				if ((controlState & 0xFC) != 0)
@@ -350,10 +350,10 @@ namespace BizHawk.Client.Common
 						string rightXRaw = player1Str.Substring(24, 4);
 						string rightYRaw = player1Str.Substring(28, 4);
 
-						var leftX = ("P1 LStick X", float.Parse(leftXRaw));
-						var leftY = ("P1 LStick Y", float.Parse(leftYRaw));
-						var rightX = ("P1 RStick X", float.Parse(rightXRaw));
-						var rightY = ("P1 RStick Y", float.Parse(rightYRaw));
+						var leftX = ("P1 LStick X", (int) float.Parse(leftXRaw));
+						var leftY = ("P1 LStick Y", (int) float.Parse(leftYRaw));
+						var rightX = ("P1 RStick X", (int) float.Parse(rightXRaw));
+						var rightY = ("P1 RStick Y", (int) float.Parse(rightYRaw));
 
 						controllers.AcceptNewAxes(new[] { leftX, leftY, rightX, rightY });
 					}
@@ -385,10 +385,10 @@ namespace BizHawk.Client.Common
 						string rightXRaw = player2Str.Substring(24, 4);
 						string rightYRaw = player2Str.Substring(28, 4);
 
-						var leftX = ("P2 LStick X", float.Parse(leftXRaw));
-						var leftY = ("P2 LStick Y", float.Parse(leftYRaw));
-						var rightX = ("P2 RStick X", float.Parse(rightXRaw));
-						var rightY = ("P2 RStick Y", float.Parse(rightYRaw));
+						var leftX = ("P2 LStick X", (int) float.Parse(leftXRaw));
+						var leftY = ("P2 LStick Y", (int) float.Parse(leftYRaw));
+						var rightX = ("P2 RStick X", (int) float.Parse(rightXRaw));
+						var rightY = ("P2 RStick Y", (int) float.Parse(rightYRaw));
 
 						controllers.AcceptNewAxes(new[] { leftX, leftY, rightX, rightY });
 					}
@@ -416,7 +416,7 @@ namespace BizHawk.Client.Common
 					controllers["Open"] = false;
 				}
 
-				var discSelect = ("Disc Select", (float) cdNumber);
+				var discSelect = ("Disc Select", cdNumber);
 				controllers.AcceptNewAxes(new[] { discSelect });
 
 				if ((controlState & 0xFC) != 0)

@@ -16,7 +16,7 @@ namespace BizHawk.Client.Common
 
 		public bool IsPressed(string button) => _pressed.Contains(button);
 
-		public float AxisValue(string name) => 0.0f;
+		public int AxisValue(string name) => 0;
 
 		/// <summary>
 		/// Call this once per frame to do the timekeeping for the hold and release

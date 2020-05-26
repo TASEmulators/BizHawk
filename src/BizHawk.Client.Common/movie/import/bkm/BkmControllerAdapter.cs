@@ -12,9 +12,9 @@ namespace BizHawk.Client.Common
 			return _myBoolButtons[button];
 		}
 
-		public float AxisValue(string name)
+		public int AxisValue(string name)
 		{
-			return _myFloatControls[name];
+			return _myAxisControls[name];
 		}
 
 		/// <summary>
@@ -188,7 +188,7 @@ namespace BizHawk.Client.Common
 		}
 
 		private readonly WorkingDictionary<string, bool> _myBoolButtons = new WorkingDictionary<string, bool>();
-		private readonly WorkingDictionary<string, float> _myFloatControls = new WorkingDictionary<string, float>();
+		private readonly WorkingDictionary<string, int> _myAxisControls = new WorkingDictionary<string, int>();
 
 		private bool IsGenesis6Button() => Definition.BoolButtons.Contains("P1 X");
 
@@ -197,9 +197,9 @@ namespace BizHawk.Client.Common
 			_myBoolButtons[button] = state;
 		}
 
-		private void Force(string name, float state)
+		private void Force(string name, int state)
 		{
-			_myFloatControls[name] = state;
+			_myAxisControls[name] = state;
 		}
 
 		private string ControlType => Definition.Name;

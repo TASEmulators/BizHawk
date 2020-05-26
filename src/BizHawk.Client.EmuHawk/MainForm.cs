@@ -943,7 +943,7 @@ namespace BizHawk.Client.EmuHawk
 
 			//also handle floats
 			//we'll need to isolate the mouse coordinates so we can translate them
-			KeyValuePair<string, float>? mouseX = null, mouseY = null;
+			KeyValuePair<string, int>? mouseX = null, mouseY = null;
 			foreach (var f in Input.Instance.GetAxisValues())
 			{
 				if (f.Key == "WMouse X")
@@ -960,8 +960,8 @@ namespace BizHawk.Client.EmuHawk
 				var p = DisplayManager.UntransformPoint(new Point((int) mouseX.Value.Value, (int) mouseY.Value.Value));
 				float x = p.X / (float)_currentVideoProvider.BufferWidth;
 				float y = p.Y / (float)_currentVideoProvider.BufferHeight;
-				conInput.AcceptNewAxis("WMouse X", (x * 20000) - 10000);
-				conInput.AcceptNewAxis("WMouse Y", (y * 20000) - 10000);
+				conInput.AcceptNewAxis("WMouse X", (int) ((x * 20000) - 10000));
+				conInput.AcceptNewAxis("WMouse Y", (int) ((y * 20000) - 10000));
 			}
 
 		}

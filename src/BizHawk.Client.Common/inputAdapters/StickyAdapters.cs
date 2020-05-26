@@ -22,7 +22,7 @@ namespace BizHawk.Client.Common
 			return source;
 		}
 
-		public float AxisValue(string name)
+		public int AxisValue(string name)
 		{
 			var val = _axisSet[name];
 
@@ -45,9 +45,9 @@ namespace BizHawk.Client.Common
 
 		// if SetAxis() is called (typically virtual pads), then that axis will entirely override the Source input
 		// otherwise, the source is passed thru.
-		private readonly WorkingDictionary<string, float?> _axisSet = new WorkingDictionary<string, float?>();
+		private readonly WorkingDictionary<string, int?> _axisSet = new WorkingDictionary<string, int?>();
 
-		public void SetAxis(string name, float? value)
+		public void SetAxis(string name, int? value)
 		{
 			if (value.HasValue)
 			{
@@ -126,7 +126,7 @@ namespace BizHawk.Client.Common
 			return source;
 		}
 
-		public float AxisValue(string name)
+		public int AxisValue(string name)
 		{
 			if (_axisPatterns.ContainsKey(name))
 			{
@@ -153,7 +153,7 @@ namespace BizHawk.Client.Common
 		}
 
 		private readonly WorkingDictionary<string, AutoPatternBool> _boolPatterns = new WorkingDictionary<string, AutoPatternBool>();
-		private readonly WorkingDictionary<string, AutoPatternFloat> _axisPatterns = new WorkingDictionary<string, AutoPatternFloat>();
+		private readonly WorkingDictionary<string, AutoPatternAxis> _axisPatterns = new WorkingDictionary<string, AutoPatternAxis>();
 
 		public AutoFireStickyXorAdapter()
 		{
@@ -163,11 +163,11 @@ namespace BizHawk.Client.Common
 
 		public IController Source { get; set; }
 
-		public void SetAxis(string name, float? value, AutoPatternFloat pattern = null)
+		public void SetAxis(string name, int? value, AutoPatternAxis pattern = null)
 		{
 			if (value.HasValue)
 			{
-				pattern ??= new AutoPatternFloat(value.Value, _on, 0, _off);
+				pattern ??= new AutoPatternAxis(value.Value, _on, 0, _off);
 				_axisPatterns[name] = pattern;
 			}
 			else

@@ -39,7 +39,7 @@ namespace BizHawk.Client.Common
 				return;
 			}
 			foreach (var button in controller.Definition.BoolButtons) Global.InputManager.ButtonOverrideAdapter.SetButton(button, controller.IsPressed(button));
-			foreach (var floatButton in controller.Definition.AxisControls) Global.InputManager.ButtonOverrideAdapter.SetAxis(floatButton, controller.AxisValue(floatButton));
+			foreach (var axis in controller.Definition.AxisControls) Global.InputManager.ButtonOverrideAdapter.SetAxis(axis, controller.AxisValue(axis));
 		}
 
 		public void Set(Dictionary<string, bool> buttons, int? controller = null)
@@ -76,7 +76,7 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				Global.InputManager.StickyXorAdapter.SetAxis(controller == null ? control : $"P{controller} {control}", value);
+				Global.InputManager.StickyXorAdapter.SetAxis(controller == null ? control : $"P{controller} {control}", value == null ? (int?) null : (int) value.Value); // the time for changing the API will come --yoshi
 			}
 			catch
 			{

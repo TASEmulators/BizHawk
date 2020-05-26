@@ -14,7 +14,7 @@ namespace BizHawk.Client.Common
 		public ControllerDefinition Definition { get; private set; }
 
 		private readonly Dictionary<string, bool> _overrides = new Dictionary<string, bool>();
-		private readonly Dictionary<string, float> _axisOverrides = new Dictionary<string, float>();
+		private readonly Dictionary<string, int> _axisOverrides = new Dictionary<string, int>();
 		private readonly List<string> _inverses = new List<string>();
 
 		/// <exception cref="InvalidOperationException"><paramref name="button"/> not overridden</exception>
@@ -28,10 +28,10 @@ namespace BizHawk.Client.Common
 			throw new InvalidOperationException();
 		}
 
-		public float AxisValue(string name)
+		public int AxisValue(string name)
 			=> _axisOverrides.ContainsKey(name)
 				? _axisOverrides[name]
-				: 0.0F;
+				: 0;
 
 		public IEnumerable<string> Overrides => _overrides.Select(kvp => kvp.Key);
 
@@ -39,7 +39,7 @@ namespace BizHawk.Client.Common
 
 		public IEnumerable<string> InversedButtons => _inverses;
 
-		public void SetAxis(string name, float value)
+		public void SetAxis(string name, int value)
 		{
 			if (_axisOverrides.ContainsKey(name))
 			{

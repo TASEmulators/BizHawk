@@ -366,7 +366,7 @@ namespace BizHawk.Client.Common
 			ChangeLog.SetGeneralRedo();
 		}
 
-		public void SetFloatState(int frame, string buttonName, float val)
+		public void SetAxisState(int frame, string buttonName, int val)
 		{
 			if (frame >= Log.Count) // Insert blank frames up to this point
 			{
@@ -384,11 +384,11 @@ namespace BizHawk.Client.Common
 			{
 				InvalidateAfter(frame);
 				Changes = true;
-				ChangeLog.AddFloatChange(frame, buttonName, old, val, $"Set {buttonName}({val}): {frame}");
+				ChangeLog.AddAxisChange(frame, buttonName, old, val, $"Set {buttonName}({val}): {frame}");
 			}
 		}
 
-		public void SetFloatStates(int frame, int count, string buttonName, float val)
+		public void SetAxisStates(int frame, int count, string buttonName, int val)
 		{
 			if (frame + count >= Log.Count) // Insert blank frames up to this point
 			{
@@ -401,7 +401,7 @@ namespace BizHawk.Client.Common
 			for (int i = 0; i < count; i++)
 			{
 				var adapter = GetInputState(frame + i);
-				float old = adapter.AxisValue(buttonName);
+				var old = adapter.AxisValue(buttonName);
 				adapter.SetAxis(buttonName, val);
 
 				var lg = LogGeneratorInstance(adapter);

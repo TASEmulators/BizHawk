@@ -17,8 +17,8 @@ namespace BizHawk.Client.EmuHawk
 		private string _startBoolDrawColumn = "";
 		private string _startFloatDrawColumn = "";
 		private bool _boolPaintState;
-		private float _axisPaintState;
-		private float _axisBackupState;
+		private int _axisPaintState;
+		private int _axisBackupState;
 		private bool _patternPaint;
 		private bool _startCursorDrag;
 		private bool _startSelectionDrag;
@@ -64,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool WasRecording { get; set; }
 		public AutoPatternBool[] BoolPatterns;
-		public AutoPatternFloat[] FloatPatterns;
+		public AutoPatternAxis[] AxisPatterns;
 
 		public void JumpToGreenzone()
 		{
@@ -473,13 +473,13 @@ namespace BizHawk.Client.EmuHawk
 					index += ControllerType.AxisControls.Count - 1;
 				}
 
-				float? value = null;
+				int? value = null;
 				if (isOn.Value)
 				{
-					value = 0f;
+					value = 0;
 				}
 
-				AutoPatternFloat p = FloatPatterns[index];
+				AutoPatternAxis p = AxisPatterns[index];
 				Global.InputManager.AutofireStickyXorAdapter.SetAxis(button, value, p);
 			}
 		}
@@ -569,7 +569,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 
 						_axisEditYPos = e.Y;
-						_axisPaintState = CurrentTasMovie.GetFloatState(frame, buttonName);
+						_axisPaintState = CurrentTasMovie.GetAxisState(frame, buttonName);
 						
 						_triggerAutoRestore = true;
 						JumpToGreenzone();
@@ -659,18 +659,18 @@ namespace BizHawk.Client.EmuHawk
 					{
 						if (frame >= CurrentTasMovie.InputLogLength)
 						{
-							CurrentTasMovie.SetFloatState(frame, buttonName, 0);
+							CurrentTasMovie.SetAxisState(frame, buttonName, 0);
 							RefreshDialog();
 						}
 
 						JumpToGreenzone();
 
-						_axisPaintState = CurrentTasMovie.GetFloatState(frame, buttonName);
+						_axisPaintState = CurrentTasMovie.GetAxisState(frame, buttonName);
 						if (applyPatternToPaintedInputToolStripMenuItem.Checked && (!onlyOnAutoFireColumnsToolStripMenuItem.Checked
 							|| TasView.CurrentCell.Column.Emphasis))
 						{
-							FloatPatterns[ControllerType.AxisControls.IndexOf(buttonName)].Reset();
-							CurrentTasMovie.SetFloatState(frame, buttonName, FloatPatterns[ControllerType.AxisControls.IndexOf(buttonName)].GetNextValue());
+							AxisPatterns[ControllerType.AxisControls.IndexOf(buttonName)].Reset();
+							CurrentTasMovie.SetAxisState(frame, buttonName, AxisPatterns[ControllerType.AxisControls.IndexOf(buttonName)].GetNextValue());
 							_patternPaint = true;
 						}
 						else
@@ -697,7 +697,7 @@ namespace BizHawk.Client.EmuHawk
 								AxisEditRow = frame;
 								_axisTypedValue = "";
 								_axisEditYPos = e.Y;
-								_axisBackupState = CurrentTasMovie.GetFloatState(_axisEditRow, _axisEditColumn);
+								_axisBackupState = CurrentTasMovie.GetAxisState(_axisEditRow, _axisEditColumn);
 							}
 
 							RefreshDialog();
@@ -783,7 +783,7 @@ namespace BizHawk.Client.EmuHawk
 			TasView.ReleaseCurrentCell();
 
 			// Exit axis editing if value was changed with cursor
-			if (AxisEditingMode && _axisPaintState != CurrentTasMovie.GetFloatState(_axisEditRow, _axisEditColumn))
+			if (AxisEditingMode && _axisPaintState != CurrentTasMovie.GetAxisState(_axisEditRow, _axisEditColumn))
 			{
 				AxisEditRow = -1;
 				_triggerAutoRestore = true;
@@ -1143,20 +1143,20 @@ namespace BizHawk.Client.EmuHawk
 
 				for (int i = startVal; i <= endVal; i++) // Inclusive on both ends (drawing up or down)
 				{
-					float setVal = _axisPaintState;
+					var setVal = _axisPaintState;
 					if (_patternPaint)
 					{
 						if (CurrentTasMovie[frame].Lagged.HasValue && CurrentTasMovie[frame].Lagged.Value)
 						{
-							setVal = CurrentTasMovie.GetFloatState(i - 1, _startFloatDrawColumn);
+							setVal = CurrentTasMovie.GetAxisState(i - 1, _startFloatDrawColumn);
 						}
 						else
 						{
-							setVal = FloatPatterns[ControllerType.AxisControls.IndexOf(_startFloatDrawColumn)].GetNextValue();
+							setVal = AxisPatterns[ControllerType.AxisControls.IndexOf(_startFloatDrawColumn)].GetNextValue();
 						}
 					}
 
-					CurrentTasMovie.SetFloatState(i, _startFloatDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
+					CurrentTasMovie.SetAxisState(i, _startFloatDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
 					JumpToGreenzone();
 				}
 			}
@@ -1182,8 +1182,8 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 
-				var value = (_axisPaintState + increment).ConstrainWithin(ControllerType.AxisRanges[ControllerType.AxisControls.IndexOf(_axisEditColumn)].FloatRange);
-				CurrentTasMovie.SetFloatState(_axisEditRow, _axisEditColumn, value);
+				var value = (_axisPaintState + increment).ConstrainWithin(ControllerType.AxisRanges[ControllerType.AxisControls.IndexOf(_axisEditColumn)].Range);
+				CurrentTasMovie.SetAxisState(_axisEditRow, _axisEditColumn, value);
 				_axisTypedValue = value.ToString();
 
 				JumpToGreenzone();
@@ -1251,7 +1251,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			float value = CurrentTasMovie.GetFloatState(_axisEditRow, _axisEditColumn);
+			float value = CurrentTasMovie.GetAxisState(_axisEditRow, _axisEditColumn);
 			float prev = value;
 			string prevTyped = _axisTypedValue;
 
@@ -1336,7 +1336,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (_axisBackupState != _axisPaintState)
 				{
-					CurrentTasMovie.SetFloatState(_axisEditRow, _axisEditColumn, _axisBackupState);
+					CurrentTasMovie.SetAxisState(_axisEditRow, _axisEditColumn, _axisBackupState);
 					_triggerAutoRestore = Emulator.Frame > _axisEditRow;
 					JumpToGreenzone();
 					DoTriggeredAutoRestoreIfNeeded();
@@ -1379,7 +1379,7 @@ namespace BizHawk.Client.EmuHawk
 					if (prevTyped != "")
 					{
 						value = 0f;
-						CurrentTasMovie.SetFloatState(_axisEditRow, _axisEditColumn, value);
+						CurrentTasMovie.SetAxisState(_axisEditRow, _axisEditColumn, (int) value);
 					}
 				}
 				else
@@ -1396,7 +1396,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 
 						_axisTypedValue = value.ToString();
-						CurrentTasMovie.SetFloatState(_axisEditRow, _axisEditColumn, value);
+						CurrentTasMovie.SetAxisState(_axisEditRow, _axisEditColumn, (int) value);
 					}
 				}
 
@@ -1404,7 +1404,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					foreach (int row in _extraAxisRows)
 					{
-						CurrentTasMovie.SetFloatState(row, _axisEditColumn, value);
+						CurrentTasMovie.SetAxisState(row, _axisEditColumn, (int) value);
 					}
 				}
 

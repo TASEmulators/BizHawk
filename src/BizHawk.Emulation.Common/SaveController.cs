@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Common
 	/// </summary>
 	public class SaveController : IController
 	{
-		private readonly WorkingDictionary<string, float> _buttons = new WorkingDictionary<string, float>();
+		private readonly WorkingDictionary<string, int> _buttons = new WorkingDictionary<string, int>();
 
 		public SaveController()
 		{
@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Common
 			{
 				string k = b.ReadString();
 				float v = b.ReadSingle();
-				_buttons.Add(k, v);
+				_buttons.Add(k, (int) v);
 			}
 		}
 
@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Common
 			_buttons.Clear();
 			foreach (var k in Definition.BoolButtons)
 			{
-				_buttons.Add(k, source.IsPressed(k) ? 1.0f : 0);
+				_buttons.Add(k, source.IsPressed(k) ? 1 : 0);
 			}
 
 			foreach (var k in Definition.AxisControls)
@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.Common
 
 		public void Set(string button)
 		{
-			_buttons[button] = 1.0f;
+			_buttons[button] = 1;
 		}
 
 		public bool IsPressed(string button)
@@ -91,7 +91,7 @@ namespace BizHawk.Emulation.Common
 			return _buttons[button] != 0;
 		}
 
-		public float AxisValue(string name)
+		public int AxisValue(string name)
 		{
 			return _buttons[name];
 		}

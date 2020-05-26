@@ -120,8 +120,8 @@ namespace BizHawk.Client.Common
 
 				controller.AcceptNewAxes(new[]
 				{
-					("TouchX", (float) touchX),
-					("TouchY", (float) touchY)
+					("TouchX", touchX),
+					("TouchY", touchY)
 				});
 			}
 

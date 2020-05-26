@@ -68,26 +68,26 @@
 		}
 	}
 
-	public class AutoPatternFloat
+	public class AutoPatternAxis
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="AutoPatternFloat"/> class. 
+		/// Initializes a new instance of the <see cref="AutoPatternAxis"/> class.
 		/// Defaults to 0.
 		/// </summary>
-		public AutoPatternFloat()
+		public AutoPatternAxis()
 		{
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="AutoPatternFloat"/> class. 
+		/// Initializes a new instance of the <see cref="AutoPatternAxis"/> class.
 		/// Simple on/off pattern, using the given values as on/off.
 		/// </summary>
-		public AutoPatternFloat(float valueOn, int on, float valueOff, int off, bool skipLag = true, int offset = 0, int loop = 0)
+		public AutoPatternAxis(int valueOn, int on, int valueOff, int off, bool skipLag = true, int offset = 0, int loop = 0)
 		{
 			SkipsLag = skipLag;
 			_index = offset;
 			Loop = loop;
-			Pattern = new float[on + off];
+			Pattern = new int[on + off];
 			for (int i = 0; i < on; i++)
 			{
 				Pattern[i] = valueOn;
@@ -99,7 +99,7 @@
 			}
 		}
 
-		public AutoPatternFloat(float[] pattern, bool skipLag = true, int offset = 0, int loop = 0)
+		public AutoPatternAxis(int[] pattern, bool skipLag = true, int offset = 0, int loop = 0)
 		{
 			SkipsLag = skipLag;
 			Pattern = pattern;
@@ -110,15 +110,15 @@
 		private int _index;
 
 		public bool SkipsLag { get; } = true;
-		public float[] Pattern { get; } = { 0f };
+		public int[] Pattern { get; } = { 0 };
 		public int Loop { get; }
 
 		/// <summary>
 		/// Gets the next value and increments index.
 		/// </summary>
-		public float GetNextValue(bool isLag = false)
+		public int GetNextValue(bool isLag = false)
 		{
-			float ret = Pattern[_index];
+			int ret = Pattern[_index];
 			if (!isLag || !SkipsLag)
 			{
 				_index++;
@@ -134,7 +134,7 @@
 		/// <summary>
 		/// Gets the next value without incrementing index.
 		/// </summary>
-		public float PeekNextValue()
+		public int PeekNextValue()
 		{
 			return Pattern[_index];
 		}

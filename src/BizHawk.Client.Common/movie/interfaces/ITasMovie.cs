@@ -30,8 +30,8 @@ namespace BizHawk.Client.Common
 
 		void GreenzoneCurrentFrame();
 		void ToggleBoolState(int frame, string buttonName);
-		void SetFloatState(int frame, string buttonName, float val);
-		void SetFloatStates(int frame, int count, string buttonName, float val);
+		void SetAxisState(int frame, string buttonName, int val);
+		void SetAxisStates(int frame, int count, string buttonName, int val);
 		void SetBoolState(int frame, string buttonName, bool val);
 		void SetBoolStates(int frame, int count, string buttonName, bool val);
 		void InsertInput(int frame, string inputState);
