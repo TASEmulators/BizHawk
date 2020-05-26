@@ -419,9 +419,10 @@ namespace BizHawk.Client.Common
 					// -----------
 					// TODO - use more sophisticated IDer
 					var discType = new DiscIdentifier(disc).DetectDiscType();
+					var discHasher = new DiscHasher(disc);
 					var discHash = discType == DiscType.SonyPSX
-						? new DiscHasher(disc).Calculate_PSX_BizIDHash().ToString("X8")
-						: new DiscHasher(disc).OldHash();
+						? discHasher.Calculate_PSX_BizIDHash().ToString("X8")
+						: discHasher.OldHash();
 
 					game = Database.CheckDatabase(discHash);
 					if (game == null)
@@ -429,9 +430,7 @@ namespace BizHawk.Client.Common
 						// try to use our wizard methods
 						game = new GameInfo { Name = Path.GetFileNameWithoutExtension(file.Name), Hash = discHash };
 
-						var dt = new DiscIdentifier(disc).DetectDiscType();
-
-						switch (dt)
+						switch (discType)
 						{
 							case DiscType.SegaSaturn:
 								game.System = "SAT";
@@ -439,16 +438,14 @@ namespace BizHawk.Client.Common
 							case DiscType.SonyPSP:
 								game.System = "PSP";
 								break;
-							default:
-							case DiscType.SonyPSX:
-								game.System = "PSX";
-								break;
 							case DiscType.MegaCD:
 								game.System = "GEN";
 								break;
 							case DiscType.PCFX:
 								game.System = "PCFX";
 								break;
+
+							case DiscType.TurboGECD:
 							case DiscType.TurboCD:
 								game.System = "PCECD";
 								break;
@@ -462,8 +459,8 @@ namespace BizHawk.Client.Common
 							case DiscType.Playdia:
 							case DiscType.Wii:
 								// no supported emulator core for these (yet)
-								game.System = dt.ToString();
-								throw new NoAvailableCoreException(dt.ToString());
+								game.System = discType.ToString();
+								throw new NoAvailableCoreException(discType.ToString());
 
 							case DiscType.AudioDisc:
 							case DiscType.UnknownCDFS:
@@ -471,6 +468,11 @@ namespace BizHawk.Client.Common
 								game.System = PreferredPlatformIsDefined(ext)
 									? Global.Config.PreferredPlatformsForExtensions[ext]
 									: "NULL";
+								break;
+
+							default: //"for an unknown disc, default to psx instead of pce-cd, since that is far more likely to be what they are attempting to open" [5e07ab3ec3b8b8de9eae71b489b55d23a3909f55, year 2015]
+							case DiscType.SonyPSX:
+								game.System = "PSX";
 								break;
 						}
 					}
