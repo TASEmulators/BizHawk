@@ -358,6 +358,13 @@ namespace BizHawk.Client.Common
 			new PathEntry { System = "MSX", SystemDisplayName = "MSX", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
 			new PathEntry { System = "MSX", SystemDisplayName = "MSX", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
 			new PathEntry { System = "MSX", SystemDisplayName = "MSX", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
+
+			new PathEntry { System = "UZE", SystemDisplayName = "UZE", Type = "Base", Path = Path.Combine(".", "VEC"), Ordinal = 0 },
+			new PathEntry { System = "UZE", SystemDisplayName = "UZE", Type = "ROM", Path = ".", Ordinal = 1 },
+			new PathEntry { System = "UZE", SystemDisplayName = "UZE", Type = "Savestates",  Path = Path.Combine(".", "State"), Ordinal = 2 },
+			new PathEntry { System = "UZE", SystemDisplayName = "UZE", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
+			new PathEntry { System = "UZE", SystemDisplayName = "UZE", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
+			new PathEntry { System = "UZE", SystemDisplayName = "UZE", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 }
 		};
 	}
 }
