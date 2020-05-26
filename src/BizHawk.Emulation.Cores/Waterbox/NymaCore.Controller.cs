@@ -151,16 +151,18 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							}
 							case LibNymaCore.InputType.POINTER_X:
 							{
-								throw new Exception("TODO: Axis ranges are ints????");
+								throw new NotImplementedException("TODO: Support Pointer");
+								// I think the core expects to be sent some sort of 16 bit integer, but haven't investigated much
 								// ret.AxisControls.Add(name);
-								// ret.AxisRanges.Add(new ControllerDefinition.AxisRange(0, 0.5, 1));
+								// ret.AxisRanges.Add(new ControllerDefinition.AxisRange(0, ????, ????));
 								// break;
 							}
 							case LibNymaCore.InputType.POINTER_Y:
 							{
-								throw new Exception("TODO: Axis ranges are ints????");
+								throw new Exception("TODO: Support Pointer");
+								// I think the core expects to be sent some sort of 16 bit integer, but haven't investigated much
 								// ret.AxisControls.Add(name);
-								// ret.AxisRanges.Add(new ControllerDefinition.AxisRange(0, 0.5, 1, true));
+								// ret.AxisRanges.Add(new ControllerDefinition.AxisRange(0, ????, ????, true));
 								// break;
 							}
 							// TODO: wire up statuses to something (not controller, of course)
