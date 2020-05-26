@@ -72,10 +72,10 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Looks for a .cht file that matches the ROM loaded based on the default filename for a given ROM
 		/// </summary>
-		public bool AttemptToLoadCheatFile(IMemoryDomains domains)
+		public bool AttemptToLoadCheatFile(IMemoryDomains domains, bool disable)
 		{
 			var file = new FileInfo(_defaultFileName);
-			return file.Exists && Load(domains, file.FullName, false);
+			return file.Exists && Load(domains, file.FullName, disable, false);
 		}
 
 		public void NewList(string defaultFileName, bool autosave = false)
@@ -321,7 +321,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public bool Load(IMemoryDomains domains, string path, bool append)
+		public bool Load(IMemoryDomains domains, string path, bool disable, bool append)
 		{
 			var file = new FileInfo(path);
 			if (file.Exists == false)
@@ -405,7 +405,7 @@ namespace BizHawk.Client.Common
 								bigEndian,
 								name);
 
-							Add(new Cheat(watch, value, compare, !Global.Config.DisableCheatsOnLoad && enabled, comparisonType));
+							Add(new Cheat(watch, value, compare, !disable && enabled, comparisonType));
 						}
 					}
 					catch

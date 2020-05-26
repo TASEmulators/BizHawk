@@ -158,8 +158,6 @@ namespace BizHawk.Client.Common
 					if (cheat != (Cheat)null)
 					{
 						cheat.PokeValue((int)val);
-						PokeDWord(val);
-						return true;
 					}
 				}
 

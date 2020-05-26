@@ -133,8 +133,6 @@ namespace BizHawk.Client.Common
 					if (cheat != (Cheat)null)
 					{
 						cheat.PokeValue(val);
-						PokeByte(val);
-						return true;
 					}
 				}
 

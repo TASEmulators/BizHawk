@@ -3751,7 +3751,7 @@ namespace BizHawk.Client.EmuHawk
 					if (Config.LoadCheatFileByGame && Emulator.HasMemoryDomains())
 					{
 						CheatList.SetDefaultFileName(Tools.GenerateDefaultCheatFilename());
-						if (CheatList.AttemptToLoadCheatFile(Emulator.AsMemoryDomains()))
+						if (CheatList.AttemptToLoadCheatFile(Emulator.AsMemoryDomains(), Config.DisableCheatsOnLoad))
 						{
 							AddOnScreenMessage("Cheats file loaded");
 						}
