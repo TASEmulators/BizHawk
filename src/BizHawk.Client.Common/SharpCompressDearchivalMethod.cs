@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using System.IO;
 using System.Linq;
 
@@ -25,18 +26,12 @@ namespace BizHawk.Client.Common
 			try
 			{
 				using var arcTest = ArchiveFactory.Open(fileName);
-				switch (arcTest.Type)
-				{
-					case ArchiveType.Zip:
-					case ArchiveType.SevenZip:
-						return true;
-				}
 			}
 			catch
 			{
-				// ignored
+				return false;
 			}
-			return false;
+			return true; // no exception? good enough
 		}
 
 		public SharpCompressArchiveFile Construct(string path) => new SharpCompressArchiveFile(path);
