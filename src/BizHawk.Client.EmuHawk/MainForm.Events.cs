@@ -1318,9 +1318,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBCorePick_Click(object sender, EventArgs e)
 		{
-			Config.PreferredCores["PCE"] = CoreNames.TurboNyma;
+			Config.PreferredCores["GB"] = CoreNames.GbHawk;
 
-			if (Emulator.SystemId == "PCE" || Emulator.SystemId == "PCECD")
+			if (Emulator.SystemId == "GB" || Emulator.SystemId == "GBC")
 			{
 				FlagNeedsReboot();
 			}
