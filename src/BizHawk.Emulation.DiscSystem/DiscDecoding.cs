@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,11 @@ namespace BizHawk.Emulation.DiscSystem
 		public class AudioQueryResult
 		{
 			public bool IsAudio;
+		}
+
+		private static string[] Escape(IEnumerable<string> args)
+		{
+			return args.Select(s => s.Contains(" ") ? $"\"{s}\"" : s).ToArray();
 		}
 
 		//note: accepts . or : in the stream stream/substream separator in the stream ID format, since that changed at some point in FFMPEG history
@@ -49,9 +55,9 @@ namespace BizHawk.Emulation.DiscSystem
 			public int ExitCode;
 		}
 
-		public static RunResults Run(params string[] args)
+		public RunResults Run(params string[] args)
 		{
-			args = args.Select(s => s.Contains(" ") ? $"\"{s}\"" : s).ToArray();
+			args = Escape(args);
 			StringBuilder sbCmdline = new StringBuilder();
 			for (int i = 0; i < args.Length; i++)
 			{
@@ -100,7 +106,7 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 	}
 
-	internal static class AudioDecoder
+	internal class AudioDecoder
 	{
 		[Serializable]
 		public class AudioDecoder_Exception : Exception
@@ -111,17 +117,50 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 		}
 
-		/// <exception cref="AudioDecoder_Exception">could not find source audio for <paramref name="audioPath"/></exception>
-		public static byte[] AcquireWaveData(string audioPath)
+		public AudioDecoder()
 		{
-			// find audio at a path similar to the provided path (i.e. finds Track01.mp3 for Track01.wav)
-			// TODO isn't this redundant with CueFileResolver?
-			var basePath = Path.GetFileNameWithoutExtension(audioPath);
-			var files = new DirectoryInfo(Path.GetDirectoryName(audioPath)).GetFiles().Select(fi => fi.FullName).ToList();
-			var found = files.Where(f => string.Equals(f, audioPath, StringComparison.InvariantCulture)) // first, look for the file type we actually asked for
-				.Concat(files.Where(f => string.Equals(Path.GetFileNameWithoutExtension(f), basePath, StringComparison.InvariantCulture))) // then, look for any other type
-				.FirstOrDefault(f => new FFMpeg().QueryAudio(f).IsAudio); // ignore false positives
-			return new FFMpeg().DecodeAudio(found ?? throw new AudioDecoder_Exception($"Could not find source audio for: {Path.GetFileName(audioPath)}"));
 		}
+
+		private bool CheckForAudio(string path)
+		{
+			FFMpeg ffmpeg = new FFMpeg();
+			var qa = ffmpeg.QueryAudio(path);
+			return qa.IsAudio;
+		}
+
+		/// <summary>
+		/// finds audio at a path similar to the provided path (i.e. finds Track01.mp3 for Track01.wav)
+		/// TODO - isnt this redundant with CueFileResolver?
+		/// </summary>
+		private string FindAudio(string audioPath)
+		{
+			string basePath = Path.GetFileNameWithoutExtension(audioPath);
+			//look for potential candidates
+			var di = new DirectoryInfo(Path.GetDirectoryName(audioPath));
+			var fis = di.GetFiles();
+			//first, look for the file type we actually asked for
+			foreach (var fi in fis)
+			{
+				if (fi.FullName.ToUpper() == audioPath.ToUpper())
+					if (CheckForAudio(fi.FullName))
+						return fi.FullName;
+			}
+			//then look for any other type
+			foreach (var fi in fis)
+			{
+				if (Path.GetFileNameWithoutExtension(fi.FullName).ToUpper() == basePath.ToUpper())
+				{
+					if (CheckForAudio(fi.FullName))
+					{
+						return fi.FullName;
+					}
+				}
+			}
+			return null;
+		}
+
+		/// <exception cref="AudioDecoder_Exception">could not find source audio for <paramref name="audioPath"/></exception>
+		public byte[] AcquireWaveData(string audioPath) => new FFMpeg()
+			.DecodeAudio(FindAudio(audioPath) ?? throw new AudioDecoder_Exception($"Could not find source audio for: {Path.GetFileName(audioPath)}"));
 	}
 }

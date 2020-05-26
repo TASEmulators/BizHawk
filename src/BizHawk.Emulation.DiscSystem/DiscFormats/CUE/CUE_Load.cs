@@ -107,7 +107,8 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 							{
 								throw new DiscReferenceException(ccf.FullPath, "No decoding service was available (make sure ffmpeg.exe is available. even though this may be a wav, ffmpeg is used to load oddly formatted wave files. If you object to this, please send us a note and we'll see what we can do. It shouldn't be too hard.)");
 							}
-							byte[] buf = AudioDecoder.AcquireWaveData(ccf.FullPath);
+							AudioDecoder dec = new AudioDecoder();
+							byte[] buf = dec.AcquireWaveData(ccf.FullPath);
 							var blob = new Disc.Blob_WaveFile();
 							OUT_Disc.DisposableResources.Add(file_blob = blob);
 							blob.Load(new MemoryStream(buf));

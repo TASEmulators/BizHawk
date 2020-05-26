@@ -126,6 +126,44 @@ namespace BizHawk.Emulation.DiscSystem
 			return 2448;
 		}
 
+		private int ReadLBA_2048_Mode1(int lba, byte[] buffer, int offset)
+		{
+			//we can read the 2048 bytes directly
+			var sector = disc.SynthProvider.Get(lba);
+
+			if (sector == null) return 0;
+
+			PrepareBuffer(buffer, offset, 2048);
+			PrepareJob(lba);
+			job.DestBuffer2448 = buf2442;
+			job.DestOffset = 0;
+			job.Parts = ESectorSynthPart.User2048;
+
+			sector.Synth(job);
+			Buffer.BlockCopy(buf2442, 16, buffer, offset, 2048);
+
+			return 2048;
+		}
+
+		private int ReadLBA_2048_Mode2_Form1(int lba, byte[] buffer, int offset)
+		{
+			//we can read the 2048 bytes directly but we have to get them from the mode 2 data
+			var sector = disc.SynthProvider.Get(lba);
+
+			if (sector == null) return 0;
+
+			PrepareBuffer(buffer, offset, 2048);
+			PrepareJob(lba);
+			job.DestBuffer2448 = buf2442;
+			job.DestOffset = 0;
+			job.Parts = ESectorSynthPart.User2336;
+
+			sector.Synth(job);
+			Buffer.BlockCopy(buf2442, 24, buffer, offset, 2048);
+
+			return 2048;
+		}
+
 		/// <summary>
 		/// Reads 12 bytes of subQ data from a sector.
 		/// This is necessarily deinterleaved.
@@ -158,48 +196,10 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <exception cref="InvalidOperationException"></exception>
 		public int ReadLBA_2048(int lba, byte[] buffer, int offset)
 		{
-			int ReadLBA_2048_Mode1()
-			{
-				//we can read the 2048 bytes directly
-				var sector = disc.SynthProvider.Get(lba);
-
-				if (sector == null) return 0;
-
-				PrepareBuffer(buffer, offset, 2048);
-				PrepareJob(lba);
-				job.DestBuffer2448 = buf2442;
-				job.DestOffset = 0;
-				job.Parts = ESectorSynthPart.User2048;
-
-				sector.Synth(job);
-				Buffer.BlockCopy(buf2442, 16, buffer, offset, 2048);
-
-				return 2048;
-			}
-
-			int ReadLBA_2048_Mode2_Form1()
-			{
-				//we can read the 2048 bytes directly but we have to get them from the mode 2 data
-				var sector = disc.SynthProvider.Get(lba);
-
-				if (sector == null) return 0;
-
-				PrepareBuffer(buffer, offset, 2048);
-				PrepareJob(lba);
-				job.DestBuffer2448 = buf2442;
-				job.DestOffset = 0;
-				job.Parts = ESectorSynthPart.User2336;
-
-				sector.Synth(job);
-				Buffer.BlockCopy(buf2442, 24, buffer, offset, 2048);
-
-				return 2048;
-			}
-
 			if (Policy.UserData2048Mode == DiscSectorReaderPolicy.EUserData2048Mode.AssumeMode1)
-				return ReadLBA_2048_Mode1();
+				return ReadLBA_2048_Mode1(lba, buffer, offset);
 			else if (Policy.UserData2048Mode == DiscSectorReaderPolicy.EUserData2048Mode.AssumeMode2_Form1)
-				return ReadLBA_2048_Mode2_Form1();
+				return ReadLBA_2048_Mode2_Form1(lba, buffer, offset);
 			else
 			{
 				//we need to determine the type of the sector.

@@ -146,33 +146,19 @@ namespace BizHawk.Emulation.DiscSystem
 			return true;
 		}
 
+
+		private List<KeyValuePair<string, ISOFileNode>> fileNodes;
+		private List<ISODirectoryNode> dirsParsed;
+
 		/// <summary>
 		/// Returns a flat list of all recursed files
 		/// </summary>
 		public List<KeyValuePair<string, ISOFileNode>> EnumerateAllFilesRecursively()
 		{
-			var fileNodes = new List<KeyValuePair<string, ISOFileNode>>();
+			fileNodes = new List<KeyValuePair<string, ISOFileNode>>();
 			if (Root.Children == null) return fileNodes;
 
-			var dirsParsed = new List<ISODirectoryNode>();
-
-			void ProcessDirectoryFiles(Dictionary<string, ISONode> idn)
-			{
-				foreach (var n in idn)
-				{
-					if (n.Value is ISODirectoryNode subdirNode)
-					{
-						if (dirsParsed.Contains(subdirNode)) continue;
-						dirsParsed.Add(subdirNode);
-						ProcessDirectoryFiles(subdirNode.Children);
-					}
-					else
-					{
-						fileNodes.Add(new KeyValuePair<string, ISOFileNode>(n.Key, n.Value as ISOFileNode));
-					}
-				}
-			}
-
+			dirsParsed = new List<ISODirectoryNode>();
 			foreach (var idn in Root.Children.Values.OfType<ISODirectoryNode>()) // iterate through each folder
 			{
 				// process all files in this directory (and recursively process files in subfolders)
@@ -181,6 +167,24 @@ namespace BizHawk.Emulation.DiscSystem
 				ProcessDirectoryFiles(idn.Children);                
 			}
 			return fileNodes.Distinct().ToList();
+		}  
+
+		private void ProcessDirectoryFiles(Dictionary<string, ISONode> idn)
+		{
+			foreach (var n in idn)
+			{
+				if (n.Value is ISODirectoryNode subdirNode)
+				{
+					if (dirsParsed.Contains(subdirNode)) continue;
+					dirsParsed.Add(subdirNode);
+					ProcessDirectoryFiles(subdirNode.Children);
+				}
+				else
+				{
+					KeyValuePair<string, ISOFileNode> f = new KeyValuePair<string, ISOFileNode>(n.Key, n.Value as ISOFileNode);
+					fileNodes.Add(f);
+				}
+			}
 		}
 
 		/// <summary>

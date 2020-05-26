@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using BizHawk.Common.BufferExtensions;
-
 //disc type identification logic
 
 namespace BizHawk.Emulation.DiscSystem
@@ -121,79 +119,6 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public DiscType DetectDiscType()
 		{
-			// this is a reasonable approach to identify Saturn
-			bool DetectSegaSaturn() => StringAt("SEGA SEGASATURN", 0);
-
-			// probably wrong
-			bool DetectMegaCD() => StringAt("SEGADISCSYSTEM", 0) || StringAt("SEGADISCSYSTEM", 16);
-
-			bool DetectPSX() => StringAt("          Licensed  by          ", 0, 4)
-				&& (
-					StringAt("Sony Computer Entertainment Euro", 32, 4)
-					|| StringAt("Sony Computer Entertainment Inc.", 32, 4)
-					|| StringAt("Sony Computer Entertainment Amer", 32, 4)
-					|| StringAt("Sony Computer Entertainment of A", 32, 4)
-				);
-
-			bool DetectPCFX()
-			{
-				var toc = _disc.TOC;
-				for (var t = toc.FirstRecordedTrackNumber; t <= toc.LastRecordedTrackNumber; t++)
-				{
-					var track = _disc.TOC.TOCItems[t];
-					//asni - this search is less specific - turns out there are discs where 'Hu:' is not present
-					if (track.IsData && SectorContains("pc-fx", track.LBA)) return true;
-				}
-				return false;
-			}
-
-			// asni 20171011 - this ONLY works if a valid cuefile/ccd is passed into DiscIdentifier.
-			// if an .iso is presented, the internally manufactured cue data does not work - possibly something to do with track 01 being Audio.
-			// Not tested, but presumably PCFX has the same issue
-			bool DetectTurboCD()
-			{
-				var toc = _disc.TOC;
-				for (int t = toc.FirstRecordedTrackNumber; t <= toc.LastRecordedTrackNumber; t++)
-				{
-					var track = _disc.TOC.TOCItems[t];
-					// asni - pcfx games also contain the 'PC Engine' string
-					if (track.IsData && SectorContains("pc engine", track.LBA + 1) && !SectorContains("pc-fx", track.LBA + 1)) return true;
-				}
-				return false;
-			}
-
-			bool Detect3DO()
-			{
-				var toc = _disc.TOC;
-				for (var t = toc.FirstRecordedTrackNumber; t <= toc.LastRecordedTrackNumber; t++)
-				{
-					var track = _disc.TOC.TOCItems[t];
-					if (track.IsData && SectorContains("iamaduckiamaduck", track.LBA)) return true;
-				}
-				return false;
-			}
-
-			// asni - slightly longer-running than the others due to its brute-force nature. Should be run later in the method
-			bool DetectDreamcast()
-			{
-				for (var i = 0; i < 1000; i++) if (SectorContains("segakatana", i)) return true;
-				return false;
-			}
-
-			bool DetectCDi() => StringAt("CD-RTOS", 8, 16);
-
-			bool DetectGameCube()
-			{
-				var data = ReadSectorCached(0);
-				return data != null && data.Skip(28).Take(4).ToArray().BytesToHexString() == "C2339F3D";
-			}
-
-			bool DetectWii()
-			{
-				var data = ReadSectorCached(0);
-				return data != null && data.Skip(24).Take(4).ToArray().BytesToHexString() == "5D1C9EA3";
-			}
-
 			// PCFX & TurboCD sometimes (if not alltimes) have audio on track 1 - run these before the AudioDisc detection (asni)
 			if (DetectPCFX())
 				return DiscType.PCFX;
@@ -292,6 +217,120 @@ namespace BizHawk.Emulation.DiscSystem
 			}                
 
 			return DiscType.UnknownFormat;
+		}
+
+		/// <summary>
+		/// This is reasonable approach to ID saturn.
+		/// </summary>
+		private bool DetectSegaSaturn()
+		{
+			return StringAt("SEGA SEGASATURN", 0);
+		}
+
+		/// <summary>
+		/// probably wrong
+		/// </summary>
+		private bool DetectMegaCD()
+		{
+			return StringAt("SEGADISCSYSTEM", 0) || StringAt("SEGADISCSYSTEM", 16);
+		}
+
+		private bool DetectPSX()
+		{
+			if (!StringAt("          Licensed  by          ", 0, 4)) return false;
+			return (StringAt("Sony Computer Entertainment Euro", 32, 4)
+				|| StringAt("Sony Computer Entertainment Inc.", 32, 4)
+				|| StringAt("Sony Computer Entertainment Amer", 32, 4)
+				|| StringAt("Sony Computer Entertainment of A", 32, 4)
+				);
+		}
+
+		private bool DetectPCFX()
+		{
+			var toc = _disc.TOC;
+			for (int t = toc.FirstRecordedTrackNumber;
+				t <= toc.LastRecordedTrackNumber;
+				t++)
+			{
+				var track = _disc.TOC.TOCItems[t];
+				//asni - this search is less specific - turns out there are discs where 'Hu:' is not present
+				if (track.IsData && SectorContains("pc-fx", track.LBA))
+					return true;
+			}
+			return false;
+		}
+
+		//asni 20171011 - this ONLY works if a valid cuefile/ccd is passed into DiscIdentifier.
+		//if an .iso is presented, the internally manufactured cue data does not work - possibly something to do with
+		//track 01 being Audio. Not tested, but presumably PCFX has the same issue
+		private bool DetectTurboCD()
+		{
+			var toc = _disc.TOC;
+			for (int t = toc.FirstRecordedTrackNumber;
+				t <= toc.LastRecordedTrackNumber;
+				t++)
+			{
+				var track = _disc.TOC.TOCItems[t];
+				//asni - pcfx games also contain the 'PC Engine' string
+				if ((track.IsData && SectorContains("pc engine", track.LBA + 1) && !SectorContains("pc-fx", track.LBA + 1)))
+					return true;
+			}
+			return false;
+		}
+
+		private bool Detect3DO()
+		{
+			var toc = _disc.TOC;
+			for (int t = toc.FirstRecordedTrackNumber;
+				t <= toc.LastRecordedTrackNumber;
+				t++)
+			{
+				var track = _disc.TOC.TOCItems[t];
+				if (track.IsData && SectorContains("iamaduckiamaduck", track.LBA))
+					return true;
+			}
+			return false;
+		}
+
+		//asni - slightly longer running than the others due to its brute-force nature. Should run later in the method
+		private bool DetectDreamcast()
+		{
+			for (int i = 0; i < 1000; i++)
+			{
+				if (SectorContains("segakatana", i))
+					return true;
+			}
+
+			return false;
+		}
+
+		private bool DetectCDi()
+		{
+			return StringAt("CD-RTOS", 8, 16);
+		}
+
+		private bool DetectGameCube()
+		{
+			var data = ReadSectorCached(0);
+			if (data == null) return false;
+			byte[] magic = data.Skip(28).Take(4).ToArray();
+			string hexString = "";
+			foreach (var b in magic)            
+				hexString += b.ToString("X2");
+
+			return hexString == "C2339F3D";
+		}
+
+		private bool DetectWii()
+		{
+			var data = ReadSectorCached(0);
+			if (data == null) return false;
+			byte[] magic = data.Skip(24).Take(4).ToArray();
+			string hexString = "";
+			foreach (var b in magic)
+				hexString += b.ToString("X2");
+
+			return hexString == "5D1C9EA3";
 		}
 
 		private byte[] ReadSectorCached(int lba)

@@ -215,29 +215,40 @@ namespace BizHawk.Emulation.DiscSystem
 			return crc;
 		}
 
+
+
+		/// <summary>
+		/// returns the address from a sector. useful for saving it before zeroing it for ECC calculations
+		/// </summary>
+		private static uint GetSectorAddress(byte[] sector, int sector_offset)
+		{
+			return (uint)(
+				(sector[sector_offset + 12 + 0] << 0)
+				| (sector[sector_offset + 12 + 1] << 8)
+				| (sector[sector_offset + 12 + 2] << 16)
+			);
+				//| (sector[sector_offset + 12 + 3] << 24));
+		}
+
+		/// <summary>
+		/// sets the address for a sector. useful for restoring it after zeroing it for ECC calculations
+		/// </summary>
+		private static void SetSectorAddress(byte[] sector, int sector_offset, uint address)
+		{
+			sector[sector_offset + 12 + 0] = (byte)((address >> 0) & 0xFF);
+			sector[sector_offset + 12 + 1] = (byte)((address >> 8) & 0xFF);
+			sector[sector_offset + 12 + 2] = (byte)((address >> 16) & 0xFF);
+			//sector[sector_offset + 12 + 3] = (byte)((address >> 24) & 0xFF);
+		}
+
+
+
 		/// <summary>
 		/// populates a sector with valid ECC information.
 		/// it is safe to supply the same array for sector and dest.
 		/// </summary>
 		public static void ECC_Populate(byte[] src, int src_offset, byte[] dest, int dest_offset, bool zeroSectorAddress)
 		{
-			// returns the address from a sector. useful for saving it before zeroing it for ECC calculations
-			static uint GetSectorAddress(byte[] sector, int sector_offset) => (uint)(
-				(sector[sector_offset + 12 + 0] << 0)
-				| (sector[sector_offset + 12 + 1] << 8)
-				| (sector[sector_offset + 12 + 2] << 16)
-//				| (sector[sector_offset + 12 + 3] << 24)
-			);
-
-			// sets the address for a sector. useful for restoring it after zeroing it for ECC calculations
-			static void SetSectorAddress(byte[] sector, int sector_offset, uint address)
-			{
-				sector[sector_offset + 12 + 0] = (byte)((address >> 0) & 0xFF);
-				sector[sector_offset + 12 + 1] = (byte)((address >> 8) & 0xFF);
-				sector[sector_offset + 12 + 2] = (byte)((address >> 16) & 0xFF);
-//				sector[sector_offset + 12 + 3] = (byte)((address >> 24) & 0xFF);
-			}
-
 			//save the old sector address, so we can restore it later. SOMETIMES ECC is supposed to be calculated without it? see TODO
 			uint address = GetSectorAddress(src, src_offset);
 			if (zeroSectorAddress) SetSectorAddress(src, src_offset, 0);
