@@ -77,8 +77,11 @@ SECTIONS
   . = SEGMENT_START("rodata-segment", ALIGN(CONSTANT (MAXPAGESIZE)) + (. & (CONSTANT (MAXPAGESIZE) - 1)));
   .rodata         : { *(.rodata .rodata.* .gnu.linkonce.r.*) }
   .rodata1        : { *(.rodata1) }
-  __eh_frame_hdr_start = .;
-  .eh_frame_hdr   : { *(.eh_frame_hdr) *(.eh_frame_entry .eh_frame_entry.*) }
+  .eh_frame_hdr :
+  {
+    __eh_frame_hdr_start = .;
+	*(.eh_frame_hdr) *(.eh_frame_entry .eh_frame_entry.*)
+  }
   __eh_frame_hdr_end = .;
   __eh_frame_start = .;
   .eh_frame       : ONLY_IF_RO { KEEP (*(.eh_frame)) *(.eh_frame.*) }
