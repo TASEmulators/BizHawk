@@ -1,5 +1,33 @@
 <?xml version="1.0"?>
 <RuleSet Name="BizHawk Rules" Description="Applies to all projects in the solution -- or, it will eventually." ToolsVersion="14.0">
+	<Rules AnalyzerId="Menees.Analyzers" RuleNamespace="Menees.Analyzers">
+		<!-- Line is too long -->
+		<Rule Id="MEN002" Action="Hidden" />
+
+		<!-- Method is too long -->
+		<Rule Id="MEN003" Action="Hidden" />
+
+		<!-- Property accessor is too long -->
+		<Rule Id="MEN004" Action="Hidden" />
+
+		<!-- File is too long -->
+		<Rule Id="MEN005" Action="Hidden" />
+
+		<!-- File name should match type -->
+		<Rule Id="MEN008" Action="Hidden" />
+
+		<!-- Use the preferred exception type -->
+		<Rule Id="MEN009" Action="Hidden" />
+
+		<!-- Align using directives -->
+		<Rule Id="MEN011" Action="Hidden" />
+
+		<!-- Flags should be powers of two -->
+		<Rule Id="MEN012" Action="Hidden" />
+
+		<!-- Use UTC time -->
+		<Rule Id="MEN013" Action="Hidden" />
+	</Rules>
 	<Rules AnalyzerId="Microsoft.CodeAnalysis.FxCopAnalyzers" RuleNamespace="Microsoft.CodeAnalysis.FxCopAnalyzers">
 		<!-- Types that own disposable fields should be disposable -->
 		<Rule Id="CA1001" Action="Hidden" />
@@ -66,6 +94,9 @@
 
 		<!-- Type {0} should implement IEquatable<T> because it overrides Equals -->
 		<Rule Id="CA1066" Action="Hidden" />
+
+		<!-- Enums values should not be duplicated -->
+		<Rule Id="CA1069" Action="Hidden" />
 
 		<!-- Do not pass literals as localized parameters -->
 		<Rule Id="CA1303" Action="Hidden" />
