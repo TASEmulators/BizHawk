@@ -26,6 +26,7 @@ using BizHawk.Emulation.Cores.Nintendo.GBHawkLink;
 
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.CoreExtensions;
+using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common.Base_Implementations;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
@@ -486,7 +487,7 @@ namespace BizHawk.Client.EmuHawk
 				// I would like to trigger a repaint here, but this isn't done yet
 			};
 
-			if (!OSTailoredCode.IsUnixHost && !Config.SkipOutdatedOsCheck)
+			if (!VersionInfo.DeveloperBuild && !OSTailoredCode.IsUnixHost && !Config.SkipOutdatedOsCheck)
 			{
 				static string GetRegValue(string key)
 				{
@@ -498,14 +499,16 @@ namespace BizHawk.Client.EmuHawk
 				if (winVer < 6.3f)
 				{
 					// less than is just easier than equals
-					string message = ($"Quick reminder: Windows {(winVer < 6.2f ? winVer < 6.1f ? winVer < 6.0f ? "XP" : "Vista" : "7" : "8")} is no longer supported by Microsoft. EmuHawk will continue to work, but please get a new operating system for increased security (either Windows 8.1, Windows 10, or a GNU+Linux distro).");
+					using var box = new ExceptionBox($"Quick reminder: Windows {(winVer < 6.2f ? winVer < 6.1f ? winVer < 6.0f ? "XP" : "Vista" : "7" : "8")} is no longer supported by Microsoft. EmuHawk will continue to work, but please get a new operating system for increased security (either Windows 8.1, Windows 10, or a GNU+Linux distro)."); //TODO one day I'll try ReactOS, just like one day I'll add i18n... --yoshi
+					box.ShowDialog();
 				}
 				else if (GetRegValue("ProductName").Contains("Windows 10"))
 				{
 					var win10version = int.Parse(GetRegValue("ReleaseId"));
-					if (win10version < 1809)
+					if (win10version < 1809) // readme says otherwise, but that's because I updated it before MS extended the support period --yoshi
 					{
-						string message = ($"Quick reminder: version {win10version} of Windows 10 is no longer supported by Microsoft. EmuHawk will continue to work, but please update to at least 1809 \"Redstone 5\" for increased security.");
+						using var box = new ExceptionBox($"Quick reminder: version {win10version} of Windows 10 is no longer supported by Microsoft. EmuHawk will continue to work, but please update to at least 1809 \"Redstone 5\" for increased security.");
+						box.ShowDialog();
 					}
 				}
 				else
