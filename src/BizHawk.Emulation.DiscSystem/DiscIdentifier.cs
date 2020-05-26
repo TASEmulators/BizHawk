@@ -45,6 +45,11 @@ namespace BizHawk.Emulation.DiscSystem
 		TurboCD,
 
 		/// <summary>
+		/// PC Engine "GECD" for unlicensed games
+		/// </summary>
+		TurboGECD,
+
+		/// <summary>
 		/// MegaDrive add-on
 		/// </summary>
 		MegaCD,
@@ -123,8 +128,11 @@ namespace BizHawk.Emulation.DiscSystem
 			if (DetectPCFX())
 				return DiscType.PCFX;
 
+			if (DetectTurboGECD())
+				return DiscType.TurboGECD;
+
 			if (DetectTurboCD())
-				return DiscType.TurboCD;            
+				return DiscType.TurboCD;
 
 			//check track 1's data type. if it's an audio track, further data-track testing is useless
 			//furthermore, it's probably senseless (no binary data there to read)
@@ -260,6 +268,35 @@ namespace BizHawk.Emulation.DiscSystem
 			return false;
 		}
 
+		private bool DetectTurboGECD()
+		{
+			//approach taken from mednafen DetectGECD()
+
+			//check for appropriate structure
+			var toc = _disc.TOC;
+			if (toc.FirstRecordedTrackNumber != 1) return false;
+			if (!toc.TOCItems[1].IsData) return false;
+			
+			//some have a signature 
+			if (StringAt("HACKER CD ROM SYSTEM", 0x8, 0x10))
+				return true;
+
+			//some are more confusing
+			if (!StringAt("CD001", 0x1, 0x10))
+				return false;
+
+			byte[] sector20 = ReadDataSectorCached(20);
+			uint zecrc = (uint)BizHawk.Common.CRC32.Calculate(sector20);
+
+			//known_crcs
+			if (zecrc == 0xd7b47c06) return true; // AV Tanjou
+			if (zecrc == 0x86aec522) return true; // Bishoujo Jyanshi [...]
+			if (zecrc == 0xc8d1b5ef) return true; // CD Bishoujo [...]
+			if (zecrc == 0x0bdbde64) return true; // CD Pachisuro [...]
+
+			return false;
+		}
+
 		//asni 20171011 - this ONLY works if a valid cuefile/ccd is passed into DiscIdentifier.
 		//if an .iso is presented, the internally manufactured cue data does not work - possibly something to do with
 		//track 01 being Audio. Not tested, but presumably PCFX has the same issue
@@ -311,7 +348,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		private bool DetectGameCube()
 		{
-			var data = ReadSectorCached(0);
+			var data = ReadDataSectorCached(0);
 			if (data == null) return false;
 			byte[] magic = data.Skip(28).Take(4).ToArray();
 			string hexString = "";
@@ -323,7 +360,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		private bool DetectWii()
 		{
-			var data = ReadSectorCached(0);
+			var data = ReadDataSectorCached(0);
 			if (data == null) return false;
 			byte[] magic = data.Skip(24).Take(4).ToArray();
 			string hexString = "";
@@ -333,7 +370,7 @@ namespace BizHawk.Emulation.DiscSystem
 			return hexString == "5D1C9EA3";
 		}
 
-		private byte[] ReadSectorCached(int lba)
+		private byte[] ReadDataSectorCached(int lba)
 		{
 			//read it if we don't have it cached
 			//we wont be caching very much here, it's no big deal
@@ -349,19 +386,19 @@ namespace BizHawk.Emulation.DiscSystem
 			return data;
 		}
 
-		private bool StringAt(string s, int n, int lba = 0)
+		private bool StringAt(string s, int offset, int lba = 0)
 		{
-			var data = ReadSectorCached(lba);
+			var data = ReadDataSectorCached(lba);
 			if (data == null) return false;
 			byte[] cmp = Encoding.ASCII.GetBytes(s);
 			byte[] cmp2 = new byte[cmp.Length];
-			Buffer.BlockCopy(data, n, cmp2, 0, cmp.Length);
+			Buffer.BlockCopy(data, offset, cmp2, 0, cmp.Length);
 			return cmp.SequenceEqual(cmp2);
 		}
 
 		private bool SectorContains(string s, int lba = 0)
 		{
-			var data = ReadSectorCached(lba);
+			var data = ReadDataSectorCached(lba);
 			return data != null && Encoding.ASCII.GetString(data).ToLower().Contains(s.ToLower());
 		}
 	}
