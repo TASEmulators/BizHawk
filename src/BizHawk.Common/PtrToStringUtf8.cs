@@ -5,10 +5,10 @@ namespace BizHawk.Common
 {
 	public static class Mershul
 	{
-		/// <summary>
+		/// <remarks>
 		/// TODO: Update to a version of .nyet that includes this
-		/// </summary>
-		public static unsafe string PtrToStringUtf8(IntPtr p)
+		/// </remarks>
+		public static unsafe string? PtrToStringUtf8(IntPtr p)
 		{
 			if (p == IntPtr.Zero)
 				return null;
