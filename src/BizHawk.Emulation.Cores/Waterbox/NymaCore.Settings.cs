@@ -14,8 +14,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	{
 		/// <summary>
 		/// Settings that we shouldn't show the user
+		/// If the value is null, use the default value, otherwise override it
 		/// </summary>
-		protected virtual ICollection<string> HiddenSettings { get; } = new string[0];
+		protected virtual IDictionary<string, string> SettingsOverrides { get; } = new Dictionary<string, string>();
 		public NymaSettingsInfo SettingsInfo { get; private set; }
 		private NymaSettings _settings;
 		private NymaSyncSettings _syncSettings;
@@ -96,17 +97,22 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private void SettingsQuery(string name, IntPtr dest)
 		{
-			if (!_syncSettingsActual.MednafenValues.TryGetValue(name, out var val) || HiddenSettings.Contains(name))
+			SettingsOverrides.TryGetValue(name, out var val);
+			if (val == null)
 			{
-				if (SettingsInfo.SettingsByKey.TryGetValue(name, out var info))
+				if (!_syncSettingsActual.MednafenValues.TryGetValue(name, out val))
 				{
-					val = info.DefaultValue;
-				}
-				else
-				{
-					throw new InvalidOperationException($"Core asked for setting {name} which was not found in the defaults");
+					if (SettingsInfo.SettingsByKey.TryGetValue(name, out var info))
+					{
+						val = info.DefaultValue;
+					}
+					else
+					{
+						throw new InvalidOperationException($"Core asked for setting {name} which was not found in the defaults");
+					}
 				}
 			}
+
 			var bytes = Encoding.UTF8.GetBytes(val);
 			if (bytes.Length > 255)
 				throw new InvalidOperationException($"Value {val} for setting {name} was too long");
@@ -313,7 +319,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				}
 			}
 
-			s.HiddenSettings = new HashSet<string>(HiddenSettings);
+			s.HiddenSettings = new HashSet<string>(SettingsOverrides.Keys);
 			SettingsInfo = s;
 		}
 	}

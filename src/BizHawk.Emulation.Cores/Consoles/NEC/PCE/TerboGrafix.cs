@@ -21,6 +21,8 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 			NymaSettings settings, NymaSyncSettings syncSettings)
 			: base(comm, "PCE", "PC Engine Controller", settings, syncSettings)
 		{
+			if (game["BRAM"])
+				SettingsOverrides["pce.disable_bram_hucard"] = "0";
 			_terboGrafix = DoInit<LibTerboGrafix>(game, rom, null, "pce.wbx", extension);
 		}
 		public TerboGrafix(GameInfo game, Disc[] discs, CoreComm comm,
@@ -39,14 +41,16 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 
 		public override string SystemId => IsSgx ? "SGX" : "PCE";
 
-		protected override ICollection<string> HiddenSettings { get; } = new[]
+		protected override IDictionary<string, string> SettingsOverrides { get; } = new Dictionary<string, string>
 		{
 			// handled by hawk
-			"pce.cdbios",
-			"pce.gecdbios",
+			{ "pce.cdbios", null },
+			{ "pce.gecdbios", null },
 			// so fringe i don't want people bothering me about it
-			"pce.resamp_rate_error",
-			"pce.vramsize",
+			{ "pce.resamp_rate_error", null },
+			{ "pce.vramsize", null },
+			// match hawk behavior on BRAM, instead of giving every game BRAM
+			{ "pce.disable_bram_hucard", "1" },
 		};
 
 		// pce always has two layers, sgx always has 4, and mednafen knows this
