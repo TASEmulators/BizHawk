@@ -46,7 +46,7 @@ namespace BizHawk.Client.EmuHawk
 				.Where(t => typeof(Form).IsAssignableFrom(t))
 				.Where(t => !typeof(ToolBox).IsAssignableFrom(t))
 				.Where(t => ServiceInjector.IsAvailable(Emulator.ServiceProvider, t))
-				.Where(t => VersionInfo.DeveloperBuild || t.GetCustomAttributes(false).OfType<ToolAttribute>().Any(a => a.Released));
+				.Where(t => VersionInfo.DeveloperBuild || !t.GetCustomAttributes(false).OfType<ToolAttribute>().Any(a => !a.Released));
 
 			foreach (var t in tools)
 			{
