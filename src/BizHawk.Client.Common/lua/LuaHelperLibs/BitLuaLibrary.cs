@@ -25,7 +25,7 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethodExample("local uibitbno = bit.bnot( 1000 );")]
-		[LuaMethod("bnot", "Bitwise NOT of 'val' against 'amt'")]
+		[LuaMethod("bnot", "Bitwise NOT of 'val'")]
 		public static uint Bnot(uint val)
 		{
 			return ~val;
