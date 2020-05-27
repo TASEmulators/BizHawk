@@ -157,11 +157,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private string GetStringForPulse(int val) =>
-			_watch.Type == DisplayType.Hex
-				? val.ToString("X8")
-				: val.ToString();
-
 		public void Pulse()
 		{
 			if (!IsSeparator && _enabled)
@@ -201,11 +196,6 @@ namespace BizHawk.Client.Common
 			}
 
 			return true;
-		}
-
-		private void PokeByte()
-		{
-			_watch.Poke(GetStringForPulse(_val));
 		}
 
 		public bool Contains(long addr)
