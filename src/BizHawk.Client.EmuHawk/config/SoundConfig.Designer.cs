@@ -122,6 +122,7 @@
             0,
             0,
             0});
+			this.nudRWFF.ValueChanged += new System.EventHandler(this.nudRWFF_ValueChanged);
 			// 
 			// cbEnableRWFF
 			// 

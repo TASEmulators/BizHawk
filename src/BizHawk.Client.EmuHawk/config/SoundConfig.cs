@@ -148,5 +148,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			UpdateSoundDialog();
 		}
+
+		private void nudRWFF_ValueChanged(object sender, EventArgs e)
+		{
+			tbRWFF.Value = (int)nudRWFF.Value;
+		}
 	}
 }
