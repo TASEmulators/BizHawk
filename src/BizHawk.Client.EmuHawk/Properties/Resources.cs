@@ -112,6 +112,8 @@ namespace BizHawk.Client.EmuHawk.Properties
 		internal static readonly Bitmap LightOn = ReadEmbeddedBitmap("LightOn");
 		internal static readonly Bitmap LoadConfig = ReadEmbeddedBitmap("LoadConfig");
 		internal static readonly Icon logo = ReadEmbeddedIcon("logo");
+		internal static readonly Icon log_window_MultiSize = ReadEmbeddedIcon("log_window");
+		internal static readonly Bitmap log_window = ReadEmbeddedBitmap("log_window");
 		internal static readonly Bitmap Lua = ReadEmbeddedBitmap("Lua");
 		internal static readonly Bitmap luaPictureBox = ReadEmbeddedBitmap("luaPictureBox");
 		internal static readonly Bitmap mame = ReadEmbeddedBitmap("mame");
