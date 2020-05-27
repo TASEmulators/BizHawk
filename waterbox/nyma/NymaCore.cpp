@@ -28,6 +28,7 @@ static uint8_t InputPortData[(MAX_PORTS + 1) * MAX_PORT_DATA];
 
 bool LagFlag;
 void (*InputCallback)();
+int64_t FrontendTime = 1555555555555;
 
 ECL_EXPORT void PreInit()
 {
@@ -36,8 +37,8 @@ ECL_EXPORT void PreInit()
 
 static void Setup()
 {
-	pixels = new uint32_t[Game->fb_width * Game->fb_height];
-	samples = new int16_t[22050 * 2];
+	pixels = (uint32_t*)alloc_invisible(Game->fb_width * Game->fb_height * sizeof(*pixels));
+	samples = (int16_t*)alloc_invisible(22050 * 2 * sizeof(*samples));
 	Surf = new MDFN_Surface(
 		pixels, Game->fb_width, Game->fb_height, Game->fb_width,
 		MDFN_PixelFormat(MDFN_COLORSPACE_RGB, 16, 8, 0, 24)
@@ -105,10 +106,12 @@ struct MyFrameInfo: public FrameInfo
 	int32_t Command;
 	// raw data for each input port, assumed to be MAX_PORTS * MAX_PORT_DATA long
 	uint8_t* InputPortData;
+	int64_t FrontendTime;
 };
 
 ECL_EXPORT void FrameAdvance(MyFrameInfo& frame)
 {
+	FrontendTime = frame.FrontendTime;
 	LagFlag = true;
 	EES->skip = frame.SkipRendering;
 
@@ -117,7 +120,8 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo& frame)
 	
 	memcpy(InputPortData, frame.InputPortData, sizeof(InputPortData));
 
-	Game->TransformInput();
+	if (Game->TransformInput)
+		Game->TransformInput();
 	Game->Emulate(EES);
 
 	EES->VideoFormatChanged = false;

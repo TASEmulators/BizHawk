@@ -5,6 +5,7 @@
 #include "mednafen/src/mempatcher.h"
 #include "mednafen/src/mednafen-driver.h"
 #include "mednafen/src/player.h"
+#include "mednafen/src/Time.h"
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -193,4 +194,30 @@ namespace Mednafen
 	{}
 	void Player_Draw(MDFN_Surface *surface, MDFN_Rect *dr, int CurrentSong, int16 *samples, int32 sampcount)
 	{}
+
+	namespace Time
+	{
+		void Time_Init(void)
+		{}
+		int64 EpochTime(void)
+		{
+			return FrontendTime;
+		}
+		struct tm LocalTime(const int64 ept)
+		{
+			// musl's localtime_r gets into a lot of unfun syscalls, and we wouldn't allow changable timezone anyway
+			return UTCTime(ept);
+		}
+		struct tm UTCTime(const int64 ept)
+		{
+			struct tm tout;
+			time_t tt = (time_t)ept;
+			if(!gmtime_r(&tt, &tout))
+			{
+				ErrnoHolder ene(errno);
+				throw MDFN_Error(ene.Errno(), _("%s failed: %s"), "gmtime_r()", ene.StrError());
+			}
+			return tout;
+		}
+	}
 }

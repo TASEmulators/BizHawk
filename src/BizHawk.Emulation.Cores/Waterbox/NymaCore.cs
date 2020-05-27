@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		}
 
 		private LibNymaCore _nyma;
-		protected T DoInit<T>(GameInfo game, byte[] rom, Disc[] discs, string wbxFilename, string extension,
+		protected T DoInit<T>(GameInfo game, byte[] rom, Disc[] discs, string wbxFilename, string extension, bool deterministic,
 			ICollection<KeyValuePair<string, byte[]>> firmwares = null)
 			where T : LibNymaCore
 		{
@@ -115,12 +115,25 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 				InitControls();
 				_nyma.SetFrontendSettingQuery(null);
-				_nyma.SetCDCallbacks(null, null);
+				if (_disks != null)
+					_nyma.SetCDCallbacks(null, null);
 				PostInit();
 				SettingsInfo.LayerNames = GetLayerData();
 				_nyma.SetFrontendSettingQuery(_settingsQueryDelegate);
-				_nyma.SetCDCallbacks(_cdTocCallback, _cdSectorCallback);
+				if (_disks != null)
+					_nyma.SetCDCallbacks(_cdTocCallback, _cdSectorCallback);
 				PutSettings(_settings);
+				DateTime RtcStart = DateTime.Parse("2010-01-01");
+				try
+				{
+					RtcStart = DateTime.Parse(SettingsQuery("nyma.rtcinitialtime"));
+				}
+				catch
+				{
+					Console.Error.WriteLine($"Couldn't parse DateTime \"{SettingsQuery("nyma.rtcinitialtime")}\"");
+				}
+				DeterministicEmulation = deterministic || SettingsQuery("nyma.rtcrealtime") == "0";
+				InitializeRtc(RtcStart);
 			}
 
 			return t;
@@ -129,7 +142,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		protected override void LoadStateBinaryInternal(BinaryReader reader)
 		{
 			_nyma.SetFrontendSettingQuery(_settingsQueryDelegate);
-			_nyma.SetCDCallbacks(_cdTocCallback, _cdSectorCallback);
+			if (_disks != null)
+				_nyma.SetCDCallbacks(_cdTocCallback, _cdSectorCallback);
 		}
 
 		// todo: bleh
@@ -149,7 +163,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					: controller.IsPressed("Reset")
 						? LibNymaCore.CommandType.RESET
 						: LibNymaCore.CommandType.NONE,
-				InputPortData = (byte*)_frameAdvanceInputLock.AddrOfPinnedObject()
+				InputPortData = (byte*)_frameAdvanceInputLock.AddrOfPinnedObject(),
+				FrontendTime = GetRtcTime(SettingsQuery("nyma.rtcrealtime") != "0"),
 			};
 			return ret;
 		}

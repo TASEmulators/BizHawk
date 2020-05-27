@@ -88,6 +88,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			/// raw data for each input port, assumed to be MAX_PORTS * MAX_PORT_DATA long
 			/// </summary>
 			public byte* InputPortData;
+			/// <summary>
+			/// If the core calls time functions, this is the value that will be used
+			/// </summary>
+			public long FrontendTime;
 		}
 
 		/// <summary>

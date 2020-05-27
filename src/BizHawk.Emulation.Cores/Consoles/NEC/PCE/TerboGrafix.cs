@@ -11,22 +11,22 @@ using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 {
-	[Core(CoreNames.TurboNyma, "Mednafen Team", true, false, "1.24.3", "", false)]
+	[Core(CoreNames.TurboNyma, "Mednafen Team", true, false, "1.24.3", "https://mednafen.github.io/releases/", false)]
 	public class TerboGrafix : NymaCore, IRegionable, IPceGpuView
 	{
 		private readonly LibTerboGrafix _terboGrafix;
 
 		[CoreConstructor(new[] { "PCE", "SGX" })]
 		public TerboGrafix(GameInfo game, byte[] rom, CoreComm comm, string extension,
-			NymaSettings settings, NymaSyncSettings syncSettings)
+			NymaSettings settings, NymaSyncSettings syncSettings, bool deterministic)
 			: base(comm, "PCE", "PC Engine Controller", settings, syncSettings)
 		{
 			if (game["BRAM"])
 				SettingsOverrides["pce.disable_bram_hucard"] = "0";
-			_terboGrafix = DoInit<LibTerboGrafix>(game, rom, null, "pce.wbx", extension);
+			_terboGrafix = DoInit<LibTerboGrafix>(game, rom, null, "pce.wbx", extension, deterministic);
 		}
 		public TerboGrafix(GameInfo game, Disc[] discs, CoreComm comm,
-			NymaSettings settings, NymaSyncSettings syncSettings)
+			NymaSettings settings, NymaSyncSettings syncSettings, bool deterministic)
 			: base(comm, "PCE", "PC Engine Controller", settings, syncSettings)
 		{
 			var firmwares = new Dictionary<string, byte[]>();
@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 				firmwares.Add("FIRMWARE:syscard3.pce", comm.CoreFileProvider.GetFirmware("PCECD", "Bios", true));
 			if (types.Contains(DiscType.TurboGECD))
 				firmwares.Add("FIRMWARE:gecard.pce", comm.CoreFileProvider.GetFirmware("PCECD", "GE-Bios", true));
-			_terboGrafix = DoInit<LibTerboGrafix>(game, null, discs, "pce.wbx", null, firmwares);
+			_terboGrafix = DoInit<LibTerboGrafix>(game, null, discs, "pce.wbx", null, deterministic, firmwares);
 		}
 
 		public override string SystemId => IsSgx ? "SGX" : "PCE";

@@ -39,7 +39,6 @@ SRCS := \
 	mednafen/src/file.cpp \
 	mednafen/src/NativeVFS.cpp \
 	mednafen/src/IPSPatcher.cpp \
-	mednafen/src/Time.cpp \
 	mednafen/src/git.cpp \
 	mednafen/src/endian.cpp \
 	$(call cppdir,string) \

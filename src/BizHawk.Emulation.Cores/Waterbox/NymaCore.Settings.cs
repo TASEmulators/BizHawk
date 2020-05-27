@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -77,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				return new NymaSyncSettings
 				{
 					MednafenValues = new Dictionary<string, string>(MednafenValues),
-					PortDevices = new Dictionary<int, string>(PortDevices)
+					PortDevices = new Dictionary<int, string>(PortDevices),
 				};
 			}
 
@@ -95,7 +96,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		private void SettingsQuery(string name, IntPtr dest)
+		protected string SettingsQuery(string name)
 		{
 			SettingsOverrides.TryGetValue(name, out var val);
 			if (val == null)
@@ -112,7 +113,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					}
 				}
 			}
+			return val;
+		}
 
+		private void SettingsQuery(string name, IntPtr dest)
+		{
+			var val = SettingsQuery(name);
 			var bytes = Encoding.UTF8.GetBytes(val);
 			if (bytes.Length > 255)
 				throw new InvalidOperationException($"Value {val} for setting {name} was too long");
@@ -230,6 +236,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 						Value = Mershul.PtrToStringUtf8(s.Value);
 					}
 				}
+				public MednaSetting()
+				{}
 				public MednaSetting(MednaSettingS s)
 				{
 					Name = Mershul.PtrToStringUtf8(s.Name);
@@ -320,7 +328,34 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 
 			s.HiddenSettings = new HashSet<string>(SettingsOverrides.Keys);
+			foreach (var ss in ExtraSettings)
+			{
+				s.Settings.Add(ss);
+				s.SettingsByKey.Add(ss.SettingsKey, ss);
+			}
 			SettingsInfo = s;
 		}
+
+		private static IReadOnlyCollection<NymaSettingsInfo.MednaSetting> ExtraSettings = new List<NymaSettingsInfo.MednaSetting>
+		{
+			new NymaSettingsInfo.MednaSetting
+			{
+				Name = "Initial Time",
+				Description = "Initial time of emulation.  Only relevant when UseRealTime is false.\nEnter as IS0-8601.",
+				SettingsKey = "nyma.rtcinitialtime",
+				DefaultValue = "2010-01-01",
+				Flags = NymaSettingsInfo.MednaSetting.SettingFlags.EMU_STATE,
+				Type = NymaSettingsInfo.MednaSetting.SettingType.STRING
+			},
+			new NymaSettingsInfo.MednaSetting
+			{
+				Name = "Use RealTime",
+				Description = "If true, RTC clock will be based off of real time instead of emulated time.  Ignored (set to false) when recording a movie.",
+				SettingsKey = "nyma.rtcrealtime",
+				DefaultValue = "0",
+				Flags = NymaSettingsInfo.MednaSetting.SettingFlags.EMU_STATE,
+				Type = NymaSettingsInfo.MednaSetting.SettingType.BOOL
+			},
+		};
 	}
 }

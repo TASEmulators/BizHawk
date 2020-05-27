@@ -529,7 +529,7 @@ namespace BizHawk.Client.Common
 							{
 								nextEmulator = new TerboGrafix(game, new[] { disc }, nextComm,
 									(Emulation.Cores.Waterbox.NymaCore.NymaSettings)GetCoreSettings<TerboGrafix>(),
-									(Emulation.Cores.Waterbox.NymaCore.NymaSyncSettings)GetCoreSyncSettings<TerboGrafix>());
+									(Emulation.Cores.Waterbox.NymaCore.NymaSyncSettings)GetCoreSyncSettings<TerboGrafix>(), Deterministic);
 							}
 							
 							break;

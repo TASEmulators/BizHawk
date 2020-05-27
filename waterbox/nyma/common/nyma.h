@@ -16,3 +16,4 @@ CheatArea* FindCheatArea(uint32_t address);
 
 extern bool LagFlag;
 extern void (*InputCallback)();
+extern int64_t FrontendTime;
