@@ -112,7 +112,8 @@ namespace BizHawk.Client.EmuHawk
 		/// <exception cref="IndexOutOfRangeException">Raised when you specify a player less than 1 or greater than maximum allows (see SystemInfo class to get this information)</exception>
 		public static Joypad GetInput(int player)
 		{
-			if (!1.RangeTo(RunningSystem.MaxControllers).Contains(player)) throw new IndexOutOfRangeException($"{RunningSystem.DisplayName} does not support {player} controller(s)");
+			if (!1.RangeTo(RunningSystem.MaxControllers).Contains(player))
+				throw new IndexOutOfRangeException($"{RunningSystem.DisplayName} does not support {player} controller(s)");
 			GetAllInputs();
 			return _allJoyPads[player - 1];
 		}
@@ -184,9 +185,17 @@ namespace BizHawk.Client.EmuHawk
 			VideoProvider = emu.AsVideoProviderOrDefault();
 			RomLoaded?.Invoke(null, EventArgs.Empty);
 
-			// TODO: Don't crash
-			// _allJoyPads = new List<Joypad>(RunningSystem.MaxControllers);
-			// for (var i = 1; i <= RunningSystem.MaxControllers; i++) _allJoyPads.Add(new Joypad(RunningSystem, i));
+			try
+			{
+				_allJoyPads = new List<Joypad>(RunningSystem.MaxControllers);
+				for (var i = 1; i <= RunningSystem.MaxControllers; i++)
+					_allJoyPads.Add(new Joypad(RunningSystem, i));
+			}
+			catch (Exception e)
+			{
+				Console.Error.WriteLine("Apihawk is garbage and may not work this session.");
+				Console.Error.WriteLine(e);
+			}
 		}
 
 		/// <summary>
