@@ -166,57 +166,7 @@ namespace BizHawk.Client.Common
 		{
 			if (!IsSeparator && _enabled)
 			{
-				if (_compare.HasValue)
-				{
-					switch (ComparisonType)
-					{
-						default:
-						case CompareType.None: // This should never happen, but it's here just in case.  adelikat: And yet it does! Cheat Code converter doesn't do this.  Changing this to default to equal since 99.9999% of all cheats are going to be equals
-						case CompareType.Equal:
-							if (_compare.Value == _watch.Value)
-							{
-								PokeByte();
-							}
-
-							break;
-						case CompareType.GreaterThan:
-							if (_compare.Value > _watch.Value) 
-							{
-								PokeByte();
-							}
-
-							break;
-						case CompareType.GreaterThanOrEqual:
-							if (_compare.Value >= _watch.Value)
-							{
-								PokeByte();
-							}
-
-							break;
-						case CompareType.LessThan:
-							if (_compare.Value < _watch.Value) 
-							{
-								PokeByte();
-							}
-
-							break;
-						case CompareType.LessThanOrEqual:
-							if (_compare.Value <= _watch.Value)
-							{
-								PokeByte();
-							}
-
-							break;
-						case CompareType.NotEqual:
-							if (_compare.Value != _watch.Value)
-							{
-								PokeByte();
-							}
-
-							break;
-					}
-				}
-				else
+				if (ShouldPoke())
 				{
 					switch (_watch.Size)
 					{
@@ -232,6 +182,25 @@ namespace BizHawk.Client.Common
 					}
 				}
 			}
+		}
+
+		// Returns true if compare value exists, and the comparison type criteria matches
+		private bool ShouldPoke()
+		{
+			if (_compare.HasValue)
+			{
+				return ComparisonType switch
+				{
+					CompareType.GreaterThan => _compare.Value > _watch.Value,
+					CompareType.GreaterThanOrEqual => _compare.Value >= _watch.Value,
+					CompareType.LessThan => _compare.Value < _watch.Value,
+					CompareType.LessThanOrEqual => _compare.Value <= _watch.Value,
+					CompareType.NotEqual => _compare.Value != _watch.Value,
+					_ => _compare.Value == _watch.Value,
+				};
+			}
+
+			return true;
 		}
 
 		private void PokeByte()
