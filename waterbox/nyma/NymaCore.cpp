@@ -26,6 +26,8 @@ enum { MAX_PORTS = 16 };
 enum { MAX_PORT_DATA = 16 };
 static uint8_t InputPortData[(MAX_PORTS + 1) * MAX_PORT_DATA];
 
+bool LagFlag;
+
 ECL_EXPORT void PreInit()
 {
 	SetupMDFNGameInfo();
@@ -106,6 +108,7 @@ struct MyFrameInfo: public FrameInfo
 
 ECL_EXPORT void FrameAdvance(MyFrameInfo& frame)
 {
+	LagFlag = true;
 	EES->skip = frame.SkipRendering;
 
 	if (frame.Command)
@@ -119,6 +122,7 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo& frame)
 	EES->VideoFormatChanged = false;
 	EES->SoundFormatChanged = false;
 	frame.Cycles = EES->MasterCycles;
+	frame.Lagged = LagFlag;
 	if (!frame.SkipSoundening)
 	{
 		memcpy(frame.SoundBuffer, EES->SoundBuf, EES->SoundBufSize * 4);

@@ -9,6 +9,8 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <emulibc.h>
+#include "nyma.h"
+#include <unordered_map>
 
 enum { SETTING_VALUE_MAX_LENGTH = 256 };
 
@@ -16,6 +18,21 @@ static void (*FrontendSettingQuery)(const char* setting, char* dest);
 ECL_EXPORT void SetFrontendSettingQuery(void (*q)(const char* setting, char* dest))
 {
 	FrontendSettingQuery = q;
+}
+
+static std::unordered_map<uint32_t, CheatArea> CheatAreas;
+
+CheatArea* FindCheatArea(uint32_t address)
+{
+	auto kvp = CheatAreas.find(address);
+	if (kvp != CheatAreas.end())
+	{
+		return &kvp->second;
+	}
+	else
+	{
+		return nullptr;
+	}
 }
 
 namespace Mednafen
@@ -152,7 +169,9 @@ namespace Mednafen
 	void MDFNMP_Init(uint32 ps, uint32 numpages)
 	{}
 	void MDFNMP_AddRAM(uint32 size, uint32 address, uint8 *RAM, bool use_in_search) // Deprecated
-	{}
+	{
+		CheatAreas.insert(std::pair<uint32_t, CheatArea>({ address, CheatArea({ (void*)RAM, size }) }));
+	}
 	void MDFNMP_RegSearchable(uint32 addr, uint32 size)
 	{}
 	void MDFNMP_Kill(void)

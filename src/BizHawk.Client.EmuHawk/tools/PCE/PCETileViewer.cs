@@ -13,10 +13,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class PceTileViewer : ToolFormBase, IToolFormAutoConfig
 	{
 		[RequiredService]
-		public PCEngine Emu { get; private set; }
-
-		private VDC _vdc;
-		private VCE _vce;
+		public IPceGpuView Viewer { get; private set; }
 
 		private int _bgPalNum;
 		private int _spPalNum;
@@ -67,13 +64,14 @@ namespace BizHawk.Client.EmuHawk
 
 		unsafe void DrawSprites()
 		{
-			var lockData = bmpViewSP.BMP.LockBits(new Rectangle(0, 0, 512, 256), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-
-			int* dest = (int*)lockData.Scan0;
-			int pitch = lockData.Stride / sizeof(int);
-			fixed (byte* src = _vdc.SpriteBuffer)
-			fixed (int* pal = &_vce.Palette[256 + _spPalNum * 16])
+			Viewer.GetGpuData(checkBoxVDC2.Checked ? 1 : 0, view =>
 			{
+				var lockData = bmpViewSP.BMP.LockBits(new Rectangle(0, 0, 512, 256), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+
+				int* dest = (int*)lockData.Scan0;
+				int pitch = lockData.Stride / sizeof(int);
+				byte* src = (byte*)view.SpriteCache;
+				int* pal = (int*)view.PaletteCache + 256 + _spPalNum * 16;
 				for (int tile = 0; tile < 512; tile++)
 				{
 					int srcAddr = tile * 256;
@@ -82,20 +80,20 @@ namespace BizHawk.Client.EmuHawk
 					int destAddr = ty * 16 * pitch + tx * 16;
 					Draw16x16(src + srcAddr, dest + destAddr, pitch, pal);
 				}
-			}
-
-			bmpViewSP.BMP.UnlockBits(lockData);
+				bmpViewSP.BMP.UnlockBits(lockData);
+			});
 		}
 
 		unsafe void DrawBacks()
 		{
-			var lockData = bmpViewBG.BMP.LockBits(new Rectangle(0, 0, 512, 256), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-
-			int* dest = (int*)lockData.Scan0;
-			int pitch = lockData.Stride / sizeof(int);
-			fixed (byte* src = _vdc.PatternBuffer)
-			fixed (int* pal = &_vce.Palette[0 + _bgPalNum * 16])
+			Viewer.GetGpuData(checkBoxVDC2.Checked ? 1 : 0, view =>
 			{
+				var lockData = bmpViewBG.BMP.LockBits(new Rectangle(0, 0, 512, 256), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+
+				int* dest = (int*)lockData.Scan0;
+				int pitch = lockData.Stride / sizeof(int);
+				byte* src = (byte*)view.BackgroundCache;
+				int* pal = (int*)view.PaletteCache + _bgPalNum * 16;
 				for (int tile = 0; tile < 2048; tile++)
 				{
 					int srcAddr = tile * 64;
@@ -104,17 +102,18 @@ namespace BizHawk.Client.EmuHawk
 					int destAddr = ty * 8 * pitch + tx * 8;
 					Draw8x8(src + srcAddr, dest + destAddr, pitch, pal);
 				}
-			}
-			bmpViewBG.BMP.UnlockBits(lockData);
+				bmpViewBG.BMP.UnlockBits(lockData);
+			});
 		}
 
 		unsafe void DrawPalettes()
 		{
-			fixed (int* pal = _vce.Palette)
+			Viewer.GetGpuData(checkBoxVDC2.Checked ? 1 : 0, view =>
 			{
+				int* pal = (int*)view.PaletteCache;
 				DrawPalette(bmpViewBGPal.BMP, pal);
 				DrawPalette(bmpViewSPPal.BMP, pal + 256);
-			}
+			});
 		}
 
 		static unsafe void DrawPalette(Bitmap bmp, int* pal)
@@ -140,9 +139,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			_vce = Emu.VCE;
-
-			if (Emu.SystemId == "SGX")
+			if (Viewer.IsSgx)
 			{
 				checkBoxVDC2.Enabled = true;
 			}
@@ -157,7 +154,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CheckBoxVDC2_CheckedChanged(object sender, EventArgs e)
 		{
-			_vdc = checkBoxVDC2.Checked ? Emu.VDC2 : Emu.VDC1;
 			GeneralUpdate();
 		}
 
@@ -215,7 +211,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PceTileViewer_Load(object sender, EventArgs e)
 		{
-			_vce = Emu.VCE;
 		}
 	}
 }

@@ -15,7 +15,8 @@ MEDNAFLAGS := \
 	-mindirect-branch=keep \
 	-mno-indirect-branch-register \
 	-Wall -Wshadow -Wempty-body -Wignored-qualifiers \
-	-Wvla -Wvariadic-macros -Wdisabled-optimization -Werror=write-strings
+	-Wvla -Wvariadic-macros -Wdisabled-optimization -Werror=write-strings \
+	-Dprivate=public # the gods have abandoned us
 
 CCFLAGS := $(MEDNAFLAGS) -std=gnu99
 CXXFLAGS := $(MEDNAFLAGS) -std=gnu++11
@@ -28,7 +29,6 @@ MODULENAME := $(lastword $(filter-out $(lastword $(MAKEFILE_LIST)),$(MAKEFILE_LI
 MODULENAME := $(MODULENAME:.mak=)
 
 TARGET := $(MODULENAME).wbx
-OUT_DIR := obj/$(MODULENAME)
 
 SRCS := \
 	mednafen/src/error.cpp \

@@ -12,7 +12,9 @@ namespace BizHawk.Client.EmuHawk
 	public partial class PceBgViewer : ToolFormBase, IToolFormAutoConfig
 	{
 		[RequiredService]
-		private PCEngine PCE { get; set; }
+		public IPceGpuView Viewer { get; private set; }
+		[RequiredService]
+		public IEmulator Emulator { get; private set; }
 
 		[ConfigPersist]
 		// ReSharper disable once UnusedMember.Local
@@ -32,48 +34,52 @@ namespace BizHawk.Client.EmuHawk
 
 		public unsafe void Generate()
 		{
-			if (PCE.Frame % RefreshRate.Value != 0)
+			if (Emulator.Frame % RefreshRate.Value != 0)
 			{
 				return;
 			}
 
-			var vdc = _vdcType == 0 ? PCE.VDC1 : PCE.VDC2;
-
-			var width = 8 * vdc.BatWidth;
-			var height = 8 * vdc.BatHeight;
-			var buf = canvas.Bat.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, canvas.Bat.PixelFormat);
-			var pitch = buf.Stride / 4;
-			var begin = (int*)buf.Scan0.ToPointer();
-
-			int* p = begin;
-			for (int y = 0; y < height; ++y)
+			Viewer.GetGpuData(_vdcType, view =>
 			{
-				int yTile = y / 8;
-				int yOfs = y % 8;
-				for (int x = 0; x < width; ++x, ++p)
-				{
-					int xTile = x / 8;
-					int xOfs = x % 8;
-					int tileNo = vdc.VRAM[(ushort)(((yTile * vdc.BatWidth) + xTile))] & 0x07FF;
-					int paletteNo = vdc.VRAM[(ushort)(((yTile * vdc.BatWidth) + xTile))] >> 12;
-					int paletteBase = paletteNo * 16;
+				var width = 8 * view.BatWidth;
+				var height = 8 * view.BatHeight;
+				var buf = canvas.Bat.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, canvas.Bat.PixelFormat);
+				var pitch = buf.Stride / 4;
+				var begin = (int*)buf.Scan0.ToPointer();
+				var vram = (ushort*)view.Vram;
+				var patternBuffer = (byte*)view.BackgroundCache;
+				var palette = (int*)view.PaletteCache;
 
-					byte c = vdc.PatternBuffer[(tileNo * 64) + (yOfs * 8) + xOfs];
-					if (c == 0)
+				int* p = begin;
+				for (int y = 0; y < height; ++y)
+				{
+					int yTile = y / 8;
+					int yOfs = y % 8;
+					for (int x = 0; x < width; ++x, ++p)
 					{
-						*p = PCE.VCE.Palette[0];
+						int xTile = x / 8;
+						int xOfs = x % 8;
+						int tileNo = vram[(ushort)(((yTile * view.BatWidth) + xTile))] & 0x07FF;
+						int paletteNo = vram[(ushort)(((yTile * view.BatWidth) + xTile))] >> 12;
+						int paletteBase = paletteNo * 16;
+
+						byte c = patternBuffer[(tileNo * 64) + (yOfs * 8) + xOfs];
+						if (c == 0)
+						{
+							*p = palette[0];
+						}
+						else
+						{
+							*p = palette[paletteBase + c];
+						}
 					}
-					else
-					{
-						*p = PCE.VCE.Palette[paletteBase + c];
-					}
+
+					p += pitch - width;
 				}
 
-				p += pitch - width;
-			}
-
-			canvas.Bat.UnlockBits(buf);
-			canvas.Refresh();
+				canvas.Bat.UnlockBits(buf);
+				canvas.Refresh();
+			});
 		}
 
 		public void Restart()
@@ -85,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			VDC2MenuItem.Enabled = PCE.SystemId == "SGX";
+			VDC2MenuItem.Enabled = Viewer.IsSgx;
 
 			VDC1MenuItem.Checked = _vdcType == 0;
 			VDC2MenuItem.Checked = _vdcType == 1;
@@ -106,16 +112,19 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		private void Canvas_MouseMove(object sender, MouseEventArgs e)
+		private unsafe void Canvas_MouseMove(object sender, MouseEventArgs e)
 		{
-			var vdc = _vdcType == 0 ? PCE.VDC1 : PCE.VDC2;
-			int xTile = e.X / 8;
-			int yTile = e.Y / 8;
-			int tileNo = vdc.VRAM[(ushort)((yTile * vdc.BatWidth) + xTile)] & 0x07FF;
-			int paletteNo = vdc.VRAM[(ushort)((yTile * vdc.BatWidth) + xTile)] >> 12;
-			TileIDLabel.Text = tileNo.ToString();
-			XYLabel.Text = $"{xTile}:{yTile}";
-			PaletteLabel.Text = paletteNo.ToString();
+			Viewer.GetGpuData(_vdcType, view =>
+			{
+				var vram = (ushort*)view.Vram;
+				int xTile = e.X / 8;
+				int yTile = e.Y / 8;
+				int tileNo = vram[(ushort)((yTile * view.BatWidth) + xTile)] & 0x07FF;
+				int paletteNo = vram[(ushort)((yTile * view.BatWidth) + xTile)] >> 12;
+				TileIDLabel.Text = tileNo.ToString();
+				XYLabel.Text = $"{xTile}:{yTile}";
+				PaletteLabel.Text = paletteNo.ToString();
+			});
 		}
 	}
 }

@@ -46,19 +46,19 @@ DOBJS := $(patsubst $(ROOT_DIR)%,$(DOBJ_DIR)%,$(_OBJS))
 $(OBJ_DIR)/%.c.o: %.c
 	@echo cc $<
 	@mkdir -p $(@D)
-	@$(CC) -c -o $@ $< $(CCFLAGS) $(CCFLAGS_RELEASE)
+	@$(CC) -c -o $@ $< $(CCFLAGS) $(CCFLAGS_RELEASE) $(PER_FILE_FLAGS_$<)
 $(OBJ_DIR)/%.cpp.o: %.cpp
 	@echo cxx $<
 	@mkdir -p $(@D)
-	@$(CC) -c -o $@ $< $(CXXFLAGS) $(CXXFLAGS_RELEASE) 
+	@$(CC) -c -o $@ $< $(CXXFLAGS) $(CXXFLAGS_RELEASE) $(PER_FILE_FLAGS_$<)
 $(DOBJ_DIR)/%.c.o: %.c
 	@echo cc $<
 	@mkdir -p $(@D)
-	@$(CC) -c -o $@ $< $(CCFLAGS) $(CCFLAGS_DEBUG)
+	@$(CC) -c -o $@ $< $(CCFLAGS) $(CCFLAGS_DEBUG) $(PER_FILE_FLAGS_$<)
 $(DOBJ_DIR)/%.cpp.o: %.cpp
 	@echo cxx $<
 	@mkdir -p $(@D)
-	@$(CC) -c -o $@ $< $(CXXFLAGS) $(CXXFLAGS_DEBUG)
+	@$(CC) -c -o $@ $< $(CXXFLAGS) $(CXXFLAGS_DEBUG) $(PER_FILE_FLAGS_$<)
 
 ifndef NO_WBX_TARGETS
 

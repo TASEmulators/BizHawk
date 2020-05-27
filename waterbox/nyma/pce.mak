@@ -21,4 +21,6 @@ SRCS += \
 	cdrom.cpp \
 	pce.cpp
 
+PER_FILE_FLAGS_mednafen/src/pce/input.cpp := -DINPUT_Read=ZZINPUT_Read
+
 include ../common.mak

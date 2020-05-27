@@ -17,7 +17,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		isPorted: false,
 		isReleased: true)]
 	public sealed partial class PCEngine : IEmulator, ISaveRam, IInputPollable, IVideoLogicalOffsets, IRomInfo,
-		IDebuggable, ISettable<PCEngine.PCESettings, PCEngine.PCESyncSettings>, IDriveLight, ICodeDataLogger
+		IDebuggable, ISettable<PCEngine.PCESettings, PCEngine.PCESyncSettings>, IDriveLight, ICodeDataLogger,
+		IPceGpuView
 	{
 		[CoreConstructor(new[] { "PCE", "SGX" })]
 		public PCEngine(GameInfo game, byte[] rom, object settings, object syncSettings)
@@ -357,8 +358,30 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 		}
 
+
 		private ISoundProvider _soundProvider;
 
 		private string Region { get; set; }
+
+		public bool IsSgx => Type == NecSystemType.SuperGrafx;
+		public unsafe void GetGpuData(int vdcIndex, Action<PceGpuData> callback)
+		{
+			var vdc = vdcIndex == 0 ? VDC1 : VDC2;
+			fixed(int* pal = VCE.Palette)
+			fixed(byte* bg = vdc.PatternBuffer)
+			fixed(byte* spr = vdc.SpriteBuffer)
+			fixed(ushort* vram = vdc.VRAM)
+			{
+				callback(new PceGpuData
+				{
+					BatWidth = vdc.BatWidth,
+					BatHeight = vdc.BatHeight,
+					PaletteCache = pal,
+					BackgroundCache = bg,
+					SpriteCache = spr,
+					Vram = vram
+				});
+			}
+		}
 	}
 }
