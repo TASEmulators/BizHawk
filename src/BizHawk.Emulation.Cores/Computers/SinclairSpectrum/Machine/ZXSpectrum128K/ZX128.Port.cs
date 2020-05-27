@@ -47,10 +47,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (lowByte == 0x1f)
             {
                 if (LocateUniqueJoystick(JoystickType.Kempston) != null)
-                    return (byte)((KempstonJoystick)LocateUniqueJoystick(JoystickType.Kempston) as KempstonJoystick).JoyLine;
+				{
+					InputRead = true;
+					return (byte)((KempstonJoystick)LocateUniqueJoystick(JoystickType.Kempston) as KempstonJoystick).JoyLine;
+				}
 
-                InputRead = true;
-            }
+				InputRead = true;
+			}
             else
             {
                 if (KeyboardDevice.ReadPort(port, ref result))
