@@ -1,12 +1,12 @@
 #include "mednafen/src/types.h"
 #include <emulibc.h>
 #include <waterboxcore.h>
-#include <mednafen/mednafen.h>
+#include <src/mednafen.h>
 #include <stdint.h>
-#include <mednafen/cdrom/CDInterface.h>
-#include <mednafen/cdrom/CDInterface_MT.h>
-#include <mednafen/cdrom/CDInterface_ST.h>
-#include <mednafen/cdrom/CDAccess.h>
+#include <src/cdrom/CDInterface.h>
+#include <src/cdrom/CDInterface_MT.h>
+#include <src/cdrom/CDInterface_ST.h>
+#include <src/cdrom/CDAccess.h>
 #include <trio/trio.h>
 
 #include "cdrom.h"

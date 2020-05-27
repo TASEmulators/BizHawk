@@ -1,7 +1,7 @@
 #include "mednafen/src/types.h"
 #include <emulibc.h>
 #include <waterboxcore.h>
-#include <mednafen/mednafen.h>
+#include <src/mednafen.h>
 #include <stdint.h>
 #include "mednafen/src/FileStream.h"
 #include "nyma.h"

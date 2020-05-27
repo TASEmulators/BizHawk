@@ -1,8 +1,8 @@
 #pragma once
 
 #include "mednafen/src/types.h"
-#include <mednafen/mednafen.h>
-#include <mednafen/cdrom/CDInterface.h>
+#include <src/mednafen.h>
+#include <src/cdrom/CDInterface.h>
 
 class CDInterfaceNyma : public Mednafen::CDInterface
 {

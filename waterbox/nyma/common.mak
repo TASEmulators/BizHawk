@@ -1,7 +1,7 @@
 # common things across all mednafen cores
 
 MEDNAFLAGS := \
-	-Imednafen/include -Icommon -Imednafen/src/trio \
+	-Imednafen -Icommon -Imednafen/src/trio \
 	-DHAVE_CONFIG_H=1 -DMDFN_DISABLE_NO_OPT_ERRWARN=1 \
 	-fwrapv \
 	-fno-strict-aliasing \

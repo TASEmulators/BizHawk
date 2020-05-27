@@ -5,6 +5,7 @@
             "includePath": [
 				"${workspaceFolder}",
 				"${workspaceFolder}/mednafen/include",
+				"${workspaceFolder}/mednafen",
 				"${workspaceFolder}/common",
 				"${workspaceFolder}/mednafen/src/trio",
 				"${workspaceFolder}/../sysroot/include",

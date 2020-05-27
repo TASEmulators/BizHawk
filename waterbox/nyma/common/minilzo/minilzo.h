@@ -1,1 +1,1 @@
-#include <mednafen/minilzo/_minilzo.h>
+#include <src/minilzo/_minilzo.h>
