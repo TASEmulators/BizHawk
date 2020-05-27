@@ -39,7 +39,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				var ret = new ControllerDefinition
 				{
-					Name = "Mednafen Controller"
+					Name = "Mednafen Controller",
+					BoolButtons = { "Power", "Reset" },
+					CategoryLabels =
+					{
+						{ "Power", "System" },
+						{ "Reset", "System" },
+					}
 				};
 
 				var finalDevices = new List<string>();

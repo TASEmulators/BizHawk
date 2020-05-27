@@ -144,7 +144,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				SkipRendering = (short)(render ? 0 : 1),
 				SkipSoundening =(short)(rendersound ? 0 : 1),
-				Command = LibNymaCore.CommandType.NONE,
+				Command = controller.IsPressed("Power")
+					? LibNymaCore.CommandType.POWER
+					: controller.IsPressed("Reset")
+						? LibNymaCore.CommandType.RESET
+						: LibNymaCore.CommandType.NONE,
 				InputPortData = (byte*)_frameAdvanceInputLock.AddrOfPinnedObject()
 			};
 			return ret;
