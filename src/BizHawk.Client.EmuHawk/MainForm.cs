@@ -3424,33 +3424,12 @@ namespace BizHawk.Client.EmuHawk
 		public string SaveStatePrefix()
 		{
 			var name = Game.FilesystemSafeName();
-
-			// Neshawk and Quicknes have incompatible savestates, store the name to keep them separate
-			if (Emulator.SystemId == "NES")
-			{
-				name += $".{Emulator.Attributes().CoreName}";
-			}
-
-			// Gambatte and GBHawk have incompatible savestates, store the name to keep them separate
-			if (Emulator.SystemId == "GB")
-			{
-				name += $".{Emulator.Attributes().CoreName}";
-			}
-
-			if (Emulator is Snes9x) // Keep snes9x savestate away from libsnes, we want to not be too tedious so bsnes names will just have the profile name not the core name
-			{
-				name += $".{Emulator.Attributes().CoreName}";
-			}
+			name += $".{Emulator.Attributes().CoreName}";
 
 			// Bsnes profiles have incompatible savestates so save the profile name
 			if (Emulator is LibsnesCore bsnes)
 			{
 				name += $".{bsnes.CurrentProfile}";
-			}
-
-			if (Emulator.SystemId == "GBA")
-			{
-				name += $".{Emulator.Attributes().CoreName}";
 			}
 
 			if (MovieSession.Movie.IsActive())
