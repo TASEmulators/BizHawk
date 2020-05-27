@@ -56,6 +56,8 @@ namespace MDFN_IEN_PCE
 	uint8 INPUT_Read(int32 timestamp, unsigned int A)
 	{
 		LagFlag = false;
+		if (InputCallback)
+			InputCallback();
 		return ZZINPUT_Read(timestamp, A);
 	}
 }

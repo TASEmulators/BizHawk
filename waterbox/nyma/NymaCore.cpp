@@ -27,6 +27,7 @@ enum { MAX_PORT_DATA = 16 };
 static uint8_t InputPortData[(MAX_PORTS + 1) * MAX_PORT_DATA];
 
 bool LagFlag;
+void (*InputCallback)();
 
 ECL_EXPORT void PreInit()
 {
@@ -195,7 +196,9 @@ ECL_EXPORT void SetLayers(uint64_t layers)
 }
 
 ECL_EXPORT void SetInputCallback(void (*cb)())
-{}
+{
+	InputCallback = cb;
+}
 
 // same information as PortInfo, but easier to marshal
 struct NPortInfo
