@@ -9,6 +9,7 @@ using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Cores.ColecoVision;
 using BizHawk.Emulation.Cores.Atari.Atari2600;
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -139,6 +140,14 @@ namespace BizHawk.Client.EmuHawk
 
 			// NES
 			_config.PreferredCores["NES"] = CoreNames.QuickNes;
+
+			// GB
+			{
+				var s = GetSyncSettings<Gameboy, Gameboy.GambatteSyncSettings>();
+				s.EnableBIOS = false;
+				// TODO: Do we want to set anything else here?
+				PutSyncSettings<Gameboy>(s);
+			}
 		}
 
 		private void SetLongPlay()
@@ -206,6 +215,14 @@ namespace BizHawk.Client.EmuHawk
 
 			// NES
 			_config.PreferredCores["NES"] = CoreNames.NesHawk;
+
+			// GB
+			{
+				var s = GetSyncSettings<Gameboy, Gameboy.GambatteSyncSettings>();
+				s.EnableBIOS = true;
+				// TODO: Do we want to set anything else here?
+				PutSyncSettings<Gameboy>(s);
+			}
 		}
 
 		private void SetN64Tas()

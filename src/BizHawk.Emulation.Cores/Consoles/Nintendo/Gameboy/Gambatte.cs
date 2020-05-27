@@ -83,21 +83,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_load)}() returned non-zero (is this not a gb or gbc rom?)");
 				}
 
-				byte[] Bios;
+				string biosName;
 				if ((flags & LibGambatte.LoadFlags.FORCE_DMG) == LibGambatte.LoadFlags.FORCE_DMG)
 				{
-					Bios = comm.CoreFileProvider.GetFirmware("GB", "World", true, "BIOS Not Found, Cannot Load");
+					biosName = "GB";
 					IsCgb = false;
 				}
 				else
 				{
-					Bios = comm.CoreFileProvider.GetFirmware("GBC", "World", true, "BIOS Not Found, Cannot Load");
+					biosName = "GBC";
 					IsCgb = true;
 				}
 
-				if (LibGambatte.gambatte_loadbios(GambatteState, Bios, (uint)Bios.Length) != 0)
+				if (_syncSettings.EnableBIOS)
 				{
-					throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_loadbios)}() returned non-zero (bios error)");
+					byte[] Bios;
+					Bios = comm.CoreFileProvider.GetFirmware(biosName, "World", true, "BIOS Not Found, Cannot Load.  Change SyncSettings to run without BIOS.");
+					if (LibGambatte.gambatte_loadbios(GambatteState, Bios, (uint)Bios.Length) != 0)
+					{
+						throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_loadbios)}() returned non-zero (bios error)");
+					}
 				}
 
 				// set real default colors (before anyone mucks with them at all)
