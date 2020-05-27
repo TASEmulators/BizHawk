@@ -173,44 +173,44 @@ namespace BizHawk.Client.Common
 						default:
 						case CompareType.None: // This should never happen, but it's here just in case.  adelikat: And yet it does! Cheat Code converter doesn't do this.  Changing this to default to equal since 99.9999% of all cheats are going to be equals
 						case CompareType.Equal:
-							if (_compare.Value == _watch.Value) 
+							if (_compare.Value == _watch.Value)
 							{
-								_watch.Poke(GetStringForPulse(_val));
+								PokeByte();
 							}
 
 							break;
 						case CompareType.GreaterThan:
 							if (_compare.Value > _watch.Value) 
 							{
-								_watch.Poke(GetStringForPulse(_val));
+								PokeByte();
 							}
 
 							break;
 						case CompareType.GreaterThanOrEqual:
 							if (_compare.Value >= _watch.Value)
 							{
-								_watch.Poke(GetStringForPulse(_val));
+								PokeByte();
 							}
 
 							break;
 						case CompareType.LessThan:
 							if (_compare.Value < _watch.Value) 
 							{
-								_watch.Poke(GetStringForPulse(_val));
+								PokeByte();
 							}
 
 							break;
 						case CompareType.LessThanOrEqual:
 							if (_compare.Value <= _watch.Value)
 							{
-								_watch.Poke(GetStringForPulse(_val));
+								PokeByte();
 							}
 
 							break;
 						case CompareType.NotEqual:
 							if (_compare.Value != _watch.Value)
 							{
-								_watch.Poke(GetStringForPulse(_val));
+								PokeByte();
 							}
 
 							break;
@@ -234,6 +234,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		private void PokeByte()
+		{
+			_watch.Poke(GetStringForPulse(_val));
+		}
+
 		public bool Contains(long addr)
 		{
 			switch (_watch.Size)
@@ -248,78 +253,6 @@ namespace BizHawk.Client.Common
 				case WatchSize.DWord:
 					return addr == _watch.Address || addr == _watch.Address + 1 ||
 						addr == _watch.Address + 2 || addr == _watch.Address + 3;
-			}
-		}
-
-		public byte? GetByteVal(long addr)
-		{
-			if (!Contains(addr))
-			{
-				return null;
-			}
-
-			switch (_watch.Size)
-			{
-				default:
-				case WatchSize.Separator:
-				case WatchSize.Byte:
-					return (byte?)_val;
-				case WatchSize.Word:
-					if (_watch.BigEndian)
-					{
-						if (addr == _watch.Address)
-						{
-							return (byte)(_val >> 8);
-						}
-						return (byte)(_val & 0xFF);
-					}
-					else
-					{
-						if (addr == _watch.Address)
-						{
-							return (byte)(_val & 0xFF);
-						}
-						return (byte)(_val >> 8);
-					}
-				case WatchSize.DWord:
-					if (_watch.BigEndian)
-					{
-						if (addr == _watch.Address)
-						{
-							return (byte)((_val >> 24) & 0xFF);
-						}
-
-						if (addr == _watch.Address + 1)
-						{
-							return (byte)((_val >> 16) & 0xFF);
-						}
-
-						if (addr == _watch.Address + 2)
-						{
-							return (byte)((_val >> 8) & 0xFF);
-						}
-
-						return (byte)(_val & 0xFF);
-					}
-					else
-					{
-						if (addr == _watch.Address)
-						{
-							return (byte)(_val & 0xFF);
-						}
-
-						if (addr == _watch.Address + 1)
-						{
-							return (byte)((_val >> 8) & 0xFF);
-						}
-
-						if (addr == _watch.Address + 2)
-						{
-							return (byte)((_val >> 16) & 0xFF);
-						}
-
-						return (byte)((_val >> 24) & 0xFF);
-					}
 			}
 		}
 
