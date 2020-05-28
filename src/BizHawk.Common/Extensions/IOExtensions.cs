@@ -25,15 +25,24 @@ namespace BizHawk.Common.IOExtensions
 			return outStream.ToArray();
 		}
 
-		// Read bytes from a BinaryReader and translate them into the UTF-8 string they represent.
-		// WHAT? WHY IS THIS NAMED ASCII BUT USING UTF8
-		public static string ReadStringFixedAscii(this BinaryReader r, int bytes)
+		/// <summary>
+		/// Read a string from a binary reader using utf8 encoding and known byte length
+		/// </summary>
+		/// <param name="r"></param>
+		/// <param name="bytes">exact number of bytes to read</param>
+		/// <returns></returns>
+		public static string ReadStringFixedUtf8(this BinaryReader r, int bytes)
 		{
 			var read = new byte[bytes];
 			r.Read(read, 0, bytes);
 			return Encoding.UTF8.GetString(read);
 		}
 
+		/// <summary>
+		/// Read a null terminated string from a binary reader using utf8 encoding
+		/// </summary>
+		/// <param name="br"></param>
+		/// <returns></returns>
 		public static string ReadStringUtf8NullTerminated(this BinaryReader br)
 		{
 			using var ms = new MemoryStream();

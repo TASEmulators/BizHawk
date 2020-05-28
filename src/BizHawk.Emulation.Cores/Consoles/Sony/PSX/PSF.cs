@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			{
 				//not endian safe
 				var br = new BinaryReader(fs);
-				var sig = br.ReadStringFixedAscii(4);
+				var sig = br.ReadStringFixedUtf8(4);
 				if (sig != "PSF\x1")
 					return false;
 
@@ -37,9 +37,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				}
 				else
 				{
-					if (br.ReadStringFixedAscii(5) == "[TAG]")
+					if (br.ReadStringFixedUtf8(5) == "[TAG]")
 					{
-						var tagstring = br.ReadStringFixedAscii((int)(fs.Length - fs.Position)).Replace("\r\n", "\n");
+						var tagstring = br.ReadStringFixedUtf8((int)(fs.Length - fs.Position)).Replace("\r\n", "\n");
 						foreach (var tag in tagstring.Split('\n', '\x0'))
 						{
 							if (tag.Trim() == "")

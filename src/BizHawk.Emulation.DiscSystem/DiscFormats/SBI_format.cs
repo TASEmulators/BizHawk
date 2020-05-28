@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.DiscSystem.SBI
 			using (var fs = File.OpenRead(path))
 			{
 				BinaryReader br = new BinaryReader(fs);
-				string sig = br.ReadStringFixedAscii(4);
+				string sig = br.ReadStringFixedUtf8(4);
 				if (sig != "SBI\0")
 					return false;
 			}

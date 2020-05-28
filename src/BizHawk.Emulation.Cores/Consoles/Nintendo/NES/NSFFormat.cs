@@ -62,9 +62,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			LoadAddress = br.ReadUInt16();
 			InitAddress = br.ReadUInt16();
 			PlayAddress = br.ReadUInt16();
-			SongName = br.ReadStringFixedAscii(32);
-			ArtistName = br.ReadStringFixedAscii(32);
-			CopyrightHolder = br.ReadStringFixedAscii(32);
+			SongName = br.ReadStringFixedUtf8(32);
+			ArtistName = br.ReadStringFixedUtf8(32);
+			CopyrightHolder = br.ReadStringFixedUtf8(32);
 			SpeedNTSC = br.ReadUInt16();
 			br.Read(BankswitchInitValues, 0, 8);
 			SpeedPAL = br.ReadUInt16();
