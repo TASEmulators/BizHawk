@@ -452,6 +452,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						NOISE_clk_shft = (byte)((value & 0xF0) >> 4);
 						NOISE_wdth_md = (value & 8) > 0;
 						NOISE_div_code = (byte)(value & 7);
+						// Mickey's Dangerous Chase requires writes here to take effect immediately (for sound of taking damage)
+						NOISE_intl_cntr = (DIVISOR[NOISE_div_code] << NOISE_clk_shft);
 						break;
 					case 0xFF23:                                        // NR44 (trigger)
 						Audio_Regs[NR44] = value;
