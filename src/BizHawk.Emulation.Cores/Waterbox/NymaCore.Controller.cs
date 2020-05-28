@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private void InitControls()
 		{
-			_controllerAdapter = new ControllerAdapter(_nyma, _syncSettingsActual.PortDevices);
+			_controllerAdapter = new ControllerAdapter(_nyma, _syncSettingsActual.PortDevices, ButtonNameOverrides);
 			_nyma.SetInputDevices(_controllerAdapter.Devices);
 			ControllerDefinition = _controllerAdapter.Definition;
 		}
@@ -35,12 +35,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			/// </summary>
 			public string[] Devices { get; }
 			public ControllerDefinition Definition { get; }
-			public ControllerAdapter(LibNymaCore core, IDictionary<int, string> config)
+			public ControllerAdapter(LibNymaCore core, IDictionary<int, string> config, IDictionary<string, string> overrides)
 			{
 				var ret = new ControllerDefinition
 				{
 					Name = "Mednafen Controller",
-					BoolButtons = { "Power", "Reset" },
 					CategoryLabels =
 					{
 						{ "Power", "System" },
@@ -88,7 +87,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 						var bitOffset = (int)inputInfo.BitOffset;
 						var byteStart = devByteStart + bitOffset / 8;
 						bitOffset %= 8;
-						var name = $"P{port + 1} {inputInfo.Name}";
+						var baseName = inputInfo.Name;
+						if (overrides.ContainsKey(baseName))
+							baseName = overrides[baseName];
+						var name = $"P{port + 1} {baseName}";
 						switch (inputInfo.Type)
 						{
 							case LibNymaCore.InputType.PADDING:
@@ -178,6 +180,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 						ret.CategoryLabels[name] = category;
 					}
 				}
+				ret.BoolButtons.Add("Power");
+				ret.BoolButtons.Add("Reset");
 				Definition = ret;
 				finalDevices.Add(null);
 				Devices = finalDevices.ToArray();
@@ -192,5 +196,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					t(src, dest);
 			}
 		}
+
+		protected virtual IDictionary<string, string> ButtonNameOverrides { get; }= new Dictionary<string, string>();
 	}
 }
