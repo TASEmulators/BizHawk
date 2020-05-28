@@ -9,13 +9,13 @@
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
 		<DebugSymbols>true</DebugSymbols>
-		<DebugType>full</DebugType>
+		<DebugType>portable</DebugType>
 		<DefineConstants>DEBUG;TRACE</DefineConstants>
 		<Optimize>false</Optimize>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
 		<DebugSymbols>false</DebugSymbols>
-		<DebugType>pdbonly</DebugType>
+		<DebugType>portable</DebugType>
 		<DefineConstants>TRACE</DefineConstants>
 		<Optimize>true</Optimize>
 	</PropertyGroup>
