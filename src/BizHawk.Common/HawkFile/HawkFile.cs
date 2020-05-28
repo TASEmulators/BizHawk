@@ -51,7 +51,7 @@ namespace BizHawk.Common
 		/// <summary>Gets the directory containing the root</summary>
 		public string? Directory => Path.GetDirectoryName(FullPathWithoutMember);
 
-		/// <value><see cref="true"/> iff a file is bound and the bound file exists</value>
+		/// <value>true if a file is bound and the bound file exists</value>
 		public readonly bool Exists;
 
 		/// <summary>returns the extension of Name in uppercase</summary>
