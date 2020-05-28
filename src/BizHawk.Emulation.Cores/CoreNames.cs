@@ -22,6 +22,6 @@ namespace BizHawk.Emulation.Cores
 		public const string PicoDrive = "PicoDrive";
 		public const string Gpgx = "Genplus-gx";
 		public const string PceHawk = "PCEHawk";
-		public const string TurboNyma = "Terbo Grafix";
+		public const string TurboNyma = "TurboNyma";
 	}
 }

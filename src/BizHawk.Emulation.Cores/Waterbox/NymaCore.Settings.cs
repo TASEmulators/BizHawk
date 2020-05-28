@@ -14,8 +14,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	unsafe partial class NymaCore : ISettable<NymaCore.NymaSettings, NymaCore.NymaSyncSettings>
 	{
 		/// <summary>
-		/// Settings that we shouldn't show the user
-		/// If the value is null, use the default value, otherwise override it
+		/// Settings that we shouldn't show the user.
+		/// If the value is null, use the default value, otherwise override it.
 		/// </summary>
 		protected virtual IDictionary<string, string> SettingsOverrides { get; } = new Dictionary<string, string>();
 		public NymaSettingsInfo SettingsInfo { get; private set; }

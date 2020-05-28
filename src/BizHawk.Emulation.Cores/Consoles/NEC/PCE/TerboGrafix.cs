@@ -11,7 +11,7 @@ using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 {
-	[Core(CoreNames.TurboNyma, "Mednafen Team", true, false, "1.24.3", "https://mednafen.github.io/releases/", false)]
+	[Core(CoreNames.TurboNyma, "Mednafen Team", true, true, "1.24.3", "https://mednafen.github.io/releases/", false)]
 	public class TerboGrafix : NymaCore, IRegionable, IPceGpuView
 	{
 		private readonly LibTerboGrafix _terboGrafix;
@@ -51,6 +51,10 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 			{ "pce.vramsize", null },
 			// match hawk behavior on BRAM, instead of giving every game BRAM
 			{ "pce.disable_bram_hucard", "1" },
+			// nyma settings that don't apply here
+			// TODO: not quite happy with how this works out
+			{ "nyma.rtcinitialtime", null },
+			{ "nyma.rtcrealtime", null },
 		};
 
 		// pce always has two layers, sgx always has 4, and mednafen knows this
