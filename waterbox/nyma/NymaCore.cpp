@@ -417,22 +417,26 @@ ECL_EXPORT void DumpSettings()
 	SettingsT settings;
 	for (auto a = Game->Settings; a->name; a++)
 	{
+		#define MAYBENULL(y,x) if(x) y = x
 		std::unique_ptr<SettingT> s(new SettingT());
-		s->Name = a->description;
-		s->Description = a->description_extra;
-		s->SettingsKey = a->name;
-		s->DefaultValue = a->default_value;
-		s->Min = a->minimum;
-		s->Max = a->maximum;
+		MAYBENULL(s->Name, a->description);
+		MAYBENULL(s->Description, a->description_extra);
+		MAYBENULL(s->SettingsKey, a->name);
+		MAYBENULL(s->DefaultValue, a->default_value);
+		MAYBENULL(s->Min, a->minimum);
+		MAYBENULL(s->Max, a->maximum);
 		s->Flags = (SettingsFlags)a->flags;
 		s->Type = (SettingType)a->type;
-		for (auto b = a->enum_list; b->string; b++)
+		if (a->enum_list)
 		{
-			std::unique_ptr<EnumValueT> e(new EnumValueT());
-			e->Name = b->description;
-			e->Description = b->description_extra;
-			e->Value = b->string;
-			s->SettingEnums.push_back(std::move(e));
+			for (auto b = a->enum_list; b->string; b++)
+			{
+				std::unique_ptr<EnumValueT> e(new EnumValueT());
+				MAYBENULL(e->Name, b->description);
+				MAYBENULL(e->Description, b->description_extra);
+				MAYBENULL(e->Value, b->string);
+				s->SettingEnums.push_back(std::move(e));
+			}
 		}
 		settings.Values.push_back(std::move(s));
 	}
