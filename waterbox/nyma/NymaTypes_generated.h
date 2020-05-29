@@ -9,29 +9,32 @@
 namespace NymaTypes {
 
 struct EnumValue;
+struct EnumValueBuilder;
 struct EnumValueT;
 
 struct Setting;
+struct SettingBuilder;
 struct SettingT;
 
 struct Settings;
+struct SettingsBuilder;
 struct SettingsT;
 
 enum SettingType {
   /// (signed), int8, int16, int32, int64(saved as)
-  SettingType_Int = 0  /// uint8, uint16, uint32, uint64(saved as)
-,
-  SettingType_Uint = 1  /// 0 or 1
-,
-  SettingType_Bool = 2  /// float64
-,
+  SettingType_Int = 0,
+  /// uint8, uint16, uint32, uint64(saved as)
+  SettingType_Uint = 1,
+  /// 0 or 1
+  SettingType_Bool = 2,
+  /// float64
   SettingType_Float = 3,
-  SettingType_String = 4  /// string value from a list of potential strings
-,
-  SettingType_Enum = 5  /// TODO: How do these work
-,
-  SettingType_MultiEnum = 6  /// Shouldn't see any of these
-,
+  SettingType_String = 4,
+  /// string value from a list of potential strings
+  SettingType_Enum = 5,
+  /// TODO: How do these work
+  SettingType_MultiEnum = 6,
+  /// Shouldn't see any of these
   SettingType_Alias = 7,
   SettingType_MIN = SettingType_Int,
   SettingType_MAX = SettingType_Alias
@@ -52,7 +55,7 @@ inline const SettingType (&EnumValuesSettingType())[8] {
 }
 
 inline const char * const *EnumNamesSettingType() {
-  static const char * const names[] = {
+  static const char * const names[9] = {
     "Int",
     "Uint",
     "Bool",
@@ -67,7 +70,7 @@ inline const char * const *EnumNamesSettingType() {
 }
 
 inline const char *EnumNameSettingType(SettingType e) {
-  if (e < SettingType_Int || e > SettingType_Alias) return "";
+  if (flatbuffers::IsOutRange(e, SettingType_Int, SettingType_Alias)) return "";
   const size_t index = static_cast<size_t>(e);
   return EnumNamesSettingType()[index];
 }
@@ -76,21 +79,21 @@ enum SettingsFlags {
   /// TODO(cats)
   SettingsFlags_Input = 256,
   SettingsFlags_Sound = 512,
-  SettingsFlags_Video = 1024  /// User-configurable physical->virtual button/axes and hotkey mappings(driver-side code category mainly).
-,
+  SettingsFlags_Video = 1024,
+  /// User-configurable physical->virtual button/axes and hotkey mappings(driver-side code category mainly).
   SettingsFlags_InputMapping = 2048,
-  SettingsFlags_Path = 4096  /// If the setting affects emulation from the point of view of the emulated program
-,
-  SettingsFlags_EmuState = 131072  /// If it's safe for an untrusted source to modify it, probably only used in conjunction with MDFNST_EX_EMU_STATE and network play
-,
-  SettingsFlags_UntrustedSafe = 262144  /// Suppress documentation generation for this setting.
-,
-  SettingsFlags_SuppressDoc = 524288  /// Auto-generated common template setting(like nes.xscale, pce.xscale, vb.xscale, nes.enable, pce.enable, vb.enable)
-,
-  SettingsFlags_CommonTemplate = 1048576  /// Don't save setting in settings file.
-,
-  SettingsFlags_NonPersistent = 2097152  /// TODO(in progress)
-,
+  SettingsFlags_Path = 4096,
+  /// If the setting affects emulation from the point of view of the emulated program
+  SettingsFlags_EmuState = 131072,
+  /// If it's safe for an untrusted source to modify it, probably only used in conjunction with MDFNST_EX_EMU_STATE and network play
+  SettingsFlags_UntrustedSafe = 262144,
+  /// Suppress documentation generation for this setting.
+  SettingsFlags_SuppressDoc = 524288,
+  /// Auto-generated common template setting(like nes.xscale, pce.xscale, vb.xscale, nes.enable, pce.enable, vb.enable)
+  SettingsFlags_CommonTemplate = 1048576,
+  /// Don't save setting in settings file.
+  SettingsFlags_NonPersistent = 2097152,
+  /// TODO(in progress)
   SettingsFlags_RequiresReload = 16777216,
   SettingsFlags_RequiresRestart = 33554432,
   SettingsFlags_NONE = 0,
@@ -144,6 +147,7 @@ struct EnumValueT : public flatbuffers::NativeTable {
 
 struct EnumValue FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   typedef EnumValueT NativeTableType;
+  typedef EnumValueBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_NAME = 4,
     VT_DESCRIPTION = 6,
@@ -174,6 +178,7 @@ struct EnumValue FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 };
 
 struct EnumValueBuilder {
+  typedef EnumValue Table;
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
   void add_Name(flatbuffers::Offset<flatbuffers::String> Name) {
@@ -234,17 +239,18 @@ struct SettingT : public flatbuffers::NativeTable {
   std::string DefaultValue;
   std::string Min;
   std::string Max;
-  SettingsFlags Flags;
-  SettingType Type;
-  std::vector<std::unique_ptr<EnumValueT>> SettingEnums;
+  NymaTypes::SettingsFlags Flags;
+  NymaTypes::SettingType Type;
+  std::vector<std::unique_ptr<NymaTypes::EnumValueT>> SettingEnums;
   SettingT()
-      : Flags(static_cast<SettingsFlags>(0)),
-        Type(SettingType_Int) {
+      : Flags(static_cast<NymaTypes::SettingsFlags>(0)),
+        Type(NymaTypes::SettingType_Int) {
   }
 };
 
 struct Setting FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   typedef SettingT NativeTableType;
+  typedef SettingBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_NAME = 4,
     VT_DESCRIPTION = 6,
@@ -274,14 +280,14 @@ struct Setting FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   const flatbuffers::String *Max() const {
     return GetPointer<const flatbuffers::String *>(VT_MAX);
   }
-  SettingsFlags Flags() const {
-    return static_cast<SettingsFlags>(GetField<uint32_t>(VT_FLAGS, 0));
+  NymaTypes::SettingsFlags Flags() const {
+    return static_cast<NymaTypes::SettingsFlags>(GetField<uint32_t>(VT_FLAGS, 0));
   }
-  SettingType Type() const {
-    return static_cast<SettingType>(GetField<int32_t>(VT_TYPE, 0));
+  NymaTypes::SettingType Type() const {
+    return static_cast<NymaTypes::SettingType>(GetField<int32_t>(VT_TYPE, 0));
   }
-  const flatbuffers::Vector<flatbuffers::Offset<EnumValue>> *SettingEnums() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<EnumValue>> *>(VT_SETTINGENUMS);
+  const flatbuffers::Vector<flatbuffers::Offset<NymaTypes::EnumValue>> *SettingEnums() const {
+    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<NymaTypes::EnumValue>> *>(VT_SETTINGENUMS);
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
@@ -310,6 +316,7 @@ struct Setting FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 };
 
 struct SettingBuilder {
+  typedef Setting Table;
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
   void add_Name(flatbuffers::Offset<flatbuffers::String> Name) {
@@ -330,13 +337,13 @@ struct SettingBuilder {
   void add_Max(flatbuffers::Offset<flatbuffers::String> Max) {
     fbb_.AddOffset(Setting::VT_MAX, Max);
   }
-  void add_Flags(SettingsFlags Flags) {
+  void add_Flags(NymaTypes::SettingsFlags Flags) {
     fbb_.AddElement<uint32_t>(Setting::VT_FLAGS, static_cast<uint32_t>(Flags), 0);
   }
-  void add_Type(SettingType Type) {
+  void add_Type(NymaTypes::SettingType Type) {
     fbb_.AddElement<int32_t>(Setting::VT_TYPE, static_cast<int32_t>(Type), 0);
   }
-  void add_SettingEnums(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<EnumValue>>> SettingEnums) {
+  void add_SettingEnums(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<NymaTypes::EnumValue>>> SettingEnums) {
     fbb_.AddOffset(Setting::VT_SETTINGENUMS, SettingEnums);
   }
   explicit SettingBuilder(flatbuffers::FlatBufferBuilder &_fbb)
@@ -359,9 +366,9 @@ inline flatbuffers::Offset<Setting> CreateSetting(
     flatbuffers::Offset<flatbuffers::String> DefaultValue = 0,
     flatbuffers::Offset<flatbuffers::String> Min = 0,
     flatbuffers::Offset<flatbuffers::String> Max = 0,
-    SettingsFlags Flags = static_cast<SettingsFlags>(0),
-    SettingType Type = SettingType_Int,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<EnumValue>>> SettingEnums = 0) {
+    NymaTypes::SettingsFlags Flags = static_cast<NymaTypes::SettingsFlags>(0),
+    NymaTypes::SettingType Type = NymaTypes::SettingType_Int,
+    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<NymaTypes::EnumValue>>> SettingEnums = 0) {
   SettingBuilder builder_(_fbb);
   builder_.add_SettingEnums(SettingEnums);
   builder_.add_Type(Type);
@@ -383,16 +390,16 @@ inline flatbuffers::Offset<Setting> CreateSettingDirect(
     const char *DefaultValue = nullptr,
     const char *Min = nullptr,
     const char *Max = nullptr,
-    SettingsFlags Flags = static_cast<SettingsFlags>(0),
-    SettingType Type = SettingType_Int,
-    const std::vector<flatbuffers::Offset<EnumValue>> *SettingEnums = nullptr) {
+    NymaTypes::SettingsFlags Flags = static_cast<NymaTypes::SettingsFlags>(0),
+    NymaTypes::SettingType Type = NymaTypes::SettingType_Int,
+    const std::vector<flatbuffers::Offset<NymaTypes::EnumValue>> *SettingEnums = nullptr) {
   auto Name__ = Name ? _fbb.CreateString(Name) : 0;
   auto Description__ = Description ? _fbb.CreateString(Description) : 0;
   auto SettingsKey__ = SettingsKey ? _fbb.CreateString(SettingsKey) : 0;
   auto DefaultValue__ = DefaultValue ? _fbb.CreateString(DefaultValue) : 0;
   auto Min__ = Min ? _fbb.CreateString(Min) : 0;
   auto Max__ = Max ? _fbb.CreateString(Max) : 0;
-  auto SettingEnums__ = SettingEnums ? _fbb.CreateVector<flatbuffers::Offset<EnumValue>>(*SettingEnums) : 0;
+  auto SettingEnums__ = SettingEnums ? _fbb.CreateVector<flatbuffers::Offset<NymaTypes::EnumValue>>(*SettingEnums) : 0;
   return NymaTypes::CreateSetting(
       _fbb,
       Name__,
@@ -410,18 +417,19 @@ flatbuffers::Offset<Setting> CreateSetting(flatbuffers::FlatBufferBuilder &_fbb,
 
 struct SettingsT : public flatbuffers::NativeTable {
   typedef Settings TableType;
-  std::vector<std::unique_ptr<SettingT>> Values;
+  std::vector<std::unique_ptr<NymaTypes::SettingT>> Values;
   SettingsT() {
   }
 };
 
 struct Settings FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   typedef SettingsT NativeTableType;
+  typedef SettingsBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_VALUES = 4
   };
-  const flatbuffers::Vector<flatbuffers::Offset<Setting>> *Values() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<Setting>> *>(VT_VALUES);
+  const flatbuffers::Vector<flatbuffers::Offset<NymaTypes::Setting>> *Values() const {
+    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<NymaTypes::Setting>> *>(VT_VALUES);
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
@@ -436,9 +444,10 @@ struct Settings FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 };
 
 struct SettingsBuilder {
+  typedef Settings Table;
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
-  void add_Values(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Setting>>> Values) {
+  void add_Values(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<NymaTypes::Setting>>> Values) {
     fbb_.AddOffset(Settings::VT_VALUES, Values);
   }
   explicit SettingsBuilder(flatbuffers::FlatBufferBuilder &_fbb)
@@ -455,7 +464,7 @@ struct SettingsBuilder {
 
 inline flatbuffers::Offset<Settings> CreateSettings(
     flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Setting>>> Values = 0) {
+    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<NymaTypes::Setting>>> Values = 0) {
   SettingsBuilder builder_(_fbb);
   builder_.add_Values(Values);
   return builder_.Finish();
@@ -463,8 +472,8 @@ inline flatbuffers::Offset<Settings> CreateSettings(
 
 inline flatbuffers::Offset<Settings> CreateSettingsDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
-    const std::vector<flatbuffers::Offset<Setting>> *Values = nullptr) {
-  auto Values__ = Values ? _fbb.CreateVector<flatbuffers::Offset<Setting>>(*Values) : 0;
+    const std::vector<flatbuffers::Offset<NymaTypes::Setting>> *Values = nullptr) {
+  auto Values__ = Values ? _fbb.CreateVector<flatbuffers::Offset<NymaTypes::Setting>>(*Values) : 0;
   return NymaTypes::CreateSettings(
       _fbb,
       Values__);
@@ -473,17 +482,17 @@ inline flatbuffers::Offset<Settings> CreateSettingsDirect(
 flatbuffers::Offset<Settings> CreateSettings(flatbuffers::FlatBufferBuilder &_fbb, const SettingsT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
 inline EnumValueT *EnumValue::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = new EnumValueT();
-  UnPackTo(_o, _resolver);
-  return _o;
+  std::unique_ptr<NymaTypes::EnumValueT> _o = std::unique_ptr<NymaTypes::EnumValueT>(new EnumValueT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
 }
 
 inline void EnumValue::UnPackTo(EnumValueT *_o, const flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
-  { auto _e = Name(); if (_e) _o->Name = _e->str(); };
-  { auto _e = Description(); if (_e) _o->Description = _e->str(); };
-  { auto _e = Value(); if (_e) _o->Value = _e->str(); };
+  { auto _e = Name(); if (_e) _o->Name = _e->str(); }
+  { auto _e = Description(); if (_e) _o->Description = _e->str(); }
+  { auto _e = Value(); if (_e) _o->Value = _e->str(); }
 }
 
 inline flatbuffers::Offset<EnumValue> EnumValue::Pack(flatbuffers::FlatBufferBuilder &_fbb, const EnumValueT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
@@ -505,23 +514,23 @@ inline flatbuffers::Offset<EnumValue> CreateEnumValue(flatbuffers::FlatBufferBui
 }
 
 inline SettingT *Setting::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = new SettingT();
-  UnPackTo(_o, _resolver);
-  return _o;
+  std::unique_ptr<NymaTypes::SettingT> _o = std::unique_ptr<NymaTypes::SettingT>(new SettingT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
 }
 
 inline void Setting::UnPackTo(SettingT *_o, const flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
-  { auto _e = Name(); if (_e) _o->Name = _e->str(); };
-  { auto _e = Description(); if (_e) _o->Description = _e->str(); };
-  { auto _e = SettingsKey(); if (_e) _o->SettingsKey = _e->str(); };
-  { auto _e = DefaultValue(); if (_e) _o->DefaultValue = _e->str(); };
-  { auto _e = Min(); if (_e) _o->Min = _e->str(); };
-  { auto _e = Max(); if (_e) _o->Max = _e->str(); };
-  { auto _e = Flags(); _o->Flags = _e; };
-  { auto _e = Type(); _o->Type = _e; };
-  { auto _e = SettingEnums(); if (_e) { _o->SettingEnums.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->SettingEnums[_i] = std::unique_ptr<EnumValueT>(_e->Get(_i)->UnPack(_resolver)); } } };
+  { auto _e = Name(); if (_e) _o->Name = _e->str(); }
+  { auto _e = Description(); if (_e) _o->Description = _e->str(); }
+  { auto _e = SettingsKey(); if (_e) _o->SettingsKey = _e->str(); }
+  { auto _e = DefaultValue(); if (_e) _o->DefaultValue = _e->str(); }
+  { auto _e = Min(); if (_e) _o->Min = _e->str(); }
+  { auto _e = Max(); if (_e) _o->Max = _e->str(); }
+  { auto _e = Flags(); _o->Flags = _e; }
+  { auto _e = Type(); _o->Type = _e; }
+  { auto _e = SettingEnums(); if (_e) { _o->SettingEnums.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->SettingEnums[_i] = std::unique_ptr<NymaTypes::EnumValueT>(_e->Get(_i)->UnPack(_resolver)); } } }
 }
 
 inline flatbuffers::Offset<Setting> Setting::Pack(flatbuffers::FlatBufferBuilder &_fbb, const SettingT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
@@ -540,7 +549,7 @@ inline flatbuffers::Offset<Setting> CreateSetting(flatbuffers::FlatBufferBuilder
   auto _Max = _o->Max.empty() ? 0 : _fbb.CreateString(_o->Max);
   auto _Flags = _o->Flags;
   auto _Type = _o->Type;
-  auto _SettingEnums = _o->SettingEnums.size() ? _fbb.CreateVector<flatbuffers::Offset<EnumValue>> (_o->SettingEnums.size(), [](size_t i, _VectorArgs *__va) { return CreateEnumValue(*__va->__fbb, __va->__o->SettingEnums[i].get(), __va->__rehasher); }, &_va ) : 0;
+  auto _SettingEnums = _o->SettingEnums.size() ? _fbb.CreateVector<flatbuffers::Offset<NymaTypes::EnumValue>> (_o->SettingEnums.size(), [](size_t i, _VectorArgs *__va) { return CreateEnumValue(*__va->__fbb, __va->__o->SettingEnums[i].get(), __va->__rehasher); }, &_va ) : 0;
   return NymaTypes::CreateSetting(
       _fbb,
       _Name,
@@ -555,15 +564,15 @@ inline flatbuffers::Offset<Setting> CreateSetting(flatbuffers::FlatBufferBuilder
 }
 
 inline SettingsT *Settings::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = new SettingsT();
-  UnPackTo(_o, _resolver);
-  return _o;
+  std::unique_ptr<NymaTypes::SettingsT> _o = std::unique_ptr<NymaTypes::SettingsT>(new SettingsT());
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
 }
 
 inline void Settings::UnPackTo(SettingsT *_o, const flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
-  { auto _e = Values(); if (_e) { _o->Values.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->Values[_i] = std::unique_ptr<SettingT>(_e->Get(_i)->UnPack(_resolver)); } } };
+  { auto _e = Values(); if (_e) { _o->Values.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->Values[_i] = std::unique_ptr<NymaTypes::SettingT>(_e->Get(_i)->UnPack(_resolver)); } } }
 }
 
 inline flatbuffers::Offset<Settings> Settings::Pack(flatbuffers::FlatBufferBuilder &_fbb, const SettingsT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
@@ -574,7 +583,7 @@ inline flatbuffers::Offset<Settings> CreateSettings(flatbuffers::FlatBufferBuild
   (void)_rehasher;
   (void)_o;
   struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const SettingsT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
-  auto _Values = _o->Values.size() ? _fbb.CreateVector<flatbuffers::Offset<Setting>> (_o->Values.size(), [](size_t i, _VectorArgs *__va) { return CreateSetting(*__va->__fbb, __va->__o->Values[i].get(), __va->__rehasher); }, &_va ) : 0;
+  auto _Values = _o->Values.size() ? _fbb.CreateVector<flatbuffers::Offset<NymaTypes::Setting>> (_o->Values.size(), [](size_t i, _VectorArgs *__va) { return CreateSetting(*__va->__fbb, __va->__o->Values[i].get(), __va->__rehasher); }, &_va ) : 0;
   return NymaTypes::CreateSettings(
       _fbb,
       _Values);

@@ -290,11 +290,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		[BizImport(CC, Compatibility = true)]
 		public abstract SystemInfo* GetSystemInfo();
 
-		[BizImport(CC, Compatibility = true)]
-		public abstract void IterateSettings(int index, [In, Out]NymaCore.NymaSettingsInfo.MednaSettingS s);
-
-		[BizImport(CC, Compatibility = true)]
-		public abstract void IterateSettingEnums(int index, int enumIndex,[In, Out]NymaCore.NymaSettingsInfo.MednaSettingS.EnumValueS e);
+		[BizImport(CC)]
+		public abstract void DumpSettings();
 
 		public delegate void FrontendSettingQuery(string setting, IntPtr dest);
 		[BizImport(CC)]
