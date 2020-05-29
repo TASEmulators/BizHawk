@@ -314,8 +314,7 @@ ECL_EXPORT void DumpInputs()
 	flatbuffers::FlatBufferBuilder fbb;
 	fbb.Finish(NPorts::Pack(fbb, &ports));
 
-	// the file is initially empty, so inplace vs not doesn't make a difference, but we haven't implemented ftruncate(2)
-	FileStream f("inputs", FileStream::MODE_WRITE_INPLACE, false);
+	FileStream f("inputs", FileStream::MODE_WRITE);
 	f.write(fbb.GetBufferPointer(), fbb.GetSize());
 }
 
@@ -349,8 +348,7 @@ ECL_EXPORT void DumpSettings()
 	flatbuffers::FlatBufferBuilder fbb;
 	fbb.Finish(Settings::Pack(fbb, &settings));
 
-	// the file is initially empty, so inplace vs not doesn't make a difference, but we haven't implemented ftruncate(2)
-	FileStream f("settings", FileStream::MODE_WRITE_INPLACE, false);
+	FileStream f("settings", FileStream::MODE_WRITE);
 	f.write(fbb.GetBufferPointer(), fbb.GetSize());
 }
 }
