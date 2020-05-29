@@ -3,7 +3,8 @@
 	<Import Project="../../CommonNullable.props" />
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<TargetFrameworks>netstandard2.0;netcoreapp3.1</TargetFrameworks>
+	</PropertyGroup>
+	<PropertyGroup>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />

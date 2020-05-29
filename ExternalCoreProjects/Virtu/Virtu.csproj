@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<Import Project="$(ProjectDir)../../Common.props" />
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;netcoreapp3.1</TargetFrameworks>
 	</PropertyGroup>
 	<ItemGroup>
 		<Reference Include="Microsoft.CSharp" />
