@@ -984,6 +984,39 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
+		public override void DMA_tick()
+		{
+			if (DMA_clock >= 4)
+			{
+				DMA_OAM_access = false;
+				if ((DMA_clock % 4) == 1)
+				{
+					// the cpu can't access memory during this time, but we still need the ppu to be able to.
+					DMA_start = false;
+					// Gekkio reports that A14 being high on DMA transfers always represent WRAM accesses
+					// So transfers nominally from higher memory areas are actually still from there (i.e. FF -> DF)
+					byte DMA_actual = DMA_addr;
+					if (DMA_addr > 0xDF) { DMA_actual &= 0xDF; }
+					DMA_byte = Core.ReadMemory((ushort)((DMA_actual << 8) + DMA_inc));
+					DMA_start = true;
+				}
+				else if ((DMA_clock % 4) == 3)
+				{
+					Core.OAM[DMA_inc] = DMA_byte;
+
+					if (DMA_inc < (0xA0 - 1)) { DMA_inc++; }
+				}
+			}
+
+			DMA_clock++;
+
+			if (DMA_clock == 648)
+			{
+				DMA_start = false;
+				DMA_OAM_access = true;
+			}
+		}
+
 		public override void process_sprite()
 		{
 			int y;
@@ -1023,55 +1056,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			if (SL_sprites[sl_use_index * 4 + 3].Bit(5))
 			{
-				int b0, b1, b2, b3, b4, b5, b6, b7 = 0;
 				for (int i = 0; i < 2; i++)
 				{
-					b0 = (sprite_sel[i] & 0x01) << 7;
-					b1 = (sprite_sel[i] & 0x02) << 5;
-					b2 = (sprite_sel[i] & 0x04) << 3;
-					b3 = (sprite_sel[i] & 0x08) << 1;
-					b4 = (sprite_sel[i] & 0x10) >> 1;
-					b5 = (sprite_sel[i] & 0x20) >> 3;
-					b6 = (sprite_sel[i] & 0x40) >> 5;
-					b7 = (sprite_sel[i] & 0x80) >> 7;
-
-					sprite_sel[i] = (byte)(b0 | b1 | b2 | b3 | b4 | b5 | b6 | b7);
+					sprite_sel[i] = (byte)(((sprite_sel[i] & 0x01) << 7) |
+										   ((sprite_sel[i] & 0x02) << 5) |
+										   ((sprite_sel[i] & 0x04) << 3) |
+										   ((sprite_sel[i] & 0x08) << 1) |
+										   ((sprite_sel[i] & 0x10) >> 1) |
+										   ((sprite_sel[i] & 0x20) >> 3) |
+										   ((sprite_sel[i] & 0x40) >> 5) |
+										   ((sprite_sel[i] & 0x80) >> 7));
 				}
-			}
-		}
-
-		// normal DMA moves twice as fast in double speed mode on GBC
-		// So give it it's own function so we can seperate it from PPU tick
-		public override void DMA_tick()
-		{
-			if (DMA_clock >= 4)
-			{
-				DMA_OAM_access = false;
-				if ((DMA_clock % 4) == 1)
-				{
-					// the cpu can't access memory during this time, but we still need the ppu to be able to.
-					DMA_start = false;
-					// Gekkio reports that A14 being high on DMA transfers always represent WRAM accesses
-					// So transfers nominally from higher memory areas are actually still from there (i.e. FF -> DF)
-					byte DMA_actual = DMA_addr;
-					if (DMA_addr > 0xDF) { DMA_actual &= 0xDF; }
-					DMA_byte = Core.ReadMemory((ushort)((DMA_actual << 8) + DMA_inc));
-					DMA_start = true;
-				}
-				else if ((DMA_clock % 4) == 3)
-				{
-					Core.OAM[DMA_inc] = DMA_byte;
-
-					if (DMA_inc < (0xA0 - 1)) { DMA_inc++; }
-				}
-			}
-
-			DMA_clock++;
-
-			if (DMA_clock == 648)
-			{
-				DMA_start = false;
-				DMA_OAM_access = true;
 			}
 		}
 
@@ -1098,47 +1093,43 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 			}
 
-			bool have_pixel = false;
 			byte s_pixel = 0;
 			byte sprite_attr = 0;
 
+			int low_bound = 0;
+			int high_bound = 0;
+			int t_index = 0;
+			
 			for (int i = 0; i < 160; i++)
 			{
-				have_pixel = false;
-				for (int j = 0; j < SL_sprites_index; j++)
+				sprite_present_list[i] = 0;
+			}
+
+			for (int i = (SL_sprites_index - 1); i >= 0; i--)
+			{
+				if ((SL_sprites_ordered[i * 4] > 0) && ((SL_sprites_ordered[i * 4] - 8) < 160))
 				{
-					if ((i >= (SL_sprites_ordered[j * 4] - 8)) &&
-						(i < SL_sprites_ordered[j * 4]) &&
-						!have_pixel)
+					low_bound = (SL_sprites_ordered[i * 4] >= 8) ? 0 : (8 - SL_sprites_ordered[i * 4]);
+					high_bound = ((SL_sprites_ordered[i * 4] - 8) <= 152) ? 7 : (159 - (SL_sprites_ordered[i * 4] - 8));
+
+					for (int j = low_bound; j <= high_bound; j++)
 					{
-						// we can use the current sprite, so pick out a pixel for it
-						int t_index = i - (SL_sprites_ordered[j * 4] - 8);
+						t_index = 7 - j;
 
-						t_index = 7 - t_index;
-
-						sprite_data[0] = (byte)((SL_sprites_ordered[j * 4 + 1] >> t_index) & 1);
-						sprite_data[1] = (byte)(((SL_sprites_ordered[j * 4 + 2] >> t_index) & 1) << 1);
+						sprite_data[0] = (byte)((SL_sprites_ordered[i * 4 + 1] >> t_index) & 1);
+						sprite_data[1] = (byte)(((SL_sprites_ordered[i * 4 + 2] >> t_index) & 1) << 1);
 
 						s_pixel = (byte)(sprite_data[0] + sprite_data[1]);
-						sprite_attr = (byte)SL_sprites_ordered[j * 4 + 3];
+						sprite_attr = (byte)SL_sprites_ordered[i * 4 + 3];
 
 						// pixel color of 0 is transparent, so if this is the case we don't have a pixel
 						if (s_pixel != 0)
 						{
-							have_pixel = true;
+							sprite_present_list[SL_sprites_ordered[i * 4] - (8 - j)] = 1;
+							sprite_pixel_list[SL_sprites_ordered[i * 4] - (8 - j)] = s_pixel;
+							sprite_attr_list[SL_sprites_ordered[i * 4] - (8 - j)] = sprite_attr;
 						}
 					}
-				}
-
-				if (have_pixel)
-				{
-					sprite_present_list[i] = 1;
-					sprite_pixel_list[i] = s_pixel;
-					sprite_attr_list[i] = sprite_attr;
-				}
-				else
-				{
-					sprite_present_list[i] = 0;
 				}
 			}
 		}

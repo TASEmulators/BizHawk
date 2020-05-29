@@ -6,6 +6,9 @@
 		<NoWarn>NU1701</NoWarn>
 		<OutputPath>$(ProjectDir)../../output/dll</OutputPath>
 	</PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net48</TargetFrameworks>
+	</PropertyGroup>
 	<ItemGroup>
 		<AdditionalFiles Include="$(ProjectDir)../../.stylecop.json" />
 	</ItemGroup>
