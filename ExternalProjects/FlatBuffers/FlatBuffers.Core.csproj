@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="../../src/MainSlnCommon.props" />
+
+    <ItemGroup>
+      <Compile Remove="Properties\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="Properties\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Properties\**" />
+    </ItemGroup>
+
+</Project>

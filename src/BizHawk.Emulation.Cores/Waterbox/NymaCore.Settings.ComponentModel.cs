@@ -3,9 +3,9 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
+using NymaTypes;
 using static BizHawk.Emulation.Cores.Waterbox.NymaCore;
 using static BizHawk.Emulation.Cores.Waterbox.NymaCore.NymaSettingsInfo;
-using static BizHawk.Emulation.Cores.Waterbox.NymaCore.NymaSettingsInfo.MednaSetting;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
@@ -75,8 +75,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 	public abstract class MednaPropertyDescriptor : PropertyDescriptor
 	{
-		public MednaSetting Setting { get; private set; }
-		public MednaPropertyDescriptor(MednaSetting setting)
+		public SettingT Setting { get; private set; }
+		public MednaPropertyDescriptor(SettingT setting)
 			: base(setting.SettingsKey, new Attribute[0])
 		{
 			Setting = setting;
@@ -125,21 +125,21 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			return ((NymaSyncSettings)component).MednafenValues.ContainsKey(Setting.SettingsKey);
 		}
 
-		public static MednaPropertyDescriptor Create(MednaSetting s)
+		public static MednaPropertyDescriptor Create(SettingT s)
 		{
 			switch (s.Type)
 			{
-				case SettingType.INT:
+				case SettingType.Int:
 					return new MednaLongDescriptor(s);
-				case SettingType.UINT:
+				case SettingType.Uint:
 					return new MednaUlongDescriptor(s);
-				case SettingType.BOOL:
+				case SettingType.Bool:
 					return new MednaBoolDescriptor(s);
-				case SettingType.FLOAT:
+				case SettingType.Float:
 					return new MednaDoubleDescriptor(s);
-				case SettingType.STRING:
+				case SettingType.String:
 					return new MednaStringDescriptor(s);
-				case SettingType.ENUM:
+				case SettingType.Enum:
 					return new MednaEnumDescriptor(s);
 				default:
 					throw new NotImplementedException($"Unexpected SettingType {s.Type}");
@@ -149,7 +149,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 	public class MednaEnumDescriptor : MednaPropertyDescriptor
 	{
-		public MednaEnumDescriptor(MednaSetting s) : base(s) {}
+		public MednaEnumDescriptor(SettingT s) : base(s) {}
 		public override Type PropertyType => typeof(string);
 		protected override object ConvertFromString(string s)
 		{
@@ -163,7 +163,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private class MyTypeConverter : TypeConverter
 		{
-			public MednaSetting Setting { get; set; }
+			public SettingT Setting { get; set; }
 
 			public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType) => sourceType == typeof(string);
 			public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType) => destinationType == typeof(string);
@@ -196,7 +196,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	}
 	public class MednaStringDescriptor : MednaPropertyDescriptor
 	{
-		public MednaStringDescriptor(MednaSetting s) : base(s) {}
+		public MednaStringDescriptor(SettingT s) : base(s) {}
 		public override Type PropertyType => typeof(string);
 		protected override object ConvertFromString(string s)
 		{
@@ -209,7 +209,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	}
 	public class MednaBoolDescriptor : MednaPropertyDescriptor
 	{
-		public MednaBoolDescriptor(MednaSetting s) : base(s) {}
+		public MednaBoolDescriptor(SettingT s) : base(s) {}
 		public override Type PropertyType => typeof(bool);
 		protected override object ConvertFromString(string s)
 		{
@@ -222,7 +222,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	}
 	public class MednaLongDescriptor : MednaPropertyDescriptor
 	{
-		public MednaLongDescriptor(MednaSetting s) : base(s) {}
+		public MednaLongDescriptor(SettingT s) : base(s) {}
 		public override Type PropertyType => typeof(long);
 		protected override object ConvertFromString(string s)
 		{
@@ -238,7 +238,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	}
 	public class MednaUlongDescriptor : MednaPropertyDescriptor
 	{
-		public MednaUlongDescriptor(MednaSetting s) : base(s) {}
+		public MednaUlongDescriptor(SettingT s) : base(s) {}
 		public override Type PropertyType => typeof(ulong);
 		protected override object ConvertFromString(string s)
 		{
@@ -254,7 +254,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	}
 	public class MednaDoubleDescriptor : MednaPropertyDescriptor
 	{
-		public MednaDoubleDescriptor(MednaSetting s) : base(s) {}
+		public MednaDoubleDescriptor(SettingT s) : base(s) {}
 		public override Type PropertyType => typeof(double);
 		protected override object ConvertFromString(string s)
 		{

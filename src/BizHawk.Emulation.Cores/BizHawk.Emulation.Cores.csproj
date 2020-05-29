@@ -63,4 +63,7 @@
 		<Compile Update="Consoles/Sony/PSX/Octoshock.*.cs" DependentUpon="Octoshock.cs" />
 		<Compile Update="Consoles/WonderSwan/WonderSwan.*.cs" DependentUpon="WonderSwan.cs" />
 	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\..\ExternalProjects\FlatBuffers\FlatBuffers.Core.csproj" />
+	</ItemGroup>
 </Project>

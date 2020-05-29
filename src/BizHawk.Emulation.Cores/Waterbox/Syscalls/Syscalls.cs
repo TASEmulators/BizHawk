@@ -365,6 +365,19 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				return -EINVAL;
 			}
 		}
+		[BizExport(CallingConvention.Cdecl, EntryPoint = "__wsyscalltab[77]")]
+		public long FTruncate(int fd, long length)
+		{
+			var s = StreamForFd(fd);
+			if (s == null)
+				return -EBADF;
+			if (!s.CanWrite)
+				return -ESPIPE;
+			if (!s.CanSeek)
+				return -ESPIPE;
+			s.SetLength(length);
+			return 0;
+		}
 
 		// TODO: Remove this entirely once everything is compiled against the new libc
 		[BizExport(CallingConvention.Cdecl, EntryPoint = "__wsyscalltab[205]")]
