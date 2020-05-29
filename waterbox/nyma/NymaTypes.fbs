@@ -58,3 +58,94 @@ table Setting {
 table Settings {
 	Values: [Setting];
 }
+
+
+
+enum InputType: uint8 {
+	Padding = 0,	// n-bit, zero
+	Button,		// 1-bit
+	ButtonCanRapid, // 1-bit
+	Switch,		// ceil(log2(n))-bit
+			// Current switch position(default 0).
+			// Persistent, and bidirectional communication(can be modified driver side, and Mednafen core and emulation module side)
+	Status,		// ceil(log2(n))-bit
+			// emulation module->driver communication
+	Axis,		// 16-bits; 0 through 65535; 32768 is centered position
+	PointerX,	// mouse pointer, 16-bits, signed - in-screen/window range before scaling/offseting normalized coordinates: [0.0, 1.0)
+	PointerY,	// see: mouse_scale_x, mouse_scale_y, mouse_offs_x, mouse_offs_y
+	AxisRel,		// mouse relative motion, 16-bits, signed
+	ByteSpecial,
+	ResetButton,	// 1-bit
+	ButtonAnalog,	// 16-bits, 0 - 65535
+	Rumble,		// 16-bits, lower 8 bits are weak rumble(0-255), next 8 bits are strong rumble(0-255), 0=no rumble, 255=max rumble.  Somewhat subjective, too...
+}
+enum AxisFlags: uint8 (bit_flags) {
+	// Denotes analog data that may need to be scaled to ensure a more squareish logical range(for emulated analog sticks)
+	Sqlr = 0,
+	// Invert config order of the two components(neg,pos) of the axis
+	InvertCo = 1,
+	SettingsUndoc = 7,
+}
+enum DeviceFlags: uint8 (bit_flags) {
+	Keyboard = 0,
+}
+table NButtonInfo {
+	ExcludeName: string;
+}
+table NAxisInfo {
+	// negative, then positive
+	SettingsNameNeg: string;
+	SettingsNamePos: string;
+	NameNeg: string;
+	NamePos: string;	
+}
+table NSwitchInfo {
+	DefaultPosition: uint32;
+	Positions: [NSwitchPosition];
+}
+table NSwitchPosition {
+	SettingName: string;
+	Name: string;
+	Description: string;
+}
+table NStatusInfo {
+	States: [NStatusState];
+}
+table NStatusState {
+	ShortName: string;
+	Name: string;
+	Color: int32; // (msb)0RGB(lsb), -1 for unused.
+}
+union NInputExtra {
+	Button: NButtonInfo,
+	Axis: NAxisInfo,
+	Switch: NSwitchInfo,
+	Status: NStatusInfo,
+}
+table NInputInfo {
+	SettingName: string;
+	Name: string;
+	ConfigOrder: int16;
+	BitOffset: uint16;
+	Type: InputType;
+	Flags: AxisFlags;
+	BitSize: uint8;
+	Extra: NInputExtra;
+}
+table NDeviceInfo {
+	ShortName: string;
+	FullName: string;
+	Description: string;
+	Flags: DeviceFlags;
+	ByteLength: uint32;
+	Inputs: [NInputInfo];
+}
+table NPortInfo {
+	ShortName: string;
+	FullName: string;
+	DefaultDeviceShortName: string;
+	Devices: [NDeviceInfo];
+}
+table NPorts {
+	Values: [NPortInfo];
+}

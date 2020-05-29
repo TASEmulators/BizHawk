@@ -165,38 +165,26 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			public Dictionary<string, SettingT> SettingsByKey { get; set; } = new Dictionary<string, SettingT>();
 			public HashSet<string> HiddenSettings { get; set; } = new HashSet<string>();
 		}
-		private void InitSyncSettingsInfo()
+		private void InitSyncSettingsInfo(List<NPortInfoT> allPorts)
 		{
-			// TODO: Some shared logic in ControllerAdapter.  Avoidable?
 			var s = new NymaSettingsInfo();
 
-			var numPorts = _nyma.GetNumPorts();
-			for (uint port = 0; port < numPorts; port++)
+			foreach (var portInfo in allPorts)
 			{
-				var portInfo = *_nyma.GetPort(port);
-
 				s.Ports.Add(new NymaSettingsInfo.Port
 				{
 					Name = portInfo.FullName,
 					DefaultSettingsValue = portInfo.DefaultDeviceShortName,
-					AllowedDevices = Enumerable.Range(0, (int)portInfo.NumDevices)
-						.Select(i =>
-						{
-							var dev =  *_nyma.GetDevice(port, (uint)i);
-							return new NymaSettingsInfo.Device
-							{
-								Name = dev.FullName,
-								Description = dev.Description,
-								SettingValue = dev.ShortName
-							};
-						})
-						.ToList()
+					AllowedDevices = portInfo.Devices.Select(dev => new NymaSettingsInfo.Device
+					{
+						Name = dev.FullName,
+						Description = dev.Description,
+						SettingValue = dev.ShortName
+					}).ToList()
 				});
 			}
-			_exe.AddTransientFile(new byte[0], "settings");
-			_nyma.DumpSettings();
-			var settingsBuff = _exe.RemoveTransientFile("settings");
-			foreach (var setting in NymaTypes.Settings.GetRootAsSettings(new ByteBuffer(settingsBuff)).UnPack().Values)
+
+			foreach (var setting in GetSettingsData())
 			{
 				s.Settings.Add(setting);
 				s.SettingsByKey.Add(setting.SettingsKey, setting);

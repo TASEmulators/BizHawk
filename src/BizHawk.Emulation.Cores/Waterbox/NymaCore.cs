@@ -6,6 +6,8 @@ using System.Runtime.InteropServices;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.DiscSystem;
+using FlatBuffers;
+using NymaTypes;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
@@ -45,7 +47,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			using (_exe.EnterExit())
 			{
 				_nyma.PreInit();
-				InitSyncSettingsInfo();
+				var portData = GetInputPortsData();
+				InitSyncSettingsInfo(portData);
 				_nyma.SetFrontendSettingQuery(_settingsQueryDelegate);
 				if (firmwares != null)
 				{
@@ -113,7 +116,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				VsyncDenominator = 1 << 24;
 				_soundBuffer = new short[22050 * 2];
 
-				InitControls();
+				InitControls(portData);
 				_nyma.SetFrontendSettingQuery(null);
 				if (_disks != null)
 					_nyma.SetCDCallbacks(null, null);
@@ -198,6 +201,22 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				q++;
 			}
 			return ret;
+		}
+
+		private List<SettingT> GetSettingsData()
+		{
+			_exe.AddTransientFile(new byte[0], "settings");
+			_nyma.DumpSettings();
+			var settingsBuff = _exe.RemoveTransientFile("settings");
+			return NymaTypes.Settings.GetRootAsSettings(new ByteBuffer(settingsBuff)).UnPack().Values;
+		}
+
+		private List<NPortInfoT> GetInputPortsData()
+		{
+			_exe.AddTransientFile(new byte[0], "inputs");
+			_nyma.DumpInputs();
+			var settingsBuff = _exe.RemoveTransientFile("inputs");
+			return NymaTypes.NPorts.GetRootAsNPorts(new ByteBuffer(settingsBuff)).UnPack().Values;
 		}
 	}
 }
