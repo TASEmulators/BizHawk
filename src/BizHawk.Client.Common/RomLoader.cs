@@ -900,6 +900,8 @@ namespace BizHawk.Client.Common
 
 							if (useSnes9x)
 							{
+								// TODO
+								// core = CoreInventory.Instance["SNES", "Faust"];
 								core = CoreInventory.Instance["SNES", CoreNames.Snes9X];
 							}
 							else

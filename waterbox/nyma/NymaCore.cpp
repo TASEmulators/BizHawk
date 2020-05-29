@@ -59,8 +59,6 @@ ECL_EXPORT bool InitRom(const InitData& data)
 {
 	try
 	{
-		Setup();
-
 		std::unique_ptr<Stream> gamestream(new FileStream(data.FileNameFull, FileStream::MODE_READ, false));
 		GameFile gf({
 			&NVFS,
@@ -74,6 +72,8 @@ ECL_EXPORT bool InitRom(const InitData& data)
 		});
 
 		Game->Load(&gf);
+
+		Setup();
 	}
 	catch(...)
 	{
@@ -88,8 +88,8 @@ ECL_EXPORT bool InitCd(int numdisks)
 {
 	try
 	{
-		Setup();
 		StartGameWithCds(numdisks);
+		Setup();
 	}
 	catch(...)
 	{

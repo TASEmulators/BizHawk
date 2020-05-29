@@ -106,6 +106,15 @@ namespace Mednafen
 	{
 		abort();
 	}
+	void MDFNSS_SaveSM(Stream *st, bool data_only, const MDFN_Surface *surface, const MDFN_Rect *DisplayRect, const int32 *LineWidths)
+	{
+		abort();
+	}
+	void MDFNSS_LoadSM(Stream *st, bool data_only, const bool fuzz)
+	{
+		abort();
+	}
+
 
 	static const MDFNSetting* GetSetting(const char* name)
 	{
