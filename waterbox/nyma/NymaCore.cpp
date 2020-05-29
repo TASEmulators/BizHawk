@@ -6,7 +6,6 @@
 #include "mednafen/src/FileStream.h"
 #include "nyma.h"
 #include "NymaTypes_generated.h"
-#include <fstream>
 
 using namespace Mednafen;
 
@@ -443,7 +442,8 @@ ECL_EXPORT void DumpSettings()
 	flatbuffers::FlatBufferBuilder fbb;
 	fbb.Finish(Settings::Pack(fbb, &settings));
 
-	std::ofstream f("settings", std::ios::binary);
-	f.write((char*)fbb.GetBufferPointer(), fbb.GetSize());
+	// the file is initially empty, so inplace vs not doesn't make a difference, but we haven't implemented ftruncate(2)
+	FileStream f("settings", FileStream::MODE_WRITE_INPLACE, false);
+	f.write(fbb.GetBufferPointer(), fbb.GetSize());
 }
 }
