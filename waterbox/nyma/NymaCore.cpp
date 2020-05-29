@@ -5,6 +5,8 @@
 #include <stdint.h>
 #include "mednafen/src/FileStream.h"
 #include "nyma.h"
+#include "NymaTypes_generated.h"
+#include <fstream>
 
 using namespace Mednafen;
 
@@ -406,4 +408,38 @@ ECL_EXPORT void IterateSettingEnums(int index, int enumIndex, NEnumValue& e)
 		e.Description = a.description_extra;
 		e.Value = a.string;
 	}
+}
+
+namespace NymaTypes
+{
+ECL_EXPORT void DumpSettings()
+{
+	SettingsT settings;
+	for (auto a = Game->Settings; a->name; a++)
+	{
+		std::unique_ptr<SettingT> s(new SettingT());
+		s->Name = a->description;
+		s->Description = a->description_extra;
+		s->SettingsKey = a->name;
+		s->DefaultValue = a->default_value;
+		s->Min = a->minimum;
+		s->Max = a->maximum;
+		s->Flags = (SettingsFlags)a->flags;
+		s->Type = (SettingType)a->type;
+		for (auto b = a->enum_list; b->string; b++)
+		{
+			std::unique_ptr<EnumValueT> e(new EnumValueT());
+			e->Name = b->description;
+			e->Description = b->description_extra;
+			e->Value = b->string;
+			s->SettingEnums.push_back(std::move(e));
+		}
+		settings.Values.push_back(std::move(s));
+	}
+	flatbuffers::FlatBufferBuilder fbb;
+	fbb.Finish(Settings::Pack(fbb, &settings));
+
+	std::ofstream f("settings", std::ios::binary);
+	f.write((char*)fbb.GetBufferPointer(), fbb.GetSize());
+}
 }

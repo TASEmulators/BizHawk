@@ -1,0 +1,60 @@
+namespace NymaTypes;
+
+enum SettingType: int32 {
+	/// (signed), int8, int16, int32, int64(saved as)
+	Int,
+	/// uint8, uint16, uint32, uint64(saved as)
+	Uint,
+	/// 0 or 1
+	Bool,
+	/// float64
+	Float,
+	String,
+	/// string value from a list of potential strings
+	Enum,
+	/// TODO: How do these work
+	MultiEnum,
+	/// Shouldn't see any of these
+	Alias,
+}
+enum SettingsFlags: uint32 (bit_flags) {
+	/// TODO(cats)
+	Input = 8,
+	Sound = 9,
+	Video = 10,
+	/// User-configurable physical->virtual button/axes and hotkey mappings(driver-side code category mainly).
+	InputMapping = 11,
+	Path = 12,
+	/// If the setting affects emulation from the point of view of the emulated program
+	EmuState = 17,
+	/// If it's safe for an untrusted source to modify it, probably only used in conjunction with MDFNST_EX_EMU_STATE and network play
+	UntrustedSafe = 18,
+	/// Suppress documentation generation for this setting.
+	SuppressDoc = 19,
+	/// Auto-generated common template setting(like nes.xscale, pce.xscale, vb.xscale, nes.enable, pce.enable, vb.enable)
+	CommonTemplate = 20,
+	/// Don't save setting in settings file.
+	NonPersistent = 21,
+	/// TODO(in progress)
+	RequiresReload = 24,
+	RequiresRestart = 25,
+}
+table EnumValue {
+	Name: string;
+	Description: string;
+	Value: string;
+}
+table Setting {
+	Name: string;
+	Description: string;
+	SettingsKey: string;
+	DefaultValue: string;
+	Min: string;
+	Max: string;
+	Flags: SettingsFlags;
+	Type: SettingType;
+	SettingEnums: [EnumValue];
+}
+table Settings {
+	Values: [Setting];
+}
