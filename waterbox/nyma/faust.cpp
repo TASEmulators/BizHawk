@@ -6,6 +6,8 @@
 #include "mednafen/src/snes_faust/ppu.h"
 #include "mednafen/src/snes_faust/input.h"
 #include "mednafen/src/snes_faust/cart.h"
+#include "mednafen/src/snes_faust/cart-private.h"
+#include "mednafen/src/snes_faust/apu.h"
 
 using namespace MDFN_IEN_SNES_FAUST;
 
@@ -15,36 +17,6 @@ void SetupMDFNGameInfo()
 {
 	Mednafen::MDFNGameInfo = &EmulatedSNES_Faust;
 }
-
-// ECL_EXPORT bool GetSaveRam()
-// {
-// 	try
-// 	{
-// 		FLASH_SaveNV();
-// 		return true;
-// 	}
-// 	catch(...)
-// 	{
-// 		return false;
-// 	}
-// }
-// ECL_EXPORT bool PutSaveRam()
-// {
-// 	try
-// 	{
-// 		FLASH_LoadNV();
-// 		return true;
-// 	}
-// 	catch(...)
-// 	{
-// 		return false;
-// 	}
-// }
-
-// namespace MDFN_IEN_NGP
-// {
-// 	extern uint8 CPUExRAM[16384];
-// }
 
 #define MemoryDomainFunctions(N,R,W)\
 static void Access##N(uint8_t* buffer, int64_t address, int64_t count, bool write)\
@@ -60,28 +32,75 @@ static void Access##N(uint8_t* buffer, int64_t address, int64_t count, bool writ
 			*buffer++ = R(address++);\
 	}\
 }
+#define MemoryDomainFunctions16(N,R,W)\
+static void Access##N(uint8_t* buffer, int64_t address, int64_t count, bool write)\
+{\
+	auto address16 = address >> 1;\
+	if (address & 1 && count)\
+	{\
+		auto scratch = R(address16);\
+		if (write)\
+		{\
+			scratch = scratch & 0xff | buffer[0] << 8;\
+			W(address16, scratch);\
+		}\
+		else\
+		{\
+			buffer[0] = scratch >> 8;\
+		}\
+		buffer++;\
+		address16++;\
+		count--;\
+	}\
+	auto buffer16 = (uint16_t*)buffer;\
+	if (write)\
+	{\
+		for (; count > 1; count -= 2)\
+			W(address16++, *buffer16++);\
+	}\
+	else\
+	{\
+		for (; count > 1; count -= 2)\
+			*buffer16++ = R(address16++);\
+	}\
+	if (count)\
+	{\
+		buffer = (uint8_t*)buffer16;\
+		auto scratch = R(address16);\
+		if (write)\
+		{\
+			scratch = scratch & 0xff00 | buffer[0];\
+			W(address16, scratch);\
+		}\
+		else\
+		{\
+			buffer[0] = scratch;\
+		}\
+	}\
+}
 
 MemoryDomainFunctions(WRAM, PeekWRAM, PokeWRAM);
+MemoryDomainFunctions(SRAM, CART_PeekRAM, CART_PokeRAM);
+
+MemoryDomainFunctions16(VRAM, PPU_ST::PPU_PeekVRAM, PPU_ST::PPU_PokeVRAM);
+MemoryDomainFunctions16(CGRAM, PPU_ST::PPU_PeekCGRAM, PPU_ST::PPU_PokeCGRAM);
+
+MemoryDomainFunctions(OAMLO, PPU_ST::PPU_PeekOAM, PPU_ST::PPU_PokeOAM);
+MemoryDomainFunctions(OAMHI, PPU_ST::PPU_PeekOAMHI, PPU_ST::PPU_PokeOAMHI);
+
+MemoryDomainFunctions(APU, APU_PeekRAM, APU_PokeRAM);
 
 ECL_EXPORT void GetMemoryAreas(MemoryArea* m)
 {
 	int i = 0;
-	// m[0].Data = Memory.SRAM; // sram, or sufami A sram
-	// m[0].Name = "CARTRAM";
-	// m[0].Size = (unsigned)(Memory.SRAMSize ? (1 << (Memory.SRAMSize + 3)) * 128 : 0);
-	// if (m[0].Size > 0x20000)
-	// 	m[0].Size = 0x20000;
-	// m[0].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_SAVERAMMABLE;
 
-	// m[1].Data = Multi.sramB; // sufami B sram
-	// m[1].Name = "CARTRAM B";
-	// m[1].Size = (unsigned)(Multi.cartType && Multi.sramSizeB ? (1 << (Multi.sramSizeB + 3)) * 128 : 0);
-	// m[1].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_SAVERAMMABLE;
+	// Sufami not supported on this core
+	// m[i].Name = "CARTRAM B";
+	// m[i].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_SAVERAMMABLE;
 
-	// m[2].Data = RTCData.reg;
-	// m[2].Name = "RTC";
-	// m[2].Size = (Settings.SRTC || Settings.SPC7110RTC) ? 20 : 0;
-	// m[2].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_SAVERAMMABLE;
+	// spc7110 not supported on this core
+	// m[i].Name = "RTC";
+	// m[i].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_SAVERAMMABLE;
 
 	m[i].Data = (void*)(MemoryFunctionHook)AccessWRAM;
 	m[i].Name = "WRAM";
@@ -89,19 +108,53 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea* m)
 	m[i].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_PRIMARY | MEMORYAREA_FLAGS_FUNCTIONHOOK;
 	i++;
 
-	// m[4].Data = Memory.VRAM;
-	// m[4].Name = "VRAM";
-	// m[4].Size = 64 * 1024;
-	// m[4].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE2;
+	m[i].Data = Cart.ROM;
+	m[i].Name = "CARTROM";
+	m[i].Size = Cart.ROM_Size;
+	m[i].Flags = MEMORYAREA_FLAGS_WORDSIZE2;
+	i++;
 
-	// m[5].Data = Memory.ROM;
-	// m[5].Name = "CARTROM";
-	// m[5].Size = Memory.CalculatedSize;
-	// m[5].Flags = MEMORYAREA_FLAGS_WORDSIZE2;
+	if (CART_GetRAMSize())
+	{
+		m[i].Data = (void*)(MemoryFunctionHook)AccessSRAM;
+		m[i].Name = "CARTRAM";
+		m[i].Size = CART_GetRAMSize();
+		m[i].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_FUNCTIONHOOK | MEMORYAREA_FLAGS_ONEFILLED | MEMORYAREA_FLAGS_SAVERAMMABLE;
+		i++;
+	}
+
+	m[i].Data = (void*)(MemoryFunctionHook)AccessVRAM;
+	m[i].Name = "VRAM";
+	m[i].Size = 64 * 1024;
+	m[i].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_FUNCTIONHOOK;
+	i++;
+
+	m[i].Data = (void*)(MemoryFunctionHook)AccessCGRAM;
+	m[i].Name = "CGRAM";
+	m[i].Size = 512;
+	m[i].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_FUNCTIONHOOK;
+	i++;
+
+	m[i].Data = (void*)(MemoryFunctionHook)AccessOAMLO;
+	m[i].Name = "OAMLO";
+	m[i].Size = 512;
+	m[i].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_FUNCTIONHOOK;
+	i++;
+
+	m[i].Data = (void*)(MemoryFunctionHook)AccessOAMHI;
+	m[i].Name = "OAMHI";
+	m[i].Size = 32;
+	m[i].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_FUNCTIONHOOK;
+	i++;
+
+	m[i].Data = (void*)(MemoryFunctionHook)AccessAPU;
+	m[i].Name = "APURAM";
+	m[i].Size = 64 * 1024;
+	m[i].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_FUNCTIONHOOK;
+	i++;
+
+	// TODO: "System Bus"
 }
-
-
-
 
 // stub ppu_mt since we can't support it
 namespace MDFN_IEN_SNES_FAUST

@@ -31,13 +31,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			var t = PreInit<T>(new WaterboxOptions
 			{
-				// TODO fix these up
 				Filename = wbxFilename,
+				// MemoryBlock understands reserve vs commit semantics, so nothing to be gained by making these precisely sized
 				SbrkHeapSizeKB = 1024 * 16,
-				SealedHeapSizeKB = 1024 * 16,
-				InvisibleHeapSizeKB = 1024 * 16,
-				PlainHeapSizeKB = 1024 * 16,
-				MmapHeapSizeKB = 1024 * 16,
+				SealedHeapSizeKB = 1024 * 48,
+				InvisibleHeapSizeKB = 1024 * 48,
+				PlainHeapSizeKB = 1024 * 48,
+				MmapHeapSizeKB = 1024 * 48,
 				SkipCoreConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			});
