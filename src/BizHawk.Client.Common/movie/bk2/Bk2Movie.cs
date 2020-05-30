@@ -21,10 +21,14 @@ namespace BizHawk.Client.Common
 
 		public virtual void Attach(IMovieSession session, IEmulator emulator)
 		{
-			if (!Emulator.IsNull())
-			{
-				throw new InvalidOperationException("A core has already been attached!");
-			}
+			// TODO: this check would ideally happen
+			// but is disabled for now because restarting a movie doesn't new one up
+			// so the old one hangs around with old emulator until this point
+			// maybe we should new it up, or have a detach method
+			//if (!Emulator.IsNull())
+			//{
+			//	throw new InvalidOperationException("A core has already been attached!");
+			//}
 
 			Emulator = emulator;
 			Session = session;
