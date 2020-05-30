@@ -220,7 +220,7 @@
 #undef HAVE_ICONV
 
 /* Define if GNU-style AVX inline assembly is supported. */
-#undef HAVE_INLINEASM_AVX
+#define HAVE_INLINEASM_AVX 1
 
 /* Define if you have the 'intmax_t' type in <stdint.h> or <inttypes.h>. */
 #define HAVE_INTMAX_T 1
