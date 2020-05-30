@@ -289,7 +289,7 @@ namespace BizHawk.Client.Common
 
 		public void RunQueuedMovie(bool recordMode, IEmulator emulator)
 		{
-			_queuedMovie.Attach(emulator);
+			_queuedMovie.Attach(this, emulator);
 			foreach (var previousPref in _preferredCores)
 			{
 				Global.Config.PreferredCores[previousPref.Key] = previousPref.Value;

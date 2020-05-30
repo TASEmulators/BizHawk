@@ -64,7 +64,7 @@ namespace BizHawk.Client.Common
 				Branches.Save(bs);
 			}
 
-			bs.PutLump(BinaryStateLump.Session, tw => tw.WriteLine(JsonConvert.SerializeObject(Session)));
+			bs.PutLump(BinaryStateLump.Session, tw => tw.WriteLine(JsonConvert.SerializeObject(TasSession)));
 
 			if (TasStateManager.Settings.SaveStateHistory && !backup)
 			{
@@ -253,7 +253,7 @@ namespace BizHawk.Client.Common
 					var json = tr.ReadToEnd();
 					try
 					{
-						Session = JsonConvert.DeserializeObject<TasSession>(json);
+						TasSession = JsonConvert.DeserializeObject<TasSession>(json);
 					}
 					catch
 					{

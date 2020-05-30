@@ -39,7 +39,7 @@ namespace BizHawk.Client.Common
 			int? stateFrame = null;
 
 			// We are in record mode so replace the movie log with the one from the savestate
-			if (!Global.MovieSession.MultiTrack.IsActive)
+			if (!Session.MultiTrack.IsActive)
 			{
 				if (Global.Config.EnableBackupMovies && MakeBackup && Log.Count != 0)
 				{
