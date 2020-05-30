@@ -1,5 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<Import Project="../../src/MainSlnCommon.props" />
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+	</PropertyGroup>
 
     <ItemGroup>
       <Compile Remove="Properties\**" />

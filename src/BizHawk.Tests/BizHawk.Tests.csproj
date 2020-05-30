@@ -4,6 +4,7 @@
 	<PropertyGroup>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<OutputPath>$(ProjectDir)../../test_output</OutputPath>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" PrivateAssets="all" />
