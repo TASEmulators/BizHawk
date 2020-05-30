@@ -8,6 +8,7 @@
 #include "mednafen/src/snes_faust/cart.h"
 #include "mednafen/src/snes_faust/cart-private.h"
 #include "mednafen/src/snes_faust/apu.h"
+#include "mednafen/src/snes_faust/cart/sa1cpu.h"
 
 using namespace MDFN_IEN_SNES_FAUST;
 
@@ -90,6 +91,11 @@ MemoryDomainFunctions(OAMHI, PPU_ST::PPU_PeekOAMHI, PPU_ST::PPU_PokeOAMHI);
 
 MemoryDomainFunctions(APU, APU_PeekRAM, APU_PokeRAM);
 
+namespace MDFN_IEN_SNES_FAUST::SA1CPU
+{
+	extern CPU_Misc CPUM;
+}
+
 ECL_EXPORT void GetMemoryAreas(MemoryArea* m)
 {
 	int i = 0;
@@ -152,6 +158,15 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea* m)
 	m[i].Size = 64 * 1024;
 	m[i].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_FUNCTIONHOOK;
 	i++;
+
+	if (SA1CPU::CPUM.ReadFuncs[0])
+	{
+		m[i].Data = SA1CPU::CPUM.IRAM;
+		m[i].Name = "SA1 IRAM";
+		m[i].Size = sizeof(SA1CPU::CPUM.IRAM);
+		m[i].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE2;
+		i++;
+	}
 
 	// TODO: "System Bus"
 }
