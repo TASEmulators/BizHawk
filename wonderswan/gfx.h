@@ -57,6 +57,8 @@ private:
 
 	uint8 SpriteTable[0x80][4];
 	uint32 SpriteCountCache;
+	uint8 NextSpriteTable[0x80][4];
+	uint32 NextSpriteCountCache;
 	uint8 DispControl;
 	uint8 BGColor;
 	uint8 LineCompare;
@@ -69,6 +71,7 @@ private:
 	uint8 BGXScroll, BGYScroll;
 	uint8 FGXScroll, FGYScroll;
 	uint8 LCDControl, LCDIcons;
+	uint8 LCDVtotal;
 
 	uint8 BTimerControl;
 	uint16 HBTimerPeriod;

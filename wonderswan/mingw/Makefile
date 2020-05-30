@@ -11,8 +11,12 @@ else
 	$(error Unknown arch)
 endif
 
-CXXFLAGS = -Wall -DLSB_FIRST -I.. -Wno-multichar -O3 -Wzero-as-null-pointer-constant -std=gnu++11 -fomit-frame-pointer -fno-exceptions -flto -fPIC
+CXXFLAGS = -Wall -DLSB_FIRST -I.. -Wno-multichar -O3 -Wzero-as-null-pointer-constant -std=gnu++11 -fomit-frame-pointer -fno-exceptions -flto
 TARGET = bizswan.dll
+
+ifeq (,$(findstring MINGW,$(shell uname)))
+	CXXFLAGS += -fPIC
+endif
 
 LDFLAGS_32 = -static -static-libgcc -static-libstdc++
 LDFLAGS_64 =
