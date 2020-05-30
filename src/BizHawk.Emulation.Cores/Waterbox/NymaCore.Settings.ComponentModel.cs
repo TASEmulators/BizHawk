@@ -242,14 +242,25 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public override Type PropertyType => typeof(ulong);
 		protected override object ConvertFromString(string s)
 		{
-			var ret = ulong.Parse(s);
-			if (Setting.Min != null && ret < ulong.Parse(Setting.Min) || Setting.Max != null && ret > ulong.Parse(Setting.Max))
-				ret = ulong.Parse(Setting.DefaultValue);
+			var ret = Parse(s);
+			if (Setting.Min != null && ret < Parse(Setting.Min) || Setting.Max != null && ret > Parse(Setting.Max))
+				ret = Parse(Setting.DefaultValue);
 			return ret;
 		}
 		protected override string ConvertToString(object o)
 		{
 			return o.ToString();
+		}
+		private static ulong Parse(string s)
+		{
+			if (s.StartsWith("0x"))
+			{
+				return ulong.Parse(s.Substring(2), NumberStyles.HexNumber);
+			}
+			else
+			{
+				return ulong.Parse(s);
+			}
 		}
 	}
 	public class MednaDoubleDescriptor : MednaPropertyDescriptor

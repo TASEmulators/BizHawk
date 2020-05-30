@@ -100,10 +100,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		protected string SettingsQuery(string name)
 		{
-			SettingsOverrides.TryGetValue(name, out var val);
+			var forced = SettingsOverrides.TryGetValue(name, out var val);
 			if (val == null)
 			{
-				if (!_syncSettingsActual.MednafenValues.TryGetValue(name, out val))
+				if (forced || !_syncSettingsActual.MednafenValues.TryGetValue(name, out val))
 				{
 					if (SettingsInfo.SettingsByKey.TryGetValue(name, out var info))
 					{

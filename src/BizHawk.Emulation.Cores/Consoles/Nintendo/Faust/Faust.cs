@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 
@@ -13,5 +14,18 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Faust
 		{
 			DoInit<LibNymaCore>(game, rom, null, "faust.wbx", extension, deterministic);
 		}
+
+		protected override IDictionary<string, string> SettingsOverrides { get; } = new Dictionary<string, string>
+		{
+			{ "snes_faust.renderer", null },
+			{ "snes_faust.affinity.ppu", null },
+			{ "snes_faust.affinity.msu1.audio", null },
+			{ "snes_faust.affinity.msu1.data", null },
+			{ "snes_faust.frame_begin_vblank", null },
+			{ "snes_faust.msu1.resamp_quality", null },
+			{ "snes_faust.correct_aspect", null },
+			{ "nyma.rtcinitialtime", null },
+			{ "nyma.rtcrealtime", null },
+		};
 	}
 }
