@@ -31,6 +31,7 @@ using BizHawk.Emulation.Common.Base_Implementations;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 using BizHawk.Emulation.Cores.Consoles.SNK;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.Faust;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -1847,7 +1848,7 @@ namespace BizHawk.Client.EmuHawk
 						SNESSubMenu.Text = ((LibsnesCore)Emulator).IsSGB ? "&SGB" : "&SNES";
 						SNESSubMenu.Visible = true;
 					}
-					else if (Emulator is Snes9x)
+					else if (Emulator is Snes9x || Emulator is Faust)
 					{
 						sNESToolStripMenuItem.Visible = true;
 					}
