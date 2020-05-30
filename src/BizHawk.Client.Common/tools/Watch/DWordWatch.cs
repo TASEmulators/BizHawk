@@ -152,15 +152,6 @@ namespace BizHawk.Client.Common
 						break;
 				}
 
-				if (Global.CheatList.Contains(Domain, Address))
-				{
-					var cheat = Global.CheatList.FirstOrDefault(c => c.Address == Address && c.Domain == Domain);
-					if (cheat != (Cheat)null)
-					{
-						cheat.PokeValue((int)val);
-					}
-				}
-
 				PokeDWord(val);
 				return true;
 			}
