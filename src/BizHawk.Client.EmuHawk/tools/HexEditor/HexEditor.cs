@@ -574,7 +574,7 @@ namespace BizHawk.Client.EmuHawk
 			var dict = new Dictionary<long, long>();
 			var range = new MutableRange<long>(addresses[0], addresses[0] + addresses.Count - 1);
 
-			switch (DataSize)
+			switch (dataSize)
 			{
 				default:
 				case 1:
