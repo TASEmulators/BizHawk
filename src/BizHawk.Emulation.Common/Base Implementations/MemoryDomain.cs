@@ -125,18 +125,20 @@ namespace BizHawk.Emulation.Common
 			{
 				throw new ArgumentException();
 			}
+			var start = addresses.Start;
+			var end  = addresses.EndInclusive + 1;
 
-			var nAddresses = (long) addresses.Count();
-			if (nAddresses != values.Length)
+			if ((start & 1) != 0 || (end & 1) != 0)
+				throw new InvalidOperationException("The API contract doesn't define what to do for unaligned reads and writes!");
+			
+			if (values.LongLength * 2 != end - start)
 			{
+				// a longer array could be valid, but nothing needs that so don't support it for now
 				throw new InvalidOperationException("Invalid length of values array");
 			}
 
-			var start = addresses.Start;
-			for (var i = 0; i < nAddresses; i++)
-			{
-				values[i] = PeekUshort(start + i*2, bigEndian);
-			}
+			for (var i = 0; i < values.Length; i++, start += 2)
+				values[i] = PeekUshort(start, bigEndian);
 		}
 
 		public virtual void BulkPeekUint(Range<long> addresses, bool bigEndian, uint[] values)
@@ -145,18 +147,20 @@ namespace BizHawk.Emulation.Common
 			{
 				throw new ArgumentException();
 			}
+			var start = addresses.Start;
+			var end  = addresses.EndInclusive + 1;
 
-			var nAddresses = (long) addresses.Count();
-			if (nAddresses != values.Length)
+			if ((start & 3) != 0 || (end & 3) != 0)
+				throw new InvalidOperationException("The API contract doesn't define what to do for unaligned reads and writes!");
+			
+			if (values.LongLength * 4 != end - start)
 			{
+				// a longer array could be valid, but nothing needs that so don't support it for now
 				throw new InvalidOperationException("Invalid length of values array");
 			}
 
-			var start = addresses.Start;
-			for (var i = 0; i<nAddresses; i++)
-			{
-				values[i] = PeekUint(start + i*4, bigEndian);
-			}
+			for (var i = 0; i < values.Length; i++, start += 4)
+				values[i] = PeekUshort(start, bigEndian);
 		}
 	}
 }

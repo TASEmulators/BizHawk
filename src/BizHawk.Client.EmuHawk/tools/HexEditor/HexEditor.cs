@@ -65,8 +65,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private MemoryDomain _domain = new NullMemoryDomain();
 
-		private long _row;
-		private long _addr;
 		private string _findStr = "";
 		private bool _mouseIsDown;
 		private byte[] _rom;
@@ -474,8 +472,8 @@ namespace BizHawk.Client.EmuHawk
 
 			for (var i = 0; i < _rowsVisible; i++)
 			{
-				_row = i + HexScrollBar.Value;
-				_addr = _row << 4;
+				long _row = i + HexScrollBar.Value;
+				long _addr = _row << 4;
 				if (_addr >= _domain.Size)
 				{
 					break;
@@ -503,8 +501,8 @@ namespace BizHawk.Client.EmuHawk
 			var charValues = MakeValues(1);
 			for (var i = 0; i < _rowsVisible; i++)
 			{
-				_row = i + HexScrollBar.Value;
-				_addr = _row << 4;
+				long _row = i + HexScrollBar.Value;
+				long _addr = _row << 4;
 				if (_addr >= _domain.Size)
 				{
 					break;
@@ -550,63 +548,46 @@ namespace BizHawk.Client.EmuHawk
 
 		private Dictionary<long, long> MakeValues(int dataSize)
 		{
-			var addresses = new List<long>();
+			long start = (long)HexScrollBar.Value << 4;
+			long end = (long)(HexScrollBar.Value + _rowsVisible) << 4;
 
-			for (var i = 0; i < _rowsVisible; i++)
-			{
-				_row = i + HexScrollBar.Value;
-				_addr = _row << 4;
-				if (_addr >= _domain.Size)
-				{
-					break;
-				}
+			end = Math.Min(end, _domain.Size);
+			end &= -(long)dataSize;
 
-				for (var j = 0; j < 16; j += dataSize)
-				{
-					if (_addr + j + dataSize <= _domain.Size)
-					{
-						var address = _addr + j;
-						addresses.Add(address);
-					}
-				}
-			}
+			var range = new MutableRange<long>(start, end - 1);
 
 			var dict = new Dictionary<long, long>();
-			var range = new MutableRange<long>(addresses[0], addresses[0] + addresses.Count - 1);
 
 			switch (dataSize)
 			{
 				default:
 				case 1:
 				{
-						var vals = new byte[addresses.Count];
-						_domain.BulkPeekByte(range, vals);
-						for (var i = 0; i < addresses.Count; i++)
-						{
-							dict.Add(addresses[i], vals[i]);
-						}
-						break;
-					}
+					var vals = new byte[end - start];
+					_domain.BulkPeekByte(range, vals);
+					int i = 0;
+					for (var addr = start; addr < end; addr += dataSize)
+						dict.Add(addr, vals[i++]);
+					break;
+				}
 				case 2:
-					{
-						var vals = new ushort[addresses.Count];
-						_domain.BulkPeekUshort(range, BigEndian, vals);
-						for (var i = 0; i < addresses.Count; i++)
-						{
-							dict.Add(addresses[i], vals[i]);
-						}
-						break;
-					}
+				{
+					var vals = new ushort[(end - start) >> 1];
+					_domain.BulkPeekUshort(range, BigEndian, vals);
+					int i = 0;
+					for (var addr = start; addr < end; addr += dataSize)
+						dict.Add(addr, vals[i++]);
+					break;
+				}
 				case 4:
-					{
-						var vals = new uint[addresses.Count];
-						_domain.BulkPeekUint(range, BigEndian, vals);
-						for (var i = 0; i < addresses.Count; i++)
-						{
-							dict.Add(addresses[i], vals[i]);
-						}
-						break;
-					}
+				{
+					var vals = new uint[(end - start) >> 2];
+					_domain.BulkPeekUint(range, BigEndian, vals);
+					int i = 0;
+					for (var addr = start; addr < end; addr += dataSize)
+						dict.Add(addr, vals[i++]);
+					break;
+				}
 			}
 
 			return dict;
