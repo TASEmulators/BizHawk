@@ -137,9 +137,9 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Update the Watch (read it from <see cref="MemoryDomain"/>
 		/// </summary>
-		public override void Update()
+		public override void Update(PreviousType previousType)
 		{
-			switch (Global.Config.RamWatchDefinePrevious)
+			switch (previousType)
 			{
 				case PreviousType.Original:
 					return;

@@ -206,7 +206,7 @@ namespace BizHawk.Client.EmuHawk
 				&& _watches.All(w => w.Domain == null || MemoryDomains.Select(m => m.Name).Contains(w.Domain.Name))
 				&& (Config.RecentWatches.AutoLoad || (IsHandleCreated || !IsDisposed)))
 			{
-				_watches.RefreshDomains(MemoryDomains);
+				_watches.RefreshDomains(MemoryDomains, Config.RamWatchDefinePrevious);
 				_watches.Reload();
 				GeneralUpdate();
 				UpdateStatusBar();
@@ -241,7 +241,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_watches.Any())
 			{
-				_watches.UpdateValues();
+				_watches.UpdateValues(Config.RamWatchDefinePrevious);
 				DisplayOnScreenWatches();
 			}
 		}
@@ -256,7 +256,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.OSD.ClearRamWatches();
 			if (_watches.Any())
 			{
-				_watches.UpdateValues();
+				_watches.UpdateValues(Config.RamWatchDefinePrevious);
 				DisplayOnScreenWatches();
 
 				if (!IsHandleCreated || IsDisposed)

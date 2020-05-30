@@ -263,7 +263,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Updates the Watch (read it from <see cref="MemoryDomain"/>
 		/// </summary>
-		public abstract void Update();
+		public abstract void Update(PreviousType previousType);
 
 		protected byte GetByte()
 		{
