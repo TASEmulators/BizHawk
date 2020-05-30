@@ -6,6 +6,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="ELFSharp" Version="2.10.0" />
+		<Reference Include="FlatBuffers.Core" HintPath="$(ProjectDir)../../References/FlatBuffers.Core.dll" Private="true" />
 		<Reference Include="Virtu" HintPath="$(ProjectDir)../../References/Virtu.dll" Private="true" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.BizInvoke/BizHawk.BizInvoke.csproj" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.Common/BizHawk.Emulation.Common.csproj" />
@@ -63,8 +64,5 @@
 		<Compile Update="Consoles/Sony/PSX/Octoshock.cs" SubType="Code" />
 		<Compile Update="Consoles/Sony/PSX/Octoshock.*.cs" DependentUpon="Octoshock.cs" />
 		<Compile Update="Consoles/WonderSwan/WonderSwan.*.cs" DependentUpon="WonderSwan.cs" />
-	</ItemGroup>
-	<ItemGroup>
-	  <ProjectReference Include="..\..\ExternalProjects\FlatBuffers\FlatBuffers.Core.csproj" />
 	</ItemGroup>
 </Project>
