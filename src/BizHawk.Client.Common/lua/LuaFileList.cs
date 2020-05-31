@@ -69,7 +69,7 @@ namespace BizHawk.Client.Common
 			return base.RemoveAll(match);
 		}
 
-		public bool LoadLuaSession(string path)
+		public bool LoadLuaSession(string path, bool disableOnLoad)
 		{
 			var file = new FileInfo(path);
 			if (file.Exists)
@@ -95,7 +95,7 @@ namespace BizHawk.Client.Common
 
 							Add(new LuaFile(scriptPath)
 							{
-								State = !Global.Config.DisableLuaScriptsOnLoad && line.Substring(0, 1) == "1"
+								State = !disableOnLoad && line.Substring(0, 1) == "1"
 									 ? LuaFile.RunState.Running
 									 : LuaFile.RunState.Disabled
 							});

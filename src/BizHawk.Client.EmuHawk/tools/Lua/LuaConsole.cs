@@ -59,6 +59,8 @@ namespace BizHawk.Client.EmuHawk
 			public bool ToggleAllIfNoneSelected { get; set; } = true;
 
 			public int SplitDistance { get; set; }
+
+			public bool DisableLuaScriptsOnLoad { get; set; }
 		}
 
 		[ConfigPersist]
@@ -511,7 +513,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool LoadLuaSession(string path)
 		{
-			var result = LuaImp.ScriptList.LoadLuaSession(path);
+			var result = LuaImp.ScriptList.LoadLuaSession(path, Settings.DisableLuaScriptsOnLoad);
 
 			RunLuaScripts();
 			UpdateDialog();
@@ -664,7 +666,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (load)
 			{
-				if (!LuaImp.ScriptList.LoadLuaSession(path))
+				if (!LuaImp.ScriptList.LoadLuaSession(path, Settings.DisableLuaScriptsOnLoad))
 				{
 					Config.RecentLuaSession.HandleLoadError(path);
 				}
@@ -770,7 +772,7 @@ namespace BizHawk.Client.EmuHawk
 			var result = ofd.ShowHawkDialog();
 			if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(ofd.FileName))
 			{
-				LuaImp.ScriptList.LoadLuaSession(ofd.FileName);
+				LuaImp.ScriptList.LoadLuaSession(ofd.FileName, Settings.DisableLuaScriptsOnLoad);
 				RunLuaScripts();
 				UpdateDialog();
 				LuaImp.ScriptList.Changes = false;
@@ -1301,7 +1303,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else if (Path.GetExtension(path)?.ToLower() == ".luases")
 					{
-						LuaImp.ScriptList.LoadLuaSession(path);
+						LuaImp.ScriptList.LoadLuaSession(path, Settings.DisableLuaScriptsOnLoad);
 						RunLuaScripts();
 						UpdateDialog();
 						LuaImp.ScriptList.Changes = false;
