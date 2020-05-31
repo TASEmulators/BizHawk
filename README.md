@@ -271,7 +271,7 @@ A short [FAQ](http://tasvideos.org/Bizhawk/FAQ.html) is provided on the [BizHawk
 If your problem is one of the many not answered there, and you can't find it in the [issue tracker search](https://github.com/TASVideos/BizHawk/issues?q=is%3Aissue+ISSUE_KEYWORDS), check the [BizHawk forum](http://tasvideos.org/forum/viewforum.php?f=64) at TASVideos, or ask on IRC:
 * with an IRC client, join channel `#bizhawk` on `chat.freenode.net:6697`
 * with a Matrix client, connect to [#freenode_#bizhawk:matrix.org](https://matrix.to/#/#freenode_#bizhawk:matrix.org) (via matrix.org's IRC bridge)
-* use freenode's [web-based IRC client](http://webchat.freenode.net/?channels=bizhawk)
+* use freenode's [web-based IRC client](https://webchat.freenode.net/#bizhawk)
 
 If there's no easy solution, what you've got is a bug. Or maybe a feature request. Either way, [open a new issue](https://github.com/TASVideos/BizHawk/issues/new) (you'll need a GitHub account, signup is very fast).
 
