@@ -142,8 +142,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			return t;
 		}
 
+		protected override void SaveStateBinaryInternal(BinaryWriter writer)
+		{
+			_controllerAdapter.SaveStateBinary(writer);
+		}
+
 		protected override void LoadStateBinaryInternal(BinaryReader reader)
 		{
+			_controllerAdapter.LoadStateBinary(reader);
 			_nyma.SetFrontendSettingQuery(_settingsQueryDelegate);
 			if (_disks != null)
 				_nyma.SetCDCallbacks(_cdTocCallback, _cdSectorCallback);

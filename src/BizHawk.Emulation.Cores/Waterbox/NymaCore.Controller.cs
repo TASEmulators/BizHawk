@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using BizHawk.Emulation.Common;
 using NymaTypes;
@@ -20,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		}
 		protected delegate void ControllerThunk(IController c, byte[] b);
 
-		protected class ControllerAdapter
+		protected class ControllerAdapter : IBinaryStateable
 		{
 			/// <summary>
 			/// allowed number of input ports.  must match native
@@ -52,6 +53,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 				if (allPorts.Count > MAX_PORTS)
 					throw new InvalidOperationException($"Too many input ports");
+				var switchPreviousFrame = new List<byte>();
 				for (int port = 0, devByteStart = 0; port < allPorts.Count; port++, devByteStart += MAX_PORT_DATA)
 				{
 					var portInfo = allPorts[port];
@@ -100,6 +102,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 								// var data = inputInfo.Extra.AsButton();
 								// TODO: Wire up data.ExcludeName
 								ret.BoolButtons.Add(name);
+								ret.CategoryLabels[name] = category;
 								_thunks.Add((c, b) =>
 								{
 									if (c.IsPressed(name))
@@ -110,17 +113,41 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							case InputType.Switch:
 							{
 								var data = inputInfo.Extra.AsSwitch();
-								var zzhacky = (int)data.DefaultPosition;
-								// TODO: Possibly bulebutton for 2 states?
-								// TODO: Motorcycle shift if we can't get sticky correct?
-								ret.AxisControls.Add(name);
-								ret.AxisRanges.Add(new ControllerDefinition.AxisRange(
-									0, (int)data.DefaultPosition, (int)data.Positions.Count - 1));
+								if (data.Positions.Count > 8)
+									throw new NotImplementedException("Need code changes to support Mdfn switch with more than 8 positions");
+								
+								// fake switches as a series of push downs that select each state
+								// imagine the "gear" selector on a Toyota Prius
+
+								var si = switchPreviousFrame.Count;
+								// [si]: position of this switch on the previous frame
+								switchPreviousFrame.Add((byte)data.DefaultPosition);
+								// [si + 1]: bit array of the previous state of each selector button
+								switchPreviousFrame.Add(0);
+
+								var names = data.Positions.Select(p => $"{name}: Set {p.Name}").ToArray();
+								foreach (var n in names)
+								{
+									ret.BoolButtons.Add(n);
+									ret.CategoryLabels[n] = category;
+								}
+
 								_thunks.Add((c, b) =>
 								{
-									// HACK: Silently discard this until bizhawk fixes its shit
-								 	// var val = (int)Math.Round(c.AxisValue(name));
-									var val = zzhacky;
+									var val = _switchPreviousFrame[si];
+									var allOldPressed = _switchPreviousFrame[si + 1];
+									byte allNewPressed = 0;
+									for (var i = 0; i < names.Length; i++)
+									{
+										var mask = (byte)(1 << i);
+										var oldPressed = allOldPressed & mask;
+										var newPressed = c.IsPressed(names[i]) ? mask : (byte)0;
+										if (newPressed > oldPressed)
+											val = (byte)i;
+										allNewPressed |= newPressed;
+									}
+									_switchPreviousFrame[si] = val;
+									_switchPreviousFrame[si + 1] = allNewPressed;
 								 	b[byteStart] |= (byte)(val << bitOffset);
 								});
 								break;
@@ -129,6 +156,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							{
 								// var data = inputInfo.Extra.AsAxis();
 								ret.AxisControls.Add(name);
+								ret.CategoryLabels[name] = category;
 								ret.AxisRanges.Add(new ControllerDefinition.AxisRange(
 									0, 0x8000, 0xffff, (inputInfo.Flags & AxisFlags.InvertCo) != 0
 								));
@@ -144,6 +172,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							{
 								// var data = inputInfo.Extra.AsAxis();
 								ret.AxisControls.Add(name);
+								ret.CategoryLabels[name] = category;
 								ret.AxisRanges.Add(new ControllerDefinition.AxisRange(
 									-0x8000, 0, 0x7fff, (inputInfo.Flags & AxisFlags.InvertCo) != 0
 								));
@@ -177,7 +206,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 								throw new NotImplementedException($"Unimplemented button type {inputInfo.Type}");
 							}
 						}
-						ret.CategoryLabels[name] = category;
 					}
 				}
 				ret.BoolButtons.Add("Power");
@@ -185,7 +213,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				Definition = ret;
 				finalDevices.Add(null);
 				Devices = finalDevices.ToArray();
+				_switchPreviousFrame = switchPreviousFrame.ToArray();
 			}
+
+			private byte[] _switchPreviousFrame;
 
 			private readonly List<Action<IController, byte[]>> _thunks = new List<Action<IController, byte[]>>();
 
@@ -194,6 +225,22 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				Array.Clear(dest, 0, dest.Length);
 				foreach (var t in _thunks)
 					t(src, dest);
+			}
+
+			private const ulong MAGIC = 9569546739673486731;
+
+			public void SaveStateBinary(BinaryWriter writer)
+			{
+				writer.Write(MAGIC);
+				writer.Write(_switchPreviousFrame.Length);
+				writer.Write(_switchPreviousFrame);
+			}
+
+			public void LoadStateBinary(BinaryReader reader)
+			{
+				if (reader.ReadUInt64() != MAGIC || reader.ReadInt32() != _switchPreviousFrame.Length)
+					throw new InvalidOperationException("Savestate corrupted!");
+				reader.Read(_switchPreviousFrame, 0, _switchPreviousFrame.Length);
 			}
 		}
 
