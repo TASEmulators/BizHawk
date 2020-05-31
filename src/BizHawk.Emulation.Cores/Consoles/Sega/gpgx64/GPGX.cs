@@ -77,42 +77,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					DriveLightEnabled = true;
 				}
 
-				LibGPGX.INPUT_SYSTEM system_a = LibGPGX.INPUT_SYSTEM.SYSTEM_NONE;
-				LibGPGX.INPUT_SYSTEM system_b = LibGPGX.INPUT_SYSTEM.SYSTEM_NONE;
-
-				switch (_syncSettings.ControlType)
-				{
-					case ControlType.None:
-					default:
-						break;
-					case ControlType.Activator:
-						system_a = LibGPGX.INPUT_SYSTEM.SYSTEM_ACTIVATOR;
-						system_b = LibGPGX.INPUT_SYSTEM.SYSTEM_ACTIVATOR;
-						break;
-					case ControlType.Normal:
-						system_a = LibGPGX.INPUT_SYSTEM.SYSTEM_MD_GAMEPAD;
-						system_b = LibGPGX.INPUT_SYSTEM.SYSTEM_MD_GAMEPAD;
-						break;
-					case ControlType.OnePlayer:
-						system_a = LibGPGX.INPUT_SYSTEM.SYSTEM_MD_GAMEPAD;
-						break;
-					case ControlType.Xea1p:
-						system_a = LibGPGX.INPUT_SYSTEM.SYSTEM_XE_A1P;
-						break;
-					case ControlType.Teamplayer:
-						system_a = LibGPGX.INPUT_SYSTEM.SYSTEM_TEAMPLAYER;
-						system_b = LibGPGX.INPUT_SYSTEM.SYSTEM_TEAMPLAYER;
-						break;
-					case ControlType.Wayplay:
-						system_a = LibGPGX.INPUT_SYSTEM.SYSTEM_WAYPLAY;
-						system_b = LibGPGX.INPUT_SYSTEM.SYSTEM_WAYPLAY;
-						break;
-					case ControlType.Mouse:
-						system_a = LibGPGX.INPUT_SYSTEM.SYSTEM_MD_GAMEPAD;
-						// seems like mouse in port 1 would be supported, but not both at the same time
-						system_b = LibGPGX.INPUT_SYSTEM.SYSTEM_MOUSE;
-						break;
-				}
+				LibGPGX.INPUT_SYSTEM system_a = SystemForSystem(_syncSettings.ControlTypeLeft);
+				LibGPGX.INPUT_SYSTEM system_b = SystemForSystem(_syncSettings.ControlTypeRight);
 
 				var initResult = Core.gpgx_init(
 					romextension,
@@ -165,6 +131,28 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			_romfile = null;
 		}
 
+		private static LibGPGX.INPUT_SYSTEM SystemForSystem(ControlType c)
+		{
+			switch (c)
+			{
+				default:
+				case ControlType.None:
+					return LibGPGX.INPUT_SYSTEM.SYSTEM_NONE;
+				case ControlType.Normal:
+					return LibGPGX.INPUT_SYSTEM.SYSTEM_MD_GAMEPAD;
+				case ControlType.Xea1p:
+					return LibGPGX.INPUT_SYSTEM.SYSTEM_XE_A1P;
+				case ControlType.Activator:
+					return LibGPGX.INPUT_SYSTEM.SYSTEM_ACTIVATOR;
+				case ControlType.Teamplayer:
+					return LibGPGX.INPUT_SYSTEM.SYSTEM_TEAMPLAYER;
+				case ControlType.Wayplay:
+					return LibGPGX.INPUT_SYSTEM.SYSTEM_WAYPLAY;
+				case ControlType.Mouse:
+					return LibGPGX.INPUT_SYSTEM.SYSTEM_MOUSE;
+			}
+		}
+
 		private LibGPGX Core;
 		private WaterboxHost _elf;
 
@@ -185,7 +173,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public enum ControlType
 		{
 			None,
-			OnePlayer,
 			Normal,
 			Xea1p,
 			Activator,

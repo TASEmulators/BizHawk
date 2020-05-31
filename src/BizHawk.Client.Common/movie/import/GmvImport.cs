@@ -72,7 +72,8 @@ namespace BizHawk.Client.Common.movie.import
 			var ss = new GPGX.GPGXSyncSettings
 			{
 				UseSixButton = player1Config == '6' || player2Config == '6',
-				ControlType = GPGX.ControlType.Normal
+				ControlTypeLeft = GPGX.ControlType.Normal,
+				ControlTypeRight = GPGX.ControlType.Normal
 			};
 
 			input.dev[2] = input.dev[3] = input.dev[4] = input.dev[5] = input.dev[6] = input.dev[7] = LibGPGX.INPUT_DEVICE.DEVICE_NONE;

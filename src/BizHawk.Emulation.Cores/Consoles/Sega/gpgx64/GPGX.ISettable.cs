@@ -233,10 +233,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			[DefaultValue(true)]
 			public bool UseSixButton { get; set; }
 
-			[DisplayName("Control Type")]
+			[DisplayName("Control Type - Left Port")]
 			[Description("Sets the type of controls that are plugged into the console.  Some games will automatically load with a different control type.")]
 			[DefaultValue(ControlType.Normal)]
-			public ControlType ControlType { get; set; }
+			public ControlType ControlTypeLeft { get; set; }
+
+			[DisplayName("Control Type - Right Port")]
+			[Description("Sets the type of controls that are plugged into the console.  Some games will automatically load with a different control type.")]
+			[DefaultValue(ControlType.Normal)]
+			public ControlType ControlTypeRight { get; set; }
 
 			[DisplayName("Autodetect Region")]
 			[Description("Sets the region of the emulated console.  Many games can run on multiple regions and will behave differently on different ones.  Some games may require a particular region.")]
