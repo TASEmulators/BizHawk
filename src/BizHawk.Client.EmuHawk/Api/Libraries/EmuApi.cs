@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-
+using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
@@ -11,7 +11,7 @@ using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Cores.WonderSwan;
 
-namespace BizHawk.Client.Common
+namespace BizHawk.Client.EmuHawk
 {
 	[Description("A library for interacting with the currently loaded emulator core")]
 	public sealed class EmuApi : IEmu

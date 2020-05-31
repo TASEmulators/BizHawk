@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Client.Common
+namespace BizHawk.Client.EmuHawk
 {
 	public sealed class JoypadApi : IJoypad
 	{
