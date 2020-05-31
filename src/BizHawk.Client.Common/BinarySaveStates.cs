@@ -328,9 +328,9 @@ namespace BizHawk.Client.Common
 			sw.Flush();
 		}
 
-		public BinaryStateSaver(string path, bool notamovie) // notamovie is hack, really should have separate something
+		public BinaryStateSaver(string path, int compressionLevel)
 		{
-			_zip = new FrameworkZipWriter(path, notamovie ? Global.Config.SaveStateCompressionLevelNormal : Global.Config.MovieCompressionLevel);
+			_zip = new FrameworkZipWriter(path, compressionLevel);
 		}
 
 		public void PutVersionLumps()
