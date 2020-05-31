@@ -519,6 +519,12 @@ namespace BizHawk.Client.EmuHawk
 			UpdateDialog();
 			LuaImp.ScriptList.Changes = false;
 
+			Config.RecentLuaSession.Add(path);
+			foreach (var script in LuaImp.ScriptList)
+			{
+				Config.RecentLua.Add(script.Path);
+			}
+
 			return result;
 		}
 
