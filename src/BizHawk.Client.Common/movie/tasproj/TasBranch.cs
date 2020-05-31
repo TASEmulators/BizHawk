@@ -31,8 +31,8 @@ namespace BizHawk.Client.Common
 		void Swap(int b1, int b2);
 		void Replace(TasBranch old, TasBranch newBranch);
 
-		void Save(BinaryStateSaver bs);
-		void Load(BinaryStateLoader bl, ITasMovie movie);
+		void Save(ZipStateSaver bs);
+		void Load(ZipStateLoader bl, ITasMovie movie);
 	}
 
 	public class TasBranchCollection : List<TasBranch>, ITasBranchCollection
@@ -108,7 +108,7 @@ namespace BizHawk.Client.Common
 			return result;
 		}
 
-		public void Save(BinaryStateSaver bs)
+		public void Save(ZipStateSaver bs)
 		{
 			var nheader = new IndexedStateLump(BinaryStateLump.BranchHeader);
 			var ncore = new IndexedStateLump(BinaryStateLump.BranchCoreData);
@@ -176,7 +176,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void Load(BinaryStateLoader bl, ITasMovie movie)
+		public void Load(ZipStateLoader bl, ITasMovie movie)
 		{
 			var nheader = new IndexedStateLump(BinaryStateLump.BranchHeader);
 			var ncore = new IndexedStateLump(BinaryStateLump.BranchCoreData);

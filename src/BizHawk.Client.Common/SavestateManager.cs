@@ -15,7 +15,7 @@ namespace BizHawk.Client.Common
 
 			// the old method of text savestate save is now gone.
 			// a text savestate is just like a binary savestate, but with a different core lump
-			using var bs = new BinaryStateSaver(filename, Global.Config.SaveStateCompressionLevelNormal);
+			using var bs = new ZipStateSaver(filename, Global.Config.SaveStateCompressionLevelNormal);
 			bs.PutVersionLumps();
 			if (Global.Config.SaveStateType == SaveStateTypeE.Text)
 			{
@@ -101,7 +101,7 @@ namespace BizHawk.Client.Common
 			var core = emulator.AsStatable();
 
 			// try to detect binary first
-			var bl = BinaryStateLoader.LoadAndDetect(path);
+			var bl = ZipStateLoader.LoadAndDetect(path);
 			if (bl != null)
 			{
 				try

@@ -18,7 +18,7 @@ namespace BizHawk.Client.Common
 				Directory.CreateDirectory(file.Directory.ToString());
 			}
 
-			using var bs = new BinaryStateSaver(fn, Global.Config.MovieCompressionLevel);
+			using var bs = new ZipStateSaver(fn, Global.Config.MovieCompressionLevel);
 			bs.PutLump(BinaryStateLump.Movieheader, tw => tw.WriteLine(Header.ToString()));
 			bs.PutLump(BinaryStateLump.Comments, tw => tw.WriteLine(CommentsString()));
 			bs.PutLump(BinaryStateLump.Subtitles, tw => tw.WriteLine(Subtitles.ToString()));
@@ -85,7 +85,7 @@ namespace BizHawk.Client.Common
 				return false;
 			}
 
-			using (var bl = BinaryStateLoader.LoadAndDetect(Filename, true))
+			using (var bl = ZipStateLoader.LoadAndDetect(Filename, true))
 			{
 				if (bl == null)
 				{

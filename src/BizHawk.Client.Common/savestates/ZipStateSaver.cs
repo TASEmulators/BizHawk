@@ -3,7 +3,7 @@ using System.IO;
 
 namespace BizHawk.Client.Common
 {
-	public class BinaryStateSaver : IDisposable
+	public class ZipStateSaver : IDisposable
 	{
 		private readonly IZipWriter _zip;
 		private bool _isDisposed;
@@ -22,7 +22,7 @@ namespace BizHawk.Client.Common
 			sw.Flush();
 		}
 
-		public BinaryStateSaver(string path, int compressionLevel)
+		public ZipStateSaver(string path, int compressionLevel)
 		{
 			_zip = new FrameworkZipWriter(path, compressionLevel);
 		}

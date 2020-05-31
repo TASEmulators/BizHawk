@@ -6,17 +6,14 @@ using ICSharpCode.SharpZipLib.Zip;
 
 namespace BizHawk.Client.Common
 {
-	/// <summary>
-	/// more accurately should be called ZipStateLoader, as it supports both text and binary core data
-	/// </summary>
-	public class BinaryStateLoader : IDisposable
+	public class ZipStateLoader : IDisposable
 	{
 		private ZipFile _zip;
 		private Version _ver;
 		private bool _isDisposed;
 		private Dictionary<string, ZipEntry> _entriesByName;
 
-		private BinaryStateLoader()
+		private ZipStateLoader()
 		{
 		}
 
@@ -71,9 +68,9 @@ namespace BizHawk.Client.Common
 		}
 
 		private static readonly byte[] Zipheader = { 0x50, 0x4b, 0x03, 0x04 };
-		public static BinaryStateLoader LoadAndDetect(string filename, bool isMovieLoad = false)
+		public static ZipStateLoader LoadAndDetect(string filename, bool isMovieLoad = false)
 		{
-			var ret = new BinaryStateLoader();
+			var ret = new ZipStateLoader();
 
 			using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read))
 			{
