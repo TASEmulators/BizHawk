@@ -172,5 +172,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public delegate void CDSectorCallback(int disk, int lba, IntPtr dest);
 		[BizImport(CC)]
 		public abstract void SetCDCallbacks(CDTOCCallback toccallback, CDSectorCallback sectorcallback);
+		[BizImport(CC)]
+		public abstract IntPtr GetFrameThreadProc();
 	}
 }

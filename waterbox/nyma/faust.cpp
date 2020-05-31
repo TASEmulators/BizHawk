@@ -91,10 +91,15 @@ MemoryDomainFunctions(OAMHI, PPU_ST::PPU_PeekOAMHI, PPU_ST::PPU_PokeOAMHI);
 
 MemoryDomainFunctions(APU, APU_PeekRAM, APU_PokeRAM);
 
-namespace MDFN_IEN_SNES_FAUST::SA1CPU
+namespace MDFN_IEN_SNES_FAUST
 {
-	extern CPU_Misc CPUM;
+	namespace SA1CPU
+	{
+		extern CPU_Misc CPUM;
+	}
+	extern unsigned ppu_renderer;
 }
+
 
 ECL_EXPORT void GetMemoryAreas(MemoryArea* m)
 {
@@ -129,29 +134,32 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea* m)
 		i++;
 	}
 
-	m[i].Data = (void*)(MemoryFunctionHook)AccessVRAM;
-	m[i].Name = "VRAM";
-	m[i].Size = 64 * 1024;
-	m[i].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_FUNCTIONHOOK;
-	i++;
+	if (ppu_renderer == PPU_RENDERER_ST)
+	{
+		m[i].Data = (void*)(MemoryFunctionHook)AccessVRAM;
+		m[i].Name = "VRAM";
+		m[i].Size = 64 * 1024;
+		m[i].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_FUNCTIONHOOK;
+		i++;
 
-	m[i].Data = (void*)(MemoryFunctionHook)AccessCGRAM;
-	m[i].Name = "CGRAM";
-	m[i].Size = 512;
-	m[i].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_FUNCTIONHOOK;
-	i++;
+		m[i].Data = (void*)(MemoryFunctionHook)AccessCGRAM;
+		m[i].Name = "CGRAM";
+		m[i].Size = 512;
+		m[i].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_FUNCTIONHOOK;
+		i++;
 
-	m[i].Data = (void*)(MemoryFunctionHook)AccessOAMLO;
-	m[i].Name = "OAMLO";
-	m[i].Size = 512;
-	m[i].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_FUNCTIONHOOK;
-	i++;
+		m[i].Data = (void*)(MemoryFunctionHook)AccessOAMLO;
+		m[i].Name = "OAMLO";
+		m[i].Size = 512;
+		m[i].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_FUNCTIONHOOK;
+		i++;
 
-	m[i].Data = (void*)(MemoryFunctionHook)AccessOAMHI;
-	m[i].Name = "OAMHI";
-	m[i].Size = 32;
-	m[i].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_FUNCTIONHOOK;
-	i++;
+		m[i].Data = (void*)(MemoryFunctionHook)AccessOAMHI;
+		m[i].Name = "OAMHI";
+		m[i].Size = 32;
+		m[i].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_FUNCTIONHOOK;
+		i++;
+	}
 
 	m[i].Data = (void*)(MemoryFunctionHook)AccessAPU;
 	m[i].Name = "APURAM";
@@ -171,32 +179,32 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea* m)
 	// TODO: "System Bus"
 }
 
-// stub ppu_mt since we can't support it
 namespace MDFN_IEN_SNES_FAUST
 {
 static MDFN_COLD uint32 DummyEventHandler(uint32 timestamp)
 {
 	return SNES_EVENT_MAXTS;
 }
+// uncomment to stub ppu mt, instead of including our hacked up version.
 namespace PPU_MT
 {
-void PPU_Init(const bool IsPAL, const bool IsPALPPUBit, const bool WantFrameBeginVBlank, const uint64 affinity){}
-void PPU_SetGetVideoParams(MDFNGI* gi, const unsigned caspect, const unsigned hfilter, const unsigned sls, const unsigned sle){}
-snes_event_handler PPU_GetEventHandler(void){ return DummyEventHandler; }
-snes_event_handler PPU_GetLineIRQEventHandler(void){ return DummyEventHandler; }
-void PPU_Kill(void){}
-void PPU_StartFrame(EmulateSpecStruct* espec){}
-void PPU_SyncMT(void){}
-void PPU_Reset(bool powering_up){}
-void PPU_ResetTS(void){}
-void PPU_StateAction(StateMem* sm, const unsigned load, const bool data_only){}
-uint16 PPU_PeekVRAM(uint32 addr){ return 0; }
-uint16 PPU_PeekCGRAM(uint32 addr){ return 0; }
-uint8 PPU_PeekOAM(uint32 addr){ return 0; }
-uint8 PPU_PeekOAMHI(uint32 addr){ return 0; }
-uint32 PPU_GetRegister(const unsigned id, char* const special, const uint32 special_len){ return 0; }
+// void PPU_Init(const bool IsPAL, const bool IsPALPPUBit, const bool WantFrameBeginVBlank, const uint64 affinity){}
+// void PPU_SetGetVideoParams(MDFNGI* gi, const unsigned caspect, const unsigned hfilter, const unsigned sls, const unsigned sle){}
+// snes_event_handler PPU_GetEventHandler(void){ return DummyEventHandler; }
+// snes_event_handler PPU_GetLineIRQEventHandler(void){ return DummyEventHandler; }
+// void PPU_Kill(void){}
+// void PPU_StartFrame(EmulateSpecStruct* espec){}
+// void PPU_SyncMT(void){}
+// void PPU_Reset(bool powering_up){}
+// void PPU_ResetTS(void){}
+// void PPU_StateAction(StateMem* sm, const unsigned load, const bool data_only){}
+// uint16 PPU_PeekVRAM(uint32 addr){ return 0; }
+// uint16 PPU_PeekCGRAM(uint32 addr){ return 0; }
+// uint8 PPU_PeekOAM(uint32 addr){ return 0; }
+// uint8 PPU_PeekOAMHI(uint32 addr){ return 0; }
+// uint32 PPU_GetRegister(const unsigned id, char* const special, const uint32 special_len){ return 0; }
 }
-// and msu1 because it uses MT readers
+// stub msu1 because it uses MT readers
 void MSU1_Init(GameFile* gf, double* IdealSoundRate, uint64 affinity_audio, uint64 affinity_data){}
 void MSU1_Kill(void){}
 void MSU1_Reset(bool powering_up){}

@@ -352,3 +352,15 @@ ECL_EXPORT void DumpSettings()
 	f.write(fbb.GetBufferPointer(), fbb.GetSize());
 }
 }
+
+static FrameCallback FrameThreadProc = nullptr;
+
+void RegisterFrameThreadProc(FrameCallback threadproc)
+{
+	FrameThreadProc = threadproc;
+}
+
+ECL_EXPORT FrameCallback GetFrameThreadProc()
+{
+	return FrameThreadProc;
+}

@@ -17,3 +17,11 @@ CheatArea* FindCheatArea(uint32_t address);
 extern bool LagFlag;
 extern void (*InputCallback)();
 extern int64_t FrontendTime;
+
+typedef void (*FrameCallback)();
+
+// Register a callback to run each frame asynchronously
+// Only one callback may be registered
+// The callback may not call any C standard library functions, or otherwise trigger a syscall
+// The callback must return before frame advance finishes
+void RegisterFrameThreadProc(FrameCallback threadproc);

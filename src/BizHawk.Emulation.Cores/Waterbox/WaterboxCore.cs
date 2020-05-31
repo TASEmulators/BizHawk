@@ -259,33 +259,39 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public void LoadStateBinary(BinaryReader reader)
 		{
-			_exe.LoadStateBinary(reader);
-			// other variables
-			Frame = reader.ReadInt32();
-			LagCount = reader.ReadInt32();
-			IsLagFrame = reader.ReadBoolean();
-			BufferWidth = reader.ReadInt32();
-			BufferHeight = reader.ReadInt32();
-			_clockTime = reader.ReadInt64();
-			_clockRemainder = reader.ReadInt32();
-			// reset pointers here!
-			_core.SetInputCallback(null);
-			//_exe.PrintDebuggingInfo();
-			LoadStateBinaryInternal(reader);
+			using (_exe.EnterExit())
+			{
+				_exe.LoadStateBinary(reader);
+				// other variables
+				Frame = reader.ReadInt32();
+				LagCount = reader.ReadInt32();
+				IsLagFrame = reader.ReadBoolean();
+				BufferWidth = reader.ReadInt32();
+				BufferHeight = reader.ReadInt32();
+				_clockTime = reader.ReadInt64();
+				_clockRemainder = reader.ReadInt32();
+				// reset pointers here!
+				_core.SetInputCallback(null);
+				//_exe.PrintDebuggingInfo();
+				LoadStateBinaryInternal(reader);
+			}
 		}
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			_exe.SaveStateBinary(writer);
-			// other variables
-			writer.Write(Frame);
-			writer.Write(LagCount);
-			writer.Write(IsLagFrame);
-			writer.Write(BufferWidth);
-			writer.Write(BufferHeight);
-			writer.Write(_clockTime);
-			writer.Write(_clockRemainder);
-			SaveStateBinaryInternal(writer);
+			using (_exe.EnterExit())
+			{
+				_exe.SaveStateBinary(writer);
+				// other variables
+				writer.Write(Frame);
+				writer.Write(LagCount);
+				writer.Write(IsLagFrame);
+				writer.Write(BufferWidth);
+				writer.Write(BufferHeight);
+				writer.Write(_clockTime);
+				writer.Write(_clockRemainder);
+				SaveStateBinaryInternal(writer);
+			}
 		}
 
 		public byte[] SaveStateBinary()

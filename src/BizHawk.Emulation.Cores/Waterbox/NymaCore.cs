@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
+using BizHawk.BizInvoke;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.DiscSystem;
@@ -135,8 +138,17 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				{
 					Console.Error.WriteLine($"Couldn't parse DateTime \"{SettingsQuery("nyma.rtcinitialtime")}\"");
 				}
-				DeterministicEmulation = deterministic || SettingsQuery("nyma.rtcrealtime") == "0";
+				// Don't optimistically set deterministic, as some cores like faust can change this
+				DeterministicEmulation = deterministic; // || SettingsQuery("nyma.rtcrealtime") == "0";
 				InitializeRtc(RtcStart);
+				_frameThreadPtr = _nyma.GetFrameThreadProc();
+				if (_frameThreadPtr != IntPtr.Zero)
+				{
+					if (deterministic)
+						throw new InvalidOperationException("Internal error: Core set a frame thread proc in deterministic mode");
+					Console.WriteLine($"Setting up waterbox thread for {_frameThreadPtr}");
+					_frameThreadStart = CallingConventionAdapters.Waterbox.GetDelegateForFunctionPointer<Action>(_frameThreadPtr);
+				}
 			}
 
 			return t;
@@ -153,10 +165,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			_nyma.SetFrontendSettingQuery(_settingsQueryDelegate);
 			if (_disks != null)
 				_nyma.SetCDCallbacks(_cdTocCallback, _cdSectorCallback);
+			if (_frameThreadPtr != _nyma.GetFrameThreadProc())
+				throw new InvalidOperationException("_frameThreadPtr mismatch");
 		}
 
 		// todo: bleh
 		private GCHandle _frameAdvanceInputLock;
+
+		private volatile bool _frameThreadProcActive;
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
@@ -175,10 +191,28 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				InputPortData = (byte*)_frameAdvanceInputLock.AddrOfPinnedObject(),
 				FrontendTime = GetRtcTime(SettingsQuery("nyma.rtcrealtime") != "0"),
 			};
+			if (_frameThreadStart != null)
+			{
+				_frameThreadProcActive = true;
+				Task.Run(() =>
+				{
+					_frameThreadStart();
+					_frameThreadProcActive = false;
+				});
+			}
 			return ret;
 		}
 		protected override void FrameAdvancePost()
 		{
+			while (_frameThreadProcActive)
+			{
+				// The nyma core unmanaged code should always release the threadproc to completion
+				// before returning from Emulate, but even when it does occasionally the threadproc
+				// might not actually finish first
+
+				// It MUST be allowed to finish now, because the theadproc doesn't know about or participate
+				// in the waterbox core lockout (IMonitor) directly -- it assumes the parent has handled that
+			}
 			_frameAdvanceInputLock.Free();
 		}
 
@@ -224,5 +258,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			var settingsBuff = _exe.RemoveTransientFile("inputs");
 			return NymaTypes.NPorts.GetRootAsNPorts(new ByteBuffer(settingsBuff)).UnPack().Values;
 		}
+
+		private IntPtr _frameThreadPtr;
+		private Action _frameThreadStart;
 	}
 }

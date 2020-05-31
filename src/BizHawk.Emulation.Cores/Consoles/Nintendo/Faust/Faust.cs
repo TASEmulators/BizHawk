@@ -12,12 +12,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Faust
 			NymaSettings settings, NymaSyncSettings syncSettings, bool deterministic)
 			: base(comm, "SNES", "I don't think anything uses this parameter", settings, syncSettings)
 		{
+			if (deterministic)
+				// force ST renderer
+				SettingsOverrides.Add("snes_faust.renderer", "0");
+
 			DoInit<LibNymaCore>(game, rom, null, "faust.wbx", extension, deterministic);
 		}
 
 		protected override IDictionary<string, string> SettingsOverrides { get; } = new Dictionary<string, string>
 		{
-			{ "snes_faust.renderer", null },
+			// { "snes_faust.renderer", null },
 			{ "snes_faust.affinity.ppu", null },
 			{ "snes_faust.affinity.msu1.audio", null },
 			{ "snes_faust.affinity.msu1.data", null },
