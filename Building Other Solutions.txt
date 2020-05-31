@@ -12,7 +12,7 @@ libgambatte: There is a vs2019 solution at libgambatte/libgambatte.sln.
 wonderswan: There is a vs2019 solution at wonderswan/bizswan.sln
 octoshock (psx): There is a vs2019 solution at psx/octoshock/bizhawk/octoshock.sln
 libretrobridge: There is a vs2019 solution at LibretroBridge/vs2019/LibretroBridge.sln
-lynx: There is a vs2019 solution at lynx/bizlynx/bizlynx.sln
+lynx: There is a vs2019 solution at lynx/msvc/bizlynx.sln
 
 libmupen64plus: ??
 
