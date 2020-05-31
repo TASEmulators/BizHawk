@@ -51,9 +51,7 @@ class cheat:
 
 l=[]
 cCount=0
-_cs = []
-for i in range(225):
- _cs.append(cheat())
+_cs = [cheat() for _ in range(225)]
 cs = _cs[:]
 
 def print_l():
@@ -79,18 +77,17 @@ for line in lines:
         l.append("\ncrc %s" % line[1:-1])
     elif(line[:5] == "Name="):
         l.append("gn %s" % (line[5:]))
-    elif(line[:5] == "Cheat"):
+    elif line[:5] == "Cheat":
         t = line[5:].split('=')[0]
         if (len(t)>1 and t[-2] == '_'):
             n = int(t[:-2])
-            if(t[-1] == 'N'):
+            if (t[-1] == 'N'):
                 cs[n].d = line.split("=")[1]
             else:
                 for option in line.split("=")[1].split("$")[1:]:
                     if(len(option) < 4):
                         break;
-                    if(option[-1]==','): end =-1
-                    else: end = None
+                    end = -1 if option[-1] == ',' else None
                     if(option[2] == " "):
                         cs[n].c[cs[n].v] += "%s%s:\"%s\""%(cs[n].hb,option[:2],option[3:end].replace("\"", "\\\""))
                     else:
@@ -114,5 +111,5 @@ for line in lines:
                 i+=1
         if(n > cCount):
             cCount = n
-    elif(line != "//----" and line != "//---" ):
+    elif line not in ["//----", "//---"]:
         l.append("//%s" %line)

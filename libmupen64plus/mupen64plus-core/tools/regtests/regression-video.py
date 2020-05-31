@@ -297,11 +297,8 @@ class RegTester:
                 videoname = plugin[:plugin.find('.')]
                 # check if this plugin should be skipped
                 if "skipvideo" in GameParams:
-                    skipit = False
                     skiplist = [ name.strip() for name in GameParams["skipvideo"].split(',') ]
-                    for skiptag in skiplist:
-                        if skiptag.lower() in plugin.lower():
-                            skipit = True
+                    skipit = any(skiptag.lower() in plugin.lower() for skiptag in skiplist)
                     if skipit:
                         continue
                 # construct the command line
@@ -324,7 +321,7 @@ class RegTester:
                     report += "    Error: Test run timed out after 60 seconds:  '%s'\n" % " ".join(exeparms)
                     os.kill(testrun.pid, 9)
                     testrun.join(10.0)
-                
+
         # all tests have been run
         return True                
 
@@ -431,9 +428,8 @@ class RegTester:
             os.mkdir(archivedir)
         # move the images into a subdirectory of 'archive' given by date
         subdir = os.path.join(archivedir, self.thisdate)
-        if os.path.exists(subdir):
-            if not deltree(subdir):
-                return False
+        if os.path.exists(subdir) and not deltree(subdir):
+            return False
         if os.path.exists(self.screenshotdir):
             shutil.move(self.screenshotdir, subdir)
         # copy the report into the archive directory
@@ -484,7 +480,7 @@ def deltree(dirname):
     return True
 
 def copytree(srcpath, dstpath):
-    if not os.path.isdir(srcpath) or not os.path.isdir(dstpath):
+    if not (os.path.isdir(srcpath) and os.path.isdir(dstpath)):
         return False
     for filename in os.listdir(srcpath):
         filepath = os.path.join(srcpath, filename)
