@@ -56,7 +56,7 @@ namespace BizHawk.Client.Common
 			return base.Remove(item);
 		}
 
-		public bool LoadLuaSession(string path, bool disableOnLoad)
+		public bool Load(string path, bool disableOnLoad)
 		{
 			var file = new FileInfo(path);
 			if (!file.Exists)
@@ -95,7 +95,7 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		public void SaveSession(string path)
+		public void Save(string path)
 		{
 			using var sw = new StreamWriter(path);
 			var sb = new StringBuilder();

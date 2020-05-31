@@ -512,7 +512,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool LoadLuaSession(string path)
 		{
-			var result = LuaImp.ScriptList.LoadLuaSession(path, Settings.DisableLuaScriptsOnLoad);
+			var result = LuaImp.ScriptList.Load(path, Settings.DisableLuaScriptsOnLoad);
 
 			RunLuaScripts();
 			UpdateDialog();
@@ -660,7 +660,7 @@ namespace BizHawk.Client.EmuHawk
 				var path = Config.PathEntries
 					.AbsolutePathFor(file.FullName, "")
 					.MakeRelativeTo(Path.GetDirectoryName(file.FullName));
-				LuaImp.ScriptList.SaveSession(path);
+				LuaImp.ScriptList.Save(path);
 
 				Config.RecentLuaSession.Add(file.FullName); // TODO: should path be used here?
 				OutputMessages.Text = $"{Path.GetFileName(LuaImp.ScriptList.Filename)} saved.";
@@ -727,7 +727,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!string.IsNullOrWhiteSpace(LuaImp.ScriptList.Filename))
 			{
-				LuaImp.ScriptList.SaveSession(LuaImp.ScriptList.Filename);
+				LuaImp.ScriptList.Save(LuaImp.ScriptList.Filename);
 				Config.RecentLuaSession.Add(LuaImp.ScriptList.Filename);
 			}
 			else
