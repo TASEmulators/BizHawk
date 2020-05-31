@@ -1,0 +1,17 @@
+{
+    "configurations": [
+        {
+            "name": "Waterbox",
+            "includePath": [
+				"${workspaceFolder}/../sysroot/include",
+				"${workspaceFolder}/../sysroot/include/c++/v1",
+				"${workspaceFolder}/../emulibc",
+				"${workspaceFolder}/hatari/src/includes"
+            ],
+            "defines": [
+            ],
+            "intelliSenseMode": "gcc-x64"
+        }
+    ],
+    "version": 4
+}
