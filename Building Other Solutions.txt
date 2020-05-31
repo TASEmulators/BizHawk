@@ -1,10 +1,14 @@
-Besides the main Bizhawk.sln, there are a number of other projects, each with its own build method.  To develop Bizhawk, you do not need to build these other projects, as they are included prebuild in SVN.  You need only build them if you want to modify the cores themselves.
+Besides the main Bizhawk.sln, there are a number of other projects, each with its own build method.  To develop on Bizhawk, you do not need to build these other projects, as they are included prebuilt in GIT.  You need only build them if you want to modify the cores themselves.
 
-When "VC16" is mentioned, this means Microsoft(R) Visual(R) Studio(R)(R) 2019(TM),
+When "vs2019" is mentioned, this means Microsoft(R) Visual(R) Studio(R)(R) 2019(TM) using the latest version with all the normal toolchains installed.
+Unless otherwise specified, the build process consists simply of building the sln; the dlls are automatically output to the appropriate place.
+
 When "mingw" is mentioned, this means a 64 bit gcc setup installed by https://www.msys2.org/.
 
-libgambatte: There is a VC16 solution at libgambatte/libgambatte.sln.
-wonderswan: There is a VC16 solution at wonderswan/bizswan.sln
+libgambatte: There is a vs2019 solution at libgambatte/libgambatte.sln.
+wonderswan: There is a vs2019 solution at wonderswan/bizswan.sln
+octoshock (psx): There is a vs2019 solution at psx/octoshock/bizhawk/octoshock.sln
+libretrobridge: There is a vs2019 solution at LibretroBridge/vs2019/LibretroBridge.sln
 
 libmupen64plus: ??
 
@@ -13,7 +17,6 @@ quicknes: Process quicknes/mingw/Makefile with mingw.  Use "make install" top co
 lynx: mingw
 melonds: ??
 mgba: mingw
-psx: ??
 
 waterbox:  See separate document waterbox/readme.txt
 
