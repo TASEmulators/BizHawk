@@ -19,17 +19,23 @@ namespace BizHawk.Client.Common
 			Header[HeaderKeys.MovieVersion] = "BizHawk v2.0.0";
 		}
 
-		public virtual void Attach(IEmulator emulator)
+		public virtual void Attach(IMovieSession session, IEmulator emulator)
 		{
-			if (!Emulator.IsNull())
-			{
-				throw new InvalidOperationException("A core has already been attached!");
-			}
+			// TODO: this check would ideally happen
+			// but is disabled for now because restarting a movie doesn't new one up
+			// so the old one hangs around with old emulator until this point
+			// maybe we should new it up, or have a detach method
+			//if (!Emulator.IsNull())
+			//{
+			//	throw new InvalidOperationException("A core has already been attached!");
+			//}
 
 			Emulator = emulator;
+			Session = session;
 		}
 
 		public IEmulator Emulator { get; private set; }
+		public IMovieSession Session { get; private set; }
 
 		protected bool MakeBackup { get; set; } = true;
 
@@ -113,7 +119,7 @@ namespace BizHawk.Client.Common
 		{
 			// This is a bad way to do multitrack logic, pass the info in instead of going to the global
 			// and it is weird for Truncate to possibly not truncate
-			if (!Global.MovieSession.MultiTrack.IsActive)
+			if (!Session.MultiTrack.IsActive)
 			{
 				if (frame < Log.Count)
 				{
@@ -127,7 +133,7 @@ namespace BizHawk.Client.Common
 		{
 			if (frame < FrameCount && frame >= 0)
 			{
-				_adapter ??= new Bk2Controller(Global.MovieSession.MovieController.Definition);
+				_adapter ??= new Bk2Controller(Session.MovieController.Definition);
 				_adapter.SetFromMnemonic(Log[frame]);
 				return _adapter;
 			}
@@ -144,7 +150,7 @@ namespace BizHawk.Client.Common
 
 		public virtual void ClearFrame(int frame)
 		{
-			var lg = LogGeneratorInstance(Global.MovieSession.MovieController);
+			var lg = LogGeneratorInstance(Session.MovieController);
 			SetFrameAt(frame, lg.EmptyEntry);
 			Changes = true;
 		}

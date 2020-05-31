@@ -1,31 +1,23 @@
 Besides the main Bizhawk.sln, there are a number of other projects, each with its own build method.  To develop Bizhawk, you do not need to build these other projects, as they are included prebuild in SVN.  You need only build them if you want to modify the cores themselves.
 
+When "VC16" is mentioned, this means Microsoft(R) Visual(R) Studio(R)(R) 2019(TM),
+When "mingw" is mentioned, this means a 64 bit gcc setup installed by https://www.msys2.org/.
 
-genplus-gx: Load genplus-gx/libretro/msvc/msvc-2010.sln; builds as VC++ (VC10).  Output dll automatically copies to appropriate folder.
-waterbox: check the waterbox/ folder for instructions on the alpha waterbox builds.
-
-libgambatte: Process libgambatte/Makefile with mingw.  Use "make install" to copy to output folder.  Alternatively, there is a VC10 solution at libgambatte/libgambatte.sln, but that's not used.
-amd64: there is some sort of codegen issue with mingw.  The VC10 solution is used there.
-
-libmeteor: Probably libmeteor/libmeteor.sln, but not well checked.
+libgambatte: There is a VC16 solution at libgambatte/libgambatte.sln.
 
 libmupen64plus: ??
 
-libsnes: During development, run bizwinmake.sh. Edit it as necessary to change profiles and bitness. For making release mode dlls for committing, run bizwinmakedistro.sh. Note that 64bits libsnes doesn't work right now.
+quicknes: Process quicknes/mingw/Makefile with mingw.  Use "make install" top copy to output folder.
 
-quicknes: Process quicknes/mingw/Makefile with mingw.  Use "make install" top copy to output folder.  Alternatively, there is a VC10 solution at quicknes/libquicknes/libquicknes.sln, but that has audio output glitches.
-amd64: mingw only
+wonderswan: There is a mingw Makefile at wonderswan/mingw/Makefile.  Use "make install" to copy to output folder.
 
-wonderswan: Load wonderswan/bizswan/bizswan.sln; builds as VC++ (VC10).  Output dll automatically copies to appropriate folder.  Alternatively, there is a mingw Makefile at wonderswan/mingw/Makefile, but that's not used.
-amd64: mingw only
+lynx: mingw
+melonds: ??
+mgba: mingw
+psx: ??
 
-yabause: Load yabause/src/libyabause/libyabause.sln; builds as VC++ (VC10).  Output dll automatically copies to appropriate folder.
+waterbox:  See separate document waterbox/readme.txt
+
+libdarm: stock build from https://github.com/jbremer/darm.git   71a027e0ffb2171d01213c6ecc6da1c49e158398 ????
 
 
-libdarm: stock build from https://github.com/jbremer/darm.git   71a027e0ffb2171d01213c6ecc6da1c49e158398
-
-libsnes: use libsnes/vs2015/libsnes.sln in vs2015
-
-=========================================
-
-natt: February 2016: the environment I currently use to build all of my mingw stuff, 32 and 64 bit, but not waterbox (which is on linux) and maybe not bsnes (haven't tried in a while) is a vanilla http://msys2.github.io/ install.

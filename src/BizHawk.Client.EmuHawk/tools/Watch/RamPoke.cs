@@ -91,7 +91,23 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Ok_Click(object sender, EventArgs e)
 		{
-			var success = _watchList.All(watch => watch.Poke(ValueBox.Text));
+			var success = true;
+			foreach (var watch in _watchList)
+			{
+				var result = watch.Poke(ValueBox.Text);
+				if (result)
+				{
+					var cheat = GlobalWin.CheatList.FirstOrDefault(c => c.Address == watch.Address && c.Domain == watch.Domain);
+					if (cheat != (Cheat)null)
+					{
+						cheat.PokeValue(watch.Value); 
+					}
+				}
+				else
+				{
+					success = false;
+				}
+			}
 
 			ParentTool?.UpdateValues(ToolFormUpdateType.General);
 

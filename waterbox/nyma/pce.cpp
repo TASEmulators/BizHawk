@@ -17,7 +17,7 @@ void SetupMDFNGameInfo()
 	Mednafen::MDFNGameInfo = &EmulatedPCE;
 }
 
-#define DEFUN(N,R,W)\
+#define MemoryDomainFunctions(N,R,W)\
 static void Access##N(uint8_t* buffer, int64_t address, int64_t count, bool write)\
 {\
 	PCE_InDebug = 1;\
@@ -33,7 +33,7 @@ static void Access##N(uint8_t* buffer, int64_t address, int64_t count, bool writ
 	}\
 	PCE_InDebug = 0;\
 }
-#define DEFRG(N,R,W)\
+#define MemoryDomainBulkFunctions(N,R,W)\
 static void Access##N(uint8_t* buffer, int64_t address, int64_t count, bool write)\
 {\
 	PCE_InDebug = 1;\
@@ -62,10 +62,10 @@ namespace MDFN_IEN_PCE
 	}
 }
 
-DEFUN(ShortBus, HuCPU.PeekLogical, HuCPU.PokeLogical);
-DEFUN(LongBus, HuCPU.PeekPhysical, HuCPU.PokePhysical);
-DEFUN(BRAM, HuC_PeekBRAM, HuC_PokeBRAM);
-DEFRG(ADPCM, ADPCM_PeekRAM, ADPCM_PokeRAM);
+MemoryDomainFunctions(ShortBus, HuCPU.PeekLogical, HuCPU.PokeLogical);
+MemoryDomainFunctions(LongBus, HuCPU.PeekPhysical, HuCPU.PokePhysical);
+MemoryDomainFunctions(BRAM, HuC_PeekBRAM, HuC_PokeBRAM);
+MemoryDomainBulkFunctions(ADPCM, ADPCM_PeekRAM, ADPCM_PokeRAM);
 
 ECL_EXPORT void GetMemoryAreas(MemoryArea* m)
 {

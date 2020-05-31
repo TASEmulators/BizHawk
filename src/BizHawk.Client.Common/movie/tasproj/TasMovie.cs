@@ -25,7 +25,7 @@ namespace BizHawk.Client.Common
 			Markers.Add(0, startsFromSavestate ? "Savestate" : "Power on");
 		}
 
-		public override void Attach(IEmulator emulator)
+		public override void Attach(IMovieSession session, IEmulator emulator)
 		{
 			if (!emulator.HasSavestates())
 			{
@@ -39,12 +39,12 @@ namespace BizHawk.Client.Common
 
 			_inputPollable = emulator.AsInputPollable();
 			TasStateManager.Attach(emulator);
-			base.Attach(emulator);
+			base.Attach(session, emulator);
 		}
 
 		public IStringLog VerificationLog { get; } = StringLogUtil.MakeStringLog(); // For movies that do not begin with power-on, this is the input required to get into the initial state
 		public ITasBranchCollection Branches { get; }
-		public ITasSession Session { get; private set; } = new TasSession();
+		public ITasSession TasSession { get; private set; } = new TasSession();
 
 		public int LastEditedFrame { get; private set; } = -1;
 		public bool LastPositionStable { get; set; } = true;
@@ -97,7 +97,7 @@ namespace BizHawk.Client.Common
 			}
 			LastEditedFrame = frame;
 
-			if (anyInvalidated && Global.MovieSession.Movie.IsCountingRerecords)
+			if (anyInvalidated && IsCountingRerecords)
 			{
 				Rerecords++;
 			}
@@ -185,7 +185,7 @@ namespace BizHawk.Client.Common
 			var newLog = new List<string>();
 
 			// We are in record mode so replace the movie log with the one from the savestate
-			if (!Global.MovieSession.MultiTrack.IsActive)
+			if (!Session.MultiTrack.IsActive)
 			{
 				_timelineBranchFrame = null;
 

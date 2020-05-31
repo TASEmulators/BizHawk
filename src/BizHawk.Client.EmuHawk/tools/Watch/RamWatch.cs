@@ -206,7 +206,7 @@ namespace BizHawk.Client.EmuHawk
 				&& _watches.All(w => w.Domain == null || MemoryDomains.Select(m => m.Name).Contains(w.Domain.Name))
 				&& (Config.RecentWatches.AutoLoad || (IsHandleCreated || !IsDisposed)))
 			{
-				_watches.RefreshDomains(MemoryDomains);
+				_watches.RefreshDomains(MemoryDomains, Config.RamWatchDefinePrevious);
 				_watches.Reload();
 				GeneralUpdate();
 				UpdateStatusBar();
@@ -241,7 +241,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_watches.Any())
 			{
-				_watches.UpdateValues();
+				_watches.UpdateValues(Config.RamWatchDefinePrevious);
 				DisplayOnScreenWatches();
 			}
 		}
@@ -256,7 +256,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.OSD.ClearRamWatches();
 			if (_watches.Any())
 			{
-				_watches.UpdateValues();
+				_watches.UpdateValues(Config.RamWatchDefinePrevious);
 				DisplayOnScreenWatches();
 
 				if (!IsHandleCreated || IsDisposed)
@@ -274,7 +274,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				for (var i = 0; i < _watches.Count; i++)
 				{
-					var frozen = !_watches[i].IsSeparator && Global.CheatList.IsActive(_watches[i].Domain, _watches[i].Address);
+					var frozen = !_watches[i].IsSeparator && MainForm.CheatList.IsActive(_watches[i].Domain, _watches[i].Address);
 					GlobalWin.OSD.AddRamWatch(
 						_watches[i].ToDisplayString(),
 						new MessagePosition
@@ -574,7 +574,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				color = Color.PeachPuff;
 			}
-			else if (Global.CheatList.IsActive(_watches[index].Domain, _watches[index].Address))
+			else if (MainForm.CheatList.IsActive(_watches[index].Domain, _watches[index].Address))
 			{
 				color = Color.LightCyan;
 			}
@@ -777,7 +777,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FreezeAddressMenuItem_Click(object sender, EventArgs e)
 		{
-			var allCheats = SelectedWatches.All(x => Global.CheatList.IsActive(x.Domain, x.Address));
+			var allCheats = SelectedWatches.All(x => MainForm.CheatList.IsActive(x.Domain, x.Address));
 			if (allCheats)
 			{
 				SelectedWatches.UnfreezeAll();
@@ -1078,7 +1078,7 @@ namespace BizHawk.Client.EmuHawk
 				SelectedIndices.Any()
 				&& SelectedWatches.All(w => w.Domain.Writable);
 
-			var allCheats = SelectedWatches.All(x => Global.CheatList.IsActive(x.Domain, x.Address));
+			var allCheats = SelectedWatches.All(x => MainForm.CheatList.IsActive(x.Domain, x.Address));
 
 			if (allCheats)
 			{
@@ -1091,7 +1091,7 @@ namespace BizHawk.Client.EmuHawk
 				FreezeContextMenuItem.Image = Properties.Resources.Freeze;
 			}
 
-			UnfreezeAllContextMenuItem.Visible = Global.CheatList.ActiveCount > 0;
+			UnfreezeAllContextMenuItem.Visible = MainForm.CheatList.ActiveCount > 0;
 
 			ViewInHexEditorContextMenuItem.Visible = SelectedWatches.Count() == 1;
 
@@ -1100,7 +1100,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UnfreezeAllContextMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.CheatList.RemoveAll();
+			MainForm.CheatList.RemoveAll();
 		}
 
 		private void ViewInHexEditorContextMenuItem_Click(object sender, EventArgs e)

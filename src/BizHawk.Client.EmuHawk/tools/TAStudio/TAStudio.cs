@@ -644,7 +644,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				GoToFrame(CurrentTasMovie.Session.CurrentFrame);
+				GoToFrame(CurrentTasMovie.TasSession.CurrentFrame);
 			}
 
 			// If we are loading an existing non-default movie, we will already have columns generated
@@ -657,7 +657,7 @@ namespace BizHawk.Client.EmuHawk
 			SetUpToolStripColumns();
 
 			CurrentTasMovie.PropertyChanged += TasMovie_OnPropertyChanged;
-			CurrentTasMovie.Branches.Current = CurrentTasMovie.Session.CurrentBranch;
+			CurrentTasMovie.Branches.Current = CurrentTasMovie.TasSession.CurrentBranch;
 			BookMarkControl.UpdateTextColumnWidth();
 			MarkerControl.UpdateTextColumnWidth();
 			// clear all selections

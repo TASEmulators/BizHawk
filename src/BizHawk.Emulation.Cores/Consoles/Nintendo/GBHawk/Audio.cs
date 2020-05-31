@@ -59,6 +59,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int WAVE_decay_counter;
 		public bool WAVE_decay_done;
 
+		public bool sound_update_needed;
+
 		// Audio Variables
 		// derived
 		public bool												WAVE_DAC_pow;
@@ -625,8 +627,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					SQ1_output = DUTY_CYCLES[SQ1_duty * 8 + SQ1_duty_cntr] ? (SQ1_vol_state + DAC_OFST) : DAC_OFST;
 
-					// avoid aliasing at high frequenices
-					//if (SQ1_frq > 0x7F0) { SQ1_output = 0; }
+					sound_update_needed = true;
 				}
 			}
 
@@ -642,8 +643,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					SQ2_output = DUTY_CYCLES[SQ2_duty * 8 + SQ2_duty_cntr] ? (SQ2_vol_state + DAC_OFST) : DAC_OFST;
 
-					// avoid aliasing at high frequenices
-					//if (SQ2_frq > 0x7F0) { SQ2_output = 0; }
+					sound_update_needed = true;
 				}
 			}
 
@@ -687,6 +687,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					WAVE_wave_cntr++;
 					WAVE_wave_cntr &= 0x1F;
 					sample = Wave_RAM[WAVE_wave_cntr >> 1];
+
+					sound_update_needed = true;
 				}
 			}
 			else if (!WAVE_decay_done && (++WAVE_decay_counter == 200))
@@ -696,18 +698,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				// wave state must decay slow enough that games that turn on and off the wave channel to fill wave RAM don't buzz too much
 				if (!WAVE_DAC_pow)
 				{
-					if (WAVE_output > 0)  {  WAVE_output--; }
+					if (WAVE_output > 0)  {  WAVE_output--; sound_update_needed = true; }
 					else { WAVE_decay_done = true; }
 				}
 				else
 				{
 					if (WAVE_output > DAC_OFST)
 					{
-						WAVE_output--;
+						WAVE_output--; sound_update_needed = true;
 					}
 					else if (WAVE_output < DAC_OFST)
 					{
-						WAVE_output++;
+						WAVE_output++; sound_update_needed = true;
 					}
 					else { WAVE_decay_done = true; }
 				}
@@ -732,39 +734,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 
 					NOISE_output = (NOISE_LFSR & 1) > 0 ? DAC_OFST : (NOISE_vol_state + DAC_OFST);
+					sound_update_needed = true;
 				}
 			}
-
-			// add up components to each channel
-			int L_final = 0;
-			int R_final = 0;
-
-			if (AUD_CTRL_sq1_L_en) { L_final += SQ1_output; }
-			if (AUD_CTRL_sq2_L_en) { L_final += SQ2_output; }
-			if (AUD_CTRL_wave_L_en) { L_final += WAVE_output;}
-			if (AUD_CTRL_noise_L_en) { L_final += NOISE_output; }
-
-			if (AUD_CTRL_sq1_R_en) { R_final += SQ1_output; }
-			if (AUD_CTRL_sq2_R_en) { R_final += SQ2_output; }
-			if (AUD_CTRL_wave_R_en) { R_final += WAVE_output; }
-			if (AUD_CTRL_noise_R_en) { R_final += NOISE_output; }
-
-			L_final *= (AUD_CTRL_vol_L + 1) * 40;
-			R_final *= (AUD_CTRL_vol_R + 1) * 40;
-
-			if (L_final != latched_sample_L)
-			{
-				_blip_L.AddDelta(master_audio_clock, L_final - latched_sample_L);
-				latched_sample_L = L_final;
-			}
-
-			if (R_final != latched_sample_R)
-			{
-				_blip_R.AddDelta(master_audio_clock, R_final - latched_sample_R);
-				latched_sample_R = R_final;
-			}
-
-			master_audio_clock++;
 
 			// frame sequencer ticks at a rate of 512 hz (or every time a 13 bit counter rolls over)
 			// the sequencer is actually the timer DIV register
@@ -867,12 +839,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							{
 								if (SQ1_env_add)
 								{
-									if (SQ1_vol_state < 15) { SQ1_vol_state++; }
+									if (SQ1_vol_state < 15) { SQ1_vol_state++; sound_update_needed = true; }
 									else { SQ1_vol_done = true; }
 								}
 								else
 								{
-									if (SQ1_vol_state >= 1) { SQ1_vol_state--; }
+									if (SQ1_vol_state >= 1) { SQ1_vol_state--; sound_update_needed = true; }
 									else { SQ1_vol_done = true; }
 								}
 							}
@@ -889,12 +861,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							{
 								if (SQ2_env_add)
 								{
-									if (SQ2_vol_state < 15) { SQ2_vol_state++; }
+									if (SQ2_vol_state < 15) { SQ2_vol_state++; sound_update_needed = true; }
 									else { SQ2_vol_done = true; }
 								}
 								else
 								{
-									if (SQ2_vol_state >= 1) { SQ2_vol_state--; }
+									if (SQ2_vol_state >= 1) { SQ2_vol_state--; sound_update_needed = true; }
 									else { SQ2_vol_done = true; }
 								}
 							}
@@ -911,12 +883,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							{
 								if (NOISE_env_add)
 								{
-									if (NOISE_vol_state < 15) { NOISE_vol_state++; }
+									if (NOISE_vol_state < 15) { NOISE_vol_state++; sound_update_needed = true; }
 									else { NOISE_vol_done = true; }
 								}
 								else
 								{
-									if (NOISE_vol_state >= 1) { NOISE_vol_state--; }
+									if (NOISE_vol_state >= 1) { NOISE_vol_state--; sound_update_needed = true; }
 									else { NOISE_vol_done = true; }
 								}
 							}
@@ -946,6 +918,40 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}				
 				}
 			}
+
+			if (sound_update_needed)
+			{
+				// add up components to each channel
+				int L_final = 0;
+				int R_final = 0;
+
+				if (AUD_CTRL_sq1_L_en) { L_final += SQ1_output; }
+				if (AUD_CTRL_sq2_L_en) { L_final += SQ2_output; }
+				if (AUD_CTRL_wave_L_en) { L_final += WAVE_output; }
+				if (AUD_CTRL_noise_L_en) { L_final += NOISE_output; }
+
+				if (AUD_CTRL_sq1_R_en) { R_final += SQ1_output; }
+				if (AUD_CTRL_sq2_R_en) { R_final += SQ2_output; }
+				if (AUD_CTRL_wave_R_en) { R_final += WAVE_output; }
+				if (AUD_CTRL_noise_R_en) { R_final += NOISE_output; }
+
+				L_final *= (AUD_CTRL_vol_L + 1) * 40;
+				R_final *= (AUD_CTRL_vol_R + 1) * 40;
+
+				if (L_final != latched_sample_L)
+				{
+					_blip_L.AddDelta(master_audio_clock, L_final - latched_sample_L);
+					latched_sample_L = L_final;
+				}
+
+				if (R_final != latched_sample_R)
+				{
+					_blip_R.AddDelta(master_audio_clock, R_final - latched_sample_R);
+					latched_sample_R = R_final;
+				}
+			}
+			master_audio_clock++;
+			sound_update_needed = false;
 		}
 
 		public void power_off()
@@ -1034,30 +1040,50 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			if (!NOISE_enable && ((Audio_Regs[NR42] & 0xF8) > 0)) { NOISE_output = DAC_OFST; }
 			else if ((Audio_Regs[NR42] & 0xF8) == 0) { NOISE_output = 0; }
+
+			sound_update_needed = true;
 		}
 
 		public void calculate_bias_gain_1()
 		{
 			if (!SQ1_enable && ((Audio_Regs[NR12] & 0xF8) > 0)) { SQ1_output = DAC_OFST; }
 			else if ((Audio_Regs[NR12] & 0xF8) == 0) { SQ1_output = 0; }
+
+			sound_update_needed = true;
 		}
 
 		public void calculate_bias_gain_2()
 		{
 			if (!SQ2_enable && ((Audio_Regs[NR22] & 0xF8) > 0)) { SQ2_output = DAC_OFST; }
 			else if ((Audio_Regs[NR22] & 0xF8) == 0) { SQ2_output = 0; }
+
+			sound_update_needed = true;
 		}
 
 		public void calculate_bias_gain_w()
 		{
 			if (!WAVE_enable && WAVE_DAC_pow) { WAVE_decay_counter = 0; WAVE_decay_done = false; }
 			else if (!WAVE_DAC_pow) { WAVE_decay_counter = 0; WAVE_decay_done = false; }
+
+			sound_update_needed = true;
 		}
 
 		public void calculate_bias_gain_n()
 		{
 			if (!NOISE_enable && ((Audio_Regs[NR42] & 0xF8) > 0)) { NOISE_output = DAC_OFST; }
 			else if ((Audio_Regs[NR42] & 0xF8) == 0) { NOISE_output = 0; }
+
+			sound_update_needed = true;
+		}
+
+		public void update_sound()
+		{
+			if (sound_update_needed)
+			{
+
+
+				
+			}
 		}
 
 		public void SyncState(Serializer ser)
@@ -1145,6 +1171,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(WAVE_decay_counter), ref WAVE_decay_counter);
 			ser.Sync(nameof(WAVE_decay_done), ref WAVE_decay_done);
 
+			ser.Sync(nameof(sound_update_needed), ref sound_update_needed);
 			ser.Sync(nameof(master_audio_clock), ref master_audio_clock);
 
 			ser.Sync(nameof(sample), ref sample);

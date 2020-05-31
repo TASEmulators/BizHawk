@@ -104,7 +104,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Ignore that stuff
 		/// </summary>
-		public override void Update()
+		public override void Update(PreviousType previousType)
 		{
 		}
 	}

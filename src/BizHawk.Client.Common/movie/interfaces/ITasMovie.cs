@@ -16,7 +16,7 @@ namespace BizHawk.Client.Common
 		Func<string> ClientSettingsForSave { set; }
 		Action<string> GetClientSettingsOnLoad { set; }
 		ITasMovieRecord this[int index] { get; }
-		ITasSession Session { get; }
+		ITasSession TasSession { get; }
 		TasMovieMarkerList Markers { get; }
 		ITasBranchCollection Branches { get; }
 		TasLagLog LagLog { get; }

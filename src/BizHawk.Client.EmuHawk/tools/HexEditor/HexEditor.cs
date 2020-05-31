@@ -65,8 +65,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private MemoryDomain _domain = new NullMemoryDomain();
 
-		private long _row;
-		private long _addr;
 		private string _findStr = "";
 		private bool _mouseIsDown;
 		private byte[] _rom;
@@ -474,8 +472,8 @@ namespace BizHawk.Client.EmuHawk
 
 			for (var i = 0; i < _rowsVisible; i++)
 			{
-				_row = i + HexScrollBar.Value;
-				_addr = _row << 4;
+				long _row = i + HexScrollBar.Value;
+				long _addr = _row << 4;
 				if (_addr >= _domain.Size)
 				{
 					break;
@@ -503,8 +501,8 @@ namespace BizHawk.Client.EmuHawk
 			var charValues = MakeValues(1);
 			for (var i = 0; i < _rowsVisible; i++)
 			{
-				_row = i + HexScrollBar.Value;
-				_addr = _row << 4;
+				long _row = i + HexScrollBar.Value;
+				long _addr = _row << 4;
 				if (_addr >= _domain.Size)
 				{
 					break;
@@ -550,63 +548,46 @@ namespace BizHawk.Client.EmuHawk
 
 		private Dictionary<long, long> MakeValues(int dataSize)
 		{
-			var addresses = new List<long>();
+			long start = (long)HexScrollBar.Value << 4;
+			long end = (long)(HexScrollBar.Value + _rowsVisible) << 4;
 
-			for (var i = 0; i < _rowsVisible; i++)
-			{
-				_row = i + HexScrollBar.Value;
-				_addr = _row << 4;
-				if (_addr >= _domain.Size)
-				{
-					break;
-				}
+			end = Math.Min(end, _domain.Size);
+			end &= -(long)dataSize;
 
-				for (var j = 0; j < 16; j += dataSize)
-				{
-					if (_addr + j + dataSize <= _domain.Size)
-					{
-						var address = _addr + j;
-						addresses.Add(address);
-					}
-				}
-			}
+			var range = new MutableRange<long>(start, end - 1);
 
 			var dict = new Dictionary<long, long>();
-			var range = new MutableRange<long>(addresses[0], addresses[0] + addresses.Count - 1);
 
-			switch (DataSize)
+			switch (dataSize)
 			{
 				default:
 				case 1:
 				{
-						var vals = new byte[addresses.Count];
-						_domain.BulkPeekByte(range, vals);
-						for (var i = 0; i < addresses.Count; i++)
-						{
-							dict.Add(addresses[i], vals[i]);
-						}
-						break;
-					}
+					var vals = new byte[end - start];
+					_domain.BulkPeekByte(range, vals);
+					int i = 0;
+					for (var addr = start; addr < end; addr += dataSize)
+						dict.Add(addr, vals[i++]);
+					break;
+				}
 				case 2:
-					{
-						var vals = new ushort[addresses.Count];
-						_domain.BulkPeekUshort(range, BigEndian, vals);
-						for (var i = 0; i < addresses.Count; i++)
-						{
-							dict.Add(addresses[i], vals[i]);
-						}
-						break;
-					}
+				{
+					var vals = new ushort[(end - start) >> 1];
+					_domain.BulkPeekUshort(range, BigEndian, vals);
+					int i = 0;
+					for (var addr = start; addr < end; addr += dataSize)
+						dict.Add(addr, vals[i++]);
+					break;
+				}
 				case 4:
-					{
-						var vals = new uint[addresses.Count];
-						_domain.BulkPeekUint(range, BigEndian, vals);
-						for (var i = 0; i < addresses.Count; i++)
-						{
-							dict.Add(addresses[i], vals[i]);
-						}
-						break;
-					}
+				{
+					var vals = new uint[(end - start) >> 2];
+					_domain.BulkPeekUint(range, BigEndian, vals);
+					int i = 0;
+					for (var addr = start; addr < end; addr += dataSize)
+						dict.Add(addr, vals[i++]);
+					break;
+				}
 			}
 
 			return dict;
@@ -790,7 +771,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool IsFrozen(long address)
 		{
-			return Global.CheatList.IsActive(_domain, address);
+			return MainForm.CheatList.IsActive(_domain, address);
 		}
 
 		private void FreezeHighlighted()
@@ -809,7 +790,7 @@ namespace BizHawk.Client.EmuHawk
 					Common.DisplayType.Hex,
 					BigEndian);
 
-				Global.CheatList.Add(new Cheat(
+				MainForm.CheatList.Add(new Cheat(
 					watch,
 					watch.Value));
 			}
@@ -831,7 +812,7 @@ namespace BizHawk.Client.EmuHawk
 						watch.Value));
 				}
 
-				Global.CheatList.AddRange(cheats);
+				MainForm.CheatList.AddRange(cheats);
 			}
 
 			MemoryViewerBox.Refresh();
@@ -846,13 +827,13 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_highlightedAddress >= 0)
 			{
-				Global.CheatList.RemoveRange(Global.CheatList.Where(x => x.Contains(_highlightedAddress.Value)));
+				MainForm.CheatList.RemoveRange(MainForm.CheatList.Where(x => x.Contains(_highlightedAddress.Value)));
 			}
 
 			if (_secondaryHighlightedAddresses.Any())
 			{
-				Global.CheatList.RemoveRange(
-					Global.CheatList.Where(
+				MainForm.CheatList.RemoveRange(
+					MainForm.CheatList.Where(
 						cheat => !cheat.IsSeparator && cheat.Domain == _domain &&
 							_secondaryHighlightedAddresses.Contains(cheat.Address ?? 0)));
 			}
@@ -1090,10 +1071,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void IncrementAddress(long address)
 		{
-			if (Global.CheatList.IsActive(_domain, address))
+			if (MainForm.CheatList.IsActive(_domain, address))
 			{
 				// TODO: Increment should be intelligent since IsActive is.  If this address is part of a multi-byte cheat it should intelligently increment just that byte
-				Global.CheatList.First(x => x.Domain == _domain && x.Address == address).Increment();
+				MainForm.CheatList.First(x => x.Domain == _domain && x.Address == address).Increment();
 			}
 			else
 			{
@@ -1123,10 +1104,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DecrementAddress(long address)
 		{
-			if (Global.CheatList.IsActive(_domain, address))
+			if (MainForm.CheatList.IsActive(_domain, address))
 			{
 				// TODO: Increment should be intelligent since IsActive is.  If this address is part of a multi-byte cheat it should intelligently increment just that byte
-				Global.CheatList.First(x => x.Domain == _domain && x.Address == address).Decrement();
+				MainForm.CheatList.First(x => x.Domain == _domain && x.Address == address).Decrement();
 			}
 			else
 			{
@@ -1650,7 +1631,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UnfreezeAllMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.CheatList.RemoveAll();
+			MainForm.CheatList.RemoveAll();
 		}
 
 		private void PokeAddressMenuItem_Click(object sender, EventArgs e)
@@ -1897,7 +1878,7 @@ namespace BizHawk.Client.EmuHawk
 				case Keys.Delete:
 					if (e.Modifiers == Keys.Shift)
 					{
-						Global.CheatList.RemoveAll();
+						MainForm.CheatList.RemoveAll();
 					}
 					else
 					{
@@ -1985,7 +1966,7 @@ namespace BizHawk.Client.EmuHawk
 				(_highlightedAddress.HasValue || _secondaryHighlightedAddresses.Any()) &&
 				_domain.Writable;
 
-			UnfreezeAllContextItem.Visible = Global.CheatList.ActiveCount > 0;
+			UnfreezeAllContextItem.Visible = MainForm.CheatList.ActiveCount > 0;
 			PasteContextItem.Visible = _domain.Writable && data != null && data.GetDataPresent(DataFormats.Text);
 
 			ContextSeparator1.Visible =
@@ -2074,7 +2055,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MemoryViewerBox_Paint(object sender, PaintEventArgs e)
 		{
-			var activeCheats = Global.CheatList.Where(x => x.Enabled);
+			var activeCheats = MainForm.CheatList.Where(x => x.Enabled);
 			foreach (var cheat in activeCheats)
 			{
 				if (IsVisible(cheat.Address ?? 0))
@@ -2114,7 +2095,7 @@ namespace BizHawk.Client.EmuHawk
 
 				var textRect = new Rectangle(textPoint, new Size(_fontWidth * DataSize, _fontHeight));
 
-				if (Global.CheatList.IsActive(_domain, addressHighlighted))
+				if (MainForm.CheatList.IsActive(_domain, addressHighlighted))
 				{
 					_freezeHighlightBrush.Color = Colors.HighlightFreeze;
 					e.Graphics.FillRectangle(_freezeHighlightBrush, rect);
@@ -2141,7 +2122,7 @@ namespace BizHawk.Client.EmuHawk
 
 					var textRect = new Rectangle(textPoint, new Size(_fontWidth * DataSize, _fontHeight));
 
-					if (Global.CheatList.IsActive(_domain, address))
+					if (MainForm.CheatList.IsActive(_domain, address))
 					{
 						_freezeHighlightBrush.Color = Colors.HighlightFreeze;
 						e.Graphics.FillRectangle(_freezeHighlightBrush, rect);

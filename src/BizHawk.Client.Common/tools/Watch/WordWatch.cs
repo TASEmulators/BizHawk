@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
@@ -135,15 +134,6 @@ namespace BizHawk.Client.Common
 						break;
 				}
 
-				if (Global.CheatList.Contains(Domain, Address))
-				{
-					var cheat = Global.CheatList.FirstOrDefault(c => c.Address == Address && c.Domain == Domain);
-					if (cheat != (Cheat)null)
-					{
-						cheat.PokeValue(val);
-					}
-				}
-
 				PokeWord(val);
 				return true;
 			}
@@ -156,9 +146,9 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Update the Watch (read it from <see cref="MemoryDomain"/>
 		/// </summary>
-		public override void Update()
+		public override void Update(PreviousType previousType)
 		{
-			switch (Global.Config.RamWatchDefinePrevious)
+			switch (previousType)
 			{
 				case PreviousType.Original:
 					return;

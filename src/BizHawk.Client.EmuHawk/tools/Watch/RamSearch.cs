@@ -155,7 +155,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var nextColor = Color.White;
 
-				var isCheat = Global.CheatList.IsActive(_settings.Domain, _searches[index].Address);
+				var isCheat = MainForm.CheatList.IsActive(_settings.Domain, _searches[index].Address);
 				var isWeeded = Settings.PreviewMode && !_forcePreviewClear && _searches.Preview(_searches[index].Address);
 
 				if (_searches[index].Address >= _searches[index].Domain.Size)
@@ -1253,7 +1253,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FreezeAddressMenuItem_Click(object sender, EventArgs e)
 		{
-			var allCheats = SelectedWatches.All(x => Global.CheatList.IsActive(x.Domain, x.Address));
+			var allCheats = SelectedWatches.All(x => MainForm.CheatList.IsActive(x.Domain, x.Address));
 			if (allCheats)
 			{
 				SelectedWatches.UnfreezeAll();
@@ -1380,14 +1380,14 @@ namespace BizHawk.Client.EmuHawk
 				SelectedIndices.Any() &&
 				SelectedWatches.All(w => w.Domain.Writable);
 
-			UnfreezeAllContextMenuItem.Visible = Global.CheatList.ActiveCount > 0;
+			UnfreezeAllContextMenuItem.Visible = MainForm.CheatList.ActiveCount > 0;
 
-			ContextMenuSeparator3.Visible = SelectedIndices.Any() || (Global.CheatList.ActiveCount > 0);
+			ContextMenuSeparator3.Visible = SelectedIndices.Any() || (MainForm.CheatList.ActiveCount > 0);
 
 			var allCheats = true;
 			foreach (var index in SelectedIndices)
 			{
-				if (!Global.CheatList.IsActive(_settings.Domain, _searches[index].Address))
+				if (!MainForm.CheatList.IsActive(_settings.Domain, _searches[index].Address))
 				{
 					allCheats = false;
 				}
@@ -1407,7 +1407,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UnfreezeAllContextMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.CheatList.RemoveAll();
+			MainForm.CheatList.RemoveAll();
 		}
 
 		private void ViewInHexEditorContextMenuItem_Click(object sender, EventArgs e)

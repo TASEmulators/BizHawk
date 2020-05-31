@@ -236,7 +236,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 
 		public static void FreezeAll(this IEnumerable<Watch> watches)
 		{
-			Global.CheatList.AddRange(
+			GlobalWin.CheatList.AddRange(
 				watches
 				.Where(w => !w.IsSeparator)
 				.Select(w => new Cheat(w, w.Value)));
@@ -244,7 +244,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 
 		public static void UnfreezeAll(this IEnumerable<Watch> watches)
 		{
-			Global.CheatList.RemoveRange(watches.Where(watch => !watch.IsSeparator));
+			GlobalWin.CheatList.RemoveRange(watches.Where(watch => !watch.IsSeparator));
 		}
 
 		public static IEnumerable<ToolStripItem> MenuItems(this IMemoryDomains domains, Action<string> setCallback, string selected = "", int? maxSize = null)

@@ -16,6 +16,7 @@ MEDNAFLAGS := \
 	-mno-indirect-branch-register \
 	-Wall -Wshadow -Wempty-body -Wignored-qualifiers \
 	-Wvla -Wvariadic-macros -Wdisabled-optimization -Werror=write-strings \
+	--param max-gcse-memory=300000000 \
 	-Dprivate=public # the gods have abandoned us
 
 CCFLAGS := $(MEDNAFLAGS) -std=gnu99

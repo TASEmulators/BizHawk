@@ -234,7 +234,7 @@ namespace BizHawk.Client.Common
 		/// <see cref="Watch"/> domain will also be refreshed
 		/// </summary>
 		/// <param name="core">New domains</param>
-		public void RefreshDomains(IMemoryDomains core)
+		public void RefreshDomains(IMemoryDomains core, PreviousType previousType)
 		{
 			_memoryDomains = core;
 			Parallel.ForEach(_watchList, watch =>
@@ -246,7 +246,7 @@ namespace BizHawk.Client.Common
 
 				watch.Domain = core[watch.Domain.Name];
 				watch.ResetPrevious();
-				watch.Update();
+				watch.Update(previousType);
 				watch.ClearChangeCount();
 			});
 		}
@@ -254,11 +254,11 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Updates all <see cref="Watch"/> in the current collection
 		/// </summary>
-		public void UpdateValues()
+		public void UpdateValues(PreviousType previousType)
 		{
 			Parallel.ForEach(_watchList, watch =>
 			{
-				watch.Update();
+				watch.Update(previousType);
 			});
 		}
 

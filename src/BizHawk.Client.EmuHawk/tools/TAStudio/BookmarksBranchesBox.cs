@@ -130,7 +130,7 @@ namespace BizHawk.Client.EmuHawk
 			Branches.Add(branch);
 			BranchView.RowCount = Branches.Count;
 			Branches.Current = Branches.Count - 1;
-			Movie.Session.UpdateValues(Tastudio.Emulator.Frame, Branches.Current);
+			Movie.TasSession.UpdateValues(Tastudio.Emulator.Frame, Branches.Current);
 			BranchView.ScrollToIndex(Branches.Current);
 			Select(Branches.Current, true);
 			BranchView.Refresh();

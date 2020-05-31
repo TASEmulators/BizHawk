@@ -19,6 +19,20 @@ cd ../libco
 make
 cd ../libcxx
 ./do-everything.sh
-cd ../<insert your favourite core here>
-make
-make install
+cd ..
+
+4. You are now ready to start building cores. Each supports `make` and `make install`, as well as `make debug` and `make install-debug` for local development.  From the root directory, the following should all be valid:
+
+cd gpgx && make install
+cd libsnes && make install
+cd nyma && make -f faust.mak install
+cd nyma && make -f ngp.mak install
+cd nyma && make -f pce.mak install
+cd pcfx && make install
+cd picodrive && make install
+cd sameboy && make install
+cd snes9x && make install
+cd ss && make install
+cd uzem && make install
+cd vb && make install
+

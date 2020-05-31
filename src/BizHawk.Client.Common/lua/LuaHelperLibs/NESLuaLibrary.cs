@@ -1,10 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Linq;
 
 using NLua;
 
-using BizHawk.Client.Common.cheats;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
@@ -31,26 +29,17 @@ namespace BizHawk.Client.Common
 
 		public override string Name => "nes";
 
-		private bool NESAvailable => APIs.Emu.GetSystemId() == "NES";
-
 		private object Settings
 		{
 			get => APIs.Emu.GetSettings();
 			set => APIs.Emu.PutSettings(value);
 		}
 
-		[LuaMethodExample("nes.addgamegenie( \"GXXZZLVI\" );")]
+		[LuaDeprecatedMethod]
 		[LuaMethod("addgamegenie", "Adds the specified game genie code. If an NES game is not currently loaded or the code is not a valid game genie code, this will have no effect")]
 		public void AddGameGenie(string code)
 		{
-			if (NESAvailable && MemoryDomains != null)
-			{
-				var result = NesGameGenieDecoder.Decode(code);
-				if (result.IsValid)
-				{
-					Global.CheatList.Add(result.ToCheat(MemoryDomains.SystemBus, ""));
-				}
-			}
+			Log("Method no longer supported, use client.addcheat() instead");
 		}
 
 		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickNes</exception>
@@ -113,19 +102,11 @@ namespace BizHawk.Client.Common
 			_ => throw new InvalidOperationException()
 		};
 
-		[LuaMethodExample("nes.removegamegenie( \"GXXZZLVI\" );")]
+		[LuaDeprecatedMethod]
 		[LuaMethod("removegamegenie", "Removes the specified game genie code. If an NES game is not currently loaded or the code is not a valid game genie code, this will have no effect")]
 		public void RemoveGameGenie(string code)
 		{
-			if (NESAvailable)
-			{
-				var decoder = NesGameGenieDecoder.Decode(code);
-				if (decoder.IsValid)
-				{
-					Global.CheatList.RemoveRange(
-						Global.CheatList.Where(c => c.Address == decoder.Address));
-				}
-			}
+			Log("Method no longer supported, use client.removecheat() instead");
 		}
 
 		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickNes</exception>

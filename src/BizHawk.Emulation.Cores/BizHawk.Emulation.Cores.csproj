@@ -2,10 +2,11 @@
 	<Import Project="../MainSlnCommon.props" />
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<TargetFrameworks>netstandard2.0;netcoreapp3.1</TargetFrameworks>
+		<TargetFramework>netstandard2.0</TargetFramework>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="ELFSharp" Version="2.10.0" />
+		<Reference Include="FlatBuffers.Core" HintPath="$(ProjectDir)../../References/FlatBuffers.Core.dll" Private="true" />
 		<Reference Include="Virtu" HintPath="$(ProjectDir)../../References/Virtu.dll" Private="true" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.BizInvoke/BizHawk.BizInvoke.csproj" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.Common/BizHawk.Emulation.Common.csproj" />

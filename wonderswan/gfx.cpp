@@ -20,6 +20,7 @@
 
 #include "system.h"
 #include <cstring>
+#include <algorithm>
 
 namespace MDFN_IEN_WSWAN
 {
@@ -72,16 +73,18 @@ namespace MDFN_IEN_WSWAN
 
 		case 0x14: LCDControl = V; break; //    if((!(wsIO[0x14]&1))&&(data&1)) { wsLine=0; }break; /* LCD off ??*/
 		case 0x15: LCDIcons = V; break;
+		case 0x16: LCDVtotal = V; break;
 
 		case 0x60: VideoMode = V; 
 			SetVideo(V>>5, false); 
 			//printf("VideoMode: %02x, %02x\n", V, V >> 5);
 			break;
 
-		case 0xa2: if((V & 0x01) && !(BTimerControl & 0x01))
-					   HBCounter = HBTimerPeriod;
-			if((V & 0x04) && !(BTimerControl & 0x04))
-				VBCounter = VBTimerPeriod;
+		case 0xa2:
+			// if((V & 0x01) && !(BTimerControl & 0x01))
+			// 	HBCounter = HBTimerPeriod;
+			// if((V & 0x04) && !(BTimerControl & 0x04))
+			// 	VBCounter = VBTimerPeriod;
 			BTimerControl = V; 
 			//printf("%04x:%02x\n", A, V);
 			break;
@@ -134,6 +137,7 @@ namespace MDFN_IEN_WSWAN
 		case 0x13: return(FGYScroll);
 		case 0x14: return(LCDControl);
 		case 0x15: return(LCDIcons);
+		case 0x16: return(LCDVtotal);
 		case 0x60: return(VideoMode);
 		case 0xa0: return(wsc ? 0x87 : 0x86);
 		case 0xa2: return(BTimerControl);
@@ -168,21 +172,30 @@ namespace MDFN_IEN_WSWAN
 		sys->memory.CheckSoundDMA();
 
 		// Update sprite data table
+		// Note: it's at 142 actually but it doesn't "update" until next frame
 		if(wsLine == 142)
 		{
-			SpriteCountCache = SpriteCount;
-
-			if(SpriteCountCache > 0x80)
-				SpriteCountCache = 0x80;
-
-			memcpy(SpriteTable, &sys->memory.wsRAM[(SPRBase << 9) + (SpriteStart << 2)], SpriteCountCache << 2);
+			NextSpriteCountCache = std::min<uint8>(0x80, SpriteCount);
+			memcpy(NextSpriteTable, &sys->memory.wsRAM[(SPRBase << 9) + (SpriteStart << 2)], NextSpriteCountCache << 2);
 		}
 
 		if(wsLine == 144)
 		{
+			SpriteCountCache = NextSpriteCountCache;
+			memcpy(SpriteTable, NextSpriteTable, SpriteCountCache << 2);
 			ret = true;
 			sys->interrupt.DoInterrupt(WSINT_VBLANK);
 			//printf("VBlank: %d\n", wsLine);
+			if(VBCounter && (BTimerControl & 0x04))
+			{
+				VBCounter--;
+				if(!VBCounter)
+				{
+					if(BTimerControl & 0x08) // loop
+						VBCounter = VBTimerPeriod;
+					sys->interrupt.DoInterrupt(WSINT_VBLANK_TIMER);
+				}
+			}
 		}
 
 
@@ -199,10 +212,12 @@ namespace MDFN_IEN_WSWAN
 		}
 
 		// CPU ==========================
-		sys->cpu.execute(224);
+		sys->cpu.execute(128);
+		sys->memory.CheckSoundDMA();
+		sys->cpu.execute(96);
 		// CPU ==========================
 
-		wsLine = (wsLine + 1) % 159;
+		wsLine = (wsLine + 1) % (std::max<uint8>(144, LCDVtotal) + 1);
 		if(wsLine == LineCompare)
 		{
 			sys->interrupt.DoInterrupt(WSINT_LINE_HIT);
@@ -215,21 +230,21 @@ namespace MDFN_IEN_WSWAN
 
 		sys->rtc.Clock(256);
 
-		if(!wsLine)
-		{
-			if(VBCounter && (BTimerControl & 0x04))
-			{
-				VBCounter--;
-				if(!VBCounter)
-				{
-					if(BTimerControl & 0x08) // Loop mode?
-						VBCounter = VBTimerPeriod;
+		// if(!wsLine)
+		// {
+		// 	if(VBCounter && (BTimerControl & 0x04))
+		// 	{
+		// 		VBCounter--;
+		// 		if(!VBCounter)
+		// 		{
+		// 			if(BTimerControl & 0x08) // Loop mode?
+		// 				VBCounter = VBTimerPeriod;
 
-					sys->interrupt.DoInterrupt(WSINT_VBLANK_TIMER);
-				}
-			}
-			wsLine = 0;
-		}
+		// 			sys->interrupt.DoInterrupt(WSINT_VBLANK_TIMER);
+		// 		}
+		// 	}
+		// 	wsLine = 0;
+		// }
 
 		return ret;
 	}
@@ -355,7 +370,7 @@ namespace MDFN_IEN_WSWAN
 
 				if(windowtype == 0x20) // Display FG only inside window
 				{
-					if((wsLine >= FGy0) && (wsLine < FGy1))
+					if((wsLine >= FGy0) && (wsLine <= FGy1))
 						for(j = FGx0; j <= FGx1 && j < 224; j++)
 							in_window[7 + j] = 1;
 				}
@@ -363,7 +378,7 @@ namespace MDFN_IEN_WSWAN
 				{
 					for(j = 0; j < 224; j++)
 					{
-						if(!(j >= FGx0 && j < FGx1) || !((wsLine >= FGy0) && (wsLine < FGy1)))
+						if(!(j >= FGx0 && j <= FGx1) || !((wsLine >= FGy0) && (wsLine <= FGy1)))
 							in_window[7 + j] = 1;
 					}
 				}
@@ -431,8 +446,8 @@ namespace MDFN_IEN_WSWAN
 			if(DispControl & 0x08)
 			{
 				memset(in_window, 0, sizeof(in_window));
-				if((wsLine >= SPRy0) && (wsLine < SPRy1))
-					for(j = SPRx0; j < SPRx1 && j < 256; j++)
+				if((wsLine >= SPRy0) && (wsLine <= SPRy1))
+					for(j = SPRx0; j <= SPRx1 && j < 256; j++)
 						in_window[7 + j] = 1;
 			}
 			else
@@ -577,6 +592,8 @@ namespace MDFN_IEN_WSWAN
 
 		std::memset(SpriteTable, 0, sizeof(SpriteTable));
 		SpriteCountCache = 0;
+		std::memset(NextSpriteTable, 0, sizeof(NextSpriteTable));
+		NextSpriteCountCache = 0;
 		DispControl = 0;
 		BGColor = 0;
 		LineCompare = 0xBB;
@@ -599,6 +616,7 @@ namespace MDFN_IEN_WSWAN
 		FGXScroll = FGYScroll = 0;
 		LCDControl = 0;
 		LCDIcons = 0;
+		LCDVtotal = 158;
 
 		BTimerControl = 0;
 		HBTimerPeriod = 0;
@@ -645,6 +663,8 @@ namespace MDFN_IEN_WSWAN
 
 		NSS(SpriteTable);
 		NSS(SpriteCountCache);
+		NSS(NextSpriteTable);
+		NSS(NextSpriteCountCache);
 		NSS(DispControl);
 		NSS(BGColor);
 		NSS(LineCompare);
@@ -667,6 +687,7 @@ namespace MDFN_IEN_WSWAN
 		NSS(FGYScroll);
 		NSS(LCDControl);
 		NSS(LCDIcons);
+		NSS(LCDVtotal);
 
 		NSS(BTimerControl);
 		NSS(HBTimerPeriod);

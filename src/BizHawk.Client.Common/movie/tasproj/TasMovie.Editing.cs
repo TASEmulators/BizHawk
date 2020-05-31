@@ -256,7 +256,7 @@ namespace BizHawk.Client.Common
 				frame = Log.Count();
 			}
 
-			var lg = LogGeneratorInstance(Global.MovieSession.MovieController);
+			var lg = LogGeneratorInstance(Session.MovieController);
 			Log.InsertRange(frame, Enumerable.Repeat(lg.EmptyEntry, count).ToList());
 
 			ShiftBindedMarkers(frame, count);
@@ -273,7 +273,7 @@ namespace BizHawk.Client.Common
 			int oldLength = InputLogLength;
 			ChangeLog.AddGeneralUndo(oldLength, oldLength + numFrames - 1);
 
-			Global.MovieSession.MovieController.SetFromSticky(Global.InputManager.AutofireStickyXorAdapter);
+			Session.MovieController.SetFromSticky(Global.InputManager.AutofireStickyXorAdapter);
 
 			// account for autohold. needs autohold pattern to be already recorded in the current frame
 			var lg = LogGeneratorInstance(Global.InputManager.MovieOutputHardpoint);

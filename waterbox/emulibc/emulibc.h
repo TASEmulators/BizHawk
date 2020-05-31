@@ -43,6 +43,29 @@ void _debug_puts(const char *);
 
 #ifdef __cplusplus
 }
+
+// allocate memory from the "sealed" pool.  this memory can never be freed,
+// and can only be allocated or written to during the init phase.  after that, the host
+// seals the pool, making it read only and all of its contents frozen.  good for LUTs and
+// ROMs
+template<typename T> T* alloc_sealed(size_t nmemb)
+{
+	return (T*)alloc_sealed(nmemb * sizeof(T));
+}
+// allocate memory from the "invisible" pool.  this memory can never be freed.
+// this memory is not savestated!  this should only be used for a large buffer whose contents
+// you are absolutely sure will not harm savestates
+template<typename T> T* alloc_invisible(size_t nmemb)
+{
+	return (T*)alloc_invisible(nmemb * sizeof(T));
+}
+// allocate memory from the "plain" pool.  this memory can never be freed.
+// this memory is savestated normally.
+// useful to avoid malloc() overhead for things that will never be freed
+template<typename T> T* alloc_plain(size_t nmemb)
+{
+	return (T*)alloc_plain(nmemb * sizeof(T));
+}
 #endif
 
 #endif

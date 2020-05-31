@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include "mednafen/src/FileStream.h"
 #include "nyma.h"
+#include "NymaTypes_generated.h"
 
 using namespace Mednafen;
 
@@ -58,8 +59,6 @@ ECL_EXPORT bool InitRom(const InitData& data)
 {
 	try
 	{
-		Setup();
-
 		std::unique_ptr<Stream> gamestream(new FileStream(data.FileNameFull, FileStream::MODE_READ, false));
 		GameFile gf({
 			&NVFS,
@@ -73,6 +72,8 @@ ECL_EXPORT bool InitRom(const InitData& data)
 		});
 
 		Game->Load(&gf);
+
+		Setup();
 	}
 	catch(...)
 	{
@@ -87,8 +88,8 @@ ECL_EXPORT bool InitCd(int numdisks)
 {
 	try
 	{
-		Setup();
 		StartGameWithCds(numdisks);
+		Setup();
 	}
 	catch(...)
 	{
@@ -204,156 +205,6 @@ ECL_EXPORT void SetInputCallback(void (*cb)())
 	InputCallback = cb;
 }
 
-// same information as PortInfo, but easier to marshal
-struct NPortInfo
-{
-	const char* ShortName;
-	const char* FullName;
-	const char* DefaultDeviceShortName;
-	uint32_t NumDevices;
-};
-struct NDeviceInfo
-{
-	const char* ShortName;
-	const char* FullName;
-	const char* Description;
-	uint32_t Flags;
-	uint32_t ByteLength;
-	uint32_t NumInputs;
-};
-struct NInputInfo
-{
-	const char* SettingName;
-	const char* Name;
-	int16_t ConfigOrder;
-	uint16_t BitOffset;
-	InputDeviceInputType Type; // uint8_t
-	uint8_t Flags;
-	uint8_t BitSize;
-};
-struct NButtonInfo
-{
-	const char* ExcludeName;
-};
-struct NAxisInfo
-{
-	// negative, then positive
-	const char* SettingName[2];
-	const char* Name[2];	
-};
-struct NSwitchInfo
-{
-	uint32_t NumPositions;
-	uint32_t DefaultPosition;
-	struct Position
-	{
-		const char* SettingName;
-		const char* Name;
-		const char* Description;
-	};
-};
-struct NStatusInfo
-{
-	uint32_t NumStates;
-	struct State
-	{
-		const char* ShortName;
-		const char* Name;
-		int32_t Color; // (msb)0RGB(lsb), -1 for unused.
-		int32_t _Padding;
-	};
-};
-
-ECL_EXPORT uint32_t GetNumPorts()
-{
-	return Game->PortInfo.size();
-}
-ECL_EXPORT NPortInfo& GetPort(uint32_t port)
-{
-	auto& a = *(NPortInfo*)InputPortData;
-	auto& x = Game->PortInfo[port];
-	a.ShortName = x.ShortName;
-	a.FullName = x.FullName;
-	a.DefaultDeviceShortName = x.DefaultDevice;
-	a.NumDevices = x.DeviceInfo.size();
-	return a;
-}
-ECL_EXPORT NDeviceInfo& GetDevice(uint32_t port, uint32_t dev)
-{
-	auto& b = *(NDeviceInfo*)InputPortData;
-	auto& y = Game->PortInfo[port].DeviceInfo[dev];
-	b.ShortName = y.ShortName;
-	b.FullName = y.FullName;
-	b.Description = y.Description;
-	b.Flags = y.Flags;
-	b.ByteLength = y.IDII.InputByteSize;
-	b.NumInputs = y.IDII.size();
-	return b;
-}
-ECL_EXPORT NInputInfo& GetInput(uint32_t port, uint32_t dev, uint32_t input)
-{
-	auto& c = *(NInputInfo*)InputPortData;
-	auto& z = Game->PortInfo[port].DeviceInfo[dev].IDII[input];
-	c.SettingName = z.SettingName;
-	c.Name = z.Name;
-	c.ConfigOrder = z.ConfigOrder;
-	c.BitOffset = z.BitOffset;
-	c.Type = z.Type;
-	c.Flags = z.Flags;
-	c.BitSize = z.BitSize;
-	return c;
-}
-ECL_EXPORT NButtonInfo& GetButton(uint32_t port, uint32_t dev, uint32_t input)
-{
-	auto& c = *(NButtonInfo*)InputPortData;
-	auto& z = Game->PortInfo[port].DeviceInfo[dev].IDII[input].Button;
-	c.ExcludeName = z.ExcludeName;
-	return c;
-}
-ECL_EXPORT NSwitchInfo& GetSwitch(uint32_t port, uint32_t dev, uint32_t input)
-{
-	auto& c = *(NSwitchInfo*)InputPortData;
-	auto& z = Game->PortInfo[port].DeviceInfo[dev].IDII[input].Switch;
-	c.NumPositions = z.NumPos;
-	c.DefaultPosition = z.DefPos;
-	return c;
-}
-ECL_EXPORT NSwitchInfo::Position& GetSwitchPosition(uint32_t port, uint32_t dev, uint32_t input, int i)
-{
-	auto& c = *(NSwitchInfo::Position*)InputPortData;
-	auto& z = Game->PortInfo[port].DeviceInfo[dev].IDII[input].Switch;
-	c.SettingName = z.Pos[i].SettingName;
-	c.Name = z.Pos[i].Name;
-	c.Description = z.Pos[i].Description;
-	return c;
-}
-ECL_EXPORT NStatusInfo& GetStatus(uint32_t port, uint32_t dev, uint32_t input)
-{
-	auto& c = *(NStatusInfo*)InputPortData;
-	auto& z = Game->PortInfo[port].DeviceInfo[dev].IDII[input].Status;
-	c.NumStates = z.NumStates;
-	return c;
-}
-ECL_EXPORT NStatusInfo::State& GetStatusState(uint32_t port, uint32_t dev, uint32_t input, int i)
-{
-	auto& c = *(NStatusInfo::State*)InputPortData;
-	auto& z = Game->PortInfo[port].DeviceInfo[dev].IDII[input].Status;
-	c.ShortName = z.States[i].ShortName;
-	c.Name = z.States[i].Name;
-	c.Color = z.States[i].Color;
-	return c;
-}
-ECL_EXPORT NAxisInfo& GetAxis(uint32_t port, uint32_t dev, uint32_t input)
-{
-	auto& c = *(NAxisInfo*)InputPortData;
-	auto& z = Game->PortInfo[port].DeviceInfo[dev].IDII[input].Axis;
-	c.SettingName[0] = z.sname_dir[0];
-	c.SettingName[1] = z.sname_dir[1];
-	c.Name[0] = z.name_dir[0];
-	c.Name[1] = z.name_dir[1];
-	return c;
-}
-
 ECL_EXPORT void SetInputDevices(const char** devices)
 {
 	for (unsigned port = 0; port < MAX_PORTS && devices[port]; port++)
@@ -363,47 +214,141 @@ ECL_EXPORT void SetInputDevices(const char** devices)
 	}
 }
 
-struct NSetting
+namespace NymaTypes
 {
-	const char* Name;
-	const char* Description;
-	const char* SettingsKey;
-	const char* DefaultValue;
-	const char* Min;
-	const char* Max;
-	uint32_t Flags;
-	uint32_t Type;
-};
-struct NEnumValue
+#define MAYBENULL(y,x) if(x) y = x
+ECL_EXPORT void DumpInputs()
 {
-	const char* Name;
-	const char* Description;
-	const char* Value;
-};
-
-ECL_EXPORT void IterateSettings(int index, NSetting& s)
-{
-	auto& a = Game->Settings[index];
-	if (a.name)
+	NPortsT ports;
+	for (auto& x: Game->PortInfo)
 	{
-		s.Name = a.description;
-		s.Description = a.description_extra;
-		s.SettingsKey = a.name;
-		s.DefaultValue = a.default_value;
-		s.Min = a.minimum;
-		s.Max = a.maximum;
-		s.Flags = a.flags;
-		s.Type = a.type;
+		std::unique_ptr<NPortInfoT> a(new NPortInfoT());
+		MAYBENULL(a->ShortName, x.ShortName);
+		MAYBENULL(a->FullName, x.FullName);
+		MAYBENULL(a->DefaultDeviceShortName, x.DefaultDevice);
+		for (auto& y: x.DeviceInfo)
+		{
+			std::unique_ptr<NDeviceInfoT> b(new NDeviceInfoT());
+			MAYBENULL(b->ShortName, y.ShortName);
+			MAYBENULL(b->FullName, y.FullName);
+			MAYBENULL(b->Description, y.Description);
+			b->Flags = (DeviceFlags)y.Flags;
+			b->ByteLength = y.IDII.InputByteSize;
+			for (auto& z: y.IDII)
+			{
+				std::unique_ptr<NInputInfoT> c(new NInputInfoT());
+				MAYBENULL(c->SettingName, z.SettingName);
+				MAYBENULL(c->Name, z.Name);
+				c->ConfigOrder = z.ConfigOrder;
+				c->BitOffset = z.BitOffset;
+				c->Type = (InputType)z.Type;
+				c->Flags = (AxisFlags)z.Flags;
+				c->BitSize = z.BitSize;
+				switch(z.Type)
+				{
+					case IDIT_BUTTON:
+					case IDIT_BUTTON_CAN_RAPID:
+					{
+						auto p(new NButtonInfoT());
+						MAYBENULL(p->ExcludeName, z.Button.ExcludeName);
+						c->Extra.type = NInputExtra_Button;
+						c->Extra.value = p;
+						break;
+					}
+					case IDIT_SWITCH:
+					{
+						auto p(new NSwitchInfoT());
+						p->DefaultPosition = z.Switch.DefPos;
+						for (uint32_t i = 0; i < z.Switch.NumPos; i++)
+						{
+							auto& q = z.Switch.Pos[i];
+							std::unique_ptr<NSwitchPositionT> d(new NSwitchPositionT());
+							MAYBENULL(d->SettingName, q.SettingName);
+							MAYBENULL(d->Name, q.Name);
+							MAYBENULL(d->Description, q.Description);
+							p->Positions.push_back(std::move(d));
+						}
+						c->Extra.type = NInputExtra_Switch;
+						c->Extra.value = p;
+						break;
+					}
+					case IDIT_STATUS:
+					{
+						auto p(new NStatusInfoT());
+						for (uint32_t i = 0; i < z.Status.NumStates; i++)
+						{
+							auto& q = z.Status.States[i];
+							std::unique_ptr<NStatusStateT> d(new NStatusStateT());
+							MAYBENULL(d->ShortName, q.ShortName);
+							MAYBENULL(d->Name, q.Name);
+							d->Color = q.Color;
+							p->States.push_back(std::move(d));
+						}
+						c->Extra.type = NInputExtra_Status;
+						c->Extra.value = p;
+						break;
+					}
+					case IDIT_AXIS:
+					case IDIT_AXIS_REL:
+					{
+						auto p(new NAxisInfoT());
+						MAYBENULL(p->SettingsNameNeg, z.Axis.sname_dir[0]);
+						MAYBENULL(p->SettingsNamePos, z.Axis.sname_dir[1]);
+						MAYBENULL(p->NameNeg, z.Axis.name_dir[0]);
+						MAYBENULL(p->NamePos, z.Axis.name_dir[1]);
+						c->Extra.type = NInputExtra_Axis;
+						c->Extra.value = p;
+						break;
+					}
+					default:
+						// no extra data on these
+						break;
+				}
+				b->Inputs.push_back(std::move(c));
+			}
+			a->Devices.push_back(std::move(b));
+		}
+		ports.Values.push_back(std::move(a));
 	}
+
+	flatbuffers::FlatBufferBuilder fbb;
+	fbb.Finish(NPorts::Pack(fbb, &ports));
+
+	FileStream f("inputs", FileStream::MODE_WRITE);
+	f.write(fbb.GetBufferPointer(), fbb.GetSize());
 }
 
-ECL_EXPORT void IterateSettingEnums(int index, int enumIndex, NEnumValue& e)
+ECL_EXPORT void DumpSettings()
 {
-	auto& a = Game->Settings[index].enum_list[enumIndex];
-	if (a.string)
+	SettingsT settings;
+	for (auto a = Game->Settings; a->name; a++)
 	{
-		e.Name = a.description;
-		e.Description = a.description_extra;
-		e.Value = a.string;
+		std::unique_ptr<SettingT> s(new SettingT());
+		MAYBENULL(s->Name, a->description);
+		MAYBENULL(s->Description, a->description_extra);
+		MAYBENULL(s->SettingsKey, a->name);
+		MAYBENULL(s->DefaultValue, a->default_value);
+		MAYBENULL(s->Min, a->minimum);
+		MAYBENULL(s->Max, a->maximum);
+		s->Flags = (SettingsFlags)a->flags;
+		s->Type = (SettingType)a->type;
+		if (a->enum_list)
+		{
+			for (auto b = a->enum_list; b->string; b++)
+			{
+				std::unique_ptr<EnumValueT> e(new EnumValueT());
+				MAYBENULL(e->Name, b->description);
+				MAYBENULL(e->Description, b->description_extra);
+				MAYBENULL(e->Value, b->string);
+				s->SettingEnums.push_back(std::move(e));
+			}
+		}
+		settings.Values.push_back(std::move(s));
 	}
+	flatbuffers::FlatBufferBuilder fbb;
+	fbb.Finish(Settings::Pack(fbb, &settings));
+
+	FileStream f("settings", FileStream::MODE_WRITE);
+	f.write(fbb.GetBufferPointer(), fbb.GetSize());
+}
 }
