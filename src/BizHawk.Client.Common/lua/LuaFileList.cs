@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using BizHawk.Common.PathExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -111,7 +110,7 @@ namespace BizHawk.Client.Common
 					sb
 						.Append(file.Enabled ? "1" : "0")
 						.Append(' ')
-						.Append(Global.Config.PathEntries.AbsolutePathFor(file.Path, "").MakeRelativeTo(Path.GetDirectoryName(path)))
+						.Append(path)
 						.AppendLine();
 				}
 			}
@@ -119,7 +118,6 @@ namespace BizHawk.Client.Common
 			sw.Write(sb.ToString());
 
 			Filename = path;
-			Global.Config.RecentLuaSession.Add(path);
 			Changes = false;
 		}
 	}
