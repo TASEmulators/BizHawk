@@ -84,10 +84,6 @@ namespace BizHawk.Client.Common
 		public bool HotkeyConfigAutoTab { get; set; } = true;
 		public bool InputConfigAutoTab { get; set; } = true;
 		public bool SkipWaterboxIntegrityChecks { get; set; } = false;
-		public bool BackupSavestates { get; set; } = true;
-		public bool SaveScreenshotWithStates { get; set; } = true;
-		public int BigScreenshotSize { get; set; } = 128 * 1024;
-		public bool NoLowResLargeScreenshotWithStates { get; set; }
 		public int AutofireOn { get; set; } = 1;
 		public int AutofireOff { get; set; } = 1;
 		public bool AutofireLagFrames { get; set; } = true;
@@ -142,13 +138,7 @@ namespace BizHawk.Client.Common
 
 		public RewindConfig Rewind { get; set; } = new RewindConfig();
 
-		// Savestate settings
-		public SaveStateTypeE SaveStateType { get; set; } = SaveStateTypeE.Binary;
-		public const int DefaultSaveStateCompressionLevelNormal = 1;
-		public int SaveStateCompressionLevelNormal { get; set; } = DefaultSaveStateCompressionLevelNormal;
-		public const int DefaultSaveStateCompressionLevelRewind = 0; // this isn't actually used yet 
-		public int SaveStateCompressionLevelRewind { get; set; } = DefaultSaveStateCompressionLevelRewind; // this isn't actually used yet 
-		public int MovieCompressionLevel { get; set; } = 2;
+		public SaveStateConfig Savestates { get; set; } = new SaveStateConfig();
 
 		/// <summary>
 		/// Use vsync when presenting all 3d accelerated windows.

@@ -27,7 +27,7 @@
 		CustomRatio
 	}
 
-	public enum SaveStateTypeE
+	public enum SaveStateType
 	{
 		Binary, Text
 	}

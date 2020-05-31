@@ -4060,7 +4060,7 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				SavestateManager.SaveStateFile(Emulator, path);
+				SavestateManager.SaveStateFile(Emulator, path, Config.Savestates);
 
 				ClientApi.OnStateSaved(this, userFriendlyStateName);
 
@@ -4109,7 +4109,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Make backup first
-			if (Config.BackupSavestates)
+			if (Config.Savestates.MakeBackups)
 			{
 				Util.TryMoveBackupFile(path, $"{path}.bak");
 			}

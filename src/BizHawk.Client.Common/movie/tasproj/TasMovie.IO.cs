@@ -18,7 +18,7 @@ namespace BizHawk.Client.Common
 				Directory.CreateDirectory(file.Directory.ToString());
 			}
 
-			using var bs = new ZipStateSaver(fn, Global.Config.MovieCompressionLevel);
+			using var bs = new ZipStateSaver(fn, Global.Config.Savestates.MovieCompressionLevel);
 			bs.PutLump(BinaryStateLump.Movieheader, tw => tw.WriteLine(Header.ToString()));
 			bs.PutLump(BinaryStateLump.Comments, tw => tw.WriteLine(CommentsString()));
 			bs.PutLump(BinaryStateLump.Subtitles, tw => tw.WriteLine(Subtitles.ToString()));

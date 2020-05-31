@@ -95,12 +95,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetCasual()
 		{
-			_config.NoLowResLargeScreenshotWithStates = false;
-			_config.SaveScreenshotWithStates = false;
+			_config.Savestates.NoLowResLargeScreenshots = false;
+			_config.Savestates.SaveScreenshot = false;
 			_config.AllowUdlr = false;
-			_config.BackupSavestates = false;
+			_config.Savestates.MakeBackups = false;
 
-			_config.SaveStateCompressionLevelNormal = 0;
+			_config.Savestates.CompressionLevelNormal = 0;
 			_config.Rewind.EnabledLarge = false;
 			_config.Rewind.EnabledMedium = false;
 			_config.Rewind.EnabledSmall = true;
@@ -152,7 +152,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetLongPlay()
 		{
-			_config.SaveStateCompressionLevelNormal = 5;
+			_config.Savestates.CompressionLevelNormal = 5;
 
 			// SNES
 			_config.PreferredCores["SNES"] = CoreNames.Bsnes;
@@ -176,11 +176,11 @@ namespace BizHawk.Client.EmuHawk
 		private void SetTas()
 		{
 			// General
-			_config.SaveScreenshotWithStates = true;
+			_config.Savestates.SaveScreenshot = true;
 			_config.AllowUdlr = true;
-			_config.BackupSavestates = true;
+			_config.Savestates.MakeBackups = true;
 			_config.SkipLagFrame = false;
-			_config.SaveStateCompressionLevelNormal = 5;
+			_config.Savestates.CompressionLevelNormal = 5;
 
 			// Rewind
 			_config.Rewind.EnabledLarge = false;
@@ -228,9 +228,9 @@ namespace BizHawk.Client.EmuHawk
 		private void SetN64Tas()
 		{
 			// General
-			_config.BackupSavestates = false;
+			_config.Savestates.MakeBackups = false;
 			_config.SkipLagFrame = true;
-			_config.SaveStateCompressionLevelNormal = 0;
+			_config.Savestates.CompressionLevelNormal = 0;
 		}
 
 		private TSetting GetSyncSettings<TEmulator, TSetting>()

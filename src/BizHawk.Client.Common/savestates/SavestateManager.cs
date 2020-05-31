@@ -9,15 +9,15 @@ namespace BizHawk.Client.Common
 {
 	public static class SavestateManager
 	{
-		public static void SaveStateFile(IEmulator emulator, string filename)
+		public static void SaveStateFile(IEmulator emulator, string filename, SaveStateConfig config)
 		{
 			var core = emulator.AsStatable();
 
 			// the old method of text savestate save is now gone.
 			// a text savestate is just like a binary savestate, but with a different core lump
-			using var bs = new ZipStateSaver(filename, Global.Config.SaveStateCompressionLevelNormal);
+			using var bs = new ZipStateSaver(filename, config.CompressionLevelNormal);
 			bs.PutVersionLumps();
-			if (Global.Config.SaveStateType == SaveStateTypeE.Text)
+			if (config.Type == SaveStateType.Text)
 			{
 				// text savestate format
 				using (new SimpleTime("Save Core"))
@@ -34,7 +34,7 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			if (Global.Config.SaveScreenshotWithStates && emulator.HasVideoProvider())
+			if (config.SaveScreenshot && emulator.HasVideoProvider())
 			{
 				var vp = emulator.AsVideoProvider();
 				var buff = vp.GetVideoBuffer();
@@ -52,7 +52,7 @@ namespace BizHawk.Client.Common
 					int outHeight = vp.BufferHeight;
 
 					// if buffer is too big, scale down screenshot
-					if (!Global.Config.NoLowResLargeScreenshotWithStates && buff.Length >= Global.Config.BigScreenshotSize)
+					if (!config.NoLowResLargeScreenshots && buff.Length >= config.BigScreenshotSize)
 					{
 						outWidth /= 2;
 						outHeight /= 2;
