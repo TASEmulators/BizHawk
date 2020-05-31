@@ -8,11 +8,11 @@ When "mingw" is mentioned, this means a 64 bit gcc setup installed by https://ww
 ----------------------------------
 BUILDING .DLL FOR WINDOWS:
 
-libgambatte: There is a vs2019 solution at libgambatte/libgambatte.sln.
-wonderswan: There is a vs2019 solution at wonderswan/bizswan.sln
-octoshock (psx): There is a vs2019 solution at psx/octoshock/bizhawk/octoshock.sln
-libretrobridge: There is a vs2019 solution at LibretroBridge/vs2019/LibretroBridge.sln
 lynx: There is a vs2019 solution at lynx/msvc/bizlynx.sln
+wonderswan: There is a vs2019 solution at wonderswan/msvc/bizswan.sln
+libretrobridge: There is a vs2019 solution at LibretroBridge/msvc/LibretroBridge.sln
+libgambatte: There is a vs2019 solution at libgambatte/libgambatte.sln.
+octoshock (psx): There is a vs2019 solution at psx/octoshock/bizhawk/octoshock.sln
 
 libmupen64plus: ??
 
