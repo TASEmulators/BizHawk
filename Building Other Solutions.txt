@@ -15,7 +15,12 @@ quicknes: use quicknes/msvc/libquicknes.sln
 libgambatte: use libgambatte/libgambatte.sln.
 octoshock (psx): use psx/octoshock/bizhawk/octoshock.sln
 
-libmupen64plus: ??
+libmupen64plus: 
+Use mupen64plus-sln/projects/msvc11/mupen64plus.sln.
+These are actually a mishmash of vs2010 and vs2013 projects.
+It will be difficult to build this without having vs2010 and vs2013 installed.
+Currently, we are stuck due to out of date mupen code and prebuilt static libraries.
+If you have the skills required to modify our mupen core, please send us a postcard to let us know and consider volunteering for the BizMupen Rehabilitation Team where we will redo the core on latest master.
 
 melonds: ??
 mgba: mingw
