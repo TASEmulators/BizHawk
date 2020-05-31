@@ -30,7 +30,7 @@ namespace BizHawk.Client.Common
 
 		// Poop
 		public string GetRetroSaveRAMDirectory(GameInfo game)
-			=> _pathEntries.RetroSaveRamAbsolutePath(game, Global.MovieSession.Movie.IsActive(), Global.MovieSession.Movie.Filename);
+			=> _pathEntries.RetroSaveRamAbsolutePath(game, Global.MovieSession.Movie);
 
 		// Poop
 		public string GetRetroSystemPath(GameInfo game)

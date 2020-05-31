@@ -2634,7 +2634,7 @@ namespace BizHawk.Client.EmuHawk
 
 			ConfigContextMenuItem.Visible = _inFullscreen;
 
-			ClearSRAMContextMenuItem.Visible = File.Exists(Config.PathEntries.SaveRamAbsolutePath(Game, movieIsActive));
+			ClearSRAMContextMenuItem.Visible = File.Exists(Config.PathEntries.SaveRamAbsolutePath(Game, MovieSession.Movie));
 
 			ContextSeparator_AfterROM.Visible = OpenRomContextMenuItem.Visible || LoadLastRomContextMenuItem.Visible;
 

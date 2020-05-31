@@ -1624,11 +1624,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				try // zero says: this is sort of sketchy... but this is no time for rearchitecting
 				{
-					var saveRamPath = Config.PathEntries.SaveRamAbsolutePath(Game, MovieSession.Movie.IsActive());
+					var saveRamPath = Config.PathEntries.SaveRamAbsolutePath(Game, MovieSession.Movie);
 					if (Config.AutosaveSaveRAM)
 					{
 						var saveram = new FileInfo(saveRamPath);
-						var autosave = new FileInfo(Config.PathEntries.AutoSaveRamAbsolutePath(Game, MovieSession.Movie.IsActive()));
+						var autosave = new FileInfo(Config.PathEntries.AutoSaveRamAbsolutePath(Game, MovieSession.Movie));
 						if (autosave.Exists && autosave.LastWriteTime > saveram.LastWriteTime)
 						{
 							AddOnScreenMessage("AutoSaveRAM is newer than last saved SaveRAM");
@@ -1673,16 +1673,15 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator.HasSaveRam())
 			{
-				bool movieIsActive = MovieSession.Movie.IsActive();
 				string path;
 				if (autosave)
 				{
-					path = Config.PathEntries.AutoSaveRamAbsolutePath(Game, movieIsActive);
+					path = Config.PathEntries.AutoSaveRamAbsolutePath(Game, MovieSession.Movie);
 					AutoFlushSaveRamIn = Config.FlushSaveRamFrames;
 				}
 				else
 				{
-					path =  Config.PathEntries.SaveRamAbsolutePath(Game, movieIsActive);
+					path =  Config.PathEntries.SaveRamAbsolutePath(Game, MovieSession.Movie);
 				}
 
 				var file = new FileInfo(path);
@@ -3718,12 +3717,11 @@ namespace BizHawk.Client.EmuHawk
 					// Don't load Save Ram if a movie is being loaded
 					if (!MovieSession.NewMovieQueued)
 					{
-						var movieIsActive = MovieSession.Movie.IsActive();
-						if (File.Exists(Config.PathEntries.SaveRamAbsolutePath(loader.Game, movieIsActive)))
+						if (File.Exists(Config.PathEntries.SaveRamAbsolutePath(loader.Game, MovieSession.Movie)))
 						{
 							LoadSaveRam();
 						}
-						else if (Config.AutosaveSaveRAM && File.Exists(Config.PathEntries.SaveRamAbsolutePath(loader.Game, movieIsActive)))
+						else if (Config.AutosaveSaveRAM && File.Exists(Config.PathEntries.SaveRamAbsolutePath(loader.Game, MovieSession.Movie)))
 						{
 							AddOnScreenMessage("AutoSaveRAM found, but SaveRAM was not saved");
 						}
@@ -3838,7 +3836,7 @@ namespace BizHawk.Client.EmuHawk
 			GameIsClosing = true;
 			if (clearSram)
 			{
-				var path = Config.PathEntries.SaveRamAbsolutePath(Game, MovieSession.Movie.IsActive());
+				var path = Config.PathEntries.SaveRamAbsolutePath(Game, MovieSession.Movie);
 				if (File.Exists(path))
 				{
 					File.Delete(path);
