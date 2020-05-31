@@ -7,9 +7,12 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public static class SavestateManager
+	/// <summary>
+	/// Represents an aggregated savestate file that includes core, movie, and other related data
+	/// </summary>
+	public static class SavestateFile
 	{
-		public static void SaveStateFile(IEmulator emulator, string filename, SaveStateConfig config)
+		public static void Create(IEmulator emulator, string filename, SaveStateConfig config)
 		{
 			var core = emulator.AsStatable();
 
@@ -96,7 +99,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public static bool LoadStateFile(IEmulator emulator, string path)
+		public static bool Load(IEmulator emulator, string path)
 		{
 			var core = emulator.AsStatable();
 
