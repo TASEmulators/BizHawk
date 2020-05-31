@@ -1,6 +1,7 @@
 ﻿using BizHawk.Bizware.BizwareGL;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
+using System.Collections.Generic;
 
 // ReSharper disable StyleCop.SA1401
 namespace BizHawk.Client.EmuHawk
@@ -38,5 +39,7 @@ namespace BizHawk.Client.EmuHawk
 		/// Used to disable secondary throttling (e.g. vsync, audio) for unthrottled modes or when the primary (clock) throttle is taking over (e.g. during fast forward/rewind).
 		/// </summary>
 		public static bool DisableSecondaryThrottling { get; set; }
+
+		public static Dictionary<string, object> UserBag { get; set; } = new Dictionary<string, object>();
 	}
 }

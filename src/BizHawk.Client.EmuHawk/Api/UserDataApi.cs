@@ -13,15 +13,15 @@ namespace BizHawk.Client.EmuHawk
 				var t = value.GetType();
 				if (!t.IsPrimitive && t != typeof(string)) throw new InvalidOperationException("Invalid type for userdata");
 			}
-			Global.UserBag[name] = value;
+			GlobalWin.UserBag[name] = value;
 		}
 
-		public object Get(string key) => Global.UserBag.TryGetValue(key, out var value) ? value : null;
+		public object Get(string key) => GlobalWin.UserBag.TryGetValue(key, out var value) ? value : null;
 
-		public void Clear() => Global.UserBag.Clear();
+		public void Clear() => GlobalWin.UserBag.Clear();
 
-		public bool Remove(string key) => Global.UserBag.Remove(key);
+		public bool Remove(string key) => GlobalWin.UserBag.Remove(key);
 
-		public bool ContainsKey(string key) => Global.UserBag.ContainsKey(key);
+		public bool ContainsKey(string key) => GlobalWin.UserBag.ContainsKey(key);
 	}
 }
