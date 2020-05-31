@@ -3983,7 +3983,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (SavestateFile.Load(Emulator, path))
+			if (new SavestateFile(Emulator, MovieSession, Global.UserBag).Load(path))
 			{
 				GlobalWin.OSD.ClearGuiText();
 				ClientApi.OnStateLoaded(this, userFriendlyStateName);
@@ -4060,7 +4060,7 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				SavestateFile.Create(Emulator, path, Config.Savestates);
+				new SavestateFile(Emulator, MovieSession, Global.UserBag).Create(path, Config.Savestates);
 
 				ClientApi.OnStateSaved(this, userFriendlyStateName);
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -10,37 +11,54 @@ namespace BizHawk.Client.Common
 	/// <summary>
 	/// Represents an aggregated savestate file that includes core, movie, and other related data
 	/// </summary>
-	public static class SavestateFile
+	public class SavestateFile
 	{
-		public static void Create(IEmulator emulator, string filename, SaveStateConfig config)
-		{
-			var core = emulator.AsStatable();
+		private readonly IEmulator _emulator;
+		private readonly IStatable _statable;
+		private readonly IVideoProvider _videoProvider;
+		private readonly IMovieSession _movieSession;
+		private readonly Dictionary<string, object> _userBag;
 
+		public SavestateFile(IEmulator emulator, IMovieSession movieSession, Dictionary<string, object> userBag)
+		{
+			if (!emulator.HasSavestates())
+			{
+				throw new InvalidOperationException("The provided core must have savestates");
+			}
+
+			_emulator = emulator;
+			_statable = emulator.AsStatable();
+			if (emulator.HasVideoProvider())
+			{
+				_videoProvider = emulator.AsVideoProvider();
+			}
+
+			_movieSession = movieSession;
+			_userBag = userBag;
+		}
+
+		public void Create(string filename, SaveStateConfig config)
+		{
 			// the old method of text savestate save is now gone.
 			// a text savestate is just like a binary savestate, but with a different core lump
 			using var bs = new ZipStateSaver(filename, config.CompressionLevelNormal);
 			bs.PutVersionLumps();
-			if (config.Type == SaveStateType.Text)
+
+			using (new SimpleTime("Save Core"))
 			{
-				// text savestate format
-				using (new SimpleTime("Save Core"))
+				if (config.Type == SaveStateType.Text)
 				{
-					bs.PutLump(BinaryStateLump.CorestateText, tw => core.SaveStateText(tw));
+					bs.PutLump(BinaryStateLump.CorestateText, tw => _statable.SaveStateText(tw));
 				}
-			}
-			else
-			{
-				// binary core lump format
-				using (new SimpleTime("Save Core"))
+				else
 				{
-					bs.PutLump(BinaryStateLump.Corestate, bw => core.SaveStateBinary(bw));
+					bs.PutLump(BinaryStateLump.Corestate, bw => _statable.SaveStateBinary(bw));
 				}
 			}
 
-			if (config.SaveScreenshot && emulator.HasVideoProvider())
+			if (config.SaveScreenshot && _videoProvider != null)
 			{
-				var vp = emulator.AsVideoProvider();
-				var buff = vp.GetVideoBuffer();
+				var buff = _videoProvider.GetVideoBuffer();
 				if (buff.Length == 1)
 				{
 					// is a hacky opengl texture ID. can't handle this now!
@@ -51,8 +69,8 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					int outWidth = vp.BufferWidth;
-					int outHeight = vp.BufferHeight;
+					int outWidth = _videoProvider.BufferWidth;
+					int outHeight = _videoProvider.BufferHeight;
 
 					// if buffer is too big, scale down screenshot
 					if (!config.NoLowResLargeScreenshots && buff.Length >= config.BigScreenshotSize)
@@ -63,46 +81,44 @@ namespace BizHawk.Client.Common
 
 					using (new SimpleTime("Save Framebuffer"))
 					{
-						bs.PutLump(BinaryStateLump.Framebuffer, s => QuickBmpFile.Save(emulator.AsVideoProvider(), s, outWidth, outHeight));
+						bs.PutLump(BinaryStateLump.Framebuffer, s => QuickBmpFile.Save(_videoProvider, s, outWidth, outHeight));
 					}
 				}
 			}
 
-			if (Global.MovieSession.Movie.IsActive())
+			if (_movieSession.Movie.IsActive())
 			{
 				bs.PutLump(BinaryStateLump.Input,
 					delegate(TextWriter tw)
 					{
 						// this never should have been a core's responsibility
-						tw.WriteLine("Frame {0}", emulator.Frame);
-						Global.MovieSession.HandleSaveState(tw);
+						tw.WriteLine("Frame {0}", _emulator.Frame);
+						_movieSession.HandleSaveState(tw);
 					});
 			}
 
-			if (Global.UserBag.Any())
+			if (_userBag.Any())
 			{
 				bs.PutLump(BinaryStateLump.UserData,
 					delegate(TextWriter tw)
 					{
-						var data = ConfigService.SaveWithType(Global.UserBag);
+						var data = ConfigService.SaveWithType(_userBag);
 						tw.WriteLine(data);
 					});
 			}
 
-			if (Global.MovieSession.Movie.IsActive() && Global.MovieSession.Movie is ITasMovie)
+			if (_movieSession.Movie.IsActive() && _movieSession.Movie is ITasMovie)
 			{
 				bs.PutLump(BinaryStateLump.LagLog,
 					delegate(TextWriter tw)
 					{
-						((ITasMovie)Global.MovieSession.Movie).LagLog.Save(tw);
+						((ITasMovie)_movieSession.Movie).LagLog.Save(tw);
 					});
 			}
 		}
 
-		public static bool Load(IEmulator emulator, string path)
+		public bool Load(string path)
 		{
-			var core = emulator.AsStatable();
-
 			// try to detect binary first
 			var bl = ZipStateLoader.LoadAndDetect(path);
 			if (bl != null)
@@ -112,9 +128,9 @@ namespace BizHawk.Client.Common
 					var succeed = false;
 
 					// Movie timeline check must happen before the core state is loaded
-					if (Global.MovieSession.Movie.IsActive())
+					if (_movieSession.Movie.IsActive())
 					{
-						bl.GetLump(BinaryStateLump.Input, true, tr => succeed = Global.MovieSession.CheckSavestateTimeline(tr));
+						bl.GetLump(BinaryStateLump.Input, true, tr => succeed = _movieSession.CheckSavestateTimeline(tr));
 						if (!succeed)
 						{
 							return false;
@@ -123,22 +139,22 @@ namespace BizHawk.Client.Common
 
 					using (new SimpleTime("Load Core"))
 					{
-						bl.GetCoreState(br => core.LoadStateBinary(br), tr => core.LoadStateText(tr));
+						bl.GetCoreState(br => _statable.LoadStateBinary(br), tr => _statable.LoadStateText(tr));
 					}
 
 					// We must handle movie input AFTER the core is loaded to properly handle mode changes, and input latching
-					if (Global.MovieSession.Movie.IsActive())
+					if (_movieSession.Movie.IsActive())
 					{
-						bl.GetLump(BinaryStateLump.Input, true, tr => succeed = Global.MovieSession.HandleLoadState(tr));
+						bl.GetLump(BinaryStateLump.Input, true, tr => succeed = _movieSession.HandleLoadState(tr));
 						if (!succeed)
 						{
 							return false;
 						}
 					}
 
-					if (emulator.HasVideoProvider())
+					if (_videoProvider != null)
 					{
-						bl.GetLump(BinaryStateLump.Framebuffer, false, br => PopulateFramebuffer(br, emulator.AsVideoProvider()));
+						bl.GetLump(BinaryStateLump.Framebuffer, false, br => PopulateFramebuffer(br, _videoProvider));
 					}
 
 					string userData = "";
@@ -156,14 +172,19 @@ namespace BizHawk.Client.Common
 
 					if (!string.IsNullOrWhiteSpace(userData))
 					{
-						Global.UserBag = (Dictionary<string, object>)ConfigService.LoadWithType(userData);
+						var bag = (Dictionary<string, object>)ConfigService.LoadWithType(userData);
+						_userBag.Clear();
+						foreach (var kvp in bag)
+						{
+							_userBag.Add(kvp.Key, kvp.Value);
+						}
 					}
 
-					if (Global.MovieSession.Movie.IsActive() && Global.MovieSession.Movie is ITasMovie)
+					if (_movieSession.Movie.IsActive() && _movieSession.Movie is ITasMovie)
 					{
 						bl.GetLump(BinaryStateLump.LagLog, false, delegate(TextReader tr)
 						{
-							((ITasMovie)Global.MovieSession.Movie).LagLog.Load(tr);
+							((ITasMovie)_movieSession.Movie).LagLog.Load(tr);
 						});
 					}
 				}
