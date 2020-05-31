@@ -328,15 +328,15 @@ namespace BizHawk.Client.Common
 			sw.Flush();
 		}
 
-		public BinaryStateSaver(string path, bool notamovie = true) // notamovie is hack, really should have separate something
+		public BinaryStateSaver(string path, bool notamovie) // notamovie is hack, really should have separate something
 		{
 			_zip = new FrameworkZipWriter(path, notamovie ? Global.Config.SaveStateCompressionLevelNormal : Global.Config.MovieCompressionLevel);
+		}
 
-			if (notamovie)
-			{
-				PutLump(BinaryStateLump.Versiontag, WriteVersion);
-				PutLump(BinaryStateLump.BizVersion, WriteEmuVersion);
-			}
+		public void PutVersionLumps()
+		{
+			PutLump(BinaryStateLump.Versiontag, WriteVersion);
+			PutLump(BinaryStateLump.BizVersion, WriteEmuVersion);
 		}
 
 		public void PutLump(BinaryStateLump lump, Action<Stream> callback)

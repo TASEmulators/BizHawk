@@ -15,7 +15,8 @@ namespace BizHawk.Client.Common
 
 			// the old method of text savestate save is now gone.
 			// a text savestate is just like a binary savestate, but with a different core lump
-			using var bs = new BinaryStateSaver(filename);
+			using var bs = new BinaryStateSaver(filename, true);
+			bs.PutVersionLumps();
 			if (Global.Config.SaveStateType == SaveStateTypeE.Text)
 			{
 				// text savestate format
