@@ -94,15 +94,6 @@ namespace BizHawk.Client.Common
 
 			Filename = path;
 			return true;
-
-		}
-
-		public void SaveSession()
-		{
-			if (!string.IsNullOrWhiteSpace(Filename))
-			{
-				SaveSession(Filename);
-			}
 		}
 
 		public void SaveSession(string path)

@@ -690,14 +690,7 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Sound.StartSound();
 				if (result == DialogResult.Yes)
 				{
-					if (!string.IsNullOrWhiteSpace(LuaImp.ScriptList.Filename))
-					{
-						LuaImp.ScriptList.SaveSession();
-					}
-					else
-					{
-						SaveSessionAs();
-					}
+					SaveOrSaveAs();
 
 					return true;
 				}
@@ -722,6 +715,18 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var form in Application.OpenForms.OfType<LuaRegisteredFunctionsList>().ToList())
 			{
 				form.UpdateValues();
+			}
+		}
+
+		private void SaveOrSaveAs()
+		{
+			if (!string.IsNullOrWhiteSpace(LuaImp.ScriptList.Filename))
+			{
+				LuaImp.ScriptList.SaveSession(LuaImp.ScriptList.Filename);
+			}
+			else
+			{
+				SaveSessionAs();
 			}
 		}
 
@@ -780,15 +785,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (LuaImp.ScriptList.Changes)
 			{
-				if (!string.IsNullOrWhiteSpace(LuaImp.ScriptList.Filename))
-				{
-					LuaImp.ScriptList.SaveSession();
-				}
-				else
-				{
-					SaveSessionAs();
-				}
-
+				SaveOrSaveAs();
 				OutputMessages.Text = $"{Path.GetFileName(LuaImp.ScriptList.Filename)} saved.";
 			}
 		}
