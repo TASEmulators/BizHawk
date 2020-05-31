@@ -98,27 +98,25 @@ namespace BizHawk.Client.Common
 
 		public void SaveSession(string path)
 		{
-			using (var sw = new StreamWriter(path))
+			using var sw = new StreamWriter(path);
+			var sb = new StringBuilder();
+			foreach (var file in this)
 			{
-				var sb = new StringBuilder();
-				foreach (var file in this)
+				if (file.IsSeparator)
 				{
-					if (file.IsSeparator)
-					{
-						sb.AppendLine("---");
-					}
-					else
-					{
-						sb
-							.Append(file.Enabled ? "1" : "0")
-							.Append(' ')
-							.Append(Global.Config.PathEntries.AbsolutePathFor(file.Path, "").MakeRelativeTo(Path.GetDirectoryName(path)))
-							.AppendLine();
-					}
+					sb.AppendLine("---");
 				}
-
-				sw.Write(sb.ToString());
+				else
+				{
+					sb
+						.Append(file.Enabled ? "1" : "0")
+						.Append(' ')
+						.Append(Global.Config.PathEntries.AbsolutePathFor(file.Path, "").MakeRelativeTo(Path.GetDirectoryName(path)))
+						.AppendLine();
+				}
 			}
+
+			sw.Write(sb.ToString());
 
 			Filename = path;
 			Global.Config.RecentLuaSession.Add(path);
