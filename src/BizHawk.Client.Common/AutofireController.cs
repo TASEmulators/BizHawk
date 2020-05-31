@@ -9,10 +9,10 @@ namespace BizHawk.Client.Common
 {
 	public class AutofireController : IController
 	{
-		public AutofireController(ControllerDefinition definition, IEmulator emulator)
+		public AutofireController(ControllerDefinition definition, IEmulator emulator, int on, int off)
 		{
-			On = Global.Config.AutofireOn < 1 ? 0 : Global.Config.AutofireOn;
-			Off = Global.Config.AutofireOff < 1 ? 0 : Global.Config.AutofireOff;
+			On = on < 1 ? 0 : on;
+			Off = off < 1 ? 0 : off;
 			Definition = definition;
 			_emulator = emulator;
 		}

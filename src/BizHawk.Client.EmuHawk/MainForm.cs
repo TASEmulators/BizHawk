@@ -1947,7 +1947,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			Global.InputManager.ClientControls = controls;
-			_autofireNullControls = new AutofireController(NullController.Instance.Definition, Emulator);
+			_autofireNullControls = new AutofireController(
+				NullController.Instance.Definition,
+				Emulator,
+				Config.AutofireOn,
+				Config.AutofireOff);
 		}
 
 		private void LoadMoviesFromRecent(string path)

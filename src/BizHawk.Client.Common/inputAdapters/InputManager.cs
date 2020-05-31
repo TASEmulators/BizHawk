@@ -84,7 +84,7 @@ namespace BizHawk.Client.Common
 			var def = emulator.ControllerDefinition;
 
 			ActiveController = BindToDefinition(def, config.AllTrollers, config.AllTrollersAnalog);
-			AutoFireController = BindToDefinitionAF(def, emulator, config.AllTrollersAutoFire);
+			AutoFireController = BindToDefinitionAF(def, emulator, config.AllTrollersAutoFire, config.AutofireOn, config.AutofireOff);
 
 			// allow propagating controls that are in the current controller definition but not in the prebaked one
 			// these two lines shouldn't be required anymore under the new system?
@@ -121,9 +121,14 @@ namespace BizHawk.Client.Common
 			return ret;
 		}
 
-		private static AutofireController BindToDefinitionAF(ControllerDefinition def, IEmulator emulator, IDictionary<string, Dictionary<string, string>> allBinds)
+		private static AutofireController BindToDefinitionAF(
+			ControllerDefinition def,
+			IEmulator emulator,
+			IDictionary<string, Dictionary<string, string>> allBinds,
+			int on,
+			int off)
 		{
-			var ret = new AutofireController(def, emulator);
+			var ret = new AutofireController(def, emulator, on, off);
 			if (allBinds.TryGetValue(def.Name, out var binds))
 			{
 				foreach (var btn in def.BoolButtons)
