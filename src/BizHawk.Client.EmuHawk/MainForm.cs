@@ -817,7 +817,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private Sound Sound => GlobalWin.Sound;
-		private CheatCollection CheatList => Global.CheatList;
+		public CheatCollection CheatList => GlobalWin.CheatList;
 
 		private Rewinder Rewinder { get; }
 

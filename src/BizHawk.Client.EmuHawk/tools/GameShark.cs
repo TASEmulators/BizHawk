@@ -47,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 						var description = !string.IsNullOrWhiteSpace(txtDescription.Text)
 							? txtDescription.Text
 							: code;
-						Global.CheatList.Add(result.ToCheat(domain, description));
+						MainForm.CheatList.Add(result.ToCheat(domain, description));
 					}
 					else
 					{

@@ -486,7 +486,7 @@ namespace BizHawk.Client.EmuHawk
 			// If Cheat tool is loaded, restarting will restart the list too anyway
 			if (!Has<Cheats>())
 			{
-				Global.CheatList.NewList(GenerateDefaultCheatFilename(), autosave: true);
+				_owner.CheatList.NewList(GenerateDefaultCheatFilename(), autosave: true);
 			}
 
 			var unavailable = new List<IToolForm>();

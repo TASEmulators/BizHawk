@@ -97,7 +97,7 @@ namespace BizHawk.Client.EmuHawk
 				var result = watch.Poke(ValueBox.Text);
 				if (result)
 				{
-					var cheat = Global.CheatList.FirstOrDefault(c => c.Address == watch.Address && c.Domain == watch.Domain);
+					var cheat = GlobalWin.CheatList.FirstOrDefault(c => c.Address == watch.Address && c.Domain == watch.Domain);
 					if (cheat != (Cheat)null)
 					{
 						cheat.PokeValue(watch.Value); 

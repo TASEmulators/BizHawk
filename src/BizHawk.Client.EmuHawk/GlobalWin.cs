@@ -1,4 +1,5 @@
 ﻿using BizHawk.Bizware.BizwareGL;
+using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
 // ReSharper disable StyleCop.SA1401
@@ -10,6 +11,8 @@ namespace BizHawk.Client.EmuHawk
 		public static ToolManager Tools;
 
 		public static IEmulator Emulator { get; set; }
+
+		public static CheatCollection CheatList { get; set; } = new CheatCollection();
 
 		/// <summary>
 		/// the IGL to be used for rendering

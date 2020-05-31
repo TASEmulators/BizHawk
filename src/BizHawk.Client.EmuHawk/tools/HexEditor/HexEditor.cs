@@ -771,7 +771,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool IsFrozen(long address)
 		{
-			return Global.CheatList.IsActive(_domain, address);
+			return MainForm.CheatList.IsActive(_domain, address);
 		}
 
 		private void FreezeHighlighted()
@@ -790,7 +790,7 @@ namespace BizHawk.Client.EmuHawk
 					Common.DisplayType.Hex,
 					BigEndian);
 
-				Global.CheatList.Add(new Cheat(
+				MainForm.CheatList.Add(new Cheat(
 					watch,
 					watch.Value));
 			}
@@ -812,7 +812,7 @@ namespace BizHawk.Client.EmuHawk
 						watch.Value));
 				}
 
-				Global.CheatList.AddRange(cheats);
+				MainForm.CheatList.AddRange(cheats);
 			}
 
 			MemoryViewerBox.Refresh();
@@ -827,13 +827,13 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_highlightedAddress >= 0)
 			{
-				Global.CheatList.RemoveRange(Global.CheatList.Where(x => x.Contains(_highlightedAddress.Value)));
+				MainForm.CheatList.RemoveRange(MainForm.CheatList.Where(x => x.Contains(_highlightedAddress.Value)));
 			}
 
 			if (_secondaryHighlightedAddresses.Any())
 			{
-				Global.CheatList.RemoveRange(
-					Global.CheatList.Where(
+				MainForm.CheatList.RemoveRange(
+					MainForm.CheatList.Where(
 						cheat => !cheat.IsSeparator && cheat.Domain == _domain &&
 							_secondaryHighlightedAddresses.Contains(cheat.Address ?? 0)));
 			}
@@ -1071,10 +1071,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void IncrementAddress(long address)
 		{
-			if (Global.CheatList.IsActive(_domain, address))
+			if (MainForm.CheatList.IsActive(_domain, address))
 			{
 				// TODO: Increment should be intelligent since IsActive is.  If this address is part of a multi-byte cheat it should intelligently increment just that byte
-				Global.CheatList.First(x => x.Domain == _domain && x.Address == address).Increment();
+				MainForm.CheatList.First(x => x.Domain == _domain && x.Address == address).Increment();
 			}
 			else
 			{
@@ -1104,10 +1104,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DecrementAddress(long address)
 		{
-			if (Global.CheatList.IsActive(_domain, address))
+			if (MainForm.CheatList.IsActive(_domain, address))
 			{
 				// TODO: Increment should be intelligent since IsActive is.  If this address is part of a multi-byte cheat it should intelligently increment just that byte
-				Global.CheatList.First(x => x.Domain == _domain && x.Address == address).Decrement();
+				MainForm.CheatList.First(x => x.Domain == _domain && x.Address == address).Decrement();
 			}
 			else
 			{
@@ -1631,7 +1631,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UnfreezeAllMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.CheatList.RemoveAll();
+			MainForm.CheatList.RemoveAll();
 		}
 
 		private void PokeAddressMenuItem_Click(object sender, EventArgs e)
@@ -1878,7 +1878,7 @@ namespace BizHawk.Client.EmuHawk
 				case Keys.Delete:
 					if (e.Modifiers == Keys.Shift)
 					{
-						Global.CheatList.RemoveAll();
+						MainForm.CheatList.RemoveAll();
 					}
 					else
 					{
@@ -1966,7 +1966,7 @@ namespace BizHawk.Client.EmuHawk
 				(_highlightedAddress.HasValue || _secondaryHighlightedAddresses.Any()) &&
 				_domain.Writable;
 
-			UnfreezeAllContextItem.Visible = Global.CheatList.ActiveCount > 0;
+			UnfreezeAllContextItem.Visible = MainForm.CheatList.ActiveCount > 0;
 			PasteContextItem.Visible = _domain.Writable && data != null && data.GetDataPresent(DataFormats.Text);
 
 			ContextSeparator1.Visible =
@@ -2055,7 +2055,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MemoryViewerBox_Paint(object sender, PaintEventArgs e)
 		{
-			var activeCheats = Global.CheatList.Where(x => x.Enabled);
+			var activeCheats = MainForm.CheatList.Where(x => x.Enabled);
 			foreach (var cheat in activeCheats)
 			{
 				if (IsVisible(cheat.Address ?? 0))
@@ -2095,7 +2095,7 @@ namespace BizHawk.Client.EmuHawk
 
 				var textRect = new Rectangle(textPoint, new Size(_fontWidth * DataSize, _fontHeight));
 
-				if (Global.CheatList.IsActive(_domain, addressHighlighted))
+				if (MainForm.CheatList.IsActive(_domain, addressHighlighted))
 				{
 					_freezeHighlightBrush.Color = Colors.HighlightFreeze;
 					e.Graphics.FillRectangle(_freezeHighlightBrush, rect);
@@ -2122,7 +2122,7 @@ namespace BizHawk.Client.EmuHawk
 
 					var textRect = new Rectangle(textPoint, new Size(_fontWidth * DataSize, _fontHeight));
 
-					if (Global.CheatList.IsActive(_domain, address))
+					if (MainForm.CheatList.IsActive(_domain, address))
 					{
 						_freezeHighlightBrush.Color = Colors.HighlightFreeze;
 						e.Graphics.FillRectangle(_freezeHighlightBrush, rect);

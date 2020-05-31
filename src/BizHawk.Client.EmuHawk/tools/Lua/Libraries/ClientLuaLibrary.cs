@@ -487,7 +487,7 @@ namespace BizHawk.Client.EmuHawk
 			if (result.IsValid)
 			{
 				var domain = decoder.CheatDomain();
-				Global.CheatList.Add(result.ToCheat(domain, code));
+				MainForm.CheatList.Add(result.ToCheat(domain, code));
 			}
 			else
 			{
@@ -515,8 +515,8 @@ namespace BizHawk.Client.EmuHawk
 
 			if (result.IsValid)
 			{
-				Global.CheatList.RemoveRange(
-					Global.CheatList.Where(c => c.Address == result.Address));
+				MainForm.CheatList.RemoveRange(
+					MainForm.CheatList.Where(c => c.Address == result.Address));
 			}
 			else
 			{

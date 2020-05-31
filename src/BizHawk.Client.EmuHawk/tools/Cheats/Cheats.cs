@@ -64,16 +64,16 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		protected override void GeneralUpdate()
 		{
-			CheatListView.RowCount = Global.CheatList.Count;
-			TotalLabel.Text = $"{Global.CheatList.CheatCount} {(Global.CheatList.CheatCount == 1 ? "cheat" : "cheats")} {Global.CheatList.ActiveCount} active";
+			CheatListView.RowCount = MainForm.CheatList.Count;
+			TotalLabel.Text = $"{MainForm.CheatList.CheatCount} {(MainForm.CheatList.CheatCount == 1 ? "cheat" : "cheats")} {MainForm.CheatList.ActiveCount} active";
 		}
 
 		private void LoadFileFromRecent(string path)
 		{
-			var askResult = !Global.CheatList.Changes || AskSaveChanges();
+			var askResult = !MainForm.CheatList.Changes || AskSaveChanges();
 			if (askResult)
 			{
-				var loadResult = Global.CheatList.Load(Core, path,  Config.DisableCheatsOnLoad, append: false);
+				var loadResult = MainForm.CheatList.Load(Core, path,  Config.DisableCheatsOnLoad, append: false);
 				if (!loadResult)
 				{
 					Config.RecentCheats.HandleLoadError(path);
@@ -90,10 +90,10 @@ namespace BizHawk.Client.EmuHawk
 		private void UpdateMessageLabel(bool saved = false)
 		{
 			MessageLabel.Text = saved
-				? $"{Path.GetFileName(Global.CheatList.CurrentFileName)} saved."
-				: Global.CheatList.Changes
-					? $"{Path.GetFileName(Global.CheatList.CurrentFileName)} *"
-					: Path.GetFileName(Global.CheatList.CurrentFileName);
+				? $"{Path.GetFileName(MainForm.CheatList.CurrentFileName)} saved."
+				: MainForm.CheatList.Changes
+					? $"{Path.GetFileName(MainForm.CheatList.CurrentFileName)} *"
+					: Path.GetFileName(MainForm.CheatList.CurrentFileName);
 		}
 
 		private void LoadFile(FileSystemInfo file, bool append)
@@ -101,17 +101,17 @@ namespace BizHawk.Client.EmuHawk
 			if (file != null)
 			{
 				var result = true;
-				if (Global.CheatList.Changes)
+				if (MainForm.CheatList.Changes)
 				{
 					result = AskSaveChanges();
 				}
 
 				if (result)
 				{
-					Global.CheatList.Load(Core, file.FullName, Config.DisableCheatsOnLoad, append);
+					MainForm.CheatList.Load(Core, file.FullName, Config.DisableCheatsOnLoad, append);
 					GeneralUpdate();
 					UpdateMessageLabel();
-					Config.RecentCheats.Add(Global.CheatList.CurrentFileName);
+					Config.RecentCheats.Add(MainForm.CheatList.CurrentFileName);
 				}
 			}
 		}
@@ -119,12 +119,12 @@ namespace BizHawk.Client.EmuHawk
 		private bool SaveAs()
 		{
 			var file = SaveFileDialog(
-				Global.CheatList.CurrentFileName,
+				MainForm.CheatList.CurrentFileName,
 				Config.PathEntries.CheatsAbsolutePath(Global.Game.System),
 				"Cheat Files",
 				"cht");
 
-			return file != null && Global.CheatList.SaveFile(file.FullName);
+			return file != null && MainForm.CheatList.SaveFile(file.FullName);
 		}
 
 		private void Cheats_Load(object sender, EventArgs e)
@@ -170,7 +170,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddCheat()
 		{
-			Global.CheatList.Add(CheatEditor.GetCheat());
+			MainForm.CheatList.Add(CheatEditor.GetCheat());
 			GeneralUpdate();
 			UpdateMessageLabel();
 		}
@@ -181,7 +181,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!newCheat.IsSeparator) // If a separator comes from the cheat editor something must have been invalid
 			{
-				Global.CheatList.Exchange(CheatEditor.OriginalCheat, newCheat);
+				MainForm.CheatList.Exchange(CheatEditor.OriginalCheat, newCheat);
 				GeneralUpdate();
 				UpdateMessageLabel();
 			}
@@ -222,7 +222,7 @@ namespace BizHawk.Client.EmuHawk
 		private void CheatListView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = "";
-			if (index >= Global.CheatList.Count || Global.CheatList[index].IsSeparator)
+			if (index >= MainForm.CheatList.Count || MainForm.CheatList[index].IsSeparator)
 			{
 				return;
 			}
@@ -232,34 +232,34 @@ namespace BizHawk.Client.EmuHawk
 			switch (columnName)
 			{
 				case NameColumn:
-					text = Global.CheatList[index].Name;
+					text = MainForm.CheatList[index].Name;
 					break;
 				case AddressColumn:
-					text = Global.CheatList[index].AddressStr;
+					text = MainForm.CheatList[index].AddressStr;
 					break;
 				case ValueColumn:
-					text = Global.CheatList[index].ValueStr;
+					text = MainForm.CheatList[index].ValueStr;
 					break;
 				case CompareColumn:
-					text = Global.CheatList[index].CompareStr;
+					text = MainForm.CheatList[index].CompareStr;
 					break;
 				case OnColumn:
-					text = Global.CheatList[index].Enabled ? "*" : "";
+					text = MainForm.CheatList[index].Enabled ? "*" : "";
 					break;
 				case DomainColumn:
-					text = Global.CheatList[index].Domain.Name;
+					text = MainForm.CheatList[index].Domain.Name;
 					break;
 				case SizeColumn:
-					text = Global.CheatList[index].Size.ToString();
+					text = MainForm.CheatList[index].Size.ToString();
 					break;
 				case EndianColumn:
-					text = (Global.CheatList[index].BigEndian ?? false) ? "Big" : "Little";
+					text = (MainForm.CheatList[index].BigEndian ?? false) ? "Big" : "Little";
 					break;
 				case TypeColumn:
-					text = Watch.DisplayTypeToString(Global.CheatList[index].Type);
+					text = Watch.DisplayTypeToString(MainForm.CheatList[index].Type);
 					break;
 				case ComparisonTypeColumn:
-					text = Global.CheatList[index].ComparisonType switch
+					text = MainForm.CheatList[index].ComparisonType switch
 						{
 							Cheat.CompareType.None => "",
 							Cheat.CompareType.Equal => "=",
@@ -277,13 +277,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CheatListView_QueryItemBkColor(int index, RollColumn column, ref Color color)
 		{
-			if (index < Global.CheatList.Count)
+			if (index < MainForm.CheatList.Count)
 			{
-				if (Global.CheatList[index].IsSeparator)
+				if (MainForm.CheatList[index].IsSeparator)
 				{
 					color = BackColor;
 				}
-				else if (Global.CheatList[index].Enabled)
+				else if (MainForm.CheatList[index].Enabled)
 				{
 					color = Color.LightCyan;
 				}
@@ -292,7 +292,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private IEnumerable<int> SelectedIndices => CheatListView.SelectedRows;
 
-		private IEnumerable<Cheat> SelectedItems => SelectedIndices.Select(index => Global.CheatList[index]);
+		private IEnumerable<Cheat> SelectedItems => SelectedIndices.Select(index => MainForm.CheatList[index]);
 
 		private IEnumerable<Cheat> SelectedCheats => SelectedItems.Where(x => !x.IsSeparator);
 
@@ -313,10 +313,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StartNewList()
 		{
-			var result = !Global.CheatList.Changes || AskSaveChanges();
+			var result = !MainForm.CheatList.Changes || AskSaveChanges();
 			if (result)
 			{
-				Global.CheatList.NewList(Tools.GenerateDefaultCheatFilename());
+				MainForm.CheatList.NewList(Tools.GenerateDefaultCheatFilename());
 				GeneralUpdate();
 				UpdateMessageLabel();
 				ToggleGameGenieButton();
@@ -325,7 +325,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewList()
 		{
-			var result = !Global.CheatList.Changes || AskSaveChanges();
+			var result = !MainForm.CheatList.Changes || AskSaveChanges();
 			if (result)
 			{
 				StartNewList();
@@ -334,7 +334,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			SaveMenuItem.Enabled = Global.CheatList.Changes;
+			SaveMenuItem.Enabled = MainForm.CheatList.Changes;
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -351,7 +351,7 @@ namespace BizHawk.Client.EmuHawk
 		private void OpenMenuItem_Click(object sender, EventArgs e)
 		{
 			var file = OpenFileDialog(
-				Global.CheatList.CurrentFileName,
+				MainForm.CheatList.CurrentFileName,
 				Config.PathEntries.CheatsAbsolutePath(Global.Game.System),
 				"Cheat Files",
 				"cht");
@@ -361,9 +361,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Global.CheatList.Changes)
+			if (MainForm.CheatList.Changes)
 			{
-				if (Global.CheatList.Save())
+				if (MainForm.CheatList.Save())
 				{
 					UpdateMessageLabel(saved: true);
 				}
@@ -396,7 +396,7 @@ namespace BizHawk.Client.EmuHawk
 				SelectedIndices.Any();
 
 			// Always leave enabled even if no cheats enabled. This way the hotkey will always work however a new cheat is enabled
-			// DisableAllCheatsMenuItem.Enabled = Global.CheatList.ActiveCount > 0;
+			// DisableAllCheatsMenuItem.Enabled = MainForm.CheatList.ActiveCount > 0;
 
 			GameGenieSeparator.Visible =
 				OpenGameGenieEncoderDecoderMenuItem.Visible =
@@ -410,7 +410,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				foreach (var item in items)
 				{
-					Global.CheatList.Remove(item);
+					MainForm.CheatList.Remove(item);
 				}
 
 				CheatListView.DeselectAll();
@@ -422,11 +422,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (SelectedIndices.Any())
 			{
-				Global.CheatList.Insert(SelectedIndices.Max(), Cheat.Separator);
+				MainForm.CheatList.Insert(SelectedIndices.Max(), Cheat.Separator);
 			}
 			else
 			{
-				Global.CheatList.Add(Cheat.Separator);
+				MainForm.CheatList.Add(Cheat.Separator);
 			}
 			
 			GeneralUpdate();
@@ -443,9 +443,9 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var index in indices)
 			{
-				var cheat = Global.CheatList[index];
-				Global.CheatList.Remove(cheat);
-				Global.CheatList.Insert(index - 1, cheat);
+				var cheat = MainForm.CheatList[index];
+				MainForm.CheatList.Remove(cheat);
+				MainForm.CheatList.Insert(index - 1, cheat);
 			}
 
 			var newIndices = indices.Select(t => t - 1);
@@ -463,16 +463,16 @@ namespace BizHawk.Client.EmuHawk
 		private void MoveDownMenuItem_Click(object sender, EventArgs e)
 		{
 			var indices = SelectedIndices.ToList();
-			if (indices.Count == 0 || indices.Last() == Global.CheatList.Count - 1)
+			if (indices.Count == 0 || indices.Last() == MainForm.CheatList.Count - 1)
 			{
 				return;
 			}
 
 			for (var i = indices.Count - 1; i >= 0; i--)
 			{
-				var cheat = Global.CheatList[indices[i]];
-				Global.CheatList.Remove(cheat);
-				Global.CheatList.Insert(indices[i] + 1, cheat);
+				var cheat = MainForm.CheatList[indices[i]];
+				MainForm.CheatList.Remove(cheat);
+				MainForm.CheatList.Insert(indices[i] + 1, cheat);
 			}
 
 			UpdateMessageLabel();
@@ -504,7 +504,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DisableAllCheatsMenuItem_Click(object sender, EventArgs e)
 		{	
-			Global.CheatList.DisableAll();
+			MainForm.CheatList.DisableAll();
 		}
 
 		private void OpenGameGenieEncoderDecoderMenuItem_Click(object sender, EventArgs e)
@@ -610,7 +610,7 @@ namespace BizHawk.Client.EmuHawk
 				_sortReverse = false;
 			}
 
-			Global.CheatList.Sort(column.Name, _sortReverse);
+			MainForm.CheatList.Sort(column.Name, _sortReverse);
 
 			_sortedColumn = column.Name;
 			_sortReverse ^= true;
@@ -639,7 +639,7 @@ namespace BizHawk.Client.EmuHawk
 				RemoveContextMenuItem.Enabled =
 				SelectedCheats.Any();
 
-			DisableAllContextMenuItem.Enabled = Global.CheatList.ActiveCount > 0;
+			DisableAllContextMenuItem.Enabled = MainForm.CheatList.ActiveCount > 0;
 		}
 
 		private void ViewInHexEditorContextMenuItem_Click(object sender, EventArgs e)
