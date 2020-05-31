@@ -5,16 +5,19 @@ Unless otherwise specified, the build process consists simply of building the sl
 
 When "mingw" is mentioned, this means a 64 bit gcc setup installed by https://www.msys2.org/.
 
+----------------------------------
+BUILDING .DLL FOR WINDOWS:
+
 libgambatte: There is a vs2019 solution at libgambatte/libgambatte.sln.
 wonderswan: There is a vs2019 solution at wonderswan/bizswan.sln
 octoshock (psx): There is a vs2019 solution at psx/octoshock/bizhawk/octoshock.sln
 libretrobridge: There is a vs2019 solution at LibretroBridge/vs2019/LibretroBridge.sln
+lynx: There is a vs2019 solution at lynx/bizlynx/bizlynx.sln
 
 libmupen64plus: ??
 
 quicknes: Process quicknes/mingw/Makefile with mingw.  Use "make install" top copy to output folder.
 
-lynx: mingw
 melonds: ??
 mgba: mingw
 
@@ -22,4 +25,10 @@ waterbox:  See separate document waterbox/readme.txt
 
 libdarm: stock build from https://github.com/jbremer/darm.git   71a027e0ffb2171d01213c6ecc6da1c49e158398 ????
 
+----------------------------------
+BUILDING .SO FOR LINUX
+-TBD-
 
+----------------------------------
+BUILDING .DYLIB FOR MACOS
+-TBD-
