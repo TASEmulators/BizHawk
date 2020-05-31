@@ -666,15 +666,9 @@ namespace BizHawk.Client.EmuHawk
 
 			if (load)
 			{
-				if (!LuaImp.ScriptList.LoadLuaSession(path, Settings.DisableLuaScriptsOnLoad))
+				if (!LoadLuaSession(path))
 				{
 					Config.RecentLuaSession.HandleLoadError(path);
-				}
-				else
-				{
-					RunLuaScripts();
-					UpdateDialog();
-					LuaImp.ScriptList.Changes = false;
 				}
 			}
 
@@ -772,10 +766,7 @@ namespace BizHawk.Client.EmuHawk
 			var result = ofd.ShowHawkDialog();
 			if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(ofd.FileName))
 			{
-				LuaImp.ScriptList.LoadLuaSession(ofd.FileName, Settings.DisableLuaScriptsOnLoad);
-				RunLuaScripts();
-				UpdateDialog();
-				LuaImp.ScriptList.Changes = false;
+				LoadLuaSession(ofd.FileName);
 			}
 		}
 
@@ -1303,10 +1294,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else if (Path.GetExtension(path)?.ToLower() == ".luases")
 					{
-						LuaImp.ScriptList.LoadLuaSession(path, Settings.DisableLuaScriptsOnLoad);
-						RunLuaScripts();
-						UpdateDialog();
-						LuaImp.ScriptList.Changes = false;
+						LoadLuaSession(path);
 						return;
 					}
 				}
