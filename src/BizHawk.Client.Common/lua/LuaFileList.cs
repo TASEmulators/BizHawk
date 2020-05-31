@@ -12,8 +12,6 @@ namespace BizHawk.Client.Common
 		private bool _changes;
 
 		public Action ChangedCallback { get; set; }
-		public Action LoadCallback { get; set; }
-
 		public bool Changes
 		{
 			get => _changes;
@@ -64,52 +62,44 @@ namespace BizHawk.Client.Common
 			return base.Remove(item);
 		}
 
-		public new int RemoveAll(Predicate<LuaFile> match)
-		{
-			return base.RemoveAll(match);
-		}
-
 		public bool LoadLuaSession(string path, bool disableOnLoad)
 		{
 			var file = new FileInfo(path);
-			if (file.Exists)
+			if (!file.Exists)
 			{
-				Clear();
-				using (var sr = file.OpenText())
-				{
-					string line;
-					while ((line = sr.ReadLine()) != null)
-					{
-						if (line.StartsWith("---"))
-						{
-							Add(LuaFile.SeparatorInstance);
-						}
-						else
-						{
-							var scriptPath = line.Substring(2, line.Length - 2);
-							if (!Path.IsPathRooted(scriptPath))
-							{
-								var directory = Path.GetDirectoryName(path);
-								scriptPath = Path.GetFullPath(Path.Combine(directory ?? "", scriptPath));
-							}
-
-							Add(new LuaFile(scriptPath)
-							{
-								State = !disableOnLoad && line.Substring(0, 1) == "1"
-									 ? LuaFile.RunState.Running
-									 : LuaFile.RunState.Disabled
-							});
-						}
-					}
-				}
-
-				_filename = path;
-				LoadCallback?.Invoke();
-
-				return true;
+				return false;
 			}
-			
-			return false;
+
+			Clear();
+			using var sr = file.OpenText();
+			string line;
+			while ((line = sr.ReadLine()) != null)
+			{
+				if (line.StartsWith("---"))
+				{
+					Add(LuaFile.SeparatorInstance);
+				}
+				else
+				{
+					var scriptPath = line.Substring(2, line.Length - 2);
+					if (!Path.IsPathRooted(scriptPath))
+					{
+						var directory = Path.GetDirectoryName(path);
+						scriptPath = Path.GetFullPath(Path.Combine(directory ?? "", scriptPath));
+					}
+
+					Add(new LuaFile(scriptPath)
+					{
+						State = !disableOnLoad && line.Substring(0, 1) == "1"
+							? LuaFile.RunState.Running
+							: LuaFile.RunState.Disabled
+					});
+				}
+			}
+
+			_filename = path;
+			return true;
+
 		}
 
 		public void SaveSession()

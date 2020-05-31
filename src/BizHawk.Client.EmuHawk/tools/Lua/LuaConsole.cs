@@ -128,7 +128,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			LuaImp.ScriptList.ChangedCallback = SessionChangedCallback;
-			LuaImp.ScriptList.LoadCallback = ClearOutputWindow;
 
 			if (Config.RecentLuaSession.AutoLoad && !Config.RecentLuaSession.Empty)
 			{
@@ -525,6 +524,7 @@ namespace BizHawk.Client.EmuHawk
 				Config.RecentLua.Add(script.Path);
 			}
 
+			ClearOutputWindow();
 			return result;
 		}
 
