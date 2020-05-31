@@ -42,109 +42,107 @@ namespace BizHawk.Client.Common
 				return false;
 			}
 
-			using (var bl = ZipStateLoader.LoadAndDetect(Filename, true))
+			using var bl = ZipStateLoader.LoadAndDetect(Filename, true);
+			if (bl == null)
 			{
-				if (bl == null)
-				{
-					return false;
-				}
+				return false;
+			}
 
-				ClearBeforeLoad();
+			ClearBeforeLoad();
 
-				bl.GetLump(BinaryStateLump.Movieheader, true, delegate(TextReader tr)
+			bl.GetLump(BinaryStateLump.Movieheader, true, delegate(TextReader tr)
+			{
+				string line;
+				while ((line = tr.ReadLine()) != null)
 				{
-					string line;
-					while ((line = tr.ReadLine()) != null)
+					if (!string.IsNullOrWhiteSpace(line))
 					{
-						if (!string.IsNullOrWhiteSpace(line))
-						{
-							var pair = line.Split(new[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
+						var pair = line.Split(new[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
 
-							if (pair.Length > 1)
+						if (pair.Length > 1)
+						{
+							if (!Header.ContainsKey(pair[0]))
 							{
-								if (!Header.ContainsKey(pair[0]))
-								{
-									Header.Add(pair[0], pair[1]);
-								}
+								Header.Add(pair[0], pair[1]);
 							}
 						}
 					}
-				});
-
-				bl.GetLump(BinaryStateLump.Comments, false, delegate(TextReader tr)
-				{
-					string line;
-					while ((line = tr.ReadLine()) != null)
-					{
-						if (!string.IsNullOrWhiteSpace(line))
-						{
-							Comments.Add(line);
-						}
-					}
-				});
-
-				bl.GetLump(BinaryStateLump.Subtitles, false, delegate(TextReader tr)
-				{
-					string line;
-					while ((line = tr.ReadLine()) != null)
-					{
-						if (!string.IsNullOrWhiteSpace(line))
-						{
-							Subtitles.AddFromString(line);
-						}
-					}
-
-					Subtitles.Sort();
-				});
-
-				bl.GetLump(BinaryStateLump.SyncSettings, false, delegate(TextReader tr)
-				{
-					string line;
-					while ((line = tr.ReadLine()) != null)
-					{
-						if (!string.IsNullOrWhiteSpace(line))
-						{
-							_syncSettingsJson = line;
-						}
-					}
-				});
-
-				bl.GetLump(BinaryStateLump.Input, true, delegate(TextReader tr)
-				{
-					IsCountingRerecords = false;
-					ExtractInputLog(tr, out _);
-					IsCountingRerecords = true;
-				});
-
-				if (StartsFromSavestate)
-				{
-					bl.GetCoreState(
-						delegate(BinaryReader br, long length)
-						{
-							BinarySavestate = br.ReadBytes((int)length);
-						},
-						delegate(TextReader tr)
-						{
-							TextSavestate = tr.ReadToEnd();
-						});
-					bl.GetLump(BinaryStateLump.Framebuffer, false,
-						delegate(BinaryReader br, long length)
-						{
-							SavestateFramebuffer = new int[length / sizeof(int)];
-							for (int i = 0; i < SavestateFramebuffer.Length; i++)
-							{
-								SavestateFramebuffer[i] = br.ReadInt32();
-							}
-						});
 				}
-				else if (StartsFromSaveRam)
+			});
+
+			bl.GetLump(BinaryStateLump.Comments, false, delegate(TextReader tr)
+			{
+				string line;
+				while ((line = tr.ReadLine()) != null)
 				{
-					bl.GetLump(BinaryStateLump.MovieSaveRam, false,
-						delegate(BinaryReader br, long length)
-						{
-							SaveRam = br.ReadBytes((int)length);
-						});
+					if (!string.IsNullOrWhiteSpace(line))
+					{
+						Comments.Add(line);
+					}
 				}
+			});
+
+			bl.GetLump(BinaryStateLump.Subtitles, false, delegate(TextReader tr)
+			{
+				string line;
+				while ((line = tr.ReadLine()) != null)
+				{
+					if (!string.IsNullOrWhiteSpace(line))
+					{
+						Subtitles.AddFromString(line);
+					}
+				}
+
+				Subtitles.Sort();
+			});
+
+			bl.GetLump(BinaryStateLump.SyncSettings, false, delegate(TextReader tr)
+			{
+				string line;
+				while ((line = tr.ReadLine()) != null)
+				{
+					if (!string.IsNullOrWhiteSpace(line))
+					{
+						_syncSettingsJson = line;
+					}
+				}
+			});
+
+			bl.GetLump(BinaryStateLump.Input, true, delegate(TextReader tr)
+			{
+				IsCountingRerecords = false;
+				ExtractInputLog(tr, out _);
+				IsCountingRerecords = true;
+			});
+
+			if (StartsFromSavestate)
+			{
+				bl.GetCoreState(
+					delegate(BinaryReader br, long length)
+					{
+						BinarySavestate = br.ReadBytes((int)length);
+					},
+					delegate(TextReader tr)
+					{
+						TextSavestate = tr.ReadToEnd();
+					});
+				bl.GetLump(BinaryStateLump.Framebuffer, false,
+					delegate(BinaryReader br, long length)
+					{
+						SavestateFramebuffer = new int[length / sizeof(int)];
+						for (int i = 0; i < SavestateFramebuffer.Length; i++)
+						{
+							SavestateFramebuffer[i] = br.ReadInt32();
+						}
+					});
+			}
+			else if (StartsFromSaveRam)
+			{
+				bl.GetLump(BinaryStateLump.MovieSaveRam, false,
+					delegate(BinaryReader br, long length)
+					{
+						SaveRam = br.ReadBytes((int)length);
+					});
 			}
 
 			Changes = false;
