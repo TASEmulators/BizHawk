@@ -777,11 +777,11 @@ namespace BizHawk.Client.EmuHawk
 
 		// TODO: make these actual properties
 		// This is a quick hack to reduce the dependency on Globals
-		private IEmulator Emulator
+		public IEmulator Emulator
 		{
 			get => GlobalWin.Emulator;
 
-			set
+			private set
 			{
 				GlobalWin.Emulator = value;
 				_currentVideoProvider = GlobalWin.Emulator.AsVideoProviderOrDefault();
