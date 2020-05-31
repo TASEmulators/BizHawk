@@ -246,6 +246,8 @@ namespace BizHawk.Client.Common
 				name = game.FilesystemSafeName();
 			}
 
+			name ??= "";
+
 			if (movieIsActive)
 			{
 				name = Path.Combine(name, $"movie-{Path.GetFileNameWithoutExtension(movieFilename)}");
