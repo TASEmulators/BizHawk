@@ -1,1 +1,2 @@
 language: csharp
+solution: solution-name.sln
