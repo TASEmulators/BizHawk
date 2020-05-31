@@ -49,6 +49,7 @@
 #include "machine.h"
 
 #include <string>
+#include <algorithm>
 
 #define HANDY_SYSTEM_FREQ						16000000
 #define HANDY_TIMER_FREQ						20
