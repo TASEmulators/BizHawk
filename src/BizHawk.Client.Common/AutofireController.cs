@@ -9,11 +9,10 @@ namespace BizHawk.Client.Common
 {
 	public class AutofireController : IController
 	{
-		public AutofireController(ControllerDefinition definition, IEmulator emulator, int on, int off)
+		public AutofireController(IEmulator emulator, int on, int off)
 		{
 			On = on < 1 ? 0 : on;
 			Off = off < 1 ? 0 : off;
-			Definition = definition;
 			_emulator = emulator;
 		}
 
@@ -28,7 +27,7 @@ namespace BizHawk.Client.Common
 		public int On { get; set; }
 		public int Off { get; set; }
 
-		public ControllerDefinition Definition { get; }
+		public ControllerDefinition Definition => _emulator.ControllerDefinition;
 
 		public bool IsPressed(string button)
 		{
