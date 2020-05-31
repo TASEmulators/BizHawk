@@ -8,7 +8,6 @@ namespace BizHawk.Client.Common
 {
 	public class LuaFileList : List<LuaFile>
 	{
-		private string _filename = "";
 		private bool _changes;
 
 		public Action ChangedCallback { get; set; }
@@ -25,11 +24,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public string Filename
-		{
-			get => _filename;
-			set => _filename = value ?? "";
-		}
+		public string Filename { get; set; } = "";
 
 		public void StopAllScripts()
 		{
@@ -39,7 +34,7 @@ namespace BizHawk.Client.Common
 		public new void Clear()
 		{
 			StopAllScripts();
-			_filename = "";
+			Filename = "";
 			Changes = false;
 			base.Clear();
 		}
@@ -97,16 +92,16 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			_filename = path;
+			Filename = path;
 			return true;
 
 		}
 
 		public void SaveSession()
 		{
-			if (!string.IsNullOrWhiteSpace(_filename))
+			if (!string.IsNullOrWhiteSpace(Filename))
 			{
-				SaveSession(_filename);
+				SaveSession(Filename);
 			}
 		}
 

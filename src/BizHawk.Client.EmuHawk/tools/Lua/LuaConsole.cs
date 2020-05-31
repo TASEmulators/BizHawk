@@ -825,13 +825,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var sfd = new SaveFileDialog
 			{
-				InitialDirectory = !string.IsNullOrWhiteSpace(LuaImp.ScriptList.Filename) ?
-					Path.GetDirectoryName(LuaImp.ScriptList.Filename) :
-					Config.PathEntries.LuaAbsolutePath(),
+				InitialDirectory = !string.IsNullOrWhiteSpace(LuaImp.ScriptList.Filename)
+					? Path.GetDirectoryName(LuaImp.ScriptList.Filename)
+					: Config.PathEntries.LuaAbsolutePath(),
 				DefaultExt = ".lua",
-				FileName = !string.IsNullOrWhiteSpace(LuaImp.ScriptList.Filename) ?
-					Path.GetFileNameWithoutExtension(LuaImp.ScriptList.Filename) :
-					Path.GetFileNameWithoutExtension(Global.Game.Name),
+				FileName = !string.IsNullOrWhiteSpace(LuaImp.ScriptList.Filename)
+					? Path.GetFileNameWithoutExtension(LuaImp.ScriptList.Filename)
+					: Path.GetFileNameWithoutExtension(Global.Game.Name),
 				OverwritePrompt = true,
 				Filter = new FilesystemFilterSet(FilesystemFilter.LuaScripts).ToString()
 			};
