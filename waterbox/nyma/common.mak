@@ -50,3 +50,15 @@ SRCS := \
 	$(call cppdir,video) \
 	$(filter-out %generate.cpp,$(call cppdir,sound)) \
 	Interfaces.cpp NymaCore.cpp
+
+# Common sources cores with cdroms need for cdrom support
+CD_SRCS := \
+	mednafen/src/cdrom/CDInterface.cpp \
+	mednafen/src/cdrom/scsicd.cpp \
+	mednafen/src/cdrom/CDUtility.cpp \
+	mednafen/src/cdrom/lec.cpp \
+	mednafen/src/cdrom/recover-raw.cpp \
+	mednafen/src/cdrom/l-ec.cpp \
+	mednafen/src/cdrom/crc32.cpp \
+	mednafen/src/cdrom/galois.cpp \
+	cdrom.cpp

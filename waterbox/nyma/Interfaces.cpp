@@ -99,7 +99,10 @@ namespace Mednafen
 		va_start(argp, format);
 		vfprintf(t == MDFN_NOTICE_ERROR ? stderr : stdout, format, argp);
 	}
+
 	void MDFN_MidSync(EmulateSpecStruct *espec, const unsigned flags)
+	{}
+	void MDFN_MidLineUpdate(EmulateSpecStruct *espec, int y)
 	{}
 
 	bool MDFNSS_StateAction(StateMem *sm, const unsigned load, const bool data_only, const SFORMAT *sf, const char *sname, const bool optional) noexcept

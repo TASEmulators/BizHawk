@@ -23,5 +23,6 @@ namespace BizHawk.Emulation.Cores
 		public const string Gpgx = "Genplus-gx";
 		public const string PceHawk = "PCEHawk";
 		public const string TurboNyma = "TurboNyma";
+		public const string TurboTurboNyma = "TurboTurboNyma";
 	}
 }

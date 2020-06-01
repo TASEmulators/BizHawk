@@ -171,7 +171,12 @@ namespace BizHawk.Client.Common
 
 		private bool HandleArchiveBinding(HawkFile file)
 		{
-			var romExtensions = new[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT", "COL", "XML", "Z64", "V64", "N64", "WS", "WSC", "GBA", "32X", "VEC", "O2" };
+			var romExtensions = new[]
+			{
+				"SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB",
+				"NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT", "COL", "XML", "Z64",
+				"V64", "N64", "WS", "WSC", "GBA", "32X", "VEC", "O2"
+			};
 
 			// try binding normal rom extensions first
 			if (!file.IsBound)
@@ -530,6 +535,9 @@ namespace BizHawk.Client.Common
 								nextEmulator = new TerboGrafix(game, new[] { disc }, nextComm,
 									(Emulation.Cores.Waterbox.NymaCore.NymaSettings)GetCoreSettings<TerboGrafix>(),
 									(Emulation.Cores.Waterbox.NymaCore.NymaSyncSettings)GetCoreSyncSettings<TerboGrafix>(), Deterministic);
+								// nextEmulator = new TerboGrafixSanic(game, new[] { disc }, nextComm,
+								// 	(Emulation.Cores.Waterbox.NymaCore.NymaSettings)GetCoreSettings<TerboGrafixSanic>(),
+								// 	(Emulation.Cores.Waterbox.NymaCore.NymaSyncSettings)GetCoreSyncSettings<TerboGrafixSanic>(), Deterministic);
 							}
 							
 							break;
