@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			ser.Sync(nameof(current_cycle), ref current_cycle);
 			ser.Sync(nameof(reset_cycle), ref reset_cycle);
 			ser.Sync(nameof(reset_cycle_int), ref reset_cycle_int);
-			ser.Sync(nameof(VBL_CNT), ref VBL_CNT);
+			ser.Sync(nameof(VblankCount), ref VblankCount);
 		}
 	}
 }

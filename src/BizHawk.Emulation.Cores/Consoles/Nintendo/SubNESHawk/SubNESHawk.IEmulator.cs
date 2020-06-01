@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			if (_isLag)
 			{
 				_lagCount++;
-				VBL_CNT++;
+				VblankCount++;
 			}
 
 			reset_frame = false;

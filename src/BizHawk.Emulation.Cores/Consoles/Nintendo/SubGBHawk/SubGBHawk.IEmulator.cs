@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 
 				current_cycle++;
 				frame_cycle++;
-				Cycle_CNT++;
+				CycleCount++;
 
 				if (frame_cycle == 70224)
 				{

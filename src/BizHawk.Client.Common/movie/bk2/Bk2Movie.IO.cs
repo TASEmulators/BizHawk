@@ -165,7 +165,7 @@ namespace BizHawk.Client.Common
 		{
 			if (Emulator is Emulation.Cores.Nintendo.SubNESHawk.SubNESHawk subNes)
 			{
-				Header[HeaderKeys.VBlankCount] = subNes.VBL_CNT.ToString();
+				Header[HeaderKeys.VBlankCount] = subNes.VblankCount.ToString();
 			}
 			else if (Emulator is Emulation.Cores.Nintendo.Gameboy.Gameboy gameboy)
 			{
@@ -173,7 +173,7 @@ namespace BizHawk.Client.Common
 			}
 			else if (Emulator is Emulation.Cores.Nintendo.SubGBHawk.SubGBHawk subGb)
 			{
-				Header[HeaderKeys.CycleCount] = subGb.Cycle_CNT.ToString();
+				Header[HeaderKeys.CycleCount] = subGb.CycleCount.ToString();
 			}
 
 			var file = new FileInfo(fn);

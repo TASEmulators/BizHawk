@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			HardReset();
 			current_cycle = 0;
 			_nesCore.cpu.ext_ppu_cycle = current_cycle;
-			VBL_CNT = 0;
+			VblankCount = 0;
 
 			_nesStatable = _nesCore.ServiceProvider.GetService<IStatable>();
 
@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 		private readonly NES.NES _nesCore;
 
 		// needed for movies to accurately calculate timing
-		public int VBL_CNT;
+		public int VblankCount;
 
 		public void HardReset() => _nesCore.HardReset();
 

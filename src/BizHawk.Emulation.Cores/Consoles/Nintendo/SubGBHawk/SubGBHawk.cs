@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 
 			HardReset();
 			current_cycle = 0;
-			Cycle_CNT = 0;
+			CycleCount = 0;
 
 			_GBStatable = _GBCore.ServiceProvider.GetService<IStatable>();
 
@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 		public GBHawk.GBHawk _GBCore;
 
 		// needed for movies to accurately calculate timing
-		public long Cycle_CNT;
+		public long CycleCount;
 
 		public void HardReset() => _GBCore.HardReset();
 
