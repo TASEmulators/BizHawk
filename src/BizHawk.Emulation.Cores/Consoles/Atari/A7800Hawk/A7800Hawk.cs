@@ -1,9 +1,10 @@
 ﻿using System;
 
+using BizHawk.API.ApiHawk;
 using BizHawk.Common.BufferExtensions;
+using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.M6502;
-using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {

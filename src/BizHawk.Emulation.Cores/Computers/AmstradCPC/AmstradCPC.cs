@@ -1,11 +1,13 @@
-﻿using BizHawk.Common;
-using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Components.Z80A;
-using BizHawk.Emulation.Cores.Properties;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
+using BizHawk.API.ApiHawk;
+using BizHawk.Common;
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Components.Z80A;
+using BizHawk.Emulation.Cores.Properties;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {

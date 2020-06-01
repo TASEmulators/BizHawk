@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
+
+using BizHawk.API.ApiHawk;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
-using System.IO;
-using System.ComponentModel;
-using BizHawk.Common;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 {

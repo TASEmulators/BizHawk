@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+using BizHawk.API.ApiHawk;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 

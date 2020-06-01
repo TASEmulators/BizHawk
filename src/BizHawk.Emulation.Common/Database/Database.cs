@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
+using BizHawk.API.ApiHawk;
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
 

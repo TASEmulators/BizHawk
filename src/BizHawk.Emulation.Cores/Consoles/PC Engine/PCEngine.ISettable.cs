@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 
+using BizHawk.API.ApiHawk;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 

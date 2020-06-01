@@ -1,8 +1,10 @@
 ﻿using System;
-using BizHawk.Emulation.Common;
 using System.ComponentModel;
-using BizHawk.Common;
 using System.Drawing;
+
+using BizHawk.API.ApiHawk;
+using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.WonderSwan
 {

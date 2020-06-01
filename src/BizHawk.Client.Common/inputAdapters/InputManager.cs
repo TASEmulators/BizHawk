@@ -36,7 +36,7 @@ namespace BizHawk.Client.Common
 		public StickyXorAdapter StickyXorAdapter { get; } = new StickyXorAdapter();
 
 		/// <summary>
-		/// Used to AND to another controller, used for <see cref="JoypadApi.Set(Dictionary{string, bool}, int?)">JoypadApi.Set</see>
+		/// Used to AND to another controller, used for <see cref="IJoypad.Set(Dictionary{string,bool},int?)">IJoypad.Set</see> implementation
 		/// </summary>
 		public OverrideAdapter ButtonOverrideAdapter { get; } = new OverrideAdapter();
 

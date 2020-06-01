@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Text;
+
+using BizHawk.API.ApiHawk;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.MSX

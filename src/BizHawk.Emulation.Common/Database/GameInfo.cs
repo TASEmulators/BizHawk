@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Globalization;
+using System.Linq;
 
+using BizHawk.API.ApiHawk;
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Common
@@ -170,9 +171,8 @@ namespace BizHawk.Emulation.Common
 			return game == null || game.System == "NULL";
 		}
 
-		public static bool IsRomStatusBad(this GameInfo game)
-		{
-			return game.Status == RomStatus.BadDump || game.Status == RomStatus.Overdump;
-		}
+		public static bool IsRomStatusBad(this GameInfo game) => game.Status.IsBad();
+
+		public static bool IsBad(this RomStatus status) => status == RomStatus.BadDump || status == RomStatus.Overdump;
 	}
 }

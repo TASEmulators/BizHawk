@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Threading.Tasks;
+
+using BizHawk.API.ApiHawk;
 using BizHawk.BizInvoke;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.DiscSystem;
+
 using FlatBuffers;
+
 using NymaTypes;
 
 namespace BizHawk.Emulation.Cores.Waterbox

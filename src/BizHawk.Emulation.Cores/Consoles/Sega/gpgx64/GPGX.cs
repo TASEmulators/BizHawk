@@ -1,13 +1,14 @@
 ﻿using System;
-using System.Runtime.InteropServices;
-
-using BizHawk.BizInvoke;
-using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Waterbox;
-using BizHawk.Common;
-using BizHawk.Emulation.DiscSystem;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
+
+using BizHawk.API.ApiHawk;
+using BizHawk.BizInvoke;
+using BizHawk.Common;
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Waterbox;
+using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {

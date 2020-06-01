@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
+using BizHawk.API.ApiHawk;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.LR35902;
-
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
-using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {

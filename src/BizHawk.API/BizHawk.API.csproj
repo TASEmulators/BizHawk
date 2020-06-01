@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="../MainSlnCommon.props" />
+	<Import Project="../../CommonNullable.props" />
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+	</PropertyGroup>
+	<!-- Do not add a <PackageReference/> or <ProjectReference/> to the API project! -->
+</Project>

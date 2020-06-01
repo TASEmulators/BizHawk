@@ -1,9 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
+using BizHawk.API.ApiHawk;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using System.ComponentModel.DataAnnotations;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA

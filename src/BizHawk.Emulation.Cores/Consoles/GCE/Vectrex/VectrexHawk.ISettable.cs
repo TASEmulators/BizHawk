@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel;
 
-using Newtonsoft.Json;
-
+using BizHawk.API.ApiHawk;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+
+using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 {

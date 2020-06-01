@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 
+using BizHawk.API.ApiHawk;
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Common.IOExtensions;

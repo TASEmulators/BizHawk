@@ -11,18 +11,19 @@
 //not exactly user friendly but maybe we can build it from there with a custom UI.. a disk-changer? dunno if that would help
 
 using System;
-using System.ComponentModel;
-using System.Runtime.InteropServices;
-using System.IO;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 
-using Newtonsoft.Json;
-
-using BizHawk.Emulation.Common;
+using BizHawk.API.ApiHawk;
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.DiscSystem;
+
+using Newtonsoft.Json;
 
 #pragma warning disable 649 //adelikat: Disable dumb warnings until this file is complete
 

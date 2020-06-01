@@ -5,11 +5,12 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 
+using BizHawk.API.ApiHawk;
+using BizHawk.BizInvoke;
 using BizHawk.Common;
+using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
-using BizHawk.BizInvoke;
-using BizHawk.Common.BufferExtensions;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {

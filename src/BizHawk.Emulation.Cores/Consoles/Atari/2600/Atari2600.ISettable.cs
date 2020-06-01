@@ -2,10 +2,11 @@
 using System.ComponentModel;
 using System.Drawing;
 
-using Newtonsoft.Json;
-
-using BizHawk.Emulation.Common;
+using BizHawk.API.ApiHawk;
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
+
+using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 
+using BizHawk.API.ApiHawk;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
 

@@ -4,10 +4,11 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
-using BizHawk.Common;
-using BizHawk.Emulation.Common;
+using BizHawk.API.ApiHawk;
 using BizHawk.Client.Common;
+using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
+using BizHawk.Emulation.Common;
 
 // todo - perks - pause, copy to clipboard, backlog length limiting
 

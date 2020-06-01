@@ -74,6 +74,8 @@ using System.Threading;
 using System.Diagnostics;
 using System.Dynamic;
 using System.IO;
+
+using BizHawk.API.ApiHawk;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
