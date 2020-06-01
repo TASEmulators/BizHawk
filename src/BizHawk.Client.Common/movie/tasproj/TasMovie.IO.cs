@@ -12,19 +12,6 @@ namespace BizHawk.Client.Common
 
 		protected override void Write(string fn, bool isBackup = false)
 		{
-			if (Emulator is Emulation.Cores.Nintendo.SubNESHawk.SubNESHawk subNes)
-			{
-				Header[HeaderKeys.VBlankCount] = subNes.VblankCount.ToString();
-			}
-			else if (Emulator is Emulation.Cores.Nintendo.Gameboy.Gameboy gameboy)
-			{
-				Header[HeaderKeys.CycleCount] = gameboy.CycleCount.ToString();
-			}
-			else if (Emulator is Emulation.Cores.Nintendo.SubGBHawk.SubGBHawk subGb)
-			{
-				Header[HeaderKeys.CycleCount] = subGb.CycleCount.ToString();
-			}
-
 			var file = new FileInfo(fn);
 			if (file.Directory != null && !file.Directory.Exists)
 			{
