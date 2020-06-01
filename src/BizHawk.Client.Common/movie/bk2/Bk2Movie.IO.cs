@@ -31,7 +31,7 @@ namespace BizHawk.Client.Common
 				Directory.CreateDirectory(directoryInfo.FullName);
 			}
 
-			Write(backupName, backup: true);
+			Write(backupName, isBackup: true);
 		}
 
 		public virtual bool Load(bool preload)
@@ -161,7 +161,7 @@ namespace BizHawk.Client.Common
 			return Load(true);
 		}
 
-		protected virtual void Write(string fn, bool backup = false)
+		protected virtual void Write(string fn, bool isBackup = false)
 		{
 			if (Emulator is Emulation.Cores.Nintendo.SubNESHawk.SubNESHawk subNes)
 			{
@@ -211,7 +211,7 @@ namespace BizHawk.Client.Common
 				bs.PutLump(BinaryStateLump.MovieSaveRam, (BinaryWriter bw) => bw.Write(SaveRam));
 			}
 
-			if (!backup)
+			if (!isBackup)
 			{
 				Changes = false;
 			}

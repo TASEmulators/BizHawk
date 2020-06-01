@@ -10,7 +10,7 @@ namespace BizHawk.Client.Common
 		public Func<string> ClientSettingsForSave { get; set; }
 		public Action<string> GetClientSettingsOnLoad { get; set; }
 
-		protected override void Write(string fn, bool backup = false)
+		protected override void Write(string fn, bool isBackup = false)
 		{
 			var file = new FileInfo(fn);
 			if (file.Directory != null && !file.Directory.Exists)
@@ -66,12 +66,12 @@ namespace BizHawk.Client.Common
 
 			bs.PutLump(BinaryStateLump.Session, tw => tw.WriteLine(JsonConvert.SerializeObject(TasSession)));
 
-			if (TasStateManager.Settings.SaveStateHistory && !backup)
+			if (TasStateManager.Settings.SaveStateHistory && !isBackup)
 			{
 				bs.PutLump(BinaryStateLump.StateHistory, bw => TasStateManager.Save(bw));
 			}
 
-			if (!backup)
+			if (!isBackup)
 			{
 				Changes = false;
 			}
