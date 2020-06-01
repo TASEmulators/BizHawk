@@ -124,7 +124,7 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea* m)
 	{
 		// pce-fast always adds the full 256kiB of turbocd + super system card as a single block
 		c = FindCheatArea(0x68 * 8192);
-		m[i].Data = c->data + 0x18 * 8192;
+		m[i].Data = (void*)((char*)c->data + 0x18 * 8192);
 		m[i].Name = "TurboCD RAM";
 		m[i].Size = 8 * 8192;
 		m[i].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE1;
