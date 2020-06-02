@@ -10,43 +10,18 @@ namespace BizHawk.Client.Common
 		public Func<string> ClientSettingsForSave { get; set; }
 		public Action<string> GetClientSettingsOnLoad { get; set; }
 
-		protected override void Write(string fn, bool isBackup = false)
+		protected override void AddLumps(ZipStateSaver bs, bool isBackup = false)
 		{
-			var file = new FileInfo(fn);
-			if (file.Directory != null && !file.Directory.Exists)
-			{
-				Directory.CreateDirectory(file.Directory.ToString());
-			}
+			AddBk2Lumps(bs);
+			AddTasProjLumps(bs, isBackup);
+		}
 
-			using var bs = new ZipStateSaver(fn, Global.Config.Savestates.MovieCompressionLevel);
-			bs.PutLump(BinaryStateLump.Movieheader, tw => tw.WriteLine(Header.ToString()));
-			bs.PutLump(BinaryStateLump.Comments, tw => tw.WriteLine(CommentsString()));
-			bs.PutLump(BinaryStateLump.Subtitles, tw => tw.WriteLine(Subtitles.ToString()));
-			bs.PutLump(BinaryStateLump.SyncSettings, tw => tw.WriteLine(SyncSettingsJson));
-			bs.PutLump(BinaryStateLump.Input, WriteInputLog);
-
-			// TasProj extras
+		private void AddTasProjLumps(ZipStateSaver bs, bool isBackup = false)
+		{
 			var settings = JsonConvert.SerializeObject(TasStateManager.Settings);
 			bs.PutLump(BinaryStateLump.StateHistorySettings, tw => tw.WriteLine(settings));
-
 			bs.PutLump(BinaryStateLump.LagLog, tw => LagLog.Save(tw));
 			bs.PutLump(BinaryStateLump.Markers, tw => tw.WriteLine(Markers.ToString()));
-
-			if (StartsFromSavestate)
-			{
-				if (TextSavestate != null)
-				{
-					bs.PutLump(BinaryStateLump.CorestateText, (TextWriter tw) => tw.Write(TextSavestate));
-				}
-				else
-				{
-					bs.PutLump(BinaryStateLump.Corestate, (BinaryWriter bw) => bw.Write(BinarySavestate));
-				}
-			}
-			else if (StartsFromSaveRam)
-			{
-				bs.PutLump(BinaryStateLump.MovieSaveRam, (BinaryWriter bw) => bw.Write(SaveRam));
-			}
 
 			if (ClientSettingsForSave != null)
 			{
@@ -69,11 +44,6 @@ namespace BizHawk.Client.Common
 			if (TasStateManager.Settings.SaveStateHistory && !isBackup)
 			{
 				bs.PutLump(BinaryStateLump.StateHistory, bw => TasStateManager.Save(bw));
-			}
-
-			if (!isBackup)
-			{
-				Changes = false;
 			}
 		}
 

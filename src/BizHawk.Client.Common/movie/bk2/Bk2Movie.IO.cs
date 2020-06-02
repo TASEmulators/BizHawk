@@ -25,12 +25,6 @@ namespace BizHawk.Client.Common
 			backupName = backupName.Insert(Filename.LastIndexOf("."), $".{DateTime.Now:yyyy-MM-dd HH.mm.ss}");
 			backupName = Path.Combine(backupDir, Path.GetFileName(backupName));
 
-			var directoryInfo = new FileInfo(backupName).Directory;
-			if (directoryInfo != null)
-			{
-				Directory.CreateDirectory(directoryInfo.FullName);
-			}
-
 			Write(backupName, isBackup: true);
 		}
 
@@ -163,6 +157,20 @@ namespace BizHawk.Client.Common
 
 		protected virtual void Write(string fn, bool isBackup = false)
 		{
+			SetCycleValues(); // We are pretending these only need to be set on save
+			CreateDirectoryIfNotExists(fn);
+
+			using var bs = new ZipStateSaver(fn, Global.Config.Savestates.MovieCompressionLevel);
+			AddLumps(bs);
+
+			if (!isBackup)
+			{
+				Changes = false;
+			}
+		}
+
+		private void SetCycleValues()
+		{
 			if (Emulator is Emulation.Cores.Nintendo.SubNESHawk.SubNESHawk subNes)
 			{
 				Header[HeaderKeys.VBlankCount] = subNes.VblankCount.ToString();
@@ -175,19 +183,28 @@ namespace BizHawk.Client.Common
 			{
 				Header[HeaderKeys.CycleCount] = subGb.CycleCount.ToString();
 			}
+		}
 
+		private void CreateDirectoryIfNotExists(string fn)
+		{
 			var file = new FileInfo(fn);
-			if (!file.Directory.Exists)
+			if (file.Directory != null && !file.Directory.Exists)
 			{
 				Directory.CreateDirectory(file.Directory.ToString());
 			}
+		}
 
-			using var bs = new ZipStateSaver(fn, Global.Config.Savestates.MovieCompressionLevel);
+		protected virtual void AddLumps(ZipStateSaver bs, bool isBackup = false)
+		{
+			AddBk2Lumps(bs);
+		}
+
+		protected void AddBk2Lumps(ZipStateSaver bs)
+		{
 			bs.PutLump(BinaryStateLump.Movieheader, tw => tw.WriteLine(Header.ToString()));
 			bs.PutLump(BinaryStateLump.Comments, tw => tw.WriteLine(CommentsString()));
 			bs.PutLump(BinaryStateLump.Subtitles, tw => tw.WriteLine(Subtitles.ToString()));
-			bs.PutLump(BinaryStateLump.SyncSettings, tw => tw.WriteLine(_syncSettingsJson));
-
+			bs.PutLump(BinaryStateLump.SyncSettings, tw => tw.WriteLine(SyncSettingsJson));
 			bs.PutLump(BinaryStateLump.Input, WriteInputLog);
 
 			if (StartsFromSavestate)
@@ -209,11 +226,6 @@ namespace BizHawk.Client.Common
 			else if (StartsFromSaveRam)
 			{
 				bs.PutLump(BinaryStateLump.MovieSaveRam, (BinaryWriter bw) => bw.Write(SaveRam));
-			}
-
-			if (!isBackup)
-			{
-				Changes = false;
 			}
 		}
 
