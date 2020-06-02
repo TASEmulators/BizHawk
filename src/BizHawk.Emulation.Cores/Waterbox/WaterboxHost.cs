@@ -293,7 +293,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				IntPtr co_clean;
 				if ((co_clean = _module.GetProcAddrOrZero("co_clean")) != IntPtr.Zero)
 				{
-					Console.WriteLine("Calling co_clean()...");
+					Console.WriteLine("Calling co_clean().");
 					CallingConventionAdapters.Waterbox.GetDelegateForFunctionPointer<Action>(co_clean)();
 				}
 
@@ -301,10 +301,21 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				foreach (var h in _heaps)
 				{
 					if (h != _invisibleheap && h != _sealedheap) // TODO: if we have more non-savestated heaps, refine this hack
-						h.Memory.SaveXorSnapshot();
+						h.Memory.Seal();
 				}
 				_module.SealImportsAndTakeXorSnapshot();
-				_mmapheap?.Memory.SaveXorSnapshot();
+				_mmapheap?.Memory.Seal();
+
+				// MemoryBlock's lazy write detection can't work on the current stack, because the VEH handler runs in the stack
+				// so it has to already be writable.  This isn't a problem for normal stacks, which are outside the cycle, but
+				// co stacks have to be fully probed before they're used as stacks.
+
+				IntPtr co_probe;
+				if ((co_probe = _module.GetProcAddrOrZero("co_probe")) != IntPtr.Zero)
+				{
+					Console.WriteLine("Calling co_probe().");
+					CallingConventionAdapters.Waterbox.GetDelegateForFunctionPointer<Action>(co_probe)();
+				}
 			}
 		}
 

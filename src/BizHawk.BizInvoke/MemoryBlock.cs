@@ -1,11 +1,12 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using BizHawk.Common;
 
 namespace BizHawk.BizInvoke
 {
-	public class MemoryBlock : IDisposable
+	public class MemoryBlock : IDisposable /*, IBinaryStateable */
 	{
 		/// <summary>allocate <paramref name="size"/> bytes starting at a particular address <paramref name="start"/></summary>
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="start"/> is not aligned or <paramref name="size"/> is <c>0</c></exception>
@@ -15,10 +16,13 @@ namespace BizHawk.BizInvoke
 				throw new ArgumentOutOfRangeException(nameof(start), start, "start address must be aligned");
 			if (size == 0)
 				throw new ArgumentOutOfRangeException(nameof(size), size, "cannot create 0-length block");
+			if (start == 0)
+				throw new NotImplementedException("Start == 0 doesn't work right now, not really");
 			Start = start;
 			Size = WaterboxUtils.AlignUp(size);
 			EndExclusive = Start + Size;
-			_pageData = new Protection[GetPage(EndExclusive - 1) + 1];
+			_pageData = (Protection[])(object)new byte[GetPage(EndExclusive - 1) + 1];
+			_dirtydata = (WriteDetectionStatus[])(object)new byte[GetPage(EndExclusive - 1) + 1];
 
 			_pal = OSTailoredCode.IsUnixHost
 				? (IMemoryBlockPal)new MemoryBlockUnixPal(Start, Size)
@@ -33,14 +37,9 @@ namespace BizHawk.BizInvoke
 		/// </summary>
 		private ulong CommittedSize;
 
-		/// <summary>
-		/// The last CommittedSize that was sent to the PAL layer when we were active.
-		/// TODO: Do we really need the ability to change protections while inactive?
-		/// </summary>
-		private ulong LastActiveCommittedSize;
-
 		/// <summary>stores last set memory protection value for each page</summary>
-		private readonly Protection[] _pageData;
+		private Protection[] _pageData;
+		private WriteDetectionStatus[] _dirtydata;
 
 		/// <summary>
 		/// end address of the memory block (not part of the block; class invariant: equal to <see cref="Start"/> + <see cref="Size"/>)
@@ -53,13 +52,13 @@ namespace BizHawk.BizInvoke
 		/// <summary>starting address of the memory block</summary>
 		public readonly ulong Start;
 
-		/// <summary>snapshot for XOR buffer</summary>
+		/// <summary>snapshot containing a clean state for all committed pages</summary>
 		private byte[] _snapshot;
+
+		private byte[] _hash;
 
 		/// <summary>true if this is currently swapped in</summary>
 		public bool Active { get; private set; }
-
-		public byte[] XorHash { get; private set; }
 
 		/// <summary>get a page index within the block</summary>
 		private int GetPage(ulong addr)
@@ -71,6 +70,19 @@ namespace BizHawk.BizInvoke
 
 		/// <summary>get a start address for a page index within the block</summary>
 		private ulong GetStartAddr(int page) => ((ulong) page << WaterboxUtils.PageShift) + Start;
+
+		private void EnsureActive()
+		{
+			if (!Active)
+				throw new InvalidOperationException("MemoryBlock is not currently active");
+		}
+		private void EnsureSealed()
+		{
+			if (!_sealed)
+				throw new InvalidOperationException("MemoryBlock is not currently sealed");
+		}
+
+		private bool _sealed;
 
 		/// <summary>
 		/// Get a stream that can be used to read or write from part of the block. Does not check for or change <see cref="Protect"/>!
@@ -85,27 +97,7 @@ namespace BizHawk.BizInvoke
 				throw new ArgumentOutOfRangeException(nameof(start), start, "invalid address");
 			if (EndExclusive < start + length)
 				throw new ArgumentOutOfRangeException(nameof(length), length, "requested length implies invalid end address");
-			return new MemoryViewStream(!writer, writer, (long)start, (long)length, this);
-		}
-
-		/// <summary>
-		/// get a stream that can be used to read or write from part of the block.
-		/// both reads and writes will be XORed against an earlier recorded snapshot
-		/// </summary>
-		/// <exception cref="ArgumentOutOfRangeException">
-		/// <paramref name="start"/> or end (= <paramref name="start"/> + <paramref name="length"/> - <c>1</c>) are outside
-		/// [<see cref="Start"/>, <see cref="EndExclusive"/>), the range of the block
-		/// </exception>
-		/// <exception cref="InvalidOperationException">no snapshot taken (haven't called <see cref="SaveXorSnapshot"/>)</exception>
-		public Stream GetXorStream(ulong start, ulong length, bool writer)
-		{
-			if (start < Start)
-				throw new ArgumentOutOfRangeException(nameof(start), start, "invalid address");
-			if (EndExclusive < start + length)
-				throw new ArgumentOutOfRangeException(nameof(length), length, "requested length implies invalid end address");
-			if (_snapshot == null)
-				throw new InvalidOperationException("No snapshot taken!");
-			return new MemoryViewXorStream(!writer, writer, (long)start, (long)length, this, _snapshot, (long)(start - Start));
+			return new MemoryViewStream(!writer, writer, (long)start, (long)length);
 		}
 
 		/// <summary>activate the memory block, swapping it in at the pre-specified address</summary>
@@ -115,12 +107,9 @@ namespace BizHawk.BizInvoke
 			if (Active)
 				throw new InvalidOperationException("Already active");
 			_pal.Activate();
-			if (CommittedSize > LastActiveCommittedSize)
-			{
-				_pal.Commit(CommittedSize);
-				LastActiveCommittedSize = CommittedSize;
-			}
 			ProtectAll();
+			if (_sealed)
+				_pal.SetWriteStatus(_dirtydata);
 			Active = true;
 		}
 
@@ -130,38 +119,32 @@ namespace BizHawk.BizInvoke
 		/// </exception>
 		public void Deactivate()
 		{
-			if (!Active)
-				throw new InvalidOperationException("Not active");
+			EnsureActive();
+			if (_sealed)
+				_pal.GetWriteStatus(_dirtydata);
 			_pal.Deactivate();
 			Active = false;
 		}
 
 		/// <summary>
-		/// take a hash of the current full contents of the block, including unreadable areas
+		/// read the of the current full contents of the block, including unreadable areas
 		/// but not uncommitted areas
 		/// </summary>
-		/// <exception cref="InvalidOperationException">
-		/// <see cref="MemoryBlock.Active"/> is <see langword="false"/> or failed to make memory read-only
-		/// </exception>
 		public byte[] FullHash()
 		{
-			if (!Active)
-				throw new InvalidOperationException("Not active");
-			// temporarily switch the committed parts to `R` so we can read them
-			if (CommittedSize > 0)
-				_pal.Protect(Start, CommittedSize, Protection.R);
-			var ret = WaterboxUtils.Hash(GetStream(Start, CommittedSize, false));
-			ProtectAll();
-			return ret;
+			EnsureSealed();
+			return _hash;
 		}
-
 
 		/// <summary>set r/w/x protection on a portion of memory. rounded to encompassing pages</summary
 		/// <exception cref="InvalidOperationException">failed to protect memory</exception>
 		public void Protect(ulong start, ulong length, Protection prot)
 		{
+			EnsureActive();
 			if (length == 0)
 				return;
+			if (_sealed)
+				_pal.GetWriteStatus(_dirtydata);
 			
 			// Note: asking for prot.none on memory that was not previously committed, commits it
 
@@ -169,32 +152,30 @@ namespace BizHawk.BizInvoke
 			var computedEnd = WaterboxUtils.AlignUp(start + length);
 			var computedLength = computedEnd - computedStart;
 
-			int pstart = GetPage(start);
-			int pend = GetPage(start + length - 1);
-
-			for (int i = pstart; i <= pend; i++)
-				_pageData[i] = prot; // also store the value for later use
-
 			// potentially commit more memory
 			var minNewCommittedSize = computedEnd - Start;
 			if (minNewCommittedSize > CommittedSize)
 			{
 				CommittedSize = minNewCommittedSize;
+				// Since Commit() was called, we have to do a full ProtectAll -- remember that when refactoring
+				_pal.Commit(CommittedSize);
 			}
 
-			if (Active) // it's legal to Protect() if we're not active; the information is just saved for the next activation
+			int pstart = GetPage(start);
+			int pend = GetPage(start + length - 1);
+			for (int i = pstart; i <= pend; i++)
 			{
-				if (CommittedSize > LastActiveCommittedSize)
-				{
-					_pal.Commit(CommittedSize);
-					LastActiveCommittedSize = CommittedSize;
-					ProtectAll();
-				}
+				_pageData[i] = prot;
+				if (prot == Protection.RW)
+					_dirtydata[i] |= WriteDetectionStatus.CanChange;
 				else
-				{
-					_pal.Protect(computedStart, computedLength, prot);
-				}
+					_dirtydata[i] &= ~WriteDetectionStatus.CanChange;
 			}
+
+			// TODO: restore the previous behavior where we would only reprotect a partial range
+			ProtectAll();
+			if (_sealed)
+				_pal.SetWriteStatus(_dirtydata);
 		}
 
 		/// <summary>restore all recorded protections</summary>
@@ -206,40 +187,151 @@ namespace BizHawk.BizInvoke
 			int pageLimit = (int)(CommittedSize >> WaterboxUtils.PageShift);
 			for (int i = 0; i < pageLimit; i++)
 			{
-				if (i == pageLimit - 1 || _pageData[i] != _pageData[i + 1])
+				if (i == pageLimit - 1 || _pageData[i] != _pageData[i + 1] || _dirtydata[i] != _dirtydata[i + 1])
 				{
 					ulong zstart = GetStartAddr(ps);
 					ulong zend = GetStartAddr(i + 1);
-					_pal.Protect(zstart, zend - zstart, _pageData[i]);
+					var prot = _pageData[i];
+					if (_sealed && prot == Protection.RW)
+					{
+						var didChange = (_dirtydata[i] & WriteDetectionStatus.DidChange) != 0;
+						if (!didChange)
+							prot = Protection.R;
+					}
+					_pal.Protect(zstart, zend - zstart, prot);
 					ps = i + 1;
 				}
 			}
 		}
 
-		/// <summary>take a snapshot of the entire memory block's contents, for use in <see cref="GetXorStream"/></summary>
-		/// <exception cref="InvalidOperationException">
-		/// snapshot already taken, <see cref="MemoryBlock.Active"/> is <see langword="false"/>, or failed to make memory read-only
-		/// </exception>
-		public void SaveXorSnapshot()
+		public void Seal()
 		{
-			// note: The snapshot only holds up to the current committed size.  We compensate for that in xorstream
-			if (_snapshot != null)
-				throw new InvalidOperationException("Snapshot already taken");
-			if (!Active)
-				throw new InvalidOperationException("Not active");
-
-			// temporarily switch the entire committed area to `R`: in case some areas are unreadable, we don't want
-			// that to complicate things
-			if (CommittedSize > 0)
-				_pal.Protect(Start, CommittedSize, Protection.R);
-
+			EnsureActive();
+			if (_sealed)
+				throw new InvalidOperationException("Already sealed");
 			_snapshot = new byte[CommittedSize];
-			var ds = new MemoryStream(_snapshot, true);
-			var ss = GetStream(Start, CommittedSize, false);
-			ss.CopyTo(ds);
-			XorHash = WaterboxUtils.Hash(_snapshot);
-
+			if (CommittedSize > 0)
+			{
+				// temporarily switch the committed parts to `R` so we can read them
+				_pal.Protect(Start, CommittedSize, Protection.R);
+				Marshal.Copy(Z.US(Start), _snapshot, 0, (int)CommittedSize);
+			}
+			_hash = WaterboxUtils.Hash(_snapshot);
+			_sealed = true;
 			ProtectAll();
+			_pal.SetWriteStatus(_dirtydata);
+		}
+
+		const ulong MAGIC = 18123868458638683;
+
+		public void SaveState(BinaryWriter w)
+		{
+			EnsureActive();
+			EnsureSealed();
+			_pal.GetWriteStatus(_dirtydata);
+
+			w.Write(MAGIC);
+			w.Write(Start);
+			w.Write(Size);
+			w.Write(_hash);
+			w.Write(CommittedSize);
+			w.Write((byte[])(object)_pageData);
+			w.Write((byte[])(object)_dirtydata);
+
+			var buff = new byte[4096];
+			int p;
+			ulong addr;
+			ulong endAddr = Start + CommittedSize;
+			for (p = 0, addr = Start; addr < endAddr; p++, addr += 4096)
+			{
+				if ((_dirtydata[p] & WriteDetectionStatus.DidChange) != 0)
+				{
+					// TODO: It's slow to toggle individual pages like this.
+					// Maybe that's OK because None is not used much?
+					if (_pageData[p] == Protection.None)
+						_pal.Protect(addr, 4096, Protection.R);
+					Marshal.Copy(Z.US(addr), buff, 0, 4096);
+					w.Write(buff);
+					if (_pageData[p] == Protection.None)
+						_pal.Protect(addr, 4096, Protection.None);
+				}
+			}
+		}
+
+		public void LoadState(BinaryReader r)
+		{
+			EnsureActive();
+			EnsureSealed();
+			_pal.GetWriteStatus(_dirtydata);
+
+			if (r.ReadUInt64() != MAGIC || r.ReadUInt64() != Start || r.ReadUInt64() != Size)
+				throw new InvalidOperationException("Savestate internal mismatch");
+			if (!r.ReadBytes(_hash.Length).SequenceEqual(_hash))
+			{
+				// TODO: We'll probably have to allow this for romhackurz
+				throw new InvalidOperationException("Waterbox consistency guarantee failed");
+			}
+			var newCommittedSize = r.ReadUInt64();
+			if (newCommittedSize > CommittedSize)
+			{
+				_pal.Commit(newCommittedSize);
+			}
+			else if (newCommittedSize < CommittedSize)
+			{
+				// PAL layer won't let us shrink commits, but that's kind of OK
+				var start = Start + newCommittedSize;
+				var size = CommittedSize - newCommittedSize;
+				_pal.Protect(start, size, Protection.RW);
+				WaterboxUtils.ZeroMemory(Z.US(start), (long)size);
+				_pal.Protect(start, size, Protection.None);
+			}
+			CommittedSize = newCommittedSize;
+			var newPageData = (Protection[])(object)r.ReadBytes(_pageData.Length);
+			var newDirtyData = (WriteDetectionStatus[])(object)r.ReadBytes(_dirtydata.Length);
+
+			var buff = new byte[4096];
+			int p;
+			ulong addr;
+			ulong endAddr = Start + CommittedSize;
+			for (p = 0, addr = Start; addr < endAddr; p++, addr += 4096)
+			{
+				var dirty = (_dirtydata[p] & WriteDetectionStatus.DidChange) != 0;
+				var newDirty = (newDirtyData[p] & WriteDetectionStatus.DidChange) != 0;
+
+				if (dirty || newDirty)
+				{
+					// must write out changed data
+
+					// TODO: It's slow to toggle individual pages like this
+					if (_pageData[p] != Protection.RW)
+						_pal.Protect(addr, 4096, Protection.RW);
+
+					if (newDirty)
+					{
+						// changed data comes from the savestate
+						r.Read(buff, 0, 4096);
+						Marshal.Copy(buff, 0, Z.US(addr), 4096);
+					}
+					else
+					{
+						// data comes from the snapshot
+						var offs = (int)(addr - Start);
+						if (offs < _snapshot.Length)
+						{
+							Marshal.Copy(_snapshot, offs, Z.US(addr), 4096);
+						}
+						else
+						{
+							// or was not in the snapshot at all, so had never been changed by seal
+							WaterboxUtils.ZeroMemory(Z.US(addr), 4096);
+						}
+					}
+				}
+			}
+			_pageData = newPageData;
+			_dirtydata = newDirtyData;
+			ProtectAll();
+			_pal.SetWriteStatus(_dirtydata);
 		}
 
 		public void Dispose()
@@ -260,151 +352,5 @@ namespace BizHawk.BizInvoke
 		/// <summary>Memory protection constant</summary>
 		public enum Protection : byte { None, R, RW, RX }
 
-		private class MemoryViewStream : Stream
-		{
-			public MemoryViewStream(bool readable, bool writable, long ptr, long length, MemoryBlock owner)
-			{
-				_readable = readable;
-				_writable = writable;
-				_ptr = ptr;
-				_length = length;
-				_owner = owner;
-				_pos = 0;
-			}
-
-			private readonly long _length;
-			private readonly MemoryBlock _owner;
-			private readonly long _ptr;
-			private readonly bool _readable;
-			private readonly bool _writable;
-
-			private long _pos;
-
-			public override bool CanRead => _readable;
-			public override bool CanSeek => true;
-			public override bool CanWrite => _writable;
-			public override long Length => _length;
-			public override long Position
-			{
-				get => _pos;
-				set
-				{
-					if (value < 0 || value > _length)
-						throw new ArgumentOutOfRangeException();
-					_pos = value;
-				}
-			}
-
-			private void EnsureNotDisposed()
-			{
-				if (_owner.Start == 0)
-					throw new ObjectDisposedException(nameof(MemoryBlock));
-			}
-
-			public override void Flush() {}
-
-			public override int Read(byte[] buffer, int offset, int count)
-			{
-				if (!_readable)
-					throw new InvalidOperationException();
-				if (count < 0 || offset + count > buffer.Length)
-					throw new ArgumentOutOfRangeException();
-				EnsureNotDisposed();
-
-				count = (int)Math.Min(count, _length - _pos);
-				Marshal.Copy(Z.SS(_ptr + _pos), buffer, offset, count);
-				_pos += count;
-				return count;
-			}
-
-			public override long Seek(long offset, SeekOrigin origin)
-			{
-				long newpos;
-				switch (origin)
-				{
-					default:
-					case SeekOrigin.Begin:
-						newpos = offset;
-						break;
-					case SeekOrigin.Current:
-						newpos = _pos + offset;
-						break;
-					case SeekOrigin.End:
-						newpos = _length + offset;
-						break;
-				}
-				Position = newpos;
-				return newpos;
-			}
-
-			public override void SetLength(long value)
-			{
-				throw new InvalidOperationException();
-			}
-
-			public override void Write(byte[] buffer, int offset, int count)
-			{
-				if (!_writable)
-					throw new InvalidOperationException();
-				if (count < 0 || _pos + count > _length || offset + count > buffer.Length)
-					throw new ArgumentOutOfRangeException();
-				EnsureNotDisposed();
-
-				Marshal.Copy(buffer, offset, Z.SS(_ptr + _pos), count);
-				_pos += count;
-			}
-		}
-
-		private class MemoryViewXorStream : MemoryViewStream
-		{
-			public MemoryViewXorStream(bool readable, bool writable, long ptr, long length, MemoryBlock owner, byte[] initial, long offset)
-				: base(readable, writable, ptr, length, owner)
-			{
-				_initial = initial;
-				_offset = (int)offset;
-			}
-
-			/// <summary>the initial data to XOR against for both reading and writing</summary>
-			private readonly byte[] _initial;
-
-			/// <summary>offset into the XOR data that this stream is representing</summary>
-			private readonly int _offset;
-
-			public override int Read(byte[] buffer, int offset, int count)
-			{
-				var pos = (int)Position;
-				count = base.Read(buffer, offset, count);
-				XorTransform(_initial, _offset + pos, buffer, offset, count);
-				return count;
-			}
-
-			public override void Write(byte[] buffer, int offset, int count)
-			{
-				var pos = (int)Position;
-				if (count < 0 || pos + count > Length || offset + count > buffer.Length)
-					throw new ArgumentOutOfRangeException();
-
-				// is mutating the buffer passed to Stream.Write kosher?
-				XorTransform(_initial, _offset + pos, buffer, offset, count);
-				base.Write(buffer, offset, count);
-			}
-
-			private static unsafe void XorTransform(byte[] source, int sourceOffset, byte[] dest, int destOffset, int length)
-			{
-				// bounds checks on dest have been done already, but not on source
-				// If a xorsnapshot was created and then the heap was later expanded, those other bytes are effectively 0
-
-				// TODO: C compilers can make this pretty snappy, but can the C# jitter? Or do we need intrinsics
-				fixed (byte* _s = source, _d = dest)
-				{
-					byte* s = _s + sourceOffset;
-					byte* d = _d + destOffset;
-					byte* sEnd = _s + Math.Min(sourceOffset + length, source.Length);
-					while (s < sEnd)
-						*d++ ^= *s++;
-					// for anything left in dest past source.Length, we need not transform at all
-				}
-			}
-		}
 	}
 }

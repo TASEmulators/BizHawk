@@ -285,21 +285,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			bw.Write(Name);
 			bw.Write(Memory.Size);
 			bw.Write(Used);
-			bw.Write(Memory.XorHash);
 			bw.Write(_pagesAsBytes);
-
-			Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.R);
-			var srcs = Memory.GetXorStream(Memory.Start, Memory.Size, false);
-			for (int i = 0, addr = 0; i < _pages.Length; i++, addr += WaterboxUtils.PageSize)
-			{
-				if (_pages[i] != FREE)
-				{
-					srcs.Seek(addr, SeekOrigin.Begin);
-					WaterboxUtils.CopySome(srcs, bw.BaseStream, WaterboxUtils.PageSize);
-				}
-			}
+			Memory.SaveState(bw);
 			bw.Write(MAGIC);
-			RefreshAllProtections();
 		}
 
 		public void LoadStateBinary(BinaryReader br)
@@ -310,31 +298,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			var size = br.ReadUInt64();
 			if (size != Memory.Size)
 				throw new InvalidOperationException($"Size did not match for {nameof(MapHeap)} {Name}");
-			var used = br.ReadUInt64();
-			var hash = br.ReadBytes(Memory.XorHash.Length);
-			if (!hash.SequenceEqual(Memory.XorHash))
-				throw new InvalidOperationException($"Hash did not match for {nameof(MapHeap)} {Name}.  Is this the same rom?");
-
-			if (br.BaseStream.Read(_pagesAsBytes, 0, _pagesAsBytes.Length) != _pagesAsBytes.Length)
-				throw new InvalidOperationException("Unexpected error reading!");
-
-			Used = 0;
-			Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.RW);
-			var dsts = Memory.GetXorStream(Memory.Start, Memory.Size, true);
-			for (int i = 0, addr = 0; i < _pages.Length; i++, addr += WaterboxUtils.PageSize)
-			{
-				if (_pages[i] != FREE)
-				{
-					dsts.Seek(addr, SeekOrigin.Begin);
-					WaterboxUtils.CopySome(br.BaseStream, dsts, WaterboxUtils.PageSize);
-					Used += (uint)WaterboxUtils.PageSize;
-				}
-			}
-			if (Used != used)
-				throw new InvalidOperationException("Internal savestate error");
+			Used = br.ReadUInt64();
+			br.Read(_pagesAsBytes, 0, _pagesAsBytes.Length);
+			Memory.LoadState(br);
 			if (br.ReadUInt64() != MAGIC)
 				throw new InvalidOperationException("Savestate internal error");
-			RefreshAllProtections();
 		}
 
 		public static void StressTest()

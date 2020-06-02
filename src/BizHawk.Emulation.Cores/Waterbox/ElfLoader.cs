@@ -278,7 +278,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				WaterboxUtils.ZeroMemory(Z.US(_invisible.LoadAddress), (long)_invisible.Size);
 			}
 
-			Memory.SaveXorSnapshot();
+			Memory.Seal();
 
 			Marshal.Copy(impData, 0, Z.US(_imports.LoadAddress), (int)_imports.Size);
 
@@ -336,12 +336,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 			bw.Write(MAGIC);
 			bw.Write(_elfHash);
-			bw.Write(Memory.XorHash);
-
-			var len = Memory.EndExclusive - _saveStart;
-			var ms = Memory.GetXorStream(_saveStart, len, false);
-			bw.Write(len);
-			ms.CopyTo(bw.BaseStream);
+			Memory.SaveState(bw);
 		}
 
 		public void LoadStateBinary(BinaryReader br)
@@ -366,20 +361,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					throw new InvalidOperationException("Core consistency check failed.  Is this a savestate from a different version?");
 			}
 
-			var xorHash = br.ReadBytes(Memory.XorHash.Length);
-			if (!_skipMemoryConsistencyCheck)
-			{
-				if (!xorHash.SequenceEqual(Memory.XorHash))
-					// the post-Seal memory state is different. probable cause:  different rom or different version of rom,
-					// different syncsettings
-					throw new InvalidOperationException("Memory consistency check failed.  Is this savestate from different SyncSettings?");
-			}
-
-			var len = Memory.EndExclusive - _saveStart;
-			if (br.ReadUInt64() != len)
-				throw new InvalidOperationException("Unexpected saved length");
-			var ms = Memory.GetXorStream(_saveStart, len, true);
-			WaterboxUtils.CopySome(br.BaseStream, ms, (long)len);
+			Memory.LoadState(br);
 		}
 	}
 }

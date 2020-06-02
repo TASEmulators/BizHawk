@@ -88,9 +88,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			bw.Write(Used);
 			if (!Sealed)
 			{
-				bw.Write(Memory.XorHash);
-				var ms = Memory.GetXorStream(Memory.Start, WaterboxUtils.AlignUp(Used), false);
-				ms.CopyTo(bw.BaseStream);
+				Memory.SaveState(bw);
 			}
 			else
 			{
@@ -109,32 +107,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				throw new InvalidOperationException($"Heap {Name} used {used} larger than available {Memory.Size}");
 			if (!Sealed)
 			{
-				var hash = br.ReadBytes(Memory.XorHash.Length);
-				if (!hash.SequenceEqual(Memory.XorHash))
-				{
-					throw new InvalidOperationException($"Hash did not match for heap {Name}.  Is this the same rom with the same SyncSettings?");
-				}
-				var oldUsedAligned = WaterboxUtils.AlignUp(Used);
-				var usedAligned = WaterboxUtils.AlignUp(used);
-				if (usedAligned > oldUsedAligned)
-				{
-					// grow
-					var s = Memory.Start + oldUsedAligned;
-					var l = usedAligned - oldUsedAligned;
-					Memory.Protect(s, l, MemoryBlock.Protection.RW);
-				}
-				else if (usedAligned < oldUsedAligned)
-				{
-					// shrink
-					var s = Memory.Start + usedAligned;
-					var l = oldUsedAligned - usedAligned;
-					// like elsewhere, we zero on free to avoid nondeterminism if later reallocated
-					WaterboxUtils.ZeroMemory(Z.US(s), (long)l);
-					Memory.Protect(s, l, MemoryBlock.Protection.None);
-				}
-
-				var ms = Memory.GetXorStream(Memory.Start, usedAligned, true);
-				WaterboxUtils.CopySome(br.BaseStream, ms, (long)usedAligned);
+				Memory.LoadState(br);
 				Used = used;
 			}
 			else

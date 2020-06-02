@@ -4,7 +4,7 @@ using static BizHawk.BizInvoke.MemoryBlock;
 
 namespace BizHawk.BizInvoke
 {
-	internal sealed class MemoryBlockWindowsPal : IMemoryBlockPal
+	internal sealed unsafe class MemoryBlockWindowsPal : IMemoryBlockPal
 	{
 		/// <summary>
 		/// handle returned by CreateFileMapping
@@ -12,6 +12,7 @@ namespace BizHawk.BizInvoke
 		private IntPtr _handle;
 		private ulong _start;
 		private ulong _size;
+		private bool _guardActive;
 
 		/// <summary>
 		/// Reserve bytes to later be swapped in, but do not map them
@@ -49,12 +50,20 @@ namespace BizHawk.BizInvoke
 			{
 				throw new InvalidOperationException($"{nameof(Kernel32.MapViewOfFileEx)}() returned NULL");
 			}
+			if ((IntPtr)WinGuard.AddTripGuard(Z.UU(_start), Z.UU(_size)) == IntPtr.Zero)
+			{
+				throw new InvalidOperationException($"{nameof(WinGuard.AddTripGuard)}() returned NULL");
+			}
+			_guardActive = true;
 		}
 
 		public void Deactivate()
 		{
 			if (!Kernel32.UnmapViewOfFile(Z.US(_start)))
 				throw new InvalidOperationException($"{nameof(Kernel32.UnmapViewOfFile)}() returned NULL");
+			if (!WinGuard.RemoveTripGuard(Z.UU(_start), Z.UU(_size)))
+				throw new InvalidOperationException($"{nameof(WinGuard.RemoveTripGuard)}() returned FALSE");
+			_guardActive = false;
 		}
 
 		public void Protect(ulong start, ulong size, Protection prot)
@@ -89,8 +98,29 @@ namespace BizHawk.BizInvoke
 			{
 				Kernel32.CloseHandle(_handle);
 				_handle = IntPtr.Zero;
+				if (_guardActive)
+				{
+					WinGuard.RemoveTripGuard(Z.UU(_start), Z.UU(_size));
+					_guardActive = false;
+				}
 				GC.SuppressFinalize(this);
 			}
+		}
+
+		public void GetWriteStatus(WriteDetectionStatus[] dest)
+		{
+			var p = (IntPtr)WinGuard.ExamineTripGuard(Z.UU(_start), Z.UU(_size));
+			if (p == IntPtr.Zero)
+				throw new InvalidOperationException($"{nameof(WinGuard.ExamineTripGuard)}() returned NULL!");
+			Marshal.Copy(p, (byte[])(object)dest, 0, dest.Length);
+		}
+
+		public void SetWriteStatus(WriteDetectionStatus[] src)
+		{
+			var p = (IntPtr)WinGuard.ExamineTripGuard(Z.UU(_start), Z.UU(_size));
+			if (p == IntPtr.Zero)
+				throw new InvalidOperationException($"{nameof(WinGuard.ExamineTripGuard)}() returned NULL!");
+			Marshal.Copy((byte[])(object)src, 0, p, src.Length);
 		}
 
 		~MemoryBlockWindowsPal()
@@ -182,6 +212,41 @@ namespace BizHawk.BizInvoke
 			}
 
 			public static readonly IntPtr INVALID_HANDLE_VALUE = Z.US(0xffffffffffffffff);
+		}
+
+		private static unsafe class WinGuard
+		{
+			/// <summary>
+			/// Add write detection to an area of memory.  Any page in the specified range that has CanChange
+			/// set and triggers an access violation on write
+			/// will be noted, set to read+write permissions, and execution will be continued.
+			/// CALLER'S RESPONSIBILITY: All addresses are page aligned.
+			/// CALLER'S RESPONSIBILITY: No other thread enters any WinGuard function, or trips any tracked page during this call.
+			/// CALLER'S RESPONSIBILITY: Pages to be tracked are VirtualProtected to R (no G) beforehand.  Pages with write permission
+			/// cause no issues, but they will not trip.  WinGuard will not intercept Guard flag exceptions in any way.
+			/// </summary>
+			/// <returns>The same information as ExamineTripGuard, or null on failure</returns>
+			[DllImport("winguard.dll")]
+			public static extern WriteDetectionStatus* AddTripGuard(UIntPtr start, UIntPtr length);
+			/// <summary>
+			/// Remove write detection from the specified addresses.
+			/// CALLER'S RESPONSIBILITY: All addresses are page aligned.
+			/// CALLER'S RESPONSIBILITY: No other thread enters any WinGuard function, or trips any tracked guard page during this call.
+			/// </summary>
+			/// <returns>false on failure (usually, the address range did not match a known one)</returns>
+			[DllImport("winguard.dll")]
+			public static extern bool RemoveTripGuard(UIntPtr start, UIntPtr length);
+			/// <summary>
+			/// Examines a previously installed guard page detection.
+			/// CALLER'S RESPONSIBILITY: All addresses are page aligned.
+			/// CALLER'S RESPONSIBILITY: No other thread enters any WinGuard function, or trips any tracked guard page during this call.
+			/// </summary>
+			/// <returns>
+			/// A pointer to an array of bytes, one byte for each memory page in the range.  Caller should set CanChange on pages to
+			/// observe, and read back DidChange to see if things changed.
+			/// </returns>
+			[DllImport("winguard.dll")]
+			public static extern WriteDetectionStatus* ExamineTripGuard(UIntPtr start, UIntPtr length);
 		}
 	}
 }

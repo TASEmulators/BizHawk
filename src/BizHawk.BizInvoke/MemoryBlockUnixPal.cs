@@ -22,11 +22,12 @@ namespace BizHawk.BizInvoke
 		/// </exception>
 		public MemoryBlockUnixPal(ulong start, ulong size)
 		{
-			_start = start;
-			_size = size;
-			_fd = memfd_create("MemoryBlockUnix", 0);
-			if (_fd == -1)
-				throw new InvalidOperationException($"{nameof(memfd_create)}() returned -1");
+			throw new NotImplementedException();
+			// _start = start;
+			// _size = size;
+			// _fd = memfd_create("MemoryBlockUnix", 0);
+			// if (_fd == -1)
+			// 	throw new InvalidOperationException($"{nameof(memfd_create)}() returned -1");
 		}
 
 		public void Dispose()
@@ -84,6 +85,16 @@ namespace BizHawk.BizInvoke
 			);
 			if (errorCode != 0)
 				throw new InvalidOperationException($"{nameof(mprotect)}() returned {errorCode}!");
+		}
+
+		public void GetWriteStatus(WriteDetectionStatus[] dest)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void SetWriteStatus(WriteDetectionStatus[] src)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }
