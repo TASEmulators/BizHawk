@@ -1284,6 +1284,7 @@ namespace BizHawk.Client.EmuHawk
 		private void GambatteCorePick_Click(object sender, EventArgs e)
 		{
 			Config.PreferredCores["GB"] = CoreNames.Gambatte;
+			Config.PreferredCores["GBC"] = CoreNames.Gambatte;
 
 			if (Emulator.SystemId == "GB" || Emulator.SystemId == "GBC")
 			{

@@ -313,6 +313,7 @@ namespace BizHawk.Client.Common
 			["NES"] = CoreNames.QuickNes,
 			["SNES"] = CoreNames.Snes9X,
 			["GB"] = CoreNames.Gambatte,
+			["GBC"] = CoreNames.Gambatte,
 			["PCE"] = CoreNames.PceHawk,
 			["PCECD"] = CoreNames.PceHawk,
 			["SGX"] = CoreNames.PceHawk

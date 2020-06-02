@@ -251,27 +251,20 @@ namespace BizHawk.Client.Common
 
 			if (!record)
 			{
-				var preference = systemId;
-				if (preference == "GBC")
+				if (Global.Config.PreferredCores.ContainsKey(systemId))
 				{
-					// We want to treat GBC the same as GB
-					preference = "GB";
-				}
-
-				if (Global.Config.PreferredCores.ContainsKey(preference))
-				{
-					string movieCore = Global.Config.PreferredCores[preference];
+					string movieCore = Global.Config.PreferredCores[systemId];
 					if (string.IsNullOrWhiteSpace(movie.Core))
 					{
-						PopupMessage($"No core specified in the movie file, using the preferred core {Global.Config.PreferredCores[preference]} instead.");
+						PopupMessage($"No core specified in the movie file, using the preferred core {Global.Config.PreferredCores[systemId]} instead.");
 					}
 					else
 					{
 						movieCore = movie.Core;
 					}
 
-					_preferredCores[preference] = Global.Config.PreferredCores[preference];
-					Global.Config.PreferredCores[preference] = movieCore;
+					_preferredCores[systemId] = Global.Config.PreferredCores[systemId];
+					Global.Config.PreferredCores[systemId] = movieCore;
 				}
 			}
 
