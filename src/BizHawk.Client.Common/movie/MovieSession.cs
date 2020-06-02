@@ -227,7 +227,7 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <exception cref="MoviePlatformMismatchException"><paramref name="record"/> is <see langword="false"/> and <paramref name="movie"/>.<see cref="IMovie.SystemID"/> does not match <paramref name="systemId"/>.<see cref="IEmulator.SystemId"/></exception>
-		public void QueueNewMovie(IMovie movie, bool record, string systemId)
+		public void QueueNewMovie(IMovie movie, bool record, string systemId, IDictionary<string, string> preferredCores)
 		{
 			if (movie.IsActive() && movie.Changes)
 			{
@@ -251,20 +251,20 @@ namespace BizHawk.Client.Common
 
 			if (!record)
 			{
-				if (Global.Config.PreferredCores.ContainsKey(systemId))
+				if (preferredCores.ContainsKey(systemId))
 				{
-					string movieCore = Global.Config.PreferredCores[systemId];
+					string movieCore = preferredCores[systemId];
 					if (string.IsNullOrWhiteSpace(movie.Core))
 					{
-						PopupMessage($"No core specified in the movie file, using the preferred core {Global.Config.PreferredCores[systemId]} instead.");
+						PopupMessage($"No core specified in the movie file, using the preferred core {preferredCores[systemId]} instead.");
 					}
 					else
 					{
 						movieCore = movie.Core;
 					}
 
-					_preferredCores[systemId] = Global.Config.PreferredCores[systemId];
-					Global.Config.PreferredCores[systemId] = movieCore;
+					_preferredCores[systemId] = preferredCores[systemId];
+					preferredCores[systemId] = movieCore;
 				}
 			}
 
@@ -280,12 +280,12 @@ namespace BizHawk.Client.Common
 			_queuedMovie = movie;
 		}
 
-		public void RunQueuedMovie(bool recordMode, IEmulator emulator)
+		public void RunQueuedMovie(bool recordMode, IEmulator emulator, IDictionary<string, string> preferredCores)
 		{
 			_queuedMovie.Attach(this, emulator);
 			foreach (var previousPref in _preferredCores)
 			{
-				Global.Config.PreferredCores[previousPref.Key] = previousPref.Value;
+				preferredCores[previousPref.Key] = previousPref.Value;
 			}
 
 			Movie = _queuedMovie;

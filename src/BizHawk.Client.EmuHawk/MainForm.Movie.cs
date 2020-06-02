@@ -17,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				MovieSession.QueueNewMovie(movie, record, Emulator.SystemId);
+				MovieSession.QueueNewMovie(movie, record, Emulator.SystemId, Config.PreferredCores);
 			}
 			catch (MoviePlatformMismatchException ex)
 			{
@@ -30,7 +30,7 @@ namespace BizHawk.Client.EmuHawk
 
 			Config.RecentMovies.Add(movie.Filename);
 
-			MovieSession.RunQueuedMovie(record, Emulator);
+			MovieSession.RunQueuedMovie(record, Emulator, Config.PreferredCores);
 
 			SetMainformMovieInfo();
 

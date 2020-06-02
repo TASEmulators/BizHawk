@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -54,12 +55,12 @@ namespace BizHawk.Client.Common
 		/// When initializing a movie, it will be stored until Rom loading processes have been completed, then it will be moved to the Movie property
 		/// If an existing movie is still active, it will remain in the Movie property while the new movie is queued
 		/// </summary>
-		void QueueNewMovie(IMovie movie, bool record, string systemId);
+		void QueueNewMovie(IMovie movie, bool record, string systemId, IDictionary<string, string> preferredCores);
 
 		/// <summary>
 		/// Sets the Movie property with the QueuedMovie, clears the queued movie, and starts the new movie
 		/// </summary>
-		void RunQueuedMovie(bool recordMode, IEmulator emulator);
+		void RunQueuedMovie(bool recordMode, IEmulator emulator, IDictionary<string, string> preferredCores);
 
 		void ToggleMultitrack();
 
