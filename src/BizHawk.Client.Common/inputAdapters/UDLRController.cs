@@ -11,6 +11,10 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public class UdlrControllerAdapter : IController
 	{
+		private readonly HashSet<string> _unpresses = new HashSet<string>();
+
+		public IController Source { get; set; }
+
 		public ControllerDefinition Definition => Source.Definition;
 
 		public bool IsPressed(string button)
@@ -144,13 +148,6 @@ namespace BizHawk.Client.Common
 		}
 
 		// The float format implies no U+D and no L+R no matter what, so just passthru
-		public int AxisValue(string name)
-		{
-			return Source.AxisValue(name);
-		}
-
-		private readonly HashSet<string> _unpresses = new HashSet<string>();
-
-		public IController Source { get; set; }
+		public int AxisValue(string name) => Source.AxisValue(name);
 	}
 }
