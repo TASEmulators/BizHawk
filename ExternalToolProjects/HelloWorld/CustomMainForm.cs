@@ -77,7 +77,7 @@ namespace HelloWorld
 
 			if (Global.Game.Name != "Null")
 			{
-				Watches.RefreshDomains(_memoryDomains);
+				Watches.RefreshDomains(_memoryDomains, Global.Config.RamWatchDefinePrevious);
 				label_Game.Text = $"You're playing {Global.Game.Name}";
 				label_GameHash.Text = $"Hash: {Global.Game.Hash}";
 			}
@@ -96,7 +96,7 @@ namespace HelloWorld
 			{
 				return;
 			}
-			Watches.UpdateValues();
+			Watches.UpdateValues(Global.Config.RamWatchDefinePrevious);
 			label_Watch1.Text = $"First watch ({Watches[0].AddressString}) current value: {Watches[0].ValueString}";
 			label_Watch2.Text = $"Second watch ({Watches[1].AddressString}) current value: {Watches[1].ValueString}";
 			label_Watch3.Text = $"Third watch ({Watches[2].AddressString}) current value: {Watches[2].ValueString}";

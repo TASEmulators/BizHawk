@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk;
 
 using static BizHawk.Experiment.AutoGenConfig.ConfigEditorUIGenerators;
 
