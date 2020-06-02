@@ -241,8 +241,8 @@ namespace BizHawk.Client.EmuHawk
 				= MovieSession.Movie.IsActive();
 
 			ReadonlyMenuItem.Checked = MovieSession.ReadOnly;
-			AutomaticallyBackupMoviesMenuItem.Checked = Config.EnableBackupMovies;
-			FullMovieLoadstatesMenuItem.Checked = Config.VBAStyleMovieLoadState;
+			AutomaticallyBackupMoviesMenuItem.Checked = Config.Movies.EnableBackupMovies;
+			FullMovieLoadstatesMenuItem.Checked = Config.Movies.VBAStyleMovieLoadState;
 
 			ReadonlyMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Toggle read-only"].Bindings;
 			RecordMovieMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Record Movie"].Bindings;
@@ -272,10 +272,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MovieEndSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			MovieEndFinishMenuItem.Checked = Config.MovieEndAction == MovieEndAction.Finish;
-			MovieEndRecordMenuItem.Checked = Config.MovieEndAction == MovieEndAction.Record;
-			MovieEndStopMenuItem.Checked = Config.MovieEndAction == MovieEndAction.Stop;
-			MovieEndPauseMenuItem.Checked = Config.MovieEndAction == MovieEndAction.Pause;
+			MovieEndFinishMenuItem.Checked = Config.Movies.MovieEndAction == MovieEndAction.Finish;
+			MovieEndRecordMenuItem.Checked = Config.Movies.MovieEndAction == MovieEndAction.Record;
+			MovieEndStopMenuItem.Checked = Config.Movies.MovieEndAction == MovieEndAction.Stop;
+			MovieEndPauseMenuItem.Checked = Config.Movies.MovieEndAction == MovieEndAction.Pause;
 
 			// Arguably an IControlMainForm property should be set here, but in reality only Tastudio is ever going to interfere with this logic
 			MovieEndFinishMenuItem.Enabled =
@@ -564,7 +564,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StopMovieWithoutSavingMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Config.EnableBackupMovies)
+			if (Config.Movies.EnableBackupMovies)
 			{
 				MovieSession.Movie.SaveBackup();
 			}
@@ -574,32 +574,32 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AutomaticMovieBackupMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.EnableBackupMovies ^= true;
+			Config.Movies.EnableBackupMovies ^= true;
 		}
 
 		private void FullMovieLoadstatesMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.VBAStyleMovieLoadState ^= true;
+			Config.Movies.VBAStyleMovieLoadState ^= true;
 		}
 
 		private void MovieEndFinishMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.MovieEndAction = MovieEndAction.Finish;
+			Config.Movies.MovieEndAction = MovieEndAction.Finish;
 		}
 
 		private void MovieEndRecordMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.MovieEndAction = MovieEndAction.Record;
+			Config.Movies.MovieEndAction = MovieEndAction.Record;
 		}
 
 		private void MovieEndStopMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.MovieEndAction = MovieEndAction.Stop;
+			Config.Movies.MovieEndAction = MovieEndAction.Stop;
 		}
 
 		private void MovieEndPauseMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.MovieEndAction = MovieEndAction.Pause;
+			Config.Movies.MovieEndAction = MovieEndAction.Pause;
 		}
 
 		private void ConfigAndRecordAVMenuItem_Click(object sender, EventArgs e)

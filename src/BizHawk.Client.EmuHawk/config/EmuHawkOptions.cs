@@ -74,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 			AutosaveSaveRAMSeconds = _config.FlushSaveRamFrames / 60;
 			FrameAdvSkipLagCheckbox.Checked = _config.SkipLagFrame;
 			LuaDuringTurboCheckbox.Checked = _config.RunLuaDuringTurbo;
-			cbMoviesOnDisk.Checked = _config.MoviesOnDisk;
+			cbMoviesOnDisk.Checked = _config.Movies.MoviesOnDisk;
 			cbSkipWaterboxIntegrityChecks.Checked = _config.SkipWaterboxIntegrityChecks;
 
 			switch (_config.HostInputMethod)
@@ -128,7 +128,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_config.SkipLagFrame = FrameAdvSkipLagCheckbox.Checked;
 			_config.RunLuaDuringTurbo = LuaDuringTurboCheckbox.Checked;
-			_config.MoviesOnDisk = cbMoviesOnDisk.Checked;
+			_config.Movies.MoviesOnDisk = cbMoviesOnDisk.Checked;
 			_config.SkipWaterboxIntegrityChecks = cbSkipWaterboxIntegrityChecks.Checked;
 
 			var prevLuaEngine = _config.LuaEngine;

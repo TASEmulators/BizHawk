@@ -79,8 +79,6 @@ namespace BizHawk.Client.Common
 		public bool AllowUdlr { get; set; }
 		public bool ForbidUdlr { get; set; }
 		public bool ShowContextMenu { get; set; } = true;
-		public bool EnableBackupMovies { get; set; } = true;
-		public bool MoviesOnDisk { get; set; }
 		public bool HotkeyConfigAutoTab { get; set; } = true;
 		public bool InputConfigAutoTab { get; set; } = true;
 		public bool SkipWaterboxIntegrityChecks { get; set; } = false;
@@ -120,8 +118,6 @@ namespace BizHawk.Client.Common
 
 		public bool TurboSeek { get; set; }
 
-		public MovieEndAction MovieEndAction { get; set; } = MovieEndAction.Finish;
-
 		public ClientProfile SelectedProfile { get; set; } = ClientProfile.Unknown;
 
 		// N64
@@ -139,6 +135,8 @@ namespace BizHawk.Client.Common
 		public RewindConfig Rewind { get; set; } = new RewindConfig();
 
 		public SaveStateConfig Savestates { get; set; } = new SaveStateConfig();
+
+		public MovieConfig Movies { get; set; } = new MovieConfig();
 
 		/// <summary>
 		/// Use vsync when presenting all 3d accelerated windows.
@@ -279,8 +277,6 @@ namespace BizHawk.Client.Common
 		public string DefaultAuthor { get; set; } = "default user";
 		public bool UseDefaultAuthor { get; set; } = true;
 		public bool DisplaySubtitles { get; set; } = true;
-		public bool VBAStyleMovieLoadState { get; set; }
-		public bool MoviePlaybackPokeMode { get; set; }
 
 		// Play Movie Dialog
 		public bool PlayMovieIncludeSubDir { get; set; }

@@ -2652,8 +2652,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToggleModePokeMode()
 		{
-			Config.MoviePlaybackPokeMode ^= true;
-			AddOnScreenMessage($"Movie Poke mode {(Config.MoviePlaybackPokeMode ? "enabled" : "disabled")}");
+			Config.Movies.MoviePlaybackPokeMode ^= true;
+			AddOnScreenMessage($"Movie Poke mode {(Config.Movies.MoviePlaybackPokeMode ? "enabled" : "disabled")}");
 		}
 
 		private void ToggleBackgroundInput()

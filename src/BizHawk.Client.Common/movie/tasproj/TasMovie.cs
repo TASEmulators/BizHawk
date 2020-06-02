@@ -189,7 +189,7 @@ namespace BizHawk.Client.Common
 			{
 				_timelineBranchFrame = null;
 
-				if (Global.Config.EnableBackupMovies && MakeBackup && Log.Count != 0)
+				if (Global.Config.Movies.EnableBackupMovies && MakeBackup && Log.Count != 0)
 				{
 					SaveBackup();
 					MakeBackup = false;
@@ -308,14 +308,14 @@ namespace BizHawk.Client.Common
 
 			if (stateFrameValue > 0 && stateFrameValue < Log.Count)
 			{
-				if (!Global.Config.VBAStyleMovieLoadState)
+				if (!Global.Config.Movies.VBAStyleMovieLoadState)
 				{
 					Truncate(stateFrameValue);
 				}
 			}
 			else if (stateFrameValue > Log.Count) // Post movie savestate
 			{
-				if (!Global.Config.VBAStyleMovieLoadState)
+				if (!Global.Config.Movies.VBAStyleMovieLoadState)
 				{
 					Truncate(Log.Count);
 				}

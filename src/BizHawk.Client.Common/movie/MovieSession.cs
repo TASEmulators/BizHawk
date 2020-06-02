@@ -119,7 +119,7 @@ namespace BizHawk.Client.Common
 							LatchInputToUser();
 							ClearFrame();
 						}
-						else if (Global.Config.MoviePlaybackPokeMode)
+						else if (Global.Config.Movies.MoviePlaybackPokeMode)
 						{
 							LatchInputToUser();
 							var lg = Movie.LogGeneratorInstance(Global.InputManager.MovieOutputHardpoint);
@@ -310,7 +310,7 @@ namespace BizHawk.Client.Common
 		{
 			if (Movie.IsActive())
 			{
-				if (Global.Config.VBAStyleMovieLoadState)
+				if (Global.Config.Movies.VBAStyleMovieLoadState)
 				{
 					Output("Multi-track can not be used in Full Movie Loadstates mode");
 				}
@@ -452,7 +452,7 @@ namespace BizHawk.Client.Common
 			}
 
 			// TODO: mainform callback to update on mode change
-			switch (Global.Config.MovieEndAction)
+			switch (Global.Config.Movies.MovieEndAction)
 			{
 				case MovieEndAction.Stop:
 					Movie.Stop();

@@ -194,7 +194,7 @@ namespace BizHawk.Client.EmuHawk
 			if (movie.InputLogLength >= _emulator.Frame)
 			{
 				movie.SwitchToPlay();
-				Global.Config.MovieEndAction = MovieEndAction.Record;
+				Global.Config.Movies.MovieEndAction = MovieEndAction.Record;
 			}
 		}
 
