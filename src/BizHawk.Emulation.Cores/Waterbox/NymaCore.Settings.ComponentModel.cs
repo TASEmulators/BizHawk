@@ -47,9 +47,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			var s1 = SettingsInfo.Ports
 				.Select((p, i) => new PortPropertyDescriptor(p, i))
 				.Cast<PropertyDescriptor>();
-			var s2 = SettingsInfo.Settings
-				.Where(s => !SettingsInfo.HiddenSettings.Contains(s.SettingsKey))
-				.Select(m => MednaPropertyDescriptor.Create(m));
+			var s2 = SettingsInfo.SyncSettings
+				.Select(m => MednaPropertyDescriptor.Create(m, true));
 			return new PropertyDescriptorCollection(s1.Concat(s2).ToArray());
 		}
 		public override PropertyDescriptorCollection GetProperties(Attribute[] attributes) => GetProperties();
@@ -67,8 +66,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public override PropertyDescriptor GetDefaultProperty() => GetProperties()[0]; // "default" ??
 		public override PropertyDescriptorCollection GetProperties()
 		{
-			return new PropertyDescriptorCollection(
-				SettingsInfo.LayerNames.Select(l => new LayerPropertyDescriptor(l)).ToArray());
+			var s1 = SettingsInfo.LayerNames.Select(l => new LayerPropertyDescriptor(l))
+				.Cast<PropertyDescriptor>();
+			var s2 = SettingsInfo.Settings
+				.Select(m => MednaPropertyDescriptor.Create(m, true));
+			return new PropertyDescriptorCollection(s1.Concat(s2).ToArray());
 		}
 		public override PropertyDescriptorCollection GetProperties(Attribute[] attributes) => GetProperties();
 	}
@@ -76,13 +78,15 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	public abstract class MednaPropertyDescriptor : PropertyDescriptor
 	{
 		public SettingT Setting { get; private set; }
-		public MednaPropertyDescriptor(SettingT setting)
+		private bool _isSyncSetting;
+		public MednaPropertyDescriptor(SettingT setting, bool isSyncSetting)
 			: base(setting.SettingsKey, new Attribute[0])
 		{
 			Setting = setting;
+			_isSyncSetting = isSyncSetting;
 		}
 
-		public override Type ComponentType => typeof(NymaSyncSettings);
+		public override Type ComponentType => _isSyncSetting ? typeof(NymaSyncSettings) : typeof(NymaSettings);
 		public override bool IsReadOnly => false;
 		// public override Type PropertyType => typeof(string);
 		public override bool CanResetValue(object component) => true;
@@ -97,7 +101,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public override object GetValue(object component)
 		{
-			var ss = (NymaSyncSettings)component;
+			var ss = (INymaDictionarySettings)component;
 			if (!ss.MednafenValues.TryGetValue(Setting.SettingsKey, out var val))
 				val = Setting.DefaultValue;
 			var ret = ConvertFromString(val);
@@ -106,7 +110,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public override void ResetValue(object component)
 		{
-			((NymaSyncSettings)component).MednafenValues.Remove(Setting.SettingsKey);
+			((INymaDictionarySettings)component).MednafenValues.Remove(Setting.SettingsKey);
 		}
 
 		public override void SetValue(object component, object value)
@@ -117,30 +121,30 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				ResetValue(component);
 				return;
 			}
-			((NymaSyncSettings)component).MednafenValues[Setting.SettingsKey] = s;
+			((INymaDictionarySettings)component).MednafenValues[Setting.SettingsKey] = s;
 		}
 
 		public override bool ShouldSerializeValue(object component)
 		{
-			return ((NymaSyncSettings)component).MednafenValues.ContainsKey(Setting.SettingsKey);
+			return ((INymaDictionarySettings)component).MednafenValues.ContainsKey(Setting.SettingsKey);
 		}
 
-		public static MednaPropertyDescriptor Create(SettingT s)
+		public static MednaPropertyDescriptor Create(SettingT s, bool isSyncSetting)
 		{
 			switch (s.Type)
 			{
 				case SettingType.Int:
-					return new MednaLongDescriptor(s);
+					return new MednaLongDescriptor(s, isSyncSetting);
 				case SettingType.Uint:
-					return new MednaUlongDescriptor(s);
+					return new MednaUlongDescriptor(s, isSyncSetting);
 				case SettingType.Bool:
-					return new MednaBoolDescriptor(s);
+					return new MednaBoolDescriptor(s, isSyncSetting);
 				case SettingType.Float:
-					return new MednaDoubleDescriptor(s);
+					return new MednaDoubleDescriptor(s, isSyncSetting);
 				case SettingType.String:
-					return new MednaStringDescriptor(s);
+					return new MednaStringDescriptor(s, isSyncSetting);
 				case SettingType.Enum:
-					return new MednaEnumDescriptor(s);
+					return new MednaEnumDescriptor(s, isSyncSetting);
 				default:
 					throw new NotImplementedException($"Unexpected SettingType {s.Type}");
 			}
@@ -149,7 +153,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 	public class MednaEnumDescriptor : MednaPropertyDescriptor
 	{
-		public MednaEnumDescriptor(SettingT s) : base(s) {}
+		public MednaEnumDescriptor(SettingT s, bool isSyncSetting) : base(s, isSyncSetting) {}
 		public override Type PropertyType => typeof(string);
 		protected override object ConvertFromString(string s)
 		{
@@ -196,7 +200,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	}
 	public class MednaStringDescriptor : MednaPropertyDescriptor
 	{
-		public MednaStringDescriptor(SettingT s) : base(s) {}
+		public MednaStringDescriptor(SettingT s, bool isSyncSetting) : base(s, isSyncSetting) {}
 		public override Type PropertyType => typeof(string);
 		protected override object ConvertFromString(string s)
 		{
@@ -209,7 +213,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	}
 	public class MednaBoolDescriptor : MednaPropertyDescriptor
 	{
-		public MednaBoolDescriptor(SettingT s) : base(s) {}
+		public MednaBoolDescriptor(SettingT s, bool isSyncSetting) : base(s, isSyncSetting) {}
 		public override Type PropertyType => typeof(bool);
 		protected override object ConvertFromString(string s)
 		{
@@ -222,7 +226,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	}
 	public class MednaLongDescriptor : MednaPropertyDescriptor
 	{
-		public MednaLongDescriptor(SettingT s) : base(s) {}
+		public MednaLongDescriptor(SettingT s, bool isSyncSetting) : base(s, isSyncSetting) {}
 		public override Type PropertyType => typeof(long);
 		protected override object ConvertFromString(string s)
 		{
@@ -238,7 +242,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	}
 	public class MednaUlongDescriptor : MednaPropertyDescriptor
 	{
-		public MednaUlongDescriptor(SettingT s) : base(s) {}
+		public MednaUlongDescriptor(SettingT s, bool isSyncSetting) : base(s, isSyncSetting) {}
 		public override Type PropertyType => typeof(ulong);
 		protected override object ConvertFromString(string s)
 		{
@@ -265,7 +269,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	}
 	public class MednaDoubleDescriptor : MednaPropertyDescriptor
 	{
-		public MednaDoubleDescriptor(SettingT s) : base(s) {}
+		public MednaDoubleDescriptor(SettingT s, bool isSyncSetting) : base(s, isSyncSetting) {}
 		public override Type PropertyType => typeof(double);
 		protected override object ConvertFromString(string s)
 		{

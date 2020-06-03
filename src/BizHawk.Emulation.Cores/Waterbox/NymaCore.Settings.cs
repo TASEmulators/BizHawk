@@ -7,8 +7,6 @@ using System.Text;
 using BizHawk.BizInvoke;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using FlatBuffers;
-using Newtonsoft.Json;
 using NymaTypes;
 
 namespace BizHawk.Emulation.Cores.Waterbox
@@ -20,6 +18,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// If the value is null, use the default value, otherwise override it.
 		/// </summary>
 		protected virtual IDictionary<string, string> SettingsOverrides { get; } = new Dictionary<string, string>();
+		/// <summary>
+		/// Add any settings here that your core is not sync sensitive to.  Don't screw up and cause nondeterminism!
+		/// </summary>
+		protected virtual ISet<string> NonSyncSettingNames { get; } = new HashSet<string>();
 		public NymaSettingsInfo SettingsInfo { get; private set; }
 		private NymaSettings _settings;
 		private NymaSyncSettings _syncSettings;
@@ -62,16 +64,26 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				: PutSettingsDirtyBits.RebootCore;
 		}
 
-		public class NymaSettings
+		public interface INymaDictionarySettings
 		{
+			Dictionary<string, string> MednafenValues { get; }
+		}
+
+		public class NymaSettings :  INymaDictionarySettings
+		{
+			public Dictionary<string, string> MednafenValues { get; set; } = new Dictionary<string, string>();
 			public HashSet<string> DisabledLayers { get; set; } = new HashSet<string>();
 			public NymaSettings Clone()
 			{
-				return new NymaSettings { DisabledLayers = new HashSet<string>(DisabledLayers) };
+				return new NymaSettings
+				{
+					MednafenValues = new Dictionary<string, string>(MednafenValues),
+					DisabledLayers = new HashSet<string>(DisabledLayers),
+				};
 			}
 		}
 
-		public class NymaSyncSettings
+		public class NymaSyncSettings :  INymaDictionarySettings
 		{
 			public Dictionary<string, string> MednafenValues { get; set; } = new Dictionary<string, string>();
 			public Dictionary<int, string> PortDevices { get; set; } = new Dictionary<int, string>();
@@ -100,20 +112,27 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		protected string SettingsQuery(string name)
 		{
-			var forced = SettingsOverrides.TryGetValue(name, out var val);
+			if (SettingsOverrides.TryGetValue(name, out var val))
+			{
+				// use override
+			}
+			else
+			{
+				// try to get actual value from settings
+				if (NonSyncSettingNames.Contains(name))
+					_settings.MednafenValues.TryGetValue(name, out val);
+				else
+					_syncSettings.MednafenValues.TryGetValue(name, out val);
+			}
+			// in either case, might need defaults
 			if (val == null)
 			{
-				if (forced || !_syncSettingsActual.MednafenValues.TryGetValue(name, out val))
-				{
-					if (SettingsInfo.SettingsByKey.TryGetValue(name, out var info))
-					{
-						val = info.DefaultValue;
-					}
-					else
-					{
-						throw new InvalidOperationException($"Core asked for setting {name} which was not found in the defaults");
-					}
-				}
+				SettingsInfo.AllSettingsByKey.TryGetValue(name, out var info);
+				val = info?.DefaultValue;
+			}
+			if (val == null)
+			{
+				throw new InvalidOperationException($"Core asked for setting {name} which was not found in the defaults");
 			}
 			return val;
 		}
@@ -133,11 +152,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// <summary>
 		/// If true, the settings object has at least one settable value in it
 		/// </summary>
-		public bool HasSettings => SettingsInfo.LayerNames.Any();
+		public bool HasSettings => SettingsInfo.LayerNames.Count > 0|| SettingsInfo.Settings.Count > 0;
 		/// <summary>
 		/// If true, the syncSettings object has at least one settable value in it
 		/// </summary>
-		public bool HasSyncSettings => SettingsInfo.Ports.Any() || SettingsInfo.Settings.Any();
+		public bool HasSyncSettings => SettingsInfo.Ports.Count > 0 || SettingsInfo.SyncSettings.Count > 0;
 
 		public class NymaSettingsInfo
 		{
@@ -162,8 +181,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			/// </summary>
 			public List<Port> Ports { get; set; } = new List<Port>();
 			public List<SettingT> Settings { get; set; } = new List<SettingT>();
-			public Dictionary<string, SettingT> SettingsByKey { get; set; } = new Dictionary<string, SettingT>();
-			public HashSet<string> HiddenSettings { get; set; } = new HashSet<string>();
+			public List<SettingT> SyncSettings { get; set; } = new List<SettingT>();
+			public Dictionary<string, SettingT> AllSettingsByKey { get; set; } = new Dictionary<string, SettingT>();
 		}
 		private void InitSyncSettingsInfo(List<NPortInfoT> allPorts)
 		{
@@ -184,16 +203,20 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				});
 			}
 
-			foreach (var setting in GetSettingsData())
+			foreach (var setting in GetSettingsData().Concat(ExtraSettings))
 			{
-				s.Settings.Add(setting);
-				s.SettingsByKey.Add(setting.SettingsKey, setting);
-			}
-			s.HiddenSettings = new HashSet<string>(SettingsOverrides.Keys);
-			foreach (var ss in ExtraSettings)
-			{
-				s.Settings.Add(ss);
-				s.SettingsByKey.Add(ss.SettingsKey, ss);
+				s.AllSettingsByKey.Add(setting.SettingsKey, setting);
+				if (!SettingsOverrides.ContainsKey(setting.SettingsKey))
+				{
+					if (NonSyncSettingNames.Contains(setting.SettingsKey))
+					{
+						s.Settings.Add(setting);
+					}
+					else
+					{
+						s.SyncSettings.Add(setting);
+					}
+				}
 			}
 			SettingsInfo = s;
 		}

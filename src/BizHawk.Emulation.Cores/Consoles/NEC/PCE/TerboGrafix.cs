@@ -56,6 +56,10 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 			{ "nyma.rtcinitialtime", null },
 			{ "nyma.rtcrealtime", null },
 		};
+		protected override ISet<string> NonSyncSettingNames { get; } = new HashSet<string>
+		{
+			"pce.slstart", "pce.slend",
+		};
 
 		protected override IDictionary<string, string> ButtonNameOverrides { get; } = new Dictionary<string, string>
 		{
