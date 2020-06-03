@@ -856,7 +856,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var file = SaveFileDialog(
 				filename,
-				Global.Config.PathEntries.MovieAbsolutePath(),
+				Config.PathEntries.MovieAbsolutePath(),
 				"Tas Project Files",
 				"tasproj");
 
