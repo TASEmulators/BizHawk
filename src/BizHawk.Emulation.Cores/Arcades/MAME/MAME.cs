@@ -777,16 +777,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			public const string GetSpaceAddressShift = "return manager:machine().devices[\":maincpu\"].spaces[\"program\"].shift";
 			public const string GetSpaceDataWidth = "return manager:machine().devices[\":maincpu\"].spaces[\"program\"].data_width";
 			public const string GetSpaceEndianness = "return manager:machine().devices[\":maincpu\"].spaces[\"program\"].endianness";
-			public const string GetSpaceBuffer =
-				"local space = manager:machine().devices[\":maincpu\"].spaces[\"program\"]" +
-				"local address_shift = space.shift " +
-				"local data_width = space.data_width " +
-				"local bit_step " +
-				"if     address_shift == 0 then bit_step = data_width " +
-				"elseif address_shift >  0 then bit_step = data_width << address_shift " +
-				"elseif address_shift <  0 then bit_step = 8 " +
-				"end " +
-				"return space:read_range(0, 0xfffffff, space.data_width, math.floor(bit_step / 8))";
 
 			// complex stuff
 			public const string GetBoundX =
