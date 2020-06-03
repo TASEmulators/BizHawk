@@ -318,6 +318,10 @@ namespace BizHawk.Client.Common
 				{
 					Output("Multi-track can not be used in Full Movie Loadstates mode");
 				}
+				else if (Movie is ITasMovie)
+				{
+					Output("Multi-track can not be used with tasproj movies");
+				}
 				else
 				{
 					MultiTrack.IsActive ^= true;

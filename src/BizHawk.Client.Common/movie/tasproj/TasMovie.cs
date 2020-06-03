@@ -182,92 +182,54 @@ namespace BizHawk.Client.Common
 
 			var newLog = new List<string>();
 			int? timelineBranchFrame = null;
+
 			// We are in record mode so replace the movie log with the one from the savestate
-			if (!Global.MovieSession.MultiTrack.IsActive)
+			if (Global.Config.Movies.EnableBackupMovies && MakeBackup && Log.Count != 0)
 			{
-				if (Global.Config.Movies.EnableBackupMovies && MakeBackup && Log.Count != 0)
-				{
-					SaveBackup();
-					MakeBackup = false;
-				}
-
-				int counter = 0;
-				while (true)
-				{
-					var line = reader.ReadLine();
-					if (string.IsNullOrEmpty(line))
-					{
-						break;
-					}
-
-					if (line.Contains("Frame "))
-					{
-						var split = line.Split(' ');
-						try
-						{
-							stateFrame = int.Parse(split[1]);
-						}
-						catch
-						{
-							errorMessage = "Savestate Frame number failed to parse";
-							return false;
-						}
-					}
-					else if (line.StartsWith("LogKey:"))
-					{
-						LogKey = line.Replace("LogKey:", "");
-					}
-					else if (line[0] == '|')
-					{
-						newLog.Add(line);
-						if (!timelineBranchFrame.HasValue && counter < Log.Count && line != Log[counter])
-						{
-							timelineBranchFrame = counter;
-						}
-
-						counter++;
-					}
-				}
-
-				Log.Clear();
-				Log.AddRange(newLog);
+				SaveBackup();
+				MakeBackup = false;
 			}
-			else // Multitrack mode
+
+			int counter = 0;
+			while (true)
 			{
-				// TODO: consider TimelineBranchFrame here, my thinking is that there's never a scenario to invalidate state/lag data during multitrack
-				var i = 0;
-				while (true)
+				var line = reader.ReadLine();
+				if (string.IsNullOrEmpty(line))
 				{
-					var line = reader.ReadLine();
-					if (line == null)
+					break;
+				}
+
+				if (line.Contains("Frame "))
+				{
+					var split = line.Split(' ');
+					try
 					{
-						break;
+						stateFrame = int.Parse(split[1]);
+					}
+					catch
+					{
+						errorMessage = "Savestate Frame number failed to parse";
+						return false;
+					}
+				}
+				else if (line.StartsWith("LogKey:"))
+				{
+					LogKey = line.Replace("LogKey:", "");
+				}
+				else if (line[0] == '|')
+				{
+					newLog.Add(line);
+					if (!timelineBranchFrame.HasValue && counter < Log.Count && line != Log[counter])
+					{
+						timelineBranchFrame = counter;
 					}
 
-					if (line.Contains("Frame "))
-					{
-						var strs = line.Split(' ');
-						try
-						{
-							stateFrame = int.Parse(strs[1]);
-						}
-						catch
-						{
-							errorMessage = "Savestate Frame number failed to parse";
-							return false;
-						}
-					}
-					else if (line.StartsWith("LogKey:"))
-					{
-						LogKey = line.Replace("LogKey:", "");
-					}
-					else if (line.StartsWith("|"))
-					{
-						SetFrame(i, line);
-						i++;
-					}
+					counter++;
 				}
 			}
+
+			Log.Clear();
+			Log.AddRange(newLog);
 
 			if (!stateFrame.HasValue)
 			{
