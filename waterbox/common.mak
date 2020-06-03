@@ -29,11 +29,13 @@ CCFLAGS := $(CCFLAGS) $(COMMONFLAGS)
 LDFLAGS := $(LDFLAGS) -static -Wl,--eh-frame-hdr -T $(WATERBOX_DIR)/linkscript.T #-Wl,--plugin,$(LD_PLUGIN)
 CCFLAGS_DEBUG := -O0 -g
 CCFLAGS_RELEASE := -O3 -flto
+CCFLAGS_RELEASE_ASONLY := -O3
 LDFLAGS_DEBUG :=
 LDFLAGS_RELEASE :=
 CXXFLAGS := $(CXXFLAGS) $(COMMONFLAGS) -I$(SYSROOT)/include/c++/v1 -fno-use-cxa-atexit
 CXXFLAGS_DEBUG := -O0 -g
 CXXFLAGS_RELEASE := -O3 -flto
+CXXFLAGS_RELEASE_ASONLY := -O3
 
 EXTRA_LIBS := -L $(SYSROOT)/lib/linux -lclang_rt.builtins-x86_64 $(EXTRA_LIBS)
 ifneq ($(filter %.cpp,$(SRCS)),)
@@ -60,6 +62,14 @@ $(DOBJ_DIR)/%.cpp.o: %.cpp
 	@echo cxx $<
 	@mkdir -p $(@D)
 	@$(CC) -c -o $@ $< $(CXXFLAGS) $(CXXFLAGS_DEBUG) $(PER_FILE_FLAGS_$<)
+$(OBJ_DIR)/%.c.s: %.c
+	@echo cc -S $<
+	@mkdir -p $(@D)
+	@$(CC) -c -S -o $@ $< $(CCFLAGS) $(CCFLAGS_RELEASE_ASONLY) $(PER_FILE_FLAGS_$<)
+$(OBJ_DIR)/%.cpp.s: %.cpp
+	@echo cxx -S $<
+	@mkdir -p $(@D)
+	@$(CC) -c -S -o $@ $< $(CXXFLAGS) $(CXXFLAGS_RELEASE_ASONLY) $(PER_FILE_FLAGS_$<)
 
 ifndef NO_WBX_TARGETS
 
