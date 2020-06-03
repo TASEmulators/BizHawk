@@ -65,42 +65,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void Screenshot()
-		{
-			using var sfd = new SaveFileDialog
-			{
-				FileName = $"{Global.Game.FilesystemSafeName()}-Nametables",
-				InitialDirectory = Global.Config.PathEntries.ScreenshotAbsolutePathFor("NES"),
-				Filter = FilesystemFilterSet.Screenshots.ToString(),
-				RestoreDirectory = true
-			};
-
-			var result = sfd.ShowHawkDialog();
-			if (result != DialogResult.OK)
-			{
-				return;
-			}
-
-			var file = new FileInfo(sfd.FileName);
-			using Bitmap b = new Bitmap(Width, Height);
-			Rectangle rect = new Rectangle(new Point(0, 0), Size);
-			DrawToBitmap(b, rect);
-
-			ImageFormat i;
-			string extension = file.Extension.ToUpper();
-			switch (extension)
-			{
-				default:
-				case ".PNG":
-					i = ImageFormat.Png;
-					break;
-				case ".BMP":
-					i = ImageFormat.Bmp;
-					break;
-			}
-
-			b.Save(file.FullName, i);
-		}
+		
 
 		public void ScreenshotToClipboard()
 		{

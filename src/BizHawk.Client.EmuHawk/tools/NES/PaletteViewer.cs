@@ -1,10 +1,5 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
-using System.IO;
-using System.Drawing.Imaging;
-
-using BizHawk.Client.Common;
-using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -69,53 +64,6 @@ namespace BizHawk.Client.EmuHawk
 					return true;
 			}
 			return false;
-		}
-
-		public void Screenshot()
-		{
-			var sfd = new SaveFileDialog
-			{
-				FileName = $"{Global.Game.FilesystemSafeName()}-Palettes",
-				InitialDirectory = Global.Config.PathEntries.ScreenshotAbsolutePathFor("NES"),
-				Filter = FilesystemFilterSet.Screenshots.ToString(),
-				RestoreDirectory = true
-			};
-
-			var result = sfd.ShowHawkDialog();
-			if (result != DialogResult.OK)
-			{
-				return;
-			}
-
-			var file = new FileInfo(sfd.FileName);
-			var b = new Bitmap(Width, Height);
-			var rect = new Rectangle(new Point(0, 0), Size);
-			DrawToBitmap(b, rect);
-
-			ImageFormat i;
-			string extension = file.Extension.ToUpper();
-			switch (extension)
-			{
-				default:
-				case ".PNG":
-					i = ImageFormat.Png;
-					break;
-				case ".BMP":
-					i = ImageFormat.Bmp;
-					break;
-			}
-
-			b.Save(file.FullName, i);
-		}
-
-		public void ScreenshotToClipboard()
-		{
-			var b = new Bitmap(Width, Height);
-			var rect = new Rectangle(new Point(0, 0), Size);
-			DrawToBitmap(b, rect);
-
-			using var img = b;
-			Clipboard.SetImage(img);
 		}
 	}
 }

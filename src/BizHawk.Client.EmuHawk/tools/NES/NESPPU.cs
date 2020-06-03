@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -309,34 +310,67 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void Screenshot(Bitmap b, string suffix)
+		{
+			var sfd = new SaveFileDialog
+			{
+				FileName = $"{Global.Game.FilesystemSafeName()}-{suffix}",
+				InitialDirectory = Config.PathEntries.ScreenshotAbsolutePathFor("NES"),
+				Filter = FilesystemFilterSet.Screenshots.ToString(),
+				RestoreDirectory = true
+			};
+
+			var result = sfd.ShowHawkDialog();
+			if (result != DialogResult.OK)
+			{
+				return;
+			}
+
+			var file = new FileInfo(sfd.FileName);
+			ImageFormat i;
+			string extension = file.Extension.ToUpper();
+			switch (extension)
+			{
+				default:
+				case ".PNG":
+					i = ImageFormat.Png;
+					break;
+				case ".BMP":
+					i = ImageFormat.Bmp;
+					break;
+			}
+
+			b.Save(file.FullName, i);
+		}
+
 		private void SavePaletteScreenshotMenuItem_Click(object sender, EventArgs e)
 		{
-			PaletteView.Screenshot();
+			Screenshot(PaletteView.ToBitMap(), "Palettes");
 		}
 
 		private void SavePatternScreenshotMenuItem_Click(object sender, EventArgs e)
 		{
-			PatternView.Screenshot();
+			Screenshot(PatternView.ToBitMap(), "Patterns");
 		}
 
 		private void SaveSpriteScreenshotMenuItem_Click(object sender, EventArgs e)
 		{
-			SpriteView.Screenshot();
+			Screenshot(SpriteView.ToBitMap(), "Sprites");
 		}
 
 		private void CopyPaletteToClipboardMenuItem_Click(object sender, EventArgs e)
 		{
-			PaletteView.ScreenshotToClipboard();
+			PaletteView.ToBitMap().ToClipBoard();
 		}
 
 		private void CopyPatternToClipboardMenuItem_Click(object sender, EventArgs e)
 		{
-			PatternView.ScreenshotToClipboard();
+			PatternView.ToBitMap().ToClipBoard();
 		}
 
 		private void CopySpriteToClipboardMenuItem_Click(object sender, EventArgs e)
 		{
-			SpriteView.ScreenshotToClipboard();
+			SpriteView.ToBitMap().ToClipBoard();
 		}
 
 		private void ExitMenuItem_Click(object sender, EventArgs e)

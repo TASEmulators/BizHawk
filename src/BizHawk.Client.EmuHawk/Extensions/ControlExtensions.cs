@@ -254,5 +254,19 @@ namespace BizHawk.Client.EmuHawk
 				? effect
 				: DragDropEffects.None;
 		}
+
+		public static Bitmap ToBitMap(this Control control)
+		{
+			var b = new Bitmap(control.Width, control.Height);
+			var rect = new Rectangle(new Point(0, 0), control.Size);
+			control.DrawToBitmap(b, rect);
+			return b;
+		}
+
+		public static void ToClipBoard(this Bitmap bitmap)
+		{
+			using var img = bitmap;
+			Clipboard.SetImage(img);
+		}
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -179,14 +180,47 @@ namespace BizHawk.Client.EmuHawk
 			NameTableView.Refresh();
 		}
 
+		public void Screenshot(Bitmap b)
+		{
+			using var sfd = new SaveFileDialog
+			{
+				FileName = $"{Global.Game.FilesystemSafeName()}-Nametables",
+				InitialDirectory = Global.Config.PathEntries.ScreenshotAbsolutePathFor("NES"),
+				Filter = FilesystemFilterSet.Screenshots.ToString(),
+				RestoreDirectory = true
+			};
+
+			var result = sfd.ShowHawkDialog();
+			if (result != DialogResult.OK)
+			{
+				return;
+			}
+
+			var file = new FileInfo(sfd.FileName);
+			ImageFormat i;
+			string extension = file.Extension.ToUpper();
+			switch (extension)
+			{
+				default:
+				case ".PNG":
+					i = ImageFormat.Png;
+					break;
+				case ".BMP":
+					i = ImageFormat.Bmp;
+					break;
+			}
+
+			b.Save(file.FullName, i);
+		}
+
 		private void ScreenshotMenuItem_Click(object sender, EventArgs e)
 		{
-			NameTableView.Screenshot();
+			Screenshot(NameTableView.ToBitMap());
 		}
 
 		private void ScreenshotToClipboardMenuItem_Click(object sender, EventArgs e)
 		{
-			NameTableView.ScreenshotToClipboard();
+			NameTableView.ToBitMap().ToClipBoard();
 		}
 
 		private void ExitMenuItem_Click(object sender, EventArgs e)
@@ -207,7 +241,7 @@ namespace BizHawk.Client.EmuHawk
 				case Keys.C:
 					if (e.Modifiers == Keys.Control)
 					{
-						NameTableView.ScreenshotToClipboard();
+						NameTableView.ToBitMap().ToClipBoard();
 					}
 
 					break;
