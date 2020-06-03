@@ -185,7 +185,7 @@ namespace BizHawk.Client.Common
 			var newLog = new List<string>();
 
 			// We are in record mode so replace the movie log with the one from the savestate
-			if (!Session.MultiTrack.IsActive)
+			if (!Global.MovieSession.MultiTrack.IsActive)
 			{
 				_timelineBranchFrame = null;
 
