@@ -160,7 +160,7 @@ namespace BizHawk.Client.Common
 			SetCycleValues(); // We are pretending these only need to be set on save
 			CreateDirectoryIfNotExists(fn);
 
-			using var bs = new ZipStateSaver(fn, Session.Settings.MovieCompressionLevel);
+			using var bs = new ZipStateSaver(fn, Global.MovieSession.Settings.MovieCompressionLevel);
 			AddLumps(bs);
 
 			if (!isBackup)

@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common
 		public virtual void StartNewRecording()
 		{
 			Mode = MovieMode.Record;
-			if (Global.Config.Movies.EnableBackupMovies && MakeBackup && Log.Any())
+			if (Session.Settings.EnableBackupMovies && MakeBackup && Log.Any())
 			{
 				SaveBackup();
 				MakeBackup = false;
