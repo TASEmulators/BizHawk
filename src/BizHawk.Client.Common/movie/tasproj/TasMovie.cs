@@ -200,20 +200,7 @@ namespace BizHawk.Client.Common
 						break;
 					}
 
-					if (line.Contains("Frame 0x")) // NES stores frame count in hex, yay
-					{
-						var split = line.Split('x');
-						try
-						{
-							stateFrame = int.Parse(split[1], NumberStyles.HexNumber);
-						}
-						catch
-						{
-							errorMessage = "Savestate Frame number failed to parse";
-							return false;
-						}
-					}
-					else if (line.Contains("Frame "))
+					if (line.Contains("Frame "))
 					{
 						var split = line.Split(' ');
 						try
@@ -257,20 +244,7 @@ namespace BizHawk.Client.Common
 						break;
 					}
 
-					if (line.Contains("Frame 0x")) // NES stores frame count in hex, yay
-					{
-						var strs = line.Split('x');
-						try
-						{
-							stateFrame = int.Parse(strs[1], NumberStyles.HexNumber);
-						}
-						catch
-						{
-							errorMessage = "Savestate Frame number failed to parse";
-							return false;
-						}
-					}
-					else if (line.Contains("Frame "))
+					if (line.Contains("Frame "))
 					{
 						var strs = line.Split(' ');
 						try
