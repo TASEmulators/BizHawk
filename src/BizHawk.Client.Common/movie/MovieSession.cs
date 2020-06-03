@@ -12,6 +12,7 @@ namespace BizHawk.Client.Common
 
 	public class MovieSession : IMovieSession
 	{
+		private readonly IMovieConfig _settings;
 		private readonly Action _pauseCallback;
 		private readonly Action _modeChangedCallback;
 		private readonly Action<string> _messageCallback;
@@ -24,11 +25,13 @@ namespace BizHawk.Client.Common
 		private readonly IDictionary<string, string> _preferredCores = new Dictionary<string, string>();
 
 		public MovieSession(
+			IMovieConfig settings,
 			Action<string> messageCallback,
 			Action<string> popupCallback,
 			Action pauseCallback,
 			Action modeChangedCallback)
 		{
+			_settings = settings;
 			_messageCallback = messageCallback;
 			_popupCallback = popupCallback;
 			_pauseCallback = pauseCallback
@@ -119,7 +122,7 @@ namespace BizHawk.Client.Common
 							LatchInputToUser();
 							ClearFrame();
 						}
-						else if (Global.Config.Movies.MoviePlaybackPokeMode)
+						else if (_settings.MoviePlaybackPokeMode)
 						{
 							LatchInputToUser();
 							var lg = Movie.LogGeneratorInstance(Global.InputManager.MovieOutputHardpoint);
@@ -310,7 +313,7 @@ namespace BizHawk.Client.Common
 		{
 			if (Movie.IsActive())
 			{
-				if (Global.Config.Movies.VBAStyleMovieLoadState)
+				if (_settings.VBAStyleMovieLoadState)
 				{
 					Output("Multi-track can not be used in Full Movie Loadstates mode");
 				}
@@ -452,7 +455,7 @@ namespace BizHawk.Client.Common
 			}
 
 			// TODO: mainform callback to update on mode change
-			switch (Global.Config.Movies.MovieEndAction)
+			switch (_settings.MovieEndAction)
 			{
 				case MovieEndAction.Stop:
 					Movie.Stop();

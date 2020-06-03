@@ -206,6 +206,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.InputManager.ControllerInputCoalescer = new ControllerInputCoalescer();
 			Global.FirmwareManager = new FirmwareManager();
 			MovieSession = new MovieSession(
+				Config.Movies,
 				AddOnScreenMessage,
 				ShowMessageCoreComm,
 				PauseEmulator,

@@ -1,6 +1,16 @@
 ﻿namespace BizHawk.Client.Common
 {
-	public class MovieConfig
+	public interface IMovieConfig
+	{
+		public MovieEndAction MovieEndAction { get; }
+		public bool EnableBackupMovies { get; }
+		public bool MoviesOnDisk { get; }
+		public int MovieCompressionLevel { get; }
+		public bool VBAStyleMovieLoadState { get; }
+		public bool MoviePlaybackPokeMode { get; }
+	}
+
+	public class MovieConfig : IMovieConfig
 	{
 		public MovieEndAction MovieEndAction { get; set; } = MovieEndAction.Finish;
 		public bool EnableBackupMovies { get; set; } = true;
