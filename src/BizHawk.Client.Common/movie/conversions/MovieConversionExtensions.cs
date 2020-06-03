@@ -313,7 +313,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			string newFilename = oldFileName;
 			string oldExtension = Path.GetExtension(oldFileName);
 
-			if (oldExtension == ".tasproj" || oldExtension == ".bk2")
+			if (oldExtension == $".{TasMovie.Extension}" || oldExtension == $".{Bk2Movie.Extension}")
 			{
 				newFilename = Path.ChangeExtension(newFilename, null);
 				newFilename = $"{newFilename}.{TasMovie.Extension}";
