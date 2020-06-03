@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 				SbrkHeapSizeKB = 1024,
 				SealedHeapSizeKB = 12 * 1024,
 				InvisibleHeapSizeKB = 6 * 1024,
-				PlainHeapSizeKB = 64,
+				PlainHeapSizeKB = 12 * 1024,
 				SkipCoreConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			});
