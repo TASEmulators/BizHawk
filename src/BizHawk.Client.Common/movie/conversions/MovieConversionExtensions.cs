@@ -17,25 +17,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 	{
 		public static ITasMovie ToTasMovie(this IMovie old)
 		{
-			string newFilename = $"{old.Filename}.{TasMovie.Extension}";
-
-			if (File.Exists(newFilename))
-			{
-				int fileNum = 1;
-				bool fileConflict = true;
-				while (fileConflict)
-				{
-					if (File.Exists(newFilename))
-					{
-						newFilename = $"{old.Filename} ({fileNum}).{TasMovie.Extension}";
-						fileNum++;
-					}
-					else
-					{
-						fileConflict = false;
-					}
-				}
-			}
+			string newFilename = GetNewFileName(old.Filename);
 
 			var tas = (ITasMovie)MovieService.Get(newFilename, old.StartsFromSavestate);
 
@@ -113,35 +95,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 
 		public static ITasMovie ConvertToSavestateAnchoredMovie(this ITasMovie old, int frame, byte[] savestate)
 		{
-			string newFilename = old.Filename;
-
-			if (old.Filename.Contains("tasproj"))
-			{
-				newFilename = newFilename.Remove(newFilename.Length - 7, 7);
-				newFilename = $"{newFilename}nfn.{TasMovie.Extension}";
-			}
-			else
-			{
-				newFilename = $"{old.Filename}.{TasMovie.Extension}";
-			}
-
-			if (File.Exists(newFilename))
-			{
-				int fileNum = 1;
-				bool fileConflict = true;
-				while (fileConflict)
-				{
-					if (File.Exists(newFilename))
-					{
-						newFilename = $"{old.Filename} ({fileNum}).{TasMovie.Extension}";
-						fileNum++;
-					}
-					else
-					{
-						fileConflict = false;
-					}
-				}
-			}
+			string newFilename = GetNewFileName(old.Filename);
 
 			var tas = (ITasMovie)MovieService.Get(newFilename, true);
 			tas.BinarySavestate = savestate;
@@ -198,35 +152,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 
 		public static ITasMovie ConvertToSaveRamAnchoredMovie(this ITasMovie old, byte[] saveRam)
 		{
-			string newFilename = old.Filename;
-
-			if (old.Filename.Contains("tasproj"))
-			{
-				newFilename = newFilename.Remove(newFilename.Length - 7, 7);
-				newFilename = $"{newFilename}nfsr.{TasMovie.Extension}";
-			}
-			else
-			{
-				newFilename = $"{old.Filename}.{TasMovie.Extension}";
-			}
-
-			if (File.Exists(newFilename))
-			{
-				int fileNum = 1;
-				bool fileConflict = true;
-				while (fileConflict)
-				{
-					if (File.Exists(newFilename))
-					{
-						newFilename = $"{old.Filename} ({fileNum}).{TasMovie.Extension}";
-						fileNum++;
-					}
-					else
-					{
-						fileConflict = false;
-					}
-				}
-			}
+			string newFilename = GetNewFileName(old.Filename);
 
 			var tas = (ITasMovie) MovieService.Get(newFilename, false);
 			tas.SaveRam = saveRam;
@@ -380,6 +306,42 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			movie.Core = ((CoreAttribute)Attribute
 				.GetCustomAttribute(emulator.GetType(), typeof(CoreAttribute)))
 				.CoreName;
+		}
+
+		public static string GetNewFileName(string oldFileName)
+		{
+			string newFilename = oldFileName;
+			string oldExtension = Path.GetExtension(oldFileName);
+
+			if (oldExtension == ".tasproj" || oldExtension == ".bk2")
+			{
+				newFilename = Path.ChangeExtension(newFilename, null);
+				newFilename = $"{newFilename}.{TasMovie.Extension}";
+			}
+			else
+			{
+				newFilename = $"{oldFileName}.{TasMovie.Extension}";
+			}
+
+			if (File.Exists(newFilename))
+			{
+				int fileNum = 1;
+				bool fileConflict = true;
+				while (fileConflict)
+				{
+					if (File.Exists(newFilename))
+					{
+						newFilename = $"{oldFileName} ({fileNum}).{TasMovie.Extension}";
+						fileNum++;
+					}
+					else
+					{
+						fileConflict = false;
+					}
+				}
+			}
+
+			return newFilename;
 		}
 	}
 }
