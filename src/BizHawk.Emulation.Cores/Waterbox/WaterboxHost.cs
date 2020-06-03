@@ -361,8 +361,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			return _syscalls.RemoveTransientFile(name);
 		}
 
+		private const ulong MAGIC = 0x736b776162727477;
+		private const ulong WATERBOXSTATEVERSION = 1;
+
 		public void SaveStateBinary(BinaryWriter bw)
 		{
+			bw.Write(MAGIC);
+			bw.Write(WATERBOXSTATEVERSION);
 			bw.Write(_createstamp);
 			bw.Write(_savestateComponents.Count);
 			using (this.EnterExit())
@@ -376,6 +381,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public void LoadStateBinary(BinaryReader br)
 		{
+			if (br.ReadUInt64() != MAGIC)
+				throw new InvalidOperationException("Internal savestate error");
+			if (br.ReadUInt64() != WATERBOXSTATEVERSION)
+				throw new InvalidOperationException("Waterbox savestate version mismatch");
 			var differentCore = br.ReadInt64() != _createstamp; // true if a different core instance created the state
 			if (br.ReadInt32() != _savestateComponents.Count)
 				throw new InvalidOperationException("Internal savestate error");
