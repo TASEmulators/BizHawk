@@ -2,5 +2,5 @@
 MYPATH="`dirname \"$0\"`"
 SYSROOT="`realpath \"$MYPATH/../../sysroot\"`"
 export CC=$SYSROOT/bin/musl-gcc
-export CFLAGS="-O3 -mabi=ms -mcmodel=large -mstack-protector-guard=global -no-pie -fno-pic -fno-pie"
+export CFLAGS="-O3 -mabi=ms -mcmodel=small -mstack-protector-guard=global -no-pie -fno-pic -fno-pie"
 ./configure --static --prefix=$SYSROOT

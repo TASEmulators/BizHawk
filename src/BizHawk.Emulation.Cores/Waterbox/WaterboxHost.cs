@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// <summary>
 		/// usual starting point for the executable
 		/// </summary>
-		public const ulong CanonicalStart = 0x0000036f00000000;
+		public const ulong CanonicalStart = 0x2000_0000;
 
 		/// <summary>
 		/// the next place where we can put a module or heap

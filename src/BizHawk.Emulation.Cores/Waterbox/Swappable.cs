@@ -52,8 +52,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			var lockkey = (uint)(startAddress >> 32);
 
 			_lockkey = lockkey;
-			if (lockkey == 0)
-				throw new NullReferenceException();
 			_currentLockInfo = LockInfos.GetOrAdd(_lockkey, new LockInfo { Sync = new object() });
 		}
 

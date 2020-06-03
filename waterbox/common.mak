@@ -15,6 +15,7 @@ ifdef NEED_LIBCO
 EMULIBC_OBJS := $(EMULIBC_OBJS) $(shell find $(WATERBOX_DIR)/libco/obj/release -type f -name '*.o')
 EMULIBC_DOBJS := $(EMULIBC_DOBJS) $(shell find $(WATERBOX_DIR)/libco/obj/debug -type f -name '*.o')
 endif
+LINKSCRIPT := $(WATERBOX_DIR)/linkscript.T
 
 print-%: ;
 	@echo $* = $($*)
@@ -22,11 +23,11 @@ print-%: ;
 #LD_PLUGIN := $(shell gcc --print-file-name=liblto_plugin.so)
 
 CC := $(SYSROOT)/bin/musl-gcc
-COMMONFLAGS := -mabi=ms -fvisibility=hidden -I$(WATERBOX_DIR)/emulibc -Wall -mcmodel=large \
+COMMONFLAGS := -mabi=ms -fvisibility=hidden -I$(WATERBOX_DIR)/emulibc -Wall -mcmodel=small \
 	-mstack-protector-guard=global -no-pie -fno-pic -fno-pie -fcf-protection=none \
 	-MD -MP
 CCFLAGS := $(CCFLAGS) $(COMMONFLAGS)
-LDFLAGS := $(LDFLAGS) -static -Wl,--eh-frame-hdr -T $(WATERBOX_DIR)/linkscript.T #-Wl,--plugin,$(LD_PLUGIN)
+LDFLAGS := $(LDFLAGS) -static -Wl,--eh-frame-hdr -T $(LINKSCRIPT) #-Wl,--no-relax #-Wl,--plugin,$(LD_PLUGIN)
 CCFLAGS_DEBUG := -O0 -g
 CCFLAGS_RELEASE := -O3 -flto
 CCFLAGS_RELEASE_ASONLY := -O3
@@ -83,10 +84,10 @@ TARGET_DEBUG := $(DOBJ_DIR)/$(TARGET)
 release: $(TARGET_RELEASE)
 debug: $(TARGET_DEBUG)
 
-$(TARGET_RELEASE): $(OBJS) $(EMULIBC_OBJS)
+$(TARGET_RELEASE): $(OBJS) $(EMULIBC_OBJS) $(LINKSCRIPT)
 	@echo ld $@
 	@$(CC) -o $@ $(LDFLAGS) $(LDFLAGS_RELEASE) $(CCFLAGS) $(CCFLAGS_RELEASE) $(OBJS) $(EMULIBC_OBJS) $(EXTRA_LIBS)
-$(TARGET_DEBUG): $(DOBJS) $(EMULIBC_DOBJS)
+$(TARGET_DEBUG): $(DOBJS) $(EMULIBC_DOBJS) $(LINKSCRIPT)
 	@echo ld $@
 	@$(CC) -o $@ $(LDFLAGS) $(LDFLAGS_DEBUG) $(CCFLAGS) $(CCFLAGS_DEBUG) $(DOBJS) $(EMULIBC_DOBJS) $(EXTRA_LIBS)
 

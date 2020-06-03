@@ -161,8 +161,39 @@ void co_delete(cothread_t handle)
 	free_thread(handle);
 }
 
+static uint64_t hoststart;
+static uint64_t hostend;
+
 void co_switch(cothread_t handle)
 {
+	uint64_t start;
+	uint64_t end;
+	if (co_active_handle == &co_host_buffer)
+	{
+		// migrating off of real thread; save stack params
+		__asm__("movq %%gs:0x08, %0": "=r"(end));
+		__asm__("movq %%gs:0x10, %0": "=r"(start));
+		hoststart = start;
+		hostend = end;
+	}
+	if (handle == &co_host_buffer)
+	{
+		// migrating onto real thread; load stack params
+		start = hoststart;
+		end = hostend;
+		hoststart = 0;
+		hostend = 0;
+	}
+	else
+	{
+		// migrating onto cothread; compute its extents we allocated them
+		cothread_impl* co = handle;
+		start = (uintptr_t)co->stack_bottom;
+		end = (uintptr_t)co->stack_top;
+	}
+	__asm__("movq %0, %%gs:0x08":: "r"(end));
+	__asm__("movq %0, %%gs:0x10":: "r"(start));
+
 	register cothread_t co_previous_handle = co_active_handle;
 	co_swap(co_active_handle = handle, co_previous_handle);
 }
