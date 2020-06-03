@@ -174,8 +174,6 @@ namespace BizHawk.Client.Common
 
 		public IStringLog GetLogEntries() => Log;
 
-		private int? _timelineBranchFrame;
-
 		// TODO: this is 99% copy pasting of bad code
 		public override bool ExtractInputLog(TextReader reader, out string errorMessage)
 		{
@@ -183,12 +181,10 @@ namespace BizHawk.Client.Common
 			int? stateFrame = null;
 
 			var newLog = new List<string>();
-
+			int? timelineBranchFrame = null;
 			// We are in record mode so replace the movie log with the one from the savestate
 			if (!Global.MovieSession.MultiTrack.IsActive)
 			{
-				_timelineBranchFrame = null;
-
 				if (Global.Config.Movies.EnableBackupMovies && MakeBackup && Log.Count != 0)
 				{
 					SaveBackup();
@@ -237,9 +233,9 @@ namespace BizHawk.Client.Common
 					else if (line[0] == '|')
 					{
 						newLog.Add(line);
-						if (!_timelineBranchFrame.HasValue && counter < Log.Count && line != Log[counter])
+						if (!timelineBranchFrame.HasValue && counter < Log.Count && line != Log[counter])
 						{
-							_timelineBranchFrame = counter;
+							timelineBranchFrame = counter;
 						}
 
 						counter++;
@@ -328,10 +324,10 @@ namespace BizHawk.Client.Common
 				Rerecords++;
 			}
 
-			if (_timelineBranchFrame.HasValue)
+			if (timelineBranchFrame.HasValue)
 			{
-				LagLog.RemoveFrom(_timelineBranchFrame.Value);
-				TasStateManager.Invalidate(_timelineBranchFrame.Value);
+				LagLog.RemoveFrom(timelineBranchFrame.Value);
+				TasStateManager.Invalidate(timelineBranchFrame.Value);
 			}
 
 			return true;
