@@ -23,7 +23,7 @@ print-%: ;
 
 CC := $(SYSROOT)/bin/musl-gcc
 COMMONFLAGS := -mabi=ms -fvisibility=hidden -I$(WATERBOX_DIR)/emulibc -Wall -mcmodel=large \
-	-mstack-protector-guard=global -no-pie -fno-pic -fno-pie \
+	-mstack-protector-guard=global -no-pie -fno-pic -fno-pie -fcf-protection=none \
 	-MD -MP
 CCFLAGS := $(CCFLAGS) $(COMMONFLAGS)
 LDFLAGS := $(LDFLAGS) -static -Wl,--eh-frame-hdr -T $(WATERBOX_DIR)/linkscript.T #-Wl,--plugin,$(LD_PLUGIN)
