@@ -101,7 +101,7 @@ namespace BizHawk.Client.Common
 
 		public virtual void RecordFrame(int frame, IController source)
 		{
-			if (Global.Config.Movies.VBAStyleMovieLoadState)
+			if (Session.Settings.VBAStyleMovieLoadState)
 			{
 				if (Emulator.Frame < Log.Count)
 				{

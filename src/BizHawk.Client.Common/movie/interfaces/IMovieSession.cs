@@ -6,6 +6,7 @@ namespace BizHawk.Client.Common
 {
 	public interface IMovieSession
 	{
+		IMovieConfig Settings { get; }
 		IMovie Movie { get; }
 		bool ReadOnly { get; set; }
 
