@@ -7,7 +7,6 @@
 		public bool MoviesOnDisk { get; }
 		public int MovieCompressionLevel { get; }
 		public bool VBAStyleMovieLoadState { get; }
-		public bool MoviePlaybackPokeMode { get; }
 	}
 
 	public class MovieConfig : IMovieConfig
@@ -17,6 +16,5 @@
 		public bool MoviesOnDisk { get; set; }
 		public int MovieCompressionLevel { get; set; } = 2;
 		public bool VBAStyleMovieLoadState { get; set; }
-		public bool MoviePlaybackPokeMode { get; set; }
 	}
 }

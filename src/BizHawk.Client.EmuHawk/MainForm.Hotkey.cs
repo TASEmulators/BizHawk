@@ -314,9 +314,6 @@ namespace BizHawk.Client.EmuHawk
 				case "MT Decrement Player":
 					MovieSession.MultiTrack.Decrement();
 					break;
-				case "Movie Poke": 
-					ToggleModePokeMode(); 
-					break;
 
 				// Tools
 				case "RAM Watch":

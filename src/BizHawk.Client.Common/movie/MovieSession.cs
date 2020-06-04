@@ -123,21 +123,6 @@ namespace BizHawk.Client.Common
 							LatchInputToUser();
 							ClearFrame();
 						}
-						else if (Settings.MoviePlaybackPokeMode)
-						{
-							LatchInputToUser();
-							var lg = Movie.LogGeneratorInstance(Global.InputManager.MovieOutputHardpoint);
-							if (!lg.IsEmpty)
-							{
-								LatchInputToUser();
-								Movie.PokeFrame(Movie.Emulator.Frame, Global.InputManager.MovieOutputHardpoint);
-							}
-							else
-							{
-								// Why, this was already done?
-								LatchInputToLog();
-							}
-						}
 					}
 				}
 			}
