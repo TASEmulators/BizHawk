@@ -45,11 +45,6 @@ rmdir /s /q temp\firmware
 rmdir /s /q gitsucks
 git --git-dir ../.git archive --format zip --output lua.zip HEAD Assets/Lua
 git --git-dir ../.git archive --format zip --output firmware.zip HEAD output/Firmware
-rem Getting externaltools example from my repo
-rem I once talked about a dedicated repo for external tools, think about moving the exemple to it it it happend
-git clone https://github.com/Hathor86/HelloWorld_BizHawkTool.git
-git --git-dir HelloWorld_BizHawkTool/.git archive --format zip --output HelloWorld_BizHawkTool.zip master
-rmdir /s /q  HelloWorld_BizHawkTool
 
 unzip lua.zip -d gitsucks
 rem del lua.zip
@@ -69,18 +64,9 @@ upx -d temp\*.exe
 rem dont need docs xml for assemblies and whatnot
 del temp\dll\*.xml
 
-rem we're building multiple copies of every assembly for some reason. this is a huge pain in the ass.
-rem until that's fixed, we need to delete them from the distribution
-rmdir /s /q temp\dll\netstandard2.0
-rmdir /s /q temp\dll\netcoreapp3.1
-rmdir /s /q temp\dll\net48
-
 cd temp
 
 rem Patch up working dir with a few other things we want
-mkdir ExternalTools
-copy ..\HelloWorld_BizHawkTool.dll ExternalTools
-copy ..\HelloWorld_BizHawkTool.zip ExternalTools
 mkdir Firmware
 
 rem compress nescart 7z
