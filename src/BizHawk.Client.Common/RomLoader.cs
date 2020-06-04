@@ -893,26 +893,24 @@ namespace BizHawk.Client.Common
 
 							break;
 						case "SNES":
-							bool useSnes9x = Global.Config.PreferredCores["SNES"] == CoreNames.Snes9X;
-							if (Global.Config.CoreForcingViaGameDb && !string.IsNullOrEmpty(game.ForcedCore))
-							{
+						{
+							var name = Global.Config.PreferredCores["SNES"];
+							if (Global.Config.CoreForcingViaGameDb)
+								{
 								if (game.ForcedCore.ToLower() == "snes9x")
 								{
-									useSnes9x = true;
+									name = CoreNames.Snes9X;
 								}
 								else if (game.ForcedCore.ToLower() == "bsnes")
 								{
-									useSnes9x = false;
+									name = CoreNames.Bsnes;
 								}
 							}
-
-							if (useSnes9x)
+							try
 							{
-								// TODO
-								// core = CoreInventory.Instance["SNES", "Faust"];
-								core = CoreInventory.Instance["SNES", CoreNames.Snes9X];
+								core = CoreInventory.Instance["SNES", name];
 							}
-							else
+							catch // TODO: CoreInventory should support some sort of trygetvalue
 							{
 								// need to get rid of this hack at some point
 								var basePath = Path.GetDirectoryName(path.Replace("|", "")); // Dirty hack to get around archive filenames (since we are just getting the directory path, it is safe to mangle the filename
@@ -921,8 +919,8 @@ namespace BizHawk.Client.Common
 								var snes = new LibsnesCore(game, romData, xmlData, basePath, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
 								nextEmulator = snes;
 							}
-
 							break;
+						}
 						case "NES":
 						{
 							// apply main spur-of-the-moment switcheroo as lowest priority
