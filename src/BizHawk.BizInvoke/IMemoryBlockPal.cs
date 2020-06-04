@@ -21,7 +21,7 @@ namespace BizHawk.BizInvoke
 		void Deactivate();
 		/// <summary>
 		/// Change protection on [start, start + size), guaranteed to be page aligned and in the committed area.
-		/// Will only be called when active.
+		/// Will only be called when active.  Will not be called with RW_Invisible, which is a front end artifact.
 		/// </summary>
 		void Protect(ulong start, ulong size, MemoryBlock.Protection prot);
 		/// <summary>
@@ -38,7 +38,11 @@ namespace BizHawk.BizInvoke
 		/// automatically changing to RW and setting DidChange
 		/// </summary>
 		/// <param name="dest">Caller-owned array that the PAL will overwrite with page data</param>
-		void GetWriteStatus(WriteDetectionStatus[] dest);
+		/// <param name="pagedata">
+		/// Caller-owned array that should indicate which areas were set to RW_Stack.
+		/// Will not be modified by callee.  Some implementations need this to get all of the correct information in dest.
+		/// </param>
+		void GetWriteStatus(WriteDetectionStatus[] dest, MemoryBlock.Protection[] pagedata);
 		/// <summary>
 		/// Sets the current write detection status on each page in the block.  Pages marked with CanChange
 		/// that are also committed and set to R, will not trigger a segmentation violation on write; instead

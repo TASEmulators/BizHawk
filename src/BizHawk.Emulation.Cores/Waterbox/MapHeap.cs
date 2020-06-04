@@ -170,8 +170,19 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private bool EnsureMapped(int startPage, int pageCount)
 		{
 			for (int i = startPage; i < startPage + pageCount; i++)
+			{
 				if (_pages[i] == FREE)
 					return false;
+			}
+			return true;
+		}
+		private bool EnsureMappedNonStack(int startPage, int pageCount)
+		{
+			for (int i = startPage; i < startPage + pageCount; i++)
+			{
+				if (_pages[i] == FREE || _pages[i] == MemoryBlock.Protection.RW_Stack)
+					return false;
+			}
 			return true;
 		}
 
@@ -197,7 +208,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 			var oldStartPage = GetPage(start);
 			var oldNumPages = WaterboxUtils.PagesNeeded(oldSize);
-			if (!EnsureMapped(oldStartPage, oldNumPages))
+			if (!EnsureMappedNonStack(oldStartPage, oldNumPages))
 				return 0;
 			var oldProt = _pages[oldStartPage];
 
@@ -252,17 +263,28 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public bool Unmap(ulong start, ulong size)
 		{
-			return Protect(start, size, FREE);
-		}
-
-		public bool Protect(ulong start, ulong size, MemoryBlock.Protection prot)
-		{
+			// TODO: eliminate copy+pasta between unmap and protect
 			if (start < Memory.Start || start + size > Memory.EndExclusive || size == 0)
 				return false;
 
 			var startPage = GetPage(start);
 			var numPages = WaterboxUtils.PagesNeeded(size);
 			if (!EnsureMapped(startPage, numPages))
+				return false;
+
+			ProtectInternal(startPage, numPages, FREE, true);
+			return true;
+		}
+
+		public bool Protect(ulong start, ulong size, MemoryBlock.Protection prot)
+		{
+			// TODO: eliminate copy+pasta between unmap and protect
+			if (start < Memory.Start || start + size > Memory.EndExclusive || size == 0)
+				return false;
+
+			var startPage = GetPage(start);
+			var numPages = WaterboxUtils.PagesNeeded(size);
+			if (!EnsureMappedNonStack(startPage, numPages))
 				return false;
 
 			ProtectInternal(startPage, numPages, prot, true);

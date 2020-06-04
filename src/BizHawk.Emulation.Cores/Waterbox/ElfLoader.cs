@@ -44,9 +44,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// </summary>
 		private ulong _postSealWriteStart;
 		/// <summary>
-		/// Where the saveable program data begins
+		/// Where executable data ends
 		/// </summary>
-		private ulong _saveStart;
 		private ulong _execEnd;
 
 		public ElfLoader(string moduleName, byte[] fileData, ulong assumedStart, bool skipCoreConsistencyCheck, bool skipMemoryConsistencyCheck)
@@ -125,7 +124,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 				_writeStart = WaterboxUtils.AlignDown(writable.Min(s => s.LoadAddress));
 				_postSealWriteStart = WaterboxUtils.AlignDown(postSealWritable.Min(s => s.LoadAddress));
-				_saveStart = WaterboxUtils.AlignDown(saveable.Min(s => s.LoadAddress));
 				_execEnd = WaterboxUtils.AlignUp(executable.Max(s => s.LoadAddress + s.Size));
 
 				// validate; this may require linkscript cooperation
@@ -133,13 +131,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				// in the wrong place (because the linkscript doesn't know "eventually readonly")
 				if (_execEnd > _writeStart)
 					throw new InvalidOperationException($"ElfLoader: Executable data to {_execEnd:X16} overlaps writable data from {_writeStart}");
-				
-				var actuallySaved = allocated.Where(a => a.LoadAddress + a.Size > _saveStart);
-				var oopsSaved = actuallySaved.Except(saveable);
-				foreach (var s in oopsSaved)
-				{
-					Console.WriteLine($"ElfLoader: Section {s.Name} will be saved, but that was not expected");
-				}
 			}
 
 			PrintSections();
@@ -159,12 +150,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			Console.WriteLine($"Mounted `{ModuleName}` @{Memory.Start:x16}");
 			foreach (var s in _elf.Sections.OrderBy(s => s.LoadAddress))
 			{
-				Console.WriteLine("  @{0:x16} {1}{2}{3}{4} `{5}` {6} bytes",
+				Console.WriteLine("  @{0:x16} {1}{2}{3} `{4}` {5} bytes",
 					s.LoadAddress,
 					(s.Flags & SectionFlags.Allocatable) != 0 ? "R" : " ",
 					(s.Flags & SectionFlags.Writable) != 0 ? "W" : " ",
 					(s.Flags & SectionFlags.Executable) != 0 ? "X" : " ",
-					s.LoadAddress + s.Size > _saveStart ? "V" : " ",
 					s.Name,
 					s.Size);
 			}
@@ -172,8 +162,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private void PrintTopSavableSymbols()
 		{
+			// TODO: With change detection, this isn't so great anymore.
+			// It could look at actual intersections with what we saved, but that would mean going into MemoryBlock
 			var tops = _allSymbols
-				.Where(s => s.Value + s.Size > _saveStart)
 				.OrderByDescending(s => s.Size)
 				.Where(s => s.Size >= 20 * 1024)
 				.Take(30)
@@ -182,7 +173,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 			if (tops.Count > 0)
 			{
-				Console.WriteLine("Top savestate symbols:");
+				Console.WriteLine("Top potential savestate symbols:");
 				foreach (var text in tops)
 				{
 					Console.WriteLine(text);
@@ -206,7 +197,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		}
 
 		/// <summary>
-		/// Set normal (post-seal) memory protections
+		/// Set memory protections, pre or post seal
 		/// </summary>
 		private void Protect()
 		{
@@ -215,6 +206,20 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			Memory.Protect(Memory.Start, _execEnd - Memory.Start, MemoryBlock.Protection.RX);
 			Memory.Protect(_execEnd, writeStart - _execEnd, MemoryBlock.Protection.R);
 			Memory.Protect(writeStart, Memory.EndExclusive - writeStart, MemoryBlock.Protection.RW);
+			if (_invisible != null)
+			{
+				if (!WaterboxUtils.Aligned(_invisible.LoadAddress))
+					throw new InvalidOperationException("Invisible section start not aligned!  Check linker script");
+				var end = WaterboxUtils.AlignUp(_invisible.LoadAddress + _invisible.Size);
+				if (_sectionsByName.Values.Any(s => s != _invisible && s.LoadAddress < end && s.LoadAddress >= _invisible.LoadAddress))
+				{
+					throw new InvalidOperationException("Invisible section end not aligned, or not padded!  Check linker script");
+				}
+				Memory.Protect(
+					_invisible.LoadAddress,
+					_invisible.Size,
+					MemoryBlock.Protection.RW_Invisible);
+			}
 		}
 
 		// connect all of the .wbxsyscall stuff

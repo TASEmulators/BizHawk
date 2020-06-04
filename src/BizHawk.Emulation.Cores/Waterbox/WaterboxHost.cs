@@ -305,17 +305,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				}
 				_module.SealImportsAndTakeXorSnapshot();
 				_mmapheap?.Memory.Seal();
-
-				// MemoryBlock's lazy write detection can't work on the current stack, because the VEH handler runs in the stack
-				// so it has to already be writable.  This isn't a problem for normal stacks, which are outside the cycle, but
-				// co stacks have to be fully probed before they're used as stacks.
-
-				IntPtr co_probe;
-				if ((co_probe = _module.GetProcAddrOrZero("co_probe")) != IntPtr.Zero)
-				{
-					Console.WriteLine("Calling co_probe().");
-					CallingConventionAdapters.Waterbox.GetDelegateForFunctionPointer<Action>(co_probe)();
-				}
 			}
 		}
 
@@ -362,7 +351,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		}
 
 		private const ulong MAGIC = 0x736b776162727477;
-		private const ulong WATERBOXSTATEVERSION = 1;
+		private const ulong WATERBOXSTATEVERSION = 2;
 
 		public void SaveStateBinary(BinaryWriter bw)
 		{

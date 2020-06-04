@@ -121,7 +121,7 @@ namespace BizHawk.BizInvoke
 		{
 			EnsureActive();
 			if (_sealed)
-				_pal.GetWriteStatus(_dirtydata);
+				_pal.GetWriteStatus(_dirtydata, _pageData);
 			_pal.Deactivate();
 			Active = false;
 		}
@@ -144,7 +144,7 @@ namespace BizHawk.BizInvoke
 			if (length == 0)
 				return;
 			if (_sealed)
-				_pal.GetWriteStatus(_dirtydata);
+				_pal.GetWriteStatus(_dirtydata, _pageData);
 			
 			// Note: asking for prot.none on memory that was not previously committed, commits it
 
@@ -166,7 +166,8 @@ namespace BizHawk.BizInvoke
 			for (int i = pstart; i <= pend; i++)
 			{
 				_pageData[i] = prot;
-				if (prot == Protection.RW)
+				// inform the low level code what addresses might fault on it
+				if (prot == Protection.RW || prot == Protection.RW_Stack)
 					_dirtydata[i] |= WriteDetectionStatus.CanChange;
 				else
 					_dirtydata[i] &= ~WriteDetectionStatus.CanChange;
@@ -192,12 +193,35 @@ namespace BizHawk.BizInvoke
 					ulong zstart = GetStartAddr(ps);
 					ulong zend = GetStartAddr(i + 1);
 					var prot = _pageData[i];
-					if (_sealed && prot == Protection.RW)
+					// adjust frontend notion of prot to the PAL layer's expectation
+					if (prot == Protection.RW_Stack)
+					{
+						if (!_sealed)
+						{
+							// don't activate this protection yet
+							prot = Protection.RW;
+						}
+						else
+						{
+							var didChange = (_dirtydata[i] & WriteDetectionStatus.DidChange) != 0;
+							if (didChange)
+								// don't needlessly retrigger
+								prot = Protection.RW;
+						}
+					}
+					else if (prot == Protection.RW_Invisible)
+					{
+						// this never matters to the backend
+						prot = Protection.RW;
+					}
+					else if (_sealed && prot == Protection.RW)
 					{
 						var didChange = (_dirtydata[i] & WriteDetectionStatus.DidChange) != 0;
 						if (!didChange)
+							// set to trigger if we have not before
 							prot = Protection.R;
 					}
+
 					_pal.Protect(zstart, zend - zstart, prot);
 					ps = i + 1;
 				}
@@ -228,7 +252,7 @@ namespace BizHawk.BizInvoke
 		{
 			EnsureActive();
 			EnsureSealed();
-			_pal.GetWriteStatus(_dirtydata);
+			_pal.GetWriteStatus(_dirtydata, _pageData);
 
 			w.Write(MAGIC);
 			w.Write(Start);
@@ -244,7 +268,7 @@ namespace BizHawk.BizInvoke
 			ulong endAddr = Start + CommittedSize;
 			for (p = 0, addr = Start; addr < endAddr; p++, addr += 4096)
 			{
-				if ((_dirtydata[p] & WriteDetectionStatus.DidChange) != 0)
+				if (_pageData[p] != Protection.RW_Invisible && (_dirtydata[p] & WriteDetectionStatus.DidChange) != 0)
 				{
 					// TODO: It's slow to toggle individual pages like this.
 					// Maybe that's OK because None is not used much?
@@ -256,13 +280,43 @@ namespace BizHawk.BizInvoke
 						_pal.Protect(addr, 4096, Protection.None);
 				}
 			}
+			// Console.WriteLine($"{Start:x16}");
+			// var voom = _pageData.Take((int)(CommittedSize >> 12)).Select(p =>
+			// {
+			// 	switch (p)
+			// 	{
+			// 		case Protection.None: return ' ';
+			// 		case Protection.R: return 'R';
+			// 		case Protection.RW: return 'W';
+			// 		case Protection.RX: return 'X';
+			// 		case Protection.RW_Invisible: return '!';
+			// 		case Protection.RW_Stack: return '+';
+			// 		default: return '?';
+			// 	}
+			// }).Select((c, i) => new { c, i }).GroupBy(a => a.i / 60);
+			// var zoom = _dirtydata.Take((int)(CommittedSize >> 12)).Select(p =>
+			// {
+			// 	switch (p)
+			// 	{
+			// 		case WriteDetectionStatus.CanChange: return '.';
+			// 		case WriteDetectionStatus.CanChange | WriteDetectionStatus.DidChange: return '*';
+			// 		case 0: return ' ';
+			// 		case WriteDetectionStatus.DidChange: return '!';
+			// 		default: return '?';
+			// 	}
+			// }).Select((c, i) => new { c, i }).GroupBy(a => a.i / 60);
+			// foreach (var l in voom.Zip(zoom, (a, b) => new { a, b }))
+			// {
+			// 	Console.WriteLine("____" + new string(l.a.Select(a => a.c).ToArray()));
+			// 	Console.WriteLine("____" + new string(l.b.Select(a => a.c).ToArray()));
+			// }
 		}
 
 		public void LoadState(BinaryReader r)
 		{
 			EnsureActive();
 			EnsureSealed();
-			_pal.GetWriteStatus(_dirtydata);
+			_pal.GetWriteStatus(_dirtydata, _pageData);
 
 			if (r.ReadUInt64() != MAGIC || r.ReadUInt64() != Start || r.ReadUInt64() != Size)
 				throw new InvalidOperationException("Savestate internal mismatch");
@@ -297,8 +351,9 @@ namespace BizHawk.BizInvoke
 			{
 				var dirty = (_dirtydata[p] & WriteDetectionStatus.DidChange) != 0;
 				var newDirty = (newDirtyData[p] & WriteDetectionStatus.DidChange) != 0;
+				var inState = newPageData[p] != Protection.RW_Invisible && newDirty;
 
-				if (dirty || newDirty)
+				if (dirty || inState)
 				{
 					// must write out changed data
 
@@ -306,7 +361,10 @@ namespace BizHawk.BizInvoke
 					if (_pageData[p] != Protection.RW)
 						_pal.Protect(addr, 4096, Protection.RW);
 
-					if (newDirty)
+					// NB: There are some weird behaviors possible if a block transitions to or from RW_Invisible,
+					// but nothing really "broken" (as far as I know); just reflecting the fact that you cannot track it.
+
+					if (inState)
 					{
 						// changed data comes from the savestate
 						r.Read(buff, 0, 4096);
@@ -350,7 +408,21 @@ namespace BizHawk.BizInvoke
 		public static MemoryBlock Create(ulong size) => Create(0, size);
 
 		/// <summary>Memory protection constant</summary>
-		public enum Protection : byte { None, R, RW, RX }
-
+		public enum Protection : byte
+		{
+			None,
+			R,
+			RW,
+			RX,
+			/// <summary>
+			/// This area should not be tracked for changes, and should not be saved.
+			/// </summary>
+			RW_Invisible,
+			/// <summary>
+			/// This area may be used as a stack and should use a change detection that will work on stacks.
+			/// (In windows, this is an inferior detection that triggers on reads.  In Linux, this flag has no effect.)
+			/// </summary>
+			RW_Stack,
+		}
 	}
 }

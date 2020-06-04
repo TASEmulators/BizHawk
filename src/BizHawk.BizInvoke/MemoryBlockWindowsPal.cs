@@ -87,6 +87,11 @@ namespace BizHawk.BizInvoke
 				case Protection.R: p = Kernel32.MemoryProtection.READONLY; break;
 				case Protection.RW: p = Kernel32.MemoryProtection.READWRITE; break;
 				case Protection.RX: p = Kernel32.MemoryProtection.EXECUTE_READ; break;
+				// VEH can't work when the stack is not writable, because VEH is delivered on that selfsame stack.  The kernel
+				// simply declines to return to user mode on a first chance exception if the stack is not writable.
+				// So we use guard pages instead, which are much worse because reads set them off as well, but it doesn't matter
+				// in this case.
+				case Protection.RW_Stack: p = Kernel32.MemoryProtection.READWRITE | Kernel32.MemoryProtection.GUARD_Modifierflag; break;
 				default: throw new ArgumentOutOfRangeException(nameof(prot));
 			}
 			return p;
@@ -107,12 +112,41 @@ namespace BizHawk.BizInvoke
 			}
 		}
 
-		public void GetWriteStatus(WriteDetectionStatus[] dest)
+		public void GetWriteStatus(WriteDetectionStatus[] dest, Protection[] pagedata)
 		{
 			var p = (IntPtr)WinGuard.ExamineTripGuard(Z.UU(_start), Z.UU(_size));
 			if (p == IntPtr.Zero)
 				throw new InvalidOperationException($"{nameof(WinGuard.ExamineTripGuard)}() returned NULL!");
 			Marshal.Copy(p, (byte[])(object)dest, 0, dest.Length);
+
+			// guard pages do not trigger VEH when they are actually being used as a stack and there are other
+			// free pages below them, so virtualquery to get that information out
+			Kernel32.MEMORY_BASIC_INFORMATION mbi;
+			for (int i = 0; i < pagedata.Length;)
+			{
+				if (pagedata[i] == Protection.RW_Stack)
+				{
+					var q = ((ulong)i << WaterboxUtils.PageShift) + _start;
+					Kernel32.VirtualQuery(Z.UU(q), &mbi, Z.SU(sizeof(Kernel32.MEMORY_BASIC_INFORMATION)));
+					var pstart = (int)(((ulong)mbi.BaseAddress - _start) >> WaterboxUtils.PageShift);
+					var pend = pstart + (int)((ulong)mbi.RegionSize >> WaterboxUtils.PageShift);
+					if (pstart != i)
+						throw new Exception("Huh?");
+
+					if ((mbi.Protect & Kernel32.MemoryProtection.GUARD_Modifierflag) == 0)
+					{
+						// tripped!
+						for (int j = pstart; j < pend; j++)
+							dest[j] |= WriteDetectionStatus.DidChange;
+					}
+					i = pend;
+				}
+				else
+				{
+					i++;
+				}
+			}
+
 		}
 
 		public void SetWriteStatus(WriteDetectionStatus[] src)
@@ -212,6 +246,34 @@ namespace BizHawk.BizInvoke
 			}
 
 			public static readonly IntPtr INVALID_HANDLE_VALUE = Z.US(0xffffffffffffffff);
+
+			[StructLayout(LayoutKind.Sequential)]
+			public struct MEMORY_BASIC_INFORMATION
+			{
+				public IntPtr BaseAddress;
+				public IntPtr AllocationBase;
+				public MemoryProtection AllocationProtect;
+				public UIntPtr RegionSize;
+				public StateEnum State;
+				public MemoryProtection Protect;
+				public TypeEnum Type;
+			}
+			public enum StateEnum : uint
+			{
+				MEM_COMMIT = 0x1000,
+				MEM_FREE = 0x10000,
+				MEM_RESERVE = 0x2000
+			}
+
+			public enum TypeEnum : uint
+			{
+				MEM_IMAGE = 0x1000000,
+				MEM_MAPPED = 0x40000,
+				MEM_PRIVATE = 0x20000
+			}
+
+			[DllImport("kernel32.dll")]
+			public static extern UIntPtr VirtualQuery(UIntPtr lpAddress, MEMORY_BASIC_INFORMATION* lpBuffer, UIntPtr dwLength);
 		}
 
 		private static unsafe class WinGuard

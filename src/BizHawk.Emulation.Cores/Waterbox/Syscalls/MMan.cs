@@ -117,7 +117,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				case PROT_WRITE:
 					return Z.SS(MAP_FAILED); // write only????
 				case PROT_READ | PROT_WRITE:
-					mprot = MemoryBlock.Protection.RW;
+					mprot = (flags & MAP_STACK) != 0 ? MemoryBlock.Protection.RW_Stack : MemoryBlock.Protection.RW;
 					break;
 				case PROT_READ:
 					mprot = MemoryBlock.Protection.R;

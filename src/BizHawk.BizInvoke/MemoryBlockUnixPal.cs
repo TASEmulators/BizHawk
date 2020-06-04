@@ -87,7 +87,7 @@ namespace BizHawk.BizInvoke
 				throw new InvalidOperationException($"{nameof(mprotect)}() returned {errorCode}!");
 		}
 
-		public void GetWriteStatus(WriteDetectionStatus[] dest)
+		public void GetWriteStatus(WriteDetectionStatus[] dest, Protection[] pagedata)
 		{
 			throw new NotImplementedException();
 		}
