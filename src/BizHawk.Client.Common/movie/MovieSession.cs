@@ -50,32 +50,6 @@ namespace BizHawk.Client.Common
 
 		public MultitrackRecorder MultiTrack { get; } = new MultitrackRecorder();
 
-		public IController CurrentInput
-		{
-			get
-			{
-				if (Movie.IsPlayingOrRecording() && Movie.Emulator.Frame > 0)
-				{
-					return Movie.GetInputState(Movie.Emulator.Frame - 1);
-				}
-
-				return null;
-			}
-		}
-
-		public IController PreviousFrame
-		{
-			get
-			{
-				if (Movie.IsPlayingOrRecording() && Movie.Emulator.Frame > 1)
-				{
-					return Movie.GetInputState(Movie.Emulator.Frame - 2);
-				}
-
-				return null;
-			}
-		}
-
 		public void RecreateMovieController(ControllerDefinition definition)
 		{
 			MovieController = new Bk2Controller(definition);

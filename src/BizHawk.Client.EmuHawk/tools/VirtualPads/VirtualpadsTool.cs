@@ -149,14 +149,16 @@ namespace BizHawk.Client.EmuHawk
 			if (MovieSession.Movie.IsPlaying())
 			{
 				Readonly = true;
-				if (MovieSession.CurrentInput != null)
+				var currentInput = CurrentInput();
+				if (currentInput != null)
 				{
-					Pads.ForEach(p => p.Set(MovieSession.CurrentInput));
+					Pads.ForEach(p => p.Set(currentInput));
 				}
 			}
 			else if (MovieSession.Movie.IsRecording())
 			{
-				Pads.ForEach(p => p.SetPrevious(MovieSession.PreviousFrame));
+				var previousFrame = PreviousFrame();
+				Pads.ForEach(p => p.SetPrevious(previousFrame));
 				Readonly = false;
 			}
 
@@ -166,6 +168,26 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			Pads.ForEach(pad => pad.UpdateValues());
+		}
+
+		private IController CurrentInput()
+		{
+			if (MovieSession.Movie.IsPlayingOrRecording() && Emulator.Frame > 0)
+			{
+				return MovieSession.Movie.GetInputState(Emulator.Frame - 1);
+			}
+
+			return null;
+		}
+
+		public IController PreviousFrame()
+		{
+			if (MovieSession.Movie.IsPlayingOrRecording() && Emulator.Frame > 1)
+			{
+				return MovieSession.Movie.GetInputState(Emulator.Frame - 2);
+			}
+
+			return null;
 		}
 
 		protected override void FastUpdateAfter()

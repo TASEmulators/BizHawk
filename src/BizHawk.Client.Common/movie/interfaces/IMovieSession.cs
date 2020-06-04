@@ -24,13 +24,6 @@ namespace BizHawk.Client.Common
 		MultitrackRecorder MultiTrack { get; }
 
 		/// <summary>
-		/// Gets the controller state from the movie for the most recent frame
-		/// </summary>
-		IController CurrentInput { get; }
-
-		IController PreviousFrame { get; }
-
-		/// <summary>
 		/// Recreates MovieController with the given controller definition
 		/// with an empty controller state
 		/// </summary>
