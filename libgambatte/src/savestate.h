@@ -77,6 +77,7 @@ struct SaveState {
 		unsigned char rambank;
 		unsigned char oamDmaPos;
 		unsigned char haltHdmaState;
+		unsigned char HuC3RAMflag;
 		unsigned char /*bool*/ IME;
 		unsigned char /*bool*/ halted;
 		unsigned char /*bool*/ enableRam;
@@ -205,6 +206,18 @@ struct SaveState {
 		unsigned char dataS;
 		unsigned char /*bool*/ lastLatchData;
 	} rtc;
+
+	struct HuC3 {
+		unsigned long haltTime;
+		unsigned long dataTime;
+		unsigned long writingTime;
+		unsigned long irBaseCycle;
+		unsigned char /*bool*/ halted;
+		unsigned char shift;
+		unsigned char ramValue;
+		unsigned char modeflag;
+		unsigned char /*bool*/ irReceivingPulse;
+	} huc3;
 };
 
 }

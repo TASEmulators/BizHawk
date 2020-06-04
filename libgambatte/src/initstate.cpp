@@ -1330,4 +1330,12 @@ void gambatte::setInitState(SaveState &state, const bool cgb) {
 	state.rtc.dataM = 0;
 	state.rtc.dataS = 0;
 	state.rtc.lastLatchData = false;
+
+	state.huc3.haltTime = state.time.seconds;
+	state.huc3.dataTime = 0;
+	state.huc3.writingTime = 0;
+	state.huc3.halted = false;
+	state.huc3.shift = 0;
+	state.huc3.ramValue = 1;
+	state.huc3.modeflag = 2; // huc3_none
 }
