@@ -895,17 +895,15 @@ namespace BizHawk.Client.Common
 						case "SNES":
 						{
 							var name = Global.Config.PreferredCores["SNES"];
-							if (Global.Config.CoreForcingViaGameDb)
-								{
-								if (game.ForcedCore.ToLower() == "snes9x")
-								{
-									name = CoreNames.Snes9X;
-								}
-								else if (game.ForcedCore.ToLower() == "bsnes")
-								{
-									name = CoreNames.Bsnes;
-								}
+							if (game.ForcedCore.ToLower() == "snes9x")
+							{
+								name = CoreNames.Snes9X;
 							}
+							else if (game.ForcedCore.ToLower() == "bsnes")
+							{
+								name = CoreNames.Bsnes;
+							}
+							
 							try
 							{
 								core = CoreInventory.Instance["SNES", name];
@@ -927,7 +925,7 @@ namespace BizHawk.Client.Common
 							string preference = Global.Config.PreferredCores["NES"];
 
 							// if user has saw fit to override in gamedb, apply that
-							if (Global.Config.CoreForcingViaGameDb && !string.IsNullOrEmpty(game.ForcedCore))
+							if (!string.IsNullOrEmpty(game.ForcedCore))
 							{
 								preference = game.ForcedCore.ToLower() switch
 								{
@@ -995,7 +993,7 @@ namespace BizHawk.Client.Common
 							rom.GameInfo.Name = gameName;
 							break;
 						case "GEN":
-							if (Global.Config.CoreForcingViaGameDb && game.ForcedCore?.ToLower() == "pico")
+							if (game.ForcedCore?.ToLower() == "pico")
 							{
 								core = CoreInventory.Instance["GEN", CoreNames.PicoDrive];
 							}

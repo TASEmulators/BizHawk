@@ -1186,7 +1186,6 @@ namespace BizHawk.Client.EmuHawk
 		private void CoresSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			GBInSGBMenuItem.Checked = Config.GbAsSgb;
-			AllowGameDbCoreOverridesMenuItem.Checked = Config.CoreForcingViaGameDb;
 		}
 
 		private void NesCoreSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -1335,11 +1334,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				FlagNeedsReboot();
 			}
-		}
-
-		private void AllowGameDBCoreOverridesMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.CoreForcingViaGameDb ^= true;
 		}
 
 		private void N64VideoPluginSettingsMenuItem_Click(object sender, EventArgs e)

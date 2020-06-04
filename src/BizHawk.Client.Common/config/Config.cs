@@ -301,7 +301,6 @@ namespace BizHawk.Client.Common
 		// it hasn't been absorbed into the new system
 		public bool GbAsSgb { get; set; }
 		public bool SgbUseBsnes { get; set; }
-		public bool CoreForcingViaGameDb { get; set; } = true;
 		public string LibretroCore { get; set; }
 
 		public Dictionary<string, string> PreferredCores = new Dictionary<string, string>
