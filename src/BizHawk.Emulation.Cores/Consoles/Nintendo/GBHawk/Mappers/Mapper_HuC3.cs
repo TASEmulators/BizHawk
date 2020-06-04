@@ -1,6 +1,7 @@
 ﻿using BizHawk.Common;
 
 using BizHawk.Emulation.Cores.Components.LR35902;
+using System;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
@@ -58,38 +59,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public override byte ReadMemoryHigh(ushort addr)
 		{
-			if ((addr >= 0xA000) && (addr < 0xC000))
+			if ((control >= 0xB) && (control < 0xE))
 			{
-				if ((control >= 0xB) && (control < 0xE))
+				if (control == 0xD)
 				{
-					if (control == 0xD)
-					{
-						return 1;
-					}
-					return chip_read;
+					return 1;
 				}
+				return chip_read;
+			}
 
-				if (RAM_enable)
+			if (Core.cart_RAM != null)
+			{
+				if (((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length)
 				{
-					if (Core.cart_RAM != null)
-					{
-						if (((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length)
-						{
-							return Core.cart_RAM[(addr - 0xA000) + RAM_bank * 0x2000];
-						}
-						else
-						{
-							return 0xFF;
-						}
-					}
-					else
-					{
-						return 0xFF;
-					}
+					return Core.cart_RAM[(addr - 0xA000) + RAM_bank * 0x2000];
 				}
 				else
-				{
-					// what to return if RAM not enabled and controller not selected?
+				{	
 					return 0xFF;
 				}
 			}
@@ -170,8 +156,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			else
 			{
-				if (RAM_enable && ((control < 0xB) || (control > 0xE)))
+				if ((control < 0xB) || (control > 0xE))
 				{
+					if (!RAM_enable)
+					{
+						return;
+					}
+
 					if (Core.cart_RAM != null)
 					{
 						if (((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length)
@@ -179,6 +170,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							Core.cart_RAM[(addr - 0xA000) + RAM_bank * 0x2000] = value;
 						}
 					}
+
+					return;
 				}
 				
 				if (control == 0xB)
@@ -242,6 +235,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				else if (control == 0xD)
 				{
 					// maybe IR
+				}
+
+				// Still write to RAM if another command executed
+				if (Core.cart_RAM != null)
+				{
+					if (((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length)
+					{
+						Core.cart_RAM[(addr - 0xA000) + RAM_bank * 0x2000] = value;
+					}
 				}
 			}
 		}
