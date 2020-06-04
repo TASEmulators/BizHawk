@@ -202,8 +202,6 @@
 			this.GBGBHawkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GBInSGBMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem16 = new System.Windows.Forms.ToolStripSeparator();
-			this.AllowGameDbCoreOverridesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
 			this.N64VideoPluginSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.setLibretroCoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
@@ -1795,8 +1793,6 @@
 			this.PceCoreSubmenu,
 			this.GBInSGBMenuItem,
 			this.toolStripMenuItem16,
-			this.AllowGameDbCoreOverridesMenuItem,
-			this.toolStripSeparator8,
 			this.N64VideoPluginSettingsMenuItem,
 			this.setLibretroCoreToolStripMenuItem});
 			this.CoresSubMenu.Name = "CoresSubMenu";
@@ -1958,18 +1954,6 @@
 			// 
 			this.toolStripMenuItem16.Name = "toolStripMenuItem16";
 			this.toolStripMenuItem16.Size = new System.Drawing.Size(220, 6);
-			// 
-			// allowGameDBCoreOverridesToolStripMenuItem
-			// 
-			this.AllowGameDbCoreOverridesMenuItem.Name = "AllowGameDbCoreOverridesMenuItem";
-			this.AllowGameDbCoreOverridesMenuItem.Size = new System.Drawing.Size(223, 22);
-			this.AllowGameDbCoreOverridesMenuItem.Text = "Follow GameDB Core Overrides";
-			this.AllowGameDbCoreOverridesMenuItem.Click += new System.EventHandler(this.AllowGameDBCoreOverridesMenuItem_Click);
-			// 
-			// toolStripSeparator8
-			// 
-			this.toolStripSeparator8.Name = "toolStripSeparator8";
-			this.toolStripSeparator8.Size = new System.Drawing.Size(220, 6);
 			// 
 			// N64VideoPluginSettingsMenuItem
 			// 
@@ -4229,7 +4213,6 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator30;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem66;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem67;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
 		private System.Windows.Forms.ToolStripMenuItem N64VideoPluginSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ClientOptionsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem customizeToolStripMenuItem;
@@ -4319,7 +4302,6 @@
 		private System.Windows.Forms.ToolStripMenuItem CoreSNESSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem CorebsnesMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem Coresnes9xMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem AllowGameDbCoreOverridesMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem16;
 		private System.Windows.Forms.ToolStripMenuItem IntvSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem IntVControllerSettingsMenuItem;
