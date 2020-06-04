@@ -310,38 +310,14 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 
 		public static string GetNewFileName(string oldFileName)
 		{
-			string newFilename = oldFileName;
-			string oldExtension = Path.GetExtension(oldFileName);
-
-			if (oldExtension == $".{TasMovie.Extension}" || oldExtension == $".{Bk2Movie.Extension}")
+			string newFileName = Path.ChangeExtension(oldFileName, $".{TasMovie.Extension}");
+			int fileSuffix = 0;
+			while (File.Exists(newFileName))
 			{
-				newFilename = Path.ChangeExtension(newFilename, null);
-				newFilename = $"{newFilename}.{TasMovie.Extension}";
-			}
-			else
-			{
-				newFilename = $"{oldFileName}.{TasMovie.Extension}";
+				newFileName = $"{Path.GetDirectoryName(oldFileName)}{Path.GetFileNameWithoutExtension(oldFileName)} {++fileSuffix}.{TasMovie.Extension}";
 			}
 
-			if (File.Exists(newFilename))
-			{
-				int fileNum = 1;
-				bool fileConflict = true;
-				while (fileConflict)
-				{
-					if (File.Exists(newFilename))
-					{
-						newFilename = $"{oldFileName} ({fileNum}).{TasMovie.Extension}";
-						fileNum++;
-					}
-					else
-					{
-						fileConflict = false;
-					}
-				}
-			}
-
-			return newFilename;
+			return newFileName;
 		}
 	}
 }
