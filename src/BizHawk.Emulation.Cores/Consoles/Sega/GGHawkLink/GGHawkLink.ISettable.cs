@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 			[DisplayName("Use Existing SaveRAM")]
 			[Description("When true, existing SaveRAM will be loaded at boot up")]
-			[DefaultValue(false)]
+			[DefaultValue(true)]
 			public bool Use_SRAM { get; set; }
 
 			public GGLinkSyncSettings Clone()
