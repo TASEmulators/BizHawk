@@ -1,8 +1,9 @@
 ﻿using System;
-
+using System.IO;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
+using BizHawk.Emulation.Cores.Properties;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
@@ -83,6 +84,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_load)}() returned non-zero (is this not a gb or gbc rom?)");
 				}
 
+				byte[] bios;
 				string biosName;
 				if ((flags & LibGambatte.LoadFlags.FORCE_DMG) == LibGambatte.LoadFlags.FORCE_DMG)
 				{
@@ -91,18 +93,40 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				}
 				else
 				{
+					// TODO: Fix AGB bios mode stuff
+					// biosName = _syncSettings.GBACGB ? "AGB" : "GBC";
 					biosName = "GBC";
 					IsCgb = true;
 				}
 
 				if (_syncSettings.EnableBIOS)
 				{
-					byte[] Bios;
-					Bios = comm.CoreFileProvider.GetFirmware(biosName, "World", true, "BIOS Not Found, Cannot Load.  Change SyncSettings to run without BIOS.");
-					if (LibGambatte.gambatte_loadbios(GambatteState, Bios, (uint)Bios.Length) != 0)
+					bios = comm.CoreFileProvider.GetFirmware(biosName, "World", true, "BIOS Not Found, Cannot Load.  Change SyncSettings to run without BIOS.");
+				}
+				else
+				{
+					Lazy<byte[]> builtinBios;
+					switch (biosName)
 					{
-						throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_loadbios)}() returned non-zero (bios error)");
+						case "GB":
+							builtinBios = Resources.SameboyDmgBoot;
+							break;
+						case "GBC":
+							builtinBios = Resources.SameboyCgbBoot;
+							break;
+						// TODO: This doesn't work; locks up before leaving the bios screen
+						// case "AGB":
+						// 	builtinBios = Resources.SameboyAgbBoot;
+						// 	break;
+						default:
+							throw new Exception("Internal GB Error (BIOS??)");
 					}
+					bios = BizHawk.Common.Util.DecompressGzipFile(new MemoryStream(builtinBios.Value, false));
+				}
+
+				if (LibGambatte.gambatte_loadbios(GambatteState, bios, (uint)bios.Length) != 0)
+				{
+					throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_loadbios)}() returned non-zero (bios error)");
 				}
 
 				// set real default colors (before anyone mucks with them at all)

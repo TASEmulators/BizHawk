@@ -88,8 +88,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public class GambatteSyncSettings
 		{
-			[DisplayName("Enable BIOS: WARNING: File must exist!")]
-			[Description("Boots game using system BIOS. Should be used for TASing")]
+			[DisplayName("Enable official Nintendo BIOS")]
+			[Description("Boots game using system BIOS. You must have the bios file. Should be used for TASing.")]
 			[DefaultValue(false)]
 			public bool EnableBIOS { get; set; }
 
