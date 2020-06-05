@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 
@@ -89,6 +90,17 @@ namespace BizHawk.Client.Common
 				}
 
 				return (ulong)Log.Count;
+			}
+		}
+
+		public IStringLog GetLogEntries() => Log;
+
+		public void CopyLog(IEnumerable<string> log)
+		{
+			Log.Clear();
+			foreach (var entry in log)
+			{
+				Log.Add(entry);
 			}
 		}
 

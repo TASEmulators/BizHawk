@@ -15,20 +15,11 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 {
 	public static class MovieConversionExtensions
 	{
-		public static ITasMovie ToTasMovie(this IMovie old, IMovieSession session)
+		public static ITasMovie ToTasMovie(this IMovie old)
 		{
 			string newFilename = GetNewFileName(old.Filename);
 			var tas = (ITasMovie)MovieService.Get(newFilename);
-
-			// TODO: this relies on the fact that the emulator core here will be the same as when it is load
-			// so this specifically only works in the scenario of a running bk2 converted to tasproj in tastudio
-			// need to untangle and not be so dependent on core loading behavior
-			tas.Attach(session, old.Emulator);
-			for (var i = 0; i < old.InputLogLength; i++)
-			{
-				var input = old.GetInputState(i);
-				tas.AppendFrame(input);
-			}
+			tas.CopyLog(old.GetLogEntries());
 
 			old.Truncate(0); // Trying to minimize ram usage
 
@@ -63,12 +54,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 		public static IMovie ToBk2(this IMovie old)
 		{
 			var bk2 = MovieService.Get(old.Filename.Replace(old.PreferredExtension, Bk2Movie.Extension));
-
-			for (var i = 0; i < old.InputLogLength; i++)
-			{
-				var input = old.GetInputState(i);
-				bk2.AppendFrame(input);
-			}
+			bk2.CopyLog(old.GetLogEntries());
 
 			bk2.HeaderEntries.Clear();
 			foreach (var kvp in old.HeaderEntries)

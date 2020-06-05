@@ -165,15 +165,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void CopyLog(IEnumerable<string> log)
-		{
-			Log.Clear();
-			foreach (var entry in log)
-			{
-				Log.Add(entry);
-			}
-		}
-
+		
 		public void CopyVerificationLog(IEnumerable<string> log)
 		{
 			foreach (string entry in log)
@@ -181,8 +173,6 @@ namespace BizHawk.Client.Common
 				VerificationLog.Add(entry);
 			}
 		}
-
-		public IStringLog GetLogEntries() => Log;
 
 		// TODO: this is 99% copy pasting of bad code
 		public override bool ExtractInputLog(TextReader reader, out string errorMessage)

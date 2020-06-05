@@ -240,6 +240,9 @@ namespace BizHawk.Client.Common
 		/// The currently attached core or null if not yet attached
 		/// </summary>
 		IEmulator Emulator { get; }
+
+		IStringLog GetLogEntries();
+		void CopyLog(IEnumerable<string> log);
 	}
 
 	public static class MovieExtensions

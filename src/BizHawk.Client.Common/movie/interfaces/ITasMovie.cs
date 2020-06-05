@@ -26,7 +26,6 @@ namespace BizHawk.Client.Common
 		string DisplayValue(int frame, string buttonName);
 		void FlagChanges();
 		void ClearChanges();
-		IStringLog GetLogEntries();
 
 		void GreenzoneCurrentFrame();
 		void ToggleBoolState(int frame, string buttonName);
@@ -48,7 +47,6 @@ namespace BizHawk.Client.Common
 
 		void LoadBranch(TasBranch branch);
 
-		void CopyLog(IEnumerable<string> log);
 		void CopyVerificationLog(IEnumerable<string> log);
 	}
 }
