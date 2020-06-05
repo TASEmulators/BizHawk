@@ -167,6 +167,7 @@
     <ClInclude Include="src\interruptrequester.h" />
     <ClInclude Include="src\memory.h" />
     <ClInclude Include="src\mem\cartridge.h" />
+    <ClInclude Include="src\mem\huc3.h" />
     <ClInclude Include="src\mem\memptrs.h" />
     <ClInclude Include="src\mem\rtc.h" />
     <ClInclude Include="src\mem\time.h" />
@@ -204,6 +205,7 @@
     <ClCompile Include="src\interruptrequester.cpp" />
     <ClCompile Include="src\memory.cpp" />
     <ClCompile Include="src\mem\cartridge.cpp" />
+    <ClCompile Include="src\mem\huc3.cpp" />
     <ClCompile Include="src\mem\memptrs.cpp" />
     <ClCompile Include="src\mem\rtc.cpp" />
     <ClCompile Include="src\mem\time.cpp" />

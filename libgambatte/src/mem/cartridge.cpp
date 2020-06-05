@@ -437,6 +437,95 @@ public:
 	}
 };
 
+class HuC3 : public DefaultMbc {
+public:
+	HuC3(MemPtrs& memptrs, HuC3Chip* const huc3)
+		: memptrs_(memptrs)
+		, huc3_(huc3)
+		, rombank_(1)
+		, rambank_(0)
+		, ramflag_(0)
+	{
+	}
+
+	virtual unsigned char curRomBank() const {
+		return rombank_;
+	}
+
+	virtual bool disabledRam() const {
+		return false;
+	}
+
+	virtual void romWrite(unsigned const p, unsigned const data, unsigned long const /*cc*/) {
+		switch (p >> 13 & 3) {
+		case 0:
+			ramflag_ = data;
+			//printf("[HuC3] set ramflag to %02X\n", data);
+			setRambank();
+			break;
+		case 1:
+			//printf("[HuC3] set rombank to %02X\n", data);
+			rombank_ = data;
+			setRombank();
+			break;
+		case 2:
+			//printf("[HuC3] set rambank to %02X\n", data);
+			rambank_ = data;
+			setRambank();
+			break;
+		case 3:
+			// GEST: "programs will write 1 here"
+			break;
+		}
+	}
+
+	virtual void SyncState(NewState *ns, bool isReader)
+	{
+		NSS(rombank_);
+		NSS(rambank_);
+		NSS(ramflag_);
+	}
+
+	virtual void loadState(SaveState::Mem const& ss) {
+		rombank_ = ss.rombank;
+		rambank_ = ss.rambank;
+		ramflag_ = ss.HuC3RAMflag;
+		setRambank();
+		setRombank();
+	}
+
+private:
+	MemPtrs& memptrs_;
+	HuC3Chip* const huc3_;
+	unsigned char rombank_;
+	unsigned char rambank_;
+	unsigned char ramflag_;
+
+	void setRambank() const {
+		huc3_->setRamflag(ramflag_);
+
+		unsigned flags;
+		if (ramflag_ >= 0x0B && ramflag_ < 0x0F) {
+			// System registers mode
+			flags = MemPtrs::read_en | MemPtrs::write_en | MemPtrs::rtc_en;
+		}
+		else if (ramflag_ == 0x0A || ramflag_ > 0x0D) {
+			// Read/write mode
+			flags = MemPtrs::read_en | MemPtrs::write_en;
+		}
+		else {
+			// Read-only mode ??
+			flags = MemPtrs::read_en;
+		}
+
+		memptrs_.setRambank(flags, rambank_ & (rambanks(memptrs_) - 1));
+	}
+
+	void setRombank() const {
+		memptrs_.setRombank(std::max(rombank_ & (rombanks(memptrs_) - 1), 1u));
+	}
+};
+
 class Mbc5 : public DefaultMbc {
 public:
 	explicit Mbc5(MemPtrs &memptrs)
@@ -578,6 +667,7 @@ int asHex(char c) {
 
 Cartridge::Cartridge()
 : rtc_(time_)
+, huc3_(time_)
 {
 }
 
@@ -588,7 +678,9 @@ void Cartridge::setStatePtrs(SaveState &state) {
 }
 
 void Cartridge::loadState(SaveState const &state) {
+	huc3_.loadState(state);
 	rtc_.loadState(state);
+	time_.loadState(state);
 	mbc_->loadState(state.mem);
 }
 
@@ -613,7 +705,8 @@ LoadRes Cartridge::loadROM(char const *romfiledata, unsigned romfilelength, bool
 	                     type_mbc2,
 	                     type_mbc3,
 	                     type_mbc5,
-	                     type_huc1 };
+	                     type_huc1,
+						 type_huc3 };
 	Cartridgetype type = type_plain;
 	unsigned rambanks = 1;
 	unsigned rombanks = 2;
@@ -656,7 +749,7 @@ LoadRes Cartridge::loadROM(char const *romfiledata, unsigned romfilelength, bool
 		case 0x22: return LOADRES_UNSUPPORTED_MBC_MBC7;
 		case 0xFC: return LOADRES_UNSUPPORTED_MBC_POCKET_CAMERA;
 		case 0xFD: return LOADRES_UNSUPPORTED_MBC_TAMA5;
-		case 0xFE: return LOADRES_UNSUPPORTED_MBC_HUC3;
+		case 0xFE: type = type_huc3; break;
 		case 0xFF: type = type_huc1; break;
 		default:   return LOADRES_BAD_FILE_OR_UNKNOWN_MBC;
 		}
@@ -686,6 +779,7 @@ LoadRes Cartridge::loadROM(char const *romfiledata, unsigned romfilelength, bool
 	mbc_.reset();
 	memptrs_.reset(rombanks, rambanks, cgb ? 8 : 2);
 	rtc_.set(false, 0);
+	huc3_.set(false);
 
 	std::memcpy(memptrs_.romdata(), romfiledata, (filesize / rombank_size() * rombank_size()));
 	std::memset(memptrs_.romdata() + filesize / rombank_size() * rombank_size(),
@@ -708,6 +802,10 @@ LoadRes Cartridge::loadROM(char const *romfiledata, unsigned romfilelength, bool
 		break;
 	case type_mbc5: mbc_.reset(new Mbc5(memptrs_)); break;
 	case type_huc1: mbc_.reset(new HuC1(memptrs_)); break;
+	case type_huc3:
+		huc3_.set(true);
+		mbc_.reset(new HuC3(memptrs_, &huc3_));
+		break;
 	}
 
 	return LOADRES_OK;
@@ -798,6 +896,7 @@ bool Cartridge::getMemoryArea(int which, unsigned char **data, int *length) cons
 
 SYNCFUNC(Cartridge)
 {
+	SSS(huc3_);
 	SSS(memptrs_);
 	SSS(time_);
 	SSS(rtc_);

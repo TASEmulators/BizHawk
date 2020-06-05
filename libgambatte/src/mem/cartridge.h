@@ -23,6 +23,7 @@
 #include "memptrs.h"
 #include "time.h"
 #include "rtc.h"
+#include "huc3.h"
 #include "savestate.h"
 #include <memory>
 #include <string>
@@ -82,11 +83,15 @@ public:
 	bool getMemoryArea(int which, unsigned char **data, int *length) const;
 	LoadRes loadROM(char const *romfiledata, unsigned romfilelength, bool forceDmg, bool multicartCompat);
 	char const * romTitle() const { return reinterpret_cast<char const *>(memptrs_.romdata() + 0x134); }
+	bool isHuC3() const { return huc3_.isHuC3(); }
+	unsigned char HuC3Read(unsigned p, unsigned long const cc) { return huc3_.read(p, cc); }
+	void HuC3Write(unsigned p, unsigned data, unsigned long const cc) { huc3_.write(p, data, cc); }
 
 private:
 	MemPtrs memptrs_;
 	Time time_;
 	Rtc rtc_;
+	HuC3Chip huc3_;
 	std::unique_ptr<Mbc> mbc_;
 
 public:
