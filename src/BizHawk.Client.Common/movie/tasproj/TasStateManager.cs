@@ -46,10 +46,11 @@ namespace BizHawk.Client.Common
 
 		public void Attach(IEmulator emulator)
 		{
-			if (!_emulator.IsNull())
-			{
-				throw new InvalidOperationException("A core has already been attached!");
-			}
+			// TODO: we aren't ready for this, attach is called when converting a bk2 to tasproj and again to officially load the emulator
+			//if (!_emulator.IsNull())
+			//{
+			//	throw new InvalidOperationException("A core has already been attached!");
+			//}
 
 			if (!emulator.HasSavestates())
 			{

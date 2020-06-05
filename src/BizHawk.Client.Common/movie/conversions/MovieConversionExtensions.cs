@@ -15,12 +15,15 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 {
 	public static class MovieConversionExtensions
 	{
-		public static ITasMovie ToTasMovie(this IMovie old)
+		public static ITasMovie ToTasMovie(this IMovie old, IMovieSession session)
 		{
 			string newFilename = GetNewFileName(old.Filename);
-
 			var tas = (ITasMovie)MovieService.Get(newFilename);
 
+			// TODO: this relies on the fact that the emulator core here will be the same as when it is load
+			// so this specifically only works in the scenario of a running bk2 converted to tasproj in tastudio
+			// need to untangle and not be so dependent on core loading behavior
+			tas.Attach(session, old.Emulator);
 			for (var i = 0; i < old.InputLogLength; i++)
 			{
 				var input = old.GetInputState(i);
