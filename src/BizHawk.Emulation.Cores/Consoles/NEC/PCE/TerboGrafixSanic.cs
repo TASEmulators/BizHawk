@@ -21,8 +21,6 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 			NymaSettings settings, NymaSyncSettings syncSettings, bool deterministic)
 			: base(comm, "PCE", "PC Engine Controller", settings, syncSettings)
 		{
-			if (game["BRAM"])
-				SettingsOverrides["pce.disable_bram_hucard"] = "0";
 			_terboGrafix = DoInit<LibTerboGrafixSanic>(game, rom, null, "pce-fast.wbx", extension, deterministic);
 		}
 		public TerboGrafixSanic(GameInfo game, Disc[] discs, CoreComm comm,
