@@ -2,7 +2,7 @@
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28729.10
 MinimumVisualStudioVersion = 16.0.28729.10
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Version", "src\Version\Version.csproj", "{0CE8B337-08E3-4602-BF10-C4D4C75D2F13}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Version", "src\BizHawk.Version\BizHawk.Version.csproj", "{0CE8B337-08E3-4602-BF10-C4D4C75D2F13}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Client.Common", "src\BizHawk.Client.Common\BizHawk.Client.Common.csproj", "{24A0AA3C-B25F-4197-B23D-476D6462DBA0}"
 	ProjectSection(ProjectDependencies) = postProject

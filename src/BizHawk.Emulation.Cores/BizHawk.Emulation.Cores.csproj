@@ -11,8 +11,8 @@
 		<ProjectReference Include="$(ProjectDir)../BizHawk.BizInvoke/BizHawk.BizInvoke.csproj" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.Common/BizHawk.Emulation.Common.csproj" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.DiscSystem/BizHawk.Emulation.DiscSystem.csproj" />
-		<Compile Include="$(ProjectDir)../Version/svnrev.cs" />
-		<Compile Include="$(ProjectDir)../Version/VersionInfo.cs" />
+		<Compile Include="$(ProjectDir)../BizHawk.Version/svnrev.cs" />
+		<Compile Include="$(ProjectDir)../BizHawk.Version/VersionInfo.cs" />
 		<EmbeddedResource Include="Resources/**/*" />
 	</ItemGroup>
 	<ItemGroup>

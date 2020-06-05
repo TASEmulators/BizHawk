@@ -11,8 +11,8 @@
 		<PackageReference Include="SharpZipLib" Version="1.1.0" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.Cores/BizHawk.Emulation.Cores.csproj" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.BizwareGL/BizHawk.Bizware.BizwareGL.csproj" />
-		<Compile Include="$(ProjectDir)../Version/svnrev.cs" />
-		<Compile Include="$(ProjectDir)../Version/VersionInfo.cs" />
+		<Compile Include="$(ProjectDir)../BizHawk.Version/svnrev.cs" />
+		<Compile Include="$(ProjectDir)../BizHawk.Version/VersionInfo.cs" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Update="movie/bk2/Bk2Movie.HeaderApi.cs" DependentUpon="Bk2Movie.cs" />
