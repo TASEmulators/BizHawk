@@ -622,7 +622,7 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
-			var newMovie = (ITasMovie)MovieService.Get(file.FullName, startsFromSavestate);
+			var newMovie = (ITasMovie)MovieService.Get(file.FullName);
 			newMovie.BindMarkersToInput = Settings.BindMarkersToInput;
 			newMovie.TasStateManager.InvalidateCallback = GreenzoneInvalidated;
 			
