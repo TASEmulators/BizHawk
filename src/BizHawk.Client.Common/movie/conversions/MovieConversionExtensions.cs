@@ -19,7 +19,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 		{
 			string newFilename = GetNewFileName(old.Filename);
 
-			var tas = (ITasMovie)MovieService.Get(newFilename, old.StartsFromSavestate);
+			var tas = (ITasMovie)MovieService.Get(newFilename);
 
 			for (var i = 0; i < old.InputLogLength; i++)
 			{
@@ -49,6 +49,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				tas.Subtitles.Add(sub);
 			}
 
+			tas.StartsFromSavestate = old.StartsFromSavestate;
 			tas.TextSavestate = old.TextSavestate;
 			tas.BinarySavestate = old.BinarySavestate;
 			tas.SaveRam = old.SaveRam;
@@ -97,7 +98,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 		{
 			string newFilename = GetNewFileName(old.Filename);
 
-			var tas = (ITasMovie)MovieService.Get(newFilename, true);
+			var tas = (ITasMovie)MovieService.Get(newFilename);
 			tas.BinarySavestate = savestate;
 			tas.LagLog.Clear();
 
@@ -154,7 +155,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 		{
 			string newFilename = GetNewFileName(old.Filename);
 
-			var tas = (ITasMovie) MovieService.Get(newFilename, false);
+			var tas = (ITasMovie) MovieService.Get(newFilename);
 			tas.SaveRam = saveRam;
 			tas.TasStateManager.Clear();
 			tas.LagLog.Clear();

@@ -48,7 +48,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public bool StartsFromSavestate
+		public virtual bool StartsFromSavestate
 		{
 			get => Header.ContainsKey(HeaderKeys.StartsFromSavestate) && bool.Parse(Header[HeaderKeys.StartsFromSavestate]);
 			set

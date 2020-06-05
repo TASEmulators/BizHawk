@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 		private IInputPollable _inputPollable;
 
 		/// <exception cref="InvalidOperationException">loaded core does not implement <see cref="IStatable"/></exception>
-		internal TasMovie(string path, bool startsFromSavestate) : base(path)
+		internal TasMovie(string path) : base(path)
 		{
 			Branches = new TasBranchCollection(this);
 			ChangeLog = new TasMovieChangeLog(this);
@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common
 			Header[HeaderKeys.MovieVersion] = "BizHawk v2.0 Tasproj v1.0";
 			Markers = new TasMovieMarkerList(this);
 			Markers.CollectionChanged += Markers_CollectionChanged;
-			Markers.Add(0, startsFromSavestate ? "Savestate" : "Power on");
+			Markers.Add(0, "Power on");
 		}
 
 		public override void Attach(IMovieSession session, IEmulator emulator)
@@ -38,7 +38,18 @@ namespace BizHawk.Client.Common
 
 			_inputPollable = emulator.AsInputPollable();
 			TasStateManager.Attach(emulator);
+
 			base.Attach(session, emulator);
+		}
+
+		public override bool StartsFromSavestate
+		{
+			get => base.StartsFromSavestate;
+			set
+			{
+				Markers.Add(0, value ? "Savestate" : "Power on");
+				base.StartsFromSavestate = value;
+			}
 		}
 
 		public IStringLog VerificationLog { get; } = StringLogUtil.MakeStringLog(); // For movies that do not begin with power-on, this is the input required to get into the initial state

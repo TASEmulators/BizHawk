@@ -6,12 +6,12 @@ namespace BizHawk.Client.Common
 {
 	public static class MovieService
 	{
-		public static IMovie Get(string path, bool startsFromSavestate = false)
+		public static IMovie Get(string path)
 		{
 			// TODO: change IMovies to take HawkFiles only and not path
 			if (Path.GetExtension(path)?.EndsWith("tasproj") ?? false)
 			{
-				return new TasMovie(path, startsFromSavestate);
+				return new TasMovie(path);
 			}
 
 			return new Bk2Movie(path);
