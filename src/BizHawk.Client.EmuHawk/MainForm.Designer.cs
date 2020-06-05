@@ -182,28 +182,6 @@
 			this.InputOverHkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.HkOverInputMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.CoresSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.NesCoreSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.QuicknesCoreMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.NesCoreMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator38 = new System.Windows.Forms.ToolStripSeparator();
-			this.SubNesHawkNesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SubGBHawkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.CoreSNESSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.Coresnes9xMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.CorebsnesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SGBCoreSubmenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.SgbBsnesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.PceHawkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.TurboNymaMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SgbSameBoyMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.GBCoreSubmenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.PceCoreSubmenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.GBGambatteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.GBGBHawkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.GBInSGBMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripMenuItem16 = new System.Windows.Forms.ToolStripSeparator();
-			this.N64VideoPluginSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.setLibretroCoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
 			this.SaveConfigMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaveConfigAsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -232,11 +210,6 @@
 			this.dummyExternalTool = new System.Windows.Forms.ToolStripMenuItem();
 			this.BatchRunnerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.NESSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.coreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.quickNESMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.nesHawkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.subNesHawkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator34 = new System.Windows.Forms.ToolStripSeparator();
 			this.NESPPUViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.NESNametableViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MusicRipperMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -277,7 +250,6 @@
 			this.A7800FilterSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GBSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.GBcoreSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.LoadGBInSGBMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator28 = new System.Windows.Forms.ToolStripSeparator();
 			this.GBGPUViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GBPrinterViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -294,7 +266,6 @@
 			this.SNESControllerConfigurationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator18 = new System.Windows.Forms.ToolStripSeparator();
 			this.SnesGfxDebuggerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SnesGBInSGBMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SnesOptionsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ColecoSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.ColecoControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1785,189 +1756,9 @@
 			// 
 			// CoresSubMenu
 			// 
-			this.CoresSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.NesCoreSubMenu,
-			this.CoreSNESSubMenu,
-			this.SGBCoreSubmenu,
-			this.GBCoreSubmenu,
-			this.PceCoreSubmenu,
-			this.GBInSGBMenuItem,
-			this.toolStripMenuItem16,
-			this.N64VideoPluginSettingsMenuItem,
-			this.setLibretroCoreToolStripMenuItem});
 			this.CoresSubMenu.Name = "CoresSubMenu";
 			this.CoresSubMenu.Size = new System.Drawing.Size(170, 22);
 			this.CoresSubMenu.Text = "Cores";
-			this.CoresSubMenu.DropDownOpened += new System.EventHandler(this.CoresSubMenu_DropDownOpened);
-			// 
-			// NesCoreSubMenu
-			// 
-			this.NesCoreSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.QuicknesCoreMenuItem,
-			this.NesCoreMenuItem,
-			this.toolStripSeparator38,
-			this.SubNesHawkNesMenuItem});
-			this.NesCoreSubMenu.Name = "NesCoreSubMenu";
-			this.NesCoreSubMenu.Size = new System.Drawing.Size(223, 22);
-			this.NesCoreSubMenu.Text = "NES";
-			this.NesCoreSubMenu.DropDownOpened += new System.EventHandler(this.NesCoreSubMenu_DropDownOpened);
-			// 
-			// QuicknesCoreMenuItem
-			// 
-			this.QuicknesCoreMenuItem.Name = "QuicknesCoreMenuItem";
-			this.QuicknesCoreMenuItem.Size = new System.Drawing.Size(209, 22);
-			this.QuicknesCoreMenuItem.Text = "QuickNES";
-			this.QuicknesCoreMenuItem.Click += new System.EventHandler(this.QuickNesCorePick_Click);
-			// 
-			// NesCoreMenuItem
-			// 
-			this.NesCoreMenuItem.Name = "NesCoreMenuItem";
-			this.NesCoreMenuItem.Size = new System.Drawing.Size(209, 22);
-			this.NesCoreMenuItem.Text = "NesHawk";
-			this.NesCoreMenuItem.Click += new System.EventHandler(this.NesCorePick_Click);
-			// 
-			// toolStripSeparator38
-			// 
-			this.toolStripSeparator38.Name = "toolStripSeparator38";
-			this.toolStripSeparator38.Size = new System.Drawing.Size(206, 6);
-			// 
-			// SubNesHawkMenuItem
-			// 
-			this.SubNesHawkNesMenuItem.Name = "SubNesHawkNesMenuItem";
-			this.SubNesHawkNesMenuItem.Size = new System.Drawing.Size(209, 22);
-			this.SubNesHawkNesMenuItem.Text = "SubNesHawk (Experimental)";
-			this.SubNesHawkNesMenuItem.Click += new System.EventHandler(this.SubNesCorePick_Click);
-			// 
-			// SubGBHawkMenuItem
-			// 
-			this.SubGBHawkMenuItem.Name = "SubGBHawkMenuItem";
-			this.SubGBHawkMenuItem.Size = new System.Drawing.Size(209, 22);
-			this.SubGBHawkMenuItem.Text = "SubGBHawk (Experimental)";
-			this.SubGBHawkMenuItem.Click += new System.EventHandler(this.SubGBCorePick_Click);
-			// 
-			// CoreSNESSubMenu
-			// 
-			this.CoreSNESSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.Coresnes9xMenuItem,
-			this.CorebsnesMenuItem});
-			this.CoreSNESSubMenu.Name = "CoreSNESSubMenu";
-			this.CoreSNESSubMenu.Size = new System.Drawing.Size(223, 22);
-			this.CoreSNESSubMenu.Text = "SNES";
-			this.CoreSNESSubMenu.DropDownOpened += new System.EventHandler(this.CoreSNESSubMenu_DropDownOpened);
-			// 
-			// Coresnes9xMenuItem
-			// 
-			this.Coresnes9xMenuItem.Name = "Coresnes9xMenuItem";
-			this.Coresnes9xMenuItem.Size = new System.Drawing.Size(109, 22);
-			this.Coresnes9xMenuItem.Text = "Snes9x";
-			this.Coresnes9xMenuItem.Click += new System.EventHandler(this.CoreSnesToggle_Click);
-			// 
-			// CorebsnesMenuItem
-			// 
-			this.CorebsnesMenuItem.Name = "CorebsnesMenuItem";
-			this.CorebsnesMenuItem.Size = new System.Drawing.Size(109, 22);
-			this.CorebsnesMenuItem.Text = "BSNES";
-			this.CorebsnesMenuItem.Click += new System.EventHandler(this.CoreSnesToggle_Click);
-			// 
-			// SGBCoreSubmenu
-			// 
-			this.SGBCoreSubmenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.SgbBsnesMenuItem,
-			this.SgbSameBoyMenuItem});
-			this.SGBCoreSubmenu.Name = "SGBCoreSubmenu";
-			this.SGBCoreSubmenu.Size = new System.Drawing.Size(223, 22);
-			this.SGBCoreSubmenu.Text = "SGB";
-			this.SGBCoreSubmenu.DropDownOpened += new System.EventHandler(this.SGBCoreSubmenu_DropDownOpened);
-			// 
-			// PceCoreSubmenu
-			// 
-			this.PceCoreSubmenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-				this.PceHawkMenuItem,
-				this.TurboNymaMenuItem});
-			this.PceCoreSubmenu.Name = "PceCoreSubmenu";
-			this.PceCoreSubmenu.Size = new System.Drawing.Size(223, 22);
-			this.PceCoreSubmenu.Text = "PCE";
-			this.PceCoreSubmenu.DropDownOpened += new System.EventHandler(this.PceCoreSubmenu_DropDownOpened);
-			// 
-			// SgbBsnesMenuItem
-			// 
-			this.SgbBsnesMenuItem.Name = "SgbBsnesMenuItem";
-			this.SgbBsnesMenuItem.Size = new System.Drawing.Size(118, 22);
-			this.SgbBsnesMenuItem.Text = "BSNES";
-			this.SgbBsnesMenuItem.Click += new System.EventHandler(this.SgbCorePick_Click);
-			// 
-			// SgbSameBoyMenuItem
-			// 
-			this.SgbSameBoyMenuItem.Name = "SgbSameBoyMenuItem";
-			this.SgbSameBoyMenuItem.Size = new System.Drawing.Size(118, 22);
-			this.SgbSameBoyMenuItem.Text = "SameBoy";
-			this.SgbSameBoyMenuItem.Click += new System.EventHandler(this.SgbCorePick_Click);
-			// 
-			// PceHawkMenuItem
-			// 
-			this.PceHawkMenuItem.Name = "PceHawkMenuItem";
-			this.PceHawkMenuItem.Size = new System.Drawing.Size(118, 22);
-			this.PceHawkMenuItem.Text = "PCEHawk";
-			this.PceHawkMenuItem.Click += new System.EventHandler(this.PceHawkCorePick_Click);
-			// 
-			// TurboNymaMenuItem
-			// 
-			this.TurboNymaMenuItem.Name = "TurboNymaMenuItem";
-			this.TurboNymaMenuItem.Size = new System.Drawing.Size(118, 22);
-			this.TurboNymaMenuItem.Text = "TurboNyma";
-			this.TurboNymaMenuItem.Click += new System.EventHandler(this.TurboNymaCorePick_Click);
-			// 
-			// GBCoreSubmenu
-			// 
-			this.GBCoreSubmenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.GBGambatteMenuItem,
-			this.GBGBHawkMenuItem,
-			this.toolStripSeparator38,
-			this.SubGBHawkMenuItem});
-			this.GBCoreSubmenu.Name = "GBCoreSubmenu";
-			this.GBCoreSubmenu.Size = new System.Drawing.Size(223, 22);
-			this.GBCoreSubmenu.Text = "GB";
-			this.GBCoreSubmenu.DropDownOpened += new System.EventHandler(this.GBCoreSubmenu_DropDownOpened);
-			// 
-			// GBGambatteMenuItem
-			// 
-			this.GBGambatteMenuItem.Name = "GBGambatteMenuItem";
-			this.GBGambatteMenuItem.Size = new System.Drawing.Size(121, 22);
-			this.GBGambatteMenuItem.Text = "Gambatte";
-			this.GBGambatteMenuItem.Click += new System.EventHandler(this.GambatteCorePick_Click);
-			// 
-			// GBGBHawkMenuItem
-			// 
-			this.GBGBHawkMenuItem.Name = "GBGBHawkMenuItem";
-			this.GBGBHawkMenuItem.Size = new System.Drawing.Size(121, 22);
-			this.GBGBHawkMenuItem.Text = "GBHawk";
-			this.GBGBHawkMenuItem.Click += new System.EventHandler(this.GBCorePick_Click);
-			// 
-			// GBInSGBMenuItem
-			// 
-			this.GBInSGBMenuItem.Name = "GBInSGBMenuItem";
-			this.GBInSGBMenuItem.Size = new System.Drawing.Size(223, 22);
-			this.GBInSGBMenuItem.Text = "GB in SGB";
-			this.GBInSGBMenuItem.Click += new System.EventHandler(this.GbInSgbMenuItem_Click);
-			// 
-			// toolStripMenuItem16
-			// 
-			this.toolStripMenuItem16.Name = "toolStripMenuItem16";
-			this.toolStripMenuItem16.Size = new System.Drawing.Size(220, 6);
-			// 
-			// N64VideoPluginSettingsMenuItem
-			// 
-			this.N64VideoPluginSettingsMenuItem.Name = "N64VideoPluginSettingsMenuItem";
-			this.N64VideoPluginSettingsMenuItem.Size = new System.Drawing.Size(223, 22);
-			this.N64VideoPluginSettingsMenuItem.Text = "N64 Video Plugin Settings";
-			this.N64VideoPluginSettingsMenuItem.Click += new System.EventHandler(this.N64VideoPluginSettingsMenuItem_Click);
-			// 
-			// setLibretroCoreToolStripMenuItem
-			// 
-			this.setLibretroCoreToolStripMenuItem.Name = "setLibretroCoreToolStripMenuItem";
-			this.setLibretroCoreToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
-			this.setLibretroCoreToolStripMenuItem.Text = "Set Libretro Core";
-			this.setLibretroCoreToolStripMenuItem.Click += new System.EventHandler(this.SetLibretroCoreMenuItem_Click);
 			// 
 			// toolStripSeparator10
 			// 
@@ -2176,8 +1967,6 @@
 			// NESSubMenu
 			// 
 			this.NESSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.coreToolStripMenuItem,
-			this.toolStripSeparator34,
 			this.NESPPUViewerMenuItem,
 			this.NESNametableViewerMenuItem,
 			this.MusicRipperMenuItem,
@@ -2195,43 +1984,6 @@
 			this.NESSubMenu.Size = new System.Drawing.Size(38, 17);
 			this.NESSubMenu.Text = "&NES";
 			this.NESSubMenu.DropDownOpened += new System.EventHandler(this.NesSubMenu_DropDownOpened);
-			// 
-			// coreToolStripMenuItem
-			// 
-			this.coreToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.quickNESMenuItem,
-			this.nesHawkMenuItem,
-			this.subNesHawkMenuItem});
-			this.coreToolStripMenuItem.Name = "coreToolStripMenuItem";
-			this.coreToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
-			this.coreToolStripMenuItem.Text = "&Core";
-			this.coreToolStripMenuItem.DropDownOpened += new System.EventHandler(this.CoreMenuItem_DropDownOpened);
-			// 
-			// quickNESToolStripMenuItem
-			// 
-			this.quickNESMenuItem.Name = "quickNESMenuItem";
-			this.quickNESMenuItem.Size = new System.Drawing.Size(118, 22);
-			this.quickNESMenuItem.Text = "&QuickNes";
-			this.quickNESMenuItem.Click += new System.EventHandler(this.QuickNesCorePick_Click);
-			// 
-			// nesHawkToolStripMenuItem
-			// 
-			this.nesHawkMenuItem.Name = "nesHawkMenuItem";
-			this.nesHawkMenuItem.Size = new System.Drawing.Size(118, 22);
-			this.nesHawkMenuItem.Text = "&NesHawk";
-			this.nesHawkMenuItem.Click += new System.EventHandler(this.NesCorePick_Click);
-			// 
-			// subNesHawkMenuItem
-			// 
-			this.subNesHawkMenuItem.Name = "subNesHawkMenuItem";
-			this.subNesHawkMenuItem.Size = new System.Drawing.Size(118, 22);
-			this.subNesHawkMenuItem.Text = "&SubNesHawk";
-			this.subNesHawkMenuItem.Click += new System.EventHandler(this.SubNesCorePick_Click);
-			// 
-			// toolStripSeparator34
-			// 
-			this.toolStripSeparator34.Name = "toolStripSeparator34";
-			this.toolStripSeparator34.Size = new System.Drawing.Size(214, 6);
 			// 
 			// NESPPUViewerMenuItem
 			// 
@@ -2519,7 +2271,6 @@
 			// 
 			this.GBSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.GBcoreSettingsToolStripMenuItem,
-			this.LoadGBInSGBMenuItem,
 			this.toolStripSeparator28,
 			this.GBGPUViewerMenuItem,
 			this.GBPrinterViewerMenuItem});
@@ -2534,13 +2285,6 @@
 			this.GBcoreSettingsToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.GBcoreSettingsToolStripMenuItem.Text = "Settings...";
 			this.GBcoreSettingsToolStripMenuItem.Click += new System.EventHandler(this.GbCoreSettingsMenuItem_Click);
-			// 
-			// LoadGBInSGBMenuItem
-			// 
-			this.LoadGBInSGBMenuItem.Name = "LoadGBInSGBMenuItem";
-			this.LoadGBInSGBMenuItem.Size = new System.Drawing.Size(217, 22);
-			this.LoadGBInSGBMenuItem.Text = "Load GB in SGB";
-			this.LoadGBInSGBMenuItem.Click += new System.EventHandler(this.LoadGbInSgbMenuItem_Click);
 			// 
 			// toolStripSeparator28
 			// 
@@ -2637,7 +2381,6 @@
 			this.SNESControllerConfigurationMenuItem,
 			this.toolStripSeparator18,
 			this.SnesGfxDebuggerMenuItem,
-			this.SnesGBInSGBMenuItem,
 			this.SnesOptionsMenuItem});
 			this.SNESSubMenu.Name = "SNESSubMenu";
 			this.SNESSubMenu.Size = new System.Drawing.Size(44, 17);
@@ -2662,13 +2405,6 @@
 			this.SnesGfxDebuggerMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.SnesGfxDebuggerMenuItem.Text = "Graphics Debugger";
 			this.SnesGfxDebuggerMenuItem.Click += new System.EventHandler(this.SnesGfxDebuggerMenuItem_Click);
-			// 
-			// SnesGBInSGBMenuItem
-			// 
-			this.SnesGBInSGBMenuItem.Name = "SnesGBInSGBMenuItem";
-			this.SnesGBInSGBMenuItem.Size = new System.Drawing.Size(217, 22);
-			this.SnesGBInSGBMenuItem.Text = "Load GB in SGB";
-			this.SnesGBInSGBMenuItem.Click += new System.EventHandler(this.SnesGbInSgbMenuItem_Click);
 			// 
 			// SnesOptionsMenuItem
 			// 
@@ -4123,8 +3859,6 @@
 		private System.Windows.Forms.ToolStripMenuItem CaptureOSDMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator20;
 		private System.Windows.Forms.ToolStripMenuItem ScreenshotCaptureOSDMenuItem1;
-		private System.Windows.Forms.ToolStripMenuItem LoadGBInSGBMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SnesGBInSGBMenuItem;
 		private System.Windows.Forms.ToolStripStatusLabel RebootStatusBarIcon;
 		private System.Windows.Forms.ToolStripMenuItem TraceLoggerMenuItem;
 		private System.Windows.Forms.ToolStripSeparator SmsMenuSeparator;
@@ -4190,7 +3924,6 @@
 		private System.Windows.Forms.ToolStripMenuItem A7800FilterSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem MovieSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem CoresSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem GBInSGBMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem BatchRunnerMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem DisplayConfigMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem PCEtileViewerToolStripMenuItem;
@@ -4213,7 +3946,6 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator30;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem66;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem67;
-		private System.Windows.Forms.ToolStripMenuItem N64VideoPluginSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ClientOptionsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem customizeToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem N64ControllerSettingsMenuItem;
@@ -4258,11 +3990,6 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator31;
 		private System.Windows.Forms.ToolStripMenuItem MultiDiskBundlerFileMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem MusicRipperMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem coreToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem quickNESMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem nesHawkMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem subNesHawkMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator34;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator35;
 		private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem PSXHashDiscsToolStripMenuItem;
@@ -4285,7 +4012,6 @@
 		private System.Windows.Forms.ToolStripMenuItem C64SettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ExternalToolMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem CodeDataLoggerMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem setLibretroCoreToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem OpenAdvancedMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem GameSharkConverterMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem dummyExternalTool;
@@ -4299,10 +4025,6 @@
 		private System.Windows.Forms.ToolStripMenuItem VSInsertCoinP2MenuItem;
 		private System.Windows.Forms.ToolStripMenuItem VSServiceSwitchMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem VSSettingsMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem CoreSNESSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem CorebsnesMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem Coresnes9xMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem16;
 		private System.Windows.Forms.ToolStripMenuItem IntvSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem IntVControllerSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SNESControllerConfigurationMenuItem;
@@ -4314,19 +4036,7 @@
 		private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem neoGeoPocketToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem2;
-		private System.Windows.Forms.ToolStripMenuItem NesCoreSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem QuicknesCoreMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem NesCoreMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem Atari7800HawkCoreMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SGBCoreSubmenu;
-		private System.Windows.Forms.ToolStripMenuItem SgbBsnesMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SgbSameBoyMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem PceHawkMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem TurboNymaMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem GBCoreSubmenu;
-		private System.Windows.Forms.ToolStripMenuItem PceCoreSubmenu;
-		private System.Windows.Forms.ToolStripMenuItem GBGambatteMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem GBGBHawkMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem pCFXToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem3;
 		private System.Windows.Forms.ToolStripMenuItem zXSpectrumToolStripMenuItem;
@@ -4351,9 +4061,6 @@
 		private System.Windows.Forms.ToolStripMenuItem AmstradCPCDisksSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem cpcd1ToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AmstradCPCNonSyncSettingsToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SubNesHawkNesMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SubGBHawkMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator38;
 		private System.Windows.Forms.ToolStripMenuItem NDSSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem NdsSyncSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem NdsSettingsMenuItem;

@@ -17,6 +17,7 @@ using BizHawk.Client.Common;
 using BizHawk.Bizware.BizwareGL;
 
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Nintendo.NES;
@@ -37,9 +38,117 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class MainForm : Form
 	{
+		/// <remarks><c>CoreData[x].CoveredSystems[0]</c> should be <c>x</c>; adding a label that's distinct from <c>x</c> can be done in future if necessary</remarks>
+		private static readonly IReadOnlyDictionary<string, (string[] CoveredSystems, (string CoreName, string Label)[] Entries)> CoreData = new Dictionary<string, (string[], (string, string)[] Entries)> {
+			["NES"] = (
+				new[] { "NES" },
+				new[] {
+					(CoreNames.QuickNes, "QuickNES"),
+					(CoreNames.NesHawk, "NesHawk"),
+					(CoreNames.SubNesHawk, "SubNesHawk (Experimental)")
+				}
+			),
+			["SNES"] = (
+				new[] { "SNES" },
+				new[] {
+					(CoreNames.Faust, "Faust"),
+					(CoreNames.Snes9X, "Snes9x"),
+					(CoreNames.Bsnes, "BSNES")
+				}
+			),
+			["SGB"] = (
+				new[] { "SGB" },
+				new[] {
+					(CoreNames.Bsnes, "BSNES"),
+					(CoreNames.SameBoy, "SameBoy")
+				}
+			),
+			["GB"] = (
+				new[] { "GB", "GBC" },
+				new[] {
+					(CoreNames.Gambatte, "Gambatte"),
+					(CoreNames.GbHawk, "GBHawk"),
+					(CoreNames.SubGbHawk, "SubGBHawk (Experimental)")
+				}
+			),
+			["PCE"] = (
+				new[] { "PCE", "PCECD", "SGX" },
+				new[] {
+					(CoreNames.TurboTurboNyma, "TurboTurboNyma"),
+					(CoreNames.PceHawk, "PCEHawk"),
+					(CoreNames.TurboNyma, "TurboNyma")
+				}
+			)
+		};
+
 		private void MainForm_Load(object sender, EventArgs e)
 		{
 			SetWindowText();
+
+			EventHandler GenClickHandlerForSystem(string system)
+			{
+				var coveredSystems = CoreData[system].CoveredSystems;
+				return (clickSender, clickArgs) =>
+				{
+					var coreName = (string) ((ToolStripMenuItem) clickSender).Tag;
+					foreach (var covered in coveredSystems) Config.PreferredCores[covered] = coreName;
+					if (coveredSystems.Contains(Emulator.SystemId)) FlagNeedsReboot(); //TODO don't alert if the loaded core was the one selected
+				};
+			}
+
+			ToolStripMenuItem GenSubmenuForSystem(string system, EventHandler onclick = null, EventHandler onmouseover = null)
+			{
+				onclick ??= GenClickHandlerForSystem(system);
+				var submenu = new ToolStripMenuItem { Text = system };
+				submenu.DropDownItems.AddRange(CoreData[system].Entries.Select(entryData => {
+					var entry = new ToolStripMenuItem { Tag = entryData.CoreName, Text = entryData.Label };
+					entry.Click += onclick;
+					return (ToolStripItem) entry;
+				}).ToArray());
+				submenu.DropDownOpened += onmouseover ?? ((openedSender, openedArgs) => {
+					foreach (ToolStripMenuItem entry in ((ToolStripMenuItem) openedSender).DropDownItems)
+					{
+						entry.Checked = (string) entry.Tag == Config.PreferredCores[system];
+					}
+				});
+				return submenu;
+			}
+
+			var GBInSGBMenuItem = new ToolStripMenuItem { Text = "GB in SGB" };
+			GBInSGBMenuItem.Click += (clickSender, clickArgs) =>
+			{
+				Config.GbAsSgb ^= true;
+				if (!Emulator.IsNull()) FlagNeedsReboot(); //TODO only alert if a GB or SGB core is loaded
+			};
+			var N64VideoPluginSettingsMenuItem = new ToolStripMenuItem { Image = Properties.Resources.monitor, Text = "N64 Video Plugin Settings" };
+			N64VideoPluginSettingsMenuItem.Click += N64PluginSettingsMenuItem_Click;
+			var setLibretroCoreToolStripMenuItem = new ToolStripMenuItem { Text = "Set Libretro Core" };
+			setLibretroCoreToolStripMenuItem.Click += (clickSender, clickArgs) => RunLibretroCoreChooser();
+			CoresSubMenu.DropDownItems.AddRange(new ToolStripItem[] {
+				GenSubmenuForSystem("NES"),
+				GenSubmenuForSystem("SNES"),
+				GenSubmenuForSystem(
+					"SGB",
+					(clickSender, clickArgs) =>
+					{
+						Config.SgbUseBsnes = (string) ((ToolStripMenuItem) clickSender).Tag == CoreNames.Bsnes;
+						if (Emulator.SystemId == "GB" || Emulator.SystemId == "GBC") FlagNeedsReboot(); //TODO don't alert if the loaded core was the one selected
+					},
+					(openedSender, openedArgs) =>
+					{
+						var entries = ((ToolStripMenuItem) openedSender).DropDownItems.Cast<ToolStripMenuItem>().ToList();
+						entries[0].Checked = Config.SgbUseBsnes;
+						entries[1].Checked = !Config.SgbUseBsnes;
+					}
+				),
+				GenSubmenuForSystem("GB"),
+				GenSubmenuForSystem("PCE"),
+				GBInSGBMenuItem,
+				new ToolStripSeparator { AutoSize = true },
+				N64VideoPluginSettingsMenuItem,
+				setLibretroCoreToolStripMenuItem
+			});
+			CoresSubMenu.DropDownOpened += (openedSender, openedArgs) => GBInSGBMenuItem.Checked = Config.GbAsSgb;
 
 			// Hide Status bar icons and general StatusBar prep
 			MainStatusBar.Padding = new Padding(MainStatusBar.Padding.Left, MainStatusBar.Padding.Top, MainStatusBar.Padding.Left, MainStatusBar.Padding.Bottom); // Workaround to remove extra padding on right
@@ -132,7 +241,6 @@ namespace BizHawk.Client.EmuHawk
 				AutofireMenuItem.Image = Properties.Resources.Lightning;
 				RewindOptionsMenuItem.Image = Properties.Resources.Previous;
 				ProfilesMenuItem.Image = Properties.Resources.user_blue_small;
-				N64VideoPluginSettingsMenuItem.Image = Properties.Resources.monitor;
 				SaveConfigMenuItem.Image = Properties.Resources.Save;
 				LoadConfigMenuItem.Image = Properties.Resources.LoadConfig;
 				ToolBoxMenuItem.Image = Properties.Resources.ToolBox;

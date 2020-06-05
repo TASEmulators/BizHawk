@@ -925,13 +925,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void CoreMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			quickNESMenuItem.Checked = Config.PreferredCores["NES"] == CoreNames.QuickNes;
-			nesHawkMenuItem.Checked = Config.PreferredCores["NES"] == CoreNames.NesHawk;
-			subNesHawkMenuItem.Checked = Config.PreferredCores["NES"] == CoreNames.SubNesHawk;
-		}
-
 		private void ControllersMenuItem_Click(object sender, EventArgs e)
 		{
 			using var controller = new ControllerConfig(Emulator, Config);
@@ -1181,169 +1174,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Config.InputHotkeyOverrideOptions = 2;
 			UpdateKeyPriorityIcon();
-		}
-
-		private void CoresSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			GBInSGBMenuItem.Checked = Config.GbAsSgb;
-		}
-
-		private void NesCoreSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			QuicknesCoreMenuItem.Checked = Config.PreferredCores["NES"] == CoreNames.QuickNes;
-			NesCoreMenuItem.Checked = Config.PreferredCores["NES"] == CoreNames.NesHawk;
-			SubNesHawkNesMenuItem.Checked = Config.PreferredCores["NES"] == CoreNames.SubNesHawk;
-		}
-
-		private void QuickNesCorePick_Click(object sender, EventArgs e)
-		{
-			Config.PreferredCores["NES"] = CoreNames.QuickNes;
-
-			if (Emulator.SystemId == "NES")
-			{
-				FlagNeedsReboot();
-			}
-		}
-
-		private void NesCorePick_Click(object sender, EventArgs e)
-		{
-			Config.PreferredCores["NES"] = CoreNames.NesHawk;
-
-			if (Emulator.SystemId == "NES")
-			{
-				FlagNeedsReboot();
-			}
-		}
-
-		private void SubNesCorePick_Click(object sender, EventArgs e)
-		{
-			Config.PreferredCores["NES"] = CoreNames.SubNesHawk;
-
-			if (Emulator.SystemId == "NES")
-			{
-				FlagNeedsReboot();
-			}
-		}
-
-		private void CoreSNESSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			Coresnes9xMenuItem.Checked = Config.PreferredCores["SNES"] == CoreNames.Snes9X;
-			CorebsnesMenuItem.Checked = Config.PreferredCores["SNES"] == CoreNames.Bsnes;
-		}
-
-		private void CoreSnesToggle_Click(object sender, EventArgs e)
-		{
-			Config.PreferredCores["SNES"] = Config.PreferredCores["SNES"] == CoreNames.Snes9X
-				? CoreNames.Bsnes
-				: CoreNames.Snes9X;
-
-			if (Emulator.SystemId == "SNES")
-			{
-				FlagNeedsReboot();
-			}
-		}
-
-		private void SGBCoreSubmenu_DropDownOpened(object sender, EventArgs e)
-		{
-			SgbBsnesMenuItem.Checked = Config.SgbUseBsnes;
-			SgbSameBoyMenuItem.Checked = !Config.SgbUseBsnes;
-		}
-
-		private void GBCoreSubmenu_DropDownOpened(object sender, EventArgs e)
-		{
-			GBGambatteMenuItem.Checked = Config.PreferredCores["GB"] == CoreNames.Gambatte;
-			GBGBHawkMenuItem.Checked = Config.PreferredCores["GB"] == CoreNames.GbHawk;
-			SubGBHawkMenuItem.Checked = Config.PreferredCores["GB"] == CoreNames.SubGbHawk;
-		}
-
-		private void PceCoreSubmenu_DropDownOpened(object sender, EventArgs e)
-		{
-			PceHawkMenuItem.Checked = Config.PreferredCores["PCE"] == CoreNames.PceHawk;
-			TurboNymaMenuItem.Checked = Config.PreferredCores["PCE"] == CoreNames.TurboNyma;
-		}
-
-		private void SubGBCorePick_Click(object sender, EventArgs e)
-		{
-			Config.PreferredCores["GB"] = CoreNames.SubGbHawk;
-			if (Emulator.SystemId == "GB" || Emulator.SystemId == "GBC")
-			{
-				FlagNeedsReboot();
-			}
-		}
-
-		private void SgbCorePick_Click(object sender, EventArgs e)
-		{
-			Config.SgbUseBsnes ^= true;
-			if (Emulator.SystemId == "GB" || Emulator.SystemId == "GBC")
-			{
-				FlagNeedsReboot();
-			}
-		}
-
-		private void GambatteCorePick_Click(object sender, EventArgs e)
-		{
-			Config.PreferredCores["GB"] = CoreNames.Gambatte;
-			Config.PreferredCores["GBC"] = CoreNames.Gambatte;
-
-			if (Emulator.SystemId == "GB" || Emulator.SystemId == "GBC")
-			{
-				FlagNeedsReboot();
-			}
-		}
-
-		private void PceHawkCorePick_Click(object sender, EventArgs e)
-		{
-			// TODO: do we want to be able to pick different cores for each system?
-			Config.PreferredCores["PCE"] = CoreNames.PceHawk;
-			Config.PreferredCores["PCECD"] = CoreNames.PceHawk;
-			Config.PreferredCores["SGX"] = CoreNames.PceHawk;
-
-			if (Emulator.SystemId == "PCE" || Emulator.SystemId == "PCECD" || Emulator.SystemId == "SGX")
-			{
-				FlagNeedsReboot();
-			}
-		}
-
-		private void TurboNymaCorePick_Click(object sender, EventArgs e)
-		{
-			Config.PreferredCores["PCE"] = CoreNames.TurboNyma;
-			Config.PreferredCores["PCECD"] = CoreNames.TurboNyma;
-			Config.PreferredCores["SGX"] = CoreNames.TurboNyma;
-
-			if (Emulator.SystemId == "PCE" || Emulator.SystemId == "PCECD" || Emulator.SystemId == "SGX")
-			{
-				FlagNeedsReboot();
-			}
-		}
-
-		private void GBCorePick_Click(object sender, EventArgs e)
-		{
-			Config.PreferredCores["GB"] = CoreNames.GbHawk;
-
-			if (Emulator.SystemId == "GB" || Emulator.SystemId == "GBC")
-			{
-				FlagNeedsReboot();
-			}
-		}
-
-		private void GbInSgbMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.GbAsSgb ^= true;
-
-			if (!Emulator.IsNull())
-			{
-				FlagNeedsReboot();
-			}
-		}
-
-		private void N64VideoPluginSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			N64PluginSettingsMenuItem_Click(sender, e);
-		}
-
-		private void SetLibretroCoreMenuItem_Click(object sender, EventArgs e)
-		{
-			RunLibretroCoreChooser();
 		}
 
 		private void SaveConfigMenuItem_Click(object sender, EventArgs e)
@@ -1850,7 +1680,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GbSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			LoadGBInSGBMenuItem.Checked = Config.GbAsSgb;
 			GBGPUViewerMenuItem.Enabled = !OSTailoredCode.IsUnixHost;
 		}
 
@@ -1864,11 +1693,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GenericCoreConfig.DoDialog(this, "Gameboy Settings");
 			}
-		}
-
-		private void LoadGbInSgbMenuItem_Click(object sender, EventArgs e)
-		{
-			SnesGbInSgbMenuItem_Click(sender, e);
 		}
 
 		private void GbGpuViewerMenuItem_Click(object sender, EventArgs e)
@@ -1957,16 +1781,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SnesSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			if (((LibsnesCore)Emulator).IsSGB)
-			{
-				SnesGBInSGBMenuItem.Visible = true;
-				SnesGBInSGBMenuItem.Checked = Config.GbAsSgb;
-			}
-			else
-			{
-				SnesGBInSGBMenuItem.Visible = false;
-			}
-
 			SNESControllerConfigurationMenuItem.Enabled = MovieSession.Movie.NotActive();
 			SnesGfxDebuggerMenuItem.Enabled = !OSTailoredCode.IsUnixHost;
 		}
@@ -1983,12 +1797,6 @@ namespace BizHawk.Client.EmuHawk
 		private void SnesGfxDebuggerMenuItem_Click(object sender, EventArgs e)
 		{
 			Tools.Load<SNESGraphicsDebugger>();
-		}
-
-		private void SnesGbInSgbMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.GbAsSgb ^= true;
-			FlagNeedsReboot();
 		}
 
 		private void SnesOptionsMenuItem_Click(object sender, EventArgs e)

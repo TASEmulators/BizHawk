@@ -3,11 +3,10 @@
 namespace BizHawk.Emulation.Cores
 {
 	/// <summary>
-	/// Constant class for the names of cores, that should be used  in every <see cref="CoreAttribute"/>
-	/// For now we are only including ones that can be picked as a core preference,
-	/// but all cores should be included ere
+	/// Constant class for the names of cores, that should be used in every <see cref="CoreAttribute"/><br/>
+	/// For now we are only including ones that can be picked as a core preference, but all cores should be included here
 	/// </summary>
-	public class CoreNames
+	public static class CoreNames
 	{
 		public const string NesHawk = "NesHawk";
 		public const string SubNesHawk = "SubNESHawk";
@@ -24,5 +23,6 @@ namespace BizHawk.Emulation.Cores
 		public const string PceHawk = "PCEHawk";
 		public const string TurboNyma = "TurboNyma";
 		public const string TurboTurboNyma = "TurboTurboNyma";
+		public const string Faust = "Faust";
 	}
 }
