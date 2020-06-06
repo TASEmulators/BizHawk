@@ -39,23 +39,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public byte[] SaveStateBinary()
 		{
-			if (_stateBuffer != null)
-			{
-				using var stream = new MemoryStream(_stateBuffer);
-				using var writer = new BinaryWriter(stream);
-				SaveStateBinary(writer);
-				writer.Flush();
-				writer.Close();
-				return _stateBuffer;
-			}
-
 			using var ms = new MemoryStream();
 			using var bw = new BinaryWriter(ms);
 			SaveStateBinary(bw);
 			bw.Flush();
-			_stateBuffer = ms.ToArray();
-			bw.Close();
-			return _stateBuffer;
+			ms.Close();
+			return ms.ToArray();
 		}
 	}
 }
