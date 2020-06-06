@@ -82,22 +82,22 @@ const void* ptrs[] = { Depart0, Depart1, Depart2, Depart3, Depart4, Depart5, Dep
 
 void print(const char* name, int offs)
 {
-	printf("private static readonly byte[][] %s =\n{\n", name);
+	printf("\t\t\tprivate static readonly byte[][] %s =\n\t\t\t{\n", name);
 	for (int i = offs; i < offs + 7; i++)
 	{
-		printf("\tnew byte[] { ");
+		printf("\t\t\t\tnew byte[] { ");
 		const uint8_t* start = ptrs[i];
 		const uint8_t* end = ptrs[i + 1];
 		while (start < end)
 			printf("0x%02x, ", *start++);
 		printf("},\n");		
 	}
-	printf("};\n");
+	printf("\t\t\t};\n");
 }	
 
 int main(void)
 {
 	print("Depart", 0);
-	print("Arrive", 0);
+	print("Arrive", 7);
 	return 0;
 }

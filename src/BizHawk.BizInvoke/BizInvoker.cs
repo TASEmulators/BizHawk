@@ -206,7 +206,7 @@ namespace BizHawk.BizInvoke
 			{
 				// this isn't a problem if CallingConventionAdapters.Waterbox is a no-op
 				if (CallingConventionAdapters.Waterbox.GetType() != CallingConventionAdapters.Native.GetType())
-					throw new InvalidOperationException("Compatibility call mode cannot use ICallingConventionAdapters!");
+					throw new InvalidOperationException("Compatibility call mode cannot use ICallingConventionAdapters for automatically marshalled delegate types!");
 			}
 
 			// define a field on the class to hold the delegate

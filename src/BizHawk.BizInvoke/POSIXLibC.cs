@@ -37,9 +37,11 @@ namespace BizHawk.BizInvoke
 			switch (prot)
 			{
 				case Protection.None: return MemoryProtection.None;
-				case Protection.R: return MemoryProtection.Read;
+				case Protection.R: return MemoryProtection.Read | MemoryProtection.Write; // FIXME
 				case Protection.RW: return MemoryProtection.Read | MemoryProtection.Write;
 				case Protection.RX: return MemoryProtection.Read | MemoryProtection.Execute;
+				case Protection.RW_Invisible: return MemoryProtection.Read | MemoryProtection.Write;
+				case Protection.RW_Stack: return MemoryProtection.Read | MemoryProtection.Write; // FIXME
 				default: throw new ArgumentOutOfRangeException(nameof(prot));
 			}
 		}

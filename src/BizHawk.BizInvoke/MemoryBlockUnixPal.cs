@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 using static BizHawk.BizInvoke.MemoryBlock;
 using static BizHawk.BizInvoke.POSIXLibC;
 
@@ -22,12 +23,12 @@ namespace BizHawk.BizInvoke
 		/// </exception>
 		public MemoryBlockUnixPal(ulong start, ulong size)
 		{
-			throw new NotImplementedException();
-			// _start = start;
-			// _size = size;
-			// _fd = memfd_create("MemoryBlockUnix", 0);
-			// if (_fd == -1)
-			// 	throw new InvalidOperationException($"{nameof(memfd_create)}() returned -1");
+			// Console.WriteLine($".ctor {start:x16} {size:x16}");
+			_start = start;
+			_size = size;
+			_fd = memfd_create("MemoryBlockUnix", 1 /*MFD_CLOEXEC*/);
+			if (_fd == -1)
+				throw new InvalidOperationException($"{nameof(memfd_create)}() failed with error {Marshal.GetLastWin32Error()}");
 		}
 
 		public void Dispose()
@@ -50,10 +51,10 @@ namespace BizHawk.BizInvoke
 			{
 				var ptr = mmap(Z.US(_start), Z.UU(_committedSize),
 					MemoryProtection.Read | MemoryProtection.Write | MemoryProtection.Execute,
-					16, // MAP_FIXED
+					17, // MAP_SHARED | MAP_FIXED
 					_fd, IntPtr.Zero);
 				if (ptr != Z.US(_start))
-					throw new InvalidOperationException($"{nameof(mmap)}() returned NULL or the wrong pointer");
+					throw new InvalidOperationException($"{nameof(mmap)}() failed with error {Marshal.GetLastWin32Error()}");
 			}
 		}
 
@@ -63,38 +64,41 @@ namespace BizHawk.BizInvoke
 			{
 				var errorCode = munmap(Z.US(_start), Z.UU(_committedSize));
 				if (errorCode != 0)
-					throw new InvalidOperationException($"{nameof(munmap)}() returned {errorCode}");
+					throw new InvalidOperationException($"{nameof(munmap)}() failed with error {Marshal.GetLastWin32Error()}");
 			}
 		}
 
 		public void Commit(ulong length)
 		{
+			// Console.WriteLine($"commit {length:x16}");
 			Deactivate();
 			var errorCode = ftruncate(_fd, Z.US(length));
 			if (errorCode != 0)
-				throw new InvalidOperationException($"{nameof(ftruncate)}() returned {errorCode}");
+				throw new InvalidOperationException($"{nameof(ftruncate)}() failed with error {Marshal.GetLastWin32Error()}");
+			_committedSize = length;
 			Activate();
 		}
 
 		public void Protect(ulong start, ulong size, Protection prot)
 		{
+			// Console.WriteLine($"protect {start:x16} {size:x16} {prot}");
 			var errorCode = mprotect(
 				Z.US(start),
 				Z.UU(size),
 				prot.ToMemoryProtection()
 			);
 			if (errorCode != 0)
-				throw new InvalidOperationException($"{nameof(mprotect)}() returned {errorCode}!");
+				throw new InvalidOperationException($"{nameof(mprotect)}() failed with error {Marshal.GetLastWin32Error()}!");
 		}
 
 		public void GetWriteStatus(WriteDetectionStatus[] dest, Protection[] pagedata)
 		{
-			throw new NotImplementedException();
+			// TODO
 		}
 
 		public void SetWriteStatus(WriteDetectionStatus[] src)
 		{
-			throw new NotImplementedException();
+			// TODO
 		}
 	}
 }

@@ -229,14 +229,22 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					_disposeList.Add(_mmapheap);
 				}
 
+				// TODO: This debugger stuff doesn't work on nix?
 				System.Diagnostics.Debug.WriteLine($"About to enter unmanaged code for {opt.Filename}");
-				if (!OSTailoredCode.IsUnixHost && !System.Diagnostics.Debugger.IsAttached && Win32Imports.IsDebuggerPresent())
+				if (OSTailoredCode.IsUnixHost)
 				{
-					// this means that GDB or another unconventional debugger is attached.
-					// if that's the case, and it's observing this core, it probably wants a break
-					System.Diagnostics.Debugger.Break();
+					if (System.Diagnostics.Debugger.IsAttached)
+						System.Diagnostics.Debugger.Break();
 				}
-
+				else
+				{
+					if (!System.Diagnostics.Debugger.IsAttached && Win32Imports.IsDebuggerPresent())
+					{
+						// this means that GDB or another unconventional debugger is attached.
+						// if that's the case, and it's observing this core, it probably wants a break
+						System.Diagnostics.Debugger.Break();
+					}
+				}
 				_module.RunNativeInit();
 			}
 		}
