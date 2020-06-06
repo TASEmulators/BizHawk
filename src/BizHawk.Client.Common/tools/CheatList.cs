@@ -176,11 +176,6 @@ namespace BizHawk.Client.Common
 			return _cheatList.Any(c => c == cheat);
 		}
 
-		public bool Contains(MemoryDomain domain, long address)
-		{
-			return _cheatList.Any(c => c.Domain == domain && c.Address == address);
-		}
-
 		public void CopyTo(Cheat[] array, int arrayIndex)
 		{
 			_cheatList.CopyTo(array, arrayIndex);
@@ -217,12 +212,6 @@ namespace BizHawk.Client.Common
 		public void DisableAll()
 		{
 			_cheatList.ForEach(c => c.Disable(false));
-			Changes = true;
-		}
-
-		public void EnableAll()
-		{
-			_cheatList.ForEach(c => c.Enable(false));
 			Changes = true;
 		}
 
@@ -272,43 +261,39 @@ namespace BizHawk.Client.Common
 					file.Directory.Create();
 				}
 
-				using (var sw = new StreamWriter(path))
+				var sb = new StringBuilder();
+
+				foreach (var cheat in _cheatList)
 				{
-					var sb = new StringBuilder();
-
-					foreach (var cheat in _cheatList)
+					if (cheat.IsSeparator)
 					{
-						if (cheat.IsSeparator)
-						{
-							sb.AppendLine("----");
-						}
-						else
-						{
-							// Set to hex for saving
-							var tempCheatType = cheat.Type;
-
-							cheat.SetType(DisplayType.Hex);
-
-							sb
-								.Append(cheat.AddressStr).Append('\t')
-								.Append(cheat.ValueStr).Append('\t')
-								.Append(cheat.Compare?.ToString() ?? "N").Append('\t')
-								.Append(cheat.Domain != null ? cheat.Domain.Name : "").Append('\t')
-								.Append(cheat.Enabled ? '1' : '0').Append('\t')
-								.Append(cheat.Name).Append('\t')
-								.Append(cheat.SizeAsChar).Append('\t')
-								.Append(cheat.TypeAsChar).Append('\t')
-								.Append((cheat.BigEndian ?? false) ? '1' : '0').Append('\t')
-								.Append(cheat.ComparisonType).Append('\t')
-								.AppendLine();
-
-							cheat.SetType(tempCheatType);
-
-						}
+						sb.AppendLine("----");
 					}
+					else
+					{
+						// Set to hex for saving
+						var tempCheatType = cheat.Type;
 
-					sw.WriteLine(sb.ToString());
+						cheat.SetType(DisplayType.Hex);
+
+						sb
+							.Append(cheat.AddressStr).Append('\t')
+							.Append(cheat.ValueStr).Append('\t')
+							.Append(cheat.Compare?.ToString() ?? "N").Append('\t')
+							.Append(cheat.Domain != null ? cheat.Domain.Name : "").Append('\t')
+							.Append(cheat.Enabled ? '1' : '0').Append('\t')
+							.Append(cheat.Name).Append('\t')
+							.Append(cheat.SizeAsChar).Append('\t')
+							.Append(cheat.TypeAsChar).Append('\t')
+							.Append((cheat.BigEndian ?? false) ? '1' : '0').Append('\t')
+							.Append(cheat.ComparisonType).Append('\t')
+							.AppendLine();
+
+						cheat.SetType(tempCheatType);
+					}
 				}
+
+				File.WriteAllText(path, sb.ToString());
 
 				CurrentFileName = path;
 				Global.Config.RecentCheats.Add(CurrentFileName);
@@ -334,84 +319,83 @@ namespace BizHawk.Client.Common
 				CurrentFileName = path;
 			}
 
-			using (var sr = file.OpenText())
+			using var sr = file.OpenText();
+			
+			if (!append)
 			{
-				if (!append)
-				{
-					Clear();
-				}
+				Clear();
+			}
 
-				string s;
-				while ((s = sr.ReadLine()) != null)
+			string s;
+			while ((s = sr.ReadLine()) != null)
+			{
+				try
 				{
-					try
+					if (s == "----")
 					{
-						if (s == "----")
+						_cheatList.Add(Cheat.Separator);
+					}
+					else
+					{
+						int? compare;
+						var size = WatchSize.Byte;
+						var type = DisplayType.Hex;
+						var bigEndian = false;
+						var comparisonType = Cheat.CompareType.None;
+
+						if (s.Length < 6)
 						{
-							_cheatList.Add(Cheat.Separator);
+							continue;
+						}
+
+						var vals = s.Split('\t');
+						var address = int.Parse(vals[0], NumberStyles.HexNumber);
+						var value = int.Parse(vals[1], NumberStyles.HexNumber);
+
+						if (vals[2] == "N")
+						{
+							compare = null;
 						}
 						else
 						{
-							int? compare;
-							var size = WatchSize.Byte;
-							var type = DisplayType.Hex;
-							var bigEndian = false;
-							Cheat.CompareType comparisonType = Cheat.CompareType.None;
-
-							if (s.Length < 6)
-							{
-								continue;
-							}
-
-							var vals = s.Split('\t');
-							var address = int.Parse(vals[0], NumberStyles.HexNumber);
-							var value = int.Parse(vals[1], NumberStyles.HexNumber);
-
-							if (vals[2] == "N")
-							{
-								compare = null;
-							}
-							else
-							{
-								compare = int.Parse(vals[2], NumberStyles.HexNumber);
-							}
-
-							var domain = domains[vals[3]];
-							var enabled = vals[4] == "1";
-							var name = vals[5];
-
-							// For backwards compatibility, don't assume these values exist
-							if (vals.Length > 6)
-							{
-								size = Watch.SizeFromChar(vals[6][0]);
-								type = Watch.DisplayTypeFromChar(vals[7][0]);
-								bigEndian = vals[8] == "1";
-							}
-							
-							// For backwards compatibility, don't assume these values exist
-							if (vals.Length > 9)
-							{
-								if (!Enum.TryParse(vals[9], out comparisonType))
-								{
-									continue; // Not sure if this is the best answer, could just resort to ==
-								}
-							}
-
-							var watch = Watch.GenerateWatch(
-								domain,
-								address,
-								size,
-								type,
-								bigEndian,
-								name);
-
-							Add(new Cheat(watch, value, compare, !disable && enabled, comparisonType));
+							compare = int.Parse(vals[2], NumberStyles.HexNumber);
 						}
+
+						var domain = domains[vals[3]];
+						var enabled = vals[4] == "1";
+						var name = vals[5];
+
+						// For backwards compatibility, don't assume these values exist
+						if (vals.Length > 6)
+						{
+							size = Watch.SizeFromChar(vals[6][0]);
+							type = Watch.DisplayTypeFromChar(vals[7][0]);
+							bigEndian = vals[8] == "1";
+						}
+						
+						// For backwards compatibility, don't assume these values exist
+						if (vals.Length > 9)
+						{
+							if (!Enum.TryParse(vals[9], out comparisonType))
+							{
+								continue; // Not sure if this is the best answer, could just resort to ==
+							}
+						}
+
+						var watch = Watch.GenerateWatch(
+							domain,
+							address,
+							size,
+							type,
+							bigEndian,
+							name);
+
+						Add(new Cheat(watch, value, compare, !disable && enabled, comparisonType));
 					}
-					catch
-					{
-						continue;
-					}
+				}
+				catch
+				{
+					continue;
 				}
 			}
 
