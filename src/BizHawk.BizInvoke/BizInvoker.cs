@@ -49,11 +49,17 @@ namespace BizHawk.BizInvoke
 		/// </summary>
 		private static readonly ModuleBuilder ImplModuleBuilder;
 
+		/// <summary>
+		/// How far into a class pointer the first field is.  Different on mono and fw.
+		/// </summary>
+		private static readonly int ClassFieldOffset;
+
 		static BizInvoker()
 		{
 			var aname = new AssemblyName("BizInvokeProxyAssembly");
 			ImplAssemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(aname, AssemblyBuilderAccess.Run);
 			ImplModuleBuilder = ImplAssemblyBuilder.DefineDynamicModule("BizInvokerModule");
+			ClassFieldOffset = BizInvokerUtilities.ComputeClassFieldOffset();
 		}
 
 		/// <summary>
@@ -476,6 +482,7 @@ namespace BizHawk.BizInvoke
 
 			if (typeof(Delegate).IsAssignableFrom(type))
 			{
+				// callback -- use the same callingconventionadapter on it that the invoker is being made from
 				var mi = typeof(ICallingConventionAdapter).GetMethod("GetFunctionPointerForDelegate");
 				var end = il.DefineLabel();
 				var isNull = il.DefineLabel();
@@ -515,7 +522,7 @@ namespace BizHawk.BizInvoke
 				il.Emit(OpCodes.Stloc, loc);
 				il.Emit(OpCodes.Conv_I);
 				// skip past the methodtable pointer to the first field
-				il.Emit(IntPtr.Size == 4 ? OpCodes.Ldc_I4_4 : OpCodes.Ldc_I4_8);
+				il.Emit(OpCodes.Ldc_I4, ClassFieldOffset);
 				il.Emit(OpCodes.Conv_I);
 				il.Emit(OpCodes.Add);
 				il.Emit(OpCodes.Br, end);

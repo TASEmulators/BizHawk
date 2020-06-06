@@ -394,17 +394,17 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-		public class TimeSpec
+		public struct TimeSpec
 		{
 			public long Seconds;
 			public long NanoSeconds;
 		}
 
 		[BizExport(CallingConvention.Cdecl, EntryPoint = "__wsyscalltab[228]")]
-		public int SysClockGetTime(int which, [In, Out] TimeSpec time)
+		public unsafe int SysClockGetTime(int which, TimeSpec* time)
 		{
-			time.Seconds = 1495889068;
-			time.NanoSeconds = 0;
+			time->Seconds = 1495889068;
+			time->NanoSeconds = 0;
 			return 0;
 		}
 
