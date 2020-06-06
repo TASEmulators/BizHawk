@@ -38,81 +38,66 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class MainForm : Form
 	{
-		/// <remarks><c>CoreData[x].CoveredSystems[0]</c> should be <c>x</c>; adding a label that's distinct from <c>x</c> can be done in future if necessary</remarks>
-		private static readonly IReadOnlyDictionary<string, (string[] CoveredSystems, (string CoreName, string Label)[] Entries)> CoreData = new Dictionary<string, (string[], (string, string)[] Entries)> {
-			["NES"] = (
-				new[] { "NES" },
-				new[] {
-					(CoreNames.QuickNes, "QuickNES"),
-					(CoreNames.NesHawk, "NesHawk"),
-					(CoreNames.SubNesHawk, "SubNesHawk (Experimental)")
-				}
-			),
-			["SNES"] = (
-				new[] { "SNES" },
-				new[] {
-					(CoreNames.Faust, "Faust"),
-					(CoreNames.Snes9X, "Snes9x"),
-					(CoreNames.Bsnes, "BSNES")
-				}
-			),
-			["SGB"] = (
-				new[] { "SGB" },
-				new[] {
-					(CoreNames.Bsnes, "BSNES"),
-					(CoreNames.SameBoy, "SameBoy")
-				}
-			),
-			["GB"] = (
-				new[] { "GB", "GBC" },
-				new[] {
-					(CoreNames.Gambatte, "Gambatte"),
-					(CoreNames.GbHawk, "GBHawk"),
-					(CoreNames.SubGbHawk, "SubGBHawk (Experimental)")
-				}
-			),
-			["PCE"] = (
-				new[] { "PCE", "PCECD", "SGX" },
-				new[] {
-					(CoreNames.TurboTurboNyma, "TurboTurboNyma"),
-					(CoreNames.PceHawk, "PCEHawk"),
-					(CoreNames.TurboNyma, "TurboNyma")
-				}
-			)
+		/// <remarks><c>AppliesTo[0]</c> is used as the group label, and <c>Config.PreferredCores[AppliesTo[0]]</c> determines the currently selected option</remarks>
+		private static readonly IReadOnlyCollection<(string[] AppliesTo, string[] CoreNames)> CoreData = new List<(string[], string[])> {
+			(new[] { "NES" }, new[] { CoreNames.QuickNes, CoreNames.NesHawk, CoreNames.SubNesHawk }),
+			(new[] { "SNES" }, new[] { CoreNames.Faust, CoreNames.Snes9X, CoreNames.Bsnes }),
+			(new[] { "SGB" }, new[] { CoreNames.Bsnes, CoreNames.SameBoy }),
+			(new[] { "GB", "GBC" }, new[] { CoreNames.Gambatte, CoreNames.GbHawk, CoreNames.SubGbHawk }),
+			(new[] { "PCE", "PCECD", "SGX" }, new[] { CoreNames.TurboTurboNyma, CoreNames.PceHawk, CoreNames.TurboNyma })
 		};
 
 		private void MainForm_Load(object sender, EventArgs e)
 		{
 			SetWindowText();
 
-			EventHandler GenClickHandlerForSystem(string system)
+			ToolStripMenuItem GenSubmenuForSystem((string[] AppliesTo, string[] CoreNames) systemData, EventHandler onclick = null, EventHandler onmouseover = null)
 			{
-				var coveredSystems = CoreData[system].CoveredSystems;
-				return (clickSender, clickArgs) =>
+				var (appliesTo, coreNames) = systemData;
+				var groupLabel = appliesTo[0];
+				var submenu = new ToolStripMenuItem { Text = groupLabel };
+				onclick ??= (clickSender, clickArgs) =>
 				{
 					var coreName = (string) ((ToolStripMenuItem) clickSender).Tag;
-					foreach (var covered in coveredSystems) Config.PreferredCores[covered] = coreName;
-					if (coveredSystems.Contains(Emulator.SystemId)) FlagNeedsReboot(); //TODO don't alert if the loaded core was the one selected
+					foreach (var system in appliesTo) Config.PreferredCores[system] = coreName;
+					if (appliesTo.Contains(Emulator.SystemId)) FlagNeedsReboot(); //TODO don't alert if the loaded core was the one selected
 				};
-			}
-
-			ToolStripMenuItem GenSubmenuForSystem(string system, EventHandler onclick = null, EventHandler onmouseover = null)
-			{
-				onclick ??= GenClickHandlerForSystem(system);
-				var submenu = new ToolStripMenuItem { Text = system };
-				submenu.DropDownItems.AddRange(CoreData[system].Entries.Select(entryData => {
-					var entry = new ToolStripMenuItem { Tag = entryData.CoreName, Text = entryData.Label };
+				submenu.DropDownItems.AddRange(coreNames.Select(coreName => {
+					var entry = new ToolStripMenuItem
+					{
+						Tag = coreName,
+						Text = coreName.StartsWith("Sub") ? $"{coreName} (Experimental)" : coreName //TODO if we ditch this "Experimental" thing, we can use Text instead of Tag
+					};
 					entry.Click += onclick;
 					return (ToolStripItem) entry;
 				}).ToArray());
 				submenu.DropDownOpened += onmouseover ?? ((openedSender, openedArgs) => {
 					foreach (ToolStripMenuItem entry in ((ToolStripMenuItem) openedSender).DropDownItems)
 					{
-						entry.Checked = (string) entry.Tag == Config.PreferredCores[system];
+						entry.Checked = (string) entry.Tag == Config.PreferredCores[groupLabel];
 					}
 				});
 				return submenu;
 			}
+			CoresSubMenu.DropDownItems.AddRange(CoreData.Select(systemData =>
+				systemData.AppliesTo[0] == "SGB"
+					? GenSubmenuForSystem(
+						systemData,
+						(clickSender, clickArgs) =>
+						{
+							Config.SgbUseBsnes = (string) ((ToolStripMenuItem) clickSender).Tag == CoreNames.Bsnes;
+							if (Emulator.SystemId == "GB" || Emulator.SystemId == "GBC") FlagNeedsReboot(); //TODO don't alert if the loaded core was the one selected
+						},
+						(openedSender, openedArgs) =>
+						{
+							//TODO use Config.PreferredCores for SGB, then this custom EventHandler can go away
+							var entries = ((ToolStripMenuItem) openedSender).DropDownItems.Cast<ToolStripMenuItem>().ToList();
+							entries[0].Checked = Config.SgbUseBsnes;
+							entries[1].Checked = !Config.SgbUseBsnes;
+						}
+					)
+					: (ToolStripItem) GenSubmenuForSystem(systemData)
+			).ToArray());
 
 			var GBInSGBMenuItem = new ToolStripMenuItem { Text = "GB in SGB" };
 			GBInSGBMenuItem.Click += (clickSender, clickArgs) =>
@@ -125,24 +110,6 @@ namespace BizHawk.Client.EmuHawk
 			var setLibretroCoreToolStripMenuItem = new ToolStripMenuItem { Text = "Set Libretro Core" };
 			setLibretroCoreToolStripMenuItem.Click += (clickSender, clickArgs) => RunLibretroCoreChooser();
 			CoresSubMenu.DropDownItems.AddRange(new ToolStripItem[] {
-				GenSubmenuForSystem("NES"),
-				GenSubmenuForSystem("SNES"),
-				GenSubmenuForSystem(
-					"SGB",
-					(clickSender, clickArgs) =>
-					{
-						Config.SgbUseBsnes = (string) ((ToolStripMenuItem) clickSender).Tag == CoreNames.Bsnes;
-						if (Emulator.SystemId == "GB" || Emulator.SystemId == "GBC") FlagNeedsReboot(); //TODO don't alert if the loaded core was the one selected
-					},
-					(openedSender, openedArgs) =>
-					{
-						var entries = ((ToolStripMenuItem) openedSender).DropDownItems.Cast<ToolStripMenuItem>().ToList();
-						entries[0].Checked = Config.SgbUseBsnes;
-						entries[1].Checked = !Config.SgbUseBsnes;
-					}
-				),
-				GenSubmenuForSystem("GB"),
-				GenSubmenuForSystem("PCE"),
 				GBInSGBMenuItem,
 				new ToolStripSeparator { AutoSize = true },
 				N64VideoPluginSettingsMenuItem,
