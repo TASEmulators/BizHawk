@@ -24,9 +24,15 @@ namespace BizHawk.Client.Common
 		private const string TypeColumn = "DisplayTypeColumn";
 		private const string ComparisonType = "ComparisonTypeColumn";
 
+		private readonly ICheatConfig _config;
 		private List<Cheat> _cheatList = new List<Cheat>();
 		private string _defaultFileName = "";
 		private bool _changes;
+
+		public CheatCollection(ICheatConfig config)
+		{
+			_config = config;
+		}
 
 		public delegate void CheatListEventHandler(object sender, CheatListEventArgs e);
 		public event CheatListEventHandler Changed;
@@ -72,10 +78,10 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Looks for a .cht file that matches the ROM loaded based on the default filename for a given ROM
 		/// </summary>
-		public bool AttemptToLoadCheatFile(IMemoryDomains domains, bool disable)
+		public bool AttemptToLoadCheatFile(IMemoryDomains domains)
 		{
 			var file = new FileInfo(_defaultFileName);
-			return file.Exists && Load(domains, file.FullName, disable, false);
+			return file.Exists && Load(domains, file.FullName, false);
 		}
 
 		public void NewList(string defaultFileName, bool autosave = false)
@@ -226,19 +232,22 @@ namespace BizHawk.Client.Common
 
 		public void SaveOnClose()
 		{
-			if (Changes && _cheatList.Any())
+			if (_config.AutoSaveOnClose)
 			{
-				if (string.IsNullOrWhiteSpace(CurrentFileName))
+				if (Changes && _cheatList.Any())
 				{
-					CurrentFileName = _defaultFileName;
-				}
+					if (string.IsNullOrWhiteSpace(CurrentFileName))
+					{
+						CurrentFileName = _defaultFileName;
+					}
 
-				SaveFile(CurrentFileName);
-			}
-			else if (!_cheatList.Any() && !string.IsNullOrWhiteSpace(CurrentFileName))
-			{
-				new FileInfo(CurrentFileName).Delete();
-				Global.Config.RecentCheats.Remove(CurrentFileName);
+					SaveFile(CurrentFileName);
+				}
+				else if (!_cheatList.Any() && !string.IsNullOrWhiteSpace(CurrentFileName))
+				{
+					new FileInfo(CurrentFileName).Delete();
+					_config.Recent.Remove(CurrentFileName);
+				}
 			}
 		}
 
@@ -297,7 +306,7 @@ namespace BizHawk.Client.Common
 				File.WriteAllText(path, sb.ToString());
 
 				CurrentFileName = path;
-				Global.Config.RecentCheats.Add(CurrentFileName);
+				_config.Recent.Add(CurrentFileName);
 				Changes = false;
 				return true;
 			}
@@ -307,7 +316,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public bool Load(IMemoryDomains domains, string path, bool disable, bool append)
+		public bool Load(IMemoryDomains domains, string path, bool append)
 		{
 			var file = new FileInfo(path);
 			if (file.Exists == false)
@@ -391,15 +400,16 @@ namespace BizHawk.Client.Common
 							bigEndian,
 							name);
 
-						Add(new Cheat(watch, value, compare, !disable && enabled, comparisonType));
+						Add(new Cheat(watch, value, compare, !_config.DisableOnLoad && enabled, comparisonType));
 					}
 				}
 				catch
 				{
-					continue;
+					// Ignore and continue
 				}
 			}
 
+			_config.Recent.Add(CurrentFileName);
 			Changes = false;
 			return true;
 		}

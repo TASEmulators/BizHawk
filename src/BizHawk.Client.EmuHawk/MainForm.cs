@@ -296,7 +296,6 @@ namespace BizHawk.Client.EmuHawk
 
 			Emulator = new NullEmulator();
 			GlobalWin.Tools = new ToolManager(this, Config, Emulator, MovieSession);
-			CheatList.Changed += Tools.UpdateCheatRelatedTools;
 
 			UpdateStatusSlots();
 			UpdateKeyPriorityIcon();
@@ -414,6 +413,8 @@ namespace BizHawk.Client.EmuHawk
 
 			Sound.StartSound();
 			InputManager.SyncControls(Emulator, Config);
+			GlobalWin.CheatList = new CheatCollection(Config.Cheats);
+			CheatList.Changed += Tools.UpdateCheatRelatedTools;
 			RewireSound();
 
 			// Workaround for windows, location is -32000 when minimized, if they close it during this time, that's what gets saved
@@ -3799,10 +3800,10 @@ namespace BizHawk.Client.EmuHawk
 
 					Tools.Restart(Emulator);
 
-					if (Config.LoadCheatFileByGame && Emulator.HasMemoryDomains())
+					if (Config.Cheats.LoadFileByGame && Emulator.HasMemoryDomains())
 					{
 						CheatList.SetDefaultFileName(Tools.GenerateDefaultCheatFilename());
-						if (CheatList.AttemptToLoadCheatFile(Emulator.AsMemoryDomains(), Config.DisableCheatsOnLoad))
+						if (CheatList.AttemptToLoadCheatFile(Emulator.AsMemoryDomains()))
 						{
 							AddOnScreenMessage("Cheats file loaded");
 						}
@@ -3942,11 +3943,7 @@ namespace BizHawk.Client.EmuHawk
 				Tools.Get<TraceLogger>().Restart();
 			}
 
-			if (Config.CheatsAutoSaveOnClose)
-			{
-				CheatList.SaveOnClose();
-			}
-
+			CheatList.SaveOnClose();
 			Emulator.Dispose();
 			Emulator = new NullEmulator();
 			ClientApi.UpdateEmulatorAndVP(Emulator);

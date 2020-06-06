@@ -2787,7 +2787,7 @@ namespace BizHawk.Client.EmuHawk
 				Tools.LoadRamWatch(!Config.DisplayRamWatch);
 			}
 
-			if (Config.RecentCheats.AutoLoad)
+			if (Config.Cheats.Recent.AutoLoad)
 			{
 				Tools.Load<Cheats>();
 			}

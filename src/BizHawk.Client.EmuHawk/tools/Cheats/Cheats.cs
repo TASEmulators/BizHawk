@@ -73,14 +73,13 @@ namespace BizHawk.Client.EmuHawk
 			var askResult = !MainForm.CheatList.Changes || AskSaveChanges();
 			if (askResult)
 			{
-				var loadResult = MainForm.CheatList.Load(Core, path,  Config.DisableCheatsOnLoad, append: false);
+				var loadResult = MainForm.CheatList.Load(Core, path, append: false);
 				if (!loadResult)
 				{
-					Config.RecentCheats.HandleLoadError(path);
+					Config.Cheats.Recent.HandleLoadError(path);
 				}
 				else
 				{
-					Config.RecentCheats.Add(path);
 					GeneralUpdate();
 					UpdateMessageLabel();
 				}
@@ -108,10 +107,9 @@ namespace BizHawk.Client.EmuHawk
 
 				if (result)
 				{
-					MainForm.CheatList.Load(Core, file.FullName, Config.DisableCheatsOnLoad, append);
+					MainForm.CheatList.Load(Core, file.FullName, append);
 					GeneralUpdate();
 					UpdateMessageLabel();
-					Config.RecentCheats.Add(MainForm.CheatList.CurrentFileName);
 				}
 			}
 		}
@@ -340,7 +338,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			RecentSubMenu.DropDownItems.Clear();
-			RecentSubMenu.DropDownItems.AddRange(Config.RecentCheats.RecentMenu(LoadFileFromRecent, "Cheats", noAutoload: true));
+			RecentSubMenu.DropDownItems.AddRange(Config.Cheats.Recent.RecentMenu(LoadFileFromRecent, "Cheats", noAutoload: true));
 		}
 
 		private void NewMenuItem_Click(object sender, EventArgs e)
@@ -514,10 +512,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			AlwaysLoadCheatsMenuItem.Checked = Config.LoadCheatFileByGame;
-			AutoSaveCheatsMenuItem.Checked = Config.CheatsAutoSaveOnClose;
-			DisableCheatsOnLoadMenuItem.Checked = Config.DisableCheatsOnLoad;
-			AutoloadMenuItem.Checked = Config.RecentCheats.AutoLoad;
+			AlwaysLoadCheatsMenuItem.Checked = Config.Cheats.LoadFileByGame;
+			AutoSaveCheatsMenuItem.Checked = Config.Cheats.AutoSaveOnClose;
+			DisableCheatsOnLoadMenuItem.Checked = Config.Cheats.DisableOnLoad;
+			AutoloadMenuItem.Checked = Config.Cheats.Recent.AutoLoad;
 			SaveWindowPositionMenuItem.Checked = Settings.SaveWindowPosition;
 			AlwaysOnTopMenuItem.Checked = Settings.TopMost;
 			FloatingWindowMenuItem.Checked = Settings.FloatingWindow;
@@ -525,22 +523,22 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AlwaysLoadCheatsMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.LoadCheatFileByGame ^= true;
+			Config.Cheats.LoadFileByGame ^= true;
 		}
 
 		private void AutoSaveCheatsMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.CheatsAutoSaveOnClose ^= true;
+			Config.Cheats.AutoSaveOnClose ^= true;
 		}
 
 		private void CheatsOnOffLoadMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.DisableCheatsOnLoad ^= true;
+			Config.Cheats.DisableOnLoad ^= true;
 		}
 
 		private void AutoloadMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.RecentCheats.AutoLoad ^= true;
+			Config.Cheats.Recent.AutoLoad ^= true;
 		}
 
 		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
@@ -571,9 +569,9 @@ namespace BizHawk.Client.EmuHawk
 
 			CheatsMenu.Items.Add(CheatListView.ToColumnsMenu(ColumnToggleCallback));
 
-			Config.DisableCheatsOnLoad = false;
-			Config.LoadCheatFileByGame = true;
-			Config.CheatsAutoSaveOnClose = true;
+			Config.Cheats.DisableOnLoad = false;
+			Config.Cheats.LoadFileByGame = true;
+			Config.Cheats.AutoSaveOnClose = true;
 
 			RefreshFloatingWindowControl(Settings.FloatingWindow);
 			CheatListView.AllColumns.Clear();

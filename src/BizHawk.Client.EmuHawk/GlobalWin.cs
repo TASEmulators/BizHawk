@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static IEmulator Emulator { get; set; }
 
-		public static CheatCollection CheatList { get; set; } = new CheatCollection();
+		public static CheatCollection CheatList { get; set; }
 
 		/// <summary>
 		/// the IGL to be used for rendering

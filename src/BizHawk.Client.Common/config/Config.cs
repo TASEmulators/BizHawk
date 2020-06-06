@@ -259,11 +259,7 @@ namespace BizHawk.Client.Common
 		public Dictionary<string, ToolDialogSettings> CommonToolSettings { get; set; } = new Dictionary<string, ToolDialogSettings>();
 		public Dictionary<string, Dictionary<string, object>> CustomToolSettings { get; set; } = new Dictionary<string, Dictionary<string, object>>();
 
-		// Cheats
-		public bool DisableCheatsOnLoad { get; set; }
-		public bool LoadCheatFileByGame { get; set; } = true;
-		public bool CheatsAutoSaveOnClose { get; set; } = true;
-		public RecentFiles RecentCheats { get; set; } = new RecentFiles(8);
+		public CheatConfig Cheats { get; set; } = new CheatConfig();
 
 		// Macro Tool
 		public RecentFiles RecentMacros { get; set; } = new RecentFiles(8);
