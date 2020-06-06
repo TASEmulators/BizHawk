@@ -51,7 +51,7 @@ namespace BizHawk.Client.Common
 
 		public Controller ClientControls { get; set; }
 
-		public void RewireInputChain()
+		private void RewireInputChain()
 		{
 			ControllerInputCoalescer.Clear();
 			ControllerInputCoalescer.Definition = ActiveController.Definition;

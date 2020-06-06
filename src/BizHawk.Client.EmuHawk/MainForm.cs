@@ -413,7 +413,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			Sound.StartSound();
-			InputManager.RewireInputChain();
+			InputManager.SyncControls(Emulator, Config);
 			RewireSound();
 
 			// Workaround for windows, location is -32000 when minimized, if they close it during this time, that's what gets saved
