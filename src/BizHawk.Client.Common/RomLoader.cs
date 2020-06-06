@@ -33,6 +33,13 @@ namespace BizHawk.Client.Common
 {
 	public class RomLoader
 	{
+		private readonly Config _config;
+
+		public RomLoader(Config config)
+		{
+			_config = config;
+		}
+
 		public enum LoadErrorType
 		{
 			Unknown, MissingFirmware, Xml, DiscError
@@ -159,9 +166,9 @@ namespace BizHawk.Client.Common
 
 		private bool PreferredPlatformIsDefined(string extension)
 		{
-			if (Global.Config.PreferredPlatformsForExtensions.ContainsKey(extension))
+			if (_config.PreferredPlatformsForExtensions.ContainsKey(extension))
 			{
-				return !string.IsNullOrEmpty(Global.Config.PreferredPlatformsForExtensions[extension]);
+				return !string.IsNullOrEmpty(_config.PreferredPlatformsForExtensions[extension]);
 			}
 
 			return false;
@@ -471,7 +478,7 @@ namespace BizHawk.Client.Common
 							case DiscType.UnknownCDFS:
 							case DiscType.UnknownFormat:
 								game.System = PreferredPlatformIsDefined(ext)
-									? Global.Config.PreferredPlatformsForExtensions[ext]
+									? _config.PreferredPlatformsForExtensions[ext]
 									: "NULL";
 								break;
 
@@ -521,7 +528,7 @@ namespace BizHawk.Client.Common
 						case "PCE": // TODO: this is clearly not used, its set to PCE by code above
 						case "PCECD":
 							string core = CoreNames.PceHawk;
-							if (Global.Config.PreferredCores.TryGetValue("PCECD", out string preferredCore))
+							if (_config.PreferredCores.TryGetValue("PCECD", out string preferredCore))
 							{
 								core = preferredCore;
 							}
@@ -560,7 +567,7 @@ namespace BizHawk.Client.Common
 
 								var left = Database.GetGameInfo(leftBytes, "left.gb");
 								var right = Database.GetGameInfo(rightBytes, "right.gb");
-								if (Global.Config.PreferredCores["GB"] == CoreNames.GbHawk)
+								if (_config.PreferredCores["GB"] == CoreNames.GbHawk)
 								{
 									nextEmulator = new GBHawkLink(
 										nextComm,
@@ -832,7 +839,7 @@ namespace BizHawk.Client.Common
 						// Has the user picked a preference for this extension?
 						if (PreferredPlatformIsDefined(rom.Extension.ToLowerInvariant()))
 						{
-							rom.GameInfo.System = Global.Config.PreferredPlatformsForExtensions[rom.Extension.ToLowerInvariant()];
+							rom.GameInfo.System = _config.PreferredPlatformsForExtensions[rom.Extension.ToLowerInvariant()];
 						}
 						else if (ChoosePlatform != null)
 						{
@@ -864,7 +871,7 @@ namespace BizHawk.Client.Common
 					switch (game.System)
 					{
 						default:
-							if (Global.Config.PreferredCores.TryGetValue(game.System, out string coreName))
+							if (_config.PreferredCores.TryGetValue(game.System, out string coreName))
 							{
 								core = CoreInventory.Instance[game.System, coreName];
 							}
@@ -882,7 +889,7 @@ namespace BizHawk.Client.Common
 							var ti83Bios = nextComm.CoreFileProvider.GetFirmware("TI83", "Rom", true);
 
 							// TODO: make the ti-83 a proper firmware file
-							var ti83BiosPath = Global.FirmwareManager.Request(Global.Config.PathEntries, Global.Config.FirmwareUserSpecifications, "TI83", "Rom");
+							var ti83BiosPath = Global.FirmwareManager.Request(_config.PathEntries, _config.FirmwareUserSpecifications, "TI83", "Rom");
 							using (var ti83AsHawkFile = new HawkFile(ti83BiosPath))
 							{
 								var ti83BiosAsRom = new RomGame(ti83AsHawkFile);
@@ -894,7 +901,7 @@ namespace BizHawk.Client.Common
 							break;
 						case "SNES":
 						{
-							var name = Global.Config.PreferredCores["SNES"];
+							var name = _config.PreferredCores["SNES"];
 							if (game.ForcedCore.ToLower() == "snes9x")
 							{
 								name = CoreNames.Snes9X;
@@ -922,7 +929,7 @@ namespace BizHawk.Client.Common
 						case "NES":
 						{
 							// apply main spur-of-the-moment switcheroo as lowest priority
-							string preference = Global.Config.PreferredCores["NES"];
+							string preference = _config.PreferredCores["NES"];
 
 							// if user has saw fit to override in gamedb, apply that
 							if (!string.IsNullOrEmpty(game.ForcedCore))
@@ -946,13 +953,13 @@ namespace BizHawk.Client.Common
 
 						case "GB":
 						case "GBC":
-							if (!Global.Config.GbAsSgb)
+							if (!_config.GbAsSgb)
 							{
-								core = CoreInventory.Instance["GB", Global.Config.PreferredCores["GB"]];
+								core = CoreInventory.Instance["GB", _config.PreferredCores["GB"]];
 							}
 							else
 							{
-								if (Global.Config.SgbUseBsnes)
+								if (_config.SgbUseBsnes)
 								{
 									game.System = "SNES";
 									game.AddOption("SGB");
@@ -1061,7 +1068,7 @@ namespace BizHawk.Client.Common
 				{
 					// failed to load SGB bios or game does not support SGB mode. 
 					// To avoid catch-22, disable SGB mode
-					Global.Config.GbAsSgb = false;
+					_config.GbAsSgb = false;
 					DoMessageCallback("Failed to load a GB rom in SGB mode.  Disabling SGB Mode.");
 					return LoadRom(path, nextComm, launchLibretroCore, false, recursiveCount + 1);
 				}

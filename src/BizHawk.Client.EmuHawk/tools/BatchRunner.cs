@@ -70,7 +70,7 @@ namespace BizHawk.Client.EmuHawk
 			_files = new List<string>(files);
 			_numFrames = numFrames;
 
-			_ldr = new RomLoader();
+			_ldr = new RomLoader(Global.Config);
 			_ldr.OnLoadError += OnLoadError;
 			_ldr.ChooseArchive = ChooseArchive;
 			_comm = mainForm.CreateCoreComm();
@@ -80,11 +80,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_current.Status = Result.EStatus.ErrorOnLoad;
 			_current.Messages.Add($"{nameof(OnLoadError)}: {e.AttemptedCoreLoad}, {e.Message}, {e.Type}");
-		}
-
-		private void CommMessage(string msg)
-		{
-			_current.Messages.Add($"{nameof(CommMessage)}: {msg}");
 		}
 
 		private int? ChooseArchive(HawkFile hf)

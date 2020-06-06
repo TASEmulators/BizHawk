@@ -3628,7 +3628,7 @@ namespace BizHawk.Client.EmuHawk
 					return false;
 				}
 
-				var loader = new RomLoader
+				var loader = new RomLoader(Config)
 				{
 					ChooseArchive = LoadArchiveChooser,
 					ChoosePlatform = ChoosePlatformForRom,
