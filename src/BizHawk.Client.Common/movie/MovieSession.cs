@@ -25,12 +25,14 @@ namespace BizHawk.Client.Common
 
 		public MovieSession(
 			IMovieConfig settings,
+			string backDirectory,
 			Action<string> messageCallback,
 			Action<string> popupCallback,
 			Action pauseCallback,
 			Action modeChangedCallback)
 		{
 			Settings = settings;
+			BackupDirectory = backDirectory;
 			_messageCallback = messageCallback;
 			_popupCallback = popupCallback;
 			_pauseCallback = pauseCallback
@@ -40,6 +42,8 @@ namespace BizHawk.Client.Common
 		}
 
 		public IMovieConfig Settings { get; }
+
+		public string BackupDirectory { get; set; }
 
 		public IMovie Movie { get; private set; }
 		public bool ReadOnly { get; set; } = true;

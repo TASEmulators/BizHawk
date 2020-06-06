@@ -66,5 +66,7 @@ namespace BizHawk.Client.Common
 		void ConvertToTasProj();
 
 		IMovie Get(string path);
+
+		string BackupDirectory { get; set; }
 	}
 }

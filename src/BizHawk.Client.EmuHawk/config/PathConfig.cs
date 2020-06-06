@@ -254,6 +254,8 @@ namespace BizHawk.Client.EmuHawk
 				var pathEntry = _config.PathEntries.First(p => p.System == t.Parent.Name && p.Type == t.Name);
 				pathEntry.Path = t.Text;
 			}
+
+			_mainForm.MovieSession.BackupDirectory = _config.PathEntries.MovieBackupsAbsolutePath();
 		}
 
 		private void DoRomToggle()

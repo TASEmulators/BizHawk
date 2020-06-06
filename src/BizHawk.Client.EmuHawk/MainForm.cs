@@ -282,6 +282,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.FirmwareManager = new FirmwareManager();
 			MovieSession = new MovieSession(
 				Config.Movies,
+				Config.PathEntries.MovieBackupsAbsolutePath(),
 				AddOnScreenMessage,
 				ShowMessageCoreComm,
 				PauseEmulator,
@@ -881,10 +882,10 @@ namespace BizHawk.Client.EmuHawk
 		private ToolManager Tools => GlobalWin.Tools;
 		private DisplayManager DisplayManager => GlobalWin.DisplayManager;
 
-		private IMovieSession MovieSession
+		public IMovieSession MovieSession
 		{
 			get => Global. MovieSession;
-			set => Global.MovieSession = value;
+			private set => Global.MovieSession = value;
 		}
 
 		private GameInfo Game
