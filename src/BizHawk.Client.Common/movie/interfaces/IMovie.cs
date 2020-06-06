@@ -189,11 +189,6 @@ namespace BizHawk.Client.Common
 		void FinishedMode();
 
 		/// <summary>
-		/// Replaces the given frame's input with an empty frame
-		/// </summary>
-		void ClearFrame(int frame);
-		
-		/// <summary>
 		/// Adds the given input to the movie
 		/// Note: this edits the input log without the normal movie recording logic applied
 		/// </summary>

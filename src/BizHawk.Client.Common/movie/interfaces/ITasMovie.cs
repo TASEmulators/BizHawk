@@ -27,6 +27,11 @@ namespace BizHawk.Client.Common
 		void FlagChanges();
 		void ClearChanges();
 
+		/// <summary>
+		/// Replaces the given frame's input with an empty frame
+		/// </summary>
+		void ClearFrame(int frame);
+
 		void GreenzoneCurrentFrame();
 		void ToggleBoolState(int frame, string buttonName);
 		void SetAxisState(int frame, string buttonName, int val);

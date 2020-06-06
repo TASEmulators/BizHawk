@@ -160,13 +160,6 @@ namespace BizHawk.Client.Common
 			Changes = true;
 		}
 
-		public virtual void ClearFrame(int frame)
-		{
-			var lg = LogGeneratorInstance(Session.MovieController);
-			SetFrameAt(frame, lg.EmptyEntry);
-			Changes = true;
-		}
-
 		protected void SetFrameAt(int frameNum, string frame)
 		{
 			if (Log.Count > frameNum)

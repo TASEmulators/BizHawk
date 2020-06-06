@@ -191,7 +191,6 @@ namespace BizHawk.Client.Common
 						Bind("Movie", "MT Select None"),
 						Bind("Movie", "MT Increment Player"),
 						Bind("Movie", "MT Decrement Player"),
-						Bind("Movie", "Scrub Input"),
 
 						Bind("Tools", "RAM Watch"),
 						Bind("Tools", "RAM Search"),

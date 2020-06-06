@@ -87,18 +87,6 @@ namespace BizHawk.Client.Common
 				{
 					HandleFrameLoopForRecordMode();
 				}
-				else
-				{
-					// Movie may go into finished mode as a result from latching
-					if (!Movie.IsFinished())
-					{
-						if (Global.InputManager.ClientControls.IsPressed("Scrub Input"))
-						{
-							LatchInputToUser();
-							ClearFrame();
-						}
-					}
-				}
 			}
 			else if (Movie.IsRecording())
 			{
@@ -348,16 +336,6 @@ namespace BizHawk.Client.Common
 			}
 
 			return new Bk2Movie(this, path);
-		}
-
-
-		private void ClearFrame()
-		{
-			if (Movie.IsPlayingOrFinished())
-			{
-				Movie.ClearFrame(Movie.Emulator.Frame);
-				Output($"Scrubbed input at frame {Movie.Emulator.Frame}");
-			}
 		}
 
 		private void PopupMessage(string message)

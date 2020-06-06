@@ -78,13 +78,15 @@ namespace BizHawk.Client.Common
 			ChangeLog.SetGeneralRedo();
 		}
 
-		public override void ClearFrame(int frame)
+		public void ClearFrame(int frame)
 		{
 			ChangeLog.AddGeneralUndo(frame, frame, $"Clear Frame: {frame}");
 
-			base.ClearFrame(frame);
-			InvalidateAfter(frame);
+			var lg = LogGeneratorInstance(Session.MovieController);
+			SetFrameAt(frame, lg.EmptyEntry);
+			Changes = true;
 
+			InvalidateAfter(frame);
 			ChangeLog.SetGeneralRedo();
 		}
 
