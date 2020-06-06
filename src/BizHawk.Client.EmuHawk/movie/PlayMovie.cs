@@ -128,7 +128,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private IMovie PreLoadMovieFile(HawkFile hf, bool force)
 		{
-			var movie = MovieService.Get(hf.CanonicalFullPath);
+			var movie = _movieSession.Get(hf.CanonicalFullPath);
 
 			try
 			{

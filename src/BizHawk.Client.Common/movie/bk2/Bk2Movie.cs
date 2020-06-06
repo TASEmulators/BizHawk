@@ -9,18 +9,19 @@ namespace BizHawk.Client.Common
 	{
 		private Bk2Controller _adapter;
 
-		internal Bk2Movie(string filename)
+		internal Bk2Movie(IMovieSession session, string filename)
 		{
 			if (string.IsNullOrWhiteSpace(filename))
 			{
 				throw new ArgumentNullException($"{nameof(filename)} can not be null.");
 			}
 
+			Session = session;
 			Filename = filename;
 			Header[HeaderKeys.MovieVersion] = "BizHawk v2.0.0";
 		}
 
-		public virtual void Attach(IMovieSession session, IEmulator emulator)
+		public virtual void Attach(IEmulator emulator)
 		{
 			// TODO: this check would ideally happen
 			// but is disabled for now because restarting a movie doesn't new one up
@@ -32,11 +33,10 @@ namespace BizHawk.Client.Common
 			//}
 
 			Emulator = emulator;
-			Session = session;
 		}
 
 		public IEmulator Emulator { get; private set; }
-		public IMovieSession Session { get; private set; }
+		public IMovieSession Session { get; }
 
 		protected bool MakeBackup { get; set; } = true;
 

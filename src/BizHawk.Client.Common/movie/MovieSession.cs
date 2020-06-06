@@ -245,7 +245,7 @@ namespace BizHawk.Client.Common
 
 		public void RunQueuedMovie(bool recordMode, IEmulator emulator, IDictionary<string, string> preferredCores)
 		{
-			_queuedMovie.Attach(this, emulator);
+			_queuedMovie.Attach(emulator);
 			foreach (var previousPref in _preferredCores)
 			{
 				preferredCores[previousPref.Key] = previousPref.Value;
@@ -338,6 +338,18 @@ namespace BizHawk.Client.Common
 			Movie.Save();
 			Movie.SwitchToPlay();
 		}
+
+		public IMovie Get(string path)
+		{
+			// TODO: change IMovies to take HawkFiles only and not path
+			if (Path.GetExtension(path)?.EndsWith("tasproj") ?? false)
+			{
+				return new TasMovie(this, path);
+			}
+
+			return new Bk2Movie(this, path);
+		}
+
 
 		private void ClearFrame()
 		{

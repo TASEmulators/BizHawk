@@ -102,7 +102,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			StartNewMovie(MovieService.Get(filename), false);
+			StartNewMovie(MovieSession.Get(filename), false);
 		}
 
 		private void LoadRom(string filename, string archive = null)

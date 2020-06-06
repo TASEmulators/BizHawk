@@ -234,12 +234,17 @@ namespace BizHawk.Client.Common
 		/// Thrown if attempting to attach a core when one is already attached
 		/// or if the given core does not meet all required dependencies
 		/// </exception>
-		void Attach(IMovieSession session, IEmulator emulator);
+		void Attach(IEmulator emulator);
 
 		/// <summary>
 		/// The currently attached core or null if not yet attached
 		/// </summary>
 		IEmulator Emulator { get; }
+
+		/// <summary>
+		/// The current movie session
+		/// </summary>
+		IMovieSession Session { get; }
 
 		IStringLog GetLogEntries();
 		void CopyLog(IEnumerable<string> log);

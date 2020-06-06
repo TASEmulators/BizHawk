@@ -18,7 +18,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 		public static ITasMovie ToTasMovie(this IMovie old)
 		{
 			string newFilename = ConvertFileNameToTasMovie(old.Filename);
-			var tas = (ITasMovie)MovieService.Get(newFilename);
+			var tas = (ITasMovie)old.Session.Get(newFilename);
 			tas.CopyLog(old.GetLogEntries());
 
 			old.Truncate(0); // Trying to minimize ram usage
@@ -53,7 +53,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 
 		public static IMovie ToBk2(this IMovie old)
 		{
-			var bk2 = MovieService.Get(old.Filename.Replace(old.PreferredExtension, Bk2Movie.Extension));
+			var bk2 = old.Session.Get(old.Filename.Replace(old.PreferredExtension, Bk2Movie.Extension));
 			bk2.CopyLog(old.GetLogEntries());
 
 			bk2.HeaderEntries.Clear();
@@ -87,7 +87,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 		{
 			string newFilename = ConvertFileNameToTasMovie(old.Filename);
 
-			var tas = (ITasMovie)MovieService.Get(newFilename);
+			var tas = (ITasMovie)old.Session.Get(newFilename);
 			tas.BinarySavestate = savestate;
 			tas.LagLog.Clear();
 
@@ -144,7 +144,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 		{
 			string newFilename = ConvertFileNameToTasMovie(old.Filename);
 
-			var tas = (ITasMovie) MovieService.Get(newFilename);
+			var tas = (ITasMovie)old.Session.Get(newFilename);
 			tas.SaveRam = saveRam;
 			tas.TasStateManager.Clear();
 			tas.LagLog.Clear();

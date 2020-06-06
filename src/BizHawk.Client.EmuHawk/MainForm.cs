@@ -496,7 +496,7 @@ namespace BizHawk.Client.EmuHawk
 				// If user picked a game, then do the commandline logic
 				if (!Game.IsNullInstance())
 				{
-					var movie = MovieService.Get(_argParser.cmdMovie);
+					var movie = MovieSession.Get(_argParser.cmdMovie);
 					MovieSession.ReadOnly = true;
 
 					// if user is dumping and didn't supply dump length, make it as long as the loaded movie
@@ -531,7 +531,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (File.Exists(Config.RecentMovies.MostRecent))
 					{
-						StartNewMovie(MovieService.Get(Config.RecentMovies.MostRecent), false);
+						StartNewMovie(MovieSession.Get(Config.RecentMovies.MostRecent), false);
 					}
 					else
 					{
@@ -2065,7 +2065,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (File.Exists(path))
 			{
-				var movie = MovieService.Get(path);
+				var movie = MovieSession.Get(path);
 				MovieSession.ReadOnly = true;
 				StartNewMovie(movie, false);
 			}
@@ -4015,7 +4015,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ProcessMovieImport(string fn, bool start)
 		{
-			var result = MovieImport.ImportFile(fn, Config);
+			var result = MovieImport.ImportFile(MovieSession, fn, Config);
 
 			if (result.Errors.Any())
 			{

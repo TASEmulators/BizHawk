@@ -1,22 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace BizHawk.Client.Common
 {
 	public static class MovieService
 	{
-		public static IMovie Get(string path)
-		{
-			// TODO: change IMovies to take HawkFiles only and not path
-			if (Path.GetExtension(path)?.EndsWith("tasproj") ?? false)
-			{
-				return new TasMovie(path);
-			}
-
-			return new Bk2Movie(path);
-		}
-
 		public static string StandardMovieExtension => Bk2Movie.Extension;
 		public static string TasMovieExtension => TasMovie.Extension;
 

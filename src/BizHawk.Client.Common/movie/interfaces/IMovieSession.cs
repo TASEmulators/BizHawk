@@ -61,8 +61,10 @@ namespace BizHawk.Client.Common
 		void StopMovie(bool saveChanges = true);
 
 		/// <summary>
-		/// If a movie is active, it will be converted to a <see cref="TasMovie" />
+		/// If a movie is active, it will be converted to a <see cref="ITasMovie" />
 		/// </summary>
 		void ConvertToTasProj();
+
+		IMovie Get(string path);
 	}
 }

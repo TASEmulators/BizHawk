@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 		private IInputPollable _inputPollable;
 
 		/// <exception cref="InvalidOperationException">loaded core does not implement <see cref="IStatable"/></exception>
-		internal TasMovie(string path) : base(path)
+		internal TasMovie(IMovieSession session, string path) : base(session, path)
 		{
 			Branches = new TasBranchCollection(this);
 			ChangeLog = new TasMovieChangeLog(this);
@@ -24,7 +24,7 @@ namespace BizHawk.Client.Common
 			Markers.Add(0, "Power on");
 		}
 
-		public override void Attach(IMovieSession session, IEmulator emulator)
+		public override void Attach(IEmulator emulator)
 		{
 			if (!emulator.HasSavestates())
 			{
@@ -39,7 +39,7 @@ namespace BizHawk.Client.Common
 			_inputPollable = emulator.AsInputPollable();
 			TasStateManager.Attach(emulator);
 
-			base.Attach(session, emulator);
+			base.Attach(emulator);
 		}
 
 		public override bool StartsFromSavestate

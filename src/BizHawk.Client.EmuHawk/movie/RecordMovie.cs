@@ -92,7 +92,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				var movieToRecord = MovieService.Get(path);
+				var movieToRecord = _movieSession.Get(path);
 
 				var fileInfo = new FileInfo(path);
 				if (!fileInfo.Exists)

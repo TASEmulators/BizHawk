@@ -622,7 +622,7 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
-			var newMovie = (ITasMovie)MovieService.Get(file.FullName);
+			var newMovie = (ITasMovie)MovieSession.Get(file.FullName);
 			newMovie.BindMarkersToInput = Settings.BindMarkersToInput;
 			newMovie.TasStateManager.InvalidateCallback = GreenzoneInvalidated;
 			
@@ -677,7 +677,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
-			var tasMovie = (ITasMovie)MovieService.Get(filename);
+			var tasMovie = (ITasMovie)MovieSession.Get(filename);
 			tasMovie.BindMarkersToInput = Settings.BindMarkersToInput;
 			
 
