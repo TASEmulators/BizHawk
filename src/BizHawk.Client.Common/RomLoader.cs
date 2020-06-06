@@ -258,13 +258,10 @@ namespace BizHawk.Client.Common
 
 				if (OpenAdvanced is OpenAdvanced_Libretro)
 				{
-					// kind of dirty.. we need to stash this, and then we can unstash it in a moment, in case the core doesn't fail
-					var oldGame = Global.Game;
-
 					// must be done before LoadNoGame (which triggers retro_init and the paths to be consumed by the core)
 					// game name == name of core
 					string codePathPart = Path.GetFileNameWithoutExtension(launchLibretroCore);
-					Global.Game = game = new GameInfo { Name = codePathPart, System = "Libretro" };
+					Game = game = new GameInfo { Name = codePathPart, System = "Libretro" };
 					var retro = new LibretroCore(nextComm, game, launchLibretroCore);
 					nextEmulator = retro;
 
@@ -272,7 +269,6 @@ namespace BizHawk.Client.Common
 					{
 						// if we are allowed to run NoGame and we don't have a game, boot up the core that way
 						bool ret = retro.LoadNoGame();
-						Global.Game = oldGame;
 
 						if (!ret)
 						{
@@ -317,8 +313,6 @@ namespace BizHawk.Client.Common
 								}
 							}
 						}
-
-						Global.Game = oldGame;
 
 						if (!ret)
 						{

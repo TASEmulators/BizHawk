@@ -3679,7 +3679,10 @@ namespace BizHawk.Client.EmuHawk
 					//path = ioa_openrom.Path;
 				}
 
+				var oldGame = Global.Game;
 				var result = loader.LoadRom(path, nextComm, ioaRetro?.CorePath);
+
+				Global.Game = result ? loader.Game : oldGame;
 
 				// we need to replace the path in the OpenAdvanced with the canonical one the user chose.
 				// It can't be done until loader.LoadRom happens (for CanonicalFullPath)
@@ -3703,7 +3706,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					string openAdvancedArgs = $"*{OpenAdvancedSerializer.Serialize(ioa)}";
 					Emulator = loader.LoadedEmulator;
-					Global.Game = loader.Game;
 					InputManager.SyncControls(Emulator, Config);
 
 					if (oaOpenrom != null && Path.GetExtension(oaOpenrom.Path.Replace("|", "")).ToLowerInvariant() == ".xml" && !(Emulator is LibsnesCore))
