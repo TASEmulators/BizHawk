@@ -22,23 +22,26 @@ namespace BizHawk.Client.EmuHawk
 
 		public Sound(IntPtr mainWindowHandle)
 		{
-			if (OSTailoredCode.IsUnixHost)
+			if (Global.Config.SoundOutputMethod != ESoundOutputMethod.Dummy)
 			{
-				// at the moment unix/mono can only support OpenAL (so ignore whatever is set in the config)
-				_outputDevice = new OpenALSoundOutput(this);
-			}
-			else
-			{
-				if (Global.Config.SoundOutputMethod == ESoundOutputMethod.OpenAL)
+				if (OSTailoredCode.IsUnixHost)
+				{
+					// at the moment unix/mono can only support OpenAL (so ignore whatever is set in the config)
 					_outputDevice = new OpenALSoundOutput(this);
-				if (Global.Config.SoundOutputMethod == ESoundOutputMethod.DirectSound)
-					_outputDevice = new DirectSoundSoundOutput(this, mainWindowHandle, Global.Config.SoundDevice);
-				if (Global.Config.SoundOutputMethod == ESoundOutputMethod.XAudio2)
-					_outputDevice = new XAudio2SoundOutput(this);
-			}
+				}
+				else
+				{
+					if (Global.Config.SoundOutputMethod == ESoundOutputMethod.OpenAL)
+						_outputDevice = new OpenALSoundOutput(this);
+					if (Global.Config.SoundOutputMethod == ESoundOutputMethod.DirectSound)
+						_outputDevice = new DirectSoundSoundOutput(this, mainWindowHandle, Global.Config.SoundDevice);
+					if (Global.Config.SoundOutputMethod == ESoundOutputMethod.XAudio2)
+						_outputDevice = new XAudio2SoundOutput(this);
+				}
 
-			if (_outputDevice == null)
-				_outputDevice = new DummySoundOutput(this);
+				if (_outputDevice == null)
+					_outputDevice = new DummySoundOutput(this);
+			}
 		}
 
 		/// <summary>
