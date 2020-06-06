@@ -82,9 +82,11 @@ namespace BizHawk.BizInvoke
 
 		static CallingConventionAdapters()
 		{
-			Waterbox = OSTailoredCode.IsUnixHost
-				? (ICallingConventionAdapter)new SysVHostMsGuest()
-				: new NativeConvention();
+			Waterbox = new NativeConvention();
+				// OSTailoredCode.IsUnixHost
+				// // TODO: This will not work properly on linux, but it gets us past some stuff until we're ready to implement this for real
+				// ? (ICallingConventionAdapter)new SysVHostMsGuest()
+				// : new NativeConvention();
 		}
 
 		/// <summary>
