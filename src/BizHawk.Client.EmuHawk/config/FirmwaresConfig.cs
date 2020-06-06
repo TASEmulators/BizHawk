@@ -243,7 +243,7 @@ namespace BizHawk.Client.EmuHawk
 			DoScan();
 		}
 
-		private FirmwareManager Manager => Global.FirmwareManager;
+		private FirmwareManager Manager => GlobalWin.FirmwareManager;
 
 		private void DoScan()
 		{

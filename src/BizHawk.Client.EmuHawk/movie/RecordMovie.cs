@@ -134,7 +134,7 @@ namespace BizHawk.Client.EmuHawk
 				movieToRecord.PopulateWithDefaultHeaderValues(
 					_emulator,
 					Global.Game,
-					Global.FirmwareManager,
+					GlobalWin.FirmwareManager,
 					AuthorBox.Text ?? _config.DefaultAuthor);
 				movieToRecord.Save();
 				_mainForm.StartNewMovie(movieToRecord, true);

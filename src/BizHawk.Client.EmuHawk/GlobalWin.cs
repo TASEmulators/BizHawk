@@ -43,5 +43,6 @@ namespace BizHawk.Client.EmuHawk
 		public static Dictionary<string, object> UserBag { get; set; } = new Dictionary<string, object>();
 
 		public static Config Config { get; set; }
+		public static FirmwareManager FirmwareManager { get; set; }
 	}
 }

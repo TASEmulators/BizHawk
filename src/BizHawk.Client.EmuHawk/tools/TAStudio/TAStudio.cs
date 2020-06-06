@@ -687,7 +687,7 @@ namespace BizHawk.Client.EmuHawk
 			tasMovie.PopulateWithDefaultHeaderValues(
 				Emulator,
 				Global.Game,
-				Global.FirmwareManager,
+				GlobalWin.FirmwareManager,
 				Config.DefaultAuthor);
 
 			SetTasMovieCallbacks(tasMovie);

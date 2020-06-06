@@ -162,7 +162,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var cfp = new CoreFileProvider(
 				ShowMessageCoreComm,
-				Global.FirmwareManager,
+				GlobalWin.FirmwareManager,
 				Config.PathEntries,
 				Config.FirmwareUserSpecifications);
 			var prefs = CoreComm.CorePreferencesFlags.None;
@@ -279,7 +279,7 @@ namespace BizHawk.Client.EmuHawk
 			Rewinder = new Rewinder();
 
 			Global.InputManager.ControllerInputCoalescer = new ControllerInputCoalescer();
-			Global.FirmwareManager = new FirmwareManager();
+			GlobalWin.FirmwareManager = new FirmwareManager();
 			MovieSession = new MovieSession(
 				Config.Movies,
 				Config.PathEntries.MovieBackupsAbsolutePath(),
@@ -899,7 +899,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private Rewinder Rewinder { get; }
 
-		private FirmwareManager FirmwareManager => Global.FirmwareManager;
+		private FirmwareManager FirmwareManager => GlobalWin.FirmwareManager;
 
 		protected override void OnActivated(EventArgs e)
 		{
@@ -3628,7 +3628,7 @@ namespace BizHawk.Client.EmuHawk
 					return false;
 				}
 
-				var loader = new RomLoader(Config, Global.FirmwareManager)
+				var loader = new RomLoader(Config, GlobalWin.FirmwareManager)
 				{
 					ChooseArchive = LoadArchiveChooser,
 					ChoosePlatform = ChoosePlatformForRom,
@@ -3636,7 +3636,7 @@ namespace BizHawk.Client.EmuHawk
 					MessageCallback = GlobalWin.OSD.AddMessage,
 					OpenAdvanced = args.OpenAdvanced
 				};
-				Global.FirmwareManager.RecentlyServed.Clear();
+				GlobalWin.FirmwareManager.RecentlyServed.Clear();
 
 				loader.OnLoadError += ShowLoadError;
 				loader.OnLoadSettings += CoreSettings;
