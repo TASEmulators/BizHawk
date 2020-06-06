@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BizHawk.Emulation.Common;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -12,14 +13,11 @@ namespace BizHawk.Client.Common
 		public bool Loaded { get; private set; }
 		public int InputLogLength => Loaded ? _log.Count : 0;
 
-		public BkmControllerAdapter GetInputState(int frame)
+		public BkmControllerAdapter GetInputState(int frame, ControllerDefinition definition, string sytemId)
 		{
 			if (frame < InputLogLength && frame >= 0)
 			{
-				var adapter = new BkmControllerAdapter
-				{
-					Definition = Global.MovieSession.MovieController.Definition
-				};
+				var adapter = new BkmControllerAdapter(definition, sytemId);
 				adapter.SetControllersAsMnemonic(_log[frame]);
 				return adapter;
 			}

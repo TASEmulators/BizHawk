@@ -3982,7 +3982,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ProcessMovieImport(string fn, bool start)
 		{
-			var result = MovieImport.ImportFile(MovieSession, fn, Config);
+			var result = MovieImport.ImportFile(MovieSession, Emulator, fn, Config);
 
 			if (result.Errors.Any())
 			{

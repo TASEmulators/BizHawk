@@ -11,7 +11,7 @@
 
 			for (var i = 0; i < bkm.InputLogLength; i++)
 			{
-				var input = bkm.GetInputState(i);
+				var input = bkm.GetInputState(i, Result.Movie.Emulator.ControllerDefinition, bkm.Header[HeaderKeys.Platform]);
 				Result.Movie.AppendFrame(input);
 			}
 

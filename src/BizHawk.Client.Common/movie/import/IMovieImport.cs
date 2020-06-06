@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BizHawk.Emulation.Common;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,7 +8,7 @@ namespace BizHawk.Client.Common
 {
 	public interface IMovieImport
 	{
-		ImportResult Import(IMovieSession session, string path, Config config);
+		ImportResult Import(IMovieSession session, IEmulator emulator, string path, Config config);
 	}
 
 	internal abstract class MovieImporter : IMovieImport
@@ -16,7 +17,7 @@ namespace BizHawk.Client.Common
 		protected const string Md5 = "MD5";
 		protected const string MovieOrigin = "MovieOrigin";
 
-		public ImportResult Import(IMovieSession session, string path, Config config)
+		public ImportResult Import(IMovieSession session, IEmulator emulator, string path, Config config)
 		{
 			SourceFile = new FileInfo(path);
 			Config = config;
@@ -29,7 +30,7 @@ namespace BizHawk.Client.Common
 
 			var newFileName = $"{SourceFile.FullName}.{Bk2Movie.Extension}";
 			Result.Movie = session.Get(newFileName);
-
+			Result.Movie.Attach(emulator);
 			RunImport();
 
 			if (!Result.Errors.Any())
