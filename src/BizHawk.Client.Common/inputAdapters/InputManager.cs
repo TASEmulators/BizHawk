@@ -51,13 +51,24 @@ namespace BizHawk.Client.Common
 
 		public Controller ClientControls { get; set; }
 
-		private void RewireInputChain()
+		public void SyncControls(IEmulator emulator, Config config)
 		{
+			var def = emulator.ControllerDefinition;
+
+			ActiveController = BindToDefinition(def, config.AllTrollers, config.AllTrollersAnalog);
+			AutoFireController = BindToDefinitionAF(emulator, config.AllTrollersAutoFire, config.AutofireOn, config.AutofireOff);
+
+			// allow propagating controls that are in the current controller definition but not in the prebaked one
+			// these two lines shouldn't be required anymore under the new system?
+			ActiveController.ForceType(new ControllerDefinition(def));
+			ClickyVirtualPadController.Definition = new ControllerDefinition(def);
+
+			// Wire up input chain
 			ControllerInputCoalescer.Clear();
 			ControllerInputCoalescer.Definition = ActiveController.Definition;
 
 			UdLRControllerAdapter.Source = ActiveController.Or(AutoFireController);
-			UdLRControllerAdapter.AllowUdlr = Global.Config.AllowUdlr;
+			UdLRControllerAdapter.AllowUdlr = config.AllowUdlr;
 
 			StickyXorAdapter.Source = UdLRControllerAdapter;
 			AutofireStickyXorAdapter.Source = StickyXorAdapter;
@@ -78,20 +89,6 @@ namespace BizHawk.Client.Common
 			{
 				MovieOutputHardpoint.Source = MovieInputSourceAdapter;
 			}
-		}
-
-		public void SyncControls(IEmulator emulator, Config config)
-		{
-			var def = emulator.ControllerDefinition;
-
-			ActiveController = BindToDefinition(def, config.AllTrollers, config.AllTrollersAnalog);
-			AutoFireController = BindToDefinitionAF(emulator, config.AllTrollersAutoFire, config.AutofireOn, config.AutofireOff);
-
-			// allow propagating controls that are in the current controller definition but not in the prebaked one
-			// these two lines shouldn't be required anymore under the new system?
-			ActiveController.ForceType(new ControllerDefinition(def));
-			ClickyVirtualPadController.Definition = new ControllerDefinition(def);
-			RewireInputChain();
 		}
 
 		private static Controller BindToDefinition(ControllerDefinition def, IDictionary<string, Dictionary<string, string>> allBinds, IDictionary<string, Dictionary<string, AnalogBind>> analogBinds)
