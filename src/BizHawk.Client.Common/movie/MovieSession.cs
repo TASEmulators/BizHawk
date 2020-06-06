@@ -267,6 +267,8 @@ namespace BizHawk.Client.Common
 			{
 				Movie.StartNewPlayback();
 			}
+
+			MultiTrack.Restart(emulator.ControllerDefinition.PlayerCount);
 		}
 
 		public void ToggleMultitrack()
@@ -310,6 +312,8 @@ namespace BizHawk.Client.Common
 
 				message += "stopped.";
 
+				MultiTrack.Restart(1);
+
 				var result = Movie.Stop(saveChanges);
 				if (result)
 				{
@@ -319,7 +323,6 @@ namespace BizHawk.Client.Common
 				Output(message);
 				ReadOnly = true;
 
-				MultiTrack.Restart(Movie.Emulator.ControllerDefinition.PlayerCount);
 				_modeChangedCallback();
 			}
 
