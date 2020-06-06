@@ -38,10 +38,9 @@ namespace BizHawk.Client.EmuHawk
 					if (Global.Config.SoundOutputMethod == ESoundOutputMethod.XAudio2)
 						_outputDevice = new XAudio2SoundOutput(this);
 				}
-
-				if (_outputDevice == null)
-					_outputDevice = new DummySoundOutput(this);
 			}
+			if (_outputDevice == null)
+				_outputDevice = new DummySoundOutput(this);
 		}
 
 		/// <summary>
