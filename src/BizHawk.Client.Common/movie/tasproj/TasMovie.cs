@@ -194,7 +194,17 @@ namespace BizHawk.Client.Common
 			string line;
 			while ((line = reader.ReadLine()) != null)
 			{
-				if (line.Contains("Frame "))
+				if (line.StartsWith("|"))
+				{
+					newLog.Add(line);
+					if (!timelineBranchFrame.HasValue && counter < Log.Count && line != Log[counter])
+					{
+						timelineBranchFrame = counter;
+					}
+
+					counter++;
+				}
+				else if (line.StartsWith("Frame "))
 				{
 					var split = line.Split(' ');
 					try
@@ -210,16 +220,6 @@ namespace BizHawk.Client.Common
 				else if (line.StartsWith("LogKey:"))
 				{
 					LogKey = line.Replace("LogKey:", "");
-				}
-				else if (line[0] == '|')
-				{
-					newLog.Add(line);
-					if (!timelineBranchFrame.HasValue && counter < Log.Count && line != Log[counter])
-					{
-						timelineBranchFrame = counter;
-					}
-
-					counter++;
 				}
 			}
 

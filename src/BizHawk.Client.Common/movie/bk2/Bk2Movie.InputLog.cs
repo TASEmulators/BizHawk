@@ -50,7 +50,11 @@ namespace BizHawk.Client.Common
 				string line;
 				while ((line = reader.ReadLine()) != null)
 				{
-					if (line.Contains("Frame "))
+					if (line.StartsWith("|"))
+					{
+						Log.Add(line);
+					}
+					else if (line.StartsWith("Frame "))
 					{
 						var strs = line.Split(' ');
 						try
@@ -66,10 +70,6 @@ namespace BizHawk.Client.Common
 					else if (line.StartsWith("LogKey:"))
 					{
 						LogKey = line.Replace("LogKey:", "");
-					}
-					else if (line[0] == '|')
-					{
-						Log.Add(line);
 					}
 				}
 			}
@@ -79,7 +79,12 @@ namespace BizHawk.Client.Common
 				string line;
 				while ((line = reader.ReadLine()) != null)
 				{
-					if (line.Contains("Frame "))
+					if (line.StartsWith("|"))
+					{
+						SetFrameAt(i, line);
+						i++;
+					}
+					else if (line.StartsWith("Frame "))
 					{
 						var strs = line.Split(' ');
 						try
@@ -95,11 +100,6 @@ namespace BizHawk.Client.Common
 					else if (line.StartsWith("LogKey:"))
 					{
 						LogKey = line.Replace("LogKey:", "");
-					}
-					else if (line.StartsWith("|"))
-					{
-						SetFrameAt(i, line);
-						i++;
 					}
 				}
 			}
@@ -145,12 +145,11 @@ namespace BizHawk.Client.Common
 			string line;
 			while ((line = reader.ReadLine()) != null)
 			{
-				if (line.Trim() == "")
+				if (line.StartsWith("|"))
 				{
-					continue;
+					newLog.Add(line);
 				}
-
-				if (line.Contains("Frame "))
+				else if (line.StartsWith("Frame "))
 				{
 					var strs = line.Split(' ');
 					try
@@ -162,10 +161,6 @@ namespace BizHawk.Client.Common
 						errorMessage = "Savestate Frame number failed to parse";
 						return false;
 					}
-				}
-				else if (line[0] == '|')
-				{
-					newLog.Add(line);
 				}
 			}
 
