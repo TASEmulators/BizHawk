@@ -17,7 +17,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 	{
 		public static ITasMovie ToTasMovie(this IMovie old)
 		{
-			string newFilename = GetNewFileName(old.Filename);
+			string newFilename = ConvertFileNameToTasMovie(old.Filename);
 			var tas = (ITasMovie)MovieService.Get(newFilename);
 			tas.CopyLog(old.GetLogEntries());
 
@@ -85,7 +85,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 
 		public static ITasMovie ConvertToSavestateAnchoredMovie(this ITasMovie old, int frame, byte[] savestate)
 		{
-			string newFilename = GetNewFileName(old.Filename);
+			string newFilename = ConvertFileNameToTasMovie(old.Filename);
 
 			var tas = (ITasMovie)MovieService.Get(newFilename);
 			tas.BinarySavestate = savestate;
@@ -142,7 +142,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 
 		public static ITasMovie ConvertToSaveRamAnchoredMovie(this ITasMovie old, byte[] saveRam)
 		{
-			string newFilename = GetNewFileName(old.Filename);
+			string newFilename = ConvertFileNameToTasMovie(old.Filename);
 
 			var tas = (ITasMovie) MovieService.Get(newFilename);
 			tas.SaveRam = saveRam;
@@ -298,7 +298,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				.CoreName;
 		}
 
-		public static string GetNewFileName(string oldFileName)
+		internal static string ConvertFileNameToTasMovie(string oldFileName)
 		{
 			string newFileName = Path.ChangeExtension(oldFileName, $".{TasMovie.Extension}");
 			int fileSuffix = 0;

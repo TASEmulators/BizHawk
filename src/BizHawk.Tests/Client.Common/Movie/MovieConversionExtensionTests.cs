@@ -12,9 +12,9 @@ namespace BizHawk.Common.Tests.Client.Common.Movie
 		[DataRow("C:\\Temp\\TestMovie.bk2", "C:\\Temp\\TestMovie.tasproj")]
 		[DataRow("C:\\Temp\\TestMovie.tasproj.bk2", "C:\\Temp\\TestMovie.tasproj.tasproj")]
 		[DataRow("C:\\Temp\\TestMovie.tasproj", "C:\\Temp\\TestMovie.tasproj")]
-		public void GetNewFileNameFromBk2(string original, string expected)
+		public void ConvertFileNameToTasMovie(string original, string expected)
 		{
-			var actual = MovieConversionExtensions.GetNewFileName(original);
+			var actual = MovieConversionExtensions.ConvertFileNameToTasMovie(original);
 			Assert.AreEqual(expected, actual);
 		}
 	}
