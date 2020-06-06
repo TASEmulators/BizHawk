@@ -1,4 +1,4 @@
-image: mcr.microsoft.com/dotnet/core/sdk:3.1
+image: mcr.microsoft.com/dotnet/sdk:latest
 
 stages:
   - build
@@ -17,6 +17,10 @@ build:
   stage: build
 
 check_style:
+  allow_failure: true
+  rules:
+    - if: '$BIZHAWKBUILD_USE_ANALYZERS != null'
+      when: always
   script:
     - Dist/BuildRelease.sh -p:MachineRunAnalyzersDuringBuild=true
   stage: test
@@ -38,8 +42,9 @@ create_archive:
     name: "BizHawk_devbuild_$CI_COMMIT_REF_SLUG"
     paths:
       - output
-  only:
-    - master
+  rules:
+    - if: '$CI_COMMIT_REF_SLUG == "master"'
+      when: always
   script:
     - ''
   stage: archive
